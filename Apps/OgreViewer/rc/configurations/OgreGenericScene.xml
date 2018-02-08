@@ -3,7 +3,7 @@
     <parameters>
         <param name="WID_PARENT" />
         <param name="modelSeriesUID" />
-        <param name="genericSceneUID" />
+        <param name="compositorChannel" />
         <!-- 3D negato image -->
         <param name="imageUID" />
         <param name="TF" />
@@ -34,7 +34,7 @@
             <registry>
                 <parent wid="${WID_PARENT}" />
                 <toolBar sid="toolBar" start="yes" />
-                <view sid="${genericSceneUID}" start="yes" />
+                <view sid="genericScene" start="yes" />
                 <view sid="negato3DInteractor" start="yes" />
             </registry>
         </service>
@@ -99,7 +99,7 @@
         </service>
 
         <!-- ******************************* Begin Generic Scene ******************************* -->
-        <service uid="${genericSceneUID}" type="::fwRenderOgre::SRender">
+        <service uid="genericScene" type="::fwRenderOgre::SRender">
             <scene overlay="true">
                 <background topColor="#DDDDDD" bottomColor="#43958D" topScale="0.7" bottomScale="1.0" />
                 <layer id="video" depth="1" />
@@ -186,12 +186,16 @@
             <slot>addPointInList/addPoint</slot>
         </connect>
 
+        <connect channel="${compositorChannel}">
+            <signal>genericScene/compositorUpdated</signal>
+        </connect>
+
         <!-- *************************************** Starts ************************************ -->
         <start uid="OgreSceneView" />
         <start uid="frameGrabber" />
         <start uid="synchronizer" />
 
-        <!-- Ogre scene '${genericSceneUID}' -->
+        <!-- Ogre scene 'genericScene' -->
         <start uid="videoAdapter" />
         <start uid="interactorAdaptorVideo" />
         <start uid="interactorAdaptor" />

@@ -48,7 +48,6 @@ namespace fwRenderOgre
 
 const ::fwCom::Signals::SignalKeyType Layer::s_INIT_LAYER_SIG           = "layerInitialized";
 const ::fwCom::Signals::SignalKeyType Layer::s_RESIZE_LAYER_SIG         = "layerResized";
-const ::fwCom::Signals::SignalKeyType Layer::s_COMPOSITOR_UPDATED_SIG   = "compositorUpdated";
 const ::fwCom::Signals::SignalKeyType Layer::s_STEREO_MODE_CHANGED_SIG  = "StereoModeChanged";
 const ::fwCom::Signals::SignalKeyType Layer::s_CAMERA_UPDATED_SIG       = "CameraUpdated";
 const ::fwCom::Signals::SignalKeyType Layer::s_CAMERA_RANGE_UPDATED_SIG = "CameraRangeUpdated";
@@ -168,7 +167,6 @@ Layer::Layer() :
 {
     newSignal<InitLayerSignalType>(s_INIT_LAYER_SIG);
     newSignal<ResizeLayerSignalType>(s_RESIZE_LAYER_SIG);
-    newSignal<CompositorUpdatedSignalType>(s_COMPOSITOR_UPDATED_SIG);
     newSignal<StereoModeChangedSignalType>(s_STEREO_MODE_CHANGED_SIG);
     newSignal<CameraUpdatedSignalType>(s_CAMERA_UPDATED_SIG);
     newSignal<CameraUpdatedSignalType>(s_CAMERA_RANGE_UPDATED_SIG);
@@ -407,10 +405,12 @@ void Layer::updateCompositorState(std::string compositorName, bool isEnabled)
     m_renderService.lock()->makeCurrent();
     m_compositorChainManager->updateCompositorState(compositorName, isEnabled, m_id, m_renderService.lock());
 
-    auto sig = this->signal<CompositorUpdatedSignalType>(s_COMPOSITOR_UPDATED_SIG);
+    auto renderService = m_renderService.lock();
+
+    auto sig = renderService->signal<SRender::CompositorUpdatedSignalType>(SRender::s_COMPOSITOR_UPDATED_SIG);
     sig->asyncEmit(compositorName, isEnabled, this->getSptr());
 
-    m_renderService.lock()->requestRender();
+    renderService->requestRender();
 }
 
 // ----------------------------------------------------------------------------

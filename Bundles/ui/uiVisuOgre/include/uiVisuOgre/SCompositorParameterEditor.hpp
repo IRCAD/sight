@@ -44,6 +44,14 @@ public:
     /// Destructor. Destroy UI
     UIVISUOGRE_API virtual ~SCompositorParameterEditor() noexcept;
 
+    /**
+     * @name Slots API
+     * @{
+     */
+    /// Slot: update the interface.
+    FWRENDEROGRE_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_COMPOSITOR_SLOT;
+    /** @} */
+
 protected:
 
     /// Configure the editor to associate with each object type
@@ -59,10 +67,11 @@ protected:
     UIVISUOGRE_API virtual void updating() override;
 
 private:
+    /// Slot: update the interface.
+    void updateCompositor(std::string _compositorName, bool _enabled, ::fwRenderOgre::Layer::sptr _layer);
+
     /// Clear the current container
     void clear();
-    /// Retrieves the shader parameters attached to the Reconstruction object and stores them into a collection
-    void updateGuiInfo();
     /// Instanciates the needed ui editors according to the stored informations
     void fillGui();
 
@@ -79,20 +88,8 @@ private:
 
     QVBoxLayout* m_sizer;
 
-    /// Name of the render service when we configure it in XML
-    std::string m_renderID;
-
     /// Name of the layer when we configure it in XML
     std::string m_layerID;
-
-    /// Pointer on the render service we work on
-    ::fwRenderOgre::SRender::cwptr m_render;
-
-    /// Pointer on the layer we work on
-    ::fwRenderOgre::Layer::wptr m_currentLayer;
-
-    /// Connection with the layer to be aware of compositors updates
-    ::fwCom::helper::SigSlotConnection m_layerConnection;
 };
 
 } // uiVisuOgre

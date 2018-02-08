@@ -70,7 +70,8 @@ public:
     fwCoreClassDefinitionsWithFactoryMacro( (Layer)(::fwRenderOgre::Layer), (()), new Layer)
     fwCoreAllowSharedFromThis()
 
-    /**@name Signals API
+    /**
+     * @name Signals API
      * @{
      */
     FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_INIT_LAYER_SIG;
@@ -78,9 +79,6 @@ public:
 
     FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_RESIZE_LAYER_SIG;
     typedef ::fwCom::Signal<void (int, int)> ResizeLayerSignalType;
-
-    FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_COMPOSITOR_UPDATED_SIG;
-    typedef ::fwCom::Signal<void (std::string, bool, ::fwRenderOgre::Layer::sptr)> CompositorUpdatedSignalType;
 
     FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_STEREO_MODE_CHANGED_SIG;
     typedef ::fwCom::Signal<void (StereoModeType)> StereoModeChangedSignalType;

@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWRENDEROGRE_SRENDER_HPP__
-#define __FWRENDEROGRE_SRENDER_HPP__
+#pragma once
 
 #include "fwRenderOgre/config.hpp"
 #include "fwRenderOgre/IRenderWindowInteractorManager.hpp"
@@ -87,6 +86,14 @@ public:
     typedef std::map< SceneIdType, SPTR(::fwRenderOgre::Layer) > LayerMapType;
 
     FWRENDEROGRE_API static const std::string s_OGREBACKGROUNDID;
+
+    /**
+     * @name Signals API
+     * @{
+     */
+    FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_COMPOSITOR_UPDATED_SIG;
+    typedef ::fwCom::Signal<void (std::string, bool, ::fwRenderOgre::Layer::sptr)> CompositorUpdatedSignalType;
+    /** @} */
 
     /**
      * @name Slots API
@@ -219,4 +226,3 @@ std::vector<SPTR(T)> SRender::getAdaptors() const
 //-----------------------------------------------------------------------------
 
 }
-#endif // __FWRENDEROGRE_SRENDER_HPP__
