@@ -69,6 +69,14 @@ if(EXTERNAL_LIBRARIES)
     include(${EXTERNAL_LIBRARIES}/lib/cmake/BinPkgsConfig.cmake)
     include(${EXTERNAL_LIBRARIES}/lib/cmake/find_sse.cmake)
 
+    # This serves two purposes:
+    # - The CUDA bundles/libs in FW4SPL projects will automatically find a working CUDA toolkit.
+    # - Dependencies using CUDA such as OpenCV can find the toolkit they were compiled with, they might otherwise pick
+    #   another one if you have several toolkits installed, which would cause an error.
+    set(CUDA_TOOLKIT_ROOT_DIR ${BINPKGS_CUDA_TOOLKIT_ROOT_DIR} CACHE PATH
+        "Version of the CUDA toolkit used for this build, if any. Read-only."
+        FORCE)
+
 elseif(USE_SYSTEM_LIB)
 
     list(APPEND CMAKE_PREFIX_PATH ${FWCMAKE_RESOURCE_PATH}/modules)
