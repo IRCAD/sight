@@ -49,7 +49,7 @@ public:
      * @{
      */
     /// Slot: update the interface.
-    FWRENDEROGRE_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_COMPOSITOR_SLOT;
+    UIVISUOGRE_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_COMPOSITOR_SLOT;
     /** @} */
 
 protected:
