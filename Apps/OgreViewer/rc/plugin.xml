@@ -2,6 +2,7 @@
 
 <plugin id="OgreViewer" version="@PROJECT_VERSION@" >
 
+    <requirement id="arDataReg" />
     <requirement id="dataReg" />
     <requirement id="servicesReg" />
     <requirement id="visuOgreQt" />
@@ -180,7 +181,7 @@
             <service uid="cfgVTKGenericScene" type="::fwServices::SConfigController" >
                 <appConfig id="VTKGenericScene" />
                 <inout key="modelSeriesUID" uid="modelSeriesUID" />
-                <parameter replace="WID_PARENT" uid="VTKSceneView" />
+                <parameter replace="WID_PARENT" by="VTKSceneView" />
             </service>
 
             <service uid="cfgOgreGenericScene" type="::fwServices::SConfigController" >
@@ -190,7 +191,7 @@
                 <inout key="imageUID" uid="imageUID" />
                 <inout key="TF" uid="TF" optional="yes" />
                 <parameter replace="WID_PARENT" by="OgreSceneView" />
-                <parameter replace="genericSceneUID" by="genericSceneUID" />
+                <parameter replace="compositorChannel" by="compositorChannel" />
             </service>
 
             <service uid="cfgOgreNegato2D" type="::fwServices::SConfigController" >
@@ -250,7 +251,6 @@
             <service uid="compositorSelector" type="::uiVisuOgre::SCompositorSelector"  />
 
             <service uid="compositorParameters" type="::uiVisuOgre::SCompositorParameterEditor"  >
-                <render uid="genericSceneUID" />
                 <layer id="default" />
             </service>
 
@@ -280,6 +280,9 @@
             <connect channel="idvrBoolParamChannel" />
             <connect channel="idvrDoubleParamChannel" />
             <connect channel="idvrColorParamChannel" />
+            <connect channel="compositorChannel" >
+                <slot>compositorParameters/updateCompositor</slot>
+            </connect>
 
             <!-- Start/Stop services -->
             <start uid="medicalImage" />

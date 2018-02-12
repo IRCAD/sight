@@ -35,7 +35,15 @@ fwServicesRegisterMacro( ::fwRender::IRender, ::fwRenderOgre::SRender, ::fwData:
 namespace fwRenderOgre
 {
 
+//-----------------------------------------------------------------------------
+
 const std::string SRender::s_OGREBACKGROUNDID = "ogreBackground";
+
+//-----------------------------------------------------------------------------
+
+const ::fwCom::Signals::SignalKeyType SRender::s_COMPOSITOR_UPDATED_SIG = "compositorUpdated";
+
+//-----------------------------------------------------------------------------
 
 const ::fwCom::Slots::SlotKeyType SRender::s_COMPUTE_CAMERA_ORIG_SLOT     = "computeCameraParameters";
 const ::fwCom::Slots::SlotKeyType SRender::s_COMPUTE_CAMERA_CLIPPING_SLOT = "computeCameraClipping";
@@ -55,6 +63,8 @@ SRender::SRender() noexcept :
     m_fullscreen(false)
 {
     m_ogreRoot = ::fwRenderOgre::Utils::getOgreRoot();
+
+    newSignal<CompositorUpdatedSignalType>(s_COMPOSITOR_UPDATED_SIG);
 
     newSlot(s_COMPUTE_CAMERA_ORIG_SLOT, &SRender::resetCameraCoordinates, this);
     newSlot(s_COMPUTE_CAMERA_CLIPPING_SLOT, &SRender::computeCameraClipping, this);

@@ -7,21 +7,21 @@
         <param name="maskUID" />
         <param name="TF" />
     </parameters>
-    
+
     <config>
-        
+
         <!-- ******************************* Objects declaration ****************************** -->
-        
+
         <object uid="${imageUID}"     type="::fwData::Image"     src="ref" />
         <object uid="${maskUID}"      type="::fwData::Image"     src="ref" />
-        
+
         <object uid="TFPool" type="::fwData::Composite" />
         <object uid="${TF}" type="::fwData::TransferFunction" src="deferred" />
-        
+
         <object uid="histogram" type="::fwData::Histogram" />
-        
+
         <!-- ******************************* UI declaration *********************************** -->
-        
+
         <service uid="histogramView" type="::gui::view::SDefaultView" >
             <gui>
                 <layout type="::fwGui::LineLayoutManager">
@@ -40,44 +40,44 @@
                 <view sid="transparencyEditor" start="yes" />
             </registry>
         </service>
-        
+
         <!-- ************************************* Services ************************************ -->
-        
+
         <service uid="tfWidget" type="::fwServices::SConfigController">
             <appConfig id="TransferFunctionWidget" />
             <inout key="image" uid="${imageUID}"/>
             <inout key="histogram" uid="histogram"/>
             <inout key="transferFunction" uid="${TF}" />
-            <parameter replace="WID_PARENT" uid="tfScene"/>
+            <parameter replace="WID_PARENT" by="tfScene"/>
         </service>
-        
+
         <service uid="windowLevel" type="::uiImageQt::WindowLevel" autoConnect="yes">
             <inout key="image" uid="${imageUID}" />
             <inout key="tf" uid="${TF}" optional="yes" />
         </service>
-        
+
         <service uid="transparencyEditor" type="::uiImageQt::ImageTransparency" autoConnect="yes" >
             <inout key="image" uid="${imageUID}" />
         </service>
-        
+
         <service uid="tfm" type="::uiTF::TransferFunctionEditor" >
             <inout key="tfPool" uid="TFPool" autoConnect="yes"/>
             <out key="tf" uid="${TF}" />
         </service>
-        
+
         <service uid="computeHistogram" type="::scene2D::processing::SComputeHistogram" autoConnect="yes" worker="COMPUTING_THREAD">
             <in key="image" uid="${imageUID}" />
             <inout key="histogram" uid="histogram" />
             <binsWidth>5.0</binsWidth>
         </service>
-        
+
         <!-- ************************************* Start ************************************* -->
-        
+
         <!-- Start/Stop services -->
         <start uid="histogramView" />
         <start uid="tfWidget" />
         <start uid="computeHistogram" />
         <start uid="windowLevel" />
-        
+
     </config>
 </extension>
