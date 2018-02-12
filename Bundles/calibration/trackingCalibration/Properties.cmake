@@ -9,7 +9,6 @@ set( DEPENDENCIES
     fwServices
     fwTools
     fwMath
-    ARLcore
     fwCom
     arData
     eigenTools

@@ -31,7 +31,7 @@
 #include <opencv2/calib3d.hpp>
 #include <opencv2/core.hpp>
 
-fwServicesRegisterMacro(::videoCalibration::ICalibration, ::videoCalibration::SOpenCVExtrinsic, ::arData::CameraSeries);
+fwServicesRegisterMacro(::arServices::ICalibration, ::videoCalibration::SOpenCVExtrinsic, ::arData::CameraSeries);
 
 namespace videoCalibration
 {

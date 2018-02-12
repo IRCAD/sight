@@ -135,7 +135,7 @@
             </config>
         </service>
 
-        <service uid="homography" type="::registrationARL::SPoseFrom2d" worker="registration">
+        <service uid="homography" type="::registrationCV::SPoseFrom2d" worker="registration">
             <in group="markerTL" autoConnect="yes">
                 <key uid="tagTL" />
             </in>

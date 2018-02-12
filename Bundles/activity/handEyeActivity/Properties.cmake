@@ -19,7 +19,7 @@ set( REQUIREMENTS
         dataReg
         servicesReg
         imageConfig
-        registrationARL
+        registrationCV
         trackerAruco
         trackingCalibration
         eigenTools

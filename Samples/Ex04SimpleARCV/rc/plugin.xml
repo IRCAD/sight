@@ -4,6 +4,8 @@
     <requirement id="servicesReg" />
     <requirement id="visuVTKQt" />
     <requirement id="preferences" />
+    <requirement id="visuVTKARAdaptor" />
+
     <extension implements="::fwServices::registry::AppConfig">
         <id>Ex04SimpleARCVConfig</id>
         <config>

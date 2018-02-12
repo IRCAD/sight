@@ -9,7 +9,6 @@
     <xi:include href="configurations/calCameraView.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/displayImageConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/displayTwoImagesConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
-    <xi:include href="configurations/toolsCalibration.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/calibrationEdition.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/videoEdition.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/rgbdCalibration.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
@@ -26,36 +25,6 @@
         <appConfig id="calibration">
             <parameters>
                 <parameter replace="cameraSeries" by="@values.cameraSeries" />
-            </parameters>
-        </appConfig>
-    </extension>
-
-    <extension implements="::fwActivities::registry::Activities">
-        <id>toolsCalibration</id>
-        <title>ToolsCalibration</title>
-        <desc>This activity allows to calibrate a tool.</desc>
-        <icon>arMedia-0.1/icons/calibrationActivity.svg</icon>
-        <requirements>
-             <requirement name="cameraSeries" type="::arData::CameraSeries" minOccurs="1" maxOccurs="1">
-                <desc>Stereo calibrated camera series.</desc>
-                <validator>::validators::CameraSeries::StereoCamera</validator>
-             </requirement>
-             <requirement name="tagsIdString" type="::fwData::String" minOccurs="1" maxOccurs="1">
-                <desc>
-                <![CDATA[
-                    Identifier of the tag used to calibrate the tool (separated by a ','). <br />
-                    Ex.: <b>101</b>
-                ]]>
-                </desc>
-                <validator>::calibrationActivity::validator::TagId</validator>
-             </requirement>
-        </requirements>
-        <appConfig id="toolsCalibration">
-            <parameters>
-                <parameter replace="camera1" by="@values.cameraSeries.cameras.0" />
-                <parameter replace="camera2" by="@values.cameraSeries.cameras.1" />
-                <parameter replace="cameraExtrinsic" by="@values.cameraSeries.extrinsic_matrices.1" />
-                <parameter replace="tagsId" by="!values.tagsIdString" />
             </parameters>
         </appConfig>
     </extension>

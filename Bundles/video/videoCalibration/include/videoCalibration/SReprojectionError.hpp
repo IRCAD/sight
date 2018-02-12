@@ -1,17 +1,12 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017.
+ * FW4SPL - Copyright (C) IRCAD, 2017-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VIDEOCALIBRATION_SREPROJECTIONERROR_HPP__
-#define __VIDEOCALIBRATION_SREPROJECTIONERROR_HPP__
+#pragma once
 
 #include "videoCalibration/config.hpp"
-
-#include <fwCom/Signal.hpp>
-
-#include <fwCore/HiResClock.hpp>
 
 #include <fwServices/IController.hpp>
 
@@ -123,5 +118,3 @@ private:
 };
 
 }//namespace videoCalibration
-
-#endif //__VIDEOCALIBRATION_SREPROJECTIONERROR_HPP__

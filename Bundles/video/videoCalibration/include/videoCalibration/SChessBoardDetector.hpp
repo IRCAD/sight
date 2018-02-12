@@ -1,26 +1,19 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VIDEOCALIBRATION_SCHESSBOARDDETECTOR_HPP__
-#define __VIDEOCALIBRATION_SCHESSBOARDDETECTOR_HPP__
+#pragma once
 
 #include "videoCalibration/config.hpp"
 
 #include <arData/FrameTL.hpp>
 
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slots.hpp>
-
 #include <fwData/Image.hpp>
 #include <fwData/PointList.hpp>
 
 #include <fwServices/IController.hpp>
-
-#include <string>
-#include <vector>
 
 namespace videoCalibration
 {
@@ -180,5 +173,3 @@ private:
 };
 
 } //namespace videoCalibration
-
-#endif //__VIDEOCALIBRATION_SCHESSBOARDDETECTOR_HPP__

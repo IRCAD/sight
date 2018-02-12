@@ -351,7 +351,7 @@
             </config>
         </service>
 
-        <service uid="registration1" type="::registrationARL::SPoseFrom2d" worker="registration1">
+        <service uid="registration1" type="::registrationCV::SPoseFrom2d" worker="registration1">
             <in group="markerTL" autoConnect="yes">
                 <key uid="markerTL1" />
             </in>
@@ -362,7 +362,7 @@
             <patternWidth>106</patternWidth>
         </service>
 
-        <service uid="registration2" type="::registrationARL::SPoseFrom2d" worker="registration2">
+        <service uid="registration2" type="::registrationCV::SPoseFrom2d" worker="registration2">
             <in group="markerTL" autoConnect="yes">
                 <key uid="markerTL2" />
             </in>

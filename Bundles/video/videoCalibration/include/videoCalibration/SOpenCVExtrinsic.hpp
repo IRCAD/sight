@@ -1,14 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VIDEOCALIBRATION_SOPENCVEXTRINSIC_HPP__
-#define __VIDEOCALIBRATION_SOPENCVEXTRINSIC_HPP__
+#pragma once
 
 #include "videoCalibration/config.hpp"
-#include "videoCalibration/ICalibration.hpp"
+
+#include <arServices/ICalibration.hpp>
 
 namespace videoCalibration
 {
@@ -39,10 +39,10 @@ namespace videoCalibration
  *      (from camera[0] to camera[index]).
  * - \b board : preference key to retrieve the number of square in 2 dimensions of the chessboard.
  */
-class VIDEOCALIBRATION_CLASS_API SOpenCVExtrinsic : public ::videoCalibration::ICalibration
+class VIDEOCALIBRATION_CLASS_API SOpenCVExtrinsic : public ::arServices::ICalibration
 {
 public:
-    fwCoreServiceClassDefinitionsMacro((SOpenCVExtrinsic)(::videoCalibration::ICalibration));
+    fwCoreServiceClassDefinitionsMacro((SOpenCVExtrinsic)(::arServices::ICalibration));
 
     /// Constructor.
     VIDEOCALIBRATION_API SOpenCVExtrinsic() noexcept;
@@ -102,5 +102,3 @@ private:
     size_t m_camIndex;
 };
 } // namespace videoCalibration
-
-#endif // __VIDEOCALIBRATION_SOPENCVEXTRINSIC_HPP__
