@@ -402,14 +402,10 @@ void Layer::addAvailableCompositor(std::string compositorName)
 
 void Layer::updateCompositorState(std::string compositorName, bool isEnabled)
 {
-    m_renderService.lock()->makeCurrent();
-    m_compositorChainManager->updateCompositorState(compositorName, isEnabled, m_id, m_renderService.lock());
-
     auto renderService = m_renderService.lock();
 
-    auto sig = renderService->signal<SRender::CompositorUpdatedSignalType>(SRender::s_COMPOSITOR_UPDATED_SIG);
-    sig->asyncEmit(compositorName, isEnabled, this->getSptr());
-
+    renderService->makeCurrent();
+    m_compositorChainManager->updateCompositorState(compositorName, isEnabled, m_id, m_renderService.lock());
     renderService->requestRender();
 }
 

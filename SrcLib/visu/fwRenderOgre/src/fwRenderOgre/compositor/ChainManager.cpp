@@ -147,6 +147,10 @@ void ChainManager::updateCompositorState(CompositorIdType _compositorName, bool 
             }
 
             this->updateCompositorAdaptors(_compositorName, _isEnabled, _layerId, _renderService);
+
+            // Send a signal, i.e. to update editors in user interfaces
+            auto sig = _renderService->signal<SRender::CompositorUpdatedSignalType>(SRender::s_COMPOSITOR_UPDATED_SIG);
+            sig->asyncEmit(_compositorName, _isEnabled, _renderService->getLayer(_layerId));
         }
     }
 }
@@ -185,6 +189,10 @@ void ChainManager::setCompositorChain(const std::vector<CompositorIdType>& _comp
             }
 
             this->updateCompositorAdaptors(compositorName, true, _layerId, _renderService);
+
+            // Send a signal, i.e. to update editors in user interfaces
+            auto sig = _renderService->signal<SRender::CompositorUpdatedSignalType>(SRender::s_COMPOSITOR_UPDATED_SIG);
+            sig->asyncEmit(compositorName, true, _renderService->getLayer(_layerId));
         }
         else
         {

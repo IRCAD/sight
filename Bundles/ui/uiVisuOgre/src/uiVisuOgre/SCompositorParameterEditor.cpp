@@ -86,10 +86,11 @@ void SCompositorParameterEditor::updating()
 void SCompositorParameterEditor::updateCompositor(std::string /*_compositorName*/, bool /*_enabled*/,
                                                   fwRenderOgre::Layer::sptr _layer)
 {
-    this->clear();
-
     if(_layer->getLayerID() == m_layerID)
     {
+        // We will create a new layout so clear everything before
+        this->clear();
+
         bool found = false;
 
         const auto adaptors = _layer->getRegisteredAdaptors();
@@ -157,9 +158,9 @@ void SCompositorParameterEditor::updateCompositor(std::string /*_compositorName*
         editorService->configure();
 
         editorService->start();
-    }
 
-    this->fillGui();
+        this->fillGui();
+    }
 }
 
 //------------------------------------------------------------------------------
