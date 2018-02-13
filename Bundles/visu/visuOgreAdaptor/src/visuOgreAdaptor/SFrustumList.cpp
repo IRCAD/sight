@@ -15,6 +15,8 @@
 
 #include <fwRenderOgre/helper/Scene.hpp>
 
+#include <fwServices/macros.hpp>
+
 #include <OgreCamera.h>
 #include <OgreSceneNode.h>
 
