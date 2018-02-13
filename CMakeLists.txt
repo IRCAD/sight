@@ -10,7 +10,6 @@ include(CMakeParseArguments)
 include(GNUInstallDirs)
 include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/profile_config.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/plugin_config.cmake)
-include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/find_sse.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/install/generic_install.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/install/helper.cmake)
 
@@ -61,12 +60,22 @@ endif()
 
 set(FWCMAKE_RESOURCE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/CMake/)
 
-# Append our 'FindPackages.cmake' to CMAKE_MODULE_PATH
+# Append our 'FindPackages.cmake' to CMAKE_MODULE_PATH and include BinPkgs config file
 if(EXTERNAL_LIBRARIES)
 
     list(APPEND CMAKE_PREFIX_PATH ${EXTERNAL_LIBRARIES})
     list(APPEND CMAKE_MODULE_PATH ${EXTERNAL_LIBRARIES})
     list(APPEND CMAKE_FIND_ROOT_PATH ${EXTERNAL_LIBRARIES})
+    include(${EXTERNAL_LIBRARIES}/lib/cmake/BinPkgsConfig.cmake)
+    include(${EXTERNAL_LIBRARIES}/lib/cmake/find_sse.cmake)
+
+    # This serves two purposes:
+    # - The CUDA bundles/libs in FW4SPL projects will automatically find a working CUDA toolkit.
+    # - Dependencies using CUDA such as OpenCV can find the toolkit they were compiled with, they might otherwise pick
+    #   another one if you have several toolkits installed, which would cause an error.
+    set(CUDA_TOOLKIT_ROOT_DIR ${BINPKGS_CUDA_TOOLKIT_ROOT_DIR} CACHE PATH
+        "Version of the CUDA toolkit used for this build, if any. Read-only."
+        FORCE)
 
 elseif(USE_SYSTEM_LIB)
 
@@ -146,9 +155,8 @@ if(MSVC_IDE)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
 endif()
 
-option(USE_SSE "Use SSE/SSE2/SSE3/SSE4 if available (WARNING, this variable must match the deps settings !)" ON)
-
-if(USE_SSE)
+if(BINPKGS_HAS_SSE)
+    message(STATUS "SSE support detected in the dependencies, enabling SSE.")
     # Build with SSE support if possible
     fwFindSSE()
 
