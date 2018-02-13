@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017.
+ * FW4SPL - Copyright (C) IRCAD, 2017-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __HANDEYECALIBRATION_HANDEYEAPI_HPP__
-#define __HANDEYECALIBRATION_HANDEYEAPI_HPP__
+#pragma once
 
 #include "handEyeCalibration/config.hpp"
 
@@ -59,8 +58,9 @@ private:
 
     void initializeData();
 
-    std::vector< ::Eigen::Matrix<double, 4, 4, ::Eigen::RowMajor> > m_transfoList1;
-    std::vector< ::Eigen::Matrix<double, 4, 4, ::Eigen::RowMajor> > m_transfoList2;
+    typedef ::Eigen::Matrix<double, 4, 4, ::Eigen::RowMajor> eigenMat4Type;
+    std::vector< eigenMat4Type, ::Eigen::aligned_allocator< eigenMat4Type > > m_transfoList1;
+    std::vector< eigenMat4Type, ::Eigen::aligned_allocator< eigenMat4Type > > m_transfoList2;
 
     /// List of rvec tvec (eigen style)
     std::vector< ::Eigen::Vector3d, ::Eigen::aligned_allocator< ::Eigen::Vector3d > > m_rvecs1;
@@ -72,5 +72,3 @@ private:
 };
 
 } //namespace handEyeCalibration
-
-#endif // __HANDEYECALIBRATION_HANDEYEAPI_HPP__
