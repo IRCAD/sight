@@ -2,7 +2,7 @@ fwLoadProperties()
 
 find_package(ITK REQUIRED)
 
-fwLink(
-    ITKLabelMap
-    ITKOptimizers
+fwForwardLink(
+    ITKOptimizersv4
+    ITKTransform
 )
