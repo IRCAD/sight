@@ -740,20 +740,22 @@ void Layer::resetCameraClippingRange(const ::Ogre::AxisAlignedBox& worldCoordBou
         const auto saoCompositorIt = std::find_if(chain.begin(), chain.end(),
                                                   ::fwRenderOgre::compositor::ChainManager::FindCompositorByName("SAO"));
 
+        const auto prevNear = m_camera->getNearClipDistance();
+        const auto prevFar  = m_camera->getFarClipDistance();
         if(saoCompositorIt != chain.end() && saoCompositorIt->second)
         {
             // Near and far for SAO
             OSLM_TRACE("Near SAO");
-            m_camera->setNearClipDistance( 1 );
-            m_camera->setFarClipDistance( 10000 );
+            maxNear = 1;
+            minFar  = 10000;
         }
-        else
+        m_camera->setNearClipDistance( maxNear );
+        m_camera->setFarClipDistance( minFar );
+
+        if(maxNear != prevNear || minFar != prevFar)
         {
-            OSLM_TRACE("Near normal");
-            m_camera->setNearClipDistance( maxNear );
-            m_camera->setFarClipDistance( minFar );
+            this->signal<CameraUpdatedSignalType>(s_CAMERA_RANGE_UPDATED_SIG)->asyncEmit();
         }
-        this->signal<CameraUpdatedSignalType>(s_CAMERA_RANGE_UPDATED_SIG)->asyncEmit();
     }
 }
 
