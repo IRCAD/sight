@@ -1,25 +1,26 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2016.
+ * FW4SPL - Copyright (C) IRCAD, 2016-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwGuiQt/widget/SlideBar.hpp"
 
+#include "fwGuiQt/QtMainFrame.hpp"
+
 #include <fwCore/spyLog.hpp>
 
 #include <QHBoxLayout>
-#include <QVBoxLayout>
 #include <QParallelAnimationGroup>
 #include <QPropertyAnimation>
 #include <QPushButton>
+#include <QVBoxLayout>
 
 namespace fwGuiQt
 {
 
 namespace widget
 {
-
 
 //-----------------------------------------------------------------------------
 
@@ -56,7 +57,12 @@ void SlideBar::init()
     // Listen parent and activeWindow 'Resize' and 'Move' event to update widget position
     // (just listening parent event is not enough because the Move event is only send on activeWindow).
     this->parent()->installEventFilter(this);
-    qApp->activeWindow()->installEventFilter(this);
+
+    auto activeWindow = qApp->activeWindow();
+    if(activeWindow)
+    {
+        activeWindow->installEventFilter(this);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -152,7 +158,6 @@ void SlideBar::forceHide()
     this->QGroupBox::setVisible(false);
 }
 
-
 //-----------------------------------------------------------------------------
 
 void SlideBar::forceShow()
@@ -212,6 +217,21 @@ bool SlideBar::eventFilter(QObject* obj, QEvent* event)
     {
         this->updatePosition();
     }
+    else if (event->type() == QEvent::WindowActivate)
+    {
+        auto activeWindow = qApp->activeWindow();
+        SLM_ASSERT("No active window", activeWindow);
+        activeWindow->installEventFilter(this);
+        this->updatePosition();
+    }
+    else if (event->type() == QEvent::WindowDeactivate)
+    {
+        auto mainFrame = dynamic_cast< ::fwGuiQt::QtMainFrame*>(obj);
+        if(mainFrame)
+        {
+            mainFrame->removeEventFilter(this);
+        }
+    }
     return QObject::eventFilter(obj, event);
 }
 
@@ -219,6 +239,3 @@ bool SlideBar::eventFilter(QObject* obj, QEvent* event)
 
 } // namespace widget
 } // namespace fwGuiQt
-
-
-
