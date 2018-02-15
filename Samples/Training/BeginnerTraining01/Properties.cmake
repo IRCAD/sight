@@ -8,7 +8,6 @@ set( REQUIREMENTS
     dataReg
     gui
     guiQt
-    io
     fwlauncher
     appXml
     beginnerTraining

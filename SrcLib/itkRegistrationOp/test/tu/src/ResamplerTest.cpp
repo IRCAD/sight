@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017.
+ * FW4SPL - Copyright (C) IRCAD, 2017-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,6 +8,7 @@
 
 #include <itkRegistrationOp/Resampler.hpp>
 
+#include <fwData/Image.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
 
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
@@ -68,11 +69,11 @@ void ResamplerTest::identityTest()
     fwDataTools::helper::Image imageInHelper(imageIn);
     fwDataTools::helper::Image imageOutHelper(imageOut);
 
-    for(int i = 0; i < SIZE[0]; ++i)
+    for(size_t i = 0; i < SIZE[0]; ++i)
     {
-        for(int j = 0; j < SIZE[1]; ++j )
+        for(size_t j = 0; j < SIZE[1]; ++j )
         {
-            for(int k = 0; k < SIZE[2]; ++k)
+            for(size_t k = 0; k < SIZE[2]; ++k)
             {
                 const uint8_t valueIn  = *(reinterpret_cast<uint8_t*>(imageInHelper.getPixelBuffer(i, j, k)));
                 const uint8_t valueOut = *(reinterpret_cast<uint8_t*>(imageOutHelper.getPixelBuffer(i, j, k)));
@@ -134,11 +135,11 @@ void ResamplerTest::translateTest()
 
     fwDataTools::helper::Image imageOutHelper(imageOut);
 
-    for(int i = 0; i < SIZE[0]; ++i)
+    for(size_t i = 0; i < SIZE[0]; ++i)
     {
-        for(int j = 0; j < SIZE[1]; ++j )
+        for(size_t j = 0; j < SIZE[1]; ++j )
         {
-            for(int k = 0; k < SIZE[2]; ++k)
+            for(size_t k = 0; k < SIZE[2]; ++k)
             {
                 const uint8_t valueOut = *(reinterpret_cast<uint8_t*>(imageOutHelper.getPixelBuffer(i, j, k)));
 
@@ -181,9 +182,9 @@ void ResamplerTest::rotateTest()
     fwDataTools::helper::Image imageHelper(imageIn);
 
     // draw the back Z face.
-    for(int i = 0; i < 64; ++i)
+    for(size_t i = 0; i < 64; ++i)
     {
-        for(int j = 0; j < 64; ++j)
+        for(size_t j = 0; j < 64; ++j)
         {
             imageHelper.setPixelBuffer( computeOffset(i, j, 0, imageIn), bufferValue.get() );
         }
@@ -206,11 +207,11 @@ void ResamplerTest::rotateTest()
 
     fwDataTools::helper::Image imageOutHelper(imageOut);
 
-    for(int i = 0; i < SIZE[0]; ++i)
+    for(size_t i = 0; i < SIZE[0]; ++i)
     {
-        for(int j = 0; j < SIZE[1]; ++j )
+        for(size_t j = 0; j < SIZE[1]; ++j )
         {
-            for(int k = 0; k < SIZE[2]; ++k)
+            for(size_t k = 0; k < SIZE[2]; ++k)
             {
                 const float valueOut = *(reinterpret_cast<uint8_t*>(imageOutHelper.getPixelBuffer(i, j, k)));
 

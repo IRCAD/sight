@@ -8,31 +8,20 @@
 
 #include "itkRegistrationOp/ItkImageCaster.hpp"
 
-#include <fwDataTools/TransformationMatrix3D.hpp>
-
 #include <fwItkIO/helper/Transform.hpp>
 #include <fwItkIO/itk.hpp>
 
-#include <fwTools/Dispatcher.hpp>
-#include <fwTools/DynamicTypeKeyTypeMapping.hpp>
-#include <fwTools/IntrinsicTypes.hpp>
-
-#include <glm/gtc/matrix_access.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/euler_angles.hpp>
-#include <glm/gtx/quaternion.hpp>
-#include <glm/mat4x4.hpp>
-
-#include <itkCastImageFilter.h>
-#include <itkCenteredTransformInitializer.h>
 #include <itkCommand.h>
 #include <itkCorrelationImageToImageMetricv4.h>
 #include <itkImage.h>
+#include <itkImageMomentsCalculator.h>
 #include <itkImageToImageMetricv4.h>
 #include <itkLinearInterpolateImageFunction.h>
 #include <itkMattesMutualInformationImageToImageMetricv4.h>
 #include <itkMeanSquaresImageToImageMetricv4.h>
 #include <itkNearestNeighborInterpolateImageFunction.h>
+
+#include <numeric>
 
 namespace itkRegistrationOp
 {
@@ -100,9 +89,21 @@ void AutomaticRegistration::registerImage(const ::fwData::Image::csptr& _target,
     typename ::itk::ImageToImageMetricv4< RegisteredImageType, RegisteredImageType, RegisteredImageType,
                                           RealType >::Pointer metric;
 
+    ::fwData::Image::csptr ref = _reference;
+    ::fwData::Image::csptr tgt = _target;
+
+    m_invert = computeVolume(tgt) < computeVolume(ref);
+
+    // Always register images with the largest one being fixed.
+    // Otherwise, our metric may not find any matching points between them.
+    if(m_invert)
+    {
+        std::swap(ref, tgt);
+    }
+
     // Convert input images to float. Integer images aren't supported yet.
-    RegisteredImageType::Pointer target    = castTo<float>(_target);
-    RegisteredImageType::Pointer reference = castTo<float>(_reference);
+    RegisteredImageType::Pointer target    = castTo<float>(tgt);
+    RegisteredImageType::Pointer reference = castTo<float>(ref);
 
     // Choose a metric.
     switch(_metric)
@@ -136,14 +137,6 @@ void AutomaticRegistration::registerImage(const ::fwData::Image::csptr& _target,
 
     TransformType::Pointer itkTransform = TransformType::New();
 
-    const RegisteredImageType::SizeType targetSize = target->GetLargestPossibleRegion().GetSize();
-    ::itk::Vector<RealType, 3> targetCenter;
-
-    for(std::uint8_t i = 0; i < 3; ++i)
-    {
-        targetCenter[i] = RealType(targetSize[i]/2 - 1);
-    }
-
     ::itk::Matrix<RealType, 3, 3> m;
     ::itk::Vector<RealType, 3> t;
 
@@ -156,7 +149,24 @@ void AutomaticRegistration::registerImage(const ::fwData::Image::csptr& _target,
         }
     }
 
-    itkTransform->SetCenter(targetCenter);
+    if(m_invert)
+    {
+        // Our algorithm assumes m to be orthogonal. If it isn't, an exception will be thrown later on.
+        m = ::itk::Matrix<RealType, 3, 3>(m.GetTranspose());
+        t = -(m * t);
+    }
+
+    // Initialize the transform.
+    ::itk::ImageMomentsCalculator<RegisteredImageType>::Pointer momentsCalculator =
+        ::itk::ImageMomentsCalculator<RegisteredImageType>::New();
+
+    momentsCalculator->SetImage(target);
+    momentsCalculator->Compute();
+
+    // Set the rigid transform center to the center of mass of the target image.
+    // This truly helps the registration algorithm.
+    itkTransform->SetCenter(momentsCalculator->GetCenterOfGravity());
+
     // Setting the offset also recomputes the translation using the offset, rotation and center
     // so the matrix needs to be set first.
     itkTransform->SetMatrix(m);
@@ -164,10 +174,10 @@ void AutomaticRegistration::registerImage(const ::fwData::Image::csptr& _target,
 
     // Registration.
     m_registrator = RegistrationMethodType::New();
-    auto optimizer = OptimizerType::New();
+    m_optimizer   = OptimizerType::New();
 
     m_registrator->SetMetric(metric);
-    m_registrator->SetOptimizer(optimizer);
+    m_registrator->SetOptimizer(m_optimizer);
 
     OptimizerType::ScalesType optimizerScales(static_cast<unsigned int>(itkTransform->GetNumberOfParameters()));
     const double translationScale = 1.0 / 1000.0;
@@ -178,13 +188,15 @@ void AutomaticRegistration::registerImage(const ::fwData::Image::csptr& _target,
     optimizerScales[4] = translationScale;
     optimizerScales[5] = translationScale;
 
-    optimizer->SetScales( optimizerScales );
-    optimizer->SetDoEstimateLearningRateAtEachIteration( true );
-    optimizer->SetMinimumStepLength(_minStep);
-    optimizer->SetReturnBestParametersAndValue(true);
-    optimizer->SetNumberOfIterations(_maxIterations);
+    m_optimizer->SetScales( optimizerScales );
+    m_optimizer->SetDoEstimateLearningRateAtEachIteration( true );
+    m_optimizer->SetMinimumStepLength(_minStep);
 
-    // The fixed image isn't tranformed, nearest neighbor interpolation is enough.
+    // The solution is the transform returned when optimization ends.
+    m_optimizer->SetReturnBestParametersAndValue(false);
+    m_optimizer->SetNumberOfIterations(_maxIterations);
+
+    // The fixed image isn't transformed, nearest neighbor interpolation is enough.
     auto fixedInterpolator  = ::itk::NearestNeighborInterpolateImageFunction< RegisteredImageType, RealType >::New();
     auto movingInterpolator = ::itk::LinearInterpolateImageFunction< RegisteredImageType, RealType >::New();
 
@@ -200,7 +212,7 @@ void AutomaticRegistration::registerImage(const ::fwData::Image::csptr& _target,
     RegistrationMethodType::SmoothingSigmasArrayType smoothingSigmasPerLevel;
     smoothingSigmasPerLevel.SetSize( numberOfLevels );
 
-    // For each stages, we set the shrink factor and smoothing Sigma
+    // We set the shrink factor and smoothing Sigma for each stage.
     for( std::uint8_t i = 0; i < numberOfLevels; ++i  )
     {
         const auto& stageParameters = _multiResolutionParameters[i];
@@ -211,7 +223,13 @@ void AutomaticRegistration::registerImage(const ::fwData::Image::csptr& _target,
     m_registrator->SetInitialTransform(itkTransform);
     m_registrator->SetFixedImage(target);
     m_registrator->SetMovingImage(reference);
+
     m_registrator->SetMetricSamplingPercentage(_samplingPercentage);
+
+    const auto samplingStrategy = _samplingPercentage < 1.0 ?
+                                  RegistrationMethodType::REGULAR : RegistrationMethodType::NONE;
+
+    m_registrator->SetMetricSamplingStrategy(samplingStrategy);
     m_registrator->SetNumberOfLevels(::itk::SizeValueType(numberOfLevels));
     m_registrator->SetSmoothingSigmasPerLevel( smoothingSigmasPerLevel );
     m_registrator->SetShrinkFactorsPerLevel( shrinkFactorsPerLevel );
@@ -222,35 +240,26 @@ void AutomaticRegistration::registerImage(const ::fwData::Image::csptr& _target,
     if(_callback)
     {
         observer->setCallback(_callback);
-        optimizer->AddObserver( ::itk::IterationEvent(), observer );
+        m_optimizer->AddObserver( ::itk::IterationEvent(), observer );
     }
-
-    m_optimizer = optimizer;
 
     try
     {
         // Time for lift-off.
         m_registrator->Update();
+        this->getCurrentMatrix(_trf);
     }
     catch( ::itk::ExceptionObject& err )
     {
         OSLM_ERROR("Error while registering : " << err);
-        return;
     }
-
-    m_optimizer = nullptr;
-
-    // Get the last transform.
-    const TransformType* finalTransform = m_registrator->GetTransform();
-
-    convertToF4sMatrix(finalTransform, _trf);
 }
 
 //------------------------------------------------------------------------------
 
 void AutomaticRegistration::stopRegistration()
 {
-    if(m_optimizer)
+    if(m_optimizer && m_registrator)
     {
         // Stop registration by removing all levels.
         m_registrator->SetNumberOfLevels(0);
@@ -320,16 +329,22 @@ void AutomaticRegistration::getCurrentMatrix(const ::fwData::TransformationMatri
 {
     OSLM_ASSERT("No registration process running.", m_registrator);
     auto itkMatrix = m_registrator->GetTransform();
-    convertToF4sMatrix(itkMatrix, _trf);
+    this->convertToF4sMatrix(itkMatrix, _trf);
 }
 
 //------------------------------------------------------------------------------
 
 void AutomaticRegistration::convertToF4sMatrix(const AutomaticRegistration::TransformType* _itkMat,
-                                               const fwData::TransformationMatrix3D::sptr& _f4sMat)
+                                               const fwData::TransformationMatrix3D::sptr& _f4sMat) const
 {
-    const ::itk::Matrix<RealType, 3, 3> rigidMat = _itkMat->GetMatrix();
-    const ::itk::Vector<RealType, 3> offset      = _itkMat->GetOffset();
+    ::itk::Matrix<RealType, 3, 3> rigidMat = _itkMat->GetMatrix();
+    ::itk::Vector<RealType, 3> offset      = _itkMat->GetOffset();
+
+    if(m_invert)
+    {
+        rigidMat = ::itk::Matrix<RealType, 3, 3>(_itkMat->GetMatrix().GetTranspose());
+        offset   = -(rigidMat * offset);
+    }
 
     // Convert ::itk::RigidTransform to f4s matrix.
     for(std::uint8_t i = 0; i < 3; ++i)
@@ -340,6 +355,21 @@ void AutomaticRegistration::convertToF4sMatrix(const AutomaticRegistration::Tran
             _f4sMat->setCoefficient(i, j, rigidMat(i, j));
         }
     }
+}
+
+//------------------------------------------------------------------------------
+
+double AutomaticRegistration::computeVolume(const fwData::Image::csptr& _img)
+{
+    const auto& spacing = _img->getSpacing();
+    const auto& size    = _img->getSize();
+
+    SLM_ASSERT("Degenerated image. Spacing and size should be of the same dimension.", spacing.size() == size.size());
+
+    const double voxelVolume = std::accumulate(spacing.begin(), spacing.end(), 1., std::multiplies<double>());
+    const size_t nbVoxels    = std::accumulate(size.begin(), size.end(), 1, std::multiplies<size_t>());
+
+    return voxelVolume * static_cast<double>(nbVoxels);
 }
 
 //------------------------------------------------------------------------------

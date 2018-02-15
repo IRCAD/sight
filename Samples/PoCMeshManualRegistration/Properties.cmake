@@ -9,7 +9,6 @@ set( REQUIREMENTS
     dataReg
     gui
     guiQt
-    io
     ioITK
     fwlauncher
     uiIO

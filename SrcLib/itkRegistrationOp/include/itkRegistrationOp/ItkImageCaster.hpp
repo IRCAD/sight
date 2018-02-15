@@ -1,10 +1,17 @@
-#ifndef __ITKREGISTRATIONOP_ITKIMAGECASTER_HPP__
-#define __ITKREGISTRATIONOP_ITKIMAGECASTER_HPP__
+/* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2017-2018.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
+
+#pragma once
 
 #include <fwData/Image.hpp>
 
 #include <fwItkIO/itk.hpp>
 
+#include <fwTools/Dispatcher.hpp>
+#include <fwTools/DynamicTypeKeyTypeMapping.hpp>
 #include <fwTools/IntrinsicTypes.hpp>
 
 #include <itkCastImageFilter.h>
@@ -54,5 +61,3 @@ typename ::itk::Image<OUTPUT_PIXELTYPE, 3>::Pointer castTo(const ::fwData::Image
 
     return p.o_img;
 }
-
-#endif // __ITKREGISTRATIONOP_ITKIMAGECASTER_HPP__

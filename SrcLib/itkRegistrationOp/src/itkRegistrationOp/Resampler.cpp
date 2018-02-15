@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017.
+ * FW4SPL - Copyright (C) IRCAD, 2017-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -14,6 +14,7 @@
 #include <fwTools/IntrinsicTypes.hpp>
 
 #include <itkAffineTransform.h>
+#include <itkBoundingBox.h>
 #include <itkBSplineInterpolateImageFunction.h>
 #include <itkMatrix.h>
 #include <itkMinimumMaximumImageCalculator.h>
@@ -58,14 +59,19 @@ struct Resampling
         typename ImageType::SpacingType spacing     = itkImage->GetSpacing();
         typename ImageType::DirectionType direction = itkImage->GetDirection();
 
+        SLM_ASSERT("Input spacing can't be null along any axis", spacing[0] > 0 && spacing[1] > 0 && spacing[2] > 0);
+
         if(params.i_targetImage)
         {
             for(std::uint8_t i = 0; i < 3; ++i)
             {
                 // ITK uses unsigned long to store sizes.
-                size[i]    = static_cast<typename ImageType::SizeType::SizeValueType>(params.i_targetImage->getSize()[i]);
+                size[i] = static_cast<typename ImageType::SizeType::SizeValueType>(params.i_targetImage->getSize()[i]);
+
                 origin[i]  = params.i_targetImage->getOrigin()[i];
                 spacing[i] = params.i_targetImage->getSpacing()[i];
+
+                SLM_ASSERT("Output spacing can't be null along any axis.", spacing[i] > 0);
             }
         }
 
@@ -89,7 +95,6 @@ void Resampler::resample(const ::fwData::Image::csptr& _inImage,
                          const ::fwData::TransformationMatrix3D::csptr& _trf,
                          const ::fwData::Image::csptr& _targetImg)
 {
-    const ::fwTools::DynamicType type          = _inImage->getPixelType();
     const itk::Matrix<double, 4, 4 > itkMatrix = ::fwItkIO::helper::Transform::convertToITK(_trf);
 
     // We need to extract a 3x3 matrix and a vector to set the affine transform.
@@ -120,7 +125,75 @@ void Resampler::resample(const ::fwData::Image::csptr& _inImage,
     params.i_trf         = transf.GetPointer();
     params.i_targetImage = _targetImg;
 
+    const ::fwTools::DynamicType type = _inImage->getPixelType();
     ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes, Resampling >::invoke(type, params);
+}
+
+//-----------------------------------------------------------------------------
+
+fwData::Image::sptr Resampler::resample(const fwData::Image::csptr& _img,
+                                        const ::fwData::TransformationMatrix3D::csptr& _trf,
+                                        const ::fwData::Image::SpacingType& _outputSpacing)
+{
+    using PointType           = ::itk::Point<double, 3>;
+    using VectorContainerType = ::itk::VectorContainer<int, PointType>;
+    using BoundingBoxType     = ::itk::BoundingBox<int, 3, double, VectorContainerType>;
+
+    const auto& inputSize    = _img->getSize();
+    const auto& inputOrigin  = _img->getOrigin();
+    const auto& inputSpacing = _img->getSpacing();
+
+    SLM_ASSERT("Image dimension must be 3.",
+               inputOrigin.size() == 3 && inputSpacing.size() == 3 && inputSize.size() == 3);
+
+    typename BoundingBoxType::Pointer inputBB = BoundingBoxType::New();
+
+    const PointType min(inputOrigin.data());
+    PointType max;
+    for(std::uint8_t i = 0; i < 3; ++i)
+    {
+        max[i] = inputOrigin[i] + static_cast<double>(inputSize[i]) * inputSpacing[i];
+    }
+
+    inputBB->SetMinimum(min);
+    inputBB->SetMaximum(max);
+
+    const auto inputCorners = inputBB->GetCorners();
+    const ::itk::Matrix<double, 4, 4> matrix(::fwItkIO::helper::Transform::convertToITK(_trf).GetInverse());
+
+    // Apply transform matrix to all bounding box corners.
+    typename VectorContainerType::Pointer outputCorners = VectorContainerType::New();
+    outputCorners->Reserve(inputCorners->Size());
+    std::transform(inputCorners->begin(), inputCorners->end(), outputCorners->begin(), [&matrix](const PointType& _in)
+        {
+            // Convert input to homogeneous coordinates.
+            const ::itk::Point<double, 4> input(std::array<double, 4>({{_in[0], _in[1], _in[2], 1.}}).data());
+            const auto p = matrix * input;
+            return PointType(p.GetDataPointer());
+        });
+
+    // Compute the transformed axis aligned bounding box.
+    typename BoundingBoxType::Pointer outputBB = BoundingBoxType::New();
+    outputBB->SetPoints(outputCorners);
+    outputBB->ComputeBoundingBox();
+
+    // Compute output size and origin.
+    ::fwData::Image::sptr output = ::fwData::Image::New();
+    ::fwData::Image::OriginType outputOrigin(3);
+    ::fwData::Image::SizeType outputSize(3);
+
+    for(std::uint8_t i = 0; i < 3; ++i)
+    {
+        outputOrigin[i] = outputBB->GetMinimum()[i];
+        outputSize[i]   = size_t((outputBB->GetMaximum()[i] - outputOrigin[i]) / _outputSpacing[i]);
+    }
+
+    output->setSize(outputSize);
+    output->setSpacing(_outputSpacing);
+    output->setOrigin(outputOrigin);
+
+    resample(_img, output, _trf, output);
+    return output;
 }
 
 //-----------------------------------------------------------------------------
