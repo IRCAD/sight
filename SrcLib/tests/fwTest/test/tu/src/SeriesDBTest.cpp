@@ -1,25 +1,24 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwData/Composite.hpp>
-#include <fwData/String.hpp>
-
-#include <fwMedData/SeriesDB.hpp>
-#include <fwMedData/Series.hpp>
-#include <fwMedData/ImageSeries.hpp>
-#include <fwMedData/ModelSeries.hpp>
-#include <fwMedData/ActivitySeries.hpp>
-#include <fwMedData/Patient.hpp>
-#include <fwMedData/Study.hpp>
-#include <fwMedData/Equipment.hpp>
-#include <fwMedData/ImageSeries.hpp>
+#include "SeriesDBTest.hpp"
 
 #include <fwTest/generator/SeriesDB.hpp>
 
-#include "SeriesDBTest.hpp"
+#include <fwData/Composite.hpp>
+#include <fwData/String.hpp>
+
+#include <fwMedData/ActivitySeries.hpp>
+#include <fwMedData/Equipment.hpp>
+#include <fwMedData/ImageSeries.hpp>
+#include <fwMedData/ModelSeries.hpp>
+#include <fwMedData/Patient.hpp>
+#include <fwMedData/Series.hpp>
+#include <fwMedData/SeriesDB.hpp>
+#include <fwMedData/Study.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwTest::ut::SeriesDBTest );

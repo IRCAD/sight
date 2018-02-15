@@ -4,8 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWSTRUCTURALPATCH_CREATOR_FWDATA_LANDMARKS1_HPP__
-#define __FWSTRUCTURALPATCH_CREATOR_FWDATA_LANDMARKS1_HPP__
+#pragma once
 
 #include "fwStructuralPatch/config.hpp"
 
@@ -34,12 +33,10 @@ public:
     FWSTRUCTURALPATCH_API Landmarks1( const Landmarks1& cpy );
 
     /// Create the specified object (sets 'landmarks' attribute).
-    FWSTRUCTURALPATCH_API virtual ::fwAtoms::Object::sptr create();
+    FWSTRUCTURALPATCH_API virtual ::fwAtoms::Object::sptr create() override;
 
 };
 
 } // namespace fwData
 } // namespace creator
 } // namespace fwStructuralPatch
-
-#endif // __FWSTRUCTURALPATCH_CREATOR_FWDATA_LANDMARKS1_HPP__

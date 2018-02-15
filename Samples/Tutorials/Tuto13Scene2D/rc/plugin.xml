@@ -31,20 +31,22 @@
                     <layout type="::fwGui::LineLayoutManager">
                         <orientation value="vertical" />
                         <view caption="Scene2D" />
-                        <view caption="X Spacing" proportion="0" />
+                        <view proportion="0" />
                     </layout>
                 </gui>
                 <registry>
                     <view sid="Scene2D" start="no" />
-                    <view sid="XSpacingEditor" start="no" />
+                    <view sid="spacingEditor" start="no" />
                 </registry>
             </service>
             <!-- ***************************************** End layouts declaration ***************************************** -->
 
             <!-- ***************************************** Begin services declarations  ************************************ -->
 
-            <service uid="XSpacingEditor" type="::uiVisuQt::BasicFloatEditor" autoConnect="yes" >
-                <inout key="float" uid="Float" />
+            <service uid="spacingEditor" type="::guiQt::editor::SParameters">
+                <parameters>
+                    <param type="double2" name="Grid spacing" key="spacing" defaultValue="10." min="1." max="150." />
+                </parameters>
             </service>
 
             <!-- ***************************************** Begin render scenes declarations  ***************************************** -->
@@ -53,16 +55,15 @@
                     <viewport x="-100" y="-100" width="200" height="200" />
                     <axis id="axe1" origin="0.0" scale="1.0" scaleType="LINEAR" />
 
-                    <adaptor uid="gridFromFloat" />
+                    <adaptor uid="grid" />
                     <adaptor uid="square1" />
                     <adaptor uid="square2" />
                     <adaptor uid="abscissa" />
                     <adaptor uid="ordinate"/>
                 </scene>
             </service>
-            
-            <service uid="gridFromFloat" type="::scene2D::adaptor::SGridFromFloat" autoConnect="yes" >
-                <in key="float" uid="Float" />
+
+            <service uid="grid" type="::scene2D::adaptor::SGrid2D" autoConnect="yes" >
                 <config xMin="-150" xMax="150" yMin="-150" yMax="150" xSpacing="10" ySpacing="10" color="green" zValue="2" xAxis="axe1" yAxis="axe1" />
             </service>
 
@@ -82,14 +83,19 @@
                 <config x1="0" x2="0" y1="-100" y2="100" color="red" zValue="6" />
             </service>
             <!-- ***************************************** End render scenes declaration ***************************************** -->
-                    
+
             <!-- ***************************************** End services declarations  ************************************************ -->
+
+            <connect>
+                <signal>spacingEditor/double2Changed</signal>
+                <slot>grid/setGridSpacing</slot>
+            </connect>
 
             <start uid="mainFrame" />
             <start uid="Scene2D" />
-            <start uid="XSpacingEditor" />
+            <start uid="spacingEditor" />
 
-            <start uid="gridFromFloat" />
+            <start uid="grid" />
             <start uid="square1" />
             <start uid="square2" />
             <start uid="abscissa" />

@@ -1,39 +1,31 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWRUNTIME_EXTENSION_HPP__
-#define __FWRUNTIME_EXTENSION_HPP__
+#pragma once
 
-#include <string>
-#include <libxml/tree.h>
-
-
-#include "fwRuntime/config.hpp"
 #include "fwRuntime/BundleElement.hpp"
+#include "fwRuntime/config.hpp"
 #include "fwRuntime/ConfigurationElementContainer.hpp"
 
+#include <libxml/tree.h>
+
+#include <string>
 
 namespace fwRuntime
 {
 
-
 struct Bundle;
-
 
 namespace io
 {
 struct BundleDescriptorReader;
 } // namespace io
 
-
 /**
  * @brief   Defines the extension class.
- * @struct  Extension
- * @date    2004-2009
- *
  */
 struct Extension : public BundleElement,
                    public ConfigurationElementContainer
@@ -109,15 +101,16 @@ struct Extension : public BundleElement,
          *
          * @todo        test parameters validity
          */
-        Extension( std::shared_ptr<Bundle> bundle, const std::string & id, const std::string & point,
+        Extension( std::shared_ptr<Bundle> bundle, const std::string& id, const std::string& point,
                    const xmlNodePtr xmlNode );
-
 
     private:
 
         const std::string m_id;     ///< A string containing the extension identifier.
-        const std::string m_point;  ///< A string containing the extension point identifier the extension will be connected to.
-        xmlDocPtr m_xmlDoc;         ///< A pointer to the xml document that contains the xml node representing the extension
+        const std::string m_point;  ///< A string containing the extension point identifier the extension will be
+                                    // connected to.
+        xmlDocPtr m_xmlDoc;         ///< A pointer to the xml document that contains the xml node representing the
+                                    // extension
         xmlNodePtr m_xmlNode;       ///< A pointer to the xml node that represents the extension
         Validity m_validity;        ///< The validity state of the extension
 
@@ -130,8 +123,4 @@ struct Extension : public BundleElement,
 
 };
 
-
 } // namespace fwRuntime
-
-
-#endif // __FWRUNTIME_EXTENSION_HPP__

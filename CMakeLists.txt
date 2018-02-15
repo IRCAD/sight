@@ -60,12 +60,22 @@ endif()
 
 set(FWCMAKE_RESOURCE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/CMake/)
 
-# Append our 'FindPackages.cmake' to CMAKE_MODULE_PATH
+# Append our 'FindPackages.cmake' to CMAKE_MODULE_PATH and include BinPkgs config file
 if(EXTERNAL_LIBRARIES)
 
     list(APPEND CMAKE_PREFIX_PATH ${EXTERNAL_LIBRARIES})
     list(APPEND CMAKE_MODULE_PATH ${EXTERNAL_LIBRARIES})
     list(APPEND CMAKE_FIND_ROOT_PATH ${EXTERNAL_LIBRARIES})
+    include(${EXTERNAL_LIBRARIES}/lib/cmake/BinPkgsConfig.cmake)
+    include(${EXTERNAL_LIBRARIES}/lib/cmake/find_sse.cmake)
+
+    # This serves two purposes:
+    # - The CUDA bundles/libs in FW4SPL projects will automatically find a working CUDA toolkit.
+    # - Dependencies using CUDA such as OpenCV can find the toolkit they were compiled with, they might otherwise pick
+    #   another one if you have several toolkits installed, which would cause an error.
+    set(CUDA_TOOLKIT_ROOT_DIR ${BINPKGS_CUDA_TOOLKIT_ROOT_DIR} CACHE PATH
+        "Version of the CUDA toolkit used for this build, if any. Read-only."
+        FORCE)
 
 elseif(USE_SYSTEM_LIB)
 
@@ -87,14 +97,6 @@ set(ADDITIONAL_PROJECTS CACHE PATH
 )
 
 set(SET_API_VERSION ON)
-
-# Empty custom macro that can be overriden by projects CMakeLists
-macro(fwLibExtra)
-    # Do nothing
-endmacro()
-macro(fwBundleExtra)
-    # Do nothing
-endmacro()
 
 if(ADDITIONAL_PROJECTS)
     foreach(ADDITIONAL_PROJECT ${ADDITIONAL_PROJECTS})
@@ -151,6 +153,16 @@ endif()
 if(MSVC_IDE)
     set(CMAKE_C_FLAG "${CMAKE_C_FLAGS} /MP")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
+endif()
+
+if(BINPKGS_HAS_SSE)
+    message(STATUS "SSE support detected in the dependencies, enabling SSE.")
+    # Build with SSE support if possible
+    fwFindSSE()
+
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${SSE_FLAGS}")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SSE_FLAGS}")
+    add_definitions("${SSE_DEFINITIONS}")
 endif()
 
 set(LIBRARY_OUTPUT_DIR lib)
@@ -557,8 +569,6 @@ macro(fwLib FWPROJECT_NAME PROJECT_VERSION)
         endif()
     endif()
 
-    fwLibExtra()
-
 endmacro()
 
 macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
@@ -577,12 +587,24 @@ macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
     set(BUNDLE_DIR "${CMAKE_BINARY_DIR}/${BUNDLE_LIB_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}")
 
     if(EXISTS "${PRJ_SOURCE_DIR}/src")
+
         add_library(${FWPROJECT_NAME} ${ARGN}
             ${${FWPROJECT_NAME}_HEADERS}
             ${${FWPROJECT_NAME}_SOURCES}
             ${${FWPROJECT_NAME}_RC_FILES}
             ${${FWPROJECT_NAME}_CMAKE_FILES}
-            ${${FWPROJECT_NAME}_PCH_LIB})
+            ${${FWPROJECT_NAME}_PCH_LIB}
+        )
+
+        # create the custom command that may generate the plugin.xml and the registerServices.cpp file
+        if(NOT EXISTS "${${FWPROJECT_NAME}_DIR}/rc/plugin.xml" )
+            target_sources( ${FWPROJECT_NAME} PRIVATE "${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/registerServices.cpp" )
+            set_source_files_properties("${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/registerServices.cpp" PROPERTIES
+                GENERATED TRUE
+                SKIP_AUTOMOC ON)
+
+            plugin_setup("${FWPROJECT_NAME}" "${${FWPROJECT_NAME}_HEADERS}")
+        endif()
 
         configureProject( ${FWPROJECT_NAME} ${PROJECT_VERSION} )
 
@@ -685,8 +707,6 @@ macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
     if(${FWPROJECT_NAME}_INSTALL)
         createResourcesInstallTarget( "${${FWPROJECT_NAME}_RC_BUILD_DIR}" "${BUNDLE_RC_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}" )
     endif()
-
-    fwBundleExtra()
 endmacro()
 
 # Include the projects in parameter and export them.
@@ -715,24 +735,28 @@ endmacro()
 #     fwUse( fwCore fwData )
 # WARNING : some part of this cmake file relies on this macro signature
 
-macro(fwUse)
-    target_link_libraries(${FWPROJECT_NAME} PUBLIC ${ARGV})
+macro(fwDefineDependencies)
 
-    set(${FWPROJECT_NAME}_DEPENDENCIES)
-    set(${FWPROJECT_NAME}_EXECUTABLE_DEPENDENCIES)
-    set(${FWPROJECT_NAME}_LIBRARY_DEPENDENCIES)
-    set(${FWPROJECT_NAME}_BUNDLE_DEPENDENCIES)
+    set(${NAME}_DEPENDENCIES)
+    set(${NAME}_BUNDLE_DEPENDENCIES)
 
     foreach(PROJECT ${ARGV})
-        list(APPEND ${FWPROJECT_NAME}_DEPENDENCIES ${PROJECT})
-        list(APPEND ${FWPROJECT_NAME}_${${PROJECT}_TYPE}_DEPENDENCIES ${PROJECT})
+        list(APPEND ${NAME}_DEPENDENCIES ${PROJECT})
+        list(APPEND ${NAME}_${${PROJECT}_TYPE}_DEPENDENCIES ${PROJECT})
     endforeach()
 
-    set(${FWPROJECT_NAME}_DEPENDENCIES ${${FWPROJECT_NAME}_DEPENDENCIES} PARENT_SCOPE)
-    set(${FWPROJECT_NAME}_EXECUTABLE_DEPENDENCIES ${${FWPROJECT_NAME}_EXECUTABLE_DEPENDENCIES} PARENT_SCOPE)
-    set(${FWPROJECT_NAME}_BUNDLE_DEPENDENCIES ${${FWPROJECT_NAME}_BUNDLE_DEPENDENCIES} PARENT_SCOPE)
-    set(${FWPROJECT_NAME}_LIBRARY_DEPENDENCIES ${${FWPROJECT_NAME}_LIBRARY_DEPENDENCIES} PARENT_SCOPE)
+    set(${NAME}_DEPENDENCIES ${${NAME}_DEPENDENCIES} PARENT_SCOPE)
+    set(${NAME}_BUNDLE_DEPENDENCIES ${${NAME}_BUNDLE_DEPENDENCIES} PARENT_SCOPE)
 
+endmacro()
+
+# Defines project's linked dependencies on others projects
+# example :
+#     fwUse( fwCore fwData )
+# WARNING : some part of this cmake file relies on this macro signature
+
+macro(fwUse)
+    target_link_libraries(${FWPROJECT_NAME} PUBLIC ${ARGV})
 endmacro()
 
 
@@ -745,8 +769,6 @@ macro(fwReq)
     add_dependencies(${FWPROJECT_NAME} ${ARGV})
 
     set(${FWPROJECT_NAME}_REQUIREMENTS)
-    set(${FWPROJECT_NAME}_EXECUTABLE_REQUIREMENTS)
-    set(${FWPROJECT_NAME}_LIBRARY_REQUIREMENTS)
     set(${FWPROJECT_NAME}_BUNDLE_REQUIREMENTS)
 
     foreach(PROJECT ${ARGV})
@@ -755,9 +777,7 @@ macro(fwReq)
     endforeach()
 
     set(${FWPROJECT_NAME}_REQUIREMENTS ${${FWPROJECT_NAME}_REQUIREMENTS} PARENT_SCOPE)
-    set(${FWPROJECT_NAME}_EXECUTABLE_REQUIREMENTS ${${FWPROJECT_NAME}_EXECUTABLE_REQUIREMENTS} PARENT_SCOPE)
     set(${FWPROJECT_NAME}_BUNDLE_REQUIREMENTS ${${FWPROJECT_NAME}_BUNDLE_REQUIREMENTS} PARENT_SCOPE)
-    set(${FWPROJECT_NAME}_LIBRARY_REQUIREMENTS ${${FWPROJECT_NAME}_LIBRARY_REQUIREMENTS} PARENT_SCOPE)
 
 endmacro()
 
@@ -860,6 +880,8 @@ macro(fwLoadProperties)
     loadProperties("Properties.cmake")
 
     string( TOUPPER "${TYPE}" TYPE )
+
+    fwDefineDependencies( ${NAME} ${DEPENDENCIES} )
 
     if( TYPE STREQUAL "EXECUTABLE" )
         fwExec(${NAME} ${VERSION} ${OPTIONS})
@@ -1070,10 +1092,6 @@ if(EXTERNAL_LIBRARIES OR USE_SYSTEM_LIB)
         if(${PROJECT}_TYPE STREQUAL "APP")
             if(NOT EXISTS "${${PROJECT}_DIR}/rc/profile.xml" )
                 profile_setup("${PROJECT}")
-            endif()
-        elseif(${PROJECT}_TYPE STREQUAL "BUNDLE")
-            if(NOT EXISTS "${${PROJECT}_DIR}/rc/plugin.xml" )
-                plugin_setup("${PROJECT}")
             endif()
         endif()
     endforeach()

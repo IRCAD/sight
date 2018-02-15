@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWDATAIO_WRITER_IOBJECTWRITER_HPP__
-#define __FWDATAIO_WRITER_IOBJECTWRITER_HPP__
+#pragma once
 
 #include "fwDataIO/config.hpp"
 #include "fwDataIO/writer/factory/new.hpp"
@@ -33,7 +32,7 @@ namespace writer
  * @brief   Base class for all object writers.
  *
  * This class defines the API to use basic object writers. This writer is not
- * a service. Their equivalent exist as services see ::io::IWriter. To write an
+ * a service. Their equivalent exist as services see ::fwIO::IWriter. To write an
  * object with this class, use setLocation and setOject method before execute
  * the method write.
  *
@@ -148,5 +147,3 @@ protected:
 } // namespace writer
 
 } // namespace fwDataIO
-
-#endif // __FWDATAIO_WRITER_IOBJECTWRITER_HPP__

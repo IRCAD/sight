@@ -1,17 +1,17 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWDATATOOLS_TRANSFORMATIONMATRIX3D_HPP__
-#define __FWDATATOOLS_TRANSFORMATIONMATRIX3D_HPP__
-
-#include <fwCore/base.hpp>
-#include <fwData/TransformationMatrix3D.hpp>
-#include <fwData/Point.hpp>
+#pragma once
 
 #include "fwDataTools/config.hpp"
+
+#include <fwCore/base.hpp>
+
+#include <fwData/Point.hpp>
+#include <fwData/TransformationMatrix3D.hpp>
 
 #include <glm/mat4x4.hpp>
 
@@ -39,7 +39,7 @@ public:
      * @param[out] _output Output matrix.
      */
     FWDATATOOLS_API static void multiply(const ::fwData::TransformationMatrix3D::csptr& _trfA,
-                                         const::fwData::TransformationMatrix3D::csptr& _trfB,
+                                         const ::fwData::TransformationMatrix3D::csptr& _trfB,
                                          ::fwData::TransformationMatrix3D::sptr& _output);
 
     /**
@@ -96,7 +96,7 @@ inline void TransformationMatrix3D::setTF3DFromMatrix(::fwData::TransformationMa
 {
     // TransformationMatrix3D is stored row-major
     // glm matrices are stored column-major
-    auto& coefs = _trf->getRefCoefficients();
+    auto& coefs = _trf->getCoefficients();
     for (size_t i = 0; i < 4; ++i)
     {
         const size_t rowDst          = i * 4;
@@ -109,5 +109,3 @@ inline void TransformationMatrix3D::setTF3DFromMatrix(::fwData::TransformationMa
     }
 }
 } // namespace fwDataTools
-
-#endif // __FWDATATOOLS_TRANSFORMATIONMATRIX3D_HPP__

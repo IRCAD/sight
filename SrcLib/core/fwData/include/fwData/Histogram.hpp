@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWDATA_HISTOGRAM_HPP__
-#define __FWDATA_HISTOGRAM_HPP__
+#pragma once
 
 #include "fwData/config.hpp"
 #include "fwData/factory/new.hpp"
@@ -89,8 +88,6 @@ public:
      *  @{
      */
     const float  getBinsWidth() const;
-    float& getRefBinsWidth();
-    const float& getCRefBinsWidth() const;
     void setBinsWidth(float _binsWidth);
     /// @}
 
@@ -98,19 +95,17 @@ public:
      *  @brief Get/Set histogram values
      *  @{
      */
-    const fwHistogramValues getValues() const;
-    fwHistogramValues& getRefValues();
-    const fwHistogramValues& getCRefValues() const;
-    void setCRefValues(const fwHistogramValues& _values);
+    fwHistogramValues& getValues();
+    const fwHistogramValues& getValues() const;
+    void setValues(const fwHistogramValues& _values);
     /// @}
 
     /** @name minimum value within the histogram
      *  @brief Get/Set minimum value within the histogram
      *  @{
      */
-    const float getMinValue () const;
-    float& getRefMinValue ();
-    const float& getCRefMinValue () const;
+    float& getMinValue ();
+    const float& getMinValue () const;
     void setMinValue (float _minValue);
     /// @}
 
@@ -118,9 +113,8 @@ public:
      *  @brief Get/Set maximum value within the histogram
      *  @{
      */
-    const float getMaxValue() const;
-    float& getRefMaxValue();
-    const float& getCRefMaxValue() const;
+    float& getMaxValue();
+    const float& getMaxValue() const;
     void setMaxValue(float _maxValue);
     /// @}
 
@@ -148,20 +142,6 @@ inline const float Histogram::getBinsWidth() const
 
 //-----------------------------------------------------------------------------
 
-inline float& Histogram::getRefBinsWidth()
-{
-    return this->m_binsWidth;
-}
-
-//-----------------------------------------------------------------------------
-
-inline const float& Histogram::getCRefBinsWidth() const
-{
-    return this->m_binsWidth;
-}
-
-//-----------------------------------------------------------------------------
-
 inline void Histogram::setBinsWidth(float _binsWidth)
 {
     this->m_binsWidth = _binsWidth;
@@ -169,49 +149,35 @@ inline void Histogram::setBinsWidth(float _binsWidth)
 
 //-----------------------------------------------------------------------------
 
-inline const Histogram::fwHistogramValues Histogram::getValues() const
-{
-    return m_values;
-}
-
-//-----------------------------------------------------------------------------
-
-inline Histogram::fwHistogramValues& Histogram::getRefValues()
+inline Histogram::fwHistogramValues& Histogram::getValues()
 {
     return this->m_values;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const Histogram::fwHistogramValues& Histogram::getCRefValues() const
+inline const Histogram::fwHistogramValues& Histogram::getValues() const
 {
     return this->m_values;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void Histogram::setCRefValues(const Histogram::fwHistogramValues& _values)
+inline void Histogram::setValues(const Histogram::fwHistogramValues& _values)
 {
     this->m_values = _values;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const float Histogram::getMinValue () const
-{
-    return m_minValue;
-}
-
-//-----------------------------------------------------------------------------
-
-inline float& Histogram::getRefMinValue ()
+inline float& Histogram::getMinValue ()
 {
     return this->m_minValue;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const float& Histogram::getCRefMinValue () const
+inline const float& Histogram::getMinValue () const
 {
     return this->m_minValue;
 }
@@ -225,21 +191,14 @@ inline void Histogram::setMinValue (float _minValue)
 
 //-----------------------------------------------------------------------------
 
-inline const float Histogram::getMaxValue() const
-{
-    return m_maxValue;
-}
-
-//-----------------------------------------------------------------------------
-
-inline float& Histogram::getRefMaxValue()
+inline float& Histogram::getMaxValue()
 {
     return this->m_maxValue;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const float& Histogram::getCRefMaxValue() const
+inline const float& Histogram::getMaxValue() const
 {
     return this->m_maxValue;
 }
@@ -254,6 +213,3 @@ inline void Histogram::setMaxValue(float _maxValue)
 //-----------------------------------------------------------------------------
 
 } // namespace fwData
-
-#endif // __FWDATA_HISTOGRAM_HPP__
-

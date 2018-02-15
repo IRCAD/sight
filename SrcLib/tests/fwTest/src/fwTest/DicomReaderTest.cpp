@@ -1,13 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwTest/DicomReaderTest.hpp"
-
-#include <fwTools/dateAndTime.hpp>
-#include <fwTools/Type.hpp>
 
 #include <fwData/Image.hpp>
 
@@ -17,13 +14,15 @@
 #include <fwMedData/Series.hpp>
 #include <fwMedData/SeriesDB.hpp>
 #include <fwMedData/Study.hpp>
-#include <fwMedData/Series.hpp>
+
+#include <fwTools/dateAndTime.hpp>
+#include <fwTools/Type.hpp>
 
 namespace fwTest
 {
 
 //------------------------------------------------------------------------------
-#define CHECK_VALUE(check,message,val1,val2)                                \
+#define CHECK_VALUE(check, message, val1, val2)                                \
     {                                                                           \
         check &= (val1 == val2);                                                \
         OSLM_ERROR_IF(message << " <"<< val1 << "> != <" << val2 << ">", val1 != val2 );        \
@@ -31,7 +30,7 @@ namespace fwTest
 
 //------------------------------------------------------------------------------
 
-#define CHECK_VALUE_WITH_TOLERANCE(check,message,val1,val2,tol)                                 \
+#define CHECK_VALUE_WITH_TOLERANCE(check, message, val1, val2, tol)                                 \
     {                                                                                               \
         check &= ( val1 - tol <= val2 &&  val2 <= val1 + tol );                                    \
         OSLM_ERROR_IF(message << val1 << " != " << val2, val1 - tol > val2 ||  val2 > val1 + tol ); \
@@ -39,11 +38,10 @@ namespace fwTest
 
 //------------------------------------------------------------------------------
 
-bool DicomReaderTest::checkSeriesACHGenou( const ::fwMedData::ImageSeries::sptr &series )
+bool DicomReaderTest::checkSeriesACHGenou( const ::fwMedData::ImageSeries::sptr& series )
 {
     bool ok               = true;
     bool notReallyChecked = true;
-
 
     ::fwMedData::Patient::sptr patient     = series->getPatient();
     ::fwMedData::Study::sptr study         = series->getStudy();
@@ -59,7 +57,8 @@ bool DicomReaderTest::checkSeriesACHGenou( const ::fwMedData::ImageSeries::sptr 
     //(0002,0000) UL 224                                                # 4,1 File Meta Information Group Length
     //(0002,0001) OB 00\01                                              # 2,1 File Meta Information Version
     //(0002,0002) UI [1.2.840.10008.5.1.4.1.1.2]                        # 26,1 Media Storage SOP Class UID
-    //(0002,0003) UI [1.2.392.200036.9116.2.6.1.48.1211418863.1225184712.380696]         # 58,1 Media Storage SOP Instance UID
+    //(0002,0003) UI [1.2.392.200036.9116.2.6.1.48.1211418863.1225184712.380696]         # 58,1 Media Storage SOP
+    // Instance UID
     //(0002,0010) UI [1.2.840.10008.1.2.1]                              # 20,1 Transfer Syntax UID
     //(0002,0012) UI [1.2.250.1.119.1.1.1.1.1.1.33.3.8.13.7]            # 38,1 Implementation Class UID
     //(0002,0013) SH [scanplus_33 ]                                     # 12,1 Implementation Version Name
@@ -72,50 +71,50 @@ bool DicomReaderTest::checkSeriesACHGenou( const ::fwMedData::ImageSeries::sptr 
     //(0008,0016) UI [1.2.840.10008.5.1.4.1.1.2]                        # 26,1 SOP Class UID
     //(0008,0018) UI [1.2.392.200036.9116.2.6.1.48.1211418863.1225184712.380696]         # 58,1 SOP Instance UID
     //(0008,0020) DA [20081028]                                         # 8,1 Study Date
-    CHECK_VALUE(ok,"Study Date doesn't match : ", "20081028",study->getDate());
+    CHECK_VALUE(ok, "Study Date doesn't match : ", "20081028", study->getDate());
     //(0008,0021) DA [20081028]                                         # 8,1 Series Date
-    CHECK_VALUE(ok,"Series Modality doesn't match : ", "20081028", series->getDate() );
+    CHECK_VALUE(ok, "Series Modality doesn't match : ", "20081028", series->getDate() );
     //(0008,0022) DA [20081028]                                         # 8,1 Acquisition Date
     //(0008,0023) DA [20081028]                                         # 8,1 Content Date
     //(0008,0030) TM [174327.000]                                       # 10,1 Study Time
-    CHECK_VALUE(ok,"Study Time doesn't match : ", "174327.000", study->getTime() );
+    CHECK_VALUE(ok, "Study Time doesn't match : ", "174327.000", study->getTime() );
     //(0008,0031) TM [180156.734]                                       # 10,1 Series Time
-    CHECK_VALUE(ok,"Series Modality doesn't match : ", "180156.734", series->getTime() );
+    CHECK_VALUE(ok, "Series Modality doesn't match : ", "180156.734", series->getTime() );
     //(0008,0032) TM [174446.850]                                       # 10,1 Acquisition Time
     //(0008,0033) TM [174502.095]                                       # 10,1 Content Time
     //(0008,0050) SH [12514 ]                                           # 6,1 Accession Number
     //(0008,0060) CS [CT]                                               # 2,1 Modality
-    CHECK_VALUE(ok,"Series Modality doesn't match : ", "CT", series->getModality() );
+    CHECK_VALUE(ok, "Series Modality doesn't match : ", "CT", series->getModality() );
     //(0008,0070) LO [TOSHIBA ]                                         # 8,1 Manufacturer
     //(0008,0080) LO [SCANNER DE LA MODER ]                             # 20,1 Institution Name
-    CHECK_VALUE(ok,"Equipment's Institution Name doesn't match : ", "SCANNER DE LA MODER ",
+    CHECK_VALUE(ok, "Equipment's Institution Name doesn't match : ", "SCANNER DE LA MODER ",
                 equipment->getInstitutionName() );
     //(0008,0090) PN [DR MOREL]                                         # 8,1 Referring Physician's Name
-    CHECK_VALUE(ok,"Study Referring Physician's Name doesn't match : ", "DR MOREL",
+    CHECK_VALUE(ok, "Study Referring Physician's Name doesn't match : ", "DR MOREL",
                 study->getReferringPhysicianName() );
     //(0008,1010) SH [00000000001 ]                                     # 12,1 Station Name
     //(0008,103e) LO [ OS 0.5   ]                                       # 10,1 Series Description
-    CHECK_VALUE(ok,"Study Description doesn't match : ", " OS 0.5   ", series->getDescription() );
-    CHECK_VALUE(ok,"Study Description doesn't match : ", "", study->getDescription() ); // 0008,1030
+    CHECK_VALUE(ok, "Study Description doesn't match : ", " OS 0.5   ", series->getDescription() );
+    CHECK_VALUE(ok, "Study Description doesn't match : ", "", study->getDescription() ); // 0008,1030
     //(0008,1040) LO [ID_DEPARTMENT ]                                   # 14,1 Institutional Department Name
     {
         fwMedData::DicomValuesType physiciansName;
         ok &= (physiciansName == series->getPerformingPhysiciansName());
-        OSLM_ERROR_IF ("Name of the physician(s) administering the Series doesn't match : ",
-                       (physiciansName == series->getPerformingPhysiciansName()));
+        OSLM_ERROR_IF("Name of the physician(s) administering the Series doesn't match : ",
+                      (physiciansName == series->getPerformingPhysiciansName()));
     }
     //(0008,1090) LO [Aquilion]                                         # 8,1 Manufacturer's Model Name
     //(0010,0000) UL 104                                                # 4,1 Generic Group Length
     //(0010,0010) PN [CHARNOZ ARNAUD]                                   # 14,1 Patient's Name
-    CHECK_VALUE(ok,"Patient's Name doesn't match : ", "CHARNOZ ARNAUD", patient->getName() );
+    CHECK_VALUE(ok, "Patient's Name doesn't match : ", "CHARNOZ ARNAUD", patient->getName() );
     //(0010,0020) LO [12592 ARTHRO GENOU  G ]                           # 22,1 Patient ID
-    CHECK_VALUE(ok,"Patient ID doesn't match : ", "12592 ARTHRO GENOU  G ", patient->getPatientId() );
+    CHECK_VALUE(ok, "Patient ID doesn't match : ", "12592 ARTHRO GENOU  G ", patient->getPatientId() );
     //(0010,0030) DA [19790618]                                         # 8,1 Patient's Birth Date
-    CHECK_VALUE(ok,"Patient's Birth Date doesn't match : ", "19790618", patient->getBirthdate() );
+    CHECK_VALUE(ok, "Patient's Birth Date doesn't match : ", "19790618", patient->getBirthdate() );
     //(0010,0040) CS [M ]                                               # 2,1 Patient's Sex
-    CHECK_VALUE(ok,"Patient's Sex doesn't match :", "M ", patient->getSex() );
+    CHECK_VALUE(ok, "Patient's Sex doesn't match :", "M ", patient->getSex() );
     //(0010,1010) AS [029Y]                                             # 4,1 Patient's Age
-    CHECK_VALUE(ok,"Study Patient's Age doesn't match :", "029Y", study->getPatientAge() );
+    CHECK_VALUE(ok, "Study Patient's Age doesn't match :", "029Y", study->getPatientAge() );
     //(0010,4000) LT [ARTHRO]                                           # 6,1 Patient Comments
     //(0018,0000) UL 284                                                # 4,1 Generic Group Length
     //(0018,0015) CS [DR MOREL]                                         # 8,1 Body Part Examined
@@ -140,10 +139,10 @@ bool DicomReaderTest::checkSeriesACHGenou( const ::fwMedData::ImageSeries::sptr 
     //(0018,9345) UN (FD) 23.1                                          # 8,1 CTDIvol
     //(0020,0000) UL 370                                                # 4,1 Generic Group Length
     //(0020,000d) UI [1.2.392.200036.9116.2.6.1.48.1211418863.1225183167.375775]         # 58,1 Study Instance UID
-    CHECK_VALUE(ok,"Study Instance UID doesn't match :", "1.2.392.200036.9116.2.6.1.48.1211418863.1225183167.375775",
+    CHECK_VALUE(ok, "Study Instance UID doesn't match :", "1.2.392.200036.9116.2.6.1.48.1211418863.1225183167.375775",
                 study->getInstanceUID() );
     //(0020,000e) UI [1.2.392.200036.9116.2.6.1.48.1211418863.1225184516.765855]         # 58,1 Series Instance UID
-    CHECK_VALUE(ok,"Series Instance UID doesn't match :", "1.2.392.200036.9116.2.6.1.48.1211418863.1225184516.765855",
+    CHECK_VALUE(ok, "Series Instance UID doesn't match :", "1.2.392.200036.9116.2.6.1.48.1211418863.1225184516.765855",
                 series->getInstanceUID() );
     //(0020,0010) SH [12514 ]                                           # 6,1 Study ID
     //(0020,0011) IS [3 ]                                               # 2,1 Series Number
@@ -152,17 +151,15 @@ bool DicomReaderTest::checkSeriesACHGenou( const ::fwMedData::ImageSeries::sptr 
     //(0020,0020) CS [L\P ]                                             # 4,2 Patient Orientation
     //(0020,0032) DS [-36.71875\-88.28125\1350.300]                     # 28,3 Image Position (Patient)
 
-
     if(!img)
     {
         OSLM_ERROR( "Missing image." );
         return false;
     }
 
-
-    CHECK_VALUE_WITH_TOLERANCE(ok,"Image x origin doesn't match  :", -36.71875, img->getOrigin()[0], 0.01);
-    CHECK_VALUE_WITH_TOLERANCE(ok,"Image y origin doesn't match  :", -88.28125, img->getOrigin()[1], 0.01);
-    CHECK_VALUE_WITH_TOLERANCE(ok,"Image z origin doesn't match  :", 1350.300, img->getOrigin()[2], 0.01);
+    CHECK_VALUE_WITH_TOLERANCE(ok, "Image x origin doesn't match  :", -36.71875, img->getOrigin()[0], 0.01);
+    CHECK_VALUE_WITH_TOLERANCE(ok, "Image y origin doesn't match  :", -88.28125, img->getOrigin()[1], 0.01);
+    CHECK_VALUE_WITH_TOLERANCE(ok, "Image z origin doesn't match  :", 1350.300, img->getOrigin()[2], 0.01);
     //(0020,0037) DS [1.00000\0.00000\0.00000\0.00000\1.00000\0.00000 ]         # 48,6 Image Orientation (Patient)
     //(0020,0052) UI [1.2.392.200036.9116.2.6.1.48.1211418863.1225183409.15274]         # 56,1 Frame of Reference UID
     //(0020,1040) LO (no value)                                         # 0,1 Position Reference Indicator
@@ -172,23 +169,23 @@ bool DicomReaderTest::checkSeriesACHGenou( const ::fwMedData::ImageSeries::sptr 
     //(0028,0004) CS [MONOCHROME2 ]                                     # 12,1 Photometric Interpretation
     //(0028,0010) US 512                                                # 2,1 Rows
     //(0028,0011) US 512                                                # 2,1 Columns
-    CHECK_VALUE(ok,"Image x size doesn't match  :", 512, img->getSize()[0] );
-    CHECK_VALUE(ok,"Image y size doesn't match  :", 512, img->getSize()[1] );
-    CHECK_VALUE(ok,"Image z size doesn't match  :", 404, img->getSize()[2] );
+    CHECK_VALUE(ok, "Image x size doesn't match  :", 512, img->getSize()[0] );
+    CHECK_VALUE(ok, "Image y size doesn't match  :", 512, img->getSize()[1] );
+    CHECK_VALUE(ok, "Image z size doesn't match  :", 404, img->getSize()[2] );
     //(0028,0030) DS [0.384\0.384 ]                                     # 12,2 Pixel Spacing
-    CHECK_VALUE_WITH_TOLERANCE(ok,"Image x spacing doesn't match  :", 0.384, img->getSpacing()[0], 0.001);
-    CHECK_VALUE_WITH_TOLERANCE(ok,"Image y spacing doesn't match  :", 0.384, img->getSpacing()[1], 0.001);
-    CHECK_VALUE_WITH_TOLERANCE(ok,"Image z spacing doesn't match  :", 0.399, img->getSpacing()[2], 0.001);
+    CHECK_VALUE_WITH_TOLERANCE(ok, "Image x spacing doesn't match  :", 0.384, img->getSpacing()[0], 0.001);
+    CHECK_VALUE_WITH_TOLERANCE(ok, "Image y spacing doesn't match  :", 0.384, img->getSpacing()[1], 0.001);
+    CHECK_VALUE_WITH_TOLERANCE(ok, "Image z spacing doesn't match  :", 0.399, img->getSpacing()[2], 0.001);
     //(0028,0100) US 16                                                 # 2,1 Bits Allocated
     //(0028,0101) US 16                                                 # 2,1 Bits Stored
-    CHECK_VALUE(notReallyChecked,"Image Bits Allocated correspond  :", 16, img->getType().sizeOf() * 8 );
+    CHECK_VALUE(notReallyChecked, "Image Bits Allocated correspond  :", 16, img->getType().sizeOf() * 8 );
     //(0028,0102) US 15                                                 # 2,1 High Bit
     //(0028,0103) US 1                                                  # 2,1 Pixel Representation
-    CHECK_VALUE(notReallyChecked,"Image Bits Allocated correspond  :", false, img->getType().isSigned() );
+    CHECK_VALUE(notReallyChecked, "Image Bits Allocated correspond  :", false, img->getType().isSigned() );
     //(0028,1050) DS [500 ]                                             # 4,1-n Window Center
-    CHECK_VALUE(ok,"Image Window Center correspond  :", 500, img->getWindowCenter() );
+    CHECK_VALUE(ok, "Image Window Center correspond  :", 500, img->getWindowCenter() );
     //(0028,1051) DS [2500]                                             # 4,1-n Window Width
-    CHECK_VALUE(ok,"Image Window Width correspond  :", 2500, img->getWindowWidth() );
+    CHECK_VALUE(ok, "Image Window Width correspond  :", 2500, img->getWindowWidth() );
     //(0028,1052) DS [-1024 ]                                           # 6,1 Rescale Intercept
     //(0028,1053) DS [1 ]                                               # 2,1 Rescale Slope
     //(0040,0000) UL 116                                                # 4,1 Generic Group Length
@@ -235,11 +232,10 @@ bool DicomReaderTest::checkSeriesACHGenou( const ::fwMedData::ImageSeries::sptr 
 
 //------------------------------------------------------------------------------
 
-bool DicomReaderTest::checkSeriesACHGenouTrimmed( const ::fwMedData::ImageSeries::sptr &series )
+bool DicomReaderTest::checkSeriesACHGenouTrimmed( const ::fwMedData::ImageSeries::sptr& series )
 {
     bool ok               = true;
     bool notReallyChecked = true;
-
 
     ::fwMedData::Patient::sptr patient     = series->getPatient();
     ::fwMedData::Study::sptr study         = series->getStudy();
@@ -255,7 +251,8 @@ bool DicomReaderTest::checkSeriesACHGenouTrimmed( const ::fwMedData::ImageSeries
     //(0002,0000) UL 224                                                # 4,1 File Meta Information Group Length
     //(0002,0001) OB 00\01                                              # 2,1 File Meta Information Version
     //(0002,0002) UI [1.2.840.10008.5.1.4.1.1.2]                        # 26,1 Media Storage SOP Class UID
-    //(0002,0003) UI [1.2.392.200036.9116.2.6.1.48.1211418863.1225184712.380696]         # 58,1 Media Storage SOP Instance UID
+    //(0002,0003) UI [1.2.392.200036.9116.2.6.1.48.1211418863.1225184712.380696]         # 58,1 Media Storage SOP
+    // Instance UID
     //(0002,0010) UI [1.2.840.10008.1.2.1]                              # 20,1 Transfer Syntax UID
     //(0002,0012) UI [1.2.250.1.119.1.1.1.1.1.1.33.3.8.13.7]            # 38,1 Implementation Class UID
     //(0002,0013) SH [scanplus_33 ]                                     # 12,1 Implementation Version Name
@@ -268,50 +265,50 @@ bool DicomReaderTest::checkSeriesACHGenouTrimmed( const ::fwMedData::ImageSeries
     //(0008,0016) UI [1.2.840.10008.5.1.4.1.1.2]                        # 26,1 SOP Class UID
     //(0008,0018) UI [1.2.392.200036.9116.2.6.1.48.1211418863.1225184712.380696]         # 58,1 SOP Instance UID
     //(0008,0020) DA [20081028]                                         # 8,1 Study Date
-    CHECK_VALUE(ok,"Study Date doesn't match : ", "20081028",study->getDate());
+    CHECK_VALUE(ok, "Study Date doesn't match : ", "20081028", study->getDate());
     //(0008,0021) DA [20081028]                                         # 8,1 Series Date
-    CHECK_VALUE(ok,"Series Modality doesn't match : ", "20081028", series->getDate() );
+    CHECK_VALUE(ok, "Series Modality doesn't match : ", "20081028", series->getDate() );
     //(0008,0022) DA [20081028]                                         # 8,1 Acquisition Date
     //(0008,0023) DA [20081028]                                         # 8,1 Content Date
     //(0008,0030) TM [174327.000]                                       # 10,1 Study Time
-    CHECK_VALUE(ok,"Study Time doesn't match : ", "174327.000", study->getTime() );
+    CHECK_VALUE(ok, "Study Time doesn't match : ", "174327.000", study->getTime() );
     //(0008,0031) TM [180156.734]                                       # 10,1 Series Time
-    CHECK_VALUE(ok,"Series Modality doesn't match : ", "180156.734", series->getTime() );
+    CHECK_VALUE(ok, "Series Modality doesn't match : ", "180156.734", series->getTime() );
     //(0008,0032) TM [174446.850]                                       # 10,1 Acquisition Time
     //(0008,0033) TM [174502.095]                                       # 10,1 Content Time
     //(0008,0050) SH [12514 ]                                           # 6,1 Accession Number
     //(0008,0060) CS [CT]                                               # 2,1 Modality
-    CHECK_VALUE(ok,"Series Modality doesn't match : ", "CT", series->getModality() );
+    CHECK_VALUE(ok, "Series Modality doesn't match : ", "CT", series->getModality() );
     //(0008,0070) LO [TOSHIBA ]                                         # 8,1 Manufacturer
     //(0008,0080) LO [SCANNER DE LA MODER ]                             # 20,1 Institution Name
-    CHECK_VALUE(ok,"Equipment's Institution Name doesn't match : ", "SCANNER DE LA MODER",
+    CHECK_VALUE(ok, "Equipment's Institution Name doesn't match : ", "SCANNER DE LA MODER",
                 equipment->getInstitutionName() );
     //(0008,0090) PN [DR MOREL]                                         # 8,1 Referring Physician's Name
-    CHECK_VALUE(ok,"Study Referring Physician's Name doesn't match : ", "DR MOREL",
+    CHECK_VALUE(ok, "Study Referring Physician's Name doesn't match : ", "DR MOREL",
                 study->getReferringPhysicianName() );
     //(0008,1010) SH [00000000001 ]                                     # 12,1 Station Name
     //(0008,103e) LO [ OS 0.5   ]                                       # 10,1 Series Description
-    CHECK_VALUE(ok,"Study Description doesn't match : ", "OS 0.5", series->getDescription() );
-    CHECK_VALUE(ok,"Study Description doesn't match : ", "", study->getDescription() ); // 0008,1030
+    CHECK_VALUE(ok, "Study Description doesn't match : ", "OS 0.5", series->getDescription() );
+    CHECK_VALUE(ok, "Study Description doesn't match : ", "", study->getDescription() ); // 0008,1030
     //(0008,1040) LO [ID_DEPARTMENT ]                                   # 14,1 Institutional Department Name
     {
         fwMedData::DicomValuesType physiciansName;
         ok &= (physiciansName == series->getPerformingPhysiciansName());
-        OSLM_ERROR_IF ("Name of the physician(s) administering the Series doesn't match : ",
-                       (physiciansName == series->getPerformingPhysiciansName()));
+        OSLM_ERROR_IF("Name of the physician(s) administering the Series doesn't match : ",
+                      (physiciansName == series->getPerformingPhysiciansName()));
     }
     //(0008,1090) LO [Aquilion]                                         # 8,1 Manufacturer's Model Name
     //(0010,0000) UL 104                                                # 4,1 Generic Group Length
     //(0010,0010) PN [CHARNOZ ARNAUD]                                   # 14,1 Patient's Name
-    CHECK_VALUE(ok,"Patient's Name doesn't match : ", "CHARNOZ ARNAUD", patient->getName() );
+    CHECK_VALUE(ok, "Patient's Name doesn't match : ", "CHARNOZ ARNAUD", patient->getName() );
     //(0010,0020) LO [12592 ARTHRO GENOU  G ]                           # 22,1 Patient ID
-    CHECK_VALUE(ok,"Patient ID doesn't match : ", "12592 ARTHRO GENOU  G", patient->getPatientId() );
+    CHECK_VALUE(ok, "Patient ID doesn't match : ", "12592 ARTHRO GENOU  G", patient->getPatientId() );
     //(0010,0030) DA [19790618]                                         # 8,1 Patient's Birth Date
-    CHECK_VALUE(ok,"Patient's Birth Date doesn't match : ", "19790618", patient->getBirthdate() );
+    CHECK_VALUE(ok, "Patient's Birth Date doesn't match : ", "19790618", patient->getBirthdate() );
     //(0010,0040) CS [M ]                                               # 2,1 Patient's Sex
-    CHECK_VALUE(ok,"Patient's Sex doesn't match :", "M", patient->getSex() );
+    CHECK_VALUE(ok, "Patient's Sex doesn't match :", "M", patient->getSex() );
     //(0010,1010) AS [029Y]                                             # 4,1 Patient's Age
-    CHECK_VALUE(ok,"Study Patient's Age doesn't match :", "029Y", study->getPatientAge() );
+    CHECK_VALUE(ok, "Study Patient's Age doesn't match :", "029Y", study->getPatientAge() );
     //(0010,4000) LT [ARTHRO]                                           # 6,1 Patient Comments
     //(0018,0000) UL 284                                                # 4,1 Generic Group Length
     //(0018,0015) CS [DR MOREL]                                         # 8,1 Body Part Examined
@@ -336,10 +333,10 @@ bool DicomReaderTest::checkSeriesACHGenouTrimmed( const ::fwMedData::ImageSeries
     //(0018,9345) UN (FD) 23.1                                          # 8,1 CTDIvol
     //(0020,0000) UL 370                                                # 4,1 Generic Group Length
     //(0020,000d) UI [1.2.392.200036.9116.2.6.1.48.1211418863.1225183167.375775]         # 58,1 Study Instance UID
-    CHECK_VALUE(ok,"Study Instance UID doesn't match :", "1.2.392.200036.9116.2.6.1.48.1211418863.1225183167.375775",
+    CHECK_VALUE(ok, "Study Instance UID doesn't match :", "1.2.392.200036.9116.2.6.1.48.1211418863.1225183167.375775",
                 study->getInstanceUID() );
     //(0020,000e) UI [1.2.392.200036.9116.2.6.1.48.1211418863.1225184516.765855]         # 58,1 Series Instance UID
-    CHECK_VALUE(ok,"Series Instance UID doesn't match :", "1.2.392.200036.9116.2.6.1.48.1211418863.1225184516.765855",
+    CHECK_VALUE(ok, "Series Instance UID doesn't match :", "1.2.392.200036.9116.2.6.1.48.1211418863.1225184516.765855",
                 series->getInstanceUID() );
     //(0020,0010) SH [12514 ]                                           # 6,1 Study ID
     //(0020,0011) IS [3 ]                                               # 2,1 Series Number
@@ -348,17 +345,15 @@ bool DicomReaderTest::checkSeriesACHGenouTrimmed( const ::fwMedData::ImageSeries
     //(0020,0020) CS [L\P ]                                             # 4,2 Patient Orientation
     //(0020,0032) DS [-36.71875\-88.28125\1350.300]                     # 28,3 Image Position (Patient)
 
-
     if(!img)
     {
         OSLM_ERROR( "Missing image." );
         return false;
     }
 
-
-    CHECK_VALUE_WITH_TOLERANCE(ok,"Image x origin doesn't match  :", -36.71875, img->getOrigin()[0], 0.01);
-    CHECK_VALUE_WITH_TOLERANCE(ok,"Image y origin doesn't match  :", -88.28125, img->getOrigin()[1], 0.01);
-    CHECK_VALUE_WITH_TOLERANCE(ok,"Image z origin doesn't match  :", 1350.300, img->getOrigin()[2], 0.01);
+    CHECK_VALUE_WITH_TOLERANCE(ok, "Image x origin doesn't match  :", -36.71875, img->getOrigin()[0], 0.01);
+    CHECK_VALUE_WITH_TOLERANCE(ok, "Image y origin doesn't match  :", -88.28125, img->getOrigin()[1], 0.01);
+    CHECK_VALUE_WITH_TOLERANCE(ok, "Image z origin doesn't match  :", 1350.300, img->getOrigin()[2], 0.01);
     //(0020,0037) DS [1.00000\0.00000\0.00000\0.00000\1.00000\0.00000 ]         # 48,6 Image Orientation (Patient)
     //(0020,0052) UI [1.2.392.200036.9116.2.6.1.48.1211418863.1225183409.15274]         # 56,1 Frame of Reference UID
     //(0020,1040) LO (no value)                                         # 0,1 Position Reference Indicator
@@ -368,23 +363,23 @@ bool DicomReaderTest::checkSeriesACHGenouTrimmed( const ::fwMedData::ImageSeries
     //(0028,0004) CS [MONOCHROME2 ]                                     # 12,1 Photometric Interpretation
     //(0028,0010) US 512                                                # 2,1 Rows
     //(0028,0011) US 512                                                # 2,1 Columns
-    CHECK_VALUE(ok,"Image x size doesn't match  :", 512, img->getSize()[0] );
-    CHECK_VALUE(ok,"Image y size doesn't match  :", 512, img->getSize()[1] );
-    CHECK_VALUE(ok,"Image z size doesn't match  :", 404, img->getSize()[2] );
+    CHECK_VALUE(ok, "Image x size doesn't match  :", 512, img->getSize()[0] );
+    CHECK_VALUE(ok, "Image y size doesn't match  :", 512, img->getSize()[1] );
+    CHECK_VALUE(ok, "Image z size doesn't match  :", 404, img->getSize()[2] );
     //(0028,0030) DS [0.384\0.384 ]                                     # 12,2 Pixel Spacing
-    CHECK_VALUE_WITH_TOLERANCE(ok,"Image x spacing doesn't match  :", 0.384, img->getSpacing()[0], 0.001);
-    CHECK_VALUE_WITH_TOLERANCE(ok,"Image y spacing doesn't match  :", 0.384, img->getSpacing()[1], 0.001);
-    CHECK_VALUE_WITH_TOLERANCE(ok,"Image z spacing doesn't match  :", 0.399, img->getSpacing()[2], 0.001);
+    CHECK_VALUE_WITH_TOLERANCE(ok, "Image x spacing doesn't match  :", 0.384, img->getSpacing()[0], 0.001);
+    CHECK_VALUE_WITH_TOLERANCE(ok, "Image y spacing doesn't match  :", 0.384, img->getSpacing()[1], 0.001);
+    CHECK_VALUE_WITH_TOLERANCE(ok, "Image z spacing doesn't match  :", 0.399, img->getSpacing()[2], 0.001);
     //(0028,0100) US 16                                                 # 2,1 Bits Allocated
     //(0028,0101) US 16                                                 # 2,1 Bits Stored
-    CHECK_VALUE(notReallyChecked,"Image Bits Allocated correspond  :", 16, img->getType().sizeOf() * 8 );
+    CHECK_VALUE(notReallyChecked, "Image Bits Allocated correspond  :", 16, img->getType().sizeOf() * 8 );
     //(0028,0102) US 15                                                 # 2,1 High Bit
     //(0028,0103) US 1                                                  # 2,1 Pixel Representation
-    CHECK_VALUE(notReallyChecked,"Image Bits Allocated correspond  :", false, img->getType().isSigned() );
+    CHECK_VALUE(notReallyChecked, "Image Bits Allocated correspond  :", false, img->getType().isSigned() );
     //(0028,1050) DS [500 ]                                             # 4,1-n Window Center
-    CHECK_VALUE(ok,"Image Window Center correspond  :", 500, img->getWindowCenter() );
+    CHECK_VALUE(ok, "Image Window Center correspond  :", 500, img->getWindowCenter() );
     //(0028,1051) DS [2500]                                             # 4,1-n Window Width
-    CHECK_VALUE(ok,"Image Window Width correspond  :", 2500, img->getWindowWidth() );
+    CHECK_VALUE(ok, "Image Window Width correspond  :", 2500, img->getWindowWidth() );
     //(0028,1052) DS [-1024 ]                                           # 6,1 Rescale Intercept
     //(0028,1053) DS [1 ]                                               # 2,1 Rescale Slope
     //(0040,0000) UL 116                                                # 4,1 Generic Group Length
@@ -430,5 +425,3 @@ bool DicomReaderTest::checkSeriesACHGenouTrimmed( const ::fwMedData::ImageSeries
 }
 
 } // namespace fwTest
-
-

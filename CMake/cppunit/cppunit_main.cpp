@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2004-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2004-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -38,7 +38,7 @@ public:
         ::fwRuntime::Runtime* runtime = ::fwRuntime::Runtime::getDefault();
         runtime->addDefaultBundles();
 
-        ::boost::filesystem::path cwd = ::boost::filesystem::current_path();
+        ::boost::filesystem::path cwd = runtime->getWorkingPath();
 
         if (!::boost::filesystem::exists( profilePath ))
         {

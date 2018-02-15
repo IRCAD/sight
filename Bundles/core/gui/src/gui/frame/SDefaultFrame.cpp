@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,14 +10,12 @@
 
 #include <fwTools/fwID.hpp>
 
-
 namespace gui
 {
 namespace frame
 {
 
-fwServicesRegisterMacro( ::fwGui::IFrameSrv, ::gui::frame::SDefaultFrame, ::fwData::Object );
-
+fwServicesRegisterMacro( ::fwGui::IFrameSrv, ::gui::frame::SDefaultFrame );
 
 SDefaultFrame::SDefaultFrame() noexcept
 {
@@ -55,7 +53,7 @@ void SDefaultFrame::stopping()
 
 //-----------------------------------------------------------------------------
 
-void SDefaultFrame::info(std::ostream &_sstream )
+void SDefaultFrame::info(std::ostream& _sstream )
 {
     SLM_TRACE_FUNC();
 }
@@ -67,9 +65,7 @@ void SDefaultFrame::updating()
     SLM_TRACE_FUNC();
 }
 
-
 //-----------------------------------------------------------------------------
 
 }
 }
-

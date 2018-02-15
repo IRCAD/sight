@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWDATAIO_READER_IOBJECTREADER_HPP__
-#define __FWDATAIO_READER_IOBJECTREADER_HPP__
+#pragma once
 
 #include "fwDataIO/config.hpp"
 #include "fwDataIO/reader/factory/new.hpp"
@@ -34,7 +33,7 @@ namespace reader
  * @brief   Base class for all object readers.
  *
  * This class defines the API to use basic object readers. This reader is not
- * service. Their equivalent exist as services see ::io::IReader. To read an
+ * service. Their equivalent exist as services see ::fwIO::IReader. To read an
  * object with this class, use setLocation and setOject method before execute
  * the method read. Reading modify the object given in parameter with the
  * method setOject.
@@ -139,5 +138,3 @@ protected:
 } // namespace reader
 
 } // namespace fwDataIO
-
-#endif // __FWDATAIO_READER_IOBJECTREADER_HPP__

@@ -14,7 +14,6 @@ set( REQUIREMENTS
     memory
     fwlauncher
 
-    io
     ioAtoms
     ioITK
     ioVTK

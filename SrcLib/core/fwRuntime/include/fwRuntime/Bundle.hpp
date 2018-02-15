@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWRUNTIME_BUNDLE_HPP__
-#define __FWRUNTIME_BUNDLE_HPP__
+#pragma once
 
 #include "fwCore/base.hpp"
 
@@ -152,7 +151,7 @@ struct Bundle : public std::enable_shared_from_this< Bundle >
      *
      * @return      a shared pointer to the found executable factory instance or null if none
      */
-    FWRUNTIME_API SPTR( ExecutableFactory ) findExecutableFactory( const std::string & type ) const;
+    FWRUNTIME_API SPTR( ExecutableFactory ) findExecutableFactory( const std::string& type ) const;
     //@}
 
     /**
@@ -221,7 +220,7 @@ struct Bundle : public std::enable_shared_from_this< Bundle >
      *
      * @return      a shared pointer to the found extensoin point, may be empty if none
      */
-    FWRUNTIME_API SPTR( ExtensionPoint ) findExtensionPoint( const std::string & identifier ) const;
+    FWRUNTIME_API SPTR( ExtensionPoint ) findExtensionPoint( const std::string& identifier ) const;
 
     /**
      * @brief       Tells if a specific extension point exists.
@@ -481,5 +480,3 @@ struct Bundle : public std::enable_shared_from_this< Bundle >
 };
 
 } // namespace fwRuntime
-
-#endif // __FWRUNTIME_BUNDLE_HPP__

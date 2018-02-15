@@ -1,0 +1,22 @@
+<plugin id="dicomPacsWriterActivity" version="@PROJECT_VERSION@" >
+
+    <requirement id="activities" />
+    <requirement id="dataReg" />
+    <requirement id="guiQt" />
+    <requirement id="visuVTKQt" />
+    <requirement id="ioPacs" />
+
+    <xi:include href="configurations/DicomPacsWriter.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+
+    <extension implements="::fwActivities::registry::Activities">
+        <id>DicomPacsWriter</id>
+        <title>Dicom PACS Writer</title>
+        <desc>Dicom Pacs Writer activity</desc>
+        <icon>media-0.1/icons/Push.svg</icon>
+        <requirements>
+        </requirements>
+        <builder>::fwActivities::builder::ActivitySeries</builder>
+        <appConfig id="DicomPacsWriter">
+        </appConfig>
+    </extension>
+</plugin>

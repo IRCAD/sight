@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -85,7 +85,7 @@ void TagReader::read()
                 fwVec3d vPoint;
                 file>>vPoint[0]>>vPoint[1]>>vPoint[2]>>radius;
                 p->setCoord(vPoint);
-                tag->getRefPointList()->getRefPoints().push_back(p);
+                tag->getPointList()->getPoints().push_back(p);
             }
         }
         else

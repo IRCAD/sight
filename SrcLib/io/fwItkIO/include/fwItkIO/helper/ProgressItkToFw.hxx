@@ -1,21 +1,23 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#pragma once
+
 #ifndef __FWITKIO_HELPER_PROGRESSITKTOFW_HXX__
 #define __FWITKIO_HELPER_PROGRESSITKTOFW_HXX__
 
-#include <limits>
-#include <sstream>
+#include <fwCore/base.hpp>
 
-#include <itkLightProcessObject.h>
-#include <itkEventObject.h>
 #include <itkCommand.h>
+#include <itkEventObject.h>
+#include <itkLightProcessObject.h>
 #include <itkSmartPointer.h>
 
-#include <fwCore/base.hpp>
+#include <limits>
+#include <sstream>
 
 namespace fwItkIO
 {
@@ -30,9 +32,11 @@ public:
 
     typedef LocalCommand Self;
     typedef itk::SmartPointer<LocalCommand>      Pointer;
-    itkNewMacro (Self);
+    itkNewMacro(Self);
 
-    void Execute(itk::Object *caller, const itk::EventObject &event)
+    //------------------------------------------------------------------------------
+
+    void Execute(itk::Object* caller, const itk::EventObject& event) override
     {
         itk::LightProcessObject* po = dynamic_cast<itk::LightProcessObject*>(caller);
         if( !po )
@@ -44,10 +48,12 @@ public:
         m_adviser->notifyProgress( percent, m_msg );
     }
 
-    void Execute(const itk::Object *caller, const itk::EventObject &event)
+    //------------------------------------------------------------------------------
+
+    void Execute(const itk::Object* caller, const itk::EventObject& event) override
     {
         itk::LightProcessObject* po = dynamic_cast<itk::LightProcessObject*>( const_cast<itk::Object*>(caller));
-        Execute(po,event);
+        Execute(po, event);
     }
 
     std::string m_msg;
@@ -58,8 +64,10 @@ public:
 
 template<typename OBSERVEE >
 ProgressItkToFw<OBSERVEE >::ProgressItkToFw(OBSERVEE observee, SPTR(::fwTools::ProgressAdviser)observer,
-                                            std::string msg)
-    : m_observee( observee), m_obsTag(std::numeric_limits<unsigned long>::max()), m_initialized(false)
+                                            std::string msg) :
+    m_observee( observee),
+    m_obsTag(std::numeric_limits<unsigned long>::max()),
+    m_initialized(false)
 {
     typename LocalCommand::Pointer itkCallBack;
     itkCallBack            = LocalCommand::New();
@@ -76,7 +84,7 @@ ProgressItkToFw<OBSERVEE >::~ProgressItkToFw()
 {
     if( m_initialized)
     {
-        m_observee->RemoveObserver (m_obsTag);
+        m_observee->RemoveObserver(m_obsTag);
     }
 }
 

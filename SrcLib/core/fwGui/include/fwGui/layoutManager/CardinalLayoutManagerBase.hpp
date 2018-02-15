@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWGUI_LAYOUTMANAGER_CARDINALLAYOUTMANAGERBASE_HPP__
-#define __FWGUI_LAYOUTMANAGER_CARDINALLAYOUTMANAGERBASE_HPP__
+#pragma once
 
 #include "fwGui/config.hpp"
 #include "fwGui/layoutManager/IViewLayoutManager.hpp"
@@ -82,7 +81,7 @@ public:
      *
      * Example of configuration with cardinal layout.
      * @code{.xml}
-       <service uid="subView2" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no" >
+       <service uid="subView2" type="::gui::view::SDefaultView" autoConnect="no" >
            <gui>
                <layout type="::fwGui::CardinalLayoutManager" >
                    <view caption="CardinalView1" align="center" />
@@ -136,6 +135,3 @@ private:
 
 } // namespace layoutManager
 } // namespace fwGui
-
-#endif /*__FWGUI_LAYOUTMANAGER_CARDINALLAYOUTMANAGERBASE_HPP__*/
-

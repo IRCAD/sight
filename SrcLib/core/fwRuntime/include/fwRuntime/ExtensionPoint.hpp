@@ -1,23 +1,23 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWRUNTIME_EXTENSIONPOINT_HPP__
-#define __FWRUNTIME_EXTENSIONPOINT_HPP__
+#pragma once
+
+#include "fwRuntime/BundleElement.hpp"
+#include "fwRuntime/config.hpp"
+#include "fwRuntime/Extension.hpp"
+#include "fwRuntime/Runtime.hpp"
+
+#include <fwCore/base.hpp>
+
+#include <boost/filesystem/path.hpp>
 
 #include <algorithm>
 #include <iostream>
 #include <string>
-#include <boost/filesystem/path.hpp>
-
-#include <fwCore/base.hpp>
-
-#include "fwRuntime/config.hpp"
-#include "fwRuntime/BundleElement.hpp"
-#include "fwRuntime/Extension.hpp"
-#include "fwRuntime/Runtime.hpp"
 
 namespace fwRuntime
 {
@@ -30,16 +30,11 @@ struct Validator;
 }
 }
 
-
-
 namespace fwRuntime
 {
 
 /**
  * @brief   Defines the extension point class.
- * @struct  ExtensionPoint
- * @date    2004-2009
- *
  */
 struct ExtensionPoint : public BundleElement
 {
@@ -73,7 +68,7 @@ struct ExtensionPoint : public BundleElement
      *              pointer to the found configuration elements
      */
     template<typename OutputIterator>
-    void getAllConfigurationElements( OutputIterator & output ) const
+    void getAllConfigurationElements( OutputIterator& output ) const
     {
         // Retrieves all connected extensions.
         typedef std::vector< std::shared_ptr< Extension > > ExtensionContainer;
@@ -104,9 +99,9 @@ struct ExtensionPoint : public BundleElement
      *              pointers to found extensions
      */
     template<typename OutputIterator>
-    void getAllExtensions( OutputIterator & output ) const
+    void getAllExtensions( OutputIterator& output ) const
     {
-        Runtime * rntm( Runtime::getDefault() );
+        Runtime* rntm( Runtime::getDefault() );
 
         for( Runtime::ExtensionIterator i = rntm->extensionsBegin(); i != rntm->extensionsEnd(); ++i )
         {
@@ -121,13 +116,12 @@ struct ExtensionPoint : public BundleElement
         }
     }
 
-
     /**
      * @brief   Retrieves the extension point identifier.
      *
      * @return  a string containing the extension point identifier
      */
-    FWRUNTIME_API const std::string & getIdentifier() const;
+    FWRUNTIME_API const std::string& getIdentifier() const;
 
     /**
      * @brief   Retrieves the extension validator.
@@ -136,9 +130,7 @@ struct ExtensionPoint : public BundleElement
      */
     FWRUNTIME_API std::shared_ptr< io::Validator > getExtensionValidator() const;
 
-
     protected:
-
 
         /**
          * @brief       constructor
@@ -154,11 +146,12 @@ struct ExtensionPoint : public BundleElement
             const std::string&              id,
             const boost::filesystem::path&  schema);
 
-
     private:
 
-        const std::string m_id;                                     ///< a string containing the extension point identifier
-        const ::boost::filesystem::path m_schema;                   ///< a path to the XML schema used to validate contributed extensions
+        const std::string m_id;                                     ///< a string containing the extension point
+                                                                    // identifier
+        const ::boost::filesystem::path m_schema;                   ///< a path to the XML schema used to validate
+                                                                    // contributed extensions
         mutable std::shared_ptr< io::Validator >    m_validator;///< a shared pointer to the extension validator
 
         /**
@@ -171,7 +164,3 @@ struct ExtensionPoint : public BundleElement
 };
 
 } // namespace fwRuntime
-
-
-
-#endif // __FWRUNTIME_EXTENSIONPOINT_HPP__

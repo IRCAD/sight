@@ -1,14 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWSTRUCTURALPATCH_CREATOR_FWMEDDATA_PATIENT1_HPP__
-#define __FWSTRUCTURALPATCH_CREATOR_FWMEDDATA_PATIENT1_HPP__
+#pragma once
+
+#include "fwStructuralPatch/config.hpp"
 
 #include <fwAtomsPatch/IStructuralCreator.hpp>
-#include "fwStructuralPatch/config.hpp"
 
 namespace fwStructuralPatch
 {
@@ -32,15 +32,13 @@ public:
     FWSTRUCTURALPATCH_API ~Patient1();
 
     /// Copy constructor
-    FWSTRUCTURALPATCH_API Patient1( const Patient1 &cpy );
+    FWSTRUCTURALPATCH_API Patient1( const Patient1& cpy );
 
     /// Creates the specified object (sets 'name', 'patient_id', 'birth_date' and 'sex' attributes).
-    FWSTRUCTURALPATCH_API virtual ::fwAtoms::Object::sptr create();
+    FWSTRUCTURALPATCH_API virtual ::fwAtoms::Object::sptr create() override;
 
 };
 
 } // namespace fwMedData
 } // namespace creator
 } // namespace fwStructuralPatch
-
-#endif /* __FWSTRUCTURALPATCH_CREATOR_FWMEDDATA_PATIENT1_HPP__ */

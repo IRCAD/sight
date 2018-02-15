@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWSERVICES_REGISTRY_SERVICEFACTORY_HPP__
-#define __FWSERVICES_REGISTRY_SERVICEFACTORY_HPP__
+#pragma once
 
 #include "fwServices/config.hpp"
 
@@ -44,7 +43,7 @@ public:
     typedef ::boost::unordered_map< StringPair, bool > SupportMapType;
     typedef std::function< SPTR(::fwServices::IService)() > FactoryType;
 
-    fwCoreClassDefinitionsWithFactoryMacro( (ServiceFactory)(::fwCore::BaseObject), (()), new ServiceFactory);
+    fwCoreClassDefinitionsWithFactoryMacro( (ServiceFactory)(::fwCore::BaseObject), (()), new ServiceFactory)
 
     /// Return the unique Instance, create it if required at first access
     FWSERVICES_API static ServiceFactory::sptr getDefault();
@@ -75,11 +74,14 @@ public:
     FWSERVICES_API std::string getDefaultImplementationIdFromObjectAndType( const std::string& object,
                                                                             const std::string& type ) const;
 
-    /// return the associated object implementation.
-    FWSERVICES_API std::string getObjectImplementation(const std::string& srvImpl) const;
+    /// return the objects registered for a given service.
+    FWSERVICES_API const std::vector<std::string>& getServiceObjects(const std::string& srvImpl) const;
 
     /// return the service description.
     FWSERVICES_API std::string getServiceDescription(const std::string& srvImpl) const;
+
+    /// return the service capabilities.
+    FWSERVICES_API std::string getServiceTags(const std::string& srvImpl) const;
 
     /// Check if the service with given object and implementation is valid
     FWSERVICES_API bool checkServiceValidity(const std::string& object, const std::string& srvImpl) const;
@@ -107,10 +109,12 @@ private:
     struct ServiceInfo
     {
         std::string serviceType;
-        std::string objectImpl;
+        std::vector<std::string> objectImpl;
         std::string desc;
+        std::string tags;
         std::shared_ptr< ::fwRuntime::Bundle > bundle;
         FactoryType factory;
+        bool objectsSetFromBundle {false}; // True if the objects implementation are set from the bundle information
     };
     typedef std::unordered_map< KeyType, ServiceInfo > SrvRegContainer;
 
@@ -136,6 +140,3 @@ private:
 
 } // namespace registry
 } // namespace fwServices
-
-#endif // __FWSERVICES_REGISTRY_SERVICEFACTORY_HPP__
-

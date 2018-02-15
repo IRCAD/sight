@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -32,7 +32,7 @@ static const std::string s_DESTINATION_KEY = "destination";
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::SPushField, ::fwData::Object );
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::SPushField );
 
 //------------------------------------------------------------------------------
 

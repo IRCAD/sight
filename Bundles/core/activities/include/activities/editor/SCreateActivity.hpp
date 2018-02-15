@@ -1,18 +1,17 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2016-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2016-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __ACTIVITIES_EDITOR_SCREATEACTIVITY_HPP__
-#define __ACTIVITIES_EDITOR_SCREATEACTIVITY_HPP__
+#pragma once
 
 #include "activities/config.hpp"
 
 #include <fwActivities/registry/Activities.hpp>
 #include <fwActivities/registry/ActivityMsg.hpp>
 
-#include <gui/editor/IEditor.hpp>
+#include <fwGui/editor/IEditor.hpp>
 
 #include <QButtonGroup>
 #include <QObject>
@@ -56,13 +55,13 @@ namespace editor
  *    - \b id: id of the activity
  */
 class ACTIVITIES_CLASS_API SCreateActivity : public QObject,
-                                             public ::gui::editor::IEditor
+                                             public ::fwGui::editor::IEditor
 {
 Q_OBJECT;
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SCreateActivity)(::gui::editor::IEditor) );
+    fwCoreServiceClassDefinitionsMacro( (SCreateActivity)(::fwGui::editor::IEditor) );
 
     /// Constructor. Do nothing.
     ACTIVITIES_API SCreateActivity() noexcept;
@@ -132,5 +131,3 @@ private:
 
 } // namespace editor
 } // namespace activities
-
-#endif // __ACTIVITIES_EDITOR_SCREATEACTIVITY_HPP__

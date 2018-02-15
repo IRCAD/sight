@@ -1,18 +1,18 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "SeriesDBReaderTest.hpp"
 
+#include <fwDcmtkIO/SeriesDBReader.hpp>
+
 #include <fwCore/Exception.hpp>
 
 #include <fwData/Image.hpp>
 
 #include <fwDataTools/helper/Image.hpp>
-
-#include <fwDcmtkIO/SeriesDBReader.hpp>
 
 #include <fwMedData/DicomSeries.hpp>
 #include <fwMedData/Equipment.hpp>
@@ -31,7 +31,7 @@
 #include <boost/property_tree/json_parser.hpp>
 #include <boost/property_tree/ptree.hpp>
 
-CPPUNIT_TEST_SUITE_REGISTRATION (::fwDcmtkIO::ut::SeriesDBReaderTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(::fwDcmtkIO::ut::SeriesDBReaderTest);
 
 namespace fwDcmtkIO
 {
@@ -111,7 +111,6 @@ void verifyTagValues(const std::string& filename, const ::fwMedData::SeriesDB::s
         }
         CPPUNIT_ASSERT_EQUAL(getValue(root, "PerformingPhysiciansName", mf), performingPhysiciansNameStr);
 
-
         // Patient
         ::fwMedData::Patient::sptr patient = series->getPatient();
         CPPUNIT_ASSERT_EQUAL(getValue(root, "PatientID", mf), patient->getPatientId());
@@ -184,7 +183,7 @@ void verifyTagValues(const std::string& filename, const ::fwMedData::SeriesDB::s
         }
         else
         {
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(0,image->getWindowCenter(), delta);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(0, image->getWindowCenter(), delta);
         }
 
         // Window Width
@@ -198,7 +197,7 @@ void verifyTagValues(const std::string& filename, const ::fwMedData::SeriesDB::s
         }
         else
         {
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(0,image->getWindowWidth(), delta);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(0, image->getWindowWidth(), delta);
         }
 
         // Number of components
@@ -356,7 +355,7 @@ void SeriesDBReaderTest::readACHSeries()
     CPPUNIT_ASSERT( ::fwTest::DicomReaderTest::checkSeriesACHGenouTrimmed( series ) );
 
     // Read image in lazy mode
-    ::fwDataTools::helper::Image locker ( series->getImage() );
+    ::fwDataTools::helper::Image locker( series->getImage() );
 
 }
 
@@ -388,7 +387,7 @@ void SeriesDBReaderTest::readCTSeries()
     // Read image buffer
     ::fwMedData::ImageSeries::sptr series = ::fwMedData::ImageSeries::dynamicCast(seriesDB->front());
     ::fwData::Image::sptr image           = series->getImage();
-    ::fwDataTools::helper::Image locker ( image );
+    ::fwDataTools::helper::Image locker( image );
 
     // Check number of dimensions
     CPPUNIT_ASSERT_EQUAL( size_t( 3 ), image->getNumberOfDimensions());
@@ -452,9 +451,10 @@ void SeriesDBReaderTest::readMRSeries()
     // Read image buffer
     ::fwMedData::ImageSeries::sptr series = ::fwMedData::ImageSeries::dynamicCast(seriesDB->front());
     ::fwData::Image::sptr image           = series->getImage();
-    ::fwDataTools::helper::Image locker ( image );
+    ::fwDataTools::helper::Image locker( image );
 
-    // Check number of dimensions - FIXME Should be 2 but when creating an image with 2D size, the visualization crashes...
+    // Check number of dimensions - FIXME Should be 2 but when creating an image with 2D size, the visualization
+    // crashes...
     CPPUNIT_ASSERT_EQUAL( size_t( 3 ), image->getNumberOfDimensions());
 
     // Check size
@@ -517,9 +517,10 @@ void SeriesDBReaderTest::readOTSeries()
     // Read image buffer
     ::fwMedData::ImageSeries::sptr series = ::fwMedData::ImageSeries::dynamicCast(seriesDB->front());
     ::fwData::Image::sptr image           = series->getImage();
-    ::fwDataTools::helper::Image locker ( image );
+    ::fwDataTools::helper::Image locker( image );
 
-    // Check number of dimensions - FIXME Should be 2 but when creating an image with 2D size, the visualization crashes...
+    // Check number of dimensions - FIXME Should be 2 but when creating an image with 2D size, the visualization
+    // crashes...
     CPPUNIT_ASSERT_EQUAL( size_t( 3 ), image->getNumberOfDimensions());
 
     // Check size
@@ -608,4 +609,3 @@ void SeriesDBReaderTest::readDisabledSeries()
 }// namespace ut
 
 } // namespace fwDcmtkIO
-

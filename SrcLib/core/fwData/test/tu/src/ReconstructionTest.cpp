@@ -1,22 +1,21 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <iostream>
-#include <exception>
-#include <vector>
-#include <ostream>
-#include <map>
-
-#include <boost/date_time/posix_time/posix_time.hpp>
+#include "ReconstructionTest.hpp"
 
 #include <fwData/Image.hpp>
 #include <fwData/Reconstruction.hpp>
-#include "ReconstructionTest.hpp"
 
+#include <boost/date_time/posix_time/posix_time.hpp>
 
+#include <exception>
+#include <iostream>
+#include <map>
+#include <ostream>
+#include <vector>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwData::ut::ReconstructionTest );
@@ -25,6 +24,8 @@ namespace fwData
 {
 namespace ut
 {
+
+//------------------------------------------------------------------------------
 
 void ReconstructionTest::setUp()
 {
@@ -57,12 +58,12 @@ void ReconstructionTest::methode1() //test des setters et getters
     CPPUNIT_ASSERT_EQUAL(p1->getIsVisible(), ISVISIBLE);
 
     CPPUNIT_ASSERT_EQUAL(p1->getOrganName(), CREFORGANNAME);
-    CPPUNIT_ASSERT_EQUAL(p1->getCRefOrganName(), CREFORGANNAME);
-    CPPUNIT_ASSERT_EQUAL(p1->getRefOrganName(), CREFORGANNAME);
+    CPPUNIT_ASSERT_EQUAL(p1->getOrganName(), CREFORGANNAME);
+    CPPUNIT_ASSERT_EQUAL(p1->getOrganName(), CREFORGANNAME);
 
     CPPUNIT_ASSERT_EQUAL(p1->getStructureType(), CREFSTRUCTURETYPE);
-    CPPUNIT_ASSERT_EQUAL(p1->getCRefStructureType(), CREFSTRUCTURETYPE);
-    CPPUNIT_ASSERT_EQUAL(p1->getRefStructureType(), CREFSTRUCTURETYPE);
+    CPPUNIT_ASSERT_EQUAL(p1->getStructureType(), CREFSTRUCTURETYPE);
+    CPPUNIT_ASSERT_EQUAL(p1->getStructureType(), CREFSTRUCTURETYPE);
 
 }
 
@@ -85,12 +86,12 @@ void ReconstructionTest::methode2()
     CPPUNIT_ASSERT_EQUAL(p1->getIsVisible(), ISVISIBLE);
 
     CPPUNIT_ASSERT_EQUAL(p1->getOrganName(), CREFORGANNAME);
-    CPPUNIT_ASSERT_EQUAL(p1->getCRefOrganName(), CREFORGANNAME);
-    CPPUNIT_ASSERT_EQUAL(p1->getRefOrganName(), CREFORGANNAME);
+    CPPUNIT_ASSERT_EQUAL(p1->getOrganName(), CREFORGANNAME);
+    CPPUNIT_ASSERT_EQUAL(p1->getOrganName(), CREFORGANNAME);
 
     CPPUNIT_ASSERT_EQUAL(p1->getStructureType(), CREFSTRUCTURETYPE);
-    CPPUNIT_ASSERT_EQUAL(p1->getCRefStructureType(), CREFSTRUCTURETYPE);
-    CPPUNIT_ASSERT_EQUAL(p1->getRefStructureType(), CREFSTRUCTURETYPE);
+    CPPUNIT_ASSERT_EQUAL(p1->getStructureType(), CREFSTRUCTURETYPE);
+    CPPUNIT_ASSERT_EQUAL(p1->getStructureType(), CREFSTRUCTURETYPE);
 }
 
 //------------------------------------------------------------------------------
@@ -106,4 +107,3 @@ void ReconstructionTest::image()
 
 } //namespace ut
 } //namespace fwData
-

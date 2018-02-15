@@ -11,7 +11,6 @@ set( REQUIREMENTS
     guiQt
     ioData
     ioVTK
-    io
     servicesReg
     uiVisuQt
     uiImageQt

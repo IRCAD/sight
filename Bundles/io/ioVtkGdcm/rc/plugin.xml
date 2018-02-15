@@ -1,0 +1,25 @@
+<plugin id="ioVtkGdcm" class="ioVtkGdcm::Plugin"  version="@PROJECT_VERSION@" >
+    <library name="ioVtkGdcm" />
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwIO::IReader</type>
+        <service>::ioVtkGdcm::SSeriesDBReader</service>
+        <object>::fwMedData::SeriesDB</object>
+        <desc>Series DB Reader (VTK/gdcm)</desc>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwIO::IReader</type>
+        <service>::ioVtkGdcm::SSeriesDBLazyReader</service>
+        <object>::fwMedData::SeriesDB</object>
+        <desc>Series DB Lazy Reader (VTK/gdcm)</desc>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwIO::IWriter</type>
+        <service>::ioVtkGdcm::SImageSeriesWriter</service>
+        <object>::fwMedData::ImageSeries</object>
+        <desc>Dicom Writer (VTK/gdcm)</desc>
+    </extension>
+
+</plugin>

@@ -1,0 +1,32 @@
+<plugin id="blendActivity" version="@PROJECT_VERSION@" >
+
+    <requirement id="servicesReg" />
+    <requirement id="guiQt" />
+    <requirement id="scene2D" />
+
+    <xi:include href="configurations/Blend.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/ImageMix.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/TransferFunctionEditor.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+
+    <extension implements="::fwActivities::registry::Activities">
+        <id>Blend</id>
+        <title>Blend</title>
+        <desc>Activity to superimpose two images.</desc>
+        <icon>media-0.1/icons/icon-blend.png</icon>
+        <requirements>
+            <requirement name="imageSeries" type="::fwMedData::ImageSeries" minOccurs="2" maxOccurs="2" >
+                <desc>Images series to superimpose. They must have the same size, spacing and origin.</desc>
+                <validator>::fwActivities::validator::ImageProperties</validator>
+                <key>FrontImage</key>
+                <key>BackImage</key>
+            </requirement>
+        </requirements>
+        <builder>::fwActivities::builder::ActivitySeries</builder>
+        <appConfig id="Blend">
+            <parameters>
+                <parameter replace="frontImageUid"      by="@values.imageSeries.values.FrontImage.image" />
+                <parameter replace="backgroundImageUid" by="@values.imageSeries.values.BackImage.image" />
+            </parameters>
+        </appConfig>
+    </extension>
+</plugin>

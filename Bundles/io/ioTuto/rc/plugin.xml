@@ -1,0 +1,20 @@
+<plugin id="ioTuto" class="ioTuto::Plugin" version="@PROJECT_VERSION@" >
+
+    <library name="ioTuto" />
+
+<!-- All Reader/Writer can extended by providing a specific configuration, being a user info for instance -->
+<!--     <extension-point id="::ioTuto::ioTuto1" /> -->
+
+<!-- User info like extensions -->
+<!--    <extension implements="::ioTuto::ioTuto1" >
+        <info text="Tuto(Ircad)"/>
+    </extension> -->
+
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwIO::IReader</type>
+        <service>::ioTuto::ExternalDataReaderService</service>
+        <object>::fwData::Composite</object>
+    </extension>
+
+</plugin>

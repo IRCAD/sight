@@ -7,10 +7,19 @@
         <xs:sequence>
             <xs:element name="type" type="xs:string" minOccurs="1" maxOccurs="1"/>
             <xs:element name="service" type="xs:string" minOccurs="1" maxOccurs="1"/>
-            <xs:element name="object" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="object" type="ObjectType" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element name="desc" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="tags" type="xs:string" minOccurs="0" maxOccurs="1"/>
         </xs:sequence>
         <xs:attribute name="implements" type="xs:string" use="required" />
+    </xs:complexType>
+
+    <xs:complexType name="ObjectType">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute name="key" type="xs:string" use="optional"/>
+            </xs:extension>
+        </xs:simpleContent>
     </xs:complexType>
 
 </xs:schema>

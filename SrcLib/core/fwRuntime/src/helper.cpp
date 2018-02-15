@@ -1,11 +1,12 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwRuntime/Convert.hpp"
 #include "fwRuntime/helper.hpp"
+
+#include "fwRuntime/Convert.hpp"
 
 #include <fwCore/base.hpp>
 
@@ -51,7 +52,7 @@ void ConfigurationElement2XML(::fwRuntime::ConfigurationElement::sptr _cfgElemen
 {
     //ATTRIBUTES + VALUES
     std::map<std::string, std::string> attr = _cfgElement->getAttributes();
-    for ( std::map<std::string, std::string>::iterator iter_attr_cfe = attr.begin(); iter_attr_cfe!= attr.end();
+    for ( std::map<std::string, std::string>::iterator iter_attr_cfe = attr.begin(); iter_attr_cfe != attr.end();
           ++iter_attr_cfe)
     {
         xmlSetProp(pNode, xmlCharStrdup((iter_attr_cfe->first).c_str()),
@@ -63,7 +64,8 @@ void ConfigurationElement2XML(::fwRuntime::ConfigurationElement::sptr _cfgElemen
         xmlNodePtr child = xmlNewNode( NULL,  xmlCharStrdup( elt->getName().c_str() ) );
 
         xmlAddChild(pNode, child);
-        // If configuration element is a XML_TEXT_NODE : WARNING : even whitespace (non XML_TEXT_NODE) have been considered as valid XML_TEXT_NODE by BundleDescriptorReader!!!!
+        // If configuration element is a XML_TEXT_NODE : WARNING : even whitespace (non XML_TEXT_NODE) have been
+        // considered as valid XML_TEXT_NODE by BundleDescriptorReader!!!!
         if( !elt->getValue().empty() )
         {
             xmlNodeSetContent(child, xmlCharStrdup( elt->getValue().c_str() ));
@@ -216,7 +218,7 @@ std::vector< std::shared_ptr< ::fwRuntime::Extension > > getAllExtensionsForPoin
     ExtensionContainer extElements;
     Inserter extInserter(extElements);
 
-    ::fwRuntime::getAllExtensionsForPoint ( extension_pt, extInserter );
+    ::fwRuntime::getAllExtensionsForPoint( extension_pt, extInserter );
     return extElements;
 }
 }

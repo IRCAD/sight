@@ -14,7 +14,7 @@ namespace gui
 {
 namespace action
 {
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::SDoNothing, ::fwData::Object );
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::SDoNothing );
 
 SDoNothing::SDoNothing() noexcept
 {
@@ -65,4 +65,3 @@ void SDoNothing::info(std::ostream& _sstream )
 
 }
 }
-

@@ -26,7 +26,7 @@ Point list 2 Tab selected
 |                                                                      |
 ========================================================================
 
-Regsitration Tab selected
+Registration Tab selected
 
 =======================================================================
 |                           toolBar                                    |
@@ -194,6 +194,7 @@ Detail of the ToolBar
                 <inout key="registeredPL" uid="pointList2" />
                 <inout key="referencePL" uid="pointList1" />
                 <inout key="output" uid="registrationMatrix" />
+                <config mode="rigid" />
             </service>
 
             <!-- Generic Scene (Negato) for the first tab -->

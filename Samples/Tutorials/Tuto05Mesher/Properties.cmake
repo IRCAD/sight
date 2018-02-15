@@ -8,7 +8,6 @@ set( REQUIREMENTS
     servicesReg
     gui
     guiQt
-    io
     ioVTK
     visuVTKQt
     uiIO

@@ -10,7 +10,6 @@ set( DEPENDENCIES
     fwRuntime
 )
 set( REQUIREMENTS
-    io
     gui
     guiQt
     dataReg

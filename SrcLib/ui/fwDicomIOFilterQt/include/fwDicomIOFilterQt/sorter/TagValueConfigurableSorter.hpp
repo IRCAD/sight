@@ -1,16 +1,16 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWDICOMIOFILTERQT_SORTER_TAGVALUECONFIGURABLESORTER_HPP__
-#define __FWDICOMIOFILTERQT_SORTER_TAGVALUECONFIGURABLESORTER_HPP__
+#pragma once
 
 #include "fwDicomIOFilterQt/config.hpp"
 
-#include <fwMedData/DicomSeries.hpp>
 #include <fwDicomIOFilter/sorter/TagValueSorter.hpp>
+
+#include <fwMedData/DicomSeries.hpp>
 
 namespace fwDicomIOFilterQt
 {
@@ -33,19 +33,19 @@ public:
     FWDICOMIOFILTERQT_API virtual ~TagValueConfigurableSorter();
 
     /// Return the name of the filter
-    FWDICOMIOFILTERQT_API virtual std::string getName() const;
+    FWDICOMIOFILTERQT_API virtual std::string getName() const override;
 
     /// Return the description of the filter
-    FWDICOMIOFILTERQT_API virtual std::string getDescription() const;
+    FWDICOMIOFILTERQT_API virtual std::string getDescription() const override;
 
     /// Return true if a configuration is required
-    FWDICOMIOFILTERQT_API virtual bool isConfigurationRequired() const;
+    FWDICOMIOFILTERQT_API virtual bool isConfigurationRequired() const override;
 
     /// Return true if the filter is configurable using GUI
-    FWDICOMIOFILTERQT_API virtual bool isConfigurableWithGUI() const;
+    FWDICOMIOFILTERQT_API virtual bool isConfigurableWithGUI() const override;
 
     /// Configure the filter using GUI dialog
-    FWDICOMIOFILTERQT_API virtual void configureWithGUI();
+    FWDICOMIOFILTERQT_API virtual void configureWithGUI() override;
 
 protected:
     /// Filter name
@@ -58,6 +58,3 @@ protected:
 
 } // namespace sorter
 } // namespace fwDicomIOFilterQt
-
-
-#endif /* __FWDICOMIOFILTERQT_SORTER_TAGVALUECONFIGURABLESORTER_HPP__ */

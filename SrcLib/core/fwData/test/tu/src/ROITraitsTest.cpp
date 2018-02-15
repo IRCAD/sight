@@ -1,14 +1,13 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwData/ROITraits.hpp>
-#include <fwData/StructureTraits.hpp>
-
 #include "ROITraitsTest.hpp"
 
+#include <fwData/ROITraits.hpp>
+#include <fwData/StructureTraits.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwData::ut::ROITraitsTest );
@@ -18,15 +17,21 @@ namespace fwData
 namespace ut
 {
 
+//------------------------------------------------------------------------------
+
 void ROITraitsTest::setUp()
 {
     // Set up context before running a test.
 
 }
+//------------------------------------------------------------------------------
+
 void ROITraitsTest::tearDown()
 {
     // Clean up after the test run.
 }
+
+//------------------------------------------------------------------------------
 
 void ROITraitsTest::creation()
 {
@@ -40,7 +45,7 @@ void ROITraitsTest::creation()
     ::fwData::Node::sptr opNode = ::fwData::Node::New();
     roiTraits->setMaskOpNode(opNode);
 
-    CPPUNIT_ASSERT_EQUAL(ID, roiTraits->getRefIdentifier());
+    CPPUNIT_ASSERT_EQUAL(ID, roiTraits->getIdentifier());
     CPPUNIT_ASSERT_EQUAL(EXP, roiTraits->getEvaluatedExp());
     CPPUNIT_ASSERT(structure == roiTraits->getStructureTraits() );
     CPPUNIT_ASSERT(opNode == roiTraits->getMaskOpNode() );
@@ -48,4 +53,3 @@ void ROITraitsTest::creation()
 
 } //namespace ut
 } //namespace fwData
-

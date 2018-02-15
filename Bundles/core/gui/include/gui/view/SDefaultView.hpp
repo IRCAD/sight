@@ -1,14 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __GUI_VIEW_SDEFAULTVIEW_HPP__
-#define __GUI_VIEW_SDEFAULTVIEW_HPP__
+#pragma once
 
 #include "gui/config.hpp"
-#include "gui/view/IView.hpp"
+
+#include <fwGui/view/IView.hpp>
 
 #include <fwTools/Failed.hpp>
 
@@ -21,11 +21,11 @@ namespace view
  * @brief Defines the generic layout for application.
  * @see ::fwGui::IGuiContainer for the service configuration
  */
-class GUI_CLASS_API SDefaultView : public ::gui::view::IView
+class GUI_CLASS_API SDefaultView : public ::fwGui::view::IView
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SDefaultView)(::gui::view::IView) );
+    fwCoreServiceClassDefinitionsMacro( (SDefaultView)(::fwGui::view::IView) );
 
     /// Constructor. Do nothing.
     GUI_API SDefaultView() noexcept;
@@ -73,5 +73,3 @@ protected:
 
 } // namespace view
 } // namespace gui
-
-#endif /*__GUI_VIEW_SDEFAULTVIEW_HPP__*/

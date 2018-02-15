@@ -1,0 +1,8 @@
+<plugin id="visuVTKQt" class="visuVTKQt::Plugin"  version="@PROJECT_VERSION@" >
+
+    <library name="visuVTKQt" />
+
+    <requirement id="dataReg"/>
+    <requirement id="servicesReg"/>
+
+</plugin>

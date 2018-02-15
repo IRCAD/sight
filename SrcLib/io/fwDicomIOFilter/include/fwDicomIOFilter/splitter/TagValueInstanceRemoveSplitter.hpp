@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWDICOMIOFILTER_SPLITTER_TAGVALUEINSTANCEREMOVESPLITTER_HPP__
-#define __FWDICOMIOFILTER_SPLITTER_TAGVALUEINSTANCEREMOVESPLITTER_HPP__
+#pragma once
 
 #include "fwDicomIOFilter/config.hpp"
 #include "fwDicomIOFilter/splitter/ISplitter.hpp"
@@ -50,19 +49,15 @@ public:
     /**
      * @brief Tag used to sort instances
      * @{ */
-    const DcmTagKey getTag () const
-    {
-        return m_tag;
-    }
     //------------------------------------------------------------------------------
 
-    DcmTagKey& getRefTag ()
+    DcmTagKey& getTag ()
     {
         return this->m_tag;
     }
     //------------------------------------------------------------------------------
 
-    const DcmTagKey& getCRefTag() const
+    const DcmTagKey& getTag() const
     {
         return this->m_tag;
     }
@@ -77,19 +72,15 @@ public:
     /**
      * @brief Tag value used to determine if an instance must be removed
      * @{ */
-    const std::string  getTagValue() const
-    {
-        return m_tagValue;
-    }
     //------------------------------------------------------------------------------
 
-    std::string& getRefTagValue()
+    std::string& getTagValue()
     {
         return this->m_tagValue;
     }
     //------------------------------------------------------------------------------
 
-    const std::string& getCRefTagValue() const
+    const std::string& getTagValue() const
     {
         return this->m_tagValue;
     }
@@ -118,5 +109,3 @@ protected:
 
 } // namespace splitter
 } // namespace fwDicomIOFilter
-
-#endif /* __FWDICOMIOFILTER_SPLITTER_TAGVALUEINSTANCEREMOVESPLITTER_HPP__ */

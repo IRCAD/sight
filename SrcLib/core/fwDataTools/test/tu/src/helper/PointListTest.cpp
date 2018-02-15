@@ -146,7 +146,7 @@ void PointListTest::transform()
         ::fwData::PointList::sptr pl2 = ::fwData::PointList::New();
         for(size_t i = 0; i < size; i++)
         {
-            const ::fwData::Point::PointCoordArrayType tmp = points1[i]->getCRefCoord();
+            const ::fwData::Point::PointCoordArrayType tmp = points1[i]->getCoord();
             pl2->pushBack(::fwData::Point::New(tmp[0], tmp[1], tmp[2]));
         }
 
@@ -156,8 +156,8 @@ void PointListTest::transform()
         const ::fwData::PointList::PointListContainer points2 = pl2->getPoints();
         for(size_t i = 0; i < size; i++)
         {
-            const ::fwData::Point::PointCoordArrayType tmp1 = points1[i]->getCRefCoord();
-            const ::fwData::Point::PointCoordArrayType tmp2 = points2[i]->getCRefCoord();
+            const ::fwData::Point::PointCoordArrayType tmp1 = points1[i]->getCoord();
+            const ::fwData::Point::PointCoordArrayType tmp2 = points2[i]->getCoord();
 
             CPPUNIT_ASSERT_DOUBLES_EQUAL(tmp1[0], tmp2[0], 1e-8);
             CPPUNIT_ASSERT_DOUBLES_EQUAL(tmp1[1], tmp2[1], 1e-8);
@@ -192,7 +192,7 @@ void PointListTest::transform()
         ::fwData::PointList::sptr pl2 = ::fwData::PointList::New();
         for(size_t i = 0; i < size; i++)
         {
-            const ::fwData::Point::PointCoordArrayType tmp = points1[i]->getCRefCoord();
+            const ::fwData::Point::PointCoordArrayType tmp = points1[i]->getCoord();
             pl2->pushBack(::fwData::Point::New(tmp[0] + translation[0], tmp[1] + translation[1],
                                                tmp[2] + translation[2]));
         }
@@ -206,8 +206,8 @@ void PointListTest::transform()
         const ::fwData::PointList::PointListContainer points2 = pl2->getPoints();
         for(size_t i = 0; i < size; i++)
         {
-            const ::fwData::Point::PointCoordArrayType tmp1 = points1[i]->getCRefCoord();
-            const ::fwData::Point::PointCoordArrayType tmp2 = points2[i]->getCRefCoord();
+            const ::fwData::Point::PointCoordArrayType tmp1 = points1[i]->getCoord();
+            const ::fwData::Point::PointCoordArrayType tmp2 = points2[i]->getCoord();
 
             CPPUNIT_ASSERT_DOUBLES_EQUAL(tmp1[0], tmp2[0], 1e-8);
             CPPUNIT_ASSERT_DOUBLES_EQUAL(tmp1[1], tmp2[1], 1e-8);
@@ -254,8 +254,8 @@ void PointListTest::transform()
 
         for(size_t i = 0; i < size; i++)
         {
-            const ::fwData::Point::PointCoordArrayType tmp1 = points1[i]->getCRefCoord();
-            const ::fwData::Point::PointCoordArrayType tmp2 = points2[i]->getCRefCoord();
+            const ::fwData::Point::PointCoordArrayType tmp1 = points1[i]->getCoord();
+            const ::fwData::Point::PointCoordArrayType tmp2 = points2[i]->getCoord();
 
             CPPUNIT_ASSERT_DOUBLES_EQUAL(tmp1[0], tmp2[0], 1e-8);
             CPPUNIT_ASSERT_DOUBLES_EQUAL(tmp1[1], tmp2[1], 1e-8);
@@ -325,8 +325,8 @@ void PointListTest::associate()
 
         for(size_t i = 0; i < size; i++)
         {
-            const ::fwData::Point::PointCoordArrayType tmp1 = points1[i]->getCRefCoord();
-            const ::fwData::Point::PointCoordArrayType tmp2 = points2[i]->getCRefCoord();
+            const ::fwData::Point::PointCoordArrayType tmp1 = points1[i]->getCoord();
+            const ::fwData::Point::PointCoordArrayType tmp2 = points2[i]->getCoord();
 
             // Check that the last component is equal to i
             CPPUNIT_ASSERT_DOUBLES_EQUAL(tmp1[0], tmp2[0], 1e-8);
@@ -390,8 +390,8 @@ void PointListTest::associate()
 
         for(size_t i = 0; i < size; i++)
         {
-            const ::fwData::Point::PointCoordArrayType tmp1 = points1[i]->getCRefCoord();
-            const ::fwData::Point::PointCoordArrayType tmp2 = points2[i]->getCRefCoord();
+            const ::fwData::Point::PointCoordArrayType tmp1 = points1[i]->getCoord();
+            const ::fwData::Point::PointCoordArrayType tmp2 = points2[i]->getCoord();
 
             // Compare the components
             for(int j = 0; j < nbComponents; j++)

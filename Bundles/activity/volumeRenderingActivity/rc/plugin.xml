@@ -1,0 +1,30 @@
+<plugin id="volumeRenderingActivity" version="@PROJECT_VERSION@" >
+
+    <requirement id="servicesReg" />
+    <requirement id="scene2D" />
+
+    <xi:include href="configurations/VolumeRendering.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+
+    <extension implements="::fwActivities::registry::Activities">
+        <id>VolumeRendering</id>
+        <title>Volume rendering</title>
+        <desc>Volume rendering activity</desc>
+        <icon>media-0.1/icons/icon-VR.png</icon>
+        <requirements>
+            <requirement name="imageSeries" type="::fwMedData::ImageSeries" minOccurs="1" maxOccurs="1">
+                <desc>Image to displayed in volumic rendering.</desc>
+            </requirement>
+            <requirement name="modelSeries" type="::fwMedData::ModelSeries" minOccurs="0" maxOccurs="1" >
+                <desc>Optional model to superimpose with the volumic image.</desc>
+                <key>optionalModelSeriesKey</key>
+            </requirement>
+        </requirements>
+        <builder>::fwActivities::builder::ActivitySeries</builder>
+        <appConfig id="VolumeRendering">
+            <parameters>
+                <parameter replace="image" by="@values.imageSeries.image" />
+                <parameter replace="optionalModelSeriesComposite" by="@values.modelSeries" />
+            </parameters>
+        </appConfig>
+    </extension>
+</plugin>

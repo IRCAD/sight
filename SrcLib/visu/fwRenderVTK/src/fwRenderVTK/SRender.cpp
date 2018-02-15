@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -57,9 +57,10 @@ using namespace fwServices;
 
 namespace fwRenderVTK
 {
-const ::fwCom::Signals::SignalKeyType SRender::s_DROPPED_SIG     = "dropped";
-const ::fwCom::Slots::SlotKeyType SRender::s_RENDER_SLOT         = "render";
-const ::fwCom::Slots::SlotKeyType SRender::s_REQUEST_RENDER_SLOT = "requestRender";
+const ::fwCom::Signals::SignalKeyType SRender::s_DROPPED_SIG         = "dropped";
+const ::fwCom::Slots::SlotKeyType SRender::s_RENDER_SLOT             = "render";
+const ::fwCom::Slots::SlotKeyType SRender::s_REQUEST_RENDER_SLOT     = "requestRender";
+const ::fwCom::Slots::SlotKeyType SRender::s_TOGGLE_AUTO_RENDER_SLOT = "toggleAutoRender";
 
 static const ::fwServices::IService::KeyType s_OFFSCREEN_INOUT = "offScreen";
 
@@ -77,6 +78,7 @@ SRender::SRender() noexcept :
 
     newSlot(s_RENDER_SLOT, &SRender::render, this);
     newSlot(s_REQUEST_RENDER_SLOT, &SRender::requestRender, this);
+    newSlot(s_TOGGLE_AUTO_RENDER_SLOT, &SRender::toggleAutoRender, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -113,7 +115,7 @@ void SRender::configureRenderer( const ConfigType& rendererConf )
         {
             ::fwData::Color::sptr color = ::fwData::Color::New();
             color->setRGBA(background);
-            m_renderers[id]->SetBackground(color->getRefRGBA()[0], color->getRefRGBA()[1], color->getRefRGBA()[2]);
+            m_renderers[id]->SetBackground(color->getRGBA()[0], color->getRGBA()[1], color->getRGBA()[2]);
         }
         else
         {
@@ -182,7 +184,7 @@ vtkTransform* SRender::createVtkTransform( const ConfigType& vtkObjectConf )
 
     if(vtkTransformConf.is_initialized())
     {
-        BOOST_FOREACH(const ::boost::property_tree::ptree::value_type &v, vtkTransformConf.get())
+        BOOST_FOREACH(const ::boost::property_tree::ptree::value_type& v, vtkTransformConf.get())
         {
             SLM_ASSERT("Invalid markup '" + v.first + "', 'concatenate' must be used here.", v.first == "concatenate");
 
@@ -273,7 +275,7 @@ void SRender::configuring()
     m_width  = m_sceneConf.get<unsigned int>("<xmlattr>.width", m_width);
     m_height = m_sceneConf.get<unsigned int>("<xmlattr>.height", m_height);
 
-    BOOST_FOREACH(const ::fwServices::IService::ConfigType::value_type &v, m_sceneConf.equal_range("adaptor"))
+    BOOST_FOREACH(const ::fwServices::IService::ConfigType::value_type& v, m_sceneConf.equal_range("adaptor"))
     {
         const std::string adaptorUid = v.second.get<std::string>("<xmlattr>.uid", "");
 
@@ -310,7 +312,7 @@ void SRender::starting()
     this->startContext();
 
     // Instantiate vtk object, class...
-    BOOST_FOREACH(const ::fwServices::IService::ConfigType::value_type &v, m_sceneConf)
+    BOOST_FOREACH(const ::fwServices::IService::ConfigType::value_type& v, m_sceneConf)
     {
         const std::string& subEltName = v.first;
         if(subEltName == "renderer")
@@ -440,6 +442,24 @@ void SRender::requestRender()
         this->setPendingRenderRequest(true);
         this->slot(SRender::s_RENDER_SLOT)->asyncRun();
     }
+}
+
+//-----------------------------------------------------------------------------
+
+void SRender::toggleAutoRender()
+{
+    if(m_renderMode == RenderMode::AUTO)
+    {
+        m_renderMode = RenderMode::NONE;
+    }
+    else if(m_renderMode == RenderMode::NONE)
+    {
+        m_renderMode = RenderMode::AUTO;
+    }
+
+    auto interactor      = m_interactorManager->getInteractor()->GetInteractorStyle();
+    auto interactorStyle = dynamic_cast< IInteractorStyle* >(interactor);
+    interactorStyle->setAutoRender(m_renderMode == RenderMode::AUTO);
 }
 
 //-----------------------------------------------------------------------------
