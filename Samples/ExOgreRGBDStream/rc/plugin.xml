@@ -5,7 +5,6 @@
     <requirement id="scene2D" />
     <requirement id="servicesReg" />
     <requirement id="visuOgreQt" />
-    <requirement id="visuOgreAdaptor" />
 
     <extension implements="::fwServices::registry::AppConfig">
         <id>ExOgreRGBDStream</id>

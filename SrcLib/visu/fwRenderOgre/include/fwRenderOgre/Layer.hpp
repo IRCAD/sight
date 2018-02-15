@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWRENDEROGRE_LAYER_HPP__
-#define __FWRENDEROGRE_LAYER_HPP__
+#pragma once
 
 #include "fwRenderOgre/compositor/ChainManager.hpp"
 #include "fwRenderOgre/compositor/Core.hpp"
@@ -71,7 +70,8 @@ public:
     fwCoreClassDefinitionsWithFactoryMacro( (Layer)(::fwRenderOgre::Layer), (()), new Layer)
     fwCoreAllowSharedFromThis()
 
-    /**@name Signals API
+    /**
+     * @name Signals API
      * @{
      */
     FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_INIT_LAYER_SIG;
@@ -80,13 +80,11 @@ public:
     FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_RESIZE_LAYER_SIG;
     typedef ::fwCom::Signal<void (int, int)> ResizeLayerSignalType;
 
-    FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_COMPOSITOR_UPDATED_SIG;
-    typedef ::fwCom::Signal<void (std::string, bool, ::fwRenderOgre::Layer::sptr)> CompositorUpdatedSignalType;
-
     FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_STEREO_MODE_CHANGED_SIG;
     typedef ::fwCom::Signal<void (StereoModeType)> StereoModeChangedSignalType;
 
     FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_CAMERA_UPDATED_SIG;
+    FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_CAMERA_RANGE_UPDATED_SIG;
     typedef ::fwCom::Signal<void ()> CameraUpdatedSignalType;
     /** @} */
 
@@ -189,7 +187,7 @@ public:
     /// Sets the render service.
     FWRENDEROGRE_API void setRenderService( const SPTR(::fwRenderOgre::SRender)& _service );
 
-    FWRENDEROGRE_API void doRayCast(int x, int y, int width, int height);
+    FWRENDEROGRE_API bool doRayCast(int x, int y, int width, int height);
 
     FWRENDEROGRE_API ::fwRenderOgre::interactor::IInteractor getInteractor(std::string type);
 
@@ -357,5 +355,3 @@ private:
 };
 
 }
-
-#endif // __FWRENDEROGRE_LAYER_HPP__

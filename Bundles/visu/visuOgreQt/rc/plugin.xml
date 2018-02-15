@@ -1,0 +1,9 @@
+<plugin id="visuOgreQt" class="::visuOgreQt::Plugin"  version="@PROJECT_VERSION@" >
+
+    <library name="visuOgreQt" />
+
+    <requirement id="dataReg"/>
+    <requirement id="servicesReg"/>
+    <requirement id="visuOgre" />
+
+</plugin>

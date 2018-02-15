@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -46,11 +46,11 @@ namespace fwRenderOgre
 
 //-----------------------------------------------------------------------------
 
-const ::fwCom::Signals::SignalKeyType Layer::s_INIT_LAYER_SIG          = "layerInitialized";
-const ::fwCom::Signals::SignalKeyType Layer::s_RESIZE_LAYER_SIG        = "layerResized";
-const ::fwCom::Signals::SignalKeyType Layer::s_COMPOSITOR_UPDATED_SIG  = "compositorUpdated";
-const ::fwCom::Signals::SignalKeyType Layer::s_STEREO_MODE_CHANGED_SIG = "StereoModeChanged";
-const ::fwCom::Signals::SignalKeyType Layer::s_CAMERA_UPDATED_SIG      = "CameraUpdated";
+const ::fwCom::Signals::SignalKeyType Layer::s_INIT_LAYER_SIG           = "layerInitialized";
+const ::fwCom::Signals::SignalKeyType Layer::s_RESIZE_LAYER_SIG         = "layerResized";
+const ::fwCom::Signals::SignalKeyType Layer::s_STEREO_MODE_CHANGED_SIG  = "StereoModeChanged";
+const ::fwCom::Signals::SignalKeyType Layer::s_CAMERA_UPDATED_SIG       = "CameraUpdated";
+const ::fwCom::Signals::SignalKeyType Layer::s_CAMERA_RANGE_UPDATED_SIG = "CameraRangeUpdated";
 
 const ::fwCom::Slots::SlotKeyType Layer::s_INTERACTION_SLOT    = "interaction";
 const ::fwCom::Slots::SlotKeyType Layer::s_RESET_CAMERA_SLOT   = "resetCamera";
@@ -167,9 +167,9 @@ Layer::Layer() :
 {
     newSignal<InitLayerSignalType>(s_INIT_LAYER_SIG);
     newSignal<ResizeLayerSignalType>(s_RESIZE_LAYER_SIG);
-    newSignal<CompositorUpdatedSignalType>(s_COMPOSITOR_UPDATED_SIG);
     newSignal<StereoModeChangedSignalType>(s_STEREO_MODE_CHANGED_SIG);
     newSignal<CameraUpdatedSignalType>(s_CAMERA_UPDATED_SIG);
+    newSignal<CameraUpdatedSignalType>(s_CAMERA_RANGE_UPDATED_SIG);
 
     newSlot(s_INTERACTION_SLOT, &Layer::interaction, this);
     newSlot(s_RESET_CAMERA_SLOT, &Layer::resetCameraCoordinates, this);
@@ -238,7 +238,7 @@ void Layer::createScene()
     namespace fwc = ::fwRenderOgre::compositor;
 
     auto root = ::fwRenderOgre::Utils::getOgreRoot();
-    m_sceneManager = root->createSceneManager(::Ogre::ST_GENERIC, m_renderService.lock()->getID() + "_" + m_id);
+    m_sceneManager = root->createSceneManager("DefaultSceneManager", m_renderService.lock()->getID() + "_" + m_id);
     m_sceneManager->addRenderQueueListener( ::fwRenderOgre::Utils::getOverlaySystem() );
 
     SLM_ASSERT("Scene manager must be initialized", m_sceneManager);
@@ -402,13 +402,11 @@ void Layer::addAvailableCompositor(std::string compositorName)
 
 void Layer::updateCompositorState(std::string compositorName, bool isEnabled)
 {
-    m_renderService.lock()->makeCurrent();
+    auto renderService = m_renderService.lock();
+
+    renderService->makeCurrent();
     m_compositorChainManager->updateCompositorState(compositorName, isEnabled, m_id, m_renderService.lock());
-
-    auto sig = this->signal<CompositorUpdatedSignalType>(s_COMPOSITOR_UPDATED_SIG);
-    sig->asyncEmit(compositorName, isEnabled, this->getSptr());
-
-    m_renderService.lock()->requestRender();
+    renderService->requestRender();
 }
 
 // ----------------------------------------------------------------------------
@@ -742,37 +740,39 @@ void Layer::resetCameraClippingRange(const ::Ogre::AxisAlignedBox& worldCoordBou
         const auto saoCompositorIt = std::find_if(chain.begin(), chain.end(),
                                                   ::fwRenderOgre::compositor::ChainManager::FindCompositorByName("SAO"));
 
+        const auto prevNear = m_camera->getNearClipDistance();
+        const auto prevFar  = m_camera->getFarClipDistance();
         if(saoCompositorIt != chain.end() && saoCompositorIt->second)
         {
             // Near and far for SAO
             OSLM_TRACE("Near SAO");
-            m_camera->setNearClipDistance( 1 );
-            m_camera->setFarClipDistance( 10000 );
+            maxNear = 1;
+            minFar  = 10000;
         }
-        else
+        m_camera->setNearClipDistance( maxNear );
+        m_camera->setFarClipDistance( minFar );
+
+        if(maxNear != prevNear || minFar != prevFar)
         {
-            OSLM_TRACE("Near normal");
-            m_camera->setNearClipDistance( maxNear );
-            m_camera->setFarClipDistance( minFar );
+            this->signal<CameraUpdatedSignalType>(s_CAMERA_RANGE_UPDATED_SIG)->asyncEmit();
         }
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void Layer::doRayCast(int x, int y, int width, int height)
+bool Layer::doRayCast(int x, int y, int width, int height)
 {
     if(m_selectInteractor)
     {
-        OSLM_ASSERT("SelectInteractor Isn't initialized, add the adaptor to your xml file.", m_selectInteractor);
-
         if(!m_selectInteractor->isPickerInitialized())
         {
             m_selectInteractor->initPicker();
         }
 
-        m_selectInteractor->mouseClickEvent(x, y, width, height);
+        return m_selectInteractor->mouseClickEvent(x, y, width, height);
     }
+    return false;
 }
 
 //-----------------------------------------------------------------------------

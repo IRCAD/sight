@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWRENDEROGRE_INTERACTOR_IPICKERINTERACTOR_HPP__
-#define __FWRENDEROGRE_INTERACTOR_IPICKERINTERACTOR_HPP__
+#pragma once
 
 #include <fwRenderOgre/config.hpp>
 #include <fwRenderOgre/factory/new.hpp>
@@ -57,7 +56,7 @@ public:
     /// Destructor
     FWRENDEROGRE_API virtual ~IPickerInteractor();
 
-    FWRENDEROGRE_API void virtual mouseClickEvent(int x, int y, int width, int height) = 0;
+    FWRENDEROGRE_API bool virtual mouseClickEvent(int x, int y, int width, int height) = 0;
 
     /**
      * @brief Initilaize picker with the corresponding layer's info
@@ -78,4 +77,3 @@ protected:
 
 }
 }
-#endif // __FWRENDEROGRE_INTERACTOR_IPICKERINTERACTOR_HPP__

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017.
+ * FW4SPL - Copyright (C) IRCAD, 2017-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -34,7 +34,7 @@ const unsigned int Mesh::s_maxTextureSize;
 //-----------------------------------------------------------------------------
 
 template <typename T>
-void copyIndices(void* _pTriangles, void* _pQuads, void* _pEdges, void* _pTetras,
+void copyIndices(void* _pTriangles, void* _pQuads, void* _pEdges, void* _pTetras, void* _pPoints,
                  ::fwDataTools::helper::MeshGetter& _meshHelper, size_t _uiNumCells)
 {
     FW_PROFILE_AVG("copyIndices", 5);
@@ -43,6 +43,7 @@ void copyIndices(void* _pTriangles, void* _pQuads, void* _pEdges, void* _pTetras
     T* pQuads     = static_cast<T*>(_pQuads);
     T* pEdges     = static_cast<T*>(_pEdges);
     T* pTetras    = static_cast<T*>(_pTetras);
+    T* pPoints    = static_cast<T*>(_pPoints);
 
     ::fwData::Mesh::ConstCellDataMultiArrayType cells                  = _meshHelper.getCellData();
     ::fwData::Mesh::ConstCellDataOffsetsMultiArrayType cellDataOffsets = _meshHelper.getCellDataOffsets();
@@ -51,7 +52,11 @@ void copyIndices(void* _pTriangles, void* _pQuads, void* _pEdges, void* _pTetras
     for (unsigned int i = 0; i < _uiNumCells; ++i)
     {
         long offset = static_cast<long>(cellDataOffsets[static_cast<int>(i)]);
-        if ( cellsType[static_cast<int>(i)] == ::fwData::Mesh::TRIANGLE )
+        if ( cellsType[static_cast<int>(i)] == ::fwData::Mesh::POINT )
+        {
+            *pPoints++ = static_cast<T>(cells[offset]);
+        }
+        else if ( cellsType[static_cast<int>(i)] == ::fwData::Mesh::TRIANGLE )
         {
             *pTriangles++ = static_cast<T>(cells[offset]);
             *pTriangles++ = static_cast<T>(cells[offset + 1]);
@@ -211,7 +216,7 @@ void Mesh::updateMesh(const ::fwData::Mesh::sptr& _mesh)
 
         if(!m_hasNormal)
         {
-            // Verify if mesh contains Tetra or Edge
+            // Verify if mesh contains Tetra, Edge or Point
             // If not, generate normals
             ::fwData::Mesh::ConstCellTypesMultiArrayType cellsType = meshHelper.getCellTypes();
             bool computeNormals = true;
@@ -219,7 +224,8 @@ void Mesh::updateMesh(const ::fwData::Mesh::sptr& _mesh)
             for(unsigned int i = 0; i < cellsType.size() && computeNormals; ++i)
             {
                 auto cellType = cellsType[static_cast<int>(i)];
-                if(cellType == ::fwData::Mesh::EDGE || cellType == ::fwData::Mesh::TETRA)
+                if(cellType == ::fwData::Mesh::EDGE || cellType == ::fwData::Mesh::TETRA
+                   || cellType == ::fwData::Mesh::POINT)
                 {
                     computeNormals = false;
                 }
@@ -285,17 +291,21 @@ void Mesh::updateMesh(const ::fwData::Mesh::sptr& _mesh)
     for(unsigned int i = 0; i < cellsType.size(); ++i)
     {
         auto cellType = cellsType[static_cast<int>(i)];
-        if(cellType == ::fwData::Mesh::TRIANGLE)
+        if(cellType == ::fwData::Mesh::POINT)
+        {
+            numIndices[::fwData::Mesh::POINT] += 1;
+        }
+        else if(cellType == ::fwData::Mesh::EDGE)
+        {
+            numIndices[::fwData::Mesh::EDGE] += 2;
+        }
+        else if(cellType == ::fwData::Mesh::TRIANGLE)
         {
             numIndices[::fwData::Mesh::TRIANGLE] += 3;
         }
         else if(cellType == ::fwData::Mesh::QUAD)
         {
             numIndices[::fwData::Mesh::QUAD] += 4;
-        }
-        else if(cellType == ::fwData::Mesh::EDGE)
-        {
-            numIndices[::fwData::Mesh::EDGE] += 2;
         }
         else if(cellType == ::fwData::Mesh::TETRA)
         {
@@ -418,12 +428,14 @@ void Mesh::updateMesh(const ::fwData::Mesh::sptr& _mesh)
     {
         copyIndices< std::uint32_t >( indexBuffer[::fwData::Mesh::TRIANGLE], indexBuffer[::fwData::Mesh::QUAD],
                                       indexBuffer[::fwData::Mesh::EDGE], indexBuffer[::fwData::Mesh::TETRA],
+                                      indexBuffer[::fwData::Mesh::POINT],
                                       meshHelper, _mesh->getNumberOfCells() );
     }
     else
     {
         copyIndices< std::uint16_t >( indexBuffer[::fwData::Mesh::TRIANGLE], indexBuffer[::fwData::Mesh::QUAD],
                                       indexBuffer[::fwData::Mesh::EDGE], indexBuffer[::fwData::Mesh::TETRA],
+                                      indexBuffer[::fwData::Mesh::POINT],
                                       meshHelper, _mesh->getNumberOfCells() );
     }
 
@@ -440,7 +452,7 @@ void Mesh::updateMesh(const ::fwData::Mesh::sptr& _mesh)
 
 void Mesh::updateMesh(const ::fwData::PointList::csptr& _pointList)
 {
-    auto points = _pointList->getCRefPoints();
+    auto points = _pointList->getPoints();
 
     /// The values in this table refer to vertices in the above table
     size_t uiNumVertices = points.size();
@@ -513,7 +525,7 @@ void Mesh::updateMesh(const ::fwData::PointList::csptr& _pointList)
 
 //------------------------------------------------------------------------------
 
-std::vector<R2VBRenderable*> Mesh::updateR2VB(const::fwData::Mesh::sptr& _mesh, ::Ogre::SceneManager& _sceneMgr,
+std::vector<R2VBRenderable*> Mesh::updateR2VB(const ::fwData::Mesh::sptr& _mesh, ::Ogre::SceneManager& _sceneMgr,
                                               const std::string& _materialName, bool _hasTexture)
 {
     //------------------------------------------
@@ -635,7 +647,6 @@ void Mesh::updateVertices(const ::fwData::Mesh::csptr& _mesh)
         for (unsigned int i = 0; i < numPoints; ++i)
         {
             memcpy(pPos, &points[static_cast<int>(i)][0], 3 * sizeof(PointValueType) );
-
             pPos += uiStrideFloat;
         }
     }
@@ -645,7 +656,6 @@ void Mesh::updateVertices(const ::fwData::Mesh::csptr& _mesh)
         FW_PROFILE_AVG("UPDATE NORMALS", 5);
         ::fwData::Mesh::ConstPointNormalsMultiArrayType normals = meshHelper.getPointNormals();
         NormalValueType* __restrict pNormal = static_cast< NormalValueType* >( pVertex ) + 3;
-
         for (unsigned int i = 0; i < numPoints; ++i)
         {
             memcpy(pNormal, &normals[static_cast<int>(i)][0], 3 * sizeof(NormalValueType) );
@@ -705,14 +715,14 @@ void Mesh::updateVertices(const ::fwData::PointList::csptr& _pointList)
     PointType yMax = std::numeric_limits<PointType>::lowest();
     PointType zMax = std::numeric_limits<PointType>::lowest();
 
-    const auto& points     = _pointList->getCRefPoints();
+    const auto& points     = _pointList->getPoints();
     const size_t numPoints = points.size();
 
     {
         FW_PROFILE_AVG("UPDATE BBOX", 5);
         for (size_t i = 0; i < numPoints; ++i)
         {
-            const auto point = points[i]->getCRefCoord();
+            const auto point = points[i]->getCoord();
             const auto& pt0  = point[0];
             xMin = std::min(xMin, pt0);
             xMax = std::max(xMax, pt0);
@@ -731,7 +741,7 @@ void Mesh::updateVertices(const ::fwData::PointList::csptr& _pointList)
         FW_PROFILE_AVG("UPDATE POS", 5);
         for (size_t i = 0; i < numPoints; ++i)
         {
-            const auto point = points[i]->getCRefCoord();
+            const auto point = points[i]->getCoord();
             pPos[0] = static_cast<float>(point[0]);
             pPos[1] = static_cast<float>(point[1]);
             pPos[2] = static_cast<float>(point[2]);
@@ -781,7 +791,7 @@ void Mesh::updateColors(const ::fwData::Mesh::csptr& _mesh)
     // 1 - Initialization
     if(hasVertexColor)
     {
-        bindLayer(_mesh, COLOUR, ::Ogre::VES_DIFFUSE, Ogre::VET_UBYTE4);
+        bindLayer(_mesh, COLOUR, ::Ogre::VES_DIFFUSE, Ogre::VET_COLOUR);
     }
     else
     {

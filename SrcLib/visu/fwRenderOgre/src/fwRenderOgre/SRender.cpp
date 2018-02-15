@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -35,7 +35,15 @@ fwServicesRegisterMacro( ::fwRender::IRender, ::fwRenderOgre::SRender, ::fwData:
 namespace fwRenderOgre
 {
 
+//-----------------------------------------------------------------------------
+
 const std::string SRender::s_OGREBACKGROUNDID = "ogreBackground";
+
+//-----------------------------------------------------------------------------
+
+const ::fwCom::Signals::SignalKeyType SRender::s_COMPOSITOR_UPDATED_SIG = "compositorUpdated";
+
+//-----------------------------------------------------------------------------
 
 const ::fwCom::Slots::SlotKeyType SRender::s_COMPUTE_CAMERA_ORIG_SLOT     = "computeCameraParameters";
 const ::fwCom::Slots::SlotKeyType SRender::s_COMPUTE_CAMERA_CLIPPING_SLOT = "computeCameraClipping";
@@ -55,6 +63,8 @@ SRender::SRender() noexcept :
     m_fullscreen(false)
 {
     m_ogreRoot = ::fwRenderOgre::Utils::getOgreRoot();
+
+    newSignal<CompositorUpdatedSignalType>(s_COMPOSITOR_UPDATED_SIG);
 
     newSlot(s_COMPUTE_CAMERA_ORIG_SLOT, &SRender::resetCameraCoordinates, this);
     newSlot(s_COMPUTE_CAMERA_CLIPPING_SLOT, &SRender::computeCameraClipping, this);
@@ -287,8 +297,10 @@ void SRender::doRayCast(int x, int y, int width, int height)
     for (auto it : m_layers)
     {
         ::fwRenderOgre::Layer::sptr layer = it.second;
-        layer->doRayCast(x, y, width, height);
-        break;
+        if(layer->doRayCast(x, y, width, height))
+        {
+            break;
+        }
     }
 }
 

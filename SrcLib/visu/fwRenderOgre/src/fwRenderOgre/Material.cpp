@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017.
+ * FW4SPL - Copyright (C) IRCAD, 2017-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -44,7 +44,7 @@ Material::Material(const std::string& _name, const std::string& _templateName) :
 
 Material::~Material()
 {
-
+    m_material.reset();
 }
 
 //------------------------------------------------------------------------------
@@ -380,6 +380,19 @@ void Material::setDiffuseTexture(const ::Ogre::TexturePtr& _texture)
         }
     }
 
+}
+
+//------------------------------------------------------------------------------
+
+void Material::setTemplate(const std::string& _templateName)
+{
+    const ::Ogre::MaterialPtr ogreMaterial = ::Ogre::MaterialManager::getSingleton().getByName(_templateName);
+
+    SLM_ASSERT( "Material '" + _templateName + "'' not found", ogreMaterial );
+
+    // Then we copy these parameters in m_material.
+    // We can now alter this new instance without changing the default material
+    ogreMaterial.get()->copyDetailsTo(m_material);
 }
 
 //-----------------------------------------------------------------------------

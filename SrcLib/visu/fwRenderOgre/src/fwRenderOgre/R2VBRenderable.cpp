@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -78,7 +78,7 @@ void fwRenderOgre::R2VBRenderable::setOutputSettings(size_t _vertexCount, bool _
     ofst += vtxDecl->addElement(0, ofst, ::Ogre::VET_FLOAT3, ::Ogre::VES_NORMAL).getSize();
     if(_hasColor)
     {
-        ofst += vtxDecl->addElement(0, ofst, ::Ogre::VET_UBYTE4, ::Ogre::VES_DIFFUSE).getSize();
+        ofst += vtxDecl->addElement(0, ofst, ::Ogre::VET_COLOUR, ::Ogre::VES_DIFFUSE).getSize();
     }
     if(_hasTexCoord)
     {

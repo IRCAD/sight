@@ -2,9 +2,7 @@
 
     <requirement id="dataReg" />
     <requirement id="servicesReg" />
-    <requirement id="visuOgreAdaptor" />
     <requirement id="visuOgreQt" />
-    <requirement id="material" />
     <requirement id="scene2D" />
     <requirement id="preferences" />
 

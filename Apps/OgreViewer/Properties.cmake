@@ -10,7 +10,6 @@ set( REQUIREMENTS
     guiQt
     ioData
     ioAtoms
-    io
     ioVTK
     servicesReg
     uiImageQt

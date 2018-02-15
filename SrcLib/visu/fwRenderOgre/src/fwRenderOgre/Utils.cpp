@@ -40,11 +40,7 @@
 #       define PLUGIN_PATH "plugins_win32.cfg"
 #   endif
 #else
-#   ifdef _DEBUG
-#       define PLUGIN_PATH "plugins_d.cfg"
-#   else
-#       define PLUGIN_PATH "plugins.cfg"
-#   endif
+#   define PLUGIN_PATH "plugins.cfg"
 #endif
 
 #define PLUGIN_FOLDER_NAME "PluginFolder"
@@ -325,7 +321,7 @@ void Utils::destroyOgreRoot()
     const ::fwData::Image::SizeType imageSize = imageFw->getSize();
 
     const uint32_t width = static_cast<uint32_t>(imageSize[0]);
-    uint32_t height      = 1, depth = 1;
+    uint32_t height = 1, depth = 1;
 
     if(imageSize.size() >= 2)
     {
@@ -466,9 +462,12 @@ void Utils::loadOgreTexture(const ::fwData::Image::csptr& _image, ::Ogre::Textur
             _texture->getTextureType() != _texType ||
             _texture->getFormat() != pixelFormat )
         {
+            const auto& size = _image->getSize();
+            SLM_ASSERT("Only handle 2D and 3D textures", size.size() >= 2);
+            const size_t depth = size.size() == 2 ? 1 : size[2];
 
-            ::fwRenderOgre::Utils::allocateTexture(_texture.get(), _image->getSize()[0], _image->getSize()[1],
-                                                   _image->getSize()[2], pixelFormat, _texType, _dynamic);
+            ::fwRenderOgre::Utils::allocateTexture(_texture.get(), size[0], size[1], depth,
+                                                   pixelFormat, _texType, _dynamic);
         }
 
         // Copy image's pixel box into texture buffer
