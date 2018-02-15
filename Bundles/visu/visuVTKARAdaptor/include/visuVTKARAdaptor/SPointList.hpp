@@ -29,15 +29,12 @@ namespace visuVTKARAdaptor
  * @code{.xml}
    <service type="::visuVTKARAdaptor::SPointList" autoConnect="yes">
        <in key="pointlist" uid="..." />
-       <in key="camera" uid="..." />
        <config renderer="default" color="#cb1f72" radius="3.0" />
    </service>
    @endcode
  *
  * @subsection Input Input
  * - \b pointlist [::fwData::PointList]: displayed point list.
- * - \b image [::fwData::Image] (optional if a camera is set): Image on top of which the points are displayed.
- * - \b camera [::arData::Camera] (optional if an image is set): Camera in front of which the points are displayed.
  *
  * @subsection Configuration Configuration
  * - \b renderer : ID of renderer the adaptor must use.
