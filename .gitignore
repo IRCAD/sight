@@ -16,3 +16,6 @@ syntax: glob
 # reject and backup file
 *.rej
 *.orig
+
+# macos
+.DS_Store

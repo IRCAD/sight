@@ -3,7 +3,6 @@
     <requirement id="arDataReg" />
     <requirement id="servicesReg" />
     <requirement id="visuVTKQt" />
-    <requirement id="arMedia" />
     <extension implements="::fwServices::registry::AppConfig">
         <id>Ex05FrameByFrameConfig</id>
         <config>
