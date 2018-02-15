@@ -51,10 +51,12 @@ SPointListRegistration::~SPointListRegistration()
 
 void SPointListRegistration::configuring()
 {
-    const auto optConfig = this->getConfigTree().get_child_optional("config.<xmlattr>");
-    if(optConfig)
+    const auto configTree = this->getConfigTree();
+    const auto config     = configTree.get_child_optional("config.<xmlattr>");
+
+    if (config)
     {
-        const std::string mode = optConfig->get< std::string >("mode", "rigid");
+        const std::string mode = config->get< std::string >("mode", "rigid");
 
         if(mode == "rigid")
         {
