@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VISUVTKARADAPTOR_SPOINTLIST_HPP__
-#define __VISUVTKARADAPTOR_SPOINTLIST_HPP__
+#pragma once
 
 #include "visuVTKARAdaptor/config.hpp"
 
@@ -53,6 +52,17 @@ public:
     /// Destructor.
     VISUVTKARADAPTOR_API virtual ~SPointList() noexcept;
 
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect ::fwData::PointList::s_MODIFIED_SIG to this::s_UPDATE_SLOT
+     * Connect ::fwData::PointList::s_POINT_ADDED_SIG to this::s_UPDATE_SLOT
+     * Connect ::fwData::PointList::s_POINT_REMOVED_SIG to this::s_UPDATE_SLOT
+     *
+     */
+    VISUVTKARADAPTOR_API KeyConnectionsMap getAutoConnections() const override;
+
 protected:
 
     VISUVTKARADAPTOR_API void configuring() override;
@@ -80,5 +90,3 @@ private:
 };
 
 } //namespace visuVTKARAdaptor
-
-#endif // __VISUVTKARADAPTOR_SPOINTLIST_HPP__

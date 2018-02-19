@@ -118,6 +118,9 @@ void SPointList::updating()
 
     imgPoints->Modified();
 
+    this->setVtkPipelineModified();
+    this->requestRender();
+
 }
 
 //------------------------------------------------------------------------------
@@ -133,6 +136,18 @@ void SPointList::swapping()
 void SPointList::stopping()
 {
     this->removeAllPropFromRenderer();
+}
+
+//------------------------------------------------------------------------------
+
+fwServices::IService::KeyConnectionsMap SPointList::getAutoConnections() const
+{
+    KeyConnectionsMap connections;
+    connections.push(s_POINTLIST_IN, ::fwData::PointList::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_POINTLIST_IN, ::fwData::PointList::s_POINT_ADDED_SIG, s_UPDATE_SLOT);
+    connections.push(s_POINTLIST_IN, ::fwData::PointList::s_POINT_REMOVED_SIG, s_UPDATE_SLOT);
+
+    return connections;
 }
 
 //------------------------------------------------------------------------------
