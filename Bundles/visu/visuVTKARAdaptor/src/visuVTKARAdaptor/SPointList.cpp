@@ -108,12 +108,7 @@ void SPointList::updating()
     {
         // Convert qt 2D coordinates into vtk 3D coordinates.
         const ::fwData::Point::PointCoordArrayType& vecSrc = pt->getCoord();
-        ::fwData::Point::PointCoordArrayType vecDst;
-        vecDst[0] = vecSrc[0];
-        vecDst[1] = -vecSrc[1];
-        vecDst[2] = 0;
-
-        imgPoints->InsertNextPoint(vecDst[0], vecDst[1], vecDst[2]);
+        imgPoints->InsertNextPoint(vecSrc[0], -vecSrc[1], 0);
     }
 
     imgPoints->Modified();
