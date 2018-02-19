@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
- #include "registrationCV/SSolvePnP.hpp"
+#include "registrationCV/SSolvePnP.hpp"
 
 #include <arData/Camera.hpp>
 
@@ -12,9 +12,10 @@
 
 #include <cvIO/Matrix.hpp>
 
+#include <fwCom/Signal.hxx>
+
 #include <fwData/PointList.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
-#include <fwCom/Signal.hxx>
 
 namespace registrationCV
 {
@@ -79,9 +80,11 @@ void SSolvePnP::computeRegistration(::fwCore::HiResClock::HiResClockType _timest
 
         cvP2d.x = static_cast<float>(p2d->getCoord()[0]) + m_offset[0];
 
+        //on vtk coordinate system
         cvP2d.y = static_cast<float>(p2d->getCoord()[1]) + m_offset[1];
-        //if Ogre coordinate system:
-        //cvP2d.y =  - static_cast<float>(p2d->getCoord()[1]) + m_offset[1];
+
+        //NOTE: if using Ogre y axis is inverted, this need to be fixed.
+        //cvP2d.y = - static_cast<float>(p2d->getCoord()[1]) + m_offset[1];
 
         points2d.push_back(cvP2d);
 
@@ -177,13 +180,8 @@ void SSolvePnP::initialize()
 
     if(m_videoRef == CENTER)
     {
-        OSLM_LOG("centered coordinates");
         m_offset[0] = static_cast<float>(m_cvCamera.imageSize.width) / 2.f;
         m_offset[1] = static_cast<float>(m_cvCamera.imageSize.height) / 2.f;
-    }
-    else if(m_videoRef == BOTTOM_LEFT)
-    {
-        //TODO
     }
 
     m_isInitialized = true;
@@ -194,7 +192,7 @@ void SSolvePnP::initialize()
 
 void SSolvePnP::updating()
 {
-    // call computeRegistration slot with fake timestamp
+    // call computeRegistration slot with fake timestamp (timestamp is not used)
     this->computeRegistration(0.);
 }
 
