@@ -84,7 +84,6 @@
                         <menuItem name="stop" icon="arMedia-0.1/icons/stop-cam.svg" />
                         <menuItem name="pause" icon="arMedia-0.1/icons/pause-cam.svg" />
                         <editor />
-                        <menuItem name="Show/Hide" style="check"/>
                         <menuItem name="Register" />
                     </layout>
                 </gui>
@@ -94,7 +93,6 @@
                     <menuItem sid="startVideo" start="yes" />
                     <menuItem sid="stopVideo" start="yes" />
                     <menuItem sid="pauseVideo" start="yes" />
-                    <menuItem sid="show_hide" start="yes" />
                     <menuItem sid="register" start="yes" />
                 </registry>
             </service>
@@ -186,20 +184,6 @@
                 </slots>
             </service>
 
-            <!-- hide axis adaptor until a marker is found -->
-            <service uid="actionUpdateAxesVisibility" type="::gui::action::SBooleanSlotCaller" >
-                <slots>
-                    <slot>axis/updateVisibility</slot>
-                    <slot>axis2/updateVisibility</slot>
-                </slots>
-            </service>
-
-            <service uid="show_hide" type="::gui::action::SBooleanSlotCaller" >
-                <slots>
-                    <slot>meshAdpt/updateVisibility</slot>
-                    <slot>meshAdpt2/updateVisibility</slot>
-                </slots>
-            </service>
 
             <!-- Calibration reader (here OpenCV's XML/YAML) -->
             <service uid="CalibrationReader" type="::ioCalibration::SOpenCVReader">
@@ -274,7 +258,7 @@
 
             <service uid="pointList" type="::visuVTKARAdaptor::SPointList" autoConnect="yes">
                 <in key="pointlist" uid="2dPoints" />
-                <config renderer="video" picker="videoPicker" color="#cb1f72" />
+                <config renderer="video" picker="videoPicker" color="#00ff00" />
             </service>
 
             <service uid="debugScene" type="::fwRenderVTK::SRender" autoConnect="yes">
@@ -387,7 +371,6 @@
             <start uid="meshAdpt2" />
 
             <update uid="meshreader" />
-            <update uid="show_hide" />
 
         </config>
     </extension>
