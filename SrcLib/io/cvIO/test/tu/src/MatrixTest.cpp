@@ -93,11 +93,10 @@ void MatrixTest::copyToCv()
         {
             CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("values are not the equals at [" + std::to_string(i)
                                                  + " ; " + std::to_string(j) + "]"
-                                                 ,fwMat->getCoefficient(i, j),
-                                                 static_cast<double>(cvMat(i, j)) , 1e-6);
+                                                 , fwMat->getCoefficient(i, j),
+                                                 static_cast<double>(cvMat(i, j)), 1e-6);
         }
     }
-
 
     ::fwData::TransformationMatrix3D::TMCoefArray array = {{0.16, 0.15, 0.14, 0.13,
                                                             12.0, 11.0, 10.0, 9.0,
