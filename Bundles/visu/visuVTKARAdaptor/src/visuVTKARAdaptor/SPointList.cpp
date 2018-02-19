@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -102,12 +102,12 @@ void SPointList::updating()
 
     ::fwData::PointList::csptr pl = this->getInput< ::fwData::PointList >(s_POINTLIST_IN);
 
-    SLM_ASSERT("Cannot find input '" + s_POINTLIST_IN +"'" ,pl);
+    SLM_ASSERT("Cannot find input '" + s_POINTLIST_IN +"'", pl);
 
     for(const auto& pt : pl->getPoints() )
     {
         // Convert qt 2D coordinates into vtk 3D coordinates.
-        ::fwData::Point::PointCoordArrayType vecSrc = pt->getCoord();
+        const ::fwData::Point::PointCoordArrayType& vecSrc = pt->getCoord();
         ::fwData::Point::PointCoordArrayType vecDst;
         vecDst[0] = vecSrc[0];
         vecDst[1] = -vecSrc[1];
@@ -138,4 +138,3 @@ void SPointList::stopping()
 //------------------------------------------------------------------------------
 
 } //namespace visuVTKARAdaptor
-
