@@ -69,14 +69,17 @@ namespace action
                 <type>combobox</type>
                 <name>Device name</name>
                 <key>DEVICE_NAME</key>
-                <default_value>trakStar,Aurora</default_value>
+                <values>trakStar,Aurora</values>
+                <default_value>trakStar</default_value>
             </preference>
        </service>
    @endcode
- * - \b type : the type of the parameter field (path, text, checkbox, number, combobox).
- * - \b name : the name of the parameter.
- * - \b key  : the key of the parameter.
- * - \b default_value : the default value of the parameter.
+ * - \b type: the type of the parameter field (path, text, checkbox, number, combobox).
+ * - \b name: the name of the parameter.
+ * - \b key: the key of the parameter.
+ * - \b default_value: the default value of the parameter.
+ * - \b values: list of possible values separated by a comma ',' a space ' ' or a semicolon ';' (only for 'combobox'
+ * type).
  */
 class UIPREFERENCES_CLASS_API SPreferencesConfiguration : public QObject,
                                                           public ::fwGui::IActionSrv

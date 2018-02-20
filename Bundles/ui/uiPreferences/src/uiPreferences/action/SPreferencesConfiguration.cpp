@@ -153,8 +153,11 @@ void SPreferencesConfiguration::configuring()
         }
         else if(pref.m_type == PreferenceType::COMBOBOX)
         {
+            ConfigurationType valuesCfg = elt->findConfigurationElement("values");
+            SLM_ASSERT("element 'values' is missing.", valuesCfg);
+
             const ::boost::char_separator<char> sep(", ;");
-            const ::boost::tokenizer< ::boost::char_separator<char> > tokens {pref.m_defaultValue, sep};
+            const ::boost::tokenizer< ::boost::char_separator<char> > tokens {valuesCfg->getValue(), sep};
 
             pref.m_comboBox = new QComboBox();
             for(const std::string& value : tokens)
@@ -210,8 +213,8 @@ void SPreferencesConfiguration::updating()
             const int currentIndex = pref.m_comboBox->findText(QString::fromStdString(pref.m_dataPreference->value()));
             if(currentIndex < 0)
             {
-                OSLM_WARN( "Preference '" << pref.m_dataPreference->value() <<
-                           "' can't be find in combobox. The first one is selected.");
+                SLM_WARN( "Preference '" + pref.m_dataPreference->value() +
+                          "' can't be find in combobox. The first one is selected.");
                 pref.m_comboBox->setCurrentIndex(0);
             }
             else
