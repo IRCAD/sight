@@ -26,7 +26,7 @@ void Matrix::copyFromCv(const ::cv::Matx44f& _src, ::fwData::TransformationMatri
 
 //-----------------------------------------------------------------------------
 
-void Matrix::copyToCv(const fwData::TransformationMatrix3D::csptr& _src, cv::Matx44f& _dst)
+void Matrix::copyToCv(const ::fwData::TransformationMatrix3D::csptr& _src, ::cv::Matx44d& _dst)
 {
     SLM_ASSERT("::fwData::TransformationMatrix3D is null", _src);
 
@@ -34,7 +34,7 @@ void Matrix::copyToCv(const fwData::TransformationMatrix3D::csptr& _src, cv::Mat
     {
         for (std::uint8_t j = 0; j < 4; ++j)
         {
-            _dst(i, j) = static_cast<float>(_src->getCoefficient(i, j));
+            _dst(i, j) = _src->getCoefficient(i, j);
         }
     }
 

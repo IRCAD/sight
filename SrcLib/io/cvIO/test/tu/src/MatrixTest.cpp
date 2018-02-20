@@ -51,7 +51,7 @@ void MatrixTest::copyFromCv()
             CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("values are not the equals at [" + std::to_string(i)
                                                  + " ; " + std::to_string(j) + "]"
                                                  , static_cast<double>(cvMat(i, j)),
-                                                 fwMat->getCoefficient(i, j), 1e-6);
+                                                 fwMat->getCoefficient(i, j), 1e-8);
         }
     }
 
@@ -71,7 +71,7 @@ void MatrixTest::copyFromCv()
             CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("values are not the equals at [" + std::to_string(i)
                                                  + " ; " + std::to_string(j) + "]",
                                                  static_cast<double>(cvMat(i, j)),
-                                                 fwMat->getCoefficient(i, j), 1e-6);
+                                                 fwMat->getCoefficient(i, j), 1e-8);
         }
     }
 }
@@ -82,7 +82,7 @@ void MatrixTest::copyToCv()
 {
 
     ::fwData::TransformationMatrix3D::sptr fwMat = ::fwData::TransformationMatrix3D::New();
-    ::cv::Matx44f cvMat                          = ::cv::Matx44f::eye();
+    ::cv::Matx44d cvMat                          = ::cv::Matx44d::eye();
 
     //identity test
     ::cvIO::Matrix::copyToCv(fwMat, cvMat);
@@ -94,13 +94,13 @@ void MatrixTest::copyToCv()
             CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("values are not the equals at [" + std::to_string(i)
                                                  + " ; " + std::to_string(j) + "]"
                                                  , fwMat->getCoefficient(i, j),
-                                                 static_cast<double>(cvMat(i, j)), 1e-6);
+                                                 static_cast<double>(cvMat(i, j)), 1e-8);
         }
     }
 
-    ::fwData::TransformationMatrix3D::TMCoefArray array = {{0.16, 0.15, 0.14, 0.13,
+    ::fwData::TransformationMatrix3D::TMCoefArray array = {{0.16, 0.15, 0.14, 0.1378942,
                                                             12.0, 11.0, 10.0, 9.0,
-                                                            0.08, 0.07, 0.06, 0.05,
+                                                            0.08, 0.07, 0.0645687, 0.05,
                                                             40.0, 30.0, 20.0, 10.0}};
     fwMat->setCoefficients(array);
 
@@ -114,7 +114,7 @@ void MatrixTest::copyToCv()
             CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("values are not the equals at [" + std::to_string(i)
                                                  + " ; " + std::to_string(j) + "]",
                                                  static_cast<double>(cvMat(i, j)),
-                                                 fwMat->getCoefficient(i, j), 1e-6);
+                                                 fwMat->getCoefficient(i, j), 1e-8);
         }
     }
 
