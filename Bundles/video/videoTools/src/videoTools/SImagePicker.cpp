@@ -92,6 +92,10 @@ void SImagePicker::addPoint(const std::array<double, 3>& currentPoint )
     auto sig = pointList->signal< ::fwData::PointList::ModifiedSignalType >(
         ::fwData::PointList::s_MODIFIED_SIG);
     sig->asyncEmit();
+
+    auto sig2 = pointList->signal< ::fwData::PointList::PointAddedSignalType >(
+        ::fwData::PointList::s_POINT_ADDED_SIG);
+    sig2->asyncEmit(point);
 }
 
 //-----------------------------------------------------------------------------
@@ -99,14 +103,22 @@ void SImagePicker::addPoint(const std::array<double, 3>& currentPoint )
 void SImagePicker::removeLastPoint()
 {
     ::fwData::PointList::sptr pointList = this->getInOut< ::fwData::PointList >(s_POINTLIST_INOUT);
+    ::fwData::Point::sptr point;
 
     if (!pointList->getPoints().empty())
     {
+        point = pointList->getPoints().back();
         pointList->getPoints().pop_back();
+
+        auto sig = pointList->signal< ::fwData::PointList::ModifiedSignalType >(
+            ::fwData::PointList::s_MODIFIED_SIG);
+        sig->asyncEmit();
+
+        auto sig2 = pointList->signal< ::fwData::PointList::PointRemovedSignalType >(
+            ::fwData::PointList::s_POINT_REMOVED_SIG);
+        sig2->asyncEmit(point);
     }
-    auto sig = pointList->signal< ::fwData::PointList::ModifiedSignalType >(
-        ::fwData::PointList::s_MODIFIED_SIG);
-    sig->asyncEmit();
+
 }
 
 //-----------------------------------------------------------------------------
