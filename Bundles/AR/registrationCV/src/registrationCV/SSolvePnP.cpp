@@ -31,7 +31,6 @@ SSolvePnP::SSolvePnP() noexcept :
     m_videoRef(TOP_LEFT)
 {
     m_videoRefMap.insert( std::make_pair("top_left", TOP_LEFT));
-    m_videoRefMap.insert( std::make_pair("bottom_left", BOTTOM_LEFT));
     m_videoRefMap.insert( std::make_pair("center", CENTER));
 
     m_offset = {{0.f, 0.f}};
@@ -74,21 +73,16 @@ void SSolvePnP::computeRegistration(::fwCore::HiResClock::HiResClockType _timest
 
     for(size_t i = 0; i < numberOfPoints; ++i)
     {
-        //2d
+        // 2d
         ::fwData::Point::csptr p2d = fwPoints2d->getPoints()[i];
         ::cv::Point2f cvP2d;
 
         cvP2d.x = static_cast<float>(p2d->getCoord()[0]) + m_offset[0];
-
-        //on vtk coordinate system
         cvP2d.y = static_cast<float>(p2d->getCoord()[1]) + m_offset[1];
-
-        //NOTE: if using Ogre y axis is inverted, this need to be fixed.
-        //cvP2d.y = - static_cast<float>(p2d->getCoord()[1]) + m_offset[1];
 
         points2d.push_back(cvP2d);
 
-        //3d
+        // 3d
         ::fwData::Point::csptr p3d = fwPoints3d->getPoints()[i];
         ::cv::Point3f cvP3d;
         cvP3d.x = static_cast<float>(p3d->getCoord()[0]);
@@ -98,10 +92,10 @@ void SSolvePnP::computeRegistration(::fwCore::HiResClock::HiResClockType _timest
 
     }
 
-    //call solvepnp
+    // call solvepnp
     ::cv::Matx44f cvMat = ::calibration3d::helper::cameraPoseMonocular(points3d, points2d,
                                                                        m_cvCamera.intrinsicMat, m_cvCamera.distCoef);
-
+    // object pose
     if(m_reverseMatrix)
     {
         cvMat = cvMat.inv();
@@ -149,7 +143,7 @@ void SSolvePnP::starting()
 
 void SSolvePnP::stopping()
 {
-
+    m_isInitialized = false;
 }
 
 //-----------------------------------------------------------------------------
@@ -176,8 +170,7 @@ void SSolvePnP::initialize()
         m_cvCamera.distCoef.at<double>(static_cast<int>(i)) = camera->getDistortionCoefficient()[i];
     }
 
-    // check if coordinate system is the same as opencv (TOP_LEFT)
-
+    // if coordinate system is not the same as opencv's (TOP_LEFT), compute corresponding offset
     if(m_videoRef == CENTER)
     {
         m_offset[0] = static_cast<float>(m_cvCamera.imageSize.width) / 2.f;

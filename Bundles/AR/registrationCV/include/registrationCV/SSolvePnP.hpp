@@ -18,7 +18,6 @@ namespace registrationCV
  * @brief This service estimates the object pose given a set of object points, their corresponding image projections,
  *  as well as the camera matrix and the distortion coefficients.
  *
-
  * @section Slots Slots
  * - \b computeRegistration(::fwCore::HiResClock::HiResClockType): compute the registration using ::opencv::solvePnP.
 
@@ -41,9 +40,10 @@ namespace registrationCV
  * - \b matrix [::fwData::TransformationMatrix3D]: output registration matrix
  * (updated when calling 'computeRegistration' slot), in-out is used since matrix is not created in this service.
  * @subsection Configuration Configuration:
- * - \b videoRef: origin of image, opencv requires top left image origin.
- * - \b inverse: reverse output matrix. If "inverse" is true then the object pose is computed,
- *  camera pose is computed otherwise. Default value is false (camera pose).
+ * - \b videoRef (optionnal): origin of image, opencv requires top left image origin.
+ *      Values are "top_left" or "center" (default: "top_left")
+ * - \b inverse (optionnal): reverse output matrix. If 'inverse' is "true" then the object pose is computed,
+ *      camera pose is computed otherwise.(default: "false").
  */
 class REGISTRATIONCV_CLASS_API SSolvePnP : public ::fwServices::IRegisterer
 {
@@ -60,8 +60,9 @@ public:
     }
 
     /**
-     * @brief computeRegistration
-     * @param _timestamp
+     * @brief computeRegistration: compute the camera pose from 'pointList2d' and corresponding 'pointList3d'.
+     * Update 'matrix' with the camera pose (or object pose if 'inverse' is "true")
+     * @param _timestamp: not used by the method.
      */
     REGISTRATIONCV_API virtual void computeRegistration(::fwCore::HiResClock::HiResClockType _timestamp) override;
 
@@ -72,7 +73,7 @@ protected:
     REGISTRATIONCV_API virtual void starting() override;
     /// does nothing
     REGISTRATIONCV_API virtual void stopping() override;
-    /// does nothing
+    /// calls computeRegistration with fake timestamp.
     REGISTRATIONCV_API virtual void updating() override;
 
 private:
@@ -84,7 +85,6 @@ private:
     typedef enum VideoReference
     {
         TOP_LEFT = 0,
-        BOTTOM_LEFT,
         CENTER,
     } VideoReferenceType;
 
@@ -109,13 +109,13 @@ private:
     VideoReferenceType m_videoRef;
     /// Map that handles conversion between xml configuration string and VideoReferenceType
     std::map<std::string, VideoReferenceType > m_videoRefMap;
-    /// Camera structure that handles parameters in opencv format
+    /// Camera structure that handles parameters in OpenCV format
     Camera m_cvCamera;
     /// checks if service is initialized or not (parsing of camera parameters)
     bool m_isInitialized = {false};
     /// reverse or not output matrix (camera pose vs object pose)
     bool m_reverseMatrix = {false};
-    /// offset to apply if image reference is at top left
+    /// offset to apply if image reference is not at top left
     std::array< float, 2 > m_offset;
 
 };

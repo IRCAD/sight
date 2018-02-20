@@ -313,12 +313,12 @@
                 <config videoReference="top_left" inverse="true"/>
             </service>
 
-            <service uid="imagePicker" type="::videoTools::SImagePicker" autoConnect="yes">
+            <service uid="imagePicker" type="::videoTools::SImagePicker" >
                 <in key="camera" uid="camera" />
                 <inout key="pointList" uid="2dPoints" />
             </service>
 
-            <service uid="landmarkManager" type="::uiMeasurement::SManageLandmark" autoConnect="yes">
+            <service uid="landmarkManager" type="::uiMeasurement::SManageLandmark" >
                 <inout key="landmarks" uid="3dPoints" />
             </service>
 
