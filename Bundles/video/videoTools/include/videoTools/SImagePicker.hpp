@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2018-2018.
+ * FW4SPL - Copyright (C) IRCAD, 2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -25,11 +25,14 @@ namespace videoTools
 /**
  * @brief This service listens to a picking interaction and fills the clicked point list.
  * @code{.xml}
-   <service uid="..." type="::uiVideo::SImagePicker" >
+   <service uid="..." type="::videoTools::SImagePicker" >
         <inout key="pointList" uid="..." />
    </service>
    @endcode
+ * @section InOut InOut
  * - \b pointList [::fwData::PointList] : Pointlist of clicked points
+ * @section Slots Slots
+ * - \b getInteraction(::fwDataTools::PickingInfo info): retrieves the 2d coordinates (z= 0) from picking info.
  **/
 
 class VIDEOTOOLS_CLASS_API SImagePicker : public ::fwServices::IController
@@ -38,10 +41,24 @@ public:
 
     fwCoreServiceClassDefinitionsMacro( (SImagePicker)(::fwServices::IController) );
 
-    /// Contructor. Do nothing.
+    /**
+     * @name Slots API
+     * @{
+     */
+    VIDEOTOOLS_API static const ::fwCom::Slots::SlotKeyType s_GET_INTERACTION_SLOT;
+    ///@}
+
+    /**
+     * @name Data API
+     * @{
+     */
+    VIDEOTOOLS_API static const ::fwServices::IService::KeyType s_POINTLIST_INOUT;
+    /** @} */
+
+    /// Does nothing
     VIDEOTOOLS_API SImagePicker() noexcept;
 
-    /// Destructor. Do nothing.
+    /// Does nothing
     VIDEOTOOLS_API virtual ~SImagePicker() noexcept;
 
 protected:
@@ -62,16 +79,13 @@ protected:
 private:
 
     /// Adds a point in the pointlist.
-    void addPoint(const std::array<double, 3>& curentPoint);
+    void addPoint(const std::array<double, 3>& currentPoint);
 
     /// Removes the last point in the pointlist.
     void removeLastPoint();
 
-    /// Slot: retrieves the image from the interaction point.
+    /// Slot: retrieves the 2d coordinates from the interaction point.
     void getInteraction(::fwDataTools::PickingInfo info);
-
-    /// PointList of the clicked points in the video
-    ::fwData::PointList::sptr m_pointList;
 
 };
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2018-2018.
+ * FW4SPL - Copyright (C) IRCAD, 2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -18,7 +18,8 @@ fwServicesRegisterMacro( ::fwServices::IController, ::videoTools::SImagePicker, 
 
 //-----------------------------------------------------------------------------
 
-static const ::fwCom::Slots::SlotKeyType s_GET_INTERACTION_SLOT = "getInteraction";
+const ::fwCom::Slots::SlotKeyType s_GET_INTERACTION_SLOT = "getInteraction";
+const ::fwServices::IService::KeyType s_POINTLIST_INOUT  = "pointList";
 
 SImagePicker::SImagePicker() noexcept
 {
@@ -35,7 +36,6 @@ SImagePicker::~SImagePicker() noexcept
 
 void SImagePicker::starting()
 {
-    m_pointList = this->getInOut< ::fwData::PointList >("pointList");
 }
 
 //-----------------------------------------------------------------------------
@@ -66,7 +66,7 @@ void SImagePicker::getInteraction(::fwDataTools::PickingInfo info)
         const double y = -(info.m_worldPos[1]);
         const double z = info.m_worldPos[2];
 
-        std::array<double, 3> position = {{x, y, z}};
+        const std::array<double, 3> position = {{x, y, z}};
 
         if (info.m_eventId == ::fwDataTools::PickingInfo::Event::MOUSE_LEFT_DOWN)
         {
@@ -84,10 +84,12 @@ void SImagePicker::getInteraction(::fwDataTools::PickingInfo info)
 
 void SImagePicker::addPoint(const std::array<double, 3>& currentPoint )
 {
-    ::fwData::Point::sptr point = ::fwData::Point::New(currentPoint[0], currentPoint[1], 0.);
+    // set z to 0 as it is an image.
+    ::fwData::Point::sptr point         = ::fwData::Point::New(currentPoint[0], currentPoint[1], 0.);
+    ::fwData::PointList::sptr pointList = this->getInOut< ::fwData::PointList >(s_POINTLIST_INOUT);
 
-    m_pointList->getPoints().push_back(point);
-    auto sig = m_pointList->signal< ::fwData::PointList::ModifiedSignalType >(
+    pointList->getPoints().push_back(point);
+    auto sig = pointList->signal< ::fwData::PointList::ModifiedSignalType >(
         ::fwData::PointList::s_MODIFIED_SIG);
     sig->asyncEmit();
 }
@@ -96,15 +98,17 @@ void SImagePicker::addPoint(const std::array<double, 3>& currentPoint )
 
 void SImagePicker::removeLastPoint()
 {
-    if (!m_pointList->getPoints().empty())
+    ::fwData::PointList::sptr pointList = this->getInOut< ::fwData::PointList >(s_POINTLIST_INOUT);
+
+    if (!pointList->getPoints().empty())
     {
-        m_pointList->getPoints().pop_back();
+        pointList->getPoints().pop_back();
     }
-    auto sig = m_pointList->signal< ::fwData::PointList::ModifiedSignalType >(
+    auto sig = pointList->signal< ::fwData::PointList::ModifiedSignalType >(
         ::fwData::PointList::s_MODIFIED_SIG);
     sig->asyncEmit();
 }
 
 //-----------------------------------------------------------------------------
 
-} // namespace uiVideo
+} // namespace videoTools
