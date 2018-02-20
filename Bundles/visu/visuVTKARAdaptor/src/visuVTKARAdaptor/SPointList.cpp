@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -72,36 +72,6 @@ void SPointList::starting()
 
 void SPointList::updating()
 {
-    std::array<size_t, 2> resolution;
-    std::array<double, 2 > opticalCenter;
-    bool needToShift = false;
-
-    ::arData::Camera::csptr camera = this->getInput< ::arData::Camera>(s_CAMERA_IN);
-    ::fwData::Image::csptr image   = this->getInput< ::fwData::Image >(s_IMAGE_IN);
-
-    if(camera)
-    {
-        resolution[0] = camera->getWidth();
-        resolution[1] = camera->getHeight();
-
-        opticalCenter[0] = camera->getCx();
-        opticalCenter[1] = camera->getCy();
-
-        // Points need to be shifted along with the video.
-        needToShift = true;
-
-        OSLM_FATAL_IF("This service uses an image or a camera, not both.", image);
-    }
-    else if(image)
-    {
-        resolution[0] = image->getSize()[0];
-        resolution[1] = image->getSize()[1];
-    }
-    else
-    {
-        OSLM_FATAL("An image or a camera is needed by this service.")
-    }
-
     this->removeAllPropFromRenderer();
 
     vtkSmartPointer<vtkPoints> imgPoints  = vtkSmartPointer<vtkPoints>::New();
@@ -122,41 +92,30 @@ void SPointList::updating()
     vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
     actor->SetMapper(mapper);
 
-    actor->GetProperty()->SetColor(m_pointColor->red(), m_pointColor->green(), m_pointColor->blue());
-    actor->GetProperty()->SetOpacity(m_pointColor->alpha());
+    actor->GetProperty()->SetColor(static_cast< double >( m_pointColor->red() ),
+                                   static_cast< double >( m_pointColor->green() ),
+                                   static_cast <double >( m_pointColor->blue() ));
+
+    actor->GetProperty()->SetOpacity(static_cast< double >( m_pointColor->alpha() ));
 
     this->addToRenderer(actor);
 
-    if(resolution[0] > 0 && resolution[1] > 0)
+    ::fwData::PointList::csptr pl = this->getInput< ::fwData::PointList >(s_POINTLIST_IN);
+
+    SLM_ASSERT("Cannot find input '" + s_POINTLIST_IN +"'", pl);
+
+    for(const auto& pt : pl->getPoints() )
     {
-        ::fwData::PointList::csptr pl = this->getInput< ::fwData::PointList >(s_POINTLIST_IN);
-        for(const auto& pt : pl->getPoints() )
-        {
-            // Convert qt 2D coordinates into vtk 3D coordinates.
-            ::fwData::Point::PointCoordArrayType vecSrc = pt->getCoord();
-            ::fwData::Point::PointCoordArrayType vecDst;
-            vecDst[0] = vecSrc[0];
-            vecDst[1] = -vecSrc[1];
-            vecDst[2] = 0;
-
-            if(needToShift)
-            {
-                const double shiftX = static_cast<double>(resolution[0]) / 2. - opticalCenter[0];
-                const double shiftY = static_cast<double>(resolution[1]) / 2. - opticalCenter[1];
-
-                vecDst[0] += shiftX;
-                vecDst[1] -= shiftY;
-            }
-
-            imgPoints->InsertNextPoint(vecDst[0], vecDst[1], vecDst[2]);
-        }
-
-        imgPoints->Modified();
+        // Convert qt 2D coordinates into vtk 3D coordinates.
+        const ::fwData::Point::PointCoordArrayType& vecSrc = pt->getCoord();
+        imgPoints->InsertNextPoint(vecSrc[0], -vecSrc[1], 0);
     }
-    else
-    {
-        SLM_WARN("Image size is null");
-    }
+
+    imgPoints->Modified();
+
+    this->setVtkPipelineModified();
+    this->requestRender();
+
 }
 
 //------------------------------------------------------------------------------
@@ -176,5 +135,16 @@ void SPointList::stopping()
 
 //------------------------------------------------------------------------------
 
-} //namespace visuVTKARAdaptor
+fwServices::IService::KeyConnectionsMap SPointList::getAutoConnections() const
+{
+    KeyConnectionsMap connections;
+    connections.push(s_POINTLIST_IN, ::fwData::PointList::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_POINTLIST_IN, ::fwData::PointList::s_POINT_ADDED_SIG, s_UPDATE_SLOT);
+    connections.push(s_POINTLIST_IN, ::fwData::PointList::s_POINT_REMOVED_SIG, s_UPDATE_SLOT);
 
+    return connections;
+}
+
+//------------------------------------------------------------------------------
+
+} //namespace visuVTKARAdaptor

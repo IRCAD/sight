@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VISUVTKARADAPTOR_SPOINTLIST_HPP__
-#define __VISUVTKARADAPTOR_SPOINTLIST_HPP__
+#pragma once
 
 #include "visuVTKARAdaptor/config.hpp"
 
@@ -29,15 +28,12 @@ namespace visuVTKARAdaptor
  * @code{.xml}
    <service type="::visuVTKARAdaptor::SPointList" autoConnect="yes">
        <in key="pointlist" uid="..." />
-       <in key="camera" uid="..." />
        <config renderer="default" color="#cb1f72" radius="3.0" />
    </service>
    @endcode
  *
  * @subsection Input Input
  * - \b pointlist [::fwData::PointList]: displayed point list.
- * - \b image [::fwData::Image] (optional if a camera is set): Image on top of which the points are displayed.
- * - \b camera [::arData::Camera] (optional if an image is set): Camera in front of which the points are displayed.
  *
  * @subsection Configuration Configuration
  * - \b renderer : ID of renderer the adaptor must use.
@@ -55,6 +51,17 @@ public:
 
     /// Destructor.
     VISUVTKARADAPTOR_API virtual ~SPointList() noexcept;
+
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect ::fwData::PointList::s_MODIFIED_SIG to this::s_UPDATE_SLOT
+     * Connect ::fwData::PointList::s_POINT_ADDED_SIG to this::s_UPDATE_SLOT
+     * Connect ::fwData::PointList::s_POINT_REMOVED_SIG to this::s_UPDATE_SLOT
+     *
+     */
+    VISUVTKARADAPTOR_API KeyConnectionsMap getAutoConnections() const override;
 
 protected:
 
@@ -83,5 +90,3 @@ private:
 };
 
 } //namespace visuVTKARAdaptor
-
-#endif // __VISUVTKARADAPTOR_SPOINTLIST_HPP__
