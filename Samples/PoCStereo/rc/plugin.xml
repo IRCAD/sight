@@ -115,7 +115,7 @@
             </service>
 
             <service uid="interactorAdaptor" type="::visuOgreAdaptor::SInteractorStyle">
-                <config layer="default" style="VR" />
+                <config layer="default" movement="VR" />
             </service>
 
             <service uid="modelSeriesAdaptor" type="::visuOgreAdaptor::SModelSeries" autoConnect="yes">

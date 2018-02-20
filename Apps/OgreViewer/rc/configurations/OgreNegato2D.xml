@@ -37,7 +37,7 @@
         </service>
 
         <service uid="interactorAdaptor" type="::visuOgreAdaptor::SInteractorStyle">
-            <config layer="default" style="Negato2D" />
+            <config layer="default" movement="Negato2D" />
         </service>
 
         <service uid="negato2DAdaptor" type="::visuOgreAdaptor::SNegato2D">

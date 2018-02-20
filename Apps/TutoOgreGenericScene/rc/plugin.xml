@@ -142,7 +142,7 @@
             </service>
 
             <service uid="interactorAdaptor" type="::visuOgreAdaptor::SInteractorStyle">
-                <config layer="default" style="Trackball" />
+                <config layer="default" movement="Trackball" />
             </service>
 
             <service uid="cameraAdaptor" type="::visuOgreAdaptor::SCamera" autoConnect="yes">
