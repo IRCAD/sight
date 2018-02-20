@@ -1,10 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
-#ifndef __UIPREFERENCES_ACTION_SPREFERENCESCONFIGURATION_HPP__
-#define __UIPREFERENCES_ACTION_SPREFERENCESCONFIGURATION_HPP__
+
+#pragma once
 
 #include "uiPreferences/config.hpp"
 
@@ -15,6 +15,7 @@
 #include <fwTools/Failed.hpp>
 
 #include <QCheckBox>
+#include <QComboBox>
 #include <QLineEdit>
 #include <QObject>
 #include <QPointer>
@@ -64,9 +65,15 @@ namespace action
                 <key>KEEP_PIXELDATA_KEY</key>
                 <default_value>true</default_value>
             </preference>
+            <preference>
+                <type>combobox</type>
+                <name>Device name</name>
+                <key>DEVICE_NAME</key>
+                <default_value>trakStar,Aurora</default_value>
+            </preference>
        </service>
    @endcode
- * - \b type : the type of the parameter field (checkBox, lineEdit).
+ * - \b type : the type of the parameter field (path, text, checkbox, number, combobox).
  * - \b name : the name of the parameter.
  * - \b key  : the key of the parameter.
  * - \b default_value : the default value of the parameter.
@@ -118,7 +125,8 @@ private:
         TEXT,
         CHECKBOX,
         U_INT,
-        PATH
+        PATH,
+        COMBOBOX
     };
 
     struct PreferenceElt
@@ -126,6 +134,7 @@ private:
         PreferenceType m_type;
         QPointer<QLineEdit> m_lineEdit;
         QPointer<QCheckBox> m_checkBox;
+        QPointer<QComboBox> m_comboBox;
         SPTR(::fwData::String) m_dataPreference;
         std::string m_preferenceKey;
         std::string m_name;
@@ -140,5 +149,3 @@ private:
 
 } // namespace action
 } // namespace uiPreferences
-
-#endif /*__UIPREFERENCES_ACTION_SPREFERENCESCONFIGURATION_HPP__*/

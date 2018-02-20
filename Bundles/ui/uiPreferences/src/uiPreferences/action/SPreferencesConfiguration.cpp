@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,13 +10,16 @@
 
 #include <fwData/Composite.hpp>
 #include <fwData/Integer.hpp>
-#include <fwData/String.hpp>
 #include <fwData/location/Folder.hpp>
+#include <fwData/String.hpp>
 
 #include <fwGui/dialog/LocationDialog.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
+
+#include <boost/lexical_cast.hpp>
+#include <boost/tokenizer.hpp>
 
 #include <QDialog>
 #include <QGridLayout>
@@ -24,8 +27,6 @@
 #include <QIntValidator>
 #include <QLabel>
 #include <QPushButton>
-
-#include <boost/lexical_cast.hpp>
 
 namespace uiPreferences
 {
@@ -115,6 +116,10 @@ void SPreferencesConfiguration::configuring()
         {
             pref.m_type = PreferenceType::PATH;
         }
+        else if(typeCfg->getValue() == "combobox")
+        {
+            pref.m_type = PreferenceType::COMBOBOX;
+        }
         else
         {
             OSLM_ERROR("Preference type "<<typeCfg->getValue()<<" is not implemented");
@@ -145,6 +150,17 @@ void SPreferencesConfiguration::configuring()
         {
             pref.m_lineEdit = new QLineEdit(QString::fromStdString(pref.m_defaultValue));
             pref.m_lineEdit->setValidator( new QIntValidator( 0, 999999));
+        }
+        else if(pref.m_type == PreferenceType::COMBOBOX)
+        {
+            const ::boost::char_separator<char> sep(", ;");
+            const ::boost::tokenizer< ::boost::char_separator<char> > tokens {pref.m_defaultValue, sep};
+
+            pref.m_comboBox = new QComboBox();
+            for(const std::string& value : tokens)
+            {
+                pref.m_comboBox->addItem(QString::fromStdString(value));
+            }
         }
         m_preferences.push_back(pref);
     }
@@ -189,6 +205,21 @@ void SPreferencesConfiguration::updating()
                         this->onSelectDir(pref.m_lineEdit);
                     });
         }
+        else if(pref.m_type == PreferenceType::COMBOBOX)
+        {
+            const int currentIndex = pref.m_comboBox->findText(QString::fromStdString(pref.m_dataPreference->value()));
+            if(currentIndex < 0)
+            {
+                OSLM_WARN( "Preference '" << pref.m_dataPreference->value() <<
+                           "' can't be find in combobox. The first one is selected.");
+                pref.m_comboBox->setCurrentIndex(0);
+            }
+            else
+            {
+                pref.m_comboBox->setCurrentIndex(currentIndex);
+            }
+            layout->addWidget(pref.m_comboBox, index, 1);
+        }
 
         ++index;
     }
@@ -224,6 +255,10 @@ void SPreferencesConfiguration::updating()
             else if(pref.m_type == PreferenceType::U_INT)
             {
                 pref.m_dataPreference->value() = pref.m_lineEdit->text().toStdString();
+            }
+            else if(pref.m_type == PreferenceType::COMBOBOX)
+            {
+                pref.m_dataPreference->value() = pref.m_comboBox->currentText().toStdString();
             }
         }
         m_sigParametersModified->asyncEmit();
