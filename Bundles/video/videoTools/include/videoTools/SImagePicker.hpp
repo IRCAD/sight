@@ -24,6 +24,10 @@ namespace videoTools
 {
 /**
  * @brief This service listens to a picking interaction and fills the clicked point list.
+ *
+ * @section Slots Slots
+ * - \b getInteraction(::fwDataTools::PickingInfo info): retrieves the 2d coordinates (z= 0) from picking info.
+ *
  * @code{.xml}
    <service uid="..." type="::videoTools::SImagePicker" >
         <inout key="pointList" uid="..." />
@@ -31,8 +35,6 @@ namespace videoTools
    @endcode
  * @section InOut InOut
  * - \b pointList [::fwData::PointList] : Pointlist of clicked points
- * @section Slots Slots
- * - \b getInteraction(::fwDataTools::PickingInfo info): retrieves the 2d coordinates (z= 0) from picking info.
  **/
 
 class VIDEOTOOLS_CLASS_API SImagePicker : public ::fwServices::IController
