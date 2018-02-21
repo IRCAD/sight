@@ -18,8 +18,8 @@ fwServicesRegisterMacro( ::fwServices::IController, ::videoTools::SImagePicker, 
 
 //-----------------------------------------------------------------------------
 
-const ::fwCom::Slots::SlotKeyType s_GET_INTERACTION_SLOT = "getInteraction";
-const ::fwServices::IService::KeyType s_POINTLIST_INOUT  = "pointList";
+const ::fwCom::Slots::SlotKeyType SImagePicker::s_GET_INTERACTION_SLOT = "getInteraction";
+const ::fwServices::IService::KeyType SImagePicker::s_POINTLIST_INOUT  = "pointList";
 
 SImagePicker::SImagePicker() noexcept
 {
