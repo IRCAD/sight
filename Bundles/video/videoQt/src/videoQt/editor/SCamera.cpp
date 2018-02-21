@@ -226,10 +226,17 @@ void SCamera::onChooseFile()
                                                   {
                                                       ::boost::filesystem::directory_iterator currentEntry(dir);
                                                       ::boost::filesystem::directory_iterator endEntry;
-                                                      if(currentEntry != endEntry)
+                                                      while(currentEntry != endEntry)
                                                       {
                                                           ::boost::filesystem::path entryPath = *currentEntry;
-                                                          return entryPath;
+                                                          if (entryPath.has_stem())
+                                                          {
+                                                              return entryPath;
+                                                          }
+                                                          else
+                                                          {
+                                                              ++currentEntry;
+                                                          }
                                                       }
                                                   }
                                               }
