@@ -18,7 +18,6 @@ set( REQUIREMENTS
     ioVTK
     uiPreferences
     uiTools
-    uiVideo
     uiMeasurement
     maths
     preferences
