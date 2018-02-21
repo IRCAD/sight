@@ -151,7 +151,7 @@ void SSolvePnP::stopping()
 void SSolvePnP::initialize()
 {
     const auto camera = this->getInput< ::arData::Camera > (s_CALIBRATION_INPUT);
-    OSLM_FATAL_IF("Camera '" + s_CALIBRATION_INPUT + "'not found", !camera);
+    SLM_FATAL_IF("Camera '" + s_CALIBRATION_INPUT + "' not found", !camera);
 
     m_cvCamera.intrinsicMat = ::cv::Mat::eye(3, 3, CV_64F);
 

@@ -15,15 +15,17 @@ namespace ut
 {
 
 /**
- * @brief The MatrixTest class
+ * @brief Tests the ::cvIO::Matrix functions
  */
 class MatrixTest : public CPPUNIT_NS::TestFixture
 {
 public:
 
     CPPUNIT_TEST_SUITE( MatrixTest );
-    CPPUNIT_TEST(copyFromCv);
-    CPPUNIT_TEST(copyToCv);
+    CPPUNIT_TEST(copyFromCvFloat);
+    CPPUNIT_TEST(copyToCvFloat);
+    CPPUNIT_TEST(copyFromCvDouble);
+    CPPUNIT_TEST(copyToCvDouble);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -31,8 +33,13 @@ public:
     void setUp();
     void tearDown();
 
-    void copyFromCv();
-    void copyToCv();
+    ///Tests the copy from/to ::cv::Matx44f (float)
+    void copyFromCvFloat();
+    void copyToCvFloat();
+    ///Tests the copy from/to ::cv::Matx44d (double)
+    void copyFromCvDouble();
+    void copyToCvDouble();
+
 };
 
 }

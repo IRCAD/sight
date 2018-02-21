@@ -36,7 +36,7 @@ void MatrixTest::tearDown()
 
 //-----------------------------------------------------------------------------
 
-void MatrixTest::copyFromCv()
+void MatrixTest::copyFromCvFloat()
 {
     ::cv::Matx44f cvMat                          = ::cv::Matx44f::eye();
     ::fwData::TransformationMatrix3D::sptr fwMat = ::fwData::TransformationMatrix3D::New();
@@ -78,7 +78,93 @@ void MatrixTest::copyFromCv()
 
 //-----------------------------------------------------------------------------
 
-void MatrixTest::copyToCv()
+void MatrixTest::copyToCvFloat()
+{
+
+    ::fwData::TransformationMatrix3D::sptr fwMat = ::fwData::TransformationMatrix3D::New();
+    ::cv::Matx44f cvMat                          = ::cv::Matx44f::eye();
+
+    //identity test
+    ::cvIO::Matrix::copyToCv(fwMat, cvMat);
+
+    for(std::uint8_t i = 0; i < 4; ++i)
+    {
+        for(std::uint8_t j = 0; j < 4; ++j)
+        {
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("values are not the equals at [" + std::to_string(i)
+                                                 + " ; " + std::to_string(j) + "]"
+                                                 , fwMat->getCoefficient(i, j),
+                                                 static_cast<double>(cvMat(i, j)), 1e-8);
+        }
+    }
+
+    ::fwData::TransformationMatrix3D::TMCoefArray array = {{0.16, 0.15, 0.14, 0.1378942,
+                                                            12.0, 11.0, 10.0, 9.0,
+                                                            0.08, 0.07, 0.0645687, 0.05,
+                                                            40.0, 30.0, 20.0, 10.0}};
+    fwMat->setCoefficients(array);
+
+    //values test
+    ::cvIO::Matrix::copyToCv(fwMat, cvMat);
+
+    for(std::uint8_t i = 0; i < 4; ++i)
+    {
+        for(std::uint8_t j = 0; j < 4; ++j)
+        {
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("values are not the equals at [" + std::to_string(i)
+                                                 + " ; " + std::to_string(j) + "]",
+                                                 static_cast<double>(cvMat(i, j)),
+                                                 fwMat->getCoefficient(i, j), 1e-8);
+        }
+    }
+
+}
+
+//-----------------------------------------------------------------------------
+
+void MatrixTest::copyFromCvDouble()
+{
+    ::cv::Matx44d cvMat                          = ::cv::Matx44d::eye();
+    ::fwData::TransformationMatrix3D::sptr fwMat = ::fwData::TransformationMatrix3D::New();
+
+    //identity test
+    ::cvIO::Matrix::copyFromCv(cvMat, fwMat);
+
+    for(std::uint8_t i = 0; i < 4; ++i)
+    {
+        for(std::uint8_t j = 0; j < 4; ++j)
+        {
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("values are not the equals at [" + std::to_string(i)
+                                                 + " ; " + std::to_string(j) + "]"
+                                                 , static_cast<double>(cvMat(i, j)),
+                                                 fwMat->getCoefficient(i, j), 1e-8);
+        }
+    }
+
+    // 1 to 16 values
+    cvMat = ::cv::Matx44d(1., 2., 3., 4.,
+                          5., 6., 7., 8.,
+                          9., 10., 11.9874563, 12.,
+                          13.123456, 14., 15., 16.);
+
+    //values test
+    ::cvIO::Matrix::copyFromCv(cvMat, fwMat);
+
+    for(std::uint8_t i = 0; i < 4; ++i)
+    {
+        for(std::uint8_t j = 0; j < 4; ++j)
+        {
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("values are not the equals at [" + std::to_string(i)
+                                                 + " ; " + std::to_string(j) + "]",
+                                                 static_cast<double>(cvMat(i, j)),
+                                                 fwMat->getCoefficient(i, j), 1e-8);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void MatrixTest::copyToCvDouble()
 {
 
     ::fwData::TransformationMatrix3D::sptr fwMat = ::fwData::TransformationMatrix3D::New();
