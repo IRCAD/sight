@@ -19,10 +19,9 @@ namespace registrationCV
  *  as well as the camera matrix and the distortion coefficients.
  *
  * @section Slots Slots
- * - \b computeRegistration(::fwCore::HiResClock::HiResClockType): compute the registration using ::opencv::solvePnP.
-
- * @section XML XML Configuration
+ * - \b computeRegistration(::fwCore::HiResClock::HiResClockType): compute the registration using ::cv::solvePnP.
  *
+ * @section XML XML Configuration
  * @code{.xml}
         <service type="::registrationCV::SSolvePnP">
             <in key="pointList2d" uid="..." />
@@ -40,7 +39,7 @@ namespace registrationCV
  * - \b matrix [::fwData::TransformationMatrix3D]: output registration matrix
  * (updated when calling 'computeRegistration' slot), in-out is used since matrix is not created in this service.
  * @subsection Configuration Configuration:
- * - \b videoRef (optionnal): origin of image, opencv requires top left image origin.
+ * - \b videoRef (optionnal): origin of image, OpenCV requires top left image origin.
  *      Values are "top_left" or "center" (default: "top_left")
  * - \b inverse (optionnal): reverse output matrix. If 'inverse' is "true" then the object pose is computed,
  *      camera pose is computed otherwise.(default: "false").
@@ -78,7 +77,7 @@ protected:
 
 private:
 
-    /// Gets camera parameters and converts into opencv structures
+    /// Gets camera parameters and converts into OpenCV structures
     void initialize();
 
     /// Manages several video coordinate system.
@@ -89,7 +88,7 @@ private:
     } VideoReferenceType;
 
     /**
-     * @brief Camera structure: handles intrinsic parameters and distorsion coefficients in opencv format.
+     * @brief Camera structure: handles intrinsic parameters and distorsion coefficients in OpenCV format.
      */
     struct Camera
     {

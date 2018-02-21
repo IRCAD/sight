@@ -170,7 +170,7 @@ void SSolvePnP::initialize()
         m_cvCamera.distCoef.at<double>(static_cast<int>(i)) = camera->getDistortionCoefficient()[i];
     }
 
-    // if coordinate system is not the same as opencv's (TOP_LEFT), compute corresponding offset
+    // if coordinate system is not the same as OpenCV's (TOP_LEFT), compute corresponding offset
     if(m_videoRef == CENTER)
     {
         m_offset[0] = static_cast<float>(m_cvCamera.imageSize.width) / 2.f;
