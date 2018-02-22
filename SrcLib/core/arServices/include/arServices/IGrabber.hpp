@@ -48,6 +48,8 @@ public:
     ARSERVICES_API static const ::fwCom::Slots::SlotKeyType s_LOOP_VIDEO_SLOT;
     ARSERVICES_API static const ::fwCom::Slots::SlotKeyType s_SET_POSITION_VIDEO_SLOT;
     ARSERVICES_API static const ::fwCom::Slots::SlotKeyType s_PRESENT_SLOT;
+    ARSERVICES_API static const ::fwCom::Slots::SlotKeyType s_PREVIOUS_IMAGE_SLOT;
+    ARSERVICES_API static const ::fwCom::Slots::SlotKeyType s_NEXT_IMAGE_SLOT;
     ///@}
 
     /**
@@ -114,6 +116,15 @@ public:
      */
     ARSERVICES_API virtual void setPosition(int64_t position) = 0;
 
+    /**
+     * @brief API to get the previous image in frame by frame mode.
+     */
+    ARSERVICES_API virtual void previousImage();
+
+    /**
+     * @brief API to get the next image in frame by frame mode.
+     */
+    ARSERVICES_API virtual void nextImage();
 };
 
 } //namespace arServices
