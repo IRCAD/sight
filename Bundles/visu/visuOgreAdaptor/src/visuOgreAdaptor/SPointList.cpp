@@ -125,7 +125,8 @@ void SPointList::configuring()
         this->setTransformId(this->getID() + "_TF");
     }
 
-    m_radius = config.get("radius", 1.f);
+    m_queryFlags = config.get<std::uint32_t>("queryFlags", m_queryFlags);
+    m_radius     = config.get("radius", 1.f);
 }
 
 //-----------------------------------------------------------------------------
@@ -215,6 +216,7 @@ void SPointList::updateMesh(const ::fwData::PointList::csptr& _pointList)
     {
         m_entity = m_meshGeometry->createEntity(*sceneMgr);
         m_entity->setVisible(m_isVisible);
+        m_entity->setQueryFlags(m_queryFlags);
         sceneMgr->getRootSceneNode()->detachObject(m_entity);
     }
 

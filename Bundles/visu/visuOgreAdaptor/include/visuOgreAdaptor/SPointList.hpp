@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VISUOGREADAPTOR_SPOINTLIST_HPP__
-#define __VISUOGREADAPTOR_SPOINTLIST_HPP__
+#pragma once
 
 #include "visuOgreAdaptor/config.hpp"
 #include "visuOgreAdaptor/SMaterial.hpp"
@@ -50,9 +49,8 @@ namespace visuOgreAdaptor
     </service>
    @endcode
  * @subsection In-Out In-Out
- * - \b mesh [::fwData::PointList]: adapted mesh. It can not be a read-only data because we may generate normals or add
- * some
- * fields.
+ * - \b pointList [::fwData::PointList]: adapted mesh. It can not be a read-only data because we may generate normals
+ * or add some fields.
  * @subsection Configuration Configuration:
  *  - \b renderer (mandatory) : defines the mesh's layer
  *  - \b autoresetcamera (optional, default="yes"): reset the camera when this mesh is modified, "yes" or "no".
@@ -149,6 +147,9 @@ private:
 
     /// Allows to scale the billboards
     float m_radius { 1.f };
+
+    /// Mask for picking requests
+    std::uint32_t m_queryFlags {0};
 };
 
 //------------------------------------------------------------------------------
@@ -197,5 +198,3 @@ inline bool SPointList::getVisibility() const
 //------------------------------------------------------------------------------
 
 } //namespace visuOgreAdaptor
-
-#endif // __VISUOGREADAPTOR_SPOINTLIST_HPP__

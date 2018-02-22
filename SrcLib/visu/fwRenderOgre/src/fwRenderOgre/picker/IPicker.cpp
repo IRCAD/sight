@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -44,7 +44,7 @@ IPicker::~IPicker()
 
 //------------------------------------------------------------------------------
 
-bool IPicker::executeRaySceneQuery(int x, int y, int width, int height)
+bool IPicker::executeRaySceneQuery(int x, int y, int width, int height, std::uint32_t _queryFlags)
 {
     ::Ogre::Ray r = m_sceneManager->getCamera(::fwRenderOgre::Layer::DEFAULT_CAMERA_NAME)->getCameraToViewportRay(
         static_cast< ::Ogre::Real>(x) / static_cast< ::Ogre::Real>(width),
@@ -63,7 +63,7 @@ bool IPicker::executeRaySceneQuery(int x, int y, int width, int height)
     ::fwRenderOgre::CollisionTools tool = ::fwRenderOgre::CollisionTools(m_sceneManager);
 
     std::tie(entityFound, m_rayIntersect, m_selectedObject, distance) =
-        tool.raycast(r, ::Ogre::SceneManager::ENTITY_TYPE_MASK);
+        tool.raycast(r, _queryFlags ? _queryFlags : ::Ogre::SceneManager::ENTITY_TYPE_MASK);
 
     if (entityFound)
     {

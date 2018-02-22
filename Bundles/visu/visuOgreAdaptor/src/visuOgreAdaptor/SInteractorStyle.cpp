@@ -73,6 +73,8 @@ void SInteractorStyle::configuring()
     {
         m_movementStyle = config.get<std::string>(s_CONFIG_MOVEMENT);
     }
+
+    m_queryFlags = config.get<std::uint32_t>("queryFlags", m_queryFlags);
 }
 
 //------------------------------------------------------------------------------
@@ -123,8 +125,10 @@ void SInteractorStyle::setInteractorStyle()
             OSLM_ASSERT("Unknown picker interactor style : " << style, interactor);
 
             interactor->setSceneID(this->getSceneManager()->getName());
-            this->getRenderService()->getLayer(m_layerID)->setSelectInteractor(::fwRenderOgre::interactor::IPickerInteractor::dynamicCast(
-                                                                                   interactor));
+            auto layer            = this->getRenderService()->getLayer(m_layerID);
+            auto pickerInteractor = ::fwRenderOgre::interactor::IPickerInteractor::dynamicCast(interactor);
+            pickerInteractor->setQueryFlags(m_queryFlags);
+            layer->setSelectInteractor(::fwRenderOgre::interactor::IPickerInteractor::dynamicCast(interactor));
         }
         else
         {
@@ -146,8 +150,8 @@ void SInteractorStyle::setInteractorStyle()
             OSLM_ASSERT("Unknown movement interactor style : " << style, interactor);
 
             interactor->setSceneID(this->getSceneManager()->getName());
-            this->getRenderService()->getLayer(m_layerID)->setMoveInteractor(::fwRenderOgre::interactor::IMovementInteractor::dynamicCast(
-                                                                                 interactor));
+            auto layer = this->getRenderService()->getLayer(m_layerID);
+            layer->setMoveInteractor(::fwRenderOgre::interactor::IMovementInteractor::dynamicCast(interactor));
         }
         else
         {

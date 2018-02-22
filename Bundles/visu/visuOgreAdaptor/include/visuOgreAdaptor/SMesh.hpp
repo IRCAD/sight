@@ -112,6 +112,8 @@ public:
     VISUOGREADAPTOR_API void setDynamicVertices(bool _isDynamic);
     /// Set meshes and indices buffers to dynamic state (only has effect if called before service starting/update)
     VISUOGREADAPTOR_API void setDynamic(bool _isDynamic);
+    /// Set query mask
+    VISUOGREADAPTOR_API void setQueryFlags(std::uint32_t _queryFlags);
 
     /// This method is called by a reconstruction adaptor after creating the mesh adaptor
     VISUOGREADAPTOR_API void setIsReconstructionManaged(bool _isReconstructionManaged);
@@ -197,6 +199,9 @@ private:
 
     /// SMaterial adaptors attached to the r2vb objects
     std::map< ::fwData::Mesh::CellTypes, ::visuOgreAdaptor::SMaterial::sptr> m_r2vbMaterialAdaptor;
+
+    /// Mask for picking request
+    std::uint32_t m_queryFlags {0};
 };
 
 //------------------------------------------------------------------------------
@@ -262,6 +267,13 @@ inline void SMesh::setDynamicVertices(bool _isDynamic)
     {
         m_meshGeometry->setDynamicVertices(_isDynamic);
     }
+}
+
+//------------------------------------------------------------------------------
+
+inline void SMesh::setQueryFlags(uint32_t _queryFlags)
+{
+    m_queryFlags = _queryFlags;
 }
 
 //-----------------------------------------------------------------------------

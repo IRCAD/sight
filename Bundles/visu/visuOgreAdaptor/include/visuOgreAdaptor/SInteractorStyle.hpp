@@ -95,6 +95,8 @@ private:
     PointClickedSignalType::sptr m_sigPointClicked;
     ///Connection service, needed for slot/signal association
     ::fwCom::helper::SigSlotConnection m_connections;
+    /// Mask for picking requests
+    std::uint32_t m_queryFlags {0};
 };
 
 } //namespace visuOgreAdaptor

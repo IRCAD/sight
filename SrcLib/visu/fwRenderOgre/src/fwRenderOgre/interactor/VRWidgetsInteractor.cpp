@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -45,7 +45,7 @@ Ogre::MovableObject* VRWidgetsInteractor::pickObject(int x, int y)
     int height = camera->getViewport()->getActualHeight();
     int width  = camera->getViewport()->getActualWidth();
 
-    bool pickSuccess = m_picker.executeRaySceneQuery( x, y, width, height );
+    bool pickSuccess = m_picker.executeRaySceneQuery( x, y, width, height, 0 );
 
     return pickSuccess ? m_picker.getSelectedObject() : nullptr;
 }

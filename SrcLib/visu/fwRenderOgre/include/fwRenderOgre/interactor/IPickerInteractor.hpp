@@ -59,20 +59,23 @@ public:
     FWRENDEROGRE_API bool virtual mouseClickEvent(int x, int y, int width, int height) = 0;
 
     /**
-     * @brief Initilaize picker with the corresponding layer's info
+     * @brief Initialize picker with the corresponding layer's info
      *        This method should only be called by a layer that contains this interactor
      */
     FWRENDEROGRE_API void  initPicker();
 
     FWRENDEROGRE_API bool  isPickerInitialized();
 
+    /// Set query mask
+    FWRENDEROGRE_API void setQueryFlags(std::uint32_t _queryFlags);
+
 protected:
 
     /// Ogre picker
     ::fwRenderOgre::picker::IPicker* m_picker;
 
-    bool m_isPickerInitialized;
-
+    /// Mask for picking requests
+    std::uint32_t m_queryFlags {0};
 };
 
 }

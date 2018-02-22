@@ -34,7 +34,7 @@ bool VideoPickerInteractor::mouseClickEvent(int x, int y, int width, int height)
 {
     if(m_picker->hasSceneManager())
     {
-        if( m_picker->executeRaySceneQuery(x, y, width, height) )
+        if( m_picker->executeRaySceneQuery(x, y, width, height, 0) )
         {
             ::Ogre::Vector3 click = m_picker->getIntersectionInWorldSpace();
 

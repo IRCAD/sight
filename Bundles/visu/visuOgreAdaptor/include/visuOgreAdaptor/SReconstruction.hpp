@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VISUOGREADAPTOR_SRECONSTRUCTION_HPP__
-#define __VISUOGREADAPTOR_SRECONSTRUCTION_HPP__
+#pragma once
 
 #include "visuOgreAdaptor/config.hpp"
 #include "visuOgreAdaptor/SMesh.hpp"
@@ -87,6 +86,9 @@ public:
     /// Set meshes and indices buffers to dynamic state (only has effect if called before service starting/update)
     VISUOGREADAPTOR_API void setDynamic(bool _isDynamic);
 
+    /// Set query mask
+    VISUOGREADAPTOR_API void setQueryFlags(std::uint32_t _queryFlags);
+
 protected:
     /// Configure the Reconstruction adaptor.
     VISUOGREADAPTOR_API void configuring() override;
@@ -117,6 +119,8 @@ private:
     bool m_isDynamic;
     /// defines if the vertices change dynamically
     bool m_isDynamicVertices;
+    /// Mask for picking requests
+    std::uint32_t m_queryFlags {0};
 };
 
 //------------------------------------------------------------------------------
@@ -136,13 +140,6 @@ inline void SReconstruction::setMaterialTemplateName(const std::string& _materia
 
 //------------------------------------------------------------------------------
 
-inline void SReconstruction::setDynamic(bool _isDynamic)
-{
-    m_isDynamic = _isDynamic;
-}
-
-//------------------------------------------------------------------------------
-
 inline void SReconstruction::setDynamicVertices(bool _isDynamic)
 {
     m_isDynamicVertices = _isDynamic;
@@ -150,6 +147,18 @@ inline void SReconstruction::setDynamicVertices(bool _isDynamic)
 
 //------------------------------------------------------------------------------
 
-} // namespace visuOgreAdaptor
+inline void SReconstruction::setDynamic(bool _isDynamic)
+{
+    m_isDynamic = _isDynamic;
+}
 
-#endif // __VISUOGREADAPTOR_SRECONSTRUCTION_HPP__
+//------------------------------------------------------------------------------
+
+inline void SReconstruction::setQueryFlags(uint32_t _queryFlags)
+{
+    m_queryFlags = _queryFlags;
+}
+
+//------------------------------------------------------------------------------
+
+} // namespace visuOgreAdaptor
