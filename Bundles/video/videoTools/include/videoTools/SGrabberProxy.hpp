@@ -144,7 +144,7 @@ private:
     std::string m_grabberImpl;
 
     /// actual grabber service
-    ::arServices::IGrabber::sptr m_service;
+    std::vector< ::arServices::IGrabber::sptr > m_services;
 
     /// connections with service signals
     ::fwCom::helper::SigSlotConnection m_connections;
