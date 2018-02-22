@@ -173,6 +173,10 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> CollisionTools::ray
             // get the entity to check
             Ogre::MovableObject* pentity = static_cast<Ogre::MovableObject*>(query_result[qr_idx].movable);
 
+            if(!pentity->isVisible())
+            {
+                continue;
+            }
             // mesh data to retrieve
             size_t vertex_count;
             size_t index_count;
