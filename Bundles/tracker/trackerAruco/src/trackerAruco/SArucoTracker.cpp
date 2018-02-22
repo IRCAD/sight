@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -14,9 +14,6 @@
 #include <fwCom/Slots.hxx>
 
 #include <fwData/Composite.hpp>
-
-#include <aruco/aruco.h>
-#include <aruco/cvdrawingutils.h>
 
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/path.hpp>
@@ -47,18 +44,8 @@ const ::fwServices::IService::KeyType s_TAGTL_INOUT_GROUP = "tagTL";
 //-----------------------------------------------------------------------------
 
 SArucoTracker::SArucoTracker() noexcept :
-    m_arUcoTracker(nullptr),
-    m_camParameters(nullptr),
-    m_threshold("auto"),
-    m_borderWidth(0.25),
-    m_patternWidth(80),
     m_isInitialized(false),
-    m_blockSize(7.),
-    m_constant(7.),
-    m_debugMarkers(false),
-    m_speed(3),
-    m_thresholdMethod(::aruco::MarkerDetector::ADPT_THRES),
-    m_cornerRefinement(::aruco::MarkerDetector::SUBPIX)
+    m_debugMarkers(false)
 {
     m_sigDetectionDone = newSignal<DetectionDoneSignalType>(s_DETECTION_DONE_SIG);
 
@@ -68,8 +55,15 @@ SArucoTracker::SArucoTracker() noexcept :
     newSlot(s_SET_INT_PARAMETER_SLOT, &SArucoTracker::setIntParameter, this);
     newSlot(s_SET_BOOL_PARAMETER_SLOT, &SArucoTracker::setBoolParameter, this);
     newSlot(s_SET_ENUM_PARAMETER_SLOT, &SArucoTracker::setEnumParameter, this);
-}
 
+    m_detectorParams = ::cv::aruco::DetectorParameters::create();
+    //Default parameters
+    m_detectorParams->minCornerDistanceRate  = 0.01;
+    m_detectorParams->minMarkerDistanceRate  = 0.01;
+    m_detectorParams->minDistanceToBorder    = 1;
+    m_detectorParams->cornerRefinementMethod = ::cv::aruco::CornerRefineMethod::CORNER_REFINE_SUBPIX;
+
+}
 //-----------------------------------------------------------------------------
 
 SArucoTracker::~SArucoTracker() noexcept
@@ -81,6 +75,8 @@ SArucoTracker::~SArucoTracker() noexcept
 void SArucoTracker::configuring()
 {
     this->::arServices::ITracker::configuring();
+
+    const ::fwServices::IService::ConfigType config = this->getConfigTree();
 
     ::fwRuntime::ConfigurationElement::sptr cfg = m_configuration->findConfigurationElement("config");
     SLM_ASSERT("Tag 'config' not found.", cfg);
@@ -102,55 +98,6 @@ void SArucoTracker::configuring()
                 markersID.push_back(id);
             }
             m_markers.push_back(markersID);
-        }
-    }
-
-    // gets pattern width
-    ::fwRuntime::ConfigurationElement::sptr cfgPatternWidth = cfg->findConfigurationElement("patternWidth");
-    if (cfgPatternWidth)
-    {
-        m_patternWidth = ::boost::lexical_cast< double >(cfgPatternWidth->getValue());
-    }
-
-    // gets threshold parameters
-    {
-        ::fwRuntime::ConfigurationElement::sptr cfgThreshold = cfg->findConfigurationElement("threshold");
-        if(cfgThreshold)
-        {
-            ::fwRuntime::ConfigurationElement::sptr cfgMethod    = cfgThreshold->findConfigurationElement("method");
-            ::fwRuntime::ConfigurationElement::sptr cfgBlockSize = cfgThreshold->findConfigurationElement("blockSize");
-            ::fwRuntime::ConfigurationElement::sptr cfgConstant  = cfgThreshold->findConfigurationElement("constant");
-
-            std::string thresholdMethod = cfgMethod->getValue();
-            if(thresholdMethod == "ADPT_THRES")
-            {
-                m_thresholdMethod = ::aruco::MarkerDetector::ADPT_THRES;
-            }
-            else if(thresholdMethod == "FIXED_THRES")
-            {
-                m_thresholdMethod = ::aruco::MarkerDetector::FIXED_THRES;
-            }
-            else if(thresholdMethod == "CANNY")
-            {
-                m_thresholdMethod = ::aruco::MarkerDetector::CANNY;
-            }
-            else
-            {
-                SLM_FATAL("Threshold method ("+thresholdMethod+") set in parameter is not allowed. "
-                          "Allowed values : ADPT_THRES, FIXED_THRES, CANNY");
-            }
-
-            std::string blocksize = cfgBlockSize->getValue();
-            if(!blocksize.empty())
-            {
-                m_blockSize = ::boost::lexical_cast<double>(blocksize);
-            }
-
-            std::string constant = cfgConstant->getValue();
-            if(!constant.empty())
-            {
-                m_constant = ::boost::lexical_cast<double>(constant);
-            }
         }
     }
 
@@ -180,8 +127,6 @@ void SArucoTracker::starting()
 
 void SArucoTracker::stopping()
 {
-    delete m_camParameters;
-    delete m_arUcoTracker;
     m_isInitialized = false;
     m_isTracking    = false;
 }
@@ -200,39 +145,29 @@ void SArucoTracker::tracking(::fwCore::HiResClock::HiResClockType& timestamp)
 
     if(!m_isInitialized)
     {
-        m_arUcoTracker = new ::aruco::MarkerDetector();
-        m_arUcoTracker->setThresholdMethod(m_thresholdMethod);
-        m_arUcoTracker->setThresholdParams(m_blockSize, m_constant);
-        m_arUcoTracker->setCornerRefinementMethod(::aruco::MarkerDetector::NONE);
-        m_arUcoTracker->setBorderDistance(0.01f);
 
         ::arData::Camera::csptr arCam = this->getInput< ::arData::Camera >(s_CAMERA_INPUT);
-        ::cv::Mat cameraMatrix        = ::cv::Mat::eye(3, 3, CV_64F);
-        ::cv::Mat distorsionCoeff     = ::cv::Mat::eye(4, 1, CV_64F);
+
+        m_cameraParams.intrinsic  = ::cv::Mat::eye(3, 3, CV_64F);
+        m_cameraParams.distorsion = ::cv::Mat::eye(4, 1, CV_64F);
 
         // 3x3 matrix (fx 0 cx, 0 fy cy, 0 0 1)
-        cameraMatrix.at<double>(0, 0) = arCam->getFx();
-        cameraMatrix.at<double>(1, 1) = arCam->getFy();
-        cameraMatrix.at<double>(0, 2) = arCam->getCx();
-        cameraMatrix.at<double>(1, 2) = arCam->getCy();
+        m_cameraParams.intrinsic.at<double>(0, 0) = arCam->getFx();
+        m_cameraParams.intrinsic.at<double>(1, 1) = arCam->getFy();
+        m_cameraParams.intrinsic.at<double>(0, 2) = arCam->getCx();
+        m_cameraParams.intrinsic.at<double>(1, 2) = arCam->getCy();
 
         // 4x1 matrix (k1,k2,p1,p2)
-        for (unsigned int i = 0; i < 4; ++i)
+        for (std::uint8_t i = 0; i < 4; ++i)
         {
-            distorsionCoeff.at<double>(static_cast<int>(i), 0) = arCam->getDistortionCoefficient()[i];
+            m_cameraParams.distorsion.at<double>(i, 0) = arCam->getDistortionCoefficient()[i];
         }
 
         // size of the image
-        ::cv::Size2i size(static_cast<int>(frameTL->getWidth()), static_cast<int>(frameTL->getHeight()));
-        m_camParameters = new ::aruco::CameraParameters(cameraMatrix, distorsionCoeff, size);
-        m_isInitialized = true;
+        m_cameraParams.size.width  = static_cast<int>(frameTL->getWidth());
+        m_cameraParams.size.height = static_cast<int>(frameTL->getHeight());
+        m_isInitialized            = true;
     }
-
-    // if parameters changed
-    m_arUcoTracker->setThresholdMethod(m_thresholdMethod);
-    m_arUcoTracker->setThresholdParams(m_blockSize, m_constant);
-    m_arUcoTracker->setCornerRefinementMethod(m_cornerRefinement);
-    m_arUcoTracker->setDesiredSpeed(static_cast<int>(m_speed));
 
     const CSPTR(::arData::FrameTL::BufferType) buffer = frameTL->getClosestBuffer(timestamp);
 
@@ -243,32 +178,41 @@ void SArucoTracker::tracking(::fwCore::HiResClock::HiResClockType& timestamp)
         m_lastTimestamp = timestamp;
 
         const std::uint8_t* frameBuff = &buffer->getElement(0);
-        std::vector< ::aruco::Marker > detectedMarkers;
+
+        const ::cv::Ptr< ::cv::aruco::Dictionary > dict =
+            ::cv::aruco::Dictionary::get(::cv::aruco::DICT_ARUCO_ORIGINAL);
+        std::vector<std::vector< ::cv::Point2f> > detectedMarkers;
+        std::vector< int > detectedMarkersIds;
 
         // read the input image
         const ::cv::Size frameSize(static_cast<int>(frameTL->getWidth()),
                                    static_cast<int>(frameTL->getHeight()));
+
         ::cv::Mat inImage = ::cv::Mat(frameSize, CV_8UC4, (void*)frameBuff, ::cv::Mat::AUTO_STEP);
 
         // aruco expects a grey image and make a conversion at the beginning of the detect() method if it receives
         // a RGB image. However we have a RGBA image so we must make the conversion ourselves.
-        cv::Mat grey;
+        cv::Mat grey, bgr;
         // inImage is BGRA (see constructor of ::cv::Mat)
         cv::cvtColor(inImage, grey, CV_BGRA2GRAY);
 
         // Ok, let's detect
-        m_arUcoTracker->detect(grey, detectedMarkers, *m_camParameters, static_cast<float>(m_patternWidth/1000.));
 
-        // For Debug purpose
-        // ::cv::imshow("Threshold", m_arUcoTracker->getThresholdedImage());
+        ::cv::aruco::detectMarkers(grey, dict, detectedMarkers, detectedMarkersIds, m_detectorParams, ::cv::noArray(),
+                                   m_cameraParams.intrinsic, m_cameraParams.distorsion);
 
-        // for each marker, draw info and its boundaries in the image
-        unsigned int index = 0;
-        size_t tagTLIndex  = 0;
+        //Note: This draws all detected markers
+        if(m_debugMarkers)
+        {
+            // since drawDetectedMarkers does not handle 4 channels ::cv::mat
+            ::cv::cvtColor(inImage, bgr, CV_BGRA2BGR);
+            ::cv::aruco::drawDetectedMarkers(bgr, detectedMarkers, detectedMarkersIds);
+            ::cv::cvtColor(bgr, inImage, CV_BGR2BGRA);
+        }
+
+        size_t tagTLIndex = 0;
         for(const auto& markersID : m_markers)
         {
-            std::array<unsigned int, 3> color = {{0, 0, 0}};
-            color[index]                      = 255;
             ::arData::MarkerTL::sptr markerTL =
                 this->getInOut< ::arData::MarkerTL >(s_TAGTL_INOUT_GROUP, tagTLIndex);
             SPTR(::arData::MarkerTL::BufferType) trackerObject;
@@ -276,18 +220,11 @@ void SArucoTracker::tracking(::fwCore::HiResClock::HiResClockType& timestamp)
             unsigned int markerPosition = 0;
             for (const auto& markerID : markersID)
             {
-                for (unsigned int i = 0; i < detectedMarkers.size(); i++)
+                for (unsigned int i = 0; i < detectedMarkersIds.size(); i++)
                 {
-                    if (detectedMarkers[i].id == markerID)
+                    if (detectedMarkersIds[i] == markerID)
                     {
                         foundMarker = true;
-                        if(m_debugMarkers)
-                        {
-                            detectedMarkers[i].draw(inImage, cvScalar(color[0], color[1], color[2], 255), 2);
-                            ::cv::Point2f center = detectedMarkers[i].getCenter();
-                            ::cv::circle(inImage, center, 7, cvScalar(color[0], color[1], color[2],
-                                                                      255), 1, ::cv::LINE_8);
-                        }
 
                         // Push matrix
                         float markerBuffer[8];
@@ -318,30 +255,49 @@ void SArucoTracker::tracking(::fwCore::HiResClock::HiResClockType& timestamp)
 
             this->signal<MarkerDetectedSignalType>(s_MARKER_DETECTED_SIG)->asyncEmit(foundMarker);
 
-            ++index;
-            if(index >= 3)
-            {
-                index = 0;
-            }
             ++tagTLIndex;
         }
         // Emit
-
         m_sigDetectionDone->asyncEmit(timestamp);
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void SArucoTracker::setIntParameter(int _val, string _key)
+void SArucoTracker::setIntParameter(int _val, std::string _key)
 {
-    if(_key == "pattern")
+
+    if(_key == "adaptiveThreshWinSizeMin")
     {
-        m_patternWidth = static_cast<double>(_val);
+        m_detectorParams->adaptiveThreshWinSizeMin = _val;
     }
-    else if(_key == "speed")
+    else if(_key == "adaptiveThreshWinSizeMax")
     {
-        m_speed = static_cast< unsigned int >(_val);
+        m_detectorParams->adaptiveThreshWinSizeMax = _val;
+    }
+    else if(_key == "adaptiveThreshWinSizeStep")
+    {
+        m_detectorParams->adaptiveThreshWinSizeStep = _val;
+    }
+    else if(_key == "minDistanceToBorder")
+    {
+        m_detectorParams->minDistanceToBorder = _val;
+    }
+    else if(_key == "cornerRefinementWinSize")
+    {
+        m_detectorParams->cornerRefinementWinSize = _val;
+    }
+    else if(_key == "cornerRefinementMaxIterations")
+    {
+        m_detectorParams->cornerRefinementMaxIterations = _val;
+    }
+    else if(_key == "markerBorderBits")
+    {
+        m_detectorParams->markerBorderBits = _val;
+    }
+    else if(_key == "perspectiveRemovePixelPerCell")
+    {
+        m_detectorParams->perspectiveRemovePixelPerCell = _val;
     }
     else
     {
@@ -351,19 +307,51 @@ void SArucoTracker::setIntParameter(int _val, string _key)
 
 //-----------------------------------------------------------------------------
 
-void SArucoTracker::setDoubleParameter(double _val, string _key)
+void SArucoTracker::setDoubleParameter(double _val, std::string _key)
 {
-    if(_key == "blocksize")
+    if(_key == "adaptiveThreshConstant")
     {
-        m_blockSize = _val;
+        m_detectorParams->adaptiveThreshConstant = _val;
     }
-    else if(_key == "constant")
+    else if(_key == "minMarkerPerimeterRate")
     {
-        m_constant = _val;
+        m_detectorParams->minMarkerPerimeterRate = _val;
     }
-    else if(_key == "borderwidth")
+    else if(_key == "maxMarkerPerimeterRate")
     {
-        m_borderWidth = _val;
+        m_detectorParams->maxMarkerPerimeterRate = _val;
+    }
+    else if(_key == "polygonalApproxAccuracyRate")
+    {
+        m_detectorParams->polygonalApproxAccuracyRate = _val;
+    }
+    else if(_key == "minCornerDistanceRate")
+    {
+        m_detectorParams->minCornerDistanceRate = _val;
+    }
+    else if(_key == "minMarkerDistanceRate")
+    {
+        m_detectorParams->minMarkerDistanceRate = _val;
+    }
+    else if(_key == "cornerRefinementMinAccuracy")
+    {
+        m_detectorParams->cornerRefinementMinAccuracy = _val;
+    }
+    else if(_key == "perspectiveRemoveIgnoredMarginPerCell")
+    {
+        m_detectorParams->perspectiveRemoveIgnoredMarginPerCell = _val;
+    }
+    else if(_key == "maxErroneousBitsInBorderRate")
+    {
+        m_detectorParams->maxErroneousBitsInBorderRate = _val;
+    }
+    else if(_key == "minOtsuStdDev")
+    {
+        m_detectorParams->minOtsuStdDev = _val;
+    }
+    else if(_key == "errorCorrectionRate")
+    {
+        m_detectorParams->errorCorrectionRate = _val;
     }
     else
     {
@@ -373,7 +361,7 @@ void SArucoTracker::setDoubleParameter(double _val, string _key)
 
 //-----------------------------------------------------------------------------
 
-void SArucoTracker::setBoolParameter(bool _val, string _key)
+void SArucoTracker::setBoolParameter(bool _val, std::string _key)
 {
     if(_key == "debugMode")
     {
@@ -387,44 +375,21 @@ void SArucoTracker::setBoolParameter(bool _val, string _key)
 
 //-----------------------------------------------------------------------------
 
-void SArucoTracker::setEnumParameter(string _val, string _key)
+void SArucoTracker::setEnumParameter(std::string _val, std::string _key)
 {
-    if(_key == "method")
-    {
-        if(_val == "ADPT_THRES" )
-        {
-            m_thresholdMethod = ::aruco::MarkerDetector::ADPT_THRES;
-        }
-        else if(_val == "FIXED_THRES")
-        {
-            m_thresholdMethod = ::aruco::MarkerDetector::FIXED_THRES;
-        }
-        else if(_val == "CANNY")
-        {
-            m_thresholdMethod = ::aruco::MarkerDetector::CANNY;
-        }
-        else
-        {
-            SLM_ERROR("Value : '"+ _val + "' is not supported");
-        }
-    }
-    else if(_key == "corner")
+    if(_key == "corner")
     {
         if(_val == "NONE" )
         {
-            m_cornerRefinement = ::aruco::MarkerDetector::NONE;
-        }
-        else if(_val == "HARRIS")
-        {
-            m_cornerRefinement = ::aruco::MarkerDetector::HARRIS;
+            m_detectorParams->cornerRefinementMethod = ::cv::aruco::CornerRefineMethod::CORNER_REFINE_NONE;
         }
         else if(_val == "SUBPIX")
         {
-            m_cornerRefinement = ::aruco::MarkerDetector::SUBPIX;
+            m_detectorParams->cornerRefinementMethod = ::cv::aruco::CornerRefineMethod::CORNER_REFINE_SUBPIX;
         }
-        else if(_val == "LINES")
+        else if(_val == "CONTOUR")
         {
-            m_cornerRefinement = ::aruco::MarkerDetector::LINES;
+            m_detectorParams->cornerRefinementMethod = ::cv::aruco::CornerRefineMethod::CORNER_REFINE_CONTOUR;
         }
         else
         {
@@ -435,9 +400,9 @@ void SArucoTracker::setEnumParameter(string _val, string _key)
     {
         SLM_ERROR("The slot key : '"+ _key + "' is not handled");
     }
+
 }
 
 //-----------------------------------------------------------------------------
 
 } // namespace trackerAruco
-
