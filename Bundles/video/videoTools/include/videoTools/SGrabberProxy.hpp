@@ -48,6 +48,7 @@ namespace videoTools
         <service uid="..." type="::videoQt::SGrabberProxy">
             <in key="camera" uid="..." />
             <inout key="frameTL" uid="..." />
+            <inout key="depthTL" uid="..." />
             <config>
                 <camera type="RGBD" />
                 <selection mode="include" />
@@ -60,6 +61,7 @@ namespace videoTools
  * - \b camera [::arData::Camera]: camera used to display video.
  * @subsection In-Out In-Out
  * - \b frameTL [::arData::FrameTL]: timeline where to extract the video frames.
+ * - \b depthTL [::arData::FrameTL] (optional): timeline where to extract the depth frames.
  * @subsection Configuration Configuration
  *  - \b type (optional, default="RGB"): allows to filter for RGB or RGBD grabbers
  *  - \b selection
@@ -144,7 +146,7 @@ private:
     std::string m_grabberImpl;
 
     /// actual grabber service
-    ::arServices::IGrabber::sptr m_service;
+    std::vector< ::arServices::IGrabber::sptr > m_services;
 
     /// connections with service signals
     ::fwCom::helper::SigSlotConnection m_connections;

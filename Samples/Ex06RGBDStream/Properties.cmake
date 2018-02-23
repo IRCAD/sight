@@ -17,18 +17,21 @@ set( REQUIREMENTS
     guiQt
 
     scene2D
-    uiTF
 
     visuVTK
     visuVTKQt
     visuVTKAdaptor
     visuVTKARAdaptor
 
-    videoTools
     videoOpenni
+    videoOpenCV
+    videoQt
+    videoTools
 
     arMedia
     media
+
+    preferences
 )
 
 bundleParam(appXml PARAM_LIST config PARAM_VALUES Ex06RGBDStream)
