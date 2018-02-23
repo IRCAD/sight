@@ -189,6 +189,7 @@ void Window::destroyWindow()
 
     if(m_ogreRenderWindow)
     {
+        m_ogreRenderWindow->removeListener(this);
         ::fwRenderOgre::WindowManager::sptr mgr = ::fwRenderOgre::WindowManager::get();
         mgr->unregisterWindow(m_ogreRenderWindow);
     }
