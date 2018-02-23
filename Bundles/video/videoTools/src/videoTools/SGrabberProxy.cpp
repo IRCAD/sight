@@ -487,6 +487,32 @@ void SGrabberProxy::setPosition(std::int64_t position)
 
 //-----------------------------------------------------------------------------
 
+void SGrabberProxy::previousImage()
+{
+    for(auto& srv : m_services)
+    {
+        if(srv != nullptr)
+        {
+            srv->previousImage();
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void SGrabberProxy::nextImage()
+{
+    for(auto& srv : m_services)
+    {
+        if(srv != nullptr)
+        {
+            srv->nextImage();
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+
 void SGrabberProxy::reconfigure()
 {
     for(auto& srv : m_services)

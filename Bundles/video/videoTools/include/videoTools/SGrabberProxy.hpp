@@ -120,6 +120,12 @@ protected:
     /// SLOT : set the new position in the video.
     VIDEOTOOLS_API virtual void setPosition(std::int64_t position) final;
 
+    /// SLOT : get the previous image in frame by frame mode.
+    VIDEOTOOLS_API virtual void previousImage() override;
+
+    /// SLOT : get the next image in frame by frame mode.
+    VIDEOTOOLS_API virtual void nextImage() override;
+
 private:
 
     typedef std::pair<std::string, ::fwRuntime::ConfigurationElement::csptr > ServiceConfigPair;

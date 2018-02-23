@@ -276,12 +276,9 @@
             <videoSupport>yes</videoSupport>
         </service>
 
-        <service uid="frameGrabber" type="::videoOpenCV::SFrameGrabber">
+        <service uid="frameGrabber" type="::videoTools::SGrabberProxy">
             <in key="camera" uid="camera" />
             <inout key="frameTL" uid="frameTL" />
-            <oneShot>true</oneShot>
-            <useTimelapse>false</useTimelapse>
-            <createTimestamp>true</createTimestamp>
         </service>
 
         <!-- choose location of csv file -->
