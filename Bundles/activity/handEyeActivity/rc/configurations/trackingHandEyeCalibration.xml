@@ -102,13 +102,14 @@
         <service uid="toolBarVideo" type="::gui::aspect::SDefaultToolBar">
             <gui>
                 <layout>
-                    <menuItem name="Load csv file" icon="media-0.1/icons/Import.svg" />
-                    <separator/>
                     <editor/>
                     <menuItem name="Start camera" icon="arMedia-0.1/icons/start-cam.svg" />
                     <menuItem name="Stop camera" icon="arMedia-0.1/icons/stop-cam.svg" />
                     <menuItem name="Pause video" icon="arMedia-0.1/icons/pause-cam.svg" />
                     <separator/>
+                    <menuItem name="Start Tracker client" icon="arMedia-0.1/icons/Network-Receiving.svg" />
+                    <menuItem name="Stop Tracker client" icon="arMedia-0.1/icons/Network-Stop-Receiving.svg" />
+                    <menuItem name="Configure Tracker client" icon="media-0.1/icons/Settings.svg" />
                     <menuItem name="Previous" icon="media-0.1/icons/Back.svg" />
                     <menuItem name="Next" icon="media-0.1/icons/Next.svg" />
                     <separator/>
@@ -118,11 +119,13 @@
                 </layout>
             </gui>
             <registry>
-                <menuItem sid="loadCsv" start="yes" />
                 <editor sid="cameraSelector" />
                 <menuItem sid="actionStartCamera" start="yes" />
                 <menuItem sid="actionStopCamera" start="yes" />
                 <menuItem sid="actionPauseCamera" start="yes" />
+                <menuItem sid="actionStartOpenIGTLinkClient" start="yes" />
+                <menuItem sid="actionStopOpenIGTLinkClient" start="yes" />
+                <menuItem sid="configureClient" start="yes" />
                 <menuItem sid="actionPrevious" start="yes" />
                 <menuItem sid="actionNext" start="yes" />
                 <menuItem sid="actionChessBoardSize" start="yes" />
@@ -267,6 +270,16 @@
             </preference>
         </service>
 
+        <service uid="actionStartOpenIGTLinkClient" type="::gui::action::SStarter">
+            <state active="true" visible="false" />
+            <start uid="trackerTLMatrixListener" />
+        </service>
+
+        <service uid="actionStopOpenIGTLinkClient" type="::gui::action::SStarter">
+            <state active="true" visible="false" />
+            <stop uid="trackerTLMatrixListener" />
+        </service>
+
         <!-- *************************** End Actions *************************** -->
 
         <!-- *************************** Begin Services *************************** -->
@@ -315,6 +328,28 @@
                 <key uid="matrix3" />
             </inout>
             <framerate>1</framerate>
+        </service>
+
+        <service uid="trackerTLMatrixListener" type="::ioIGTL::STDataListener">
+            <inout key="timeline" uid="matrixTL" />
+            <server>%TRACKER_HOSTNAME%:%TRACKER_PORT%</server>
+            <deviceName>%TRACKER_NAME%</deviceName>
+            <TData>
+                <matrix name="Input0" index="0" />
+                <matrix name="Input1" index="1" />
+                <matrix name="Input2" index="2" />
+                <matrix name="Input3" index="3" />
+            </TData>
+        </service>
+
+        <service uid="trackerTLMatrixSynchronizer" type="::syncTimeline::SMatrixTLSynchronizer">
+            <in key="matrixTL" uid="matrixTL" autoConnect="yes" />
+            <inout group="matrices">
+                <key uid="matrix0" />
+                <key uid="matrix1" />
+                <key uid="matrix2" />
+                <key uid="matrix3" />
+            </inout>
         </service>
 
         <service uid="synchronizer2" type="::videoTools::SFrameMatrixSynchronizer" worker="synchronizer2">
@@ -388,6 +423,28 @@
             <type mode="writer" />
             <selection mode="include" />
             <addSelection service="::ioData::TransformationMatrix3DWriterService" />
+        </service>
+
+        <service uid="configureClient" type="::uiPreferences::action::SPreferencesConfiguration">
+            <state active="true" visible="false" />
+            <preference>
+                <type>text</type>
+                <name>Tracker hostname</name>
+                <key>TRACKER_HOSTNAME</key>
+                <default_value>127.0.0.1</default_value>
+            </preference>
+            <preference>
+                <type>number</type>
+                <name>Tracker port</name>
+                <key>TRACKER_PORT</key>
+                <default_value>6767</default_value>
+            </preference>
+            <preference>
+                <type>text</type>
+                <name>Tracker name</name>
+                <key>TRACKER_NAME</key>
+                <default_value>trakSTAR</default_value>
+            </preference>
         </service>
 
         <!-- *************************** End Services *************************** -->
@@ -512,6 +569,36 @@
             <slot>actionCalibrate/setInexecutable</slot>
         </connect>
 
+        <connect>
+            <signal>cameraSelector/configuredFile</signal>
+            <slot>loadCsv/update</slot>
+            <slot>actionStartOpenIGTLinkClient/hide</slot>
+            <slot>actionStopOpenIGTLinkClient/hide</slot>
+            <slot>configureClient/hide</slot>
+            <slot>actionStopOpenIGTLinkClient/update</slot>
+        </connect>
+
+        <connect>
+            <signal>cameraSelector/configuredDevice</signal>
+            <signal>cameraSelector/configuredStream</signal>
+            <slot>actionPrevious/hide</slot>
+            <slot>actionNext/hide</slot>
+            <slot>actionStartOpenIGTLinkClient/show</slot>
+            <slot>configureClient/show</slot>
+        </connect>
+
+        <connect>
+            <signal>trackerTLMatrixListener/connected</signal>
+            <slot>actionStartOpenIGTLinkClient/hide</slot>
+            <slot>actionStopOpenIGTLinkClient/show</slot>
+        </connect>
+
+        <connect>
+            <signal>trackerTLMatrixListener/disconnected</signal>
+            <slot>actionStopOpenIGTLinkClient/hide</slot>
+            <slot>actionStartOpenIGTLinkClient/show</slot>
+        </connect>
+
         <!-- *************************** End Connections *************************** -->
 
         <start uid="mainView" />
@@ -529,6 +616,7 @@
         <start uid="computeRegistration" />
         <start uid="cameraSelector" />
         <start uid="handEyeMatrixWriter" />
+        <start uid="loadCsv" />
         <!-- VTK scene 'frameView' -->
         <start uid="videoAdpt" />
         <!-- VTK scene 'chessboardDetectionView' -->
