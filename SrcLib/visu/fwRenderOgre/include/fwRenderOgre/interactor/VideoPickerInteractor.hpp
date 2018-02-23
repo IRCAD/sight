@@ -39,17 +39,32 @@ public:
     /// Destructor. Does nothing
     FWRENDEROGRE_API ~VideoPickerInteractor() noexcept;
 
-protected:
+    /// Behaviour on mouseMoveEvent
+    FWRENDEROGRE_API virtual void mouseMoveEvent(MouseButton, int, int, int, int) override;
 
-    /**
-     * @brief Mouse's left button pressed.
-     *        The picker will do ray cast command.
-     * @param x The mouse's X displacement
-     * @param y The mouse's Y displacement
-     * @param width the render window width
-     * @param height the render window height
-     */
-    FWRENDEROGRE_API bool mouseClickEvent(int x, int y, int width, int height);
+    /// Behaviour on a wheelEvent
+    FWRENDEROGRE_API virtual void wheelEvent(int, int, int) override;
+
+    /// Behaviour on button release.
+    FWRENDEROGRE_API virtual void buttonReleaseEvent(MouseButton, int, int) override;
+
+    /// Behaviour on button press.
+    FWRENDEROGRE_API virtual void buttonPressEvent(MouseButton, int, int) override;
+
+    /// Called when the window is resized
+    FWRENDEROGRE_API virtual void resizeEvent(int, int) override;
+
+    /// No key press event handling needed here
+    FWRENDEROGRE_API virtual void keyPressEvent(int) override;
+
+private:
+
+    // Render window's width
+    int m_width;
+
+    // Render window's height
+    int m_height;
+
 };
 } //namespace itneractor
 } //namespace fwRenderOgre

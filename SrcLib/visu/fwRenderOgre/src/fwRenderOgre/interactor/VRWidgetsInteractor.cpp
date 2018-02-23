@@ -104,5 +104,46 @@ void VRWidgetsInteractor::buttonPressEvent(MouseButton button, int x, int y)
 
 //------------------------------------------------------------------------------
 
+void VRWidgetsInteractor::wheelEvent(int, int, int)
+{
+}
+
+//------------------------------------------------------------------------------
+
+void VRWidgetsInteractor::resizeEvent(int, int)
+{
+}
+
+//------------------------------------------------------------------------------
+
+void VRWidgetsInteractor::keyPressEvent(int)
+{
+}
+
+//------------------------------------------------------------------------------
+
+void VRWidgetsInteractor::attachWidget(ui::VRWidget::sptr widget)
+{
+    OSLM_ASSERT("Only one widget can be attached to a VR interactor", !m_widget);
+    m_widget = widget;
+}
+
+//------------------------------------------------------------------------------
+
+void VRWidgetsInteractor::detachWidget(ui::VRWidget::sptr widget)
+{
+    if(m_widget == widget)
+    {
+        m_widget = nullptr;
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void VRWidgetsInteractor::initPicker()
+{
+    m_picker.setSceneManager(this->m_sceneManager);
+}
+
 } // namespace interactor
 } // namespace fwRenderOgre

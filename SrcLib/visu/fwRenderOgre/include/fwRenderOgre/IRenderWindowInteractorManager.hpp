@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWRENDEROGRE_IRENDERWINDOWINTERACTORMANAGER_HPP__
-#define __FWRENDEROGRE_IRENDERWINDOWINTERACTORMANAGER_HPP__
+#pragma once
 
 #include "fwRenderOgre/config.hpp"
 #include "fwRenderOgre/factory/new.hpp"
@@ -118,7 +117,7 @@ public:
     FWRENDEROGRE_API virtual void makeCurrent() = 0;
 
     /// Get Ogre RenderWindow
-    FWRENDEROGRE_API virtual ::Ogre::RenderWindow* getRenderWindow() = 0;
+    FWRENDEROGRE_API virtual ::Ogre::RenderWindow* getRenderWindow() const = 0;
 
     /// Set the render service using the IOgreRenderWindowInteractor
     virtual void setRenderService(::fwServices::IService::sptr srv)
@@ -131,6 +130,3 @@ protected:
 };
 
 } // namespace fwRenderOgre
-
-#endif // __FWRENDEROGRE_IRENDERWINDOWINTERACTORMANAGER_HPP__
-

@@ -433,11 +433,10 @@ void Window::mouseMoveEvent( QMouseEvent* e )
         info.dy              = dy;
         info.button          = ::fwRenderOgre::interactor::IInteractor::LEFT;
         Q_EMIT interacted(info);
+
         m_lastPosLeftClick->setX(e->x());
         m_lastPosLeftClick->setY(e->y());
         this->requestRender();
-
-        m_mousedMoved = true;
     }
     else if (e->buttons() & ::Qt::MiddleButton && m_lastPosMiddleClick )
     {
@@ -516,8 +515,6 @@ void Window::mousePressEvent( QMouseEvent* e )
     {
         m_lastPosLeftClick = new QPoint(e->x(), e->y());
 
-        m_mousedMoved = false;
-
         info.button = ::fwRenderOgre::interactor::IInteractor::LEFT;
     }
     else if(e->button() == Qt::MiddleButton)
@@ -552,14 +549,6 @@ void Window::mouseReleaseEvent( QMouseEvent* e )
 
     if(e->button() == Qt::LeftButton && m_lastPosLeftClick)
     {
-        if( !m_mousedMoved )
-        {
-            Q_EMIT rayCastRequested(e->x(),
-                                    e->y(),
-                                    static_cast<int>(m_ogreRenderWindow->getWidth()),
-                                    static_cast<int>(m_ogreRenderWindow->getHeight()));
-        }
-
         delete m_lastPosLeftClick;
         m_lastPosLeftClick = nullptr;
 

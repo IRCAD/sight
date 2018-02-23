@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -83,20 +83,6 @@ void TrackballInteractor::wheelEvent(int delta, int /*x*/, int /*y*/)
 
 // ----------------------------------------------------------------------------
 
-void TrackballInteractor::buttonReleaseEvent(IInteractor::MouseButton, int, int)
-{
-
-}
-
-// ----------------------------------------------------------------------------
-
-void TrackballInteractor::buttonPressEvent(IInteractor::MouseButton, int, int)
-{
-
-}
-
-// ----------------------------------------------------------------------------
-
 void TrackballInteractor::resizeEvent(int x, int y)
 {
     m_width  = x;
@@ -139,6 +125,18 @@ void TrackballInteractor::keyPressEvent(int key)
             m_timer->start();
         }
     }
+}
+
+//------------------------------------------------------------------------------
+
+void TrackballInteractor::buttonReleaseEvent(MouseButton, int, int)
+{
+}
+
+//------------------------------------------------------------------------------
+
+void TrackballInteractor::buttonPressEvent(MouseButton, int, int)
+{
 }
 
 // ----------------------------------------------------------------------------

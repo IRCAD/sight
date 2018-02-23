@@ -121,12 +121,13 @@ void SInteractorStyle::setInteractorStyle()
         {
             const auto style = s_STYLES_PICKER.at(m_pickerStyle);
 
-            ::fwRenderOgre::interactor::IInteractor::sptr interactor = ::fwRenderOgre::interactorFactory::New(style);
+            ::fwRenderOgre::interactor::IInteractor::sptr interactor = ::fwRenderOgre::interactorFactory::New(style,
+                                                                                                              this->getSceneManager()->getName());
             OSLM_ASSERT("Unknown picker interactor style : " << style, interactor);
 
-            interactor->setSceneID(this->getSceneManager()->getName());
             auto layer            = this->getRenderService()->getLayer(m_layerID);
             auto pickerInteractor = ::fwRenderOgre::interactor::IPickerInteractor::dynamicCast(interactor);
+            pickerInteractor->initPicker();
             pickerInteractor->setQueryFlags(m_queryFlags);
             layer->setSelectInteractor(::fwRenderOgre::interactor::IPickerInteractor::dynamicCast(interactor));
         }
@@ -146,10 +147,10 @@ void SInteractorStyle::setInteractorStyle()
         {
             const auto style = s_STYLES_MOVEMENT.at(m_movementStyle);
 
-            ::fwRenderOgre::interactor::IInteractor::sptr interactor = ::fwRenderOgre::interactorFactory::New(style);
+            ::fwRenderOgre::interactor::IInteractor::sptr interactor = ::fwRenderOgre::interactorFactory::New(style,
+                                                                                                              this->getSceneManager()->getName());
             OSLM_ASSERT("Unknown movement interactor style : " << style, interactor);
 
-            interactor->setSceneID(this->getSceneManager()->getName());
             auto layer = this->getRenderService()->getLayer(m_layerID);
             layer->setMoveInteractor(::fwRenderOgre::interactor::IMovementInteractor::dynamicCast(interactor));
         }

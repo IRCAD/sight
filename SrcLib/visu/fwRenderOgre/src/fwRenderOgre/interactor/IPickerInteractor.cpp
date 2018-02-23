@@ -22,8 +22,6 @@ IPickerInteractor::IPickerInteractor()
 {
     m_ogreRoot = ::fwRenderOgre::Utils::getOgreRoot();
     m_picker   = new ::fwRenderOgre::picker::IPicker();
-
-    m_sigPointClicked = newSignal< PointClickedSigType >( s_POINT_CLICKED_SIG );
 }
 
 // ----------------------------------------------------------------------------
@@ -35,7 +33,7 @@ IPickerInteractor::~IPickerInteractor()
 
 // ----------------------------------------------------------------------------
 
-bool IPickerInteractor::isPickerInitialized()
+bool IPickerInteractor::isPickerInitialized() const
 {
     return m_picker->hasSceneManager();
 }

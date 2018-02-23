@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWRENDEROGRE_INTERACTOR_IINTERACTOR_HPP__
-#define __FWRENDEROGRE_INTERACTOR_IINTERACTOR_HPP__
+#pragma once
 
 #include <fwRenderOgre/config.hpp>
 #include <fwRenderOgre/factory/new.hpp>
@@ -79,14 +78,32 @@ public:
 
     fwCoreNonInstanciableClassDefinitionsMacro( (IInteractor)(::fwCore::BaseObject) )
 
-    /// Constructor.
-    /// Retrieves the Ogre root and the \<sceneID\> scene manager
+    /// Constructor. Retrieves the Ogre root and the \<sceneID\> scene manager
     FWRENDEROGRE_API IInteractor();
+
     /// Destructor
     FWRENDEROGRE_API virtual ~IInteractor();
 
     /// Change point of interest viewed by the camera
-    FWRENDEROGRE_API void setSceneID(const std::string& sceneID);
+    FWRENDEROGRE_API void setSceneID(const std::string&);
+
+    /// Behaviour on a MouseMoveEvent
+    FWRENDEROGRE_API virtual void mouseMoveEvent(MouseButton, int, int, int, int) = 0;
+
+    /// Behaviour on a WheelEvent
+    FWRENDEROGRE_API virtual void wheelEvent(int, int, int) = 0;
+
+    /// Called when the window is resized
+    FWRENDEROGRE_API virtual void resizeEvent(int, int) = 0;
+
+    /// Called when a key is pressed
+    FWRENDEROGRE_API virtual void keyPressEvent(int) = 0;
+
+    /// Called when a mouse button is released.
+    FWRENDEROGRE_API virtual void buttonReleaseEvent(MouseButton, int, int) = 0;
+
+    /// Called when a mouse button is pressed.
+    FWRENDEROGRE_API virtual void buttonPressEvent(MouseButton, int, int) = 0;
 
 protected:
 
@@ -95,11 +112,6 @@ protected:
 
     /// Current scene manager
     ::Ogre::SceneManager* m_sceneManager;
-
-    /// Mouse's current X position
-    int m_mouseX;
-    /// Mouse's current Y position
-    int m_mouseY;
 
     /**
      * @name Signals attributes
@@ -116,4 +128,3 @@ protected:
 };
 } // interactor
 } // fwRenderOgre
-#endif // __FWRENDEROGRE_INTERACTOR_IINTERACTOR_HPP__

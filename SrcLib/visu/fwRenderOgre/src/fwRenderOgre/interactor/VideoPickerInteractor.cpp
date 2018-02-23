@@ -30,11 +30,19 @@ VideoPickerInteractor::~VideoPickerInteractor() noexcept
 
 //------------------------------------------------------------------------------
 
-bool VideoPickerInteractor::mouseClickEvent(int x, int y, int width, int height)
+void VideoPickerInteractor::resizeEvent(int x, int y)
+{
+    m_width  = x;
+    m_height = y;
+}
+
+//------------------------------------------------------------------------------
+
+void VideoPickerInteractor::buttonPressEvent(MouseButton button, int x, int y)
 {
     if(m_picker->hasSceneManager())
     {
-        if( m_picker->executeRaySceneQuery(x, y, width, height, 0) )
+        if( m_picker->executeRaySceneQuery(x, y, m_width, m_height, 0) )
         {
             ::Ogre::Vector3 click = m_picker->getIntersectionInWorldSpace();
 
@@ -44,14 +52,36 @@ bool VideoPickerInteractor::mouseClickEvent(int x, int y, int width, int height)
             point->setCoord(cords);
 
             m_sigPointClicked->asyncEmit(::fwData::Object::dynamicCast(point));
-            return true;
         }
     }
     else
     {
         SLM_WARN("The picker scene hasn't been initialized, you are not using this interactor correctly");
     }
-    return false;
+}
+
+//------------------------------------------------------------------------------
+
+void VideoPickerInteractor::mouseMoveEvent(MouseButton, int, int, int, int)
+{
+}
+
+//------------------------------------------------------------------------------
+
+void VideoPickerInteractor::wheelEvent(int, int, int)
+{
+}
+
+//------------------------------------------------------------------------------
+
+void VideoPickerInteractor::buttonReleaseEvent(MouseButton, int, int)
+{
+}
+
+//------------------------------------------------------------------------------
+
+void VideoPickerInteractor::keyPressEvent(int)
+{
 }
 
 //------------------------------------------------------------------------------

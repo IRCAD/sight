@@ -31,11 +31,19 @@ MeshPickerInteractor::~MeshPickerInteractor() noexcept
 
 //------------------------------------------------------------------------------
 
-bool MeshPickerInteractor::mouseClickEvent(int x, int y, int width, int height)
+void MeshPickerInteractor::resizeEvent(int x, int y)
+{
+    m_width  = x;
+    m_height = y;
+}
+
+//------------------------------------------------------------------------------
+
+void MeshPickerInteractor::buttonPressEvent(MouseButton button, int x, int y)
 {
     if(m_picker->hasSceneManager())
     {
-        if(m_picker->executeRaySceneQuery(x, y, width, height, m_queryFlags))
+        if(m_picker->executeRaySceneQuery(x, y, m_width, m_height, m_queryFlags))
         {
             ::Ogre::Vector3 click = m_picker->getIntersectionInWorldSpace();
 
@@ -45,14 +53,36 @@ bool MeshPickerInteractor::mouseClickEvent(int x, int y, int width, int height)
             point->setCoord(cords);
 
             m_sigPointClicked->asyncEmit(::fwData::Object::dynamicCast(point));
-            return true;
         }
     }
     else
     {
         SLM_WARN("The picker scene hasn't been initialized, you are not using this interactor correctly");
     }
-    return false;
+}
+
+//------------------------------------------------------------------------------
+
+void MeshPickerInteractor::mouseMoveEvent(MouseButton, int, int, int, int)
+{
+}
+
+//------------------------------------------------------------------------------
+
+void MeshPickerInteractor::wheelEvent(int, int, int)
+{
+}
+
+//------------------------------------------------------------------------------
+
+void MeshPickerInteractor::buttonReleaseEvent(MouseButton, int, int)
+{
+}
+
+//------------------------------------------------------------------------------
+
+void MeshPickerInteractor::keyPressEvent(int)
+{
 }
 
 //------------------------------------------------------------------------------

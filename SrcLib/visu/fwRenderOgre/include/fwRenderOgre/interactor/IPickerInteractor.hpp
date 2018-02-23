@@ -50,21 +50,17 @@ public:
 
     fwCoreNonInstanciableClassDefinitionsMacro( (IPickerInteractor)(::fwCore::BaseObject) )
 
-    /// Constructor.
-    /// Retrieves the Ogre root and the \<sceneID\> scene manager
+    /// Constructor. Retrieves the Ogre root and the \<sceneID\> scene manager
     FWRENDEROGRE_API IPickerInteractor();
+
     /// Destructor
     FWRENDEROGRE_API virtual ~IPickerInteractor();
 
-    FWRENDEROGRE_API bool virtual mouseClickEvent(int x, int y, int width, int height) = 0;
+    /// Initialize picker with the corresponding layer's info
+    FWRENDEROGRE_API void initPicker();
 
-    /**
-     * @brief Initialize picker with the corresponding layer's info
-     *        This method should only be called by a layer that contains this interactor
-     */
-    FWRENDEROGRE_API void  initPicker();
-
-    FWRENDEROGRE_API bool  isPickerInitialized();
+    /// Return true if the picker is initialized
+    FWRENDEROGRE_API bool isPickerInitialized() const;
 
     /// Set query mask
     FWRENDEROGRE_API void setQueryFlags(std::uint32_t _queryFlags);

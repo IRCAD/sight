@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWRENDEROGRE_INTERACTOR_VRWIDGETSINTERACTOR_HPP__
-#define __FWRENDEROGRE_INTERACTOR_VRWIDGETSINTERACTOR_HPP__
+#pragma once
 
 #include "fwRenderOgre/interactor/TrackballInteractor.hpp"
 #include "fwRenderOgre/picker/IPicker.hpp"
@@ -35,14 +34,23 @@ public:
     /// Destructor.
     FWRENDEROGRE_API virtual ~VRWidgetsInteractor() noexcept;
 
-    /// Rotate the camera (see TrackballInteractor) or displace widgets if in drag mode.
-    FWRENDEROGRE_API virtual void mouseMoveEvent(MouseButton button, int x, int y, int dx, int dy);
+    /// Behaviour on mouseMoveEvent
+    FWRENDEROGRE_API virtual void mouseMoveEvent(MouseButton, int, int, int, int) override;
 
-    /// Used to signal the end of drag mode.
-    FWRENDEROGRE_API virtual void buttonReleaseEvent(MouseButton button, int x, int y);
+    /// Behaviour on a wheelEvent
+    FWRENDEROGRE_API virtual void wheelEvent(int, int, int) override;
 
-    /// Starts object picking.
-    FWRENDEROGRE_API virtual void buttonPressEvent(MouseButton button, int x, int y);
+    /// Behaviour on button release.
+    FWRENDEROGRE_API virtual void buttonReleaseEvent(MouseButton, int, int) override;
+
+    /// Behaviour on button press.
+    FWRENDEROGRE_API virtual void buttonPressEvent(MouseButton, int, int) override;
+
+    /// Called when the window is resized
+    FWRENDEROGRE_API virtual void resizeEvent(int, int) override;
+
+    /// No key press event handling needed here
+    FWRENDEROGRE_API virtual void keyPressEvent(int) override;
 
     /// Attaches a widget.
     FWRENDEROGRE_API inline void attachWidget(ui::VRWidget::sptr widget);
@@ -56,7 +64,7 @@ public:
 private:
 
     /// Currently selected widget.
-    ::Ogre::MovableObject *m_pickedObject;
+    ::Ogre::MovableObject* m_pickedObject;
 
     /// All widgets with whom we interact.
     ui::VRWidget::sptr m_widget;
@@ -68,35 +76,5 @@ private:
     Ogre::MovableObject* pickObject(int x, int y);
 
 };
-
-//------------------------------------------------------------------------------
-
-void VRWidgetsInteractor::attachWidget(ui::VRWidget::sptr widget)
-{
-    OSLM_ASSERT("Only one widget can be attached to a VR interactor", !m_widget);
-    m_widget = widget;
-}
-
-//------------------------------------------------------------------------------
-
-void VRWidgetsInteractor::detachWidget(ui::VRWidget::sptr widget)
-{
-    if(m_widget == widget)
-    {
-        m_widget = nullptr;
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void VRWidgetsInteractor::initPicker()
-{
-    m_picker.setSceneManager(this->m_sceneManager);
-}
-
-//------------------------------------------------------------------------------
-
 } // namespace interactor
 } // namespace fwRenderOgre
-
-#endif // __FWRENDEROGRE_INTERACTOR_VRWIDGETSINTERACTOR_HPP__

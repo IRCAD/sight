@@ -107,7 +107,6 @@ public:
     /// Slot: Computes the parameters to reset the camera.
     FWRENDEROGRE_API static const ::fwCom::Slots::SlotKeyType s_COMPUTE_CAMERA_CLIPPING_SLOT;
 
-    typedef ::fwCom::Slot< void (int, int, int, int) > DoRayCastSlotType;
     /// Slot: Request the picker to do a ray cast according to the passed position.
     FWRENDEROGRE_API static const ::fwCom::Slots::SlotKeyType s_DO_RAY_CAST_SLOT;
 
@@ -171,9 +170,6 @@ private:
     void configureBackgroundLayer( const ConfigType& _cfg );
     /// Configure each layer of the scene
     void configureLayer(const ConfigType& _cfg );
-
-    /// Execute a ray cast with a ray built from (x,y) point, which is the mouse position
-    void doRayCast(int x, int y, int width, int height);
 
     /// Contains the scene configuration which is the scene xml node
     ConfigurationType m_sceneConfiguration;

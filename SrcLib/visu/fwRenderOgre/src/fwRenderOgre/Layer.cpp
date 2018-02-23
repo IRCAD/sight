@@ -337,9 +337,9 @@ void Layer::createScene()
     // If there is any interactor adaptor in xml, m_moveInteractor will be overwritten by InteractorStyle adaptor
     ::fwRenderOgre::interactor::IMovementInteractor::sptr interactor =
         ::fwRenderOgre::interactor::IMovementInteractor::dynamicCast(
-            ::fwRenderOgre::interactorFactory::New("::fwRenderOgre::interactor::TrackballInteractor"));
+            ::fwRenderOgre::interactorFactory::New("::fwRenderOgre::interactor::TrackballInteractor",
+                                                   m_sceneManager->getName()));
 
-    interactor->setSceneID(m_sceneManager->getName());
     this->setMoveInteractor(interactor);
 
     m_cameraListener = new LayerCameraListener(this, interactor);
@@ -418,11 +418,19 @@ void Layer::interaction(::fwRenderOgre::IRenderWindowInteractorManager::Interact
         case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::MOUSEMOVE:
         {
             m_moveInteractor->mouseMoveEvent(info.button, info.x, info.y, info.dx, info.dy);
+            if(m_selectInteractor)
+            {
+                m_selectInteractor->mouseMoveEvent(info.button, info.x, info.y, info.dx, info.dy);
+            }
             break;
         }
         case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::WHEELMOVE:
         {
             m_moveInteractor->wheelEvent(info.delta, info.x, info.y);
+            if(m_selectInteractor)
+            {
+                m_selectInteractor->wheelEvent(info.delta, info.x, info.y);
+            }
             break;
         }
         case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::RESIZE:
@@ -430,21 +438,37 @@ void Layer::interaction(::fwRenderOgre::IRenderWindowInteractorManager::Interact
             auto sig = this->signal<ResizeLayerSignalType>(s_RESIZE_LAYER_SIG);
             sig->asyncEmit(info.x, info.y);
             m_moveInteractor->resizeEvent(info.x, info.y);
+            if(m_selectInteractor)
+            {
+                m_selectInteractor->resizeEvent(info.x, info.y);
+            }
             break;
         }
         case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::KEYPRESS:
         {
             m_moveInteractor->keyPressEvent(info.key);
+            if(m_selectInteractor)
+            {
+                m_selectInteractor->keyPressEvent(info.key);
+            }
             break;
         }
         case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::BUTTONRELEASE:
         {
             m_moveInteractor->buttonReleaseEvent(info.button, info.x, info.y);
+            if(m_selectInteractor)
+            {
+                m_selectInteractor->buttonReleaseEvent(info.button, info.x, info.y);
+            }
             break;
         }
         case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::BUTTONPRESS:
         {
             m_moveInteractor->buttonPressEvent(info.button, info.x, info.y);
+            if(m_selectInteractor)
+            {
+                m_selectInteractor->buttonPressEvent(info.button, info.x, info.y);
+            }
             break;
         }
     }
@@ -757,22 +781,6 @@ void Layer::resetCameraClippingRange(const ::Ogre::AxisAlignedBox& worldCoordBou
             this->signal<CameraUpdatedSignalType>(s_CAMERA_RANGE_UPDATED_SIG)->asyncEmit();
         }
     }
-}
-
-//-----------------------------------------------------------------------------
-
-bool Layer::doRayCast(int x, int y, int width, int height)
-{
-    if(m_selectInteractor)
-    {
-        if(!m_selectInteractor->isPickerInitialized())
-        {
-            m_selectInteractor->initPicker();
-        }
-
-        return m_selectInteractor->mouseClickEvent(x, y, width, height);
-    }
-    return false;
 }
 
 //-----------------------------------------------------------------------------
