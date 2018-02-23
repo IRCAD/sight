@@ -89,6 +89,15 @@ public:
     /// Key of the 'configuredCameras' signal
     VIDEOQT_API static const ::fwCom::Signals::SignalKeyType s_CONFIGURED_CAMERAS_SIG;
 
+    /// Key of the 'configuredDevice' signal
+    VIDEOQT_API static const ::fwCom::Signals::SignalKeyType s_CONFIGURED_DEVICE_SIG;
+
+    /// Key of the 'configuredFile' signal
+    VIDEOQT_API static const ::fwCom::Signals::SignalKeyType s_CONFIGURED_FILE_SIG;
+
+    /// Key of the 'configuredStream' signal
+    VIDEOQT_API static const ::fwCom::Signals::SignalKeyType s_CONFIGURED_STREAM_SIG;
+
     /// Key of the 'configureDevice' slot
     VIDEOQT_API static const ::fwCom::Slots::SlotKeyType s_CONFIGURE_DEVICE_SLOT;
     /// Key of the 'configureFile' slot
