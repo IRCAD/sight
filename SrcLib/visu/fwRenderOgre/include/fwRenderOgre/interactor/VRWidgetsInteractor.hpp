@@ -53,13 +53,13 @@ public:
     FWRENDEROGRE_API virtual void keyPressEvent(int) override;
 
     /// Attaches a widget.
-    FWRENDEROGRE_API inline void attachWidget(ui::VRWidget::sptr widget);
+    FWRENDEROGRE_API void attachWidget(ui::VRWidget::sptr widget);
 
     /// Detaches a widget.
-    FWRENDEROGRE_API inline void detachWidget(ui::VRWidget::sptr widget);
+    FWRENDEROGRE_API void detachWidget(ui::VRWidget::sptr widget);
 
     /// Initializes the picker.
-    FWRENDEROGRE_API inline void initPicker();
+    FWRENDEROGRE_API void initPicker();
 
 private:
 
