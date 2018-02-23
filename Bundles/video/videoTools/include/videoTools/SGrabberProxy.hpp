@@ -122,6 +122,8 @@ protected:
 
 private:
 
+    typedef std::pair<std::string, ::fwRuntime::ConfigurationElement::csptr > ServiceConfigPair;
+
     /// SLOT : reset the grabber implementation and stop the current playback.
     void reconfigure();
 
@@ -143,6 +145,9 @@ private:
     /// grabber implementation chosen by the user
     std::string m_grabberImpl;
 
+    /// Config to use with the current grabber.
+    std::string m_grabberConfig;
+
     /// actual grabber service
     std::vector< ::arServices::IGrabber::sptr > m_services;
 
@@ -152,8 +157,8 @@ private:
     /// List of services to be included or excluded.
     std::set< std::string > m_selectedServices;
 
-    /// Map that specifies a configuration extension for a service
-    std::map< std::string, std::string > m_serviceToConfig;
+    /// Map that specifies all configuration extensions for a service.
+    std::map< std::string, std::vector< std::string > > m_serviceToConfig;
 
     /// state of the loop mode
     bool m_loopVideo { false };
