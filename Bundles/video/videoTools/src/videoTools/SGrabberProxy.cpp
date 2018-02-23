@@ -60,11 +60,12 @@ void SGrabberProxy::starting()
 
 void SGrabberProxy::stopping()
 {
+    m_connections.disconnect();
+
     for(auto& srv : m_services)
     {
         if(srv != nullptr)
         {
-            m_connections.disconnect();
             srv->stopCamera();
             this->unregisterService(srv);
             srv.reset();
@@ -458,11 +459,12 @@ void SGrabberProxy::setPosition(std::int64_t position)
 
 void SGrabberProxy::reconfigure()
 {
+    m_connections.disconnect();
+
     for(auto& srv : m_services)
     {
         if(srv != nullptr)
         {
-            m_connections.disconnect();
             srv->stopCamera();
             this->unregisterService(srv);
             srv.reset();
