@@ -409,6 +409,9 @@ void SPointList::updateMaterialAdaptor()
         auto materialFw = m_materialAdaptor->getMaterialFw();
         m_meshGeometry->updateMaterial(materialFw, false);
         materialFw->setMeshSize(m_radius);
+
+        m_entity->setMaterialName(m_materialAdaptor->getMaterialName());
+
         m_materialAdaptor->slot(::visuOgreAdaptor::SMaterial::s_UPDATE_SLOT)->run();
     }
 }
