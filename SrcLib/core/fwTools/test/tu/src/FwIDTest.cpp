@@ -1,19 +1,18 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "FwIDTest.hpp"
 
-#include <fwTools/fwID.hpp>
-#include <fwTools/UUID.hpp>
 #include <fwTools/Failed.hpp>
+#include <fwTools/fwID.hpp>
 #include <fwTools/Object.hpp>
-
-#include <fwTest/helper/Thread.hpp>
+#include <fwTools/UUID.hpp>
 
 #include <chrono>
+#include <future>
 #include <thread>
 
 // Registers the fixture into the 'registry'
@@ -28,8 +27,6 @@ namespace ut
 
 void FwIDTest::setUp()
 {
-    // Set up context before running a test.
-    m_object = std::make_shared< ::fwTools::Object >();
 }
 
 //-----------------------------------------------------------------------------
@@ -58,10 +55,10 @@ void FwIDTest::objectFwIDTest()
     ::fwTools::Object::sptr obj2 = std::make_shared< ::fwTools::Object >();
 
     CPPUNIT_ASSERT(obj2->hasID() == false);
-    CPPUNIT_ASSERT_THROW (obj2->getID(::fwTools::fwID::MUST_EXIST), ::fwTools::Failed);
+    CPPUNIT_ASSERT_THROW(obj2->getID(::fwTools::fwID::MUST_EXIST), ::fwTools::Failed);
 
     std::string fwid = obj2->getID(::fwTools::fwID::GENERATE);
-    CPPUNIT_ASSERT_NO_THROW (obj2->getID(::fwTools::fwID::MUST_EXIST));
+    CPPUNIT_ASSERT_NO_THROW(obj2->getID(::fwTools::fwID::MUST_EXIST));
 
     CPPUNIT_ASSERT(obj2->hasID() == true);
     CPPUNIT_ASSERT( ::fwTools::fwID::exist(fwid) );
@@ -75,25 +72,21 @@ void FwIDTest::objectFwIDTest()
 
 //-----------------------------------------------------------------------------
 
-void FwIDTest::conccurentAccessOnFwIDMapTest()
+void FwIDTest::concurrentAccessOnFwIDMapTest()
 {
-    const unsigned int nbThreads = 10;
-    std::vector< SPTR(::fwTest::helper::Thread) > threads;
-    for (int i = 0; i<nbThreads; ++i)
+    const auto fn = std::bind(&FwIDTest::runFwIDCreation, this);
+    std::vector< std::future<void> > futures;
+    for (unsigned int i = 0; i < 10; ++i)
     {
-        SPTR(::fwTest::helper::Thread) thread;
-        thread = std::shared_ptr< ::fwTest::helper::Thread >(
-            new ::fwTest::helper::Thread(std::bind(&FwIDTest::runFwIDCreation, this)));
-        threads.push_back(thread);
+        futures.push_back( std::async(std::launch::async, fn) );
     }
 
-    for (int i = 0; i<nbThreads; ++i)
+    for (auto& future : futures)
     {
-        std::stringstream str;
-        str << "thread " << i;
-        CPPUNIT_ASSERT_MESSAGE(str.str(), threads[i]->timedJoin(1000));
+        const auto status = future.wait_for(std::chrono::seconds(1));
+        CPPUNIT_ASSERT(status == std::future_status::ready);
+        future.get(); // Trigger exceptions
     }
-
 }
 
 //-----------------------------------------------------------------------------
@@ -117,63 +110,19 @@ void FwIDTest::runFwIDCreation()
     ::fwTools::Object::sptr obj2 = std::make_shared< ::fwTools::Object >();
 
     CPPUNIT_ASSERT(obj2->hasID() == false);
-    CPPUNIT_ASSERT_THROW (obj2->getID(::fwTools::fwID::MUST_EXIST), ::fwTools::Failed);
+    CPPUNIT_ASSERT_THROW(obj2->getID(::fwTools::fwID::MUST_EXIST), ::fwTools::Failed);
 
-    std::string fwid = obj2->getID(::fwTools::fwID::GENERATE);
-    CPPUNIT_ASSERT_NO_THROW (obj2->getID(::fwTools::fwID::MUST_EXIST));
+    const std::string fwID2 = obj2->getID(::fwTools::fwID::GENERATE);
+    CPPUNIT_ASSERT_NO_THROW(obj2->getID(::fwTools::fwID::MUST_EXIST));
 
     CPPUNIT_ASSERT(obj2->hasID() == true);
-    CPPUNIT_ASSERT( ::fwTools::fwID::exist(fwid) );
+    CPPUNIT_ASSERT( ::fwTools::fwID::exist(fwID2) );
 
     obj2->resetID();
     CPPUNIT_ASSERT(obj2->hasID() == false);
 
-    CPPUNIT_ASSERT( ::fwTools::fwID::exist(fwid) == false );
-    CPPUNIT_ASSERT( !::fwTools::fwID::getObject(fwid) );
-}
-
-//-----------------------------------------------------------------------------
-
-void FwIDTest::conccurentAccessOnSameObjFwIDTest()
-{
-    const unsigned int nbThreads = 10;
-    std::vector< SPTR(::fwTest::helper::Thread) > threads;
-    for (int i = 0; i<nbThreads; ++i)
-    {
-        SPTR(::fwTest::helper::Thread) thread;
-        thread = std::shared_ptr< ::fwTest::helper::Thread >(
-            new ::fwTest::helper::Thread(std::bind(&FwIDTest::runAccessToObjectFwID, this)));
-        threads.push_back(thread);
-    }
-
-    for (int i = 0; i<nbThreads; ++i)
-    {
-        std::stringstream str;
-        str << "thread " << i;
-        CPPUNIT_ASSERT_MESSAGE(str.str(), threads[i]->timedJoin(1000));
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-void FwIDTest::runAccessToObjectFwID()
-{
-    std::string id = m_object->getID();
-    CPPUNIT_ASSERT( ::fwTools::fwID::exist(id) );
-    CPPUNIT_ASSERT( m_object->hasID() );
-
-    std::this_thread::sleep_for( std::chrono::milliseconds(200));
-
-    CPPUNIT_ASSERT_EQUAL(  id, m_object->getID() );
-
-    CPPUNIT_ASSERT_EQUAL( m_object, ::fwTools::fwID::getObject(id) );
-
-    std::this_thread::sleep_for( std::chrono::milliseconds(200));
-
-    m_object->resetID();
-    CPPUNIT_ASSERT( m_object->hasID() == false );
-    CPPUNIT_ASSERT( ::fwTools::fwID::exist(id) == false );
-
+    CPPUNIT_ASSERT( ::fwTools::fwID::exist(fwID2) == false );
+    CPPUNIT_ASSERT( !::fwTools::fwID::getObject(fwID2) );
 }
 
 //-----------------------------------------------------------------------------
