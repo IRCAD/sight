@@ -10,14 +10,9 @@
         <object uid="${cameraSeries}" type="::arData::CameraSeries" src="ref" />
         <object uid="camera" type="::arData::Camera" src="deferred" />
         <object uid="frameTL" type="::arData::FrameTL" />
-        <object uid="detectionTL" type="::arData::FrameTL" />
         <object uid="videoImage" type="::fwData::Image" />
-        <object uid="detectionImage" type="::fwData::Image" />
         <object uid="matrixTL" type="::arData::MatrixTL" />
-        <object uid="matrix0" type="::fwData::TransformationMatrix3D" />
-        <object uid="matrix1" type="::fwData::TransformationMatrix3D" />
-        <object uid="matrix2" type="::fwData::TransformationMatrix3D" />
-        <object uid="matrix3" type="::fwData::TransformationMatrix3D" />
+        <object uid="trackerMatrix" type="::fwData::TransformationMatrix3D" />
         <object uid="handEyeMatrix" type="::fwData::TransformationMatrix3D" />
         <object uid="matrixVectorPose" type="::fwData::Vector" />
         <object uid="matrixVectorSensor" type="::fwData::Vector" />
@@ -42,43 +37,41 @@
         <service uid="mainViews" type="::gui::view::SDefaultView">
             <gui>
                 <layout type="::fwGui::LineLayoutManager">
-                    <orientation value="vertical" />
-                    <view proportion="1" />
+                    <orientation value="horizontal" />
+                    <view proportion="4" />
                     <view proportion="1" />
                 </layout>
                 <toolBar/>
             </gui>
             <registry>
-                <view sid="topView" start="yes" />
-                <view sid="bottomView" start="yes" />
+                <view sid="leftView" start="yes" />
+                <view sid="rightPanel" start="yes" />
                 <toolBar sid="toolBarVideo" start="yes" />
             </registry>
         </service>
 
-        <service uid="topView" type="::gui::view::SDefaultView">
+        <service uid="leftView" type="::gui::view::SDefaultView">
             <gui>
                 <layout type="::fwGui::LineLayoutManager">
-                    <orientation value="horizontal" />
+                    <orientation value="vertical" />
                     <view caption="Input frames" proportion="1" />
-                    <view caption="Chessboard detection" proportion="1" />
+                    <view caption="Result" proportion="1" />
                 </layout>
             </gui>
             <registry>
                 <view sid="frameView" start="yes" />
-                <view sid="chessboardDetectionView" start="yes" />
+                <view sid="resultView" start="yes" />
             </registry>
         </service>
 
-        <service uid="bottomView" type="::gui::view::SDefaultView">
+        <service uid="rightPanel" type="::gui::view::SDefaultView">
             <gui>
                 <layout type="::fwGui::LineLayoutManager">
                     <orientation value="horizontal" />
-                    <view caption="result view" proportion="1" />
                     <view caption="Hand Eye" proportion="1" />
                 </layout>
             </gui>
             <registry>
-                <view sid="resultView" start="yes" />
                 <view sid="paramView" start="yes" />
             </registry>
         </service>
@@ -136,7 +129,7 @@
         <service uid="handEyeView" type="::gui::view::SDefaultView">
             <gui>
                 <layout type="::fwGui::LineLayoutManager">
-                    <orientation value="horizontal" />
+                    <orientation value="vertical" />
                     <view caption="Matrices" />
                     <view caption="Chessboard vector matrices" />
                 </layout>
@@ -310,7 +303,7 @@
             <inout key="calInfo1" uid="calibInfo" />
         </service>
 
-        <service uid="synchronizer" type="::videoTools::SFrameMatrixSynchronizer" worker="synchronizer">
+        <service uid="synchronizer" type="::videoTools::SFrameMatrixSynchronizer" >
             <in group="frameTL">
                 <key uid="frameTL" />
             </in>
@@ -321,10 +314,7 @@
                 <key uid="matrixTL" />
             </in>
             <inout group="matrices0">
-                <key uid="matrix0" />
-                <key uid="matrix1" />
-                <key uid="matrix2" />
-                <key uid="matrix3" />
+                <key uid="trackerMatrix" />
             </inout>
             <framerate>30</framerate>
         </service>
@@ -335,34 +325,19 @@
             <deviceName>%TRACKER_NAME%</deviceName>
             <TData>
                 <matrix name="Input0" index="0" />
-                <matrix name="Input1" index="1" />
-                <matrix name="Input2" index="2" />
-                <matrix name="Input3" index="3" />
             </TData>
         </service>
 
         <service uid="trackerTLMatrixSynchronizer" type="::syncTimeline::SMatrixTLSynchronizer">
             <in key="matrixTL" uid="matrixTL" autoConnect="yes" />
             <inout group="matrices">
-                <key uid="matrix0" />
-                <key uid="matrix1" />
-                <key uid="matrix2" />
-                <key uid="matrix3" />
-            </inout>
-        </service>
-
-        <service uid="synchronizer2" type="::videoTools::SFrameMatrixSynchronizer" worker="synchronizer2">
-            <in group="frameTL">
-                <key uid="detectionTL" />
-            </in>
-            <inout group="image">
-                <key uid="detectionImage" />
+                <key uid="trackerMatrix" />
             </inout>
         </service>
 
         <service uid="matrixViewer" type="::uiTools::editor::SMatrixViewer" autoConnect="yes">
-            <in key="matrix" uid="matrix0" />
-            <title>Sensor Matrix  </title>
+            <in key="matrix" uid="trackerMatrix" />
+            <title>Sensor Matrix</title>
         </service>
 
         <!-- Hand Eye -->
@@ -377,34 +352,31 @@
             <inout key="matrix" uid="handEyeMatrix" />
         </service>
 
-        <service uid="chessboardDetector" type="::videoCalibration::SChessBoardDetector" >
+        <service uid="chessboardDetector" type="::videoCalibration::SChessBoardDetector" worker="detectorWorker" >
              <in group="timeline">
                  <key uid="frameTL" />
              </in>
              <inout group="calInfo">
                  <key uid="calibInfo" />
              </inout>
-             <inout group="detection">
-                <key uid="detectionTL" />
-             </inout>
             <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" />
         </service>
 
-        <service uid="cameraPose" type="::videoCalibration::SOpenCVIntrinsic" worker="intr_chess_checker">
+        <service uid="cameraPose" type="::videoCalibration::SOpenCVIntrinsic" >
             <in key="calibrationInfo" uid="calibInfo" />
             <inout key="camera" uid="camera" />
             <inout key="poseVector" uid="matrixVectorPose" />
             <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" squareSize="CHESSBOARD_SQUARE_SIZE" />
         </service>
 
-        <service uid="Status" type="::uiTools::editor::SStatus">
+        <service uid="Status" type="::uiTools::editor::SStatus" >
             <green>Chessboard points are visible</green>
             <orange>Calibration in progress</orange>
             <red>Chessboard points are NOT visible</red>
         </service>
 
         <service uid="pushMatrixSensor" type="::ctrlSelection::SManage">
-           <inout key="object" uid="matrix0" />
+           <inout key="object" uid="trackerMatrix" />
            <inout key="vector" uid="matrixVectorSensor" />
         </service>
 
@@ -465,23 +437,6 @@
 
         <!-- *************************** End frameView *************************** -->
 
-        <!-- *************************** Begin chessboardDetectionView *************************** -->
-
-        <service uid="chessboardDetectionView" type="::fwRenderVTK::SRender" autoConnect="yes">
-            <scene autoRender="false">
-                <renderer id="default" layer="1" background="0.0" />
-                <renderer id="background" layer="0" background="0.0" />
-                <adaptor uid="videoAdptChessboard" />
-            </scene>
-        </service>
-
-        <service uid="videoAdptChessboard" type="::visuVTKARAdaptor::SVideo" autoConnect="yes">
-            <in key="frame" uid="detectionImage" />
-            <config renderer="background" />
-        </service>
-
-        <!-- *************************** End chessboardDetectionView *************************** -->
-
         <!-- *************************** Begin resultView *************************** -->
 
         <service uid="resultView" type="::fwRenderVTK::SRender" autoConnect="yes">
@@ -513,7 +468,7 @@
         </service>
 
         <service uid="sensorTransformAdaptor" type="::visuVTKAdaptor::STransform" autoConnect="yes">
-            <inout key="tm3d" uid="matrix0" />
+            <inout key="tm3d" uid="trackerMatrix" />
             <config renderer="default" transform="vtkSensorMatrix" />
         </service>
 
@@ -608,7 +563,6 @@
         <start uid="matrixViewerHE" />
         <start uid="frameGrabber" />
         <start uid="synchronizer" />
-        <start uid="synchronizer2" />
         <start uid="handEyeCalibration" />
         <start uid="csvReader" />
         <start uid="chessboardDetector" />
@@ -620,8 +574,6 @@
         <start uid="loadCsv" />
         <!-- VTK scene 'frameView' -->
         <start uid="videoAdpt" />
-        <!-- VTK scene 'chessboardDetectionView' -->
-        <start uid="videoAdptChessboard" />
         <!-- VTK scene 'resultView' -->
         <start uid="videoAdptResult" />
         <start uid="sensorAxis" />
