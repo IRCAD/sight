@@ -417,6 +417,17 @@ void Window::keyPressEvent(QKeyEvent* e)
 
 // ----------------------------------------------------------------------------
 
+void Window::keyReleaseEvent(QKeyEvent* e)
+{
+    ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo info;
+    info.interactionType = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::KEYRELEASE;
+    info.key             = e->key();
+
+    Q_EMIT interacted(info);
+}
+
+// ----------------------------------------------------------------------------
+
 void Window::mouseMoveEvent( QMouseEvent* e )
 {
     if (e->buttons() & ::Qt::LeftButton && m_lastPosLeftClick)

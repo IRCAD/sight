@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017.
+ * FW4SPL - Copyright (C) IRCAD, 2017-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __UIVISUOGRE_SADDPOINT_HPP__
-#define __UIVISUOGRE_SADDPOINT_HPP__
+#pragma once
 
 #include <uiVisuOgre/config.hpp>
 
@@ -42,7 +41,8 @@ public:
      * @name Slots API
      * @{
      */
-    UIVISUOGRE_API static const ::fwCom::Slots::SlotKeyType s_ADDPOINT_SLOT;
+    UIVISUOGRE_API static const ::fwCom::Slots::SlotKeyType s_ADD_POINT_SLOT;
+    UIVISUOGRE_API static const ::fwCom::Slots::SlotKeyType s_REMOVE_POINT_SLOT;
     /** @} */
 
     /// Constructor. Creates slot.
@@ -73,10 +73,11 @@ private:
     /// SLOT : Sends a signal with the clicked poin coordinates.
     void addPoint(SPTR(::fwData::Object) _pointObject);
 
+    /// SLOT : Sends a signal with the clicked poin coordinates.
+    void removePoint(SPTR(::fwData::Object) _pointObject);
+
     /**
      * @}
      */
 };
 } // uiVisuOgre
-
-#endif // __UIVISUOGRE_SADDPOINT_HPP__

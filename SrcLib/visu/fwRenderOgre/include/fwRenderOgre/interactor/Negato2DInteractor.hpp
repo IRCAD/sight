@@ -42,8 +42,11 @@ public:
     /// Called when the window is resized
     FWRENDEROGRE_API virtual void resizeEvent(int, int) override;
 
-    /// No key press event handling needed here
+    /// Called when a key is press
     FWRENDEROGRE_API virtual void keyPressEvent(int) override;
+
+    /// Called when a key is release
+    FWRENDEROGRE_API virtual void keyReleaseEvent(int) override;
 
 private:
 

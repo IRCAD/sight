@@ -121,6 +121,12 @@ void Negato2DInteractor::keyPressEvent(int)
 {
 }
 
+//------------------------------------------------------------------------------
+
+void Negato2DInteractor::keyReleaseEvent(int)
+{
+}
+
 // ----------------------------------------------------------------------------
 
 void Negato2DInteractor::updateTotalSize()

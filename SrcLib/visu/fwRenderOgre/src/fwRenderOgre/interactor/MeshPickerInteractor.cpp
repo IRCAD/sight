@@ -11,6 +11,8 @@
 
 #include <fwCom/Signal.hxx>
 
+#include <QtCore/QEvent>
+
 fwRenderOgreRegisterInteractorMacro( ::fwRenderOgre::interactor::MeshPickerInteractor );
 
 namespace fwRenderOgre
@@ -19,7 +21,8 @@ namespace fwRenderOgre
 namespace interactor
 {
 
-MeshPickerInteractor::MeshPickerInteractor() noexcept
+MeshPickerInteractor::MeshPickerInteractor() noexcept :
+    m_control(false)
 {
 }
 
@@ -43,7 +46,7 @@ void MeshPickerInteractor::buttonPressEvent(MouseButton button, int x, int y)
 {
     if(m_picker->hasSceneManager())
     {
-        if(m_picker->executeRaySceneQuery(x, y, m_width, m_height, m_queryFlags))
+        if(m_control && m_picker->executeRaySceneQuery(x, y, m_width, m_height, m_queryFlags))
         {
             ::Ogre::Vector3 click = m_picker->getIntersectionInWorldSpace();
 
@@ -52,7 +55,14 @@ void MeshPickerInteractor::buttonPressEvent(MouseButton button, int x, int y)
             {{static_cast<double>(click.x), static_cast<double>(click.y), static_cast<double>(click.z)}};
             point->setCoord(cords);
 
-            m_sigPointClicked->asyncEmit(::fwData::Object::dynamicCast(point));
+            if(button == Qt::LeftButton)
+            {
+                m_sigAddPoint->asyncEmit(::fwData::Object::dynamicCast(point));
+            }
+            else
+            {
+                m_sigRemovePoint->asyncEmit(::fwData::Object::dynamicCast(point));
+            }
         }
     }
     else
@@ -81,8 +91,19 @@ void MeshPickerInteractor::buttonReleaseEvent(MouseButton, int, int)
 
 //------------------------------------------------------------------------------
 
-void MeshPickerInteractor::keyPressEvent(int)
+void MeshPickerInteractor::keyPressEvent(int k)
 {
+    if(k == Qt::Key_Control)
+    {
+        m_control = true;
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void MeshPickerInteractor::keyReleaseEvent(int)
+{
+    m_control = false;
 }
 
 //------------------------------------------------------------------------------

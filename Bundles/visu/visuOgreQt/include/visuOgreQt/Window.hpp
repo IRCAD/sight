@@ -127,6 +127,8 @@ protected:
      */
     /// Qt event to manage keyboard action
     virtual void keyPressEvent(QKeyEvent* e) override;
+    /// Qt event to manage keyboard action
+    virtual void keyReleaseEvent(QKeyEvent* e) override;
     /// Qt event to manage mouse move
     virtual void mouseMoveEvent(QMouseEvent* e) override;
     /// Qt event to manage wheel action

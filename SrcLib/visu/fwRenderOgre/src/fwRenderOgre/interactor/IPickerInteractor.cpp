@@ -16,12 +16,18 @@ namespace fwRenderOgre
 namespace interactor
 {
 
+const ::fwCom::Signals::SignalKeyType fwRenderOgre::interactor::IPickerInteractor::s_ADD_POINT_SIG    = "addPoint";
+const ::fwCom::Signals::SignalKeyType fwRenderOgre::interactor::IPickerInteractor::s_REMOVE_POINT_SIG = "removePoint";
+
 // ----------------------------------------------------------------------------
 
 IPickerInteractor::IPickerInteractor()
 {
     m_ogreRoot = ::fwRenderOgre::Utils::getOgreRoot();
     m_picker   = new ::fwRenderOgre::picker::IPicker();
+
+    m_sigAddPoint    = newSignal< PointClickedSigType >( s_ADD_POINT_SIG );
+    m_sigRemovePoint = newSignal< PointClickedSigType >( s_REMOVE_POINT_SIG );
 }
 
 // ----------------------------------------------------------------------------

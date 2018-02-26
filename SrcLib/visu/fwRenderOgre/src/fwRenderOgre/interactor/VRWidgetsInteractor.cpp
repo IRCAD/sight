@@ -122,6 +122,12 @@ void VRWidgetsInteractor::keyPressEvent(int)
 
 //------------------------------------------------------------------------------
 
+void VRWidgetsInteractor::keyReleaseEvent(int)
+{
+}
+
+//------------------------------------------------------------------------------
+
 void VRWidgetsInteractor::attachWidget(ui::VRWidget::sptr widget)
 {
     OSLM_ASSERT("Only one widget can be attached to a VR interactor", !m_widget);

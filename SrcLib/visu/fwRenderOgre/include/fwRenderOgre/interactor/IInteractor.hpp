@@ -69,9 +69,6 @@ public:
      * @name Signals API
      * @{
      */
-    typedef ::fwCom::Signal< void ( ::fwData::Object::sptr ) > PointClickedSigType;
-    FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_POINT_CLICKED_SIG;
-
     typedef ::fwCom::Signal< void () > RenderRequestedSigType;
     FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_RENDER_REQUESTED_SIG;
     /** @} */
@@ -99,6 +96,9 @@ public:
     /// Called when a key is pressed
     FWRENDEROGRE_API virtual void keyPressEvent(int) = 0;
 
+    /// Called when a key is release
+    FWRENDEROGRE_API virtual void keyReleaseEvent(int) = 0;
+
     /// Called when a mouse button is released.
     FWRENDEROGRE_API virtual void buttonReleaseEvent(MouseButton, int, int) = 0;
 
@@ -117,9 +117,6 @@ protected:
      * @name Signals attributes
      * @{
      */
-    /// Signal triggered when an action has been triggered
-    PointClickedSigType::sptr m_sigPointClicked;
-
     /// Signal triggered when a render is requested
     RenderRequestedSigType::sptr m_sigRenderRequested;
     /**

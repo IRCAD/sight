@@ -129,6 +129,12 @@ void TrackballInteractor::keyPressEvent(int key)
 
 //------------------------------------------------------------------------------
 
+void TrackballInteractor::keyReleaseEvent(int)
+{
+}
+
+//------------------------------------------------------------------------------
+
 void TrackballInteractor::buttonReleaseEvent(MouseButton, int, int)
 {
 }

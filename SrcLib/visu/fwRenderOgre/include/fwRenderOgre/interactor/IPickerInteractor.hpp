@@ -48,6 +48,15 @@ public:
         }
     };
 
+    /**
+     * @name Signals API
+     * @{
+     */
+    typedef ::fwCom::Signal< void ( ::fwData::Object::sptr ) > PointClickedSigType;
+    FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_ADD_POINT_SIG;
+    FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_REMOVE_POINT_SIG;
+    /** @} */
+
     fwCoreNonInstanciableClassDefinitionsMacro( (IPickerInteractor)(::fwCore::BaseObject) )
 
     /// Constructor. Retrieves the Ogre root and the \<sceneID\> scene manager
@@ -72,6 +81,22 @@ protected:
 
     /// Mask for picking requests
     std::uint32_t m_queryFlags {0};
+
+    /**
+     * @name Signals attributes
+     * @{
+     */
+    /// Signal triggered when an action has been triggered
+    PointClickedSigType::sptr m_sigAddPoint;
+
+    /// Signal triggered when an action has been triggered
+    PointClickedSigType::sptr m_sigRemovePoint;
+
+    /// Signal triggered when a render is requested
+    RenderRequestedSigType::sptr m_sigRenderRequested;
+    /**
+     * @}
+     */
 };
 
 }

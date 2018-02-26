@@ -44,6 +44,7 @@ public:
             WHEELMOVE,
             RESIZE,
             KEYPRESS,
+            KEYRELEASE,
             BUTTONRELEASE,
             BUTTONPRESS
         } InteractionEnumType;

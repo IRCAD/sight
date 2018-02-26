@@ -51,7 +51,7 @@ void VideoPickerInteractor::buttonPressEvent(MouseButton button, int x, int y)
             {{static_cast<double>(click.x), static_cast<double>(click.y), static_cast<double>(click.z)}};
             point->setCoord(cords);
 
-            m_sigPointClicked->asyncEmit(::fwData::Object::dynamicCast(point));
+            m_sigAddPoint->asyncEmit(::fwData::Object::dynamicCast(point));
         }
     }
     else
@@ -81,6 +81,12 @@ void VideoPickerInteractor::buttonReleaseEvent(MouseButton, int, int)
 //------------------------------------------------------------------------------
 
 void VideoPickerInteractor::keyPressEvent(int)
+{
+}
+
+//------------------------------------------------------------------------------
+
+void VideoPickerInteractor::keyReleaseEvent(int)
 {
 }
 

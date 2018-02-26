@@ -18,7 +18,6 @@ namespace fwRenderOgre
 namespace interactor
 {
 
-const ::fwCom::Signals::SignalKeyType fwRenderOgre::interactor::IInteractor::s_POINT_CLICKED_SIG    = "pointClicked";
 const ::fwCom::Signals::SignalKeyType fwRenderOgre::interactor::IInteractor::s_RENDER_REQUESTED_SIG = "renderRequested";
 
 // ----------------------------------------------------------------------------
@@ -29,8 +28,6 @@ IInteractor::IInteractor()  :
     m_ogreRoot = ::fwRenderOgre::Utils::getOgreRoot();
 
     m_sigRenderRequested = newSignal< RenderRequestedSigType >( s_RENDER_REQUESTED_SIG );
-
-    m_sigPointClicked = newSignal< PointClickedSigType >( s_POINT_CLICKED_SIG );
 }
 
 // ----------------------------------------------------------------------------

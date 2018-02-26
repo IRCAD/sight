@@ -453,6 +453,15 @@ void Layer::interaction(::fwRenderOgre::IRenderWindowInteractorManager::Interact
             }
             break;
         }
+        case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::KEYRELEASE:
+        {
+            m_moveInteractor->keyReleaseEvent(info.key);
+            if(m_selectInteractor)
+            {
+                m_selectInteractor->keyReleaseEvent(info.key);
+            }
+            break;
+        }
         case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::BUTTONRELEASE:
         {
             m_moveInteractor->buttonReleaseEvent(info.button, info.x, info.y);
