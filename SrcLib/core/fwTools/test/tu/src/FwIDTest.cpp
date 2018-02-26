@@ -27,8 +27,6 @@ namespace ut
 
 void FwIDTest::setUp()
 {
-    // Set up context before running a test.
-    m_object = std::make_shared< ::fwTools::Object >();
 }
 
 //-----------------------------------------------------------------------------
@@ -74,7 +72,7 @@ void FwIDTest::objectFwIDTest()
 
 //-----------------------------------------------------------------------------
 
-void FwIDTest::conccurentAccessOnFwIDMapTest()
+void FwIDTest::concurrentAccessOnFwIDMapTest()
 {
     const auto fn = std::bind(&FwIDTest::runFwIDCreation, this);
     std::vector< std::future<void> > futures;
@@ -114,57 +112,17 @@ void FwIDTest::runFwIDCreation()
     CPPUNIT_ASSERT(obj2->hasID() == false);
     CPPUNIT_ASSERT_THROW(obj2->getID(::fwTools::fwID::MUST_EXIST), ::fwTools::Failed);
 
-    std::string fwid = obj2->getID(::fwTools::fwID::GENERATE);
+    const std::string fwID2 = obj2->getID(::fwTools::fwID::GENERATE);
     CPPUNIT_ASSERT_NO_THROW(obj2->getID(::fwTools::fwID::MUST_EXIST));
 
     CPPUNIT_ASSERT(obj2->hasID() == true);
-    CPPUNIT_ASSERT( ::fwTools::fwID::exist(fwid) );
+    CPPUNIT_ASSERT( ::fwTools::fwID::exist(fwID2) );
 
     obj2->resetID();
     CPPUNIT_ASSERT(obj2->hasID() == false);
 
-    CPPUNIT_ASSERT( ::fwTools::fwID::exist(fwid) == false );
-    CPPUNIT_ASSERT( !::fwTools::fwID::getObject(fwid) );
-}
-
-//-----------------------------------------------------------------------------
-
-void FwIDTest::conccurentAccessOnSameObjFwIDTest()
-{
-    auto fn = std::bind(&FwIDTest::runAccessToObjectFwID, this);
-    std::vector< std::future<void> > futures;
-    for (unsigned int i = 0; i < 10; ++i)
-    {
-        futures.push_back( std::async(std::launch::async, fn) );
-    }
-
-    for (auto& future : futures)
-    {
-        future.wait_for(std::chrono::seconds(1));
-        future.get(); // Trigger exceptions
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-void FwIDTest::runAccessToObjectFwID()
-{
-    std::string id = m_object->getID();
-    CPPUNIT_ASSERT( ::fwTools::fwID::exist(id) );
-    CPPUNIT_ASSERT( m_object->hasID() );
-
-    std::this_thread::sleep_for( std::chrono::milliseconds(200));
-
-    CPPUNIT_ASSERT_EQUAL(  id, m_object->getID() );
-
-    CPPUNIT_ASSERT_EQUAL( m_object, ::fwTools::fwID::getObject(id) );
-
-    std::this_thread::sleep_for( std::chrono::milliseconds(200));
-
-    m_object->resetID();
-    CPPUNIT_ASSERT( m_object->hasID() == false );
-    CPPUNIT_ASSERT( ::fwTools::fwID::exist(id) == false );
-
+    CPPUNIT_ASSERT( ::fwTools::fwID::exist(fwID2) == false );
+    CPPUNIT_ASSERT( !::fwTools::fwID::getObject(fwID2) );
 }
 
 //-----------------------------------------------------------------------------
