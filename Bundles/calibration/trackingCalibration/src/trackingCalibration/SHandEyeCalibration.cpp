@@ -30,9 +30,8 @@ static const ::fwServices::IService::KeyType s_MATRIXVECTOR2_INPUT = "matrixVect
 // -----------------------------------------------------------------------------
 
 SHandEyeCalibration::SHandEyeCalibration() noexcept :
-    m_lastTimestamp(0)
+    m_movingCamera(false)
 {
-    m_handEyeApi = ::boost::make_unique< ::handEyeCalibration::HandEyeApi >();
 }
 
 // -----------------------------------------------------------------------------
@@ -45,38 +44,41 @@ SHandEyeCalibration::~SHandEyeCalibration() noexcept
 
 void SHandEyeCalibration::configuring()
 {
+    const auto configTree = this->getConfigTree();
+    const auto config     = configTree.get_child_optional("config.<xmlattr>");
 
+    if(config)
+    {
+        m_movingCamera = config->get<bool>("movingCamera", false);
+    }
 }
 
 // -----------------------------------------------------------------------------
 
 void SHandEyeCalibration::starting()
 {
-
 }
 
 // -----------------------------------------------------------------------------
 
 void SHandEyeCalibration::stopping()
 {
-
 }
 
 // -----------------------------------------------------------------------------
 
 void SHandEyeCalibration::updating()
 {
-
 }
 
 // -----------------------------------------------------------------------------
 
-void SHandEyeCalibration::computeRegistration(::fwCore::HiResClock::HiResClockType timestamp)
+void SHandEyeCalibration::computeRegistration(::fwCore::HiResClock::HiResClockType)
 {
     ::fwCore::mt::ScopedLock lock(m_mutex);
 
     SLM_WARN_IF("Invoking computeHandEye while service is STOPPED", this->isStopped() );
-    ::fwData::TransformationMatrix3D::sptr matrix3D = this->getInOut< ::fwData::TransformationMatrix3D >("matrix");
+    ::fwData::TransformationMatrix3D::sptr matrixX = this->getInOut< ::fwData::TransformationMatrix3D >("matrix");
 
     ::fwData::Vector::csptr vector1 = this->getInput< ::fwData::Vector >(s_MATRIXVECTOR1_INPUT);
     SLM_ASSERT("The first vector is null", vector1);
@@ -92,6 +94,8 @@ void SHandEyeCalibration::computeRegistration(::fwCore::HiResClock::HiResClockTy
     it1 = vector1->begin();
     it2 = vector2->begin();
 
+    std::vector< ::fwData::TransformationMatrix3D::csptr > AMatrices, BMatrices;
+
     for(; it1 != vector1->end()-1 && it2 != vector2->end()-1;
         ++it1, ++it2)
     {
@@ -101,7 +105,6 @@ void SHandEyeCalibration::computeRegistration(::fwCore::HiResClock::HiResClockTy
         matrixBj;
 
         ::fwData::TransformationMatrix3D::sptr matrixAiInv = ::fwData::TransformationMatrix3D::New();
-        ::fwData::TransformationMatrix3D::sptr matrixBiInv = ::fwData::TransformationMatrix3D::New();
         ::fwData::TransformationMatrix3D::sptr matrixA     = ::fwData::TransformationMatrix3D::New();
         ::fwData::TransformationMatrix3D::sptr matrixB     = ::fwData::TransformationMatrix3D::New();
 
@@ -118,19 +121,43 @@ void SHandEyeCalibration::computeRegistration(::fwCore::HiResClock::HiResClockTy
         matrixBj = ::fwData::TransformationMatrix3D::dynamicCast(*(it2 + 1));
         SLM_ASSERT("This element of the vector is not a TransformationMatrix3D", matrixBj);
 
-        ::fwDataTools::TransformationMatrix3D::invert(matrixBi, matrixBiInv);
-        ::fwDataTools::TransformationMatrix3D::multiply(matrixBj, matrixBiInv, matrixB);
+        if(m_movingCamera)
+        {
+            ::fwData::TransformationMatrix3D::sptr matrixBjInv = ::fwData::TransformationMatrix3D::New();
+            ::fwDataTools::TransformationMatrix3D::invert(matrixBj, matrixBjInv);
+            ::fwDataTools::TransformationMatrix3D::multiply(matrixBjInv, matrixBi, matrixB);
+        }
+        else
+        {
+            ::fwData::TransformationMatrix3D::sptr matrixBiInv = ::fwData::TransformationMatrix3D::New();
+            ::fwDataTools::TransformationMatrix3D::invert(matrixBi, matrixBiInv);
+            ::fwDataTools::TransformationMatrix3D::multiply(matrixBj, matrixBiInv, matrixB);
+        }
 
-        m_handEyeApi->pushMatrix(matrixA, matrixB);
+        AMatrices.push_back(matrixA);
+        BMatrices.push_back(matrixB);
     }
 
-    ::fwData::TransformationMatrix3D::sptr result = m_handEyeApi->computeHandEye();
+    ::handEyeCalibration::HandEyeApi handEyeApi;
 
-    matrix3D->deepCopy(result);
+    handEyeApi.setTransformLists(AMatrices, BMatrices);
+    ::fwData::TransformationMatrix3D::sptr resultX = handEyeApi.computeHandEye();
 
-    auto sig = matrix3D->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+    handEyeApi.setTransformLists(BMatrices, AMatrices);
+    ::fwData::TransformationMatrix3D::sptr resultZ = handEyeApi.computeHandEye();
+
+    // Result needs to be inverted because we want the position of the camera relative to the tracking system
+    if(!m_movingCamera)
+    {
+        ::fwDataTools::TransformationMatrix3D::invert(resultX, matrixX);
+    }
+    else
+    {
+        matrixX->deepCopy(resultX);
+    }
+
+    auto sig = matrixX->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
     sig->asyncEmit();
-
 }
 
 } // trackingCalibration

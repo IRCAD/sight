@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017.
+ * FW4SPL - Copyright (C) IRCAD, 2017-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -58,8 +58,8 @@ void HandEyeApi::pushData(const std::array<double, 16> _m1,
 
 //-------------------------------------------------------------------------------------------------
 
-void HandEyeApi::pushMatrix(const fwData::TransformationMatrix3D::csptr _m1,
-                            const fwData::TransformationMatrix3D::csptr _m2)
+void HandEyeApi::pushMatrix(const ::fwData::TransformationMatrix3D::csptr _m1,
+                            const ::fwData::TransformationMatrix3D::csptr _m2)
 {
 
     ::Eigen::Matrix< double, 4, 4, ::Eigen::RowMajor > mat1, mat2;
@@ -73,15 +73,33 @@ void HandEyeApi::pushMatrix(const fwData::TransformationMatrix3D::csptr _m1,
 
 //-------------------------------------------------------------------------------------------------
 
+void HandEyeApi::setTransformLists(const std::vector< ::fwData::TransformationMatrix3D::csptr > _m1,
+                                   const std::vector< ::fwData::TransformationMatrix3D::csptr > _m2)
+{
+    SLM_ASSERT("Input vectors must have the same size", _m1.size() == _m2.size());
+
+    ::Eigen::Matrix< double, 4, 4, ::Eigen::RowMajor > mat1, mat2;
+
+    for(size_t i = 0; i < _m1.size(); ++i)
+    {
+        mat1 = ::eigenTools::helper::toEigen<double>(_m1.at(i));
+        mat2 = ::eigenTools::helper::toEigen<double>(_m2.at(i));
+
+        m_transfoList1.push_back(mat1);
+        m_transfoList2.push_back(mat2);
+    }
+}
+
+//-------------------------------------------------------------------------------------------------
+
 ::fwData::TransformationMatrix3D::sptr HandEyeApi::computeHandEye()
 {
     this->initializeData();
-    ::Eigen::Matrix4d result, iresult;
+    ::Eigen::Matrix4d result;
     ::camodocal::HandEyeCalibration::setVerbose( false );
     ::camodocal::HandEyeCalibration::estimateHandEyeScrew(m_rvecs1, m_tvecs1, m_rvecs2, m_tvecs2, result);
 
-    iresult                                    = result.inverse();
-    ::fwData::TransformationMatrix3D::sptr mat = ::eigenTools::helper::toF4s(iresult);
+    ::fwData::TransformationMatrix3D::sptr mat = ::eigenTools::helper::toF4s(result);
 
     this->clearData();
 

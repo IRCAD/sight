@@ -299,6 +299,10 @@
             <createTimestamp>true</createTimestamp>
         </service>
 
+        <service uid="displayCalibrationInfo" type="::uiCalibration::SDisplayCalibrationInfo">
+            <in key="calInfo1" uid="calibInfo" />
+        </service>
+
         <service uid="handEyeEditor" type="::uiCalibration::SCalibrationInfoEditor" autoConnect="yes">
             <inout key="calInfo1" uid="calibInfo" />
         </service>
@@ -350,6 +354,7 @@
             <in key="matrixVector1" uid="matrixVectorPose" />
             <in key="matrixVector2" uid="matrixVectorSensor" />
             <inout key="matrix" uid="handEyeMatrix" />
+            <config movingCamera="false" />
         </service>
 
         <service uid="chessboardDetector" type="::videoCalibration::SChessBoardDetector" worker="detectorWorker" >
@@ -555,6 +560,11 @@
             <slot>actionStartOpenIGTLinkClient/show</slot>
         </connect>
 
+        <connect>
+            <signal>calibInfo/getRecord</signal>
+            <slot>displayCalibrationInfo/displayImage</slot>
+        </connect>
+
         <!-- *************************** End Connections *************************** -->
 
         <start uid="mainView" />
@@ -572,6 +582,7 @@
         <start uid="cameraSelector" />
         <start uid="handEyeMatrixWriter" />
         <start uid="loadCsv" />
+        <start uid="displayCalibrationInfo" />
         <!-- VTK scene 'frameView' -->
         <start uid="videoAdpt" />
         <!-- VTK scene 'resultView' -->

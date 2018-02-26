@@ -36,11 +36,15 @@ public:
     HANDEYECALIBRATION_API void pushData(const std::array<double, 16> _m1,
                                          const std::array<double, 16> _m2);
     /**
-     * @brief Push two synchronized fwData TransformationMatrix3D
-     *
+     * @brief Push two synchronized ::fwData::TransformationMatrix3D
      **/
     HANDEYECALIBRATION_API void pushMatrix(const ::fwData::TransformationMatrix3D::csptr _m1,
                                            const ::fwData::TransformationMatrix3D::csptr _m2);
+    /**
+     * @brief Set two synchronized vector of ::fwData::TransformationMatrix3D
+     **/
+    HANDEYECALIBRATION_API void setTransformLists(const std::vector< ::fwData::TransformationMatrix3D::csptr > _m1,
+                                                  const std::vector< ::fwData::TransformationMatrix3D::csptr > _m2);
 
     /**
      * @brief computeHandEye will first prepare the datas and put it into 'camodocal' hand eye calibration
