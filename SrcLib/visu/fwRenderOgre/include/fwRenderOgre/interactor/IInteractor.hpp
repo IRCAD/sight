@@ -48,6 +48,14 @@ public:
         UNKNOWN
     };
 
+    enum Modifier
+    {
+        SHIFT,
+        CONTROL,
+        META,
+        ALT,
+    };
+
     /**
      * @brief Class used to register a class factory in factory registry.
      * This class defines also the object factory ( 'create' )

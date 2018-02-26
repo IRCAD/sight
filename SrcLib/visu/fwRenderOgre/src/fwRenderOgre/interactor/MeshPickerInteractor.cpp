@@ -11,8 +11,6 @@
 
 #include <fwCom/Signal.hxx>
 
-#include <QtCore/QEvent>
-
 fwRenderOgreRegisterInteractorMacro( ::fwRenderOgre::interactor::MeshPickerInteractor );
 
 namespace fwRenderOgre
@@ -55,7 +53,7 @@ void MeshPickerInteractor::buttonPressEvent(MouseButton button, int x, int y)
             {{static_cast<double>(click.x), static_cast<double>(click.y), static_cast<double>(click.z)}};
             point->setCoord(cords);
 
-            if(button == Qt::LeftButton)
+            if(button == MouseButton::LEFT)
             {
                 m_sigAddPoint->asyncEmit(::fwData::Object::dynamicCast(point));
             }
@@ -93,7 +91,7 @@ void MeshPickerInteractor::buttonReleaseEvent(MouseButton, int, int)
 
 void MeshPickerInteractor::keyPressEvent(int k)
 {
-    if(k == Qt::Key_Control)
+    if(k == Modifier::CONTROL)
     {
         m_control = true;
     }
