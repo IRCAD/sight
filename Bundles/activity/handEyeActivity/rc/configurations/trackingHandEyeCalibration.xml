@@ -226,7 +226,6 @@
         <service uid="actionStartCamera" type="::gui::action::SSlotCaller">
             <slots>
                 <slot>frameGrabber/startCamera</slot>
-                <slot>csvReader/startReading</slot>
             </slots>
         </service>
 
@@ -297,7 +296,7 @@
         <!-- choose location of csv file -->
         <service uid="loadCsv" type="::gui::action::SSlotCaller">
             <slots>
-                <slot>csvReader/configureWithIHM</slot>
+                <slot>csvReader/startReading</slot>
             </slots>
         </service>
 
@@ -327,7 +326,7 @@
                 <key uid="matrix2" />
                 <key uid="matrix3" />
             </inout>
-            <framerate>1</framerate>
+            <framerate>30</framerate>
         </service>
 
         <service uid="trackerTLMatrixListener" type="::ioIGTL::STDataListener">
@@ -571,11 +570,13 @@
 
         <connect>
             <signal>cameraSelector/configuredFile</signal>
-            <slot>loadCsv/update</slot>
             <slot>actionStartOpenIGTLinkClient/hide</slot>
             <slot>actionStopOpenIGTLinkClient/hide</slot>
             <slot>configureClient/hide</slot>
+            <slot>actionPrevious/show</slot>
+            <slot>actionNext/show</slot>
             <slot>actionStopOpenIGTLinkClient/update</slot>
+            <slot>loadCsv/update</slot>
         </connect>
 
         <connect>
