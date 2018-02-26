@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -133,8 +133,8 @@ fwID::IDType fwID::generate() const
 
 void fwID::resetID()
 {
-    ::fwCore::mt::WriteLock dicoLock(s_dictionaryMutex);
     ::fwCore::mt::WriteLock lock(m_idMutex);
+    ::fwCore::mt::WriteLock dicoLock(s_dictionaryMutex);
     fwID::removeIDfromDictionary(m_id);
     m_id.clear();
 }
