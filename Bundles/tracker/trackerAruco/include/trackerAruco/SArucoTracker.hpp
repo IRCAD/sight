@@ -47,14 +47,12 @@ namespace trackerAruco
                 <key uid="PatientTimeline" />
                 <key uid="TableTimeline" />
             </inout>
-            <config>
-                <track>
-                    <marker id="42,1,100,54" />
-                    <marker id="32,10" />
-                    <marker id="52,45" />
-                </track>
-                <debugMarkers>yes</debugMarkers>
-            </config>
+            <track>
+                <marker id="42,1,100,54" />
+                <marker id="32,10" />
+                <marker id="52,45" />
+            </track>
+            <debugMarkers>yes</debugMarkers>
             <dropObj>true</dropObj>
         </service>
    @endcode

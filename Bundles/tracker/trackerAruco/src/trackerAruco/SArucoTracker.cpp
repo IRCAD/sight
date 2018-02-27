@@ -52,7 +52,7 @@ SArucoTracker::SArucoTracker() noexcept :
     newSlot(s_SET_BOOL_PARAMETER_SLOT, &SArucoTracker::setBoolParameter, this);
     newSlot(s_SET_ENUM_PARAMETER_SLOT, &SArucoTracker::setEnumParameter, this);
 
-    // initialize detector parameters
+    // Initialize detector parameters
     m_detectorParams = ::cv::aruco::DetectorParameters::create();
 
     // We need to tweak some parameters to adjust detection in our cases.
@@ -85,16 +85,14 @@ void SArucoTracker::configuring()
 {
     this->::arServices::ITracker::configuring();
 
-    const ::fwServices::IService::ConfigType config = this->getConfigTree();
+    const auto config = this->getConfigTree();
 
-    const ::fwServices::IService::ConfigType& cfgElement = config.get_child("config");
-
-    const ::fwServices::IService::ConfigType& trackCfg = cfgElement.get_child("track");
+    const auto& trackCfg = config.get_child("track");
 
     BOOST_FOREACH(const auto& elt,  trackCfg.equal_range("marker"))
     {
-        const ::fwServices::IService::ConfigType& cfg = elt.second;
-        const std::string markersIDStr                = cfg.get< std::string >("<xmlattr>.id");
+        const auto& cfg                = elt.second;
+        const std::string markersIDStr = cfg.get< std::string >("<xmlattr>.id");
         ::boost::tokenizer<> tok(markersIDStr);
         MarkerIDType markersID;
         for( const auto& it: tok)
@@ -106,9 +104,9 @@ void SArucoTracker::configuring()
 
     }
 
-    // get the debug markers flag
-    m_debugMarkers = config.get<bool>("debugMarkers", false);
-
+    // Get the debug markers flag
+    const std::string markerdebugging = config.get< std::string >("debugMarkers", "no");
+    m_debugMarkers = (markerdebugging == "yes" ? true : false);
 }
 
 //-----------------------------------------------------------------------------
