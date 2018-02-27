@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __GUI_ACTION_SSTARTER_HPP__
-#define __GUI_ACTION_SSTARTER_HPP__
+#pragma once
 
 #include "gui/config.hpp"
 
@@ -33,6 +32,14 @@ namespace action
    @endcode
  * If the service is stopped, the service specified by "Uid_of_the_service" is started and updated. Otherwise it is just
  * updated.
+ *
+ *   - Only start a service :
+ * @code{.xml}
+           <service uid="actionUid" type="::fwGui::IActionSrv" impl="::gui::action::SStarter" autoConnect="no">
+              <start_only uid="Uid_of_the_service" />
+           </service>
+   @endcode
+ * If the service is stopped, the service specified by "Uid_of_the_service" is started. Otherwise nothing happens.
  *
  *   - Start a service if exists :
  * @code{.xml}
@@ -97,6 +104,7 @@ protected:
         STOP,
         START_OR_STOP,
         START_IF_EXISTS,
+        START_ONLY,
         STOP_IF_EXISTS,
         DO_NOTHING
     };
@@ -138,5 +146,3 @@ private:
 
 } // namespace action
 } // namespace gui
-
-#endif /*__GUI_ACTION_SSTARTER_HPP__*/

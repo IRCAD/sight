@@ -158,6 +158,19 @@ void SStarter::updating()
                     }
                     break;
                 }
+                case START_ONLY:
+                {
+                    if(service->isStopped())
+                    {
+                        service->start();
+                        m_idStartedSrvSet.insert(uid);
+                    }
+                    else
+                    {
+                        OSLM_WARN("Service " << service->getID() << " is not stopped");
+                    }
+                    break;
+                }
                 default:
                 {
                     OSLM_FATAL("There is no action ("<< action
@@ -210,6 +223,10 @@ void SStarter::configuring()
         else if ( actionType == "stop_if_exists" )
         {
             action = STOP_IF_EXISTS;
+        }
+        else if ( actionType == "start_only" )
+        {
+            action = START_ONLY;
         }
         else
         {
