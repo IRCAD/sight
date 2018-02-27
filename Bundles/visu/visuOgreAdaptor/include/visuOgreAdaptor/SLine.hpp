@@ -9,6 +9,8 @@
 #include "visuOgreAdaptor/config.hpp"
 #include "visuOgreAdaptor/SMaterial.hpp"
 
+#include <fwData/Color.hpp>
+
 #include <fwRenderOgre/IAdaptor.hpp>
 #include <fwRenderOgre/ITransformable.hpp>
 
@@ -32,7 +34,7 @@ namespace visuOgreAdaptor
  * @section XML XML Configuration
  * @code{.xml}
     <service uid="..." type="::visuOgreAdaptor::SLine">
-        <config layer="default" transform="transformUID" length="30" />
+        <config layer="default" transform="transformUID" length="30" color="#0000FF"/>
     </service>
    @endcode
  * @subsection Configuration Configuration:
@@ -91,6 +93,8 @@ private:
     ::fwData::Material::sptr m_material;
     /// Handles the length of the line (in mm)
     float m_length;
+    /// Handles the color of the line
+    ::fwData::Color::sptr m_color;
     /// Handles the visibility of the line
     bool m_isVisible;
 

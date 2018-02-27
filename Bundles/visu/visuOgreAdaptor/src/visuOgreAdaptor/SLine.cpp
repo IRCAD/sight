@@ -81,6 +81,11 @@ void SLine::configuring()
 
     this->setTransformId(transformId);
     m_length = config.get<float>(s_LENGTH_CONFIG, 50.f);
+
+    const std::string color = config.get("color", "#FFFFFF");
+
+    m_color = ::fwData::Color::New();
+    m_color->setRGBA(color);
 }
 
 //-----------------------------------------------------------------------------
@@ -113,9 +118,9 @@ void SLine::starting()
     // Draw
     line->begin(materialAdaptor->getMaterialName(), ::Ogre::RenderOperation::OT_LINE_LIST);
     line->position(0, 0, 0);
-    line->colour(1.0f, 0, 0);
+    line->colour(m_color->red(), m_color->green(), m_color->blue());
     line->position(0, 0, m_length);
-    line->colour(1.0f, 0, 0);
+    line->colour(m_color->red(), m_color->green(), m_color->blue() );
     line->end();
 
     // Set the bounding box of your Manual Object
