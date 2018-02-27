@@ -118,7 +118,7 @@ inline void PointList::pushBack(const ::fwData::Point::sptr& p)
 
 inline void PointList::remove(size_t _index)
 {
-    const auto it = m_vPoints.begin() + _index;
+    const auto it = m_vPoints.begin() + static_cast<ptrdiff_t>(_index);
     this->m_vPoints.erase(it);
 }
 
