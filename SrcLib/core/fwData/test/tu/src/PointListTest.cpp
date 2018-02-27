@@ -131,5 +131,26 @@ void PointListTest::pushTest()
 
 //------------------------------------------------------------------------------
 
+void PointListTest::clearTest()
+{
+    const size_t nbPoints = 42;
+    ::fwData::PointList::sptr pl = ::fwData::PointList::New();
+
+    CPPUNIT_ASSERT(pl->getPoints().size() == 0);
+    pl->clear();
+    CPPUNIT_ASSERT(pl->getPoints().size() == 0);
+
+    // Build a list
+    for(size_t i = 0; i < nbPoints; i++)
+    {
+        const auto p = ::fwData::Point::New(.0f, .0f, .0f);
+        pl->pushBack(p);
+    }
+
+    CPPUNIT_ASSERT(pl->getPoints().size() == nbPoints);
+    pl->clear();
+    CPPUNIT_ASSERT(pl->getPoints().size() == 0);
+}
+
 } //namespace ut
 } //namespace fwData

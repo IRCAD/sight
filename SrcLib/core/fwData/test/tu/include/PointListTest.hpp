@@ -25,6 +25,7 @@ private:
     CPPUNIT_TEST( getterTest );
     CPPUNIT_TEST( setterTest );
     CPPUNIT_TEST( pushTest );
+    CPPUNIT_TEST( clearTest );
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -35,6 +36,7 @@ public:
     void getterTest();
     void setterTest();
     void pushTest();
+    void clearTest();
 
 };
 

@@ -4,8 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWDATATOOLS_UT_HELPER_POINTLISTTEST_HPP__
-#define __FWDATATOOLS_UT_HELPER_POINTLISTTEST_HPP__
+#pragma once
 
 #include <fwData/PointList.hpp>
 
@@ -23,6 +22,8 @@ private:
     CPPUNIT_TEST( computeDistance );
     CPPUNIT_TEST( transform );
     CPPUNIT_TEST( associate );
+    CPPUNIT_TEST( removeClosestPointNominal );
+    CPPUNIT_TEST( removeClosestPointExtreme );
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -35,8 +36,10 @@ public:
     void transform();
 
     void associate();
+
+    void removeClosestPointNominal();
+
+    void removeClosestPointExtreme();
 };
 } //namespace ut
 } //namespace fwDataTools
-
-#endif //__FWDATATOOLS_UT_HELPER_POINTLISTTEST_HPP__
