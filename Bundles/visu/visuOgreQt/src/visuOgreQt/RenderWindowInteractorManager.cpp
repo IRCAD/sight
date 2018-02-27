@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -108,8 +108,8 @@ void RenderWindowInteractorManager::connectToContainer()
         SLM_ERROR("RenderService wrongly instantiated. ");
     }
 
-    QObject::connect(m_qOgreWidget, SIGNAL(rayCastRequested(int, int, int, int)), this,
-                     SLOT(onRayCastRequested(int, int, int, int)));
+    QObject::connect(m_qOgreWidget, SIGNAL(rayCastRequested(int,int,int,int)), this,
+                     SLOT(onRayCastRequested(int,int,int,int)));
     QObject::connect(m_qOgreWidget, SIGNAL(cameraClippingComputation()), this, SLOT(onCameraClippingComputation()));
     QObject::connect(m_qOgreWidget, SIGNAL(interacted(
                                                ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo)), this,
@@ -120,8 +120,8 @@ void RenderWindowInteractorManager::connectToContainer()
 
 void RenderWindowInteractorManager::disconnectInteractor()
 {
-    QObject::disconnect(m_qOgreWidget, SIGNAL(rayCastRequested(int, int, int, int)), this,
-                        SLOT(onRayCastRequested(int, int, int, int)));
+    QObject::disconnect(m_qOgreWidget, SIGNAL(rayCastRequested(int,int,int,int)), this,
+                        SLOT(onRayCastRequested(int,int,int,int)));
     QObject::disconnect(m_qOgreWidget, SIGNAL(cameraClippingComputation()), this, SLOT(onCameraClippingComputation()));
     QObject::disconnect(m_qOgreWidget, SIGNAL(interacted(
                                                   ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo)), this,
@@ -154,7 +154,7 @@ int RenderWindowInteractorManager::getFrameId() const
 
 //-----------------------------------------------------------------------------
 
-::Ogre::RenderWindow* RenderWindowInteractorManager::getRenderWindow()
+::Ogre::RenderTarget* RenderWindowInteractorManager::getRenderTarget()
 {
     return m_qOgreWidget->getOgreRenderWindow();
 }
@@ -198,4 +198,3 @@ void RenderWindowInteractorManager::onRayCastRequested(int _x, int _y, int _w, i
 //-----------------------------------------------------------------------------
 
 } // namespace visuOgreQt
-

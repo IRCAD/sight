@@ -111,7 +111,7 @@ public:
      * @brief setRenderWindow
      * Set the render window containing this layer
      */
-    FWRENDEROGRE_API void setRenderWindow(::Ogre::RenderWindow* renderWindow);
+    FWRENDEROGRE_API void setRenderTarget(::Ogre::RenderTarget* _renderTarget);
     /**
      * @brief setID
      * Set the associated scene manager ID of this viewport
@@ -272,7 +272,7 @@ private:
     ::Ogre::SceneManager* m_sceneManager;
 
     /// Ogre render window containing this viewport.
-    ::Ogre::RenderWindow* m_renderWindow;
+    ::Ogre::RenderTarget* m_renderTarget;
 
     /// Ogre viewport representing this layer.
     ::Ogre::Viewport* m_viewport;

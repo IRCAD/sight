@@ -311,7 +311,7 @@ void Utils::destroyOgreRoot()
 
 //------------------------------------------------------------------------------
 
-::Ogre::Image Utils::convertFwDataImageToOgreImage( const ::fwData::Image::csptr imageFw)
+::Ogre::Image Utils::convertToOgreImage( const ::fwData::Image::csptr imageFw)
 {
     SLM_ASSERT("Image is null", imageFw);
 
@@ -344,102 +344,235 @@ void Utils::destroyOgreRoot()
 
 //------------------------------------------------------------------------------
 
-// Only handles RGB for now, since fwData::Image only does so.
+void Utils::convertFromOgreTexture( ::Ogre::TexturePtr _texture, const ::fwData::Image::sptr _imageFw)
+{
+    SLM_ASSERT("Texture is null", _texture);
+    SLM_ASSERT("Image is null", _imageFw);
+
+    ::fwData::Image::SizeType imageSize;
+
+    imageSize.push_back(_texture->getWidth());
+
+    if(_texture->getHeight() > 0)
+    {
+        imageSize.push_back(_texture->getHeight());
+
+        if(_texture->getDepth() > 0)
+        {
+            imageSize.push_back(_texture->getDepth());
+        }
+    }
+    _imageFw->setSize(imageSize);
+
+    Utils::setPixelFormatFromOgre(_imageFw, _texture->getFormat());
+    ::fwData::Image::SpacingType spacing(3, 1);
+    ::fwData::Image::OriginType origin(3, 0);
+
+    _imageFw->setSpacing(spacing);
+    _imageFw->setOrigin(origin);
+    _imageFw->allocate();
+
+    // Get the pixel buffer
+    ::Ogre::HardwarePixelBufferSharedPtr pixelBuffer = _texture->getBuffer();
+
+    // Lock the pixel buffer and copy it
+    {
+        ::fwDataTools::helper::Image imageHelper(_imageFw);
+
+        auto dstBuffer = reinterpret_cast< std::uint8_t* >(imageHelper.getBuffer());
+
+        pixelBuffer->lock(::Ogre::HardwareBuffer::HBL_READ_ONLY);
+        const ::Ogre::PixelBox& pixelBox = pixelBuffer->getCurrentLock();
+        auto srcBuffer                   = reinterpret_cast< const std::uint8_t* >(pixelBox.data);
+
+        std::memcpy(dstBuffer, srcBuffer, pixelBox.getConsecutiveSize());
+
+        // Unlock the pixel buffer
+        pixelBuffer->unlock();
+    }
+
+}
+
+//------------------------------------------------------------------------------
+
 ::Ogre::PixelFormat Utils::getPixelFormatOgre(::fwData::Image::csptr imageFw)
 {
-    const std::string pixelType    = ::fwTools::getString( imageFw->getPixelType() );
-    const size_t numberOfComponent = imageFw->getNumberOfComponents();
+    const ::fwTools::Type pixelType = imageFw->getType();
+    const size_t numberOfComponent  = imageFw->getNumberOfComponents();
 
     if(numberOfComponent == 1)
     {
-        if(pixelType == "unsigned char")
+        if(pixelType == ::fwTools::Type::s_UINT8)
         {
             // uint8
             return ::Ogre::PF_L8;
         }
-        else if(pixelType == "signed short")
+        else if(pixelType == ::fwTools::Type::s_INT16)
         {
             // int16
             return ::Ogre::PF_L16;
         }
-        else if(pixelType == "unsigned short")
+        else if(pixelType == ::fwTools::Type::s_UINT16)
         {
             // uint16
             return ::Ogre::PF_R16_UINT;
         }
-        else if (pixelType == "float")
+        else if (pixelType == ::fwTools::Type::s_FLOAT)
         {
             return ::Ogre::PF_FLOAT32_R;
         }
-        FW_RAISE("Format '" + pixelType + "' not handled");
+        FW_RAISE("Format '" + pixelType.string() + "' not handled");
     }
 
     if(numberOfComponent == 2)
     {
-        if(pixelType == "unsigned char")
+        if(pixelType == ::fwTools::Type::s_UINT8)
         {
             // uint8
             return ::Ogre::PF_RG8;
         }
-        else if(pixelType == "signed short")
+        else if(pixelType == ::fwTools::Type::s_INT8)
         {
             // int16
             return ::Ogre::PF_R8G8_SNORM;
         }
-        FW_RAISE("Format '" + pixelType + "' not handled");
+        FW_RAISE("Format '" + pixelType.string() + "' not handled");
     }
 
     // PixelFormat in little endian
-    if(pixelType == "unsigned char")
+    if(pixelType == ::fwTools::Type::s_UINT8)
     {
         // uint8
         return numberOfComponent == 3 ? ::Ogre::PF_BYTE_RGB : ::Ogre::PF_BYTE_RGBA;
     }
-    else if (pixelType == "unsigned short")
+    else if (pixelType == ::fwTools::Type::s_UINT16)
     {
         // uint16
         return numberOfComponent == 3 ? ::Ogre::PF_R16G16B16_UINT : ::Ogre::PF_R16G16B16A16_UINT;
     }
-    else if (pixelType == "unsigned int")
+    else if (pixelType == ::fwTools::Type::s_UINT32)
     {
         // uint32
         return numberOfComponent == 3 ? ::Ogre::PF_R32G32B32_UINT : ::Ogre::PF_R32G32B32A32_UINT;
     }
-    else if (pixelType == "signed char" )
+    else if (pixelType == ::fwTools::Type::s_INT8 )
     {
         // int8
         return numberOfComponent == 3 ? ::Ogre::PF_R8G8B8_SINT : ::Ogre::PF_R8G8B8A8_SINT;
     }
-    else if (pixelType == "signed short")
+    else if (pixelType == ::fwTools::Type::s_INT16)
     {
         // int16
         return numberOfComponent == 3 ? ::Ogre::PF_R16G16B16_SINT : ::Ogre::PF_R16G16B16A16_SINT;
     }
-    else if (pixelType == "signed int")
+    else if (pixelType == ::fwTools::Type::s_INT32)
     {
         // int32
         return numberOfComponent == 3 ? ::Ogre::PF_R32G32B32_SINT : ::Ogre::PF_R32G32B32A32_SINT;
     }
-    else if (pixelType == "unsigned long" )
-    {
-        // int64
-        return numberOfComponent == 3 ? ::Ogre::PF_SHORT_RGB : ::Ogre::PF_SHORT_RGBA;
-    }
-    else if (pixelType == "signed long")
-    {
-        // uint64
-        return numberOfComponent == 3 ? ::Ogre::PF_R16G16B16_UINT : ::Ogre::PF_R16G16B16A16_UINT;
-    }
-    else if (pixelType == "float")
+    else if (pixelType == ::fwTools::Type::s_FLOAT)
     {
         return numberOfComponent == 3 ? ::Ogre::PF_FLOAT32_RGB : ::Ogre::PF_FLOAT32_RGBA;
     }
-    else if (pixelType == "double")
+    else if (pixelType == ::fwTools::Type::s_DOUBLE)
     {
         OSLM_FATAL("Pixel format not handled.");
     }
     SLM_WARN("Pixel format not found, trying with the default 8-bits RGBA.");
     return ::Ogre::PF_BYTE_RGBA;
+}
+
+//------------------------------------------------------------------------------
+
+void Utils::setPixelFormatFromOgre( ::fwData::Image::sptr _image, ::Ogre::PixelFormat _format )
+{
+    // Set the number of components;
+    size_t numComponents;
+    switch(_format)
+    {
+        case ::Ogre::PF_L8:
+        case ::Ogre::PF_L16:
+        case ::Ogre::PF_R16_UINT:
+        case ::Ogre::PF_FLOAT32_R: numComponents = 1; break;
+
+        case ::Ogre::PF_RG8:
+        case ::Ogre::PF_R8G8_SNORM:  numComponents = 2; break;
+
+        case ::Ogre::PF_BYTE_RGB:
+        case ::Ogre::PF_R8G8B8:
+        case ::Ogre::PF_R16G16B16_UINT:
+        case ::Ogre::PF_R32G32B32_UINT:
+        case ::Ogre::PF_R8G8B8_SINT:
+        case ::Ogre::PF_R16G16B16_SINT:
+        case ::Ogre::PF_R32G32B32_SINT:
+        case ::Ogre::PF_SHORT_RGB:
+        case ::Ogre::PF_FLOAT32_RGB:  numComponents = 3; break;
+
+        case ::Ogre::PF_BYTE_RGBA:
+        case ::Ogre::PF_A8R8G8B8:
+        case ::Ogre::PF_B8G8R8A8:
+        case ::Ogre::PF_R8G8B8A8:
+        case ::Ogre::PF_X8R8G8B8:
+        case ::Ogre::PF_X8B8G8R8:
+        case ::Ogre::PF_R16G16B16A16_UINT:
+        case ::Ogre::PF_R32G32B32A32_UINT:
+        case ::Ogre::PF_R8G8B8A8_SINT:
+        case ::Ogre::PF_R16G16B16A16_SINT:
+        case ::Ogre::PF_R32G32B32A32_SINT:
+        case ::Ogre::PF_SHORT_RGBA:
+        case ::Ogre::PF_FLOAT32_RGBA: numComponents = 4; break;
+
+        default:
+            OSLM_ERROR("Pixel format " << _format << " not found, defaults to 4 components.");
+            numComponents = 4;
+    }
+    _image->setNumberOfComponents(numComponents);
+
+    // Set the pixel type
+
+    ::fwTools::Type pixelType;
+    switch(_format)
+    {
+        case ::Ogre::PF_L8:
+        case ::Ogre::PF_RG8:
+        case ::Ogre::PF_R8G8B8:
+        case ::Ogre::PF_A8R8G8B8:
+        case ::Ogre::PF_B8G8R8A8:
+        case ::Ogre::PF_R8G8B8A8:
+        case ::Ogre::PF_X8R8G8B8:
+        case ::Ogre::PF_X8B8G8R8:
+        case ::Ogre::PF_BYTE_RGB:
+        case ::Ogre::PF_BYTE_RGBA: pixelType = ::fwTools::Type::s_UINT8; break;
+
+        case ::Ogre::PF_R8G8_SNORM:
+        case ::Ogre::PF_R8G8B8_SINT:
+        case ::Ogre::PF_R8G8B8A8_SINT: pixelType = ::fwTools::Type::s_INT8; break;
+
+        case ::Ogre::PF_L16:
+        case ::Ogre::PF_R16G16B16_UINT:
+        case ::Ogre::PF_R16_UINT:
+        case ::Ogre::PF_R16G16B16A16_UINT: pixelType = ::fwTools::Type::s_UINT16; break;
+
+        case ::Ogre::PF_SHORT_RGB:
+        case ::Ogre::PF_SHORT_RGBA:
+        case ::Ogre::PF_R16G16B16_SINT:
+        case ::Ogre::PF_R16G16B16A16_SINT: pixelType = ::fwTools::Type::s_INT16; break;
+
+        case ::Ogre::PF_R32G32B32_UINT:
+        case ::Ogre::PF_R32G32B32A32_UINT:  pixelType = ::fwTools::Type::s_UINT32; break;
+
+        case ::Ogre::PF_R32G32B32_SINT:
+        case ::Ogre::PF_R32G32B32A32_SINT: pixelType = ::fwTools::Type::s_INT32; break;
+
+        case ::Ogre::PF_FLOAT32_R:
+        case ::Ogre::PF_FLOAT32_RGB:
+        case ::Ogre::PF_FLOAT32_RGBA: pixelType = ::fwTools::Type::s_FLOAT; break;
+
+        default:
+            OSLM_ERROR("Pixel format " << _format << " not found, defaults to s_UINT8.");
+            pixelType = ::fwTools::Type::s_UINT8;
+    }
+    _image->setType(pixelType);
 }
 
 //------------------------------------------------------------------------------
@@ -454,7 +587,7 @@ void Utils::loadOgreTexture(const ::fwData::Image::csptr& _image, ::Ogre::Textur
         const ::Ogre::PixelFormat pixelFormat = getPixelFormatOgre( _image );
 
         // Conversion from fwData::Image to ::Ogre::Image
-        ::Ogre::Image ogreImage = ::fwRenderOgre::Utils::convertFwDataImageToOgreImage(_image);
+        ::Ogre::Image ogreImage = ::fwRenderOgre::Utils::convertToOgreImage(_image);
 
         if( _texture->getWidth() != ogreImage.getWidth() ||
             _texture->getHeight() != ogreImage.getHeight() ||

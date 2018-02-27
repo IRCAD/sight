@@ -97,8 +97,6 @@ void Window::initialise()
     /*
        We need to supply the low level OS window handle to this QWindow so that Ogre3D knows where to draw
        the scene. Below is a cross-platform method on how to do this.
-       If you set both options (externalWindowHandle and parentWindowHandle) this code will work with OpenGL
-       and DirectX.
      */
 #if defined(Q_OS_MAC) || defined(Q_OS_WIN)
     parameters["externalWindowHandle"] = Ogre::StringConverter::toString((size_t)(this->winId()));
@@ -116,9 +114,6 @@ void Window::initialise()
     parameters["contextProfile"] = Ogre::String("1");
 #endif
 
-    // We create the renderWindow with a dummy size of 1 by 1, otherwise we would have to wait for the widget to
-    // be painted. But then, the starting process of the render service and its adaptors becomes quite complicated.
-    // We did that in the past, but now we use this trick to be able to start everything at once.
     m_ogreRenderWindow = m_ogreRoot->createRenderWindow("Widget-RenderWindow_" + std::to_string(m_id),
                                                         static_cast<unsigned int>(this->width()),
                                                         static_cast<unsigned int>(this->height()),
@@ -191,6 +186,7 @@ void Window::destroyWindow()
     {
         ::fwRenderOgre::WindowManager::sptr mgr = ::fwRenderOgre::WindowManager::get();
         mgr->unregisterWindow(m_ogreRenderWindow);
+        m_ogreRenderWindow = nullptr;
     }
 
     if (m_lastPosLeftClick)

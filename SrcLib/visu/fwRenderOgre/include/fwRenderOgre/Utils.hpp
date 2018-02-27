@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWRENDEROGRE_UTILS_HPP__
-#define __FWRENDEROGRE_UTILS_HPP__
+#pragma once
 
 #include "fwRenderOgre/config.hpp"
 
@@ -65,11 +64,17 @@ public:
     FWRENDEROGRE_API static void destroyOgreRoot();
 
     /**
-     * @brief convertFwDataImageToOgreImage
+     * @brief Convert an fw4spl image data into an ogre image
      * @param imageFw The FW4SPL Image to convert
      * @return Ogre image
      */
-    FWRENDEROGRE_API static ::Ogre::Image convertFwDataImageToOgreImage( const ::fwData::Image::csptr imageFw);
+    FWRENDEROGRE_API static ::Ogre::Image convertToOgreImage( const ::fwData::Image::csptr imageFw);
+
+    /**
+     * @brief Convert an Ogre texture into a fw4spl image data
+     */
+    FWRENDEROGRE_API static void convertFromOgreTexture( ::Ogre::TexturePtr _texture,
+                                                         const ::fwData::Image::sptr _imageFw);
 
     /**
      * @brief getPixelFormatOgre
@@ -77,6 +82,13 @@ public:
      * @return Pixel format of a fwData::Image
      */
     FWRENDEROGRE_API static ::Ogre::PixelFormat getPixelFormatOgre( ::fwData::Image::csptr imageFw );
+
+    /**
+     * @brief set the pixel format of an image from an Ogre pixel format
+     * @param _image The FW4SPL Image
+     * @param _format Pixel format of Ogre
+     */
+    FWRENDEROGRE_API static void setPixelFormatFromOgre( ::fwData::Image::sptr _image, ::Ogre::PixelFormat _format );
 
     /**
      * @brief loadOgreTexture
@@ -129,5 +141,3 @@ private:
 };
 
 } // namespace fwRenderOgre
-
-#endif // __FWRENDEROGRE_UTILS_HPP__

@@ -2,6 +2,7 @@
     <requirement id="dataReg" />
     <requirement id="servicesReg" />
     <requirement id="visuOgreQt" />
+
     <extension implements="::fwServices::registry::AppConfig">
         <id>TutoOgreGenericScene</id>
         <config>
@@ -44,6 +45,7 @@
                         <menuItem name="Open image" shortcut="Ctrl+I" />
                         <menuItem name="Open mesh" shortcut="Ctrl+M" />
                         <menuItem name="Open texture" shortcut="Ctrl+T" />
+                        <menuItem name="Render to texture" shortcut="Ctrl+R" />
                         <separator/>
                         <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
                     </layout>
@@ -52,6 +54,7 @@
                     <menuItem sid="actionOpenImage" start="yes" />
                     <menuItem sid="actionOpenMesh" start="yes" />
                     <menuItem sid="actionOpenTexture" start="yes" />
+                    <menuItem sid="actionRenderToTexture" start="yes" />
                     <menuItem sid="actionQuit" start="yes" />
                 </registry>
             </service>
@@ -65,6 +68,10 @@
             </service>
 
             <service uid="actionOpenTexture" type="::gui::action::SStarter">
+                <start uid="textureReader" />
+            </service>
+
+            <service uid="actionRenderToTexture" type="::gui::action::SSignal">
                 <start uid="textureReader" />
             </service>
 
@@ -170,7 +177,29 @@
                 <config layer="default" textureName="meshTexture" filtering="linear" wrapping="repeat" />
             </service>
 
-            <!-- #################################### End Generic Scene ########################################### -->
+            <!-- ##################################### End Generic Scene ########################################### -->
+
+            <!-- ################################### Begin offscreen scene ######################################### -->
+            <service uid="offscreenScene" type="::fwRenderOgre::SRender">
+                <inout key="offScreen" uid="texture" />
+                <scene width="1920" height="1080">
+                    <background topColor="#0000ff" bottomColor="#ff0000" topScale="0.7" bottomScale="1.0" />
+                    <layer id="default" depth="1" />
+                    <adaptor uid="meshOffscreenAdaptor" />
+                </scene>
+            </service>
+
+            <service uid="meshOffscreenAdaptor" type="::visuOgreAdaptor::SMesh" autoConnect="yes">
+                <inout key="mesh" uid="mesh" />
+                <config layer="default" />
+            </service>
+
+            <!-- ##################################### End offscreen Scene ######################################### -->
+
+            <connect>
+                <signal>actionRenderToTexture/triggered</signal>
+                <slot>offscreenScene/requestRender</slot>
+            </connect>
 
             <start uid="mainFrame" />
             <start uid="imageReader" />
@@ -182,6 +211,10 @@
             <start uid="materialAdaptor" />
             <start uid="meshAdaptor" />
             <start uid="negato3DAdaptor" />
+
+            <!-- Ogre scene 'offscreenScene' -->
+            <start uid="offscreenScene" />
+            <start uid="meshOffscreenAdaptor" />
 
         </config>
     </extension>
