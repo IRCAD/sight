@@ -13,11 +13,7 @@
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
 
-#include <fwData/Composite.hpp>
-
-#include <boost/filesystem/operations.hpp>
-#include <boost/filesystem/path.hpp>
-#include <boost/lexical_cast.hpp>
+#include <boost/foreach.hpp>
 #include <boost/tokenizer.hpp>
 
 #include <opencv2/core.hpp>
@@ -56,12 +52,25 @@ SArucoTracker::SArucoTracker() noexcept :
     newSlot(s_SET_BOOL_PARAMETER_SLOT, &SArucoTracker::setBoolParameter, this);
     newSlot(s_SET_ENUM_PARAMETER_SLOT, &SArucoTracker::setEnumParameter, this);
 
+    // initialize detector parameters
     m_detectorParams = ::cv::aruco::DetectorParameters::create();
-    //Default parameters
-    m_detectorParams->minCornerDistanceRate  = 0.01;
-    m_detectorParams->minMarkerDistanceRate  = 0.01;
-    m_detectorParams->minDistanceToBorder    = 1;
+
+    // We need to tweak some parameters to adjust detection in our cases.
+    // minimum distance between corners for detected markers relative to its perimeter (default 0.05)
+    m_detectorParams->minCornerDistanceRate = 0.01;
+    // minimum mean distance beetween two marker corners to be considered
+    // similar, so that the smaller one is removed.
+    // The rate is relative to the smaller perimeter of the two markers (default 0.05).
+    m_detectorParams->minMarkerDistanceRate = 0.01;
+    //minimum distance of any corner to the image border for detected markers (in pixels) (default 3)
+    m_detectorParams->minDistanceToBorder = 1;
+
+    // corner refinement method. (CORNER_REFINE_NONE, no refinement. CORNER_REFINE_SUBPIX,
+    // do subpixel refinement. CORNER_REFINE_CONTOUR use contour-Points)
     m_detectorParams->cornerRefinementMethod = ::cv::aruco::CornerRefineMethod::CORNER_REFINE_SUBPIX;
+
+    // For now only original aruco markers are used
+    m_dictionary = ::cv::aruco::Dictionary::get(::cv::aruco::DICT_ARUCO_ORIGINAL);
 
 }
 //-----------------------------------------------------------------------------
@@ -78,35 +87,28 @@ void SArucoTracker::configuring()
 
     const ::fwServices::IService::ConfigType config = this->getConfigTree();
 
-    ::fwRuntime::ConfigurationElement::sptr cfg = m_configuration->findConfigurationElement("config");
-    SLM_ASSERT("Tag 'config' not found.", cfg);
+    const ::fwServices::IService::ConfigType& cfgElement = config.get_child("config");
 
-    // gets marker informations
+    const ::fwServices::IService::ConfigType& trackCfg = cfgElement.get_child("track");
+
+    BOOST_FOREACH(const auto& elt,  trackCfg.equal_range("marker"))
     {
-        ::fwRuntime::ConfigurationElement::sptr cfgTrack = cfg->findConfigurationElement("track");
-        SLM_ASSERT("Tag 'track' not found.", cfgTrack);
-        typedef ::fwRuntime::ConfigurationElementContainer::Container CfgContainer;
-        for(const CfgContainer::value_type& elt : cfgTrack->getElements())
+        const ::fwServices::IService::ConfigType& cfg = elt.second;
+        const std::string markersIDStr                = cfg.get< std::string >("<xmlattr>.id");
+        ::boost::tokenizer<> tok(markersIDStr);
+        MarkerIDType markersID;
+        for( const auto& it: tok)
         {
-            SLM_ASSERT("Missing 'id' attribute.", elt->hasAttribute("id"));
-            const std::string markersIDStr = elt->getAttributeValue("id");
-            ::boost::tokenizer<> tok(markersIDStr);
-            MarkerIDType markersID;
-            for( const auto& it: tok)
-            {
-                const int id = ::boost::lexical_cast< int >(it);
-                markersID.push_back(id);
-            }
-            m_markers.push_back(markersID);
+            const int id = ::boost::lexical_cast< int >(it);
+            markersID.push_back(id);
         }
+        m_markers.push_back(markersID);
+
     }
 
     // get the debug markers flag
-    ::fwRuntime::ConfigurationElement::sptr cfgDebugMarkers = cfg->findConfigurationElement("debugMarkers");
-    if (cfgDebugMarkers && cfgDebugMarkers->getValue() == "yes")
-    {
-        m_debugMarkers = true;
-    }
+    m_debugMarkers = config.get<bool>("debugMarkers", false);
+
 }
 
 //-----------------------------------------------------------------------------
@@ -145,7 +147,6 @@ void SArucoTracker::tracking(::fwCore::HiResClock::HiResClockType& timestamp)
 
     if(!m_isInitialized)
     {
-
         ::arData::Camera::csptr arCam = this->getInput< ::arData::Camera >(s_CAMERA_INPUT);
 
         m_cameraParams.intrinsic  = ::cv::Mat::eye(3, 3, CV_64F);
@@ -179,8 +180,6 @@ void SArucoTracker::tracking(::fwCore::HiResClock::HiResClockType& timestamp)
 
         const std::uint8_t* frameBuff = &buffer->getElement(0);
 
-        const ::cv::Ptr< ::cv::aruco::Dictionary > dict =
-            ::cv::aruco::Dictionary::get(::cv::aruco::DICT_ARUCO_ORIGINAL);
         std::vector<std::vector< ::cv::Point2f> > detectedMarkers;
         std::vector< int > detectedMarkersIds;
 
@@ -197,8 +196,8 @@ void SArucoTracker::tracking(::fwCore::HiResClock::HiResClockType& timestamp)
         cv::cvtColor(inImage, grey, CV_BGRA2GRAY);
 
         // Ok, let's detect
-
-        ::cv::aruco::detectMarkers(grey, dict, detectedMarkers, detectedMarkersIds, m_detectorParams, ::cv::noArray(),
+        ::cv::aruco::detectMarkers(grey, m_dictionary, detectedMarkers, detectedMarkersIds, m_detectorParams,
+                                   ::cv::noArray(),
                                    m_cameraParams.intrinsic, m_cameraParams.distorsion);
 
         //Note: This draws all detected markers

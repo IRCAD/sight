@@ -15,8 +15,6 @@
 
 #include <fwCore/HiResClock.hpp>
 
-#include <fwData/Composite.hpp>
-
 #include <fwServices/macros.hpp>
 
 #include <opencv2/aruco.hpp>
@@ -51,9 +49,9 @@ namespace trackerAruco
             </inout>
             <config>
                 <track>
-                    <markers id="42,1,100,54" />
-                    <markers id="32,10" />
-                    <markers id="52,45" />
+                    <marker id="42,1,100,54" />
+                    <marker id="32,10" />
+                    <marker id="52,45" />
                 </track>
                 <debugMarkers>yes</debugMarkers>
             </config>
@@ -129,7 +127,7 @@ protected:
     TRACKERARUCO_API void starting() override;
 
     /**
-     * @brief Updating method : This method is used to update the service.
+     * @brief Updating method : This method does nothing
      */
     TRACKERARUCO_API void updating() override;
 
@@ -170,6 +168,8 @@ private:
     bool m_debugMarkers;
     /// aruco detector parameters structure
     ::cv::Ptr< ::cv::aruco::DetectorParameters > m_detectorParams;
+    ///Dictionary/Set of markers. It contains the inner codification
+    ::cv::Ptr< ::cv::aruco::Dictionary > m_dictionary;
     /// Signal to emit when
     DetectionDoneSignalType::sptr m_sigDetectionDone;
 };
