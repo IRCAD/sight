@@ -14,7 +14,9 @@
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
 
-#include <fwData/Color.hpp>
+#define FW_PROFILING_DISABLED
+#include <fwCore/Profiling.hpp>
+
 #include <fwData/mt/ObjectWriteLock.hpp>
 
 #include <fwRuntime/ConfigurationElementContainer.hpp>
@@ -22,8 +24,6 @@
 
 #include <fwServices/helper/Config.hpp>
 #include <fwServices/macros.hpp>
-
-#include <fwTools/fwID.hpp>
 
 #include <OGRE/OgreEntity.h>
 #include <OGRE/OgreNode.h>
@@ -352,8 +352,7 @@ void SRender::requestRender()
 
         if(m_offScreen)
         {
-            ::Ogre::RenderTarget* renderTarget = m_interactorManager->getRenderTarget();
-            SLM_ASSERT("No render target found.", renderTarget);
+            FW_PROFILE("Offscreen rendering");
 
             ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_OFFSCREEN_INOUT);
             SLM_ASSERT("Offscreen image not found.", image);
