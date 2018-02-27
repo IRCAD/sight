@@ -42,7 +42,7 @@ void VideoPickerInteractor::buttonPressEvent(MouseButton button, int x, int y)
 {
     if(m_picker->hasSceneManager())
     {
-        if( m_picker->executeRaySceneQuery(x, y, m_width, m_height, 0) )
+        if(m_control && m_picker->executeRaySceneQuery(x, y, m_width, m_height, m_queryFlags))
         {
             ::Ogre::Vector3 click = m_picker->getIntersectionInWorldSpace();
 
@@ -51,7 +51,14 @@ void VideoPickerInteractor::buttonPressEvent(MouseButton button, int x, int y)
             {{static_cast<double>(click.x), static_cast<double>(click.y), static_cast<double>(click.z)}};
             point->setCoord(cords);
 
-            m_sigAddPoint->asyncEmit(::fwData::Object::dynamicCast(point));
+            if(button == MouseButton::LEFT)
+            {
+                m_sigAddPoint->asyncEmit(::fwData::Object::dynamicCast(point));
+            }
+            else
+            {
+                m_sigRemovePoint->asyncEmit(::fwData::Object::dynamicCast(point));
+            }
         }
     }
     else
@@ -80,14 +87,32 @@ void VideoPickerInteractor::buttonReleaseEvent(MouseButton, int, int)
 
 //------------------------------------------------------------------------------
 
-void VideoPickerInteractor::keyPressEvent(int)
+void VideoPickerInteractor::keyPressEvent(int k)
 {
+    if(k == Modifier::CONTROL)
+    {
+        m_control = true;
+    }
 }
 
 //------------------------------------------------------------------------------
 
 void VideoPickerInteractor::keyReleaseEvent(int)
 {
+    m_control = false;
+}
+
+//------------------------------------------------------------------------------
+
+void VideoPickerInteractor::focusInEvent()
+{
+}
+
+//------------------------------------------------------------------------------
+
+void VideoPickerInteractor::focusOutEvent()
+{
+    m_control = false;
 }
 
 //------------------------------------------------------------------------------

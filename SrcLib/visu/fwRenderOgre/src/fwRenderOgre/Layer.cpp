@@ -480,6 +480,24 @@ void Layer::interaction(::fwRenderOgre::IRenderWindowInteractorManager::Interact
             }
             break;
         }
+        case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::FOCUSIN:
+        {
+            m_moveInteractor->focusInEvent();
+            if(m_selectInteractor)
+            {
+                m_selectInteractor->focusInEvent();
+            }
+            break;
+        }
+        case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::FOCUSOUT:
+        {
+            m_moveInteractor->focusOutEvent();
+            if(m_selectInteractor)
+            {
+                m_selectInteractor->focusOutEvent();
+            }
+            break;
+        }
     }
     this->signal<CameraUpdatedSignalType>(s_CAMERA_UPDATED_SIG)->asyncEmit();
 }

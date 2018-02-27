@@ -127,6 +127,18 @@ void Negato2DInteractor::keyReleaseEvent(int)
 {
 }
 
+//------------------------------------------------------------------------------
+
+void Negato2DInteractor::focusInEvent()
+{
+}
+
+//------------------------------------------------------------------------------
+
+void Negato2DInteractor::focusOutEvent()
+{
+}
+
 // ----------------------------------------------------------------------------
 
 void Negato2DInteractor::updateTotalSize()

@@ -106,5 +106,18 @@ void MeshPickerInteractor::keyReleaseEvent(int)
 
 //------------------------------------------------------------------------------
 
+void MeshPickerInteractor::focusInEvent()
+{
+}
+
+//------------------------------------------------------------------------------
+
+void MeshPickerInteractor::focusOutEvent()
+{
+    m_control = false;
+}
+
+//------------------------------------------------------------------------------
+
 } //namespace interactor
 } //namespace fwRenderOgre

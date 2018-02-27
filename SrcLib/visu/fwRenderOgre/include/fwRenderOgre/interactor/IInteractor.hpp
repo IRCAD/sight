@@ -113,6 +113,12 @@ public:
     /// Called when a mouse button is pressed.
     FWRENDEROGRE_API virtual void buttonPressEvent(MouseButton, int, int) = 0;
 
+    /// Called when the focus is win
+    FWRENDEROGRE_API virtual void focusInEvent() = 0;
+
+    /// Called when the focus is lost
+    FWRENDEROGRE_API virtual void focusOutEvent() = 0;
+
 protected:
 
     /// Ogre Root

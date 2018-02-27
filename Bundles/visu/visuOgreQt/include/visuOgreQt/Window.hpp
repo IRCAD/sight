@@ -143,6 +143,11 @@ protected:
     virtual void moveEvent(QMoveEvent* event) override;
     /// Qt event to manage generic events
     virtual bool event(QEvent* event) override;
+    /// Qt event to manage focus
+    virtual void focusInEvent(QFocusEvent* event) override;
+    /// Qt event to manage focus
+    virtual void focusOutEvent(QFocusEvent* event) override;
+
 
     /// Needed for multiple instances of ogreQt WIDGET
     static int m_counter;

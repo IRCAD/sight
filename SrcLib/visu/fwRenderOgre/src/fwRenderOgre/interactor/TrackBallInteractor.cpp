@@ -145,6 +145,18 @@ void TrackballInteractor::buttonPressEvent(MouseButton, int, int)
 {
 }
 
+//------------------------------------------------------------------------------
+
+void TrackballInteractor::focusInEvent()
+{
+}
+
+//------------------------------------------------------------------------------
+
+void TrackballInteractor::focusOutEvent()
+{
+}
+
 // ----------------------------------------------------------------------------
 
 void TrackballInteractor::cameraRotate(int dx, int dy)

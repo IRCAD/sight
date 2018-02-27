@@ -55,6 +55,12 @@ public:
     /// Called when a key is release
     FWRENDEROGRE_API virtual void keyReleaseEvent(int) override;
 
+    /// Called when the focus is win
+    FWRENDEROGRE_API virtual void focusInEvent() override;
+
+    /// Called when the focus is lost
+    FWRENDEROGRE_API virtual void focusOutEvent() override;
+
     /// Attaches a widget
     FWRENDEROGRE_API void attachWidget(ui::VRWidget::sptr widget);
 

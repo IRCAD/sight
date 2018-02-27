@@ -52,6 +52,12 @@ public:
     /// Called when a key is release
     FWRENDEROGRE_API virtual void keyReleaseEvent(int) override;
 
+    /// Called when the focus is win
+    FWRENDEROGRE_API virtual void focusInEvent() override;
+
+    /// Called when the focus is lost
+    FWRENDEROGRE_API virtual void focusOutEvent() override;
+
 private:
     /**
      * @brief The camera's scene node will rotate around it's point of interest (lookAt).

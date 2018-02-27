@@ -594,6 +594,24 @@ void Window::mouseReleaseEvent( QMouseEvent* e )
 
 // ----------------------------------------------------------------------------
 
+void Window::focusInEvent(QFocusEvent* event)
+{
+    ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo info;
+    info.interactionType = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::FOCUSIN;
+    Q_EMIT interacted(info);
+}
+
+// ----------------------------------------------------------------------------
+
+void Window::focusOutEvent(QFocusEvent* event)
+{
+    ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo info;
+    info.interactionType = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::FOCUSOUT;
+    Q_EMIT interacted(info);
+}
+
+// ----------------------------------------------------------------------------
+
 void Window::setAnimating(bool animating)
 {
 #if DISPLAY_OGRE_FPS == 1

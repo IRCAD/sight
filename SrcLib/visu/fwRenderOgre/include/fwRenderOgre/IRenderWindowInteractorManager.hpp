@@ -46,7 +46,9 @@ public:
             KEYPRESS,
             KEYRELEASE,
             BUTTONRELEASE,
-            BUTTONPRESS
+            BUTTONPRESS,
+            FOCUSIN,
+            FOCUSOUT
         } InteractionEnumType;
 
         /**

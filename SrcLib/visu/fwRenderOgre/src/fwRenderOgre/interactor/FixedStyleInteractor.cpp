@@ -64,5 +64,19 @@ void FixedStyleInteractor::keyReleaseEvent(int)
 {
 }
 
+//------------------------------------------------------------------------------
+
+void FixedStyleInteractor::focusInEvent()
+{
+}
+
+//------------------------------------------------------------------------------
+
+void FixedStyleInteractor::focusOutEvent()
+{
+}
+
+//------------------------------------------------------------------------------
+
 } // namespace interactor
 } // namespace fwRenderOgre
