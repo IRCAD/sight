@@ -295,7 +295,7 @@
             <service uid="reprojectionParams" type="::guiQt::editor::SParameters">
                 <parameters>
                     <param type="bool" name="Show reprojection" key="display" defaultValue="true" />
-                    <param type="color" name="Circle color" key="color" defaultValue="#00ff00" />
+                    <param type="color" name="Circle color" key="color" defaultValue="#ffffff" />
                 </parameters>
             </service>
 
@@ -323,13 +323,11 @@
                 <inout group="tagTL">
                     <key uid="tagTL" /> <!-- timeline of detected tag(s) -->
                 </inout>
-                <config>
-                    <track>
-                        <!-- list of tag's id -->
-                        <marker id="101" />
-                    </track>
-                    <debugMarkers>yes</debugMarkers>
-                </config>
+                <track>
+                    <!-- list of tag's id -->
+                    <marker id="101" />
+                </track>
+                <debugMarkers>yes</debugMarkers>
             </service>
 
             <!-- This will compute the pose of the camera with tag(s) detected by aruco -->
