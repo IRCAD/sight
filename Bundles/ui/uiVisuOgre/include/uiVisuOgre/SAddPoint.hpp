@@ -43,6 +43,7 @@ public:
      */
     UIVISUOGRE_API static const ::fwCom::Slots::SlotKeyType s_ADD_POINT_SLOT;
     UIVISUOGRE_API static const ::fwCom::Slots::SlotKeyType s_REMOVE_POINT_SLOT;
+    UIVISUOGRE_API static const ::fwCom::Slots::SlotKeyType s_CLEAR_POINTS_SLOT;
     /** @} */
 
     /// Constructor. Creates slot.
@@ -75,6 +76,9 @@ private:
 
     /// SLOT : Sends a signal with the clicked poin coordinates.
     void removePoint(SPTR(::fwData::Object) _pointObject);
+
+    /// SLOT : Clear the point list.
+    void clearPoints();
 
     /**
      * @}

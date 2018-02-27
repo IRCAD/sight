@@ -25,13 +25,16 @@ fwServicesRegisterMacro( ::fwServices::IController, ::uiVisuOgre::SAddPoint, ::f
 
 const ::fwCom::Slots::SlotKeyType SAddPoint::s_ADD_POINT_SLOT    = "addPoint";
 const ::fwCom::Slots::SlotKeyType SAddPoint::s_REMOVE_POINT_SLOT = "removePoint";
-const std::string s_POINTLIST_KEY                                = "pointList";
+const ::fwCom::Slots::SlotKeyType SAddPoint::s_CLEAR_POINTS_SLOT = "clearPoints";
+
+const std::string s_POINTLIST_KEY = "pointList";
 
 //------------------------------------------------------------------------------
 SAddPoint::SAddPoint() noexcept
 {
     newSlot( s_ADD_POINT_SLOT, &SAddPoint::addPoint, this );
     newSlot( s_REMOVE_POINT_SLOT, &SAddPoint::removePoint, this );
+    newSlot( s_CLEAR_POINTS_SLOT, &SAddPoint::clearPoints, this );
 }
 
 //------------------------------------------------------------------------------
@@ -107,5 +110,18 @@ void SAddPoint::removePoint(::fwData::Object::sptr _pointObject)
 }
 
 //------------------------------------------------------------------------------
+
+void SAddPoint::clearPoints()
+{
+    auto pointList = this->getInOut< ::fwData::PointList >(s_POINTLIST_KEY);
+    OSLM_ASSERT("Missing ::fwData::PointList data", pointList);
+
+    pointList->clear();
+    const auto& sig = pointList->signal< ::fwData::PointList::PointRemovedSignalType >(::fwData::PointList::s_POINT_REMOVED_SIG);
+    {
+       ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        sig->asyncEmit(nullptr);
+    }
+}
 
 } // namespace uiVisuOgre
