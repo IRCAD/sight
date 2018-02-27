@@ -63,8 +63,7 @@ public:
     /// Returns if the line is visible in the scene or not.
     VISUOGREADAPTOR_API bool getVisibility() const;
 
-private:
-
+protected:
     /// Configures the adaptor
     void configuring() override;
     /// Manually creates a Mesh in the Default Ogre Ressource group
@@ -74,6 +73,7 @@ private:
     /// Checks if the fwData::Mesh has changed, and updates it if it has.
     void updating() override;
 
+private:
     /// Attach a node in the scene graph
     void attachNode(::Ogre::MovableObject* _node);
 
