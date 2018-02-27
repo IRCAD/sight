@@ -379,13 +379,22 @@ void Utils::convertFromOgreTexture( ::Ogre::TexturePtr _texture, const ::fwData:
     {
         ::fwDataTools::helper::Image imageHelper(_imageFw);
 
-        auto dstBuffer = reinterpret_cast< std::uint8_t* >(imageHelper.getBuffer());
+        std::uint8_t* __restrict dstBuffer = reinterpret_cast< std::uint8_t* >(imageHelper.getBuffer());
 
         pixelBuffer->lock(::Ogre::HardwareBuffer::HBL_READ_ONLY);
-        const ::Ogre::PixelBox& pixelBox = pixelBuffer->getCurrentLock();
-        auto srcBuffer                   = reinterpret_cast< const std::uint8_t* >(pixelBox.data);
+        const ::Ogre::PixelBox& pixelBox         = pixelBuffer->getCurrentLock();
+        const size_t pitch                       = pixelBox.rowPitch * _imageFw->getNumberOfComponents();
+        const std::uint8_t* __restrict srcBuffer = reinterpret_cast< const std::uint8_t* >(pixelBox.data) +
+                                                   pixelBox.getConsecutiveSize();
 
-        std::memcpy(dstBuffer, srcBuffer, pixelBox.getConsecutiveSize());
+        // Copy and flip the image
+        const auto numRows = pixelBox.getConsecutiveSize() / pitch;
+        for(size_t i = 0; i < numRows; ++i)
+        {
+            srcBuffer -= pitch;
+            std::memcpy(dstBuffer, srcBuffer, pitch);
+            dstBuffer += pitch;
+        }
 
         // Unlock the pixel buffer
         pixelBuffer->unlock();
