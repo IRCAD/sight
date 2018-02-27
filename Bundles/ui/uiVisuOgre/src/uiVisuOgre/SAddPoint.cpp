@@ -12,7 +12,11 @@
 #include <fwData/mt/ObjectWriteLock.hpp>
 #include <fwData/PointList.hpp>
 
+#include <fwDataTools/helper/PointList.hpp>
+
 #include <fwServices/macros.hpp>
+
+#include <glm/geometric.hpp>
 
 namespace uiVisuOgre
 {
@@ -87,20 +91,19 @@ void SAddPoint::removePoint(::fwData::Object::sptr _pointObject)
     auto pointList = this->getInOut< ::fwData::PointList >(s_POINTLIST_KEY);
     OSLM_ASSERT("Missing ::fwData::PointList data", pointList);
 
+    const auto point = ::fwData::Point::dynamicCast(_pointObject);
     ::fwData::mt::ObjectWriteLock lock(pointList);
 
-    if(pointList->getPoints().size() > 0)
-    {
-        /*const auto point = pointList->getPoints()[0];
-        pointList->remove(0);
-        auto sig = pointList->signal< ::fwData::PointList::PointRemovedSignalType >(
-            ::fwData::PointList::s_POINT_REMOVED_SIG);
-        {
-            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
-            sig->asyncEmit(point );
-        }*/
-    }
+    const ::fwData::Point::sptr pointRes = ::fwDataTools::helper::PointList::removeClosestPoint(pointList, point, 10);
 
+    if(pointRes != nullptr)
+    {
+        const auto& sig = pointList->signal< ::fwData::PointList::PointRemovedSignalType >(::fwData::PointList::s_POINT_REMOVED_SIG);
+        {
+           ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+            sig->asyncEmit(pointRes);
+        }
+    }
 }
 
 //------------------------------------------------------------------------------
