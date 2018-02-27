@@ -9,8 +9,6 @@
 #include "visuOgreAdaptor/config.hpp"
 #include "visuOgreAdaptor/SMaterial.hpp"
 
-#include <fwData/Color.hpp>
-
 #include <fwRenderOgre/IAdaptor.hpp>
 #include <fwRenderOgre/ITransformable.hpp>
 
@@ -94,7 +92,7 @@ private:
     /// Handles the length of the line (in mm)
     float m_length;
     /// Handles the color of the line
-    ::fwData::Color::sptr m_color;
+    ::Ogre::ColourValue m_color;
     /// Handles the visibility of the line
     bool m_isVisible;
 

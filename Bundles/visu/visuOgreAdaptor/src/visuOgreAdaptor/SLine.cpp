@@ -10,6 +10,8 @@
 
 #include <fwCom/Slots.hxx>
 
+#include <fwDataTools/Color.hpp>
+
 #include <fwRenderOgre/helper/Scene.hpp>
 
 #include <fwServices/macros.hpp>
@@ -84,8 +86,13 @@ void SLine::configuring()
 
     const std::string color = config.get("color", "#FFFFFF");
 
-    m_color = ::fwData::Color::New();
-    m_color->setRGBA(color);
+    std::uint8_t rgba[4];
+    ::fwDataTools::Color::hexaStringToRGBA(color, rgba);
+
+    m_color.r = static_cast<float>(rgba[0]) / 255.f;
+    m_color.g = static_cast<float>(rgba[1]) / 255.f;
+    m_color.b = static_cast<float>(rgba[2]) / 255.f;
+    m_color.a = static_cast<float>(rgba[3]) / 255.f;
 }
 
 //-----------------------------------------------------------------------------
@@ -118,9 +125,9 @@ void SLine::starting()
     // Draw
     line->begin(materialAdaptor->getMaterialName(), ::Ogre::RenderOperation::OT_LINE_LIST);
     line->position(0, 0, 0);
-    line->colour(m_color->red(), m_color->green(), m_color->blue());
+    line->colour(m_color);
     line->position(0, 0, m_length);
-    line->colour(m_color->red(), m_color->green(), m_color->blue() );
+    line->colour(m_color);
     line->end();
 
     // Set the bounding box of your Manual Object
