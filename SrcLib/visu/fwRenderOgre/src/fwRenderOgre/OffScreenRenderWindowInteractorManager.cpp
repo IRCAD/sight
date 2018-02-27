@@ -113,7 +113,7 @@ void OffScreenRenderWindowInteractorManager::createContainer( ::fwGui::container
                                                         &parameters);
     mgr->registerWindow(m_ogreRenderWindow);
 
-    m_ogreRenderWindow->setVisible(false);
+    m_ogreRenderWindow->setHidden(true);
     m_ogreRenderWindow->setAutoUpdated(false);
 
     auto& texMgr = ::Ogre::TextureManager::getSingleton();

@@ -244,7 +244,6 @@ void SRender::stopping()
 
 void SRender::updating()
 {
-    this->requestRender();
 }
 
 //-----------------------------------------------------------------------------
