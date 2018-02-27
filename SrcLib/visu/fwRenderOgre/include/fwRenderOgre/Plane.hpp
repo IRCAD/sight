@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWRENDEROGRE_PLANE_HPP__
-#define __FWRENDEROGRE_PLANE_HPP__
+#pragma once
 
 #include "fwRenderOgre/config.hpp"
 
@@ -86,8 +85,6 @@ public:
     FWRENDEROGRE_API OrientationMode getOrientationMode() const;
 
     FWRENDEROGRE_API ::Ogre::MaterialPtr getMaterial() const;
-
-    FWRENDEROGRE_API void removeAndDestroyPlane();
 
 private:
 
@@ -206,5 +203,3 @@ inline ::Ogre::Real Plane::getHeight() const
 //------------------------------------------------------------------------------
 
 } // Namespace fwRenderOgre
-
-#endif // __FWRENDEROGRE_PLANE_HPP__

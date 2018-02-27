@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -50,7 +50,14 @@ void WindowManager::unregisterWindow(::Ogre::RenderWindow* _window)
 
 // ----------------------------------------------------------------------------
 
-bool fwRenderOgre::WindowManager::hasWindow()
+::fwRenderOgre::WindowManager::sptr WindowManager::get()
+{
+    return ::fwCore::util::LazyInstantiator< ::fwRenderOgre::WindowManager >::getInstance();
+}
+
+// ----------------------------------------------------------------------------
+
+bool WindowManager::hasWindow()
 {
     return !m_windows.empty();
 }

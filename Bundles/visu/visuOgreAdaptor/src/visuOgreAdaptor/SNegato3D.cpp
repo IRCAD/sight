@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -181,13 +181,10 @@ void SNegato3D::stopping()
 {
     this->removeTFConnections();
 
-    m_planes[0]->removeAndDestroyPlane();
-    m_planes[1]->removeAndDestroyPlane();
-    m_planes[2]->removeAndDestroyPlane();
-
     delete m_planes[0];
     delete m_planes[1];
     delete m_planes[2];
+    this->getSceneManager()->destroySceneNode(m_negatoSceneNode);
 
     m_3DOgreTexture.reset();
     m_gpuTF.reset();
