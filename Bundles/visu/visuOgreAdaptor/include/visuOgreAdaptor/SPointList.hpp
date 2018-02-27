@@ -68,6 +68,7 @@ namespace visuOgreAdaptor
  *  - \b textureName (optional) : the name of the Ogre texture that the mesh will use.
  *  - \b radius (optional) : billboard radius.
  *  - \b fixedSize (optional, default="false") : if true, the billboard will have a fixed size in screen space.
+ *  - \b queryFlags (optional) : Used for picking. Picked only by pickers with the same flag.
  */
 class VISUOGREADAPTOR_CLASS_API SPointList : public ::fwRenderOgre::IAdaptor,
                                              public ::fwRenderOgre::ITransformable

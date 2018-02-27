@@ -78,6 +78,7 @@ namespace visuOgreAdaptor
  *  - \b materialTemplate (optional) : the name of the base Ogre material for the internally created SMaterial.
  *  - \b textureName (optional) : the name of the Ogre texture that the mesh will use.
  *  - \b shadingMode (optional, none/flat/gouraud/phong/ambient, default=phong) : name of the used shading mode.
+ *  - \b queryFlags (optional) : Used for picking. Picked only by pickers with the same flag.
  */
 class VISUOGREADAPTOR_CLASS_API SMesh : public ::fwRenderOgre::IAdaptor,
                                         public ::fwRenderOgre::ITransformable

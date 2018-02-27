@@ -43,6 +43,7 @@ namespace visuOgreAdaptor
  * performance hint that will choose a specific GPU memory pool accordingly.
  *  - \b dynamicVertices (optional, default=no) : if the modelSeries geometry is likely to be updated frequently. This
  * is a performance hint that will choose a specific GPU memory pool accordingly.
+ *  - \b queryFlags (optional) : Used for picking. Picked only by pickers with the same flag.
  */
 class VISUOGREADAPTOR_CLASS_API SModelSeries : public ::fwRenderOgre::IAdaptor,
                                                public ::fwRenderOgre::ITransformable
