@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017-2018.
+ * FW4SPL - Copyright (C) IRCAD, 2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,8 +8,6 @@
 
 #include "visuOgreAdaptor/config.hpp"
 #include "visuOgreAdaptor/SMaterial.hpp"
-
-#include <fwCom/Slot.hpp>
 
 #include <fwRenderOgre/IAdaptor.hpp>
 #include <fwRenderOgre/ITransformable.hpp>
@@ -62,14 +60,8 @@ public:
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_TOGGLE_VISIBILITY_SLOT;
     typedef ::fwCom::Slot<void ()> ToggleVisibilitySlotType;
 
-    /// Sets visibility of line
-    VISUOGREADAPTOR_API void updateVisibility(bool isVisible);
-    /// Toggle visibility of line
-    VISUOGREADAPTOR_API void toggleVisibility();
     /// Returns if the line is visible in the scene or not.
     VISUOGREADAPTOR_API bool getVisibility() const;
-    /// Returns proposals to connect service slots to associated object signals
-    VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
 private:
 
@@ -85,9 +77,19 @@ private:
     /// Attach a node in the scene graph
     void attachNode(::Ogre::MovableObject* _node);
 
+    /**
+     * @name Slots methods
+     * @{
+     */
+    /// Slot: sets visibility of the line
+    void updateVisibility(bool isVisible);
+    /// Slot: toggles visibility of line
+    void toggleVisibility();
+    /** @} */
+
     /// Pointer to the Material data
     ::fwData::Material::sptr m_material;
-    /// Handle the length of each axes (in mm)
+    /// Handles the length of the line (in mm)
     float m_length;
     /// Handles the visibility of the line
     bool m_isVisible;

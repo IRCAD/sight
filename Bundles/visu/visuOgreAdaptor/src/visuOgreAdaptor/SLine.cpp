@@ -69,16 +69,6 @@ bool SLine::getVisibility() const
 
 //-----------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap visuOgreAdaptor::SLine::getAutoConnections() const
-{
-    ::fwServices::IService::KeyConnectionsMap connections;
-    connections.push( ::visuOgreAdaptor::STransform::s_CONFIG_TRANSFORM, ::fwData::Object::s_MODIFIED_SIG,
-                      s_UPDATE_SLOT );
-    return connections;
-}
-
-//-----------------------------------------------------------------------------
-
 void SLine::configuring()
 {
     this->configureParams();
