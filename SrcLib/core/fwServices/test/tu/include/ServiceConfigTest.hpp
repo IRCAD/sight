@@ -1,14 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWSERVICES_UT_SERVICECONFIGTEST_HPP__
-#define __FWSERVICES_UT_SERVICECONFIGTEST_HPP__
+#pragma once
+
+#include <fwRuntime/EConfigurationElement.hpp>
 
 #include <cppunit/extensions/HelperMacros.h>
-#include <fwRuntime/EConfigurationElement.hpp>
 
 namespace fwServices
 {
@@ -23,18 +23,17 @@ class ServiceConfigTest : public CPPUNIT_NS::TestFixture
 CPPUNIT_TEST_SUITE( ServiceConfigTest );
 CPPUNIT_TEST( serviceConfigTest );
 CPPUNIT_TEST( concurentAccessToServiceConfigTest );
+CPPUNIT_TEST( getAllConfigsTest );
 CPPUNIT_TEST_SUITE_END();
-
 
 public:
     // interface
     void setUp();
     void tearDown();
 
-
-    // fonctions de tests
     void serviceConfigTest();
     void concurentAccessToServiceConfigTest();
+    void getAllConfigsTest();
 
 private:
     ::fwRuntime::ConfigurationElement::sptr buildConfig();
@@ -42,5 +41,3 @@ private:
 
 } //namespace ut
 } //namespace fwServices
-
-#endif // __FWSERVICES_UT_SERVICECONFIGTEST_HPP__

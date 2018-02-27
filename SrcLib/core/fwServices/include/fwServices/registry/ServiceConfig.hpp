@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWSERVICES_REGISTRY_SERVICECONFIG_HPP__
-#define __FWSERVICES_REGISTRY_SERVICECONFIG_HPP__
+#pragma once
 
 #include "fwServices/config.hpp"
 
@@ -115,7 +114,8 @@ public:
      * implementation
      * @note This method is thread safe
      */
-    FWSERVICES_API std::vector< std::string > getAllConfigForService( std::string serviceImpl ) const;
+    FWSERVICES_API std::vector< std::string > getAllConfigForService( std::string serviceImpl,
+                                                                      bool matchingOnly = false ) const;
 
     /**
      * @brief Clear the registry.
@@ -145,6 +145,3 @@ protected:
 } // namespace registry
 
 } // namespace fwServices
-
-#endif // __FWSERVICES_REGISTRY_SERVICECONFIG_HPP__
-
