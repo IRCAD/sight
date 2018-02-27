@@ -132,6 +132,20 @@ void SStarter::updating()
                     }
                     break;
                 }
+                case START_ONLY_OR_STOP:
+                {
+                    if(service->isStopped())
+                    {
+                        service->start();
+                        m_idStartedSrvSet.insert(uid);
+                    }
+                    else
+                    {
+                        service->stop();
+                        m_idStartedSrvSet.erase(uid);
+                    }
+                    break;
+                }
                 case START:
                 {
                     if(service->isStopped())
@@ -215,6 +229,10 @@ void SStarter::configuring()
         else if ( actionType == "start_or_stop" )
         {
             action = START_OR_STOP;
+        }
+        else if ( actionType == "start_only_or_stop" )
+        {
+            action = START_ONLY_OR_STOP;
         }
         else if ( actionType == "start_if_exists" )
         {

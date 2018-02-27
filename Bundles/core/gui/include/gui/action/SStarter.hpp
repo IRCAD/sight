@@ -65,15 +65,23 @@ namespace action
    @endcode
  *  Test if the service specified by "Uid_of_the_service" exists before stopping it.
  *
- *   - Start or stop the service:
+ *   - Start and update or stop the service:
  * @code{.xml}
            <service uid="actionUid" type="::fwGui::IActionSrv" impl="::gui::action::SStarter" autoConnect="no">
               <start_or_stop uid="Uid_of_the_service" />
            </service>
    @endcode
- * If the service is stopped, this works as start the service. If the service is started, this works as stop the
+ * If the service is stopped, this starts and updates the service. If the service is started, this stops the
  * service.
  *
+ *   - Only start or stop the service:
+ * @code{.xml}
+           <service uid="actionUid" type="::fwGui::IActionSrv" impl="::gui::action::SStarter" autoConnect="no">
+              <start_only_or_stop uid="Uid_of_the_service" />
+           </service>
+   @endcode
+ * If the service is stopped, this starts the service. If the service is started, this stops the
+ * service.
  * To notice : when the starterActionService is stopped, it stops all the associated services which have been started by
  * itself.
  */
@@ -105,6 +113,7 @@ protected:
         START_OR_STOP,
         START_IF_EXISTS,
         START_ONLY,
+        START_ONLY_OR_STOP,
         STOP_IF_EXISTS,
         DO_NOTHING
     };
