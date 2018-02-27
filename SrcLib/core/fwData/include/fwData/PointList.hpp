@@ -55,10 +55,14 @@ public:
     PointListContainer& getPoints ();
     const PointListContainer& getPoints () const;
     void setPoints (const PointListContainer& _vPoints);
+    /// @}
 
     ///Push back a ::fwData::Point in the pointlist
     void pushBack(const ::fwData::Point::sptr&);
-    /// @}
+    /// Remove a point
+    void remove(size_t);
+    /// Clear the list
+    void clear();
 
     /**
      * @name Signals
@@ -111,5 +115,18 @@ inline void PointList::pushBack(const ::fwData::Point::sptr& p)
 }
 
 //-----------------------------------------------------------------------------
+
+inline void PointList::remove(size_t _index)
+{
+    const auto it = m_vPoints.begin() + _index;
+    this->m_vPoints.erase(it);
+}
+
+//-----------------------------------------------------------------------------
+
+inline void PointList::clear()
+{
+    this->m_vPoints.clear();
+}
 
 } // end namespace fwData

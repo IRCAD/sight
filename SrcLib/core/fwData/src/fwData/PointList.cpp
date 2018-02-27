@@ -1,12 +1,13 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwData/registry/macros.hpp"
-#include "fwData/Exception.hpp"
 #include "fwData/PointList.hpp"
+
+#include "fwData/Exception.hpp"
+#include "fwData/registry/macros.hpp"
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
@@ -37,7 +38,7 @@ PointList::~PointList()
 
 //------------------------------------------------------------------------------
 
-void PointList::shallowCopy(const Object::csptr &_source )
+void PointList::shallowCopy(const Object::csptr& _source )
 {
     PointList::csptr other = PointList::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
@@ -50,7 +51,7 @@ void PointList::shallowCopy(const Object::csptr &_source )
 
 //------------------------------------------------------------------------------
 
-void PointList::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cache)
+void PointList::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
 {
     PointList::csptr other = PointList::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
@@ -70,5 +71,3 @@ void PointList::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &
 //------------------------------------------------------------------------------
 
 } // namespace fwData
-
-

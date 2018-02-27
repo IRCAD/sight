@@ -145,6 +145,49 @@ void PointList::associate(const ::fwData::PointList::csptr& pointList1,
     }
 }
 
+//------------------------------------------------------------------------------
+
+const ::fwData::Point::sptr PointList::removeClosestPoint(::fwData::PointList::sptr& _pointList,
+                                                          const ::fwData::Point::sptr& _point, float _delta)
+{
+    // Initial data
+    const auto& list = _pointList->getPoints();
+    if(list.size() > 0)
+    {
+        const auto& coord1 = _point->getCoord();
+        const ::glm::vec3 p1{coord1[0], coord1[1], coord1[2]};
+
+        // Data to find the closest point
+        float closest = FLT_MAX;
+        ::fwData::Point::sptr point = nullptr;
+        size_t index = -1;
+
+        // Find the closest one
+        for(size_t i = 0; i < list.size(); ++i)
+        {
+            const auto& coord2 = list[i]->getCoord();
+            const ::glm::vec3 p2{coord2[0], coord2[1], coord2[2]};
+
+            float tempClosest;
+            if((tempClosest = ::glm::distance(p1, p2)) < _delta  && tempClosest < closest)
+            {
+                closest = tempClosest;
+                point   = list[i];
+                index   = i;
+            }
+
+        }
+
+        // Remove the closest point if it has been found
+        if(index != -1)
+        {
+            _pointList->remove(index);
+        }
+        return point;
+    }
+    return nullptr;
+}
+
 //-----------------------------------------------------------------------------
 
 } // namespace helper
