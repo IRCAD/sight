@@ -1,5 +1,6 @@
 <plugin id="Ex01VideoTracking" version="@PROJECT_VERSION@">
     <requirement id="dataReg" />
+    <requirement id="arDataReg" />
     <requirement id="servicesReg" />
     <requirement id="visuVTKQt" />
     <extension implements="::fwServices::registry::AppConfig">
@@ -115,18 +116,10 @@
                 <inout group="tagTL">
                     <key uid="tagTL" />
                 </inout>
-                <config>
-                    <track>
-                        <marker id="0,1,2,3,4,5,6,7,8,42,100,101,102,103,104,105" />
-                    </track>
-                    <threshold>
-                        <method>ADPT_THRES</method>
-                        <blockSize>7</blockSize>
-                        <constant>7</constant>
-                    </threshold>
-                    <patternWidth>30</patternWidth>
-                    <debugMarkers>yes</debugMarkers>
-                </config>
+                <track>
+                    <marker id="0,1,2,3,4,5,6,7,8,42,100,101,102,103,104,105" />
+                </track>
+                <debugMarkers>yes</debugMarkers>
             </service>
 
             <service uid="synchronizer" type="::videoTools::SFrameMatrixSynchronizer" worker="videoWorker">
