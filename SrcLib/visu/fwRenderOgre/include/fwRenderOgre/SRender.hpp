@@ -214,6 +214,9 @@ private:
 
     /// If true, scene is rendered off-screen
     bool m_offScreen { false };
+
+    /// If true and doing offscreen rendering, the scene will be rendered upside down.
+    bool m_flip { false };
 };
 
 //-----------------------------------------------------------------------------

@@ -74,7 +74,8 @@ public:
      * @brief Convert an Ogre texture into a fw4spl image data
      */
     FWRENDEROGRE_API static void convertFromOgreTexture( ::Ogre::TexturePtr _texture,
-                                                         const ::fwData::Image::sptr _imageFw);
+                                                         const ::fwData::Image::sptr _imageFw,
+                                                         bool flip = false);
 
     /**
      * @brief getPixelFormatOgre

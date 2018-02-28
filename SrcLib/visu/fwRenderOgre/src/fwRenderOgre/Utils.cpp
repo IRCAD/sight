@@ -344,7 +344,7 @@ void Utils::destroyOgreRoot()
 
 //------------------------------------------------------------------------------
 
-void Utils::convertFromOgreTexture( ::Ogre::TexturePtr _texture, const ::fwData::Image::sptr _imageFw)
+void Utils::convertFromOgreTexture( ::Ogre::TexturePtr _texture, const ::fwData::Image::sptr _imageFw, bool flip)
 {
     SLM_ASSERT("Texture is null", _texture);
     SLM_ASSERT("Image is null", _imageFw);
@@ -353,11 +353,11 @@ void Utils::convertFromOgreTexture( ::Ogre::TexturePtr _texture, const ::fwData:
 
     imageSize.push_back(_texture->getWidth());
 
-    if(_texture->getHeight() > 0)
+    if(_texture->getHeight() > 1)
     {
         imageSize.push_back(_texture->getHeight());
 
-        if(_texture->getDepth() > 0)
+        if(_texture->getDepth() > 1)
         {
             imageSize.push_back(_texture->getDepth());
         }
@@ -384,16 +384,28 @@ void Utils::convertFromOgreTexture( ::Ogre::TexturePtr _texture, const ::fwData:
         pixelBuffer->lock(::Ogre::HardwareBuffer::HBL_READ_ONLY);
         const ::Ogre::PixelBox& pixelBox         = pixelBuffer->getCurrentLock();
         const size_t pitch                       = pixelBox.rowPitch * _imageFw->getNumberOfComponents();
-        const std::uint8_t* __restrict srcBuffer = reinterpret_cast< const std::uint8_t* >(pixelBox.data) +
-                                                   pixelBox.getConsecutiveSize();
+        const std::uint8_t* __restrict srcBuffer =
+            reinterpret_cast< const std::uint8_t* >(pixelBox.data) + (flip ? pixelBox.getConsecutiveSize() : 0);
 
         // Copy and flip the image
         const auto numRows = pixelBox.getConsecutiveSize() / pitch;
-        for(size_t i = 0; i < numRows; ++i)
+        if(flip)
         {
-            srcBuffer -= pitch;
-            std::memcpy(dstBuffer, srcBuffer, pitch);
-            dstBuffer += pitch;
+            for(size_t i = 0; i < numRows; ++i)
+            {
+                srcBuffer -= pitch;
+                std::memcpy(dstBuffer, srcBuffer, pitch);
+                dstBuffer += pitch;
+            }
+        }
+        else
+        {
+            for(size_t i = 0; i < numRows; ++i)
+            {
+                std::memcpy(dstBuffer, srcBuffer, pitch);
+                dstBuffer += pitch;
+                srcBuffer += pitch;
+            }
         }
 
         // Unlock the pixel buffer

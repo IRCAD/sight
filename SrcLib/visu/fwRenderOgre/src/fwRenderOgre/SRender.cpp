@@ -106,6 +106,7 @@ void SRender::configuring()
 
         m_width  = sceneCfg.get<unsigned int>("<xmlattr>.width", m_width);
         m_height = sceneCfg.get<unsigned int>("<xmlattr>.height", m_height);
+        m_flip   = sceneCfg.get<bool>("<xmlattr>.flip", m_flip);
 
     }
     else // no offscreen rendering.
@@ -360,7 +361,7 @@ void SRender::requestRender()
             auto offScreenInteractor = OffScreenRenderWindowInteractorManager::dynamicCast(m_interactorManager);
             {
                 ::fwData::mt::ObjectWriteLock lock(image);
-                ::fwRenderOgre::Utils::convertFromOgreTexture(offScreenInteractor->getRenderTexture(), image);
+                ::fwRenderOgre::Utils::convertFromOgreTexture(offScreenInteractor->getRenderTexture(), image, m_flip);
             }
 
             auto sig = image->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
