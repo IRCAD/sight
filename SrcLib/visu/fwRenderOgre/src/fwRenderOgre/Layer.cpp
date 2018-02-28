@@ -29,6 +29,7 @@
 #include <OGRE/OgreException.h>
 #include <OGRE/OgreGpuProgramManager.h>
 #include <OGRE/OgreLight.h>
+#include <OGRE/OgreManualObject.h>
 #include <OGRE/OgreMaterialManager.h>
 #include <OGRE/OgreRectangle2D.h>
 #include <OGRE/OgreSceneManager.h>
@@ -565,12 +566,24 @@ void Layer::setSelectInteractor(::fwRenderOgre::interactor::IPickerInteractor::s
         while(entitiesIt.hasMoreElements())
         {
             // First, we must cast the MovableObject* into an Entity*
-            const ::Ogre::Entity* e = dynamic_cast< ::Ogre::Entity* > (entitiesIt.getNext());
+            const auto movable           = entitiesIt.getNext();
+            const ::Ogre::Entity* entity = dynamic_cast< ::Ogre::Entity* > (movable);
 
-            if(e)
+            if(entity)
             {
                 // The current entity's bounding box is merged into the "world" bounding box
-                worldCoordBoundingBox.merge(e->getWorldBoundingBox());
+                worldCoordBoundingBox.merge(entity->getWorldBoundingBox());
+            }
+            else
+            {
+                // Try then with to cast into an ManualObject*
+                const ::Ogre::ManualObject* manualObject = dynamic_cast< ::Ogre::ManualObject* > (movable);
+
+                if(manualObject)
+                {
+                    // The current entity's bounding box is merged into the "world" bounding box
+                    worldCoordBoundingBox.merge(manualObject->getWorldBoundingBox());
+                }
             }
         }
 
