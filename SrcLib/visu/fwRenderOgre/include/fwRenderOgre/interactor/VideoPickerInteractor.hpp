@@ -74,8 +74,9 @@ private:
     // Render window's height
     int m_height;
 
+    // Control key status (pressed or not)
     bool m_control;
 
 };
-} //namespace itneractor
+} //namespace interactor
 } //namespace fwRenderOgre

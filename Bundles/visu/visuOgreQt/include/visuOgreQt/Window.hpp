@@ -148,7 +148,6 @@ protected:
     /// Qt event to manage focus
     virtual void focusOutEvent(QFocusEvent* event) override;
 
-
     /// Needed for multiple instances of ogreQt WIDGET
     static int m_counter;
 

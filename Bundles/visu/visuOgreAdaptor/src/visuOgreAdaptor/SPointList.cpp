@@ -144,14 +144,14 @@ void SPointList::starting()
     m_meshGeometry = ::std::make_shared< ::fwRenderOgre::Mesh>(this->getID());
     m_meshGeometry->setDynamic(true);
 
-    auto pointList = this->getInput< ::fwData::PointList >(s_POINTLIST_INPUT);
+    const auto pointList = this->getInput< ::fwData::PointList >(s_POINTLIST_INPUT);
     if(pointList)
     {
         this->updateMesh(pointList);
     }
     else
     {
-        auto mesh = this->getInput< ::fwData::Mesh >(s_MESH_INPUT);
+        const auto mesh = this->getInput< ::fwData::Mesh >(s_MESH_INPUT);
         if(mesh)
         {
             this->updateMesh(mesh);

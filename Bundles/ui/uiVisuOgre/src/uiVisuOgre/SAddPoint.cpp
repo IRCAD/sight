@@ -101,9 +101,10 @@ void SAddPoint::removePoint(::fwData::Object::sptr _pointObject)
 
     if(pointRes != nullptr)
     {
-        const auto& sig = pointList->signal< ::fwData::PointList::PointRemovedSignalType >(::fwData::PointList::s_POINT_REMOVED_SIG);
+        const auto& sig = pointList->signal< ::fwData::PointList::PointRemovedSignalType >(
+            ::fwData::PointList::s_POINT_REMOVED_SIG);
         {
-           ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
             sig->asyncEmit(pointRes);
         }
     }
@@ -117,10 +118,11 @@ void SAddPoint::clearPoints()
     OSLM_ASSERT("Missing ::fwData::PointList data", pointList);
 
     pointList->clear();
-    const auto& sig = pointList->signal< ::fwData::PointList::PointRemovedSignalType >(::fwData::PointList::s_POINT_REMOVED_SIG);
+    const auto& sig = pointList->signal< ::fwData::PointList::ModifiedSignalType >(
+        ::fwData::PointList::s_MODIFIED_SIG);
     {
-       ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
-        sig->asyncEmit(nullptr);
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        sig->asyncEmit();
     }
 }
 
