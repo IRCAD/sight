@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWDATA_UT_POINTLISTTEST_HPP__
-#define __FWDATA_UT_POINTLISTTEST_HPP__
+#pragma once
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -32,6 +31,7 @@ public:
     // interface
     void setUp();
     void tearDown();
+
     void copyTest();
     void getterTest();
     void setterTest();
@@ -42,4 +42,3 @@ public:
 
 } //namespace ut
 } //namespace fwData
-#endif //__FWDATA_UT_POINTLISTTEST_HPP__

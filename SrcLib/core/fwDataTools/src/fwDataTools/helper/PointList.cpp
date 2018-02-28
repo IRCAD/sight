@@ -158,7 +158,7 @@ const ::fwData::Point::sptr PointList::removeClosestPoint(::fwData::PointList::s
         const ::glm::vec3 p1{coord1[0], coord1[1], coord1[2]};
 
         // Data to find the closest point
-        float closest = FLT_MAX;
+        float closest = std::numeric_limits<float>::max();
         ::fwData::Point::sptr point = nullptr;
         size_t index = -1;
 

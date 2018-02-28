@@ -37,42 +37,63 @@ public:
 
     /**
      * @brief Constructor
-     * @param key Private construction key
+     * @param [::fwData::Object::Key key]: key Private construction key
      */
     FWDATA_API PointList(::fwData::Object::Key key);
-
-    /// Destructor
+    /**
+     * @brief Destructor
+     */
     FWDATA_API virtual ~PointList();
-
-    /// Defines shallow copy
+    /**
+     * @brief Defines shallow copy
+     */
     FWDATA_API void shallowCopy( const Object::csptr& _source ) override;
-
-    /// Defines deep copy
+    /**
+     * @brief Defines deep copy
+     */
     FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
-
-    /// @brief get/set points container
-    /// @{
+    /**
+     * @brief Gets point vector
+     * @return [PointListContainer&]: the vector of points
+     */
     PointListContainer& getPoints ();
+    /**
+     * @brief Gets point vector
+     * @return [PointListContainer&]: the vector of points
+     */
     const PointListContainer& getPoints () const;
+    /**
+     * @brief Sets point vector
+     * @param [const PointListContainer&]: the vector of points to set
+     */
     void setPoints (const PointListContainer& _vPoints);
-    /// @}
-
-    ///Push back a ::fwData::Point in the pointlist
+    /**
+     * @brief Adds a ::fwData::Point in the pointlist
+     * @param [const ::fwData::Point::sptr&]: the point to push
+     */
     void pushBack(const ::fwData::Point::sptr&);
-    /// Remove a point
+    /**
+     * @brief: Deletes a point at the specified index
+     * @param: [size_t] Index of point to delete
+     **/
     void remove(size_t);
-    /// Clear the list
+    /**
+     * @brief Clears the list
+     */
     void clear();
 
     /**
      * @name Signals
      * @{
      */
-    /// Signal emitted when a Point is added
+    /**
+     * @brief Signal emitted when a Point is added
+     */
     typedef ::fwCom::Signal< void (::fwData::Point::sptr) > PointAddedSignalType;
     FWDATA_API static const ::fwCom::Signals::SignalKeyType s_POINT_ADDED_SIG;
-
-    /// Signal emitted when a Point is removed
+    /**
+     * @brief Signal emitted when a Point is removed
+     */
     typedef ::fwCom::Signal< void (::fwData::Point::sptr) > PointRemovedSignalType;
     FWDATA_API static const ::fwCom::Signals::SignalKeyType s_POINT_REMOVED_SIG;
     /**
@@ -81,7 +102,9 @@ public:
 
 protected:
 
-    //! Points container
+    /**
+     * @brief Points container
+     */
     PointListContainer m_vPoints;
 
 }; // end class PointList

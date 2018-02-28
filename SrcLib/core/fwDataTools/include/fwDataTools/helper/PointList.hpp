@@ -56,6 +56,13 @@ public:
      */
     FWDATATOOLS_API static void associate(const ::fwData::PointList::csptr&, ::fwData::PointList::sptr);
 
+    /**
+     * @brief removeClosestPoint: removes the closest point from a reference point
+     * @param _pointList: the point list
+     * @param _point: used to find the closest point in the list of points
+     * @param _delta: the maximum tolerance  between the reference point and the point to find
+     * @return the removed point or nullptr if no point has been removed
+     */
     FWDATATOOLS_API static const ::fwData::Point::sptr removeClosestPoint(::fwData::PointList::sptr&,
                                                                           const ::fwData::Point::sptr&, float);
 

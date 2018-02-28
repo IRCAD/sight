@@ -239,7 +239,7 @@ void SPointListRegistration::computeRegistration(::fwCore::HiResClock::HiResCloc
         }
         else
         {
-            std::string msg = "The point clouds have not the same points number : ";
+            std::string msg = "The pointlists doesn't have the same number of points : ";
             msg += std::to_string(registeredPL->getPoints().size()) + " != " + std::to_string(
                 referencePL->getPoints().size());
             ::fwGui::dialog::MessageDialog::showMessageDialog("Error", msg, ::fwGui::dialog::IMessageDialog::WARNING);
