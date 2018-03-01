@@ -37,9 +37,9 @@ public:
 
     /**
      * @brief Constructor
-     * @param [::fwData::Object::Key key]: key Private construction key
+     * @param[in] _key Private construction key
      */
-    FWDATA_API PointList(::fwData::Object::Key key);
+    FWDATA_API PointList(::fwData::Object::Key _key);
     /**
      * @brief Destructor
      */
@@ -54,29 +54,29 @@ public:
     FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
     /**
      * @brief Gets point vector
-     * @return [PointListContainer&]: the vector of points
+     * @return the vector of points
      */
     PointListContainer& getPoints ();
     /**
      * @brief Gets point vector
-     * @return [PointListContainer&]: the vector of points
+     * @return the vector of points
      */
     const PointListContainer& getPoints () const;
     /**
      * @brief Sets point vector
-     * @param [const PointListContainer&]: the vector of points to set
+     * @param[in] _vPoints The vector of points to set
      */
     void setPoints (const PointListContainer& _vPoints);
     /**
      * @brief Adds a ::fwData::Point in the pointlist
-     * @param [const ::fwData::Point::sptr&]: the point to push
+     * @param[in] _p The point to push
      */
-    void pushBack(const ::fwData::Point::sptr&);
+    void pushBack(const ::fwData::Point::sptr& _p);
     /**
      * @brief: Deletes a point at the specified index
-     * @param: [size_t] Index of point to delete
+     * @param[in] _index Index of point to delete
      **/
-    void remove(size_t);
+    void remove(size_t _index);
     /**
      * @brief Clears the list
      */
@@ -132,9 +132,9 @@ inline void PointList::setPoints (const PointList::PointListContainer& _vPoints)
 
 //-----------------------------------------------------------------------------
 
-inline void PointList::pushBack(const ::fwData::Point::sptr& p)
+inline void PointList::pushBack(const ::fwData::Point::sptr& _p)
 {
-    this->m_vPoints.push_back(p);
+    this->m_vPoints.push_back(_p);
 }
 
 //-----------------------------------------------------------------------------

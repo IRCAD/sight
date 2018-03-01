@@ -131,6 +131,79 @@ void PointListTest::pushTest()
 
 //------------------------------------------------------------------------------
 
+void PointListTest::removeTest()
+{
+    const size_t nbPoints = 42;
+    ::fwData::PointList::sptr pl = ::fwData::PointList::New();
+
+    // Remove first
+    {
+        // Build a list
+        for(size_t i = 0; i < nbPoints; ++i)
+        {
+            const auto p = ::fwData::Point::New(.0f, .0f, .0f);
+            pl->pushBack(p);
+        }
+
+        // remove the first
+        size_t size = nbPoints;
+        while(pl->getPoints().size())
+        {
+            pl->remove(0);
+            CPPUNIT_ASSERT_EQUAL(--size, pl->getPoints().size());
+        }
+    }
+
+    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(0), pl->getPoints().size());
+
+    // Remove last
+    {
+        // Build a list
+        for(size_t i = 0; i < nbPoints; ++i)
+        {
+            const auto p = ::fwData::Point::New(.0f, .0f, .0f);
+            pl->pushBack(p);
+        }
+
+        // remove the last
+        size_t size = nbPoints;
+        while(pl->getPoints().size())
+        {
+            const size_t index = pl->getPoints().size()-1;
+            pl->remove( index );
+            CPPUNIT_ASSERT_EQUAL(--size, pl->getPoints().size());
+        }
+    }
+
+    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(0), pl->getPoints().size());
+
+    // Check that the correct one is removed
+    {
+        // Build a list
+        for(size_t i = 0; i < nbPoints; ++i)
+        {
+            const auto p = ::fwData::Point::New(static_cast<float>(i), .0f, .0f);
+            pl->pushBack(p);
+        }
+
+        size_t size = nbPoints;
+        while(pl->getPoints().size())
+        {
+            const size_t index = size / 2;
+            const auto ref     = pl->getPoints()[index];
+            pl->remove( index );
+            CPPUNIT_ASSERT_EQUAL(--size, pl->getPoints().size());
+            for(const auto& p : pl->getPoints())
+            {
+                CPPUNIT_ASSERT(ref->getCoord()[0] != p->getCoord()[0]);
+            }
+        }
+    }
+
+}
+
+//------------------------------------------------------------------------------
+
 void PointListTest::clearTest()
 {
     const size_t nbPoints = 42;

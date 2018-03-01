@@ -24,7 +24,7 @@ const ::fwCom::Signals::SignalKeyType PointList::s_POINT_REMOVED_SIG = "pointRem
 
 //------------------------------------------------------------------------------
 
-PointList::PointList(::fwData::Object::Key key)
+PointList::PointList(::fwData::Object::Key _key)
 {
     newSignal<PointAddedSignalType>(s_POINT_ADDED_SIG);
     newSignal<PointRemovedSignalType>(s_POINT_REMOVED_SIG);
@@ -51,19 +51,19 @@ void PointList::shallowCopy(const Object::csptr& _source )
 
 //------------------------------------------------------------------------------
 
-void PointList::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
+void PointList::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& _cache)
 {
     PointList::csptr other = PointList::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
                                "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
                                + " to " + this->getClassname()), !bool(other) );
-    this->fieldDeepCopy( _source, cache );
+    this->fieldDeepCopy( _source, _cache );
 
     m_vPoints.clear();
     for(const PointListContainer::value_type& point : other->m_vPoints )
     {
         Point::sptr newPoint = Point::New();
-        newPoint = ::fwData::Object::copy(point, cache);
+        newPoint = ::fwData::Object::copy(point, _cache);
         m_vPoints.push_back( newPoint );
     }
 }
