@@ -42,6 +42,7 @@ const ::fwServices::IService::KeyType s_TAGTL_INOUT_GROUP = "tagTL";
 SArucoTracker::SArucoTracker() noexcept :
     m_isInitialized(false),
     m_debugMarkers(false)
+
 {
     m_sigDetectionDone = newSignal<DetectionDoneSignalType>(s_DETECTION_DONE_SIG);
 
@@ -50,23 +51,16 @@ SArucoTracker::SArucoTracker() noexcept :
     newSlot(s_SET_DOUBLE_PARAMETER_SLOT, &SArucoTracker::setDoubleParameter, this);
     newSlot(s_SET_INT_PARAMETER_SLOT, &SArucoTracker::setIntParameter, this);
     newSlot(s_SET_BOOL_PARAMETER_SLOT, &SArucoTracker::setBoolParameter, this);
-    newSlot(s_SET_ENUM_PARAMETER_SLOT, &SArucoTracker::setEnumParameter, this);
 
     // Initialize detector parameters
     m_detectorParams = ::cv::aruco::DetectorParameters::create();
 
     // We need to tweak some parameters to adjust detection in our cases.
-    // minimum distance between corners for detected markers relative to its perimeter (default 0.05)
-    m_detectorParams->minCornerDistanceRate = 0.01;
-    // minimum mean distance beetween two marker corners to be considered
-    // similar, so that the smaller one is removed.
-    // The rate is relative to the smaller perimeter of the two markers (default 0.05).
-    m_detectorParams->minMarkerDistanceRate = 0.01;
     //minimum distance of any corner to the image border for detected markers (in pixels) (default 3)
     m_detectorParams->minDistanceToBorder = 1;
 
     // corner refinement method. (CORNER_REFINE_NONE, no refinement. CORNER_REFINE_SUBPIX,
-    // do subpixel refinement. CORNER_REFINE_CONTOUR use contour-Points)
+    // do subpixel refinement.)
     m_detectorParams->cornerRefinementMethod = ::cv::aruco::CornerRefineMethod::CORNER_REFINE_SUBPIX;
 
     // For now only original aruco markers are used
@@ -107,6 +101,13 @@ void SArucoTracker::configuring()
     // Get the debug markers flag
     const std::string markerdebugging = config.get< std::string >("debugMarkers", "no");
     m_debugMarkers = (markerdebugging == "yes" ? true : false);
+
+    // Do corner refinement ?
+    const std::string doCornerRefinement = config.get< std::string >("cornerRefinement", "yes");
+    m_detectorParams->cornerRefinementMethod = (doCornerRefinement == "no" ?
+                                                ::cv::aruco::CornerRefineMethod::CORNER_REFINE_NONE :
+                                                ::cv::aruco::CornerRefineMethod::CORNER_REFINE_SUBPIX);
+
 }
 
 //-----------------------------------------------------------------------------
@@ -366,40 +367,21 @@ void SArucoTracker::setBoolParameter(bool _val, std::string _key)
     {
         m_debugMarkers = _val;
     }
-    else
+    else if(_key == "corner")
     {
-        SLM_ERROR("The slot key : '"+ _key + "' is not handled");
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-void SArucoTracker::setEnumParameter(std::string _val, std::string _key)
-{
-    if(_key == "corner")
-    {
-        if(_val == "NONE" )
-        {
-            m_detectorParams->cornerRefinementMethod = ::cv::aruco::CornerRefineMethod::CORNER_REFINE_NONE;
-        }
-        else if(_val == "SUBPIX")
+        if(_val)
         {
             m_detectorParams->cornerRefinementMethod = ::cv::aruco::CornerRefineMethod::CORNER_REFINE_SUBPIX;
         }
-        else if(_val == "CONTOUR")
-        {
-            m_detectorParams->cornerRefinementMethod = ::cv::aruco::CornerRefineMethod::CORNER_REFINE_CONTOUR;
-        }
         else
         {
-            SLM_ERROR("Value : '"+ _val + "' is not supported");
+            m_detectorParams->cornerRefinementMethod = ::cv::aruco::CornerRefineMethod::CORNER_REFINE_NONE;
         }
     }
     else
     {
         SLM_ERROR("The slot key : '"+ _key + "' is not handled");
     }
-
 }
 
 //-----------------------------------------------------------------------------

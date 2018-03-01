@@ -53,6 +53,7 @@ namespace trackerAruco
                 <marker id="52,45" />
             </track>
             <debugMarkers>yes</debugMarkers>
+            <cornerRefinement>yes</cornerRefinement>
             <dropObj>true</dropObj>
         </service>
    @endcode
@@ -69,6 +70,7 @@ namespace trackerAruco
  *      - \b markers (mandatory) : list of the tracked markers.
  *           - \b id (mandatory) : ids of the markers to detect.
  *  - \b debugMarkers : if value is yes markers debugging mode is activated.
+ *  - \b cornerRefinement: if yes corner refinement by subpixel will be activited
  *  - \b dropObj : defines if the tracker should drop few objects from the timeline (and always get the last one) or
  *  not.
  */
@@ -114,6 +116,7 @@ public:
     TRACKERARUCO_API virtual ~SArucoTracker() noexcept;
 
 protected:
+
     /**
      * @brief Configuring method : This method is used to configure the service.
      */
@@ -147,14 +150,12 @@ private:
         ::cv::Size2i size;
     };
 
-    ///Slot called when a integer value is changed
+    /// Slot called when a integer value is changed
     void setIntParameter(int _val, std::string _key);
-    ///Slot called when a double value is changed
+    /// Slot called when a double value is changed
     void setDoubleParameter(double _val, std::string _key);
-    ///Slot called when a boolean value is changed
+    /// Slot called when a boolean value is changed
     void setBoolParameter(bool _val, std::string _key);
-    ///Slot called when a enum value is changed
-    void setEnumParameter(std::string _val, std::string _key);
 
     /// Camera parameters
     Camera m_cameraParams;

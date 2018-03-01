@@ -241,9 +241,8 @@
                 <parameters>
                     <!-- show marker or not -->
                     <param type="bool" name="Show Marker" key="debugMode" defaultValue="true" />
-                    <!-- corner refinement method. (CORNER_REFINE_NONE, no refinement.
-                    *   CORNER_REFINE_SUBPIX, do subpixel refinement. CORNER_REFINE_CONTOUR use contour-Points) -->
-                    <param type="enum" name="Corner ref." key="corner" defaultValue="SUBPIX" values="NONE,SUBPIX,CONTOUR" />
+                    <!--  do corner refinement or not. -->
+                    <param type="bool" name="Corner refinement." key="corner" defaultValue="true" />
                     <!-- minimum window size for adaptive thresholding before finding contours -->
                     <param type="int" name="adpt. Threshold win size min" key="adaptiveThreshWinSizeMin" defaultValue="3" min="1" max="100" />
                     <!-- maximum window size for adaptive thresholding before finding contours -->
@@ -411,13 +410,9 @@
             </connect>
 
             <connect>
-                <signal>arucoParams/enumChanged</signal>
-                <slot>tracker/setEnumParameter</slot>
-            </connect>
-
-            <connect>
-                <signal>cameraSeries/addedCamera</signal>
+                <signal>cameraSeries/modified</signal>
                 <slot>Extractor/update</slot>
+                <slot>error/update</slot>
             </connect>
 
             <connect>
@@ -452,6 +447,8 @@
 
             <update uid="actionHide" />
             <update uid="hideAxis" />
+
+
         </config>
     </extension>
 </plugin>
