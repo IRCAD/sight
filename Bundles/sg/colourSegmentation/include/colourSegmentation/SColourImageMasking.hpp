@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017.
+ * FW4SPL - Copyright (C) IRCAD, 2017-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __COLOURSEGMENTATION_SCOLOURIMAGEMASKING_HPP__
-#define __COLOURSEGMENTATION_SCOLOURIMAGEMASKING_HPP__
+#pragma once
 
 #include "colourSegmentation/config.hpp"
 
@@ -31,6 +30,7 @@ namespace colourSegmentation
  * - \b setNoiseLevel(double noiseLevel) : Slot to set the noise level added in the learning steps
  * - \b setBackgroundComponents(int bgComponents) : Slot to set the number of background components learned
  * - \b setForegroundComponents(int fgComponents) : Slot to set the number of foreground components learned
+ * - \b clearMaskTL() : Slot to clear the output foreground mask timeline and reset the last timestamp.
  *
  * @section XML XML Configuration
  *
@@ -81,6 +81,8 @@ public:
     COLOURSEGMENTATION_API static const ::fwCom::Slots::SlotKeyType s_SET_NOISE_LEVEL_SLOT;
     COLOURSEGMENTATION_API static const ::fwCom::Slots::SlotKeyType s_SET_BACKGROUND_COMPONENTS_SLOT;
     COLOURSEGMENTATION_API static const ::fwCom::Slots::SlotKeyType s_SET_FOREGROUND_COMPONENTS_SLOT;
+
+    COLOURSEGMENTATION_API static const ::fwCom::Slots::SlotKeyType s_CLEAR_MASKTL_SLOT;
     ///@}
 
     ///Constructor
@@ -126,6 +128,9 @@ private:
     /// Slot: Set the number of foreground components learned
     void setForegroundComponents(int fgComponents);
 
+    /// Slot: Clear the output mask timeline and reset the last timestamp.
+    void clearMaskTL();
+
     /// Object performing the Expectation Maximization segmentation
     std::unique_ptr< ::colourImageMasking::Masker > m_masker;
 
@@ -155,5 +160,3 @@ private:
 };
 
 } // namespace colourSegmentation
-
-#endif // __COLOURSEGMENTATION_SCOLOURIMAGEMASKING_HPP__

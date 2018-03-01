@@ -34,6 +34,7 @@ const ::fwCom::Slots::SlotKeyType SColourImageMasking::s_SET_THRESHOLD_SLOT     
 const ::fwCom::Slots::SlotKeyType SColourImageMasking::s_SET_NOISE_LEVEL_SLOT           = "setNoiseLevel";
 const ::fwCom::Slots::SlotKeyType SColourImageMasking::s_SET_BACKGROUND_COMPONENTS_SLOT = "setBackgroundComponents";
 const ::fwCom::Slots::SlotKeyType SColourImageMasking::s_SET_FOREGROUND_COMPONENTS_SLOT = "setForegroundComponents";
+const ::fwCom::Slots::SlotKeyType SColourImageMasking::s_CLEAR_MASKTL_SLOT              = "clearMaskTL";
 
 const ::fwServices::IService::KeyType s_MASK_KEY          = "mask";
 const ::fwServices::IService::KeyType s_VIDEO_TL_KEY      = "videoTL";
@@ -57,6 +58,7 @@ SColourImageMasking::SColourImageMasking() noexcept :
     newSlot( s_SET_NOISE_LEVEL_SLOT, &SColourImageMasking::setNoiseLevel, this );
     newSlot( s_SET_BACKGROUND_COMPONENTS_SLOT, &SColourImageMasking::setBackgroundComponents, this );
     newSlot( s_SET_FOREGROUND_COMPONENTS_SLOT, &SColourImageMasking::setForegroundComponents, this );
+    newSlot( s_CLEAR_MASKTL_SLOT, &SColourImageMasking::clearMaskTL, this );
 }
 
 // ------------------------------------------------------------------------------
@@ -140,6 +142,7 @@ void SColourImageMasking::stopping()
     KeyConnectionsMap connections;
 
     connections.push( s_VIDEO_TL_KEY, ::arData::FrameTL::s_OBJECT_PUSHED_SIG, s_UPDATE_SLOT );
+    connections.push( s_VIDEO_TL_KEY, ::arData::FrameTL::s_CLEARED_SIG, s_CLEAR_MASKTL_SLOT );
 
     return connections;
 }
@@ -339,6 +342,18 @@ void SColourImageMasking::setBackgroundComponents(int bgComponents)
 void SColourImageMasking::setForegroundComponents(int fgComponents)
 {
     m_foregroundComponents = fgComponents;
+}
+
+// ------------------------------------------------------------------------------
+
+void SColourImageMasking::clearMaskTL()
+{
+    auto videoMaskTL = this->getInOut< ::arData::FrameTL >(s_VIDEO_MASK_TL_KEY);
+    videoMaskTL->clearTimeline();
+    auto sigTLCleared = videoMaskTL->signal< ::arData::FrameTL::ObjectClearedSignalType >(
+        ::arData::FrameTL::s_CLEARED_SIG );
+    sigTLCleared->asyncEmit();
+    m_lastVideoTimestamp = 0.;
 }
 
 // ------------------------------------------------------------------------------

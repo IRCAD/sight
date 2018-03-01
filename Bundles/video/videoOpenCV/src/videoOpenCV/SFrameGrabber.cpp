@@ -196,8 +196,11 @@ void SFrameGrabber::stopCamera()
 
         // push buffer and notify
         frameTL->clearTimeline();
-        frameTL->pushObject(buffer);
+        auto sigTLCleared = frameTL->signal< ::arData::FrameTL::ObjectClearedSignalType >(
+            ::arData::FrameTL::s_CLEARED_SIG );
+        sigTLCleared->asyncEmit();
 
+        frameTL->pushObject(buffer);
         auto sigTL = frameTL->signal< ::arData::TimeLine::ObjectPushedSignalType >(
             ::arData::TimeLine::s_OBJECT_PUSHED_SIG );
         sigTL->asyncEmit(timestamp);
