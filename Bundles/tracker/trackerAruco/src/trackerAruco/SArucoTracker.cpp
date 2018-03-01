@@ -118,6 +118,8 @@ void SArucoTracker::starting()
     for(size_t i = 0; i < numTagTL; ++i)
     {
         ::arData::MarkerTL::sptr markerTL = this->getInOut< ::arData::MarkerTL >(s_TAGTL_INOUT_GROUP, i);
+        OSLM_ASSERT("Marker timeline #" << i << " not found", markerTL);
+        OSLM_ASSERT("Marker id(s) for timeline #" << i << " not found", i < m_markers.size());
         markerTL->initPoolSize(static_cast<unsigned int>(m_markers[i].size()));
     }
     m_isTracking = true;
