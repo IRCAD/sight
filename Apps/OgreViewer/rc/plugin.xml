@@ -228,11 +228,10 @@
 
             <service uid="cfgHistogramManager" type="::fwServices::SConfigController">
                 <appConfig id="OgreHistogramManager" />
-                <inout key="imageUID" uid="imageUID" />
-                <inout key="maskUID" uid="maskUID" />
+                <inout key="IMAGE" uid="imageUID" />
+                <inout key="MASK" uid="maskUID" />
                 <inout key="TF" uid="TF" optional="yes" />
                 <parameter replace="WID_PARENT" by="histogramView" />
-                <parameter replace="ICON_PATH" by="arMedia-0.1/icons/app.ico" />
             </service>
 
             <service uid="cfgIDVRManager"  type="::fwServices::SConfigController">
