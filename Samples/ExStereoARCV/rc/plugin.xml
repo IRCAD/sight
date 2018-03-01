@@ -27,7 +27,7 @@
                 <gui>
                     <frame>
                         <name>ExStereoARCV</name>
-                        <icon>ExStereoAR-0.1/app.ico</icon>
+                        <icon>ExStereoARCV-0.1/app.ico</icon>
                     </frame>
                     <menuBar/>
                     <toolBar/>
