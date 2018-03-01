@@ -37,14 +37,14 @@ PointList::~PointList()
 //-----------------------------------------------------------------------------
 
 ::fwData::Array::sptr
-PointList::computeDistance(::fwData::PointList::sptr pointList1,
-                           ::fwData::PointList::sptr pointList2)
+PointList::computeDistance(::fwData::PointList::sptr _pointList1,
+                           ::fwData::PointList::sptr _pointList2)
 {
     SLM_ASSERT("the 2 pointLists must have the same number of points",
-               pointList1->getPoints().size() == pointList2->getPoints().size() );
+               _pointList1->getPoints().size() == _pointList2->getPoints().size() );
 
-    const ::fwData::PointList::PointListContainer points1 = pointList1->getPoints();
-    const ::fwData::PointList::PointListContainer points2 = pointList2->getPoints();
+    const ::fwData::PointList::PointListContainer points1 = _pointList1->getPoints();
+    const ::fwData::PointList::PointListContainer points2 = _pointList2->getPoints();
     const size_t size                                     = points1.size();
 
     ::fwData::Array::sptr outputArray = ::fwData::Array::New();
@@ -68,10 +68,10 @@ PointList::computeDistance(::fwData::PointList::sptr pointList1,
 
 //------------------------------------------------------------------------------
 
-void PointList::transform(::fwData::PointList::sptr& pointList,
-                          const ::fwData::TransformationMatrix3D::csptr&  matrix)
+void PointList::transform(::fwData::PointList::sptr& _pointList,
+                          const ::fwData::TransformationMatrix3D::csptr& _matrix)
 {
-    ::fwData::PointList::PointListContainer points = pointList->getPoints();
+    ::fwData::PointList::PointListContainer points = _pointList->getPoints();
     const size_t size = points.size();
 
     for(size_t i = 0; i < size; ++i)
@@ -79,20 +79,20 @@ void PointList::transform(::fwData::PointList::sptr& pointList,
         ::fwData::Point::sptr& pt = points[i];
 
         // Transform the current point with the input matrix
-        ::fwDataTools::TransformationMatrix3D::multiply(matrix, pt, pt);
+        ::fwDataTools::TransformationMatrix3D::multiply(_matrix, pt, pt);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void PointList::associate(const ::fwData::PointList::csptr& pointList1,
-                          ::fwData::PointList::sptr pointList2)
+void PointList::associate(const ::fwData::PointList::csptr& _pointList1,
+                          ::fwData::PointList::sptr _pointList2)
 {
     SLM_ASSERT("the 2 pointLists must have the same number of points",
-               pointList1->getPoints().size() == pointList2->getPoints().size() );
+               _pointList1->getPoints().size() == _pointList2->getPoints().size() );
 
-    ::fwData::PointList::PointListContainer points1 = pointList1->getPoints();
-    ::fwData::PointList::PointListContainer points2 = pointList2->getPoints();
+    ::fwData::PointList::PointListContainer points1 = _pointList1->getPoints();
+    ::fwData::PointList::PointListContainer points2 = _pointList2->getPoints();
 
     const size_t size = points1.size();
 
