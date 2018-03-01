@@ -129,12 +129,14 @@ void SOpenCVReader::updating()
     //Remove all CameraSeries
     // lock cameraSeries
     ::fwData::mt::ObjectReadToWriteLock lock(camSeries);
+    const size_t cams = camSeries->getNumberOfCameras();
 
-    for(size_t c = 0; c < camSeries->getNumberOfCameras(); ++c)
+    for(size_t c = 0; c < cams; ++c)
     {
         ::arData::Camera::sptr cam = camSeries->getCamera(c);
         lock.upgrade();
         camSeries->removeCamera(cam);
+        lock.downgrade();
 
         auto sig = camSeries->signal< ::arData::CameraSeries::RemovedCameraSignalType >
                        (::arData::CameraSeries::s_REMOVED_CAMERA_SIG);
