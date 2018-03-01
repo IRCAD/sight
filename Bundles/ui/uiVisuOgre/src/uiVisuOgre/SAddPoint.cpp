@@ -117,6 +117,8 @@ void SAddPoint::clearPoints()
     auto pointList = this->getInOut< ::fwData::PointList >(s_POINTLIST_KEY);
     OSLM_ASSERT("Missing ::fwData::PointList data", pointList);
 
+    ::fwData::mt::ObjectWriteLock lock(pointList);
+
     pointList->clear();
     const auto& sig = pointList->signal< ::fwData::PointList::ModifiedSignalType >(
         ::fwData::PointList::s_MODIFIED_SIG);
