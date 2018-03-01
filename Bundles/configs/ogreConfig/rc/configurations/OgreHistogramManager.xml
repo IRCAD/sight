@@ -3,7 +3,6 @@
     <parameters>
         <param name="WID_PARENT" />
         <param name="IMAGE" />
-        <param name="MASK" />
         <param name="TF" />
     </parameters>
 
@@ -11,7 +10,6 @@
 
         <!-- *********************************** Begin Objects declaration *********************************** -->
         <object uid="${IMAGE}"     type="::fwData::Image"     src="ref" />
-        <object uid="${MASK}"      type="::fwData::Image"     src="ref" />
         <object uid="${TF}" type="::fwData::TransferFunction" src="deferred" />
 
         <object uid="TFPool" type="::fwData::Composite" />

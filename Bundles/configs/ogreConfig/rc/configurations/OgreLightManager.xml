@@ -2,7 +2,6 @@
     <id>OgreLightManager</id>
     <parameters>
         <param name="WID_PARENT" />
-        <param name="ICON_PATH" />
     </parameters>
 
     <config>
@@ -11,7 +10,7 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="lightView" type="::gui::view::SDefaultView" >
+        <service uid="LightView" type="::gui::view::SDefaultView" >
             <gui>
                 <layout type="::fwGui::ToolboxLayoutManager" >
                     <orientation value="vertical" />
@@ -21,24 +20,24 @@
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <view sid="lightSelector" start="yes" />
-                <view sid="lightEditor" start="yes" />
+                <view sid="LightSelector" start="yes" />
+                <view sid="LightEditor" start="yes" />
             </registry>
         </service>
 
         <!-- ************************************* Services ************************************ -->
 
-        <service uid="lightSelector" type="::uiVisuOgre::SLightSelector"  />
-        <service uid="lightEditor" type="::uiVisuOgre::SLightEditor" />
+        <service uid="LightSelector" type="::uiVisuOgre::SLightSelector"  />
+        <service uid="LightEditor" type="::uiVisuOgre::SLightEditor" />
 
         <!-- ************************************* Actions ************************************* -->
 
         <connect>
-            <signal>lightSelector/lightSelected</signal>
-            <slot>lightEditor/editLight</slot>
+            <signal>LightSelector/lightSelected</signal>
+            <slot>LightEditor/editLight</slot>
         </connect>
 
-        <start uid="lightView" />
+        <start uid="LightView" />
 
     </config>
 </extension>
