@@ -43,8 +43,8 @@ public:
     /**
      * @brief Set two synchronized vector of ::fwData::TransformationMatrix3D
      **/
-    HANDEYECALIBRATION_API void setTransformLists(const std::vector< ::fwData::TransformationMatrix3D::csptr > _m1,
-                                                  const std::vector< ::fwData::TransformationMatrix3D::csptr > _m2);
+    HANDEYECALIBRATION_API void setTransformLists(const std::vector< ::fwData::TransformationMatrix3D::csptr >& _m1,
+                                                  const std::vector< ::fwData::TransformationMatrix3D::csptr >& _m2);
 
     /**
      * @brief computeHandEye will first prepare the datas and put it into 'camodocal' hand eye calibration

@@ -73,8 +73,8 @@ void HandEyeApi::pushMatrix(const ::fwData::TransformationMatrix3D::csptr _m1,
 
 //-------------------------------------------------------------------------------------------------
 
-void HandEyeApi::setTransformLists(const std::vector< ::fwData::TransformationMatrix3D::csptr > _m1,
-                                   const std::vector< ::fwData::TransformationMatrix3D::csptr > _m2)
+void HandEyeApi::setTransformLists(const std::vector< ::fwData::TransformationMatrix3D::csptr >& _m1,
+                                   const std::vector< ::fwData::TransformationMatrix3D::csptr >& _m2)
 {
     SLM_ASSERT("Input vectors must have the same size", _m1.size() == _m2.size());
 
