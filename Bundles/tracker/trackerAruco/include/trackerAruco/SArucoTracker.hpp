@@ -142,7 +142,7 @@ protected:
 
 private:
 
-    /// Handles camera parameters (instrinsic matrix, distorsion coefficients and image size)
+    /// Handles camera parameters (intrinsic matrix, distorsion coefficients and image size)
     struct Camera
     {
         ::cv::Mat intrinsic;
@@ -167,7 +167,7 @@ private:
     bool m_debugMarkers;
     /// aruco detector parameters structure
     ::cv::Ptr< ::cv::aruco::DetectorParameters > m_detectorParams;
-    ///Dictionary/Set of markers. It contains the inner codification
+    /// Dictionary/Set of markers. It contains the inner codification
     ::cv::Ptr< ::cv::aruco::Dictionary > m_dictionary;
     /// Signal to emit when
     DetectionDoneSignalType::sptr m_sigDetectionDone;

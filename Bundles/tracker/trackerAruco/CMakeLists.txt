@@ -1,15 +1,11 @@
-link_directories(${CMAKE_PREFIX_PATH}/lib)
-
 fwLoadProperties()
 
-find_package(OpenCV REQUIRED)
+find_package(OpenCV REQUIRED core aruco)
 
 fwForwardInclude(
     ${OpenCV_INCLUDE_DIRS}
 )
 
 fwForwardLink(
-    opencv_core
-    opencv_aruco
+    ${OpenCV_LIBS}
 )
-
