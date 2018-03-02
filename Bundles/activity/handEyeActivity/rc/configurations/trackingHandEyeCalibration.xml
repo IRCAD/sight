@@ -43,28 +43,15 @@
             <gui>
                 <layout type="::fwGui::LineLayoutManager">
                     <orientation value="horizontal" />
-                    <view proportion="4" />
+                    <view proportion="3" />
                     <view proportion="1" />
                 </layout>
                 <toolBar/>
             </gui>
             <registry>
-                <view sid="leftView" start="yes" />
+                <view sid="resultView" start="yes" />
                 <view sid="rightPanel" start="yes" />
                 <toolBar sid="toolBarVideo" start="yes" />
-            </registry>
-        </service>
-
-        <service uid="leftView" type="::gui::view::SDefaultView">
-            <gui>
-                <layout type="::fwGui::TabLayoutManager">
-                    <view caption="Input frames" proportion="1" />
-                    <view caption="Result" proportion="1" />
-                </layout>
-            </gui>
-            <registry>
-                <view sid="frameView" start="yes" />
-                <view sid="resultView" start="yes" />
             </registry>
         </service>
 
@@ -175,6 +162,8 @@
                     <editor/>
                     <separator/>
                     <editor/>
+                    <separator/>
+                    <menuItem name="Show/Hide axis" icon="arMedia-0.1/icons/show.svg" style="check"/>
                 </layout>
             </gui>
             <registry>
@@ -183,6 +172,7 @@
                 <menuItem sid="actionCalibrate" start="yes" />
                 <editor sid="Status" start="yes" />
                 <editor sid="movingCameraParameter"  start="yes" />
+                <menuItem sid="actionShowHideVisibility" start="yes" />
             </registry>
         </service>
 
@@ -201,6 +191,8 @@
             <slots>
                 <slot>handEyeEditor/reset</slot>
                 <slot>pushMatrixSensor/clear</slot>
+                <slot>actionShowHideVisibility/deactivate</slot>
+                <slot>actionShowHideVisibility/update</slot>
             </slots>
         </service>
 
@@ -253,6 +245,16 @@
         <service uid="actionExportHandEye" type="::gui::action::SSlotCaller">
             <slots>
                 <slot>handEyeMatrixWriter/update</slot>
+            </slots>
+        </service>
+
+        <service uid="actionShowHideVisibility" type="::gui::action::SBooleanSlotCaller">
+            <state active="false" />
+            <slots>
+                <slot>sensorAxis/updateVisibility</slot>
+                <slot>regisAxis/updateVisibility</slot>
+                <slot>chessAxis/updateVisibility</slot>
+                <slot>systemCenterAxis/updateVisibility</slot>
             </slots>
         </service>
 
@@ -466,30 +468,13 @@
 
         <!-- *************************** End Services *************************** -->
 
-        <!-- *************************** Begin frameView *************************** -->
-
-        <service uid="frameView" type="::fwRenderVTK::SRender" autoConnect="yes">
-            <scene autoRender="false">
-                <renderer id="default" layer="1" background="0.0" />
-                <renderer id="background" layer="0" background="0.0" />
-                <adaptor uid="videoAdpt" />
-            </scene>
-        </service>
-
-        <service uid="videoAdpt" type="::visuVTKARAdaptor::SVideo" autoConnect="yes">
-            <in key="frame" uid="videoImage" />
-            <config renderer="background" />
-        </service>
-
-        <!-- *************************** End frameView *************************** -->
-
         <!-- *************************** Begin resultView *************************** -->
 
         <service uid="resultView" type="::fwRenderVTK::SRender" autoConnect="yes">
             <scene>
                 <renderer id="video" layer="0" background="0.0" />
                 <renderer id="default" layer="1" background="0.0" />
-                <adaptor uid="videoAdptResult" />
+                <adaptor uid="videoAdpt" />
                 <adaptor uid="cameraAdpt" />
                 <adaptor uid="interactorStyle" />
                 <adaptor uid="sensorTransformAdaptor" />
@@ -499,12 +484,11 @@
                 <adaptor uid="sensorAxis" />
                 <adaptor uid="regisAxis" />
                 <adaptor uid="chessAxis" />
-                <adaptor uid="cameraAxis" />
-                <adaptor uid="systemCenter" />
+                <adaptor uid="systemCenterAxis" />
             </scene>
         </service>
 
-        <service uid="videoAdptResult" type="::visuVTKARAdaptor::SVideo" autoConnect="yes">
+        <service uid="videoAdpt" type="::visuVTKARAdaptor::SVideo" autoConnect="yes">
             <in key="frame" uid="videoImage" />
             <config renderer="video" />
         </service>
@@ -539,16 +523,12 @@
             <config renderer="default" transform="vtkChessMatrix" />
         </service>
 
-        <service uid="systemCenter" type="::visuVTKAdaptor::SAxis">
+        <service uid="systemCenterAxis" type="::visuVTKAdaptor::SAxis">
             <config renderer="default" length="75" transform="id" label="no" marker="yes" markerColor="#FF0000" />
         </service>
 
         <service uid="sensorAxis" type="::visuVTKAdaptor::SAxis">
             <config renderer="default" length="50" transform="vtkSensorMatrix" label="no" marker="yes" markerColor="#00FF00" />
-        </service>
-
-        <service uid="cameraAxis" type="::visuVTKAdaptor::SAxis">
-            <config renderer="default" length="50" transform="vtkCameraMatrix" label="no" marker="yes" markerColor="#00FFFF" />
         </service>
 
         <service uid="regisAxis" type="::visuVTKAdaptor::SAxis">
@@ -647,6 +627,12 @@
             <slot>cameraSwitcher/switchMatrix</slot>
         </connect>
 
+        <connect>
+            <signal>handEyeMatX/modified</signal>
+            <slot>actionShowHideVisibility/activate</slot>
+            <slot>actionShowHideVisibility/update</slot>
+        </connect>
+
         <!-- *************************** End Connections *************************** -->
 
         <start uid="mainView" />
@@ -666,15 +652,12 @@
         <start uid="trackerTLMatrixSynchronizer" />
         <start uid="chessSwitcher" />
         <start uid="cameraSwitcher" />
-        <!-- VTK scene 'frameView' -->
-        <start uid="videoAdpt" />
         <!-- VTK scene 'resultView' -->
-        <start uid="videoAdptResult" />
+        <start uid="videoAdpt" />
         <start uid="sensorAxis" />
         <start uid="regisAxis" />
         <start uid="chessAxis" />
-        <!--<start uid="cameraAxis" />-->
-        <start uid="systemCenter" />
+        <start uid="systemCenterAxis" />
         <start uid="cameraAdpt" />
         <start uid="interactorStyle" />
         <start uid="sensorTransformAdaptor" />
@@ -684,6 +667,7 @@
         <!-- Update -->
         <update uid="extractor" />
         <update uid="actionReset" />
+        <update uid="actionShowHideVisibility" />
 
     </config>
 </extension>
