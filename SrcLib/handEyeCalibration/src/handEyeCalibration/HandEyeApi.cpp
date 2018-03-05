@@ -30,88 +30,46 @@ HandEyeApi::~HandEyeApi()
 
 //-------------------------------------------------------------------------------------------------
 
-void HandEyeApi::pushData(const std::array<float, 16> _m1,
-                          const std::array<float, 16> _m2)
-{
-    ::Eigen::Matrix< double, 4, 4, ::Eigen::RowMajor > mat1, mat2;
-
-    mat1 = ::eigenTools::helper::toEigen(_m1);
-    mat2 = ::eigenTools::helper::toEigen(_m2);
-
-    m_transfoList1.push_back(mat1);
-    m_transfoList2.push_back(mat2);
-}
-
-//-------------------------------------------------------------------------------------------------
-
-void HandEyeApi::pushData(const std::array<double, 16> _m1,
-                          const std::array<double, 16> _m2)
-{
-    ::Eigen::Matrix< double, 4, 4, ::Eigen::RowMajor > mat1, mat2;
-
-    mat1 = ::eigenTools::helper::toEigen(_m1);
-    mat2 = ::eigenTools::helper::toEigen(_m2);
-
-    m_transfoList1.push_back(mat1);
-    m_transfoList2.push_back(mat2);
-}
-
-//-------------------------------------------------------------------------------------------------
-
-void HandEyeApi::pushMatrix(const ::fwData::TransformationMatrix3D::csptr _m1,
-                            const ::fwData::TransformationMatrix3D::csptr _m2)
-{
-
-    ::Eigen::Matrix< double, 4, 4, ::Eigen::RowMajor > mat1, mat2;
-
-    mat1 = ::eigenTools::helper::toEigen<double>(_m1);
-    mat2 = ::eigenTools::helper::toEigen<double>(_m2);
-
-    m_transfoList1.push_back(mat1);
-    m_transfoList2.push_back(mat2);
-}
-
-//-------------------------------------------------------------------------------------------------
-
 void HandEyeApi::setTransformLists(const std::vector< ::fwData::TransformationMatrix3D::csptr >& _m1,
                                    const std::vector< ::fwData::TransformationMatrix3D::csptr >& _m2)
 {
     SLM_ASSERT("Input vectors must have the same size", _m1.size() == _m2.size());
+    this->clearData();
 
-    ::Eigen::Matrix< double, 4, 4, ::Eigen::RowMajor > mat1, mat2;
+    EigenMatrixListType transfoList1, transfoList2;
+    EigenMat4Type mat1, mat2;
 
     for(size_t i = 0; i < _m1.size(); ++i)
     {
         mat1 = ::eigenTools::helper::toEigen<double>(_m1.at(i));
         mat2 = ::eigenTools::helper::toEigen<double>(_m2.at(i));
 
-        m_transfoList1.push_back(mat1);
-        m_transfoList2.push_back(mat2);
+        transfoList1.push_back(mat1);
+        transfoList2.push_back(mat2);
     }
+
+    this->initializeData(transfoList1, transfoList2);
 }
 
 //-------------------------------------------------------------------------------------------------
 
 ::fwData::TransformationMatrix3D::sptr HandEyeApi::computeHandEye()
 {
-    this->initializeData();
     ::Eigen::Matrix4d result;
     ::camodocal::HandEyeCalibration::setVerbose( false );
     ::camodocal::HandEyeCalibration::estimateHandEyeScrew(m_rvecs1, m_tvecs1, m_rvecs2, m_tvecs2, result);
 
     ::fwData::TransformationMatrix3D::sptr mat = ::eigenTools::helper::toF4s(result);
 
-    this->clearData();
-
     return mat;
 }
 
 //-------------------------------------------------------------------------------------------------
 
-void HandEyeApi::initializeData()
+void HandEyeApi::initializeData(const EigenMatrixListType& _transfoList1, const EigenMatrixListType& _transforList2)
 {
-    const size_t nbMatrix = m_transfoList1.size();
-    SLM_ASSERT("Size of transformation list should be the same", nbMatrix == m_transfoList2.size());
+    const size_t nbMatrix = _transfoList1.size();
+    SLM_ASSERT("Size of transformation list should be the same", nbMatrix == _transforList2.size());
 
     m_rvecs1.reserve(nbMatrix);
     m_tvecs1.reserve(nbMatrix);
@@ -121,26 +79,21 @@ void HandEyeApi::initializeData()
     for(size_t i = 0; i < nbMatrix; ++i)
     {
         ::eigenTools::helper::RvecTvecType RvecTvec1 =
-            ::eigenTools::helper::eigenMatToRvecTvec(m_transfoList1[i]);
+            ::eigenTools::helper::eigenMatToRvecTvec(_transfoList1[i]);
         m_rvecs1.push_back(RvecTvec1.first);
         m_tvecs1.push_back(RvecTvec1.second);
 
         ::eigenTools::helper::RvecTvecType RvecTvec2 =
-            ::eigenTools::helper::eigenMatToRvecTvec(m_transfoList2[i]);
+            ::eigenTools::helper::eigenMatToRvecTvec(_transforList2[i]);
         m_rvecs2.push_back(RvecTvec2.first);
         m_tvecs2.push_back(RvecTvec2.second);
-
     }
-
 }
 
 //-------------------------------------------------------------------------------------------------
 
 void HandEyeApi::clearData()
 {
-    m_transfoList1.clear();
-    m_transfoList2.clear();
-
     m_rvecs1.clear();
     m_rvecs2.clear();
 

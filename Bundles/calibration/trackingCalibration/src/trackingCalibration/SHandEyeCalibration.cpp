@@ -7,6 +7,7 @@
 #include "trackingCalibration/SHandEyeCalibration.hpp"
 
 #include <fwCom/Signal.hxx>
+#include <fwCom/Slots.hxx>
 
 #include <fwData/TransformationMatrix3D.hpp>
 #include <fwData/Vector.hpp>
