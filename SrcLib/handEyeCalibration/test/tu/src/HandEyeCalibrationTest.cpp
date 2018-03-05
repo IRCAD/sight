@@ -172,13 +172,12 @@ void HandEyeCalibrationTest::checkApi()
         H.block<3, 3>(0, 0) = R;
         H.block<3, 1>(0, 3) << dx, dy, dz;
 
-        ::Eigen::Matrix4d H_ = H.inverse();
-        H                    = H_;
+        const ::Eigen::Matrix4d H_ = H.inverse();
+        H = H_;
 
         ::fwData::TransformationMatrix3D::sptr fw_H = ::eigenTools::helper::toF4s(H);
 
-        const ::Eigen::Matrix4d H12_ = H_12_expected * H
-                                       * H_12_expected.inverse();
+        const ::Eigen::Matrix4d H12_ = H_12_expected.inverse() * H * H_12_expected;
 
         ::fwData::TransformationMatrix3D::sptr fw_H12_ = ::eigenTools::helper::toF4s(H12_);
 

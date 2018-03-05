@@ -174,19 +174,10 @@ void SHandEyeCalibration::computeRegistration(::fwCore::HiResClock::HiResClockTy
 
     if(matrixX)
     {
-        handEyeApi.setTransformLists(BMatrices, AMatrices);
+        handEyeApi.setTransformLists(AMatrices, BMatrices);
         ::fwData::TransformationMatrix3D::sptr resultX = handEyeApi.computeHandEye();
 
-        if(m_movingCamera)
-        {
-            // The computed matrix is a transform from the A world to the B world but we need the opposite
-            ::fwDataTools::TransformationMatrix3D::invert(resultX, matrixX);
-        }
-        else
-        {
-            ::fwDataTools::TransformationMatrix3D::invert(resultX, matrixX);
-            //matrixX->deepCopy(resultX);
-        }
+        matrixX->deepCopy(resultX);
 
         auto sig = matrixX->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
         sig->asyncEmit();
