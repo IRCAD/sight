@@ -30,17 +30,17 @@ public:
     HANDEYECALIBRATION_API ~HandEyeApi();
 
     /**
-     * @brief Sets two synchronized vector of input matrices.
-     * @pre both lists must have the same size.
+     * @brief Sets two synchronized vectors of input matrices. Converts matrices to rvec/tvec pairs.
+     * @pre both vectors must have the same size.
      */
     HANDEYECALIBRATION_API void setTransformLists(const std::vector< ::fwData::TransformationMatrix3D::csptr >& _m1,
                                                   const std::vector< ::fwData::TransformationMatrix3D::csptr >& _m2);
 
     /**
-     * @brief computeHandEye will first prepare the data and pass them to the 'camodocal' hand eye calibration
-     * @return the hand eye calibration matrix
+     * @brief computeHandEye calls camodocal's hand-eye calibration method.
+     * @return the hand eye calibration matrix.
      */
-    HANDEYECALIBRATION_API ::fwData::TransformationMatrix3D::sptr computeHandEye();
+    HANDEYECALIBRATION_API ::fwData::TransformationMatrix3D::sptr computeHandEye() const;
 
     /// Resets the input data.
     HANDEYECALIBRATION_API void clearData();
@@ -52,9 +52,6 @@ private:
 
     /// Decomposes matrices into rvec/tvec pairs.
     void initializeData(const EigenMatrixListType& _transfoList1, const EigenMatrixListType& _transforList2);
-
-//    std::vector< eigenMat4Type, ::Eigen::aligned_allocator< eigenMat4Type > > m_transfoList1;
-//    std::vector< eigenMat4Type, ::Eigen::aligned_allocator< eigenMat4Type > > m_transfoList2;
 
     /// List of rvec tvec (eigen style)
     std::vector< ::Eigen::Vector3d, ::Eigen::aligned_allocator< ::Eigen::Vector3d > > m_rvecs1;

@@ -53,7 +53,7 @@ void HandEyeApi::setTransformLists(const std::vector< ::fwData::TransformationMa
 
 //-------------------------------------------------------------------------------------------------
 
-::fwData::TransformationMatrix3D::sptr HandEyeApi::computeHandEye()
+::fwData::TransformationMatrix3D::sptr HandEyeApi::computeHandEye() const
 {
     ::Eigen::Matrix4d result;
     ::camodocal::HandEyeCalibration::setVerbose( false );
