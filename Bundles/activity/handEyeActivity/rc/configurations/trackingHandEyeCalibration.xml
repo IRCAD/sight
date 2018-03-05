@@ -12,8 +12,10 @@
         <object uid="frameTL" type="::arData::FrameTL" />
         <object uid="videoImage" type="::fwData::Image" />
         <object uid="matrixTL" type="::arData::MatrixTL" />
-        <object uid="trackerMatrix" type="::fwData::TransformationMatrix3D" />
-        <object uid="regisMatrix" type="::fwData::TransformationMatrix3D" />
+        <object uid="trackerMatrix0" type="::fwData::TransformationMatrix3D" />
+        <object uid="trackerMatrix1" type="::fwData::TransformationMatrix3D" />
+        <object uid="trackerMatrix2" type="::fwData::TransformationMatrix3D" />
+        <object uid="trackerMatrix3" type="::fwData::TransformationMatrix3D" />
         <object uid="handEyeMatX" type="::fwData::TransformationMatrix3D" />
         <object uid="handEyeMatZ" type="::fwData::TransformationMatrix3D" />
         <object uid="cameraMatrix" type="::fwData::TransformationMatrix3D" />
@@ -251,8 +253,10 @@
         <service uid="actionShowHideVisibility" type="::gui::action::SBooleanSlotCaller">
             <state active="false" />
             <slots>
-                <slot>sensorAxis/updateVisibility</slot>
-                <slot>regisAxis/updateVisibility</slot>
+                <slot>trackerAxis0/updateVisibility</slot>
+                <slot>trackerAxis1/updateVisibility</slot>
+                <slot>trackerAxis2/updateVisibility</slot>
+                <slot>trackerAxis3/updateVisibility</slot>
                 <slot>chessAxis/updateVisibility</slot>
                 <slot>systemCenterAxis/updateVisibility</slot>
             </slots>
@@ -328,7 +332,7 @@
                 <key uid="matrixTL" />
             </in>
             <inout group="matrices0">
-                <key uid="trackerMatrix" />
+                <key uid="trackerMatrix0" />
             </inout>
             <framerate>30</framerate>
         </service>
@@ -340,19 +344,23 @@
             <TData>
                 <matrix name="Input0" index="0" />
                 <matrix name="Input1" index="1" />
+                <matrix name="Input2" index="1" />
+                <matrix name="Input3" index="1" />
             </TData>
         </service>
 
         <service uid="trackerTLMatrixSynchronizer" type="::syncTimeline::SMatrixTLSynchronizer">
             <in key="matrixTL" uid="matrixTL" autoConnect="yes" />
             <inout group="matrices">
-                <key uid="trackerMatrix" />
-                <key uid="regisMatrix" />
+                <key uid="trackerMatrix0" />
+                <key uid="trackerMatrix1" />
+                <key uid="trackerMatrix2" />
+                <key uid="trackerMatrix3" />
             </inout>
         </service>
 
         <service uid="matrixViewerSensor" type="::uiTools::editor::SMatrixViewer" autoConnect="yes">
-            <in key="matrix" uid="trackerMatrix" />
+            <in key="matrix" uid="trackerMatrix0" />
             <title>Sensor Matrix</title>
         </service>
 
@@ -400,7 +408,7 @@
         </service>
 
         <service uid="pushMatrixSensor" type="::ctrlSelection::SManage">
-           <inout key="object" uid="trackerMatrix" />
+           <inout key="object" uid="trackerMatrix0" />
            <inout key="vector" uid="matrixVectorSensor" />
         </service>
 
@@ -444,7 +452,7 @@
 
         <service uid="concatTrackerHEX" type="::maths::SConcatenateMatrices" autoConnect="yes">
             <in group="matrix">
-                <key uid="trackerMatrix" />
+                <key uid="trackerMatrix0" />
                 <key uid="handEyeMatX" />
             </in>
             <inout key="output" uid="trackerHEXMatrix" />
@@ -477,12 +485,16 @@
                 <adaptor uid="videoAdpt" />
                 <adaptor uid="cameraAdpt" />
                 <adaptor uid="interactorStyle" />
-                <adaptor uid="sensorTransformAdaptor" />
-                <adaptor uid="regisTransformAdaptor" />
+                <adaptor uid="trackerTransformAdaptor0" />
+                <adaptor uid="trackerTransformAdaptor1" />
+                <adaptor uid="trackerTransformAdaptor2" />
+                <adaptor uid="trackerTransformAdaptor3" />
                 <adaptor uid="chessTransformAdaptor" />
                 <adaptor uid="cameraTransformAdaptor" />
-                <adaptor uid="sensorAxis" />
-                <adaptor uid="regisAxis" />
+                <adaptor uid="trackerAxis0" />
+                <adaptor uid="trackerAxis1" />
+                <adaptor uid="trackerAxis2" />
+                <adaptor uid="trackerAxis3" />
                 <adaptor uid="chessAxis" />
                 <adaptor uid="systemCenterAxis" />
             </scene>
@@ -503,14 +515,24 @@
             <config renderer="default" style="FixedInteractorStyle" />
         </service>
 
-        <service uid="sensorTransformAdaptor" type="::visuVTKAdaptor::STransform" autoConnect="yes">
-            <inout key="tm3d" uid="trackerMatrix" />
-            <config renderer="default" transform="vtkSensorMatrix" />
+        <service uid="trackerTransformAdaptor0" type="::visuVTKAdaptor::STransform" autoConnect="yes">
+            <inout key="tm3d" uid="trackerMatrix0" />
+            <config renderer="default" transform="vtkTrackerMatrix0" />
         </service>
 
-        <service uid="regisTransformAdaptor" type="::visuVTKAdaptor::STransform" autoConnect="yes">
-            <inout key="tm3d" uid="regisMatrix" />
-            <config renderer="default" transform="vtkRegisMatrix" />
+        <service uid="trackerTransformAdaptor1" type="::visuVTKAdaptor::STransform" autoConnect="yes">
+            <inout key="tm3d" uid="trackerMatrix1" />
+            <config renderer="default" transform="vtkTrackerMatrix1" />
+        </service>
+
+        <service uid="trackerTransformAdaptor2" type="::visuVTKAdaptor::STransform" autoConnect="yes">
+            <inout key="tm3d" uid="trackerMatrix2" />
+            <config renderer="default" transform="vtkTrackerMatrix2" />
+        </service>
+
+        <service uid="trackerTransformAdaptor3" type="::visuVTKAdaptor::STransform" autoConnect="yes">
+            <inout key="tm3d" uid="trackerMatrix3" />
+            <config renderer="default" transform="vtkTrackerMatrix3" />
         </service>
 
         <service uid="cameraTransformAdaptor" type="::visuVTKAdaptor::STransform" autoConnect="yes">
@@ -524,19 +546,27 @@
         </service>
 
         <service uid="systemCenterAxis" type="::visuVTKAdaptor::SAxis">
-            <config renderer="default" length="75" transform="id" label="no" marker="yes" markerColor="#FF0000" />
+            <config renderer="default" length="20" transform="id" label="no" marker="yes" markerColor="#FF0000" />
         </service>
 
-        <service uid="sensorAxis" type="::visuVTKAdaptor::SAxis">
-            <config renderer="default" length="50" transform="vtkSensorMatrix" label="no" marker="yes" markerColor="#00FF00" />
+        <service uid="trackerAxis0" type="::visuVTKAdaptor::SAxis">
+            <config renderer="default" length="20" transform="vtkTrackerMatrix0" label="no" marker="yes" markerColor="#00FF00" />
         </service>
 
-        <service uid="regisAxis" type="::visuVTKAdaptor::SAxis">
-            <config renderer="default" length="50" transform="vtkRegisMatrix" label="no" marker="yes" markerColor="#AA1298" />
+        <service uid="trackerAxis1" type="::visuVTKAdaptor::SAxis">
+            <config renderer="default" length="20" transform="vtkTrackerMatrix1" label="no" marker="yes" markerColor="#AA1298" />
+        </service>
+
+        <service uid="trackerAxis2" type="::visuVTKAdaptor::SAxis">
+            <config renderer="default" length="20" transform="vtkTrackerMatrix2" label="no" marker="yes" markerColor="#FF7700" />
+        </service>
+
+        <service uid="trackerAxis3" type="::visuVTKAdaptor::SAxis">
+            <config renderer="default" length="20" transform="vtkTrackerMatrix3" label="no" marker="yes" markerColor="#00FFA1" />
         </service>
 
         <service uid="chessAxis" type="::visuVTKAdaptor::SAxis">
-            <config renderer="default" length="50" transform="vtkChessMatrix" label="no" marker="yes" markerColor="#EEBAED" />
+            <config renderer="default" length="20" transform="vtkChessMatrix" label="no" marker="yes" markerColor="#EEBAED" />
         </service>
 
         <!-- *************************** End resultView *************************** -->
@@ -654,14 +684,18 @@
         <start uid="cameraSwitcher" />
         <!-- VTK scene 'resultView' -->
         <start uid="videoAdpt" />
-        <start uid="sensorAxis" />
-        <start uid="regisAxis" />
+        <start uid="trackerAxis0" />
+        <start uid="trackerAxis1" />
+        <start uid="trackerAxis2" />
+        <start uid="trackerAxis3" />
         <start uid="chessAxis" />
         <start uid="systemCenterAxis" />
         <start uid="cameraAdpt" />
         <start uid="interactorStyle" />
-        <start uid="sensorTransformAdaptor" />
-        <start uid="regisTransformAdaptor" />
+        <start uid="trackerTransformAdaptor0" />
+        <start uid="trackerTransformAdaptor1" />
+        <start uid="trackerTransformAdaptor2" />
+        <start uid="trackerTransformAdaptor3" />
         <start uid="chessTransformAdaptor" />
         <start uid="cameraTransformAdaptor" />
         <!-- Update -->
