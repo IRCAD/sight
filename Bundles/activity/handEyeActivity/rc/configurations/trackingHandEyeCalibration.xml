@@ -101,7 +101,8 @@
                     <separator/>
                     <menuItem name="Chessboard size" icon="arMedia-0.1/icons/chessboard.svg" />
                     <separator/>
-                    <menuItem name="Save Hand Eye calibration matrix" icon="media-0.1/icons/Export.svg" />
+                    <menuItem name="Save Hand Eye X matrix" icon="handEyeActivity-0.1/icons/ExportXMatrix.svg" />
+                    <menuItem name="Save Hand Eye Z matrix" icon="handEyeActivity-0.1/icons/ExportZMatrix.svg" />
                 </layout>
             </gui>
             <registry>
@@ -115,7 +116,8 @@
                 <menuItem sid="actionPrevious" start="yes" />
                 <menuItem sid="actionNext" start="yes" />
                 <menuItem sid="actionChessBoardSize" start="yes" />
-                <menuItem sid="actionExportHandEye" start="yes" />
+                <menuItem sid="actionExportHandEyeX" start="yes" />
+                <menuItem sid="actionExportHandEyeZ" start="yes" />
             </registry>
         </service>
 
@@ -244,9 +246,15 @@
             </slots>
         </service>
 
-        <service uid="actionExportHandEye" type="::gui::action::SSlotCaller">
+        <service uid="actionExportHandEyeX" type="::gui::action::SSlotCaller">
             <slots>
-                <slot>handEyeMatrixWriter/update</slot>
+                <slot>handEyeXMatrixWriter/update</slot>
+            </slots>
+        </service>
+
+        <service uid="actionExportHandEyeZ" type="::gui::action::SSlotCaller">
+            <slots>
+                <slot>handEyeZMatrixWriter/update</slot>
             </slots>
         </service>
 
@@ -344,8 +352,8 @@
             <TData>
                 <matrix name="Input0" index="0" />
                 <matrix name="Input1" index="1" />
-                <matrix name="Input2" index="1" />
-                <matrix name="Input3" index="1" />
+                <matrix name="Input2" index="2" />
+                <matrix name="Input3" index="3" />
             </TData>
         </service>
 
@@ -421,8 +429,15 @@
             </out>
         </service>
 
-        <service uid="handEyeMatrixWriter" type="::uiIO::editor::SIOSelector" >
+        <service uid="handEyeXMatrixWriter" type="::uiIO::editor::SIOSelector" >
             <inout key="target" uid="handEyeMatX" />
+            <type mode="writer" />
+            <selection mode="include" />
+            <addSelection service="::ioData::TransformationMatrix3DWriterService" />
+        </service>
+
+        <service uid="handEyeZMatrixWriter" type="::uiIO::editor::SIOSelector" >
+            <inout key="target" uid="handEyeMatZ" />
             <type mode="writer" />
             <selection mode="include" />
             <addSelection service="::ioData::TransformationMatrix3DWriterService" />
@@ -676,7 +691,8 @@
         <start uid="pushMatrixSensor" />
         <start uid="computeRegistration" />
         <start uid="cameraSelector" />
-        <start uid="handEyeMatrixWriter" />
+        <start uid="handEyeXMatrixWriter" />
+        <start uid="handEyeZMatrixWriter" />
         <start uid="displayCalibrationInfo" />
         <start uid="concatTrackerHEX" />
         <start uid="trackerTLMatrixSynchronizer" />
