@@ -1,23 +1,21 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "videoQt/player/VideoRegistry.hpp"
 
-#include <arPreferences/preferences.hpp>
-
-#include <fwCore/spyLog.hpp>
-#include <fwCore/exceptionmacros.hpp>
-
-#include <fwGui/dialog/MessageDialog.hpp>
-
+#include "videoQt/helper/formats.hpp"
 #include "videoQt/player/QVideoPlayer.hpp"
 #include "videoQt/player/QVideoSurface.hpp"
-#include "videoQt/helper/formats.hpp"
 
+#include <arPreferences/preferences.hpp>
 
+#include <fwCore/exceptionmacros.hpp>
+#include <fwCore/spyLog.hpp>
+
+#include <fwGui/dialog/MessageDialog.hpp>
 
 namespace videoQt
 {
@@ -34,7 +32,9 @@ VideoRegistry& VideoRegistry::getInstance()
 
 //-----------------------------------------------------------------------------
 
-VideoRegistry::VideoRegistry() : m_mapVideoPlayer(Key::less), m_mapRefCount(Key::less)
+VideoRegistry::VideoRegistry() :
+    m_mapVideoPlayer(Key::less),
+    m_mapRefCount(Key::less)
 {
 }
 
@@ -160,7 +160,7 @@ void VideoRegistry::releasePlayer(QVideoPlayer* player)
             MapRefCountType::const_iterator refCountIter = m_mapRefCount.find(elt.first);
             std::uint8_t nbRef                           = refCountIter->second;
             nbRef--;
-            if(nbRef  > 0)
+            if(nbRef > 0)
             {
                 m_mapRefCount[elt.first] = nbRef;
             }
@@ -168,7 +168,7 @@ void VideoRegistry::releasePlayer(QVideoPlayer* player)
             {
                 m_mapVideoPlayer.erase(elt.first);
                 m_mapRefCount.erase(elt.first);
-                delete player;
+                player->deleteLater();
             }
             return;
         }
