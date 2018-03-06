@@ -100,7 +100,7 @@ void SArucoTracker::configuring()
 
     // Get the debug markers flag
     const std::string markerdebugging = config.get< std::string >("debugMarkers", "no");
-    m_debugMarkers = (markerdebugging == "yes" ? true : false);
+    m_debugMarkers = (markerdebugging == "yes");
 
     // Do corner refinement ?
     const std::string doCornerRefinement = config.get< std::string >("cornerRefinement", "yes");
