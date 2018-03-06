@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -18,15 +18,12 @@ namespace fwRenderOgre
 namespace interactor
 {
 
-const ::fwCom::Signals::SignalKeyType fwRenderOgre::interactor::IInteractor::s_POINT_CLICKED_SIG    = "pointClicked";
 const ::fwCom::Signals::SignalKeyType fwRenderOgre::interactor::IInteractor::s_RENDER_REQUESTED_SIG = "renderRequested";
 
 // ----------------------------------------------------------------------------
 
 IInteractor::IInteractor()  :
-    m_sceneManager(nullptr),
-    m_mouseX(0),
-    m_mouseY(0)
+    m_sceneManager(nullptr)
 {
     m_ogreRoot = ::fwRenderOgre::Utils::getOgreRoot();
 

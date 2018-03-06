@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -45,7 +45,7 @@ Ogre::MovableObject* VRWidgetsInteractor::pickObject(int x, int y)
     int height = camera->getViewport()->getActualHeight();
     int width  = camera->getViewport()->getActualWidth();
 
-    bool pickSuccess = m_picker.executeRaySceneQuery( x, y, width, height );
+    bool pickSuccess = m_picker.executeRaySceneQuery( x, y, width, height, 0 );
 
     return pickSuccess ? m_picker.getSelectedObject() : nullptr;
 }
@@ -103,6 +103,65 @@ void VRWidgetsInteractor::buttonPressEvent(MouseButton button, int x, int y)
 }
 
 //------------------------------------------------------------------------------
+
+void VRWidgetsInteractor::wheelEvent(int, int, int)
+{
+}
+
+//------------------------------------------------------------------------------
+
+void VRWidgetsInteractor::resizeEvent(int, int)
+{
+}
+
+//------------------------------------------------------------------------------
+
+void VRWidgetsInteractor::keyPressEvent(int)
+{
+}
+
+//------------------------------------------------------------------------------
+
+void VRWidgetsInteractor::keyReleaseEvent(int)
+{
+}
+
+//------------------------------------------------------------------------------
+
+void VRWidgetsInteractor::focusInEvent()
+{
+}
+
+//------------------------------------------------------------------------------
+
+void VRWidgetsInteractor::focusOutEvent()
+{
+}
+
+//------------------------------------------------------------------------------
+
+void VRWidgetsInteractor::attachWidget(ui::VRWidget::sptr widget)
+{
+    OSLM_ASSERT("Only one widget can be attached to a VR interactor", !m_widget);
+    m_widget = widget;
+}
+
+//------------------------------------------------------------------------------
+
+void VRWidgetsInteractor::detachWidget(ui::VRWidget::sptr widget)
+{
+    if(m_widget == widget)
+    {
+        m_widget = nullptr;
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void VRWidgetsInteractor::initPicker()
+{
+    m_picker.setSceneManager(this->m_sceneManager);
+}
 
 } // namespace interactor
 } // namespace fwRenderOgre

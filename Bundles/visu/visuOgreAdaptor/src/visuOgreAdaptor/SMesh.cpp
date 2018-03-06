@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -135,20 +135,14 @@ void SMesh::configuring()
         }
     }
 
-    if(config.count("dynamic"))
-    {
-        m_isDynamic = config.get<bool>("dynamic");
-    }
-
-    if(config.count("dynamicVertices"))
-    {
-        m_isDynamicVertices = config.get<bool>("dynamicVertices");
-    }
-
     if(config.count("transform"))
     {
         this->setTransformId(config.get<std::string>("transform"));
     }
+
+    m_isDynamic         = config.get<bool>("dynamic", m_isDynamic);
+    m_isDynamicVertices = config.get<bool>("dynamicVertices", m_isDynamicVertices);
+    m_queryFlags        = config.get<std::uint32_t>("queryFlags", m_queryFlags);
 }
 
 //-----------------------------------------------------------------------------
@@ -273,6 +267,7 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& _mesh)
     {
         m_entity = m_meshGeometry->createEntity(*sceneMgr);
         m_entity->setVisible(m_isVisible);
+        m_entity->setQueryFlags(m_queryFlags);
         sceneMgr->getRootSceneNode()->detachObject(m_entity);
     }
 

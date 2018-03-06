@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWRENDEROGRE_PICKER_IPICKER_HPP__
-#define __FWRENDEROGRE_PICKER_IPICKER_HPP__
+#pragma once
 
 #include "fwRenderOgre/config.hpp"
 
@@ -30,7 +29,7 @@ public:
     FWRENDEROGRE_API virtual ~IPicker();
 
     /// Executes the RaySceneQuery object and returns true or false wether an object has been selected or not
-    FWRENDEROGRE_API bool executeRaySceneQuery(int x, int y, int width, int height);
+    FWRENDEROGRE_API bool executeRaySceneQuery(int x, int y, int width, int height, std::uint32_t _queryFlags);
 
     FWRENDEROGRE_API ::Ogre::MovableObject* getSelectedObject() const;
     FWRENDEROGRE_API ::Ogre::Vector3 getIntersectionInWorldSpace() const;
@@ -70,4 +69,3 @@ inline ::Ogre::MovableObject* IPicker::getSelectedObject() const
 
 }
 }
-#endif // __FWRENDEROGRE_PICKER_IPICKER_HPP__

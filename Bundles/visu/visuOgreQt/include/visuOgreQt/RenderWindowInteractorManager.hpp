@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VISUOGREQT_RENDERWINDOWINTERACTORMANAGER_HPP__
-#define __VISUOGREQT_RENDERWINDOWINTERACTORMANAGER_HPP__
+#pragma once
 
 #include "visuOgreQt/config.hpp"
 #include <visuOgreQt/Window.hpp>
@@ -72,7 +71,7 @@ public:
     VISUOGREQT_API virtual void makeCurrent() override;
 
     /// Get Ogre RenderWindow
-    VISUOGREQT_API virtual ::Ogre::RenderWindow* getRenderWindow() override;
+    VISUOGREQT_API virtual ::Ogre::RenderWindow* getRenderWindow() const override;
 
 private Q_SLOTS:
 
@@ -81,9 +80,6 @@ private Q_SLOTS:
 
     /// When the clipping range has to match the last updating of the scene bounding box
     void onCameraClippingComputation();
-
-    /// When a ray cast request is emitted
-    void onRayCastRequested(int, int, int, int);
 
 private:
 
@@ -94,5 +90,3 @@ private:
 };
 
 } // namespace visuOgreQt
-
-#endif // __VISUOGREQT_RENDERWINDOWINTERACTORMANAGER_HPP__

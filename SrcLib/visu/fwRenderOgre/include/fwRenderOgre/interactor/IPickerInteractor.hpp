@@ -48,31 +48,55 @@ public:
         }
     };
 
+    /**
+     * @name Signals API
+     * @{
+     */
+    typedef ::fwCom::Signal< void ( ::fwData::Object::sptr ) > PointClickedSigType;
+    FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_ADD_POINT_SIG;
+    FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_REMOVE_POINT_SIG;
+    /** @} */
+
     fwCoreNonInstanciableClassDefinitionsMacro( (IPickerInteractor)(::fwCore::BaseObject) )
 
-    /// Constructor.
-    /// Retrieves the Ogre root and the \<sceneID\> scene manager
+    /// Constructor. Retrieves the Ogre root and the \<sceneID\> scene manager
     FWRENDEROGRE_API IPickerInteractor();
+
     /// Destructor
     FWRENDEROGRE_API virtual ~IPickerInteractor();
 
-    FWRENDEROGRE_API bool virtual mouseClickEvent(int x, int y, int width, int height) = 0;
+    /// Initialize picker with the corresponding layer's info
+    FWRENDEROGRE_API void initPicker();
 
-    /**
-     * @brief Initilaize picker with the corresponding layer's info
-     *        This method should only be called by a layer that contains this interactor
-     */
-    FWRENDEROGRE_API void  initPicker();
+    /// Return true if the picker is initialized
+    FWRENDEROGRE_API bool isPickerInitialized() const;
 
-    FWRENDEROGRE_API bool  isPickerInitialized();
+    /// Set query mask
+    FWRENDEROGRE_API void setQueryFlags(std::uint32_t _queryFlags);
 
 protected:
 
     /// Ogre picker
     ::fwRenderOgre::picker::IPicker* m_picker;
 
-    bool m_isPickerInitialized;
+    /// Mask for picking requests
+    std::uint32_t m_queryFlags {0};
 
+    /**
+     * @name Signals attributes
+     * @{
+     */
+    /// Signal triggered when an action has been triggered
+    PointClickedSigType::sptr m_sigAddPoint;
+
+    /// Signal triggered when an action has been triggered
+    PointClickedSigType::sptr m_sigRemovePoint;
+
+    /// Signal triggered when a render is requested
+    RenderRequestedSigType::sptr m_sigRenderRequested;
+    /**
+     * @}
+     */
 };
 
 }

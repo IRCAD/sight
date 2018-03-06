@@ -47,7 +47,6 @@ const ::fwCom::Signals::SignalKeyType SRender::s_COMPOSITOR_UPDATED_SIG = "compo
 
 const ::fwCom::Slots::SlotKeyType SRender::s_COMPUTE_CAMERA_ORIG_SLOT     = "computeCameraParameters";
 const ::fwCom::Slots::SlotKeyType SRender::s_COMPUTE_CAMERA_CLIPPING_SLOT = "computeCameraClipping";
-const ::fwCom::Slots::SlotKeyType SRender::s_DO_RAY_CAST_SLOT             = "doRayCast";
 const ::fwCom::Slots::SlotKeyType SRender::s_REQUEST_RENDER_SLOT          = "requestRender";
 
 static const ::fwCom::Slots::SlotKeyType s_ADD_OBJECTS_SLOT    = "addObject";
@@ -68,7 +67,6 @@ SRender::SRender() noexcept :
 
     newSlot(s_COMPUTE_CAMERA_ORIG_SLOT, &SRender::resetCameraCoordinates, this);
     newSlot(s_COMPUTE_CAMERA_CLIPPING_SLOT, &SRender::computeCameraClipping, this);
-    newSlot(s_DO_RAY_CAST_SLOT, &SRender::doRayCast, this);
     newSlot(s_REQUEST_RENDER_SLOT, &SRender::requestRender, this);
 }
 
@@ -288,20 +286,6 @@ void SRender::configureBackgroundLayer(const ConfigType& _cfg )
     }
 
     m_layers[s_OGREBACKGROUNDID] = ogreLayer;
-}
-
-//-----------------------------------------------------------------------------
-
-void SRender::doRayCast(int x, int y, int width, int height)
-{
-    for (auto it : m_layers)
-    {
-        ::fwRenderOgre::Layer::sptr layer = it.second;
-        if(layer->doRayCast(x, y, width, height))
-        {
-            break;
-        }
-    }
 }
 
 //-----------------------------------------------------------------------------

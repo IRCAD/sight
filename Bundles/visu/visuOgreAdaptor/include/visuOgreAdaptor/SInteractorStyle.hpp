@@ -32,13 +32,14 @@ namespace visuOgreAdaptor
  * @section XML XML Configuration
  * @code{.xml}
         <service type=" ::visuOgreAdaptor::SInteractorStyle ">
-            <config render=" ... " movement=" ... " picker=" ..." />
+            <config render=" ... " movement=" ... " picker=" ..." queryFlags="..."/>
        </service>
    @endcode
  * @subsection Configuration Configuration:
  * - \b render (mandatory) : Layer on which the interactions will be done.
  * - \b movement (optional) : Style of the movement interactor: 'Trackball', 'Fixed', 'Negato2D', or 'VR'.
  * - \b picker (optional) : Style of the picker interactor: 'Mesh' or 'Video'.
+ * - \b queryFlags (optional) : Used for picking. Picked only displayed entities with the same flag.
  */
 class VISUOGREADAPTOR_CLASS_API SInteractorStyle : public ::fwRenderOgre::IAdaptor
 {
@@ -53,7 +54,8 @@ public:
      */
     /// Signal sent when a point is clicked
     typedef ::fwCom::Signal< void ( ::fwData::Object::sptr ) > PointClickedSignalType;
-    VISUOGREADAPTOR_API static const ::fwCom::Signals::SignalKeyType s_POINT_CLICKED_SIG;
+    VISUOGREADAPTOR_API static const ::fwCom::Signals::SignalKeyType s_ADD_POINT_SIG;
+    VISUOGREADAPTOR_API static const ::fwCom::Signals::SignalKeyType s_REMOVE_POINT_SIG;
     /** @} */
 
     /**
@@ -62,7 +64,8 @@ public:
      */
 
     /// Slots used when a point is clicked
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_POINT_CLICKED_SLOT;
+    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_ADD_POINT_SLOT;
+    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_REMOVE_POINT_SLOT;
     /** @} */
 
     /// Constructor. Creates signals and slots
@@ -84,7 +87,9 @@ protected:
 private:
 
     /// Slot: sends a signal when the interactor has recieved a clicked point signal
-    void clickedPoint(fwData::Object::sptr obj);
+    void addPoint(fwData::Object::sptr obj);
+    /// Slot: sends a signal when the interactor has recieved a clicked point signal
+    void removePoint(fwData::Object::sptr obj);
     /// Set interactor style
     void setInteractorStyle();
     /// Type of the picker style
@@ -92,9 +97,13 @@ private:
     /// Type of the movement style
     std::string m_movementStyle;
     /// Pointer to the generic signal
-    PointClickedSignalType::sptr m_sigPointClicked;
+    PointClickedSignalType::sptr m_sigAddPoint;
+    /// Pointer to the generic signal
+    PointClickedSignalType::sptr m_sigRemovePoint;
     ///Connection service, needed for slot/signal association
     ::fwCom::helper::SigSlotConnection m_connections;
+    /// Mask for picking requests
+    std::uint32_t m_queryFlags {0};
 };
 
 } //namespace visuOgreAdaptor

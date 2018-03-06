@@ -30,11 +30,19 @@ VideoPickerInteractor::~VideoPickerInteractor() noexcept
 
 //------------------------------------------------------------------------------
 
-bool VideoPickerInteractor::mouseClickEvent(int x, int y, int width, int height)
+void VideoPickerInteractor::resizeEvent(int x, int y)
+{
+    m_width  = x;
+    m_height = y;
+}
+
+//------------------------------------------------------------------------------
+
+void VideoPickerInteractor::buttonPressEvent(MouseButton button, int x, int y)
 {
     if(m_picker->hasSceneManager())
     {
-        if( m_picker->executeRaySceneQuery(x, y, width, height) )
+        if(m_control && m_picker->executeRaySceneQuery(x, y, m_width, m_height, m_queryFlags))
         {
             ::Ogre::Vector3 click = m_picker->getIntersectionInWorldSpace();
 
@@ -43,15 +51,68 @@ bool VideoPickerInteractor::mouseClickEvent(int x, int y, int width, int height)
             {{static_cast<double>(click.x), static_cast<double>(click.y), static_cast<double>(click.z)}};
             point->setCoord(cords);
 
-            m_sigPointClicked->asyncEmit(::fwData::Object::dynamicCast(point));
-            return true;
+            if(button == MouseButton::LEFT)
+            {
+                m_sigAddPoint->asyncEmit(::fwData::Object::dynamicCast(point));
+            }
+            else
+            {
+                m_sigRemovePoint->asyncEmit(::fwData::Object::dynamicCast(point));
+            }
         }
     }
     else
     {
         SLM_WARN("The picker scene hasn't been initialized, you are not using this interactor correctly");
     }
-    return false;
+}
+
+//------------------------------------------------------------------------------
+
+void VideoPickerInteractor::mouseMoveEvent(MouseButton, int, int, int, int)
+{
+}
+
+//------------------------------------------------------------------------------
+
+void VideoPickerInteractor::wheelEvent(int, int, int)
+{
+}
+
+//------------------------------------------------------------------------------
+
+void VideoPickerInteractor::buttonReleaseEvent(MouseButton, int, int)
+{
+}
+
+//------------------------------------------------------------------------------
+
+void VideoPickerInteractor::keyPressEvent(int k)
+{
+    if(k == Modifier::CONTROL)
+    {
+        m_control = true;
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void VideoPickerInteractor::keyReleaseEvent(int)
+{
+    m_control = false;
+}
+
+//------------------------------------------------------------------------------
+
+void VideoPickerInteractor::focusInEvent()
+{
+}
+
+//------------------------------------------------------------------------------
+
+void VideoPickerInteractor::focusOutEvent()
+{
+    m_control = false;
 }
 
 //------------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -24,43 +24,59 @@ FixedStyleInteractor::FixedStyleInteractor() :
 
 // ----------------------------------------------------------------------------
 
-void FixedStyleInteractor::mouseMoveEvent(MouseButton /*button*/, int /*x*/, int /*y*/, int /*dx*/, int /*dy*/)
+void FixedStyleInteractor::mouseMoveEvent(MouseButton, int, int, int, int)
 {
 }
 
-// ----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-void FixedStyleInteractor::wheelEvent(int /*delta*/, int /*x*/, int /*y*/)
+void FixedStyleInteractor::wheelEvent(int, int, int)
 {
 }
 
-// ----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-void FixedStyleInteractor::buttonReleaseEvent(IInteractor::MouseButton, int, int)
-{
-
-}
-
-// ----------------------------------------------------------------------------
-
-void FixedStyleInteractor::buttonPressEvent(IInteractor::MouseButton /*button*/, int /*x*/, int /*y*/)
-{
-
-}
-
-// ----------------------------------------------------------------------------
-
-void FixedStyleInteractor::resizeEvent(int /*x*/, int /*y*/)
+void FixedStyleInteractor::buttonReleaseEvent(MouseButton, int, int)
 {
 }
 
-// ----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-void FixedStyleInteractor::keyPressEvent(int /*key*/)
+void FixedStyleInteractor::buttonPressEvent(MouseButton, int, int)
 {
 }
 
-// ----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+
+void FixedStyleInteractor::resizeEvent(int, int)
+{
+}
+
+//------------------------------------------------------------------------------
+
+void FixedStyleInteractor::keyPressEvent(int)
+{
+}
+
+//------------------------------------------------------------------------------
+
+void FixedStyleInteractor::keyReleaseEvent(int)
+{
+}
+
+//------------------------------------------------------------------------------
+
+void FixedStyleInteractor::focusInEvent()
+{
+}
+
+//------------------------------------------------------------------------------
+
+void FixedStyleInteractor::focusOutEvent()
+{
+}
+
+//------------------------------------------------------------------------------
 
 } // namespace interactor
 } // namespace fwRenderOgre

@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VISUOGREADAPTOR_SMODELSERIES_HPP__
-#define __VISUOGREADAPTOR_SMODELSERIES_HPP__
+#pragma once
 
 #include "visuOgreAdaptor/config.hpp"
 
@@ -44,6 +43,7 @@ namespace visuOgreAdaptor
  * performance hint that will choose a specific GPU memory pool accordingly.
  *  - \b dynamicVertices (optional, default=no) : if the modelSeries geometry is likely to be updated frequently. This
  * is a performance hint that will choose a specific GPU memory pool accordingly.
+ *  - \b queryFlags (optional) : Used for picking. Picked only by pickers with the same flag.
  */
 class VISUOGREADAPTOR_CLASS_API SModelSeries : public ::fwRenderOgre::IAdaptor,
                                                public ::fwRenderOgre::ITransformable
@@ -99,10 +99,10 @@ private:
     bool m_isDynamicVertices;
     /// Signal/Slot connections with this service
     ::fwCom::helper::SigSlotConnection m_connections;
+    /// Mask for picking requests
+    std::uint32_t m_queryFlags {0};
 };
 
 //------------------------------------------------------------------------------
 
 } // visuOgreAdaptor
-
-#endif // __VISUOGREADAPTOR_SMODELSERIES_HPP__
