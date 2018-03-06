@@ -17,6 +17,7 @@
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 #include <fwDataTools/TransformationMatrix3D.hpp>
 
+#include <fwRenderOgre/helper/Scene.hpp>
 #include <fwRenderOgre/helper/Shading.hpp>
 #include <fwRenderOgre/interactor/VRWidgetsInteractor.hpp>
 #include <fwRenderOgre/vr/ImportanceDrivenVolumeRenderer.hpp>
@@ -28,6 +29,8 @@
 #include <OGRE/OgreCamera.h>
 #include <OGRE/OgreSceneNode.h>
 #include <OGRE/OgreTextureManager.h>
+
+#include "visuOgreAdaptor/STransform.hpp"
 
 fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SVolumeRender, ::fwData::Image);
 
@@ -114,8 +117,6 @@ SVolumeRender::SVolumeRender() noexcept :
     newSlot(s_SET_DOUBLE_PARAMETER_SLOT, &SVolumeRender::setDoubleParameter, this);
     newSlot(s_SET_ENUM_PARAMETER_SLOT, &SVolumeRender::setEnumParameter, this);
     newSlot(s_SET_COLOR_PARAMETER_SLOT, &SVolumeRender::setColorParameter, this);
-
-    m_ogreTransform = ::Ogre::Matrix4::IDENTITY;
     m_renderingMode = VR_MODE_RAY_TRACING;
 }
 
@@ -152,6 +153,9 @@ void SVolumeRender::configuring()
         m_colorBleeding       = config.get<std::string>("colorBleeding", "false") == "yes";
         m_shadows             = config.get<std::string>("shadows", "false") == "yes";
     }
+
+    const std::string transformId = config.get<std::string>(::visuOgreAdaptor::STransform::s_CONFIG_TRANSFORM, this->getID() + "_transform");
+    this->setTransformId(transformId);
 }
 
 //-----------------------------------------------------------------------------
@@ -229,8 +233,18 @@ void SVolumeRender::starting()
     this->updateImageInfos(image);
 
     m_sceneManager    = this->getSceneManager();
-    m_volumeSceneNode = m_sceneManager->getRootSceneNode()->createChildSceneNode(this->getID() + "_sceneNode");
-    m_camera          = this->getLayer()->getDefaultCamera();
+
+    ::Ogre::SceneNode* rootSceneNode = m_sceneManager->getRootSceneNode();
+    ::Ogre::SceneNode* transformNode = ::fwRenderOgre::helper::Scene::getNodeById(this->getTransformId(), rootSceneNode);
+    if (transformNode == nullptr)
+    {
+        transformNode = rootSceneNode->createChildSceneNode(this->getTransformId());
+    }
+    m_volumeSceneNode = transformNode->createChildSceneNode(this->getID() + "_transform");
+    const auto origin = image->getOrigin();
+    m_volumeSceneNode->translate(::Ogre::Vector3(origin[0],origin[1],origin[2]));
+
+    m_camera = this->getLayer()->getDefaultCamera();
 
     // Create textures
     m_3DOgreTexture = ::Ogre::TextureManager::getSingleton().create(
@@ -310,7 +324,7 @@ void SVolumeRender::stopping()
     delete m_volumeRenderer;
     m_volumeRenderer = nullptr;
 
-    m_sceneManager->getRootSceneNode()->removeChild(m_volumeSceneNode->getName());
+    m_sceneManager->getRootSceneNode()->removeChild(this->getTransformId());
 
     ::Ogre::TextureManager::getSingleton().remove(m_3DOgreTexture->getHandle());
     m_3DOgreTexture.reset();
