@@ -9,9 +9,11 @@ set( DEPENDENCIES
     fwGuiQt
     fwServices
     fwTools
+    fwPreferences
     fwMath
     fwCom
     arData
+    cvIO
     eigenTools
     handEyeCalibration
 )
