@@ -133,7 +133,7 @@ void SOpenCVReader::updating()
 
     for(size_t c = 0; c < cams; ++c)
     {
-        ::arData::Camera::sptr cam = camSeries->getCamera(c);
+        ::arData::Camera::sptr cam = camSeries->getCamera(0);
         lock.upgrade();
         camSeries->removeCamera(cam);
         lock.downgrade();
