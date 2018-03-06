@@ -4,8 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWDATATOOLS_HELPER_POINTLIST_HPP__
-#define __FWDATATOOLS_HELPER_POINTLIST_HPP__
+#pragma once
 
 #include "fwDataTools/config.hpp"
 
@@ -34,34 +33,43 @@ public:
 
     /**
      * @brief Computes the point-to-point distance between 2 pointlists
-     * @param pointList1 [::fwData::PointList]: first point list
-     * @param pointList2 [::fwData::PointList]: second point list
+     * @param[in] _pointList1 first point list
+     * @param[in] _pointList2 second point list
      * @return array of the size of one the pointlists (they must have the same size)
      */
     FWDATATOOLS_API static ::fwData::Array::sptr
-    computeDistance(::fwData::PointList::sptr pointList1, ::fwData::PointList::sptr pointList2);
+    computeDistance(::fwData::PointList::sptr _pointList1, ::fwData::PointList::sptr _pointList2);
 
     /**
      * @brief Transform a pointList with a transformation matrix
-     * @param pointList [::fwData::PointList]: pointlist to be transformed
-     * @param matrix [::fwData::TransformationMatrix3D]: transformation to apply to each points in pointlist
+     * @param[in] _pointList pointlist to be transformed
+     * @param[in] _matrix transformation to apply to each points in pointlist
      */
-    FWDATATOOLS_API static void transform(::fwData::PointList::sptr& pointList,
-                                          const ::fwData::TransformationMatrix3D::csptr& matrix);
+    FWDATATOOLS_API static void transform(::fwData::PointList::sptr& _pointList,
+                                          const ::fwData::TransformationMatrix3D::csptr& _matrix);
 
     /**
      * @brief Associate 2 pointLists:
      * Take 2 pointLists as input and re-order the second one, so that the points at the
      * same index on both lists are the closest to each other
-     * @param pointList1 [::fwData::PointList]: first pointlist
-     * @param pointList2 [::fwData::PointList]: pointlist that will be re-ordered
+     * @param[in] _pointList1 first pointlist
+     * @param[in] _pointList2 pointlist that will be re-ordered
      */
-    FWDATATOOLS_API static void associate(const ::fwData::PointList::csptr& pointList1,
-                                          ::fwData::PointList::sptr pointList2);
+    FWDATATOOLS_API static void associate(const ::fwData::PointList::csptr& _pointList1,
+                                          ::fwData::PointList::sptr _pointList2);
+
+    /**
+     * @brief removeClosestPoint: removes the closest point from a reference point
+     * @param[in] _pointList: the point list
+     * @param[in] _point: used to find the closest point in the list of points
+     * @param[in] _delta: the maximum tolerance  between the reference point and the point to find
+     * @return the removed point or nullptr if no point has been removed
+     */
+    FWDATATOOLS_API static const ::fwData::Point::sptr removeClosestPoint(::fwData::PointList::sptr& _pointList,
+                                                                          const ::fwData::Point::sptr& _point,
+                                                                          float _delta);
 
 };
 
 } // namespace helper
 } // namespace fwDataTools
-
-#endif // __FWDATATOOLS_HELPER_POINTLIST_HPP__

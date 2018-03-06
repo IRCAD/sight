@@ -403,5 +403,89 @@ void PointListTest::associate()
     }
 }
 
+//------------------------------------------------------------------------------
+
+void PointListTest::removeClosestPointNominal()
+{
+    const size_t nbPoints = 42;
+    ::fwData::PointList::sptr pl = ::fwData::PointList::New();
+
+    // Remove points in an empty list
+    for(size_t i = 0; i < nbPoints; ++i)
+    {
+        const auto p = ::fwData::Point::New(static_cast< float >(i), static_cast< float >(i), static_cast< float >(i));
+        CPPUNIT_ASSERT( ::fwDataTools::helper::PointList::removeClosestPoint(pl, p,
+                                                                             std::numeric_limits<float>::min()) ==
+                        nullptr );
+    }
+
+    // Build a list
+    for(size_t i = 0; i < nbPoints; ++i)
+    {
+        const auto p = ::fwData::Point::New(static_cast< float >(i), static_cast< float >(i), static_cast< float >(i));
+        pl->pushBack(p);
+    }
+
+    // Remove points with an unmatched delta
+    for(size_t i = 0; i < nbPoints; ++i)
+    {
+        const auto p = ::fwData::Point::New(static_cast< float >(nbPoints+1), static_cast< float >(nbPoints+1),
+                                            static_cast< float >(nbPoints+1));
+        CPPUNIT_ASSERT( ::fwDataTools::helper::PointList::removeClosestPoint(pl, p,
+                                                                             std::numeric_limits<float>::min()) ==
+                        nullptr );
+    }
+
+    // Remove points
+    for(size_t i = 0; i < nbPoints; ++i)
+    {
+        const auto p =
+            ::fwData::Point::New(static_cast< float >(i), static_cast< float >(i), static_cast< float >(i));
+        const auto pRes =
+            ::fwDataTools::helper::PointList::removeClosestPoint(pl, p, std::numeric_limits<float>::max());
+        CPPUNIT_ASSERT(pRes != nullptr);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(pRes->getCoord()[0], p->getCoord()[0], std::numeric_limits<float>::min());
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(pRes->getCoord()[1], p->getCoord()[1], std::numeric_limits<float>::min());
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(pRes->getCoord()[2], p->getCoord()[2], std::numeric_limits<float>::min());
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void PointListTest::removeClosestPointExtreme()
+{
+    const size_t nbPoints = 42;
+    ::fwData::PointList::sptr pl = ::fwData::PointList::New();
+
+    // Build a list
+    for(size_t i = 0; i < nbPoints; ++i)
+    {
+        const auto p = ::fwData::Point::New(static_cast< float >(i), static_cast< float >(i), static_cast< float >(i));
+        pl->pushBack(p);
+    }
+
+    // Remove points with negative delta
+    for(size_t i = 0; i < nbPoints; ++i)
+    {
+        const auto p = ::fwData::Point::New(static_cast< float >(i), static_cast< float >(i), static_cast< float >(i));
+        CPPUNIT_ASSERT(::fwDataTools::helper::PointList::removeClosestPoint(pl, p,
+                                                                            -std::numeric_limits<float>::max()) ==
+                       nullptr);
+    }
+
+    // Remove points with biggest delta
+    for(size_t i = 0; i < nbPoints; ++i)
+    {
+        const auto p =
+            ::fwData::Point::New(static_cast< float >(i), static_cast< float >(i), static_cast< float >(i));
+        const auto pRes =
+            ::fwDataTools::helper::PointList::removeClosestPoint(pl, p, std::numeric_limits<float>::max());
+        CPPUNIT_ASSERT(pRes != nullptr);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(pRes->getCoord()[0], p->getCoord()[0], i + std::numeric_limits<float>::max());
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(pRes->getCoord()[1], p->getCoord()[1], i + std::numeric_limits<float>::max());
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(pRes->getCoord()[2], p->getCoord()[2], i + std::numeric_limits<float>::max());
+    }
+}
+
 } //namespace ut
 } //namespace fwDataTools
