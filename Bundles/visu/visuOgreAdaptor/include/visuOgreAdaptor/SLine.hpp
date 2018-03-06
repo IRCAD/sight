@@ -14,6 +14,8 @@
 
 #include <Ogre.h>
 
+#include <memory>
+
 namespace fwData
 {
 class Material;
@@ -28,6 +30,7 @@ namespace visuOgreAdaptor
  * @section Slots Slots
  * -\b updateVisibility(bool): Sets whether the line is shown or not.
  * -\b toggleVisibility(): Toggle whether the line is shown or not.
+ * -\b updateLength(float): Update the line length
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -56,12 +59,20 @@ public:
     /// Slot to set visibility
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT;
     typedef ::fwCom::Slot<void (bool)> UpdateVisibilitySlotType;
+
     /// Slot to toggle visibility
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_TOGGLE_VISIBILITY_SLOT;
     typedef ::fwCom::Slot<void ()> ToggleVisibilitySlotType;
 
     /// Returns if the line is visible in the scene or not.
     VISUOGREADAPTOR_API bool getVisibility() const;
+
+    /// Slot to set the line length
+    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_LENGTH_SLOT;
+    typedef ::fwCom::Slot<void (float)> UpdateLengthSlotType;
+
+    /// Slot: update length of the line
+    VISUOGREADAPTOR_API void updateLength (float length );
 
 protected:
     /// Configures the adaptor
@@ -89,6 +100,9 @@ private:
 
     /// Pointer to the Material data
     ::fwData::Material::sptr m_material;
+
+    /// ManualObject defining the SLine
+    ::Ogre::ManualObject* m_line;
     /// Handles the length of the line (in mm)
     float m_length;
     /// Handles the color of the line
