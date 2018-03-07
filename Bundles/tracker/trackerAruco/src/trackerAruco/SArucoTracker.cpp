@@ -59,6 +59,11 @@ SArucoTracker::SArucoTracker() noexcept :
     //minimum distance of any corner to the image border for detected markers (in pixels) (default 3)
     m_detectorParams->minDistanceToBorder = 1;
 
+    // minimum mean distance beetween two marker corners to be considered
+    // similar, so that the smaller one is removed.
+    // The rate is relative to the smaller perimeter of the two markers (default 0.05).
+    m_detectorParams->minMarkerDistanceRate = 0.01;
+
     // corner refinement method. (CORNER_REFINE_NONE, no refinement. CORNER_REFINE_SUBPIX,
     // do subpixel refinement.)
     m_detectorParams->cornerRefinementMethod = ::cv::aruco::CornerRefineMethod::CORNER_REFINE_SUBPIX;
