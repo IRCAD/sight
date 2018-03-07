@@ -154,7 +154,8 @@ void SVolumeRender::configuring()
         m_shadows             = config.get<std::string>("shadows", "false") == "yes";
     }
 
-    const std::string transformId = config.get<std::string>(::visuOgreAdaptor::STransform::s_CONFIG_TRANSFORM, this->getID() + "_transform");
+    const std::string transformId = config.get<std::string>(::visuOgreAdaptor::STransform::s_CONFIG_TRANSFORM,
+                                                            this->getID() + "_transform");
     this->setTransformId(transformId);
 }
 
@@ -232,17 +233,26 @@ void SVolumeRender::starting()
 
     this->updateImageInfos(image);
 
-    m_sceneManager    = this->getSceneManager();
+    m_sceneManager = this->getSceneManager();
 
     ::Ogre::SceneNode* rootSceneNode = m_sceneManager->getRootSceneNode();
-    ::Ogre::SceneNode* transformNode = ::fwRenderOgre::helper::Scene::getNodeById(this->getTransformId(), rootSceneNode);
+    ::Ogre::SceneNode* transformNode =
+        ::fwRenderOgre::helper::Scene::getNodeById(this->getTransformId(), rootSceneNode);
     if (transformNode == nullptr)
     {
         transformNode = rootSceneNode->createChildSceneNode(this->getTransformId());
     }
-    m_volumeSceneNode = transformNode->createChildSceneNode(this->getID() + "_transform");
+    m_volumeSceneNode = transformNode->createChildSceneNode(this->getID() + "_transform_origin");
+
     const auto origin = image->getOrigin();
-    m_volumeSceneNode->translate(::Ogre::Vector3(origin[0],origin[1],origin[2]));
+    if(origin.size())
+    {
+        SLM_ASSERT("Image origin is not in 3D", origin.size() == 3);
+
+        m_volumeSceneNode->translate(::Ogre::Vector3(static_cast<float>(origin[0]),
+                                                     static_cast<float>(origin[1]),
+                                                     static_cast<float>(origin[2])));
+    }
 
     m_camera = this->getLayer()->getDefaultCamera();
 
