@@ -25,23 +25,25 @@
 namespace trackingCalibration
 {
 
-const ::fwServices::IService::KeyType s_CAMERA_INPUT              = "camera";
-const ::fwServices::IService::KeyType s_DETECTED_CHESSBOARD_INPUT = "detectedChessboard";
-const ::fwServices::IService::KeyType s_HAND_EYE_X_INPUT          = "handEyeX";
-const ::fwServices::IService::KeyType s_HAND_EYE_Z_INPUT          = "handEyeZ";
-const ::fwServices::IService::KeyType s_TRACKER_MATRIX_INPUT      = "trackerMatrix";
+static const ::fwServices::IService::KeyType s_CAMERA_INPUT              = "camera";
+static const ::fwServices::IService::KeyType s_DETECTED_CHESSBOARD_INPUT = "detectedChessboard";
+static const ::fwServices::IService::KeyType s_HAND_EYE_X_INPUT          = "handEyeX";
+static const ::fwServices::IService::KeyType s_HAND_EYE_Z_INPUT          = "handEyeZ";
+static const ::fwServices::IService::KeyType s_TRACKER_MATRIX_INPUT      = "trackerMatrix";
 
-const ::fwServices::IService::KeyType s_REPROJECTED_CHESSBOARD_INOUT = "reprojectedChessboard";
+static const ::fwServices::IService::KeyType s_REPROJECTED_CHESSBOARD_INOUT = "reprojectedChessboard";
 
-const ::fwCom::Slots::SlotKeyType s_UPDATE_CHESSBOARD_SIZE_SLOT = "updateChessboardSize";
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_CHESSBOARD_SIZE_SLOT = "updateChessboardSize";
+static const ::fwCom::Slots::SlotKeyType s_SET_MOVING_CAMERA           = "setMovingCamera";
 
-const ::fwCom::Signals::SignalKeyType s_REPROJECTION_COMPUTED_SIGNAL = "reprojectionComputed";
+static const ::fwCom::Signals::SignalKeyType s_REPROJECTION_COMPUTED_SIGNAL = "reprojectionComputed";
 
 //------------------------------------------------------------------------------
 
 SChessboardReprojection::SChessboardReprojection() noexcept
 {
     newSlot(s_UPDATE_CHESSBOARD_SIZE_SLOT, &SChessboardReprojection::updateChessboardSize, this);
+    newSlot(s_SET_MOVING_CAMERA, &SChessboardReprojection::setMovingCamera, this);
 
     newSignal< ErrorComputedSignalType >(s_REPROJECTION_COMPUTED_SIGNAL);
 }
@@ -63,6 +65,8 @@ void SChessboardReprojection::configuring()
     m_boardWidthKey      = boardConfig.get<std::string>("width");
     m_boardHeightKey     = boardConfig.get<std::string>("height");
     m_boardSquareSizeKey = boardConfig.get<std::string>("squareSize");
+
+    m_movingCamera = configTree.get<bool>("config.<xmlattr>.movingCamera", false);
 }
 
 //------------------------------------------------------------------------------
@@ -98,8 +102,15 @@ void SChessboardReprojection::updating()
         ::cvIO::Matrix::copyToCv(handEyeZ, cvZ);
         ::cvIO::Matrix::copyToCv(trackerMatrix, cvTracker);
 
-        // TODO: handle fixed camera hand-eye reprojections
-        ::cv::Matx44d modelToCamera = cvX.inv() * cvTracker.inv() * cvZ;
+        ::cv::Matx44d modelToCamera;
+        if(m_movingCamera)
+        {
+            modelToCamera = cvX.inv() * cvTracker.inv() * cvZ;
+        }
+        else
+        {
+            modelToCamera = cvZ.inv() * cvTracker * cvX;
+        }
 
         ::cv::Mat intrinsic, distortionCoefficients;
         ::cv::Size imageSize;
@@ -157,22 +168,23 @@ fwServices::IService::KeyConnectionsMap SChessboardReprojection::getAutoConnecti
 
 //------------------------------------------------------------------------------
 
-double SChessboardReprojection::meanDistance(const std::vector< ::cv::Point2d >& detected,
-                                             const std::vector< ::cv::Point2d >& reprojected)
+double SChessboardReprojection::meanDistance(const std::vector< ::cv::Point2d >& _detected,
+                                             const std::vector< ::cv::Point2d >& _reprojected)
 {
-    SLM_ASSERT("Detected and reprojected point lists don't have the same size.", detected.size() == reprojected.size());
+    SLM_ASSERT("Detected and reprojected point lists don't have the same size.",
+               _detected.size() == _reprojected.size());
 
     double res = 0.;
 
     // Sum of distances.
-    for(size_t i = 0; i < detected.size(); ++i)
+    for(size_t i = 0; i < _detected.size(); ++i)
     {
-        ::cv::Vec2d v = ::cv::Vec2d(detected[i]) - ::cv::Vec2d(reprojected[i]);
+        ::cv::Vec2d v = ::cv::Vec2d(_detected[i]) - ::cv::Vec2d(_reprojected[i]);
         res          += ::cv::norm(v, ::cv::NORM_L2);
     }
 
     // Return the mean distance difference.
-    return res / detected.size();
+    return res / _detected.size();
 }
 
 //------------------------------------------------------------------------------
@@ -210,6 +222,14 @@ void SChessboardReprojection::updateChessboardSize()
             m_chessboardModel.push_back(::cv::Point3d(x, y, 0.));
         }
     }
+}
+
+//------------------------------------------------------------------------------
+
+void SChessboardReprojection::setMovingCamera(bool _movingCamera)
+{
+    std::cerr << m_movingCamera << std::endl;
+    m_movingCamera = _movingCamera;
 }
 
 //------------------------------------------------------------------------------

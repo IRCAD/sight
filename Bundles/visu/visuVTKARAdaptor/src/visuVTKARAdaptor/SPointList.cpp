@@ -8,6 +8,8 @@
 
 #include <arData/Camera.hpp>
 
+#include <fwCom/Slots.hxx>
+
 #include <fwData/Image.hpp>
 #include <fwData/PointList.hpp>
 
@@ -70,6 +72,7 @@ void SPointList::starting()
     this->initialize();
 
     m_actor = vtkSmartPointer<vtkActor>::New();
+    this->addToRenderer(m_actor);
 
     this->updating();
 }
@@ -78,8 +81,6 @@ void SPointList::starting()
 
 void SPointList::updating()
 {
-    this->removeAllPropFromRenderer();
-
     vtkSmartPointer<vtkPoints> imgPoints  = vtkSmartPointer<vtkPoints>::New();
     vtkSmartPointer<vtkPolyData> polydata = vtkSmartPointer<vtkPolyData>::New();
     polydata->SetPoints(imgPoints);
@@ -102,8 +103,6 @@ void SPointList::updating()
                                      static_cast <double >( m_pointColor->blue() ));
 
     m_actor->GetProperty()->SetOpacity(static_cast< double >( m_pointColor->alpha() ));
-
-    this->addToRenderer(m_actor);
 
     ::fwData::PointList::csptr pl = this->getInput< ::fwData::PointList >(s_POINTLIST_IN);
 
@@ -145,7 +144,6 @@ void SPointList::updateVisibility(bool isVisible)
 void SPointList::stopping()
 {
     this->removeAllPropFromRenderer();
-    m_actor->Delete();
 }
 
 //------------------------------------------------------------------------------

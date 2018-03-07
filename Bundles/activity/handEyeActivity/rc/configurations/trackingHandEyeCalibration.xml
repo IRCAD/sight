@@ -423,6 +423,7 @@
             <in key="trackerMatrix" uid="trackerMatrix0" />
             <inout key="reprojectedChessboard" uid="reprojectedPoints" />
             <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" squareSize="CHESSBOARD_SQUARE_SIZE" />
+            <config movingCamera="true" />
         </service>
 
         <service uid="chessboardDetector" type="::videoCalibration::SChessBoardDetector" worker="detectorWorker" >
@@ -711,6 +712,7 @@
         <connect>
             <signal>movingCameraParameter/boolChanged</signal>
             <slot>handEyeCalibration/setMovingCamera</slot>
+            <slot>chessboardReprojection/setMovingCamera</slot>
             <slot>chessSwitcher/switchMatrix</slot>
             <slot>cameraSwitcher/switchMatrix</slot>
         </connect>

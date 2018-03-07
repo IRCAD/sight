@@ -17,11 +17,14 @@ namespace trackingCalibration
 /**
  * @brief
  *
- * @subsection Signals Signals
+ * @section Signals Signals
  * - \b reprojectionComputed(double): sends the reprojection error.
  *
- * @subsection Slots Slots
+ * @section Slots Slots
  * - \b updateChessboardSize(): updates the chessboard model from the preferences.
+ * - \b setMovingCamera(bool): configure the service to compute a hand-eye calibration for a moving or fixed camera
+ *
+ * @section XML XML Configuration
  *
  * @code{.xml}
     <service type="::trackingCalibration::SChessboardReprojection">
@@ -32,6 +35,7 @@ namespace trackingCalibration
         <in key="trackerMatrix" uid="..." />
         <inout key="reprojectedChessboard" uid="..." />
         <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" squareSize="CHESSBOARD_SQUARE_SIZE" />
+        <config movingCamera="false" />
     </service>
  * @endcode
  *
@@ -48,6 +52,9 @@ namespace trackingCalibration
  *
  * @subsection Configuration Configuration
  * - \b board (mandatory): chessboard preferences (width, height and square size)
+ * - \b config (optional)
+ *     - \b movingCamera (optional, values=true|false, default: false): defines if the camera is a moving element of our
+ *          hand eye system (i.e. fixed chessboard)
  */
 class TRACKINGCALIBRATION_CLASS_API SChessboardReprojection : public ::fwServices::IService
 {
@@ -80,12 +87,15 @@ protected:
 
 private:
 
-    /// Computes the mean pointwise distance between the detected and the reprojected chessboards.
-    static double meanDistance(const std::vector< ::cv::Point2d >& detected,
-                               const std::vector< ::cv::Point2d >& reprojected);
-
-    /// Fetches the chessboard dimension from the preferences and computes the model.
+    /// SLOT: Fetches the chessboard dimension from the preferences and computes the model.
     void updateChessboardSize();
+
+    /// SLOT: sets moving or fixed camera mode
+    void setMovingCamera(bool movingCamera);
+
+    /// Computes the mean pointwise distance between the detected and the reprojected chessboards.
+    static double meanDistance(const std::vector< ::cv::Point2d >& _detected,
+                               const std::vector< ::cv::Point2d >& _reprojected);
 
     /// Type of signal emitted when the reprojection error is computed.
     typedef ::fwCom::Signal< void (double) > ErrorComputedSignalType;
@@ -101,6 +111,8 @@ private:
 
     /// Chessboard model based on the preferences.
     std::vector< ::cv::Point3d > m_chessboardModel;
+
+    bool m_movingCamera;
 
 };
 
