@@ -71,8 +71,9 @@
                 <start uid="textureReader" />
             </service>
 
-            <service uid="actionRenderToTexture" type="::gui::action::SSignal">
-                <start uid="textureReader" />
+            <service uid="actionRenderToTexture" type="::gui::action::SStarter">
+                <start uid="offscreenScene" />
+                <start uid="meshOffscreenAdaptor" />
             </service>
 
             <service uid="actionQuit" type="::gui::action::SQuit" />
@@ -164,7 +165,7 @@
 
             <service uid="materialAdaptor" type="::visuOgreAdaptor::SMaterial">
                 <inout key="material" uid="material" />
-                <config layer="default" materialName="texMaterial" textureName="meshTexture" shadingMode="flat"/>
+                <config layer="default" materialName="texMaterial" textureName="meshTexture" />
             </service>
 
             <service uid="negato3DAdaptor" type="::visuOgreAdaptor::SNegato3D">
@@ -189,17 +190,12 @@
                 </scene>
             </service>
 
-            <service uid="meshOffscreenAdaptor" type="::visuOgreAdaptor::SMesh" autoConnect="yes">
+            <service uid="meshOffscreenAdaptor" type="::visuOgreAdaptor::SMesh" >
                 <inout key="mesh" uid="mesh" />
                 <config layer="default" />
             </service>
 
             <!-- ##################################### End offscreen Scene ######################################### -->
-
-            <connect>
-                <signal>actionRenderToTexture/triggered</signal>
-                <slot>offscreenScene/requestRender</slot>
-            </connect>
 
             <start uid="mainFrame" />
             <start uid="imageReader" />
@@ -211,10 +207,6 @@
             <start uid="materialAdaptor" />
             <start uid="meshAdaptor" />
             <start uid="negato3DAdaptor" />
-
-            <!-- Ogre scene 'offscreenScene' -->
-            <start uid="offscreenScene" />
-            <start uid="meshOffscreenAdaptor" />
 
         </config>
     </extension>
