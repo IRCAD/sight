@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -87,7 +87,7 @@ void Negato2DInteractor::wheelEvent(int delta, int mouseX, int mouseY)
 
 // ----------------------------------------------------------------------------
 
-void Negato2DInteractor::mouseMoveEvent(IInteractor::MouseButton button, int /*x*/, int /*y*/, int dx, int dy)
+void Negato2DInteractor::mouseMoveEvent(IInteractor::MouseButton button, int, int, int dx, int dy)
 {
     if(button == MIDDLE && m_totalWidth > 1)
     {
@@ -95,6 +95,48 @@ void Negato2DInteractor::mouseMoveEvent(IInteractor::MouseButton button, int /*x
         m_cameraPos.y -= m_currentHeight / m_renderWindowHeight * static_cast< ::Ogre::Real >(dy);
         this->updateCameraPosition();
     }
+}
+
+//------------------------------------------------------------------------------
+
+void Negato2DInteractor::buttonReleaseEvent(MouseButton, int, int)
+{
+}
+
+//------------------------------------------------------------------------------
+
+void Negato2DInteractor::buttonPressEvent(MouseButton, int, int)
+{
+}
+
+//------------------------------------------------------------------------------
+
+void Negato2DInteractor::resizeEvent(int, int)
+{
+}
+
+//------------------------------------------------------------------------------
+
+void Negato2DInteractor::keyPressEvent(int)
+{
+}
+
+//------------------------------------------------------------------------------
+
+void Negato2DInteractor::keyReleaseEvent(int)
+{
+}
+
+//------------------------------------------------------------------------------
+
+void Negato2DInteractor::focusInEvent()
+{
+}
+
+//------------------------------------------------------------------------------
+
+void Negato2DInteractor::focusOutEvent()
+{
 }
 
 // ----------------------------------------------------------------------------
@@ -244,7 +286,7 @@ void Negato2DInteractor::updateCameraAngle()
 
 // ----------------------------------------------------------------------------
 
-::Ogre::Real Negato2DInteractor::getTextureCoordinate_X(int mouseX)
+::Ogre::Real Negato2DInteractor::getTextureCoordinate_X(int mouseX) const
 {
     ::Ogre::Real leftScreenBordure = m_cameraPos.x - static_cast< ::Ogre::Real >(m_currentWidth) / 2;
     ::Ogre::Real newCoordinate     = static_cast< ::Ogre::Real >(leftScreenBordure) +
@@ -254,7 +296,7 @@ void Negato2DInteractor::updateCameraAngle()
 
 // ----------------------------------------------------------------------------
 
-::Ogre::Real Negato2DInteractor::getTextureCoordinate_Y(int mouseY)
+::Ogre::Real Negato2DInteractor::getTextureCoordinate_Y(int mouseY) const
 {
     // Qt and Ogre's Y axis are oriented to the opposite of each other.
     ::Ogre::Real topScreenBordure = m_cameraPos.y + static_cast< ::Ogre::Real >(m_currentHeight) / 2;

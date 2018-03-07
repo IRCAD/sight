@@ -44,8 +44,11 @@ public:
             WHEELMOVE,
             RESIZE,
             KEYPRESS,
+            KEYRELEASE,
             BUTTONRELEASE,
-            BUTTONPRESS
+            BUTTONPRESS,
+            FOCUSIN,
+            FOCUSOUT
         } InteractionEnumType;
 
         /**

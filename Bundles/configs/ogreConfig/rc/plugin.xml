@@ -2,7 +2,7 @@
 
 
     <xi:include href="configurations/OgreHistogramManager.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
-    <xi:include href="configurations/OgreIDVR.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/OgreIDVRManager.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/OgreLightManager.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
 </plugin>

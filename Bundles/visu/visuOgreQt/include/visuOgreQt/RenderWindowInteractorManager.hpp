@@ -81,9 +81,6 @@ private Q_SLOTS:
     /// When the clipping range has to match the last updating of the scene bounding box
     void onCameraClippingComputation();
 
-    /// When a ray cast request is emitted
-    void onRayCastRequested(int, int, int, int);
-
 private:
 
     /// Pointers to the Qt element of the Widget

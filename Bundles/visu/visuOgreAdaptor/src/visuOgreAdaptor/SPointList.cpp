@@ -41,7 +41,8 @@ namespace visuOgreAdaptor
 
 static const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT = "updateVisibility";
 
-static const std::string s_POINTLIST_INOUT = "pointList";
+static const ::fwServices::IService::KeyType s_POINTLIST_INPUT = "pointList";
+static const ::fwServices::IService::KeyType s_MESH_INPUT      = "mesh";
 
 //-----------------------------------------------------------------------------
 
@@ -125,7 +126,8 @@ void SPointList::configuring()
         this->setTransformId(this->getID() + "_TF");
     }
 
-    m_radius = config.get("radius", 1.f);
+    m_queryFlags = config.get<std::uint32_t>("queryFlags", m_queryFlags);
+    m_radius     = config.get("radius", 1.f);
 }
 
 //-----------------------------------------------------------------------------
@@ -142,8 +144,23 @@ void SPointList::starting()
     m_meshGeometry = ::std::make_shared< ::fwRenderOgre::Mesh>(this->getID());
     m_meshGeometry->setDynamic(true);
 
-    auto pointList = this->getInput< ::fwData::PointList >(s_POINTLIST_INOUT);
-    this->updateMesh(pointList);
+    const auto pointList = this->getInput< ::fwData::PointList >(s_POINTLIST_INPUT);
+    if(pointList)
+    {
+        this->updateMesh(pointList);
+    }
+    else
+    {
+        const auto mesh = this->getInput< ::fwData::Mesh >(s_MESH_INPUT);
+        if(mesh)
+        {
+            this->updateMesh(mesh);
+        }
+        else
+        {
+            OSLM_ERROR("No '" + s_POINTLIST_INPUT + "' or '" + s_MESH_INPUT + "' specified.")
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -173,10 +190,24 @@ void SPointList::updating()
     {
         return;
     }
-    auto pointList = this->getInput< ::fwData::PointList >(s_POINTLIST_INOUT);
-    ::fwData::mt::ObjectReadLock lock(pointList);
 
-    this->updateMesh(pointList);
+    auto pointList = this->getInput< ::fwData::PointList >(s_POINTLIST_INPUT);
+    if(pointList)
+    {
+        this->updateMesh(pointList);
+    }
+    else
+    {
+        auto mesh = this->getInput< ::fwData::Mesh >(s_MESH_INPUT);
+        if(mesh)
+        {
+            this->updateMesh(mesh);
+        }
+        else
+        {
+            OSLM_ERROR("No '" + s_POINTLIST_INPUT + "' or '" + s_MESH_INPUT + "' specified.")
+        }
+    }
     this->requestRender();
 }
 
@@ -215,6 +246,7 @@ void SPointList::updateMesh(const ::fwData::PointList::csptr& _pointList)
     {
         m_entity = m_meshGeometry->createEntity(*sceneMgr);
         m_entity->setVisible(m_isVisible);
+        m_entity->setQueryFlags(m_queryFlags);
         sceneMgr->getRootSceneNode()->detachObject(m_entity);
     }
 
@@ -223,6 +255,66 @@ void SPointList::updateMesh(const ::fwData::PointList::csptr& _pointList)
     //------------------------------------------
 
     m_meshGeometry->updateVertices(_pointList);
+
+    //------------------------------------------
+    // Create sub-services
+    //------------------------------------------
+    this->updateMaterialAdaptor();
+
+    this->attachNode(m_entity);
+
+    m_meshGeometry->setVisible(m_isVisible);
+
+    if (m_autoResetCamera)
+    {
+        this->getRenderService()->resetCameraCoordinates(m_layerID);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SPointList::updateMesh(const ::fwData::Mesh::csptr& _mesh)
+{
+    ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
+    SLM_ASSERT("::Ogre::SceneManager is null", sceneMgr);
+
+    ::fwData::mt::ObjectReadLock lock(_mesh);
+
+    const size_t uiNumVertices = _mesh->getNumberOfPoints();
+    if(uiNumVertices == 0)
+    {
+        SLM_DEBUG("Empty mesh");
+
+        if(m_entity)
+        {
+            sceneMgr->destroyEntity(m_entity);
+            m_entity = nullptr;
+        }
+        m_meshGeometry->clearMesh(*sceneMgr);
+        return;
+    }
+
+    this->getRenderService()->makeCurrent();
+
+    m_meshGeometry->updateMesh(::std::const_pointer_cast< ::fwData::Mesh >(_mesh));
+
+    //------------------------------------------
+    // Create entity and attach it in the scene graph
+    //------------------------------------------
+
+    if(!m_entity)
+    {
+        m_entity = m_meshGeometry->createEntity(*sceneMgr);
+        m_entity->setVisible(m_isVisible);
+        m_entity->setQueryFlags(m_queryFlags);
+        sceneMgr->getRootSceneNode()->detachObject(m_entity);
+    }
+
+    //------------------------------------------
+    // Update vertex layers
+    //------------------------------------------
+
+    m_meshGeometry->updateVertices(_mesh);
 
     //------------------------------------------
     // Create sub-services
@@ -254,9 +346,21 @@ void SPointList::updateMesh(const ::fwData::PointList::csptr& _pointList)
     {
         materialAdaptor->setMaterialTemplateName(m_materialTemplateName);
     }
-
-    const std::string meshName = this->getInput< ::fwData::PointList >(s_POINTLIST_INOUT)->getID();
-    const std::string mtlName  = meshName + "_" + materialAdaptor->getID() + _materialSuffix;
+    std::string meshName;
+    auto pointList = this->getInput< ::fwData::PointList >(s_POINTLIST_INPUT);
+    if(pointList)
+    {
+        meshName = pointList->getID();
+    }
+    else
+    {
+        auto mesh = this->getInput< ::fwData::Mesh >(s_MESH_INPUT);
+        if(mesh)
+        {
+            meshName = mesh->getID();
+        }
+    }
+    const std::string mtlName = meshName + "_" + materialAdaptor->getID() + _materialSuffix;
 
     materialAdaptor->setMaterialName(mtlName);
 
@@ -305,6 +409,9 @@ void SPointList::updateMaterialAdaptor()
         auto materialFw = m_materialAdaptor->getMaterialFw();
         m_meshGeometry->updateMaterial(materialFw, false);
         materialFw->setMeshSize(m_radius);
+
+        m_entity->setMaterialName(m_materialAdaptor->getMaterialName());
+
         m_materialAdaptor->slot(::visuOgreAdaptor::SMaterial::s_UPDATE_SLOT)->run();
     }
 }
@@ -339,9 +446,13 @@ void SPointList::attachNode(::Ogre::MovableObject* _node)
 ::fwServices::IService::KeyConnectionsMap SPointList::getAutoConnections() const
 {
     ::fwServices::IService::KeyConnectionsMap connections;
-    connections.push( s_POINTLIST_INOUT, ::fwData::PointList::s_POINT_ADDED_SIG, s_UPDATE_SLOT );
-    connections.push( s_POINTLIST_INOUT, ::fwData::PointList::s_POINT_REMOVED_SIG, s_UPDATE_SLOT );
-    connections.push( s_POINTLIST_INOUT, ::fwData::PointList::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push( s_POINTLIST_INPUT, ::fwData::PointList::s_POINT_ADDED_SIG, s_UPDATE_SLOT );
+    connections.push( s_POINTLIST_INPUT, ::fwData::PointList::s_POINT_REMOVED_SIG, s_UPDATE_SLOT );
+    connections.push( s_POINTLIST_INPUT, ::fwData::PointList::s_MODIFIED_SIG, s_UPDATE_SLOT );
+
+    connections.push( s_MESH_INPUT, ::fwData::Mesh::s_VERTEX_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push( s_MESH_INPUT, ::fwData::Mesh::s_MODIFIED_SIG, s_UPDATE_SLOT );
+
     return connections;
 }
 

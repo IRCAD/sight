@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -81,15 +81,9 @@ void SModelSeries::configuring()
         m_materialTemplateName = config.get<std::string>("material");
     }
 
-    if(config.count("dynamic"))
-    {
-        m_isDynamic = config.get<bool>("dynamic");
-    }
-
-    if(config.count("dynamicVertices"))
-    {
-        m_isDynamicVertices = config.get<bool>("dynamicVertices");
-    }
+    m_isDynamic         = config.get<bool>("dynamic", m_isDynamic);
+    m_isDynamicVertices = config.get<bool>("dynamicVertices", m_isDynamicVertices);
+    m_queryFlags        = config.get<std::uint32_t>("queryFlags", m_queryFlags);
 }
 
 //------------------------------------------------------------------------------
@@ -126,6 +120,7 @@ void SModelSeries::updating()
         adaptor->setTransformId(this->getTransformId());
         adaptor->setMaterialTemplateName(m_materialTemplateName);
         adaptor->setAutoResetCamera(m_autoResetCamera);
+        adaptor->setQueryFlags(m_queryFlags);
 
         adaptor->start();
         adaptor->setForceHide(!showRec);

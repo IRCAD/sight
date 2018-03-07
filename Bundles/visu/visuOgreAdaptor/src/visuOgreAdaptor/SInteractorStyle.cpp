@@ -23,8 +23,11 @@ fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SInteractor
 namespace visuOgreAdaptor
 {
 
-const ::fwCom::Signals::SignalKeyType visuOgreAdaptor::SInteractorStyle::s_POINT_CLICKED_SIG = "pointClickedSignal";
-const ::fwCom::Slots::SlotKeyType visuOgreAdaptor::SInteractorStyle::s_POINT_CLICKED_SLOT    = "pointClickedSlot";
+const ::fwCom::Signals::SignalKeyType visuOgreAdaptor::SInteractorStyle::s_ADD_POINT_SIG = "addPointSignal";
+const ::fwCom::Slots::SlotKeyType visuOgreAdaptor::SInteractorStyle::s_ADD_POINT_SLOT    = "addPointSlot";
+
+const ::fwCom::Signals::SignalKeyType visuOgreAdaptor::SInteractorStyle::s_REMOVE_POINT_SIG = "removePointSignal";
+const ::fwCom::Slots::SlotKeyType visuOgreAdaptor::SInteractorStyle::s_REMOVE_POINT_SLOT    = "removePointSlot";
 
 static const std::string s_CONFIG_PICKER   = "picker";
 static const std::string s_CONFIG_MOVEMENT = "movement";
@@ -45,9 +48,11 @@ static const std::map<std::string, std::string> s_STYLES_MOVEMENT = {
 
 SInteractorStyle::SInteractorStyle() noexcept
 {
-    newSlot( s_POINT_CLICKED_SLOT, &::visuOgreAdaptor::SInteractorStyle::clickedPoint, this );
+    newSlot( s_ADD_POINT_SLOT, &::visuOgreAdaptor::SInteractorStyle::addPoint, this );
+    newSlot( s_REMOVE_POINT_SLOT, &::visuOgreAdaptor::SInteractorStyle::removePoint, this );
 
-    m_sigPointClicked = newSignal< PointClickedSignalType >( s_POINT_CLICKED_SIG );
+    m_sigAddPoint    = newSignal< PointClickedSignalType >( s_ADD_POINT_SIG );
+    m_sigRemovePoint = newSignal< PointClickedSignalType >( s_REMOVE_POINT_SIG );
 }
 
 //------------------------------------------------------------------------------
@@ -73,6 +78,8 @@ void SInteractorStyle::configuring()
     {
         m_movementStyle = config.get<std::string>(s_CONFIG_MOVEMENT);
     }
+
+    m_queryFlags = config.get<std::uint32_t>("queryFlags", m_queryFlags);
 }
 
 //------------------------------------------------------------------------------
@@ -90,8 +97,10 @@ void SInteractorStyle::starting()
 
         if(pickerInteractor)
         {
-            m_connections.connect(pickerInteractor, ::fwRenderOgre::interactor::IInteractor::s_POINT_CLICKED_SIG,
-                                  this->getSptr(), ::visuOgreAdaptor::SInteractorStyle::s_POINT_CLICKED_SLOT);
+            m_connections.connect(pickerInteractor, ::fwRenderOgre::interactor::IPickerInteractor::s_ADD_POINT_SIG,
+                                  this->getSptr(), ::visuOgreAdaptor::SInteractorStyle::s_ADD_POINT_SLOT);
+            m_connections.connect(pickerInteractor, ::fwRenderOgre::interactor::IPickerInteractor::s_REMOVE_POINT_SIG,
+                                  this->getSptr(), ::visuOgreAdaptor::SInteractorStyle::s_REMOVE_POINT_SLOT);
         }
     }
 }
@@ -119,21 +128,24 @@ void SInteractorStyle::setInteractorStyle()
         {
             const auto style = s_STYLES_PICKER.at(m_pickerStyle);
 
-            ::fwRenderOgre::interactor::IInteractor::sptr interactor = ::fwRenderOgre::interactorFactory::New(style);
-            OSLM_ASSERT("Unknown picker interactor style : " << style, interactor);
+            ::fwRenderOgre::interactor::IInteractor::sptr interactor = ::fwRenderOgre::interactorFactory::New(style,
+                                                                                                              this->getSceneManager()->getName());
+            SLM_ASSERT(this->getID() + " : Unknown picker interactor style : " + style, interactor);
 
-            interactor->setSceneID(this->getSceneManager()->getName());
-            this->getRenderService()->getLayer(m_layerID)->setSelectInteractor(::fwRenderOgre::interactor::IPickerInteractor::dynamicCast(
-                                                                                   interactor));
+            auto layer            = this->getRenderService()->getLayer(m_layerID);
+            auto pickerInteractor = ::fwRenderOgre::interactor::IPickerInteractor::dynamicCast(interactor);
+            pickerInteractor->initPicker();
+            pickerInteractor->setQueryFlags(m_queryFlags);
+            layer->setSelectInteractor(::fwRenderOgre::interactor::IPickerInteractor::dynamicCast(interactor));
         }
         else
         {
-            SLM_WARN("'" + s_CONFIG_PICKER +"' has an unknown value : '" + m_pickerStyle +"'");
+            SLM_WARN(this->getID() + " : '" + s_CONFIG_PICKER +"' has an unknown value : '" + m_pickerStyle +"'");
         }
     }
     else
     {
-        SLM_WARN("'" + s_CONFIG_PICKER +"' is not set.");
+        SLM_WARN(this->getID() + " : '" + s_CONFIG_PICKER +"' is not set.");
     }
 
     if(!m_movementStyle.empty())
@@ -142,30 +154,37 @@ void SInteractorStyle::setInteractorStyle()
         {
             const auto style = s_STYLES_MOVEMENT.at(m_movementStyle);
 
-            ::fwRenderOgre::interactor::IInteractor::sptr interactor = ::fwRenderOgre::interactorFactory::New(style);
-            OSLM_ASSERT("Unknown movement interactor style : " << style, interactor);
+            ::fwRenderOgre::interactor::IInteractor::sptr interactor = ::fwRenderOgre::interactorFactory::New(style,
+                                                                                                              this->getSceneManager()->getName());
+            SLM_ASSERT(this->getID() + " : Unknown movement interactor style : " + style, interactor);
 
-            interactor->setSceneID(this->getSceneManager()->getName());
-            this->getRenderService()->getLayer(m_layerID)->setMoveInteractor(::fwRenderOgre::interactor::IMovementInteractor::dynamicCast(
-                                                                                 interactor));
+            auto layer = this->getRenderService()->getLayer(m_layerID);
+            layer->setMoveInteractor(::fwRenderOgre::interactor::IMovementInteractor::dynamicCast(interactor));
         }
         else
         {
-            SLM_WARN("'" + s_CONFIG_MOVEMENT +"' has an unknown value : '" + m_movementStyle +"'");
+            SLM_WARN(this->getID() + " : '" + s_CONFIG_MOVEMENT +"' has an unknown value : '" + m_movementStyle +"'");
         }
     }
     else
     {
-        SLM_WARN("'" + s_CONFIG_MOVEMENT +"' is not set.");
+        SLM_WARN(this->getID() + " : '" + s_CONFIG_MOVEMENT +"' is not set.");
     }
 
 }
 
 //------------------------------------------------------------------------------
 
-void SInteractorStyle::clickedPoint( ::fwData::Object::sptr obj )
+void SInteractorStyle::addPoint( ::fwData::Object::sptr obj )
 {
-    m_sigPointClicked->asyncEmit( obj );
+    m_sigAddPoint->asyncEmit( obj );
+}
+
+//------------------------------------------------------------------------------
+
+void SInteractorStyle::removePoint( ::fwData::Object::sptr obj )
+{
+    m_sigRemovePoint->asyncEmit( obj );
 }
 
 } //namespace visuOgreAdaptor

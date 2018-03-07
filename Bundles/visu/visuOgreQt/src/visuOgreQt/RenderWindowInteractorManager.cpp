@@ -108,8 +108,6 @@ void RenderWindowInteractorManager::connectToContainer()
         SLM_ERROR("RenderService wrongly instantiated. ");
     }
 
-    QObject::connect(m_qOgreWidget, SIGNAL(rayCastRequested(int,int,int,int)), this,
-                     SLOT(onRayCastRequested(int,int,int,int)));
     QObject::connect(m_qOgreWidget, SIGNAL(cameraClippingComputation()), this, SLOT(onCameraClippingComputation()));
     QObject::connect(m_qOgreWidget, SIGNAL(interacted(
                                                ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo)), this,
@@ -120,8 +118,6 @@ void RenderWindowInteractorManager::connectToContainer()
 
 void RenderWindowInteractorManager::disconnectInteractor()
 {
-    QObject::disconnect(m_qOgreWidget, SIGNAL(rayCastRequested(int,int,int,int)), this,
-                        SLOT(onRayCastRequested(int,int,int,int)));
     QObject::disconnect(m_qOgreWidget, SIGNAL(cameraClippingComputation()), this, SLOT(onCameraClippingComputation()));
     QObject::disconnect(m_qOgreWidget, SIGNAL(interacted(
                                                   ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo)), this,
@@ -182,17 +178,6 @@ void RenderWindowInteractorManager::onCameraClippingComputation()
     ::fwRenderOgre::SRender::sptr ogreRenderService = ::fwRenderOgre::SRender::dynamicCast( renderService );
 
     ogreRenderService->slot(::fwRenderOgre::SRender::s_COMPUTE_CAMERA_CLIPPING_SLOT)->asyncRun();
-}
-
-//-----------------------------------------------------------------------------
-
-void RenderWindowInteractorManager::onRayCastRequested(int _x, int _y, int _w, int _h)
-{
-    ::fwServices::IService::sptr renderService      = m_renderService.lock();
-    ::fwRenderOgre::SRender::sptr ogreRenderService = ::fwRenderOgre::SRender::dynamicCast( renderService );
-
-    ogreRenderService->slot< ::fwRenderOgre::SRender::DoRayCastSlotType>(::fwRenderOgre::SRender::s_DO_RAY_CAST_SLOT)->
-    asyncRun(_x, _y, _w, _h);
 }
 
 //-----------------------------------------------------------------------------
