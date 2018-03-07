@@ -162,20 +162,7 @@ void SFrameGrabber::stopCamera()
 
         if(timeline->isAllocated())
         {
-            const ::fwCore::HiResClock::HiResClockType timestamp = ::fwCore::HiResClock::getTimeInMilliSec() + 1;
-            SPTR(::arData::FrameTL::BufferType) buffer = timeline->createBuffer(timestamp);
-            std::uint8_t* destBuffer = buffer->addElement(0);
-
-            std::fill(destBuffer,
-                      destBuffer + timeline->getWidth() * timeline->getHeight() * timeline->getNumberOfComponents(), 0);
-
-            // push buffer and notify
-            timeline->clearTimeline();
-            timeline->pushObject(buffer);
-
-            auto sigTL = timeline->signal< ::arData::TimeLine::ObjectPushedSignalType >(
-                ::arData::TimeLine::s_OBJECT_PUSHED_SIG );
-            sigTL->asyncEmit(timestamp);
+            this->clearTimeline(timeline);
         }
 
         auto sig = this->signal< ::arServices::IGrabber::CameraStoppedSignalType >(

@@ -6,6 +6,8 @@
 
 #include "arServices/IGrabber.hpp"
 
+#include <arData/FrameTL.hpp>
+
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
 
@@ -53,6 +55,27 @@ IGrabber::IGrabber() noexcept
 IGrabber::~IGrabber() noexcept
 {
 
+}
+
+// ----------------------------------------------------------------------------
+
+void IGrabber::clearTimeline(::arData::FrameTL::sptr const& tl)
+{
+    // Clear the timeline: send a black frame
+    const ::fwCore::HiResClock::HiResClockType timestamp = tl->getNewerTimestamp() + 1;
+
+    SPTR(::arData::FrameTL::BufferType) buffer = tl->createBuffer(timestamp);
+    auto destBuffer = reinterpret_cast< std::uint8_t* >( buffer->addElement(0) );
+
+    std::fill(destBuffer, destBuffer + tl->getWidth() * tl->getHeight() * tl->getNumberOfComponents(), 0);
+
+    // push buffer and notify
+    tl->clearTimeline();
+    tl->pushObject(buffer);
+
+    auto sigTL = tl->signal< ::arData::TimeLine::ObjectPushedSignalType >(
+        ::arData::TimeLine::s_OBJECT_PUSHED_SIG );
+    sigTL->asyncEmit(timestamp);
 }
 
 // ----------------------------------------------------------------------------
