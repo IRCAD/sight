@@ -68,8 +68,6 @@ void OffScreenRenderWindowInteractorManager::requestRender()
     this->makeCurrent();
 
     m_ogreRoot->renderOneFrame();
-
-    m_ogreRenderTarget->writeContentsToFile("zizi.png");
 }
 
 //-----------------------------------------------------------------------------
