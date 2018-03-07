@@ -113,12 +113,12 @@
                     <param type="double" name="adpt. threshold constant" key="adaptiveThreshConstant" defaultValue="7." min="0." max="30." />
                     <!-- determine minimum perimeter for marker contour to be detected.
                         This is defined as a rate respect to the maximum dimension of the input image -->
-                    <param type="double" name="Min. Marker Perimeter Rate" key="minMarkerPerimeterRate" defaultValue="0.03" min="0." max="1.0" />
+                    <param type="double" name="Min. Marker Perimeter Rate" key="minMarkerPerimeterRate" defaultValue="0.03" min="0.01" max="1.0" />
                     <!-- determine maximum perimeter for marker contour to be detected.
                         This is defined as a rate respect to the maximum dimension of the input image -->
-                    <param type="double" name="Max. Marker Perimeter Rate" key="maxMarkerPerimeterRate" defaultValue="4.0" min="0." max="10." />
+                    <param type="double" name="Max. Marker Perimeter Rate" key="maxMarkerPerimeterRate" defaultValue="4.0" min="1." max="10." />
                     <!-- minimum accuracy during the polygonal approximation process to determine which contours are squares -->
-                    <param type="double" name="Polygonal Approx. Accuracy Rate" key="polygonalApproxAccuracyRate" defaultValue="0.03" min="0." max="1." />
+                    <param type="double" name="Polygonal Approx. Accuracy Rate" key="polygonalApproxAccuracyRate" defaultValue="0.03" min="0.01" max="1." />
                     <!-- minimum distance between corners for detected markers relative to its perimeter -->
                     <param type="double" name="Min. Corner Distance Rate" key="minCornerDistanceRate" defaultValue="0.01" min="0." max="1." />
                     <!-- minimum distance of any corner to the image border for detected markers (in pixels) -->
