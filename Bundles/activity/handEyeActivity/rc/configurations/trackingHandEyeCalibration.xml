@@ -36,11 +36,13 @@
                 <layout type="::fwGui::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="1" />
+                    <view proportion="0" />
                 </layout>
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
                 <view sid="mainViews" start="yes" />
+                <view sid="footer" start="yes" />
             </registry>
         </service>
 
@@ -57,6 +59,18 @@
                 <view sid="resultView" start="yes" />
                 <view sid="rightPanel" start="yes" />
                 <toolBar sid="toolBarVideo" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="footer" type="::gui::view::SDefaultView">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="horizontal" />
+                    <view proportion="1" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="reprojectionLabel" start="yes" />
             </registry>
         </service>
 
@@ -122,6 +136,11 @@
                 <menuItem sid="actionExportHandEyeX" start="yes" />
                 <menuItem sid="actionExportHandEyeZ" start="yes" />
             </registry>
+        </service>
+
+        <service uid="reprojectionLabel" type="::uiTools::editor::STextStatus">
+           <label>Reprojection Error (pixels)</label>
+           <color>#ee0066</color>
         </service>
 
         <service uid="movingCameraParameter" type="::guiQt::editor::SParameters" >
@@ -698,6 +717,11 @@
             <signal>handEyeMatX/modified</signal>
             <slot>actionShowHideVisibility/activate</slot>
             <slot>actionShowHideVisibility/update</slot>
+        </connect>
+
+        <connect>
+            <signal>chessboardReprojection/reprojectionComputed</signal>
+            <slot>reprojectionLabel/setDoubleParameter</slot>
         </connect>
 
         <!-- *************************** End Connections *************************** -->

@@ -21,7 +21,7 @@ namespace trackingCalibration
  * - \b reprojectionComputed(double): sends the reprojection error.
  *
  * @subsection Slots Slots
- * - \b updateChessboardSize(): updates the chessboard model from the preferences
+ * - \b updateChessboardSize(): updates the chessboard model from the preferences.
  *
  * @code{.xml}
     <service type="::trackingCalibration::SChessboardReprojection">
@@ -55,35 +55,51 @@ public:
 
     fwCoreServiceClassDefinitionsMacro((SChessboardReprojection)(::fwServices::IService));
 
-    /**
-     * @brief Constructor.
-     */
+    /// Constructor.
     TRACKINGCALIBRATION_API SChessboardReprojection() noexcept;
 
-    /**
-     * @brief Destructor.
-     */
+    /// Destructor.
     TRACKINGCALIBRATION_API virtual ~SChessboardReprojection() noexcept;
 
 protected:
 
+    /// Configures chessboard preferences.
     TRACKINGCALIBRATION_API void configuring() override;
+
+    /// Updates the model using the initial preferences.
     TRACKINGCALIBRATION_API void starting() override;
+
+    /// Reprojects the chessboard models and computes the mean reprojection error.
     TRACKINGCALIBRATION_API void updating() override;
+
+    /// Does nothing.
     TRACKINGCALIBRATION_API void stopping() override;
 
+    /// Connect all the inputs' modified signals to this service's update slot.
     TRACKINGCALIBRATION_API virtual KeyConnectionsMap getAutoConnections() const override;
 
 private:
 
+    /// Computes the mean pointwise distance between the detected and the reprojected chessboards.
+    static double meanDistance(const std::vector< ::cv::Point2d >& detected,
+                               const std::vector< ::cv::Point2d >& reprojected);
+
+    /// Fetches the chessboard dimension from the preferences and computes the model.
     void updateChessboardSize();
 
+    /// Type of signal emitted when the reprojection error is computed.
+    typedef ::fwCom::Signal< void (double) > ErrorComputedSignalType;
+
+    /// Chessboard width preference.
     std::string m_boardWidthKey;
 
+    /// Chessboard height preference.
     std::string m_boardHeightKey;
 
+    /// Chessboard square size preference.
     std::string m_boardSquareSizeKey;
 
+    /// Chessboard model based on the preferences.
     std::vector< ::cv::Point3d > m_chessboardModel;
 
 };
