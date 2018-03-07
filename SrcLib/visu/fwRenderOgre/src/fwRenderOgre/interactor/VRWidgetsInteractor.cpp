@@ -104,42 +104,6 @@ void VRWidgetsInteractor::buttonPressEvent(MouseButton button, int x, int y)
 
 //------------------------------------------------------------------------------
 
-void VRWidgetsInteractor::wheelEvent(int, int, int)
-{
-}
-
-//------------------------------------------------------------------------------
-
-void VRWidgetsInteractor::resizeEvent(int, int)
-{
-}
-
-//------------------------------------------------------------------------------
-
-void VRWidgetsInteractor::keyPressEvent(int)
-{
-}
-
-//------------------------------------------------------------------------------
-
-void VRWidgetsInteractor::keyReleaseEvent(int)
-{
-}
-
-//------------------------------------------------------------------------------
-
-void VRWidgetsInteractor::focusInEvent()
-{
-}
-
-//------------------------------------------------------------------------------
-
-void VRWidgetsInteractor::focusOutEvent()
-{
-}
-
-//------------------------------------------------------------------------------
-
 void VRWidgetsInteractor::attachWidget(ui::VRWidget::sptr widget)
 {
     OSLM_ASSERT("Only one widget can be attached to a VR interactor", !m_widget);
