@@ -18,6 +18,8 @@
 
 #include <fwTools/fwID.hpp>
 
+#include <boost/range/adaptor/reversed.hpp>
+
 namespace gui
 {
 namespace action
@@ -50,7 +52,7 @@ void SStarter::stopping()
 {
     std::vector< ::fwServices::IService::SharedFutureType > futures;
 
-    for( VectPairIDActionType::value_type serviceUid :  m_uuidServices)
+    for( VectPairIDActionType::value_type serviceUid : ::boost::adaptors::reverse(m_uuidServices) )
     {
         bool srv_exists = ::fwTools::fwID::exist(serviceUid.first );
         if (srv_exists &&  (m_idStartedSrvSet.find(serviceUid.first) != m_idStartedSrvSet.end()) )
