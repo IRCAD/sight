@@ -14,6 +14,9 @@
 
 #include <fwRenderVTK/IAdaptor.hpp>
 
+#include <vtkActor.h>
+#include <vtkSmartPointer.h>
+
 namespace visuVTKARAdaptor
 {
 
@@ -22,6 +25,9 @@ namespace visuVTKARAdaptor
  *
  *  The coordinate system of the point list is [ (0,0);(width,-height) ] whereas the coordinate system of the scene
  *  is [ (-width/2;-height/2,width/2:height/2], so we need to transform the points.
+ *
+ * @section Slots Slots
+ * - \b updateVisibility(bool) : show/hide the pointlist
  *
  * @section XML XML Configuration
  *
@@ -80,6 +86,12 @@ protected:
     VISUVTKARADAPTOR_API void swapping() override;
 
 private:
+
+    /// Slot: update point list visibility (true = visible)
+    VISUVTKARADAPTOR_API void updateVisibility ( bool isVisible );
+
+    /// Point list actor.
+    vtkSmartPointer<vtkActor> m_actor;
 
     /// Point color.
     ::fwData::Color::sptr m_pointColor;

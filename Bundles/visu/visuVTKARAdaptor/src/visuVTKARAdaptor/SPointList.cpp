@@ -26,6 +26,8 @@ fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKARAdaptor::SPointList
 namespace visuVTKARAdaptor
 {
 
+const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT = "updateVisibility";
+
 static const ::fwServices::IService::KeyType s_CAMERA_IN    = "camera";
 static const ::fwServices::IService::KeyType s_IMAGE_IN     = "image";
 static const ::fwServices::IService::KeyType s_POINTLIST_IN = "pointlist";
@@ -35,6 +37,7 @@ static const ::fwServices::IService::KeyType s_POINTLIST_IN = "pointlist";
 SPointList::SPointList() noexcept :
     m_pointColor(::fwData::Color::New())
 {
+    newSlot(s_UPDATE_VISIBILITY_SLOT, &SPointList::updateVisibility, this);
 }
 
 //------------------------------------------------------------------------------
@@ -65,6 +68,9 @@ void SPointList::configuring()
 void SPointList::starting()
 {
     this->initialize();
+
+    m_actor = vtkSmartPointer<vtkActor>::New();
+
     this->updating();
 }
 
@@ -89,16 +95,15 @@ void SPointList::updating()
     vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
     mapper->SetInputConnection(glyph3D->GetOutputPort());
 
-    vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
-    actor->SetMapper(mapper);
+    m_actor->SetMapper(mapper);
 
-    actor->GetProperty()->SetColor(static_cast< double >( m_pointColor->red() ),
-                                   static_cast< double >( m_pointColor->green() ),
-                                   static_cast <double >( m_pointColor->blue() ));
+    m_actor->GetProperty()->SetColor(static_cast< double >( m_pointColor->red() ),
+                                     static_cast< double >( m_pointColor->green() ),
+                                     static_cast <double >( m_pointColor->blue() ));
 
-    actor->GetProperty()->SetOpacity(static_cast< double >( m_pointColor->alpha() ));
+    m_actor->GetProperty()->SetOpacity(static_cast< double >( m_pointColor->alpha() ));
 
-    this->addToRenderer(actor);
+    this->addToRenderer(m_actor);
 
     ::fwData::PointList::csptr pl = this->getInput< ::fwData::PointList >(s_POINTLIST_IN);
 
@@ -128,9 +133,19 @@ void SPointList::swapping()
 
 //------------------------------------------------------------------------------
 
+void SPointList::updateVisibility(bool isVisible)
+{
+    m_actor->SetVisibility(isVisible);
+    this->setVtkPipelineModified();
+    this->requestRender();
+}
+
+//------------------------------------------------------------------------------
+
 void SPointList::stopping()
 {
     this->removeAllPropFromRenderer();
+    m_actor->Delete();
 }
 
 //------------------------------------------------------------------------------

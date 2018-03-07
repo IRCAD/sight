@@ -289,6 +289,7 @@
                 <slot>trackerAxis3/updateVisibility</slot>
                 <slot>chessAxis/updateVisibility</slot>
                 <slot>systemCenterAxis/updateVisibility</slot>
+                <slot>chessboardAdaptor/updateVisibility</slot>
             </slots>
         </service>
 
@@ -414,9 +415,9 @@
             <config movingCamera="true" />
         </service>
 
-        <service uid="chessboardReprojection" type="::trackingCalibration::SChessboardReprojection">
+        <service uid="chessboardReprojection" type="::trackingCalibration::SChessboardReprojection" autoConnect="yes" >
             <in key="camera" uid="camera" />
-            <in key="detectedChessboard" uid="detectedPoints" autoConnect="yes" />
+            <in key="detectedChessboard" uid="detectedPoints" />
             <in key="handEyeX" uid="handEyeMatX" />
             <in key="handEyeZ" uid="handEyeMatZ" />
             <in key="trackerMatrix" uid="trackerMatrix0" />
@@ -622,7 +623,7 @@
         </service>
 
         <service uid="chessAxis" type="::visuVTKAdaptor::SAxis">
-            <config renderer="default" length="20" transform="vtkChessMatrix" label="no" marker="yes" markerColor="#EEBAED" />
+            <config renderer="default" length="5" transform="vtkChessMatrix" label="no" marker="yes" markerColor="#EEBAED" />
         </service>
 
         <!-- *************************** End resultView *************************** -->
@@ -649,6 +650,7 @@
         <connect>
             <signal>actionChessBoardSize/parametersModified</signal>
             <slot>chessboardDetector/updateChessboardSize</slot>
+            <slot>chessboardReprojection/updateChessboardSize</slot>
             <slot>cameraPose/updateChessboardSize</slot>
         </connect>
 
@@ -750,6 +752,7 @@
         <start uid="trackerAxis1" />
         <start uid="trackerAxis2" />
         <start uid="trackerAxis3" />
+        <start uid="chessboardAdaptor" />
         <start uid="chessAxis" />
         <start uid="systemCenterAxis" />
         <start uid="cameraAdpt" />
@@ -760,7 +763,6 @@
         <start uid="trackerTransformAdaptor3" />
         <start uid="chessTransformAdaptor" />
         <start uid="cameraTransformAdaptor" />
-        <start uid="chessboardAdaptor" />
         <start uid="chessboardReprojection" />
         <!-- Update -->
         <update uid="extractor" />
