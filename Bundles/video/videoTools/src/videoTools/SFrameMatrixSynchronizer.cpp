@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -235,10 +235,9 @@ void SFrameMatrixSynchronizer::synchronize()
         ::arData::FrameTL::csptr frameTL = m_frameTLs[key.second];
         ::fwData::Image::sptr image      = m_images[key.second];
 
-        ::fwData::Image::SizeType size(3);
+        ::fwData::Image::SizeType size(2);
         size[0] = frameTL->getWidth();
         size[1] = frameTL->getHeight();
-        size[2] = 1;
         // Check if image dimensions has changed
         if(size != image->getSize())
         {
@@ -252,7 +251,7 @@ void SFrameMatrixSynchronizer::synchronize()
             ::fwData::Image::OriginType origin(3, 0);
 
             image->setOrigin(origin);
-            ::fwData::Image::SpacingType spacing(3, voxelSize);
+            ::fwData::Image::SpacingType spacing(2, voxelSize);
             image->setSpacing(spacing);
             image->setWindowWidth(1);
             image->setWindowCenter(0);
