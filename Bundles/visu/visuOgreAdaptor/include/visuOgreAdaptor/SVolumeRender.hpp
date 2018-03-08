@@ -89,9 +89,9 @@ namespace visuOgreAdaptor
  * - \b widgets (optional, yes/no, default=yes): display VR widgets.
  * - \b mode (optional, slice/raycasting, default=raycasting): Rendering mode.
  * Only if the raycasting render mode is activated :
- * - \b ao (optional, yes/no, default=no): Ambient occlusion usage.
- * - \b colorBleeding (optional, yes/no, default=no): Color bleeding usage.
- * - \b shadows (optional, yes/no, default=no): Soft shadows usage.
+ * - \b ao (optional, true/false, default=false): Ambient occlusion usage.
+ * - \b colorBleeding (optional, true/false, default=false): Color bleeding usage.
+ * - \b shadows (optional, true/false, default=false): Soft shadows usage.
  * - \b satSizeRatio (optional, float, default=0.25): ratio used to determine the size of the SAT regarding of the
  *      associated image size.
  * - \b satShells (optional, int, default=3): number of shells used to compute the volume illumination from the SAT.

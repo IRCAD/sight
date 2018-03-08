@@ -137,8 +137,8 @@ void SVolumeRender::configuring()
     m_autoResetCamera        = config.get<std::string>("autoresetcamera", "yes") == "yes";
     m_preIntegratedRendering = config.get<std::string>("preintegration", "no") == "yes";
     m_widgetVisibilty        = config.get<std::string>("widgets", "yes") == "yes";
-    m_renderingMode          =
-        config.get<std::string>("mode", "raytracing") == "raytracing" ? VR_MODE_RAY_TRACING : VR_MODE_SLICE;
+    m_renderingMode          = config.get<std::string>("mode", "raytracing") == "raytracing" ? VR_MODE_RAY_TRACING :
+                               VR_MODE_SLICE;
 
     if(m_renderingMode == VR_MODE_RAY_TRACING)
     {
@@ -149,9 +149,9 @@ void SVolumeRender::configuring()
         m_satConeSamples      = config.get<int>("satConeSamples", m_satConeSamples);
         m_aoFactor            = config.get<double>("aoFactor", m_aoFactor);
         m_colorBleedingFactor = config.get<double>("colorBleedingFactor", m_colorBleedingFactor);
-        m_ambientOcclusion    = config.get<std::string>("ao", "false") == "yes";
-        m_colorBleeding       = config.get<std::string>("colorBleeding", "false") == "yes";
-        m_shadows             = config.get<std::string>("shadows", "false") == "yes";
+        m_ambientOcclusion    = config.get<bool>("ao", false);
+        m_colorBleeding       = config.get<bool>("colorBleeding", false);
+        m_shadows             = config.get<bool>("shadows", false);
     }
 
     const std::string transformId = config.get<std::string>(::visuOgreAdaptor::STransform::s_CONFIG_TRANSFORM,
