@@ -317,18 +317,10 @@
             <inout group="tagTL">
                 <key uid="markerTL1" />
             </inout>
-            <config>
-                <track>
-                    <marker id="103" />
-                </track>
-                <threshold>
-                    <method>ADPT_THRES</method>
-                    <blockSize>7</blockSize>
-                    <constant>7</constant>
-                </threshold>
-                <patternWidth>106</patternWidth>
-                <debugMarkers>yes</debugMarkers>
-            </config>
+            <track>
+                <marker id="103" />
+            </track>
+            <debugMarkers>yes</debugMarkers>
         </service>
 
         <service uid="arucoTracker2" type="::trackerAruco::SArucoTracker" worker="tracking2">
@@ -337,18 +329,10 @@
             <inout group="tagTL">
                 <key uid="markerTL2" />
             </inout>
-            <config>
-                <track>
-                    <marker id="104" />
-                </track>
-                <threshold>
-                    <method>ADPT_THRES</method>
-                    <blockSize>7</blockSize>
-                    <constant>7</constant>
-                </threshold>
-                <patternWidth>106</patternWidth>
-                <debugMarkers>yes</debugMarkers>
-            </config>
+            <track>
+                <marker id="104" />
+            </track>
+            <debugMarkers>yes</debugMarkers>
         </service>
 
         <service uid="registration1" type="::registrationCV::SPoseFrom2d" worker="registration1">

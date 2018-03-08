@@ -15,11 +15,9 @@
 
 #include <fwCore/HiResClock.hpp>
 
-#include <fwData/Composite.hpp>
-
 #include <fwServices/macros.hpp>
 
-#include <aruco/markerdetector.h>
+#include <opencv2/aruco.hpp>
 
 namespace trackerAruco
 {
@@ -49,20 +47,13 @@ namespace trackerAruco
                 <key uid="PatientTimeline" />
                 <key uid="TableTimeline" />
             </inout>
-            <config>
-                <track>
-                    <markers id="42,1,100,54" />
-                    <markers id="32,10" />
-                    <markers id="52,45" />
-                </track>
-                <threshold>
-                    <method>ADPT_THRES</method>
-                    <blockSize>7</blockSize>
-                    <constant>7</constant>
-                </threshold>
-                <patternWidth>106</patternWidth>
-                <debugMarkers>yes</debugMarkers>
-            </config>
+            <track>
+                <marker id="42,1,100,54" />
+                <marker id="32,10" />
+                <marker id="52,45" />
+            </track>
+            <debugMarkers>yes</debugMarkers>
+            <cornerRefinement>yes</cornerRefinement>
             <dropObj>true</dropObj>
         </service>
    @endcode
@@ -78,12 +69,8 @@ namespace trackerAruco
  *  - \b track (mandatory)
  *      - \b markers (mandatory) : list of the tracked markers.
  *           - \b id (mandatory) : ids of the markers to detect.
- *  - \b threshold (optional)
- *      - \b method (mandatory): can be ADPT_THRES, FIXED_THRES or CANNY.
- *      - \b blockSize : parameter of the chosen method
- *      - \b constant : parameter of the chosen method
- *  - \b patternWidth (optional): width of the pattern(s).
  *  - \b debugMarkers : if value is yes markers debugging mode is activated.
+ *  - \b cornerRefinement: if yes corner refinement by subpixel will be activited
  *  - \b dropObj : defines if the tracker should drop few objects from the timeline (and always get the last one) or
  *  not.
  */
@@ -129,6 +116,7 @@ public:
     TRACKERARUCO_API virtual ~SArucoTracker() noexcept;
 
 protected:
+
     /**
      * @brief Configuring method : This method is used to configure the service.
      */
@@ -140,7 +128,7 @@ protected:
     TRACKERARUCO_API void starting() override;
 
     /**
-     * @brief Updating method : This method is used to update the service.
+     * @brief Updating method : This method does nothing
      */
     TRACKERARUCO_API void updating() override;
 
@@ -154,47 +142,33 @@ protected:
 
 private:
 
-    ///Slot called when a integer value is changed
-    void setIntParameter(int _val, std::string _key);
-    ///Slot called when a double value is changed
-    void setDoubleParameter(double _val, std::string _key);
-    ///Slot called when a boolean value is changed
-    void setBoolParameter(bool _val, std::string _key);
-    ///Slot called when a enum value is changed
-    void setEnumParameter(std::string _val, std::string _key);
+    /// Handles camera parameters (intrinsic matrix, distorsion coefficients and image size)
+    struct Camera
+    {
+        ::cv::Mat intrinsic;
+        ::cv::Mat distorsion;
+        ::cv::Size2i size;
+    };
 
+    /// Slot called when a integer value is changed
+    void setIntParameter(int _val, std::string _key);
+    /// Slot called when a double value is changed
+    void setDoubleParameter(double _val, std::string _key);
+    /// Slot called when a boolean value is changed
+    void setBoolParameter(bool _val, std::string _key);
+
+    /// Camera parameters
+    Camera m_cameraParams;
     /// Marker vector [[0,1,2],[4,5,6]]
     MarkerIDVectorType m_markers;
-    /// Marker detector
-    ::aruco::MarkerDetector* m_arUcoTracker;
-    /// arUCO camera parameters
-    ::aruco::CameraParameters* m_camParameters;
-    /// Threshold, value must be a double or "auto"
-    std::string m_threshold;
-    /// Marker border width.
-    double m_borderWidth;
-    /// Marker pattern width.
-    double m_patternWidth;
-
     /// True if tracker is initialized
     bool m_isInitialized;
-
-    /// BlockSize of the pixel neighborhood that is used to calculate a threshold value for the pixel
-    double m_blockSize;
-
-    /// The constant subtracted from the mean or weighted mean
-    double m_constant;
-
     /// Display markers in the image or not
     bool m_debugMarkers;
-
-    /// Speed of detection
-    unsigned int m_speed;
-
-    /// The threshold method
-    ::aruco::MarkerDetector::ThresholdMethods m_thresholdMethod;
-    ::aruco::MarkerDetector::CornerRefinementMethod m_cornerRefinement;
-
+    /// aruco detector parameters structure
+    ::cv::Ptr< ::cv::aruco::DetectorParameters > m_detectorParams;
+    /// Dictionary/Set of markers. It contains the inner codification
+    ::cv::Ptr< ::cv::aruco::Dictionary > m_dictionary;
     /// Signal to emit when
     DetectionDoneSignalType::sptr m_sigDetectionDone;
 };

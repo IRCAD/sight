@@ -45,7 +45,7 @@ namespace videoTools
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service uid="..." type="::videoQt::SGrabberProxy">
+        <service uid="..." type="::videoTools::SGrabberProxy">
             <in key="camera" uid="..." />
             <inout key="frameTL" uid="..." />
             <inout key="depthTL" uid="..." />
@@ -54,6 +54,7 @@ namespace videoTools
                 <selection mode="include" />
                 <addSelection service="::videoQt::SFrameGrabber" />
                 <config id="cvGrabberConfig" service="::videoOpenCV::SFrameGrabber" />
+                <gui title="Please select the camera to use" />
             </config>
         </service>
    @endcode
@@ -72,6 +73,8 @@ namespace videoTools
  *  - \b config
  *      - \b id (mandatory) : the id of the configuration to use.
  *      - \b service (mandatory) :  the name of the service.
+ *  - \b gui
+ *      - \b title (optional) : title of the grabber selector window.
  */
 class VIDEOTOOLS_CLASS_API SGrabberProxy :  public ::arServices::IGrabber,
                                             public ::fwServices::IHasServices
@@ -155,6 +158,9 @@ private:
 
     /// Config to use with the current grabber.
     std::string m_grabberConfig;
+
+    /// Title of the GUI selector window
+    std::string m_guiTitle { "Please select a video grabber implementation" };
 
     /// actual grabber service
     std::vector< ::arServices::IGrabber::sptr > m_services;
