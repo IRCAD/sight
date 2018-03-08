@@ -305,9 +305,18 @@ void SScan::stopCamera()
         m_irStream.stop();
     }
 
-    this->clearTimeline(m_depthTL);
-    this->clearTimeline(m_colorTL);
-    this->clearTimeline(m_irTL);
+    if(m_depthTL != nullptr)
+    {
+        this->clearTimeline(m_depthTL);
+    }
+    if(m_colorTL != nullptr)
+    {
+        this->clearTimeline(m_colorTL);
+    }
+    if(m_irTL != nullptr)
+    {
+        this->clearTimeline(m_irTL);
+    }
     auto sig = this->signal< ::arServices::IGrabber::CameraStoppedSignalType >(
         ::arServices::IGrabber::s_CAMERA_STOPPED_SIG);
     sig->asyncEmit();
