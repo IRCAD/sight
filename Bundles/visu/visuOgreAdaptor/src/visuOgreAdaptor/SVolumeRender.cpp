@@ -133,85 +133,24 @@ void SVolumeRender::configuring()
 
     const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
 
-    if(config.count("autoresetcamera"))
+    m_autoResetCamera        = config.get<std::string>("autoresetcamera", "yes") == "yes";
+    m_preIntegratedRendering = config.get<std::string>("preintegration", "no") == "yes";
+    m_widgetVisibilty        = config.get<std::string>("widgets", "yes") == "yes";
+    m_renderingMode          =
+        config.get<std::string>("mode", "raytracing") == "raytracing" ? VR_MODE_RAY_TRACING : VR_MODE_SLICE;
+
+    if(m_renderingMode == VR_MODE_RAY_TRACING)
     {
-        m_autoResetCamera = config.get<std::string>("autoresetcamera") == "yes";
-    }
-
-    if(config.count("preintegration"))
-    {
-        m_preIntegratedRendering = (config.get<std::string>("preintegration") == "yes");
-    }
-
-    if(config.count("mode"))
-    {
-        if(config.get<std::string>("mode") == "slice")
-        {
-            m_renderingMode = VR_MODE_SLICE;
-        }
-        if(config.get<std::string>("mode") == "raytracing")
-        {
-            m_renderingMode = VR_MODE_RAY_TRACING;
-
-            if(config.count("satSizeRatio"))
-            {
-                m_satSizeRatio = config.get<float>("satSizeRatio");
-            }
-
-            if(config.count("satShells"))
-            {
-                m_satShells = config.get<int>("satShells");
-            }
-
-            if(config.count("satShellRadius"))
-            {
-                m_satShellRadius = config.get<int>("satShellRadius");
-            }
-
-            if(config.count("satConeAngle"))
-            {
-                m_satConeAngle = config.get<float>("satConeAngle");
-            }
-
-            if(config.count("satConeSamples"))
-            {
-                m_satConeSamples = config.get<int>("satConeSamples");
-            }
-
-            if(config.count("aoFactor"))
-            {
-                m_aoFactor = config.get<double>("aoFactor");
-            }
-
-            if(config.count("colorBleedingFactor"))
-            {
-                m_colorBleedingFactor = config.get<double>("colorBleedingFactor");
-            }
-
-            if(config.count("ao"))
-            {
-                m_ambientOcclusion = (config.get<std::string>("ao") == "yes");
-            }
-
-            if(config.count("colorBleeding"))
-            {
-                m_colorBleeding = (config.get<std::string>("colorBleeding") == "yes");
-            }
-
-            if(config.count("shadows"))
-            {
-                m_shadows = (config.get<std::string>("shadows") == "yes");
-            }
-        }
-        else
-        {
-            OSLM_WARN("Unknown VR mode, defaults to ray tracing.");
-        }
-    }
-
-    if(config.count("widgets"))
-    {
-        m_widgetVisibilty = (config.get<std::string>("widgets") == "yes");
+        m_satSizeRatio        = config.get<float>("satSizeRatio", m_satSizeRatio);
+        m_satShells           = config.get<int>("satShells", m_satShells);
+        m_satShellRadius      = config.get<int>("satShellRadius", m_satShellRadius);
+        m_satConeAngle        = config.get<float>("satConeAngle", m_satConeAngle);
+        m_satConeSamples      = config.get<int>("satConeSamples", m_satConeSamples);
+        m_aoFactor            = config.get<double>("aoFactor", m_aoFactor);
+        m_colorBleedingFactor = config.get<double>("colorBleedingFactor", m_colorBleedingFactor);
+        m_ambientOcclusion    = config.get<std::string>("ao", "false") == "yes";
+        m_colorBleeding       = config.get<std::string>("colorBleeding", "false") == "yes";
+        m_shadows             = config.get<std::string>("shadows", "false") == "yes";
     }
 }
 
