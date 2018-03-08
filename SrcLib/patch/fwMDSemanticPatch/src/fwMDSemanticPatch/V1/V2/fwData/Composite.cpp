@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -14,6 +14,7 @@
 #include <fwAtoms/Object.hxx>
 #include <fwAtoms/Sequence.hpp>
 #include <fwAtoms/String.hpp>
+
 #include <fwAtomsPatch/helper/functions.hpp>
 #include <fwAtomsPatch/StructuralCreatorDB.hpp>
 
@@ -24,6 +25,7 @@
 #include <fwTools/UUID.hpp>
 
 #include <boost/algorithm/string.hpp>
+
 #include <string>
 #include <vector>
 
@@ -38,7 +40,8 @@ namespace fwData
 
 typedef std::map< ::fwAtoms::Object::sptr, ::fwAtoms::Object::sptr > Image2ModelType;
 
-Composite::Composite() : ::fwAtomsPatch::ISemanticPatch()
+Composite::Composite() :
+    ::fwAtomsPatch::ISemanticPatch()
 {
     m_originClassname = "::fwData::Composite";
     m_originVersion   = "1";
@@ -53,7 +56,8 @@ Composite::~Composite()
 
 // ----------------------------------------------------------------------------
 
-Composite::Composite( const Composite &cpy ) : ::fwAtomsPatch::ISemanticPatch(cpy)
+Composite::Composite( const Composite& cpy ) :
+    ::fwAtomsPatch::ISemanticPatch(cpy)
 {
 }
 
@@ -182,7 +186,6 @@ void processProcessing(
         ::fwAtoms::Map::sptr oldProcessing
             = ::fwAtoms::Object::dynamicCast(oldProcessingAtom.second)->getAttribute< ::fwAtoms::Map >("values");
 
-
         // Retrieves expert who performed the resection
         ::fwAtoms::Object::sptr expert
             = ::fwAtoms::Object::dynamicCast(oldProcessing->getValue().find("expert")->second);
@@ -241,7 +244,7 @@ void processProcessing(
         helperActivity.replaceAttribute("performing_physicians_name", experts);
         helperActivity.replaceAttribute("description", informationStr);
 
-        // Check if the processing is associted to an acquisition
+        // Check if the processing is associated to an acquisition
         ::fwAtoms::Base::sptr acquisitionSelection = oldProcessing->getValue().find("acquisitionSelection")->second;
         ::fwAtoms::Object::sptr acqSelectionObj    = ::fwAtoms::Object::dynamicCast(acquisitionSelection);
         SLM_ASSERT("Failed to cast acquisition composite to object", acqSelectionObj);
@@ -257,12 +260,14 @@ void processProcessing(
             SLM_ASSERT("Failed to cast acquisition to object", acqObj);
 
             Image2ModelType::const_iterator it = image2Model.find(newVersions[acqObj]);
-            SLM_ASSERT("Didn't find image series related to acquisition", it != image2Model.end());
-            ::fwAtoms::Object::sptr imageSeries = it->first;
-
-            helperActivity.replaceAttribute("patient", imageSeries->getAttribute< ::fwAtoms::Object >("patient"));
-            helperActivity.replaceAttribute("study", imageSeries->getAttribute< ::fwAtoms::Object >("study"));
-            helperActivity.replaceAttribute("equipment", imageSeries->getAttribute< ::fwAtoms::Object >("equipment"));
+            if(it != image2Model.end())
+            {
+                ::fwAtoms::Object::sptr imageSeries = it->first;
+                helperActivity.replaceAttribute("patient", imageSeries->getAttribute< ::fwAtoms::Object >("patient"));
+                helperActivity.replaceAttribute("study", imageSeries->getAttribute< ::fwAtoms::Object >("study"));
+                helperActivity.replaceAttribute("equipment",
+                                                imageSeries->getAttribute< ::fwAtoms::Object >("equipment"));
+            }
         }
 
         series->push_back(newActivitySeries);
@@ -326,7 +331,7 @@ void Composite::apply(
 
                     // finalize and push newImgSeries
                     ::fwAtoms::Object::sptr newImgSeries = newVersions[oldAcq];
-                    ::fwAtomsPatch::helper::Object imgSeriesHelper (newImgSeries);
+                    ::fwAtomsPatch::helper::Object imgSeriesHelper(newImgSeries);
                     ::fwAtoms::Object::sptr clonedPatient = ::fwAtoms::Object::dynamicCast(newPatient->clone());
                     ::fwAtomsPatch::helper::changeUID(clonedPatient);
 
@@ -343,7 +348,6 @@ void Composite::apply(
                     ::fwAtoms::Object::sptr equipment = newImgSeries->getAttribute< ::fwAtoms::Object >("equipment");
                     ::fwAtomsPatch::helper::Object equipmentHelper(equipment);
                     equipmentHelper.replaceAttribute("institution_name", institution);
-
 
                     // Set study date and time if necessary
                     ::fwAtoms::String::sptr studyDate = newStudy->getAttribute< ::fwAtoms::String >("date");
@@ -372,7 +376,7 @@ void Composite::apply(
                         ::fwAtoms::Object::sptr newModelSeries =
                             creators->create( "::fwMedData::ModelSeries", "1");
 
-                        ::fwAtomsPatch::helper::Object msHelper (newModelSeries);
+                        ::fwAtomsPatch::helper::Object msHelper(newModelSeries);
                         ::fwAtoms::Object::sptr msPatient = ::fwAtoms::Object::dynamicCast(clonedPatient->clone());
                         ::fwAtomsPatch::helper::changeUID(msPatient);
                         msHelper.replaceAttribute("patient", msPatient );
