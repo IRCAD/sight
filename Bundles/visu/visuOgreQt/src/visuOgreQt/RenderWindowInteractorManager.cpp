@@ -150,7 +150,7 @@ int RenderWindowInteractorManager::getFrameId() const
 
 //-----------------------------------------------------------------------------
 
-::Ogre::RenderWindow* RenderWindowInteractorManager::getRenderWindow() const
+::Ogre::RenderTarget* RenderWindowInteractorManager::getRenderTarget()
 {
     return m_qOgreWidget->getOgreRenderWindow();
 }

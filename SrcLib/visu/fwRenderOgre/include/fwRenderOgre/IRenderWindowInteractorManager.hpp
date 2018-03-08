@@ -120,7 +120,7 @@ public:
     FWRENDEROGRE_API virtual void makeCurrent() = 0;
 
     /// Get Ogre RenderWindow
-    FWRENDEROGRE_API virtual ::Ogre::RenderWindow* getRenderWindow() const = 0;
+    FWRENDEROGRE_API virtual ::Ogre::RenderTarget* getRenderTarget() = 0;
 
     /// Set the render service using the IOgreRenderWindowInteractor
     virtual void setRenderService(::fwServices::IService::sptr srv)

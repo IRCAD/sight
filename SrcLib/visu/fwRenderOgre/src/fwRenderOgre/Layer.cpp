@@ -147,7 +147,7 @@ struct Layer::LayerCameraListener : public ::Ogre::Camera::Listener
 
 Layer::Layer() :
     m_sceneManager(nullptr),
-    m_renderWindow(nullptr),
+    m_renderTarget(nullptr),
     m_viewport(nullptr),
     m_stereoMode(StereoModeType::NONE),
     m_rawCompositorChain(""),
@@ -197,9 +197,9 @@ Layer::~Layer()
 
 //-----------------------------------------------------------------------------
 
-void Layer::setRenderWindow(::Ogre::RenderWindow* renderWindow)
+void Layer::setRenderTarget(::Ogre::RenderTarget* _renderTarget)
 {
-    m_renderWindow = renderWindow;
+    m_renderTarget = _renderTarget;
 }
 
 //-----------------------------------------------------------------------------
@@ -243,7 +243,7 @@ void Layer::createScene()
     m_sceneManager->addRenderQueueListener( ::fwRenderOgre::Utils::getOverlaySystem() );
 
     SLM_ASSERT("Scene manager must be initialized", m_sceneManager);
-    SLM_ASSERT("Render window must be initialized", m_renderWindow);
+    SLM_ASSERT("Render window must be initialized", m_renderTarget);
 
     m_sceneManager->setAmbientLight(::Ogre::ColourValue(0.8f, 0.8f, 0.8f));
 
@@ -251,7 +251,7 @@ void Layer::createScene()
     m_camera = m_sceneManager->createCamera(Layer::DEFAULT_CAMERA_NAME);
     m_camera->setNearClipDistance(1);
 
-    m_viewport = m_renderWindow->addViewport(m_camera, m_depth);
+    m_viewport = m_renderTarget->addViewport(m_camera, m_depth);
 
     m_compositorChainManager = fwc::ChainManager::uptr(new fwc::ChainManager(m_viewport));
 
@@ -554,8 +554,8 @@ void Layer::setMoveInteractor(::fwRenderOgre::interactor::IMovementInteractor::s
     m_connections.disconnect();
 
     m_moveInteractor = interactor;
-    m_moveInteractor->resizeEvent(static_cast<int>(m_renderWindow->getWidth()),
-                                  static_cast<int>(m_renderWindow->getHeight()) );
+    m_moveInteractor->resizeEvent(static_cast<int>(m_renderTarget->getWidth()),
+                                  static_cast<int>(m_renderTarget->getHeight()) );
 
     m_connections.connect(interactor, ::fwRenderOgre::interactor::IMovementInteractor::s_RESET_CAMERA_SIG,
                           this->getSptr(), s_RESET_CAMERA_SLOT);

@@ -71,7 +71,7 @@ public:
     VISUOGREQT_API virtual void makeCurrent() override;
 
     /// Get Ogre RenderWindow
-    VISUOGREQT_API virtual ::Ogre::RenderWindow* getRenderWindow() const override;
+    VISUOGREQT_API virtual ::Ogre::RenderTarget* getRenderTarget() override;
 
 private Q_SLOTS:
 

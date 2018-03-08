@@ -50,10 +50,17 @@ class Layer;
         </scene>
     </service>
    @endcode
- * With :
+ *
+ * @subsection In-Out In-Out
+ * - \b offScreen [::fwData::Image] (optional, unused by default): If used, render the scene in an image
+ * and not in a window.
+ *
+ * @subsection Configuration Configuration
  *  - \b scene
  *    - \b renderMode (optional): 'auto' (only when something has changed) or 'always' (render continuously).
  *         Default is 'auto'.
+ *    - \b width (optional, "1280" by default): width for off-screen rendering
+ *    - \b height (optional, "720" by default): height for off-screen rendering
  *  - \b layer : mandatory, defines the scene's layer
  *    - \b id (mandatory): the identifier of the layer
  *    - \b depth (mandatory): the depth of the layer, starting from 1
@@ -194,6 +201,18 @@ private:
 
     /// True if the render window is in fullscreen.
     bool m_fullscreen;
+
+    /// Width for off-screen rendering
+    unsigned int m_width { 0 };
+
+    /// Height for off-screen rendering
+    unsigned int m_height { 0 };
+
+    /// If true, scene is rendered off-screen
+    bool m_offScreen { false };
+
+    /// If true and doing offscreen rendering, the scene will be rendered upside down.
+    bool m_flip { false };
 };
 
 //-----------------------------------------------------------------------------
