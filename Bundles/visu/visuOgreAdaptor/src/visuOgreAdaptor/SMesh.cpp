@@ -260,6 +260,14 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& _mesh)
     m_meshGeometry->updateMesh(_mesh);
 
     //------------------------------------------
+    // Update vertex layers
+    //------------------------------------------
+
+    m_meshGeometry->updateVertices(_mesh);
+    m_meshGeometry->updateColors(_mesh);
+    m_meshGeometry->updateTexCoords(_mesh);
+
+    //------------------------------------------
     // Create entity and attach it in the scene graph
     //------------------------------------------
 
@@ -270,14 +278,12 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& _mesh)
         m_entity->setQueryFlags(m_queryFlags);
         sceneMgr->getRootSceneNode()->detachObject(m_entity);
     }
-
-    //------------------------------------------
-    // Update vertex layers
-    //------------------------------------------
-
-    m_meshGeometry->updateVertices(_mesh);
-    m_meshGeometry->updateColors(_mesh);
-    m_meshGeometry->updateTexCoords(_mesh);
+    else
+    {
+        // Re-initialize the entity in order to trigger the build of the sub-entities list
+        // We need them to exist now as we will set the material after that
+        m_entity->_initialise(true);
+    }
 
     //------------------------------------------
     // Create sub-services
@@ -296,33 +302,43 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& _mesh)
     auto r2vbRenderables = m_meshGeometry->updateR2VB(_mesh, *sceneMgr,
                                                       m_materialAdaptor->getMaterialName(),
                                                       m_materialAdaptor->hasDiffuseTexture());
-    for(auto renderable : r2vbRenderables)
+    for(auto renderable : r2vbRenderables.second)
     {
-
         auto adaptor = renderable->m_materialAdaptor.lock();
-        if(adaptor)
+
+        if(r2vbRenderables.first)
         {
-            auto r2vbMtlAdaptor = ::visuOgreAdaptor::SMaterial::dynamicCast(adaptor);
-            m_meshGeometry->updateMaterial(r2vbMtlAdaptor->getMaterialFw(), true);
-            // Update the material *synchronously* otherwise the r2vb will be rendered before the shader switch
-            r2vbMtlAdaptor->slot(::visuOgreAdaptor::SMaterial::s_UPDATE_SLOT)->run();
+            if(adaptor)
+            {
+                auto r2vbMtlAdaptor = ::visuOgreAdaptor::SMaterial::dynamicCast(adaptor);
+                m_meshGeometry->updateMaterial(r2vbMtlAdaptor->getMaterialFw(), true);
+                // Update the material *synchronously* otherwise the r2vb will be rendered before the shader switch
+                r2vbMtlAdaptor->slot(::visuOgreAdaptor::SMaterial::s_UPDATE_SLOT)->run();
+            }
+            else
+            {
+                // Instantiate a material adaptor for the r2vb process for this primitive type
+                adaptor = this->createMaterialService(renderable->getName());
+
+                auto r2vbMtlAdaptor = ::visuOgreAdaptor::SMaterial::dynamicCast(adaptor);
+                r2vbMtlAdaptor->setR2VBObject(renderable);
+                r2vbMtlAdaptor->start();
+                m_meshGeometry->updateMaterial(r2vbMtlAdaptor->getMaterialFw(), true);
+                r2vbMtlAdaptor->update();
+
+                renderable->setRenderToBufferMaterial(r2vbMtlAdaptor->getMaterialName());
+                renderable->m_materialAdaptor = r2vbMtlAdaptor;
+            }
+            // Attach r2vb object in the scene graph
+            this->attachNode(renderable);
         }
         else
         {
-            // Instantiate a material adaptor for the r2vb process for this primitive type
-            adaptor = this->createMaterialService(renderable->getName());
+            // Unregister the service if it has been removed
+            this->unregisterService(adaptor);
 
-            auto r2vbMtlAdaptor = ::visuOgreAdaptor::SMaterial::dynamicCast(adaptor);
-            r2vbMtlAdaptor->setR2VBObject(renderable);
-            r2vbMtlAdaptor->start();
-            m_meshGeometry->updateMaterial(r2vbMtlAdaptor->getMaterialFw(), true);
-            r2vbMtlAdaptor->update();
-
-            renderable->setRenderToBufferMaterial(r2vbMtlAdaptor->getMaterialName());
-            renderable->m_materialAdaptor = r2vbMtlAdaptor;
+            this->getSceneManager()->destroyMovableObject(renderable);
         }
-        // Attach r2vb object in the scene graph
-        this->attachNode(renderable);
     }
 
     m_meshGeometry->setVisible(m_isVisible);
@@ -383,6 +399,7 @@ void SMesh::updateNewMaterialAdaptor()
     }
     else
     {
+        m_entity->setMaterialName(m_materialAdaptor->getMaterialName());
         m_meshGeometry->updateMaterial(m_materialAdaptor->getMaterialFw(), false);
         m_materialAdaptor->slot(::visuOgreAdaptor::SMaterial::s_UPDATE_SLOT)->run();
     }
@@ -490,8 +507,6 @@ void SMesh::modifyTexCoords()
 
 void SMesh::attachNode(::Ogre::MovableObject* _node)
 {
-    auto transformService = ::visuOgreAdaptor::STransform::dynamicCast(m_transformService.lock());
-
     ::Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
     ::Ogre::SceneNode* transNode     =
         ::fwRenderOgre::helper::Scene::getNodeById(this->getTransformId(), rootSceneNode);

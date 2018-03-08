@@ -523,8 +523,9 @@ void Mesh::updateMesh(const ::fwData::PointList::csptr& _pointList)
 
 //------------------------------------------------------------------------------
 
-std::vector<R2VBRenderable*> Mesh::updateR2VB(const ::fwData::Mesh::sptr& _mesh, ::Ogre::SceneManager& _sceneMgr,
-                                              const std::string& _materialName, bool _hasTexture)
+std::pair<bool, std::vector<R2VBRenderable*> > Mesh::updateR2VB(const ::fwData::Mesh::sptr& _mesh,
+                                                                ::Ogre::SceneManager& _sceneMgr,
+                                                                const std::string& _materialName, bool _hasTexture)
 {
     //------------------------------------------
     // Render to vertex-buffer
@@ -534,6 +535,7 @@ std::vector<R2VBRenderable*> Mesh::updateR2VB(const ::fwData::Mesh::sptr& _mesh,
     // - Per-primitive color generation - either triangles, quads or tetrahedrons
     //------------------------------------------
     std::vector<R2VBRenderable*> r2vbRenderables;
+    bool add = true;
 
     const bool hasPrimitiveColor = (_mesh->getCellColorsArray() != nullptr);
     if( (m_subMeshes[::fwData::Mesh::QUAD] || m_subMeshes[::fwData::Mesh::TETRA]) || hasPrimitiveColor)
@@ -581,8 +583,25 @@ std::vector<R2VBRenderable*> Mesh::updateR2VB(const ::fwData::Mesh::sptr& _mesh,
 
             r2vbRenderables.push_back(m_r2vbObject[cellType]);
         }
+        add = true;
     }
-    return r2vbRenderables;
+    else
+    {
+        // Clear if necessary
+        for(auto r2vbObject : m_r2vbObject)
+        {
+            r2vbRenderables.push_back(r2vbObject.second);
+        }
+        m_r2vbObject.clear();
+
+        if(m_r2vbEntity)
+        {
+            _sceneMgr.destroyEntity(m_r2vbEntity);
+            m_r2vbEntity = nullptr;
+        }
+        add = false;
+    }
+    return std::make_pair(add, r2vbRenderables);
 }
 
 //-----------------------------------------------------------------------------
