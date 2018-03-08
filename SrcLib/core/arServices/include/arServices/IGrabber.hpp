@@ -10,6 +10,11 @@
 
 #include <fwServices/IService.hpp>
 
+namespace arData
+{
+class FrameTL;
+}
+
 namespace arServices
 {
 /**
@@ -114,6 +119,12 @@ public:
      */
     ARSERVICES_API virtual void setPosition(int64_t position) = 0;
 
+protected:
+    /**
+     * @brief Helper function intended to be used in derived services. Clears the supplied timeline, emits the cleared
+     * signal, pushes a black frame and emits the object pushed signal.
+     */
+    ARSERVICES_API static void clearTimeline(SPTR(::arData::FrameTL) const&);
 };
 
 } //namespace arServices

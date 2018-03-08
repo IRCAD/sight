@@ -292,10 +292,6 @@ void SScan::startCamera()
 
 void SScan::stopCamera()
 {
-    auto sig = this->signal< ::arServices::IGrabber::CameraStoppedSignalType >(
-        ::arServices::IGrabber::s_CAMERA_STOPPED_SIG);
-    sig->asyncEmit();
-
     if (m_depthStream.isValid())
     {
         m_depthStream.stop();
@@ -308,6 +304,22 @@ void SScan::stopCamera()
     {
         m_irStream.stop();
     }
+
+    if(m_depthTL != nullptr)
+    {
+        this->clearTimeline(m_depthTL);
+    }
+    if(m_colorTL != nullptr)
+    {
+        this->clearTimeline(m_colorTL);
+    }
+    if(m_irTL != nullptr)
+    {
+        this->clearTimeline(m_irTL);
+    }
+    auto sig = this->signal< ::arServices::IGrabber::CameraStoppedSignalType >(
+        ::arServices::IGrabber::s_CAMERA_STOPPED_SIG);
+    sig->asyncEmit();
 
     m_pause = false;
 }
