@@ -9,7 +9,10 @@ set( DEPENDENCIES
     fwRuntime
     fwServices
 )
-set( REQUIREMENTS )
+set( REQUIREMENTS
+    dataReg
+    servicesReg
+)
 
 if(UNIX)
     set( PLUGINS

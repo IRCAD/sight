@@ -51,8 +51,6 @@
 
 #include <functional>
 
-fwServicesRegisterMacro( ::fwRender::IRender, ::fwRenderVTK::SRender );
-
 using namespace fwServices;
 
 namespace fwRenderVTK
