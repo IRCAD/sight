@@ -135,7 +135,7 @@
             <!-- ***************************************** End layouts declaration ***************************************** -->
             <!-- ***************************************** Begin services declarations    ************************************ -->
             <service uid="readerPathFile" type="::uiIO::editor::SIOSelector">
-                <in key="image" uid="image" />
+                <inout key="data" uid="image" />
                 <type mode="reader" />
             </service>
 

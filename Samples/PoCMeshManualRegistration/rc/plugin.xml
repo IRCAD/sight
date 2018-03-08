@@ -180,7 +180,7 @@
             <service uid="action_quit" type="::gui::action::SQuit" />
             <service uid="snapshotScene1Editor" type="::uiVisuQt::SnapshotEditor" />
             <service uid="imageReaderUid" type="::uiIO::editor::SIOSelector">
-                <in key="image" uid="image" />
+                <inout key="data" uid="image" />
                 <type mode="reader" />
                 <selection mode="exclude" />
                 <addSelection service="::ioXML::FwXMLGenericReaderService" />
@@ -223,14 +223,14 @@
             </service>
 
             <service uid="modelSeriesReaderUid" type="::uiIO::editor::SIOSelector">
-                <inout key="target" uid="modelSeries" />
+                <inout key="data" uid="modelSeries" />
                 <type mode="reader" />
                 <selection mode="exclude" />
                 <addSelection service="::ioXML::FwXMLGenericReaderService" />
             </service>
 
             <service uid="camReaderFile" type="::uiIO::editor::SIOSelector">
-                <inout key="target" uid="cam2Mesh" />
+                <inout key="data" uid="cam2Mesh" />
                 <type mode="reader" />
                 <selection mode="exclude" />
                 <addSelection service="::ioXML::FwXMLGenericReaderService" />
