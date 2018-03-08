@@ -387,7 +387,7 @@
         </service>
 
         <service uid="handEyeMatrixWriter" type="::uiIO::editor::SIOSelector" >
-            <inout key="target" uid="handEyeMatrix" />
+            <inout key="data" uid="handEyeMatrix" />
             <type mode="writer" />
             <selection mode="include" />
             <addSelection service="::ioData::TransformationMatrix3DWriterService" />

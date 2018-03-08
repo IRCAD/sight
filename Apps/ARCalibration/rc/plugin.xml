@@ -29,8 +29,8 @@
         </parameters>
         <config>
             <object uid="${selection}" src="ref" />
-            <service uid="export_selection" type="::uiIO::editor::SIOSelector" autoConnect="yes">
-                <inout key="target" uid="${selection}" />
+            <service uid="export_selection" type="::uiIO::editor::SIOSelector">
+                <inout key="data" uid="${selection}" />
                 <type mode="writer" />
                 <selection mode="include" />
                 <addSelection service="::ioAtoms::SWriter" />
