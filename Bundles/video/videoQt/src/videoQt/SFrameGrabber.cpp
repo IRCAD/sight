@@ -159,11 +159,7 @@ void SFrameGrabber::stopCamera()
 
         // Reset the timeline and send a black frame
         ::arData::FrameTL::sptr timeline = this->getInOut< ::arData::FrameTL >("frameTL");
-
-        if(timeline->isAllocated())
-        {
-            this->clearTimeline(timeline);
-        }
+        this->clearTimeline(timeline);
 
         auto sig = this->signal< ::arServices::IGrabber::CameraStoppedSignalType >(
             ::arServices::IGrabber::s_CAMERA_STOPPED_SIG);

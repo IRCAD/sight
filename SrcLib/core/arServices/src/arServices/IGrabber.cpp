@@ -59,23 +59,26 @@ IGrabber::~IGrabber() noexcept
 
 // ----------------------------------------------------------------------------
 
-void IGrabber::clearTimeline(::arData::FrameTL::sptr const& tl)
+void IGrabber::clearTimeline(::arData::FrameTL::sptr const& _tl)
 {
-    // Clear the timeline: send a black frame
-    const ::fwCore::HiResClock::HiResClockType timestamp = tl->getNewerTimestamp() + 1;
+    if(_tl->isAllocated())
+    {
+        // Clear the timeline: send a black frame
+        const ::fwCore::HiResClock::HiResClockType timestamp = _tl->getNewerTimestamp() + 1;
 
-    SPTR(::arData::FrameTL::BufferType) buffer = tl->createBuffer(timestamp);
-    auto destBuffer = reinterpret_cast< std::uint8_t* >( buffer->addElement(0) );
+        SPTR(::arData::FrameTL::BufferType) buffer = _tl->createBuffer(timestamp);
+        auto destBuffer = reinterpret_cast< std::uint8_t* >( buffer->addElement(0) );
 
-    std::fill(destBuffer, destBuffer + tl->getWidth() * tl->getHeight() * tl->getNumberOfComponents(), 0);
+        std::fill(destBuffer, destBuffer + _tl->getWidth() * _tl->getHeight() * _tl->getNumberOfComponents(), 0);
 
-    // push buffer and notify
-    tl->clearTimeline();
-    tl->pushObject(buffer);
+        // push buffer and notify
+        _tl->clearTimeline();
+        _tl->pushObject(buffer);
 
-    auto sigTL = tl->signal< ::arData::TimeLine::ObjectPushedSignalType >(
-        ::arData::TimeLine::s_OBJECT_PUSHED_SIG );
-    sigTL->asyncEmit(timestamp);
+        auto sigTL = _tl->signal< ::arData::TimeLine::ObjectPushedSignalType >(
+            ::arData::TimeLine::s_OBJECT_PUSHED_SIG );
+        sigTL->asyncEmit(timestamp);
+    }
 }
 
 // ----------------------------------------------------------------------------
