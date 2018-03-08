@@ -4,6 +4,7 @@
         <param name="WID_PARENT" />
         <param name="camera" />
         <param name="videoGrabber" />
+        <param name="grabberProxyGuiTitle" default="ARCalibration" />
         <param name="cameraModifiedChannel" default="cameraModified" />
         <param name="videoPositionChangedChannel" default="videoPositionChanged" />
         <param name="videoPositionModifiedChannel" default="videoPositionModified" />
@@ -75,6 +76,9 @@
         <service uid="${videoGrabber}" type="::videoTools::SGrabberProxy">
             <in key="camera" uid="${camera}" />
             <inout key="frameTL" uid="timeLine" />
+            <config>
+                <gui title="${grabberProxyGuiTitle}" />
+            </config>
         </service>
 
         <service uid="FrameUpdater" type="::videoTools::SFrameUpdater">

@@ -154,6 +154,7 @@
             <inout key="camera" uid="camera0" />
             <parameter replace="WID_PARENT" uid="camera0View" />
             <parameter replace="videoGrabber" uid="videoGrabber1" />
+            <parameter replace="grabberProxyGuiTitle" by="Please select the first video grabber" />
             <parameter replace="cameraModifiedChannel" uid="cameraModified" />
             <parameter replace="videoPositionChangedChannel" uid="videoPositionChanged" />
             <parameter replace="videoPositionModifiedChannel" uid="videoPositionModified" />
@@ -165,6 +166,7 @@
             <inout key="camera" uid="camera1" />
             <parameter replace="WID_PARENT" uid="camera1View" />
             <parameter replace="videoGrabber" uid="videoGrabber2" />
+            <parameter replace="grabberProxyGuiTitle" by="Please select the second video grabber" />
             <parameter replace="cameraModifiedChannel" uid="cameraModified" />
             <parameter replace="videoPositionChangedChannel" uid="videoPositionChanged" />
             <parameter replace="videoPositionModifiedChannel" uid="videoPositionModified" />
