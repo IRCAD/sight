@@ -579,7 +579,7 @@ std::pair<bool, std::vector<R2VBRenderable*> > Mesh::updateR2VB(const ::fwData::
 
             m_r2vbObject[cellType]->setOutputSettings(static_cast<unsigned int>(subMesh->indexData->indexCount),
                                                       m_hasPrimitiveColor || m_hasVertexColor,
-                                                      m_hasUV && _hasTexture);
+                                                      m_hasUV);
 
             r2vbRenderables.push_back(m_r2vbObject[cellType]);
         }
@@ -1001,6 +1001,7 @@ void Mesh::updateMaterial(Material* _material, bool _isR2VB) const
     _material->setMeshSize(bbox.getSize().length());
 
     _material->setHasMeshNormal(m_hasNormal);
+    _material->setHasUV(m_hasUV);
 
     // The r2vb pipeline outputs per-vertex color if we have per-primitive color
     // Thus for the rendering pipeline it is only viewed as per-vertex color
