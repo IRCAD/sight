@@ -103,47 +103,44 @@ void SHandEyeCalibration::computeRegistration(::fwCore::HiResClock::HiResClockTy
         return;
     }
 
-    ::fwData::Vector::ConstIteratorType it1, it2;
+    ::fwData::TransformationMatrix3D::sptr matrixAi = ::fwData::TransformationMatrix3D::dynamicCast(vector1->at(0));
+    SLM_ASSERT("This element of the vector is not a TransformationMatrix3D", matrixAi);
+    ::fwData::TransformationMatrix3D::sptr matrixBi = ::fwData::TransformationMatrix3D::dynamicCast(vector2->at(0));
+    SLM_ASSERT("This element of the vector is not a TransformationMatrix3D", matrixBi);
 
-    it1 = vector1->begin();
-    it2 = vector2->begin();
+    ::fwData::TransformationMatrix3D::sptr matrixAiInv = ::fwData::TransformationMatrix3D::New();
+    ::fwData::TransformationMatrix3D::sptr matrixBiInv = ::fwData::TransformationMatrix3D::New();
+
+    ::fwDataTools::TransformationMatrix3D::invert(matrixAi, matrixAiInv);
+    ::fwDataTools::TransformationMatrix3D::invert(matrixBi, matrixBiInv);
 
     std::vector< ::fwData::TransformationMatrix3D::csptr > AMatrices, BMatrices, AMatricesCoB, BMatricesCoB;
 
-    for(; it1 != vector1->end()-1 && it2 != vector2->end()-1;
-        ++it1, ++it2)
+    for(size_t index = 1; index < vector1->size(); ++index)
     {
-        ::fwData::TransformationMatrix3D::sptr matrixAi, matrixAj, matrixBi, matrixBj;
+        ::fwData::TransformationMatrix3D::sptr matrixAj, matrixBj;
 
+        ::fwData::TransformationMatrix3D::sptr matrixAjInv = ::fwData::TransformationMatrix3D::New();
+        ::fwData::TransformationMatrix3D::sptr matrixBjInv = ::fwData::TransformationMatrix3D::New();
+        //Displacement from the other point of view (i.e. a Change of Base)
+        //ACoB is the displacement matrix in A's destination basis
+        ::fwData::TransformationMatrix3D::sptr matrixACoB = ::fwData::TransformationMatrix3D::New();
+        ::fwData::TransformationMatrix3D::sptr matrixBCoB = ::fwData::TransformationMatrix3D::New();
         //A is the displacement matrix in A's source basis
         ::fwData::TransformationMatrix3D::sptr matrixA = ::fwData::TransformationMatrix3D::New();
         ::fwData::TransformationMatrix3D::sptr matrixB = ::fwData::TransformationMatrix3D::New();
-        //Displacement from the other point of view (i.e. a Change of Base)
-        //ACoB is the displacement matrix in A's destination basis
-        ::fwData::TransformationMatrix3D::sptr matrixACoB  = ::fwData::TransformationMatrix3D::New();
-        ::fwData::TransformationMatrix3D::sptr matrixBCoB  = ::fwData::TransformationMatrix3D::New();
-        ::fwData::TransformationMatrix3D::sptr matrixAiInv = ::fwData::TransformationMatrix3D::New();
-        ::fwData::TransformationMatrix3D::sptr matrixAjInv = ::fwData::TransformationMatrix3D::New();
-        ::fwData::TransformationMatrix3D::sptr matrixBiInv = ::fwData::TransformationMatrix3D::New();
-        ::fwData::TransformationMatrix3D::sptr matrixBjInv = ::fwData::TransformationMatrix3D::New();
 
-        matrixAi = ::fwData::TransformationMatrix3D::dynamicCast(*it1);
-        SLM_ASSERT("This element of the vector is not a TransformationMatrix3D", matrixAi);
-        matrixAj = ::fwData::TransformationMatrix3D::dynamicCast(*(it1 + 1));
+        matrixAj = ::fwData::TransformationMatrix3D::dynamicCast(vector1->at(index));
         SLM_ASSERT("This element of the vector is not a TransformationMatrix3D", matrixAj);
 
         ::fwDataTools::TransformationMatrix3D::invert(matrixAj, matrixAjInv);
-        ::fwDataTools::TransformationMatrix3D::multiply(matrixAjInv, matrixAi, matrixA);
 
-        ::fwDataTools::TransformationMatrix3D::invert(matrixAi, matrixAiInv);
+        ::fwDataTools::TransformationMatrix3D::multiply(matrixAjInv, matrixAi, matrixA);
         ::fwDataTools::TransformationMatrix3D::multiply(matrixAj, matrixAiInv, matrixACoB);
 
-        matrixBi = ::fwData::TransformationMatrix3D::dynamicCast(*it2);
-        SLM_ASSERT("This element of the vector is not a TransformationMatrix3D", matrixBi);
-        matrixBj = ::fwData::TransformationMatrix3D::dynamicCast(*(it2 + 1));
+        matrixBj = ::fwData::TransformationMatrix3D::dynamicCast(vector2->at(index));
         SLM_ASSERT("This element of the vector is not a TransformationMatrix3D", matrixBj);
 
-        ::fwDataTools::TransformationMatrix3D::invert(matrixBi, matrixBiInv);
         ::fwDataTools::TransformationMatrix3D::invert(matrixBj, matrixBjInv);
 
         if(m_movingCamera)

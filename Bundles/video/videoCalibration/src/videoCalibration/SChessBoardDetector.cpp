@@ -16,6 +16,7 @@
 
 #include <fwData/Array.hpp>
 #include <fwData/Composite.hpp>
+#include <fwData/mt/ObjectWriteLock.hpp>
 
 #include <fwDataTools/helper/Array.hpp>
 
@@ -140,15 +141,25 @@ void SChessBoardDetector::checkPoints( ::fwCore::HiResClock::HiResClockType time
             if(!chessBoardPoints)
             {
                 m_isDetected = false;
-                break;
-
             }
-            m_pointsLists[i] = chessBoardPoints;
+            else
+            {
+                m_pointsLists[i] = chessBoardPoints;
+            }
 
             if(detection)
             {
                 auto detectedPoints = this->getInOut< ::fwData::PointList >(s_DETECTION_INOUT, i);
-                detectedPoints->deepCopy(chessBoardPoints);
+                ::fwData::mt::ObjectWriteLock lock(detectedPoints);
+
+                if(m_isDetected)
+                {
+                    detectedPoints->deepCopy(chessBoardPoints);
+                }
+                else
+                {
+                    detectedPoints->getPoints().clear();
+                }
 
                 auto sig = detectedPoints->signal< ::fwData::Object::ModifiedSignalType >(
                     ::fwData::Object::s_MODIFIED_SIG);

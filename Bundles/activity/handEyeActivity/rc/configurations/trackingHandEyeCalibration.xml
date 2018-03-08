@@ -415,9 +415,9 @@
             <config movingCamera="true" />
         </service>
 
-        <service uid="chessboardReprojection" type="::trackingCalibration::SChessboardReprojection" autoConnect="yes" >
+        <service uid="chessboardReprojection" type="::trackingCalibration::SChessboardReprojection" worker="detectorWorker" >
             <in key="camera" uid="camera" />
-            <in key="detectedChessboard" uid="detectedPoints" />
+            <in key="detectedChessboard" uid="detectedPoints" autoConnect="yes" />
             <in key="handEyeX" uid="handEyeMatX" />
             <in key="handEyeZ" uid="handEyeMatZ" />
             <in key="trackerMatrix" uid="trackerMatrix0" />

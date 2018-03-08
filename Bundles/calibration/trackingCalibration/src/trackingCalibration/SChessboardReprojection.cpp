@@ -15,6 +15,7 @@
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
 
+#include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/PointList.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
 
@@ -117,6 +118,9 @@ void SChessboardReprojection::updating()
         ::cvIO::Camera::copyToCv(camera, intrinsic, imageSize, distortionCoefficients);
 
         std::vector< ::cv::Point2d > cvDetected;
+
+        ::fwData::mt::ObjectReadLock lock(detectedPointList);
+
         ::cvIO::PointList::copyToCv(detectedPointList, cvDetected);
 
         ::cv::Matx33d rotMat = modelToCamera.get_minor<3, 3>(0, 0);
