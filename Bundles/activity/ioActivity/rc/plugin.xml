@@ -65,8 +65,8 @@
         <config>
             <object uid="${selection}" src="ref" />
 
-            <service uid="export_selection" type="::uiIO::editor::SIOSelector" autoConnect="yes">
-                <in key="selection" uid="${selection}" />
+            <service uid="export_selection" type="::uiIO::editor::SIOSelector">
+                <inout key="data" uid="${selection}" />
                 <type mode="writer" />
                 <selection mode="exclude" />
                 <addSelection service="::ioAtoms::SWriter" />
@@ -101,7 +101,7 @@
             </service>
 
             <service uid="exportSelection" type="::uiIO::editor::SIOSelector">
-                <in key="selection" uid="vectorToSave" />
+                <inout key="data" uid="vectorToSave" />
                 <type mode="writer" />
                 <selection mode="include" />
                 <addSelection service="::ioGdcm::SSurfaceSegmentationWriter" />

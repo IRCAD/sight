@@ -21,7 +21,55 @@ namespace editor
 {
 
 /**
- * @brief   Defines the service interface managing the editor service for object.
+ * @brief   This service displays the list of the availlable reader/writer and allows to select one of them to read or
+ * write a data.
+ *
+ * @section Signals Signals
+ * - \b jobCreated(::fwJobs::IJob::sptr) : emitted when a job is created.
+ *
+ * @section Slots Slots
+ * - \b forwardJob(::fwJobs::IJob::sptr ) : slot connected to the reader/writer to forward the signal 'jobCreated'
+ *
+ * @section XML XML Configuration
+ *
+ * Sample of configuration :
+ * @code{.xml}
+          <service uid="..." type="::uiIO::editor::SIOSelector">
+              <inout key="data" uid="${selection}" />
+              <type mode="writer" />
+              <selection mode="include" />
+              <addSelection service="::ioAtoms::SWriter" />
+              <config id="ioAtomsConfig" service="::ioAtoms::SWriter" />
+          </service>
+ * @endcode
+ *
+ * For reader mode, you can read in an output data. In this case, you must define the type of the output data.
+ *
+ * @code{.xml}
+          <service uid="..." type="::uiIO::editor::SIOSelector">
+              <out key="data" uid="image" />
+              <type mode="reader" class="::fwData::Image" />
+              <selection mode="include" />
+              <addSelection service="::ioAtoms::SReader" />
+          </service>
+ * @endcode
+ *
+ * @subsection In-Out In-Out
+ * - \b data [::fwData::Object]: the read or saved object.
+ * @subsection Output Output
+ * - \b data [::fwData::Object]: the loaded object (not used if an inout data is defined).
+ * @subsection Configuration Configuration
+ * - \b type
+ *      - \b mode (mandatory) : selector type must be "reader" (to open file) or "writer" (to write a new file).
+ *      - \b data (mandatory if the object is set as an output): classname of the object to read
+ * - \b selection
+ *      - \b mode (mandatory) : must be include (to add the selection to selector list ) or exclude (to exclude the
+ * selection of the selector list).
+ * - \b addSelection
+ *      - \b service (mandatory) : Name of the service to include/exclude to the choice list of the selector.
+ * - \b config
+ *      - \b id (mandatory) : the id of the configuration to use.
+ *      - \b service (mandatory) :  the name of the service.
  */
 class UIIO_CLASS_API SIOSelector : public ::fwGui::editor::IDialogEditor
 {
@@ -70,29 +118,6 @@ protected:
      *
      * The method verifies if the configuration is well written and retrieves user parameter values.
      * Thanks to this method, SIOSelector::m_selectedServices value is up to date (cleared before reconfiguring).
-     *
-     * Sample of configuration :
-     * @code{.xml}
-          <service uid="GENERIC_UID_writer" type="::fwGui::editor::IDialogEditor" impl="::uiIO::editor::SIOSelector"
-     * autoConnect="no">
-              <type mode="writer" />
-              <selection mode="include" />
-              <addSelection service="::ioAtoms::SWriter" />
-              <config id="ioAtomsConfig" service="::ioAtoms::SWriter" />
-          </service>
-     * @endcode
-     * With :
-     * None of these parameters are mandatory.
-     *  - \b type
-     *      - \b mode (mandatory) : selector type must be "reader" (to open file) or "writer" (to write a new file).
-     *  - \b selection
-     *      - \b mode (mandatory) : must be include (to add the selection to selector list ) or exclude (to exclude the
-     * selection of the selector list).
-     *  - \b addSelection
-     *      - \b service (mandatory) : Name of the service to include/exclude to the choice list of the selector.
-     *  - \b config
-     *      - \b id (mandatory) : the id of the configuration to use.
-     *      - \b service (mandatory) :  the name of the service.
      **/
     UIIO_API void configuring() override;
 
@@ -123,7 +148,8 @@ private:
     /// Map that specifies a configuration extension for a service
     std::map< std::string, std::string > m_serviceToConfig;
 
-    std::string m_inject;
+    /// classname of the readed object (used if the data is set as output instead of inout)
+    std::string m_dataClassname;
 
     SPTR(JobCreatedSignalType) m_sigJobCreated;
     SPTR(ForwardJobSlotType) m_slotForwardJob;

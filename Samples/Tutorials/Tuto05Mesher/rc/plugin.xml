@@ -132,12 +132,12 @@
             </service>
 
             <service uid="readerPathImageFile" type="::uiIO::editor::SIOSelector">
-                <inout key="target" uid="myImage" />
+                <inout key="data" uid="myImage" />
                 <type mode="reader" />
             </service>
 
             <service uid="writerImageFile" type="::uiIO::editor::SIOSelector">
-                <in key="target" uid="myImage" />
+                <inout key="data" uid="myImage" />
                 <type mode="writer" />
             </service>
 
@@ -150,12 +150,12 @@
             </service>
 
             <service uid="readerPathMeshFile" type="::uiIO::editor::SIOSelector">
-                <inout key="target" uid="myMesh" />
+                <inout key="data" uid="myMesh" />
                 <type mode="reader" />
             </service>
 
             <service uid="writerMeshFile" type="::uiIO::editor::SIOSelector">
-                <in key="target" uid="myMesh" />
+                <inout key="data" uid="myMesh" />
                 <type mode="writer" />
             </service>
 

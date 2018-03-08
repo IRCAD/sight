@@ -128,7 +128,7 @@
             </service>
 
             <service uid="readerPathFile" type="::uiIO::editor::SIOSelector">
-                <inout key="target" uid="mesh" />
+                <inout key="data" uid="mesh" />
                 <type mode="reader" />
             </service>
 

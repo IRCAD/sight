@@ -130,14 +130,14 @@
 
             <service uid="action_quit" type="::gui::action::SQuit" />
             <service uid="myReaderMesh" type="::uiIO::editor::SIOSelector">
-                <in key="target" uid="myMesh" />
+                <inout key="data" uid="myMesh" />
                 <type mode="reader" />
                 <selection mode="exclude" />
                 <addSelection service="::ioXML::FwXMLGenericReaderService" />
             </service>
 
             <service uid="myWriterMesh" type="::uiIO::editor::SIOSelector">
-                <in key="target" uid="myMesh" />
+                <inout key="data" uid="myMesh" />
                 <type mode="writer" />
             </service>
 

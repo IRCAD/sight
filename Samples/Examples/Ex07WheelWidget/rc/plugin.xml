@@ -46,9 +46,9 @@
             </registry>
         </service>
 
-        <service uid="imageReader" type="::uiIO::editor::SIOSelector" autoConnect="no">
+        <service uid="imageReader" type="::uiIO::editor::SIOSelector">
             <type mode="reader" />
-            <in key="image" uid="image" />
+            <inout key="data" uid="image" />
         </service>
 
         <service uid="actionOpen" type="::gui::action::SStarter">

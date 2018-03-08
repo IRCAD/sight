@@ -12,6 +12,8 @@
 
 #include <fwGui/Cursor.hpp>
 
+#include <fwIO/ioTypes.hpp>
+
 #include <fwJobs/IJob.hpp>
 
 #include <fwMedData/Series.hpp>
@@ -94,10 +96,8 @@ void SSeriesDBMerger::updating( )
 
     // Init and execute the service
     ::fwServices::IService::sptr ioSelectorSrv;
-    ioSelectorSrv = ::fwServices::add(localSeriesDB,
-                                      "::fwGui::editor::IDialogEditor",
-                                      "::uiIO::editor::SIOSelector");
-
+    ioSelectorSrv = ::fwServices::add("::uiIO::editor::SIOSelector");
+    ioSelectorSrv->registerInOut(localSeriesDB, ::fwIO::s_DATA_KEY);
     ioSelectorSrv->setWorker(m_associatedWorker);
 
     auto jobCreatedSignal = ioSelectorSrv->signal("jobCreated");

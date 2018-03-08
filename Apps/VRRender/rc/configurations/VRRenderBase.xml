@@ -9,14 +9,14 @@
         <object uid="seriesDB" type="::fwMedData::SeriesDB" />
 
         <service uid="action_open" type="::uiIO::action::SSeriesDBMerger">
-            <inout key="seriesDB" uid="seriesDB" />
+            <inout key="data" uid="seriesDB" />
             <IOSelectorSrvConfig name="SDBAtomsReaderIOSelectorConfig" />
         </service>
         <service uid="action_save" type="::gui::action::SStarter">
             <start uid="SDBWriter" />
         </service>
         <service uid="SDBWriter" type="::uiIO::editor::SIOSelector">
-            <in key="seriesDB" uid="seriesDB" />
+            <inout key="data" uid="seriesDB" />
             <type mode="writer" />
             <selection mode="include" />
             <addSelection service="::ioAtoms::SWriter" />

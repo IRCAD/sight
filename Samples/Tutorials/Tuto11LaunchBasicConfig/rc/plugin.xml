@@ -77,7 +77,7 @@
             </service>
 
             <service uid="myReaderPathFile" type="::uiIO::editor::SIOSelector" >
-                <in key="image" uid="imageUid" />
+                <inout key="data" uid="imageUid" />
             </service>
             <service uid="mainView" type="::vtkSimpleNegato::SRenderer" autoConnect="yes" >
                 <in key="image" uid="imageUid" />

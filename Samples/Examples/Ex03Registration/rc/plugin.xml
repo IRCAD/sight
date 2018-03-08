@@ -329,7 +329,7 @@ Detail of the ToolBar
             </service>
 
             <service uid="readerPathFile" type="::uiIO::editor::SIOSelector">
-                <in key="image" uid="myImage" />
+                <inout key="data" uid="myImage" />
                 <type mode="reader" />
                 <selection mode="exclude" />
                 <addSelection service="::ioXML::FwXMLGenericReaderService" />
@@ -342,14 +342,14 @@ Detail of the ToolBar
             </service>
 
             <service uid="meshReader1" type="::uiIO::editor::SIOSelector">
-                <inout key="target" uid="meshOnNegato1" />
+                <inout key="data" uid="meshOnNegato1" />
                 <type mode="reader" />
                 <selection mode="exclude" />
                 <addSelection service="::ioXML::FwXMLGenericReaderService" />
             </service>
 
             <service uid="meshReader2" type="::uiIO::editor::SIOSelector">
-                <inout key="target" uid="meshOnNegato2" />
+                <inout key="data" uid="meshOnNegato2" />
                 <type mode="reader" />
                 <selection mode="exclude" />
                 <addSelection service="::ioXML::FwXMLGenericReaderService" />

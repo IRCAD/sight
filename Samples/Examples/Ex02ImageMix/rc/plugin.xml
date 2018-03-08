@@ -6,9 +6,10 @@
         <id>Ex02ImageMix</id>
         <config>
             <!-- backgroundImage description -->
-            <object uid="backgroundImage" type="::fwData::Image" />
+            <object uid="backgroundImage" type="::fwData::Image" src="deferred" />
             <!-- frontImage description -->
-            <object uid="frontImage" type="::fwData::Image" />
+            <object uid="frontImage" type="::fwData::Image" src="deferred" />
+
             <service uid="mainFrame" type="::gui::frame::SDefaultFrame">
                 <gui>
                     <frame>
@@ -127,20 +128,21 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="sliderIndexEditor" start="yes" />
+                    <view sid="sliderIndexEditor" start="no" />
                     <view sid="snapshotBlendSceneEditor" start="yes" />
                 </registry>
             </service>
 
             <service uid="snapshotBlendSceneEditor" type="::uiVisuQt::SnapshotEditor" />
+
             <service uid="readerBackgroundImage" type="::uiIO::editor::SIOSelector">
-                <inout key="target" uid="backgroundImage" />
-                <type mode="reader" />
+                <out key="data" uid="backgroundImage" />
+                <type mode="reader" class="::fwData::Image" />
             </service>
 
             <service uid="readerFrontImage" type="::uiIO::editor::SIOSelector">
-                <inout key="target" uid="frontImage" />
-                <type mode="reader" />
+                <out key="data" uid="frontImage" />
+                <type mode="reader" class="::fwData::Image" />
             </service>
 
             <service uid="bgImgEditorsView" type="::gui::view::SDefaultView">
@@ -152,8 +154,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="imageInfo" start="yes" />
-                    <view sid="windowLevel" start="yes" />
+                    <view sid="imageInfo" start="no" />
+                    <view sid="windowLevel" start="no" />
                 </registry>
             </service>
 
@@ -186,9 +188,9 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="imageInfo2" start="yes" />
-                    <view sid="imageTransparency2" start="yes" />
-                    <view sid="windowLevel2" start="yes" />
+                    <view sid="imageInfo2" start="no" />
+                    <view sid="imageTransparency2" start="no" />
+                    <view sid="windowLevel2" start="no" />
                 </registry>
             </service>
 
@@ -222,7 +224,7 @@
             <!-- Generic scene to show merging of backgroung and front images -->
             <!-- *************************** Begin generic scene *************************** -->
 
-            <service uid="blendGenericScene" type="::fwRenderVTK::SRender" autoConnect="yes">
+            <service uid="blendGenericScene" type="::fwRenderVTK::SRender">
                 <scene>
                     <picker id="picker" vtkclass="fwVtkCellPicker" />
                     <vtkObject id="imageBlend" class="vtkImageBlend" />
@@ -283,7 +285,7 @@
             <!-- Generic scene for background image -->
             <!-- *************************** Begin generic scene *************************** -->
 
-            <service uid="bgImgGenericScene" type="::fwRenderVTK::SRender" autoConnect="yes">
+            <service uid="bgImgGenericScene" type="::fwRenderVTK::SRender">
                 <scene>
                     <picker id="picker" vtkclass="fwVtkCellPicker" />
                     <renderer id="default" background="0.0" />
@@ -312,7 +314,7 @@
             <!-- Generic scene for front image -->
             <!-- *************************** Begin generic scene *************************** -->
 
-            <service uid="fgImgGenericScene" type="::fwRenderVTK::SRender" autoConnect="yes">
+            <service uid="fgImgGenericScene" type="::fwRenderVTK::SRender">
                 <scene>
                     <picker id="picker" vtkclass="fwVtkCellPicker" />
                     <renderer id="default" background="0.0" />
@@ -356,6 +358,13 @@
 
             <start uid="mainFrame" />
             <start uid="forwarderMsg" />
+            <!-- deferred start -->
+            <start uid="sliderIndexEditor" />
+            <start uid="imageInfo" />
+            <start uid="windowLevel" />
+            <start uid="imageInfo2" />
+            <start uid="windowLevel2" />
+            <start uid="imageTransparency2" />
             <!-- VTK scene 'blendGenericScene' -->
             <start uid="MPRNegato3D" />
             <start uid="interactor" />
