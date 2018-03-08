@@ -6,6 +6,8 @@
 
 #include "visuOgreAdaptor/SVolumeRender.hpp"
 
+#include "visuOgreAdaptor/STransform.hpp"
+
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
 
@@ -29,8 +31,6 @@
 #include <OGRE/OgreCamera.h>
 #include <OGRE/OgreSceneNode.h>
 #include <OGRE/OgreTextureManager.h>
-
-#include "visuOgreAdaptor/STransform.hpp"
 
 fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SVolumeRender, ::fwData::Image);
 
@@ -245,10 +245,8 @@ void SVolumeRender::starting()
     m_volumeSceneNode = transformNode->createChildSceneNode(this->getID() + "_transform_origin");
 
     const auto origin = image->getOrigin();
-    if(origin.size())
+    if(origin.size() == 3)
     {
-        SLM_ASSERT("Image origin is not in 3D", origin.size() == 3);
-
         m_volumeSceneNode->translate(::Ogre::Vector3(static_cast<float>(origin[0]),
                                                      static_cast<float>(origin[1]),
                                                      static_cast<float>(origin[2])));
