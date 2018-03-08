@@ -27,7 +27,7 @@
                 <gui>
                     <frame>
                         <name>ExStereoARCV</name>
-                        <icon>ExStereoAR-0.1/app.ico</icon>
+                        <icon>ExStereoARCV-0.1/app.ico</icon>
                     </frame>
                     <menuBar/>
                     <toolBar/>
@@ -357,44 +357,28 @@
                 <in key="timeline" uid="frameTL1" autoConnect="yes" />
                 <in key="camera" uid="camera1" />
                 <inout group="tagTL">
-                    <key uid="tagTL1" />
                     <!-- timeline of detected tag(s) -->
+                    <key uid="tagTL1" />
                 </inout>
-                <config>
-                    <track>
-                        <marker id="101" />
-                        <!-- list of id -->
-                    </track>
-                    <threshold>
-                        <method>ADPT_THRES</method>
-                        <blockSize>7</blockSize>
-                        <constant>7</constant>
-                    </threshold>
-                    <patternWidth>60</patternWidth>
-                    <debugMarkers>yes</debugMarkers>
-                </config>
+                <track>
+                    <!-- list of id -->
+                    <marker id="101" />
+                </track>
+                <debugMarkers>yes</debugMarkers>
             </service>
 
             <service uid="tracker2" type="::trackerAruco::SArucoTracker" worker="tracking2">
                 <in key="timeline" uid="frameTL2" autoConnect="yes" />
                 <in key="camera" uid="camera2" />
                 <inout group="tagTL">
-                    <key uid="tagTL2" />
                     <!-- timeline of detected tag(s) -->
+                    <key uid="tagTL2" />
                 </inout>
-                <config>
-                    <track>
-                        <marker id="101" />
-                        <!-- list of id -->
-                    </track>
-                    <threshold>
-                        <method>ADPT_THRES</method>
-                        <blockSize>7</blockSize>
-                        <constant>7</constant>
-                    </threshold>
-                    <patternWidth>60</patternWidth>
-                    <debugMarkers>yes</debugMarkers>
-                </config>
+                <track>
+                    <!-- list of id -->
+                    <marker id="101" />
+                </track>
+                <debugMarkers>yes</debugMarkers>
             </service>
 
             <!-- This will compute the pose of the camera with tag(s) detected by aruco -->
