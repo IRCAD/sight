@@ -41,6 +41,9 @@ namespace videoTools
  * - \b setPositionVideo(int) : Force the current time in the video.
  * - \b reconfigure() : Allows to erase the implementation choice, so that the selection routine is ran again, thus,
  * potentially the selection dialog is shown.
+ * - \b nextImage(): display the next image in step by step mode. Does nothing if not supported by the selected grabber.
+ * - \b previousImage(): display the previous image in step by step mode. Does nothing if not supported by the
+ * selected grabber.
  *
  * @section XML XML Configuration
  *

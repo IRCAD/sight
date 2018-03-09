@@ -34,6 +34,8 @@ namespace arServices
  * - \b pauseCamera() : Pause the video, it has no effect when playing a camera.
  * - \b loopVideo() : Toggle the loop of the playing.
  * - \b setPositionVideo(int) : Force the current time in the video.
+ * - \b nextImage(): display the next image in step by step mode. Does nothing if not overridden.
+ * - \b previousImage(): display the previous image in step by step mode. Does nothing if not overridden.
  */
 class ARSERVICES_CLASS_API IGrabber : public fwServices::IService
 {
