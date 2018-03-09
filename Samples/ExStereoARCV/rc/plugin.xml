@@ -218,13 +218,11 @@
             <service uid="Extractor" type="::ctrlCamp::SExtractObj">
                 <inout key="source" uid="cameraSeries">
                     <extract from="@cameras.0" />
-                    <!-- Camp path of the first camera in cameraSeries -->
                     <extract from="@cameras.1" />
                     <extract from="@extrinsic_matrices.1" />
                 </inout>
                 <out group="target">
                     <key uid="camera1" />
-                    <!-- destination -->
                     <key uid="camera2" />
                     <key uid="extrinsic" />
                 </out>
@@ -303,14 +301,55 @@
             <!-- GUI to handle aruco tracking parameters -->
             <service uid="arucoParams" type="::guiQt::editor::SParameters">
                 <parameters>
+                    <!-- show marker or not -->
                     <param type="bool" name="Show Marker" key="debugMode" defaultValue="true" />
-                    <param type="enum" name="Detection Method" key="method" defaultValue="ADPT_THRES" values="ADPT_THRES,FIXED_THRES,CANNY" />
-                    <param type="enum" name="Corner ref." key="corner" defaultValue="SUBPIX" values="NONE,HARRIS,SUBPIX,LINES" />
-                    <param type="double" name="block size" key="blocksize" defaultValue="7." min="0." max="30." />
-                    <param type="double" name="constant" key="constant" defaultValue="7." min="0." max="50." />
-                    <param type="double" name="border width(%)" key="borderwidth" defaultValue="0.01" min="0." max="99.9" />
-                    <param type="int" name="Pattern Width(mm)" key="pattern" defaultValue="60" min="10" max="1000" />
-                    <param type="int" name="Speed" key="speed" defaultValue="3" min="1" max="3" />
+                    <!--  do corner refinement or not. -->
+                    <param type="bool" name="Corner refinement." key="corner" defaultValue="true" />
+                    <!-- minimum window size for adaptive thresholding before finding contours -->
+                    <param type="int" name="adpt. Threshold win size min" key="adaptiveThreshWinSizeMin" defaultValue="3" min="1" max="100" />
+                    <!-- maximum window size for adaptive thresholding before finding contours -->
+                    <param type="int" name="adpt. Threshold win size max" key="adaptiveThreshWinSizeMax" defaultValue="23" min="1" max="100" />
+                    <!-- increments from adaptiveThreshWinSizeMin to adaptiveThreshWinSizeMax during the thresholding -->
+                    <param type="int" name="adpt. Threshold win size step" key="adaptiveThreshWinSizeStep" defaultValue="10" min="1" max="100" />
+                    <!-- constant for adaptive thresholding before finding contours -->
+                    <param type="double" name="adpt. threshold constant" key="adaptiveThreshConstant" defaultValue="7." min="0." max="30." />
+                    <!-- determine minimum perimeter for marker contour to be detected.
+                        This is defined as a rate respect to the maximum dimension of the input image -->
+                    <param type="double" name="Min. Marker Perimeter Rate" key="minMarkerPerimeterRate" defaultValue="0.03" min="0.01" max="1.0" />
+                    <!-- determine maximum perimeter for marker contour to be detected.
+                        This is defined as a rate respect to the maximum dimension of the input image -->
+                    <param type="double" name="Max. Marker Perimeter Rate" key="maxMarkerPerimeterRate" defaultValue="4.0" min="1." max="10." />
+                    <!-- minimum accuracy during the polygonal approximation process to determine which contours are squares -->
+                    <param type="double" name="Polygonal Approx. Accuracy Rate" key="polygonalApproxAccuracyRate" defaultValue="0.03" min="0.01" max="1." />
+                    <!-- minimum distance between corners for detected markers relative to its perimeter -->
+                    <param type="double" name="Min. Corner Distance Rate" key="minCornerDistanceRate" defaultValue="0.01" min="0." max="1." />
+                    <!-- minimum distance of any corner to the image border for detected markers (in pixels) -->
+                    <param type="int" name="Min. Distance to Border" key="minDistanceToBorder" defaultValue="1" min="0" max="10" />
+                    <!-- minimum mean distance beetween two marker corners to be considered similar,
+                    so that the smaller one is removed. The rate is relative to the smaller perimeter of the two markers -->
+                    <param type="double" name="Min. Marker Distance Rate" key="minMarkerDistanceRate" defaultValue="0.01" min="0." max="1." />
+                    <!-- window size for the corner refinement process (in pixels) -->
+                    <param type="int" name="Corner Refinement Win. Size" key="cornerRefinementWinSize" defaultValue="5" min="1" max="100" />
+                    <!-- maximum number of iterations for stop criteria of the corner refinement process -->
+                    <param type="int" name="Corner Refinement Max Iterations" key="cornerRefinementMaxIterations" defaultValue="30" min="0" max="10" />
+                    <!-- minimum error for the stop cristeria of the corner refinement process -->
+                    <param type="double" name="Corner Refinement Min. Accuracy" key="cornerRefinementMinAccuracy" defaultValue="0.1" min="0." max="10." />
+                    <!-- number of bits of the marker border, i.e. marker border width -->
+                    <param type="int" name="Marker Border Bits" key="markerBorderBits" defaultValue="1" min="1" max="100" />
+                    <!-- number of bits (per dimension) for each cell of the marker when removing the perspective -->
+                    <param type="int" name="Perspective Remove Pixel per Cell" key="perspectiveRemovePixelPerCell" defaultValue="8" min="1" max="32" />
+                    <!-- width of the margin of pixels on each cell not considered for the determination of the cell bit.
+                        Represents the rate respect to the total size of the cell,
+                        i.e. perpectiveRemovePixelPerCel -->
+                    <param type="double" name="Perspective Remove Ignored Margin Per Cell" key="perspectiveRemoveIgnoredMarginPerCell" defaultValue="0.13" min="0." max="1." />
+                    <!-- maximum number of accepted erroneous bits in the border (i.e. number of allowed white bits in the border).
+                        Represented as a rate respect to the total number of bits per marker -->
+                    <param type="double" name="Max. Erroneous Bits In Border Rate" key="maxErroneousBitsInBorderRate" defaultValue="0.35" min="0." max="1." />
+                    <!-- minimun standard deviation in pixels values during the decodification step to apply Otsu thresholding
+                        (otherwise, all the bits are set to 0 or 1 depending on mean higher than 128 or not) -->
+                    <param type="double" name="Min. Otsu Std. Dev." key="minOtsuStdDev" defaultValue="5.0" min="0." max="100." />
+                    <!-- error correction rate respect to the maximun error correction capability for each dictionary -->
+                    <param type="double" name="Error Correction Rate" key="errorCorrectionRate" defaultValue="0.6" min="0." max="1." />
                 </parameters>
             </service>
 
@@ -478,17 +517,20 @@
 
             <connect>
                 <signal>arucoParams/boolChanged</signal>
-                <slot>tracker/setBoolParameter</slot>
+                <slot>tracker1/setBoolParameter</slot>
+                <slot>tracker2/setBoolParameter</slot>
             </connect>
 
             <connect>
                 <signal>arucoParams/intChanged</signal>
-                <slot>tracker/setIntParameter</slot>
+                <slot>tracker1/setIntParameter</slot>
+                <slot>tracker2/setIntParameter</slot>
             </connect>
 
             <connect>
                 <signal>arucoParams/doubleChanged</signal>
-                <slot>tracker/setDoubleParameter</slot>
+                <slot>tracker1/setDoubleParameter</slot>
+                <slot>tracker2/setDoubleParameter</slot>
             </connect>
 
             <connect>
@@ -520,15 +562,15 @@
             </connect>
 
             <start uid="mainFrame" />
+            <start uid="CalibrationReader" />
+            <start uid="Extractor" />
+            <start uid="CameraSelector1" />
+            <start uid="CameraSelector2" />
             <start uid="frameGrabber1" />
             <start uid="frameGrabber2" />
             <start uid="synchronizer" />
             <start uid="tracker1" />
             <start uid="tracker2" />
-            <start uid="CalibrationReader" />
-            <start uid="CameraSelector1" />
-            <start uid="CameraSelector2" />
-            <start uid="Extractor" />
             <start uid="registration" />
             <start uid="reprojectionErrorLeft" />
             <start uid="reprojectionErrorRight" />
