@@ -30,6 +30,9 @@ namespace editor
  *
  * @section Signals Signals
  * - \b configuredCameras(): emitted when the cameras have been successfully configured.
+ * - \b configuredDevice(): emitted when the user selects a device as the video source.
+ * - \b configuredFile(): emitted when the user selects a file as the video source.
+ * - \b configuredStream(): emitted when the user selects a stream as the video source.
  *
  * @section Slots Slots
  * - \b configureDevice(): configure the cameras as device sources.
@@ -128,6 +131,8 @@ protected Q_SLOTS:
     void onApply(int index);
 
 private:
+
+    typedef ::fwCom::Signal< void () > SourceConfiguredSignal;
 
     void onChooseFile();
     void onChooseStream();
