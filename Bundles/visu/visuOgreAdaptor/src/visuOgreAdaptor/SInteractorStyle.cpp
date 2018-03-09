@@ -23,11 +23,11 @@ fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SInteractor
 namespace visuOgreAdaptor
 {
 
-const ::fwCom::Signals::SignalKeyType visuOgreAdaptor::SInteractorStyle::s_ADD_POINT_SIG = "addPointSignal";
-const ::fwCom::Slots::SlotKeyType visuOgreAdaptor::SInteractorStyle::s_ADD_POINT_SLOT    = "addPointSlot";
+const ::fwCom::Signals::SignalKeyType visuOgreAdaptor::SInteractorStyle::s_ADD_POINT_SIG    = "pointAdded";
+const ::fwCom::Signals::SignalKeyType visuOgreAdaptor::SInteractorStyle::s_REMOVE_POINT_SIG = "pointRemoved";
 
-const ::fwCom::Signals::SignalKeyType visuOgreAdaptor::SInteractorStyle::s_REMOVE_POINT_SIG = "removePointSignal";
-const ::fwCom::Slots::SlotKeyType visuOgreAdaptor::SInteractorStyle::s_REMOVE_POINT_SLOT    = "removePointSlot";
+const ::fwCom::Slots::SlotKeyType visuOgreAdaptor::SInteractorStyle::s_ADD_POINT_SLOT    = "addPoint";
+const ::fwCom::Slots::SlotKeyType visuOgreAdaptor::SInteractorStyle::s_REMOVE_POINT_SLOT = "removePoint";
 
 static const std::string s_CONFIG_PICKER   = "picker";
 static const std::string s_CONFIG_MOVEMENT = "movement";

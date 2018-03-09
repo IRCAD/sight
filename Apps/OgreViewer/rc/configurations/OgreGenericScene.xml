@@ -182,7 +182,7 @@
         </service>
 
         <connect>
-            <signal>selectInteractorAdaptor/pointClickedSignal</signal>
+            <signal>selectInteractorAdaptor/pointAdded</signal>
             <slot>addPointInList/addPoint</slot>
         </connect>
 

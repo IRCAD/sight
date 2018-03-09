@@ -6,6 +6,8 @@
 
 #include "visuOgreAdaptor/SVolumeRender.hpp"
 
+#include "visuOgreAdaptor/STransform.hpp"
+
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
 
@@ -17,6 +19,7 @@
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 #include <fwDataTools/TransformationMatrix3D.hpp>
 
+#include <fwRenderOgre/helper/Scene.hpp>
 #include <fwRenderOgre/helper/Shading.hpp>
 #include <fwRenderOgre/interactor/VRWidgetsInteractor.hpp>
 #include <fwRenderOgre/vr/ImportanceDrivenVolumeRenderer.hpp>
@@ -114,8 +117,6 @@ SVolumeRender::SVolumeRender() noexcept :
     newSlot(s_SET_DOUBLE_PARAMETER_SLOT, &SVolumeRender::setDoubleParameter, this);
     newSlot(s_SET_ENUM_PARAMETER_SLOT, &SVolumeRender::setEnumParameter, this);
     newSlot(s_SET_COLOR_PARAMETER_SLOT, &SVolumeRender::setColorParameter, this);
-
-    m_ogreTransform = ::Ogre::Matrix4::IDENTITY;
     m_renderingMode = VR_MODE_RAY_TRACING;
 }
 
@@ -133,86 +134,29 @@ void SVolumeRender::configuring()
 
     const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
 
-    if(config.count("autoresetcamera"))
+    m_autoResetCamera        = config.get<std::string>("autoresetcamera", "yes") == "yes";
+    m_preIntegratedRendering = config.get<std::string>("preintegration", "no") == "yes";
+    m_widgetVisibilty        = config.get<std::string>("widgets", "yes") == "yes";
+    m_renderingMode          = config.get<std::string>("mode", "raytracing") == "raytracing" ? VR_MODE_RAY_TRACING :
+                               VR_MODE_SLICE;
+
+    if(m_renderingMode == VR_MODE_RAY_TRACING)
     {
-        m_autoResetCamera = config.get<std::string>("autoresetcamera") == "yes";
+        m_satSizeRatio        = config.get<float>("satSizeRatio", m_satSizeRatio);
+        m_satShells           = config.get<int>("satShells", m_satShells);
+        m_satShellRadius      = config.get<int>("satShellRadius", m_satShellRadius);
+        m_satConeAngle        = config.get<float>("satConeAngle", m_satConeAngle);
+        m_satConeSamples      = config.get<int>("satConeSamples", m_satConeSamples);
+        m_aoFactor            = config.get<double>("aoFactor", m_aoFactor);
+        m_colorBleedingFactor = config.get<double>("colorBleedingFactor", m_colorBleedingFactor);
+        m_ambientOcclusion    = config.get<bool>("ao", false);
+        m_colorBleeding       = config.get<bool>("colorBleeding", false);
+        m_shadows             = config.get<bool>("shadows", false);
     }
 
-    if(config.count("preintegration"))
-    {
-        m_preIntegratedRendering = (config.get<std::string>("preintegration") == "yes");
-    }
-
-    if(config.count("mode"))
-    {
-        if(config.get<std::string>("mode") == "slice")
-        {
-            m_renderingMode = VR_MODE_SLICE;
-        }
-        if(config.get<std::string>("mode") == "raytracing")
-        {
-            m_renderingMode = VR_MODE_RAY_TRACING;
-
-            if(config.count("satSizeRatio"))
-            {
-                m_satSizeRatio = config.get<float>("satSizeRatio");
-            }
-
-            if(config.count("satShells"))
-            {
-                m_satShells = config.get<int>("satShells");
-            }
-
-            if(config.count("satShellRadius"))
-            {
-                m_satShellRadius = config.get<int>("satShellRadius");
-            }
-
-            if(config.count("satConeAngle"))
-            {
-                m_satConeAngle = config.get<float>("satConeAngle");
-            }
-
-            if(config.count("satConeSamples"))
-            {
-                m_satConeSamples = config.get<int>("satConeSamples");
-            }
-
-            if(config.count("aoFactor"))
-            {
-                m_aoFactor = config.get<double>("aoFactor");
-            }
-
-            if(config.count("colorBleedingFactor"))
-            {
-                m_colorBleedingFactor = config.get<double>("colorBleedingFactor");
-            }
-
-            if(config.count("ao"))
-            {
-                m_ambientOcclusion = (config.get<std::string>("ao") == "yes");
-            }
-
-            if(config.count("colorBleeding"))
-            {
-                m_colorBleeding = (config.get<std::string>("colorBleeding") == "yes");
-            }
-
-            if(config.count("shadows"))
-            {
-                m_shadows = (config.get<std::string>("shadows") == "yes");
-            }
-        }
-        else
-        {
-            OSLM_WARN("Unknown VR mode, defaults to ray tracing.");
-        }
-    }
-
-    if(config.count("widgets"))
-    {
-        m_widgetVisibilty = (config.get<std::string>("widgets") == "yes");
-    }
+    const std::string transformId = config.get<std::string>(::visuOgreAdaptor::STransform::s_CONFIG_TRANSFORM,
+                                                            this->getID() + "_transform");
+    this->setTransformId(transformId);
 }
 
 //-----------------------------------------------------------------------------
@@ -289,9 +233,26 @@ void SVolumeRender::starting()
 
     this->updateImageInfos(image);
 
-    m_sceneManager    = this->getSceneManager();
-    m_volumeSceneNode = m_sceneManager->getRootSceneNode()->createChildSceneNode(this->getID() + "_sceneNode");
-    m_camera          = this->getLayer()->getDefaultCamera();
+    m_sceneManager = this->getSceneManager();
+
+    ::Ogre::SceneNode* rootSceneNode = m_sceneManager->getRootSceneNode();
+    ::Ogre::SceneNode* transformNode =
+        ::fwRenderOgre::helper::Scene::getNodeById(this->getTransformId(), rootSceneNode);
+    if (transformNode == nullptr)
+    {
+        transformNode = rootSceneNode->createChildSceneNode(this->getTransformId());
+    }
+    m_volumeSceneNode = transformNode->createChildSceneNode(this->getID() + "_transform_origin");
+
+    const auto origin = image->getOrigin();
+    if(origin.size() == 3)
+    {
+        m_volumeSceneNode->translate(::Ogre::Vector3(static_cast<float>(origin[0]),
+                                                     static_cast<float>(origin[1]),
+                                                     static_cast<float>(origin[2])));
+    }
+
+    m_camera = this->getLayer()->getDefaultCamera();
 
     // Create textures
     m_3DOgreTexture = ::Ogre::TextureManager::getSingleton().create(
@@ -371,7 +332,7 @@ void SVolumeRender::stopping()
     delete m_volumeRenderer;
     m_volumeRenderer = nullptr;
 
-    m_sceneManager->getRootSceneNode()->removeChild(m_volumeSceneNode->getName());
+    m_sceneManager->getRootSceneNode()->removeChild(this->getTransformId());
 
     ::Ogre::TextureManager::getSingleton().remove(m_3DOgreTexture->getHandle());
     m_3DOgreTexture.reset();
