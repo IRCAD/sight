@@ -10,6 +10,11 @@
 
 #include <fwServices/IService.hpp>
 
+namespace arData
+{
+class FrameTL;
+}
+
 namespace arServices
 {
 /**
@@ -125,6 +130,13 @@ public:
      * @brief API to get the next image in frame by frame mode.
      */
     ARSERVICES_API virtual void nextImage();
+
+protected:
+    /**
+     * @brief Helper function intended to be used in derived services. Clears the supplied timeline, emits the cleared
+     * signal, pushes a black frame and emits the object pushed signal.
+     */
+    ARSERVICES_API static void clearTimeline(SPTR(::arData::FrameTL) const&);
 };
 
 } //namespace arServices
