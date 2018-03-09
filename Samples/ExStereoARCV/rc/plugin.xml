@@ -492,11 +492,6 @@
             </connect>
 
             <connect>
-                <signal>arucoParams/enumChanged</signal>
-                <slot>tracker/setEnumParameter</slot>
-            </connect>
-
-            <connect>
                 <signal>cameraSeries/addedCamera</signal>
                 <slot>Extractor/update</slot>
             </connect>
