@@ -123,6 +123,8 @@ void SGrabberProxy::configuring()
             m_serviceToConfig[service].push_back(configId);
             SLM_DEBUG( "add config '" + configId + "' for service '" + service + "'");
         }
+
+        m_guiTitle = subConfig.get<std::string>("gui.<xmlattr>.title", m_guiTitle);
     }
 }
 
@@ -328,7 +330,7 @@ void SGrabberProxy::startCamera()
                 }
                 ::fwGui::dialog::SelectorDialog::sptr selector = ::fwGui::dialog::SelectorDialog::New();
 
-                selector->setTitle("Choose a video grabber");
+                selector->setTitle(m_guiTitle);
                 selector->setSelections(descriptions);
 
                 const auto selectedDesc = selector->show();

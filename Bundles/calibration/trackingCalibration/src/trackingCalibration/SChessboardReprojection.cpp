@@ -232,7 +232,6 @@ void SChessboardReprojection::updateChessboardSize()
 
 void SChessboardReprojection::setMovingCamera(bool _movingCamera)
 {
-    std::cerr << m_movingCamera << std::endl;
     m_movingCamera = _movingCamera;
 }
 

@@ -78,7 +78,7 @@ protected:
     VIDEOCALIBRATION_API void starting() override;
 
     /**
-     * @brief Updating method : This method is used to update the service.
+     * @brief Updating method : This method is used to restart the service.
      */
     VIDEOCALIBRATION_API void updating() override;
 

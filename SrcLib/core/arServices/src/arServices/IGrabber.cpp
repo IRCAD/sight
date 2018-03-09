@@ -6,6 +6,8 @@
 
 #include "arServices/IGrabber.hpp"
 
+#include <arData/FrameTL.hpp>
+
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
 
@@ -70,6 +72,30 @@ void IGrabber::previousImage()
 void IGrabber::nextImage()
 {
     SLM_WARN("Frame by frame mode not implemented for this grabber type.");
+}
+
+// ----------------------------------------------------------------------------
+
+void IGrabber::clearTimeline(::arData::FrameTL::sptr const& _tl)
+{
+    if(_tl->isAllocated())
+    {
+        // Clear the timeline: send a black frame
+        const ::fwCore::HiResClock::HiResClockType timestamp = _tl->getNewerTimestamp() + 1;
+
+        SPTR(::arData::FrameTL::BufferType) buffer = _tl->createBuffer(timestamp);
+        auto destBuffer = reinterpret_cast< std::uint8_t* >( buffer->addElement(0) );
+
+        std::fill(destBuffer, destBuffer + _tl->getWidth() * _tl->getHeight() * _tl->getNumberOfComponents(), 0);
+
+        // push buffer and notify
+        _tl->clearTimeline();
+        _tl->pushObject(buffer);
+
+        auto sigTL = _tl->signal< ::arData::TimeLine::ObjectPushedSignalType >(
+            ::arData::TimeLine::s_OBJECT_PUSHED_SIG );
+        sigTL->asyncEmit(timestamp);
+    }
 }
 
 // ----------------------------------------------------------------------------
