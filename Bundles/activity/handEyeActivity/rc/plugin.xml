@@ -41,4 +41,15 @@
         </appConfig>
     </extension>
 
+    <extension implements="::fwServices::registry::ServiceConfig">
+        <id>FrameByFrameOpenCVGrabberConfig</id>
+        <service>::videoOpenCV::SFrameGrabber</service>
+        <desc>OpenCV frame by frame player</desc>
+        <config>
+            <oneShot>true</oneShot>
+            <useTimelapse>false</useTimelapse>
+            <createTimestamp>true</createTimestamp>
+        </config>
+    </extension>
+
 </plugin>

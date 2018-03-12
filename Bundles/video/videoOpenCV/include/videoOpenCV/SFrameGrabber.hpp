@@ -93,14 +93,6 @@ public:
     /// Destructor. Do nothing.
     VIDEOOPENCV_API virtual ~SFrameGrabber() noexcept;
 
-    /**
-     * @name Slots API
-     * @{
-     */
-    VIDEOOPENCV_API static const ::fwCom::Slots::SlotKeyType s_NEXT_IMAGE_SLOT;
-    VIDEOOPENCV_API static const ::fwCom::Slots::SlotKeyType s_PREVIOUS_IMAGE_SLOT;
-    ///@}
-
 protected:
 
     /// Initialize the layout and the camera.
@@ -131,10 +123,10 @@ protected:
     virtual void setPosition(int64_t position) override;
 
     /// SLOT : read the next image (only in file mode, and if m_oneShot is enabled)
-    void nextImage();
+    virtual void nextImage() override;
 
     /// SLOT : read the previous image (only in file mode, and if m_oneShot is enabled)
-    void previousImage();
+    virtual void previousImage() override;
 
 private:
 

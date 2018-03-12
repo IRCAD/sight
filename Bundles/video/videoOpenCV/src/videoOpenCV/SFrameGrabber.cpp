@@ -36,9 +36,6 @@ namespace videoOpenCV
 
 static const ::fwServices::IService::KeyType s_FRAMETL = "frameTL";
 
-const ::fwCom::Slots::SlotKeyType SFrameGrabber::s_NEXT_IMAGE_SLOT     = "nextImage";
-const ::fwCom::Slots::SlotKeyType SFrameGrabber::s_PREVIOUS_IMAGE_SLOT = "previousImage";
-
 // -----------------------------------------------------------------------------
 
 SFrameGrabber::SFrameGrabber() noexcept :
@@ -52,8 +49,6 @@ SFrameGrabber::SFrameGrabber() noexcept :
     m_isPaused(false)
 {
     m_worker = ::fwThread::Worker::New();
-    newSlot(s_NEXT_IMAGE_SLOT, &SFrameGrabber::nextImage, this);
-    newSlot(s_PREVIOUS_IMAGE_SLOT, &SFrameGrabber::previousImage, this);
 }
 
 // -----------------------------------------------------------------------------

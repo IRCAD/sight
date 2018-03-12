@@ -109,7 +109,7 @@ void SGrabberProxy::configuring()
             const std::string configId = itSelection->second.get<std::string>("<xmlattr>.config", "");
             if(!configId.empty())
             {
-                m_serviceToConfig[service] = configId;
+                m_serviceToConfig[service].push_back(configId);
                 SLM_DEBUG( "add config '" + configId + "' for service '" + service + "'");
             }
         }
@@ -120,7 +120,7 @@ void SGrabberProxy::configuring()
             const std::string service  = itCfg->second.get<std::string>("<xmlattr>.service");
             const std::string configId = itCfg->second.get<std::string>("<xmlattr>.id");
 
-            m_serviceToConfig[service] = configId;
+            m_serviceToConfig[service].push_back(configId);
             SLM_DEBUG( "add config '" + configId + "' for service '" + service + "'");
         }
 
@@ -142,7 +142,8 @@ void SGrabberProxy::startCamera()
     {
         if(m_grabberImpl.empty())
         {
-            const auto srvFactory = ::fwServices::registry::ServiceFactory::getDefault();
+            const auto srvFactory       = ::fwServices::registry::ServiceFactory::getDefault();
+            const auto srvConfigFactory = ::fwServices::registry::ServiceConfig::getDefault();
 
             // We select all RGBD grabbers. They should be capable to output a single color frame
             auto grabbersImpl = srvFactory->getImplementationIdFromObjectAndType("::arData::FrameTL",
@@ -150,6 +151,18 @@ void SGrabberProxy::startCamera()
 
             auto rgbGrabbersImpl = srvFactory->getImplementationIdFromObjectAndType("::arData::FrameTL",
                                                                                     "::arServices::IGrabber");
+
+            if(m_serviceToConfig.empty() && m_selectedServices.empty())
+            {
+                for(const auto& impl : rgbGrabbersImpl)
+                {
+                    const auto configs   = srvConfigFactory->getAllConfigForService(impl, true);
+                    auto& serviceConfigs = m_serviceToConfig[impl];
+                    serviceConfigs.push_back(""); // Add the empty config.
+                    serviceConfigs.insert(serviceConfigs.end(), configs.begin(), configs.end());
+                }
+            }
+
             std::move(rgbGrabbersImpl.begin(), rgbGrabbersImpl.end(), std::back_inserter(grabbersImpl));
 
             ::arData::Camera::SourceType sourceType = ::arData::Camera::UNKNOWN;
@@ -288,13 +301,32 @@ void SGrabberProxy::startCamera()
 
             if(availableExtensionsSelector.size() > 1)
             {
-                std::map<std::string, std::string> descToExtension;
+                std::map<std::string, std::pair<std::string, std::string> > descToExtension;
                 std::vector<std::string> descriptions;
+
+                const auto& srvConfigRegistry = ::fwServices::registry::ServiceConfig::getDefault();
                 for(const auto& extension : availableExtensionsSelector)
                 {
+                    // Add the default config-less grabber.
                     const auto desc = srvFactory->getServiceDescription(extension);
-                    descToExtension[desc] = extension;
+                    descToExtension[desc] = std::make_pair(extension, "");
                     descriptions.push_back(desc);
+
+                    const auto configsIt = m_serviceToConfig.find(extension);
+
+                    if(configsIt != m_serviceToConfig.end())
+                    {
+                        for(const auto& config : configsIt->second)
+                        {
+                            if(!config.empty())
+                            {
+                                // Store all (grabber, config) pairs.
+                                const std::string& configDesc = srvConfigRegistry->getConfigDesc(config);
+                                descToExtension[configDesc] = std::make_pair(extension, config);
+                                descriptions.push_back(configDesc);
+                            }
+                        }
+                    }
                 }
                 ::fwGui::dialog::SelectorDialog::sptr selector = ::fwGui::dialog::SelectorDialog::New();
 
@@ -302,7 +334,7 @@ void SGrabberProxy::startCamera()
                 selector->setSelections(descriptions);
 
                 const auto selectedDesc = selector->show();
-                m_grabberImpl = descToExtension[selectedDesc];
+                std::tie(m_grabberImpl, m_grabberConfig) = descToExtension[selectedDesc];
             }
             else if( availableExtensionsSelector.size() == 1)
             {
@@ -375,17 +407,16 @@ void SGrabberProxy::startCamera()
                     ++inputTLCount;
                 }
 
-                ::fwRuntime::ConfigurationElement::csptr srvCfg;
-                if ( m_serviceToConfig.find( m_grabberImpl ) != m_serviceToConfig.end() )
+                if(!m_grabberConfig.empty())
                 {
                     const auto& srvConfigRegistry = ::fwServices::registry::ServiceConfig::getDefault();
-                    srvCfg = srvConfigRegistry->getServiceConfig(m_serviceToConfig[m_grabberImpl], m_grabberImpl );
-                    SLM_ASSERT("No service configuration called '" + m_serviceToConfig[m_grabberImpl] + "' was found for "
-                               "service type '" + m_grabberImpl + "'",
-                               srvCfg );
+
+                    ::fwRuntime::ConfigurationElement::csptr srvCfg =
+                        srvConfigRegistry->getServiceConfig(m_grabberConfig, m_grabberImpl);
                     srv->setConfiguration( ::fwRuntime::ConfigurationElement::constCast(srvCfg) );
                     srv->configure();
                 }
+
                 srv->setWorker(m_associatedWorker);
                 srv->start();
 
@@ -453,6 +484,32 @@ void SGrabberProxy::setPosition(std::int64_t position)
         if(srv != nullptr)
         {
             srv->setPosition(position);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void SGrabberProxy::previousImage()
+{
+    for(auto& srv : m_services)
+    {
+        if(srv != nullptr)
+        {
+            srv->previousImage();
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void SGrabberProxy::nextImage()
+{
+    for(auto& srv : m_services)
+    {
+        if(srv != nullptr)
+        {
+            srv->nextImage();
         }
     }
 }

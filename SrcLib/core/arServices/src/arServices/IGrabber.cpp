@@ -27,6 +27,8 @@ const ::fwCom::Slots::SlotKeyType IGrabber::s_STOP_CAMERA_SLOT        = "stopCam
 const ::fwCom::Slots::SlotKeyType IGrabber::s_PAUSE_CAMERA_SLOT       = "pauseCamera";
 const ::fwCom::Slots::SlotKeyType IGrabber::s_LOOP_VIDEO_SLOT         = "loopVideo";
 const ::fwCom::Slots::SlotKeyType IGrabber::s_SET_POSITION_VIDEO_SLOT = "setPositionVideo";
+const ::fwCom::Slots::SlotKeyType IGrabber::s_PREVIOUS_IMAGE_SLOT     = "previousImage";
+const ::fwCom::Slots::SlotKeyType IGrabber::s_NEXT_IMAGE_SLOT         = "nextImage";
 
 const ::fwServices::IService::KeyType IGrabber::s_CAMERA_INPUT  = "camera";
 const ::fwServices::IService::KeyType IGrabber::s_FRAMETL_INOUT = "frameTL";
@@ -47,7 +49,8 @@ IGrabber::IGrabber() noexcept
     newSlot( s_PAUSE_CAMERA_SLOT, &IGrabber::pauseCamera, this );
     newSlot( s_LOOP_VIDEO_SLOT, &IGrabber::toggleLoopMode, this );
     newSlot( s_SET_POSITION_VIDEO_SLOT, &IGrabber::setPosition, this );
-
+    newSlot( s_PREVIOUS_IMAGE_SLOT, &IGrabber::previousImage, this);
+    newSlot(s_NEXT_IMAGE_SLOT, &IGrabber::nextImage, this);
 }
 
 // ----------------------------------------------------------------------------
@@ -55,6 +58,20 @@ IGrabber::IGrabber() noexcept
 IGrabber::~IGrabber() noexcept
 {
 
+}
+
+// ----------------------------------------------------------------------------
+
+void IGrabber::previousImage()
+{
+    SLM_WARN("Frame by frame mode not implemented for this grabber type.");
+}
+
+// ----------------------------------------------------------------------------
+
+void IGrabber::nextImage()
+{
+    SLM_WARN("Frame by frame mode not implemented for this grabber type.");
 }
 
 // ----------------------------------------------------------------------------
