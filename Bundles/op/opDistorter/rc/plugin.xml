@@ -1,0 +1,18 @@
+<plugin id="opDistorter" class="::opDistorter::Plugin"  version="@PROJECT_VERSION@" >
+
+    <library name="opDistorter" />
+
+     <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwServices::IController</type>
+        <service>::opDistorter::SUndistortImage</service>
+        <object>::fwData::Image</object>
+    </extension>
+    
+ 
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwServices::IController</type>
+        <service>::opDistorter::SDistortImage</service>
+        <object>::fwData::Image</object>
+    </extension>
+
+</plugin>
