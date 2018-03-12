@@ -11,6 +11,7 @@ set( DEPENDENCIES
     fwTools
     fwServices
     arData
+    cvIO
 )
 set( REQUIREMENTS )
 

@@ -17,6 +17,12 @@
 
 #include <fwServices/IController.hpp>
 
+#ifdef OPENCV_CUDA_SUPPORT
+#include <opencv2/cudawarping.hpp>
+#else
+#include <opencv2/core/mat.hpp>
+#endif // OPENCV_CUDA_SUPPORT
+
 namespace opDistorter
 {
 /**
@@ -111,6 +117,14 @@ private:
 
     /// Camera corresponding to the video.
     ::arData::Camera::csptr m_camera;
+
+#ifdef OPENCV_CUDA_SUPPORT
+    ::cv::cuda::GpuMat m_mapx;
+    ::cv::cuda::GpuMat m_mapy;
+#else
+    ::cv::Mat m_mapx;
+    ::cv::Mat m_mapy;
+#endif // OPENCV_CUDA_SUPPORT
 };
 
 } //namespace opDistorter
