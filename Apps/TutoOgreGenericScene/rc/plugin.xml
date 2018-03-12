@@ -72,8 +72,8 @@
             </service>
 
             <service uid="actionRenderToTexture" type="::gui::action::SStarter">
-                <start uid="offscreenScene" />
-                <start uid="meshOffscreenAdaptor" />
+                <start_only uid="offscreenScene" />
+                <start_only uid="meshOffscreenAdaptor" />
             </service>
 
             <service uid="actionQuit" type="::gui::action::SQuit" />
@@ -190,7 +190,7 @@
                 </scene>
             </service>
 
-            <service uid="meshOffscreenAdaptor" type="::visuOgreAdaptor::SMesh" >
+            <service uid="meshOffscreenAdaptor" type="::visuOgreAdaptor::SMesh" autoConnect="yes">
                 <inout key="mesh" uid="mesh" />
                 <config layer="default" />
             </service>

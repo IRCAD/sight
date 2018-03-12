@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017.
+ * FW4SPL - Copyright (C) IRCAD, 2017-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWRENDEROGRE_MESH_HPP__
-#define __FWRENDEROGRE_MESH_HPP__
+#pragma once
 
 #include "fwRenderOgre/config.hpp"
 #include "fwRenderOgre/Material.hpp"
@@ -55,9 +54,10 @@ public:
     FWRENDEROGRE_API void setVisible(bool _visible);
     FWRENDEROGRE_API void updateMesh(const ::fwData::Mesh::sptr& _mesh);
     FWRENDEROGRE_API void updateMesh(const ::fwData::PointList::csptr& _pointList);
-    FWRENDEROGRE_API std::vector<R2VBRenderable*> updateR2VB(const ::fwData::Mesh::sptr& _mesh,
-                                                             ::Ogre::SceneManager& _sceneMgr,
-                                                             const std::string& _materialName, bool _hasTexture);
+    FWRENDEROGRE_API std::pair<bool, std::vector<R2VBRenderable*> > updateR2VB(const ::fwData::Mesh::sptr& _mesh,
+                                                                               ::Ogre::SceneManager& _sceneMgr,
+                                                                               const std::string& _materialName,
+                                                                               bool _hasTexture);
 
     /// Updates the vertices position
     FWRENDEROGRE_API void updateVertices(const ::fwData::Mesh::csptr& _mesh);
@@ -139,5 +139,3 @@ inline void Mesh::setDynamicVertices(bool _isDynamic)
 //------------------------------------------------------------------------------
 
 } // namespace fwRenderOgre
-
-#endif // __FWRENDEROGRE_MESH_HPP__

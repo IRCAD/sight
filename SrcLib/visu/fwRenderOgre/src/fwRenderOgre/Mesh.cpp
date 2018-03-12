@@ -523,8 +523,9 @@ void Mesh::updateMesh(const ::fwData::PointList::csptr& _pointList)
 
 //------------------------------------------------------------------------------
 
-std::vector<R2VBRenderable*> Mesh::updateR2VB(const ::fwData::Mesh::sptr& _mesh, ::Ogre::SceneManager& _sceneMgr,
-                                              const std::string& _materialName, bool _hasTexture)
+std::pair<bool, std::vector<R2VBRenderable*> > Mesh::updateR2VB(const ::fwData::Mesh::sptr& _mesh,
+                                                                ::Ogre::SceneManager& _sceneMgr,
+                                                                const std::string& _materialName, bool _hasTexture)
 {
     //------------------------------------------
     // Render to vertex-buffer
@@ -534,6 +535,7 @@ std::vector<R2VBRenderable*> Mesh::updateR2VB(const ::fwData::Mesh::sptr& _mesh,
     // - Per-primitive color generation - either triangles, quads or tetrahedrons
     //------------------------------------------
     std::vector<R2VBRenderable*> r2vbRenderables;
+    bool add = true;
 
     const bool hasPrimitiveColor = (_mesh->getCellColorsArray() != nullptr);
     if( (m_subMeshes[::fwData::Mesh::QUAD] || m_subMeshes[::fwData::Mesh::TETRA]) || hasPrimitiveColor)
@@ -577,12 +579,29 @@ std::vector<R2VBRenderable*> Mesh::updateR2VB(const ::fwData::Mesh::sptr& _mesh,
 
             m_r2vbObject[cellType]->setOutputSettings(static_cast<unsigned int>(subMesh->indexData->indexCount),
                                                       m_hasPrimitiveColor || m_hasVertexColor,
-                                                      m_hasUV && _hasTexture);
+                                                      m_hasUV);
 
             r2vbRenderables.push_back(m_r2vbObject[cellType]);
         }
+        add = true;
     }
-    return r2vbRenderables;
+    else
+    {
+        // Clear if necessary
+        for(auto r2vbObject : m_r2vbObject)
+        {
+            r2vbRenderables.push_back(r2vbObject.second);
+        }
+        m_r2vbObject.clear();
+
+        if(m_r2vbEntity)
+        {
+            _sceneMgr.destroyEntity(m_r2vbEntity);
+            m_r2vbEntity = nullptr;
+        }
+        add = false;
+    }
+    return std::make_pair(add, r2vbRenderables);
 }
 
 //-----------------------------------------------------------------------------
@@ -982,6 +1001,7 @@ void Mesh::updateMaterial(Material* _material, bool _isR2VB) const
     _material->setMeshSize(bbox.getSize().length());
 
     _material->setHasMeshNormal(m_hasNormal);
+    _material->setHasUV(m_hasUV);
 
     // The r2vb pipeline outputs per-vertex color if we have per-primitive color
     // Thus for the rendering pipeline it is only viewed as per-vertex color

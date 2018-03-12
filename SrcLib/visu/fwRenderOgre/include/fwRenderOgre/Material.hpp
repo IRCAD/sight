@@ -50,8 +50,9 @@ public:
     FWRENDEROGRE_API void updateRGBAMode( ::fwData::Material::sptr _f4sMaterial );
 
     void setHasMeshNormal(bool _hasMeshNormal);
-    void setHasVertexColor(bool _hasMeshNormal);
-    void setHasPrimitiveColor(bool _hasMeshNormal, const std::string& _textureName);
+    void setHasUV(bool _hasUV);
+    void setHasVertexColor(bool _hasVertexColor);
+    void setHasPrimitiveColor(bool _hasPrimitiveColor, const std::string& _textureName);
     void setPrimitiveType(::fwData::Mesh::CellTypesEnum _type);
 
     /// Sets the size of the mesh. This is used either to adjust the size of normals or to expand billboards
@@ -79,6 +80,9 @@ private:
     /// Defines if the associated mesh has a normal layer
     bool m_hasMeshNormal { true };
 
+    /// Defines if the associated mesh has a a texture coordinates layer
+    bool m_hasUV { false };
+
     /// Defines if the associated mesh has a a per vertex color layer
     bool m_hasVertexColor { false };
 
@@ -103,6 +107,13 @@ private:
 inline void Material::setHasMeshNormal(bool _hasMeshNormal)
 {
     m_hasMeshNormal = _hasMeshNormal;
+}
+
+//------------------------------------------------------------------------------
+
+inline void Material::setHasUV(bool _hasUV)
+{
+    m_hasUV = _hasUV;
 }
 
 //------------------------------------------------------------------------------

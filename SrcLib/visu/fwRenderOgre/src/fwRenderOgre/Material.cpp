@@ -206,12 +206,18 @@ void Material::updatePolygonMode(int _polygonMode)
 
 void Material::updateShadingMode( int _shadingMode, int _numLights, bool _hasDiffuseTexture, bool _useTextureAlpha )
 {
+    const bool isR2VB = m_primitiveType != ::fwData::Mesh::TRIANGLE || m_hasPrimitiveColor;
+
+    // If we have UVs with R2VB, then for the sake of simplicity we generate UVs whatever the material is
+    // Otherwise we would have to update the whole R2VB pipeline each time a texture is set/unset
+    const bool needDiffuseTexture = isR2VB ? m_hasUV : m_hasUV && _hasDiffuseTexture;
+
     const ::fwData::Material::ShadingType mode = static_cast< ::fwData::Material::ShadingType >(_shadingMode);
 
-    const ::Ogre::String permutation = ::fwRenderOgre::helper::Shading::getPermutation(mode, _hasDiffuseTexture,
+    const ::Ogre::String permutation = ::fwRenderOgre::helper::Shading::getPermutation(mode, needDiffuseTexture,
                                                                                        m_hasVertexColor);
     const ::Ogre::String r2vbGSName = ::fwRenderOgre::helper::Shading::getR2VBGeometryProgramName(m_primitiveType,
-                                                                                                  _hasDiffuseTexture,
+                                                                                                  needDiffuseTexture,
                                                                                                   m_hasVertexColor,
                                                                                                   m_hasPrimitiveColor);
 
@@ -233,7 +239,7 @@ void Material::updateShadingMode( int _shadingMode, int _numLights, bool _hasDif
                 continue;
             }
 
-            if(m_primitiveType != ::fwData::Mesh::TRIANGLE || m_hasPrimitiveColor)
+            if(isR2VB)
             {
                 // We need a geometry shader (primitive generation and per-primitive color)
                 // and thus we rely on the render to vertex buffer pipeline
@@ -295,7 +301,7 @@ void Material::updateShadingMode( int _shadingMode, int _numLights, bool _hasDif
                     const bool colorPass = ::fwRenderOgre::helper::Shading::isColorTechnique(*tech);
 
                     // Updates the u_hasTextureAlpha flag uniform according to the configuration of the texture adaptor
-                    if(_hasDiffuseTexture && colorPass)
+                    if(needDiffuseTexture && colorPass)
                     {
                         int useTextureAlpha = static_cast<int>(_useTextureAlpha);
                         ogrePass->getFragmentProgramParameters()->setNamedConstant("u_useTextureAlpha",
