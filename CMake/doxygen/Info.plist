@@ -7,14 +7,15 @@
 	<key>CFBundleName</key>
 	<string>FW4SPL</string>
 	<key>DocSetPlatformFamily</key>
-	<string></string>
+	<string>f4s</string>
 	<key>isDashDocset</key>
 	<true/>
 	<key>DashDocSetFamily</key>
-	<string>dashtoc</string>
+	<string>doxy</string>
 	<key>dashIndexFilePath</key>
 	<string>index.html</string>
-	<key>isJavaScriptEnabled</key><true/>
+    <key>isJavaScriptEnabled</key>
+    <true/>
 	<key>DashDocSetFallbackURL</key>
 	<string>https://rawgit.com/fw4spl-org/fw4spl-dox/master/index.html</string>
 </dict>
