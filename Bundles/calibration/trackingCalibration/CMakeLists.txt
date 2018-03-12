@@ -1,7 +1,7 @@
 fwLoadProperties()
 
-find_package(Eigen REQUIRED)
-find_package(OpenCV REQUIRED)
+find_package(OpenCV QUIET REQUIRED)
+find_package(Eigen QUIET REQUIRED)
 
 fwForwardInclude(
     ${EIGEN3_INCLUDE_DIR}

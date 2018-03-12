@@ -3,7 +3,7 @@
 # - PCL_FOUND
 # - PCL_INCLUDE_DIRS
 # - PCL_LIBRARIES
-find_package(PCL)
+find_package(PCL QUIET)
 
 set(PCL_FOUND ${PCL_FOUND} PARENT_SCOPE)
 set(PCL_INCLUDE_DIRS ${PCL_INCLUDE_DIRS} PARENT_SCOPE)
@@ -18,5 +18,5 @@ macro(fwQuickFindPCL)
 
     # This is necessary for now to run this, at least on Linux, in order to resolve the version number of the libraries,
     # .i.e from -lvtksys to -lvtksys7.1
-    find_package(VTK)
+    find_package(VTK QUIET)
 endmacro()
