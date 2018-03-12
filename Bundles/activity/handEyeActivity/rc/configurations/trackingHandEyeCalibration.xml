@@ -724,7 +724,7 @@
         </connect>
 
         <connect>
-            <signal>chessboardReprojection/reprojectionComputed</signal>
+            <signal>chessboardReprojection/errorComputed</signal>
             <slot>reprojectionLabel/setDoubleParameter</slot>
         </connect>
 

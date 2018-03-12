@@ -35,18 +35,18 @@ static const ::fwServices::IService::KeyType s_TRACKER_MATRIX_INPUT      = "trac
 static const ::fwServices::IService::KeyType s_REPROJECTED_CHESSBOARD_INOUT = "reprojectedChessboard";
 
 static const ::fwCom::Slots::SlotKeyType s_UPDATE_CHESSBOARD_SIZE_SLOT = "updateChessboardSize";
-static const ::fwCom::Slots::SlotKeyType s_SET_MOVING_CAMERA           = "setMovingCamera";
+static const ::fwCom::Slots::SlotKeyType s_SET_MOVING_CAMERA_SLOT      = "setMovingCamera";
 
-static const ::fwCom::Signals::SignalKeyType s_REPROJECTION_COMPUTED_SIGNAL = "reprojectionComputed";
+static const ::fwCom::Signals::SignalKeyType s_ERROR_COMPUTED_SIGNAL = "errorComputed";
 
 //------------------------------------------------------------------------------
 
 SChessboardReprojection::SChessboardReprojection() noexcept
 {
     newSlot(s_UPDATE_CHESSBOARD_SIZE_SLOT, &SChessboardReprojection::updateChessboardSize, this);
-    newSlot(s_SET_MOVING_CAMERA, &SChessboardReprojection::setMovingCamera, this);
+    newSlot(s_SET_MOVING_CAMERA_SLOT, &SChessboardReprojection::setMovingCamera, this);
 
-    newSignal< ErrorComputedSignalType >(s_REPROJECTION_COMPUTED_SIGNAL);
+    newSignal< ErrorComputedSignalType >(s_ERROR_COMPUTED_SIGNAL);
 }
 
 //------------------------------------------------------------------------------
@@ -136,7 +136,7 @@ void SChessboardReprojection::updating()
         ::cvIO::PointList::copyFromCv(projectedPoints, outputPl);
 
         const double error = meanDistance(cvDetected, projectedPoints);
-        this->signal<ErrorComputedSignalType>(s_REPROJECTION_COMPUTED_SIGNAL)->asyncEmit(error);
+        this->signal<ErrorComputedSignalType>(s_ERROR_COMPUTED_SIGNAL)->asyncEmit(error);
     }
     else
     {
@@ -183,8 +183,8 @@ double SChessboardReprojection::meanDistance(const std::vector< ::cv::Point2d >&
     // Sum of distances.
     for(size_t i = 0; i < _detected.size(); ++i)
     {
-        ::cv::Vec2d v = ::cv::Vec2d(_detected[i]) - ::cv::Vec2d(_reprojected[i]);
-        res          += ::cv::norm(v, ::cv::NORM_L2);
+        const ::cv::Vec2d v = ::cv::Vec2d(_detected[i]) - ::cv::Vec2d(_reprojected[i]);
+        res += ::cv::norm(v, ::cv::NORM_L2);
     }
 
     // Return the mean distance difference.

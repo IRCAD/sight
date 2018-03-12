@@ -88,7 +88,7 @@ protected:
 private:
 
     /// Slot: update point list visibility (true = visible)
-    VISUVTKARADAPTOR_API void updateVisibility ( bool isVisible );
+    void updateVisibility ( bool isVisible );
 
     /// Point list actor.
     vtkSmartPointer<vtkActor> m_actor;

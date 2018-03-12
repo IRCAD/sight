@@ -1,6 +1,6 @@
 fwLoadProperties()
 
-find_package(OpenCV QUIET REQUIRED)
+find_package(OpenCV QUIET REQUIRED core calib3d)
 find_package(Eigen QUIET REQUIRED)
 
 fwForwardInclude(
@@ -9,6 +9,5 @@ fwForwardInclude(
 )
 
 fwLink(
-    opencv_core
-    opencv_calib3d
+    ${OpenCV_LIBS}
 )

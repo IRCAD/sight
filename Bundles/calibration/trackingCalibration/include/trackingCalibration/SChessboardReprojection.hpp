@@ -15,10 +15,11 @@
 namespace trackingCalibration
 {
 /**
- * @brief
+ * @brief Projects the chessboard model's on the camera's image using the hand-eye and
+ * camera calibrations. Computes the mean distance from the detected chessboard.
  *
  * @section Signals Signals
- * - \b reprojectionComputed(double): sends the reprojection error.
+ * - \b errorComputed(double): sends the reprojection error.
  *
  * @section Slots Slots
  * - \b updateChessboardSize(): updates the chessboard model from the preferences.
