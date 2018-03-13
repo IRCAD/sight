@@ -4,8 +4,9 @@ set( VERSION 0.1 )
 set( TYPE BUNDLE )
 set( DEPENDENCIES  )
 
-set( REQUIREMENTS 
+set( REQUIREMENTS
         2DVisualizationActivity
+        qtSceneConfig
         dataReg
         servicesReg
         gui
@@ -20,4 +21,3 @@ set( REQUIREMENTS
         scene2D
         media
         )
-

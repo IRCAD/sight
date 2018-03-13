@@ -1,7 +1,8 @@
 <plugin id="imageConfig" version="@PROJECT_VERSION@" >
 
-    <xi:include href="configurations/ImageManager.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
-    <xi:include href="configurations/TransferFunctionWidget.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <requirement id="dataReg" />
+    <requirement id="servicesReg" />
+
     <xi:include href="configurations/TransferFunctionWithNegatoEditor.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
-        
+
 </plugin>

@@ -19,5 +19,6 @@ set( REQUIREMENTS
     uiReconstructionQt
     uiMedDataQt
     media
+    dataManagerConfig
     2DVisualizationActivity
 )
