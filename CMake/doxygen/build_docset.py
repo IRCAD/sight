@@ -16,10 +16,11 @@ struct_file_re    = re.compile('struct([a-zA-Z_][a-zA-Z0-9_]*)_1_1([a-zA-Z_][a-z
 struct_re         = re.compile('fw4spl: (.+) Struct Reference')
 namespace_file_re = re.compile('namespace.+\.html')
 namespace_re      = re.compile('fw4spl: ([a-zA-Z_][a-zA-Z0-9_:]*) Namespace Reference')
-srv_re            = re.compile('fw4spl: ([a-zA-Z_][a-zA-Z0-9_]*)::(S[A-Z][a-zA-Z0-9_]*) Class Reference')
-obj_re            = re.compile('fw4spl: ([a-zA-Z_][a-zA-Z0-9_]*)::([A-Z][a-zA-Z0-9_]*) Class Reference')
-iface_re          = re.compile('fw4spl: ([a-zA-Z_][a-zA-Z0-9_]*)::(I[A-Z][a-zA-Z0-9_]*|IService) Class Reference')
-except_re         = re.compile('fw4spl: ([a-zA-Z_][a-zA-Z0-9_]*)::([A-Z][a-zA-Z0-9_]*) Struct Reference')
+srv_re            = re.compile('fw4spl: ([a-zA-Z_][a-zA-Z0-9_]*::(?:[a-zA-Z_][a-zA-Z0-9_]*::)*(S[A-Z0-9][a-zA-Z0-9_]*)) Class Reference')
+bad_srv_re        = re.compile('fw4spl: ([a-zA-Z_][a-zA-Z0-9_]*::(?:[a-zA-Z_][a-zA-Z0-9_]*::)*([A-Z0-9][a-zA-Z0-9_]*)) Class Reference')
+obj_re            = re.compile('fw4spl: ([a-zA-Z_][a-zA-Z0-9_]*::(?:[a-zA-Z_][a-zA-Z0-9_]*::)*([A-Z0-9][a-zA-Z0-9_]*)) Class Reference')
+iface_re          = re.compile('fw4spl: ([a-zA-Z_][a-zA-Z0-9_]*::(?:[a-zA-Z_][a-zA-Z0-9_]*::)*(I[A-Z0-9][a-zA-Z0-9_]*|IService)) Class Reference')
+except_re         = re.compile('fw4spl: ([a-zA-Z_][a-zA-Z0-9_]*::(?:[a-zA-Z_][a-zA-Z0-9_]*::)*([A-Z0-9][a-zA-Z0-9_]*)) Struct Reference')
 
 # Regexes of the files to skip
 file_skip_re = [
@@ -75,6 +76,7 @@ def parse_file(f):
     # name, and ignore files that we know we don't care about. This script currently looks for files containing classes
     # or structs.
     entries = list()
+    # Some files are of no interest to us and can be skipped
     if any(map(lambda regexp: regexp.match(f), file_skip_re)):
         return entries
     try:
@@ -88,33 +90,42 @@ def parse_file(f):
             title = soup.title.get_text()
             match = srv_re.search(title)
             if match:
-                bundle = match.group(1)
+                path = match.group(1)
                 srv = match.group(2)
-                return (bundle + '::' + srv, "Service", f)
+                return (path, "Service", f)
+
+        def is_bad_service(f, soup):
+            title = soup.title.get_text()
+            match = bad_srv_re.search(title)
+            if match:
+                path = match.group(1)
+                srv = match.group(2)
+                print("Warning: service {} has non compliant name (no S prefix)".format(srv))
+                return (path, "Service", f)
 
         def is_object(f, soup):
             title = soup.title.get_text()
             match = obj_re.search(title)
             if match:
-                bundle = match.group(1)
+                path = match.group(1)
                 obj = match.group(2)
-                return (bundle + '::' + obj, "Object", f)
+                return (path, "Object", f)
 
         def is_interface(f, soup):
             title = soup.title.get_text()
             match = iface_re.search(title)
             if match:
-                bundle = match.group(1)
+                path = match.group(1)
                 iface = match.group(2)
-                return (bundle + '::' + iface, "Interface", f)
+                return (path, "Interface", f)
 
         def is_exception(f, soup):
             title = soup.title.get_text()
             match = except_re.search(title)
             if match:
-                bundle = match.group(1)
+                path = match.group(1)
                 exception = match.group(2)
-                return (bundle + '::' + exception, "Exception", f)
+                return (path, "Exception", f)
 
         def file_class(f, soup):
             title = soup.title.get_text()
@@ -154,7 +165,11 @@ def parse_file(f):
                     if triple is not None:
                         entries.append(triple)
                     else:
-                        print("Warning: unexepected behaviour for class {} while parsing file {}".format(class_name, f))
+                        triple = is_bad_service(f, soup)
+                        if triple is not None:
+                            entries.append(triple)
+                        else:
+                            print("Warning: unexepected behaviour for class {} while parsing file {}".format(class_name, f))
             elif class_name == "fwData::Object":
                 # Special case, Object is not an actual data.
                 entries.append((class_name, "Class", f))
