@@ -1,6 +1,8 @@
 #!/bin/python3
-import bs4
-from enum import Enum
+"""
+Generate a dash docset from a doxygen documentation.
+"""
+
 import json
 import os
 from pathlib import Path
@@ -9,23 +11,28 @@ import shutil
 import sqlite3
 import sys
 
+import bs4
+
+CFG = dict()
+REPO_NAMES = dict()
+
 # Global regexes we don't want to recompile every single time we parse a file
-class_file_re     = re.compile('class([a-zA-Z_][a-zA-Z0-9_]*)_1_1([a-zA-Z_][a-zA-Z0-9_]*)\.html')
-class_re          = re.compile('fw4spl: (.+) Class Reference')
-struct_file_re    = re.compile('struct([a-zA-Z_][a-zA-Z0-9_]*)_1_1([a-zA-Z_][a-zA-Z0-9_]*)\.html')
-struct_re         = re.compile('fw4spl: (.+) Struct Reference')
-namespace_file_re = re.compile('namespace.+\.html')
-namespace_re      = re.compile('fw4spl: ([a-zA-Z_][a-zA-Z0-9_:]*) Namespace Reference')
-srv_re            = re.compile('fw4spl: ([a-zA-Z_][a-zA-Z0-9_]*::(?:[a-zA-Z_][a-zA-Z0-9_]*::)*(S[A-Z0-9][a-zA-Z0-9_]*)) Class Reference')
-bad_srv_re        = re.compile('fw4spl: ([a-zA-Z_][a-zA-Z0-9_]*::(?:[a-zA-Z_][a-zA-Z0-9_]*::)*([A-Z0-9][a-zA-Z0-9_]*)) Class Reference')
-obj_re            = re.compile('fw4spl: ([a-zA-Z_][a-zA-Z0-9_]*::(?:[a-zA-Z_][a-zA-Z0-9_]*::)*([A-Z0-9][a-zA-Z0-9_]*)) Class Reference')
-iface_re          = re.compile('fw4spl: ([a-zA-Z_][a-zA-Z0-9_]*::(?:[a-zA-Z_][a-zA-Z0-9_]*::)*(I[A-Z0-9][a-zA-Z0-9_]*|IService)) Class Reference')
-except_re         = re.compile('fw4spl: ([a-zA-Z_][a-zA-Z0-9_]*::(?:[a-zA-Z_][a-zA-Z0-9_]*::)*([A-Z0-9][a-zA-Z0-9_]*)) Struct Reference')
+CLASS_FILE_RE = re.compile(r'class([a-zA-Z_][a-zA-Z0-9_]*)_1_1([a-zA-Z_][a-zA-Z0-9_]*)\.html')
+CLASS_RE = re.compile('fw4spl: (.+) Class Reference')
+STRUCT_FILE_RE = re.compile(r'struct([a-zA-Z_][a-zA-Z0-9_]*)_1_1([a-zA-Z_][a-zA-Z0-9_]*)\.html')
+STRUCT_RE = re.compile('fw4spl: (.+) Struct Reference')
+NAMESPACE_FILE_RE = re.compile(r'namespace.+\.html')
+NAMESPACE_RE = re.compile('fw4spl: ([a-zA-Z_][a-zA-Z0-9_:]*) Namespace Reference')
+SRV_RE = re.compile('fw4spl: ([a-zA-Z_][a-zA-Z0-9_]*::(?:[a-zA-Z_][a-zA-Z0-9_]*::)*(S[A-Z0-9][a-zA-Z0-9_]*)) Class Reference')
+BAD__SRV_RE = re.compile('fw4spl: ([a-zA-Z_][a-zA-Z0-9_]*::(?:[a-zA-Z_][a-zA-Z0-9_]*::)*([A-Z0-9][a-zA-Z0-9_]*)) Class Reference')
+OBJ_RE = re.compile('fw4spl: ([a-zA-Z_][a-zA-Z0-9_]*::(?:[a-zA-Z_][a-zA-Z0-9_]*::)*([A-Z0-9][a-zA-Z0-9_]*)) Class Reference')
+IFACE_RE = re.compile('fw4spl: ([a-zA-Z_][a-zA-Z0-9_]*::(?:[a-zA-Z_][a-zA-Z0-9_]*::)*(I[A-Z0-9][a-zA-Z0-9_]*|IService)) Class Reference')
+EXCEPT_RE = re.compile('fw4spl: ([a-zA-Z_][a-zA-Z0-9_]*::(?:[a-zA-Z_][a-zA-Z0-9_]*::)*([A-Z0-9][a-zA-Z0-9_]*)) Struct Reference')
 
 # Regexes of the files to skip
-file_skip_re = [
+FILE_SKIP_RE = [
     re.compile('pages.html'),
-    re.compile('dir_.+\.html'),
+    re.compile(r'dir_.+\.html'),
     re.compile('.+_source.html')
 ]
 
@@ -41,23 +48,23 @@ def bootstrap_docset():
     db = Path('./fw4spl.docset/Contents/Resources/docSet.dsidx')
     if db.exists():
         os.remove(str(db))
-    conn = sqlite3.connect(str(db))
-    cur = conn.cursor()
+    conn_ = sqlite3.connect(str(db))
+    cur = conn_.cursor()
     cur.execute('CREATE TABLE searchIndex(id INTEGER PRIMARY KEY, name TEXT, type TEXT, path TEXT);')
     cur.execute('CREATE UNIQUE INDEX anchor ON searchIndex (name, type, path);')
-    conn.commit()
-    return conn
+    conn_.commit()
+    return conn_
 
 def parse_json_config():
     """
     Parse the projects.json configuration file. It is expected to be present in the working directory.
     """
     try:
-        cfg = json.loads(open('./projects.json', encoding="utf8").read())
+        cfg_ = json.loads(open('./projects.json', encoding="utf8").read())
     except (OSError, json.JSONDecodeError) as err:
         print("Error loading configuration file: " + str(err))
-        cfg = None
-    return cfg
+        cfg_ = None
+    return cfg_
 
 def gather_sources():
     """
@@ -84,202 +91,205 @@ def parse_related_pages():
     return pages
 
 # TODO: strip the leading repository path from the HTML file to get rid of the ugly full paths ?
-def file_repo(f, f_soup):
+def file_repo(f_soup):
     """
     Return the name of the repository that a particular documentation file was generated from, or None if not possible.
     """
     # res = f_soup.select("div.contents ul li a [href$=_source.html]")
     # res = f_soup.select("ul li a[href$=_source.html]")
     lists = f_soup.find_all('ul')
-    if len(lists) > 0:
+    if lists:
         file_path = lists[-1].li.get_text()
-        path = Path(file_path)
-        for repo in cfg['repositories']:
-            candidates = [ repo for repo in cfg['repositories'] if file_path.startswith(repo) ]
-            if len(candidates) > 0:
+        for repo in CFG['repositories']:
+            candidates = [repo for repo in CFG['repositories'] if file_path.startswith(repo)]
+            if candidates:
                 res = max(candidates, key=len)
-                return repo_names[res]
+                return REPO_NAMES[res]
+    return None
 
-def parse_file(f):
+def parse_file(f_):
     """
     Parse a HTML file and return a (potentially empty) list of 3-tuples to add to the SQLite database.
     """
     # Doxygen names the documentation files in a friendly manner, which means we can guess what is inside from the file
     # name, and ignore files that we know we don't care about. This script currently looks for files containing classes
     # or structs.
-    entries = list()
+    new_entries = list()
     # Some files are of no interest to us and can be skipped
-    if any(map(lambda regexp: regexp.match(f), file_skip_re)):
-        return entries
+    if any(map(lambda regexp: regexp.match(f_), FILE_SKIP_RE)):
+        return new_entries
     try:
-        html = open(os.path.join('./html', f), encoding="utf8").read()
+        html = open(os.path.join('./html', f_), encoding="utf8").read()
         soup = bs4.BeautifulSoup(html, "html.parser")
         inherits_iservice = soup.find(class_='inherit_header pub_methods_classfwServices_1_1IService')
         inherits_object = soup.find(class_='inherit_header pub_methods_classfwData_1_1Object')
         inherits_exception = soup.find(class_='inherit_header pub_methods_classfwCore_1_1Exception')
 
-        def is_service(f, soup):
+        def is_service(soup):
             title = soup.title.get_text()
-            match = srv_re.search(title)
+            match = SRV_RE.search(title)
             if match:
                 path = match.group(1)
-                srv = match.group(2)
-                repo = file_repo(f, soup)
+                repo = file_repo(soup)
                 if repo is not None:
                     path = path + " ({})".format(repo)
-                return (path, "Service", f)
+                return (path, "Service", f_)
+            return None
 
-        def is_bad_service(f, soup):
+        def is_bad_service(soup):
             title = soup.title.get_text()
-            match = bad_srv_re.search(title)
+            match = BAD__SRV_RE.search(title)
             if match:
                 path = match.group(1)
                 srv = match.group(2)
-                repo = file_repo(f, soup)
+                repo = file_repo(soup)
                 if repo is not None:
                     path = path + " ({})".format(repo)
                 print("Warning: service {} has non compliant name (no S prefix)".format(srv))
-                return (path, "Service", f)
+                return (path, "Service", f_)
+            return None
 
-        def is_object(f, soup):
+        def is_object(soup):
             title = soup.title.get_text()
-            match = obj_re.search(title)
+            match = OBJ_RE.search(title)
             if match:
                 path = match.group(1)
-                obj = match.group(2)
-                repo = file_repo(f, soup)
+                repo = file_repo(soup)
                 if repo is not None:
                     path = path + " ({})".format(repo)
-                return (path, "Object", f)
+                return (path, "Object", f_)
+            return None
 
-        def is_interface(f, soup):
+        def is_interface(soup):
             title = soup.title.get_text()
-            match = iface_re.search(title)
+            match = IFACE_RE.search(title)
             if match:
                 path = match.group(1)
-                iface = match.group(2)
-                repo = file_repo(f, soup)
+                repo = file_repo(soup)
                 if repo is not None:
                     path = path + " ({})".format(repo)
-                return (path, "Interface", f)
+                return (path, "Interface", f_)
+            return None
 
-        def is_exception(f, soup):
+        def is_exception(soup):
             title = soup.title.get_text()
-            match = except_re.search(title)
+            match = EXCEPT_RE.search(title)
             if match:
                 path = match.group(1)
-                exception = match.group(2)
-                repo = file_repo(f, soup)
+                repo = file_repo(soup)
                 if repo is not None:
                     path = path + " ({})".format(repo)
-                return (path, "Exception", f)
+                return (path, "Exception", f_)
+            return None
 
-        def file_class(f, soup):
+        def file_class(soup):
             title = soup.title.get_text()
-            match = class_re.search(title)
+            match = CLASS_RE.search(title)
             if match:
                 class_ = match.group(1)
-                return (class_, "Class", f)
+                return (class_, "Class", f_)
+            return None
 
-        def file_struct(f, soup):
+        def file_struct(soup):
             title = soup.title.get_text()
-            match = struct_re.search(title)
+            match = STRUCT_RE.search(title)
             if match:
                 struct_ = match.group(1)
-                return (struct_, "Struct", f)
+                return (struct_, "Struct", f_)
+            return None
 
-        def file_namespace(f, soup):
+        def file_namespace(soup):
             title = soup.title.get_text()
-            match = namespace_re.search(title)
+            match = NAMESPACE_RE.search(title)
             if match:
                 namespace = match.group(1)
-                return (namespace, "Namespace", f)
+                return (namespace, "Namespace", f_)
+            return None
 
-        if class_file_re.match(f):
+        if CLASS_FILE_RE.match(f_):
             # We know the file contains a class, find what kind of class
-            class_triple = file_class(f, soup)
+            class_triple = file_class(soup)
             if class_triple is None:
-                return entries
+                return new_entries
             class_name = class_triple[0]
             if inherits_iservice:
                 # The class inherits IService, it can be a service or an interface
-                triple = is_interface(f, soup)
+                triple = is_interface(soup)
                 if triple is not None:
-                    entries.append(triple)
+                    new_entries.append(triple)
                 else:
                     # Not an interface, probably a service
-                    triple = is_service(f, soup)
+                    triple = is_service(soup)
                     if triple is not None:
-                        entries.append(triple)
+                        new_entries.append(triple)
                     else:
-                        triple = is_bad_service(f, soup)
+                        triple = is_bad_service(soup)
                         if triple is not None:
-                            entries.append(triple)
+                            new_entries.append(triple)
                         else:
-                            print("Warning: unexepected behaviour for class {} while parsing file {}".format(class_name, f))
+                            print("Warning: unexepected behaviour for class {} while parsing file {}".format(class_name, f_))
             elif class_name == "fwData::Object":
                 # Special case, Object is not an actual data.
-                entries.append((class_name, "Class", f))
+                new_entries.append((class_name, "Class", f_))
             elif inherits_object:
                 # Not a service and inherits fwData::Object, this class is probably a data.
-                triple = is_object(f, soup)
+                triple = is_object(soup)
                 if triple is not None:
-                    entries.append(triple)
+                    new_entries.append(triple)
             elif class_name == "fwCore::Exception":
                 # Special case for fwCore::Exception
-                entries.append((class_name, "Exception", f))
+                new_entries.append((class_name, "Exception", f_))
             elif inherits_exception:
                 # Inherits an exception type, this is probably an exception
                 # TODO: I'm pretty sure this won't catch all exceptions in the codebase
-                triple = is_exception(f, soup)
+                triple = is_exception(soup)
                 if triple is not None:
-                    entries.append(triple)
+                    new_entries.append(triple)
             else:
                 # Plain old class
-                entries.append(class_triple)
-        elif struct_file_re.match(f):
+                new_entries.append(class_triple)
+        elif STRUCT_FILE_RE.match(f_):
             # We know the file contains a struct, find what kind of struct
-            struct_triple = file_struct(f, soup)
+            struct_triple = file_struct(soup)
             if struct_triple is None:
-                return entries
-            struct_name = struct_triple[0]
-            entries.append(struct_triple)
+                return new_entries
+            new_entries.append(struct_triple)
             if inherits_exception:
                 # Inherits an exception type, this is probably an exception
                 # TODO: I'm pretty sure this won't catch all exceptions in the codebase
-                triple = is_exception(f, soup)
+                triple = is_exception(soup)
                 if triple is not None:
-                    entries.append(triple)
-        elif namespace_file_re.match(f):
+                    new_entries.append(triple)
+        elif NAMESPACE_FILE_RE.match(f_):
             # We know the file contains a namespace, find what kind of namespace (i.e. Bundle, Library, regular
             # namespace...)
-            namespace_triple = file_namespace(f, soup)
+            namespace_triple = file_namespace(soup)
             if namespace_triple is None:
-                return entries
+                return new_entries
             namespace_name = namespace_triple[0]
-            if namespace_name in cfg['srclibs']:
-                entries.append((namespace_name, "Library", f))
-            elif namespace_name in cfg['bundles']:
+            if namespace_name in CFG['srclibs']:
+                new_entries.append((namespace_name, "Library", f_))
+            elif namespace_name in CFG['bundles']:
                 # There is no 'Bundle' entry type, unfortunately. Component, Package or Module would be suitable
                 # replacements. I chose Package.
-                entries.append((namespace_name, "Package", f))
+                new_entries.append((namespace_name, "Package", f_))
             else:
-                entries.append(namespace_triple)
+                new_entries.append(namespace_triple)
     except UnicodeDecodeError:
-        print('The file ' + f + ' is not valid UTF-8')
+        print('The file ' + f_ + ' is not valid UTF-8')
     except FileNotFoundError:
         # Occurs for files in the search subdirectory, it's OK, we don't care about those
         pass
-    return entries
+    return new_entries
 
-def populate_db(conn, services):
-    cur = conn.cursor()
+def populate_db(conn_, services):
+    cur = conn_.cursor()
     for triple in services:
         try:
             cur.execute("INSERT OR IGNORE INTO searchIndex(name, type, path) VALUES (?, ?, ?);", triple)
         except ValueError:
             print("Error inserting " + str(triple))
-    conn.commit()
+    conn_.commit()
 
 def copy_files():
     try:
@@ -287,26 +297,27 @@ def copy_files():
     except shutil.Error as err:
         errors = err.args[0]
         print("Warning: some files were not copied correctly. The generated docset might be incomplete.")
-        for src, dst, why in errors:
+        for src, _, why in errors:
             print("File '" + src + "' was not copied correctly. Reason: " + why)
 
-if __name__ == '__main__':
-    global cfg
-    global repo_names
-    cfg = parse_json_config()
-    repo_names = { repo: Path(repo).parent.name if Path(repo).name == "src" else Path(repo).name for repo in cfg['repositories'] }
-    for r, n in repo_names.items():
-        print("Repository {} name is {}".format(r, n))
-    if cfg is None:
+def main():
+    global CFG
+    global REPO_NAMES
+    CFG = parse_json_config()
+    REPO_NAMES = {repo: Path(repo).parent.name if Path(repo).name == "src" else Path(repo).name for repo in CFG['repositories']}
+    if CFG is None:
         sys.exit(1)
     conn = bootstrap_docset()
     html_files = gather_sources()
     entries = list()
     for f in html_files:
-        new_entries = parse_file(f)
-        if len(new_entries) != 0:
-            entries += new_entries
+        f_entries = parse_file(f)
+        if f_entries:
+            entries += f_entries
     entries += parse_related_pages()
     populate_db(conn, entries)
     copy_files()
     conn.close()
+
+if __name__ == '__main__':
+    main()
