@@ -19,7 +19,7 @@ set( REQUIREMENTS
     media
     maths
     visuVTKQt
-    imageConfig
+    qtSceneConfig
     opItkRegistration
     opVTKSlicer
 )
