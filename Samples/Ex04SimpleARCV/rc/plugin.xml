@@ -510,16 +510,18 @@
                 <inout key="output" uid="inverseMat" />
             </service>
 
-            <service uid="undistorter" type="::opDistorter::SUndistortImage" worker="distortion">
+            <service uid="undistorter" type="::videoCalibration::SDistortion" worker="distortion">
                 <in key="camera" uid="camera" />
                 <in key="input" uid="rawVideoImage" autoConnect="yes" />
                 <inout key="output" uid="videoImage" />
+                <mode>undistort</mode>
            </service>
 
-            <service uid="distorter" type="::opDistorter::SDistortImage" worker="distortion">
+            <service uid="distorter" type="::videoCalibration::SDistortion" worker="distortion">
                 <in key="camera" uid="camera" />
                 <in key="input" uid="offscreen3DImage" autoConnect="yes" />
                 <inout key="output" uid="distortedVideoImage" />
+                <mode>distort</mode>
             </service>
 
             <!-- signal/slot connection -->

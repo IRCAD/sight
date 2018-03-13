@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include "opDistorter/config.hpp"
+#include "videoCalibration/config.hpp"
 
 #include <arData/Camera.hpp>
 
@@ -18,74 +18,77 @@
 #include <opencv2/core/mat.hpp>
 #endif // OPENCV_CUDA_SUPPORT
 
-namespace opDistorter
+namespace videoCalibration
 {
 
 /**
- * @brief   Distort an image as if it is viewed by a lens of a camera. We thus need a camera calibration.
+ * @brief   Distort or undistort an image according to camera intrinsics and distortion coefficients.
  *
  * @section Slots Slots
- * - \b changeState() : enabled/disabled the distort correction.
+ * - \b changeState() : enabled/disabled the distortion correction.
  *
  * @section XML XML Configuration
  *
  * @code{.xml}
-    <service type="::opDistorter::SDistortImage">
+    <service type="::videoCalibration::SDistortion">
         <in key="camera" uid="..." />
         <inout key="input" uid="..." />
         <inout key="output" uid="..." />
+        <mode>distort</mode>
     </service>
    @endcode
  * @subsection Input Input
  * - \b camera [::arData::Camera]: camera containing calibration information.
  * - \b input [::fwData::Image]: input image to distort.
  * @subsection In-Out In-Out
- * - \b output [::fwData::Image]: image distorted.
+ * - \b output [::fwData::Image]: output image.
+ * @subsection Configuration Configuration:
+ * - \b mode(optional) : "distort" or "undistort" the output image (default: "distort").
  */
-class OPDISTORTER_CLASS_API SDistortImage : public ::fwServices::IOperator
+class VIDEOCALIBRATION_CLASS_API SDistortion : public ::fwServices::IOperator
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SDistortImage)(::fwServices::IOperator) )
+    fwCoreServiceClassDefinitionsMacro( (SDistortion)(::fwServices::IOperator) )
 
     /**
      * @name Slots API
      * @{
      */
-    OPDISTORTER_API static const ::fwCom::Slots::SlotKeyType s_CHANGE_STATE_SLOT;
+    VIDEOCALIBRATION_API static const ::fwCom::Slots::SlotKeyType s_CHANGE_STATE_SLOT;
     typedef ::fwCom::Slot<void ()> ChangeStateSlotType;
     ///@}
 
     /// Constructor.
-    OPDISTORTER_API SDistortImage() noexcept;
+    VIDEOCALIBRATION_API SDistortion() noexcept;
 
     /// Destructor. Does nothing
-    OPDISTORTER_API virtual ~SDistortImage() noexcept;
+    VIDEOCALIBRATION_API virtual ~SDistortion() noexcept;
 
     /**
      * @brief Connect ::fwData::Image::s_MODIFIED_SIG to s_UPDATE_SLOT
      * and ::fwData::Image::s_BUFFER_MODIFIED_SIG to s_UPDATE_SLOT
      */
-    OPDISTORTER_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
+    VIDEOCALIBRATION_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
 protected:
 
     /// Does nothing
-    OPDISTORTER_API virtual void configuring() override;
+    VIDEOCALIBRATION_API virtual void configuring() override;
 
     /// Retrieve the camera.
-    OPDISTORTER_API virtual void starting() override;
+    VIDEOCALIBRATION_API virtual void starting() override;
 
     /// Do nothing.
-    OPDISTORTER_API virtual void stopping() override;
+    VIDEOCALIBRATION_API virtual void stopping() override;
 
     /// Distort the image.
-    OPDISTORTER_API virtual void updating() override;
+    VIDEOCALIBRATION_API virtual void updating() override;
 
 private:
 
-    /// Distort the video.
-    void distort();
+    /// Distort or undistort the video.
+    void remap();
 
     /// Slot: enable/disable the distort correction.
     void changeState();
@@ -93,8 +96,8 @@ private:
     /// True if the undistortion is enabled.
     bool m_isEnabled { false };
 
-    /// Camera corresponding to the video.
-    ::arData::Camera::csptr m_camera;
+    /// If true, distort the output image, otherwise we undistort it
+    bool m_distort { true };
 
 #if OPENCV_CUDA_SUPPORT
     ::cv::cuda::GpuMat m_mapx;
@@ -105,4 +108,4 @@ private:
 #endif // OPENCV_CUDA_SUPPORT
 };
 
-} // opDistorter
+} // videoCalibration

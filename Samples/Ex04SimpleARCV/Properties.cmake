@@ -20,7 +20,6 @@ set( REQUIREMENTS
     ioVTK
     uiPreferences
     uiTools
-    opDistorter
     maths
     preferences
     servicesReg

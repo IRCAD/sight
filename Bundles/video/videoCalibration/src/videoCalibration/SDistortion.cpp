@@ -4,7 +4,9 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "opDistorter/SUndistortImage.hpp"
+#include "videoCalibration/SDistortion.hpp"
+
+#include <arData/Camera.hpp>
 
 #include <cvIO/Camera.hpp>
 #include <cvIO/Image.hpp>
@@ -14,6 +16,8 @@
 
 #include <fwCore/Profiling.hpp>
 
+#include <fwData/Array.hpp>
+#include <fwData/Image.hpp>
 #include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
 
@@ -22,31 +26,31 @@
 
 #include <opencv2/imgproc.hpp>
 
-namespace opDistorter
+namespace videoCalibration
 {
 
-const ::fwCom::Slots::SlotKeyType SUndistortImage::s_CHANGE_STATE_SLOT = "changeState";
+const ::fwCom::Slots::SlotKeyType SDistortion::s_CHANGE_STATE_SLOT = "changeState";
 
 const ::fwServices::IService::KeyType s_CAMERA_INPUT = "camera";
 const ::fwServices::IService::KeyType s_IMAGE_INPUT  = "input";
 const ::fwServices::IService::KeyType s_IMAGE_INOUT  = "output";
 
-// ----------------------------------------------------------------------------
-
-SUndistortImage::SUndistortImage() noexcept
+//------------------------------------------------------------------------------
+SDistortion::SDistortion() noexcept :
+    m_isEnabled(false)
 {
-    newSlot(s_CHANGE_STATE_SLOT, &SUndistortImage::changeState, this);
+    newSlot(s_CHANGE_STATE_SLOT, &SDistortion::changeState, this);
+}
+
+//------------------------------------------------------------------------------
+
+SDistortion::~SDistortion() noexcept
+{
 }
 
 // ----------------------------------------------------------------------------
 
-SUndistortImage::~SUndistortImage() noexcept
-{
-}
-
-// ----------------------------------------------------------------------------
-
-fwServices::IService::KeyConnectionsMap SUndistortImage::getAutoConnections() const
+fwServices::IService::KeyConnectionsMap SDistortion::getAutoConnections() const
 {
     ::fwServices::IService::KeyConnectionsMap connections;
     connections.push( s_IMAGE_INPUT, ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT );
@@ -55,58 +59,110 @@ fwServices::IService::KeyConnectionsMap SUndistortImage::getAutoConnections() co
     return connections;
 }
 
-// ----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-void SUndistortImage::configuring()
+void SDistortion::configuring()
 {
+    const auto config = this->getConfigTree();
+
+    auto mode = config.get<std::string>("mode");
+    if(mode == "undistort")
+    {
+        m_distort = false;
+    }
+    else if(mode != "distort")
+    {
+        SLM_ERROR("Mode should be distort or undistort");
+    }
 }
 
-// ----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-void SUndistortImage::starting()
+void SDistortion::starting()
 {
-    m_camera = this->getInput< ::arData::Camera> (s_CAMERA_INPUT);
-    SLM_FATAL_IF("Object 'camera' is not found.", !m_camera);
+    auto camera = this->getInput< ::arData::Camera> (s_CAMERA_INPUT);
+    SLM_FATAL_IF("Object 'camera' is not found.", !camera);
 
     ::cv::Mat intrinsics;
     ::cv::Mat distCoefs;
     ::cv::Size size;
 
-    std::tie(intrinsics, size, distCoefs) = ::cvIO::Camera::copyToCv(m_camera);
+    std::tie(intrinsics, size, distCoefs) = ::cvIO::Camera::copyToCv(camera);
 
-    ::cv::Mat mx;
-    ::cv::Mat my;
-    ::cv::initUndistortRectifyMap(intrinsics, distCoefs, ::cv::Mat(), intrinsics, size, CV_32FC1, mx, my);
+    std::vector< ::cv::Mat> xyMaps(2);
 
-#ifdef OPENCV_CUDA_SUPPORT
-    m_mapx = ::cv::cuda::GpuMat(mx);
-    m_mapy = ::cv::cuda::GpuMat(my);
+    if(m_distort)
+    {
+        ::cv::Mat pixel_locations_src      = ::cv::Mat( size, CV_32FC2);
+        ::cv::Mat fractional_locations_dst = ::cv::Mat( size, CV_32FC2);
+
+        for (int i = 0; i < size.height; i++)
+        {
+            for (int j = 0; j < size.width; j++)
+            {
+                pixel_locations_src.at< ::cv::Point2f>(i, j) = ::cv::Point2f(j, i);
+            }
+            ::cv::undistortPoints(pixel_locations_src.row(i),
+                                  fractional_locations_dst.row(i),
+                                  intrinsics, distCoefs);
+        }
+
+        ::cv::Mat pixelLocations = ::cv::Mat( size, CV_32FC2);
+
+        // Output from undistortPoints is normalized point coordinates
+        const float fx = static_cast<float>(intrinsics.at<double>(0, 0));
+        const float fy = static_cast<float>(intrinsics.at<double>(1, 1));
+        const float cx = static_cast<float>(intrinsics.at<double>(0, 2));
+        const float cy = static_cast<float>(intrinsics.at<double>(1, 2));
+
+        for (int i = 0; i < size.height; i++)
+        {
+            for (int j = 0; j < size.width; j++)
+            {
+                const float x = fractional_locations_dst.at< ::cv::Point2f>(i, j).x*fx + cx;
+                const float y = fractional_locations_dst.at< ::cv::Point2f>(i, j).y*fy + cy;
+                pixelLocations.at< ::cv::Point2f>(i, j) = ::cv::Point2f(x, y);
+            }
+        }
+
+        ::cv::split(pixelLocations, xyMaps);
+    }
+    else
+    {
+        ::cv::initUndistortRectifyMap(intrinsics, distCoefs, ::cv::Mat(), intrinsics, size, CV_32FC1,
+                                      xyMaps[0], xyMaps[1]);
+    }
+
+#if OPENCV_CUDA_SUPPORT
+    m_mapx = ::cv::cuda::GpuMat(xyMaps[0]);
+    m_mapy = ::cv::cuda::GpuMat(xyMaps[1]);
 #else
-    m_mapx = mx;
-    m_mapy = my;
+    m_mapx = xyMaps[0];
+    m_mapy = xyMaps[1];
 #endif // OPENCV_CUDA_SUPPORT
-
 }
 
-// ----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-void SUndistortImage::stopping()
+void SDistortion::stopping()
 {
 }
 
-// ----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-void SUndistortImage::updating()
+void SDistortion::updating()
 {
     if (m_isEnabled)
     {
-        if (m_camera->getIsCalibrated())
+        ::arData::Camera::csptr camera = this->getInput< ::arData::Camera >(s_CAMERA_INPUT);
+        SLM_FATAL_IF("Object with id \"" + s_CAMERA_INPUT + "\" is not found.", !camera);
+        if (camera->getIsCalibrated())
         {
-            this->undistort();
+            this->remap();
         }
         else
         {
-            OSLM_WARN("Unable to undistort the image: " << m_camera->getID() << " is not calibrated.");
+            SLM_WARN("Unable to distort/undistort the image: camera '" + camera->getID() + "' is not calibrated.");
         }
     }
     else
@@ -128,11 +184,11 @@ void SUndistortImage::updating()
     }
 }
 
-// ----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-void SUndistortImage::undistort()
+void SDistortion::remap()
 {
-    FW_PROFILE_AVG("undistort", 5);
+    FW_PROFILE("distort");
     ::fwData::Image::sptr outputImage = this->getInOut< ::fwData::Image >( s_IMAGE_INOUT);
     SLM_FATAL_IF("Object 'output' is not found.", !outputImage);
 
@@ -227,10 +283,12 @@ void SUndistortImage::undistort()
 
 // ----------------------------------------------------------------------------
 
-void SUndistortImage::changeState()
+void SDistortion::changeState()
 {
     m_isEnabled = !m_isEnabled;
     this->updating();
 }
 
-}  // namespace opDistorter
+//------------------------------------------------------------------------------
+
+} // namespace videoCalibration
