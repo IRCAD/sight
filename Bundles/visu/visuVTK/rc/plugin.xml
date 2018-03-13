@@ -1,4 +1,4 @@
-<plugin id="visuVTK" class="visuVTK::Plugin" version="@PROJECT_VERSION@" >
+<plugin id="visuVTK" class="::visuVTK::Plugin" version="@PROJECT_VERSION@" >
 
     <library name="visuVTK" />
 
@@ -8,7 +8,6 @@
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwRender::IRender</type>
         <service>::fwRenderVTK::SRender</service>
-        <object>::fwData::Composite</object>
     </extension>
 
 </plugin>

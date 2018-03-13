@@ -1,8 +1,8 @@
 fwLoadProperties()
 
-find_package(CAMP REQUIRED)
+find_package(CAMP QUIET REQUIRED)
 if(NOT ANDROID)
-    find_package (Boost COMPONENTS log log_setup filesystem REQUIRED)
+    find_package(Boost QUIET COMPONENTS log log_setup filesystem REQUIRED)
 endif()
 
 fwForwardInclude(

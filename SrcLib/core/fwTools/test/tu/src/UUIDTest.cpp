@@ -1,17 +1,16 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "UUIDTest.hpp"
 
-#include <fwTools/UUID.hpp>
 #include <fwTools/Object.hpp>
-
-#include <fwTest/helper/Thread.hpp>
+#include <fwTools/UUID.hpp>
 
 #include <functional>
+#include <future>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwTools::ut::UUIDTest );
@@ -62,23 +61,19 @@ void UUIDTest::objectUUIDTest()
 
 void UUIDTest::conccurentAccessOnUUIDMapTest()
 {
-    const unsigned int nbThreads = 10;
-    std::vector< SPTR(::fwTest::helper::Thread) > threads;
-    for (int i = 0; i<nbThreads; ++i)
+    const auto fn = std::bind(&UUIDTest::runUUIDCreation, this);
+    std::vector< std::future<void> > futures;
+    for (unsigned int i = 0; i < 10; ++i)
     {
-        SPTR(::fwTest::helper::Thread) thread;
-        thread = std::shared_ptr< ::fwTest::helper::Thread >(
-            new ::fwTest::helper::Thread(std::bind(&UUIDTest::runUUIDCreation, this)));
-        threads.push_back(thread);
+        futures.push_back( std::async(std::launch::async, fn) );
     }
 
-    for (int i = 0; i<nbThreads; ++i)
+    for (auto& future : futures)
     {
-        std::stringstream str;
-        str << "thread " << i;
-        CPPUNIT_ASSERT_MESSAGE(str.str(), threads[i]->timedJoin(1000));
+        const auto status = future.wait_for(std::chrono::seconds(1));
+        CPPUNIT_ASSERT(status == std::future_status::ready);
+        future.get(); // Trigger exceptions
     }
-
 }
 
 //-----------------------------------------------------------------------------
@@ -106,23 +101,19 @@ void UUIDTest::runUUIDCreation()
 
 void UUIDTest::conccurentAccessOnSameObjUUIDTest()
 {
-    const unsigned int nbThreads = 10;
-    std::vector< SPTR(::fwTest::helper::Thread) > threads;
-    for (int i = 0; i<nbThreads; ++i)
+    const auto fn = std::bind(&UUIDTest::runAccessToObjectUUID, this);
+    std::vector< std::future<void> > futures;
+    for (unsigned int i = 0; i < 10; ++i)
     {
-        SPTR(::fwTest::helper::Thread) thread;
-        thread = std::shared_ptr< ::fwTest::helper::Thread >(
-            new ::fwTest::helper::Thread(std::bind(&UUIDTest::runAccessToObjectUUID, this)));
-        threads.push_back(thread);
+        futures.push_back( std::async(std::launch::async, fn) );
     }
 
-    for (int i = 0; i<nbThreads; ++i)
+    for (auto& future : futures)
     {
-        std::stringstream str;
-        str << "thread " << i;
-        CPPUNIT_ASSERT_MESSAGE(str.str(), threads[i]->timedJoin(1000));
+        const auto status = future.wait_for(std::chrono::seconds(1));
+        CPPUNIT_ASSERT(status == std::future_status::ready);
+        future.get(); // Trigger exceptions
     }
-
 }
 
 //-----------------------------------------------------------------------------

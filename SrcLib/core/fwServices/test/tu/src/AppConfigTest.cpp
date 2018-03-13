@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -21,8 +21,6 @@
 #include <fwRuntime/Bundle.hpp>
 #include <fwRuntime/Convert.hpp>
 #include <fwRuntime/Runtime.hpp>
-
-#include <fwTest/helper/Thread.hpp>
 
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/path.hpp>
@@ -1152,22 +1150,18 @@ void AppConfigTest::keyGroupTest()
 
 void AppConfigTest::concurentAccessToAppConfigTest()
 {
-    const unsigned int nbThreads = 20;
-    std::vector< SPTR(::fwTest::helper::Thread) > threads;
-
-    for (unsigned int i = 0; i < nbThreads; ++i)
+    const auto fn = std::bind(&AppConfigTest::parametersConfigTest, this);
+    std::vector< std::future<void> > futures;
+    for (unsigned int i = 0; i < 20; ++i)
     {
-        SPTR(::fwTest::helper::Thread) thread;
-        thread = std::shared_ptr< ::fwTest::helper::Thread >(
-            new ::fwTest::helper::Thread(std::bind(&AppConfigTest::parametersConfigTest, this)));
-        threads.push_back(thread);
+        futures.push_back( std::async(std::launch::async, fn) );
     }
 
-    for (unsigned int i = 0; i < nbThreads; ++i)
+    for (auto& future : futures)
     {
-        std::stringstream str;
-        str << "thread " << i;
-        CPPUNIT_ASSERT_MESSAGE(str.str(), threads[i]->timedJoin(1000));
+        const auto status = future.wait_for(std::chrono::seconds(1));
+        CPPUNIT_ASSERT(status == std::future_status::ready);
+        future.get(); // Trigger exceptions
     }
 
     ::fwServices::registry::AppConfig::getDefault()->clearRegistry();

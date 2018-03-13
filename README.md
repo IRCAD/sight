@@ -24,8 +24,8 @@ Install
 =======
 
 See how to install fw4spl :
- - [stable version](http://fw4spl.readthedocs.org/en/master/Installation/index.html)
- - [latest version](http://fw4spl.readthedocs.org/en/dev/Installation/index.html)
+* [stable version](http://fw4spl.readthedocs.org/en/master/Installation/index.html)
+* [latest version](http://fw4spl.readthedocs.org/en/dev/Installation/index.html)
 
 Documentation
 =============
@@ -36,6 +36,12 @@ Documentation
  * [latest](http://fw4spl.readthedocs.io/en/dev/Tutorials/index.html)
 * **[Doxygen](http://fw4spl-org.github.io/fw4spl-dox/)**
 * **[Blog](http://fw4spl-org.github.io/fw4spl-blog/)**
+
+Support
+===========
+
+- Please report any issue on the [github tracker](https://github.com/fw4spl-org/fw4spl/issues).
+- You can also get live community support on the [gitter chat room](https://gitter.im/fw4spl-org/support).
 
 Annex
 =====

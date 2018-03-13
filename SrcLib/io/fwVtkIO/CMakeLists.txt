@@ -1,7 +1,7 @@
 fwLoadProperties()
 
 if(NOT ANDROID)
-    find_package(VTK COMPONENTS
+    find_package(VTK QUIET COMPONENTS
         vtkFiltersModeling
         vtkIOImage
         vtkIOLegacy
@@ -11,7 +11,7 @@ if(NOT ANDROID)
         REQUIRED
         NO_MODULE)
 else()
-    find_package(VTK COMPONENTS
+    find_package(VTK QUIET COMPONENTS
         vtkFiltersModeling
         vtkIOImage
         vtkIOLegacy

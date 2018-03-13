@@ -1,8 +1,8 @@
 fwLoadProperties()
 
-find_package(VTK REQUIRED)
+find_package(VTK QUIET REQUIRED)
 include(${VTK_USE_FILE})
-find_package(GDCM REQUIRED)
+find_package(GDCM QUIET REQUIRED)
 include(${GDCM_USE_FILE})
 
 fwForwardInclude(

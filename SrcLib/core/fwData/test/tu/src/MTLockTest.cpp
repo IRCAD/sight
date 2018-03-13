@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,8 +9,6 @@
 #include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/mt/ObjectReadToWriteLock.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
-
-#include <fwTest/helper/Thread.hpp>
 
 #include <functional>
 
@@ -41,10 +39,11 @@ void MTLockTest::tearDown()
 
 void MTLockTest::lockTest()
 {
+    auto future = std::async(std::launch::async, std::bind(&MTLockTest::runLock, this));
 
-    ::fwTest::helper::Thread thread(std::bind(&MTLockTest::runLock, this));
-
-    CPPUNIT_ASSERT(thread.timedJoin(2000));
+    const std::future_status status = future.wait_for(std::chrono::seconds(2));
+    CPPUNIT_ASSERT(status == std::future_status::ready);
+    future.get(); // Trigger exceptions
 
 }
 
@@ -64,7 +63,6 @@ void MTLockTest::runLock()
         ::fwData::mt::ObjectReadToWriteLock updrageLock(m_string);
 
         updrageLock.unlock();
-
         writeLock.lock();
 
         writeLock.unlock();
@@ -89,11 +87,16 @@ void MTLockTest::runLock()
 
 void MTLockTest::multipleLockTest()
 {
-    ::fwTest::helper::Thread thread(std::bind(&MTLockTest::runMultipleLock1, this));
-    ::fwTest::helper::Thread thread2(std::bind(&MTLockTest::runMultipleLock2, this));
+    auto future1 = std::async(std::launch::async, std::bind(&MTLockTest::runMultipleLock1, this));
+    auto future2 = std::async(std::launch::async, std::bind(&MTLockTest::runMultipleLock2, this));
 
-    CPPUNIT_ASSERT(thread.timedJoin(2500));
-    CPPUNIT_ASSERT(thread2.timedJoin(2500));
+    const std::future_status status1 = future1.wait_for(std::chrono::milliseconds(2500));
+    CPPUNIT_ASSERT(status1 == std::future_status::ready);
+    future1.get(); // Trigger exceptions
+
+    const std::future_status status2 = future2.wait_for(std::chrono::milliseconds(2500));
+    CPPUNIT_ASSERT(status2 == std::future_status::ready);
+    future2.get(); // Trigger exceptions
 
     CPPUNIT_ASSERT_MESSAGE(m_string->value(), m_string->value() == "lili" ||  m_string->value() == "toto");
 }

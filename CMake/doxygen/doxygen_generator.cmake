@@ -2,7 +2,7 @@
 # Works only with fw4spl CMake script.
 function(doxygenGenerator)
     include(${CMAKE_ROOT}/Modules/Documentation.cmake)
-    find_package(Doxygen)
+    find_package(Doxygen QUIET)
     
     if(DOXYGEN_FOUND)
         set(INCLUDE_DIRS)

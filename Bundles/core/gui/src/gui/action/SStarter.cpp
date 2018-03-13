@@ -18,6 +18,8 @@
 
 #include <fwTools/fwID.hpp>
 
+#include <boost/range/adaptor/reversed.hpp>
+
 namespace gui
 {
 namespace action
@@ -50,7 +52,7 @@ void SStarter::stopping()
 {
     std::vector< ::fwServices::IService::SharedFutureType > futures;
 
-    for( VectPairIDActionType::value_type serviceUid :  m_uuidServices)
+    for( VectPairIDActionType::value_type serviceUid : ::boost::adaptors::reverse(m_uuidServices) )
     {
         bool srv_exists = ::fwTools::fwID::exist(serviceUid.first );
         if (srv_exists &&  (m_idStartedSrvSet.find(serviceUid.first) != m_idStartedSrvSet.end()) )
@@ -132,6 +134,20 @@ void SStarter::updating()
                     }
                     break;
                 }
+                case START_ONLY_OR_STOP:
+                {
+                    if(service->isStopped())
+                    {
+                        service->start();
+                        m_idStartedSrvSet.insert(uid);
+                    }
+                    else
+                    {
+                        service->stop();
+                        m_idStartedSrvSet.erase(uid);
+                    }
+                    break;
+                }
                 case START:
                 {
                     if(service->isStopped())
@@ -155,6 +171,19 @@ void SStarter::updating()
                     else
                     {
                         OSLM_WARN("Service " << service->getID() << " is not started");
+                    }
+                    break;
+                }
+                case START_ONLY:
+                {
+                    if(service->isStopped())
+                    {
+                        service->start();
+                        m_idStartedSrvSet.insert(uid);
+                    }
+                    else
+                    {
+                        OSLM_WARN("Service " << service->getID() << " is not stopped");
                     }
                     break;
                 }
@@ -203,6 +232,10 @@ void SStarter::configuring()
         {
             action = START_OR_STOP;
         }
+        else if ( actionType == "start_only_or_stop" )
+        {
+            action = START_ONLY_OR_STOP;
+        }
         else if ( actionType == "start_if_exists" )
         {
             action = START_IF_EXISTS;
@@ -210,6 +243,10 @@ void SStarter::configuring()
         else if ( actionType == "stop_if_exists" )
         {
             action = STOP_IF_EXISTS;
+        }
+        else if ( actionType == "start_only" )
+        {
+            action = START_ONLY;
         }
         else
         {

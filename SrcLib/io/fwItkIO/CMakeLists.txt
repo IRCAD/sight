@@ -1,23 +1,14 @@
 fwLoadProperties()
 
-find_package(ITK REQUIRED)
-find_package(JPEG REQUIRED)
-find_package(ZLIB REQUIRED )
+find_package(ITK QUIET REQUIRED)
+find_package(JPEG QUIET REQUIRED)
+find_package(ZLIB QUIET REQUIRED )
 
 find_library(JPEG_LIBRARY libjpeg)
-
-find_library(VCL_LIBRARY        vcl )
-find_library(VNL_LIBRARY        vnl )
-find_library(VNL_ALGO_LIBRARY   vnl_algo )
-find_library(V3P_NETLIB_LIBRARY v3p_netlib )
 
 fwInclude(${ZLIB_INCLUDE_DIRS})
 
 fwForwardInclude(
-    ${VNL_INCLUDE_PATH}
-    ${VNL_INCLUDE_PATH}/vxl
-    ${VNL_INCLUDE_PATH}/vxl/core
-    ${VNL_INCLUDE_PATH}/vxl/vcl
     ${ITK_INCLUDE_DIRS}
 )
 
@@ -32,10 +23,6 @@ fwForwardLink(
     ITKIOImageBase
     ITKIOJPEG
     ITKMetaIO
-    ${VCL_LIBRARY}
-    ${VNL_LIBRARY}
-    ${VNL_ALGO_LIBRARY}
-    ${V3P_NETLIB_LIBRARY}
     itksys
     itkopenjpeg
 )

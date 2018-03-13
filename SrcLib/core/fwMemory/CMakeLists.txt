@@ -1,6 +1,6 @@
 fwLoadProperties()
 
-find_package (Boost COMPONENTS regex signals iostreams REQUIRED)
+find_package(Boost QUIET COMPONENTS regex signals iostreams REQUIRED)
 
 fwLink(${Boost_LIBRARIES})
 

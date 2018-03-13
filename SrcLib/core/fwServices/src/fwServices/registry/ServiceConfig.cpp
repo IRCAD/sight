@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -135,7 +135,7 @@ const std::string& ServiceConfig::getConfigDesc( const std::string& configId ) c
 
 //-----------------------------------------------------------------------------
 
-std::vector< std::string > ServiceConfig::getAllConfigForService( std::string serviceImpl ) const
+std::vector< std::string > ServiceConfig::getAllConfigForService( std::string serviceImpl, bool matchingOnly ) const
 {
     ::fwCore::mt::ReadLock lock(m_registryMutex);
     std::vector< std::string > configs;
@@ -143,7 +143,7 @@ std::vector< std::string > ServiceConfig::getAllConfigForService( std::string se
     for(Registry::value_type srvCfg :  m_reg)
     {
         ServiceConfigInfo::sptr info = srvCfg.second;
-        if (info->service.empty() || info->service == serviceImpl)
+        if ( (info->service.empty() && !matchingOnly ) || info->service == serviceImpl)
         {
             configs.push_back(srvCfg.first);
         }
@@ -157,4 +157,3 @@ std::vector< std::string > ServiceConfig::getAllConfigForService( std::string se
 } // namespace registry
 
 } // namespace fwServices
-
