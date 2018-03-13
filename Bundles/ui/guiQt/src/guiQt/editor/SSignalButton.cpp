@@ -138,7 +138,7 @@ void SSignalButton::configuring()
     ::fwRuntime::ConfigurationElement::sptr iconCfg = config->findConfigurationElement("icon");
     if (iconCfg)
     {
-        m_icon = ::boost::filesystem::path(iconCfg->getValue());
+        m_icon = ::fwRuntime::getBundleResourceFilePath(iconCfg->getValue());
     }
 
     ::fwRuntime::ConfigurationElement::sptr txt2Cfg = config->findConfigurationElement("text2");
