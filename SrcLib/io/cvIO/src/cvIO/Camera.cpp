@@ -11,25 +11,27 @@ namespace cvIO
 
 //------------------------------------------------------------------------------
 
-void Camera::copyToCv(const arData::Camera::csptr& _src, cv::Mat& _intrinsic, cv::Size& _imgSize,
-                      cv::Mat& _distortionCoeffs)
+std::tuple< ::cv::Mat, ::cv::Size, ::cv::Mat> Camera::copyToCv(const arData::Camera::csptr& _src)
 {
-    _intrinsic = ::cv::Mat::eye(3, 3, CV_64F);
+    ::cv::Mat intrinsic = ::cv::Mat::eye(3, 3, CV_64F);
 
-    _intrinsic.at<double>(0, 0) = _src->getFx();
-    _intrinsic.at<double>(1, 1) = _src->getFy();
-    _intrinsic.at<double>(0, 2) = _src->getCx();
-    _intrinsic.at<double>(1, 2) = _src->getCy();
+    intrinsic.at<double>(0, 0) = _src->getFx();
+    intrinsic.at<double>(1, 1) = _src->getFy();
+    intrinsic.at<double>(0, 2) = _src->getCx();
+    intrinsic.at<double>(1, 2) = _src->getCy();
 
-    _imgSize.width  = static_cast<int>(_src->getWidth());
-    _imgSize.height = static_cast<int>(_src->getHeight());
+    ::cv::Size imgSize;
+    imgSize.width  = static_cast<int>(_src->getWidth());
+    imgSize.height = static_cast<int>(_src->getHeight());
 
-    _distortionCoeffs = ::cv::Mat::zeros(5, 1, CV_64F);
+    ::cv::Mat distortionCoeffs = ::cv::Mat::zeros(5, 1, CV_64F);
 
     for (size_t i = 0; i < 5; ++i)
     {
-        _distortionCoeffs.at<double>(static_cast<int>(i)) = _src->getDistortionCoefficient()[i];
+        distortionCoeffs.at<double>(static_cast<int>(i)) = _src->getDistortionCoefficient()[i];
     }
+
+    return std::make_tuple(intrinsic, imgSize, distortionCoeffs);
 }
 
 } //namespace cvIO
