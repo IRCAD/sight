@@ -6,6 +6,7 @@
 
 #include "opDistorter/SUndistortImage.hpp"
 
+#include <cvIO/Camera.hpp>
 #include <cvIO/Image.hpp>
 
 #include <fwCom/Signal.hxx>
@@ -19,26 +20,39 @@
 #include <fwDataTools/helper/Image.hpp>
 #include <fwDataTools/helper/ImageGetter.hpp>
 
-#include <fwRuntime/ConfigurationElement.hpp>
-
-#include <fwServices/macros.hpp>
-
-#include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
-
-fwServicesRegisterMacro(::fwServices::IController, ::opDistorter::SUndistortImage, ::fwData::Image);
 
 namespace opDistorter
 {
 
 const ::fwCom::Slots::SlotKeyType SUndistortImage::s_CHANGE_STATE_SLOT = "changeState";
 
+const ::fwServices::IService::KeyType s_CAMERA_INPUT = "camera";
+const ::fwServices::IService::KeyType s_IMAGE_INPUT  = "input";
+const ::fwServices::IService::KeyType s_IMAGE_INOUT  = "output";
+
 // ----------------------------------------------------------------------------
 
-SUndistortImage::SUndistortImage() noexcept :
-    m_isEnabled(false)
+SUndistortImage::SUndistortImage() noexcept
 {
     newSlot(s_CHANGE_STATE_SLOT, &SUndistortImage::changeState, this);
+}
+
+// ----------------------------------------------------------------------------
+
+SUndistortImage::~SUndistortImage() noexcept
+{
+}
+
+// ----------------------------------------------------------------------------
+
+fwServices::IService::KeyConnectionsMap SUndistortImage::getAutoConnections() const
+{
+    ::fwServices::IService::KeyConnectionsMap connections;
+    connections.push( s_IMAGE_INPUT, ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push( s_IMAGE_INPUT, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT );
+
+    return connections;
 }
 
 // ----------------------------------------------------------------------------
@@ -51,28 +65,18 @@ void SUndistortImage::configuring()
 
 void SUndistortImage::starting()
 {
-    m_camera = this->getInput< ::arData::Camera> ("camera");
+    m_camera = this->getInput< ::arData::Camera> (s_CAMERA_INPUT);
     SLM_FATAL_IF("Object 'camera' is not found.", !m_camera);
 
-    // 3x3 matrix (fx 0 cx, 0 fy cy, 0 0 1)
-    ::cv::Mat cameraMatrix        = ::cv::Mat::eye(3, 3, CV_64F);
-    cameraMatrix.at<double>(0, 0) = m_camera->getFx();
-    cameraMatrix.at<double>(1, 1) = m_camera->getFy();
-    cameraMatrix.at<double>(0, 2) = m_camera->getCx();
-    cameraMatrix.at<double>(1, 2) = m_camera->getCy();
+    ::cv::Mat intrinsics;
+    ::cv::Mat distCoefs;
+    ::cv::Size size;
 
-    //4x1 matrix (k1,k2,p1,p2)
-    ::cv::Mat distCoefs = ::cv::Mat::eye(4, 1, CV_64F);
-    for (unsigned int i = 0; i < 4; ++i)
-    {
-        distCoefs.at<double>(static_cast<int>(i), 0) = m_camera->getDistortionCoefficient()[i];
-    }
-
-    ::cv::Size size(static_cast<int>(m_camera->getWidth()), static_cast<int>(m_camera->getHeight()) );
+    std::tie(intrinsics, size, distCoefs) = ::cvIO::Camera::copyToCv(m_camera);
 
     ::cv::Mat mx;
     ::cv::Mat my;
-    ::cv::initUndistortRectifyMap(cameraMatrix, distCoefs, ::cv::Mat(), cameraMatrix, size, CV_32FC1, mx, my);
+    ::cv::initUndistortRectifyMap(intrinsics, distCoefs, ::cv::Mat(), intrinsics, size, CV_32FC1, mx, my);
 
 #ifdef OPENCV_CUDA_SUPPORT
     m_mapx = ::cv::cuda::GpuMat(mx);
@@ -88,17 +92,6 @@ void SUndistortImage::starting()
 
 void SUndistortImage::stopping()
 {
-}
-
-// ----------------------------------------------------------------------------
-
-fwServices::IService::KeyConnectionsMap SUndistortImage::getAutoConnections() const
-{
-    ::fwServices::IService::KeyConnectionsMap connections;
-    connections.push( "input", ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT );
-    connections.push( "input", ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT );
-
-    return connections;
 }
 
 // ----------------------------------------------------------------------------
@@ -119,10 +112,10 @@ void SUndistortImage::updating()
     else
     {
 
-        ::fwData::Image::sptr outputImage = this->getInOut< ::fwData::Image >("output");
+        ::fwData::Image::sptr outputImage = this->getInOut< ::fwData::Image >( s_IMAGE_INOUT);
         SLM_FATAL_IF("Object 'output' is not found.", !outputImage);
 
-        ::fwData::Image::csptr inputImage = this->getInput< ::fwData::Image> ("input");
+        ::fwData::Image::csptr inputImage = this->getInput< ::fwData::Image> (  s_IMAGE_INPUT);
         SLM_FATAL_IF("Object 'input' is not found.", !inputImage);
 
         outputImage->deepCopy(inputImage);
@@ -140,10 +133,10 @@ void SUndistortImage::updating()
 void SUndistortImage::undistort()
 {
     FW_PROFILE_AVG("undistort", 5);
-    ::fwData::Image::sptr outputImage = this->getInOut< ::fwData::Image >("output");
+    ::fwData::Image::sptr outputImage = this->getInOut< ::fwData::Image >( s_IMAGE_INOUT);
     SLM_FATAL_IF("Object 'output' is not found.", !outputImage);
 
-    ::fwData::Image::csptr inputImage = this->getInput< ::fwData::Image> ("input");
+    ::fwData::Image::csptr inputImage = this->getInput< ::fwData::Image> (  s_IMAGE_INPUT);
     SLM_FATAL_IF("Object 'input' is not found.", !inputImage);
 
     auto sig = outputImage->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Image::s_BUFFER_MODIFIED_SIG);

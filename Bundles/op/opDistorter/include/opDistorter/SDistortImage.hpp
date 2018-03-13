@@ -8,7 +8,15 @@
 
 #include "opDistorter/config.hpp"
 
-#include <fwServices/IController.hpp>
+#include <arData/Camera.hpp>
+
+#include <fwServices/IOperator.hpp>
+
+#ifdef OPENCV_CUDA_SUPPORT
+#include <opencv2/cudawarping.hpp>
+#else
+#include <opencv2/core/mat.hpp>
+#endif // OPENCV_CUDA_SUPPORT
 
 namespace opDistorter
 {
@@ -34,12 +42,11 @@ namespace opDistorter
  * @subsection In-Out In-Out
  * - \b output [::fwData::Image]: image distorted.
  */
-class OPDISTORTER_CLASS_API SDistortImage : public ::fwServices::IController
+class OPDISTORTER_CLASS_API SDistortImage : public ::fwServices::IOperator
 {
-
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SDistortImage)(::fwServices::IController) );
+    fwCoreServiceClassDefinitionsMacro( (SDistortImage)(::fwServices::IOperator) )
 
     /**
      * @name Slots API
@@ -48,8 +55,7 @@ public:
     OPDISTORTER_API static const ::fwCom::Slots::SlotKeyType s_CHANGE_STATE_SLOT;
     typedef ::fwCom::Slot<void ()> ChangeStateSlotType;
     ///@}
-    ///
-    ///
+
     /// Constructor.
     OPDISTORTER_API SDistortImage() noexcept;
 
@@ -76,16 +82,27 @@ protected:
     /// Distort the image.
     OPDISTORTER_API virtual void updating() override;
 
-    /// Distort the video.
-    OPDISTORTER_API void distort();
-
-    /// SLOT: enabled/disabled the distort correction.
-    OPDISTORTER_API void changeState();
-
 private:
 
+    /// Distort the video.
+    void distort();
+
+    /// Slot: enable/disable the distort correction.
+    void changeState();
+
     /// True if the undistortion is enabled.
-    bool m_isEnabled;
+    bool m_isEnabled { false };
+
+    /// Camera corresponding to the video.
+    ::arData::Camera::csptr m_camera;
+
+#if OPENCV_CUDA_SUPPORT
+    ::cv::cuda::GpuMat m_mapx;
+    ::cv::cuda::GpuMat m_mapy;
+#else
+    ::cv::Mat m_mapx;
+    ::cv::Mat m_mapy;
+#endif // OPENCV_CUDA_SUPPORT
 };
 
 } // opDistorter

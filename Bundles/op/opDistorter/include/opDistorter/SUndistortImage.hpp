@@ -10,12 +10,7 @@
 
 #include <arData/Camera.hpp>
 
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slots.hpp>
-
-#include <fwData/Image.hpp>
-
-#include <fwServices/IController.hpp>
+#include <fwServices/IOperator.hpp>
 
 #ifdef OPENCV_CUDA_SUPPORT
 #include <opencv2/cudawarping.hpp>
@@ -47,24 +42,12 @@ namespace opDistorter
  * - \b output [::fwData::Image]: image undistorted.
  */
 
-class OPDISTORTER_CLASS_API SUndistortImage : public fwServices::IController
+class OPDISTORTER_CLASS_API SUndistortImage : public fwServices::IOperator
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro((SUndistortImage)(fwServices::IController));
-
-    /**
-     * @brief Constructor.
-     */
-    OPDISTORTER_API SUndistortImage() noexcept;
-
-    /**
-     * @brief Destructor.
-     */
-    virtual ~SUndistortImage() noexcept
-    {
-    }
+    fwCoreServiceClassDefinitionsMacro((SUndistortImage)(fwServices::IOperator))
 
     /**
      * @name Slots API
@@ -74,20 +57,15 @@ public:
     typedef ::fwCom::Slot<void ()> ChangeStateSlotType;
     ///@}
 
-protected:
-
-    /// Do nothing
-    OPDISTORTER_API void configuring() override;
+    /**
+     * @brief Constructor.
+     */
+    OPDISTORTER_API SUndistortImage() noexcept;
 
     /**
-     * @brief This method is used to initialize the service.
+     * @brief Destructor.
      */
-    OPDISTORTER_API void starting() override;
-
-    /**
-     * @brief This method is used to stop the service.
-     */
-    OPDISTORTER_API void stopping() override;
+    virtual ~SUndistortImage() noexcept;
 
     /**
      * @brief Connect ::fwData::Image::s_MODIFIED_SIG to s_UPDATE_SLOT
@@ -95,25 +73,29 @@ protected:
      */
     OPDISTORTER_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
-    /**
-     * @brief This method is used to update the service.
-     */
+protected:
+
+    /// Do nothing
+    OPDISTORTER_API void configuring() override;
+
+    /// Compute the undistortion map
+    OPDISTORTER_API void starting() override;
+
+    /// Do nothing
+    OPDISTORTER_API void stopping() override;
+
+    /// Undistort the video
     OPDISTORTER_API void updating() override;
 
-    /**
-     * @brief Undistort the video.
-     */
-    OPDISTORTER_API void undistort();
-
-    /**
-     * @brief SLOT: enabled/disabled the undistort correction.
-     */
-    OPDISTORTER_API void changeState();
-
 private:
+    /// Remap the image using the undistortion map
+    void undistort();
+
+    /// Slot: enable/disable the undistort correction.
+    void changeState();
 
     /// True if the undistortion is enabled.
-    bool m_isEnabled;
+    bool m_isEnabled { false };
 
     /// Camera corresponding to the video.
     ::arData::Camera::csptr m_camera;
