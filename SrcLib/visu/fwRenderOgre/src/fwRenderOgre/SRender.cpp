@@ -7,21 +7,23 @@
 #include "fwRenderOgre/SRender.hpp"
 
 #include "fwRenderOgre/IAdaptor.hpp"
+#include "fwRenderOgre/OffScreenRenderWindowInteractorManager.hpp"
 #include "fwRenderOgre/registry/Adaptor.hpp"
 #include "fwRenderOgre/Utils.hpp"
 
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
 
-#include <fwData/Color.hpp>
+#define FW_PROFILING_DISABLED
+#include <fwCore/Profiling.hpp>
+
+#include <fwData/mt/ObjectWriteLock.hpp>
 
 #include <fwRuntime/ConfigurationElementContainer.hpp>
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 
 #include <fwServices/helper/Config.hpp>
 #include <fwServices/macros.hpp>
-
-#include <fwTools/fwID.hpp>
 
 #include <OGRE/OgreEntity.h>
 #include <OGRE/OgreNode.h>
@@ -41,13 +43,16 @@ const std::string SRender::s_OGREBACKGROUNDID = "ogreBackground";
 
 //-----------------------------------------------------------------------------
 
+static const ::fwServices::IService::KeyType s_OFFSCREEN_INOUT = "offScreen";
+
+//-----------------------------------------------------------------------------
+
 const ::fwCom::Signals::SignalKeyType SRender::s_COMPOSITOR_UPDATED_SIG = "compositorUpdated";
 
 //-----------------------------------------------------------------------------
 
 const ::fwCom::Slots::SlotKeyType SRender::s_COMPUTE_CAMERA_ORIG_SLOT     = "computeCameraParameters";
 const ::fwCom::Slots::SlotKeyType SRender::s_COMPUTE_CAMERA_CLIPPING_SLOT = "computeCameraClipping";
-const ::fwCom::Slots::SlotKeyType SRender::s_DO_RAY_CAST_SLOT             = "doRayCast";
 const ::fwCom::Slots::SlotKeyType SRender::s_REQUEST_RENDER_SLOT          = "requestRender";
 
 static const ::fwCom::Slots::SlotKeyType s_ADD_OBJECTS_SLOT    = "addObject";
@@ -68,7 +73,6 @@ SRender::SRender() noexcept :
 
     newSlot(s_COMPUTE_CAMERA_ORIG_SLOT, &SRender::resetCameraCoordinates, this);
     newSlot(s_COMPUTE_CAMERA_CLIPPING_SLOT, &SRender::computeCameraClipping, this);
-    newSlot(s_DO_RAY_CAST_SLOT, &SRender::doRayCast, this);
     newSlot(s_REQUEST_RENDER_SLOT, &SRender::requestRender, this);
 }
 
@@ -83,13 +87,30 @@ SRender::~SRender() noexcept
 
 void SRender::configuring()
 {
-    this->initialize();
-
     const ConfigType config = this->getConfigTree();
 
     SLM_ERROR_IF("Only one scene must be configured.", config.count("scene") != 1);
-
     const ConfigType sceneCfg = config.get_child("scene");
+
+    const size_t nbInouts = config.count("inout");
+    SLM_ASSERT("This service accepts at most one inout.", nbInouts <= 1);
+
+    if(nbInouts == 1)
+    {
+        const std::string key = config.get<std::string>("inout.<xmlattr>.key", "");
+        m_offScreen = (key == s_OFFSCREEN_INOUT);
+
+        SLM_ASSERT("'" + key + "' is not a valid key. Only '" + s_OFFSCREEN_INOUT +"' is accepted.", m_offScreen);
+
+        m_width  = sceneCfg.get<unsigned int>("<xmlattr>.width", m_width);
+        m_height = sceneCfg.get<unsigned int>("<xmlattr>.height", m_height);
+        m_flip   = sceneCfg.get<bool>("<xmlattr>.flip", m_flip);
+
+    }
+    else // no offscreen rendering.
+    {
+        this->initialize();
+    }
 
     m_showOverlay = sceneCfg.get<bool>("<xmlattr>.overlay", false);
     m_fullscreen  = sceneCfg.get<bool>("<xmlattr>.fullscreen", false);
@@ -121,8 +142,11 @@ void SRender::starting()
 
     bool bHasBackground = false;
 
-    this->create();
+    if (!m_offScreen)
+    {
+        this->create();
 
+    }
     const ConfigType config = this->getConfigTree();
 
     SLM_ERROR_IF("Only one scene must be configured.", config.count("scene") != 1);
@@ -165,17 +189,27 @@ void SRender::starting()
         m_layers[s_OGREBACKGROUNDID] = ogreLayer;
     }
 
-    // Instantiate the manager that help to communicate between this service and the widget
-    m_interactorManager = ::fwRenderOgre::IRenderWindowInteractorManager::createManager();
-    m_interactorManager->setRenderService(this->getSptr());
-    m_interactorManager->createContainer( this->getContainer(), m_showOverlay, m_renderOnDemand, m_fullscreen );
+    if(m_offScreen)
+    {
+        // Instantiate the manager that help to communicate between this service and the widget
+        m_interactorManager = ::fwRenderOgre::OffScreenRenderWindowInteractorManager::New(m_width, m_height);
+        m_interactorManager->setRenderService(this->getSptr());
+        m_interactorManager->createContainer( nullptr, m_showOverlay, m_renderOnDemand, m_fullscreen );
 
+    }
+    else
+    {
+        // Instantiate the manager that help to communicate between this service and the widget
+        m_interactorManager = ::fwRenderOgre::IRenderWindowInteractorManager::createManager();
+        m_interactorManager->setRenderService(this->getSptr());
+        m_interactorManager->createContainer( this->getContainer(), m_showOverlay, m_renderOnDemand, m_fullscreen );
+    }
     Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 
     for (auto it : m_layers)
     {
         ::fwRenderOgre::Layer::sptr layer = it.second;
-        layer->setRenderWindow(m_interactorManager->getRenderWindow());
+        layer->setRenderTarget(m_interactorManager->getRenderTarget());
         layer->createScene();
     }
 
@@ -199,7 +233,10 @@ void SRender::stopping()
     m_interactorManager->disconnectInteractor();
     m_interactorManager.reset();
 
-    this->destroy();
+    if(!m_offScreen)
+    {
+        this->destroy();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -292,25 +329,28 @@ void SRender::configureBackgroundLayer(const ConfigType& _cfg )
 
 //-----------------------------------------------------------------------------
 
-void SRender::doRayCast(int x, int y, int width, int height)
-{
-    for (auto it : m_layers)
-    {
-        ::fwRenderOgre::Layer::sptr layer = it.second;
-        if(layer->doRayCast(x, y, width, height))
-        {
-            break;
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
-
 void SRender::requestRender()
 {
-    if( this->getContainer()->isShownOnScreen() )
+    if( this->isShownOnScreen() )
     {
         m_interactorManager->requestRender();
+
+        if(m_offScreen)
+        {
+            FW_PROFILE("Offscreen rendering");
+
+            ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_OFFSCREEN_INOUT);
+            SLM_ASSERT("Offscreen image not found.", image);
+
+            auto offScreenInteractor = OffScreenRenderWindowInteractorManager::dynamicCast(m_interactorManager);
+            {
+                ::fwData::mt::ObjectWriteLock lock(image);
+                ::fwRenderOgre::Utils::convertFromOgreTexture(offScreenInteractor->getRenderTexture(), image, m_flip);
+            }
+
+            auto sig = image->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+            sig->asyncEmit();
+        }
     }
 }
 
@@ -350,6 +390,10 @@ void SRender::render()
 
 bool SRender::isShownOnScreen()
 {
+    if( m_offScreen )
+    {
+        return true;
+    }
     return this->getContainer()->isShownOnScreen();
 }
 

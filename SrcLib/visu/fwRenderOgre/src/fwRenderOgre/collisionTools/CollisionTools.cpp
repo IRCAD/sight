@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -30,7 +30,10 @@
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
    THE SOFTWARE.
 ******************************************************************************************/
+
 #include "fwRenderOgre/collisionTools/CollisionTools.hpp"
+
+#include "fwRenderOgre/Layer.hpp"
 
 namespace fwRenderOgre
 {
@@ -173,6 +176,10 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> CollisionTools::ray
             // get the entity to check
             Ogre::MovableObject* pentity = static_cast<Ogre::MovableObject*>(query_result[qr_idx].movable);
 
+            if(!pentity->isVisible())
+            {
+                continue;
+            }
             // mesh data to retrieve
             size_t vertex_count;
             size_t index_count;
@@ -188,23 +195,50 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> CollisionTools::ray
 
             // test for hitting individual triangles on the mesh
             bool new_closest_found = false;
-            for (size_t i = 0; i < index_count; i += 3)
+            if(index_count)
             {
-                // check for a hit against this triangle
-                std::pair<bool, Ogre::Real> hit = Ogre::Math::intersects(ray, vertices[indices[i]],
-                                                                         vertices[indices[i+1]], vertices[indices[i+2]],
-                                                                         true,
-                                                                         false);
-
-                // if it was a hit check if its the closest
-                if (hit.first)
+                for (size_t i = 0; i < index_count; i += 3)
                 {
-                    if ((closest_distance < 0.0f) ||
-                        (hit.second < closest_distance))
+                    // check for a hit against this triangle
+                    std::pair<bool, Ogre::Real> hit = Ogre::Math::intersects(ray, vertices[indices[i]],
+                                                                             vertices[indices[i+1]],
+                                                                             vertices[indices[i+2]], true, false);
+
+                    // if it was a hit check if its the closest
+                    if (hit.first)
                     {
-                        // this is the closest so far, save it off
-                        closest_distance  = hit.second;
+                        if ((closest_distance < 0.0f) || (hit.second < closest_distance))
+                        {
+                            // this is the closest so far, save it off
+                            closest_distance  = hit.second;
+                            new_closest_found = true;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                // We do not have faces, we simply check all vertices and compute the distance from the picked point
+                const auto* camera               = mSceneMgr->getCamera(::fwRenderOgre::Layer::DEFAULT_CAMERA_NAME);
+                const ::Ogre::Matrix4 viewMatrix = camera->getViewMatrix();
+                const ::Ogre::Matrix4 projMatrix = camera->getProjectionMatrixWithRSDepth();
+
+                const ::Ogre::Matrix4 viewProjMatrix = projMatrix * viewMatrix;
+
+                const ::Ogre::Vector3 resPointWVP = viewProjMatrix * ray.getPoint(query_result[qr_idx].distance);
+                const ::Ogre::Vector2 resPointSS  = (resPointWVP.xy() / 2.f) + 0.5f;
+
+                for (size_t i = 0; i < vertex_count; ++i)
+                {
+                    const ::Ogre::Vector3 pointWVP = viewProjMatrix * vertices[i];
+                    const ::Ogre::Vector2 pointSS  = (pointWVP.xy() / 2.f) + 0.5f;
+
+                    static const ::Ogre::Real s_TOLERANCE = 0.02f;
+                    if (((closest_distance < 0.0f) || (query_result[qr_idx].distance < closest_distance)) &&
+                        resPointSS.distance(pointSS) < s_TOLERANCE)
+                    {
                         new_closest_found = true;
+                        closest_distance  = vertices[i].distance(ray.getOrigin());
                     }
                 }
             }

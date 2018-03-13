@@ -78,6 +78,7 @@ namespace visuOgreAdaptor
  *  - \b materialTemplate (optional) : the name of the base Ogre material for the internally created SMaterial.
  *  - \b textureName (optional) : the name of the Ogre texture that the mesh will use.
  *  - \b shadingMode (optional, none/flat/gouraud/phong/ambient, default=phong) : name of the used shading mode.
+ *  - \b queryFlags (optional) : Used for picking. Picked only by pickers with the same flag.
  */
 class VISUOGREADAPTOR_CLASS_API SMesh : public ::fwRenderOgre::IAdaptor,
                                         public ::fwRenderOgre::ITransformable
@@ -89,36 +90,30 @@ public:
     VISUOGREADAPTOR_API SMesh() noexcept;
     /// Destructor: if an entity exists in the Ogre Scene, asks Ogre to destroy it.
     VISUOGREADAPTOR_API virtual ~SMesh() noexcept;
-
     /// Returns the material associated to this.
     VISUOGREADAPTOR_API SPTR(::fwData::Material) getMaterial() const;
     /// Sets the current material.
     VISUOGREADAPTOR_API void setMaterial(SPTR(::fwData::Material) material);
     /// Sets the material template Name.
     VISUOGREADAPTOR_API void setMaterialTemplateName(const std::string& materialName);
-
     /// Active/Inactive automatic reset on camera. By default =true.
     VISUOGREADAPTOR_API void setAutoResetCamera(bool autoResetCamera);
-
     /// Returns associated entity
     VISUOGREADAPTOR_API ::Ogre::Entity* getEntity() const;
-
     /// Returns if the SMesh is visible in the scene or not.
     VISUOGREADAPTOR_API bool getVisibility() const;
     /// Sets whether the mesh is to be seen or not.
     VISUOGREADAPTOR_API void updateVisibility(bool isVisible);
-
     /// Set meshes vertex buffer to dynamic state (only has effect if called before service starting/update)
     VISUOGREADAPTOR_API void setDynamicVertices(bool _isDynamic);
     /// Set meshes and indices buffers to dynamic state (only has effect if called before service starting/update)
     VISUOGREADAPTOR_API void setDynamic(bool _isDynamic);
-
+    /// Set query mask, it's a flag for picking request
+    VISUOGREADAPTOR_API void setQueryFlags(std::uint32_t _queryFlags);
     /// This method is called by a reconstruction adaptor after creating the mesh adaptor
     VISUOGREADAPTOR_API void setIsReconstructionManaged(bool _isReconstructionManaged);
-
     /// Returns proposals to connect service slots to associated object signals
     VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
-
     /// Ask the render service (SRender) to update - we also flag the r2vb objects as dirty
     VISUOGREADAPTOR_API virtual void requestRender() override;
 
@@ -132,7 +127,6 @@ private:
     void stopping() override;
     /// Called when the mesh is modified
     void updating() override;
-
     /// Updates the Mesh, checks if color, number of vertices have changed, and updates them.
     void updateMesh(const ::fwData::Mesh::sptr& mesh);
     /// Instantiates a new material adaptor
@@ -143,7 +137,6 @@ private:
     /// Updates the associated material adaptor.
     /// This method is called when a material adaptor has been configured in the XML scene
     void updateXMLMaterialAdaptor();
-
     /// Attach a node in the scene graph
     void attachNode(::Ogre::MovableObject* _node);
 
@@ -161,10 +154,8 @@ private:
 
     /// Sets whether the camera must be auto reset when a mesh is updated or not.
     bool m_autoResetCamera;
-
     /// Node in the scene graph
     ::Ogre::Entity* m_entity;
-
     /// SMaterial attached to the mesh
     ::visuOgreAdaptor::SMaterial::sptr m_materialAdaptor;
     /// Attached material name (when configured by XML)
@@ -173,10 +164,8 @@ private:
     ::fwData::Material::sptr m_material;
     /// Attached Material's name
     std::string m_materialTemplateName;
-
     /// Attached texture adaptor UID
     std::string m_textureName;
-
     /// Indicates if the mesh adaptor is managed by a reconstruction adaptor
     bool m_isReconstructionManaged;
     /// Indicates if the mesh adaptor has to create a new material adaptor or simply use the one that is XML configured
@@ -184,19 +173,18 @@ private:
     /// Is the entity visible or not ? We need to store it in the adaptor because the information may be received
     /// before the entity is created.
     bool m_isVisible;
-
     /// The configured shading mode
     std::string m_shadingMode;
-
     /// defines if the mesh changes dynamically, defined in m_configuration
     bool m_isDynamic { false };
     /// defines if the vertices change dynamically, defined in m_configuration
     bool m_isDynamicVertices { false };
 
     ::fwRenderOgre::Mesh::sptr m_meshGeometry;
-
     /// SMaterial adaptors attached to the r2vb objects
     std::map< ::fwData::Mesh::CellTypes, ::visuOgreAdaptor::SMaterial::sptr> m_r2vbMaterialAdaptor;
+    /// Mask for picking request
+    std::uint32_t m_queryFlags {0};
 };
 
 //------------------------------------------------------------------------------
@@ -262,6 +250,13 @@ inline void SMesh::setDynamicVertices(bool _isDynamic)
     {
         m_meshGeometry->setDynamicVertices(_isDynamic);
     }
+}
+
+//------------------------------------------------------------------------------
+
+inline void SMesh::setQueryFlags(uint32_t _queryFlags)
+{
+    m_queryFlags = _queryFlags;
 }
 
 //-----------------------------------------------------------------------------

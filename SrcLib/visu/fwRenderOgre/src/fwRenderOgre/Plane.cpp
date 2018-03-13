@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -68,6 +68,7 @@ Plane::Plane( const ::fwTools::fwID::IDType& _negatoId, ::Ogre::SceneNode* _pare
 
 Plane::~Plane()
 {
+    m_parentSceneNode->removeAndDestroyChild(m_planeSceneNode);
 }
 
 //-----------------------------------------------------------------------------
@@ -497,13 +498,6 @@ void Plane::changeSlice(float sliceIndex)
     }
 
     return plane;
-}
-
-//-----------------------------------------------------------------------------
-
-void Plane::removeAndDestroyPlane()
-{
-    m_parentSceneNode->removeAndDestroyChild(m_sceneNodeName);
 }
 
 //-----------------------------------------------------------------------------

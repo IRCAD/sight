@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VISUOGREQT_WINDOW_HPP__
-#define __VISUOGREQT_WINDOW_HPP__
+#pragma once
 
 #include "visuOgreQt/config.hpp"
 
@@ -126,7 +125,10 @@ protected:
     /*
      * Qt events to manage keyboard and mouse input
      */
+    /// Qt event to manage keyboard action
     virtual void keyPressEvent(QKeyEvent* e) override;
+    /// Qt event to manage keyboard action
+    virtual void keyReleaseEvent(QKeyEvent* e) override;
     /// Qt event to manage mouse move
     virtual void mouseMoveEvent(QMouseEvent* e) override;
     /// Qt event to manage wheel action
@@ -141,6 +143,10 @@ protected:
     virtual void moveEvent(QMoveEvent* event) override;
     /// Qt event to manage generic events
     virtual bool event(QEvent* event) override;
+    /// Qt event to manage focus
+    virtual void focusInEvent(QFocusEvent* event) override;
+    /// Qt event to manage focus
+    virtual void focusOutEvent(QFocusEvent* event) override;
 
     /// Needed for multiple instances of ogreQt WIDGET
     static int m_counter;
@@ -175,9 +181,6 @@ protected:
     /// Used to log position of right clic.
     QPoint* m_lastPosRightClick;
 
-    /// Has the mouse moved since clicked
-    bool m_mousedMoved;
-
     int m_frameId;
 };
 
@@ -198,5 +201,3 @@ inline int Window::getFrameId() const
 //-----------------------------------------------------------------------------
 
 }
-
-#endif // __VISUOGREQT_WINDOW_HPP__

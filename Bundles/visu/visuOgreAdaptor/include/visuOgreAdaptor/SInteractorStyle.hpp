@@ -1,13 +1,12 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VISUOGREADAPTOR_SINTERACTORSTYLE_HPP__
-#define __VISUOGREADAPTOR_SINTERACTORSTYLE_HPP__
+#pragma once
 
-#include <visuOgreAdaptor/config.hpp>
+#include "visuOgreAdaptor/config.hpp"
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signals.hpp>
@@ -32,14 +31,15 @@ namespace visuOgreAdaptor
 
  * @section XML XML Configuration
  * @code{.xml}
-        <service type="::visuOgreAdaptor::SInteractorStyle">
-            <config render="..." style="InteractorStyle" />
+        <service type=" ::visuOgreAdaptor::SInteractorStyle ">
+            <config render=" ... " movement=" ... " picker=" ..." queryFlags="..."/>
        </service>
    @endcode
  * @subsection Configuration Configuration:
- * - \b render: Layer on which the interactions will be done.
- * - \b style: Style of the interactor depending on the type: 'Trackball', 'Fixed', 'Negato2D', 'Mesh', 'Video', or
- * 'VR', default to 'Trackball'.
+ * - \b render (mandatory) : Layer on which the interactions will be done.
+ * - \b movement (optional) : Style of the movement interactor: 'Trackball', 'Fixed', 'Negato2D', or 'VR'.
+ * - \b picker (optional) : Style of the picker interactor: 'Mesh' or 'Video'.
+ * - \b queryFlags (optional) : Used for picking. Picked only displayed entities with the same flag.
  */
 class VISUOGREADAPTOR_CLASS_API SInteractorStyle : public ::fwRenderOgre::IAdaptor
 {
@@ -52,10 +52,10 @@ public:
      * @name Signals API
      * @{
      */
-
+    /// Signal sent when a point is clicked
     typedef ::fwCom::Signal< void ( ::fwData::Object::sptr ) > PointClickedSignalType;
-    VISUOGREADAPTOR_API static const ::fwCom::Signals::SignalKeyType s_POINT_CLICKED_SIG;
-
+    VISUOGREADAPTOR_API static const ::fwCom::Signals::SignalKeyType s_ADD_POINT_SIG;
+    VISUOGREADAPTOR_API static const ::fwCom::Signals::SignalKeyType s_REMOVE_POINT_SIG;
     /** @} */
 
     /**
@@ -63,13 +63,13 @@ public:
      * @{
      */
 
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_POINT_CLICKED_SLOT;
-
+    /// Slots used when a point is clicked
+    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_ADD_POINT_SLOT;
+    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_REMOVE_POINT_SLOT;
     /** @} */
 
     /// Constructor. Creates signals and slots
     VISUOGREADAPTOR_API SInteractorStyle() noexcept;
-
     /// Destructor. Does nothing
     VISUOGREADAPTOR_API virtual ~SInteractorStyle() noexcept;
 
@@ -77,52 +77,33 @@ protected:
 
     /// Select the interactor style
     VISUOGREADAPTOR_API void configuring() override;
-
     /// Starting method
     VISUOGREADAPTOR_API void starting() override;
-
     /// Update the interactor
     VISUOGREADAPTOR_API void updating() override;
-
     /// Stopping method
     VISUOGREADAPTOR_API void stopping() override;
 
 private:
 
-    /**
-     * @name Slots methods
-     * @{
-     */
-
     /// Slot: sends a signal when the interactor has recieved a clicked point signal
-    void clickedPoint(fwData::Object::sptr obj);
-
-    /**
-     * @}
-     */
-
+    void addPoint(fwData::Object::sptr obj);
+    /// Slot: sends a signal when the interactor has recieved a clicked point signal
+    void removePoint(fwData::Object::sptr obj);
     /// Set interactor style
     void setInteractorStyle();
-
-    /// Type of the configured style
-    std::string m_configuredStyle;
-
-    /**
-     * @name Signals attributes
-     * @{
-     */
-
+    /// Type of the picker style
+    std::string m_pickerStyle;
+    /// Type of the movement style
+    std::string m_movementStyle;
     /// Pointer to the generic signal
-    PointClickedSignalType::sptr m_sigPointClicked;
-
-    /**
-     * @}
-     */
-
+    PointClickedSignalType::sptr m_sigAddPoint;
+    /// Pointer to the generic signal
+    PointClickedSignalType::sptr m_sigRemovePoint;
     ///Connection service, needed for slot/signal association
     ::fwCom::helper::SigSlotConnection m_connections;
+    /// Mask for picking requests
+    std::uint32_t m_queryFlags {0};
 };
 
 } //namespace visuOgreAdaptor
-
-#endif // __VISUOGREADAPTOR_SINTERACTORSTYLE_HPP__

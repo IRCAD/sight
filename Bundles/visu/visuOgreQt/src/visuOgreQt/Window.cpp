@@ -97,8 +97,6 @@ void Window::initialise()
     /*
        We need to supply the low level OS window handle to this QWindow so that Ogre3D knows where to draw
        the scene. Below is a cross-platform method on how to do this.
-       If you set both options (externalWindowHandle and parentWindowHandle) this code will work with OpenGL
-       and DirectX.
      */
 #if defined(Q_OS_MAC) || defined(Q_OS_WIN)
     parameters["externalWindowHandle"] = Ogre::StringConverter::toString((size_t)(this->winId()));
@@ -116,9 +114,6 @@ void Window::initialise()
     parameters["contextProfile"] = Ogre::String("1");
 #endif
 
-    // We create the renderWindow with a dummy size of 1 by 1, otherwise we would have to wait for the widget to
-    // be painted. But then, the starting process of the render service and its adaptors becomes quite complicated.
-    // We did that in the past, but now we use this trick to be able to start everything at once.
     m_ogreRenderWindow = m_ogreRoot->createRenderWindow("Widget-RenderWindow_" + std::to_string(m_id),
                                                         static_cast<unsigned int>(this->width()),
                                                         static_cast<unsigned int>(this->height()),
@@ -189,8 +184,10 @@ void Window::destroyWindow()
 
     if(m_ogreRenderWindow)
     {
+        m_ogreRenderWindow->removeListener(this);
         ::fwRenderOgre::WindowManager::sptr mgr = ::fwRenderOgre::WindowManager::get();
         mgr->unregisterWindow(m_ogreRenderWindow);
+        m_ogreRenderWindow = nullptr;
     }
 
     if (m_lastPosLeftClick)
@@ -401,15 +398,35 @@ void Window::keyPressEvent(QKeyEvent* e)
 {
     ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo info;
     info.interactionType = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::KEYPRESS;
-    info.key             = e->key();
 
-    if(m_fullscreen && e->key() == Qt::Key_Escape)
+    switch(e->key())
+    {
+        case ::Qt::Key_Shift: info.key   = ::fwRenderOgre::interactor::IInteractor::SHIFT; break;
+        case ::Qt::Key_Control: info.key = ::fwRenderOgre::interactor::IInteractor::CONTROL; break;
+        case ::Qt::Key_Meta: info.key    = ::fwRenderOgre::interactor::IInteractor::META; break;
+        case ::Qt::Key_Alt: info.key     = ::fwRenderOgre::interactor::IInteractor::ALT; break;
+        default:
+            info.key = e->key();
+    }
+
+    if(m_fullscreen && e->key() == ::Qt::Key_Escape)
     {
         ::fwGui::Cursor cursor;
         cursor.setCursor(::fwGui::ICursor::BUSY);
         ::fwGui::Application::New()->exit(0);
         cursor.setDefaultCursor();
     }
+
+    Q_EMIT interacted(info);
+}
+
+// ----------------------------------------------------------------------------
+
+void Window::keyReleaseEvent(QKeyEvent* e)
+{
+    ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo info;
+    info.interactionType = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::KEYRELEASE;
+    info.key             = e->key();
 
     Q_EMIT interacted(info);
 }
@@ -432,11 +449,10 @@ void Window::mouseMoveEvent( QMouseEvent* e )
         info.dy              = dy;
         info.button          = ::fwRenderOgre::interactor::IInteractor::LEFT;
         Q_EMIT interacted(info);
+
         m_lastPosLeftClick->setX(e->x());
         m_lastPosLeftClick->setY(e->y());
         this->requestRender();
-
-        m_mousedMoved = true;
     }
     else if (e->buttons() & ::Qt::MiddleButton && m_lastPosMiddleClick )
     {
@@ -515,8 +531,6 @@ void Window::mousePressEvent( QMouseEvent* e )
     {
         m_lastPosLeftClick = new QPoint(e->x(), e->y());
 
-        m_mousedMoved = false;
-
         info.button = ::fwRenderOgre::interactor::IInteractor::LEFT;
     }
     else if(e->button() == Qt::MiddleButton)
@@ -551,14 +565,6 @@ void Window::mouseReleaseEvent( QMouseEvent* e )
 
     if(e->button() == Qt::LeftButton && m_lastPosLeftClick)
     {
-        if( !m_mousedMoved )
-        {
-            Q_EMIT rayCastRequested(e->x(),
-                                    e->y(),
-                                    static_cast<int>(m_ogreRenderWindow->getWidth()),
-                                    static_cast<int>(m_ogreRenderWindow->getHeight()));
-        }
-
         delete m_lastPosLeftClick;
         m_lastPosLeftClick = nullptr;
 
@@ -579,6 +585,24 @@ void Window::mouseReleaseEvent( QMouseEvent* e )
         info.button = ::fwRenderOgre::interactor::IInteractor::RIGHT;
     }
 
+    Q_EMIT interacted(info);
+}
+
+// ----------------------------------------------------------------------------
+
+void Window::focusInEvent(QFocusEvent* event)
+{
+    ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo info;
+    info.interactionType = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::FOCUSIN;
+    Q_EMIT interacted(info);
+}
+
+// ----------------------------------------------------------------------------
+
+void Window::focusOutEvent(QFocusEvent* event)
+{
+    ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo info;
+    info.interactionType = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::FOCUSOUT;
     Q_EMIT interacted(info);
 }
 

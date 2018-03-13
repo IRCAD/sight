@@ -223,27 +223,23 @@
             <service uid="cfgLightManager"  type="::fwServices::SConfigController">
                 <appConfig id="OgreLightManager" />
                 <parameter replace="WID_PARENT" by="lightView" />
-                <parameter replace="ICON_PATH" by="arMedia-0.1/icons/app.ico" />
             </service>
 
             <service uid="cfgHistogramManager" type="::fwServices::SConfigController">
                 <appConfig id="OgreHistogramManager" />
-                <inout key="imageUID" uid="imageUID" />
-                <inout key="maskUID" uid="maskUID" />
+                <inout key="IMAGE" uid="imageUID" />
                 <inout key="TF" uid="TF" optional="yes" />
                 <parameter replace="WID_PARENT" by="histogramView" />
-                <parameter replace="ICON_PATH" by="arMedia-0.1/icons/app.ico" />
             </service>
 
             <service uid="cfgIDVRManager"  type="::fwServices::SConfigController">
-                <appConfig id="OgreIDVR" />
-                <inout key="maskUID" uid="maskUID" />
+                <appConfig id="OgreIDVRManager" />
+                <inout key="MASK" uid="maskUID" />
                 <parameter replace="WID_PARENT" by="idvrView" />
-                <parameter replace="ICON_PATH" by="arMedia-0.1/icons/app.ico" />
-                <parameter replace="idvrEnumParamChannel" by="idvrEnumParamChannel" />
-                <parameter replace="idvrBoolParamChannel" by="idvrBoolParamChannel" />
-                <parameter replace="idvrDoubleParamChannel" by="idvrDoubleParamChannel" />
-                <parameter replace="idvrColorParamChannel" by="idvrColorParamChannel" />
+                <parameter replace="IDVR_ENUM_PARAM_CHANNEL" by="idvrEnumParamChannel" />
+                <parameter replace="IDVR_BOOL_PARAM_CHANNEL" by="idvrBoolParamChannel" />
+                <parameter replace="IDVR_DOUBLE_PARAM_CHANNEL" by="idvrDoubleParamChannel" />
+                <parameter replace="IDVR_COLOR_PARAM_CHANNEL" by="idvrColorParamChannel" />
             </service>
 
             <!-- ******************************* Services ***************************************** -->

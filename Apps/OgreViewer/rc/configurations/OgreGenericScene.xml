@@ -122,15 +122,15 @@
 
         <service uid="interactorAdaptorVideo" type="::visuOgreAdaptor::SInteractorStyle">
             <in key="object" uid="camera" />
-            <config layer="video" style="Fixed" />
+            <config layer="video" movement="Fixed" />
         </service>
 
         <service uid="interactorAdaptor" type="::visuOgreAdaptor::SInteractorStyle">
-            <config layer="default" style="Trackball" />
+            <config layer="default" movement="Trackball" />
         </service>
 
         <service uid="selectInteractorAdaptor" type="::visuOgreAdaptor::SInteractorStyle">
-            <config layer="default" style="Mesh" />
+            <config layer="default" picker="Mesh" />
         </service>
 
         <service uid="modelSeriesAdaptor" type="::visuOgreAdaptor::SModelSeries" autoConnect="yes">
@@ -182,7 +182,7 @@
         </service>
 
         <connect>
-            <signal>selectInteractorAdaptor/pointClickedSignal</signal>
+            <signal>selectInteractorAdaptor/pointAdded</signal>
             <slot>addPointInList/addPoint</slot>
         </connect>
 

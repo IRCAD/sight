@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWRENDEROGRE_WINDOWMANAGER_HPP__
-#define __FWRENDEROGRE_WINDOWMANAGER_HPP__
+#pragma once
 
 #include "fwRenderOgre/config.hpp"
 
@@ -36,10 +35,7 @@ public:
     FWRENDEROGRE_API void unregisterWindow(::Ogre::RenderWindow* _window);
 
     /// Return the singleton instance
-    FWRENDEROGRE_API static ::fwRenderOgre::WindowManager::sptr get()
-    {
-        return ::fwCore::util::LazyInstantiator< ::fwRenderOgre::WindowManager >::getInstance();
-    }
+    FWRENDEROGRE_API static ::fwRenderOgre::WindowManager::sptr get();
 
     /// returns true if at least one window is registered
     FWRENDEROGRE_API bool hasWindow();
@@ -54,5 +50,3 @@ private:
 };
 
 } // namespace fwRenderOgre
-
-#endif // __FWRENDEROGRE_WINDOWMANAGER_HPP__

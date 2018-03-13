@@ -1,4 +1,4 @@
-#version 400
+#version 410
 
 #if defined(QUAD)
 layout (lines_adjacency) in;

@@ -34,7 +34,7 @@ const unsigned int Mesh::s_maxTextureSize;
 //-----------------------------------------------------------------------------
 
 template <typename T>
-void copyIndices(void* _pTriangles, void* _pQuads, void* _pEdges, void* _pTetras, void* _pPoints,
+void copyIndices(void* _pTriangles, void* _pQuads, void* _pEdges, void* _pTetras,
                  ::fwDataTools::helper::MeshGetter& _meshHelper, size_t _uiNumCells)
 {
     FW_PROFILE_AVG("copyIndices", 5);
@@ -43,7 +43,6 @@ void copyIndices(void* _pTriangles, void* _pQuads, void* _pEdges, void* _pTetras
     T* pQuads     = static_cast<T*>(_pQuads);
     T* pEdges     = static_cast<T*>(_pEdges);
     T* pTetras    = static_cast<T*>(_pTetras);
-    T* pPoints    = static_cast<T*>(_pPoints);
 
     ::fwData::Mesh::ConstCellDataMultiArrayType cells                  = _meshHelper.getCellData();
     ::fwData::Mesh::ConstCellDataOffsetsMultiArrayType cellDataOffsets = _meshHelper.getCellDataOffsets();
@@ -52,11 +51,7 @@ void copyIndices(void* _pTriangles, void* _pQuads, void* _pEdges, void* _pTetras
     for (unsigned int i = 0; i < _uiNumCells; ++i)
     {
         long offset = static_cast<long>(cellDataOffsets[static_cast<int>(i)]);
-        if ( cellsType[static_cast<int>(i)] == ::fwData::Mesh::POINT )
-        {
-            *pPoints++ = static_cast<T>(cells[offset]);
-        }
-        else if ( cellsType[static_cast<int>(i)] == ::fwData::Mesh::TRIANGLE )
+        if ( cellsType[static_cast<int>(i)] == ::fwData::Mesh::TRIANGLE )
         {
             *pTriangles++ = static_cast<T>(cells[offset]);
             *pTriangles++ = static_cast<T>(cells[offset + 1]);
@@ -373,33 +368,38 @@ void Mesh::updateMesh(const ::fwData::Mesh::sptr& _mesh)
                     m_subMeshes[i]->indexData->indexStart = 0;
                 }
 
-                ::Ogre::HardwareIndexBufferSharedPtr ibuf = m_subMeshes[i]->indexData->indexBuffer;
-
-                // Allocate index buffer of the requested number of vertices (ibufCount) if necessary
-                // We don't reallocate if we have more space than requested
-                bool createIndexBuffer = !ibuf;
-                if( ibuf)
+                if(cellType != ::fwData::Mesh::POINT)
                 {
-                    // reallocate if new mesh has more indexes or IndexType change
-                    createIndexBuffer = (ibuf->getNumIndexes() < numIndices[i]) || (indicesPrev32Bits != indices32Bits);
+                    ::Ogre::HardwareIndexBufferSharedPtr ibuf = m_subMeshes[i]->indexData->indexBuffer;
+
+                    // Allocate index buffer of the requested number of vertices (ibufCount) if necessary
+                    // We don't reallocate if we have more space than requested
+                    bool createIndexBuffer = !ibuf;
+                    if( ibuf)
+                    {
+                        // reallocate if new mesh has more indexes or IndexType change
+                        createIndexBuffer = (ibuf->getNumIndexes() < numIndices[i]) ||
+                                            (indicesPrev32Bits != indices32Bits);
+                    }
+                    if(createIndexBuffer)
+                    {
+                        ::Ogre::HardwareBuffer::Usage usage = m_isDynamic ?
+                                                              ::Ogre::HardwareBuffer::HBU_DYNAMIC_WRITE_ONLY_DISCARDABLE
+                                                              :
+                                                              ::Ogre::HardwareBuffer::HBU_STATIC_WRITE_ONLY;
+
+                        ibuf = ::Ogre::HardwareBufferManager::getSingleton().createIndexBuffer(
+                            indices32Bits ? ::Ogre::HardwareIndexBuffer::IT_32BIT : ::Ogre::HardwareIndexBuffer::IT_16BIT,
+                            numIndices[i], usage);
+
+                        m_subMeshes[i]->indexData->indexBuffer = ibuf;
+                    }
+                    m_subMeshes[i]->indexData->indexCount = numIndices[i];
+                    OSLM_DEBUG("Index #" << m_subMeshes[i]->indexData->indexCount );
+
+                    // Lock index data, we are going to write into it in the next loop
+                    indexBuffer[i] = ibuf->lock(::Ogre::HardwareBuffer::HBL_DISCARD);
                 }
-                if(createIndexBuffer)
-                {
-                    ::Ogre::HardwareBuffer::Usage usage = m_isDynamic ?
-                                                          ::Ogre::HardwareBuffer::HBU_DYNAMIC_WRITE_ONLY_DISCARDABLE :
-                                                          ::Ogre::HardwareBuffer::HBU_STATIC_WRITE_ONLY;
-
-                    ibuf = ::Ogre::HardwareBufferManager::getSingleton().createIndexBuffer(
-                        indices32Bits ? ::Ogre::HardwareIndexBuffer::IT_32BIT : ::Ogre::HardwareIndexBuffer::IT_16BIT,
-                        numIndices[i], usage);
-
-                    m_subMeshes[i]->indexData->indexBuffer = ibuf;
-                }
-                m_subMeshes[i]->indexData->indexCount = numIndices[i];
-                OSLM_DEBUG("Index #" << m_subMeshes[i]->indexData->indexCount );
-
-                // Lock index data, we are going to write into it in the next loop
-                indexBuffer[i] = ibuf->lock(::Ogre::HardwareBuffer::HBL_DISCARD);
             }
             else
             {
@@ -428,20 +428,18 @@ void Mesh::updateMesh(const ::fwData::Mesh::sptr& _mesh)
     {
         copyIndices< std::uint32_t >( indexBuffer[::fwData::Mesh::TRIANGLE], indexBuffer[::fwData::Mesh::QUAD],
                                       indexBuffer[::fwData::Mesh::EDGE], indexBuffer[::fwData::Mesh::TETRA],
-                                      indexBuffer[::fwData::Mesh::POINT],
                                       meshHelper, _mesh->getNumberOfCells() );
     }
     else
     {
         copyIndices< std::uint16_t >( indexBuffer[::fwData::Mesh::TRIANGLE], indexBuffer[::fwData::Mesh::QUAD],
                                       indexBuffer[::fwData::Mesh::EDGE], indexBuffer[::fwData::Mesh::TETRA],
-                                      indexBuffer[::fwData::Mesh::POINT],
                                       meshHelper, _mesh->getNumberOfCells() );
     }
 
     for(size_t i = 0; i < s_numPrimitiveTypes; ++i)
     {
-        if(numIndices[i] > 0)
+        if(numIndices[i] > 0 && m_subMeshes[i]->indexData->indexBuffer)
         {
             m_subMeshes[i]->indexData->indexBuffer->unlock();
         }
@@ -525,8 +523,9 @@ void Mesh::updateMesh(const ::fwData::PointList::csptr& _pointList)
 
 //------------------------------------------------------------------------------
 
-std::vector<R2VBRenderable*> Mesh::updateR2VB(const ::fwData::Mesh::sptr& _mesh, ::Ogre::SceneManager& _sceneMgr,
-                                              const std::string& _materialName, bool _hasTexture)
+std::pair<bool, std::vector<R2VBRenderable*> > Mesh::updateR2VB(const ::fwData::Mesh::sptr& _mesh,
+                                                                ::Ogre::SceneManager& _sceneMgr,
+                                                                const std::string& _materialName, bool _hasTexture)
 {
     //------------------------------------------
     // Render to vertex-buffer
@@ -536,6 +535,7 @@ std::vector<R2VBRenderable*> Mesh::updateR2VB(const ::fwData::Mesh::sptr& _mesh,
     // - Per-primitive color generation - either triangles, quads or tetrahedrons
     //------------------------------------------
     std::vector<R2VBRenderable*> r2vbRenderables;
+    bool add = true;
 
     const bool hasPrimitiveColor = (_mesh->getCellColorsArray() != nullptr);
     if( (m_subMeshes[::fwData::Mesh::QUAD] || m_subMeshes[::fwData::Mesh::TETRA]) || hasPrimitiveColor)
@@ -579,12 +579,29 @@ std::vector<R2VBRenderable*> Mesh::updateR2VB(const ::fwData::Mesh::sptr& _mesh,
 
             m_r2vbObject[cellType]->setOutputSettings(static_cast<unsigned int>(subMesh->indexData->indexCount),
                                                       m_hasPrimitiveColor || m_hasVertexColor,
-                                                      m_hasUV && _hasTexture);
+                                                      m_hasUV);
 
             r2vbRenderables.push_back(m_r2vbObject[cellType]);
         }
+        add = true;
     }
-    return r2vbRenderables;
+    else
+    {
+        // Clear if necessary
+        for(auto r2vbObject : m_r2vbObject)
+        {
+            r2vbRenderables.push_back(r2vbObject.second);
+        }
+        m_r2vbObject.clear();
+
+        if(m_r2vbEntity)
+        {
+            _sceneMgr.destroyEntity(m_r2vbEntity);
+            m_r2vbEntity = nullptr;
+        }
+        add = false;
+    }
+    return std::make_pair(add, r2vbRenderables);
 }
 
 //-----------------------------------------------------------------------------
@@ -984,6 +1001,7 @@ void Mesh::updateMaterial(Material* _material, bool _isR2VB) const
     _material->setMeshSize(bbox.getSize().length());
 
     _material->setHasMeshNormal(m_hasNormal);
+    _material->setHasUV(m_hasUV);
 
     // The r2vb pipeline outputs per-vertex color if we have per-primitive color
     // Thus for the rendering pipeline it is only viewed as per-vertex color

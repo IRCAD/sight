@@ -301,11 +301,11 @@
             </service>
 
             <service uid="interactorStyle" type="::visuOgreAdaptor::SInteractorStyle">
-                <config layer="default" style="Fixed" />
+                <config layer="default" movement="Fixed" />
             </service>
 
             <service uid="interactorStyle2" type="::visuOgreAdaptor::SInteractorStyle">
-                <config layer="video" style="Fixed" />
+                <config layer="video" movement="Fixed" />
             </service>
 
             <service uid="axis" type="::visuOgreAdaptor::SAxis">
@@ -373,13 +373,26 @@
             <service uid="arucoParams" type="::guiQt::editor::SParameters">
                 <parameters>
                     <param type="bool" name="Show Marker" key="debugMode" defaultValue="true" />
-                    <param type="enum" name="Detection Method" key="method" defaultValue="ADPT_THRES" values="ADPT_THRES,FIXED_THRES,CANNY" />
-                    <param type="enum" name="Corner ref." key="corner" defaultValue="SUBPIX" values="NONE,HARRIS,SUBPIX,LINES" />
-                    <param type="double" name="block size" key="blocksize" defaultValue="7." min="0." max="30." />
-                    <param type="double" name="constant" key="constant" defaultValue="7." min="0." max="50." />
-                    <param type="double" name="border width(%)" key="borderwidth" defaultValue="0.01" min="0." max="99.9" />
-                    <param type="int" name="Pattern Width(mm)" key="pattern" defaultValue="60" min="10" max="1000" />
-                    <param type="int" name="Speed" key="speed" defaultValue="3" min="1" max="3" />
+                    <param type="bool" name="Corner refinement." key="corner" defaultValue="true" />
+                    <param type="int" name="adpt. Threshold win size min" key="adaptiveThreshWinSizeMin" defaultValue="3" min="1" max="100" />
+                    <param type="int" name="adpt. Threshold win size max" key="adaptiveThreshWinSizeMax" defaultValue="23" min="1" max="100" />
+                    <param type="int" name="adpt. Threshold win size step" key="adaptiveThreshWinSizeStep" defaultValue="10" min="1" max="100" />
+                    <param type="double" name="adpt. threshold constant" key="adaptiveThreshConstant" defaultValue="7." min="0." max="30." />
+                    <param type="double" name="Min. Marker Perimeter Rate" key="minMarkerPerimeterRate" defaultValue="0.03" min="0.01" max="1.0" />
+                    <param type="double" name="Max. Marker Perimeter Rate" key="maxMarkerPerimeterRate" defaultValue="4.0" min="1." max="10." />
+                    <param type="double" name="Polygonal Approx. Accuracy Rate" key="polygonalApproxAccuracyRate" defaultValue="0.03" min="0.01" max="1." />
+                    <param type="double" name="Min. Corner Distance Rate" key="minCornerDistanceRate" defaultValue="0.01" min="0." max="1." />
+                    <param type="int" name="Min. Distance to Border" key="minDistanceToBorder" defaultValue="1" min="0" max="10" />
+                    <param type="double" name="Min. Marker Distance Rate" key="minMarkerDistanceRate" defaultValue="0.01" min="0." max="1." />
+                    <param type="int" name="Corner Refinement Win. Size" key="cornerRefinementWinSize" defaultValue="5" min="1" max="100" />
+                    <param type="int" name="Corner Refinement Max Iterations" key="cornerRefinementMaxIterations" defaultValue="30" min="0" max="10" />
+                    <param type="double" name="Corner Refinement Min. Accuracy" key="cornerRefinementMinAccuracy" defaultValue="0.1" min="0." max="10." />
+                    <param type="int" name="Marker Border Bits" key="markerBorderBits" defaultValue="1" min="1" max="100" />
+                    <param type="int" name="Perspective Remove Pixel per Cell" key="perspectiveRemovePixelPerCell" defaultValue="8" min="1" max="32" />
+                    <param type="double" name="Perspective Remove Ignored Margin Per Cell" key="perspectiveRemoveIgnoredMarginPerCell" defaultValue="0.13" min="0." max="1." />
+                    <param type="double" name="Max. Erroneous Bits In Border Rate" key="maxErroneousBitsInBorderRate" defaultValue="0.35" min="0." max="1." />
+                    <param type="double" name="Min. Otsu Std. Dev." key="minOtsuStdDev" defaultValue="5.0" min="0." max="100." />
+                    <param type="double" name="Error Correction Rate" key="errorCorrectionRate" defaultValue="0.6" min="0." max="1." />
                 </parameters>
             </service>
 
@@ -414,19 +427,11 @@
                 <inout group="tagTL">
                     <key uid="tagTL" /> <!-- timeline of detected tag(s) -->
                 </inout>
-                <config>
-                    <track>
-                        <!-- list of tag's id -->
-                        <marker id="101" />
-                    </track>
-                    <threshold>
-                        <method>ADPT_THRES</method>
-                        <blockSize>7</blockSize>
-                        <constant>7</constant>
-                    </threshold>
-                    <patternWidth>60</patternWidth>
-                    <debugMarkers>yes</debugMarkers>
-                </config>
+                <track>
+                    <!-- list of tag's id -->
+                    <marker id="101" />
+                </track>
+                <debugMarkers>yes</debugMarkers>
             </service>
 
             <!-- This will compute the pose of the camera with tag(s) detected by aruco -->
@@ -507,11 +512,6 @@
             <connect>
                 <signal>arucoParams/doubleChanged</signal>
                 <slot>tracker/setDoubleParameter</slot>
-            </connect>
-
-            <connect>
-                <signal>arucoParams/enumChanged</signal>
-                <slot>tracker/setEnumParameter</slot>
             </connect>
 
             <connect>

@@ -2,6 +2,7 @@
     <requirement id="dataReg" />
     <requirement id="servicesReg" />
     <requirement id="visuOgreQt" />
+
     <extension implements="::fwServices::registry::AppConfig">
         <id>TutoOgreGenericScene</id>
         <config>
@@ -44,6 +45,7 @@
                         <menuItem name="Open image" shortcut="Ctrl+I" />
                         <menuItem name="Open mesh" shortcut="Ctrl+M" />
                         <menuItem name="Open texture" shortcut="Ctrl+T" />
+                        <menuItem name="Render to texture" shortcut="Ctrl+R" />
                         <separator/>
                         <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
                     </layout>
@@ -52,6 +54,7 @@
                     <menuItem sid="actionOpenImage" start="yes" />
                     <menuItem sid="actionOpenMesh" start="yes" />
                     <menuItem sid="actionOpenTexture" start="yes" />
+                    <menuItem sid="actionRenderToTexture" start="yes" />
                     <menuItem sid="actionQuit" start="yes" />
                 </registry>
             </service>
@@ -66,6 +69,11 @@
 
             <service uid="actionOpenTexture" type="::gui::action::SStarter">
                 <start uid="textureReader" />
+            </service>
+
+            <service uid="actionRenderToTexture" type="::gui::action::SStarter">
+                <start_only uid="offscreenScene" />
+                <start_only uid="meshOffscreenAdaptor" />
             </service>
 
             <service uid="actionQuit" type="::gui::action::SQuit" />
@@ -142,7 +150,7 @@
             </service>
 
             <service uid="interactorAdaptor" type="::visuOgreAdaptor::SInteractorStyle">
-                <config layer="default" style="Trackball" />
+                <config layer="default" movement="Trackball" />
             </service>
 
             <service uid="cameraAdaptor" type="::visuOgreAdaptor::SCamera" autoConnect="yes">
@@ -157,7 +165,7 @@
 
             <service uid="materialAdaptor" type="::visuOgreAdaptor::SMaterial">
                 <inout key="material" uid="material" />
-                <config layer="default" materialName="texMaterial" textureName="meshTexture" shadingMode="flat"/>
+                <config layer="default" materialName="texMaterial" textureName="meshTexture" />
             </service>
 
             <service uid="negato3DAdaptor" type="::visuOgreAdaptor::SNegato3D">
@@ -170,7 +178,24 @@
                 <config layer="default" textureName="meshTexture" filtering="linear" wrapping="repeat" />
             </service>
 
-            <!-- #################################### End Generic Scene ########################################### -->
+            <!-- ##################################### End Generic Scene ########################################### -->
+
+            <!-- ################################### Begin offscreen scene ######################################### -->
+            <service uid="offscreenScene" type="::fwRenderOgre::SRender">
+                <inout key="offScreen" uid="texture" />
+                <scene width="1920" height="1080">
+                    <background topColor="#0000ff" bottomColor="#ff0000" topScale="0.7" bottomScale="1.0" />
+                    <layer id="default" depth="1" />
+                    <adaptor uid="meshOffscreenAdaptor" />
+                </scene>
+            </service>
+
+            <service uid="meshOffscreenAdaptor" type="::visuOgreAdaptor::SMesh" autoConnect="yes">
+                <inout key="mesh" uid="mesh" />
+                <config layer="default" />
+            </service>
+
+            <!-- ##################################### End offscreen Scene ######################################### -->
 
             <start uid="mainFrame" />
             <start uid="imageReader" />

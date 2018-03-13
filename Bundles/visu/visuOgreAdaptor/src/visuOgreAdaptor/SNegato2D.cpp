@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -159,7 +159,6 @@ void SNegato2D::stopping()
         m_connection.disconnect();
     }
 
-    m_plane->removeAndDestroyPlane();
     delete m_plane;
 
     m_3DOgreTexture.reset();

@@ -50,10 +50,17 @@ class Layer;
         </scene>
     </service>
    @endcode
- * With :
+ *
+ * @subsection In-Out In-Out
+ * - \b offScreen [::fwData::Image] (optional, unused by default): If used, render the scene in an image
+ * and not in a window.
+ *
+ * @subsection Configuration Configuration
  *  - \b scene
  *    - \b renderMode (optional): 'auto' (only when something has changed) or 'always' (render continuously).
  *         Default is 'auto'.
+ *    - \b width (optional, "1280" by default): width for off-screen rendering
+ *    - \b height (optional, "720" by default): height for off-screen rendering
  *  - \b layer : mandatory, defines the scene's layer
  *    - \b id (mandatory): the identifier of the layer
  *    - \b depth (mandatory): the depth of the layer, starting from 1
@@ -107,7 +114,6 @@ public:
     /// Slot: Computes the parameters to reset the camera.
     FWRENDEROGRE_API static const ::fwCom::Slots::SlotKeyType s_COMPUTE_CAMERA_CLIPPING_SLOT;
 
-    typedef ::fwCom::Slot< void (int, int, int, int) > DoRayCastSlotType;
     /// Slot: Request the picker to do a ray cast according to the passed position.
     FWRENDEROGRE_API static const ::fwCom::Slots::SlotKeyType s_DO_RAY_CAST_SLOT;
 
@@ -172,9 +178,6 @@ private:
     /// Configure each layer of the scene
     void configureLayer(const ConfigType& _cfg );
 
-    /// Execute a ray cast with a ray built from (x,y) point, which is the mouse position
-    void doRayCast(int x, int y, int width, int height);
-
     /// Contains the scene configuration which is the scene xml node
     ConfigurationType m_sceneConfiguration;
 
@@ -198,6 +201,18 @@ private:
 
     /// True if the render window is in fullscreen.
     bool m_fullscreen;
+
+    /// Width for off-screen rendering
+    unsigned int m_width { 0 };
+
+    /// Height for off-screen rendering
+    unsigned int m_height { 0 };
+
+    /// If true, scene is rendered off-screen
+    bool m_offScreen { false };
+
+    /// If true and doing offscreen rendering, the scene will be rendered upside down.
+    bool m_flip { false };
 };
 
 //-----------------------------------------------------------------------------

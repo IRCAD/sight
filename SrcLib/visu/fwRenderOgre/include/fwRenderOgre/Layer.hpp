@@ -111,7 +111,7 @@ public:
      * @brief setRenderWindow
      * Set the render window containing this layer
      */
-    FWRENDEROGRE_API void setRenderWindow(::Ogre::RenderWindow* renderWindow);
+    FWRENDEROGRE_API void setRenderTarget(::Ogre::RenderTarget* _renderTarget);
     /**
      * @brief setID
      * Set the associated scene manager ID of this viewport
@@ -187,9 +187,7 @@ public:
     /// Sets the render service.
     FWRENDEROGRE_API void setRenderService( const SPTR(::fwRenderOgre::SRender)& _service );
 
-    FWRENDEROGRE_API bool doRayCast(int x, int y, int width, int height);
-
-    FWRENDEROGRE_API ::fwRenderOgre::interactor::IInteractor getInteractor(std::string type);
+    FWRENDEROGRE_API ::fwRenderOgre::interactor::IInteractor& getInteractor(std::string type);
 
     /// Requests render.
     FWRENDEROGRE_API void requestRender();
@@ -272,7 +270,7 @@ private:
     ::Ogre::SceneManager* m_sceneManager;
 
     /// Ogre render window containing this viewport.
-    ::Ogre::RenderWindow* m_renderWindow;
+    ::Ogre::RenderTarget* m_renderTarget;
 
     /// Ogre viewport representing this layer.
     ::Ogre::Viewport* m_viewport;
