@@ -24,6 +24,7 @@ except_re         = re.compile('fw4spl: ([a-zA-Z_][a-zA-Z0-9_]*::(?:[a-zA-Z_][a-
 
 # Regexes of the files to skip
 file_skip_re = [
+    re.compile('pages.html'),
     re.compile('dir_.+\.html'),
     re.compile('.+_source.html')
 ]
@@ -67,6 +68,21 @@ def gather_sources():
     for _, _, dir_files in os.walk('./html/'):
         files += [f for f in dir_files if f.endswith('.html')]
     return files
+
+def parse_related_pages():
+    """
+    Parse the 'pages.html' doxygen file and generate the list of related pages.
+    """
+    pages = list()
+    html = open(os.path.join('./html', 'pages.html'), encoding="utf8").read()
+    soup = bs4.BeautifulSoup(html, "html.parser")
+    table = soup.find("table", class_="directory")
+    for cell in table.find_all("tr"):
+        page_name = cell.td.a.string
+        page_link = cell.td.a.get('href')
+        pages.append((page_name, "Guide", page_link))
+        print("Guide: {}@{}".format(page_name, page_link))
+    return pages
 
 def parse_file(f):
     """
@@ -255,6 +271,7 @@ if __name__ == '__main__':
         new_entries = parse_file(f)
         if len(new_entries) != 0:
             entries += new_entries
+    entries += parse_related_pages()
     populate_db(conn, entries)
     copy_files()
     conn.close()
