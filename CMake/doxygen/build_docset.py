@@ -81,8 +81,24 @@ def parse_related_pages():
         page_name = cell.td.a.string
         page_link = cell.td.a.get('href')
         pages.append((page_name, "Guide", page_link))
-        print("Guide: {}@{}".format(page_name, page_link))
     return pages
+
+# TODO: strip the leading repository path from the HTML file to get rid of the ugly full paths ?
+def file_repo(f, f_soup):
+    """
+    Return the name of the repository that a particular documentation file was generated from, or None if not possible.
+    """
+    # res = f_soup.select("div.contents ul li a [href$=_source.html]")
+    # res = f_soup.select("ul li a[href$=_source.html]")
+    lists = f_soup.find_all('ul')
+    if len(lists) > 0:
+        file_path = lists[-1].li.get_text()
+        path = Path(file_path)
+        for repo in cfg['repositories']:
+            candidates = [ repo for repo in cfg['repositories'] if file_path.startswith(repo) ]
+            if len(candidates) > 0:
+                res = max(candidates, key=len)
+                return repo_names[res]
 
 def parse_file(f):
     """
@@ -108,6 +124,9 @@ def parse_file(f):
             if match:
                 path = match.group(1)
                 srv = match.group(2)
+                repo = file_repo(f, soup)
+                if repo is not None:
+                    path = path + " ({})".format(repo)
                 return (path, "Service", f)
 
         def is_bad_service(f, soup):
@@ -116,6 +135,9 @@ def parse_file(f):
             if match:
                 path = match.group(1)
                 srv = match.group(2)
+                repo = file_repo(f, soup)
+                if repo is not None:
+                    path = path + " ({})".format(repo)
                 print("Warning: service {} has non compliant name (no S prefix)".format(srv))
                 return (path, "Service", f)
 
@@ -125,6 +147,9 @@ def parse_file(f):
             if match:
                 path = match.group(1)
                 obj = match.group(2)
+                repo = file_repo(f, soup)
+                if repo is not None:
+                    path = path + " ({})".format(repo)
                 return (path, "Object", f)
 
         def is_interface(f, soup):
@@ -133,6 +158,9 @@ def parse_file(f):
             if match:
                 path = match.group(1)
                 iface = match.group(2)
+                repo = file_repo(f, soup)
+                if repo is not None:
+                    path = path + " ({})".format(repo)
                 return (path, "Interface", f)
 
         def is_exception(f, soup):
@@ -141,6 +169,9 @@ def parse_file(f):
             if match:
                 path = match.group(1)
                 exception = match.group(2)
+                repo = file_repo(f, soup)
+                if repo is not None:
+                    path = path + " ({})".format(repo)
                 return (path, "Exception", f)
 
         def file_class(f, soup):
@@ -261,7 +292,11 @@ def copy_files():
 
 if __name__ == '__main__':
     global cfg
+    global repo_names
     cfg = parse_json_config()
+    repo_names = { repo: Path(repo).parent.name if Path(repo).name == "src" else Path(repo).name for repo in cfg['repositories'] }
+    for r, n in repo_names.items():
+        print("Repository {} name is {}".format(r, n))
     if cfg is None:
         sys.exit(1)
     conn = bootstrap_docset()

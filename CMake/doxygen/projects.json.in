@@ -4,5 +4,8 @@
     ],
     "srclibs": [
         @SRCLIBS_JSON@
+    ],
+    "repositories": [
+        @REPOSITORIES_JSON@
     ]
 }
