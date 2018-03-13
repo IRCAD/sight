@@ -25,6 +25,9 @@
         <object uid="matrixVectorSensor" type="::fwData::Vector" />
         <object uid="identityMatrix" type="::fwData::TransformationMatrix3D" />
         <object uid="calibInfo" type="::arData::CalibrationInfo" />
+        <object uid="detectedPoints" type="::fwData::PointList" />
+        <object uid="reprojectedPoints" type="::fwData::PointList" />
+
 
         <!-- *************************** Begin Layouts *************************** -->
 
@@ -33,11 +36,13 @@
                 <layout type="::fwGui::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="1" />
+                    <view proportion="0" />
                 </layout>
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
                 <view sid="mainViews" start="yes" />
+                <view sid="footer" start="yes" />
             </registry>
         </service>
 
@@ -54,6 +59,18 @@
                 <view sid="resultView" start="yes" />
                 <view sid="rightPanel" start="yes" />
                 <toolBar sid="toolBarVideo" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="footer" type="::gui::view::SDefaultView">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="horizontal" />
+                    <view proportion="1" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="reprojectionLabel" start="yes" />
             </registry>
         </service>
 
@@ -119,6 +136,11 @@
                 <menuItem sid="actionExportHandEyeX" start="yes" />
                 <menuItem sid="actionExportHandEyeZ" start="yes" />
             </registry>
+        </service>
+
+        <service uid="reprojectionLabel" type="::uiTools::editor::STextStatus">
+           <label>Reprojection Error (pixels)</label>
+           <color>#ee0066</color>
         </service>
 
         <service uid="movingCameraParameter" type="::guiQt::editor::SParameters" >
@@ -267,6 +289,7 @@
                 <slot>trackerAxis3/updateVisibility</slot>
                 <slot>chessAxis/updateVisibility</slot>
                 <slot>systemCenterAxis/updateVisibility</slot>
+                <slot>chessboardAdaptor/updateVisibility</slot>
             </slots>
         </service>
 
@@ -392,13 +415,27 @@
             <config movingCamera="true" />
         </service>
 
+        <service uid="chessboardReprojection" type="::trackingCalibration::SChessboardReprojection" worker="detectorWorker" >
+            <in key="camera" uid="camera" />
+            <in key="detectedChessboard" uid="detectedPoints" autoConnect="yes" />
+            <in key="handEyeX" uid="handEyeMatX" />
+            <in key="handEyeZ" uid="handEyeMatZ" />
+            <in key="trackerMatrix" uid="trackerMatrix0" />
+            <inout key="reprojectedChessboard" uid="reprojectedPoints" />
+            <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" squareSize="CHESSBOARD_SQUARE_SIZE" />
+            <config movingCamera="true" />
+        </service>
+
         <service uid="chessboardDetector" type="::videoCalibration::SChessBoardDetector" worker="detectorWorker" >
-             <in group="timeline">
-                 <key uid="frameTL" />
-             </in>
-             <inout group="calInfo">
-                 <key uid="calibInfo" />
-             </inout>
+            <in group="timeline">
+                <key uid="frameTL" />
+            </in>
+            <inout group="calInfo">
+                <key uid="calibInfo" />
+            </inout>
+            <inout group="detection" >
+                <key uid="detectedPoints" />
+            </inout>
             <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" />
         </service>
 
@@ -512,12 +549,18 @@
                 <adaptor uid="trackerAxis3" />
                 <adaptor uid="chessAxis" />
                 <adaptor uid="systemCenterAxis" />
+                <adaptor uid="chessboardAdaptor" />
             </scene>
         </service>
 
         <service uid="videoAdpt" type="::visuVTKARAdaptor::SVideo" autoConnect="yes">
             <in key="frame" uid="videoImage" />
             <config renderer="video" />
+        </service>
+
+        <service uid="chessboardAdaptor" type="::visuVTKARAdaptor::SPointList" autoConnect="yes">
+            <in key="pointlist" uid="reprojectedPoints" />
+            <config renderer="video" color="#8e76db" radius="10.0" />
         </service>
 
         <service uid="cameraAdpt" type="::visuVTKARAdaptor::SCamera" autoConnect="yes">
@@ -581,7 +624,7 @@
         </service>
 
         <service uid="chessAxis" type="::visuVTKAdaptor::SAxis">
-            <config renderer="default" length="20" transform="vtkChessMatrix" label="no" marker="yes" markerColor="#EEBAED" />
+            <config renderer="default" length="5" transform="vtkChessMatrix" label="no" marker="yes" markerColor="#EEBAED" />
         </service>
 
         <!-- *************************** End resultView *************************** -->
@@ -608,6 +651,7 @@
         <connect>
             <signal>actionChessBoardSize/parametersModified</signal>
             <slot>chessboardDetector/updateChessboardSize</slot>
+            <slot>chessboardReprojection/updateChessboardSize</slot>
             <slot>cameraPose/updateChessboardSize</slot>
         </connect>
 
@@ -668,6 +712,7 @@
         <connect>
             <signal>movingCameraParameter/boolChanged</signal>
             <slot>handEyeCalibration/setMovingCamera</slot>
+            <slot>chessboardReprojection/setMovingCamera</slot>
             <slot>chessSwitcher/switchMatrix</slot>
             <slot>cameraSwitcher/switchMatrix</slot>
         </connect>
@@ -676,6 +721,11 @@
             <signal>handEyeMatX/modified</signal>
             <slot>actionShowHideVisibility/activate</slot>
             <slot>actionShowHideVisibility/update</slot>
+        </connect>
+
+        <connect>
+            <signal>chessboardReprojection/errorComputed</signal>
+            <slot>reprojectionLabel/setDoubleParameter</slot>
         </connect>
 
         <!-- *************************** End Connections *************************** -->
@@ -704,6 +754,7 @@
         <start uid="trackerAxis1" />
         <start uid="trackerAxis2" />
         <start uid="trackerAxis3" />
+        <start uid="chessboardAdaptor" />
         <start uid="chessAxis" />
         <start uid="systemCenterAxis" />
         <start uid="cameraAdpt" />
@@ -714,6 +765,7 @@
         <start uid="trackerTransformAdaptor3" />
         <start uid="chessTransformAdaptor" />
         <start uid="cameraTransformAdaptor" />
+        <start uid="chessboardReprojection" />
         <!-- Update -->
         <update uid="extractor" />
         <update uid="actionReset" />

@@ -20,8 +20,10 @@ namespace trackingCalibration
  *
  * @see https://github.com/jhu-lcsr/handeye_calib_camodocal
  *
- * @subsection Slots Slots
+ * @section Slots Slots
  * - \b setMovingCamera(bool): configure the service to compute a hand-eye calibration for a moving or fixed camera
+ *
+ * @section XML XML Configuration
  *
  * @code{.xml}
     <service uid="..." type="::trackingCalibration::SHandEyeCalibration" >

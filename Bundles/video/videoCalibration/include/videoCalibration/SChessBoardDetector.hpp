@@ -57,7 +57,7 @@ namespace videoCalibration
  * - \b timeline [::arData::FrameTL]: timelines containing the images to detect the chessboard.
  * @subsection In-Out In-Out:
  * - \b calInfo [::arData::CalibrationInfo]: calibration object where to store the detected images.
- * - \b detection [::arData::FrameTL] (optional): timelines filled with images on which detected chessboard are drawn
+ * - \b detection [::fwData::PointList] (optional): detected chessboard points in image coordinates.
  * @subsection Configuration Configuration:
  * - \b board : preference key to retrieve the number of squares of the board in width and height.
  */
@@ -131,13 +131,11 @@ private:
      * @param timestamp time corresponding to the frame to process in the timeline
      * @param xDim the number of chessboard squares horizontally
      * @param yDim the number of chessboard squares vertically
-     * @param tlDetection the optional result timeline filled with processed frames
      * @return The list of chessboard points or NULL if no points are detected
      */
     static SPTR(::fwData::PointList) detectChessboard(::arData::FrameTL::csptr tl,
                                                       ::fwCore::HiResClock::HiResClockType timestamp,
-                                                      size_t xDim, size_t yDim,
-                                                      ::arData::FrameTL::sptr tlDetection = 0);
+                                                      size_t xDim, size_t yDim);
 
     /**
      * @brief Creates an image from frame timeline
