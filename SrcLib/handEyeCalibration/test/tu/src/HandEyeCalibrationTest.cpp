@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017.
+ * FW4SPL - Copyright (C) IRCAD, 2017-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -89,7 +89,7 @@ void HandEyeCalibrationTest::checkCalibration()
 
         ::Eigen::Vector3d rvec1, tvec1, rvec2, tvec2;
 
-        ::Eigen::AngleAxisd angleAxis1((H_12_expected * H * H_12_expected.inverse()).block<3, 3>(0, 0));
+        ::Eigen::AngleAxisd angleAxis1((H_12_expected* H* H_12_expected.inverse()).block<3, 3>(0, 0));
         rvec1 = angleAxis1.angle() * angleAxis1.axis();
 
         tvec1 = (H_12_expected * H * H_12_expected.inverse()).block<3, 1>(0, 3);
@@ -151,7 +151,7 @@ void HandEyeCalibrationTest::checkApi()
 
     ::fwData::TransformationMatrix3D::sptr fw_H_12_expected = ::eigenTools::helper::toF4s(H_12_expected);
 
-    ::handEyeCalibration::HandEyeApi* he_api = new ::handEyeCalibration::HandEyeApi();
+    std::vector< ::fwData::TransformationMatrix3D::csptr > handEyeInputs1, handEyeInputs2;
 
     const size_t motionCount = 2;
     for (size_t i = 0; i < motionCount; ++i)
@@ -172,22 +172,22 @@ void HandEyeCalibrationTest::checkApi()
         H.block<3, 3>(0, 0) = R;
         H.block<3, 1>(0, 3) << dx, dy, dz;
 
-        ::Eigen::Matrix4d H_ = H.inverse();
-        H                    = H_;
+        const ::Eigen::Matrix4d H_ = H.inverse();
+        H = H_;
 
         ::fwData::TransformationMatrix3D::sptr fw_H = ::eigenTools::helper::toF4s(H);
 
-        const ::Eigen::Matrix4d H12_ = H_12_expected * H
-                                       * H_12_expected.inverse();
+        const ::Eigen::Matrix4d H12_ = H_12_expected.inverse() * H * H_12_expected;
 
         ::fwData::TransformationMatrix3D::sptr fw_H12_ = ::eigenTools::helper::toF4s(H12_);
 
-        he_api->pushData(fw_H->getCoefficients(), fw_H12_->getCoefficients());
-
+        handEyeInputs1.push_back(fw_H);
+        handEyeInputs2.push_back(fw_H12_);
     }
 
-    ::fwData::TransformationMatrix3D::sptr fw_H_12;
-    fw_H_12 = he_api->computeHandEye();
+    ::handEyeCalibration::HandEyeApi he_api;
+    he_api.setTransformLists(handEyeInputs1, handEyeInputs2);
+    ::fwData::TransformationMatrix3D::sptr fw_H_12 = he_api.computeHandEye();
 
     for (size_t i = 0; i < 4; ++i)
     {
@@ -198,69 +198,6 @@ void HandEyeCalibrationTest::checkApi()
                                                  fw_H_12->getCoefficient(i, j), 0.00001);
         }
     }
-
-    delete he_api;
-}
-// ------------------------------------------------------------------------------
-void HandEyeCalibrationTest::checkApi2()
-{
-    ::handEyeCalibration::HandEyeApi* he_api                      = new ::handEyeCalibration::HandEyeApi();
-    ::fwData::TransformationMatrix3D::sptr expectedMat            = ::fwData::TransformationMatrix3D::New();
-    ::fwData::TransformationMatrix3D::sptr mat1                   = ::fwData::TransformationMatrix3D::New();
-    ::fwData::TransformationMatrix3D::sptr mat2                   = ::fwData::TransformationMatrix3D::New();
-    ::fwDataIO::reader::TransformationMatrix3DReader::sptr reader =
-        ::fwDataIO::reader::TransformationMatrix3DReader::New();
-    const ::boost::filesystem::path expectedMatrixPath( ::fwTest::Data::dir() / "fw4spl/arHandEye/expectedMatrix.trf" );
-    CPPUNIT_ASSERT_MESSAGE("The file '" + expectedMatrixPath.string() + "' does not exist",
-                           ::boost::filesystem::exists(expectedMatrixPath));
-    reader->setObject( expectedMat );
-    reader->setFile(expectedMatrixPath);
-    reader->read();
-
-    const boost::filesystem::path path1(::fwTest::Data::dir() / "fw4spl/arHandEye/matrix1");
-    const boost::filesystem::path path2(::fwTest::Data::dir() / "fw4spl/arHandEye/matrix2");
-    CPPUNIT_ASSERT_MESSAGE("The directory '" + path1.string() + "' does not exist",
-                           ::boost::filesystem::exists(path1));
-    CPPUNIT_ASSERT_MESSAGE("The directory '" + path2.string() + "' does not exist",
-                           ::boost::filesystem::exists(path2));
-    boost::filesystem::directory_iterator it2(path2);
-    for(boost::filesystem::directory_iterator it(path1), end; it != end; ++it, ++it2)
-    {
-        if(boost::filesystem::is_regular_file(it->status()))
-        {
-            // get matrix
-            ::fwDataIO::reader::TransformationMatrix3DReader::sptr reader =
-                ::fwDataIO::reader::TransformationMatrix3DReader::New();
-            reader->setObject( mat1 );
-            std::string str = path1.string() + "/";
-            str += it->path().filename().string();
-            reader->setFile(str);
-            reader->read();
-
-            ::fwDataIO::reader::TransformationMatrix3DReader::sptr reader2 =
-                ::fwDataIO::reader::TransformationMatrix3DReader::New();
-            reader2->setObject( mat2 );
-            std::string str2 = path2.string() + "/";
-            str2 += it2->path().filename().string();
-            reader2->setFile(str2);
-            reader2->read();
-            he_api->pushMatrix(mat1, mat2);
-        }
-    }
-
-    // compute heand eye calibration
-    ::fwData::TransformationMatrix3D::sptr actualMatrix = he_api->computeHandEye();
-
-    for (size_t i = 0; i < 4; ++i)
-    {
-        for (size_t j = 0; j < 4; ++j)
-        {
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Elements differ at (" + std::to_string(i) + ","  + std::to_string(
-                                                     j) + ")", expectedMat->getCoefficient(i, j),
-                                                 actualMatrix->getCoefficient(i, j), 0.000001);
-        }
-    }
-    delete he_api;
 }
 
 // ------------------------------------------------------------------------------

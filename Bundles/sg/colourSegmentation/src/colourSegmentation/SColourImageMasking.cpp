@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017.
+ * FW4SPL - Copyright (C) IRCAD, 2017-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -34,6 +34,7 @@ const ::fwCom::Slots::SlotKeyType SColourImageMasking::s_SET_THRESHOLD_SLOT     
 const ::fwCom::Slots::SlotKeyType SColourImageMasking::s_SET_NOISE_LEVEL_SLOT           = "setNoiseLevel";
 const ::fwCom::Slots::SlotKeyType SColourImageMasking::s_SET_BACKGROUND_COMPONENTS_SLOT = "setBackgroundComponents";
 const ::fwCom::Slots::SlotKeyType SColourImageMasking::s_SET_FOREGROUND_COMPONENTS_SLOT = "setForegroundComponents";
+const ::fwCom::Slots::SlotKeyType SColourImageMasking::s_CLEAR_MASKTL_SLOT              = "clearMaskTL";
 
 const ::fwServices::IService::KeyType s_MASK_KEY          = "mask";
 const ::fwServices::IService::KeyType s_VIDEO_TL_KEY      = "videoTL";
@@ -42,7 +43,7 @@ const ::fwServices::IService::KeyType s_VIDEO_MASK_TL_KEY = "videoMaskTL";
 // ------------------------------------------------------------------------------
 
 SColourImageMasking::SColourImageMasking() noexcept :
-    m_lastVideoTimestamp(::fwCore::HiResClock::getTimeInMilliSec()),
+    m_lastVideoTimestamp(0.),
     m_scaleFactor(1.),
     m_maskDownsize(::cv::Size(0, 0)),
     m_lowerColor(::cv::Scalar(0, 0, 0)),
@@ -57,6 +58,7 @@ SColourImageMasking::SColourImageMasking() noexcept :
     newSlot( s_SET_NOISE_LEVEL_SLOT, &SColourImageMasking::setNoiseLevel, this );
     newSlot( s_SET_BACKGROUND_COMPONENTS_SLOT, &SColourImageMasking::setBackgroundComponents, this );
     newSlot( s_SET_FOREGROUND_COMPONENTS_SLOT, &SColourImageMasking::setForegroundComponents, this );
+    newSlot( s_CLEAR_MASKTL_SLOT, &SColourImageMasking::clearMaskTL, this );
 }
 
 // ------------------------------------------------------------------------------
@@ -124,7 +126,7 @@ void SColourImageMasking::starting()
                                                                     ::colourImageMasking::LLRatio);
     m_masker->setThreshold(1.);
 
-    m_lastVideoTimestamp = ::fwCore::HiResClock::getTimeInMilliSec();
+    m_lastVideoTimestamp = 0.;
 }
 
 // ------------------------------------------------------------------------------
@@ -140,6 +142,7 @@ void SColourImageMasking::stopping()
     KeyConnectionsMap connections;
 
     connections.push( s_VIDEO_TL_KEY, ::arData::FrameTL::s_OBJECT_PUSHED_SIG, s_UPDATE_SLOT );
+    connections.push( s_VIDEO_TL_KEY, ::arData::FrameTL::s_CLEARED_SIG, s_CLEAR_MASKTL_SLOT );
 
     return connections;
 }
@@ -154,15 +157,21 @@ void SColourImageMasking::updating()
         auto videoTL     = this->getInput< ::arData::FrameTL >(s_VIDEO_TL_KEY);
         auto videoMaskTL = this->getInOut< ::arData::FrameTL >(s_VIDEO_MASK_TL_KEY);
 
-        // Get current timestamp
-        ::fwCore::HiResClock::HiResClockType currentTimestamp = ::fwCore::HiResClock::getTimeInMilliSec();
+        // This service can take a while to run, this blocker skips frames that arrive while we're already processing
+        // one
+        auto sig_ = videoTL->signal< ::arData::FrameTL::ObjectPushedSignalType>(
+            ::arData::FrameTL::s_OBJECT_PUSHED_SIG);
+        ::fwCom::Connection::Blocker blocker(sig_->getConnection(m_slotUpdate));
+
+        // Get the timestamp from the latest video frame
+        ::fwCore::HiResClock::HiResClockType currentTimestamp = videoTL->getNewerTimestamp();
 
         // Get image from the video timeline
         CSPTR(::arData::FrameTL::BufferType) videoBuffer = videoTL->getClosestBuffer(currentTimestamp);
 
         if(!videoBuffer)
         {
-            OSLM_INFO("Buffer not found with timestamp "<< currentTimestamp);
+            OSLM_ERROR("Buffer not found with timestamp "<< currentTimestamp);
             return;
         }
 
@@ -171,6 +180,8 @@ void SColourImageMasking::updating()
         ::fwCore::HiResClock::HiResClockType videoTimestamp = videoBuffer->getTimestamp();
         if(videoTimestamp <= m_lastVideoTimestamp)
         {
+            OSLM_WARN("Dropping frame with timestamp " << videoTimestamp << " (previous frame had timestamp "
+                                                       << m_lastVideoTimestamp << ")");
             return;
         }
 
@@ -218,7 +229,7 @@ void SColourImageMasking::setBackground()
     CSPTR(::arData::FrameTL::BufferType) videoBuffer      = videoTL->getClosestBuffer(currentTimestamp);
     if(!videoBuffer)
     {
-        OSLM_INFO("Buffer not found with timestamp " << currentTimestamp);
+        OSLM_ERROR("Buffer not found with timestamp " << currentTimestamp);
         return;
     }
     const std::uint8_t* frameBuffOutVideo = &videoBuffer->getElement(0);
@@ -268,7 +279,7 @@ void SColourImageMasking::setForeground()
     CSPTR(::arData::FrameTL::BufferType) videoBuffer      = videoTL->getClosestBuffer(currentTimestamp);
     if(!videoBuffer)
     {
-        OSLM_INFO("Buffer not found with timestamp "<< currentTimestamp);
+        OSLM_ERROR("Buffer not found with timestamp "<< currentTimestamp);
         return;
     }
     const std::uint8_t* frameBuffOutVideo = &videoBuffer->getElement(0);
@@ -331,6 +342,18 @@ void SColourImageMasking::setBackgroundComponents(int bgComponents)
 void SColourImageMasking::setForegroundComponents(int fgComponents)
 {
     m_foregroundComponents = fgComponents;
+}
+
+// ------------------------------------------------------------------------------
+
+void SColourImageMasking::clearMaskTL()
+{
+    auto videoMaskTL = this->getInOut< ::arData::FrameTL >(s_VIDEO_MASK_TL_KEY);
+    videoMaskTL->clearTimeline();
+    auto sigTLCleared = videoMaskTL->signal< ::arData::FrameTL::ObjectClearedSignalType >(
+        ::arData::FrameTL::s_CLEARED_SIG );
+    sigTLCleared->asyncEmit();
+    m_lastVideoTimestamp = 0.;
 }
 
 // ------------------------------------------------------------------------------

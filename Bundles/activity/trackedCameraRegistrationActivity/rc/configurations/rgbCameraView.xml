@@ -121,18 +121,10 @@
             <inout group="tagTL">
                 <key uid="tagTL" />
             </inout>
-            <config>
-                <track>
-                    <marker id="${tagsToDetect}" />
-                </track>
-                <threshold>
-                    <method>ADPT_THRES</method>
-                    <blockSize>7</blockSize>
-                    <constant>7</constant>
-                </threshold>
-                <patternWidth>150</patternWidth>
-                <debugMarkers>yes</debugMarkers>
-            </config>
+            <track>
+                <marker id="${tagsToDetect}" />
+            </track>
+            <debugMarkers>yes</debugMarkers>
         </service>
 
         <service uid="homography" type="::registrationCV::SPoseFrom2d" worker="registration">

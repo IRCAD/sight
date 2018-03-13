@@ -44,7 +44,6 @@
 
         <service uid="points" type="::visuVTKARAdaptor::SPointList" autoConnect="yes">
             <in key="pointlist" uid="${pointListId1}" />
-            <in key="image" uid="${imageId1}" />
             <config renderer="default" color="#00FF00" />
         </service>
 

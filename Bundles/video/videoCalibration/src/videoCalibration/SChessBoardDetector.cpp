@@ -16,6 +16,7 @@
 
 #include <fwData/Array.hpp>
 #include <fwData/Composite.hpp>
+#include <fwData/mt/ObjectWriteLock.hpp>
 
 #include <fwDataTools/helper/Array.hpp>
 
@@ -115,7 +116,8 @@ void SChessBoardDetector::checkPoints( ::fwCore::HiResClock::HiResClockType time
         const size_t numTimeline  = this->getKeyGroupSize(s_TIMELINE_INPUT);
         const size_t numDetection = this->getKeyGroupSize(s_DETECTION_INOUT);
 
-        OSLM_ERROR_IF("Number of input and detection timelines are different.", numTimeline != numDetection);
+        OSLM_ERROR_IF("Different number of input timelines and detected point lists.",
+                      numDetection > 0 && numTimeline != numDetection);
 
         const bool detection = (numDetection > 0) && (numTimeline == numDetection);
 
@@ -133,27 +135,36 @@ void SChessBoardDetector::checkPoints( ::fwCore::HiResClock::HiResClockType time
             auto tl = this->getInput< ::arData::FrameTL >(s_TIMELINE_INPUT, i);
 
             ::fwData::PointList::sptr chessBoardPoints;
-            if(detection)
-            {
-                auto tlDetection = this->getInOut< ::arData::FrameTL >(s_DETECTION_INOUT, i);
-                if(!tlDetection->isAllocated())
-                {
-                    tlDetection->initPoolSize(tl->getWidth(), tl->getHeight(), ::fwTools::Type::s_UINT8, 4);
-                }
-                chessBoardPoints = this->detectChessboard(tl, lastTimestamp, m_width, m_height, tlDetection);
-            }
-            else
-            {
-                chessBoardPoints = this->detectChessboard(tl, lastTimestamp, m_width, m_height);
-            }
+
+            chessBoardPoints = this->detectChessboard(tl, lastTimestamp, m_width, m_height);
 
             if(!chessBoardPoints)
             {
                 m_isDetected = false;
-                break;
-
             }
-            m_pointsLists[i] = chessBoardPoints;
+            else
+            {
+                m_pointsLists[i] = chessBoardPoints;
+            }
+
+            if(detection)
+            {
+                auto detectedPoints = this->getInOut< ::fwData::PointList >(s_DETECTION_INOUT, i);
+                ::fwData::mt::ObjectWriteLock lock(detectedPoints);
+
+                if(m_isDetected)
+                {
+                    detectedPoints->deepCopy(chessBoardPoints);
+                }
+                else
+                {
+                    detectedPoints->getPoints().clear();
+                }
+
+                auto sig = detectedPoints->signal< ::fwData::Object::ModifiedSignalType >(
+                    ::fwData::Object::s_MODIFIED_SIG);
+                sig->asyncEmit();
+            }
         }
 
         if(m_isDetected)
@@ -201,12 +212,12 @@ void SChessBoardDetector::updateChessboardSize()
     const std::string widthStr = ::fwPreferences::getPreference(m_widthKey);
     if(!widthStr.empty())
     {
-        m_width = std::stoi(widthStr);
+        m_width = std::stoul(widthStr);
     }
     const std::string heightStr = ::fwPreferences::getPreference(m_heightKey);
     if(!heightStr.empty())
     {
-        m_height = std::stoi(heightStr);
+        m_height = std::stoul(heightStr);
     }
 }
 
@@ -253,8 +264,7 @@ void SChessBoardDetector::updateChessboardSize()
 
 SPTR(::fwData::PointList) SChessBoardDetector::detectChessboard(::arData::FrameTL::csptr tl,
                                                                 ::fwCore::HiResClock::HiResClockType timestamp,
-                                                                size_t xDim, size_t yDim,
-                                                                ::arData::FrameTL::sptr tlDetection)
+                                                                size_t xDim, size_t yDim)
 {
     ::fwData::PointList::sptr pointlist;
 
@@ -302,25 +312,6 @@ SPTR(::fwData::PointList) SChessBoardDetector::detectChessboard(::arData::FrameT
             {
                 ::fwData::Point::sptr point = ::fwData::Point::New(p.x, p.y);
                 points.push_back(point);
-            }
-
-            if(tlDetection)
-            {
-                SPTR(::arData::FrameTL::BufferType) detectionBuffer = tlDetection->createBuffer(timestamp);
-                std::uint8_t* frameDetectionBuffer = detectionBuffer->addElement(0);
-                ::cv::Mat frameDetectionCV = ::cvIO::FrameTL::moveToCv(tlDetection, frameDetectionBuffer);
-
-                ::cv::Mat imgCpy;
-                img.copyTo(imgCpy);
-
-                ::cv::drawChessboardCorners(imgCpy, boardSize, corners, patternWasFound);
-
-                imgCpy.copyTo(frameDetectionCV);
-
-                tlDetection->pushObject(detectionBuffer);
-                auto sig = tlDetection->signal< ::arData::TimeLine::ObjectPushedSignalType >(
-                    ::arData::TimeLine::s_OBJECT_PUSHED_SIG);
-                sig->asyncEmit(timestamp);
             }
         }
     }

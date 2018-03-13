@@ -62,7 +62,6 @@
 
         <service uid="points1" type="::visuVTKARAdaptor::SPointList" autoConnect="yes">
             <in key="pointlist" uid="${pointListId1}" />
-            <in key="image" uid="${imageId1}" />
             <config renderer="default" color="#00FF00" />
         </service>
 
@@ -90,7 +89,6 @@
 
         <service uid="points2" type="::visuVTKARAdaptor::SPointList" autoConnect="yes">
             <in key="pointlist" uid="${pointListId2}" />
-            <in key="image" uid="${imageId2}" />
             <config renderer="default" color="#00FF00" />
         </service>
 

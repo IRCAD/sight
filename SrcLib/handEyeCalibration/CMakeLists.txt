@@ -1,8 +1,8 @@
 fwLoadProperties()
 
-find_package(OpenCV COMPONENTS core  REQUIRED)
-find_package(Eigen REQUIRED)
-find_package(Ceres REQUIRED)
+find_package(OpenCV QUIET COMPONENTS core  REQUIRED)
+find_package(Eigen QUIET REQUIRED)
+find_package(Ceres QUIET REQUIRED)
 
 fwForwardInclude(
     ${OpenCV_INCLUDE_DIRS}

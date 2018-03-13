@@ -1,8 +1,8 @@
 
 fwLoadProperties()
 
-find_package(LibArchive REQUIRED)
-find_package(OpenIGTLink REQUIRED)
+find_package(LibArchive QUIET REQUIRED)
+find_package(OpenIGTLink QUIET REQUIRED)
 
 fwForwardInclude(
     ${OpenIGTLink_INCLUDE_DIRS}

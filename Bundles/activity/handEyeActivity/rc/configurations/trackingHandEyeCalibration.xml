@@ -10,19 +10,24 @@
         <object uid="${cameraSeries}" type="::arData::CameraSeries" src="ref" />
         <object uid="camera" type="::arData::Camera" src="deferred" />
         <object uid="frameTL" type="::arData::FrameTL" />
-        <object uid="detectionTL" type="::arData::FrameTL" />
         <object uid="videoImage" type="::fwData::Image" />
-        <object uid="detectionImage" type="::fwData::Image" />
         <object uid="matrixTL" type="::arData::MatrixTL" />
-        <object uid="matrix0" type="::fwData::TransformationMatrix3D" />
-        <object uid="matrix1" type="::fwData::TransformationMatrix3D" />
-        <object uid="matrix2" type="::fwData::TransformationMatrix3D" />
-        <object uid="matrix3" type="::fwData::TransformationMatrix3D" />
-        <object uid="handEyeMatrix" type="::fwData::TransformationMatrix3D" />
+        <object uid="trackerMatrix0" type="::fwData::TransformationMatrix3D" />
+        <object uid="trackerMatrix1" type="::fwData::TransformationMatrix3D" />
+        <object uid="trackerMatrix2" type="::fwData::TransformationMatrix3D" />
+        <object uid="trackerMatrix3" type="::fwData::TransformationMatrix3D" />
+        <object uid="handEyeMatX" type="::fwData::TransformationMatrix3D" />
+        <object uid="handEyeMatZ" type="::fwData::TransformationMatrix3D" />
+        <object uid="cameraMatrix" type="::fwData::TransformationMatrix3D" />
+        <object uid="chessMatrix" type="::fwData::TransformationMatrix3D" />
+        <object uid="trackerHEXMatrix" type="::fwData::TransformationMatrix3D" />
         <object uid="matrixVectorPose" type="::fwData::Vector" />
         <object uid="matrixVectorSensor" type="::fwData::Vector" />
         <object uid="identityMatrix" type="::fwData::TransformationMatrix3D" />
         <object uid="calibInfo" type="::arData::CalibrationInfo" />
+        <object uid="detectedPoints" type="::fwData::PointList" />
+        <object uid="reprojectedPoints" type="::fwData::PointList" />
+
 
         <!-- *************************** Begin Layouts *************************** -->
 
@@ -31,54 +36,52 @@
                 <layout type="::fwGui::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="1" />
+                    <view proportion="0" />
                 </layout>
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
                 <view sid="mainViews" start="yes" />
+                <view sid="footer" start="yes" />
             </registry>
         </service>
 
         <service uid="mainViews" type="::gui::view::SDefaultView">
             <gui>
                 <layout type="::fwGui::LineLayoutManager">
-                    <orientation value="vertical" />
-                    <view proportion="1" />
+                    <orientation value="horizontal" />
+                    <view proportion="3" />
                     <view proportion="1" />
                 </layout>
                 <toolBar/>
             </gui>
             <registry>
-                <view sid="topView" start="yes" />
-                <view sid="bottomView" start="yes" />
+                <view sid="resultView" start="yes" />
+                <view sid="rightPanel" start="yes" />
                 <toolBar sid="toolBarVideo" start="yes" />
             </registry>
         </service>
 
-        <service uid="topView" type="::gui::view::SDefaultView">
+        <service uid="footer" type="::gui::view::SDefaultView">
             <gui>
                 <layout type="::fwGui::LineLayoutManager">
                     <orientation value="horizontal" />
-                    <view caption="Input frames" proportion="1" />
-                    <view caption="Chessboard detection" proportion="1" />
+                    <view proportion="1" />
                 </layout>
             </gui>
             <registry>
-                <view sid="frameView" start="yes" />
-                <view sid="chessboardDetectionView" start="yes" />
+                <view sid="reprojectionLabel" start="yes" />
             </registry>
         </service>
 
-        <service uid="bottomView" type="::gui::view::SDefaultView">
+        <service uid="rightPanel" type="::gui::view::SDefaultView">
             <gui>
                 <layout type="::fwGui::LineLayoutManager">
                     <orientation value="horizontal" />
-                    <view caption="result view" proportion="1" />
                     <view caption="Hand Eye" proportion="1" />
                 </layout>
             </gui>
             <registry>
-                <view sid="resultView" start="yes" />
                 <view sid="paramView" start="yes" />
             </registry>
         </service>
@@ -102,38 +105,54 @@
         <service uid="toolBarVideo" type="::gui::aspect::SDefaultToolBar">
             <gui>
                 <layout>
-                    <menuItem name="Load csv file" icon="media-0.1/icons/Import.svg" />
-                    <separator/>
                     <editor/>
-                    <menuItem name="Start camera" icon="arMedia-0.1/icons/start-cam.svg" />
+                    <menuItem name="Start camera" icon="arMedia-0.1/icons/start-cam.svg" shortcut="Space" />
                     <menuItem name="Stop camera" icon="arMedia-0.1/icons/stop-cam.svg" />
                     <menuItem name="Pause video" icon="arMedia-0.1/icons/pause-cam.svg" />
                     <separator/>
-                    <menuItem name="Previous" icon="media-0.1/icons/Back.svg" />
-                    <menuItem name="Next" icon="media-0.1/icons/Next.svg" />
+                    <menuItem name="Start Tracker client" icon="arMedia-0.1/icons/Network-Receiving.svg" />
+                    <menuItem name="Stop Tracker client" icon="arMedia-0.1/icons/Network-Stop-Receiving.svg" />
+                    <menuItem name="Configure Tracker client" icon="media-0.1/icons/Settings.svg" />
+                    <menuItem name="Previous" icon="media-0.1/icons/Back.svg" shortcut="p" />
+                    <menuItem name="Next" icon="media-0.1/icons/Next.svg" shortcut="n" />
                     <separator/>
                     <menuItem name="Chessboard size" icon="arMedia-0.1/icons/chessboard.svg" />
                     <separator/>
-                    <menuItem name="Save Hand Eye calibration matrix" icon="media-0.1/icons/Export.svg" />
+                    <menuItem name="Save Hand Eye X matrix" icon="handEyeActivity-0.1/icons/ExportXMatrix.svg" />
+                    <menuItem name="Save Hand Eye Z matrix" icon="handEyeActivity-0.1/icons/ExportZMatrix.svg" />
                 </layout>
             </gui>
             <registry>
-                <menuItem sid="loadCsv" start="yes" />
                 <editor sid="cameraSelector" />
                 <menuItem sid="actionStartCamera" start="yes" />
                 <menuItem sid="actionStopCamera" start="yes" />
                 <menuItem sid="actionPauseCamera" start="yes" />
+                <menuItem sid="actionStartOpenIGTLinkClient" start="yes" />
+                <menuItem sid="actionStopOpenIGTLinkClient" start="yes" />
+                <menuItem sid="configureClient" start="yes" />
                 <menuItem sid="actionPrevious" start="yes" />
                 <menuItem sid="actionNext" start="yes" />
                 <menuItem sid="actionChessBoardSize" start="yes" />
-                <menuItem sid="actionExportHandEye" start="yes" />
+                <menuItem sid="actionExportHandEyeX" start="yes" />
+                <menuItem sid="actionExportHandEyeZ" start="yes" />
             </registry>
+        </service>
+
+        <service uid="reprojectionLabel" type="::uiTools::editor::STextStatus">
+           <label>Reprojection Error (pixels)</label>
+           <color>#ee0066</color>
+        </service>
+
+        <service uid="movingCameraParameter" type="::guiQt::editor::SParameters" >
+            <parameters>
+                <param type="bool" name="Moving camera" key="boolParam" defaultValue="true" />
+            </parameters>
         </service>
 
         <service uid="handEyeView" type="::gui::view::SDefaultView">
             <gui>
                 <layout type="::fwGui::LineLayoutManager">
-                    <orientation value="horizontal" />
+                    <orientation value="vertical" />
                     <view caption="Matrices" />
                     <view caption="Chessboard vector matrices" />
                 </layout>
@@ -150,21 +169,27 @@
                     <orientation value="vertical" />
                     <view />
                     <view />
+                    <view />
                 </layout>
             </gui>
             <registry>
-                <view sid="matrixViewer" />
-                <view sid="matrixViewerHE" />
+                <view sid="matrixViewerSensor" start="yes" />
+                <view sid="matrixViewerHEX" start="yes" />
+                <view sid="matrixViewerHEZ" start="yes" />
             </registry>
         </service>
 
         <service uid="handEyeToolBar" type="::gui::aspect::SDefaultToolBar">
             <gui>
                 <layout>
-                    <menuItem name="Add" icon="media-0.1/icons/Import.svg" />
-                    <menuItem name="Reset" icon="arMedia-0.1/icons/reset.svg" />
-                    <menuItem name="Calibrate with Hand Eye" icon="arMedia-0.1/icons/CheckButton.svg" />
+                    <menuItem name="Add" icon="media-0.1/icons/Import.svg" shortcut="a" />
+                    <menuItem name="Reset" icon="arMedia-0.1/icons/reset.svg" shortcut="r" />
+                    <menuItem name="Calibrate with Hand Eye" icon="arMedia-0.1/icons/CheckButton.svg" shortcut="Return" />
                     <editor/>
+                    <separator/>
+                    <editor/>
+                    <separator/>
+                    <menuItem name="Show/Hide axis" icon="arMedia-0.1/icons/show.svg" style="check"/>
                 </layout>
             </gui>
             <registry>
@@ -172,6 +197,8 @@
                 <menuItem sid="actionReset" start="yes" />
                 <menuItem sid="actionCalibrate" start="yes" />
                 <editor sid="Status" start="yes" />
+                <editor sid="movingCameraParameter"  start="yes" />
+                <menuItem sid="actionShowHideVisibility" start="yes" />
             </registry>
         </service>
 
@@ -190,6 +217,8 @@
             <slots>
                 <slot>handEyeEditor/reset</slot>
                 <slot>pushMatrixSensor/clear</slot>
+                <slot>actionShowHideVisibility/deactivate</slot>
+                <slot>actionShowHideVisibility/update</slot>
             </slots>
         </service>
 
@@ -223,7 +252,6 @@
         <service uid="actionStartCamera" type="::gui::action::SSlotCaller">
             <slots>
                 <slot>frameGrabber/startCamera</slot>
-                <slot>csvReader/startReading</slot>
             </slots>
         </service>
 
@@ -240,9 +268,28 @@
             </slots>
         </service>
 
-        <service uid="actionExportHandEye" type="::gui::action::SSlotCaller">
+        <service uid="actionExportHandEyeX" type="::gui::action::SSlotCaller">
             <slots>
-                <slot>handEyeMatrixWriter/update</slot>
+                <slot>handEyeXMatrixWriter/update</slot>
+            </slots>
+        </service>
+
+        <service uid="actionExportHandEyeZ" type="::gui::action::SSlotCaller">
+            <slots>
+                <slot>handEyeZMatrixWriter/update</slot>
+            </slots>
+        </service>
+
+        <service uid="actionShowHideVisibility" type="::gui::action::SBooleanSlotCaller">
+            <state active="false" />
+            <slots>
+                <slot>trackerAxis0/updateVisibility</slot>
+                <slot>trackerAxis1/updateVisibility</slot>
+                <slot>trackerAxis2/updateVisibility</slot>
+                <slot>trackerAxis3/updateVisibility</slot>
+                <slot>chessAxis/updateVisibility</slot>
+                <slot>systemCenterAxis/updateVisibility</slot>
+                <slot>chessboardAdaptor/updateVisibility</slot>
             </slots>
         </service>
 
@@ -267,6 +314,16 @@
             </preference>
         </service>
 
+        <service uid="actionStartOpenIGTLinkClient" type="::gui::action::SStarter">
+            <state active="true" visible="false" />
+            <start uid="trackerTLMatrixListener" />
+        </service>
+
+        <service uid="actionStopOpenIGTLinkClient" type="::gui::action::SStarter">
+            <state active="true" visible="false" />
+            <stop uid="trackerTLMatrixListener" />
+        </service>
+
         <!-- *************************** End Actions *************************** -->
 
         <!-- *************************** Begin Services *************************** -->
@@ -276,19 +333,9 @@
             <videoSupport>yes</videoSupport>
         </service>
 
-        <service uid="frameGrabber" type="::videoOpenCV::SFrameGrabber">
+        <service uid="frameGrabber" type="::videoTools::SGrabberProxy">
             <in key="camera" uid="camera" />
             <inout key="frameTL" uid="frameTL" />
-            <oneShot>true</oneShot>
-            <useTimelapse>false</useTimelapse>
-            <createTimestamp>true</createTimestamp>
-        </service>
-
-        <!-- choose location of csv file -->
-        <service uid="loadCsv" type="::gui::action::SSlotCaller">
-            <slots>
-                <slot>csvReader/configureWithIHM</slot>
-            </slots>
         </service>
 
         <service uid="csvReader" type="::ioTimeline::SMatricesReader">
@@ -297,11 +344,15 @@
             <createTimestamp>true</createTimestamp>
         </service>
 
+        <service uid="displayCalibrationInfo" type="::uiCalibration::SDisplayCalibrationInfo">
+            <in key="calInfo1" uid="calibInfo" />
+        </service>
+
         <service uid="handEyeEditor" type="::uiCalibration::SCalibrationInfoEditor" autoConnect="yes">
             <inout key="calInfo1" uid="calibInfo" />
         </service>
 
-        <service uid="synchronizer" type="::videoTools::SFrameMatrixSynchronizer" worker="synchronizer">
+        <service uid="synchronizer" type="::videoTools::SFrameMatrixSynchronizer" >
             <in group="frameTL">
                 <key uid="frameTL" />
             </in>
@@ -312,68 +363,97 @@
                 <key uid="matrixTL" />
             </in>
             <inout group="matrices0">
-                <key uid="matrix0" />
-                <key uid="matrix1" />
-                <key uid="matrix2" />
-                <key uid="matrix3" />
+                <key uid="trackerMatrix0" />
             </inout>
-            <framerate>1</framerate>
+            <framerate>30</framerate>
         </service>
 
-        <service uid="synchronizer2" type="::videoTools::SFrameMatrixSynchronizer" worker="synchronizer2">
-            <in group="frameTL">
-                <key uid="detectionTL" />
-            </in>
-            <inout group="image">
-                <key uid="detectionImage" />
+        <service uid="trackerTLMatrixListener" type="::ioIGTL::STDataListener">
+            <inout key="timeline" uid="matrixTL" />
+            <server>%TRACKER_HOSTNAME%:%TRACKER_PORT%</server>
+            <deviceName>%TRACKER_NAME%</deviceName>
+            <TData>
+                <matrix name="Input0" index="0" />
+                <matrix name="Input1" index="1" />
+                <matrix name="Input2" index="2" />
+                <matrix name="Input3" index="3" />
+            </TData>
+        </service>
+
+        <service uid="trackerTLMatrixSynchronizer" type="::syncTimeline::SMatrixTLSynchronizer">
+            <in key="matrixTL" uid="matrixTL" autoConnect="yes" />
+            <inout group="matrices">
+                <key uid="trackerMatrix0" />
+                <key uid="trackerMatrix1" />
+                <key uid="trackerMatrix2" />
+                <key uid="trackerMatrix3" />
             </inout>
         </service>
 
-        <service uid="matrixViewer" type="::uiTools::editor::SMatrixViewer" autoConnect="yes">
-            <in key="matrix" uid="matrix0" />
-            <title>Sensor Matrix  </title>
+        <service uid="matrixViewerSensor" type="::uiTools::editor::SMatrixViewer" autoConnect="yes">
+            <in key="matrix" uid="trackerMatrix0" />
+            <title>Sensor Matrix</title>
         </service>
 
         <!-- Hand Eye -->
-        <service uid="matrixViewerHE" type="::uiTools::editor::SMatrixViewer" autoConnect="yes">
-            <in key="matrix" uid="handEyeMatrix" />
-            <title>Hand-Eye Matrix</title>
+        <service uid="matrixViewerHEX" type="::uiTools::editor::SMatrixViewer" autoConnect="yes">
+            <in key="matrix" uid="handEyeMatX" />
+            <title>Hand-Eye Matrix X</title>
+        </service>
+
+        <!-- Hand Eye -->
+        <service uid="matrixViewerHEZ" type="::uiTools::editor::SMatrixViewer" autoConnect="yes">
+            <in key="matrix" uid="handEyeMatZ" />
+            <title>Hand-Eye Matrix Z</title>
         </service>
 
         <service uid="handEyeCalibration" type="::trackingCalibration::SHandEyeCalibration">
-            <in key="matrixVector1" uid="matrixVectorPose" />
-            <in key="matrixVector2" uid="matrixVectorSensor" />
-            <inout key="matrix" uid="handEyeMatrix" />
+            <in key="matrixVector1" uid="matrixVectorSensor" />
+            <in key="matrixVector2" uid="matrixVectorPose" />
+            <inout key="matZ" uid="handEyeMatZ" />
+            <inout key="matX" uid="handEyeMatX" />
+            <config movingCamera="true" />
         </service>
 
-        <service uid="chessboardDetector" type="::videoCalibration::SChessBoardDetector" >
-             <in group="timeline">
-                 <key uid="frameTL" />
-             </in>
-             <inout group="calInfo">
-                 <key uid="calibInfo" />
-             </inout>
-             <inout group="detection">
-                <key uid="detectionTL" />
-             </inout>
+        <service uid="chessboardReprojection" type="::trackingCalibration::SChessboardReprojection" worker="detectorWorker" >
+            <in key="camera" uid="camera" />
+            <in key="detectedChessboard" uid="detectedPoints" autoConnect="yes" />
+            <in key="handEyeX" uid="handEyeMatX" />
+            <in key="handEyeZ" uid="handEyeMatZ" />
+            <in key="trackerMatrix" uid="trackerMatrix0" />
+            <inout key="reprojectedChessboard" uid="reprojectedPoints" />
+            <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" squareSize="CHESSBOARD_SQUARE_SIZE" />
+            <config movingCamera="true" />
+        </service>
+
+        <service uid="chessboardDetector" type="::videoCalibration::SChessBoardDetector" worker="detectorWorker" >
+            <in group="timeline">
+                <key uid="frameTL" />
+            </in>
+            <inout group="calInfo">
+                <key uid="calibInfo" />
+            </inout>
+            <inout group="detection" >
+                <key uid="detectedPoints" />
+            </inout>
             <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" />
         </service>
 
-        <service uid="cameraPose" type="::videoCalibration::SOpenCVIntrinsic" worker="intr_chess_checker">
+        <service uid="cameraPose" type="::videoCalibration::SOpenCVIntrinsic" >
             <in key="calibrationInfo" uid="calibInfo" />
             <inout key="camera" uid="camera" />
             <inout key="poseVector" uid="matrixVectorPose" />
             <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" squareSize="CHESSBOARD_SQUARE_SIZE" />
         </service>
 
-        <service uid="Status" type="::uiTools::editor::SStatus">
+        <service uid="Status" type="::uiTools::editor::SStatus" >
             <green>Chessboard points are visible</green>
             <orange>Calibration in progress</orange>
             <red>Chessboard points are NOT visible</red>
         </service>
 
         <service uid="pushMatrixSensor" type="::ctrlSelection::SManage">
-           <inout key="object" uid="matrix0" />
+           <inout key="object" uid="trackerMatrix0" />
            <inout key="vector" uid="matrixVectorSensor" />
         </service>
 
@@ -386,48 +466,67 @@
             </out>
         </service>
 
-        <service uid="handEyeMatrixWriter" type="::uiIO::editor::SIOSelector" >
-            <inout key="target" uid="handEyeMatrix" />
+        <service uid="handEyeXMatrixWriter" type="::uiIO::editor::SIOSelector" >
+            <inout key="target" uid="handEyeMatX" />
             <type mode="writer" />
             <selection mode="include" />
             <addSelection service="::ioData::TransformationMatrix3DWriterService" />
         </service>
 
+        <service uid="handEyeZMatrixWriter" type="::uiIO::editor::SIOSelector" >
+            <inout key="target" uid="handEyeMatZ" />
+            <type mode="writer" />
+            <selection mode="include" />
+            <addSelection service="::ioData::TransformationMatrix3DWriterService" />
+        </service>
+
+        <service uid="configureClient" type="::uiPreferences::action::SPreferencesConfiguration">
+            <state active="true" visible="false" />
+            <preference>
+                <type>text</type>
+                <name>Tracker hostname</name>
+                <key>TRACKER_HOSTNAME</key>
+                <default_value>127.0.0.1</default_value>
+            </preference>
+            <preference>
+                <type>number</type>
+                <name>Tracker port</name>
+                <key>TRACKER_PORT</key>
+                <default_value>6767</default_value>
+            </preference>
+            <preference>
+                <type>text</type>
+                <name>Tracker name</name>
+                <key>TRACKER_NAME</key>
+                <default_value>trakSTAR</default_value>
+            </preference>
+        </service>
+
+        <service uid="concatTrackerHEX" type="::maths::SConcatenateMatrices" autoConnect="yes">
+            <in group="matrix">
+                <key uid="trackerMatrix0" />
+                <key uid="handEyeMatX" />
+            </in>
+            <inout key="output" uid="trackerHEXMatrix" />
+        </service>
+
+        <service uid="cameraSwitcher" type="::maths::SSwitchMatrices" autoConnect="yes">
+            <in group="matrix">
+                <key uid="trackerHEXMatrix" />
+                <key uid="handEyeMatZ" />
+            </in>
+            <inout key="output" uid="cameraMatrix" />
+        </service>
+
+        <service uid="chessSwitcher" type="::maths::SSwitchMatrices" autoConnect="yes">
+            <in group="matrix">
+                <key uid="handEyeMatZ" />
+                <key uid="trackerHEXMatrix" />
+            </in>
+            <inout key="output" uid="chessMatrix" />
+        </service>
+
         <!-- *************************** End Services *************************** -->
-
-        <!-- *************************** Begin frameView *************************** -->
-
-        <service uid="frameView" type="::fwRenderVTK::SRender" autoConnect="yes">
-            <scene autoRender="false">
-                <renderer id="default" layer="1" background="0.0" />
-                <renderer id="background" layer="0" background="0.0" />
-                <adaptor uid="videoAdpt" />
-            </scene>
-        </service>
-
-        <service uid="videoAdpt" type="::visuVTKARAdaptor::SVideo" autoConnect="yes">
-            <in key="frame" uid="videoImage" />
-            <config renderer="background" />
-        </service>
-
-        <!-- *************************** End frameView *************************** -->
-
-        <!-- *************************** Begin chessboardDetectionView *************************** -->
-
-        <service uid="chessboardDetectionView" type="::fwRenderVTK::SRender" autoConnect="yes">
-            <scene autoRender="false">
-                <renderer id="default" layer="1" background="0.0" />
-                <renderer id="background" layer="0" background="0.0" />
-                <adaptor uid="videoAdptChessboard" />
-            </scene>
-        </service>
-
-        <service uid="videoAdptChessboard" type="::visuVTKARAdaptor::SVideo" autoConnect="yes">
-            <in key="frame" uid="detectionImage" />
-            <config renderer="background" />
-        </service>
-
-        <!-- *************************** End chessboardDetectionView *************************** -->
 
         <!-- *************************** Begin resultView *************************** -->
 
@@ -435,22 +534,37 @@
             <scene>
                 <renderer id="video" layer="0" background="0.0" />
                 <renderer id="default" layer="1" background="0.0" />
-                <adaptor uid="videoAdptResult" />
+                <adaptor uid="videoAdpt" />
                 <adaptor uid="cameraAdpt" />
                 <adaptor uid="interactorStyle" />
-                <adaptor uid="sensorTransformAdaptor" />
-                <adaptor uid="sensorAxis" />
-                <adaptor uid="systemCenter" />
+                <adaptor uid="trackerTransformAdaptor0" />
+                <adaptor uid="trackerTransformAdaptor1" />
+                <adaptor uid="trackerTransformAdaptor2" />
+                <adaptor uid="trackerTransformAdaptor3" />
+                <adaptor uid="chessTransformAdaptor" />
+                <adaptor uid="cameraTransformAdaptor" />
+                <adaptor uid="trackerAxis0" />
+                <adaptor uid="trackerAxis1" />
+                <adaptor uid="trackerAxis2" />
+                <adaptor uid="trackerAxis3" />
+                <adaptor uid="chessAxis" />
+                <adaptor uid="systemCenterAxis" />
+                <adaptor uid="chessboardAdaptor" />
             </scene>
         </service>
 
-        <service uid="videoAdptResult" type="::visuVTKARAdaptor::SVideo" autoConnect="yes">
+        <service uid="videoAdpt" type="::visuVTKARAdaptor::SVideo" autoConnect="yes">
             <in key="frame" uid="videoImage" />
             <config renderer="video" />
         </service>
 
+        <service uid="chessboardAdaptor" type="::visuVTKARAdaptor::SPointList" autoConnect="yes">
+            <in key="pointlist" uid="reprojectedPoints" />
+            <config renderer="video" color="#8e76db" radius="10.0" />
+        </service>
+
         <service uid="cameraAdpt" type="::visuVTKARAdaptor::SCamera" autoConnect="yes">
-            <inout key="transform" uid="handEyeMatrix" />
+            <inout key="transform" uid="cameraMatrix" />
             <in key="camera" uid="camera" />
             <config renderer="default" />
         </service>
@@ -459,17 +573,58 @@
             <config renderer="default" style="FixedInteractorStyle" />
         </service>
 
-        <service uid="sensorTransformAdaptor" type="::visuVTKAdaptor::STransform" autoConnect="yes">
-            <inout key="tm3d" uid="matrix0" />
-            <config renderer="default" transform="vtkSensorMatrix" />
+        <service uid="trackerTransformAdaptor0" type="::visuVTKAdaptor::STransform" autoConnect="yes">
+            <inout key="tm3d" uid="trackerMatrix0" />
+            <config renderer="default" transform="vtkTrackerMatrix0" />
         </service>
 
-        <service uid="systemCenter" type="::visuVTKAdaptor::SAxis">
-            <config renderer="default" length="75" transform="id" label="no" marker="yes" markerColor="#FF0000" />
+        <service uid="trackerTransformAdaptor1" type="::visuVTKAdaptor::STransform" autoConnect="yes">
+            <inout key="tm3d" uid="trackerMatrix1" />
+            <config renderer="default" transform="vtkTrackerMatrix1" />
         </service>
 
-        <service uid="sensorAxis" type="::visuVTKAdaptor::SAxis">
-            <config renderer="default" length="50" transform="vtkSensorMatrix" label="no" marker="yes" markerColor="#00FF00" />
+        <service uid="trackerTransformAdaptor2" type="::visuVTKAdaptor::STransform" autoConnect="yes">
+            <inout key="tm3d" uid="trackerMatrix2" />
+            <config renderer="default" transform="vtkTrackerMatrix2" />
+        </service>
+
+        <service uid="trackerTransformAdaptor3" type="::visuVTKAdaptor::STransform" autoConnect="yes">
+            <inout key="tm3d" uid="trackerMatrix3" />
+            <config renderer="default" transform="vtkTrackerMatrix3" />
+        </service>
+
+        <service uid="cameraTransformAdaptor" type="::visuVTKAdaptor::STransform" autoConnect="yes">
+            <inout key="tm3d" uid="cameraMatrix" />
+            <config renderer="default" transform="vtkCameraMatrix" />
+        </service>
+
+        <service uid="chessTransformAdaptor" type="::visuVTKAdaptor::STransform" autoConnect="yes">
+            <inout key="tm3d" uid="chessMatrix" />
+            <config renderer="default" transform="vtkChessMatrix" />
+        </service>
+
+        <service uid="systemCenterAxis" type="::visuVTKAdaptor::SAxis">
+            <config renderer="default" length="20" transform="id" label="no" marker="yes" markerColor="#FF0000" />
+        </service>
+
+        <service uid="trackerAxis0" type="::visuVTKAdaptor::SAxis">
+            <config renderer="default" length="20" transform="vtkTrackerMatrix0" label="no" marker="yes" markerColor="#00FF00" />
+        </service>
+
+        <service uid="trackerAxis1" type="::visuVTKAdaptor::SAxis">
+            <config renderer="default" length="20" transform="vtkTrackerMatrix1" label="no" marker="yes" markerColor="#AA1298" />
+        </service>
+
+        <service uid="trackerAxis2" type="::visuVTKAdaptor::SAxis">
+            <config renderer="default" length="20" transform="vtkTrackerMatrix2" label="no" marker="yes" markerColor="#FF7700" />
+        </service>
+
+        <service uid="trackerAxis3" type="::visuVTKAdaptor::SAxis">
+            <config renderer="default" length="20" transform="vtkTrackerMatrix3" label="no" marker="yes" markerColor="#00FFA1" />
+        </service>
+
+        <service uid="chessAxis" type="::visuVTKAdaptor::SAxis">
+            <config renderer="default" length="5" transform="vtkChessMatrix" label="no" marker="yes" markerColor="#EEBAED" />
         </service>
 
         <!-- *************************** End resultView *************************** -->
@@ -496,6 +651,8 @@
         <connect>
             <signal>actionChessBoardSize/parametersModified</signal>
             <slot>chessboardDetector/updateChessboardSize</slot>
+            <slot>chessboardReprojection/updateChessboardSize</slot>
+            <slot>cameraPose/updateChessboardSize</slot>
         </connect>
 
         <connect>
@@ -515,15 +672,68 @@
             <slot>actionCalibrate/setInexecutable</slot>
         </connect>
 
+        <connect>
+            <signal>cameraSelector/configuredFile</signal>
+            <slot>actionStartOpenIGTLinkClient/hide</slot>
+            <slot>actionStopOpenIGTLinkClient/hide</slot>
+            <slot>configureClient/hide</slot>
+            <slot>actionPrevious/show</slot>
+            <slot>actionNext/show</slot>
+            <slot>actionStopOpenIGTLinkClient/update</slot>
+            <slot>csvReader/startReading</slot>
+        </connect>
+
+        <connect>
+            <signal>cameraSelector/configuredDevice</signal>
+            <signal>cameraSelector/configuredStream</signal>
+            <slot>actionPrevious/hide</slot>
+            <slot>actionNext/hide</slot>
+            <slot>actionStartOpenIGTLinkClient/show</slot>
+            <slot>configureClient/show</slot>
+        </connect>
+
+        <connect>
+            <signal>trackerTLMatrixListener/connected</signal>
+            <slot>actionStartOpenIGTLinkClient/hide</slot>
+            <slot>actionStopOpenIGTLinkClient/show</slot>
+        </connect>
+
+        <connect>
+            <signal>trackerTLMatrixListener/disconnected</signal>
+            <slot>actionStopOpenIGTLinkClient/hide</slot>
+            <slot>actionStartOpenIGTLinkClient/show</slot>
+        </connect>
+
+        <connect>
+            <signal>calibInfo/getRecord</signal>
+            <slot>displayCalibrationInfo/displayImage</slot>
+        </connect>
+
+        <connect>
+            <signal>movingCameraParameter/boolChanged</signal>
+            <slot>handEyeCalibration/setMovingCamera</slot>
+            <slot>chessboardReprojection/setMovingCamera</slot>
+            <slot>chessSwitcher/switchMatrix</slot>
+            <slot>cameraSwitcher/switchMatrix</slot>
+        </connect>
+
+        <connect>
+            <signal>handEyeMatX/modified</signal>
+            <slot>actionShowHideVisibility/activate</slot>
+            <slot>actionShowHideVisibility/update</slot>
+        </connect>
+
+        <connect>
+            <signal>chessboardReprojection/errorComputed</signal>
+            <slot>reprojectionLabel/setDoubleParameter</slot>
+        </connect>
+
         <!-- *************************** End Connections *************************** -->
 
         <start uid="mainView" />
         <start uid="extractor" />
-        <start uid="matrixViewer" />
-        <start uid="matrixViewerHE" />
         <start uid="frameGrabber" />
         <start uid="synchronizer" />
-        <start uid="synchronizer2" />
         <start uid="handEyeCalibration" />
         <start uid="csvReader" />
         <start uid="chessboardDetector" />
@@ -531,21 +741,35 @@
         <start uid="pushMatrixSensor" />
         <start uid="computeRegistration" />
         <start uid="cameraSelector" />
-        <start uid="handEyeMatrixWriter" />
-        <!-- VTK scene 'frameView' -->
-        <start uid="videoAdpt" />
-        <!-- VTK scene 'chessboardDetectionView' -->
-        <start uid="videoAdptChessboard" />
+        <start uid="handEyeXMatrixWriter" />
+        <start uid="handEyeZMatrixWriter" />
+        <start uid="displayCalibrationInfo" />
+        <start uid="concatTrackerHEX" />
+        <start uid="trackerTLMatrixSynchronizer" />
+        <start uid="chessSwitcher" />
+        <start uid="cameraSwitcher" />
         <!-- VTK scene 'resultView' -->
-        <start uid="videoAdptResult" />
-        <start uid="sensorAxis" />
-        <start uid="systemCenter" />
+        <start uid="videoAdpt" />
+        <start uid="trackerAxis0" />
+        <start uid="trackerAxis1" />
+        <start uid="trackerAxis2" />
+        <start uid="trackerAxis3" />
+        <start uid="chessboardAdaptor" />
+        <start uid="chessAxis" />
+        <start uid="systemCenterAxis" />
         <start uid="cameraAdpt" />
         <start uid="interactorStyle" />
-        <start uid="sensorTransformAdaptor" />
+        <start uid="trackerTransformAdaptor0" />
+        <start uid="trackerTransformAdaptor1" />
+        <start uid="trackerTransformAdaptor2" />
+        <start uid="trackerTransformAdaptor3" />
+        <start uid="chessTransformAdaptor" />
+        <start uid="cameraTransformAdaptor" />
+        <start uid="chessboardReprojection" />
         <!-- Update -->
         <update uid="extractor" />
         <update uid="actionReset" />
+        <update uid="actionShowHideVisibility" />
 
     </config>
 </extension>

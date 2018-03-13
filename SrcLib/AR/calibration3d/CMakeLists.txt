@@ -1,7 +1,7 @@
 fwLoadProperties()
 
-find_package(OpenCV REQUIRED)
-find_package(Ceres REQUIRED)
+find_package(OpenCV QUIET REQUIRED)
+find_package(Ceres QUIET REQUIRED)
 
 fwInclude(
     ${OpenCV_INCLUDE_DIRS}

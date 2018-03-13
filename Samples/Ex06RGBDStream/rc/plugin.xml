@@ -23,6 +23,7 @@
                     <step color="#000000ff" value="5000" />
                 </colors>
             </object>
+            <object uid="RGBDCameraSeries" type="::arData::CameraSeries" />
 
             <!-- ***************************************** Begin layouts declaration ***************************************** -->
             <service uid="mainView" type="::gui::frame::SDefaultFrame">
@@ -49,6 +50,7 @@
                     </layout>
                 </gui>
                 <registry>
+                    <editor sid="cameraSelector" start="yes" />
                     <menuItem sid="startVideo" start="yes" />
                     <menuItem sid="stopVideo" start="yes" />
                 </registry>
@@ -254,19 +256,22 @@
             </service>
 
             <!-- Manages Sense camera configuration -->
-            <service uid="scanner" type="::videoTools::SGrabberProxy" worker="scanWorker">
+            <service uid="grabber" type="::videoTools::SGrabberProxy">
+                <in key="camera" uid="RGBDCameraSeries" />
                 <inout key="depthTL" uid="frameTLDepth" />
                 <inout key="frameTL" uid="frameTLVideo" />
                 <config>
                     <camera type="RGBD" />
+                    <selection mode="exclude" />
+                    <addSelection service="::videoQt::SFrameGrabber" />
                 </config>
             </service>
 
-            <!-- ***************************************** Begin mesh computing services declarations ***************************************** -->
+            <!-- ***************************************** Begin actions ******************************************* -->
             <service uid="startVideo" type="::gui::action::SSlotCaller">
                 <slots>
                     <slot>startVideo/setInexecutable</slot>
-                    <slot>scanner/startCamera</slot>
+                    <slot>grabber/startCamera</slot>
                     <slot>stopVideo/setExecutable</slot>
                 </slots>
             </service>
@@ -275,16 +280,30 @@
                 <state executable="false" />
                 <slots>
                     <slot>stopVideo/setInexecutable</slot>
-                    <slot>scanner/stopCamera</slot>
+                    <slot>grabber/stopCamera</slot>
                     <slot>startVideo/setExecutable</slot>
                 </slots>
             </service>
 
-            <!-- ***************************************** End connections declarations ***************************************** -->
+            <!-- The CameraSelector creates 2 empty ::arData::Camera so we can use it without any prior calibration -->
+            <service uid="cameraSelector" type="::videoQt::editor::SCamera">
+                <inout key="cameraSeries" uid="RGBDCameraSeries" />
+                <videoSupport>yes</videoSupport>
+                <createCameraNumber>2</createCameraNumber>
+            </service>
+            <!-- ***************************************** End actions ********************************************* -->
+
+            <!-- ***************************************** Begin connections declarations ************************** -->
+            <connect>
+                <signal>cameraSelector/configuredCameras</signal>
+                <slot>grabber/reconfigure</slot>
+            </connect>
+            <!-- ***************************************** End connections declarations **************************** -->
+
             <!-- layouts -->
             <start uid="mainView" />
             <start uid="synchronizer" />
-            <start uid="scanner" />
+            <start uid="grabber" />
             <!-- TFEditor Scene2D -->
             <start uid="grid" />
             <start uid="abscissa" />

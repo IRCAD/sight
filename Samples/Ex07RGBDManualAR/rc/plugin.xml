@@ -402,15 +402,9 @@
                 <inout key="videoMaskTL" uid="maskTL" />
                 <config scaleFactor="1.0" noise="30" foregroundComponents="5" backgroundComponents="5"/>
                 <HSV>
-                    <!-- Range for the white gloves -->
-                    <lower>5,100,0</lower>
-                    <upper>15,150,255</upper>
-
                     <!-- Range for the blue gloves -->
-                    <!--
                     <lower>35,0,0</lower>
                     <upper>360.5,255,255</upper>
-                    -->
                 </HSV>
             </service>
 

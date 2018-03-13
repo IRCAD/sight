@@ -1,6 +1,6 @@
 fwLoadProperties()
 
-find_package (OpenNI2 REQUIRED)
+find_package(OpenNI2 QUIET REQUIRED)
 
 fwInclude(
     ${OPENNI2_INCLUDE_DIRS}

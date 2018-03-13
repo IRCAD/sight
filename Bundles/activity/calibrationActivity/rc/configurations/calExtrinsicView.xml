@@ -295,13 +295,17 @@
         <service uid="VideoGrabber1" type="::videoTools::SGrabberProxy">
             <in key="camera" uid="${camera1}" />
             <inout key="frameTL" uid="Frame1TL" />
-            <cameraFwId>${camera1}</cameraFwId>
+            <config>
+                <gui title="Please select the first camera grabber" />
+            </config>
         </service>
 
         <service uid="VideoGrabber2" type="::videoTools::SGrabberProxy">
             <in key="camera" uid="${camera2}" />
             <inout key="frameTL" uid="Frame2TL" />
-            <cameraFwId>${camera2}</cameraFwId>
+            <config>
+                <gui title="Please select the second camera grabber" />
+            </config>
         </service>
 
         <service uid="openCVExtrinsicCal" type="::videoCalibration::SOpenCVExtrinsic" worker="extr_chess_checker">

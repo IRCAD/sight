@@ -21,10 +21,10 @@
 
 #include <fwGui/dialog/InputDialog.hpp>
 #include <fwGui/dialog/LocationDialog.hpp>
+#include <fwGui/dialog/MessageDialog.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
-#include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/operations.hpp>
 
 #include <fwServices/macros.hpp>
@@ -46,6 +46,10 @@ fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::videoQt::editor::SCamera );
 
 const ::fwCom::Signals::SignalKeyType SCamera::s_CONFIGURED_CAMERAS_SIG = "configuredCameras";
 
+const ::fwCom::Signals::SignalKeyType SCamera::s_CONFIGURED_DEVICE_SIG = "configuredDevice";
+const ::fwCom::Signals::SignalKeyType SCamera::s_CONFIGURED_FILE_SIG   = "configuredFile";
+const ::fwCom::Signals::SignalKeyType SCamera::s_CONFIGURED_STREAM_SIG = "configuredStream";
+
 const ::fwCom::Slots::SlotKeyType SCamera::s_CONFIGURE_DEVICE_SLOT = "configureDevice";
 const ::fwCom::Slots::SlotKeyType SCamera::s_CONFIGURE_FILE_SLOT   = "configureFile";
 const ::fwCom::Slots::SlotKeyType SCamera::s_CONFIGURE_STREAM_SLOT = "configureStream";
@@ -57,6 +61,10 @@ SCamera::SCamera() noexcept :
     m_numCreateCameras(0),
     m_sigConfiguredCameras(newSignal<ConfiguredCamerasSignalType>(s_CONFIGURED_CAMERAS_SIG))
 {
+    newSignal< SourceConfiguredSignal >(s_CONFIGURED_DEVICE_SIG);
+    newSignal< SourceConfiguredSignal >(s_CONFIGURED_FILE_SIG);
+    newSignal< SourceConfiguredSignal >(s_CONFIGURED_STREAM_SIG);
+
     newSlot(s_CONFIGURE_DEVICE_SLOT, &SCamera::onChooseDevice, this );
     newSlot(s_CONFIGURE_FILE_SLOT, &SCamera::onChooseFile, this );
     newSlot(s_CONFIGURE_STREAM_SLOT, &SCamera::onChooseStream, this );
@@ -132,7 +140,7 @@ void SCamera::starting()
         else
         {
             SLM_ASSERT("CameraSeries contains camera data but the service is configured to create " <<
-                       m_numCreateCameras <<" cameras.", m_numCreateCameras != 0);
+                       m_numCreateCameras <<" cameras.", m_numCreateCameras == 0);
         }
     }
 }
@@ -188,10 +196,8 @@ void SCamera::onChooseFile()
 
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
-    dialogFile.addFilter("mp4", "*.mp4");
-    dialogFile.addFilter("avi", "*.avi");
-    dialogFile.addFilter("m4v", "*.m4v");
-    dialogFile.addFilter("mkv", "*.mkv");
+    dialogFile.addFilter("videos", "*.avi *.m4v *.mkv *.mp4 *.ogv");
+    dialogFile.addFilter("images", "*.bmp *.jpeg *.jpg *.png *.tiff");
     dialogFile.addFilter("All files", "*.*");
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST);
@@ -199,16 +205,83 @@ void SCamera::onChooseFile()
     size_t count = 0;
     for(auto& camera : cameras)
     {
-        dialogFile.setTitle("Choose a file to load for video source #" + std::to_string(count++));
-
-        ::fwData::location::SingleFile::sptr result;
         ::boost::filesystem::path videoPath;
-        result = ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
-        if (result)
+
+        if(count == 1 && cameras.size() == 2)
         {
-            _sDefaultPath = result->getPath().parent_path();
-            dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
-            videoPath = result->getPath();
+            // Try to guess the second stream path for RGBD cameras
+            auto file = cameras[0]->getVideoFile();
+
+            if(::boost::filesystem::is_directory(videoDirPreferencePath))
+            {
+                file = videoDirPreferencePath / file;
+                file = file.lexically_normal();
+            }
+            const auto dir = file.parent_path();
+
+            if(!dir.empty())
+            {
+                const auto parentDir = dir.parent_path();
+                const auto curDir    = *(dir.rbegin());
+
+                auto findValidImagePath = [&](std::set<std::string> _folders)
+                                          {
+                                              for(const auto& leafDir : _folders)
+                                              {
+                                                  const auto dir = parentDir / leafDir;
+
+                                                  if(::boost::filesystem::exists(dir))
+                                                  {
+                                                      ::boost::filesystem::directory_iterator currentEntry(dir);
+                                                      ::boost::filesystem::directory_iterator endEntry;
+                                                      while(currentEntry != endEntry)
+                                                      {
+                                                          ::boost::filesystem::path entryPath = *currentEntry;
+                                                          if (entryPath.has_stem())
+                                                          {
+                                                              return entryPath;
+                                                          }
+                                                          else
+                                                          {
+                                                              ++currentEntry;
+                                                          }
+                                                      }
+                                                  }
+                                              }
+
+                                              return ::boost::filesystem::path();
+                                          };
+
+                static const std::set<std::string> s_DEPTH_FOLDERS = {{ "d", "D", "depth", "Depth", "DEPTH"}};
+                static const std::set<std::string> s_COLOR_FOLDERS = {{ "c", "C", "color", "Color", "COLOR", "RGB"}};
+
+                if(s_DEPTH_FOLDERS.find(curDir.string()) != s_DEPTH_FOLDERS.end())
+                {
+                    videoPath = findValidImagePath(s_COLOR_FOLDERS);
+                }
+                else if(s_COLOR_FOLDERS.find(curDir.string()) != s_COLOR_FOLDERS.end())
+                {
+                    videoPath = findValidImagePath(s_DEPTH_FOLDERS);
+                }
+            }
+        }
+
+        if(videoPath.empty())
+        {
+            dialogFile.setTitle("Choose a file to load for video source #" + std::to_string(count++));
+
+            ::fwData::location::SingleFile::sptr result;
+            result = ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
+            if (result)
+            {
+                _sDefaultPath = result->getPath().parent_path();
+                dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+                videoPath = result->getPath();
+            }
+        }
+
+        if(!videoPath.empty())
+        {
             if(::boost::filesystem::is_directory(videoDirPreferencePath))
             {
                 ::boost::filesystem::path videoRelativePath;
@@ -234,6 +307,8 @@ void SCamera::onChooseFile()
             ::arData::Camera::ModifiedSignalType::sptr sig;
             sig = camera->signal< ::arData::Camera::ModifiedSignalType >( ::arData::Camera::s_MODIFIED_SIG );
             sig->asyncEmit();
+
+            this->signal< SourceConfiguredSignal >(s_CONFIGURED_FILE_SIG)->asyncEmit();
         }
     }
     m_sigConfiguredCameras->asyncEmit();
@@ -262,6 +337,8 @@ void SCamera::onChooseStream()
             ::arData::Camera::ModifiedSignalType::sptr sig;
             sig = camera->signal< ::arData::Camera::ModifiedSignalType >( ::arData::Camera::s_MODIFIED_SIG );
             sig->asyncEmit();
+
+            this->signal< SourceConfiguredSignal >(s_CONFIGURED_STREAM_SIG)->asyncEmit();
         }
     }
     m_sigConfiguredCameras->asyncEmit();
@@ -286,6 +363,8 @@ void SCamera::onChooseDevice()
             ::arData::Camera::ModifiedSignalType::sptr sig;
             sig = camera->signal< ::arData::Camera::ModifiedSignalType >( ::arData::Camera::s_MODIFIED_SIG );
             sig->asyncEmit();
+
+            this->signal< SourceConfiguredSignal >(s_CONFIGURED_DEVICE_SIG)->asyncEmit();
         }
     }
     m_sigConfiguredCameras->asyncEmit();
