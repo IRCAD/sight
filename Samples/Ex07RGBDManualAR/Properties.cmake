@@ -32,7 +32,7 @@ set( REQUIREMENTS
     ioVTK
     ioAtoms
     uiMedDataQt
-    3DVisualizationActivity
+    dataManagerConfig
     colourSegmentation
 
     )
