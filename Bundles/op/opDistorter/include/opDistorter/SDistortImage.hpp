@@ -22,15 +22,17 @@ namespace opDistorter
  * @section XML XML Configuration
  *
  * @code{.xml}
-     <service type="::opDistorter::SDistortImage">
-         <in key="camera" uid="..." />
-         <inout key="image" uid="..." />
-     </service>
+    <service type="::opDistorter::SDistortImage">
+        <in key="camera" uid="..." />
+        <inout key="input" uid="..." />
+        <inout key="output" uid="..." />
+    </service>
    @endcode
  * @subsection Input Input
  * - \b camera [::arData::Camera]: camera containing calibration information.
+ * - \b input [::fwData::Image]: input image to distort.
  * @subsection In-Out In-Out
- * - \b image [::fwData::Image]: image to distort.
+ * - \b output [::fwData::Image]: image distorted.
  */
 class OPDISTORTER_CLASS_API SDistortImage : public ::fwServices::IController
 {
@@ -38,12 +40,6 @@ class OPDISTORTER_CLASS_API SDistortImage : public ::fwServices::IController
 public:
 
     fwCoreServiceClassDefinitionsMacro( (SDistortImage)(::fwServices::IController) );
-
-    /// Constructor.
-    OPDISTORTER_API SDistortImage() noexcept;
-
-    /// Destructor. Does nothing
-    OPDISTORTER_API virtual ~SDistortImage() noexcept;
 
     /**
      * @name Slots API
@@ -53,6 +49,19 @@ public:
     typedef ::fwCom::Slot<void ()> ChangeStateSlotType;
     ///@}
     ///
+    ///
+    /// Constructor.
+    OPDISTORTER_API SDistortImage() noexcept;
+
+    /// Destructor. Does nothing
+    OPDISTORTER_API virtual ~SDistortImage() noexcept;
+
+    /**
+     * @brief Connect ::fwData::Image::s_MODIFIED_SIG to s_UPDATE_SLOT
+     * and ::fwData::Image::s_BUFFER_MODIFIED_SIG to s_UPDATE_SLOT
+     */
+    OPDISTORTER_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
+
 protected:
 
     /// Does nothing

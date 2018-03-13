@@ -14,12 +14,17 @@
             <object uid="camera" type="::arData::Camera" src="deferred" />
             <object uid="frameTL" type="::arData::FrameTL" />
             <object uid="tagTL" type="::arData::MarkerTL" />
+            <object uid="rawVideoImage" type="::fwData::Image" />
             <object uid="videoImage" type="::fwData::Image" />
+            <object uid="offscreen3DImage" type="::fwData::Image" />
+            <object uid="distortedVideoImage" type="::fwData::Image" />
 
             <object uid="matrixTL" type="::arData::MatrixTL" />
             <object uid="matrix" type="::fwData::TransformationMatrix3D" />
             <object uid="identity" type="::fwData::TransformationMatrix3D" />
             <object uid="inverseMat" type="::fwData::TransformationMatrix3D" />
+
+            <object uid="tagMesh" type="::fwData::Mesh" />
 
             <!-- declaration of the views, menu and toolbar -->
             <service uid="mainFrame" type="::gui::frame::SDefaultFrame">
@@ -80,9 +85,16 @@
                     <layout>
                         <menuItem name="Load Calibration" icon="media-0.1/icons/Plus.svg" />
                         <editor/>
-                        <menuItem name="start" icon="arMedia-0.1/icons/start-cam.svg" />
-                        <menuItem name="stop" icon="arMedia-0.1/icons/stop-cam.svg" />
-                        <menuItem name="pause" icon="arMedia-0.1/icons/pause-cam.svg" />
+                        <menuItem name="Start" icon="arMedia-0.1/icons/start-cam.svg" />
+                        <menuItem name="Stop" icon="arMedia-0.1/icons/stop-cam.svg" />
+                        <menuItem name="Pause" icon="arMedia-0.1/icons/pause-cam.svg" />
+                        <separator/>
+                        <menuItem name="Undistort video image" icon="arMedia-0.1/icons/distortion.svg" />
+                        <menuItem name="Disable video image undistortion" icon="arMedia-0.1/icons/disableDistortion.svg" />
+                        <menuItem name="Distort 3D rendering" icon="arMedia-0.1/icons/distortion.svg" />
+                        <menuItem name="Disable 3D rendering distortion" icon="arMedia-0.1/icons/disableDistortion.svg" />
+                        <separator/>
+                        <menuItem name="Show Mesh on tag" icon="arMedia-0.1/icons/show.svg" icon2="arMedia-0.1/icons/hide.svg" style="check"/>
                     </layout>
                 </gui>
                 <registry>
@@ -91,6 +103,11 @@
                     <menuItem sid="startVideo" start="yes" />
                     <menuItem sid="stopVideo" start="yes" />
                     <menuItem sid="pauseVideo" start="yes" />
+                    <menuItem sid="actionStartUndistort" start="yes" />
+                    <menuItem sid="actionStopUndistort" start="yes" />
+                    <menuItem sid="actionStartDistort" start="yes" />
+                    <menuItem sid="actionStopDistort" start="yes" />
+                    <menuItem sid="showMesh" start="yes" />
                 </registry>
             </service>
 
@@ -151,6 +168,12 @@
                 </slots>
             </service>
 
+            <service uid="loadMesh" type="::ioData::STrianMeshReader">
+                <type mode="reader" />
+                <inout key="data" uid="tagMesh" />
+                <resource>Ex04SimpleARCV-@PROJECT_VERSION@/plane_60.trian</resource>
+            </service>
+
             <service uid="startVideo" type="::gui::action::SSlotCaller">
                 <slots>
                     <slot>frameGrabber/startCamera</slot>
@@ -166,6 +189,73 @@
             <service uid="pauseVideo" type="::gui::action::SSlotCaller">
                 <slots>
                     <slot>frameGrabber/pauseCamera</slot>
+                </slots>
+            </service>
+
+            <service uid="actionStartUndistort" type="::gui::action::SSlotCaller">
+                <slots>
+                    <slot>undistorter/changeState</slot>
+                    <slot>actionStartDistort/setInexecutable</slot>
+                    <slot>actionStartUndistort/hide</slot>
+                    <slot>actionStopUndistort/show</slot>
+                </slots>
+            </service>
+
+            <service uid="actionStopUndistort" type="::gui::action::SSlotCaller">
+                <state visible="false" />
+                <slots>
+                    <slot>undistorter/changeState</slot>
+                    <slot>actionStartDistort/setExecutable</slot>
+                    <slot>actionStartUndistort/show</slot>
+                    <slot>actionStopUndistort/hide</slot>
+                </slots>
+            </service>
+
+            <service uid="actionStartDistort" type="::gui::action::SSlotCaller">
+                <slots>
+                    <slot>distorter/changeState</slot>
+                    <slot>actionStartUndistort/setInexecutable</slot>
+                    <slot>actionStartDistort/hide</slot>
+                    <slot>actionStopDistort/show</slot>
+                    <slot>showDistortionActor/activate</slot>
+                    <slot>showActors/deactivate</slot>
+                    <slot>showDistortionActor/update</slot>
+                    <slot>showActors/update</slot>
+                </slots>
+            </service>
+
+            <service uid="actionStopDistort" type="::gui::action::SSlotCaller">
+                <state visible="false" />
+                <slots>
+                    <slot>distorter/changeState</slot>
+                    <slot>actionStartUndistort/setExecutable</slot>
+                    <slot>actionStartDistort/show</slot>
+                    <slot>actionStopDistort/hide</slot>
+                    <slot>showDistortionActor/deactivate</slot>
+                    <slot>showActors/activate</slot>
+                    <slot>showDistortionActor/update</slot>
+                    <slot>showActors/update</slot>
+                </slots>
+            </service>
+
+            <service uid="showDistortionActor" type="::gui::action::SBooleanSlotCaller" >
+                <state active="false" />
+                <slots>
+                    <slot>videoARAdpt/show</slot>
+                </slots>
+            </service>
+
+            <service uid="showActors" type="::gui::action::SBooleanSlotCaller" >
+                <state active="true" />
+                <slots>
+                    <slot>meshAdpt/updateVisibility</slot>
+                    <slot>showMesh/setIsActive</slot>
+                </slots>
+            </service>
+
+            <service uid="showMesh" type="::gui::action::SBooleanSlotCaller">
+                <slots>
+                    <slot>meshAdpt/updateVisibility</slot>
                 </slots>
             </service>
 
@@ -206,11 +296,14 @@
             <service uid="genericScene" type="::fwRenderVTK::SRender" autoConnect="yes">
                 <scene>
                     <renderer id="video" layer="0" background="0.0" />
-                    <renderer id="default" layer="1" background="0.0" />
+                    <renderer id="ar" layer="1" background="0.0" />
+                    <renderer id="default" layer="2" background="0.0" />
                     <adaptor uid="videoAdpt" />
+                    <adaptor uid="videoARAdpt" />
                     <adaptor uid="interactorStyle" />
                     <adaptor uid="axis" />
                     <adaptor uid="cameraAdpt" />
+                    <adaptor uid="meshAdpt" />
                 </scene>
             </service>
 
@@ -218,6 +311,11 @@
                 <in key="frame" uid="videoImage" />
                 <in key="camera" uid="camera" />
                 <config renderer="video" />
+            </service>
+
+            <service uid="videoARAdpt" type="::visuVTKARAdaptor::SVideo" autoConnect="yes">
+                <in key="frame" uid="distortedVideoImage" />
+                <config renderer="ar" />
             </service>
 
             <service uid="interactorStyle" type="::visuVTKAdaptor::SInteractorStyle">
@@ -234,7 +332,42 @@
                 <config renderer="default" />
             </service>
 
+            <service uid="meshAdpt" type="::visuVTKAdaptor::SMesh" autoConnect="yes">
+                <in key="mesh" uid="tagMesh" />
+                <config renderer="default" transform="id" autoresetcamera="no" />
+            </service>
+
             <!-- *************************** End generic scene *************************** -->
+
+            <!-- *************************** Begin offscreen scene *************************** -->
+
+            <service uid="offscreenRender" type="::fwRenderVTK::SRender" autoConnect="yes">
+                <inout key="offScreen" uid="offscreen3DImage" />
+                <flip>true</flip>
+                <scene width="1920" height="1080">
+                    <renderer id="default" layer="0" background="0.0" />
+                    <adaptor uid="interactorStyleOffscreen" />
+                    <adaptor uid="meshAdptOffscreen" />
+                    <adaptor uid="cameraAdptOffscreen" />
+                </scene>
+            </service>
+
+            <service uid="interactorStyleOffscreen" type="::visuVTKAdaptor::SInteractorStyle">
+                <config renderer="default" style="FixedInteractorStyle" />
+            </service>
+
+            <service uid="meshAdptOffscreen" type="::visuVTKAdaptor::SMesh" autoConnect="yes">
+                <in key="mesh" uid="tagMesh" />
+                <config renderer="default" picker="default" autoresetcamera="no" transform="id" />
+            </service>
+
+            <service uid="cameraAdptOffscreen" type="::visuVTKARAdaptor::SCamera" autoConnect="yes">
+                <inout key="transform" uid="inverseMat" />
+                <in key="camera" uid="camera" />
+                <config renderer="default" />
+            </service>
+
+            <!-- *************************** End offscreen scene *************************** -->
 
             <!-- GUI to handle aruco tracking parameters -->
             <service uid="arucoParams" type="::guiQt::editor::SParameters">
@@ -357,7 +490,7 @@
                     <key uid="frameTL" />
                 </in>
                 <inout group="image">
-                    <key uid="videoImage" />
+                    <key uid="rawVideoImage" />
                 </inout>
                 <in group="matrixTL">
                     <key uid="matrixTL" />
@@ -377,6 +510,17 @@
                 <inout key="output" uid="inverseMat" />
             </service>
 
+            <service uid="undistorter" type="::opDistorter::SUndistortImage" worker="distortion">
+                <in key="camera" uid="camera" />
+                <in key="input" uid="rawVideoImage" autoConnect="yes" />
+                <inout key="output" uid="videoImage" />
+           </service>
+
+            <service uid="distorter" type="::opDistorter::SDistortImage" worker="distortion">
+                <in key="camera" uid="camera" />
+                <in key="input" uid="offscreen3DImage" autoConnect="yes" />
+                <inout key="output" uid="distortedVideoImage" />
+            </service>
 
             <!-- signal/slot connection -->
             <connect>
@@ -438,16 +582,30 @@
             <start uid="genericScene" />
             <start uid="error" />
             <start uid="hideAxis" />
+            <start uid="undistorter" />
+            <start uid="distorter" />
+            <start uid="showDistortionActor" />
+            <start uid="showActors" />
+            <start uid="loadMesh" />
 
             <!-- VTK scene 'genericScene' -->
             <start uid="videoAdpt" />
+            <start uid="videoARAdpt" />
             <start uid="interactorStyle" />
             <start uid="axis" />
             <start uid="cameraAdpt" />
+            <start uid="meshAdpt" />
+
+            <!-- VTK scene 'offscreenRender' -->
+            <start uid="offscreenRender" />
+            <start uid="interactorStyleOffscreen" />
+            <start uid="meshAdptOffscreen" />
+            <start uid="cameraAdptOffscreen" />
 
             <update uid="actionHide" />
             <update uid="hideAxis" />
-
+            <update uid="loadMesh" />
+            <update uid="showMesh" />
 
         </config>
     </extension>

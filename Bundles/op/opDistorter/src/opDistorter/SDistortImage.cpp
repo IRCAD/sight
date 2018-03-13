@@ -8,13 +8,16 @@
 
 #include <arData/Camera.hpp>
 
+#include <cvIO/Image.hpp>
+
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slot.hxx>
 #include <fwCom/Slots.hxx>
 
 #include <fwData/Array.hpp>
 #include <fwData/Image.hpp>
-#include <fwData/mt/ObjectReadToWriteLock.hpp>
+#include <fwData/mt/ObjectReadLock.hpp>
+#include <fwData/mt/ObjectWriteLock.hpp>
 
 #include <fwDataTools/helper/Array.hpp>
 #include <fwDataTools/helper/Image.hpp>
@@ -31,7 +34,8 @@ fwServicesRegisterMacro( ::fwServices::IController, ::opDistorter::SDistortImage
 const ::fwCom::Slots::SlotKeyType SDistortImage::s_CHANGE_STATE_SLOT = "changeState";
 
 const ::fwServices::IService::KeyType s_CAMERA_INPUT = "camera";
-const ::fwServices::IService::KeyType s_IMAGE_INOUT  = "image";
+const ::fwServices::IService::KeyType s_IMAGE_INPUT  = "input";
+const ::fwServices::IService::KeyType s_IMAGE_INOUT  = "output";
 
 //------------------------------------------------------------------------------
 SDistortImage::SDistortImage() noexcept :
@@ -44,6 +48,17 @@ SDistortImage::SDistortImage() noexcept :
 
 SDistortImage::~SDistortImage() noexcept
 {
+}
+
+// ----------------------------------------------------------------------------
+
+fwServices::IService::KeyConnectionsMap SDistortImage::getAutoConnections() const
+{
+    ::fwServices::IService::KeyConnectionsMap connections;
+    connections.push( "input", ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push( "input", ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT );
+
+    return connections;
 }
 
 //------------------------------------------------------------------------------
@@ -90,10 +105,10 @@ void SDistortImage::distort()
     ::arData::Camera::csptr camera = this->getInput< ::arData::Camera >(s_CAMERA_INPUT);
     SLM_FATAL_IF("Camera with id \"" + s_CAMERA_INPUT + "\" is not found.", !camera);
 
-    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    SLM_FATAL_IF("Image with id \"" + s_IMAGE_INOUT + "\" is not found.", !image);
+    ::fwData::Image::csptr image = this->getInput< ::fwData::Image >(s_IMAGE_INPUT);
+    SLM_FATAL_IF("Image with id \"" + s_IMAGE_INPUT + "\" is not found.", !image);
 
-    ::fwData::mt::ObjectReadToWriteLock lock(image);
+    ::fwData::mt::ObjectReadLock lock(image);
     ::fwData::Array::sptr arraySrc = image->getDataArray();
     ::fwDataTools::helper::Array arraySrcHelper(arraySrc);
 
@@ -159,17 +174,34 @@ void SDistortImage::distort()
         }
     }
 
-    ::cv::Mat dst =
-        ::cv::Mat(::cv::Size(static_cast<int>(image->getSize()[0]), static_cast<int>(image->getSize()[1])),
-                  CV_8UC4, (void*)arrayDstHelper.getBuffer(), ::cv::Mat::AUTO_STEP);
+    ::fwData::Image::sptr outputImage = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    SLM_FATAL_IF("Image with id \"" + s_IMAGE_INOUT + "\" is not found.", !outputImage);
+
+    ::fwData::mt::ObjectWriteLock outputLock(outputImage);
+
+    if(!outputImage->getSizeInBytes())
+    {
+        ::fwData::Image::SizeType size(2);
+        size[0] = image->getSize()[0];
+        size[1] = image->getSize()[1];
+
+        outputImage->allocate(size, image->getType(), image->getNumberOfComponents());
+
+        ::fwData::Image::OriginType origin(2, 0);
+        outputImage->setOrigin(origin);
+
+        const ::fwData::Image::SpacingType::value_type voxelSize = 1;
+        ::fwData::Image::SpacingType spacing(2, voxelSize);
+        outputImage->setSpacing(spacing);
+        outputImage->setWindowWidth(1);
+        outputImage->setWindowCenter(0);
+    }
+
+    ::cv::Mat dst = ::cvIO::Image::moveToCv(outputImage);
 
     ::cv::remap(src, dst, pixel_locations_dst, ::cv::Mat(), CV_INTER_LINEAR);
 
-    // Write image
-    lock.upgrade();
-    arraySrc->swap(arrayDst);
-
-    auto sig = image->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Image::s_BUFFER_MODIFIED_SIG);
+    auto sig = outputImage->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Image::s_BUFFER_MODIFIED_SIG);
     {
         ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();

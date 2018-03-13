@@ -99,7 +99,6 @@ fwServices::IService::KeyConnectionsMap SUndistortImage::getAutoConnections() co
     connections.push( "input", ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT );
 
     return connections;
-
 }
 
 // ----------------------------------------------------------------------------
@@ -162,6 +161,7 @@ void SUndistortImage::undistort()
 
     if(!outputImage->getSizeInBytes())
     {
+        ::fwData::mt::ObjectWriteLock outputLock(outputImage);
         ::fwData::Image::SizeType size(2);
         size[0] = inputImage->getSize()[0];
         size[1] = inputImage->getSize()[1];

@@ -1,6 +1,6 @@
 
 set( NAME Ex04SimpleARCV )
-set( VERSION 0.1 )
+set( VERSION 0.2 )
 set( TYPE APP )
 set( DEPENDENCIES  )
 set( REQUIREMENTS
@@ -16,8 +16,11 @@ set( REQUIREMENTS
     gui
     guiQt
     ioCalibration
+    ioData
+    ioVTK
     uiPreferences
     uiTools
+    opDistorter
     maths
     preferences
     servicesReg
