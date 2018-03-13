@@ -1,6 +1,6 @@
 fwLoadProperties()
 
-find_package(VTK COMPONENTS
+find_package(VTK QUIET COMPONENTS
     vtkCommonCore
     vtkImagingCore
     REQUIRED

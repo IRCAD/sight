@@ -1,6 +1,6 @@
 fwLoadProperties()
 
-find_package(VTK
+find_package(VTK QUIET
             COMPONENTS 
             vtkCommonCore 
             vtkCommonDataModel 
