@@ -55,6 +55,7 @@ SVideo::SVideo() noexcept :
     m_actor(vtkSmartPointer<vtkImageActor>::New()),
     m_lookupTable(vtkSmartPointer<vtkLookupTable>::New()),
     m_isTextureInit(false),
+    m_isCameraInit(false),
     m_reverse(true),
     m_interpolate(true)
 {
@@ -150,8 +151,6 @@ void SVideo::updating()
             m_actor->RotateY(180);
         }
 
-        const ::fwData::Image::SizeType size = image->getSize();
-
         if(this->getInput< ::fwData::TransferFunction>(s_TF_INPUT))
         {
             auto scalarValuesToColors = vtkSmartPointer<vtkImageMapToColors>::New();
@@ -169,11 +168,19 @@ void SVideo::updating()
         m_actor->SetInterpolate(m_interpolate);
 
         m_isTextureInit = true;
+    }
 
-        this->getRenderer()->InteractiveOff();
-        this->getRenderer()->GetActiveCamera()->ParallelProjectionOn();
-        this->getRenderer()->ResetCamera();
-        this->getRenderer()->GetActiveCamera()->SetParallelScale(static_cast<double>(size[1]) / 2.0);
+    if( !m_isCameraInit)
+    {
+        if(m_actor->GetVisibility())
+        {
+            const ::fwData::Image::SizeType size = image->getSize();
+            this->getRenderer()->InteractiveOff();
+            this->getRenderer()->GetActiveCamera()->ParallelProjectionOn();
+            this->getRenderer()->ResetCamera();
+            this->getRenderer()->GetActiveCamera()->SetParallelScale(static_cast<double>(size[1]) / 2.0);
+        }
+        m_isCameraInit = true;
     }
 
     m_imageData->Modified();
@@ -235,6 +242,7 @@ void SVideo::updateImageOpacity()
 void SVideo::updateImage()
 {
     m_isTextureInit = false;
+    m_isCameraInit  = false;
     this->updating();
 }
 
@@ -243,6 +251,7 @@ void SVideo::updateImage()
 void SVideo::show(bool visible)
 {
     m_actor->SetVisibility(visible);
+    m_isCameraInit = false;
 
     this->setVtkPipelineModified();
     this->requestRender();
