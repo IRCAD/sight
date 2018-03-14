@@ -309,7 +309,6 @@
 
             <service uid="videoAdpt" type="::visuVTKARAdaptor::SVideo" autoConnect="yes">
                 <in key="frame" uid="videoImage" />
-                <in key="camera" uid="camera" />
                 <config renderer="video" />
             </service>
 
@@ -327,14 +326,14 @@
             </service>
 
             <service uid="cameraAdpt" type="::visuVTKARAdaptor::SCamera" autoConnect="yes">
-                <inout key="transform" uid="inverseMat" />
+                <in key="transform" uid="inverseMat" />
                 <in key="camera" uid="camera" />
                 <config renderer="default" />
             </service>
 
             <service uid="meshAdpt" type="::visuVTKAdaptor::SMesh" autoConnect="yes">
                 <in key="mesh" uid="tagMesh" />
-                <config renderer="default" transform="id" autoresetcamera="no" />
+                <config renderer="default" autoresetcamera="no" color="#ffffffda"/>
             </service>
 
             <!-- *************************** End generic scene *************************** -->
@@ -358,11 +357,11 @@
 
             <service uid="meshAdptOffscreen" type="::visuVTKAdaptor::SMesh" autoConnect="yes">
                 <in key="mesh" uid="tagMesh" />
-                <config renderer="default" picker="default" autoresetcamera="no" transform="id" />
+                <config renderer="default" autoresetcamera="no" color="#ffffffda" />
             </service>
 
             <service uid="cameraAdptOffscreen" type="::visuVTKARAdaptor::SCamera" autoConnect="yes">
-                <inout key="transform" uid="inverseMat" />
+                <in key="transform" uid="inverseMat" />
                 <in key="camera" uid="camera" />
                 <config renderer="default" />
             </service>
@@ -559,6 +558,16 @@
                 <signal>cameraSeries/modified</signal>
                 <slot>Extractor/update</slot>
                 <slot>error/update</slot>
+                <slot>actionStartDistort/setExecutable</slot>
+                <slot>actionStartUndistort/setExecutable</slot>
+                <slot>actionStartUndistort/show</slot>
+                <slot>actionStopUndistort/hide</slot>
+                <slot>actionStartDistort/show</slot>
+                <slot>actionStopDistort/hide</slot>
+                <slot>showDistortionActor/deactivate</slot>
+                <slot>showActors/activate</slot>
+                <slot>showDistortionActor/update</slot>
+                <slot>showActors/update</slot>
             </connect>
 
             <connect>
