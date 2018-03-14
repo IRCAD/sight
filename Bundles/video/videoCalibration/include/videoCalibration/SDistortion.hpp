@@ -93,6 +93,9 @@ private:
     /// Slot: enable/disable the distort correction.
     void changeState();
 
+    /// Slot: compute the distortion map.
+    void calibrate();
+
     /// True if the undistortion is enabled.
     bool m_isEnabled { false };
 
