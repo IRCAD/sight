@@ -125,18 +125,34 @@ def parse_file(f_):
         inherits_object = soup.find(class_='inherit_header pub_methods_classfwData_1_1Object')
         inherits_exception = soup.find(class_='inherit_header pub_methods_classfwCore_1_1Exception')
 
-        def is_service(soup):
+        item_type_re = {
+            "Service": SRV_RE,
+            "Object": OBJ_RE,
+            "Interface": IFACE_RE,
+            "Exception": EXCEPT_RE
+        }
+        def is_item_type(soup, ty_str):
+            """
+            Test if the HTML contained in the supplied soup describes and element of the specified type based on the
+            doxygen page title. Accepted types are 'Service', 'Object', 'Interface' and 'Exception'. If true, return an
+            entry to add to the sqlite DB, else return None.
+            """
             title = soup.title.get_text()
-            match = SRV_RE.search(title)
+            match = item_type_re[ty_str].search(title)
             if match:
                 path = match.group(1)
                 repo = file_repo(soup)
                 if repo is not None:
                     path = path + " ({})".format(repo)
-                return (path, "Service", f_)
+                return (path, ty_str, f_)
             return None
 
         def is_bad_service(soup):
+            """
+            Test if the HTML contained in the supplied soup describes a service, with more lenient rules regarding
+            the name of the service. If true, print a warning regarding the service name and return an entry to add to
+            the sqlite DB, otherwise return None.
+            """
             title = soup.title.get_text()
             match = BAD__SRV_RE.search(title)
             if match:
@@ -149,77 +165,38 @@ def parse_file(f_):
                 return (path, "Service", f_)
             return None
 
-        def is_object(soup):
+        file_type_re = {
+            "Class": CLASS_RE,
+            "Namespace": NAMESPACE_RE,
+            "Struct": STRUCT_RE,
+        }
+        def is_file_type(soup, ty_str):
+            """
+            Test if the HTML contained in the supplied soup describes and element of the specified type based on the
+            doxygen page title. Accepted types are 'Class', 'Namespace', and 'Struct'. If true, return an
+            entry to add to the sqlite DB, else return None.
+            """
             title = soup.title.get_text()
-            match = OBJ_RE.search(title)
-            if match:
-                path = match.group(1)
-                repo = file_repo(soup)
-                if repo is not None:
-                    path = path + " ({})".format(repo)
-                return (path, "Object", f_)
-            return None
-
-        def is_interface(soup):
-            title = soup.title.get_text()
-            match = IFACE_RE.search(title)
-            if match:
-                path = match.group(1)
-                repo = file_repo(soup)
-                if repo is not None:
-                    path = path + " ({})".format(repo)
-                return (path, "Interface", f_)
-            return None
-
-        def is_exception(soup):
-            title = soup.title.get_text()
-            match = EXCEPT_RE.search(title)
-            if match:
-                path = match.group(1)
-                repo = file_repo(soup)
-                if repo is not None:
-                    path = path + " ({})".format(repo)
-                return (path, "Exception", f_)
-            return None
-
-        def file_class(soup):
-            title = soup.title.get_text()
-            match = CLASS_RE.search(title)
-            if match:
-                class_ = match.group(1)
-                return (class_, "Class", f_)
-            return None
-
-        def file_struct(soup):
-            title = soup.title.get_text()
-            match = STRUCT_RE.search(title)
+            match = file_type_re[ty_str].search(title)
             if match:
                 struct_ = match.group(1)
-                return (struct_, "Struct", f_)
-            return None
-
-        def file_namespace(soup):
-            title = soup.title.get_text()
-            match = NAMESPACE_RE.search(title)
-            if match:
-                namespace = match.group(1)
-                return (namespace, "Namespace", f_)
+                return (struct_, ty_str, f_)
             return None
 
         if CLASS_FILE_RE.match(f_):
             # We know the file contains a class, find what kind of class
-            class_triple = file_class(soup)
+            class_triple = is_file_type(soup, 'Class')
             if class_triple is None:
                 return new_entries
             class_name = class_triple[0]
             if inherits_iservice:
                 # The class inherits IService, it can be a service or an interface
-                triple = is_interface(soup)
+                triple = is_item_type(soup, 'Interface')
                 if triple is not None:
                     new_entries.append(triple)
                 else:
                     # Not an interface, probably a service
-                    triple = is_service(soup)
+                    triple = is_item_type(soup, 'Service')
                     if triple is not None:
                         new_entries.append(triple)
                     else:
@@ -233,7 +210,7 @@ def parse_file(f_):
                 new_entries.append((class_name, "Class", f_))
             elif inherits_object:
                 # Not a service and inherits fwData::Object, this class is probably a data.
-                triple = is_object(soup)
+                triple = is_item_type(soup, 'Object')
                 if triple is not None:
                     new_entries.append(triple)
             elif class_name == "fwCore::Exception":
@@ -242,7 +219,7 @@ def parse_file(f_):
             elif inherits_exception:
                 # Inherits an exception type, this is probably an exception
                 # TODO: I'm pretty sure this won't catch all exceptions in the codebase
-                triple = is_exception(soup)
+                triple = is_item_type(soup, 'Exception')
                 if triple is not None:
                     new_entries.append(triple)
             else:
@@ -250,20 +227,20 @@ def parse_file(f_):
                 new_entries.append(class_triple)
         elif STRUCT_FILE_RE.match(f_):
             # We know the file contains a struct, find what kind of struct
-            struct_triple = file_struct(soup)
+            struct_triple = is_file_type(soup, 'Struct')
             if struct_triple is None:
                 return new_entries
             new_entries.append(struct_triple)
             if inherits_exception:
                 # Inherits an exception type, this is probably an exception
                 # TODO: I'm pretty sure this won't catch all exceptions in the codebase
-                triple = is_exception(soup)
+                triple = is_item_type(soup, 'Exception')
                 if triple is not None:
                     new_entries.append(triple)
         elif NAMESPACE_FILE_RE.match(f_):
             # We know the file contains a namespace, find what kind of namespace (i.e. Bundle, Library, regular
             # namespace...)
-            namespace_triple = file_namespace(soup)
+            namespace_triple = is_file_type(soup, 'Namespace')
             if namespace_triple is None:
                 return new_entries
             namespace_name = namespace_triple[0]
