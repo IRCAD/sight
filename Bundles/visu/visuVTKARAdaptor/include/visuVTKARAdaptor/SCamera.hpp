@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VISUVTKARADAPTOR_SCAMERA_HPP__
-#define __VISUVTKARADAPTOR_SCAMERA_HPP__
+#pragma once
 
 #include "visuVTKARAdaptor/config.hpp"
 
@@ -18,7 +17,8 @@ namespace visuVTKARAdaptor
 {
 
 /**
- * @brief   Places the camera inside a VTK scene and updates its transform matrix.
+ * @brief   Places the camera inside a VTK scene according to a transform matrix. If the transform matrix is specified
+ * as an inout key, it will be updated if the corresponding VTK transform is modified.
  *
  * @section Slots Slots
  * - \b calibrate(): recompute the FOV.
@@ -35,12 +35,22 @@ namespace visuVTKARAdaptor
             <config renderer="default" />
         </service>
    @endcode
+ * Or:
+ * @code{.xml}
+        <service type="::visuVTKARAdaptor::SCamera" autoConnect="yes">
+            <in key="transform" uid="..." />
+            <in key="camera" uid="..." />
+            <config renderer="default" />
+        </service>
+   @endcode
  *
  * @subsection Input Input
  * - \b camera [::arData::Camera] (optional): camera calibration.
+ * - \b transform [::fwData::TransformationMatrix3D] (optional): camera position and orientation.
  *
  * @subsection In-Out In-Out
- * - \b transform [::fwData::TransformationMatrix3D]: camera position and orientation.
+ * - \b transform [::fwData::TransformationMatrix3D] (optional): camera position and orientation. Will be updated if the
+ * underlying VTK transform is modified
  *
  * @subsection Configuration Configuration
  * - \b renderer : ID of renderer the adaptor must use.
@@ -99,8 +109,7 @@ private:
     vtkCommand* m_cameraCommand; ///< VTK camera command.
     vtkCommand* m_resizeCommand; ///< VTK renderer resize command.
 
+    friend class WindowResizeCallBack;
 };
 
 } //namespace visuVTKARAdaptor
-
-#endif /* __VISUVTKARADAPTOR_SCAMERA_HPP__ */
