@@ -32,7 +32,6 @@ const ::fwCom::Signals::SignalKeyType SArucoTracker::s_MARKER_DETECTED_SIG = "ma
 const ::fwCom::Slots::SlotKeyType SArucoTracker::s_SET_DOUBLE_PARAMETER_SLOT = "setDoubleParameter";
 const ::fwCom::Slots::SlotKeyType SArucoTracker::s_SET_INT_PARAMETER_SLOT    = "setIntParameter";
 const ::fwCom::Slots::SlotKeyType SArucoTracker::s_SET_BOOL_PARAMETER_SLOT   = "setBoolParameter";
-const ::fwCom::Slots::SlotKeyType SArucoTracker::s_SET_ENUM_PARAMETER_SLOT   = "setEnumParameter";
 
 const ::fwServices::IService::KeyType s_CAMERA_INPUT      = "camera";
 const ::fwServices::IService::KeyType s_TAGTL_INOUT_GROUP = "tagTL";

@@ -1,8 +1,8 @@
 
 fwLoadProperties()
 
-find_package(ZEROMQ REQUIRED)
-find_package(OpenIGTLink REQUIRED)
+find_package(ZEROMQ QUIET REQUIRED)
+find_package(OpenIGTLink QUIET REQUIRED)
 
 fwForwardInclude(
     ${ZeroMQ_INCLUDE_DIRS}

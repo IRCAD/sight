@@ -36,9 +36,6 @@ namespace videoOpenCV
 
 static const ::fwServices::IService::KeyType s_FRAMETL = "frameTL";
 
-const ::fwCom::Slots::SlotKeyType SFrameGrabber::s_NEXT_IMAGE_SLOT     = "nextImage";
-const ::fwCom::Slots::SlotKeyType SFrameGrabber::s_PREVIOUS_IMAGE_SLOT = "previousImage";
-
 // -----------------------------------------------------------------------------
 
 SFrameGrabber::SFrameGrabber() noexcept :
@@ -52,8 +49,6 @@ SFrameGrabber::SFrameGrabber() noexcept :
     m_isPaused(false)
 {
     m_worker = ::fwThread::Worker::New();
-    newSlot(s_NEXT_IMAGE_SLOT, &SFrameGrabber::nextImage, this);
-    newSlot(s_PREVIOUS_IMAGE_SLOT, &SFrameGrabber::previousImage, this);
 }
 
 // -----------------------------------------------------------------------------
@@ -185,22 +180,7 @@ void SFrameGrabber::stopCamera()
         sigDuration->asyncEmit(static_cast<std::int64_t>(-1));
 
         ::arData::FrameTL::sptr frameTL = this->getInOut< ::arData::FrameTL >(s_FRAMETL);
-
-        const ::fwCore::HiResClock::HiResClockType timestamp = frameTL->getNewerTimestamp() + 1;
-
-        SPTR(::arData::FrameTL::BufferType) buffer = frameTL->createBuffer(timestamp);
-        std::uint8_t* destBuffer = reinterpret_cast< std::uint8_t* >( buffer->addElement(0) );
-
-        std::fill(destBuffer,
-                  destBuffer + frameTL->getWidth() * frameTL->getHeight() * frameTL->getNumberOfComponents(), 0);
-
-        // push buffer and notify
-        frameTL->clearTimeline();
-        frameTL->pushObject(buffer);
-
-        auto sigTL = frameTL->signal< ::arData::TimeLine::ObjectPushedSignalType >(
-            ::arData::TimeLine::s_OBJECT_PUSHED_SIG );
-        sigTL->asyncEmit(timestamp);
+        this->clearTimeline(frameTL);
 
         auto sig = this->signal< ::arServices::IGrabber::CameraStoppedSignalType >(
             ::arServices::IGrabber::s_CAMERA_STOPPED_SIG);

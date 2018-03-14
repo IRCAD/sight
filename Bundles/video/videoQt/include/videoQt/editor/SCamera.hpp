@@ -30,6 +30,9 @@ namespace editor
  *
  * @section Signals Signals
  * - \b configuredCameras(): emitted when the cameras have been successfully configured.
+ * - \b configuredDevice(): emitted when the user selects a device as the video source.
+ * - \b configuredFile(): emitted when the user selects a file as the video source.
+ * - \b configuredStream(): emitted when the user selects a stream as the video source.
  *
  * @section Slots Slots
  * - \b configureDevice(): configure the cameras as device sources.
@@ -89,6 +92,15 @@ public:
     /// Key of the 'configuredCameras' signal
     VIDEOQT_API static const ::fwCom::Signals::SignalKeyType s_CONFIGURED_CAMERAS_SIG;
 
+    /// Key of the 'configuredDevice' signal
+    VIDEOQT_API static const ::fwCom::Signals::SignalKeyType s_CONFIGURED_DEVICE_SIG;
+
+    /// Key of the 'configuredFile' signal
+    VIDEOQT_API static const ::fwCom::Signals::SignalKeyType s_CONFIGURED_FILE_SIG;
+
+    /// Key of the 'configuredStream' signal
+    VIDEOQT_API static const ::fwCom::Signals::SignalKeyType s_CONFIGURED_STREAM_SIG;
+
     /// Key of the 'configureDevice' slot
     VIDEOQT_API static const ::fwCom::Slots::SlotKeyType s_CONFIGURE_DEVICE_SLOT;
     /// Key of the 'configureFile' slot
@@ -119,6 +131,8 @@ protected Q_SLOTS:
     void onApply(int index);
 
 private:
+
+    typedef ::fwCom::Signal< void () > SourceConfiguredSignal;
 
     void onChooseFile();
     void onChooseStream();

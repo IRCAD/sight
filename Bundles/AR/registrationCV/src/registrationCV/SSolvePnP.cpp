@@ -10,6 +10,7 @@
 
 #include <calibration3d/helper.hpp>
 
+#include <cvIO/Camera.hpp>
 #include <cvIO/Matrix.hpp>
 
 #include <fwCom/Signal.hxx>
@@ -106,7 +107,6 @@ void SSolvePnP::computeRegistration(::fwCore::HiResClock::HiResClockType _timest
     const auto sig = fwMatrix->signal< ::fwData::TransformationMatrix3D::ModifiedSignalType >
                          ( ::fwData::TransformationMatrix3D::s_MODIFIED_SIG);
     sig->asyncEmit();
-
 }
 
 //-----------------------------------------------------------------------------
@@ -155,20 +155,7 @@ void SSolvePnP::initialize()
 
     m_cvCamera.intrinsicMat = ::cv::Mat::eye(3, 3, CV_64F);
 
-    m_cvCamera.intrinsicMat.at<double>(0, 0) = camera->getFx();
-    m_cvCamera.intrinsicMat.at<double>(1, 1) = camera->getFy();
-    m_cvCamera.intrinsicMat.at<double>(0, 2) = camera->getCx();
-    m_cvCamera.intrinsicMat.at<double>(1, 2) = camera->getCy();
-
-    m_cvCamera.imageSize.width  = static_cast<int>(camera->getWidth());
-    m_cvCamera.imageSize.height = static_cast<int>(camera->getHeight());
-
-    m_cvCamera.distCoef = ::cv::Mat::zeros(5, 1, CV_64F);
-
-    for (size_t i = 0; i < 5; ++i)
-    {
-        m_cvCamera.distCoef.at<double>(static_cast<int>(i)) = camera->getDistortionCoefficient()[i];
-    }
+    ::cvIO::Camera::copyToCv(camera, m_cvCamera.intrinsicMat, m_cvCamera.imageSize, m_cvCamera.distCoef);
 
     // if coordinate system is not the same as OpenCV's (TOP_LEFT), compute corresponding offset
     if(m_videoRef == CENTER)

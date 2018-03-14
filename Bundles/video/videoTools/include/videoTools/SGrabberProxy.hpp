@@ -41,6 +41,9 @@ namespace videoTools
  * - \b setPositionVideo(int) : Force the current time in the video.
  * - \b reconfigure() : Allows to erase the implementation choice, so that the selection routine is ran again, thus,
  * potentially the selection dialog is shown.
+ * - \b nextImage(): display the next image in step by step mode. Does nothing if not supported by the selected grabber.
+ * - \b previousImage(): display the previous image in step by step mode. Does nothing if not supported by the
+ * selected grabber.
  *
  * @section XML XML Configuration
  *
@@ -125,7 +128,15 @@ protected:
     /// SLOT : set the new position in the video.
     VIDEOTOOLS_API virtual void setPosition(std::int64_t position) final;
 
+    /// SLOT : get the previous image in frame by frame mode.
+    VIDEOTOOLS_API virtual void previousImage() override;
+
+    /// SLOT : get the next image in frame by frame mode.
+    VIDEOTOOLS_API virtual void nextImage() override;
+
 private:
+
+    typedef std::pair<std::string, ::fwRuntime::ConfigurationElement::csptr > ServiceConfigPair;
 
     /// SLOT : reset the grabber implementation and stop the current playback.
     void reconfigure();
@@ -148,6 +159,9 @@ private:
     /// grabber implementation chosen by the user
     std::string m_grabberImpl;
 
+    /// Config to use with the current grabber.
+    std::string m_grabberConfig;
+
     /// Title of the GUI selector window
     std::string m_guiTitle { "Please select a video grabber implementation" };
 
@@ -160,8 +174,8 @@ private:
     /// List of services to be included or excluded.
     std::set< std::string > m_selectedServices;
 
-    /// Map that specifies a configuration extension for a service
-    std::map< std::string, std::string > m_serviceToConfig;
+    /// Map that specifies all configuration extensions for a service.
+    std::map< std::string, std::vector< std::string > > m_serviceToConfig;
 
     /// state of the loop mode
     bool m_loopVideo { false };

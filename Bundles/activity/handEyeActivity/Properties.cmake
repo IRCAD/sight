@@ -26,5 +26,7 @@ set( REQUIREMENTS
         handEyeCalibration
         uiHandEye
         ioTimeline
+        ioIGTL
+        syncTimeline
         )
 

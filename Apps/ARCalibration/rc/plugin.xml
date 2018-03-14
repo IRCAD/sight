@@ -17,8 +17,8 @@
     <extension implements="::fwServices::registry::AppConfigParameters">
         <id>ARCalibrationAppBase</id>
         <parameters>
-            <param name="appName" value="ARCalibration 0.3" />
-            <param name="appIconPath" value="ARCalibration-0.3/arcalibration.ico" />
+            <param name="appName" value="ARCalibration @PROJECT_VERSION@" />
+            <param name="appIconPath" value="ARCalibration-@PROJECT_VERSION@/arcalibration.ico" />
         </parameters>
     </extension>
 

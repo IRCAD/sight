@@ -6,11 +6,14 @@ set( DEPENDENCIES
     fwCore
     fwData
     fwDataTools
+    fwGuiQt
     fwServices
     fwTools
+    fwPreferences
     fwMath
     fwCom
     arData
+    cvIO
     eigenTools
     handEyeCalibration
 )

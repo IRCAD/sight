@@ -1,6 +1,6 @@
 fwLoadProperties()
 
-find_package(Qt5 COMPONENTS Core Multimedia MultimediaWidgets REQUIRED)
+find_package(Qt5 QUIET COMPONENTS Core Multimedia MultimediaWidgets REQUIRED)
 
 fwForwardInclude(
     ${Qt5Core_INCLUDE_DIRS}
