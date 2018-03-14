@@ -343,7 +343,7 @@
             <service uid="offscreenRender" type="::fwRenderVTK::SRender" autoConnect="yes">
                 <inout key="offScreen" uid="offscreen3DImage" />
                 <flip>true</flip>
-                <scene width="1920" height="1080">
+                <scene>
                     <renderer id="default" layer="0" background="0.0" />
                     <adaptor uid="interactorStyleOffscreen" />
                     <adaptor uid="meshAdptOffscreen" />

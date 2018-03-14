@@ -379,6 +379,13 @@ void SCamera::calibrate()
 
         camera->SetUserTransform(t);
 
+        // Adjust the size of the render window if we run in an offscreen render
+        auto renderService = this->getRenderService();
+        if(renderService->isOffScreen())
+        {
+            renderService->setOffScreenRenderSize(static_cast<unsigned int>(imW), static_cast<unsigned int>(imH));
+        }
+
         camera->AddObserver(::vtkCommand::ModifiedEvent, m_cameraCommand);
 
         this->updateFromTMatrix3D();
