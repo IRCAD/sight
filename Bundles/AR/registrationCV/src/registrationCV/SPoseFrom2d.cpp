@@ -208,7 +208,7 @@ void SPoseFrom2d::computeRegistration(::fwCore::HiResClock::HiResClockType times
                 sig = matrixTL->signal< ::arData::TimeLine::ObjectPushedSignalType >(
                     ::arData::TimeLine::s_OBJECT_PUSHED_SIG );
 
-                sig->asyncEmit(timestamp);
+                sig->asyncEmit(newerTimestamp);
 
             }
 
