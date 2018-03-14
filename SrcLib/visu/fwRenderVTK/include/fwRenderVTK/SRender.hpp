@@ -145,8 +145,14 @@ public:
         TIMER
     };
 
-    /// Get the render mode
+    /// Gets the render mode
     RenderMode getRenderMode() const;
+
+    /// Tells if the rendering is done offscreen
+    FWRENDERVTK_API bool isOffScreen() const;
+
+    /// Allows to change the size of the offscreen renderer at runtime. This overrides XML configuration settings.
+    FWRENDERVTK_API void setOffScreenRenderSize(unsigned int _width, unsigned int _height);
 
 protected:
 

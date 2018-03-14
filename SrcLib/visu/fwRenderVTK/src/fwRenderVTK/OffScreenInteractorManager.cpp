@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -66,7 +66,7 @@ OffScreenInteractorManager::~OffScreenInteractorManager()
 
 //-----------------------------------------------------------------------------
 
-void OffScreenInteractorManager::installInteractor( ::fwGui::container::fwContainer::sptr _parent )
+void OffScreenInteractorManager::installInteractor( ::fwGui::container::fwContainer::sptr )
 {
     SLM_FATAL("This interactor doesn't need container, use installInteractor(width, height).");
 }

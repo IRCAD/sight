@@ -67,8 +67,8 @@ static const ::fwServices::IService::KeyType s_OFFSCREEN_INOUT = "offScreen";
 SRender::SRender() noexcept :
     m_pendingRenderRequest(false),
     m_renderMode(RenderMode::AUTO),
-    m_width(1280),
-    m_height(720),
+    m_width(160),
+    m_height(90),
     m_offScreen(false),
     m_flip(false)
 {
@@ -555,6 +555,29 @@ vtkTransform* SRender::getOrAddVtkTransform( const VtkObjectIdType& _id )
         this->addVtkObject(_id, t);
     }
     return t;
+}
+
+//-----------------------------------------------------------------------------
+
+bool SRender::isOffScreen() const
+{
+    return m_offScreen;
+}
+
+//-----------------------------------------------------------------------------
+
+void SRender::setOffScreenRenderSize(unsigned int _width, unsigned int _height)
+{
+    if(m_offScreen)
+    {
+        m_width  = _width;
+        m_height = _height;
+
+        // The MakeCurrent() is really essential otherwise this breaks the rendering of other rendering windows
+        m_interactorManager->getInteractor()->GetRenderWindow()->MakeCurrent();
+        m_interactorManager->getInteractor()->GetRenderWindow()->SetSize(static_cast<int>(m_width),
+                                                                         static_cast<int>(m_height));
+    }
 }
 
 //-----------------------------------------------------------------------------
