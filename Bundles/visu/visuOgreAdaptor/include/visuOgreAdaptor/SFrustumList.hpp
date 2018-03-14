@@ -128,7 +128,8 @@ private:
     ::visuOgreAdaptor::SMaterial::sptr m_materialAdaptor;
     /// Pointer to the Material data
     ::fwData::Material::sptr m_material;
-
+    /// The scene node where all frustums are attached
+    ::Ogre::SceneNode* m_sceneNode { nullptr };
 };
 
 } // namespace visuOgreAdaptor

@@ -223,25 +223,34 @@ void SFrustumList::clear()
 
 void SFrustumList::updating()
 {
-    // Add camera to ogre scene
-    ::Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
-    ::Ogre::SceneNode* transNode     =
-        ::fwRenderOgre::helper::Scene::getNodeById(this->getTransformId(), rootSceneNode);
-    if (transNode == nullptr)
+    if (m_sceneNode == nullptr)
     {
-        transNode = rootSceneNode->createChildSceneNode(this->getID() + "_transform_"
-                                                        + std::to_string(m_currentCamIndex));
+        // Add camera to ogre scene
+        ::Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
+        ::Ogre::SceneNode* sceneNode     = ::fwRenderOgre::helper::Scene::getNodeById(this->getTransformId(),
+                                                                                      rootSceneNode);
+
+        if(sceneNode == nullptr)
+        {
+            sceneNode = rootSceneNode->createChildSceneNode(this->getID() + "_transform_" + std::to_string(0));
+        }
+        m_sceneNode = sceneNode;
     }
-    transNode->attachObject(m_frustumList.front());
+
+    m_sceneNode->attachObject(m_frustumList.front());
 
     this->requestRender();
-
 }
 
 //-----------------------------------------------------------------------------
 
 void SFrustumList::stopping()
 {
+    if (m_sceneNode != nullptr)
+    {
+        this->getSceneManager()->destroySceneNode(m_sceneNode);
+    }
+
     this->unregisterServices();
     this->clear();
     m_materialAdaptor.reset();
