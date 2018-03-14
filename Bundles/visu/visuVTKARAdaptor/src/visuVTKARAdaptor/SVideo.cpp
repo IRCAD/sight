@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -16,6 +16,7 @@
 #include <fwData/Boolean.hpp>
 #include <fwData/Image.hpp>
 #include <fwData/Integer.hpp>
+#include <fwData/mt/ObjectReadLock.hpp>
 
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 
@@ -134,6 +135,7 @@ void SVideo::updating()
         return;
     }
 
+    ::fwData::mt::ObjectReadLock inputLock(image);
     ::fwVtkIO::toVTKImage(image, m_imageData);
 
     if(!m_isTextureInit)
