@@ -21,8 +21,7 @@ namespace editor
 {
 
 /**
- * @brief   This service displays the list of the availlable reader/writer and allows to select one of them to read or
- * write a data.
+ * @brief  This service displays a list of available readers or writers and lets you select one to load or save a data.
  *
  * @section Signals Signals
  * - \b jobCreated(::fwJobs::IJob::sptr) : emitted when a job is created.
@@ -43,7 +42,7 @@ namespace editor
           </service>
  * @endcode
  *
- * For reader mode, you can read in an output data. In this case, you must define the type of the output data.
+ * Readers can generate output data. In this case, you must define the type of the output data.
  *
  * @code{.xml}
           <service uid="..." type="::uiIO::editor::SIOSelector">

@@ -136,7 +136,7 @@ void SIOSelector::updating()
     {
         SLM_ASSERT("The object to read is not defined, you must set '" + ::fwIO::s_DATA_KEY + "' as <inout> or define "
                    "the 'class' of the output object", obj || !m_dataClassname.empty());
-        ::std::string classname = m_dataClassname;
+        std::string classname = m_dataClassname;
         if (obj)
         {
             classname = obj->getClassname();
