@@ -59,12 +59,6 @@ def parse_json_config():
     """
     Parse the projects.json configuration file. It is expected to be present in the working directory.
     """
-    try:
-        cfg_ = json.loads(open('./projects.json', encoding="utf8").read())
-    except (OSError, json.JSONDecodeError) as err:
-        print("Error loading configuration file: " + str(err))
-        cfg_ = None
-    return cfg_
 
 def gather_sources():
     """
@@ -95,8 +89,6 @@ def file_repo(f_soup):
     """
     Return the name of the repository that a particular documentation file was generated from, or None if not possible.
     """
-    # res = f_soup.select("div.contents ul li a [href$=_source.html]")
-    # res = f_soup.select("ul li a[href$=_source.html]")
     lists = f_soup.find_all('ul')
     if lists:
         file_path = lists[-1].li.get_text()
@@ -260,15 +252,21 @@ def parse_file(f_):
     return new_entries
 
 def populate_db(conn_, services):
+    """
+    Fill the sqlite database with the supplied list of (name, entry_type, file_path) triples.
+    """
     cur = conn_.cursor()
     for triple in services:
         try:
             cur.execute("INSERT OR IGNORE INTO searchIndex(name, type, path) VALUES (?, ?, ?);", triple)
-        except ValueError:
+        except Exception:
             print("Error inserting " + str(triple))
     conn_.commit()
 
 def copy_files():
+    """
+    Copy the doxygen HTML files into the docset destination.
+    """
     try:
         shutil.copytree('./html', './fw4spl.docset/Contents/Resources/Documents')
     except shutil.Error as err:
@@ -278,8 +276,16 @@ def copy_files():
             print("File '" + src + "' was not copied correctly. Reason: " + why)
 
 def main():
+    """
+    Builds the dash docset.
+    """
     global CFG
     global REPO_NAMES
+    try:
+        CFG = json.loads(open('./projects.json', encoding="utf8").read())
+    except (OSError, json.JSONDecodeError) as err:
+        print("Error loading configuration file: " + str(err))
+        return
     CFG = parse_json_config()
     REPO_NAMES = {repo: Path(repo).parent.name if Path(repo).name == "src" else Path(repo).name for repo in CFG['repositories']}
     if CFG is None:
