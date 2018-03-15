@@ -100,6 +100,9 @@ void IService::setOutput(const IService::KeyType& key, const fwData::Object::spt
 
 ::fwData::Object::sptr IService::getObject()
 {
+    SLM_WARN("(deprecated) 'getObject()' is deprecated and will be removed, use getInput() or getInOut() instead. It is"
+             " still used by '" + this->getClassname() + "'.");
+
     // Handle compatibility with new behavior
     if(m_associatedObject.expired())
     {
@@ -713,6 +716,9 @@ void IService::autoConnect()
 {
     ::fwServices::IService::KeyConnectionsMap connectionMap = this->getAutoConnections();
 
+    SLM_ERROR_IF("The service '" + this->getClassname() + "' is set to 'autoConnect=\"yes\"' but is has no object to "
+                 "connect", m_serviceConfig.m_globalAutoConnect && m_serviceConfig.m_objects.empty());
+
     // For compatibility with V1, we allow services to connect explicitly with the default object
     // For these services we will ignore all auto connections with any other data
     // This is intended notably for managers-like services
@@ -746,6 +752,9 @@ void IService::autoConnect()
                         }
                     }
                 }
+                SLM_ERROR_IF("Oject '" + objectCfg.m_key + "' of '" + this->getClassname() + "' is set to "
+                             "'autoConnect=\"yes\"' but there is no connection available.",
+                             connections.empty() && objectCfg.m_autoConnect);
             }
             else
             {
@@ -753,6 +762,9 @@ void IService::autoConnect()
                 // This also allows to get the default connection with the s_UPDATE_SLOT. When we remove this
                 // function, we will have to implement this behavior with getAutoConnections()
                 connections = this->getObjSrvConnections();
+                SLM_WARN_IF("(deprecated) 'getObjSrvConnections()' is deprecated and will be removed, "
+                            "use getAutoConnections()' instead. It is still used by '" + this->getClassname() + "'.",
+                            !connections.empty());
             }
 
             ::fwData::Object::csptr obj;

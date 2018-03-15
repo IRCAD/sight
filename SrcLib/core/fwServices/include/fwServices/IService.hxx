@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWSERVICES_ISERVICE_HXX__
-#define __FWSERVICES_ISERVICE_HXX__
+#pragma once
 
 #include "fwServices/IService.hpp"
 
@@ -17,6 +16,8 @@ namespace fwServices
 template< class DATATYPE >
 SPTR(DATATYPE) IService::getObject()
 {
+    SLM_WARN("(deprecated) 'getObject()' is deprecated and will be removed, use getInput() or getInOut() instead. It is"
+             " still used by '" + this->getClassname() + "'.");
     SPTR(DATATYPE) castData = std::dynamic_pointer_cast<DATATYPE>( m_associatedObject.lock() );
     OSLM_ASSERT("DynamicCast " << ::fwCore::TypeDemangler<DATATYPE>().getClassname() << " failed", castData);
 
@@ -26,7 +27,7 @@ SPTR(DATATYPE) IService::getObject()
 //------------------------------------------------------------------------------
 
 template< class DATATYPE >
-CSPTR(DATATYPE) IService::getInput(const KeyType &key) const
+CSPTR(DATATYPE) IService::getInput(const KeyType& key) const
 {
     CSPTR(DATATYPE) input;
 
@@ -43,7 +44,7 @@ CSPTR(DATATYPE) IService::getInput(const KeyType &key) const
 //------------------------------------------------------------------------------
 
 template< class DATATYPE >
-SPTR(DATATYPE) IService::getInOut(const KeyType &key) const
+SPTR(DATATYPE) IService::getInOut(const KeyType& key) const
 {
     SPTR(DATATYPE) inout;
     auto iterator = m_inOutsMap.find(key);
@@ -59,7 +60,7 @@ SPTR(DATATYPE) IService::getInOut(const KeyType &key) const
 //------------------------------------------------------------------------------
 
 template< class DATATYPE >
-CSPTR(DATATYPE) IService::getInput(const KeyType &keybase, size_t index) const
+CSPTR(DATATYPE) IService::getInput(const KeyType& keybase, size_t index) const
 {
 # ifdef _DEBUG
     auto it = m_keyGroupSize.find(keybase);
@@ -73,7 +74,7 @@ CSPTR(DATATYPE) IService::getInput(const KeyType &keybase, size_t index) const
 //------------------------------------------------------------------------------
 
 template< class DATATYPE >
-SPTR(DATATYPE) IService::getInOut(const KeyType &keybase, size_t index) const
+SPTR(DATATYPE) IService::getInOut(const KeyType& keybase, size_t index) const
 {
 # ifdef _DEBUG
     auto it = m_keyGroupSize.find(keybase);
@@ -144,5 +145,3 @@ inline std::vector< ::fwData::Object::csptr > IService::getObjects() const
 //------------------------------------------------------------------------------
 
 } // namespace fwServices
-
-#endif // __FWSERVICES_ISERVICE_HXX__
