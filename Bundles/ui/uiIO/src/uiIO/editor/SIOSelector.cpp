@@ -130,15 +130,25 @@ void SIOSelector::updating()
 {
     bool createOutput = false;
     ::fwData::Object::sptr obj = this->getInOut< ::fwData::Object>(::fwIO::s_DATA_KEY);
+
     // Retrieve implementation of type ::fwIO::IReader for this object
     std::vector< std::string > availableExtensionsId;
     if ( m_mode == READER_MODE )
     {
-        SLM_ASSERT("The object to read is not defined, you must set '" + ::fwIO::s_DATA_KEY + "' as <inout> or define "
-                   "the 'class' of the output object", obj || !m_dataClassname.empty());
         std::string classname = m_dataClassname;
+
+        // FIXME: support for old version using getObject(): all the 'in' or 'inout' keys were possible
+        if (!obj && classname.empty())
+        {
+            SLM_ERROR("(deprecated) The object to read is not set correctly, you must set '" + ::fwIO::s_DATA_KEY
+                      + "' as <inout> or define the 'class' of the output object");
+
+            obj = this->getObject();
+        }
         if (obj)
         {
+            SLM_WARN_IF("The 'class' attribute is defined, but the object is set as 'inout', only the object classname "
+                        "is used", !classname.empty())
             classname = obj->getClassname();
         }
         createOutput          = (!obj && !m_dataClassname.empty());
@@ -148,7 +158,13 @@ void SIOSelector::updating()
     }
     else // m_mode == WRITER_MODE
     {
-        SLM_ASSERT("The object to save is not defined, you must set '" + ::fwIO::s_DATA_KEY + "' as <inout>", obj);
+        // FIXME: support for old version using getObject(): all the 'in' or 'inout' keys were possible
+        if (!obj)
+        {
+            SLM_ERROR("(deprecated) The object to save is not set correctly, you must set '" + ::fwIO::s_DATA_KEY
+                      + "' as <inout>");
+            obj = this->getObject();
+        }
         availableExtensionsId =
             ::fwServices::registry::ServiceFactory::getDefault()->getImplementationIdFromObjectAndType(
                 obj->getClassname(), "::fwIO::IWriter");
