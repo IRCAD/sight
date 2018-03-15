@@ -169,11 +169,9 @@
             </service>
 
             <service uid="organManager" type="::gui::action::SConfigLauncher">
-                <appConfig id="OrganManagerWithSeries" />
+                <appConfig id="ModelSeriesManagerWindow" />
                 <inout key="ORGAN_MANAGER_MODELSERIES" uid="modelseries" />
                 <parameter replace="ICON_PATH" by="Ex07RGBDManualAR-0.1/app.ico" />
-                <parameter replace="ModelRepresentationChannel" uid="ModelRepresentationChannel" />
-                <parameter replace="ModelDisplayChannel" uid="ModelDisplayChannel" />
             </service>
 
             <service uid="ModelReader" type="::uiIO::editor::SIOSelector">
@@ -424,14 +422,6 @@
             <connect>
                 <signal>cameraRGB/idModified</signal>
                 <slot>frameGrabber/stopCamera</slot>
-            </connect>
-
-            <connect channel="ModelRepresentationChannel">
-                <slot>modelseriesAdpt/updateNormalMode</slot>
-            </connect>
-
-            <connect channel="ModelDisplayChannel">
-                <slot>modelseriesAdpt/showReconstructions</slot>
             </connect>
 
             <connect>
