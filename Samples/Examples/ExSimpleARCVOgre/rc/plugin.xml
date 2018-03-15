@@ -102,10 +102,6 @@
                         <menuItem name="start" icon="arMedia-0.1/icons/start-cam.svg" />
                         <menuItem name="stop" icon="arMedia-0.1/icons/stop-cam.svg" />
                         <menuItem name="pause" icon="arMedia-0.1/icons/pause-cam.svg" />
-                        <separator/>
-                        <menuItem name="Distort 3D rendering" icon="arMedia-0.1/icons/distortion.svg" />
-                        <menuItem name="Disable 3D rendering distortion" icon="arMedia-0.1/icons/disableDistortion.svg" />
-
                     </layout>
                 </gui>
                 <registry>
@@ -114,8 +110,6 @@
                     <menuItem sid="startVideo" start="yes" />
                     <menuItem sid="stopVideo" start="yes" />
                     <menuItem sid="pauseVideo" start="yes" />
-                    <menuItem sid="actionStartDistort" start="yes" />
-                    <menuItem sid="actionStopDistort" start="yes" />
                 </registry>
             </service>
 
@@ -242,25 +236,6 @@
                 </slots>
             </service>
 
-            <service uid="actionStartDistort" type="::gui::action::SSlotCaller">
-                <slots>
-                    <slot>distorter/changeState</slot>
-                    <slot>actionStartUndistort/setInexecutable</slot>
-                    <slot>actionStartDistort/hide</slot>
-                    <slot>actionStopDistort/show</slot>
-                </slots>
-            </service>
-
-            <service uid="actionStopDistort" type="::gui::action::SSlotCaller">
-                <state visible="false" />
-                <slots>
-                    <slot>distorter/changeState</slot>
-                    <slot>actionStartUndistort/setExecutable</slot>
-                    <slot>actionStartDistort/show</slot>
-                    <slot>actionStopDistort/hide</slot>
-                </slots>
-            </service>
-
             <!-- hide axis adaptor until a marker is found -->
             <service uid="actionUpdateAxesVisibility" type="::gui::action::SBooleanSlotCaller" >
                 <slots>
@@ -277,6 +252,7 @@
             </service>
 
             <service uid="actionUpdatePlaneVisibility" type="::gui::action::SBooleanSlotCaller" >
+                <state active="true" />
                 <slots>
                     <slot>meshPlaneAdpt/updateVisibility</slot>
                     <slot>meshPlaneAdpt2/updateVisibility</slot>
