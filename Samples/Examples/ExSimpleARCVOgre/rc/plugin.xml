@@ -21,6 +21,8 @@
             <object uid="identity" type="::fwData::TransformationMatrix3D" />
             <object uid="inverseMat" type="::fwData::TransformationMatrix3D" />
 
+            <object uid="arAlpha" type="::fwData::Float" />
+
             <!-- declaration of the views, menu and toolbar -->
             <service uid="mainFrame" type="::gui::frame::SDefaultFrame">
                 <gui>
@@ -284,13 +286,14 @@
                 <scene>
                     <background topColor="#46455A" bottomColor="#46455A" />
                     <layer id="video" depth="1" />
-                    <layer id="default" depth="2" />
+                    <layer id="default" depth="2" compositors="AlphaModulator" />
                     <adaptor uid="videoAdpt" />
                     <adaptor uid="interactorStyle" />
                     <adaptor uid="interactorStyle2" />
                     <adaptor uid="axis" />
                     <adaptor uid="cameraAdpt" />
                     <adaptor uid="meshAdpt" />
+                    <adaptor uid="compositorAdpt" />
                 </scene>
             </service>
 
@@ -321,6 +324,11 @@
             <service uid="meshAdpt" type="::visuOgreAdaptor::SMesh" autoConnect="yes">
                 <inout key="mesh" uid="cube" />
                 <config layer="default" />
+            </service>
+
+            <service uid="compositorAdpt" type="::visuOgreAdaptor::SCompositorParameter">
+                <inout key="parameter" uid="arAlpha" />
+                <config layer="default" compositorName="AlphaModulator" parameter="u_alpha" shaderType="fragment" />
             </service>
 
             <service uid="debugScene" type="::fwRenderOgre::SRender" autoConnect="yes">
@@ -400,6 +408,7 @@
                 <parameters>
                     <param type="bool" name="Show reprojection" key="display" defaultValue="true" />
                     <param type="color" name="Circle color" key="color" defaultValue="#00ff00" />
+                    <param type="double" name="Transparency" key="u_alpha" defaultValue="1" min="0" max="1" />
                 </parameters>
             </service>
 
@@ -495,6 +504,11 @@
             </connect>
 
             <connect>
+                <signal>reprojectionParams/doubleChanged</signal>
+                <slot>compositorAdpt/setDoubleParameter</slot>
+            </connect>
+
+            <connect>
                 <signal>error/errorComputed</signal>
                 <slot>errorLabel/setDoubleParameter</slot>
             </connect>
@@ -552,6 +566,7 @@
             <start uid="axis" />
             <start uid="cameraAdpt" />
             <start uid="meshAdpt" />
+            <start uid="compositorAdpt" />
 
             <!-- Ogre debug scene -->
 
