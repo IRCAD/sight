@@ -24,6 +24,9 @@ namespace videoCalibration
 /**
  * @brief   Distort or undistort an image according to camera intrinsics and distortion coefficients.
  *
+ * The service can be used either to transform an image or to output the distortion map. The latter case is used when
+ * you want to perform the distortion directly in the rendering pipeline.
+ *
  * @section Slots Slots
  * - \b changeState() : enabled/disabled the distortion correction.
  *
@@ -32,8 +35,16 @@ namespace videoCalibration
  * @code{.xml}
     <service type="::videoCalibration::SDistortion">
         <in key="camera" uid="..." />
-        <inout key="input" uid="..." />
+        <in key="input" uid="..." />
         <inout key="output" uid="..." />
+        <mode>distort</mode>
+    </service>
+   @endcode
+ * Or
+ * @code{.xml}
+    <service type="::videoCalibration::SDistortion">
+        <in key="camera" uid="..." />
+        <inout key="map" uid="..." />
         <mode>distort</mode>
     </service>
    @endcode
@@ -42,6 +53,8 @@ namespace videoCalibration
  * - \b input [::fwData::Image]: input image to distort.
  * @subsection In-Out In-Out
  * - \b output [::fwData::Image]: output image.
+ * - \b map [::fwData::Image]: distortion map. Useful mainly if you want to perform the distortion directly with the
+ * renderer.
  * @subsection Configuration Configuration:
  * - \b mode(optional) : "distort" or "undistort" the output image (default: "distort").
  */

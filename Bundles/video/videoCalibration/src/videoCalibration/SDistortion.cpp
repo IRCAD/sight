@@ -38,6 +38,7 @@ static const ::fwCom::Slots::SlotKeyType s_CALIBRATE_SLOT = "calibrate";
 const ::fwServices::IService::KeyType s_CAMERA_INPUT = "camera";
 const ::fwServices::IService::KeyType s_IMAGE_INPUT  = "input";
 const ::fwServices::IService::KeyType s_IMAGE_INOUT  = "output";
+const ::fwServices::IService::KeyType s_MAP_INOUT    = "map";
 
 //------------------------------------------------------------------------------
 SDistortion::SDistortion() noexcept :
@@ -115,37 +116,40 @@ void SDistortion::updating()
     }
     else
     {
+        // Simple copy of the input image
+        ::fwData::Image::csptr inputImage = this->getInput< ::fwData::Image> ( s_IMAGE_INPUT);
         ::fwData::Image::sptr outputImage = this->getInOut< ::fwData::Image >( s_IMAGE_INOUT);
-        SLM_FATAL_IF("Object 'output' is not found.", !outputImage);
 
-        ::fwData::Image::csptr inputImage = this->getInput< ::fwData::Image> (  s_IMAGE_INPUT);
-        SLM_FATAL_IF("Object 'input' is not found.", !inputImage);
-
-        auto prevSize = outputImage->getSize();
-
-        ::fwData::mt::ObjectReadLock inputLock(inputImage);
-        ::fwData::mt::ObjectWriteLock outputLock(outputImage);
-
-        outputImage->deepCopy(inputImage);
-
-        auto newSize = outputImage->getSize();
-
-        if(prevSize != newSize)
+        if(inputImage && outputImage )
         {
-            auto sig = outputImage->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+            auto prevSize = outputImage->getSize();
+
+            ::fwData::mt::ObjectReadLock inputLock(inputImage);
+            ::fwData::mt::ObjectWriteLock outputLock(outputImage);
+
+            outputImage->deepCopy(inputImage);
+
+            auto newSize = outputImage->getSize();
+
+            if(prevSize != newSize)
             {
-                ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
-                sig->asyncEmit();
+                auto sig =
+                    outputImage->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+                {
+                    ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+                    sig->asyncEmit();
+                }
             }
-        }
-        else
-        {
-            auto sig = outputImage->signal< ::fwData::Image::BufferModifiedSignalType >(
-                ::fwData::Image::s_BUFFER_MODIFIED_SIG);
+            else
             {
-                ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
-                sig->asyncEmit();
+                auto sig = outputImage->signal< ::fwData::Image::BufferModifiedSignalType >(
+                    ::fwData::Image::s_BUFFER_MODIFIED_SIG);
+                {
+                    ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+                    sig->asyncEmit();
+                }
             }
+
         }
     }
 }
@@ -154,13 +158,14 @@ void SDistortion::updating()
 
 void SDistortion::remap()
 {
-    FW_PROFILE_AVG("distort", 5);
-
+    ::fwData::Image::csptr inputImage = this->getInput< ::fwData::Image> ( s_IMAGE_INPUT);
     ::fwData::Image::sptr outputImage = this->getInOut< ::fwData::Image >( s_IMAGE_INOUT);
-    SLM_FATAL_IF("Object 'output' is not found.", !outputImage);
 
-    ::fwData::Image::csptr inputImage = this->getInput< ::fwData::Image> (  s_IMAGE_INPUT);
-    SLM_FATAL_IF("Object 'input' is not found.", !inputImage);
+    if(!inputImage || !outputImage )
+    {
+        return;
+    }
+    FW_PROFILE_AVG("distort", 5);
 
     auto sig = outputImage->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Image::s_BUFFER_MODIFIED_SIG);
     // Blocking signals early allows to discard any event  while we are updating
@@ -326,13 +331,28 @@ void SDistortion::calibrate()
                                       xyMaps[0], xyMaps[1]);
     }
 
+    ::fwData::Image::sptr map = this->getInOut< ::fwData::Image >( s_MAP_INOUT);
+    if(map)
+    {
+        ::cv::Mat cvMap;
+        ::cv::merge(xyMaps, cvMap);
+
+        ::fwData::mt::ObjectWriteLock outputLock(map);
+        ::cvIO::Image::copyFromCv(map, cvMap);
+
+        auto sigModified = map->signal< ::fwData::Image::ModifiedSignalType >(::fwData::Image::s_MODIFIED_SIG);
+        sigModified->asyncEmit();
+    }
+    else
+    {
 #if OPENCV_CUDA_SUPPORT
-    m_mapx = ::cv::cuda::GpuMat(xyMaps[0]);
-    m_mapy = ::cv::cuda::GpuMat(xyMaps[1]);
+        m_mapx = ::cv::cuda::GpuMat(xyMaps[0]);
+        m_mapy = ::cv::cuda::GpuMat(xyMaps[1]);
 #else
-    m_mapx = xyMaps[0];
-    m_mapy = xyMaps[1];
+        m_mapx = xyMaps[0];
+        m_mapy = xyMaps[1];
 #endif // OPENCV_CUDA_SUPPORT
+    }
 }
 
 //------------------------------------------------------------------------------
