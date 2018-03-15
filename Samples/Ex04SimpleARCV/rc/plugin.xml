@@ -169,7 +169,6 @@
             </service>
 
             <service uid="loadMesh" type="::ioData::STrianMeshReader">
-                <type mode="reader" />
                 <inout key="data" uid="tagMesh" />
                 <resource>Ex04SimpleARCV-@PROJECT_VERSION@/plane_60.trian</resource>
             </service>
