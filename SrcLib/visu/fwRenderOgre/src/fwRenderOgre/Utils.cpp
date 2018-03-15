@@ -440,6 +440,7 @@ void Utils::convertFromOgreTexture( ::Ogre::TexturePtr _texture, const ::fwData:
         }
         else if (pixelType == ::fwTools::Type::s_FLOAT)
         {
+            // float
             return ::Ogre::PF_FLOAT32_R;
         }
         FW_RAISE("Format '" + pixelType.string() + "' not handled");
@@ -456,6 +457,11 @@ void Utils::convertFromOgreTexture( ::Ogre::TexturePtr _texture, const ::fwData:
         {
             // int16
             return ::Ogre::PF_R8G8_SNORM;
+        }
+        else if(pixelType == ::fwTools::Type::s_FLOAT)
+        {
+            // float
+            return ::Ogre::PF_FLOAT32_GR;
         }
         FW_RAISE("Format '" + pixelType.string() + "' not handled");
     }

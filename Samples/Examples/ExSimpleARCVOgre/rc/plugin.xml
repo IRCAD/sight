@@ -13,8 +13,10 @@
             <object uid="frameTL" type="::arData::FrameTL" />
             <object uid="tagTL" type="::arData::MarkerTL" />
             <object uid="videoImage" type="::fwData::Image" />
+            <object uid="distortionMap" type="::fwData::Image" />
 
             <object uid="cube" type="::fwData::Mesh" />
+            <object uid="plane" type="::fwData::Mesh" />
 
             <object uid="matrixTL" type="::arData::MatrixTL" />
             <object uid="matrix" type="::fwData::TransformationMatrix3D" />
@@ -69,12 +71,14 @@
                     <layout>
                         <menuItem name="Show Settings" shortcut="Ctrl+H" style="check" />
                         <menuItem name="Show Cube" shortcut="Ctrl+C" style="check" />
+                        <menuItem name="Show Plane" shortcut="Ctrl+C" style="check" />
                         <menuItem name="Show Debug" shortcut="Ctrl+D" style="check" />
                     </layout>
                 </gui>
                 <registry>
                     <menuItem sid="actionHide" start="yes" />
                     <menuItem sid="actionUpdateCubeVisibility" start="yes" />
+                    <menuItem sid="actionUpdatePlaneVisibility" start="yes" />
                     <menuItem sid="actionShowHideDebug" start="yes" />
                 </registry>
             </service>
@@ -98,6 +102,10 @@
                         <menuItem name="start" icon="arMedia-0.1/icons/start-cam.svg" />
                         <menuItem name="stop" icon="arMedia-0.1/icons/stop-cam.svg" />
                         <menuItem name="pause" icon="arMedia-0.1/icons/pause-cam.svg" />
+                        <separator/>
+                        <menuItem name="Distort 3D rendering" icon="arMedia-0.1/icons/distortion.svg" />
+                        <menuItem name="Disable 3D rendering distortion" icon="arMedia-0.1/icons/disableDistortion.svg" />
+
                     </layout>
                 </gui>
                 <registry>
@@ -106,6 +114,8 @@
                     <menuItem sid="startVideo" start="yes" />
                     <menuItem sid="stopVideo" start="yes" />
                     <menuItem sid="pauseVideo" start="yes" />
+                    <menuItem sid="actionStartDistort" start="yes" />
+                    <menuItem sid="actionStopDistort" start="yes" />
                 </registry>
             </service>
 
@@ -232,6 +242,25 @@
                 </slots>
             </service>
 
+            <service uid="actionStartDistort" type="::gui::action::SSlotCaller">
+                <slots>
+                    <slot>distorter/changeState</slot>
+                    <slot>actionStartUndistort/setInexecutable</slot>
+                    <slot>actionStartDistort/hide</slot>
+                    <slot>actionStopDistort/show</slot>
+                </slots>
+            </service>
+
+            <service uid="actionStopDistort" type="::gui::action::SSlotCaller">
+                <state visible="false" />
+                <slots>
+                    <slot>distorter/changeState</slot>
+                    <slot>actionStartUndistort/setExecutable</slot>
+                    <slot>actionStartDistort/show</slot>
+                    <slot>actionStopDistort/hide</slot>
+                </slots>
+            </service>
+
             <!-- hide axis adaptor until a marker is found -->
             <service uid="actionUpdateAxesVisibility" type="::gui::action::SBooleanSlotCaller" >
                 <slots>
@@ -244,6 +273,13 @@
                 <slots>
                     <slot>meshAdpt/updateVisibility</slot>
                     <slot>meshAdpt2/updateVisibility</slot>
+                </slots>
+            </service>
+
+            <service uid="actionUpdatePlaneVisibility" type="::gui::action::SBooleanSlotCaller" >
+                <slots>
+                    <slot>meshPlaneAdpt/updateVisibility</slot>
+                    <slot>meshPlaneAdpt2/updateVisibility</slot>
                 </slots>
             </service>
 
@@ -272,25 +308,31 @@
                 </out>
             </service>
 
-            <service uid="meshreader" type="::ioVTK::SMeshReader">
-                <inout key="output" uid="cube" />
+            <service uid="meshReader" type="::ioVTK::SMeshReader">
+                <inout key="data" uid="cube" />
                 <resource>ExSimpleARCVOgre-@PROJECT_VERSION@/cube60.vtk</resource>
             </service>
 
+            <service uid="meshPlaneReader" type="::ioData::STrianMeshReader">
+                <inout key="data" uid="plane" />
+                <resource>ExSimpleARCVOgre-@PROJECT_VERSION@/plane_60.trian</resource>
+            </service>
+
             <!-- Scene in which the video and the 3D will be rendered -->
-            <!-- *************************** Begin generic scene *************************** -->
 
             <service uid="genericScene" type="::fwRenderOgre::SRender" autoConnect="yes">
                 <scene>
                     <background topColor="#46455A" bottomColor="#46455A" />
                     <layer id="video" depth="1" />
-                    <layer id="default" depth="2" />
+                    <layer id="default" depth="2" compositors="Remap"/>
                     <adaptor uid="videoAdpt" />
                     <adaptor uid="interactorStyle" />
                     <adaptor uid="interactorStyle2" />
                     <adaptor uid="axis" />
                     <adaptor uid="cameraAdpt" />
                     <adaptor uid="meshAdpt" />
+                    <adaptor uid="meshPlaneAdpt" />
+                    <adaptor uid="remapTextureAdpt" />
                 </scene>
             </service>
 
@@ -320,8 +362,20 @@
 
             <service uid="meshAdpt" type="::visuOgreAdaptor::SMesh" autoConnect="yes">
                 <inout key="mesh" uid="cube" />
-                <config layer="default" />
+                <config layer="default" color="#ffffffda" />
             </service>
+
+            <service uid="meshPlaneAdpt" type="::visuOgreAdaptor::SMesh" autoConnect="yes">
+                <inout key="mesh" uid="plane" />
+                <config layer="default" color="#ffffffda" />
+            </service>
+
+            <service uid="remapTextureAdpt" type="::visuOgreAdaptor::SCompositorParameter" autoConnect="yes">
+                <inout key="parameter" uid="distortionMap" />
+                <config layer="default" compositorName="Remap" parameter="u_map" shaderType="fragment" />
+            </service>
+
+            <!-- Debug 3D Scene -->
 
             <service uid="debugScene" type="::fwRenderOgre::SRender" autoConnect="yes">
                 <scene>
@@ -330,6 +384,7 @@
                     <adaptor uid="axis2" />
                     <adaptor uid="trfAdpt" />
                     <adaptor uid="meshAdpt2" />
+                    <adaptor uid="meshPlaneAdpt2" />
                     <adaptor uid="frustumAdpt" />
                     <adaptor uid="frustumListAdpt" />
                     <adaptor uid="cameraAdpt2" />
@@ -347,7 +402,12 @@
 
             <service uid="meshAdpt2" type="::visuOgreAdaptor::SMesh" autoConnect="yes">
                 <inout key="mesh" uid="cube" />
-                <config layer="default" />
+                <config layer="default" color="#ffffffda" />
+            </service>
+
+            <service uid="meshPlaneAdpt2" type="::visuOgreAdaptor::SMesh" autoConnect="yes">
+                <inout key="mesh" uid="plane" />
+                <config layer="default" color="#ffffffda" />
             </service>
 
             <service uid="frustumAdpt" type="::visuOgreAdaptor::SFrustum" autoConnect="yes">
@@ -365,7 +425,6 @@
                 <inout key="transform" uid="identity" />
                 <config layer="default" />
             </service>
-
 
             <!-- *************************** End generic scene *************************** -->
 
@@ -482,6 +541,11 @@
                 <inout key="output" uid="inverseMat" />
             </service>
 
+            <service uid="distorter" type="::videoCalibration::SDistortion" >
+                <in key="camera" uid="camera" autoConnect="yes" />
+                <inout key="map" uid="distortionMap" />
+                <mode>distort</mode>
+            </service>
 
             <!-- signal/slot connection -->
             <connect>
@@ -542,8 +606,10 @@
             <start uid="genericScene" />
             <start uid="debugScene" />
             <start uid="error" />
-            <start uid="meshreader" />
+            <start uid="meshReader" />
+            <start uid="meshPlaneReader" />
             <start uid="actionUpdateAxesVisibility" />
+            <start uid="distorter" />
 
             <!-- Ogre scene 'genericScene' -->
             <start uid="videoAdpt" />
@@ -552,12 +618,14 @@
             <start uid="axis" />
             <start uid="cameraAdpt" />
             <start uid="meshAdpt" />
+            <start uid="meshPlaneAdpt" />
+            <start uid="remapTextureAdpt" />
 
             <!-- Ogre debug scene -->
-
             <start uid="axis2" />
             <start uid="trfAdpt" />
             <start uid="meshAdpt2" />
+            <start uid="meshPlaneAdpt2" />
             <start uid="frustumAdpt" />
             <start uid="frustumListAdpt" />
             <start uid="cameraAdpt2" />
@@ -567,7 +635,8 @@
             <update uid="actionUpdateAxesVisibility" />
             <update uid="actionUpdateCubeVisibility" />
 
-            <update uid="meshreader" />
+            <update uid="meshReader" />
+            <update uid="meshPlaneReader" />
 
         </config>
     </extension>

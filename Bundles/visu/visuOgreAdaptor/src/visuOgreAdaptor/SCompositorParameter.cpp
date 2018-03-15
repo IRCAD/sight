@@ -51,6 +51,15 @@ public:
         adaptor->updateValue(mat);
     }
 
+    //------------------------------------------------------------------------------
+
+    virtual void notifyResourcesCreated(bool forResizeOnly)
+    {
+        auto adaptor = m_adaptor.lock();
+        SLM_ASSERT("Adaptor has expired.", adaptor);
+        adaptor->setDirty();
+    }
+
 private:
     /// Associated f4s adaptor
     ::visuOgreAdaptor::SCompositorParameter::wptr m_adaptor;
@@ -73,7 +82,7 @@ SCompositorParameter::~SCompositorParameter() noexcept
 void SCompositorParameter::updateValue(::Ogre::MaterialPtr& _mat)
 {
     this->setMaterial(_mat);
-    this->updating();
+    this->IParameter::updating();
 }
 
 //------------------------------------------------------------------------------
@@ -123,6 +132,16 @@ void SCompositorParameter::stopping()
     // Association of a listener attached to this adaptor to the configured compositor
     m_compositor->removeListener(m_listener);
     delete m_listener;
+}
+
+//------------------------------------------------------------------------------
+
+void SCompositorParameter::updating()
+{
+    // This is typically called when the data has changed through autoconnect
+    // So set the parameter as dirty and perform the update
+    this->setDirty();
+    this->IParameter::updating();
 }
 
 //------------------------------------------------------------------------------
