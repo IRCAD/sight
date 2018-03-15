@@ -22,6 +22,7 @@
 #include <OGRE/OgreHardwarePixelBuffer.h>
 #include <OGRE/OgreMaterial.h>
 #include <OGRE/OgreMaterialManager.h>
+#include <OGRE/OgreMesh.h>
 #include <OGRE/OgreMeshManager.h>
 #include <OGRE/OgreMovablePlane.h>
 #include <OGRE/OgreSceneManager.h>
@@ -79,9 +80,13 @@ void SVideo::starting()
 
 void SVideo::stopping()
 {
-    m_texture.reset();
+    this->clearEntity();
+
     m_material.reset();
+    m_texture.reset();
     m_gpuTF.reset();
+
+    m_isTextureInit = false;
 }
 
 //------------------------------------------------------------------------------
@@ -104,11 +109,15 @@ void SVideo::updating()
             // /////////////////////////////////////////////////////////////////////
             // Create the appropriate material according to the texture format
             // /////////////////////////////////////////////////////////////////////
+            if(!m_texture)
+            {
+                auto texture = ::Ogre::TextureManager::getSingletonPtr()->createOrRetrieve(
+                    this->getID() + "_VideoTexture",
+                    ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+                    true).first;
 
-            m_texture = ::Ogre::TextureManager::getSingletonPtr()->create(
-                this->getID() + "_VideoTexture",
-                ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-                true);
+                m_texture = ::Ogre::dynamic_pointer_cast< ::Ogre::Texture>( texture );
+            }
 
             auto& mtlMgr = ::Ogre::MaterialManager::getSingleton();
             auto tf      = this->getInput< ::fwData::TransferFunction>(s_TF_INPUT);
@@ -129,9 +138,13 @@ void SVideo::updating()
             {
                 defaultMat = mtlMgr.getByName(VIDEO_MATERIAL_NAME);
             }
-            // Duplicate default material to create Video material
-            m_material = mtlMgr.create( this->getID() + "_VideoMaterial",
-                                        ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+
+            // Duplicate the template material to create our own material
+            auto material = ::Ogre::MaterialManager::getSingletonPtr()->createOrRetrieve(
+                this->getID() + "_VideoMaterial",
+                ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+                true).first;
+            m_material = ::Ogre::dynamic_pointer_cast< ::Ogre::Material>( material );
 
             defaultMat->copyDetailsTo(m_material);
 
@@ -158,6 +171,8 @@ void SVideo::updating()
 
         if (!m_isTextureInit || size[0] != m_previousWidth || size[1] != m_previousHeight )
         {
+            this->clearEntity();
+
             // /////////////////////////////////////////////////////////////////////
             // Create the plane entity
             // /////////////////////////////////////////////////////////////////////
@@ -171,27 +186,18 @@ void SVideo::updating()
             ::Ogre::SceneManager* sceneManager = this->getSceneManager();
             ::Ogre::MeshManager& meshManager   = ::Ogre::MeshManager::getSingleton();
 
-            // Delete deprecated Ogre resources if necessary
-            if (meshManager.resourceExists(videoMeshName))
-            {
-                ::Ogre::ResourcePtr mesh = meshManager.getResourceByName(videoMeshName);
-                meshManager.remove(mesh);
-                sceneManager->destroyEntity(entityName);
-                sceneManager->getRootSceneNode()->removeAndDestroyChild(nodeName);
-            }
-
-            meshManager.createPlane(videoMeshName, ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-                                    plane, static_cast< ::Ogre::Real >(size[0]), static_cast< ::Ogre::Real >(size[1]));
+            m_mesh = meshManager.createPlane(videoMeshName, ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+                                             plane, static_cast< ::Ogre::Real >(size[0]),
+                                             static_cast< ::Ogre::Real >(size[1]));
 
             // Create Ogre Entity
-            ::Ogre::Entity* ent = sceneManager->createEntity(entityName, videoMeshName);
-
-            ent->setMaterial(m_material);
+            m_entity = sceneManager->createEntity(entityName, videoMeshName);
+            m_entity->setMaterial(m_material);
 
             // Add the entity to the scene
-            ::Ogre::SceneNode* sn = sceneManager->getRootSceneNode()->createChildSceneNode(nodeName);
-            sn->attachObject(ent);
-            sn->setPosition(0, 0, 0);
+            m_sceneNode = sceneManager->getRootSceneNode()->createChildSceneNode(nodeName);
+            m_sceneNode->attachObject(m_entity);
+            m_sceneNode->setPosition(0, 0, 0);
 
             ::Ogre::Camera* cam = this->getLayer()->getDefaultCamera();
             SLM_ASSERT("Default camera not found", cam);
@@ -199,7 +205,6 @@ void SVideo::updating()
             cam->setOrthoWindowHeight(static_cast< ::Ogre::Real >(size[1]));
 
             m_isTextureInit = true;
-
         }
 
         m_previousWidth  = size[0];
@@ -219,6 +224,29 @@ void SVideo::updateTF()
     m_gpuTF->updateTexture(tf);
 
     this->requestRender();
+}
+
+//------------------------------------------------------------------------------
+
+void SVideo::clearEntity()
+{
+    if(m_entity)
+    {
+        m_entity->detachFromParent();
+        this->getSceneManager()->destroyEntity(m_entity);
+    }
+    if(m_sceneNode)
+    {
+        m_sceneNode->removeAndDestroyAllChildren();
+        this->getSceneManager()->destroySceneNode(m_sceneNode);
+        m_sceneNode = nullptr;
+    }
+    if (m_mesh)
+    {
+        ::Ogre::MeshManager& meshManager = ::Ogre::MeshManager::getSingleton();
+        meshManager.remove(m_mesh->getName());
+        m_mesh.reset();
+    }
 }
 
 //-----------------------------------------------------------------------------
