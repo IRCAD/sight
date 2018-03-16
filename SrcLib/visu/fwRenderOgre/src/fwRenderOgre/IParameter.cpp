@@ -91,6 +91,16 @@ const std::string& IParameter::getParamName() const
 
 //------------------------------------------------------------------------------
 
+fwServices::IService::KeyConnectionsMap IParameter::getAutoConnections() const
+{
+    ::fwServices::IService::KeyConnectionsMap connections;
+    connections.push(s_PARAMETER_INOUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+
+    return connections;
+}
+
+//------------------------------------------------------------------------------
+
 void IParameter::configuring()
 {
     this->configureParams();

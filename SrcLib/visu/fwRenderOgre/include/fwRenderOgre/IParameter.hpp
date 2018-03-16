@@ -61,6 +61,9 @@ public:
     /// Inform that the parameter value has changed. Its value will be uploaded on next update
     void setDirty();
 
+    /// Connect the input parameter modified signal to this service update slot.
+    fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
+
 protected:
 
     /// Configure the adaptor
