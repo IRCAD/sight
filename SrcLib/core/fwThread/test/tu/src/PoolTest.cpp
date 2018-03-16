@@ -1,16 +1,15 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2015-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2015-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwCore/spyLog.hpp>
+#include "PoolTest.hpp"
 
 #include <fwThread/Pool.hpp>
 #include <fwThread/Worker.hpp>
 
-#include "PoolTest.hpp"
-
+#include <fwCore/spyLog.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwThread::ut::PoolTest );
@@ -20,30 +19,39 @@ namespace fwThread
 namespace ut
 {
 
+//------------------------------------------------------------------------------
+
 void PoolTest::setUp()
 {
     // Set up context before running a test.
 }
+//------------------------------------------------------------------------------
+
 void PoolTest::tearDown()
 {
     // Clean up after the test run.
 }
 
-
 //-----------------------------------------------------------------------------
 
 struct PoolTestHandler
 {
-    PoolTestHandler() : m_step(0), m_threadCheckOk(true)
+    PoolTestHandler() :
+        m_step(0),
+        m_threadCheckOk(true)
     {
         m_constructorThreadId = ::fwThread::getCurrentThreadId();
     }
+
+    //------------------------------------------------------------------------------
 
     void nextStep()
     {
         ::std::this_thread::sleep_for( ::std::chrono::milliseconds(10));
         this->nextStepNoSleep();
     }
+
+    //------------------------------------------------------------------------------
 
     void nextStepNoSleep()
     {
@@ -64,19 +72,41 @@ struct PoolTestHandler
 void PoolTest::basicTest()
 {
     {
+        // Single thread test
         PoolTestHandler handler;
-        {
-            ::fwThread::Pool pool(1);
 
-            pool.post( ::std::bind( &PoolTestHandler::nextStep, &handler) );
-            pool.post( ::std::bind( &PoolTestHandler::nextStep, &handler) );
-            pool.post( ::std::bind( &PoolTestHandler::nextStep, &handler) );
-        }
+        ::fwThread::Pool pool(1);
+
+        std::vector< ::std::shared_future<void> > futures;
+        futures.push_back( pool.post( ::std::bind( &PoolTestHandler::nextStep, &handler) ));
+        futures.push_back( pool.post( ::std::bind( &PoolTestHandler::nextStep, &handler) ));
+        futures.push_back( pool.post( ::std::bind( &PoolTestHandler::nextStep, &handler) ));
+
+        std::for_each(futures.begin(), futures.end(), std::mem_fn(&::std::shared_future<void>::wait));
+
         CPPUNIT_ASSERT_EQUAL(3, handler.m_step);
         CPPUNIT_ASSERT_EQUAL(true, handler.m_threadCheckOk);
     }
 
     {
+        // Multiple threads test
+        PoolTestHandler handler;
+
+        ::fwThread::Pool pool(10);
+
+        std::vector< ::std::shared_future<void> > futures;
+        for(int i = 0; i < 50; ++i)
+        {
+            futures.push_back( pool.post( ::std::bind( &PoolTestHandler::nextStep, &handler) ));
+        }
+        std::for_each(futures.begin(), futures.end(), std::mem_fn(&::std::shared_future<void>::wait));
+
+        CPPUNIT_ASSERT_EQUAL(50, handler.m_step);
+        CPPUNIT_ASSERT_EQUAL(true, handler.m_threadCheckOk);
+    }
+
+    {
+        // Check that the destructor of the pool waits for the end of all tasks
         PoolTestHandler handler;
         {
             ::fwThread::Pool pool(10);
@@ -96,18 +126,16 @@ void PoolTest::basicTest()
 
 void PoolTest::defaultPoolTest()
 {
-    // Create the pool
-    ::fwThread::createDefaultPool();
-
     // Use the pool
     PoolTestHandler handler;
     ::fwThread::Pool& pool = ::fwThread::getDefaultPool();
-    pool.post( ::std::bind( &PoolTestHandler::nextStep, &handler) );
-    pool.post( ::std::bind( &PoolTestHandler::nextStep, &handler) );
-    pool.post( ::std::bind( &PoolTestHandler::nextStep, &handler) );
 
-    // Delete the default ppol
-    ::fwThread::deleteDefaultPool();
+    std::vector< ::std::shared_future<void> > futures;
+    futures.push_back( pool.post( ::std::bind( &PoolTestHandler::nextStep, &handler) ));
+    futures.push_back( pool.post( ::std::bind( &PoolTestHandler::nextStep, &handler) ));
+    futures.push_back( pool.post( ::std::bind( &PoolTestHandler::nextStep, &handler) ));
+
+    std::for_each(futures.begin(), futures.end(), std::mem_fn(&::std::shared_future<void>::wait));
 
     CPPUNIT_ASSERT_EQUAL(3, handler.m_step);
     CPPUNIT_ASSERT_EQUAL(true, handler.m_threadCheckOk);
