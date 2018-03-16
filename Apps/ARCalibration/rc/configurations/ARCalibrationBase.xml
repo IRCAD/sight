@@ -136,7 +136,7 @@
         </service>
 
         <service uid="SDBWriter" type="::uiIO::editor::SIOSelector" config="ARSDBAtomsWriterIOSelectorConfig" >
-            <inout key="series" uid="seriesDB" />
+            <inout key="data" uid="seriesDB" />
         </service>
 
         <!-- Service to select the current activity into the composite. -->

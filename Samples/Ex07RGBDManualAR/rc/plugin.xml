@@ -177,7 +177,7 @@
             </service>
 
             <service uid="ModelReader" type="::uiIO::editor::SIOSelector">
-                <inout key="target" uid="seriesDB" />
+                <inout key="data" uid="seriesDB" />
                 <type mode="reader" />
             </service>
 
@@ -198,7 +198,7 @@
             <!-- Matrix (trf format) reader -->
             <!-- This matrix is used to staticaly register the model onto the video -->
             <service uid="TransformReader" type="::uiIO::editor::SIOSelector">
-                <inout key="target" uid="matrix" />
+                <inout key="data" uid="matrix" />
                 <type mode="reader" /> <!-- mode is optional (by default it is "reader") -->
                 <selection mode="include" />
                 <addSelection service="::ioData::TransformationMatrix3DReaderService" />
