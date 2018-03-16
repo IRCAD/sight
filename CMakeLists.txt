@@ -90,9 +90,12 @@ endif()
 
 set(CREATE_SUBPROJECTS OFF CACHE BOOL "Create a project for each subproject")
 
+# Tests build / run options
 set(BUILD_TESTS ON CACHE BOOL "Configures projects associated tests (<project>Test projects)")
 set(TESTS_XML_OUTPUT OFF CACHE BOOL "Tests will generate an xml output, suitable for CI integration")
 mark_as_advanced(TESTS_XML_OUTPUT)
+set(TESTS_FILTER "" CACHE STRING "Allows to only build/run tests whose path contains the filter string.")
+mark_as_advanced(TESTS_FILTER)
 
 set(ADDITIONAL_PROJECTS CACHE PATH
         "Paths to the additional projects"
@@ -836,11 +839,11 @@ function(findAllDependencies FWPROJECT_NAMES RESULT_VAR)
 
 endfunction()
 
-function(findTests FWPROJECTS RESULT_VAR)
+function(findTests FWPROJECTS FILTER RESULT_VAR)
     set(RESULT "")
 
     foreach(PROJECT ${FWPROJECTS})
-        if(${PROJECT}Test_DIR)
+        if(${PROJECT}Test_DIR AND ("${FILTER}" STREQUAL "" OR "${${PROJECT}Test_DIR}" MATCHES "${FILTER}" ))
             list(APPEND RESULT ${PROJECT}Test)
         endif()
     endforeach()
@@ -1069,14 +1072,16 @@ if(PROJECTS_TO_BUILD)
     message(STATUS "Project configuration is restricted to : ${PROJECTS_TO_BUILD}")
 endif()
 
+# Clear all previous tests from project list
+findTests("${PROJECT_LIST}" "" PROJECT_TESTS)
+if(PROJECT_TESTS)
+    list(REMOVE_ITEM PROJECT_LIST ${PROJECT_TESTS})
+endif()
+
+# Append tests to the project list
 if(BUILD_TESTS)
-    findTests("${PROJECT_LIST}" PROJECT_TESTS)
+    findTests("${PROJECT_LIST}" "${TESTS_FILTER}" PROJECT_TESTS)
     list(APPEND PROJECT_LIST ${PROJECT_TESTS})
-else()
-    findTests("${PROJECT_LIST}" PROJECT_TESTS)
-    if(PROJECT_TESTS)
-        list(REMOVE_ITEM PROJECT_LIST ${PROJECT_TESTS})
-    endif()
 endif()
 
 if(PROJECTS_TO_INSTALL)
