@@ -30,17 +30,13 @@ float getOpacity(in ivec3 voxel)
 
 bool isInsideBox(in ivec3 gridVoxel)
 {
-    // TODO: perhaps compute this outside the shader.
-    vec3 comparisonEpsilon = vec3(0.001);
-    vec3 boxMax = u_boundingBoxMax + comparisonEpsilon;
-    vec3 boxMin = u_boundingBoxMin - comparisonEpsilon;
-
     // Brick positions in image space.
-    vec3 v0  = vec3(gridVoxel) * (vec3(u_brickSize) / vec3(u_imageResolution));
-    vec3 v1  = v0 + (vec3(u_brickSize) / vec3(u_imageResolution));
+    vec3 brickSize = vec3(u_brickSize) / vec3(u_imageResolution);
+    vec3 brickMin  = vec3(gridVoxel) * brickSize;
+    vec3 brickMax  = brickMin + brickSize;
 
-    return (all(greaterThan(v0, boxMin)) && all(lessThan(v0, boxMax))) ||
-           (all(greaterThan(v1, boxMin)) && all(lessThan(v1, boxMax)));
+    // Check if the brick and the box intersect.
+    return all(greaterThan(brickMax, u_boundingBoxMin)) && all(lessThan(brickMin, u_boundingBoxMax));
 }
 
 //-----------------------------------------------------------------------------
