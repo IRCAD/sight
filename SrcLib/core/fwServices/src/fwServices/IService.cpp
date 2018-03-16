@@ -100,8 +100,7 @@ void IService::setOutput(const IService::KeyType& key, const fwData::Object::spt
 
 ::fwData::Object::sptr IService::getObject()
 {
-    SLM_WARN("(deprecated) 'getObject()' is deprecated and will be removed, use getInput() or getInOut() instead. It is"
-             " still used by '" + this->getClassname() + "'.");
+    FW_DEPRECATED("getObject()", "getInput() or getInOut()");
 
     // Handle compatibility with new behavior
     if(m_associatedObject.expired())
@@ -762,9 +761,7 @@ void IService::autoConnect()
                 // This also allows to get the default connection with the s_UPDATE_SLOT. When we remove this
                 // function, we will have to implement this behavior with getAutoConnections()
                 connections = this->getObjSrvConnections();
-                SLM_WARN_IF("(deprecated) 'getObjSrvConnections()' is deprecated and will be removed, "
-                            "use getAutoConnections()' instead. It is still used by '" + this->getClassname() + "'.",
-                            !connections.empty());
+                FW_DEPRECATED_IF("getObjSrvConnections()", "getAutoConnections()", !connections.empty());
             }
 
             ::fwData::Object::csptr obj;

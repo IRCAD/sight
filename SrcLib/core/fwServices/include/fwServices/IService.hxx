@@ -16,8 +16,8 @@ namespace fwServices
 template< class DATATYPE >
 SPTR(DATATYPE) IService::getObject()
 {
-    SLM_WARN("(deprecated) 'getObject()' is deprecated and will be removed, use getInput() or getInOut() instead. It is"
-             " still used by '" + this->getClassname() + "'.");
+    FW_DEPRECATED("getObject()", "getInput() or getInOut()");
+
     SPTR(DATATYPE) castData = std::dynamic_pointer_cast<DATATYPE>( m_associatedObject.lock() );
     OSLM_ASSERT("DynamicCast " << ::fwCore::TypeDemangler<DATATYPE>().getClassname() << " failed", castData);
 
