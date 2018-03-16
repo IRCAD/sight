@@ -68,7 +68,7 @@ OffScreenInteractorManager::~OffScreenInteractorManager()
 
 void OffScreenInteractorManager::installInteractor( ::fwGui::container::fwContainer::sptr )
 {
-    SLM_FATAL("This interactor doesn't need container, use installInteractor(width, height).");
+    SLM_FATAL("This interactor doesn't need a container, use installInteractor(width, height).");
 }
 
 //-----------------------------------------------------------------------------

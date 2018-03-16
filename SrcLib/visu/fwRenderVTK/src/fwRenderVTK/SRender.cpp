@@ -570,8 +570,8 @@ void SRender::setOffScreenRenderSize(unsigned int _width, unsigned int _height)
 {
     if(m_offScreen)
     {
-        m_width  = _width;
-        m_height = _height;
+        m_width  = std::max(_width, 1u);
+        m_height = std::max(_height, 1u);
 
         // The MakeCurrent() is really essential otherwise this breaks the rendering of other rendering windows
         m_interactorManager->getInteractor()->GetRenderWindow()->MakeCurrent();
