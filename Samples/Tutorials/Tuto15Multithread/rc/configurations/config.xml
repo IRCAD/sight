@@ -95,7 +95,7 @@
         </service>
 
         <service uid="reader" type="::uiIO::editor::SIOSelector">
-            <inout key="target" uid="mesh" />
+            <inout key="data" uid="mesh" />
             <type mode="reader" />
         </service>
 

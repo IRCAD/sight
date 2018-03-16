@@ -31,6 +31,8 @@
 #include <fwServices/registry/ServiceConfig.hpp>
 #include <fwServices/registry/ServiceFactory.hpp>
 
+#include <boost/foreach.hpp>
+
 #include <sstream>
 #include <string>
 
@@ -61,115 +63,111 @@ SIOSelector::SIOSelector() :
 
 SIOSelector::~SIOSelector()  noexcept
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 void SIOSelector::configuring()
 {
-    SLM_TRACE_FUNC();
+    const ConfigType srvConfig = this->getConfigTree();
 
-    bool vectorIsAlreadyCleared = false;
+    const std::string mode = srvConfig.get<std::string>("type.<xmlattr>.mode", "reader");
+    SLM_ASSERT("The xml attribute <mode> must be 'reader' (to open file) or 'writer' (to write a new file).",
+               mode == "writer" || mode == "reader" );
+    m_mode = ( mode == "writer" ) ? WRITER_MODE : READER_MODE;
+    SLM_DEBUG( "mode => " + mode );
 
-    //  Config Elem
-    //  <selection mode="include" />
-    //  <addSelection service="::ioAtoms::SWriter" />
+    m_dataClassname = srvConfig.get<std::string>("type.<xmlattr>.class", "");
 
-    ::fwRuntime::ConfigurationElementContainer::Iterator iter = this->m_configuration->begin();
-    for(; iter != this->m_configuration->end(); ++iter )
+    const std::string selectionMode = srvConfig.get<std::string>("selection.<xmlattr>.mode", "exclude");
+    SLM_ASSERT( "The xml attribute <mode> must be 'include' (to add the selection to selector list ) or "
+                "'exclude' (to exclude the selection of the selector list).",
+                selectionMode == "exclude" || selectionMode == "include" );
+    m_servicesAreExcluded = ( selectionMode == "exclude" );
+    SLM_DEBUG( "selection mode => " + selectionMode );
+
+    const auto selectionCfg = srvConfig.equal_range("addSelection");
+    for (auto itSelection = selectionCfg.first; itSelection != selectionCfg.second; ++itSelection)
     {
-        OSLM_INFO( "SIOSelector " << (*iter)->getName());
+        const std::string service = itSelection->second.get<std::string>("<xmlattr>.service");
+        m_selectedServices.push_back(service);
+        SLM_DEBUG( "add selection => " + service );
 
-        if( (*iter)->getName() == "selection" )
+        const std::string configId = itSelection->second.get<std::string>("<xmlattr>.config", "");
+        if(!configId.empty())
         {
-            SLM_ASSERT( "The xml element <selection> must have the attribute 'mode'.", (*iter)->hasAttribute("mode"));
-            std::string mode = (*iter)->getExistingAttributeValue("mode");
-            m_servicesAreExcluded = ( mode == "exclude" );
-            SLM_ASSERT( "The xml attribute <mode> must be 'include' (to add the selection to selector list ) or "
-                        "'exclude' (to exclude the selection of the selector list).",
-                        mode == "exclude" || mode == "include" );
-            OSLM_DEBUG( "mode => " << mode );
+            m_serviceToConfig[service] = configId;
+            SLM_DEBUG( "add config '" + configId + "' for service '" + service + "'");
         }
-
-        if( (*iter)->getName() == "addSelection" )
-        {
-            if( !vectorIsAlreadyCleared )
-            {
-                vectorIsAlreadyCleared = true;
-                m_selectedServices.clear();
-            }
-            SLM_ASSERT( "The xml elemenet <addSelection> must have the attribute 'service'.",
-                        (*iter)->hasAttribute("service"));
-            m_selectedServices.push_back( (*iter)->getExistingAttributeValue("service") );
-            OSLM_DEBUG( "add selection => " << (*iter)->getExistingAttributeValue("service") );
-        }
-
-        if( (*iter)->getName() == "type" )
-        {
-            SLM_ASSERT( "The xml elemenet <type> must have the attribute 'mode'.", (*iter)->hasAttribute("mode"));
-            std::string mode = (*iter)->getExistingAttributeValue("mode");
-            SLM_ASSERT("The xml attribute <mode> must be 'reader' (to open file) or 'writer' (to write a new file).",
-                       mode == "writer" || mode == "reader" );
-            m_mode = ( mode == "writer" ) ? WRITER_MODE : READER_MODE;
-            OSLM_DEBUG( "mode => " << mode );
-        }
-
-        if( (*iter)->getName() == "config" )
-        {
-            SLM_ASSERT( "The xml element <config> must have the attribute 'id'.", (*iter)->hasAttribute("id"));
-            SLM_ASSERT( "The xml element <config> must have the attribute 'service'.",
-                        (*iter)->hasAttribute("service"));
-            std::string configId  = (*iter)->getExistingAttributeValue("id");
-            std::string configSrv = (*iter)->getExistingAttributeValue("service");
-            m_serviceToConfig[ configSrv ] = configId;
-        }
-
     }
 
-    typedef std::vector < SPTR(::fwRuntime::ConfigurationElement) >  ConfigurationElementContainer;
-    ConfigurationElementContainer inject = m_configuration->find("inject");
-
-    if(!inject.empty())
+    const auto configCfg = srvConfig.equal_range("config");
+    for (auto itCfg = configCfg.first; itCfg != configCfg.second; ++itCfg)
     {
-        m_inject = inject.at(0)->getValue();
-    }
+        const std::string service  = itCfg->second.get<std::string>("<xmlattr>.service");
+        const std::string configId = itCfg->second.get<std::string>("<xmlattr>.id");
 
+        m_serviceToConfig[service] = configId;
+        SLM_DEBUG( "add config '" + configId + "' for service '" + service + "'");
+    }
 }
 
 //------------------------------------------------------------------------------
 
 void SIOSelector::starting()
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 void SIOSelector::stopping()
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 void SIOSelector::updating()
 {
-    SLM_TRACE_FUNC();
+    bool createOutput = false;
+    ::fwData::Object::sptr obj = this->getInOut< ::fwData::Object>(::fwIO::s_DATA_KEY);
 
     // Retrieve implementation of type ::fwIO::IReader for this object
     std::vector< std::string > availableExtensionsId;
     if ( m_mode == READER_MODE )
     {
+        std::string classname = m_dataClassname;
+
+        // FIXME: support for old version using getObject(): all the 'in' or 'inout' keys were possible
+        if (!obj && classname.empty())
+        {
+            SLM_ERROR("(deprecated) The object to read is not set correctly, you must set '" + ::fwIO::s_DATA_KEY
+                      + "' as <inout> or define the 'class' of the output object");
+
+            obj = this->getObject();
+        }
+        if (obj)
+        {
+            SLM_WARN_IF("The 'class' attribute is defined, but the object is set as 'inout', only the object classname "
+                        "is used", !classname.empty())
+            classname = obj->getClassname();
+        }
+        createOutput          = (!obj && !m_dataClassname.empty());
         availableExtensionsId =
             ::fwServices::registry::ServiceFactory::getDefault()->getImplementationIdFromObjectAndType(
-                this->getObject()->getClassname(), "::fwIO::IReader");
+                classname, "::fwIO::IReader");
     }
     else // m_mode == WRITER_MODE
     {
+        // FIXME: support for old version using getObject(): all the 'in' or 'inout' keys were possible
+        if (!obj)
+        {
+            SLM_ERROR("(deprecated) The object to save is not set correctly, you must set '" + ::fwIO::s_DATA_KEY
+                      + "' as <inout>");
+            obj = this->getObject();
+        }
         availableExtensionsId =
             ::fwServices::registry::ServiceFactory::getDefault()->getImplementationIdFromObjectAndType(
-                this->getObject()->getClassname(), "::fwIO::IWriter");
+                obj->getClassname(), "::fwIO::IWriter");
     }
 
     // Filter available extensions and replace id by service description
@@ -275,33 +273,14 @@ void SIOSelector::updating()
             // Configure and start service
             if ( m_mode == READER_MODE )
             {
-                ::fwData::Object::sptr object;
-                if(m_inject.empty() ||  this->getObject()->getClassname().compare("::fwData::Composite") )
+                if(createOutput)
                 {
-                    object = this->getObject< ::fwData::Object >();
-                }
-                else
-                {
-                    ::fwServices::registry::ServiceFactory::sptr services =
-                        ::fwServices::registry::ServiceFactory::getDefault();
-                    std::string objType = services->getServiceObjects(extensionId)[0];
-                    if(!objType.compare("::fwData::Object"))
-                    {
-                        object = this->getObject< ::fwData::Composite>();
-                    }
-                    else
-                    {
-                        object                              = ::fwData::factory::New(objType);
-                        ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite>();
-                        ::fwDataTools::helper::Composite helper(composite);
-                        helper.add(m_inject, object);
-
-                        helper.notify();
-                    }
+                    obj = ::fwData::factory::New(m_dataClassname);
+                    SLM_ASSERT("Cannot create object with classname='" + m_dataClassname + "'", obj);
                 }
 
                 ::fwIO::IReader::sptr reader = ::fwServices::add< ::fwIO::IReader >( extensionId );
-                reader->registerInOut(this->getObject(), ::fwIO::s_DATA_KEY);
+                reader->registerInOut(obj, ::fwIO::s_DATA_KEY);
                 reader->setWorker(m_associatedWorker);
 
                 if ( hasConfigForService )
@@ -328,6 +307,11 @@ void SIOSelector::updating()
 
                     reader->stop();
                     ::fwServices::OSR::unregisterService(reader);
+
+                    if (createOutput)
+                    {
+                        this->setOutput(::fwIO::s_DATA_KEY, obj);
+                    }
                 }
                 catch (std::exception& e)
                 {
@@ -344,7 +328,7 @@ void SIOSelector::updating()
                 auto factory = ::fwServices::registry::ServiceFactory::getDefault();
                 ::fwIO::IWriter::sptr writer =
                     ::fwIO::IWriter::dynamicCast(factory->create( "::fwIO::IWriter", extensionId));
-                ::fwServices::OSR::registerService(this->getObject(), ::fwIO::s_DATA_KEY,
+                ::fwServices::OSR::registerService(obj, ::fwIO::s_DATA_KEY,
                                                    ::fwServices::IService::AccessType::INPUT, writer);
 
                 writer->setWorker(m_associatedWorker);

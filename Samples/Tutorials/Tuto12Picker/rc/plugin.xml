@@ -122,14 +122,14 @@
 
             <service uid="pointView" type="::uiVisuQt::PointEditor" autoConnect="yes" />
             <service uid="meshReader" type="::uiIO::editor::SIOSelector">
-                <in key="target" uid="mesh" />
+                <inout key="data" uid="mesh" />
                 <type mode="reader" />
                 <selection mode="exclude" />
                 <addSelection service="::ioXML::FwXMLGenericReaderService" />
             </service>
 
             <service uid="imageReader" type="::uiIO::editor::SIOSelector">
-                <in key="image" uid="image" />
+                <inout key="data" uid="image" />
                 <type mode="reader" />
                 <selection mode="exclude" />
                 <addSelection service="::ioXML::FwXMLGenericReaderService" />

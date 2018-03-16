@@ -137,7 +137,7 @@
             </service>
 
             <service uid="SDBWriter" type="::uiIO::editor::SIOSelector" config="SDBAtomsWriterIOSelectorConfig" >
-                <inout key="series" uid="seriesDB" />
+                <inout key="data" uid="seriesDB" />
             </service>
 
             <service uid="selector" type="::uiMedDataQt::editor::SSelector" autoConnect="yes">

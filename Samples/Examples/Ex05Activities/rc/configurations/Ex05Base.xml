@@ -62,7 +62,7 @@
         <!-- ******************************************************************************************************* -->
 
         <service uid="actionOpen" type="::uiIO::editor::SIOSelector" config="ActivityReaderConfig">
-            <inout key="seriesDB" uid="seriesDB" />
+            <inout key="data" uid="seriesDB" />
         </service>
 
         <service uid="actionSave" type="::gui::action::SStarter">
@@ -73,7 +73,7 @@
 
         <!-- Service to save the launched activities -->
         <service uid="SDBWriter" type="::uiIO::editor::SIOSelector" config="ActivityWriterConfig">
-            <inout key="seriesDB" uid="seriesDB" />
+            <inout key="data" uid="seriesDB" />
         </service>
 
         <!-- ******************************************************************************************************* -->

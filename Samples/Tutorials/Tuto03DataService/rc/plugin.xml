@@ -104,7 +104,7 @@
                 When the service was chosen, it is started, updated and stopped, so the data is read.
             -->
             <service uid="myReaderPathFile" type="::uiIO::editor::SIOSelector" >
-                <inout key="target" uid="image" />
+                <inout key="data" uid="image" />
             </service>
 
             <!--

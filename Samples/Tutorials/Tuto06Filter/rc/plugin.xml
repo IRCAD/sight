@@ -107,7 +107,7 @@
             </service>
 
             <service uid="readerPathImageFile" type="::uiIO::editor::SIOSelector">
-                <inout key="target" uid="myImage1" />
+                <inout key="data" uid="myImage1" />
                 <type mode="reader" />
             </service>
 

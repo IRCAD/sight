@@ -21,6 +21,8 @@
 #include <fwDataCamp/getObject.hpp>
 #include <fwDataCamp/visitor/CompareObjects.hpp>
 
+#include <fwIO/ioTypes.hpp>
+
 #include <fwMedData/Patient.hpp>
 #include <fwMedData/Series.hpp>
 #include <fwMedData/SeriesDB.hpp>
@@ -684,9 +686,8 @@ void ActivityDataView::importObject()
 bool ActivityDataView::readObject(::fwData::Object::sptr obj)
 {
     ::fwServices::IService::sptr ioSelectorSrv;
-    ioSelectorSrv = ::fwServices::add(obj,
-                                      "::fwGui::editor::IDialogEditor",
-                                      "::uiIO::editor::SIOSelector");
+    ioSelectorSrv = ::fwServices::add("::uiIO::editor::SIOSelector");
+    ioSelectorSrv->registerInOut(obj, ::fwIO::s_DATA_KEY);
 
     ::fwRuntime::ConfigurationElement::csptr ioCfg;
     ioCfg = ::fwServices::registry::ServiceConfig::getDefault()->getServiceConfig(m_ioSelectorSrvConfig,
