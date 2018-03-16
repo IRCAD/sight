@@ -73,7 +73,7 @@ void SDistortion::configuring()
 {
     const auto config = this->getConfigTree();
 
-    auto mode = config.get<std::string>("mode");
+    const auto mode = config.get<std::string>("mode");
     if(mode == "undistort")
     {
         m_distort = false;
@@ -122,14 +122,14 @@ void SDistortion::updating()
 
         if(inputImage && outputImage )
         {
-            auto prevSize = outputImage->getSize();
+            const auto prevSize = outputImage->getSize();
 
             ::fwData::mt::ObjectReadLock inputLock(inputImage);
             ::fwData::mt::ObjectWriteLock outputLock(outputImage);
 
             outputImage->deepCopy(inputImage);
 
-            auto newSize = outputImage->getSize();
+            const auto newSize = outputImage->getSize();
 
             if(prevSize != newSize)
             {
@@ -180,7 +180,7 @@ void SDistortion::remap()
         return;
     }
 
-    auto prevSize = outputImage->getSize();
+    const auto prevSize = outputImage->getSize();
 
     if(prevSize != inputImage->getSize())
     {
@@ -200,7 +200,7 @@ void SDistortion::remap()
         outputImage->setWindowWidth(1);
         outputImage->setWindowCenter(0);
     }
-    auto newSize = outputImage->getSize();
+    const auto newSize = outputImage->getSize();
 
     ::fwDataTools::helper::Image outputImgHelper(outputImage);
 
