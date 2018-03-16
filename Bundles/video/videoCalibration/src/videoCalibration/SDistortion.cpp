@@ -127,10 +127,11 @@ void SDistortion::updating()
             ::fwData::mt::ObjectReadLock inputLock(inputImage);
             ::fwData::mt::ObjectWriteLock outputLock(outputImage);
 
-            outputImage->deepCopy(inputImage);
+            // Shallow copy the image is faster
+            // We only have to take care about reallocating a new buffer when we perform the distortion
+            outputImage->shallowCopy(inputImage);
 
             const auto newSize = outputImage->getSize();
-
             if(prevSize != newSize)
             {
                 auto sig =
@@ -182,14 +183,25 @@ void SDistortion::remap()
 
     const auto prevSize = outputImage->getSize();
 
-    if(prevSize != inputImage->getSize())
+    // Since we shallow copy the input image when no remap is done
+    // We have to reallocate the output image if it still shares the buffer
+    bool realloc = false;
+    {
+        ::fwDataTools::helper::Image outputImgHelper(outputImage);
+        realloc = inputImgHelper.getBuffer() == outputImgHelper.getBuffer();
+    }
+    if(prevSize != inputImage->getSize() || realloc)
     {
         ::fwData::mt::ObjectWriteLock outputLock(outputImage);
         ::fwData::Image::SizeType size(2);
         size[0] = inputImage->getSize()[0];
         size[1] = inputImage->getSize()[1];
 
-        outputImage->allocate(size, inputImage->getType(), inputImage->getNumberOfComponents());
+        // Since we may have shared the pointer on the input image, we can't use ::fwData::Image::allocate
+        // Because it will not give us a new buffer and will thus make us modify both input and output images
+        ::fwData::Array::sptr outputBuffer = ::fwData::Array::New();
+        outputBuffer->resize(inputImage->getType(), size, inputImage->getNumberOfComponents(), true);
+        outputImage->setDataArray(outputBuffer);
 
         ::fwData::Image::OriginType origin(2, 0);
         outputImage->setOrigin(origin);
@@ -199,10 +211,9 @@ void SDistortion::remap()
         outputImage->setSpacing(spacing);
         outputImage->setWindowWidth(1);
         outputImage->setWindowCenter(0);
+        outputImage->setNumberOfComponents(inputImage->getNumberOfComponents());
     }
     const auto newSize = outputImage->getSize();
-
-    ::fwDataTools::helper::Image outputImgHelper(outputImage);
 
     // Get ::cv::Mat from fwData::Image
     auto inImage = std::const_pointer_cast< ::fwData::Image>(inputImage);
@@ -217,6 +228,8 @@ void SDistortion::remap()
         undistortedImage = ::cvIO::Image::moveToCv(outputImage);
     }
 #endif
+
+    ::fwDataTools::helper::Image outputImgHelper(outputImage);
 
     {
 #ifdef OPENCV_CUDA_SUPPORT
