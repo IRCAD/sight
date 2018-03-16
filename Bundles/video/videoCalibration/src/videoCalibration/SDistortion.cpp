@@ -122,17 +122,30 @@ void SDistortion::updating()
 
         if(inputImage && outputImage )
         {
-            const auto prevSize = outputImage->getSize();
-
             ::fwData::mt::ObjectReadLock inputLock(inputImage);
             ::fwData::mt::ObjectWriteLock outputLock(outputImage);
+
+            // Since we shallow copy the input image when no remap is done
+            // We have to reallocate the output image if it still shares the buffer
+            bool reallocated = false;
+            {
+                ::fwDataTools::helper::ImageGetter inputImgHelper(inputImage);
+                ::fwDataTools::helper::Image outputImgHelper(outputImage);
+                reallocated = inputImgHelper.getBuffer() != outputImgHelper.getBuffer();
+
+                if(reallocated)
+                {
+                    /// Hack to keep a reference to the image because the rendering might be triggered before the video
+                    /// adaptor update
+                    m_doubleBuffer = outputImage->getDataArray();
+                }
+            }
 
             // Shallow copy the image is faster
             // We only have to take care about reallocating a new buffer when we perform the distortion
             outputImage->shallowCopy(inputImage);
 
-            const auto newSize = outputImage->getSize();
-            if(prevSize != newSize)
+            if(reallocated)
             {
                 auto sig =
                     outputImage->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
