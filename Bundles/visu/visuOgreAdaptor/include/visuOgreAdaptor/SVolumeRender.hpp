@@ -62,6 +62,7 @@ namespace visuOgreAdaptor
  * - \b updateTFPoints() : update the displayed transfer function according to the new points
  * - \b updateTFWindowing(double window, double level) : update the displayed transfer function according to the new
  *      window and level
+ * - \b setVisibility(bool): show or hide the volume.
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -70,7 +71,7 @@ namespace visuOgreAdaptor
         <inout key="tf" uid="..." optional="yes" />
         <inout key="clippingMatrix" uid="..." />
         <config layer="default"
-                preintegration="yes" mode="slice" ao="no" colorBleeding="no" shadows="no"
+                samples="1024" preintegration="yes" mode="raytracing" ao="no" colorBleeding="no" shadows="no"
                 satSizeRatio="0.25" satShells="3" satShellRadius="7" satConeAngle="0.1" satConeSamples="50"
                 aoFactor="0.5" colorBleedingFactor="0.5" autoresetcamera="yes"/>
     </service>
@@ -85,9 +86,10 @@ namespace visuOgreAdaptor
  * - \b clippingMatrix [::fwData::TransformationMatrix3D]: matrix used to clip the volume.
  * @subsection Configuration Configuration
  * - \b layer (mandatory): id of the layer where this adaptor applies.
+ * - \b samples (optional, default=512): maximum number of samples per ray or number of slices.
  * - \b preintegration (optional, yes/no, default=no): use pre-integration.
  * - \b widgets (optional, yes/no, default=yes): display VR widgets.
- * - \b mode (optional, slice/raycasting, default=raycasting): Rendering mode.
+ * - \b mode (optional, slice/raytracing, default=raytracing): Rendering mode.
  * Only if the raycasting render mode is activated :
  * - \b ao (optional, true/false, default=false): Ambient occlusion usage.
  * - \b colorBleeding (optional, true/false, default=false): Color bleeding usage.
@@ -139,6 +141,7 @@ public:
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_DOUBLE_PARAMETER_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_ENUM_PARAMETER_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_COLOR_PARAMETER_SLOT;
+    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_VISIBILITY_SLOT;
     /** @} */
 
     /// Volume rendering effects.
@@ -214,6 +217,9 @@ private:
     void setEnumParameter(std::string val, std::string key);
     void setColorParameter(std::array<uint8_t, 4> color, std::string key);
 
+    /// Slot: Sets the volume to be visible or not.
+    void setVisibility(bool visibility);
+
     /// Creates widgets and connects its slots to interactor signals.
     void initWidgets();
 
@@ -257,7 +263,7 @@ private:
     ::fwRenderOgre::ui::VRWidget::sptr m_widgets;
 
     /// Sampling rate.
-    uint16_t m_nbSlices;
+    std::uint16_t m_nbSamples;
 
     /// Use pre-integration.
     bool m_preIntegratedRendering;
