@@ -1,0 +1,11 @@
+{
+    "bundles": [
+        @BUNDLES_JSON@
+    ],
+    "srclibs": [
+        @SRCLIBS_JSON@
+    ],
+    "repositories": [
+        @REPOSITORIES_JSON@
+    ]
+}

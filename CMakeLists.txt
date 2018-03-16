@@ -1102,8 +1102,14 @@ endif()
 # Doxygen documentation
 option(BUILD_DOCUMENTATION "Build the doxygen documentation" OFF)
 if(BUILD_DOCUMENTATION)
+    option(BUILD_DOCSET "Build a Dash/Zeal/XCode docset" OFF)
     include(${FWCMAKE_RESOURCE_PATH}doxygen/doxygen_generator.cmake)
     doxygenGenerator(${PROJECT_LIST})
+    if(BUILD_DOCSET)
+        docsetGenerator(${PROJECT_LIST})
+    endif()
+else()
+    unset(BUILD_DOCSET CACHE)
 endif()
 
 # Eclipse project
