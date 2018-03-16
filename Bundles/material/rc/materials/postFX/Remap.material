@@ -34,7 +34,7 @@ material Remap
                 filtering linear linear linear
             }
 
-            // Same name than parameter so that SCompositorParameter founds it
+            // Same name as parameter so that SCompositorParameter finds it
             texture_unit u_map
             {
                 tex_coord_set 0
