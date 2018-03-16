@@ -751,7 +751,7 @@ void IService::autoConnect()
                         }
                     }
                 }
-                SLM_ERROR_IF("Oject '" + objectCfg.m_key + "' of '" + this->getClassname() + "' is set to "
+                SLM_ERROR_IF("Object '" + objectCfg.m_key + "' of '" + this->getClassname() + "' is set to "
                              "'autoConnect=\"yes\"' but there is no connection available.",
                              connections.empty() && objectCfg.m_autoConnect);
             }
