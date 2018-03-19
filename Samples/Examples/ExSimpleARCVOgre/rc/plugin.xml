@@ -408,7 +408,7 @@
                 <parameters>
                     <param type="bool" name="Show reprojection" key="display" defaultValue="true" />
                     <param type="color" name="Circle color" key="color" defaultValue="#00ff00" />
-                    <param type="double" name="Transparency" key="u_alpha" defaultValue="1" min="0" max="1" />
+                    <param type="double" name="Transparency" key="u_alpha" defaultValue="1" min="0" max="1" widget="slider" />
                 </parameters>
             </service>
 
