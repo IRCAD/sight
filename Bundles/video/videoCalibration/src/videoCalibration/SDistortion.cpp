@@ -132,13 +132,6 @@ void SDistortion::updating()
                 ::fwDataTools::helper::ImageGetter inputImgHelper(inputImage);
                 ::fwDataTools::helper::Image outputImgHelper(outputImage);
                 reallocated = inputImgHelper.getBuffer() != outputImgHelper.getBuffer();
-
-                if(reallocated)
-                {
-                    /// Hack to keep a reference to the image because the rendering might be triggered before the video
-                    /// adaptor update
-                    m_doubleBuffer = outputImage->getDataArray();
-                }
             }
 
             // Shallow copy the image is faster

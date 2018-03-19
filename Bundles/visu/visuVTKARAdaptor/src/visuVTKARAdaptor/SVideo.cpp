@@ -167,6 +167,8 @@ void SVideo::updating()
 
         m_actor->SetInterpolate(m_interpolate);
 
+        m_imageBuffer = image->getDataArray();
+
         m_isTextureInit = true;
     }
 

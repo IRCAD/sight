@@ -116,6 +116,10 @@ private:
     bool m_reverse; ///< if true, the actor is rotated by 180° along the z and y axis.
 
     bool m_interpolate; ///< turn on/off the linear interpolation of the vtkImageActor
+
+    /// Keep a reference to the image because it may be reallocated by someone whereas the vtk actor needs it
+    /// If the rendering is triggered before the update of the adaptor this will crash
+    ::fwData::Array::sptr m_imageBuffer;
 };
 
 } //namespace visuVTKARAdaptor

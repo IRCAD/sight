@@ -123,9 +123,6 @@ private:
     ::cv::Mat m_mapx;
     ::cv::Mat m_mapy;
 #endif // OPENCV_CUDA_SUPPORT
-
-    /// Hack to keep a reference to the image because the rendering might be triggered before the video adaptor update
-    ::fwData::Array::sptr m_doubleBuffer;
 };
 
 } // videoCalibration
