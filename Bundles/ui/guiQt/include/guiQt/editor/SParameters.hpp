@@ -11,10 +11,12 @@
 #include <fwGui/editor/IEditor.hpp>
 
 #include <QGridLayout>
+#include <QLabel>
 #include <QObject>
 #include <QPointer>
 #include <QPushButton>
 #include <QSignalMapper>
+#include <QSlider>
 
 namespace guiQt
 {
@@ -64,6 +66,7 @@ namespace editor
  * - \b max: maximum value, if relevant for the data type.
  * - \b widget: choose the type of the widget, if relevant for the data type. Currently the only type that provides
  * a choice is 'int' : you can choose either "spin" or "slider".
+ * - \b decimals (optional, default=2): number of decimals settable using a double slider.
  * - \b values: list of possible values separated by a comma ',' a space ' ' or a semicolon ';' (only for enum type).
  * The actual displayed value and the returned one in the signal can be different using '=' to separate the two. For
  * example 'values="BLEND=imageBlend,CHECKERBOARD=imageCheckerboard"' means the combo will display BLEND, CHECKBOARD
@@ -124,14 +127,20 @@ private Q_SLOTS:
     /// This method is called when an integer value changes
     void onChangeInteger(int value);
 
-    /// This method is called when an integer value changes
+    /// This method is called when a double value changes
     void onChangeDouble(double value);
+
+    /// This method is called when a double slider value changes
+    void onChangeDoubleSlider(int value);
 
     /// This method is called when selection changes (QComboBox)
     void onChangeEnum(int value);
 
-    /// This method is called to connect sliders and their labels
+    /// This method is called to connect sliders to their labels
     void onSliderMapped(QWidget* widget);
+
+    /// This method is called to connect double sliders to their labels
+    void onDoubleSliderMapped(QWidget* widget);
 
     /// This method is called to connect reset buttons and checkboxes
     void onResetBooleanMapped(QWidget* widget);
@@ -150,27 +159,34 @@ private:
     /// Snippet to create the reset button
     QPushButton* createResetButton();
 
-    /// Create the widget associated with a boolean type
+    /// Create a widget associated with a boolean type
     void createBoolWidget(QGridLayout& layout, int row, const std::string& key, const std::string& defaultValue);
 
-    /// Create the widget associated with a color type
+    /// Create a widget associated with a color type
     void createColorWidget(QGridLayout& layout, int row, const std::string& key, const std::string& defaultValue);
 
-    /// Create the widget associated with a double type
+    /// Create a widget associated with a double type
     void createDoubleWidget(QGridLayout& layout, int row, const std::string& key, double defaultValue,
                             double min, double max, int count);
 
-    /// Create the slider widget associated with an integer type
+    /// Create a slider widget associated with a double type.
+    void createDoubleSliderWidget(QGridLayout& layout, int row, const std::string& key, double defaultValue,
+                                  double min, double max, std::uint8_t decimals);
+
+    /// Create a slider widget associated with an integer type
     void createIntegerSliderWidget(QGridLayout& layout, int row, const std::string& key,
                                    int defaultValue, int min, int max);
 
-    /// Create the spin widget associated with an integer type
+    /// Create a spin widget associated with an integer type
     void createIntegerSpinWidget(QGridLayout& layout, int row, const std::string& key,
                                  int defaultValue, int min, int max, int count);
 
     /// Create a multi choice widget
     void createEnumWidget(QGridLayout& layout, int row, const std::string& key, const std::string& defaultValue,
                           const std::vector< std::string>& values, const std::vector<std::string>& data);
+
+    /// Computes a double slider value from a slider position.
+    static double getDoubleSliderValue(const QSlider* slider);
 
     /// Allows to connect sliders and their labels
     QPointer< QSignalMapper> m_signalMapper;
