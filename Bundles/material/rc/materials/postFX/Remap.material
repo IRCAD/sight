@@ -40,7 +40,7 @@ material Remap
                 tex_coord_set 0
                 tex_address_mode border
                 tex_border_colour 0.0 0.0 0.0 0.0
-                filtering nearest
+                filtering none
             }
         }
     }
