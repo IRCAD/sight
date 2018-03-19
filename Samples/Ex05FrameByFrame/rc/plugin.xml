@@ -109,6 +109,7 @@
                 <in key="camera" uid="camera" />
                 <inout key="frameTL" uid="frameTL" />
                 <oneShot>true</oneShot>
+                <useTimelapse>false</useTimelapse>
                 <createTimestamp>true</createTimestamp>
             </service>
 

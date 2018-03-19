@@ -18,7 +18,6 @@ set( REQUIREMENTS
         arDataReg
         dataReg
         servicesReg
-        imageConfig
         registrationCV
         trackerAruco
         trackingCalibration
