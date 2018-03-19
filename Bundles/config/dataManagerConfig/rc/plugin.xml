@@ -1,0 +1,10 @@
+<plugin id="dataManagerConfig" version="@PROJECT_VERSION@" >
+
+    <requirement id="dataReg" />
+    <requirement id="servicesReg" />
+
+    <xi:include href="configurations/ModelSeriesManagerWindow.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/ImageManager.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/ModelSeriesManagerView.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+
+</plugin>

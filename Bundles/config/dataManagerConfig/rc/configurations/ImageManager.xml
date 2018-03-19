@@ -1,4 +1,7 @@
 <!--
+This configuration displays editor for image (slice and windowing), and call the service that adds the image's fields
+for slices and transfer function.
+
 Example:
 
 <service uid="..." type="::fwServices::SConfigController">

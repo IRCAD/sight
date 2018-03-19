@@ -105,7 +105,7 @@
         </service>
 
         <service uid="action_organManager" type="::gui::action::SConfigLauncher">
-            <appConfig id="OrganManagerWithSeries" />
+            <appConfig id="ModelSeriesManagerWindow" />
             <inout key="ORGAN_MANAGER_MODELSERIES" uid="optionalModelSeries" />
             <parameter replace="ICON_PATH" by="${ICON_PATH}" />
         </service>

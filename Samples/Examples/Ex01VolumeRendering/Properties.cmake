@@ -11,7 +11,7 @@ set( REQUIREMENTS
     fwlauncher
     gui
     guiQt
-    imageConfig
+    dataManagerConfig
     ioAtoms
     ioVTK
     preferences
