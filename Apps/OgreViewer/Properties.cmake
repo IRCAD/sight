@@ -22,7 +22,6 @@ set( REQUIREMENTS
     visuVTKAdaptor
     fwlauncher
     appXml
-    activities
     arMedia
     arDataReg
     videoQt

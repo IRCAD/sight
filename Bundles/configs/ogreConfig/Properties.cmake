@@ -5,7 +5,7 @@ set( TYPE BUNDLE )
 set( DEPENDENCIES)
 set( REQUIREMENTS
     guiQt
-    imageConfig
+    qtSceneConfig
     ioVTK
     uiImageQt
     uiVisuOgre

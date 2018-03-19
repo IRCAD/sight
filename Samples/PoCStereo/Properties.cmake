@@ -22,7 +22,7 @@ set( REQUIREMENTS
     media
     preferences
     scene2D
-    imageConfig
+    qtSceneConfig
 )
 
 bundleParam(appXml PARAM_LIST config PARAM_VALUES PoCStereo)

@@ -19,9 +19,6 @@ set( REQUIREMENTS
     visuOgre
     visuOgreQt
     visuOgreAdaptor
-    visuVTKAdaptor
-    visuVTK
-    visuVTKQt
     material
 )
 
