@@ -21,7 +21,7 @@ namespace visuVTKARAdaptor
  * as an inout key, it will be updated if the corresponding VTK transform is modified.
  *
  * @section Slots Slots
- * - \b calibrate(): recompute the FOV.
+ * - \b calibrate(): recomputes the FOV. Also, it sets the size of the renderer if it is offscreen.
  *
  * @section Signals Signals
  * - \b positionModified(): notifies camera displacements.
@@ -59,7 +59,7 @@ class VISUVTKARADAPTOR_CLASS_API SCamera : public ::fwRenderVTK::IAdaptor
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro( (SCamera)(::fwRenderVTK::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (SCamera)(::fwRenderVTK::IAdaptor) )
 
     /// Constructor.
     SCamera() noexcept;
@@ -102,7 +102,7 @@ private:
     /// Update vtk camera from current TransformationMatrix3D.
     void updateFromTMatrix3D();
 
-    /// Calibrate vtk camera.
+    /// Calibrate vtk camera and set the size of the renderer if it is offscreen.
     void calibrate();
 
     vtkPerspectiveTransform* m_transOrig; ///<  VTK original perspective transform.
