@@ -22,11 +22,11 @@ before_script:
     - git checkout travis
     - git config --global codingstyle-hook.uncrustify-path `pwd`/hooks/uncrustify
     - cd ..
-    - wget -q --no-check-certificate https://cmake.org/files/v3.10/cmake-3.10.3-Linux-x86_64.tar.gz
-    - tar xzf cmake-3.10.3-Linux-x86_64.tar.gz > /dev/null
+    - wget -q --no-check-certificate https://cmake.org/files/v3.4/cmake-3.4.1-Linux-x86_64.tar.gz
+    - tar xzf cmake-3.4.1-Linux-x86_64.tar.gz > /dev/null
     - wget -q --no-check-certificate http://ftp.stack.nl/pub/users/dimitri/doxygen-1.8.11.linux.bin.tar.gz
     - tar xzf doxygen-1.8.11.linux.bin.tar.gz > /dev/null
-    - export CMAKE_BIN=$TRAVIS_BUILD_DIR/cmake-3.10.3-Linux-x86_64/bin/cmake
+    - export CMAKE_BIN=$TRAVIS_BUILD_DIR/cmake-3.4.1-Linux-x86_64/bin/cmake
     - export DOXYGEN_BIN=$TRAVIS_BUILD_DIR/doxygen-1.8.11/bin/doxygen
     - mkdir -p build/Documentation/Doxygen/html
     - cd build/Documentation/Doxygen/html
