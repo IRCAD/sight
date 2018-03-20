@@ -7,7 +7,7 @@
 #pragma once
 
 #include "fwRenderOgre/compositor/ChainManager.hpp"
-#include "fwRenderOgre/compositor/Core.hpp"
+#include "fwRenderOgre/compositor/types.hpp"
 #include "fwRenderOgre/config.hpp"
 #include "fwRenderOgre/interactor/IInteractor.hpp"
 #include "fwRenderOgre/interactor/IMovementInteractor.hpp"
@@ -39,6 +39,12 @@ namespace fwRenderOgre
 class SRender;
 class IAdaptor;
 class ILight;
+
+namespace compositor
+{
+class Core;
+}
+
 }
 
 namespace Ogre
@@ -220,9 +226,6 @@ public:
     /// Gets stereoscopic mode
     FWRENDEROGRE_API StereoModeType getStereoMode() const;
 
-    /// Checks if this layer has a default compositor.
-    FWRENDEROGRE_API ::fwRenderOgre::compositor::Core::sptr getCoreCompositor();
-
     FWRENDEROGRE_API ::fwRenderOgre::compositor::ChainManager::CompositorChainType getCompositorChain() const;
 
     /// Returns the list of adaptors in the chain manager.
@@ -256,6 +259,20 @@ public:
 
     FWRENDEROGRE_API static const std::string s_DEFAULT_CAMERA_NODE_NAME;
 
+    /// Return the OIT selected
+    FWRENDEROGRE_API compositor::transparencyTechnique getTransparencyTechnique();
+
+    /// Return the number of peels computed by Depth Peeling or x2 Dual Depth Peeling
+    FWRENDEROGRE_API int getTransparencyDepth();
+
+    /// Set the OIT desired
+    /// Deactivate OIT compositor
+    FWRENDEROGRE_API bool setTransparencyTechnique(compositor::transparencyTechnique technique);
+
+    /// Set the number of peels computed by Depth Peeling or x2 Dual Depth Peeling
+    /// Deactivate OIT compositor
+    FWRENDEROGRE_API void setTransparencyDepth(int depth);
+
 private:
     /// Slot: Interact with the scene.
     void interaction(::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo);
@@ -282,7 +299,7 @@ private:
     std::string m_rawCompositorChain;
 
     /// Ogre default compositor for this layer.
-    ::fwRenderOgre::compositor::Core::sptr m_coreCompositor;
+    SPTR(::fwRenderOgre::compositor::Core) m_coreCompositor;
 
     /// Ogre default compositor default transparency technique.
     ::fwRenderOgre::compositor::transparencyTechnique m_transparencyTechnique;
