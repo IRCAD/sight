@@ -10,6 +10,9 @@
 #include <arData/FrameTL.hpp>
 #include <arData/MarkerTL.hpp>
 
+#include <cvIO/Camera.hpp>
+#include <cvIO/FrameTL.hpp>
+
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
 
@@ -154,25 +157,10 @@ void SArucoTracker::tracking(::fwCore::HiResClock::HiResClockType& timestamp)
     {
         ::arData::Camera::csptr arCam = this->getInput< ::arData::Camera >(s_CAMERA_INPUT);
 
-        m_cameraParams.intrinsic  = ::cv::Mat::eye(3, 3, CV_64F);
-        m_cameraParams.distorsion = ::cv::Mat::eye(4, 1, CV_64F);
+        std::tie(m_cameraParams.intrinsic, m_cameraParams.size, m_cameraParams.distorsion) =
+            ::cvIO::Camera::copyToCv(arCam);
 
-        // 3x3 matrix (fx 0 cx, 0 fy cy, 0 0 1)
-        m_cameraParams.intrinsic.at<double>(0, 0) = arCam->getFx();
-        m_cameraParams.intrinsic.at<double>(1, 1) = arCam->getFy();
-        m_cameraParams.intrinsic.at<double>(0, 2) = arCam->getCx();
-        m_cameraParams.intrinsic.at<double>(1, 2) = arCam->getCy();
-
-        // 4x1 matrix (k1,k2,p1,p2)
-        for (std::uint8_t i = 0; i < 4; ++i)
-        {
-            m_cameraParams.distorsion.at<double>(i, 0) = arCam->getDistortionCoefficient()[i];
-        }
-
-        // size of the image
-        m_cameraParams.size.width  = static_cast<int>(frameTL->getWidth());
-        m_cameraParams.size.height = static_cast<int>(frameTL->getHeight());
-        m_isInitialized            = true;
+        m_isInitialized = true;
     }
 
     const CSPTR(::arData::FrameTL::BufferType) buffer = frameTL->getClosestBuffer(timestamp);
@@ -192,7 +180,7 @@ void SArucoTracker::tracking(::fwCore::HiResClock::HiResClockType& timestamp)
         const ::cv::Size frameSize(static_cast<int>(frameTL->getWidth()),
                                    static_cast<int>(frameTL->getHeight()));
 
-        ::cv::Mat inImage = ::cv::Mat(frameSize, CV_8UC4, (void*)frameBuff, ::cv::Mat::AUTO_STEP);
+        ::cv::Mat inImage = ::cvIO::FrameTL::moveToCv(frameTL, frameBuff);
 
         // aruco expects a grey image and make a conversion at the beginning of the detect() method if it receives
         // a RGB image. However we have a RGBA image so we must make the conversion ourselves.
