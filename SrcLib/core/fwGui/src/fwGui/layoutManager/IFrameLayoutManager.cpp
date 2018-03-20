@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,6 +10,8 @@
 
 #include <fwData/Integer.hpp>
 #include <fwData/String.hpp>
+
+#include <fwPreferences/helper.hpp>
 
 #include <fwRuntime/operations.hpp>
 
@@ -204,14 +206,11 @@ void IFrameLayoutManager::writeConfig()
 ::fwData::Composite::sptr IFrameLayoutManager::getPreferenceUI()
 {
     ::fwData::Composite::sptr prefUI;
+    ::fwData::Composite::sptr prefs = ::fwPreferences::getPreferences();
 
     // Get preferences
-    auto preferencesServicesList = ::fwServices::OSR::getServices("::fwPreferences::IPreferences");
-    if(!preferencesServicesList.empty())
+    if(prefs)
     {
-        ::fwServices::IService::sptr prefService = *preferencesServicesList.begin();
-        ::fwData::Composite::sptr prefs          = prefService->getObject< ::fwData::Composite >();
-
         ::fwData::Composite::sptr framesUI;
         // Retreives software UI pref
         if ( prefs->find( IFrameLayoutManager::SOFTWARE_UI ) == prefs->end() )
@@ -241,4 +240,3 @@ void IFrameLayoutManager::writeConfig()
 
 } // namespace layoutManager
 } // namespace fwGui
-

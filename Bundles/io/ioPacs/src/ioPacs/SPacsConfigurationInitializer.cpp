@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,6 +8,8 @@
 
 #include <fwData/Composite.hpp>
 #include <fwData/String.hpp>
+
+#include <fwPreferences/helper.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
@@ -61,6 +63,8 @@ void SPacsConfigurationInitializer::stopping()
 template<typename T, typename CAST_T = T>
 struct SetFromConfig
 {
+    //------------------------------------------------------------------------------
+
     void operator()(::fwData::Composite::sptr config, std::string const& confName, T& attribute)
     {
         if(config)
@@ -91,7 +95,7 @@ std::pair< ::fwServices::IService::sptr, ::fwData::Composite::sptr> getPreferenc
 
     if(prefService)
     {
-        prefs = prefService->getObject< ::fwData::Composite>();
+        prefs = prefService->getInOut< ::fwData::Composite>(::fwPreferences::s_PREFERENCES_KEY);
     }
 
     return std::make_pair(prefService, prefs);
@@ -198,22 +202,22 @@ void SPacsConfigurationInitializer::updating()
         this->getObject< ::fwPacsIO::data::PacsConfiguration >();
 
     // Check if the user has changed the Pacs configuration and update the local var
-    if(pacsConfiguration->getLocalApplicationTitle   () != m_localApplicationTitle
-       || pacsConfiguration->getPacsHostName            () != m_pacsHostName
-       || pacsConfiguration->getPacsApplicationTitle    () != m_pacsApplicationTitle
-       || pacsConfiguration->getPacsApplicationPort     () != m_pacsApplicationPort
-       || pacsConfiguration->getMoveApplicationTitle    () != m_moveApplicationTitle
-       || pacsConfiguration->getMoveApplicationPort     () != m_moveApplicationPort
-       || pacsConfiguration->getRetrieveMethod          () != m_retrieveMethod
+    if(pacsConfiguration->getLocalApplicationTitle() != m_localApplicationTitle
+       || pacsConfiguration->getPacsHostName() != m_pacsHostName
+       || pacsConfiguration->getPacsApplicationTitle() != m_pacsApplicationTitle
+       || pacsConfiguration->getPacsApplicationPort() != m_pacsApplicationPort
+       || pacsConfiguration->getMoveApplicationTitle() != m_moveApplicationTitle
+       || pacsConfiguration->getMoveApplicationPort() != m_moveApplicationPort
+       || pacsConfiguration->getRetrieveMethod() != m_retrieveMethod
        )
     {
-        m_localApplicationTitle = pacsConfiguration->getLocalApplicationTitle   ();
-        m_pacsHostName          = pacsConfiguration->getPacsHostName            ();
-        m_pacsApplicationTitle  = pacsConfiguration->getPacsApplicationTitle    ();
-        m_pacsApplicationPort   = pacsConfiguration->getPacsApplicationPort     ();
-        m_moveApplicationTitle  = pacsConfiguration->getMoveApplicationTitle    ();
-        m_moveApplicationPort   = pacsConfiguration->getMoveApplicationPort     ();
-        m_retrieveMethod        = pacsConfiguration->getRetrieveMethod          ();
+        m_localApplicationTitle = pacsConfiguration->getLocalApplicationTitle();
+        m_pacsHostName          = pacsConfiguration->getPacsHostName();
+        m_pacsApplicationTitle  = pacsConfiguration->getPacsApplicationTitle();
+        m_pacsApplicationPort   = pacsConfiguration->getPacsApplicationPort();
+        m_moveApplicationTitle  = pacsConfiguration->getMoveApplicationTitle();
+        m_moveApplicationPort   = pacsConfiguration->getMoveApplicationPort();
+        m_retrieveMethod        = pacsConfiguration->getRetrieveMethod();
     }
 
     // If a preference key is set, save the local var to the preferences

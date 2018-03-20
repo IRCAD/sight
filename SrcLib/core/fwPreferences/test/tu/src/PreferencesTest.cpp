@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2016-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2016-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,6 +7,9 @@
 #include "PreferencesTest.hpp"
 
 #include <fwPreferences/helper.hpp>
+
+#include <fwData/Composite.hpp>
+#include <fwData/String.hpp>
 
 #include <fwRuntime/Bundle.hpp>
 #include <fwRuntime/IPlugin.hpp>
@@ -84,6 +87,12 @@ void PreferencesTest::helperTest()
     //Check get preference
     const std::string value = ::fwPreferences::getPreference(preferenceKey);
     CPPUNIT_ASSERT_EQUAL(preferenceValue, value);
+
+    ::fwData::Composite::sptr prefs = ::fwPreferences::getPreferences();
+    CPPUNIT_ASSERT(prefs);
+
+    ::fwData::String::sptr prefStr = prefs->at< ::fwData::String >(preferenceKey);
+    CPPUNIT_ASSERT_EQUAL(preferenceValue, prefStr->value());
 }
 
 //------------------------------------------------------------------------------

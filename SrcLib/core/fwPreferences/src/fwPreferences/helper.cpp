@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -25,12 +25,10 @@ bool setPreference(const std::string& key, const std::string& value)
 {
     bool isModified = false;
     // Check preferences
-    auto preferencesServicesList = ::fwServices::OSR::getServices("::fwPreferences::IPreferences");
-    if(!preferencesServicesList.empty())
-    {
-        const ::fwServices::IService::sptr prefService = *preferencesServicesList.begin();
-        ::fwData::Composite::sptr prefs = prefService->getObject< ::fwData::Composite >();
 
+    ::fwData::Composite::sptr prefs = getPreferences();
+    if(prefs)
+    {
         ::fwData::Composite::IteratorType iterPref = prefs->find(key);
         if ( iterPref != prefs->end() )
         {
@@ -52,12 +50,9 @@ std::string getPreference(const std::string& preferenceKey)
 {
     std::string value;
     // Check preferences
-    auto preferencesServicesList = ::fwServices::OSR::getServices("::fwPreferences::IPreferences");
-    if(!preferencesServicesList.empty())
+    ::fwData::Composite::sptr prefs = getPreferences();
+    if(prefs)
     {
-        ::fwServices::IService::sptr prefService = *preferencesServicesList.begin();
-        ::fwData::Composite::sptr prefs          = prefService->getObject< ::fwData::Composite >();
-
         ::fwData::Composite::IteratorType iterPref = prefs->find( preferenceKey );
         if ( iterPref != prefs->end() )
         {
@@ -94,6 +89,19 @@ std::string getPreference(const std::string& preferenceKey)
     return appPrefFile;
 }
 
+//-----------------------------------------------------------------------------
+
+::fwData::Composite::sptr getPreferences()
+{
+    ::fwData::Composite::sptr prefs;
+    auto preferencesServicesList = ::fwServices::OSR::getServices("::fwPreferences::IPreferences");
+    if(!preferencesServicesList.empty())
+    {
+        ::fwServices::IService::sptr prefService = *preferencesServicesList.begin();
+        prefs                                    = prefService->getInOut< ::fwData::Composite >(s_PREFERENCES_KEY);
+    }
+    return prefs;
+}
 //-----------------------------------------------------------------------------
 
 } // namespace fwPreferences
