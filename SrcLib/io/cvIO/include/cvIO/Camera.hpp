@@ -22,8 +22,7 @@ class CVIO_CLASS_API Camera
 public:
 
     /// Copy the intrinsic matrix, the image size and the distortion coefficients from a f4s camera.
-    CVIO_API static void copyToCv(const ::arData::Camera::csptr& _src, ::cv::Mat& _intrinsic, ::cv::Size& _imgSize,
-                                  ::cv::Mat& _distortionCoeffs);
+    CVIO_API static std::tuple< ::cv::Mat, ::cv::Size, ::cv::Mat> copyToCv(const ::arData::Camera::csptr& _src);
 };
 
 } // namespace cvIO
