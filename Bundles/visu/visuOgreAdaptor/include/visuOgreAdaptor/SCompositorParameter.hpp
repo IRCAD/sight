@@ -57,22 +57,24 @@ public:
     /// Destructor. Does nothing
     VISUOGREADAPTOR_API virtual ~SCompositorParameter() noexcept;
 
-    /// Updates parameter according to the attached fwData::Object
-    VISUOGREADAPTOR_API void updateValue(::Ogre::MaterialPtr& _mat);
-
     /// Return the compositor name
     const std::string& getCompositorName() const;
 
 protected:
 
     /// Configure the adaptor
-    VISUOGREADAPTOR_API virtual void configuring() final override;
+    VISUOGREADAPTOR_API virtual void configuring() final;
     /// Do nothing
-    VISUOGREADAPTOR_API virtual void starting() final override;
+    VISUOGREADAPTOR_API virtual void starting() final;
     /// Do nothing
-    VISUOGREADAPTOR_API virtual void stopping() final override;
+    VISUOGREADAPTOR_API virtual void stopping() final;
+    /// Set the parameter as dirty
+    VISUOGREADAPTOR_API virtual void updating() final;
 
 private:
+
+    /// Updates parameter according to the attached fwData::Object
+    VISUOGREADAPTOR_API void updateValue(::Ogre::MaterialPtr& _mat);
 
     /// Material name
     std::string m_compositorName;
@@ -82,6 +84,8 @@ private:
 
     /// Pointer on the compositor we work on
     ::Ogre::CompositorInstance* m_compositor;
+
+    friend class CompositorListener;
 };
 
 } // visuOgreAdaptor

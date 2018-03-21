@@ -74,11 +74,23 @@ private:
     /// Slot: Updates the displayed transfer function
     void updateTF();
 
+    /// Clean scene entities and associated mesh.
+    void clearEntity();
+
     /// Ogre texture used to store the fwImage
     ::Ogre::TexturePtr m_texture;
 
     /// Ogre Material used to display the video plane
     ::Ogre::MaterialPtr m_material;
+
+    /// Ogre Mesh used to display the video plane
+    ::Ogre::MeshPtr m_mesh;
+
+    /// Ogre Material used to display the video plane
+    ::Ogre::SceneNode* m_sceneNode { nullptr };
+
+    /// Ogre entity used to display the video plane
+    ::Ogre::Entity* m_entity { nullptr };
 
     /// Contains and manages the Ogre textures used to store the transfer function (GPU point of view)
     std::unique_ptr< ::fwRenderOgre::TransferFunction> m_gpuTF;

@@ -138,7 +138,18 @@ void SFrustum::updating()
 
 void SFrustum::stopping()
 {
+    ::Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
+    ::Ogre::SceneNode* transNode     =
+        ::fwRenderOgre::helper::Scene::getNodeById(this->getTransformId(), rootSceneNode);
+    if (transNode != nullptr)
+    {
+        transNode->removeAndDestroyAllChildren();
+    }
     this->unregisterServices();
+
+    this->getSceneManager()->destroyCamera(m_ogreCamera);
+    m_ogreCamera = nullptr;
+
     m_material = nullptr;
 }
 
