@@ -113,7 +113,7 @@ Q_SIGNALS:
     /// When the clipping range has to match the last updating of the scene bounding box
     void cameraClippingComputation();
 
-protected:
+private:
 
     /**
      * @brief render
@@ -121,6 +121,9 @@ protected:
      * If you want to update this window, call requestRender()
      */
     VISUOGREQT_API virtual void render();
+
+    /// Apply device pixel ratio on screen coordinates, needed only for MacOs currently
+    static std::pair<int, int> getDeviceCoordinates(int _x, int _y);
 
     /*
      * Qt events to manage keyboard and mouse input
