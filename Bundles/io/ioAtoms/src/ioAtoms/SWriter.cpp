@@ -184,16 +184,68 @@ bool SWriter::versionSelection()
         else
         {
             versions.push_back(m_version);
+
+            std::sort(versions.begin(), versions.end(), [](const std::string& _a, const std::string& _b)
+                {
+                    try
+                    {
+                        // Assume a pattern like V[0-9][0-9][A-Z][A-Z][A-Z]
+                        // Sort with the version number
+                        const std::string repoA = _a.substr(3, _a.size());
+                        const std::string repoB = _b.substr(3, _b.size());
+                        if(repoA == repoB)
+                        {
+                            const std::string numA = _a.substr(1, 2);
+                            const std::string numB = _b.substr(1, 2);
+                            return numA > numB;
+                        }
+                        return repoA < repoB;
+                    }
+                    catch ( std::out_of_range e)
+                    {
+                        OSLM_ERROR("Bad version format: either " + _a + " or " + _b);
+                        return false;
+                    }
+                });
+
+            std::vector< std::string > prettyVersions;
+            std::map< std::string, std::string > prettyVersionsToVersions;
+
+            for(const auto& v : versions)
+            {
+                try
+                {
+                    const std::string num  = v.substr(0, 3);
+                    const std::string repo = v.substr(3, v.size());
+
+                    const std::string prettyVersion = num + ((repo.empty()) ? "" : " (" + repo + ")");
+                    prettyVersions.push_back(prettyVersion);
+                    prettyVersionsToVersions[ prettyVersion ] = v;
+
+                }
+                catch ( std::out_of_range e)
+                {
+                    OSLM_ERROR("Bad version format: " + v);
+
+                    prettyVersions.push_back(v);
+                    prettyVersionsToVersions[ v ] = v;
+                }
+            }
+
+            // Sort versions according to repository. This is not really honnest since we should not make any
+            // assumption about the versioning convention, especially for child repositories... But since this is
+            // how things are organized currently I don't think this is such a big issue
+
             ::fwGui::dialog::SelectorDialog dialogVersion;
 
             dialogVersion.setTitle("Archive version");
             dialogVersion.setMessage("Select an archive version");
 
-            dialogVersion.setSelections(versions);
+            dialogVersion.setSelections(prettyVersions);
             std::string result = dialogVersion.show();
             if ( !result.empty() )
             {
-                m_exportedVersion = result;
+                m_exportedVersion = prettyVersionsToVersions[result];
             }
             return !result.empty();
         }
