@@ -362,8 +362,6 @@
             </service>
 
             <!-- Debug 3D Scene -->
-
->>>>>>> dev
             <service uid="debugScene" type="::fwRenderOgre::SRender" autoConnect="yes">
                 <scene>
                     <background topColor="#46455A" bottomColor="#46455A" />
