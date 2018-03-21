@@ -23,7 +23,9 @@
             <object uid="identity" type="::fwData::TransformationMatrix3D" />
             <object uid="inverseMat" type="::fwData::TransformationMatrix3D" />
 
-            <object uid="arAlpha" type="::fwData::Float" />
+            <object uid="arAlpha" type="::fwData::Float" >
+                <value>1</value>
+            </object>
 
             <!-- declaration of the views, menu and toolbar -->
             <service uid="mainFrame" type="::gui::frame::SDefaultFrame">
