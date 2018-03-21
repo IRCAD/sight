@@ -64,8 +64,8 @@ namespace editor
  * - \b defaultValue: value used to initialize the parameter.
  * - \b min: minimum value, if relevant for the data type.
  * - \b max: maximum value, if relevant for the data type.
- * - \b widget: choose the type of the widget, if relevant for the data type. Currently the only type that provides
- * a choice is 'int' : you can choose either "spin" or "slider".
+ * - \b widget (optional) : widget type, available for types 'int' and 'double'.
+ * You can choose between a 'spin' or a 'slider' widget. Defaults to 'spin' for 'double' and  'slider' for 'int'.
  * - \b decimals (optional, default=2): number of decimals settable using a double slider.
  * - \b values: list of possible values separated by a comma ',' a space ' ' or a semicolon ';' (only for enum type).
  * The actual displayed value and the returned one in the signal can be different using '=' to separate the two. For
