@@ -108,7 +108,7 @@
             </service>
 
             <service uid="imageReader" type="::uiIO::editor::SIOSelector">
-                <inout key="target" uid="image" />
+                <inout key="data" uid="image" />
                 <type mode="reader" />
             </service>
 
@@ -126,12 +126,12 @@
             </service>
 
             <service uid="meshReader" type="::uiIO::editor::SIOSelector">
-                <inout key="target" uid="mesh" />
+                <inout key="data" uid="mesh" />
                 <type mode="reader" />
             </service>
 
             <service uid="textureReader" type="::uiIO::editor::SIOSelector">
-                <inout key="target" uid="texture" />
+                <inout key="data" uid="texture" />
                 <type mode="reader" />
             </service>
 

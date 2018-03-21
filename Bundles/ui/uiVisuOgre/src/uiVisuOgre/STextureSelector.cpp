@@ -17,6 +17,8 @@
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
+#include <fwIO/ioTypes.hpp>
+
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>
 
@@ -121,7 +123,8 @@ void STextureSelector::onLoadButton()
         material->setDiffuseTexture(image);
     }
 
-    auto srv           = ::fwServices::add< ::fwGui::editor::IDialogEditor >(image, "::uiIO::editor::SIOSelector");
+    auto srv = ::fwServices::add< ::fwGui::editor::IDialogEditor >("::uiIO::editor::SIOSelector");
+    srv->registerInOut(image, ::fwIO::s_DATA_KEY);
     auto ioSelectorSrv = ::uiIO::editor::SIOSelector::dynamicCast(srv);
     if (ioSelectorSrv != nullptr)
     {

@@ -1,0 +1,26 @@
+compositor Remap
+{
+    technique
+    {
+
+        // temporary texture
+        texture render_target target_width target_height PF_R8G8B8A8
+
+        target render_target
+        {
+            input previous
+        }
+
+        // Final pass
+        target_output
+        {
+            input none
+            pass render_quad
+            {
+                material Remap
+                input 0 render_target
+            }
+
+        }
+    }
+}

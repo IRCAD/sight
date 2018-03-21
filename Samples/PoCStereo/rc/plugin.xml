@@ -92,12 +92,12 @@
             <service uid="actionQuit" type="::gui::action::SQuit"  />
 
             <service uid="meshReader" type="::uiIO::editor::SIOSelector" >
-                <in key="target" uid="modelSeries" />
+                <inout key="data" uid="modelSeries" />
                 <type mode="reader" />
             </service>
 
             <service uid="imageReader" type="::uiIO::editor::SIOSelector" >
-                <in key="target" uid="image" />
+                <inout key="data" uid="image" />
                 <type mode="reader" />
             </service>
 
