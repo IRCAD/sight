@@ -47,10 +47,6 @@ SLine::SLine() noexcept :
 
 SLine::~SLine() noexcept
 {
-    if(m_line)
-    {
-        this->getSceneManager()->destroyManualObject(m_line);
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -169,6 +165,11 @@ void SLine::stopping()
 {
     this->unregisterServices();
     m_material = nullptr;
+    if(m_line)
+    {
+        this->getSceneManager()->destroyManualObject(m_line);
+        m_line = nullptr;
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -204,7 +205,7 @@ void SLine::updateLength(float length)
         m_line->colour(m_color);
         m_line->end();
 
-        // Update the bouding box
+        // Update the bounding box
         ::Ogre::Vector3 bbMin(-0.1f, -0.1f, 0.f);
         ::Ogre::Vector3 bbMax(0.1f, 0.1f, m_length);
         ::Ogre::AxisAlignedBox box(bbMin, bbMax);
