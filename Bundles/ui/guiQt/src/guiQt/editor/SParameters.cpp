@@ -24,6 +24,7 @@
 #include <QColorDialog>
 #include <QComboBox>
 #include <QFormLayout>
+#include <QLabel>
 #include <QSpinBox>
 #include <QString>
 #include <QStyle>

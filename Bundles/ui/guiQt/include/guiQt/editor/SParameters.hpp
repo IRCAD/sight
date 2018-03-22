@@ -11,7 +11,6 @@
 #include <fwGui/editor/IEditor.hpp>
 
 #include <QGridLayout>
-#include <QLabel>
 #include <QObject>
 #include <QPointer>
 #include <QPushButton>
