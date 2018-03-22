@@ -1,0 +1,35 @@
+//----------------------------------------------
+
+fragment_program AlphaModulator_FP glsl
+{
+    source AlphaModulator_FP.glsl
+    default_params
+    {
+        param_named u_alpha float 1
+    }
+}
+
+//----------------------------------------------
+
+material AlphaModulator
+{
+    technique
+    {
+        pass
+        {
+            cull_hardware none
+            cull_software none
+            depth_check off
+
+            separate_scene_blend zero one zero src_alpha
+
+            vertex_program_ref RenderQuad_VP
+            {
+            }
+
+            fragment_program_ref AlphaModulator_FP
+            {
+            }
+        }
+    }
+}

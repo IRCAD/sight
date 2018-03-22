@@ -23,6 +23,10 @@
             <object uid="identity" type="::fwData::TransformationMatrix3D" />
             <object uid="inverseMat" type="::fwData::TransformationMatrix3D" />
 
+            <object uid="arAlpha" type="::fwData::Float" >
+                <value>1</value>
+            </object>
+
             <!-- declaration of the views, menu and toolbar -->
             <service uid="mainFrame" type="::gui::frame::SDefaultFrame">
                 <gui>
@@ -300,13 +304,14 @@
                 <scene>
                     <background topColor="#46455A" bottomColor="#46455A" />
                     <layer id="video" depth="1" />
-                    <layer id="default" depth="2" compositors="Remap"/>
+                    <layer id="default" depth="2" compositors="Remap;AlphaModulator" />
                     <adaptor uid="videoAdpt" />
                     <adaptor uid="interactorStyle" />
                     <adaptor uid="interactorStyle2" />
                     <adaptor uid="axis" />
                     <adaptor uid="cameraAdpt" />
                     <adaptor uid="meshAdpt" />
+                    <adaptor uid="layerTransparencyCompositor" />
                     <adaptor uid="meshPlaneAdpt" />
                     <adaptor uid="remapTextureAdpt" />
                 </scene>
@@ -346,13 +351,17 @@
                 <config layer="default" color="#ffffffda" />
             </service>
 
+            <service uid="layerTransparencyCompositor" type="::visuOgreAdaptor::SCompositorParameter">
+                <inout key="parameter" uid="arAlpha" />
+                <config layer="default" compositorName="AlphaModulator" parameter="u_alpha" shaderType="fragment" />
+            </service>
+
             <service uid="remapTextureAdpt" type="::visuOgreAdaptor::SCompositorParameter" autoConnect="yes">
                 <inout key="parameter" uid="distortionMap" />
                 <config layer="default" compositorName="Remap" parameter="u_map" shaderType="fragment" />
             </service>
 
             <!-- Debug 3D Scene -->
-
             <service uid="debugScene" type="::fwRenderOgre::SRender" autoConnect="yes">
                 <scene>
                     <background topColor="#46455A" bottomColor="#46455A" />
@@ -435,6 +444,7 @@
                 <parameters>
                     <param type="bool" name="Show reprojection" key="display" defaultValue="true" />
                     <param type="color" name="Circle color" key="color" defaultValue="#00ff00" />
+                    <param type="double" name="Transparency" key="u_alpha" defaultValue="1" min="0" max="1" widget="slider" />
                 </parameters>
             </service>
 
@@ -535,6 +545,11 @@
             </connect>
 
             <connect>
+                <signal>reprojectionParams/doubleChanged</signal>
+                <slot>layerTransparencyCompositor/setDoubleParameter</slot>
+            </connect>
+
+            <connect>
                 <signal>error/errorComputed</signal>
                 <slot>errorLabel/setDoubleParameter</slot>
             </connect>
@@ -594,6 +609,7 @@
             <start uid="axis" />
             <start uid="cameraAdpt" />
             <start uid="meshAdpt" />
+            <start uid="layerTransparencyCompositor" />
             <start uid="meshPlaneAdpt" />
             <start uid="remapTextureAdpt" />
 
