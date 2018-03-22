@@ -25,7 +25,6 @@
 #include <QComboBox>
 #include <QFormLayout>
 #include <QLabel>
-#include <QSlider>
 #include <QSpinBox>
 #include <QString>
 #include <QStyle>
@@ -105,7 +104,6 @@ void SParameters::starting()
         const std::string key          = cfg.get< std::string >("<xmlattr>.key");
         const std::string type         = cfg.get< std::string >("<xmlattr>.type");
         const std::string defaultValue = cfg.get< std::string >("<xmlattr>.defaultValue");
-        const std::string widget       = cfg.get< std::string >("<xmlattr>.widget", "slider");
 
         layout->addWidget(new QLabel(QString(name.c_str())), row, 0);
 
@@ -119,16 +117,35 @@ void SParameters::starting()
         }
         else if(type == "double" || type == "double2" || type == "double3")
         {
+            const std::string widget = cfg.get< std::string >("<xmlattr>.widget", "spin");
+
             const double min          = cfg.get<double>("<xmlattr>.min", 0.);
             const double max          = cfg.get<double>("<xmlattr>.max", 1.);
             const double defaultValue = cfg.get<double>("<xmlattr>.defaultValue", 0.5);
 
             const int count = (type == "double3") ? 3 : (type == "double2" ? 2 : 1);
 
-            this->createDoubleWidget(*layout, row, key, defaultValue, min, max, count);
+            if(widget == "spin")
+            {
+                this->createDoubleWidget(*layout, row, key, defaultValue, min, max, count);
+            }
+            else if(widget == "slider")
+            {
+                // We don't support multiple sliders because we will not have the room in a single row
+                SLM_ASSERT("Count > 1 is not supported with sliders", count == 1);
+
+                const std::uint8_t decimals = cfg.get< std::uint8_t >("<xmlattr>.decimals", 2);
+                this->createDoubleSliderWidget(*layout, row, key, defaultValue, min, max, decimals);
+            }
+            else
+            {
+                SLM_ERROR("Unknown widget type : '" + widget + "' for " + name + ". Must be 'spin' or 'slider'.");
+            }
         }
         else if(type == "int" || type == "int2" || type == "int3")
         {
+            const std::string widget = cfg.get< std::string >("<xmlattr>.widget", "slider");
+
             const int min          = cfg.get<int>("<xmlattr>.min", 0);
             const int max          = cfg.get<int>("<xmlattr>.max", 100);
             const int defaultValue = cfg.get<int>("<xmlattr>.defaultValue", 50);
@@ -139,12 +156,16 @@ void SParameters::starting()
             {
                 this->createIntegerSpinWidget(*layout, row, key, defaultValue, min, max, count);
             }
-            else
+            else if(widget == "slider")
             {
                 // We don't support multiple sliders because we will not have the room in a single row
                 SLM_ASSERT("Count > 1 is not supported with sliders", count == 1);
 
                 this->createIntegerSliderWidget(*layout, row, key, defaultValue, min, max);
+            }
+            else
+            {
+                SLM_ERROR("Unknown widget type : '" + widget + "' for " + name + ". Must be 'spin' or 'slider'.");
             }
         }
         else if(type == "enum")
@@ -369,6 +390,18 @@ void SParameters::onChangeDouble(double value)
 
 //-----------------------------------------------------------------------------
 
+void SParameters::onChangeDoubleSlider(int)
+{
+    const QSlider* sender = qobject_cast<QSlider*>(this->sender());
+    const QString key     = sender->property("key").toString();
+
+    const double realValue = getDoubleSliderValue(sender);
+
+    this->signal<DoubleChangedSignalType>(DOUBLE_CHANGED_SIG)->asyncEmit(realValue, key.toStdString());
+}
+
+//-----------------------------------------------------------------------------
+
 void SParameters::onSliderMapped(QWidget* widget)
 {
     const QSlider* slider = qobject_cast<QSlider*>(m_signalMapper->mapping(widget));
@@ -376,6 +409,22 @@ void SParameters::onSliderMapped(QWidget* widget)
     if (label && slider)
     {
         label->setText(QString::number(slider->value()));
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void SParameters::onDoubleSliderMapped(QWidget* widget)
+{
+    const QSlider* slider = qobject_cast<QSlider*>(m_signalMapper->mapping(widget));
+    QLabel* label         = qobject_cast<QLabel*>(widget);
+
+    if (label && slider)
+    {
+        const double newValue = getDoubleSliderValue(slider);
+        const int decimals    = slider->property("decimals").toInt();
+
+        label->setText(QString::number(newValue, 'f', decimals));
     }
 }
 
@@ -569,7 +618,6 @@ void SParameters::createColorWidget(QGridLayout& layout, int row, const std::str
     colourButton->setIcon(QIcon(pix));
 
     colourButton->setProperty("key", QString(key.c_str()));
-//    colourButton->setProperty("defaultValue", QVariant::fromValue< QColor>(colorQt));
     colourButton->setProperty("defaultValue", colorQt);
     colourButton->setProperty("color", colorQt);
 
@@ -648,6 +696,84 @@ void SParameters::createDoubleWidget(QGridLayout& layout, int row, const std::st
 
 //-----------------------------------------------------------------------------
 
+void SParameters::createDoubleSliderWidget(QGridLayout& layout, int row, const std::string& key,
+                                           double defaultValue, double min, double max, std::uint8_t decimals)
+{
+    // Reset button
+    QPushButton* resetButton = this->createResetButton();
+
+    layout.addWidget(resetButton, row, 5);
+
+    // Connect reset button to the slider
+    QObject::connect(m_resetMapper, SIGNAL(mapped(QWidget*)), this, SLOT(onResetDoubleMapped(QWidget*)));
+
+    int maxSliderValue = 1;
+    for(std::uint8_t i = 0; i < decimals; ++i)
+    {
+        maxSliderValue *= 10;
+    }
+
+    const double valueRange = max - min;
+    maxSliderValue *= valueRange;
+
+    QSlider* slider = new QSlider(Qt::Horizontal);
+    slider->setMinimum(0);
+    slider->setMaximum(maxSliderValue);
+
+    int defaultSliderValue = int(((defaultValue - min) / valueRange) * double(slider->maximum()));
+    slider->setValue(defaultSliderValue);
+
+    this->signal<DoubleChangedSignalType>(DOUBLE_CHANGED_SIG)->asyncEmit(defaultValue, key);
+
+    QFont font;
+    font.setPointSize(7);
+    font.setItalic(true);
+
+    QLabel* minValueLabel = new QLabel();
+    minValueLabel->setFont(font);
+    minValueLabel->setText(QString::number(min, 'g', decimals));
+    minValueLabel->setToolTip("Minimum value.");
+
+    QLabel* maxValueLabel = new QLabel();
+    maxValueLabel->setFont(font);
+    maxValueLabel->setText(QString::number(max, 'g', decimals));
+    maxValueLabel->setToolTip("Maximum value.");
+
+    QLabel* valueLabel = new QLabel();
+    valueLabel->setStyleSheet("QLabel { font: bold; }");
+    valueLabel->setText(QString::number(defaultValue, 'f', decimals));
+    valueLabel->setToolTip("Current value.");
+
+    layout.addWidget( minValueLabel, row, 1 );
+    layout.addWidget( slider, row, 2 );
+    layout.addWidget( maxValueLabel, row, 3 );
+    layout.addWidget( valueLabel, row, 4);
+    layout.addWidget( resetButton, row, 5);
+
+    slider->setProperty("key", QString(key.c_str()));
+    slider->setProperty("count", 1);
+    slider->setProperty("defaultValue", slider->value());
+    slider->setProperty("decimals", decimals);
+    slider->setProperty("min", min);
+    slider->setProperty("max", max);
+
+    // Connect slider value with our editor
+    QObject::connect(slider, SIGNAL(valueChanged(int)), this, SLOT(onChangeDoubleSlider(int)));
+
+    // Connect slider value to the label
+    QObject::connect(slider, SIGNAL(valueChanged(int)), m_signalMapper, SLOT(map()));
+    m_signalMapper->setMapping(slider, valueLabel);
+    QObject::connect(m_signalMapper, SIGNAL(mapped(QWidget*)), this, SLOT(onDoubleSliderMapped(QWidget*)));
+
+    m_resetMapper->setMapping(resetButton, slider);
+    QObject::connect(m_resetMapper, SIGNAL(mapped(QWidget*)), this, SLOT(onResetIntegerMapped(QWidget*)));
+
+    const std::string propName = std::string("widget#0");
+    slider->setProperty(propName.c_str(), QVariant::fromValue< QSlider*>(slider));
+}
+
+//-----------------------------------------------------------------------------
+
 void SParameters::createIntegerSliderWidget(QGridLayout& layout, int row, const std::string& key,
                                             int defaultValue, int min, int max)
 {
@@ -696,10 +822,10 @@ void SParameters::createIntegerSliderWidget(QGridLayout& layout, int row, const 
     // Connect slider value to the label
     QObject::connect(slider, SIGNAL(valueChanged(int)), m_signalMapper, SLOT(map()));
     m_signalMapper->setMapping(slider, valueLabel);
-    connect(m_signalMapper, SIGNAL(mapped(QWidget*)), this, SLOT(onSliderMapped(QWidget*)));
+    QObject::connect(m_signalMapper, SIGNAL(mapped(QWidget*)), this, SLOT(onSliderMapped(QWidget*)));
 
     m_resetMapper->setMapping(resetButton, slider);
-    connect(m_resetMapper, SIGNAL(mapped(QWidget*)), this, SLOT(onResetIntegerMapped(QWidget*)));
+    QObject::connect(m_resetMapper, SIGNAL(mapped(QWidget*)), this, SLOT(onResetIntegerMapped(QWidget*)));
 
     const std::string propName = std::string("widget#0");
     slider->setProperty(propName.c_str(), QVariant::fromValue< QSlider*>(slider));
@@ -783,6 +909,18 @@ void SParameters::createEnumWidget(QGridLayout& layout, int row, const std::stri
 
     //Set the comboBox to the default value
     menu->setCurrentText(QString::fromStdString(defaultValue));
+}
+
+//-----------------------------------------------------------------------------
+
+double SParameters::getDoubleSliderValue(const QSlider* slider)
+{
+    const double min = slider->property("min").toDouble();
+    const double max = slider->property("max").toDouble();
+
+    const double doubleValue = (double(slider->value()) / slider->maximum()) * (max - min) + min;
+
+    return doubleValue;
 }
 
 //-----------------------------------------------------------------------------
