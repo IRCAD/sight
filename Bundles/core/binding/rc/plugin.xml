@@ -1,5 +1,0 @@
-<plugin id="binding" class="::binding::Plugin" version="@PROJECT_VERSION@" >
-    
-    <library name="binding" />
-
-</plugin>
