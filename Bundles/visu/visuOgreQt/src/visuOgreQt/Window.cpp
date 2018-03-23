@@ -127,10 +127,10 @@ void Window::initialise()
     mgr->registerWindow(m_ogreRenderWindow);
 
     ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo info;
-    info.interactionType = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::RESIZE;
-    std::tie(info.x,info.y) = Window::getDeviceCoordinates(this->width(), this->height());
-    info.dx              = 0;
-    info.dy              = 0;
+    info.interactionType     = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::RESIZE;
+    std::tie(info.x, info.y) = Window::getDeviceCoordinates(this->width(), this->height());
+    info.dx                  = 0;
+    info.dy                  = 0;
     Q_EMIT interacted(info);
 }
 
@@ -233,14 +233,14 @@ std::pair<int, int> Window::getDeviceCoordinates(int _x, int _y)
 {
 #ifdef Q_OS_MAC
     qreal pixelRatio = qApp->devicePixelRatio();
-    int x = static_cast<int>(_x * pixelRatio);
-    int y = static_cast<int>(_y * pixelRatio);
+    int x            = static_cast<int>(_x * pixelRatio);
+    int y            = static_cast<int>(_y * pixelRatio);
 #else
     int x = _x;
     int y = _y;
 #endif
 
-    return std::make_pair(x,y);
+    return std::make_pair(x, y);
 }
 
 // ----------------------------------------------------------------------------
@@ -346,7 +346,7 @@ bool Window::eventFilter(QObject* target, QEvent* event)
 
         int newWidth, newHeight;
         std::tie(newWidth, newHeight) = Window::getDeviceCoordinates(resizeEvent->size().width(),
-                                                                    resizeEvent->size().height());
+                                                                     resizeEvent->size().height());
 
         if(newWidth > 0 && newHeight > 0)
         {
@@ -447,10 +447,10 @@ void Window::mouseMoveEvent( QMouseEvent* e )
         int dx = x - e->x();
         int dy = y - e->y();
         ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo info;
-        info.interactionType = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::MOUSEMOVE;
-        std::tie(info.x,info.y) = Window::getDeviceCoordinates(x, y);
-        std::tie(info.dx,info.dy) = Window::getDeviceCoordinates(dx, dy);
-        info.button          = ::fwRenderOgre::interactor::IInteractor::LEFT;
+        info.interactionType       = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::MOUSEMOVE;
+        std::tie(info.x, info.y)   = Window::getDeviceCoordinates(x, y);
+        std::tie(info.dx, info.dy) = Window::getDeviceCoordinates(dx, dy);
+        info.button                = ::fwRenderOgre::interactor::IInteractor::LEFT;
         Q_EMIT interacted(info);
 
         m_lastPosLeftClick->setX(e->x());
@@ -465,10 +465,10 @@ void Window::mouseMoveEvent( QMouseEvent* e )
         int dy = y - e->y();
 
         ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo info;
-        info.interactionType = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::MOUSEMOVE;
-        std::tie(info.x,info.y) = Window::getDeviceCoordinates(x, y);
-        std::tie(info.dx,info.dy) = Window::getDeviceCoordinates(dx, dy);
-        info.button          = ::fwRenderOgre::interactor::IInteractor::MIDDLE;
+        info.interactionType       = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::MOUSEMOVE;
+        std::tie(info.x, info.y)   = Window::getDeviceCoordinates(x, y);
+        std::tie(info.dx, info.dy) = Window::getDeviceCoordinates(dx, dy);
+        info.button                = ::fwRenderOgre::interactor::IInteractor::MIDDLE;
         Q_EMIT interacted(info);
 
         m_lastPosMiddleClick->setX(e->x());
@@ -483,10 +483,10 @@ void Window::mouseMoveEvent( QMouseEvent* e )
         int dy = y - e->y();
 
         ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo info;
-        info.interactionType = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::MOUSEMOVE;
-        std::tie(info.x,info.y) = Window::getDeviceCoordinates(x, y);
-        std::tie(info.dx,info.dy) = Window::getDeviceCoordinates(dx, dy);
-        info.button          = ::fwRenderOgre::interactor::IInteractor::RIGHT;
+        info.interactionType       = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::MOUSEMOVE;
+        std::tie(info.x, info.y)   = Window::getDeviceCoordinates(x, y);
+        std::tie(info.dx, info.dy) = Window::getDeviceCoordinates(dx, dy);
+        info.button                = ::fwRenderOgre::interactor::IInteractor::RIGHT;
         Q_EMIT interacted(info);
 
         m_lastPosRightClick->setX(e->x());
@@ -500,11 +500,11 @@ void Window::mouseMoveEvent( QMouseEvent* e )
 void Window::wheelEvent(QWheelEvent* e)
 {
     ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo info;
-    info.interactionType = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::WHEELMOVE;
-    info.delta           = static_cast<int>(e->delta()*ZOOM_SPEED);
-    std::tie(info.x,info.y) = Window::getDeviceCoordinates(e->x(), e->y());
-    info.dx              = 0;
-    info.dy              = 0;
+    info.interactionType     = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::WHEELMOVE;
+    info.delta               = static_cast<int>(e->delta()*ZOOM_SPEED);
+    std::tie(info.x, info.y) = Window::getDeviceCoordinates(e->x(), e->y());
+    info.dx                  = 0;
+    info.dy                  = 0;
 
     Q_EMIT interacted(info);
     Q_EMIT cameraClippingComputation();
@@ -517,12 +517,12 @@ void Window::wheelEvent(QWheelEvent* e)
 void Window::mousePressEvent( QMouseEvent* e )
 {
     ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo info;
-    info.interactionType = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::BUTTONPRESS;
-    info.button          = ::fwRenderOgre::interactor::IInteractor::UNKNOWN;
-    info.delta           = 0;
-    std::tie(info.x,info.y) = Window::getDeviceCoordinates(e->x(), e->y());
-    info.dx              = 0;
-    info.dy              = 0;
+    info.interactionType     = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::BUTTONPRESS;
+    info.button              = ::fwRenderOgre::interactor::IInteractor::UNKNOWN;
+    info.delta               = 0;
+    std::tie(info.x, info.y) = Window::getDeviceCoordinates(e->x(), e->y());
+    info.dx                  = 0;
+    info.dy                  = 0;
 
     if(e->button() == Qt::LeftButton)
     {
@@ -552,12 +552,12 @@ void Window::mousePressEvent( QMouseEvent* e )
 void Window::mouseReleaseEvent( QMouseEvent* e )
 {
     ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo info;
-    info.interactionType = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::BUTTONRELEASE;
-    info.button          = ::fwRenderOgre::interactor::IInteractor::UNKNOWN;
-    info.delta           = 0;
-    std::tie(info.x,info.y) = Window::getDeviceCoordinates(e->x(), e->y());
-    info.dx              = 0;
-    info.dy              = 0;
+    info.interactionType     = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::BUTTONRELEASE;
+    info.button              = ::fwRenderOgre::interactor::IInteractor::UNKNOWN;
+    info.delta               = 0;
+    std::tie(info.x, info.y) = Window::getDeviceCoordinates(e->x(), e->y());
+    info.dx                  = 0;
+    info.dy                  = 0;
 
     if(e->button() == Qt::LeftButton && m_lastPosLeftClick)
     {

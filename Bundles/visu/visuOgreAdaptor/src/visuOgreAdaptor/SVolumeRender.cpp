@@ -655,7 +655,7 @@ void SVolumeRender::updateSatConeSamples(int nbConeSamples)
 //-----------------------------------------------------------------------------
 
 void SVolumeRender::togglePreintegration(bool preintegration)
-{   
+{
     this->getRenderService()->makeCurrent();
 
     m_preIntegratedRendering = preintegration;
