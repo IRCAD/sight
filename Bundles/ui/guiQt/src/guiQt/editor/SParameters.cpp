@@ -718,7 +718,7 @@ void SParameters::createDoubleSliderWidget(QGridLayout& layout, int row, const s
     slider->setMinimum(0);
     slider->setMaximum(maxSliderValue);
 
-    int defaultSliderValue = int(((defaultValue - min) / valueRange) * double(slider->maximum()));
+    int defaultSliderValue = int(std::round(((defaultValue - min) / valueRange) * double(slider->maximum())));
     slider->setValue(defaultSliderValue);
 
     this->signal<DoubleChangedSignalType>(DOUBLE_CHANGED_SIG)->asyncEmit(defaultValue, key);
