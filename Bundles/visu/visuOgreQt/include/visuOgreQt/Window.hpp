@@ -125,6 +125,9 @@ private:
     /// Apply device pixel ratio on screen coordinates, needed only for MacOs currently
     static std::pair<int, int> getDeviceCoordinates(int _x, int _y);
 
+    /// resizeEvent forwarding function
+    void ogreResize(const QSize& newSize);
+
     /*
      * Qt events to manage keyboard and mouse input
      */

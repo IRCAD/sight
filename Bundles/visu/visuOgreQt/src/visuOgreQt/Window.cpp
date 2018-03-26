@@ -99,8 +99,8 @@ void Window::initialise()
        the scene. Below is a cross-platform method on how to do this.
      */
 #if defined(Q_OS_MAC) || defined(Q_OS_WIN)
-    parameters["externalWindowHandle"] = Ogre::StringConverter::toString((size_t)(this->winId()));
-    parameters["parentWindowHandle"]   = Ogre::StringConverter::toString((size_t)(this->winId()));
+    parameters["externalWindowHandle"] = Ogre::StringConverter::toString(size_t(this->winId()));
+    parameters["parentWindowHandle"]   = Ogre::StringConverter::toString(size_t(this->winId()));
 #else
     parameters["externalWindowHandle"] = Ogre::StringConverter::toString((unsigned long)(this->winId()));
 #endif
@@ -232,12 +232,12 @@ void Window::render()
 std::pair<int, int> Window::getDeviceCoordinates(int _x, int _y)
 {
 #ifdef Q_OS_MAC
-    qreal pixelRatio = qApp->devicePixelRatio();
-    int x            = static_cast<int>(_x * pixelRatio);
-    int y            = static_cast<int>(_y * pixelRatio);
+    const qreal pixelRatio = qApp->devicePixelRatio();
+    const int x            = static_cast<int>(std::ceil(_x * pixelRatio));
+    const int y            = static_cast<int>(std::ceil(_y * pixelRatio));
 #else
-    int x = _x;
-    int y = _y;
+    const int x = _x;
+    const int y = _y;
 #endif
 
     return std::make_pair(x, y);
@@ -284,19 +284,20 @@ bool Window::event(QEvent* event)
 }
 // ----------------------------------------------------------------------------
 
-void Window::exposeEvent(QExposeEvent* event)
+void Window::exposeEvent(QExposeEvent*)
 {
-    Q_UNUSED(event);
+#if defined(__APPLE__)
+    // This allow correct renderring on dual screen display when dragging window to another screen
+    ogreResize(this->size());
+#endif
 
     this->renderNow();
 }
 
 // ----------------------------------------------------------------------------
 
-void Window::moveEvent(QMoveEvent* event)
+void Window::moveEvent(QMoveEvent*)
 {
-    Q_UNUSED(event);
-
     if(m_ogreRenderWindow != nullptr)
     {
         m_ogreRenderWindow->reposition(x(), y());
@@ -307,6 +308,7 @@ void Window::moveEvent(QMoveEvent* event)
 
 void Window::renderNow()
 {
+    // Small optimization to not render when not visible
     if(false == isExposed())
     {
         return;
@@ -314,7 +316,7 @@ void Window::renderNow()
 
     this->render();
 
-#if DISPLAY_OGRE_FPS == 1
+#if defined(DISPLAY_OGRE_FPS) && DISPLAY_OGRE_FPS == 1
     static int i               = 0;
     static float fps           = 0.f;
     static const int numFrames = 500;
@@ -342,56 +344,7 @@ bool Window::eventFilter(QObject* target, QEvent* event)
         && m_ogreRenderWindow != nullptr
         && event->type() == QEvent::Resize)
     {
-        const QResizeEvent* const resizeEvent = static_cast<QResizeEvent*>(event);
-
-        int newWidth, newHeight;
-        std::tie(newWidth, newHeight) = Window::getDeviceCoordinates(resizeEvent->size().width(),
-                                                                     resizeEvent->size().height());
-
-        if(newWidth > 0 && newHeight > 0)
-        {
-            this->makeCurrent();
-
-#if defined(linux) || defined(__linux) || defined(__APPLE__)
-            m_ogreRenderWindow->resize(static_cast< unsigned int >(newWidth),
-                                       static_cast< unsigned int >(newHeight));
-#endif
-            m_ogreRenderWindow->windowMovedOrResized();
-
-            const auto numViewports = m_ogreRenderWindow->getNumViewports();
-
-            ::Ogre::Viewport* viewport = nullptr;
-            for (unsigned short i = 0; i < numViewports; i++)
-            {
-                viewport = m_ogreRenderWindow->getViewport(i);
-                viewport->getCamera()->setAspectRatio(::Ogre::Real(newWidth) / ::Ogre::Real(newHeight));
-            }
-
-            if (viewport && ::Ogre::CompositorManager::getSingleton().hasCompositorChain(viewport))
-            {
-                ::Ogre::CompositorChain* chain = ::Ogre::CompositorManager::getSingleton().getCompositorChain(
-                    viewport);
-                size_t length = chain->getNumCompositors();
-                for(size_t i = 0; i < length; i++)
-                {
-                    if( chain->getCompositor(i)->getEnabled() )
-                    {
-                        chain->setCompositorEnabled(i, false);
-                        chain->setCompositorEnabled(i, true);
-                    }
-                }
-            }
-
-            ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo info;
-            info.interactionType = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::RESIZE;
-            info.x               = newWidth;
-            info.y               = newHeight;
-            info.dx              = 0;
-            info.dy              = 0;
-            Q_EMIT interacted(info);
-
-            this->requestRender();
-        }
+        this->ogreResize(static_cast<QResizeEvent*>(event)->size());
     }
 
     return QWindow::eventFilter(target, event);
@@ -586,7 +539,7 @@ void Window::mouseReleaseEvent( QMouseEvent* e )
 
 // ----------------------------------------------------------------------------
 
-void Window::focusInEvent(QFocusEvent* event)
+void Window::focusInEvent(QFocusEvent*)
 {
     ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo info;
     info.interactionType = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::FOCUSIN;
@@ -595,7 +548,7 @@ void Window::focusInEvent(QFocusEvent* event)
 
 // ----------------------------------------------------------------------------
 
-void Window::focusOutEvent(QFocusEvent* event)
+void Window::focusOutEvent(QFocusEvent*)
 {
     ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo info;
     info.interactionType = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::FOCUSOUT;
@@ -604,9 +557,63 @@ void Window::focusOutEvent(QFocusEvent* event)
 
 // ----------------------------------------------------------------------------
 
+void Window::ogreResize(const QSize& newSize)
+{
+    if(!newSize.isValid())
+    {
+        return;
+    }
+
+    int newWidth, newHeight;
+    std::tie(newWidth, newHeight) = Window::getDeviceCoordinates(newSize.width(), newSize.height());
+
+    this->makeCurrent();
+
+#if defined(linux) || defined(__linux) || defined(__APPLE__)
+    m_ogreRenderWindow->resize(static_cast< unsigned int >(newWidth), static_cast< unsigned int >(newHeight));
+#endif
+    m_ogreRenderWindow->windowMovedOrResized();
+
+    const auto numViewports = m_ogreRenderWindow->getNumViewports();
+
+    ::Ogre::Viewport* viewport = nullptr;
+    for (unsigned short i = 0; i < numViewports; i++)
+    {
+        viewport = m_ogreRenderWindow->getViewport(i);
+        viewport->getCamera()->setAspectRatio(::Ogre::Real(newWidth) / ::Ogre::Real(newHeight));
+    }
+
+    if (viewport && ::Ogre::CompositorManager::getSingleton().hasCompositorChain(viewport))
+    {
+        ::Ogre::CompositorChain* chain = ::Ogre::CompositorManager::getSingleton().getCompositorChain(
+            viewport);
+        size_t length = chain->getNumCompositors();
+        for(size_t i = 0; i < length; i++)
+        {
+            if( chain->getCompositor(i)->getEnabled() )
+            {
+                chain->setCompositorEnabled(i, false);
+                chain->setCompositorEnabled(i, true);
+            }
+        }
+    }
+
+    ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo info;
+    info.interactionType = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::RESIZE;
+    info.x               = newWidth;
+    info.y               = newHeight;
+    info.dx              = 0;
+    info.dy              = 0;
+    Q_EMIT interacted(info);
+
+    this->requestRender();
+}
+
+// ----------------------------------------------------------------------------
+
 void Window::setAnimating(bool animating)
 {
-#if DISPLAY_OGRE_FPS == 1
+#if defined(DISPLAY_OGRE_FPS) && DISPLAY_OGRE_FPS == 1
     m_animating = true;
 #else
     m_animating = animating;
