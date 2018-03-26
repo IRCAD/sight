@@ -7,9 +7,8 @@
 #include "fwRenderOgre/Layer.hpp"
 
 #include "fwRenderOgre/compositor/Core.hpp"
-#include <fwRenderOgre/helper/Camera.hpp>
-#include <fwRenderOgre/ILight.hpp>
-#include <fwRenderOgre/Layer.hpp>
+#include "fwRenderOgre/helper/Camera.hpp"
+#include "fwRenderOgre/ILight.hpp"
 
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
