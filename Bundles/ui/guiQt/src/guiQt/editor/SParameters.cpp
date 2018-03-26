@@ -24,7 +24,6 @@
 #include <QColorDialog>
 #include <QComboBox>
 #include <QFormLayout>
-#include <QLabel>
 #include <QSpinBox>
 #include <QString>
 #include <QStyle>
@@ -747,6 +746,7 @@ void SParameters::createDoubleSliderWidget(QGridLayout& layout, int row, const s
     valueLabel->setStyleSheet("QLabel { font: bold; }");
     valueLabel->setText(QString::number(defaultValue, 'f', decimals));
     valueLabel->setToolTip("Current value.");
+    this->setLabelMinimumSize(valueLabel, min, max, decimals);
 
     layout.addWidget( minValueLabel, row, 1 );
     layout.addWidget( slider, row, 2 );
@@ -809,6 +809,7 @@ void SParameters::createIntegerSliderWidget(QGridLayout& layout, int row, const 
     valueLabel->setStyleSheet("QLabel { font: bold; }");
     valueLabel->setText(QString("%1").arg(slider->value()));
     valueLabel->setToolTip("Current value.");
+    this->setLabelMinimumSize(valueLabel, min, max);
 
     layout.addWidget( minValueLabel, row, 1 );
     layout.addWidget( slider, row, 2 );

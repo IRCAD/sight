@@ -11,6 +11,7 @@
 #include <fwGui/editor/IEditor.hpp>
 
 #include <QGridLayout>
+#include <QLabel>
 #include <QObject>
 #include <QPointer>
 #include <QPushButton>
@@ -187,11 +188,60 @@ private:
     /// Computes a double slider value from a slider position.
     static double getDoubleSliderValue(const QSlider* slider);
 
+    /// Adjust the minimum size of a label according to the range values
+    template <typename T>
+    static void setLabelMinimumSize(QLabel* label, T min, T max, std::uint8_t decimals = 0);
+
+    template<typename T>
+    static QString valueToStringLabel(T value, std::uint8_t decimals);
+
     /// Allows to connect sliders and their labels
     QPointer< QSignalMapper> m_integerSliderSignalMapper;
     QPointer< QSignalMapper> m_doubleSliderSignalMapper;
     QPointer< QSignalMapper> m_resetMapper;
 };
+
+//------------------------------------------------------------------------------
+
+template<> inline QString SParameters::valueToStringLabel<int>(int value, std::uint8_t)
+{
+    return QString("%1").arg(value);
+}
+
+//------------------------------------------------------------------------------
+
+template<> inline QString SParameters::valueToStringLabel<double>(double value, std::uint8_t decimals)
+{
+    return QString::number(value, 'f', decimals);
+}
+
+//------------------------------------------------------------------------------
+
+template<typename T>
+void SParameters::setLabelMinimumSize(QLabel* label, T min, T max, std::uint8_t decimals)
+{
+    const auto minString = valueToStringLabel(min, decimals);
+    const auto maxString = valueToStringLabel(max, decimals);
+
+    // Create a dummy label with same properties
+    QLabel dummyLabel;
+    dummyLabel.setFont(label->font());
+    dummyLabel.setStyleSheet(label->styleSheet());
+
+    // Fill it with the string of the max value and request the size from Qt
+    dummyLabel.setText(maxString);
+    const QSize sizeWithMaxValue = dummyLabel.sizeHint();
+
+    // Fill it with the string of the min value and request the size from Qt
+    dummyLabel.setText(minString);
+    const QSize sizeWithMinValue = dummyLabel.sizeHint();
+
+    // Compute the maximum size and set it to our label
+    const QSize maxSize = sizeWithMaxValue.expandedTo(sizeWithMinValue);
+    label->setMinimumSize(maxSize);
+}
+
+//------------------------------------------------------------------------------
 
 }   //namespace guiQt
 }   //namespace editor
