@@ -37,6 +37,8 @@ OffScreenRenderWindowInteractorManager::OffScreenRenderWindowInteractorManager(u
 
 OffScreenRenderWindowInteractorManager::~OffScreenRenderWindowInteractorManager()
 {
+    auto& texMgr = ::Ogre::TextureManager::getSingleton();
+    texMgr.removeAll();
 }
 
 //-----------------------------------------------------------------------------
