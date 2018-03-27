@@ -37,8 +37,6 @@ OffScreenRenderWindowInteractorManager::OffScreenRenderWindowInteractorManager(u
 
 OffScreenRenderWindowInteractorManager::~OffScreenRenderWindowInteractorManager()
 {
-    auto& texMgr = ::Ogre::TextureManager::getSingleton();
-    texMgr.removeAll();
 }
 
 //-----------------------------------------------------------------------------
@@ -138,7 +136,6 @@ void OffScreenRenderWindowInteractorManager::connectToContainer()
 
 void OffScreenRenderWindowInteractorManager::disconnectInteractor()
 {
-    m_ogreTexture.reset();
     m_ogreRenderTarget = nullptr;
 
     OffScreenRenderWindowInteractorManager::m_counter--;
@@ -148,6 +145,13 @@ void OffScreenRenderWindowInteractorManager::disconnectInteractor()
         ::fwRenderOgre::WindowManager::sptr mgr = ::fwRenderOgre::WindowManager::get();
         mgr->unregisterWindow(m_ogreRenderWindow);
         m_ogreRenderWindow = nullptr;
+    }
+
+    if(m_ogreTexture)
+    {
+        auto& texMgr = ::Ogre::TextureManager::getSingleton();
+        texMgr.remove(m_ogreTexture);
+        m_ogreTexture.reset();
     }
 }
 
