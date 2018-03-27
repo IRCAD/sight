@@ -91,6 +91,7 @@ std::string getPreference(const std::string& preferenceKey)
 
 //-----------------------------------------------------------------------------
 
+// returns the preferences service (or nullptr if is does not exist). This method is not exposed.
 ::fwPreferences::IPreferences::sptr getPreferencesSrv()
 {
     ::fwPreferences::IPreferences::sptr srv;
