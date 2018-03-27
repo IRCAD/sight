@@ -2,7 +2,7 @@
     <requirement id="dataReg" />
     <requirement id="servicesReg" />
     <requirement id="visuVTKQt" />
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude" href="configurations/organManagerConfig.xml" />
+
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude" href="configurations/manualRegistrationEditorConfig.xml" />
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude" href="configurations/camViewManagerConfig.xml" />
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude" href="configurations/worldViewConfig.xml" />
