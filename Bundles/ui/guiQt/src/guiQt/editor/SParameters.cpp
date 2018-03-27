@@ -715,10 +715,16 @@ void SParameters::createDoubleSliderWidget(QGridLayout& layout, int row, const s
     maxSliderValue *= valueRange;
 
     QSlider* slider = new QSlider(Qt::Horizontal);
+    // The slider's maximum internal range is [0; 2 147 483 647]
+    // We could technically extend this range by setting the minimum to std::numeric_limits<int>::min()
+    // but it would be ridiculous to use a slider handling so many values.
     slider->setMinimum(0);
     slider->setMaximum(maxSliderValue);
 
-    int defaultSliderValue = int(std::round(((defaultValue - min) / valueRange) * double(slider->maximum())));
+    SLM_ERROR_IF("The requested value range for '" + key + "' is too large to be handled by a double slider. "
+                 "Please reduce your range, the number of decimals or use a 'spin' widget.", maxSliderValue < 0);
+
+    const int defaultSliderValue = int(std::round(((defaultValue - min) / valueRange) * double(slider->maximum())));
     slider->setValue(defaultSliderValue);
 
     this->signal<DoubleChangedSignalType>(DOUBLE_CHANGED_SIG)->asyncEmit(defaultValue, key);
