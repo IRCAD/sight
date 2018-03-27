@@ -7,6 +7,7 @@
 #pragma once
 
 #include "fwPreferences/config.hpp"
+#include "fwPreferences/IPreferences.hpp"
 
 #include <fwData/Composite.hpp>
 
@@ -30,5 +31,15 @@ FWPREFERENCES_API ::boost::filesystem::path getPreferencesFile();
 
 /// Returns the Composite of preferences. Return nullptr if it does not exist.
 FWPREFERENCES_API ::fwData::Composite::sptr getPreferences();
+
+/// Returns the service of preferences. Return nullptr if it does not exist.
+FWPREFERENCES_API ::fwPreferences::IPreferences::sptr getPreferencesSrv();
+
+/**
+ * @brief Gets the preferences service and call 'update', it should save the preferences file (if the service is
+ * ::preferences::SPreferences).
+ * @warning This method does nothing if the preferences service is not found or if the service is not started.
+ */
+FWPREFERENCES_API void savePreferences();
 
 } // namespace fwPreferences

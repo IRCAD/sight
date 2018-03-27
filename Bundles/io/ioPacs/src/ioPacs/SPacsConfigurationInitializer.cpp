@@ -81,28 +81,6 @@ struct SetFromConfig
 
 //------------------------------------------------------------------------------
 
-std::pair< ::fwServices::IService::sptr, ::fwData::Composite::sptr> getPreferences()
-{
-    ::fwData::Composite::sptr prefs;
-
-    auto preferencesServicesList = ::fwServices::OSR::getServices("::fwPreferences::IPreferences");
-
-    ::fwServices::IService::sptr prefService;
-    if(!preferencesServicesList.empty())
-    {
-        prefService = *preferencesServicesList.begin();
-    }
-
-    if(prefService)
-    {
-        prefs = prefService->getInOut< ::fwData::Composite>(::fwPreferences::s_PREFERENCES_KEY);
-    }
-
-    return std::make_pair(prefService, prefs);
-}
-
-//------------------------------------------------------------------------------
-
 void SPacsConfigurationInitializer::configuring()
 {
     SLM_TRACE_FUNC();
@@ -165,7 +143,7 @@ void SPacsConfigurationInitializer::configuring()
     // Set information from xml and update PacsConfiguration
     if(!m_preferenceKey.empty())
     {
-        ::fwData::Composite::sptr prefs = getPreferences().second;
+        ::fwData::Composite::sptr prefs = ::fwPreferences::getPreferences();
         if(prefs)
         {
             ::fwData::Composite::sptr config = ::fwData::Composite::dynamicCast((*prefs)[m_preferenceKey]);
@@ -223,9 +201,7 @@ void SPacsConfigurationInitializer::updating()
     // If a preference key is set, save the local var to the preferences
     if(!m_preferenceKey.empty())
     {
-        std::pair< ::fwServices::IService::sptr, ::fwData::Composite::sptr>  prefs_pair = getPreferences();
-        ::fwServices::IService::sptr prefService = prefs_pair.first;
-        ::fwData::Composite::sptr prefs          = prefs_pair.second;
+        ::fwData::Composite::sptr prefs = ::fwPreferences::getPreferences();
         if(prefs && (prefs->find(m_preferenceKey) == prefs->end() || !(*prefs)[m_preferenceKey]))
         {
             (*prefs)[m_preferenceKey] = ::fwData::Composite::New();
@@ -244,10 +220,7 @@ void SPacsConfigurationInitializer::updating()
             (*config)["RetrieveMethod"       ] =
                 ::fwData::String::New(::boost::lexical_cast<std::string>(m_retrieveMethod));
         }
-        if(prefService)
-        {
-            prefService->update();
-        }
+        ::fwPreferences::savePreferences();
     }
 }
 

@@ -91,17 +91,51 @@ std::string getPreference(const std::string& preferenceKey)
 
 //-----------------------------------------------------------------------------
 
-::fwData::Composite::sptr getPreferences()
+::fwPreferences::IPreferences::sptr getPreferencesSrv()
 {
-    ::fwData::Composite::sptr prefs;
-    auto preferencesServicesList = ::fwServices::OSR::getServices("::fwPreferences::IPreferences");
+    ::fwPreferences::IPreferences::sptr srv;
+    const auto preferencesServicesList = ::fwServices::OSR::getServices("::fwPreferences::IPreferences");
+
     if(!preferencesServicesList.empty())
     {
         ::fwServices::IService::sptr prefService = *preferencesServicesList.begin();
-        prefs                                    = prefService->getInOut< ::fwData::Composite >(s_PREFERENCES_KEY);
+        srv                                      = ::fwPreferences::IPreferences::dynamicCast(prefService);
     }
+    SLM_DEBUG_IF("The preferences service is not found, the preferences can not be used", !srv);
+
+    return srv;
+}
+
+//-----------------------------------------------------------------------------
+
+::fwData::Composite::sptr getPreferences()
+{
+    ::fwData::Composite::sptr prefs;
+
+    const auto prefService = getPreferencesSrv();
+
+    if(prefService)
+    {
+        prefs = prefService->getInOut< ::fwData::Composite >(s_PREFERENCES_KEY);
+    }
+    SLM_DEBUG_IF("The preferences are not found", !prefs);
+
     return prefs;
 }
+
+//-----------------------------------------------------------------------------
+
+void savePreferences()
+{
+    const auto prefService = getPreferencesSrv();
+    SLM_WARN_IF("The preferences service is not found, the preferences can not be saved", !prefService);
+    SLM_WARN_IF("The preferences service is not started, the preferences can not be saved", !prefService->isStarted());
+    if(prefService && prefService->isStarted())
+    {
+        prefService->update();
+    }
+}
+
 //-----------------------------------------------------------------------------
 
 } // namespace fwPreferences
