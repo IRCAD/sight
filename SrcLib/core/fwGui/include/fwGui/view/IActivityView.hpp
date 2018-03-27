@@ -107,6 +107,14 @@ protected:
     FWGUI_API virtual void translateParameters( ::fwData::Object::sptr sourceObj, const ParametersType& parameters,
                                                 ReplaceMapType& replaceMap );
 
+    /**
+     * @brief Create the replace map from the parameters.
+     *
+     * @param[in] parameters list of parameters to translate
+     * @param[out] replaceMap map containing the translated parameter
+     */
+    FWGUI_API virtual void translateParameters( const ParametersType& parameters, ReplaceMapType& replaceMap );
+
     std::string m_mainActivityId; ///< configuration id of the main activity
 
     ParametersType m_parameters; ///< parameters given in configuration

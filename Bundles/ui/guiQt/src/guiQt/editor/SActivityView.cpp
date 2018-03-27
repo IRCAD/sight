@@ -113,7 +113,7 @@ void SActivityView::launchActivity(::fwMedData::ActivitySeries::sptr activitySer
         info = ::fwActivities::registry::Activities::getDefault()->getInfo(activitySeries->getActivityConfigId());
 
         ReplaceMapType replaceMap;
-        this->translateParameters(this->getObject(), m_parameters, replaceMap);
+        this->translateParameters(m_parameters, replaceMap);
         this->translateParameters(activitySeries->getData(), info.appConfig.parameters, replaceMap);
         replaceMap["AS_UID"]       = activitySeries->getID();
         replaceMap[ "WID_PARENT" ] = m_wid;
