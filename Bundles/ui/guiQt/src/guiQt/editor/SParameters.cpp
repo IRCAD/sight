@@ -63,8 +63,9 @@ SParameters::SParameters() noexcept
     newSignal< Integer3ChangedSignalType>(INTEGER3_CHANGED_SIG);
     newSignal< EnumChangedSignalType >(ENUM_CHANGED_SIG);
 
-    m_signalMapper = new QSignalMapper(this);
-    m_resetMapper  = new QSignalMapper(this);
+    m_integerSliderSignalMapper = new QSignalMapper(this);
+    m_doubleSliderSignalMapper  = new QSignalMapper(this);
+    m_resetMapper               = new QSignalMapper(this);
 }
 
 //-----------------------------------------------------------------------------
@@ -404,7 +405,7 @@ void SParameters::onChangeDoubleSlider(int)
 
 void SParameters::onSliderMapped(QWidget* widget)
 {
-    const QSlider* slider = qobject_cast<QSlider*>(m_signalMapper->mapping(widget));
+    const QSlider* slider = qobject_cast<QSlider*>(m_integerSliderSignalMapper->mapping(widget));
     QLabel* label         = qobject_cast<QLabel*>(widget);
     if (label && slider)
     {
@@ -416,7 +417,7 @@ void SParameters::onSliderMapped(QWidget* widget)
 
 void SParameters::onDoubleSliderMapped(QWidget* widget)
 {
-    const QSlider* slider = qobject_cast<QSlider*>(m_signalMapper->mapping(widget));
+    const QSlider* slider = qobject_cast<QSlider*>(m_doubleSliderSignalMapper->mapping(widget));
     QLabel* label         = qobject_cast<QLabel*>(widget);
 
     if (label && slider)
@@ -704,9 +705,6 @@ void SParameters::createDoubleSliderWidget(QGridLayout& layout, int row, const s
 
     layout.addWidget(resetButton, row, 5);
 
-    // Connect reset button to the slider
-    QObject::connect(m_resetMapper, SIGNAL(mapped(QWidget*)), this, SLOT(onResetDoubleMapped(QWidget*)));
-
     int maxSliderValue = 1;
     for(std::uint8_t i = 0; i < decimals; ++i)
     {
@@ -717,10 +715,16 @@ void SParameters::createDoubleSliderWidget(QGridLayout& layout, int row, const s
     maxSliderValue *= valueRange;
 
     QSlider* slider = new QSlider(Qt::Horizontal);
+    // The slider's maximum internal range is [0; 2 147 483 647]
+    // We could technically extend this range by setting the minimum to std::numeric_limits<int>::min()
+    // but it would be ridiculous to use a slider handling so many values.
     slider->setMinimum(0);
     slider->setMaximum(maxSliderValue);
 
-    int defaultSliderValue = int(((defaultValue - min) / valueRange) * double(slider->maximum()));
+    SLM_ERROR_IF("The requested value range for '" + key + "' is too large to be handled by a double slider. "
+                 "Please reduce your range, the number of decimals or use a 'spin' widget.", maxSliderValue < 0);
+
+    const int defaultSliderValue = int(std::round(((defaultValue - min) / valueRange) * double(slider->maximum())));
     slider->setValue(defaultSliderValue);
 
     this->signal<DoubleChangedSignalType>(DOUBLE_CHANGED_SIG)->asyncEmit(defaultValue, key);
@@ -761,9 +765,9 @@ void SParameters::createDoubleSliderWidget(QGridLayout& layout, int row, const s
     QObject::connect(slider, SIGNAL(valueChanged(int)), this, SLOT(onChangeDoubleSlider(int)));
 
     // Connect slider value to the label
-    QObject::connect(slider, SIGNAL(valueChanged(int)), m_signalMapper, SLOT(map()));
-    m_signalMapper->setMapping(slider, valueLabel);
-    QObject::connect(m_signalMapper, SIGNAL(mapped(QWidget*)), this, SLOT(onDoubleSliderMapped(QWidget*)));
+    QObject::connect(slider, SIGNAL(valueChanged(int)), m_doubleSliderSignalMapper, SLOT(map()));
+    m_doubleSliderSignalMapper->setMapping(slider, valueLabel);
+    QObject::connect(m_doubleSliderSignalMapper, SIGNAL(mapped(QWidget*)), this, SLOT(onDoubleSliderMapped(QWidget*)));
 
     m_resetMapper->setMapping(resetButton, slider);
     QObject::connect(m_resetMapper, SIGNAL(mapped(QWidget*)), this, SLOT(onResetIntegerMapped(QWidget*)));
@@ -820,9 +824,9 @@ void SParameters::createIntegerSliderWidget(QGridLayout& layout, int row, const 
     QObject::connect(slider, SIGNAL(valueChanged(int)), this, SLOT(onChangeInteger(int)));
 
     // Connect slider value to the label
-    QObject::connect(slider, SIGNAL(valueChanged(int)), m_signalMapper, SLOT(map()));
-    m_signalMapper->setMapping(slider, valueLabel);
-    QObject::connect(m_signalMapper, SIGNAL(mapped(QWidget*)), this, SLOT(onSliderMapped(QWidget*)));
+    QObject::connect(slider, SIGNAL(valueChanged(int)), m_integerSliderSignalMapper, SLOT(map()));
+    m_integerSliderSignalMapper->setMapping(slider, valueLabel);
+    QObject::connect(m_integerSliderSignalMapper, SIGNAL(mapped(QWidget*)), this, SLOT(onSliderMapped(QWidget*)));
 
     m_resetMapper->setMapping(resetButton, slider);
     QObject::connect(m_resetMapper, SIGNAL(mapped(QWidget*)), this, SLOT(onResetIntegerMapped(QWidget*)));

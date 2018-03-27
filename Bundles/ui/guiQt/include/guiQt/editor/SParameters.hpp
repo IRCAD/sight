@@ -188,7 +188,8 @@ private:
     static double getDoubleSliderValue(const QSlider* slider);
 
     /// Allows to connect sliders and their labels
-    QPointer< QSignalMapper> m_signalMapper;
+    QPointer< QSignalMapper> m_integerSliderSignalMapper;
+    QPointer< QSignalMapper> m_doubleSliderSignalMapper;
     QPointer< QSignalMapper> m_resetMapper;
 };
 
