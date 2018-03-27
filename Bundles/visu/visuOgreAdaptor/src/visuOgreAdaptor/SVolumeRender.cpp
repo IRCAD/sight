@@ -64,7 +64,7 @@ const ::fwCom::Slots::SlotKeyType SVolumeRender::s_SET_INT_PARAMETER_SLOT       
 const ::fwCom::Slots::SlotKeyType SVolumeRender::s_SET_DOUBLE_PARAMETER_SLOT         = "setDoubleParameter";
 const ::fwCom::Slots::SlotKeyType SVolumeRender::s_SET_ENUM_PARAMETER_SLOT           = "setEnumParameter";
 const ::fwCom::Slots::SlotKeyType SVolumeRender::s_SET_COLOR_PARAMETER_SLOT          = "setColorParameter";
-const ::fwCom::Slots::SlotKeyType SVolumeRender::s_SET_VISIBILITY_SLOT               = "setVisibility";
+const ::fwCom::Slots::SlotKeyType SVolumeRender::s_UPDATE_VISIBILITY_SLOT            = "updateVisibility";
 
 static const ::fwServices::IService::KeyType s_IMAGE_INOUT           = "image";
 static const ::fwServices::IService::KeyType s_TF_INOUT              = "tf";
@@ -118,7 +118,7 @@ SVolumeRender::SVolumeRender() noexcept :
     newSlot(s_SET_DOUBLE_PARAMETER_SLOT, &SVolumeRender::setDoubleParameter, this);
     newSlot(s_SET_ENUM_PARAMETER_SLOT, &SVolumeRender::setEnumParameter, this);
     newSlot(s_SET_COLOR_PARAMETER_SLOT, &SVolumeRender::setColorParameter, this);
-    newSlot(s_SET_VISIBILITY_SLOT, &SVolumeRender::setVisibility, this);
+    newSlot(s_UPDATE_VISIBILITY_SLOT, &SVolumeRender::updateVisibility, this);
     m_renderingMode = VR_MODE_RAY_TRACING;
 }
 
@@ -141,7 +141,7 @@ void SVolumeRender::configuring()
     m_widgetVisibilty        = config.get<std::string>("widgets", "yes") == "yes";
     m_renderingMode          = config.get<std::string>("mode", "raytracing") == "raytracing" ? VR_MODE_RAY_TRACING :
                                VR_MODE_SLICE;
-    m_nbSamples = config.get<std::uint16_t>("samples", 512);
+    m_nbSamples = config.get<std::uint16_t>("samples", m_nbSamples);
 
     if(m_renderingMode == VR_MODE_RAY_TRACING)
     {
@@ -1073,7 +1073,7 @@ void SVolumeRender::toggleVREffect(::visuOgreAdaptor::SVolumeRender::VREffectTyp
 
 //-----------------------------------------------------------------------------
 
-void SVolumeRender::setVisibility(bool visibility)
+void SVolumeRender::updateVisibility(bool visibility)
 {
     m_volumeSceneNode->setVisible(visibility);
     m_widgets->setVisibility(visibility && m_widgetVisibilty);

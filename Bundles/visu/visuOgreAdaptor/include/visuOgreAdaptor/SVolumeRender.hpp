@@ -62,7 +62,7 @@ namespace visuOgreAdaptor
  * - \b updateTFPoints() : update the displayed transfer function according to the new points
  * - \b updateTFWindowing(double window, double level) : update the displayed transfer function according to the new
  *      window and level
- * - \b setVisibility(bool): show or hide the volume.
+ * - \b updateVisibility(bool): show or hide the volume.
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -141,7 +141,7 @@ public:
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_DOUBLE_PARAMETER_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_ENUM_PARAMETER_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_COLOR_PARAMETER_SLOT;
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_VISIBILITY_SLOT;
+    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT;
     /** @} */
 
     /// Volume rendering effects.
@@ -218,7 +218,7 @@ private:
     void setColorParameter(std::array<uint8_t, 4> color, std::string key);
 
     /// Slot: Sets the volume to be visible or not.
-    void setVisibility(bool visibility);
+    void updateVisibility(bool visibility);
 
     /// Creates widgets and connects its slots to interactor signals.
     void initWidgets();
