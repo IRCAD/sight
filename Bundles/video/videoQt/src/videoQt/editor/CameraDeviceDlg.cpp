@@ -85,9 +85,9 @@ CameraDeviceDlg::CameraDeviceDlg() :
                     {
                         return c1.deviceName().toStdString() < c2.deviceName().toStdString();
                     });
-            for(auto& deviceInfo: devicesInfo)
+            for(auto const& deviceInfo: devicesInfo)
             {
-                std::string uniqueName = deviceName + " #" + std::to_string(n);
+                const std::string uniqueName = deviceName + " #" + std::to_string(n);
                 m_devicesComboBox->addItem(QString(uniqueName.c_str()), QVariant::fromValue(deviceInfo));
                 ++n;
             }
