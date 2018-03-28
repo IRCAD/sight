@@ -9,7 +9,7 @@
 #include "videoCalibration/config.hpp"
 
 #include <arData/Camera.hpp>
-#include <fwData/Array.hpp>
+#include <fwData/Image.hpp>
 
 #include <fwServices/IOperator.hpp>
 
@@ -115,6 +115,12 @@ private:
 
     /// If true, distort the output image, otherwise we undistort it
     bool m_distort { true };
+
+    /// True when a calibration mismatch is detected, this avoids to pop-up the error at each update
+    bool m_calibrationMismatch { false };
+
+    /// This is used to reset m_calibrationMismatch when the image resolution changes
+    ::fwData::Image::SizeType m_prevImageSize;
 
 #if OPENCV_CUDA_SUPPORT
     ::cv::cuda::GpuMat m_mapx;

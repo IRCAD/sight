@@ -18,12 +18,13 @@
 #include <fwCore/Profiling.hpp>
 
 #include <fwData/Array.hpp>
-#include <fwData/Image.hpp>
 #include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
 
 #include <fwDataTools/helper/Image.hpp>
 #include <fwDataTools/helper/ImageGetter.hpp>
+
+#include <fwGui/dialog/MessageDialog.hpp>
 
 #include <opencv2/imgproc.hpp>
 
@@ -96,16 +97,31 @@ void SDistortion::starting()
 
 void SDistortion::stopping()
 {
+    m_calibrationMismatch = false;
+    m_prevImageSize.clear();
 }
 
 //------------------------------------------------------------------------------
 
 void SDistortion::updating()
 {
+    ::fwData::Image::csptr inputImage = this->getInput< ::fwData::Image> ( s_IMAGE_INPUT);
+    if(inputImage && m_calibrationMismatch)
+    {
+        const ::fwData::mt::ObjectReadLock inputLock(inputImage);
+        const auto inputSize = inputImage->getSize();
+        if(inputSize != m_prevImageSize)
+        {
+            // Reset the error detection boolean
+            m_calibrationMismatch = false;
+            m_prevImageSize.clear();
+        }
+    }
+
     if (m_isEnabled)
     {
         ::arData::Camera::csptr camera = this->getInput< ::arData::Camera >(s_CAMERA_INPUT);
-        SLM_FATAL_IF("Object with id \"" + s_CAMERA_INPUT + "\" is not found.", !camera);
+        SLM_FATAL_IF("Object key '" + s_CAMERA_INPUT + "' is not found.", !camera);
         if (camera->getIsCalibrated())
         {
             this->remap();
@@ -169,7 +185,7 @@ void SDistortion::remap()
     ::fwData::Image::csptr inputImage = this->getInput< ::fwData::Image> ( s_IMAGE_INPUT);
     ::fwData::Image::sptr outputImage = this->getInOut< ::fwData::Image >( s_IMAGE_INOUT);
 
-    if(!inputImage || !outputImage )
+    if(!inputImage || !outputImage || m_calibrationMismatch)
     {
         return;
     }
@@ -181,10 +197,30 @@ void SDistortion::remap()
 
     ::fwData::mt::ObjectReadLock inputLock(inputImage);
 
+    const auto inputSize = inputImage->getSize();
+
     ::fwDataTools::helper::ImageGetter inputImgHelper(inputImage);
 
-    if (!inputImgHelper.getBuffer())
+    if (!inputImgHelper.getBuffer() || inputSize.size() < 2)
     {
+        SLM_WARN("Can not remap this image, it is empty.");
+        return;
+    }
+
+    ::arData::Camera::csptr camera = this->getInput< ::arData::Camera >(s_CAMERA_INPUT);
+    SLM_ASSERT("Object key '" + s_CAMERA_INPUT + "' is not found.", camera);
+    if(inputSize[0] != camera->getWidth() || inputSize[1] != camera->getHeight())
+    {
+        std::stringstream msg;
+        msg << "Can not distort/undistort, the camera calibration resolution [" <<
+            camera->getWidth() << "x" << camera->getHeight() << "] does not match the input image size [" <<
+            inputSize[0] << "x" << inputSize[1] << "]";
+
+        ::fwGui::dialog::MessageDialog::showMessageDialog("Error", msg.str(),
+                                                          ::fwGui::dialog::IMessageDialog::CRITICAL);
+
+        m_calibrationMismatch = true;
+        m_prevImageSize       = inputSize;
         return;
     }
 
@@ -197,12 +233,12 @@ void SDistortion::remap()
         ::fwDataTools::helper::Image outputImgHelper(outputImage);
         realloc = inputImgHelper.getBuffer() == outputImgHelper.getBuffer();
     }
-    if(prevSize != inputImage->getSize() || realloc)
+    if(prevSize != inputSize || realloc)
     {
         ::fwData::mt::ObjectWriteLock outputLock(outputImage);
         ::fwData::Image::SizeType size(2);
-        size[0] = inputImage->getSize()[0];
-        size[1] = inputImage->getSize()[1];
+        size[0] = inputSize[0];
+        size[1] = inputSize[1];
 
         // Since we may have shared the pointer on the input image, we can't use ::fwData::Image::allocate
         // Because it will not give us a new buffer and will thus make us modify both input and output images
@@ -290,6 +326,10 @@ void SDistortion::remap()
 
 void SDistortion::changeState()
 {
+    // Reset the error detection boolean
+    m_calibrationMismatch = false;
+    m_prevImageSize.clear();
+
     m_isEnabled = !m_isEnabled;
     this->updating();
 }
@@ -298,6 +338,10 @@ void SDistortion::changeState()
 
 void SDistortion::calibrate()
 {
+    // Reset the error detection boolean
+    m_calibrationMismatch = false;
+    m_prevImageSize.clear();
+
     auto camera = this->getInput< ::arData::Camera> (s_CAMERA_INPUT);
     SLM_FATAL_IF("Object 'camera' is not found.", !camera);
 
