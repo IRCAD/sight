@@ -1,39 +1,29 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWRENDEROGRE_COMPOSITOR_CORE_HPP__
-#define __FWRENDEROGRE_COMPOSITOR_CORE_HPP__
+#pragma once
 
-#include <fwCore/BaseObject.hpp>
+#include "fwRenderOgre/config.hpp"
+
+#include "fwRenderOgre/compositor/types.hpp"
 
 #include <OGRE/OgreAxisAlignedBox.h>
-#include <OGRE/OgreSceneManager.h>
 #include <OGRE/OgreRenderWindow.h>
+#include <OGRE/OgreSceneManager.h>
 #include <OGRE/OgreViewport.h>
 //#include <OGRE/OgreRenderTargetListener.h>
 //#include <OGRE/OgreRenderObjectListener.h>
 
-#include "fwRenderOgre/config.hpp"
+#include <memory>
 
 namespace fwRenderOgre
 {
 
 namespace compositor
 {
-
-/// OIT (Ordrer Independent Transparency) techniques supported
-enum transparencyTechnique
-{
-    DEFAULT,
-    DEPTHPEELING,
-    DUALDEPTHPEELING,
-    WEIGHTEDBLENDEDOIT,
-    HYBRIDTRANSPARENCY,
-    CELSHADING_DEPTHPEELING,
-};
 
 /**
  * Manages principal compositor for a layer's 3D scene
@@ -142,5 +132,3 @@ private:
 } // namespace compositor
 
 } // namespace fwRenderOgre
-
-#endif // __FWRENDEROGRE_COMPOSITOR_CORE_HPP__

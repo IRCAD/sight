@@ -10,7 +10,6 @@
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
-#include <fwRenderOgre/compositor/Core.hpp>
 #include <fwRenderOgre/SRender.hpp>
 
 #include <fwServices/macros.hpp>
@@ -42,7 +41,6 @@ fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuOgre::SCoreCompositor
 //------------------------------------------------------------------------------
 
 SCoreCompositorEditor::SCoreCompositorEditor() noexcept :
-    m_currentCoreCompositor(nullptr),
     m_isLayerSelected(false)
 {
 }
@@ -210,8 +208,6 @@ void SCoreCompositorEditor::configuring()
 
 void SCoreCompositorEditor::updating()
 {
-    m_currentCoreCompositor->update();
-    m_currentLayer.lock()->requestRender();
 }
 
 //------------------------------------------------------------------------------
@@ -236,13 +232,13 @@ void SCoreCompositorEditor::onSelectedLayerItem(int index)
     }
 
     // Reloads buttons to match layer's parameters
-    m_currentLayer          = m_layers[static_cast<size_t>(index)];
-    m_currentCoreCompositor = m_currentLayer.lock()->getCoreCompositor();
+    m_currentLayer = m_layers[static_cast<size_t>(index)];
 
     // If the layer is not yet started, we can't use its default compositor
-    if(m_currentCoreCompositor)
+    auto layer = m_currentLayer.lock();
+    if(layer)
     {
-        switch (m_currentCoreCompositor->getTransparencyTechnique())
+        switch (layer->getTransparencyTechnique())
         {
             case ::fwRenderOgre::compositor::DEFAULT:
                 m_transparencyButtonGroup->button(0)->setChecked(true);
@@ -263,21 +259,18 @@ void SCoreCompositorEditor::onSelectedLayerItem(int index)
                 m_transparencyButtonGroup->button(5)->setChecked(true);
                 break;
         }
-        m_transparencyDepthSlider->setValue(m_currentCoreCompositor->getTransparencyDepth());
-        this->update();
+        m_transparencyDepthSlider->setValue(layer->getTransparencyDepth());
     }
-//    */
-//    this->update();
 }
 
 //------------------------------------------------------------------------------
 
 void SCoreCompositorEditor::onEditTransparencyDepth(int depth)
 {
-    if(m_currentCoreCompositor)
+    auto layer = m_currentLayer.lock();
+    if(layer)
     {
-        m_currentCoreCompositor->setTransparencyDepth(depth);
-        this->update();
+        layer->setTransparencyDepth(depth);
     }
 }
 
@@ -285,33 +278,34 @@ void SCoreCompositorEditor::onEditTransparencyDepth(int depth)
 
 void SCoreCompositorEditor::onEditTransparency(int index)
 {
-    if(m_currentCoreCompositor)
+    auto layer = m_currentLayer.lock();
+    if(layer)
     {
         bool transparencyUpdated = false;
         switch (index)
         {
             case 0:
-                transparencyUpdated = m_currentCoreCompositor->setTransparencyTechnique(
+                transparencyUpdated = layer->setTransparencyTechnique(
                     ::fwRenderOgre::compositor::DEFAULT);
                 break;
             case 1:
-                transparencyUpdated = m_currentCoreCompositor->setTransparencyTechnique(
+                transparencyUpdated = layer->setTransparencyTechnique(
                     ::fwRenderOgre::compositor::DEPTHPEELING);
                 break;
             case 2:
-                transparencyUpdated = m_currentCoreCompositor->setTransparencyTechnique(
+                transparencyUpdated = layer->setTransparencyTechnique(
                     ::fwRenderOgre::compositor::DUALDEPTHPEELING);
                 break;
             case 3:
-                transparencyUpdated = m_currentCoreCompositor->setTransparencyTechnique(
+                transparencyUpdated = layer->setTransparencyTechnique(
                     ::fwRenderOgre::compositor::WEIGHTEDBLENDEDOIT);
                 break;
             case 4:
-                transparencyUpdated = m_currentCoreCompositor->setTransparencyTechnique(
+                transparencyUpdated = layer->setTransparencyTechnique(
                     ::fwRenderOgre::compositor::HYBRIDTRANSPARENCY);
                 break;
             case 5:
-                transparencyUpdated = m_currentCoreCompositor->setTransparencyTechnique(
+                transparencyUpdated = layer->setTransparencyTechnique(
                     ::fwRenderOgre::compositor::CELSHADING_DEPTHPEELING);
                 break;
         }
@@ -320,8 +314,6 @@ void SCoreCompositorEditor::onEditTransparency(int index)
         {
             m_transparencyButtonGroup->button(0)->setChecked(true);
         }
-
-        this->update();
     }
 }
 

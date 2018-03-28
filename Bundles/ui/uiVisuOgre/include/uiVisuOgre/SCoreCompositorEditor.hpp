@@ -6,17 +6,15 @@
 
 #pragma once
 
-#include <fwRenderOgre/Layer.hpp>
-#include <fwRenderOgre/compositor/Core.hpp>
+#include "uiVisuOgre/config.hpp"
 
 #include <fwGui/editor/IEditor.hpp>
 
+#include <fwRenderOgre/Layer.hpp>
+
+#include <QLabel>
 #include <QObject>
 #include <QPointer>
-#include <QLabel>
-// #include <QAbstractSpinBox>
-
-#include "uiVisuOgre/config.hpp"
 
 class QAbstractButton;
 class QButtonGroup;
@@ -79,7 +77,6 @@ protected:
 
     std::vector< ::fwRenderOgre::Layer::wptr > m_layers;
     ::fwRenderOgre::Layer::wptr m_currentLayer;
-    ::fwRenderOgre::compositor::Core::sptr m_currentCoreCompositor;
 
 protected Q_SLOTS:
 

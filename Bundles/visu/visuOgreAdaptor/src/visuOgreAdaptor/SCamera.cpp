@@ -284,9 +284,13 @@ void SCamera::calibrate()
         const float cx1 = winW - px;
         const float cy1 = winH - py;
 
+        // avoid divide by zero below
+        const float invWinW = std::max(1e-5f, winW - 1.f);
+        const float invWinH = std::max(1e-5f, winH - 1.f);
+
         // compute the offset according to current size
-        const float wcx = cx1 / ( (winW - 1.f) / 2.f) -1.f;
-        const float wcy = cy1 / ( (winH - 1.f) / 2.f) -1.f;
+        const float wcx = cx1 / ( invWinW / 2.f) -1.f;
+        const float wcy = cy1 / ( invWinH / 2.f) -1.f;
 
         // setup projection matrix
         ::Ogre::Matrix4 m = m_camera->getProjectionMatrixWithRSDepth();

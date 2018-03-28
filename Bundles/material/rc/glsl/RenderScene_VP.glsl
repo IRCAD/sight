@@ -41,7 +41,7 @@ layout(location = 1) out vec3 outPosition_WS;
 #   endif
 
 #   ifdef FLAT
-flat layout(location = 2) out vec4 outColor;
+layout(location = 2) flat out vec4 outColor;
 #   else
 layout(location = 2) out vec4 outColor;
 #   endif // FLAT
