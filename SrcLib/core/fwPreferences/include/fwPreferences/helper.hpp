@@ -18,7 +18,7 @@
 namespace fwPreferences
 {
 
-FWPREFERENCES_API static const std::string s_PREFERENCES_KEY = "preferences";
+FWPREFERENCES_API extern const std::string s_PREFERENCES_KEY;
 
 /// Returns preferences associated with specified key. If not found, returns an empty string.
 FWPREFERENCES_API std::string getPreference(const std::string& preferenceKey);

@@ -19,6 +19,8 @@
 namespace fwPreferences
 {
 
+const std::string s_PREFERENCES_KEY = "preferences";
+
 //----------------------------------------------------------------------------
 
 bool setPreference(const std::string& key, const std::string& value)
