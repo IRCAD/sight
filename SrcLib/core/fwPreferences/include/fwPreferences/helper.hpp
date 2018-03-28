@@ -1,13 +1,15 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWPREFERENCES_HELPER_HPP__
-#define __FWPREFERENCES_HELPER_HPP__
+#pragma once
 
 #include "fwPreferences/config.hpp"
+#include "fwPreferences/IPreferences.hpp"
+
+#include <fwData/Composite.hpp>
 
 #include <boost/filesystem.hpp>
 
@@ -15,6 +17,8 @@
 
 namespace fwPreferences
 {
+
+FWPREFERENCES_API static const std::string s_PREFERENCES_KEY = "preferences";
 
 /// Returns preferences associated with specified key. If not found, returns an empty string.
 FWPREFERENCES_API std::string getPreference(const std::string& preferenceKey);
@@ -25,6 +29,14 @@ FWPREFERENCES_API bool setPreference(const std::string& key, const std::string& 
 /// Returns file used to store all preferences in current context.
 FWPREFERENCES_API ::boost::filesystem::path getPreferencesFile();
 
-} // namespace fwPreferences
+/// Returns the Composite of preferences. Return nullptr if it does not exist.
+FWPREFERENCES_API ::fwData::Composite::sptr getPreferences();
 
-#endif //__FWPREFERENCES_HELPER_HPP__
+/**
+ * @brief Gets the preferences service and call 'update', it should save the preferences file (if the service is
+ * ::preferences::SPreferences).
+ * @warning This method does nothing if the preferences service is not found or if the service is not started.
+ */
+FWPREFERENCES_API void savePreferences();
+
+} // namespace fwPreferences

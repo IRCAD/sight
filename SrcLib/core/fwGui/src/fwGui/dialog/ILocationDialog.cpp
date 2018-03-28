@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,6 +8,8 @@
 
 #include <fwData/location/Folder.hpp>
 #include <fwData/location/SingleFile.hpp>
+
+#include <fwPreferences/helper.hpp>
 
 #include <fwServices/IService.hpp>
 #include <fwServices/registry/ObjectService.hpp>
@@ -111,12 +113,9 @@ void ILocationDialog::saveDefaultLocation(::fwData::location::ILocation::sptr lo
     ::fwData::Composite::sptr prefUI;
 
     // Get preferences
-    auto preferencesServicesList = ::fwServices::OSR::getServices("::fwPreferences::IPreferences");
-    if(!preferencesServicesList.empty())
+    ::fwData::Composite::sptr prefs = ::fwPreferences::getPreferences();
+    if(prefs)
     {
-        ::fwServices::IService::sptr prefService = *preferencesServicesList.begin();
-        ::fwData::Composite::sptr prefs          = prefService->getObject< ::fwData::Composite >();
-
         ::fwData::Composite::sptr framesUI;
         // Retrieves software UI pref
         if ( prefs->find( ILocationDialog::SOFTWARE_UI ) != prefs->end() )
@@ -146,6 +145,3 @@ void ILocationDialog::saveDefaultLocation(::fwData::location::ILocation::sptr lo
 
 } //namespace dialog
 } // namespace fwGui
-
-
-

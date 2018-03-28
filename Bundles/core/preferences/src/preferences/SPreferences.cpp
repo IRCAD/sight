@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,12 +9,14 @@
 #include <fwAtomConversion/convert.hpp>
 
 #include <fwAtomsBoostIO/Reader.hpp>
-#include <fwAtomsBoostIO/Writer.hpp>
 #include <fwAtomsBoostIO/types.hpp>
+#include <fwAtomsBoostIO/Writer.hpp>
 
 #include <fwData/Composite.hpp>
 
 #include <fwDataCamp/visitor/RecursiveLock.hpp>
+
+#include <fwPreferences/helper.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
 
@@ -69,7 +71,14 @@ void SPreferences::load()
         const ::boost::filesystem::path folderPath = m_prefFile.parent_path();
         const ::boost::filesystem::path filename   = m_prefFile.filename();
 
-        ::fwData::Object::sptr data = this->getObject< ::fwData::Object >();
+        ::fwData::Object::sptr data = this->getInOut< ::fwData::Object >(::fwPreferences::s_PREFERENCES_KEY);
+
+        if (!data)
+        {
+            FW_DEPRECATED_MSG("The 'preferences' object is not set correctly, you must define the object as: "
+                              "<inout key=\"preferences\" uid=\"...\".");
+            data = this->getObject< ::fwData::Object >();
+        }
 
         // Read atom
         ::fwZip::IReadArchive::sptr readArchive = ::fwZip::ReadDirArchive::New(folderPath.string());
@@ -96,10 +105,17 @@ void SPreferences::save()
     const ::boost::filesystem::path folderPath = m_prefFile.parent_path();
     const ::boost::filesystem::path filename   = m_prefFile.filename();
 
-    ::fwData::Object::sptr obj = this->getObject();
+    ::fwData::Object::sptr obj = this->getInOut< ::fwData::Object >(::fwPreferences::s_PREFERENCES_KEY);
+
+    if (!obj)
+    {
+        FW_DEPRECATED_MSG("The 'preferences' object is not set correctly, you must define the object as: "
+                          "<inout key=\"preferences\" uid=\"...\".");
+        obj = this->getObject< ::fwData::Object >();
+    }
 
     // Mutex data lock
-    ::fwDataCamp::visitor::RecursiveLock recursiveLock (obj);
+    ::fwDataCamp::visitor::RecursiveLock recursiveLock(obj);
 
     // Convert data to atom
     ::fwAtoms::Object::sptr atom = ::fwAtomConversion::convert(obj);
@@ -122,4 +138,3 @@ void SPreferences::save()
 //-----------------------------------------------------------------------------
 
 } //namespace preferences
-
