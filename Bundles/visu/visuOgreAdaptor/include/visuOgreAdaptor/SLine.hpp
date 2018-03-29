@@ -14,8 +14,6 @@
 
 #include <Ogre.h>
 
-#include <memory>
-
 namespace fwData
 {
 class Material;
