@@ -27,7 +27,6 @@
         <config>
             <type mode="reader" />
             <selection mode="include" />
-            <!-- <addSelection service="::ioDcmtk::SDicomSeriesDBReader" /> -->
             <addSelection service="::ioGdcm::SDicomSeriesDBReader" />
             <config id="DicomReaderConfig" service="::ioGdcm::SDicomSeriesDBReader" />
         </config>
