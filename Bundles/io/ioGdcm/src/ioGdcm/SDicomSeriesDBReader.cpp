@@ -186,10 +186,8 @@ std::string SDicomSeriesDBReader::getSelectorDialogTitle()
 
 //------------------------------------------------------------------------------
 
-::fwMedData::SeriesDB::sptr SDicomSeriesDBReader::createSeriesDB(bool checkIsDicom,
-                                                                 const ::boost::filesystem::path& dicomDir)
+::fwMedData::SeriesDB::sptr SDicomSeriesDBReader::createSeriesDB(const ::boost::filesystem::path& dicomDir)
 {
-    SLM_TRACE_FUNC();
     ::fwGdcmIO::reader::SeriesDB::sptr reader = ::fwGdcmIO::reader::SeriesDB::New();
     ::fwMedData::SeriesDB::sptr dummy         = ::fwMedData::SeriesDB::New();
     reader->setObject(dummy);
@@ -221,7 +219,7 @@ std::string SDicomSeriesDBReader::getSelectorDialogTitle()
 
     try
     {
-        reader->readDicomSeries(checkIsDicom);
+        reader->readDicomSeries();
 
         // Retrieve logger
         ::fwLog::Logger::sptr logger = reader->getLogger();
@@ -340,7 +338,7 @@ void SDicomSeriesDBReader::updating()
             mustCopy = mustCopyDialog();
         }
 
-        ::fwMedData::SeriesDB::sptr seriesDB = createSeriesDB(!mustCopy, this->getFolder() );
+        ::fwMedData::SeriesDB::sptr seriesDB = createSeriesDB(this->getFolder() );
 
         if( seriesDB->size() > 0 && !m_cancelled)
         {

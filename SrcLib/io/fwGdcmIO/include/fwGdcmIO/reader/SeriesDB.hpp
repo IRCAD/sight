@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWGDCMIO_READER_SERIESDB_HPP__
-#define __FWGDCMIO_READER_SERIESDB_HPP__
+#pragma once
 
 #include "fwGdcmIO/config.hpp"
 #include "fwGdcmIO/exception/Failed.hpp"
@@ -74,10 +73,8 @@ public:
 
     /**
      * @brief Reads DICOM data from configured path and fills SeriesDB object with DicomSeries
-     * @param checkIsDicom If set to true, when there is no dicomdir, each file
-     * is check in order to know if it is dicom or not.
      */
-    FWGDCMIO_API void readDicomSeries(bool checkIsDicom = true);
+    FWGDCMIO_API void readDicomSeries();
 
     /// Return true if a dicomdir file can be read.
     FWGDCMIO_API bool isDicomDirAvailable();
@@ -146,10 +143,8 @@ private:
 
     /**
      * @brief Read DICOM series
-     * @param checkIsDicom If set to true, when there is no dicomdir, each file
-     * is check in order to know if it is dicom or not.
      */
-    void readDicom(const bool checkIsDicom);
+    void readDicom();
 
     /**
      * @brief Convert DicomSeries to Image or Model Series
@@ -196,5 +191,3 @@ private:
 }  // namespace reader
 
 }  // namespace fwGdcmIO
-
-#endif /*__FWGDCMIO_READER_SERIESDB_HPP__*/

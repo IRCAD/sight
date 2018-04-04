@@ -97,8 +97,7 @@ public:
     {
         NONE     = 1,   /*! The DICOM files are not available on the local machine but may be available on the pacs. */
         PATHS    = 2,   /*! The paths to the DICOM files are saved in this DicomSeries. */
-        BINARIES = 3,    /*! The binaries of the DICOM files are saved in this DicomSeries. */
-        BLOB     = 4    /*! A set of paths that has not yet been read. Those paths may not be DICOM files. */
+        BINARIES = 3    /*! The binaries of the DICOM files are saved in this DicomSeries. */
     } DICOM_AVAILABILITY;
 
     /**

@@ -82,7 +82,7 @@ void SeriesDB::read()
 
     try
     {
-        this->readDicom(true);
+        this->readDicom();
     }
     catch (const std::exception& e)
     {
@@ -140,7 +140,7 @@ void SeriesDB::read()
 
 //------------------------------------------------------------------------------
 
-void SeriesDB::readDicomSeries(bool checkIsDicom)
+void SeriesDB::readDicomSeries()
 {
     // Clear DicomSeries container
     m_dicomSeriesContainer.clear();
@@ -152,7 +152,7 @@ void SeriesDB::readDicomSeries(bool checkIsDicom)
 
     try
     {
-        this->readDicom(checkIsDicom);
+        this->readDicom();
     }
     catch (const std::exception& e)
     {
@@ -203,7 +203,7 @@ void SeriesDB::readDicomSeries(bool checkIsDicom)
 
 //------------------------------------------------------------------------------
 
-void SeriesDB::readDicom(const bool checkIsDicom)
+void SeriesDB::readDicom()
 {
     SLM_ASSERT("This reader only work on folder selection.",
                (::fwData::location::have < ::fwData::location::Folder, ::fwDataIO::reader::IObjectReader > (this)));
@@ -237,18 +237,11 @@ void SeriesDB::readDicom(const bool checkIsDicom)
         // Recursively search for dicom files
         std::vector< ::boost::filesystem::path > filenames;
         ::fwGdcmIO::helper::DicomSearch::searchRecursively(
-            this->getFolder(), filenames, checkIsDicom, m_regularFileLookupJob);
+            this->getFolder(), filenames, true, m_regularFileLookupJob);
 
         // Read Dicom Series
         ::fwGdcmIO::helper::DicomSeries helper;
-        if(checkIsDicom)
-        {
-            m_dicomSeriesContainer = helper.read(filenames, m_readerJob, m_completeDicomSeriesJob);
-        }
-        else
-        {
-            m_dicomSeriesContainer.push_back(helper.createBlob(filenames));
-        }
+        m_dicomSeriesContainer = helper.read(filenames, m_readerJob, m_completeDicomSeriesJob);
     }
 
     // Finish regular lookup

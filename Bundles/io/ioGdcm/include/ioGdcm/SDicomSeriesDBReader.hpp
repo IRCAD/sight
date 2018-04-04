@@ -112,10 +112,9 @@ private:
 
     /**
      * @brief Create a seriesDB and fill it using the data of the DICOM files
-     * @param[in] checkIsDicom If set to true, file must be checked for DICOM information
      * @param[in] dicomDir DICOM folder
      */
-    SPTR(::fwMedData::SeriesDB) createSeriesDB(bool checkIsDicom, const ::boost::filesystem::path& dicomDir);
+    SPTR(::fwMedData::SeriesDB) createSeriesDB(const ::boost::filesystem::path& dicomDir);
 
     /// Signal emitted when a job is created
     SPTR(JobCreatedSignal) m_sigJobCreated;
