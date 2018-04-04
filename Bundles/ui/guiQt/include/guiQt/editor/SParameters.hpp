@@ -185,6 +185,12 @@ private:
     void createEnumWidget(QGridLayout& layout, int row, const std::string& key, const std::string& defaultValue,
                           const std::vector< std::string>& values, const std::vector<std::string>& data);
 
+    /// Emit the signal(s) for the integer widget
+    void emitIntegerSignal(QObject* widget);
+
+    /// Emit the signal(s) for the double widget
+    void emitDoubleSignal(QObject* spinbox);
+
     /// Computes a double slider value from a slider position.
     static double getDoubleSliderValue(const QSlider* slider);
 

@@ -216,6 +216,75 @@ void SParameters::starting()
 
 void SParameters::updating()
 {
+    auto qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer());
+    QWidget* widget  = qtContainer->getQtContainer();
+
+    ::fwServices::IService::ConfigType config = this->getConfigTree();
+    const ::fwServices::IService::ConfigType& parametersCfg = config.get_child("parameters");
+
+    // emit signal for each widget
+    BOOST_FOREACH( const auto& param, parametersCfg.equal_range("param") )
+    {
+        const ::fwServices::IService::ConfigType& cfg = param.second;
+
+        const std::string key  = cfg.get< std::string >("<xmlattr>.key");
+        const std::string type = cfg.get< std::string >("<xmlattr>.type");
+
+        QWidget* child = widget->findChild<QWidget*>(QString::fromStdString(key));
+        if (child)
+        {
+            if(type == "bool")
+            {
+                const QCheckBox* box = dynamic_cast<QCheckBox* >(child);
+                SLM_ASSERT("Widget must be a QCheckBox", box);
+
+                const bool state = (box->checkState() == Qt::Checked);
+                this->signal<BooleanChangedSignalType>(BOOLEAN_CHANGED_SIG)->asyncEmit(state, key);
+            }
+            else if(type == "color")
+            {
+                const QColor colorQt                       = child->property("color").value<QColor>();
+                const std::array<std::uint8_t, 4> newColor = {{ static_cast<std::uint8_t>(colorQt.red()),
+                                                                static_cast<std::uint8_t>(colorQt.green()),
+                                                                static_cast<std::uint8_t>(colorQt.blue()),
+                                                                static_cast<std::uint8_t>(colorQt.alpha()) }};
+                this->signal<ColorChangedSignalType>(COLOR_CHANGED_SIG)->asyncEmit(newColor, key);
+            }
+            else if(type == "double" || type == "double2" || type == "double3")
+            {
+                const std::string widget = cfg.get< std::string >("<xmlattr>.widget", "spin");
+
+                if(widget == "spin")
+                {
+                    QDoubleSpinBox* spinbox = qobject_cast<QDoubleSpinBox*>(child);
+                    SLM_ASSERT("Widget must be a QDoubleSpinBox", spinbox);
+
+                    this->emitDoubleSignal(spinbox);
+                }
+                else if(widget == "slider")
+                {
+                    const QSlider* slider = dynamic_cast<QSlider* >(child);
+                    SLM_ASSERT("Widget must be a QSlider", slider);
+                    const double value = this->getDoubleSliderValue(slider);
+                    this->signal<DoubleChangedSignalType>(DOUBLE_CHANGED_SIG)->asyncEmit(value, key);
+                }
+            }
+            else if(type == "int" || type == "int2" || type == "int3")
+            {
+                this->emitIntegerSignal(child);
+            }
+            else if(type == "enum")
+            {
+                QComboBox* box = qobject_cast<QComboBox*>(child);
+
+                SLM_ASSERT("Widget must be a QComboBox", box);
+
+                const QString data = box->itemData(box->currentIndex()).toString();
+
+                this->signal<EnumChangedSignalType>(ENUM_CHANGED_SIG)->asyncEmit(data.toStdString(), key);
+            }
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -291,18 +360,34 @@ void SParameters::onColorButton()
 
 void SParameters::onChangeInteger(int value)
 {
-    const QObject* sender = this->sender();
-    const QString key     = sender->property("key").toString();
-    const int count       = sender->property("count").toInt();
+    QObject* sender = this->sender();
+    this->emitIntegerSignal(sender);
+}
+
+//------------------------------------------------------------------------------
+
+void SParameters::emitIntegerSignal(QObject* widget)
+{
+    const QString key = widget->property("key").toString();
+    const int count   = widget->property("count").toInt();
 
     SLM_ASSERT("Invalid widgets count, must be <= 3", count <= 3);
 
-    const QSpinBox* spinbox = dynamic_cast<const QSpinBox*>(sender);
-    const QSlider* slider   = dynamic_cast<const QSlider*>(sender);
+    const QSpinBox* spinbox = dynamic_cast<const QSpinBox*>(widget);
+    const QSlider* slider   = dynamic_cast<const QSlider*>(widget);
     SLM_ASSERT("Wrong widget type", spinbox || slider);
 
     if(count == 1)
     {
+        int value;
+        if (spinbox)
+        {
+            value = spinbox->value();
+        }
+        else
+        {
+            value = slider->value();
+        }
         this->signal<IntegerChangedSignalType>(INTEGER_CHANGED_SIG)->asyncEmit(value, key.toStdString());
     }
     else
@@ -312,16 +397,16 @@ void SParameters::onChangeInteger(int value)
 
         if(spinbox)
         {
-            const QSpinBox* spin1 = sender->property("widget#0").value< QSpinBox*>();
-            const QSpinBox* spin2 = sender->property("widget#1").value< QSpinBox*>();
+            const QSpinBox* spin1 = widget->property("widget#0").value< QSpinBox*>();
+            const QSpinBox* spin2 = widget->property("widget#1").value< QSpinBox*>();
 
             value1 = spin1->value();
             value2 = spin2->value();
         }
         else
         {
-            const QSlider* spin1 = sender->property("widget#0").value< QSlider*>();
-            const QSlider* spin2 = sender->property("widget#1").value< QSlider*>();
+            const QSlider* spin1 = widget->property("widget#0").value< QSlider*>();
+            const QSlider* spin2 = widget->property("widget#1").value< QSlider*>();
 
             value1 = spin1->value();
             value2 = spin2->value();
@@ -336,12 +421,12 @@ void SParameters::onChangeInteger(int value)
             int value3;
             if(spinbox)
             {
-                const QSpinBox* spin3 = sender->property("widget#2").value< QSpinBox*>();
+                const QSpinBox* spin3 = widget->property("widget#2").value< QSpinBox*>();
                 value3 = spin3->value();
             }
             else
             {
-                const QSlider* spin3 = sender->property("widget#2").value< QSlider*>();
+                const QSlider* spin3 = widget->property("widget#2").value< QSlider*>();
                 value3 = spin3->value();
             }
 
@@ -355,20 +440,30 @@ void SParameters::onChangeInteger(int value)
 
 void SParameters::onChangeDouble(double value)
 {
-    const QObject* sender = this->sender();
-    const QString key     = sender->property("key").toString();
-    const int count       = sender->property("count").toInt();
+    QObject* sender = this->sender();
+    this->emitDoubleSignal(sender);
+}
+
+//-----------------------------------------------------------------------------
+
+void SParameters::emitDoubleSignal(QObject* widget)
+{
+    const QString key = widget->property("key").toString();
+    const int count   = widget->property("count").toInt();
+
+    QDoubleSpinBox* spinbox = qobject_cast<QDoubleSpinBox*>(widget);
+    SLM_ASSERT("Widget must be a QDoubleSpinBox", spinbox);
 
     SLM_ASSERT("Invalid widgets count, must be <= 3", count <= 3);
 
     if(count == 1)
     {
-        this->signal<DoubleChangedSignalType>(DOUBLE_CHANGED_SIG)->asyncEmit(value, key.toStdString());
+        this->signal<DoubleChangedSignalType>(DOUBLE_CHANGED_SIG)->asyncEmit(spinbox->value(), key.toStdString());
     }
     else
     {
-        const QDoubleSpinBox* spin1 = sender->property("widget#0").value< QDoubleSpinBox*>();
-        const QDoubleSpinBox* spin2 = sender->property("widget#1").value< QDoubleSpinBox*>();
+        const QDoubleSpinBox* spin1 = spinbox->property("widget#0").value< QDoubleSpinBox*>();
+        const QDoubleSpinBox* spin2 = spinbox->property("widget#1").value< QDoubleSpinBox*>();
 
         const double value1 = spin1->value();
         const double value2 = spin2->value();
@@ -379,7 +474,7 @@ void SParameters::onChangeDouble(double value)
         }
         else
         {
-            const QDoubleSpinBox* spin3 = sender->property("widget#2").value< QDoubleSpinBox*>();
+            const QDoubleSpinBox* spin3 = spinbox->property("widget#2").value< QDoubleSpinBox*>();
             const double value3         = spin3->value();
 
             this->signal<Double3ChangedSignalType>(DOUBLE3_CHANGED_SIG)->asyncEmit(value1, value2, value3,
@@ -554,6 +649,7 @@ void SParameters::createBoolWidget(QGridLayout& layout, int row,
 {
     QCheckBox* checkbox = new QCheckBox();
     checkbox->setTristate(false);
+    checkbox->setObjectName(QString::fromStdString(key));
 
     if(defaultValue == "true")
     {
@@ -591,6 +687,7 @@ void SParameters::createColorWidget(QGridLayout& layout, int row, const std::str
     QPushButton* resetButton = this->createResetButton();
 
     QPushButton* colourButton = new QPushButton("Color");
+    colourButton->setObjectName(QString::fromStdString(key));
     colourButton->setToolTip(tr("Selected color"));
     colourButton->setMinimumSize(120, 35);
 
@@ -683,6 +780,8 @@ void SParameters::createDoubleWidget(QGridLayout& layout, int row, const std::st
         m_resetMapper->setMapping(resetButton, spinbox);
     }
 
+    spinboxes[0]->setObjectName(QString::fromStdString(key));
+
     // Set a property with a pointer on each member of the group
     for(int i = 0; i < count; ++i)
     {
@@ -714,6 +813,8 @@ void SParameters::createDoubleSliderWidget(QGridLayout& layout, int row, const s
     maxSliderValue *= valueRange;
 
     QSlider* slider = new QSlider(Qt::Horizontal);
+    slider->setObjectName(QString::fromStdString(key));
+
     // The slider's maximum internal range is [0; 2 147 483 647]
     // We could technically extend this range by setting the minimum to std::numeric_limits<int>::min()
     // but it would be ridiculous to use a slider handling so many values.
@@ -785,6 +886,7 @@ void SParameters::createIntegerSliderWidget(QGridLayout& layout, int row, const 
     QPushButton* resetButton = this->createResetButton();
 
     QSlider* slider = new QSlider(Qt::Horizontal);
+    slider->setObjectName(QString::fromStdString(key));
     slider->setMinimum(min);
     slider->setMaximum(max);
     slider->setValue(defaultValue);
@@ -873,6 +975,8 @@ void SParameters::createIntegerSpinWidget(QGridLayout& layout, int row, const st
         connect(m_resetMapper, SIGNAL(mapped(QWidget*)), this, SLOT(onResetIntegerMapped(QWidget*)));
     }
 
+    spinboxes[0]->setObjectName(QString::fromStdString(key));
+
     // Set a property with a pointer on each member of the group
     for(int i = 0; i < count; ++i)
     {
@@ -892,6 +996,8 @@ void SParameters::createEnumWidget(QGridLayout& layout, int row, const std::stri
                                    const std::vector<std::string>& data)
 {
     QComboBox* menu = new QComboBox();
+    menu->setObjectName(QString::fromStdString(key));
+
     menu->setProperty("key", QString(key.c_str()));
     int idx = 0;
     for(const auto& value : values)
