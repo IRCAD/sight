@@ -191,6 +191,33 @@ private:
     /// Emit the signal(s) for the double widget
     void emitDoubleSignal(QObject* spinbox);
 
+    /// Slot: This method is used to set an boolean parameter.
+    void setBoolParameter(bool val, std::string key);
+
+    /// Slot: This method is used to set a color parameter.
+    void setColorParameter(std::array<std::uint8_t, 4> color, std::string key);
+
+    /// Slot: This method is used to set a double parameter.
+    void setDoubleParameter(double val, std::string key);
+
+    /// Slot: This method is used to set two double parameters.
+    void setDouble2Parameter(double val0, double val1, std::string key);
+
+    /// Slot: This method is used to set three double parameters.
+    void setDouble3Parameter(double val0, double val1, double val2, std::string key);
+
+    /// Slot: This method is used to set an integer parameter.
+    void setIntParameter(int val, std::string key);
+
+    /// Slot: This method is used to set two int parameters.
+    void setInt2Parameter(int val0, int val1, std::string key);
+
+    /// Slot: This method is used to set three int parameters.
+    void setInt3Parameter(int val0, int val1, int val2, std::string key);
+
+    /// Slot: This method is used to set an enum parameter.
+    void setEnumParameter(std::string val, std::string key);
+
     /// Computes a double slider value from a slider position.
     static double getDoubleSliderValue(const QSlider* slider);
 

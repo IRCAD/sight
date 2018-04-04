@@ -48,6 +48,16 @@ static const ::fwCom::Signals::SignalKeyType INTEGER2_CHANGED_SIG = "int2Changed
 static const ::fwCom::Signals::SignalKeyType INTEGER3_CHANGED_SIG = "int3Changed";
 static const ::fwCom::Signals::SignalKeyType ENUM_CHANGED_SIG     = "enumChanged";
 
+static const ::fwCom::Slots::SlotKeyType s_SET_BOOL_PARAMETER_SLOT    = "setBoolParameter";
+static const ::fwCom::Slots::SlotKeyType s_SET_COLOR_PARAMETER_SLOT   = "setColorParameter";
+static const ::fwCom::Slots::SlotKeyType s_SET_DOUBLE_PARAMETER_SLOT  = "setDoubleParameter";
+static const ::fwCom::Slots::SlotKeyType s_SET_DOUBLE2_PARAMETER_SLOT = "setDouble2Parameter";
+static const ::fwCom::Slots::SlotKeyType s_SET_DOUBLE3_PARAMETER_SLOT = "setDouble3Parameter";
+static const ::fwCom::Slots::SlotKeyType s_SET_INT_PARAMETER_SLOT     = "setIntParameter";
+static const ::fwCom::Slots::SlotKeyType s_SET_INT2_PARAMETER_SLOT    = "setInt2Parameter";
+static const ::fwCom::Slots::SlotKeyType s_SET_INT3_PARAMETER_SLOT    = "setInt3Parameter";
+static const ::fwCom::Slots::SlotKeyType s_SET_ENUM_PARAMETER_SLOT    = "setEnumParameter";
+
 //-----------------------------------------------------------------------------
 
 SParameters::SParameters() noexcept
@@ -61,6 +71,16 @@ SParameters::SParameters() noexcept
     newSignal< Integer2ChangedSignalType>(INTEGER2_CHANGED_SIG);
     newSignal< Integer3ChangedSignalType>(INTEGER3_CHANGED_SIG);
     newSignal< EnumChangedSignalType >(ENUM_CHANGED_SIG);
+
+    newSlot(s_SET_BOOL_PARAMETER_SLOT, &SParameters::setBoolParameter, this);
+    newSlot(s_SET_COLOR_PARAMETER_SLOT, &SParameters::setColorParameter, this);
+    newSlot(s_SET_DOUBLE_PARAMETER_SLOT, &SParameters::setDoubleParameter, this);
+    newSlot(s_SET_DOUBLE2_PARAMETER_SLOT, &SParameters::setDouble2Parameter, this);
+    newSlot(s_SET_DOUBLE3_PARAMETER_SLOT, &SParameters::setDouble3Parameter, this);
+    newSlot(s_SET_INT_PARAMETER_SLOT, &SParameters::setIntParameter, this);
+    newSlot(s_SET_INT2_PARAMETER_SLOT, &SParameters::setInt2Parameter, this);
+    newSlot(s_SET_INT3_PARAMETER_SLOT, &SParameters::setInt3Parameter, this);
+    newSlot(s_SET_ENUM_PARAMETER_SLOT, &SParameters::setEnumParameter, this);
 
     m_integerSliderSignalMapper = new QSignalMapper(this);
     m_doubleSliderSignalMapper  = new QSignalMapper(this);
@@ -1032,6 +1052,196 @@ double SParameters::getDoubleSliderValue(const QSlider* slider)
     const double doubleValue = (double(slider->value()) / slider->maximum()) * (max - min) + min;
 
     return doubleValue;
+}
+
+//------------------------------------------------------------------------------
+
+void SParameters::setBoolParameter(bool val, std::string key)
+{
+    auto qtContainer      = ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer());
+    const QWidget* widget = qtContainer->getQtContainer();
+
+    QCheckBox* checkbox = widget->findChild<QCheckBox*>(QString::fromStdString(key));
+    SLM_ERROR_IF("Widget '" + key + "' is not found", !checkbox);
+
+    if (checkbox)
+    {
+        checkbox->setCheckState(val ? Qt::Checked : Qt::Unchecked);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SParameters::setColorParameter(std::array<std::uint8_t, 4> color, std::string key)
+{
+    auto qtContainer      = ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer());
+    const QWidget* widget = qtContainer->getQtContainer();
+
+    QPushButton* colourButton = widget->findChild<QPushButton*>(QString::fromStdString(key));
+    SLM_ERROR_IF("Widget '" + key + "' is not found", !colourButton);
+
+    if (colourButton)
+    {
+        const int iconSize = colourButton->style()->pixelMetric(QStyle::PM_LargeIconSize);
+        QPixmap pix(iconSize, iconSize);
+        QColor colorQt(color[0], color[1], color[2], color[3]);
+        pix.fill(colorQt);
+
+        colourButton->setIcon(QIcon(pix));
+        colourButton->setProperty("color", colorQt);
+    }
+}
+//------------------------------------------------------------------------------
+
+void SParameters::setDoubleParameter(double val, std::string key)
+{
+    auto qtContainer      = ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer());
+    const QWidget* widget = qtContainer->getQtContainer();
+
+    QWidget* child = widget->findChild<QWidget*>(QString::fromStdString(key));
+    SLM_ERROR_IF("Widget '" + key + "' is not found", !child);
+
+    QDoubleSpinBox* spinbox = qobject_cast<QDoubleSpinBox*>(child);
+    QSlider* slider         = qobject_cast<QSlider*>(child);
+
+    if (spinbox)
+    {
+        spinbox->setValue(val);
+    }
+    else if (slider)
+    {
+        const double min        = slider->property("min").toDouble();
+        const double max        = slider->property("max").toDouble();
+        const double valueRange = max - min;
+        const int sliderVal     = int(std::round(((val - min) / valueRange) * double(slider->maximum())));
+        slider->setValue(sliderVal);
+    }
+    else
+    {
+        SLM_ERROR("Widget '" + key + "' must be a QSlider or a QDoubleSpinBox");
+    }
+}
+//------------------------------------------------------------------------------
+
+void SParameters::setDouble2Parameter(double val0, double val1, std::string key)
+{
+    auto qtContainer      = ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer());
+    const QWidget* widget = qtContainer->getQtContainer();
+
+    QWidget* child = widget->findChild<QWidget*>(QString::fromStdString(key));
+    SLM_ERROR_IF("Widget '" + key + "' is not found", !child);
+
+    if (child)
+    {
+        QDoubleSpinBox* spin0 = child->property("widget#0").value< QDoubleSpinBox*>();
+        QDoubleSpinBox* spin1 = child->property("widget#1").value< QDoubleSpinBox*>();
+
+        spin0->setValue(val0);
+        spin1->setValue(val1);
+    }
+}
+//------------------------------------------------------------------------------
+
+void SParameters::setDouble3Parameter(double val0, double val1, double val2, std::string key)
+{
+    auto qtContainer      = ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer());
+    const QWidget* widget = qtContainer->getQtContainer();
+
+    QWidget* child = widget->findChild<QWidget*>(QString::fromStdString(key));
+    SLM_ERROR_IF("Widget '" + key + "' is not found", !child);
+
+    if (child)
+    {
+        QDoubleSpinBox* spin0 = child->property("widget#0").value< QDoubleSpinBox*>();
+        QDoubleSpinBox* spin1 = child->property("widget#1").value< QDoubleSpinBox*>();
+        QDoubleSpinBox* spin2 = child->property("widget#2").value< QDoubleSpinBox*>();
+
+        spin0->setValue(val0);
+        spin1->setValue(val1);
+        spin2->setValue(val2);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SParameters::setIntParameter(int val, std::string key)
+{
+    auto qtContainer      = ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer());
+    const QWidget* widget = qtContainer->getQtContainer();
+
+    QWidget* child = widget->findChild<QWidget*>(QString::fromStdString(key));
+    SLM_ERROR_IF("Widget '" + key + "' is not found", !child);
+
+    QSpinBox* spinbox = qobject_cast<QSpinBox*>(child);
+    QSlider* slider   = qobject_cast<QSlider*>(child);
+
+    if (spinbox)
+    {
+        spinbox->setValue(val);
+    }
+    else if (slider)
+    {
+        slider->setValue(val);
+    }
+    else
+    {
+        SLM_ERROR("Widget '" + key + "' must be a QSlider or a QDoubleSpinBox");
+    }
+}
+//------------------------------------------------------------------------------
+
+void SParameters::setInt2Parameter(int val0, int val1, std::string key)
+{
+    auto qtContainer      = ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer());
+    const QWidget* widget = qtContainer->getQtContainer();
+
+    QWidget* child = widget->findChild<QWidget*>(QString::fromStdString(key));
+    SLM_ERROR_IF("Widget '" + key + "' is not found", !child);
+
+    if (child)
+    {
+        QSpinBox* spin0 = child->property("widget#0").value< QSpinBox*>();
+        QSpinBox* spin1 = child->property("widget#1").value< QSpinBox*>();
+
+        spin0->setValue(val0);
+        spin1->setValue(val1);
+    }
+}
+//------------------------------------------------------------------------------
+
+void SParameters::setInt3Parameter(int val0, int val1, int val2, std::string key)
+{
+    auto qtContainer      = ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer());
+    const QWidget* widget = qtContainer->getQtContainer();
+
+    QWidget* child = widget->findChild<QWidget*>(QString::fromStdString(key));
+    SLM_ERROR_IF("Widget '" + key + "' is not found", !child);
+
+    if (child)
+    {
+        QSpinBox* spin0 = child->property("widget#0").value< QSpinBox*>();
+        QSpinBox* spin1 = child->property("widget#1").value< QSpinBox*>();
+        QSpinBox* spin2 = child->property("widget#2").value< QSpinBox*>();
+
+        spin0->setValue(val0);
+        spin1->setValue(val1);
+        spin2->setValue(val2);
+    }
+}
+//------------------------------------------------------------------------------
+
+void SParameters::setEnumParameter(std::string val, std::string key)
+{
+    auto qtContainer      = ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer());
+    const QWidget* widget = qtContainer->getQtContainer();
+
+    QComboBox* combobox = widget->findChild<QComboBox*>(QString::fromStdString(key));
+    SLM_ERROR_IF("Widget '" + key + "' is not found", !combobox);
+
+    if (combobox)
+    {
+        combobox->setCurrentText(QString::fromStdString(val));
+    }
 }
 
 //-----------------------------------------------------------------------------
