@@ -142,8 +142,8 @@ void SDistortion::updating()
             ::fwData::mt::ObjectReadLock inputLock(inputImage);
             ::fwData::mt::ObjectWriteLock outputLock(outputImage);
 
-            // Since we shallow copy the input image when no remap is done
-            // We have to reallocate the output image if it still shares the buffer
+            // Since we shallow copy the input image when no remap is done,
+            // we have to notify the output image pointer has changed if it was not shared yet before
             bool reallocated = false;
             {
                 ::fwDataTools::helper::ImageGetter inputImgHelper(inputImage);
