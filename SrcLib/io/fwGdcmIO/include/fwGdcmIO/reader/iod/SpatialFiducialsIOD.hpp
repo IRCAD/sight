@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWGDCMIO_READER_IOD_SPATIALFIDUCIALSIOD_HPP__
-#define __FWGDCMIO_READER_IOD_SPATIALFIDUCIALSIOD_HPP__
+#pragma once
 
 #include "fwGdcmIO/reader/iod/InformationObjectDefinition.hpp"
 
@@ -31,11 +30,11 @@ public:
      * @param[in] progress Progress callback
      * @param[in] cancel Cancel requested callback
      */
-    FWGDCMIO_API SpatialFiducialsIOD(const ::fwMedData::DicomSeries::sptr& dicomSeries,
+    FWGDCMIO_API SpatialFiducialsIOD(const ::fwMedData::DicomSeries::csptr& dicomSeries,
                                      const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
                                      const ::fwLog::Logger::sptr& logger = nullptr,
-                                     ProgressCallback progress = nullptr,
-                                     CancelRequestedCallback cancel = nullptr);
+                                     ProgressCallback progress           = nullptr,
+                                     CancelRequestedCallback cancel      = nullptr);
 
     /// Destructor
     FWGDCMIO_API ~SpatialFiducialsIOD();
@@ -51,5 +50,3 @@ public:
 }  // namespace iod
 }  // namespace reader
 }  // namespace fwGdcmIO
-
-#endif /* __FWGDCMIO_READER_IOD_SPATIALFIDUCIALSIOD_HPP__ */

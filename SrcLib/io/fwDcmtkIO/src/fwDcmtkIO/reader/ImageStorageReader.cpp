@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -46,7 +46,7 @@ ImageStorageReader::~ImageStorageReader()
 
 //-----------------------------------------------------------------------------
 
-::fwMedData::Series::sptr ImageStorageReader::read(::fwMedData::DicomSeries::sptr series)
+::fwMedData::Series::sptr ImageStorageReader::read(::fwMedData::DicomSeries::csptr series)
 {
     ::fwMedData::DicomSeries::SOPClassUIDContainerType sopClassUIDContainer = series->getSOPClassUIDs();
     std::string sopClassUID = dcmFindNameOfUID(sopClassUIDContainer.begin()->c_str());
@@ -81,9 +81,9 @@ ImageStorageReader::~ImageStorageReader()
 
     //Spacing
     double spacing[3];
-    dataset->findAndGetFloat64(DCM_PixelSpacing,spacing[0],0);
-    dataset->findAndGetFloat64(DCM_PixelSpacing,spacing[1],1);
-    dataset->findAndGetFloat64(DCM_SliceThickness,spacing[2]);
+    dataset->findAndGetFloat64(DCM_PixelSpacing, spacing[0], 0);
+    dataset->findAndGetFloat64(DCM_PixelSpacing, spacing[1], 1);
+    dataset->findAndGetFloat64(DCM_SliceThickness, spacing[2]);
 
     if(series->hasComputedValues("SliceThickness"))
     {
@@ -95,7 +95,6 @@ ImageStorageReader::~ImageStorageReader()
         spacing[0] = spacing[1] = spacing[2] = 1;
         OSLM_WARN("Invalid value for pixel spacing. Assuming pixel value is 1.");
     }
-
 
     image->setSpacing(std::vector< double >(spacing, spacing+3));
 
@@ -109,8 +108,8 @@ ImageStorageReader::~ImageStorageReader()
 
     //Size
     unsigned short rows, columns;
-    dataset->findAndGetUint16(DCM_Rows,rows);
-    dataset->findAndGetUint16(DCM_Columns,columns);
+    dataset->findAndGetUint16(DCM_Rows, rows);
+    dataset->findAndGetUint16(DCM_Columns, columns);
 
     uint32_t depth;
     if(instances.size() == 1)
@@ -136,12 +135,12 @@ ImageStorageReader::~ImageStorageReader()
 
     //Window Center
     double windowCenter = 0;
-    dataset->findAndGetFloat64(DCM_WindowCenter,windowCenter);
+    dataset->findAndGetFloat64(DCM_WindowCenter, windowCenter);
     image->setWindowCenter(windowCenter);
 
     //Window Width
     double windowWidth = 0;
-    dataset->findAndGetFloat64(DCM_WindowWidth,windowWidth);
+    dataset->findAndGetFloat64(DCM_WindowWidth, windowWidth);
     image->setWindowWidth(windowWidth);
 
     //Number of components
@@ -169,15 +168,15 @@ ImageStorageReader::~ImageStorageReader()
     }
     else
     {
-        FW_RAISE ( "The photometric interpretation \"" << photometricInterpretation << "\" is not supported.");
+        FW_RAISE( "The photometric interpretation \"" << photometricInterpretation << "\" is not supported.");
     }
 
     //Rescale Slope
     double rescaleSlope;
     double rescaleIntercept;
-    status           = dataset->findAndGetFloat64(DCM_RescaleSlope,rescaleSlope);
+    status           = dataset->findAndGetFloat64(DCM_RescaleSlope, rescaleSlope);
     rescaleSlope     = (status.bad()) ? 1 : rescaleSlope;
-    status           = dataset->findAndGetFloat64(DCM_RescaleIntercept,rescaleIntercept);
+    status           = dataset->findAndGetFloat64(DCM_RescaleIntercept, rescaleIntercept);
     rescaleIntercept = (status.bad()) ? 0 : rescaleIntercept;
 
     //Type
@@ -187,11 +186,11 @@ ImageStorageReader::~ImageStorageReader()
     unsigned short highBit             = 7;
     unsigned short pixelRepresentation = 0;
 
-    dataset->findAndGetUint16(DCM_SamplesPerPixel,samplesPerPixel);
-    dataset->findAndGetUint16(DCM_BitsAllocated,bitsAllocated);
-    dataset->findAndGetUint16(DCM_BitsStored,bitsStored);
-    dataset->findAndGetUint16(DCM_HighBit,highBit);
-    dataset->findAndGetUint16(DCM_PixelRepresentation,pixelRepresentation);
+    dataset->findAndGetUint16(DCM_SamplesPerPixel, samplesPerPixel);
+    dataset->findAndGetUint16(DCM_BitsAllocated, bitsAllocated);
+    dataset->findAndGetUint16(DCM_BitsStored, bitsStored);
+    dataset->findAndGetUint16(DCM_HighBit, highBit);
+    dataset->findAndGetUint16(DCM_PixelRepresentation, pixelRepresentation);
 
     //Using lookup tables
     if(photometricInterpretation == "COLOR" || photometricInterpretation == "PALETTE COLOR")
@@ -204,12 +203,11 @@ ImageStorageReader::~ImageStorageReader()
 
     //Find image type
     ::fwDicomTools::Image imageHelper(
-        samplesPerPixel,bitsAllocated,bitsStored, highBit, pixelRepresentation, rescaleSlope, rescaleIntercept);
+        samplesPerPixel, bitsAllocated, bitsStored, highBit, pixelRepresentation, rescaleSlope, rescaleIntercept);
     ::fwTools::Type imageType = imageHelper.findImageTypeFromMinMaxValues();
 
     //Set image type
     image->setType(imageType);
-
 
     //Direct reading mode
     if(::fwMemory::BufferManager::getDefault()->getLoadingMode() == ::fwMemory::BufferManager::DIRECT)
@@ -284,7 +282,7 @@ void ImageStorageReader::directRGBLookupRead(::fwData::Image::sptr image, DcmDat
     ::fwDataTools::helper::Array arrayHelper(array);
 
     unsigned short pixelValueBitsAllocated = 8;
-    dataset.findAndGetUint16(DCM_BitsAllocated,pixelValueBitsAllocated);
+    dataset.findAndGetUint16(DCM_BitsAllocated, pixelValueBitsAllocated);
 
     // 16 bits allocated
     if(bitsAllocated == 16)
@@ -348,7 +346,7 @@ void ImageStorageReader::directRGBLookupRead(::fwData::Image::sptr image, DcmDat
 
 //-----------------------------------------------------------------------------
 
-void ImageStorageReader::lazyRead(::fwData::Image::sptr image, ::fwMedData::DicomSeries::sptr series,
+void ImageStorageReader::lazyRead(::fwData::Image::sptr image, ::fwMedData::DicomSeries::csptr series,
                                   unsigned short rows, unsigned short columns, int depth, double rescaleSlope,
                                   double rescaleIntercept,
                                   unsigned short pixelRepresentation, ::fwTools::Type imageType)
@@ -374,13 +372,13 @@ void ImageStorageReader::lazyRead(::fwData::Image::sptr image, ::fwMedData::Dico
 
 //-----------------------------------------------------------------------------
 
-void ImageStorageReader::lazyRGBLookupRead(::fwData::Image::sptr image, ::fwMedData::DicomSeries::sptr series,
+void ImageStorageReader::lazyRGBLookupRead(::fwData::Image::sptr image, ::fwMedData::DicomSeries::csptr series,
                                            DcmDataset& dataset, DicomPathContainerType instances, unsigned short rows,
                                            unsigned short columns, int depth,
                                            unsigned short bitsAllocated, ::fwTools::Type imageType)
 {
     unsigned short pixelValueBitsAllocated = 8;
-    dataset.findAndGetUint16(DCM_BitsAllocated,pixelValueBitsAllocated);
+    dataset.findAndGetUint16(DCM_BitsAllocated, pixelValueBitsAllocated);
 
     // Create information object
     ::fwDcmtkIO::reader::rgblookup::ImageRGBLookupLazyInformation::sptr dcmInfo =

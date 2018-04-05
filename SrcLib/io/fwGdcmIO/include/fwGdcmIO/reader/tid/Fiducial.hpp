@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWGDCMIO_READER_TID_FIDUCIAL_HPP__
-#define __FWGDCMIO_READER_TID_FIDUCIAL_HPP__
+#pragma once
 
 #include "fwGdcmIO/container/sr/DicomSRNode.hpp"
 #include "fwGdcmIO/reader/tid/TemplateID.hpp"
@@ -35,7 +34,7 @@ public:
      * @param[in] image FW4SPL data object
      * @param[in] logger Logger
      */
-    FWGDCMIO_API Fiducial(const SPTR(::fwMedData::DicomSeries)& dicomSeries,
+    FWGDCMIO_API Fiducial(const CSPTR(::fwMedData::DicomSeries)& dicomSeries,
                           const SPTR(::gdcm::Reader)& reader,
                           const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
                           const ::fwData::Image::sptr& image,
@@ -61,11 +60,8 @@ protected:
      */
     void addLandmark(double x, double y, double z, const std::string& label);
 
-
 };
 
 } // namespace tid
 } // namespace reader
 } // namespace fwGdcmIO
-
-#endif /* __FWGDCMIO_READER_TID_FIDUCIAL_HPP__ */

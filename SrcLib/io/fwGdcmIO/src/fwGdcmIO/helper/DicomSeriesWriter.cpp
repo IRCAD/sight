@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -57,7 +57,7 @@ DicomSeriesWriter::DicomSeriesWriter(::fwDataIO::writer::IObjectWriter::Key key)
         if (p.first != longestPrefix.end())
         {
             ::boost::filesystem::path newPrefix;
-            BOOST_FOREACH( const ::boost::filesystem::path &subpath, std::make_pair(longestPrefix.begin(), p.first))
+            BOOST_FOREACH( const ::boost::filesystem::path& subpath, std::make_pair(longestPrefix.begin(), p.first))
             {
                 newPrefix /= subpath;
             }
@@ -77,7 +77,7 @@ DicomSeriesWriter::DicomSeriesWriter(::fwDataIO::writer::IObjectWriter::Key key)
         = std::mismatch(path.begin(), path.end(), prefix.begin());
 
     ::boost::filesystem::path newPrefix;
-    BOOST_FOREACH( const ::boost::filesystem::path &subpath, std::make_pair(p.first,  path.end()))
+    BOOST_FOREACH( const ::boost::filesystem::path& subpath, std::make_pair(p.first,  path.end()))
     {
         newPrefix /= subpath;
     }
@@ -151,7 +151,7 @@ void DicomSeriesWriter::processStream(std::istream& inputStream, std::ostream& o
 
 void DicomSeriesWriter::processWrite()
 {
-    ::fwMedData::DicomSeries::sptr dicomSeries = this->getConcreteObject();
+    ::fwMedData::DicomSeries::csptr dicomSeries = this->getConcreteObject();
 
     FW_RAISE_IF("Dicom series should contain binaries.",
                 dicomSeries->getDicomAvailability() == ::fwMedData::DicomSeries::NONE);
@@ -266,7 +266,7 @@ void DicomSeriesWriter::processWriteArchive()
 {
     SLM_ASSERT("Output archive shall be set", m_archive);
 
-    ::fwMedData::DicomSeries::sptr dicomSeries = this->getConcreteObject();
+    ::fwMedData::DicomSeries::csptr dicomSeries = this->getConcreteObject();
 
     FW_RAISE_IF("Dicom series should contain binaries.",
                 dicomSeries->getDicomAvailability() == ::fwMedData::DicomSeries::NONE);

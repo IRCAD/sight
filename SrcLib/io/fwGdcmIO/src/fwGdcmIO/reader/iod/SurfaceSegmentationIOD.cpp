@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -33,7 +33,7 @@ namespace iod
 
 //------------------------------------------------------------------------------
 
-SurfaceSegmentationIOD::SurfaceSegmentationIOD(const ::fwMedData::DicomSeries::sptr& dicomSeries,
+SurfaceSegmentationIOD::SurfaceSegmentationIOD(const ::fwMedData::DicomSeries::csptr& dicomSeries,
                                                const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
                                                const ::fwLog::Logger::sptr& logger,
                                                ProgressCallback progress,
@@ -92,8 +92,8 @@ void SurfaceSegmentationIOD::read(::fwMedData::Series::sptr series) throw(::fwGd
         "fwGdcmIO-" FWGDCMIO_VER "/SegmentedPropertyRegistry.csv");
     if(!surfaceIE.loadSegmentedPropertyRegistry(filepath))
     {
-        throw  ::fwGdcmIO::exception::Failed("Unable to load segmented property registry: '" +
-                                             filepath.string() + "'. File does not exist.");
+        throw ::fwGdcmIO::exception::Failed("Unable to load segmented property registry: '" +
+                                            filepath.string() + "'. File does not exist.");
     }
 
     // Read Patient Module - PS 3.3 C.7.1.1

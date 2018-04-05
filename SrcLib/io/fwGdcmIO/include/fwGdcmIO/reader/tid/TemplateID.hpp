@@ -1,16 +1,16 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWGDCMIO_READER_TID_TEMPLATEID_HPP__
-#define __FWGDCMIO_READER_TID_TEMPLATEID_HPP__
+#pragma once
 
 #include "fwGdcmIO/config.hpp"
 #include "fwGdcmIO/container/DicomInstance.hpp"
 
 #include <fwData/Object.hpp>
+
 #include <fwLog/Logger.hpp>
 
 #include <gdcmReader.h>
@@ -38,7 +38,7 @@ public:
      * @param[in] object FW4SPL data object
      * @param[in] logger Logger
      */
-    FWGDCMIO_API TemplateID(const SPTR(::fwMedData::DicomSeries)& dicomSeries,
+    FWGDCMIO_API TemplateID(const CSPTR(::fwMedData::DicomSeries)& dicomSeries,
                             const SPTR(::gdcm::Reader)& reader,
                             const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
                             const SPTR(DATATYPE)& object,
@@ -50,7 +50,7 @@ public:
 protected:
 
     /// Dicom Series
-    SPTR(::fwMedData::DicomSeries) m_dicomSeries;
+    CSPTR(::fwMedData::DicomSeries) m_dicomSeries;
 
     /// GDCM Reader
     SPTR(::gdcm::Reader) m_reader;
@@ -68,7 +68,7 @@ protected:
 //------------------------------------------------------------------------------
 
 template< class DATATYPE >
-TemplateID<DATATYPE>::TemplateID(const SPTR(::fwMedData::DicomSeries)& dicomSeries,
+TemplateID<DATATYPE>::TemplateID(const CSPTR(::fwMedData::DicomSeries)& dicomSeries,
                                  const SPTR(::gdcm::Reader)& reader,
                                  const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
                                  const SPTR(DATATYPE)& object,
@@ -98,5 +98,3 @@ TemplateID<DATATYPE>::~TemplateID()
 } // namespace tid
 } // namespace reader
 } // namespace fwGdcmIO
-
-#endif // __FWGDCMIO_READER_TID_TEMPLATEID_HPP__

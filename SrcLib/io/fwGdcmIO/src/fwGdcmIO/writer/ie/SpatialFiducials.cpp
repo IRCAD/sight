@@ -34,7 +34,7 @@ namespace ie
 
 SpatialFiducials::SpatialFiducials(const SPTR(::gdcm::Writer)& writer,
                                    const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
-                                   const ::fwData::Image::sptr& image,
+                                   const ::fwData::Image::csptr& image,
                                    const ::fwLog::Logger::sptr& logger,
                                    ProgressCallback progress,
                                    CancelRequestedCallback cancel) :

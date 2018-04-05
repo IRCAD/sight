@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -56,10 +56,10 @@ SurfaceSegmentationIOD::~SurfaceSegmentationIOD()
 
 //------------------------------------------------------------------------------
 
-void SurfaceSegmentationIOD::write(const ::fwMedData::Series::sptr& series)
+void SurfaceSegmentationIOD::write(const ::fwMedData::Series::csptr& series)
 {
     // Retrieve model series
-    ::fwMedData::ModelSeries::sptr modelSeries = ::fwMedData::ModelSeries::dynamicCast(series);
+    ::fwMedData::ModelSeries::csptr modelSeries = ::fwMedData::ModelSeries::dynamicCast(series);
     SLM_ASSERT("Image series should not be null.", modelSeries);
 
     // Create writer
@@ -80,8 +80,8 @@ void SurfaceSegmentationIOD::write(const ::fwMedData::Series::sptr& series)
 
     if(!surfaceIE.loadSegmentedPropertyRegistry(filepath))
     {
-        throw  ::fwGdcmIO::exception::Failed("Unable to load segmented property registry: '" +
-                                             filepath.string() + "'. File does not exist.");
+        throw ::fwGdcmIO::exception::Failed("Unable to load segmented property registry: '" +
+                                            filepath.string() + "'. File does not exist.");
     }
 
     // Write Patient Module - PS 3.3 C.7.1.1

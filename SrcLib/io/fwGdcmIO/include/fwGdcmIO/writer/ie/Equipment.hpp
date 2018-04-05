@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWGDCMIO_WRITER_IE_EQUIPMENT_HPP__
-#define __FWGDCMIO_WRITER_IE_EQUIPMENT_HPP__
+#pragma once
 
 #include "fwGdcmIO/writer/ie/InformationEntity.hpp"
 
@@ -36,10 +35,10 @@ public:
      */
     FWGDCMIO_API Equipment(const SPTR(::gdcm::Writer)& writer,
                            const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
-                           const ::fwMedData::Equipment::sptr& equipment,
+                           const ::fwMedData::Equipment::csptr& equipment,
                            const ::fwLog::Logger::sptr& logger = nullptr,
-                           ProgressCallback progress = nullptr,
-                           CancelRequestedCallback cancel = nullptr);
+                           ProgressCallback progress           = nullptr,
+                           CancelRequestedCallback cancel      = nullptr);
 
     /// Destructor
     FWGDCMIO_API virtual ~Equipment();
@@ -56,11 +55,8 @@ public:
      */
     FWGDCMIO_API virtual void writeEnhancedGeneralEquipmentModule();
 
-
 };
 
 } // namespace ie
 } // namespace writer
 } // namespace fwGdcmIO
-
-#endif /* __FWGDCMIO_WRITER_IE_EQUIPMENT_HPP__ */

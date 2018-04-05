@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -45,7 +45,7 @@ namespace ie
 Surface::Surface(const SPTR(::gdcm::Writer)& writer,
                  const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
                  const SPTR(::fwGdcmIO::container::DicomInstance)& imageInstance,
-                 const ::fwMedData::ModelSeries::sptr& series,
+                 const ::fwMedData::ModelSeries::csptr& series,
                  const ::fwLog::Logger::sptr& logger,
                  ProgressCallback progress,
                  CancelRequestedCallback cancel) :
@@ -356,6 +356,8 @@ void Surface::writeSegmentSequence(const ::fwData::Reconstruction::csptr& recons
     // Referenced Surface Sequence Item
     ::gdcm::Item refSurfaceSeqItem;
     refSurfaceSeqItem.SetVLToUndefined();
+    // TODO
+
     ::gdcm::DataSet& refSurfaceSeqItemDataset = refSurfaceSeqItem.GetNestedDataSet();
     {
         // Referenced Surface Number - Type 1

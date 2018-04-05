@@ -1,42 +1,42 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #ifndef ANDROID
 
+#include "fwVtkIO/ModelSeriesObjWriter.hpp"
+
 #include "fwVtkIO/helper/Mesh.hpp"
 #include "fwVtkIO/vtk.hpp"
-#include "fwVtkIO/ModelSeriesObjWriter.hpp"
 
 #include <fwCore/base.hpp>
 
-#include <fwData/Reconstruction.hpp>
 #include <fwData/Material.hpp>
+#include <fwData/Reconstruction.hpp>
 
 #include <fwDataIO/writer/registry/macros.hpp>
+
+#include <fwJobs/IJob.hpp>
+#include <fwJobs/Observer.hpp>
 
 #include <fwMedData/ModelSeries.hpp>
 
 #include <fwTools/UUID.hpp>
 
-#include <fwJobs/IJob.hpp>
-#include <fwJobs/Observer.hpp>
-
-#include <vtkActor.h>
-#include <vtkPolyData.h>
-#include <vtkProperty.h>
-#include <vtkOBJExporter.h>
-#include <vtkRenderWindow.h>
-#include <vtkRenderer.h>
-#include <vtkPolyDataMapper.h>
-#include <vtkSmartPointer.h>
-
 #include <boost/filesystem.hpp>
 
-fwDataIOWriterRegisterMacro( ::fwVtkIO::ModelSeriesObjWriter );
+#include <vtkActor.h>
+#include <vtkOBJExporter.h>
+#include <vtkPolyData.h>
+#include <vtkPolyDataMapper.h>
+#include <vtkProperty.h>
+#include <vtkRenderer.h>
+#include <vtkRenderWindow.h>
+#include <vtkSmartPointer.h>
 
+fwDataIOWriterRegisterMacro( ::fwVtkIO::ModelSeriesObjWriter );
 
 namespace fwVtkIO
 {
@@ -58,7 +58,7 @@ ModelSeriesObjWriter::~ModelSeriesObjWriter()
 
 //------------------------------------------------------------------------------
 
-vtkSmartPointer< vtkActor > createActor( const ::fwData::Reconstruction::sptr & pReconstruction )
+vtkSmartPointer< vtkActor > createActor( const ::fwData::Reconstruction::sptr& pReconstruction )
 {
     vtkSmartPointer< vtkActor >  actor = vtkSmartPointer< vtkActor >::New();
 
@@ -71,7 +71,7 @@ vtkSmartPointer< vtkActor > createActor( const ::fwData::Reconstruction::sptr & 
     mapper->SetInputData(polyData);
     actor->SetMapper(mapper);
 
-    vtkProperty *property = actor->GetProperty();
+    vtkProperty* property = actor->GetProperty();
 
     ::fwData::Color::sptr diffuse = material->diffuse();
     property->SetDiffuseColor(diffuse->red(), diffuse->green(), diffuse->blue());
@@ -80,11 +80,10 @@ vtkSmartPointer< vtkActor > createActor( const ::fwData::Reconstruction::sptr & 
     ::fwData::Color::sptr ambient = material->ambient();
     property->SetAmbientColor(ambient->red(), ambient->green(), ambient->blue());
 
-    property->SetSpecularColor(1.,1.,1.);
+    property->SetSpecularColor(1., 1., 1.);
     property->SetSpecularPower(100.); //Shininess
 
     property->SetInterpolationToPhong();
-
 
     return actor;
 }
@@ -98,7 +97,7 @@ void ModelSeriesObjWriter::write()
 
     ::boost::filesystem::path prefix = this->getFolder();
 
-    ::fwMedData::ModelSeries::sptr modelSeries = getConcreteObject();
+    ::fwMedData::ModelSeries::csptr modelSeries = getConcreteObject();
 
     m_job->setTotalWorkUnits(modelSeries->getReconstructionDB().size());
     std::uint64_t units = 0;
@@ -140,4 +139,3 @@ std::string ModelSeriesObjWriter::extension()
 } // namespace fwVtkIO
 
 #endif //ANDROID
-

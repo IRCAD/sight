@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWDATATOOLS_MESH_HPP__
-#define __FWDATATOOLS_MESH_HPP__
+#pragma once
 
 #include "fwDataTools/config.hpp"
 #include "fwDataTools/Vector.hxx"
@@ -101,7 +100,7 @@ public:
      * @param[in]  mesh fwData::Mesh mesh structure to find cell type.
      * @param[in]  cell CellTypes to find in mesh.
      */
-    FWDATATOOLS_API static bool hasUniqueCellType(::fwData::Mesh::sptr mesh, ::fwData::Mesh::CellTypes cell);
+    FWDATATOOLS_API static bool hasUniqueCellType(::fwData::Mesh::csptr mesh, ::fwData::Mesh::CellTypes cell);
 
     /// Apply a transformation 4x4 from an input mesh to an output mesh
     FWDATATOOLS_API static void transform(fwData::Mesh::csptr inMesh, ::fwData::Mesh::sptr outMesh,
@@ -134,7 +133,7 @@ public:
      * @pre cell color array must be allocated
      * @pre mesh must only contain triangle
      */
-    FWDATATOOLS_API static void colorizeMeshCells(const::fwData::Mesh::sptr& mesh, const std::uint8_t colorR,
+    FWDATATOOLS_API static void colorizeMeshCells(const ::fwData::Mesh::sptr& mesh, const std::uint8_t colorR,
                                                   const std::uint8_t colorG, const std::uint8_t colorB,
                                                   const std::uint8_t _colorA = 255);
     /**
@@ -142,7 +141,7 @@ public:
      * @pre cell color array must be allocated
      * @pre mesh must only contain triangle
      */
-    FWDATATOOLS_API static void colorizeMeshCells(const::fwData::Mesh::sptr& mesh,
+    FWDATATOOLS_API static void colorizeMeshCells(const ::fwData::Mesh::sptr& mesh,
                                                   const std::vector<size_t>& triangleIndexVector,
                                                   const std::uint8_t colorR,
                                                   const std::uint8_t colorG, const std::uint8_t colorB,
@@ -151,5 +150,3 @@ public:
 };
 
 } // namespace fwDataTools
-
-#endif // __FWDATATOOLS_MESH_HPP__

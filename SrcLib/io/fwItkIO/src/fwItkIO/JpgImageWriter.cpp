@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -25,16 +25,14 @@
 #include <fwTools/DynamicTypeKeyTypeMapping.hpp>
 #include <fwTools/IntrinsicTypes.hpp>
 
+#include <boost/filesystem.hpp>
+
 #include <itkImageSeriesWriter.h>
 #include <itkIntensityWindowingImageFilter.h>
 #include <itkJPEGImageIOFactory.h>
 #include <itkNumericSeriesFileNames.h>
 
-#include <boost/filesystem.hpp>
-
-
 fwDataIOWriterRegisterMacro( ::fwItkIO::JpgImageWriter );
-
 
 namespace fwItkIO
 {
@@ -66,20 +64,24 @@ struct JpgITKSaverFunctor
     struct Parameter
     {
         std::string m_filename;
-        ::fwData::Image::sptr m_dataImage;
+        ::fwData::Image::csptr m_dataImage;
         ::fwItkIO::JpgImageWriter::sptr m_fwWriter;
     };
+
+    //------------------------------------------------------------------------------
 
     template<class PIXELTYPE>
     void operator()( const Parameter& param )
     {
         OSLM_DEBUG( "itk::ImageSeriesWriter with PIXELTYPE "<<  fwTools::DynamicType::string<PIXELTYPE>() );
 
-        ::fwData::Image::sptr image = param.m_dataImage;
+        ::fwData::Image::csptr image = param.m_dataImage;
 
-        // VAG attention : ImageFileReader ne notifie AUCUNE progressEvent mais son ImageIO oui!!!! mais ImageFileReader ne permet pas de l'atteindre
+        // VAG attention : ImageFileReader ne notifie AUCUNE progressEvent mais son ImageIO oui!!!! mais ImageFileReader
+        // ne permet pas de l'atteindre
         // car soit mis a la mano ou alors construit lors de l'Update donc trop tard
-        // Il faut dont creer une ImageIO a la mano (*1*): affecter l'observation  sur IO (*2*) et mettre le IO dans le reader (voir *3*)
+        // Il faut dont creer une ImageIO a la mano (*1*): affecter l'observation  sur IO (*2*) et mettre le IO dans le
+        // reader (voir *3*)
 
         // Reader IO (*1*)
         typename itk::ImageIOBase::Pointer imageIOWrite = itk::ImageIOFactory::CreateImageIO( "image.jpg",
@@ -89,7 +91,7 @@ struct JpgITKSaverFunctor
         // create writer
         typedef itk::Image< PIXELTYPE, 3> itkImageType;
         typedef itk::Image< unsigned char, 2 >      Image2DType;
-        typedef typename  itk::ImageSeriesWriter< itkImageType, Image2DType > WriterType;
+        typedef typename itk::ImageSeriesWriter< itkImageType, Image2DType > WriterType;
         typename WriterType::Pointer writer = WriterType::New();
 
         // set observation (*2*)

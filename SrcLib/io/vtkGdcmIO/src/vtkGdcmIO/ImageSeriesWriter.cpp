@@ -73,11 +73,11 @@ ImageSeriesWriter::ImageSeriesWriter(::fwDataIO::writer::IObjectWriter::Key key)
 
 void ImageSeriesWriter::write()
 {
-    ::fwMedData::ImageSeries::sptr imgSeries = this->getConcreteObject();
-    ::fwData::Image::sptr dataImage          = imgSeries->getImage();
-    ::fwMedData::Patient::sptr patient       = imgSeries->getPatient();
-    ::fwMedData::Study::sptr study           = imgSeries->getStudy();
-    ::fwMedData::Equipment::sptr equipment   = imgSeries->getEquipment();
+    ::fwMedData::ImageSeries::csptr imgSeries = this->getConcreteObject();
+    ::fwData::Image::sptr dataImage           = imgSeries->getImage();
+    ::fwMedData::Patient::sptr patient        = imgSeries->getPatient();
+    ::fwMedData::Study::sptr study            = imgSeries->getStudy();
+    ::fwMedData::Equipment::sptr equipment    = imgSeries->getEquipment();
 
     // Vtk Conversion
     vtkSmartPointer< vtkImageData > vtkImage = vtkSmartPointer< vtkImageData >::New();

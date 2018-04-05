@@ -21,7 +21,7 @@ namespace ie
 
 Study::Study(const SPTR(::gdcm::Writer)& writer,
              const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
-             const ::fwMedData::Study::sptr& study,
+             const ::fwMedData::Study::csptr& study,
              const ::fwLog::Logger::sptr& logger,
              ProgressCallback progress,
              CancelRequestedCallback cancel) :

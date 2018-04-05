@@ -1,9 +1,8 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
-
 
 #include "fwDataIO/writer/IObjectWriter.hpp"
 
@@ -29,14 +28,14 @@ IObjectWriter::~IObjectWriter()
 
 //------------------------------------------------------------------------------
 
-void IObjectWriter::setObject( ::fwTools::Object::sptr _pObject )
+void IObjectWriter::setObject( ::fwTools::Object::csptr object )
 {
-    m_object = _pObject;
+    m_object = object;
 }
 
 //------------------------------------------------------------------------------
 
-::fwTools::Object::sptr IObjectWriter::getObject()
+::fwTools::Object::csptr IObjectWriter::getObject() const
 {
     assert( !m_object.expired() );
     return m_object.lock();
@@ -73,7 +72,6 @@ void IObjectWriter::cancel()
         job->cancel();
     }
 }
-
 
 //------------------------------------------------------------------------------
 

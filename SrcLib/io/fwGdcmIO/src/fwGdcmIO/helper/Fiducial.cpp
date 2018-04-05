@@ -84,7 +84,7 @@ bool Fiducial::contains3DDistances(const SPTR(::fwMedData::SeriesDB)& seriesDB)
         ::fwMedData::ImageSeries::sptr imageSeries = ::fwMedData::ImageSeries::dynamicCast(series);
         if(imageSeries)
         {
-            ::fwData::Image::sptr image = imageSeries->getImage();
+            ::fwData::Image::csptr image = imageSeries->getImage();
             if(image)
             {
                 ::fwData::Vector::sptr distanceVector =
@@ -96,9 +96,9 @@ bool Fiducial::contains3DDistances(const SPTR(::fwMedData::SeriesDB)& seriesDB)
                         ::fwData::PointList::sptr pointList = ::fwData::PointList::dynamicCast(object);
                         if(pointList && pointList->getPoints().size() >= 2)
                         {
-                            const ::fwData::Point::sptr point1 = *pointList->getPoints().begin();
-                            const ::fwData::Point::sptr point2 = *(++pointList->getPoints().begin());
-                            const size_t frameNumber1          =
+                            const ::fwData::Point::csptr point1 = *pointList->getPoints().begin();
+                            const ::fwData::Point::csptr point2 = *(++pointList->getPoints().begin());
+                            const size_t frameNumber1           =
                                 ::fwGdcmIO::helper::DicomDataTools::convertPointToFrameNumber(image, point1);
                             const size_t frameNumber2 =
                                 ::fwGdcmIO::helper::DicomDataTools::convertPointToFrameNumber(image, point2);

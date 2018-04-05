@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWMEDDATA_DICOMSERIES_HPP__
-#define __FWMEDDATA_DICOMSERIES_HPP__
+#pragma once
 
 #include "fwMedData/config.hpp"
 #include "fwMedData/Series.hpp"
@@ -52,7 +51,7 @@ public:
     FWMEDDATA_API DicomSeries(::fwData::Object::Key key);
 
     /// Destructor
-    FWMEDDATA_API virtual ~DicomSeries();
+    FWMEDDATA_API virtual ~DicomSeries() override;
 
     /// Defines shallow copy
     FWMEDDATA_API void shallowCopy( const ::fwData::Object::csptr& _source ) override;
@@ -61,10 +60,10 @@ public:
     FWMEDDATA_API void cachedDeepCopy( const ::fwData::Object::csptr& _source, DeepCopyCacheType& cache ) override;
 
     /// Add dicom path
-    FWMEDDATA_API void addDicomPath(std::size_t instanceIndex, ::boost::filesystem::path path);
+    FWMEDDATA_API void addDicomPath(std::size_t instanceIndex, const ::boost::filesystem::path& path);
 
     /// Add binary array
-    FWMEDDATA_API void addBinary(const std::string &filename, SPTR(::fwData::Array) binary);
+    FWMEDDATA_API void addBinary(const std::string& filename, const SPTR(::fwData::Array)& binary);
 
     /**
      * @brief Return true if the instance is available on the local computer
@@ -240,6 +239,3 @@ protected:
 };
 
 }   //end namespace fwMedData
-
-#endif // __FWMEDDATA_DICOMSERIES_HPP__
-

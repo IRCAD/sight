@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -43,7 +43,7 @@ void SeriesDB::write()
 //    // Disable GDCM Warnings
 //    ::gdcm::Trace::SetWarning(false);
 
-    ::fwMedData::SeriesDB::sptr seriesDB = this->getConcreteObject();
+    ::fwMedData::SeriesDB::csptr seriesDB = this->getConcreteObject();
     SLM_ASSERT("SeriesDB not instanced", seriesDB);
 
     ::fwGdcmIO::writer::Series::sptr writer = ::fwGdcmIO::writer::Series::New();
@@ -81,11 +81,11 @@ std::string SeriesDB::extension()
 
 //------------------------------------------------------------------------------
 
-bool SeriesDB::seriesComparator(const SPTR(::fwMedData::Series)& a,
-                                const SPTR(::fwMedData::Series)& b)
+bool SeriesDB::seriesComparator(const ::fwMedData::Series::csptr& a,
+                                const ::fwMedData::Series::csptr& b)
 {
-    ::fwMedData::ModelSeries::sptr ma = ::fwMedData::ModelSeries::dynamicCast(a);
-    ::fwMedData::ModelSeries::sptr mb = ::fwMedData::ModelSeries::dynamicCast(b);
+    ::fwMedData::ModelSeries::csptr ma = ::fwMedData::ModelSeries::dynamicCast(a);
+    ::fwMedData::ModelSeries::csptr mb = ::fwMedData::ModelSeries::dynamicCast(b);
     return (mb && !ma);
 }
 

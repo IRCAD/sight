@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -50,7 +50,7 @@ Series::~Series()
 
 // ----------------------------------------------------------------------------
 
-::fwMedData::Series::sptr Series::read(const ::fwMedData::DicomSeries::sptr& dicomSeries)
+::fwMedData::Series::sptr Series::read(const ::fwMedData::DicomSeries::csptr& dicomSeries)
 throw(::fwGdcmIO::exception::Failed)
 {
     SLM_ASSERT("DicomSeries should not be null.", dicomSeries);
@@ -207,7 +207,7 @@ throw(::fwGdcmIO::exception::Failed)
 //------------------------------------------------------------------------------
 
 SPTR(::fwGdcmIO::container::DicomInstance) Series::getSpatialFiducialsReferencedSeriesInstance(
-    const ::fwMedData::DicomSeries::sptr& dicomSeries)
+    const ::fwMedData::DicomSeries::csptr& dicomSeries)
 {
     SPTR(::fwGdcmIO::container::DicomInstance) result;
 
@@ -263,7 +263,7 @@ SPTR(::fwGdcmIO::container::DicomInstance) Series::getSpatialFiducialsReferenced
 //------------------------------------------------------------------------------
 
 SPTR(::fwGdcmIO::container::DicomInstance) Series::getStructuredReportReferencedSeriesInstance(
-    const ::fwMedData::DicomSeries::sptr& dicomSeries)
+    const ::fwMedData::DicomSeries::csptr& dicomSeries)
 {
 
     SPTR(::fwGdcmIO::container::DicomInstance) result;
@@ -333,4 +333,3 @@ SPTR(::fwGdcmIO::container::DicomInstance) Series::getStructuredReportReferenced
 
 }  // namespace reader
 }  // namespace fwGdcmIO
-

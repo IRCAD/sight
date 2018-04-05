@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,8 +9,9 @@
 #include "fwGdcmIO/helper/DicomDataTools.hpp"
 #include "fwGdcmIO/helper/DicomDataWriter.hxx"
 
-#include <fwDataTools/helper/Image.hpp>
 #include <fwData/Image.hpp>
+
+#include <fwDataTools/helper/ImageGetter.hpp>
 
 #include <gdcmImageWriter.h>
 
@@ -25,7 +26,7 @@ namespace ie
 
 Image::Image(const SPTR(::gdcm::Writer)& writer,
              const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
-             const ::fwData::Image::sptr& image,
+             const ::fwData::Image::csptr& image,
              const ::fwLog::Logger::sptr& logger,
              ProgressCallback progress,
              CancelRequestedCallback cancel) :
@@ -67,11 +68,11 @@ void Image::writeImagePlaneModule()
 
     // Retrieve GDCM image
     SPTR(::gdcm::ImageWriter) imageWriter = std::static_pointer_cast< ::gdcm::ImageWriter >(m_writer);
-    ::gdcm::Image& gdcmImage = imageWriter->GetImage();
+    ::gdcm::Image& gdcmImage              = imageWriter->GetImage();
 
     // Pixel Spacing - Type 1
     // WARNING : some DICOM image have not any spacing (NOT SUPPORTED BY FW4SPL), but stuff like "Pixel Aspect Ratio"
-    const std::size_t dimension = m_object->getNumberOfDimensions();
+    const std::size_t dimension          = m_object->getNumberOfDimensions();
     const std::vector< double >& spacing = m_object->getSpacing();
     for (unsigned int i = 0; i < dimension; ++i)
     {
@@ -94,10 +95,10 @@ void Image::writeImagePlaneModuleSpecificTags(unsigned int instanceNumber)
 {
     // Retrieve GDCM image
     SPTR(::gdcm::ImageWriter) imageWriter = std::static_pointer_cast< ::gdcm::ImageWriter >(m_writer);
-    ::gdcm::Image& gdcmImage = imageWriter->GetImage();
+    ::gdcm::Image& gdcmImage              = imageWriter->GetImage();
 
     // Image Position (Patient) - Type 1
-    const std::vector< double >& origin = m_object->getOrigin();
+    const std::vector< double >& origin  = m_object->getOrigin();
     const std::vector< double >& spacing = m_object->getSpacing();
     gdcmImage.SetOrigin(0, origin[0]);
     gdcmImage.SetOrigin(1, origin[1]);
@@ -110,7 +111,7 @@ void Image::writeImagePixelModule()
 {
     // Retrieve GDCM image
     ::gdcm::ImageWriter* imageWriter = std::static_pointer_cast< ::gdcm::ImageWriter >(m_writer).get();
-    ::gdcm::Image& gdcmImage = imageWriter->GetImage();
+    ::gdcm::Image& gdcmImage         = imageWriter->GetImage();
 
     // Image's photometric interpretation - Type 1
     ::gdcm::PhotometricInterpretation photoInter =
@@ -147,15 +148,15 @@ void Image::writeImagePixelModuleSpecificTags(unsigned int instanceNumber)
 
     // Retrieve GDCM image
     ::gdcm::ImageWriter* imageWriter = std::static_pointer_cast< ::gdcm::ImageWriter >(m_writer).get();
-    ::gdcm::Image& gdcmImage = imageWriter->GetImage();
+    ::gdcm::Image& gdcmImage         = imageWriter->GetImage();
 
     // Compute buffer size
     const ::fwData::Image::SizeType& size = m_object->getSize();
-    std::size_t bufferLength = size[0] * size[1] * gdcmImage.GetPixelFormat().GetPixelSize();
+    std::size_t bufferLength              = size[0] * size[1] * gdcmImage.GetPixelFormat().GetPixelSize();
     bufferLength = (!m_instance->getIsMultiFiles()) ? (bufferLength*size[2]) : bufferLength;
 
     // Retrieve image buffer
-    ::fwDataTools::helper::Image imageHelper(m_object);
+    ::fwDataTools::helper::ImageGetter imageHelper(m_object);
     const char* imageBuffer = static_cast< char* >(imageHelper.getBuffer());
 
     // Pixel Data - Type 1C
@@ -172,7 +173,7 @@ void Image::writeVOILUTModule()
     ::gdcm::DataSet& dataset = m_writer->GetFile().GetDataSet();
 
     const double windowCenter = m_object->getWindowCenter();
-    const double windowWidth = m_object->getWindowWidth();
+    const double windowWidth  = m_object->getWindowWidth();
     if(windowCenter || windowWidth)
     {
         // Image's windows center
@@ -219,7 +220,8 @@ void Image::writeCTImageModule()
 
     // Image Type - Type 1 - FIXME: Fake Value
     const ::gdcm::String< 92, 16 > imageType = "ORIGINAL\\PRIMARY\\AXIAL";
-    ::fwGdcmIO::helper::DicomDataWriter::setTagValues< ::gdcm::String< 92, 16 >, 0x0008, 0x0008 >(&imageType, 1, dataset);
+    ::fwGdcmIO::helper::DicomDataWriter::setTagValues< ::gdcm::String< 92, 16 >, 0x0008, 0x0008 >(&imageType, 1,
+                                                                                                  dataset);
 
     // Acquisition Number - Type 2 - FIXME: Fake Value
     unsigned int acquisitionNumber = 1;
@@ -242,19 +244,23 @@ void Image::writeMRImageModule()
 
     // Image Type - Type 1 - FIXME: Fake Value
     const ::gdcm::String< 92, 16 > imageType = "ORIGINAL\\PRIMARY\\MPR";
-    ::fwGdcmIO::helper::DicomDataWriter::setTagValues< ::gdcm::String< 92, 16 >, 0x0008, 0x0008 >(&imageType, 1, dataset);
+    ::fwGdcmIO::helper::DicomDataWriter::setTagValues< ::gdcm::String< 92, 16 >, 0x0008, 0x0008 >(&imageType, 1,
+                                                                                                  dataset);
 
     // Scanning Sequence - Type 1 - FIXME: Fake Value
     const ::gdcm::String< 92, 16 > scanningSequence = "SE";
-    ::fwGdcmIO::helper::DicomDataWriter::setTagValues< ::gdcm::String< 92, 16 >, 0x0018, 0x0020 >(&scanningSequence, 1, dataset);
+    ::fwGdcmIO::helper::DicomDataWriter::setTagValues< ::gdcm::String< 92, 16 >, 0x0018, 0x0020 >(&scanningSequence, 1,
+                                                                                                  dataset);
 
     // Sequence Variant - Type 1 - FIXME: Fake Value
     const ::gdcm::String< 92, 16 > sequenceVariant = "NONE";
-    ::fwGdcmIO::helper::DicomDataWriter::setTagValues< ::gdcm::String< 92, 16 >, 0x0018, 0x0021 >(&sequenceVariant, 1, dataset);
+    ::fwGdcmIO::helper::DicomDataWriter::setTagValues< ::gdcm::String< 92, 16 >, 0x0018, 0x0021 >(&sequenceVariant, 1,
+                                                                                                  dataset);
 
     // Scan Options - Type 2 - FIXME: Fake Value
     const ::gdcm::String< 92, 16 > scanOption = "";
-    ::fwGdcmIO::helper::DicomDataWriter::setTagValues< ::gdcm::String< 92, 16 >, 0x0018, 0x0022 >(&scanOption, 1, dataset);
+    ::fwGdcmIO::helper::DicomDataWriter::setTagValues< ::gdcm::String< 92, 16 >, 0x0018, 0x0022 >(&scanOption, 1,
+                                                                                                  dataset);
 
     // MR Acquisition Type - Type 2 - FIXME: Fake Value
     ::fwGdcmIO::helper::DicomDataWriter::setTagValue< 0x0018, 0x0023 >("3D", dataset);

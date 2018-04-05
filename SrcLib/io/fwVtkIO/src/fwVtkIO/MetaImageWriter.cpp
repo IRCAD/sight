@@ -1,12 +1,13 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwVtkIO/vtk.hpp"
 #include "fwVtkIO/MetaImageWriter.hpp"
+
 #include "fwVtkIO/helper/vtkLambdaCommand.hpp"
+#include "fwVtkIO/vtk.hpp"
 
 #include <fwCore/base.hpp>
 
@@ -15,12 +16,11 @@
 #include <fwJobs/IJob.hpp>
 #include <fwJobs/Observer.hpp>
 
-#include <vtkSmartPointer.h>
 #include <vtkImageData.h>
 #include <vtkMetaImageWriter.h>
+#include <vtkSmartPointer.h>
 
 fwDataIOWriterRegisterMacro( ::fwVtkIO::MetaImageWriter );
-
 
 namespace fwVtkIO
 {
@@ -49,7 +49,7 @@ void MetaImageWriter::write()
     assert( !m_object.expired() );
     assert( m_object.lock() );
 
-    ::fwData::Image::sptr pImage = getConcreteObject();
+    ::fwData::Image::csptr pImage = getConcreteObject();
 
     vtkSmartPointer< vtkMetaImageWriter > writer = vtkSmartPointer< vtkMetaImageWriter >::New();
     vtkSmartPointer< vtkImageData > vtkImage     = vtkSmartPointer< vtkImageData >::New();

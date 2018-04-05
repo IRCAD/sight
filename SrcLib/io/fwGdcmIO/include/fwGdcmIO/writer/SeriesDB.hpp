@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWGDCMIO_WRITER_SERIESDB_HPP__
-#define __FWGDCMIO_WRITER_SERIESDB_HPP__
+#pragma once
 
 #include "fwGdcmIO/config.hpp"
 #include "fwGdcmIO/writer/Series.hpp"
@@ -74,8 +73,8 @@ protected:
      * @param[in] a First Series
      * @param[in] b Second Series
      */
-    static bool seriesComparator(const SPTR(::fwMedData::Series)& a,
-                                 const SPTR(::fwMedData::Series)& b);
+    static bool seriesComparator(const ::fwMedData::Series::csptr& a,
+                                 const ::fwMedData::Series::csptr& b);
 
     /// Fiducials Export Mode
     ::fwGdcmIO::writer::Series::FiducialsExportMode m_fiducialsExportMode;
@@ -84,5 +83,3 @@ protected:
 } // namespace writer
 
 } // namespace fwGdcmIO
-
-#endif // __FWGDCMIO_WRITER_SERIESDB_HPP__

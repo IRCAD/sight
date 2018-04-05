@@ -1,12 +1,13 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "fwGdcmIO/reader/tid/MeasurementReport.hpp"
+
 #include "fwGdcmIO/reader/tid/Fiducial.hpp"
 #include "fwGdcmIO/reader/tid/Measurement.hpp"
-#include "fwGdcmIO/reader/tid/MeasurementReport.hpp"
 
 namespace fwGdcmIO
 {
@@ -17,9 +18,9 @@ namespace tid
 
 //------------------------------------------------------------------------------
 
-MeasurementReport::MeasurementReport(const SPTR(::fwMedData::DicomSeries)& dicomSeries,
+MeasurementReport::MeasurementReport(const ::fwMedData::DicomSeries::csptr& dicomSeries,
                                      const SPTR(::gdcm::Reader)& reader,
-                                     const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
+                                     const ::fwGdcmIO::container::DicomInstance::sptr& instance,
                                      const ::fwData::Image::sptr& image,
                                      const ::fwLog::Logger::sptr& logger) :
     ::fwGdcmIO::reader::tid::TemplateID< ::fwData::Image >(dicomSeries, reader, instance, image, logger)
@@ -56,7 +57,8 @@ void MeasurementReport::readSR(const SPTR(::fwGdcmIO::container::sr::DicomSRNode
             {
                 for(const SPTR(::fwGdcmIO::container::sr::DicomSRNode)& subNode : node->getSubNodeContainer())
                 {
-                    ::fwGdcmIO::reader::tid::Measurement measurement(m_dicomSeries, m_reader, m_instance, m_object, m_logger);
+                    ::fwGdcmIO::reader::tid::Measurement measurement(m_dicomSeries, m_reader, m_instance, m_object,
+                                                                     m_logger);
                     measurement.readNode(subNode);
                 }
             }

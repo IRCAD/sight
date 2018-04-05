@@ -1,16 +1,16 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWGDCMIO_WRITER_IE_INFORMATIONENTITY_HPP__
-#define __FWGDCMIO_WRITER_IE_INFORMATIONENTITY_HPP__
+#pragma once
 
 #include "fwGdcmIO/config.hpp"
 #include "fwGdcmIO/container/DicomInstance.hpp"
 
 #include <fwData/Object.hpp>
+
 #include <fwLog/Logger.hpp>
 
 #include <gdcmWriter.h>
@@ -32,8 +32,8 @@ class FWGDCMIO_CLASS_API InformationEntity
 {
 
 public:
-    typedef std::function< void(std::uint64_t) > ProgressCallback;
-    typedef std::function< bool() > CancelRequestedCallback;
+    typedef std::function< void (std::uint64_t) > ProgressCallback;
+    typedef std::function< bool () > CancelRequestedCallback;
 
     /**
      * @brief Constructor
@@ -46,10 +46,10 @@ public:
      */
     FWGDCMIO_API InformationEntity(const SPTR(::gdcm::Writer)& writer,
                                    const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
-                                   const SPTR(DATATYPE)& object,
+                                   const CSPTR(DATATYPE)& object,
                                    const ::fwLog::Logger::sptr& logger = nullptr,
-                                   ProgressCallback progress = nullptr,
-                                   CancelRequestedCallback cancel = nullptr);
+                                   ProgressCallback progress           = nullptr,
+                                   CancelRequestedCallback cancel      = nullptr);
 
     /// Destructor
     FWGDCMIO_API virtual ~InformationEntity();
@@ -63,7 +63,7 @@ protected:
     SPTR(::fwGdcmIO::container::DicomInstance) m_instance;
 
     /// FW4SPL Object
-    SPTR(DATATYPE) m_object;
+    CSPTR(DATATYPE) m_object;
 
     /// Logger
     ::fwLog::Logger::sptr m_logger;
@@ -80,7 +80,7 @@ protected:
 template< class DATATYPE >
 InformationEntity<DATATYPE>::InformationEntity(const SPTR(::gdcm::Writer)& writer,
                                                const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
-                                               const SPTR(DATATYPE)& object,
+                                               const CSPTR(DATATYPE)& object,
                                                const ::fwLog::Logger::sptr& logger,
                                                ProgressCallback progress,
                                                CancelRequestedCallback cancel) :
@@ -108,5 +108,3 @@ InformationEntity<DATATYPE>::~InformationEntity()
 } // namespace ie
 } // namespace writer
 } // namespace fwGdcmIO
-
-#endif // __FWGDCMIO_WRITER_IE_INFORMATIONENTITY_HPP__

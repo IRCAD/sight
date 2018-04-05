@@ -1,13 +1,15 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwGdcmIO/helper/DicomDataWriter.hxx"
 #include "fwGdcmIO/writer/ie/Equipment.hpp"
 
+#include "fwGdcmIO/helper/DicomDataWriter.hxx"
+
 #include <fwMedData/Equipment.hpp>
+
 #include <fwRuntime/profile/Profile.hpp>
 
 namespace fwGdcmIO
@@ -21,7 +23,7 @@ namespace ie
 
 Equipment::Equipment(const SPTR(::gdcm::Writer)& writer,
                      const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
-                     const ::fwMedData::Equipment::sptr& equipment,
+                     const ::fwMedData::Equipment::csptr& equipment,
                      const ::fwLog::Logger::sptr& logger,
                      ProgressCallback progress,
                      CancelRequestedCallback cancel) :
@@ -51,7 +53,7 @@ void Equipment::writeGeneralEquipmentModule()
     ::fwGdcmIO::helper::DicomDataWriter::setTagValue< 0x0008, 0x0080 >(institutName, dataset);
 
     // Software Versions - Type 3 (Type 1 for EnhancedGeneralEquipmentModule)
-    const auto profile = ::fwRuntime::profile::getCurrentProfile();
+    const auto profile                = ::fwRuntime::profile::getCurrentProfile();
     const std::string softwareVersion = profile ? profile->getName() + " " + profile->getVersion() : "Unknown";
 
     // We do not use the DicomDataWriter helper as VM might be more than one
