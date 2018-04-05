@@ -137,10 +137,10 @@ private Q_SLOTS:
     void onChangeEnum(int value);
 
     /// This method is called to connect sliders to their labels
-    void onSliderMapped(QWidget* widget);
+    void onSliderMapped(QLabel* label, QSlider* slider);
 
     /// This method is called to connect double sliders to their labels
-    void onDoubleSliderMapped(QWidget* widget);
+    void onDoubleSliderMapped(QLabel* label, QSlider* slider);
 
     /// This method is called to connect reset buttons and checkboxes
     void onResetBooleanMapped(QWidget* widget);
@@ -191,6 +191,13 @@ private:
     /// Emit the signal(s) for the double widget
     void emitDoubleSignal(QObject* spinbox);
 
+    /// Emit the signal for the color widget
+    void emitColorSignal(const QColor color, const std::string& key);
+
+    /**
+     * @name Slots
+     * @{
+     */
     /// Slot: This method is used to set an boolean parameter.
     void setBoolParameter(bool val, std::string key);
 
@@ -217,6 +224,7 @@ private:
 
     /// Slot: This method is used to set an enum parameter.
     void setEnumParameter(std::string val, std::string key);
+    /// @}
 
     /// Computes a double slider value from a slider position.
     static double getDoubleSliderValue(const QSlider* slider);
@@ -228,10 +236,11 @@ private:
     template<typename T>
     static QString valueToStringLabel(T value, std::uint8_t decimals);
 
-    /// Allows to connect sliders and their labels
-    QPointer< QSignalMapper> m_integerSliderSignalMapper;
-    QPointer< QSignalMapper> m_doubleSliderSignalMapper;
-    QPointer< QSignalMapper> m_resetMapper;
+    /// Block (or not) signal emmission for this service
+    void blockSignals(bool block);
+
+    /// if true, the signals are not emitted
+    bool m_blockSignals;
 };
 
 //------------------------------------------------------------------------------
