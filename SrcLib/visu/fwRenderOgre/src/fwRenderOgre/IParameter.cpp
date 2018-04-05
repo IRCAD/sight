@@ -44,7 +44,7 @@ const ::fwCom::Slots::SlotKeyType IParameter::s_SET_INT_PARAMETER_SLOT     = "se
 const ::fwCom::Slots::SlotKeyType IParameter::s_SET_INT2_PARAMETER_SLOT    = "setInt2Parameter";
 const ::fwCom::Slots::SlotKeyType IParameter::s_SET_INT3_PARAMETER_SLOT    = "setInt3Parameter";
 
-static const std::string s_PARAMETER_INOUT = "parameter";
+const std::string IParameter::s_PARAMETER_INOUT = "parameter";
 
 //------------------------------------------------------------------------------
 

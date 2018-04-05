@@ -55,6 +55,17 @@ SFrustum::~SFrustum() noexcept
 {
 }
 
+//-----------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsMap SFrustum::getAutoConnections() const
+{
+    ::fwServices::IService::KeyConnectionsMap connections;
+    connections.push( s_CAMERA_INPUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push( s_CAMERA_INPUT, ::arData::Camera::s_INTRINSIC_CALIBRATED_SIG, s_UPDATE_SLOT );
+
+    return connections;
+}
+
 //------------------------------------------------------------------------------
 
 void SFrustum::configuring()
@@ -157,7 +168,7 @@ void SFrustum::stopping()
 
 void SFrustum::setOgreCamFromData()
 {
-    const std::shared_ptr< const ::arData::Camera > camera = this->getInput< ::arData::Camera >(s_CAMERA_INPUT);
+    auto camera = this->getInput< ::arData::Camera >(s_CAMERA_INPUT);
     if(camera != nullptr)
     {
         const double h    = static_cast<double>(camera->getHeight());

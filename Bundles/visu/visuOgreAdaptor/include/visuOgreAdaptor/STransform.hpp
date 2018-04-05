@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VISUOGREADAPTOR_STRANSFORM_HPP__
-#define __VISUOGREADAPTOR_STRANSFORM_HPP__
+#pragma once
 
 #include "visuOgreAdaptor/config.hpp"
 
@@ -57,6 +56,9 @@ public:
     /// Destructor, does nothing
     VISUOGREADAPTOR_API virtual ~STransform() noexcept;
 
+    /// Connect ::fwData::Object::s_MODIFIED_SIG of the transform data to s_UPDATE_SLOT
+    VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
+
     /// Get Ogre transform matrix
     VISUOGREADAPTOR_API const ::Ogre::Matrix4& getTransform() const;
     /// Sets the Transformation Matrix to the ::Ogre::Matrix t, then updates it in F4S by copy from Ogre
@@ -86,5 +88,3 @@ protected:
 };
 
 } //namespace visuOgreAdaptor
-
-#endif // __VISUOGREADAPTOR_STRANSFORM_HPP__

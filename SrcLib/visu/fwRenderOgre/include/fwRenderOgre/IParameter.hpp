@@ -40,6 +40,8 @@ public:
 
     ///@}
 
+    FWRENDEROGRE_API static const std::string s_PARAMETER_INOUT;
+
     /// Constructor.
     FWRENDEROGRE_API IParameter() noexcept;
 

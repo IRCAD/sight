@@ -22,6 +22,16 @@ namespace uiVisuOgre
 
 /**
  * @brief   Allows to select a ::fwData::Image and apply it to the current reconstruction as an Ogre texture
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+        <service uid="..." type="::uiVisuOgre::STextureSelector">
+            <inout key="reconstruction" uid="..." />
+       </service>
+   @endcode
+ * @subsection In-Out In-Out:
+ * - \b reconstruction [::fwData::Reconstruction]: reconstruction where the texture should be applied.
  */
 class UIVISUOGRE_CLASS_API STextureSelector : public QObject,
                                               public ::fwGui::editor::IEditor

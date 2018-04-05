@@ -35,6 +35,8 @@ namespace uiVisuOgre
 
 fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuOgre::STextureSelector, ::fwData::Reconstruction);
 
+static const std::string s_RECONSTRUCTION_INOUT = "reconstruction";
+
 //------------------------------------------------------------------------------
 
 STextureSelector::STextureSelector() noexcept
@@ -108,7 +110,7 @@ void STextureSelector::updating()
 
 void STextureSelector::onLoadButton()
 {
-    ::fwData::Reconstruction::sptr reconstruction = this->getObject< ::fwData::Reconstruction>();
+    auto reconstruction = this->getInOut< ::fwData::Reconstruction >(s_RECONSTRUCTION_INOUT);
     SLM_ASSERT("No associated Reconstruction", reconstruction);
 
     ::fwData::Material::sptr material = reconstruction->getMaterial();
@@ -154,9 +156,11 @@ void STextureSelector::onLoadButton()
 
 void STextureSelector::onDeleteButton()
 {
-    ::fwData::Reconstruction::sptr reconstruction = this->getObject< ::fwData::Reconstruction>();
-    ::fwData::Material::sptr material             = reconstruction->getMaterial();
-    ::fwData::Image::sptr image                   = material->getDiffuseTexture();
+    auto reconstruction = this->getInOut< ::fwData::Reconstruction >(s_RECONSTRUCTION_INOUT);
+    SLM_ASSERT("No associated Reconstruction", reconstruction);
+
+    ::fwData::Material::sptr material = reconstruction->getMaterial();
+    ::fwData::Image::sptr image       = material->getDiffuseTexture();
 
     if(image)
     {

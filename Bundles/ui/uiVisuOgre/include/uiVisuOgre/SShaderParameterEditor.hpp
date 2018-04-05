@@ -27,6 +27,16 @@ namespace uiVisuOgre
 
 /**
  * @brief   Editor allowing to edit each parameters from each shader of a reconstruction
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+        <service uid="..." type="::uiVisuOgre::SShaderParameterEditor" >
+            <inout key="reconstruction" uid="..." />
+        </service>
+   @endcode
+ * @subsection In-Out In-Out:
+ * - \b reconstruction [::fwData::Reconstruction]: reconstruction whose paremeters should be edited.
  */
 class UIVISUOGRE_CLASS_API SShaderParameterEditor : public ::fwGui::editor::IEditor
 {
@@ -50,19 +60,7 @@ protected:
 
     typedef ::fwRuntime::ConfigurationElement::sptr Configuration;
 
-    /**
-     * @brief Configure the editor to associate with each object type
-     *
-     * @code{.xml}
-       <service uid="paramView" type="::uiVisuOgre::SShaderParameterEditor" autoConnect="yes">
-       </service>
-       @endcode
-     * for which:\n
-     * - Each \<association\> node must contain a type attribute and an editor attribute.\n
-     * It defines a rule for all the data which has the specify type in type attribute.
-     * - type attribute is a fw4spl data type
-     * - editor attribute is the editor associated to the type given in association.
-     */
+    /// Initialize the container
     UIVISUOGRE_API virtual void configuring() override;
 
     /// Start the service, slot connections, QtContainer initialization .

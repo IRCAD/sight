@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -41,6 +41,10 @@ const ::fwCom::Slots::SlotKeyType SLight::s_SET_X_OFFSET_SLOT         = "setXOff
 const ::fwCom::Slots::SlotKeyType SLight::s_SET_Y_OFFSET_SLOT         = "setYOffset";
 const ::fwCom::Slots::SlotKeyType SLight::s_SET_DOUBLE_PARAMETER_SLOT = "setDoubleParameter";
 
+static const ::fwServices::IService::KeyType s_TRANSFORM_INOUT      = "transform";
+static const ::fwServices::IService::KeyType s_DIFFUSE_COLOR_INOUT  = "diffuseColor";
+static const ::fwServices::IService::KeyType s_SPECULAR_COLOR_INOUT = "specularColor";
+
 //------------------------------------------------------------------------------
 
 SLight::SLight() noexcept :
@@ -74,6 +78,18 @@ SLight::SLight(::fwRenderOgre::ILight::Key /*key*/) :
 
 SLight::~SLight() noexcept
 {
+}
+
+//-----------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsMap SLight::getAutoConnections() const
+{
+    ::fwServices::IService::KeyConnectionsMap connections;
+    connections.push( s_TRANSFORM_INOUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push( s_DIFFUSE_COLOR_INOUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push( s_SPECULAR_COLOR_INOUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT );
+
+    return connections;
 }
 
 //------------------------------------------------------------------------------
@@ -113,8 +129,8 @@ void SLight::starting()
 {
     this->initialize();
 
-    m_lightDiffuseColor  = this->getInOut< ::fwData::Color >("diffuseColor");
-    m_lightSpecularColor = this->getInOut< ::fwData::Color >("specularColor");
+    m_lightDiffuseColor  = this->getInOut< ::fwData::Color >(s_DIFFUSE_COLOR_INOUT);
+    m_lightSpecularColor = this->getInOut< ::fwData::Color >(s_SPECULAR_COLOR_INOUT);
 
     m_lightName = this->getID() + "_" + m_lightName;
     m_light     = this->getSceneManager()->createLight(m_lightName);
@@ -251,7 +267,7 @@ void SLight::setDoubleParameter(double _val, std::string _key)
 void SLight::createTransformService()
 {
     ::fwData::TransformationMatrix3D::sptr transform =
-        this->getInOut< ::fwData::TransformationMatrix3D >("transform");
+        this->getInOut< ::fwData::TransformationMatrix3D >(s_TRANSFORM_INOUT);
 
     SLM_ASSERT("Missing tranform data object.", transform);
 

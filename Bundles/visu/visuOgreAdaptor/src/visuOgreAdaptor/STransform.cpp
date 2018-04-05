@@ -23,6 +23,8 @@ fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::STransform,
 namespace visuOgreAdaptor
 {
 
+static const ::fwServices::IService::KeyType s_TRANSFORM_INOUT = "transform";
+
 //------------------------------------------------------------------------------
 
 STransform::STransform() noexcept :
@@ -35,6 +37,16 @@ STransform::STransform() noexcept :
 
 STransform::~STransform() noexcept
 {
+}
+
+//-----------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsMap STransform::getAutoConnections() const
+{
+    ::fwServices::IService::KeyConnectionsMap connections;
+    connections.push( s_TRANSFORM_INOUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT );
+
+    return connections;
 }
 
 //------------------------------------------------------------------------------
@@ -100,7 +112,7 @@ void STransform::starting()
 
 void STransform::updateFromOgre()
 {
-    auto fwTransform = this->getObject< ::fwData::TransformationMatrix3D >();
+    auto fwTransform = this->getInOut< ::fwData::TransformationMatrix3D >(s_TRANSFORM_INOUT);
     ::fwData::mt::ObjectWriteLock lock(fwTransform);
     for(size_t lt = 0; lt < 4; lt++)
     {
@@ -121,7 +133,7 @@ void STransform::updateFromOgre()
 
 void STransform::updating()
 {
-    auto fwTransform = this->getObject< ::fwData::TransformationMatrix3D >();
+    auto fwTransform = this->getInOut< ::fwData::TransformationMatrix3D >(s_TRANSFORM_INOUT);
 
     // Multithreaded lock
     {

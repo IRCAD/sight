@@ -295,7 +295,7 @@ void SMaterial::updateField( ::fwData::Object::FieldsContainerType fields )
         {
             this->unregisterServices("::visuOgreAdaptor::SShaderParameter");
 
-            ::fwData::Material::sptr material = this->getObject < ::fwData::Material >();
+            ::fwData::Material::sptr material = this->getInOut< ::fwData::Material >(s_MATERIAL_INOUT);
             ::fwData::String::csptr string    = ::fwData::String::dynamicCast(elt.second);
             this->setMaterialTemplateName(string->getValue());
 

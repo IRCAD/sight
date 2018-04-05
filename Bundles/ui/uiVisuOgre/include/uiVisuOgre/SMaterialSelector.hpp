@@ -24,7 +24,24 @@ namespace uiVisuOgre
 {
 
 /**
- * @brief   Allows to select an Ogre material template and apply it to the current reconstruction
+ * @brief   Allows to select an Ogre material template and apply it to the current reconstruction.
+ *
+ * @section Signals Signals
+ * - \b selected(std::string) : Send the selected material name.
+
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+        <service type="::uiVisuOgre::SMaterialSelector">
+            <inout key="reconstruction" uid="..." />
+       </service>
+   @endcode
+ * @subsection In-Out In-Out:
+ * - \b reconstruction [::fwData::Object]: .
+ */
+
+/**
+ * @brief
  */
 class UIVISUOGRE_CLASS_API SMaterialSelector : public QObject,
                                                public ::fwGui::editor::IEditor

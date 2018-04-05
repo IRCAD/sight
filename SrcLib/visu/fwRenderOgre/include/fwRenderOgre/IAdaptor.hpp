@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWRENDEROGRE_IADAPTOR_HPP__
-#define __FWRENDEROGRE_IADAPTOR_HPP__
+#pragma once
 
 #include "fwRenderOgre/config.hpp"
 #include "fwRenderOgre/SRender.hpp"
@@ -87,9 +86,6 @@ protected:
 
     /// Render service which this adaptor is attached
     ::fwRenderOgre::SRender::wptr m_renderService;
-
-    /// Signal/Slot connections with the objects
-    ::fwCom::helper::SigSlotConnection m_objConnection;
 };
 
 // ------------------------------------------------------------------------
@@ -101,5 +97,3 @@ inline std::string IAdaptor::msgHead() const
 //------------------------------------------------------------------------------
 
 } //namespace fwRenderOgre
-
-#endif /*__FWRENDEROGRE_IADAPTOR_HPP__*/
