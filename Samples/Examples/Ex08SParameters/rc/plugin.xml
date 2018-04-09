@@ -1,0 +1,259 @@
+<!--
+This example shows the possibilities of SParameters:
+- The two upper SParameters are links together (the values are synchronized for the parameters with the same name).
+- The two lower SParameters allow to set the minimum/maximum values of the upper SParameters (with the same name).
+   - The minimum of a parameter is connected to the minimum of the maximum parameter (and vice versa)
+-->
+<plugin id="Ex08SParameters" version="@PROJECT_VERSION@">
+
+    <requirement id="servicesReg" />
+    <requirement id="dataReg" />
+    <requirement id="preferences" />
+
+    <extension implements="::fwServices::registry::AppConfig">
+        <id>Ex07SParametersConfig</id>
+        <config>
+
+            <service uid="mainFrame" type="::gui::frame::SDefaultFrame">
+                <gui>
+                    <frame>
+                        <name>Example 08 SParamters @PROJECT_VERSION@</name>
+                        <minSize width="800" height="600" />
+                    </frame>
+                </gui>
+                <registry>
+                    <view sid="mainview" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="mainview" type="::gui::view::SDefaultView">
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="vertical" />
+                        <view caption="Parameters" proportion="1" />
+                        <view caption="Minimum parameters" proportion="0" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="parametersView" start="yes" />
+                    <view sid="minMaxparametersView" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="parametersView" type="::gui::view::SDefaultView">
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="horizontal" />
+                        <view caption="Parameters 1" proportion="1" />
+                        <view caption="Parameters 2" proportion="1" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="parameters1" start="yes" />
+                    <view sid="parameters2" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="minMaxparametersView" type="::gui::view::SDefaultView">
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="horizontal" />
+                        <view caption="Minimum parameters" proportion="0" />
+                        <view caption="Maximum parameters" proportion="0" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="minParameters" start="yes" />
+                    <view sid="maxParameters" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="parameters1" type="::guiQt::editor::SParameters">
+                <parameters>
+                    <param type="bool"    name="Boolean"   key="bool_1"    defaultValue="true" />
+                    <param type="color"   name="Color"     key="color_1"   defaultValue="#a55376b9" />
+                    <param type="double"  name="Double 1"  key="double_1"  defaultValue="0.03" min="0.01" max="1." />
+                    <param type="double"  name="Double 2"  key="double_2"  widget="slider" defaultValue="0.01" min="0." max="1." />
+                    <param type="double2" name="2 Double"  key="double2_1" widget="spin"   defaultValue="5.0" min="0." max="100." />
+                    <param type="double3" name="3 Double"  key="double3_1" widget="spin"   defaultValue="5.0" min="0." max="100." />
+                    <param type="int"     name="Integer 1" key="int_1"     widget="spin"   defaultValue="50" min="0" max="100" />
+                    <param type="int"     name="Integer 2" key="int_2"     widget="slider" defaultValue="50" min="0" max="100" />
+                    <param type="int2"    name="2 Integer" key="int2_1"    widget="spin"   defaultValue="5" min="0" max="100" />
+                    <param type="int3"    name="3 Integer" key="int3_1"    widget="spin"   defaultValue="5" min="0" max="100" />
+                    <param type="enum"    name="Enum"      key="enum_1"    defaultValue="V1" values="V0,V1,V2,V3" />
+                </parameters>
+            </service>
+
+            <service uid="parameters2" type="::guiQt::editor::SParameters">
+                <parameters>
+                    <param type="bool"    name="Boolean"   key="bool_1"    defaultValue="false" />
+                    <param type="color"   name="Color"     key="color_1"   defaultValue="#25b18a" />
+                    <param type="double"  name="Double 1"  key="double_1"  defaultValue="0.35" min="0.01" max="1." />
+                    <param type="double"  name="Double 2"  key="double_2"  widget="slider" defaultValue="0.5" min="0." max="1." />
+                    <param type="double2" name="2 Double"  key="double2_1" widget="spin"   defaultValue="50.0" min="0." max="100." />
+                    <param type="double3" name="3 Double"  key="double3_1" widget="spin"   defaultValue="25.0" min="0." max="100." />
+                    <param type="int"     name="Integer 1" key="int_1"     widget="spin"   defaultValue="26" min="0" max="100" />
+                    <param type="int"     name="Integer 2" key="int_2"     widget="slider" defaultValue="37" min="0" max="100" />
+                    <param type="int2"    name="2 Integer" key="int2_1"    widget="spin"   defaultValue="8" min="0" max="100" />
+                    <param type="int3"    name="3 Integer" key="int3_1"    widget="spin"   defaultValue="12" min="0" max="100" />
+                    <param type="enum"    name="Enum"      key="enum_1"    defaultValue="V2" values="V0,V1,V2,V3" />
+                </parameters>
+            </service>
+
+            <service uid="minParameters" type="::guiQt::editor::SParameters">
+                <parameters>
+                    <param type="double"  name="Double 1"  key="double_1"  widget="spin"   defaultValue="0.2" min="0." max="0.8" />
+                    <param type="double"  name="Double 2"  key="double_2"  widget="slider" defaultValue="0." min="0." max="80." />
+                    <param type="double"  name="2 Double"  key="double2_1" widget="slider" defaultValue="20.5" min="0." max="80." />
+                    <param type="double"  name="3 Double"  key="double3_1" widget="slider" defaultValue="20.5" min="0." max="80." />
+                    <param type="int"     name="Integer 1" key="int_1"     widget="spin"   defaultValue="0" min="0" max="80" />
+                    <param type="int"     name="Integer 2" key="int_2"     widget="slider" defaultValue="0" min="0" max="80" />
+                    <param type="int"     name="2 Integer" key="int2_1"    widget="slider" defaultValue="0" min="0" max="80" />
+                    <param type="int"     name="3 Integer" key="int3_1"    widget="slider" defaultValue="0" min="0" max="80" />
+                </parameters>
+            </service>
+
+            <service uid="maxParameters" type="::guiQt::editor::SParameters">
+                <parameters>
+                    <param type="double"  name="Double 1"  key="double_1"  widget="spin"   defaultValue="0.7" min="0.2" max="1." />
+                    <param type="double"  name="Double 2"  key="double_2"  widget="slider" defaultValue="75.3" min="35." max="150." />
+                    <param type="double"  name="2 Double"  key="double2_1" widget="slider" defaultValue="75.3" min="35." max="150." />
+                    <param type="double"  name="3 Double"  key="double3_1" widget="slider" defaultValue="75.3" min="35." max="150." />
+                    <param type="int"     name="Integer 1" key="int_1"     widget="spin"   defaultValue="20" min="0" max="100" />
+                    <param type="int"     name="Integer 2" key="int_2"     widget="slider" defaultValue="20" min="0" max="100" />
+                    <param type="int"     name="2 Integer" key="int2_1"    widget="slider" defaultValue="20" min="0" max="100" />
+                    <param type="int"     name="3 Integer" key="int3_1"    widget="slider" defaultValue="20" min="0" max="100" />
+                </parameters>
+            </service>
+
+            <!-- Connect all the parameters to each other -->
+            <connect>
+                <signal>parameters1/boolChanged</signal>
+                <slot>parameters2/setBoolParameter</slot>
+            </connect>
+
+            <connect>
+                <signal>parameters2/boolChanged</signal>
+                <slot>parameters1/setBoolParameter</slot>
+            </connect>
+
+            <connect>
+                <signal>parameters1/colorChanged</signal>
+                <slot>parameters2/setColorParameter</slot>
+            </connect>
+
+            <connect>
+                <signal>parameters2/colorChanged</signal>
+                <slot>parameters1/setColorParameter</slot>
+            </connect>
+
+            <connect>
+                <signal>parameters1/doubleChanged</signal>
+                <slot>parameters2/setDoubleParameter</slot>
+            </connect>
+
+            <connect>
+                <signal>parameters2/doubleChanged</signal>
+                <slot>parameters1/setDoubleParameter</slot>
+            </connect>
+
+            <connect>
+                <signal>parameters1/double2Changed</signal>
+                <slot>parameters2/setDouble2Parameter</slot>
+            </connect>
+
+            <connect>
+                <signal>parameters2/double2Changed</signal>
+                <slot>parameters1/setDouble2Parameter</slot>
+            </connect>
+
+            <connect>
+                <signal>parameters1/double3Changed</signal>
+                <slot>parameters2/setDouble3Parameter</slot>
+            </connect>
+
+            <connect>
+                <signal>parameters2/double3Changed</signal>
+                <slot>parameters1/setDouble3Parameter</slot>
+            </connect>
+
+            <connect>
+                <signal>parameters1/intChanged</signal>
+                <slot>parameters2/setIntParameter</slot>
+            </connect>
+
+            <connect>
+                <signal>parameters2/intChanged</signal>
+                <slot>parameters1/setIntParameter</slot>
+            </connect>
+
+            <connect>
+                <signal>parameters1/int2Changed</signal>
+                <slot>parameters2/setInt2Parameter</slot>
+            </connect>
+
+            <connect>
+                <signal>parameters2/int2Changed</signal>
+                <slot>parameters1/setInt2Parameter</slot>
+            </connect>
+
+            <connect>
+                <signal>parameters1/int3Changed</signal>
+                <slot>parameters2/setInt3Parameter</slot>
+            </connect>
+
+            <connect>
+                <signal>parameters2/int3Changed</signal>
+                <slot>parameters1/setInt3Parameter</slot>
+            </connect>
+
+            <connect>
+                <signal>parameters1/enumChanged</signal>
+                <slot>parameters2/setEnumParameter</slot>
+            </connect>
+
+            <connect>
+                <signal>parameters2/enumChanged</signal>
+                <slot>parameters1/setEnumParameter</slot>
+            </connect>
+
+            <!-- Connection to update paraeters minimum -->
+            <connect>
+                <signal>minParameters/intChanged</signal>
+                <slot>parameters1/setIntMinParameter</slot>
+                <slot>parameters2/setIntMinParameter</slot>
+                <slot>maxParameters/setIntMinParameter</slot>
+            </connect>
+
+            <connect>
+                <signal>maxParameters/intChanged</signal>
+                <slot>parameters1/setIntMaxParameter</slot>
+                <slot>parameters2/setIntMaxParameter</slot>
+                <slot>minParameters/setIntMaxParameter</slot>
+            </connect>
+
+            <connect>
+                <signal>minParameters/doubleChanged</signal>
+                <slot>parameters1/setDoubleMinParameter</slot>
+                <slot>parameters2/setDoubleMinParameter</slot>
+                <slot>maxParameters/setDoubleMinParameter</slot>
+            </connect>
+
+            <connect>
+                <signal>maxParameters/doubleChanged</signal>
+                <slot>parameters1/setDoubleMaxParameter</slot>
+                <slot>parameters2/setDoubleMaxParameter</slot>
+                <slot>minParameters/setDoubleMaxParameter</slot>
+            </connect>
+
+            <start uid="mainFrame" />
+
+            <update uid="parameters2" />
+            <update uid="minParameters" />
+            <update uid="maxParameters" />
+
+        </config>
+    </extension>
+
+
+</plugin>
