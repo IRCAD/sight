@@ -55,11 +55,6 @@ def bootstrap_docset():
     conn_.commit()
     return conn_
 
-def parse_json_config():
-    """
-    Parse the projects.json configuration file. It is expected to be present in the working directory.
-    """
-
 def gather_sources():
     """
     Return a list containing the paths to all interesting HTML files contained at the root of the Doxygen html
@@ -286,7 +281,6 @@ def main():
     except (OSError, json.JSONDecodeError) as err:
         print("Error loading configuration file: " + str(err))
         return
-    CFG = parse_json_config()
     REPO_NAMES = {repo: Path(repo).parent.name if Path(repo).name == "src" else Path(repo).name for repo in CFG['repositories']}
     if CFG is None:
         sys.exit(1)
