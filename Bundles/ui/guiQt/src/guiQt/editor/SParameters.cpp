@@ -48,15 +48,19 @@ static const ::fwCom::Signals::SignalKeyType INTEGER2_CHANGED_SIG = "int2Changed
 static const ::fwCom::Signals::SignalKeyType INTEGER3_CHANGED_SIG = "int3Changed";
 static const ::fwCom::Signals::SignalKeyType ENUM_CHANGED_SIG     = "enumChanged";
 
-static const ::fwCom::Slots::SlotKeyType s_SET_BOOL_PARAMETER_SLOT    = "setBoolParameter";
-static const ::fwCom::Slots::SlotKeyType s_SET_COLOR_PARAMETER_SLOT   = "setColorParameter";
-static const ::fwCom::Slots::SlotKeyType s_SET_DOUBLE_PARAMETER_SLOT  = "setDoubleParameter";
-static const ::fwCom::Slots::SlotKeyType s_SET_DOUBLE2_PARAMETER_SLOT = "setDouble2Parameter";
-static const ::fwCom::Slots::SlotKeyType s_SET_DOUBLE3_PARAMETER_SLOT = "setDouble3Parameter";
-static const ::fwCom::Slots::SlotKeyType s_SET_INT_PARAMETER_SLOT     = "setIntParameter";
-static const ::fwCom::Slots::SlotKeyType s_SET_INT2_PARAMETER_SLOT    = "setInt2Parameter";
-static const ::fwCom::Slots::SlotKeyType s_SET_INT3_PARAMETER_SLOT    = "setInt3Parameter";
-static const ::fwCom::Slots::SlotKeyType s_SET_ENUM_PARAMETER_SLOT    = "setEnumParameter";
+static const ::fwCom::Slots::SlotKeyType s_SET_BOOL_PARAMETER_SLOT       = "setBoolParameter";
+static const ::fwCom::Slots::SlotKeyType s_SET_COLOR_PARAMETER_SLOT      = "setColorParameter";
+static const ::fwCom::Slots::SlotKeyType s_SET_DOUBLE_PARAMETER_SLOT     = "setDoubleParameter";
+static const ::fwCom::Slots::SlotKeyType s_SET_DOUBLE2_PARAMETER_SLOT    = "setDouble2Parameter";
+static const ::fwCom::Slots::SlotKeyType s_SET_DOUBLE3_PARAMETER_SLOT    = "setDouble3Parameter";
+static const ::fwCom::Slots::SlotKeyType s_SET_INT_PARAMETER_SLOT        = "setIntParameter";
+static const ::fwCom::Slots::SlotKeyType s_SET_INT2_PARAMETER_SLOT       = "setInt2Parameter";
+static const ::fwCom::Slots::SlotKeyType s_SET_INT3_PARAMETER_SLOT       = "setInt3Parameter";
+static const ::fwCom::Slots::SlotKeyType s_SET_ENUM_PARAMETER_SLOT       = "setEnumParameter";
+static const ::fwCom::Slots::SlotKeyType s_SET_INT_MIN_PARAMETER_SLOT    = "setIntMinParameter";
+static const ::fwCom::Slots::SlotKeyType s_SET_INT_MAX_PARAMETER_SLOT    = "setIntMaxParameter";
+static const ::fwCom::Slots::SlotKeyType s_SET_DOUBLE_MIN_PARAMETER_SLOT = "setDoubleMinParameter";
+static const ::fwCom::Slots::SlotKeyType s_SET_DOUBLE_MAX_PARAMETER_SLOT = "setDoubleMaxParameter";
 
 //-----------------------------------------------------------------------------
 
@@ -82,6 +86,10 @@ SParameters::SParameters() noexcept :
     newSlot(s_SET_INT2_PARAMETER_SLOT, &SParameters::setInt2Parameter, this);
     newSlot(s_SET_INT3_PARAMETER_SLOT, &SParameters::setInt3Parameter, this);
     newSlot(s_SET_ENUM_PARAMETER_SLOT, &SParameters::setEnumParameter, this);
+    newSlot(s_SET_INT_MIN_PARAMETER_SLOT, &SParameters::setIntMinParameter, this);
+    newSlot(s_SET_INT_MAX_PARAMETER_SLOT, &SParameters::setIntMaxParameter, this);
+    newSlot(s_SET_DOUBLE_MIN_PARAMETER_SLOT, &SParameters::setDoubleMinParameter, this);
+    newSlot(s_SET_DOUBLE_MAX_PARAMETER_SLOT, &SParameters::setDoubleMaxParameter, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -550,12 +558,35 @@ void SParameters::onSliderMapped(QLabel* label, QSlider* slider)
 
 //-----------------------------------------------------------------------------
 
+void SParameters::onSliderRangeMapped(QLabel* minLabel, QLabel* maxLabel, QSlider* slider)
+{
+    const int min = slider->minimum();
+    const int max = slider->maximum();
+
+    minLabel->setText(QString::number(min));
+    maxLabel->setText(QString::number(max));
+}
+
+//-----------------------------------------------------------------------------
+
 void SParameters::onDoubleSliderMapped(QLabel* label, QSlider* slider)
 {
     const double newValue = getDoubleSliderValue(slider);
     const int decimals    = slider->property("decimals").toInt();
 
     label->setText(QString::number(newValue, 'f', decimals));
+}
+
+//-----------------------------------------------------------------------------
+
+void SParameters::onDoubleSliderRangeMapped(QLabel* minLabel, QLabel* maxLabel, QSlider* slider)
+{
+    const double min   = slider->property("min").toDouble();
+    const double max   = slider->property("max").toDouble();
+    const int decimals = slider->property("decimals").toInt();
+
+    minLabel->setText(QString::number(min, 'g', decimals));
+    maxLabel->setText(QString::number(max, 'g', decimals));
 }
 
 //-----------------------------------------------------------------------------
@@ -854,26 +885,19 @@ void SParameters::createDoubleSliderWidget(QGridLayout& layout, int row, const s
 
     layout.addWidget(resetButton, row, 5);
 
-    int maxSliderValue = 1;
-    for(std::uint8_t i = 0; i < decimals; ++i)
-    {
-        maxSliderValue *= 10;
-    }
-
     const double valueRange = max - min;
-    maxSliderValue *= valueRange;
 
     QSlider* slider = new QSlider(Qt::Horizontal);
     slider->setObjectName(QString::fromStdString(key));
 
-    // The slider's maximum internal range is [0; 2 147 483 647]
-    // We could technically extend this range by setting the minimum to std::numeric_limits<int>::min()
-    // but it would be ridiculous to use a slider handling so many values.
-    slider->setMinimum(0);
-    slider->setMaximum(maxSliderValue);
+    slider->setProperty("key", QString::fromStdString(key));
+    slider->setProperty("count", 1);
+    slider->setProperty("defaultValue", defaultValue);
+    slider->setProperty("decimals", decimals);
+    slider->setProperty("min", min);
+    slider->setProperty("max", max);
 
-    SLM_ERROR_IF("The requested value range for '" + key + "' is too large to be handled by a double slider. "
-                 "Please reduce your range, the number of decimals or use a 'spin' widget.", maxSliderValue < 0);
+    setDoubleSliderRange(slider);
 
     const int defaultSliderValue = int(std::round(((defaultValue - min) / valueRange) * double(slider->maximum())));
     slider->setValue(defaultSliderValue);
@@ -904,18 +928,16 @@ void SParameters::createDoubleSliderWidget(QGridLayout& layout, int row, const s
     layout.addWidget( valueLabel, row, 4);
     layout.addWidget( resetButton, row, 5);
 
-    slider->setProperty("key", QString(key.c_str()));
-    slider->setProperty("count", 1);
-    slider->setProperty("defaultValue", defaultValue);
-    slider->setProperty("decimals", decimals);
-    slider->setProperty("min", min);
-    slider->setProperty("max", max);
-
     // Connect slider value with our editor
     QObject::connect(slider, SIGNAL(valueChanged(int)), this, SLOT(onChangeDoubleSlider(int)));
 
     // Connect slider value to the label
     QObject::connect(slider, &QSlider::valueChanged, this, [ = ] {onDoubleSliderMapped(valueLabel, slider); });
+    QObject::connect(slider, &QSlider::rangeChanged, this, [ = ]
+            {
+                onDoubleSliderRangeMapped(minValueLabel,
+                                          maxValueLabel, slider);
+            });
 
     QObject::connect(resetButton, &QPushButton::clicked, this, [ = ] { onResetDoubleMapped(slider); });
 
@@ -972,6 +994,11 @@ void SParameters::createIntegerSliderWidget(QGridLayout& layout, int row, const 
 
     // Connect slider value to the label
     QObject::connect(slider, &QSlider::valueChanged, this, [ = ] {onSliderMapped(valueLabel, slider); });
+    QObject::connect(slider, &QSlider::rangeChanged, this, [ = ]
+            {
+                onSliderRangeMapped(minValueLabel, maxValueLabel,
+                                    slider);
+            });
 
     QObject::connect(resetButton, &QPushButton::clicked, this, [ = ] { onResetIntegerMapped(slider); });
 
@@ -1066,7 +1093,12 @@ double SParameters::getDoubleSliderValue(const QSlider* slider)
     const double min = slider->property("min").toDouble();
     const double max = slider->property("max").toDouble();
 
-    const double doubleValue = (double(slider->value()) / slider->maximum()) * (max - min) + min;
+    const double valueRange = max - min;
+    double doubleValue      = min;
+    if (slider->maximum() != 0)
+    {
+        doubleValue = (double(slider->value()) / slider->maximum()) * valueRange + min;
+    }
 
     return doubleValue;
 }
@@ -1076,11 +1108,8 @@ double SParameters::getDoubleSliderValue(const QSlider* slider)
 void SParameters::setBoolParameter(bool val, std::string key)
 {
     this->blockSignals(true);
-    auto qtContainer      = ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer());
-    const QWidget* widget = qtContainer->getQtContainer();
-
-    QCheckBox* checkbox = widget->findChild<QCheckBox*>(QString::fromStdString(key));
-    SLM_ERROR_IF("Widget '" + key + "' is not found", !checkbox);
+    QWidget* child      = this->getParamWidget(key);
+    QCheckBox* checkbox = qobject_cast<QCheckBox*>(child);
 
     if (checkbox)
     {
@@ -1094,21 +1123,18 @@ void SParameters::setBoolParameter(bool val, std::string key)
 void SParameters::setColorParameter(std::array<std::uint8_t, 4> color, std::string key)
 {
     this->blockSignals(true);
-    auto qtContainer      = ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer());
-    const QWidget* widget = qtContainer->getQtContainer();
+    QWidget* child           = this->getParamWidget(key);
+    QPushButton* colorButton = qobject_cast<QPushButton* >(child);
 
-    QPushButton* colourButton = widget->findChild<QPushButton*>(QString::fromStdString(key));
-    SLM_ERROR_IF("Widget '" + key + "' is not found", !colourButton);
-
-    if (colourButton)
+    if (colorButton)
     {
-        const int iconSize = colourButton->style()->pixelMetric(QStyle::PM_LargeIconSize);
+        const int iconSize = colorButton->style()->pixelMetric(QStyle::PM_LargeIconSize);
         QPixmap pix(iconSize, iconSize);
         QColor colorQt(color[0], color[1], color[2], color[3]);
         pix.fill(colorQt);
 
-        colourButton->setIcon(QIcon(pix));
-        colourButton->setProperty("color", colorQt);
+        colorButton->setIcon(QIcon(pix));
+        colorButton->setProperty("color", colorQt);
     }
     this->blockSignals(false);
 }
@@ -1117,11 +1143,7 @@ void SParameters::setColorParameter(std::array<std::uint8_t, 4> color, std::stri
 void SParameters::setDoubleParameter(double val, std::string key)
 {
     this->blockSignals(true);
-    auto qtContainer      = ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer());
-    const QWidget* widget = qtContainer->getQtContainer();
-
-    QWidget* child = widget->findChild<QWidget*>(QString::fromStdString(key));
-    SLM_ERROR_IF("Widget '" + key + "' is not found", !child);
+    QWidget* child = this->getParamWidget(key);
 
     QDoubleSpinBox* spinbox = qobject_cast<QDoubleSpinBox*>(child);
     QSlider* slider         = qobject_cast<QSlider*>(child);
@@ -1149,11 +1171,7 @@ void SParameters::setDoubleParameter(double val, std::string key)
 void SParameters::setDouble2Parameter(double val0, double val1, std::string key)
 {
     this->blockSignals(true);
-    auto qtContainer      = ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer());
-    const QWidget* widget = qtContainer->getQtContainer();
-
-    QWidget* child = widget->findChild<QWidget*>(QString::fromStdString(key));
-    SLM_ERROR_IF("Widget '" + key + "' is not found", !child);
+    QWidget* child = this->getParamWidget(key);
 
     if (child)
     {
@@ -1170,11 +1188,7 @@ void SParameters::setDouble2Parameter(double val0, double val1, std::string key)
 void SParameters::setDouble3Parameter(double val0, double val1, double val2, std::string key)
 {
     this->blockSignals(true);
-    auto qtContainer      = ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer());
-    const QWidget* widget = qtContainer->getQtContainer();
-
-    QWidget* child = widget->findChild<QWidget*>(QString::fromStdString(key));
-    SLM_ERROR_IF("Widget '" + key + "' is not found", !child);
+    QWidget* child = this->getParamWidget(key);
 
     if (child)
     {
@@ -1194,11 +1208,7 @@ void SParameters::setDouble3Parameter(double val0, double val1, double val2, std
 void SParameters::setIntParameter(int val, std::string key)
 {
     this->blockSignals(true);
-    auto qtContainer      = ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer());
-    const QWidget* widget = qtContainer->getQtContainer();
-
-    QWidget* child = widget->findChild<QWidget*>(QString::fromStdString(key));
-    SLM_ERROR_IF("Widget '" + key + "' is not found", !child);
+    QWidget* child = this->getParamWidget(key);
 
     QSpinBox* spinbox = qobject_cast<QSpinBox*>(child);
     QSlider* slider   = qobject_cast<QSlider*>(child);
@@ -1222,11 +1232,7 @@ void SParameters::setIntParameter(int val, std::string key)
 void SParameters::setInt2Parameter(int val0, int val1, std::string key)
 {
     this->blockSignals(true);
-    auto qtContainer      = ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer());
-    const QWidget* widget = qtContainer->getQtContainer();
-
-    QWidget* child = widget->findChild<QWidget*>(QString::fromStdString(key));
-    SLM_ERROR_IF("Widget '" + key + "' is not found", !child);
+    QWidget* child = this->getParamWidget(key);
 
     if (child)
     {
@@ -1243,17 +1249,13 @@ void SParameters::setInt2Parameter(int val0, int val1, std::string key)
 void SParameters::setInt3Parameter(int val0, int val1, int val2, std::string key)
 {
     this->blockSignals(true);
-    auto qtContainer      = ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer());
-    const QWidget* widget = qtContainer->getQtContainer();
+    QWidget* widget = this->getParamWidget(key);
 
-    QWidget* child = widget->findChild<QWidget*>(QString::fromStdString(key));
-    SLM_ERROR_IF("Widget '" + key + "' is not found", !child);
-
-    if (child)
+    if (widget)
     {
-        QSpinBox* spin0 = child->property("widget#0").value< QSpinBox*>();
-        QSpinBox* spin1 = child->property("widget#1").value< QSpinBox*>();
-        QSpinBox* spin2 = child->property("widget#2").value< QSpinBox*>();
+        QSpinBox* spin0 = widget->property("widget#0").value< QSpinBox*>();
+        QSpinBox* spin1 = widget->property("widget#1").value< QSpinBox*>();
+        QSpinBox* spin2 = widget->property("widget#2").value< QSpinBox*>();
 
         spin0->setValue(val0);
         spin1->setValue(val1);
@@ -1265,12 +1267,9 @@ void SParameters::setInt3Parameter(int val0, int val1, int val2, std::string key
 
 void SParameters::setEnumParameter(std::string val, std::string key)
 {
-    this->blockSignals(true);
-    auto qtContainer      = ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer());
-    const QWidget* widget = qtContainer->getQtContainer();
+    QWidget* widget = this->getParamWidget(key);
 
-    QComboBox* combobox = widget->findChild<QComboBox*>(QString::fromStdString(key));
-    SLM_ERROR_IF("Widget '" + key + "' is not found", !combobox);
+    QComboBox* combobox = qobject_cast<QComboBox*>(widget);
 
     if (combobox)
     {
@@ -1300,6 +1299,198 @@ void SParameters::emitColorSignal(const QColor color, const std::string& key)
 void SParameters::blockSignals(bool block)
 {
     m_blockSignals = block;
+}
+
+//------------------------------------------------------------------------------
+
+void SParameters::setIntMinParameter(int min, std::string key)
+{
+    QWidget* child = this->getParamWidget(key);
+
+    QSpinBox* spinbox = qobject_cast<QSpinBox*>(child);
+    QSlider* slider   = qobject_cast<QSlider*>(child);
+
+    if (spinbox)
+    {
+        const int count = child->property("count").toInt();
+        QSpinBox* spin0 = child->property("widget#0").value< QSpinBox*>();
+        spin0->setMinimum(min);
+
+        if (count >= 2)
+        {
+            QSpinBox* spin1 = child->property("widget#1").value< QSpinBox*>();
+            spin1->setMinimum(min);
+        }
+        if (count >= 3)
+        {
+            QSpinBox* spin2 = child->property("widget#2").value< QSpinBox*>();
+            spin2->setMinimum(min);
+        }
+    }
+    else if (slider)
+    {
+        slider->setMinimum(min);
+    }
+    else
+    {
+        SLM_ERROR("Widget '" + key + "' must be a QSlider or a QDoubleSpinBox");
+    }
+}
+//------------------------------------------------------------------------------
+
+void SParameters::setIntMaxParameter(int max, std::string key)
+{
+    QWidget* child = this->getParamWidget(key);
+
+    QSpinBox* spinbox = qobject_cast<QSpinBox*>(child);
+    QSlider* slider   = qobject_cast<QSlider*>(child);
+
+    if (spinbox)
+    {
+        const int count = child->property("count").toInt();
+
+        QSpinBox* spin0 = child->property("widget#0").value< QSpinBox*>();
+        spin0->setMaximum(max);
+
+        if (count >= 2)
+        {
+            QSpinBox* spin1 = child->property("widget#1").value< QSpinBox*>();
+            spin1->setMaximum(max);
+        }
+        if (count >= 3)
+        {
+            QSpinBox* spin2 = child->property("widget#2").value< QSpinBox*>();
+            spin2->setMaximum(max);
+        }
+    }
+    else if (slider)
+    {
+        slider->setMaximum(max);
+    }
+    else
+    {
+        SLM_ERROR("Widget '" + key + "' must be a QSlider or a QDoubleSpinBox");
+    }
+}
+//------------------------------------------------------------------------------
+
+void SParameters::setDoubleMinParameter(double min, std::string key)
+{
+    QWidget* child = this->getParamWidget(key);
+
+    QDoubleSpinBox* spinbox = qobject_cast<QDoubleSpinBox*>(child);
+    QSlider* slider         = qobject_cast<QSlider*>(child);
+
+    if (spinbox)
+    {
+        const int count = child->property("count").toInt();
+
+        QDoubleSpinBox* spin0 = child->property("widget#0").value< QDoubleSpinBox*>();
+        spin0->setMinimum(min);
+
+        if (count >= 2)
+        {
+            QDoubleSpinBox* spin1 = child->property("widget#1").value< QDoubleSpinBox*>();
+            spin1->setMinimum(min);
+        }
+        if (count >= 3)
+        {
+            QDoubleSpinBox* spin2 = child->property("widget#2").value< QDoubleSpinBox*>();
+            spin2->setMinimum(min);
+        }
+    }
+    else if (slider)
+    {
+        slider->setProperty("min", min);
+        setDoubleSliderRange(slider);
+    }
+    else
+    {
+        SLM_ERROR("Widget '" + key + "' must be a QSlider or a QDoubleSpinBox");
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SParameters::setDoubleMaxParameter(double max, std::string key)
+{
+    QWidget* child = this->getParamWidget(key);
+
+    QDoubleSpinBox* spinbox = qobject_cast<QDoubleSpinBox*>(child);
+    QSlider* slider         = qobject_cast<QSlider*>(child);
+
+    if (spinbox)
+    {
+        const int count = child->property("count").toInt();
+
+        QDoubleSpinBox* spin0 = child->property("widget#0").value< QDoubleSpinBox*>();
+        spin0->setMaximum(max);
+
+        if (count >= 2)
+        {
+            QDoubleSpinBox* spin1 = child->property("widget#1").value< QDoubleSpinBox*>();
+            spin1->setMaximum(max);
+        }
+        if (count >= 3)
+        {
+            QDoubleSpinBox* spin2 = child->property("widget#2").value< QDoubleSpinBox*>();
+            spin2->setMaximum(max);
+        }
+    }
+    else if (slider)
+    {
+        slider->setProperty("max", max);
+        setDoubleSliderRange(slider);
+    }
+    else
+    {
+        SLM_ERROR("Widget '" + key + "' must be a QSlider or a QDoubleSpinBox");
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void SParameters::setDoubleSliderRange(QSlider* slider)
+{
+    const std::string key       = slider->property("key").toString().toStdString();
+    const double min            = slider->property("min").toDouble();
+    const double max            = slider->property("max").toDouble();
+    const std::uint8_t decimals = static_cast<std::uint8_t>(slider->property("decimals").toUInt());
+    int maxSliderValue          = 1;
+    for(std::uint8_t i = 0; i < decimals; ++i)
+    {
+        maxSliderValue *= 10;
+    }
+
+    const double valueRange = max - min;
+    maxSliderValue *= valueRange;
+
+    // The slider's maximum internal range is [0; 2 147 483 647]
+    // We could technically extend this range by setting the minimum to std::numeric_limits<int>::min()
+    // but it would be ridiculous to use a slider handling so many values.
+    slider->setMinimum(0);
+
+    SLM_ERROR_IF("The requested value range for '" + key + "' is too large to be handled by a double slider. "
+                 "Please reduce your range, the number of decimals or use a 'spin' widget.",
+                 maxSliderValue < std::numeric_limits<double>::epsilon());
+    if (maxSliderValue < std::numeric_limits<double>::epsilon())
+    {
+        maxSliderValue = 1.;
+    }
+    slider->setMaximum(maxSliderValue);
+}
+
+//-----------------------------------------------------------------------------
+
+QWidget* SParameters::getParamWidget(const std::string& key)
+{
+    auto qtContainer      = ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer());
+    const QWidget* widget = qtContainer->getQtContainer();
+
+    QWidget* child = widget->findChild<QWidget*>(QString::fromStdString(key));
+    SLM_ERROR_IF("Widget '" + key + "' is not found", !child);
+
+    return child;
 }
 
 //-----------------------------------------------------------------------------

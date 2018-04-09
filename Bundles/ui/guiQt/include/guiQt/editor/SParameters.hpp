@@ -44,6 +44,23 @@ namespace editor
  * - \b int3Changed(int, int, int, std::string): Emitted when three integer parameters change.
  * - \b enumChanged(std::string, std::string): Emitted when enum parameter changes.
  *
+ * @section Slots Slots
+ * - \b setBoolParameter(bool, std::string): set an boolean parameter.
+ * - \b setColorParameter(std::array<std::uint8_t, 4>, std::string): set a color parameter.
+ * - \b setDoubleParameter(double, std::string): set a double parameter.
+ * - \b setDouble2Parameter(double, double, std::string): set two double parameters.
+ * - \b setDouble3Parameter(double, double, double, std::string): set three double parameters.
+ * - \b setIntParameter(int, std::string): set an integer parameter.
+ * - \b setInt2Parameter(int, int, std::string): set two int parameters.
+ * - \b setInt3Parameter(int, int, int, std::string): set three int parameters.
+ * - \b setEnumParameter(std::string, std::string y): set an enum parameter.
+ * - \b setIntMinParameter(int, std::string): set the minimum value of an integer parameter (int, int2, int3)
+ * - \b setIntMaxParameter(int, std::string): set the maximum value of an integer parameter (int, int2, int3)
+ * - \b setDoubleMinParameter(double, std::string): set the minimum value of a double parameter (double, double2,
+ * double3)
+ * - \b setDoubleMaxParameter(double, std::string): set the maximum value of an double parameter (double, double2,
+ * double3)
+ *
  * @section XML XML Configuration
  *
  * @code{.xml}
@@ -154,6 +171,12 @@ private Q_SLOTS:
     /// This method is called to connect reset buttons and sliders
     void onResetDoubleMapped(QWidget* widget);
 
+    /// This method is called when the integer slider range is modified, it updates the min and max labels
+    void onSliderRangeMapped(QLabel* minLabel, QLabel* maxLabel, QSlider* slider);
+
+    // This method is called when the double slider range is modified, it updates the min and max labels
+    void onDoubleSliderRangeMapped(QLabel* minLabel, QLabel* maxLabel, QSlider* slider);
+
 private:
 
     /// Snippet to create the reset button
@@ -224,10 +247,28 @@ private:
 
     /// Slot: This method is used to set an enum parameter.
     void setEnumParameter(std::string val, std::string key);
+
+    /// Slot: Set the minimum value of an integer parameter (int, int2, int3)
+    void setIntMinParameter(int min, std::string key);
+
+    /// Slot: Set the maximum value of an integer parameter (int, int2, int3)
+    void setIntMaxParameter(int max, std::string key);
+
+    /// Slot: Set the minimum value of a double parameter (double, double2, double3)
+    void setDoubleMinParameter(double min, std::string key);
+
+    /// Slot: Set the maximum value of an double parameter (double, double2, double3)
+    void setDoubleMaxParameter(double max, std::string key);
     /// @}
+
+    /// Return the widget of the parameter with the given key, or nullptr if it does not exist
+    QWidget* getParamWidget(const std::string& key);
 
     /// Computes a double slider value from a slider position.
     static double getDoubleSliderValue(const QSlider* slider);
+
+    /// Computes the double slider range according to the min and max property
+    static void setDoubleSliderRange(QSlider* slider);
 
     /// Adjust the minimum size of a label according to the range values
     template <typename T>
