@@ -133,6 +133,7 @@
             <type mode="reader" />
             <selection mode="exclude" />
             <addSelection service="::ioAtoms::SReader" />
+            <addSelection service="::ioData::SAttachmentSeriesReader" />
         </config>
     </extension>
 
@@ -170,6 +171,7 @@
         <config>
             <type mode="reader" />
             <selection mode="exclude" />
+            <addSelection service="::ioData::SAttachmentSeriesReader" />
             <config id="MDAtomsConfig" service="::ioAtoms::SReader" />
         </config>
     </extension>
@@ -177,7 +179,7 @@
     <!-- Service config used for ioAtoms reader and writer. Defines the Data version and filter to use. -->
     <extension implements="::fwServices::registry::ServiceConfig">
         <id>MDAtomsConfig</id>
-        <desc>Reader/Writer for atoms representing a medical data</desc>
+        <desc>Json/Xml Reader/Writer (FW4SPL)</desc>
         <config>
             <patcher context="MedicalData" version="V10" />
             <filter>VRRenderMedicalDataV2</filter>
@@ -225,7 +227,7 @@
     <!-- Service config used for ioAtoms reader and writer to read landmarks -->
     <extension implements="::fwServices::registry::ServiceConfig">
         <id>LandmarksAtomsConfig</id>
-        <desc>Reader/Writer for atoms representing a medical data</desc>
+        <desc>Json/Xml Reader/Writer (FW4SPL)</desc>
         <config>
             <patcher context="Landmark" version="V2" />
         </config>
