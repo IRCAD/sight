@@ -42,6 +42,8 @@
 #include <boost/assign.hpp>
 #include <boost/filesystem/path.hpp>
 
+#include <regex>
+
 namespace ioAtoms
 {
 
@@ -185,6 +187,15 @@ bool SWriter::versionSelection()
         {
             versions.push_back(m_version);
 
+            std::transform(versions.begin(), versions.end(), versions.begin(), [](const std::string& _version)
+                {
+                    static const std::regex ala("ALA");
+                    return std::regex_replace(_version, ala, "");
+                } );
+
+            // Sort versions according to repository/number. This is not really honnest since we should not make any
+            // assumption about the versioning convention, especially for child repositories... But since this is
+            // how things are organized currently I don't think this is such a big issue
             std::sort(versions.begin(), versions.end(), [](const std::string& _a, const std::string& _b)
                 {
                     try
@@ -208,7 +219,7 @@ bool SWriter::versionSelection()
                     }
                 });
 
-            std::vector< std::string > prettyVersions;
+            std::vector< std::string > prettyVersionsAll;
             std::map< std::string, std::string > prettyVersionsToVersions;
 
             for(const auto& v : versions)
@@ -219,7 +230,7 @@ bool SWriter::versionSelection()
                     const std::string repo = v.substr(3, v.size());
 
                     const std::string prettyVersion = num + ((repo.empty()) ? "" : " (" + repo + ")");
-                    prettyVersions.push_back(prettyVersion);
+                    prettyVersionsAll.push_back(prettyVersion);
                     prettyVersionsToVersions[ prettyVersion ] = v;
 
                 }
@@ -227,23 +238,50 @@ bool SWriter::versionSelection()
                 {
                     OSLM_ERROR("Bad version format: " + v);
 
-                    prettyVersions.push_back(v);
+                    prettyVersionsAll.push_back(v);
                     prettyVersionsToVersions[ v ] = v;
                 }
             }
 
-            // Sort versions according to repository. This is not really honnest since we should not make any
-            // assumption about the versioning convention, especially for child repositories... But since this is
-            // how things are organized currently I don't think this is such a big issue
+            // Create a shortened list of versions, with only the latest ones of each repo
+            std::vector< std::string > prettyVersions;
+            prettyVersions.push_back(prettyVersionsAll[0]);
+            for(auto itVersion = prettyVersionsAll.begin() + 1; itVersion != prettyVersionsAll.end(); ++itVersion)
+            {
+                const auto& versionA    = *(itVersion - 1);
+                const auto& versionB    = *(itVersion);
+                const std::string repoA = versionA.substr(3, versionA.size());
+                const std::string repoB = versionB.substr(3, versionB.size());
+
+                if(repoA != repoB)
+                {
+                    prettyVersions.push_back(versionB);
+                }
+            }
 
             ::fwGui::dialog::SelectorDialog dialogVersion;
 
             dialogVersion.setTitle("Archive version");
             dialogVersion.setMessage("Select an archive version");
 
+            bool selectAmongstAllVersions = false;
+            dialogVersion.addCustomButton("Advanced", [&selectAmongstAllVersions]()
+                {
+                    selectAmongstAllVersions = true;
+                });
+
             dialogVersion.setSelections(prettyVersions);
             std::string result = dialogVersion.show();
-            if ( !result.empty() )
+            if(selectAmongstAllVersions)
+            {
+                ::fwGui::dialog::SelectorDialog dialogVersionAll;
+
+                dialogVersionAll.setTitle("Archive version");
+                dialogVersionAll.setMessage("Select an archive version");
+                dialogVersionAll.setSelections(prettyVersionsAll);
+                result = dialogVersionAll.show();
+            }
+            if( !result.empty() )
             {
                 m_exportedVersion = prettyVersionsToVersions[result];
             }
