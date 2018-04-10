@@ -1,17 +1,16 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWGUI_DIALOG_ISELECTORDIALOG_HPP__
-#define __FWGUI_DIALOG_ISELECTORDIALOG_HPP__
+#pragma once
+
+#include "fwGui/config.hpp"
+#include "fwGui/container/fwContainer.hpp"
+#include "fwGui/GuiBaseObject.hpp"
 
 #include <vector>
-
-#include "fwGui/GuiBaseObject.hpp"
-#include "fwGui/container/fwContainer.hpp"
-#include "fwGui/config.hpp"
 
 namespace fwGui
 {
@@ -21,9 +20,6 @@ namespace dialog
 
 /**
  * @brief   ISelectorDialog allows the choice of an element among several (_selections)
- * @class   ISelectorDialog
- *
- * @date    2009-2010.
  */
 class FWGUI_CLASS_API ISelectorDialog : public ::fwGui::GuiBaseObject
 {
@@ -61,10 +57,11 @@ public:
     FWGUI_API virtual std::string show() = 0;
 
     /// Set the message
-    FWGUI_API virtual void setMessage(const std::string &msg) = 0;
+    FWGUI_API virtual void setMessage(const std::string& msg) = 0;
+
+    /// Add a custom button to this dialog
+    FWGUI_API virtual void addCustomButton(const std::string& label, std::function<void()> clickedFn) = 0;
 };
 
 } //namespace dialog
 } //namespace fwGui
-
-#endif /*__FWGUI_DIALOG_ISELECTORDIALOG_HPP__*/
