@@ -6,8 +6,8 @@
 
 #include "guiQt/editor/SParameters.hpp"
 
-#include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
+#include <fwCom/Slots.hxx>
 
 #include <fwDataTools/Color.hpp>
 
@@ -859,10 +859,11 @@ void SParameters::createDoubleWidget(QGridLayout& layout, int row, const std::st
         QObject::connect(spinbox, SIGNAL(valueChanged(double)), this, SLOT(onChangeDouble(double)));
     }
 
-    spinboxes[0]->setObjectName(QString::fromStdString(key));
+    QDoubleSpinBox* spinbox = spinboxes[0];
+    spinbox->setObjectName(QString::fromStdString(key));
 
     // Connect reset button to the slider
-    QObject::connect(resetButton, &QPushButton::clicked, this, [ = ] { onResetDoubleMapped(spinboxes[0]); });
+    QObject::connect(resetButton, &QPushButton::clicked, this, [ = ] { onResetDoubleMapped(spinbox); });
 
     // Set a property with a pointer on each member of the group
     for(int i = 0; i < count; ++i)
@@ -1038,8 +1039,9 @@ void SParameters::createIntegerSpinWidget(QGridLayout& layout, int row, const st
         QObject::connect(spinbox, SIGNAL(valueChanged(int)), this, SLOT(onChangeInteger(int)));
     }
 
-    spinboxes[0]->setObjectName(QString::fromStdString(key));
-    QObject::connect(resetButton, &QPushButton::clicked, this, [ = ] { onResetIntegerMapped(spinboxes[0]); });
+    QSpinBox* spinbox = spinboxes[0];
+    spinbox->setObjectName(QString::fromStdString(key));
+    QObject::connect(resetButton, &QPushButton::clicked, this, [ = ] { onResetIntegerMapped(spinbox); });
 
     // Set a property with a pointer on each member of the group
     for(int i = 0; i < count; ++i)
