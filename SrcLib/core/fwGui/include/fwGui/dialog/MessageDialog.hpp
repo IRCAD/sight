@@ -68,7 +68,10 @@ public:
     FWGUI_API virtual void addButton(IMessageDialog::Buttons button ) override;
 
     /// Set the default button
-    void setDefaultButton(IMessageDialog::Buttons button ) override;
+    FWGUI_API virtual void setDefaultButton(IMessageDialog::Buttons button ) override;
+
+    /// Add a custom button to this dialog
+    FWGUI_API virtual void addCustomButton(const std::string& label, std::function<void ()> clickedFn) override;
 
     /// Show the message box and return the clicked button.
     FWGUI_API virtual IMessageDialog::Buttons show() override;

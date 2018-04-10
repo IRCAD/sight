@@ -1,15 +1,12 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWGUIQT_DIALOG_MESSAGEDIALOG_HPP__
-#define __FWGUIQT_DIALOG_MESSAGEDIALOG_HPP__
+#pragma once
 
 #include "fwGuiQt/config.hpp"
-
-#include <fwCore/base.hpp>
 
 #include <fwGui/dialog/IMessageDialog.hpp>
 
@@ -34,11 +31,11 @@ public:
 
     fwCoreClassDefinitionsWithFactoryMacro( (MessageDialog)(::fwGui::dialog::IMessageDialog),
                                             (()),
-                                            ::fwGui::factory::New< MessageDialog > );
+                                            ::fwGui::factory::New< MessageDialog > )
 
     FWGUIQT_API MessageDialog(::fwGui::GuiBaseObject::Key key);
 
-    FWGUIQT_API virtual ~MessageDialog();
+    FWGUIQT_API virtual ~MessageDialog() override;
 
     /// Set the title of the message box
     FWGUIQT_API virtual void setTitle( const std::string& title ) override;
@@ -53,7 +50,7 @@ public:
     FWGUIQT_API virtual void addButton( IMessageDialog::Buttons button ) override;
 
     /// Add a custom button to this dialog
-    FWGUIQT_API void addCustomButton(QPushButton* button);
+    FWGUIQT_API virtual void addCustomButton(const std::string& label, std::function<void()> clickedFn) override;
 
     /// Set the default buttons
     FWGUIQT_API virtual void setDefaultButton( IMessageDialog::Buttons button ) override;
@@ -84,6 +81,3 @@ protected:
 
 } // namespace dialog
 } // namespace fwGuiQt
-
-#endif /* __FWGUIQT_DIALOG_MESSAGEDIALOG_HPP__ */
-
