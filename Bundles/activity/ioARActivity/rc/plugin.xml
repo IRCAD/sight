@@ -36,6 +36,7 @@
         <config>
             <type mode="reader" />
             <selection mode="exclude" />
+            <addSelection service="::ioData::SAttachmentSeriesReader" />
             <config id="ARMDAtomsConfig" service="::ioAtoms::SReader" />
         </config>
     </extension>
@@ -43,16 +44,16 @@
     <!-- Service config used for ioAtoms reader and writer. Defines the Data version and filter to use. -->
     <extension implements="::fwServices::registry::ServiceConfig">
         <id>ARMDAtomsConfig</id>
-        <desc>Reader/Writer for atoms representing a medical data</desc>
+        <desc>Json/Xml Reader/Writer (FW4SPL)</desc>
         <config>
             <patcher context="MedicalData" version="V12AR" />
             <filter>VRRenderMedicalDataV2</filter>
         </config>
     </extension>
-    
+
     <extension implements="::fwServices::registry::ServiceConfig">
         <id>ARActivityMDAtomsConfig</id>
-        <desc>Reader/Writer for atoms representing a medical data</desc>
+        <desc>Reader/Writer for atoms representing an activity project</desc>
         <config>
             <archive backend="jsonz">
                 <extension>.apz</extension>
@@ -63,7 +64,7 @@
             <patcher context="MedicalData" version="V12AR" />
         </config>
     </extension>
-    
+
     <extension implements="::fwServices::registry::ServiceConfig">
         <id>ARActivityReaderConfig</id>
         <service>::uiIO::editor::SIOSelector</service>
