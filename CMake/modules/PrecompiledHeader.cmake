@@ -311,9 +311,10 @@ function(add_precompiled_header _target _input)
 
     # Hacky custom command to remove the custom defines that would prevent from sharing the pch
     # and they should be useless anyway
+    # Also, we strip "/usr/include" as CMake does for regular C++ files (otherwise we may hide our bin pkgs headers)
     add_custom_command(
       OUTPUT "${_pch_flags_file}"
-      COMMAND sed 's/"/\\\\"/g' ${_pch_response_file}.in | sed '/_VER=\\\|_EXPORTS/d' > ${_pch_flags_file}
+      COMMAND sed 's/"/\\\\"/g' ${_pch_response_file}.in | sed '/_VER=\\\|_EXPORTS/d' | sed '/-isystem\\/usr\\/include$$/d' > ${_pch_flags_file}
       DEPENDS "${_pch_flags_file}.in"
       COMMENT "Fixing ${_pch_flags_file}")
 
