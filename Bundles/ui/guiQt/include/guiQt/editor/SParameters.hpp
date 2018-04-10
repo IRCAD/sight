@@ -34,7 +34,7 @@ namespace editor
  * @note This service doesn't need any data.
  *
  * @section Signals Signals
- * - \b boolChanged(bool, std::string): Emitted when an boolean parameter changes.
+ * - \b boolChanged(bool, std::string): Emitted when a boolean parameter changes.
  * - \b colorChanged(std::array<std::uint8_t, 4>, std::string): Emitted when a color parameter changes.
  * - \b doubleChanged(double, std::string): Emitted when a real parameter changes.
  * - \b double2Changed(double, double, std::string): Emitted when two real parameters change.
@@ -45,7 +45,7 @@ namespace editor
  * - \b enumChanged(std::string, std::string): Emitted when enum parameter changes.
  *
  * @section Slots Slots
- * - \b setBoolParameter(bool, std::string): set an boolean parameter.
+ * - \b setBoolParameter(bool, std::string): set a boolean parameter.
  * - \b setColorParameter(std::array<std::uint8_t, 4>, std::string): set a color parameter.
  * - \b setDoubleParameter(double, std::string): set a double parameter.
  * - \b setDouble2Parameter(double, double, std::string): set two double parameters.
@@ -58,7 +58,7 @@ namespace editor
  * - \b setIntMaxParameter(int, std::string): set the maximum value of an integer parameter (int, int2, int3)
  * - \b setDoubleMinParameter(double, std::string): set the minimum value of a double parameter (double, double2,
  * double3)
- * - \b setDoubleMaxParameter(double, std::string): set the maximum value of an double parameter (double, double2,
+ * - \b setDoubleMaxParameter(double, std::string): set the maximum value of a double parameter (double, double2,
  * double3)
  *
  * @section XML XML Configuration
@@ -174,7 +174,7 @@ private Q_SLOTS:
     /// This method is called when the integer slider range is modified, it updates the min and max labels
     void onSliderRangeMapped(QLabel* minLabel, QLabel* maxLabel, QSlider* slider);
 
-    // This method is called when the double slider range is modified, it updates the min and max labels
+    /// This method is called when the double slider range is modified, it updates the min and max labels
     void onDoubleSliderRangeMapped(QLabel* minLabel, QLabel* maxLabel, QSlider* slider);
 
 private:
@@ -221,7 +221,7 @@ private:
      * @name Slots
      * @{
      */
-    /// Slot: This method is used to set an boolean parameter.
+    /// Slot: This method is used to set a boolean parameter.
     void setBoolParameter(bool val, std::string key);
 
     /// Slot: This method is used to set a color parameter.
@@ -257,17 +257,17 @@ private:
     /// Slot: Set the minimum value of a double parameter (double, double2, double3)
     void setDoubleMinParameter(double min, std::string key);
 
-    /// Slot: Set the maximum value of an double parameter (double, double2, double3)
+    /// Slot: Set the maximum value of a double parameter (double, double2, double3)
     void setDoubleMaxParameter(double max, std::string key);
     /// @}
 
     /// Return the widget of the parameter with the given key, or nullptr if it does not exist
     QWidget* getParamWidget(const std::string& key);
 
-    /// Computes a double slider value from a slider position.
+    /// Compute the double slider value from a slider position.
     static double getDoubleSliderValue(const QSlider* slider);
 
-    /// Computes the double slider range according to the min and max property
+    /// Compute the double slider range according to the min and max property
     static void setDoubleSliderRange(QSlider* slider);
 
     /// Adjust the minimum size of a label according to the range values

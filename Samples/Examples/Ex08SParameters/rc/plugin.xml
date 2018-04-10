@@ -17,7 +17,7 @@ This example shows the possibilities of SParameters:
             <service uid="mainFrame" type="::gui::frame::SDefaultFrame">
                 <gui>
                     <frame>
-                        <name>Example 08 SParamters @PROJECT_VERSION@</name>
+                        <name>Example 08 SParameters @PROJECT_VERSION@</name>
                         <minSize width="800" height="600" />
                     </frame>
                 </gui>
@@ -217,7 +217,7 @@ This example shows the possibilities of SParameters:
                 <slot>parameters1/setEnumParameter</slot>
             </connect>
 
-            <!-- Connection to update paraeters minimum -->
+            <!-- Connection to update the parameters minimum/maximum -->
             <connect>
                 <signal>minParameters/intChanged</signal>
                 <slot>parameters1/setIntMinParameter</slot>
