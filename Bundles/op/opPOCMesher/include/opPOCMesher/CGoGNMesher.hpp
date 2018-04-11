@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __OPPOCMESHER_CGOGNMESHER_HPP__
-#define __OPPOCMESHER_CGOGNMESHER_HPP__
+#pragma once
 
 #include "opPOCMesher/config.hpp"
 
@@ -24,7 +23,7 @@ namespace opPOCMesher
  * @code{.xml}
    <service impl="::opPOCMesher::CGoGNMesher" >
         <inout key="image" uid="..." />
-        <inout key="modelSeries" uid="..." />
+        <out key="modelSeries" uid="..." />
        <config>
             <!-- Optionnal -->
             <valueMin>1</valueMin>
@@ -39,8 +38,8 @@ namespace opPOCMesher
    @endcode
  * @subsection Input Input
  * - \b image [::fwData::Image]: Image used to generate the mesh.
- * @subsection In-Out In-Out
- * - \b modelSeries [::fwData::ModelSeries]: model where the generated mesh is pushed.
+ * @subsection Output Output
+ * - \b modelSeries [::fwMedData::ModelSeries]: model where the generated mesh is pushed.
  * @subsection Configuration Configuration
  * - \b valueMin : The minimum value in the image mesh
  * - \b valueMax : The maximum value to mesh
@@ -125,5 +124,3 @@ private:
 };
 
 } // namespace opPOCMesher
-
-#endif // __OPPOCMESHER_CGOGNMESHER_HPP__
