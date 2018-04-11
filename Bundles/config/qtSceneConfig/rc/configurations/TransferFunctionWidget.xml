@@ -58,7 +58,7 @@ Example:
                 <axis id="xAxis" origin="0.0" scale="1.0" scaleType="LINEAR" />
                 <axis id="yAxis" origin="0.0" scale="-1.0" scaleType="LINEAR" />
                 <axis id="axeHistogramY" origin="0.0" scale="-0.000001" scaleType="LINEAR" />
-                
+
                 <adaptor uid="shutterGrid" />
                 <adaptor uid="shutterAbscissa" />
                 <adaptor uid="shutterOrdinate" />
@@ -66,7 +66,7 @@ Example:
                 <adaptor uid="viewportRangeSelector" />
             </scene>
         </service>
-        
+
         <service uid="shutterGrid" type="::scene2D::adaptor::SGrid2D" >
             <config xMin="-1200" xMax="1400" yMin="-0.7" yMax="1.7" xSpacing="200" ySpacing="0.2" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="1" />
         </service>
@@ -100,7 +100,7 @@ Example:
                 <axis id="xAxis" origin="0.0" scale="1.0" scaleType="LINEAR" />
                 <axis id="yAxis" origin="0.0" scale="-1.0" scaleType="LINEAR" />
                 <axis id="axeHistogramY" origin="0.0" scale="-0.000001" scaleType="LINEAR" />
-                
+
                 <adaptor uid="grid" />
                 <adaptor uid="abscissa" />
                 <adaptor uid="ordinate" />
@@ -114,10 +114,10 @@ Example:
                 <adaptor uid="axisLeft" />
                 <adaptor uid="scaleValuesBottom" />
                 <adaptor uid="axisBottom" />
-                
+
             </scene>
         </service>
-        
+
         <service uid="grid" type="::scene2D::adaptor::SGrid2D" >
             <config xMin="-1200" xMax="1500" yMin="0.0" yMax="1.0" xSpacing="100" ySpacing="0.1" opacity="0.25" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="1" />
         </service>
@@ -190,14 +190,14 @@ Example:
         <!-- Start/Stop services -->
         <start uid="histogramView" />
         <start uid="Scene2D" />
-        
+
         <!-- Scene2D Shutter -->
-        <start uid="shutterGrid" />                   
+        <start uid="shutterGrid" />
         <start uid="shutterAbscissa" />
         <start uid="shutterOrdinate" />
         <start uid="shutterHistogram" />
         <start uid="viewportRangeSelector" />
-        
+
         <!-- Scene2D -->
         <start uid="grid" />
         <start uid="abscissa" />
