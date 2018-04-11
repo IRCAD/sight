@@ -101,4 +101,25 @@ void TransformationMatrix3D::multiply(const ::fwData::TransformationMatrix3D::cs
 
 // ----------------------------------------------------------------------------
 
+bool TransformationMatrix3D::isIdentity(const ::fwData::TransformationMatrix3D::csptr& _trf, double _epsilon)
+{
+    static ::fwData::TransformationMatrix3D::sptr id = ::fwData::TransformationMatrix3D::New();
+    identity(id);
+
+    for (size_t i = 0; i < 4; ++i)
+    {
+        for (size_t j = 0; j < 4; ++j)
+        {
+            if(std::abs(id->getCoefficient(i, j) - _trf->getCoefficient(i, j)) > _epsilon)
+            {
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+
+// ----------------------------------------------------------------------------
+
 } // namespace fwDataTools
