@@ -73,6 +73,16 @@ public:
      */
     IOVTK_API SImageReader() noexcept;
 
+    /**
+     * @brief This method is used to load an vtk image using a file path.
+     * @param[in] vtkFile file system path of vtk image
+     * @param[out] image new empty image that will contain image loaded, if reading process is a success.
+     * @return bool  \b true if the image loading is a success and \b false if it fails
+     */
+    IOVTK_API static bool loadImage( const ::boost::filesystem::path& vtkFile,
+                                     const SPTR(::fwData::Image)& image,
+                                     const SPTR(JobCreatedSignalType)& sigJobCreated);
+
 protected:
 
     IOVTK_API virtual ::fwIO::IOPathType getIOPathType() const override;

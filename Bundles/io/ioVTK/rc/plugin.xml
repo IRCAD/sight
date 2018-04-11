@@ -12,10 +12,17 @@
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwIO::IReader</type>
+        <service>::ioVTK::SImageSeriesReader</service>
+        <object>::fwMedData::ImageSeries</object>
+        <desc>VTK Image Series Reader (VTK)</desc>
+    </extension>
+    
+    <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwIO::IWriter</type>
         <service>::ioVTK::SImageSeriesWriter</service>
         <object>::fwMedData::ImageSeries</object>
-        <desc>VTK Image Writer (VTK)</desc>
+        <desc>VTK Image Series Writer (VTK)</desc>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
