@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,11 +10,10 @@
 #include <fwCom/Signal.hxx>
 #include <fwCom/Signals.hpp>
 
-#include <fwData/Composite.hpp>
-#include <fwData/Image.hpp>
 #include <fwData/Mesh.hpp>
 #include <fwData/Reconstruction.hpp>
 
+#include <fwMedData/ImageSeries.hpp>
 #include <fwMedData/ModelSeries.hpp>
 
 #include <fwServices/macros.hpp>
@@ -36,7 +35,10 @@ namespace opVTKMesh
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::opVTKMesh::IMesher, ::opVTKMesh::SVTKMesher, ::fwData::Composite );
+fwServicesRegisterMacro( ::opVTKMesh::IMesher, ::opVTKMesh::SVTKMesher );
+
+static const std::string s_IMAGE_INPUT  = "imageSeries";
+static const std::string s_MODEL_OUTPUT = "modelSeries";
 
 //-----------------------------------------------------------------------------
 
@@ -82,14 +84,15 @@ void SVTKMesher::configuring()
 
 void SVTKMesher::updating()
 {
-    ::fwData::Image::csptr image               = this->getInput< ::fwData::Image >("image");
-    ::fwMedData::ModelSeries::sptr modelSeries = this->getInOut< ::fwMedData::ModelSeries >("modelSeries");
+    ::fwMedData::ImageSeries::csptr imageSeries = this->getInput< ::fwMedData::ImageSeries >(s_IMAGE_INPUT);
+    ::fwMedData::ModelSeries::sptr modelSeries  = ::fwMedData::ModelSeries::New();
 
-    ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
+    ::fwData::Object::DeepCopyCacheType cache;
+    modelSeries->::fwMedData::Series::cachedDeepCopy(imageSeries, cache);
 
     // vtk img
     vtkSmartPointer< vtkImageData > vtkImage = vtkSmartPointer< vtkImageData >::New();
-    ::fwVtkIO::toVTKImage( image, vtkImage );
+    ::fwVtkIO::toVTKImage( imageSeries->getImage(), vtkImage );
 
     // contour filter
     vtkSmartPointer< vtkDiscreteMarchingCubes > contourFilter = vtkSmartPointer< vtkDiscreteMarchingCubes >::New();
@@ -113,14 +116,14 @@ void SVTKMesher::updating()
 
     // Get polyData
     vtkSmartPointer< vtkPolyData > polyData;
+    ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
 
     // decimate filter
-    unsigned int reduction = m_reduction;
-    if( reduction > 0 )
+    if( m_reduction > 0 )
     {
         vtkSmartPointer< vtkDecimatePro > decimate = vtkSmartPointer< vtkDecimatePro >::New();
         decimate->SetInputConnection( smoothFilter->GetOutputPort() );
-        decimate->SetTargetReduction( reduction/100.0 );
+        decimate->SetTargetReduction( m_reduction/100.0 );
         decimate->PreserveTopologyOff();
         decimate->SplittingOn();
         decimate->BoundaryVertexDeletionOn();
@@ -150,13 +153,9 @@ void SVTKMesher::updating()
     ::fwMedData::ModelSeries::ReconstructionVectorType recs = modelSeries->getReconstructionDB();
     recs.push_back(reconstruction);
     modelSeries->setReconstructionDB(recs);
+    modelSeries->setDicomReference(imageSeries->getDicomReference());
 
-    // Notification
-    ::fwMedData::ModelSeries::ReconstructionVectorType addedRecs;
-    addedRecs.push_back(reconstruction);
-    auto sig = modelSeries->signal< ::fwMedData::ModelSeries::ReconstructionsAddedSignalType >(
-        ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG);
-    sig->asyncEmit(addedRecs);
+    this->setOutput(s_MODEL_OUTPUT, modelSeries);
 }
 
 //-----------------------------------------------------------------------------

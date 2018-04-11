@@ -1,0 +1,75 @@
+<plugin id="ExDicomSegmentation" version="@PROJECT_VERSION@">
+    <requirement id="dataReg" />
+    <requirement id="servicesReg" />
+    <requirement id="visuVTKQt" />
+    <requirement id="activities" />
+    <requirement id="preferences" />
+
+    <xi:include href="VTKMesherAppConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="ExDicomSegmentationAppConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+
+    <extension implements="::fwActivities::registry::Activities">
+        <id>vtkMesherActivity</id>
+        <title>VTK Mesher</title>
+        <desc>Mesher activity using VTK</desc>
+        <icon>ExDicomSegmentation-@PROJECT_VERSION@/vtk.png</icon>
+        <requirements>
+            <requirement name="imageSeries" type="::fwMedData::ImageSeries" minOccurs="1" maxOccurs="1" />
+        </requirements>
+        <builder>::fwActivities::builder::ActivitySeries</builder>
+        <appConfig id="vtkMesherAppConfig">
+            <parameters>
+                <parameter replace="imageSeries" by="@values.imageSeries" />
+                <parameter replace="image" by="@values.imageSeries.image" />
+            </parameters>
+        </appConfig>
+    </extension>
+
+    <extension implements="::fwActivities::registry::Activities">
+        <id>ExDicomSegmentationActivity</id>
+        <title>ExDicomSegmentation</title>
+        <desc>ExDicomSegmentation main activity</desc>
+        <icon>media-0.1/icons/selector.svg</icon>
+        <requirements />
+        <appConfig id="ExDicomSegmentationAppConfig">
+            <parameters />
+        </appConfig>
+    </extension>
+
+    <extension implements="::fwServices::registry::AppConfig">
+        <id>ExDicomSegmentationAppConfigBase</id>
+        <config>
+            <object uid="seriesDB" type="::fwMedData::SeriesDB" />
+
+            <service uid="mainFrame" type="::gui::frame::SDefaultFrame">
+                <gui>
+                    <frame>
+                        <name>ExDicomSegmentation</name>
+                        <icon>ExDicomSegmentation-@PROJECT_VERSION@/tuto.ico</icon>
+                    </frame>
+                </gui>
+                <registry>
+                    <view sid="dynamicView" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="dynamicView" type="::guiQt::editor::SDynamicView" >
+                <mainActivity id="ExDicomSegmentationActivity" closable="false" />
+                <parameters>
+                    <parameter replace="SERIESDB" by="seriesDB" />
+                    <parameter replace="ICON_PATH" by="ExDicomSegmentation-@PROJECT_VERSION@/tuto.ico" />
+                    <parameter replace="DYNAMICVIEW_CHANNEL" by="dynamicViewChannel" />
+                    <parameter replace="PROGRESS_CHANNEL" by="progressStatus" />
+                </parameters>
+            </service>
+
+            <connect channel="dynamicViewChannel">
+                <slot>dynamicView/createTab</slot>
+            </connect>
+
+            <start uid="mainFrame" />
+
+        </config>
+    </extension>
+
+</plugin>

@@ -1,0 +1,100 @@
+<extension implements="::fwServices::registry::AppConfig">
+    <id>ExDicomSegmentationAppConfig</id>
+    <parameters>
+        <param name="SERIESDB" />
+        <param name="WID_PARENT" />
+        <param name="DYNAMICVIEW_CHANNEL" default="channel" />
+        <param name="PROGRESS_CHANNEL" default="progressChannel" />
+    </parameters>
+    <config>
+
+        <object uid="${SERIESDB}" type="::fwMedData::SeriesDB" src="ref" />
+        <object uid="selection" type="::fwData::Vector" />
+
+        <service uid="mainView" type="::gui::view::SDefaultView">
+            <gui>
+                <layout type="::fwGui::CardinalLayoutManager">
+                    <view caption="Information" align="center" minWidth="200" />
+                    <view caption="Preview" align="bottom" minHeight="200" />
+                </layout>
+                <toolBar/>
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <toolBar sid="toolBar" start="yes" />
+                <view sid="selector" start="yes" />
+                <view wid="preview" />
+            </registry>
+        </service>
+
+        <service uid="toolBar" type="::gui::aspect::SDefaultToolBar">
+            <gui>
+                <layout>
+                    <menuItem name="Import" icon="media-0.1/icons/Import.svg" />
+                    <menuItem name="Export" icon="media-0.1/icons/Export.svg" />
+                    <menuItem name="Image processing" icon="media-0.1/icons/Split.svg" />
+                </layout>
+            </gui>
+            <registry>
+                <menuItem sid="action_import" start="yes" />
+                <menuItem sid="action_export" start="yes" />
+                <menuItem sid="action_processing" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="action_import" type="::uiIO::action::SSeriesDBMerger">
+            <in key="seriesDB" uid="${SERIESDB}" />
+            <IOSelectorSrvConfig name="SDBReaderIOSelectorConfig" />
+        </service>
+        <service uid="action_export" type="::activities::action::SActivityLauncher" autoConnect="yes">
+            <in key="series" uid="selection" />
+            <config>
+                <mode>immediate</mode>
+                <parameters>
+                </parameters>
+                <filter>
+                    <mode>include</mode>
+                    <id>ImageSeriesExport</id>
+                    <id>ModelSeriesExport</id>
+                    <id>DicomSegmentationSurfaceExport</id>
+                </filter>
+            </config>
+        </service>
+        <service uid="action_processing" type="::activities::action::SActivityLauncher" autoConnect="yes">
+            <in key="series" uid="selection" />
+            <config>
+                <parameters>
+                    <parameter replace="SERIESDB" by="${SERIESDB}" />
+                </parameters>
+                <filter>
+                    <mode>include</mode>
+                    <id>vtkMesherActivity</id>
+                </filter>
+            </config>
+        </service>
+
+        <service uid="selector" type="::uiMedDataQt::editor::SSelector" autoConnect="yes">
+            <inout key="seriesDB" uid="${SERIESDB}" />
+            <inout key="selection" uid="selection" />
+        </service>
+
+        <service uid="seriesViewer" type="::uiMedDataQt::SSeriesViewer" autoConnect="yes">
+            <in key="series" uid="selection" />
+            <parentView wid="preview" />
+            <configs>
+                <config id="2DSimpleConfig2" type="::fwMedData::ImageSeries">
+                    <extract path="@image" pattern="imageID" />
+                </config>
+                <config id="3DSimpleConfig2" type="::fwMedData::ModelSeries" />
+            </configs>
+        </service>
+
+        <connect channel="${DYNAMICVIEW_CHANNEL}">
+            <signal>action_processing/activityLaunched</signal>
+        </connect>
+
+        <start uid="mainView" />
+        <start uid="seriesViewer" />
+
+    </config>
+</extension>
