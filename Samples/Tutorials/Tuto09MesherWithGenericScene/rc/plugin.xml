@@ -11,8 +11,9 @@
         <id>Tuto09MesherWithGenericScene</id>
         <config>
             <!-- Objects declaration -->
-            <object uid="modelSeriesId" type="::fwMedData::ModelSeries" />
-            <object uid="imageId" type="::fwData::Image" />
+            <object uid="modelSeriesId" type="::fwMedData::ModelSeries" src="deferred"/>
+            <object uid="imageSeriesId" type="::fwMedData::ImageSeries" />
+            <object uid="imageId" type="::fwData::Image" src="deferred"/>
             <object uid="reconstructionId" type="::fwData::Reconstruction" src="deferred" />
             <!-- *************************************************************************************************** -->
             <!-- UI services -->
@@ -47,19 +48,30 @@
             <service uid="mainView" type="::gui::view::SDefaultView">
                 <gui>
                     <layout type="::fwGui::CardinalLayoutManager">
-                        <view align="center" minWidth="200" />
-                        <view align="right" minWidth="200" minHeight="200" position="0" />
-                        <view align="right" minWidth="200" minHeight="80" position="1" />
-                        <view align="right" minWidth="200" minHeight="200" position="2" />
+                        <view align="center" minWidth="500" />
+                        <view align="right" minWidth="300" position="0" />
                         <view align="bottom" minHeight="30" resizable="no" />
                     </layout>
                 </gui>
                 <registry>
                     <view sid="genericScene" start="yes" />
-                    <view sid="listOrganEditor" start="yes" />
+                    <view sid="multiViewOrgans" start="yes" />
+                    <view sid="sceneEditorsView" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="multiViewOrgans" type="::gui::view::SDefaultView" >
+                <gui>
+                    <layout type="::fwGui::ToolboxLayoutManager">
+                        <view caption="Organs" expanded="true" />
+                        <view caption="Material" expanded="true" />
+                        <view caption="Representation" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="listOrganEditor" start="no" />
                     <view sid="organMaterialEditor" start="no" />
                     <view sid="representationEditor" start="no" />
-                    <view sid="sceneEditorsView" start="yes" />
                 </registry>
             </service>
 
@@ -76,7 +88,7 @@
                 <registry>
                     <view sid="sliceListEditor" start="yes" />
                     <view sid="showScanEditor" start="yes" />
-                    <view sid="sliderIndexEditor" start="yes" />
+                    <view sid="sliderIndexEditor" start="no" />
                     <view sid="snapshotScene1Editor" start="yes" />
                 </registry>
             </service>
@@ -118,7 +130,7 @@
             </service>
 
             <service uid="action_saveModelSeries" type="::gui::action::SStarter">
-                <start uid="modelSeriesWriter" />
+                <start_if_exists uid="modelSeriesWriter" />
             </service>
 
             <service uid="action_quit" type="::gui::action::SQuit" />
@@ -166,16 +178,16 @@
             <!-- Meshers services -->
             <!-- *************************************************************************************************** -->
             <service uid="mesher50ServiceUID" type="::opVTKMesh::SVTKMesher">
-                <in key="image" uid="imageId" />
-                <inout key="modelSeries" uid="modelSeriesId" />
+                <in key="imageSeries" uid="imageSeriesId" />
+                <out key="modelSeries" uid="modelSeriesId" />
                 <config>
                     <percentReduction>50</percentReduction>
                 </config>
             </service>
 
             <service uid="mesher80ServiceUID" type="::opVTKMesh::SVTKMesher">
-                <in key="image" uid="imageId" />
-                <inout key="modelSeries" uid="modelSeriesId" />
+                <in key="imageSeries" uid="imageSeriesId" />
+                <out key="modelSeries" uid="modelSeriesId" />
                 <config>
                     <percentReduction>80</percentReduction>
                 </config>
@@ -190,8 +202,18 @@
             </service>
 
             <service uid="imageReader" type="::uiIO::editor::SIOSelector">
-                <inout key="data" uid="imageId" />
+                <inout key="data" uid="imageSeriesId" />
                 <type mode="reader" />
+            </service>
+
+            <!-- extract a ::fwData::Image from the ::fwMedData::ImageSeries -->
+            <service uid="extractImage" type="::ctrlCamp::SExtractObj">
+               <inout key="source" uid="imageSeriesId">
+                   <extract from="@image" />
+               </inout>
+               <out group="target">
+                   <key uid="imageId"/>
+               </out>
             </service>
 
             <!-- This service convert a simple fwData::Image to medical Image -->
@@ -213,7 +235,7 @@
 
             <!-- *************************** Begin generic scene *************************** -->
 
-            <service uid="genericScene" type="::fwRenderVTK::SRender" autoConnect="yes">
+            <service uid="genericScene" type="::fwRenderVTK::SRender" >
                 <scene>
                     <picker id="myPicker" vtkclass="fwVtkCellPicker" />
                     <renderer id="default" background="0.0" />
@@ -285,18 +307,31 @@
                 <slot>MPRNegato3D/updateSliceMode</slot>
             </connect>
 
+            <connect>
+                <signal>imageSeriesId/modified</signal>
+                <slot>extractImage/update</slot>
+            </connect>
+
             <start uid="mainFrame" />
             <start uid="progress_statusbar" />
             <start uid="updaterReconstUID" />
             <start uid="medicaImageConverter" />
+
             <!-- Deferred start -->
             <start uid="representationEditor" />
             <start uid="organMaterialEditor" />
+            <start uid="sliderIndexEditor" />
+            <start uid="listOrganEditor" />
+            <start uid="mesher50ServiceUID" />
+            <start uid="mesher80ServiceUID" />
+            <start uid="modelSeriesWriter" />
 
             <!-- genericScene adaptors -->
             <start uid="modelSeriesAdaptor" />
             <start uid="MPRNegato3D" />
             <start uid="snapshot1" />
+
+            <start uid="extractImage" />
         </config>
     </extension>
 </plugin>
