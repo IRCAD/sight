@@ -33,13 +33,14 @@
 #include <fwVtkIO/vtk.hpp>
 
 #include <boost/foreach.hpp>
-#include <boost/regex.h>
 
 #include <vtkImageBlend.h>
 #include <vtkImageCheckerboard.h>
 #include <vtkImageData.h>
 #include <vtkImageMapToColors.h>
 #include <vtkLookupTable.h>
+
+#include <regex>
 
 fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SImagesBlend, ::fwData::Composite );
 
@@ -159,10 +160,11 @@ void SImagesBlend::configuring()
 
 void SImagesBlend::swapping(const KeyType& key)
 {
-    const std::string regexStr = "([[:word:]]+)#([[:digit:]]+)";
-    ::boost::regex re(regexStr);
-    ::boost::smatch match;
-    if( ::boost::regex_match(key, match, re) )
+    const std::string regexStr = "([[:alnum:]]+)#([[:digit:]]+)";
+    const std::regex re(regexStr);
+    std::smatch match;
+
+    if( std::regex_match(key, match, re) )
     {
         const std::string group   = match[1];
         const unsigned long index = std::stoul(match[2]);

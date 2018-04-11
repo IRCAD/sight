@@ -18,7 +18,7 @@ option(VERBOSE_PCH "Display debug messages to help debugging PCH" OFF)
 mark_as_advanced(ENABLE_PCH)
 mark_as_advanced(VERBOSE_PCH)
 
-include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/modules/PrecompiledHeader.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/PrecompiledHeader.cmake)
 
 if(MSVC)
     if(NOT DEFINED CMAKE_PCH_COMPILER_TARGETS)
