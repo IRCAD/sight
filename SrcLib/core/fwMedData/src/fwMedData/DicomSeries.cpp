@@ -103,7 +103,6 @@ bool DicomSeries::isInstanceAvailable(std::size_t instanceIndex) const
     {
         case NONE:
         case PATHS:
-        case BLOB:
             localPathIter = m_localDicomPaths.find(instanceIndex);
             available     = localPathIter != m_localDicomPaths.end() && ::boost::filesystem::exists(
                 localPathIter->second);

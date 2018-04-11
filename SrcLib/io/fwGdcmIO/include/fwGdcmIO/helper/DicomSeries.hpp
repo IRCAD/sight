@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWGDCMIO_HELPER_DICOMSERIES_HPP__
-#define __FWGDCMIO_HELPER_DICOMSERIES_HPP__
+#pragma once
 
 #include "fwGdcmIO/config.hpp"
 
@@ -67,7 +66,7 @@ public:
      * @return container containing DicomSeries
      */
     FWGDCMIO_API DicomSeriesContainerType read(FilenameContainerType& filenames,
-                                               const SPTR(::fwJobs::Observer)& readerObserver = nullptr,
+                                               const SPTR(::fwJobs::Observer)& readerObserver         = nullptr,
                                                const SPTR(::fwJobs::Observer)& completeSeriesObserver = nullptr);
     /**
      * @brief Fill DicomSeries information for series generated using DICOMDIR helper
@@ -76,12 +75,6 @@ public:
      */
     FWGDCMIO_API void complete(DicomSeriesContainerType& seriesDB,
                                const SPTR(::fwJobs::Observer)& completeSeriesObserver);
-
-    /**
-     * @brief Create DicomSeries containing a blob
-     * @param[in] filenames instance paths
-     */
-    FWGDCMIO_API SPTR(::fwMedData::DicomSeries) createBlob(FilenameContainerType &filenames);
 
 protected:
 
@@ -100,7 +93,6 @@ protected:
      */
     DicomSeriesContainerType splitFiles(FilenameContainerType& filenames,
                                         const SPTR(::fwJobs::Observer)& readerObserver);
-
 
     /**
      * @brief Create a series from the dataset and store it in the series map
@@ -152,6 +144,3 @@ protected:
 
 } //helper
 } //fwGdcmIO
-
-
-#endif /* __FWGDCMIO_HELPER_DICOMSERIES_HPP__ */
