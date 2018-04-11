@@ -652,7 +652,6 @@ void RayTracingVolumeRenderer::computeEntryPointsTexture()
 
     ::Ogre::RenderOperation renderOp;
     m_proxyGeometry->getRenderOperation(renderOp);
-    m_entryPointGeometry->setVisible(true);
     m_entryPointGeometry->setMaterialName(0, m_currentMtlName);
 
     ::Ogre::Matrix4 worldMat;

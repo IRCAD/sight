@@ -64,6 +64,7 @@ const ::fwCom::Slots::SlotKeyType SVolumeRender::s_SET_INT_PARAMETER_SLOT       
 const ::fwCom::Slots::SlotKeyType SVolumeRender::s_SET_DOUBLE_PARAMETER_SLOT         = "setDoubleParameter";
 const ::fwCom::Slots::SlotKeyType SVolumeRender::s_SET_ENUM_PARAMETER_SLOT           = "setEnumParameter";
 const ::fwCom::Slots::SlotKeyType SVolumeRender::s_SET_COLOR_PARAMETER_SLOT          = "setColorParameter";
+const ::fwCom::Slots::SlotKeyType SVolumeRender::s_UPDATE_VISIBILITY_SLOT            = "updateVisibility";
 
 static const ::fwServices::IService::KeyType s_IMAGE_INOUT           = "image";
 static const ::fwServices::IService::KeyType s_TF_INOUT              = "tf";
@@ -77,7 +78,7 @@ SVolumeRender::SVolumeRender() noexcept :
     m_sceneManager(nullptr),
     m_volumeSceneNode(nullptr),
     m_camera(nullptr),
-    m_nbSlices(512),
+    m_nbSamples(512),
     m_preIntegratedRendering(false),
     m_ambientOcclusion(false),
     m_colorBleeding(false),
@@ -117,6 +118,7 @@ SVolumeRender::SVolumeRender() noexcept :
     newSlot(s_SET_DOUBLE_PARAMETER_SLOT, &SVolumeRender::setDoubleParameter, this);
     newSlot(s_SET_ENUM_PARAMETER_SLOT, &SVolumeRender::setEnumParameter, this);
     newSlot(s_SET_COLOR_PARAMETER_SLOT, &SVolumeRender::setColorParameter, this);
+    newSlot(s_UPDATE_VISIBILITY_SLOT, &SVolumeRender::updateVisibility, this);
     m_renderingMode = VR_MODE_RAY_TRACING;
 }
 
@@ -139,6 +141,7 @@ void SVolumeRender::configuring()
     m_widgetVisibilty        = config.get<std::string>("widgets", "yes") == "yes";
     m_renderingMode          = config.get<std::string>("mode", "raytracing") == "raytracing" ? VR_MODE_RAY_TRACING :
                                VR_MODE_SLICE;
+    m_nbSamples = config.get<std::uint16_t>("samples", m_nbSamples);
 
     if(m_renderingMode == VR_MODE_RAY_TRACING)
     {
@@ -299,7 +302,7 @@ void SVolumeRender::starting()
                                                                                   m_colorBleeding);
 
         // Initially focus on the image center.
-        setFocalDistance(50);
+        this->setFocalDistance(50);
     }
 
     m_gpuTF.setSampleDistance(m_volumeRenderer->getSamplingRate());
@@ -318,10 +321,6 @@ void SVolumeRender::starting()
     if (isValid)
     {
         this->newImage();
-    }
-    else
-    {
-        m_volumeSceneNode->setVisible(false, false);
     }
 
     m_volumeRenderer->tfUpdate(this->getTransferFunction());
@@ -473,9 +472,9 @@ void SVolumeRender::updateSampling(int nbSamples)
     this->getRenderService()->makeCurrent();
 
     OSLM_ASSERT("Sampling rate must fit in a 16 bit uint.", nbSamples < 65536 && nbSamples >= 0);
-    m_nbSlices = static_cast<uint16_t>(nbSamples);
+    m_nbSamples = static_cast<std::uint16_t>(nbSamples);
 
-    m_volumeRenderer->setSampling(m_nbSlices);
+    m_volumeRenderer->setSampling(m_nbSamples);
     m_gpuTF.setSampleDistance(m_volumeRenderer->getSamplingRate());
 
     if(m_ambientOcclusion || m_colorBleeding || m_shadows)
@@ -1082,7 +1081,7 @@ void SVolumeRender::toggleVREffect(::visuOgreAdaptor::SVolumeRender::VREffectTyp
                 break;
         }
 
-        this->updateSampling(m_nbSlices);
+        this->updateSampling(m_nbSamples);
         this->updateSatSizeRatio(static_cast<int>(m_satSizeRatio * 4));
         this->updateSatShellsNumber(m_satShells);
         this->updateSatShellRadius(m_satShellRadius);
@@ -1099,6 +1098,16 @@ void SVolumeRender::toggleVREffect(::visuOgreAdaptor::SVolumeRender::VREffectTyp
 
         this->requestRender();
     }
+}
+
+//-----------------------------------------------------------------------------
+
+void SVolumeRender::updateVisibility(bool visibility)
+{
+    m_volumeSceneNode->setVisible(visibility);
+    m_widgets->setVisibility(visibility && m_widgetVisibilty);
+
+    this->requestRender();
 }
 
 //-----------------------------------------------------------------------------
