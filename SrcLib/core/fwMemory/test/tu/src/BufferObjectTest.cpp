@@ -10,6 +10,8 @@
 #include <fwMemory/BufferObject.hpp>
 #include <fwMemory/exception/Memory.hpp>
 
+#include <fwTest/helper/wait.hpp>
+
 #include <boost/thread/thread.hpp>
 
 #include <chrono>
@@ -63,15 +65,15 @@ void BufferObjectTest::allocateTest()
     CPPUNIT_ASSERT_EQUAL( static_cast< ::fwMemory::BufferObject::SizeType>(SIZE), bo->getSize() );
     CPPUNIT_ASSERT( bo->lock().getBuffer() != NULL );
 
-    // We need to wait before checking that the buffer was unlocked because the actual unlocking is performed on a
-    // worker for thread safety and the buffer might take a little time to actually unlock. Not waiting causes random
-    // errors in the test that tend to pop when the machine is under load.
-    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    // We need to wait before checking that the buffer was unlocked because all buffer operations are done on a worker.
+    // The actual buffer ref count might still be owned (as a std::promise) by the worker task when we reach this point.
+    // See fw4spl!216
+    fwTestWaitMacro(bo->lockCount() == 0);
     CPPUNIT_ASSERT_EQUAL( static_cast<long>(0), bo->lockCount() );
 
     {
         ::fwMemory::BufferObject::Lock lock(bo->lock());
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        fwTestWaitMacro(bo->lockCount() == 1);
         CPPUNIT_ASSERT_EQUAL( static_cast<long>(1), bo->lockCount() );
         char* buf = static_cast<char*>(lock.getBuffer());
 
@@ -91,23 +93,26 @@ void BufferObjectTest::allocateTest()
         }
     }
 
-    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    fwTestWaitMacro(bo->lockCount() == 0);
     CPPUNIT_ASSERT_EQUAL( static_cast<long>(0), bo->lockCount() );
 
     {
         ::fwMemory::BufferObject::Lock lock(bo->lock());
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        fwTestWaitMacro(bo->lockCount() == 1);
         CPPUNIT_ASSERT_EQUAL( static_cast<long>(1), bo->lockCount() );
         ::fwMemory::BufferObject::Lock lock2(bo->lock());
+        fwTestWaitMacro(bo->lockCount() == 2);
         CPPUNIT_ASSERT_EQUAL( static_cast<long>(2), bo->lockCount() );
         ::fwMemory::BufferObject::csptr cbo = bo;
         ::fwMemory::BufferObject::ConstLock clock(cbo->lock());
+        fwTestWaitMacro(bo->lockCount() == 3);
         CPPUNIT_ASSERT_EQUAL( static_cast<long>(3), bo->lockCount() );
         CPPUNIT_ASSERT( isPointedValueConst( clock.getBuffer() ) );
         CPPUNIT_ASSERT( isPointedValueConst( cbo->lock().getBuffer() ) );
     }
 
+    fwTestWaitMacro(bo->lockCount() == 0);
     CPPUNIT_ASSERT_EQUAL( static_cast<long>(0), bo->lockCount() );
 
     bo->destroy();
@@ -219,6 +224,7 @@ void stressLock(::fwMemory::BufferObject::sptr bo, int nbLocks, int nbTest)
             m_locks.push_back(bo->lock());
         }
 
+        fwTestWaitMacro(bo->lockCount() >= 3);
         CPPUNIT_ASSERT( bo->lockCount() >= static_cast<long>(3) );
 
         m_locks.clear();
@@ -241,7 +247,7 @@ void BufferObjectTest::lockThreadedStressTest()
 
     group.join_all();
 
-    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    fwTestWaitMacro(bo->lockCount() == 0);
     CPPUNIT_ASSERT_EQUAL( static_cast<long>(0), bo->lockCount() );
 
 }
