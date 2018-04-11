@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,7 +8,7 @@
 
 #include "fwDataIO/writer/registry/macros.hpp"
 
-#include <fwDataTools/helper/Array.hpp>
+#include <fwDataTools/helper/ArrayGetter.hpp>
 
 #include <boost/filesystem/path.hpp>
 
@@ -42,7 +42,7 @@ void GzArrayWriter::write()
 {
     assert( getFile().empty() == false );
 
-    ::fwData::Array::sptr array = this->getConcreteObject();
+    ::fwData::Array::csptr array = this->getConcreteObject();
 
     /// test if can open archive
     gzFile rawFile = gzopen( this->getFile().string().c_str(), "wb1");
@@ -54,11 +54,11 @@ void GzArrayWriter::write()
         throw std::ios_base::failure(str);
     }
 
-    ::fwDataTools::helper::Array arrayHelper(array);
+    ::fwDataTools::helper::ArrayGetter arrayHelper(array);
     // file is OK : process now
-    size_t arraySizeInBytes = array->getSizeInBytes();
+    const size_t arraySizeInBytes = array->getSizeInBytes();
 
-    unsigned int uncompressedbyteswrited = gzwrite(rawFile, arrayHelper.getBuffer(), arraySizeInBytes);
+    const unsigned int uncompressedbyteswrited = gzwrite(rawFile, arrayHelper.getBuffer(), arraySizeInBytes);
     gzclose(rawFile);
     if ( uncompressedbyteswrited != arraySizeInBytes )
     {

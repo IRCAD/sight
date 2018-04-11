@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -15,7 +15,7 @@ namespace fwDicomTools
 
 // ----------------------------------------------------------------------------
 
-::fwMedData::ImageSeries::sptr Series::convertToImageSeries(const ::fwMedData::DicomSeries::sptr& series)
+::fwMedData::ImageSeries::sptr Series::convertToImageSeries(const ::fwMedData::DicomSeries::csptr& series)
 {
     ::fwMedData::ImageSeries::sptr result = ::fwMedData::ImageSeries::New();
     result->setPatient(series->getPatient());
@@ -32,7 +32,7 @@ namespace fwDicomTools
 
 // ----------------------------------------------------------------------------
 
-::fwMedData::ModelSeries::sptr Series::convertToModelSeries(const ::fwMedData::DicomSeries::sptr& series)
+::fwMedData::ModelSeries::sptr Series::convertToModelSeries(const ::fwMedData::DicomSeries::csptr& series)
 {
     ::fwMedData::ModelSeries::sptr result = ::fwMedData::ModelSeries::New();
     result->setPatient(series->getPatient());

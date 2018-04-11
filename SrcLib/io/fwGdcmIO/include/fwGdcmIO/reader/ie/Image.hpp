@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWGDCMIO_READER_IE_IMAGE_HPP__
-#define __FWGDCMIO_READER_IE_IMAGE_HPP__
+#pragma once
 
 #include "fwGdcmIO/exception/Failed.hpp"
 #include "fwGdcmIO/reader/ie/InformationEntity.hpp"
@@ -38,13 +37,13 @@ public:
      * @param[in] progress Progress callback
      * @param[in] cancel Cancel requested callback
      */
-    FWGDCMIO_API Image(const SPTR(::fwMedData::DicomSeries)& dicomSeries,
+    FWGDCMIO_API Image(const CSPTR(::fwMedData::DicomSeries)& dicomSeries,
                        const SPTR(::gdcm::Reader)& reader,
                        const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
                        const ::fwData::Image::sptr& image,
                        const ::fwLog::Logger::sptr& logger = nullptr,
-                       ProgressCallback progress = nullptr,
-                       CancelRequestedCallback cancel = nullptr);
+                       ProgressCallback progress           = nullptr,
+                       CancelRequestedCallback cancel      = nullptr);
 
     /// Destructor
     FWGDCMIO_API virtual ~Image();
@@ -114,5 +113,3 @@ protected:
 } // namespace ie
 } // namespace reader
 } // namespace fwGdcmIO
-
-#endif /* __FWGDCMIO_READER_IE_IMAGE_HPP__ */

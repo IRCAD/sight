@@ -1,11 +1,12 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwGdcmIO/helper/DicomDataReader.hxx"
 #include "fwGdcmIO/reader/ie/Series.hpp"
+
+#include "fwGdcmIO/helper/DicomDataReader.hxx"
 
 #include <fwMedData/DicomSeries.hpp>
 #include <fwMedData/Series.hpp>
@@ -25,9 +26,9 @@ namespace ie
 
 //------------------------------------------------------------------------------
 
-Series::Series(const ::fwMedData::DicomSeries::sptr& dicomSeries,
+Series::Series(const ::fwMedData::DicomSeries::csptr& dicomSeries,
                const SPTR(::gdcm::Reader)& reader,
-               const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
+               const ::fwGdcmIO::container::DicomInstance::sptr& instance,
                const ::fwMedData::Series::sptr& series,
                const ::fwLog::Logger::sptr& logger,
                ProgressCallback progress,

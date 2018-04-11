@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWGDCMIO_WRITER_IOD_SURFACESEGMENTATIONIOD_HPP__
-#define __FWGDCMIO_WRITER_IOD_SURFACESEGMENTATIONIOD_HPP__
+#pragma once
 
 #include "fwGdcmIO/config.hpp"
 #include "fwGdcmIO/container/DicomInstance.hpp"
@@ -40,14 +39,14 @@ public:
                                         const SPTR(::fwGdcmIO::container::DicomInstance)& imageInstance,
                                         const ::boost::filesystem::path& destinationPath,
                                         const ::fwLog::Logger::sptr& logger = ::fwLog::Logger::New(),
-                                        ProgressCallback progress = nullptr,
-                                        CancelRequestedCallback cancel = nullptr);
+                                        ProgressCallback progress           = nullptr,
+                                        CancelRequestedCallback cancel      = nullptr);
 
     /// Destructor
     FWGDCMIO_API virtual ~SurfaceSegmentationIOD();
 
     /// Write DICOM file
-    FWGDCMIO_API virtual void write(const ::fwMedData::Series::sptr& series) override;
+    FWGDCMIO_API virtual void write(const ::fwMedData::Series::csptr& series) override;
 
 protected:
     /// Image instance
@@ -58,5 +57,3 @@ protected:
 } // namespace iod
 } // namespace writer
 } // namespace fwGdcmIO
-
-#endif // __FWGDCMIO_WRITER_IOD_SURFACESEGMENTATIONIOD_HPP__

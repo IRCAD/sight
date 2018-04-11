@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -127,7 +127,7 @@ DicomDataTools::getPhotometricInterpretation(const ::fwData::Image::csptr& image
 //------------------------------------------------------------------------------
 
 std::size_t DicomDataTools::convertPointToFrameNumber(const ::fwData::Image::csptr& image,
-                                                      const ::fwData::Point::sptr& point)
+                                                      const ::fwData::Point::csptr& point)
 throw(::fwGdcmIO::exception::Failed)
 {
     // Retrieve Z spacing
@@ -172,4 +172,3 @@ throw(::fwGdcmIO::exception::Failed)
 
 } //namespace helper
 } //namespace fwGdcmIO
-

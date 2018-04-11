@@ -14,6 +14,8 @@
 
 #include <gdcmMediaStorage.h>
 
+#include <memory>
+
 namespace fwMedData
 {
 class DicomSeries;
@@ -37,6 +39,8 @@ class FWGDCMIO_CLASS_API DicomInstance
 {
 public:
 
+    typedef  std::shared_ptr<DicomInstance> sptr;
+
     /// SOP Instance Container Type
     typedef std::vector< std::string > SOPInstanceUIDContainerType;
 
@@ -49,7 +53,7 @@ public:
      * @param[in] isMultiFiles Set whether the instance must be split in several files or not
      * @param[in] logger Logger
      */
-    FWGDCMIO_API DicomInstance(const SPTR(::fwMedData::Series)& series,
+    FWGDCMIO_API DicomInstance(const CSPTR(::fwMedData::Series)& series,
                                const SPTR(::fwLog::Logger)& logger = nullptr,
                                bool isMultiFiles                   = true);
 
@@ -58,7 +62,7 @@ public:
      * @param[in] dicomSeries DicomSeries from which the instance is created
      * @param[in] logger Logger
      */
-    FWGDCMIO_API DicomInstance(const SPTR(::fwMedData::DicomSeries)& dicomSeries,
+    FWGDCMIO_API DicomInstance(const CSPTR(::fwMedData::DicomSeries)& dicomSeries,
                                const SPTR(::fwLog::Logger)& logger = nullptr);
 
     /// Copy constructor

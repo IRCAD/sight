@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWGDCMIO_WRITER_IE_SPATIALFIDUCIALS_HPP__
-#define __FWGDCMIO_WRITER_IE_SPATIALFIDUCIALS_HPP__
+#pragma once
 
 #include "fwGdcmIO/exception/Failed.hpp"
 #include "fwGdcmIO/writer/ie/InformationEntity.hpp"
@@ -37,10 +36,10 @@ public:
      */
     FWGDCMIO_API SpatialFiducials(const SPTR(::gdcm::Writer)& writer,
                                   const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
-                                  const ::fwData::Image::sptr& series,
+                                  const ::fwData::Image::csptr& series,
                                   const ::fwLog::Logger::sptr& logger = nullptr,
-                                  ProgressCallback progress = nullptr,
-                                  CancelRequestedCallback cancel = nullptr);
+                                  ProgressCallback progress           = nullptr,
+                                  CancelRequestedCallback cancel      = nullptr);
 
     /// Destructor
     FWGDCMIO_API virtual ~SpatialFiducials();
@@ -80,11 +79,12 @@ protected:
      * @param[in] frameNumber Frame Number
      * @param[in] referencedImageSequence Destination sequence
      */
-    void addReferencedImage(int frameNumber, ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > referencedImageSequence) throw(::fwGdcmIO::exception::Failed);
+    void addReferencedImage(int frameNumber,
+                            ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > referencedImageSequence) throw(::fwGdcmIO::
+                                                                                                           exception::
+                                                                                                           Failed);
 };
 
 } // namespace ie
 } // namespace writer
 } // namespace fwGdcmIO
-
-#endif // __FWGDCMIO_WRITER_IE_SPATIALFIDUCIALS_HPP__

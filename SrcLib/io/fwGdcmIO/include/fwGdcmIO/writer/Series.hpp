@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWGDCMIO_WRITER_SERIES_HPP__
-#define __FWGDCMIO_WRITER_SERIES_HPP__
+#pragma once
 
 #include "fwGdcmIO/config.hpp"
 #include "fwGdcmIO/container/DicomInstance.hpp"
@@ -60,7 +59,7 @@ public:
      * It manages writing of the following general DICOM modules : patient, study and series
      * @note Currently, it handles image, SR and RT document writing.
      */
-    FWGDCMIO_API void write() throw (::fwGdcmIO::exception::Failed)override;
+    FWGDCMIO_API void write() throw (::fwGdcmIO::exception::Failed) override;
 
     /**
      * Override
@@ -105,5 +104,3 @@ private:
 
 } // namespace writer
 } // namespace fwGdcmIO
-
-#endif // __FWGDCMIO_WRITER_SERIES_HPP__

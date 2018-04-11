@@ -1,20 +1,19 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWGDCMIO_READER_IE_SURFACE_HPP__
-#define __FWGDCMIO_READER_IE_SURFACE_HPP__
+#pragma once
 
-#include "fwGdcmIO/reader/ie/InformationEntity.hpp"
 #include "fwGdcmIO/helper/SegmentedPropertyRegistry.hpp"
+#include "fwGdcmIO/reader/ie/InformationEntity.hpp"
 
 #include <fwMedData/ModelSeries.hpp>
 
-#include <gdcmSurfaceReader.h>
-
 #include <boost/filesystem/path.hpp>
+
+#include <gdcmSurfaceReader.h>
 
 namespace fwData
 {
@@ -45,13 +44,13 @@ public:
      * @param[in] progress Progress callback
      * @param[in] cancel Cancel requested callback
      */
-    FWGDCMIO_API Surface(const SPTR(::fwMedData::DicomSeries)& dicomSeries,
+    FWGDCMIO_API Surface(const CSPTR(::fwMedData::DicomSeries)& dicomSeries,
                          const SPTR(::gdcm::Reader)& reader,
                          const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
                          const ::fwMedData::ModelSeries::sptr& series,
                          const ::fwLog::Logger::sptr& logger = nullptr,
-                         ProgressCallback progress = nullptr,
-                         CancelRequestedCallback cancel = nullptr);
+                         ProgressCallback progress           = nullptr,
+                         CancelRequestedCallback cancel      = nullptr);
 
     /**
      * @brief Load Segmented Property Registry
@@ -62,7 +61,6 @@ public:
 
     /// Destructor
     FWGDCMIO_API virtual ~Surface();
-
 
     /**
      * @brief Read Surface Segmentation and Surface Mesh Modules
@@ -98,5 +96,3 @@ protected:
 } // namespace ie
 } // namespace reader
 } // namespace fwGdcmIO
-
-#endif /* __FWGDCMIO_READER_IE_SURFACE_HPP__ */

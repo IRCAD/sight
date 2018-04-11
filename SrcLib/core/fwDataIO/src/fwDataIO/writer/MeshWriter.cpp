@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,7 +9,7 @@
 #include "fwDataIO/writer/registry/macros.hpp"
 
 #include <fwDataTools/helper/Array.hpp>
-#include <fwDataTools/helper/Mesh.hpp>
+#include <fwDataTools/helper/MeshGetter.hpp>
 #include <fwDataTools/Mesh.hpp>
 
 #include <fstream>
@@ -43,7 +43,7 @@ void MeshWriter::write()
     OSLM_INFO( "[MeshReader::read] Trian file: " << getFile());
     assert( getFile().empty() == false );
 
-    ::fwData::Mesh::sptr mesh = this->getConcreteObject();
+    ::fwData::Mesh::csptr mesh = this->getConcreteObject();
     FW_RAISE_IF("Can't convert this Mesh to Trian file",
                 !::fwDataTools::Mesh::hasUniqueCellType(mesh, ::fwData::Mesh::TRIANGLE));
 
@@ -59,11 +59,11 @@ void MeshWriter::write()
         throw std::ios_base::failure(str);
     }
 
-    ::fwDataTools::helper::Mesh meshHelper(mesh);
+    ::fwDataTools::helper::MeshGetter meshHelper(mesh);
 
     size_t i, nbPts, nbCells;
-    nbPts                                       = mesh->getNumberOfPoints();
-    ::fwData::Mesh::PointsMultiArrayType points = meshHelper.getPoints();
+    nbPts                                            = mesh->getNumberOfPoints();
+    ::fwData::Mesh::ConstPointsMultiArrayType points = meshHelper.getPoints();
     file<<nbPts<<std::endl;
     for( i = 0; i < nbPts; ++i )
     {

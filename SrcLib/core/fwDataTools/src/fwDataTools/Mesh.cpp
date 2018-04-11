@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,6 +7,7 @@
 #include "fwDataTools/Mesh.hpp"
 
 #include "fwDataTools/helper/ArrayGetter.hpp"
+#include "fwDataTools/helper/MeshGetter.hpp"
 #include "fwDataTools/thread/RegionThreader.hpp"
 #include "fwDataTools/TransformationMatrix3D.hpp"
 
@@ -43,13 +44,13 @@ void Mesh::initRand()
 
 //------------------------------------------------------------------------------
 
-bool Mesh::hasUniqueCellType(::fwData::Mesh::sptr mesh, ::fwData::Mesh::CellTypes cell)
+bool Mesh::hasUniqueCellType(::fwData::Mesh::csptr mesh, ::fwData::Mesh::CellTypes cell)
 {
     bool res = true;
-    ::fwDataTools::helper::Mesh meshHelper(mesh);
-    ::fwData::Mesh::CellTypesMultiArrayType cellTypes = meshHelper.getCellTypes();
+    ::fwDataTools::helper::MeshGetter meshHelper(mesh);
+    ::fwData::Mesh::ConstCellTypesMultiArrayType cellTypes = meshHelper.getCellTypes();
 
-    for(::fwData::Mesh::CellTypes type :  cellTypes)
+    for(::fwData::Mesh::CellTypes type : cellTypes)
     {
         if(type != cell)
         {

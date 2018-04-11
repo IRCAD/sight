@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -20,9 +20,9 @@ namespace ie
 
 //------------------------------------------------------------------------------
 
-Study::Study(const ::fwMedData::DicomSeries::sptr& dicomSeries,
+Study::Study(const ::fwMedData::DicomSeries::csptr& dicomSeries,
              const SPTR(::gdcm::Reader)& reader,
-             const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
+             const ::fwGdcmIO::container::DicomInstance::sptr& instance,
              const ::fwMedData::Study::sptr& study,
              const ::fwLog::Logger::sptr& logger,
              ProgressCallback progress,

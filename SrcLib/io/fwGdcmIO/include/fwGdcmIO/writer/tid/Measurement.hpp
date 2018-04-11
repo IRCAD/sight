@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWGDCMIO_WRITER_TID_MEASUREMENT_HPP__
-#define __FWGDCMIO_WRITER_TID_MEASUREMENT_HPP__
+#pragma once
 
 #include "fwGdcmIO/container/sr/DicomSRNode.hpp"
 #include "fwGdcmIO/writer/tid/TemplateID.hpp"
@@ -40,7 +39,7 @@ public:
      */
     FWGDCMIO_API Measurement(const SPTR(::gdcm::Writer)& writer,
                              const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
-                             const ::fwData::Image::sptr& image);
+                             const ::fwData::Image::csptr& image);
 
     /// Destructor
     FWGDCMIO_API virtual ~Measurement();
@@ -53,7 +52,6 @@ public:
     FWGDCMIO_API virtual void createNodes(const SPTR(::fwGdcmIO::container::sr::DicomSRNode)& parent,
                                           bool useSCoord3D = true);
 
-
 protected:
 
     /**
@@ -64,15 +62,12 @@ protected:
      * @param[in] useSCoord3D True if we must use 3D coordinates
      */
     void createMeasurement(const SPTR(::fwGdcmIO::container::sr::DicomSRNode)& parent,
-                           const SPTR(::fwData::PointList)& pointList,
+                           const CSPTR(::fwData::PointList)& pointList,
                            unsigned int id,
                            bool useSCoord3D);
-
 
 };
 
 } // namespace tid
 } // namespace writer
 } // namespace fwGdcmIO
-
-#endif /* __FWGDCMIO_WRITER_TID_MEASUREMENT_HPP__ */

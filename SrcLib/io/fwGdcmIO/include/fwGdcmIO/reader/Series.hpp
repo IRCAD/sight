@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWGDCMIO_READER_SERIES_HPP__
-#define __FWGDCMIO_READER_SERIES_HPP__
+#pragma once
 
 #include "fwGdcmIO/reader/iod/InformationObjectDefinition.hpp"
 
@@ -38,7 +37,7 @@ public:
      * @brief Read DICOM series
      * @param[in] dicomSeries DICOM series that shall be read
      */
-    FWGDCMIO_API ::fwMedData::Series::sptr read(const ::fwMedData::DicomSeries::sptr& dicomSeries)
+    FWGDCMIO_API ::fwMedData::Series::sptr read(const ::fwMedData::DicomSeries::csptr& dicomSeries)
     throw(::fwGdcmIO::exception::Failed);
 
     /// Get Logger
@@ -80,11 +79,11 @@ protected:
 
     /// Get referenced series when dealing with Spatial Fiducials
     SPTR(::fwGdcmIO::container::DicomInstance) getSpatialFiducialsReferencedSeriesInstance(
-        const ::fwMedData::DicomSeries::sptr& dicomSeries);
+        const ::fwMedData::DicomSeries::csptr& dicomSeries);
 
     /// Get referenced series when dealing with Structured Report
     SPTR(::fwGdcmIO::container::DicomInstance) getStructuredReportReferencedSeriesInstance(
-        const ::fwMedData::DicomSeries::sptr& dicomSeries);
+        const ::fwMedData::DicomSeries::csptr& dicomSeries);
 
     /// Series Container Map
     SeriesContainerMapType m_seriesContainerMap;
@@ -105,5 +104,3 @@ protected:
 
 }  // namespace reader
 }  // namespace fwGdcmIO
-
-#endif /*__FWGDCMIO_READER_SERIES_HPP__*/

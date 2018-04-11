@@ -1,8 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
+
+#include "fwGdcmIO/writer/iod/ComprehensiveSRIOD.hpp"
 
 #include "fwGdcmIO/helper/FileWriter.hpp"
 #include "fwGdcmIO/writer/ie/Document.hpp"
@@ -11,16 +13,17 @@
 #include "fwGdcmIO/writer/ie/Patient.hpp"
 #include "fwGdcmIO/writer/ie/Series.hpp"
 #include "fwGdcmIO/writer/ie/Study.hpp"
-#include "fwGdcmIO/writer/iod/ComprehensiveSRIOD.hpp"
-
-#include <boost/make_shared.hpp>
 
 #include <fwCore/spyLog.hpp>
+
 #include <fwData/Image.hpp>
+
 #include <fwMedData/Equipment.hpp>
 #include <fwMedData/ImageSeries.hpp>
 #include <fwMedData/Patient.hpp>
 #include <fwMedData/Study.hpp>
+
+#include <boost/make_shared.hpp>
 
 #include <gdcmWriter.h>
 
@@ -52,10 +55,10 @@ ComprehensiveSRIOD::~ComprehensiveSRIOD()
 
 //------------------------------------------------------------------------------
 
-void ComprehensiveSRIOD::write(const ::fwMedData::Series::sptr& series)
+void ComprehensiveSRIOD::write(const ::fwMedData::Series::csptr& series)
 {
     // Retrieve image series
-    ::fwMedData::ImageSeries::sptr imageSeries = ::fwMedData::ImageSeries::dynamicCast(series);
+    ::fwMedData::ImageSeries::csptr imageSeries = ::fwMedData::ImageSeries::dynamicCast(series);
     SLM_ASSERT("Image series should not be null.", imageSeries);
 
     // Retrieve image

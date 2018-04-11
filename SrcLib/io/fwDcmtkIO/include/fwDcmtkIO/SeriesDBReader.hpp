@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWDCMTKIO_SERIESDBREADER_HPP__
-#define __FWDCMTKIO_SERIESDBREADER_HPP__
+#pragma once
 
 #include "fwDcmtkIO/config.hpp"
 #include "fwDcmtkIO/reader/IObjectReader.hpp"
@@ -72,7 +71,7 @@ public:
      * @param[in] dicomSeriesDB SeriesDB containing DicomSeries that must be read
      * @param[in] notifier Service used to notify changes in SeriesDB
      */
-    FWDCMTKIO_API void readFromDicomSeriesDB(SPTR(::fwMedData::SeriesDB) dicomSeriesDB,
+    FWDCMTKIO_API void readFromDicomSeriesDB(CSPTR(::fwMedData::SeriesDB) dicomSeriesDB,
                                              ::fwServices::IService::sptr notifier = ::fwServices::IService::sptr());
 
     /// Reads DICOM data from configured path and fills SeriesDB object with DicomSeries
@@ -163,7 +162,7 @@ private:
      * @param[in] dicomSeries Dicom Series that must be converted
      * @param[in] notifier Service used to notify the modification
      */
-    void convertDicomSeries(SPTR(::fwMedData::DicomSeries) dicomSeries,
+    void convertDicomSeries(CSPTR(::fwMedData::DicomSeries) dicomSeries,
                             ::fwServices::IService::sptr notifier = ::fwServices::IService::sptr());
 
     ///Patient Map
@@ -190,5 +189,3 @@ private:
 };
 
 } // namespace fwDcmtkIO
-
-#endif /*__FWDCMTKIO_SERIESDBREADER_HPP__*/

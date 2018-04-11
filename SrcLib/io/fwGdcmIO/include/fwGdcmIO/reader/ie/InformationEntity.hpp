@@ -1,16 +1,16 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWGDCMIO_READER_IE_INFORMATIONENTITY_HPP__
-#define __FWGDCMIO_READER_IE_INFORMATIONENTITY_HPP__
+#pragma once
 
 #include "fwGdcmIO/config.hpp"
 #include "fwGdcmIO/container/DicomInstance.hpp"
 
 #include <fwData/Object.hpp>
+
 #include <fwLog/Logger.hpp>
 
 #include <gdcmReader.h>
@@ -38,8 +38,8 @@ class FWGDCMIO_CLASS_API InformationEntity
 
 public:
 
-    typedef std::function< void(std::uint64_t) > ProgressCallback;
-    typedef std::function< bool() > CancelRequestedCallback;
+    typedef std::function< void (std::uint64_t) > ProgressCallback;
+    typedef std::function< bool () > CancelRequestedCallback;
 
     /**
      * @brief Constructor
@@ -51,13 +51,13 @@ public:
      * @param[in] progress Progress callback
      * @param[in] cancel Cancel requested callback
      */
-    FWGDCMIO_API InformationEntity(const SPTR(::fwMedData::DicomSeries)& dicomSeries,
+    FWGDCMIO_API InformationEntity(const CSPTR(::fwMedData::DicomSeries)& dicomSeries,
                                    const SPTR(::gdcm::Reader)& reader,
                                    const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
                                    const SPTR(DATATYPE)& object,
                                    const ::fwLog::Logger::sptr& logger = nullptr,
-                                   const ProgressCallback progress = nullptr,
-                                   CancelRequestedCallback cancel = nullptr);
+                                   const ProgressCallback progress     = nullptr,
+                                   CancelRequestedCallback cancel      = nullptr);
 
     /// Destructor
     FWGDCMIO_API virtual ~InformationEntity();
@@ -65,7 +65,7 @@ public:
 protected:
 
     /// Dicom Series
-    SPTR(::fwMedData::DicomSeries) m_dicomSeries;
+    CSPTR(::fwMedData::DicomSeries) m_dicomSeries;
 
     /// GDCM Reader
     SPTR(::gdcm::Reader) m_reader;
@@ -89,13 +89,13 @@ protected:
 //------------------------------------------------------------------------------
 
 template< class DATATYPE >
-InformationEntity<DATATYPE>::InformationEntity(const SPTR(::fwMedData::DicomSeries)& dicomSeries,
+InformationEntity<DATATYPE>::InformationEntity(const CSPTR(::fwMedData::DicomSeries)& dicomSeries,
                                                const SPTR(::gdcm::Reader)& reader,
                                                const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
                                                const SPTR(DATATYPE)& object,
                                                const ::fwLog::Logger::sptr& logger,
                                                ProgressCallback progress,
-                                               CancelRequestedCallback cancel):
+                                               CancelRequestedCallback cancel) :
     m_dicomSeries(dicomSeries),
     m_reader(reader),
     m_instance(instance),
@@ -121,5 +121,3 @@ InformationEntity<DATATYPE>::~InformationEntity()
 } // namespace ie
 } // namespace reader
 } // namespace fwGdcmIO
-
-#endif // __FWGDCMIO_READER_IE_INFORMATIONENTITY_HPP__

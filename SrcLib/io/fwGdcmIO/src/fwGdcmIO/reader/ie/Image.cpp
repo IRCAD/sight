@@ -43,9 +43,9 @@ namespace ie
 
 //------------------------------------------------------------------------------
 
-Image::Image(const SPTR(::fwMedData::DicomSeries)& dicomSeries,
+Image::Image(const ::fwMedData::DicomSeries::csptr& dicomSeries,
              const SPTR(::gdcm::Reader)& reader,
-             const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
+             const ::fwGdcmIO::container::DicomInstance::sptr& instance,
              const ::fwData::Image::sptr& image,
              const ::fwLog::Logger::sptr& logger,
              ProgressCallback progress,

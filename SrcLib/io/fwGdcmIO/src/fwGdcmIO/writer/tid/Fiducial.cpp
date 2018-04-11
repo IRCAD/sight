@@ -43,7 +43,7 @@ namespace tid
 
 Fiducial::Fiducial(const SPTR(::gdcm::Writer)& writer,
                    const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
-                   const ::fwData::Image::sptr& image) :
+                   const ::fwData::Image::csptr& image) :
     ::fwGdcmIO::writer::tid::TemplateID< ::fwData::Image >(writer, instance, image)
 {
 }
@@ -74,7 +74,7 @@ void Fiducial::createNodes(const SPTR(::fwGdcmIO::container::sr::DicomSRNode)& p
 //------------------------------------------------------------------------------
 
 void Fiducial::createFiducial(const SPTR(::fwGdcmIO::container::sr::DicomSRNode)& parent,
-                              const ::fwData::Point::sptr& point,
+                              const ::fwData::Point::csptr& point,
                               unsigned int id, bool useSCoord3D)
 {
     // Create Fiducial node

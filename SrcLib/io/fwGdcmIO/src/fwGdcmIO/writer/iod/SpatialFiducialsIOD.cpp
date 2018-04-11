@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -26,9 +26,9 @@
 #include <fwMedData/Patient.hpp>
 #include <fwMedData/Study.hpp>
 
-#include <gdcmWriter.h>
-
 #include <boost/make_shared.hpp>
+
+#include <gdcmWriter.h>
 
 namespace fwGdcmIO
 {
@@ -56,16 +56,17 @@ SpatialFiducialsIOD::~SpatialFiducialsIOD()
 
 //------------------------------------------------------------------------------
 
-void SpatialFiducialsIOD::write(const ::fwMedData::Series::sptr& series)
+void SpatialFiducialsIOD::write(const ::fwMedData::Series::csptr& series)
 {
     // Retrieve image series
-    ::fwMedData::ImageSeries::sptr imageSeries = ::fwMedData::ImageSeries::dynamicCast(series);
+    ::fwMedData::ImageSeries::csptr imageSeries = ::fwMedData::ImageSeries::dynamicCast(series);
     SLM_ASSERT("Image series should not be null.", imageSeries);
 
     // Retrieve image
-    ::fwData::Image::sptr image = imageSeries->getImage();
+    ::fwData::Image::csptr image = imageSeries->getImage();
 
-    ::fwData::Vector::sptr distances = image->getField< ::fwData::Vector >(::fwDataTools::fieldHelper::Image::m_imageDistancesId);
+    ::fwData::Vector::sptr distances = image->getField< ::fwData::Vector >(
+        ::fwDataTools::fieldHelper::Image::m_imageDistancesId);
     SLM_WARN_IF("Writing Spatial Fiducials IOD : distances will be ignored.", distances && !distances->empty());
 
     // Create writer
