@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,16 +7,16 @@
 #include "fwGuiQt/dialog/SelectorDialog.hpp"
 
 #include <fwCore/base.hpp>
+
 #include <fwGui/registry/macros.hpp>
 
 #include <QApplication>
+#include <QDialog>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QListWidget>
 #include <QPushButton>
-#include <QPushButton>
 #include <QVBoxLayout>
-#include <QDialog>
 
 fwGuiRegisterMacro( ::fwGuiQt::dialog::SelectorDialog, ::fwGui::dialog::ISelectorDialog::REGISTRY_KEY );
 
@@ -27,7 +27,9 @@ namespace dialog
 
 //------------------------------------------------------------------------------
 
-SelectorDialog::SelectorDialog(::fwGui::GuiBaseObject::Key key) : m_message(""),  m_title("")
+SelectorDialog::SelectorDialog(::fwGui::GuiBaseObject::Key key) :
+    m_message(""),
+    m_title("")
 {
 }
 
@@ -55,15 +57,15 @@ void SelectorDialog::setTitle(std::string _title)
 
 std::string SelectorDialog::show()
 {
-    QWidget *parent = qApp->activeWindow();
+    QWidget* parent = qApp->activeWindow();
 
     QDialog* dialog = new QDialog(parent);
     dialog->setWindowTitle(QString::fromStdString(m_title));
 
-    QListWidget *selectionList = new QListWidget(dialog);
+    QListWidget* selectionList = new QListWidget(dialog);
     for( std::string selection :  m_selections)
     {
-        selectionList->addItem(QString::fromStdString ( selection ));
+        selectionList->addItem(QString::fromStdString( selection ));
     }
 
     QListWidgetItem* firstItem = selectionList->item(0);
@@ -72,11 +74,17 @@ std::string SelectorDialog::show()
     QPushButton* okButton     = new QPushButton(QObject::tr("Ok"));
     QPushButton* cancelButton = new QPushButton(QObject::tr("Cancel"));
 
-    QHBoxLayout *hLayout = new QHBoxLayout();
+    QHBoxLayout* hLayout = new QHBoxLayout();
     hLayout->addWidget(okButton);
     hLayout->addWidget(cancelButton);
 
-    QVBoxLayout *vLayout = new QVBoxLayout();
+    for(auto customButton : m_customButtons)
+    {
+        hLayout->addWidget(customButton);
+        QObject::connect(customButton, SIGNAL(clicked()), dialog, SLOT(reject()));
+    }
+
+    QVBoxLayout* vLayout = new QVBoxLayout();
     if(!m_message.empty())
     {
         QLabel* msgText = new QLabel(QString::fromStdString(m_message), dialog);
@@ -88,7 +96,7 @@ std::string SelectorDialog::show()
     dialog->setLayout(vLayout);
     QObject::connect(okButton, SIGNAL(clicked()), dialog, SLOT(accept()));
     QObject::connect(cancelButton, SIGNAL(clicked()), dialog, SLOT(reject()));
-    QObject::connect(selectionList, SIGNAL(itemDoubleClicked( QListWidgetItem * )), dialog, SLOT(accept()));
+    QObject::connect(selectionList, SIGNAL(itemDoubleClicked(QListWidgetItem*)), dialog, SLOT(accept()));
 
     std::string selection = "";
     if(dialog->exec())
@@ -101,14 +109,21 @@ std::string SelectorDialog::show()
 
 //------------------------------------------------------------------------------
 
-void SelectorDialog::setMessage(const std::string &msg)
+void SelectorDialog::setMessage(const std::string& msg)
 {
     m_message = msg;
 }
 
 //------------------------------------------------------------------------------
 
+void SelectorDialog::addCustomButton(const std::string& label, std::function<void()> clickedFn)
+{
+    QPushButton* button = new QPushButton( QString::fromStdString(label) );
+    m_customButtons.push_back( button );
+    QObject::connect(button, &QPushButton::clicked, clickedFn);
+}
+
+//------------------------------------------------------------------------------
+
 } // namespace dialog
 } // namespace fwGuiQt
-
-
