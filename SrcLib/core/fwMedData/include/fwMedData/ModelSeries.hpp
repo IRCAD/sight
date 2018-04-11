@@ -1,13 +1,13 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWMEDDATA_MODELSERIES_HPP__
-#define __FWMEDDATA_MODELSERIES_HPP__
+#pragma once
 
 #include "fwMedData/config.hpp"
+#include "fwMedData/DicomSeries.hpp"
 #include "fwMedData/Series.hpp"
 #include "fwMedData/types.hpp"
 
@@ -60,8 +60,21 @@ public:
     /**
      * @name Getters / Setters
      * @{ */
+
+    /**
+     * @brief  Reconstruction container use to store mesh, material and image mask
+     * @{ */
     const ReconstructionVectorType& getReconstructionDB() const;
     void setReconstructionDB(const ReconstructionVectorType& val);
+    /**  @} */
+
+    /**
+     * @brief Dicom reference use to generate valid Dicom Segmentation Surface
+     * @{ */
+    ::fwMedData::DicomSeries::csptr getDicomReference() const;
+    void setDicomReference(const ::fwMedData::DicomSeries::csptr& reference);
+    /**  @} */
+
     /**  @} */
 
     /***
@@ -88,6 +101,9 @@ protected:
 
     /// Model container
     ReconstructionVectorType m_reconstructionDB;
+
+    /// Dicom reference used to generate a valid Dicom Segmentation Surface
+    ::fwMedData::DicomSeries::csptr m_dicomReference;
 
 private:
 
@@ -122,7 +138,18 @@ inline void ModelSeries::setReconstructionDB(const ModelSeries::ReconstructionVe
 
 //-----------------------------------------------------------------------------
 
+inline ::fwMedData::DicomSeries::csptr ModelSeries::getDicomReference() const
+{
+    return m_dicomReference;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void ModelSeries::setDicomReference(const ::fwMedData::DicomSeries::csptr& reference)
+{
+    m_dicomReference = reference;
+}
+
+//-----------------------------------------------------------------------------
+
 }   //end namespace fwMedData
-
-#endif // __FWMEDDATA_MODELSERIES_HPP__
-

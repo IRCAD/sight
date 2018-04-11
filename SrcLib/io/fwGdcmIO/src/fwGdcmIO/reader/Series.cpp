@@ -75,7 +75,8 @@ throw(::fwGdcmIO::exception::Failed)
         {
             // Read the image
             ::fwMedData::ImageSeries::sptr imageSeries = ::fwDicomTools::Series::convertToImageSeries(dicomSeries);
-            ::fwData::Image::sptr image                = ::fwData::Image::New();
+            imageSeries->setDicomReference(dicomSeries);
+            ::fwData::Image::sptr image = ::fwData::Image::New();
             imageSeries->setImage(image);
 
             // Create IOD Reader
@@ -103,7 +104,7 @@ throw(::fwGdcmIO::exception::Failed)
                  ::gdcm::MediaStorage::SurfaceSegmentationStorage)
         {
             ::fwMedData::ModelSeries::sptr modelSeries = ::fwDicomTools::Series::convertToModelSeries(dicomSeries);
-
+            modelSeries->setDicomReference(dicomSeries);
             // Create IOD Reader
             ::fwGdcmIO::reader::iod::SurfaceSegmentationIOD iod(dicomSeries, instance, m_logger,
                                                                 m_progressCallback, m_cancelRequestedCallback);
@@ -133,6 +134,8 @@ throw(::fwGdcmIO::exception::Failed)
             {
                 ::fwMedData::ImageSeries::sptr imageSeries =
                     ::fwMedData::ImageSeries::dynamicCast(m_seriesContainerMap[imageInstance]);
+
+                imageSeries->setDicomReference(dicomSeries);
 
                 // Create IOD Reader
                 ::fwGdcmIO::reader::iod::SpatialFiducialsIOD iod(dicomSeries, instance, m_logger,
@@ -167,6 +170,8 @@ throw(::fwGdcmIO::exception::Failed)
 
             ::fwMedData::ImageSeries::sptr imageSeries =
                 ::fwMedData::ImageSeries::dynamicCast(m_seriesContainerMap[imageInstance]);
+
+            imageSeries->setDicomReference(dicomSeries);
 
             if(imageInstance && imageSeries)
             {

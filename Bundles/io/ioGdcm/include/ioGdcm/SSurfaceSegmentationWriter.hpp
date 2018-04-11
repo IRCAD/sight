@@ -72,12 +72,10 @@ private:
     /**
      * @brief Write a Series to a folder in DICOM format
      * @param[in] filename DICOM file name
-     * @param[in] dicom DicomSeries that must be writen
      * @param[in] model ModelSeries that must be writen
      */
     void saveSurfaceSegmentation( const ::boost::filesystem::path filename,
-                                  const ::fwMedData::DicomSeries::sptr& dicom,
-                                  const ::fwMedData::ModelSeries::sptr& model);
+                                  const ::fwMedData::ModelSeries::csptr& model);
 };
 
 } // namespace ioGdcm

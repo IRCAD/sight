@@ -48,7 +48,7 @@
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwIO::IWriter</type>
         <service>::ioGdcm::SSurfaceSegmentationWriter</service>
-        <object>::fwData::Vector</object>
+        <object>::fwMedData::ModelSeries</object>
         <desc>DICOM 3D/Surface Segmentation Writer (GDCM)</desc>
     </extension>
 

@@ -33,7 +33,7 @@
 namespace ioGdcm
 {
 
-fwServicesRegisterMacro( ::fwIO::IWriter, ::ioGdcm::SSurfaceSegmentationWriter, ::fwData::Vector );
+fwServicesRegisterMacro( ::fwIO::IWriter, ::ioGdcm::SSurfaceSegmentationWriter, ::fwMedData::ModelSeries );
 
 //------------------------------------------------------------------------------
 
@@ -116,37 +116,13 @@ void SSurfaceSegmentationWriter::updating()
         }
 
         // Retrieve dataStruct associated with this service
-        ::fwData::Vector::csptr vector = this->getObject< ::fwData::Vector >();
+        ::fwMedData::ModelSeries::csptr model = this->getInput< ::fwMedData::ModelSeries >(::fwIO::s_DATA_KEY);
 
-        if(vector->getContainer().size() > 2)
+        if(!model->getDicomReference())
         {
             ::fwGui::dialog::MessageDialog::showMessageDialog(
-                "Warning", "Writing with more than one DICOM Series is not supported as of now.",
+                "Warning", "DICOM image reference is missing, DICOM Surface Segmentation cannot be generated",
                 ::fwGui::dialog::IMessageDialog::WARNING);
-            return;
-        }
-
-        ::fwMedData::DicomSeries::sptr dicom = nullptr;
-        ::fwMedData::ModelSeries::sptr model = nullptr;
-
-        /* Look for a DicomSeries and a ModelSeries in the input vector */
-        for(const auto& data : vector->getContainer())
-        {
-            if(!dicom && data->getClassname() == "::fwMedData::DicomSeries")
-            {
-                dicom = ::fwMedData::DicomSeries::dynamicCast(data);
-            }
-
-            if(!model && data->getClassname() == "::fwMedData::ModelSeries")
-            {
-                model = ::fwMedData::ModelSeries::dynamicCast(data);
-            }
-        }
-
-        if(!model || !dicom)
-        {
-            ::fwGui::dialog::MessageDialog::showMessageDialog(
-                "Warning", "Input data must be DicomSeries and ModelSeries.", ::fwGui::dialog::IMessageDialog::WARNING);
             return;
         }
 
@@ -156,7 +132,7 @@ void SSurfaceSegmentationWriter::updating()
         /* Write the data */
         ::fwGui::Cursor cursor;
         cursor.setCursor(::fwGui::ICursor::BUSY);
-        saveSurfaceSegmentation( outputPath, dicom, model );
+        saveSurfaceSegmentation( outputPath, model );
         cursor.setDefaultCursor();
     }
 }
@@ -164,12 +140,11 @@ void SSurfaceSegmentationWriter::updating()
 //------------------------------------------------------------------------------
 
 void SSurfaceSegmentationWriter::saveSurfaceSegmentation( const ::boost::filesystem::path filename,
-                                                          const ::fwMedData::DicomSeries::sptr& dicom,
-                                                          const ::fwMedData::ModelSeries::sptr& model)
+                                                          const ::fwMedData::ModelSeries::csptr& model)
 {
     ::fwGdcmIO::writer::SurfaceSegmentation::sptr writer = ::fwGdcmIO::writer::SurfaceSegmentation::New();
+
     writer->setObject(model);
-    writer->setAssociatedDicomSeries(dicom);
 
     ::fwData::location::SingleFile::sptr location = ::fwData::location::SingleFile::New();
     location->setPath(filename);

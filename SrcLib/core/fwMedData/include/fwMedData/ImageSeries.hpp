@@ -1,13 +1,13 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWMEDDATA_IMAGESERIES_HPP__
-#define __FWMEDDATA_IMAGESERIES_HPP__
+#pragma once
 
 #include "fwMedData/config.hpp"
+#include "fwMedData/DicomSeries.hpp"
 #include "fwMedData/Series.hpp"
 #include "fwMedData/types.hpp"
 
@@ -61,6 +61,13 @@ public:
     void setImage(const SPTR(::fwData::Image)& val);
     /**  @} */
 
+    /**
+     * @brief Dicom reference use to generate valid Dicom Segmentation
+     * @{ */
+    ::fwMedData::DicomSeries::csptr getDicomReference() const;
+    void setDicomReference(const ::fwMedData::DicomSeries::csptr& reference);
+    /**  @} */
+
     /**  @} */
 
 protected:
@@ -68,6 +75,8 @@ protected:
     /// Image container
     SPTR(::fwData::Image) m_image;
 
+    /// Dicom reference used to generate a valid Dicom Segmentation
+    ::fwMedData::DicomSeries::csptr m_dicomReference;
 };
 
 //-----------------------------------------------------------------------------
@@ -86,7 +95,18 @@ inline void ImageSeries::setImage(const SPTR(::fwData::Image)& val)
 
 //-----------------------------------------------------------------------------
 
+inline ::fwMedData::DicomSeries::csptr ImageSeries::getDicomReference() const
+{
+    return m_dicomReference;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void ImageSeries::setDicomReference(const ::fwMedData::DicomSeries::csptr& reference)
+{
+    m_dicomReference = reference;
+}
+
+//-----------------------------------------------------------------------------
+
 }   //end namespace fwMedData
-
-#endif // __FWMEDDATA_IMAGESERIES_HPP__
-
