@@ -267,8 +267,9 @@ private:
     /// Compute the double slider value from a slider position.
     static double getDoubleSliderValue(const QSlider* slider);
 
-    /// Compute the double slider range according to the min and max property
-    static void setDoubleSliderRange(QSlider* slider);
+    /// Compute the double slider range according to the min and max property, update the internal slider value
+    /// according to the new range
+    static void setDoubleSliderRange(QSlider* slider, double currentValue);
 
     /// Adjust the minimum size of a label according to the range values
     template <typename T>

@@ -898,7 +898,7 @@ void SParameters::createDoubleSliderWidget(QGridLayout& layout, int row, const s
     slider->setProperty("min", min);
     slider->setProperty("max", max);
 
-    setDoubleSliderRange(slider);
+    setDoubleSliderRange(slider, defaultValue);
 
     const int defaultSliderValue = int(std::round(((defaultValue - min) / valueRange) * double(slider->maximum())));
     slider->setValue(defaultSliderValue);
@@ -1403,8 +1403,9 @@ void SParameters::setDoubleMinParameter(double min, std::string key)
     }
     else if (slider)
     {
+        const double value = getDoubleSliderValue(slider);
         slider->setProperty("min", min);
-        setDoubleSliderRange(slider);
+        setDoubleSliderRange(slider, value);
     }
     else
     {
@@ -1441,8 +1442,9 @@ void SParameters::setDoubleMaxParameter(double max, std::string key)
     }
     else if (slider)
     {
+        const double value = getDoubleSliderValue(slider);
         slider->setProperty("max", max);
-        setDoubleSliderRange(slider);
+        setDoubleSliderRange(slider, value);
     }
     else
     {
@@ -1452,7 +1454,7 @@ void SParameters::setDoubleMaxParameter(double max, std::string key)
 
 //-----------------------------------------------------------------------------
 
-void SParameters::setDoubleSliderRange(QSlider* slider)
+void SParameters::setDoubleSliderRange(QSlider* slider, double currentValue)
 {
     const std::string key       = slider->property("key").toString().toStdString();
     const double min            = slider->property("min").toDouble();
@@ -1480,6 +1482,24 @@ void SParameters::setDoubleSliderRange(QSlider* slider)
         maxSliderValue = 1.;
     }
     slider->setMaximum(maxSliderValue);
+
+    // Update the slider integer value according to the new mix/max
+    if (currentValue <= min)
+    {
+        slider->setValue(0);
+        // qt does not emit the signal if the value does not change, we have to force qt signal to update the displayed
+        // value and emit 'doubleChanged' signal
+        Q_EMIT slider->valueChanged(0);
+    }
+    else if (currentValue > max)
+    {
+        slider->setValue(maxSliderValue);
+    }
+    else
+    {
+        const int sliderVal = int(std::round(((currentValue - min) / valueRange) * double(slider->maximum())));
+        slider->setValue(sliderVal);
+    }
 }
 
 //-----------------------------------------------------------------------------
