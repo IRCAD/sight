@@ -55,35 +55,56 @@ void IActivityView::configuring()
 {
     this->::fwGui::IGuiContainerSrv::initialize();
 
-    typedef ::fwRuntime::ConfigurationElement::sptr ConfigType;
+    const ConfigType config = this->getConfigTree();
 
-    ConfigType activityConfig = m_configuration->findConfigurationElement("mainActivity");
-    if (activityConfig)
+    m_mainActivityId = config.get<std::string>("mainActivity.<xmlattr>.id", "");
+    SLM_DEBUG_IF("main activity 'id' is not defined", m_mainActivityId.empty());
+
+    const auto inoutsCfg = config.equal_range("inout");
+    for (auto itCfg = inoutsCfg.first; itCfg != inoutsCfg.second; ++itCfg)
     {
-        const std::string id = activityConfig->getAttributeValue("id");
-        SLM_ASSERT("main activity 'id' must be defined", !id.empty());
-        m_mainActivityId = id;
+        const std::string key = itCfg->second.get<std::string>("<xmlattr>.key");
+        SLM_ASSERT("Missing 'key' tag.", !key.empty());
+
+        const std::string uid = itCfg->second.get<std::string>("<xmlattr>.uid");
+        SLM_ASSERT("Missing 'uid' tag.", !uid.empty());
+
+        const std::string strOptional = itCfg->second.get<std::string>("<xmlattr>.optional", "no");
+        const bool optional           = (strOptional == "yes");
+
+        ::fwData::Object::csptr obj = this->getInOut< ::fwData::Object>(key);
+        ParameterType param;
+        param.replace = key;
+        if(optional)
+        {
+            param.by = uid;
+        }
+        else
+        {
+            SLM_ASSERT("Object key '" + key + "'with uid '" + uid + "' does not exists.", obj);
+            param.by = obj->getID();
+        }
+        m_parameters.push_back(param);
     }
 
-    ConfigType config = m_configuration->findConfigurationElement("parameters");
-    if (config)
+    ConfigType configParams = config.get_child("parameters");
+
+    const auto paramsCfg = configParams.equal_range("parameter");
+    for (auto itParams = paramsCfg.first; itParams != paramsCfg.second; ++itParams)
     {
-        const std::vector <ConfigType> params = config->find("parameter");
-        for (ConfigType cfg : params)
+        const std::string replace = itParams->second.get<std::string>("<xmlattr>.replace");
+        std::string by            = itParams->second.get<std::string>("<xmlattr>.by", "");
+        if(by.empty())
         {
-            const std::string replace = cfg->getAttributeValue("replace");
-            std::string by            = cfg->getAttributeValue("by");
-            if(by.empty())
-            {
-                by = cfg->getAttributeValue("uid");
-            }
-            SLM_ASSERT("'parameter' tag must contain valid 'replace' and 'by' attributes.",
-                       !replace.empty() && !by.empty());
-            ParameterType param;
-            param.replace = replace;
-            param.by      = by;
-            m_parameters.push_back(param);
+            by = itParams->second.get<std::string>("<xmlattr>.uid");
         }
+        SLM_ASSERT("'parameter' tag must contain valid 'replace' and 'by' attributes.",
+                   !replace.empty() && !by.empty());
+        ParameterType param;
+        param.replace = replace;
+        param.by      = by;
+        SLM_ASSERT("'camp' paths are not managed in the configuration parameters", !param.isSeshat());
+        m_parameters.push_back(param);
     }
 }
 
@@ -210,6 +231,16 @@ void IActivityView::translateParameters( ::fwData::Object::sptr sourceObj, const
             }
             replaceMap[param.replace] = parameterValue;
         }
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void IActivityView::translateParameters( const ParametersType& parameters, ReplaceMapType& replaceMap )
+{
+    for(const ParametersType::value_type& param :  parameters)
+    {
+        replaceMap[param.replace] = param.by;
     }
 }
 

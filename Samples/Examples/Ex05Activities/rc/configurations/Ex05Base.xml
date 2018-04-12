@@ -82,8 +82,8 @@
 
         <!-- Display the activity in the current view -->
         <service uid="dynamicView" type="::guiQt::editor::SActivityView">
+            <inout key="SERIESDB" uid="seriesDB" />
             <parameters>
-                <parameter replace="SERIESDB" by="seriesDB" />
                 <parameter replace="ICON_PATH" by="${appIconPath}" />
                 <parameter replace="enabledPreviousChannel" by="enabledPreviousChannel" />
                 <parameter replace="enabledNextChannel" by="enabledNextChannel" />

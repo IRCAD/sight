@@ -99,9 +99,9 @@
         </service>
 
         <service uid="dynamicView" type="::guiQt::editor::SDynamicView" autoConnect="yes">
+            <inout key="SERIESDB" uid="seriesDB" />
             <mainActivity id="SDBVRRender" closable="false" />
             <parameters>
-                <parameter replace="SERIESDB" by="seriesDB" />
                 <parameter replace="ICON_PATH" by="${appIconPath}" />
                 <parameter replace="DYNAMICVIEW_CHANNEL" by="dynamicViewChannel" />
                 <parameter replace="PROGRESS_CHANNEL" by="progressStatus" />
