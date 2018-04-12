@@ -103,8 +103,9 @@ void TransformationMatrix3D::multiply(const ::fwData::TransformationMatrix3D::cs
 
 bool TransformationMatrix3D::isIdentity(const ::fwData::TransformationMatrix3D::csptr& _trf, double _epsilon)
 {
-    static const ::fwData::TransformationMatrix3D::sptr id        = ::fwData::TransformationMatrix3D::New();
-    const ::fwData::TransformationMatrix3D::TMCoefArray& arrayID  = id->getCoefficients();
+    static const ::fwData::TransformationMatrix3D::sptr s_IDENTITY = ::fwData::TransformationMatrix3D::New();
+
+    const ::fwData::TransformationMatrix3D::TMCoefArray& arrayID  = s_IDENTITY->getCoefficients();
     const ::fwData::TransformationMatrix3D::TMCoefArray& arrayTrf = _trf->getCoefficients();
 
     for(size_t i = 0; i < arrayID.size(); ++i)
