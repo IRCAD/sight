@@ -183,7 +183,7 @@ void SFrameMatrixSynchronizer::synchronize()
         }
         else
         {
-            SLM_INFO("no available frame for timeline 'frame" << i << ".");
+            OSLM_INFO("no available frame for timeline 'frame" << i << ".");
         }
     }
 
@@ -206,7 +206,7 @@ void SFrameMatrixSynchronizer::synchronize()
         }
         else
         {
-            SLM_INFO("no available matrix for timeline 'matrix" << i << "'.");
+            OSLM_INFO("no available matrix for timeline 'matrix" << i << "'.");
         }
     }
 
