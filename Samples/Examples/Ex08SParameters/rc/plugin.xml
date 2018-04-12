@@ -1,6 +1,6 @@
 <!--
 This example shows the possibilities of SParameters:
-- The two upper SParameters are links together (the values are synchronized for the parameters with the same name).
+- The two upper SParameters are linked together (the values are synchronized for the parameters with the same name).
 - The two lower SParameters allow to set the minimum/maximum values of the upper SParameters (with the same name).
    - The minimum of a parameter is connected to the minimum of the maximum parameter (and vice versa)
 -->
