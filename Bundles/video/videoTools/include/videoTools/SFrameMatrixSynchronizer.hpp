@@ -37,6 +37,10 @@ namespace videoTools
 /**
  * @brief SFrameMatrixSynchronizer service synchronizes video frame and tracking matrix.
  *
+ * @note
+ * `autoConnect="yes"` is required in order to play nice with streams whose timelines might get reset, e.g. when
+ * replaying a recorded video several times.
+ *
  * @section Signals Signals
  * - \b synchronizationDone(::fwCore::HiResClock::HiResClockType) : Emitted when the sync is done.
  * - \b allMatricesFound(::fwCore::HiResClock::HiResClockType) : Emitted when the sync is done, contains a boolean to
@@ -45,7 +49,7 @@ namespace videoTools
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::videoTools::SFrameMatrixSynchronizer">
+        <service type="::videoTools::SFrameMatrixSynchronizer" autoConnect="yes">
             <in group="frameTL">
                 <key uid="frameTL1" />
                 <key uid="frameTL4" />
@@ -123,7 +127,7 @@ public:
     }
 
     /**
-     * @brief Returns proposals to connect service slots to associated object signals,
+     * @brief Return proposals to connect service slots to associated object signals,
      * this method is used for obj/srv auto connections
      *
      * Connect ::arData::TimeLine::s_CLEARED_SIG to s_RESET_TIMELINE_SLOT
