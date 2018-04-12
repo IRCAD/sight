@@ -25,6 +25,9 @@
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
 
+// Removes RGB macro defined in windows.h
+// to avoid conflicts in gdcmSurfaceHelper.h
+#undef RGB
 #include <gdcmSurfaceHelper.h>
 
 #include <sstream>
