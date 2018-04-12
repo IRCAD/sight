@@ -1,28 +1,28 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "videoQt/editor/CameraDeviceDlg.hpp"
 
-#include <fwGui/dialog/MessageDialog.hpp>
+#include "videoQt/helper/formats.hpp"
 
 #include <arData/Camera.hpp>
 
-#include "videoQt/helper/formats.hpp"
+#include <fwGui/dialog/MessageDialog.hpp>
 
-
-#include <QtMultimedia>
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QPushButton>
-#include <QLabel>
 #include <QCamera>
+#include <QHBoxLayout>
+#include <QLabel>
 #include <QObject>
+#include <QPushButton>
+#include <QtMultimedia>
+#include <QVBoxLayout>
 
-#include <sstream>
+#include <algorithm>
 #include <map>
+#include <sstream>
 
 Q_DECLARE_METATYPE(QCameraInfo)
 
@@ -31,16 +31,16 @@ namespace videoQt
 namespace editor
 {
 
-
 //-----------------------------------------------------------------------------
 
-CameraDeviceDlg::CameraDeviceDlg() : QDialog()
+CameraDeviceDlg::CameraDeviceDlg() :
+    QDialog()
 {
-    QVBoxLayout *mainLayout     = new QVBoxLayout();
-    QHBoxLayout *buttonLayout   = new QHBoxLayout();
-    QHBoxLayout *selectorLayout = new QHBoxLayout();
-    QPushButton *validateButton = new QPushButton("Validate");
-    QPushButton *cancelButton   = new QPushButton("Cancel");
+    QVBoxLayout* mainLayout     = new QVBoxLayout();
+    QHBoxLayout* buttonLayout   = new QHBoxLayout();
+    QHBoxLayout* selectorLayout = new QHBoxLayout();
+    QPushButton* validateButton = new QPushButton("Validate");
+    QPushButton* cancelButton   = new QPushButton("Cancel");
 
     QLabel* deviceLabel = new QLabel("Camera device: ");
     m_devicesComboBox = new QComboBox();
@@ -51,9 +51,47 @@ CameraDeviceDlg::CameraDeviceDlg() : QDialog()
 
     // Add cameras
     const QList<QCameraInfo> devices = QCameraInfo::availableCameras();
+    std::map<std::string, std::vector<QCameraInfo> > nameToUID;
+    // First run: collect all detected device names and UIDs
     for(const QCameraInfo& camInfo : devices)
     {
-        m_devicesComboBox->addItem(camInfo.description(), QVariant::fromValue(camInfo));
+        const auto camName = camInfo.description().toStdString();
+        if(nameToUID.count(camName))
+        {
+            auto& uids = nameToUID.at(camName);
+            uids.push_back(camInfo);
+        }
+        else
+        {
+            nameToUID[camName] = std::vector<QCameraInfo>(1, camInfo);
+        }
+    }
+    // Second run: disambiguate if several cameras with the same name were detected.
+    for(auto& p : nameToUID)
+    {
+        const auto& deviceName = p.first;
+        auto& devicesInfo      = p.second;
+        if(devicesInfo.size() == 1)
+        {
+            // Camera is unique
+            m_devicesComboBox->addItem(devicesInfo[0].description(), QVariant::fromValue(devicesInfo[0]));
+        }
+        else
+        {
+            // Several identical cameras detected, disambiguate
+            unsigned int n = 1;
+            std::sort(devicesInfo.begin(), devicesInfo.end(),
+                      [] (QCameraInfo const& c1, QCameraInfo const& c2)
+                    {
+                        return c1.deviceName().toStdString() < c2.deviceName().toStdString();
+                    });
+            for(const auto& deviceInfo: devicesInfo)
+            {
+                const std::string uniqueName = deviceName + " #" + std::to_string(n);
+                m_devicesComboBox->addItem(QString(uniqueName.c_str()), QVariant::fromValue(deviceInfo));
+                ++n;
+            }
+        }
     }
 
     buttonLayout->addWidget(validateButton);
@@ -119,7 +157,6 @@ bool CameraDeviceDlg::getSelectedCamera(::arData::Camera::sptr& camera)
             OSLM_ERROR("No camera setting selected, using default...");
         }
 
-
 //FIXME : Setting the pixel format generate an error (gstreamer)
 #ifndef __linux__
         camera->setPixelFormat(format);
@@ -146,7 +183,7 @@ void CameraDeviceDlg::onSelectDevice(int index)
 #ifdef __linux__
 
         //NOTE : Work arround for the camera resolution settings on linux (maybe on OSX too)
-        QCameraImageCapture *imageCapture            = new QCameraImageCapture(cam);
+        QCameraImageCapture* imageCapture            = new QCameraImageCapture(cam);
         QList<QSize> res                             = imageCapture->supportedResolutions();
         QList< QVideoFrame::PixelFormat > pixFormats = imageCapture->supportedBufferFormats();
 
@@ -176,7 +213,6 @@ void CameraDeviceDlg::onSelectDevice(int index)
                 //FIXME : Setting the pixel format generate an error (gstreamer) (see getSelectedCamera method)
                 settings.setPixelFormat(pixFormat);
 
-
                 std::stringstream stream;
                 stream << "[" << settings.resolution().width() << "X" << settings.resolution().height() << "]";
                 stream << "\t" << settings.maximumFrameRate() << " fps";
@@ -185,7 +221,6 @@ void CameraDeviceDlg::onSelectDevice(int index)
                 item->setData(Qt::UserRole, QVariant::fromValue(settings));
                 m_camSettings->addItem(item);
             }
-
 
         }
 
