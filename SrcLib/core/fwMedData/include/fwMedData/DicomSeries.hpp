@@ -31,6 +31,7 @@ class FWMEDDATA_CLASS_API DicomSeries : public ::fwMedData::Series
 {
 
 public:
+
     fwCoreClassDefinitionsWithFactoryMacro( (DicomSeries)(::fwData::Object), (()),
                                             ::fwData::factory::New< DicomSeries >);
 

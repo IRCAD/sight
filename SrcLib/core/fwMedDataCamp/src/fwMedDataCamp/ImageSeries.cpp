@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -21,5 +21,6 @@ fwCampImplementDataMacro((fwMedData)(ImageSeries))
     .tag("lib_name", "fwMedData")
     .base< ::fwMedData::Series>()
     .property("image", &::fwMedData::ImageSeries::m_image)
+//    .property("dicom_reference", &::fwMedData::ImageSeries::m_dicomReference)
     ;
 }
