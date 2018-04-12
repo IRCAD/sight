@@ -82,27 +82,29 @@ void CameraTest::computeProjectionMatrix()
     {
         // Function of the camera to set, followed by the new value in the expected matrix
         typedef std::tuple< std::function< void (const arData::Camera::sptr, double) >, double, unsigned int,
-                            unsigned int, float> tuple;
-        const std::vector<tuple> permutation{
-            {&::arData::Camera::setCx, cx, 0, 2, -0.0295966863632202f},
-            {&::arData::Camera::setCy, cy, 1, 2, 0.0245949625968933f},
-            {&::arData::Camera::setFx, fx, 0, 0, 1.65686452388763f},
-            {&::arData::Camera::setFy, fy, 1, 1, 3.01612949371338f},
+                            unsigned int, float> tupleType;
+        const std::vector<tupleType> permutation{
+            tupleType(&::arData::Camera::setCx, cx, 0, 2, -0.0295966863632202f),
+            tupleType(&::arData::Camera::setCy, cy, 1, 2, 0.0245949625968933f),
+            tupleType(&::arData::Camera::setFx, fx, 0, 0, 1.65686452388763f),
+            tupleType(&::arData::Camera::setFy, fy, 1, 1, 3.01612949371338f),
 
-            {&::arData::Camera::setCx, 0., 0, 2, 1.00104212760925f},
-            {&::arData::Camera::setCy, 0., 1, 2, -1.00185346603394f},
-            {&::arData::Camera::setFx, 0., 0, 0, 0},
-            {&::arData::Camera::setFy, 0., 1, 1, 0},
+            tupleType(&::arData::Camera::setCx, 0., 0, 2, 1.00104212760925f),
+            tupleType(&::arData::Camera::setCy, 0., 1, 2, -1.00185346603394f),
+            tupleType(&::arData::Camera::setFx, 0., 0, 0, 0),
+            tupleType(&::arData::Camera::setFy, 0., 1, 1, 0),
 
-            {&::arData::Camera::setCx, std::numeric_limits<float>::min(), 0, 2, 1.00104212760925f},
-            {&::arData::Camera::setCy, std::numeric_limits<float>::min(), 1, 2, -1.00185346603394f},
-            {&::arData::Camera::setFx, std::numeric_limits<float>::min(), 0, 0, 1.22445459812703e-41f},
-            {&::arData::Camera::setFy, std::numeric_limits<float>::min(), 1, 1, 2.17677703448217e-41f},
+            tupleType(&::arData::Camera::setCx, std::numeric_limits<float>::min(), 0, 2, 1.00104212760925f),
+            tupleType(&::arData::Camera::setCy, std::numeric_limits<float>::min(), 1, 2, -1.00185346603394f),
+            tupleType(&::arData::Camera::setFx, std::numeric_limits<float>::min(), 0, 0, 1.22445459812703e-41f),
+            tupleType(&::arData::Camera::setFy, std::numeric_limits<float>::min(), 1, 1, 2.17677703448217e-41f),
 
-            {&::arData::Camera::setCx, std::numeric_limits<float>::max(), 0, 2, -3.5464549820937e+35f},
-            {&::arData::Camera::setCy, std::numeric_limits<float>::max(), 1, 2, 6.30736510970334e+35f},
-            {&::arData::Camera::setFx, std::numeric_limits<float>::max(), 0, 0, std::numeric_limits<float>::infinity()},
-            {&::arData::Camera::setFy, std::numeric_limits<float>::max(), 1, 1, std::numeric_limits<float>::infinity()},
+            tupleType(&::arData::Camera::setCx, std::numeric_limits<float>::max(), 0, 2, -3.5464549820937e+35f),
+            tupleType(&::arData::Camera::setCy, std::numeric_limits<float>::max(), 1, 2, 6.30736510970334e+35f),
+            tupleType(&::arData::Camera::setFx,
+                      std::numeric_limits<float>::max(), 0, 0, std::numeric_limits<float>::infinity()),
+            tupleType(&::arData::Camera::setFy,
+                      std::numeric_limits<float>::max(), 1, 1, std::numeric_limits<float>::infinity()),
         };
 
         // Apply permutations and check the expected result
@@ -127,16 +129,16 @@ void CameraTest::computeProjectionMatrix()
     {
         // Function of the camera to set, followed by the new value in the expected matrix
         typedef std::tuple<std::function< void (const arData::Camera::sptr, size_t) >, size_t, unsigned int,
-                           unsigned int, float> tuple;
-        const std::vector<tuple> permutation{
-            {&::arData::Camera::setWidth, width, 0, 2, -3.5464549820937e+35},
-            {&::arData::Camera::setHeight, height, 1, 2, 6.30736510970334e+35},
+                           unsigned int, float> tupleType;
+        const std::vector<tupleType> permutation{
+            tupleType(&::arData::Camera::setWidth, width, 0, 2, -3.5464549820937e+35),
+            tupleType(&::arData::Camera::setHeight, height, 1, 2, 6.30736510970334e+35),
 
-            {&::arData::Camera::setWidth, 1, 0, 2, -std::numeric_limits<float>::infinity()},
-            {&::arData::Camera::setHeight, 1, 1, 2, std::numeric_limits<float>::infinity()},
+            tupleType(&::arData::Camera::setWidth, 1, 0, 2, -std::numeric_limits<float>::infinity()),
+            tupleType(&::arData::Camera::setHeight, 1, 1, 2, std::numeric_limits<float>::infinity()),
 
-            {&::arData::Camera::setWidth, std::numeric_limits<size_t>::max(), 0, 2, -3.68934859483958e+19f},
-            {&::arData::Camera::setHeight, std::numeric_limits<size_t>::max(), 1, 2, 3.68934859483958e+19f},
+            tupleType(&::arData::Camera::setWidth, std::numeric_limits<size_t>::max(), 0, 2, -3.68934859483958e+19f),
+            tupleType(&::arData::Camera::setHeight, std::numeric_limits<size_t>::max(), 1, 2, 3.68934859483958e+19f),
         };
 
         // Apply permutations and check the expected result
