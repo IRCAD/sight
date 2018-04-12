@@ -34,7 +34,7 @@ namespace editor
  * @note This service doesn't need any data.
  *
  * @section Signals Signals
- * - \b boolChanged(bool, std::string): Emitted when an boolean parameter changes.
+ * - \b boolChanged(bool, std::string): Emitted when a boolean parameter changes.
  * - \b colorChanged(std::array<std::uint8_t, 4>, std::string): Emitted when a color parameter changes.
  * - \b doubleChanged(double, std::string): Emitted when a real parameter changes.
  * - \b double2Changed(double, double, std::string): Emitted when two real parameters change.
@@ -43,6 +43,23 @@ namespace editor
  * - \b int2Changed(int, int, std::string): Emitted when two integer parameters change.
  * - \b int3Changed(int, int, int, std::string): Emitted when three integer parameters change.
  * - \b enumChanged(std::string, std::string): Emitted when enum parameter changes.
+ *
+ * @section Slots Slots
+ * - \b setBoolParameter(bool, std::string): set a boolean parameter.
+ * - \b setColorParameter(std::array<std::uint8_t, 4>, std::string): set a color parameter.
+ * - \b setDoubleParameter(double, std::string): set a double parameter.
+ * - \b setDouble2Parameter(double, double, std::string): set two double parameters.
+ * - \b setDouble3Parameter(double, double, double, std::string): set three double parameters.
+ * - \b setIntParameter(int, std::string): set an integer parameter.
+ * - \b setInt2Parameter(int, int, std::string): set two int parameters.
+ * - \b setInt3Parameter(int, int, int, std::string): set three int parameters.
+ * - \b setEnumParameter(std::string, std::string y): set an enum parameter.
+ * - \b setIntMinParameter(int, std::string): set the minimum value of an integer parameter (int, int2, int3)
+ * - \b setIntMaxParameter(int, std::string): set the maximum value of an integer parameter (int, int2, int3)
+ * - \b setDoubleMinParameter(double, std::string): set the minimum value of a double parameter (double, double2,
+ * double3)
+ * - \b setDoubleMaxParameter(double, std::string): set the maximum value of a double parameter (double, double2,
+ * double3)
  *
  * @section XML XML Configuration
  *
@@ -137,10 +154,10 @@ private Q_SLOTS:
     void onChangeEnum(int value);
 
     /// This method is called to connect sliders to their labels
-    void onSliderMapped(QWidget* widget);
+    void onSliderMapped(QLabel* label, QSlider* slider);
 
     /// This method is called to connect double sliders to their labels
-    void onDoubleSliderMapped(QWidget* widget);
+    void onDoubleSliderMapped(QLabel* label, QSlider* slider);
 
     /// This method is called to connect reset buttons and checkboxes
     void onResetBooleanMapped(QWidget* widget);
@@ -153,6 +170,12 @@ private Q_SLOTS:
 
     /// This method is called to connect reset buttons and sliders
     void onResetDoubleMapped(QWidget* widget);
+
+    /// This method is called when the integer slider range is modified, it updates the min and max labels
+    void onSliderRangeMapped(QLabel* minLabel, QLabel* maxLabel, QSlider* slider);
+
+    /// This method is called when the double slider range is modified, it updates the min and max labels
+    void onDoubleSliderRangeMapped(QLabel* minLabel, QLabel* maxLabel, QSlider* slider);
 
 private:
 
@@ -185,8 +208,68 @@ private:
     void createEnumWidget(QGridLayout& layout, int row, const std::string& key, const std::string& defaultValue,
                           const std::vector< std::string>& values, const std::vector<std::string>& data);
 
-    /// Computes a double slider value from a slider position.
+    /// Emit the signal(s) for the integer widget
+    void emitIntegerSignal(QObject* widget);
+
+    /// Emit the signal(s) for the double widget
+    void emitDoubleSignal(QObject* spinbox);
+
+    /// Emit the signal for the color widget
+    void emitColorSignal(const QColor color, const std::string& key);
+
+    /**
+     * @name Slots
+     * @{
+     */
+    /// Slot: This method is used to set a boolean parameter.
+    void setBoolParameter(bool val, std::string key);
+
+    /// Slot: This method is used to set a color parameter.
+    void setColorParameter(std::array<std::uint8_t, 4> color, std::string key);
+
+    /// Slot: This method is used to set a double parameter.
+    void setDoubleParameter(double val, std::string key);
+
+    /// Slot: This method is used to set two double parameters.
+    void setDouble2Parameter(double val0, double val1, std::string key);
+
+    /// Slot: This method is used to set three double parameters.
+    void setDouble3Parameter(double val0, double val1, double val2, std::string key);
+
+    /// Slot: This method is used to set an integer parameter.
+    void setIntParameter(int val, std::string key);
+
+    /// Slot: This method is used to set two int parameters.
+    void setInt2Parameter(int val0, int val1, std::string key);
+
+    /// Slot: This method is used to set three int parameters.
+    void setInt3Parameter(int val0, int val1, int val2, std::string key);
+
+    /// Slot: This method is used to set an enum parameter.
+    void setEnumParameter(std::string val, std::string key);
+
+    /// Slot: Set the minimum value of an integer parameter (int, int2, int3)
+    void setIntMinParameter(int min, std::string key);
+
+    /// Slot: Set the maximum value of an integer parameter (int, int2, int3)
+    void setIntMaxParameter(int max, std::string key);
+
+    /// Slot: Set the minimum value of a double parameter (double, double2, double3)
+    void setDoubleMinParameter(double min, std::string key);
+
+    /// Slot: Set the maximum value of a double parameter (double, double2, double3)
+    void setDoubleMaxParameter(double max, std::string key);
+    /// @}
+
+    /// Return the widget of the parameter with the given key, or nullptr if it does not exist
+    QWidget* getParamWidget(const std::string& key);
+
+    /// Compute the double slider value from a slider position.
     static double getDoubleSliderValue(const QSlider* slider);
+
+    /// Compute the double slider range according to the min and max property, update the internal slider value
+    /// according to the new range
+    static void setDoubleSliderRange(QSlider* slider, double currentValue);
 
     /// Adjust the minimum size of a label according to the range values
     template <typename T>
@@ -195,10 +278,11 @@ private:
     template<typename T>
     static QString valueToStringLabel(T value, std::uint8_t decimals);
 
-    /// Allows to connect sliders and their labels
-    QPointer< QSignalMapper> m_integerSliderSignalMapper;
-    QPointer< QSignalMapper> m_doubleSliderSignalMapper;
-    QPointer< QSignalMapper> m_resetMapper;
+    /// Block (or not) signal emmission for this service
+    void blockSignals(bool block);
+
+    /// if true, the signals are not emitted
+    bool m_blockSignals;
 };
 
 //------------------------------------------------------------------------------
