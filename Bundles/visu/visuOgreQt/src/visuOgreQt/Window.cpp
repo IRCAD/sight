@@ -76,6 +76,8 @@ void Window::initialise()
 {
     m_ogreRoot = ::fwRenderOgre::Utils::getOgreRoot();
 
+    this->makeCurrent();
+
     SLM_ASSERT("OpenGL RenderSystem not found",
                m_ogreRoot->getRenderSystem()->getName().find("GL") != std::string::npos);
 
@@ -145,14 +147,17 @@ void Window::requestRender()
 
 void Window::makeCurrent()
 {
-    if(m_ogreRenderWindow)
+    if(m_ogreRoot)
     {
         ::Ogre::RenderSystem* renderSystem = m_ogreRoot->getRenderSystem();
 
         if(renderSystem)
         {
             // This allows to set the current OpengGL context in Ogre internal state
-            renderSystem->_setRenderTarget(m_ogreRenderWindow);
+            if(m_ogreRenderWindow)
+            {
+                renderSystem->_setRenderTarget(m_ogreRenderWindow);
+            }
 
             // Use this trick to apply the current OpenGL context
             //
