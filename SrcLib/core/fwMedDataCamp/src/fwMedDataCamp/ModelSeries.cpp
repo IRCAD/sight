@@ -19,6 +19,6 @@ fwCampImplementDataMacro((fwMedData)(ModelSeries))
     .tag("lib_name", "fwMedData")
     .base< ::fwMedData::Series>()
     .property("reconstruction_db", &::fwMedData::ModelSeries::m_reconstructionDB)
-//    .property("dicom_reference", &::fwMedData::ModelSeries::m_dicomReference)
+    .property("dicom_reference", &::fwMedData::ModelSeries::m_dicomReference)
     ;
 }

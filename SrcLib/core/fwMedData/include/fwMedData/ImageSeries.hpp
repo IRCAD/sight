@@ -42,7 +42,7 @@ public:
     FWMEDDATA_API ImageSeries(::fwData::Object::Key key);
 
     /// Destructor
-    FWMEDDATA_API virtual ~ImageSeries();
+    FWMEDDATA_API virtual ~ImageSeries() override;
 
     /// Defines shallow copy
     FWMEDDATA_API void shallowCopy( const ::fwData::Object::csptr& _source ) override;
@@ -76,7 +76,7 @@ protected:
     SPTR(::fwData::Image) m_image;
 
     /// Dicom reference used to generate a valid Dicom Segmentation
-    ::fwMedData::DicomSeries::csptr m_dicomReference;
+    ::fwMedData::DicomSeries::sptr m_dicomReference;
 };
 
 //-----------------------------------------------------------------------------
@@ -104,7 +104,7 @@ inline ::fwMedData::DicomSeries::csptr ImageSeries::getDicomReference() const
 
 inline void ImageSeries::setDicomReference(const ::fwMedData::DicomSeries::csptr& reference)
 {
-    m_dicomReference = reference;
+    m_dicomReference = std::const_pointer_cast< ::fwMedData::DicomSeries >( reference );
 }
 
 //-----------------------------------------------------------------------------
