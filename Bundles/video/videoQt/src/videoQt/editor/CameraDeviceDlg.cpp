@@ -69,7 +69,7 @@ CameraDeviceDlg::CameraDeviceDlg() :
     // Second run: disambiguate if several cameras with the same name were detected.
     for(auto& p : nameToUID)
     {
-        auto const& deviceName = p.first;
+        const auto& deviceName = p.first;
         auto& devicesInfo      = p.second;
         if(devicesInfo.size() == 1)
         {
@@ -85,7 +85,7 @@ CameraDeviceDlg::CameraDeviceDlg() :
                     {
                         return c1.deviceName().toStdString() < c2.deviceName().toStdString();
                     });
-            for(auto const& deviceInfo: devicesInfo)
+            for(const auto& deviceInfo: devicesInfo)
             {
                 const std::string uniqueName = deviceName + " #" + std::to_string(n);
                 m_devicesComboBox->addItem(QString(uniqueName.c_str()), QVariant::fromValue(deviceInfo));
