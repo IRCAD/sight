@@ -153,7 +153,7 @@ void SFrameMatrixSynchronizer::synchronize()
     // Then we get the one with the newest timestamp and the other ones are not considered.
     for(size_t i = 0; i != m_frameTLs.size(); ++i)
     {
-        auto const& tl = m_frameTLs[i];
+        const auto& tl = m_frameTLs[i];
         ::fwCore::HiResClock::HiResClockType tlTimestamp = tl->getNewerTimestamp();
         if(tlTimestamp > 0)
         {
@@ -194,7 +194,7 @@ void SFrameMatrixSynchronizer::synchronize()
     availableMatricesTL.reserve(m_matrixTLs.size());
     for(size_t i = 0; i != m_matrixTLs.size(); ++i)
     {
-        auto const& tl = m_matrixTLs[i];
+        const auto& tl = m_matrixTLs[i];
         ::fwCore::HiResClock::HiResClockType tlTimestamp = tl->getNewerTimestamp();
         if(tlTimestamp > 0)
         {
@@ -274,14 +274,14 @@ void SFrameMatrixSynchronizer::synchronize()
 
     bool matrixFound       = false;
     size_t syncMatricesNbr = 0;
-    for(auto const& tlIdx: availableMatricesTL)
+    for(const auto& tlIdx: availableMatricesTL)
     {
-        auto const& matrixTL = m_matrixTLs[tlIdx];
+        const auto& matrixTL = m_matrixTLs[tlIdx];
         CSPTR(::arData::MatrixTL::BufferType) buffer = matrixTL->getClosestBuffer(matrixTimestamp);
 
         if(buffer)
         {
-            auto const& matrixVector = m_matrices[tlIdx];
+            const auto& matrixVector = m_matrices[tlIdx];
 
             for(unsigned int k = 0; k < matrixVector.size(); ++k)
             {
@@ -289,7 +289,7 @@ void SFrameMatrixSynchronizer::synchronize()
 
                 if(buffer->isPresent(k))
                 {
-                    auto const& values = buffer->getElement(k);
+                    const auto& values = buffer->getElement(k);
                     for(std::uint8_t i = 0; i < 4; ++i)
                     {
                         for(std::uint8_t j = 0; j < 4; ++j)
