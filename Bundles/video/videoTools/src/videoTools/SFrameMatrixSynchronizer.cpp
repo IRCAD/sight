@@ -30,7 +30,7 @@
 #include <algorithm>
 #include <functional>
 
-fwServicesRegisterMacro(::arServices::ISynchronizer, ::videoTools::SFrameMatrixSynchronizer, ::fwData::Composite);
+fwServicesRegisterMacro(::arServices::ISynchronizer, ::videoTools::SFrameMatrixSynchronizer);
 
 namespace videoTools
 {
@@ -73,21 +73,10 @@ SFrameMatrixSynchronizer::SFrameMatrixSynchronizer() noexcept :
 
 void SFrameMatrixSynchronizer::configuring()
 {
-    typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
+    const auto cfg = this->getConfigTree();
 
-    ConfigurationType framerateConfig = m_configuration->findConfigurationElement("framerate");
-    SLM_WARN_IF("Missing \"framerate\" tag.", !framerateConfig );
-    if(framerateConfig)
-    {
-        m_timeStep = 1000 / ::boost::lexical_cast< unsigned int >(framerateConfig->getValue());
-    }
-
-    ConfigurationType toleranceConfig = m_configuration->findConfigurationElement("tolerance");
-    if(toleranceConfig)
-    {
-        m_tolerance = ::boost::lexical_cast< unsigned int >(toleranceConfig->getValue());
-    }
-
+    m_timeStep  = 1000 / cfg.get<unsigned int>("framerate", 30);
+    m_tolerance = cfg.get<unsigned int>("tolerance", 500);
 }
 
 // ----------------------------------------------------------------------------
@@ -98,42 +87,42 @@ void SFrameMatrixSynchronizer::starting()
     const size_t numImages   = this->getKeyGroupSize(s_IMAGE_INOUT);
     SLM_ASSERT("You should have the same number of 'frameTL' and 'image' keys", numFrameTLs == numImages);
 
+    m_frameTLs.reserve(numFrameTLs);
+    m_images.reserve(numFrameTLs);
     for(size_t i = 0; i < numFrameTLs; ++i)
     {
-        // TODO: replace by a vector when appXml is removed
-        m_frameTLs["frame" + std::to_string(i)] = this->getInput< ::arData::FrameTL>(s_FRAMETL_INPUT, i);
-        m_images["frame" + std::to_string(i)]   = this->getInOut< ::fwData::Image>(s_IMAGE_INOUT, i);
+        m_frameTLs.push_back(this->getInput< ::arData::FrameTL>(s_FRAMETL_INPUT, i));
+        m_images.push_back(this->getInOut< ::fwData::Image>(s_IMAGE_INOUT, i));
     }
 
     const size_t numMatrixTLs = this->getKeyGroupSize(s_MATRIXTL_INPUT);
 
     m_totalOutputMatrices = 0;
+    m_matrixTLs.reserve(numMatrixTLs);
     for(size_t i = 0; i < numMatrixTLs; ++i)
     {
         // Get the group corresponding to the 'i' Matrix TimeLine. The name of this group is matrices0 for example.
         // if ever the group is not found 'getKeyGroupSize' will assert.
-        const size_t numMatrices = this->getKeyGroupSize(s_MATRICES_INOUT+std::to_string(i));
+        const size_t numMatrices = this->getKeyGroupSize(s_MATRICES_INOUT + std::to_string(i));
 
-        m_matrixTLs["matrixTL" + std::to_string(i)] = this->getInput< ::arData::MatrixTL>(s_MATRIXTL_INPUT, i);
+        m_matrixTLs.push_back(this->getInput< ::arData::MatrixTL>(s_MATRIXTL_INPUT, i));
 
-        MatrixKeyVectorType matricesVector;
+        std::vector< ::fwData::TransformationMatrix3D::sptr> matricesVector;
         for(size_t j = 0; j < numMatrices; ++j)
         {
             matricesVector.push_back(
-                std::make_pair(this->getInOut< ::fwData::TransformationMatrix3D >(
-                                   s_MATRICES_INOUT+std::to_string(i), j), j));
+                this->getInOut< ::fwData::TransformationMatrix3D >( s_MATRICES_INOUT + std::to_string(i), j));
         }
-        m_totalOutputMatrices                     += numMatrices;
-        m_matrices["matrixTL" + std::to_string(i)] = matricesVector;
+        m_totalOutputMatrices += numMatrices;
+        m_matrices.push_back(matricesVector);
     }
 
     SLM_ASSERT("No valid worker for timer.", m_associatedWorker);
-    m_timer                                      = m_associatedWorker->createTimer();
-    ::fwThread::Timer::TimeDurationType duration = std::chrono::milliseconds(m_timeStep);
-    m_timer->setFunction( std::bind( &SFrameMatrixSynchronizer::synchronize, this)  );
+    m_timer = m_associatedWorker->createTimer();
+    const auto duration = std::chrono::milliseconds(m_timeStep);
+    m_timer->setFunction(std::bind( &SFrameMatrixSynchronizer::synchronize, this));
     m_timer->setDuration(duration);
     m_timer->start();
-
 }
 
 // ----------------------------------------------------------------------------
@@ -155,21 +144,17 @@ void SFrameMatrixSynchronizer::synchronize()
     // Timestamp reference for the synchronization
     ::fwCore::HiResClock::HiResClockType frameTimestamp = 0;
 
-    typedef std::pair< ::fwCore::HiResClock::HiResClockType, std::string> TimeLinePairType;
-    typedef std::vector< TimeLinePairType > TimelineType;
-    typedef std::vector< std::string > MatrixTimelineType;
-
     // Get timestamp for synchronization
-    TimelineType availableFramesTL;
-    availableFramesTL.reserve(m_frameTLs.size());
+    std::vector<size_t> availableFramesTL;
 
     // If multiple TLs are set, we want to synchronize their frames together.
     // If TLs are updated, we get the one with the oldest timestamp to synchronize them.
     // In particular case, we could have only one TL updated, we still need to get frames from it.
     // Then we get the one with the newest timestamp and the other ones are not considered.
-    for(FrameTLKeyType::value_type elt : m_frameTLs)
+    for(size_t i = 0; i != m_frameTLs.size(); ++i)
     {
-        ::fwCore::HiResClock::HiResClockType tlTimestamp = elt.second->getNewerTimestamp();
+        const auto& tl = m_frameTLs[i];
+        ::fwCore::HiResClock::HiResClockType tlTimestamp = tl->getNewerTimestamp();
         if(tlTimestamp > 0)
         {
             // Check if the current TL timestamp and the previous one are closed enough (according to the tolerance)
@@ -177,7 +162,7 @@ void SFrameMatrixSynchronizer::synchronize()
             {
                 // Sets the reference timestamp as the minimum value
                 frameTimestamp = std::min(frameTimestamp, tlTimestamp);
-                availableFramesTL.push_back(std::make_pair(tlTimestamp, elt.first));
+                availableFramesTL.push_back(i);
             }
             // Otherwise keep the most recent timestamp as frameTimestamp
             else
@@ -185,60 +170,62 @@ void SFrameMatrixSynchronizer::synchronize()
                 // If the difference between the TLs timestamp is superior to the tolerance
                 // we set the reference timestamp as the maximum of them
                 frameTimestamp = std::max(frameTimestamp, tlTimestamp);
-                availableFramesTL.push_back(std::make_pair(tlTimestamp, elt.first));
+                availableFramesTL.push_back(i);
 
                 // Now remove all frames that are too far away
                 availableFramesTL.erase(std::remove_if(availableFramesTL.begin(), availableFramesTL.end(),
-                                                       [ = ](const TimeLinePairType& tl)
+                                                       [ = ](size_t const& idx)
                     {
-                        return std::abs(frameTimestamp - tl.first) >= m_tolerance;
+                        const auto ts = m_frameTLs[idx]->getNewerTimestamp();
+                        return std::abs(frameTimestamp - ts) >= m_tolerance;
                     }), availableFramesTL.end());
             }
         }
         else
         {
-            SLM_INFO("no available matrix for timeline '" + elt.first + "'.");
+            SLM_INFO("no available frame for timeline 'frame" << i << ".");
         }
     }
 
     // Now we compute the time stamp available in the matrix timelines starting from the frame timestamp
     ::fwCore::HiResClock::HiResClockType matrixTimestamp = frameTimestamp;
 
-    MatrixTimelineType availableMatricesTL;
+    std::vector<size_t> availableMatricesTL;
     availableMatricesTL.reserve(m_matrixTLs.size());
-    for(MatrixTLKeyType::value_type elt : m_matrixTLs)
+    for(size_t i = 0; i != m_matrixTLs.size(); ++i)
     {
-        ::fwCore::HiResClock::HiResClockType tlTimestamp = elt.second->getNewerTimestamp();
+        const auto& tl = m_matrixTLs[i];
+        ::fwCore::HiResClock::HiResClockType tlTimestamp = tl->getNewerTimestamp();
         if(tlTimestamp > 0)
         {
             if (std::abs(frameTimestamp - tlTimestamp) < m_tolerance)
             {
                 matrixTimestamp = std::min(matrixTimestamp, tlTimestamp);
-                availableMatricesTL.push_back(elt.first);
+                availableMatricesTL.push_back(i);
             }
         }
         else
         {
-            SLM_INFO("no available matrix for timeline '" + elt.first + "'.");
+            SLM_INFO("no available matrix for timeline 'matrix" << i << "'.");
         }
     }
 
     // Skip synchzonization if nothing has changed
-    if( ::fwMath::isEqual(matrixTimestamp, m_lastTimestamp) )
+    if(::fwMath::isEqual(matrixTimestamp, m_lastTimestamp))
     {
         return;
     }
     m_lastTimestamp = matrixTimestamp;
 
-    for(TimelineType::value_type key : availableFramesTL)
+    for(size_t i = 0; i != m_frameTLs.size(); ++i)
     {
-        ::arData::FrameTL::csptr frameTL = m_frameTLs[key.second];
-        ::fwData::Image::sptr image      = m_images[key.second];
+        ::arData::FrameTL::csptr frameTL = m_frameTLs[i];
+        ::fwData::Image::sptr image      = m_images[i];
 
         ::fwData::Image::SizeType size(2);
         size[0] = frameTL->getWidth();
         size[1] = frameTL->getHeight();
-        // Check if image dimensions has changed
+        // Check if image dimensions have changed
         if(size != image->getSize())
         {
             m_imagesInitialized = false;
@@ -248,7 +235,7 @@ void SFrameMatrixSynchronizer::synchronize()
         {
             const ::fwData::Image::SpacingType::value_type voxelSize = 1;
             image->allocate(size, frameTL->getType(), frameTL->getNumberOfComponents());
-            ::fwData::Image::OriginType origin(3, 0);
+            ::fwData::Image::OriginType origin(2, 0);
 
             image->setOrigin(origin);
             ::fwData::Image::SpacingType spacing(2, voxelSize);
@@ -266,15 +253,13 @@ void SFrameMatrixSynchronizer::synchronize()
 
         ::fwData::mt::ObjectWriteLock destLock(image);
         ::fwData::Array::sptr array = image->getDataArray();
-
         ::fwDataTools::helper::Array arrayHelper(array);
-
         CSPTR(::arData::FrameTL::BufferType) buffer = frameTL->getClosestBuffer(matrixTimestamp);
 
         if(!buffer)
         {
-            OSLM_INFO("Buffer not found with timestamp "<< matrixTimestamp);
-            return;
+            OSLM_INFO("Buffer not found for timestamp "<< matrixTimestamp << " in timeline 'frame" << i << "'.");
+            continue;
         }
 
         const std::uint8_t* frameBuff = &buffer->getElement(0);
@@ -289,46 +274,36 @@ void SFrameMatrixSynchronizer::synchronize()
 
     bool matrixFound       = false;
     size_t syncMatricesNbr = 0;
-    for(MatrixTimelineType::value_type key : availableMatricesTL)
+    for(const auto& tlIdx: availableMatricesTL)
     {
-        ::arData::MatrixTL::csptr matrixTL           = m_matrixTLs[key];
+        const auto& matrixTL = m_matrixTLs[tlIdx];
         CSPTR(::arData::MatrixTL::BufferType) buffer = matrixTL->getClosestBuffer(matrixTimestamp);
 
         if(buffer)
         {
-            const MatrixKeyVectorType& matrixVector = m_matrices[key];
+            const auto& matrixVector = m_matrices[tlIdx];
 
             for(unsigned int k = 0; k < matrixVector.size(); ++k)
             {
-                const MatrixKeyVectorTypePair& matrixKey = matrixVector[k];
+                ::fwData::TransformationMatrix3D::sptr const& matrix = matrixVector[k];
 
-                if(matrixKey.second < buffer->getMaxElementNum())
+                if(buffer->isPresent(k))
                 {
-                    if(buffer->isPresent(matrixKey.second))
+                    const auto& values = buffer->getElement(k);
+                    for(std::uint8_t i = 0; i < 4; ++i)
                     {
-                        const float* values = buffer->getElement(matrixKey.second);
-
-                        ::fwData::TransformationMatrix3D::sptr matrix = matrixKey.first;
-
-                        for(std::uint8_t i = 0; i < 4; ++i)
+                        for(std::uint8_t j = 0; j < 4; ++j)
                         {
-                            for(std::uint8_t j = 0; j < 4; ++j)
-                            {
-                                matrix->setCoefficient(i, j, static_cast<double>(values[i*4+j]));
-                            }
+                            matrix->setCoefficient(i, j, static_cast<double>(values[i * 4 + j]));
                         }
-
-                        auto sig = matrix->signal< ::fwData::Object::ModifiedSignalType >(
-                            ::fwData::Object::s_MODIFIED_SIG);
-                        sig->asyncEmit();
-
-                        matrixFound = true;
-                        ++syncMatricesNbr;
                     }
-                }
-                else
-                {
-                    SLM_WARN("Index of matrix in XML configuration is out of range.");
+
+                    auto sig = matrix->signal< ::fwData::Object::ModifiedSignalType >(
+                        ::fwData::Object::s_MODIFIED_SIG);
+                    sig->asyncEmit();
+
+                    matrixFound = true;
+                    ++syncMatricesNbr;
                 }
             }
         }
