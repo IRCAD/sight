@@ -11,6 +11,8 @@
 
 #include <fwData/Image.hpp>
 
+#include <fwMedData/DicomSeries.hpp>
+
 namespace fwData
 {
 class Point;
