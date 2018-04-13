@@ -35,7 +35,7 @@ namespace opVTKMesh
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::opVTKMesh::IMesher, ::opVTKMesh::SVTKMesher );
+fwServicesRegisterMacro( ::fwServices::IOperator, ::opVTKMesh::SVTKMesher );
 
 static const std::string s_IMAGE_INPUT  = "imageSeries";
 static const std::string s_MODEL_OUTPUT = "modelSeries";
