@@ -76,14 +76,12 @@
                         <menuItem name="Show Settings" shortcut="Ctrl+H" style="check" />
                         <menuItem name="Show Cube" shortcut="Ctrl+C" style="check" />
                         <menuItem name="Show Plane" shortcut="Ctrl+C" style="check" />
-                        <menuItem name="Show Debug" shortcut="Ctrl+D" style="check" />
                     </layout>
                 </gui>
                 <registry>
                     <menuItem sid="actionHide" start="yes" />
                     <menuItem sid="actionUpdateCubeVisibility" start="yes" />
                     <menuItem sid="actionUpdatePlaneVisibility" start="yes" />
-                    <menuItem sid="actionShowHideDebug" start="yes" />
                 </registry>
             </service>
 
@@ -162,44 +160,16 @@
 
             <service uid="sceneView" type="::gui::view::SDefaultView">
                 <gui>
-                    <layout type="::fwGui::LineLayoutManager">
-                        <orientation value="vertical" />
-                        <view proportion="3" />
-                        <view proportion="1" />
+                    <layout type="::fwGui::CardinalLayoutManager">
+                        <view align="center" />
+                        <view align="bottom" minHeight="300" />
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="arView" start="yes" />
-                    <view sid="debugView" start="yes" />
+                    <view sid="genericScene" start="yes" />
+                    <view sid="debugScene" start="yes" />
                 </registry>
             </service>
-
-
-            <service uid="arView" type="::gui::view::SDefaultView">
-                <gui>
-                    <layout type="::fwGui::LineLayoutManager">
-                        <orientation value="vertical" />
-                        <view proportion="1" />
-                    </layout>
-                </gui>
-                <registry>
-                    <view sid="genericScene" />
-                </registry>
-            </service>
-
-
-            <service uid="debugView" type="::gui::view::SDefaultView">
-                <gui>
-                    <layout type="::fwGui::LineLayoutManager">
-                        <orientation value="vertical" />
-                        <view proportion="1" />
-                    </layout>
-                </gui>
-                <registry>
-                    <view sid="debugScene" />
-                </registry>
-            </service>
-
 
             <!-- declaration of actions/slot callers -->
             <service uid="actionQuit" type="::gui::action::SQuit" />
@@ -207,12 +177,6 @@
             <service uid="actionHide" type="::gui::action::SModifyLayout">
                 <config>
                     <show_or_hide sid="parameters" />
-                </config>
-            </service>
-
-            <service uid="actionShowHideDebug" type="::gui::action::SModifyLayout">
-                <config>
-                    <show_or_hide sid="debugView" />
                 </config>
             </service>
 
@@ -594,8 +558,6 @@
             <start uid="Extractor" />
             <start uid="registration" />
             <start uid="matrixReverser" />
-            <start uid="genericScene" />
-            <start uid="debugScene" />
             <start uid="error" />
             <start uid="meshReader" />
             <start uid="meshPlaneReader" />
@@ -623,7 +585,6 @@
             <start uid="cameraAdpt2" />
 
             <update uid="actionHide" />
-            <update uid="actionShowHideDebug" />
             <update uid="actionUpdateAxesVisibility" />
             <update uid="actionUpdateCubeVisibility" />
 

@@ -616,24 +616,33 @@ void Layer::setSelectInteractor(::fwRenderOgre::interactor::IPickerInteractor::s
         ::Ogre::SceneNode::ConstObjectIterator entitiesIt = tempSceneNode->getAttachedObjectIterator();
         while(entitiesIt.hasMoreElements())
         {
-            // First, we must cast the MovableObject* into an Entity*
+            // First, we try to cast the MovableObject* into an Entity*
             const auto movable           = entitiesIt.getNext();
             const ::Ogre::Entity* entity = dynamic_cast< ::Ogre::Entity* > (movable);
 
             if(entity)
             {
-                // The current entity's bounding box is merged into the "world" bounding box
                 worldCoordBoundingBox.merge(entity->getWorldBoundingBox());
             }
             else
             {
-                // Try then with to cast into an ManualObject*
+                // Then try to cast into a ManualObject*
                 const ::Ogre::ManualObject* manualObject = dynamic_cast< ::Ogre::ManualObject* > (movable);
 
                 if(manualObject)
                 {
-                    // The current entity's bounding box is merged into the "world" bounding box
                     worldCoordBoundingBox.merge(manualObject->getWorldBoundingBox());
+                }
+                else
+                {
+                    // Last try to cast into a Camera*
+                    const ::Ogre::Camera* cameraObject = dynamic_cast< ::Ogre::Camera* > (movable);
+
+                    if(cameraObject && cameraObject != this->getDefaultCamera() &&
+                       cameraObject->isDebugDisplayEnabled())
+                    {
+                        worldCoordBoundingBox.merge(cameraObject->getWorldBoundingBox());
+                    }
                 }
             }
         }
