@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWMEDDATACAMP_AUTOLOAD_HPP__
-#define __FWMEDDATACAMP_AUTOLOAD_HPP__
+#pragma once
 
 #include "fwMedDataCamp/ActivitySeries.hpp"
 #include "fwMedDataCamp/AttachmentSeries.hpp"
@@ -38,11 +37,11 @@ struct runner
         localDeclarefwMedDataPatient();
         localDeclarefwMedDataSeries();
         localDeclarefwMedDataSeriesDB();
+        localDeclarefwMedDataDicomSeriesDICOM_AVAILABILITY();
+        localDeclarefwMedDataDicomSeries();
         localDeclarefwMedDataImageSeries();
         localDeclarefwMedDataModelSeries();
         localDeclarefwMedDataActivitySeries();
-        localDeclarefwMedDataDicomSeriesDICOM_AVAILABILITY();
-        localDeclarefwMedDataDicomSeries();
         localDeclarefwMedDataAttachmentSeriesAttachmentAvailability();
         localDeclarefwMedDataAttachmentSeries();
         localDeclarefwMedDataNavigationSeries();
@@ -52,5 +51,3 @@ struct runner
 };
 
 } //end namespace fwMedDataCamp
-
-#endif //__FWMEDDATACAMP_AUTOLOAD_HPP__

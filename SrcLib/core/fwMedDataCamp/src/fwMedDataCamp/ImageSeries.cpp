@@ -17,7 +17,7 @@
 fwCampImplementDataMacro((fwMedData)(ImageSeries))
 {
     builder
-    .tag("object_version", "1")
+    .tag("object_version", "2")
     .tag("lib_name", "fwMedData")
     .base< ::fwMedData::Series>()
     .property("image", &::fwMedData::ImageSeries::m_image)

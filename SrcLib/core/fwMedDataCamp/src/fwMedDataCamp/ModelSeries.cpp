@@ -15,7 +15,7 @@
 fwCampImplementDataMacro((fwMedData)(ModelSeries))
 {
     builder
-    .tag("object_version", "1")
+    .tag("object_version", "2")
     .tag("lib_name", "fwMedData")
     .base< ::fwMedData::Series>()
     .property("reconstruction_db", &::fwMedData::ModelSeries::m_reconstructionDB)
