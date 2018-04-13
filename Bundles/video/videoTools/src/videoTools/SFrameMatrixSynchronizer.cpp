@@ -210,8 +210,8 @@ void SFrameMatrixSynchronizer::synchronize()
         }
     }
 
-    // Skip synchzonization if nothing has changed
-    if(::fwMath::isEqual(matrixTimestamp, m_lastTimestamp))
+    // Skip synchzonization if nothing has changed or if the synchronizer decided to go back into the past
+    if(matrixTimestamp <= m_lastTimestamp)
     {
         return;
     }
