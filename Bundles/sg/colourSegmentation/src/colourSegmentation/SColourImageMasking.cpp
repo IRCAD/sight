@@ -157,6 +157,18 @@ void SColourImageMasking::updating()
         auto videoTL     = this->getInput< ::arData::FrameTL >(s_VIDEO_TL_KEY);
         auto videoMaskTL = this->getInOut< ::arData::FrameTL >(s_VIDEO_MASK_TL_KEY);
 
+        // Sanity checks
+        OSLM_ASSERT("Missing input '" << s_MASK_KEY << "'.", mask);
+        OSLM_ASSERT("Missing input '" << s_VIDEO_TL_KEY << "'.", videoTL);
+        OSLM_ASSERT("Missing inout '" << s_VIDEO_MASK_TL_KEY << "'.", videoMaskTL);
+        const auto maskSize = mask->getSize();
+        if(maskSize[0] != videoTL->getWidth() || maskSize[1] != videoTL->getHeight())
+        {
+            OSLM_ERROR("Reference mask (" << maskSize[0] << ", " << maskSize[1]
+                                          << ") has different size as the video timeline (" << videoTL->getWidth() << ", "
+                                          << videoTL->getHeight() << ").");
+        }
+
         // This service can take a while to run, this blocker skips frames that arrive while we're already processing
         // one
         auto sig_ = videoTL->signal< ::arData::FrameTL::ObjectPushedSignalType>(
