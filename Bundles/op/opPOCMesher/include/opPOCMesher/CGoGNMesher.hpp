@@ -10,7 +10,7 @@
 
 #include <fwCom/Slots.hpp>
 
-#include <opVTKMesh/IMesher.hpp>
+#include <fwServices/IOperator.hpp>
 
 #include <string>
 
@@ -49,12 +49,12 @@ namespace opPOCMesher
  * - \b percentage : If true the variable faces is a percentage, if false it is a number
  * - \b closing : If true the mesh is closed at the border of the image
  */
-class OPPOCMESHER_CLASS_API CGoGNMesher : public ::opVTKMesh::IMesher
+class OPPOCMESHER_CLASS_API CGoGNMesher : public ::fwServices::IOperator
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro((CGoGNMesher)(::opVTKMesh::IMesher) );
+    fwCoreServiceClassDefinitionsMacro((CGoGNMesher)(::fwServices::IOperator) );
 
     /**
      * @brief Constructor. Initializes slots.
