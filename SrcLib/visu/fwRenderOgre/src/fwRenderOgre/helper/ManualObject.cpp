@@ -22,7 +22,7 @@ void ManualObject::createCylinder(::Ogre::ManualObject* _object,
                                   unsigned int _sample)
 {
     // Data to create cylinder in x axis
-    const ::Ogre::Radian delta( ::Ogre::Degree(360.f / _sample) );
+    const ::Ogre::Radian delta( ::Ogre::Degree(360.f / static_cast< float > (_sample)) );
     const ::Ogre::Quaternion rot( delta, ::Ogre::Vector3::UNIT_X );
     ::Ogre::Vector3 normal = ::Ogre::Quaternion( delta/2.f, ::Ogre::Vector3::UNIT_X ) * ::Ogre::Vector3::UNIT_Y;
 
@@ -95,7 +95,7 @@ void ManualObject::createCone(::Ogre::ManualObject* _object,
                               unsigned int _sample)
 {
     // Data to create cone in x axis
-    const ::Ogre::Radian delta( ::Ogre::Degree(360.f / _sample) );
+    const ::Ogre::Radian delta( ::Ogre::Degree(360.f / static_cast< float >(_sample)) );
     const ::Ogre::Quaternion rot( delta, ::Ogre::Vector3::UNIT_X );
     ::Ogre::Vector3 normal = ::Ogre::Quaternion( delta/2.f, ::Ogre::Vector3::UNIT_X ) * ::Ogre::Vector3::UNIT_Y;
 
