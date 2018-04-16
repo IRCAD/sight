@@ -163,11 +163,14 @@ void SFrustum::setOgreCamFromData()
     if(camera != nullptr)
     {
         const auto& viewport = this->getLayer()->getDefaultCamera()->getViewport();
-        ::Ogre::Matrix4 m = ::fwRenderOgre::helper::Camera::computeProjectionMatrix(*camera,
-                                                                                    viewport->getActualWidth(),
-                                                                                    viewport->getActualHeight(),
-                                                                                    m_near,
-                                                                                    m_far);
+
+        float width, height;
+
+        width  = static_cast< float >(viewport->getActualWidth());
+        height = static_cast< float >(viewport->getActualHeight());
+
+        ::Ogre::Matrix4 m =
+            ::fwRenderOgre::helper::Camera::computeProjectionMatrix(*camera, width, height, m_near, m_far);
 
         m_ogreCamera->setCustomProjectionMatrix(true, m);
         m_ogreCamera->setVisible(true);
