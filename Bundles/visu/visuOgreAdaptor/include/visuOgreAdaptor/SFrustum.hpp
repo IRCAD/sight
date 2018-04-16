@@ -103,8 +103,9 @@ private:
     float m_near;
     /// Far clipping
     float m_far;
-    /// color of frustum
+    /// Color of frustum
     std::string m_color;
+
 };
 
 } //namespace visuOgreAdaptor

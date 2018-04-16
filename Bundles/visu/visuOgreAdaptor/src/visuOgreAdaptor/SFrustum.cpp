@@ -15,6 +15,7 @@
 
 #include <fwData/Material.hpp>
 
+#include <fwRenderOgre/helper/Camera.hpp>
 #include <fwRenderOgre/helper/Scene.hpp>
 
 #include <fwServices/macros.hpp>
@@ -43,7 +44,8 @@ SFrustum::SFrustum() noexcept :
     m_ogreCamera(nullptr),
     m_visibility(true),
     m_near(0.f),
-    m_far(0.f)
+    m_far(0.f),
+    m_color("#ff0000ff")
 {
     newSlot(s_UPDATE_VISIBILITY_SLOT, &SFrustum::updateVisibility, this);
     newSlot(s_TOGGLE_VISIBILITY_SLOT, &SFrustum::toggleVisibility, this);
@@ -77,9 +79,9 @@ void SFrustum::configuring()
     this->setTransformId(config.get<std::string>( ::fwRenderOgre::ITransformable::s_CONFIG_TRANSFORM,
                                                   this->getID() + "_transform"));
 
-    m_near  = config.get<float>(s_NEAR_CONFIG, 0.f);
-    m_far   = config.get<float>(s_FAR_CONFIG, 0.f);
-    m_color = config.get< std::string >(s_COLOR_CONFIG, "#ff0000ff");
+    m_near  = config.get<float>(s_NEAR_CONFIG, m_near);
+    m_far   = config.get<float>(s_FAR_CONFIG, m_far);
+    m_color = config.get< std::string >(s_COLOR_CONFIG, m_color);
 }
 
 //-----------------------------------------------------------------------------
@@ -92,8 +94,8 @@ void SFrustum::starting()
     m_material = ::fwData::Material::New();
     m_material->diffuse()->setRGBA(m_color);
 
-    ::visuOgreAdaptor::SMaterial::sptr materialAdaptor = this->registerService< ::visuOgreAdaptor::SMaterial >(
-        "::visuOgreAdaptor::SMaterial");
+    ::visuOgreAdaptor::SMaterial::sptr materialAdaptor =
+        this->registerService< ::visuOgreAdaptor::SMaterial >("::visuOgreAdaptor::SMaterial");
     materialAdaptor->registerInOut(m_material, ::visuOgreAdaptor::SMaterial::s_MATERIAL_INOUT, true);
     materialAdaptor->setID(this->getID() + materialAdaptor->getID());
     materialAdaptor->setMaterialName(this->getID() + materialAdaptor->getID());
@@ -171,13 +173,18 @@ void SFrustum::setOgreCamFromData()
     auto camera = this->getInput< ::arData::Camera >(s_CAMERA_INPUT);
     if(camera != nullptr)
     {
-        const double h    = static_cast<double>(camera->getHeight());
-        const double fy   = static_cast<double>(camera->getFy());
-        const double fovY = 2. * std::atan( h / (2. * fy));
+        const auto& viewport = this->getLayer()->getDefaultCamera()->getViewport();
 
-        m_ogreCamera->setFOVy(::Ogre::Radian( ::Ogre::Real(fovY)));
-        m_ogreCamera->setAspectRatio(::Ogre::Real(camera->getWidth()/camera->getHeight()));
-        m_ogreCamera->setVisible(m_visibility);
+        float width, height;
+
+        width  = static_cast< float >(viewport->getActualWidth());
+        height = static_cast< float >(viewport->getActualHeight());
+
+        ::Ogre::Matrix4 m =
+            ::fwRenderOgre::helper::Camera::computeProjectionMatrix(*camera, width, height, m_near, m_far);
+
+        m_ogreCamera->setCustomProjectionMatrix(true, m);
+        m_ogreCamera->setVisible(true);
     }
     else
     {
