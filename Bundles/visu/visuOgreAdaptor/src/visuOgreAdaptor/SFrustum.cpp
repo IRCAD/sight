@@ -171,7 +171,7 @@ void SFrustum::stopping()
 void SFrustum::setOgreCamFromData()
 {
     auto camera = this->getInput< ::arData::Camera >(s_CAMERA_INPUT);
-    if(camera != nullptr)
+    if(camera != nullptr && camera->getIsCalibrated())
     {
 
         const float width  = static_cast< float >(camera->getWidth());
