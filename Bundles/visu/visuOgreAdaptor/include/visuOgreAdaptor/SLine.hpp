@@ -70,7 +70,7 @@ public:
     typedef ::fwCom::Slot<void (float)> UpdateLengthSlotType;
 
     /// Slot: update length of the line
-    VISUOGREADAPTOR_API void updateLength (float length );
+    VISUOGREADAPTOR_API void updateLength(float length);
 
 protected:
     /// Configures the adaptor

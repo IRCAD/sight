@@ -167,6 +167,7 @@ void SLine::stopping()
     m_material = nullptr;
     if(m_line)
     {
+        m_line->detachFromParent();
         this->getSceneManager()->destroyManualObject(m_line);
         m_line = nullptr;
     }
@@ -192,27 +193,23 @@ void SLine::attachNode(::Ogre::MovableObject* object)
 
 void SLine::updateLength(float length)
 {
-    // Attempt to reduce the number of render requests
-    if(std::abs(length - m_length) > 0.1)
-    {
-        m_length = length;
+    m_length = length;
 
-        // Update the line length with the new length
-        m_line->beginUpdate(0);
-        m_line->position(0, 0, 0);
-        m_line->colour(m_color);
-        m_line->position(0, 0, m_length);
-        m_line->colour(m_color);
-        m_line->end();
+    // Update the line length with the new length
+    m_line->beginUpdate(0);
+    m_line->position(0, 0, 0);
+    m_line->colour(m_color);
+    m_line->position(0, 0, m_length);
+    m_line->colour(m_color);
+    m_line->end();
 
-        // Update the bounding box
-        ::Ogre::Vector3 bbMin(-0.1f, -0.1f, 0.f);
-        ::Ogre::Vector3 bbMax(0.1f, 0.1f, m_length);
-        ::Ogre::AxisAlignedBox box(bbMin, bbMax);
-        m_line->setBoundingBox(box);
+    // Update the bouding box
+    ::Ogre::Vector3 bbMin(-0.1f, -0.1f, 0.f);
+    ::Ogre::Vector3 bbMax(0.1f, 0.1f, m_length);
+    ::Ogre::AxisAlignedBox box(bbMin, bbMax);
+    m_line->setBoundingBox(box);
 
-        this->requestRender();
-    }
+    this->requestRender();
 }
 
 } //visuOgreAdaptor
