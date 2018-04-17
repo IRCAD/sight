@@ -58,28 +58,28 @@ public:
                                          const ::fwData::Point::csptr& _input, ::fwData::Point::sptr& _output);
 
     /**
-     * @brief Multiply a point and a matrix.
-     * @param[in] _trf input ::fwData::TransformationMatrix3D.
+     * @brief Convert a ::fwData::TransformationMatrix3D into a GLM matrix.
+     * @param[in] _trf Input ::fwData::TransformationMatrix3D.
      * @return GLM matrix.
      */
     FWDATATOOLS_API static ::glm::dmat4x4 getMatrixFromTF3D(const ::fwData::TransformationMatrix3D::csptr& _trf);
 
     /**
-     * @brief Multiply a point and a matrix.
-     * @param[in] _trf output ::fwData::TransformationMatrix3D.
-     * @param[out] _input Input GLM matrix.
+     * @brief Convert a GLM matrix into a ::fwData::TransformationMatrix3D.
+     * @param[out] _trf Output ::fwData::TransformationMatrix3D.
+     * @param[in] _input Input GLM matrix.
      */
     FWDATATOOLS_API static void setTF3DFromMatrix(::fwData::TransformationMatrix3D::sptr& _trf,
                                                   const ::glm::dmat4x4& _input);
 
     /**
      * @brief Return whether a ::fwData::TransformationMatrix3D is an identity matrix.
-     * @param[in] _trf input ::fwData::TransformationMatrix3D.
-     * @param[in] _epsilon precision of the test (default 1e-12)
+     * @param[in] _trf Input ::fwData::TransformationMatrix3D.
+     * @param[in] _epsilon Precision of the test (default 1e-12)
      * @return boolean value: true if the matrix is identity, false otherwise.
      */
     FWDATATOOLS_API static bool isIdentity(const ::fwData::TransformationMatrix3D::csptr& _trf,
-                                           double _epsilon = 1e-12);
+                                           const double _epsilon = 1e-12);
 };
 
 // ----------------------------------------------------------------------------

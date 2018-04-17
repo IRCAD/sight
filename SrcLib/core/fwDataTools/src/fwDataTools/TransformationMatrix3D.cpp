@@ -101,7 +101,7 @@ void TransformationMatrix3D::multiply(const ::fwData::TransformationMatrix3D::cs
 
 // ----------------------------------------------------------------------------
 
-bool TransformationMatrix3D::isIdentity(const ::fwData::TransformationMatrix3D::csptr& _trf, double _epsilon)
+bool TransformationMatrix3D::isIdentity(const ::fwData::TransformationMatrix3D::csptr& _trf, const double _epsilon)
 {
     static const ::fwData::TransformationMatrix3D::sptr s_IDENTITY = ::fwData::TransformationMatrix3D::New();
 
