@@ -246,14 +246,13 @@ void SCamera::calibrate()
 {
     if ( m_calibration && m_calibration->getIsCalibrated() )
     {
-        float width, height, near, far;
-        width  = static_cast< float >(m_camera->getViewport()->getActualWidth());
-        height = static_cast <float >(m_camera->getViewport()->getActualHeight());
-        near   = static_cast< float >(m_camera->getNearClipDistance());
-        far    = static_cast< float >(m_camera->getFarClipDistance());
+        const float width    = static_cast< float >(m_camera->getViewport()->getActualWidth());
+        const float height   = static_cast <float >(m_camera->getViewport()->getActualHeight());
+        const float nearClip = static_cast< float >(m_camera->getNearClipDistance());
+        const float farClip  = static_cast< float >(m_camera->getFarClipDistance());
 
         ::Ogre::Matrix4 m =
-            ::fwRenderOgre::helper::Camera::computeProjectionMatrix(*m_calibration, width, height, near, far);
+            ::fwRenderOgre::helper::Camera::computeProjectionMatrix(*m_calibration, width, height, nearClip, farClip);
 
         m_camera->setCustomProjectionMatrix(true, m);
 
