@@ -1,0 +1,169 @@
+<extension implements="::fwServices::registry::AppConfig">
+    <id>DicomWebReaderActivity</id>
+    <parameters>
+        <param name="WID_PARENT" />
+        <param name="SERIESDB" />
+        <param name="AS_UID" />
+        <param name="APP_NAME" />
+    </parameters>
+    <config>
+
+        <!-- ******************************* UI declaration *********************************** -->
+
+        <object uid="${SERIESDB}" type="::fwMedData::SeriesDB" src="ref" />
+        <object uid="previewSeriesDB" type="::fwMedData::SeriesDB" />
+        <object uid="previewSelections" type="::fwData::Vector" />
+
+        <object uid="localSeriesDB" type="::fwMedData::SeriesDB" />
+        <object uid="localSelections" type="::fwData::Vector" />
+
+        <service uid="mainView" type="::gui::view::SDefaultView" >
+            <gui>
+                <layout type="::fwGui::CardinalLayoutManager">
+                    <view align="top"/>
+                    <view align="center" minWidth="200" />
+                    <view align="bottom"/>
+                </layout>
+                <toolBar />
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <toolBar sid="toolBar" start="yes" />
+                <view sid="topView" start="yes" />
+                <view sid="centerView" start="yes" />
+                <view sid="bottomView" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="toolBar" type="::gui::aspect::SDefaultToolBar" >
+            <gui>
+                <layout>
+                    <menuItem name="Pull selected series from Pacs" icon="media-0.1/icons/Pull.svg" />
+                    <menuItem name="Push selected series to the main SeriesDB" icon="media-0.1/icons/Push.svg" />
+                </layout>
+            </gui>
+            <registry>
+                <menuItem sid="action_pullSeries" start="yes" />
+                <menuItem sid="action_pushSeries" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="topView" type="::gui::view::SDefaultView" >
+            <gui>
+                <layout type="::fwGui::CardinalLayoutManager">
+                    <orientation value="horizontal" />
+                    <view caption="DICOM Query" align="center" minWidth="200" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="queryEditor" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="centerView" type="::gui::view::SDefaultView" >
+            <gui>
+                <layout type="::fwGui::CardinalLayoutManager">
+                    <orientation value="horizontal" />
+                    <view caption="Pacs Information" align="center" minWidth="200" />
+                    <view caption="Pacs Preview" align="right" minWidth="200" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="previewSelector" start="yes" />
+                <view wid="pacsPreview" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="bottomView" type="::gui::view::SDefaultView" >
+            <gui>
+                <layout type="::fwGui::CardinalLayoutManager">
+                    <orientation value="horizontal" />
+                    <view caption="Local Series" align="center" minWidth="200" />
+                    <view caption="Local Preview" align="right" minWidth="200" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="localSelector" start="yes" />
+                <view wid="localPreview" start="yes" />
+            </registry>
+        </service>
+
+        <!-- ******************************* Actions ****************************************** -->
+
+        <service uid="action_pullSeries" type="::gui::action::SSlotCaller" >
+            <slots>
+                <slot>pullSeriesController/update</slot>
+            </slots>
+        </service>
+
+        <service uid="action_pushSeries" type="::ioDicom::SSeriesDBMerger">
+            <in key="selectedSeries" uid="localSelections" />
+            <inout key="seriesDB" uid="${SERIESDB}" />
+        </service>
+
+        <!-- ******************************* Services ***************************************** -->
+
+        <!-- PREVIEW -->
+        <service uid="previewSelector" type="::uiMedDataQt::editor::SSelector" autoConnect="yes">
+            <inout key="selection" uid="previewSelections" />
+            <inout key="seriesDB" uid="previewSeriesDB" />
+        </service>
+
+        <service uid="queryEditor" type="::ioDicomWeb::SQueryEditor" autoConnect="yes">
+            <inout key="seriesDB" uid="previewSeriesDB" />
+            <server>%PACS_SERVER_HOSTNAME%:%PACS_SERVER_PORT%</server>
+        </service>
+
+        <service uid="pullSeriesController" type="::ioDicomWeb::SSeriesPuller">
+            <in key="selectedSeries" uid="previewSelections" />
+            <inout key="seriesDB" uid="localSeriesDB" />
+            <config dicomReader="::ioGdcm::SSeriesDBReader" dicomReaderConfig="DicomWebReaderConfig" />
+            <server>%PACS_SERVER_HOSTNAME%:%PACS_SERVER_PORT%</server>
+        </service>
+
+        <service uid="pacsViewer" type="::uiMedDataQt::SSeriesViewer" autoConnect="yes">
+            <in key="series" uid="previewSelections" />
+            <parentView wid="pacsPreview" />
+            <configs>
+                <config id="2DPacsPreviewConfig" type="::fwMedData::DicomSeries" />
+            </configs>
+        </service>
+
+        <!-- LOCAL -->
+        <service uid="localSelector" type="::uiMedDataQt::editor::SSelector" autoConnect="yes">
+            <inout key="seriesDB" uid="localSeriesDB" />
+            <inout key="selection" uid="localSelections" />
+        </service>
+
+        <service uid="localViewer" type="::uiMedDataQt::SSeriesViewer" autoConnect="yes">
+            <in key="series" uid="localSelections" />
+            <parentView wid="localPreview" />
+            <configs>
+                <config id="2DSimpleConfig2" type="::fwMedData::ImageSeries">
+                    <extract path="@image" pattern="imageID" />
+                </config>
+            </configs>
+        </service>
+
+
+        <service uid="seriesDBReader" type="::ioGdcm::SSeriesDBReader" >
+            <inout key="data" uid="localSeriesDB" />
+            <config filterType="::fwDicomIOFilter::sorter::ImagePositionPatientSorter" />
+        </service>
+
+        <!-- ******************************* Connections ************************************** -->
+
+        <connect>
+            <signal>pullSeriesController/seriesReceived</signal>
+            <slot>seriesDBReader/readFolder</slot>
+        </connect>
+
+        <!-- START AND STOP SERVICES -->
+        <start uid="mainView" />
+        <start uid="pullSeriesController" />
+        <start uid="localViewer" />
+      <!--  <start uid="pacsViewer" /> -->
+        <start uid="seriesDBReader" />
+
+    </config>
+</extension>
