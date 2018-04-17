@@ -53,7 +53,6 @@ void BufferManagerTest::allocateTest()
 
     // We need to wait before checking that the buffer was unlocked because all buffer operations are done on a worker.
     // The actual buffer ref count might still be owned (as a std::promise) by the worker task when we reach this point.
-    // See fw4spl!216
     fwTestWaitMacro(bo->lockCount() == 0);
     CPPUNIT_ASSERT_EQUAL( static_cast<long>(0), bo->lockCount() );
 
