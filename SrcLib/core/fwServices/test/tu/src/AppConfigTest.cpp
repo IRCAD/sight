@@ -22,6 +22,8 @@
 #include <fwRuntime/Convert.hpp>
 #include <fwRuntime/Runtime.hpp>
 
+#include <fwTest/helper/wait.hpp>
+
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/path.hpp>
 
@@ -35,20 +37,10 @@ namespace fwServices
 namespace ut
 {
 
-// Wait at worst 1s for a given condition
-#define WAIT(cond) \
-    ::fwCore::TimeStamp BOOST_PP_CAT(timeStamp, __LINE__); \
-    BOOST_PP_CAT(timeStamp, __LINE__).setLifePeriod(1000); \
-    BOOST_PP_CAT(timeStamp, __LINE__).modified(); \
-    while(!(cond) && !BOOST_PP_CAT(timeStamp, __LINE__).periodExpired()) \
-    { \
-        std::this_thread::sleep_for( std::chrono::milliseconds(10)); \
-    }
-
 #define WAIT_SERVICE_STARTED(srv)  \
-    WAIT(::fwTools::fwID::getObject(srv) != nullptr && \
-         ::fwServices::IService::dynamicCast(::fwTools::fwID::getObject(srv))->getStatus() \
-         == ::fwServices::IService::STARTED)
+    fwTestWaitMacro(::fwTools::fwID::getObject(srv) != nullptr && \
+                    ::fwServices::IService::dynamicCast(::fwTools::fwID::getObject(srv))->getStatus() \
+                    == ::fwServices::IService::STARTED)
 
 //------------------------------------------------------------------------------
 
@@ -226,7 +218,7 @@ void AppConfigTest::startStopTest()
 
         // Remove the data
         ::fwServices::OSR::unregisterServiceOutput("out2", genDataSrv);
-        WAIT(::fwTools::fwID::getObject("TestService4Uid") == nullptr);
+        fwTestWaitMacro(::fwTools::fwID::getObject("TestService4Uid") == nullptr);
 
         // Now the service should have been stopped and destroyed automatically
         {
@@ -277,11 +269,11 @@ void AppConfigTest::startStopTest()
 
         // Now the service should have been stopped and destroyed automatically
         {
-            WAIT(::fwTools::fwID::getObject("TestService5Uid") == nullptr);
+            fwTestWaitMacro(::fwTools::fwID::getObject("TestService5Uid") == nullptr);
             auto gnsrv5 = ::fwTools::fwID::getObject("TestService5Uid");
             CPPUNIT_ASSERT(gnsrv5 == nullptr);
             // Test as well service 4, just to be sure
-            WAIT(::fwTools::fwID::getObject("TestService4Uid") == nullptr);
+            fwTestWaitMacro(::fwTools::fwID::getObject("TestService4Uid") == nullptr);
             auto gnsrv4 = ::fwTools::fwID::getObject("TestService4Uid");
             CPPUNIT_ASSERT(gnsrv4 == nullptr);
         }
@@ -327,7 +319,7 @@ void AppConfigTest::startStopTest()
         ::fwData::Boolean::sptr data5 = ::fwData::Boolean::New();
 
         ::fwServices::OSR::unregisterServiceOutput("out2", genDataSrv);
-        WAIT(::fwTools::fwID::getObject("TestService5Uid") == nullptr);
+        fwTestWaitMacro(::fwTools::fwID::getObject("TestService5Uid") == nullptr);
         ::fwServices::OSR::registerServiceOutput(data5, "out2", genDataSrv);
         WAIT_SERVICE_STARTED("TestService5Uid");
 
@@ -382,7 +374,7 @@ void AppConfigTest::autoConnectTest()
         auto sig1 = data1->signal< ::fwData::Object::ModifiedSignalType>(::fwData::Object::s_MODIFIED_SIG);
         sig1->asyncEmit();
 
-        WAIT(srv2->getIsUpdated() && srv3->getIsUpdated());
+        fwTestWaitMacro(srv2->getIsUpdated() && srv3->getIsUpdated());
         CPPUNIT_ASSERT(!srv1->getIsUpdated());
         CPPUNIT_ASSERT(srv2->getIsUpdated());
         CPPUNIT_ASSERT(srv3->getIsUpdated());
@@ -396,7 +388,7 @@ void AppConfigTest::autoConnectTest()
 
         auto sig2 = data2->signal< ::fwData::Object::ModifiedSignalType>(::fwData::Object::s_MODIFIED_SIG);
         sig2->asyncEmit();
-        WAIT(srv2->getIsUpdated() && srv3->getReceived());
+        fwTestWaitMacro(srv2->getIsUpdated() && srv3->getReceived());
         CPPUNIT_ASSERT(!srv1->getIsUpdated());
         CPPUNIT_ASSERT(srv2->getIsUpdated());
         CPPUNIT_ASSERT(!srv3->getIsUpdated());
@@ -444,7 +436,7 @@ void AppConfigTest::autoConnectTest()
 
             auto sig = data3->signal< ::fwData::Object::ModifiedSignalType>(::fwData::Object::s_MODIFIED_SIG);
             sig->asyncEmit();
-            WAIT(srv5->getReceived());
+            fwTestWaitMacro(srv5->getReceived());
 
             CPPUNIT_ASSERT(!srv4->getIsUpdated());
             CPPUNIT_ASSERT(!srv5->getIsUpdated());
@@ -453,8 +445,8 @@ void AppConfigTest::autoConnectTest()
 
         // Remove one data
         ::fwServices::OSR::unregisterServiceOutput("out3", genDataSrv);
-        WAIT(::fwTools::fwID::getObject("TestService4Uid") == nullptr &&
-             ::fwTools::fwID::getObject("TestService5Uid") == nullptr);
+        fwTestWaitMacro(::fwTools::fwID::getObject("TestService4Uid") == nullptr &&
+                        ::fwTools::fwID::getObject("TestService5Uid") == nullptr);
         {
             fwTools::Object::sptr gnsrv4 = ::fwTools::fwID::getObject("TestService4Uid");
             CPPUNIT_ASSERT(gnsrv4 == nullptr);
@@ -485,7 +477,7 @@ void AppConfigTest::autoConnectTest()
 
             auto sig = data3->signal< ::fwData::Object::ModifiedSignalType>(::fwData::Object::s_MODIFIED_SIG);
             sig->asyncEmit();
-            WAIT(srv5->getReceived());
+            fwTestWaitMacro(srv5->getReceived());
             CPPUNIT_ASSERT(srv5->getReceived());
 
             CPPUNIT_ASSERT(!srv4->getIsUpdated());
@@ -494,7 +486,7 @@ void AppConfigTest::autoConnectTest()
 
             auto sig1 = data1->signal< ::fwData::Object::ModifiedSignalType>(::fwData::Object::s_MODIFIED_SIG);
             sig1->asyncEmit();
-            WAIT(srv5->getIsUpdated());
+            fwTestWaitMacro(srv5->getIsUpdated());
 
             CPPUNIT_ASSERT(srv5->getIsUpdated());
         }
@@ -536,13 +528,13 @@ void AppConfigTest::connectionTest()
     fwTools::Object::sptr gnsrv4 = ::fwTools::fwID::getObject("TestService4Uid");
     auto srv4                    = ::fwServices::ut::TestService::dynamicCast(gnsrv4);
     CPPUNIT_ASSERT(srv4 != nullptr);
-    WAIT(::fwServices::IService::STARTED == srv4->getStatus());
+    fwTestWaitMacro(::fwServices::IService::STARTED == srv4->getStatus());
     CPPUNIT_ASSERT_EQUAL(::fwServices::IService::STARTED, srv4->getStatus());
 
     // Check connection
     auto sig = data1->signal< ::fwData::Object::ModifiedSignalType>(::fwData::Object::s_MODIFIED_SIG);
     sig->asyncEmit();
-    WAIT(srv1->getIsUpdated() && srv2->getIsUpdated());
+    fwTestWaitMacro(srv1->getIsUpdated() && srv2->getIsUpdated());
 
     CPPUNIT_ASSERT(srv1->getIsUpdated());
     CPPUNIT_ASSERT(srv2->getIsUpdated());
@@ -572,11 +564,11 @@ void AppConfigTest::connectionTest()
     CPPUNIT_ASSERT(data4 != nullptr);
     auto sig4 = data4->signal< ::fwData::Object::ModifiedSignalType>(::fwData::Object::s_MODIFIED_SIG);
     sig4->asyncEmit();
-    WAIT(srv2->getIsUpdated());
+    fwTestWaitMacro(srv2->getIsUpdated());
 
     CPPUNIT_ASSERT(srv2->getIsUpdated());
 
-    WAIT(!srv4->getIsUpdated());
+    fwTestWaitMacro(!srv4->getIsUpdated());
     CPPUNIT_ASSERT(!srv4->getIsUpdated());
     CPPUNIT_ASSERT(!srv4->getIsUpdated2());
 
@@ -591,7 +583,7 @@ void AppConfigTest::connectionTest()
         fwTools::Object::sptr gnsrv3 = ::fwTools::fwID::getObject("TestService3Uid");
         auto srv3                    = ::fwServices::ut::TestService::dynamicCast(gnsrv3);
         CPPUNIT_ASSERT(srv3 != nullptr);
-        WAIT(::fwServices::IService::STARTED == srv3->getStatus());
+        fwTestWaitMacro(::fwServices::IService::STARTED == srv3->getStatus());
         CPPUNIT_ASSERT_EQUAL(::fwServices::IService::STARTED, srv3->getStatus());
         srv2->resetIsUpdated();
         CPPUNIT_ASSERT(!srv2->getIsUpdated());
@@ -602,7 +594,7 @@ void AppConfigTest::connectionTest()
         CPPUNIT_ASSERT(!srv4->getIsUpdated2());
 
         sig->asyncEmit();
-        WAIT(srv2->getIsUpdated() && srv3->getIsUpdated());
+        fwTestWaitMacro(srv2->getIsUpdated() && srv3->getIsUpdated());
 
         CPPUNIT_ASSERT(srv2->getIsUpdated());
         CPPUNIT_ASSERT(srv3->getIsUpdated());
@@ -614,7 +606,7 @@ void AppConfigTest::connectionTest()
 
         auto sig2 = data2->signal< ::fwData::Object::ModifiedSignalType>(::fwData::Object::s_MODIFIED_SIG);
         sig2->asyncEmit();
-        WAIT(srv1->getIsUpdated() && srv3->getIsUpdated());
+        fwTestWaitMacro(srv1->getIsUpdated() && srv3->getIsUpdated());
 
         CPPUNIT_ASSERT(srv1->getIsUpdated());
         CPPUNIT_ASSERT(srv3->getIsUpdated());
@@ -626,7 +618,7 @@ void AppConfigTest::connectionTest()
         CPPUNIT_ASSERT(!srv3->getIsUpdated());
 
         sig4->asyncEmit();
-        WAIT(srv2->getIsUpdated() && srv3->getIsUpdated());
+        fwTestWaitMacro(srv2->getIsUpdated() && srv3->getIsUpdated());
 
         CPPUNIT_ASSERT(srv2->getIsUpdated());
         CPPUNIT_ASSERT(srv3->getIsUpdated());
@@ -639,7 +631,7 @@ void AppConfigTest::connectionTest()
 
         auto sig3 = data3->signal< ::fwData::Object::ModifiedSignalType>(::fwData::Object::s_MODIFIED_SIG);
         sig3->asyncEmit();
-        WAIT(srv2->getIsUpdated() && srv3->getIsUpdated());
+        fwTestWaitMacro(srv2->getIsUpdated() && srv3->getIsUpdated());
 
         CPPUNIT_ASSERT(srv2->getIsUpdated());
         CPPUNIT_ASSERT(srv3->getIsUpdated());
@@ -647,7 +639,7 @@ void AppConfigTest::connectionTest()
 
     // Remove one data
     ::fwServices::OSR::unregisterServiceOutput("out3", genDataSrv);
-    WAIT(::fwTools::fwID::getObject("TestService3Uid") == nullptr);
+    fwTestWaitMacro(::fwTools::fwID::getObject("TestService3Uid") == nullptr);
 
     // Service 3 should be removed
     {
@@ -659,14 +651,14 @@ void AppConfigTest::connectionTest()
     srv2->resetIsUpdated();
     CPPUNIT_ASSERT(!srv2->getIsUpdated());
     sig->asyncEmit();
-    WAIT(srv2->getIsUpdated());
+    fwTestWaitMacro(srv2->getIsUpdated());
     CPPUNIT_ASSERT(srv2->getIsUpdated());
 
     srv1->resetIsUpdated();
     CPPUNIT_ASSERT(!srv1->getIsUpdated());
     auto sig2 = data2->signal< ::fwData::Object::ModifiedSignalType>(::fwData::Object::s_MODIFIED_SIG);
     sig2->asyncEmit();
-    WAIT(srv1->getIsUpdated());
+    fwTestWaitMacro(srv1->getIsUpdated());
     CPPUNIT_ASSERT(srv1->getIsUpdated());
 
     // Check connection data4 -> srv2
@@ -674,7 +666,7 @@ void AppConfigTest::connectionTest()
     CPPUNIT_ASSERT(!srv2->getIsUpdated());
 
     sig4->asyncEmit();
-    WAIT(srv2->getIsUpdated());
+    fwTestWaitMacro(srv2->getIsUpdated());
 
     CPPUNIT_ASSERT(srv2->getIsUpdated());
 
@@ -701,7 +693,7 @@ void AppConfigTest::connectionTest()
         CPPUNIT_ASSERT(!srv4->getIsUpdated2());
 
         sig->asyncEmit();
-        WAIT(srv2->getIsUpdated() && srv3->getIsUpdated());
+        fwTestWaitMacro(srv2->getIsUpdated() && srv3->getIsUpdated());
 
         CPPUNIT_ASSERT(srv2->getIsUpdated());
         CPPUNIT_ASSERT(srv3->getIsUpdated());
@@ -713,7 +705,7 @@ void AppConfigTest::connectionTest()
 
         auto sig2 = data2->signal< ::fwData::Object::ModifiedSignalType>(::fwData::Object::s_MODIFIED_SIG);
         sig2->asyncEmit();
-        WAIT(srv1->getIsUpdated() && srv3->getIsUpdated());
+        fwTestWaitMacro(srv1->getIsUpdated() && srv3->getIsUpdated());
 
         CPPUNIT_ASSERT(srv1->getIsUpdated());
         CPPUNIT_ASSERT(srv3->getIsUpdated());
@@ -725,7 +717,7 @@ void AppConfigTest::connectionTest()
         CPPUNIT_ASSERT(!srv3->getIsUpdated());
 
         sig4->asyncEmit();
-        WAIT(srv2->getIsUpdated() && srv3->getIsUpdated());
+        fwTestWaitMacro(srv2->getIsUpdated() && srv3->getIsUpdated());
 
         CPPUNIT_ASSERT(srv2->getIsUpdated());
         CPPUNIT_ASSERT(srv3->getIsUpdated());
@@ -738,7 +730,7 @@ void AppConfigTest::connectionTest()
 
         auto sig3 = data3->signal< ::fwData::Object::ModifiedSignalType>(::fwData::Object::s_MODIFIED_SIG);
         sig3->asyncEmit();
-        WAIT(srv2->getIsUpdated() && srv3->getIsUpdated());
+        fwTestWaitMacro(srv2->getIsUpdated() && srv3->getIsUpdated());
 
         CPPUNIT_ASSERT(srv2->getIsUpdated());
         CPPUNIT_ASSERT(srv3->getIsUpdated());
@@ -773,7 +765,7 @@ void AppConfigTest::optionalKeyTest()
     // Check connection
     auto sig = data1->signal< ::fwData::Object::ModifiedSignalType>(::fwData::Object::s_MODIFIED_SIG);
     sig->asyncEmit();
-    WAIT(srv1->getIsUpdated());
+    fwTestWaitMacro(srv1->getIsUpdated());
 
     CPPUNIT_ASSERT(srv1->getIsUpdated());
     srv1->resetIsUpdated();
@@ -786,7 +778,7 @@ void AppConfigTest::optionalKeyTest()
     ::fwData::Boolean::sptr data2 = ::fwData::Boolean::New();
 
     ::fwServices::OSR::registerServiceOutput(data2, "out2", genDataSrv);
-    WAIT(data2 == srv1->getInput< ::fwData::Object>("data2"));
+    fwTestWaitMacro(data2 == srv1->getInput< ::fwData::Object>("data2"));
 
     CPPUNIT_ASSERT(data2 == srv1->getInput< ::fwData::Object>("data2") );
     CPPUNIT_ASSERT(nullptr == srv1->getInput< ::fwData::Object>("data3") );
@@ -798,7 +790,7 @@ void AppConfigTest::optionalKeyTest()
     CPPUNIT_ASSERT(!srv1->getIsUpdated());
     auto sig2 = data2->signal< ::fwData::Object::ModifiedSignalType>(::fwData::Object::s_MODIFIED_SIG);
     sig2->asyncEmit();
-    WAIT(!srv1->getIsUpdated());
+    fwTestWaitMacro(!srv1->getIsUpdated());
     CPPUNIT_ASSERT(!srv1->getIsUpdated());
 
     // Create data 3 and 4
@@ -808,8 +800,8 @@ void AppConfigTest::optionalKeyTest()
     ::fwServices::OSR::registerServiceOutput(data3, "out3", genDataSrv);
     ::fwServices::OSR::registerServiceOutput(data4, "out4", genDataSrv);
 
-    WAIT(data3 == srv1->getInput< ::fwData::Object>("data3") &&
-         data4 == srv1->getInput< ::fwData::Object>("data4"));
+    fwTestWaitMacro(data3 == srv1->getInput< ::fwData::Object>("data3") &&
+                    data4 == srv1->getInput< ::fwData::Object>("data4"));
 
     CPPUNIT_ASSERT(data3 == srv1->getInput< ::fwData::Object>("data3") );
     CPPUNIT_ASSERT(data4 == srv1->getInput< ::fwData::Object>("data4") );
@@ -819,26 +811,26 @@ void AppConfigTest::optionalKeyTest()
     srv1->resetIsUpdated();
     auto sig3 = data3->signal< ::fwData::Object::ModifiedSignalType>(::fwData::Object::s_MODIFIED_SIG);
     sig3->asyncEmit();
-    WAIT(srv1->getIsUpdated());
+    fwTestWaitMacro(srv1->getIsUpdated());
     CPPUNIT_ASSERT(srv1->getIsUpdated());
 
     // Check connection with data 4
     srv1->resetIsUpdated();
     auto sig4 = data4->signal< ::fwData::Object::ModifiedSignalType>(::fwData::Object::s_MODIFIED_SIG);
     sig4->asyncEmit();
-    WAIT(srv1->getIsUpdated());
+    fwTestWaitMacro(srv1->getIsUpdated());
     CPPUNIT_ASSERT(srv1->getIsUpdated());
 
     // Remove data 2 and 3
     ::fwServices::OSR::unregisterServiceOutput("out2", genDataSrv);
-    WAIT(nullptr == srv1->getInput< ::fwData::Object>("data2"));
+    fwTestWaitMacro(nullptr == srv1->getInput< ::fwData::Object>("data2"));
 
     CPPUNIT_ASSERT("data2" == srv1->getSwappedObjectKey() );
     CPPUNIT_ASSERT(nullptr == srv1->getSwappedObject() );
     CPPUNIT_ASSERT(nullptr == srv1->getInput< ::fwData::Object>("data2") );
 
     ::fwServices::OSR::unregisterServiceOutput("out3", genDataSrv);
-    WAIT(nullptr == srv1->getInput< ::fwData::Object>("data3"));
+    fwTestWaitMacro(nullptr == srv1->getInput< ::fwData::Object>("data3"));
 
     CPPUNIT_ASSERT("data3" == srv1->getSwappedObjectKey() );
     CPPUNIT_ASSERT(nullptr == srv1->getSwappedObject() );
@@ -848,7 +840,7 @@ void AppConfigTest::optionalKeyTest()
 
     // Create data 3
     ::fwServices::OSR::registerServiceOutput(data3, "out3", genDataSrv);
-    WAIT(data3 == srv1->getInput< ::fwData::Object>("data3"));
+    fwTestWaitMacro(data3 == srv1->getInput< ::fwData::Object>("data3"));
 
     CPPUNIT_ASSERT(nullptr == srv1->getInput< ::fwData::Object>("data2") );
     CPPUNIT_ASSERT(data3 == srv1->getInput< ::fwData::Object>("data3") );
@@ -883,14 +875,14 @@ void AppConfigTest::optionalKeyTest()
         srv2->resetIsUpdated();
         auto sig4 = data4->signal< ::fwData::Object::ModifiedSignalType>(::fwData::Object::s_MODIFIED_SIG);
         sig4->asyncEmit();
-        WAIT(srv2->getIsUpdated());
+        fwTestWaitMacro(srv2->getIsUpdated());
 
         // Remove data 3 and 4
         ::fwServices::OSR::unregisterServiceOutput("out3", genDataSrv);
         ::fwServices::OSR::unregisterServiceOutput("out4", genDataSrv);
 
-        WAIT(nullptr == srv2->getInput< ::fwData::Object>("data3") &&
-             nullptr == srv2->getInput< ::fwData::Object>("data4"));
+        fwTestWaitMacro(nullptr == srv2->getInput< ::fwData::Object>("data3") &&
+                        nullptr == srv2->getInput< ::fwData::Object>("data4"));
 
         CPPUNIT_ASSERT(data5 == srv2->getInput< ::fwData::Object>("data5") );
         CPPUNIT_ASSERT(nullptr == srv2->getInput< ::fwData::Object>("data2") );
@@ -899,7 +891,7 @@ void AppConfigTest::optionalKeyTest()
 
         // Create data 3
         ::fwServices::OSR::registerServiceOutput(data3, "out3", genDataSrv);
-        WAIT(nullptr != srv2->getInput< ::fwData::Object>("data3"));
+        fwTestWaitMacro(nullptr != srv2->getInput< ::fwData::Object>("data3"));
 
         CPPUNIT_ASSERT(data5 == srv2->getInput< ::fwData::Object>("data5") );
         CPPUNIT_ASSERT(nullptr == srv2->getInput< ::fwData::Object>("data2") );
@@ -911,7 +903,7 @@ void AppConfigTest::optionalKeyTest()
     {
         ::fwServices::OSR::unregisterServiceOutput("out5", genDataSrv);
 
-        WAIT(nullptr == ::fwTools::fwID::getObject("TestService2Uid"));
+        fwTestWaitMacro(nullptr == ::fwTools::fwID::getObject("TestService2Uid"));
 
         fwTools::Object::sptr gnsrv5 = ::fwTools::fwID::getObject("TestService2Uid");
         CPPUNIT_ASSERT(gnsrv5 == nullptr);
@@ -937,14 +929,14 @@ void AppConfigTest::optionalKeyTest()
         srv2->resetIsUpdated();
         auto sig3 = data3->signal< ::fwData::Object::ModifiedSignalType>(::fwData::Object::s_MODIFIED_SIG);
         sig3->asyncEmit();
-        WAIT(srv2->getIsUpdated());
+        fwTestWaitMacro(srv2->getIsUpdated());
         CPPUNIT_ASSERT(srv2->getIsUpdated());
 
         // Create data 2
         ::fwData::Boolean::sptr data2 = ::fwData::Boolean::New();
 
         ::fwServices::OSR::registerServiceOutput(data2, "out2", genDataSrv);
-        WAIT(data2 == srv2->getInput< ::fwData::Object>("data2"));
+        fwTestWaitMacro(data2 == srv2->getInput< ::fwData::Object>("data2"));
 
         CPPUNIT_ASSERT(data5 == srv2->getInput< ::fwData::Object>("data5") );
         CPPUNIT_ASSERT(data2 == srv2->getInput< ::fwData::Object>("data2") );
@@ -956,7 +948,7 @@ void AppConfigTest::optionalKeyTest()
         CPPUNIT_ASSERT(!srv2->getIsUpdated());
         auto sig2 = data2->signal< ::fwData::Object::ModifiedSignalType>(::fwData::Object::s_MODIFIED_SIG);
         sig2->asyncEmit();
-        WAIT(!srv2->getIsUpdated());
+        fwTestWaitMacro(!srv2->getIsUpdated());
         CPPUNIT_ASSERT(!srv2->getIsUpdated());
 
         // Overwrite data 2 with a new data generated by an another service
@@ -966,7 +958,7 @@ void AppConfigTest::optionalKeyTest()
         CPPUNIT_ASSERT(genDataSrv2 != nullptr);
 
         ::fwServices::OSR::registerServiceOutput(data2bis, "out", genDataSrv2);
-        WAIT(data2bis == srv2->getInput< ::fwData::Object>("data2"));
+        fwTestWaitMacro(data2bis == srv2->getInput< ::fwData::Object>("data2"));
 
         CPPUNIT_ASSERT(data2bis == srv2->getInput< ::fwData::Object>("data2"));
         CPPUNIT_ASSERT("data2" == srv2->getSwappedObjectKey() );
@@ -979,7 +971,7 @@ void AppConfigTest::optionalKeyTest()
 
         // Revert that
         ::fwServices::OSR::registerServiceOutput(data2, "out", genDataSrv2);
-        WAIT(data2 == srv2->getInput< ::fwData::Object>("data2"));
+        fwTestWaitMacro(data2 == srv2->getInput< ::fwData::Object>("data2"));
 
         CPPUNIT_ASSERT(data2 == srv2->getInput< ::fwData::Object>("data2"));
         CPPUNIT_ASSERT("data2" == srv2->getSwappedObjectKey() );
@@ -1045,7 +1037,7 @@ void AppConfigTest::keyGroupTest()
         CPPUNIT_ASSERT(!srv1->getIsUpdated());
         auto sig2 = data2->signal< ::fwData::Object::ModifiedSignalType>(::fwData::Object::s_MODIFIED_SIG);
         sig2->asyncEmit();
-        WAIT(srv1->getIsUpdated());
+        fwTestWaitMacro(srv1->getIsUpdated());
         CPPUNIT_ASSERT(srv1->getIsUpdated());
 
         // Create data 3
@@ -1053,7 +1045,7 @@ void AppConfigTest::keyGroupTest()
 
         ::fwServices::OSR::registerServiceOutput(data3, "out3", genDataSrv);
 
-        WAIT(data3 == srv1->getInput< ::fwData::Object>("dataGroup2"));
+        fwTestWaitMacro(data3 == srv1->getInput< ::fwData::Object>("dataGroup2"));
 
         CPPUNIT_ASSERT(data2 == srv1->getInput< ::fwData::Object>("dataGroup#0") );
         CPPUNIT_ASSERT(data3 == srv1->getInput< ::fwData::Object>("dataGroup#1") );
@@ -1065,7 +1057,7 @@ void AppConfigTest::keyGroupTest()
         srv1->resetIsUpdated();
         auto sig3 = data3->signal< ::fwData::Object::ModifiedSignalType>(::fwData::Object::s_MODIFIED_SIG);
         sig3->asyncEmit();
-        WAIT(srv1->getIsUpdated());
+        fwTestWaitMacro(srv1->getIsUpdated());
         CPPUNIT_ASSERT(srv1->getIsUpdated());
     }
 
@@ -1073,7 +1065,7 @@ void AppConfigTest::keyGroupTest()
     {
         ::fwServices::OSR::unregisterServiceOutput("out2", genDataSrv);
 
-        WAIT(nullptr == ::fwTools::fwID::getObject("TestService1Uid"));
+        fwTestWaitMacro(nullptr == ::fwTools::fwID::getObject("TestService1Uid"));
 
         fwTools::Object::sptr gnsrv5 = ::fwTools::fwID::getObject("TestService1Uid");
         CPPUNIT_ASSERT(gnsrv5 == nullptr);
@@ -1087,7 +1079,7 @@ void AppConfigTest::keyGroupTest()
         CPPUNIT_ASSERT_EQUAL(::fwServices::IService::STARTED, srv2->getStatus());
         CPPUNIT_ASSERT(!srv2->getIsUpdated());
 
-        WAIT(data3 == srv2->getInput< ::fwData::Object>("dataGroup1#0"));
+        fwTestWaitMacro(data3 == srv2->getInput< ::fwData::Object>("dataGroup1#0"));
 
         CPPUNIT_ASSERT(2 == srv2->getKeyGroupSize("dataGroup0") );
         CPPUNIT_ASSERT(data1 == srv2->getInput< ::fwData::Object>("dataGroup0#0") );
@@ -1109,37 +1101,37 @@ void AppConfigTest::keyGroupTest()
         srv2->resetIsUpdated();
         auto sig1 = data1->signal< ::fwData::Object::ModifiedSignalType>(::fwData::Object::s_MODIFIED_SIG);
         sig1->asyncEmit();
-        WAIT(srv2->getIsUpdated());
+        fwTestWaitMacro(srv2->getIsUpdated());
         CPPUNIT_ASSERT(srv2->getIsUpdated());
 
         // Check no connection with data 3
         srv2->resetIsUpdated();
         auto sig3 = data3->signal< ::fwData::Object::ModifiedSignalType>(::fwData::Object::s_MODIFIED_SIG);
         sig3->asyncEmit();
-        WAIT(!srv2->getIsUpdated());
+        fwTestWaitMacro(!srv2->getIsUpdated());
         CPPUNIT_ASSERT(!srv2->getIsUpdated());
 
         // Check connection with data 4
         srv2->resetIsUpdated();
         auto sig4 = data4->signal< ::fwData::Object::ModifiedSignalType>(::fwData::Object::s_MODIFIED_SIG);
         sig4->asyncEmit();
-        WAIT(srv2->getIsUpdated());
+        fwTestWaitMacro(srv2->getIsUpdated());
         CPPUNIT_ASSERT(!srv2->getIsUpdated());
         auto sigIm4 = data4->signal< ::fwData::Image::BufferModifiedSignalType>(::fwData::Image::s_BUFFER_MODIFIED_SIG);
         sigIm4->asyncEmit();
-        WAIT(srv2->getIsUpdated());
+        fwTestWaitMacro(srv2->getIsUpdated());
         CPPUNIT_ASSERT(srv2->getIsUpdated());
 
         // Check no connection with data 5
         srv2->resetIsUpdated();
         auto sig5 = data5->signal< ::fwData::Object::ModifiedSignalType>(::fwData::Object::s_MODIFIED_SIG);
         sig5->asyncEmit();
-        WAIT(!srv2->getIsUpdated());
+        fwTestWaitMacro(!srv2->getIsUpdated());
         CPPUNIT_ASSERT(!srv2->getIsUpdated());
 
         auto sigIm5 = data5->signal< ::fwData::Image::BufferModifiedSignalType>(::fwData::Image::s_BUFFER_MODIFIED_SIG);
         sigIm5->asyncEmit();
-        WAIT(srv2->getIsUpdated());
+        fwTestWaitMacro(srv2->getIsUpdated());
         CPPUNIT_ASSERT(!srv2->getIsUpdated());
     }
 

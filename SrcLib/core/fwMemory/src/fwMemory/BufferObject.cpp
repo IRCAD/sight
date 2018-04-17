@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -12,7 +12,7 @@ fwCampImplementMacro((fwMemory)(BufferObject))
 {
     builder.tag("buffer")
     .function("classname", &::fwMemory::BufferObject::className)
-    .function("is_a", (bool(::fwMemory::BufferObject::*)(const std::string &) const) &::fwMemory::BufferObject::isA);
+    .function("is_a", (bool(::fwMemory::BufferObject::*)(const std::string&) const) & ::fwMemory::BufferObject::isA);
 }
 
 namespace fwMemory
@@ -31,8 +31,8 @@ BufferObject::BufferObject() :
 
 BufferObject::~BufferObject()
 {
-    OSLM_ASSERT("There is still " << m_count.use_count() << " locks on this BufferObject (" << this << ")",
-                m_count.expired());
+    // In the past we asserted that m_count was expired, but it can not be ensured because the unlock is asynchronous
+    // So we simply unregister the buffer and we will check the counter value on the buffer manager thread instead
     m_bufferManager->unregisterBuffer(&m_buffer).get();
 }
 
@@ -119,4 +119,3 @@ void BufferObject::setIStreamFactory(const SPTR(::fwMemory::stream::in::IFactory
 }
 
 } //namespace fwMemory
-
