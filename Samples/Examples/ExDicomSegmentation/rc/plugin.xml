@@ -6,6 +6,7 @@
     <requirement id="preferences" />
 
     <xi:include href="VTKMesherAppConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="ThresholdAppConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="ExDicomSegmentationAppConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
     <extension implements="::fwActivities::registry::Activities">
@@ -21,6 +22,22 @@
             <parameters>
                 <parameter replace="imageSeries" by="@values.imageSeries" />
                 <parameter replace="image" by="@values.imageSeries.image" />
+            </parameters>
+        </appConfig>
+    </extension>
+
+    <extension implements="::fwActivities::registry::Activities">
+        <id>ThresholdActivity</id>
+        <title>Threshold Activity</title>
+        <desc>Simple threshold activity</desc>
+        <icon>ExDicomSegmentation-@PROJECT_VERSION@/vtk.png</icon>
+        <requirements>
+            <requirement name="imageSeries" type="::fwMedData::ImageSeries" minOccurs="1" maxOccurs="1" />
+        </requirements>
+        <builder>::fwActivities::builder::ActivitySeries</builder>
+        <appConfig id="ThresholdAppConfig">
+            <parameters>
+                <parameter replace="imageSeries" by="@values.imageSeries" />
             </parameters>
         </appConfig>
     </extension>
@@ -54,9 +71,9 @@
             </service>
 
             <service uid="dynamicView" type="::guiQt::editor::SDynamicView" >
+                <inout key="SERIESDB" uid="seriesDB" />
                 <mainActivity id="ExDicomSegmentationActivity" closable="false" />
                 <parameters>
-                    <parameter replace="SERIESDB" by="seriesDB" />
                     <parameter replace="ICON_PATH" by="ExDicomSegmentation-@PROJECT_VERSION@/tuto.ico" />
                     <parameter replace="DYNAMICVIEW_CHANNEL" by="dynamicViewChannel" />
                     <parameter replace="PROGRESS_CHANNEL" by="progressStatus" />

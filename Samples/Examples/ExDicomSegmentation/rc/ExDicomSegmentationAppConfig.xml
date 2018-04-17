@@ -32,13 +32,15 @@
                 <layout>
                     <menuItem name="Import" icon="media-0.1/icons/Import.svg" />
                     <menuItem name="Export" icon="media-0.1/icons/Export.svg" />
-                    <menuItem name="Image processing" icon="media-0.1/icons/Split.svg" />
+                    <menuItem name="Threshold" icon="media-0.1/icons/Split.svg" />
+                    <menuItem name="Mesher" icon="media-0.1/icons/Split.svg" />
                 </layout>
             </gui>
             <registry>
                 <menuItem sid="action_import" start="yes" />
                 <menuItem sid="action_export" start="yes" />
-                <menuItem sid="action_processing" start="yes" />
+                <menuItem sid="action_threshold" start="yes" />
+                <menuItem sid="action_mesher" start="yes" />
             </registry>
         </service>
 
@@ -60,7 +62,7 @@
                 </filter>
             </config>
         </service>
-        <service uid="action_processing" type="::activities::action::SActivityLauncher" autoConnect="yes">
+        <service uid="action_mesher" type="::activities::action::SActivityLauncher" autoConnect="yes">
             <in key="series" uid="selection" />
             <config>
                 <parameters>
@@ -69,6 +71,18 @@
                 <filter>
                     <mode>include</mode>
                     <id>vtkMesherActivity</id>
+                </filter>
+            </config>
+        </service>
+        <service uid="action_threshold" type="::activities::action::SActivityLauncher" autoConnect="yes">
+            <in key="series" uid="selection" />
+            <config>
+                <parameters>
+                    <parameter replace="SERIESDB" by="${SERIESDB}" />
+                </parameters>
+                <filter>
+                    <mode>include</mode>
+                    <id>ThresholdActivity</id>
                 </filter>
             </config>
         </service>
@@ -90,7 +104,8 @@
         </service>
 
         <connect channel="${DYNAMICVIEW_CHANNEL}">
-            <signal>action_processing/activityLaunched</signal>
+            <signal>action_threshold/activityLaunched</signal>
+            <signal>action_mesher/activityLaunched</signal>
         </connect>
 
         <start uid="mainView" />

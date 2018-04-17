@@ -18,6 +18,7 @@ set( REQUIREMENTS
     visuVTKAdaptor
     visuVTKQt
     opVTKMesh
+    opImageFilter
     fwlauncher
     appXml
     activities
