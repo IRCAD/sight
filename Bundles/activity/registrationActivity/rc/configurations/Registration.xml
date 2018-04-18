@@ -217,14 +217,14 @@
         </service>
 
         <service uid="importTransform" type="::uiIO::editor::SIOSelector" >
-            <inout key="target" uid="${transformUid}" />
+            <inout key="data" uid="${transformUid}" />
             <type mode="reader" />
             <selection mode="include" />
             <addSelection service="::ioData::TransformationMatrix3DReaderService" />
         </service>
 
         <service uid="exportTransform" type="::uiIO::editor::SIOSelector" >
-            <inout key="target" uid="${transformUid}" />
+            <inout key="data" uid="${transformUid}" />
             <type mode="writer" />
             <selection mode="include" />
             <addSelection service="::ioData::TransformationMatrix3DWriterService" />

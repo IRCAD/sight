@@ -2,7 +2,7 @@
     <requirement id="dataReg" />
     <requirement id="servicesReg" />
     <requirement id="visuVTKQt" />
-    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude" href="configurations/organManagerConfig.xml" />
+
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude" href="configurations/manualRegistrationEditorConfig.xml" />
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude" href="configurations/camViewManagerConfig.xml" />
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude" href="configurations/worldViewConfig.xml" />
@@ -134,10 +134,9 @@
             <!-- ***************************************** End layouts declaration ***************************************** -->
             <!-- ***************************************** Begin services declarations    ************************************ -->
             <service uid="action_manageOrgansColors" type="::gui::action::SConfigLauncher">
-                <appConfig id="organManagerConfig" />
-                <inout key="modelSeriesUid" uid="modelSeries" />
-                <parameter replace="ModelRepresentationChannel" uid="ModelRepresentationChannel" />
-                <parameter replace="ModelDisplayChannel" uid="ModelDisplayChannel" />
+                <appConfig id="ModelSeriesManagerWindow" />
+                <inout key="ORGAN_MANAGER_MODELSERIES" uid="modelSeries" />
+                <parameter replace="ICON_PATH" by="PoCMeshManualRegistration-0.1/tuto.ico" />
             </service>
 
             <service uid="action_manageView" type="::gui::action::SConfigLauncher">
@@ -145,8 +144,6 @@
                 <inout key="modelSeries" uid="modelSeries" />
                 <inout key="image" uid="image" />
                 <inout key="camPosMatrix" uid="camPosMatrix" />
-                <parameter replace="ModelRepresentationChannel" uid="ModelRepresentationChannel" />
-                <parameter replace="ModelDisplayChannel" uid="ModelDisplayChannel" />
             </service>
 
             <service uid="action_manageRegistration" type="::gui::action::SConfigLauncher">
@@ -162,7 +159,6 @@
                 <inout key="cam2MeshUid" uid="cam2Mesh" />
                 <inout key="view1Uid" uid="view1" />
                 <inout key="view2Uid" uid="view2" />
-                <parameter replace="ModelDisplayChannel" uid="ModelDisplayChannel" />
             </service>
 
             <service uid="action_openImage" type="::gui::action::SStarter">
@@ -180,7 +176,7 @@
             <service uid="action_quit" type="::gui::action::SQuit" />
             <service uid="snapshotScene1Editor" type="::uiVisuQt::SnapshotEditor" />
             <service uid="imageReaderUid" type="::uiIO::editor::SIOSelector">
-                <in key="image" uid="image" />
+                <inout key="data" uid="image" />
                 <type mode="reader" />
                 <selection mode="exclude" />
                 <addSelection service="::ioXML::FwXMLGenericReaderService" />
@@ -223,14 +219,14 @@
             </service>
 
             <service uid="modelSeriesReaderUid" type="::uiIO::editor::SIOSelector">
-                <inout key="target" uid="modelSeries" />
+                <inout key="data" uid="modelSeries" />
                 <type mode="reader" />
                 <selection mode="exclude" />
                 <addSelection service="::ioXML::FwXMLGenericReaderService" />
             </service>
 
             <service uid="camReaderFile" type="::uiIO::editor::SIOSelector">
-                <inout key="target" uid="cam2Mesh" />
+                <inout key="data" uid="cam2Mesh" />
                 <type mode="reader" />
                 <selection mode="exclude" />
                 <addSelection service="::ioXML::FwXMLGenericReaderService" />
@@ -249,7 +245,7 @@
             <!-- ***************************************** Begin render scenes declarations    ***************************************** -->
             <!-- *************************** Begin generic scene *************************** -->
 
-            <service uid="genericScene" type="::fwRenderVTK::SRender" autoConnect="yes">
+            <service uid="genericScene" type="::fwRenderVTK::SRender">
                 <scene>
                     <vtkObject id="cam2PosMatrixTransform" class="vtkTransform" />
                     <picker id="picker" vtkclass="fwVtkCellPicker" />
@@ -302,7 +298,7 @@
 
             <!-- *************************** Begin generic scene *************************** -->
 
-            <service uid="genericScene2" type="::fwRenderVTK::SRender" autoConnect="yes">
+            <service uid="genericScene2" type="::fwRenderVTK::SRender">
                 <scene>
                     <vtkObject id="cam1PosMatrixTransform" class="vtkTransform" />
                     <picker id="picker" vtkclass="fwVtkCellPicker" />
@@ -368,15 +364,6 @@
             </connect>
 
             <!-- ***************************************** End connections declarations    ***************************************** -->
-            <connect channel="ModelRepresentationChannel">
-                <slot>modelSeriesAdaptor/updateNormalMode</slot>
-                <slot>modelSeriesAdaptor2/updateNormalMode</slot>
-            </connect>
-
-            <connect channel="ModelDisplayChannel">
-                <slot>modelSeriesAdaptor/showReconstructions</slot>
-                <slot>modelSeriesAdaptor2/showReconstructions</slot>
-            </connect>
 
             <connect channel="snapshotChannel">
                 <slot>snapshot1/snap</slot>

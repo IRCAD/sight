@@ -258,7 +258,7 @@
         </service>
 
         <service uid="model_series_writer" type="::uiIO::editor::SIOSelector">
-            <inout key="modelSeries" uid="modelSeriesUID" />
+            <inout key="data" uid="modelSeriesUID" />
             <type mode="writer" />
         </service>
 

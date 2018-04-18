@@ -104,7 +104,7 @@
 
             <!-- Mesh displayed in the scene -->
             <service uid="meshReader" type="::uiIO::editor::SIOSelector">
-                <inout key="image" uid="mesh" />
+                <inout key="data" uid="mesh" />
                 <type mode="reader" />
             </service>
 

@@ -4,8 +4,6 @@
         <param name="modelSeries" />
         <param name="image" />
         <param name="camPosMatrix" />
-        <param name="ModelRepresentationChannel" />
-        <param name="ModelDisplayChannel" />
         <param name="CLOSE_CONFIG_CHANNEL" default="DummyChannel" />
         <!-- defined by SConfigLauncher -->
     </parameters>
@@ -36,7 +34,7 @@
         <!-- ***************************************** Begin render scenes declarations    ***************************************** -->
         <!-- *************************** Begin generic scene *************************** -->
 
-        <service uid="genericScene3" type="::fwRenderVTK::SRender" autoConnect="yes">
+        <service uid="genericScene3" type="::fwRenderVTK::SRender">
             <scene>
                 <picker id="picker" vtkclass="fwVtkCellPicker" />
                 <renderer id="default" background="0.0" />
@@ -79,13 +77,6 @@
 
         <!-- ***************************************** End connections declarations    ***************************************** -->
         <!-- START AND STOP SERVICES -->
-        <connect channel="${ModelRepresentationChannel}">
-            <slot>modelSeriesAdaptor/updateNormalMode</slot>
-        </connect>
-
-        <connect channel="${ModelDisplayChannel}">
-            <slot>modelSeriesAdaptor/showReconstructions</slot>
-        </connect>
 
         <start uid="camViewManagerConfigFrame" />
 

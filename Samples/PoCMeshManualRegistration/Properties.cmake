@@ -25,6 +25,7 @@ set( REQUIREMENTS
     appXml
     opVTKMesh
     media
+    dataManagerConfig
 )
 
 bundleParam(appXml PARAM_LIST config PARAM_VALUES PoCMeshManualRegistration)
