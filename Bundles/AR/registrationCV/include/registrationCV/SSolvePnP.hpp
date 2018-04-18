@@ -12,6 +12,8 @@
 
 #include <opencv2/core.hpp>
 
+#include <array>
+
 namespace registrationCV
 {
 /**
