@@ -40,6 +40,8 @@ fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuOgre::SMaterialSelect
 
 const ::fwCom::Signals::SignalKeyType SMaterialSelector::s_SELECTED_SIG = "selected";
 
+static const ::fwServices::IService::KeyType s_RECONSTRUCTION_INOUT = "reconstruction";
+
 //------------------------------------------------------------------------------
 SMaterialSelector::SMaterialSelector() noexcept
 {
@@ -131,7 +133,7 @@ void SMaterialSelector::swapping()
 
 void SMaterialSelector::updateMaterial()
 {
-    ::fwData::Reconstruction::sptr reconst = this->getObject< ::fwData::Reconstruction >();
+    ::fwData::Reconstruction::sptr reconst = this->getInOut< ::fwData::Reconstruction >(s_RECONSTRUCTION_INOUT);
     ::fwData::Material::sptr material      = reconst->getMaterial();
     ::fwData::Object::sptr fieldObj        = material->getField("ogreMaterial");
     if(fieldObj != nullptr)
@@ -145,7 +147,7 @@ void SMaterialSelector::updateMaterial()
 
 void SMaterialSelector::onSelectedModeItem(const QString& text)
 {
-    ::fwData::Reconstruction::sptr reconst = this->getObject< ::fwData::Reconstruction >();
+    ::fwData::Reconstruction::sptr reconst = this->getInOut< ::fwData::Reconstruction >(s_RECONSTRUCTION_INOUT);
     ::fwData::Material::sptr material      = reconst->getMaterial();
     ::fwData::String::sptr string          = ::fwData::String::New();
     string->setValue(text.toStdString());

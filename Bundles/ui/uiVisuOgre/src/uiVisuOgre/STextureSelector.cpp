@@ -17,6 +17,8 @@
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
+#include <fwIO/ioTypes.hpp>
+
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>
 
@@ -32,6 +34,8 @@ namespace uiVisuOgre
 {
 
 fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuOgre::STextureSelector, ::fwData::Reconstruction);
+
+static const std::string s_RECONSTRUCTION_INOUT = "reconstruction";
 
 //------------------------------------------------------------------------------
 
@@ -106,7 +110,7 @@ void STextureSelector::updating()
 
 void STextureSelector::onLoadButton()
 {
-    ::fwData::Reconstruction::sptr reconstruction = this->getObject< ::fwData::Reconstruction>();
+    auto reconstruction = this->getInOut< ::fwData::Reconstruction >(s_RECONSTRUCTION_INOUT);
     SLM_ASSERT("No associated Reconstruction", reconstruction);
 
     ::fwData::Material::sptr material = reconstruction->getMaterial();
@@ -121,7 +125,8 @@ void STextureSelector::onLoadButton()
         material->setDiffuseTexture(image);
     }
 
-    auto srv           = ::fwServices::add< ::fwGui::editor::IDialogEditor >(image, "::uiIO::editor::SIOSelector");
+    auto srv = ::fwServices::add< ::fwGui::editor::IDialogEditor >("::uiIO::editor::SIOSelector");
+    srv->registerInOut(image, ::fwIO::s_DATA_KEY);
     auto ioSelectorSrv = ::uiIO::editor::SIOSelector::dynamicCast(srv);
     if (ioSelectorSrv != nullptr)
     {
@@ -151,9 +156,11 @@ void STextureSelector::onLoadButton()
 
 void STextureSelector::onDeleteButton()
 {
-    ::fwData::Reconstruction::sptr reconstruction = this->getObject< ::fwData::Reconstruction>();
-    ::fwData::Material::sptr material             = reconstruction->getMaterial();
-    ::fwData::Image::sptr image                   = material->getDiffuseTexture();
+    auto reconstruction = this->getInOut< ::fwData::Reconstruction >(s_RECONSTRUCTION_INOUT);
+    SLM_ASSERT("No associated Reconstruction", reconstruction);
+
+    ::fwData::Material::sptr material = reconstruction->getMaterial();
+    ::fwData::Image::sptr image       = material->getDiffuseTexture();
 
     if(image)
     {

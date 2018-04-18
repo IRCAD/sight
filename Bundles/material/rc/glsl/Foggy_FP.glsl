@@ -18,7 +18,7 @@ layout(location = 1) in vec3 inPosition_WS;
  #endif
 
 #ifdef FLAT
-flat layout(location = 2) in vec4 inColor;
+layout(location = 2) flat in vec4 inColor;
 #   else
 layout(location = 2) in vec4 inColor;
 #   endif // FLAT

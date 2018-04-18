@@ -8,6 +8,9 @@
 
 #include <uiVisuOgre/helper/ParameterEditor.hpp>
 
+#include <fwData/Boolean.hpp>
+#include <fwData/Float.hpp>
+#include <fwData/Integer.hpp>
 #include <fwData/Material.hpp>
 #include <fwData/Mesh.hpp>
 #include <fwData/Reconstruction.hpp>
@@ -26,6 +29,8 @@ namespace uiVisuOgre
 
 fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuOgre::SShaderParameterEditor, ::fwData::Reconstruction);
 
+static const std::string s_RECONSTRUCTION_INOUT = "reconstruction";
+
 //------------------------------------------------------------------------------
 SShaderParameterEditor::SShaderParameterEditor() noexcept
 {
@@ -41,7 +46,7 @@ SShaderParameterEditor::~SShaderParameterEditor() noexcept
 
 void SShaderParameterEditor::starting()
 {
-    ::fwData::Reconstruction::sptr rec = this->getObject< ::fwData::Reconstruction >();
+    ::fwData::Reconstruction::sptr rec = this->getInOut< ::fwData::Reconstruction >(s_RECONSTRUCTION_INOUT);
     ::fwData::Material::sptr material  = rec->getMaterial();
     m_connections.connect(material, this->getSptr(), this->getSptr()->getObjSrvConnections() );
 
@@ -71,7 +76,7 @@ void SShaderParameterEditor::stopping()
 void SShaderParameterEditor::swapping()
 {
     m_connections.disconnect();
-    ::fwData::Reconstruction::sptr rec = this->getObject< ::fwData::Reconstruction >();
+    ::fwData::Reconstruction::sptr rec = this->getInOut< ::fwData::Reconstruction >(s_RECONSTRUCTION_INOUT);
     ::fwData::Material::sptr material  = rec->getMaterial();
     m_connections.connect(material, this->getSptr(), this->getSptr()->getObjSrvConnections() );
 
@@ -120,7 +125,8 @@ void SShaderParameterEditor::clear()
 void SShaderParameterEditor::updateGuiInfo()
 {
     /// Getting all Material adaptors
-    ::fwData::Reconstruction::sptr reconstruction                   = this->getObject< ::fwData::Reconstruction >();
+    auto reconstruction = this->getInOut< ::fwData::Reconstruction >(s_RECONSTRUCTION_INOUT);
+
     ::fwServices::registry::ObjectService::ServiceVectorType srvVec = ::fwServices::OSR::getServices(
         "::visuOgreAdaptor::SMaterial");
 
@@ -136,7 +142,7 @@ void SShaderParameterEditor::updateGuiInfo()
     ::fwRenderOgre::IAdaptor::sptr matService;
     for (auto srv : srvVec)
     {
-        if (srv->getObject()->getID() == reconstruction->getMaterial()->getID())
+        if (srv->getInOut< ::fwData::Object>("material")->getID() == reconstruction->getMaterial()->getID())
         {
             matService = ::fwRenderOgre::IAdaptor::dynamicCast(srv);
             break;
@@ -153,11 +159,12 @@ void SShaderParameterEditor::updateGuiInfo()
         const auto paramSrv = wParamSrv.lock();
         if (paramSrv->getClassname() == "::visuOgreAdaptor::SShaderParameter")
         {
-            /// Getting associated object infos
-            const ::fwData::Object::csptr shaderObj = paramSrv->getObject();
-            const ObjectClassnameType objType       = shaderObj->getClassname();
+            /// Filter object types
+            const ::fwData::Object::csptr shaderObj =
+                paramSrv->getInOut< ::fwData::Object>(::fwRenderOgre::IParameter::s_PARAMETER_INOUT);
+            const ObjectClassnameType objType = shaderObj->getClassname();
 
-            if(objType == "::fwData::Boolean" || objType == "::fwData::Double" || objType == "::fwData::Integer")
+            if(objType == "::fwData::Boolean" || objType == "::fwData::Float" || objType == "::fwData::Integer")
             {
                 found = true;
                 break;

@@ -76,6 +76,8 @@ void Window::initialise()
 {
     m_ogreRoot = ::fwRenderOgre::Utils::getOgreRoot();
 
+    this->makeCurrent();
+
     SLM_ASSERT("OpenGL RenderSystem not found",
                m_ogreRoot->getRenderSystem()->getName().find("GL") != std::string::npos);
 
@@ -99,8 +101,8 @@ void Window::initialise()
        the scene. Below is a cross-platform method on how to do this.
      */
 #if defined(Q_OS_MAC) || defined(Q_OS_WIN)
-    parameters["externalWindowHandle"] = Ogre::StringConverter::toString((size_t)(this->winId()));
-    parameters["parentWindowHandle"]   = Ogre::StringConverter::toString((size_t)(this->winId()));
+    parameters["externalWindowHandle"] = Ogre::StringConverter::toString(size_t(this->winId()));
+    parameters["parentWindowHandle"]   = Ogre::StringConverter::toString(size_t(this->winId()));
 #else
     parameters["externalWindowHandle"] = Ogre::StringConverter::toString((unsigned long)(this->winId()));
 #endif
@@ -127,16 +129,11 @@ void Window::initialise()
     mgr->registerWindow(m_ogreRenderWindow);
 
     ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo info;
-    info.interactionType = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::RESIZE;
-    info.x               = this->width();
-    info.y               = this->height();
-    info.dx              = 0;
-    info.dy              = 0;
+    info.interactionType     = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::RESIZE;
+    std::tie(info.x, info.y) = Window::getDeviceCoordinates(this->width(), this->height());
+    info.dx                  = 0;
+    info.dy                  = 0;
     Q_EMIT interacted(info);
-
-#if defined(__APPLE__)
-    QApplication::postEvent(this, new QResizeEvent(this->size(), QSize(0, 0)));
-#endif
 }
 
 // ----------------------------------------------------------------------------
@@ -150,14 +147,17 @@ void Window::requestRender()
 
 void Window::makeCurrent()
 {
-    if(m_ogreRenderWindow)
+    if(m_ogreRoot)
     {
         ::Ogre::RenderSystem* renderSystem = m_ogreRoot->getRenderSystem();
 
         if(renderSystem)
         {
             // This allows to set the current OpengGL context in Ogre internal state
-            renderSystem->_setRenderTarget(m_ogreRenderWindow);
+            if(m_ogreRenderWindow)
+            {
+                renderSystem->_setRenderTarget(m_ogreRenderWindow);
+            }
 
             // Use this trick to apply the current OpenGL context
             //
@@ -234,6 +234,22 @@ void Window::render()
 
 // ----------------------------------------------------------------------------
 
+std::pair<int, int> Window::getDeviceCoordinates(int _x, int _y)
+{
+#ifdef Q_OS_MAC
+    const qreal pixelRatio = qApp->devicePixelRatio();
+    const int x            = static_cast<int>(std::ceil(_x * pixelRatio));
+    const int y            = static_cast<int>(std::ceil(_y * pixelRatio));
+#else
+    const int x = _x;
+    const int y = _y;
+#endif
+
+    return std::make_pair(x, y);
+}
+
+// ----------------------------------------------------------------------------
+
 void Window::renderLater()
 {
     /*
@@ -273,13 +289,11 @@ bool Window::event(QEvent* event)
 }
 // ----------------------------------------------------------------------------
 
-void Window::exposeEvent(QExposeEvent* event)
+void Window::exposeEvent(QExposeEvent*)
 {
-    Q_UNUSED(event);
-
 #if defined(__APPLE__)
-    QResizeEvent resizeEvent(this->size(), QSize(0, 0));
-    this->eventFilter(this, &resizeEvent);
+    // This allow correct renderring on dual screen display when dragging window to another screen
+    ogreResize(this->size());
 #endif
 
     this->renderNow();
@@ -287,10 +301,8 @@ void Window::exposeEvent(QExposeEvent* event)
 
 // ----------------------------------------------------------------------------
 
-void Window::moveEvent(QMoveEvent* event)
+void Window::moveEvent(QMoveEvent*)
 {
-    Q_UNUSED(event);
-
     if(m_ogreRenderWindow != nullptr)
     {
         m_ogreRenderWindow->reposition(x(), y());
@@ -301,16 +313,15 @@ void Window::moveEvent(QMoveEvent* event)
 
 void Window::renderNow()
 {
-#if !defined(__APPLE__)
+    // Small optimization to not render when not visible
     if(false == isExposed())
     {
         return;
     }
-#endif
 
     this->render();
 
-#if DISPLAY_OGRE_FPS == 1
+#if defined(DISPLAY_OGRE_FPS) && DISPLAY_OGRE_FPS == 1
     static int i               = 0;
     static float fps           = 0.f;
     static const int numFrames = 500;
@@ -338,55 +349,7 @@ bool Window::eventFilter(QObject* target, QEvent* event)
         && m_ogreRenderWindow != nullptr
         && event->type() == QEvent::Resize)
     {
-        const QResizeEvent* const resizeEvent = static_cast<QResizeEvent*>(event);
-
-        const int newWidth  = resizeEvent->size().width();
-        const int newHeight = resizeEvent->size().height();
-
-        if(newWidth > 0 && newHeight > 0)
-        {
-            this->makeCurrent();
-
-#if defined(linux) || defined(__linux) || defined(__APPLE__)
-            m_ogreRenderWindow->resize(static_cast< unsigned int >(newWidth),
-                                       static_cast< unsigned int >(newHeight));
-#endif
-            m_ogreRenderWindow->windowMovedOrResized();
-
-            const auto numViewports = m_ogreRenderWindow->getNumViewports();
-
-            ::Ogre::Viewport* viewport = nullptr;
-            for (unsigned short i = 0; i < numViewports; i++)
-            {
-                viewport = m_ogreRenderWindow->getViewport(i);
-                viewport->getCamera()->setAspectRatio(::Ogre::Real(newWidth) / ::Ogre::Real(newHeight));
-            }
-
-            if (viewport && ::Ogre::CompositorManager::getSingleton().hasCompositorChain(viewport))
-            {
-                ::Ogre::CompositorChain* chain = ::Ogre::CompositorManager::getSingleton().getCompositorChain(
-                    viewport);
-                size_t length = chain->getNumCompositors();
-                for(size_t i = 0; i < length; i++)
-                {
-                    if( chain->getCompositor(i)->getEnabled() )
-                    {
-                        chain->setCompositorEnabled(i, false);
-                        chain->setCompositorEnabled(i, true);
-                    }
-                }
-            }
-
-            ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo info;
-            info.interactionType = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::RESIZE;
-            info.x               = newWidth;
-            info.y               = newHeight;
-            info.dx              = 0;
-            info.dy              = 0;
-            Q_EMIT interacted(info);
-
-            this->requestRender();
-        }
+        this->ogreResize(static_cast<QResizeEvent*>(event)->size());
     }
 
     return QWindow::eventFilter(target, event);
@@ -442,12 +405,10 @@ void Window::mouseMoveEvent( QMouseEvent* e )
         int dx = x - e->x();
         int dy = y - e->y();
         ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo info;
-        info.interactionType = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::MOUSEMOVE;
-        info.x               = x;
-        info.y               = y;
-        info.dx              = dx;
-        info.dy              = dy;
-        info.button          = ::fwRenderOgre::interactor::IInteractor::LEFT;
+        info.interactionType       = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::MOUSEMOVE;
+        std::tie(info.x, info.y)   = Window::getDeviceCoordinates(x, y);
+        std::tie(info.dx, info.dy) = Window::getDeviceCoordinates(dx, dy);
+        info.button                = ::fwRenderOgre::interactor::IInteractor::LEFT;
         Q_EMIT interacted(info);
 
         m_lastPosLeftClick->setX(e->x());
@@ -462,12 +423,10 @@ void Window::mouseMoveEvent( QMouseEvent* e )
         int dy = y - e->y();
 
         ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo info;
-        info.interactionType = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::MOUSEMOVE;
-        info.x               = x;
-        info.y               = y;
-        info.dx              = dx;
-        info.dy              = dy;
-        info.button          = ::fwRenderOgre::interactor::IInteractor::MIDDLE;
+        info.interactionType       = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::MOUSEMOVE;
+        std::tie(info.x, info.y)   = Window::getDeviceCoordinates(x, y);
+        std::tie(info.dx, info.dy) = Window::getDeviceCoordinates(dx, dy);
+        info.button                = ::fwRenderOgre::interactor::IInteractor::MIDDLE;
         Q_EMIT interacted(info);
 
         m_lastPosMiddleClick->setX(e->x());
@@ -482,12 +441,10 @@ void Window::mouseMoveEvent( QMouseEvent* e )
         int dy = y - e->y();
 
         ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo info;
-        info.interactionType = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::MOUSEMOVE;
-        info.x               = x;
-        info.y               = y;
-        info.dx              = dx;
-        info.dy              = dy;
-        info.button          = ::fwRenderOgre::interactor::IInteractor::RIGHT;
+        info.interactionType       = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::MOUSEMOVE;
+        std::tie(info.x, info.y)   = Window::getDeviceCoordinates(x, y);
+        std::tie(info.dx, info.dy) = Window::getDeviceCoordinates(dx, dy);
+        info.button                = ::fwRenderOgre::interactor::IInteractor::RIGHT;
         Q_EMIT interacted(info);
 
         m_lastPosRightClick->setX(e->x());
@@ -501,12 +458,11 @@ void Window::mouseMoveEvent( QMouseEvent* e )
 void Window::wheelEvent(QWheelEvent* e)
 {
     ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo info;
-    info.interactionType = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::WHEELMOVE;
-    info.delta           = static_cast<int>(e->delta()*ZOOM_SPEED);
-    info.x               = e->x();
-    info.y               = e->y();
-    info.dx              = 0;
-    info.dy              = 0;
+    info.interactionType     = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::WHEELMOVE;
+    info.delta               = static_cast<int>(e->delta()*ZOOM_SPEED);
+    std::tie(info.x, info.y) = Window::getDeviceCoordinates(e->x(), e->y());
+    info.dx                  = 0;
+    info.dy                  = 0;
 
     Q_EMIT interacted(info);
     Q_EMIT cameraClippingComputation();
@@ -519,13 +475,12 @@ void Window::wheelEvent(QWheelEvent* e)
 void Window::mousePressEvent( QMouseEvent* e )
 {
     ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo info;
-    info.interactionType = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::BUTTONPRESS;
-    info.button          = ::fwRenderOgre::interactor::IInteractor::UNKNOWN;
-    info.delta           = 0;
-    info.x               = e->x();
-    info.y               = e->y();
-    info.dx              = 0;
-    info.dy              = 0;
+    info.interactionType     = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::BUTTONPRESS;
+    info.button              = ::fwRenderOgre::interactor::IInteractor::UNKNOWN;
+    info.delta               = 0;
+    std::tie(info.x, info.y) = Window::getDeviceCoordinates(e->x(), e->y());
+    info.dx                  = 0;
+    info.dy                  = 0;
 
     if(e->button() == Qt::LeftButton)
     {
@@ -555,13 +510,12 @@ void Window::mousePressEvent( QMouseEvent* e )
 void Window::mouseReleaseEvent( QMouseEvent* e )
 {
     ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo info;
-    info.interactionType = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::BUTTONRELEASE;
-    info.button          = ::fwRenderOgre::interactor::IInteractor::UNKNOWN;
-    info.delta           = 0;
-    info.x               = e->x();
-    info.y               = e->y();
-    info.dx              = 0;
-    info.dy              = 0;
+    info.interactionType     = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::BUTTONRELEASE;
+    info.button              = ::fwRenderOgre::interactor::IInteractor::UNKNOWN;
+    info.delta               = 0;
+    std::tie(info.x, info.y) = Window::getDeviceCoordinates(e->x(), e->y());
+    info.dx                  = 0;
+    info.dy                  = 0;
 
     if(e->button() == Qt::LeftButton && m_lastPosLeftClick)
     {
@@ -590,7 +544,7 @@ void Window::mouseReleaseEvent( QMouseEvent* e )
 
 // ----------------------------------------------------------------------------
 
-void Window::focusInEvent(QFocusEvent* event)
+void Window::focusInEvent(QFocusEvent*)
 {
     ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo info;
     info.interactionType = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::FOCUSIN;
@@ -599,7 +553,7 @@ void Window::focusInEvent(QFocusEvent* event)
 
 // ----------------------------------------------------------------------------
 
-void Window::focusOutEvent(QFocusEvent* event)
+void Window::focusOutEvent(QFocusEvent*)
 {
     ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo info;
     info.interactionType = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::FOCUSOUT;
@@ -608,9 +562,63 @@ void Window::focusOutEvent(QFocusEvent* event)
 
 // ----------------------------------------------------------------------------
 
+void Window::ogreResize(const QSize& newSize)
+{
+    if(!newSize.isValid())
+    {
+        return;
+    }
+
+    int newWidth, newHeight;
+    std::tie(newWidth, newHeight) = Window::getDeviceCoordinates(newSize.width(), newSize.height());
+
+    this->makeCurrent();
+
+#if defined(linux) || defined(__linux) || defined(__APPLE__)
+    m_ogreRenderWindow->resize(static_cast< unsigned int >(newWidth), static_cast< unsigned int >(newHeight));
+#endif
+    m_ogreRenderWindow->windowMovedOrResized();
+
+    const auto numViewports = m_ogreRenderWindow->getNumViewports();
+
+    ::Ogre::Viewport* viewport = nullptr;
+    for (unsigned short i = 0; i < numViewports; i++)
+    {
+        viewport = m_ogreRenderWindow->getViewport(i);
+        viewport->getCamera()->setAspectRatio(::Ogre::Real(newWidth) / ::Ogre::Real(newHeight));
+    }
+
+    if (viewport && ::Ogre::CompositorManager::getSingleton().hasCompositorChain(viewport))
+    {
+        ::Ogre::CompositorChain* chain = ::Ogre::CompositorManager::getSingleton().getCompositorChain(
+            viewport);
+        size_t length = chain->getNumCompositors();
+        for(size_t i = 0; i < length; i++)
+        {
+            if( chain->getCompositor(i)->getEnabled() )
+            {
+                chain->setCompositorEnabled(i, false);
+                chain->setCompositorEnabled(i, true);
+            }
+        }
+    }
+
+    ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo info;
+    info.interactionType = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::RESIZE;
+    info.x               = newWidth;
+    info.y               = newHeight;
+    info.dx              = 0;
+    info.dy              = 0;
+    Q_EMIT interacted(info);
+
+    this->requestRender();
+}
+
+// ----------------------------------------------------------------------------
+
 void Window::setAnimating(bool animating)
 {
-#if DISPLAY_OGRE_FPS == 1
+#if defined(DISPLAY_OGRE_FPS) && DISPLAY_OGRE_FPS == 1
     m_animating = true;
 #else
     m_animating = animating;

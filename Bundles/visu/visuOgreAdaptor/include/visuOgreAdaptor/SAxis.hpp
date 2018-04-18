@@ -82,9 +82,6 @@ private:
     /// Checks if the fwData::Mesh has changed, and updates it if it has.
     void updating() override;
 
-    /// Attach a node in the scene graph
-    void attachNode(::Ogre::MovableObject* _node);
-
     /// Pointer to the Material data
     ::fwData::Material::sptr m_material;
     /// Handle the length of each axes (in mm)
@@ -92,6 +89,13 @@ private:
     /// Handles the visibility of the axis
     bool m_isVisible;
 
+    ::Ogre::ManualObject* xLine;
+    ::Ogre::ManualObject* yLine;
+    ::Ogre::ManualObject* zLine;
+
+    ::Ogre::ManualObject* xCone;
+    ::Ogre::ManualObject* yCone;
+    ::Ogre::ManualObject* zCone;
 };
 
 } //namespace visuOgreAdaptor

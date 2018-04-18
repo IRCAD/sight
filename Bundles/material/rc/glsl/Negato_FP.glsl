@@ -32,3 +32,9 @@ vec4 getFragmentColor()
 
     return vec4( windowedColor.rgb, /*windowedColor.a **/ u_diffuse.a );
 }
+
+// Compute alpha channel
+float getFragmentAlpha()
+{
+    return u_diffuse.a;
+}

@@ -46,6 +46,7 @@
                         <menuItem name="Open mesh" shortcut="Ctrl+M" />
                         <menuItem name="Open texture" shortcut="Ctrl+T" />
                         <menuItem name="Render to texture" shortcut="Ctrl+R" />
+                        <menuItem name="Show axis" shortcut="Ctrl+A" />
                         <separator/>
                         <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
                     </layout>
@@ -55,6 +56,7 @@
                     <menuItem sid="actionOpenMesh" start="yes" />
                     <menuItem sid="actionOpenTexture" start="yes" />
                     <menuItem sid="actionRenderToTexture" start="yes" />
+                    <menuItem sid="actionShowAxis" start="yes" />
                     <menuItem sid="actionQuit" start="yes" />
                 </registry>
             </service>
@@ -69,6 +71,10 @@
 
             <service uid="actionOpenTexture" type="::gui::action::SStarter">
                 <start uid="textureReader" />
+            </service>
+
+            <service uid="actionShowAxis" type="::gui::action::SStarter">
+                <start_or_stop uid="axisAdaptor" />
             </service>
 
             <service uid="actionRenderToTexture" type="::gui::action::SStarter">
@@ -108,7 +114,7 @@
             </service>
 
             <service uid="imageReader" type="::uiIO::editor::SIOSelector">
-                <inout key="target" uid="image" />
+                <inout key="data" uid="image" />
                 <type mode="reader" />
             </service>
 
@@ -126,12 +132,12 @@
             </service>
 
             <service uid="meshReader" type="::uiIO::editor::SIOSelector">
-                <inout key="target" uid="mesh" />
+                <inout key="data" uid="mesh" />
                 <type mode="reader" />
             </service>
 
             <service uid="textureReader" type="::uiIO::editor::SIOSelector">
-                <inout key="target" uid="texture" />
+                <inout key="data" uid="texture" />
                 <type mode="reader" />
             </service>
 
@@ -146,6 +152,7 @@
                     <adaptor uid="materialAdaptor" />
                     <adaptor uid="negato3DAdaptor" />
                     <adaptor uid="textureAdaptor" />
+                    <adaptor uid="axisAdaptor" />
                 </scene>
             </service>
 
@@ -178,6 +185,10 @@
                 <config layer="default" textureName="meshTexture" filtering="linear" wrapping="repeat" />
             </service>
 
+            <service uid="axisAdaptor" type="::visuOgreAdaptor::SAxis" >
+                <config layer="default" length="10"/>
+            </service>
+
             <!-- ##################################### End Generic Scene ########################################### -->
 
             <!-- ################################### Begin offscreen scene ######################################### -->
@@ -195,6 +206,7 @@
                 <config layer="default" />
             </service>
 
+
             <!-- ##################################### End offscreen Scene ######################################### -->
 
             <start uid="mainFrame" />
@@ -207,6 +219,7 @@
             <start uid="materialAdaptor" />
             <start uid="meshAdaptor" />
             <start uid="negato3DAdaptor" />
+            <start uid="axisAdaptor" />
 
         </config>
     </extension>

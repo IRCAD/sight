@@ -64,6 +64,7 @@ const ::fwCom::Slots::SlotKeyType SVolumeRender::s_SET_INT_PARAMETER_SLOT       
 const ::fwCom::Slots::SlotKeyType SVolumeRender::s_SET_DOUBLE_PARAMETER_SLOT         = "setDoubleParameter";
 const ::fwCom::Slots::SlotKeyType SVolumeRender::s_SET_ENUM_PARAMETER_SLOT           = "setEnumParameter";
 const ::fwCom::Slots::SlotKeyType SVolumeRender::s_SET_COLOR_PARAMETER_SLOT          = "setColorParameter";
+const ::fwCom::Slots::SlotKeyType SVolumeRender::s_UPDATE_VISIBILITY_SLOT            = "updateVisibility";
 
 static const ::fwServices::IService::KeyType s_IMAGE_INOUT           = "image";
 static const ::fwServices::IService::KeyType s_TF_INOUT              = "tf";
@@ -77,7 +78,7 @@ SVolumeRender::SVolumeRender() noexcept :
     m_sceneManager(nullptr),
     m_volumeSceneNode(nullptr),
     m_camera(nullptr),
-    m_nbSlices(512),
+    m_nbSamples(512),
     m_preIntegratedRendering(false),
     m_ambientOcclusion(false),
     m_colorBleeding(false),
@@ -117,6 +118,7 @@ SVolumeRender::SVolumeRender() noexcept :
     newSlot(s_SET_DOUBLE_PARAMETER_SLOT, &SVolumeRender::setDoubleParameter, this);
     newSlot(s_SET_ENUM_PARAMETER_SLOT, &SVolumeRender::setEnumParameter, this);
     newSlot(s_SET_COLOR_PARAMETER_SLOT, &SVolumeRender::setColorParameter, this);
+    newSlot(s_UPDATE_VISIBILITY_SLOT, &SVolumeRender::updateVisibility, this);
     m_renderingMode = VR_MODE_RAY_TRACING;
 }
 
@@ -139,6 +141,7 @@ void SVolumeRender::configuring()
     m_widgetVisibilty        = config.get<std::string>("widgets", "yes") == "yes";
     m_renderingMode          = config.get<std::string>("mode", "raytracing") == "raytracing" ? VR_MODE_RAY_TRACING :
                                VR_MODE_SLICE;
+    m_nbSamples = config.get<std::uint16_t>("samples", m_nbSamples);
 
     if(m_renderingMode == VR_MODE_RAY_TRACING)
     {
@@ -163,6 +166,8 @@ void SVolumeRender::configuring()
 
 void SVolumeRender::updateTFPoints()
 {
+    this->getRenderService()->makeCurrent();
+
     ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
 
     m_gpuTF.updateTexture(tf);
@@ -186,6 +191,8 @@ void SVolumeRender::updateTFPoints()
 
 void SVolumeRender::updateTFWindowing(double /*window*/, double /*level*/)
 {
+    this->getRenderService()->makeCurrent();
+
     ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
 
     m_gpuTF.updateTexture(tf);
@@ -225,6 +232,9 @@ void SVolumeRender::updateTFWindowing(double /*window*/, double /*level*/)
 void SVolumeRender::starting()
 {
     this->initialize();
+
+    this->getRenderService()->makeCurrent();
+
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("inout '" + s_IMAGE_INOUT +"' is missing.", image);
 
@@ -292,7 +302,7 @@ void SVolumeRender::starting()
                                                                                   m_colorBleeding);
 
         // Initially focus on the image center.
-        setFocalDistance(50);
+        this->setFocalDistance(50);
     }
 
     m_gpuTF.setSampleDistance(m_volumeRenderer->getSamplingRate());
@@ -311,10 +321,6 @@ void SVolumeRender::starting()
     if (isValid)
     {
         this->newImage();
-    }
-    else
-    {
-        m_volumeSceneNode->setVisible(false, false);
     }
 
     m_volumeRenderer->tfUpdate(this->getTransferFunction());
@@ -451,6 +457,8 @@ void SVolumeRender::updateImage()
 
 void SVolumeRender::newMask()
 {
+    this->getRenderService()->makeCurrent();
+
     ::fwData::Image::sptr mask = this->getInOut< ::fwData::Image>(s_MASK_INOUT);
     ::fwRenderOgre::Utils::convertImageForNegato(m_maskTexture.get(), mask);
 
@@ -461,10 +469,12 @@ void SVolumeRender::newMask()
 
 void SVolumeRender::updateSampling(int nbSamples)
 {
-    OSLM_ASSERT("Sampling rate must fit in a 16 bit uint.", nbSamples < 65536 && nbSamples >= 0);
-    m_nbSlices = static_cast<uint16_t>(nbSamples);
+    this->getRenderService()->makeCurrent();
 
-    m_volumeRenderer->setSampling(m_nbSlices);
+    OSLM_ASSERT("Sampling rate must fit in a 16 bit uint.", nbSamples < 65536 && nbSamples >= 0);
+    m_nbSamples = static_cast<std::uint16_t>(nbSamples);
+
+    m_volumeRenderer->setSampling(m_nbSamples);
     m_gpuTF.setSampleDistance(m_volumeRenderer->getSamplingRate());
 
     if(m_ambientOcclusion || m_colorBleeding || m_shadows)
@@ -533,6 +543,8 @@ void SVolumeRender::updateSatSizeRatio(int sizeRatio)
 {
     if(m_ambientOcclusion || m_colorBleeding || m_shadows)
     {
+        this->getRenderService()->makeCurrent();
+
         float scaleCoef(.25f);
         m_satSizeRatio = static_cast<float>(sizeRatio) * scaleCoef;
         m_illum->updateSatFromRatio(m_satSizeRatio);
@@ -557,6 +569,8 @@ void SVolumeRender::updateSatShellsNumber(int shellsNumber)
 {
     if(m_ambientOcclusion || m_colorBleeding || m_shadows)
     {
+        this->getRenderService()->makeCurrent();
+
         m_satShells = shellsNumber;
 
         auto rayCastVolumeRenderer = dynamic_cast< ::fwRenderOgre::vr::RayTracingVolumeRenderer* >(m_volumeRenderer);
@@ -577,6 +591,8 @@ void SVolumeRender::updateSatShellRadius(int shellRadius)
 {
     if(m_ambientOcclusion || m_colorBleeding || m_shadows)
     {
+        this->getRenderService()->makeCurrent();
+
         m_satShellRadius = shellRadius;
 
         auto rayCastVolumeRenderer = dynamic_cast< ::fwRenderOgre::vr::RayTracingVolumeRenderer* >(m_volumeRenderer);
@@ -597,6 +613,8 @@ void SVolumeRender::updateSatConeAngle(int coneAngle)
 {
     if(m_ambientOcclusion || m_colorBleeding || m_shadows)
     {
+        this->getRenderService()->makeCurrent();
+
         m_satConeAngle = static_cast<float>(coneAngle) / 100;
 
         auto rayCastVolumeRenderer = dynamic_cast< ::fwRenderOgre::vr::RayTracingVolumeRenderer* >(m_volumeRenderer);
@@ -617,6 +635,8 @@ void SVolumeRender::updateSatConeSamples(int nbConeSamples)
 {
     if(m_ambientOcclusion || m_colorBleeding || m_shadows)
     {
+        this->getRenderService()->makeCurrent();
+
         m_satConeSamples = nbConeSamples;
 
         auto rayCastVolumeRenderer = dynamic_cast< ::fwRenderOgre::vr::RayTracingVolumeRenderer* >(m_volumeRenderer);
@@ -635,6 +655,8 @@ void SVolumeRender::updateSatConeSamples(int nbConeSamples)
 
 void SVolumeRender::togglePreintegration(bool preintegration)
 {
+    this->getRenderService()->makeCurrent();
+
     m_preIntegratedRendering = preintegration;
 
     m_volumeRenderer->setPreIntegratedRendering(m_preIntegratedRendering);
@@ -690,6 +712,8 @@ void SVolumeRender::toggleWidgets(bool visible)
 
 void SVolumeRender::resizeViewport(int w, int h)
 {
+    this->getRenderService()->makeCurrent();
+
     if(m_volumeRenderer)
     {
         m_volumeRenderer->resizeViewport(w, h);
@@ -995,6 +1019,8 @@ void SVolumeRender::initWidgets()
 
 void SVolumeRender::updateVolumeIllumination()
 {
+    this->getRenderService()->makeCurrent();
+
     m_illum->SATUpdate(m_3DOgreTexture, m_gpuTF.getTexture(), m_volumeRenderer->getSamplingRate());
 
     // Volume illumination is only implemented for raycasting rendering
@@ -1011,6 +1037,8 @@ void SVolumeRender::updateVolumeIllumination()
 
 void SVolumeRender::toggleVREffect(::visuOgreAdaptor::SVolumeRender::VREffectType vrEffect)
 {
+    this->getRenderService()->makeCurrent();
+
     auto rayCastVolumeRenderer = dynamic_cast< ::fwRenderOgre::vr::RayTracingVolumeRenderer* >(m_volumeRenderer);
 
     // Volume illumination is only implemented for raycasting rendering
@@ -1053,7 +1081,7 @@ void SVolumeRender::toggleVREffect(::visuOgreAdaptor::SVolumeRender::VREffectTyp
                 break;
         }
 
-        this->updateSampling(m_nbSlices);
+        this->updateSampling(m_nbSamples);
         this->updateSatSizeRatio(static_cast<int>(m_satSizeRatio * 4));
         this->updateSatShellsNumber(m_satShells);
         this->updateSatShellRadius(m_satShellRadius);
@@ -1070,6 +1098,16 @@ void SVolumeRender::toggleVREffect(::visuOgreAdaptor::SVolumeRender::VREffectTyp
 
         this->requestRender();
     }
+}
+
+//-----------------------------------------------------------------------------
+
+void SVolumeRender::updateVisibility(bool visibility)
+{
+    m_volumeSceneNode->setVisible(visibility);
+    m_widgets->setVisibility(visibility && m_widgetVisibilty);
+
+    this->requestRender();
 }
 
 //-----------------------------------------------------------------------------

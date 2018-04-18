@@ -14,6 +14,7 @@
 #include <fwData/mt/ObjectWriteLock.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
 
+#include <fwRenderOgre/helper/Camera.hpp>
 #include <fwRenderOgre/SRender.hpp>
 #include <fwRenderOgre/Utils.hpp>
 
@@ -245,71 +246,13 @@ void SCamera::calibrate()
 {
     if ( m_calibration && m_calibration->getIsCalibrated() )
     {
-        const float fx = static_cast< float >(m_calibration->getFx());
-        const float fy = static_cast< float >(m_calibration->getFy());
+        const float width    = static_cast< float >(m_camera->getViewport()->getActualWidth());
+        const float height   = static_cast <float >(m_camera->getViewport()->getActualHeight());
+        const float nearClip = static_cast< float >(m_camera->getNearClipDistance());
+        const float farClip  = static_cast< float >(m_camera->getFarClipDistance());
 
-        const float cx = static_cast< float >( m_calibration->getCx() );
-        const float cy = static_cast< float >( m_calibration->getCy() );
-
-        //calibration images size
-        const float imW = static_cast< float >( m_calibration->getWidth() );
-        const float imH = static_cast< float >( m_calibration->getHeight() );
-
-        //displayed image size
-        const float winW = static_cast< float >( m_camera->getViewport()->getActualWidth() );
-        const float winH = static_cast< float >( m_camera->getViewport()->getActualHeight() );
-
-        //compute ratio between calibration image height & displayed image height
-        const float ratioH = winH / imH;
-
-        //compute new fx, fy
-        const float nfx = fx * ratioH;
-        const float nfy = fy * ratioH;
-
-        const float znear = m_camera->getNearClipDistance();
-        const float zfar  = m_camera->getFarClipDistance();
-
-        // compute principle point offset according to size of displayed image
-        float px       = ratioH * cx;
-        const float py = ratioH * cy;
-
-        const long expectedWindowSize = std::lround(ratioH * imW);
-
-        if( expectedWindowSize != static_cast<long>(winW))
-        {
-            const long diffX = (static_cast<long>(winW) - expectedWindowSize) / 2;
-            px += static_cast<float>(diffX);
-        }
-
-        const float cx1 = winW - px;
-        const float cy1 = winH - py;
-
-        // compute the offset according to current size
-        const float wcx = cx1 / ( (winW - 1.f) / 2.f) -1.f;
-        const float wcy = cy1 / ( (winH - 1.f) / 2.f) -1.f;
-
-        // setup projection matrix
-        ::Ogre::Matrix4 m = m_camera->getProjectionMatrixWithRSDepth();
-
-        m[0][0] = 2.f * nfx / winW;
-        m[0][1] = 0.f;
-        m[0][2] = wcx;
-        m[0][3] = 0.f;
-
-        m[1][0] = 0.f;
-        m[1][1] = 2.f * nfy / winH;
-        m[1][2] = -wcy;
-        m[1][3] = 0.f;
-
-        m[2][0] = 0.f;
-        m[2][1] = 0.f;
-        m[2][2] = -(zfar + znear) / (zfar - znear);
-        m[2][3] = -2.f * zfar * znear / (zfar - znear);
-
-        m[3][0] = 0.f;
-        m[3][1] = 0.f;
-        m[3][2] = -1.f;
-        m[3][3] = 0.f;
+        ::Ogre::Matrix4 m =
+            ::fwRenderOgre::helper::Camera::computeProjectionMatrix(*m_calibration, width, height, nearClip, farClip);
 
         m_camera->setCustomProjectionMatrix(true, m);
 

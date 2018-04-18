@@ -12,7 +12,9 @@
 #include <fwData/Boolean.hpp>
 #include <fwData/Color.hpp>
 #include <fwData/Float.hpp>
+#include <fwData/Image.hpp>
 #include <fwData/Integer.hpp>
+#include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/Point.hpp>
 #include <fwData/PointList.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
@@ -22,10 +24,11 @@
 
 #include <fwServices/macros.hpp>
 
-#include <OgreGpuProgramParams.h>
-#include <OgreMaterial.h>
-#include <OgreMaterialManager.h>
-#include <OgreTechnique.h>
+#include <OGRE/OgreGpuProgramParams.h>
+#include <OGRE/OgreMaterial.h>
+#include <OGRE/OgreMaterialManager.h>
+#include <OGRE/OgreTechnique.h>
+#include <OGRE/OgreTextureManager.h>
 
 namespace fwRenderOgre
 {
@@ -41,7 +44,7 @@ const ::fwCom::Slots::SlotKeyType IParameter::s_SET_INT_PARAMETER_SLOT     = "se
 const ::fwCom::Slots::SlotKeyType IParameter::s_SET_INT2_PARAMETER_SLOT    = "setInt2Parameter";
 const ::fwCom::Slots::SlotKeyType IParameter::s_SET_INT3_PARAMETER_SLOT    = "setInt3Parameter";
 
-static const std::string s_PARAMETER_INOUT = "parameter";
+const std::string IParameter::s_PARAMETER_INOUT = "parameter";
 
 //------------------------------------------------------------------------------
 
@@ -84,6 +87,16 @@ void IParameter::setParamName(const std::string& paramName)
 const std::string& IParameter::getParamName() const
 {
     return m_paramName;
+}
+
+//------------------------------------------------------------------------------
+
+fwServices::IService::KeyConnectionsMap IParameter::getAutoConnections() const
+{
+    ::fwServices::IService::KeyConnectionsMap connections;
+    connections.push(s_PARAMETER_INOUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+
+    return connections;
 }
 
 //------------------------------------------------------------------------------
@@ -174,6 +187,7 @@ void IParameter::updating()
 void IParameter::stopping()
 {
     m_material.reset();
+    m_texture.reset();
 }
 
 //------------------------------------------------------------------------------
@@ -323,10 +337,37 @@ bool IParameter::setParameter(::Ogre::Technique& technique)
             OSLM_ERROR("Array size not handled: " << arrayObject->getNumberOfComponents());
         }
     }
+    else if(objClass == "::fwData::Image")
+    {
+        ::fwData::Image::sptr image = ::fwData::Image::dynamicCast(obj);
+        SLM_ASSERT("The object is nullptr", image);
+
+        ::fwData::mt::ObjectReadLock lock(image);
+
+        if(!m_texture)
+        {
+            m_texture = ::Ogre::TextureManager::getSingleton().create(
+                this->getID() + "_TextureParam",
+                ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+                true);
+        }
+
+        // We can reach this code for an another reason than an image modification, for instance when the compositor
+        // is resized. However I don't know how to discriminate the two cases so for now we always copy the image. :/
+        if(image->getSizeInBytes())
+        {
+            ::fwRenderOgre::Utils::loadOgreTexture(image, m_texture, ::Ogre::TEX_TYPE_2D, true);
+
+            ::Ogre::TextureUnitState* texState = pass->getTextureUnitState(m_paramName);
+            texState->setTexture(m_texture);
+
+            auto texUnitIndex = pass->getTextureUnitStateIndex(texState);
+            params->setNamedConstant(m_paramName, texUnitIndex);
+        }
+    }
     // We allow to work on the SRender composite and interact with slots instead
     else if(objClass != "::fwData::Composite")
     {
-
         OSLM_ERROR("This Type " << objClass << " isn't supported.");
     }
 

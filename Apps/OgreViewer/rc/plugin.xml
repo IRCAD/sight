@@ -253,17 +253,17 @@
             <service uid="CoreEditor" type="::uiVisuOgre::SCoreCompositorEditor"  />
 
             <service uid="readerPathMeshFile" type="::uiIO::editor::SIOSelector" >
-                <in key="target" uid="modelSeriesUID" />
+                <inout key="data" uid="modelSeriesUID" />
                 <type mode="reader" />
             </service>
 
             <service uid="writerPathMeshFile" type="::uiIO::editor::SIOSelector" >
-                <in key="target" uid="modelSeriesUID" />
+                <inout key="data" uid="modelSeriesUID" />
                 <type mode="writer" />
             </service>
 
             <service uid="imageReader" type="::uiIO::editor::SIOSelector" >
-                <in key="target" uid="imageUID" />
+                <inout key="data" uid="imageUID" />
                 <type mode="reader" />
             </service>
 

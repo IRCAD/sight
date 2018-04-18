@@ -9,6 +9,8 @@
 #include "fwRenderOgre/config.hpp"
 #include "fwRenderOgre/IAdaptor.hpp"
 
+#include <OGRE/OgreTexture.h>
+
 namespace fwRenderOgre
 {
 
@@ -38,6 +40,8 @@ public:
 
     ///@}
 
+    FWRENDEROGRE_API static const std::string s_PARAMETER_INOUT;
+
     /// Constructor.
     FWRENDEROGRE_API IParameter() noexcept;
 
@@ -56,6 +60,9 @@ public:
     /// Get the name of the parameter m_paramName.
     FWRENDEROGRE_API const std::string& getDefaultValue() const;
 
+    /// Inform that the parameter value has changed. Its value will be uploaded on next update
+    void setDirty();
+
 protected:
 
     /// Configure the adaptor
@@ -72,6 +79,9 @@ protected:
 
     /// Set the material to update
     FWRENDEROGRE_API void setMaterial(const ::Ogre::MaterialPtr& material);
+
+    /// Connect the input parameter modified signal to this service update slot.
+    FWRENDEROGRE_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
 private:
 
@@ -109,8 +119,17 @@ private:
     ::Ogre::GpuProgramType m_shaderType;
     /// Pointer on the material
     ::Ogre::MaterialPtr m_material;
+    /// Pointer on a texture if the parameter is an image
+    ::Ogre::TexturePtr m_texture;
     /// Dirty flag to know if we must trigger an update or not
     bool m_dirty;
 };
+
+//------------------------------------------------------------------------------
+
+inline void IParameter::setDirty()
+{
+    m_dirty = true;
+}
 
 } // fwRenderOgre

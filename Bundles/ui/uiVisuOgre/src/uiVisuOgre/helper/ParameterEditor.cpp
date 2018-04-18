@@ -64,8 +64,10 @@ fwServices::IService::ConfigType ParameterEditor::createConfig(const ::fwRenderO
     ::fwServices::IService::ConfigType paramConfig;
 
     /// Getting associated object infos
-    const ::fwData::Object::csptr shaderObj = ::fwServices::IService::constCast(_adaptor)->getObject();
-    const auto& objType                     = shaderObj->getClassname();
+    const ::fwData::Object::csptr shaderObj =
+        _adaptor->getInOut< ::fwData::Object>(::fwRenderOgre::IParameter::s_PARAMETER_INOUT);
+
+    const auto& objType = shaderObj->getClassname();
 
     if(objType == "::fwData::Boolean")
     {
@@ -80,7 +82,7 @@ fwServices::IService::ConfigType ParameterEditor::createConfig(const ::fwRenderO
     {
         _connections.connect(_paramSrv, "colorChanged", _adaptor, "setColorParameter");
 
-        auto colorValue = ::fwData::Color::dynamicConstCast(shaderObj);
+        auto colorValue = ::fwData::Color::dynamicCast(shaderObj);
 
         int r = static_cast< unsigned char >(colorValue->red() * 255);
         int g = static_cast< unsigned char >(colorValue->green() * 255);
@@ -103,7 +105,7 @@ fwServices::IService::ConfigType ParameterEditor::createConfig(const ::fwRenderO
     {
         _connections.connect(_paramSrv, "doubleChanged", _adaptor, "setDoubleParameter");
 
-        auto floatValue           = ::fwData::Float::dynamicConstCast(shaderObj);
+        auto floatValue           = ::fwData::Float::dynamicCast(shaderObj);
         const double defaultValue = static_cast<double>(floatValue->value());
         const auto minmax         = getRange(defaultValue);
         const double min          = minmax.first;
@@ -120,7 +122,7 @@ fwServices::IService::ConfigType ParameterEditor::createConfig(const ::fwRenderO
     {
         _connections.connect(_paramSrv, "intChanged", _adaptor, "setIntParameter");
 
-        auto intValue          = ::fwData::Integer::dynamicConstCast(shaderObj);
+        auto intValue          = ::fwData::Integer::dynamicCast(shaderObj);
         const int defaultValue = intValue->value();
         const auto minmax      = getRange(defaultValue);
         const int min          = minmax.first;
@@ -135,7 +137,7 @@ fwServices::IService::ConfigType ParameterEditor::createConfig(const ::fwRenderO
     }
     else if(objType == "::fwData::Array")
     {
-        auto arrayObject = ::fwData::Array::dynamicConstCast(shaderObj);
+        auto arrayObject = ::fwData::Array::dynamicCast(shaderObj);
         if(arrayObject->getNumberOfComponents() <= 3)
         {
             auto numComponents  = arrayObject->getNumberOfComponents();

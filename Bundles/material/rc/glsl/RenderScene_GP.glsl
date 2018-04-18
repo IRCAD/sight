@@ -13,14 +13,14 @@ layout (triangle_strip, max_vertices = 3) out;
 #endif
 #endif
 
-in layout(location = 0) vec3 vNormal[];
+layout(location = 0) in vec3 vNormal[];
 
 #ifdef VERTEX_COLOR
-in layout(location = 1) vec4 vColor[];
+layout(location = 1) in vec4 vColor[];
 #endif // VERTEX_COLOR
 
 #ifdef DIFFUSE_TEX
-in layout(location = 2) vec2 vTexCoord[];
+layout(location = 2) in vec2 vTexCoord[];
 #endif // DIFFUSE_TEX
 
 out vec3 oPos;

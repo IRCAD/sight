@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VISUOGREADAPTOR_SLIGHT_HPP__
-#define __VISUOGREADAPTOR_SLIGHT_HPP__
+#pragma once
 
 #include "visuOgreAdaptor/config.hpp"
 #include "visuOgreAdaptor/STransform.hpp"
@@ -80,6 +79,9 @@ public:
 
     /// Destructor. Does nothing
     VISUOGREADAPTOR_API virtual ~SLight() noexcept;
+
+    /// Connect ::fwData::Object::s_MODIFIED_SIG of all data to s_UPDATE_SLOT
+    VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
 protected:
     /// Starting method. Do nothing
@@ -292,5 +294,3 @@ inline ::visuOgreAdaptor::STransform::sptr SLight::getTransformService()
 //------------------------------------------------------------------------------
 
 } //namespace visuOgreAdaptor
-
-#endif // __VISUOGREADAPTOR_SLIGHT_HPP__

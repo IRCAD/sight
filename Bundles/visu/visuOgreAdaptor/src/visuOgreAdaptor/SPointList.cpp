@@ -397,7 +397,7 @@ void SPointList::updateMaterialAdaptor()
             m_materialAdaptor->update();
         }
     }
-    else if(m_materialAdaptor->getObject< ::fwData::Material >() != m_material)
+    else if(m_materialAdaptor->getInOut< ::fwData::Material >(SMaterial::s_MATERIAL_INOUT) != m_material)
     {
         auto materialFw = m_materialAdaptor->getMaterialFw();
         m_meshGeometry->updateMaterial(materialFw, false);

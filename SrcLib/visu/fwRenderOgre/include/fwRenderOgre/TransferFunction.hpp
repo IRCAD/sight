@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2015-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2015-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWRENDEROGRE_TRANSFERFUNCTION_HPP__
-#define __FWRENDEROGRE_TRANSFERFUNCTION_HPP__
+#pragma once
 
 #include "fwRenderOgre/config.hpp"
 
@@ -38,10 +37,13 @@ public:
     /// Return the TF texture.
     FWRENDEROGRE_API ::Ogre::TexturePtr getTexture() const;
 
-    /// Sets sample distance.
+    /// Set the sample distance.
     FWRENDEROGRE_API void setSampleDistance(const float& _sampleDistance);
 
 private:
+
+    /// Return the buffer index matching the intensity.
+    static std::int32_t intensityToBufferIndex(double intensity);
 
     /// Texture containing the interpolated nodes of the transfer function.
     ::Ogre::TexturePtr m_texture;
@@ -68,5 +70,3 @@ inline void TransferFunction::setSampleDistance(const float& _sampleDistance)
 //-----------------------------------------------------------------------------
 
 } // Namespace fwRenderOgre
-
-#endif // __FWRENDEROGRE_TRANSFERFUNCTION_HPP__

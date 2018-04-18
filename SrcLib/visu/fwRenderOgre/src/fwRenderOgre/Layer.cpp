@@ -6,9 +6,9 @@
 
 #include "fwRenderOgre/Layer.hpp"
 
-#include <fwRenderOgre/helper/Camera.hpp>
-#include <fwRenderOgre/ILight.hpp>
-#include <fwRenderOgre/Layer.hpp>
+#include "fwRenderOgre/compositor/Core.hpp"
+#include "fwRenderOgre/helper/Camera.hpp"
+#include "fwRenderOgre/ILight.hpp"
 
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
@@ -616,24 +616,33 @@ void Layer::setSelectInteractor(::fwRenderOgre::interactor::IPickerInteractor::s
         ::Ogre::SceneNode::ConstObjectIterator entitiesIt = tempSceneNode->getAttachedObjectIterator();
         while(entitiesIt.hasMoreElements())
         {
-            // First, we must cast the MovableObject* into an Entity*
+            // First, we try to cast the MovableObject* into an Entity*
             const auto movable           = entitiesIt.getNext();
             const ::Ogre::Entity* entity = dynamic_cast< ::Ogre::Entity* > (movable);
 
             if(entity)
             {
-                // The current entity's bounding box is merged into the "world" bounding box
                 worldCoordBoundingBox.merge(entity->getWorldBoundingBox());
             }
             else
             {
-                // Try then with to cast into an ManualObject*
+                // Then try to cast into a ManualObject*
                 const ::Ogre::ManualObject* manualObject = dynamic_cast< ::Ogre::ManualObject* > (movable);
 
                 if(manualObject)
                 {
-                    // The current entity's bounding box is merged into the "world" bounding box
                     worldCoordBoundingBox.merge(manualObject->getWorldBoundingBox());
+                }
+                else
+                {
+                    // Last try to cast into a Camera*
+                    const ::Ogre::Camera* cameraObject = dynamic_cast< ::Ogre::Camera* > (movable);
+
+                    if(cameraObject && cameraObject != this->getDefaultCamera() &&
+                       cameraObject->isDebugDisplayEnabled())
+                    {
+                        worldCoordBoundingBox.merge(cameraObject->getWorldBoundingBox());
+                    }
                 }
             }
         }
@@ -652,6 +661,64 @@ void Layer::setSelectInteractor(::fwRenderOgre::interactor::IPickerInteractor::s
         }
     }
     return worldCoordBoundingBox;
+}
+
+//------------------------------------------------------------------------------
+
+compositor::transparencyTechnique Layer::getTransparencyTechnique()
+{
+    if(m_coreCompositor)
+    {
+        return m_coreCompositor->getTransparencyTechnique();
+    }
+
+    return compositor::DEFAULT;
+}
+
+//------------------------------------------------------------------------------
+
+int Layer::getTransparencyDepth()
+{
+    if(m_coreCompositor)
+    {
+        return m_coreCompositor->getTransparencyDepth();
+    }
+
+    return 0;
+
+}
+
+//------------------------------------------------------------------------------
+
+bool Layer::setTransparencyTechnique(compositor::transparencyTechnique _technique)
+{
+    bool success = false;
+    if(m_coreCompositor)
+    {
+        // Playing with the transparency may create new compositors, thus new resources in OpenGL, thus we
+        // need to explicitly switch to our OpenGL context
+        this->getRenderService()->makeCurrent();
+        success = m_coreCompositor->setTransparencyTechnique(_technique);
+        m_coreCompositor->update();
+        this->requestRender();
+    }
+
+    return success;
+}
+
+//------------------------------------------------------------------------------
+
+void Layer::setTransparencyDepth(int _depth)
+{
+    if(m_coreCompositor)
+    {
+        // Playing with the transparency may create new compositors, thus new resources in OpenGL, thus we
+        // need to explicitly switch to our OpenGL context
+        this->getRenderService()->makeCurrent();
+        m_coreCompositor->setTransparencyDepth(_depth);
+        m_coreCompositor->update();
+        this->requestRender();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -955,13 +1022,6 @@ void Layer::setupCore()
     m_coreCompositor->setTransparencyTechnique(m_transparencyTechnique);
     m_coreCompositor->setTransparencyDepth(m_numPeels);
     m_coreCompositor->update();
-}
-
-//-------------------------------------------------------------------------------------
-
-::fwRenderOgre::compositor::Core::sptr Layer::getCoreCompositor()
-{
-    return m_coreCompositor;
 }
 
 //-------------------------------------------------------------------------------------

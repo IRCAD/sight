@@ -25,13 +25,17 @@ namespace visuOgreAdaptor
  * @section Slots Slots
  * -\b updateVisibility(bool): Sets whether the frustum is shown or not.
  * -\b toggleVisibility(): Toggles whether the frustum is shown or not.
+ *
  * @section XML XML Configuration
+ *
  * @code{.xml}
     <service uid="..." type="::visuOgreAdaptor::SFrustum">
         <in key="camera" uid="..." />
         <config layer="..." transform="..." near="..." far="..."/>
     </service>
    @endcode
+ * @subsection Input Input:
+ * - \b camera [::arData::Camera]:  camera containing calibration information.
  * @subsection Configuration Configuration:
  * -\b layer (mandatory): defines the frustum's layer
  * -\b transform (optional): transform applied to the frustum's scene node
@@ -44,7 +48,7 @@ class VISUOGREADAPTOR_CLASS_API SFrustum : public ::fwRenderOgre::IAdaptor,
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro((SFrustum)(::fwRenderOgre::IAdaptor));
+    fwCoreServiceClassDefinitionsMacro((SFrustum)(::fwRenderOgre::IAdaptor))
 
     /// Slot to enable/disable visibility
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT;
@@ -57,6 +61,10 @@ public:
     VISUOGREADAPTOR_API SFrustum() noexcept;
     /// Destructor: Does nothing
     VISUOGREADAPTOR_API virtual ~SFrustum() noexcept;
+
+    /// Connect ::fwData::Object::s_MODIFIED_SIG and s_INTRINSIC_CALIBRATED_SIG of the camera data to s_UPDATE_SLOT
+    VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
+
     /// Sets visibility of the frustum
     VISUOGREADAPTOR_API void updateVisibility(bool);
     /// Toggles visibility of the frustum
@@ -95,8 +103,9 @@ private:
     float m_near;
     /// Far clipping
     float m_far;
-    /// color of frustum
+    /// Color of frustum
     std::string m_color;
+
 };
 
 } //namespace visuOgreAdaptor

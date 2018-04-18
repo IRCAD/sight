@@ -179,7 +179,7 @@ void SMesh::starting()
 
         SLM_ASSERT("SMaterial adaptor managing material'" + m_materialName + "' is not found",
                    result != mtlAdaptors.end());
-        m_material = m_materialAdaptor->getObject< ::fwData::Material >();
+        m_material = m_materialAdaptor->getInOut< ::fwData::Material >(SMaterial::s_MATERIAL_INOUT);
     }
 
     ::fwData::Mesh::sptr mesh = this->getInOut< ::fwData::Mesh >(s_MESH_INOUT);
@@ -392,7 +392,7 @@ void SMesh::updateNewMaterialAdaptor()
             m_entity->setMaterialName(m_materialAdaptor->getMaterialName());
         }
     }
-    else if(m_materialAdaptor->getObject< ::fwData::Material >() != m_material)
+    else if(m_materialAdaptor->getInOut< ::fwData::Material >(SMaterial::s_MATERIAL_INOUT) != m_material)
     {
         m_meshGeometry->updateMaterial(m_materialAdaptor->getMaterialFw(), false);
         m_materialAdaptor->swap(m_material);
@@ -425,7 +425,7 @@ void SMesh::updateXMLMaterialAdaptor()
             m_materialAdaptor->slot(::visuOgreAdaptor::SMaterial::s_UPDATE_SLOT)->run();
         }
     }
-    else if(m_materialAdaptor->getObject< ::fwData::Material >() != m_material)
+    else if(m_materialAdaptor->getInOut< ::fwData::Material >(SMaterial::s_MATERIAL_INOUT) != m_material)
     {
         m_meshGeometry->updateMaterial(m_materialAdaptor->getMaterialFw(), false);
         m_materialAdaptor->swap(m_material);

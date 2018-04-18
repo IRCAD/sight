@@ -1,0 +1,47 @@
+fragment_program Remap_FP glsl
+{
+    source Remap_FP.glsl
+    default_params
+    {
+        param_named u_fragData int 0
+        param_named u_map int 1
+        param_named_auto u_vpWidth viewport_width
+        param_named_auto u_vpHeight viewport_height
+    }
+}
+
+//---------------------------------------------------------------------------
+
+material Remap
+{
+    technique
+    {
+        pass final
+        {
+            vertex_program_ref RenderQuad_VP
+            {
+            }
+
+            fragment_program_ref Remap_FP
+            {
+            }
+
+            texture_unit
+            {
+                tex_coord_set 0
+                tex_address_mode border
+                tex_border_colour 0.0 0.0 0.0 0.0
+                filtering linear linear linear
+            }
+
+            // Same name as parameter so that SCompositorParameter finds it
+            texture_unit u_map
+            {
+                tex_coord_set 0
+                tex_address_mode border
+                tex_border_colour 0.0 0.0 0.0 0.0
+                filtering none
+            }
+        }
+    }
+}

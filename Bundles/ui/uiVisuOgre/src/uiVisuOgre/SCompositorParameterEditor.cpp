@@ -10,6 +10,10 @@
 
 #include <fwCom/Slots.hxx>
 
+#include <fwData/Boolean.hpp>
+#include <fwData/Float.hpp>
+#include <fwData/Integer.hpp>
+
 #include <fwGui/GuiRegistry.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
@@ -101,9 +105,10 @@ void SCompositorParameterEditor::updateCompositor(std::string /*_compositorName*
             const auto adaptor = wAdaptor.lock();
             if (adaptor->getClassname() == "::visuOgreAdaptor::SCompositorParameter")
             {
-                /// Getting associated object infos
-                const ::fwData::Object::csptr shaderObj = adaptor->getObject();
-                const auto& objType                     = shaderObj->getClassname();
+                /// Filter object types
+                const ::fwData::Object::csptr shaderObj =
+                    adaptor->getInOut< ::fwData::Object>(::fwRenderOgre::IParameter::s_PARAMETER_INOUT);
+                const auto& objType = shaderObj->getClassname();
 
                 if(objType == "::fwData::Boolean" || objType == "::fwData::Float" || objType == "::fwData::Integer")
                 {
