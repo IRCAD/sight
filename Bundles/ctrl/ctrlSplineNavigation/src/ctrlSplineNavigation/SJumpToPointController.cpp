@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -14,13 +14,11 @@
 #include <fwServices/registry/ActiveWorkers.hpp>
 #include <fwServices/IService.hpp>
 
-#include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
-
+#include <fwCom/Slots.hxx>
 
 fwServicesRegisterMacro(
     ::fwServices::IController, ::ctrlSplineNavigation::SJumpToPointController, ::fwData::TransformationMatrix3D);
-
 
 namespace ctrlSplineNavigation
 {
@@ -95,4 +93,3 @@ void SJumpToPointController::jumpToViewPoint(::fwData::TransformationMatrix3D::s
 }
 
 }   // namespace ctrlSplineNavigation
-

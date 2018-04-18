@@ -1,17 +1,12 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __CTRLSPLINENAVIGATION_SJUMPTOPOINTCONTROLLER_HPP__
-#define __CTRLSPLINENAVIGATION_SJUMPTOPOINTCONTROLLER_HPP__
+#pragma once
 
 #include "ctrlSplineNavigation/config.hpp"
-
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slots.hpp>
-#include <fwCom/Slots.hxx>
 
 #include <fwData/TransformationMatrix3D.hpp>
 
@@ -71,6 +66,3 @@ protected:
 };
 
 } // ctrlSplineNavigation
-
-#endif /*__CTRLSPLINENAVIGATION_SJUMPTOPOINTCONTROLLER_HPP__*/
-
