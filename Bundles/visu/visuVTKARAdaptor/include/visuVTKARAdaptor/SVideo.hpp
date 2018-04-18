@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VISUVTKARADAPTOR_SVIDEO_HPP__
-#define __VISUVTKARADAPTOR_SVIDEO_HPP__
+#pragma once
 
 #include "visuVTKARAdaptor/config.hpp"
 
@@ -112,12 +111,15 @@ private:
     vtkSmartPointer<vtkLookupTable> m_lookupTable; ///< Vtk LUT representing the fw4spl TF
 
     bool m_isTextureInit; /// true if the texture is initialized
+    bool m_isCameraInit; /// true if the vtk camera is initialized (it is only valid when the actor is visible)
 
     bool m_reverse; ///< if true, the actor is rotated by 180° along the z and y axis.
 
     bool m_interpolate; ///< turn on/off the linear interpolation of the vtkImageActor
+
+    /// Keep a reference to the image because it may be reallocated by someone whereas the vtk actor needs it
+    /// If the rendering is triggered before the update of the adaptor this will crash
+    ::fwData::Array::sptr m_imageBuffer;
 };
 
 } //namespace visuVTKARAdaptor
-
-#endif /* __VISUVTKARADAPTOR_SVIDEO_HPP__ */

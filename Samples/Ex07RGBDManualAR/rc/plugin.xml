@@ -169,15 +169,13 @@
             </service>
 
             <service uid="organManager" type="::gui::action::SConfigLauncher">
-                <appConfig id="OrganManagerWithSeries" />
+                <appConfig id="ModelSeriesManagerWindow" />
                 <inout key="ORGAN_MANAGER_MODELSERIES" uid="modelseries" />
                 <parameter replace="ICON_PATH" by="Ex07RGBDManualAR-0.1/app.ico" />
-                <parameter replace="ModelRepresentationChannel" uid="ModelRepresentationChannel" />
-                <parameter replace="ModelDisplayChannel" uid="ModelDisplayChannel" />
             </service>
 
             <service uid="ModelReader" type="::uiIO::editor::SIOSelector">
-                <inout key="target" uid="seriesDB" />
+                <inout key="data" uid="seriesDB" />
                 <type mode="reader" />
             </service>
 
@@ -198,7 +196,7 @@
             <!-- Matrix (trf format) reader -->
             <!-- This matrix is used to staticaly register the model onto the video -->
             <service uid="TransformReader" type="::uiIO::editor::SIOSelector">
-                <inout key="target" uid="matrix" />
+                <inout key="data" uid="matrix" />
                 <type mode="reader" /> <!-- mode is optional (by default it is "reader") -->
                 <selection mode="include" />
                 <addSelection service="::ioData::TransformationMatrix3DReaderService" />
@@ -424,14 +422,6 @@
             <connect>
                 <signal>cameraRGB/idModified</signal>
                 <slot>frameGrabber/stopCamera</slot>
-            </connect>
-
-            <connect channel="ModelRepresentationChannel">
-                <slot>modelseriesAdpt/updateNormalMode</slot>
-            </connect>
-
-            <connect channel="ModelDisplayChannel">
-                <slot>modelseriesAdpt/showReconstructions</slot>
             </connect>
 
             <connect>

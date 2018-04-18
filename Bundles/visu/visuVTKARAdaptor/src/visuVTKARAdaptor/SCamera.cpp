@@ -30,6 +30,7 @@ namespace visuVTKARAdaptor
 
 static const ::fwServices::IService::KeyType s_CAMERA_IN       = "camera";
 static const ::fwServices::IService::KeyType s_TRANSFORM_INOUT = "transform";
+static const ::fwServices::IService::KeyType s_TRANSFORM_INPUT = "transform";
 
 class WindowResizeCallBack : public ::vtkCommand
 {
@@ -55,7 +56,7 @@ public:
 
     virtual void Execute(::vtkObject* pCaller, unsigned long eventId, void*)
     {
-        m_adaptor->updateFromVtk();
+        m_adaptor->calibrate();
     }
 
     ::visuVTKARAdaptor::SCamera* m_adaptor;
@@ -193,35 +194,39 @@ void SCamera::updateFromVtk()
         return;
     }
 
-    vtkCamera* camera = this->getRenderer()->GetActiveCamera();
-    camera->RemoveObserver(m_cameraCommand);
-
     ::fwData::TransformationMatrix3D::sptr trf = this->getInOut< ::fwData::TransformationMatrix3D >(s_TRANSFORM_INOUT);
-
-    vtkPerspectiveTransform* trans = vtkPerspectiveTransform::New();
-    trans->Identity();
-    trans->SetupCamera(camera->GetPosition(), camera->GetFocalPoint(), camera->GetViewUp());
-    trans->Inverse();
-    trans->Concatenate(m_transOrig);
-    vtkMatrix4x4* mat = trans->GetMatrix();
-
-    for (std::uint8_t lt = 0; lt < 4; lt++)
+    if(trf)
     {
-        for (std::uint8_t ct = 0; ct < 4; ct++)
+        vtkCamera* camera = this->getRenderer()->GetActiveCamera();
+        camera->RemoveObserver(m_cameraCommand);
+
+        vtkPerspectiveTransform* trans = vtkPerspectiveTransform::New();
+        trans->Identity();
+        trans->SetupCamera(camera->GetPosition(), camera->GetFocalPoint(), camera->GetViewUp());
+        trans->Inverse();
+        trans->Concatenate(m_transOrig);
+        vtkMatrix4x4* mat = trans->GetMatrix();
+
+        for (std::uint8_t lt = 0; lt < 4; lt++)
         {
-            trf->setCoefficient(lt, ct, mat->GetElement(lt, ct));
+            for (std::uint8_t ct = 0; ct < 4; ct++)
+            {
+                trf->setCoefficient(lt, ct, mat->GetElement(lt, ct));
+            }
         }
+
+        auto sig = trf->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+        {
+            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+            sig->asyncEmit();
+        }
+
+        trans->Delete();
+
+        camera->AddObserver(::vtkCommand::ModifiedEvent, m_cameraCommand);
+
+        this->calibrate();
     }
-
-    auto sig = trf->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
-    {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
-        sig->asyncEmit();
-    }
-
-    trans->Delete();
-
-    this->calibrate();
 }
 
 //-----------------------------------------------------------------------------
@@ -248,8 +253,13 @@ void SCamera::updateFromTMatrix3D()
     vtkCamera* camera = this->getRenderer()->GetActiveCamera();
     camera->RemoveObserver(m_cameraCommand);
 
-    ::fwData::TransformationMatrix3D::sptr transMat =
+    ::fwData::TransformationMatrix3D::csptr transMat =
         this->getInOut< ::fwData::TransformationMatrix3D >(s_TRANSFORM_INOUT);
+
+    if(!transMat)
+    {
+        transMat = this->getInput< ::fwData::TransformationMatrix3D >(s_TRANSFORM_INPUT);
+    }
 
     vtkMatrix4x4* mat = vtkMatrix4x4::New();
 
@@ -277,6 +287,8 @@ void SCamera::updateFromTMatrix3D()
     camera->ApplyTransform(trans);
 
     this->setVtkPipelineModified();
+
+    camera->AddObserver(::vtkCommand::ModifiedEvent, m_cameraCommand);
 
     // Reset the clipping range as well since vtk interactor modifies it
     camera->SetClippingRange(s_nearPlane, s_farPlane);
@@ -366,6 +378,15 @@ void SCamera::calibrate()
         t->SetMatrix(m);
 
         camera->SetUserTransform(t);
+
+        // Adjust the size of the render window if we run in an offscreen render
+        auto renderService = this->getRenderService();
+        if(renderService->isOffScreen())
+        {
+            renderService->setOffScreenRenderSize(static_cast<unsigned int>(imW), static_cast<unsigned int>(imH));
+        }
+
+        camera->AddObserver(::vtkCommand::ModifiedEvent, m_cameraCommand);
 
         this->updateFromTMatrix3D();
         this->setVtkPipelineModified();

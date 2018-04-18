@@ -13,6 +13,8 @@
 
 #include <calibration3d/helper.hpp>
 
+#include <cvIO/Camera.hpp>
+
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
 
@@ -206,7 +208,7 @@ void SPoseFrom2d::computeRegistration(::fwCore::HiResClock::HiResClockType times
                 sig = matrixTL->signal< ::arData::TimeLine::ObjectPushedSignalType >(
                     ::arData::TimeLine::s_OBJECT_PUSHED_SIG );
 
-                sig->asyncEmit(timestamp);
+                sig->asyncEmit(newerTimestamp);
 
             }
 
@@ -242,22 +244,7 @@ void SPoseFrom2d::initialize()
         OSLM_FATAL_IF("Camera[" << idx << "] not found", !camera);
 
         Camera cam;
-        cam.intrinsicMat = ::cv::Mat::eye(3, 3, CV_64F);
-
-        cam.intrinsicMat.at<double>(0, 0) = camera->getFx();
-        cam.intrinsicMat.at<double>(1, 1) = camera->getFy();
-        cam.intrinsicMat.at<double>(0, 2) = camera->getCx();
-        cam.intrinsicMat.at<double>(1, 2) = camera->getCy();
-
-        cam.imageSize.width  = static_cast<int>(camera->getWidth());
-        cam.imageSize.height = static_cast<int>(camera->getHeight());
-
-        cam.distCoef = ::cv::Mat::zeros(5, 1, CV_64F);
-
-        for (size_t i = 0; i < 5; ++i)
-        {
-            cam.distCoef.at<double>(static_cast<int>(i)) = camera->getDistortionCoefficient()[i];
-        }
+        std::tie(cam.intrinsicMat, cam.imageSize, cam.distCoef) = ::cvIO::Camera::copyToCv(camera);
 
         // set extrinsic matrix only if stereo.
         if (idx == 1)

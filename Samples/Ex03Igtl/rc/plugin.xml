@@ -143,7 +143,7 @@
             <!-- *************************** End generic scene *************************** -->
 
             <service uid="objectMeshReader" type="::uiIO::editor::SIOSelector">
-                <inout key="target" uid="objectMeshUid" />
+                <inout key="data" uid="objectMeshUid" />
             </service>
 
             <service uid="matrixNetworkListener" type="::ioIGTL::SClientListener">

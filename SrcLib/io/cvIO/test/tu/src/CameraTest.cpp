@@ -50,7 +50,7 @@ void CameraTest::copyToCv()
     ::cv::Mat intrinsic, distCoeffs;
     ::cv::Size imgSize;
 
-    ::cvIO::Camera::copyToCv(f4sCam, intrinsic, imgSize, distCoeffs);
+    std::tie(intrinsic, imgSize, distCoeffs) = ::cvIO::Camera::copyToCv(f4sCam);
 
     CPPUNIT_ASSERT_EQUAL(3, intrinsic.size[0]);
     CPPUNIT_ASSERT_EQUAL(3, intrinsic.size[1]);

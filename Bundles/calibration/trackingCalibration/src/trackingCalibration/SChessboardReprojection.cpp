@@ -115,7 +115,7 @@ void SChessboardReprojection::updating()
 
         ::cv::Mat intrinsic, distortionCoefficients;
         ::cv::Size imageSize;
-        ::cvIO::Camera::copyToCv(camera, intrinsic, imageSize, distortionCoefficients);
+        std::tie(intrinsic, imageSize, distortionCoefficients) = ::cvIO::Camera::copyToCv(camera);
 
         std::vector< ::cv::Point2d > cvDetected;
 

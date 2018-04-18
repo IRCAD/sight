@@ -13,6 +13,7 @@ set( DEPENDENCIES
     arData
     fwMedData
     arServices
+    cvIO
 
 )
 set( REQUIREMENTS dataReg

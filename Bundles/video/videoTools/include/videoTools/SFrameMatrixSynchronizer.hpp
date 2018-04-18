@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VIDEOTOOLS_SFRAMEMATRIXSYNCHRONIZER_HPP__
-#define __VIDEOTOOLS_SFRAMEMATRIXSYNCHRONIZER_HPP__
+#pragma once
 
 #include "videoTools/config.hpp"
 
@@ -16,8 +15,6 @@
 
 #include <fwCore/base.hpp>
 #include <fwCore/HiResClock.hpp>
-
-#include <fwData/Composite.hpp>
 
 #include <fwServices/IController.hpp>
 
@@ -40,6 +37,10 @@ namespace videoTools
 /**
  * @brief SFrameMatrixSynchronizer service synchronizes video frame and tracking matrix.
  *
+ * @note
+ * `autoConnect="yes"` is required in order to play nice with streams whose timelines might get reset, e.g. when
+ * replaying a recorded video several times.
+ *
  * @section Signals Signals
  * - \b synchronizationDone(::fwCore::HiResClock::HiResClockType) : Emitted when the sync is done.
  * - \b allMatricesFound(::fwCore::HiResClock::HiResClockType) : Emitted when the sync is done, contains a boolean to
@@ -48,7 +49,7 @@ namespace videoTools
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::videoTools::SFrameMatrixSynchronizer">
+        <service type="::videoTools::SFrameMatrixSynchronizer" autoConnect="yes">
             <in group="frameTL">
                 <key uid="frameTL1" />
                 <key uid="frameTL4" />
@@ -92,8 +93,8 @@ namespace videoTools
  * - \b matrices defines the matrixTL to synchronize.
  *   - \b from: key of the matrix timeline to extract matrix.
  *   - \b to: key of the TransformationMatrix3D where to extract the matrix.
- * - \b framerate defines the framerate to call synchronization.
- * - \b tolerance defines the maximum distance between two frames (default = 500).
+ * - \b framerate defines the framerate to call synchronization (default: 30).
+ * - \b tolerance defines the maximum distance between two frames (default: 500).
  *  If a timeline exceeds this tolerance it will not be synchronized.
  */
 class VIDEOTOOLS_CLASS_API SFrameMatrixSynchronizer : public ::arServices::ISynchronizer
@@ -125,19 +126,8 @@ public:
     {
     }
 
-    typedef std::map<std::string, std::string> FrameKeysType;
-    typedef std::pair< std::string, unsigned int > MatrixVectorTypePair;
-    typedef std::vector<MatrixVectorTypePair> MatrixVectorType;
-    typedef std::map<std::string, MatrixVectorType> MatrixKeysType;
-    typedef std::map<std::string, CSPTR(::arData::FrameTL)> FrameTLKeyType;
-    typedef std::map<std::string, CSPTR(::arData::MatrixTL)> MatrixTLKeyType;
-    typedef std::map<std::string, SPTR(::fwData::Image)> ImageKeyType;
-    typedef std::pair< SPTR(::fwData::TransformationMatrix3D), unsigned int > MatrixKeyVectorTypePair;
-    typedef std::vector<MatrixKeyVectorTypePair> MatrixKeyVectorType;
-    typedef std::map<std::string, MatrixKeyVectorType> MatrixKeyType;
-
     /**
-     * @brief Returns proposals to connect service slots to associated object signals,
+     * @brief Return proposals to connect service slots to associated object signals,
      * this method is used for obj/srv auto connections
      *
      * Connect ::arData::TimeLine::s_CLEARED_SIG to s_RESET_TIMELINE_SLOT
@@ -173,19 +163,14 @@ private:
     /// Check if output images are initialized
     bool m_imagesInitialized;
 
-    /// registers FrameTL keys to synchronize and the associated fwData::Image keys
-    FrameKeysType m_frameKeys;
-
-    /// registers TrackerTL keys to synchronize and the associated fwData::TransformationMatrix3D keys
-    MatrixKeysType m_matrixKeys;
-    /// registers frame timeline with its id in composite
-    FrameTLKeyType m_frameTLs;
-    /// registers matrix timeline with its id in composite
-    MatrixTLKeyType m_matrixTLs;
-    /// registers frames with associated timeline key
-    ImageKeyType m_images;
+    /// Contains the input video timelines.
+    std::vector<CSPTR(::arData::FrameTL)> m_frameTLs;
+    /// Contains the input matrix timelines.
+    std::vector<CSPTR(::arData::MatrixTL)> m_matrixTLs;
+    /// Contains the output images.
+    std::vector<SPTR(::fwData::Image)> m_images;
     /// registers matrices with associated timeline key
-    MatrixKeyType m_matrices;
+    std::vector<std::vector<SPTR(::fwData::TransformationMatrix3D)> > m_matrices;
 
     /// Time step used for the update
     unsigned int m_timeStep;
@@ -208,4 +193,3 @@ private:
 };
 
 } // namespace videoTools
-#endif  // __VIDEOTOOLS_SFRAMEMATRIXSYNCHRONIZER_HPP__

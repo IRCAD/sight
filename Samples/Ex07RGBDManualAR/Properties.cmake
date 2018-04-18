@@ -4,8 +4,6 @@ set( VERSION 0.1 )
 set( TYPE APP )
 set( DEPENDENCIES  )
 set( REQUIREMENTS
-
-    activities
     appXml
     arDataReg
     arMedia
@@ -32,7 +30,7 @@ set( REQUIREMENTS
     ioVTK
     ioAtoms
     uiMedDataQt
-    3DVisualizationActivity
+    dataManagerConfig
     colourSegmentation
 
     )

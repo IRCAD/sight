@@ -7,5 +7,6 @@ set( DEPENDENCIES
     fwData
     fwServices
     fwTools
+    fwPreferences
 )
 set( REQUIREMENTS  )

@@ -467,14 +467,14 @@
         </service>
 
         <service uid="handEyeXMatrixWriter" type="::uiIO::editor::SIOSelector" >
-            <inout key="target" uid="handEyeMatX" />
+            <inout key="data" uid="handEyeMatX" />
             <type mode="writer" />
             <selection mode="include" />
             <addSelection service="::ioData::TransformationMatrix3DWriterService" />
         </service>
 
         <service uid="handEyeZMatrixWriter" type="::uiIO::editor::SIOSelector" >
-            <inout key="target" uid="handEyeMatZ" />
+            <inout key="data" uid="handEyeMatZ" />
             <type mode="writer" />
             <selection mode="include" />
             <addSelection service="::ioData::TransformationMatrix3DWriterService" />

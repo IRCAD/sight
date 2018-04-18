@@ -155,7 +155,7 @@ void SSolvePnP::initialize()
 
     m_cvCamera.intrinsicMat = ::cv::Mat::eye(3, 3, CV_64F);
 
-    ::cvIO::Camera::copyToCv(camera, m_cvCamera.intrinsicMat, m_cvCamera.imageSize, m_cvCamera.distCoef);
+    std::tie(m_cvCamera.intrinsicMat, m_cvCamera.imageSize, m_cvCamera.distCoef) = ::cvIO::Camera::copyToCv(camera);
 
     // if coordinate system is not the same as OpenCV's (TOP_LEFT), compute corresponding offset
     if(m_videoRef == CENTER)

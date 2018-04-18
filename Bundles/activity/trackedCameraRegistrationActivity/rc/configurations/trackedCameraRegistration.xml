@@ -233,7 +233,7 @@
         </service>
 
         <service uid="matrixWriter" type="::uiIO::editor::SIOSelector">
-            <in key="target" uid="registrationMatrix" />
+            <inout key="data" uid="registrationMatrix" />
             <type mode="writer" />
             <selection mode="include" />
             <addSelection service="::ioData::TransformationMatrix3DWriterService" />
