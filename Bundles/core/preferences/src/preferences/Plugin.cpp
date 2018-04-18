@@ -1,10 +1,12 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "preferences/Plugin.hpp"
+
+#include "preferences/SPreferences.hpp"
 
 #include <fwData/String.hpp>
 
@@ -34,9 +36,8 @@ void Plugin::start()
     m_preferences = ::fwData::Composite::New();
 
     ::fwServices::IService::sptr prefSrv;
-    prefSrv = ::fwServices::add (m_preferences,
-                                 "::fwPreferences::IPreferences", "::preferences::SPreferences",
-                                 s_PREF_SERVICE_UID);
+    prefSrv = ::fwServices::add("::preferences::SPreferences", s_PREF_SERVICE_UID);
+    prefSrv->registerInOut(m_preferences, fwPreferences::s_PREFERENCES_KEY);
 
     try
     {

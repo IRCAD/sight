@@ -1,11 +1,12 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwDcmtkIO/reader/main/ImageLazyReader.hpp"
 #include "fwDcmtkIO/reader/main/ImageLazyStream.hpp"
+
+#include "fwDcmtkIO/reader/main/ImageLazyReader.hpp"
 
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/path.hpp>
@@ -21,7 +22,7 @@ namespace main
 
 //------------------------------------------------------------------------------
 
-bool filesStillExist( const ::fwMedData::DicomSeries::sptr dicomSeries )
+bool filesStillExist( const ::fwMedData::DicomSeries::csptr dicomSeries )
 {
     ::boost::filesystem::path filePath;
     bool allFilesExists = true;
@@ -40,7 +41,7 @@ bool filesStillExist( const ::fwMedData::DicomSeries::sptr dicomSeries )
 //------------------------------------------------------------------------------
 
 ImageLazySource::ImageLazySource( ImageLazyInformation::sptr dcmInfo ) :
-    m_dcmInfo ( dcmInfo )
+    m_dcmInfo( dcmInfo )
 {
     SLM_ASSERT( "ImageLazySource needs at least one dicom file to read an image.",
                 !dcmInfo->m_dicomSeries->getLocalDicomPaths().empty());
@@ -136,10 +137,10 @@ std::streamsize ImageLazySource::read(char* s, std::streamsize n)
 
 }
 
-
 //------------------------------------------------------------------------------
 
-ImageLazyStream::ImageLazyStream( ImageLazyInformation::sptr dcmInfo ) : m_dcmInfo ( dcmInfo )
+ImageLazyStream::ImageLazyStream( ImageLazyInformation::sptr dcmInfo ) :
+    m_dcmInfo( dcmInfo )
 {
 }
 

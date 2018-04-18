@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -163,8 +163,8 @@ void fromRGBBuffer( void* input, size_t size, void*& destBuffer)
     }
 
     IMAGETYPE* destBufferTyped = (IMAGETYPE*)destBuffer;
-    IMAGETYPE* inputTyped      = (IMAGETYPE*)input;
-    IMAGETYPE* finalPtr        = ((IMAGETYPE*)destBuffer) + size;
+    IMAGETYPE* inputTyped = (IMAGETYPE*)input;
+    IMAGETYPE* finalPtr = ((IMAGETYPE*)destBuffer) + size;
     IMAGETYPE valR, valG, valB;
 
     while (destBufferTyped < finalPtr)
@@ -210,8 +210,6 @@ void fromVTKImage( vtkImageData* source, ::fwData::Image::sptr destination )
 
     int dim = source->GetDataDimension();
     OSLM_TRACE("source->GetDataDimension() : " << dim);
-
-    SLM_WARN_IF("2D Vtk image are not yet correctly managed", dim == 2);
 
     if(dim == 2)
     {

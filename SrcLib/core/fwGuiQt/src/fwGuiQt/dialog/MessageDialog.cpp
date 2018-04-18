@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,6 +9,7 @@
 #include <fwGui/registry/macros.hpp>
 
 #include <boost/assign/list_of.hpp>
+
 #include <QApplication>
 #include <QMessageBox>
 #include <QPushButton>
@@ -56,14 +57,14 @@ MessageDialog::~MessageDialog()
 
 //------------------------------------------------------------------------------
 
-void MessageDialog::setTitle( const std::string &title )
+void MessageDialog::setTitle( const std::string& title )
 {
     m_title = title;
 }
 
 //------------------------------------------------------------------------------
 
-void MessageDialog::setMessage( const std::string &msg )
+void MessageDialog::setMessage( const std::string& msg )
 {
     m_message = msg;
 }
@@ -82,11 +83,13 @@ void MessageDialog::addButton( ::fwGui::dialog::IMessageDialog::Buttons button )
     m_buttons = (::fwGui::dialog::IMessageDialog::Buttons) ( m_buttons | button );
 }
 
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-void MessageDialog::addCustomButton(QPushButton* button)
+void MessageDialog::addCustomButton(const std::string& label, std::function<void()> clickedFn)
 {
-    m_customButtons.push_back(button);
+    QPushButton* button = new QPushButton( QString::fromStdString(label) );
+    m_customButtons.push_back( button );
+    QObject::connect(button, &QPushButton::clicked, clickedFn);
 }
 
 //-----------------------------------------------------------------------------
@@ -118,14 +121,9 @@ void MessageDialog::setDefaultButton(::fwGui::dialog::IMessageDialog::Buttons bu
 
     QMessageBox box(icon, title, text, buttons, qApp->activeWindow());
 
-    for(int i = 0; i < m_customButtons.size(); ++i)
+    for(auto customButton : m_customButtons)
     {
-        box.addButton(m_customButtons[i], QMessageBox::ActionRole);
-    }
-
-    for(int i = 0; i < m_customButtons.size(); ++i)
-    {
-        box.addButton(m_customButtons[i], QMessageBox::ActionRole);
+        box.addButton(customButton, QMessageBox::ActionRole);
     }
 
     MessageDialogQtButtonType::const_iterator iter = messageDialogQtButton.find(m_defaultButton);
@@ -153,6 +151,3 @@ void MessageDialog::setDefaultButton(::fwGui::dialog::IMessageDialog::Buttons bu
 
 } // namespace dialog
 } // namespace fwGuiQt
-
-
-

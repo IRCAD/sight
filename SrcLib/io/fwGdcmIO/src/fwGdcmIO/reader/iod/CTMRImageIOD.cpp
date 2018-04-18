@@ -1,8 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
+
+#include "fwGdcmIO/reader/iod/CTMRImageIOD.hpp"
 
 #include "fwGdcmIO/helper/DicomDataReader.hxx"
 #include "fwGdcmIO/reader/ie/Equipment.hpp"
@@ -10,7 +12,6 @@
 #include "fwGdcmIO/reader/ie/Patient.hpp"
 #include "fwGdcmIO/reader/ie/Series.hpp"
 #include "fwGdcmIO/reader/ie/Study.hpp"
-#include "fwGdcmIO/reader/iod/CTMRImageIOD.hpp"
 
 #include <fwMedData/ImageSeries.hpp>
 
@@ -25,11 +26,11 @@ namespace iod
 
 //------------------------------------------------------------------------------
 
-CTMRImageIOD::CTMRImageIOD(const ::fwMedData::DicomSeries::sptr& dicomSeries,
+CTMRImageIOD::CTMRImageIOD(const ::fwMedData::DicomSeries::csptr& dicomSeries,
                            const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
                            const ::fwLog::Logger::sptr& logger,
                            ProgressCallback progress,
-                           CancelRequestedCallback cancel):
+                           CancelRequestedCallback cancel) :
     ::fwGdcmIO::reader::iod::InformationObjectDefinition(dicomSeries, instance, logger, progress, cancel),
     m_enableBufferRotation(true)
 {
@@ -66,13 +67,13 @@ void CTMRImageIOD::read(::fwMedData::Series::sptr series) throw(::fwGdcmIO::exce
     ::fwGdcmIO::reader::ie::Patient patientIE(m_dicomSeries, reader, m_instance, series->getPatient(), m_logger,
                                               m_progressCallback, m_cancelRequestedCallback);
     ::fwGdcmIO::reader::ie::Study studyIE(m_dicomSeries, reader, m_instance, series->getStudy(), m_logger,
-                                              m_progressCallback, m_cancelRequestedCallback);
+                                          m_progressCallback, m_cancelRequestedCallback);
     ::fwGdcmIO::reader::ie::Series seriesIE(m_dicomSeries, reader, m_instance, series, m_logger,
-                                              m_progressCallback, m_cancelRequestedCallback);
+                                            m_progressCallback, m_cancelRequestedCallback);
     ::fwGdcmIO::reader::ie::Equipment equipmentIE(m_dicomSeries, reader, m_instance, series->getEquipment(), m_logger,
-                                              m_progressCallback, m_cancelRequestedCallback);
+                                                  m_progressCallback, m_cancelRequestedCallback);
     ::fwGdcmIO::reader::ie::Image imageIE(m_dicomSeries, reader, m_instance, imageSeries->getImage(), m_logger,
-                                              m_progressCallback, m_cancelRequestedCallback);
+                                          m_progressCallback, m_cancelRequestedCallback);
     imageIE.setBufferRotationEnabled(m_enableBufferRotation);
 
     // Read Patient Module - PS 3.3 C.7.1.1

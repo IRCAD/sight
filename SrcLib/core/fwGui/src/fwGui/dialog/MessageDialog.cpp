@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -32,7 +32,7 @@ MessageDialog::MessageDialog()
     ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
             {
                 ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(IMessageDialog::REGISTRY_KEY);
-                m_implementation = ::fwGui::dialog::IMessageDialog::dynamicCast(guiObj);
+                m_implementation                    = ::fwGui::dialog::IMessageDialog::dynamicCast(guiObj);
             })).wait();
 }
 
@@ -44,7 +44,7 @@ MessageDialog::MessageDialog(
     ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
             {
                 ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(IMessageDialog::REGISTRY_KEY);
-                m_implementation = ::fwGui::dialog::IMessageDialog::dynamicCast(guiObj);
+                m_implementation                    = ::fwGui::dialog::IMessageDialog::dynamicCast(guiObj);
 
                 if(m_implementation)
                 {
@@ -128,6 +128,19 @@ void MessageDialog::setDefaultButton( ::fwGui::dialog::IMessageDialog::Buttons b
 
 //-----------------------------------------------------------------------------
 
+void MessageDialog::addCustomButton(const std::string& label, std::function<void()> clickedFn)
+{
+    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
+            {
+                if(m_implementation)
+                {
+                    m_implementation->addCustomButton(label, clickedFn);
+                }
+            })).wait();
+}
+
+//-----------------------------------------------------------------------------
+
 ::fwGui::dialog::IMessageDialog::Buttons MessageDialog::show()
 {
     if(m_implementation)
@@ -150,4 +163,3 @@ void MessageDialog::setDefaultButton( ::fwGui::dialog::IMessageDialog::Buttons b
 
 } //namespace dialog
 } // namespace fwGui
-

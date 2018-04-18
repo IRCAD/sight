@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -82,7 +82,7 @@ void SeriesDB::read()
 
     try
     {
-        this->readDicom(true);
+        this->readDicom();
     }
     catch (const std::exception& e)
     {
@@ -140,7 +140,7 @@ void SeriesDB::read()
 
 //------------------------------------------------------------------------------
 
-void SeriesDB::readDicomSeries(bool checkIsDicom)
+void SeriesDB::readDicomSeries()
 {
     // Clear DicomSeries container
     m_dicomSeriesContainer.clear();
@@ -152,7 +152,7 @@ void SeriesDB::readDicomSeries(bool checkIsDicom)
 
     try
     {
-        this->readDicom(checkIsDicom);
+        this->readDicom();
     }
     catch (const std::exception& e)
     {
@@ -203,7 +203,7 @@ void SeriesDB::readDicomSeries(bool checkIsDicom)
 
 //------------------------------------------------------------------------------
 
-void SeriesDB::readDicom(const bool checkIsDicom)
+void SeriesDB::readDicom()
 {
     SLM_ASSERT("This reader only work on folder selection.",
                (::fwData::location::have < ::fwData::location::Folder, ::fwDataIO::reader::IObjectReader > (this)));
@@ -237,18 +237,11 @@ void SeriesDB::readDicom(const bool checkIsDicom)
         // Recursively search for dicom files
         std::vector< ::boost::filesystem::path > filenames;
         ::fwGdcmIO::helper::DicomSearch::searchRecursively(
-            this->getFolder(), filenames, checkIsDicom, m_regularFileLookupJob);
+            this->getFolder(), filenames, true, m_regularFileLookupJob);
 
         // Read Dicom Series
         ::fwGdcmIO::helper::DicomSeries helper;
-        if(checkIsDicom)
-        {
-            m_dicomSeriesContainer = helper.read(filenames, m_readerJob, m_completeDicomSeriesJob);
-        }
-        else
-        {
-            m_dicomSeriesContainer.push_back(helper.createBlob(filenames));
-        }
+        m_dicomSeriesContainer = helper.read(filenames, m_readerJob, m_completeDicomSeriesJob);
     }
 
     // Finish regular lookup
@@ -353,13 +346,13 @@ void SeriesDB::convertDicomSeries(const ::fwServices::IService::sptr& notifier)
     m_converterJob->setTotalWorkUnits(totalWorkUnits);
 
     std::uint64_t completedProgress = 0;
-    auto progressCallback           = [&](std::uint64_t progress)
-                                      {
-                                          m_converterJob->doneWork(completedProgress + progress);
-                                      };
+    auto progressCallback = [&](std::uint64_t progress)
+                            {
+                                m_converterJob->doneWork(completedProgress + progress);
+                            };
 
     // Read series
-    for(const ::fwMedData::DicomSeries::sptr& dicomSeries : m_dicomSeriesContainer)
+    for(const ::fwMedData::DicomSeries::csptr& dicomSeries : m_dicomSeriesContainer)
     {
         ::fwMedData::DicomSeries::SOPClassUIDContainerType sopClassUIDContainer = dicomSeries->getSOPClassUIDs();
         FW_RAISE_IF("The series contains several SOPClassUIDs. Try to apply a filter in order to split the series.",
@@ -465,4 +458,3 @@ SPTR(::fwJobs::IJob) SeriesDB::getJob() const
 }  // namespace reader
 
 }  // namespace fwGdcmIO
-

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -25,6 +25,9 @@
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
 
+// Removes RGB macro defined in windows.h
+// to avoid conflicts in gdcmSurfaceHelper.h
+#undef RGB
 #include <gdcmSurfaceHelper.h>
 
 #include <sstream>
@@ -38,9 +41,9 @@ namespace ie
 
 //------------------------------------------------------------------------------
 
-Surface::Surface(const ::fwMedData::DicomSeries::sptr& dicomSeries,
+Surface::Surface(const ::fwMedData::DicomSeries::csptr& dicomSeries,
                  const SPTR(::gdcm::Reader)& reader,
-                 const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
+                 const ::fwGdcmIO::container::DicomInstance::sptr& instance,
                  const ::fwMedData::ModelSeries::sptr& series,
                  const ::fwLog::Logger::sptr& logger,
                  ProgressCallback progress,

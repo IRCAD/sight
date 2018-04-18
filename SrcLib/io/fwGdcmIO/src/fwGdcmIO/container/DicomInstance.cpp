@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -34,7 +34,7 @@ DicomInstance::DicomInstance() :
 
 //------------------------------------------------------------------------------
 
-DicomInstance::DicomInstance(const ::fwMedData::Series::sptr& series,
+DicomInstance::DicomInstance(const ::fwMedData::Series::csptr& series,
                              const ::fwLog::Logger::sptr& logger,
                              bool isMultiFiles) :
     m_isMultiFiles(isMultiFiles),
@@ -56,7 +56,7 @@ DicomInstance::DicomInstance(const ::fwMedData::Series::sptr& series,
 
 //------------------------------------------------------------------------------
 
-DicomInstance::DicomInstance(const ::fwMedData::DicomSeries::sptr& dicomSeries,
+DicomInstance::DicomInstance(const ::fwMedData::DicomSeries::csptr& dicomSeries,
                              const ::fwLog::Logger::sptr& logger) :
     m_isMultiFiles(dicomSeries->getLocalDicomPaths().size() > 1),
     m_studyInstanceUID(dicomSeries->getStudy()->getInstanceUID()),
@@ -75,7 +75,6 @@ DicomInstance::DicomInstance(const ::fwMedData::DicomSeries::sptr& dicomSeries,
     }
 
     this->readUIDFromDicomSeries(dicomSeries);
-
 }
 
 //------------------------------------------------------------------------------
@@ -101,8 +100,8 @@ DicomInstance::~DicomInstance()
 void DicomInstance::computeSOPClassUID(const ::fwMedData::Series::csptr& series)
 {
     // Retrieve series type
-    ::fwMedData::ImageSeries::csptr imageSeries = ::fwMedData::ImageSeries::dynamicConstCast(series);
-    ::fwMedData::ModelSeries::csptr modelSeries = ::fwMedData::ModelSeries::dynamicConstCast(series);
+    ::fwMedData::ImageSeries::csptr imageSeries = ::fwMedData::ImageSeries::dynamicCast(series);
+    ::fwMedData::ModelSeries::csptr modelSeries = ::fwMedData::ModelSeries::dynamicCast(series);
 
     // Create result
     std::string sopClassUID = "";

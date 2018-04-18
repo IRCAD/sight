@@ -1,16 +1,16 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWDCMTKIO_READER_IMAGESTORAGEREADER_HPP__
-#define __FWDCMTKIO_READER_IMAGESTORAGEREADER_HPP__
+#pragma once
 
 #include "fwDcmtkIO/config.hpp"
 #include "fwDcmtkIO/reader/IObjectReader.hpp"
 
 #include <fwData/Image.hpp>
+
 #include <fwTools/Type.hpp>
 
 #include <dcmtk/dcmdata/dcdatset.h>
@@ -35,7 +35,7 @@ public:
     FWDCMTKIO_API virtual ~ImageStorageReader();
 
     /// Override
-    FWDCMTKIO_API virtual ::fwMedData::Series::sptr read(::fwMedData::DicomSeries::sptr series);
+    FWDCMTKIO_API virtual ::fwMedData::Series::sptr read(::fwMedData::DicomSeries::csptr series);
 
 protected:
     /**
@@ -82,7 +82,7 @@ protected:
      * @param[in] pixelRepresentation Pixel Representation
      * @param[in] imageType Image Type
      */
-    FWDCMTKIO_API void lazyRead(::fwData::Image::sptr image, ::fwMedData::DicomSeries::sptr series,
+    FWDCMTKIO_API void lazyRead(::fwData::Image::sptr image, ::fwMedData::DicomSeries::csptr series,
                                 unsigned short rows, unsigned short columns, int depth, double rescaleSlope,
                                 double rescaleIntercept,
                                 unsigned short pixelRepresentation, ::fwTools::Type imageType);
@@ -99,18 +99,12 @@ protected:
      * @param[in] bitsAllocated Bits allocated
      * @param[in] imageType Image type
      */
-    FWDCMTKIO_API void lazyRGBLookupRead(::fwData::Image::sptr image, ::fwMedData::DicomSeries::sptr series,
+    FWDCMTKIO_API void lazyRGBLookupRead(::fwData::Image::sptr image, ::fwMedData::DicomSeries::csptr series,
                                          DcmDataset& dataset, DicomPathContainerType instances, unsigned short rows,
                                          unsigned short columns,
                                          int depth, unsigned short bitsAllocated, ::fwTools::Type imageType);
-
-
-
 
 };
 
 } //reader
 } //fwDcmtkIO
-
-
-#endif /* __FWDCMTKIO_READER_IMAGESTORAGEREADER_HPP__ */

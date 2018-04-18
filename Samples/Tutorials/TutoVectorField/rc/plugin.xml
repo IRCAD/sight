@@ -92,11 +92,12 @@
             <!-- ***************************************** End layouts declaration ***************************************** -->
             <!-- ***************************************** Begin services declarations    ************************************ -->
             <service uid="readerPathFile" type="::uiIO::editor::SIOSelector">
-                <in key="image" uid="image" />
+                <inout key="data" uid="image" />
                 <type mode="reader" />
             </service>
 
             <service uid="writerPathFile" type="::uiIO::editor::SIOSelector">
+                <inout key="data" uid="image" />
                 <type mode="writer" />
             </service>
 

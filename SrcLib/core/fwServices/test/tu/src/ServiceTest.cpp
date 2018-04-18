@@ -24,6 +24,8 @@
 #include <fwRuntime/EConfigurationElement.hpp>
 #include <fwRuntime/helper.hpp>
 
+#include <fwTest/helper/wait.hpp>
+
 #include <fwThread/Worker.hpp>
 
 #include <thread>
@@ -282,16 +284,6 @@ TestServiceSignals::~TestServiceSignals()
 {
 }
 
-// Wait at worst 1s for a given condition
-#define WAIT(cond) \
-    ::fwCore::TimeStamp BOOST_PP_CAT(timeStamp, __LINE__); \
-    BOOST_PP_CAT(timeStamp, __LINE__).setLifePeriod(1000); \
-    BOOST_PP_CAT(timeStamp, __LINE__).modified(); \
-    while(!(cond) && !BOOST_PP_CAT(timeStamp, __LINE__).periodExpired()) \
-    { \
-        std::this_thread::sleep_for( std::chrono::milliseconds(10)); \
-    }
-
 //------------------------------------------------------------------------------
 
 void ServiceTest::testCommunication()
@@ -348,7 +340,7 @@ void ServiceTest::testCommunication()
     CPPUNIT_ASSERT(service1->isStarted());
     CPPUNIT_ASSERT(service2->isStarted());
 
-    WAIT(receiver1->m_started && receiver2->m_started)
+    fwTestWaitMacro(receiver1->m_started && receiver2->m_started)
     CPPUNIT_ASSERT_EQUAL(true, receiver1->m_started);
     CPPUNIT_ASSERT_EQUAL(false, receiver1->m_updated);
     CPPUNIT_ASSERT_EQUAL(false, receiver1->m_stopped);
@@ -379,7 +371,7 @@ void ServiceTest::testCommunication()
     service2->update().wait();
     CPPUNIT_ASSERT(service2->getIsUpdated2());
 
-    WAIT(receiver1->m_updated && receiver2->m_updated)
+    fwTestWaitMacro(receiver1->m_updated && receiver2->m_updated)
     CPPUNIT_ASSERT_EQUAL(true, receiver1->m_started);
     CPPUNIT_ASSERT_EQUAL(true, receiver1->m_updated);
     CPPUNIT_ASSERT_EQUAL(false, receiver1->m_stopped);
@@ -391,7 +383,7 @@ void ServiceTest::testCommunication()
     service1->stop().wait();
     service2->stop().wait();
 
-    WAIT(receiver1->m_stopped && receiver2->m_stopped)
+    fwTestWaitMacro(receiver1->m_stopped && receiver2->m_stopped)
     CPPUNIT_ASSERT_EQUAL(true, receiver1->m_started);
     CPPUNIT_ASSERT_EQUAL(true, receiver1->m_updated);
     CPPUNIT_ASSERT_EQUAL(true, receiver1->m_stopped);

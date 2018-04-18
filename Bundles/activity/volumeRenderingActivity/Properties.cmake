@@ -20,5 +20,6 @@ set( REQUIREMENTS
     uiIO
     media
     imageConfig
+    dataManagerConfig
 )
 

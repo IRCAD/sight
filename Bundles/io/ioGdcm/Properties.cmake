@@ -11,7 +11,6 @@ set( DEPENDENCIES
     fwDataIO
     fwGdcmIO
     fwGui
-    fwGuiQt
     fwLog
     fwJobs
     fwCom

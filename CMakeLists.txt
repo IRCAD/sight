@@ -13,10 +13,12 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/plugin_config.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/install/generic_install.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/install/helper.cmake)
 
-set(ENABLE_PCH ON CACHE BOOL "Use pre-compiled headers to speedup the compilation")
+option(ENABLE_PCH "Use pre-compiled headers to speedup the compilation" ON)
+option(VERBOSE_PCH "Display debug messages to help debugging PCH" OFF)
 mark_as_advanced(ENABLE_PCH)
+mark_as_advanced(VERBOSE_PCH)
 
-include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/modules/PrecompiledHeader.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/PrecompiledHeader.cmake)
 
 if(MSVC)
     if(NOT DEFINED CMAKE_PCH_COMPILER_TARGETS)
@@ -88,9 +90,12 @@ endif()
 
 set(CREATE_SUBPROJECTS OFF CACHE BOOL "Create a project for each subproject")
 
+# Tests build / run options
 set(BUILD_TESTS ON CACHE BOOL "Configures projects associated tests (<project>Test projects)")
 set(TESTS_XML_OUTPUT OFF CACHE BOOL "Tests will generate an xml output, suitable for CI integration")
 mark_as_advanced(TESTS_XML_OUTPUT)
+set(TESTS_FILTER "" CACHE STRING "Allows to only build/run tests whose path contains the filter string.")
+mark_as_advanced(TESTS_FILTER)
 
 set(ADDITIONAL_PROJECTS CACHE PATH
         "Paths to the additional projects"
@@ -562,10 +567,14 @@ macro(fwLib FWPROJECT_NAME PROJECT_VERSION)
 
         if(${${FWPROJECT_NAME}_PCH_TARGET} STREQUAL ${FWPROJECT_NAME})
             add_precompiled_header(${FWPROJECT_NAME} include/${FWPROJECT_NAME}/pch.hpp)
-            message(STATUS "Use custom precompiled header")
+            if(VERBOSE_PCH)
+                message(STATUS "Use custom precompiled header")
+            endif()
         else()
             use_precompiled_header(${FWPROJECT_NAME} ${${FWPROJECT_NAME}_PCH_TARGET})
-            message(STATUS "Use ${${FWPROJECT_NAME}_PCH_TARGET} precompiled header")
+            if(VERBOSE_PCH)
+                message(STATUS "Use ${${FWPROJECT_NAME}_PCH_TARGET} precompiled header")
+            endif()
         endif()
     endif()
 
@@ -646,10 +655,14 @@ macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
 
             if(${${FWPROJECT_NAME}_PCH_TARGET} STREQUAL ${FWPROJECT_NAME})
                 add_precompiled_header(${FWPROJECT_NAME} include/${FWPROJECT_NAME}/pch.hpp)
-                message(STATUS "Use custom precompiled header")
+                if(VERBOSE_PCH)
+                    message(STATUS "Use custom precompiled header")
+                endif()
             else()
                 use_precompiled_header(${FWPROJECT_NAME} ${${FWPROJECT_NAME}_PCH_TARGET})
-                message(STATUS "Use ${${FWPROJECT_NAME}_PCH_TARGET} precompiled header")
+                if(VERBOSE_PCH)
+                    message(STATUS "Use ${${FWPROJECT_NAME}_PCH_TARGET} precompiled header")
+                endif()
             endif()
         endif()
     else()
@@ -826,11 +839,11 @@ function(findAllDependencies FWPROJECT_NAMES RESULT_VAR)
 
 endfunction()
 
-function(findTests FWPROJECTS RESULT_VAR)
+function(findTests FWPROJECTS FILTER RESULT_VAR)
     set(RESULT "")
 
     foreach(PROJECT ${FWPROJECTS})
-        if(${PROJECT}Test_DIR)
+        if(${PROJECT}Test_DIR AND ("${FILTER}" STREQUAL "" OR "${${PROJECT}Test_DIR}" MATCHES "${FILTER}" ))
             list(APPEND RESULT ${PROJECT}Test)
         endif()
     endforeach()
@@ -1059,14 +1072,16 @@ if(PROJECTS_TO_BUILD)
     message(STATUS "Project configuration is restricted to : ${PROJECTS_TO_BUILD}")
 endif()
 
+# Clear all previous tests from project list
+findTests("${PROJECT_LIST}" "" PROJECT_TESTS)
+if(PROJECT_TESTS)
+    list(REMOVE_ITEM PROJECT_LIST ${PROJECT_TESTS})
+endif()
+
+# Append tests to the project list
 if(BUILD_TESTS)
-    findTests("${PROJECT_LIST}" PROJECT_TESTS)
+    findTests("${PROJECT_LIST}" "${TESTS_FILTER}" PROJECT_TESTS)
     list(APPEND PROJECT_LIST ${PROJECT_TESTS})
-else()
-    findTests("${PROJECT_LIST}" PROJECT_TESTS)
-    if(PROJECT_TESTS)
-        list(REMOVE_ITEM PROJECT_LIST ${PROJECT_TESTS})
-    endif()
 endif()
 
 if(PROJECTS_TO_INSTALL)
@@ -1102,8 +1117,14 @@ endif()
 # Doxygen documentation
 option(BUILD_DOCUMENTATION "Build the doxygen documentation" OFF)
 if(BUILD_DOCUMENTATION)
+    option(BUILD_DOCSET "Build a Dash/Zeal/XCode docset" OFF)
     include(${FWCMAKE_RESOURCE_PATH}doxygen/doxygen_generator.cmake)
     doxygenGenerator(${PROJECT_LIST})
+    if(BUILD_DOCSET)
+        docsetGenerator(${PROJECT_LIST})
+    endif()
+else()
+    unset(BUILD_DOCSET CACHE)
 endif()
 
 # Eclipse project

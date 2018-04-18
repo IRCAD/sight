@@ -1,15 +1,15 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
-#ifndef __FWCORE_MACROS_HPP__
-#define __FWCORE_MACROS_HPP__
 
 /**
  * @file fwCore/macros.hpp
  * @brief This file defines fwCore base macros.
  */
+
+#pragma once
 
 #include "fwCore/Demangler.hpp"
 
@@ -292,8 +292,14 @@
 #define fwCorePredeclare( _cls_ )                                           \
     BOOST_PP_SEQ_FOLD_RIGHT( __FWCORE_PREDECLARE, BOOST_PP_SEQ_NIL, _cls_)
 
-#define __FWCORE_STATIC_CACHE( _type_, value )        \
-    static const _type_ __cache__(value); return __cache__;
+#define __FWCORE_STATIC_CACHE( value )        \
+    static const std::string __cache__(value); return __cache__;
+
+#ifdef __GNUC__
+#define FW_NOINLINE __attribute__((noinline))
+#else
+#define FW_NOINLINE
+#endif
 
 /**
  * @brief Generate virtual methods that return classname/namespace strings
@@ -305,16 +311,16 @@
 #define __FWCORECLASSNAMEMACRO(_qualifier)                                                        \
     /** @name Demangling methods */                                                               \
     /** @{ */                                                                                     \
-    /** @brief return object's classnam without its namespacee, i.e. BaseObject */                \
-    virtual const std::string& getLeafClassname() const _qualifier                                \
-    { __FWCORE_STATIC_CACHE(std::string,  ::fwCore::Demangler(*this).getLeafClassname()); }       \
-    static const std::string& leafClassname()                                                     \
-    { __FWCORE_STATIC_CACHE(std::string,  ::fwCore::getLeafClassname<SelfType>()); }              \
+    /** @brief return object's classname without its namespace, i.e. BaseObject */                \
+    FW_NOINLINE virtual const std::string& getLeafClassname() const _qualifier                    \
+    { __FWCORE_STATIC_CACHE(::fwCore::Demangler(*this).getLeafClassname()); }                     \
+    FW_NOINLINE static const std::string& leafClassname()                                         \
+    { __FWCORE_STATIC_CACHE(::fwCore::getLeafClassname<SelfType>());  }                           \
     /** @brief return full object's classname with its namespace, i.e. ::fwCore::BaseObject */    \
-    virtual const std::string& getClassname() const _qualifier                                    \
-    { __FWCORE_STATIC_CACHE(std::string,  ::fwCore::getClassname<SelfType>()); }                  \
-    static const std::string& classname()                                                         \
-    { __FWCORE_STATIC_CACHE(std::string,  ::fwCore::getClassname<SelfType>()); }                  \
+    FW_NOINLINE virtual const std::string& getClassname() const _qualifier                        \
+    { __FWCORE_STATIC_CACHE(::fwCore::getClassname<SelfType>()); }                                \
+    FW_NOINLINE static const std::string& classname()                                             \
+    { __FWCORE_STATIC_CACHE(::fwCore::getClassname<SelfType>());  }                               \
     /** @} */
 
 #define fwCoreInterfaceMacro() __FWCORECLASSNAMEMACRO()
@@ -330,7 +336,7 @@
  *
  */
 #define __FWCOREISTYPEOFMACRO(_classinfo_)                                                  \
-    static bool isTypeOf(const std::string &type)                                           \
+    static bool isTypeOf(const std::string& type)                                           \
     {                                                                                       \
         if (__FWCORE_TYPEDEF_SELF_NAME::classname() == type)                                \
         {                                                                                   \
@@ -341,9 +347,9 @@
     }
 
 #define __FWCOREISAMACRO(_qualifier)                                                        \
-    virtual bool isA(const std::string &type) const _qualifier                              \
+    virtual bool isA(const std::string& type) const _qualifier                              \
     {                                                                                       \
-        return this->__FWCORE_TYPEDEF_SELF_NAME::isTypeOf(type);                            \
+        return __FWCORE_TYPEDEF_SELF_NAME::isTypeOf(type);                            \
     }
 
 #define fwCoreIsTypeOfMacro(_classinfo_) \
@@ -523,5 +529,3 @@ struct pointer_holder;
     fwCoreInterfaceIsTypeOfMacro(_classinfo_)
 
 /**  @} */
-#endif // __FWCORE_MACROS_HPP__
-

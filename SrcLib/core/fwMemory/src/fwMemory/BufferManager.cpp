@@ -86,6 +86,9 @@ std::shared_future<void> BufferManager::unregisterBuffer(BufferManager::BufferPt
 
 void BufferManager::unregisterBufferImpl(BufferManager::BufferPtrType bufferPtr)
 {
+    auto& bufferInfo = m_bufferInfos[bufferPtr];
+    OSLM_ASSERT("There is still " << bufferInfo.lockCount() << " locks on this BufferObject (" << this << ")",
+                bufferInfo.lockCounter.expired());
 
     m_bufferInfos.erase(bufferPtr);
     m_updatedSig->asyncEmit();

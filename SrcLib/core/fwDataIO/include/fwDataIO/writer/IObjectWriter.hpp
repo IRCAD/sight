@@ -92,14 +92,14 @@ public:
      * @note m_object is save in class with a weakptr
      * @note This object can be get with the method getObject()
      */
-    FWDATAIO_API virtual void setObject( ::fwTools::Object::sptr _pObject );
+    FWDATAIO_API virtual void setObject( ::fwTools::Object::csptr object );
 
     /**
      * @brief m_object getter.
      *
      * @return m_object
      */
-    FWDATAIO_API virtual ::fwTools::Object::sptr  getObject();
+    FWDATAIO_API virtual ::fwTools::Object::csptr  getObject() const;
 
     /**
      * @brief Return the default filename extension can be dynamic.
@@ -116,7 +116,7 @@ public:
     FWDATAIO_API virtual void cancel();
 
     /// Returns the internal job, nullptr by default
-    FWDATAIO_API virtual SPTR(::fwJobs::IJob) getJob() const
+    virtual SPTR(::fwJobs::IJob) getJob() const
     {
         return nullptr;
     }
@@ -134,7 +134,7 @@ protected:
      *
      * This object is given in parameter of setObject method but it is conserved with a weakptr.
      */
-    ::fwTools::Object::wptr m_object;
+    ::fwTools::Object::cwptr m_object;
 
     /// Object location ( file path, directory path, url, etc )
     ::fwData::location::ILocation::sptr m_location;

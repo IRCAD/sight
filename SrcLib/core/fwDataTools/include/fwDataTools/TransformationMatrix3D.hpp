@@ -71,6 +71,15 @@ public:
      */
     FWDATATOOLS_API static void setTF3DFromMatrix(::fwData::TransformationMatrix3D::sptr& _trf,
                                                   const ::glm::dmat4x4& _input);
+
+    /**
+     * @brief Return whether a ::fwData::TransformationMatrix3D is an identity matrix.
+     * @param[in] _trf input ::fwData::TransformationMatrix3D.
+     * @param[in] _epsilon precision of the test (default 1e-12)
+     * @return boolean value: true if the matrix is identity, false otherwise.
+     */
+    FWDATATOOLS_API static bool isIdentity(const ::fwData::TransformationMatrix3D::csptr& _trf,
+                                           double _epsilon = 1e-12);
 };
 
 // ----------------------------------------------------------------------------

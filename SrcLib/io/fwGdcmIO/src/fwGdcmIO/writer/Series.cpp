@@ -50,7 +50,7 @@ Series::~Series()
 
 void Series::write() throw (::fwGdcmIO::exception::Failed)
 {
-    ::fwMedData::Series::sptr series = this->getConcreteObject();
+    ::fwMedData::Series::csptr series = this->getConcreteObject();
     SLM_ASSERT("::fwMedData::Series not instanced", series);
 
     // TODO: Make the user choose this value and implement EnhancedCTImageIOD/EnhancedMRImageIOD
@@ -66,7 +66,7 @@ void Series::write() throw (::fwGdcmIO::exception::Failed)
     if(sopClassUID == ::gdcm::MediaStorage::GetMSString(::gdcm::MediaStorage::CTImageStorage) ||
        sopClassUID == ::gdcm::MediaStorage::GetMSString(::gdcm::MediaStorage::MRImageStorage))
     {
-        ::fwMedData::ImageSeries::sptr imageSeries = ::fwMedData::ImageSeries::dynamicCast(series);
+        ::fwMedData::ImageSeries::csptr imageSeries = ::fwMedData::ImageSeries::dynamicCast(series);
         SLM_ASSERT("::fwMedData::ImageSeries not instanced", imageSeries);
         ::fwData::Image::sptr image = imageSeries->getImage();
         SLM_ASSERT("::fwData::Image not instanced", image);

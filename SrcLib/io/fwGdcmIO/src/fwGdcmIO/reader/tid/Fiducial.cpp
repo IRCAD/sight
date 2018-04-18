@@ -27,9 +27,9 @@ namespace tid
 
 //------------------------------------------------------------------------------
 
-Fiducial::Fiducial(const SPTR(::fwMedData::DicomSeries)& dicomSeries,
+Fiducial::Fiducial(const ::fwMedData::DicomSeries::csptr& dicomSeries,
                    const SPTR(::gdcm::Reader)& reader,
-                   const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
+                   const ::fwGdcmIO::container::DicomInstance::sptr& instance,
                    const ::fwData::Image::sptr& image,
                    const ::fwLog::Logger::sptr& logger) :
     ::fwGdcmIO::reader::tid::TemplateID< ::fwData::Image >(dicomSeries, reader, instance, image, logger)

@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017.
+ * FW4SPL - Copyright (C) IRCAD, 2017-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWGDCMIO_WRITER_SURFACESEGMENTATION_HPP__
-#define __FWGDCMIO_WRITER_SURFACESEGMENTATION_HPP__
+#pragma once
 
 #include "fwGdcmIO/config.hpp"
 #include "fwGdcmIO/container/DicomInstance.hpp"
@@ -66,7 +65,7 @@ public:
      * @brief Set associated DICOM series (Associated image instances)
      * @param[in] dicomSeries Associated DICOM series
      */
-    FWGDCMIO_API void setAssociatedDicomSeries(const SPTR(::fwMedData::DicomSeries)& dicomSeries);
+    FWGDCMIO_API void setAssociatedDicomSeries(const CSPTR(::fwMedData::DicomSeries)& dicomSeries);
 
     /// Returns logger
     FWGDCMIO_API SPTR(::fwLog::Logger) getLogger() const;
@@ -77,7 +76,7 @@ public:
 private:
 
     /// Associated DICOM series (Associated image instances)
-    SPTR(::fwMedData::DicomSeries) m_associatedDicomSeries;
+    CSPTR(::fwMedData::DicomSeries) m_associatedDicomSeries;
 
     /// Logger
     ::fwLog::Logger::sptr m_logger;
@@ -89,6 +88,3 @@ private:
 
 } // namespace writer
 } // namespace fwGdcmIO
-
-#endif // __FWGDCMIO_WRITER_SURFACESEGMENTATION_HPP__
-

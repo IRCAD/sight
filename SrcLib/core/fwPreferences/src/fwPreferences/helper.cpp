@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -19,18 +19,18 @@
 namespace fwPreferences
 {
 
+const std::string s_PREFERENCES_KEY = "preferences";
+
 //----------------------------------------------------------------------------
 
 bool setPreference(const std::string& key, const std::string& value)
 {
     bool isModified = false;
     // Check preferences
-    auto preferencesServicesList = ::fwServices::OSR::getServices("::fwPreferences::IPreferences");
-    if(!preferencesServicesList.empty())
-    {
-        const ::fwServices::IService::sptr prefService = *preferencesServicesList.begin();
-        ::fwData::Composite::sptr prefs = prefService->getObject< ::fwData::Composite >();
 
+    ::fwData::Composite::sptr prefs = getPreferences();
+    if(prefs)
+    {
         ::fwData::Composite::IteratorType iterPref = prefs->find(key);
         if ( iterPref != prefs->end() )
         {
@@ -52,12 +52,9 @@ std::string getPreference(const std::string& preferenceKey)
 {
     std::string value;
     // Check preferences
-    auto preferencesServicesList = ::fwServices::OSR::getServices("::fwPreferences::IPreferences");
-    if(!preferencesServicesList.empty())
+    ::fwData::Composite::sptr prefs = getPreferences();
+    if(prefs)
     {
-        ::fwServices::IService::sptr prefService = *preferencesServicesList.begin();
-        ::fwData::Composite::sptr prefs          = prefService->getObject< ::fwData::Composite >();
-
         ::fwData::Composite::IteratorType iterPref = prefs->find( preferenceKey );
         if ( iterPref != prefs->end() )
         {
@@ -92,6 +89,54 @@ std::string getPreference(const std::string& preferenceKey)
                 bfile::exists(appPrefFile) && !bfile::is_regular_file(appPrefFile));
 
     return appPrefFile;
+}
+
+//-----------------------------------------------------------------------------
+
+// returns the preferences service (or nullptr if is does not exist). This method is not exposed.
+::fwPreferences::IPreferences::sptr getPreferencesSrv()
+{
+    ::fwPreferences::IPreferences::sptr srv;
+    const auto preferencesServicesList = ::fwServices::OSR::getServices("::fwPreferences::IPreferences");
+
+    if(!preferencesServicesList.empty())
+    {
+        ::fwServices::IService::sptr prefService = *preferencesServicesList.begin();
+        srv                                      = ::fwPreferences::IPreferences::dynamicCast(prefService);
+    }
+    SLM_DEBUG_IF("The preferences service is not found, the preferences can not be used", !srv);
+
+    return srv;
+}
+
+//-----------------------------------------------------------------------------
+
+::fwData::Composite::sptr getPreferences()
+{
+    ::fwData::Composite::sptr prefs;
+
+    const auto prefService = getPreferencesSrv();
+
+    if(prefService)
+    {
+        prefs = prefService->getInOut< ::fwData::Composite >(s_PREFERENCES_KEY);
+    }
+    SLM_DEBUG_IF("The preferences are not found", !prefs);
+
+    return prefs;
+}
+
+//-----------------------------------------------------------------------------
+
+void savePreferences()
+{
+    const auto prefService = getPreferencesSrv();
+    SLM_WARN_IF("The preferences service is not found, the preferences can not be saved", !prefService);
+    SLM_WARN_IF("The preferences service is not started, the preferences can not be saved", !prefService->isStarted());
+    if(prefService && prefService->isStarted())
+    {
+        prefService->update();
+    }
 }
 
 //-----------------------------------------------------------------------------

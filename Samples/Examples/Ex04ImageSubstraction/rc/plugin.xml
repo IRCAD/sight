@@ -252,7 +252,7 @@
             </service>
 
             <service uid="readerFile1" type="::uiIO::editor::SIOSelector">
-                <in key="image" uid="image1" />
+                <inout key="data" uid="image1" />
                 <type mode="reader" />
                 <selection mode="exclude" />
                 <addSelection service="::ioXML::FwXMLGenericReaderService" />
@@ -269,7 +269,7 @@
             </service>
 
             <service uid="readerFile2" type="::uiIO::editor::SIOSelector">
-                <in key="image" uid="image2" />
+                <inout key="data" uid="image2" />
                 <type mode="reader" />
                 <selection mode="exclude" />
                 <addSelection service="::ioXML::FwXMLGenericReaderService" />
@@ -303,7 +303,7 @@
             </service>
 
             <service uid="writerFile" type="::uiIO::editor::SIOSelector">
-                <in key="target" uid="imageResult" />
+                <inout key="data" uid="imageResult" />
                 <type mode="writer" />
             </service>
 

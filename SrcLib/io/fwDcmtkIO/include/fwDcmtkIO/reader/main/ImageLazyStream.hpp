@@ -1,17 +1,19 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWDCMTKIO_READER_MAIN_IMAGELAZYSTREAM_HPP__
-#define __FWDCMTKIO_READER_MAIN_IMAGELAZYSTREAM_HPP__
+#pragma once
 
 #include "fwDcmtkIO/config.hpp"
 
 #include <fwCore/base.hpp>
+
 #include <fwMedData/DicomSeries.hpp>
+
 #include <fwMemory/stream/in/IFactory.hpp>
+
 #include <fwTools/Type.hpp>
 
 #include <boost/iostreams/stream.hpp>
@@ -36,7 +38,7 @@ public:
     typedef SPTR ( ImageLazyInformation ) sptr;
 
     /// Dicom series used to get the paths of the instances
-    ::fwMedData::DicomSeries::sptr m_dicomSeries;
+    ::fwMedData::DicomSeries::csptr m_dicomSeries;
 
     /// Number of rows in the image
     unsigned int m_rows;
@@ -136,5 +138,3 @@ protected:
 } //main
 } //reader
 } //fwDcmtkIO
-
-#endif // __FWDCMTKIO_READER_MAIN_IMAGELAZYSTREAM_HPP__

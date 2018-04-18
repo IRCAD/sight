@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWGDCMIO_WRITER_TID_TEMPLATEID_HPP__
-#define __FWGDCMIO_WRITER_TID_TEMPLATEID_HPP__
+#pragma once
 
 #include "fwGdcmIO/config.hpp"
 #include "fwGdcmIO/container/DicomInstance.hpp"
@@ -37,7 +36,7 @@ public:
      */
     FWGDCMIO_API TemplateID(const SPTR(::gdcm::Writer)& writer,
                             const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
-                            const SPTR(DATATYPE)& object);
+                            const CSPTR(DATATYPE)& object);
 
     /// Destructor
     FWGDCMIO_API virtual ~TemplateID();
@@ -51,7 +50,7 @@ protected:
     SPTR(::fwGdcmIO::container::DicomInstance) m_instance;
 
     /// FW4SPL Object
-    SPTR(DATATYPE) m_object;
+    CSPTR(DATATYPE) m_object;
 };
 
 //------------------------------------------------------------------------------
@@ -59,7 +58,7 @@ protected:
 template< class DATATYPE >
 TemplateID<DATATYPE>::TemplateID(const SPTR(::gdcm::Writer)& writer,
                                  const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
-                                 const SPTR(DATATYPE)& object) :
+                                 const CSPTR(DATATYPE)& object) :
     m_writer(writer),
     m_instance(instance),
     m_object(object)
@@ -81,5 +80,3 @@ TemplateID<DATATYPE>::~TemplateID()
 } // namespace tid
 } // namespace writer
 } // namespace fwGdcmIO
-
-#endif // __FWGDCMIO_WRITER_TID_TEMPLATEID_HPP__

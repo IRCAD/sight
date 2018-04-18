@@ -15,5 +15,6 @@ set( REQUIREMENTS
     scene2D
     uiTF
     media
+    qtSceneConfig
  )
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -169,28 +169,6 @@ void DicomSeries::complete(DicomSeriesContainerType& seriesDB, const SPTR(::fwJo
 
     this->fillSeries(seriesDB, completeSeriesObserver);
 
-}
-
-//------------------------------------------------------------------------------
-
-::fwMedData::DicomSeries::sptr DicomSeries::createBlob(FilenameContainerType& filenames)
-{
-    ::fwMedData::DicomSeries::sptr series = ::fwMedData::DicomSeries::New();
-    series->setDescription("Processing data...");
-    series->setDicomAvailability(::fwMedData::DicomSeries::BLOB);
-    series->setNumberOfInstances(filenames.size());
-
-    ::fwMedData::Patient::sptr patient = ::fwMedData::Patient::New();
-    patient->setName("Loading...");
-    series->setPatient(patient);
-
-    auto instanceNumber = 0;
-    for(auto file : filenames)
-    {
-        series->addDicomPath(++instanceNumber, file);
-    }
-
-    return series;
 }
 
 //------------------------------------------------------------------------------

@@ -6,11 +6,7 @@
 
 #include "ioGdcm/SDicomSeriesDBReader.hpp"
 
-#include <fwCom/HasSignals.hpp>
-#include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
-
-#include <fwCore/base.hpp>
 
 #include <fwData/mt/ObjectWriteLock.hpp>
 
@@ -20,8 +16,6 @@
 #include <fwGui/dialog/LocationDialog.hpp>
 #include <fwGui/dialog/LoggerDialog.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
-
-#include <fwGuiQt/dialog/MessageDialog.hpp>
 
 #include <fwIO/IReader.hpp>
 
@@ -35,11 +29,6 @@
 #include <fwServices/macros.hpp>
 
 #include <fwTools/System.hpp>
-
-#include <boost/foreach.hpp>
-
-#include <QPointer>
-#include <QPushButton>
 
 #include <string>
 #include <vector>
@@ -55,16 +44,13 @@ static const ::fwCom::Signals::SignalKeyType FILES_ADDED_SIGNAL = "filesAdded";
 //------------------------------------------------------------------------------
 
 SDicomSeriesDBReader::SDicomSeriesDBReader() noexcept :
-    m_sigJobCreated(JobCreatedSignal::New()),
-    m_sigFilesAdded(FilesAddedSignal::New()),
     m_cancelled(false),
     m_showLogDialog(true),
     m_dicomDirSupport(USER_SELECTION),
     m_readerMode(USER_SELECTION_MODE)
 {
-    ::fwCom::HasSignals::m_signals
-        ( JOB_CREATED_SIGNAL, m_sigJobCreated )
-        ( FILES_ADDED_SIGNAL, m_sigFilesAdded );
+    m_sigJobCreated = newSignal<JobCreatedSignal>(JOB_CREATED_SIGNAL);
+    m_sigFilesAdded = newSignal<FilesAddedSignal>(FILES_ADDED_SIGNAL);
 }
 
 //------------------------------------------------------------------------------
@@ -186,10 +172,8 @@ std::string SDicomSeriesDBReader::getSelectorDialogTitle()
 
 //------------------------------------------------------------------------------
 
-::fwMedData::SeriesDB::sptr SDicomSeriesDBReader::createSeriesDB(bool checkIsDicom,
-                                                                 const ::boost::filesystem::path& dicomDir)
+::fwMedData::SeriesDB::sptr SDicomSeriesDBReader::createSeriesDB(const ::boost::filesystem::path& dicomDir)
 {
-    SLM_TRACE_FUNC();
     ::fwGdcmIO::reader::SeriesDB::sptr reader = ::fwGdcmIO::reader::SeriesDB::New();
     ::fwMedData::SeriesDB::sptr dummy         = ::fwMedData::SeriesDB::New();
     reader->setObject(dummy);
@@ -221,7 +205,7 @@ std::string SDicomSeriesDBReader::getSelectorDialogTitle()
 
     try
     {
-        reader->readDicomSeries(checkIsDicom);
+        reader->readDicomSeries();
 
         // Retrieve logger
         ::fwLog::Logger::sptr logger = reader->getLogger();
@@ -279,27 +263,21 @@ std::string SDicomSeriesDBReader::getSelectorDialogTitle()
 
 bool mustCopyDialog()
 {
-    ::fwGuiQt::dialog::MessageDialog::sptr dialog = ::fwGuiQt::dialog::MessageDialog::New();
-
-    QPointer<QPushButton> copyButton   = new QPushButton("Copy");
-    QPointer<QPushButton> directButton = new QPushButton("Direct read");
-    dialog->addCustomButton(copyButton.data());
-    dialog->addCustomButton(directButton.data());
-
-    const std::string message = "Do you want to copy files before the reading process ?<br />"
-                                "<b>Warning :</b> reading files directly may be slow on external media (DVD, USB key, etc.).";
-    dialog->setMessage(message);
+    ::fwGui::dialog::MessageDialog::sptr dialog = ::fwGui::dialog::MessageDialog::New();
 
     bool copy = false;
-    QObject::connect(copyButton.data(), &QPushButton::clicked, [dialog, &copy]()
+    dialog->addCustomButton("Copy", [&copy]()
         {
             copy = true;
         });
-    QObject::connect(directButton.data(), &QPushButton::clicked, [dialog, &copy]()
+    dialog->addCustomButton("Direct read", [&copy]()
         {
             copy = false;
         });
 
+    const std::string message = "Do you want to copy files before the reading process ?<br />"
+                                "<b>Warning :</b> reading files directly may be slow on external media (DVD, USB key, etc.).";
+    dialog->setMessage(message);
     dialog->show();
 
     return copy;
@@ -340,7 +318,7 @@ void SDicomSeriesDBReader::updating()
             mustCopy = mustCopyDialog();
         }
 
-        ::fwMedData::SeriesDB::sptr seriesDB = createSeriesDB(!mustCopy, this->getFolder() );
+        ::fwMedData::SeriesDB::sptr seriesDB = createSeriesDB(this->getFolder() );
 
         if( seriesDB->size() > 0 && !m_cancelled)
         {

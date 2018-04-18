@@ -82,7 +82,7 @@
             <service uid="actionQuit" type="::gui::action::SQuit" />
 
             <service uid="myReaderPathFile" type="::uiIO::editor::SIOSelector">
-                <inout key="target" uid="mesh" />
+                <inout key="data" uid="mesh" />
                 <type mode="reader" /><!-- mode is optional (by default it is "reader") -->
             </service>
 

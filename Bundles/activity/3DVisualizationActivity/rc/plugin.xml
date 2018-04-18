@@ -4,7 +4,6 @@
     <requirement id="visuVTKQt" />
 
     <xi:include href="configurations/3DVisualization.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
-    <xi:include href="configurations/ManageOrganWithSeries.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/3DNegatoWithAcq.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/3DSimpleConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 

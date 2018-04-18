@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,8 +7,6 @@
 #include "fwGui/dialog/SelectorDialog.hpp"
 
 #include <fwServices/registry/ActiveWorkers.hpp>
-
-#include <string>
 
 namespace fwGui
 {
@@ -52,7 +50,7 @@ void SelectorDialog::create()
     ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
             {
                 ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(ISelectorDialog::REGISTRY_KEY);
-                m_implementation = ::fwGui::dialog::ISelectorDialog::dynamicCast(guiObj);
+                m_implementation                    = ::fwGui::dialog::ISelectorDialog::dynamicCast(guiObj);
             })).wait();
 }
 
@@ -94,6 +92,17 @@ void SelectorDialog::setMessage(const std::string& msg)
     ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
             {
                 m_implementation->setMessage( msg );
+            })).wait();
+}
+
+//------------------------------------------------------------------------------
+
+void SelectorDialog::addCustomButton(const std::string& label, std::function<void()> clickedFn)
+{
+
+    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
+            {
+                m_implementation->addCustomButton( label, clickedFn );
             })).wait();
 }
 

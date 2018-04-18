@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,7 +10,7 @@
 
 #include <fwData/Image.hpp>
 
-#include <fwDataTools/helper/Image.hpp>
+#include <fwDataTools/helper/ImageGetter.hpp>
 
 #include <zlib.h>
 
@@ -43,7 +43,7 @@ void GzBufferImageWriter::write()
 {
     assert( getFile().empty() == false );
 
-    ::fwData::Image::sptr image = getConcreteObject();
+    ::fwData::Image::csptr image = getConcreteObject();
     OSLM_TRACE( "GzBufferImageWriter::write()" << image.get() << " " << image->getClassname());
 
     /// test if can open archive
@@ -57,12 +57,12 @@ void GzBufferImageWriter::write()
         throw std::ios_base::failure(str);
     }
 
-    ::fwDataTools::helper::Image imageHelper(image);
+    ::fwDataTools::helper::ImageGetter imageHelper(image);
 
     // file is OK : process now
-    size_t imageSizeInBytes = image->getSizeInBytes();
+    const size_t imageSizeInBytes = image->getSizeInBytes();
 
-    char* ptr           = static_cast<char*>(imageHelper.getBuffer());
+    const char* ptr     = static_cast<char*>(imageHelper.getBuffer());
     size_t writtenBytes = 0;
 
     int uncompressedbyteswrited;

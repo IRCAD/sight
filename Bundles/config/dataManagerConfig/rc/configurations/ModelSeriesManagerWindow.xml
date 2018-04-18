@@ -1,0 +1,61 @@
+<!--
+This config open a windows containing the editors to manage the ModelSeries: show/hide reconstructions, change the
+color, ...
+
+Example:
+<service uid="..." type="::fwServices::SConfigController">
+    <appConfig id="ModelSeriesManagerWindow" />
+    <inout key="ORGAN_MANAGER_MODELSERIES" uid="modelSeries" />
+    <parameter replace="ICON_PATH" by="my/icon/path.ico" />
+    <parameter name="WindowTitle"  by="" />
+</service>
+With:
+- ORGAN_MANAGER_MODELSERIES (mandatory): uid of the ModelSeries to manage
+- ICON_PATH (mandatory): icon of the window
+- WindowTitle(optional): title of the window
+-->
+<extension implements="::fwServices::registry::AppConfig">
+    <id>ModelSeriesManagerWindow</id>
+    <parameters>
+        <param name="ORGAN_MANAGER_MODELSERIES" />
+        <param name="CLOSE_CONFIG_CHANNEL" default="DummyChannel" /><!--  defined by SConfigLauncher -->
+        <param name="ICON_PATH" />
+        <param name="WindowTitle" default="Organs Manager"/>
+    </parameters>
+    <desc>Open a windows containing the editors to manage the ModelSeries: show/hide reconstructions, change the color.</desc>
+    <config>
+
+        <object uid="${ORGAN_MANAGER_MODELSERIES}" type="::fwMedData::ModelSeries" src="ref" />
+        <object uid="reconstruction" type="::fwData::Reconstruction" src="deferred" />
+
+        <!-- MAIN FRAME -->
+        <service uid="organManagerFrame" type="::gui::frame::SDefaultFrame">
+            <window onclose="notify" />
+            <gui>
+                <frame>
+                    <name>${WindowTitle}</name>
+                    <icon>${ICON_PATH}</icon>
+                    <style mode="STAY_ON_TOP" />
+                </frame>
+            </gui>
+            <registry>
+                <view wid="OrganManagerView" />
+            </registry>
+        </service>
+
+        <service uid="modelManager" type="::fwServices::SConfigController">
+            <appConfig id="ModelSeriesManagerView" />
+            <inout key="ORGAN_MANAGER_MODELSERIES" uid="${ORGAN_MANAGER_MODELSERIES}" />
+            <parameter replace="WID_PARENT" uid="OrganManagerView" />
+        </service>
+
+        <connect channel="${CLOSE_CONFIG_CHANNEL}">
+            <signal>organManagerFrame/closed</signal>
+        </connect>
+
+        <!-- START AND STOP SERVICES -->
+        <start uid="organManagerFrame" />
+        <start uid="modelManager" />
+
+    </config>
+</extension>

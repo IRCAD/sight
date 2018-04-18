@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,6 +8,8 @@
 
 #include <fwData/Composite.hpp>
 #include <fwData/String.hpp>
+
+#include <fwPreferences/helper.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
@@ -61,6 +63,8 @@ void SPacsConfigurationInitializer::stopping()
 template<typename T, typename CAST_T = T>
 struct SetFromConfig
 {
+    //------------------------------------------------------------------------------
+
     void operator()(::fwData::Composite::sptr config, std::string const& confName, T& attribute)
     {
         if(config)
@@ -74,28 +78,6 @@ struct SetFromConfig
         }
     }
 };
-
-//------------------------------------------------------------------------------
-
-std::pair< ::fwServices::IService::sptr, ::fwData::Composite::sptr> getPreferences()
-{
-    ::fwData::Composite::sptr prefs;
-
-    auto preferencesServicesList = ::fwServices::OSR::getServices("::fwPreferences::IPreferences");
-
-    ::fwServices::IService::sptr prefService;
-    if(!preferencesServicesList.empty())
-    {
-        prefService = *preferencesServicesList.begin();
-    }
-
-    if(prefService)
-    {
-        prefs = prefService->getObject< ::fwData::Composite>();
-    }
-
-    return std::make_pair(prefService, prefs);
-}
 
 //------------------------------------------------------------------------------
 
@@ -161,7 +143,7 @@ void SPacsConfigurationInitializer::configuring()
     // Set information from xml and update PacsConfiguration
     if(!m_preferenceKey.empty())
     {
-        ::fwData::Composite::sptr prefs = getPreferences().second;
+        ::fwData::Composite::sptr prefs = ::fwPreferences::getPreferences();
         if(prefs)
         {
             ::fwData::Composite::sptr config = ::fwData::Composite::dynamicCast((*prefs)[m_preferenceKey]);
@@ -198,30 +180,28 @@ void SPacsConfigurationInitializer::updating()
         this->getObject< ::fwPacsIO::data::PacsConfiguration >();
 
     // Check if the user has changed the Pacs configuration and update the local var
-    if(pacsConfiguration->getLocalApplicationTitle   () != m_localApplicationTitle
-       || pacsConfiguration->getPacsHostName            () != m_pacsHostName
-       || pacsConfiguration->getPacsApplicationTitle    () != m_pacsApplicationTitle
-       || pacsConfiguration->getPacsApplicationPort     () != m_pacsApplicationPort
-       || pacsConfiguration->getMoveApplicationTitle    () != m_moveApplicationTitle
-       || pacsConfiguration->getMoveApplicationPort     () != m_moveApplicationPort
-       || pacsConfiguration->getRetrieveMethod          () != m_retrieveMethod
+    if(pacsConfiguration->getLocalApplicationTitle() != m_localApplicationTitle
+       || pacsConfiguration->getPacsHostName() != m_pacsHostName
+       || pacsConfiguration->getPacsApplicationTitle() != m_pacsApplicationTitle
+       || pacsConfiguration->getPacsApplicationPort() != m_pacsApplicationPort
+       || pacsConfiguration->getMoveApplicationTitle() != m_moveApplicationTitle
+       || pacsConfiguration->getMoveApplicationPort() != m_moveApplicationPort
+       || pacsConfiguration->getRetrieveMethod() != m_retrieveMethod
        )
     {
-        m_localApplicationTitle = pacsConfiguration->getLocalApplicationTitle   ();
-        m_pacsHostName          = pacsConfiguration->getPacsHostName            ();
-        m_pacsApplicationTitle  = pacsConfiguration->getPacsApplicationTitle    ();
-        m_pacsApplicationPort   = pacsConfiguration->getPacsApplicationPort     ();
-        m_moveApplicationTitle  = pacsConfiguration->getMoveApplicationTitle    ();
-        m_moveApplicationPort   = pacsConfiguration->getMoveApplicationPort     ();
-        m_retrieveMethod        = pacsConfiguration->getRetrieveMethod          ();
+        m_localApplicationTitle = pacsConfiguration->getLocalApplicationTitle();
+        m_pacsHostName          = pacsConfiguration->getPacsHostName();
+        m_pacsApplicationTitle  = pacsConfiguration->getPacsApplicationTitle();
+        m_pacsApplicationPort   = pacsConfiguration->getPacsApplicationPort();
+        m_moveApplicationTitle  = pacsConfiguration->getMoveApplicationTitle();
+        m_moveApplicationPort   = pacsConfiguration->getMoveApplicationPort();
+        m_retrieveMethod        = pacsConfiguration->getRetrieveMethod();
     }
 
     // If a preference key is set, save the local var to the preferences
     if(!m_preferenceKey.empty())
     {
-        std::pair< ::fwServices::IService::sptr, ::fwData::Composite::sptr>  prefs_pair = getPreferences();
-        ::fwServices::IService::sptr prefService = prefs_pair.first;
-        ::fwData::Composite::sptr prefs          = prefs_pair.second;
+        ::fwData::Composite::sptr prefs = ::fwPreferences::getPreferences();
         if(prefs && (prefs->find(m_preferenceKey) == prefs->end() || !(*prefs)[m_preferenceKey]))
         {
             (*prefs)[m_preferenceKey] = ::fwData::Composite::New();
@@ -240,10 +220,7 @@ void SPacsConfigurationInitializer::updating()
             (*config)["RetrieveMethod"       ] =
                 ::fwData::String::New(::boost::lexical_cast<std::string>(m_retrieveMethod));
         }
-        if(prefService)
-        {
-            prefService->update();
-        }
+        ::fwPreferences::savePreferences();
     }
 }
 

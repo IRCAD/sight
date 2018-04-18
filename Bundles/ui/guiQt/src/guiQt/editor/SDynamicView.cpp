@@ -368,7 +368,7 @@ void SDynamicView::buildMainActivity()
 SDynamicView::SDynamicViewInfo SDynamicView::createViewInfo(::fwMedData::ActivitySeries::sptr activitySeries)
 {
     ReplaceMapType replaceMap;
-    this->translateParameters(this->getObject(), m_parameters, replaceMap);
+    this->translateParameters(m_parameters, replaceMap);
 
     ::fwActivities::registry::ActivityInfo info;
     info = ::fwActivities::registry::Activities::getDefault()->getInfo(activitySeries->getActivityConfigId());

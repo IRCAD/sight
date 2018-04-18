@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWGDCMIO_WRITER_IE_SURFACE_HPP__
-#define __FWGDCMIO_WRITER_IE_SURFACE_HPP__
+#pragma once
 
 #include "fwGdcmIO/helper/SegmentedPropertyRegistry.hpp"
 #include "fwGdcmIO/writer/ie/InformationEntity.hpp"
@@ -42,10 +41,10 @@ public:
     FWGDCMIO_API Surface(const SPTR(::gdcm::Writer)& writer,
                          const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
                          const SPTR(::fwGdcmIO::container::DicomInstance)& imageInstance,
-                         const ::fwMedData::ModelSeries::sptr& series,
+                         const ::fwMedData::ModelSeries::csptr& series,
                          const ::fwLog::Logger::sptr& logger = nullptr,
-                         ProgressCallback progress = nullptr,
-                         CancelRequestedCallback cancel = nullptr);
+                         ProgressCallback progress           = nullptr,
+                         CancelRequestedCallback cancel      = nullptr);
 
     /// Destructor
     FWGDCMIO_API virtual ~Surface();
@@ -107,5 +106,3 @@ protected:
 } // namespace ie
 } // namespace writer
 } // namespace fwGdcmIO
-
-#endif /* __FWGDCMIO_WRITER_IE_SURFACE_HPP__ */

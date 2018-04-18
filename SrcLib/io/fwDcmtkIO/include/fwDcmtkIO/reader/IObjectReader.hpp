@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWDCMTKIO_READER_IOBJECTREADER_HPP__
-#define __FWDCMTKIO_READER_IOBJECTREADER_HPP__
+#pragma once
 
 #include "fwDcmtkIO/config.hpp"
 
@@ -32,12 +31,9 @@ public:
      * @brief Read the series from the group of instances.
      * @return Returns the created Series.
      */
-    FWDCMTKIO_API virtual ::fwMedData::Series::sptr read(::fwMedData::DicomSeries::sptr series) = 0;
+    FWDCMTKIO_API virtual ::fwMedData::Series::sptr read(::fwMedData::DicomSeries::csptr series) = 0;
 
 };
 
 } //reader
 } //fwDcmtkIO
-
-
-#endif /* __FWDCMTKIO_READER_IOBJECTREADER_HPP__ */

@@ -185,12 +185,12 @@
             <!-- Reader services -->
             <!-- *************************************************************************************************** -->
             <service uid="modelSeriesWriter" type="::uiIO::editor::SIOSelector">
-                <inout key="target" uid="modelSeriesId" />
+                <inout key="data" uid="modelSeriesId" />
                 <type mode="writer" />
             </service>
 
             <service uid="imageReader" type="::uiIO::editor::SIOSelector">
-                <inout key="target" uid="imageId" />
+                <inout key="data" uid="imageId" />
                 <type mode="reader" />
             </service>
 

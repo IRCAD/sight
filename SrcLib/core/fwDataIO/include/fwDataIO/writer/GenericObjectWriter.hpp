@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWDATAIO_WRITER_GENERICOBJECTWRITER_HPP__
-#define __FWDATAIO_WRITER_GENERICOBJECTWRITER_HPP__
+#pragma once
 
 #include "fwDataIO/config.hpp"
 #include "fwDataIO/writer/IObjectWriter.hpp"
@@ -51,10 +50,12 @@ public:
      *
      * This method overload setObject to ensure that given object correspond to DATATYPE
      */
-    virtual void setObject( ::fwTools::Object::sptr obj) override
+    virtual void setObject( ::fwTools::Object::csptr obj) override
     {
-        assert( std::dynamic_pointer_cast< DataType >( obj ) );
-        m_object = obj;
+        OSLM_ASSERT("Object type: '" << std::string(typeid(obj).name())
+                                     << "' is not a '" << typeid(DataType()).name()<<"'",
+                    std::dynamic_pointer_cast< const DataType >(obj));
+        IObjectWriter::setObject(obj);
     }
 
     /**
@@ -63,9 +64,9 @@ public:
      *
      * This method automatic cast object in correct DataType.
      */
-    virtual std::shared_ptr< DataType >  getConcreteObject()
+    virtual std::shared_ptr< const DataType > getConcreteObject() const
     {
-        return std::dynamic_pointer_cast< DataType >( getObject() );
+        return std::dynamic_pointer_cast< const DataType >( getObject() );
     }
 
 };
@@ -73,5 +74,3 @@ public:
 } // namespace writer
 
 } // namespace fwDataIO
-
-#endif // __FWDATAIO_WRITER_GENERICOBJECTWRITER_HPP__

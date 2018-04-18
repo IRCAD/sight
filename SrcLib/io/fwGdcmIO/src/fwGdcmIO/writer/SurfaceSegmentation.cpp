@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -51,8 +51,8 @@ SurfaceSegmentation::~SurfaceSegmentation()
 
 void SurfaceSegmentation::write()
 {
-
     const ::fwMedData::ModelSeries::csptr srcModelSeries = this->getConcreteObject();
+
     SLM_ASSERT("::fwMedData::ModelSeries not instanced", srcModelSeries);
 
     if(!m_associatedDicomSeries)
@@ -122,7 +122,6 @@ void SurfaceSegmentation::write()
 
     m_writerJob->done();
     m_writerJob->finish();
-
 }
 
 //------------------------------------------------------------------------------
@@ -134,7 +133,7 @@ std::string SurfaceSegmentation::extension()
 
 //------------------------------------------------------------------------------
 
-void SurfaceSegmentation::setAssociatedDicomSeries(const SPTR(::fwMedData::DicomSeries)& dicomSeries)
+void SurfaceSegmentation::setAssociatedDicomSeries(const CSPTR(::fwMedData::DicomSeries)& dicomSeries)
 {
     m_associatedDicomSeries = dicomSeries;
 }

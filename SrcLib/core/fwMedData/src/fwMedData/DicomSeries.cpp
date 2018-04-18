@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -17,10 +17,11 @@ fwDataRegisterMacro( ::fwMedData::DicomSeries );
 namespace fwMedData
 {
 
-DicomSeries::DicomSeries(::fwData::Object::Key key) : Series(key),
-                                                      m_dicomAvailability(NONE),
-                                                      m_numberOfInstances(0),
-                                                      m_firstInstanceNumber(0)
+DicomSeries::DicomSeries(::fwData::Object::Key key) :
+    Series(key),
+    m_dicomAvailability(NONE),
+    m_numberOfInstances(0),
+    m_firstInstanceNumber(0)
 {
 }
 
@@ -78,14 +79,14 @@ void DicomSeries::cachedDeepCopy(const ::fwData::Object::csptr& _source, DeepCop
 
 //------------------------------------------------------------------------------
 
-void DicomSeries::addDicomPath(std::size_t instanceIndex, ::boost::filesystem::path path)
+void DicomSeries::addDicomPath(std::size_t instanceIndex, const ::boost::filesystem::path& path)
 {
     m_localDicomPaths[instanceIndex] = path;
 }
 
 //------------------------------------------------------------------------------
 
-void DicomSeries::addBinary(const std::string& filename, SPTR(::fwData::Array)binary)
+void DicomSeries::addBinary(const std::string& filename, const SPTR(::fwData::Array)& binary)
 {
     m_dicomBinaries[filename] = binary;
 }
@@ -102,7 +103,6 @@ bool DicomSeries::isInstanceAvailable(std::size_t instanceIndex) const
     {
         case NONE:
         case PATHS:
-        case BLOB:
             localPathIter = m_localDicomPaths.find(instanceIndex);
             available     = localPathIter != m_localDicomPaths.end() && ::boost::filesystem::exists(
                 localPathIter->second);
@@ -111,7 +111,7 @@ bool DicomSeries::isInstanceAvailable(std::size_t instanceIndex) const
             available = instanceIndex < m_dicomBinaries.size();
             break;
         default:
-            SLM_ASSERT("You shall not pass.",0);
+            SLM_ASSERT("You shall not pass.", 0);
     }
 
     return available;
@@ -139,4 +139,3 @@ bool DicomSeries::hasComputedValues(const std::string& tagName) const
 }
 
 } // namespace fwMedData
-

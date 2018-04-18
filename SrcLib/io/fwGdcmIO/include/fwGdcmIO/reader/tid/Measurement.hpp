@@ -1,16 +1,17 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWGDCMIO_READER_TID_MEASUREMENT_HPP__
-#define __FWGDCMIO_READER_TID_MEASUREMENT_HPP__
+#pragma once
 
 #include "fwGdcmIO/container/sr/DicomSRNode.hpp"
 #include "fwGdcmIO/reader/tid/TemplateID.hpp"
 
 #include <fwData/Image.hpp>
+
+#include <fwMedData/DicomSeries.hpp>
 
 namespace fwData
 {
@@ -40,7 +41,7 @@ public:
      * @param[in] image FW4SPL data object
      * @param[in] logger Logger
      */
-    FWGDCMIO_API Measurement(const SPTR(::fwMedData::DicomSeries)& dicomSeries,
+    FWGDCMIO_API Measurement(const CSPTR(::fwMedData::DicomSeries)& dicomSeries,
                              const SPTR(::gdcm::Reader)& reader,
                              const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
                              const ::fwData::Image::sptr& image,
@@ -65,11 +66,8 @@ protected:
     void addDistance(const SPTR(::fwData::Point)& point1,
                      const SPTR(::fwData::Point)& point2);
 
-
 };
 
 } // namespace tid
 } // namespace reader
 } // namespace fwGdcmIO
-
-#endif /* __FWGDCMIO_READER_TID_MEASUREMENT_HPP__ */

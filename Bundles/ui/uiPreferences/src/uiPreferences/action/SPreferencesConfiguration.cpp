@@ -15,6 +15,8 @@
 
 #include <fwGui/dialog/LocationDialog.hpp>
 
+#include <fwPreferences/helper.hpp>
+
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
@@ -58,12 +60,9 @@ void SPreferencesConfiguration::starting()
     this->actionServiceStarting();
 
     // Check preferences
-    auto preferencesServicesList = ::fwServices::OSR::getServices("::fwPreferences::IPreferences");
-    if(!preferencesServicesList.empty())
+    ::fwData::Composite::sptr prefs = ::fwPreferences::getPreferences();
+    if(prefs)
     {
-        const ::fwServices::IService::sptr prefService = *preferencesServicesList.begin();
-        ::fwData::Composite::sptr prefs = prefService->getObject< ::fwData::Composite >();
-
         for(PreferenceElt& pref : m_preferences)
         {
             pref.m_dataPreference                      = ::fwData::String::New(pref.m_defaultValue);

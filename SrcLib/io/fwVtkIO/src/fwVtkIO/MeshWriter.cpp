@@ -1,11 +1,12 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwVtkIO/helper/Mesh.hpp"
 #include "fwVtkIO/MeshWriter.hpp"
+
+#include "fwVtkIO/helper/Mesh.hpp"
 #include "fwVtkIO/helper/vtkLambdaCommand.hpp"
 
 #include <fwCore/base.hpp>
@@ -15,12 +16,11 @@
 #include <fwJobs/IJob.hpp>
 #include <fwJobs/Observer.hpp>
 
-#include <vtkPolyData.h>
 #include <vtkGenericDataObjectWriter.h>
+#include <vtkPolyData.h>
 #include <vtkSmartPointer.h>
 
 fwDataIOWriterRegisterMacro( ::fwVtkIO::MeshWriter );
-
 
 namespace fwVtkIO
 {
@@ -49,7 +49,7 @@ void MeshWriter::write()
     assert( !m_object.expired() );
     assert( m_object.lock() );
 
-    ::fwData::Mesh::sptr pMesh = getConcreteObject();
+    ::fwData::Mesh::csptr pMesh = getConcreteObject();
 
     vtkSmartPointer< vtkGenericDataObjectWriter > writer = vtkSmartPointer< vtkGenericDataObjectWriter >::New();
     vtkSmartPointer< vtkPolyData > vtkMesh               = vtkSmartPointer< vtkPolyData >::New();

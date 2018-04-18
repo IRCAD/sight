@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -18,17 +18,18 @@
 #include "fwGdcmIO/writer/tid/Fiducial.hpp"
 #include "fwGdcmIO/writer/tid/Measurement.hpp"
 
-#include <fwDataTools/fieldHelper/Image.hpp>
 #include <fwData/PointList.hpp>
 #include <fwData/String.hpp>
 #include <fwData/Vector.hpp>
 
+#include <fwDataTools/fieldHelper/Image.hpp>
+
 #include <fwMedData/Series.hpp>
 #include <fwMedData/types.hpp>
 
-#include <gdcmUIDGenerator.h>
-
 #include <boost/algorithm/string/split.hpp>
+
+#include <gdcmUIDGenerator.h>
 
 #include <sstream>
 
@@ -43,7 +44,7 @@ namespace tid
 
 MeasurementReport::MeasurementReport(const SPTR(::gdcm::Writer)& writer,
                                      const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
-                                     const ::fwData::Image::sptr& image) :
+                                     const ::fwData::Image::csptr& image) :
     ::fwGdcmIO::writer::tid::TemplateID< ::fwData::Image >(writer, instance, image)
 {
 }
@@ -68,7 +69,9 @@ SPTR(::fwGdcmIO::container::sr::DicomSRNode) MeasurementReport::createRootNode(b
         std::make_shared< ::fwGdcmIO::container::sr::DicomSRCodeNode >(
             ::fwGdcmIO::container::DicomCodedAttribute("121049", "DCM", "Language of Content Item and Descendants"),
             "HAS CONCEPT MOD",
-            ::fwGdcmIO::container::DicomCodedAttribute("en-US", "RFC3066", "English, United States")); // FIXME Do we keep English US ?
+            ::fwGdcmIO::container::DicomCodedAttribute("en-US", "RFC3066", "English, United States")); // FIXME Do we
+                                                                                                       // keep English
+                                                                                                       // US ?
     rootNode->addSubNode(languagesNode);
 
     // Create Observation Context Node (TID 1001) FIXME Do we need to add that template ?
@@ -78,7 +81,10 @@ SPTR(::fwGdcmIO::container::sr::DicomSRNode) MeasurementReport::createRootNode(b
         std::make_shared< ::fwGdcmIO::container::sr::DicomSRCodeNode >(
             ::fwGdcmIO::container::DicomCodedAttribute("121058", "DCM", "Procedure reported"),
             "HAS CONCEPT MOD",
-            ::fwGdcmIO::container::DicomCodedAttribute("P5-09051", "SRT", "Magnetic resonance imaging guidance")); // FIXME Find a good value
+            ::fwGdcmIO::container::DicomCodedAttribute("P5-09051", "SRT", "Magnetic resonance imaging guidance")); // FIXME
+                                                                                                                   // Find
+                                                                                                                   // a good
+                                                                                                                   // value
     rootNode->addSubNode(procedureReportedNode);
 
     // Create ImageLibrary Node
@@ -134,7 +140,6 @@ SPTR(::fwGdcmIO::container::sr::DicomSRNode) MeasurementReport::createRootNode(b
         measurementTID.createNodes(imagingMeasurementsNode, useSCoord3D);
 
     }
-
 
     return rootNode;
 }
