@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2016-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2016-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __UIMEDDATAQT_WIDGET_ACTIVITYDATAVIEW_HPP__
-#define __UIMEDDATAQT_WIDGET_ACTIVITYDATAVIEW_HPP__
+#pragma once
 
 #include "uiMedDataQt/config.hpp"
 
@@ -85,6 +84,12 @@ public:
         m_ioSelectorSrvConfig = ioSelectorSrvConfig;
     }
 
+    /// Set io selector configuration used to import data from a SDB
+    void setSDBIOSelectorConfig(const std::string& ioSelectorSrvConfig)
+    {
+        m_sdbIoSelectorSrvConfig = ioSelectorSrvConfig;
+    }
+
     /// Remove all the widget tabs.
     UIMEDDATAQT_API virtual void clear();
 
@@ -107,11 +112,14 @@ private:
     /// Import an object required for the selected tab
     void importObject();
 
+    /// Import a SeriesDB and then extract the object required for the selected tab
+    void importObjectFromSDB();
+
     /// Create a new object for the selected tab (just use ::fwData::factory::New(type))
     void createNewObject();
 
     /// Call SIOSelector service to read the object. Return true if the object is properly read.
-    bool readObject(::fwData::Object::sptr obj);
+    bool readObject(const ::fwData::Object::sptr& obj, const std::string& ioSelectorSrvConfig);
 
     /// Removed the selected object in the current tree
     void removeSelectedObjects();
@@ -135,6 +143,7 @@ private:
     ::fwActivities::registry::ActivityInfo m_activityInfo; ///< activity information
 
     std::string m_ioSelectorSrvConfig; ///< io selector config
+    std::string m_sdbIoSelectorSrvConfig; ///< io selector config to import data from a SeriesDB
 
     ImportedObjectType m_importedObject; ///< refereces on the imported before to add them in the activity series.
     TreeContainerType m_treeWidgets; ///< Register the tree widget of each tab.
@@ -144,5 +153,3 @@ private:
 
 } // namespace widget
 } // namespace uiMedDataQt
-
-#endif // __UIMEDDATAQT_WIDGET_ACTIVITYDATAVIEW_HPP__

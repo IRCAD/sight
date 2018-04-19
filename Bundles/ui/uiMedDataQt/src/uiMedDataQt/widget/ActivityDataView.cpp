@@ -258,11 +258,24 @@ void ActivityDataView::fillInformation(const ::fwActivities::registry::ActivityI
             buttonLayout->addWidget(buttonNew);
             QObject::connect(buttonNew, &QPushButton::clicked, this, &ActivityDataView::createNewObject);
         }
+
         QPushButton* buttonAdd    = new QPushButton("Import");
         QPushButton* buttonRemove = new QPushButton("Remove");
         QPushButton* buttonClear  = new QPushButton("Clear");
         buttonLayout->addWidget(buttonAdd);
         buttonAdd->setToolTip(QString("Import a new object of type '%1'").arg(QString::fromStdString(req.type)));
+
+        // If type is a series, we use add a button to import the data from a SeriesDB
+        ::fwData::Object::sptr newObject = ::fwData::factory::New(req.type);
+        if (newObject && ::fwMedData::Series::dynamicCast(newObject))
+        {
+            QPushButton* buttonAddFromSDB = new QPushButton("Import from SeriesDB");
+            buttonLayout->addWidget(buttonAddFromSDB);
+            buttonAddFromSDB->setToolTip(QString("Import a SeriesDB an extract the object of type '%1'").
+                                         arg(QString::fromStdString(req.type)));
+            QObject::connect(buttonAddFromSDB, &QPushButton::clicked, this, &ActivityDataView::importObjectFromSDB);
+        }
+
         buttonLayout->addWidget(buttonRemove);
         buttonRemove->setToolTip(QString("Remove the selected objects"));
         buttonLayout->addWidget(buttonClear);
@@ -639,37 +652,67 @@ void ActivityDataView::importObject()
     ::fwData::Object::sptr newObject = ::fwData::factory::New(type);
     if (newObject)
     {
-        // If type is a series, we use the SeriesDB reader and then extract the object of this type.
-        if (::fwMedData::Series::dynamicCast(newObject))
+        if (this->readObject(newObject, m_ioSelectorSrvConfig))
         {
-            ::fwMedData::SeriesDB::sptr seriesDB = ::fwMedData::SeriesDB::New();
-            if (this->readObject(seriesDB))
+            m_importedObject.push_back(newObject);
+
+            this->addObjectItem(index, newObject);
+        }
+    }
+    else
+    {
+        std::string msg = "Can not create object '" + type + "'";
+        OSLM_ERROR(msg);
+        QMessageBox messageBox(QMessageBox::Warning, "Error", QString::fromStdString(msg), QMessageBox::Ok);
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void ActivityDataView::importObjectFromSDB()
+{
+    size_t index = static_cast<size_t>(this->currentIndex());
+
+    ::fwActivities::registry::ActivityRequirement req = m_activityInfo.requirements[index];
+
+    std::string type = req.type;
+
+    QPointer<QTreeWidget> tree = m_treeWidgets[index];
+
+    unsigned int nbItems = static_cast<unsigned int>(tree->topLevelItemCount());
+
+    if(nbItems >= req.maxOccurs)
+    {
+        QMessageBox::warning(this, "Import",
+                             "The maximum number of element is reached.\n"
+                             "You must remove one before adding another.");
+        return;
+    }
+
+    ::fwData::Object::sptr newObject = ::fwData::factory::New(type);
+    if (newObject)
+    {
+        OSLM_ERROR_IF("Imported object must inherit from 'Series'.", !::fwMedData::Series::dynamicCast(newObject));
+
+        // We use the SeriesDB reader and then extract the object of this type.
+        ::fwMedData::SeriesDB::sptr seriesDB = ::fwMedData::SeriesDB::New();
+        if (this->readObject(seriesDB, m_sdbIoSelectorSrvConfig))
+        {
+            unsigned int nbImportedObj = 0;
+            for (const ::fwMedData::Series::sptr& series : *seriesDB)
             {
-                unsigned int nbImportedObj = 0;
-                for (const ::fwMedData::Series::sptr& series : *seriesDB)
+                if (series->isA(type))
                 {
-                    if (series->isA(type))
+                    ++nbImportedObj;
+                    m_importedObject.push_back(series);
+
+                    this->addObjectItem(index, series);
+
+                    if (nbImportedObj >= req.maxOccurs)
                     {
-                        ++nbImportedObj;
-                        m_importedObject.push_back(series);
-
-                        this->addObjectItem(index, series);
-
-                        if (nbImportedObj >= req.maxOccurs)
-                        {
-                            break;
-                        }
+                        break;
                     }
                 }
-            }
-        }
-        else
-        {
-            if (this->readObject(newObject))
-            {
-                m_importedObject.push_back(newObject);
-
-                this->addObjectItem(index, newObject);
             }
         }
     }
@@ -683,14 +726,14 @@ void ActivityDataView::importObject()
 
 //-----------------------------------------------------------------------------
 
-bool ActivityDataView::readObject(::fwData::Object::sptr obj)
+bool ActivityDataView::readObject(const fwData::Object::sptr& obj, const std::string& ioSelectorSrvConfig)
 {
     ::fwServices::IService::sptr ioSelectorSrv;
     ioSelectorSrv = ::fwServices::add("::uiIO::editor::SIOSelector");
     ioSelectorSrv->registerInOut(obj, ::fwIO::s_DATA_KEY);
 
     ::fwRuntime::ConfigurationElement::csptr ioCfg;
-    ioCfg = ::fwServices::registry::ServiceConfig::getDefault()->getServiceConfig(m_ioSelectorSrvConfig,
+    ioCfg = ::fwServices::registry::ServiceConfig::getDefault()->getServiceConfig(ioSelectorSrvConfig,
                                                                                   "::uiIO::editor::SIOSelector");
 
     bool isRead = true;

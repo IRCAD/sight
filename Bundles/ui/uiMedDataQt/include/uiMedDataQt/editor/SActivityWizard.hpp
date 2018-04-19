@@ -60,6 +60,7 @@ namespace editor
  * @code{.xml}
    <service impl="::uiMedDataQt::editor::SActivityWizard">
      <ioSelectorConfig>config</ioSelectorConfig>
+     <sdbIoSelectorConfig>config</sdbIoSelectorConfig>
      <activitySeries>seriesUid</activitySeries>
      <confirm>true</confirm>
      <cancel>true</cancel>
@@ -70,6 +71,8 @@ namespace editor
    </service>
    @endcode
  * - \b ioSelectorConfig : configuration for the SIOSelector service used to import data in this editor.
+ * - \b sdbIoSelectorConfig(optional, default: ioSelectorConfig): configuration for the SIOSelector service used to
+ * import data in this editor from a SeriesDB.
  * - \b icons : defines the icons displayed for a type of data
  *    - \b type : type of data
  *    - \b icon : path of the icon to display
@@ -181,6 +184,7 @@ private:
     QPointer<QLabel> m_description; ///< Label to show activity description
 
     std::string m_ioSelectorConfig; ///< configuration used to import data
+    std::string m_sdbIoSelectorConfig; ///< configuration used to import data from e SeriesDB
 
     widget::ActivityDataView::ObjectIconMapType m_objectIcons; ///< Map defining the icon associated to an object.
 

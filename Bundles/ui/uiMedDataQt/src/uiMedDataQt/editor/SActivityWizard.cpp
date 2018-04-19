@@ -89,49 +89,35 @@ void SActivityWizard::configuring()
 {
     ::fwGui::IGuiContainerSrv::initialize();
 
-    ::fwRuntime::ConfigurationElement::sptr config = m_configuration->findConfigurationElement("ioSelectorConfig");
-    if (config)
+    const auto config = this->getConfigTree();
+
+    m_ioSelectorConfig = config.get("ioSelectorConfig", "");
+    SLM_ASSERT("ioSelector Configuration must not be empty", !m_ioSelectorConfig.empty());
+
+    m_sdbIoSelectorConfig = config.get("sdbIoSelectorConfig", "");
+    if (m_sdbIoSelectorConfig.empty())
     {
-        m_ioSelectorConfig = config->getValue();
+        m_sdbIoSelectorConfig = m_ioSelectorConfig;
     }
 
-    ::fwRuntime::ConfigurationElement::sptr confirmConfig = m_configuration->findConfigurationElement("confirm");
-    if (confirmConfig)
+    m_confirmUpdate = config.get("confirm", m_confirmUpdate);
+    m_isCancelable  = config.get("cancel", m_isCancelable);
+
+    const auto iconsCfg = config.get_child("icons");
+    const auto iconCfg  = iconsCfg.equal_range("icon");
+    for (auto itIcon = iconCfg.first; itIcon != iconCfg.second; ++itIcon)
     {
-        std::string confirmStr = confirmConfig->getValue();
-        SLM_ASSERT("'confirm' value must be 'true' or 'false', actual: '" + confirmStr + "'",
-                   confirmStr == "true" || confirmStr == "false");
-        m_confirmUpdate = (confirmStr == "true");
+        const auto iconCfg = itIcon->second.get_child("<xmlattr>");
+
+        const std::string type = iconCfg.get<std::string>("type");
+        SLM_ASSERT("'type' attribute must not be empty", !type.empty());
+        const std::string icon = iconCfg.get<std::string>("icon");
+        SLM_ASSERT("'icon' attribute must not be empty", !icon.empty());
+
+        const auto file = ::fwRuntime::getResourceFilePath(icon);
+        m_objectIcons[type] = file.string();
     }
-
-    ::fwRuntime::ConfigurationElement::sptr cancelConfig = m_configuration->findConfigurationElement("cancel");
-    if (cancelConfig)
-    {
-        std::string cancelStr = cancelConfig->getValue();
-        SLM_ASSERT("'cancel' value must be 'true' or 'false', actual: '" + cancelStr + "'",
-                   cancelStr == "true" || cancelStr == "false");
-        m_isCancelable = (cancelStr == "true");
-    }
-
-    std::vector < ::fwRuntime::ConfigurationElement::sptr > iconsCfg = m_configuration->find("icons");
-    if (!iconsCfg.empty())
-    {
-        SLM_ASSERT("Only one 'config' tag is allowed for SSelector configuration", iconsCfg.size() == 1);
-
-        std::vector < ::fwRuntime::ConfigurationElement::sptr > cfg = iconsCfg.front()->find("icon");
-
-        for(::fwRuntime::ConfigurationElement::sptr elt :  cfg)
-        {
-            const std::string type = elt->getAttributeValue("type");
-            SLM_ASSERT("'series' attribute is missing", !type.empty());
-
-            const std::string icon = elt->getAttributeValue("icon");
-            SLM_ASSERT("'icon' attribute is missing", !icon.empty());
-
-            const auto file = ::fwRuntime::getResourceFilePath(icon);
-            m_objectIcons[type] = file.string();
-        }
-    }
+    OSLM_ASSERT("icons are empty", !m_objectIcons.empty());
 }
 
 //------------------------------------------------------------------------------
@@ -158,6 +144,8 @@ void SActivityWizard::starting()
 
     m_activityDataView = new widget::ActivityDataView();
     m_activityDataView->setIOSelectorConfig(m_ioSelectorConfig);
+    m_activityDataView->setSDBIOSelectorConfig(m_sdbIoSelectorConfig);
+
     m_activityDataView->setObjectIconAssociation(m_objectIcons);
 
     layout->addWidget(m_activityDataView, 1);
