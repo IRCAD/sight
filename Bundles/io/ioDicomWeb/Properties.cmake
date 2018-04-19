@@ -9,7 +9,7 @@ set( DEPENDENCIES
     fwCom
     fwGui
     fwGuiQt
-    fwNetwork
+    fwNetworkIO
     fwRuntime
     fwTools
     fwData

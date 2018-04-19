@@ -14,7 +14,7 @@
 
 #include <fwMedDataTools/helper/SeriesDB.hpp>
 
-#include <fwNetwork/helper/Series.hpp>
+#include <fwNetworkIO/helper/Series.hpp>
 
 #include <fwPreferences/helper.hpp>
 
@@ -60,7 +60,7 @@ void SQueryEditor::configuring()
     //Parse server port and hostname
     if(configuration.count("server"))
     {
-        const std::string serverInfo = configuration.get("server", "");
+        const std::string serverInfo               = configuration.get("server", "");
         const std::string::size_type splitPosition = serverInfo.find(':');
         SLM_ASSERT("Server info not formatted correctly", splitPosition != std::string::npos);
 
@@ -204,7 +204,7 @@ void SQueryEditor::queryPatientName()
         const std::string pacsServer("http://" + m_serverHostname + ":" + std::to_string(m_serverPort));
 
         /// Orthanc "/tools/find" route. POST a JSON to get all Series corresponding to the SeriesInstanceUID.
-        ::fwNetwork::http::Request::sptr request = ::fwNetwork::http::Request::New(pacsServer + "/tools/find");
+        ::fwNetworkIO::http::Request::sptr request = ::fwNetworkIO::http::Request::New(pacsServer + "/tools/find");
         const QByteArray& seriesAnswer = m_clientQt.post(request, QJsonDocument(body).toJson());
         QJsonDocument jsonResponse     = QJsonDocument::fromJson(seriesAnswer);
         const QJsonArray& seriesArray  = jsonResponse.array();
@@ -215,7 +215,7 @@ void SQueryEditor::queryPatientName()
 
             const std::string& seriesUID = seriesArray.at(i).toString().toStdString();
             const std::string instancesUrl(pacsServer + "/series/" + seriesUID);
-            const QByteArray& instancesAnswer = m_clientQt.get( ::fwNetwork::http::Request::New(instancesUrl));
+            const QByteArray& instancesAnswer = m_clientQt.get( ::fwNetworkIO::http::Request::New(instancesUrl));
             jsonResponse = QJsonDocument::fromJson(instancesAnswer);
             const QJsonObject& jsonObj       = jsonResponse.object();
             const QJsonArray& instancesArray = jsonObj["Instances"].toArray();
@@ -225,17 +225,17 @@ void SQueryEditor::queryPatientName()
             {
                 const std::string& instanceUID = instancesArray.at(j).toString().toStdString();
                 const std::string instancesUrl(pacsServer + "/instances/" + instanceUID + "/simplified-tags");
-                const QByteArray& instance = m_clientQt.get( ::fwNetwork::http::Request::New(instancesUrl));
+                const QByteArray& instance = m_clientQt.get( ::fwNetworkIO::http::Request::New(instancesUrl));
 
                 // Convert response to DicomSeries
-                ::fwMedData::SeriesDB::ContainerType series = ::fwNetwork::helper::Series::toFwMedData(instance);
+                ::fwMedData::SeriesDB::ContainerType series = ::fwNetworkIO::helper::Series::toFwMedData(instance);
 
                 allSeries.insert(std::end(allSeries), std::begin(series), std::end(series));
                 this->updateSeriesDB(allSeries);
             }
         }
     }
-    catch (::fwNetwork::exceptions::Base& exception)
+    catch (::fwNetworkIO::exceptions::Base& exception)
     {
         this->displayErrorMessage(exception.what());
     }
@@ -271,7 +271,7 @@ void SQueryEditor::queryStudyDate()
         // Find Studies according to their StudyDate
         QJsonObject query;
         const std::string& beginDate = m_beginStudyDateEdit->date().toString("yyyyMMdd").toStdString();
-        const std::string& endDate = m_endStudyDateEdit->date().toString("yyyyMMdd").toStdString();
+        const std::string& endDate   = m_endStudyDateEdit->date().toString("yyyyMMdd").toStdString();
         const std::string& dateRange = beginDate + "-" + endDate;
         query.insert("StudyDate", dateRange.c_str());
 
@@ -284,9 +284,9 @@ void SQueryEditor::queryStudyDate()
         const std::string pacsServer("http://" + m_serverHostname + ":" + std::to_string(m_serverPort));
 
         /// Orthanc "/tools/find" route. POST a JSON to get all Studies corresponding to StudyDate range.
-        ::fwNetwork::http::Request::sptr request = ::fwNetwork::http::Request::New(pacsServer + "/tools/find");
+        ::fwNetworkIO::http::Request::sptr request = ::fwNetworkIO::http::Request::New(pacsServer + "/tools/find");
         const QByteArray& studiesListAnswer = m_clientQt.post(request, QJsonDocument(body).toJson());
-        QJsonDocument jsonResponse     = QJsonDocument::fromJson(studiesListAnswer);
+        QJsonDocument jsonResponse          = QJsonDocument::fromJson(studiesListAnswer);
         const QJsonArray& studiesListArray  = jsonResponse.array();
         const size_t studiesListArraySize   = studiesListArray.count();
 
@@ -294,18 +294,18 @@ void SQueryEditor::queryStudyDate()
         {
             const std::string& studiesUID = studiesListArray.at(i).toString().toStdString();
             const std::string studiesUrl(pacsServer + "/studies/" + studiesUID);
-            const QByteArray& studiesAnswer = m_clientQt.get( ::fwNetwork::http::Request::New(studiesUrl));
+            const QByteArray& studiesAnswer = m_clientQt.get( ::fwNetworkIO::http::Request::New(studiesUrl));
 
             jsonResponse = QJsonDocument::fromJson(studiesAnswer);
-            const QJsonObject& jsonObj       = jsonResponse.object();
+            const QJsonObject& jsonObj    = jsonResponse.object();
             const QJsonArray& seriesArray = jsonObj["Series"].toArray();
-            const size_t seriesArraySize   = seriesArray.count();
+            const size_t seriesArraySize  = seriesArray.count();
 
             for(size_t i = 0; i < seriesArraySize; ++i)
             {
                 const std::string& seriesUID = seriesArray.at(i).toString().toStdString();
                 const std::string instancesUrl(pacsServer + "/series/" + seriesUID);
-                const QByteArray& instancesAnswer = m_clientQt.get( ::fwNetwork::http::Request::New(instancesUrl));
+                const QByteArray& instancesAnswer = m_clientQt.get( ::fwNetworkIO::http::Request::New(instancesUrl));
                 jsonResponse = QJsonDocument::fromJson(instancesAnswer);
                 const QJsonObject& jsonObj       = jsonResponse.object();
                 const QJsonArray& instancesArray = jsonObj["Instances"].toArray();
@@ -315,10 +315,10 @@ void SQueryEditor::queryStudyDate()
                 {
                     const std::string& instanceUID = instancesArray.at(j).toString().toStdString();
                     const std::string instancesUrl(pacsServer + "/instances/" + instanceUID + "/simplified-tags");
-                    const QByteArray& instance = m_clientQt.get( ::fwNetwork::http::Request::New(instancesUrl));
+                    const QByteArray& instance = m_clientQt.get( ::fwNetworkIO::http::Request::New(instancesUrl));
 
                     // Convert response to DicomSeries
-                    ::fwMedData::SeriesDB::ContainerType series = ::fwNetwork::helper::Series::toFwMedData(instance);
+                    ::fwMedData::SeriesDB::ContainerType series = ::fwNetworkIO::helper::Series::toFwMedData(instance);
 
                     allSeries.insert(std::end(allSeries), std::begin(series), std::end(series));
                     this->updateSeriesDB(allSeries);
@@ -326,7 +326,7 @@ void SQueryEditor::queryStudyDate()
             }
         }
     }
-    catch (::fwNetwork::exceptions::Base& exception)
+    catch (::fwNetworkIO::exceptions::Base& exception)
     {
         this->displayErrorMessage(exception.what());
     }

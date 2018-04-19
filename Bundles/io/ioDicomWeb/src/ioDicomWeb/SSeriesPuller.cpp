@@ -20,9 +20,9 @@
 
 #include <fwMedDataTools/helper/SeriesDB.hpp>
 
-#include <fwNetwork/exceptions/Base.hpp>
-#include <fwNetwork/helper/Series.hpp>
-#include <fwNetwork/http/Request.hpp>
+#include <fwNetworkIO/exceptions/Base.hpp>
+#include <fwNetworkIO/helper/Series.hpp>
+#include <fwNetworkIO/http/Request.hpp>
 
 #include <fwPreferences/helper.hpp>
 
@@ -271,7 +271,7 @@ void SSeriesPuller::pullSeries()
         {
             /// GET
             const InstanceUIDContainerType& seriesInstancesUIDs =
-                ::fwNetwork::helper::Series::toSeriesInstanceUIDContainer(pullSeriesVector);
+                ::fwNetworkIO::helper::Series::toSeriesInstanceUIDContainer(pullSeriesVector);
             for( const std::string& seriesInstancesUID : seriesInstancesUIDs )
             {
                 // Find Series according to SeriesInstanceUID
@@ -287,7 +287,8 @@ void SSeriesPuller::pullSeries()
                 const std::string pacsServer("http://" + m_serverHostname + ":" + std::to_string(m_serverPort));
 
                 /// Orthanc "/tools/find" route. POST a JSON to get all Series corresponding to the SeriesInstanceUID.
-                ::fwNetwork::http::Request::sptr request = ::fwNetwork::http::Request::New(pacsServer + "/tools/find");
+                ::fwNetworkIO::http::Request::sptr request = ::fwNetworkIO::http::Request::New(
+                    pacsServer + "/tools/find");
                 const QByteArray& seriesAnswer = m_clientQt.post(request, QJsonDocument(body).toJson());
                 QJsonDocument jsonResponse     = QJsonDocument::fromJson(seriesAnswer);
                 const QJsonArray& seriesArray  = jsonResponse.array();
@@ -301,7 +302,8 @@ void SSeriesPuller::pullSeries()
 
                     /// GET all Instances by Series.
                     const std::string& instancesUrl(pacsServer + "/series/" + seriesUID);
-                    const QByteArray& instancesAnswer = m_clientQt.get( ::fwNetwork::http::Request::New(instancesUrl));
+                    const QByteArray& instancesAnswer =
+                        m_clientQt.get( ::fwNetworkIO::http::Request::New(instancesUrl));
                     jsonResponse = QJsonDocument::fromJson(instancesAnswer);
                     const QJsonObject& jsonObj       = jsonResponse.object();
                     const QJsonArray& instancesArray = jsonObj["Instances"].toArray();
@@ -313,7 +315,7 @@ void SSeriesPuller::pullSeries()
 
                         /// GET DICOM Instance file.
                         const std::string instanceUrl(pacsServer +"/instances/" + instanceUID + "/file");
-                        const QByteArray& instance = m_clientQt.get( ::fwNetwork::http::Request::New(instanceUrl));
+                        const QByteArray& instance = m_clientQt.get( ::fwNetworkIO::http::Request::New(instanceUrl));
 
                         /// Write it to a temporary directory.
                         QDir dir(seriesPath.string().c_str());
@@ -342,7 +344,7 @@ void SSeriesPuller::pullSeries()
         m_isPulling = false;
 
     }
-    catch (::fwNetwork::exceptions::Base& exception)
+    catch (::fwNetworkIO::exceptions::Base& exception)
     {
         ::std::stringstream ss;
         ss << "Error: Retrieving from the PACS failed.";
@@ -358,7 +360,7 @@ void SSeriesPuller::readLocalSeries(DicomSeriesContainerType selectedSeries)
 {
     // Read only series that are not in the SeriesDB
     const InstanceUIDContainerType& alreadyLoadedSeries =
-        ::fwNetwork::helper::Series::toSeriesInstanceUIDContainer(m_destinationSeriesDB->getContainer());
+        ::fwNetworkIO::helper::Series::toSeriesInstanceUIDContainer(m_destinationSeriesDB->getContainer());
 
     // Create temporary series helper
     ::fwMedDataTools::helper::SeriesDB tempSDBhelper(m_tempSeriesDB);

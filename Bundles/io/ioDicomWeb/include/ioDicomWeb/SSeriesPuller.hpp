@@ -14,7 +14,7 @@
 
 #include <fwMedData/SeriesDB.hpp>
 
-#include <fwNetwork/http/ClientQt.hpp>
+#include <fwNetworkIO/http/ClientQt.hpp>
 
 #include <fwServices/IController.hpp>
 
@@ -128,7 +128,7 @@ private:
     DisplayMessageSlotType::sptr m_slotDisplayMessage;
 
     /// Http Qt Client
-    ::fwNetwork::http::ClientQt m_clientQt;
+    ::fwNetworkIO::http::ClientQt m_clientQt;
 
     /// Reader
     ::fwIO::IReader::sptr m_dicomReader;

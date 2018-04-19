@@ -10,7 +10,7 @@
 
 #include <fwCom/Slot.hpp>
 
-#include <fwNetwork/http/ClientQt.hpp>
+#include <fwNetworkIO/http/ClientQt.hpp>
 
 #include <fwServices/IController.hpp>
 
@@ -106,7 +106,7 @@ protected:
     DisplayMessageSlotType::sptr m_slotDisplayMessage;
 
     /// Http Qt Client
-    ::fwNetwork::http::ClientQt m_clientQt;
+    ::fwNetworkIO::http::ClientQt m_clientQt;
 
     /// Push Worker
     ::fwThread::Worker::sptr m_pushSeriesWorker;

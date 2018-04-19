@@ -12,7 +12,7 @@
 
 #include <fwMedData/SeriesDB.hpp>
 
-#include <fwNetwork/http/ClientQt.hpp>
+#include <fwNetworkIO/http/ClientQt.hpp>
 
 #include <boost/filesystem/path.hpp>
 
@@ -110,7 +110,7 @@ private:
     QPointer< QPushButton > m_studyDateQueryButton;
 
     /// Http Qt Client
-    ::fwNetwork::http::ClientQt m_clientQt;
+    ::fwNetworkIO::http::ClientQt m_clientQt;
 
     /// Returns a well formatted preferences key
     std::string getPreferenceKey(const std::string& key) const;

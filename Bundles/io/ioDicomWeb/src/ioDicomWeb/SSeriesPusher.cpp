@@ -18,7 +18,7 @@
 #include <fwMedData/DicomSeries.hpp>
 #include <fwMedData/Series.hpp>
 
-#include <fwNetwork/exceptions/Base.hpp>
+#include <fwNetworkIO/exceptions/Base.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -228,7 +228,7 @@ void SSeriesPusher::pushSeries()
         // m_seriesRequestor->pushSeries(dicomFilesContainer);
 
     }
-    catch (::fwNetwork::exceptions::Base& exception)
+    catch (::fwNetworkIO::exceptions::Base& exception)
     {
         std::stringstream ss;
         m_slotDisplayMessage->asyncRun(ss.str(), true);
