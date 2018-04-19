@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWSERVICES_UT_TESTSERVICE_HPP__
-#define __FWSERVICES_UT_TESTSERVICE_HPP__
+#pragma once
 
 #include <fwServices/IService.hpp>
 
@@ -290,7 +289,42 @@ private:
     int m_received;
 };
 
+/**
+ * @brief Service with input and output
+ */
+class TestServiceWithData : public ::fwServices::IService
+{
+public:
+
+    static const KeyType s_INPUT;
+    static const KeyType s_OUTPUT;
+
+    fwCoreServiceClassDefinitionsMacro( (TestServiceWithData)(::fwServices::IService) );
+    TestServiceWithData() noexcept
+    {
+    }
+
+    virtual ~TestServiceWithData() noexcept
+    {
+    }
+
+    //------------------------------------------------------------------------------
+
+    virtual void configuring() override
+    {
+    }
+
+    //------------------------------------------------------------------------------
+
+    virtual void starting() override
+    {
+
+    }
+    //------------------------------------------------------------------------------
+
+    virtual void stopping() override;
+    virtual void updating() override;
+};
+
 } //namespace ut
 } //namespace fwServices
-
-#endif //__FWSERVICES_UT_TESTSERVICE_HPP__

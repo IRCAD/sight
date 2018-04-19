@@ -106,7 +106,7 @@ protected:
 
 private:
 
-    typedef std::vector< ::fwData::Object::sptr > ImportedObjectType;
+    typedef std::vector< ::fwData::Object::csptr > ImportedObjectType;
     typedef std::vector<QPointer<QTreeWidget> > TreeContainerType;
 
     /// Import an object required for the selected tab
@@ -119,7 +119,7 @@ private:
     void createNewObject();
 
     /// Call SIOSelector service to read the object. Return true if the object is properly read.
-    bool readObject(const ::fwData::Object::sptr& obj, const std::string& ioSelectorSrvConfig);
+    fwData::Object::sptr readObject(const std::string& classname, const std::string& ioSelectorSrvConfig);
 
     /// Removed the selected object in the current tree
     void removeSelectedObjects();
@@ -138,7 +138,7 @@ private:
      * @param index index used to find the associated tree widget
      * @param obj object to add in the tree
      */
-    void addObjectItem(size_t index, const ::fwData::Object::sptr& obj);
+    void addObjectItem(size_t index, const ::fwData::Object::csptr& obj);
 
     ::fwActivities::registry::ActivityInfo m_activityInfo; ///< activity information
 

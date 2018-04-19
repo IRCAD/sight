@@ -76,7 +76,8 @@ public:
     typedef std::string IdType;
     typedef std::string KeyType;
     typedef std::map< KeyType, CWPTR( ::fwData::Object )> InputMapType;
-    typedef std::map< KeyType, WPTR( ::fwData::Object )> OutputMapType;
+    typedef std::map< KeyType, WPTR( ::fwData::Object )> InOutMapType;
+    typedef std::map< KeyType, SPTR( ::fwData::Object )> OutputMapType;
 
     enum class AccessType : std::uint8_t
     {
@@ -329,14 +330,6 @@ public:
      * @brief Return the configuration, in an boost property tree
      */
     FWSERVICES_API ConfigType getConfigTree() const;
-
-//    /**
-//     * @brief Check the configuration using XSD if possible
-//     * @return true if the configuration is validate or if
-//     * there is not XSD available to validate the configuration.
-//     */
-//    FWSERVICES_API bool checkConfiguration() ;
-
     //@}
 
     /**
@@ -366,18 +359,20 @@ public:
     /**
      * @brief Return the inputs map associated to service
      * @return m_inputsMap
-     * @pre the service must have an associated object set
-     * @pre associated objects have not expired
      */
     FWSERVICES_API const InputMapType& getInputs() const;
 
     /**
      * @brief Return the inouts map associated to service
      * @return m_inoutsMap
-     * @pre the service must have an associated object set
-     * @pre associated objects have not expired
      */
-    FWSERVICES_API const OutputMapType& getInOuts() const;
+    FWSERVICES_API const InOutMapType& getInOuts() const;
+
+    /**
+     * @brief Return the outouts map associated to service
+     * @return m_outputsMap
+     */
+    FWSERVICES_API const OutputMapType& getOutputs() const;
 
     /**
      * @brief Return the objects associated to service
@@ -391,37 +386,43 @@ public:
      * @brief Return the input object at the given key. Asserts if the data is not of the right type.
      * @param key name of the data to retrieve.
      * @return object cast in the right type, nullptr if not found.
-     * @pre the service must have an associated object set.
-     * @post cast verification in debug mode ( assertion on dynamic cast ).
      */
-    template< class DATATYPE > CSPTR(DATATYPE) getInput(const KeyType &key) const;
+    template< class DATATYPE > CSPTR(DATATYPE) getInput(const KeyType& key) const;
 
     /**
      * @brief Return the inout object at the given key. Asserts if the data is not of the right type.
      * @param key name of the data to retrieve.
      * @return object cast in the right type, nullptr if not found.
-     * @pre the service must have an associated object set.
-     * @post cast verification in debug mode ( assertion on dynamic cast ).
      */
-    template< class DATATYPE > SPTR(DATATYPE) getInOut(const KeyType &key) const;
+    template< class DATATYPE > SPTR(DATATYPE) getInOut(const KeyType& key) const;
+
+    /**
+     * @brief Return the output object at the given key. Asserts if the data is not of the right type.
+     * @param key name of the data to retrieve.
+     * @return object cast in the right type, nullptr if not found.
+     */
+    template< class DATATYPE > SPTR(DATATYPE) getOutput(const KeyType& key) const;
 
     /**
      * @brief Return the input object at the given key. Asserts if the data is not of the right type.
      * @param key name of the data to retrieve.
      * @return object cast in the right type, nullptr if not found.
-     * @pre the service must have an associated object set.
-     * @post cast verification in debug mode ( assertion on dynamic cast ).
      */
-    template< class DATATYPE > CSPTR(DATATYPE) getInput(const KeyType &keybase, size_t index) const;
+    template< class DATATYPE > CSPTR(DATATYPE) getInput(const KeyType& keybase, size_t index) const;
 
     /**
      * @brief Return the inout object at the given key. Asserts if the data is not of the right type.
      * @param key name of the data to retrieve.
      * @return object cast in the right type, nullptr if not found.
-     * @pre the service must have an associated object set.
-     * @post cast verification in debug mode ( assertion on dynamic cast ).
      */
-    template< class DATATYPE > SPTR(DATATYPE) getInOut(const KeyType &keybase, size_t index) const;
+    template< class DATATYPE > SPTR(DATATYPE) getInOut(const KeyType& keybase, size_t index) const;
+
+    /**
+     * @brief Return the output object at the given key. Asserts if the data is not of the right type.
+     * @param key name of the data to retrieve.
+     * @return object cast in the right type, nullptr if not found.
+     */
+    template< class DATATYPE > SPTR(DATATYPE) getOutput(const KeyType& keybase, size_t index) const;
 
     /**
      * @brief Register an output object at a given key in the OSR, replacing it if it already exists.
@@ -534,7 +535,7 @@ public:
      * @param[in] optional if true, the service can be started even if the objet is not present
      * @return
      */
-    FWSERVICES_API void registerInput(const::fwData::Object::csptr& obj, const std::string& key,
+    FWSERVICES_API void registerInput(const ::fwData::Object::csptr& obj, const std::string& key,
                                       const bool autoConnect = false, const bool optional = false);
 
     /**
@@ -545,7 +546,7 @@ public:
      * @param[in] optional if true, the service can be started even if the objet is not present
      * @return
      */
-    FWSERVICES_API void registerInOut(const::fwData::Object::sptr& obj, const std::string& key,
+    FWSERVICES_API void registerInOut(const ::fwData::Object::sptr& obj, const std::string& key,
                                       const bool autoConnect = false, const bool optional = false);
 
 protected:
@@ -738,7 +739,7 @@ private:
     /**
      * @brief associated input/outputs of the service ordered by key
      */
-    OutputMapType m_inOutsMap;
+    InOutMapType m_inOutsMap;
 
     /**
      * @brief associated outputs of the service ordered by key

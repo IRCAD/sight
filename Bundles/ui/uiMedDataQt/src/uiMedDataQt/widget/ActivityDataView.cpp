@@ -28,8 +28,11 @@
 #include <fwMedData/SeriesDB.hpp>
 #include <fwMedData/Study.hpp>
 
+#include <fwRuntime/Convert.hpp>
+
 #include <fwServices/IService.hpp>
 #include <fwServices/op/Add.hpp>
+#include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/registry/ServiceConfig.hpp>
 
 #include <QApplication>
@@ -649,21 +652,12 @@ void ActivityDataView::importObject()
         return;
     }
 
-    ::fwData::Object::sptr newObject = ::fwData::factory::New(type);
-    if (newObject)
+    auto obj = this->readObject(type, m_ioSelectorSrvConfig);
+    if (obj)
     {
-        if (this->readObject(newObject, m_ioSelectorSrvConfig))
-        {
-            m_importedObject.push_back(newObject);
+        m_importedObject.push_back(obj);
 
-            this->addObjectItem(index, newObject);
-        }
-    }
-    else
-    {
-        std::string msg = "Can not create object '" + type + "'";
-        OSLM_ERROR(msg);
-        QMessageBox messageBox(QMessageBox::Warning, "Error", QString::fromStdString(msg), QMessageBox::Ok);
+        this->addObjectItem(index, obj);
     }
 }
 
@@ -695,8 +689,9 @@ void ActivityDataView::importObjectFromSDB()
         OSLM_ERROR_IF("Imported object must inherit from 'Series'.", !::fwMedData::Series::dynamicCast(newObject));
 
         // We use the SeriesDB reader and then extract the object of this type.
-        ::fwMedData::SeriesDB::sptr seriesDB = ::fwMedData::SeriesDB::New();
-        if (this->readObject(seriesDB, m_sdbIoSelectorSrvConfig))
+        auto obj      = this->readObject("::fwMedData::SeriesDB", m_sdbIoSelectorSrvConfig);
+        auto seriesDB = ::fwMedData::SeriesDB::dynamicCast(obj);
+        if (seriesDB)
         {
             unsigned int nbImportedObj = 0;
             for (const ::fwMedData::Series::sptr& series : *seriesDB)
@@ -726,40 +721,31 @@ void ActivityDataView::importObjectFromSDB()
 
 //-----------------------------------------------------------------------------
 
-bool ActivityDataView::readObject(const fwData::Object::sptr& obj, const std::string& ioSelectorSrvConfig)
+::fwData::Object::sptr ActivityDataView::readObject(const std::string& classname,
+                                                    const std::string& ioSelectorSrvConfig)
 {
+    ::fwData::Object::sptr obj;
     ::fwServices::IService::sptr ioSelectorSrv;
     ioSelectorSrv = ::fwServices::add("::uiIO::editor::SIOSelector");
-    ioSelectorSrv->registerInOut(obj, ::fwIO::s_DATA_KEY);
+    ioSelectorSrv->setObjectId(::fwIO::s_DATA_KEY, "objRead");
 
     ::fwRuntime::ConfigurationElement::csptr ioCfg;
     ioCfg = ::fwServices::registry::ServiceConfig::getDefault()->getServiceConfig(ioSelectorSrvConfig,
                                                                                   "::uiIO::editor::SIOSelector");
 
-    bool isRead = true;
+    auto ioConfig  = ::fwRuntime::Convert::toPropertyTree(ioCfg);
+    auto srvConfig = ioConfig.get_child("config");
+    srvConfig.add("type.<xmlattr>.class", classname); // add the class of the output object
+
     try
     {
-        ioSelectorSrv->setConfiguration( ::fwRuntime::ConfigurationElement::constCast(ioCfg) );
+        ioSelectorSrv->setConfiguration(srvConfig);
         ioSelectorSrv->configure();
         ioSelectorSrv->start();
         ioSelectorSrv->update();
+        obj = ioSelectorSrv->getOutput< ::fwData::Object >(::fwIO::s_DATA_KEY);
         ioSelectorSrv->stop();
         ::fwServices::OSR::unregisterService( ioSelectorSrv );
-
-        // check if object is properly read.
-        // TODO : improve this test
-        {
-            ::fwData::Object::sptr tmpObject = ::fwData::factory::New(obj->getClassname());
-            ::fwDataCamp::visitor::CompareObjects visitor;
-            visitor.compare(tmpObject, obj);
-            SPTR(::fwDataCamp::visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
-
-            if (props->empty())
-            {
-                SLM_WARN("Object of type '" + obj->getClassname() + "' is not read.");
-                isRead = false;
-            }
-        }
     }
     catch(std::exception& e)
     {
@@ -773,14 +759,13 @@ bool ActivityDataView::readObject(const fwData::Object::sptr& obj, const std::st
             ioSelectorSrv->stop();
         }
         ::fwServices::OSR::unregisterService( ioSelectorSrv );
-        isRead = false;
     }
-    return isRead;
+    return obj;
 }
 
 //-----------------------------------------------------------------------------
 
-void ActivityDataView::addObjectItem(size_t index, const ::fwData::Object::sptr& obj)
+void ActivityDataView::addObjectItem(size_t index, const ::fwData::Object::csptr& obj)
 {
     QPointer<QTreeWidget> tree = m_treeWidgets[index];
 
@@ -790,12 +775,12 @@ void ActivityDataView::addObjectItem(size_t index, const ::fwData::Object::sptr&
     newItem->setText(int(ColumnType::TYPE), QString::fromStdString(obj->getClassname()));
 
     // TODO add more information about object
-    ::fwMedData::Series::sptr series           = ::fwMedData::Series::dynamicCast(obj);
-    ::fwData::String::sptr strObj              = ::fwData::String::dynamicCast(obj);
-    ::fwData::Integer::sptr intObj             = ::fwData::Integer::dynamicCast(obj);
-    ::fwData::Float::sptr floatObj             = ::fwData::Float::dynamicCast(obj);
-    ::fwData::Boolean::sptr boolObj            = ::fwData::Boolean::dynamicCast(obj);
-    ::fwData::TransformationMatrix3D::sptr trf = ::fwData::TransformationMatrix3D::dynamicCast(obj);
+    ::fwMedData::Series::csptr series           = ::fwMedData::Series::dynamicCast(obj);
+    ::fwData::String::csptr strObj              = ::fwData::String::dynamicCast(obj);
+    ::fwData::Integer::csptr intObj             = ::fwData::Integer::dynamicCast(obj);
+    ::fwData::Float::csptr floatObj             = ::fwData::Float::dynamicCast(obj);
+    ::fwData::Boolean::csptr boolObj            = ::fwData::Boolean::dynamicCast(obj);
+    ::fwData::TransformationMatrix3D::csptr trf = ::fwData::TransformationMatrix3D::dynamicCast(obj);
     if (series)
     {
         newItem->setText(int(ColumnType::NAME), QString::fromStdString(series->getModality()));
@@ -842,7 +827,7 @@ void ActivityDataView::addObjectItem(size_t index, const ::fwData::Object::sptr&
 
 //-----------------------------------------------------------------------------
 
-void ActivityDataView::onTreeItemDoubleClicked(QTreeWidgetItem* item, int column)
+void ActivityDataView::onTreeItemDoubleClicked(QTreeWidgetItem* item, int)
 {
     if (item)
     {

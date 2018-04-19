@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -13,6 +13,7 @@
 fwServicesRegisterMacro( ::fwServices::ut::TestService, ::fwServices::ut::TestServiceImplementation, ::fwData::Object );
 fwServicesRegisterMacro( ::fwServices::ut::TestService, ::fwServices::ut::TestServiceImplementation2 );
 fwServicesRegisterMacro( ::fwServices::ut::TestService, ::fwServices::ut::TestSrvAutoconnect );
+fwServicesRegisterMacro( ::fwServices::IService, ::fwServices::ut::TestServiceWithData );
 
 namespace fwServices
 {
@@ -27,6 +28,9 @@ const ::fwCom::Slots::SlotKeyType TestSrvAutoconnect::s_SLOT_1    = "slot1";
 
 unsigned int TestService::s_START_COUNTER  = 0;
 unsigned int TestService::s_UPDATE_COUNTER = 0;
+
+const ::fwServices::IService::KeyType TestServiceWithData::s_INPUT  = "input";
+const ::fwServices::IService::KeyType TestServiceWithData::s_OUTPUT = "output";
 
 //------------------------------------------------------------------------------
 
@@ -72,6 +76,24 @@ TestServiceImplementation::TestServiceImplementation() noexcept
 
 TestServiceImplementation::~TestServiceImplementation() noexcept
 {
+}
+
+//------------------------------------------------------------------------------
+
+void TestServiceWithData::updating()
+{
+    ::fwData::Object::csptr input = this->getInput< ::fwData::Object >(s_INPUT);
+
+    ::fwData::Object::sptr output = ::fwData::Object::copy(input);
+
+    this->setOutput(s_OUTPUT, output);
+}
+
+//------------------------------------------------------------------------------
+
+void TestServiceWithData::stopping()
+{
+    this->setOutput(s_OUTPUT, nullptr);
 }
 
 //------------------------------------------------------------------------------

@@ -117,7 +117,7 @@ void IService::setOutput(const IService::KeyType& key, const fwData::Object::spt
         }
         else if(!m_outputsMap.empty())
         {
-            return m_outputsMap.begin()->second.lock();
+            return m_outputsMap.begin()->second;
         }
         else
         {
@@ -792,7 +792,7 @@ void IService::autoConnect()
                     auto itObj = m_outputsMap.find(objectCfg.m_key);
                     if(itObj != m_outputsMap.end())
                     {
-                        obj = itObj->second.lock();
+                        obj = itObj->second;
                     }
                     break;
                 }
