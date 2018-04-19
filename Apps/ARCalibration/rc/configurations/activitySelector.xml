@@ -15,7 +15,7 @@
         <object uid="${SERIESDB}" type="::fwMedData::SeriesDB" src="ref"/>
         <object uid="${LOADING_SERIESDB}" type="::fwMedData::SeriesDB" src="ref" />
 
-        <service uid="mainview" type="::gui::view::SDefaultView" autoConnect="yes">
+        <service uid="mainview" type="::gui::view::SDefaultView">
             <gui>
                 <layout type="::fwGui::CardinalLayoutManager">
                     <view align="center" minWidth="200" visible="false" />
@@ -32,7 +32,8 @@
         <!-- Editor to create/update an activity. -->
         <service uid="activityCreator" type="::uiMedDataQt::editor::SActivityWizard" >
             <inout key="series" uid="${SERIESDB}" />
-            <ioSelectorConfig>ARFullSDBReaderIOSelectorConfig</ioSelectorConfig>
+            <ioSelectorConfig>SDBReaderIOSelectorConfig</ioSelectorConfig>
+            <sdbIoSelectorConfig>ARFullSDBReaderIOSelectorConfig</sdbIoSelectorConfig>
             <confirm>false</confirm>
             <icons>
                 <icon type="::fwMedData::ImageSeries" icon="media-0.1/icons/ImageSeries.svg" />
@@ -42,7 +43,7 @@
         </service>
 
         <!-- Editor to select an activity. -->
-        <service uid="selector" type="::activities::editor::SCreateActivity" autoConnect="yes">
+        <service uid="selector" type="::activities::editor::SCreateActivity">
             <filter>
                 <mode>include</mode>
                 <id>Calibration</id>

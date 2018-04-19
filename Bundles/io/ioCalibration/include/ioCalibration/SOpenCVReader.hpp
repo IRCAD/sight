@@ -12,14 +12,18 @@
 
 namespace ioCalibration
 {
+
 /**
  * @brief SOpenCVReader class read a xml/yaml file using opencv and fill a arData::CameraSeries.
  *
+ * @section XML XML Configuration
  * @code{.xml}
        <service uid="..." type="::ioCalibration::SOpenCVReader" >
            <inout key="data" uid="..." />
        </service>
  * @endcode
+ * @subsection In-Out In-Out
+ * - \b data [::arData::CameraSeries]: object to read
  */
 class IOCALIBRATION_CLASS_API SOpenCVReader : public ::fwIO::IReader
 {
