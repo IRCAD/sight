@@ -46,10 +46,10 @@ IAdaptor::~IAdaptor() noexcept
 
 void IAdaptor::configureParams()
 {
-    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
-    this->setPickerId(config.get<std::string>("picker", ""));
-    this->setRendererId(config.get<std::string>("renderer", ""));
-    this->setTransformId(config.get<std::string>("transform", ""));
+    const ConfigType config = this->getConfigTree();
+    this->setPickerId(config.get<std::string>("config.<xmlattr>.picker", ""));
+    this->setRendererId(config.get<std::string>("config.<xmlattr>.renderer", ""));
+    this->setTransformId(config.get<std::string>("config.<xmlattr>.transform", ""));
 }
 
 //------------------------------------------------------------------------------
