@@ -13,6 +13,7 @@
 
 #include <fwRenderOgre/IAdaptor.hpp>
 #include <fwRenderOgre/ITransformable.hpp>
+#include <fwRenderOgre/Text.hpp>
 
 #include <Ogre.h>
 
@@ -96,6 +97,8 @@ private:
     ::Ogre::ManualObject* xCone;
     ::Ogre::ManualObject* yCone;
     ::Ogre::ManualObject* zCone;
+
+    std::array< ::fwRenderOgre::Text*, 3> m_axisLabels;
 };
 
 } //namespace visuOgreAdaptor

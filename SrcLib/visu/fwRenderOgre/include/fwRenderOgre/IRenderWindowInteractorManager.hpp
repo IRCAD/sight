@@ -18,8 +18,10 @@
 #include <fwServices/IService.hpp>
 
 #include <OGRE/OgreRenderWindow.h>
+#include <OGRE/Overlay/OgreOverlay.h>
 
 #include <string>
+#include <unordered_set>
 
 namespace fwRenderOgre
 {
@@ -87,6 +89,8 @@ public:
 
     typedef std::string FactoryRegistryKeyType;
 
+    typedef std::unordered_set< ::Ogre::Overlay* > OverlaySetType;
+
     FWRENDEROGRE_API static const FactoryRegistryKeyType REGISTRY_KEY;
 
     FWRENDEROGRE_API static IRenderWindowInteractorManager::sptr createManager();
@@ -101,7 +105,7 @@ public:
     FWRENDEROGRE_API virtual void requestRender() = 0;
 
     /// Creates an interactor and installs it in window.
-    FWRENDEROGRE_API virtual void createContainer( ::fwGui::container::fwContainer::sptr _parent, bool showOverlay,
+    FWRENDEROGRE_API virtual void createContainer( ::fwGui::container::fwContainer::sptr _parent,
                                                    bool renderOnDemand, bool fullscreen ) = 0;
 
     /// Connects widget and SRender signals and slots.
@@ -121,6 +125,8 @@ public:
 
     /// Get Ogre RenderWindow
     FWRENDEROGRE_API virtual ::Ogre::RenderTarget* getRenderTarget() = 0;
+
+    FWRENDEROGRE_API virtual void setEnabledOverlays(const OverlaySetType& overlaySet);
 
     /// Set the render service using the IOgreRenderWindowInteractor
     virtual void setRenderService(::fwServices::IService::sptr srv)

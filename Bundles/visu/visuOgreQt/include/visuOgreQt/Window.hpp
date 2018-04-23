@@ -12,6 +12,7 @@
 
 #include <Ogre.h>
 
+#include <Overlay/OgreOverlay.h>
 #include <Overlay/OgreOverlaySystem.h>
 
 #include <QPoint>
@@ -64,7 +65,9 @@ public:
 
     VISUOGREQT_API virtual void makeCurrent();
 
-    VISUOGREQT_API void showOverlay(bool show);
+    /// Sets the list of overlays to be rendered in this window.
+    VISUOGREQT_API void setEnabledOverlays(
+        const ::fwRenderOgre::IRenderWindowInteractorManager::OverlaySetType& enabledOverlays);
 
     /// Destroy ogre window
     VISUOGREQT_API void destroyWindow();
@@ -157,7 +160,7 @@ private:
     /// Needed for multiple instances of ogreQt WIDGET
     static int m_counter;
 
-    /// Used to instanciate the managers related to this instance with a proper name.
+    /// Used to instantiate the managers related to this instance with a proper name.
     int m_id;
 
     /*
@@ -165,6 +168,8 @@ private:
      */
     Ogre::Root* m_ogreRoot;
     Ogre::RenderWindow* m_ogreRenderWindow;
+
+    std::unordered_set< ::Ogre::Overlay* > m_enabledOverlays;
 
     /// Ogre overlay system.
     static ::Ogre::OverlaySystem* m_ogreOverlaySystem;
@@ -175,16 +180,14 @@ private:
     bool m_update_pending;
     /// Tells if the window is currently showed
     bool m_animating;
-    /// Tells if the overlay is show for this renderwindow
-    bool m_showOverlay;
     /// Tells if the window fills the screen.
     bool m_fullscreen;
 
-    /// Used to log position of left clic.
+    /// Logs left click positions.
     QPoint* m_lastPosLeftClick;
-    /// Used to log position of middle clic.
+    /// Logs middle click positions.
     QPoint* m_lastPosMiddleClick;
-    /// Used to log position of right clic.
+    /// Logs right click positions.
     QPoint* m_lastPosRightClick;
 
     int m_frameId;

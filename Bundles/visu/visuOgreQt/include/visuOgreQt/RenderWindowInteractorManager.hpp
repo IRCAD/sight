@@ -51,7 +51,7 @@ public:
     VISUOGREQT_API virtual void requestRender() override;
 
     /// Create the container that holds the QtWidget.
-    VISUOGREQT_API virtual void createContainer(::fwGui::container::fwContainer::sptr _parent, bool showOverlay,
+    VISUOGREQT_API virtual void createContainer(::fwGui::container::fwContainer::sptr _parent,
                                                 bool renderOnDemand, bool fullscreen) override;
 
     /// Connects widget and SRender signals and slots.
@@ -72,6 +72,10 @@ public:
 
     /// Get Ogre RenderWindow
     VISUOGREQT_API virtual ::Ogre::RenderTarget* getRenderTarget() override;
+
+    /// Sets the list of overlays to be rendered in this window.
+    VISUOGREQT_API virtual void setEnabledOverlays(
+        const ::fwRenderOgre::IRenderWindowInteractorManager::OverlaySetType& enabledOverlays) override;
 
 private Q_SLOTS:
 

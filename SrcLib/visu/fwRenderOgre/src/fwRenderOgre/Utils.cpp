@@ -8,6 +8,7 @@
 
 #include "fwRenderOgre/compositor/MaterialMgrListener.hpp"
 #include "fwRenderOgre/factory/R2VBRenderable.hpp"
+#include "fwRenderOgre/factory/Text.hpp"
 #include "fwRenderOgre/vr/GridProxyGeometry.hpp"
 
 #include <fwCore/spyLog.hpp>
@@ -53,6 +54,7 @@ static std::set<std::string> s_resourcesPath;
 
 ::Ogre::OverlaySystem* Utils::s_overlaySystem                                   = nullptr;
 ::fwRenderOgre::factory::R2VBRenderable* Utils::s_R2VBRenderableFactory         = nullptr;
+::fwRenderOgre::factory::Text* Utils::s_textFactory                             = nullptr;
 ::fwRenderOgre::vr::GridProxyGeometryFactory* Utils::s_gridProxyGeometryFactory = nullptr;
 
 //------------------------------------------------------------------------------
@@ -274,6 +276,10 @@ void Utils::addResourcesPath(const ::boost::filesystem::path& path)
         ::fwRenderOgre::Utils::addResourcesPath( resourcePath );
 
         loadResources();
+
+        // Register factory for Text objects
+        s_textFactory = OGRE_NEW ::fwRenderOgre::factory::Text();
+        ::Ogre::Root::getSingleton().addMovableObjectFactory(s_textFactory);
 
         // Register factory for R2VB renderables objects
         s_R2VBRenderableFactory = OGRE_NEW ::fwRenderOgre::factory::R2VBRenderable();

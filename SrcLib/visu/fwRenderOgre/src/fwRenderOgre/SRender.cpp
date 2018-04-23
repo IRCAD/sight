@@ -25,8 +25,13 @@
 #include <fwServices/helper/Config.hpp>
 #include <fwServices/macros.hpp>
 
+#include <fwRenderOgre/helper/Font.hpp>
+#include <fwRenderOgre/Text.hpp>
+
 #include <OGRE/OgreEntity.h>
 #include <OGRE/OgreNode.h>
+#include <OGRE/Overlay/OgreOverlayContainer.h>
+#include <OGRE/Overlay/OgreOverlayManager.h>
 #include <OGRE/OgreSceneManager.h>
 #include <OGRE/OgreSceneNode.h>
 
@@ -63,6 +68,7 @@ static const ::fwCom::Slots::SlotKeyType s_REMOVE_OBJECTS_SLOT = "removeObjects"
 
 SRender::SRender() noexcept :
     m_interactorManager(nullptr),
+    m_overlayTextPanel(nullptr),
     m_showOverlay(false),
     m_renderOnDemand(true),
     m_fullscreen(false)
@@ -112,8 +118,17 @@ void SRender::configuring()
         this->initialize();
     }
 
-    m_showOverlay = sceneCfg.get<bool>("<xmlattr>.overlay", false);
-    m_fullscreen  = sceneCfg.get<bool>("<xmlattr>.fullscreen", false);
+    const auto showOverlay = sceneCfg.get_optional<bool>("<xmlattr>.overlay");
+
+    if(showOverlay.is_initialized())
+    {
+        FW_DEPRECATED_MSG("The 'showOverlay' tag is deprecated, you should explicitly add the 'LogoOverlay' overlay "
+                          "to the new 'overlays' list.");
+
+        m_showOverlay = showOverlay.get();
+    }
+
+    m_fullscreen = sceneCfg.get<bool>("<xmlattr>.fullscreen", false);
 
     const std::string renderMode = sceneCfg.get<std::string>("<xmlattr>.renderMode", "auto");
     if (renderMode == "auto")
@@ -189,20 +204,35 @@ void SRender::starting()
         m_layers[s_OGREBACKGROUNDID] = ogreLayer;
     }
 
+    // TODO: remove this conditional in the next major version.
+    if(m_showOverlay)
+    {
+        ::Ogre::Overlay* logoOverlay = ::Ogre::OverlayManager::getSingleton().getByName("LogoOverlay");
+        m_enabledOverlays.insert(logoOverlay);
+    }
+
+    std::istringstream overlays(sceneCfg.get<std::string>("<xmlattr>.overlays", ""));
+
+    for(std::string overlayName; std::getline(overlays, overlayName, ';'); )
+    {
+        ::Ogre::Overlay* overlay = ::Ogre::OverlayManager::getSingleton().getByName(overlayName);
+        m_enabledOverlays.insert(overlay);
+    }
+
     if(m_offScreen)
     {
         // Instantiate the manager that help to communicate between this service and the widget
         m_interactorManager = ::fwRenderOgre::OffScreenRenderWindowInteractorManager::New(m_width, m_height);
         m_interactorManager->setRenderService(this->getSptr());
-        m_interactorManager->createContainer( nullptr, m_showOverlay, m_renderOnDemand, m_fullscreen );
-
+        m_interactorManager->createContainer( nullptr, m_renderOnDemand, m_fullscreen );
     }
     else
     {
         // Instantiate the manager that help to communicate between this service and the widget
         m_interactorManager = ::fwRenderOgre::IRenderWindowInteractorManager::createManager();
         m_interactorManager->setRenderService(this->getSptr());
-        m_interactorManager->createContainer( this->getContainer(), m_showOverlay, m_renderOnDemand, m_fullscreen );
+        m_interactorManager->createContainer( this->getContainer(), m_renderOnDemand, m_fullscreen );
+        m_interactorManager->setEnabledOverlays(m_enabledOverlays);
     }
     Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 
@@ -377,6 +407,36 @@ void SRender::computeCameraClipping()
         ::fwRenderOgre::Layer::sptr layer = it.second;
         layer->resetCameraClippingRange();
     }
+}
+
+//-----------------------------------------------------------------------------
+
+::Ogre::OverlayContainer* SRender::getOverlayTextPanel()
+{
+    static std::mutex overlayManagerLock;
+
+    overlayManagerLock.lock();
+    if(m_overlayTextPanel == nullptr)
+    {
+        auto& overlayManager = ::Ogre::OverlayManager::getSingleton();
+
+        m_overlayTextPanel =
+            static_cast< ::Ogre::OverlayContainer* >(overlayManager.createOverlayElement("Panel",
+                                                                                         this->getID() + "_GUI"));
+        m_overlayTextPanel->setMetricsMode(::Ogre::GMM_PIXELS);
+        m_overlayTextPanel->setPosition(0, 0);
+        m_overlayTextPanel->setDimensions(1.0f, 1.0f);
+
+        ::Ogre::Overlay* uiOverlay = overlayManager.create(this->getID() + "_UIOverlay");
+        uiOverlay->add2D(m_overlayTextPanel);
+
+        m_enabledOverlays.insert(uiOverlay);
+
+        m_interactorManager->setEnabledOverlays(m_enabledOverlays);
+    }
+    overlayManagerLock.unlock();
+
+    return m_overlayTextPanel;
 }
 
 //-----------------------------------------------------------------------------
