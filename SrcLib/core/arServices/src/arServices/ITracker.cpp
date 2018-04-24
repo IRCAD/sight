@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017.
+ * FW4SPL - Copyright (C) IRCAD, 2017-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -25,6 +25,7 @@ const ::fwCom::Slots::SlotKeyType ITracker::s_START_TRACKING_SLOT = "startTracki
 const ::fwCom::Slots::SlotKeyType ITracker::s_STOP_TRACKING_SLOT  = "stopTracking";
 
 const ::fwServices::IService::KeyType ITracker::s_TIMELINE_INPUT = "timeline";
+const ::fwServices::IService::KeyType ITracker::s_FRAME_INOUT    = "frame";
 
 //-----------------------------------------------------------------------------
 
@@ -117,4 +118,3 @@ void ITracker::stopTracking()
 //-----------------------------------------------------------------------------
 
 } // namespace arServices
-

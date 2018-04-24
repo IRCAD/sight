@@ -40,12 +40,12 @@ namespace trackerAruco
  *
  * @code{.xml}
         <service uid="..." type="::trackerAruco::SArucoTracker" >
-            <in key="timeline" uid="frameTLUid" autoConnect="yes"/>
-            <in key="camera" uid="cameraUid" />
+            <in key="timeline" uid="..." autoConnect="yes"/>
+            <in key="camera" uid="..." />
             <inout group="tagTL" >
-                <key uid="WireTimeline" />
-                <key uid="PatientTimeline" />
-                <key uid="TableTimeline" />
+                <key uid="..." />
+                <key uid="..." />
+                <key uid="..." />
             </inout>
             <track>
                 <marker id="42,1,100,54" />
@@ -54,7 +54,25 @@ namespace trackerAruco
             </track>
             <debugMarkers>yes</debugMarkers>
             <cornerRefinement>yes</cornerRefinement>
-            <dropObj>true</dropObj>
+        </service>
+
+        or
+
+        <service uid="..." type="::trackerAruco::SArucoTracker" >
+            <in key="camera" uid="..." />
+            <inout key="frame" uid="..." autoConnect="yes" />
+            <inout group="markerMap">
+                <key uid="..." /> <!-- timeline of detected tag(s) -->
+                <key uid="..." /> <!-- timeline of detected tag(s) -->
+                <key uid="..." /> <!-- timeline of detected tag(s) -->
+            </inout>
+            <track>
+                <marker id="42,1,100,54" />
+                <marker id="32,10" />
+                <marker id="52,45" />
+            </track>
+            <debugMarkers>yes</debugMarkers>
+            <cornerRefinement>yes</cornerRefinement>
         </service>
    @endcode
  * @subsection Input Input
@@ -62,8 +80,11 @@ namespace trackerAruco
  * - \b camera [::arData::Camera]: camera calibration.
  *
  * @subsection In-Out In-Out
+ * - \b frame [::fwData::Image]: video frame.
  * - \b tagTL [::arData::MarkerTL]: list of markers timelines where to extract the tags. The number of tagTL inout keys
  * must match the number of \b markers entries in the config below.
+ * - \b markerMap [::arData::MarkerMap]: list of markers maps where to extract the tags. The number of keys must match
+ * the number of \b markers entries in the config below.
  *
  * @subsection Configuration Configuration
  *  - \b track (mandatory)
@@ -71,7 +92,6 @@ namespace trackerAruco
  *           - \b id (mandatory) : ids of the markers to detect.
  *  - \b debugMarkers : if value is yes markers debugging mode is activated.
  *  - \b cornerRefinement: if yes corner refinement by subpixel will be activited
- *  - \b dropObj : defines if the tracker should drop few objects from the timeline (and always get the last one) or
  *  not.
  */
 class TRACKERARUCO_CLASS_API SArucoTracker : public ::arServices::ITracker
@@ -112,8 +132,9 @@ public:
     /**
      * @brief Destructor.
      */
-    TRACKERARUCO_API virtual ~SArucoTracker() noexcept;
+    TRACKERARUCO_API virtual ~SArucoTracker() noexcept override;
 
+    ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 protected:
 
     /**
