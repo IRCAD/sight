@@ -8,6 +8,7 @@
 
 #include <arData/Camera.hpp>
 #include <arData/FrameTL.hpp>
+#include <arData/MarkerMap.hpp>
 #include <arData/MarkerTL.hpp>
 #include <arData/MatrixTL.hpp>
 
@@ -30,9 +31,11 @@ namespace registrationCV
 //-----------------------------------------------------------------------------
 
 const ::fwServices::IService::KeyType s_MARKERTL_INPUT  = "markerTL";
+const ::fwServices::IService::KeyType s_MARKERMAP_INPUT = "markerMap";
 const ::fwServices::IService::KeyType s_CAMERA_INPUT    = "camera";
 const ::fwServices::IService::KeyType s_EXTRINSIC_INPUT = "extrinsic";
 const ::fwServices::IService::KeyType s_MATRIXTL_INOUT  = "matrixTL";
+const ::fwServices::IService::KeyType s_MATRIX_INOUT    = "matrix";
 
 //-----------------------------------------------------------------------------
 
@@ -76,7 +79,6 @@ void SPoseFrom2d::starting()
 
 void SPoseFrom2d::stopping()
 {
-
     m_cameras.clear();
     m_3dModel.clear();
     m_lastTimestamp = 0;
@@ -87,6 +89,11 @@ void SPoseFrom2d::stopping()
 
 void SPoseFrom2d::updating()
 {
+    // When working with a frame (newest design), we do not rely on the timetamp
+    // So we can just send the current one.
+    // When removing timelines from the service then we could get rid of it
+    auto timestamp = ::fwCore::HiResClock::getTimeInMilliSec();
+    this->computeRegistration(timestamp);
 }
 
 //-----------------------------------------------------------------------------
@@ -102,116 +109,191 @@ void SPoseFrom2d::computeRegistration(::fwCore::HiResClock::HiResClockType times
 
     if (this->isStarted())
     {
-        if (timestamp > m_lastTimestamp)
+        if(this->getKeyGroupSize(s_MARKERTL_INPUT) > 0)
         {
-            ::fwCore::HiResClock::HiResClockType newerTimestamp =
-                std::numeric_limits< ::fwCore::HiResClock::HiResClockType >::max();
-            for(size_t i = 0; i < this->getKeyGroupSize(s_MARKERTL_INPUT); ++i)
+            if (timestamp > m_lastTimestamp)
             {
-                auto markerTL = this->getInput< ::arData::MarkerTL >(s_MARKERTL_INPUT, i);
-                ::fwCore::HiResClock::HiResClockType timestamp = markerTL->getNewerTimestamp();
-                if(timestamp <= 0.)
+                ::fwCore::HiResClock::HiResClockType newerTimestamp =
+                    std::numeric_limits< ::fwCore::HiResClock::HiResClockType >::max();
+                for(size_t i = 0; i < this->getKeyGroupSize(s_MARKERTL_INPUT); ++i)
                 {
-                    OSLM_WARN("No marker found in a timeline for timestamp '"<<timestamp<<"'.");
-                    return;
+                    auto markerTL = this->getInput< ::arData::MarkerTL >(s_MARKERTL_INPUT, i);
+                    ::fwCore::HiResClock::HiResClockType timestamp = markerTL->getNewerTimestamp();
+                    if(timestamp <= 0.)
+                    {
+                        OSLM_WARN("No marker found in a timeline for timestamp '"<<timestamp<<"'.");
+                        return;
+                    }
+                    newerTimestamp = std::min(timestamp, newerTimestamp);
                 }
-                newerTimestamp = std::min(timestamp, newerTimestamp);
+
+                m_lastTimestamp = newerTimestamp;
+
+                // We consider that all timeline have the same number of elements
+                // This is WRONG if we have more than two cameras
+                auto markerTL = this->getInput< ::arData::MarkerTL >(s_MARKERTL_INPUT, 0);
+                const CSPTR(::arData::MarkerTL::BufferType) buffer = markerTL->getClosestBuffer(newerTimestamp);
+                const unsigned int numMarkers = buffer->getMaxElementNum();
+
+                ::arData::MatrixTL::sptr matrixTL = this->getInOut< ::arData::MatrixTL >(s_MATRIXTL_INOUT);
+
+                // Push matrix in timeline
+                SPTR(::arData::MatrixTL::BufferType) matrixBuf;
+
+                // For each marker
+                bool matrixBufferCreated = false;
+                for(unsigned int markerIndex = 0; markerIndex < numMarkers; ++markerIndex)
+                {
+                    std::vector< Marker > markers;
+                    size_t indexTL = 0;
+
+                    // For each camera timeline
+                    for(size_t i = 0; i < this->getKeyGroupSize(s_MARKERTL_INPUT); ++i)
+                    {
+                        auto markerTL = this->getInput< ::arData::MarkerTL >(s_MARKERTL_INPUT, i);
+                        const CSPTR(::arData::MarkerTL::BufferType) buffer = markerTL->getClosestBuffer(newerTimestamp);
+
+                        if(buffer->isPresent(markerIndex))
+                        {
+                            const float* registrationCVBuffer = buffer->getElement(markerIndex);
+
+                            Marker currentMarker;
+                            for(size_t i = 0; i < 4; ++i)
+                            {
+                                currentMarker.corners2D.push_back( ::cv::Point2f(registrationCVBuffer[i*2],
+                                                                                 registrationCVBuffer[i*2+1]));
+                            }
+                            markers.push_back(currentMarker);
+                        }
+                        ++indexTL;
+                    }
+
+                    if(markers.empty())
+                    {
+                        SLM_WARN("No Markers!")
+                        continue;
+                    }
+
+                    float matrixValues[16];
+                    ::cv::Matx44f Rt;
+                    if(markers.size() == 1)
+                    {
+                        Rt = this->cameraPoseFromMono(markers[0]);
+                    }
+                    else if(markers.size() == 2)
+                    {
+
+                        Rt = this->cameraPoseFromStereo(markers[0], markers[1]);
+                    }
+                    else
+                    {
+                        SLM_WARN("More than 2 cameras is not handle for the moment");
+                        continue;
+                    }
+
+                    for (std::uint8_t i = 0; i < 4; ++i)
+                    {
+                        for (std::uint8_t j = 0; j < 4; ++j)
+                        {
+                            matrixValues[4*i+j] = Rt(i, j);
+                        }
+                    }
+
+                    if(!matrixBufferCreated)
+                    {
+                        matrixBuf = matrixTL->createBuffer(newerTimestamp);
+                        matrixTL->pushObject(matrixBuf);
+                        matrixBufferCreated = true;
+                    }
+
+                    matrixBuf->setElement(matrixValues, markerIndex);
+                }
+
+                if(matrixBufferCreated)
+                {
+                    //Notify
+                    ::arData::TimeLine::ObjectPushedSignalType::sptr sig;
+                    sig = matrixTL->signal< ::arData::TimeLine::ObjectPushedSignalType >(
+                        ::arData::TimeLine::s_OBJECT_PUSHED_SIG );
+
+                    sig->asyncEmit(newerTimestamp);
+                }
+
             }
-
-            m_lastTimestamp = newerTimestamp;
-
+        }
+        else
+        {
             // We consider that all timeline have the same number of elements
             // This is WRONG if we have more than two cameras
-            auto markerTL = this->getInput< ::arData::MarkerTL >(s_MARKERTL_INPUT, 0);
-            const CSPTR(::arData::MarkerTL::BufferType) buffer = markerTL->getClosestBuffer(newerTimestamp);
-            const unsigned int numMarkers = buffer->getMaxElementNum();
-
-            ::arData::MatrixTL::sptr matrixTL = this->getInOut< ::arData::MatrixTL >(s_MATRIXTL_INOUT);
+            auto firstMarkerMap   = this->getInput< ::arData::MarkerMap >(s_MARKERMAP_INPUT, 0);
+            const auto numMarkers = firstMarkerMap->count();
 
             // Push matrix in timeline
             SPTR(::arData::MatrixTL::BufferType) matrixBuf;
 
             // For each marker
-            bool matrixBufferCreated = false;
             for(unsigned int markerIndex = 0; markerIndex < numMarkers; ++markerIndex)
             {
                 std::vector< Marker > markers;
                 size_t indexTL = 0;
 
                 // For each camera timeline
-                for(size_t i = 0; i < this->getKeyGroupSize(s_MARKERTL_INPUT); ++i)
+                for(size_t i = 0; i < this->getKeyGroupSize(s_MARKERMAP_INPUT); ++i)
                 {
-                    auto markerTL = this->getInput< ::arData::MarkerTL >(s_MARKERTL_INPUT, i);
-                    const CSPTR(::arData::MarkerTL::BufferType) buffer = markerTL->getClosestBuffer(newerTimestamp);
+                    auto markerMap     = this->getInput< ::arData::MarkerMap >(s_MARKERMAP_INPUT, i);
+                    const auto& marker = markerMap->getMarker(markerIndex);
 
-                    if(buffer->isPresent(markerIndex))
+                    Marker currentMarker;
+                    for(size_t i = 0; i < 4; ++i)
                     {
-                        const float* registrationCVBuffer = buffer->getElement(markerIndex);
-
-                        Marker currentMarker;
-                        for(size_t i = 0; i < 4; ++i)
-                        {
-                            currentMarker.corners2D.push_back( ::cv::Point2f(registrationCVBuffer[i*2],
-                                                                             registrationCVBuffer[i*2+1]));
-                        }
-                        markers.push_back(currentMarker);
+                        currentMarker.corners2D.push_back( ::cv::Point2f(marker[i][0], marker[i][1]));
                     }
+                    markers.push_back(currentMarker);
+
                     ++indexTL;
                 }
 
+                ::fwData::TransformationMatrix3D::sptr matrix = this->getInOut< ::fwData::TransformationMatrix3D >(
+                    s_MATRIX_INOUT, markerIndex);
+                OSLM_ASSERT("Matrix " << markerIndex << " not found", matrix);
                 if(markers.empty())
                 {
                     SLM_WARN("No Markers!")
-                    continue;
-                }
-
-                float matrixValues[16];
-                ::cv::Matx44f Rt;
-                if(markers.size() == 1)
-                {
-                    Rt = this->cameraPoseFromMono(markers[0]);
-                }
-                else if(markers.size() == 2)
-                {
-
-                    Rt = this->cameraPoseFromStereo(markers[0], markers[1]);
                 }
                 else
                 {
-                    SLM_WARN("More than 2 cameras is not handle for the moment");
-                    continue;
-                }
 
-                for (std::uint8_t i = 0; i < 4; ++i)
-                {
-                    for (std::uint8_t j = 0; j < 4; ++j)
+                    ::fwData::TransformationMatrix3D::TMCoefArray matrixValues;
+                    ::cv::Matx44f Rt;
+                    if(markers.size() == 1)
                     {
-                        matrixValues[4*i+j] = Rt(i, j);
+                        Rt = this->cameraPoseFromMono(markers[0]);
                     }
+                    else if(markers.size() == 2)
+                    {
+
+                        Rt = this->cameraPoseFromStereo(markers[0], markers[1]);
+                    }
+                    else
+                    {
+                        SLM_WARN("More than 2 cameras is not handle for the moment");
+                        continue;
+                    }
+
+                    for (std::uint8_t i = 0; i < 4; ++i)
+                    {
+                        for (std::uint8_t j = 0; j < 4; ++j)
+                        {
+                            matrixValues[4*i+j] = Rt(i, j);
+                        }
+                    }
+
+                    matrix->setCoefficients(matrixValues);
                 }
 
-                if(!matrixBufferCreated)
-                {
-                    matrixBuf = matrixTL->createBuffer(newerTimestamp);
-                    matrixTL->pushObject(matrixBuf);
-                    matrixBufferCreated = true;
-                }
-
-                matrixBuf->setElement(matrixValues, markerIndex);
-
+                auto sig = matrix->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+                sig->asyncEmit();
             }
-
-            if(matrixBufferCreated)
-            {
-                //Notify
-                ::arData::TimeLine::ObjectPushedSignalType::sptr sig;
-                sig = matrixTL->signal< ::arData::TimeLine::ObjectPushedSignalType >(
-                    ::arData::TimeLine::s_OBJECT_PUSHED_SIG );
-
-                sig->asyncEmit(newerTimestamp);
-
-            }
-
         }
     }
 }
@@ -220,23 +302,25 @@ void SPoseFrom2d::computeRegistration(::fwCore::HiResClock::HiResClockType times
 
 void SPoseFrom2d::initialize()
 {
-    // Initialization of timelines
-
-    ::arData::MarkerTL::csptr firstTimeline = this->getInput< ::arData::MarkerTL >(s_MARKERTL_INPUT, 0);
-
-    const unsigned int maxElementNum = firstTimeline->getMaxElementNum();
-
-    for(size_t i = 0; i < this->getKeyGroupSize(s_MARKERTL_INPUT); ++i)
+    if(this->getKeyGroupSize(s_MARKERTL_INPUT) > 0)
     {
-        ::arData::MarkerTL::csptr timeline = this->getInput< ::arData::MarkerTL >(s_MARKERTL_INPUT, 0);
+        // Initialization of timelines
+        ::arData::MarkerTL::csptr firstTimeline = this->getInput< ::arData::MarkerTL >(s_MARKERTL_INPUT, 0);
 
-        SLM_ASSERT("Timelines should have the same maximum number of elements",
-                   maxElementNum == timeline->getMaxElementNum());
+        const unsigned int maxElementNum = firstTimeline->getMaxElementNum();
+
+        for(size_t i = 0; i < this->getKeyGroupSize(s_MARKERTL_INPUT); ++i)
+        {
+            ::arData::MarkerTL::csptr timeline = this->getInput< ::arData::MarkerTL >(s_MARKERTL_INPUT, 0);
+
+            SLM_ASSERT("Timelines should have the same maximum number of elements",
+                       maxElementNum == timeline->getMaxElementNum());
+        }
+
+        ::arData::MatrixTL::sptr matrixTL = this->getInOut< ::arData::MatrixTL >(s_MATRIXTL_INOUT);
+        // initialized matrix timeline
+        matrixTL->initPoolSize(maxElementNum);
     }
-
-    ::arData::MatrixTL::sptr matrixTL = this->getInOut< ::arData::MatrixTL >(s_MATRIXTL_INOUT);
-    // initialized matrix timeline
-    matrixTL->initPoolSize(maxElementNum);
 
     for(size_t idx = 0; idx < this->getKeyGroupSize(s_CAMERA_INPUT); ++idx)
     {
@@ -313,6 +397,7 @@ const cv::Matx44f SPoseFrom2d::cameraPoseFromMono(const SPoseFrom2d::Marker& _ma
     KeyConnectionsMap connections;
 
     connections.push( s_MARKERTL_INPUT, ::arData::TimeLine::s_OBJECT_PUSHED_SIG, s_COMPUTE_REGISTRATION_SLOT );
+    connections.push( s_MARKERMAP_INPUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT );
 
     return connections;
 }

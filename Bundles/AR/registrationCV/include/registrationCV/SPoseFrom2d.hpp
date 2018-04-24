@@ -30,24 +30,48 @@ namespace registrationCV
  * @code{.xml}
      <service uid="..." type="::registrationCV::SPoseFrom2d">
          <in group="markerTL" autoConnect="yes">
-             <key uid="markerTL1" />
-             <key uid="markerTL2" />
+             <key uid="..." />
+             <key uid="..." />
          </in>
          <in group="camera">
-             <key uid="cam1" />
-             <key uid="cam2" />
+             <key uid="..." />
+             <key uid="..." />
          </in>
-         <in key="extrinsic" uid="matrix1" />
-         <inout key="matrixTL" uid="matrixTL1" />
+         <in key="extrinsic" uid="..." />
+         <inout key="matrixTL" uid="..." />
+         <patternWidth>80</patternWidth>
+     </service>
+
+     or
+
+     <service uid="..." type="::registrationCV::SPoseFrom2d">
+         <in group="markerMap" autoConnect="yes">
+             <key uid="..." />
+             <key uid="..." />
+         </in>
+         <in group="camera">
+             <key uid="..." />
+             <key uid="..." />
+         </in>
+         <in key="extrinsic" uid="..." />
+         <in group="matrix">
+             <key uid="..." />
+             <key uid="..." />
+             <key uid="..." />
+             <key uid="..." />
+         </in>
          <patternWidth>80</patternWidth>
      </service>
    @endcode
  * @subsection Input Input
  * - \b markerTL [::arData::MarkerTL]: timeline for markers.
+ * - \b markerMap [::arData::MarkerMap]: list of markers maps where the tags. The number of keys must match
+ * the number of \b markers entries in the config below. for markers.
  * - \b camera [::arData::Camera]: calibrated cameras.
  * - \b extrinsic [::fwData::TransformationMatrix3D]: extrinsic matrix, only used if you have two cameras configured.
  * @subsection In-Out In-Out
  * - \b matrixTL [::arData::MatrixTL]: timeline of 3D transformation matrices.
+ * - \b matrix [::fwData::TransformationMatrix3D]: list of matrices, one for each marker.
  * @subsection Configuration Configuration
  * - \b patternWidth : width of the tag.
  */
