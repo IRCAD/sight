@@ -9,6 +9,7 @@ set( REQUIREMENTS
     media
     arMedia
     ctrlCamp
+    ctrlCom
     dataReg
     fwlauncher
     gui
