@@ -164,16 +164,13 @@ void SDistortion::updating()
                     sig->asyncEmit();
                 }
             }
-            else
-            {
-                auto sig = outputImage->signal< ::fwData::Image::BufferModifiedSignalType >(
-                    ::fwData::Image::s_BUFFER_MODIFIED_SIG);
-                {
-                    ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
-                    sig->asyncEmit();
-                }
-            }
 
+            auto sig = outputImage->signal< ::fwData::Image::BufferModifiedSignalType >(
+                ::fwData::Image::s_BUFFER_MODIFIED_SIG);
+            {
+                ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+                sig->asyncEmit();
+            }
         }
     }
 }
@@ -191,8 +188,8 @@ void SDistortion::remap()
     }
     FW_PROFILE_AVG("distort", 5);
 
-    auto sig = outputImage->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Image::s_BUFFER_MODIFIED_SIG);
-    // Blocking signals early allows to discard any event  while we are updating
+    auto sig = inputImage->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Image::s_BUFFER_MODIFIED_SIG);
+    // Blocking signals early allows to discard any event while we are updating
     ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
 
     ::fwData::mt::ObjectReadLock inputLock(inputImage);
@@ -316,10 +313,9 @@ void SDistortion::remap()
             sigModified->asyncEmit();
         }
     }
-    else
-    {
-        sig->asyncEmit();
-    }
+
+    auto sigOut = outputImage->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Image::s_BUFFER_MODIFIED_SIG);
+    sigOut->asyncEmit();
 }
 
 // ----------------------------------------------------------------------------
@@ -331,7 +327,6 @@ void SDistortion::changeState()
     m_prevImageSize.clear();
 
     m_isEnabled = !m_isEnabled;
-    this->updating();
 }
 
 // ----------------------------------------------------------------------------
