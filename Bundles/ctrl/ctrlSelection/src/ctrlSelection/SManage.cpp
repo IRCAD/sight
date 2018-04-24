@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2015-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2015-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -42,10 +42,6 @@ const ::fwServices::IService::KeyType s_VECTOR_INOUT       = "vector";
 const ::fwServices::IService::KeyType s_SERIESDB_INOUT     = "seriesDB";
 const ::fwServices::IService::KeyType s_FIELD_HOLDER_INOUT = "fieldHolder";
 const ::fwServices::IService::KeyType s_OBJECT_INOUT       = "object";
-
-//-----------------------------------------------------------------------------
-
-fwServicesRegisterMacro( ::fwServices::IController, ::ctrlSelection::SManage, ::fwData::Composite );
 
 //-----------------------------------------------------------------------------
 

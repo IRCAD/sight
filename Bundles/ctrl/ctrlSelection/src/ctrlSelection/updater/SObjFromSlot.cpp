@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2015-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2015-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -33,13 +33,11 @@ fwServicesRegisterMacro( ::ctrlSelection::IUpdaterSrv, ::ctrlSelection::updater:
 
 SObjFromSlot::SObjFromSlot() noexcept
 {
-    m_slots(s_ADD_OR_SWAP_SLOT, &SObjFromSlot::addOrSwap, this)
-        (s_ADD_SLOT, &SObjFromSlot::add, this)
-        (s_SWAP_OBJ_SLOT, &SObjFromSlot::swap, this)
-        (s_REMOVE_SLOT, &SObjFromSlot::remove, this)
-        (s_REMOVE_IF_PRESENT_SLOT, &SObjFromSlot::removeIfPresent, this);
-
-    m_slots.setWorker(m_associatedWorker);
+    newSlot(s_ADD_OR_SWAP_SLOT, &SObjFromSlot::addOrSwap, this);
+    newSlot(s_ADD_SLOT, &SObjFromSlot::add, this);
+    newSlot(s_SWAP_OBJ_SLOT, &SObjFromSlot::swap, this);
+    newSlot(s_REMOVE_SLOT, &SObjFromSlot::remove, this);
+    newSlot(s_REMOVE_IF_PRESENT_SLOT, &SObjFromSlot::removeIfPresent, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -74,7 +72,7 @@ void SObjFromSlot::updating()
 
 //-----------------------------------------------------------------------------
 
-void SObjFromSlot::info( std::ostream& _sstream )
+void SObjFromSlot::info( std::ostream& )
 {
 }
 
@@ -89,6 +87,7 @@ void SObjFromSlot::add(::fwData::Object::sptr obj)
 
 void SObjFromSlot::addOrSwap(::fwData::Object::sptr obj)
 {
+    FW_DEPRECATED("addOrSwap", "add");
     this->setOutput(s_OBJECT, obj);
 }
 
@@ -96,6 +95,7 @@ void SObjFromSlot::addOrSwap(::fwData::Object::sptr obj)
 
 void SObjFromSlot::swap(::fwData::Object::sptr obj)
 {
+    FW_DEPRECATED("addOrSwap", "add");
     this->setOutput(s_OBJECT, obj);
 }
 
@@ -110,6 +110,7 @@ void SObjFromSlot::remove()
 
 void SObjFromSlot::removeIfPresent()
 {
+    FW_DEPRECATED("removeIfPresent", "remove");
     this->setOutput(s_OBJECT, nullptr);
 }
 
