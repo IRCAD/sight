@@ -25,6 +25,53 @@ namespace ioAtoms
 
 /**
  * @brief Atoms writer. Service to write an fwData medical data converted in fwAtoms.
+ *
+ * @section Signals Signals
+ * - \b jobCreated(SPTR(::fwJobs::IJob)): emitted when the image is loading to display a progress bar.
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+   <service type="::ioAtoms::SWriter">
+       <inout key="data" uid="..." />
+       <config>
+        <patcher context="..." version="..." />
+
+        <archive backend="json">
+            <extension>.j</extension>
+        </archive>
+
+        <archive backend="jsonz">
+            <extension>.vpz</extension>
+        </archive>
+
+        <extensions>
+            <extension label="XML">.xml</extension>
+            <extension label="Zipped XML>.xmlz</extension>
+            <extension>.f4s</extension>
+            <extension>.j</extension>
+            <extension label="Medical workspace">.mw</extension>
+            <extension>.vpz</extension>
+        </extensions>
+
+       </config>
+   </service>
+   @endcode
+ * @subsection In-Out In-Out
+ * - \b data [::fwData::Object]: object to write.
+ * @subsection Configuration Configuration
+ * - \b patcher defines the atom patcher to use to convert the atoms (see ::fwAtomsPatch::PatchingManager)
+ * - \b archive(optional): defines custom file extensions. The file to be read with an extension given in 'archive' tag
+ *      will be processed with the given backend in archive tag (the 'backend' attribute is mandatory). Extensions must
+ *      begin with '.'. Available 'backend' values are json, xml, jsonz and xmlz.
+ *
+ * - \b extensions(optional): defines available extensions displayed in dialog to read file. If the 'extensions' is
+ *      empty or not specified, all the extensions (.json, .xml, .jsonz, .xmlz extensions and custom extensions) are
+ *      available.
+ *      The attribute label (not mandatory) allows to display a label in front of extension when the file dialog is
+ *      shown.
+ *
+ * @see ::fwIO::IReader
  */
 class IOATOMS_CLASS_API SWriter : public ::fwIO::IWriter
 {
@@ -52,45 +99,7 @@ protected:
     /// Maps file extension to format name.
     typedef std::map< std::string, std::string > FileExtension2NameType;
 
-    /**
-     * @brief Configures the writer
-       @code{.xml}
-       <config>
-        <patcher context="..." version="..." />
-
-        <archive backend="json">
-            <extension>.j</extension>
-        </archive>
-
-        <archive backend="jsonz">
-            <extension>.vpz</extension>
-        </archive>
-
-        <extensions>
-            <extension label="XML">.xml</extension>
-            <extension label="Zipped XML>.xmlz</extension>
-            <extension>.f4s</extension>
-            <extension>.j</extension>
-            <extension label="Medical workspace">.mw</extension>
-            <extension>.vpz</extension>
-        </extensions>
-
-       </config>
-       @endcode
-     *
-     * archive : defines custom file extensions. The file to be saved with an extension given in 'archive' tag will be
-     * written with the given backend in archive tag (the 'backend' attribute is mandatory). Extensions must begin with
-     * '.'.
-     * Available 'backend' values are json, xml, jsonz and xmlz.
-     *
-     * extensions : defines available extensions displayed in dialog to save file. If the 'extensions' is empty or not
-     * specified, all the extensions (.json, .xml, .jsonz, .xmlz extensions and custom extensions) are available.
-     * The attribute label (not mandatory) allows to display a label in front of extension when the file dialog is
-     * shown.
-     *
-     * @see ::fwIO::IWriter
-     * @throw ::fwTools::Failed
-     */
+    /// Parse the configuration
     IOATOMS_API void configuring() override;
 
     /// Does nothing

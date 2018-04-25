@@ -1,19 +1,20 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "fwActivities/validator/ImageProperties.hpp"
+
+#include "fwActivities/validator/registry/macros.hpp"
+
+#include <fwData/Composite.hpp>
 #include <fwData/Image.hpp>
 #include <fwData/Vector.hpp>
-#include <fwData/Composite.hpp>
-
-#include <fwMedData/ImageSeries.hpp>
 
 #include <fwMath/Compare.hpp>
 
-#include "fwActivities/validator/registry/macros.hpp"
-#include "fwActivities/validator/ImageProperties.hpp"
+#include <fwMedData/ImageSeries.hpp>
 
 namespace fwActivities
 {
@@ -39,7 +40,7 @@ ImageProperties::~ImageProperties()
 
 IValidator::ValidationType ImageProperties::validate(
     const ::fwActivities::registry::ActivityInfo& activityInfo,
-    ::fwData::Vector::sptr currentSelection ) const
+    const ::fwData::Vector::csptr& currentSelection ) const
 {
     IValidator::ValidationType validation;
 
@@ -92,7 +93,7 @@ IValidator::ValidationType ImageProperties::validate(
 
 //-----------------------------------------------------------------------------
 
-IValidator::ValidationType ImageProperties::validate(const ::fwData::Object::csptr &currentData ) const
+IValidator::ValidationType ImageProperties::validate(const ::fwData::Object::csptr& currentData ) const
 {
     IValidator::ValidationType validation;
 
@@ -204,5 +205,3 @@ IValidator::ValidationType ImageProperties::validate(const ::fwData::Object::csp
 
 } // namespace validator
 } // namespace fwActivities
-
-

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2016-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2016-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -18,8 +18,6 @@
 #include <fwData/Composite.hpp>
 #include <fwData/String.hpp>
 #include <fwData/Vector.hpp>
-
-#include <fwDataCamp/getObject.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/SelectorDialog.hpp>
@@ -105,7 +103,7 @@ void SCreateActivity::configuring()
                    mode == "include" || mode == "exclude");
         m_filterMode = mode;
 
-        BOOST_FOREACH( const ConfigType::value_type &v,  configFilter.equal_range("id") )
+        BOOST_FOREACH( const ConfigType::value_type& v,  configFilter.equal_range("id") )
         {
             m_keys.push_back(v.second.get<std::string>(""));
         }
@@ -167,7 +165,7 @@ void SCreateActivity::configuring()
     dialog->setLayout(vLayout);
     QObject::connect(okButton, SIGNAL(clicked()), dialog, SLOT(accept()));
     QObject::connect(cancelButton, SIGNAL(clicked()), dialog, SLOT(reject()));
-    QObject::connect(selectionList, SIGNAL(doubleClicked( const QModelIndex &  )), dialog, SLOT(accept()));
+    QObject::connect(selectionList, SIGNAL(doubleClicked(const QModelIndex&)), dialog, SLOT(accept()));
 
     ::fwActivities::registry::ActivityInfo info;
     if(dialog->exec())
@@ -217,48 +215,6 @@ SCreateActivity::ActivityInfoContainer SCreateActivity::getEnabledActivities(con
 
 void SCreateActivity::updating()
 {
-    ::fwData::Vector::sptr selection = this->getObject< ::fwData::Vector >();
-
-    bool update = false;
-    if (selection->size() == 1)
-    {
-        ::fwMedData::ActivitySeries::sptr as = ::fwMedData::ActivitySeries::dynamicCast(selection->front());
-        if (as)
-        {
-            m_sigActivitySelected->asyncEmit(as);
-            update = true;
-        }
-    }
-
-    if (!update)
-    {
-        ActivityInfoContainer infos = ::fwActivities::registry::Activities::getDefault()->getInfos();
-        infos = this->getEnabledActivities(infos);
-
-        if ( !infos.empty())
-        {
-            ::fwActivities::registry::ActivityInfo info;
-            if((m_keys.size() == 1 && m_filterMode == "include") || (infos.size() == 1))
-            {
-                info = infos[0];
-            }
-            else
-            {
-                info = this->show( infos );
-            }
-
-            if( !info.id.empty() )
-            {
-                m_sigActivityIDSelected->asyncEmit(info.id);
-            }
-        }
-        else
-        {
-            ::fwGui::dialog::MessageDialog::showMessageDialog("Activity launcher",
-                                                              "No available activity for the current selection.",
-                                                              ::fwGui::dialog::MessageDialog::WARNING);
-        }
-    }
 }
 
 //------------------------------------------------------------------------------

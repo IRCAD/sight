@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __CTRLCAMP_SCOPY_HPP__
-#define __CTRLCAMP_SCOPY_HPP__
+#pragma once
 
 #include "ctrlCamp/config.hpp"
 #include "ctrlCamp/ICamp.hpp"
@@ -81,22 +80,14 @@ private:
     /// Copy method
     void copy();
 
-    /// source object uid or sesh@ path
-    std::string m_source;
-
     /// sesh@ path for appXml
     std::string m_path;
 
     /// boolean to know if the object to copy is a sesh@ path or an object
     bool m_hasExtractTag;
 
-    /// target sesh@ path
-    std::string m_target;
-
     /// Determine when the data is copied (start or update)
     ModeType m_mode;
 };
 
 } // namespace ctrlCamp
-
-#endif /* __CTRLCAMP_SCOPY_HPP__ */

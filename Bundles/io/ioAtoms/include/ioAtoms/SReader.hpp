@@ -27,6 +27,60 @@ namespace ioAtoms
 
 /**
  * @brief Atoms reader. Service to load data from Atoms format
+ *
+ * @section Signals Signals
+ * - \b jobCreated(SPTR(::fwJobs::IJob)): emitted when the image is loading to display a progress bar.
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+   <service type="::ioAtoms::SReader">
+       <inout key="data" uid="..." />
+       <config>
+           <uuidPolicy>Strict|Change|Reuse</uuidPolicy>
+           <patcher context="..." version="..." />
+           <filter>...</filter>
+           <archive backend="json">
+               <extension>.j</extension>
+           </archive>
+
+           <archive backend="jsonz">
+               <extension>.vpz</extension>
+           </archive>
+
+           <extensions>
+               <extension label="XML">.xml</extension>
+               <extension label="Zipped XML>.xmlz</extension>
+               <extension>.f4s</extension>
+               <extension>.j</extension>
+               <extension label="Medical workspace">.mw</extension>
+               <extension>.vpz</extension>
+           </extensions>
+
+       </config>
+   </service>
+   @endcode
+ * @subsection In-Out In-Out
+ * - \b data [::fwData::Object]: object to read.
+ * @subsection Configuration Configuration
+ * - \b uuidPolicy(optional, default ChangePolicy): defines the policy for atoms conversion. 'ChangePolicy' change the
+ *      object uuid only if it already exist in the application. 'StrictPolicy' keep the object uuid and throws an
+ *      exception if the loaded uuid already exist. 'ReusePolicy' use the existing object in the application with the
+ *      uuid.
+ * - \b patcher defines the atom patcher to use to convert the atoms (see ::fwAtomsPatch::PatchingManager)
+ * - \b filter(optional): filter applied on the read atom before the conversion to the object. (see
+ *      ::fwAtomsFilter::IFilter)
+ * - \b archive(optional): defines custom file extensions. The file to be read with an extension given in 'archive' tag
+ *      will be processed with the given backend in archive tag (the 'backend' attribute is mandatory). Extensions must
+ *      begin with '.'. Available 'backend' values are json, xml, jsonz and xmlz.
+ *
+ * - \b extensions(optional): defines available extensions displayed in dialog to read file. If the 'extensions' is
+ *      empty or not specified, all the extensions (.json, .xml, .jsonz, .xmlz extensions and custom extensions) are
+ *      available.
+ *      The attribute label (not mandatory) allows to display a label in front of extension when the file dialog is
+ *      shown.
+ *
+ * @see ::fwIO::IReader
  */
 class IOATOMS_CLASS_API SReader : public ::fwIO::IReader
 {
@@ -63,47 +117,7 @@ protected:
     /// Does nothing
     IOATOMS_API void stopping() override;
 
-    /**
-     * @brief Configures the reader.
-     * @code{.xml}
-       <config>
-        <inject>ReadData</inject>
-        <uuidPolicy>Strict|Change|Reuse</uuidPolicy>
-        <patcher context="..." version="..." />
-
-        <archive backend="json">
-            <extension>.j</extension>
-        </archive>
-
-        <archive backend="jsonz">
-            <extension>.vpz</extension>
-        </archive>
-
-        <extensions>
-            <extension label="XML">.xml</extension>
-            <extension label="Zipped XML>.xmlz</extension>
-            <extension>.f4s</extension>
-            <extension>.j</extension>
-            <extension label="Medical workspace">.mw</extension>
-            <extension>.vpz</extension>
-        </extensions>
-
-       </config>
-       @endcode
-     *
-     * archive : defines custom file extensions. The file to be read with an extension given in 'archive' tag will be
-     * processed with the given backend in archive tag (the 'backend' attribute is mandatory). Extensions must begin
-     * with '.'.
-     * Available 'backend' values are json, xml, jsonz and xmlz.
-     *
-     * extensions : defines available extensions displayed in dialog to read file. If the 'extensions' is empty or not
-     * specified, all the extensions (.json, .xml, .jsonz, .xmlz extensions and custom extensions) are available.
-     * The attribute label (not mandatory) allows to display a label in front of extension when the file dialog is
-     * shown.
-     *
-     * @see ::fwIO::IReader
-     * @throw ::fwTools::Failed
-     */
+    /// Parse the configuration
     IOATOMS_API void configuring() override;
 
     /**
