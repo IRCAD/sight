@@ -274,7 +274,7 @@ void ActivityDataView::fillInformation(const ::fwActivities::registry::ActivityI
         {
             QPushButton* buttonAddFromSDB = new QPushButton("Import from SeriesDB");
             buttonLayout->addWidget(buttonAddFromSDB);
-            buttonAddFromSDB->setToolTip(QString("Import a SeriesDB an extract the object of type '%1'").
+            buttonAddFromSDB->setToolTip(QString("Import a SeriesDB and extract the object of type '%1'").
                                          arg(QString::fromStdString(req.type)));
             QObject::connect(buttonAddFromSDB, &QPushButton::clicked, this, &ActivityDataView::importObjectFromSDB);
         }
@@ -619,9 +619,9 @@ void ActivityDataView::createNewObject()
 
     if(nbItems >= req.maxOccurs)
     {
-        QMessageBox::warning(this, "Import",
-                             "The maximum number of element is reached.\n"
-                             "You must remove one before adding another.");
+        const QString message("Can't create more '"+ QString::fromStdString(type) +
+                              "', please remove one to create another.");
+        QMessageBox::warning(this, "New", message );
         return;
     }
     ::fwData::Object::sptr newObject = ::fwData::factory::New(type);
@@ -646,9 +646,9 @@ void ActivityDataView::importObject()
 
     if(nbItems >= req.maxOccurs)
     {
-        QMessageBox::warning(this, "Import",
-                             "The maximum number of element is reached.\n"
-                             "You must remove one before adding another.");
+        const QString message("Can't load more '"+ QString::fromStdString(type) +
+                              "', please remove one to load another.");
+        QMessageBox::warning(this, "Import", message );
         return;
     }
 
@@ -677,9 +677,9 @@ void ActivityDataView::importObjectFromSDB()
 
     if(nbItems >= req.maxOccurs)
     {
-        QMessageBox::warning(this, "Import",
-                             "The maximum number of element is reached.\n"
-                             "You must remove one before adding another.");
+        const QString message("Can't load more '"+ QString::fromStdString(type) +
+                              "', please remove one to load another.");
+        QMessageBox::warning(this, "Import from SeriesDB", message );
         return;
     }
 
