@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -11,7 +11,6 @@
 
 #include <fwData/Composite.hpp>
 #include <fwData/Material.hpp>
-
 #include <fwData/Mesh.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
 
@@ -21,23 +20,19 @@
 #include <fwVtkIO/helper/Mesh.hpp>
 #include <fwVtkIO/vtk.hpp>
 
-#include <vtkCommand.h>
 #include <vtkCamera.h>
+#include <vtkCommand.h>
+#include <vtkInteractorStyleTrackballCamera.h>
+#include <vtkMatrix4x4.h>
 #include <vtkPolyData.h>
 #include <vtkPolyDataMapper.h>
+#include <vtkPolyDataNormals.h>
 #include <vtkProperty.h>
 #include <vtkRenderer.h>
 #include <vtkRenderWindow.h>
-#include <vtkPolyDataNormals.h>
-#include <vtkCamera.h>
-#include <vtkMatrix4x4.h>
-#include <vtkInteractorStyleTrackballCamera.h>
 #include <vtkTransform.h>
 
-
 fwServicesRegisterMacro( ::fwRender::IRender, ::vtkCompositeMesh::RendererService, ::fwData::Composite );
-
-
 
 namespace vtkCompositeMesh
 {
@@ -55,6 +50,8 @@ public:
         m_service              = _service;
         this->m_isMousePressed = false;
     }
+    //------------------------------------------------------------------------------
+
     void Execute(vtkObject* _caller, unsigned long _event, void* _obj)
     {
         if (_event == vtkCommand::StartInteractionEvent )
@@ -78,8 +75,9 @@ private:
     bool m_isMousePressed;
 };
 
-RendererService::RendererService() noexcept
-    : m_render( 0 ), m_bPipelineIsInit(false)
+RendererService::RendererService() noexcept :
+    m_render( 0 ),
+    m_bPipelineIsInit(false)
 {
     m_slotUpdateCamPosition = newSlot( s_UPDATE_CAM_POSITION_SLOT, &RendererService::updateCamPosition, this );
     newSlot(s_UPDATE_PIPELINE_SLOT, &RendererService::updatePipeline, this);
@@ -101,6 +99,7 @@ RendererService::~RendererService() noexcept
 
 void RendererService::starting()
 {
+    FW_DEPRECATED_MSG("This service is deprecated and will be removed.");
     this->IGuiContainerSrv::create();
 
     m_bPipelineIsInit = false;
@@ -192,9 +191,9 @@ void RendererService::createAndAddActorToRender()
     {
         OSLM_INFO("ObjectName: " << it->first);
         OSLM_INFO("ObjectPointer: " << it->second);
-        OSLM_INFO("ObjectType: " << it->second->getClassname () << '\n');
+        OSLM_INFO("ObjectType: " << it->second->getClassname() << '\n');
 
-        ::fwData::Mesh::sptr myMesh = ::fwData::Mesh::dynamicCast (it->second);
+        ::fwData::Mesh::sptr myMesh = ::fwData::Mesh::dynamicCast(it->second);
 
         // If it's a mesh, then put it in the pipeline:
         if( myMesh )
@@ -214,7 +213,6 @@ void RendererService::createAndAddActorToRender()
             // Add the actors
             m_render->AddActor( actor);
 
-
             OSLM_INFO("Mesh found: " << it->first);
             if (!myMesh->getField( "MaterialMesh" ))
             {
@@ -223,21 +221,21 @@ void RendererService::createAndAddActorToRender()
                 {
                     actor->GetProperty()->EdgeVisibilityOn();
                     actor->GetProperty()->SetInterpolationToFlat();
-                    actor->GetProperty()->SetColor (1.0, 0.0, 0.0);
-                    actor->GetProperty()->SetEdgeColor (1.0, 0.0, 0.0);
+                    actor->GetProperty()->SetColor(1.0, 0.0, 0.0);
+                    actor->GetProperty()->SetEdgeColor(1.0, 0.0, 0.0);
                 }
                 else
                 {
-                    actor->GetProperty()->SetRepresentationToWireframe ();
-                    actor->GetProperty()->SetColor (1.0, 1.0, 1.0);
+                    actor->GetProperty()->SetRepresentationToWireframe();
+                    actor->GetProperty()->SetColor(1.0, 1.0, 1.0);
                 }
             }
             else
             {
                 // Material exists
                 ::fwData::Material::sptr matObjPtr = myMesh->getField< ::fwData::Material >( "MaterialMesh" );
-                actor->GetProperty()->SetColor (matObjPtr->diffuse()->red(),
-                                                matObjPtr->diffuse()->green(), matObjPtr->diffuse()->blue());
+                actor->GetProperty()->SetColor(matObjPtr->diffuse()->red(),
+                                               matObjPtr->diffuse()->green(), matObjPtr->diffuse()->blue());
             }
             mapper->Delete();
             elementNumber++;

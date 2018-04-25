@@ -17,6 +17,7 @@ namespace fwData
 
 /**
  * @brief This class defines a spline object.
+ * @deprecated This data is deprecated, use ::fwData::PointList instead
  */
 class FWDATA_CLASS_API Spline : public Object
 {
