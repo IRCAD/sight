@@ -214,25 +214,22 @@ void SQueryEditor::queryPatientName()
         {
 
             const std::string& seriesUID = seriesArray.at(i).toString().toStdString();
-            const std::string instancesUrl(pacsServer + "/series/" + seriesUID);
-            const QByteArray& instancesAnswer = m_clientQt.get( ::fwNetworkIO::http::Request::New(instancesUrl));
+            const std::string instancesListUrl(pacsServer + "/series/" + seriesUID);
+            const QByteArray& instancesAnswer = m_clientQt.get( ::fwNetworkIO::http::Request::New(instancesListUrl));
             jsonResponse = QJsonDocument::fromJson(instancesAnswer);
-            const QJsonObject& jsonObj       = jsonResponse.object();
-            const QJsonArray& instancesArray = jsonObj["Instances"].toArray();
+            const QJsonObject& jsonObj      = jsonResponse.object();
+            const QJsonArray& instanceArray = jsonObj["Instances"].toArray();
 
-            const size_t instancesArraySize = instancesArray.count();
-            for(size_t j = 0; j < instancesArraySize; ++j)
-            {
-                const std::string& instanceUID = instancesArray.at(j).toString().toStdString();
-                const std::string instancesUrl(pacsServer + "/instances/" + instanceUID + "/simplified-tags");
-                const QByteArray& instance = m_clientQt.get( ::fwNetworkIO::http::Request::New(instancesUrl));
+            // Retrieve the first instance for the needed information
+            const std::string& instanceUID = instanceArray.at(0).toString().toStdString();
+            const std::string instanceUrl(pacsServer + "/instances/" + instanceUID + "/simplified-tags");
+            const QByteArray& instance = m_clientQt.get( ::fwNetworkIO::http::Request::New(instanceUrl));
 
-                // Convert response to DicomSeries
-                ::fwMedData::SeriesDB::ContainerType series = ::fwNetworkIO::helper::Series::toFwMedData(instance);
+            // Convert response to DicomSeries
+            ::fwMedData::SeriesDB::ContainerType series = ::fwNetworkIO::helper::Series::toFwMedData(instance);
 
-                allSeries.insert(std::end(allSeries), std::begin(series), std::end(series));
-                this->updateSeriesDB(allSeries);
-            }
+            allSeries.insert(std::end(allSeries), std::begin(series), std::end(series));
+            this->updateSeriesDB(allSeries);
         }
     }
     catch (::fwNetworkIO::exceptions::Base& exception)
