@@ -659,7 +659,7 @@ void Window::preViewportUpdate(const ::Ogre::RenderTargetViewportEvent& evt)
     {
         ::Ogre::Overlay* overlay = overlayMapElt.second;
 
-        if(m_enabledOverlays.find(overlay) != m_enabledOverlays.end() && !overlay->isVisible())
+        if(m_enabledOverlays.find(overlay) != m_enabledOverlays.end())
         {
             overlay->show();
         }
@@ -670,6 +670,18 @@ void Window::preViewportUpdate(const ::Ogre::RenderTargetViewportEvent& evt)
     }
 
     ::Ogre::RenderTargetListener::preViewportUpdate(evt);
+}
+
+//-----------------------------------------------------------------------------
+
+void Window::postViewportUpdate(const Ogre::RenderTargetViewportEvent& evt)
+{
+    for(::Ogre::Overlay* o : m_enabledOverlays)
+    {
+        o->hide();
+    }
+
+    ::Ogre::RenderTargetListener::postViewportUpdate(evt);
 }
 
 } // namespace visuOgreQt

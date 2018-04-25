@@ -7,6 +7,7 @@
 #include "fwRenderOgre/Text.hpp"
 
 #include "fwRenderOgre/helper/Font.hpp"
+#include "fwRenderOgre/Utils.hpp"
 
 #include <OGRE/OgreGpuProgramParams.h>
 #include <OGRE/OgreMaterial.h>
@@ -20,28 +21,30 @@ namespace fwRenderOgre
 
 //------------------------------------------------------------------------------
 
-Text* Text::New(const std::string& _id, ::Ogre::SceneManager* _sm, ::Ogre::OverlayContainer* _parent,
-                ::Ogre::FontPtr _font, ::Ogre::Camera* _cam)
+Text* Text::New(const std::string& _id, ::Ogre::SceneManager* _sm, ::Ogre::FontPtr _font, ::Ogre::Camera* _cam)
 {
     const auto& factoryName = ::fwRenderOgre::factory::Text::FACTORY_TYPE_NAME;
     Text* instance          = static_cast< ::fwRenderOgre::Text* >(_sm->createMovableObject(_id, factoryName));
 
-    instance->m_parentContainer = _parent;
-    instance->m_camera          = _cam;
+    instance->m_camera = _cam;
 
     instance->m_overlayText->setDimensions(1.0f, 1.0f);
     instance->m_overlayText->setMetricsMode(Ogre::GMM_RELATIVE);
     instance->m_overlayText->setCharHeight(0.03f);
     instance->m_overlayText->setPosition(0.5, 0.5);
-
     instance->m_overlayText->setFontName(_font->getName());
 
     // Clone the font material, thereby allowing each text object to have its own color.
     const ::Ogre::MaterialPtr& fontMtl = ::fwRenderOgre::helper::Font::getFontMtl(_font->getName());
     const ::Ogre::MaterialPtr& textMtl = fontMtl->clone(_id + "_TextMaterial");
     instance->m_overlayText->setMaterial(textMtl);
+    instance->m_overlayText->initialise();
+    instance->m_overlayText->_updateFromParent();
+    instance->m_overlayText->show();
+    instance->setTransform(::Ogre::Matrix4::IDENTITY);
+    instance->setMaterial(textMtl);
 
-    _parent->addChild(instance->m_overlayText);
+    instance->setRenderQueueGroup(::Ogre::RENDER_QUEUE_OVERLAY);
 
     return instance;
 }
@@ -49,7 +52,7 @@ Text* Text::New(const std::string& _id, ::Ogre::SceneManager* _sm, ::Ogre::Overl
 //------------------------------------------------------------------------------
 
 Text::Text(const std::string& _id) :
-    ::Ogre::MovableObject(_id)
+    ::Ogre::SimpleRenderable(_id)
 {
     auto& overlayManager = ::Ogre::OverlayManager::getSingleton();
     m_overlayText = dynamic_cast< ::Ogre::TextAreaOverlayElement* >(
@@ -62,7 +65,6 @@ Text::~Text()
 {
     const ::Ogre::String& overlayTextName = m_overlayText->getName();
 
-    m_parentContainer->removeChild(overlayTextName);
     ::Ogre::OverlayManager::getSingleton().destroyOverlayElement(overlayTextName);
 }
 
@@ -71,6 +73,7 @@ Text::~Text()
 void Text::setText(const std::string& _text)
 {
     m_overlayText->setCaption(_text);
+    m_dirty = true;
 }
 
 //------------------------------------------------------------------------------
@@ -78,6 +81,7 @@ void Text::setText(const std::string& _text)
 void Text::setPosition(float _x, float _y)
 {
     m_overlayText->setPosition(_x, _y);
+    m_dirty = true;
 }
 
 //------------------------------------------------------------------------------
@@ -85,13 +89,14 @@ void Text::setPosition(float _x, float _y)
 void Text::setCharHeight(float _height)
 {
     m_overlayText->setCharHeight(_height);
+    m_dirty = true;
 }
 
 //------------------------------------------------------------------------------
 
 void Text::setTextColor(Ogre::ColourValue _color)
 {
-    ::Ogre::Pass* fontRenderPass                     = m_overlayText->getMaterial()->getTechnique(0)->getPass(0);
+    ::Ogre::Pass* fontRenderPass                     = this->getMaterial()->getTechnique(0)->getPass(0);
     ::Ogre::GpuProgramParametersSharedPtr passParams = fontRenderPass->getFragmentProgramParameters();
 
     passParams->setNamedConstant("u_textColor", ::Ogre::Vector3(_color.r, _color.g, _color.b));
@@ -106,13 +111,6 @@ const Ogre::String& Text::getMovableType() const
 
 //------------------------------------------------------------------------------
 
-const Ogre::AxisAlignedBox& Text::getBoundingBox() const
-{
-    return m_bb;
-}
-
-//------------------------------------------------------------------------------
-
 Ogre::Real Text::getBoundingRadius() const
 {
     return 0.f;
@@ -120,13 +118,12 @@ Ogre::Real Text::getBoundingRadius() const
 
 //------------------------------------------------------------------------------
 
-void Text::_updateRenderQueue(Ogre::RenderQueue*)
+void Text::_updateRenderQueue(Ogre::RenderQueue* rq)
 {
     ::Ogre::Node* parentNode = this->getParentNode();
 
     if(!mVisible)
     {
-        m_overlayText->hide();
         return;
     }
 
@@ -138,9 +135,7 @@ void Text::_updateRenderQueue(Ogre::RenderQueue*)
         const auto projPos    = viewProjMx * pos;
 
         const ::Ogre::Vector2 screenPos(0.5f + projPos.x/2.f, 0.5f - projPos.y/2.f);
-        m_overlayText->setPosition(screenPos.x, screenPos.y);
-
-//        std::cerr << "POS " << screenPos << " CAPTION " << m_overlayText->getCaption() << std::endl;
+        this->setPosition(screenPos.x, screenPos.y);
 
         // Clipping test.
         if(projPos.z < 0.f || projPos.z > 1.f)
@@ -150,16 +145,59 @@ void Text::_updateRenderQueue(Ogre::RenderQueue*)
         else
         {
             m_overlayText->show();
+            rq->addRenderable(this);
         }
     }
 }
 
 //------------------------------------------------------------------------------
 
-void Text::visitRenderables(Ogre::Renderable::Visitor*, bool)
+void Text::getRenderOperation(Ogre::RenderOperation& _op)
 {
+    if(m_dirty)
+    {
+        this->updateTextGeometry();
+    }
+
+    m_overlayText->getRenderOperation(mRenderOp);
+    _op = mRenderOp;
 }
 
 //------------------------------------------------------------------------------
+
+Ogre::Real Text::getSquaredViewDepth(const Ogre::Camera* _cam) const
+{
+    if(this->getParentNode() != nullptr)
+    {
+        return this->getParentNode()->getSquaredViewDepth(_cam);
+    }
+    else
+    {
+        return 1.f;
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void Text::getWorldTransforms(Ogre::Matrix4* _xform) const
+{
+    *_xform = ::Ogre::Matrix4::IDENTITY;
+    _xform->setScale(::Ogre::Vector3(1.f, -1.f, 1.f));
+}
+
+//------------------------------------------------------------------------------
+
+void Text::updateTextGeometry()
+{
+    // HACK: updates the current viewport size in the overlay manager.
+    // This way we can handle multiple viewports. It needs to be done because the overlay system
+    // was designed for a single viewport only.
+    // The viewport's size needs to be the right one when updating the geometry because the text's height is defined
+    // as a fraction of the viewport's height.
+    ::Ogre::OverlayManager::getSingleton()._queueOverlaysForRendering(m_camera, nullptr, m_camera->getViewport());
+
+    m_overlayText->_updateFromParent();
+    m_overlayText->_update();
+}
 
 } // namespace fwRenderOgre

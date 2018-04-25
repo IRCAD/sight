@@ -72,10 +72,11 @@ public:
     /// Destroy ogre window
     VISUOGREQT_API void destroyWindow();
 
-    /**
-     * @brief Override from RenderTargetListener
-     */
+    /// Called right before rendering in the viewport. Activates the overlays enabled for this viewport.
     VISUOGREQT_API virtual void preViewportUpdate(const ::Ogre::RenderTargetViewportEvent& evt) override;
+
+    /// Called right after rendering in the viewport. Disables the overlays enabled for this viewport.
+    VISUOGREQT_API virtual void postViewportUpdate(const Ogre::RenderTargetViewportEvent& evt) override;
 
     VISUOGREQT_API void setFullScreen(bool fullscreen);
 
@@ -191,6 +192,7 @@ private:
     QPoint* m_lastPosRightClick;
 
     int m_frameId;
+
 };
 
 //-----------------------------------------------------------------------------
