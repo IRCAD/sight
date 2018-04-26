@@ -9,11 +9,11 @@ vertex_program Text_VP glsl
 
 fragment_program Text_FP glsl
 {
-    source Video_FP.glsl
+    source Text_FP.glsl
     default_params
     {
         param_named u_fontMap int 0
-        param_named u_textColor float 1 1 1 1
+        param_named u_textColor float4 1 1 1 1
     }
 }
 
