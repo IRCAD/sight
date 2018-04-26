@@ -521,7 +521,19 @@ void ServiceTest::testWithInAndOut()
     CPPUNIT_ASSERT(outInteger);
 
     CPPUNIT_ASSERT_EQUAL(obj->value(), outInteger->value());
+
+    ::fwData::Integer::csptr outInteger2 = service->getOutput< ::fwData::Integer >(
+        ::fwServices::ut::TestServiceWithData::s_OUTPUT);
+    CPPUNIT_ASSERT(outInteger2);
+
+    CPPUNIT_ASSERT_EQUAL(obj->value(), outInteger2->value());
+
     service->stop();
+
+    ::fwData::Integer::csptr nullInteger = service->getOutput< ::fwData::Integer >(
+        ::fwServices::ut::TestServiceWithData::s_OUTPUT);
+    CPPUNIT_ASSERT(nullptr == nullInteger);
+
     CPPUNIT_ASSERT_EQUAL(false, ::fwServices::OSR::isRegistered(::fwServices::ut::TestServiceWithData::s_OUTPUT,
                                                                 ::fwServices::IService::AccessType::OUTPUT, service));
     ::fwServices::OSR::unregisterService(service);
