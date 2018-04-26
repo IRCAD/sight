@@ -24,15 +24,14 @@ namespace helper
 Ogre::FontPtr Font::getFont(const std::string& _trueTypeFileName, const size_t _size)
 {
     // Search for ttf extension in the file name.
-    const size_t extPos         = _trueTypeFileName.rfind(".ttf");
-    const size_t fileNameLength = _trueTypeFileName.size() - 4;
+    const size_t extPos = _trueTypeFileName.rfind(".ttf");
 
     SLM_ASSERT(_trueTypeFileName + "doesn't seem to be a truetype font (*.ttf) file.",
-               extPos == fileNameLength && _trueTypeFileName.size() > 4);
+               _trueTypeFileName.size() > 4 && extPos == _trueTypeFileName.size() - 4);
 
     ::Ogre::FontManager& fontManager = ::Ogre::FontManager::getSingleton();
 
-    const std::string fontName = _trueTypeFileName.substr(0, fileNameLength) + std::to_string(_size);
+    const std::string fontName = _trueTypeFileName.substr(0, extPos) + std::to_string(_size);
     ::Ogre::FontPtr font = fontManager.getByName(fontName);
 
     if(!font)

@@ -264,7 +264,7 @@
 
             <!-- Scene in which the video and the 3D will be rendered -->
 
-            <service uid="genericScene" type="::fwRenderOgre::SRender" autoConnect="yes">
+            <service uid="genericScene" type="::fwRenderOgre::SRender" >
                 <scene>
                     <background topColor="#46455A" bottomColor="#46455A" />
                     <layer id="video" depth="1" />
@@ -326,7 +326,7 @@
             </service>
 
             <!-- Debug 3D Scene -->
-            <service uid="debugScene" type="::fwRenderOgre::SRender" autoConnect="yes">
+            <service uid="debugScene" type="::fwRenderOgre::SRender" >
                 <scene>
                     <background topColor="#46455A" bottomColor="#46455A" />
                     <layer id="default" depth="1" />
