@@ -327,10 +327,10 @@ void SSliceIndexDicomPullerEditor::readImage(std::size_t selectedSliceIndex)
         ::fwMedData::DicomSeries::DicomBinaryContainerType::const_iterator binary = binaries.begin();
         std::advance(binary, selectedSliceIndex);
 
-        ::fwData::Array::sptr array = binary->second;
-        ::fwDataTools::helper::Array arrayHelper(array);
-        char* buffer = static_cast<char*>(arrayHelper.getBuffer());
-        size_t size  = array->getSizeInBytes();
+        const ::fwMemory::BufferObject::sptr bufferObj = binary->second;
+        const ::fwMemory::BufferObject::Lock lockerDest(bufferObj);
+        const char* buffer = static_cast<char*>(lockerDest.getBuffer());
+        const size_t size  = bufferObj->getSize();
 
         ::boost::filesystem::path dest = tmpPath / binary->first;
         ::boost::filesystem::ofstream fs(dest, std::ios::binary|std::ios::trunc);

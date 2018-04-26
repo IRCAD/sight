@@ -28,7 +28,7 @@ fwCampImplementDataMacro((fwMedData)(DicomSeries))
     ;
 }
 
-fwCampImplementEnumMacro((fwMedData)(DicomSeries)(DICOM_AVAILABILITY))
+fwCampImplementEnumMacro((fwMedData)(DicomSeries)(DicomAvailability))
 {
     builder
     .value("NONE",  ::fwMedData::DicomSeries::NONE)

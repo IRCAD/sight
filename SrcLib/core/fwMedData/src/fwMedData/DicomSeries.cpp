@@ -6,7 +6,6 @@
 
 #include "fwMedData/DicomSeries.hpp"
 
-#include <fwData/Array.hpp>
 #include <fwData/Exception.hpp>
 #include <fwData/registry/macros.hpp>
 
@@ -49,7 +48,6 @@ void DicomSeries::shallowCopy(const ::fwData::Object::csptr& _source)
     m_SOPClassUIDs        = other->m_SOPClassUIDs;
     m_computedTagValues   = other->m_computedTagValues;
     m_firstInstanceNumber = other->m_firstInstanceNumber;
-
 }
 
 //------------------------------------------------------------------------------
@@ -71,9 +69,21 @@ void DicomSeries::cachedDeepCopy(const ::fwData::Object::csptr& _source, DeepCop
     m_firstInstanceNumber = other->m_firstInstanceNumber;
 
     m_dicomBinaries.clear();
-    for(const DicomBinaryContainerType::value_type& array : other->m_dicomBinaries)
+    for(const auto& elt : other->m_dicomBinaries)
     {
-        m_dicomBinaries[array.first] = ::fwData::Object::copy(array.second);
+        const ::fwMemory::BufferObject::sptr bufferSrc  = elt.second;
+        const ::fwMemory::BufferObject::sptr bufferDest = m_dicomBinaries[elt.first];
+        if( !bufferSrc->isEmpty() )
+        {
+            ::fwMemory::BufferObject::Lock lockerDest(bufferDest);
+            bufferDest->allocate(bufferSrc->getSize());
+            char* buffDest = static_cast< char* >( lockerDest.getBuffer() );
+
+            ::fwMemory::BufferObject::Lock lockerSource(bufferSrc);
+            char* buffSrc = static_cast< char* >( lockerSource.getBuffer() );
+
+            std::copy(buffSrc, buffSrc + bufferSrc->getSize(), buffDest );
+        }
     }
 }
 
@@ -86,9 +96,9 @@ void DicomSeries::addDicomPath(std::size_t instanceIndex, const ::boost::filesys
 
 //------------------------------------------------------------------------------
 
-void DicomSeries::addBinary(const std::string& filename, const SPTR(::fwData::Array)& binary)
+void DicomSeries::addBinary(const std::string& filename, const ::fwMemory::BufferObject::sptr& buffer)
 {
-    m_dicomBinaries[filename] = binary;
+    m_dicomBinaries[filename] = buffer;
 }
 
 //------------------------------------------------------------------------------
@@ -111,7 +121,7 @@ bool DicomSeries::isInstanceAvailable(std::size_t instanceIndex) const
             available = instanceIndex < m_dicomBinaries.size();
             break;
         default:
-            SLM_ASSERT("You shall not pass.", 0);
+            SLM_ASSERT("You shall not pass.", nullptr);
     }
 
     return available;
