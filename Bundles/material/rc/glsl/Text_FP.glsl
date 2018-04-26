@@ -1,7 +1,7 @@
 #version 150
 
 uniform sampler2D u_videoTexture;
-uniform vec3 u_textColor;
+uniform vec4 u_textColor;
 
 in vec2 oTexCoord;
 
@@ -13,5 +13,5 @@ void main(void)
 {
     vec4 color = texture(u_videoTexture, oTexCoord);
 
-    fragColor = vec4(u_textColor, color.r);
+    fragColor = vec4(u_textColor.rgb, color.r * u_textColor.a);
 }

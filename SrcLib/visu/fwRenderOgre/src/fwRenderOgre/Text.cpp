@@ -96,10 +96,16 @@ void Text::setCharHeight(float _height)
 
 void Text::setTextColor(Ogre::ColourValue _color)
 {
-    ::Ogre::Pass* fontRenderPass                     = this->getMaterial()->getTechnique(0)->getPass(0);
-    ::Ogre::GpuProgramParametersSharedPtr passParams = fontRenderPass->getFragmentProgramParameters();
+    SLM_ASSERT("No material set for this Text.", mMaterial);
+    ::Ogre::Technique* fontRenderTechnique = mMaterial->getTechnique(0);
+    SLM_ASSERT("This Text's material has no technique.", fontRenderTechnique);
+    ::Ogre::Pass* fontRenderPass = fontRenderTechnique->getPass(0);
+    SLM_ASSERT("This Text's material has no pass.", fontRenderPass);
 
-    passParams->setNamedConstant("u_textColor", ::Ogre::Vector3(_color.r, _color.g, _color.b));
+    ::Ogre::GpuProgramParametersSharedPtr passParams = fontRenderPass->getFragmentProgramParameters();
+    SLM_ASSERT("The Text's material pass has no fragment shader attached.", passParams);
+
+    passParams->setNamedConstant("u_textColor", _color);
 }
 
 //------------------------------------------------------------------------------
@@ -182,6 +188,9 @@ Ogre::Real Text::getSquaredViewDepth(const Ogre::Camera* _cam) const
 void Text::getWorldTransforms(Ogre::Matrix4* _xform) const
 {
     *_xform = ::Ogre::Matrix4::IDENTITY;
+
+    // Invert y axis to transform the geometry from the overlay's world (top-left origin)
+    // to render system's viewport world (bottom-left origin).
     _xform->setScale(::Ogre::Vector3(1.f, -1.f, 1.f));
 }
 

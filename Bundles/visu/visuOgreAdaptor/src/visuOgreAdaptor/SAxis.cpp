@@ -32,14 +32,7 @@ static const std::string s_BILLBOARD_CONFIG = "billboard";
 
 //-----------------------------------------------------------------------------
 
-SAxis::SAxis() noexcept :
-    m_material(nullptr),
-    m_length(50.f),
-    m_isVisible(true),
-    m_axisLabels{
-        {
-            nullptr, nullptr, nullptr
-        }}
+SAxis::SAxis() noexcept
 {
     newSlot(s_UPDATE_VISIBILITY_SLOT, &SAxis::updateVisibility, this);
     newSlot(s_TOGGLE_VISIBILITY_SLOT, &SAxis::toggleVisibility, this);
@@ -278,7 +271,6 @@ void SAxis::stopping()
     {
         label->detachFromParent();
         sceneMgr->destroyMovableObject(label);
-//        delete label;
         label = nullptr;
     }
 

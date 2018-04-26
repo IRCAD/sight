@@ -25,10 +25,10 @@ Ogre::FontPtr Font::getFont(const std::string& _trueTypeFileName, const size_t _
 {
     // Search for ttf extension in the file name.
     const size_t extPos         = _trueTypeFileName.rfind(".ttf");
-    const size_t fileNameLength = (_trueTypeFileName.size() - 4);
+    const size_t fileNameLength = _trueTypeFileName.size() - 4;
 
     SLM_ASSERT(_trueTypeFileName + "doesn't seem to be a truetype font (*.ttf) file.",
-               extPos == fileNameLength);
+               extPos == fileNameLength && _trueTypeFileName.size() > 4);
 
     ::Ogre::FontManager& fontManager = ::Ogre::FontManager::getSingleton();
 
@@ -71,11 +71,21 @@ Ogre::MaterialPtr Font::getFontMtl(const std::string& _fontName)
 
     if(!fontMtl)
     {
-        fontMtl = mm.getByName("Text")->clone(mtlName);
+        const auto& baseTextMtl = mm.getByName("Text");
+        SLM_ASSERT("'Text' material not found, please make that the resource exists and has been loaded.", baseTextMtl);
+
+        fontMtl = baseTextMtl->clone(mtlName);
         fontMtl->load(false);
 
         ::Ogre::TexturePtr fontMap = getFontMap(_fontName);
-        fontMtl->getTechnique(0)->getPass(0)->getTextureUnitState("fontMap")->setTexture(fontMap);
+
+        ::Ogre::Technique* fontRenderTechnique = fontMtl->getTechnique(0);
+        SLM_ASSERT("This font's material has no technique.", fontRenderTechnique);
+        ::Ogre::Pass* fontRenderPass = fontRenderTechnique->getPass(0);
+        SLM_ASSERT("This font's material has no pass.", fontRenderPass);
+        ::Ogre::TextureUnitState* fontMapTextUnit = fontRenderPass->getTextureUnitState("fontMap");
+        SLM_ASSERT("This font's pass has no texture unit named 'fontMap'.", fontRenderPass);
+        fontMapTextUnit->setTexture(fontMap);
     }
 
     return fontMtl;

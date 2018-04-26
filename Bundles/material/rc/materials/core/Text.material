@@ -13,7 +13,7 @@ fragment_program Text_FP glsl
     default_params
     {
         param_named u_fontMap int 0
-        param_named u_textColor float 1 1 1
+        param_named u_textColor float 1 1 1 1
     }
 }
 

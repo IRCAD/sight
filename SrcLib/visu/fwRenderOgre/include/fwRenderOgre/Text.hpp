@@ -92,7 +92,7 @@ private:
     ::Ogre::TextAreaOverlayElement* m_overlayText {nullptr};
 
     /// Set to true when the text geometry needs to be updated.
-    bool m_dirty;
+    bool m_dirty {false};
 
 };
 

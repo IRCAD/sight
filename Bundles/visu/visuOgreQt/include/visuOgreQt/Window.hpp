@@ -170,7 +170,8 @@ private:
     Ogre::Root* m_ogreRoot;
     Ogre::RenderWindow* m_ogreRenderWindow;
 
-    std::unordered_set< ::Ogre::Overlay* > m_enabledOverlays;
+    /// List of overlays to display on this window.
+    ::fwRenderOgre::IRenderWindowInteractorManager::OverlaySetType m_enabledOverlays;
 
     /// Ogre overlay system.
     static ::Ogre::OverlaySystem* m_ogreOverlaySystem;
