@@ -261,49 +261,65 @@ void SStatus::toggleGreenRed(const bool green)
 
 void SStatus::changeNthToGreen(const int index)
 {
-    OSLM_FATAL_IF(
-        "Index("<<index <<") must be in vector range [0:" <<m_indicator.size()-1 <<"]",
+    OSLM_INFO_IF(
+        "Index(" << index << ") must be in vector range [0:" << m_indicator.size() - 1 << "]",
             index < 0 || index >= m_count);
-    m_indicator.at(index)->setStyleSheet("background-color: green; border-radius: "+QString(
-                                             m_isCircular ? "10px;" : "0")+";");
-    m_indicator.at(index)->setToolTip(QString::fromStdString(m_greenTooltip));
+
+    if(index >= 0 && index < m_count)
+    {
+        m_indicator.at(index)->setStyleSheet("background-color: green; border-radius: "
+                                             + QString(m_isCircular ? "10px;" : "0") + ";");
+        m_indicator.at(index)->setToolTip(QString::fromStdString(m_greenTooltip));
+    }
 }
 
 //------------------------------------------------------------------------------
 
 void SStatus::changeNthToRed(const int index)
 {
-    OSLM_FATAL_IF(
-        "Index("<<index <<") must be in vector range [0:" <<m_indicator.size()-1 <<"]",
+    OSLM_INFO_IF(
+        "Index(" << index << ") must be in vector range [0:" << m_indicator.size() - 1 <<"]",
             index < 0 || index >= m_count);
-    m_indicator.at(index)->setStyleSheet("background-color: red; border-radius: "+QString(
-                                             m_isCircular ? "10px;" : "0")+";");
-    m_indicator.at(index)->setToolTip(QString::fromStdString(m_redTooltip));
+
+    if(index >= 0 && index < m_count)
+    {
+        m_indicator.at(index)->setStyleSheet("background-color: red; border-radius: "
+                                             + QString(m_isCircular ? "10px;" : "0") + ";");
+        m_indicator.at(index)->setToolTip(QString::fromStdString(m_redTooltip));
+    }
 }
 
 //------------------------------------------------------------------------------
 
 void SStatus::changeNthToOrange(const int index)
 {
-    OSLM_FATAL_IF(
-        "Index("<<index <<") must be in vector range [0:" <<m_indicator.size()-1 <<"]",
+    OSLM_INFO_IF(
+        "Index(" << index << ") must be in vector range [0:" << m_indicator.size() - 1 << "]",
             index < 0 || index >= m_count);
-    m_indicator.at(index)->setStyleSheet("background-color: orange; border-radius: "+
-                                         QString(m_isCircular ? "10px;" : "0")+";");
-    m_indicator.at(index)->setToolTip(QString::fromStdString(m_orangeTooltip));
+
+    if(index >= 0 && index < m_count)
+    {
+        m_indicator.at(index)->setStyleSheet("background-color: orange; border-radius: "
+                                             + QString(m_isCircular ? "10px;" : "0") + ";");
+        m_indicator.at(index)->setToolTip(QString::fromStdString(m_orangeTooltip));
+    }
 }
 
 //------------------------------------------------------------------------------
 
 void SStatus::toggleNthGreenRed(const int index, const bool green)
 {
-    OSLM_FATAL_IF(
-        "Index("<<index <<") must be in vector range [0:" <<m_indicator.size()-1 <<"]",
+    OSLM_INFO_IF(
+        "Index(" << index << ") must be in vector range [0:" << m_indicator.size() - 1 <<"]",
             index < 0 || index >= m_count);
-    m_indicator.at(index)->setStyleSheet("background-color:"+ QString(green ? "green" : "red")+"; border-radius: "+
-                                         QString(m_isCircular ? "10px;" : "0")+";");
-    m_indicator.at(index)->setToolTip(green ? QString::fromStdString(m_greenTooltip) : QString::fromStdString(
-                                          m_redTooltip));
+
+    if(index >= 0 && index < m_count)
+    {
+        m_indicator.at(index)->setStyleSheet("background-color:"+ QString(green ? "green" : "red")
+                                             + "; border-radius: " + QString(m_isCircular ? "10px;" : "0") + ";");
+        m_indicator.at(index)->setToolTip(green ? QString::fromStdString(m_greenTooltip)
+                                          : QString::fromStdString(m_redTooltip));
+    }
 }
 
 //------------------------------------------------------------------------------
