@@ -207,10 +207,10 @@ void SQueryEditor::queryPatientName()
         ::fwNetworkIO::http::Request::sptr request = ::fwNetworkIO::http::Request::New(pacsServer + "/tools/find");
         const QByteArray& seriesAnswer = m_clientQt.post(request, QJsonDocument(body).toJson());
         QJsonDocument jsonResponse     = QJsonDocument::fromJson(seriesAnswer);
-        const QJsonArray& seriesArray  = jsonResponse.array();
-        const size_t seriesArraySize   = seriesArray.count();
+        QJsonArray seriesArray         = jsonResponse.array();
+        const int seriesArraySize      = seriesArray.count();
 
-        for(size_t i = 0; i < seriesArraySize; ++i)
+        for(int i = 0; i < seriesArraySize; ++i)
         {
 
             const std::string& seriesUID = seriesArray.at(i).toString().toStdString();
@@ -225,8 +225,11 @@ void SQueryEditor::queryPatientName()
             const std::string instanceUrl(pacsServer + "/instances/" + instanceUID + "/simplified-tags");
             const QByteArray& instance = m_clientQt.get( ::fwNetworkIO::http::Request::New(instanceUrl));
 
+            QJsonObject seriesJson = QJsonDocument::fromJson(instance).object();
+            seriesJson.insert( "NumberOfSeriesRelatedInstances", instanceArray.count() );
+
             // Convert response to DicomSeries
-            ::fwMedData::SeriesDB::ContainerType series = ::fwNetworkIO::helper::Series::toFwMedData(instance);
+            ::fwMedData::SeriesDB::ContainerType series = ::fwNetworkIO::helper::Series::toFwMedData(seriesJson);
 
             allSeries.insert(std::end(allSeries), std::begin(series), std::end(series));
             this->updateSeriesDB(allSeries);
@@ -285,9 +288,9 @@ void SQueryEditor::queryStudyDate()
         const QByteArray& studiesListAnswer = m_clientQt.post(request, QJsonDocument(body).toJson());
         QJsonDocument jsonResponse          = QJsonDocument::fromJson(studiesListAnswer);
         const QJsonArray& studiesListArray  = jsonResponse.array();
-        const size_t studiesListArraySize   = studiesListArray.count();
+        const int studiesListArraySize      = studiesListArray.count();
 
-        for(size_t i = 0; i < studiesListArraySize; ++i)
+        for(int i = 0; i < studiesListArraySize; ++i)
         {
             const std::string& studiesUID = studiesListArray.at(i).toString().toStdString();
             const std::string studiesUrl(pacsServer + "/studies/" + studiesUID);
@@ -296,9 +299,9 @@ void SQueryEditor::queryStudyDate()
             jsonResponse = QJsonDocument::fromJson(studiesAnswer);
             const QJsonObject& jsonObj    = jsonResponse.object();
             const QJsonArray& seriesArray = jsonObj["Series"].toArray();
-            const size_t seriesArraySize  = seriesArray.count();
+            const int seriesArraySize     = seriesArray.count();
 
-            for(size_t i = 0; i < seriesArraySize; ++i)
+            for(int i = 0; i < seriesArraySize; ++i)
             {
                 const std::string& seriesUID = seriesArray.at(i).toString().toStdString();
                 const std::string instancesUrl(pacsServer + "/series/" + seriesUID);
@@ -307,15 +310,19 @@ void SQueryEditor::queryStudyDate()
                 const QJsonObject& jsonObj       = jsonResponse.object();
                 const QJsonArray& instancesArray = jsonObj["Instances"].toArray();
 
-                const size_t instancesArraySize = instancesArray.count();
-                for(size_t j = 0; j < instancesArraySize; ++j)
+                const int instancesArraySize = instancesArray.count();
+                for(int j = 0; j < instancesArraySize; ++j)
                 {
                     const std::string& instanceUID = instancesArray.at(j).toString().toStdString();
                     const std::string instancesUrl(pacsServer + "/instances/" + instanceUID + "/simplified-tags");
                     const QByteArray& instance = m_clientQt.get( ::fwNetworkIO::http::Request::New(instancesUrl));
 
+                    QJsonObject seriesJson = QJsonDocument::fromJson(instance).object();
+                    seriesJson.insert( "NumberOfSeriesRelatedInstances", instancesArray.count() );
+
                     // Convert response to DicomSeries
-                    ::fwMedData::SeriesDB::ContainerType series = ::fwNetworkIO::helper::Series::toFwMedData(instance);
+                    ::fwMedData::SeriesDB::ContainerType series =
+                        ::fwNetworkIO::helper::Series::toFwMedData(seriesJson);
 
                     allSeries.insert(std::end(allSeries), std::begin(series), std::end(series));
                     this->updateSeriesDB(allSeries);

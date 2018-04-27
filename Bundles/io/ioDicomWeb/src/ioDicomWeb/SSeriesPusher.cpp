@@ -151,7 +151,7 @@ bool SSeriesPusher::checkSeriesOnPACS()
     //             duplicateSeriesVector.push_back(series);
     //         }
     //
-    //         ::fwDicomWebIO::helper::Series::releaseResponses(responses);
+    //         ::fwNetworkIO::helper::Series::releaseResponses(responses);
     //     }
     //
     //     // Inform the user that some series are already on the PACS
@@ -183,7 +183,7 @@ bool SSeriesPusher::checkSeriesOnPACS()
     //
     //     }
     // }
-    // catch (::fwDicomWebIO::exceptions::Base& exception)
+    // catch (::fwNetworkIO::exceptions::Base& exception)
     // {
     //     result = false;
     //

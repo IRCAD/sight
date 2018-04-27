@@ -15,7 +15,7 @@
 #include <dcmtk/config/osconfig.h>
 #include <dcmtk/dcmnet/scu.h>
 
-#include <QByteArray>
+#include <QJsonObject>
 
 namespace fwMedData
 {
@@ -48,7 +48,7 @@ public:
      * @brief Convert HTTP series response to ::fwMedData::DicomSeries
      * @param[in] answer HTTP responses from the PACS that must be converted
      */
-    FWNETWORKIO_API static DicomSeriesContainer toFwMedData(const QByteArray& answer);
+    FWNETWORKIO_API static DicomSeriesContainer toFwMedData(const QJsonObject& answer);
 
     /**
      * @brief Convert std::vector< ::fwMedData::DicomSeries > to series instance uid container

@@ -27,20 +27,23 @@ namespace ioDicomWeb
 {
 
 /**
- * @brief   This editor service is used to perform a IOPACS query on a pacs.
+ * @brief   This editor service is used to perform a IODICOMWEB query on a pacs.
  *
  * @section XML XML Configuration
  *
  * @code{.xml}
         <service type="::ioDicomWeb::SQueryEditor">
-            <in key="pacsConfig" uid="..." />
-            <inout key="seriesDB" uid="..." />
+            <inout key="seriesDB" uid="previewSeriesDB" />
+            <server>%PACS_SERVER_HOSTNAME%:%PACS_SERVER_PORT%</server>
        </service>
    @endcode
- * @subsection Input Input:
- * - \b pacsConfig [::fwDicomWebIO::data::PacsConfiguration]: PACS configuration data.
  * @subsection In-Out In-Out:
  * - \b seriesDB [::fwData::Object]: seriesDB where to push the queried data.
+ * @subsection Configuration Configuration:
+ * - \b server: server URL. Need hostname and port in this format addr:port (default value is 127.0.0.1:8042).
+ * @note : hostname and port of this service can be a value or a nameKey from preference settings
+ *  (for example <server>%HOSTNAME%:%PORT%</server>)
+
  */
 class IODICOMWEB_CLASS_API SQueryEditor : public QObject,
                                           public ::fwGui::editor::IEditor

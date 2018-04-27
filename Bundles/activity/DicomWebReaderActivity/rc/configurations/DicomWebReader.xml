@@ -125,7 +125,7 @@
             <in key="series" uid="previewSelections" />
             <parentView wid="pacsPreview" />
             <configs>
-                <config id="2DPacsPreviewConfig" type="::fwMedData::DicomSeries" />
+                <config id="2DDicomWebPreviewConfig" type="::fwMedData::DicomSeries" />
             </configs>
         </service>
 
@@ -162,7 +162,7 @@
         <start uid="mainView" />
         <start uid="pullSeriesController" />
         <start uid="localViewer" />
-      <!--  <start uid="pacsViewer" /> -->
+        <start uid="pacsViewer" />
         <start uid="seriesDBReader" />
 
     </config>

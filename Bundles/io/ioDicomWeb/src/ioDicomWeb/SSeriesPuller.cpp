@@ -88,8 +88,7 @@ void SSeriesPuller::configuring()
     //Parse server port and hostname
     if(configuration.count("server"))
     {
-        const std::string serverInfo = configuration.get("server", "");
-        std::cout << serverInfo << std::endl;
+        const std::string serverInfo               = configuration.get("server", "");
         const std::string::size_type splitPosition = serverInfo.find(':');
         SLM_ASSERT("Server info not formatted correctly", splitPosition != std::string::npos);
 
@@ -98,7 +97,7 @@ void SSeriesPuller::configuring()
 
         m_serverHostnameKey = this->getPreferenceKey(hostnameStr);
         m_serverPortKey     = this->getPreferenceKey(portStr);
-        std::cout << m_serverHostnameKey << std::endl;
+
         if(m_serverHostnameKey.empty())
         {
             m_serverHostname = hostnameStr;

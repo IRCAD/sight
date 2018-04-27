@@ -10,8 +10,8 @@
  * @ingroup apprequirement
  * @brief ioDicomWeb contains services use to deal with PACS using DCMTK library.
  *
- * It's also used to load fwDicomWebIO library. So, if you want to use a
- * ::fwDicomWebIO::data::PacsConfiguration objects in your application,
+ * It's also used to load fwNetworkIO library. So, if you want to use a
+ * ::fwNetworkIO::data::PacsConfiguration objects in your application,
  * you require this bundle: add the requirement in your application plugin.xml.
  */
 namespace ioDicomWeb

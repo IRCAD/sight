@@ -19,9 +19,6 @@
 
 #include <boost/foreach.hpp>
 
-#include <QJsonDocument>
-#include <QJsonObject>
-
 namespace fwNetworkIO
 {
 namespace helper
@@ -29,11 +26,9 @@ namespace helper
 
 // ----------------------------------------------------------------------------
 
-Series::DicomSeriesContainer Series::toFwMedData(const QByteArray& answer)
+Series::DicomSeriesContainer Series::toFwMedData(const QJsonObject& seriesJson)
 {
     DicomSeriesContainer seriesContainer;
-
-    const QJsonObject& seriesJson = QJsonDocument::fromJson(answer).object();
 
     // Create series
     ::fwMedData::DicomSeries::sptr series  = ::fwMedData::DicomSeries::New();
@@ -77,6 +72,11 @@ Series::DicomSeriesContainer Series::toFwMedData(const QByteArray& answer)
     // Equipment
     // ==================================
     equipment->setInstitutionName(seriesJson["InstitutionName"].toString().toStdString());
+
+    // ==================================
+    // Number of instances
+    // ==================================
+    series->setNumberOfInstances(seriesJson["NumberOfSeriesRelatedInstances"].toInt());
 
     // Add series to container
     seriesContainer.push_back(series);

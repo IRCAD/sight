@@ -7,6 +7,7 @@
     <requirement id="ioDicomWeb" />
 
     <xi:include href="configurations/DicomWebReader.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/2DDicomWebPreviewConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
     <extension implements="::fwActivities::registry::Activities">
         <id>DicomWebReaderActivity</id>

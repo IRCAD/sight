@@ -49,7 +49,6 @@ namespace ioDicomWeb
  * @subsection In-Out In-Out:
  * - \b seriesDB [::fwMedData::SeriesDB]: SeriesDB where to put the retrieved dicom series.
  * @subsection Configuration Configuration:
- * - \b dicomReader Reader type to use.
  * - \b dicomReaderConfig Optional configuration for the DICOM Reader.
  * - \b server : server URL. Need hostname and port in this format addr:port (default value is 127.0.0.1:4242).
  * @note : hostname and port of this service can be a value or a nameKey from preference settings
@@ -136,7 +135,7 @@ private:
     /// Reader Config
     std::string m_dicomReaderSrvConfig;
 
-    /// IOPACS Reader
+    /// IODICOMWEB Reader
     std::string m_dicomReaderType;
 
     /// Temporary SeriesDB
@@ -180,4 +179,4 @@ private:
 
 };
 
-} // namespace ioPacs
+} // namespace ioDicomWeb
