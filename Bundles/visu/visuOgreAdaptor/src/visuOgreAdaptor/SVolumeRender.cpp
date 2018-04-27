@@ -92,7 +92,8 @@ SVolumeRender::SVolumeRender() noexcept :
     m_satConeSamples(50),
     m_aoFactor(1.),
     m_colorBleedingFactor(1.),
-    m_autoResetCamera(true)
+    m_autoResetCamera(true),
+    m_IDVRMethod("None")
 {
     this->installTFSlots(this);
     newSlot(s_NEW_IMAGE_SLOT, &SVolumeRender::newImage, this);
@@ -139,6 +140,7 @@ void SVolumeRender::configuring()
     m_autoResetCamera        = config.get<std::string>("autoresetcamera", "yes") == "yes";
     m_preIntegratedRendering = config.get<std::string>("preintegration", "no") == "yes";
     m_widgetVisibilty        = config.get<std::string>("widgets", "yes") == "yes";
+    m_IDVRMethod             = config.get<std::string>("method", "None");
     m_renderingMode          = config.get<std::string>("mode", "raytracing") == "raytracing" ? VR_MODE_RAY_TRACING :
                                VR_MODE_SLICE;
     m_nbSamples = config.get<std::uint16_t>("samples", m_nbSamples);
@@ -303,6 +305,13 @@ void SVolumeRender::starting()
 
         // Initially focus on the image center.
         this->setFocalDistance(50);
+    }
+
+    auto rayCastVolumeRenderer =
+        dynamic_cast< ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer* >(m_volumeRenderer);
+    if(rayCastVolumeRenderer)
+    {
+        rayCastVolumeRenderer->setIDVRMethod(m_IDVRMethod);
     }
 
     m_gpuTF.setSampleDistance(m_volumeRenderer->getSamplingRate());
