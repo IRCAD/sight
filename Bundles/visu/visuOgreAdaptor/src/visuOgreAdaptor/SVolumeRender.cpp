@@ -140,7 +140,7 @@ void SVolumeRender::configuring()
     m_autoResetCamera        = config.get<std::string>("autoresetcamera", "yes") == "yes";
     m_preIntegratedRendering = config.get<std::string>("preintegration", "no") == "yes";
     m_widgetVisibilty        = config.get<std::string>("widgets", "yes") == "yes";
-    m_IDVRMethod             = config.get<std::string>("method", "None");
+    m_IDVRMethod             = config.get<std::string>("idvrMethod", "None");
     m_renderingMode          = config.get<std::string>("mode", "raytracing") == "raytracing" ? VR_MODE_RAY_TRACING :
                                VR_MODE_SLICE;
     m_nbSamples = config.get<std::uint16_t>("samples", m_nbSamples);
@@ -312,6 +312,11 @@ void SVolumeRender::starting()
     if(rayCastVolumeRenderer)
     {
         rayCastVolumeRenderer->setIDVRMethod(m_IDVRMethod);
+
+        if(m_IDVRMethod != "None")
+        {
+            this->newMask();
+        }
     }
 
     m_gpuTF.setSampleDistance(m_volumeRenderer->getSamplingRate());
@@ -469,7 +474,12 @@ void SVolumeRender::newMask()
     this->getRenderService()->makeCurrent();
 
     ::fwData::Image::sptr mask = this->getInOut< ::fwData::Image>(s_MASK_INOUT);
-    ::fwRenderOgre::Utils::convertImageForNegato(m_maskTexture.get(), mask);
+    SLM_ASSERT("No 'mask' inout.", mask);
+
+    if(::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(mask))
+    {
+        ::fwRenderOgre::Utils::convertImageForNegato(m_maskTexture.get(), mask);
+    }
 
     this->requestRender();
 }
