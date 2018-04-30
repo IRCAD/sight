@@ -262,19 +262,20 @@ void ActivityDataView::fillInformation(const ::fwActivities::registry::ActivityI
             QObject::connect(buttonNew, &QPushButton::clicked, this, &ActivityDataView::createNewObject);
         }
 
-        QPushButton* buttonAdd    = new QPushButton("Import");
+        QPushButton* buttonAdd    = new QPushButton("Load");
         QPushButton* buttonRemove = new QPushButton("Remove");
         QPushButton* buttonClear  = new QPushButton("Clear");
         buttonLayout->addWidget(buttonAdd);
-        buttonAdd->setToolTip(QString("Import a new object of type '%1'").arg(QString::fromStdString(req.type)));
+        buttonAdd->setToolTip(QString("Load an object of type '%1'.").arg(QString::fromStdString(req.type)));
 
-        // If type is a series, we use add a button to import the data from a SeriesDB
+        // If type is a series, we add a button to import the data from a SeriesDB
         ::fwData::Object::sptr newObject = ::fwData::factory::New(req.type);
         if (newObject && ::fwMedData::Series::dynamicCast(newObject))
         {
-            QPushButton* buttonAddFromSDB = new QPushButton("Import from SeriesDB");
+            QPushButton* buttonAddFromSDB = new QPushButton("Import");
             buttonLayout->addWidget(buttonAddFromSDB);
-            buttonAddFromSDB->setToolTip(QString("Import a SeriesDB and extract the object of type '%1'").
+            buttonAddFromSDB->setToolTip(QString("Import a SeriesDB and extract the N first objects of type '%1', with "
+                                                 "N the maximum number of required objects.").
                                          arg(QString::fromStdString(req.type)));
             QObject::connect(buttonAddFromSDB, &QPushButton::clicked, this, &ActivityDataView::importObjectFromSDB);
         }
@@ -634,15 +635,15 @@ void ActivityDataView::createNewObject()
 
 void ActivityDataView::importObject()
 {
-    size_t index = static_cast<size_t>(this->currentIndex());
+    const size_t index = static_cast<size_t>(this->currentIndex());
 
     ::fwActivities::registry::ActivityRequirement req = m_activityInfo.requirements[index];
 
-    std::string type = req.type;
+    const std::string type = req.type;
 
     QPointer<QTreeWidget> tree = m_treeWidgets[index];
 
-    unsigned int nbItems = static_cast<unsigned int>(tree->topLevelItemCount());
+    const unsigned int nbItems = static_cast<unsigned int>(tree->topLevelItemCount());
 
     if(nbItems >= req.maxOccurs)
     {
@@ -665,15 +666,15 @@ void ActivityDataView::importObject()
 
 void ActivityDataView::importObjectFromSDB()
 {
-    size_t index = static_cast<size_t>(this->currentIndex());
+    const size_t index = static_cast<size_t>(this->currentIndex());
 
     ::fwActivities::registry::ActivityRequirement req = m_activityInfo.requirements[index];
 
-    std::string type = req.type;
+    const std::string type = req.type;
 
     QPointer<QTreeWidget> tree = m_treeWidgets[index];
 
-    unsigned int nbItems = static_cast<unsigned int>(tree->topLevelItemCount());
+    const unsigned int nbItems = static_cast<unsigned int>(tree->topLevelItemCount());
 
     if(nbItems >= req.maxOccurs)
     {
