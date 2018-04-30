@@ -60,6 +60,22 @@ SPTR(DATATYPE) IService::getInOut(const KeyType& key) const
 //------------------------------------------------------------------------------
 
 template< class DATATYPE >
+SPTR(DATATYPE) IService::getOutput(const KeyType& key) const
+{
+    SPTR(DATATYPE) output;
+    auto iterator = m_outputsMap.find(key);
+    if(iterator != m_outputsMap.end())
+    {
+        output = std::dynamic_pointer_cast<DATATYPE>( iterator->second );
+        OSLM_ASSERT("DynamicCast " << ::fwCore::TypeDemangler<DATATYPE>().getClassname() << " failed", output);
+    }
+
+    return output;
+}
+
+//------------------------------------------------------------------------------
+
+template< class DATATYPE >
 CSPTR(DATATYPE) IService::getInput(const KeyType& keybase, size_t index) const
 {
 # ifdef _DEBUG
@@ -83,6 +99,19 @@ SPTR(DATATYPE) IService::getInOut(const KeyType& keybase, size_t index) const
     OSLM_ASSERT("Index overflow '" << index << " >= " << it->second << "' in key group '" << keybase << ".",
                 index < it->second);
     return this->getInOut< DATATYPE >(KEY_GROUP_NAME(keybase, index));
+}
+//------------------------------------------------------------------------------
+
+template< class DATATYPE >
+SPTR(DATATYPE) IService::getOutput(const KeyType& keybase, size_t index) const
+{
+# ifdef _DEBUG
+    auto it = m_keyGroupSize.find(keybase);
+#endif
+    SLM_ASSERT("Key group '" + keybase + "' not found", it != m_keyGroupSize.end());
+    OSLM_ASSERT("Index overflow '" << index << " >= " << it->second << "' in key group '" << keybase << ".",
+                index < it->second);
+    return this->getOutput< DATATYPE >(KEY_GROUP_NAME(keybase, index));
 }
 
 //------------------------------------------------------------------------------
@@ -109,9 +138,16 @@ inline const IService::InputMapType& IService::getInputs() const
 
 //------------------------------------------------------------------------------
 
-inline const IService::OutputMapType& IService::getInOuts() const
+inline const IService::InOutMapType& IService::getInOuts() const
 {
     return m_inOutsMap;
+}
+
+//------------------------------------------------------------------------------
+
+inline const IService::OutputMapType& IService::getOutputs() const
+{
+    return m_outputsMap;
 }
 
 //------------------------------------------------------------------------------
@@ -131,7 +167,7 @@ inline std::vector< ::fwData::Object::csptr > IService::getObjects() const
         }
         for(auto itObj : m_outputsMap)
         {
-            objectsVector.push_back(itObj.second.lock());
+            objectsVector.push_back(itObj.second);
         }
     }
     else

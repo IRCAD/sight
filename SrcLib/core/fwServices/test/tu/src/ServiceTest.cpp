@@ -497,5 +497,49 @@ void ServiceTest::startStopUpdateExceptions(TestService::sptr _service)
 
 //------------------------------------------------------------------------------
 
+void ServiceTest::testWithInAndOut()
+{
+    ::fwData::Integer::sptr obj          = ::fwData::Integer::New(18);
+    ::fwServices::IService::sptr service = ::fwServices::add("::fwServices::ut::TestServiceWithData");
+
+    CPPUNIT_ASSERT(service);
+    service->registerInput(obj, ::fwServices::ut::TestServiceWithData::s_INPUT);
+    service->setObjectId(::fwServices::ut::TestServiceWithData::s_OUTPUT, "outputID");
+
+    service->start();
+    CPPUNIT_ASSERT(service->isStarted());
+    CPPUNIT_ASSERT_EQUAL(true, ::fwServices::OSR::isRegistered(::fwServices::ut::TestServiceWithData::s_INPUT,
+                                                               ::fwServices::IService::AccessType::INPUT, service));
+    service->update();
+    CPPUNIT_ASSERT_EQUAL(true, ::fwServices::OSR::isRegistered(::fwServices::ut::TestServiceWithData::s_OUTPUT,
+                                                               ::fwServices::IService::AccessType::OUTPUT, service));
+    ::fwData::Object::csptr output =
+        ::fwServices::OSR::getRegistered(::fwServices::ut::TestServiceWithData::s_OUTPUT,
+                                         ::fwServices::IService::AccessType::OUTPUT, service);
+    CPPUNIT_ASSERT(output);
+    ::fwData::Integer::csptr outInteger = ::fwData::Integer::dynamicCast(output);
+    CPPUNIT_ASSERT(outInteger);
+
+    CPPUNIT_ASSERT_EQUAL(obj->value(), outInteger->value());
+
+    ::fwData::Integer::csptr outInteger2 = service->getOutput< ::fwData::Integer >(
+        ::fwServices::ut::TestServiceWithData::s_OUTPUT);
+    CPPUNIT_ASSERT(outInteger2);
+
+    CPPUNIT_ASSERT_EQUAL(obj->value(), outInteger2->value());
+
+    service->stop();
+
+    ::fwData::Integer::csptr nullInteger = service->getOutput< ::fwData::Integer >(
+        ::fwServices::ut::TestServiceWithData::s_OUTPUT);
+    CPPUNIT_ASSERT(nullptr == nullInteger);
+
+    CPPUNIT_ASSERT_EQUAL(false, ::fwServices::OSR::isRegistered(::fwServices::ut::TestServiceWithData::s_OUTPUT,
+                                                                ::fwServices::IService::AccessType::OUTPUT, service));
+    ::fwServices::OSR::unregisterService(service);
+}
+
+//------------------------------------------------------------------------------
+
 } //namespace ut
 } //namespace fwServices

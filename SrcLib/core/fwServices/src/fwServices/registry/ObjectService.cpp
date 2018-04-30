@@ -252,6 +252,9 @@ void ObjectService::registerServiceOutput(::fwData::Object::sptr object, const :
 {
     const auto id = service->getObjectId(objKey);
 
+    ::fwCore::mt::WriteLock writeLock(m_containerMutex);
+    this->internalRegisterService(object, service, objKey, ::fwServices::IService::AccessType::OUTPUT);
+
     this->signal<RegisterSignalType>(s_REGISTERED_SIG)->asyncEmit(object, id);
 }
 
@@ -366,6 +369,7 @@ void ObjectService::unregisterServiceOutput( const ::fwServices::IService::KeyTy
     ::fwData::Object::wptr obj = service->m_outputsMap[objKey];
 
     this->signal<RegisterSignalType>(s_UNREGISTERED_SIG)->asyncEmit(obj.lock(), id);
+    service->m_outputsMap.erase(objKey);
 }
 
 //------------------------------------------------------------------------------
@@ -418,7 +422,7 @@ bool ObjectService::isRegistered(const ::fwServices::IService::KeyType& objKey,
         auto it = service->m_outputsMap.find(objKey);
         if(it != service->m_outputsMap.end())
         {
-            return it->second.lock();
+            return it->second;
         }
     }
     return nullptr;
