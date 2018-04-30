@@ -15,11 +15,15 @@ namespace ioCalibration
 /**
  * @brief SOpenCVWriter class exports arData::CameraSeries in xml/yaml files using openCV
  *
+ * @section XML XML Configuration
  * @code{.xml}
        <service uid="..." type="::ioCalibration::SOpenCVWriter" >
            <in key="data" uid="..." />
        </service>
  * @endcode
+ *
+ * @subsection Input Input
+ * - \b data [::arData::CameraSeries]: data to save.
  *
  * An Example of the xml structure:
  * @code{.xml}

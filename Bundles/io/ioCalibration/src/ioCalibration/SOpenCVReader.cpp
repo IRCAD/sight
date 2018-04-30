@@ -27,7 +27,7 @@
 
 namespace ioCalibration
 {
-fwServicesRegisterMacro(::fwIO::IReader, ::ioCalibration::SOpenCVReader);
+
 // ----------------------------------------------------------------------------
 
 SOpenCVReader::SOpenCVReader()
