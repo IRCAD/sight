@@ -188,16 +188,16 @@ void DicomSeriesWriter::processWrite()
 
             const std::string filename = this->getFilename(value.first);
 
-            ::fwData::Array::sptr array = value.second;
-            ::fwDataTools::helper::Array arrayHelper(array);
-            char* buffer = static_cast<char*>(arrayHelper.getBuffer());
-            size_t size  = array->getSizeInBytes();
+            const ::fwMemory::BufferObject::sptr sourceBuffer = value.second;
+            ::fwMemory::BufferObject::Lock sourceLocker(sourceBuffer);
+
+            char* buffer         = static_cast<char*>(sourceBuffer->getBuffer());
+            std::streamsize size = std::streamsize(sourceBuffer->getSize());
 
             std::ifstream stream;
             stream.rdbuf()->pubsetbuf(buffer, size);
 
-            const ::boost::filesystem::path& dest_dir =
-                m_anonymizer ? folder/m_subPath : folder;
+            const ::boost::filesystem::path& dest_dir = m_anonymizer ? folder/m_subPath : folder;
 
             if(!::boost::filesystem::exists(dest_dir))
             {
@@ -286,10 +286,11 @@ void DicomSeriesWriter::processWriteArchive()
 
             const std::string filename = this->getFilename(value.first);
 
-            ::fwData::Array::sptr array = value.second;
-            ::fwDataTools::helper::Array arrayHelper(array);
-            char* buffer = static_cast<char*>(arrayHelper.getBuffer());
-            size_t size  = array->getSizeInBytes();
+            const ::fwMemory::BufferObject::sptr sourceBuffer = value.second;
+            ::fwMemory::BufferObject::Lock sourceLocker(sourceBuffer);
+
+            char* buffer         = static_cast<char*>(sourceBuffer->getBuffer());
+            std::streamsize size = std::streamsize(sourceBuffer->getSize());
 
             std::ifstream stream;
             stream.rdbuf()->pubsetbuf(buffer, size);
