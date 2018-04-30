@@ -100,7 +100,7 @@
 
         <!-- ******************************* Begin Generic Scene ******************************* -->
         <service uid="genericScene" type="::fwRenderOgre::SRender">
-            <scene overlay="true">
+            <scene overlays="LogoOverlay">
                 <background topColor="#DDDDDD" bottomColor="#43958D" topScale="0.7" bottomScale="1.0" />
                 <layer id="video" depth="1" />
                 <layer id="default" depth="2" transparency="HybridTransparency" numPeels="3"/>

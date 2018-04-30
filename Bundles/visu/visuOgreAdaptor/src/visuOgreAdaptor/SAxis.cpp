@@ -10,8 +10,10 @@
 
 #include <fwCom/Slots.hxx>
 
+#include <fwRenderOgre/helper/Font.hpp>
 #include <fwRenderOgre/helper/ManualObject.hpp>
 #include <fwRenderOgre/helper/Scene.hpp>
+#include <fwRenderOgre/SRender.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -30,10 +32,7 @@ static const std::string s_BILLBOARD_CONFIG = "billboard";
 
 //-----------------------------------------------------------------------------
 
-SAxis::SAxis() noexcept :
-    m_material(nullptr),
-    m_length(50.f),
-    m_isVisible(true)
+SAxis::SAxis() noexcept
 {
     newSlot(s_UPDATE_VISIBILITY_SLOT, &SAxis::updateVisibility, this);
     newSlot(s_TOGGLE_VISIBILITY_SLOT, &SAxis::toggleVisibility, this);
@@ -185,6 +184,9 @@ void SAxis::starting()
     zLineNode->attachObject(zLine);
     zLineNode->yaw(::Ogre::Degree(-90));
 
+    ::Ogre::FontPtr dejaVuSansFont = ::fwRenderOgre::helper::Font::getFont("DejaVuSans.ttf", 32);
+    ::Ogre::Camera* cam            = this->getLayer()->getDefaultCamera();
+
     // X cone
     ::fwRenderOgre::helper::ManualObject::createCone(xCone, materialAdaptor->getMaterialName(),
                                                      ::Ogre::ColourValue(::Ogre::ColourValue::Red),
@@ -193,6 +195,13 @@ void SAxis::starting()
                                                      sample);
     ::Ogre::SceneNode* xConeNode = transNode->createChildSceneNode(
         this->getTransformId() + "_" + this->getID() + "_xCone");
+
+    m_axisLabels[0] = ::fwRenderOgre::Text::New(
+        this->getID() + "_xAxisLabel", sceneMgr, dejaVuSansFont, cam);
+    m_axisLabels[0]->setText("X");
+    m_axisLabels[0]->setCharHeight(0.1f);
+    xConeNode->attachObject(m_axisLabels[0]);
+
     xConeNode->attachObject(xCone);
     xConeNode->translate(cylinderLength, 0.f, 0.f);
 
@@ -205,6 +214,13 @@ void SAxis::starting()
     ::Ogre::SceneNode* yConeNode = transNode->createChildSceneNode(
         this->getTransformId() + "_" + this->getID() + "_yCone");
     yConeNode->attachObject(yCone);
+
+    m_axisLabels[1] = ::fwRenderOgre::Text::New(
+        this->getID() + "_yAxisLabel", sceneMgr, dejaVuSansFont, cam);
+    m_axisLabels[1]->setText("Y");
+    m_axisLabels[1]->setCharHeight(0.1f);
+    yConeNode->attachObject(m_axisLabels[1]);
+
     yConeNode->translate(0.f, cylinderLength, 0.f);
     yConeNode->roll(::Ogre::Degree(90));
 
@@ -217,6 +233,13 @@ void SAxis::starting()
     ::Ogre::SceneNode* zConeNode = transNode->createChildSceneNode(
         this->getTransformId() + "_" + this->getID() + "_zCone");
     zConeNode->attachObject(zCone);
+
+    m_axisLabels[2] = ::fwRenderOgre::Text::New(
+        this->getID() + "_zAxisLabel", sceneMgr, dejaVuSansFont, cam);
+    m_axisLabels[2]->setText("Z");
+    m_axisLabels[2]->setCharHeight(0.1f);
+    zConeNode->attachObject(m_axisLabels[2]);
+
     zConeNode->translate(0.f, 0.f, cylinderLength);
     zConeNode->yaw(::Ogre::Degree(-90));
 
@@ -242,6 +265,13 @@ void SAxis::stopping()
     if(transNode != nullptr)
     {
         transNode->removeAndDestroyAllChildren();
+    }
+
+    for(auto& label : m_axisLabels)
+    {
+        label->detachFromParent();
+        sceneMgr->destroyMovableObject(label);
+        label = nullptr;
     }
 
     sceneMgr->destroyManualObject(xLine);

@@ -27,6 +27,7 @@
 
 #include <OGRE/OgreEntity.h>
 #include <OGRE/OgreNode.h>
+#include <OGRE/Overlay/OgreOverlayManager.h>
 #include <OGRE/OgreSceneManager.h>
 #include <OGRE/OgreSceneNode.h>
 
@@ -112,8 +113,17 @@ void SRender::configuring()
         this->initialize();
     }
 
-    m_showOverlay = sceneCfg.get<bool>("<xmlattr>.overlay", false);
-    m_fullscreen  = sceneCfg.get<bool>("<xmlattr>.fullscreen", false);
+    const auto showOverlay = sceneCfg.get_optional<bool>("<xmlattr>.overlay");
+
+    if(showOverlay)
+    {
+        FW_DEPRECATED_MSG("The 'showOverlay' tag is deprecated, you should explicitly add the 'LogoOverlay' overlay "
+                          "to the new 'overlays' list.");
+
+        m_showOverlay = showOverlay.value();
+    }
+
+    m_fullscreen = sceneCfg.get<bool>("<xmlattr>.fullscreen", false);
 
     const std::string renderMode = sceneCfg.get<std::string>("<xmlattr>.renderMode", "auto");
     if (renderMode == "auto")
@@ -194,17 +204,43 @@ void SRender::starting()
         // Instantiate the manager that help to communicate between this service and the widget
         m_interactorManager = ::fwRenderOgre::OffScreenRenderWindowInteractorManager::New(m_width, m_height);
         m_interactorManager->setRenderService(this->getSptr());
-        m_interactorManager->createContainer( nullptr, m_showOverlay, m_renderOnDemand, m_fullscreen );
-
+        m_interactorManager->createContainer( nullptr, m_renderOnDemand, m_fullscreen );
     }
     else
     {
         // Instantiate the manager that help to communicate between this service and the widget
         m_interactorManager = ::fwRenderOgre::IRenderWindowInteractorManager::createManager();
         m_interactorManager->setRenderService(this->getSptr());
-        m_interactorManager->createContainer( this->getContainer(), m_showOverlay, m_renderOnDemand, m_fullscreen );
+        m_interactorManager->createContainer( this->getContainer(), m_renderOnDemand, m_fullscreen );
     }
-    Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
+
+    // Initialize resources to load overlay scripts.
+    ::Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
+
+    // TODO: remove this conditional in the next major version.
+    if(m_showOverlay)
+    {
+        ::Ogre::Overlay* logoOverlay = ::Ogre::OverlayManager::getSingleton().getByName("LogoOverlay");
+        m_enabledOverlays.insert(logoOverlay);
+    }
+
+    std::istringstream overlays(sceneCfg.get<std::string>("<xmlattr>.overlays", ""));
+
+    for(std::string overlayName; std::getline(overlays, overlayName, ';'); )
+    {
+        ::Ogre::Overlay* overlay = ::Ogre::OverlayManager::getSingleton().getByName(overlayName);
+
+        if(overlay)
+        {
+            m_enabledOverlays.insert(overlay);
+        }
+        else
+        {
+            SLM_ERROR("Can't find overlay : " + overlayName);
+        }
+    }
+
+    m_interactorManager->setEnabledOverlays(m_enabledOverlays);
 
     for (auto it : m_layers)
     {

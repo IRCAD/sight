@@ -33,7 +33,7 @@ public:
     FWRENDEROGRE_API virtual void requestRender() override;
 
     /// Create the container that holds the QtWidget.
-    FWRENDEROGRE_API virtual void createContainer(::fwGui::container::fwContainer::sptr _parent, bool showOverlay,
+    FWRENDEROGRE_API virtual void createContainer(::fwGui::container::fwContainer::sptr _parent,
                                                   bool renderOnDemand, bool fullscreen) override;
 
     /// Connects widget and SRender signals and slots.
