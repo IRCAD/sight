@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWSERVICES_HELPER_CONFIGLAUNCHER_HPP__
-#define __FWSERVICES_HELPER_CONFIGLAUNCHER_HPP__
+#pragma once
 
 #include "fwServices/config.hpp"
 #include "fwServices/IAppConfigManager.hpp"
@@ -29,6 +28,17 @@ namespace helper
 
 /**
  * @brief   This class provides few methods to manage AppConfig (parsing, starting, stopping...).
+ *
+ * Example of configuration
+ *
+ * @code{.xml}
+    <service type="::fwServices::SConfigController" >
+        <appConfig id="IdOfConfig" />
+        <inout key="object" uid="..." />
+        <parameter replace="channel" by="changeValueChannel"  />
+        <parameter replace="service" by="serviceUid" />
+    </service>
+   @endcode
  */
 class FWSERVICES_CLASS_API ConfigLauncher
 {
@@ -46,17 +56,6 @@ public:
 
     /**
      * @brief Parse a ConfigLauncher configuration
-     *
-     * Example of configuration
-     * @code{.xml}
-       <service>
-           <config>
-                <appConfig id="Visu2DID" />
-                <parameter replace="SERIESDB" by="medicalData" />
-                <parameter replace="IMAGE" by="@values.image" />
-            </config>
-       </service>
-        @endcode
      */
     FWSERVICES_API virtual void parseConfig(const ::fwServices::IService::ConfigType& config,
                                             const ::fwServices::IService::sptr& service);
@@ -72,9 +71,6 @@ public:
     /// Stop/destroy AppConfig and disconnect connection with config root object
     FWSERVICES_API virtual void stopConfig();
 
-    /// Check if AppConfig can be launched.
-    FWSERVICES_API virtual bool isExecutable(::fwData::Object::sptr currentObj);
-
     //------------------------------------------------------------------------------
 
     virtual bool configIsRunning() const
@@ -83,9 +79,6 @@ public:
     }
 
 protected:
-
-    /// To manage connection to the config root
-    ::fwCom::helper::SigSlotConnection m_connections;
 
     ::fwActivities::registry::ActivityAppConfig m_appConfig;
 
@@ -97,12 +90,6 @@ protected:
 
 private:
 
-    /// helper to connect config root
-    void connectToConfigRoot(SPTR(::fwServices::IService) srv);
-
-    /// helper to disconnect config root
-    void disconnectToConfigRoot();
-
     /// Defines a special key to defines the associated object him self
     static const std::string s_SELF_KEY;
     /// Defines a special key to defines the generated uid
@@ -112,5 +99,3 @@ private:
 
 } // helper
 } // fwServices
-
-#endif // __FWSERVICES_HELPER_CONFIGLAUNCHER_HPP__
