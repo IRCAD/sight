@@ -75,18 +75,18 @@ void SSlotCaller::updating()
 
     if(this->confirmAction())
     {
-        for(SlotInfoType info :  m_slotInfos)
+        for(const SlotInfoType& info :  m_slotInfos)
         {
-            HasSlotIDType HasSlotId = info.first;
-            ::fwCom::Slots::SlotKeyType slotKey = info.second;
+            const HasSlotIDType& HasSlotId             = info.first;
+            const ::fwCom::Slots::SlotKeyType& slotKey = info.second;
 
             if (::fwTools::fwID::exist(HasSlotId))
             {
-                ::fwTools::Object::sptr obj      = ::fwTools::fwID::getObject(HasSlotId);
-                ::fwCom::HasSlots::sptr hasSlots = std::dynamic_pointer_cast< ::fwCom::HasSlots >(obj);
+                const ::fwTools::Object::sptr obj       = ::fwTools::fwID::getObject(HasSlotId);
+                const ::fwCom::HasSlots::csptr hasSlots = std::dynamic_pointer_cast< ::fwCom::HasSlots >(obj);
                 SLM_ASSERT("Object with id " << HasSlotId << " is not a HasSlots", hasSlots);
 
-                ::fwCom::SlotBase::sptr slot = hasSlots->slot(slotKey);
+                const ::fwCom::SlotBase::csptr slot = hasSlots->slot(slotKey);
 
                 slot->asyncRun();
             }
