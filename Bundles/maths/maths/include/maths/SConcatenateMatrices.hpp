@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __MATHS_SCONCATENATEMATRICES_HPP__
-#define __MATHS_SCONCATENATEMATRICES_HPP__
+#pragma once
 
 #include "maths/config.hpp"
 
@@ -77,6 +76,8 @@ protected:
     /// Does nothing.
     MATHS_API void updating() override;
 
+    MATHS_API KeyConnectionsMap getAutoConnections() const override;
+
 private:
 
     typedef std::vector< bool > InvertVectorType;
@@ -86,5 +87,3 @@ private:
 };
 
 } //namespace maths
-
-#endif  // __MATHS_SCONCATENATEMATRICES_HPP__

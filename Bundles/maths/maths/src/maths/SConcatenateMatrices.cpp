@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -100,6 +100,17 @@ void SConcatenateMatrices::updating()
         ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();
     }
+}
+
+// ----------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsMap SConcatenateMatrices::getAutoConnections() const
+{
+    KeyConnectionsMap connections;
+
+    connections.push("matrix", ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+
+    return connections;
 }
 
 // ----------------------------------------------------------------------------
