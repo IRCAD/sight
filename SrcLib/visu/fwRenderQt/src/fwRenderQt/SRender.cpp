@@ -294,10 +294,21 @@ void SRender::configureScene( ConfigurationType _conf )
         }
     }
 
-    if( _conf->hasAttribute(("aspectRatioMode")))
+    if( _conf->hasAttribute("aspectRatioMode"))
     {
-        m_aspectRatioMode = (_conf->getAttributeValue("aspectRatioMode") == "KeepAspectRatioByExpanding")
-                            ? Qt::KeepAspectRatioByExpanding : Qt::IgnoreAspectRatio;
+        std::string aspectRatio = _conf->getAttributeValue("aspectRatioMode");
+        if(aspectRatio == "KeepAspectRatioByExpanding")
+        {
+            m_aspectRatioMode = Qt::KeepAspectRatioByExpanding;
+        }
+        else if(aspectRatio == "KeepAspectRatio")
+        {
+            m_aspectRatioMode = Qt::KeepAspectRatio;
+        }
+        else
+        {
+            m_aspectRatioMode = Qt::IgnoreAspectRatio;
+        }
     }
 
     if ( _conf->hasAttribute(("background")) )

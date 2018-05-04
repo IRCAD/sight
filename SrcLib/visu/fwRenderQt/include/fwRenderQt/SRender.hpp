@@ -60,6 +60,8 @@ class IAdaptor;
  *   - \b width: set the width of the scene
  *   - \b height: set the height of the scene
  *   - \b antialiasing (optional, default: false): activate scene antialiasing if attribute's value set to 'true'
+ *   - \b aspectRatioMode (optional, default: IgnoreAspectRatio): defines what happens to the aspect ratio
+ *     when scaling an rectangle (See https://doc.qt.io/qt-5/qt.html#AspectRatioMode-enum).
  *   - \b background (optional, default: #000000): the background color of the rendering screen.
  *        The color value must be defined as a hexadecimal value (ex : \#ffffff for white).
  * - \<viewport id="view1" x="-500" y="-1.1" width="500" height="1.2" /\> : Set a viewport coordinates
