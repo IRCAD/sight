@@ -1,14 +1,16 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017-2018.
+ * FW4SPL - Copyright (C) IRCAD, 2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "trackingCalibration/SToolCalibration.hpp"
 
-#include <fwData/Vector.hpp>
-#include <fwData/TransformationMatrix3D.hpp>
+#include <eigenTools/helper.hpp>
+
 #include <fwData/mt/ObjectReadLock.hpp>
+#include <fwData/TransformationMatrix3D.hpp>
+#include <fwData/Vector.hpp>
 
 #include <fwDataTools/TransformationMatrix3D.hpp>
 
@@ -16,16 +18,14 @@
 
 #include <fwServices/macros.hpp>
 
-#include <eigenTools/helper.hpp>
-
 #include <Eigen/Core>
 
 namespace trackingCalibration
 {
 
-static const ::fwServices::IService::KeyType s_MATRIX_CENTER_OUTPUT = "matrixCenter";
+static const ::fwServices::IService::KeyType s_MATRIX_CENTER_OUTPUT      = "matrixCenter";
 static const ::fwServices::IService::KeyType s_MATRIX_CALIBRATION_OUTPUT = "matrixCalibration";
-static const ::fwServices::IService::KeyType s_MATRICES_VECTOR_INPUT = "matricesVector";
+static const ::fwServices::IService::KeyType s_MATRICES_VECTOR_INPUT     = "matricesVector";
 
 // -----------------------------------------------------------------------------
 
@@ -45,7 +45,7 @@ SToolCalibration::~SToolCalibration() noexcept
 void SToolCalibration::configuring()
 {
     const auto configTree = this->getConfigTree();
-    const auto outputs     = configTree.equal_range("out");
+    const auto outputs    = configTree.equal_range("out");
     for (auto it = outputs.first; it != outputs.second; ++it)
     {
         const std::string key = it->second.get<std::string>("<xmlattr>.key");
@@ -85,12 +85,12 @@ void SToolCalibration::updating()
 
 void SToolCalibration::computeRegistration(::fwCore::HiResClock::HiResClockType)
 {
-    ::fwData::Vector::csptr matricesVector = this->getInput<::fwData::Vector>(s_MATRICES_VECTOR_INPUT);
+    ::fwData::Vector::csptr matricesVector = this->getInput< ::fwData::Vector >(s_MATRICES_VECTOR_INPUT);
 
     ::fwData::mt::ObjectReadLock lock(matricesVector);
 
     const ::fwData::Vector::ContainerType matrices = matricesVector->getContainer();
-    const size_t nbrMatrices = matrices.size();
+    const size_t nbrMatrices                       = matrices.size();
 
     if (nbrMatrices < 4)
     {
@@ -122,7 +122,7 @@ void SToolCalibration::computeRegistration(::fwCore::HiResClock::HiResClockType)
     tempMatrix(0, 1) = vectorSum[1];
     tempMatrix(0, 2) = vectorSum[2];
     tempMatrix(0, 3) = vectorSum[3];
-    tempMatrix = -tempMatrix * matrixSum.inverse();
+    tempMatrix       = -tempMatrix* matrixSum.inverse();
 
     const double a = -1. * tempMatrix(0, 0) / 2.;
     const double b = -1. * tempMatrix(0, 1) / 2.;
@@ -149,7 +149,7 @@ void SToolCalibration::computeRegistration(::fwCore::HiResClock::HiResClockType)
 
     translation /= static_cast<double>(nbrMatrices);
 
-    ::fwData::TransformationMatrix3D::sptr matrixCalibration  = ::fwData::TransformationMatrix3D::New();
+    ::fwData::TransformationMatrix3D::sptr matrixCalibration = ::fwData::TransformationMatrix3D::New();
     matrixCalibration->setCoefficient(0, 3, translation(0));
     matrixCalibration->setCoefficient(1, 3, translation(1));
     matrixCalibration->setCoefficient(2, 3, translation(2));

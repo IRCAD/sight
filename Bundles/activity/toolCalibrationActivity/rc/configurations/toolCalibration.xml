@@ -62,12 +62,6 @@
             </registry>
         </service>
 
-        <service uid="movingCameraParameter" type="::guiQt::editor::SParameters" >
-            <parameters>
-                <param type="bool" name="Moving camera" key="boolParam" defaultValue="true" />
-            </parameters>
-        </service>
-
         <!-- *************************** End Layouts *************************** -->
 
         <!-- *************************** Begin Actions *************************** -->
@@ -102,12 +96,6 @@
         <service uid="markerToPoint" type="::videoCalibration::SMarkerToPoint">
             <in key="matrixTL" uid="matrixTL" />
             <inout key="pointList" uid="pointlist" />
-        </service>
-
-        <service uid="csvReader" type="::ioTimeline::SMatricesReader">
-            <inout key="matrixTL" uid="matrixTL" />
-            <oneShot>true</oneShot>
-            <createTimestamp>true</createTimestamp>
         </service>
 
         <service uid="trackerTLMatrixListener" type="::ioIGTL::STDataListener">

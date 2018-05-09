@@ -79,7 +79,7 @@ protected:
 
 private:
 
-    bool m_hasOutputCenter{false};
+    bool m_hasOutputCenter {false};
 };
 
 }
