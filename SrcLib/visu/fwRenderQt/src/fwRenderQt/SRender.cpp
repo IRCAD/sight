@@ -314,7 +314,7 @@ void SRender::configureScene( ConfigurationType _conf )
     if ( _conf->hasAttribute(("background")) )
     {
         m_background = _conf->getAttributeValue("background");
-        SLM_ASSERT("Color format must be hexadecimal.", m_background[0] == "#")
+        SLM_ASSERT("Color format must be hexadecimal.", m_background[0] == '#');
     }
 }
 
