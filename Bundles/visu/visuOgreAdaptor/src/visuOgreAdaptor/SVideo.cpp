@@ -197,7 +197,9 @@ void SVideo::updating()
             // Add the entity to the scene
             m_sceneNode = sceneManager->getRootSceneNode()->createChildSceneNode(nodeName);
             m_sceneNode->attachObject(m_entity);
-            m_sceneNode->setPosition(0, 0, 0);
+
+            // Slightly offset the plane in Z to allow some space for other entities, thus they can be rendered on top
+            m_sceneNode->setPosition(0, 0, -1);
 
             ::Ogre::Camera* cam = this->getLayer()->getDefaultCamera();
             SLM_ASSERT("Default camera not found", cam);
