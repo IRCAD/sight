@@ -275,7 +275,7 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& _mesh)
     {
         m_entity = m_meshGeometry->createEntity(*sceneMgr);
         m_entity->setVisible(m_isVisible);
-        m_entity->setQueryFlags(m_queryFlags);
+        m_entity->addQueryFlags(m_queryFlags);
         sceneMgr->getRootSceneNode()->detachObject(m_entity);
     }
     else
