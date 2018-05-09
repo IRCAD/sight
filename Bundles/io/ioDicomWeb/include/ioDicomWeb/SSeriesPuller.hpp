@@ -8,8 +8,6 @@
 
 #include "ioDicomWeb/config.hpp"
 
-#include <fwCom/Slot.hpp>
-
 #include <fwIO/IReader.hpp>
 
 #include <fwMedData/SeriesDB.hpp>
@@ -19,8 +17,6 @@
 #include <fwServices/IController.hpp>
 
 #include <boost/filesystem/path.hpp>
-
-#include <vector>
 
 namespace fwMedData
 {
@@ -65,15 +61,6 @@ public:
     typedef std::map < std::string, unsigned int > InstanceCountMapType;
     typedef std::map < std::string, WPTR(::fwMedData::DicomSeries) > DicomSeriesMapType;
 
-    IODICOMWEB_API static const ::fwCom::Slots::SlotKeyType s_READ_SLOT;
-    typedef ::fwCom::Slot<void (DicomSeriesContainerType)> ReadDicomSlotType;
-
-    IODICOMWEB_API static const ::fwCom::Slots::SlotKeyType s_DISPLAY_SLOT;
-    typedef ::fwCom::Slot<void (const std::string&)> DisplayMessageSlotType;
-
-    IODICOMWEB_API static const ::fwCom::Signals::SignalKeyType s_SERIES_RECEIVED_SIG;
-    typedef ::fwCom::Signal< void (::boost::filesystem::path) > SeriesReceivedSignalType;
-
     /**
      * @brief Constructor
      */
@@ -117,14 +104,6 @@ private:
      * @param[in] message Error message to display
      */
     IODICOMWEB_API void displayErrorMessage(const std::string& message) const;
-
-    SeriesReceivedSignalType::sptr m_sigSeriesReceived;
-
-    /// Slot to call readLocalSeries method
-    ReadDicomSlotType::sptr m_slotReadLocalSeries;
-
-    /// Slot to call displayErrorMessage method;
-    DisplayMessageSlotType::sptr m_slotDisplayMessage;
 
     /// Http Qt Client
     ::fwNetworkIO::http::ClientQt m_clientQt;

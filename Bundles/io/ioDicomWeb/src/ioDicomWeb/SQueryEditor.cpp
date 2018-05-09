@@ -307,26 +307,22 @@ void SQueryEditor::queryStudyDate()
                 const std::string instancesUrl(pacsServer + "/series/" + seriesUID);
                 const QByteArray& instancesAnswer = m_clientQt.get( ::fwNetworkIO::http::Request::New(instancesUrl));
                 jsonResponse = QJsonDocument::fromJson(instancesAnswer);
-                const QJsonObject& jsonObj       = jsonResponse.object();
-                const QJsonArray& instancesArray = jsonObj["Instances"].toArray();
+                const QJsonObject& jsonObj      = jsonResponse.object();
+                const QJsonArray& instanceArray = jsonObj["Instances"].toArray();
 
-                const int instancesArraySize = instancesArray.count();
-                for(int j = 0; j < instancesArraySize; ++j)
-                {
-                    const std::string& instanceUID = instancesArray.at(j).toString().toStdString();
-                    const std::string instancesUrl(pacsServer + "/instances/" + instanceUID + "/simplified-tags");
-                    const QByteArray& instance = m_clientQt.get( ::fwNetworkIO::http::Request::New(instancesUrl));
+                // Retrieve the first instance for the needed information
+                const std::string& instanceUID = instanceArray.at(0).toString().toStdString();
+                const std::string instanceUrl(pacsServer + "/instances/" + instanceUID + "/simplified-tags");
+                const QByteArray& instance = m_clientQt.get( ::fwNetworkIO::http::Request::New(instanceUrl));
 
-                    QJsonObject seriesJson = QJsonDocument::fromJson(instance).object();
-                    seriesJson.insert( "NumberOfSeriesRelatedInstances", instancesArray.count() );
+                QJsonObject seriesJson = QJsonDocument::fromJson(instance).object();
+                seriesJson.insert( "NumberOfSeriesRelatedInstances", instanceArray.count() );
 
-                    // Convert response to DicomSeries
-                    ::fwMedData::SeriesDB::ContainerType series =
-                        ::fwNetworkIO::helper::Series::toFwMedData(seriesJson);
+                // Convert response to DicomSeries
+                ::fwMedData::SeriesDB::ContainerType series = ::fwNetworkIO::helper::Series::toFwMedData(seriesJson);
 
-                    allSeries.insert(std::end(allSeries), std::begin(series), std::end(series));
-                    this->updateSeriesDB(allSeries);
-                }
+                allSeries.insert(std::end(allSeries), std::begin(series), std::end(series));
+                this->updateSeriesDB(allSeries);
             }
         }
     }

@@ -23,7 +23,6 @@ namespace http
 
 ClientQt::ClientQt()
 {
-    m_networkManager = new QNetworkAccessManager();
 }
 
 //-----------------------------------------------------------------------------
@@ -36,31 +35,35 @@ ClientQt::~ClientQt()
 
 QByteArray ClientQt::get(Request::sptr request)
 {
+    QNetworkAccessManager networkManager;
     const QUrl qtUrl(QString::fromStdString(request->getUrl()));
     QNetworkRequest qtRequest(qtUrl);
 
     this->computeHeaders(qtRequest, request->getHeaders());
 
-    QNetworkReply* reply = m_networkManager->get(qtRequest);
+    QNetworkReply* reply = networkManager.get(qtRequest);
     QEventLoop loop;
     QObject::connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
     QObject::connect(reply, QOverload<QNetworkReply::NetworkError>::of(
                          &QNetworkReply::error), this, &ClientQt::processError);
 
     loop.exec();
-    return reply->readAll();
+    QByteArray data = reply->readAll();
+    reply->deleteLater();
+    return data;
 }
 
 //-----------------------------------------------------------------------------
 
 std::string ClientQt::getFile(Request::sptr request)
 {
+    QNetworkAccessManager networkManager;
     const QUrl qtUrl(QString::fromStdString(request->getUrl()));
     QNetworkRequest qtRequest(qtUrl);
 
     this->computeHeaders(qtRequest, request->getHeaders());
 
-    QNetworkReply* reply = m_networkManager->get(qtRequest);
+    QNetworkReply* reply = networkManager.get(qtRequest);
     QEventLoop loop;
     QObject::connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
     QObject::connect(reply, QOverload<QNetworkReply::NetworkError>::of(
@@ -82,9 +85,12 @@ std::string ClientQt::getFile(Request::sptr request)
         throw ("Could not create a temporary file");
     }
 
-    QObject::connect(reply, &QNetworkReply::readyRead, this, [&]  { file.write(reply->readAll()); } );
+    QObject::connect(reply, &QNetworkReply::readyRead,  [&]  { file.write(reply->readAll()); } );
 
     loop.exec();
+    file.write(reply->readAll());
+    reply->deleteLater();
+
     return filePath.string();
 }
 
@@ -117,6 +123,7 @@ void ClientQt::processError(QNetworkReply::NetworkError errorCode)
 
 QByteArray ClientQt::post(Request::sptr request, const QByteArray& body)
 {
+    QNetworkAccessManager networkManager;
     const QUrl qtUrl(QString::fromStdString(request->getUrl()));
     QNetworkRequest qtRequest(qtUrl);
 
@@ -124,12 +131,13 @@ QByteArray ClientQt::post(Request::sptr request, const QByteArray& body)
 
     this->computeHeaders(qtRequest, request->getHeaders());
 
-    QNetworkReply* replay = m_networkManager->post(qtRequest, body);
+    QNetworkReply* reply = networkManager.post(qtRequest, body);
     QEventLoop loop;
-    QObject::connect(replay, SIGNAL(finished()), &loop, SLOT(quit()));
+    QObject::connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
     loop.exec();
-    const QByteArray& answer = replay->readAll();
-    return answer.data();
+    QByteArray data = reply->readAll();
+    reply->deleteLater();
+    return data;
 }
 
 //-----------------------------------------------------------------------------
@@ -147,6 +155,7 @@ void ClientQt::computeHeaders(QNetworkRequest& request,  const Request::HeadersT
 
 Request::HeadersType ClientQt::head(Request::sptr request)
 {
+    QNetworkAccessManager networkManager;
     Request::HeadersType headers;
 
     const QUrl qtUrl(QString::fromStdString(request->getUrl()));
@@ -154,12 +163,12 @@ Request::HeadersType ClientQt::head(Request::sptr request)
 
     this->computeHeaders(qtRequest, request->getHeaders());
 
-    QNetworkReply* replay = m_networkManager->head(qtRequest);
+    QNetworkReply* reply = networkManager.head(qtRequest);
     QEventLoop loop;
-    QObject::connect(replay, SIGNAL(finished()), &loop, SLOT(quit()));
+    QObject::connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
     loop.exec();
 
-    const QList< QNetworkReply::RawHeaderPair>& rawHeaders = replay->rawHeaderPairs();
+    const QList< QNetworkReply::RawHeaderPair>& rawHeaders = reply->rawHeaderPairs();
 
     QList< QNetworkReply::RawHeaderPair>::const_iterator cIt = rawHeaders.begin();
 
@@ -167,7 +176,7 @@ Request::HeadersType ClientQt::head(Request::sptr request)
     {
         headers[cIt->first.data()] = cIt->second.data();
     }
-
+    reply->deleteLater();
     return headers;
 }
 

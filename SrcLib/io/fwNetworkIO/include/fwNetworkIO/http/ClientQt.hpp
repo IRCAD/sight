@@ -79,9 +79,6 @@ private:
     /// Set request headers with given values.
     void computeHeaders(QNetworkRequest& request,  const Request::HeadersType& headers);
 
-    // Performs requests.
-    QNetworkAccessManager* m_networkManager;
-
 };
 
 } // namespace http

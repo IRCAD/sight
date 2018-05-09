@@ -40,19 +40,10 @@ fwServicesRegisterMacro( ::fwServices::IController, ::ioDicomWeb::SSeriesPuller,
 
 //------------------------------------------------------------------------------
 
-const ::fwCom::Slots::SlotKeyType SSeriesPuller::s_READ_SLOT               = "readDicom";
-const ::fwCom::Slots::SlotKeyType SSeriesPuller::s_DISPLAY_SLOT            = "displayMessage";
-const ::fwCom::Signals::SignalKeyType SSeriesPuller::s_SERIES_RECEIVED_SIG = "seriesReceived";
-
 SSeriesPuller::SSeriesPuller() noexcept :
     m_isPulling(false),
     m_seriesIndex(0)
 {
-    // Internal slots
-    m_slotReadLocalSeries = newSlot(s_READ_SLOT, &SSeriesPuller::readLocalSeries, this);
-    m_slotDisplayMessage  = newSlot(s_DISPLAY_SLOT, &SSeriesPuller::displayErrorMessage, this);
-    m_sigSeriesReceived   = newSignal< SeriesReceivedSignalType >(s_SERIES_RECEIVED_SIG);
-
 }
 
 //------------------------------------------------------------------------------
@@ -328,7 +319,7 @@ void SSeriesPuller::pullSeries()
         // Read series if there is no error
         if(m_isPulling)
         {
-            m_slotReadLocalSeries->asyncRun(selectedSeriesVector);
+            this->readLocalSeries(selectedSeriesVector);
         }
 
         // Set pulling boolean to false
@@ -339,7 +330,7 @@ void SSeriesPuller::pullSeries()
     {
         ::std::stringstream ss;
         ss << "Error: Retrieving from the PACS failed.";
-        m_slotDisplayMessage->asyncRun(ss.str());
+        this->displayErrorMessage(ss.str());
         SLM_WARN(exception.what());
         m_isPulling = false;
     }

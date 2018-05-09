@@ -8,29 +8,19 @@
 
 #include "ioDicomWeb/config.hpp"
 
-#include <fwCom/Slot.hpp>
-
 #include <fwGui/editor/IEditor.hpp>
 
 #include <fwIO/IReader.hpp>
 
 #include <fwNetworkIO/http/ClientQt.hpp>
 
-#include <fwThread/Worker.hpp>
-
-#include <boost/asio/deadline_timer.hpp>
-#include <boost/asio/io_service.hpp>
 #include <boost/filesystem/path.hpp>
 
 #include <QLineEdit>
-#include <QObject>
-#include <QPointer>
 #include <QSlider>
-#include <QWidget>
 
 namespace fwData
 {
-class Composite;
 class Integer;
 }
 
@@ -98,12 +88,6 @@ public:
 
     fwCoreServiceClassDefinitionsMacro( (SSliceIndexDicomPullerEditor)( ::fwGui::editor::IEditor ) );
 
-    IODICOMWEB_API static const ::fwCom::Slots::SlotKeyType s_READ_IMAGE_SLOT;
-    typedef ::fwCom::Slot<void (std::size_t)> ReadImageSlotType;
-
-    IODICOMWEB_API static const ::fwCom::Slots::SlotKeyType s_DISPLAY_MESSAGE_SLOT;
-    typedef ::fwCom::Slot<void (const std::string&)> DisplayMessageSlotType;
-
     /**
      * @brief Constructor
      */
@@ -155,12 +139,6 @@ protected:
      */
     IODICOMWEB_API void displayErrorMessage(const std::string& message) const;
 
-    /// Slot to call readLocalSeries method
-    ReadImageSlotType::sptr m_slotReadImage;
-
-    /// Slot to call displayErrorMessage method;
-    DisplayMessageSlotType::sptr m_slotDisplayMessage;
-
     /// Slice index slider
     QPointer< QSlider > m_sliceIndexSlider;
 
@@ -179,12 +157,6 @@ protected:
     /// Image Key
     std::string m_imageKey;
 
-    /// Composite UID
-    std::string m_compositeUID;
-
-    /// Composite
-    SPTR(::fwData::Composite) m_composite;
-
     /// Temporary SeriesDB
     SPTR(::fwMedData::SeriesDB) m_tempSeriesDB;
 
@@ -195,14 +167,11 @@ protected:
     /// Sagittal slice index
     SPTR(::fwData::Integer) m_sagittalIndex;
 
-    /// Pull Worker
-    ::fwThread::Worker::sptr m_pullSeriesWorker;
-
     /// Series enquirer
     ::fwNetworkIO::http::ClientQt m_clientQt;
 
     /// Timer used to generate the new slice selection delay
-    SPTR(::fwThread::Timer) m_delayTimer2;
+    SPTR(::fwThread::Timer) m_delayTimer;
 
     /// Delay
     unsigned int m_delay;

@@ -62,19 +62,11 @@ namespace ioDicomWeb
 fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::ioDicomWeb::SSliceIndexDicomPullerEditor,
                          ::fwMedData::DicomSeries );
 
-const ::fwCom::Slots::SlotKeyType SSliceIndexDicomPullerEditor::s_READ_IMAGE_SLOT      = "readImage";
-const ::fwCom::Slots::SlotKeyType SSliceIndexDicomPullerEditor::s_DISPLAY_MESSAGE_SLOT = "displayErrorMessage";
-
 //------------------------------------------------------------------------------
 
 SSliceIndexDicomPullerEditor::SSliceIndexDicomPullerEditor() noexcept :
     m_delay(500)
 {
-    m_slotReadImage = ::fwCom::newSlot(&SSliceIndexDicomPullerEditor::readImage, this);
-    ::fwCom::HasSlots::m_slots(s_READ_IMAGE_SLOT, m_slotReadImage);
-
-    m_slotDisplayMessage = ::fwCom::newSlot(&SSliceIndexDicomPullerEditor::displayErrorMessage, this);
-    ::fwCom::HasSlots::m_slots(s_DISPLAY_MESSAGE_SLOT, m_slotDisplayMessage);
 }
 
 //------------------------------------------------------------------------------
@@ -120,19 +112,19 @@ void SSliceIndexDicomPullerEditor::configuring()
         m_delay = ::boost::lexical_cast< unsigned int >(delayStr);
     }
 
-    if(m_delayTimer2 && m_delayTimer2->isRunning())
+    if(m_delayTimer && m_delayTimer->isRunning())
     {
-        m_delayTimer2->stop();
-        m_delayTimer2.reset();
+        m_delayTimer->stop();
+        m_delayTimer.reset();
     }
 
-    m_delayTimer2 = m_associatedWorker->createTimer();
-    m_delayTimer2->setFunction(  [ = ]()
+    m_delayTimer = m_associatedWorker->createTimer();
+    m_delayTimer->setFunction(  [ = ]()
         {
             this->triggerNewSlice();
         }  );
 
-    m_delayTimer2->setOneShot(true);
+    m_delayTimer->setOneShot(true);
 }
 
 // -----------------------------------------------------------------------------
@@ -211,15 +203,15 @@ void SSliceIndexDicomPullerEditor::starting()
     m_sagittalIndex = ::fwData::Integer::New(0);
 
     // Load a slice
-    if(m_delayTimer2)
+    if(m_delayTimer)
     {
-        if(m_delayTimer2->isRunning())
+        if(m_delayTimer->isRunning())
         {
-            m_delayTimer2->stop();
+            m_delayTimer->stop();
         }
 
-        m_delayTimer2->setDuration(std::chrono::milliseconds(m_delay));
-        m_delayTimer2->start();
+        m_delayTimer->setDuration(std::chrono::milliseconds(m_delay));
+        m_delayTimer->start();
     }
     else
     {
@@ -231,9 +223,9 @@ void SSliceIndexDicomPullerEditor::starting()
 
 void SSliceIndexDicomPullerEditor::stopping()
 {
-    if(m_delayTimer2 && m_delayTimer2->isRunning())
+    if(m_delayTimer && m_delayTimer->isRunning())
     {
-        m_delayTimer2->stop();
+        m_delayTimer->stop();
     }
 
     // Stop dicom reader
@@ -242,9 +234,6 @@ void SSliceIndexDicomPullerEditor::stopping()
         m_dicomReader.lock()->stop();
         ::fwServices::OSR::unregisterService(m_dicomReader.lock());
     }
-
-    // Disconnect the signals
-    QObject::disconnect(m_sliceIndexSlider, SIGNAL(valueChanged(int)), this, SLOT(changeSliceIndex(int)));
 
     this->destroy();
 }
@@ -265,14 +254,14 @@ void SSliceIndexDicomPullerEditor::changeSliceIndex(int)
     m_sliceIndexLineEdit->setText(std::string(ss.str()).c_str());
 
     // Get the new slice if there is no change for m_delay milliseconds
-    if( m_delayTimer2 )
+    if( m_delayTimer )
     {
-        if(m_delayTimer2->isRunning())
+        if(m_delayTimer->isRunning())
         {
-            m_delayTimer2->stop();
+            m_delayTimer->stop();
         }
 
-        m_delayTimer2->start();
+        m_delayTimer->start();
     }
     else
     {
@@ -298,7 +287,7 @@ void SSliceIndexDicomPullerEditor::triggerNewSlice()
     }
     else
     {
-        m_slotReadImage->asyncRun(selectedSliceIndex);
+        this->readImage(selectedSliceIndex);
     }
 }
 
@@ -506,27 +495,11 @@ void SSliceIndexDicomPullerEditor::pullInstance()
 
         // GET frame by Slice.
         const std::string& instanceUrl(pacsServer + "/instances/" + instanceUID + "/file");
-        const std::string& instancePath1 = m_clientQt.getFile( ::fwNetworkIO::http::Request::New(instanceUrl));
-
-        const QByteArray& instanceAnswer = m_clientQt.get( ::fwNetworkIO::http::Request::New(instanceUrl));
-        // Add path and trigger reading
-        const ::boost::filesystem::path& path         = ::fwTools::System::getTemporaryFolder() / "dicom/";
-        const ::boost::filesystem::path& seriesPath   = path.string() + seriesInstanceUID;
-        const ::boost::filesystem::path& instancePath = seriesPath / instanceUID;
-        QDir dir(seriesPath.string().c_str());
-        if ( dir.mkpath("."))
-        {
-            QFile instanceFile(instancePath.string().c_str());
-            if(instanceFile.open(QIODevice::WriteOnly))
-            {
-                instanceFile.write(instanceAnswer);
-            }
-            instanceFile.close();
-        }
+        const std::string& instancePath = m_clientQt.getFile( ::fwNetworkIO::http::Request::New(instanceUrl));
 
         // Add path and trigger reading
         dicomSeries->addDicomPath(selectedSliceIndex, instancePath);
-        m_slotReadImage->asyncRun(selectedSliceIndex);
+        this->readImage(selectedSliceIndex);
     }
     catch (::fwNetworkIO::exceptions::Base&)
     {
@@ -535,7 +508,7 @@ void SSliceIndexDicomPullerEditor::pullInstance()
            << "Pacs host name: " << m_serverHostname << "\n"
            << "Pacs port: " << m_serverPort << "\n";
 
-        m_slotDisplayMessage->asyncRun(ss.str());
+        this->displayErrorMessage(ss.str());
         SLM_WARN(exception.what());
     }
 }

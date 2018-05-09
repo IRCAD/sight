@@ -92,6 +92,7 @@
 
         <service uid="action_pullSeries" type="::gui::action::SSlotCaller" >
             <slots>
+                <slot>action_pullSeries/setInexecutable</slot>
                 <slot>pullSeriesController/update</slot>
             </slots>
         </service>
@@ -114,7 +115,7 @@
             <server>%PACS_SERVER_HOSTNAME%:%PACS_SERVER_PORT%</server>
         </service>
 
-        <service uid="pullSeriesController" type="::ioDicomWeb::SSeriesPuller">
+        <service uid="pullSeriesController" type="::ioDicomWeb::SSeriesPuller" >
             <in key="selectedSeries" uid="previewSelections" />
             <inout key="seriesDB" uid="localSeriesDB" />
             <config dicomReader="::ioGdcm::SSeriesDBReader" dicomReaderConfig="DicomWebReaderConfig" />
@@ -154,8 +155,8 @@
         <!-- ******************************* Connections ************************************** -->
 
         <connect>
-            <signal>pullSeriesController/seriesReceived</signal>
-            <slot>seriesDBReader/readFolder</slot>
+            <signal>pullSeriesController/updated</signal>
+            <slot>action_pullSeries/setExecutable</slot>
         </connect>
 
         <!-- START AND STOP SERVICES -->
