@@ -30,7 +30,7 @@ namespace action
  * @subsection In-Out In-Out
  * - \b image [::fwData::Image]: Image containig the landmarks field.
  *
- * @deprecated This service is deprecated and will be removed, use SWriter to write the landmarks
+ * @deprecated This service is deprecated and will be removed, use SReader to load the landmarks
  */
 class UIMEASUREMENT_CLASS_API LoadLandmark : public ::fwGui::IActionSrv
 {

@@ -80,7 +80,7 @@ protected:
      */
     virtual void starting() override
     {
-        FW_DEPRECATED_MSG("This service in deprecated. Use a ::fwData::PointList instead of a Spline.");
+        FW_DEPRECATED_MSG("This service is deprecated. Use a ::fwData::PointList instead of a Spline.");
     }
 
     /**
