@@ -125,9 +125,14 @@ void SExportWithSeriesDB::starting()
 {
     this->::fwGui::IActionSrv::actionServiceStarting();
 
-    SLM_FATAL_IF(
-        "The associated object must be a ::fwMedData::Series (Here: " + this->getObject()->getClassname() + ").",
-        !this->getObject< ::fwMedData::Series >());
+    ::fwMedData::Series::sptr series = this->getInOut< ::fwMedData::Series >(s_SERIES_INOUT);
+
+    if (!series)
+    {
+        series = this->getObject< ::fwMedData::Series >();
+        FW_DEPRECATED_MSG("input 'series' is not correctly set");
+    }
+    SLM_FATAL_IF( "The associated object must be a ::fwMedData::Series.", !series);
 }
 
 //------------------------------------------------------------------------------

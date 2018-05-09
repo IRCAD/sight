@@ -59,6 +59,7 @@ namespace editor
  *
  * @code{.xml}
    <service impl="::uiMedDataQt::editor::SActivityWizard">
+     <inout key="seriesDB" uid="..." />
      <ioSelectorConfig>config</ioSelectorConfig>
      <sdbIoSelectorConfig>config</sdbIoSelectorConfig>
      <activitySeries>seriesUid</activitySeries>
@@ -70,6 +71,9 @@ namespace editor
      </icons>
    </service>
    @endcode
+ * @subsection In-Out In-Out
+ * - \b seriesDB [::fwMedData::SeriesDB]: seriesDB to store the create activity series
+ * @subsection Configuration Configuration
  * - \b ioSelectorConfig : configuration for the SIOSelector service used to import data in this editor.
  * - \b sdbIoSelectorConfig(optional, default: ioSelectorConfig): configuration for the SIOSelector service used to
  * import data in this editor from a SeriesDB.

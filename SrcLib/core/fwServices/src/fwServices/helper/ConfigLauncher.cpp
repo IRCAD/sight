@@ -129,7 +129,6 @@ void ConfigLauncher::parseConfig(const ::fwServices::IService::ConfigType& confi
 void ConfigLauncher::startConfig(::fwServices::IService::sptr srv,
                                  const FieldAdaptorType& optReplaceMap )
 {
-    ::fwData::Object::sptr currentObj = srv->getObject();
     typedef ::fwActivities::registry::ActivityAppConfig AppConfig;
     FieldAdaptorType replaceMap(optReplaceMap);
 
