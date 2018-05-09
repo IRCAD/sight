@@ -6,6 +6,13 @@
 
 #include "fwNetworkIO/http/ClientQt.hpp"
 
+#include <fwGui/dialog/MessageDialog.hpp>
+
+#include <fwTools/System.hpp>
+#include <fwTools/UUID.hpp>
+
+#include <boost/filesystem/operations.hpp>
+
 #include <QList>
 #include <QtNetwork>
 
@@ -27,27 +34,6 @@ ClientQt::~ClientQt()
 
 //-----------------------------------------------------------------------------
 
-std::string ClientQt::post(Request::sptr request, const std::string& content)
-{
-    const QUrl qtUrl(QString::fromStdString(request->getUrl()));
-    QNetworkRequest qtRequest(qtUrl);
-
-    this->computeHeaders(qtRequest, request->getHeaders());
-
-    QString byteArray     = QString::fromStdString(content);
-    QNetworkReply* replay = m_networkManager->post(qtRequest, byteArray.toUtf8());
-    QEventLoop loop;
-    QObject::connect(replay, SIGNAL(finished()), &loop, SLOT(quit()));
-    QObject::connect(replay, SIGNAL(error(QNetworkReply::NetworkError)),
-                     this, SLOT(processError(QNetworkReply::NetworkError)));
-    loop.exec();
-    const QByteArray& answer = replay->readAll();
-
-    return answer.data();
-}
-
-//-----------------------------------------------------------------------------
-
 QByteArray ClientQt::get(Request::sptr request)
 {
     const QUrl qtUrl(QString::fromStdString(request->getUrl()));
@@ -57,12 +43,49 @@ QByteArray ClientQt::get(Request::sptr request)
 
     QNetworkReply* reply = m_networkManager->get(qtRequest);
     QEventLoop loop;
-    QObject::connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
-    QObject::connect(reply, SIGNAL(error(QNetworkReply::NetworkError)),
-                     this, SLOT(processError(QNetworkReply::NetworkError)));
+    QObject::connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
+    QObject::connect(reply, QOverload<QNetworkReply::NetworkError>::of(
+                         &QNetworkReply::error), this, &ClientQt::processError);
 
     loop.exec();
     return reply->readAll();
+}
+
+//-----------------------------------------------------------------------------
+
+std::string ClientQt::getFile(Request::sptr request)
+{
+    const QUrl qtUrl(QString::fromStdString(request->getUrl()));
+    QNetworkRequest qtRequest(qtUrl);
+
+    this->computeHeaders(qtRequest, request->getHeaders());
+
+    QNetworkReply* reply = m_networkManager->get(qtRequest);
+    QEventLoop loop;
+    QObject::connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
+    QObject::connect(reply, QOverload<QNetworkReply::NetworkError>::of(
+                         &QNetworkReply::error), this, &ClientQt::processError);
+
+    ::boost::filesystem::path folderPath = ::fwTools::System::getTemporaryFolder();
+    ::boost::filesystem::path filePath   = folderPath / ::fwTools::UUID::generateUUID();
+
+    QFile file(filePath.string().c_str());
+
+    while(file.exists())
+    {
+        filePath = folderPath / ::fwTools::UUID::generateUUID();
+        file.setFileName(filePath.string().c_str());
+    }
+
+    if (!file.open(QIODevice::WriteOnly))
+    {
+        throw ("Could not create a temporary file");
+    }
+
+    QObject::connect(reply, &QNetworkReply::readyRead, this, [&]  { file.write(reply->readAll()); } );
+
+    loop.exec();
+    return filePath.string();
 }
 
 //-----------------------------------------------------------------------------
@@ -92,44 +115,6 @@ void ClientQt::processError(QNetworkReply::NetworkError errorCode)
 
 //-----------------------------------------------------------------------------
 
-bool ClientQt::get(Request::sptr request, char* buffer, size_t size)
-{
-    HTTPResponse resp;
-    const QUrl qtUrl(QString::fromStdString(request->getUrl()));
-    QNetworkRequest qtRequest(qtUrl);
-
-    this->computeHeaders(qtRequest, request->getHeaders());
-
-    QNetworkReply* reply = m_networkManager->get(qtRequest);
-    QEventLoop loop;
-    QObject::connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
-    loop.exec();
-
-    qint64 readValue = reply->read(buffer, size);
-
-    return (readValue >= 0);
-}
-
-//-----------------------------------------------------------------------------
-
-std::string ClientQt::put(Request::sptr request, const std::string& content)
-{
-    const QUrl qtUrl(QString::fromStdString(request->getUrl()));
-    QNetworkRequest qtRequest(qtUrl);
-
-    this->computeHeaders(qtRequest, request->getHeaders());
-
-    QString byteArray     = QString::fromStdString(content);
-    QNetworkReply* replay = m_networkManager->put(qtRequest, byteArray.toUtf8());
-    QEventLoop loop;
-    QObject::connect(replay, SIGNAL(finished()), &loop, SLOT(quit()));
-    loop.exec();
-    const QByteArray& answer = replay->readAll();
-    return answer.data();
-}
-
-//-----------------------------------------------------------------------------
-
 QByteArray ClientQt::post(Request::sptr request, const QByteArray& body)
 {
     const QUrl qtUrl(QString::fromStdString(request->getUrl()));
@@ -145,55 +130,6 @@ QByteArray ClientQt::post(Request::sptr request, const QByteArray& body)
     loop.exec();
     const QByteArray& answer = replay->readAll();
     return answer.data();
-}
-
-//-----------------------------------------------------------------------------
-
-void ClientQt::putAsync(Request::sptr request, const std::string& content)
-{
-    const QUrl qtUrl(QString::fromStdString(request->getUrl()));
-    QNetworkRequest qtRequest(qtUrl);
-
-    this->computeHeaders(qtRequest, request->getHeaders());
-
-    QString byteArray     = QString::fromStdString(content);
-    QNetworkReply* replay = m_networkManager->put(qtRequest, byteArray.toUtf8());
-
-    QObject::connect(replay, SIGNAL(finished()), this, SLOT(onPutAsyncFinished()));
-}
-
-//-----------------------------------------------------------------------------
-
-std::string ClientQt::put(Request::sptr request, char* buffer, size_t size)
-{
-    const QUrl qtUrl(QString::fromStdString(request->getUrl()));
-    QNetworkRequest qtRequest(qtUrl);
-
-    this->computeHeaders(qtRequest, request->getHeaders());
-
-    QByteArray byteArray(buffer, size);
-    QNetworkReply* replay = m_networkManager->put(qtRequest, byteArray);
-
-    QEventLoop loop;
-    QObject::connect(replay, SIGNAL(finished()), &loop, SLOT(quit()));
-    loop.exec();
-
-    QByteArray answer = replay->readAll();
-    return answer.data();
-}
-
-//-----------------------------------------------------------------------------
-
-void ClientQt::putAsync(Request::sptr request, char* buffer, size_t size)
-{
-    const QUrl qtUrl(QString::fromStdString(request->getUrl()));
-    QNetworkRequest qtRequest(qtUrl);
-
-    this->computeHeaders(qtRequest, request->getHeaders());
-
-    QByteArray byteArray(buffer, size);
-    QNetworkReply* replay = m_networkManager->put(qtRequest, byteArray);
-    QObject::connect(replay, SIGNAL(finished()), this, SLOT(onPutAsyncFinished()));
 }
 
 //-----------------------------------------------------------------------------
@@ -233,13 +169,6 @@ Request::HeadersType ClientQt::head(Request::sptr request)
     }
 
     return headers;
-}
-
-//-----------------------------------------------------------------------------
-
-void ClientQt::onPutAsyncFinished()
-{
-    SLM_TRACE("Put async. finished.");
 }
 
 //-----------------------------------------------------------------------------

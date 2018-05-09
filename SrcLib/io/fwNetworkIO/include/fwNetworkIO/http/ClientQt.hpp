@@ -46,63 +46,23 @@ public:
     /**  @} */
 
     /**
-     * @brief Sends data to the server using post
-     * @param request the request to post
-     * @param content has the data to send
+     * @brief Retrieves data over network
+     * @param request the request
      */
-    FWNETWORKIO_API virtual std::string post(Request::sptr request, const std::string& content);
+    FWNETWORKIO_API QByteArray get(Request::sptr request);
 
     /**
      * @brief Retrieves data over network
      * @param request the request
      */
-    FWNETWORKIO_API virtual QByteArray get(Request::sptr request);
-
-    /**
-     * @brief Retrieves data over network
-     * @param buffer the buffer where data is written
-     * @param size buffer size
-     * @return true if the reply has been read successfully
-     */
-    FWNETWORKIO_API virtual bool get(Request::sptr request, char* buffer, size_t size);
-
-    /**
-     * @brief Puts HTTP request
-     * @param url destination of data
-     * @param content the data to put
-     * @return answer data
-     */
-    FWNETWORKIO_API virtual std::string put(Request::sptr url, const std::string& content);
-
-    /**
-     * @brief Puts HTTP request asynchronously
-     * @param url destination of data
-     * @param content the data to put
-     */
-    FWNETWORKIO_API virtual void putAsync(Request::sptr url, const std::string& content);
-
-    /**
-     * @brief Puts binary file
-     * @param request the request
-     * @param buffer reference to the buffer
-     * @param size buffer size
-     */
-    FWNETWORKIO_API virtual std::string put(Request::sptr request, char* buffer, size_t size);
-
-    /**
-     * @brief Puts binary file asynchronously
-     * @param request the request
-     * @param buffer reference to the buffer;
-     * @param size buffer size
-     */
-    FWNETWORKIO_API virtual void putAsync(Request::sptr request, char* buffer, size_t size);
+    FWNETWORKIO_API std::string getFile(Request::sptr request);
 
     /**
      * @brief Performs head request
      * @param request the request
      * @return headers resulting of the request
      */
-    FWNETWORKIO_API virtual Request::HeadersType head(Request::sptr request);
+    FWNETWORKIO_API Request::HeadersType head(Request::sptr request);
 
     /**
      * @brief Performs POST request
@@ -114,9 +74,6 @@ public:
 public Q_SLOTS:
     /// Slot triggered when an error occurs.
     void processError(QNetworkReply::NetworkError errorCode);
-
-    /// Slot triggered when an asynchronous requested has completed.
-    void onPutAsyncFinished();
 
 private:
     /// Set request headers with given values.
