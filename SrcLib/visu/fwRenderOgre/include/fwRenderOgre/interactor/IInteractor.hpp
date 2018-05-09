@@ -16,10 +16,6 @@
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
 
-#include <fwCore/BaseObject.hpp>
-
-#include <fwData/Object.hpp>
-
 #include <OGRE/OgreSceneManager.h>
 #include <OGRE/OgreVector3.h>
 
@@ -32,11 +28,11 @@ namespace interactor
 /**
  * @brief Interface implementation for all the interaction with the mouse
  */
-class FWRENDEROGRE_CLASS_API IInteractor : public ::fwCore::BaseObject,
-                                           public ::fwCom::HasSignals
+class FWRENDEROGRE_CLASS_API IInteractor
 {
 
 public:
+    typedef std::shared_ptr< IInteractor > sptr;
 
     /// List of recognized mouse buttons.
     enum MouseButton
@@ -80,8 +76,6 @@ public:
     typedef ::fwCom::Signal< void () > RenderRequestedSigType;
     FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_RENDER_REQUESTED_SIG;
     /** @} */
-
-    fwCoreNonInstanciableClassDefinitionsMacro( (IInteractor)(::fwCore::BaseObject) )
 
     /// Constructor. Retrieves the Ogre root and the \<sceneID\> scene manager
     FWRENDEROGRE_API IInteractor();

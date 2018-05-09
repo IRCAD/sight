@@ -155,11 +155,6 @@ public:
     FWRENDEROGRE_API void resetCameraClippingRange(const ::Ogre::AxisAlignedBox& worldCoordBoundingBox) const;
 
     /**
-     * @brief Returns Ogre interactor.
-     */
-    FWRENDEROGRE_API virtual ::fwRenderOgre::interactor::IInteractor::sptr getInteractor();
-
-    /**
      * @brief set Ogre Movement interactor.
      */
     FWRENDEROGRE_API virtual void setMoveInteractor(::fwRenderOgre::interactor::IMovementInteractor::sptr interactor);
@@ -167,7 +162,7 @@ public:
     /**
      * @brief set Ogre Select interactor.
      */
-    FWRENDEROGRE_API virtual void setSelectInteractor(::fwRenderOgre::interactor::IPickerInteractor::sptr interactor);
+    FWRENDEROGRE_API virtual void setSelectInteractor(::fwRenderOgre::interactor::IInteractor::sptr interactor);
 
     /**
      * @brief get Ogre Movement interactor.
@@ -176,6 +171,7 @@ public:
 
     /**
      * @brief get Ogre Select interactor.
+     * @deprecated This will be removed soon.
      */
     FWRENDEROGRE_API virtual ::fwRenderOgre::interactor::IPickerInteractor::sptr getSelectInteractor();
 
@@ -329,8 +325,8 @@ private:
     /// Ogre movement interactor
     ::fwRenderOgre::interactor::IMovementInteractor::sptr m_moveInteractor;
 
-    /// Ogre picker interactor
-    ::fwRenderOgre::interactor::IPickerInteractor::sptr m_selectInteractor;
+    /// List of interactors
+    std::vector< ::fwRenderOgre::interactor::IInteractor::sptr > m_interactors;
 
     ///Connection service, needed for slot/signal association.
     ::fwCom::helper::SigSlotConnection m_connections;

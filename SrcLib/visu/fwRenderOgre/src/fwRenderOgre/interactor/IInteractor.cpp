@@ -26,8 +26,6 @@ IInteractor::IInteractor()  :
     m_sceneManager(nullptr)
 {
     m_ogreRoot = ::fwRenderOgre::Utils::getOgreRoot();
-
-    m_sigRenderRequested = newSignal< RenderRequestedSigType >( s_RENDER_REQUESTED_SIG );
 }
 
 // ----------------------------------------------------------------------------
