@@ -21,11 +21,7 @@ uniform sampler2D u_videoTexture;
 
 in vec2 oTexCoord;
 
-out vec4 fragColor;
-
-//-----------------------------------------------------------------------------
-
-void main(void)
+vec4 getFragmentColor()
 {
     vec4 color;
 
@@ -42,5 +38,25 @@ void main(void)
     color = texture(u_videoTexture, oTexCoord);
 #endif // TF
 
-    fragColor = color;
+    return color;
+}
+
+float getFragmentAlpha()
+{
+    vec4 color;
+
+#ifdef TF
+
+#   ifdef TF_INTEGER
+    int value = texture(u_videoTexture, oTexCoord).r;
+    color = sampleTransferFunction_uint16(value);
+#   else // TF_INTEGER
+    float value = texture(u_videoTexture, oTexCoord).r;
+    color = sampleTransferFunction_float(value);
+#   endif // TF_INTEGER
+#else // TF
+    color = texture(u_videoTexture, oTexCoord);
+#endif // TF
+
+    return color.a;
 }

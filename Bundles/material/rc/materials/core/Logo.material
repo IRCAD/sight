@@ -1,18 +1,3 @@
-vertex_program Logo_VP glsl
-{
-    source Video_VP.glsl
-    default_params
-    {
-        param_named_auto u_worldViewProj worldviewproj_matrix
-    }
-}
-
-fragment_program Logo_FP glsl
-{
-    source Video_FP.glsl
-}
-
-
 // Material to represent IRCAD logo in a texture
 material IrcadLogo
 {
@@ -24,11 +9,11 @@ material IrcadLogo
             cull_hardware none
             scene_blend alpha_blend
 
-            vertex_program_ref Logo_VP
+            vertex_program_ref Default/Video_VP
             {
             }
 
-            fragment_program_ref Logo_FP
+            fragment_program_ref Default/Video_FP
             {
             }
             texture_unit
@@ -54,11 +39,11 @@ material IHULogo
             cull_hardware none
             scene_blend alpha_blend
 
-            vertex_program_ref Logo_VP
+            vertex_program_ref Default/Video_VP
             {
             }
 
-            fragment_program_ref Logo_FP
+            fragment_program_ref Default/Video_FP
             {
             }
             texture_unit
