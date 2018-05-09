@@ -32,6 +32,7 @@ class FWRENDEROGRE_CLASS_API IInteractor
 {
 
 public:
+    typedef std::weak_ptr< IInteractor > wptr;
     typedef std::shared_ptr< IInteractor > sptr;
 
     /// List of recognized mouse buttons.

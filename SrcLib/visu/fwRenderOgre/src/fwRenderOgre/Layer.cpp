@@ -420,7 +420,7 @@ void Layer::interaction(::fwRenderOgre::IRenderWindowInteractorManager::Interact
         {
             for(auto& interactor : m_interactors)
             {
-                interactor->mouseMoveEvent(info.button, info.x, info.y, info.dx, info.dy);
+                interactor.lock()->mouseMoveEvent(info.button, info.x, info.y, info.dx, info.dy);
             }
             break;
         }
@@ -428,7 +428,7 @@ void Layer::interaction(::fwRenderOgre::IRenderWindowInteractorManager::Interact
         {
             for(auto& interactor : m_interactors)
             {
-                interactor->wheelEvent(info.delta, info.x, info.y);
+                interactor.lock()->wheelEvent(info.delta, info.x, info.y);
             }
             break;
         }
@@ -439,7 +439,7 @@ void Layer::interaction(::fwRenderOgre::IRenderWindowInteractorManager::Interact
 
             for(auto& interactor : m_interactors)
             {
-                interactor->resizeEvent(info.x, info.y);
+                interactor.lock()->resizeEvent(info.x, info.y);
             }
             break;
         }
@@ -448,7 +448,7 @@ void Layer::interaction(::fwRenderOgre::IRenderWindowInteractorManager::Interact
 
             for(auto& interactor : m_interactors)
             {
-                interactor->keyPressEvent(info.key);
+                interactor.lock()->keyPressEvent(info.key);
             }
             break;
         }
@@ -456,7 +456,7 @@ void Layer::interaction(::fwRenderOgre::IRenderWindowInteractorManager::Interact
         {
             for(auto& interactor : m_interactors)
             {
-                interactor->keyReleaseEvent(info.key);
+                interactor.lock()->keyReleaseEvent(info.key);
             }
             break;
         }
@@ -464,7 +464,7 @@ void Layer::interaction(::fwRenderOgre::IRenderWindowInteractorManager::Interact
         {
             for(auto& interactor : m_interactors)
             {
-                interactor->buttonReleaseEvent(info.button, info.x, info.y);
+                interactor.lock()->buttonReleaseEvent(info.button, info.x, info.y);
             }
             break;
         }
@@ -472,7 +472,7 @@ void Layer::interaction(::fwRenderOgre::IRenderWindowInteractorManager::Interact
         {
             for(auto& interactor : m_interactors)
             {
-                interactor->buttonPressEvent(info.button, info.x, info.y);
+                interactor.lock()->buttonPressEvent(info.button, info.x, info.y);
             }
             break;
         }
@@ -480,7 +480,7 @@ void Layer::interaction(::fwRenderOgre::IRenderWindowInteractorManager::Interact
         {
             for(auto& interactor : m_interactors)
             {
-                interactor->focusInEvent();
+                interactor.lock()->focusInEvent();
             }
             break;
         }
@@ -488,7 +488,7 @@ void Layer::interaction(::fwRenderOgre::IRenderWindowInteractorManager::Interact
         {
             for(auto& interactor : m_interactors)
             {
-                interactor->focusOutEvent();
+                interactor.lock()->focusOutEvent();
             }
             break;
         }
@@ -544,7 +544,7 @@ void Layer::setMoveInteractor(::fwRenderOgre::interactor::IMovementInteractor::s
     {
         // This function is only kept to maintain compatibility with SInteractorStyle which will be removed soon
         // We return the first select interactor found
-        auto moveInteractor = ::fwRenderOgre::interactor::IMovementInteractor::dynamicCast(interactor);
+        auto moveInteractor = ::fwRenderOgre::interactor::IMovementInteractor::dynamicCast(interactor.lock());
         if(moveInteractor)
         {
             interactor   = _interactor;
@@ -596,7 +596,7 @@ void Layer::setSelectInteractor(::fwRenderOgre::interactor::IInteractor::sptr in
     {
         // This function is only kept to maintain compatibility with SInteractorStyle which will be removed soon
         // We return the first select interactor found
-        auto selectInteractor = ::fwRenderOgre::interactor::IPickerInteractor::dynamicCast(interactor);
+        auto selectInteractor = ::fwRenderOgre::interactor::IPickerInteractor::dynamicCast(interactor.lock());
         if(selectInteractor)
         {
             return selectInteractor;

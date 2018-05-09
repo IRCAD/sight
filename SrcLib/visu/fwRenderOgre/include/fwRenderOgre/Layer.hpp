@@ -326,7 +326,7 @@ private:
     ::fwRenderOgre::interactor::IMovementInteractor::sptr m_moveInteractor;
 
     /// List of interactors
-    std::vector< ::fwRenderOgre::interactor::IInteractor::sptr > m_interactors;
+    std::vector< ::fwRenderOgre::interactor::IInteractor::wptr > m_interactors;
 
     ///Connection service, needed for slot/signal association.
     ::fwCom::helper::SigSlotConnection m_connections;

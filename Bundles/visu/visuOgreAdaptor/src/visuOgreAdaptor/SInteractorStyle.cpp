@@ -128,15 +128,14 @@ void SInteractorStyle::setInteractorStyle()
         {
             const auto style = s_STYLES_PICKER.at(m_pickerStyle);
 
-            ::fwRenderOgre::interactor::IInteractor::sptr interactor = ::fwRenderOgre::interactorFactory::New(style,
-                                                                                                              this->getSceneManager()->getName());
-            SLM_ASSERT(this->getID() + " : Unknown picker interactor style : " + style, interactor);
+            m_selectInteractor = ::fwRenderOgre::interactorFactory::New(style, this->getSceneManager()->getName());
+            SLM_ASSERT(this->getID() + " : Unknown picker interactor style : " + style, m_selectInteractor);
 
             auto layer            = this->getRenderService()->getLayer(m_layerID);
-            auto pickerInteractor = ::fwRenderOgre::interactor::IPickerInteractor::dynamicCast(interactor);
+            auto pickerInteractor = ::fwRenderOgre::interactor::IPickerInteractor::dynamicCast(m_selectInteractor);
             pickerInteractor->initPicker();
             pickerInteractor->setQueryFlags(m_queryFlags);
-            layer->setSelectInteractor(::fwRenderOgre::interactor::IPickerInteractor::dynamicCast(interactor));
+            layer->setSelectInteractor(::fwRenderOgre::interactor::IPickerInteractor::dynamicCast(m_selectInteractor));
         }
         else
         {
@@ -154,12 +153,11 @@ void SInteractorStyle::setInteractorStyle()
         {
             const auto style = s_STYLES_MOVEMENT.at(m_movementStyle);
 
-            ::fwRenderOgre::interactor::IInteractor::sptr interactor = ::fwRenderOgre::interactorFactory::New(style,
-                                                                                                              this->getSceneManager()->getName());
-            SLM_ASSERT(this->getID() + " : Unknown movement interactor style : " + style, interactor);
+            m_moveInteractor = ::fwRenderOgre::interactorFactory::New(style, this->getSceneManager()->getName());
+            SLM_ASSERT(this->getID() + " : Unknown movement interactor style : " + style, m_moveInteractor);
 
             auto layer = this->getRenderService()->getLayer(m_layerID);
-            layer->setMoveInteractor(::fwRenderOgre::interactor::IMovementInteractor::dynamicCast(interactor));
+            layer->setMoveInteractor(::fwRenderOgre::interactor::IMovementInteractor::dynamicCast(m_moveInteractor));
         }
         else
         {
