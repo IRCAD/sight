@@ -295,9 +295,7 @@ void SSeriesPuller::pullSeries()
                 const size_t seriesArraySize = seriesArray.count();
                 for(size_t i = 0; i < seriesArraySize; ++i)
                 {
-                    const std::string& seriesUID                = seriesArray.at(i).toString().toStdString();
-                    const ::boost::filesystem::path& seriesPath = ::fwTools::System::getTemporaryFolder() /
-                                                                  seriesInstancesUID;
+                    const std::string& seriesUID = seriesArray.at(i).toString().toStdString();
 
                     /// GET all Instances by Series.
                     const std::string& instancesUrl(pacsServer + "/series/" + seriesUID);
@@ -314,20 +312,14 @@ void SSeriesPuller::pullSeries()
 
                         /// GET DICOM Instance file.
                         const std::string instanceUrl(pacsServer +"/instances/" + instanceUID + "/file");
-                        const QByteArray& instance = m_clientQt.get( ::fwNetworkIO::http::Request::New(instanceUrl));
-
-                        /// Write it to a temporary directory.
-                        QDir dir(seriesPath.string().c_str());
-                        if ( dir.mkpath("."))
-                        {
-                            const ::boost::filesystem::path& instancePath = seriesPath / instanceUID;
-                            QFile instanceFile(instancePath.string().c_str());
-                            if(instanceFile.open(QIODevice::WriteOnly))
-                            {
-                                instanceFile.write(instance);
-                            }
-                            instanceFile.close();
-                        }
+                        m_path = m_clientQt.getFile(::fwNetworkIO::http::Request::New(instanceUrl));
+                        // Create dicom folder
+                        ::boost::filesystem::path instancePath = m_path.parent_path() / seriesInstancesUID;
+                        QDir().mkpath(instancePath.string().c_str());
+                        // Move dicom file to the created dicom folder
+                        instancePath /= m_path.filename();
+                        QFile().rename(m_path.string().c_str(), instancePath.string().c_str());
+                        m_path = m_path.parent_path() / seriesInstancesUID;
                     }
                 }
             }
@@ -382,8 +374,7 @@ void SSeriesPuller::readLocalSeries(DicomSeriesContainerType selectedSeries)
             // Clear temporary series
             tempSDBhelper.clear();
 
-            const ::boost::filesystem::path& path = ::fwTools::System::getTemporaryFolder() / selectedSeriesUID;
-            m_dicomReader->setFolder(path);
+            m_dicomReader->setFolder(m_path);
             m_dicomReader->update();
 
             // Merge series

@@ -506,8 +506,9 @@ void SSliceIndexDicomPullerEditor::pullInstance()
 
         // GET frame by Slice.
         const std::string& instanceUrl(pacsServer + "/instances/" + instanceUID + "/file");
-        const QByteArray& instanceAnswer = m_clientQt.get( ::fwNetworkIO::http::Request::New(instanceUrl));
+        const std::string& instancePath1 = m_clientQt.getFile( ::fwNetworkIO::http::Request::New(instanceUrl));
 
+        const QByteArray& instanceAnswer = m_clientQt.get( ::fwNetworkIO::http::Request::New(instanceUrl));
         // Add path and trigger reading
         const ::boost::filesystem::path& path         = ::fwTools::System::getTemporaryFolder() / "dicom/";
         const ::boost::filesystem::path& seriesPath   = path.string() + seriesInstanceUID;
@@ -523,6 +524,7 @@ void SSliceIndexDicomPullerEditor::pullInstance()
             instanceFile.close();
         }
 
+        // Add path and trigger reading
         dicomSeries->addDicomPath(selectedSliceIndex, instancePath);
         m_slotReadImage->asyncRun(selectedSliceIndex);
     }

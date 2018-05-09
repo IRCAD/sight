@@ -159,9 +159,6 @@ private:
     /// Map of Dicom series being pulled
     DicomSeriesMapType m_pullingDicomSeriesMap;
 
-    /// Path where the files must be saved
-    ::boost::filesystem::path m_path;
-
     /// Returns a well formatted preferences key
     std::string getPreferenceKey(const std::string& key) const;
 
@@ -176,6 +173,9 @@ private:
 
     /// Server port
     int m_serverPort;
+
+    /// DICOM Folder path
+    ::boost::filesystem::path m_path;
 
 };
 
