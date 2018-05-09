@@ -75,8 +75,6 @@ SSliceIndexDicomPullerEditor::SSliceIndexDicomPullerEditor() noexcept :
 
     m_slotDisplayMessage = ::fwCom::newSlot(&SSliceIndexDicomPullerEditor::displayErrorMessage, this);
     ::fwCom::HasSlots::m_slots(s_DISPLAY_MESSAGE_SLOT, m_slotDisplayMessage);
-
-    ::fwCom::HasSlots::m_slots.setWorker( m_associatedWorker );
 }
 
 //------------------------------------------------------------------------------
@@ -122,6 +120,19 @@ void SSliceIndexDicomPullerEditor::configuring()
         m_delay = ::boost::lexical_cast< unsigned int >(delayStr);
     }
 
+    if(m_delayTimer2 && m_delayTimer2->isRunning())
+    {
+        m_delayTimer2->stop();
+        m_delayTimer2.reset();
+    }
+
+    m_delayTimer2 = m_associatedWorker->createTimer();
+    m_delayTimer2->setFunction(  [ = ]()
+        {
+            this->triggerNewSlice();
+        }  );
+
+    m_delayTimer2->setOneShot(true);
 }
 
 // -----------------------------------------------------------------------------
@@ -142,8 +153,6 @@ std::string SSliceIndexDicomPullerEditor::getPreferenceKey(const std::string& ke
 
 void SSliceIndexDicomPullerEditor::starting()
 {
-    m_delayTimer2 = m_associatedWorker->createTimer();
-
     ::fwGui::IGuiContainerSrv::create();
     ::fwGuiQt::container::QtContainer::sptr qtContainer = fwGuiQt::container::QtContainer::dynamicCast(getContainer());
 
@@ -156,8 +165,8 @@ void SSliceIndexDicomPullerEditor::starting()
     // Slider
     m_sliceIndexSlider = new QSlider(Qt::Horizontal);
     layout->addWidget(m_sliceIndexSlider, 1);
-    m_sliceIndexSlider->setRange(0, static_cast<unsigned int>(m_numberOfSlices-1));
-    m_sliceIndexSlider->setValue(static_cast<unsigned int>(m_numberOfSlices/2));
+    m_sliceIndexSlider->setRange(0, static_cast<int>(m_numberOfSlices-1));
+    m_sliceIndexSlider->setValue(static_cast<int>(m_numberOfSlices/2));
 
     // Line Edit
     m_sliceIndexLineEdit = new QLineEdit();
@@ -201,29 +210,31 @@ void SSliceIndexDicomPullerEditor::starting()
     m_frontalIndex  = ::fwData::Integer::New(0);
     m_sagittalIndex = ::fwData::Integer::New(0);
 
-    // Worker
-    m_pullSeriesWorker = ::fwThread::Worker::New();
-
     // Load a slice
-    std::chrono::milliseconds duration = std::chrono::milliseconds(m_delay);
-    m_delayTimer2->setFunction(  [ = ]()
+    if(m_delayTimer2)
+    {
+        if(m_delayTimer2->isRunning())
         {
-            this->triggerNewSlice();
-        }  );
-    m_delayTimer2->setDuration(duration);
-    m_delayTimer2->setOneShot(true);
+            m_delayTimer2->stop();
+        }
 
-    this->triggerNewSlice();
-
+        m_delayTimer2->setDuration(std::chrono::milliseconds(m_delay));
+        m_delayTimer2->start();
+    }
+    else
+    {
+        this->triggerNewSlice();
+    }
 }
 
 //------------------------------------------------------------------------------
 
 void SSliceIndexDicomPullerEditor::stopping()
 {
-    // Worker
-    m_pullSeriesWorker->stop();
-    m_pullSeriesWorker.reset();
+    if(m_delayTimer2 && m_delayTimer2->isRunning())
+    {
+        m_delayTimer2->stop();
+    }
 
     // Stop dicom reader
     if(!m_dicomReader.expired())
@@ -246,7 +257,7 @@ void SSliceIndexDicomPullerEditor::updating()
 
 //------------------------------------------------------------------------------
 
-void SSliceIndexDicomPullerEditor::changeSliceIndex(int value)
+void SSliceIndexDicomPullerEditor::changeSliceIndex(int)
 {
     // Update text
     std::stringstream ss;
@@ -254,8 +265,19 @@ void SSliceIndexDicomPullerEditor::changeSliceIndex(int value)
     m_sliceIndexLineEdit->setText(std::string(ss.str()).c_str());
 
     // Get the new slice if there is no change for m_delay milliseconds
-    m_delayTimer2->start();
+    if( m_delayTimer2 )
+    {
+        if(m_delayTimer2->isRunning())
+        {
+            m_delayTimer2->stop();
+        }
 
+        m_delayTimer2->start();
+    }
+    else
+    {
+        this->triggerNewSlice();
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -267,7 +289,8 @@ void SSliceIndexDicomPullerEditor::triggerNewSlice()
     SLM_ASSERT("DicomSeries should not be null !", dicomSeries);
 
     // Compute slice index
-    std::size_t selectedSliceIndex = m_sliceIndexSlider->value() + dicomSeries->getFirstInstanceNumber();
+    std::size_t selectedSliceIndex = static_cast<std::size_t>(m_sliceIndexSlider->value()) +
+                                     dicomSeries->getFirstInstanceNumber();
     OSLM_TRACE("triggered new slice : " << selectedSliceIndex);
     if(!dicomSeries->isInstanceAvailable(selectedSliceIndex))
     {
@@ -340,12 +363,11 @@ void SSliceIndexDicomPullerEditor::readImage(std::size_t selectedSliceIndex)
         ::boost::filesystem::ofstream fs(dest, std::ios::binary|std::ios::trunc);
         FW_RAISE_IF("Can't open '" << tmpPath << "' for write.", !fs.good());
 
-        fs.write(buffer, size);
+        fs.write(buffer, static_cast<std::streamsize>(size));
         fs.close();
     }
 
     // Read image
-
     m_dicomReader.lock()->setFolder(tmpPath);
     if(!m_dicomReader.expired())
     {
@@ -445,7 +467,8 @@ void SSliceIndexDicomPullerEditor::pullInstance()
         SLM_ASSERT("DicomSeries should not be null !", dicomSeries);
 
         // Get selected slice
-        std::size_t selectedSliceIndex = m_sliceIndexSlider->value() + dicomSeries->getFirstInstanceNumber();
+        std::size_t selectedSliceIndex = static_cast<std::size_t>(m_sliceIndexSlider->value()) +
+                                         dicomSeries->getFirstInstanceNumber();
 
         std::string seriesInstanceUID = dicomSeries->getInstanceUID();
 
@@ -478,7 +501,8 @@ void SSliceIndexDicomPullerEditor::pullInstance()
         jsonResponse = QJsonDocument::fromJson(instancesAnswer);
         const QJsonObject& jsonObj       = jsonResponse.object();
         const QJsonArray& instancesArray = jsonObj["Instances"].toArray();
-        const std::string& instanceUID   = instancesArray.at(selectedSliceIndex).toString().toStdString();
+        const std::string& instanceUID   =
+            instancesArray.at(static_cast<int>(selectedSliceIndex)).toString().toStdString();
 
         // GET frame by Slice.
         const std::string& instanceUrl(pacsServer + "/instances/" + instanceUID + "/file");
@@ -502,7 +526,7 @@ void SSliceIndexDicomPullerEditor::pullInstance()
         dicomSeries->addDicomPath(selectedSliceIndex, instancePath);
         m_slotReadImage->asyncRun(selectedSliceIndex);
     }
-    catch (::fwNetworkIO::exceptions::Base& exception)
+    catch (::fwNetworkIO::exceptions::Base&)
     {
         std::stringstream ss;
         ss << "Unable to connect to the pacs. Please check your configuration: \n"
