@@ -1,0 +1,281 @@
+<extension implements="::fwServices::registry::AppConfig">
+    <id>toolCalibration</id>
+    <parameters>
+        <param name="WID_PARENT" />
+        <param name="ICON_PATH" />
+    </parameters>
+    <config>
+        <object uid="matrixTL" type="::arData::MatrixTL" />
+        <object uid="matricesVector" type="::fwData::Vector" />
+        <object uid="toolMatrix" type="::fwData::TransformationMatrix3D" src="deferred"/>
+        <object uid="matrixCalibration" type="::fwData::TransformationMatrix3D" src="deferred"/>
+        <object uid="trackerMatrix0" type="::fwData::TransformationMatrix3D" />
+        <object uid="pointlist" type="::fwData::PointList" />
+
+        <!-- *************************** Begin Layouts *************************** -->
+
+        <service uid="mainView" type="::gui::view::SDefaultView">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="vertical" />
+                    <view proportion="1" />
+                    <view proportion="0" />
+                </layout>
+                <toolBar/>
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <view sid="resultView" start="yes" />
+                <view sid="footer" start="yes" />
+                <toolBar sid="toolBar" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="footer" type="::gui::view::SDefaultView">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="horizontal" />
+                    <view proportion="1" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="status" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="toolBar" type="::gui::aspect::SDefaultToolBar">
+            <gui>
+                <layout>
+                    <menuItem name="Start Tracker client" icon="arMedia-0.1/icons/Network-Receiving.svg" />
+                    <menuItem name="Stop Tracker client" icon="arMedia-0.1/icons/Network-Stop-Receiving.svg" />
+                    <menuItem name="Configure Tracker client" icon="media-0.1/icons/Settings.svg" />
+                    <menuItem name="Add point" icon="media-0.1/icons/Import.svg" />
+                    <menuItem name="Compute tool calibration" icon="arMedia-0.1/icons/CheckButton.svg" />
+                </layout>
+            </gui>
+            <registry>
+                <menuItem sid="actionStartOpenIGTLinkClient" start="yes" />
+                <menuItem sid="actionStopOpenIGTLinkClient" start="yes" />
+                <menuItem sid="configureClient" start="yes" />
+                <menuItem sid="actionAddPoint" start="yes" />
+                <menuItem sid="actionComputeCalibration" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="movingCameraParameter" type="::guiQt::editor::SParameters" >
+            <parameters>
+                <param type="bool" name="Moving camera" key="boolParam" defaultValue="true" />
+            </parameters>
+        </service>
+
+        <!-- *************************** End Layouts *************************** -->
+
+        <!-- *************************** Begin Actions *************************** -->
+
+        <service uid="actionStartOpenIGTLinkClient" type="::gui::action::SStarter">
+            <state active="true" visible="true" />
+            <start uid="trackerTLMatrixListener" />
+        </service>
+
+        <service uid="actionStopOpenIGTLinkClient" type="::gui::action::SStarter">
+            <state active="true" visible="false" />
+            <stop uid="trackerTLMatrixListener" />
+        </service>
+
+        <service uid="actionAddPoint" type="::gui::action::SSlotCaller" >
+           <slots>
+               <slot>markerToPoint/addPoint</slot>
+               <slot>manageVector/addCopy</slot>
+           </slots>
+        </service>
+
+        <service uid="actionComputeCalibration" type="::uiTools::action::STimestampSlotCaller" >
+           <slots>
+               <slot>toolCalibration/computeRegistration</slot>
+           </slots>
+        </service>
+
+        <!-- *************************** End Actions *************************** -->
+
+        <!-- *************************** Begin Services *************************** -->
+
+        <service uid="markerToPoint" type="::videoCalibration::SMarkerToPoint">
+            <in key="matrixTL" uid="matrixTL" />
+            <inout key="pointList" uid="pointlist" />
+        </service>
+
+        <service uid="csvReader" type="::ioTimeline::SMatricesReader">
+            <inout key="matrixTL" uid="matrixTL" />
+            <oneShot>true</oneShot>
+            <createTimestamp>true</createTimestamp>
+        </service>
+
+        <service uid="trackerTLMatrixListener" type="::ioIGTL::STDataListener">
+            <inout key="timeline" uid="matrixTL" />
+            <server>%TRACKER_HOSTNAME%:%TRACKER_PORT%</server>
+            <deviceName>%TRACKER_NAME%</deviceName>
+            <TData>
+                <matrix name="Input0" index="0" />
+            </TData>
+        </service>
+
+        <service uid="trackerTLMatrixSynchronizer" type="::syncTimeline::SMatrixTLSynchronizer">
+            <in key="matrixTL" uid="matrixTL" autoConnect="yes" />
+            <inout group="matrices">
+                <key uid="trackerMatrix0" />
+            </inout>
+        </service>
+
+        <service uid="status" type="::uiTools::editor::SStatus" >
+            <form>circle</form>
+            <labelStatus>Sensor status</labelStatus>
+            <green>Sensor is tracked</green>
+            <red>Sensor is not tracked</red>
+        </service>
+
+        <service uid="configureClient" type="::uiPreferences::action::SPreferencesConfiguration">
+            <preference>
+                <type>text</type>
+                <name>Tracker hostname</name>
+                <key>TRACKER_HOSTNAME</key>
+                <default_value>127.0.0.1</default_value>
+            </preference>
+            <preference>
+                <type>number</type>
+                <name>Tracker port</name>
+                <key>TRACKER_PORT</key>
+                <default_value>6767</default_value>
+            </preference>
+            <preference>
+                <type>text</type>
+                <name>Tracker name</name>
+                <key>TRACKER_NAME</key>
+                <default_value>trakSTAR</default_value>
+            </preference>
+        </service>
+
+        <service uid="toolCalibration" type="::trackingCalibration::SToolCalibration" >
+            <out key="matrixCenter" uid="toolMatrix" />
+            <out key="matrixCalibration" uid="matrixCalibration" />
+            <in key="pointList" uid="pointlist" />
+            <in key="matricesVector" uid="matricesVector" />
+        </service>
+
+
+        <service uid="manageVector" type="::ctrlSelection::SManage">
+           <inout key="object" uid="trackerMatrix0" />
+           <inout key="vector" uid="matricesVector" />
+        </service>
+
+        <!-- *************************** End Services *************************** -->
+
+        <!-- *************************** Begin resultView *************************** -->
+
+        <service uid="resultView" type="::fwRenderVTK::SRender" >
+            <scene>
+                <renderer id="default" layer="0" background="0.0" />
+                <adaptor uid="trackerTransformAdaptor0" />
+                <adaptor uid="systemCenterAxis" />
+                <adaptor uid="trackerAxis0" />
+                <adaptor uid="pointlistAdaptor" />
+                <adaptor uid="toolCalibrationTransform" />
+                <adaptor uid="toolAxis" />
+
+                <adaptor uid="calibrationTransform" />
+                <adaptor uid="calibrationAxis" />
+                <vtkObject id="calibrationTransform" class="vtkTransform" />
+                <vtkObject id="vtkTrackerMatrix0" class="vtkTransform" />
+
+                <vtkObject id="calibrationMat" class="vtkTransform">
+                    <vtkTransform>
+                        <concatenate>vtkTrackerMatrix0</concatenate>
+                        <concatenate>calibrationTransform</concatenate>
+                    </vtkTransform>
+                </vtkObject>
+
+            </scene>
+        </service>
+
+        <service uid="trackerTransformAdaptor0" type="::visuVTKAdaptor::STransform" autoConnect="yes">
+            <inout key="tm3d" uid="trackerMatrix0" />
+            <config renderer="default" transform="vtkTrackerMatrix0" />
+        </service>
+
+        <service uid="calibrationTransform" type="::visuVTKAdaptor::STransform" autoConnect="yes">
+            <inout key="tm3d" uid="matrixCalibration" />
+            <config renderer="default" transform="calibrationTransform" />
+        </service>
+
+        <service uid="calibrationAxis" type="::visuVTKAdaptor::SAxis">
+            <config renderer="default" length="20" transform="calibrationMat" label="no" marker="yes" markerColor="#0000FF" />
+        </service>
+
+        <service uid="toolCalibrationTransform" type="::visuVTKAdaptor::STransform" autoConnect="yes">
+            <inout key="tm3d" uid="toolMatrix" />
+            <config renderer="default" transform="toolCalibrationTransform" />
+        </service>
+
+        <service uid="systemCenterAxis" type="::visuVTKAdaptor::SAxis">
+            <config renderer="default" length="20" transform="id" label="no" marker="yes" markerColor="#FFFFFF" />
+        </service>
+
+        <service uid="toolAxis" type="::visuVTKAdaptor::SAxis">
+            <config renderer="default" length="20" transform="toolCalibrationTransform" label="no" marker="yes" markerColor="#FF0000" />
+        </service>
+
+        <service uid="trackerAxis0" type="::visuVTKAdaptor::SAxis">
+            <config renderer="default" length="20" transform="vtkTrackerMatrix0" label="no" marker="yes" markerColor="#00FF00" />
+        </service>
+
+        <service uid="pointlistAdaptor" type="::visuVTKARAdaptor::SPointList3D" autoConnect="yes">
+            <in key="pointList" uid="pointlist" />
+            <config renderer="default" color="#cb1f72" radius="3.0" />
+        </service>
+
+        <!-- *************************** End resultView *************************** -->
+
+        <!-- *************************** Begin Connections *************************** -->
+
+        <connect>
+            <signal>trackerTLMatrixSynchronizer/matrixSynchronized</signal>
+            <slot>status/changeNthToGreen</slot>
+        </connect>
+
+        <connect>
+            <signal>trackerTLMatrixSynchronizer/matrixUnsynchronized</signal>
+            <slot>status/changeNthToRed</slot>
+        </connect>
+
+        <connect>
+            <signal>trackerTLMatrixListener/connected</signal>
+            <slot>actionStartOpenIGTLinkClient/hide</slot>
+            <slot>actionStopOpenIGTLinkClient/show</slot>
+        </connect>
+
+        <connect>
+            <signal>trackerTLMatrixListener/disconnected</signal>
+            <slot>actionStopOpenIGTLinkClient/hide</slot>
+            <slot>actionStartOpenIGTLinkClient/show</slot>
+        </connect>
+
+        <!-- *************************** End Connections *************************** -->
+
+        <start uid="mainView" />
+        <start uid="trackerTLMatrixSynchronizer" />
+        <start uid="markerToPoint" />
+        <start uid="toolCalibration" />
+        <start uid="manageVector" />
+
+        <!-- VTK scene 'resultView' -->
+
+        <start uid="trackerAxis0" />
+        <start uid="systemCenterAxis" />
+        <start uid="trackerTransformAdaptor0" />
+        <start uid="pointlistAdaptor" />
+        <start uid="toolCalibrationTransform" />
+        <start uid="toolAxis" />
+        <start uid="calibrationTransform" />
+        <start uid="calibrationAxis" />
+
+    </config>
+</extension>

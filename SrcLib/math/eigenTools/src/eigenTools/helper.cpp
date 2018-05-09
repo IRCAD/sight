@@ -80,7 +80,7 @@ RvecTvecType f4sMatToRvecTvec(const fwData::TransformationMatrix3D::csptr _mat)
 
 //-------------------------------------------------------------------------------------------------
 
-::Eigen::Matrix<double, 4, 4, ::Eigen::RowMajor> toEigen(const std::array<float, 16>& _farray)
+EigenMatrix toEigen(const std::array<float, 16>& _farray)
 {
     ::Eigen::Matrix< double, 4, 4, ::Eigen::RowMajor > mat;
 
@@ -97,7 +97,7 @@ RvecTvecType f4sMatToRvecTvec(const fwData::TransformationMatrix3D::csptr _mat)
 
 //-------------------------------------------------------------------------------------------------
 
-::Eigen::Matrix<double, 4, 4, ::Eigen::RowMajor> toEigen(const std::array<double, 16>& _farray)
+EigenMatrix toEigen(const std::array<double, 16>& _farray)
 {
     ::Eigen::Matrix< double, 4, 4, ::Eigen::RowMajor > mat;
 

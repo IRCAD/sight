@@ -30,6 +30,7 @@ set( REQUIREMENTS
     calibrationActivity
     trackedCameraRegistrationActivity
     handEyeActivity
+    toolCalibrationActivity
 
     appXml
     fwlauncher
