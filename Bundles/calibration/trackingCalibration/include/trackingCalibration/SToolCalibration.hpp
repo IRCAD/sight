@@ -49,10 +49,6 @@ public:
      */
     TRACKINGCALIBRATION_API virtual ~SToolCalibration() noexcept;
 
-    /// Matrices X and Y computed signal type
-    typedef ::fwCom::Signal< void (double) > MatrixXComputedSignalType;
-    typedef ::fwCom::Signal< void (double) > MatrixZComputedSignalType;
-
 protected:
 
     /// Configures the service

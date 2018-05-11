@@ -99,6 +99,7 @@ void SToolCalibration::computeRegistration(::fwCore::HiResClock::HiResClockType)
     ::eigenTools::helper::EigenMatrix matrixSum;
     matrixSum.fill(0.);
     ::Eigen::Vector4d vectorSum;
+    vectorSum.fill(0);
 
     for (size_t i = 0; i < nbrMatrices; ++i)
     {
