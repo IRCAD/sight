@@ -10,6 +10,7 @@ set( DEPENDENCIES
     fwMedData
     fwCom
     fwGui
+    fwGuiQt
     )
-set( REQUIREMENTS )
+set( REQUIREMENTS  )
 set( USE_PCH_FROM_TARGET pchData )
