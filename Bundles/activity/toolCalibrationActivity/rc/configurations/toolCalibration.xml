@@ -51,6 +51,7 @@
                     <menuItem name="Configure Tracker client" icon="media-0.1/icons/Settings.svg" />
                     <menuItem name="Add point" icon="media-0.1/icons/Import.svg" />
                     <menuItem name="Compute tool calibration" icon="arMedia-0.1/icons/CheckButton.svg" />
+                    <menuItem name="Save calibration matrix" icon="media-0.1/icons/Export.svg" />
                 </layout>
             </gui>
             <registry>
@@ -59,6 +60,7 @@
                 <menuItem sid="configureClient" start="yes" />
                 <menuItem sid="actionAddPoint" start="yes" />
                 <menuItem sid="actionComputeCalibration" start="yes" />
+                <menuItem sid="actionExportMatrix" start="yes" />
             </registry>
         </service>
 
@@ -87,6 +89,12 @@
            <slots>
                <slot>toolCalibration/computeRegistration</slot>
            </slots>
+        </service>
+
+        <service uid="actionExportMatrix" type="::gui::action::SSlotCaller">
+            <slots>
+                <slot>calibrationMatrixWriter/update</slot>
+            </slots>
         </service>
 
         <!-- *************************** End Actions *************************** -->
@@ -153,6 +161,13 @@
         <service uid="manageVector" type="::ctrlSelection::SManage">
            <inout key="object" uid="trackerMatrix0" />
            <inout key="vector" uid="matricesVector" />
+        </service>
+
+        <service uid="calibrationMatrixWriter" type="::uiIO::editor::SIOSelector" >
+            <inout key="data" uid="matrixCalibration" />
+            <type mode="writer" />
+            <selection mode="include" />
+            <addSelection service="::ioData::TransformationMatrix3DWriterService" />
         </service>
 
         <!-- *************************** End Services *************************** -->
@@ -253,6 +268,7 @@
         <start uid="markerToPoint" />
         <start uid="toolCalibration" />
         <start uid="manageVector" />
+        <start uid="calibrationMatrixWriter" />
 
         <!-- VTK scene 'resultView' -->
 
