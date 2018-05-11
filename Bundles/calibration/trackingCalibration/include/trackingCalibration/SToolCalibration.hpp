@@ -10,34 +10,27 @@
 
 #include <fwServices/IRegisterer.hpp>
 
-#include <handEyeCalibration/HandEyeApi.hpp>
-
 namespace trackingCalibration
 {
 /**
- * @brief Service that computes the
- *
- *
- * @section Signals Signals
-
- *
- * @section Slots Slots
+ * @brief Service that computes a pivot calibration
  *
  * @section XML XML Configuration
  *
  * @code{.xml}
     <service uid="..." type="::trackingCalibration::SToolCalibration" >
-        <out key="matrix" uid="..." />
-        <in key="pointList" uid="..." />
+        <in key="matricesVector" uid="..." />
+        <out key="matrixCalibration" uid="..." />
+        <out key="matrixCenter" uid="..." />
     </service>
    @endcode
  * @subsection Input Input
- * - \b matrixVector1 [::fwData::Vector]: vector of matrices corresponding to {Ai, Aj, ...} matrices
- * - \b matrixVector2 [::fwData::Vector]: vector of matrices corresponding to {Bi, Bj, ...} matrices
+ * - \b matricesVector [::fwData::Vector]: vector of matrices corresponding to points on a sphere
  *
- * @subsection InOut InOut
- * - \b matX [::fwData::TransformationMatrix3D]: Hand-Eye calibration matrix X
- * - \b matZ [::fwData::TransformationMatrix3D]: Hand-Eye calibration matrix Z
+ * @subsection Output Output
+ * - \b matrixCalibration [::fwData::TransformationMatrix3D]: tool calibration
+ * - \b matrixCenter [::fwData::TransformationMatrix3D] (optional): matrix representing the point around which the tool
+ * is moved
  *
  */
 class TRACKINGCALIBRATION_CLASS_API SToolCalibration : public ::fwServices::IRegisterer

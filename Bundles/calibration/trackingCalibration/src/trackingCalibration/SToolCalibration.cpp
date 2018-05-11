@@ -14,8 +14,6 @@
 
 #include <fwDataTools/TransformationMatrix3D.hpp>
 
-#include <fwGuiQt/dialog/MessageDialog.hpp>
-
 #include <fwServices/macros.hpp>
 
 #include <Eigen/Core>
