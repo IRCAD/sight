@@ -296,7 +296,7 @@ void SPointList::updateMesh(const ::fwData::Mesh::csptr& _mesh)
 
     this->getRenderService()->makeCurrent();
 
-    m_meshGeometry->updateMesh(::std::const_pointer_cast< ::fwData::Mesh >(_mesh));
+    m_meshGeometry->updateMesh(::std::const_pointer_cast< ::fwData::Mesh >(_mesh), true);
 
     //------------------------------------------
     // Create entity and attach it in the scene graph
