@@ -348,24 +348,7 @@ void main(void)
         )
 #endif // CSG_DEPTH_LINES == 1
         {
-#ifndef CSG_DEPTH_LINES
             result = vec4(u_csgBorderColor, 1.);
-#else
-            vec3 red   = vec3(1., 0., 0.);
-            vec3 green = vec3(0., 1., 0.);
-            vec3 blue  = vec3(0., 0., 1.);
-
-            float scale = 1. / u_depthLinesThreshold;
-
-            if(jfaDistance.a < u_depthLinesThreshold)
-            {
-                result = vec4(mix(blue, green, jfaDistance.a * scale), 1.);
-            }
-            else
-            {
-                result = vec4(mix(green, red, (jfaDistance.a - u_depthLinesThreshold) * scale), 1.);
-            }
-#endif // CSG_DEPTH_LINES
         }
         else
         {
