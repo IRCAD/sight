@@ -55,13 +55,11 @@ void DicomSeriesCampTest::propertiesTest()
     const std::string time                       = "143328";
     const std::string performing_physicians_name = "John Doe";
     const std::string description                = "description";
+    const std::string filename                   = "dicom.dcm";
     //DicomSeries
-    //const std::string dicom_availability  = "PATHS";
     ::DataCampHelper::PropertiesNameType dataProperties = ::boost::assign::list_of("fields")
-                                                              ("dicom_availability")
                                                               ("number_of_instances")
-                                                              ("local_dicom_paths")
-                                                              ("dicom_binaries")
+                                                              ("dicom_container")
                                                               ("patient")
                                                               ("study")
                                                               ("equipment")
@@ -76,7 +74,16 @@ void DicomSeriesCampTest::propertiesTest()
                                                               ("first_instance_number");
 
     ::fwMemory::BufferObject::sptr bufferObj = ::fwMemory::BufferObject::New();
-    ::boost::filesystem::path path           = "mypath";
+
+    const ::boost::filesystem::path path = ::fwTools::System::getTemporaryFolder() / "DicomSeriesCampTest";
+    ::boost::filesystem::create_directories(path);
+    const ::boost::filesystem::path dicomFile = path / filename;
+    {
+        std::ofstream file;
+        file.open(dicomFile.string().c_str(), std::ofstream::out);
+        file << "42";
+        file.close();
+    }
 
     ::fwMedData::DicomValuesType performing_physicians_names;
     performing_physicians_names.push_back(performing_physicians_name);
@@ -89,7 +96,7 @@ void DicomSeriesCampTest::propertiesTest()
     obj->setPerformingPhysiciansName(performing_physicians_names);
     obj->setDescription(description);
     obj->setNumberOfInstances(100);
-    obj->addDicomPath(42, path);
+    obj->addDicomPath(42, dicomFile);
     obj->addBinary(1664, bufferObj);
     obj->addSOPClassUID("1.2.840.10008.5.1.4.1.1.2");
     obj->addComputedTagValue("(0020,0100)", "1664");
@@ -110,9 +117,6 @@ void DicomSeriesCampTest::propertiesTest()
     ::std::stringstream ss;
     ss << obj->getNumberOfInstances();
     ::DataCampHelper::compareSimplePropertyValue(obj, "@number_of_instances", ss.str());
-
-    // Local dicom paths
-    ::DataCampHelper::compareSimplePropertyValue(obj, "@local_dicom_paths.42", "mypath");
 
     // Dicom binaries
     // TODO: BufferObject is not supported yet, so we cannot make unit tests on this part...
