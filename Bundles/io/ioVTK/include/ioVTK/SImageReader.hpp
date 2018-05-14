@@ -109,14 +109,6 @@ protected:
 
 private:
 
-    /**
-     * @brief This method is used to load an vtk image using a file path.
-     * @param[in] _vtkFile file system path of vtk image
-     * @param[out] _pImage new empty image that will contain image loaded, if reading process is a success.
-     * @return bool  \b true if the image loading is a success and \b false if it fails
-     */
-    bool loadImage( const ::boost::filesystem::path _vtkFile, std::shared_ptr< ::fwData::Image > _pImage );
-
     /// This value is \b true if the path image is known.
     bool m_bServiceIsConfigured;
 

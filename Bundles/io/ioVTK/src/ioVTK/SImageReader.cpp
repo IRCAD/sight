@@ -164,7 +164,7 @@ void SImageReader::updating()
         try
         {
             // Notify other image services that a new image has been loaded.
-            if ( this->loadImage( this->getFile(), image ) )
+            if ( SImageReader::loadImage( this->getFile(), image, m_sigJobCreated ) )
             {
                 auto sig = image->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
                 {
