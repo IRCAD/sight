@@ -153,7 +153,6 @@
         <service uid="toolCalibration" type="::trackingCalibration::SToolCalibration" >
             <out key="matrixCenter" uid="toolMatrix" />
             <out key="matrixCalibration" uid="matrixCalibration" />
-            <in key="pointList" uid="pointlist" />
             <in key="matricesVector" uid="matricesVector" />
         </service>
 
