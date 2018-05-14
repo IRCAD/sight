@@ -10,6 +10,8 @@
 
 #include <fwGuiQt/WorkerQt.hpp>
 
+#include <fwServices/registry/ActiveWorkers.hpp>
+
 #include <fwTest/Exception.hpp>
 
 #include <cppunit/Exception.h>
@@ -21,7 +23,7 @@ namespace fwNetworkIO
 namespace ut
 {
 
-unsigned char getAnswer[] = { /* Packet 3145 */
+std::uint8_t getAnswer[] = { /* Packet 3145 */
     0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00,
     0x00, 0x03, 0x2d, 0xcd, 0xcb, 0x0d, 0xc3, 0x30,
     0x08, 0x00, 0xd0, 0x7b, 0xa6, 0x88, 0x72, 0x2e,
@@ -44,6 +46,17 @@ unsigned char getAnswer[] = { /* Packet 3145 */
     0xcf, 0x00, 0x00, 0x00
 };
 
+std::uint8_t postAnswer[] = { /* Packet 196 */
+    0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x03, 0x8b, 0x56, 0x50, 0x4a, 0x4b, 0x4b,
+    0x35, 0x4c, 0x4c, 0x35, 0x33, 0xd7, 0xb5, 0xb0,
+    0x30, 0x4f, 0x31, 0x49, 0x4b, 0x36, 0xd5, 0x35,
+    0x31, 0x37, 0x37, 0x37, 0x4e, 0x4e, 0x35, 0xd0,
+    0x35, 0x4c, 0x32, 0xb4, 0x34, 0x49, 0x35, 0x48,
+    0xd5, 0x4d, 0xb6, 0x48, 0x4a, 0x33, 0x37, 0x33,
+    0x31, 0x52, 0x52, 0x88, 0xe5, 0x02, 0x00, 0xe2,
+    0x39, 0xc0, 0x49, 0x33, 0x00, 0x00, 0x00
+};
 static ::fwTest::Exception e(""); // force link with fwTest
 
 //------------------------------------------------------------------------------
@@ -65,33 +78,9 @@ void ClientQtTest::setUp()
     CPPUNIT_ASSERT(qApp == NULL);
     m_worker = ::fwGuiQt::getQtWorker(argc, argv, false);
 
-    m_server.listen();
-}
-
-//------------------------------------------------------------------------------
-
-void ClientQtTest::waitForConnection()
-{
-    m_server.waitForNewConnection(5000);
-    QTcpSocket* socket = m_server.nextPendingConnection();
-    QByteArray data;
-    while( socket->isOpen() && socket->waitForReadyRead() )
-    {
-        data += socket->readAll();
-
-        if(data.endsWith("\r\n\r\n"))
-        {
-            break;
-        }
-    }
-    socket->write( "HTTP/1.1 200 OK\n"
-                   "Content-Type: application/json; charset=utf-8\n"
-                   "Content-Encoding: gzip\n"
-                   "Content-Length: 156\r\n\r\n" );
-    socket->write(reinterpret_cast<char*>(getAnswer), sizeof(getAnswer));
-    socket->waitForBytesWritten();
-
-    delete socket;
+    m_server.moveToThread(&m_thread);
+    m_thread.connect(&m_thread, &QThread::started, [ = ] {m_server.listen(); });
+    m_thread.connect(&m_thread, &QThread::finished, [ = ] {m_server.close(); });
 }
 
 //------------------------------------------------------------------------------
@@ -99,18 +88,61 @@ void ClientQtTest::waitForConnection()
 void ClientQtTest::tearDown()
 {
     // Clean up after the test run.
+    m_thread.quit();
+    m_thread.wait();
+
+    m_thread.disconnect();
+    m_server.disconnect();
+
+    m_worker->post( std::bind( &QCoreApplication::quit ) );
+    m_worker->getFuture().wait();
+    m_worker.reset();
+
+    ::fwServices::registry::ActiveWorkers::getDefault()->clearRegistry();
+    CPPUNIT_ASSERT(qApp == NULL);
 }
 
 //------------------------------------------------------------------------------
 
 void ClientQtTest::get()
 {
-    int port = m_server.serverPort();
+    m_server.connect( &m_server, &QTcpServer::newConnection, [ = ]
+            {
+                QTcpSocket* socket = m_server.nextPendingConnection();
+                QByteArray data;
+                while( socket->isOpen() && socket->waitForReadyRead() )
+                {
+                    data += socket->readAll();
+
+                    if(data.endsWith("\r\n\r\n"))
+                    {
+                        break;
+                    }
+                }
+                socket->write( "HTTP/1.1 200 OK\n"
+                               "Content-Type: application/json; charset=utf-8\n"
+                               "Content-Encoding: gzip\n"
+                               "Content-Length: 156\r\n\r\n" );
+                socket->write(reinterpret_cast<char*>(getAnswer), sizeof(getAnswer));
+                socket->waitForBytesWritten();
+
+                delete socket;
+            });
+
+    m_thread.start();
+
+    for(int i = 0; !m_server.isListening() && i < 10; ++i)
+    {
+        QThread::sleep(1);
+    }
+
+    CPPUNIT_ASSERT(m_server.isListening());
+
+    const int port = m_server.serverPort();
     ::fwNetworkIO::http::Request::sptr request =
         ::fwNetworkIO::http::Request::New("http://localhost:" + std::to_string(port) + "/instances");
 
-    m_worker->post(std::bind(&ClientQtTest::waitForConnection, this));
-    QByteArray answer = m_client.get(request);
+    const QByteArray& answer = m_client.get(request);
 
     QString expected("[\n"
                      "   \"845ff5b6-26dc4deb-c703a430-2a164b55-d95941d6\",\n"
@@ -119,7 +151,69 @@ void ClientQtTest::get()
                      "   \"e3b7fef4-975ba90d-0fb2a825-9ef507ee-d486d0d4\"\n"
                      "]\n");
     CPPUNIT_ASSERT_MESSAGE("Test get", QString(answer) == expected);
+}
 
+//------------------------------------------------------------------------------
+
+void ClientQtTest::post()
+{
+    m_server.connect( &m_server, &QTcpServer::newConnection, [ = ]
+            {
+                QTcpSocket* socket = m_server.nextPendingConnection();
+                QByteArray data;
+                while( socket->isOpen() && socket->waitForReadyRead() )
+                {
+                    data += socket->readAll();
+
+                    if(data.endsWith("\r\n\r\n"))
+                    {
+                        break;
+                    }
+                }
+                while( socket->isOpen() && socket->waitForReadyRead() )
+                {
+                    data += socket->readAll();
+
+                    if(data.endsWith("}\n}\n"))
+                    {
+                        break;
+                    }
+                }
+                socket->write( "HTTP/1.1 200 OK\n"
+                               "Content-Type: application/json; charset=utf-8\n"
+                               "Content-Encoding: gzip\n"
+                               "Content-Length: 71\r\n\r\n" );
+                socket->write(reinterpret_cast<char*>(postAnswer), sizeof(postAnswer));
+                socket->waitForBytesWritten();
+
+                delete socket;
+            });
+
+    m_thread.start();
+
+    for(int i = 0; !m_server.isListening() && i < 10; ++i)
+    {
+        QThread::sleep(1);
+    }
+
+    CPPUNIT_ASSERT(m_server.isListening());
+
+    const int port = m_server.serverPort();
+
+    QJsonObject query;
+    query.insert("SeriesInstanceUID", "1.2.392.200036.9116.2.6.1.48.1211418863.1225184516.765855");
+
+    QJsonObject body;
+    body.insert("Level", "Series");
+    body.insert("Query", query);
+    body.insert("Limit", 0);
+
+    ::fwNetworkIO::http::Request::sptr request =
+        ::fwNetworkIO::http::Request::New("http://localhost:" + std::to_string(port) + "/tools/find");
+
+    const QByteArray& answer = m_client.post(request, QJsonDocument(body).toJson());
+    QString expected("[ \"ffe1ae67-887d4fc5-47773ce0-1b194e0e-c8bf7642\" ]\n");
+    CPPUNIT_ASSERT_MESSAGE("Test post", QString(answer) == expected);
 }
 
 //------------------------------------------------------------------------------

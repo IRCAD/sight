@@ -26,6 +26,7 @@ class ClientQtTest : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE( ClientQtTest );
 CPPUNIT_TEST( get );
+CPPUNIT_TEST( post );
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -33,15 +34,16 @@ public:
     // Interface
     void setUp();
     void tearDown();
-    void waitForConnection();
 
     // Test functions
     void get();
+    void post();
 
 private:
     ::fwThread::Worker::sptr m_worker;
     ::fwNetworkIO::http::ClientQt m_client;
     QTcpServer m_server;
+    QThread m_thread;
 };
 
 } // namespace ut

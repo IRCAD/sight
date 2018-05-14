@@ -134,6 +134,8 @@ QByteArray ClientQt::post(Request::sptr request, const QByteArray& body)
     QNetworkReply* reply = networkManager.post(qtRequest, body);
     QEventLoop loop;
     QObject::connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
+    QObject::connect(reply, QOverload<QNetworkReply::NetworkError>::of(
+                         &QNetworkReply::error), this, &ClientQt::processError);
     loop.exec();
     QByteArray data = reply->readAll();
     reply->deleteLater();
