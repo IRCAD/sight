@@ -95,4 +95,3 @@ template< class T>
 
 } //namespace helper
 } //namespace eigenTools
-
