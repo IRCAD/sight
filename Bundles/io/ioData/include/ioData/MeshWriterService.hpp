@@ -26,7 +26,7 @@ namespace ioData
  * fwServicesRegisterMacro( ::fwIO::IWriter , ::ioData::MeshWriterService , ::fwData::Mesh )
  */
 /**
- * @brief This service writes a ::fwData::Mesh (with only triangular cells) on filesystem in format is .trian.
+ * @brief This service writes a ::fwData::Mesh (with only triangular cells) on filesystem in format .trian.
  *
  * This format is basic. This is an ascii file which contains :
  * 1) nb of points

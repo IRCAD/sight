@@ -63,9 +63,9 @@ namespace ioAtoms
  * @subsection In-Out In-Out
  * - \b data [::fwData::Object]: object to read.
  * @subsection Configuration Configuration
- * - \b uuidPolicy(optional, default ChangePolicy): defines the policy for atoms conversion. 'ChangePolicy' change the
- *      object uuid only if it already exist in the application. 'StrictPolicy' keep the object uuid and throws an
- *      exception if the loaded uuid already exist. 'ReusePolicy' use the existing object in the application with the
+ * - \b uuidPolicy(optional, default ChangePolicy): defines the policy for atoms conversion. 'ChangePolicy' changes the
+ *      object uuid only if it already exists in the application. 'StrictPolicy' keeps the object uuid and throws an
+ *      exception if the loaded uuid already exists. 'ReusePolicy' uses the existing object in the application with the
  *      uuid.
  * - \b patcher defines the atom patcher to use to convert the atoms (see ::fwAtomsPatch::PatchingManager)
  * - \b filter(optional): filter applied on the read atom before the conversion to the object. (see
