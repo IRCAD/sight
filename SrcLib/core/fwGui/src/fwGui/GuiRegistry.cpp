@@ -52,7 +52,7 @@ void GuiRegistry::unregisterSIDContainer(std::string sid)
     if(service_exists)
     {
         ::fwServices::IService::sptr service = ::fwServices::get( sid );
-        OSLM_ASSERT("Service "<<sid<<" must be stopped before unregister container.", service->isStopped());
+        OSLM_ASSERT("Service "<<sid<<" must be stopped before unregistering the container.", service->isStopped());
     }
 
     OSLM_ASSERT("No fwContainer with the sid "<<sid<<" exists in the SID container map.",
@@ -140,7 +140,7 @@ void GuiRegistry::unregisterSIDMenuBar(std::string sid)
     if(service_exists)
     {
         ::fwServices::IService::sptr service = ::fwServices::get( sid );
-        OSLM_ASSERT("Service "<<sid<<" must be stopped before unregister menuBar.", service->isStopped());
+        OSLM_ASSERT("Service "<<sid<<" must be stopped before unregistering the menuBar.", service->isStopped());
     }
 
     OSLM_ASSERT("No fwMenuBar with the sid "<<sid<<" exists in the SID menuBar map.",
@@ -178,7 +178,7 @@ void GuiRegistry::unregisterSIDToolBar(std::string sid)
     if(service_exists)
     {
         ::fwServices::IService::sptr service = ::fwServices::get( sid );
-        OSLM_ASSERT("Service "<<sid<<" must be stopped before unregister toolBar.", service->isStopped());
+        OSLM_ASSERT("Service "<<sid<<" must be stopped before unregistering the toolBar.", service->isStopped());
     }
 
     OSLM_ASSERT("No fwToolBar with the sid "<<sid<<"  exists in the SID toolBar map.",
@@ -216,7 +216,7 @@ void GuiRegistry::unregisterSIDMenu(std::string sid)
     if(service_exists)
     {
         ::fwServices::IService::sptr service = ::fwServices::get( sid );
-        OSLM_ASSERT("Service "<<sid<<" must be stopped before unregister menu.", service->isStopped());
+        OSLM_ASSERT("Service "<<sid<<" must be stopped before unregistering the menu.", service->isStopped());
     }
 
     OSLM_ASSERT("No fwMenu with the sid "<<sid<<" exists in the SID menu map.",
@@ -266,7 +266,8 @@ void GuiRegistry::unregisterActionSIDToParentSID(std::string actionSid, std::str
         if(service_exists)
         {
             ::fwServices::IService::sptr service = ::fwServices::get( actionSid );
-            OSLM_WARN_IF("Service "<<actionSid<<" must be stopped before unregister action.", !service->isStopped());
+            OSLM_WARN_IF("Service "<<actionSid<<" must be stopped before unregistering the action.",
+                         !service->isStopped());
         }
         m_actionSIDToParentSID.erase(actionSid);
     }
