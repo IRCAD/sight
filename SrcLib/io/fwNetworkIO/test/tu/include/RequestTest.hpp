@@ -23,13 +23,17 @@ CPPUNIT_TEST_SUITE_END();
 
 public:
     // Interface
+    // Creates a Request object
     void setUp();
+    // Does nothing
     void tearDown();
 
     // Test functions
+    // Tests the Request class API
     void testRequest();
 
 private:
+    // Object Request
     ::fwNetworkIO::http::Request::sptr m_request;
 };
 

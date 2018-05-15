@@ -23,13 +23,17 @@ CPPUNIT_TEST_SUITE_END();
 
 public:
     // Interface
+    // Creates a JSON
     void setUp();
+    // Does nothing
     void tearDown();
 
     // Test functions
+    // Tests the Series helper API
     void testSeries();
 
 private:
+    // JSON corresponding to a result of a Orthanc GET /instances/{id}/simplified-tags request.
     QJsonObject m_json;
 };
 

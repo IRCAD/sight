@@ -32,17 +32,25 @@ CPPUNIT_TEST_SUITE_END();
 public:
 
     // Interface
+    // Set up the application and the threads
     void setUp();
+    // Clean up the application and the threads
     void tearDown();
 
     // Test functions
+    // Simulates a GET request on Orthanc /instances route
     void get();
+    // Simulates a POST request on Orthanc /tools/find route
     void post();
 
 private:
+    // Application thread
     ::fwThread::Worker::sptr m_worker;
+    // HTTP client
     ::fwNetworkIO::http::ClientQt m_client;
+    // Local server that will communicate with the client
     QTcpServer m_server;
+    // Server thread
     QThread m_thread;
 };
 
