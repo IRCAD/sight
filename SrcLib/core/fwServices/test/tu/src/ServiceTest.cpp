@@ -504,7 +504,6 @@ void ServiceTest::testWithInAndOut()
 
     CPPUNIT_ASSERT(service);
     service->registerInput(obj, ::fwServices::ut::TestServiceWithData::s_INPUT);
-    service->setObjectId(::fwServices::ut::TestServiceWithData::s_OUTPUT, "outputID");
 
     service->start();
     CPPUNIT_ASSERT(service->isStarted());

@@ -250,12 +250,17 @@ void ObjectService::registerServiceInput( const ::fwData::Object::csptr& object,
 void ObjectService::registerServiceOutput(::fwData::Object::sptr object, const ::fwServices::IService::KeyType& objKey,
                                           ::fwServices::IService::sptr service)
 {
-    const auto id = service->getObjectId(objKey);
 
     ::fwCore::mt::WriteLock writeLock(m_containerMutex);
     this->internalRegisterService(object, service, objKey, ::fwServices::IService::AccessType::OUTPUT);
 
-    this->signal<RegisterSignalType>(s_REGISTERED_SIG)->asyncEmit(object, id);
+    auto sig = this->signal<RegisterSignalType>(s_REGISTERED_SIG);
+
+    if (sig->getNumberOfConnections() > 0)
+    {
+        const auto id = service->getObjectId(objKey);
+        sig->asyncEmit(object, id);
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -365,10 +370,15 @@ void ObjectService::unregisterService(const ::fwServices::IService::KeyType& obj
 void ObjectService::unregisterServiceOutput( const ::fwServices::IService::KeyType& objKey,
                                              ::fwServices::IService::sptr service )
 {
-    const auto id = service->getObjectId(objKey);
     ::fwData::Object::wptr obj = service->m_outputsMap[objKey];
 
-    this->signal<RegisterSignalType>(s_UNREGISTERED_SIG)->asyncEmit(obj.lock(), id);
+    auto sig = this->signal<RegisterSignalType>(s_UNREGISTERED_SIG);
+
+    if (sig->getNumberOfConnections() > 0)
+    {
+        const auto id = service->getObjectId(objKey);
+        sig->asyncEmit(obj.lock(), id);
+    }
     service->m_outputsMap.erase(objKey);
 }
 
