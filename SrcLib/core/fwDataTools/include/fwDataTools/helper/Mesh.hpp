@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWDATATOOLS_HELPER_MESH_HPP__
-#define __FWDATATOOLS_HELPER_MESH_HPP__
+#pragma once
 
 #include "fwDataTools/config.hpp"
 #include "fwDataTools/helper/Array.hpp"
@@ -190,7 +189,8 @@ public:
     FWDATATOOLS_API ::fwData::Mesh::Id insertNextCell(::fwData::Mesh::CellValueType p1,
                                                       ::fwData::Mesh::CellValueType p2,
                                                       ::fwData::Mesh::CellValueType p3,
-                                                      ::fwData::Mesh::CellValueType p4 );
+                                                      ::fwData::Mesh::CellValueType p4,
+                                                      bool isTetra = false);
     /**
      * @brief Insert a cell into the mesh.
      * @see insertNextCell
@@ -249,5 +249,3 @@ protected:
 } // namespace helper
 
 } // namespace fwData
-
-#endif // __FWDATATOOLS_HELPER_MESH_HPP__

@@ -1,31 +1,31 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "MeshTest.hpp"
 
+#include <fwVtkIO/helper/Mesh.hpp>
+#include <fwVtkIO/MeshReader.hpp>
+#include <fwVtkIO/MeshWriter.hpp>
+
 #include <fwDataCamp/visitor/CompareObjects.hpp>
 
-#include <fwDataTools/Mesh.hpp>
 #include <fwDataTools/helper/Array.hpp>
+#include <fwDataTools/Mesh.hpp>
 
 #include <fwTest/generator/Mesh.hpp>
 
 #include <fwTools/NumericRoundCast.hxx>
 #include <fwTools/System.hpp>
 
-#include <fwVtkIO/MeshReader.hpp>
-#include <fwVtkIO/MeshWriter.hpp>
-#include <fwVtkIO/helper/Mesh.hpp>
+#include <boost/filesystem/operations.hpp>
+#include <boost/filesystem/path.hpp>
 
 #include <vtkPolyData.h>
 #include <vtkSmartPointer.h>
 #include <vtkSphereSource.h>
-
-#include <boost/filesystem/operations.hpp>
-#include <boost/filesystem/path.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwVtkIO::ut::MeshTest );
@@ -79,7 +79,6 @@ void MeshTest::testMeshToVtk()
     source->Update();
     vtkSmartPointer< vtkPolyData > poly_source = source->GetOutput();
 
-
     CPPUNIT_ASSERT_EQUAL(mesh1->getNumberOfCells(), (::fwData::Mesh::Id)0);
     CPPUNIT_ASSERT_EQUAL(mesh1->getNumberOfPoints(), (::fwData::Mesh::Id)0);
 
@@ -100,6 +99,41 @@ void MeshTest::testMeshToVtk()
     ::fwData::Mesh::sptr mesh2 = ::fwData::Mesh::New();
     CPPUNIT_ASSERT( mesh2 );
     ::fwVtkIO::helper::Mesh::fromVTKMesh(vtkMesh, mesh2);
+
+    compare(mesh1, mesh2);
+}
+
+//------------------------------------------------------------------------------
+
+void MeshTest::testMeshToGrid()
+{
+    ::fwData::Mesh::sptr mesh1 = ::fwData::Mesh::New();
+    CPPUNIT_ASSERT( mesh1 );
+
+    vtkSmartPointer< vtkSphereSource > source = vtkSmartPointer< vtkSphereSource >::New();
+    source->SetThetaResolution(50);
+    source->SetPhiResolution(50);
+    source->SetRadius(2);
+    source->Update();
+    vtkSmartPointer< vtkPolyData > poly_source = source->GetOutput();
+
+    CPPUNIT_ASSERT_EQUAL(mesh1->getNumberOfCells(), (::fwData::Mesh::Id)0);
+    CPPUNIT_ASSERT_EQUAL(mesh1->getNumberOfPoints(), (::fwData::Mesh::Id)0);
+
+    ::fwVtkIO::helper::Mesh::fromVTKMesh(poly_source, mesh1);
+
+    CPPUNIT_ASSERT( mesh1->getNumberOfCells() );
+    CPPUNIT_ASSERT( mesh1->getNumberOfPoints() );
+
+    vtkSmartPointer< vtkUnstructuredGrid > vtkGrid = vtkSmartPointer< vtkUnstructuredGrid >::New();
+    ::fwVtkIO::helper::Mesh::toVTKGrid( mesh1, vtkGrid);
+    CPPUNIT_ASSERT( vtkGrid );
+
+    CPPUNIT_ASSERT_EQUAL(poly_source->GetNumberOfPoints(), vtkGrid->GetNumberOfPoints());
+
+    ::fwData::Mesh::sptr mesh2 = ::fwData::Mesh::New();
+    CPPUNIT_ASSERT( mesh2 );
+    ::fwVtkIO::helper::Mesh::fromVTKGrid(vtkGrid, mesh2);
 
     compare(mesh1, mesh2);
 }
@@ -158,7 +192,6 @@ void MeshTest::testExportImportSyntheticMesh()
 }
 
 //------------------------------------------------------------------------------
-
 
 void MeshTest::testPointCloud()
 {

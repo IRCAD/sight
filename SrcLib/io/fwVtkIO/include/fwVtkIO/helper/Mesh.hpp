@@ -1,19 +1,18 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWVTKIO_HELPER_MESH_HPP__
-#define __FWVTKIO_HELPER_MESH_HPP__
+#pragma once
 
-#include <vtkSmartPointer.h>
-#include <vtkPolyData.h>
-#include <vtkUnstructuredGrid.h>
+#include "fwVtkIO/config.hpp"
 
 #include <fwData/Mesh.hpp>
 
-#include "fwVtkIO/config.hpp"
+#include <vtkPolyData.h>
+#include <vtkSmartPointer.h>
+#include <vtkUnstructuredGrid.h>
 
 namespace fwVtkIO
 {
@@ -46,6 +45,14 @@ public:
     FWVTKIO_API static void fromVTKGrid(vtkSmartPointer<vtkUnstructuredGrid> grid, ::fwData::Mesh::sptr mesh);
 
     /*!
+     * @brief Convert a ::fwData::Mesh::sptr to a vtkUnstructuredGrid.
+     *
+     * @param[in] mesh ::fwData::Mesh::sptr.
+     * @param[out] grid vtkUnstructuredGrid.
+     */
+    FWVTKIO_API static void toVTKGrid( const ::fwData::Mesh::csptr& mesh, vtkSmartPointer<vtkUnstructuredGrid> grid);
+
+    /*!
      * @brief Convert a ::fwData::Mesh::sptr to a vtkPolyData.
      *
      * @param[in] _mesh ::fwData::Mesh::sptr.
@@ -65,7 +72,7 @@ public:
      * Returns the updated vtkPolyPata
      */
     FWVTKIO_API static vtkSmartPointer<vtkPolyData>  updatePolyDataPoints(vtkSmartPointer<vtkPolyData> polyDataDst,
-                                                                          const fwData::Mesh::csptr &meshSrc );
+                                                                          const fwData::Mesh::csptr& meshSrc );
 
     /*!
      * @brief Update a vtkPolyData with point color of fwData::Mesh
@@ -136,6 +143,97 @@ public:
         vtkSmartPointer<vtkPolyData> polyDataDst, const ::fwData::Mesh::csptr& meshSrc);
 
     /*!
+     * @brief Update a vtkUnstructuredGrid with ::fwData::Mesh::sptr points
+     *
+     * @param[out] gridDataDst vtkUnstructuredGrid
+     * @param[in]  meshSrc ::fwData::Mesh::sptr
+     * @return vtkUnstructuredGrid
+     *
+     * Warning : be carefull with updatePoints : this may change the number of
+     * vertex of the vtkUnstructuredGrid, cells will not be updated.
+     * Returns the updated vtkUnstructuredGrid
+     */
+    FWVTKIO_API static vtkSmartPointer<vtkUnstructuredGrid>  updateGridPoints(
+        vtkSmartPointer<vtkUnstructuredGrid> gridDst,
+        const fwData::Mesh::csptr& meshSrc );
+
+    /*!
+     * @brief Update a vtkUnstructuredGrid with point color of fwData::Mesh
+     *
+     * @param[out] gridDataDst vtkUnstructuredGrid
+     * @param[in]  meshSrc ::fwData::Mesh::sptr
+     * @return vtkUnstructuredGrid
+     *
+     * Returns the updated vtkUnstructuredGrid
+     */
+    FWVTKIO_API static vtkSmartPointer<vtkUnstructuredGrid> updateGridPointColor(
+        vtkSmartPointer<vtkUnstructuredGrid> gridDst,
+        const ::fwData::Mesh::csptr& meshSrc);
+
+    /*!
+     * @brief Update a vtkUnstructuredGrid with cell color of fwData::Mesh
+     *
+     * @param[out] gridDataDst vtkUnstructuredGrid
+     * @param[in]  meshSrc ::fwData::Mesh::sptr
+     * @return vtkUnstructuredGrid
+     *
+     * Returns the updated vtkUnstructuredGrid
+     */
+    FWVTKIO_API static vtkSmartPointer<vtkUnstructuredGrid> updateGridCellColor(
+        vtkSmartPointer<vtkUnstructuredGrid> gridDst,
+        const ::fwData::Mesh::csptr& meshSrc );
+
+    /*!
+     * @brief Update a vtkUnstructuredGrid with point normals of fwData::Mesh
+     *
+     * @param[out] gridDataDst vtkUnstructuredGrid
+     * @param[in]  meshSrc ::fwData::Mesh::sptr
+     * @return vtkUnstructuredGrid
+     *
+     * Returns the updated vtkUnstructuredGrid
+     */
+    FWVTKIO_API static vtkSmartPointer<vtkUnstructuredGrid> updateGridPointNormals(
+        vtkSmartPointer<vtkUnstructuredGrid> gridDst,
+        const ::fwData::Mesh::csptr& meshSrc);
+
+    /*!
+     * @brief Update a vtkUnstructuredGrid with cell normals of fwData::Mesh
+     *
+     * @param[out] gridDataDst vtkUnstructuredGrid
+     * @param[in]  meshSrc ::fwData::Mesh::sptr
+     * @return vtkUnstructuredGrid
+     *
+     * Returns the updated vtkUnstructuredGrid
+     */
+    FWVTKIO_API static vtkSmartPointer<vtkUnstructuredGrid> updateGridCellNormals(
+        vtkSmartPointer<vtkUnstructuredGrid> gridDst,
+        const ::fwData::Mesh::csptr& meshSrc);
+
+    /*!
+     * @brief Update a vtkUnstructuredGrid with point texCoords of fwData::Mesh
+     *
+     * @param[out] gridDataDst vtkUnstructuredGrid
+     * @param[in]  meshSrc ::fwData::Mesh::sptr
+     * @return vtkUnstructuredGrid
+     *
+     * Returns the updated vtkUnstructuredGrid
+     */
+    FWVTKIO_API static vtkSmartPointer<vtkUnstructuredGrid> updateGridPointTexCoords(
+        vtkSmartPointer<vtkUnstructuredGrid> gridDst, const ::fwData::Mesh::csptr& meshSrc);
+
+    /*!
+     * @brief Update a vtkUnstructuredGrid with cell texCoords of fwData::Mesh
+     *
+     * @param[out] gridDataDst vtkUnstructuredGrid
+     * @param[in]  meshSrc ::fwData::Mesh::sptr
+     * @return vtkUnstructuredGrid
+     *
+     * Returns the updated vtkUnstructuredGrid
+     */
+    FWVTKIO_API static vtkSmartPointer<vtkUnstructuredGrid> updateGridCellTexCoords(
+        vtkSmartPointer<vtkUnstructuredGrid> gridDst, const ::fwData::Mesh::csptr& meshSrc);
+
+    /*!
      * @brief Compute the volume of the mesh using MassProperties vtk class
      * @param[in] mesh current mesh
      * @return volume of the mesh
@@ -146,5 +244,3 @@ public:
 
 } // namespace helper
 } // namespace fwVtkIO
-
-#endif // __FWVTKIO_HELPER_MESH_HPP__

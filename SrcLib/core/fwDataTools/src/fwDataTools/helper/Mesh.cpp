@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -22,7 +22,8 @@ namespace helper
 #define CELL_REALLOC_STEP 1000
 #define CELLDATA_REALLOC_STEP 1000
 
-Mesh::Mesh( ::fwData::Mesh::sptr mesh ) : m_mesh (mesh)
+Mesh::Mesh( ::fwData::Mesh::sptr mesh ) :
+    m_mesh(mesh)
 {
     SLM_ASSERT("Mesh ptr is null.", mesh);
     this->updateLock();
@@ -99,7 +100,7 @@ void Mesh::updateLock()
                                          ::fwData::Mesh::PointValueType y,
                                          ::fwData::Mesh::PointValueType z)
 {
-    const ::fwData::Mesh::PointValueType p[3] = {x,y,z};
+    const ::fwData::Mesh::PointValueType p[3] = {x, y, z};
     return this->insertNextPoint(p);
 }
 
@@ -117,7 +118,7 @@ void Mesh::setPoint(::fwData::Mesh::Id id,
                     ::fwData::Mesh::PointValueType y,
                     ::fwData::Mesh::PointValueType z )
 {
-    const ::fwData::Mesh::PointValueType p[3] = {x,y,z};
+    const ::fwData::Mesh::PointValueType p[3] = {x, y, z};
     this->setPoint(id, p);
 }
 
@@ -179,6 +180,8 @@ void Mesh::setCellTexCoord(::fwData::Mesh::Id id, const ::fwData::Mesh::TexCoord
                type != ::fwData::Mesh::TRIANGLE || nb == 3);
     SLM_ASSERT("Bad number of points ("<< nb << ") for cell type: 'QUAD'",
                type != ::fwData::Mesh::QUAD || nb == 4);
+    SLM_ASSERT("Bad number of points ("<< nb << ") for cell type: 'TETRA'",
+               type != ::fwData::Mesh::TETRA || nb == 4);
     SLM_ASSERT("Bad number of points ("<< nb << ") for cell type: 'POLY'",
                type != ::fwData::Mesh::POLY || nb > 4);
 
@@ -200,14 +203,12 @@ void Mesh::setCellTexCoord(::fwData::Mesh::Id id, const ::fwData::Mesh::TexCoord
         cellDataOffsets->resize(list_of(allocatedCellDataOffsets + CELL_REALLOC_STEP), true);
     }
 
-
     size_t allocatedCellData = cellData->empty() ? 0 : cellData->getSize().at(0);
 
     if( allocatedCellData <= cellsDataSize + nb )
     {
         cellData->resize(list_of(allocatedCellData + CELLDATA_REALLOC_STEP), true);
     }
-
 
     const ::fwData::Mesh::CellTypes t[1] = {static_cast< ::fwData::Mesh::CellTypes >(type)};
     m_helperCellTypes->setItem(list_of(nbCells), t);
@@ -219,7 +220,6 @@ void Mesh::setCellTexCoord(::fwData::Mesh::Id id, const ::fwData::Mesh::TexCoord
 
     const ::fwData::Mesh::CellDataOffsetType id[1] = {cellsDataSize};
     m_helperCellDataOffsets->setItem(list_of(nbCells), id);
-
 
     cellsDataSize += nb;
     m_mesh->setCellDataSize(cellsDataSize);
@@ -259,9 +259,16 @@ void Mesh::setCellTexCoord(::fwData::Mesh::Id id, const ::fwData::Mesh::TexCoord
 ::fwData::Mesh::Id Mesh::insertNextCell(::fwData::Mesh::CellValueType p1,
                                         ::fwData::Mesh::CellValueType p2,
                                         ::fwData::Mesh::CellValueType p3,
-                                        ::fwData::Mesh::CellValueType p4)
+                                        ::fwData::Mesh::CellValueType p4,
+                                        bool isTetra)
 {
     ::fwData::Mesh::CellValueType p[4] = {p1, p2, p3, p4};
+
+    if(isTetra)
+    {
+        return this->insertNextCell(::fwData::Mesh::TETRA, p, 4);
+    }
+
     return this->insertNextCell(::fwData::Mesh::QUAD, p, 4);
 }
 
