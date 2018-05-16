@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -96,7 +96,7 @@ Bundle::ExecutableFactoryConstIterator Bundle::executableFactoriesEnd() const
 
 //------------------------------------------------------------------------------
 
-SPTR( ExecutableFactory ) Bundle::findExecutableFactory( const std::string & type ) const
+SPTR( ExecutableFactory ) Bundle::findExecutableFactory( const std::string& type ) const
 {
     std::shared_ptr<ExecutableFactory> resExecutableFactory;
     for(const ExecutableFactoryContainer::value_type& factory : m_executableFactories)
@@ -169,7 +169,7 @@ void Bundle::addExtensionPoint( SPTR( ExtensionPoint )extensionPoint )
 
 //------------------------------------------------------------------------------
 
-SPTR( ExtensionPoint ) Bundle::findExtensionPoint( const std::string & identifier ) const
+SPTR( ExtensionPoint ) Bundle::findExtensionPoint( const std::string& identifier ) const
 {
     std::shared_ptr<ExtensionPoint> resExtensionPoint;
     for(const ExtensionPointContainer::value_type& extensionPoint :  m_extensionPoints)
@@ -365,7 +365,7 @@ void Bundle::loadRequirements()
             // Ensure that a bundle has been retrieved.
             if( bundle == 0 )
             {
-                throw RuntimeException( requirement + ": required bundle not found or not enable." );
+                throw RuntimeException( requirement + ": required bundle not found or not enabled." );
             }
             // Starts the bundle (loads its libraries and requirements bundle).
             if ( !bundle->isStarted() )
