@@ -830,6 +830,8 @@ void SVolumeRender::setBoolParameter(bool val, std::string key)
         OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
         rayCastVolumeRenderer->toggleIDVRCSGDisableContext(val);
     }
+
+    this->requestRender();
 }
 
 //-----------------------------------------------------------------------------
@@ -864,6 +866,8 @@ void SVolumeRender::setIntParameter(int val, std::string key)
     {
         this->updateSatConeSamples(val);
     }
+
+    this->requestRender();
 }
 
 //-----------------------------------------------------------------------------
@@ -990,6 +994,8 @@ void SVolumeRender::setEnumParameter(std::string val, std::string key)
                 ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer::IDVRCSGModulationMethod::COLOR4);
         }
     }
+
+    this->requestRender();
 }
 
 //-----------------------------------------------------------------------------
@@ -1003,6 +1009,8 @@ void SVolumeRender::setColorParameter(std::array<std::uint8_t, 4> color, std::st
         OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
         rayCastVolumeRenderer->setIDVRCSGBorderColor(color);
     }
+
+    this->requestRender();
 }
 
 //-----------------------------------------------------------------------------
