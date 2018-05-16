@@ -343,8 +343,17 @@ void ImportanceDrivenVolumeRenderer::cleanCompositorChain()
                   );
     m_compositorListeners.clear();
 
-    // Simulate a viewport change to rebind potentially removed resources.
-    compChain->viewportDimensionsChanged(viewport);
+    // Reallocate chain resources.
+    for(size_t i = 0; i < compChain->getNumCompositors(); ++i)
+    {
+        auto compIntance = compChain->getCompositor(i);
+        if(compIntance->getEnabled())
+        {
+            // Mark the instance as being dead for the resources to be allocated again when enabled.
+            compIntance->setAlive(false);
+            compIntance->setEnabled(true);
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
