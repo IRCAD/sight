@@ -67,15 +67,21 @@ protected:
     /// This method is used to configure the service.
     MATHS_API void configuring() override;
 
-    /// This method is used to initialize the service.
+    /// Does nothing.
     MATHS_API void starting() override;
 
     /// Does nothing.
     MATHS_API void stopping() override;
 
-    /// Does nothing.
+    /// Concatenates the matrices
     MATHS_API void updating() override;
 
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect TransformationMatrix3d::s_MODIFIED_SIG to this::s_UPDATE_SLOT
+     */
     MATHS_API KeyConnectionsMap getAutoConnections() const override;
 
 private:
