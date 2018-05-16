@@ -114,6 +114,7 @@ public:
 
     /// Enum changed signal type
     typedef ::fwCom::Signal< void (std::string, std::string) > EnumChangedSignalType;
+    typedef ::fwCom::Signal< void (int, std::string) > EnumChangedIndexSignalType;
 
     /// Constructor. Initializes signals
     GUIQT_API SParameters() noexcept;
