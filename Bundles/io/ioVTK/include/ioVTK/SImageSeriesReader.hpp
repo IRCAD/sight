@@ -27,6 +27,9 @@ namespace ioVTK
  *
  * Service reading an image series using the fwVtkIO lib.
  *
+ * @section Signals Signals
+ * - \b jobCreated(SPTR(::fwJobs::IJob)): emitted when the image is loading to display a progress bar.
+ *
  * @section XML Configuration
  * @code{.xml}
     <service uid="..." type="::ioVTK::SImageSeriesReader">
@@ -51,7 +54,7 @@ public:
      */
     IOVTK_API SImageSeriesReader() noexcept;
 
-    ~SImageSeriesReader() noexcept
+    ~SImageSeriesReader() noexcept override
     {
     }
 

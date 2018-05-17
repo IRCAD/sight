@@ -25,13 +25,22 @@
 #include <fwJobs/IJob.hpp>
 #include <fwJobs/Job.hpp>
 
+#include <fwMedData/Equipment.hpp>
 #include <fwMedData/ImageSeries.hpp>
+#include <fwMedData/Patient.hpp>
+#include <fwMedData/Study.hpp>
 
 #include <fwServices/macros.hpp>
 
+#include <fwTools/dateAndTime.hpp>
 #include <fwTools/Failed.hpp>
+#include <fwTools/Os.hpp>
+#include <fwTools/UUID.hpp>
 
 #include <fwVtkIO/BitmapImageReader.hpp>
+
+#include <boost/date_time/posix_time/posix_time.hpp>
+#include <boost/filesystem/operations.hpp>
 
 namespace ioVTK
 {
@@ -126,6 +135,42 @@ void SImageSeriesReader::info(std::ostream& _sstream )
 
 //------------------------------------------------------------------------------
 
+void initSeries(::fwMedData::Series::sptr series)
+{
+    const std::string instanceUID        = ::fwTools::UUID::generateUUID();
+    const std::string unknown            = "unknown";
+    const ::boost::posix_time::ptime now = ::boost::posix_time::second_clock::local_time();
+    const std::string date               = ::fwTools::getDate(now);
+    const std::string time               = ::fwTools::getTime(now);
+
+    series->setModality("OT");
+    series->setDate(date);
+    series->setTime(time);
+    series->setDescription("Image imported with VTK");
+    ::fwMedData::DicomValuesType physicians = series->getPerformingPhysiciansName();
+    if(physicians.empty())
+    {
+        const std::string username = ::fwTools::os::getEnv("USERNAME", ::fwTools::os::getEnv("LOGNAME", "Unknown"));
+        physicians.push_back(username);
+    }
+    series->setPerformingPhysiciansName(physicians);
+    series->getEquipment()->setInstitutionName(unknown);
+
+    series->getPatient()->setName(unknown);
+    series->getPatient()->setPatientId(unknown);
+    series->getPatient()->setBirthdate(unknown);
+    series->getPatient()->setSex(unknown);
+
+    series->getStudy()->setInstanceUID(instanceUID);
+    series->getStudy()->setDate(date);
+    series->getStudy()->setTime(time);
+    series->getStudy()->setReferringPhysicianName(unknown);
+    series->getStudy()->setDescription(unknown);
+    series->getStudy()->setPatientAge(unknown);
+}
+
+//------------------------------------------------------------------------------
+
 void SImageSeriesReader::updating()
 {
     if( this->hasLocationDefined() )
@@ -144,6 +189,7 @@ void SImageSeriesReader::updating()
             if ( SImageReader::loadImage( this->getFile(), image, m_sigJobCreated ) )
             {
                 imageSeries->setImage(image);
+                initSeries(imageSeries);
                 this->notificationOfDBUpdate();
             }
         }
