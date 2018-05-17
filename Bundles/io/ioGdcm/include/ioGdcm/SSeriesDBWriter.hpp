@@ -25,7 +25,18 @@ namespace ioGdcm
 {
 
 /**
- * @brief Services to write several series in DICOM format.
+ * @brief Services to write several series (ImageSeries or ModelSeries) in DICOM format.
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+       <service uid="..." type="::ioGdcm::SSeriesDBWriter" >
+           <in key="data" uid="..." />
+       </service>
+ * @endcode
+ *
+ * @subsection Input Input
+ * - \b data [::fwData::Vector]: vector containing Series (ImageSeries or ModelSeries) to save in Dicom.
  */
 class IOGDCM_CLASS_API SSeriesDBWriter : public ::fwIO::IWriter
 {
@@ -41,7 +52,7 @@ public:
     /**
      * @brief Destructor
      */
-    IOGDCM_API virtual ~SSeriesDBWriter() noexcept;
+    IOGDCM_API virtual ~SSeriesDBWriter() noexcept override;
 
     /// Propose a directory selection where to save the DICOM files.
     IOGDCM_API virtual void configureWithIHM() override;
@@ -54,7 +65,7 @@ protected:
     /// Does nothing
     IOGDCM_API virtual void stopping() override;
 
-    /// Does nothing
+    /// Configuring method. This method is used to configure the service.
     IOGDCM_API virtual void configuring() override;
 
     /// Write the ImageSeries in DICOM format.

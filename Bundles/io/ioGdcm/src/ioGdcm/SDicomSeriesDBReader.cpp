@@ -244,7 +244,8 @@ void SDicomSeriesDBReader::updating()
         if( seriesDB->size() > 0 && !m_cancelled)
         {
             // Retrieve dataStruct associated with this service
-            ::fwMedData::SeriesDB::sptr associatedSeriesDB = this->getObject< ::fwMedData::SeriesDB >();
+            ::fwMedData::SeriesDB::sptr associatedSeriesDB =
+                this->getInOut< ::fwMedData::SeriesDB >(::fwIO::s_DATA_KEY);
             SLM_ASSERT("associated SeriesDB not instanced", associatedSeriesDB);
 
             // Add series to SeriesDB
@@ -255,7 +256,6 @@ void SDicomSeriesDBReader::updating()
             // Notify SeriesDB
             sDBhelper.notify();
         }
-
         cursor.setDefaultCursor();
     }
 }

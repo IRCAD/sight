@@ -31,21 +31,37 @@ namespace ioGdcm
 {
 
 /**
- * @brief Read DicomSeries from DICOM with gdcm reader
- **/
+ * @brief Read DicomSeries from DICOM folder with GDCM reader
+ *
+ * @section Signals Signals
+ * - \b jobCreated( SPTR(::fwJobs::IJob) ) : Emitted when a job is created.
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+        <service type="::ioGdcm::SDicomSeriesDBReader">
+            <inout key="data" uid="..." />
+            <dicomdirSupport>user_selection</dicomdirSupport>
+       </service>
+   @endcode
+ * @subsection In-Out In-Out:
+ * - \b data [::fwMedData::SeriesDB]: Destination container for DicomSeries
+ * @subsection Configuration Configuration:
+ * - \b dicomdirSupport (optional) : DicomDir support mode.
+ * dicomdirSupport available mode:
+ *    - always (always use the DicomDir if present)
+ *    - never (never use the DicomDir)
+ *    - user_selection (let the user decide whether using the DicomDir or not)
+ */
 class IOGDCM_CLASS_API SDicomSeriesDBReader : public ::fwIO::IReader
 {
 
 public:
-    typedef std::string ExtensionType;
-    typedef std::vector< ExtensionType > ExtensionsType;
 
     typedef ::fwCom::Signal< void ( SPTR(::fwJobs::IJob) ) > JobCreatedSignal;
 
-    typedef ::boost::filesystem::path PathType;
-    typedef ::fwCom::Signal< void ( bool, std::vector< PathType > ) > FilesAddedSignal;
-
     fwCoreServiceClassDefinitionsMacro( (SDicomSeriesDBReader)( ::fwIO::IReader) );
+
     /**
      * @brief   constructor
      *
@@ -82,15 +98,7 @@ protected:
     /// Override
     IOGDCM_API virtual std::string getSelectorDialogTitle() override;
 
-    /**
-     * The reader can be configured as a regular reader.
-     * You can also specify how dicomdir support is handled
-     * @code{.xml}
-       <config>
-       <dicomdirSupport>always|never|user_selection</dicomdirSupport> <!-- optional, default set to user_selection -->
-       </config>
-       @endcode
-     */
+    /// Configuring method. This method is used to configure the service.
     IOGDCM_API virtual void configuring() override;
 
     /// Override

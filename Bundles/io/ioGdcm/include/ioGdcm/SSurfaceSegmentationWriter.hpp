@@ -29,7 +29,18 @@ namespace ioGdcm
 {
 
 /**
- * @brief Services to write in DICOM 3D format from a DicomSeries and ModelSeries.
+ * @brief Services to write in DICOM 3D format from ModelSeries.
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+       <service uid="..." type="::ioGdcm::SSurfaceSegmentationWriter" >
+           <in key="data" uid="..." />
+       </service>
+ * @endcode
+ *
+ * @subsection Input Input
+ * - \b data [::fwMedData::ModelSeries]: ModelSeries to save in Dicom.
  */
 class IOGDCM_CLASS_API SSurfaceSegmentationWriter : public ::fwIO::IWriter
 {
@@ -45,7 +56,7 @@ public:
     /**
      * @brief Destructor
      */
-    IOGDCM_API virtual ~SSurfaceSegmentationWriter() noexcept;
+    IOGDCM_API virtual ~SSurfaceSegmentationWriter() noexcept override;
 
     /// Propose a directory selection where to save the DICOM files.
     IOGDCM_API virtual void configureWithIHM() override;
@@ -58,7 +69,7 @@ protected:
     /// Does nothing
     IOGDCM_API virtual void stopping() override;
 
-    /// Does nothing
+    /// Configuring method. This method is used to configure the service.
     IOGDCM_API virtual void configuring() override;
 
     /// Write the ImageSeries in DICOM format.
@@ -72,7 +83,7 @@ private:
     /**
      * @brief Write a Series to a folder in DICOM format
      * @param[in] filename DICOM file name
-     * @param[in] model ModelSeries that must be writen
+     * @param[in] model ModelSeries that must be written
      */
     void saveSurfaceSegmentation( const ::boost::filesystem::path filename,
                                   const ::fwMedData::ModelSeries::csptr& model);

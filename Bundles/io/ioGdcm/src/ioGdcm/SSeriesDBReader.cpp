@@ -6,11 +6,7 @@
 
 #include "ioGdcm/SSeriesDBReader.hpp"
 
-#include <fwCom/HasSignals.hpp>
-#include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
-
-#include <fwCore/base.hpp>
 
 #include <fwData/location/Folder.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
@@ -52,15 +48,11 @@ static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 //------------------------------------------------------------------------------
 
 SSeriesDBReader::SSeriesDBReader() noexcept :
-    m_filterSelectorSrvConfig(""),
-    m_filterType(""),
-    m_sigJobCreated(JobCreatedSignal::New()),
     m_showLogDialog(true),
     m_enableBufferRotation(true),
     m_dicomDirSupport(USER_SELECTION)
 {
-    ::fwCom::HasSignals::m_signals
-        ( JOB_CREATED_SIGNAL, m_sigJobCreated );
+    m_sigJobCreated = newSignal<JobCreatedSignal>(JOB_CREATED_SIGNAL);
 }
 
 //------------------------------------------------------------------------------
@@ -102,15 +94,15 @@ void SSeriesDBReader::configureWithIHM()
     }
 
     // Select filter
-    if(!m_filterSelectorSrvConfig.empty())
+    if(!m_filterConfig.empty())
     {
         // Get the config
         ::fwRuntime::ConfigurationElement::csptr filterSelectorConfig;
         filterSelectorConfig = ::fwServices::registry::ServiceConfig::getDefault()->getServiceConfig(
-            m_filterSelectorSrvConfig, "::ioDicom::SFilterSelectorDialog");
+            m_filterConfig, "::ioDicom::SFilterSelectorDialog");
 
         SLM_ASSERT("Sorry, there is no service configuration "
-                   << m_filterSelectorSrvConfig
+                   << m_filterConfig
                    << " for ::ioDicom::SFilterSelectorDialog", filterSelectorConfig);
 
         // Init and execute the service
@@ -127,7 +119,6 @@ void SSeriesDBReader::configureWithIHM()
         ::fwServices::OSR::unregisterService( filterSelectorSrv );
 
         m_filterType = key->getValue();
-
     }
 }
 
@@ -137,79 +128,49 @@ void SSeriesDBReader::configuring()
 {
     ::fwIO::IReader::configuring();
 
+    const ::fwServices::IService::ConfigType config = this->getConfigTree();
+
     // Use filter selector
-    ::fwRuntime::ConfigurationElement::sptr selectorConfig =
-        m_configuration->findConfigurationElement("FilterSelectorSrvConfig");
-    if(selectorConfig)
+    m_filterConfig = config.get<std::string>("filterConfig", "");
+
+    // Set filter
+    m_filterType = config.get<std::string>("filterConfig", "");
+
+    // Show log dialog
+    m_showLogDialog = config.get<bool>("showLogDialog", true);
+
+    // Enable buffer rotation
+    m_enableBufferRotation = config.get<bool>("enableBufferRotation", true);
+
+    // Enable dicomdir
+    const std::string dicomDirStr = config.get<std::string>("dicomdirSupport", "user_selection");
+    SLM_ASSERT("<dicomdirSupport> value must be 'always' or 'never' or 'user_selection'",
+               dicomDirStr == "always" || dicomDirStr == "never" || dicomDirStr == "user_selection");
+    if(dicomDirStr == "always")
     {
-        SLM_ASSERT("Missing 'name' attribute", selectorConfig->hasAttribute("name"));
-        m_filterSelectorSrvConfig = selectorConfig->getAttributeValue("name");
+        m_dicomDirSupport = ALWAYS;
+    }
+    else if(dicomDirStr == "never")
+    {
+        m_dicomDirSupport = NEVER;
+    }
+    else if(dicomDirStr == "user_selection")
+    {
+        m_dicomDirSupport = USER_SELECTION;
     }
 
     // Get SOP Class selection
-    const ::fwRuntime::ConfigurationElement::sptr sopClassSelection =
-        m_configuration->findConfigurationElement("SOPClassSelection");
-    if(sopClassSelection)
+    if(config.count("SOPClassSelection") == 1 )
     {
-        ::fwRuntime::ConfigurationElementContainer sopClassElements =
-            sopClassSelection->findAllConfigurationElement("SOPClass");
-
-        for(::fwRuntime::ConfigurationElementContainer::Iterator it = sopClassElements.begin();
-            it != sopClassElements.end(); ++it)
+        const auto sopClassSelectionConfig = config.get_child("SOPClassSelection");
+        const auto sopClassRange           = sopClassSelectionConfig.equal_range("SOPClass");
+        for(auto sopClassIter = sopClassRange.first; sopClassIter != sopClassRange.second; ++sopClassIter)
         {
-            const ::fwRuntime::ConfigurationElement::AttributePair attributePair = (*it)->getSafeAttributeValue("uid");
-            if(attributePair.first)
-            {
-                SLM_TRACE("New SOP class supported : " + attributePair.second);
-                m_supportedSOPClassSelection.push_back(attributePair.second);
-            }
-        }
-    }
+            const ::fwServices::IService::ConfigType& sopClassConfig = sopClassIter->second;
+            const ::fwServices::IService::ConfigType& sopClassAttr   = sopClassConfig.get_child("<xmlattr>");
 
-    // Set filter
-    ::fwRuntime::ConfigurationElement::sptr config = m_configuration->findConfigurationElement("config");
-    if(config)
-    {
-        m_filterType = config->getAttributeValue("filterType");
-    }
-
-    // Show log dialog
-    ::fwRuntime::ConfigurationElement::sptr logDialog = m_configuration->findConfigurationElement("showLogDialog");
-    if(logDialog)
-    {
-        std::string logDialogStr = logDialog->getValue();
-        SLM_ASSERT("<showLogDialog> value must be 'yes' or 'no'", logDialogStr == "yes" || logDialogStr == "no");
-        m_showLogDialog = (logDialogStr == "yes");
-    }
-
-    // Enable buffer rotation
-    ::fwRuntime::ConfigurationElement::sptr bufRot = m_configuration->findConfigurationElement("enableBufferRotation");
-    if(bufRot)
-    {
-        std::string bufRotStr = bufRot->getValue();
-        SLM_ASSERT("<enableBufferRotation> value must be 'yes' or 'no'", bufRotStr == "yes" || bufRotStr == "no");
-        m_enableBufferRotation = (bufRotStr == "yes");
-    }
-
-    // Enable dicomdir
-    ::fwRuntime::ConfigurationElement::sptr dicomDir = m_configuration->findConfigurationElement("dicomdirSupport");
-    if(dicomDir)
-    {
-        std::string dicomDirStr = dicomDir->getValue();
-        SLM_ASSERT("<dicomdirSupport> value must be 'always' or 'never' or 'user_selection'",
-                   dicomDirStr == "always" || dicomDirStr == "never" || dicomDirStr == "user_selection");
-
-        if(dicomDirStr == "always")
-        {
-            m_dicomDirSupport = ALWAYS;
-        }
-        else if(dicomDirStr == "never")
-        {
-            m_dicomDirSupport = NEVER;
-        }
-        else if(dicomDirStr == "user_selection")
-        {
-            m_dicomDirSupport = USER_SELECTION;
+            SLM_ASSERT("Missing attribute 'uid' in element '<SOPClass>'", sopClassAttr.count("uid") == 1);
+            m_supportedSOPClassSelection.push_back(sopClassAttr.get<std::string>("uid"));
         }
     }
 }
@@ -348,7 +309,7 @@ void SSeriesDBReader::updating()
         if( !localSeriesDB->empty() )
         {
             // Retrieve dataStruct associated with this service
-            ::fwMedData::SeriesDB::sptr seriesDB = this->getObject< ::fwMedData::SeriesDB >();
+            ::fwMedData::SeriesDB::sptr seriesDB = this->getInOut< ::fwMedData::SeriesDB >(::fwIO::s_DATA_KEY);
             // seriesDB->shallowCopy( localSeriesDB ) ;
 
             ::fwMedDataTools::helper::SeriesDB sDBhelper(seriesDB);

@@ -119,8 +119,8 @@ void SSeriesPuller::starting()
         ::fwIO::IReader::dynamicCast(srvFactory->create(m_dicomReaderType));
     SLM_ASSERT("Unable to create a reader of type: \"" + m_dicomReaderType + "\" in ::ioPacs::SSeriesPuller.",
                m_dicomReader);
-    ::fwServices::OSR::registerService(m_tempSeriesDB, m_dicomReader);
-
+    ::fwServices::OSR::registerService(m_tempSeriesDB, ::fwIO::s_DATA_KEY,
+                                       ::fwServices::IService::AccessType::INOUT, m_dicomReader);
     if(!m_dicomReaderSrvConfig.empty())
     {
         // Get the config

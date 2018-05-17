@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __IOGDCM_SDICOMSERIESANONYMIZER_HPP__
-#define __IOGDCM_SDICOMSERIESANONYMIZER_HPP__
+#pragma once
 
 #include "ioGdcm/config.hpp"
 
@@ -29,12 +28,12 @@ namespace ioGdcm
  *
  * @section Signals Signals
  * - \b jobCreated( SPTR(::fwJobs::IJob) ) : Emitted when a job is created.
-
+ *
  * @section XML XML Configuration
  *
  * @code{.xml}
         <service type="::ioGdcm::SDicomSeriesAnonymizer">
-            <in key="seriesDB" uid="..." />
+            <inout key="seriesDB" uid="..." />
             <inout key="selectedSeries" uid="..." />
        </service>
    @endcode
@@ -54,7 +53,7 @@ public:
     IOGDCM_API SDicomSeriesAnonymizer() noexcept;
 
     /// Destructor
-    IOGDCM_API virtual ~SDicomSeriesAnonymizer() noexcept;
+    IOGDCM_API virtual ~SDicomSeriesAnonymizer() noexcept override;
 
 protected:
 
@@ -76,9 +75,6 @@ protected:
     /// Override
     IOGDCM_API void anonymize();
 
-    /// SeriesDB of the Series
-    SPTR(::fwMedData::SeriesDB) m_seriesDB;
-
     /// Signal emitted when a job is created
     SPTR(JobCreatedSignal) m_sigJobCreated;
 
@@ -87,5 +83,3 @@ protected:
 };
 
 } // namespace ioGdcm
-
-#endif //__IOGDCM_SDICOMSERIESANONYMIZER_HPP__

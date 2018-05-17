@@ -31,7 +31,74 @@ namespace ioGdcm
 {
 /**
  * @brief Read DICOM (ImageSeries/ModelSeries) with gdcm reader
- **/
+ *
+ * @section Signals Signals
+ * - \b jobCreated( SPTR(::fwJobs::IJob) ) : Emitted when a job is created.
+ *
+ * @section XML XML Configuration
+ *
+ * The reader can be configured as a regular reader.
+ * You can select the SOP Classes that can be read using this reader.
+ * It is also possible to define a filter that must be applied prior to the reading process.
+ *
+ * @code{.xml}
+       <service uid="..." type="::ioGdcm::SSeriesDBReader" >
+           <inout key="data" uid="..." />
+           <config>
+               <filterType>::fwDicomIOFilter::custom::NoFilter<filterType/>
+               <enableBufferRotation>yes</enableBufferRotation>
+               <showLogDialog>yes</showLogDialog>
+               <dicomdirSupport>user_selection</dicomdirSupport>
+               <SOPClassSelection>
+                   <SOPClass name="CT Image Storage" uid="1.2.840.10008.5.1.4.1.1.2" />
+               </SOPClassSelection>
+           </config>
+       </service>
+ * @endcode
+ *
+ * On the other hand, you can specify a service configuration using the filterConfig element:
+ *
+ * @code{.xml}
+       <service uid="..." type="::ioGdcm::SSeriesDBReader" >
+           <inout key="data" uid="..." />
+           <config>
+               <filterConfig>MyFilterSelectorConfig<filterConfig/>
+               <enableBufferRotation>yes</enableBufferRotation>
+               <showLogDialog>yes</showLogDialog>
+               <dicomdirSupport>user_selection</dicomdirSupport>
+               <SOPClassSelection>
+                   <SOPClass name="CT Image Storage" uid="1.2.840.10008.5.1.4.1.1.2" />
+               </SOPClassSelection>
+           </config>
+       </service>
+   @endcode
+ *
+ * @code{.xml}
+    <extension implements="::fwServices::registry::ServiceConfig">
+        <id>MyFilterSelectorConfig</id>
+        <service>::ioDicom::SFilterSelectorDialog</service>
+        <desc>"Open" action's filter selector config</desc>
+        <config>
+            <selection mode="include" />
+            <addSelection filter="::fwDicomIOFilter::custom::DefaultDicomFilter" />
+            <addSelection filter="::fwDicomIOFilter::custom::NoFilter" />
+        </config>
+    </extension>
+   @endcode
+ *
+ * @subsection In-Out In-Out
+ * - \b data [::fwMedData::SeriesDB]: object to read
+ * @subsection Configuration Configuration:
+ * - \b filterType: Define a filter that must be applied prior to the reading process.
+ * - \b enableBufferRotation (optional, default set to yes): Enable buffer rotation
+ * - \b showLogDialog (optional, default set to yes): Show log dialog
+ * - \b dicomdirSupport (optional, default set to user_selection ): DicomDir support mode.
+ * dicomdirSupport available mode:
+ *    - always (always use the DicomDir if present)
+ *    - never (never use the DicomDir)
+ *    - user_selection (let the user decide whether using the DicomDir or not)
+ * - \b SOPClassSelection:  List of SOP Class selection managed by the reader
+ */
 class IOGDCM_CLASS_API SSeriesDBReader : public ::fwIO::IReader
 {
 
@@ -49,7 +116,7 @@ public:
     /**
      * @brief   destructor
      */
-    IOGDCM_API virtual ~SSeriesDBReader() noexcept;
+    IOGDCM_API virtual ~SSeriesDBReader() noexcept override;
 
 protected:
 
@@ -63,33 +130,7 @@ protected:
         USER_SELECTION
     };
 
-    /**
-     * The reader can be configured as a regular reader.
-     * You can select the SOP Classes that can be read using this reader.
-     * It is also possible to define a filter that must be applied prior to the reading process.
-     * @code{.xml}
-       <config filterType="::fwDicomIOFilter::custom::NoFilter" />
-       <enableBufferRotation>yes|no</enableBufferRotation> <!-- optional, default set to yes -->
-       <showLogDialog>yes|no</showLogDialog> <!-- optional, default set to yes -->
-       <dicomdirSupport>always|never|user_selection</dicomdirSupport> <!-- optional, default set to user_selection -->
-       <SOPClassSelection>
-           <SOPClass name="CT Image Storage" uid="1.2.840.10008.5.1.4.1.1.2" />
-       </SOPClassSelection>
-       @endcode
-     * On the other hand, you can specify a service configuration using the FilterSelectorSrvConfig element:
-     * @code{.xml}
-        <extension implements="::fwServices::registry::ServiceConfig">
-            <id>FilterSelectorConfig</id>
-            <service>::ioDicom::SFilterSelectorDialog</service>
-            <desc>"Open" action's filter selector config</desc>
-            <config>
-                <selection mode="include" />
-                <addSelection filter="::fwDicomIOFilter::custom::DefaultDicomFilter" />
-                <addSelection filter="::fwDicomIOFilter::custom::NoFilter" />
-            </config>
-        </extension>
-       @endcode
-     */
+    /// Configuring method. This method is used to configure the service.
     IOGDCM_API virtual void configuring() override;
 
     /// Override
@@ -122,7 +163,7 @@ private:
     SPTR(::fwMedData::SeriesDB) createSeriesDB(const ::boost::filesystem::path& dicomDir);
 
     /// Selector config used to select a filter to apply
-    std::string m_filterSelectorSrvConfig;
+    std::string m_filterConfig;
 
     /// Selected filter key
     std::string m_filterType;
