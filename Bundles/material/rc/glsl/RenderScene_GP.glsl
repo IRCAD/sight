@@ -71,7 +71,8 @@ void main(void)
     int div = gl_PrimitiveIDIn / int(u_colorPrimitiveTextureSize[0]);
     int mod = gl_PrimitiveIDIn - int(u_colorPrimitiveTextureSize[0]) * div;
 
-    vec2 uv = vec2(mod / u_colorPrimitiveTextureSize[0] , div/ u_colorPrimitiveTextureSize[1]);
+    vec2 range = max(vec2(1.0, 1.0), u_colorPrimitiveTextureSize - 1.0);
+    vec2 uv = vec2(mod / range.x , div/ range.y);
     ppcolor = texture(u_colorPrimitiveTexture, uv );
 #endif // PER_PRIMITIVE_COLOR
 
