@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2016-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2016-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -77,7 +77,7 @@ void SSeriesSignal::configuring()
                    mode == "include" || mode == "exclude");
         m_filterMode = mode;
 
-        BOOST_FOREACH( const ConfigType::value_type &v,  configFilter.equal_range("type") )
+        BOOST_FOREACH( const ConfigType::value_type& v,  configFilter.equal_range("type") )
         {
             m_types.push_back(v.second.get<std::string>(""));
         }
@@ -119,6 +119,25 @@ void SSeriesSignal::updating()
 {
     KeyConnectionsType connections;
     connections.push_back( std::make_pair( ::fwMedData::SeriesDB::s_ADDED_SERIES_SIG, s_REPORT_SERIES_SLOT ) );
+
+    return connections;
+}
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsMap SSeriesSignal::getAutoConnections() const
+{
+    KeyConnectionsMap connections;
+
+    // FIXME hack to support old getObject (with any 'in' or 'inout' key)
+    if (!this->getInput< ::fwMedData::SeriesDB >("seriesDB"))
+    {
+        FW_DEPRECATED_MSG("The input 'seriesDB' is not correct, you must have an 'input' key named 'seriesDB'");
+    }
+    else
+    {
+        connections.push("seriesDB",  ::fwMedData::SeriesDB::s_ADDED_SERIES_SIG, s_REPORT_SERIES_SLOT );
+    }
 
     return connections;
 }

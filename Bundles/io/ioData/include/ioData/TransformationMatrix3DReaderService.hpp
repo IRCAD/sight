@@ -14,18 +14,21 @@
 
 namespace ioData
 {
+
 /**
- * @brief   Transformation matrix 3D reader service.
+ * @brief This service read a ::fwData::TransformationMatrix3D from a .trf file.
  *
- * Service reading a TransformationMatrix3D object.
- * @li Use setConfiguration(cfg) and configure() methods to configure the matrix filename.
- * @li Use start() to initialize the service.
- * @li Use update() to read the transformation matrix.
- * @li Use stop() to stop service before to destroy it.
+ * This format is basic: an ascii file which contains matrix 4x4 values.
  *
- * Service registered details : \n
- * fwServicesRegisterMacro( ::fwIO::IReader , ::ioData::TransformationMatrix3DReaderService ,
- *::fwData::TransformationMatrix3D )
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+   <service type="::ioData::TransformationMatrix3DReaderService">
+       <inout key="data" uid="..." />
+   </service>
+   @endcode
+ * @subsection In-Out In-Out
+ * - \b data [::fwData::TransformationMatrix3D]: matrix to read.
  */
 class IODATA_CLASS_API TransformationMatrix3DReaderService : public ::fwIO::IReader
 {

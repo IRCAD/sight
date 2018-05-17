@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -66,6 +66,8 @@ const ::fwCom::Slots::SlotKeyType SActivityLauncher::s_LAUNCH_ACTIVITY_SERIES_SL
 const ::fwCom::Slots::SlotKeyType SActivityLauncher::s_UPDATE_STATE_SLOT           = "updateState";
 const ::fwCom::Signals::SignalKeyType SActivityLauncher::s_ACTIVITY_LAUNCHED_SIG   = "activityLaunched";
 
+static const ::fwServices::IService::KeyType s_SERIES_INPUT = "series";
+
 //------------------------------------------------------------------------------
 
 SActivityLauncher::SActivityLauncher() noexcept :
@@ -123,7 +125,7 @@ void SActivityLauncher::configuring()
         if(config.count("parameters") == 1 )
         {
             const ::fwServices::IService::ConfigType& configParameters = config.get_child("parameters");
-            BOOST_FOREACH( const ConfigType::value_type &v,  configParameters.equal_range("parameter") )
+            BOOST_FOREACH( const ConfigType::value_type& v,  configParameters.equal_range("parameter") )
             {
                 ParametersType::value_type parameter( v.second );
                 m_parameters.push_back( parameter );
@@ -141,7 +143,7 @@ void SActivityLauncher::configuring()
                         mode == "include" || mode == "exclude");
             m_filterMode = mode;
 
-            BOOST_FOREACH( const ConfigType::value_type &v,  configFilter.equal_range("id") )
+            BOOST_FOREACH( const ConfigType::value_type& v,  configFilter.equal_range("id") )
             {
                 m_keys.push_back(v.second.get<std::string>(""));
             }
@@ -152,7 +154,7 @@ void SActivityLauncher::configuring()
         {
             m_quickLaunch.clear();
             const ::fwServices::IService::ConfigType& configQuickLaunch = config.get_child("quickLaunch");
-            BOOST_FOREACH( const ConfigType::value_type &v,  configQuickLaunch.equal_range("association") )
+            BOOST_FOREACH( const ConfigType::value_type& v,  configQuickLaunch.equal_range("association") )
             {
                 const ::fwServices::IService::ConfigType& association = v.second;
                 const ::fwServices::IService::ConfigType xmlattr      = association.get_child("<xmlattr>");
@@ -223,7 +225,7 @@ void SActivityLauncher::configuring()
     dialog->setLayout(vLayout);
     QObject::connect(okButton, SIGNAL(clicked()), dialog, SLOT(accept()));
     QObject::connect(cancelButton, SIGNAL(clicked()), dialog, SLOT(reject()));
-    QObject::connect(selectionList, SIGNAL(doubleClicked( const QModelIndex &  )), dialog, SLOT(accept()));
+    QObject::connect(selectionList, SIGNAL(doubleClicked(const QModelIndex&)), dialog, SLOT(accept()));
 
     ::fwActivities::registry::ActivityInfo info;
     if(dialog->exec())
@@ -273,7 +275,12 @@ SActivityLauncher::ActivityInfoContainer SActivityLauncher::getEnabledActivities
 
 void SActivityLauncher::updating()
 {
-    ::fwData::Vector::sptr selection = this->getObject< ::fwData::Vector >();
+    ::fwData::Vector::csptr selection = this->getInput< ::fwData::Vector >(s_SERIES_INPUT);
+    if (!selection)
+    {
+        FW_DEPRECATED_MSG("SActivityLauncher should have an 'series' input, using default object");
+        selection = this->getObject< ::fwData::Vector >();
+    }
 
     bool launchAS = this->launchAS(selection);
     if (!launchAS)
@@ -311,7 +318,12 @@ void SActivityLauncher::updating()
 
 void SActivityLauncher::updateState()
 {
-    ::fwData::Vector::sptr selection = this->getObject< ::fwData::Vector >();
+    ::fwData::Vector::csptr selection = this->getInput< ::fwData::Vector >(s_SERIES_INPUT);
+    if (!selection)
+    {
+        FW_DEPRECATED_MSG("SActivityLauncher should have an 'series' input, using default object");
+        selection = this->getObject< ::fwData::Vector >();
+    }
 
     bool isExecutable = false;
 
@@ -366,14 +378,8 @@ void SActivityLauncher::updateState()
 
 //------------------------------------------------------------------------------
 
-void SActivityLauncher::info( std::ostream& _sstream )
-{
-}
-
-//------------------------------------------------------------------------------
-
 void SActivityLauncher::buildActivity(const ::fwActivities::registry::ActivityInfo& info,
-                                      const ::fwData::Vector::sptr& selection)
+                                      const ::fwData::Vector::csptr& selection)
 {
     ::fwData::Composite::sptr replaceMap = ::fwData::Composite::New();
     ::fwActivities::IBuilder::sptr builder;
@@ -457,7 +463,12 @@ void SActivityLauncher::sendConfig( const ::fwActivities::registry::ActivityInfo
         bundle->start();
     }
 
-    ::fwData::Vector::sptr selection = this->getObject< ::fwData::Vector >();
+    ::fwData::Vector::csptr selection = this->getInput< ::fwData::Vector >(s_SERIES_INPUT);
+    if (!selection)
+    {
+        FW_DEPRECATED_MSG("SActivityLauncher should have an 'series' input, using default object");
+        selection = this->getObject< ::fwData::Vector >();
+    }
 
     ::fwActivities::IValidator::ValidationType validation;
     validation.first = true;
@@ -491,7 +502,7 @@ void SActivityLauncher::sendConfig( const ::fwActivities::registry::ActivityInfo
 
 //------------------------------------------------------------------------------
 
-bool SActivityLauncher::launchAS(::fwData::Vector::sptr& selection)
+bool SActivityLauncher::launchAS(const ::fwData::Vector::csptr& selection)
 {
     bool launchAS = false;
     ::fwActivities::registry::ActivityInfo::DataCountType dataCount;
@@ -596,7 +607,12 @@ void SActivityLauncher::launchActivitySeries(::fwMedData::ActivitySeries::sptr s
 SActivityLauncher::ParametersType SActivityLauncher::translateParameters( const ParametersType& parameters )
 {
     ParametersType transParams = parameters;
-    ::fwData::Object::sptr workingObj = this->getObject();
+    ::fwData::Object::csptr workingObj = this->getInput< ::fwData::Object >(s_SERIES_INPUT);
+    if (!workingObj)
+    {
+        FW_DEPRECATED_MSG("SActivityLauncher should have an 'series' input, using default object");
+        workingObj = this->getObject();
+    }
     for(ParametersType::value_type& param :  transParams)
     {
         if(param.isSeshat())
@@ -631,6 +647,22 @@ SActivityLauncher::ParametersType SActivityLauncher::translateParameters( const 
     KeyConnectionsType connections;
     connections.push_back( std::make_pair( ::fwData::Vector::s_ADDED_OBJECTS_SIG, s_UPDATE_STATE_SLOT ) );
     connections.push_back( std::make_pair( ::fwData::Vector::s_REMOVED_OBJECTS_SIG, s_UPDATE_STATE_SLOT ) );
+
+    return connections;
+}
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsMap SActivityLauncher::getAutoConnections() const
+{
+    KeyConnectionsMap connections;
+
+    // FIXME hack to support the use of the deprecated getObject() and getObjSrvConnections()
+    if (this->getInput< ::fwData::Object >(s_SERIES_INPUT))
+    {
+        connections.push(s_SERIES_INPUT, ::fwData::Vector::s_ADDED_OBJECTS_SIG, s_UPDATE_STATE_SLOT );
+        connections.push(s_SERIES_INPUT, ::fwData::Vector::s_REMOVED_OBJECTS_SIG, s_UPDATE_STATE_SLOT );
+    }
 
     return connections;
 }

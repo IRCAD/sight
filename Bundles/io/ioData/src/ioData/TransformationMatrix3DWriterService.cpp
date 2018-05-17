@@ -106,7 +106,14 @@ void TransformationMatrix3DWriterService::updating()
     if(this->hasLocationDefined())
     {
         // Retrieve object
-        ::fwData::TransformationMatrix3D::sptr matrix = this->getObject< ::fwData::TransformationMatrix3D >( );
+        ::fwData::TransformationMatrix3D::sptr matrix =
+            this->getInOut< ::fwData::TransformationMatrix3D >(::fwIO::s_DATA_KEY);
+        if (!matrix)
+        {
+            FW_DEPRECATED_MSG("The object to write is not set correctly, you must set '" + ::fwIO::s_DATA_KEY
+                              + "' as <inout>.");
+            matrix = this->getObject< ::fwData::TransformationMatrix3D >();
+        }
         SLM_ASSERT("matrix not instanced", matrix);
 
         ::fwDataIO::writer::TransformationMatrix3DWriter::sptr writer =
@@ -114,14 +121,6 @@ void TransformationMatrix3DWriterService::updating()
         writer->setObject( matrix );
         writer->setFile(this->getFile());
         writer->write();
-
-        // Notify writing
-        auto sig = this->getObject()->signal< ::fwData::Object::ModifiedSignalType >(
-            ::fwData::Object::s_MODIFIED_SIG);
-        {
-            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
-            sig->asyncEmit();
-        }
     }
 }
 

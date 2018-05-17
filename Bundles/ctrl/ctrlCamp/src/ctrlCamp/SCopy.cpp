@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -119,63 +119,38 @@ void SCopy::copy()
     bool create = false;
     ::fwData::Object::sptr target;
     ::fwData::Object::csptr source;
-    if (m_target.empty())
+    target = this->getInOut< ::fwData::Object >(s_TARGET_INOUT);
+    if(!target)
     {
-        target = this->getInOut< ::fwData::Object >(s_TARGET_INOUT);
-        if(!target)
-        {
-            create = true;
-        }
+        create = true;
     }
-    else
-    {
-        if (m_target.substr(0, 1) == "@")
-        {
-            target = ::fwDataCamp::getObject(this->getObject(), m_target);
-            SLM_ASSERT("Invalid seshat path : '" + m_target + "'", target);
-        }
-        else
-        {
-            ::fwTools::Object::sptr obj = ::fwTools::fwID::getObject(m_target);
-            SLM_ASSERT("Object '" + m_target + "' is not found", obj);
-            target = ::fwData::Object::dynamicCast(obj);
-            SLM_ASSERT("Object '" + m_target + "' is not a fwData::Object (" + obj->getClassname() + ")", target);
-        }
-    }
-    if (m_source.substr(0, 1) == "@")
-    {
-        source = ::fwDataCamp::getObject(this->getObject(), m_source);
-        SLM_ERROR_IF("Invalid seshat path '" + m_source + "' or object does not exist", !source);
-    }
-    else
-    {
-        ::fwData::Object::csptr sourceObject = this->getInput< ::fwData::Object >(s_SOURCE_INPUT);
-        if (m_hasExtractTag)
-        {
-            ::fwData::Object::sptr object;
-            try
-            {
-                object = ::fwDataCamp::getObject( sourceObject, m_path, true );
-            }
-            catch(::fwDataCamp::exception::ObjectNotFound&)
-            {
-                SLM_WARN("Object from '"+ m_path +"' not found");
-            }
-            catch(std::exception& e)
-            {
-                OSLM_FATAL("Unhandled exception: " << e.what());
-            }
 
-            SLM_WARN_IF("Object from '"+ m_path +"' not found", !object);
-            if(object)
-            {
-                source = object;
-            }
-        }
-        else
+    ::fwData::Object::csptr sourceObject = this->getInput< ::fwData::Object >(s_SOURCE_INPUT);
+    if (m_hasExtractTag)
+    {
+        ::fwData::Object::sptr object;
+        try
         {
-            source = sourceObject;
+            object = ::fwDataCamp::getObject( sourceObject, m_path, true );
         }
+        catch(::fwDataCamp::exception::ObjectNotFound&)
+        {
+            SLM_WARN("Object from '"+ m_path +"' not found");
+        }
+        catch(std::exception& e)
+        {
+            OSLM_FATAL("Unhandled exception: " << e.what());
+        }
+
+        SLM_WARN_IF("Object from '"+ m_path +"' not found", !object);
+        if(object)
+        {
+            source = object;
+        }
+    }
+    else
+    {
+        source = sourceObject;
     }
 
     if(source)

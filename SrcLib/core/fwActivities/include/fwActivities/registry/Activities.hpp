@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWACTIVITIES_REGISTRY_ACTIVITIES_HPP__
-#define __FWACTIVITIES_REGISTRY_ACTIVITIES_HPP__
+#pragma once
 
 #include "fwActivities/config.hpp"
 
@@ -253,7 +252,7 @@ public:
     /**
      * @brief Get the number of vector objects in the same type.
      */
-    FWACTIVITIES_API ActivityInfo::DataCountType getDataCount( const SPTR(::fwData::Vector)& data ) const;
+    FWACTIVITIES_API ActivityInfo::DataCountType getDataCount( const CSPTR(::fwData::Vector)& data ) const;
 
     /**
      * @brief Get all infos
@@ -265,7 +264,7 @@ public:
      * @brief Get available activities for given data.
      * @note This method is thread safe.
      */
-    FWACTIVITIES_API ActivitiesType getInfos( const SPTR(::fwData::Vector)& data ) const;
+    FWACTIVITIES_API ActivitiesType getInfos( const CSPTR(::fwData::Vector)& data ) const;
 
     /**
      * @brief Get all keys
@@ -300,6 +299,3 @@ protected:
 } // namespace registry
 
 } // namespace fwActivities
-
-#endif // __FWACTIVITIES_REGISTRY_ACTIVITIES_HPP__
-

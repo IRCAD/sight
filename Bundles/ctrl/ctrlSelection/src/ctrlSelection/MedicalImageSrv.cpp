@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -99,17 +99,17 @@ void MedicalImageSrv::updating()
 
 //-----------------------------------------------------------------------------
 
-void MedicalImageSrv::info( std::ostream& _sstream )
+void MedicalImageSrv::info( std::ostream& )
 {
 }
 
-//------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsType MedicalImageSrv::getObjSrvConnections() const
+::fwServices::IService::KeyConnectionsMap MedicalImageSrv::getAutoConnections() const
 {
-    KeyConnectionsType connections;
-    connections.push_back( std::make_pair( ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT ) );
-    connections.push_back( std::make_pair( ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT ) );
+    KeyConnectionsMap connections;
+    connections.push("image", ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push("image", ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
 
     return connections;
 }

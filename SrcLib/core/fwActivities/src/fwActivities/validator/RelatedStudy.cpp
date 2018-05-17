@@ -1,18 +1,19 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/algorithm/string.hpp>
+#include "fwActivities/validator/RelatedStudy.hpp"
+
+#include "fwActivities/validator/registry/macros.hpp"
 
 #include <fwData/Vector.hpp>
 
 #include <fwMedData/Series.hpp>
 #include <fwMedData/Study.hpp>
 
-#include "fwActivities/validator/registry/macros.hpp"
-#include "fwActivities/validator/RelatedStudy.hpp"
+#include <boost/algorithm/string.hpp>
 
 namespace fwActivities
 {
@@ -38,7 +39,7 @@ RelatedStudy::~RelatedStudy()
 
 IValidator::ValidationType RelatedStudy::validate(
     const ::fwActivities::registry::ActivityInfo& activityInfo,
-    ::fwData::Vector::sptr currentSelection ) const
+    const ::fwData::Vector::csptr& currentSelection ) const
 {
     IValidator::ValidationType validation;
 
@@ -84,5 +85,3 @@ IValidator::ValidationType RelatedStudy::validate(
 
 } // namespace validator
 } // namespace fwActivities
-
-

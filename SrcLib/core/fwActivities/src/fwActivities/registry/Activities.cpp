@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -44,7 +44,7 @@ ActivityAppConfig::ActivityAppConfig(const ConfigType& config) :
     if(config.count("parameters") == 1 )
     {
         const ConfigType& configParameters = config.get_child("parameters");
-        BOOST_FOREACH( const ConfigType::value_type &v,  configParameters.equal_range("parameter") )
+        BOOST_FOREACH( const ConfigType::value_type& v,  configParameters.equal_range("parameter") )
         {
             ActivityAppConfigParam parameter( v.second );
             parameters.push_back( parameter );
@@ -72,7 +72,7 @@ ActivityRequirement::ActivityRequirement(const ConfigType& config) :
     minOccurs(config.get_optional<unsigned int>("<xmlattr>.minOccurs").get_value_or(1)),
     maxOccurs(config.get_optional<unsigned int>("<xmlattr>.maxOccurs").get_value_or(1))
 {
-    BOOST_FOREACH( const ConfigType::value_type &v, config.equal_range("key") )
+    BOOST_FOREACH( const ConfigType::value_type& v, config.equal_range("key") )
     {
         keys.push_back(ActivityRequirementKey(v.second));
     }
@@ -90,7 +90,7 @@ ActivityRequirement::ActivityRequirement(const ConfigType& config) :
 
     OSLM_ASSERT(
         "minOccurs value shall be equal or greater than 0 and lower or equal to maxOccurs (" << maxOccurs << ")",
-        0 <= minOccurs && minOccurs <= maxOccurs);
+            0 <= minOccurs && minOccurs <= maxOccurs);
     OSLM_TRACE( "ActivityRequirement : " << name << " : " << type << ", " << minOccurs << "-" << maxOccurs
                                          << "(" << description << ")");
 }
@@ -303,11 +303,11 @@ std::vector< ActivityInfo > Activities::getInfos() const
 
 //-----------------------------------------------------------------------------
 
-ActivityInfo::DataCountType Activities::getDataCount( const ::fwData::Vector::sptr& data ) const
+ActivityInfo::DataCountType Activities::getDataCount( const ::fwData::Vector::csptr& data ) const
 {
     ActivityInfo::DataCountType dataCount;
 
-    for( const ::fwData::Object::sptr& obj :  * data)
+    for( const ::fwData::Object::csptr& obj :  *data)
     {
         ++dataCount[obj->getClassname()];
     }
@@ -317,7 +317,7 @@ ActivityInfo::DataCountType Activities::getDataCount( const ::fwData::Vector::sp
 
 //-----------------------------------------------------------------------------
 
-std::vector< ActivityInfo > Activities::getInfos( const ::fwData::Vector::sptr& data ) const
+std::vector< ActivityInfo > Activities::getInfos( const ::fwData::Vector::csptr& data ) const
 {
     ActivityInfo::DataCountType dataCount = this->getDataCount(data);
     std::vector< ActivityInfo > infos;
@@ -368,4 +368,3 @@ const ActivityInfo Activities::getInfo( const std::string& extensionId ) const
 } // namespace registry
 
 } // namespace fwActivities
-

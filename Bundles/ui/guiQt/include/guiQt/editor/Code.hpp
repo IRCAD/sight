@@ -29,15 +29,19 @@ namespace editor
  *
  * It provides highlighting for python and C++.
  *
- * XML Configuration
+ * @section XML XML Configuration
  *  @code{.xml}
     <service uid="codeEditor" type="::guiQt::editor::Code" autoConnect="yes">
+        <inout key="string" uid="..." />
         <config>
             <language name="Python" />
         </config>
     </service>
     @endcode
- * - \b language name can be "Python" or "Cpp"
+ * @subsection In-Out In-Out
+ * - \b string [::fwData::String]: string containing the code
+ * @subsection Configuration Configuration
+ * - \b language name: can be "Python" or "Cpp"
  */
 class GUIQT_CLASS_API Code : public QObject,
                              public ::fwGui::editor::IEditor
@@ -52,14 +56,6 @@ public:
 
     /// Destructor. Do nothing.
     GUIQT_API virtual ~Code() noexcept;
-
-    /**
-     * @brief Returns proposals to connect service slots to associated object signals,
-     * this method is used for obj/srv auto connection
-     *
-     * Connect Object::s_MODIFIED_SIG to this::s_UPDATE_SLOT
-     */
-    GUIQT_API virtual KeyConnectionsType getObjSrvConnections() const override;
 
 protected:
 
@@ -81,9 +77,13 @@ protected:
     /// Overrides
     virtual void info( std::ostream& _sstream ) override;
 
-protected:
-    static const std::string PYTHON;
-    static const std::string CPP;
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect Object::s_MODIFIED_SIG to this::s_UPDATE_SLOT
+     */
+    GUIQT_API virtual KeyConnectionsMap getAutoConnections() const override;
 
 protected Q_SLOTS:
     /**
@@ -94,6 +94,10 @@ protected Q_SLOTS:
     void onModifyValue();
 
 private:
+
+    static const std::string s_PYTHON;
+    static const std::string s_CPP;
+
     std::string m_language;
     QPointer< QTextEdit >          m_valueCtrl;
     QPointer< QSyntaxHighlighter > m_highlighter;

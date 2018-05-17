@@ -61,6 +61,8 @@ const ::fwCom::Signals::SignalKeyType SActivityWizard::s_ACTIVITY_CREATED_SIG   
 const ::fwCom::Signals::SignalKeyType SActivityWizard::s_ACTIVITY_UPDATED_SIG    = "activityUpdated";
 const ::fwCom::Signals::SignalKeyType SActivityWizard::s_CANCELED_SIG            = "canceled";
 
+static const ::fwServices::IService::KeyType s_SERIESDB_INOUT = "seriesDB";
+
 //------------------------------------------------------------------------------
 
 SActivityWizard::SActivityWizard() noexcept :
@@ -273,7 +275,13 @@ void SActivityWizard::createActivity(std::string activityID)
             (*data)[req.name]              = ::fwData::factory::New(req.type);
         }
 
-        ::fwMedData::SeriesDB::sptr seriesDB = this->getObject< ::fwMedData::SeriesDB >();
+        ::fwMedData::SeriesDB::sptr seriesDB = this->getInOut< ::fwMedData::SeriesDB >(s_SERIESDB_INOUT);
+        if (!seriesDB)
+        {
+            FW_DEPRECATED_MSG("The 'inout' object is not correctly set, there must be a 'inout' key named 'seriesDB'");
+            seriesDB = this->getObject< ::fwMedData::SeriesDB >();
+        }
+
         ::fwMedDataTools::helper::SeriesDB helper(seriesDB);
         helper.add(m_actSeries);
         helper.notify();
@@ -460,7 +468,13 @@ void SActivityWizard::onBuildActivity()
                         return;
                     }
                     m_actSeries->setDescription(description);
-                    ::fwMedData::SeriesDB::sptr seriesDB = this->getObject< ::fwMedData::SeriesDB >();
+                    ::fwMedData::SeriesDB::sptr seriesDB = this->getInOut< ::fwMedData::SeriesDB >(s_SERIESDB_INOUT);
+                    if (!seriesDB)
+                    {
+                        FW_DEPRECATED_MSG(
+                            "The 'inout' object is not correctly set, there must be a 'inout' key named 'seriesDB'");
+                        seriesDB = this->getObject< ::fwMedData::SeriesDB >();
+                    }
                     ::fwMedDataTools::helper::SeriesDB helper(seriesDB);
                     helper.add(m_actSeries);
                     helper.notify();

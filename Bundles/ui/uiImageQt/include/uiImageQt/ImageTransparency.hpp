@@ -25,6 +25,19 @@ namespace uiImageQt
 
 /**
  * @brief   ImageTransparency service allows to change image transparency.
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+   <service type="::uiImageQt::ImageTransparency">
+       <inout key="image" uid="..." />
+       <shortcut value="Ctrl+U" />
+   </service>
+   @endcode
+ * @subsection In-Out In-Out
+ * - \b image [::fwData::Image]: image to set the transparency.
+ * @subsection Configuration Configuration
+ * - \b shortcut : shortcut used to show/hide the image
  */
 class UIIMAGEQT_CLASS_API ImageTransparency : public QObject,
                                               public ::fwGui::editor::IEditor
@@ -64,6 +77,17 @@ protected:
     virtual void configuring() override;
 
     virtual void info( std::ostream& _sstream ) override;
+
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect Image::s_MODIFIED_SIG to this::s_UPDATE_SLOT
+     * Connect Image::s_VISIBILITY_MODIFIED_SIG to this::s_UPDATE_SLOT
+     * Connect Image::s_TRANSPARENCY_MODIFIED_SIG to this::s_UPDATE_SLOT
+     * Connect Image::s_BUFFER_MODIFIED_SIG to this::s_UPDATE_SLOT
+     */
+    virtual KeyConnectionsMap getAutoConnections() const override;
 
 protected Q_SLOTS:
 

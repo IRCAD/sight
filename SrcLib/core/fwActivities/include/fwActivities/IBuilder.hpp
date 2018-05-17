@@ -1,20 +1,19 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWACTIVITIES_IBUILDER_HPP__
-#define __FWACTIVITIES_IBUILDER_HPP__
-
-#include <fwCore/base.hpp>
-#include <fwMedData/ActivitySeries.hpp>
+#pragma once
 
 #include "fwActivities/builder/factory/new.hpp"
 #include "fwActivities/builder/registry/detail.hpp"
+#include "fwActivities/config.hpp"
 #include "fwActivities/registry/Activities.hpp"
 
-#include "fwActivities/config.hpp"
+#include <fwCore/base.hpp>
+
+#include <fwMedData/ActivitySeries.hpp>
 
 namespace fwData
 {
@@ -54,7 +53,6 @@ public:
 
     fwCoreNonInstanciableClassDefinitionsMacro( (IBuilder)(::fwCore::BaseObject) );
 
-
     /**
      * @brief Build an ActivitySeries with required data present in currentSelection and defined in configuration.
      * @param[in] activityInfo a structure which contains all the Activity configuration
@@ -63,15 +61,12 @@ public:
      */
     FWACTIVITIES_API virtual ::fwMedData::ActivitySeries::sptr buildData(
         const ::fwActivities::registry::ActivityInfo& activityInfo,
-        SPTR(::fwData::Vector) currentSelection ) const = 0;
+        const CSPTR(::fwData::Vector)& currentSelection ) const = 0;
 
 protected:
 
-    FWACTIVITIES_API virtual SPTR(::fwData::Vector) getType( SPTR(::fwData::Vector) currentSelection,
-                                                             std::string type ) const;
+    FWACTIVITIES_API virtual SPTR(::fwData::Vector) getType( const CSPTR(::fwData::Vector)& currentSelection,
+                                                             const std::string& type ) const;
 };
 
 } // namespace fwActivities
-
-#endif // __FWACTIVITIES_IBUILDER_HPP__
-
