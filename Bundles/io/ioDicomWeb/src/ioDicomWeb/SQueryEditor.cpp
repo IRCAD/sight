@@ -360,7 +360,7 @@ void SQueryEditor::displayErrorMessage(const std::string& message) const
 {
     ::fwGui::dialog::MessageDialog messageBox;
     messageBox.setTitle("Error");
-//     messageBox.setMessage( ss.str() );
+    messageBox.setMessage( message );
     messageBox.setIcon(::fwGui::dialog::IMessageDialog::CRITICAL);
     messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
     messageBox.show();
