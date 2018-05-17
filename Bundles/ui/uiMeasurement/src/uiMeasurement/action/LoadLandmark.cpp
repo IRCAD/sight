@@ -105,6 +105,7 @@ void LoadLandmark::configuring()
 
 void LoadLandmark::starting()
 {
+    FW_DEPRECATED_MSG("This service is deprecated and will be removed.")
     this->::fwGui::IActionSrv::actionServiceStarting();
 }
 

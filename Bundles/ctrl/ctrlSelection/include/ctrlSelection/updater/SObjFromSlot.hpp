@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __CTRLSELECTION_UPDATER_SOBJFROMSLOT_HPP__
-#define __CTRLSELECTION_UPDATER_SOBJFROMSLOT_HPP__
+#pragma once
 
 #include "ctrlSelection/config.hpp"
 #include "ctrlSelection/IUpdaterSrv.hpp"
@@ -63,16 +62,7 @@ public:
 
 protected:
 
-    /**
-     * @brief Configures the service.
-     *
-     * @code{.xml}
-       <service impl="::ctrlSelection::updater::SObjFromSlot">
-           <compositeKey>key</compositeKey>
-       </service>
-       @endcode
-     * - \b compositeKey key of the object to manage into the composite (add/swap/remove)
-     */
+    /// Configures the service.
     CTRLSELECTION_API virtual void configuring() override;
 
     /// Implements starting method derived from IService. Do nothing.
@@ -91,7 +81,7 @@ protected:
      * @name Slots
      * @{
      */
-    /// Adds the object into the composite with the key given by config.
+    /// Registers the given object in the OSR
     void add(::fwData::Object::sptr obj);
 
     /**
@@ -107,20 +97,12 @@ protected:
     /// Adds the object from the composite with the key given by config.
     void remove();
 
-    /// Adds the object into the composite with the key given by config if it is present.
+    /// Unregisters the object in the OSR
     void removeIfPresent();
     /**
      * @}
      */
-
-private:
-
-    std::string m_compositeKey; ///< key of the object to manage in the composite
-
-    std::string m_objectUid; ///< Uid of the object to output
 };
 
 } // updater
 } // ctrlSelection
-
-#endif // __CTRLSELECTION_UPDATER_SOBJFROMSLOT_HPP__

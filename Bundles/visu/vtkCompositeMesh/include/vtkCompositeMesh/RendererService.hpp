@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VTKCOMPOSITEMESH_RENDERERSERVICE_HPP__
-#define __VTKCOMPOSITEMESH_RENDERERSERVICE_HPP__
+#pragma once
 
 #include "vtkCompositeMesh/config.hpp"
 
@@ -31,6 +30,7 @@ namespace vtkCompositeMesh
 
  * Service registered details : \n
  * fwServicesRegisterMacro( ::fwRender::IRender , ::vtkCompositeMesh::RendererService , ::fwData::Composite)
+ * @deprecated This service is deprecated.
  */
 class VTKCOMPOSITEMESH_CLASS_API RendererService : public ::fwRender::IRender
 {
@@ -155,5 +155,3 @@ private:
 };
 
 }
-
-#endif /* __VTKCOMPOSITEMESH_RENDERERSERVICE_HPP__ */
