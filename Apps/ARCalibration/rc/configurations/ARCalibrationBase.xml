@@ -147,7 +147,7 @@
 
         <!-- Save current activity. -->
         <service uid="actionSaveActivity" type="::uiIO::action::SExportWithSeriesDB" >
-            <in key="series" uid="currentActivity" />
+            <inout key="series" uid="currentActivity" />
             <IOSelectorSrvConfig name="ARActivityWriterConfig" />
         </service>
 
