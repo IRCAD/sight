@@ -182,6 +182,24 @@ ImportanceDrivenVolumeRenderer::ImportanceDrivenVolumeRenderer(std::string paren
 ImportanceDrivenVolumeRenderer::~ImportanceDrivenVolumeRenderer()
 {
     this->cleanCompositorChain();
+
+    ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
+    auto viewport = this->getLayer()->getViewport();
+
+    ::Ogre::CompositorChain* compChain = compositorManager.getCompositorChain(viewport);
+    SLM_ASSERT("Can't find compositor chain", compChain);
+
+    // Reallocate chain resources.
+    for(size_t i = 0; i < compChain->getNumCompositors(); ++i)
+    {
+        auto compIntance = compChain->getCompositor(i);
+        if(compIntance->getEnabled())
+        {
+            // Mark the instance as being dead for the resources to be allocated again when enabled.
+            compIntance->setAlive(false);
+            compIntance->setEnabled(true);
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -211,6 +229,24 @@ void ImportanceDrivenVolumeRenderer::initCompositors()
     // Start from an empty compositor chain
     this->cleanCompositorChain();
     this->buildICCompositors();
+
+    ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
+    auto viewport = this->getLayer()->getViewport();
+
+    ::Ogre::CompositorChain* compChain = compositorManager.getCompositorChain(viewport);
+    SLM_ASSERT("Can't find compositor chain", compChain);
+
+    // Reallocate chain resources.
+    for(size_t i = 0; i < compChain->getNumCompositors(); ++i)
+    {
+        auto compIntance = compChain->getCompositor(i);
+        if(compIntance->getEnabled())
+        {
+            // Mark the instance as being dead for the resources to be allocated again when enabled.
+            compIntance->setAlive(false);
+            compIntance->setEnabled(true);
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -342,18 +378,6 @@ void ImportanceDrivenVolumeRenderer::cleanCompositorChain()
                   [](::Ogre::CompositorInstance::Listener* listener) { delete listener; }
                   );
     m_compositorListeners.clear();
-
-    // Reallocate chain resources.
-    for(size_t i = 0; i < compChain->getNumCompositors(); ++i)
-    {
-        auto compIntance = compChain->getCompositor(i);
-        if(compIntance->getEnabled())
-        {
-            // Mark the instance as being dead for the resources to be allocated again when enabled.
-            compIntance->setAlive(false);
-            compIntance->setEnabled(true);
-        }
-    }
 }
 
 //-----------------------------------------------------------------------------
