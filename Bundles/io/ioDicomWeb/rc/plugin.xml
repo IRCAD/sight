@@ -17,11 +17,4 @@
         <desc>Pull Series Controller</desc>
     </extension>
 
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::fwServices::IController</type>
-        <service>::ioDicomWeb::SSeriesPusher</service>
-        <object>::fwData::Object</object>
-        <desc>Push Series Controller</desc>
-    </extension>
-
 </plugin>
