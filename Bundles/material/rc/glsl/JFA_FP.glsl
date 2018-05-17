@@ -41,7 +41,7 @@ void main()
             /* Compute the coordinate of the current sample */
             vec2 neighborSampleCoords = (gl_FragCoord.xy + vec2(x,y) * stepwidth) / vec2(u_viewportWidth, u_viewportHeight);
             /* Get the value for the sample */
-            vec4 neighborSampleValue = texture2D(u_inputTexture, neighborSampleCoords);
+            vec4 neighborSampleValue = texture(u_inputTexture, neighborSampleCoords);
 
             /* Compute the distance from the current sample position */
             /* to the closest point we get for our neighboring sample */
