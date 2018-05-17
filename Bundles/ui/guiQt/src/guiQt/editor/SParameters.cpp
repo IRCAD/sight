@@ -250,7 +250,7 @@ void SParameters::starting()
 void SParameters::updating()
 {
     auto qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer());
-    QWidget* widget = qtContainer->getQtContainer();
+    QWidget* widget  = qtContainer->getQtContainer();
 
     ::fwServices::IService::ConfigType config = this->getConfigTree();
     const ::fwServices::IService::ConfigType& parametersCfg = config.get_child("parameters");
@@ -364,7 +364,7 @@ void SParameters::onColorButton()
     QObject* sender = this->sender();
 
     // Create Color choice dialog.
-    auto qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
+    auto qtContainer         = ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
     QWidget* const container = qtContainer->getQtContainer();
     SLM_ASSERT("container not instanced", container);
 
@@ -484,7 +484,7 @@ void SParameters::onChangeDouble(double)
     this->emitDoubleSignal(sender);
 }
 
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 void SParameters::emitDoubleSignal(QObject* widget)
 {
@@ -1510,7 +1510,7 @@ void SParameters::setDoubleSliderRange(QSlider* slider, double currentValue)
 
 QWidget* SParameters::getParamWidget(const std::string& key)
 {
-    auto qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer());
+    auto qtContainer      = ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer());
     const QWidget* widget = qtContainer->getQtContainer();
 
     QWidget* child = widget->findChild<QWidget*>(QString::fromStdString(key));
