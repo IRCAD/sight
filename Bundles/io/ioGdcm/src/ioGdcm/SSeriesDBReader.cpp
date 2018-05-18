@@ -310,13 +310,23 @@ void SSeriesDBReader::updating()
         {
             // Retrieve dataStruct associated with this service
             ::fwMedData::SeriesDB::sptr seriesDB = this->getInOut< ::fwMedData::SeriesDB >(::fwIO::s_DATA_KEY);
-            // seriesDB->shallowCopy( localSeriesDB ) ;
 
+            // Clear SeriesDB and add new series
             ::fwMedDataTools::helper::SeriesDB sDBhelper(seriesDB);
-
             ::fwData::mt::ObjectWriteLock lock(seriesDB);
-            sDBhelper.merge(localSeriesDB);
+            sDBhelper.clear();
+            // Notify removal.
             sDBhelper.notify();
+            {
+                ::fwData::mt::ObjectWriteLock lock(localSeriesDB);
+                seriesDB->shallowCopy(localSeriesDB);
+            }
+
+            ::fwMedData::SeriesDB::ContainerType addedSeries = seriesDB->getContainer();
+
+            auto sig = seriesDB->signal< ::fwMedData::SeriesDB::AddedSeriesSignalType >(
+                ::fwMedData::SeriesDB::s_ADDED_SERIES_SIG);
+            sig->asyncEmit(addedSeries);
         }
     }
 }

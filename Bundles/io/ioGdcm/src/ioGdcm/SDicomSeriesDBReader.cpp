@@ -248,13 +248,22 @@ void SDicomSeriesDBReader::updating()
                 this->getInOut< ::fwMedData::SeriesDB >(::fwIO::s_DATA_KEY);
             SLM_ASSERT("associated SeriesDB not instanced", associatedSeriesDB);
 
-            // Add series to SeriesDB
+            // Clear SeriesDB and add new series
             ::fwMedDataTools::helper::SeriesDB sDBhelper(associatedSeriesDB);
             ::fwData::mt::ObjectWriteLock lock(associatedSeriesDB);
-            sDBhelper.merge(seriesDB);
-
-            // Notify SeriesDB
+            sDBhelper.clear();
+            // Notify removal.
             sDBhelper.notify();
+            {
+                ::fwData::mt::ObjectWriteLock lock(seriesDB);
+                associatedSeriesDB->shallowCopy(seriesDB);
+            }
+
+            ::fwMedData::SeriesDB::ContainerType addedSeries = associatedSeriesDB->getContainer();
+
+            auto sig = associatedSeriesDB->signal< ::fwMedData::SeriesDB::AddedSeriesSignalType >(
+                ::fwMedData::SeriesDB::s_ADDED_SERIES_SIG);
+            sig->asyncEmit(addedSeries);
         }
         cursor.setDefaultCursor();
     }

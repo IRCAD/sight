@@ -26,7 +26,7 @@
         <id>DicomPacsReaderConfig</id>
         <desc>Reader configuration to convert retrieved DicomSeries to ImageSeries</desc>
         <config>
-            <config filterType="::fwDicomIOFilter::custom::DefaultDicomFilter" />
+            <filterType>::fwDicomIOFilter::custom::DefaultDicomFilter</filterType>
         </config>
     </extension>
 
