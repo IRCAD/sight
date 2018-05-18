@@ -65,7 +65,7 @@
         </service>
 
         <service uid="action_import" type="::uiIO::action::SSeriesDBMerger">
-            <in key="seriesDB" uid="${SERIESDB}" />
+            <inout key="seriesDB" uid="${SERIESDB}" />
             <IOSelectorSrvConfig name="SDBReaderIOSelectorConfig" />
         </service>
         <service uid="selector" type="::uiMedDataQt::editor::SSelector" autoConnect="yes">

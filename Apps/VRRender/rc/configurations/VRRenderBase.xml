@@ -9,7 +9,7 @@
         <object uid="seriesDB" type="::fwMedData::SeriesDB" />
 
         <service uid="action_open" type="::uiIO::action::SSeriesDBMerger">
-            <inout key="data" uid="seriesDB" />
+            <inout key="seriesDB" uid="seriesDB" />
             <IOSelectorSrvConfig name="SDBAtomsReaderIOSelectorConfig" />
         </service>
         <service uid="action_save" type="::gui::action::SStarter">

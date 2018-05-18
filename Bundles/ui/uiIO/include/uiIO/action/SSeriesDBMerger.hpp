@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __UIIO_ACTION_SSERIESDBMERGER_HPP__
-#define __UIIO_ACTION_SSERIESDBMERGER_HPP__
+#pragma once
 
 #include "uiIO/config.hpp"
 
@@ -27,19 +26,26 @@ namespace action
 {
 
 /**
- * @brief   This action allows to load a new SeriesDB and merge it with the current SeriesDB
+ * @brief This action allows to load a new SeriesDB and merge it with the current SeriesDB
+ *
+ * @section Slots Slots
+ * - \b forwardJob(::fwJobs::IJob::sptr) : Called to forward a job.
+ *
+ * @section Signals Signals
+ * - \b jobCreated(::fwJobs::IJob::sptr) : This signal is emitted when a job is created
  *
  * The available reader can be configured
+ * @section XML XML Configuration
  * @code{.xml}
-    <service uid="action_seriesDBMerger" type="::fwGui::IActionSrv" impl="::uiIO::action::SSeriesDBMerger"
- * autoConnect="no">
+   <service uid="action" type="::uiIO::action::SSeriesDBMerger">
+        <inout key="seriesDB" uid="..." />
         <IOSelectorSrvConfig name="seriesDBImporterConfig" />
-    </service>
+   </service>
    @endcode
  * With :
- *  - \b seriesDBImporterConfig : the id of a configuration for SIOSelector
- *  for example
- *  @code{.xml}
+ * - \b seriesDBImporterConfig : the id of a configuration for SIOSelector
+ * for example
+ * @code{.xml}
     <extension implements="::fwServices::registry::ServiceConfig">
         <id>seriesDBImporterConfig</id>
         <service>::uiIO::editor::SIOSelector</service>
@@ -50,7 +56,10 @@ namespace action
             <addSelection service="::ioAtoms::SReader" />
         </config>
     </extension>
-    @endcode
+   @endcode
+ *
+ * @subsection In-Out In-Out
+ * - \b seriesDB [::fwMedData::SeriesDB]: the SeriesDB to merge.
  */
 class UIIO_CLASS_API SSeriesDBMerger : public ::fwGui::IActionSrv
 {
@@ -70,7 +79,7 @@ protected:
      * @brief Configure action. Retrieves the IOSelector config.
      *
      * @code{.xml}
-        <service impl="::uiIO::action::SSeriesDBMerger" autoConnect="no">
+        <service impl="::uiIO::action::SSeriesDBMerger">
             <IOSelectorSrvConfig name="myConfig" />
         </service>
        @endcode
@@ -100,5 +109,3 @@ private:
 
 } // namespace action
 } // namespace uiIO
-
-#endif // __UIIO_ACTION_SSERIESDBMERGER_HPP__
