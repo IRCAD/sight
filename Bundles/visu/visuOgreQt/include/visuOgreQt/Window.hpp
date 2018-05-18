@@ -95,7 +95,7 @@ public Q_SLOTS:
      * @brief renderNow
      * Force the renderWindow update
      */
-    VISUOGREQT_API virtual void renderNow();
+    VISUOGREQT_API virtual void renderNow( const bool force = false);
 
     /// We use an event filter to be able to capture keyboard/mouse events. More on this later.
     VISUOGREQT_API virtual bool eventFilter(QObject* target, QEvent* event) override;
