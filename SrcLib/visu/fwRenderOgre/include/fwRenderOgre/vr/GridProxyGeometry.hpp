@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017.
+ * FW4SPL - Copyright (C) IRCAD, 2017-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWRENDEROGRE_VR_GRIDPROXYGEOMETRY_HPP__
-#define __FWRENDEROGRE_VR_GRIDPROXYGEOMETRY_HPP__
+#pragma once
 
 #include "fwRenderOgre/config.hpp"
 #include "fwRenderOgre/factory/R2VBRenderable.hpp"
@@ -55,10 +54,10 @@ public:
     FWRENDEROGRE_API virtual ~GridProxyGeometry();
 
     /// Function to be called when the volume changed and its size too. Recomputes texture and geometry.
-    FWRENDEROGRE_API void updateGridSize();
+    FWRENDEROGRE_API void updateGridSize(const ::Ogre::Vector2& _tfWindow);
 
     /// Fills the grid texture and uses it to compute the grid geometry.
-    FWRENDEROGRE_API void computeGrid();
+    FWRENDEROGRE_API void computeGrid(const ::Ogre::Vector2& _tfWindow);
 
     /// Clip the proxy geometry. Recomputes the geometry.
     FWRENDEROGRE_API void clipGrid(const ::Ogre::AxisAlignedBox& _clippingBox);
@@ -155,5 +154,3 @@ protected:
 
 } // namespace vr
 } // namespace fwRenderOgre
-
-#endif // __FWRENDEROGRE_VR_GRIDPROXYGEOMETRY_HPP__

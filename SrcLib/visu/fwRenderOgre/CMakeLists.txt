@@ -15,6 +15,7 @@ fwLoadProperties()
 
 find_package(Boost QUIET COMPONENTS regex REQUIRED)
 find_package(OGRE QUIET REQUIRED)
+find_package(OpenGL QUIET REQUIRED)
 
 # Treat warnings as errors
 if ( CMAKE_COMPILER_IS_GNUCXX OR "${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
@@ -73,11 +74,14 @@ if(WIN32)
     fwForwardLink(
         ${OGRE_FIXED_LIBRARIES}
         ${Boost_REGEX_LIBRARY}
+        ${OPENGL_LIBRARIES}
     )
 else()
     fwForwardLink(
         -L${OGRE_LIBRARY_DIRS}
         ${OGRE_LIBRARIES}
         ${Boost_REGEX_LIBRARY}
+        ${OPENGL_LIBRARIES}
     )
+
 endif()

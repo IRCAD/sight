@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017.
+ * FW4SPL - Copyright (C) IRCAD, 2017-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -94,7 +94,7 @@ void GridProxyGeometry::initialize()
 
 //------------------------------------------------------------------------------
 
-void GridProxyGeometry::updateGridSize()
+void GridProxyGeometry::updateGridSize(const ::Ogre::Vector2& _tfWindow)
 {
     const std::vector<int> imageSize = {{ int(this->m_3DImageTexture->getWidth()),
                                           int(this->m_3DImageTexture->getHeight()),
@@ -114,7 +114,7 @@ void GridProxyGeometry::updateGridSize()
     }
 
     this->setupGrid();
-    this->computeGrid();
+    this->computeGrid(_tfWindow);
 }
 
 //------------------------------------------------------------------------------
@@ -270,7 +270,7 @@ void GridProxyGeometry::setupGrid()
 
 //------------------------------------------------------------------------------
 
-void GridProxyGeometry::computeGrid()
+void GridProxyGeometry::computeGrid(const ::Ogre::Vector2& _tfWindow)
 {
     size_t count = m_gridRenderOp.vertexData->vertexCount;
     m_gridRenderOp.vertexData->vertexCount = 4;
@@ -288,6 +288,7 @@ void GridProxyGeometry::computeGrid()
         ::Ogre::GpuProgramParametersSharedPtr params = gridPass->getFragmentProgramParameters();
 
         params->setNamedConstant("u_slice", static_cast<int>(i));
+        params->setNamedConstant("u_tfWindow", _tfWindow);
 
         mParentSceneManager->manualRender(
             &m_gridRenderOp,
@@ -346,4 +347,3 @@ const Ogre::String& GridProxyGeometry::getMovableType() const
 
 } // namespace vr
 } // namespace fwRenderOgre
-

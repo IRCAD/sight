@@ -191,6 +191,7 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
     m_RTVSharedParameters->addConstantDefinition("u_volIllumFactor", ::Ogre::GCT_FLOAT4);
     m_RTVSharedParameters->addConstantDefinition("u_min", ::Ogre::GCT_INT1);
     m_RTVSharedParameters->addConstantDefinition("u_max", ::Ogre::GCT_INT1);
+    m_RTVSharedParameters->addConstantDefinition("u_tfWindow", ::Ogre::GCT_FLOAT2);
     m_RTVSharedParameters->setNamedConstant("u_opacityCorrectionFactor", m_opacityCorrectionFactor);
 
     for(::Ogre::TexturePtr entryPtsText : m_entryPointsTextures)
@@ -253,16 +254,19 @@ void RayTracingVolumeRenderer::imageUpdate(::fwData::Image::sptr image, ::fwData
 
     const ::fwData::Image::SizeType& newSize = image->getSize();
 
+    const auto tfWLMinMax = tf->getWLMinMax();
+    const ::Ogre::Vector2 tfWindow(float(tfWLMinMax.first), float(tfWLMinMax.second));
+
     // Create new grid texture + proxy geometry if image size changed.
     if(m_imageSize != newSize)
     {
         m_imageSize = newSize;
 
-        m_proxyGeometry->updateGridSize();
+        m_proxyGeometry->updateGridSize(tfWindow);
     }
     else
     {
-        m_proxyGeometry->computeGrid();
+        m_proxyGeometry->computeGrid(tfWindow);
     }
 
     if(m_preIntegratedRendering)
@@ -276,15 +280,21 @@ void RayTracingVolumeRenderer::imageUpdate(::fwData::Image::sptr image, ::fwData
         m_RTVSharedParameters->setNamedConstant("u_min", minMax.first);
         m_RTVSharedParameters->setNamedConstant("u_max", minMax.second);
     }
+    m_RTVSharedParameters->setNamedConstant("u_tfWindow", tfWindow);
 }
 
 //-----------------------------------------------------------------------------
 
-void RayTracingVolumeRenderer::tfUpdate(fwData::TransferFunction::sptr /*tf*/)
+void RayTracingVolumeRenderer::tfUpdate(fwData::TransferFunction::sptr tf)
 {
     FW_PROFILE("TF Update")
     {
-        m_proxyGeometry->computeGrid();
+
+        const auto tfWLMinMax = tf->getWLMinMax();
+        const ::Ogre::Vector2 tfWindow(float(tfWLMinMax.first), float(tfWLMinMax.second));
+        m_RTVSharedParameters->setNamedConstant("u_tfWindow", tfWindow);
+
+        m_proxyGeometry->computeGrid(tfWindow);
     }
 }
 
@@ -461,6 +471,7 @@ void RayTracingVolumeRenderer::setRayCastingPassTextureUnits(Ogre::Pass* _rayCas
     {
         texUnitState = _rayCastingPass->createTextureUnitState(m_gpuTF.getTexture()->getName());
         texUnitState->setTextureFiltering(::Ogre::TFO_BILINEAR);
+        texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
     }
 
     fpParams->setNamedConstant("u_tfTexture", numTexUnit++);

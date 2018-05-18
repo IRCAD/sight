@@ -292,7 +292,9 @@ void SNegato2D::updateTFPoints()
     m_plane->switchThresholding(tf->getIsClamped());
 
     // Sends the TF texture to the negato-related passes
-    m_plane->setTFData(m_gpuTF->getTexture());
+    auto tfWLMinMax = tf->getWLMinMax();
+    ::Ogre::Vector2 tfWindow(float(tfWLMinMax.first), float(tfWLMinMax.second));
+    m_plane->setTFData(m_gpuTF->getTexture(), tfWindow);
 
     this->requestRender();
 }

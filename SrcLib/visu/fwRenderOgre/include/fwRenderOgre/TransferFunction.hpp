@@ -42,14 +42,14 @@ public:
 
 private:
 
-    /// Return the buffer index matching the intensity.
-    static std::int32_t intensityToBufferIndex(double intensity);
-
     /// Texture containing the interpolated nodes of the transfer function.
     ::Ogre::TexturePtr m_texture;
 
     /// Current sample distance used in the VR renderer.
     float m_sampleDistance;
+
+    static std::uint32_t TEXTURE_SIZE;
+    static std::uint32_t TEXTURE_PIXEL_COUNT;
 };
 
 //-----------------------------------------------------------------------------

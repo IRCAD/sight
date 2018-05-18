@@ -223,6 +223,12 @@ void SVideo::updateTF()
 
     m_gpuTF->updateTexture(tf);
 
+    const auto tfWLMinMax = tf->getWLMinMax();
+    const ::Ogre::Vector2 tfWindow(float(tfWLMinMax.first), float(tfWLMinMax.second));
+
+    ::Ogre::Pass* ogrePass = m_material->getTechnique(0)->getPass(0);
+    ogrePass->getFragmentProgramParameters()->setNamedConstant("u_tfWindow", tfWindow);
+
     this->requestRender();
 }
 
