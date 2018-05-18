@@ -46,7 +46,7 @@
         <id>ARMDAtomsConfig</id>
         <desc>Json/Xml Reader/Writer (FW4SPL)</desc>
         <config>
-            <patcher context="MedicalData" version="V12AR" />
+            <patcher context="MedicalData" version="V13AR" />
             <filter>VRRenderMedicalDataV2</filter>
         </config>
     </extension>
@@ -61,7 +61,7 @@
             <extensions>
                 <extension label="Zipped Activity Project">.apz</extension>
             </extensions>
-            <patcher context="MedicalData" version="V12AR" />
+            <patcher context="MedicalData" version="V13AR" />
         </config>
     </extension>
 
