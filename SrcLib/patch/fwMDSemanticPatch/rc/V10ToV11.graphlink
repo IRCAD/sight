@@ -3,5 +3,14 @@
     "origin_version" : "V10",
     "target_version" : "V11",
     "patcher" : "DefaultPatcher",
-    "links" : []
+    "links" : [
+        {
+            "::fwMedData::ImageSeries" : "1",
+            "::fwMedData::ImageSeries" : "2"
+        },
+        {
+            "::fwMedData::ModelSeries" : "1",
+            "::fwMedData::ModelSeries" : "2"
+        }
+    ]
 }
