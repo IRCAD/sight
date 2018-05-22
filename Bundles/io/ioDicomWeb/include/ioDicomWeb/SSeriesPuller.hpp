@@ -133,7 +133,7 @@ private:
     unsigned int m_seriesIndex;
 
     /// Total number of instances that must be downloaded
-    std::size_t m_instanceCount;
+    size_t m_instanceCount;
 
     /// Map of Dicom series being pulled
     DicomSeriesMapType m_pullingDicomSeriesMap;

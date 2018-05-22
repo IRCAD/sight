@@ -129,7 +129,7 @@ protected:
      * @brief Read the selected image
      * @param[in] selectedSliceIndex Selected slice of the image that must be read
      */
-    IODICOMWEB_API void readImage(std::size_t selectedSliceIndex);
+    IODICOMWEB_API void readImage(size_t selectedSliceIndex);
 
     /// Pull the selected slice from the pacs
     IODICOMWEB_API void pullInstance();
@@ -146,7 +146,7 @@ protected:
     QPointer< QLineEdit > m_sliceIndexLineEdit;
 
     /// Number of instances
-    std::size_t m_numberOfSlices;
+    size_t m_numberOfSlices;
 
     /// IODICOMWEB Reader
     std::string m_dicomReaderType;

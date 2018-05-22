@@ -328,7 +328,7 @@ void SSeriesPuller::pullSeries()
     }
     catch (::fwNetworkIO::exceptions::Base& exception)
     {
-        ::std::stringstream ss;
+        std::stringstream ss;
         ss << "Error: Retrieving from the PACS failed.";
         this->displayErrorMessage(ss.str());
         SLM_WARN(exception.what());

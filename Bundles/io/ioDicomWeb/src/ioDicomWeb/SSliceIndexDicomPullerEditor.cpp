@@ -278,7 +278,7 @@ void SSliceIndexDicomPullerEditor::triggerNewSlice()
     SLM_ASSERT("DicomSeries should not be null !", dicomSeries);
 
     // Compute slice index
-    std::size_t selectedSliceIndex = static_cast<std::size_t>(m_sliceIndexSlider->value()) +
+    size_t selectedSliceIndex = static_cast<size_t>(m_sliceIndexSlider->value()) +
                                      dicomSeries->getFirstInstanceNumber();
     OSLM_TRACE("triggered new slice : " << selectedSliceIndex);
     if(!dicomSeries->isInstanceAvailable(selectedSliceIndex))
@@ -293,7 +293,7 @@ void SSliceIndexDicomPullerEditor::triggerNewSlice()
 
 //------------------------------------------------------------------------------
 
-void SSliceIndexDicomPullerEditor::readImage(std::size_t selectedSliceIndex)
+void SSliceIndexDicomPullerEditor::readImage(size_t selectedSliceIndex)
 {
     // DicomSeries
     ::fwMedData::DicomSeries::csptr dicomSeries = this->getInOut< ::fwMedData::DicomSeries >("series");
@@ -456,7 +456,7 @@ void SSliceIndexDicomPullerEditor::pullInstance()
         SLM_ASSERT("DicomSeries should not be null !", dicomSeries);
 
         // Get selected slice
-        std::size_t selectedSliceIndex = static_cast<std::size_t>(m_sliceIndexSlider->value()) +
+        size_t selectedSliceIndex = static_cast<size_t>(m_sliceIndexSlider->value()) +
                                          dicomSeries->getFirstInstanceNumber();
 
         std::string seriesInstanceUID = dicomSeries->getInstanceUID();
