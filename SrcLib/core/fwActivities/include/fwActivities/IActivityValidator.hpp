@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2016-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2016-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWACTIVITIES_IACTIVITYVALIDATOR_HPP__
-#define __FWACTIVITIES_IACTIVITYVALIDATOR_HPP__
+#pragma once
 
 #include "fwActivities/config.hpp"
 #include "fwActivities/IValidator.hpp"
@@ -37,7 +36,7 @@ public:
     /// Does nothing.
     FWACTIVITIES_API virtual ValidationType validate(
         const ::fwActivities::registry::ActivityInfo&,
-        SPTR(::fwData::Vector) ) const override
+        const CSPTR(::fwData::Vector)& ) const override
     {
         ValidationType validation;
         validation.first  = true;
@@ -79,6 +78,3 @@ public:
 };
 
 } // namespace fwActivities
-
-#endif // __FWACTIVITIES_IACTIVITYVALIDATOR_HPP__
-

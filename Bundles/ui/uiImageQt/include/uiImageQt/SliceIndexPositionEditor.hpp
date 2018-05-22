@@ -99,6 +99,17 @@ protected:
      */
     virtual void configuring() override;
 
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect Image::s_MODIFIED_SIG to this::s_UPDATE_SLOT
+     * Connect Image::s_SLICE_INDEX_MODIFIED_SIG to this::s_UPDATE_SLICE_INDEX_SLOT
+     * Connect Image::s_SLICE_TYPE_MODIFIED_SIG to this::s_UPDATE_SLICE_TYPE_SLOT
+     * Connect Image::s_BUFFER_MODIFIED_SIG to this::s_UPDATE_BUFFER_SLOT
+     */
+    UIIMAGEQT_API virtual KeyConnectionsMap getAutoConnections() const override;
+
     /// Overrides
     UIIMAGEQT_API virtual void info( std::ostream& _sstream ) override;
 

@@ -73,20 +73,23 @@ void SSlotCaller::updating()
 {
     SLM_TRACE_FUNC();
 
-    for(SlotInfoType info :  m_slotInfos)
+    if(this->confirmAction())
     {
-        HasSlotIDType HasSlotId = info.first;
-        ::fwCom::Slots::SlotKeyType slotKey = info.second;
-
-        if (::fwTools::fwID::exist(HasSlotId))
+        for(const SlotInfoType& info :  m_slotInfos)
         {
-            ::fwTools::Object::sptr obj      = ::fwTools::fwID::getObject(HasSlotId);
-            ::fwCom::HasSlots::sptr hasSlots = std::dynamic_pointer_cast< ::fwCom::HasSlots >(obj);
-            SLM_ASSERT("Object with id " << HasSlotId << " is not a HasSlots", hasSlots);
+            const HasSlotIDType& HasSlotId             = info.first;
+            const ::fwCom::Slots::SlotKeyType& slotKey = info.second;
 
-            ::fwCom::SlotBase::sptr slot = hasSlots->slot(slotKey);
+            if (::fwTools::fwID::exist(HasSlotId))
+            {
+                const ::fwTools::Object::sptr obj       = ::fwTools::fwID::getObject(HasSlotId);
+                const ::fwCom::HasSlots::csptr hasSlots = std::dynamic_pointer_cast< ::fwCom::HasSlots >(obj);
+                SLM_ASSERT("Object with id " << HasSlotId << " is not a HasSlots", hasSlots);
 
-            slot->asyncRun();
+                const ::fwCom::SlotBase::csptr slot = hasSlots->slot(slotKey);
+
+                slot->asyncRun();
+            }
         }
     }
 }

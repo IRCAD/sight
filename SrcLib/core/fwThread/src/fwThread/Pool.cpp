@@ -24,9 +24,9 @@ Pool::Pool() :
 Pool::Pool(size_t _threads) :
     m_stop(false)
 {
-    const auto avalaibleCores = std::thread::hardware_concurrency();
+    const auto availableCores = std::thread::hardware_concurrency();
     OSLM_WARN_IF( _threads << " threads were allocated in this thread pool, but you only have " <<
-                  avalaibleCores << " physical cores on this CPU",
+                  availableCores << " physical cores on this CPU",
                   _threads > std::thread::hardware_concurrency());
 
     for(size_t i = 0; i < _threads; ++i)

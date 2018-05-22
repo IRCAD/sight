@@ -33,6 +33,8 @@ fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiIO::action::SExportWithSeriesD
 static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 static const ::fwCom::Slots::SlotKeyType FORWARD_JOB_SLOT       = "forwardJob";
 
+static const ::fwServices::IService::KeyType s_SERIES_INOUT = "series";
+
 //------------------------------------------------------------------------------
 
 SExportWithSeriesDB::SExportWithSeriesDB( ) noexcept :
@@ -74,7 +76,14 @@ void SExportWithSeriesDB::configuring()
 void SExportWithSeriesDB::updating( )
 {
     ::fwGui::LockAction lock(this->getSptr());
-    ::fwMedData::Series::sptr series = this->getObject< ::fwMedData::Series >();
+
+    ::fwMedData::Series::sptr series = this->getInOut< ::fwMedData::Series >(s_SERIES_INOUT);
+
+    if (!series)
+    {
+        series = this->getObject< ::fwMedData::Series >();
+        FW_DEPRECATED_MSG("input 'series' is not correctly set");
+    }
     // Create a new SeriesDB
     ::fwMedData::SeriesDB::sptr localSeriesDB = ::fwMedData::SeriesDB::New();
     localSeriesDB->getContainer().push_back(series);
@@ -116,9 +125,14 @@ void SExportWithSeriesDB::starting()
 {
     this->::fwGui::IActionSrv::actionServiceStarting();
 
-    SLM_FATAL_IF(
-        "The associated object must be a ::fwMedData::Series (Here: " + this->getObject()->getClassname() + ").",
-        !this->getObject< ::fwMedData::Series >());
+    ::fwMedData::Series::sptr series = this->getInOut< ::fwMedData::Series >(s_SERIES_INOUT);
+
+    if (!series)
+    {
+        series = this->getObject< ::fwMedData::Series >();
+        FW_DEPRECATED_MSG("input 'series' is not correctly set");
+    }
+    SLM_FATAL_IF( "The associated object must be a ::fwMedData::Series.", !series);
 }
 
 //------------------------------------------------------------------------------

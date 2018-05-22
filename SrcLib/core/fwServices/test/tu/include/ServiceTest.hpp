@@ -31,6 +31,7 @@ CPPUNIT_TEST( testServiceCreationWithUUID );
 CPPUNIT_TEST( testStartStopUpdate );
 CPPUNIT_TEST( testStartStopUpdateExceptions );
 CPPUNIT_TEST( testCommunication );
+CPPUNIT_TEST( testWithInAndOut );
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -61,6 +62,9 @@ public:
     /// test sending/receiving message
     void testCommunication();
 
+    /// test service with an input and an output
+    void testWithInAndOut();
+
 private:
 
     static void startStopUpdateExceptions(::fwServices::ut::TestService::sptr _service);
@@ -68,4 +72,3 @@ private:
 
 } //namespace ut
 } //namespace fwServices
-

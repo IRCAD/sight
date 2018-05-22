@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -81,7 +81,7 @@ void ConfigLauncher::parseConfig(const ::fwServices::IService::ConfigType& confi
         }
         else
         {
-            SLM_ASSERT("Object key '" + key + "'with uid '" + uid + "' does not exists.", obj);
+            SLM_ASSERT("Object key '" + key + "'with uid '" + uid + "' does not exist.", obj);
             parameterCfg.add("<xmlattr>.uid", obj->getID());
         }
 
@@ -129,7 +129,6 @@ void ConfigLauncher::parseConfig(const ::fwServices::IService::ConfigType& confi
 void ConfigLauncher::startConfig(::fwServices::IService::sptr srv,
                                  const FieldAdaptorType& optReplaceMap )
 {
-    ::fwData::Object::sptr currentObj = srv->getObject();
     typedef ::fwActivities::registry::ActivityAppConfig AppConfig;
     FieldAdaptorType replaceMap(optReplaceMap);
 
@@ -139,35 +138,7 @@ void ConfigLauncher::startConfig(::fwServices::IService::sptr srv,
 
     for(const AppConfig::ActivityAppConfigParamsType::value_type& param :  m_appConfig.parameters)
     {
-        if(!param.isSeshat())
-        {
-            std::string by = param.by;
-            if(by == ConfigLauncher::s_SELF_KEY)
-            {
-                by = currentObj->getID();
-            }
-            replaceMap[param.replace] = by;
-        }
-        else
-        {
-            std::string parameterToReplace = param.by;
-            if (parameterToReplace.substr(0, 1) == "!")
-            {
-                parameterToReplace.replace(0, 1, "@");
-            }
-
-            ::fwData::Object::sptr obj = ::fwDataCamp::getObject(currentObj, parameterToReplace);
-            OSLM_ASSERT("Invalid seshat path : '"<<param.by<<"'", obj);
-            ::fwData::String::sptr stringParameter = ::fwData::String::dynamicCast(obj);
-
-            std::string parameterValue = obj->getID();
-
-            if(stringParameter && param.by.substr(0, 1) == "!")
-            {
-                parameterValue = stringParameter->getValue();
-            }
-            replaceMap[param.replace] = parameterValue;
-        }
+        replaceMap[param.replace] = param.by;
     }
 
     // Init manager
@@ -176,9 +147,6 @@ void ConfigLauncher::startConfig(::fwServices::IService::sptr srv,
 
     // Launch config
     m_appConfigManager->launch();
-
-    // Add connection
-    this->connectToConfigRoot(srv);
 
     m_configIsRunning = true;
 }
@@ -189,47 +157,11 @@ void ConfigLauncher::stopConfig()
 {
     if( m_configIsRunning )
     {
-        // Remove connection
-        this->disconnectToConfigRoot();
-
         // Delete manager
         m_appConfigManager->stopAndDestroy();
         m_appConfigManager.reset();
     }
     m_configIsRunning = false;
-}
-
-//------------------------------------------------------------------------------
-
-void ConfigLauncher::connectToConfigRoot(::fwServices::IService::sptr srv)
-{
-    ::fwData::Object::sptr root = m_appConfigManager->getConfigRoot();
-    m_connections.connect( root, srv, srv->getObjSrvConnections() );
-}
-
-//------------------------------------------------------------------------------
-
-void ConfigLauncher::disconnectToConfigRoot()
-{
-    m_connections.disconnect();
-}
-
-//------------------------------------------------------------------------------
-
-bool ConfigLauncher::isExecutable(::fwData::Object::sptr currentObj)
-{
-    typedef ::fwActivities::registry::ActivityAppConfig AppConfig;
-    bool executable = true;
-    for(const AppConfig::ActivityAppConfigParamsType::value_type& param :  m_appConfig.parameters)
-    {
-        if(param.isSeshat())
-        {
-            std::string by = param.by;
-            executable &= ::fwDataCamp::getObject(currentObj, param.by, false).get() != 0;
-        }
-    }
-
-    return executable;
 }
 
 //------------------------------------------------------------------------------

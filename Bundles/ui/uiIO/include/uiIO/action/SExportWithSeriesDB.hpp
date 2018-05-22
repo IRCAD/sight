@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __UIIO_ACTION_SEXPORTWITHSERIESDB_HPP__
-#define __UIIO_ACTION_SEXPORTWITHSERIESDB_HPP__
+#pragma once
 
 #include "uiIO/config.hpp"
 
@@ -31,14 +30,28 @@ namespace action
  * It creates a new SeriesDB containing this series, and then launchs an ::uiIO::editor::SIOSelector service on the
  * created SeriesDB with the given configuration.
  *
+ * @section Signal Signal
+ * - \b jobCreated(SPTR(::fwJobs::IJob)) : This signal is emitted by the slot 'forwardJob' to forward job process
+ *   between SIOSelector service (jobCreated signal) and other services.
+ *
+ * @section Slot Slot
+ * - \b forwardJob(SPTR(::fwJobs::IJob)) : This slot allows to forward job process between SIOSelector service
+ *   and other services. It is connected to SIOSelector 'jobCreated' signal.
+ *
  * @section XML XML Configuration
  *
  * The available reader can be configured
  * @code{.xml}
     <service uid="action_seriesExporter" impl="::uiIO::action::SExportWithSeriesDB">
+        <inout key="series" uid="..." />
         <IOSelectorSrvConfig name="seriesDBImporterConfig" />
     </service>
    @endcode
+ *
+ * @subsection In-Out In-Out
+ * - \b series [::fwMedData::Series]: series to export using a SeriesDB writer
+ *
+ * @subsection Configuration Configuration
  * With :
  *  - \b IOSelectorSrvConfig : the id of a configuration for SIOSelector
  *  for example
@@ -54,14 +67,6 @@ namespace action
         </config>
     </extension>
     @endcode
- *
- * @section Slot Slot
- * - \b forwardJob(SPTR(::fwJobs::IJob)) : This slot allows to forward job process between SIOSelector service
- *   and other services. It is connected to SIOSelector 'jobCreated' signal.
- *
- * @section Signal Signal
- * - \b jobCreated(SPTR(::fwJobs::IJob)) : This signal is emitted by the slot 'forwardJob' to forward job process
- *   between SIOSelector service (jobCreated signal) and other services.
  */
 class UIIO_CLASS_API SExportWithSeriesDB : public ::fwGui::IActionSrv
 {
@@ -112,5 +117,3 @@ private:
 
 } // namespace action
 } // namespace uiIO
-
-#endif // __UIIO_ACTION_SEXPORTWITHSERIESDB_HPP__

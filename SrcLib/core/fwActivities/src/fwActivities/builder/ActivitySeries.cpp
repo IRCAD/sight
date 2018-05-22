@@ -1,23 +1,24 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwActivities/builder/registry/macros.hpp"
 #include "fwActivities/builder/ActivitySeries.hpp"
 
-#include <fwData/Vector.hpp>
+#include "fwActivities/builder/registry/macros.hpp"
+
 #include <fwData/Composite.hpp>
+#include <fwData/Vector.hpp>
 
 #include <fwDataCamp/getObject.hpp>
 
+#include <fwMedData/Equipment.hpp>
 #include <fwMedData/Patient.hpp>
 #include <fwMedData/Study.hpp>
-#include <fwMedData/Equipment.hpp>
 
-#include <fwTools/UUID.hpp>
 #include <fwTools/dateAndTime.hpp>
+#include <fwTools/UUID.hpp>
 
 #include <boost/date_time/posix_time/posix_time.hpp>
 
@@ -42,8 +43,8 @@ ActivitySeries::~ActivitySeries()
 
 //-----------------------------------------------------------------------------
 
-::fwData::Composite::sptr vectorToComposite(::fwData::Vector::sptr vector,
-                                            const ::fwActivities::registry::ActivityRequirement &req)
+::fwData::Composite::sptr vectorToComposite(const ::fwData::Vector::csptr& vector,
+                                            const ::fwActivities::registry::ActivityRequirement& req)
 {
     namespace ActReg                    = ::fwActivities::registry;
     ::fwData::Composite::sptr composite = ::fwData::Composite::New();
@@ -52,9 +53,9 @@ ActivitySeries::~ActivitySeries()
 
     ActReg::ActivityRequirement::KeyType::const_iterator iter = req.keys.begin();
 
-    for(const ::fwData::Object::sptr &obj :  *vector)
+    for(const ::fwData::Object::sptr& obj :  *vector)
     {
-        const ActReg::ActivityRequirementKey &keyTag = (*iter++);
+        const ActReg::ActivityRequirementKey& keyTag = (*iter++);
         if(keyTag.path.empty())
         {
             (*composite)[keyTag.key] = obj;
@@ -72,7 +73,7 @@ ActivitySeries::~ActivitySeries()
 
 ::fwMedData::ActivitySeries::sptr ActivitySeries::buildData(
     const ::fwActivities::registry::ActivityInfo& activityInfo,
-    ::fwData::Vector::sptr currentSelection ) const
+    const ::fwData::Vector::csptr& currentSelection ) const
 {
     ::fwMedData::ActivitySeries::sptr actSeries = ::fwMedData::ActivitySeries::New();
 
@@ -139,6 +140,3 @@ ActivitySeries::~ActivitySeries()
 
 } // namespace builder
 } // namespace fwActivities
-
-
-

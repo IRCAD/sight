@@ -10,8 +10,6 @@
 #include <fwData/mt/ObjectWriteLock.hpp>
 #include <fwData/Reconstruction.hpp>
 
-#include <fwDataCamp/getObject.hpp>
-
 #include <fwMedData/ModelSeries.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>

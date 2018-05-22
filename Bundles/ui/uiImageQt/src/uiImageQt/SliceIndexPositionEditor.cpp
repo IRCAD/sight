@@ -54,6 +54,8 @@ const std::string* SliceIndexPositionEditor::SLICE_INDEX_FIELDID[ 3 ] =
 static const ::fwCom::Slots::SlotKeyType s_UPDATE_SLICE_INDEX_SLOT = "updateSliceIndex";
 static const ::fwCom::Slots::SlotKeyType s_UPDATE_SLICE_TYPE_SLOT  = "updateSliceType";
 
+static const ::fwServices::IService::KeyType s_IMAGE_INOUT = "image";
+
 //------------------------------------------------------------------------------
 
 SliceIndexPositionEditor::SliceIndexPositionEditor() noexcept
@@ -94,7 +96,12 @@ void SliceIndexPositionEditor::starting()
     layout->addWidget( m_sliceSelectorPanel );
     layout->setContentsMargins(0, 0, 0, 0);
 
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    if (!image)
+    {
+        FW_DEPRECATED_MSG("The service image is not correctly set, it must have an 'image' as 'inout'");
+        image = this->getObject< ::fwData::Image >();
+    }
     this->updateImageInfos(image);
     this->updateSliceTypeFromImg(m_orientation);
 
@@ -149,7 +156,12 @@ void SliceIndexPositionEditor::configuring()
 
 void SliceIndexPositionEditor::updating()
 {
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    if (!image)
+    {
+        FW_DEPRECATED_MSG("The service image is not correctly set, it must have an 'image' as 'inout'");
+        image = this->getObject< ::fwData::Image >();
+    }
     bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
     m_sliceSelectorPanel->setEnable(imageIsValid);
     this->updateImageInfos(image);
@@ -171,7 +183,12 @@ void SliceIndexPositionEditor::updateSliceIndex(int axial, int frontal, int sagi
     m_frontalIndex->value()  = frontal;
     m_sagittalIndex->value() = sagittal;
 
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    if (!image)
+    {
+        FW_DEPRECATED_MSG("The service image is not correctly set, it must have an 'image' as 'inout'");
+        image = this->getObject< ::fwData::Image >();
+    }
 
     image->setField( fwDataTools::fieldHelper::Image::m_axialSliceIndexId, m_axialIndex);
     image->setField( fwDataTools::fieldHelper::Image::m_frontalSliceIndexId, m_frontalIndex);
@@ -204,7 +221,12 @@ void SliceIndexPositionEditor::info( std::ostream& _sstream )
 
 void SliceIndexPositionEditor::updateSliceIndexFromImg()
 {
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    if (!image)
+    {
+        FW_DEPRECATED_MSG("The service image is not correctly set, it must have an 'image' as 'inout'");
+        image = this->getObject< ::fwData::Image >();
+    }
 
     if (::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
     {
@@ -231,7 +253,12 @@ void SliceIndexPositionEditor::updateSliceTypeFromImg(Orientation type )
     // Update Type Choice
     m_sliceSelectorPanel->setTypeSelection( static_cast< int >( type ) );
 
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    if (!image)
+    {
+        FW_DEPRECATED_MSG("The service image is not correctly set, it must have an 'image' as 'inout'");
+        image = this->getObject< ::fwData::Image >();
+    }
     this->updateSliceIndexFromImg();
 }
 
@@ -239,7 +266,12 @@ void SliceIndexPositionEditor::updateSliceTypeFromImg(Orientation type )
 
 void SliceIndexPositionEditor::sliceIndexNotification( unsigned int index)
 {
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    if (!image)
+    {
+        FW_DEPRECATED_MSG("The service image is not correctly set, it must have an 'image' as 'inout'");
+        image = this->getObject< ::fwData::Image >();
+    }
 
     std::string fieldID = *SLICE_INDEX_FIELDID[m_orientation];
     OSLM_ASSERT("Field "<<fieldID<<" is missing", image->getField( fieldID ));
@@ -265,7 +297,12 @@ void SliceIndexPositionEditor::sliceTypeNotification( int _type )
     m_orientation = type;
 
     // Fire the signal
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    if (!image)
+    {
+        FW_DEPRECATED_MSG("The service image is not correctly set, it must have an 'image' as 'inout'");
+        image = this->getObject< ::fwData::Image >();
+    }
     auto sig = image->signal< ::fwData::Image::SliceTypeModifiedSignalType >(
         ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG);
     {
@@ -284,6 +321,24 @@ void SliceIndexPositionEditor::sliceTypeNotification( int _type )
     connections.push_back( std::make_pair( ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG, s_UPDATE_SLICE_INDEX_SLOT ) );
     connections.push_back( std::make_pair( ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG, s_UPDATE_SLICE_TYPE_SLOT ) );
     connections.push_back( std::make_pair( ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT ) );
+
+    return connections;
+}
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsMap SliceIndexPositionEditor::getAutoConnections() const
+{
+    KeyConnectionsMap connections;
+
+    //FIXME hack to support deprecated getObject()
+    if (this->getInOut< ::fwData::Image >(s_IMAGE_INOUT))
+    {
+        connections.push(s_IMAGE_INOUT, ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
+        connections.push(s_IMAGE_INOUT, ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG, s_UPDATE_SLICE_INDEX_SLOT);
+        connections.push(s_IMAGE_INOUT, ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG, s_UPDATE_SLICE_TYPE_SLOT);
+        connections.push(s_IMAGE_INOUT, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
+    }
 
     return connections;
 }

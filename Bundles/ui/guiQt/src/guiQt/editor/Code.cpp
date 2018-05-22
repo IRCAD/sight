@@ -31,13 +31,15 @@ fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::guiQt::editor::Code, ::fwDa
 
 //------------------------------------------------------------------------------
 
-const std::string Code::PYTHON = "Python";
-const std::string Code::CPP    = "Cpp";
+const std::string Code::s_PYTHON = "Python";
+const std::string Code::s_CPP    = "Cpp";
+
+static const ::fwServices::IService::KeyType s_STRING_INOUT = "string";
 
 //------------------------------------------------------------------------------
 
 Code::Code() noexcept :
-    m_language(PYTHON)
+    m_language(s_PYTHON)
 {
 }
 
@@ -57,17 +59,17 @@ void Code::starting()
     ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
         this->getContainer() );
 
-    ::fwData::String::sptr stringObj = this->getObject< ::fwData::String >();
+    ::fwData::String::sptr stringObj = this->getInOut< ::fwData::String >(s_STRING_INOUT);
 
     QHBoxLayout* layout = new QHBoxLayout();
     m_valueCtrl = new QTextEdit( );
     layout->addWidget( m_valueCtrl, 1);
 
-    if(m_language == PYTHON )
+    if(m_language == s_PYTHON )
     {
         m_highlighter = new ::fwGuiQt::highlighter::PythonHighlighter(m_valueCtrl->document());
     }
-    else if(m_language == CPP )
+    else if(m_language == s_CPP )
     {
         m_highlighter = new ::fwGuiQt::highlighter::CppHighlighter(m_valueCtrl->document());
     }
@@ -88,7 +90,7 @@ void Code::stopping()
 {
     SLM_TRACE_FUNC();
 
-    QObject::disconnect(m_valueCtrl, SIGNAL(textChanged(QString)), this, SLOT(onModifyValue(QString)));
+    QObject::disconnect(m_valueCtrl, SIGNAL(textChanged()), this, SLOT(onModifyValue()));
 
     this->destroy();
 }
@@ -116,7 +118,7 @@ void Code::configuring()
 
 void Code::updating()
 {
-    ::fwData::String::sptr stringObj = this->getObject< ::fwData::String >();
+    ::fwData::String::sptr stringObj = this->getInOut< ::fwData::String >(s_STRING_INOUT);
     SLM_ASSERT("The given string object is null", stringObj);
 
     m_valueCtrl->setText(QString::fromStdString(stringObj->value()));
@@ -142,7 +144,7 @@ void Code::info( std::ostream& _sstream )
 void Code::onModifyValue()
 {
     QString value = m_valueCtrl->toPlainText();
-    ::fwData::String::sptr stringObj = this->getObject< ::fwData::String >();
+    ::fwData::String::sptr stringObj = this->getInOut< ::fwData::String >(s_STRING_INOUT);
     ::fwData::String::sptr oldValue;
     oldValue = ::fwData::Object::copy(stringObj);
 
@@ -163,10 +165,10 @@ void Code::onModifyValue()
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsType Code::getObjSrvConnections() const
+::fwServices::IService::KeyConnectionsMap Code::getAutoConnections() const
 {
-    KeyConnectionsType connections;
-    connections.push_back( std::make_pair( ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT ) );
+    KeyConnectionsMap connections;
+    connections.push(s_STRING_INOUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
 
     return connections;
 }

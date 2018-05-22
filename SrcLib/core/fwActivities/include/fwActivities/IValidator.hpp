@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWACTIVITIES_IVALIDATOR_HPP__
-#define __FWACTIVITIES_IVALIDATOR_HPP__
+#pragma once
 
 #include "fwActivities/config.hpp"
 #include "fwActivities/registry/Activities.hpp"
@@ -13,6 +12,7 @@
 #include "fwActivities/validator/registry/detail.hpp"
 
 #include <fwCore/base.hpp>
+
 #include <fwMedData/ActivitySeries.hpp>
 
 namespace fwData
@@ -59,7 +59,6 @@ public:
 
     fwCoreNonInstanciableClassDefinitionsMacro( (IValidator)(::fwCore::BaseObject) );
 
-
     /**
      * @brief Performs validation of given data as inputs for the considered activity.
      * @param[in] activityInfo a structure which contains all the activity configuration
@@ -70,11 +69,8 @@ public:
      */
     FWACTIVITIES_API virtual ValidationType validate(
         const ::fwActivities::registry::ActivityInfo& activityInfo,
-        SPTR(::fwData::Vector) currentSelection ) const = 0;
+        const CSPTR(::fwData::Vector)& currentSelection ) const = 0;
 
 };
 
 } // namespace fwActivities
-
-#endif // __FWACTIVITIES_IVALIDATOR_HPP__
-

@@ -28,8 +28,11 @@
 #include <fwMedData/SeriesDB.hpp>
 #include <fwMedData/Study.hpp>
 
+#include <fwRuntime/Convert.hpp>
+
 #include <fwServices/IService.hpp>
 #include <fwServices/op/Add.hpp>
+#include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/registry/ServiceConfig.hpp>
 
 #include <QApplication>
@@ -258,11 +261,25 @@ void ActivityDataView::fillInformation(const ::fwActivities::registry::ActivityI
             buttonLayout->addWidget(buttonNew);
             QObject::connect(buttonNew, &QPushButton::clicked, this, &ActivityDataView::createNewObject);
         }
-        QPushButton* buttonAdd    = new QPushButton("Import");
+
+        QPushButton* buttonAdd    = new QPushButton("Load");
         QPushButton* buttonRemove = new QPushButton("Remove");
         QPushButton* buttonClear  = new QPushButton("Clear");
         buttonLayout->addWidget(buttonAdd);
-        buttonAdd->setToolTip(QString("Import a new object of type '%1'").arg(QString::fromStdString(req.type)));
+        buttonAdd->setToolTip(QString("Load an object of type '%1'.").arg(QString::fromStdString(req.type)));
+
+        // If type is a series, we add a button to import the data from a SeriesDB
+        ::fwData::Object::sptr newObject = ::fwData::factory::New(req.type);
+        if (newObject && ::fwMedData::Series::dynamicCast(newObject))
+        {
+            QPushButton* buttonAddFromSDB = new QPushButton("Import");
+            buttonLayout->addWidget(buttonAddFromSDB);
+            buttonAddFromSDB->setToolTip(QString("Import a SeriesDB and extract the N first objects of type '%1', with "
+                                                 "N the maximum number of required objects.").
+                                         arg(QString::fromStdString(req.type)));
+            QObject::connect(buttonAddFromSDB, &QPushButton::clicked, this, &ActivityDataView::importObjectFromSDB);
+        }
+
         buttonLayout->addWidget(buttonRemove);
         buttonRemove->setToolTip(QString("Remove the selected objects"));
         buttonLayout->addWidget(buttonClear);
@@ -603,9 +620,9 @@ void ActivityDataView::createNewObject()
 
     if(nbItems >= req.maxOccurs)
     {
-        QMessageBox::warning(this, "Import",
-                             "The maximum number of element is reached.\n"
-                             "You must remove one before adding another.");
+        const QString message("Can't create more '"+ QString::fromStdString(type) +
+                              "', please remove one to create another.");
+        QMessageBox::warning(this, "New", message );
         return;
     }
     ::fwData::Object::sptr newObject = ::fwData::factory::New(type);
@@ -618,58 +635,80 @@ void ActivityDataView::createNewObject()
 
 void ActivityDataView::importObject()
 {
-    size_t index = static_cast<size_t>(this->currentIndex());
+    const size_t index = static_cast<size_t>(this->currentIndex());
 
     ::fwActivities::registry::ActivityRequirement req = m_activityInfo.requirements[index];
 
-    std::string type = req.type;
+    const std::string type = req.type;
 
     QPointer<QTreeWidget> tree = m_treeWidgets[index];
 
-    unsigned int nbItems = static_cast<unsigned int>(tree->topLevelItemCount());
+    const unsigned int nbItems = static_cast<unsigned int>(tree->topLevelItemCount());
 
     if(nbItems >= req.maxOccurs)
     {
-        QMessageBox::warning(this, "Import",
-                             "The maximum number of element is reached.\n"
-                             "You must remove one before adding another.");
+        const QString message("Can't load more '"+ QString::fromStdString(type) +
+                              "', please remove one to load another.");
+        QMessageBox::warning(this, "Import", message );
+        return;
+    }
+
+    auto obj = this->readObject(type, m_ioSelectorSrvConfig);
+    if (obj)
+    {
+        m_importedObject.push_back(obj);
+
+        this->addObjectItem(index, obj);
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void ActivityDataView::importObjectFromSDB()
+{
+    const size_t index = static_cast<size_t>(this->currentIndex());
+
+    ::fwActivities::registry::ActivityRequirement req = m_activityInfo.requirements[index];
+
+    const std::string type = req.type;
+
+    QPointer<QTreeWidget> tree = m_treeWidgets[index];
+
+    const unsigned int nbItems = static_cast<unsigned int>(tree->topLevelItemCount());
+
+    if(nbItems >= req.maxOccurs)
+    {
+        const QString message("Can't load more '"+ QString::fromStdString(type) +
+                              "', please remove one to load another.");
+        QMessageBox::warning(this, "Import from SeriesDB", message );
         return;
     }
 
     ::fwData::Object::sptr newObject = ::fwData::factory::New(type);
     if (newObject)
     {
-        // If type is a series, we use the SeriesDB reader and then extract the object of this type.
-        if (::fwMedData::Series::dynamicCast(newObject))
+        OSLM_ERROR_IF("Imported object must inherit from 'Series'.", !::fwMedData::Series::dynamicCast(newObject));
+
+        // We use the SeriesDB reader and then extract the object of this type.
+        auto obj      = this->readObject("::fwMedData::SeriesDB", m_sdbIoSelectorSrvConfig);
+        auto seriesDB = ::fwMedData::SeriesDB::dynamicCast(obj);
+        if (seriesDB)
         {
-            ::fwMedData::SeriesDB::sptr seriesDB = ::fwMedData::SeriesDB::New();
-            if (this->readObject(seriesDB))
+            unsigned int nbImportedObj = 0;
+            for (const ::fwMedData::Series::sptr& series : *seriesDB)
             {
-                unsigned int nbImportedObj = 0;
-                for (const ::fwMedData::Series::sptr& series : *seriesDB)
+                if (series->isA(type))
                 {
-                    if (series->isA(type))
+                    ++nbImportedObj;
+                    m_importedObject.push_back(series);
+
+                    this->addObjectItem(index, series);
+
+                    if (nbImportedObj >= req.maxOccurs)
                     {
-                        ++nbImportedObj;
-                        m_importedObject.push_back(series);
-
-                        this->addObjectItem(index, series);
-
-                        if (nbImportedObj >= req.maxOccurs)
-                        {
-                            break;
-                        }
+                        break;
                     }
                 }
-            }
-        }
-        else
-        {
-            if (this->readObject(newObject))
-            {
-                m_importedObject.push_back(newObject);
-
-                this->addObjectItem(index, newObject);
             }
         }
     }
@@ -683,40 +722,31 @@ void ActivityDataView::importObject()
 
 //-----------------------------------------------------------------------------
 
-bool ActivityDataView::readObject(::fwData::Object::sptr obj)
+::fwData::Object::sptr ActivityDataView::readObject(const std::string& classname,
+                                                    const std::string& ioSelectorSrvConfig)
 {
+    ::fwData::Object::sptr obj;
     ::fwServices::IService::sptr ioSelectorSrv;
     ioSelectorSrv = ::fwServices::add("::uiIO::editor::SIOSelector");
-    ioSelectorSrv->registerInOut(obj, ::fwIO::s_DATA_KEY);
+    ioSelectorSrv->setObjectId(::fwIO::s_DATA_KEY, "objRead");
 
     ::fwRuntime::ConfigurationElement::csptr ioCfg;
-    ioCfg = ::fwServices::registry::ServiceConfig::getDefault()->getServiceConfig(m_ioSelectorSrvConfig,
+    ioCfg = ::fwServices::registry::ServiceConfig::getDefault()->getServiceConfig(ioSelectorSrvConfig,
                                                                                   "::uiIO::editor::SIOSelector");
 
-    bool isRead = true;
+    auto ioConfig  = ::fwRuntime::Convert::toPropertyTree(ioCfg);
+    auto srvConfig = ioConfig.get_child("config");
+    srvConfig.add("type.<xmlattr>.class", classname); // add the class of the output object
+
     try
     {
-        ioSelectorSrv->setConfiguration( ::fwRuntime::ConfigurationElement::constCast(ioCfg) );
+        ioSelectorSrv->setConfiguration(srvConfig);
         ioSelectorSrv->configure();
         ioSelectorSrv->start();
         ioSelectorSrv->update();
+        obj = ioSelectorSrv->getOutput< ::fwData::Object >(::fwIO::s_DATA_KEY);
         ioSelectorSrv->stop();
         ::fwServices::OSR::unregisterService( ioSelectorSrv );
-
-        // check if object is properly read.
-        // TODO : improve this test
-        {
-            ::fwData::Object::sptr tmpObject = ::fwData::factory::New(obj->getClassname());
-            ::fwDataCamp::visitor::CompareObjects visitor;
-            visitor.compare(tmpObject, obj);
-            SPTR(::fwDataCamp::visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
-
-            if (props->empty())
-            {
-                SLM_WARN("Object of type '" + obj->getClassname() + "' is not read.");
-                isRead = false;
-            }
-        }
     }
     catch(std::exception& e)
     {
@@ -730,14 +760,13 @@ bool ActivityDataView::readObject(::fwData::Object::sptr obj)
             ioSelectorSrv->stop();
         }
         ::fwServices::OSR::unregisterService( ioSelectorSrv );
-        isRead = false;
     }
-    return isRead;
+    return obj;
 }
 
 //-----------------------------------------------------------------------------
 
-void ActivityDataView::addObjectItem(size_t index, const ::fwData::Object::sptr& obj)
+void ActivityDataView::addObjectItem(size_t index, const ::fwData::Object::csptr& obj)
 {
     QPointer<QTreeWidget> tree = m_treeWidgets[index];
 
@@ -747,12 +776,12 @@ void ActivityDataView::addObjectItem(size_t index, const ::fwData::Object::sptr&
     newItem->setText(int(ColumnType::TYPE), QString::fromStdString(obj->getClassname()));
 
     // TODO add more information about object
-    ::fwMedData::Series::sptr series           = ::fwMedData::Series::dynamicCast(obj);
-    ::fwData::String::sptr strObj              = ::fwData::String::dynamicCast(obj);
-    ::fwData::Integer::sptr intObj             = ::fwData::Integer::dynamicCast(obj);
-    ::fwData::Float::sptr floatObj             = ::fwData::Float::dynamicCast(obj);
-    ::fwData::Boolean::sptr boolObj            = ::fwData::Boolean::dynamicCast(obj);
-    ::fwData::TransformationMatrix3D::sptr trf = ::fwData::TransformationMatrix3D::dynamicCast(obj);
+    ::fwMedData::Series::csptr series           = ::fwMedData::Series::dynamicCast(obj);
+    ::fwData::String::csptr strObj              = ::fwData::String::dynamicCast(obj);
+    ::fwData::Integer::csptr intObj             = ::fwData::Integer::dynamicCast(obj);
+    ::fwData::Float::csptr floatObj             = ::fwData::Float::dynamicCast(obj);
+    ::fwData::Boolean::csptr boolObj            = ::fwData::Boolean::dynamicCast(obj);
+    ::fwData::TransformationMatrix3D::csptr trf = ::fwData::TransformationMatrix3D::dynamicCast(obj);
     if (series)
     {
         newItem->setText(int(ColumnType::NAME), QString::fromStdString(series->getModality()));
@@ -799,7 +828,7 @@ void ActivityDataView::addObjectItem(size_t index, const ::fwData::Object::sptr&
 
 //-----------------------------------------------------------------------------
 
-void ActivityDataView::onTreeItemDoubleClicked(QTreeWidgetItem* item, int column)
+void ActivityDataView::onTreeItemDoubleClicked(QTreeWidgetItem* item, int)
 {
     if (item)
     {

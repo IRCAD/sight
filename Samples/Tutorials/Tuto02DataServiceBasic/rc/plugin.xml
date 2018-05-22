@@ -39,7 +39,7 @@
                 path from the repository in which you launch the application.
             -->
             <service uid="myReaderPathFile" type="::ioVTK::SImageReader">
-                <inout key="image" uid="imageData" />
+                <inout key="data" uid="imageData" />
                 <file>../../data/patient1.vtk</file>
             </service>
 

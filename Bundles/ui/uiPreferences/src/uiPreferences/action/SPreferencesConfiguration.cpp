@@ -156,7 +156,8 @@ void SPreferencesConfiguration::configuring()
             SLM_ASSERT("element 'values' is missing.", valuesCfg);
 
             const ::boost::char_separator<char> sep(", ;");
-            const ::boost::tokenizer< ::boost::char_separator<char> > tokens {valuesCfg->getValue(), sep};
+            const std::string s = valuesCfg->getValue();
+            const ::boost::tokenizer< ::boost::char_separator<char> > tokens {s, sep};
 
             pref.m_comboBox = new QComboBox();
             for(const std::string& value : tokens)

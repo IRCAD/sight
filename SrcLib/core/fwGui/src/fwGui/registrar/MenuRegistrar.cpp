@@ -1,12 +1,13 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "fwGui/registrar/MenuRegistrar.hpp"
+
 #include "fwGui/GuiRegistry.hpp"
 #include "fwGui/IActionSrv.hpp"
-#include "fwGui/registrar/MenuRegistrar.hpp"
 
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Get.hpp>
@@ -22,7 +23,8 @@ namespace registrar
 
 //-----------------------------------------------------------------------------
 
-MenuRegistrar::MenuRegistrar(const std::string &sid) : m_sid(sid)
+MenuRegistrar::MenuRegistrar(const std::string& sid) :
+    m_sid(sid)
 {
 }
 
@@ -72,7 +74,7 @@ void MenuRegistrar::initialize( ::fwRuntime::ConfigurationElement::sptr configur
                 std::string startValue = menuItem->getAttributeValue("start");
                 SLM_ASSERT("Wrong value '"<< startValue <<"' for 'start' attribute (require yes or no)",
                            startValue == "yes" || startValue == "no");
-                start = (startValue=="yes");
+                start = (startValue == "yes");
             }
             std::string sid = menuItem->getAttributeValue("sid");
             OSLM_ASSERT("Action " << sid << " already exists for this menu", m_actionSids.find(
@@ -104,7 +106,7 @@ void MenuRegistrar::initialize( ::fwRuntime::ConfigurationElement::sptr configur
                 std::string startValue = menu->getAttributeValue("start");
                 SLM_ASSERT("Wrong value '"<< startValue <<"' for 'start' attribute (require yes or no)",
                            startValue == "yes" || startValue == "no");
-                start = (startValue=="yes");
+                start = (startValue == "yes");
             }
             std::string sid                 = menu->getAttributeValue("sid");
             std::pair<int, bool> indexStart = std::make_pair( index, start);
@@ -129,7 +131,7 @@ void MenuRegistrar::manage(std::vector< ::fwGui::container::fwMenuItem::sptr > m
         ::fwGui::GuiRegistry::registerActionSIDToParentSID(sid.first, m_sid);
         if(sid.second.second) //service is auto started?
         {
-            OSLM_ASSERT("Service "<<sid.first <<" not exists.", ::fwTools::fwID::exist(sid.first ) );
+            OSLM_ASSERT("Service "<<sid.first <<" does not exist.", ::fwTools::fwID::exist(sid.first ) );
             ::fwServices::IService::sptr service = ::fwServices::get( sid.first );
             OSLM_ASSERT("Service "<<sid.first <<" must be stopped.", service->isStopped() );
             service->start();
@@ -162,7 +164,7 @@ void MenuRegistrar::manage(std::vector< ::fwGui::container::fwMenu::sptr > menus
         ::fwGui::GuiRegistry::registerSIDMenu(sid.first, menu);
         if(sid.second.second) //service is auto started?
         {
-            OSLM_ASSERT("Service "<<sid.first <<" not exists.", ::fwTools::fwID::exist(sid.first ) );
+            OSLM_ASSERT("Service "<<sid.first <<" does not exist.", ::fwTools::fwID::exist(sid.first ) );
             ::fwServices::IService::sptr service = ::fwServices::get( sid.first );
             OSLM_ASSERT("Service "<<sid.first <<" must be stopped.", service->isStopped() );
             service->start();
@@ -178,7 +180,7 @@ void MenuRegistrar::unmanage()
     {
         if(sid.second.second) //service is auto started?
         {
-            OSLM_ASSERT("Service "<<sid.first <<" not exists.", ::fwTools::fwID::exist(sid.first ) );
+            OSLM_ASSERT("Service "<<sid.first <<" does not exist.", ::fwTools::fwID::exist(sid.first ) );
             ::fwServices::IService::sptr service = ::fwServices::get( sid.first );
             service->stop();
         }
@@ -188,7 +190,7 @@ void MenuRegistrar::unmanage()
     {
         if(sid.second.second) //service is auto started?
         {
-            OSLM_ASSERT("Service "<<sid.first <<" not exists.", ::fwTools::fwID::exist(sid.first ) );
+            OSLM_ASSERT("Service "<<sid.first <<" does not exist.", ::fwTools::fwID::exist(sid.first ) );
             ::fwServices::IService::sptr service = ::fwServices::get( sid.first );
             service->stop();
         }
