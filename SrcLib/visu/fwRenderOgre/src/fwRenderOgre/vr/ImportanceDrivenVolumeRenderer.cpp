@@ -375,8 +375,8 @@ void ImportanceDrivenVolumeRenderer::cleanCompositorChain()
 
     // Remove all associated listeners from the compositor chain
     std::for_each(m_compositorListeners.begin(), m_compositorListeners.end(),
-                  [](::Ogre::CompositorInstance::Listener* listener) { delete listener; }
-                  );
+                  [](::Ogre::CompositorInstance::Listener* listener) { delete listener; });
+
     m_compositorListeners.clear();
 }
 
@@ -580,6 +580,16 @@ void ImportanceDrivenVolumeRenderer::setIDVRVPImCAlphaCorrection(double alphaCor
         m_RTVSharedParameters->setNamedConstant("u_vpimcAlphaCorrection", m_idvrVPImCAlphaCorrection);
         this->getLayer()->requestRender();
     }
+}
+
+//-----------------------------------------------------------------------------
+
+void ImportanceDrivenVolumeRenderer::resizeViewport(int w, int h)
+{
+    this->RayTracingVolumeRenderer::resizeViewport(w, h);
+
+    this->cleanCompositorChain();
+    this->buildICCompositors();
 }
 
 //-----------------------------------------------------------------------------
