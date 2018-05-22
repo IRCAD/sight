@@ -129,7 +129,7 @@ public:
 
 protected:
 
-    // Get configuration options from XML
+    /// Get configuration options from XML
     FWRENDERQT_API void configuring() override;
 
     /// Call startContext to set the scene, the viewport and the view,

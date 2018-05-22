@@ -296,7 +296,7 @@ void SRender::configureScene( ConfigurationType _conf )
 
     if( _conf->hasAttribute("aspectRatioMode"))
     {
-        std::string aspectRatio = _conf->getAttributeValue("aspectRatioMode");
+        const std::string aspectRatio = _conf->getAttributeValue("aspectRatioMode");
         if(aspectRatio == "KeepAspectRatioByExpanding")
         {
             m_aspectRatioMode = Qt::KeepAspectRatioByExpanding;
@@ -307,6 +307,10 @@ void SRender::configureScene( ConfigurationType _conf )
         }
         else
         {
+            OSLM_ERROR_IF("Unknown aspect ratio (" <<
+                          aspectRatio <<
+                          "). Possible values are: KeepAspectRatio, KeepAspectRatioByExpanding or IgnoreAspectRatio.",
+                          aspectRatio != "IgnoreAspectRatio");
             m_aspectRatioMode = Qt::IgnoreAspectRatio;
         }
     }
