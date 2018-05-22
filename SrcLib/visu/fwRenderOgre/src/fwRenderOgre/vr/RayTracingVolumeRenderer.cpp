@@ -284,7 +284,7 @@ void RayTracingVolumeRenderer::imageUpdate(::fwData::Image::sptr image, ::fwData
         auto technique = material->getTechnique(0);
         SLM_ASSERT("Technique not found", technique);
         auto pass = technique->getPass(0);
-        m_gpuTF->bind(pass, s_TF_TEXUNIT_NAME, m_RTVSharedParameters);
+        m_gpuTF.lock()->bind(pass, s_TF_TEXUNIT_NAME, m_RTVSharedParameters);
     }
 }
 
@@ -299,7 +299,7 @@ void RayTracingVolumeRenderer::tfUpdate(fwData::TransferFunction::sptr tf)
         auto technique = material->getTechnique(0);
         SLM_ASSERT("Technique not found", technique);
         auto pass = technique->getPass(0);
-        m_gpuTF->bind(pass, s_TF_TEXUNIT_NAME, m_RTVSharedParameters);
+        m_gpuTF.lock()->bind(pass, s_TF_TEXUNIT_NAME, m_RTVSharedParameters);
     }
     m_proxyGeometry->computeGrid();
 }
@@ -475,9 +475,10 @@ void RayTracingVolumeRenderer::setRayCastingPassTextureUnits(Ogre::Pass* _rayCas
     }
     else
     {
-        texUnitState = _rayCastingPass->createTextureUnitState(m_gpuTF->getTexture()->getName());
+        auto gpuTF = m_gpuTF.lock();
+        texUnitState = _rayCastingPass->createTextureUnitState(gpuTF->getTexture()->getName());
         texUnitState->setName(s_TF_TEXUNIT_NAME);
-        m_gpuTF->bind(_rayCastingPass, texUnitState->getName(), fpParams);
+        gpuTF->bind(_rayCastingPass, texUnitState->getName(), fpParams);
     }
 
     fpParams->setNamedConstant("u_tfTexture", numTexUnit++);
@@ -654,7 +655,7 @@ void RayTracingVolumeRenderer::initEntryPoints()
 
     m_proxyGeometry = ::fwRenderOgre::vr::GridProxyGeometry::New(this->m_parentId + "_GridProxyGeometry",
                                                                  m_sceneManager, m_3DOgreTexture,
-                                                                 m_gpuTF, "RayEntryPoints");
+                                                                 m_gpuTF.lock(), "RayEntryPoints");
     m_volumeSceneNode->attachObject(m_proxyGeometry);
 
     m_cameraListener = new CameraListener(this);

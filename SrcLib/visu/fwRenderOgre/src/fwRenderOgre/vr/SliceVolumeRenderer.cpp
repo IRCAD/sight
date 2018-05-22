@@ -63,7 +63,7 @@ SliceVolumeRenderer::SliceVolumeRenderer(std::string parentId,
                 }
                 else
                 {
-                    texTFState->setTexture(m_gpuTF->getTexture());
+                    texTFState->setTexture(m_gpuTF.lock()->getTexture());
                     m_defaultShaderParameters = pass->getFragmentProgramParameters();
                     m_currentShaderParameters = m_defaultShaderParameters;
                 }

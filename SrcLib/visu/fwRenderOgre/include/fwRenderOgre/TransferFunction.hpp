@@ -24,6 +24,7 @@ class FWRENDEROGRE_CLASS_API TransferFunction : public ::boost::noncopyable
 {
 public:
     typedef std::shared_ptr<TransferFunction> sptr;
+    typedef std::weak_ptr<TransferFunction> wptr;
 
     FWRENDEROGRE_API TransferFunction();
     FWRENDEROGRE_API virtual ~TransferFunction();

@@ -99,7 +99,7 @@ private:
     ::Ogre::TexturePtr m_3DImageTexture;
 
     /// Transfer function to be applied to the image.
-    TransferFunction::sptr m_gpuTF;
+    TransferFunction::wptr m_gpuTF;
 
 };
 

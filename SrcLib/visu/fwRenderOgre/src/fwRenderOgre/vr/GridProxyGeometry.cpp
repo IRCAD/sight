@@ -239,7 +239,7 @@ void GridProxyGeometry::setupGrid()
         ::Ogre::Pass* gridPass                                    = gridMtl->getTechnique(0)->getPass(0);
         ::Ogre::GpuProgramParametersSharedPtr gridGeneratorParams = gridPass->getFragmentProgramParameters();
 
-        m_gpuTF->bind(gridPass, s_TF_TEXUNIT_NAME, gridGeneratorParams);
+        m_gpuTF.lock()->bind(gridPass, s_TF_TEXUNIT_NAME, gridGeneratorParams);
 
         gridGeneratorParams->setNamedConstant("u_brickSize", m_brickSize.data(), 3, 1);
 
@@ -278,7 +278,7 @@ void GridProxyGeometry::computeGrid()
 
     ::Ogre::Pass* gridPass                       = gridMtl->getTechnique(0)->getPass(0);
     ::Ogre::GpuProgramParametersSharedPtr params = gridPass->getFragmentProgramParameters();
-    m_gpuTF->bind(gridPass, s_TF_TEXUNIT_NAME, params);
+    m_gpuTF.lock()->bind(gridPass, s_TF_TEXUNIT_NAME, params);
 
     for(unsigned i = 0; i < static_cast<unsigned>(m_gridSize[2]); ++i)
     {
