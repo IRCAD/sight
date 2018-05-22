@@ -24,8 +24,10 @@
 #include <boost/filesystem/path.hpp>
 
 #include <vtkPolyData.h>
+#include <vtkPolyDataMapper.h>
 #include <vtkSmartPointer.h>
 #include <vtkSphereSource.h>
+#include <vtkTextureMapToSphere.h>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwVtkIO::ut::MeshTest );
@@ -84,8 +86,17 @@ void MeshTest::testMeshToVtk()
 
     ::fwVtkIO::helper::Mesh::fromVTKMesh(poly_source, mesh1);
 
+    ::fwDataTools::Mesh::generatePointNormals(mesh1);
+    ::fwDataTools::Mesh::generateCellNormals(mesh1);
+    ::fwDataTools::Mesh::colorizeMeshPoints(mesh1);
+    ::fwDataTools::Mesh::colorizeMeshCells(mesh1);
+
     CPPUNIT_ASSERT( mesh1->getNumberOfCells() );
     CPPUNIT_ASSERT( mesh1->getNumberOfPoints() );
+    CPPUNIT_ASSERT( mesh1->getPointNormalsArray()->getSize()[0] );
+    CPPUNIT_ASSERT( mesh1->getCellNormalsArray()->getSize()[0] );
+    CPPUNIT_ASSERT( mesh1->getPointColorsArray()->getSize()[0] );
+    CPPUNIT_ASSERT( mesh1->getCellColorsArray()->getSize()[0] );
 
     const vtkSmartPointer< vtkPolyData > vtkMesh = vtkSmartPointer< vtkPolyData >::New();
     ::fwVtkIO::helper::Mesh::toVTKMesh( mesh1, vtkMesh);
@@ -122,8 +133,17 @@ void MeshTest::testMeshToGrid()
 
     ::fwVtkIO::helper::Mesh::fromVTKMesh(poly_source, mesh1);
 
+    ::fwDataTools::Mesh::generatePointNormals(mesh1);
+    ::fwDataTools::Mesh::generateCellNormals(mesh1);
+    ::fwDataTools::Mesh::colorizeMeshPoints(mesh1);
+    ::fwDataTools::Mesh::colorizeMeshCells(mesh1);
+
     CPPUNIT_ASSERT( mesh1->getNumberOfCells() );
     CPPUNIT_ASSERT( mesh1->getNumberOfPoints() );
+    CPPUNIT_ASSERT( mesh1->getPointNormalsArray()->getSize()[0] );
+    CPPUNIT_ASSERT( mesh1->getCellNormalsArray()->getSize()[0] );
+    CPPUNIT_ASSERT( mesh1->getPointColorsArray()->getSize()[0] );
+    CPPUNIT_ASSERT( mesh1->getCellColorsArray()->getSize()[0] );
 
     const vtkSmartPointer< vtkUnstructuredGrid > vtkGrid = vtkSmartPointer< vtkUnstructuredGrid >::New();
     ::fwVtkIO::helper::Mesh::toVTKGrid( mesh1, vtkGrid);

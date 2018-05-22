@@ -260,16 +260,11 @@ void Mesh::setCellTexCoord(::fwData::Mesh::Id id, const ::fwData::Mesh::TexCoord
                                         ::fwData::Mesh::CellValueType p2,
                                         ::fwData::Mesh::CellValueType p3,
                                         ::fwData::Mesh::CellValueType p4,
-                                        bool isTetra)
+                                        ::fwData::Mesh::CellTypesEnum type)
 {
     ::fwData::Mesh::CellValueType p[4] = {p1, p2, p3, p4};
 
-    if(isTetra)
-    {
-        return this->insertNextCell(::fwData::Mesh::TETRA, p, 4);
-    }
-
-    return this->insertNextCell(::fwData::Mesh::QUAD, p, 4);
+    return this->insertNextCell(type, p, 4);
 }
 
 //------------------------------------------------------------------------------

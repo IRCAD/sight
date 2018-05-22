@@ -190,7 +190,7 @@ public:
                                                       ::fwData::Mesh::CellValueType p2,
                                                       ::fwData::Mesh::CellValueType p3,
                                                       ::fwData::Mesh::CellValueType p4,
-                                                      bool isTetra = false);
+                                                      ::fwData::Mesh::CellTypesEnum type = ::fwData::Mesh::QUAD);
     /**
      * @brief Insert a cell into the mesh.
      * @see insertNextCell

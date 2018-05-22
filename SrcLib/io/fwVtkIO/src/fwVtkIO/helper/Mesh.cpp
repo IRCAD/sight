@@ -260,8 +260,8 @@ void Mesh::fromVTKGrid(vtkSmartPointer<vtkUnstructuredGrid> grid, ::fwData::Mesh
                     break;
                 case VTK_TETRA:
                     SLM_ASSERT("Wrong number of ids: "<<idList->GetNumberOfIds(), idList->GetNumberOfIds() == 4);
-                    meshHelper.insertNextCell( idList->GetId(0), idList->GetId(1), idList->GetId(2), idList->GetId(
-                                                   3), true);
+                    meshHelper.insertNextCell( idList->GetId(0), idList->GetId(1), idList->GetId(2), idList->GetId(3),
+                                               ::fwData::Mesh::TETRA);
                     break;
                 default:
                     FW_RAISE("VTK Mesh type "<<cellType<< " not supported.");
@@ -403,7 +403,7 @@ void Mesh::toVTKMesh( const ::fwData::Mesh::csptr& mesh, vtkSmartPointer<vtkPoly
     const ::fwData::Mesh::ConstCellDataMultiArrayType cellData               = meshHelper.getCellData();
     const ::fwData::Mesh::ConstCellDataOffsetsMultiArrayType cellDataOffsets = meshHelper.getCellDataOffsets();
 
-    polyData->Allocate(4, nbCells);
+    polyData->Allocate(static_cast< int >(nbCells));
 
     vtkIdType typeVtkCell;
     vtkIdType cell[4];
@@ -490,7 +490,7 @@ void Mesh::toVTKGrid( const ::fwData::Mesh::csptr& mesh, vtkSmartPointer<vtkUnst
     const ::fwData::Mesh::ConstCellDataMultiArrayType cellData               = meshHelper.getCellData();
     const ::fwData::Mesh::ConstCellDataOffsetsMultiArrayType cellDataOffsets = meshHelper.getCellDataOffsets();
 
-    grid->Allocate(4, nbCells);
+    grid->Allocate(static_cast<int>(nbCells));
 
     vtkIdType typeVtkCell;
     vtkIdType cell[4];
@@ -548,8 +548,8 @@ void Mesh::toVTKGrid( const ::fwData::Mesh::csptr& mesh, vtkSmartPointer<vtkUnst
 
 //------------------------------------------------------------------------------
 
-vtkSmartPointer<vtkPolyData> Mesh::updatePolyDataPoints(vtkSmartPointer<vtkPolyData> polyDataDst,
-                                                        const ::fwData::Mesh::csptr& meshSrc )
+void Mesh::updatePolyDataPoints(vtkSmartPointer<vtkPolyData> polyDataDst,
+                                const ::fwData::Mesh::csptr& meshSrc )
 {
     SLM_ASSERT( "vtkPolyData should not be NULL", polyDataDst);
     ::fwDataTools::helper::MeshGetter meshHelper(meshSrc);
@@ -571,13 +571,12 @@ vtkSmartPointer<vtkPolyData> Mesh::updatePolyDataPoints(vtkSmartPointer<vtkPolyD
     }
 
     polyDataPoints->Modified();
-    return polyDataDst;
 }
 
 //------------------------------------------------------------------------------
 
-vtkSmartPointer<vtkPolyData> Mesh::updatePolyDataPointColor(vtkSmartPointer<vtkPolyData> polyDataDst,
-                                                            const ::fwData::Mesh::csptr& meshSrc )
+void Mesh::updatePolyDataPointColor(vtkSmartPointer<vtkPolyData> polyDataDst,
+                                    const ::fwData::Mesh::csptr& meshSrc )
 {
     SLM_ASSERT( "vtkPolyData should not be NULL", polyDataDst);
 
@@ -614,14 +613,12 @@ vtkSmartPointer<vtkPolyData> Mesh::updatePolyDataPointColor(vtkSmartPointer<vtkP
         }
         polyDataDst->Modified();
     }
-
-    return polyDataDst;
 }
 
 //------------------------------------------------------------------------------
 
-vtkSmartPointer<vtkPolyData> Mesh::updatePolyDataCellColor(vtkSmartPointer<vtkPolyData> polyDataDst,
-                                                           const ::fwData::Mesh::csptr& meshSrc )
+void Mesh::updatePolyDataCellColor(vtkSmartPointer<vtkPolyData> polyDataDst,
+                                   const ::fwData::Mesh::csptr& meshSrc )
 {
     SLM_ASSERT( "vtkPolyData should not be NULL", polyDataDst);
 
@@ -661,13 +658,12 @@ vtkSmartPointer<vtkPolyData> Mesh::updatePolyDataCellColor(vtkSmartPointer<vtkPo
         polyDataDst->Modified();
     }
 
-    return polyDataDst;
 }
 
 //------------------------------------------------------------------------------
 
-vtkSmartPointer<vtkPolyData> Mesh::updatePolyDataPointNormals(vtkSmartPointer<vtkPolyData> polyDataDst,
-                                                              const ::fwData::Mesh::csptr& meshSrc )
+void Mesh::updatePolyDataPointNormals(vtkSmartPointer<vtkPolyData> polyDataDst,
+                                      const ::fwData::Mesh::csptr& meshSrc )
 {
     SLM_ASSERT( "vtkPolyData should not be NULL", polyDataDst);
 
@@ -704,14 +700,12 @@ vtkSmartPointer<vtkPolyData> Mesh::updatePolyDataPointNormals(vtkSmartPointer<vt
         }
         polyDataDst->Modified();
     }
-
-    return polyDataDst;
 }
 
 //------------------------------------------------------------------------------
 
-vtkSmartPointer<vtkPolyData> Mesh::updatePolyDataCellNormals(vtkSmartPointer<vtkPolyData> polyDataDst,
-                                                             const ::fwData::Mesh::csptr& meshSrc )
+void Mesh::updatePolyDataCellNormals(vtkSmartPointer<vtkPolyData> polyDataDst,
+                                     const ::fwData::Mesh::csptr& meshSrc )
 {
     SLM_ASSERT( "vtkPolyData should not be NULL", polyDataDst);
 
@@ -749,14 +743,12 @@ vtkSmartPointer<vtkPolyData> Mesh::updatePolyDataCellNormals(vtkSmartPointer<vtk
         }
         polyDataDst->Modified();
     }
-
-    return polyDataDst;
 }
 
 //------------------------------------------------------------------------------
 
-vtkSmartPointer<vtkPolyData> Mesh::updatePolyDataPointTexCoords(vtkSmartPointer<vtkPolyData> polyDataDst,
-                                                                const ::fwData::Mesh::csptr& meshSrc )
+void Mesh::updatePolyDataPointTexCoords(vtkSmartPointer<vtkPolyData> polyDataDst,
+                                        const ::fwData::Mesh::csptr& meshSrc )
 {
     SLM_ASSERT( "vtkPolyData should not be NULL", polyDataDst);
 
@@ -793,14 +785,12 @@ vtkSmartPointer<vtkPolyData> Mesh::updatePolyDataPointTexCoords(vtkSmartPointer<
         }
         polyDataDst->Modified();
     }
-
-    return polyDataDst;
 }
 
 //------------------------------------------------------------------------------
 
-vtkSmartPointer<vtkPolyData> Mesh::updatePolyDataCellTexCoords(vtkSmartPointer<vtkPolyData> polyDataDst,
-                                                               const ::fwData::Mesh::csptr& meshSrc )
+void Mesh::updatePolyDataCellTexCoords(vtkSmartPointer<vtkPolyData> polyDataDst,
+                                       const ::fwData::Mesh::csptr& meshSrc )
 {
     SLM_ASSERT( "vtkPolyData should not be NULL", polyDataDst);
 
@@ -838,7 +828,6 @@ vtkSmartPointer<vtkPolyData> Mesh::updatePolyDataCellTexCoords(vtkSmartPointer<v
         polyDataDst->Modified();
     }
 
-    return polyDataDst;
 }
 
 //-----------------------------------------------------------------------------
@@ -889,8 +878,8 @@ double Mesh::computeVolume( const ::fwData::Mesh::csptr& mesh )
 
 //------------------------------------------------------------------------------
 
-vtkSmartPointer<vtkUnstructuredGrid> Mesh::updateGridPointNormals(vtkSmartPointer<vtkUnstructuredGrid> gridDst,
-                                                                  const ::fwData::Mesh::csptr& meshSrc )
+void Mesh::updateGridPointNormals(vtkSmartPointer<vtkUnstructuredGrid> gridDst,
+                                  const ::fwData::Mesh::csptr& meshSrc )
 {
     SLM_ASSERT( "vtkUnstructuredGrid should not be NULL", gridDst);
 
@@ -928,13 +917,12 @@ vtkSmartPointer<vtkUnstructuredGrid> Mesh::updateGridPointNormals(vtkSmartPointe
         gridDst->Modified();
     }
 
-    return gridDst;
 }
 
 //------------------------------------------------------------------------------
 
-vtkSmartPointer<vtkUnstructuredGrid> Mesh::updateGridPoints(vtkSmartPointer<vtkUnstructuredGrid> gridDst,
-                                                            const ::fwData::Mesh::csptr& meshSrc )
+void Mesh::updateGridPoints(vtkSmartPointer<vtkUnstructuredGrid> gridDst,
+                            const ::fwData::Mesh::csptr& meshSrc )
 {
     SLM_ASSERT( "vtkPolyData should not be NULL", gridDst);
     ::fwDataTools::helper::MeshGetter meshHelper(meshSrc);
@@ -956,13 +944,11 @@ vtkSmartPointer<vtkUnstructuredGrid> Mesh::updateGridPoints(vtkSmartPointer<vtkU
     }
 
     polyDataPoints->Modified();
-    return gridDst;
 }
 
 //------------------------------------------------------------------------------
-
-vtkSmartPointer<vtkUnstructuredGrid> Mesh::updateGridPointColor(vtkSmartPointer<vtkUnstructuredGrid> gridDst,
-                                                                const ::fwData::Mesh::csptr& meshSrc )
+void Mesh::updateGridPointColor(vtkSmartPointer<vtkUnstructuredGrid> gridDst,
+                                const ::fwData::Mesh::csptr& meshSrc )
 {
     SLM_ASSERT( "vtkPolyData should not be NULL", gridDst);
 
@@ -1000,13 +986,12 @@ vtkSmartPointer<vtkUnstructuredGrid> Mesh::updateGridPointColor(vtkSmartPointer<
         gridDst->Modified();
     }
 
-    return gridDst;
 }
 
 //------------------------------------------------------------------------------
 
-vtkSmartPointer<vtkUnstructuredGrid> Mesh::updateGridCellColor(vtkSmartPointer<vtkUnstructuredGrid> gridDst,
-                                                               const ::fwData::Mesh::csptr& meshSrc )
+void Mesh::updateGridCellColor(vtkSmartPointer<vtkUnstructuredGrid> gridDst,
+                               const ::fwData::Mesh::csptr& meshSrc )
 {
     SLM_ASSERT( "vtkPolyData should not be NULL", gridDst);
 
@@ -1045,14 +1030,12 @@ vtkSmartPointer<vtkUnstructuredGrid> Mesh::updateGridCellColor(vtkSmartPointer<v
         }
         gridDst->Modified();
     }
-
-    return gridDst;
 }
 
 //------------------------------------------------------------------------------
 
-vtkSmartPointer<vtkUnstructuredGrid> Mesh::updateGridCellNormals(vtkSmartPointer<vtkUnstructuredGrid> gridDst,
-                                                                 const ::fwData::Mesh::csptr& meshSrc )
+void Mesh::updateGridCellNormals(vtkSmartPointer<vtkUnstructuredGrid> gridDst,
+                                 const ::fwData::Mesh::csptr& meshSrc )
 {
     SLM_ASSERT( "vtkPolyData should not be NULL", gridDst);
 
@@ -1091,13 +1074,12 @@ vtkSmartPointer<vtkUnstructuredGrid> Mesh::updateGridCellNormals(vtkSmartPointer
         gridDst->Modified();
     }
 
-    return gridDst;
 }
 
 //------------------------------------------------------------------------------
 
-vtkSmartPointer<vtkUnstructuredGrid> Mesh::updateGridPointTexCoords(vtkSmartPointer<vtkUnstructuredGrid> gridDst,
-                                                                    const ::fwData::Mesh::csptr& meshSrc )
+void Mesh::updateGridPointTexCoords(vtkSmartPointer<vtkUnstructuredGrid> gridDst,
+                                    const ::fwData::Mesh::csptr& meshSrc )
 {
     SLM_ASSERT( "vtkPolyData should not be NULL", gridDst);
 
@@ -1135,13 +1117,12 @@ vtkSmartPointer<vtkUnstructuredGrid> Mesh::updateGridPointTexCoords(vtkSmartPoin
         gridDst->Modified();
     }
 
-    return gridDst;
 }
 
 //------------------------------------------------------------------------------
 
-vtkSmartPointer<vtkUnstructuredGrid> Mesh::updateGridCellTexCoords(vtkSmartPointer<vtkUnstructuredGrid> gridDst,
-                                                                   const ::fwData::Mesh::csptr& meshSrc )
+void Mesh::updateGridCellTexCoords(vtkSmartPointer<vtkUnstructuredGrid> gridDst,
+                                   const ::fwData::Mesh::csptr& meshSrc )
 {
     SLM_ASSERT( "vtkPolyData should not be NULL", gridDst);
 
@@ -1180,7 +1161,6 @@ vtkSmartPointer<vtkUnstructuredGrid> Mesh::updateGridCellTexCoords(vtkSmartPoint
         gridDst->Modified();
     }
 
-    return gridDst;
 }
 
 //-----------------------------------------------------------------------------
