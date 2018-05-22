@@ -279,7 +279,7 @@ void SSliceIndexDicomPullerEditor::triggerNewSlice()
 
     // Compute slice index
     size_t selectedSliceIndex = static_cast<size_t>(m_sliceIndexSlider->value()) +
-                                     dicomSeries->getFirstInstanceNumber();
+                                dicomSeries->getFirstInstanceNumber();
     OSLM_TRACE("triggered new slice : " << selectedSliceIndex);
     if(!dicomSeries->isInstanceAvailable(selectedSliceIndex))
     {
@@ -457,7 +457,7 @@ void SSliceIndexDicomPullerEditor::pullInstance()
 
         // Get selected slice
         size_t selectedSliceIndex = static_cast<size_t>(m_sliceIndexSlider->value()) +
-                                         dicomSeries->getFirstInstanceNumber();
+                                    dicomSeries->getFirstInstanceNumber();
 
         std::string seriesInstanceUID = dicomSeries->getInstanceUID();
 
