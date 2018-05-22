@@ -29,10 +29,12 @@ namespace vr
 
 ::Ogre::String GridProxyGeometryFactory::FACTORY_TYPE_NAME = "GridProxyGeometry";
 
+static const std::string s_TF_TEXUNIT_NAME = "transferFunction";
+
 //------------------------------------------------------------------------------
 
 GridProxyGeometry* GridProxyGeometry::New(const std::string& _name, ::Ogre::SceneManager* _sceneManager,
-                                          ::Ogre::TexturePtr _3DImageTexture, TransferFunction& _tf,
+                                          ::Ogre::TexturePtr _3DImageTexture, const TransferFunction::sptr& _tf,
                                           const std::string& _mtlName)
 {
 
@@ -94,7 +96,7 @@ void GridProxyGeometry::initialize()
 
 //------------------------------------------------------------------------------
 
-void GridProxyGeometry::updateGridSize(const ::Ogre::Vector2& _tfWindow)
+void GridProxyGeometry::updateGridSize()
 {
     const std::vector<int> imageSize = {{ int(this->m_3DImageTexture->getWidth()),
                                           int(this->m_3DImageTexture->getHeight()),
@@ -114,7 +116,7 @@ void GridProxyGeometry::updateGridSize(const ::Ogre::Vector2& _tfWindow)
     }
 
     this->setupGrid();
-    this->computeGrid(_tfWindow);
+    this->computeGrid();
 }
 
 //------------------------------------------------------------------------------
@@ -166,13 +168,8 @@ void GridProxyGeometry::initializeGridMaterials()
     ::Ogre::Pass* gridPass = gridMtl->getTechnique(0)->getPass(0);
 
     ::Ogre::TextureUnitState* tex3DState = gridPass->getTextureUnitState("image");
-    ::Ogre::TextureUnitState* texTFState = gridPass->getTextureUnitState("transferFunction");
-
     SLM_ASSERT("'image' texture unit is not found", tex3DState);
-    SLM_ASSERT("'transferFunction' texture unit is not found", texTFState);
-
     tex3DState->setTexture(m_3DImageTexture);
-    texTFState->setTexture(m_gpuTF.getTexture());
 
     this->setupGrid();
 }
@@ -239,9 +236,10 @@ void GridProxyGeometry::setupGrid()
     {
         ::Ogre::MaterialPtr gridMtl = ::Ogre::MaterialManager::getSingleton().getByName("VolumeBricksGrid");
 
-        ::Ogre::Pass* gridPass = gridMtl->getTechnique(0)->getPass(0);
-
+        ::Ogre::Pass* gridPass                                    = gridMtl->getTechnique(0)->getPass(0);
         ::Ogre::GpuProgramParametersSharedPtr gridGeneratorParams = gridPass->getFragmentProgramParameters();
+
+        m_gpuTF->bind(gridPass, s_TF_TEXUNIT_NAME, gridGeneratorParams);
 
         gridGeneratorParams->setNamedConstant("u_brickSize", m_brickSize.data(), 3, 1);
 
@@ -270,11 +268,17 @@ void GridProxyGeometry::setupGrid()
 
 //------------------------------------------------------------------------------
 
-void GridProxyGeometry::computeGrid(const ::Ogre::Vector2& _tfWindow)
+void GridProxyGeometry::computeGrid()
 {
     size_t count = m_gridRenderOp.vertexData->vertexCount;
     m_gridRenderOp.vertexData->vertexCount = 4;
     m_gridRenderOp.operationType           = ::Ogre::RenderOperation::OT_TRIANGLE_STRIP;
+
+    ::Ogre::MaterialPtr gridMtl = ::Ogre::MaterialManager::getSingleton().getByName("VolumeBricksGrid");
+
+    ::Ogre::Pass* gridPass                       = gridMtl->getTechnique(0)->getPass(0);
+    ::Ogre::GpuProgramParametersSharedPtr params = gridPass->getFragmentProgramParameters();
+    m_gpuTF->bind(gridPass, s_TF_TEXUNIT_NAME, params);
 
     for(unsigned i = 0; i < static_cast<unsigned>(m_gridSize[2]); ++i)
     {
@@ -282,13 +286,7 @@ void GridProxyGeometry::computeGrid(const ::Ogre::Vector2& _tfWindow)
 
         rt->getViewport(0)->clear();
 
-        ::Ogre::MaterialPtr gridMtl = ::Ogre::MaterialManager::getSingleton().getByName("VolumeBricksGrid");
-
-        ::Ogre::Pass* gridPass                       = gridMtl->getTechnique(0)->getPass(0);
-        ::Ogre::GpuProgramParametersSharedPtr params = gridPass->getFragmentProgramParameters();
-
         params->setNamedConstant("u_slice", static_cast<int>(i));
-        params->setNamedConstant("u_tfWindow", _tfWindow);
 
         mParentSceneManager->manualRender(
             &m_gridRenderOp,

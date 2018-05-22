@@ -25,8 +25,7 @@ std::uint32_t TransferFunction::TEXTURE_PIXEL_COUNT;
 
 //-----------------------------------------------------------------------------
 
-TransferFunction::TransferFunction() :
-    m_sampleDistance(1.f)
+TransferFunction::TransferFunction()
 {
     // Unluckily Ogre does not seem to give us the maximum texture size through the caps... :'(
     // So we have no other choice than asking OpenGL directly
@@ -42,6 +41,7 @@ TransferFunction::TransferFunction() :
 
 TransferFunction::~TransferFunction()
 {
+    this->removeTexture();
 }
 
 //-----------------------------------------------------------------------------
@@ -74,6 +74,9 @@ void TransferFunction::removeTexture()
 
 void TransferFunction::updateTexture(const ::fwData::TransferFunction::csptr& _tf)
 {
+    using TFValueType     = ::fwData::TransferFunction::TFValueType;
+    using TFValuePairType = ::fwData::TransferFunction::TFValuePairType;
+
     // Retrieves the pixel buffer from the texture
     ::Ogre::HardwarePixelBufferSharedPtr pixBuffer = m_texture->getBuffer();
 
@@ -86,20 +89,21 @@ void TransferFunction::updateTexture(const ::fwData::TransferFunction::csptr& _t
     const ::fwData::TransferFunction::TFDataType tfData = _tf->getTFData();
 
     // Retrieves the transfer function's intensity window
-    const ::fwData::TransferFunction::TFValuePairType intensityMinMax = _tf->getWLMinMax();
+    const TFValuePairType intensityMinMax = _tf->getWLMinMax();
 
-    const ::fwData::TransferFunction::TFValuePairType tfMinMax = _tf->getMinMaxTFValues();
+    const TFValuePairType tfMinMax = _tf->getMinMaxTFValues();
 
     // Counter used to iterate through the texture buffer without exceeding its limit
-    const double invWindow                                      = 1./_tf->getWindow();
-    const ::fwData::TransferFunction::TFValueType intensityStep = (intensityMinMax.second - intensityMinMax.first) /
-                                                                  TEXTURE_PIXEL_COUNT;
+    const TFValueType invWindow     = 1./_tf->getWindow();
+    const TFValueType intensityStep = (intensityMinMax.second - intensityMinMax.first) /
+                                      TEXTURE_PIXEL_COUNT;
 
-    ::fwData::TransferFunction::TFValueType i = intensityMinMax.first;
+    TFValueType i = intensityMinMax.first;
     for( std::uint32_t k = 0; k < TEXTURE_PIXEL_COUNT; ++k)
     {
         // Tf intensity to mapped color.
-        auto value = (i - intensityMinMax.first) * (tfMinMax.second - tfMinMax.first) * invWindow + tfMinMax.first;
+        const TFValueType value = (i - intensityMinMax.first) * (tfMinMax.second - tfMinMax.first) *
+                                  invWindow + tfMinMax.first;
 
         ::fwData::TransferFunction::TFColor interpolatedColor = _tf->getInterpolatedColor(value);
 
@@ -111,12 +115,12 @@ void TransferFunction::updateTexture(const ::fwData::TransferFunction::csptr& _t
         i += intensityStep;
     }
 
-    ::Ogre::Image image;
-    image.loadDynamicImage(static_cast<std::uint8_t*>(pixBox.data), TEXTURE_SIZE, 1, 1, ::Ogre::PF_A8R8G8B8);
-
     pixBuffer->unlock();
 
-    image.save("zizi.png");
+    m_isClamped = _tf->getIsClamped();
+
+    const auto tfWLMinMax = _tf->getWLMinMax();
+    m_tfWindow = ::Ogre::Vector2(float(tfWLMinMax.first), float(tfWLMinMax.second));
 }
 
 //-----------------------------------------------------------------------------

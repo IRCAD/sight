@@ -10,6 +10,8 @@
 
 #include "fwTools/fwID.hpp"
 
+#include <fwRenderOgre/TransferFunction.hpp>
+
 #include <fwDataTools/helper/MedicalImageAdaptor.hpp>
 
 #include <OGRE/OgreMaterial.h>
@@ -69,7 +71,7 @@ public:
     FWRENDEROGRE_API void setEntityOpacity( float _f );
 
     /// Adds or updates the texture containing the transfer function data in the negato passes
-    FWRENDEROGRE_API void setTFData(const ::Ogre::TexturePtr _tfTexture, ::Ogre::Vector2 _tfWindow);
+    FWRENDEROGRE_API void setTFData(const ::fwRenderOgre::TransferFunction& _tfTexture, ::Ogre::Vector2 _tfWindow);
 
     FWRENDEROGRE_API void switchThresholding(bool _threshold);
 

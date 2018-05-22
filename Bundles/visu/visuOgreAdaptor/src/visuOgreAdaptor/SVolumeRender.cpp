@@ -119,6 +119,7 @@ SVolumeRender::SVolumeRender() noexcept :
     newSlot(s_SET_ENUM_PARAMETER_SLOT, &SVolumeRender::setEnumParameter, this);
     newSlot(s_SET_COLOR_PARAMETER_SLOT, &SVolumeRender::setColorParameter, this);
     newSlot(s_UPDATE_VISIBILITY_SLOT, &SVolumeRender::updateVisibility, this);
+
     m_renderingMode = VR_MODE_RAY_TRACING;
 }
 
@@ -170,7 +171,7 @@ void SVolumeRender::updateTFPoints()
 
     ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
 
-    m_gpuTF.updateTexture(tf);
+    m_gpuTF->updateTexture(tf);
 
     if(m_preIntegratedRendering)
     {
@@ -195,7 +196,7 @@ void SVolumeRender::updateTFWindowing(double /*window*/, double /*level*/)
 
     ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
 
-    m_gpuTF.updateTexture(tf);
+    m_gpuTF->updateTexture(tf);
 
     if(m_preIntegratedRendering)
     {
@@ -234,6 +235,8 @@ void SVolumeRender::starting()
     this->initialize();
 
     this->getRenderService()->makeCurrent();
+
+    m_gpuTF = std::make_shared< ::fwRenderOgre::TransferFunction>();
 
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("inout '" + s_IMAGE_INOUT +"' is missing.", image);
@@ -275,7 +278,7 @@ void SVolumeRender::starting()
         ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
         true);
 
-    m_gpuTF.createTexture(this->getID());
+    m_gpuTF->createTexture(this->getID());
     m_preIntegrationTable.createTexture(this->getID());
 
     ::fwRenderOgre::Layer::sptr layer = this->getRenderService()->getLayer(m_layerID);
@@ -305,7 +308,7 @@ void SVolumeRender::starting()
         this->setFocalDistance(50);
     }
 
-    m_gpuTF.setSampleDistance(m_volumeRenderer->getSamplingRate());
+    m_gpuTF->setSampleDistance(m_volumeRenderer->getSamplingRate());
 
     m_volumeRenderer->setPreIntegratedRendering(m_preIntegratedRendering);
 
@@ -346,7 +349,8 @@ void SVolumeRender::stopping()
     ::Ogre::TextureManager::getSingleton().remove(m_maskTexture->getHandle());
     m_maskTexture.reset();
 
-    m_gpuTF.removeTexture();
+    m_gpuTF.reset();
+
     m_preIntegrationTable.removeTexture();
 
     // Disconnect widget to interactor.
@@ -425,7 +429,7 @@ void SVolumeRender::updateImage()
 
     ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
 
-    m_gpuTF.updateTexture(tf);
+    m_gpuTF->updateTexture(tf);
 
     if(m_preIntegratedRendering)
     {
@@ -475,7 +479,7 @@ void SVolumeRender::updateSampling(int nbSamples)
     m_nbSamples = static_cast<std::uint16_t>(nbSamples);
 
     m_volumeRenderer->setSampling(m_nbSamples);
-    m_gpuTF.setSampleDistance(m_volumeRenderer->getSamplingRate());
+    m_gpuTF->setSampleDistance(m_volumeRenderer->getSamplingRate());
 
     if(m_ambientOcclusion || m_colorBleeding || m_shadows)
     {
@@ -1021,7 +1025,7 @@ void SVolumeRender::updateVolumeIllumination()
 {
     this->getRenderService()->makeCurrent();
 
-    m_illum->SATUpdate(m_3DOgreTexture, m_gpuTF.getTexture(), m_volumeRenderer->getSamplingRate());
+    m_illum->SATUpdate(m_3DOgreTexture, m_gpuTF->getTexture(), m_volumeRenderer->getSamplingRate());
 
     // Volume illumination is only implemented for raycasting rendering
     if(m_renderingMode == VR_MODE_RAY_TRACING)

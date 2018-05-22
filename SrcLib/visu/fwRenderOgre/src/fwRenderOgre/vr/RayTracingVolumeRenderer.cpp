@@ -85,7 +85,6 @@ struct RayTracingVolumeRenderer::CameraListener : public ::Ogre::Camera::Listene
                 }
 
                 // Recompute the focal length in case the camera moved.
-
                 m_renderer->computeEntryPointsTexture();
 
                 m_frameId = frameId;
@@ -103,12 +102,14 @@ struct RayTracingVolumeRenderer::CameraListener : public ::Ogre::Camera::Listene
 
 //--------------------------------------------------------------,---------------
 
-const std::string s_AUTOSTEREO_DEFINE = "AUTOSTEREO=1";
+static const std::string s_AUTOSTEREO_DEFINE = "AUTOSTEREO=1";
 
-const std::string s_AO_DEFINE             = "AMBIENT_OCCLUSION=1";
-const std::string s_COLOR_BLEEDING_DEFINE = "COLOR_BLEEDING=1";
-const std::string s_SHADOWS_DEFINE        = "SHADOWS=1";
-const std::string s_PREINTEGRATION_DEFINE = "PREINTEGRATION=1";
+static const std::string s_AO_DEFINE             = "AMBIENT_OCCLUSION=1";
+static const std::string s_COLOR_BLEEDING_DEFINE = "COLOR_BLEEDING=1";
+static const std::string s_SHADOWS_DEFINE        = "SHADOWS=1";
+static const std::string s_PREINTEGRATION_DEFINE = "PREINTEGRATION=1";
+
+static const std::string s_TF_TEXUNIT_NAME = "transferFunction";
 
 //-----------------------------------------------------------------------------
 
@@ -116,7 +117,7 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
                                                    Layer::sptr layer,
                                                    ::Ogre::SceneNode* parentNode,
                                                    ::Ogre::TexturePtr imageTexture,
-                                                   TransferFunction& gpuTF,
+                                                   const TransferFunction::sptr& gpuTF,
                                                    PreIntegrationTable& preintegrationTable,
                                                    bool ambientOcclusion,
                                                    bool colorBleeding,
@@ -254,19 +255,16 @@ void RayTracingVolumeRenderer::imageUpdate(::fwData::Image::sptr image, ::fwData
 
     const ::fwData::Image::SizeType& newSize = image->getSize();
 
-    const auto tfWLMinMax = tf->getWLMinMax();
-    const ::Ogre::Vector2 tfWindow(float(tfWLMinMax.first), float(tfWLMinMax.second));
-
     // Create new grid texture + proxy geometry if image size changed.
     if(m_imageSize != newSize)
     {
         m_imageSize = newSize;
 
-        m_proxyGeometry->updateGridSize(tfWindow);
+        m_proxyGeometry->updateGridSize();
     }
     else
     {
-        m_proxyGeometry->computeGrid(tfWindow);
+        m_proxyGeometry->computeGrid();
     }
 
     if(m_preIntegratedRendering)
@@ -280,7 +278,14 @@ void RayTracingVolumeRenderer::imageUpdate(::fwData::Image::sptr image, ::fwData
         m_RTVSharedParameters->setNamedConstant("u_min", minMax.first);
         m_RTVSharedParameters->setNamedConstant("u_max", minMax.second);
     }
-    m_RTVSharedParameters->setNamedConstant("u_tfWindow", tfWindow);
+    else
+    {
+        auto material  = ::Ogre::MaterialManager::getSingleton().getByName(m_currentMtlName);
+        auto technique = material->getTechnique(0);
+        SLM_ASSERT("Technique not found", technique);
+        auto pass = technique->getPass(0);
+        m_gpuTF->bind(pass, s_TF_TEXUNIT_NAME, m_RTVSharedParameters);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -288,14 +293,15 @@ void RayTracingVolumeRenderer::imageUpdate(::fwData::Image::sptr image, ::fwData
 void RayTracingVolumeRenderer::tfUpdate(fwData::TransferFunction::sptr tf)
 {
     FW_PROFILE("TF Update")
+    if(!m_preIntegratedRendering)
     {
-
-        const auto tfWLMinMax = tf->getWLMinMax();
-        const ::Ogre::Vector2 tfWindow(float(tfWLMinMax.first), float(tfWLMinMax.second));
-        m_RTVSharedParameters->setNamedConstant("u_tfWindow", tfWindow);
-
-        m_proxyGeometry->computeGrid(tfWindow);
+        auto material  = ::Ogre::MaterialManager::getSingleton().getByName(m_currentMtlName);
+        auto technique = material->getTechnique(0);
+        SLM_ASSERT("Technique not found", technique);
+        auto pass = technique->getPass(0);
+        m_gpuTF->bind(pass, s_TF_TEXUNIT_NAME, m_RTVSharedParameters);
     }
+    m_proxyGeometry->computeGrid();
 }
 
 //-----------------------------------------------------------------------------
@@ -469,9 +475,9 @@ void RayTracingVolumeRenderer::setRayCastingPassTextureUnits(Ogre::Pass* _rayCas
     }
     else
     {
-        texUnitState = _rayCastingPass->createTextureUnitState(m_gpuTF.getTexture()->getName());
-        texUnitState->setTextureFiltering(::Ogre::TFO_BILINEAR);
-        texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
+        texUnitState = _rayCastingPass->createTextureUnitState(m_gpuTF->getTexture()->getName());
+        texUnitState->setName(s_TF_TEXUNIT_NAME);
+        m_gpuTF->bind(_rayCastingPass, texUnitState->getName(), fpParams);
     }
 
     fpParams->setNamedConstant("u_tfTexture", numTexUnit++);
@@ -577,7 +583,7 @@ void RayTracingVolumeRenderer::createRayTracingMaterial()
 
     ///////////////////////////////////////////////////////////////////////////
     /// Create the material
-    ::Ogre::MaterialPtr mat = mm.create(matName, ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+    ::Ogre::MaterialPtr mat = mm.create(m_currentMtlName, ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
     // Ensure that we have the color parameters set for the current material
     this->setMaterialLightParams(mat);
     // Get the already created pass through the already created technique

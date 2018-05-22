@@ -44,7 +44,8 @@ class FWRENDEROGRE_CLASS_API GridProxyGeometry : public R2VBRenderable
 public:
 
     static FWRENDEROGRE_API GridProxyGeometry* New(const std::string& _name, ::Ogre::SceneManager* _sceneManager,
-                                                   ::Ogre::TexturePtr _3DImageTexture, TransferFunction& _tf,
+                                                   ::Ogre::TexturePtr _3DImageTexture,
+                                                   const TransferFunction::sptr& _tf,
                                                    const std::string& _mtlName);
 
     /// Constructor, should never be called directly.
@@ -54,10 +55,10 @@ public:
     FWRENDEROGRE_API virtual ~GridProxyGeometry();
 
     /// Function to be called when the volume changed and its size too. Recomputes texture and geometry.
-    FWRENDEROGRE_API void updateGridSize(const ::Ogre::Vector2& _tfWindow);
+    FWRENDEROGRE_API void updateGridSize();
 
     /// Fills the grid texture and uses it to compute the grid geometry.
-    FWRENDEROGRE_API void computeGrid(const ::Ogre::Vector2& _tfWindow);
+    FWRENDEROGRE_API void computeGrid();
 
     /// Clip the proxy geometry. Recomputes the geometry.
     FWRENDEROGRE_API void clipGrid(const ::Ogre::AxisAlignedBox& _clippingBox);
@@ -98,7 +99,7 @@ private:
     ::Ogre::TexturePtr m_3DImageTexture;
 
     /// Transfer function to be applied to the image.
-    TransferFunction m_gpuTF;
+    TransferFunction::sptr m_gpuTF;
 
 };
 

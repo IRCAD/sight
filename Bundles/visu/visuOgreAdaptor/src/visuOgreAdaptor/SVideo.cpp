@@ -158,9 +158,6 @@ void SVideo::updating()
                 m_gpuTF = ::boost::make_unique< ::fwRenderOgre::TransferFunction>();
                 m_gpuTF->createTexture(this->getID());
 
-                ::Ogre::Pass* ogrePass = m_material->getTechnique(0)->getPass(0);
-                ogrePass->getTextureUnitState("tf")->setTexture(m_gpuTF->getTexture());
-
                 this->updateTF();
             }
             m_previousType = type;
@@ -223,11 +220,8 @@ void SVideo::updateTF()
 
     m_gpuTF->updateTexture(tf);
 
-    const auto tfWLMinMax = tf->getWLMinMax();
-    const ::Ogre::Vector2 tfWindow(float(tfWLMinMax.first), float(tfWLMinMax.second));
-
     ::Ogre::Pass* ogrePass = m_material->getTechnique(0)->getPass(0);
-    ogrePass->getFragmentProgramParameters()->setNamedConstant("u_tfWindow", tfWindow);
+    m_gpuTF->bind(ogrePass, "tf", ogrePass->getFragmentProgramParameters());
 
     this->requestRender();
 }

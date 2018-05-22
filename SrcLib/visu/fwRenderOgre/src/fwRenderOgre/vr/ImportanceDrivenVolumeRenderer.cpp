@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017.
+ * FW4SPL - Copyright (C) IRCAD, 2017-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -127,7 +127,7 @@ ImportanceDrivenVolumeRenderer::ImportanceDrivenVolumeRenderer(std::string paren
                                                                ::Ogre::SceneNode* parentNode,
                                                                ::Ogre::TexturePtr imageTexture,
                                                                ::Ogre::TexturePtr maskTexture,
-                                                               TransferFunction& gpuTF,
+                                                               const TransferFunction::sptr& gpuTF,
                                                                PreIntegrationTable& preintegrationTable,
                                                                bool ambientOcclusion,
                                                                bool colorBleeding,
@@ -759,4 +759,3 @@ void ImportanceDrivenVolumeRenderer::createMaterialAndIDVRTechnique()
 
 } // namespace vr
 } // namespace fwRenderOgre
-
