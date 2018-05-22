@@ -74,9 +74,6 @@ protected:
     /// Override
     IODICOMWEB_API void updating() override;
 
-    /// Override
-    IODICOMWEB_API void info(std::ostream& _sstream ) override;
-
     /**
      * @brief Display an error message
      * @param[in] message Error message to display
@@ -85,17 +82,17 @@ protected:
 
 private Q_SLOTS:
     /// Slot called when querying on patient name
-    IODICOMWEB_API void queryPatientName();
+    void queryPatientName();
 
     /// Slot called when querying on study date
-    IODICOMWEB_API void queryStudyDate();
+    void queryStudyDate();
 
 private:
     /**
      * @brief Update the seriesDB with the series retrieved from the pacs
      * @param[in] series Series which must be added to the SeriesDB
      */
-    IODICOMWEB_API void updateSeriesDB(::fwMedData::SeriesDB::ContainerType series);
+    void updateSeriesDB(::fwMedData::SeriesDB::ContainerType series);
 
     /// Patient Name Field
     QPointer< QLineEdit > m_patientNameLineEdit;

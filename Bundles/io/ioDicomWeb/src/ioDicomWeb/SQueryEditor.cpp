@@ -47,13 +47,6 @@ SQueryEditor::~SQueryEditor() noexcept
 
 //------------------------------------------------------------------------------
 
-void SQueryEditor::info(std::ostream& _sstream )
-{
-    _sstream << "SQueryEditor::info";
-}
-
-//------------------------------------------------------------------------------
-
 void SQueryEditor::configuring()
 {
     ::fwServices::IService::ConfigType configuration = this->getConfigTree();

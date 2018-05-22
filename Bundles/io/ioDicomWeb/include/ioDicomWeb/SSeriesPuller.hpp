@@ -91,19 +91,19 @@ protected:
 private:
 
     /// Pull Series
-    IODICOMWEB_API void pullSeries();
+    void pullSeries();
 
     /**
      * @brief Read local series
      * @param[in] selectedSeries Dicom Series that must be read
      */
-    IODICOMWEB_API void readLocalSeries(DicomSeriesContainerType selectedSeries);
+    void readLocalSeries(DicomSeriesContainerType selectedSeries);
 
     /**
      * @brief Display an error message
      * @param[in] message Error message to display
      */
-    IODICOMWEB_API void displayErrorMessage(const std::string& message) const;
+    void displayErrorMessage(const std::string& message) const;
 
     /// Http Qt Client
     ::fwNetworkIO::http::ClientQt m_clientQt;

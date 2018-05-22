@@ -103,7 +103,7 @@ private Q_SLOTS:
      * @brief Slot called when the slider is moved
      * @param[in] value Slider value
      */
-    IODICOMWEB_API void changeSliceIndex(int value);
+    void changeSliceIndex(int value);
 
 protected:
 
