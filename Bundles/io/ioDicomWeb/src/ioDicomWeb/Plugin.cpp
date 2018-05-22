@@ -14,7 +14,7 @@ namespace ioDicomWeb
 {
 
 using namespace ::fwRuntime::utils;
-static GenericExecutableFactoryRegistrar<Plugin> registrar("ioDicomWeb::Plugin");
+static GenericExecutableFactoryRegistrar<Plugin> registrar("::ioDicomWeb::Plugin");
 
 Plugin::~Plugin() noexcept
 {
