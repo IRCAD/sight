@@ -1,16 +1,15 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWVTKIO_UT_MESHTEST_HPP__
-#define __FWVTKIO_UT_MESHTEST_HPP__
+#pragma once
+
+#include <fwData/Array.hpp>
+#include <fwData/Mesh.hpp>
 
 #include <cppunit/extensions/HelperMacros.h>
-
-#include <fwData/Mesh.hpp>
-#include <fwData/Array.hpp>
 
 namespace fwVtkIO
 {
@@ -24,6 +23,7 @@ class MeshTest : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE( MeshTest );
 CPPUNIT_TEST( testMeshToVtk );
+CPPUNIT_TEST( testMeshToGrid );
 CPPUNIT_TEST( testSyntheticMesh );
 CPPUNIT_TEST( testExportImportSyntheticMesh );
 CPPUNIT_TEST( testPointCloud );
@@ -35,6 +35,7 @@ public:
     void tearDown();
 
     void testMeshToVtk();
+    void testMeshToGrid();
     void testSyntheticMesh();
     void testExportImportSyntheticMesh();
     void testPointCloud();
@@ -43,5 +44,3 @@ public:
 
 } // namespace ut
 } // namespace fwVtkIO
-
-#endif //__FWVTKIO_UT_MESHTEST_HPP__
