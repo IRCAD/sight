@@ -16,6 +16,7 @@ set( DEPENDENCIES
     cvIO
     eigenTools
     handEyeCalibration
+    calibration3d
 )
 
 set( REQUIREMENTS )
