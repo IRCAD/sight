@@ -501,7 +501,7 @@ void SSliceIndexDicomPullerEditor::pullInstance()
         dicomSeries->addDicomPath(selectedSliceIndex, instancePath);
         this->readImage(selectedSliceIndex);
     }
-    catch (::fwNetworkIO::exceptions::Base&)
+    catch (::fwNetworkIO::exceptions::Base& exception)
     {
         std::stringstream ss;
         ss << "Unable to connect to the pacs. Please check your configuration: \n"
