@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -23,7 +23,7 @@ namespace uiMedDataQt
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwServices::IController, ::uiMedDataQt::SSeriesViewer, ::fwData::Vector);
+static const ::fwServices::IService::KeyType s_SERIES_INPUT = "series";
 
 //------------------------------------------------------------------------------
 
@@ -67,7 +67,13 @@ void SSeriesViewer::stopping()
 
 void SSeriesViewer::updating()
 {
-    ::fwData::Vector::sptr vector = this->getObject< ::fwData::Vector >();
+    ::fwData::Vector::csptr vector = this->getInput< ::fwData::Vector >(s_SERIES_INPUT);
+    if (!vector)
+    {
+        FW_DEPRECATED_MSG("The input '" + s_SERIES_INPUT + "' is not correctly set. Please correct the configuration to"
+                          "set an 'input' key named '" + s_SERIES_INPUT + "'");
+        vector = this->getObject< ::fwData::Vector >();
+    }
 
     if(m_configTemplateManager)
     {
@@ -177,6 +183,22 @@ void SSeriesViewer::configuring()
     KeyConnectionsType connections;
     connections.push_back( std::make_pair( ::fwData::Vector::s_ADDED_OBJECTS_SIG, s_UPDATE_SLOT ) );
     connections.push_back( std::make_pair( ::fwData::Vector::s_REMOVED_OBJECTS_SIG, s_UPDATE_SLOT ) );
+
+    return connections;
+}
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsMap SSeriesViewer::getAutoConnections() const
+{
+    KeyConnectionsMap connections;
+
+    // FIXME hack to support deprecated getObjSrvConnection (connection to a object with a deprecated key)
+    if (this->getInput< ::fwData::Vector >(s_SERIES_INPUT))
+    {
+        connections.push(s_SERIES_INPUT, ::fwData::Vector::s_ADDED_OBJECTS_SIG, s_UPDATE_SLOT);
+        connections.push(s_SERIES_INPUT, ::fwData::Vector::s_REMOVED_OBJECTS_SIG, s_UPDATE_SLOT);
+    }
 
     return connections;
 }

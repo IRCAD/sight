@@ -36,7 +36,44 @@ namespace editor
 class ValueView;
 
 /**
- * @brief   SModelSeriesList service.
+ * @brief Editor displaying the list of the organs in a ModelSeries.
+ *
+ * It allows to show/hide a Reconstruction when it is associated to a render scene with a Model series adaptor
+ * (for example fwRenderVTK::SRender with ::visuVTKAdaptor::SModelSeries).
+ * It also allows to select a Reconstruction, associated to the ::ctrlSelection::updater::SObjFromSlot the
+ * reconstruction is available to be used by other services.
+ * It is mostly associated to ::uiReconstructionQt::OrganMaterialEditor and
+ * ::uiReconstructionQt::RepresentationEditor to update the reconstrution color, transparency, ....
+ *
+ * @section Signals Signals
+ * - \b reconstructionSelected(::fwData::Object::sptr) : this signal emits the selected reconstruction
+ * - \b emptiedSelection() : this signal is emitted when no reconstruction are selected
+ *
+ * @section Slots Slots
+ * - \b showReconstructions(bool) : slot called to show or hide all the reconstructions
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+   <service ::uiMedDataQt::editor::SModelSeriesList">
+       <inout key="modelSeries" uid="..." autoConnect="yes" />
+       <enable_hide_all>true</enable_hide_all>
+       <columns>
+         <organ_name>@organ_name</organ_name>
+         <volume_cc view="positive" >@volume</volume_cc>
+       </columns>
+   </service>
+   @endcode
+ * @subsection In-Out In-Out
+ * - \b modelSeries [::fwMedData::ModelSeries]: model series containing the organs to list
+ * @subsection Configuration Configuration
+ * \b enable_hide_all : if 'true', allows to hide all models through a single checkbox displayed in UI (default
+ * value is 'true', allowed values are 'true' and 'false').
+ *
+ * \b columns : defines colums to be shown in reconstruction list. XML child element names follow
+ * ::fwData::Reconstruction serialization attribute names. The name of the tag will be used as the column name.
+ * The attribute 'view' is optional and can has the following values :
+ *  - positive : a numeric value is displayed only if it is positive. Otherwise, 'Unknown' is displayed.
  */
 class UIMEDDATAQT_CLASS_API SModelSeriesList :  public QObject,
                                                 public ::fwGui::editor::IEditor
@@ -74,29 +111,18 @@ protected:
 
     virtual void swapping() override;
 
-    /**
-     * @brief Configures the editor.
-     *
-     * Configuration example :
-       @code{.xml}
-       <enable_hide_all>true</enable_hide_all>
-       <columns>
-         <organ_name>@organ_name</organ_name>
-         <volume_cc view="positive" >@volume</volume_cc>
-       </columns>
-       @endcode
-     *
-     * \b enable_hide_all : if 'true', allows to hide all models through a single checkbox displayed in UI (default
-     * value is 'true', allowed values are 'true' and 'false').
-     *
-     * \b columns : defines colums to be shown in reconstruction list. XML child element names follow
-     * ::fwData::Reconstruction serialization attribute names.
-     * The attribute 'view' is optional and can has the following values :
-     *  - positive : a numeric value is displayed only if it is positive. Otherwise, 'Unknown' is displayed.
-     *
-     * @throw fwTools::Failed
-     */
+    /// Configures the editor.
     virtual void configuring() override;
+
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect ModelSeries::s_MODIFIED_SIG to this::s_UPDATE_SLOT
+     * Connect ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG to this::s_UPDATE_SLOT
+     * Connect ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG to this::s_UPDATE_SLOT
+     */
+    UIMEDDATAQT_API virtual KeyConnectionsMap getAutoConnections() const override;
 
     typedef std::map< std::string, ValueView* > DisplayedInformation;
 

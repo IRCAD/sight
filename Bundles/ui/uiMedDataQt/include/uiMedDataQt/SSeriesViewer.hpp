@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __UIMEDDATAQT_SSERIESVIEWER_HPP__
-#define __UIMEDDATAQT_SSERIESVIEWER_HPP__
+#pragma once
 
 #include "uiMedDataQt/config.hpp"
 
@@ -16,9 +15,40 @@
 
 namespace uiMedDataQt
 {
+
 /**
  * @brief  This Service allows to preview the selected series in the Vector. For the moment, it works only on a
  * single selection.
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+    <service type="::uiMedDataQt::SSeriesViewer">
+        <in key="series" uid="..." autoConnect="yes" />
+        <parentView>preview</parentView>
+        <configs>
+            <config id="2DSimpleConfig" type="::fwMedData::ImageSeries">
+                <extract path="@image" pattern="imageID" />
+            </config>
+            <config id="2DPacsPreviewConfig" type="::fwMedData::DicomSeries" >
+                <parameter replace="PACS_CONFIGURATION" by="None" />
+            </config>
+            <config id="3DSimpleConfig" type="::fwMedData::ModelSeries" />
+        </configs>
+       </service>
+   </service>
+   @endcode
+ * @subsection Input Input
+ * - \b series [::fwData::Vector]: vector containing the series to preview.
+ * @subsection Configuration Configuration
+ * - \b parentView : wid of the view where the config will install its windows.
+ * - \b config : gives the available association between data type and associated config.
+ *   - \b id : identifier of the AppConfig to launch
+ *   - \b type : classname of the object stored in Vector associated to this config.
+ *   - \b parameter : allow to pass specific value to the associ config
+ *     - \b replace : name of the parameter to be replaced
+ *     - \b by : specific value to replace for the parameter
+ * - \b extract : extracts the object from the path and replaces pattern with its fwID
  */
 class UIMEDDATAQT_CLASS_API SSeriesViewer : public ::fwServices::IController
 {
@@ -49,32 +79,7 @@ protected:
     /// Stops the config if it is running.
     virtual void stopping() override;
 
-    /**
-     * @brief Configures the service.
-     * @code{.xml}
-       <service uid="seriesViewer" type="::fwServices::IController" impl="::uiMedDataQt::SSeriesViewer"
-     * autoConnect="yes">
-        <parentView>preview</parentView>
-        <configs>
-            <config id="2DSimpleConfig" type="::fwMedData::ImageSeries">
-                <extract path="@image" pattern="imageID" />
-            </config>
-            <config id="2DPacsPreviewConfig" type="::fwMedData::DicomSeries" >
-                <parameter replace="PACS_CONFIGURATION" by="None" />
-            </config>
-            <config id="3DSimpleConfig" type="::fwMedData::ModelSeries" />
-        </configs>
-       </service>
-       @endcode
-     * - \b parentView : wid of the view where the config will install its windows.
-     * - \b config : gives the available association between data type and associated config.
-     *   - \b id : identifier of the AppConfig to launch
-     *   - \b type : classname of the object stored in Vector associated to this config.
-     *   - \b parameter : allow to pass specific value to the associ config
-     *     - \b replace : name of the parameter to be replaced
-     *     - \b by : specific value to replace for the parameter
-     * - \b extract : extracts the object from the path and replaces pattern with its fwID
-     */
+    /// Configures the service.
     virtual void configuring() override;
 
     /**
@@ -86,6 +91,15 @@ protected:
      * associated with the selected object.
      */
     virtual void updating() override;
+
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect Vector::s_ADDED_OBJECTS_SIG to this::s_UPDATE_SLOT
+     * Connect Vector::s_REMOVED_OBJECTS_SIG to this::s_UPDATE_SLOT
+     */
+    UIMEDDATAQT_API virtual KeyConnectionsMap getAutoConnections() const override;
 
     virtual void info( std::ostream& _sstream ) override;
 
@@ -118,6 +132,3 @@ private:
     SeriesConfigMapType m_seriesConfigs;
 };
 } // namespace uiMedDataQt
-
-#endif // __UIMEDDATAQT_SSERIESVIEWER_HPP__
-

@@ -170,8 +170,8 @@
             </service>
 
             <!-- Editors of background image -->
-            <service uid="imageInfo" type="::uiImageQt::ImageInfo" autoConnect="yes">
-                <inout key="image" uid="backgroundImage" autoConnect="yes" />
+            <service uid="imageInfo" type="::uiImageQt::ImageInfo">
+                <in key="image" uid="backgroundImage" autoConnect="yes" />
             </service>
 
             <service uid="windowLevel" type="::uiImageQt::WindowLevel">
@@ -200,8 +200,8 @@
             </service>
 
             <!-- Editors of front image -->
-            <service uid="imageInfo2" type="::uiImageQt::ImageInfo" autoConnect="yes">
-                <inout key="image" uid="frontImage" autoConnect="yes" />
+            <service uid="imageInfo2" type="::uiImageQt::ImageInfo">
+                <in key="image" uid="frontImage" autoConnect="yes" />
             </service>
 
             <service uid="imageTransparency2" type="::uiImageQt::ImageTransparency" autoConnect="yes">
@@ -365,6 +365,8 @@
             <start uid="imageInfo2" />
             <start uid="windowLevel2" />
             <start uid="imageTransparency2" />
+            <start uid="medicalImageConverter" />
+            <start uid="medicalImageConverter2" />
             <!-- VTK scene 'blendGenericScene' -->
             <start uid="MPRNegato3D" />
             <start uid="interactor" />
