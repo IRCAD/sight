@@ -84,13 +84,6 @@ struct RayTracingVolumeRenderer::CameraListener : public ::Ogre::Camera::Listene
                     }
                 }
 
-                if(m_renderer->m_entryPointsResizeRequired)
-                {
-                    m_renderer->resizeEntryPointsTexture();
-                    m_renderer->m_entryPointsResizeRequired = false;
-                }
-                // Recompute the focal length in case the camera moved.
-
                 m_renderer->computeEntryPointsTexture();
 
                 m_frameId = frameId;
@@ -421,23 +414,7 @@ void RayTracingVolumeRenderer::clipImage(const ::Ogre::AxisAlignedBox& clippingB
 
 void RayTracingVolumeRenderer::resizeViewport(int w, int h)
 {
-//    const auto numViewPoints = m_entryPointsTextures.size();
-//    const float wRatio       = numViewPoints != 1 && numViewPoints != 2 ? 3.f / static_cast<float>(numViewPoints) :
-// 1.f;
-//    const float hRatio       = numViewPoints != 1 ? 0.5f : 1.f;
-
-//    for(::Ogre::TexturePtr entryPtsTexture : m_entryPointsTextures)
-//    {
-//        entryPtsTexture->freeInternalResources();
-
-//        entryPtsTexture->setWidth(static_cast< ::Ogre::uint32>(static_cast< float >(w) * wRatio));
-//        entryPtsTexture->setHeight(static_cast< ::Ogre::uint32>(static_cast< float >(h) * hRatio));
-
-//        entryPtsTexture->createInternalResources();
-
-//        ::Ogre::RenderTexture* renderTexture = entryPtsTexture->getBuffer()->getRenderTarget();
-//        renderTexture->addViewport(m_camera);
-//    }
+    // Require a resize but only resize before rendering thereby avoiding many useless resizes.
     m_entryPointsResizeRequired = true;
 }
 
@@ -655,6 +632,12 @@ void RayTracingVolumeRenderer::initEntryPoints()
 
 void RayTracingVolumeRenderer::computeEntryPointsTexture()
 {
+    if(m_entryPointsResizeRequired)
+    {
+        this->resizeEntryPointsTexture();
+        m_entryPointsResizeRequired = false;
+    }
+
     m_proxyGeometry->setVisible(false);
 
     ::Ogre::RenderOperation renderOp;

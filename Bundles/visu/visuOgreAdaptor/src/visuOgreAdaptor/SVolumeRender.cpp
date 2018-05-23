@@ -736,6 +736,7 @@ void SVolumeRender::resizeViewport(int w, int h)
     if(m_volumeRenderer)
     {
         m_volumeRenderer->resizeViewport(w, h);
+        this->requestRender();
     }
 }
 
@@ -953,6 +954,7 @@ void SVolumeRender::setDoubleParameter(double val, std::string key)
 void SVolumeRender::setEnumParameter(std::string val, std::string key)
 {
     this->getRenderService()->makeCurrent();
+
     if(key == "idvrMethod")
     {
         auto rayCastVolumeRenderer =
@@ -1011,6 +1013,8 @@ void SVolumeRender::setEnumParameter(std::string val, std::string key)
 
 void SVolumeRender::setColorParameter(std::array<std::uint8_t, 4> color, std::string key)
 {
+    this->getRenderService()->makeCurrent();
+
     if(key == "idvrCSGBorderColor")
     {
         auto rayCastVolumeRenderer =

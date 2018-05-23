@@ -163,7 +163,7 @@ private:
     /// Sets the default diffuse, specular and shininess in the material.
     void setMaterialLightParams(::Ogre::MaterialPtr mtl);
 
-    /// Resize entry points texture.
+    /// Sets the entry points texture's dimensions to the layer's current ones.
     void resizeEntryPointsTexture();
 
     /// Object containing the proxy geometry, this is a cube for now.

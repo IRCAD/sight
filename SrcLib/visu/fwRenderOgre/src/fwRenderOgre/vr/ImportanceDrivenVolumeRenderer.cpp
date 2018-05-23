@@ -238,7 +238,6 @@ void ImportanceDrivenVolumeRenderer::buildICCompositors(::Ogre::Viewport* _vp)
     std::tie(vpPPDefines, fpPPDefines, hash) = this->computeRayTracingDefines();
 
     ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
-//    auto viewport = this->getLayer()->getViewport();
 
     ::Ogre::CompositorInstance* compositorInstance = nullptr;
 
@@ -321,7 +320,6 @@ void ImportanceDrivenVolumeRenderer::buildICCompositors(::Ogre::Viewport* _vp)
 void ImportanceDrivenVolumeRenderer::cleanCompositorChain(Ogre::Viewport* _vp)
 {
     ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
-//    auto viewport = this->getLayer()->getViewport();
 
     ::Ogre::CompositorChain* compChain = compositorManager.getCompositorChain(_vp);
     SLM_ASSERT("Can't find compositor chain", compChain);
