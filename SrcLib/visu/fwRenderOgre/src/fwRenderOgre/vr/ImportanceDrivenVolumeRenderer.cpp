@@ -181,10 +181,12 @@ ImportanceDrivenVolumeRenderer::ImportanceDrivenVolumeRenderer(std::string paren
 
 ImportanceDrivenVolumeRenderer::~ImportanceDrivenVolumeRenderer()
 {
-    this->cleanCompositorChain();
+    auto layer    = this->getLayer();
+    auto viewport = layer->getViewport();
+
+    this->cleanCompositorChain(viewport);
 
     ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
-    auto viewport = this->getLayer()->getViewport();
 
     ::Ogre::CompositorChain* compChain = compositorManager.getCompositorChain(viewport);
     SLM_ASSERT("Can't find compositor chain", compChain);
@@ -227,11 +229,13 @@ void ImportanceDrivenVolumeRenderer::setIDVRMethod(std::string method)
 void ImportanceDrivenVolumeRenderer::initCompositors()
 {
     // Start from an empty compositor chain
-    this->cleanCompositorChain();
-    this->buildICCompositors();
+    auto layer    = this->getLayer();
+    auto viewport = layer->getViewport();
+
+    this->cleanCompositorChain(viewport);
+    this->buildICCompositors(viewport);
 
     ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
-    auto viewport = this->getLayer()->getViewport();
 
     ::Ogre::CompositorChain* compChain = compositorManager.getCompositorChain(viewport);
     SLM_ASSERT("Can't find compositor chain", compChain);
@@ -251,20 +255,20 @@ void ImportanceDrivenVolumeRenderer::initCompositors()
 
 //-----------------------------------------------------------------------------
 
-void ImportanceDrivenVolumeRenderer::buildICCompositors()
+void ImportanceDrivenVolumeRenderer::buildICCompositors(::Ogre::Viewport* _vp)
 {
     std::string vpPPDefines, fpPPDefines;
     size_t hash;
     std::tie(vpPPDefines, fpPPDefines, hash) = this->computeRayTracingDefines();
 
     ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
-    auto viewport = this->getLayer()->getViewport();
+//    auto viewport = this->getLayer()->getViewport();
 
     ::Ogre::CompositorInstance* compositorInstance = nullptr;
 
     if(m_idvrMethod == s_MIMP)
     {
-        compositorInstance = compositorManager.addCompositor(viewport, s_MIMP_COMPOSITOR, 0);
+        compositorInstance = compositorManager.addCompositor(_vp, s_MIMP_COMPOSITOR, 0);
         SLM_ASSERT("Compositor could not be initialized", compositorInstance);
         compositorInstance->setEnabled(true);
 
@@ -273,7 +277,7 @@ void ImportanceDrivenVolumeRenderer::buildICCompositors()
                                     std::log(m_camera->getViewport()->getActualHeight()) / std::log(2.0)));
 
         int chainIndex = 1;
-        compositorInstance = compositorManager.addCompositor(viewport, s_JFAINIT_COMPOSITOR, chainIndex++);
+        compositorInstance = compositorManager.addCompositor(_vp, s_JFAINIT_COMPOSITOR, chainIndex++);
         SLM_ASSERT("Compositor could not be initialized", compositorInstance);
         compositorInstance->setEnabled(true);
 
@@ -287,13 +291,13 @@ void ImportanceDrivenVolumeRenderer::buildICCompositors()
         {
             if(i % 2 == 0)
             {
-                compositorInstance = compositorManager.addCompositor(viewport, s_JFAPING_COMPOSITOR, chainIndex++);
+                compositorInstance = compositorManager.addCompositor(_vp, s_JFAPING_COMPOSITOR, chainIndex++);
                 SLM_ASSERT("Compositor could not be initialized", compositorInstance);
                 compositorInstance->setEnabled(true);
             }
             else
             {
-                compositorInstance = compositorManager.addCompositor(viewport, s_JFAPONG_COMPOSITOR, chainIndex++);
+                compositorInstance = compositorManager.addCompositor(_vp, s_JFAPONG_COMPOSITOR, chainIndex++);
                 SLM_ASSERT("Compositor could not be initialized", compositorInstance);
                 compositorInstance->setEnabled(true);
             }
@@ -306,13 +310,13 @@ void ImportanceDrivenVolumeRenderer::buildICCompositors()
 
         if(i % 2 == 0)
         {
-            compositorInstance = compositorManager.addCompositor(viewport, s_JFAFINALPING_COMPOSITOR, chainIndex++);
+            compositorInstance = compositorManager.addCompositor(_vp, s_JFAFINALPING_COMPOSITOR, chainIndex++);
             SLM_ASSERT("Compositor could not be initialized", compositorInstance);
             compositorInstance->setEnabled(true);
         }
         else
         {
-            compositorInstance = compositorManager.addCompositor(viewport, s_JFAFINALPONG_COMPOSITOR, chainIndex++);
+            compositorInstance = compositorManager.addCompositor(_vp, s_JFAFINALPONG_COMPOSITOR, chainIndex++);
             SLM_ASSERT("Compositor could not be initialized", compositorInstance);
             compositorInstance->setEnabled(true);
         }
@@ -324,13 +328,13 @@ void ImportanceDrivenVolumeRenderer::buildICCompositors()
     }
     else if(m_idvrMethod == s_AIMC)
     {
-        compositorInstance = compositorManager.addCompositor(viewport, s_AIMC_COMPOSITOR, 0);
+        compositorInstance = compositorManager.addCompositor(_vp, s_AIMC_COMPOSITOR, 0);
         SLM_ASSERT("Compositor could not be initialized", compositorInstance);
         compositorInstance->setEnabled(true);
     }
     else if(m_idvrMethod == s_VPIMC)
     {
-        compositorInstance = compositorManager.addCompositor(viewport, s_VPIMC_COMPOSITOR, 0);
+        compositorInstance = compositorManager.addCompositor(_vp, s_VPIMC_COMPOSITOR, 0);
         SLM_ASSERT("Compositor could not be initialized", compositorInstance);
         compositorInstance->setEnabled(true);
     }
@@ -338,12 +342,12 @@ void ImportanceDrivenVolumeRenderer::buildICCompositors()
 
 //-----------------------------------------------------------------------------
 
-void ImportanceDrivenVolumeRenderer::cleanCompositorChain()
+void ImportanceDrivenVolumeRenderer::cleanCompositorChain(Ogre::Viewport* _vp)
 {
     ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
-    auto viewport = this->getLayer()->getViewport();
+//    auto viewport = this->getLayer()->getViewport();
 
-    ::Ogre::CompositorChain* compChain = compositorManager.getCompositorChain(viewport);
+    ::Ogre::CompositorChain* compChain = compositorManager.getCompositorChain(_vp);
     SLM_ASSERT("Can't find compositor chain", compChain);
 
     // Then clean the whole chain
@@ -588,8 +592,11 @@ void ImportanceDrivenVolumeRenderer::resizeViewport(int w, int h)
 {
     this->RayTracingVolumeRenderer::resizeViewport(w, h);
 
-    this->cleanCompositorChain();
-    this->buildICCompositors();
+    auto layer    = this->getLayer();
+    auto viewport = layer->getViewport();
+
+    this->cleanCompositorChain(viewport);
+    this->buildICCompositors(viewport);
 }
 
 //-----------------------------------------------------------------------------

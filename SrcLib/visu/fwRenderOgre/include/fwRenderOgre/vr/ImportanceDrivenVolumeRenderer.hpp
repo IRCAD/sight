@@ -125,10 +125,10 @@ private:
     void initCompositors();
 
     /// Creates and adds importance compositing compositors to the chain (MImP + JFA, AImC or VPImC).
-    void buildICCompositors();
+    void buildICCompositors(::Ogre::Viewport* _vp);
 
     /// Removes all listeners and compositors from the current chain.
-    void cleanCompositorChain();
+    void cleanCompositorChain(::Ogre::Viewport* _vp);
 
     /// Texture of the segmentation mask.
     ::Ogre::TexturePtr m_maskTexture;
