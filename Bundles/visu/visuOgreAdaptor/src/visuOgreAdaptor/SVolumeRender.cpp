@@ -760,6 +760,8 @@ void SVolumeRender::setFocalDistance(int focalDistance)
 
 void SVolumeRender::setStereoMode(::fwRenderOgre::Layer::StereoModeType)
 {
+    this->getRenderService()->makeCurrent();
+
     this->stopping();
     this->starting();
 }
@@ -768,6 +770,8 @@ void SVolumeRender::setStereoMode(::fwRenderOgre::Layer::StereoModeType)
 
 void SVolumeRender::setBoolParameter(bool val, std::string key)
 {
+    this->getRenderService()->makeCurrent();
+
     if(key == "preIntegration")
     {
         this->togglePreintegration(val);
@@ -838,6 +842,8 @@ void SVolumeRender::setBoolParameter(bool val, std::string key)
 
 void SVolumeRender::setIntParameter(int val, std::string key)
 {
+    this->getRenderService()->makeCurrent();
+
     if(key == "sampling")
     {
         this->updateSampling(val);
@@ -874,6 +880,8 @@ void SVolumeRender::setIntParameter(int val, std::string key)
 
 void SVolumeRender::setDoubleParameter(double val, std::string key)
 {
+    this->getRenderService()->makeCurrent();
+
     if(key == "aoFactor")
     {
         this->updateAOFactor(val);
@@ -944,6 +952,7 @@ void SVolumeRender::setDoubleParameter(double val, std::string key)
 
 void SVolumeRender::setEnumParameter(std::string val, std::string key)
 {
+    this->getRenderService()->makeCurrent();
     if(key == "idvrMethod")
     {
         auto rayCastVolumeRenderer =
