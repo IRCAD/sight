@@ -47,7 +47,7 @@ static const ::fwCom::Signals::SignalKeyType INTEGER_CHANGED_SIG    = "intChange
 static const ::fwCom::Signals::SignalKeyType INTEGER2_CHANGED_SIG   = "int2Changed";
 static const ::fwCom::Signals::SignalKeyType INTEGER3_CHANGED_SIG   = "int3Changed";
 static const ::fwCom::Signals::SignalKeyType ENUM_CHANGED_SIG       = "enumChanged";
-static const ::fwCom::Signals::SignalKeyType ENUM_CHANGED_INDEX_SIG = "enumIndexChanged";
+static const ::fwCom::Signals::SignalKeyType ENUM_INDEX_CHANGED_SIG = "enumIndexChanged";
 
 static const ::fwCom::Slots::SlotKeyType s_SET_BOOL_PARAMETER_SLOT       = "setBoolParameter";
 static const ::fwCom::Slots::SlotKeyType s_SET_COLOR_PARAMETER_SLOT      = "setColorParameter";
@@ -77,7 +77,7 @@ SParameters::SParameters() noexcept :
     newSignal< Integer2ChangedSignalType>(INTEGER2_CHANGED_SIG);
     newSignal< Integer3ChangedSignalType>(INTEGER3_CHANGED_SIG);
     newSignal< EnumChangedSignalType >(ENUM_CHANGED_SIG);
-    newSignal< EnumChangedIndexSignalType >(ENUM_CHANGED_INDEX_SIG);
+    newSignal< EnumChangedIndexSignalType >(ENUM_INDEX_CHANGED_SIG);
 
     newSlot(s_SET_BOOL_PARAMETER_SLOT, &SParameters::setBoolParameter, this);
     newSlot(s_SET_COLOR_PARAMETER_SLOT, &SParameters::setColorParameter, this);
@@ -306,6 +306,11 @@ void SParameters::updating()
                 {
                     this->signal<EnumChangedSignalType>(ENUM_CHANGED_SIG)->asyncEmit(data.toStdString(), key);
                     OSLM_DEBUG("[EMIT] " << ENUM_CHANGED_SIG << "(" << data.toStdString() << ", " << key << ")" );
+                    this->signal<EnumChangedIndexSignalType>(ENUM_INDEX_CHANGED_SIG)->asyncEmit(box->currentIndex(),
+                                                                                                key);
+                    OSLM_DEBUG(
+                        "[EMIT] " << ENUM_INDEX_CHANGED_SIG << "(" << box->currentIndex() << ", " << key.toStdString() <<
+                            ")" );
                 }
             }
         }
@@ -336,8 +341,8 @@ void SParameters::onChangeEnum(int value)
     {
         this->signal<EnumChangedSignalType>(ENUM_CHANGED_SIG)->asyncEmit(data.toStdString(), key.toStdString());
         OSLM_DEBUG("[EMIT] " << ENUM_CHANGED_SIG << "(" << data.toStdString() << ", " << key.toStdString() << ")" );
-        this->signal<EnumChangedIndexSignalType>(ENUM_CHANGED_INDEX_SIG)->asyncEmit(value, key.toStdString());
-        OSLM_DEBUG("[EMIT] " << ENUM_CHANGED_INDEX_SIG << "(" << value << ", " << key.toStdString() << ")" );
+        this->signal<EnumChangedIndexSignalType>(ENUM_INDEX_CHANGED_SIG)->asyncEmit(value, key.toStdString());
+        OSLM_DEBUG("[EMIT] " << ENUM_INDEX_CHANGED_SIG << "(" << value << ", " << key.toStdString() << ")" );
     }
 }
 
