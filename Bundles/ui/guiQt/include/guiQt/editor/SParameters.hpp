@@ -42,7 +42,10 @@ namespace editor
  * - \b intChanged(int, std::string): Emitted when an integer parameter changes.
  * - \b int2Changed(int, int, std::string): Emitted when two integer parameters change.
  * - \b int3Changed(int, int, int, std::string): Emitted when three integer parameters change.
- * - \b enumChanged(std::string, std::string): Emitted when enum parameter changes.
+ * - \b enumChanged(std::string, std::string): Emitted when enum parameter changes, returns the the label of the
+ * currently selected item.
+ * - \b enumChanged(int, std::string): Emitted when enum parameter changes, returns the index of the currently
+ * selected item.
  *
  * @section Slots Slots
  * - \b setBoolParameter(bool, std::string): set a boolean parameter.
@@ -114,6 +117,7 @@ public:
 
     /// Enum changed signal type
     typedef ::fwCom::Signal< void (std::string, std::string) > EnumChangedSignalType;
+    typedef ::fwCom::Signal< void (int, std::string) > EnumChangedIndexSignalType;
 
     /// Constructor. Initializes signals
     GUIQT_API SParameters() noexcept;
