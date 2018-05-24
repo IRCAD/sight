@@ -288,14 +288,15 @@ bool Window::event(QEvent* event)
 }
 // ----------------------------------------------------------------------------
 
-void Window::exposeEvent(QExposeEvent*)
+void Window::exposeEvent(QExposeEvent* exposeEvent)
 {
 #if defined(__APPLE__)
     // This allow correct renderring on dual screen display when dragging window to another screen
     ogreResize(this->size());
 #endif
 
-    this->renderNow();
+    // Force rendering
+    this->renderNow(!exposeEvent->region().isEmpty());
 }
 
 // ----------------------------------------------------------------------------
@@ -310,10 +311,10 @@ void Window::moveEvent(QMoveEvent*)
 
 // ----------------------------------------------------------------------------
 
-void Window::renderNow()
+void Window::renderNow(const bool force)
 {
     // Small optimization to not render when not visible
-    if(false == isExposed())
+    if(!force && !isExposed())
     {
         return;
     }

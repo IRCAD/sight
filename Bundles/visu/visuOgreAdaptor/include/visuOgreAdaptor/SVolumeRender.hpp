@@ -307,6 +307,9 @@ private:
     /// Sets whether the camera must be auto reset when a mesh is updated or not.
     bool m_autoResetCamera;
 
+    /// Default IDVR method
+    std::string m_IDVRMethod;
+
     /// Handle connections between the layer and the volume renderer.
     ::fwCom::helper::SigSlotConnection m_volumeConnection;
 };
