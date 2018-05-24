@@ -308,7 +308,7 @@ void Plane::setRelativePosition(float _relativePosition)
 
 //-----------------------------------------------------------------------------
 
-void Plane::setTFData(const ::fwRenderOgre::TransferFunction& _tfTexture, ::Ogre::Vector2 _tfWindow)
+void Plane::setTFData(const ::fwRenderOgre::TransferFunction& _tfTexture)
 {
     const ::Ogre::Material::Techniques& techniques = m_texMaterial->getTechniques();
 
