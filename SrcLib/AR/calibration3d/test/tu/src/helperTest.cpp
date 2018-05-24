@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017.
+ * FW4SPL - Copyright (C) IRCAD, 2017-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -51,22 +51,22 @@ void helperTest::reprojectionIdentity()
     ::cv::Mat cameraMatrix;
     ::cv::Mat distorsion;
 
-    rvec = ::cv::Mat::zeros(3,1,CV_64F);
-    tvec = ::cv::Mat::zeros(3,1,CV_64F);
+    rvec = ::cv::Mat::zeros(3, 1, CV_64F);
+    tvec = ::cv::Mat::zeros(3, 1, CV_64F);
 
-    cameraMatrix = ::cv::Mat::eye(3,3,CV_64F);
-    distorsion = ::cv::Mat::zeros(5,1,CV_64F);
+    cameraMatrix = ::cv::Mat::eye(3, 3, CV_64F);
+    distorsion   = ::cv::Mat::zeros(5, 1, CV_64F);
 
     ::calibration3d::helper::ErrorAndPointsType result =
-            ::calibration3d::helper::computeReprojectionError(objectPoints, imagePoints,
-                                                      rvec, tvec, cameraMatrix, distorsion);
+        ::calibration3d::helper::computeReprojectionError(objectPoints, imagePoints,
+                                                          rvec, tvec, cameraMatrix, distorsion);
 
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0., result.first, 10e-6);
 
-    for(unsigned int i = 0; i< 4; ++i)
+    for(unsigned int i = 0; i < 4; ++i)
     {
         ::cv::Point2f expected = imagePoints[i];
-        ::cv::Point2f actual = result.second[i];
+        ::cv::Point2f actual   = result.second[i];
 
         CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<double>(expected.x),
                                      static_cast<double>(actual.x), 10e-6);
@@ -93,12 +93,11 @@ void helperTest::reprojectionRealDatasetTest1()
     ::cv::Mat cameraMatrix;
     ::cv::Mat distorsion;
 
-    rvec = ::cv::Mat::zeros(3,1,CV_64F);
-    tvec = ::cv::Mat::zeros(3,1,CV_64F);
+    rvec = ::cv::Mat::zeros(3, 1, CV_64F);
+    tvec = ::cv::Mat::zeros(3, 1, CV_64F);
 
-    cameraMatrix = ::cv::Mat::eye(3,3,CV_64F);
-    distorsion = ::cv::Mat::zeros(5,1,CV_64F);
-
+    cameraMatrix = ::cv::Mat::eye(3, 3, CV_64F);
+    distorsion   = ::cv::Mat::zeros(5, 1, CV_64F);
 
     //Values from real dataset 1
     imagePoints.push_back(::cv::Point2f(220.92876f, 224.95102f));
@@ -114,11 +113,11 @@ void helperTest::reprojectionRealDatasetTest1()
     tvec.at<double>(1) = 2.249284982681274;
     tvec.at<double>(2) = 197.2704315185547;
 
-    cameraMatrix.at<double>(0,0) = 621.8917806423808; //fx
-    cameraMatrix.at<double>(0,2) = 302.178791918929; //cx
+    cameraMatrix.at<double>(0, 0) = 621.8917806423808; //fx
+    cameraMatrix.at<double>(0, 2) = 302.178791918929; //cx
 
-    cameraMatrix.at<double>(1,1) = 640.3221665123945; //fy
-    cameraMatrix.at<double>(1,2) = 281.4344544571003; //cy
+    cameraMatrix.at<double>(1, 1) = 640.3221665123945; //fy
+    cameraMatrix.at<double>(1, 2) = 281.4344544571003; //cy
 
     distorsion.at<double>(0) = 0.06356924027204514; //k1
     distorsion.at<double>(1) = -0.07869192957878113; //k2
@@ -135,15 +134,15 @@ void helperTest::reprojectionRealDatasetTest1()
     const double expectedErr = 0.0462637;
 
     ::calibration3d::helper::ErrorAndPointsType result =
-            ::calibration3d::helper::computeReprojectionError(objectPoints, imagePoints,
-                                                      rvec, tvec, cameraMatrix, distorsion);
+        ::calibration3d::helper::computeReprojectionError(objectPoints, imagePoints,
+                                                          rvec, tvec, cameraMatrix, distorsion);
 
     CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedErr, result.first, 10e-6);
 
-    for(unsigned int i = 0; i< 4; ++i)
+    for(unsigned int i = 0; i < 4; ++i)
     {
         ::cv::Point2f expected = reprojectedPoints_expected[i];
-        ::cv::Point2f actual = result.second[i];
+        ::cv::Point2f actual   = result.second[i];
 
         CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<double>(expected.x),
                                      static_cast<double>(actual.x), 10e-6);
@@ -151,7 +150,6 @@ void helperTest::reprojectionRealDatasetTest1()
                                      static_cast<double>(actual.y), 10e-6);
 
     }
-
 
 }
 
@@ -172,12 +170,11 @@ void helperTest::reprojectionRealDatasetTest2()
     ::cv::Mat cameraMatrix;
     ::cv::Mat distorsion;
 
-    rvec = ::cv::Mat::zeros(3,1,CV_64F);
-    tvec = ::cv::Mat::zeros(3,1,CV_64F);
+    rvec = ::cv::Mat::zeros(3, 1, CV_64F);
+    tvec = ::cv::Mat::zeros(3, 1, CV_64F);
 
-    cameraMatrix = ::cv::Mat::eye(3,3,CV_64F);
-    distorsion = ::cv::Mat::zeros(5,1,CV_64F);
-
+    cameraMatrix = ::cv::Mat::eye(3, 3, CV_64F);
+    distorsion   = ::cv::Mat::zeros(5, 1, CV_64F);
 
     //Values from real dataset 1
     imagePoints.push_back(::cv::Point2f(232.76308f, 227.31705f));
@@ -193,11 +190,11 @@ void helperTest::reprojectionRealDatasetTest2()
     tvec.at<double>(1) = 3.302493572235107;
     tvec.at<double>(2) = 191.1024627685547;
 
-    cameraMatrix.at<double>(0,0) = 621.8917806423808; //fx
-    cameraMatrix.at<double>(0,2) = 302.178791918929; //cx
+    cameraMatrix.at<double>(0, 0) = 621.8917806423808; //fx
+    cameraMatrix.at<double>(0, 2) = 302.178791918929; //cx
 
-    cameraMatrix.at<double>(1,1) = 640.3221665123945; //fy
-    cameraMatrix.at<double>(1,2) = 281.4344544571003; //cy
+    cameraMatrix.at<double>(1, 1) = 640.3221665123945; //fy
+    cameraMatrix.at<double>(1, 2) = 281.4344544571003; //cy
 
     distorsion.at<double>(0) = 0.06356924027204514; //k1
     distorsion.at<double>(1) = -0.07869192957878113; //k2
@@ -214,15 +211,15 @@ void helperTest::reprojectionRealDatasetTest2()
     const double expectedErr = 0.153504;
 
     ::calibration3d::helper::ErrorAndPointsType result =
-            ::calibration3d::helper::computeReprojectionError(objectPoints, imagePoints,
-                                                      rvec, tvec, cameraMatrix, distorsion);
+        ::calibration3d::helper::computeReprojectionError(objectPoints, imagePoints,
+                                                          rvec, tvec, cameraMatrix, distorsion);
 
     CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedErr, result.first, 10e-6);
 
-    for(unsigned int i = 0; i< 4; ++i)
+    for(unsigned int i = 0; i < 4; ++i)
     {
         ::cv::Point2f expected = reprojectedPoints_expected[i];
-        ::cv::Point2f actual = result.second[i];
+        ::cv::Point2f actual   = result.second[i];
 
         CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<double>(expected.x),
                                      static_cast<double>(actual.x), 10e-6);
@@ -230,6 +227,13 @@ void helperTest::reprojectionRealDatasetTest2()
                                      static_cast<double>(actual.y), 10e-6);
 
     }
+}
+
+//------------------------------------------------------------------------------
+
+void helperTest::toolCalibration()
+{
+    ::fwData::Vector::csptr matricesVector = ::fwData::Vector::New();
 }
 
 //------------------------------------------------------------------------------

@@ -190,6 +190,7 @@ void calibratePointingTool(const ::fwData::Vector::csptr _matricesVector,
     for (size_t i = 0; i < nbrMatrices; ++i)
     {
         ::fwData::TransformationMatrix3D::csptr m1 = ::fwData::TransformationMatrix3D::dynamicCast(matrices.at(i));
+        SLM_ASSERT("This element of the vector is not a ::fwData::TransformationMatrix3D", m1);
         ::eigenTools::helper::EigenMatrix xyz1;
         xyz1.fill(0.);
         xyz1(0, 0) = m1->getCoefficient(0, 3);
@@ -218,6 +219,7 @@ void calibratePointingTool(const ::fwData::Vector::csptr _matricesVector,
     for (size_t i = 0; i < nbrMatrices; ++i)
     {
         ::fwData::TransformationMatrix3D::csptr m1 = ::fwData::TransformationMatrix3D::dynamicCast(matrices.at(i));
+        SLM_ASSERT("This element of the vector is not a ::fwData::TransformationMatrix3D", m1);
         const ::eigenTools::helper::EigenMatrix pointMatrix = ::eigenTools::helper::toEigen(m1->getCoefficients());
         ::eigenTools::helper::EigenMatrix centerMatrix(pointMatrix);
         const ::eigenTools::helper::EigenMatrix pointMatrixInverse = pointMatrix.inverse();
