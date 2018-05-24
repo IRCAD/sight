@@ -8,6 +8,11 @@
 
 #include <calibration3d/helper.hpp>
 
+#include <fwDataTools/TransformationMatrix3D.hpp>
+
+#include <glm/glm.hpp>
+#include <glm/gtx/transform.hpp>
+
 #include <opencv2/core.hpp>
 
 // Registers the fixture into the 'registry'
@@ -22,7 +27,7 @@ namespace ut
 
 void helperTest::setUp()
 {
-
+    std::srand(static_cast<unsigned int>(std::time(NULL)));
 }
 
 //------------------------------------------------------------------------------
@@ -231,9 +236,115 @@ void helperTest::reprojectionRealDatasetTest2()
 
 //------------------------------------------------------------------------------
 
+void helperTest::toolCalibrationBasic()
+{
+    const std::uint8_t nbMatrices = 34;
+    ::fwData::Vector::sptr matricesVector = ::fwData::Vector::New();
+
+    ::fwData::TransformationMatrix3D::sptr resCenterMatrix    = ::fwData::TransformationMatrix3D::New();
+    ::fwData::TransformationMatrix3D::sptr resTransformMatrix = ::fwData::TransformationMatrix3D::New();
+
+    const ::glm::dvec3 center(0., 0., 0.);
+    const double radius = 18;
+    const ::glm::dvec3 translation(radius, 0, 0);
+
+    // generates matrices
+    for (size_t i = 0; i < nbMatrices; ++i)
+    {
+        const double angleInDegrees = rand()%180;
+        const double angle          = ::glm::radians(angleInDegrees);
+
+        const double x = rand()%100 / 100.;
+        const double y = rand()%100 / 100.;
+        const double z = rand()%100 / 100.;
+
+        ::glm::dvec3 axis(x, y, z);
+        axis = glm::normalize(axis);
+
+        ::glm::dmat4 matrix = ::glm::translate(center);
+
+        matrix = ::glm::rotate(matrix, angle, axis);
+
+        matrix = ::glm::translate(matrix, translation);
+
+        ::fwData::TransformationMatrix3D::sptr mat = ::fwData::TransformationMatrix3D::New();
+        ::fwDataTools::TransformationMatrix3D::setTF3DFromMatrix(mat, matrix);
+
+        matricesVector->getContainer().push_back(mat);
+    }
+    ::calibration3d::helper::calibratePointingTool(matricesVector, resTransformMatrix, resCenterMatrix);
+
+    for (std::uint8_t i = 0; i < 3; ++i)
+    {
+        for (std::uint8_t j = 0; j < 3; ++j)
+        {
+
+            const double val = (i == j ? 1. : 0.);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("transform["+ std::to_string(i) + "][" + std::to_string(j) + "]",
+                                                 val, resTransformMatrix->getCoefficient(i, j), 0.00001);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("center["+ std::to_string(i) + "][" + std::to_string(j) + "]",
+                                                 val, resCenterMatrix->getCoefficient(i, j), 0.00001);
+        }
+        CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("transform[" + std::to_string(i) + "][3]",
+                                             -translation[i], resTransformMatrix->getCoefficient(i, 3), 0.00001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("center[" + std::to_string(i) + "][3]",
+                                             center[i], resCenterMatrix->getCoefficient(i, 3), 0.00001);
+    }
+}
+
+//------------------------------------------------------------------------------
+
 void helperTest::toolCalibration()
 {
-    ::fwData::Vector::csptr matricesVector = ::fwData::Vector::New();
+    const std::uint8_t nbMatrices = 46;
+    ::fwData::Vector::sptr matricesVector = ::fwData::Vector::New();
+
+    ::fwData::TransformationMatrix3D::sptr resCenterMatrix    = ::fwData::TransformationMatrix3D::New();
+    ::fwData::TransformationMatrix3D::sptr resTransformMatrix = ::fwData::TransformationMatrix3D::New();
+
+    const ::glm::dvec3 center(36., 52., -530.);
+    const ::glm::dvec3 translation(-459.45, 46.6, -88.54);
+
+    // generates matrices
+    for (size_t i = 0; i < nbMatrices; ++i)
+    {
+        const double angleInDegrees = rand()%360;
+        const double angle          = ::glm::radians(angleInDegrees);
+
+        const double x = rand()%100 / 100.;
+        const double y = rand()%100 / 100.;
+        const double z = rand()%100 / 100.;
+
+        ::glm::dvec3 axis(x, y, z);
+        axis = glm::normalize(axis);
+
+        ::glm::dmat4 matrix = ::glm::translate(center);
+        matrix              = ::glm::rotate(matrix, angle, axis);
+        matrix              = ::glm::translate(matrix, translation);
+
+        ::fwData::TransformationMatrix3D::sptr mat = ::fwData::TransformationMatrix3D::New();
+        ::fwDataTools::TransformationMatrix3D::setTF3DFromMatrix(mat, matrix);
+
+        matricesVector->getContainer().push_back(mat);
+    }
+    ::calibration3d::helper::calibratePointingTool(matricesVector, resTransformMatrix, resCenterMatrix);
+
+    for (std::uint8_t i = 0; i < 3; ++i)
+    {
+        for (std::uint8_t j = 0; j < 3; ++j)
+        {
+
+            const double val = (i == j ? 1. : 0.);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("transform["+ std::to_string(i) + "][" + std::to_string(j) + "]",
+                                                 val, resTransformMatrix->getCoefficient(i, j), 0.00001);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("center["+ std::to_string(i) + "][" + std::to_string(j) + "]",
+                                                 val, resCenterMatrix->getCoefficient(i, j), 0.00001);
+        }
+        CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("transform[" + std::to_string(i) + "][3]",
+                                             -translation[i], resTransformMatrix->getCoefficient(i, 3), 0.00001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("center[" + std::to_string(i) + "][3]",
+                                             center[i], resCenterMatrix->getCoefficient(i, 3), 0.00001);
+    }
 }
 
 //------------------------------------------------------------------------------

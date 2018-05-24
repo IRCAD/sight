@@ -20,6 +20,7 @@ CPPUNIT_TEST_SUITE( helperTest );
 CPPUNIT_TEST(reprojectionIdentity);
 CPPUNIT_TEST(reprojectionRealDatasetTest1);
 CPPUNIT_TEST(reprojectionRealDatasetTest2);
+CPPUNIT_TEST(toolCalibrationBasic);
 CPPUNIT_TEST(toolCalibration);
 CPPUNIT_TEST_SUITE_END();
 
@@ -31,6 +32,7 @@ public:
     void reprojectionRealDatasetTest1();
     void reprojectionRealDatasetTest2();
     void reprojectionIdentity();
+    void toolCalibrationBasic();
     void toolCalibration();
 };
 
