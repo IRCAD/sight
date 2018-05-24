@@ -185,11 +185,6 @@ ImportanceDrivenVolumeRenderer::~ImportanceDrivenVolumeRenderer()
     auto viewport = layer->getViewport();
 
     this->cleanCompositorChain(viewport);
-
-    ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
-
-    ::Ogre::CompositorChain* compChain = compositorManager.getCompositorChain(viewport);
-    SLM_ASSERT("Can't find compositor chain", compChain);
 }
 
 //-----------------------------------------------------------------------------
@@ -222,11 +217,6 @@ void ImportanceDrivenVolumeRenderer::initCompositors()
 
     this->cleanCompositorChain(viewport);
     this->buildICCompositors(viewport);
-
-    ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
-
-    ::Ogre::CompositorChain* compChain = compositorManager.getCompositorChain(viewport);
-    SLM_ASSERT("Can't find compositor chain", compChain);
 }
 
 //-----------------------------------------------------------------------------
@@ -356,6 +346,18 @@ void ImportanceDrivenVolumeRenderer::cleanCompositorChain(Ogre::Viewport* _vp)
                   [](::Ogre::CompositorInstance::Listener* listener) { delete listener; });
 
     m_compositorListeners.clear();
+
+    // Reallocate chain resources, i.e. force chain recompiling.
+    for(size_t i = 0; i < compChain->getNumCompositors(); ++i)
+    {
+        auto compIntance = compChain->getCompositor(i);
+        if(compIntance->getEnabled())
+        {
+            // Mark the instance as being dead for the resources to be allocated again when enabled.
+            compIntance->setAlive(false);
+            compIntance->setEnabled(true);
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
