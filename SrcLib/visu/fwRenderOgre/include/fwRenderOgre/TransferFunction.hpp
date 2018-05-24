@@ -92,8 +92,8 @@ template <class GPU_PARAMETERS>
 inline void TransferFunction::bind(::Ogre::Pass* _pass, const std::string& _texUnitName,
                                    ::Ogre::SharedPtr<GPU_PARAMETERS> _params) const
 {
-    SLM_ASSERT("Ogre pass is null", _pass);
-    SLM_ASSERT("Ogre pass is null", _params);
+    SLM_ASSERT("Pass is null", _pass);
+    SLM_ASSERT("Parameters pointer is null", _params);
 
     auto texUnitState = _pass->getTextureUnitState(_texUnitName);
     SLM_ASSERT("'" + _texUnitName + "' texture unit is not found", texUnitState);

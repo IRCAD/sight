@@ -89,9 +89,6 @@ void TransferFunction::updateTexture(const ::fwData::TransferFunction::csptr& _t
     ::Ogre::PixelBox pixBox = pixBuffer->getCurrentLock();
     std::uint8_t* pDest = static_cast<std::uint8_t*>(pixBox.data);
 
-    // Retrieves the transfer function's data map
-    const ::fwData::TransferFunction::TFDataType tfData = _tf->getTFData();
-
     // Retrieves the transfer function's intensity window
     const TFValuePairType intensityMinMax = _tf->getWLMinMax();
 
