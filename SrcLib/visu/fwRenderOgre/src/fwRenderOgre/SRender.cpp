@@ -25,8 +25,12 @@
 #include <fwServices/helper/Config.hpp>
 #include <fwServices/macros.hpp>
 
+#include <fwRenderOgre/helper/Font.hpp>
+#include <fwRenderOgre/Text.hpp>
+
 #include <OGRE/OgreEntity.h>
 #include <OGRE/OgreNode.h>
+#include <OGRE/Overlay/OgreOverlayContainer.h>
 #include <OGRE/Overlay/OgreOverlayManager.h>
 #include <OGRE/OgreSceneManager.h>
 #include <OGRE/OgreSceneNode.h>
@@ -64,6 +68,7 @@ static const ::fwCom::Slots::SlotKeyType s_REMOVE_OBJECTS_SLOT = "removeObjects"
 
 SRender::SRender() noexcept :
     m_interactorManager(nullptr),
+    m_overlayTextPanel(nullptr),
     m_showOverlay(false),
     m_renderOnDemand(true),
     m_fullscreen(false)
@@ -413,6 +418,36 @@ void SRender::computeCameraClipping()
         ::fwRenderOgre::Layer::sptr layer = it.second;
         layer->resetCameraClippingRange();
     }
+}
+
+//-----------------------------------------------------------------------------
+
+::Ogre::OverlayContainer* SRender::getOverlayTextPanel()
+{
+    static std::mutex overlayManagerLock;
+
+    overlayManagerLock.lock();
+    if(m_overlayTextPanel == nullptr)
+    {
+        auto& overlayManager = ::Ogre::OverlayManager::getSingleton();
+
+        m_overlayTextPanel =
+            static_cast< ::Ogre::OverlayContainer* >(overlayManager.createOverlayElement("Panel",
+                                                                                         this->getID() + "_GUI"));
+        m_overlayTextPanel->setMetricsMode(::Ogre::GMM_PIXELS);
+        m_overlayTextPanel->setPosition(0, 0);
+        m_overlayTextPanel->setDimensions(1.0f, 1.0f);
+
+        ::Ogre::Overlay* uiOverlay = overlayManager.create(this->getID() + "_UIOverlay");
+        uiOverlay->add2D(m_overlayTextPanel);
+
+        m_enabledOverlays.insert(uiOverlay);
+
+        m_interactorManager->setEnabledOverlays(m_enabledOverlays);
+    }
+    overlayManagerLock.unlock();
+
+    return m_overlayTextPanel;
 }
 
 //-----------------------------------------------------------------------------

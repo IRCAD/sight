@@ -27,6 +27,7 @@
 #include <fwServices/registry/ObjectService.hpp>
 
 #include <OGRE/OgreAxisAlignedBox.h>
+#include <OGRE/Overlay/OgreOverlay.h>
 
 #include <map>
 
@@ -150,6 +151,9 @@ public:
     /// Computes camera parameters with the actual global bounding box.
     FWRENDEROGRE_API void computeCameraClipping();
 
+    /// Creates or retrieves the overlay panel in which adaptors can render 2D text.
+    FWRENDEROGRE_API ::Ogre::OverlayContainer* getOverlayTextPanel();
+
     template<class T>
     std::vector<SPTR(T)> getAdaptors() const;
 
@@ -193,6 +197,9 @@ private:
 
     /// Set of overlays enabled for this renderer.
     ::fwRenderOgre::IRenderWindowInteractorManager::OverlaySetType m_enabledOverlays;
+
+    /// Overlay panel to which all the UI's text is attached.
+    ::Ogre::OverlayContainer* m_overlayTextPanel;
 
     /// Ogre root
     ::Ogre::Root* m_ogreRoot;
