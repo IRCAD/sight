@@ -346,6 +346,8 @@ void SVolumeRender::starting()
 
 void SVolumeRender::stopping()
 {
+    this->getRenderService()->makeCurrent();
+
     this->removeTFConnections();
 
     m_volumeConnection.disconnect();
@@ -389,6 +391,8 @@ void SVolumeRender::updating()
 
 void SVolumeRender::swapping(const KeyType& key)
 {
+    this->getRenderService()->makeCurrent();
+
     if (key == s_TF_INOUT)
     {
         ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction >(s_TF_INOUT);
