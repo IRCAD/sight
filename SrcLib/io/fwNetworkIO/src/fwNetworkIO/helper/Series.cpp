@@ -6,8 +6,6 @@
 
 #include "fwNetworkIO/helper/Series.hpp"
 
-#include "fwNetworkIO/exceptions/TagMissing.hpp"
-
 #include <fwCore/spyLog.hpp>
 
 #include <fwMedData/DicomSeries.hpp>
