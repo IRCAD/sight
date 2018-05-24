@@ -89,8 +89,8 @@ private:
     /// Overlay element displaying the text.
     ::Ogre::TextAreaOverlayElement* m_overlayText {nullptr};
 
-    /// Infinite bounding box returned by the 'getBoundingBox' method. This allows to be always updated, otherwise
-    /// the text is "blocked" when reaching the camera viewport edges
+    /// Infinite bounding box returned by the 'getBoundingBox' method.
+    /// This allows to be always updated, otherwise the text can get stuck against the viewport edges.
     const ::Ogre::AxisAlignedBox m_bb { ::Ogre::AxisAlignedBox::EXTENT_INFINITE };
 
     /// Container holding the text.

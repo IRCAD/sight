@@ -25,9 +25,6 @@
 #include <fwServices/helper/Config.hpp>
 #include <fwServices/macros.hpp>
 
-#include <fwRenderOgre/helper/Font.hpp>
-#include <fwRenderOgre/Text.hpp>
-
 #include <OGRE/OgreEntity.h>
 #include <OGRE/OgreNode.h>
 #include <OGRE/Overlay/OgreOverlayContainer.h>
