@@ -1025,7 +1025,7 @@ void SVolumeRender::updateVolumeIllumination()
 {
     this->getRenderService()->makeCurrent();
 
-    m_illum->SATUpdate(m_3DOgreTexture, m_gpuTF->getTexture(), m_volumeRenderer->getSamplingRate());
+    m_illum->SATUpdate(m_3DOgreTexture, m_gpuTF, m_volumeRenderer->getSamplingRate());
 
     // Volume illumination is only implemented for raycasting rendering
     if(m_renderingMode == VR_MODE_RAY_TRACING)

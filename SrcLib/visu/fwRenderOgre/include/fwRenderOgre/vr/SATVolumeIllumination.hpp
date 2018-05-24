@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2016-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2016-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWRENDEROGRE_VR_SATVOLUMEILLUMINATION_HPP__
-#define __FWRENDEROGRE_VR_SATVOLUMEILLUMINATION_HPP__
+#pragma once
 
 #include "fwRenderOgre/config.hpp"
 #include "fwRenderOgre/vr/SummedAreaTable.hpp"
@@ -40,7 +39,8 @@ public:
     FWRENDEROGRE_API void updateVolIllum();
 
     /// Recomputes the SAT and the illumination volume when the image or the TF changed.
-    FWRENDEROGRE_API void SATUpdate(::Ogre::TexturePtr _img, Ogre::TexturePtr _tf, float _sampleDistance);
+    FWRENDEROGRE_API void SATUpdate(::Ogre::TexturePtr _img, const ::fwRenderOgre::TransferFunction::sptr& _tf,
+                                    float _sampleDistance);
 
     /// Illumination volume texture getter.
     FWRENDEROGRE_API ::Ogre::TexturePtr getIlluminationVolume();
@@ -163,5 +163,3 @@ inline void SATVolumeIllumination::setSamplesAlongCone(int _samplesAlongCone)
 } // namespace vr
 
 } // namespace fwRenderOgre
-
-#endif // __FWRENDEROGRE_VR_SATVOLUMEILLUMINATION_HPP__
