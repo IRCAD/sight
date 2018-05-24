@@ -1,41 +1,30 @@
 #version 330
 
-uniform sampler2D u_tfTexture;
+uniform sampler1D u_tfTexture;
+uniform vec2 u_tfWindow;
 
 //-----------------------------------------------------------------------------
 
 vec4 sampleTransferFunction(float intensity)
 {
-    float scaledValue = intensity * 65535.f;
+    float intIntensity = intensity * 65535.f - 32768.f;
+    float scaledValue = ((intIntensity - u_tfWindow.x) / (u_tfWindow.y - u_tfWindow.x));
 
-    // Computes 2D indices from the hounsfield value
-    vec2 uv;
-    uv.y = floor( scaledValue / 256.f );
-    uv.x = floor( scaledValue - uv.y * 256.f );
-
-    return texelFetch(u_tfTexture, ivec2(uv), 0);
+    return texture(u_tfTexture, scaledValue);
 }
 
 vec4 sampleTransferFunction_uint16(int intensity)
 {
-    float scaledValue = intensity + 32767;
+    float intIntensity = intensity ;
+    float scaledValue = ((intIntensity - u_tfWindow.x) / (u_tfWindow.y - u_tfWindow.x));
 
-    // Computes 2D indices from the hounsfield value
-    vec2 uv;
-    uv.y = floor( scaledValue / 256.f );
-    uv.x = floor( scaledValue - uv.y * 256.f );
-
-    return texelFetch(u_tfTexture, ivec2(uv), 0);
+    return texture(u_tfTexture, scaledValue);
 }
 
 vec4 sampleTransferFunction_float(float intensity)
 {
-    float scaledValue = intensity + 32767.;
+    float intIntensity = intensity ;
+    float scaledValue = ((intIntensity - u_tfWindow.x) / (u_tfWindow.y - u_tfWindow.x));
 
-    // Computes 2D indices from the hounsfield value
-    vec2 uv;
-    uv.y = floor( scaledValue / 256.f );
-    uv.x = floor( scaledValue - uv.y * 256.f );
-
-    return texelFetch(u_tfTexture, ivec2(uv), 0);
+    return texture(u_tfTexture, scaledValue);
 }

@@ -53,7 +53,7 @@ public:
                                               Layer::sptr layer,
                                               ::Ogre::SceneNode* parentNode,
                                               ::Ogre::TexturePtr imageTexture,
-                                              TransferFunction& gpuTF,
+                                              const TransferFunction::sptr& gpuTF,
                                               PreIntegrationTable& preintegrationTable,
                                               bool ambientOcclusion      = false,
                                               bool colorBleeding         = false,

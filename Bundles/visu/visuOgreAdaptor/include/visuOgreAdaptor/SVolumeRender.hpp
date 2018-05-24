@@ -245,7 +245,7 @@ private:
     ::Ogre::TexturePtr m_maskTexture;
 
     /// TF texture used for rendering.
-    ::fwRenderOgre::TransferFunction m_gpuTF;
+    ::fwRenderOgre::TransferFunction::sptr m_gpuTF;
 
     /// Pre-integration table.
     ::fwRenderOgre::vr::PreIntegrationTable m_preIntegrationTable;

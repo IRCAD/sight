@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2016-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2016-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -26,7 +26,7 @@ SliceVolumeRenderer::SliceVolumeRenderer(std::string parentId,
                                          ::Ogre::SceneManager* sceneManager,
                                          ::Ogre::SceneNode* parentNode,
                                          ::Ogre::TexturePtr imageTexture,
-                                         TransferFunction& gpuTF,
+                                         const TransferFunction::sptr& gpuTF,
                                          PreIntegrationTable& preintegrationTable) :
     IVolumeRenderer(parentId, sceneManager, parentNode, imageTexture, gpuTF, preintegrationTable),
     m_intersectingPolygons(nullptr)
@@ -63,7 +63,7 @@ SliceVolumeRenderer::SliceVolumeRenderer(std::string parentId,
                 }
                 else
                 {
-                    texTFState->setTexture(m_gpuTF.getTexture());
+                    texTFState->setTexture(m_gpuTF.lock()->getTexture());
                     m_defaultShaderParameters = pass->getFragmentProgramParameters();
                     m_currentShaderParameters = m_defaultShaderParameters;
                 }

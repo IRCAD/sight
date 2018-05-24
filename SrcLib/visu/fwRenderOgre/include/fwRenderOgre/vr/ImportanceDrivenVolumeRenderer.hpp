@@ -36,7 +36,7 @@ public:
                                                     ::Ogre::SceneNode* parentNode,
                                                     ::Ogre::TexturePtr imageTexture,
                                                     ::Ogre::TexturePtr maskTexture,
-                                                    TransferFunction& gpuTF,
+                                                    const TransferFunction::sptr& gpuTF,
                                                     PreIntegrationTable& preintegrationTable,
                                                     bool ambientOcclusion,
                                                     bool colorBleeding,
