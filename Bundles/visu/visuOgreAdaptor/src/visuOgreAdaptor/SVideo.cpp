@@ -158,9 +158,6 @@ void SVideo::updating()
                 m_gpuTF = ::boost::make_unique< ::fwRenderOgre::TransferFunction>();
                 m_gpuTF->createTexture(this->getID());
 
-                ::Ogre::Pass* ogrePass = m_material->getTechnique(0)->getPass(0);
-                ogrePass->getTextureUnitState("tf")->setTexture(m_gpuTF->getTexture());
-
                 this->updateTF();
             }
             m_previousType = type;
@@ -222,6 +219,9 @@ void SVideo::updateTF()
     SLM_ASSERT("input '" + s_TF_INPUT + "' is missing.", tf);
 
     m_gpuTF->updateTexture(tf);
+
+    ::Ogre::Pass* ogrePass = m_material->getTechnique(0)->getPass(0);
+    m_gpuTF->bind(ogrePass, "tf", ogrePass->getFragmentProgramParameters());
 
     this->requestRender();
 }

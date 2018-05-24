@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017.
+ * FW4SPL - Copyright (C) IRCAD, 2017-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWRENDEROGRE_VR_IVOLUMERENDERER_HPP__
-#define __FWRENDEROGRE_VR_IVOLUMERENDERER_HPP__
+#pragma once
 
 #include "fwData/Image.hpp"
 #include "fwData/TransferFunction.hpp"
@@ -73,7 +72,7 @@ public:
                                      ::Ogre::SceneManager* sceneManager,
                                      ::Ogre::SceneNode* volumeNode,
                                      ::Ogre::TexturePtr imageTexture,
-                                     TransferFunction& gpuTF,
+                                     const TransferFunction::sptr& gpuTF,
                                      PreIntegrationTable& preintegrationTable);
 
     /// Destructor, does nothing.
@@ -121,7 +120,7 @@ protected:
     ::Ogre::TexturePtr m_3DOgreTexture;
 
     /// TF texture used for rendering.
-    TransferFunction& m_gpuTF;
+    TransferFunction::wptr m_gpuTF;
 
     /// Pre-integration table.
     PreIntegrationTable& m_preIntegrationTable;
@@ -167,5 +166,3 @@ inline float IVolumeRenderer::getSamplingRate() const
 } // namespace vr
 
 } // namespace fwRenderOgre
-
-#endif // __FWRENDEROGRE_VR_IVOLUMERENDERER_HPP__

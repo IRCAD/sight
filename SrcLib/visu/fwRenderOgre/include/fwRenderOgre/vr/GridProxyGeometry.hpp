@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017.
+ * FW4SPL - Copyright (C) IRCAD, 2017-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWRENDEROGRE_VR_GRIDPROXYGEOMETRY_HPP__
-#define __FWRENDEROGRE_VR_GRIDPROXYGEOMETRY_HPP__
+#pragma once
 
 #include "fwRenderOgre/config.hpp"
 #include "fwRenderOgre/factory/R2VBRenderable.hpp"
@@ -45,7 +44,8 @@ class FWRENDEROGRE_CLASS_API GridProxyGeometry : public R2VBRenderable
 public:
 
     static FWRENDEROGRE_API GridProxyGeometry* New(const std::string& _name, ::Ogre::SceneManager* _sceneManager,
-                                                   ::Ogre::TexturePtr _3DImageTexture, TransferFunction& _tf,
+                                                   ::Ogre::TexturePtr _3DImageTexture,
+                                                   const TransferFunction::sptr& _tf,
                                                    const std::string& _mtlName);
 
     /// Constructor, should never be called directly.
@@ -99,7 +99,7 @@ private:
     ::Ogre::TexturePtr m_3DImageTexture;
 
     /// Transfer function to be applied to the image.
-    TransferFunction m_gpuTF;
+    TransferFunction::wptr m_gpuTF;
 
 };
 
@@ -155,5 +155,3 @@ protected:
 
 } // namespace vr
 } // namespace fwRenderOgre
-
-#endif // __FWRENDEROGRE_VR_GRIDPROXYGEOMETRY_HPP__

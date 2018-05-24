@@ -5,6 +5,7 @@
     <requirement id="scene2D" />
     <requirement id="servicesReg" />
     <requirement id="visuOgreQt" />
+    <requirement id="preferences" />
 
     <extension implements="::fwServices::registry::AppConfig">
         <id>ExOgreRGBDStream</id>
@@ -53,6 +54,7 @@
                     </layout>
                 </gui>
                 <registry>
+                    <editor sid="cameraSelector" start="yes" />
                     <menuItem sid="startVideo" start="yes" />
                     <menuItem sid="stopVideo" start="yes" />
                 </registry>
@@ -105,7 +107,7 @@
 
             <!-- *************************** Begin generic scene *************************** -->
 
-            <service uid="distanceMapRender" type="::fwRenderOgre::SRender" autoConnect="yes">
+            <service uid="distanceMapRender" type="::fwRenderOgre::SRender">
                 <scene>
                     <layer id="default" depth="1" background="0.0" />
                     <adaptor uid="depthAdaptor" />
@@ -127,7 +129,7 @@
 
             <!-- *************************** Begin generic scene *************************** -->
 
-            <service uid="videoViewRender" type="::fwRenderOgre::SRender" autoConnect="yes">
+            <service uid="videoViewRender" type="::fwRenderOgre::SRender" >
                 <scene>
                     <layer id="default" depth="1" background="0.0" />
                     <adaptor uid="videoAdaptor" />
@@ -213,7 +215,7 @@
                 <config min="-1024" max="1024" interval="100" align="bottom" tickSize="5" viewportUID="viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="11" />
             </service>
 
-            <service uid="TFEditorSettings" type="::fwRenderQt::SRender" autoConnect="yes">
+            <service uid="TFEditorSettings" type="::fwRenderQt::SRender" >
                 <scene>
                     <scene x="-20" y="-1.1" width="5020" height="1.2" />
                     <viewport x="-20" y="-1.1" width="5020" height="1.2" />
@@ -243,11 +245,11 @@
                 <config xAxis="xAxis" yAxis="yAxis" zValue="5" initialWidth="3000" initialPos="200" />
             </service>
 
-            <!-- ************************* Begin scanning services declarations ************************************ -->
+            <!-- ********************************** Begin services declarations ************************************ -->
             <service uid="synchronizer" type="::videoTools::SFrameMatrixSynchronizer" worker="synchronizer">
                 <in group="frameTL">
-                    <key uid="frameTLVideo" />
-                    <key uid="frameTLDepth" />
+                <key uid="frameTLVideo" autoConnect="yes"/>
+                <key uid="frameTLDepth" autoConnect="yes"/>
                 </in>
                 <inout group="image">
                     <key uid="imageVideo" />
@@ -255,18 +257,28 @@
                 </inout>
             </service>
 
-            <!-- Manages Sense camera configuration -->
-            <service uid="scanner" type="::videoOpenni::SScan" worker="scanWorker">
-                <inout key="frameTLDepth" uid="frameTLDepth" />
-                <inout key="frameTLColors" uid="frameTLVideo" />
-                <inout key="cameraSeries" uid="RGBDCameraSeries" />
+            <service uid="grabber" type="::videoTools::SGrabberProxy" >
+                <in key="camera" uid="RGBDCameraSeries" />
+                <inout key="depthTL" uid="frameTLDepth" />
+                <inout key="frameTL" uid="frameTLVideo" />
+                <config>
+                    <camera type="RGBD" />
+                    <selection mode="exclude" />
+                    <addSelection service="::videoQt::SFrameGrabber" />
+                </config>
             </service>
 
-            <!-- *********************** Begin mesh computing services declarations ******************************** -->
+            <!-- The CameraSelector creates 2 empty ::arData::Camera so we can use it without any prior calibration -->
+            <service uid="cameraSelector" type="::videoQt::editor::SCamera">
+                <inout key="cameraSeries" uid="RGBDCameraSeries" />
+                <videoSupport>yes</videoSupport>
+                <createCameraNumber>2</createCameraNumber>
+            </service>
+
             <service uid="startVideo" type="::gui::action::SSlotCaller">
                 <slots>
                     <slot>startVideo/setInexecutable</slot>
-                    <slot>scanner/startCamera</slot>
+                    <slot>grabber/startCamera</slot>
                     <slot>stopVideo/setExecutable</slot>
                 </slots>
             </service>
@@ -275,17 +287,23 @@
                 <state executable="false" />
                 <slots>
                     <slot>stopVideo/setInexecutable</slot>
-                    <slot>scanner/stopCamera</slot>
+                    <slot>grabber/stopCamera</slot>
                     <slot>startVideo/setExecutable</slot>
                 </slots>
             </service>
 
-            <!-- ************************** End connections declarations ******************************************* -->
+            <!-- ***************************************** Begin connections declarations ************************** -->
+            <connect>
+                <signal>cameraSelector/configuredCameras</signal>
+                <slot>grabber/reconfigure</slot>
+            </connect>
+            <!-- ***************************************** End connections declarations **************************** -->
+
             <!-- layouts -->
             <start uid="mainView" />
             <!-- reconstruction services -->
             <start uid="synchronizer" />
-            <start uid="scanner" />
+            <start uid="grabber" />
             <!-- TFEditor Scene2D -->
             <start uid="grid" />
             <start uid="abscissa" />

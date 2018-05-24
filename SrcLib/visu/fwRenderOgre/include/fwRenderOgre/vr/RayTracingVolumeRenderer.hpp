@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2016-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2016-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWRENDEROGRE_VR_RAYTRACINGVOLUMERENDERER_HPP__
-#define __FWRENDEROGRE_VR_RAYTRACINGVOLUMERENDERER_HPP__
+#pragma once
 
 #include "fwRenderOgre/compositor/listener/AutoStereo.hpp"
 #include "fwRenderOgre/config.hpp"
@@ -54,12 +53,12 @@ public:
                                               Layer::sptr layer,
                                               ::Ogre::SceneNode* parentNode,
                                               ::Ogre::TexturePtr imageTexture,
-                                              TransferFunction& gpuTF,
+                                              const TransferFunction::sptr& gpuTF,
                                               PreIntegrationTable& preintegrationTable,
-                                              bool ambientOcclusion = false,
-                                              bool colorBleeding = false,
-                                              bool shadows = false,
-                                              double aoFactor = 1.,
+                                              bool ambientOcclusion      = false,
+                                              bool colorBleeding         = false,
+                                              bool shadows               = false,
+                                              double aoFactor            = 1.,
                                               double colorBleedingFactor = 1.);
 
     /// Does nothing.
@@ -225,5 +224,3 @@ inline ::fwRenderOgre::Layer::sptr RayTracingVolumeRenderer::getLayer() const
 } // namespace vr
 
 } // namespace fwRenderOgre
-
-#endif // __FWRENDEROGRE_VR_RAYTRACINGVOLUMERENDERER_HPP__

@@ -292,7 +292,7 @@ void SNegato2D::updateTFPoints()
     m_plane->switchThresholding(tf->getIsClamped());
 
     // Sends the TF texture to the negato-related passes
-    m_plane->setTFData(m_gpuTF->getTexture());
+    m_plane->setTFData(*m_gpuTF.get());
 
     this->requestRender();
 }

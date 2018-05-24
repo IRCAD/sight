@@ -1,13 +1,13 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2016-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2016-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWRENDEROGRE_VR_SUMMEDAREATABLE_HPP__
-#define __FWRENDEROGRE_VR_SUMMEDAREATABLE_HPP__
+#pragma once
 
 #include "fwRenderOgre/config.hpp"
+#include <fwRenderOgre/TransferFunction.hpp>
 
 #include <fwData/Image.hpp>
 #include <fwData/TransferFunction.hpp>
@@ -43,7 +43,8 @@ public:
     FWRENDEROGRE_API void computeSequential(::fwData::Image::sptr _image, fwData::TransferFunction::sptr _tf);
 
     /// Computes the SAT using Hensley's recursive doubling algorithm.
-    FWRENDEROGRE_API void computeParallel(::Ogre::TexturePtr _imgTexture, ::Ogre::TexturePtr _gpuTf,
+    FWRENDEROGRE_API void computeParallel(::Ogre::TexturePtr _imgTexture,
+                                          const ::fwRenderOgre::TransferFunction::sptr& _gpuTf,
                                           float _sampleDistance);
 
     /// Returns the texture holding the SAT.
@@ -140,5 +141,3 @@ inline Ogre::TexturePtr SummedAreaTable::getSpareTexture() const
 } // namespace vr
 
 } // namespace fwRenderOgre
-
-#endif // __FWRENDEROGRE_VR_SUMMEDAREATABLE_HPP__

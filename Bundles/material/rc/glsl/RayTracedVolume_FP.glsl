@@ -1,7 +1,6 @@
 #version 330
 
 uniform sampler3D u_image;
-uniform sampler2D u_tfTexture;
 
 #if IDVR >= 1
 uniform sampler2D u_IC;
@@ -47,6 +46,7 @@ uniform float u_clippingNear;
 uniform float u_clippingFar;
 
 #ifdef PREINTEGRATION
+uniform sampler2D u_tfTexture;
 uniform int u_min;
 uniform int u_max;
 #else

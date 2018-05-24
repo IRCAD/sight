@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2016-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2016-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -112,7 +112,8 @@ SummedAreaTable::~SummedAreaTable()
 
 //-----------------------------------------------------------------------------
 
-void SummedAreaTable::computeParallel(::Ogre::TexturePtr _imgTexture, Ogre::TexturePtr _gpuTf, float _sampleDistance)
+void SummedAreaTable::computeParallel(::Ogre::TexturePtr _imgTexture,
+                                      const ::fwRenderOgre::TransferFunction::sptr& _gpuTf, float _sampleDistance)
 {
     if(!m_sourceBuffer)
     {
@@ -123,15 +124,13 @@ void SummedAreaTable::computeParallel(::Ogre::TexturePtr _imgTexture, Ogre::Text
     ::Ogre::Pass* satInitPass       = initPassMtl->getTechnique(0)->getPass(0);
 
     ::Ogre::TextureUnitState* tex3DState = satInitPass->getTextureUnitState("image");
-    ::Ogre::TextureUnitState* texTFState = satInitPass->getTextureUnitState("transferFunction");
-
     SLM_ASSERT("'image' texture unit is not found", tex3DState);
-    SLM_ASSERT("'transferFunction' texture unit is not found", texTFState);
-
     tex3DState->setTexture(_imgTexture);
-    texTFState->setTexture(_gpuTf);
 
-    satInitPass->getFragmentProgramParameters()->setNamedConstant("u_sampleDistance", _sampleDistance);
+    auto fpParams = satInitPass->getFragmentProgramParameters();
+    fpParams->setNamedConstant("u_sampleDistance", _sampleDistance);
+
+    _gpuTf->bind(satInitPass, "transferFunction", fpParams);
 
     ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
     const size_t depth = m_satSize[2];
@@ -143,7 +142,7 @@ void SummedAreaTable::computeParallel(::Ogre::TexturePtr _imgTexture, Ogre::Text
 
         compositorManager.setCompositorEnabled(vp, "SummedAreaTableInit", true);
 
-        m_currentSliceDepth = static_cast<float>(sliceIndex / depth);
+        m_currentSliceDepth = static_cast<float>(sliceIndex) / static_cast<float>(depth);
 
         m_sourceBuffer->getBuffer()->getRenderTarget(sliceIndex)->update(false);
 

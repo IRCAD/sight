@@ -308,7 +308,7 @@ void Plane::setRelativePosition(float _relativePosition)
 
 //-----------------------------------------------------------------------------
 
-void Plane::setTFData(const ::Ogre::TexturePtr _tfTexture)
+void Plane::setTFData(const ::fwRenderOgre::TransferFunction& _tfTexture)
 {
     const ::Ogre::Material::Techniques& techniques = m_texMaterial->getTechniques();
 
@@ -319,11 +319,7 @@ void Plane::setTFData(const ::Ogre::TexturePtr _tfTexture)
         if(::fwRenderOgre::helper::Shading::isColorTechnique(*tech))
         {
             ::Ogre::Pass* pass = tech->getPass(0);
-            SLM_ASSERT("Can't find Ogre pass", pass);
-
-            ::Ogre::TextureUnitState* texUnitStateValues = pass->getTextureUnitState("tfTexture");
-            SLM_ASSERT("'tfTexture' texture unit is not found", texUnitStateValues);
-            texUnitStateValues->setTexture(_tfTexture);
+            _tfTexture.bind(pass, "tfTexture", pass->getFragmentProgramParameters());
         }
     }
 }
