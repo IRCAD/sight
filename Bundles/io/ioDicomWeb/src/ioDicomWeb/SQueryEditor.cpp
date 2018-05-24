@@ -32,8 +32,6 @@
 namespace ioDicomWeb
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::ioDicomWeb::SQueryEditor, ::fwMedData::SeriesDB );
-
 //------------------------------------------------------------------------------
 
 SQueryEditor::SQueryEditor() noexcept
@@ -278,10 +276,25 @@ void SQueryEditor::queryStudyDate()
 
         /// Orthanc "/tools/find" route. POST a JSON to get all Studies corresponding to StudyDate range.
         ::fwNetworkIO::http::Request::sptr request = ::fwNetworkIO::http::Request::New(pacsServer + "/tools/find");
-        const QByteArray& studiesListAnswer = m_clientQt.post(request, QJsonDocument(body).toJson());
-        QJsonDocument jsonResponse          = QJsonDocument::fromJson(studiesListAnswer);
-        const QJsonArray& studiesListArray  = jsonResponse.array();
-        const int studiesListArraySize      = studiesListArray.count();
+        QByteArray studiesListAnswer;
+        try
+        {
+            studiesListAnswer = m_clientQt.post(request, QJsonDocument(body).toJson());
+        }
+        catch  (::fwNetworkIO::exceptions::HostNotFound& exception)
+        {
+            std::stringstream ss;
+            ss << "Host not found:\n"
+               << " Please check your configuration: \n"
+               << "Pacs host name: " << m_serverHostname << "\n"
+               << "Pacs port: " << m_serverPort << "\n";
+
+            this->displayErrorMessage(ss.str());
+            SLM_WARN(exception.what());
+        }
+        QJsonDocument jsonResponse         = QJsonDocument::fromJson(studiesListAnswer);
+        const QJsonArray& studiesListArray = jsonResponse.array();
+        const int studiesListArraySize     = studiesListArray.count();
 
         for(int i = 0; i < studiesListArraySize; ++i)
         {
@@ -321,7 +334,10 @@ void SQueryEditor::queryStudyDate()
     }
     catch (::fwNetworkIO::exceptions::Base& exception)
     {
-        this->displayErrorMessage(exception.what());
+        std::stringstream ss;
+        ss << "Unknown error.";
+        this->displayErrorMessage(ss.str());
+        SLM_WARN(exception.what());
     }
 }
 

@@ -59,9 +59,6 @@
 namespace ioDicomWeb
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::ioDicomWeb::SSliceIndexDicomPullerEditor,
-                         ::fwMedData::DicomSeries );
-
 //------------------------------------------------------------------------------
 
 SSliceIndexDicomPullerEditor::SSliceIndexDicomPullerEditor() noexcept :
@@ -73,13 +70,6 @@ SSliceIndexDicomPullerEditor::SSliceIndexDicomPullerEditor() noexcept :
 
 SSliceIndexDicomPullerEditor::~SSliceIndexDicomPullerEditor() noexcept
 {
-}
-
-//------------------------------------------------------------------------------
-
-void SSliceIndexDicomPullerEditor::info(std::ostream& _sstream )
-{
-    _sstream << "SSliceIndexDicomPullerEditor::info";
 }
 
 //------------------------------------------------------------------------------
@@ -476,9 +466,24 @@ void SSliceIndexDicomPullerEditor::pullInstance()
         /// Orthanc "/tools/find" route. POST a JSON to get all Series corresponding to the SeriesInstanceUID.
         ::fwNetworkIO::http::Request::sptr request = ::fwNetworkIO::http::Request::New(
             pacsServer + "/tools/find");
-        const QByteArray& seriesAnswer = m_clientQt.post(request, QJsonDocument(body).toJson());
-        QJsonDocument jsonResponse     = QJsonDocument::fromJson(seriesAnswer);
-        const QJsonArray& seriesArray  = jsonResponse.array();
+        QByteArray seriesAnswer;
+        try
+        {
+            seriesAnswer = m_clientQt.post(request, QJsonDocument(body).toJson());
+        }
+        catch  (::fwNetworkIO::exceptions::HostNotFound& exception)
+        {
+            std::stringstream ss;
+            ss << "Host not found:\n"
+               << " Please check your configuration: \n"
+               << "Pacs host name: " << m_serverHostname << "\n"
+               << "Pacs port: " << m_serverPort << "\n";
+
+            this->displayErrorMessage(ss.str());
+            SLM_WARN(exception.what());
+        }
+        QJsonDocument jsonResponse    = QJsonDocument::fromJson(seriesAnswer);
+        const QJsonArray& seriesArray = jsonResponse.array();
 
         // Should be one Series, so take the first of the array.
         const std::string& seriesUID = seriesArray.at(0).toString().toStdString();
@@ -494,8 +499,21 @@ void SSliceIndexDicomPullerEditor::pullInstance()
             instancesArray.at(static_cast<int>(selectedSliceIndex)).toString().toStdString();
 
         // GET frame by Slice.
+        std::string instancePath;
         const std::string& instanceUrl(pacsServer + "/instances/" + instanceUID + "/file");
-        const std::string& instancePath = m_clientQt.getFile( ::fwNetworkIO::http::Request::New(instanceUrl));
+        try
+        {
+            instancePath = m_clientQt.getFile( ::fwNetworkIO::http::Request::New(instanceUrl));
+        }
+        catch  (::fwNetworkIO::exceptions::ContentNotFound& exception)
+        {
+            std::stringstream ss;
+            ss << "Content not found:  \n"
+               << "Unable download the DICOM instance. \n";
+
+            this->displayErrorMessage(ss.str());
+            SLM_WARN(exception.what());
+        }
 
         // Add path and trigger reading
         dicomSeries->addDicomPath(selectedSliceIndex, instancePath);
@@ -504,10 +522,7 @@ void SSliceIndexDicomPullerEditor::pullInstance()
     catch (::fwNetworkIO::exceptions::Base& exception)
     {
         std::stringstream ss;
-        ss << "Unable to connect to the pacs. Please check your configuration: \n"
-           << "Pacs host name: " << m_serverHostname << "\n"
-           << "Pacs port: " << m_serverPort << "\n";
-
+        ss << "Unknown error.";
         this->displayErrorMessage(ss.str());
         SLM_WARN(exception.what());
     }

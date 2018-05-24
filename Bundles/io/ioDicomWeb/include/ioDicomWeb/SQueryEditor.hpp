@@ -27,18 +27,18 @@ namespace ioDicomWeb
 {
 
 /**
- * @brief   This editor service is used to perform a IODICOMWEB query on a pacs.
+ * @brief   This editor service is used to perform an HTTP query on a Pacs.
  *
  * @section XML XML Configuration
  *
  * @code{.xml}
         <service type="::ioDicomWeb::SQueryEditor">
-            <inout key="seriesDB" uid="previewSeriesDB" />
+            <inout key="seriesDB" uid="..." />
             <server>%PACS_SERVER_HOSTNAME%:%PACS_SERVER_PORT%</server>
        </service>
    @endcode
  * @subsection In-Out In-Out:
- * - \b seriesDB [::fwData::Object]: SeriesDB on which the queried data will be pushed.
+ * - \b seriesDB [::fwMedData::SeriesDB]: SeriesDB on which the queried data will be pushed.
  * @subsection Configuration Configuration:
  * - \b server: server URL. Need hostname and port in this format addr:port (default value is 127.0.0.1:8042).
  * @note : hostname and port of this service can be a value or a nameKey from preference settings
@@ -62,23 +62,17 @@ public:
 
 protected:
 
-    /// Configuring method. This method is used to configure the service.
+    /// Gets the configurations.
     IODICOMWEB_API virtual void configuring() override;
 
-    /// Override
+    /// Creates the widgets & connect the signals.
     IODICOMWEB_API virtual void starting() override;
 
-    /// Override
+    /// Disconnect the signals and destroy the widgets.
     IODICOMWEB_API virtual void stopping() override;
 
-    /// Override
+    /// Does nothing.
     IODICOMWEB_API void updating() override;
-
-    /**
-     * @brief Display an error message
-     * @param[in] message Error message to display
-     */
-    IODICOMWEB_API void displayErrorMessage(const std::string& message) const;
 
 private Q_SLOTS:
     /// Slot called when querying on patient name
@@ -88,6 +82,12 @@ private Q_SLOTS:
     void queryStudyDate();
 
 private:
+    /**
+     * @brief Display an error message
+     * @param[in] message Error message to display
+     */
+    IODICOMWEB_API void displayErrorMessage(const std::string& message) const;
+
     /**
      * @brief Update the seriesDB with the series retrieved from the pacs
      * @param[in] series Series which must be added to the SeriesDB

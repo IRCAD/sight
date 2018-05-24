@@ -36,8 +36,6 @@
 namespace ioDicomWeb
 {
 
-fwServicesRegisterMacro( ::fwServices::IController, ::ioDicomWeb::SSeriesPuller, ::fwData::Vector );
-
 //------------------------------------------------------------------------------
 
 SSeriesPuller::SSeriesPuller() noexcept :
@@ -50,13 +48,6 @@ SSeriesPuller::SSeriesPuller() noexcept :
 
 SSeriesPuller::~SSeriesPuller() noexcept
 {
-}
-
-//------------------------------------------------------------------------------
-
-void SSeriesPuller::info(std::ostream& _sstream )
-{
-    _sstream << "SSeriesPuller::info";
 }
 
 //------------------------------------------------------------------------------
@@ -279,9 +270,25 @@ void SSeriesPuller::pullSeries()
                 /// Orthanc "/tools/find" route. POST a JSON to get all Series corresponding to the SeriesInstanceUID.
                 ::fwNetworkIO::http::Request::sptr request = ::fwNetworkIO::http::Request::New(
                     pacsServer + "/tools/find");
-                const QByteArray& seriesAnswer = m_clientQt.post(request, QJsonDocument(body).toJson());
-                QJsonDocument jsonResponse     = QJsonDocument::fromJson(seriesAnswer);
-                const QJsonArray& seriesArray  = jsonResponse.array();
+                QByteArray seriesAnswer;
+                try
+                {
+                    seriesAnswer = m_clientQt.post(request, QJsonDocument(body).toJson());
+                }
+                catch  (::fwNetworkIO::exceptions::HostNotFound& exception)
+                {
+                    std::stringstream ss;
+                    ss << "Host not found:\n"
+                       << " Please check your configuration: \n"
+                       << "Pacs host name: " << m_serverHostname << "\n"
+                       << "Pacs port: " << m_serverPort << "\n";
+
+                    this->displayErrorMessage(ss.str());
+                    SLM_WARN(exception.what());
+                }
+
+                QJsonDocument jsonResponse    = QJsonDocument::fromJson(seriesAnswer);
+                const QJsonArray& seriesArray = jsonResponse.array();
 
                 const size_t seriesArraySize = seriesArray.count();
                 for(size_t i = 0; i < seriesArraySize; ++i)
@@ -303,7 +310,21 @@ void SSeriesPuller::pullSeries()
 
                         /// GET DICOM Instance file.
                         const std::string instanceUrl(pacsServer +"/instances/" + instanceUID + "/file");
-                        m_path = m_clientQt.getFile(::fwNetworkIO::http::Request::New(instanceUrl));
+
+                        try
+                        {
+                            m_path = m_clientQt.getFile(::fwNetworkIO::http::Request::New(instanceUrl));
+                        }
+                        catch  (::fwNetworkIO::exceptions::ContentNotFound& exception)
+                        {
+                            std::stringstream ss;
+                            ss << "Content not found:  \n"
+                               << "Unable download the DICOM instance. \n";
+
+                            this->displayErrorMessage(ss.str());
+                            SLM_WARN(exception.what());
+                        }
+
                         // Create dicom folder
                         ::boost::filesystem::path instancePath = m_path.parent_path() / seriesInstancesUID;
                         QDir().mkpath(instancePath.string().c_str());
@@ -329,7 +350,7 @@ void SSeriesPuller::pullSeries()
     catch (::fwNetworkIO::exceptions::Base& exception)
     {
         std::stringstream ss;
-        ss << "Error: Retrieving from the PACS failed.";
+        ss << "Unknown error.";
         this->displayErrorMessage(ss.str());
         SLM_WARN(exception.what());
         m_isPulling = false;

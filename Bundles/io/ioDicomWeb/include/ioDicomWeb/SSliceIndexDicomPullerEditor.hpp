@@ -53,7 +53,7 @@ namespace ioDicomWeb
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::ioDicom::SSliceIndexDicomPullerEditor">
+        <service type="::ioDicomWeb::SSliceIndexDicomPullerEditor">
            <inout key="series" uid="..." />
            <out key="image" uid="..." />
            <server>%PACS_SERVER_HOSTNAME%:%PACS_SERVER_PORT%</server>
@@ -107,37 +107,35 @@ private Q_SLOTS:
 
 protected:
 
-    /// Configuring method. This method is used to configure the service.
+    /// Gets the configurations and creates a timer on a worker.
     IODICOMWEB_API virtual void configuring() override;
 
-    /// Override
+    /// Creates the wigdets, connect the signal, register the DICOM reader and starts the callback timer.
     IODICOMWEB_API virtual void starting() override;
 
-    /// Override
+    /// Stops the timer, unregister the DICOM reader and destroy the created widgets.
     IODICOMWEB_API virtual void stopping() override;
 
-    /// Override
+    /// Does nothing.
     IODICOMWEB_API void updating() override;
 
-    /// Override
-    IODICOMWEB_API void info(std::ostream& _sstream ) override;
-
-    /// Function called when a new slice must be displayed
-    IODICOMWEB_API void triggerNewSlice();
+private:
+    /// Function called when a new slice must be displayed.
+    void triggerNewSlice();
 
     /**
      * @brief Read the selected image
      * @param[in] selectedSliceIndex Selected slice of the image that must be read
      */
-    IODICOMWEB_API void readImage(size_t selectedSliceIndex);
+    void readImage(size_t selectedSliceIndex);
 
-    /// Pull the selected slice from the pacs
-    IODICOMWEB_API void pullInstance();
+    /// Pull the selected slice from the Pacs
+    void pullInstance();
 
     /**
      * @brief Displays a dialog box with the error message
      */
-    IODICOMWEB_API void displayErrorMessage(const std::string& message) const;
+    void displayErrorMessage(const std::string& message) const;
 
     /// Slice index slider
     QPointer< QSlider > m_sliceIndexSlider;

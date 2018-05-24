@@ -33,7 +33,7 @@ namespace ioDicomWeb
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::namespace::classname">
+        <service type="::ioDicomWeb::SSeriesPuller">
             <in key="selectedSeries" uid="..." />
             <inout key="seriesDB" uid="..." />
             <config dicomReader="::ioGdcm::SSeriesDBReader" dicomReaderConfig="config" />
@@ -73,34 +73,31 @@ public:
 
 protected:
 
-    /// Configuring method. This method is used to configure the service.
+    /// Gets the configuration.
     IODICOMWEB_API virtual void configuring() override;
 
-    /// Override
+    /// Registers the DICOM reader.
     IODICOMWEB_API virtual void starting() override;
 
-    /// Override
+    /// Stops the DICOM reader.
     IODICOMWEB_API virtual void stopping() override;
 
-    /// Override
+    /// Checks the configuration and pull the series.
     IODICOMWEB_API void updating() override;
-
-    /// Override
-    IODICOMWEB_API void info(std::ostream& _sstream ) override;
 
 private:
 
-    /// Pull Series
+    /// Pull the Series from the Pacs.
     void pullSeries();
 
     /**
-     * @brief Read local series
-     * @param[in] selectedSeries Dicom Series that must be read
+     * @brief Read local series.
+     * @param[in] selectedSeries Series to read
      */
     void readLocalSeries(DicomSeriesContainerType selectedSeries);
 
     /**
-     * @brief Display an error message
+     * @brief Display an error message.
      * @param[in] message Error message to display
      */
     void displayErrorMessage(const std::string& message) const;
@@ -114,7 +111,7 @@ private:
     /// Reader Config
     std::string m_dicomReaderSrvConfig;
 
-    /// IODICOMWEB Reader
+    /// DicomWeb Reader
     std::string m_dicomReaderType;
 
     /// Temporary SeriesDB
