@@ -8,7 +8,11 @@
 
 #include <fwRenderOgre/Utils.hpp>
 
-#include <GL/gl.h>
+#if defined (__MACOSX__)
+    #include <OpenGL/gl.h>
+#else
+    #include <GL/gl.h>
+#endif
 
 #include <OGRE/OgreTextureManager.h>
 
