@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017.
+ * FW4SPL - Copyright (C) IRCAD, 2017-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __EIGENTOOLS_HELPER_HPP__
-#define __EIGENTOOLS_HELPER_HPP__
+#pragma once
 
 #include "eigenTools/config.hpp"
 
@@ -25,6 +24,7 @@ namespace helper
  * The second element is the translation vector (Tvec)
  */
 typedef std::pair< ::Eigen::Vector3d, ::Eigen::Vector3d> RvecTvecType;
+typedef ::Eigen::Matrix<double, 4, 4, ::Eigen::RowMajor> EigenMatrix;
 /**
  * @brief Convert from an Eigen float 4x4 Matrix to a fwData::TransformationMatrix3D
  * @param _mat : the eigen matrix
@@ -57,14 +57,14 @@ EIGENTOOLS_API RvecTvecType f4sMatToRvecTvec( const ::fwData::TransformationMatr
  * @param array of float (16 values)
  * @return eigen Matrix (double)
  */
-EIGENTOOLS_API ::Eigen::Matrix<double, 4, 4, ::Eigen::RowMajor> toEigen(const std::array<float, 16>& _farray);
+EIGENTOOLS_API EigenMatrix toEigen(const std::array<float, 16>& _farray);
 
 /**
  * @brief toEigen
  * @param array of double (16 values)
  * @return eigen Matrix (double)
  */
-EIGENTOOLS_API ::Eigen::Matrix<double, 4, 4, ::Eigen::RowMajor> toEigen(const std::array<double, 16>& _farray);
+EIGENTOOLS_API EigenMatrix toEigen(const std::array<double, 16>& _farray);
 
 /**
  * @brief Transform rvec tvec representation to a eigen 4x4 matrix
@@ -95,5 +95,3 @@ template< class T>
 
 } //namespace helper
 } //namespace eigenTools
-
-#endif /* __EIGENTOOLS_HELPER_HPP__ */

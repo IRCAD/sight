@@ -1,13 +1,15 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017.
+ * FW4SPL - Copyright (C) IRCAD, 2017-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __CALIBRATION3D_HELPER_HPP__
-#define __CALIBRATION3D_HELPER_HPP__
+#pragma once
 
 #include "calibration3d/config.hpp"
+
+#include <fwData/TransformationMatrix3D.hpp>
+#include <fwData/Vector.hpp>
 
 #include <opencv2/calib3d.hpp>
 
@@ -76,8 +78,19 @@ CALIBRATION3D_API ::cv::Matx44f cameraPoseStereo(const std::vector< ::cv::Point3
                                                  const std::vector< ::cv::Point2f >& _imgPoints2, const ::cv::Mat& _R,
                                                  const ::cv::Mat& _T);
 
+/**
+ * @brief calibrateTool compute a transformation matrix from tracked device attached to a passive pointing tool and its
+ * tip
+ * @param _matricesVector: vector containing a set of ::fwData::TransformationMatrix3D from the tracked device
+ * @param _calibrationMatrix corresponding to the transformation matrix from the tracked device to the
+ * tip of the attached passive pointing device
+ * @param _centerMatrix corresponding to the center of the computed sphere used to calibrate the pointing tool
+ */
+CALIBRATION3D_API void calibratePointingTool(
+    const ::fwData::Vector::csptr _matricesVector,
+    ::fwData::TransformationMatrix3D::sptr _calibrationMatrix,
+    ::fwData::TransformationMatrix3D::sptr _centerMatrix);
+
 }
 
 } //namespace calibration3d
-
-#endif //__CALIBRATION3D_HELPER_HPP__

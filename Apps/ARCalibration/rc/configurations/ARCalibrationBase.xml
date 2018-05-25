@@ -84,7 +84,7 @@
         </service>
 
 
-        <service uid="mainview" type="::gui::view::SDefaultView" autoConnect="yes">
+        <service uid="mainview" type="::gui::view::SDefaultView" >
             <gui>
                 <layout type="::fwGui::CardinalLayoutManager">
                     <view align="center" />
@@ -117,6 +117,7 @@
                 <id>TrackedCameraRegistration</id>
                 <id>TrackedSenseCameraRegistration</id>
                 <id>trackingHandEyeCalibration</id>
+                <id>toolCalibrationActivity</id>
             </filter>
         </service>
 
@@ -160,7 +161,7 @@
             <parameter replace="DYNAMICVIEW_CHANNEL" uid="dynamicView" />
         </service>
 
-        <service uid="dynamicView" type="::guiQt::editor::SDynamicView" autoConnect="yes">
+        <service uid="dynamicView" type="::guiQt::editor::SDynamicView" >
             <mainActivity id="activitySelector" closable="false" />
             <parameters>
                 <parameter replace="SERIESDB" uid="seriesDB" />

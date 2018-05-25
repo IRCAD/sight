@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017.
+ * FW4SPL - Copyright (C) IRCAD, 2017-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,6 +7,11 @@
 #include "helperTest.hpp"
 
 #include <calibration3d/helper.hpp>
+
+#include <fwDataTools/TransformationMatrix3D.hpp>
+
+#include <glm/glm.hpp>
+#include <glm/gtx/transform.hpp>
 
 #include <opencv2/core.hpp>
 
@@ -22,7 +27,7 @@ namespace ut
 
 void helperTest::setUp()
 {
-
+    std::srand(static_cast<unsigned int>(std::time(NULL)));
 }
 
 //------------------------------------------------------------------------------
@@ -51,22 +56,22 @@ void helperTest::reprojectionIdentity()
     ::cv::Mat cameraMatrix;
     ::cv::Mat distorsion;
 
-    rvec = ::cv::Mat::zeros(3,1,CV_64F);
-    tvec = ::cv::Mat::zeros(3,1,CV_64F);
+    rvec = ::cv::Mat::zeros(3, 1, CV_64F);
+    tvec = ::cv::Mat::zeros(3, 1, CV_64F);
 
-    cameraMatrix = ::cv::Mat::eye(3,3,CV_64F);
-    distorsion = ::cv::Mat::zeros(5,1,CV_64F);
+    cameraMatrix = ::cv::Mat::eye(3, 3, CV_64F);
+    distorsion   = ::cv::Mat::zeros(5, 1, CV_64F);
 
     ::calibration3d::helper::ErrorAndPointsType result =
-            ::calibration3d::helper::computeReprojectionError(objectPoints, imagePoints,
-                                                      rvec, tvec, cameraMatrix, distorsion);
+        ::calibration3d::helper::computeReprojectionError(objectPoints, imagePoints,
+                                                          rvec, tvec, cameraMatrix, distorsion);
 
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0., result.first, 10e-6);
 
-    for(unsigned int i = 0; i< 4; ++i)
+    for(unsigned int i = 0; i < 4; ++i)
     {
         ::cv::Point2f expected = imagePoints[i];
-        ::cv::Point2f actual = result.second[i];
+        ::cv::Point2f actual   = result.second[i];
 
         CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<double>(expected.x),
                                      static_cast<double>(actual.x), 10e-6);
@@ -93,12 +98,11 @@ void helperTest::reprojectionRealDatasetTest1()
     ::cv::Mat cameraMatrix;
     ::cv::Mat distorsion;
 
-    rvec = ::cv::Mat::zeros(3,1,CV_64F);
-    tvec = ::cv::Mat::zeros(3,1,CV_64F);
+    rvec = ::cv::Mat::zeros(3, 1, CV_64F);
+    tvec = ::cv::Mat::zeros(3, 1, CV_64F);
 
-    cameraMatrix = ::cv::Mat::eye(3,3,CV_64F);
-    distorsion = ::cv::Mat::zeros(5,1,CV_64F);
-
+    cameraMatrix = ::cv::Mat::eye(3, 3, CV_64F);
+    distorsion   = ::cv::Mat::zeros(5, 1, CV_64F);
 
     //Values from real dataset 1
     imagePoints.push_back(::cv::Point2f(220.92876f, 224.95102f));
@@ -114,11 +118,11 @@ void helperTest::reprojectionRealDatasetTest1()
     tvec.at<double>(1) = 2.249284982681274;
     tvec.at<double>(2) = 197.2704315185547;
 
-    cameraMatrix.at<double>(0,0) = 621.8917806423808; //fx
-    cameraMatrix.at<double>(0,2) = 302.178791918929; //cx
+    cameraMatrix.at<double>(0, 0) = 621.8917806423808; //fx
+    cameraMatrix.at<double>(0, 2) = 302.178791918929; //cx
 
-    cameraMatrix.at<double>(1,1) = 640.3221665123945; //fy
-    cameraMatrix.at<double>(1,2) = 281.4344544571003; //cy
+    cameraMatrix.at<double>(1, 1) = 640.3221665123945; //fy
+    cameraMatrix.at<double>(1, 2) = 281.4344544571003; //cy
 
     distorsion.at<double>(0) = 0.06356924027204514; //k1
     distorsion.at<double>(1) = -0.07869192957878113; //k2
@@ -135,15 +139,15 @@ void helperTest::reprojectionRealDatasetTest1()
     const double expectedErr = 0.0462637;
 
     ::calibration3d::helper::ErrorAndPointsType result =
-            ::calibration3d::helper::computeReprojectionError(objectPoints, imagePoints,
-                                                      rvec, tvec, cameraMatrix, distorsion);
+        ::calibration3d::helper::computeReprojectionError(objectPoints, imagePoints,
+                                                          rvec, tvec, cameraMatrix, distorsion);
 
     CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedErr, result.first, 10e-6);
 
-    for(unsigned int i = 0; i< 4; ++i)
+    for(unsigned int i = 0; i < 4; ++i)
     {
         ::cv::Point2f expected = reprojectedPoints_expected[i];
-        ::cv::Point2f actual = result.second[i];
+        ::cv::Point2f actual   = result.second[i];
 
         CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<double>(expected.x),
                                      static_cast<double>(actual.x), 10e-6);
@@ -151,7 +155,6 @@ void helperTest::reprojectionRealDatasetTest1()
                                      static_cast<double>(actual.y), 10e-6);
 
     }
-
 
 }
 
@@ -172,12 +175,11 @@ void helperTest::reprojectionRealDatasetTest2()
     ::cv::Mat cameraMatrix;
     ::cv::Mat distorsion;
 
-    rvec = ::cv::Mat::zeros(3,1,CV_64F);
-    tvec = ::cv::Mat::zeros(3,1,CV_64F);
+    rvec = ::cv::Mat::zeros(3, 1, CV_64F);
+    tvec = ::cv::Mat::zeros(3, 1, CV_64F);
 
-    cameraMatrix = ::cv::Mat::eye(3,3,CV_64F);
-    distorsion = ::cv::Mat::zeros(5,1,CV_64F);
-
+    cameraMatrix = ::cv::Mat::eye(3, 3, CV_64F);
+    distorsion   = ::cv::Mat::zeros(5, 1, CV_64F);
 
     //Values from real dataset 1
     imagePoints.push_back(::cv::Point2f(232.76308f, 227.31705f));
@@ -193,11 +195,11 @@ void helperTest::reprojectionRealDatasetTest2()
     tvec.at<double>(1) = 3.302493572235107;
     tvec.at<double>(2) = 191.1024627685547;
 
-    cameraMatrix.at<double>(0,0) = 621.8917806423808; //fx
-    cameraMatrix.at<double>(0,2) = 302.178791918929; //cx
+    cameraMatrix.at<double>(0, 0) = 621.8917806423808; //fx
+    cameraMatrix.at<double>(0, 2) = 302.178791918929; //cx
 
-    cameraMatrix.at<double>(1,1) = 640.3221665123945; //fy
-    cameraMatrix.at<double>(1,2) = 281.4344544571003; //cy
+    cameraMatrix.at<double>(1, 1) = 640.3221665123945; //fy
+    cameraMatrix.at<double>(1, 2) = 281.4344544571003; //cy
 
     distorsion.at<double>(0) = 0.06356924027204514; //k1
     distorsion.at<double>(1) = -0.07869192957878113; //k2
@@ -214,21 +216,134 @@ void helperTest::reprojectionRealDatasetTest2()
     const double expectedErr = 0.153504;
 
     ::calibration3d::helper::ErrorAndPointsType result =
-            ::calibration3d::helper::computeReprojectionError(objectPoints, imagePoints,
-                                                      rvec, tvec, cameraMatrix, distorsion);
+        ::calibration3d::helper::computeReprojectionError(objectPoints, imagePoints,
+                                                          rvec, tvec, cameraMatrix, distorsion);
 
     CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedErr, result.first, 10e-6);
 
-    for(unsigned int i = 0; i< 4; ++i)
+    for(unsigned int i = 0; i < 4; ++i)
     {
         ::cv::Point2f expected = reprojectedPoints_expected[i];
-        ::cv::Point2f actual = result.second[i];
+        ::cv::Point2f actual   = result.second[i];
 
         CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<double>(expected.x),
                                      static_cast<double>(actual.x), 10e-6);
         CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<double>(expected.y),
                                      static_cast<double>(actual.y), 10e-6);
 
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void helperTest::toolCalibrationBasic()
+{
+    const std::uint8_t nbMatrices = 34;
+    ::fwData::Vector::sptr matricesVector = ::fwData::Vector::New();
+
+    ::fwData::TransformationMatrix3D::sptr resCenterMatrix    = ::fwData::TransformationMatrix3D::New();
+    ::fwData::TransformationMatrix3D::sptr resTransformMatrix = ::fwData::TransformationMatrix3D::New();
+
+    const ::glm::dvec3 center(0., 0., 0.);
+    const double radius = 18;
+    const ::glm::dvec3 translation(radius, 0, 0);
+
+    // generates matrices
+    for (size_t i = 0; i < nbMatrices; ++i)
+    {
+        const double angleInDegrees = rand()%180;
+        const double angle          = ::glm::radians(angleInDegrees);
+
+        const double x = rand()%100 / 100.;
+        const double y = rand()%100 / 100.;
+        const double z = rand()%100 / 100.;
+
+        ::glm::dvec3 axis(x, y, z);
+        axis = glm::normalize(axis);
+
+        ::glm::dmat4 matrix = ::glm::translate(center);
+
+        matrix = ::glm::rotate(matrix, angle, axis);
+
+        matrix = ::glm::translate(matrix, translation);
+
+        ::fwData::TransformationMatrix3D::sptr mat = ::fwData::TransformationMatrix3D::New();
+        ::fwDataTools::TransformationMatrix3D::setTF3DFromMatrix(mat, matrix);
+
+        matricesVector->getContainer().push_back(mat);
+    }
+    ::calibration3d::helper::calibratePointingTool(matricesVector, resTransformMatrix, resCenterMatrix);
+
+    for (std::uint8_t i = 0; i < 3; ++i)
+    {
+        for (std::uint8_t j = 0; j < 3; ++j)
+        {
+
+            const double val = (i == j ? 1. : 0.);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("transform["+ std::to_string(i) + "][" + std::to_string(j) + "]",
+                                                 val, resTransformMatrix->getCoefficient(i, j), 0.00001);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("center["+ std::to_string(i) + "][" + std::to_string(j) + "]",
+                                                 val, resCenterMatrix->getCoefficient(i, j), 0.00001);
+        }
+        CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("transform[" + std::to_string(i) + "][3]",
+                                             -translation[i], resTransformMatrix->getCoefficient(i, 3), 0.00001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("center[" + std::to_string(i) + "][3]",
+                                             center[i], resCenterMatrix->getCoefficient(i, 3), 0.00001);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void helperTest::toolCalibration()
+{
+    const std::uint8_t nbMatrices = 46;
+    ::fwData::Vector::sptr matricesVector = ::fwData::Vector::New();
+
+    ::fwData::TransformationMatrix3D::sptr resCenterMatrix    = ::fwData::TransformationMatrix3D::New();
+    ::fwData::TransformationMatrix3D::sptr resTransformMatrix = ::fwData::TransformationMatrix3D::New();
+
+    const ::glm::dvec3 center(36., 52., -530.);
+    const ::glm::dvec3 translation(-459.45, 46.6, -88.54);
+
+    // generates matrices
+    for (size_t i = 0; i < nbMatrices; ++i)
+    {
+        const double angleInDegrees = rand()%360;
+        const double angle          = ::glm::radians(angleInDegrees);
+
+        const double x = rand()%100 / 100.;
+        const double y = rand()%100 / 100.;
+        const double z = rand()%100 / 100.;
+
+        ::glm::dvec3 axis(x, y, z);
+        axis = glm::normalize(axis);
+
+        ::glm::dmat4 matrix = ::glm::translate(center);
+        matrix              = ::glm::rotate(matrix, angle, axis);
+        matrix              = ::glm::translate(matrix, translation);
+
+        ::fwData::TransformationMatrix3D::sptr mat = ::fwData::TransformationMatrix3D::New();
+        ::fwDataTools::TransformationMatrix3D::setTF3DFromMatrix(mat, matrix);
+
+        matricesVector->getContainer().push_back(mat);
+    }
+    ::calibration3d::helper::calibratePointingTool(matricesVector, resTransformMatrix, resCenterMatrix);
+
+    for (std::uint8_t i = 0; i < 3; ++i)
+    {
+        for (std::uint8_t j = 0; j < 3; ++j)
+        {
+
+            const double val = (i == j ? 1. : 0.);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("transform["+ std::to_string(i) + "][" + std::to_string(j) + "]",
+                                                 val, resTransformMatrix->getCoefficient(i, j), 0.00001);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("center["+ std::to_string(i) + "][" + std::to_string(j) + "]",
+                                                 val, resCenterMatrix->getCoefficient(i, j), 0.00001);
+        }
+        CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("transform[" + std::to_string(i) + "][3]",
+                                             -translation[i], resTransformMatrix->getCoefficient(i, 3), 0.00001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("center[" + std::to_string(i) + "][3]",
+                                             center[i], resCenterMatrix->getCoefficient(i, 3), 0.00001);
     }
 }
 
