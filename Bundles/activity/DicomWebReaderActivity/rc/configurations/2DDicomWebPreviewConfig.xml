@@ -1,0 +1,92 @@
+<extension implements="::fwServices::registry::AppConfig">
+    <id>2DDicomWebPreviewConfig</id>
+    <parameters>
+        <param name="WID_PARENT" />
+        <param name="objectID" />
+    </parameters>
+    <config>
+        <object uid="${objectID}" type="::fwMedData::DicomSeries" src="ref" />
+        <object uid="image" type="::fwData::Image" src="deferred" />
+        <service uid="mainview" type="::gui::view::SDefaultView">
+            <gui>
+                <layout type="::fwGui::CardinalLayoutManager">
+                    <view align="center" />
+                    <view align="bottom" minWidth="200" minHeight="40" resizable="no" />
+                </layout>
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <view sid="gs" start="yes" />
+                <view sid="sliderIndexDicomPullerEditor" start="yes" />
+            </registry>
+        </service>
+
+        <!-- *************************** Begin generic scene *************************** -->
+
+        <service uid="gs" type="::fwRenderVTK::SRender" >
+            <scene>
+                <picker id="picker" vtkclass="fwVtkCellPicker" />
+                <vtkObject id="imageBlend" class="vtkImageBlend" />
+                <renderer id="default" background="0.0" />
+                <adaptor uid="interactor4Negato" />
+                <adaptor uid="imageText" />
+                <adaptor uid="seriesAdaptor" />
+                <adaptor uid="nameAdaptor" />
+            </scene>
+        </service>
+
+        <service uid="interactor4Negato" type="::visuVTKAdaptor::SInteractorStyle">
+            <config renderer="default" style="InteractorStyle2DForNegato" />
+        </service>
+
+        <service uid="imageText" type="::visuVTKAdaptor::SImageText" autoConnect="yes">
+            <inout key="image" uid="image" />
+            <config renderer="default" picker="picker" text="" color="#FFFFFF" />
+        </service>
+
+        <service uid="seriesAdaptor" type="::visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
+            <inout key="image" uid="image" />
+            <config renderer="default" picker="picker" mode="2D" slices="1" sliceIndex="axial" />
+        </service>
+
+        <service uid="nameAdaptor" type="::visuVTKAdaptor::SText" autoConnect="yes">
+            <in key="object" uid="${objectID}" />
+            <config renderer="default" text="@patient.name" fontSize="15" hAlign="right" vAlign="top" />
+        </service>
+
+        <!-- *************************** End generic scene *************************** -->
+
+        <service uid="imageDumpLocker" type="::ctrlMemory::LockDumpSrv">
+            <in key="image" uid="image" />
+        </service>
+
+        <service uid="medicalImgConverter" type="::ctrlSelection::MedicalImageSrv">
+            <inout key="image" uid="image" />
+        </service>
+
+        <service uid="sliderIndexDicomPullerEditor" type="::ioDicomWeb::SSliceIndexDicomPullerEditor" autoConnect="yes">
+            <inout key="series" uid="${objectID}" />
+            <out key="image" uid="image" />
+            <server>%PACS_SERVER_HOSTNAME%:%PACS_SERVER_PORT%</server>
+            <config dicomReader="::ioGdcm::SSeriesDBReader">
+                <dicomReaderConfig>
+                    <config>
+                        <showLogDialog>no</showLogDialog>
+                        <enableBufferRotation>no</enableBufferRotation>
+                        <dicomdirSupport>never</dicomdirSupport>
+                    </config>
+                </dicomReaderConfig>
+            </config>
+        </service>
+
+        <start uid="mainview" />
+        <!-- Deferred start -->
+        <start uid="medicalImgConverter" />
+        <start uid="imageDumpLocker" />
+        <!-- VTK scene 'gs' -->
+        <start uid="interactor4Negato" />
+        <start uid="imageText" />
+        <start uid="seriesAdaptor" />
+        <start uid="nameAdaptor" />
+    </config>
+</extension>

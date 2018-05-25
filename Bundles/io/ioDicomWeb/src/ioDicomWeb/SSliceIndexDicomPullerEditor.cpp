@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "ioPacs/SSliceIndexDicomPullerEditor.hpp"
+#include "ioDicomWeb/SSliceIndexDicomPullerEditor.hpp"
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
@@ -32,7 +32,9 @@
 
 #include <fwMedDataTools/helper/SeriesDB.hpp>
 
-#include <fwPacsIO/exceptions/Base.hpp>
+#include <fwNetworkIO/exceptions/Base.hpp>
+
+#include <fwPreferences/helper.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ActiveWorkers.hpp>
@@ -54,39 +56,20 @@
 
 #include <iterator>
 
-namespace ioPacs
+namespace ioDicomWeb
 {
-
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::ioPacs::SSliceIndexDicomPullerEditor,
-                         ::fwMedData::DicomSeries );
-
-const ::fwCom::Slots::SlotKeyType SSliceIndexDicomPullerEditor::s_READ_IMAGE_SLOT      = "readImage";
-const ::fwCom::Slots::SlotKeyType SSliceIndexDicomPullerEditor::s_DISPLAY_MESSAGE_SLOT = "displayErrorMessage";
 
 //------------------------------------------------------------------------------
 
 SSliceIndexDicomPullerEditor::SSliceIndexDicomPullerEditor() noexcept :
     m_delay(500)
 {
-    m_slotReadImage = ::fwCom::newSlot(&SSliceIndexDicomPullerEditor::readImage, this);
-    ::fwCom::HasSlots::m_slots(s_READ_IMAGE_SLOT, m_slotReadImage);
-
-    m_slotDisplayMessage = ::fwCom::newSlot(&SSliceIndexDicomPullerEditor::displayErrorMessage, this);
-    ::fwCom::HasSlots::m_slots(s_DISPLAY_MESSAGE_SLOT, m_slotDisplayMessage);
-
-    ::fwCom::HasSlots::m_slots.setWorker( m_associatedWorker );
 }
+
 //------------------------------------------------------------------------------
 
 SSliceIndexDicomPullerEditor::~SSliceIndexDicomPullerEditor() noexcept
 {
-}
-
-//------------------------------------------------------------------------------
-
-void SSliceIndexDicomPullerEditor::info(std::ostream& _sstream )
-{
-    _sstream << "SSliceIndexDicomPullerEditor::info";
 }
 
 //------------------------------------------------------------------------------
@@ -96,14 +79,14 @@ void SSliceIndexDicomPullerEditor::configuring()
     ::fwGui::IGuiContainerSrv::initialize();
 
     ::fwRuntime::ConfigurationElement::sptr config = m_configuration->findConfigurationElement("config");
-    SLM_ASSERT("The service ::ioPacs::SPacsConfigurationInitializer must have "
+    SLM_ASSERT("The service ::ioDicomWeb::SPacsConfigurationInitializer must have "
                "a \"config\" element.", config);
 
     bool success;
 
     // Reader
     ::boost::tie(success, m_dicomReaderType) = config->getSafeAttributeValue("dicomReader");
-    SLM_ASSERT("It should be a \"dicomReader\" tag in the ::ioPacs::SSliceIndexDicomPullerEditor "
+    SLM_ASSERT("It should be a \"dicomReader\" tag in the ::ioDicomWeb::SSliceIndexDicomPullerEditor "
                "config element.", success);
 
     // Reader configuration
@@ -118,17 +101,40 @@ void SSliceIndexDicomPullerEditor::configuring()
     {
         m_delay = ::boost::lexical_cast< unsigned int >(delayStr);
     }
+
+    if(m_delayTimer && m_delayTimer->isRunning())
+    {
+        m_delayTimer->stop();
+        m_delayTimer.reset();
+    }
+
+    m_delayTimer = m_associatedWorker->createTimer();
+    m_delayTimer->setFunction(  [ = ]()
+        {
+            this->triggerNewSlice();
+        }  );
+
+    m_delayTimer->setOneShot(true);
+}
+
+// -----------------------------------------------------------------------------
+
+std::string SSliceIndexDicomPullerEditor::getPreferenceKey(const std::string& key) const
+{
+    std::string keyResult;
+    const size_t first = key.find('%');
+    const size_t last  = key.rfind('%');
+    if (first == 0 && last == key.size() - 1)
+    {
+        keyResult = key.substr(1, key.size() - 2);
+    }
+    return keyResult;
 }
 
 //------------------------------------------------------------------------------
 
 void SSliceIndexDicomPullerEditor::starting()
 {
-    m_delayTimer2 = m_associatedWorker->createTimer();
-
-    // Get pacs configuration
-    m_pacsConfiguration = this->getInput< ::fwPacsIO::data::PacsConfiguration>("pacsConfig");
-
     ::fwGui::IGuiContainerSrv::create();
     ::fwGuiQt::container::QtContainer::sptr qtContainer = fwGuiQt::container::QtContainer::dynamicCast(getContainer());
 
@@ -141,8 +147,8 @@ void SSliceIndexDicomPullerEditor::starting()
     // Slider
     m_sliceIndexSlider = new QSlider(Qt::Horizontal);
     layout->addWidget(m_sliceIndexSlider, 1);
-    m_sliceIndexSlider->setRange(0, static_cast<unsigned int>(m_numberOfSlices-1));
-    m_sliceIndexSlider->setValue(static_cast<unsigned int>(m_numberOfSlices/2));
+    m_sliceIndexSlider->setRange(0, static_cast<int>(m_numberOfSlices-1));
+    m_sliceIndexSlider->setValue(static_cast<int>(m_numberOfSlices/2));
 
     // Line Edit
     m_sliceIndexLineEdit = new QLineEdit();
@@ -168,7 +174,7 @@ void SSliceIndexDicomPullerEditor::starting()
     ::fwIO::IReader::sptr dicomReader;
     dicomReader = ::fwIO::IReader::dynamicCast(srvFactory->create(m_dicomReaderType));
     SLM_ASSERT("Unable to create a reader of type: \"" + m_dicomReaderType + "\" in "
-               "::ioPacs::SSliceIndexDicomPullerEditor.", dicomReader);
+               "::ioDicomWeb::SSliceIndexDicomPullerEditor.", dicomReader);
     ::fwServices::OSR::registerService(m_tempSeriesDB, dicomReader);
 
     if(m_readerConfig)
@@ -186,32 +192,31 @@ void SSliceIndexDicomPullerEditor::starting()
     m_frontalIndex  = ::fwData::Integer::New(0);
     m_sagittalIndex = ::fwData::Integer::New(0);
 
-    // Worker
-    m_pullSeriesWorker = ::fwThread::Worker::New();
-
-    // Create enquirer
-    m_seriesEnquirer = ::fwPacsIO::SeriesEnquirer::New();
-
     // Load a slice
-    std::chrono::milliseconds duration = std::chrono::milliseconds(m_delay);
-    m_delayTimer2->setFunction(  [ = ]()
+    if(m_delayTimer)
+    {
+        if(m_delayTimer->isRunning())
         {
-            this->triggerNewSlice();
-        }  );
-    m_delayTimer2->setDuration(duration);
-    m_delayTimer2->setOneShot(true);
+            m_delayTimer->stop();
+        }
 
-    this->triggerNewSlice();
-
+        m_delayTimer->setDuration(std::chrono::milliseconds(m_delay));
+        m_delayTimer->start();
+    }
+    else
+    {
+        this->triggerNewSlice();
+    }
 }
 
 //------------------------------------------------------------------------------
 
 void SSliceIndexDicomPullerEditor::stopping()
 {
-    // Worker
-    m_pullSeriesWorker->stop();
-    m_pullSeriesWorker.reset();
+    if(m_delayTimer && m_delayTimer->isRunning())
+    {
+        m_delayTimer->stop();
+    }
 
     // Stop dicom reader
     if(!m_dicomReader.expired())
@@ -219,9 +224,6 @@ void SSliceIndexDicomPullerEditor::stopping()
         m_dicomReader.lock()->stop();
         ::fwServices::OSR::unregisterService(m_dicomReader.lock());
     }
-
-    // Disconnect the signals
-    QObject::disconnect(m_sliceIndexSlider, SIGNAL(valueChanged(int)), this, SLOT(changeSliceIndex(int)));
 
     this->destroy();
 }
@@ -234,7 +236,7 @@ void SSliceIndexDicomPullerEditor::updating()
 
 //------------------------------------------------------------------------------
 
-void SSliceIndexDicomPullerEditor::changeSliceIndex(int value)
+void SSliceIndexDicomPullerEditor::changeSliceIndex(int)
 {
     // Update text
     std::stringstream ss;
@@ -242,8 +244,19 @@ void SSliceIndexDicomPullerEditor::changeSliceIndex(int value)
     m_sliceIndexLineEdit->setText(std::string(ss.str()).c_str());
 
     // Get the new slice if there is no change for m_delay milliseconds
-    m_delayTimer2->start();
+    if( m_delayTimer )
+    {
+        if(m_delayTimer->isRunning())
+        {
+            m_delayTimer->stop();
+        }
 
+        m_delayTimer->start();
+    }
+    else
+    {
+        this->triggerNewSlice();
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -255,29 +268,22 @@ void SSliceIndexDicomPullerEditor::triggerNewSlice()
     SLM_ASSERT("DicomSeries should not be null !", dicomSeries);
 
     // Compute slice index
-    std::size_t selectedSliceIndex = m_sliceIndexSlider->value() + dicomSeries->getFirstInstanceNumber();
+    size_t selectedSliceIndex = static_cast<size_t>(m_sliceIndexSlider->value()) +
+                                dicomSeries->getFirstInstanceNumber();
     OSLM_TRACE("triggered new slice : " << selectedSliceIndex);
     if(!dicomSeries->isInstanceAvailable(selectedSliceIndex))
     {
-        if(m_pacsConfiguration)
-        {
-            m_pullSeriesWorker->post(std::bind(&::ioPacs::SSliceIndexDicomPullerEditor::pullInstance, this));
-        }
-        else
-        {
-            SLM_ERROR("There is no instance available for selected slice index.");
-        }
+        this->pullInstance();
     }
     else
     {
-        //m_slotReadImage->asyncRun(selectedSliceIndex);
         this->readImage(selectedSliceIndex);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void SSliceIndexDicomPullerEditor::readImage(std::size_t selectedSliceIndex)
+void SSliceIndexDicomPullerEditor::readImage(size_t selectedSliceIndex)
 {
     // DicomSeries
     ::fwMedData::DicomSeries::csptr dicomSeries = this->getInOut< ::fwMedData::DicomSeries >("series");
@@ -299,8 +305,8 @@ void SSliceIndexDicomPullerEditor::readImage(std::size_t selectedSliceIndex)
     ::boost::filesystem::create_directories(tmpPath);
 
     SLM_ASSERT("Dicom data shall be available before reading them.",
-               dicomSeries->getDicomAvailability() != ::fwMedData::DicomSeries::NONE
-               || dicomSeries->isInstanceAvailable(selectedSliceIndex));
+               dicomSeries->getDicomAvailability() != ::fwMedData::DicomSeries::PATHS ||
+               dicomSeries->isInstanceAvailable(selectedSliceIndex));
 
     if(dicomSeries->getDicomAvailability() != ::fwMedData::DicomSeries::BINARIES )
     {
@@ -336,12 +342,11 @@ void SSliceIndexDicomPullerEditor::readImage(std::size_t selectedSliceIndex)
         ::boost::filesystem::ofstream fs(dest, std::ios::binary|std::ios::trunc);
         FW_RAISE_IF("Can't open '" << tmpPath << "' for write.", !fs.good());
 
-        fs.write(buffer, size);
+        fs.write(buffer, static_cast<std::streamsize>(size));
         fs.close();
     }
 
     // Read image
-
     m_dicomReader.lock()->setFolder(tmpPath);
     if(!m_dicomReader.expired())
     {
@@ -388,71 +393,138 @@ void SSliceIndexDicomPullerEditor::readImage(std::size_t selectedSliceIndex)
 
 void SSliceIndexDicomPullerEditor::pullInstance()
 {
-    SLM_ASSERT("Pacs not configured.", m_pacsConfiguration);
 
-    if( m_pacsConfiguration )
+    ::fwServices::IService::ConfigType configuration = this->getConfigTree();
+    //Parse server port and hostname
+    if(configuration.count("server"))
     {
-        // Catch any errors
-        try
+        const std::string serverInfo               = configuration.get("server", "");
+        const std::string::size_type splitPosition = serverInfo.find(':');
+        SLM_ASSERT("Server info not formatted correctly", splitPosition != std::string::npos);
+
+        const std::string hostnameStr = serverInfo.substr(0, splitPosition);
+        const std::string portStr     = serverInfo.substr(splitPosition + 1, serverInfo.size());
+
+        m_serverHostnameKey = this->getPreferenceKey(hostnameStr);
+        m_serverPortKey     = this->getPreferenceKey(portStr);
+        if(m_serverHostnameKey.empty())
         {
-            // DicomSeries
-            ::fwMedData::DicomSeries::sptr dicomSeries = this->getInOut< ::fwMedData::DicomSeries >("series");
-            SLM_ASSERT("DicomSeries should not be null !", dicomSeries);
-
-            // Get selected slice
-            std::size_t selectedSliceIndex = m_sliceIndexSlider->value() + dicomSeries->getFirstInstanceNumber();
-
-            m_seriesEnquirer->initialize(m_pacsConfiguration->getLocalApplicationTitle(),
-                                         m_pacsConfiguration->getPacsHostName(),
-                                         m_pacsConfiguration->getPacsApplicationPort(),
-                                         m_pacsConfiguration->getPacsApplicationTitle(),
-                                         m_pacsConfiguration->getMoveApplicationTitle());
-
-            m_seriesEnquirer->connect();
-            std::string seriesInstanceUID = dicomSeries->getInstanceUID();
-            std::string sopInstanceUID    =
-                m_seriesEnquirer->findSOPInstanceUID(seriesInstanceUID, static_cast<unsigned int>(selectedSliceIndex));
-
-            // Check if an instance with the selected Instance Number is found on the PACS
-            if(!sopInstanceUID.empty())
-            {
-                // Pull Selected Series using C-GET Requests
-                m_seriesEnquirer->pullInstanceUsingGetRetrieveMethod(seriesInstanceUID, sopInstanceUID);
-
-                // Add path and trigger reading
-                ::boost::filesystem::path path     = ::fwTools::System::getTemporaryFolder() / "dicom/";
-                ::boost::filesystem::path filePath = path.string() + seriesInstanceUID + "/" + sopInstanceUID;
-                dicomSeries->addDicomPath(selectedSliceIndex, filePath);
-                //m_slotReadImage->asyncRun(selectedSliceIndex);
-                this->readImage(selectedSliceIndex);
-            }
-            else
-            {
-                std::stringstream ss;
-                ss << "The selected series does not have an instance matching the selected instance number (" <<
-                    selectedSliceIndex << ").";
-                m_slotDisplayMessage->asyncRun(ss.str());
-            }
-
-            // Close connection
-            m_seriesEnquirer->disconnect();
-
+            m_serverHostname = hostnameStr;
         }
-        catch (::fwPacsIO::exceptions::Base& exception)
+        if(m_serverPortKey.empty())
         {
-            std::stringstream ss;
-            ss << "Unable to connect to the pacs. Please check your configuration: \n"
-               << "Pacs host name: " << m_pacsConfiguration->getPacsHostName() << "\n"
-               << "Pacs application title: " << m_pacsConfiguration->getPacsApplicationTitle() << "\n"
-               << "Pacs port: " << m_pacsConfiguration->getPacsApplicationPort() << "\n";
-            m_slotDisplayMessage->asyncRun(ss.str());
-            SLM_WARN(exception.what());
+            m_serverPort = std::stoi(portStr);
         }
-
     }
     else
     {
-        SLM_ERROR("Pacs pull aborted : no pacs configuration found.");
+        throw ::fwTools::Failed("'server' element not found");
+    }
+
+    if(!m_serverHostnameKey.empty())
+    {
+        const std::string hostname = ::fwPreferences::getPreference(m_serverHostnameKey);
+        if(!hostname.empty())
+        {
+            m_serverHostname = hostname;
+        }
+    }
+    if(!m_serverPortKey.empty())
+    {
+        const std::string port = ::fwPreferences::getPreference(m_serverPortKey);
+        if(!port.empty())
+        {
+            m_serverPort = std::stoi(port);
+        }
+    }
+
+    // Catch any errors
+    try
+    {
+        // DicomSeries
+        ::fwMedData::DicomSeries::sptr dicomSeries = this->getInOut< ::fwMedData::DicomSeries >("series");
+        SLM_ASSERT("DicomSeries should not be null !", dicomSeries);
+
+        // Get selected slice
+        size_t selectedSliceIndex = static_cast<size_t>(m_sliceIndexSlider->value()) +
+                                    dicomSeries->getFirstInstanceNumber();
+
+        std::string seriesInstanceUID = dicomSeries->getInstanceUID();
+
+        // Find Series according to SeriesInstanceUID
+        QJsonObject query;
+        query.insert("SeriesInstanceUID", seriesInstanceUID.c_str());
+
+        QJsonObject body;
+        body.insert("Level", "Series");
+        body.insert("Query", query);
+        body.insert("Limit", 0);
+
+        /// Url PACS
+        const std::string pacsServer("http://" + m_serverHostname + ":" + std::to_string(m_serverPort));
+
+        /// Orthanc "/tools/find" route. POST a JSON to get all Series corresponding to the SeriesInstanceUID.
+        ::fwNetworkIO::http::Request::sptr request = ::fwNetworkIO::http::Request::New(
+            pacsServer + "/tools/find");
+        QByteArray seriesAnswer;
+        try
+        {
+            seriesAnswer = m_clientQt.post(request, QJsonDocument(body).toJson());
+        }
+        catch  (::fwNetworkIO::exceptions::HostNotFound& exception)
+        {
+            std::stringstream ss;
+            ss << "Host not found:\n"
+               << " Please check your configuration: \n"
+               << "Pacs host name: " << m_serverHostname << "\n"
+               << "Pacs port: " << m_serverPort << "\n";
+
+            this->displayErrorMessage(ss.str());
+            SLM_WARN(exception.what());
+        }
+        QJsonDocument jsonResponse    = QJsonDocument::fromJson(seriesAnswer);
+        const QJsonArray& seriesArray = jsonResponse.array();
+
+        // Should be one Series, so take the first of the array.
+        const std::string& seriesUID = seriesArray.at(0).toString().toStdString();
+        // GET all Instances by Series.
+        const std::string& instancesUrl(pacsServer + "/series/" + seriesUID);
+
+        const QByteArray& instancesAnswer =
+            m_clientQt.get( ::fwNetworkIO::http::Request::New(instancesUrl));
+        jsonResponse = QJsonDocument::fromJson(instancesAnswer);
+        const QJsonObject& jsonObj       = jsonResponse.object();
+        const QJsonArray& instancesArray = jsonObj["Instances"].toArray();
+        const std::string& instanceUID   =
+            instancesArray.at(static_cast<int>(selectedSliceIndex)).toString().toStdString();
+
+        // GET frame by Slice.
+        std::string instancePath;
+        const std::string& instanceUrl(pacsServer + "/instances/" + instanceUID + "/file");
+        try
+        {
+            instancePath = m_clientQt.getFile( ::fwNetworkIO::http::Request::New(instanceUrl));
+        }
+        catch  (::fwNetworkIO::exceptions::ContentNotFound& exception)
+        {
+            std::stringstream ss;
+            ss << "Content not found:  \n"
+               << "Unable download the DICOM instance. \n";
+
+            this->displayErrorMessage(ss.str());
+            SLM_WARN(exception.what());
+        }
+
+        // Add path and trigger reading
+        dicomSeries->addDicomPath(selectedSliceIndex, instancePath);
+        this->readImage(selectedSliceIndex);
+    }
+    catch (::fwNetworkIO::exceptions::Base& exception)
+    {
+        std::stringstream ss;
+        ss << "Unknown error.";
+        this->displayErrorMessage(ss.str());
+        SLM_WARN(exception.what());
     }
 }
 
@@ -469,4 +541,4 @@ void SSliceIndexDicomPullerEditor::displayErrorMessage(const std::string& messag
     messageBox.show();
 }
 
-} // namespace ioPacs
+} // namespace ioDicomWeb
