@@ -68,7 +68,6 @@ ImagePositionPatientSorter::DicomSeriesContainerType ImagePositionPatientSorter:
     typedef std::map< double, ::fwMemory::BufferObject::sptr > SortedDicomMapType;
     SortedDicomMapType sortedDicom;
 
-    DcmFileFormat fileFormat;
     OFCondition status;
     DcmDataset* dataset;
 
@@ -83,6 +82,7 @@ ImagePositionPatientSorter::DicomSeriesContainerType ImagePositionPatientSorter:
         is.setBuffer(buffer, offile_off_t(buffSize));
         is.setEos();
 
+        DcmFileFormat fileFormat;
         fileFormat.transferInit();
         if (!fileFormat.read(is).good())
         {

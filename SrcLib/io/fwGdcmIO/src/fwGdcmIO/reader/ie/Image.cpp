@@ -168,6 +168,18 @@ void Image::readImagePlaneModule()
             m_logger->warning(ss.str());
         }
     }
+    else
+    {
+        // Retrieve dataset
+        const ::gdcm::DataSet& dataset = imageReader->GetFile().GetDataSet();
+        // Check tags availability
+        if(dataset.FindDataElement(::gdcm::Tag(0x0018, 0x0050)))
+        {
+            const std::string& sliceThickness =
+                ::fwGdcmIO::helper::DicomDataReader::getTagValue< 0x0018, 0x0050 >(dataset);
+            spacing[2] = std::stod(sliceThickness);
+        }
+    }
 
     OSLM_TRACE("Image's spacing : "<<spacing[0]<<"x"<<spacing[1]<<"x"<<spacing[2]);
     m_object->setSpacing( spacing );
@@ -400,7 +412,6 @@ char* Image::readImageBuffer(const std::vector<unsigned int>& dimensions,
         if ( frameReader.Read() )
         {
             const ::gdcm::Image& gdcmImage = frameReader.GetImage();
-
             // Check frame buffer size
             if(frameBufferSize != gdcmImage.GetBufferLength())
             {

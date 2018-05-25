@@ -82,7 +82,6 @@ TagValueSplitter::DicomSeriesContainerType TagValueSplitter::apply(
     // Create a container to store the groups of instances
     InstanceGroupContainer groupContainer;
 
-    DcmFileFormat fileFormat;
     OFCondition status;
     DcmDataset* dataset;
     OFString data;
@@ -98,6 +97,7 @@ TagValueSplitter::DicomSeriesContainerType TagValueSplitter::apply(
         is.setBuffer(buffer, offile_off_t(buffSize));
         is.setEos();
 
+        DcmFileFormat fileFormat;
         fileFormat.transferInit();
         if (!fileFormat.read(is).good())
         {

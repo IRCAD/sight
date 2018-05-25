@@ -138,12 +138,8 @@ void DicomSeriesWriter::processWrite()
 
         const ::fwMemory::BufferObject::sptr sourceBuffer = value.second;
         ::fwMemory::BufferObject::Lock sourceLocker(sourceBuffer);
-
-        char* buffer         = static_cast<char*>(sourceBuffer->getBuffer());
-        std::streamsize size = std::streamsize(sourceBuffer->getSize());
-
-        std::ifstream stream;
-        stream.rdbuf()->pubsetbuf(buffer, size);
+        const ::fwMemory::BufferManager::StreamInfo& streamInfo = sourceBuffer->getStreamInfo();
+        SPTR(std::istream) stream = streamInfo.stream;
 
         const ::boost::filesystem::path& dest_dir = m_anonymizer ? folder/m_subPath : folder;
 
@@ -157,8 +153,7 @@ void DicomSeriesWriter::processWrite()
         ::boost::filesystem::ofstream fs(dest_file, std::ios::binary|std::ios::trunc);
         FW_RAISE_IF("Can't open '" <<  dest_file.string() << "' for write.", !fs.good());
 
-        this->processStream(stream, fs);
-        stream.close();
+        this->processStream(*(stream.get()), fs);
 
         m_job->doneWork(++count);
     }
@@ -191,12 +186,8 @@ void DicomSeriesWriter::processWriteArchive()
 
         const ::fwMemory::BufferObject::sptr sourceBuffer = value.second;
         ::fwMemory::BufferObject::Lock sourceLocker(sourceBuffer);
-
-        char* buffer         = static_cast<char*>(sourceBuffer->getBuffer());
-        std::streamsize size = std::streamsize(sourceBuffer->getSize());
-
-        std::ifstream stream;
-        stream.rdbuf()->pubsetbuf(buffer, size);
+        const ::fwMemory::BufferManager::StreamInfo& streamInfo = sourceBuffer->getStreamInfo();
+        SPTR(std::istream) stream = streamInfo.stream;
 
         const ::boost::filesystem::path& dest_dir =
             m_anonymizer ? m_subPath : "";
@@ -205,8 +196,7 @@ void DicomSeriesWriter::processWriteArchive()
         SPTR(std::ostream) fs = m_archive->createFile(dest_file);
         FW_RAISE_IF("Can't open '" << dest_file.string() << "' for write.", !fs->good());
 
-        this->processStream(stream, *fs);
-        stream.close();
+        this->processStream(*(stream.get()), *fs);
 
         m_job->doneWork(++count);
     }

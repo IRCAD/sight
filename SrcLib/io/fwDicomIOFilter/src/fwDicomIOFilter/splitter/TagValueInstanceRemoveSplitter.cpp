@@ -82,7 +82,6 @@ const
     // Create a container to store the instances
     InstanceContainerType instances;
 
-    DcmFileFormat fileFormat;
     OFCondition status;
     DcmDataset* dataset;
     OFString data;
@@ -98,6 +97,7 @@ const
         is.setBuffer(buffer, offile_off_t(buffSize));
         is.setEos();
 
+        DcmFileFormat fileFormat;
         fileFormat.transferInit();
         if (!fileFormat.read(is).good())
         {

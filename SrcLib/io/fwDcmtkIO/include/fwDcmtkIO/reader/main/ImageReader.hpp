@@ -96,7 +96,6 @@ public:
                                     unsigned int depth,
                                     DicomContainerType& instances)
     {
-        DcmFileFormat fileFormat;
         OFCondition status;
         DcmDataset* dataset;
 
@@ -129,6 +128,7 @@ public:
             is.setBuffer(buffer, offile_off_t(buffSize));
             is.setEos();
 
+            DcmFileFormat fileFormat;
             fileFormat.transferInit();
             if (!fileFormat.read(is).good())
             {

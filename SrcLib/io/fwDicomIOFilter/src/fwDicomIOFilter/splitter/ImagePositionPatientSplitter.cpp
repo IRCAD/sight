@@ -65,7 +65,6 @@ const
 {
     DicomSeriesContainerType result;
 
-    DcmFileFormat fileFormat;
     OFCondition status;
     DcmDataset* dataset;
 
@@ -85,6 +84,7 @@ const
         is.setBuffer(buffer, offile_off_t(buffSize));
         is.setEos();
 
+        DcmFileFormat fileFormat;
         fileFormat.transferInit();
         if (!fileFormat.read(is).good())
         {

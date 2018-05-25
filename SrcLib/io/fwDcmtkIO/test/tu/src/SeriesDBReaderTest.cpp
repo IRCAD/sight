@@ -218,7 +218,6 @@ void verifyTagValues(const std::string& filename, const ::fwMedData::SeriesDB::s
         CPPUNIT_ASSERT_EQUAL(nbComponents, image->getNumberOfComponents());
 
     }
-
 }
 
 //------------------------------------------------------------------------------
@@ -356,7 +355,6 @@ void SeriesDBReaderTest::readACHSeries()
 
     // Read image in lazy mode
     ::fwDataTools::helper::Image locker( series->getImage() );
-
 }
 
 //------------------------------------------------------------------------------
@@ -486,7 +484,6 @@ void SeriesDBReaderTest::readMRSeries()
 
     // Verify tag values according to json file
     verifyTagValues(filename, seriesDB);
-
 }
 
 //------------------------------------------------------------------------------
@@ -552,7 +549,6 @@ void SeriesDBReaderTest::readOTSeries()
 
     // Verify tag values according to json file
     verifyTagValues(filename, seriesDB);
-
 }
 
 //------------------------------------------------------------------------------

@@ -164,9 +164,9 @@ bool SeriesDBReader::isDicomDirAvailable()
 
 void SeriesDBReader::addSeries(const std::vector< std::string >& filenames)
 {
-    DcmFileFormat fileFormat;
     for(const std::string& filename : filenames)
     {
+        DcmFileFormat fileFormat;
         OFCondition status = fileFormat.loadFile(filename.c_str());
         FW_RAISE_IF("Unable to read the file: \""+filename+"\"", status.bad());
 

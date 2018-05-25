@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -88,13 +88,15 @@ void DicomSeriesWriterTest::checkDicomSeries(const ::boost::filesystem::path& p,
 
     // Compare Source and Destination Series
     ExcludeSetType excludeSetPrefix;
-    excludeSetPrefix.insert("local_dicom_paths");
+    excludeSetPrefix.insert("dicom_container");
 
     ExcludeSetType excludeSet;
     if(anonymized)
     {
         excludeSet.insert("instance_uid");
         excludeSet.insert("study.instance_uid");
+        excludeSet.insert("study.date");
+        excludeSet.insert("patient.birth_date");
     }
 
     CPPUNIT_ASSERT_MESSAGE("Series not equal",

@@ -78,7 +78,6 @@ const
 
     ::fwMedData::DicomSeries::DicomContainerType sortedDicom;
 
-    DcmFileFormat fileFormat;
     OFCondition status;
     DcmDataset* dataset;
     for(const auto& item :  series->getDicomContainer())
@@ -92,6 +91,7 @@ const
         is.setBuffer(buffer, offile_off_t(buffSize));
         is.setEos();
 
+        DcmFileFormat fileFormat;
         fileFormat.transferInit();
         if (!fileFormat.read(is).good())
         {
