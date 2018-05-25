@@ -184,8 +184,9 @@ void SAxis::starting()
     zLineNode->attachObject(zLine);
     zLineNode->yaw(::Ogre::Degree(-90));
 
-    ::Ogre::FontPtr dejaVuSansFont = ::fwRenderOgre::helper::Font::getFont("DejaVuSans.ttf", 32);
-    ::Ogre::Camera* cam            = this->getLayer()->getDefaultCamera();
+    ::Ogre::OverlayContainer* textContainer = this->getRenderService()->getOverlayTextPanel();
+    ::Ogre::FontPtr dejaVuSansFont          = ::fwRenderOgre::helper::Font::getFont("DejaVuSans.ttf", 32);
+    ::Ogre::Camera* cam                     = this->getLayer()->getDefaultCamera();
 
     // X cone
     ::fwRenderOgre::helper::ManualObject::createCone(xCone, materialAdaptor->getMaterialName(),
@@ -197,7 +198,7 @@ void SAxis::starting()
         this->getTransformId() + "_" + this->getID() + "_xCone");
 
     m_axisLabels[0] = ::fwRenderOgre::Text::New(
-        this->getID() + "_xAxisLabel", sceneMgr, dejaVuSansFont, cam);
+        this->getID() + "_xAxisLabel", sceneMgr, textContainer, dejaVuSansFont, cam);
     m_axisLabels[0]->setText("X");
     m_axisLabels[0]->setCharHeight(0.1f);
     xConeNode->attachObject(m_axisLabels[0]);
@@ -216,7 +217,7 @@ void SAxis::starting()
     yConeNode->attachObject(yCone);
 
     m_axisLabels[1] = ::fwRenderOgre::Text::New(
-        this->getID() + "_yAxisLabel", sceneMgr, dejaVuSansFont, cam);
+        this->getID() + "_yAxisLabel", sceneMgr, textContainer, dejaVuSansFont, cam);
     m_axisLabels[1]->setText("Y");
     m_axisLabels[1]->setCharHeight(0.1f);
     yConeNode->attachObject(m_axisLabels[1]);
@@ -235,7 +236,7 @@ void SAxis::starting()
     zConeNode->attachObject(zCone);
 
     m_axisLabels[2] = ::fwRenderOgre::Text::New(
-        this->getID() + "_zAxisLabel", sceneMgr, dejaVuSansFont, cam);
+        this->getID() + "_zAxisLabel", sceneMgr, textContainer, dejaVuSansFont, cam);
     m_axisLabels[2]->setText("Z");
     m_axisLabels[2]->setCharHeight(0.1f);
     zConeNode->attachObject(m_axisLabels[2]);

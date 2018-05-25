@@ -1,20 +1,4 @@
-vertex_program Video_VP glsl
-{
-    source Video_VP.glsl
-    default_params
-    {
-        param_named_auto u_worldViewProj worldviewproj_matrix
-    }
-}
-
-fragment_program Video_FP glsl
-{
-    source Video_FP.glsl
-    default_params
-    {
-        param_named u_videoTexture int 0
-    }
-}
+//---------------------------------------------------------------------------
 
 material Video
 {
@@ -25,11 +9,11 @@ material Video
             cull_hardware none
             cull_software none
 
-            vertex_program_ref Video_VP
+            vertex_program_ref Default/Video_VP
             {
             }
 
-            fragment_program_ref Video_FP
+            fragment_program_ref Default/Video_FP
             {
             }
             texture_unit image
@@ -39,28 +23,22 @@ material Video
             }
         }
     }
-}
 
-vertex_program VideoWithTF_VP glsl
-{
-    source Video_VP.glsl
-    default_params
+    technique depth
     {
-        param_named_auto u_worldViewProj worldviewproj_matrix
+        pass
+        {
+            cull_hardware none
+            cull_software none
+
+            vertex_program_ref Default/Video_VP
+            {
+            }
+        }
     }
 }
 
-fragment_program VideoWithTF_FP glsl
-{
-    source Video_FP.glsl
-    attach TransferFunction_FP
-    preprocessor_defines TF=1
-    default_params
-    {
-        param_named u_videoTexture int 0
-        param_named u_tfTexture int 1
-    }
-}
+//---------------------------------------------------------------------------
 
 material VideoWithTF
 {
@@ -71,11 +49,11 @@ material VideoWithTF
             cull_hardware none
             cull_software none
 
-            vertex_program_ref VideoWithTF_VP
+            vertex_program_ref Default/Video_VP
             {
             }
 
-            fragment_program_ref VideoWithTF_FP
+            fragment_program_ref Default/VideoWithTF_FP
             {
             }
             texture_unit image
@@ -90,19 +68,22 @@ material VideoWithTF
             }
         }
     }
-}
 
-fragment_program VideoWithTF_Int_FP glsl
-{
-    source Video_FP.glsl
-    attach TransferFunction_FP
-    preprocessor_defines TF=1,TF_INTEGER=1
-    default_params
+    technique depth
     {
-        param_named u_videoTexture int 0
-        param_named u_tfTexture int 1
+        pass
+        {
+            cull_hardware none
+            cull_software none
+
+            vertex_program_ref Default/Video_VP
+            {
+            }
+        }
     }
 }
+
+//---------------------------------------------------------------------------
 
 material VideoWithTF_Int
 {
@@ -113,11 +94,11 @@ material VideoWithTF_Int
             cull_hardware none
             cull_software none
 
-            vertex_program_ref VideoWithTF_VP
+            vertex_program_ref Default/Video_VP
             {
             }
 
-            fragment_program_ref VideoWithTF_Int_FP
+            fragment_program_ref Default/VideoWithTF_Int_FP
             {
             }
             texture_unit image
@@ -129,6 +110,19 @@ material VideoWithTF_Int
             {
                 tex_address_mode clamp
                 filtering bilinear
+            }
+        }
+    }
+
+    technique depth
+    {
+        pass
+        {
+            cull_hardware none
+            cull_software none
+
+            vertex_program_ref Default/Video_VP
+            {
             }
         }
     }
