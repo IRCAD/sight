@@ -155,7 +155,7 @@ public:
             }
             else
             {
-                SLM_WARN("There is no pixel data in file \"" + file.second.string() + "\".");
+                SLM_WARN("There is no pixel data in file \"" + dicomPath + "\".");
             }
 
         }
