@@ -283,15 +283,15 @@ void SSliceIndexDicomEditor::readImage(std::size_t selectedSliceIndex)
     ::boost::filesystem::create_directories(tmpPath);
 
     const auto& binaries = dicomSeries->getDicomContainer();
-    auto binary          = binaries.begin();
-    std::advance(binary, selectedSliceIndex);
+    auto iter            = binaries.find(selectedSliceIndex);
+    OSLM_ASSERT("Index '"<<selectedSliceIndex<<"' is not found in DicomSeries", iter != binaries.end());
 
-    const ::fwMemory::BufferObject::sptr bufferObj = binary->second;
+    const ::fwMemory::BufferObject::sptr bufferObj = iter->second;
     const ::fwMemory::BufferObject::Lock lockerDest(bufferObj);
     const char* buffer = static_cast<char*>(lockerDest.getBuffer());
     const size_t size  = bufferObj->getSize();
 
-    const ::boost::filesystem::path dest = tmpPath / std::to_string(binary->first);
+    const ::boost::filesystem::path dest = tmpPath / std::to_string(selectedSliceIndex);
     ::boost::filesystem::ofstream fs(dest, std::ios::binary|std::ios::trunc);
     FW_RAISE_IF("Can't open '" << tmpPath << "' for write.", !fs.good());
 

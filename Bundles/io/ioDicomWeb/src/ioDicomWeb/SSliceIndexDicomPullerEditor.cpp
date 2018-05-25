@@ -175,8 +175,8 @@ void SSliceIndexDicomPullerEditor::starting()
     dicomReader = ::fwIO::IReader::dynamicCast(srvFactory->create(m_dicomReaderType));
     SLM_ASSERT("Unable to create a reader of type: \"" + m_dicomReaderType + "\" in "
                "::ioDicomWeb::SSliceIndexDicomPullerEditor.", dicomReader);
-    ::fwServices::OSR::registerService(m_tempSeriesDB, dicomReader);
-
+    ::fwServices::OSR::registerService(m_tempSeriesDB, ::fwIO::s_DATA_KEY,
+                                       ::fwServices::IService::AccessType::INOUT, dicomReader);
     if(m_readerConfig)
     {
         dicomReader->setConfiguration(m_readerConfig);
@@ -268,8 +268,8 @@ void SSliceIndexDicomPullerEditor::triggerNewSlice()
     SLM_ASSERT("DicomSeries should not be null !", dicomSeries);
 
     // Compute slice index
-    size_t selectedSliceIndex = static_cast<size_t>(m_sliceIndexSlider->value()) +
-                                dicomSeries->getFirstInstanceNumber();
+    const size_t selectedSliceIndex = static_cast<size_t>(m_sliceIndexSlider->value()) +
+                                      dicomSeries->getFirstInstanceNumber();
     OSLM_TRACE("triggered new slice : " << selectedSliceIndex);
     if(!dicomSeries->isInstanceAvailable(selectedSliceIndex))
     {
@@ -305,15 +305,15 @@ void SSliceIndexDicomPullerEditor::readImage(size_t selectedSliceIndex)
     ::boost::filesystem::create_directories(tmpPath);
 
     const auto& binaries = dicomSeries->getDicomContainer();
-    auto binary          = binaries.begin();
-    std::advance(binary, selectedSliceIndex);
+    auto iter            = binaries.find(selectedSliceIndex);
+    OSLM_ASSERT("Index '"<<selectedSliceIndex<<"' is not found in DicomSeries", iter != binaries.end());
 
-    const ::fwMemory::BufferObject::sptr bufferObj = binary->second;
+    const ::fwMemory::BufferObject::sptr bufferObj = iter->second;
     const ::fwMemory::BufferObject::Lock lockerDest(bufferObj);
     const char* buffer = static_cast<char*>(lockerDest.getBuffer());
     const size_t size  = bufferObj->getSize();
 
-    ::boost::filesystem::path dest = tmpPath / std::to_string(binary->first);
+    ::boost::filesystem::path dest = tmpPath / std::to_string(selectedSliceIndex);
     ::boost::filesystem::ofstream fs(dest, std::ios::binary|std::ios::trunc);
     FW_RAISE_IF("Can't open '" << tmpPath << "' for write.", !fs.good());
 
@@ -321,7 +321,6 @@ void SSliceIndexDicomPullerEditor::readImage(size_t selectedSliceIndex)
     fs.close();
 
     // Read image
-
     m_dicomReader.lock()->setFolder(tmpPath);
     if(!m_dicomReader.expired())
     {
@@ -368,7 +367,6 @@ void SSliceIndexDicomPullerEditor::readImage(size_t selectedSliceIndex)
 
 void SSliceIndexDicomPullerEditor::pullInstance()
 {
-
     ::fwServices::IService::ConfigType configuration = this->getConfigTree();
     //Parse server port and hostname
     if(configuration.count("server"))
