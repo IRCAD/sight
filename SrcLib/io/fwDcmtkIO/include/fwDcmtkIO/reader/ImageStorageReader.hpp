@@ -26,7 +26,7 @@ namespace reader
 class FWDCMTKIO_CLASS_API ImageStorageReader : public ::fwDcmtkIO::reader::IObjectReader
 {
 public:
-    typedef ::fwMedData::DicomSeries::DicomPathContainerType DicomPathContainerType;
+    typedef ::fwMedData::DicomSeries::DicomContainerType DicomContainerType;
 
     /// Constructor
     FWDCMTKIO_API ImageStorageReader();
@@ -35,7 +35,7 @@ public:
     FWDCMTKIO_API virtual ~ImageStorageReader();
 
     /// Override
-    FWDCMTKIO_API virtual ::fwMedData::Series::sptr read(::fwMedData::DicomSeries::csptr series);
+    FWDCMTKIO_API virtual ::fwMedData::Series::sptr read(const ::fwMedData::DicomSeries::csptr& series);
 
 protected:
     /**
@@ -50,10 +50,13 @@ protected:
      * @param[in] pixelRepresentation Pixel representation
      * @param[in] imageType Image Type
      */
-    FWDCMTKIO_API void directRead(::fwData::Image::sptr image, DicomPathContainerType instances,
-                                  unsigned short rows, unsigned short columns, int depth, double rescaleSlope,
+    FWDCMTKIO_API void directRead(const ::fwData::Image::sptr& image,
+                                  DicomContainerType instances,
+                                  unsigned short rows, unsigned short columns,
+                                  int depth, double rescaleSlope,
                                   double rescaleIntercept,
-                                  unsigned short pixelRepresentation, ::fwTools::Type imageType);
+                                  unsigned short pixelRepresentation,
+                                  ::fwTools::Type imageType);
 
     /**
      * @brief Read an image using direct mode and perform a RGB lookup
@@ -65,8 +68,10 @@ protected:
      * @param[in] depth Depth
      * @param[in] bitsAllocated Number of bits allocated
      */
-    FWDCMTKIO_API void directRGBLookupRead(::fwData::Image::sptr image, DcmDataset& dataset,
-                                           DicomPathContainerType instances, unsigned short rows,
+    FWDCMTKIO_API void directRGBLookupRead(const ::fwData::Image::sptr& image,
+                                           DcmDataset& dataset,
+                                           DicomContainerType instances,
+                                           unsigned short rows,
                                            unsigned short columns, int depth,
                                            unsigned short bitsAllocated);
 
@@ -82,10 +87,13 @@ protected:
      * @param[in] pixelRepresentation Pixel Representation
      * @param[in] imageType Image Type
      */
-    FWDCMTKIO_API void lazyRead(::fwData::Image::sptr image, ::fwMedData::DicomSeries::csptr series,
-                                unsigned short rows, unsigned short columns, int depth, double rescaleSlope,
+    FWDCMTKIO_API void lazyRead(const ::fwData::Image::sptr& image,
+                                const ::fwMedData::DicomSeries::csptr& series,
+                                unsigned short rows, unsigned short columns,
+                                int depth, double rescaleSlope,
                                 double rescaleIntercept,
-                                unsigned short pixelRepresentation, ::fwTools::Type imageType);
+                                unsigned short pixelRepresentation,
+                                ::fwTools::Type imageType);
 
     /**
      * @brief Read an image using lazy mode and perform a RGB lookup
@@ -99,10 +107,13 @@ protected:
      * @param[in] bitsAllocated Bits allocated
      * @param[in] imageType Image type
      */
-    FWDCMTKIO_API void lazyRGBLookupRead(::fwData::Image::sptr image, ::fwMedData::DicomSeries::csptr series,
-                                         DcmDataset& dataset, DicomPathContainerType instances, unsigned short rows,
+    FWDCMTKIO_API void lazyRGBLookupRead(const ::fwData::Image::sptr& image,
+                                         const ::fwMedData::DicomSeries::csptr& series,
+                                         DcmDataset& dataset,
+                                         DicomContainerType instances, unsigned short rows,
                                          unsigned short columns,
-                                         int depth, unsigned short bitsAllocated, ::fwTools::Type imageType);
+                                         int depth, unsigned short bitsAllocated,
+                                         ::fwTools::Type imageType);
 
 };
 

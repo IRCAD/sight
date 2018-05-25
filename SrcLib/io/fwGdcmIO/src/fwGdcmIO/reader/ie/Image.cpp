@@ -64,18 +64,20 @@ Image::~Image()
 
 //------------------------------------------------------------------------------
 
-double getInstanceZPosition(const ::boost::filesystem::path& path)
+double getInstanceZPosition(const ::fwMemory::BufferObject::sptr& bufferObj)
 {
-    SPTR(::gdcm::ImageReader) reader = std::shared_ptr< ::gdcm::ImageReader >( new ::gdcm::ImageReader );
-    reader->SetFileName( path.string().c_str() );
+    ::gdcm::ImageReader reader;
+    const ::fwMemory::BufferManager::StreamInfo streamInfo = bufferObj->getStreamInfo();
+    SPTR(std::istream) is = streamInfo.stream;
+    reader.SetStream(*is);
 
-    if (!reader->Read())
+    if (!reader.Read())
     {
         return 0;
     }
 
     // Retrieve dataset
-    const ::gdcm::DataSet& dataset = reader->GetFile().GetDataSet();
+    const ::gdcm::DataSet& dataset = reader.GetFile().GetDataSet();
 
     // Check tags availability
     if(!dataset.FindDataElement(::gdcm::Tag(0x0020, 0x0032)) || !dataset.FindDataElement(::gdcm::Tag(0x0020, 0x0037)))
@@ -85,7 +87,7 @@ double getInstanceZPosition(const ::boost::filesystem::path& path)
     }
 
     // Retrieve image position
-    const ::gdcm::Image& gdcmImage = reader->GetImage();
+    const ::gdcm::Image& gdcmImage = reader.GetImage();
     const double* gdcmOrigin       = gdcmImage.GetOrigin();
     const fwVec3d imagePosition    = {{ gdcmOrigin[0], gdcmOrigin[1], gdcmOrigin[2] }};
 
@@ -142,22 +144,22 @@ void Image::readImagePlaneModule()
     }
 
     // Compute Z image spacing
-    ::fwMedData::DicomSeries::DicomPathContainerType pathContainer = m_dicomSeries->getLocalDicomPaths();
-    if(pathContainer.size() > 1)
+    const ::fwMedData::DicomSeries::DicomContainerType dicomContainer = m_dicomSeries->getDicomContainer();
+    if(dicomContainer.size() > 1)
     {
-        ::fwMedData::DicomSeries::DicomPathContainerType::iterator it = pathContainer.begin();
-        const ::fwMedData::DicomSeries::DicomPathContainerType::reverse_iterator rit = pathContainer.rbegin();
+        auto firstItem       = dicomContainer.begin();
+        const auto& lastItem = dicomContainer.rbegin();
 
         // Compute the spacing between slices of the 2 first slices.
-        const double firstIndex  = getInstanceZPosition(it->second);
-        const double secondIndex = getInstanceZPosition((++it)->second);
-        const double lastIndex   = getInstanceZPosition(rit->second);
+        const double firstIndex  = getInstanceZPosition(firstItem->second);
+        const double secondIndex = getInstanceZPosition((++firstItem)->second);
+        const double lastIndex   = getInstanceZPosition(lastItem->second);
         spacing[2] = std::abs(secondIndex - firstIndex);
 
         // Check that the same spacing is used for all the instances
         const double epsilon       = 1e-2;
         const double totalZSpacing = std::abs(lastIndex - firstIndex);
-        const double errorGap      = std::abs( spacing[2] * static_cast<double>(pathContainer.size() - 1 ) ) -
+        const double errorGap      = std::abs( spacing[2] * static_cast<double>(dicomContainer.size() - 1 ) ) -
                                      totalZSpacing;
         if(errorGap > epsilon)
         {
@@ -169,7 +171,6 @@ void Image::readImagePlaneModule()
 
     OSLM_TRACE("Image's spacing : "<<spacing[0]<<"x"<<spacing[1]<<"x"<<spacing[2]);
     m_object->setSpacing( spacing );
-
 }
 
 //------------------------------------------------------------------------------
@@ -296,7 +297,7 @@ void Image::readImagePixelModule()
     // slices (1 for CT and MR, may be more for enhanced CT and MR)
     const unsigned long frameBufferSize = gdcmImage.GetBufferLength();
     const unsigned long depth           = frameBufferSize / (dimensions[0] * dimensions[1] * (bitsAllocated/8));
-    dimensions[2] = static_cast<unsigned int>(m_dicomSeries->getLocalDicomPaths().size() * depth);
+    dimensions[2] = static_cast<unsigned int>(m_dicomSeries->getDicomContainer().size() * depth);
     m_object->setSize(::boost::assign::list_of(dimensions[0])(dimensions[1])(dimensions[2]));
 
     OSLM_TRACE("Image dimensions : [" << dimensions[0] << "," <<dimensions[1] << "," << dimensions[2] << "]");
@@ -363,7 +364,7 @@ char* Image::readImageBuffer(const std::vector<unsigned int>& dimensions,
     const ::gdcm::Image& gdcmFirstImage = imageReader->GetImage();
 
     // Path container
-    ::fwMedData::DicomSeries::DicomPathContainerType pathContainer = m_dicomSeries->getLocalDicomPaths();
+    ::fwMedData::DicomSeries::DicomContainerType dicomContainer = m_dicomSeries->getDicomContainer();
 
     // Raw buffer for all frames
     char* frameBuffer;
@@ -386,14 +387,16 @@ char* Image::readImageBuffer(const std::vector<unsigned int>& dimensions,
 
     // Read every frames
     unsigned int frameNumber = 0;
-    for(::fwMedData::DicomSeries::DicomPathContainerType::value_type v : pathContainer)
+    for(const auto& item : dicomContainer)
     {
-        // Get filename
-        const std::string& filename = v.second.string();
-
         // Read a frame
         ::gdcm::ImageReader frameReader;
-        frameReader.SetFileName( filename.c_str() );
+        const ::fwMemory::BufferObject::sptr bufferObj         = item.second;
+        const ::fwMemory::BufferManager::StreamInfo streamInfo = bufferObj->getStreamInfo();
+        const std::string dicomPath                            = bufferObj->getStreamInfo().fsFile.string();
+        SPTR(std::istream) is = streamInfo.stream;
+        frameReader.SetStream(*is);
+
         if ( frameReader.Read() )
         {
             const ::gdcm::Image& gdcmImage = frameReader.GetImage();
@@ -401,7 +404,7 @@ char* Image::readImageBuffer(const std::vector<unsigned int>& dimensions,
             // Check frame buffer size
             if(frameBufferSize != gdcmImage.GetBufferLength())
             {
-                throw ::fwGdcmIO::exception::Failed("The frame buffer does not have the expected size : " + filename);
+                throw ::fwGdcmIO::exception::Failed("The frame buffer does not have the expected size : " + dicomPath);
             }
 
             // Get raw buffer and set it in the image buffer
@@ -470,7 +473,7 @@ char* Image::readImageBuffer(const std::vector<unsigned int>& dimensions,
         ++frameNumber;
 
         unsigned int progress =
-            static_cast<unsigned int>(18 + (frameNumber*100/static_cast<double>(pathContainer.size())) * 0.6);
+            static_cast<unsigned int>(18 + (frameNumber*100/static_cast<double>(dicomContainer.size())) * 0.6);
         m_progressCallback(progress);
 
         if(m_cancelRequestedCallback && m_cancelRequestedCallback())

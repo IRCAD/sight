@@ -55,24 +55,18 @@ void DicomSeriesTest::dicomTest()
     file.close();
 
     //None
-    CPPUNIT_ASSERT_EQUAL(::fwMedData::DicomSeries::NONE, m_series->getDicomAvailability());
     CPPUNIT_ASSERT(!m_series->isInstanceAvailable(42));
     m_series->setNumberOfInstances(100);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(100, m_series->getNumberOfInstances(), 0);
 
     //Paths
-    m_series->setDicomAvailability(::fwMedData::DicomSeries::PATHS);
-    CPPUNIT_ASSERT_EQUAL(::fwMedData::DicomSeries::PATHS, m_series->getDicomAvailability());
     m_series->addDicomPath(42, filename);
     CPPUNIT_ASSERT(m_series->isInstanceAvailable(42));
 
     //Binaries
-    m_series->setDicomAvailability(::fwMedData::DicomSeries::BINARIES);
-    CPPUNIT_ASSERT_EQUAL(::fwMedData::DicomSeries::BINARIES, m_series->getDicomAvailability());
     ::fwMemory::BufferObject::sptr bufferObj = ::fwMemory::BufferObject::New();
-    m_series->addBinary(filename, bufferObj);
-    CPPUNIT_ASSERT_EQUAL(bufferObj, m_series->getDicomBinaries().at(filename));
-
+    m_series->addBinary(1664, bufferObj);
+    CPPUNIT_ASSERT_EQUAL(bufferObj, m_series->getDicomContainer().at(1664));
 }
 
 //------------------------------------------------------------------------------

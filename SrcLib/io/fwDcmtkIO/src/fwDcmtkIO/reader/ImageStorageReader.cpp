@@ -24,6 +24,7 @@
 #include <dcmtk/config/osconfig.h>
 #include <dcmtk/dcmdata/dcdeftag.h>
 #include <dcmtk/dcmdata/dcfilefo.h>
+#include <dcmtk/dcmdata/dcistrmb.h>
 #include <dcmtk/dcmimgle/dcmimage.h>
 #include <dcmtk/dcmnet/diutil.h>
 
@@ -46,13 +47,13 @@ ImageStorageReader::~ImageStorageReader()
 
 //-----------------------------------------------------------------------------
 
-::fwMedData::Series::sptr ImageStorageReader::read(::fwMedData::DicomSeries::csptr series)
+::fwMedData::Series::sptr ImageStorageReader::read(const ::fwMedData::DicomSeries::csptr& series)
 {
     ::fwMedData::DicomSeries::SOPClassUIDContainerType sopClassUIDContainer = series->getSOPClassUIDs();
     std::string sopClassUID = dcmFindNameOfUID(sopClassUIDContainer.begin()->c_str());
 
     ::fwMedData::ImageSeries::sptr imageSeries = ::fwDicomTools::Series::convertToImageSeries(series);
-    DicomPathContainerType instances = series->getLocalDicomPaths();
+    DicomContainerType instances = series->getDicomContainer();
 
     ::fwData::Image::sptr image = ::fwData::Image::New();
     DcmFileFormat fileFormat;
@@ -60,19 +61,39 @@ ImageStorageReader::~ImageStorageReader()
     DcmDataset* dataset;
 
     //Get informations from the first instance
-    std::string firstInstance = instances.begin()->second.string();
-    status = fileFormat.loadFile(firstInstance.c_str());
-    DicomImage dicomImage(firstInstance.c_str());
+    const auto firstItem                           = series->getDicomContainer().begin();
+    const ::fwMemory::BufferObject::sptr bufferObj = firstItem->second;
+    const size_t buffSize                          = bufferObj->getSize();
+    const std::string dicomPath                    = bufferObj->getStreamInfo().fsFile.string();
+    ::fwMemory::BufferObject::Lock lock(bufferObj);
+    char* buffer = static_cast< char* >( lock.getBuffer() );
 
-    FW_RAISE_IF("Unable to read the file: \""+firstInstance+"\"", status.bad() || (
+    DcmInputBufferStream is;
+    is.setBuffer(buffer, offile_off_t(buffSize));
+    is.setEos();
+
+    fileFormat.transferInit();
+    if (!fileFormat.read(is).good())
+    {
+        FW_RAISE("Unable to read Dicom file '"<< dicomPath <<"' "<<
+                 "(slice: '" << firstItem->first << "')");
+    }
+
+    fileFormat.loadAllDataIntoMemory();
+    fileFormat.transferEnd();
+
+    dataset = fileFormat.getDataset();
+
+    DicomImage dicomImage(dataset, dataset->getOriginalXfer());
+
+    FW_RAISE_IF("Unable to read the file: \""+dicomPath+"\"", status.bad() || (
                     dicomImage.getStatus() != EIS_Normal
                     && dicomImage.getStatus() != EIS_MissingAttribute
                     && dicomImage.getStatus() != EIS_NotSupportedValue
                     ));
-    dataset = fileFormat.getDataset();
 
     // Decompress data set if compressed
-    dataset->chooseRepresentation(EXS_LittleEndianExplicit, NULL);
+    dataset->chooseRepresentation(EXS_LittleEndianExplicit, nullptr);
 
     if(dicomImage.getStatus() != EIS_MissingAttribute)
     {
@@ -253,10 +274,13 @@ ImageStorageReader::~ImageStorageReader()
 
 //-----------------------------------------------------------------------------
 
-void ImageStorageReader::directRead(::fwData::Image::sptr image, DicomPathContainerType instances,
-                                    unsigned short rows, unsigned short columns, int depth, double rescaleSlope,
+void ImageStorageReader::directRead(const ::fwData::Image::sptr& image,
+                                    DicomContainerType instances,
+                                    unsigned short rows, unsigned short columns,
+                                    int depth, double rescaleSlope,
                                     double rescaleIntercept,
-                                    unsigned short pixelRepresentation, ::fwTools::Type imageType)
+                                    unsigned short pixelRepresentation,
+                                    ::fwTools::Type imageType)
 {
     //Allocate image
     image->allocate();
@@ -271,10 +295,11 @@ void ImageStorageReader::directRead(::fwData::Image::sptr image, DicomPathContai
 
 //-----------------------------------------------------------------------------
 
-void ImageStorageReader::directRGBLookupRead(::fwData::Image::sptr image, DcmDataset& dataset,
-                                             DicomPathContainerType instances, unsigned short rows,
-                                             unsigned short columns, int depth,
-                                             unsigned short bitsAllocated)
+void ImageStorageReader::directRGBLookupRead(const ::fwData::Image::sptr& image,
+                                             DcmDataset& dataset,
+                                             DicomContainerType instances,
+                                             unsigned short rows, unsigned short columns,
+                                             int depth, unsigned short bitsAllocated)
 {
     //Allocate image
     image->allocate();
@@ -311,7 +336,6 @@ void ImageStorageReader::directRGBLookupRead(::fwData::Image::sptr image, DcmDat
                                                                                                  arrayHelper.getBuffer(), redLookup, greenLookup,
                                                                                                  blueLookup);
         }
-
     }
     // 8 bits allocated
     else
@@ -341,15 +365,17 @@ void ImageStorageReader::directRGBLookupRead(::fwData::Image::sptr image, DcmDat
                                                                                                 blueLookup);
         }
     }
-
 }
 
 //-----------------------------------------------------------------------------
 
-void ImageStorageReader::lazyRead(::fwData::Image::sptr image, ::fwMedData::DicomSeries::csptr series,
-                                  unsigned short rows, unsigned short columns, int depth, double rescaleSlope,
+void ImageStorageReader::lazyRead(const ::fwData::Image::sptr& image,
+                                  const ::fwMedData::DicomSeries::csptr& series,
+                                  unsigned short rows, unsigned short columns,
+                                  int depth, double rescaleSlope,
                                   double rescaleIntercept,
-                                  unsigned short pixelRepresentation, ::fwTools::Type imageType)
+                                  unsigned short pixelRepresentation,
+                                  ::fwTools::Type imageType)
 {
     // Create information object
     ::fwDcmtkIO::reader::main::ImageLazyInformation::sptr dcmInfo =
@@ -372,10 +398,13 @@ void ImageStorageReader::lazyRead(::fwData::Image::sptr image, ::fwMedData::Dico
 
 //-----------------------------------------------------------------------------
 
-void ImageStorageReader::lazyRGBLookupRead(::fwData::Image::sptr image, ::fwMedData::DicomSeries::csptr series,
-                                           DcmDataset& dataset, DicomPathContainerType instances, unsigned short rows,
-                                           unsigned short columns, int depth,
-                                           unsigned short bitsAllocated, ::fwTools::Type imageType)
+void ImageStorageReader::lazyRGBLookupRead(const ::fwData::Image::sptr& image,
+                                           const ::fwMedData::DicomSeries::csptr& series,
+                                           DcmDataset& dataset,
+                                           DicomContainerType instances,
+                                           unsigned short rows, unsigned short columns,
+                                           int depth, unsigned short bitsAllocated,
+                                           ::fwTools::Type imageType)
 {
     unsigned short pixelValueBitsAllocated = 8;
     dataset.findAndGetUint16(DCM_BitsAllocated, pixelValueBitsAllocated);

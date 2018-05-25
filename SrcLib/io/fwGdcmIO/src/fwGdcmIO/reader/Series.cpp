@@ -63,7 +63,7 @@ throw(::fwGdcmIO::exception::Failed)
     // Create result
     ::fwMedData::Series::sptr result;
 
-    if(!dicomSeries->getLocalDicomPaths().empty())
+    if(!dicomSeries->getDicomContainer().empty())
     {
         // Get SOPClassUID
         ::fwMedData::DicomSeries::SOPClassUIDContainerType sopClassUIDContainer = dicomSeries->getSOPClassUIDs();
@@ -216,13 +216,16 @@ SPTR(::fwGdcmIO::container::DicomInstance) Series::getSpatialFiducialsReferenced
 {
     SPTR(::fwGdcmIO::container::DicomInstance) result;
 
-    // Path container
-    ::fwMedData::DicomSeries::DicomPathContainerType pathContainer = dicomSeries->getLocalDicomPaths();
-    const std::string filename = pathContainer.begin()->second.string();
+    // Dicom container
+    ::fwMedData::DicomSeries::DicomContainerType dicomContainer = dicomSeries->getDicomContainer();
 
     // Create Reader
-    ::boost::shared_ptr< ::gdcm::Reader > reader = ::boost::shared_ptr< ::gdcm::Reader >( new ::gdcm::Reader );
-    reader->SetFileName( filename.c_str() );
+    ::boost::shared_ptr< ::gdcm::Reader > reader =
+        ::boost::shared_ptr< ::gdcm::Reader >( new ::gdcm::Reader );
+    const ::fwMemory::BufferObject::sptr bufferObj         = dicomContainer.begin()->second;
+    const ::fwMemory::BufferManager::StreamInfo streamInfo = bufferObj->getStreamInfo();
+    SPTR(std::istream) is = streamInfo.stream;
+    reader->SetStream(*is);
 
     // Series Instance UID of the referenced Series
     std::string seriesInstanceUID = "";
@@ -273,13 +276,16 @@ SPTR(::fwGdcmIO::container::DicomInstance) Series::getStructuredReportReferenced
 
     SPTR(::fwGdcmIO::container::DicomInstance) result;
 
-    // Path container
-    ::fwMedData::DicomSeries::DicomPathContainerType pathContainer = dicomSeries->getLocalDicomPaths();
-    const std::string filename = pathContainer.begin()->second.string();
+    // Dicom container
+    ::fwMedData::DicomSeries::DicomContainerType dicomContainer = dicomSeries->getDicomContainer();
 
     // Create Reader
-    ::boost::shared_ptr< ::gdcm::Reader > reader = ::boost::shared_ptr< ::gdcm::Reader >( new ::gdcm::Reader );
-    reader->SetFileName( filename.c_str() );
+    ::boost::shared_ptr< ::gdcm::Reader > reader =
+        ::boost::shared_ptr< ::gdcm::Reader >( new ::gdcm::Reader );
+    const ::fwMemory::BufferObject::sptr bufferObj         = dicomContainer.begin()->second;
+    const ::fwMemory::BufferManager::StreamInfo streamInfo = bufferObj->getStreamInfo();
+    SPTR(std::istream) is = streamInfo.stream;
+    reader->SetStream(*is);
 
     // Series Instance UID of the referenced Series
     std::string seriesInstanceUID = "";

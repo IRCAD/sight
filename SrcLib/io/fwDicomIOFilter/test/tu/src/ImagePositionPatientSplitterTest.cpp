@@ -1,14 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "ImagePositionPatientSplitterTest.hpp"
 
-#include <fwDicomIOFilter/IFilter.hpp>
 #include <fwDicomIOFilter/factory/new.hpp>
 #include <fwDicomIOFilter/helper/Filter.hpp>
+#include <fwDicomIOFilter/IFilter.hpp>
 
 #include <fwGdcmIO/reader/SeriesDB.hpp>
 
@@ -79,11 +79,10 @@ void ImagePositionPatientSplitterTest::simpleApplication()
     ::fwMedData::DicomSeries::sptr dicomSeriesB = dicomSeriesContainer[1];
 
     // Check number of instances in series
-    CPPUNIT_ASSERT_EQUAL(size_t(233), dicomSeriesA->getLocalDicomPaths().size());
-    CPPUNIT_ASSERT_EQUAL(size_t(275), dicomSeriesB->getLocalDicomPaths().size());
+    CPPUNIT_ASSERT_EQUAL(size_t(233), dicomSeriesA->getDicomContainer().size());
+    CPPUNIT_ASSERT_EQUAL(size_t(275), dicomSeriesB->getDicomContainer().size());
 
 }
-
 
 //-----------------------------------------------------------------------------
 

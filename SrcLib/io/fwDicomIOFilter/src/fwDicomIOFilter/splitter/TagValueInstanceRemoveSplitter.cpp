@@ -1,18 +1,20 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwDicomIOFilter/splitter/TagValueInstanceRemoveSplitter.hpp"
-#include "fwDicomIOFilter/registry/macros.hpp"
+
 #include "fwDicomIOFilter/exceptions/FilterFailure.hpp"
+#include "fwDicomIOFilter/registry/macros.hpp"
 
 #include <dcmtk/config/osconfig.h>
-#include <dcmtk/dcmnet/diutil.h>
-#include <dcmtk/dcmdata/dcfilefo.h>
 #include <dcmtk/dcmdata/dcdeftag.h>
+#include <dcmtk/dcmdata/dcfilefo.h>
+#include <dcmtk/dcmdata/dcistrmb.h>
 #include <dcmtk/dcmimgle/dcmimage.h>
+#include <dcmtk/dcmnet/diutil.h>
 
 fwDicomIOFilterRegisterMacro( ::fwDicomIOFilter::splitter::TagValueInstanceRemoveSplitter );
 
@@ -27,7 +29,8 @@ const std::string TagValueInstanceRemoveSplitter::s_FILTER_DESCRIPTION =
 
 //-----------------------------------------------------------------------------
 
-TagValueInstanceRemoveSplitter::TagValueInstanceRemoveSplitter(::fwDicomIOFilter::IFilter::Key key) : ISplitter()
+TagValueInstanceRemoveSplitter::TagValueInstanceRemoveSplitter(::fwDicomIOFilter::IFilter::Key key) :
+    ISplitter()
 {
     m_tag      = DCM_UndefinedTagKey;
     m_tagValue = "";
@@ -74,7 +77,7 @@ const
 
     DicomSeriesContainerType result;
 
-    typedef std::vector< std::string > InstanceContainerType;
+    typedef std::vector< ::fwMemory::BufferObject::sptr > InstanceContainerType;
 
     // Create a container to store the instances
     InstanceContainerType instances;
@@ -84,20 +87,36 @@ const
     DcmDataset* dataset;
     OFString data;
 
-    for(const ::fwMedData::DicomSeries::DicomPathContainerType::value_type& file :  series->getLocalDicomPaths())
+    for(const auto& item : series->getDicomContainer())
     {
-        const std::string& filename = file.second.string();
-        status = fileFormat.loadFile(filename.c_str());
-        FW_RAISE_IF("Unable to read the file: \""+filename+"\"", status.bad());
+        const ::fwMemory::BufferObject::sptr bufferObj = item.second;
+        const size_t buffSize                          = bufferObj->getSize();
+        ::fwMemory::BufferObject::Lock lock(bufferObj);
+        char* buffer = static_cast< char* >( lock.getBuffer() );
+
+        DcmInputBufferStream is;
+        is.setBuffer(buffer, offile_off_t(buffSize));
+        is.setEos();
+
+        fileFormat.transferInit();
+        if (!fileFormat.read(is).good())
+        {
+            FW_RAISE("Unable to read Dicom file '"<< bufferObj->getStreamInfo().fsFile.string() <<"' "<<
+                     "(slice: '" << item.first << "')");
+        }
+
+        fileFormat.loadAllDataIntoMemory();
+        fileFormat.transferEnd();
+
         dataset = fileFormat.getDataset();
 
         // Get the value of the instance
-        dataset->findAndGetOFStringArray(m_tag,data);
-        ::std::string value = data.c_str();
+        dataset->findAndGetOFStringArray(m_tag, data);
+        const std::string value = data.c_str();
 
         if(value != m_tagValue)
         {
-            instances.push_back(filename.c_str());
+            instances.push_back(bufferObj);
         }
         else
         {
@@ -106,18 +125,16 @@ const
     }
 
     // Update series
-    ::fwMedData::DicomSeries::DicomPathContainerType dicomPathContainer;
-    series->setLocalDicomPaths(dicomPathContainer);
-    unsigned int index = 0;
-    for(std::string file :  instances)
+    series->clearDicomContainer();
+    size_t index = 0;
+    for(const auto& buffer : instances)
     {
-        series->addDicomPath(index++, file);
+        series->addBinary(index++, buffer);
     }
-    series->setNumberOfInstances(static_cast<unsigned int>(series->getLocalDicomPaths().size()));
+    series->setNumberOfInstances(series->getDicomContainer().size());
     result.push_back(series);
 
     return result;
-
 }
 
 } // namespace splitter

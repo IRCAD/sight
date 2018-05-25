@@ -341,7 +341,7 @@ void SeriesDB::convertDicomSeries(const ::fwServices::IService::sptr& notifier)
     std::uint64_t totalWorkUnits = 0;
     for(const ::fwMedData::DicomSeries::sptr& dicomSeries : m_dicomSeriesContainer)
     {
-        totalWorkUnits += dicomSeries->getLocalDicomPaths().size();
+        totalWorkUnits += dicomSeries->getDicomContainer().size();
     }
     m_converterJob->setTotalWorkUnits(totalWorkUnits);
 

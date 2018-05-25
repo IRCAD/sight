@@ -10,10 +10,8 @@
 
 #include <fwCamp/macros.hpp>
 
-#include <fwData/Array.hpp>
-
 #include <fwMedData/DicomSeries.hpp>
 
-fwCampAutoDeclareEnumMacro((fwMedData)(DicomSeries)(DicomAvailability));
+#include <fwMemory/BufferObject.hpp>
 
-fwCampDeclareAccessor((fwMedData)(DicomSeries), (fwData)(Array));
+fwCampDeclareAccessor((fwMedData)(DicomSeries), (fwMemory)(BufferObject));

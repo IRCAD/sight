@@ -1,15 +1,16 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __IOPACS_SSERIESPUSHER_HPP__
-#define __IOPACS_SSERIESPUSHER_HPP__
+#pragma once
 
 #include "ioPacs/config.hpp"
 
 #include <fwCom/Slot.hpp>
+
+#include <fwMemory/BufferObject.hpp>
 
 #include <fwPacsIO/data/PacsConfiguration.hpp>
 #include <fwPacsIO/SeriesEnquirer.hpp>
@@ -55,7 +56,6 @@ public:
     fwCoreServiceClassDefinitionsMacro( (SSeriesPusher)( ::fwServices::IController ) );
 
     typedef std::vector< CSPTR(::fwMedData::Series) > DicomSeriesContainerType;
-    typedef std::vector< ::boost::filesystem::path > DicomFileContainer;
 
     IOPACS_API static const ::fwCom::Slots::SlotKeyType s_DISPLAY_SLOT;
     typedef ::fwCom::Slot<void (const std::string&, bool)> DisplayMessageSlotType;
@@ -162,5 +162,3 @@ protected:
 };
 
 } // namespace ioPacs
-
-#endif // __IOPACS_SSERIESPUSHER_HPP__

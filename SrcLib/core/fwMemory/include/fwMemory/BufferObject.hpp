@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWMEMORY_BUFFEROBJECT_HPP__
-#define __FWMEMORY_BUFFEROBJECT_HPP__
+#pragma once
 
 #include "fwMemory/BufferAllocationPolicy.hpp"
 #include "fwMemory/BufferManager.hpp"
@@ -70,7 +69,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    virtual ::fwMemory::BufferManager::BufferType getBuffer()
+    virtual ::fwMemory::BufferManager::BufferType getBuffer() const
     {
         return m_buffer;
     }
@@ -272,7 +271,9 @@ public:
         return &m_buffer;
     }
 
-    ::fwCore::mt::ReadWriteMutex &getMutex()
+    //------------------------------------------------------------------------------
+
+    ::fwCore::mt::ReadWriteMutex& getMutex()
     {
         return m_mutex;
     }
@@ -294,8 +295,8 @@ public:
      */
     FWMEMORY_API void setIStreamFactory(const SPTR(::fwMemory::stream::in::IFactory)& factory,
                                         SizeType size,
-                                        const ::boost::filesystem::path& sourceFile = "",
-                                        ::fwMemory::FileFormatType format = ::fwMemory::OTHER,
+                                        const ::boost::filesystem::path& sourceFile            = "",
+                                        ::fwMemory::FileFormatType format                      = ::fwMemory::OTHER,
                                         const ::fwMemory::BufferAllocationPolicy::sptr& policy = ::fwMemory::BufferMallocPolicy::New()
                                         );
 
@@ -315,5 +316,3 @@ protected:
 };
 
 }
-
-#endif // __FWMEMORY_BUFFEROBJECT_HPP__

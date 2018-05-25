@@ -37,7 +37,6 @@ struct runner
         localDeclarefwMedDataPatient();
         localDeclarefwMedDataSeries();
         localDeclarefwMedDataSeriesDB();
-        localDeclarefwMedDataDicomSeriesDicomAvailability();
         localDeclarefwMedDataDicomSeries();
         localDeclarefwMedDataImageSeries();
         localDeclarefwMedDataModelSeries();

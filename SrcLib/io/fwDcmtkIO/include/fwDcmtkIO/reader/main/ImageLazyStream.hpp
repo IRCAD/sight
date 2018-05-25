@@ -103,9 +103,8 @@ private:
     /// Current frame
     char* m_frame;
 
-    /// Current path
-    ::fwMedData::DicomSeries::DicomPathContainerType::const_iterator m_currentPath;
-
+    /// Current Dicom item
+    ::fwMedData::DicomSeries::DicomContainerType::const_iterator m_currentDicom;
 };
 
 //------------------------------------------------------------------------------

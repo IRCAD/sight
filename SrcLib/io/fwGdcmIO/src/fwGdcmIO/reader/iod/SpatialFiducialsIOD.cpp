@@ -57,19 +57,23 @@ void SpatialFiducialsIOD::read(::fwMedData::Series::sptr series) throw (::fwGdcm
     SPTR(::gdcm::Reader) reader = std::shared_ptr< ::gdcm::Reader >( new ::gdcm::Reader );
 
     // Read the first file
-    ::fwMedData::DicomSeries::DicomPathContainerType pathContainer = m_dicomSeries->getLocalDicomPaths();
+    ::fwMedData::DicomSeries::DicomContainerType dicomContainer = m_dicomSeries->getDicomContainer();
 
-    if(pathContainer.size() > 1)
+    if(dicomContainer.size() > 1)
     {
-        m_logger->warning("More than one Spatial Fiducials files have been found in the series. "
+        m_logger->warning("More than one Spatial Fiducials item have been found in the series. "
                           "Only the first one will be read.");
     }
 
-    const std::string filename = pathContainer.begin()->second.string();
-    reader->SetFileName( filename.c_str() );
-    bool success = reader->Read();
+    const ::fwMemory::BufferObject::sptr bufferObj         = dicomContainer.begin()->second;
+    const ::fwMemory::BufferManager::StreamInfo streamInfo = bufferObj->getStreamInfo();
+    SPTR(std::istream) is = streamInfo.stream;
+    reader->SetStream(*is);
+
+    const bool success = reader->Read();
     FW_RAISE_EXCEPTION_IF(::fwGdcmIO::exception::Failed("Unable to read the DICOM instance \""+
-                                                        filename+"\" using the GDCM Image Reader."), !success);
+                                                        bufferObj->getStreamInfo().fsFile.string()+
+                                                        "\" using the GDCM Reader."), !success);
 
     // Create Information Entity helpers
     ::fwGdcmIO::reader::ie::SpatialFiducials spatialFiducialsIE(

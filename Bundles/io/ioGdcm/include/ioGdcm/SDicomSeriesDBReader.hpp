@@ -55,7 +55,7 @@ public:
     /**
      * @brief   destructor
      */
-    IOGDCM_API virtual ~SDicomSeriesDBReader() noexcept;
+    IOGDCM_API virtual ~SDicomSeriesDBReader() noexcept override;
 
 protected:
 
@@ -65,14 +65,6 @@ protected:
         ALWAYS = 0,     /*! Always use the DicomDir if present */
         NEVER,          /*! Never use the DicomDir */
         USER_SELECTION  /*! Let the user decide whether using the DicomDir or not */
-    };
-
-    /// Enum for reading mode
-    enum ReaderMode
-    {
-        DIRECT = 0,         /*! Read directly from the source folder */
-        COPY,               /*! Read after a copy of the source files */
-        USER_SELECTION_MODE /*! Let the user decide whether read directly or copy before reading */
     };
 
     /// Override
@@ -96,7 +88,6 @@ protected:
      * @code{.xml}
        <config>
        <dicomdirSupport>always|never|user_selection</dicomdirSupport> <!-- optional, default set to user_selection -->
-       <mode>direct|copy|user_selection</mode> <!-- optional, default set to user_selection -->
        </config>
        @endcode
      */
@@ -119,9 +110,6 @@ private:
     /// Signal emitted when a job is created
     SPTR(JobCreatedSignal) m_sigJobCreated;
 
-    /// Signal emitted when files have been added in the read DicomSeries
-    SPTR(FilesAddedSignal) m_sigFilesAdded;
-
     /// Cancel information for jobs
     bool m_cancelled;
 
@@ -130,10 +118,6 @@ private:
 
     /// Specify how to use dicomdir files
     DicomDirSupport m_dicomDirSupport;
-
-    /// Specify how to handle reading
-    ReaderMode m_readerMode;
-
 };
 
 } // namespace ioGdcm

@@ -55,13 +55,15 @@ void CTMRImageIOD::read(::fwMedData::Series::sptr series) throw(::fwGdcmIO::exce
     SPTR(::gdcm::ImageReader) reader = std::shared_ptr< ::gdcm::ImageReader >( new ::gdcm::ImageReader );
 
     // Read the first file
-    ::fwMedData::DicomSeries::DicomPathContainerType pathContainer = m_dicomSeries->getLocalDicomPaths();
-    const std::string filename = pathContainer.begin()->second.string();
-    reader->SetFileName( filename.c_str() );
-    bool success = reader->Read();
+    const ::fwMemory::BufferObject::sptr bufferObj         = m_dicomSeries->getDicomContainer().begin()->second;
+    const ::fwMemory::BufferManager::StreamInfo streamInfo = bufferObj->getStreamInfo();
+    SPTR(std::istream) is = streamInfo.stream;
+    reader->SetStream(*is);
+
+    const bool success = reader->Read();
     FW_RAISE_EXCEPTION_IF(::fwGdcmIO::exception::Failed("Unable to read the DICOM instance \""+
-                                                        filename+"\" using the GDCM Image Reader."),
-                          !success);
+                                                        bufferObj->getStreamInfo().fsFile.string()+
+                                                        "\" using the GDCM Reader."), !success);
 
     // Create Information Entity helpers
     ::fwGdcmIO::reader::ie::Patient patientIE(m_dicomSeries, reader, m_instance, series->getPatient(), m_logger,

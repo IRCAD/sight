@@ -89,9 +89,8 @@ void DicomSeriesCampTest::propertiesTest()
     obj->setPerformingPhysiciansName(performing_physicians_names);
     obj->setDescription(description);
     obj->setNumberOfInstances(100);
-    obj->setDicomAvailability(::fwMedData::DicomSeries::PATHS);
     obj->addDicomPath(42, path);
-    obj->addBinary(path.string(), bufferObj);
+    obj->addBinary(1664, bufferObj);
     obj->addSOPClassUID("1.2.840.10008.5.1.4.1.1.2");
     obj->addComputedTagValue("(0020,0100)", "1664");
     obj->setFirstInstanceNumber(1);
@@ -107,10 +106,6 @@ void DicomSeriesCampTest::propertiesTest()
     ::DataCampHelper::compareObjectPropertyValue(obj, "@study", obj->getStudy());
     ::DataCampHelper::compareObjectPropertyValue(obj, "@equipment", obj->getEquipment());
 
-    // Dicom availability
-    //TODO: Enum are not supported yet, so we cannot make unit tests on this part...
-    //::DataCampHelper::compareSimplePropertyValue(obj, "@dicom_availability", std::string("PATH"));
-
     // Number of instances
     ::std::stringstream ss;
     ss << obj->getNumberOfInstances();
@@ -120,8 +115,8 @@ void DicomSeriesCampTest::propertiesTest()
     ::DataCampHelper::compareSimplePropertyValue(obj, "@local_dicom_paths.42", "mypath");
 
     // Dicom binaries
-    // TODO FIXME
-    //::DataCampHelper::compareObjectPropertyValue(obj, "@dicom_binaries.mypath", obj->getDicomBinaries().at("mypath"));
+    // TODO: BufferObject is not supported yet, so we cannot make unit tests on this part...
+    //::DataCampHelper::compareObjectPropertyValue(obj, "@dicom_container.1664", obj->getDicomContainer().at(1664));
 
     // SOP class UID
     ::DataCampHelper::compareSimplePropertyValue(obj, "@sop_class_uids.0", "1.2.840.10008.5.1.4.1.1.2");

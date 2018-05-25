@@ -1,18 +1,16 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWDCMTKIO_READER_RGBLOOKUP_IMAGERGBLOOKUPREADER_HPP__
-#define __FWDCMTKIO_READER_RGBLOOKUP_IMAGERGBLOOKUPREADER_HPP__
-
-#include <dcmtk/config/osconfig.h>
+#pragma once
 
 #include "fwDcmtkIO/config.hpp"
 
 #include <fwMedData/DicomSeries.hpp>
 
+#include <dcmtk/config/osconfig.h>
 #include <dcmtk/dcmdata/dcdeftag.h>
 #include <dcmtk/dcmdata/dcfilefo.h>
 #include <dcmtk/dcmimgle/dcmimage.h>
@@ -32,7 +30,7 @@ namespace rgblookup
 class FWDCMTKIO_CLASS_API ImageRGBLookupReader
 {
 public:
-    typedef ::fwMedData::DicomSeries::DicomPathContainerType DicomPathContainerType;
+    typedef ::fwMedData::DicomSeries::DicomContainerType DicomContainerType;
 
     /**
      * @brief Fill the buffer of an image
@@ -49,14 +47,15 @@ public:
      *
      */
     template< typename T, typename U >
-    FWDCMTKIO_API static void fillImageBuffer(unsigned int rows, unsigned int columns, unsigned int depth,
-                                              DicomPathContainerType& instances, void* destination, const T* redLookup,
-                                              const T* greenLookup,
-                                              const T* blueLookup)
+    static void fillImageBuffer(unsigned int rows, unsigned int columns,
+                                unsigned int depth,
+                                DicomContainerType& instances,
+                                void* destination, const T* redLookup,
+                                const T* greenLookup,
+                                const T* blueLookup)
     {
         U* tempoBuffer = ::fwDcmtkIO::reader::main::ImageReader::createTemporaryBuffer<U>(
             rows, columns, depth, instances);
-
 
         T* arrayBuffer = static_cast< T* >(destination);
         unsigned short x, y, z;
@@ -76,21 +75,13 @@ public:
                     arrayBuffer[position*3]   = static_cast< T >((redLookup[value]/(double)0xffff)*256);
                     arrayBuffer[position*3+1] = static_cast< T >((greenLookup[value]/(double)0xffff)*256);
                     arrayBuffer[position*3+2] = static_cast< T >((blueLookup[value]/(double)0xffff)*256);
-
                 }
             }
         }
-
         delete tempoBuffer;
-
     }
-
-
 };
 
 } //rgblookup
 } //reader
 } //fwDcmtkIO
-
-
-#endif /* __FWDCMTKIO_READER_RGBLOOKUP_IMAGERGBLOOKUPREADER_HPP__ */

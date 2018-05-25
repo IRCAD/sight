@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWDCMTKIO_READER_MAIN_IMAGEREADER_HPP__
-#define __FWDCMTKIO_READER_MAIN_IMAGEREADER_HPP__
+#pragma once
 
 #include "fwDcmtkIO/config.hpp"
 
@@ -14,6 +13,7 @@
 #include <dcmtk/config/osconfig.h>
 #include <dcmtk/dcmdata/dcdeftag.h>
 #include <dcmtk/dcmdata/dcfilefo.h>
+#include <dcmtk/dcmdata/dcistrmb.h>
 #include <dcmtk/dcmimgle/dcmimage.h>
 #include <dcmtk/dcmnet/diutil.h>
 
@@ -30,7 +30,7 @@ namespace main
 class FWDCMTKIO_CLASS_API ImageReader
 {
 public:
-    typedef ::fwMedData::DicomSeries::DicomPathContainerType DicomPathContainerType;
+    typedef ::fwMedData::DicomSeries::DicomContainerType DicomContainerType;
 
     /**
      * @brief Fill the buffer of an image
@@ -44,10 +44,12 @@ public:
      * @param[in] pixelRepresentation Pixel representation of the image (signed or unsigned short)
      * @param[in] imageType Type of the image used to create the buffer
      */
-    FWDCMTKIO_API static void fillImageBuffer(unsigned int rows, unsigned int columns, unsigned int depth,
-                                              DicomPathContainerType& instances, void* destination, double rescaleSlope,
-                                              double rescaleIntercept,
-                                              unsigned short pixelRepresentation, ::fwTools::Type imageType)
+    static void fillImageBuffer(unsigned int rows, unsigned int columns,
+                                unsigned int depth,
+                                DicomContainerType& instances,
+                                void* destination, double rescaleSlope,
+                                double rescaleIntercept,
+                                unsigned short pixelRepresentation, ::fwTools::Type imageType)
     {
         if (pixelRepresentation == 0)
         {
@@ -90,8 +92,9 @@ public:
      * @param[in] instances Paths to the instances
      */
     template< typename T >
-    FWDCMTKIO_API static T* createTemporaryBuffer(unsigned int rows, unsigned int columns, unsigned int depth,
-                                                  DicomPathContainerType& instances)
+    static T* createTemporaryBuffer(unsigned int rows, unsigned int columns,
+                                    unsigned int depth,
+                                    DicomContainerType& instances)
     {
         DcmFileFormat fileFormat;
         OFCondition status;
@@ -114,16 +117,32 @@ public:
         unsigned short z = 0;
 
         // Read every instances
-        for(DicomPathContainerType::value_type file: instances)
+        for(const auto& item : instances)
         {
-            const std::string filename = file.second.string();
-            status = fileFormat.loadFile(filename.c_str());
-            FW_RAISE_IF("Unable to read the file: \""+file.second.string()+"\"", status.bad());
+            const ::fwMemory::BufferObject::sptr bufferObj = item.second;
+            const size_t buffSize                          = bufferObj->getSize();
+            const std::string dicomPath                    = bufferObj->getStreamInfo().fsFile.string();
+            ::fwMemory::BufferObject::Lock lock(bufferObj);
+            char* buffer = static_cast< char* >( lock.getBuffer() );
+
+            DcmInputBufferStream is;
+            is.setBuffer(buffer, offile_off_t(buffSize));
+            is.setEos();
+
+            fileFormat.transferInit();
+            if (!fileFormat.read(is).good())
+            {
+                FW_RAISE("Unable to read Dicom file '"<< dicomPath <<"' "<<
+                         "(slice: '" << item.first << "')");
+            }
+
+            fileFormat.loadAllDataIntoMemory();
+            fileFormat.transferEnd();
 
             dataset = fileFormat.getDataset();
 
             // Decompress data set if compressed
-            dataset->chooseRepresentation(EXS_LittleEndianExplicit, NULL);
+            dataset->chooseRepresentation(EXS_LittleEndianExplicit, nullptr);
 
             const Uint16* pixelData;
             dataset->findAndGetUint16Array(DCM_PixelData, pixelData);
@@ -159,10 +178,12 @@ protected:
      * @param[in] imageType Type of the image used to create the buffer
      */
     template< typename T >
-    FWDCMTKIO_API static void fillImageBuffer(unsigned int rows, unsigned int columns, unsigned int depth,
-                                              DicomPathContainerType& instances, void* destination, double rescaleSlope,
-                                              double rescaleIntercept,
-                                              ::fwTools::Type imageType)
+    static void fillImageBuffer(unsigned int rows, unsigned int columns,
+                                unsigned int depth,
+                                DicomContainerType& instances,
+                                void* destination, double rescaleSlope,
+                                double rescaleIntercept,
+                                ::fwTools::Type imageType)
     {
         T* tempoBuffer = ::fwDcmtkIO::reader::main::ImageReader::createTemporaryBuffer<T>(
             rows, columns, depth, instances);
@@ -230,7 +251,6 @@ protected:
         }
 
         delete tempoBuffer;
-
     }
 
     /**
@@ -246,8 +266,11 @@ protected:
      * @param[in] rescaleIntercept Intercept parameter
      */
     template< typename T, typename U >
-    FWDCMTKIO_API static void copyBuffer(unsigned int rows, unsigned int columns, unsigned int depth,
-                                         U* source, void* destination, double rescaleSlope, double rescaleIntercept)
+    static void copyBuffer(unsigned int rows, unsigned int columns,
+                           unsigned int depth,
+                           U* source,
+                           void* destination,
+                           double rescaleSlope, double rescaleIntercept)
     {
         T* arrayBuffer = static_cast< T* >(destination);
         unsigned short x, y, z;
@@ -275,5 +298,3 @@ protected:
 } //main
 } //reader
 } //fwDcmtkIO
-
-#endif /* __FWDCMTKIO_READER_MAIN_IMAGEREADER_HPP__ */

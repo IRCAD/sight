@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -277,12 +277,11 @@ void DicomDir::retrieveDicomSeries(const ::boost::filesystem::path& dicomdir,
 
     for(auto entry : dicomSeriesMap)
     {
-        auto series = entry.second;
-        auto size   = static_cast< unsigned int >(series->getLocalDicomPaths().size());
+        auto series       = entry.second;
+        const size_t size = series->getDicomContainer().size();
         if(size)
         {
-            series->setDicomAvailability(::fwMedData::DicomSeries::PATHS);
-            series->setNumberOfInstances(static_cast< unsigned int >(size));
+            series->setNumberOfInstances(size);
             seriesDB.push_back(series);
         }
         else
@@ -290,7 +289,6 @@ void DicomDir::retrieveDicomSeries(const ::boost::filesystem::path& dicomdir,
             logger->critical("Unable to retrieve instances for this series : " + series->getInstanceUID());
         }
     }
-
 }
 
 // ----------------------------------------------------------------------------
