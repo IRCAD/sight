@@ -28,6 +28,7 @@
 
 #include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/registry/ServiceConfig.hpp>
+#include <fwServices/registry/ServiceFactory.hpp>
 
 #include <fwTools/System.hpp>
 
@@ -370,15 +371,14 @@ void SSeriesPuller::readLocalSeries(DicomSeriesContainerType selectedSeries)
 
     for(const ::fwMedData::Series::sptr& series: selectedSeries)
     {
-        ::fwMedData::DicomSeries::sptr dicomSeries = ::fwMedData::DicomSeries::dynamicCast(series);
-        dicomSeries->setDicomAvailability(::fwMedData::DicomSeries::PATHS);
-
         const std::string& selectedSeriesUID = series->getInstanceUID();
+
         // Add the series to the local series vector
         if(::std::find(m_localSeries.begin(), m_localSeries.end(), selectedSeriesUID) == m_localSeries.end())
         {
             m_localSeries.push_back(selectedSeriesUID);
         }
+
         // Check if the series is loaded
         if(std::find(alreadyLoadedSeries.begin(), alreadyLoadedSeries.end(),
                      selectedSeriesUID) == alreadyLoadedSeries.end())
