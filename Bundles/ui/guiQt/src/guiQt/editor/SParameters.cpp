@@ -308,9 +308,7 @@ void SParameters::updating()
                     OSLM_DEBUG("[EMIT] " << ENUM_CHANGED_SIG << "(" << data.toStdString() << ", " << key << ")" );
                     this->signal<EnumChangedIndexSignalType>(ENUM_INDEX_CHANGED_SIG)->asyncEmit(box->currentIndex(),
                                                                                                 key);
-                    OSLM_DEBUG(
-                        "[EMIT] " << ENUM_INDEX_CHANGED_SIG << "(" << box->currentIndex() << ", " << key.toStdString() <<
-                            ")" );
+                    OSLM_DEBUG("[EMIT] " << ENUM_INDEX_CHANGED_SIG << "(" << box->currentIndex() << ", " << key << ")");
                 }
             }
         }
