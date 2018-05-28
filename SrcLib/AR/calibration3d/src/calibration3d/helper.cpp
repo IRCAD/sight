@@ -12,8 +12,6 @@
 
 #include <fwCore/spyLog.hpp>
 
-#include <ceres/ceres.h>
-
 #include <thread>
 
 namespace calibration3d

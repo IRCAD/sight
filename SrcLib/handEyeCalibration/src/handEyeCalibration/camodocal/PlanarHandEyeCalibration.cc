@@ -11,8 +11,6 @@
  * Copyright (c) 2013 Lionel Heng
  ************************************** */
 
-#define GLOG_NO_ABBREVIATED_SEVERITIES // This bypasses a compile error on Windows.
-
 #include "handEyeCalibration/camodocal/EigenUtils.h"
 #include "handEyeCalibration/camodocal/PlanarHandEyeCalibration.h"
 
