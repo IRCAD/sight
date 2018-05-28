@@ -51,7 +51,7 @@ protected:
      */
     IOTUTO_API virtual void starting() override
     {
-        FW_DEPRECATED_MSG("This service will be removed");
+        FW_DEPRECATED_MSG("This service is deprecated", "fw4spl_18.0");
     }
 
     /**

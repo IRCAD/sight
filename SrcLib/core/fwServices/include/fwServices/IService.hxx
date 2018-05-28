@@ -16,7 +16,7 @@ namespace fwServices
 template< class DATATYPE >
 SPTR(DATATYPE) IService::getObject()
 {
-    FW_DEPRECATED("getObject()", "getInput() or getInOut()");
+    FW_DEPRECATED("getObject()", "getInput() or getInOut()", "fw4spl_18.0");
 
     SPTR(DATATYPE) castData = std::dynamic_pointer_cast<DATATYPE>( m_associatedObject.lock() );
     OSLM_ASSERT("DynamicCast " << ::fwCore::TypeDemangler<DATATYPE>().getClassname() << " failed", castData);

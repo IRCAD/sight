@@ -92,8 +92,7 @@ void ImageInfo::updating()
     ::fwData::Image::csptr image = this->getInput< ::fwData::Image >(s_IMAGE_INPUT);
     if (!image)
     {
-        FW_DEPRECATED_MSG("The input '" + s_IMAGE_INPUT + "' is not correctly set. Please correct the configuration to"
-                          "set an 'input' key named '" + s_IMAGE_INPUT + "'");
+        FW_DEPRECATED_KEY(s_IMAGE_INPUT, "in", "fw4spl_18.0");
         image = this->getObject< ::fwData::Image >();
     }
     SLM_ASSERT("The input '" + s_IMAGE_INPUT + "' is not defined", image);
@@ -110,8 +109,7 @@ void ImageInfo::getInteraction(::fwDataTools::PickingInfo info)
         ::fwData::Image::csptr image = this->getInput< ::fwData::Image >(s_IMAGE_INPUT);
         if (!image)
         {
-            FW_DEPRECATED_MSG("The input '" + s_IMAGE_INPUT + "' is not correctly set. Please correct the configuration to"
-                              "set an 'input' key named '" + s_IMAGE_INPUT + "'");
+            FW_DEPRECATED_KEY(s_IMAGE_INPUT, "in", "fw4spl_18.0");
             image = this->getObject< ::fwData::Image >();
         }
         SLM_ASSERT("The input '" + s_IMAGE_INPUT + "' is not defined", image);

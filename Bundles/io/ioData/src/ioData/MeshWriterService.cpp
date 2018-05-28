@@ -94,8 +94,7 @@ void MeshWriterService::updating()
         ::fwData::Mesh::sptr mesh = this->getInOut< ::fwData::Mesh >(::fwIO::s_DATA_KEY);
         if (!mesh)
         {
-            FW_DEPRECATED_MSG("The mesh to write is not set correctly, you must set '" + ::fwIO::s_DATA_KEY
-                              + "' as <inout>.");
+            FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "fw4spl_18.0");
             mesh = this->getObject< ::fwData::Mesh >();
         }
 

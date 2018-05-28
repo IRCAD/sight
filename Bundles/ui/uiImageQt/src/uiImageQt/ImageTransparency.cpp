@@ -120,7 +120,7 @@ void ImageTransparency::updating()
     ::fwData::Image::sptr img = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     if (!img)
     {
-        FW_DEPRECATED_MSG("The service image is not correctly set, it must have an 'image' as 'inout'");
+        FW_DEPRECATED_KEY(s_IMAGE_INOUT, "inout", "fw4spl_18.0");
         img = this->getObject< ::fwData::Image >();
     }
 
@@ -183,7 +183,7 @@ void ImageTransparency::onModifyTransparency(int value)
     ::fwData::Image::sptr img = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     if (!img)
     {
-        FW_DEPRECATED_MSG("The service image is not correctly set, it must have an 'image' as 'inout'");
+        FW_DEPRECATED_KEY(s_IMAGE_INOUT, "inout", "fw4spl_18.0");
         img = this->getObject< ::fwData::Image >();
     }
     img->setField( "TRANSPARENCY",  ::fwData::Integer::New(value) );
@@ -222,7 +222,7 @@ void ImageTransparency::notifyVisibility(bool isVisible)
     ::fwData::Image::sptr img = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     if (!img)
     {
-        FW_DEPRECATED_MSG("The service image is not correctly set, it must have an 'image' as 'inout'");
+        FW_DEPRECATED_KEY(s_IMAGE_INOUT, "inout", "fw4spl_18.0");
         img = this->getObject< ::fwData::Image >();
     }
     img->setField( "VISIBILITY",  ::fwData::Boolean::New(isVisible) );

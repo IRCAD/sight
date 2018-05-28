@@ -288,8 +288,7 @@ void SModelSeriesList::updateReconstructions()
     ::fwMedData::ModelSeries::sptr modelSeries = this->getInOut< ::fwMedData::ModelSeries >(s_MODEL_SERIES_INOUT);
     if (!modelSeries)
     {
-        FW_DEPRECATED_MSG("The input '" + s_MODEL_SERIES_INOUT + "' is not correctly set. Please correct the configuration to"
-                          "set an 'input' key named '" + s_MODEL_SERIES_INOUT + "'");
+        FW_DEPRECATED_KEY(s_MODEL_SERIES_INOUT, "inout", "fw4spl_18.0");
         modelSeries = this->getObject< ::fwMedData::ModelSeries >();
     }
 
@@ -314,8 +313,7 @@ void SModelSeriesList::fillTree()
     ::fwMedData::ModelSeries::sptr modelSeries = this->getInOut< ::fwMedData::ModelSeries >(s_MODEL_SERIES_INOUT);
     if (!modelSeries)
     {
-        FW_DEPRECATED_MSG("The input '" + s_MODEL_SERIES_INOUT + "' is not correctly set. Please correct the configuration to"
-                          "set an 'input' key named '" + s_MODEL_SERIES_INOUT + "'");
+        FW_DEPRECATED_KEY(s_MODEL_SERIES_INOUT, "inout", "fw4spl_18.0");
         modelSeries = this->getObject< ::fwMedData::ModelSeries >();
     }
     auto& reconstructions = modelSeries->getReconstructionDB();
@@ -402,8 +400,7 @@ void SModelSeriesList::onShowReconstructions(int state )
     ::fwMedData::ModelSeries::sptr modelSeries = this->getInOut< ::fwMedData::ModelSeries >(s_MODEL_SERIES_INOUT);
     if (!modelSeries)
     {
-        FW_DEPRECATED_MSG("The input '" + s_MODEL_SERIES_INOUT + "' is not correctly set. Please correct the configuration to"
-                          "set an 'input' key named '" + s_MODEL_SERIES_INOUT + "'");
+        FW_DEPRECATED_KEY(s_MODEL_SERIES_INOUT, "inout", "fw4spl_18.0");
         modelSeries = this->getObject< ::fwMedData::ModelSeries >();
     }
     {

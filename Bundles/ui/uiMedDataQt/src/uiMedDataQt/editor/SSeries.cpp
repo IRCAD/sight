@@ -77,7 +77,8 @@ SSeries::~SSeries() noexcept
 
 void SSeries::starting()
 {
-    FW_DEPRECATED_MSG("This service is not longer supported and will be removed");
+    FW_DEPRECATED_MSG("This service is no longer supported.", "fw4spl_18.0");
+
     this->::fwGui::IGuiContainerSrv::create();
 
     ::fwGuiQt::container::QtContainer::sptr qtContainer

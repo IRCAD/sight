@@ -117,8 +117,7 @@ void TransformationMatrix3DReaderService::updating()
             this->getInOut< ::fwData::TransformationMatrix3D >(::fwIO::s_DATA_KEY);
         if (!matrix)
         {
-            FW_DEPRECATED_MSG("The object to read is not set correctly, you must set '" + ::fwIO::s_DATA_KEY
-                              + "' as <inout>.");
+            FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "fw4spl_18.0");
             matrix = this->getObject< ::fwData::TransformationMatrix3D >();
         }
         SLM_ASSERT("matrix not instanced", matrix);

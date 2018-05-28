@@ -148,8 +148,7 @@ void SImageReader::updating()
 
         if (!image)
         {
-            FW_DEPRECATED_MSG("The image to read is not set correctly, you must set '" + ::fwIO::s_DATA_KEY
-                              + "' as <inout>.");
+            FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "fw4spl_18.0");
             // Retrieve dataStruct associated with this service
             image = this->getObject< ::fwData::Image >();
 

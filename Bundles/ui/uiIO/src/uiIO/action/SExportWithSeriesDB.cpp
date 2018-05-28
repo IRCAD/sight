@@ -81,8 +81,8 @@ void SExportWithSeriesDB::updating( )
 
     if (!series)
     {
+        FW_DEPRECATED_KEY(s_SERIES_INOUT, "inout", "fw4spl_18.0");
         series = this->getObject< ::fwMedData::Series >();
-        FW_DEPRECATED_MSG("input 'series' is not correctly set");
     }
     // Create a new SeriesDB
     ::fwMedData::SeriesDB::sptr localSeriesDB = ::fwMedData::SeriesDB::New();
@@ -129,8 +129,8 @@ void SExportWithSeriesDB::starting()
 
     if (!series)
     {
+        FW_DEPRECATED_KEY(s_SERIES_INOUT, "inout", "fw4spl_18.0");
         series = this->getObject< ::fwMedData::Series >();
-        FW_DEPRECATED_MSG("input 'series' is not correctly set");
     }
     SLM_FATAL_IF( "The associated object must be a ::fwMedData::Series.", !series);
 }

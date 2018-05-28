@@ -341,21 +341,29 @@
 /**
  * @brief Use this macro when deprecating a function to warn the developer.
  */
-#define FW_DEPRECATED(oldFnName, newFnName) \
-    OSLM_ERROR(  "[DEPRECATED] '" << oldFnName << "' is deprecated and will be removed, use '" \
+#define FW_DEPRECATED(oldFnName, newFnName, version) \
+    OSLM_ERROR(  "[DEPRECATED] '" << oldFnName << "' is deprecated and will be removed in '" << version << "', use '" \
                                   << newFnName << "' instead. It is still used by '" + this->getClassname() + "'." \
                  );
 
 /**
  * @brief Use this macro when deprecating a function to warn the developer.
  */
-#define FW_DEPRECATED_IF(oldFnName, newFnName, condition) \
-    OSLM_ERROR_IF("[DEPRECATED] '" << oldFnName << "' is deprecated and will be removed, use '" \
+#define FW_DEPRECATED_IF(oldFnName, newFnName, version, condition) \
+    OSLM_ERROR_IF("[DEPRECATED] '" << oldFnName << "' is deprecated and will be removed in '" << version << "', use '" \
                                    << newFnName << "' instead. It is still used by '" + this->getClassname() + "'.", \
                   condition);
 
 /**
  * @brief Use this macro when deprecating a function to warn the developer.
  */
-#define FW_DEPRECATED_MSG(message) \
-    OSLM_ERROR(  "[DEPRECATED] '" << message);
+#define FW_DEPRECATED_MSG(message, version) \
+    OSLM_ERROR(  "[DEPRECATED] " << message << " It will be removed in '" << version << "'");
+
+/**
+ * @brief Use this macro when deprecating a service key to warn the developer.
+ */
+#define FW_DEPRECATED_KEY(newKey, access, version) \
+    OSLM_ERROR(  "[DEPRECATED] The key '" << newKey << "' is not correctly set. Please correct the configuration to" \
+                 "set an '" << access << "' key named '" << newKey << "'. The support of the old key will be removed " \
+                 "in '" << version << "'.");
