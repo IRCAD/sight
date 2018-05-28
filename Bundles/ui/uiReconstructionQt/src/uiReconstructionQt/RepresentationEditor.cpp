@@ -33,7 +33,7 @@ fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiReconstructionQt::Represe
 
 //------------------------------------------------------------------------------
 
-const ::fwCom::Signals::SignalKeyType RepresentationEditor::s_NORMALS_MODE_MODIFIED_SIG = "normalsModeModified";
+static const ::fwServices::IService::KeyType s_RECONSTRUCTION_INOUT = "reconstruction";
 
 //------------------------------------------------------------------------------
 
@@ -170,7 +170,12 @@ void RepresentationEditor::configuring()
 
 void RepresentationEditor::updating()
 {
-    ::fwData::Reconstruction::sptr reconstruction = this->getObject< ::fwData::Reconstruction>();
+    ::fwData::Reconstruction::sptr reconstruction = this->getInOut< ::fwData::Reconstruction >(s_RECONSTRUCTION_INOUT);
+    if (!reconstruction)
+    {
+        FW_DEPRECATED_KEY(s_RECONSTRUCTION_INOUT, "inout", "fw4spl_18.0");
+        reconstruction = this->getObject< ::fwData::Reconstruction >();
+    }
     SLM_ASSERT("No Reconstruction!", reconstruction);
     ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
         this->getContainer() );
@@ -183,13 +188,6 @@ void RepresentationEditor::updating()
     this->refreshRepresentation();
     this->refreshNormals();
     this->refreshShading();
-}
-
-//------------------------------------------------------------------------------
-
-void RepresentationEditor::swapping()
-{
-    this->updating();
 }
 
 //------------------------------------------------------------------------------
@@ -353,7 +351,13 @@ void RepresentationEditor::refreshNormals()
 
 void RepresentationEditor::onShowNormals(int state )
 {
-    ::fwData::Reconstruction::sptr reconstruction = this->getObject< ::fwData::Reconstruction>();
+    ::fwData::Reconstruction::sptr reconstruction = this->getInOut< ::fwData::Reconstruction >(s_RECONSTRUCTION_INOUT);
+    if (!reconstruction)
+    {
+        FW_DEPRECATED_KEY(s_RECONSTRUCTION_INOUT, "inout", "fw4spl_18.0");
+        reconstruction = this->getObject< ::fwData::Reconstruction >();
+    }
+    SLM_ASSERT("No Reconstruction!", reconstruction);
 
     switch(state)
     {
@@ -380,7 +384,13 @@ void RepresentationEditor::onShowNormals(int state )
 
 void RepresentationEditor::notifyMaterial()
 {
-    ::fwData::Reconstruction::sptr reconstruction = this->getObject< ::fwData::Reconstruction>();
+    ::fwData::Reconstruction::sptr reconstruction = this->getInOut< ::fwData::Reconstruction >(s_RECONSTRUCTION_INOUT);
+    if (!reconstruction)
+    {
+        FW_DEPRECATED_KEY(s_RECONSTRUCTION_INOUT, "inout", "fw4spl_18.0");
+        reconstruction = this->getObject< ::fwData::Reconstruction >();
+    }
+    SLM_ASSERT("No Reconstruction!", reconstruction);
 
     ::fwData::Object::ModifiedSignalType::sptr sig;
     sig = reconstruction->getMaterial()->signal< ::fwData::Object::ModifiedSignalType >(
