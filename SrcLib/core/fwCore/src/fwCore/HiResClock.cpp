@@ -1,20 +1,13 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwCore/HiResClock.hpp"
 
-
-#ifdef WIN32
-#include <windows.h>
-#else
-#include <sys/time.h>
-#endif
-
+#include <chrono>
 #include <cstdlib>
-
 
 namespace fwCore
 {
@@ -22,32 +15,23 @@ namespace fwCore
 namespace HiResClock
 {
 
+//------------------------------------------------------------------------------
+
 HiResClockType getTimeInMicroSec()
 {
-    HiResClockType TimeInMicroSec;
-
-#ifdef WIN32
-    LARGE_INTEGER count;
-    LARGE_INTEGER frequency;
-    QueryPerformanceFrequency(&frequency);
-    QueryPerformanceCounter(&count);
-
-    TimeInMicroSec = count.QuadPart * (1000000.0 / frequency.QuadPart);
-#else
-    timeval count;
-    gettimeofday(&count, NULL);
-
-    TimeInMicroSec = (count.tv_sec * 1000000.0) + count.tv_usec;
-#endif
-
-    return TimeInMicroSec;
+    auto now = std::chrono::system_clock::now();
+    auto res = std::chrono::duration_cast< std::chrono::microseconds >(now.time_since_epoch()).count();
+    return static_cast<HiResClockType>(res);
 }
+
+//------------------------------------------------------------------------------
 
 HiResClockType getTimeInMilliSec()
 {
     return getTimeInMicroSec() * 0.001;
 }
 
+//------------------------------------------------------------------------------
 
 HiResClockType getTimeInSec()
 {
