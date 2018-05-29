@@ -28,17 +28,20 @@ namespace ioVTK
  * @brief   VTK Mesh Reader.
  *
  * Service reading a VTK mesh using the fwVtkIO lib.
+ *
  * @section XML Configuration
  * @code{.xml}
     <service uid="..." type="::ioVTK::SMeshReader">
-        <inout key="output" uid="mesh" />
+        <inout key="data" uid="..." />
         <file>@path/to/file</file>
     </service>
  * @endcode
  *
  * @subsection In-Out In-Out
- * - \b seriesDB [::fwMedData::SeriesDB]: SeriesDB
- *
+ * - \b data [::fwData::Mesh]: mesh to read
+ * @subsection Configuration Configuration
+ * - \b file (optional): path of the file to load, if it not defined, 'configureWithIHM()' should be called to define
+ * the path.
  */
 class IOVTK_CLASS_API SMeshReader : public ::fwIO::IReader
 {

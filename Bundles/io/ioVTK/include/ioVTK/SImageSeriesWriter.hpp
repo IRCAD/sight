@@ -31,6 +31,23 @@ namespace ioVTK
  * @brief   VTK Image Writer.
  *
  * Service writing an image series using the fwVtkIO lib.
+ *
+ * @section Signals Signals
+ * - \b jobCreated(SPTR(::fwJobs::IJob)): emitted when the image is loading to display a progress bar.
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+   <service type="::ioVTK::SImageSeriesWriter">
+       <inout key="data" uid="..." />
+       <file>...</file>
+   </service>
+   @endcode
+ * @subsection In-Out In-Out
+ * - \b data [::fwMedData::ImageSeries]: image series to save.
+ * @subsection Configuration Configuration
+ * - \b file (optional): path of the image to load, if it not defined, 'configureWithIHM()' should be called to define
+ * the path.
  */
 class IOVTK_CLASS_API SImageSeriesWriter : public ::fwIO::IWriter
 {

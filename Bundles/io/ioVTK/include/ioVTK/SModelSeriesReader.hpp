@@ -25,9 +25,28 @@ namespace ioVTK
 {
 
 /**
- * @brief   VTK Model series reader.
+ * @brief  VTK Mesh Writer.
  *
- * Service reading a model series as .vtk files using the fwVtkIO lib.
+ * Service writing a VTK Mesh using the fwVtkIO lib.
+ *
+ * @section Signals Signals
+ * - \b jobCreated(SPTR(::fwJobs::IJob)): emitted when the image is loading to display a progress bar.
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+   <service type="::ioVTK::SModelSeriesReader">
+       <inout key="data" uid="..." />
+       <file>...</file>
+       <file>...</file>
+       <file>...</file>
+   </service>
+   @endcode
+ * @subsection In-Out In-Out
+ * - \b data [::fwMedData::ModelSeries]: model to save.
+ * @subsection Configuration Configuration
+ * - \b file (optional): path of the files to load, if it not defined, 'configureWithIHM()' should be called to define
+ * the path.
  */
 class IOVTK_CLASS_API SModelSeriesReader : public ::fwIO::IReader
 {

@@ -191,7 +191,12 @@ void SImageWriter::updating()
     if( this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
-        ::fwData::Image::sptr pImage = this->getObject< ::fwData::Image >();
+        ::fwData::Image::sptr pImage = this->getInOut< ::fwData::Image >(::fwIO::s_DATA_KEY);
+        if (!pImage)
+        {
+            FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "fw4spl_18.0");
+            pImage = this->getObject< ::fwData::Image >();
+        }
         SLM_ASSERT("Image not instanced", pImage);
 
         ::fwGui::Cursor cursor;
