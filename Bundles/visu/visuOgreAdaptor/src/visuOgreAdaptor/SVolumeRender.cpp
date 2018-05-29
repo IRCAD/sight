@@ -357,7 +357,11 @@ void SVolumeRender::stopping()
     delete m_volumeRenderer;
     m_volumeRenderer = nullptr;
 
-    m_sceneManager->getRootSceneNode()->removeChild(this->getTransformId());
+    this->getSceneManager()->destroySceneNode(m_volumeSceneNode);
+
+    auto transformNode = m_sceneManager->getRootSceneNode()->getChild(this->getTransformId());
+    m_sceneManager->getRootSceneNode()->removeChild(transformNode);
+    this->getSceneManager()->destroySceneNode(static_cast< ::Ogre::SceneNode*>(transformNode));
 
     ::Ogre::TextureManager::getSingleton().remove(m_3DOgreTexture->getHandle());
     m_3DOgreTexture.reset();
