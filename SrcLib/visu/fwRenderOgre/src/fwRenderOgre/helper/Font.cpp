@@ -38,7 +38,7 @@ Ogre::FontPtr Font::getFont(const std::string& _trueTypeFileName, const size_t _
     {
         font = fontManager.create(fontName, ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
         font->setType(::Ogre::FontType::FT_TRUETYPE);
-        font->setTrueTypeSize(_size);
+        font->setTrueTypeSize(static_cast< ::Ogre::Real >(_size));
         // TODO: set this according to the screen's DPI.
         font->setTrueTypeResolution(220);
         font->setAntialiasColour(false);
