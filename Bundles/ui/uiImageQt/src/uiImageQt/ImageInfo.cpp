@@ -54,7 +54,6 @@ ImageInfo::~ImageInfo() noexcept
 void ImageInfo::starting()
 {
     this->::fwGui::IGuiContainerSrv::create();
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
 
     ::fwGuiQt::container::QtContainer::sptr qtContainer
         = ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer() );

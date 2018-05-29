@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __UIMEASUREMENT_ACTION_SADDLABELEDPOINT_HPP__
-#define __UIMEASUREMENT_ACTION_SADDLABELEDPOINT_HPP__
+#pragma once
 
 #include "uiMeasurement/config.hpp"
 
@@ -17,7 +16,17 @@ namespace action
 {
 
 /**
- * @brief   This action adds landmaks on image.
+ * @brief   This action adds labeled point into a PointList.
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+   <service type=":uiMeasurement::action::SAddLabeledPoint">
+       <inout key="pointlist" uid="..." />
+   </service>
+   @endcode
+ * @subsection In-Out In-Out
+ * - \b pointlist [::fwData::PointList]: point list containing the points.
  */
 class UIMEASUREMENT_CLASS_API SAddLabeledPoint : public ::fwGui::IActionSrv
 {
@@ -54,5 +63,3 @@ private:
 
 } // namespace action
 } // namespace uiMeasurement
-
-#endif // __UIMEASUREMENT_ACTION_SADDLABELEDPOINT_HPP__

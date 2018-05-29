@@ -23,6 +23,8 @@ namespace uiMedDataQt
 
 //------------------------------------------------------------------------------
 
+fwServicesRegisterMacro( ::fwServices::IController, ::uiMedDataQt::SSeriesViewer, ::fwData::Vector);
+
 static const ::fwServices::IService::KeyType s_SERIES_INPUT = "series";
 
 //------------------------------------------------------------------------------

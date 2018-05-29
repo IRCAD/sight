@@ -33,6 +33,8 @@ namespace action
 
 fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiMeasurement::action::SAddLabeledPoint, ::fwData::PointList );
 
+static const ::fwServices::IService::KeyType s_POINTLIST_INOUT = "pointlist";
+
 //------------------------------------------------------------------------------
 
 SAddLabeledPoint::SAddLabeledPoint( ) noexcept :
@@ -81,8 +83,12 @@ bool SAddLabeledPoint::defineLabel(std::string& name)
 
 void SAddLabeledPoint::updating()
 {
-    SLM_TRACE_FUNC();
-    ::fwData::PointList::sptr landmarks = this->getObject< ::fwData::PointList >();
+    ::fwData::PointList::sptr landmarks = this->getInOut< ::fwData::PointList >(s_POINTLIST_INOUT);
+    if (!landmarks)
+    {
+        FW_DEPRECATED_KEY(s_POINTLIST_INOUT, "inout", "fw4spl_18.0");
+        landmarks = this->getObject< ::fwData::PointList >();
+    }
     SLM_ASSERT("landmarks not instanced", landmarks);
 
     std::string value;

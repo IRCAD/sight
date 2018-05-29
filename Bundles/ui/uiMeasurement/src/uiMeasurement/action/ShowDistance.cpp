@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -33,6 +33,8 @@ fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiMeasurement::action::ShowDista
 
 static const ::fwCom::Slots::SlotKeyType s_SHOW_DISTANCE_SLOT = "showDistance";
 
+static const ::fwServices::IService::KeyType s_IMAGE_INOUT = "image";
+
 //------------------------------------------------------------------------------
 
 ShowDistance::ShowDistance( ) noexcept
@@ -57,17 +59,20 @@ void ShowDistance::info(std::ostream& _sstream )
 
 void ShowDistance::updating()
 {
-    SLM_TRACE_FUNC();
-
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    if (!image)
+    {
+        FW_DEPRECATED_KEY(s_IMAGE_INOUT, "inout", "fw4spl_18.0");
+        image = this->getObject< ::fwData::Image >();
+    }
     if ( !::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image) )
     {
         this->::fwGui::IActionSrv::setIsActive(false);
     }
     else
     {
-        ::fwData::Boolean::sptr showDistances = image->getField< ::fwData::Boolean >("ShowDistances", ::fwData::Boolean::New(
-                                                                                         true));
+        ::fwData::Boolean::sptr showDistances =
+            image->getField< ::fwData::Boolean >("ShowDistances", ::fwData::Boolean::New(true));
         bool isShown = showDistances->value();
 
         bool toShow = !isShown;
@@ -87,22 +92,16 @@ void ShowDistance::updating()
 
 //------------------------------------------------------------------------------
 
-void ShowDistance::swapping()
+void ShowDistance::showDistance(bool)
 {
-    ::fwData::Image::csptr img            = this->getObject< ::fwData::Image >();
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    if (!image)
+    {
+        FW_DEPRECATED_KEY(s_IMAGE_INOUT, "inout", "fw4spl_18.0");
+        image = this->getObject< ::fwData::Image >();
+    }
     ::fwData::Boolean::sptr showDistances =
-        img->getField< ::fwData::Boolean >("ShowDistances", ::fwData::Boolean::New(true));
-
-    this->::fwGui::IActionSrv::setIsActive( !(showDistances->value()) );
-}
-
-//------------------------------------------------------------------------------
-
-void ShowDistance::showDistance(bool isShown)
-{
-    ::fwData::Image::csptr img            = this->getObject< ::fwData::Image >();
-    ::fwData::Boolean::sptr showDistances =
-        img->getField< ::fwData::Boolean >("ShowDistances", ::fwData::Boolean::New(true));
+        image->getField< ::fwData::Boolean >("ShowDistances", ::fwData::Boolean::New(true));
 
     this->::fwGui::IActionSrv::setIsActive( !(showDistances->value()) );
 }
@@ -133,7 +132,7 @@ void ShowDistance::stopping()
 ::fwServices::IService::KeyConnectionsMap ShowDistance::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push( "image", ::fwData::Image::s_DISTANCE_DISPLAYED_SIG, s_SHOW_DISTANCE_SLOT );
+    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_DISTANCE_DISPLAYED_SIG, s_SHOW_DISTANCE_SLOT );
 
     return connections;
 }

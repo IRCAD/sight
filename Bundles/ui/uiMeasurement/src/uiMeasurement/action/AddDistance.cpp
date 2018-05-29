@@ -31,10 +31,11 @@ namespace action
 
 fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiMeasurement::action::AddDistance, ::fwData::Image );
 
+static const ::fwServices::IService::KeyType s_IMAGE_INOUT = "image";
+
 //------------------------------------------------------------------------------
 
-AddDistance::AddDistance( ) noexcept :
-    m_actionCheckId(-1)
+AddDistance::AddDistance( ) noexcept
 {
 }
 
@@ -46,19 +47,17 @@ AddDistance::~AddDistance() noexcept
 
 //------------------------------------------------------------------------------
 
-void AddDistance::info(std::ostream& _sstream )
-{
-    _sstream << "Action for remove distance" << std::endl;
-}
-
-//------------------------------------------------------------------------------
-
 void AddDistance::updating()
 {
-    SLM_TRACE("AddDistance::updating");
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     if (!image)
     {
+        FW_DEPRECATED_KEY(s_IMAGE_INOUT, "inout", "fw4spl_18.0");
+        image = this->getObject< ::fwData::Image >();
+    }
+    if (!image)
+    {
+        SLM_WARN("The key '" + s_IMAGE_INOUT + "' is not found.");
         return;
     }
 
