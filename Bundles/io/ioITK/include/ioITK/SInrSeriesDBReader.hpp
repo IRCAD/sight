@@ -31,6 +31,23 @@ namespace ioITK
 
 /**
  * @brief Reads inr files and pushes them into SeriesDB.
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+   <service type="::ioITK::SInrSeriesDBReader">
+       <inout key="data" uid="..." />
+       <file>...</file>
+       <file>...</file>
+       <file>...</file>
+       <file>...</file>
+   </service>
+   @endcode
+ * @subsection In-Out In-Out
+ * - \b data [::fwMedData::SeriesDB]: store the loaded images.
+ * @subsection Configuration Configuration
+ * - \b file (optional): path of the images to load, if it not defined, 'configureWithIHM()' should be called to define
+ * the path.
  */
 class IOITK_CLASS_API SInrSeriesDBReader : public ::fwIO::IReader
 {

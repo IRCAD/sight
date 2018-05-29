@@ -146,7 +146,12 @@ void SInrSeriesDBReader::updating()
     if( this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
-        ::fwMedData::SeriesDB::sptr seriesDB = this->getObject< ::fwMedData::SeriesDB >();
+        ::fwMedData::SeriesDB::sptr seriesDB = this->getInOut< ::fwMedData::SeriesDB >(::fwIO::s_DATA_KEY);
+        if (!seriesDB)
+        {
+            FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "fw4spl_18.0");
+            seriesDB = this->getObject< ::fwMedData::SeriesDB >();
+        }
         SLM_ASSERT("SeriesDB not instanced", seriesDB);
 
         ::fwMedData::SeriesDB::sptr localSeriesDB = ::fwMedData::SeriesDB::New();

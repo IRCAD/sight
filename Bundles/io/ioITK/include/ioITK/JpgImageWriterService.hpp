@@ -22,6 +22,23 @@ class Image;
 namespace ioITK
 {
 
+/**
+ * @brief Write an image to jpg format
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+   <service type="::ioITK::JpgImageWriterService">
+       <inout key="data" uid="..." />
+       <folder>...</folder>
+   </service>
+   @endcode
+ * @subsection In-Out In-Out
+ * - \b data [::fwData::Image]: image to save.
+ * @subsection Configuration Configuration
+ * - \b folder (optional): path of the folder, if it not defined, 'configureWithIHM()' should be called to define
+ * the path.
+ */
 class IOITK_CLASS_API JpgImageWriterService : public ::fwIO::IWriter
 {
 

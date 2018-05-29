@@ -131,7 +131,12 @@ void SJpgImageSeriesWriter::updating()
     if( this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
-        ::fwMedData::ImageSeries::sptr imageSeries = this->getObject< ::fwMedData::ImageSeries >();
+        ::fwMedData::ImageSeries::sptr imageSeries = this->getInOut< ::fwMedData::ImageSeries >(::fwIO::s_DATA_KEY);
+        if (!imageSeries)
+        {
+            FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "fw4spl_18.0");
+            imageSeries = this->getObject< ::fwMedData::ImageSeries >();
+        }
         SLM_ASSERT("Image series is not instanced", imageSeries);
         SLM_ASSERT("Image from image series is not instanced", imageSeries->getImage());
 

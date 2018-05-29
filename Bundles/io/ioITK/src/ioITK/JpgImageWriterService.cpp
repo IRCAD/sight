@@ -145,12 +145,17 @@ void JpgImageWriterService::updating()
     if( this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
-        ::fwData::Image::sptr associatedImage = this->getObject< ::fwData::Image >();
-        SLM_ASSERT("associatedImage not instanced", associatedImage);
+        ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(::fwIO::s_DATA_KEY);
+        if (!image)
+        {
+            FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "fw4spl_18.0");
+            image = this->getObject< ::fwData::Image >();
+        }
+        SLM_ASSERT("'" + ::fwIO::s_DATA_KEY + "' key is not defined", image);
 
         ::fwGui::Cursor cursor;
         cursor.setCursor(::fwGui::ICursor::BUSY);
-        saveImage(this->getFolder(), associatedImage);
+        saveImage(this->getFolder(), image);
         cursor.setDefaultCursor();
     }
 }
