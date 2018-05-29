@@ -32,8 +32,6 @@ namespace opPOCMesher
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwServices::IOperator, ::opPOCMesher::CGoGNMesher);
-
 static const ::fwCom::Slots::SlotKeyType SET_INTEGER_SLOT = "setInteger";
 static const ::fwCom::Slots::SlotKeyType SET_BOOLEAN_SLOT = "setBoolean";
 

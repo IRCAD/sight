@@ -21,8 +21,8 @@ namespace opPOCMesher
  * @brief Service used to generate a mesh from an image.
  * Example of this service configuration
  * @code{.xml}
-   <service impl="::opPOCMesher::CGoGNMesher" >
-        <inout key="image" uid="..." />
+   <service type="::opPOCMesher::CGoGNMesher" >
+        <in key="image" uid="..." />
         <out key="modelSeries" uid="..." />
        <config>
             <!-- Optionnal -->
