@@ -33,6 +33,8 @@
 #include <fwJobs/Aggregator.hpp>
 #include <fwJobs/Job.hpp>
 
+#include <fwMDSemanticPatch/PatchLoader.hpp>
+
 #include <fwServices/macros.hpp>
 
 #include <fwZip/WriteDirArchive.hpp>
@@ -87,55 +89,55 @@ void SWriter::configuring()
 {
     ::fwIO::IWriter::configuring();
 
-    typedef SPTR (::fwRuntime::ConfigurationElement) ConfigurationElement;
-    typedef std::vector < ConfigurationElement >    ConfigurationElementContainer;
-
     m_customExts.clear();
     m_allowedExtLabels.clear();
 
-    ConfigurationElementContainer customExtsList = m_configuration->find("archive");
-    for(ConfigurationElement archive :  customExtsList)
+    const ConfigType config = this->getConfigTree();
+
+    const auto archiveCfgs = config.equal_range("archive");
+
+    for (auto it = archiveCfgs.first; it != archiveCfgs.second; ++it)
     {
-        const std::string& backend = archive->getAttributeValue("backend");
+        const std::string backend = it->second.get<std::string>("<xmlattr>.backend");
         SLM_ASSERT("No backend attribute given in archive tag", backend != "");
         SLM_ASSERT("Unsupported backend '" + backend + "'",
                    SReader::s_EXTENSIONS.find("." + backend) != SReader::s_EXTENSIONS.end());
 
-        ConfigurationElementContainer exts = archive->find("extension");
-        for(ConfigurationElement ext :  exts)
+        const auto extCfgs = it->second.equal_range("extension");
+
+        for (auto itExt = extCfgs.first; itExt != extCfgs.second; ++itExt)
         {
-            const std::string& extension = ext->getValue();
+            const std::string extension = itExt->second.get<std::string>("");
             SLM_ASSERT("No extension given for backend '" + backend + "'", !extension.empty());
             SLM_ASSERT("Extension must begin with '.'", extension[0] == '.');
 
             m_customExts[extension]       = backend;
-            m_allowedExtLabels[extension] = ext->getAttributeValue("label");
+            m_allowedExtLabels[extension] = itExt->second.get("<xmlattr>.label", "");
         }
     }
 
-    ConfigurationElementContainer extensionsList = m_configuration->find("extensions");
-    SLM_ASSERT("The <extensions> element can be set at most once.", extensionsList.size() <= 1);
+    const auto extensionsCfg = config.get_child_optional("extensions");
 
-    if(extensionsList.size() == 1)
+    if (extensionsCfg)
     {
         m_allowedExts.clear();
 
-        ConfigurationElementContainer extensions = extensionsList.at(0)->find("extension");
-        for(ConfigurationElement extension :  extensions)
+        const auto extCfgs = extensionsCfg->equal_range("extension");
+        for (auto it = extCfgs.first; it != extCfgs.second; ++it)
         {
-            const std::string& ext = extension->getValue();
+            const std::string ext = it->second.get<std::string>("");
 
             // The extension must be found either in custom extensions list or in known extensions
             FileExtension2NameType::const_iterator itKnown  = SReader::s_EXTENSIONS.find(ext);
             FileExtension2NameType::const_iterator itCustom = m_customExts.find(ext);
 
             const bool extIsKnown = (itKnown != SReader::s_EXTENSIONS.end() || itCustom != m_customExts.end());
-            OSLM_ASSERT("Extension '" << ext << "' is not allowed in configuration", extIsKnown);
+            SLM_ASSERT("Extension '" + ext + "' is not allowed in configuration", extIsKnown);
 
             if(extIsKnown)
             {
                 m_allowedExts.insert(m_allowedExts.end(), ext);
-                m_allowedExtLabels[ext] = extension->getAttributeValue("label");
+                m_allowedExtLabels[ext] = it->second.get("<xmlattr>.label", "");
             }
         }
     }
@@ -155,13 +157,13 @@ void SWriter::configuring()
         }
     }
 
-    ConfigurationElementContainer patcher = m_configuration->find("patcher");
-    SLM_ASSERT("The <patcher> element can be set at most once.", patcher.size() <= 1 );
-    if (patcher.size() == 1)
+    const auto patcherCfg = config.get_child_optional("patcher");
+
+    if (patcherCfg)
     {
-        m_context         = patcher.at(0)->getExistingAttributeValue("context");
-        m_version         = patcher.at(0)->getExistingAttributeValue("version");
-        m_exportedVersion = m_version;
+        m_context = patcherCfg->get<std::string>("<xmlattr>.context", "MedicalData");
+        m_version = patcherCfg->get<std::string>("<xmlattr>.version",
+                                                 ::fwMDSemanticPatch::PatchLoader::getCurrentVersion());
         m_useAtomsPatcher = true;
     }
 }
