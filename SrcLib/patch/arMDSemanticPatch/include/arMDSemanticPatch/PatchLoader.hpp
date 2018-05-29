@@ -22,6 +22,10 @@ public:
 
     /// Returns current MedicalData version.
     ARMDSEMANTICPATCH_API static std::string getCurrentVersion();
+
+private:
+
+    static std::string s_currentVersion;
 };
 
 } //namespace arMDSemanticPatch
