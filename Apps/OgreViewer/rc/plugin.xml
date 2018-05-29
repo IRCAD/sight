@@ -16,14 +16,6 @@
     <xi:include href="configurations/OgreVolumeRendering.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/ManageOgreOrganWithSeries.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
-    <extension implements="::fwServices::registry::ServiceConfig">
-        <id>MDAtomsConfig</id>
-        <desc>reader/writer config to read/write an atom representing a medical data</desc>
-        <config>
-            <patcher context="MedicalData" version="V09ALA" />
-        </config>
-    </extension>
-
     <extension implements="::fwServices::registry::AppConfig">
         <id>OgreViewer_Extension</id>
         <config>
