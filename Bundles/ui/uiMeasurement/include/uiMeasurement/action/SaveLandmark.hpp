@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __UIMEASUREMENT_ACTION_SAVELANDMARK_HPP__
-#define __UIMEASUREMENT_ACTION_SAVELANDMARK_HPP__
+#pragma once
 
 #include "uiMeasurement/config.hpp"
 
@@ -30,6 +29,8 @@ namespace action
    @endcode
  * @subsection Input Input
  * - \b image [::fwData::Image]: Image containig the landmarks field.
+ *
+ * @deprecated This service is deprecated and will be removed, use SWriter to write the landmarks
  */
 class UIMEASUREMENT_CLASS_API SaveLandmark : public ::fwGui::IActionSrv
 {
@@ -59,5 +60,3 @@ protected:
 } // namespace action
 
 } // namespace uiMeasurement
-
-#endif // __UIMEASUREMENT_ACTION_SAVELANDMARK_HPP__

@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWRENDERQT_SRENDER_HPP__
-#define __FWRENDERQT_SRENDER_HPP__
+#pragma once
 
 #include "fwRenderQt/config.hpp"
 #include "fwRenderQt/data/Axis.hpp"
@@ -35,7 +34,50 @@ class Scene2DGraphicsView;
 class IAdaptor;
 
 /**
- * @brief Scene2D rendering class
+ * @brief Qt scene rendering class.
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+   <service uid="GENERIC_UID_Scene2D" type="::fwRenderQt::SRender" >
+       <scene>
+           <scene x="-1100" y="-1.1" width="2500" height="1.2" background="#FFFFFF" />
+           <viewport x="-500" y="-1.1" width="500" height="1.2" />
+           <axis id="xAxis" origin="0.0" scale="1.0" scaleType="LINEAR" />
+           <axis id="yAxis" origin="0.0" scale="-1.0" scaleType="LINEAR" />
+           <axis id="axeHistogramY" origin="0.0" scale="-0.000005" scaleType="LINEAR" />
+
+           <adaptor uid="grid" />
+       </scene>
+   </service>
+   @endcode
+ *
+ * @subsection Configuration Configuration
+ *
+ * - \<scene x="-1100" y="-1.1" width="2500" height="1.2" /\> : Set the scene coordinates
+ *   - \b x: set the x coordinate of the top left scene corner
+ *   - \b y: set the y coordinate of the top left scene corner
+ *   - \b width: set the width of the scene
+ *   - \b height: set the height of the scene
+ *   - \b antialiasing (optional, default: false): activate scene antialiasing if attribute's value set to 'true'
+ *   - \b aspectRatioMode (optional, default: IgnoreAspectRatio): defines what happens to the aspect ratio
+ *     when scaling an rectangle (See https://doc.qt.io/qt-5/qt.html#AspectRatioMode-enum).
+ *   - \b background (optional, default: #000000): the background color of the rendering screen.
+ *        The color value must be defined as a hexadecimal value (ex : \#ffffff for white).
+ * - \<viewport id="view1" x="-500" y="-1.1" width="500" height="1.2" /\> : Set a viewport coordinates
+ *   - \b id: set the viewport id
+ *   - \b x: set the x coordinate of the top left viewport corner
+ *   - \b y: set the y coordinate of the top left viewport corner
+ *   - \b width: set the width of the viewport
+ *   - \b height: set the height of the viewport
+ * - \<axis id="xAxis" origin="0.0" scale="1.0" scaleType="LINEAR" /\> : Set an axis specifications
+ *   - \b id: set the axis id
+ *   - \b origin: set the axis origin
+ *   - \b scale: set the axis scale
+ *   - \b scaleType: set the axis scaleType
+ * - \<adaptor uid="grid" /\> : Set an adaptor
+ *   - \b uid: set the adaptor uid
+ *
  */
 class FWRENDERQT_CLASS_API SRender : public ::fwRender::IRender
 {
@@ -87,76 +129,7 @@ public:
 
 protected:
 
-    /**
-     * @brief Configuring the SRender service.
-     *
-     * Example of configuration
-     * @code{.xml}
-       <service uid="GENERIC_UID_Scene2D" impl="::fwRenderQt::SRender" type="::fwRender::IRender" autoConnect="yes">
-        <scene>
-            <scene x="-1100" y="-1.1" width="2500" height="1.2" />
-            <viewport x="-500" y="-1.1" width="500" height="1.2" />
-            <axis id="xAxis" origin="0.0" scale="1.0" scaleType="LINEAR" />
-            <axis id="yAxis" origin="0.0" scale="-1.0" scaleType="LINEAR" />
-            <axis id="axeHistogramY" origin="0.0" scale="-0.000005" scaleType="LINEAR" />
-
-            <adaptor uid="grid" />
-
-        </scene>
-
-       </service>
-       @endcode
-     *
-     * - \<scene x="-1100" y="-1.1" width="2500" height="1.2" /\> : Set the scene coordinates
-     *
-     * \b x : mandatory : Set the x coordinate of the top left scene corner
-     *
-     * \b y : mandatory : Set the y coordinate of the top left scene corner
-     *
-     * \b width : mandatory : Set the width of the scene
-     *
-     * \b height : mandatory : Set the height of the scene
-     *
-     * \b antialiasing :  not mandatory : activate scene antialiasing if attribute's value set to 'true'
-     *
-     * - \<viewport id="view1" x="-500" y="-1.1" width="500" height="1.2" /\> : Set a viewport coordinates
-     *
-     * \b id : mandatory : Set the viewport id
-     *
-     * \b x : mandatory : Set the x coordinate of the top left viewport corner
-     *
-     * \b y : mandatory : Set the y coordinate of the top left viewport corner
-     *
-     * \b width : mandatory : Set the width of the viewport
-     *
-     * \b height : mandatory : Set the height of the viewport
-     *
-     * - \<axis id="xAxis" origin="0.0" scale="1.0" scaleType="LINEAR" /\> : Set an axis specifications
-     *
-     * \b id : mandatory : Set the axis id
-     *
-     * \b origin : mandatory : Set the axis origin
-     *
-     * \b scale : mandatory : Set the axis scale
-     *
-     * \b scaleType : mandatory : Set the axis scaleType
-     *
-     * - \<adaptor id="grid" class="::fwRenderQt::adaptor::GridFromFloat" objectId="myData"\> : Set an adaptor
-     *
-     * \b id : mandatory : Set the adaptor id
-     *
-     * \b class : mandatory : Set the adaptor type
-     *
-     * \b objectId : mandatory : Set the adaptor related object id
-     *
-     * \b uid : no mandatory : Set the adaptor uid
-     *
-     *  - \b connect : not mandatory, connects signal to slot
-     *   - \b waitForKey : not mandatory, defines the required object key for the signal/slot connection
-     *   - \b signal : mandatory, must be signal holder UID, followed by '/', followed by signal name. To use the
-     *        object (defined by waitForKey) signal, you don't have to write object uid, only the signal name.
-     *   - \b slot : mandatory, must be slot holder UID, followed by '/', followed by slot name
-     */
+    /// Get configuration options from XML
     FWRENDERQT_API void configuring() override;
 
     /// Call startContext to set the scene, the viewport and the view,
@@ -229,11 +202,11 @@ private:
     /// If antialiasing is requested (deactivated by default because of a potential lack of performance)
     bool m_antialiasing;
 
+    /// Background color of the scene.
+    std::string m_background;
+
     /// How the scene should behave on view resize events
     Qt::AspectRatioMode m_aspectRatioMode;
 };
 
 } // namespace fwRenderQt
-
-#endif // __FWRENDERQT_SRENDER_HPP__
-

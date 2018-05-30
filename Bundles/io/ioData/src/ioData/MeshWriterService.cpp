@@ -91,7 +91,14 @@ void MeshWriterService::updating()
     if(this->hasLocationDefined())
     {
         // Retrieve object
-        ::fwData::Mesh::sptr mesh = this->getObject< ::fwData::Mesh >( );
+        ::fwData::Mesh::sptr mesh = this->getInOut< ::fwData::Mesh >(::fwIO::s_DATA_KEY);
+        if (!mesh)
+        {
+            FW_DEPRECATED_MSG("The mesh to write is not set correctly, you must set '" + ::fwIO::s_DATA_KEY
+                              + "' as <inout>.");
+            mesh = this->getObject< ::fwData::Mesh >();
+        }
+
         SLM_ASSERT("Mesh not instanced", mesh);
 
         ::fwDataIO::writer::MeshWriter::sptr writer = ::fwDataIO::writer::MeshWriter::New();

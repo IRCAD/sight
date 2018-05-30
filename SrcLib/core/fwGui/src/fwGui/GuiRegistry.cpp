@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -48,11 +48,11 @@ void GuiRegistry::registerSIDContainer(std::string sid, ::fwGui::container::fwCo
 void GuiRegistry::unregisterSIDContainer(std::string sid)
 {
     bool service_exists = ::fwTools::fwID::exist(sid );
-    OSLM_INFO_IF("Service "<<sid <<" not exists.",!service_exists );
+    OSLM_INFO_IF("Service "<<sid <<" does not exist.", !service_exists );
     if(service_exists)
     {
         ::fwServices::IService::sptr service = ::fwServices::get( sid );
-        OSLM_ASSERT("Service "<<sid<<" must be stopped before unregister container.",service->isStopped());
+        OSLM_ASSERT("Service "<<sid<<" must be stopped before unregistering the container.", service->isStopped());
     }
 
     OSLM_ASSERT("No fwContainer with the sid "<<sid<<" exists in the SID container map.",
@@ -136,11 +136,11 @@ void GuiRegistry::registerSIDMenuBar(std::string sid, ::fwGui::container::fwMenu
 void GuiRegistry::unregisterSIDMenuBar(std::string sid)
 {
     bool service_exists = ::fwTools::fwID::exist(sid );
-    OSLM_INFO_IF("Service "<<sid <<" not exists.",!service_exists );
+    OSLM_INFO_IF("Service "<<sid <<" does not exist.", !service_exists );
     if(service_exists)
     {
         ::fwServices::IService::sptr service = ::fwServices::get( sid );
-        OSLM_ASSERT("Service "<<sid<<" must be stopped before unregister menuBar.",service->isStopped());
+        OSLM_ASSERT("Service "<<sid<<" must be stopped before unregistering the menuBar.", service->isStopped());
     }
 
     OSLM_ASSERT("No fwMenuBar with the sid "<<sid<<" exists in the SID menuBar map.",
@@ -174,11 +174,11 @@ void GuiRegistry::registerSIDToolBar(std::string sid, ::fwGui::container::fwTool
 void GuiRegistry::unregisterSIDToolBar(std::string sid)
 {
     bool service_exists = ::fwTools::fwID::exist(sid );
-    OSLM_INFO_IF("Service "<<sid <<" not exists.",!service_exists );
+    OSLM_INFO_IF("Service "<<sid <<" does not exist.", !service_exists );
     if(service_exists)
     {
         ::fwServices::IService::sptr service = ::fwServices::get( sid );
-        OSLM_ASSERT("Service "<<sid<<" must be stopped before unregister toolBar.",service->isStopped());
+        OSLM_ASSERT("Service "<<sid<<" must be stopped before unregistering the toolBar.", service->isStopped());
     }
 
     OSLM_ASSERT("No fwToolBar with the sid "<<sid<<"  exists in the SID toolBar map.",
@@ -198,7 +198,6 @@ void GuiRegistry::unregisterSIDToolBar(std::string sid)
     return m_globalSIDToFwToolBar[sid];
 }
 
-
 //-----------------------------------------------------------------------------
 
 void GuiRegistry::registerSIDMenu(std::string sid, ::fwGui::container::fwMenu::sptr menu)
@@ -213,11 +212,11 @@ void GuiRegistry::registerSIDMenu(std::string sid, ::fwGui::container::fwMenu::s
 void GuiRegistry::unregisterSIDMenu(std::string sid)
 {
     bool service_exists = ::fwTools::fwID::exist(sid );
-    OSLM_INFO_IF("Service "<<sid <<" not exists.",!service_exists );
+    OSLM_INFO_IF("Service "<<sid <<" does not exist.", !service_exists );
     if(service_exists)
     {
         ::fwServices::IService::sptr service = ::fwServices::get( sid );
-        OSLM_ASSERT("Service "<<sid<<" must be stopped before unregister menu.",service->isStopped());
+        OSLM_ASSERT("Service "<<sid<<" must be stopped before unregistering the menu.", service->isStopped());
     }
 
     OSLM_ASSERT("No fwMenu with the sid "<<sid<<" exists in the SID menu map.",
@@ -263,11 +262,12 @@ void GuiRegistry::unregisterActionSIDToParentSID(std::string actionSid, std::str
     {
         // Action has one parent
         bool service_exists = ::fwTools::fwID::exist(actionSid );
-        OSLM_INFO_IF("Service "<<actionSid <<" not exists.",!service_exists );
+        OSLM_INFO_IF("Service "<<actionSid <<" does not exist.", !service_exists );
         if(service_exists)
         {
             ::fwServices::IService::sptr service = ::fwServices::get( actionSid );
-            OSLM_WARN_IF("Service "<<actionSid<<" must be stopped before unregister action.",!service->isStopped());
+            OSLM_WARN_IF("Service "<<actionSid<<" must be stopped before unregistering the action.",
+                         !service->isStopped());
         }
         m_actionSIDToParentSID.erase(actionSid);
     }
@@ -293,7 +293,7 @@ void GuiRegistry::actionServiceStopping(std::string actionSid)
         for(std::string parentSid :  parentSids)
         {
             bool service_exists = ::fwTools::fwID::exist(parentSid );
-            OSLM_INFO_IF("Service "<<parentSid <<" not exists.",!service_exists );
+            OSLM_INFO_IF("Service "<<parentSid <<" does not exist.", !service_exists );
             if(service_exists)
             {
                 ::fwServices::IService::sptr service  = ::fwServices::get( parentSid );
@@ -325,11 +325,10 @@ void GuiRegistry::actionServiceStarting(std::string actionSid)
     {
         ParentSidsType parentSids = m_actionSIDToParentSID[actionSid];
 
-
         for(std::string parentSid :  parentSids)
         {
             bool service_exists = ::fwTools::fwID::exist(parentSid );
-            OSLM_INFO_IF("Service "<<parentSid <<" not exists.",!service_exists );
+            OSLM_INFO_IF("Service "<<parentSid <<" does not exist.", !service_exists );
             if(service_exists)
             {
                 ::fwServices::IService::sptr service  = ::fwServices::get( parentSid );
@@ -359,14 +358,12 @@ void GuiRegistry::actionServiceSetActive(std::string actionSid, bool isActive)
     if( m_actionSIDToParentSID.find(actionSid) != m_actionSIDToParentSID.end() )
     {
 
-
         ParentSidsType parentSids = m_actionSIDToParentSID[actionSid];
-
 
         for(std::string parentSid :  parentSids)
         {
             bool service_exists = ::fwTools::fwID::exist(parentSid );
-            OSLM_INFO_IF("Service "<<parentSid <<" not exists.",!service_exists );
+            OSLM_INFO_IF("Service "<<parentSid <<" does not exist.", !service_exists );
             if(service_exists)
             {
                 ::fwServices::IService::sptr service  = ::fwServices::get( parentSid );
@@ -398,11 +395,10 @@ void GuiRegistry::actionServiceSetExecutable(std::string actionSid, bool isExecu
 
         ParentSidsType parentSids = m_actionSIDToParentSID[actionSid];
 
-
         for(std::string parentSid :  parentSids)
         {
             bool service_exists = ::fwTools::fwID::exist(parentSid );
-            OSLM_INFO_IF("Service "<<parentSid <<" not exists.",!service_exists );
+            OSLM_INFO_IF("Service "<<parentSid <<" does not exist.", !service_exists );
             if(service_exists)
             {
                 ::fwServices::IService::sptr service  = ::fwServices::get( parentSid );
@@ -436,7 +432,7 @@ void GuiRegistry::actionServiceSetVisible(std::string actionSid, bool isVisible)
         for(std::string parentSid :  parentSids)
         {
             bool service_exists = ::fwTools::fwID::exist(parentSid );
-            OSLM_INFO_IF("Service "<<parentSid <<" not exists.",!service_exists );
+            OSLM_INFO_IF("Service "<<parentSid <<" does not exist.", !service_exists );
             if(service_exists)
             {
                 ::fwServices::IService::sptr service  = ::fwServices::get( parentSid );
@@ -460,6 +456,5 @@ void GuiRegistry::actionServiceSetVisible(std::string actionSid, bool isVisible)
 }
 
 //-----------------------------------------------------------------------------
-
 
 }

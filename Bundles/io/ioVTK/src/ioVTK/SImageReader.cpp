@@ -144,9 +144,17 @@ void SImageReader::updating()
 {
     if( this->hasLocationDefined() )
     {
-        // Retrieve dataStruct associated with this service
-        ::fwData::Image::sptr pImage = this->getObject< ::fwData::Image >();
-        SLM_ASSERT("pImage not instanced", pImage);
+        ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(::fwIO::s_DATA_KEY);
+
+        if (!image)
+        {
+            FW_DEPRECATED_MSG("The image to read is not set correctly, you must set '" + ::fwIO::s_DATA_KEY
+                              + "' as <inout>.");
+            // Retrieve dataStruct associated with this service
+            image = this->getObject< ::fwData::Image >();
+
+        }
+        SLM_ASSERT("image not instanced", image);
 
         // Read new image path and update image. If the reading process is a success, we notify all listeners that image
         // has been modified.
@@ -155,9 +163,14 @@ void SImageReader::updating()
         cursor.setCursor(::fwGui::ICursor::BUSY);
         try
         {
-            if ( this->loadImage( this->getFile(), pImage ) )
+            // Notify other image services that a new image has been loaded.
+            if ( this->loadImage( this->getFile(), image ) )
             {
-                this->notificationOfDBUpdate();
+                auto sig = image->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+                {
+                    ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+                    sig->asyncEmit();
+                }
             }
         }
         catch(::fwTools::Failed& e)
@@ -275,20 +288,6 @@ bool SImageReader::loadImage( const ::boost::filesystem::path imgFile, ::fwData:
     }
 
     return ok;
-}
-
-//------------------------------------------------------------------------------
-
-void SImageReader::notificationOfDBUpdate()
-{
-    ::fwData::Image::sptr pImage = this->getObject< ::fwData::Image >();
-    SLM_ASSERT("pImage not instanced", pImage);
-
-    auto sig = pImage->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
-    {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
-        sig->asyncEmit();
-    }
 }
 
 } // namespace ioVtk

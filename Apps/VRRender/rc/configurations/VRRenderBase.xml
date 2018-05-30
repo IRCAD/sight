@@ -42,11 +42,13 @@
             <gui>
                 <layout>
                     <menu name="File" />
+                    <menu name="Preferences" />
                     <menu name="Help" />
                 </layout>
             </gui>
             <registry>
                 <menu sid="menu_file" start="yes" />
+                <menu sid="menu_preferences" start="yes" />
                 <menu sid="menu_help" start="yes" />
             </registry>
         </service>
@@ -63,6 +65,17 @@
                 <menuItem sid="action_open" start="yes" />
                 <menuItem sid="action_save" start="yes" />
                 <menuItem sid="action_quit" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="menu_preferences" type="::gui::aspect::SDefaultMenu">
+            <gui>
+                <layout>
+                    <menuItem name="Preferences configuration"/>
+                </layout>
+            </gui>
+            <registry>
+                <menuItem sid="action_configuration" start="yes" />
             </registry>
         </service>
 
@@ -83,6 +96,21 @@
         </service>
 
         <service uid="action_quit" type="::gui::action::SQuit" />
+
+        <service uid="action_configuration" type="::uiPreferences::action::SPreferencesConfiguration">
+            <preference>
+                <type>text</type>
+                <name>Pacs Server Hostname</name>
+                <key>PACS_SERVER_HOSTNAME</key>
+                <default_value>127.0.0.1</default_value>
+            </preference>
+            <preference>
+                <type>number</type>
+                <name>Pacs Server Port</name>
+                <key>PACS_SERVER_PORT</key>
+                <default_value>80</default_value>
+             </preference>
+        </service>
 
         <service uid="action_about" type="::uiGenericQt::action::SShowAbout">
             <filename id="VRRender-${appVersion}/about/about.html" />
@@ -117,6 +145,10 @@
 
         <connect channel="dynamicViewChannel">
             <slot>dynamicView/createTab</slot>
+        </connect>
+
+        <connect channel="parametersChannel">
+            <signal>action_configuration/parametersModified</signal>
         </connect>
 
         <start uid="mainFrame" />

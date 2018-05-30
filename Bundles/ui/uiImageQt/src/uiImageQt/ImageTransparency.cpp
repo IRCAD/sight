@@ -33,6 +33,8 @@ namespace uiImageQt
 
 fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiImageQt::ImageTransparency, ::fwData::Image );
 
+static const ::fwServices::IService::KeyType s_IMAGE_INOUT = "image";
+
 ImageTransparency::ImageTransparency() noexcept
 {
 }
@@ -49,7 +51,6 @@ void ImageTransparency::starting()
 {
     SLM_TRACE_FUNC();
     this->::fwGui::IGuiContainerSrv::create();
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
 
     ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
         this->getContainer() );
@@ -116,7 +117,12 @@ void ImageTransparency::configuring()
 
 void ImageTransparency::updating()
 {
-    ::fwData::Image::sptr img = this->getObject< ::fwData::Image >();
+    ::fwData::Image::sptr img = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    if (!img)
+    {
+        FW_DEPRECATED_MSG("The service image is not correctly set, it must have an 'image' as 'inout'");
+        img = this->getObject< ::fwData::Image >();
+    }
 
     bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( img );
     m_valueSlider->setEnabled(imageIsValid);
@@ -174,7 +180,12 @@ void ImageTransparency::info( std::ostream& _sstream )
 void ImageTransparency::onModifyTransparency(int value)
 {
     SLM_TRACE_FUNC();
-    ::fwData::Image::sptr img = this->getObject< ::fwData::Image >();
+    ::fwData::Image::sptr img = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    if (!img)
+    {
+        FW_DEPRECATED_MSG("The service image is not correctly set, it must have an 'image' as 'inout'");
+        img = this->getObject< ::fwData::Image >();
+    }
     img->setField( "TRANSPARENCY",  ::fwData::Integer::New(value) );
 
     auto sig = img->signal< ::fwData::Image::TransparencyModifiedSignalType >(
@@ -208,7 +219,12 @@ void ImageTransparency::onModifyVisibility(int value)
 
 void ImageTransparency::notifyVisibility(bool isVisible)
 {
-    ::fwData::Image::sptr img = this->getObject< ::fwData::Image >();
+    ::fwData::Image::sptr img = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    if (!img)
+    {
+        FW_DEPRECATED_MSG("The service image is not correctly set, it must have an 'image' as 'inout'");
+        img = this->getObject< ::fwData::Image >();
+    }
     img->setField( "VISIBILITY",  ::fwData::Boolean::New(isVisible) );
 
     auto sig = img->signal< ::fwData::Image::VisibilityModifiedSignalType >(::fwData::Image::s_VISIBILITY_MODIFIED_SIG);
@@ -227,6 +243,24 @@ void ImageTransparency::notifyVisibility(bool isVisible)
     connections.push_back( std::make_pair( ::fwData::Image::s_VISIBILITY_MODIFIED_SIG, s_UPDATE_SLOT ) );
     connections.push_back( std::make_pair( ::fwData::Image::s_TRANSPARENCY_MODIFIED_SIG, s_UPDATE_SLOT ) );
     connections.push_back( std::make_pair( ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT ) );
+
+    return connections;
+}
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsMap ImageTransparency::getAutoConnections() const
+{
+    KeyConnectionsMap connections;
+
+    //FIXME hack to support deprecated getObject()
+    if (this->getInOut< ::fwData::Image >(s_IMAGE_INOUT))
+    {
+        connections.push(s_IMAGE_INOUT, ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
+        connections.push(s_IMAGE_INOUT, ::fwData::Image::s_VISIBILITY_MODIFIED_SIG, s_UPDATE_SLOT);
+        connections.push(s_IMAGE_INOUT, ::fwData::Image::s_TRANSPARENCY_MODIFIED_SIG, s_UPDATE_SLOT);
+        connections.push(s_IMAGE_INOUT, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
+    }
 
     return connections;
 }

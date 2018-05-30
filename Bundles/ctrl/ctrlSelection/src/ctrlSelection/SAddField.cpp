@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017.
+ * FW4SPL - Copyright (C) IRCAD, 2017-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -35,13 +35,13 @@ void SAddField::configuring()
 {
     auto srvConfig = this->getConfigTree();
 
-    BOOST_FOREACH(const ::fwServices::IService::ConfigType::value_type &v, srvConfig.equal_range("inout"))
+    BOOST_FOREACH(const ::fwServices::IService::ConfigType::value_type& v, srvConfig.equal_range("inout"))
     {
         const ::fwServices::IService::ConfigType& inout     = v.second;
         const ::fwServices::IService::ConfigType& attrInOut = inout.get_child("<xmlattr>");
         if(attrInOut.get("group", "" ) == "source")
         {
-            BOOST_FOREACH(const ::fwServices::IService::ConfigType::value_type &v, inout.equal_range("key"))
+            BOOST_FOREACH(const ::fwServices::IService::ConfigType::value_type& v, inout.equal_range("key"))
             {
                 const ::fwServices::IService::ConfigType& specAssoc = v.second;
                 const ::fwServices::IService::ConfigType& attr      = specAssoc.get_child("<xmlattr>");
@@ -56,6 +56,7 @@ void SAddField::configuring()
 
 void SAddField::starting()
 {
+    FW_DEPRECATED("::ctrlSelection::SAddField", "::crrlSelection::SManage");
 }
 
 // ----------------------------------------------------------------------------

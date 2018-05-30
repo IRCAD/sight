@@ -1,0 +1,94 @@
+/* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
+
+#pragma once
+
+#include "fwNetworkIO/config.hpp"
+
+#include <fwCore/base.hpp>
+
+#include <map>
+
+namespace fwNetworkIO
+{
+
+namespace http
+{
+
+/**
+ * @brief HTTP request.
+ */
+class FWNETWORKIO_CLASS_API Request : public ::fwCore::BaseObject
+{
+
+public:
+    fwCoreAllowSharedFromThis();
+    fwCoreClassDefinitionsWithFactoryMacro((Request), (()), new Request );
+
+    /// Maps header name to its value.
+    typedef std::map<std::string, std::string> HeadersType;
+
+    /**
+     * @name Constructor/Destructor
+     * @{ */
+    FWNETWORKIO_API Request();
+
+    /**
+     * @brief Construct a new Request with given url.
+     */
+    FWNETWORKIO_API Request(const std::string& url);
+
+    virtual ~Request()
+    {
+    }
+    /**  @} */
+
+    /**
+     * @brief Creates a new Request with given url.
+     *
+     * @param url URL belonging to the request.
+     *
+     * @return  the newly created Request object
+     */
+    FWNETWORKIO_API static Request::sptr New(const std::string& url);
+
+    /**
+     * @brief add element in the request header
+     */
+    FWNETWORKIO_API void addHeader(const std::string& key, const std::string& value);
+
+    /**
+     *@brief headers setter.
+     */
+    FWNETWORKIO_API void setHeaders(const HeadersType& headers);
+
+    /**
+     *@brief headers getter.
+     */
+    FWNETWORKIO_API const HeadersType& getHeaders() const;
+
+    /**
+     * @brief return current url
+     */
+    FWNETWORKIO_API const std::string& getUrl() const;
+
+    /**
+     * @brief set current url
+     */
+    FWNETWORKIO_API void setUrl(const std::string& url);
+
+private:
+
+    HeadersType m_headers;
+
+    std::string m_url;
+};
+
+}  // namespace http
+
+}
+
+// namespace fwNetworkIO

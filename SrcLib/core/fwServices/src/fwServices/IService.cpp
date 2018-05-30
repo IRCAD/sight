@@ -117,7 +117,7 @@ void IService::setOutput(const IService::KeyType& key, const fwData::Object::spt
         }
         else if(!m_outputsMap.empty())
         {
-            return m_outputsMap.begin()->second.lock();
+            return m_outputsMap.begin()->second;
         }
         else
         {
@@ -715,8 +715,9 @@ void IService::autoConnect()
 {
     ::fwServices::IService::KeyConnectionsMap connectionMap = this->getAutoConnections();
 
-    SLM_ERROR_IF("The service '" + this->getClassname() + "' is set to 'autoConnect=\"yes\"' but is has no object to "
-                 "connect", m_serviceConfig.m_globalAutoConnect && m_serviceConfig.m_objects.empty());
+    SLM_ERROR_IF("The service '" + this->getID() + "'(" + this->getClassname() +
+                 ") is set to 'autoConnect=\"yes\"' but is has no object to connect",
+                 m_serviceConfig.m_globalAutoConnect && m_serviceConfig.m_objects.empty());
 
     // For compatibility with V1, we allow services to connect explicitly with the default object
     // For these services we will ignore all auto connections with any other data
@@ -751,8 +752,8 @@ void IService::autoConnect()
                         }
                     }
                 }
-                SLM_ERROR_IF("Object '" + objectCfg.m_key + "' of '" + this->getClassname() + "' is set to "
-                             "'autoConnect=\"yes\"' but there is no connection available.",
+                SLM_ERROR_IF("Object '" + objectCfg.m_key + "' of '" + this->getID() + "'(" + this->getClassname() +
+                             ") is set to 'autoConnect=\"yes\"' but there is no connection available.",
                              connections.empty() && objectCfg.m_autoConnect);
             }
             else
@@ -792,7 +793,7 @@ void IService::autoConnect()
                     auto itObj = m_outputsMap.find(objectCfg.m_key);
                     if(itObj != m_outputsMap.end())
                     {
-                        obj = itObj->second.lock();
+                        obj = itObj->second;
                     }
                     break;
                 }

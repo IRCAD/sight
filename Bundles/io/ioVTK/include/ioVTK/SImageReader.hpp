@@ -27,9 +27,27 @@ namespace ioVTK
 {
 
 /**
- * @brief VTK Image Reader
+ * @brief Service reading a VTK Image using the fwVtkIO lib.
  *
- * Service reading a VTK Image using the fwVtkIO lib.
+ * @section Signals Signals
+ * - \b jobCreated(SPTR(::fwJobs::IJob)): emitted when the image is loading to display a progress bar.
+ *
+ * @section Slots Slots
+ * - \b readFile(::boost::filesystem::path) : read the given file
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+   <service type="::ioVTK::SImageReader">
+       <inout key="data" uid="..." />
+       <file>...</file>
+   </service>
+   @endcode
+ * @subsection In-Out In-Out
+ * - \b data [::fwData::Image]: loaded image.
+ * @subsection Configuration Configuration
+ * - \b file (optional): path of the image to load, if it not defined, 'configureWithIHM()' should be called to define
+ * the path.
  */
 class IOVTK_CLASS_API SImageReader : public ::fwIO::IReader
 {
@@ -88,9 +106,6 @@ private:
      * @return bool  \b true if the image loading is a success and \b false if it fails
      */
     bool loadImage( const ::boost::filesystem::path _vtkFile, std::shared_ptr< ::fwData::Image > _pImage );
-
-    /// This method notifies other image services that a new image has been loaded.
-    void notificationOfDBUpdate();
 
     /// This value is \b true if the path image is known.
     bool m_bServiceIsConfigured;

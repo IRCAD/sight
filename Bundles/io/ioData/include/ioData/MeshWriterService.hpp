@@ -25,6 +25,25 @@ namespace ioData
  * Service registered details : \n
  * fwServicesRegisterMacro( ::fwIO::IWriter , ::ioData::MeshWriterService , ::fwData::Mesh )
  */
+/**
+ * @brief This service writes a ::fwData::Mesh (with only triangular cells) on filesystem in format .trian.
+ *
+ * This format is basic. This is an ascii file which contains :
+ * 1) nb of points
+ * 2) list of points (x,y,z). Line numbers represent index of point in vector
+ * 3) nb of triangles
+ * 4) list of triangles with index of points and normals ( often set a -1 )
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+   <service type="::ioData::MeshWriterService">
+       <inout key="data" uid="..." />
+   </service>
+   @endcode
+ * @subsection In-Out In-Out
+ * - \b data [::fwData::Mesh]: mesh to write.
+ */
 class IODATA_CLASS_API MeshWriterService : public ::fwIO::IWriter
 {
 

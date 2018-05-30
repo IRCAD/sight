@@ -270,7 +270,8 @@ void SSliceIndexDicomPullerEditor::triggerNewSlice()
     }
     else
     {
-        m_slotReadImage->asyncRun(selectedSliceIndex);
+        //m_slotReadImage->asyncRun(selectedSliceIndex);
+        this->readImage(selectedSliceIndex);
     }
 }
 
@@ -422,7 +423,8 @@ void SSliceIndexDicomPullerEditor::pullInstance()
                 ::boost::filesystem::path path     = ::fwTools::System::getTemporaryFolder() / "dicom/";
                 ::boost::filesystem::path filePath = path.string() + seriesInstanceUID + "/" + sopInstanceUID;
                 dicomSeries->addDicomPath(selectedSliceIndex, filePath);
-                m_slotReadImage->asyncRun(selectedSliceIndex);
+                //m_slotReadImage->asyncRun(selectedSliceIndex);
+                this->readImage(selectedSliceIndex);
             }
             else
             {

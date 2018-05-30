@@ -25,8 +25,7 @@ fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::SConfigLauncher );
 
 const ::fwCom::Signals::SignalKeyType SConfigLauncher::s_LAUNCHED_SIG = "launched";
 
-static const ::fwCom::Slots::SlotKeyType s_CHECK_IF_EXECUTABLE_SLOT = "checkIfExecutable";
-static const ::fwCom::Slots::SlotKeyType s_STOP_CONFIG_SLOT         = "stopConfig";
+static const ::fwCom::Slots::SlotKeyType s_STOP_CONFIG_SLOT = "stopConfig";
 
 static const std::string s_CLOSE_CONFIG_CHANNEL_ID = "CLOSE_CONFIG_CHANNEL";
 
@@ -38,7 +37,6 @@ SConfigLauncher::SConfigLauncher() noexcept
 
     m_sigLaunched = newSignal<LaunchedSignalType>(s_LAUNCHED_SIG);
 
-    newSlot(s_CHECK_IF_EXECUTABLE_SLOT, &SConfigLauncher::checkIfExecutable, this);
     newSlot(s_STOP_CONFIG_SLOT, &SConfigLauncher::stopConfig, this);
 }
 
@@ -55,11 +53,6 @@ void SConfigLauncher::starting()
     m_proxychannel = this->getID() + "_stopConfig";
 
     this->actionServiceStarting();
-    ::fwData::Object::sptr currentObj = this->getObject();
-
-    // Check if all inputs exists and if the service was configured to be 'executable'.
-    const bool executable = m_configLauncher->isExecutable(currentObj) & this->getIsExecutable();
-    this->setIsExecutable( executable );
 }
 
 //------------------------------------------------------------------------------
@@ -107,15 +100,6 @@ void SConfigLauncher::updating()
 
 //------------------------------------------------------------------------------
 
-void SConfigLauncher::checkIfExecutable()
-{
-    ::fwData::Object::sptr currentObj = this->getObject();
-    bool executable = m_configLauncher->isExecutable(currentObj);
-    this->setIsExecutable( executable );
-}
-
-//------------------------------------------------------------------------------
-
 void SConfigLauncher::stopConfig()
 {
     if (m_configLauncher->configIsRunning())
@@ -125,15 +109,6 @@ void SConfigLauncher::stopConfig()
         proxies->disconnect(m_proxychannel, this->slot(s_STOP_CONFIG_SLOT));
         this->setIsActive(false);
     }
-}
-
-//-----------------------------------------------------------------------------
-
-SConfigLauncher::KeyConnectionsType SConfigLauncher::getObjSrvConnections() const
-{
-    KeyConnectionsType connections;
-    connections.push_back( std::make_pair( ::fwData::Object::s_MODIFIED_SIG, s_CHECK_IF_EXECUTABLE_SLOT ) );
-    return connections;
 }
 
 //------------------------------------------------------------------------------

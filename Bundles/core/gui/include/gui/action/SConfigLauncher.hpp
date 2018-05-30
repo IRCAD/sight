@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __GUI_ACTION_SCONFIGLAUNCHER_HPP__
-#define __GUI_ACTION_SCONFIGLAUNCHER_HPP__
+#pragma once
 
 #include "gui/config.hpp"
 
@@ -35,6 +34,13 @@ namespace action
  * Note that <in> is not supported. This would have no meaning, because we can't ensure the object won't be modified
  * in the configuration. <out> is also not supported because if we assume that the target configuration produces the
  * object, thus we would not get a valid id for the matching parameter.
+ *
+ * @section Signals Signals
+ * - \b launched(): emitted when the configuration is launched
+ *
+ * @section Slots Slots
+ * - \b stopConfig(): called to stop the running configuration
+ *
  *
  * @section XML XML Configuration
  *
@@ -68,14 +74,6 @@ public:
 
     /// Set the action service is activated/disable.
     GUI_API virtual void setIsActive(bool isActive) override;
-
-    /**
-     * @brief Returns proposals to connect service slots to associated object signals,
-     * this method is used for obj/srv auto connection
-     *
-     * @note connect Object::s_MODIFIED_SIG to this::s_CHECK_PARAMETERS_SIG
-     */
-    GUI_API virtual KeyConnectionsType getObjSrvConnections() const override;
 
     // Launched signal key
     GUI_API static const ::fwCom::Signals::SignalKeyType s_LAUNCHED_SIG;
@@ -127,9 +125,6 @@ protected:
      */
     /// Slot: stop the config.
     void stopConfig();
-
-    /// Slot: check if the configuration is executable
-    void checkIfExecutable();
     /**
      * @}
      */
@@ -140,5 +135,3 @@ protected:
 
 } // action
 } // gui
-
-#endif // __GUI_ACTION_SCONFIGLAUNCHER_HPP__

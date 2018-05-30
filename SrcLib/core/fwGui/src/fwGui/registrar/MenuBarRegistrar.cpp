@@ -1,15 +1,17 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwGui/GuiRegistry.hpp"
 #include "fwGui/registrar/MenuBarRegistrar.hpp"
 
-#include <fwTools/fwID.hpp>
+#include "fwGui/GuiRegistry.hpp"
+
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Get.hpp>
+
+#include <fwTools/fwID.hpp>
 
 #include <utility>
 
@@ -20,7 +22,8 @@ namespace registrar
 
 //-----------------------------------------------------------------------------
 
-MenuBarRegistrar::MenuBarRegistrar(const std::string &sid) : m_sid(sid)
+MenuBarRegistrar::MenuBarRegistrar(const std::string& sid) :
+    m_sid(sid)
 {
 }
 
@@ -70,7 +73,7 @@ void MenuBarRegistrar::initialize( ::fwRuntime::ConfigurationElement::sptr confi
                 std::string startValue = menu->getAttributeValue("start");
                 SLM_ASSERT("Wrong value '"<< startValue <<"' for 'start' attribute (require yes or no)",
                            startValue == "yes" || startValue == "no");
-                start = (startValue=="yes");
+                start = (startValue == "yes");
             }
             std::string sid = menu->getAttributeValue("sid");
             m_menuSids[sid] = SIDMenuMapType::mapped_type(index, start);
@@ -92,7 +95,7 @@ void MenuBarRegistrar::manage(std::vector< ::fwGui::container::fwMenu::sptr > me
         ::fwGui::GuiRegistry::registerSIDMenu(sid.first, menu);
         if(sid.second.second) //service is auto started?
         {
-            OSLM_ASSERT("Service "<<sid.first <<" not exists.", ::fwTools::fwID::exist(sid.first ) );
+            OSLM_ASSERT("Service "<<sid.first <<" does not exist.", ::fwTools::fwID::exist(sid.first ) );
             ::fwServices::IService::sptr service = ::fwServices::get( sid.first );
             service->start();
         }
@@ -115,7 +118,7 @@ void MenuBarRegistrar::unmanage()
     {
         if(sid.second.second) //service is auto started?
         {
-            OSLM_ASSERT("Service "<<sid.first <<" not exists.", ::fwTools::fwID::exist(sid.first ) );
+            OSLM_ASSERT("Service "<<sid.first <<" does not exist.", ::fwTools::fwID::exist(sid.first ) );
             ::fwServices::IService::sptr service = ::fwServices::get( sid.first );
             service->stop();
         }

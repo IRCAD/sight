@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -15,6 +15,8 @@
 #include <fwCom/Slot.hxx>
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
+
+#include <fwDataTools/Color.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
@@ -34,6 +36,7 @@ SRender::SRender() noexcept :
     m_scene(nullptr),
     m_view(nullptr),
     m_antialiasing(false),
+    m_background("#000000"),
     m_aspectRatioMode(Qt::IgnoreAspectRatio)
 {
 }
@@ -195,8 +198,12 @@ void SRender::startContext()
     SPTR(::fwGuiQt::container::QtContainer) qtContainer
         = ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer());
 
+    // Convert the background color
+    std::uint8_t color[4];
+    ::fwDataTools::Color::hexaStringToRGBA(m_background, color);
+
     m_scene = new QGraphicsScene( m_sceneStart.getX(), m_sceneStart.getY(), m_sceneWidth.getX(), m_sceneWidth.getY());
-    m_scene->setBackgroundBrush(QBrush(QColor(0, 0, 0)));
+    m_scene->setBackgroundBrush(QBrush(QColor(color[0], color[1], color[2], color[3])));
     m_scene->setFocus( Qt::MouseFocusReason );
 
     m_view = new Scene2DGraphicsView( m_scene, qtContainer->getQtContainer() );
@@ -287,10 +294,31 @@ void SRender::configureScene( ConfigurationType _conf )
         }
     }
 
-    if( _conf->hasAttribute(("aspectRatioMode")))
+    if( _conf->hasAttribute("aspectRatioMode"))
     {
-        m_aspectRatioMode = (_conf->getAttributeValue("aspectRatioMode") == "KeepAspectRatioByExpanding")
-                            ? Qt::KeepAspectRatioByExpanding : Qt::IgnoreAspectRatio;
+        const std::string aspectRatio = _conf->getAttributeValue("aspectRatioMode");
+        if(aspectRatio == "KeepAspectRatioByExpanding")
+        {
+            m_aspectRatioMode = Qt::KeepAspectRatioByExpanding;
+        }
+        else if(aspectRatio == "KeepAspectRatio")
+        {
+            m_aspectRatioMode = Qt::KeepAspectRatio;
+        }
+        else
+        {
+            OSLM_ERROR_IF("Unknown aspect ratio (" <<
+                          aspectRatio <<
+                          "). Possible values are: KeepAspectRatio, KeepAspectRatioByExpanding or IgnoreAspectRatio.",
+                          aspectRatio != "IgnoreAspectRatio");
+            m_aspectRatioMode = Qt::IgnoreAspectRatio;
+        }
+    }
+
+    if ( _conf->hasAttribute(("background")) )
+    {
+        m_background = _conf->getAttributeValue("background");
+        SLM_ASSERT("Color format must be hexadecimal.", m_background[0] == '#');
     }
 }
 
@@ -335,4 +363,3 @@ void SRender::updateSceneSize( float ratioPercent )
 //-----------------------------------------------------------------------------
 
 } // namespace fwRenderQt
-

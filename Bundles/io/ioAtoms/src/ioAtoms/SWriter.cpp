@@ -304,7 +304,13 @@ void SWriter::updating()
         return;
     }
 
-    ::fwData::Object::sptr obj = this->getObject< ::fwData::Object >();
+    ::fwData::Object::sptr obj = this->getInOut< ::fwData::Object >(::fwIO::s_DATA_KEY);
+    if (!obj)
+    {
+        FW_DEPRECATED_MSG("The object to write is not set correctly, you must set '" + ::fwIO::s_DATA_KEY
+                          + "' as <inout>.");
+        obj = this->getObject< ::fwData::Object >();
+    }
 
     ::fwGui::Cursor cursor;
     cursor.setCursor(::fwGui::ICursor::BUSY);

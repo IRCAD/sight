@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __ACTIVITIES_ACTION_SACTIVITYLAUNCHER_HPP__
-#define __ACTIVITIES_ACTION_SACTIVITYLAUNCHER_HPP__
+#pragma once
 
 #include "activities/config.hpp"
 
@@ -45,14 +44,13 @@ namespace action
  *
  * @section Signal Signal
  * - \b activityLaunched(::fwActivities::registry::ActivityMsg) : This signal is emitted when the activity is created,
- * it
- *      contains the activity information. It should be connected to the slot 'createTab' of the service
- *      '::guiQt::editor::DynamicView'.
+ *      it contains the activity information. It should be connected to the slot 'createTab' of the service
+ *      '::guiQt::editor::SDynamicView'.
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service uid="action_newActivity" type="::fwGui::IActionSrv" impl="::activities::action::SActivityLauncher"
- * autoConnect="yes" >
+    <service uid="action_newActivity" type="::activities::action::SActivityLauncher" autoConnect="yes" >
+        <in key="series" uid="..." />
         <config>
             <!-- SActivityLauncher mode : immediate or message(default)
                  Immediate mode starts and stop immediatly the activity's config -->
@@ -80,7 +78,9 @@ namespace action
         </config>
     </service>
         @endcode
- *
+ * @subsection Input Input
+ * - \b series [::fwData::Vector]: vector containg series inherited from ::fwMedData::Series
+ * @subsection Configuration Configuration
  * - \b mode (optional): there are two mode: "message" and "immediate"
  *    - \b message (used by défaut): the action send a signal containing the information needed to launch the
  *      choosen activity. The service '::guiQt::editor::DynamicView' allows to launch the activity in a new tab. For
@@ -154,6 +154,15 @@ public:
 
 protected:
 
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect Vector::s_ADDED_OBJECTS_SIG to this::s_UPDATE_STATE_SLOT
+     * Connect Vector::s_REMOVED_OBJECTS_SIG to this::s_UPDATE_STATE_SLOT
+     */
+    ACTIVITIES_API virtual KeyConnectionsMap getAutoConnections() const override;
+
     ///This method launches the IAction::starting method.
     virtual void starting() override;
 
@@ -170,9 +179,6 @@ protected:
      * @see fwGui::IActionSrv::initialize()
      */
     virtual void configuring() override;
-
-    /// Overrides
-    virtual void info( std::ostream& _sstream ) override;
 
     typedef ::fwActivities::registry::ActivityAppConfig::ActivityAppConfigParamsType ParametersType;
 
@@ -194,7 +200,7 @@ private:
      * @brief Launches activity series if only ActivitySeries are selected.
      * @return Returns true if only ActivitySeries are selected.
      */
-    bool launchAS(::fwData::Vector::sptr& selection);
+    bool launchAS(const ::fwData::Vector::csptr& selection);
 
     /**
      * @brief Slots to launch the given series.
@@ -226,7 +232,7 @@ private:
      * @param info activity information
      * @param selection input data to launch the activity
      */
-    void buildActivity(const ::fwActivities::registry::ActivityInfo& info, const ::fwData::Vector::sptr& selection);
+    void buildActivity(const ::fwActivities::registry::ActivityInfo& info, const ::fwData::Vector::csptr& selection);
 
     typedef ::fwActivities::registry::Activities::ActivitiesType ActivityInfoContainer;
 
@@ -259,5 +265,3 @@ private:
 
 } //action
 } // gui
-
-#endif // __ACTIVITIES_ACTION_SACTIVITYLAUNCHER_HPP__

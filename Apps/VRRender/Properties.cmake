@@ -24,6 +24,7 @@ set( REQUIREMENTS
     uiIO
     uiGenericQt
     uiMedDataQt
+    uiPreferences
 
     2DVisualizationActivity
     3DVisualizationActivity
@@ -34,6 +35,8 @@ set( REQUIREMENTS
     dicomFilteringActivity
     dicomPacsReaderActivity
     dicomPacsWriterActivity
+
+    DicomWebReaderActivity
 
     media
     style

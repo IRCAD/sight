@@ -27,6 +27,8 @@ namespace ioData
  *
  * Service registered details : \n
  * fwServicesRegisterMacro( ::fwIO::IReader , ::ioData::SplineReaderService , ::fwData::Spline )
+ *
+ * @deprecated This service will be removed
  */
 class IODATA_CLASS_API SplineReaderService : public ::fwIO::IReader
 {
@@ -78,6 +80,7 @@ protected:
      */
     virtual void starting() override
     {
+        FW_DEPRECATED_MSG("This service is deprecated. Use a ::fwData::PointList instead of a Spline.");
     }
 
     /**

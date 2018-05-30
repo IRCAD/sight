@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2016-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2016-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __ACTIVITIES_SSERIESSIGNAL_HPP__
-#define __ACTIVITIES_SSERIESSIGNAL_HPP__
+#pragma once
 
 #include "activities/config.hpp"
 
@@ -39,8 +38,8 @@ namespace activities
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service uid="action_newActivity" type="::fwGui::IActionSrv" impl="::activities::action::SSeriesSignal"
- * autoConnect="yes" >
+    <service uid="action_newActivity" type="::activities::action::SSeriesSignal" autoConnect="yes" >
+        <in key="seriesDB" uid="..." />
         <!-- Filter mode 'include' allows all given types.
              Filter mode 'exclude' allows all series excepted given ones. -->
         <filter>
@@ -50,6 +49,10 @@ namespace activities
         </filter>
     </service>
         @endcode
+ * @subsection Input Input
+ * - \b seriesDB [::fwMedData::SeriesDB]: seriesDB to listen to forward the added series signal.
+ *
+ * @subsection Configuration Configuration
  * - \b filter (optional): it allows to filter the series that can be notified.
  *    - \b mode: 'include' or 'exclude'. Defines if the series is notified (include) or not (exclude).
  *    - \b id: id of the activity
@@ -95,6 +98,15 @@ protected:
     /// Parse XML configuration
     virtual void configuring() override;
 
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect Vector::s_ADDED_OBJECTS_SIG to this::s_UPDATE_STATE_SLOT
+     * Connect Vector::s_REMOVED_OBJECTS_SIG to this::s_UPDATE_STATE_SLOT
+     */
+    ACTIVITIES_API KeyConnectionsMap getAutoConnections() const override;
+
 private:
 
     typedef std::vector< std::string > TypesType;
@@ -120,5 +132,3 @@ private:
 };
 
 } // gui
-
-#endif // __ACTIVITIES_SSERIESSIGNAL_HPP__

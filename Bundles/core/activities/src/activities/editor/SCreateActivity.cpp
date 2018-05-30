@@ -19,8 +19,6 @@
 #include <fwData/String.hpp>
 #include <fwData/Vector.hpp>
 
-#include <fwDataCamp/getObject.hpp>
-
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/SelectorDialog.hpp>
 
