@@ -40,7 +40,6 @@ Window::Window(QWindow* parent) :
     m_ogreRenderWindow(nullptr),
     m_update_pending(false),
     m_animating(false),
-    m_showOverlay(false),
     m_fullscreen(false),
     m_lastPosLeftClick(nullptr),
     m_lastPosMiddleClick(nullptr),
@@ -59,9 +58,9 @@ Window::~Window()
 
 // ----------------------------------------------------------------------------
 
-void Window::showOverlay(bool show)
+void Window::setEnabledOverlays(const ::fwRenderOgre::IRenderWindowInteractorManager::OverlaySetType& enabledOverlays)
 {
-    m_showOverlay = show;
+    m_enabledOverlays = enabledOverlays;
 }
 // ----------------------------------------------------------------------------
 
@@ -289,14 +288,15 @@ bool Window::event(QEvent* event)
 }
 // ----------------------------------------------------------------------------
 
-void Window::exposeEvent(QExposeEvent*)
+void Window::exposeEvent(QExposeEvent* exposeEvent)
 {
 #if defined(__APPLE__)
     // This allow correct renderring on dual screen display when dragging window to another screen
     ogreResize(this->size());
 #endif
 
-    this->renderNow();
+    // Force rendering
+    this->renderNow(!exposeEvent->region().isEmpty());
 }
 
 // ----------------------------------------------------------------------------
@@ -311,10 +311,10 @@ void Window::moveEvent(QMoveEvent*)
 
 // ----------------------------------------------------------------------------
 
-void Window::renderNow()
+void Window::renderNow(const bool force)
 {
     // Small optimization to not render when not visible
-    if(false == isExposed())
+    if(!force && !isExposed())
     {
         return;
     }
@@ -655,18 +655,34 @@ int Window::getId()
 
 void Window::preViewportUpdate(const ::Ogre::RenderTargetViewportEvent& evt)
 {
-    ::Ogre::Overlay* overlay = ::Ogre::OverlayManager::getSingletonPtr()->getByName("LogoOverlay");
+    auto overlayIterator = ::Ogre::OverlayManager::getSingleton().getOverlayIterator();
+    for(auto overlayMapElt : overlayIterator)
+    {
+        ::Ogre::Overlay* overlay = overlayMapElt.second;
 
-    if(!m_showOverlay)
-    {
-        overlay->hide();
-    }
-    else
-    {
-        overlay->show();
+        if(m_enabledOverlays.find(overlay) != m_enabledOverlays.end())
+        {
+            overlay->show();
+        }
+        else
+        {
+            overlay->hide();
+        }
     }
 
     ::Ogre::RenderTargetListener::preViewportUpdate(evt);
+}
+
+//-----------------------------------------------------------------------------
+
+void Window::postViewportUpdate(const Ogre::RenderTargetViewportEvent& evt)
+{
+    for(::Ogre::Overlay* o : m_enabledOverlays)
+    {
+        o->hide();
+    }
+
+    ::Ogre::RenderTargetListener::postViewportUpdate(evt);
 }
 
 } // namespace visuOgreQt

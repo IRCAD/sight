@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2016-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2016-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWRENDEROGRE_VR_RAYTRACINGVOLUMERENDERER_HPP__
-#define __FWRENDEROGRE_VR_RAYTRACINGVOLUMERENDERER_HPP__
+#pragma once
 
 #include "fwRenderOgre/compositor/listener/AutoStereo.hpp"
 #include "fwRenderOgre/config.hpp"
@@ -54,12 +53,12 @@ public:
                                               Layer::sptr layer,
                                               ::Ogre::SceneNode* parentNode,
                                               ::Ogre::TexturePtr imageTexture,
-                                              TransferFunction& gpuTF,
+                                              const TransferFunction::sptr& gpuTF,
                                               PreIntegrationTable& preintegrationTable,
-                                              bool ambientOcclusion = false,
-                                              bool colorBleeding = false,
-                                              bool shadows = false,
-                                              double aoFactor = 1.,
+                                              bool ambientOcclusion      = false,
+                                              bool colorBleeding         = false,
+                                              bool shadows               = false,
+                                              double aoFactor            = 1.,
                                               double colorBleedingFactor = 1.);
 
     /// Does nothing.
@@ -164,6 +163,9 @@ private:
     /// Sets the default diffuse, specular and shininess in the material.
     void setMaterialLightParams(::Ogre::MaterialPtr mtl);
 
+    /// Sets the entry points texture's dimensions to the layer's current ones.
+    void resizeEntryPointsTexture();
+
     /// Object containing the proxy geometry, this is a cube for now.
     ::Ogre::ManualObject* m_entryPointGeometry;
 
@@ -203,6 +205,10 @@ private:
     compositor::listener::AutoStereoCompositorListener* m_autostereoListener;
 
     ::Ogre::Rectangle2D* m_fullScreenQuad;
+
+    /// Flag set when we need to resize the entry points texture (e.g. when resizing the viewport).
+    bool m_entryPointsResizeRequired {false};
+
 };
 
 //-----------------------------------------------------------------------------
@@ -225,5 +231,3 @@ inline ::fwRenderOgre::Layer::sptr RayTracingVolumeRenderer::getLayer() const
 } // namespace vr
 
 } // namespace fwRenderOgre
-
-#endif // __FWRENDEROGRE_VR_RAYTRACINGVOLUMERENDERER_HPP__

@@ -10,7 +10,6 @@
             <object uid="mesh" type="::fwData::Mesh" />
             <object uid="material" type="::fwData::Material" />
             <object uid="texture" type="::fwData::Image" />
-            <object uid="meshTF" type="::fwData::TransformationMatrix3D" />
             <object uid="cameraTF" type="::fwData::TransformationMatrix3D" />
 
             <service uid="mainFrame" type="::gui::frame::SDefaultFrame">
@@ -145,7 +144,7 @@
             <service uid="genericSceneOgre" type="::fwRenderOgre::SRender">
                 <scene>
                     <background topColor="#DDDDDD" bottomColor="#43958D" topScale="0.7" bottomScale="1.0" />
-                    <layer id="default" depth="1" />
+                    <layer id="default" depth="1"/>
                     <adaptor uid="interactorAdaptor" />
                     <adaptor uid="cameraAdaptor" />
                     <adaptor uid="meshAdaptor" />

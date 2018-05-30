@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017.
+ * FW4SPL - Copyright (C) IRCAD, 2017-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -29,10 +29,12 @@ namespace vr
 
 ::Ogre::String GridProxyGeometryFactory::FACTORY_TYPE_NAME = "GridProxyGeometry";
 
+static const std::string s_TF_TEXUNIT_NAME = "transferFunction";
+
 //------------------------------------------------------------------------------
 
 GridProxyGeometry* GridProxyGeometry::New(const std::string& _name, ::Ogre::SceneManager* _sceneManager,
-                                          ::Ogre::TexturePtr _3DImageTexture, TransferFunction& _tf,
+                                          ::Ogre::TexturePtr _3DImageTexture, const TransferFunction::sptr& _tf,
                                           const std::string& _mtlName)
 {
 
@@ -166,13 +168,8 @@ void GridProxyGeometry::initializeGridMaterials()
     ::Ogre::Pass* gridPass = gridMtl->getTechnique(0)->getPass(0);
 
     ::Ogre::TextureUnitState* tex3DState = gridPass->getTextureUnitState("image");
-    ::Ogre::TextureUnitState* texTFState = gridPass->getTextureUnitState("transferFunction");
-
     SLM_ASSERT("'image' texture unit is not found", tex3DState);
-    SLM_ASSERT("'transferFunction' texture unit is not found", texTFState);
-
     tex3DState->setTexture(m_3DImageTexture);
-    texTFState->setTexture(m_gpuTF.getTexture());
 
     this->setupGrid();
 }
@@ -239,9 +236,10 @@ void GridProxyGeometry::setupGrid()
     {
         ::Ogre::MaterialPtr gridMtl = ::Ogre::MaterialManager::getSingleton().getByName("VolumeBricksGrid");
 
-        ::Ogre::Pass* gridPass = gridMtl->getTechnique(0)->getPass(0);
-
+        ::Ogre::Pass* gridPass                                    = gridMtl->getTechnique(0)->getPass(0);
         ::Ogre::GpuProgramParametersSharedPtr gridGeneratorParams = gridPass->getFragmentProgramParameters();
+
+        m_gpuTF.lock()->bind(gridPass, s_TF_TEXUNIT_NAME, gridGeneratorParams);
 
         gridGeneratorParams->setNamedConstant("u_brickSize", m_brickSize.data(), 3, 1);
 
@@ -276,16 +274,17 @@ void GridProxyGeometry::computeGrid()
     m_gridRenderOp.vertexData->vertexCount = 4;
     m_gridRenderOp.operationType           = ::Ogre::RenderOperation::OT_TRIANGLE_STRIP;
 
+    ::Ogre::MaterialPtr gridMtl = ::Ogre::MaterialManager::getSingleton().getByName("VolumeBricksGrid");
+
+    ::Ogre::Pass* gridPass                       = gridMtl->getTechnique(0)->getPass(0);
+    ::Ogre::GpuProgramParametersSharedPtr params = gridPass->getFragmentProgramParameters();
+    m_gpuTF.lock()->bind(gridPass, s_TF_TEXUNIT_NAME, params);
+
     for(unsigned i = 0; i < static_cast<unsigned>(m_gridSize[2]); ++i)
     {
         ::Ogre::RenderTexture* rt = m_gridTexture->getBuffer()->getRenderTarget(i);
 
         rt->getViewport(0)->clear();
-
-        ::Ogre::MaterialPtr gridMtl = ::Ogre::MaterialManager::getSingleton().getByName("VolumeBricksGrid");
-
-        ::Ogre::Pass* gridPass                       = gridMtl->getTechnique(0)->getPass(0);
-        ::Ogre::GpuProgramParametersSharedPtr params = gridPass->getFragmentProgramParameters();
 
         params->setNamedConstant("u_slice", static_cast<int>(i));
 
@@ -346,4 +345,3 @@ const Ogre::String& GridProxyGeometry::getMovableType() const
 
 } // namespace vr
 } // namespace fwRenderOgre
-

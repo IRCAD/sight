@@ -1,0 +1,46 @@
+vertex_program Text_VP glsl
+{
+    source Video_VP.glsl
+    default_params
+    {
+        param_named_auto u_worldViewProj worldviewproj_matrix
+    }
+}
+
+fragment_program Text_FP glsl
+{
+    source Text_FP.glsl
+    default_params
+    {
+        param_named u_fontMap int 0
+        param_named u_textColor float4 1 1 1 1
+    }
+}
+
+material Text
+{
+    technique
+    {
+        pass
+        {
+            cull_hardware none
+            cull_software none
+            scene_blend alpha_blend
+
+            vertex_program_ref Text_VP
+            {
+            }
+
+            fragment_program_ref Text_FP
+            {
+            }
+
+            texture_unit fontMap
+            {
+                tex_address_mode border
+                tex_border_colour 0 0 0 0
+                filtering none
+            }
+        }
+    }
+}

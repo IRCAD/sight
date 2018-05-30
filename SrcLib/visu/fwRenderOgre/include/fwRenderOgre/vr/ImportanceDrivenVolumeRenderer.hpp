@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017.
+ * FW4SPL - Copyright (C) IRCAD, 2017-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWRENDEROGRE_VR_IMPORTANCEDRIVENVOLUMERENDERER_HPP__
-#define __FWRENDEROGRE_VR_IMPORTANCEDRIVENVOLUMERENDERER_HPP__
+#pragma once
 
 #include "fwRenderOgre/vr/RayTracingVolumeRenderer.hpp"
 
@@ -37,12 +36,12 @@ public:
                                                     ::Ogre::SceneNode* parentNode,
                                                     ::Ogre::TexturePtr imageTexture,
                                                     ::Ogre::TexturePtr maskTexture,
-                                                    TransferFunction& gpuTF,
+                                                    const TransferFunction::sptr& gpuTF,
                                                     PreIntegrationTable& preintegrationTable,
                                                     bool ambientOcclusion,
                                                     bool colorBleeding,
-                                                    bool shadows = false,
-                                                    double aoFactor = 1.,
+                                                    bool shadows               = false,
+                                                    double aoFactor            = 1.,
                                                     double colorBleedingFactor = 1.);
 
     FWRENDEROGRE_API virtual ~ImportanceDrivenVolumeRenderer();
@@ -98,6 +97,9 @@ public:
     /// Setup the alpha correction factor used in the VPImC method.
     FWRENDEROGRE_API void setIDVRVPImCAlphaCorrection(double);
 
+    /// Slot: Called when the size of the viewport changes.
+    FWRENDEROGRE_API virtual void resizeViewport(int w, int h) override;
+
 protected:
 
     /// Updates the current compositor name according to VR effects flags.
@@ -123,10 +125,10 @@ private:
     void initCompositors();
 
     /// Creates and adds importance compositing compositors to the chain (MImP + JFA, AImC or VPImC).
-    void buildICCompositors();
+    void buildICCompositors(::Ogre::Viewport* _vp);
 
     /// Removes all listeners and compositors from the current chain.
-    void cleanCompositorChain();
+    void cleanCompositorChain(::Ogre::Viewport* _vp);
 
     /// Texture of the segmentation mask.
     ::Ogre::TexturePtr m_maskTexture;
@@ -193,5 +195,3 @@ private:
 
 } // namespace vr
 } // namespace fwRenderOgre
-
-#endif // __FWRENDEROGRE_VR_IMPORTANCEDRIVENVOLUMERENDERER_HPP__

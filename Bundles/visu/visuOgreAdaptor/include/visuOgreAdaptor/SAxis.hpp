@@ -13,6 +13,7 @@
 
 #include <fwRenderOgre/IAdaptor.hpp>
 #include <fwRenderOgre/ITransformable.hpp>
+#include <fwRenderOgre/Text.hpp>
 
 #include <Ogre.h>
 
@@ -83,11 +84,11 @@ private:
     void updating() override;
 
     /// Pointer to the Material data
-    ::fwData::Material::sptr m_material;
+    ::fwData::Material::sptr m_material {nullptr};
     /// Handle the length of each axes (in mm)
-    float m_length;
+    float m_length { 50.f };
     /// Handles the visibility of the axis
-    bool m_isVisible;
+    bool m_isVisible { true };
 
     ::Ogre::ManualObject* xLine;
     ::Ogre::ManualObject* yLine;
@@ -96,6 +97,8 @@ private:
     ::Ogre::ManualObject* xCone;
     ::Ogre::ManualObject* yCone;
     ::Ogre::ManualObject* zCone;
+
+    std::array< ::fwRenderOgre::Text*, 3> m_axisLabels {{ nullptr, nullptr, nullptr }};
 };
 
 } //namespace visuOgreAdaptor

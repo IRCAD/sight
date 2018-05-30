@@ -24,9 +24,12 @@ set( REQUIREMENTS
 
     videoTools
     videoOpenni
+    videoOpenCV
+    videoQt
 
     arMedia
     media
+    preferences
 )
 
 bundleParam(appXml PARAM_LIST config PARAM_VALUES ExOgreRGBDStream)

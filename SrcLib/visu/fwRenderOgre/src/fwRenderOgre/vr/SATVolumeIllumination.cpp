@@ -117,7 +117,8 @@ void SATVolumeIllumination::updateSatFromRatio(float _satSizeRatio)
 
 //-----------------------------------------------------------------------------
 
-void SATVolumeIllumination::SATUpdate(::Ogre::TexturePtr _img, Ogre::TexturePtr _tf, float _sampleDistance)
+void SATVolumeIllumination::SATUpdate(::Ogre::TexturePtr _img, const ::fwRenderOgre::TransferFunction::sptr& _tf,
+                                      float _sampleDistance)
 {
     m_sat.computeParallel(_img, _tf, _sampleDistance);
     this->updateVolIllum();

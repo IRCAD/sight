@@ -52,7 +52,7 @@ void RenderWindowInteractorManager::requestRender()
 
 //-----------------------------------------------------------------------------
 
-void RenderWindowInteractorManager::createContainer( ::fwGui::container::fwContainer::sptr _parent, bool showOverlay,
+void RenderWindowInteractorManager::createContainer( ::fwGui::container::fwContainer::sptr _parent,
                                                      bool renderOnDemand, bool fullscreen)
 {
     SLM_ASSERT("Invalid parent.", _parent );
@@ -63,7 +63,6 @@ void RenderWindowInteractorManager::createContainer( ::fwGui::container::fwConta
     layout->setContentsMargins(0, 0, 0, 0);
 
     m_qOgreWidget = new ::visuOgreQt::Window();
-    m_qOgreWidget->showOverlay(showOverlay);
     m_qOgreWidget->setAnimating(!renderOnDemand);
 
     QWidget* renderingContainer = QWidget::createWindowContainer(m_qOgreWidget);
@@ -153,6 +152,14 @@ int RenderWindowInteractorManager::getFrameId() const
 ::Ogre::RenderTarget* RenderWindowInteractorManager::getRenderTarget()
 {
     return m_qOgreWidget->getOgreRenderWindow();
+}
+
+//-----------------------------------------------------------------------------
+
+void RenderWindowInteractorManager::setEnabledOverlays(
+    const fwRenderOgre::IRenderWindowInteractorManager::OverlaySetType& enabledOverlays)
+{
+    m_qOgreWidget->setEnabledOverlays(enabledOverlays);
 }
 
 //-----------------------------------------------------------------------------

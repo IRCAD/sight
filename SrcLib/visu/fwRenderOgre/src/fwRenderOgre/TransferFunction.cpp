@@ -8,6 +8,12 @@
 
 #include <fwRenderOgre/Utils.hpp>
 
+#if defined (__MACOSX__)
+    #include <OpenGL/gl.h>
+#else
+    #include <GL/gl.h>
+#endif
+
 #include <OGRE/OgreTextureManager.h>
 
 #include <OgreHardwarePixelBuffer.h>
@@ -18,21 +24,28 @@
 namespace fwRenderOgre
 {
 
-static const std::int32_t TEXTURE_SIZE         = 256;
-static const std::int32_t TEXTURE_PIXEL_COUNT  = TEXTURE_SIZE * TEXTURE_SIZE;
-static const std::int32_t TEXTURE_CENTER_INDEX = TEXTURE_PIXEL_COUNT / 2;
+std::uint32_t TransferFunction::TEXTURE_SIZE;
+std::uint32_t TransferFunction::TEXTURE_PIXEL_COUNT;
 
 //-----------------------------------------------------------------------------
 
-TransferFunction::TransferFunction() :
-    m_sampleDistance(1.f)
+TransferFunction::TransferFunction()
 {
+    // Unluckily Ogre does not seem to give us the maximum texture size through the caps... :'(
+    // So we have no other choice than asking OpenGL directly
+    int max;
+    glGetIntegerv(GL_MAX_TEXTURE_SIZE, &max);
+    TEXTURE_SIZE        = static_cast<std::uint32_t>(max);
+    TEXTURE_PIXEL_COUNT = static_cast<std::uint32_t>(max);
+
+    OSLM_INFO("Use a 1D texture of size : " << TEXTURE_SIZE);
 }
 
 //-----------------------------------------------------------------------------
 
 TransferFunction::~TransferFunction()
 {
+    this->removeTexture();
 }
 
 //-----------------------------------------------------------------------------
@@ -45,8 +58,8 @@ void TransferFunction::createTexture(const ::Ogre::String& _parentId)
         m_texture = ::Ogre::TextureManager::getSingleton().createManual(
             _parentId + "_tfTexture",                                   // name
             ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,  // resource groupe
-            ::Ogre::TEX_TYPE_2D,                                        // type
-            TEXTURE_SIZE, TEXTURE_SIZE,                                 // width, height
+            ::Ogre::TEX_TYPE_1D,                                        // type
+            TEXTURE_SIZE, 1,                                            // width, height
             0,                                                          // number of mipmaps (depth)
             ::Ogre::PF_A8R8G8B8,                                        // pixel format
             ::Ogre::TU_DYNAMIC_WRITE_ONLY_DISCARDABLE);                 // usage
@@ -65,6 +78,9 @@ void TransferFunction::removeTexture()
 
 void TransferFunction::updateTexture(const ::fwData::TransferFunction::csptr& _tf)
 {
+    using TFValueType     = ::fwData::TransferFunction::TFValueType;
+    using TFValuePairType = ::fwData::TransferFunction::TFValuePairType;
+
     // Retrieves the pixel buffer from the texture
     ::Ogre::HardwarePixelBufferSharedPtr pixBuffer = m_texture->getBuffer();
 
@@ -73,49 +89,22 @@ void TransferFunction::updateTexture(const ::fwData::TransferFunction::csptr& _t
     ::Ogre::PixelBox pixBox = pixBuffer->getCurrentLock();
     std::uint8_t* pDest = static_cast<std::uint8_t*>(pixBox.data);
 
-    // Retrieves the transfer function's data map
-    const ::fwData::TransferFunction::TFDataType tfData = _tf->getTFData();
-
     // Retrieves the transfer function's intensity window
-    const ::fwData::TransferFunction::TFValuePairType intensityMinMax = _tf->getWLMinMax();
+    const TFValuePairType intensityMinMax = _tf->getWLMinMax();
 
-    const ::fwData::TransferFunction::TFValuePairType tfMinMax = _tf->getMinMaxTFValues();
-
-    // Index corresponding to the first tf value.
-    const std::int32_t minIntensityIndex = intensityToBufferIndex(intensityMinMax.first);
-
-    // If the transfer function is clamped, we have to force the extremity colors to black
-    const bool isTFClamped = _tf->getIsClamped();
-    const ::fwData::TransferFunction::TFColor black(0., 0., 0., 1.);
-
-    // We need first and last colors defined in the TF in order to fill the uninterpolated ranges (left and right)
-    const ::fwData::TransferFunction::TFColor lBoundaryColor = isTFClamped ? black : tfData.cbegin()->second;
-    const ::fwData::TransferFunction::TFColor rBoundaryColor = isTFClamped ? black : tfData.crbegin()->second;
+    const TFValuePairType tfMinMax = _tf->getMinMaxTFValues();
 
     // Counter used to iterate through the texture buffer without exceeding its limit
-    std::int32_t k = 0;
+    const TFValueType invWindow     = 1./_tf->getWindow();
+    const TFValueType intensityStep = (intensityMinMax.second - intensityMinMax.first) /
+                                      TEXTURE_PIXEL_COUNT;
 
-    // LEFT BOUNDARY
-    for(; k < minIntensityIndex; ++k)
+    TFValueType i = intensityMinMax.first;
+    for( std::uint32_t k = 0; k < TEXTURE_PIXEL_COUNT; ++k)
     {
-        *pDest++ = static_cast<std::uint8_t>(lBoundaryColor.b * 255);
-        *pDest++ = static_cast<std::uint8_t>(lBoundaryColor.g * 255);
-        *pDest++ = static_cast<std::uint8_t>(lBoundaryColor.r * 255);
-        *pDest++ = static_cast<std::uint8_t>(lBoundaryColor.a * 255);
-    }
-
-    const double invWindow = 1./_tf->getWindow();
-
-    // Index corresponding to the last tf value.
-    const std::int32_t maxIntensityIndex = intensityToBufferIndex(intensityMinMax.second);
-
-    for(; k < maxIntensityIndex; ++k)
-    {
-        // Buffer index to tf intensity.
-        ::fwData::TransferFunction::TFValueType value = static_cast<double>(k) - TEXTURE_CENTER_INDEX;
-
         // Tf intensity to mapped color.
-        value = (value - intensityMinMax.first) * (tfMinMax.second - tfMinMax.first) * invWindow + tfMinMax.first;
+        const TFValueType value = (i - intensityMinMax.first) * (tfMinMax.second - tfMinMax.first) *
+                                  invWindow + tfMinMax.first;
 
         ::fwData::TransferFunction::TFColor interpolatedColor = _tf->getInterpolatedColor(value);
 
@@ -123,35 +112,16 @@ void TransferFunction::updateTexture(const ::fwData::TransferFunction::csptr& _t
         *pDest++ = static_cast<std::uint8_t>(interpolatedColor.g * 255);
         *pDest++ = static_cast<std::uint8_t>(interpolatedColor.r * 255);
         *pDest++ = static_cast<std::uint8_t>(interpolatedColor.a * 255);
-    }
 
-    // RIGHT BOUNDARY
-    for(; k < TEXTURE_PIXEL_COUNT; ++k)
-    {
-        *pDest++ = static_cast<std::uint8_t>(rBoundaryColor.b * 255);
-        *pDest++ = static_cast<std::uint8_t>(rBoundaryColor.g * 255);
-        *pDest++ = static_cast<std::uint8_t>(rBoundaryColor.r * 255);
-        *pDest++ = static_cast<std::uint8_t>(rBoundaryColor.a * 255);
+        i += intensityStep;
     }
 
     pixBuffer->unlock();
-}
 
-//-----------------------------------------------------------------------------
+    m_isClamped = _tf->getIsClamped();
 
-std::int32_t TransferFunction::intensityToBufferIndex(double intensity)
-{
-    std::int32_t bufferIndex = static_cast<std::int32_t>(intensity) + TEXTURE_CENTER_INDEX;
-
-    // Clamp the buffer index.
-    if(bufferIndex < 0 || bufferIndex >= TEXTURE_PIXEL_COUNT)
-    {
-        SLM_WARN("GPU TFs only handle intensities between -32768 and 32767 but the given intensity"
-                 " is outside that range.");
-        bufferIndex = std::min(::std::max(bufferIndex, 0), TEXTURE_PIXEL_COUNT);
-    }
-
-    return bufferIndex;
+    const auto tfWLMinMax = _tf->getWLMinMax();
+    m_tfWindow = ::Ogre::Vector2(float(tfWLMinMax.first), float(tfWLMinMax.second));
 }
 
 //-----------------------------------------------------------------------------

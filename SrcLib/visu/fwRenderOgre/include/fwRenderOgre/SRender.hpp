@@ -27,6 +27,7 @@
 #include <fwServices/registry/ObjectService.hpp>
 
 #include <OGRE/OgreAxisAlignedBox.h>
+#include <OGRE/Overlay/OgreOverlay.h>
 
 #include <map>
 
@@ -61,6 +62,7 @@ class Layer;
  *         Default is 'auto'.
  *    - \b width (optional, "1280" by default): width for off-screen rendering
  *    - \b height (optional, "720" by default): height for off-screen rendering
+ *    - \b overlays (optional): list of overlay names (separated by semicolons) rendered on top of this scene.
  *  - \b layer : mandatory, defines the scene's layer
  *    - \b id (mandatory): the identifier of the layer
  *    - \b depth (mandatory): the depth of the layer, starting from 1
@@ -149,6 +151,9 @@ public:
     /// Computes camera parameters with the actual global bounding box.
     FWRENDEROGRE_API void computeCameraClipping();
 
+    /// Creates or retrieves the overlay panel in which adaptors can render 2D text.
+    FWRENDEROGRE_API ::Ogre::OverlayContainer* getOverlayTextPanel();
+
     template<class T>
     std::vector<SPTR(T)> getAdaptors() const;
 
@@ -189,6 +194,12 @@ private:
 
     /// Ogre window interactor manager
     ::fwRenderOgre::IRenderWindowInteractorManager::sptr m_interactorManager;
+
+    /// Set of overlays enabled for this renderer.
+    ::fwRenderOgre::IRenderWindowInteractorManager::OverlaySetType m_enabledOverlays;
+
+    /// Overlay panel to which all the UI's text is attached.
+    ::Ogre::OverlayContainer* m_overlayTextPanel;
 
     /// Ogre root
     ::Ogre::Root* m_ogreRoot;

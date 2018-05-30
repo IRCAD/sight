@@ -27,6 +27,7 @@ namespace fwRenderOgre
 namespace factory
 {
 class R2VBRenderable;
+class Text;
 }
 namespace vr
 {
@@ -138,6 +139,7 @@ private:
     static ::Ogre::OverlaySystem* s_overlaySystem;
 
     static ::fwRenderOgre::factory::R2VBRenderable* s_R2VBRenderableFactory;
+    static ::fwRenderOgre::factory::Text* s_textFactory;
     static ::fwRenderOgre::vr::GridProxyGeometryFactory* s_gridProxyGeometryFactory;
 };
 

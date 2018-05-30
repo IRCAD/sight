@@ -92,7 +92,8 @@ SVolumeRender::SVolumeRender() noexcept :
     m_satConeSamples(50),
     m_aoFactor(1.),
     m_colorBleedingFactor(1.),
-    m_autoResetCamera(true)
+    m_autoResetCamera(true),
+    m_IDVRMethod("None")
 {
     this->installTFSlots(this);
     newSlot(s_NEW_IMAGE_SLOT, &SVolumeRender::newImage, this);
@@ -119,6 +120,7 @@ SVolumeRender::SVolumeRender() noexcept :
     newSlot(s_SET_ENUM_PARAMETER_SLOT, &SVolumeRender::setEnumParameter, this);
     newSlot(s_SET_COLOR_PARAMETER_SLOT, &SVolumeRender::setColorParameter, this);
     newSlot(s_UPDATE_VISIBILITY_SLOT, &SVolumeRender::updateVisibility, this);
+
     m_renderingMode = VR_MODE_RAY_TRACING;
 }
 
@@ -139,6 +141,7 @@ void SVolumeRender::configuring()
     m_autoResetCamera        = config.get<std::string>("autoresetcamera", "yes") == "yes";
     m_preIntegratedRendering = config.get<std::string>("preintegration", "no") == "yes";
     m_widgetVisibilty        = config.get<std::string>("widgets", "yes") == "yes";
+    m_IDVRMethod             = config.get<std::string>("idvrMethod", "None");
     m_renderingMode          = config.get<std::string>("mode", "raytracing") == "raytracing" ? VR_MODE_RAY_TRACING :
                                VR_MODE_SLICE;
     m_nbSamples = config.get<std::uint16_t>("samples", m_nbSamples);
@@ -170,7 +173,7 @@ void SVolumeRender::updateTFPoints()
 
     ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
 
-    m_gpuTF.updateTexture(tf);
+    m_gpuTF->updateTexture(tf);
 
     if(m_preIntegratedRendering)
     {
@@ -195,7 +198,7 @@ void SVolumeRender::updateTFWindowing(double /*window*/, double /*level*/)
 
     ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
 
-    m_gpuTF.updateTexture(tf);
+    m_gpuTF->updateTexture(tf);
 
     if(m_preIntegratedRendering)
     {
@@ -234,6 +237,8 @@ void SVolumeRender::starting()
     this->initialize();
 
     this->getRenderService()->makeCurrent();
+
+    m_gpuTF = std::make_shared< ::fwRenderOgre::TransferFunction>();
 
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("inout '" + s_IMAGE_INOUT +"' is missing.", image);
@@ -275,7 +280,7 @@ void SVolumeRender::starting()
         ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
         true);
 
-    m_gpuTF.createTexture(this->getID());
+    m_gpuTF->createTexture(this->getID());
     m_preIntegrationTable.createTexture(this->getID());
 
     ::fwRenderOgre::Layer::sptr layer = this->getRenderService()->getLayer(m_layerID);
@@ -305,7 +310,19 @@ void SVolumeRender::starting()
         this->setFocalDistance(50);
     }
 
-    m_gpuTF.setSampleDistance(m_volumeRenderer->getSamplingRate());
+    auto rayCastVolumeRenderer =
+        dynamic_cast< ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer* >(m_volumeRenderer);
+    if(rayCastVolumeRenderer)
+    {
+        rayCastVolumeRenderer->setIDVRMethod(m_IDVRMethod);
+
+        if(m_IDVRMethod != "None")
+        {
+            this->newMask();
+        }
+    }
+
+    m_gpuTF->setSampleDistance(m_volumeRenderer->getSamplingRate());
 
     m_volumeRenderer->setPreIntegratedRendering(m_preIntegratedRendering);
 
@@ -332,13 +349,19 @@ void SVolumeRender::starting()
 
 void SVolumeRender::stopping()
 {
+    this->getRenderService()->makeCurrent();
+
     this->removeTFConnections();
 
     m_volumeConnection.disconnect();
     delete m_volumeRenderer;
     m_volumeRenderer = nullptr;
 
-    m_sceneManager->getRootSceneNode()->removeChild(this->getTransformId());
+    this->getSceneManager()->destroySceneNode(m_volumeSceneNode);
+
+    auto transformNode = m_sceneManager->getRootSceneNode()->getChild(this->getTransformId());
+    m_sceneManager->getRootSceneNode()->removeChild(transformNode);
+    this->getSceneManager()->destroySceneNode(static_cast< ::Ogre::SceneNode*>(transformNode));
 
     ::Ogre::TextureManager::getSingleton().remove(m_3DOgreTexture->getHandle());
     m_3DOgreTexture.reset();
@@ -346,7 +369,8 @@ void SVolumeRender::stopping()
     ::Ogre::TextureManager::getSingleton().remove(m_maskTexture->getHandle());
     m_maskTexture.reset();
 
-    m_gpuTF.removeTexture();
+    m_gpuTF.reset();
+
     m_preIntegrationTable.removeTexture();
 
     // Disconnect widget to interactor.
@@ -375,6 +399,8 @@ void SVolumeRender::updating()
 
 void SVolumeRender::swapping(const KeyType& key)
 {
+    this->getRenderService()->makeCurrent();
+
     if (key == s_TF_INOUT)
     {
         ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction >(s_TF_INOUT);
@@ -425,7 +451,7 @@ void SVolumeRender::updateImage()
 
     ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
 
-    m_gpuTF.updateTexture(tf);
+    m_gpuTF->updateTexture(tf);
 
     if(m_preIntegratedRendering)
     {
@@ -460,7 +486,12 @@ void SVolumeRender::newMask()
     this->getRenderService()->makeCurrent();
 
     ::fwData::Image::sptr mask = this->getInOut< ::fwData::Image>(s_MASK_INOUT);
-    ::fwRenderOgre::Utils::convertImageForNegato(m_maskTexture.get(), mask);
+    SLM_ASSERT("No 'mask' inout.", mask);
+
+    if(::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(mask))
+    {
+        ::fwRenderOgre::Utils::convertImageForNegato(m_maskTexture.get(), mask);
+    }
 
     this->requestRender();
 }
@@ -475,7 +506,7 @@ void SVolumeRender::updateSampling(int nbSamples)
     m_nbSamples = static_cast<std::uint16_t>(nbSamples);
 
     m_volumeRenderer->setSampling(m_nbSamples);
-    m_gpuTF.setSampleDistance(m_volumeRenderer->getSamplingRate());
+    m_gpuTF->setSampleDistance(m_volumeRenderer->getSamplingRate());
 
     if(m_ambientOcclusion || m_colorBleeding || m_shadows)
     {
@@ -717,6 +748,7 @@ void SVolumeRender::resizeViewport(int w, int h)
     if(m_volumeRenderer)
     {
         m_volumeRenderer->resizeViewport(w, h);
+        this->requestRender();
     }
 }
 
@@ -741,6 +773,8 @@ void SVolumeRender::setFocalDistance(int focalDistance)
 
 void SVolumeRender::setStereoMode(::fwRenderOgre::Layer::StereoModeType)
 {
+    this->getRenderService()->makeCurrent();
+
     this->stopping();
     this->starting();
 }
@@ -749,6 +783,8 @@ void SVolumeRender::setStereoMode(::fwRenderOgre::Layer::StereoModeType)
 
 void SVolumeRender::setBoolParameter(bool val, std::string key)
 {
+    this->getRenderService()->makeCurrent();
+
     if(key == "preIntegration")
     {
         this->togglePreintegration(val);
@@ -811,12 +847,16 @@ void SVolumeRender::setBoolParameter(bool val, std::string key)
         OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
         rayCastVolumeRenderer->toggleIDVRCSGDisableContext(val);
     }
+
+    this->requestRender();
 }
 
 //-----------------------------------------------------------------------------
 
 void SVolumeRender::setIntParameter(int val, std::string key)
 {
+    this->getRenderService()->makeCurrent();
+
     if(key == "sampling")
     {
         this->updateSampling(val);
@@ -845,12 +885,16 @@ void SVolumeRender::setIntParameter(int val, std::string key)
     {
         this->updateSatConeSamples(val);
     }
+
+    this->requestRender();
 }
 
 //-----------------------------------------------------------------------------
 
 void SVolumeRender::setDoubleParameter(double val, std::string key)
 {
+    this->getRenderService()->makeCurrent();
+
     if(key == "aoFactor")
     {
         this->updateAOFactor(val);
@@ -921,6 +965,8 @@ void SVolumeRender::setDoubleParameter(double val, std::string key)
 
 void SVolumeRender::setEnumParameter(std::string val, std::string key)
 {
+    this->getRenderService()->makeCurrent();
+
     if(key == "idvrMethod")
     {
         auto rayCastVolumeRenderer =
@@ -971,12 +1017,16 @@ void SVolumeRender::setEnumParameter(std::string val, std::string key)
                 ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer::IDVRCSGModulationMethod::COLOR4);
         }
     }
+
+    this->requestRender();
 }
 
 //-----------------------------------------------------------------------------
 
 void SVolumeRender::setColorParameter(std::array<std::uint8_t, 4> color, std::string key)
 {
+    this->getRenderService()->makeCurrent();
+
     if(key == "idvrCSGBorderColor")
     {
         auto rayCastVolumeRenderer =
@@ -984,6 +1034,8 @@ void SVolumeRender::setColorParameter(std::array<std::uint8_t, 4> color, std::st
         OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
         rayCastVolumeRenderer->setIDVRCSGBorderColor(color);
     }
+
+    this->requestRender();
 }
 
 //-----------------------------------------------------------------------------
@@ -1021,7 +1073,7 @@ void SVolumeRender::updateVolumeIllumination()
 {
     this->getRenderService()->makeCurrent();
 
-    m_illum->SATUpdate(m_3DOgreTexture, m_gpuTF.getTexture(), m_volumeRenderer->getSamplingRate());
+    m_illum->SATUpdate(m_3DOgreTexture, m_gpuTF, m_volumeRenderer->getSamplingRate());
 
     // Volume illumination is only implemented for raycasting rendering
     if(m_renderingMode == VR_MODE_RAY_TRACING)
