@@ -6,6 +6,8 @@
 
 #include "fwRenderOgre/helper/Camera.hpp"
 
+#include <OGRE/OgreViewport.h>
+
 namespace fwRenderOgre
 {
 
@@ -101,6 +103,32 @@ Ogre::Matrix4 Camera::computeProjectionMatrix(const ::arData::Camera& _calibrati
     m[3][3] = 0.f;
 
     return m;
+}
+
+//-----------------------------------------------------------------------------
+
+Ogre::Vector3 Camera::convertPixelToViewSpace(const ::Ogre::Camera* _camera, const float _pixelPoint[3])
+{
+    const ::Ogre::Viewport* viewport = _camera->getViewport();
+
+    // Starting pixel
+    const ::Ogre::Vector3 ogrePixel(_pixelPoint[0], _pixelPoint[1], _pixelPoint[2]);
+
+    // Affect the viewport's dimensions to the pixel's coordinates.
+    const ::Ogre::Vector3 clippingCoordinatePixel(  _pixelPoint[0]/viewport->getActualWidth() *2 - 1,
+                                                    -(_pixelPoint[1]/viewport->getActualHeight() * 2 - 1),
+                                                    _pixelPoint[2]);
+
+    const ::Ogre::Matrix4 viewMat = _camera->getViewMatrix();
+    const ::Ogre::Matrix4 projMat = _camera->getProjectionMatrixWithRSDepth();
+
+    // We multiply by the inverse since we are performing the usual projection in the other way around.
+    ::Ogre::Vector3 result = viewMat.inverse() * projMat.inverse() * clippingCoordinatePixel;
+
+    // Set the z so that the Regions are in front of the perfusion plane
+    result[2] = -0.5;
+
+    return result;
 }
 
 } // namespace helper
