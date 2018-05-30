@@ -7,6 +7,9 @@ find_package(Ceres QUIET REQUIRED)
 fwForwardInclude(
     ${OpenCV_INCLUDE_DIRS}
     ${EIGEN3_INCLUDE_DIR}
+)
+
+fwInclude(
     ${CERES_INCLUDE_DIR}
 )
 

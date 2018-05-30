@@ -22,7 +22,6 @@
 
 namespace ioCalibration
 {
-fwServicesRegisterMacro(::fwIO::IWriter, ::ioCalibration::SOpenCVWriter);
 // ----------------------------------------------------------------------------
 
 SOpenCVWriter::SOpenCVWriter()

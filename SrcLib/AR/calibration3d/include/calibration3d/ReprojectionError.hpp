@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017.
+ * FW4SPL - Copyright (C) IRCAD, 2017-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __CALIBRATION3D_REPROJECTIONERROR_HPP__
-#define __CALIBRATION3D_REPROJECTIONERROR_HPP__
+#pragma once
 
 #include "calibration3d/config.hpp"
 
@@ -58,15 +57,11 @@ public:
      * @return a pointer to a ::ceres::CostFunction
      */
 
-    static ::ceres::CostFunction* Create(const ::cv::Mat& _cameraMatrix,
-                                         const ::cv::Mat& _distCoef,
-                                         const ::cv::Point2f& _imagePoints,
-                                         const ::cv::Point3f& _objectPoints,
-                                         const ::cv::Mat& _extrinsic)
-    {
-        return (new ::ceres::NumericDiffCostFunction<ReprojectionError, ::ceres::FORWARD, 2, 6>(
-                    new ReprojectionError(_cameraMatrix, _distCoef, _imagePoints, _objectPoints, _extrinsic)));
-    }
+    CALIBRATION3D_API static ::ceres::CostFunction* Create(const ::cv::Mat& _cameraMatrix,
+                                                           const ::cv::Mat& _distCoef,
+                                                           const ::cv::Point2f& _imagePoints,
+                                                           const ::cv::Point3f& _objectPoints,
+                                                           const ::cv::Mat& _extrinsic);
 
 private:
 
@@ -129,4 +124,3 @@ bool ReprojectionError::operator()(const T* const pose, T* residuals) const
 //-----------------------------------------------------------------------------
 
 } //namespace calibration3d
-#endif //__CALIBRATION3D_REPROJECTIONERROR_HPP__
