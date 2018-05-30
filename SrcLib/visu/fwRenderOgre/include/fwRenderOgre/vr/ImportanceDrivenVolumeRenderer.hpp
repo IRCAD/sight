@@ -97,6 +97,8 @@ public:
     /// Setup the alpha correction factor used in the VPImC method.
     FWRENDEROGRE_API void setIDVRVPImCAlphaCorrection(double);
 
+    FWRENDEROGRE_API void setImageSpacing(const ::Ogre::Vector3& _spacing);
+
     /// Slot: Called when the size of the viewport changes.
     FWRENDEROGRE_API virtual void resizeViewport(int w, int h) override;
 

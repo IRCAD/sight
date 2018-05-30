@@ -440,6 +440,7 @@ void SVolumeRender::updateImage()
 
     // Retrieves or creates the slice index fields
     this->updateImageInfos(image);
+    this->setImageSpacing();
 
     ::fwRenderOgre::Utils::convertImageForNegato(m_3DOgreTexture.get(), image);
 
@@ -807,6 +808,8 @@ void SVolumeRender::setBoolParameter(bool val, std::string key)
             dynamic_cast< ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer* >(m_volumeRenderer);
         OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
         rayCastVolumeRenderer->toggleIDVRCountersinkGeometry(val);
+
+        this->setImageSpacing();
     }
     else if(key == "idvrCSGBorder")
     {
@@ -1032,6 +1035,27 @@ void SVolumeRender::setColorParameter(std::array<std::uint8_t, 4> color, std::st
     }
 
     this->requestRender();
+}
+
+//-----------------------------------------------------------------------------
+
+void SVolumeRender::setImageSpacing()
+{
+    auto img = this->getImage();
+
+    const bool isValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(img);
+
+    auto rayCastVolumeRenderer =
+        dynamic_cast< ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer* >(m_volumeRenderer);
+
+    if(rayCastVolumeRenderer && isValid)
+    {
+        const auto& spacing = img->getSpacing();
+
+        SLM_ASSERT("Image must be 3D.", spacing.size() == 3);
+
+        rayCastVolumeRenderer->setImageSpacing(::Ogre::Vector3(spacing[0], spacing[1], spacing[2]));
+    }
 }
 
 //-----------------------------------------------------------------------------

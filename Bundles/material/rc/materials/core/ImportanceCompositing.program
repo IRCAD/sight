@@ -10,6 +10,7 @@ fragment_program IDVR_MImP_FP glsl
         param_named_auto u_clippingNear near_clip_distance
         param_named_auto u_clippingFar far_clip_distance
         param_named_auto u_invWorldViewProj inverse_worldviewproj_matrix
+        param_named_auto u_worldViewProj worldviewproj_matrix
         param_named u_sampleDistance float 0.002
         param_named u_mask int 0
         param_named u_entryPoints int 1

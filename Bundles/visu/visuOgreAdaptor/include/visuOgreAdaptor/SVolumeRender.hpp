@@ -216,6 +216,7 @@ private:
     void setDoubleParameter(double val, std::string key);
     void setEnumParameter(std::string val, std::string key);
     void setColorParameter(std::array<uint8_t, 4> color, std::string key);
+    void setImageSpacing();
 
     /// Slot: Sets the volume to be visible or not.
     void updateVisibility(bool visibility);

@@ -163,6 +163,10 @@ ImportanceDrivenVolumeRenderer::ImportanceDrivenVolumeRenderer(std::string paren
     m_RTVSharedParameters->addConstantDefinition("u_aimcAlphaCorrection", ::Ogre::GCT_FLOAT1);
     m_RTVSharedParameters->addConstantDefinition("u_depthLinesThreshold", ::Ogre::GCT_FLOAT1);
     m_RTVSharedParameters->addConstantDefinition("u_csgBorderColor", ::Ogre::GCT_FLOAT3);
+    m_RTVSharedParameters->addConstantDefinition("u_imageSpacing", ::Ogre::GCT_FLOAT3);
+    m_RTVSharedParameters->addConstantDefinition("u_depthLinesSpacing", ::Ogre::GCT_INT1);
+    m_RTVSharedParameters->addConstantDefinition("u_depthLinesWidth", ::Ogre::GCT_FLOAT1);
+
     m_RTVSharedParameters->setNamedConstant("u_countersinkSlope", m_idvrCSGSlope);
     m_RTVSharedParameters->setNamedConstant("u_csgBorderThickness", m_idvrCSGBorderThickness);
     m_RTVSharedParameters->setNamedConstant("u_colorModulationFactor", m_idvrCSGModulationFactor);
@@ -171,6 +175,8 @@ ImportanceDrivenVolumeRenderer::ImportanceDrivenVolumeRenderer(std::string paren
     m_RTVSharedParameters->setNamedConstant("u_aimcAlphaCorrection", m_idvrAImCAlphaCorrection);
     m_RTVSharedParameters->setNamedConstant("u_vpimcAlphaCorrection", m_idvrVPImCAlphaCorrection);
     m_RTVSharedParameters->setNamedConstant("u_depthLinesThreshold", m_idvrCSGDepthLinesThreshold);
+    m_RTVSharedParameters->setNamedConstant("u_depthLinesSpacing", 10);
+    m_RTVSharedParameters->setNamedConstant("u_depthLinesWidth", 0.5f);
 
     m_fragmentShaderAttachements.push_back("ColorFormats_FP");
 
@@ -558,6 +564,17 @@ void ImportanceDrivenVolumeRenderer::setIDVRVPImCAlphaCorrection(double alphaCor
     if(m_idvrMethod == s_VPIMC)
     {
         m_RTVSharedParameters->setNamedConstant("u_vpimcAlphaCorrection", m_idvrVPImCAlphaCorrection);
+        this->getLayer()->requestRender();
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void ImportanceDrivenVolumeRenderer::setImageSpacing(const ::Ogre::Vector3& _spacing)
+{
+    if(m_idvrMethod == s_MIMP && this->m_idvrCSG)
+    {
+        m_RTVSharedParameters->setNamedConstant("u_imageSpacing", _spacing);
         this->getLayer()->requestRender();
     }
 }
