@@ -1,22 +1,22 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWDCMTKIO_READER_RGBLOOKUP_IMAGERGBLOOKUPLAZYREADER_HPP__
-#define __FWDCMTKIO_READER_RGBLOOKUP_IMAGERGBLOOKUPLAZYREADER_HPP__
-
-#include <dcmtk/config/osconfig.h>
+#pragma once
 
 #include "fwDcmtkIO/config.hpp"
 #include "fwDcmtkIO/helper/Codec.hpp"
 
 #include <fwMedData/DicomSeries.hpp>
+
 #include <fwTools/Type.hpp>
 
+#include <dcmtk/config/osconfig.h>
 #include <dcmtk/dcmdata/dcdeftag.h>
 #include <dcmtk/dcmdata/dcfilefo.h>
+#include <dcmtk/dcmdata/dcistrmb.h>
 #include <dcmtk/dcmimgle/dcmimage.h>
 #include <dcmtk/dcmnet/diutil.h>
 
@@ -46,10 +46,11 @@ public:
      * @param[in] pixelValueBitsAllocated Pixel value bits allocated
      */
     template< typename T>
-    FWDCMTKIO_API static void* createInstanceBuffer(unsigned int rows, unsigned int columns,
-                                                    const ::boost::filesystem::path& instance, const T* redLookup,
-                                                    const T* greenLookup,
-                                                    const T* blueLookup, unsigned short pixelValueBitsAllocated)
+    static void* createInstanceBuffer(unsigned int rows, unsigned int columns,
+                                      const ::fwMemory::BufferObject::sptr& instance,
+                                      const T* redLookup,
+                                      const T* greenLookup,
+                                      const T* blueLookup, unsigned short pixelValueBitsAllocated)
     {
         if(pixelValueBitsAllocated == 16)
         {
@@ -75,10 +76,11 @@ public:
      * @param[in] blueLookup Red lookup table
      */
     template< typename T, typename U >
-    FWDCMTKIO_API static T* createInstanceBuffer(unsigned int rows, unsigned int columns,
-                                                 const ::boost::filesystem::path& instance, const T* redLookup,
-                                                 const T* greenLookup,
-                                                 const T* blueLookup)
+    static T* createInstanceBuffer(unsigned int rows, unsigned int columns,
+                                   const ::fwMemory::BufferObject::sptr& instance,
+                                   const T* redLookup,
+                                   const T* greenLookup,
+                                   const T* blueLookup)
     {
         DcmFileFormat fileFormat;
         OFCondition status;
@@ -91,13 +93,28 @@ public:
         T* tempoBuffer = new T[rows * columns * 3]; // 3 colors (RGB)
 
         // Read instance
-        const std::string filename = instance.string();
-        status = fileFormat.loadFile(filename.c_str());
-        FW_RAISE_IF("Unable to read the file: \""+filename+"\"", status.bad());
+        const size_t buffSize       = instance->getSize();
+        const std::string dicomPath = instance->getStreamInfo().fsFile.string();
+        ::fwMemory::BufferObject::Lock lock(instance);
+        char* buffer = static_cast< char* >( lock.getBuffer() );
+
+        DcmInputBufferStream is;
+        is.setBuffer(buffer, offile_off_t(buffSize));
+        is.setEos();
+
+        fileFormat.transferInit();
+        if (!fileFormat.read(is).good())
+        {
+            FW_RAISE("Unable to read Dicom file '"<< dicomPath <<"'");
+        }
+
+        fileFormat.loadAllDataIntoMemory();
+        fileFormat.transferEnd();
+
         dataset = fileFormat.getDataset();
 
         // Decompress data set if compressed
-        dataset->chooseRepresentation(EXS_LittleEndianExplicit, NULL);
+        dataset->chooseRepresentation(EXS_LittleEndianExplicit, nullptr);
 
         // Read pixels
         const U* pixelData;
@@ -128,19 +145,13 @@ public:
             }
         }
 
-
         // Clean up codecs
         ::fwDcmtkIO::helper::Codec::cleanup();
 
         return tempoBuffer;
     }
-
-
 };
 
 } //rgblookup
 } //reader
 } //fwDcmtkIO
-
-
-#endif /* __FWDCMTKIO_READER_RGBLOOKUP_IMAGERGBLOOKUPLAZYREADER_HPP__ */

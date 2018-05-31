@@ -1,14 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "TagValueInstanceRemoveSplitterTest.hpp"
 
-#include <fwDicomIOFilter/IFilter.hpp>
 #include <fwDicomIOFilter/factory/new.hpp>
 #include <fwDicomIOFilter/helper/Filter.hpp>
+#include <fwDicomIOFilter/IFilter.hpp>
 #include <fwDicomIOFilter/splitter/TagValueInstanceRemoveSplitter.hpp>
 
 #include <fwGdcmIO/reader/SeriesDB.hpp>
@@ -78,8 +78,7 @@ void TagValueInstanceRemoveSplitterTest::simpleApplication()
     dicomSeries = dicomSeriesContainer[0];
 
     // Check number of instances in series
-    CPPUNIT_ASSERT_EQUAL(size_t(275), dicomSeries->getLocalDicomPaths().size());
-
+    CPPUNIT_ASSERT_EQUAL(size_t(275), dicomSeries->getDicomContainer().size());
 }
 
 //------------------------------------------------------------------------------

@@ -59,20 +59,24 @@ void SurfaceSegmentationIOD::read(::fwMedData::Series::sptr series) throw(::fwGd
     // Create GDCM Reader
     SPTR(::gdcm::SurfaceReader) reader = std::shared_ptr< ::gdcm::SurfaceReader >( new ::gdcm::SurfaceReader );
 
-    // Path container
-    ::fwMedData::DicomSeries::DicomPathContainerType pathContainer = m_dicomSeries->getLocalDicomPaths();
-    if(pathContainer.size() > 1)
+    // Dicom container
+    ::fwMedData::DicomSeries::DicomContainerType dicomContainer = m_dicomSeries->getDicomContainer();
+    if(dicomContainer.size() > 1)
     {
         m_logger->warning("More than one surface segmentation storage have been found in the series. "
                           "Only the first one will be read.");
     }
 
     // Read first file
-    const std::string filename = pathContainer.begin()->second.string();
-    reader->SetFileName( filename.c_str() );
-    bool success = reader->Read();
+    const ::fwMemory::BufferObject::sptr bufferObj         = dicomContainer.begin()->second;
+    const ::fwMemory::BufferManager::StreamInfo streamInfo = bufferObj->getStreamInfo();
+    SPTR(std::istream) is = streamInfo.stream;
+    reader->SetStream(*is);
+
+    const bool success = reader->Read();
     FW_RAISE_EXCEPTION_IF(::fwGdcmIO::exception::Failed("Unable to read the DICOM instance \""+
-                                                        filename+"\" using the GDCM Image Reader."), !success);
+                                                        bufferObj->getStreamInfo().fsFile.string()+
+                                                        "\" using the GDCM Reader."), !success);
 
     // Create Information Entity helpers
     ::fwGdcmIO::reader::ie::Patient patientIE(m_dicomSeries, reader, m_instance, series->getPatient(), m_logger,

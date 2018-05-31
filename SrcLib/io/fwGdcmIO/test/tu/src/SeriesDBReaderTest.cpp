@@ -589,7 +589,7 @@ void SeriesDBReaderTest::readSEGSeries()
 
     // Check reconstruction
     ::fwData::Reconstruction::sptr reconstruction = reconstructionDB[0];
-    CPPUNIT_ASSERT_EQUAL( std::string("Liver"), reconstruction->getStructureType());
+    CPPUNIT_ASSERT_EQUAL( std::string("Liver"), reconstruction->getOrganName());
 
     // Check mesh
     ::fwData::Mesh::sptr mesh = reconstruction->getMesh();
@@ -656,7 +656,6 @@ void SeriesDBReaderTest::readSFSeries()
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 281.63 ), pointB->getCoord()[0], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 326.52 ), pointB->getCoord()[1], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 276 ), pointB->getCoord()[2], delta);
-
 }
 
 //------------------------------------------------------------------------------
@@ -685,7 +684,8 @@ void SeriesDBReaderTest::readSRSeries()
 
     // Retrieve ImageSeries
     ::fwMedData::ImageSeries::sptr series = ::fwMedData::ImageSeries::dynamicCast(seriesDB->front());
-    ::fwData::Image::sptr image           = series->getImage();
+    CPPUNIT_ASSERT(series);
+    ::fwData::Image::sptr image = series->getImage();
     ::fwDataTools::helper::Image locker( image );
 
     // Retrieve landmarks
@@ -896,7 +896,7 @@ void SeriesDBReaderTest::readMultipleRescaleSeries()
                        };
 
     CPPUNIT_ASSERT_EQUAL_MESSAGE("Multiple rescale image hash comparison failed ",
-                                 std::string("2153416264075454069"), computeHash());
+                                 std::string("2828747570601766717"), computeHash());
 
 }
 

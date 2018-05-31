@@ -1,14 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "CTImageStorageDefaultCompositeTest.hpp"
 
-#include <fwDicomIOFilter/IFilter.hpp>
 #include <fwDicomIOFilter/factory/new.hpp>
 #include <fwDicomIOFilter/helper/Filter.hpp>
+#include <fwDicomIOFilter/IFilter.hpp>
 
 #include <fwGdcmIO/reader/SeriesDB.hpp>
 
@@ -98,10 +98,10 @@ void CTImageStorageDefaultCompositeTest::simpleApplication()
     CPPUNIT_ASSERT_EQUAL(dicomSeriesContainerA.size(), dicomSeriesContainerB.size());
     for(unsigned int j = 0; j < dicomSeriesContainerA.size(); ++j)  // For every series
     {
-        for(unsigned int i = 0; i < dicomSeriesContainerA[j]->getLocalDicomPaths().size(); ++i) // For every instances
+        for(unsigned int i = 0; i < dicomSeriesContainerA[j]->getDicomContainer().size(); ++i) // For every instances
         {
-            CPPUNIT_ASSERT_EQUAL(dicomSeriesContainerA[j]->getLocalDicomPaths().at(i),
-                                 dicomSeriesContainerB[j]->getLocalDicomPaths().at(i));
+            CPPUNIT_ASSERT_EQUAL(dicomSeriesContainerA[j]->getDicomContainer().at(i),
+                                 dicomSeriesContainerB[j]->getDicomContainer().at(i));
         }
     }
 

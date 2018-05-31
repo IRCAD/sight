@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWGDCMIO_HELPER_DICOMSERIESWRITER_HPP__
-#define __FWGDCMIO_HELPER_DICOMSERIESWRITER_HPP__
+#pragma once
 
 #include "fwGdcmIO/config.hpp"
 
@@ -54,8 +53,8 @@ class DicomSeriesWriter : public ::fwDataIO::writer::GenericObjectWriter< ::fwMe
 public:
 
     fwCoreClassDefinitionsWithFactoryMacro((DicomSeriesWriter)(
-            ::fwDataIO::writer::GenericObjectWriter< ::fwMedData::DicomSeries>),
-             (()), ::fwDataIO::writer::factory::New< DicomSeriesWriter >);
+                                               ::fwDataIO::writer::GenericObjectWriter< ::fwMedData::DicomSeries>),
+                                           (()), ::fwDataIO::writer::factory::New< DicomSeriesWriter >);
     fwCoreAllowSharedFromThis();
 
     /// Constructor. Does nothing
@@ -85,7 +84,7 @@ public:
 protected:
 
     /// Compute DICOM filename according to anonymizer or return default filename.
-    std::string getFilename(const std::string& defaultName);
+    std::string getFilename(const size_t& instanceIndex);
 
     /// Process inputStream to outputStream with anonymisation management.
     void processStream(std::istream& inputStream, std::ostream& outputStream);
@@ -114,5 +113,3 @@ protected:
 
 } // namespace helper
 } // namespace fwGdcmIO
-
-#endif // __FWGDCMIO_HELPER_DICOMSERIESWRITER_HPP__

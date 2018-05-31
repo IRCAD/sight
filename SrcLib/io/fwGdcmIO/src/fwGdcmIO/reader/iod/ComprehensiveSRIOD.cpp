@@ -50,12 +50,16 @@ void ComprehensiveSRIOD::read(::fwMedData::Series::sptr series) throw(::fwGdcmIO
     SPTR(::gdcm::Reader) reader = std::shared_ptr< ::gdcm::Reader >( new ::gdcm::Reader );
 
     // Read the first file
-    ::fwMedData::DicomSeries::DicomPathContainerType pathContainer = m_dicomSeries->getLocalDicomPaths();
-    const std::string filename = pathContainer.begin()->second.string();
-    reader->SetFileName( filename.c_str() );
-    bool success = reader->Read();
+    const auto& dicomContainer                             = m_dicomSeries->getDicomContainer();
+    const ::fwMemory::BufferObject::sptr bufferObj         = dicomContainer.begin()->second;
+    const ::fwMemory::BufferManager::StreamInfo streamInfo = bufferObj->getStreamInfo();
+    SPTR(std::istream) is = streamInfo.stream;
+    reader->SetStream(*is);
+    const bool success = reader->Read();
+
     FW_RAISE_EXCEPTION_IF(::fwGdcmIO::exception::Failed("Unable to read the DICOM instance \""+
-                                                        filename+"\" using the GDCM Image Reader."), !success);
+                                                        bufferObj->getStreamInfo().fsFile.string()+
+                                                        "\" using the GDCM Image Reader."), !success);
 
     // Create Information Entity helpers
     ::fwGdcmIO::reader::ie::Document documentIE(m_dicomSeries, reader, m_instance, imageSeries->getImage(), m_logger,
@@ -63,7 +67,6 @@ void ComprehensiveSRIOD::read(::fwMedData::Series::sptr series) throw(::fwGdcmIO
 
     // Read SR
     documentIE.readSR();
-
 }
 
 //------------------------------------------------------------------------------

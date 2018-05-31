@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -49,7 +49,6 @@ void DicomDirTest::readDicomDir()
     CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + path.string() + "' does not exist",
                            ::boost::filesystem::exists(path));
 
-
     std::vector< ::fwMedData::DicomSeries::sptr > seriesDB;
 
     ::fwLog::Logger::sptr logger = ::fwLog::Logger::New();
@@ -60,14 +59,7 @@ void DicomDirTest::readDicomDir()
     CPPUNIT_ASSERT( logger->empty() );
 
     auto series = *seriesDB.begin();
-    CPPUNIT_ASSERT_EQUAL( size_t( 84 ), series->getLocalDicomPaths().size());
-
-    // Verify filenames
-    for(auto entry: series->getLocalDicomPaths())
-    {
-        CPPUNIT_ASSERT(::boost::filesystem::exists(entry.second));
-    }
-
+    CPPUNIT_ASSERT_EQUAL( size_t( 84 ), series->getDicomContainer().size());
 }
 
 //------------------------------------------------------------------------------
@@ -75,4 +67,3 @@ void DicomDirTest::readDicomDir()
 } // namespace ut
 
 } // namespace fwGdcmIO
-

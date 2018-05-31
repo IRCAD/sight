@@ -42,11 +42,9 @@ static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 //------------------------------------------------------------------------------
 
 SDicomSeriesWriter::SDicomSeriesWriter() noexcept :
-    m_sigJobCreated(JobCreatedSignal::New()),
     m_cancelled(false)
 {
-    ::fwCom::HasSignals::m_signals
-        ( JOB_CREATED_SIGNAL, m_sigJobCreated );
+    m_sigJobCreated = newSignal<JobCreatedSignal>(JOB_CREATED_SIGNAL);
 }
 
 //------------------------------------------------------------------------------
@@ -107,7 +105,7 @@ void SDicomSeriesWriter::updating()
     if( this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
-        ::fwMedData::DicomSeries::sptr series = this->getObject< ::fwMedData::DicomSeries >();
+        ::fwMedData::DicomSeries::csptr series = this->getInput< ::fwMedData::DicomSeries >(::fwIO::s_DATA_KEY);
         const ::boost::filesystem::path& folder = this->getFolder();
         if(!::boost::filesystem::is_empty(folder))
         {
@@ -150,7 +148,7 @@ void SDicomSeriesWriter::updating()
 //------------------------------------------------------------------------------
 
 void SDicomSeriesWriter::saveDicomSeries( const ::boost::filesystem::path folder,
-                                          ::fwMedData::DicomSeries::sptr series ) const
+                                          const ::fwMedData::DicomSeries::csptr& series ) const
 {
     ::fwGdcmIO::helper::DicomSeriesWriter::sptr writer = ::fwGdcmIO::helper::DicomSeriesWriter::New();
 

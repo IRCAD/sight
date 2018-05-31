@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __IOGDCM_SDICOMSERIESCONVERTER_HPP__
-#define __IOGDCM_SDICOMSERIESCONVERTER_HPP__
+#pragma once
 
 #include "ioGdcm/config.hpp"
 
@@ -24,7 +23,24 @@ namespace ioGdcm
 {
 
 /**
- * @brief   This service is used to read and push DicomSeries to a SeriesDB
+ * @brief   This service is used to convert DicomSeries from source SeriesDB
+ * and push result (ImageSeries, ModelSeries, ...) in target SeriesDB
+ *
+ * @section Signals Signals
+ * - \b jobCreated( SPTR(::fwJobs::IJob) ) : Emitted when a job is created.
+ *
+ * @section XML XML Configuration
+ *
+   @code{.xml}
+   <service uid="..." impl="::ioGdcm::SDicomSeriesConverter">
+     <in key="source" uid="..." />
+     <inout key="target" uid="..." />
+   </service>
+   @endcode
+ * @subsection Input Input:
+ * - \b source [::fwMedData::SeriesDB]: Source SeriesDB containing DicomSeries.
+ * @subsection In-Out In-Out:
+ * - \b target [::fwMedData::SeriesDB]: Destination SeriesDB.
  */
 class IOGDCM_CLASS_API SDicomSeriesConverter : public ::fwGui::IActionSrv
 {
@@ -42,20 +58,11 @@ public:
     /**
      * @brief Destructor
      */
-    IOGDCM_API virtual ~SDicomSeriesConverter() noexcept;
+    IOGDCM_API virtual ~SDicomSeriesConverter() noexcept override;
 
 protected:
 
-    /**
-     * @brief Configuring method. This method is used to configure the service.
-     *
-     * XML configuration sample:
-       @code{.xml}
-       <service uid="actionConvertSeries" impl="::ioGdcm::SDicomSeriesConverter">
-         <config destinationSeriesDBID="mySeriesDB" />
-       </service>
-       @endcode
-     */
+    /// Configuring method. This method is used to configure the service.
     IOGDCM_API virtual void configuring() override;
 
     /// Override
@@ -72,13 +79,8 @@ protected:
 
 protected:
 
-    /// Destination SeriesDB
-    ::fwMedData::SeriesDB::sptr m_destinationSeriesDB;
-
     /// Signal emitted when a job is created
     SPTR(JobCreatedSignal) m_sigJobCreated;
 };
 
 } // namespace ioGdcm
-
-#endif // __IOGDCM_SDICOMSERIESCONVERTER_HPP__

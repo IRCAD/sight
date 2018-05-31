@@ -164,7 +164,7 @@ void SImageReader::updating()
         try
         {
             // Notify other image services that a new image has been loaded.
-            if ( this->loadImage( this->getFile(), image ) )
+            if ( SImageReader::loadImage( this->getFile(), image, m_sigJobCreated ) )
             {
                 auto sig = image->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
                 {
@@ -194,7 +194,9 @@ template< typename READER > typename READER::sptr configureReader(const ::boost:
 
 //------------------------------------------------------------------------------
 
-bool SImageReader::loadImage( const ::boost::filesystem::path imgFile, ::fwData::Image::sptr _pImg )
+bool SImageReader::loadImage( const ::boost::filesystem::path& imgFile,
+                              const ::fwData::Image::sptr& img,
+                              const SPTR(JobCreatedSignalType)& sigJobCreated)
 {
     bool ok = true;
 
@@ -221,7 +223,7 @@ bool SImageReader::loadImage( const ::boost::filesystem::path imgFile, ::fwData:
         ::fwVtkIO::BitmapImageReader::getAvailableExtensions(availableExtensions);
 
         /* If we find the current extensions in the available readers, we use it */
-        int i = 0;
+        size_t i = 0;
         for(; i < availableExtensions.size(); i++)
         {
             if(availableExtensions.at(i) == ext)
@@ -245,10 +247,10 @@ bool SImageReader::loadImage( const ::boost::filesystem::path imgFile, ::fwData:
     }
 
     // Set the image (already created, but empty) that will be modified
-    ::fwData::mt::ObjectWriteLock lock(_pImg);
-    imageReader->setObject(_pImg);
+    ::fwData::mt::ObjectWriteLock lock(img);
+    imageReader->setObject(img);
 
-    m_sigJobCreated->emit(imageReader->getJob());
+    sigJobCreated->emit(imageReader->getJob());
 
     try
     {

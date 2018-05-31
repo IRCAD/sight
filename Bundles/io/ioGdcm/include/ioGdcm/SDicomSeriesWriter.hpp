@@ -29,6 +29,20 @@ namespace ioGdcm
 
 /**
  * @brief Services to write an DicomSeries in DICOM format.
+ *
+ * @section Signals Signals
+ * - \b jobCreated( SPTR(::fwJobs::IJob) ) : Emitted when a job is created.
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+       <service uid="..." type="::ioGdcm::SDicomSeriesWriter" >
+           <in key="data" uid="..." />
+       </service>
+ * @endcode
+ *
+ * @subsection Input Input
+ * - \b data [::fwMedData::DicomSeries]: data to save in Dicom.
  */
 class IOGDCM_CLASS_API SDicomSeriesWriter : public ::fwIO::IWriter
 {
@@ -46,7 +60,7 @@ public:
     /**
      * @brief   destructor
      */
-    IOGDCM_API virtual ~SDicomSeriesWriter() noexcept;
+    IOGDCM_API virtual ~SDicomSeriesWriter() noexcept override;
 
     /// Propose select a directory where to save the DICOM files.
     IOGDCM_API virtual void configureWithIHM() override;
@@ -59,7 +73,7 @@ protected:
     /// Does nothing
     IOGDCM_API virtual void stopping() override;
 
-    /// Does nothing
+    /// Configuring method. This method is used to configure the service.
     IOGDCM_API virtual void configuring() override;
 
     /// Write the DicomSeries in DICOM format.
@@ -70,7 +84,8 @@ protected:
 
 private:
     /// Save the selected Dicom series
-    void saveDicomSeries( const ::boost::filesystem::path folder, SPTR(::fwMedData::DicomSeries) series ) const;
+    void saveDicomSeries( const ::boost::filesystem::path folder,
+                          const CSPTR(::fwMedData::DicomSeries)& series ) const;
 
     /// Signal emitted when a job is created
     SPTR(JobCreatedSignal) m_sigJobCreated;

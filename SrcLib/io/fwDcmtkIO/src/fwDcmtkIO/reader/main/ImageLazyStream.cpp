@@ -22,38 +22,20 @@ namespace main
 
 //------------------------------------------------------------------------------
 
-bool filesStillExist( const ::fwMedData::DicomSeries::csptr dicomSeries )
-{
-    ::boost::filesystem::path filePath;
-    bool allFilesExists = true;
-
-    for(::fwMedData::DicomSeries::DicomPathContainerType::const_iterator itPath =
-            dicomSeries->getLocalDicomPaths().begin();
-        allFilesExists && ( itPath != dicomSeries->getLocalDicomPaths().end() );
-        ++itPath )
-    {
-        filePath        = itPath->second;
-        allFilesExists &= ::boost::filesystem::exists(filePath);
-    }
-    return allFilesExists;
-}
-
-//------------------------------------------------------------------------------
-
 ImageLazySource::ImageLazySource( ImageLazyInformation::sptr dcmInfo ) :
     m_dcmInfo( dcmInfo )
 {
     SLM_ASSERT( "ImageLazySource needs at least one dicom file to read an image.",
-                !dcmInfo->m_dicomSeries->getLocalDicomPaths().empty());
+                !dcmInfo->m_dicomSeries->getDicomContainer().empty());
 
-    m_frameSize       = m_dcmInfo->m_rows*m_dcmInfo->m_columns*m_dcmInfo->m_imageType.sizeOf();
+    m_frameSize       = m_dcmInfo->m_rows * m_dcmInfo->m_columns * m_dcmInfo->m_imageType.sizeOf();
     m_currentFrame    = 0;
     m_currentPosition = 0;
-    m_currentPath     = m_dcmInfo->m_dicomSeries->getLocalDicomPaths().begin();
+    m_currentDicom    = m_dcmInfo->m_dicomSeries->getDicomContainer().begin();
 
     m_frame = static_cast<char*>(::fwDcmtkIO::reader::main::ImageLazyReader::createInstanceBuffer(m_dcmInfo->m_rows,
                                                                                                   m_dcmInfo->m_columns,
-                                                                                                  m_currentPath->second,
+                                                                                                  m_currentDicom->second,
                                                                                                   m_dcmInfo->
                                                                                                   m_rescaleSlope,
                                                                                                   m_dcmInfo->
@@ -68,14 +50,6 @@ ImageLazySource::ImageLazySource( ImageLazyInformation::sptr dcmInfo ) :
 std::streamsize ImageLazySource::read(char* s, std::streamsize n)
 {
     std::streamsize result = -1;
-
-    // Be sure that all files exist when reading the first frame
-    if(m_currentFrame == 0 && m_currentPosition == 0)
-    {
-        const bool exist = filesStillExist(m_dcmInfo->m_dicomSeries);
-        OSLM_ERROR_IF( "Error while reading dicom files : " <<
-                       m_dcmInfo->m_dicomSeries->getLocalDicomPaths().begin()->second.string() << " ...", !exist );
-    }
 
     // Load new frame
     if(m_currentPosition + n > m_frameSize)
@@ -93,17 +67,17 @@ std::streamsize ImageLazySource::read(char* s, std::streamsize n)
         // Change frame
         delete m_frame;
         ++m_currentFrame;
-        ++m_currentPath;
+        ++m_currentDicom;
         m_currentPosition = 0;
 
         // If there is more frame
-        if(m_currentPath != m_dcmInfo->m_dicomSeries->getLocalDicomPaths().end())
+        if(m_currentDicom != m_dcmInfo->m_dicomSeries->getDicomContainer().end())
         {
             // Copy extra bytes from the new frame
             if(extraBytes > 0)
             {
                 m_frame = static_cast<char*>(::fwDcmtkIO::reader::main::ImageLazyReader::createInstanceBuffer(
-                                                 m_dcmInfo->m_rows, m_dcmInfo->m_columns, m_currentPath->second,
+                                                 m_dcmInfo->m_rows, m_dcmInfo->m_columns, m_currentDicom->second,
                                                  m_dcmInfo->m_rescaleSlope, m_dcmInfo->m_rescaleIntercept,
                                                  m_dcmInfo->m_pixelRepresentation, m_dcmInfo->m_imageType));
 
@@ -125,7 +99,7 @@ std::streamsize ImageLazySource::read(char* s, std::streamsize n)
         m_currentPosition += n;
         result             = n;
 
-        if(m_currentPath->second == m_dcmInfo->m_dicomSeries->getLocalDicomPaths().rbegin()->second &&
+        if(m_currentDicom->second == m_dcmInfo->m_dicomSeries->getDicomContainer().rbegin()->second &&
            m_currentPosition == m_frameSize)
         {
             SLM_TRACE("Reading process over.");
@@ -134,7 +108,6 @@ std::streamsize ImageLazySource::read(char* s, std::streamsize n)
     }
 
     return result;
-
 }
 
 //------------------------------------------------------------------------------

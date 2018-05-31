@@ -1,17 +1,19 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "DicomSeriesTest.hpp"
 
-#include <fstream>
 #include <fwData/Array.hpp>
+
 #include <fwTools/System.hpp>
 #include <fwTools/Type.hpp>
 
 #include <boost/filesystem/operations.hpp>
+
+#include <fstream>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwMedData::ut::DicomSeriesTest );
@@ -53,24 +55,18 @@ void DicomSeriesTest::dicomTest()
     file.close();
 
     //None
-    CPPUNIT_ASSERT_EQUAL(::fwMedData::DicomSeries::NONE, m_series->getDicomAvailability());
     CPPUNIT_ASSERT(!m_series->isInstanceAvailable(42));
     m_series->setNumberOfInstances(100);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(100,m_series->getNumberOfInstances(),0);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(100, m_series->getNumberOfInstances(), 0);
 
     //Paths
-    m_series->setDicomAvailability(::fwMedData::DicomSeries::PATHS);
-    CPPUNIT_ASSERT_EQUAL(::fwMedData::DicomSeries::PATHS, m_series->getDicomAvailability());
     m_series->addDicomPath(42, filename);
     CPPUNIT_ASSERT(m_series->isInstanceAvailable(42));
 
     //Binaries
-    m_series->setDicomAvailability(::fwMedData::DicomSeries::BINARIES);
-    CPPUNIT_ASSERT_EQUAL(::fwMedData::DicomSeries::BINARIES, m_series->getDicomAvailability());
-    ::fwData::Array::sptr array = ::fwData::Array::New();
-    m_series->addBinary(filename, array);
-    CPPUNIT_ASSERT_EQUAL(array, m_series->getDicomBinaries().at(filename));
-
+    ::fwMemory::BufferObject::sptr bufferObj = ::fwMemory::BufferObject::New();
+    m_series->addBinary(1664, bufferObj);
+    CPPUNIT_ASSERT_EQUAL(bufferObj, m_series->getDicomContainer().at(1664));
 }
 
 //------------------------------------------------------------------------------

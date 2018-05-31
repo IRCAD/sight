@@ -31,7 +31,7 @@ public:
      * @brief Read the series from the group of instances.
      * @return Returns the created Series.
      */
-    FWDCMTKIO_API virtual ::fwMedData::Series::sptr read(::fwMedData::DicomSeries::csptr series) = 0;
+    FWDCMTKIO_API virtual ::fwMedData::Series::sptr read(const ::fwMedData::DicomSeries::csptr& series) = 0;
 
 };
 

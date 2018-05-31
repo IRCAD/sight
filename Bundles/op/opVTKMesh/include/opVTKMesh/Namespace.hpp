@@ -1,14 +1,13 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __OPVTKMESH_NAMESPACE_HPP__
-#define __OPVTKMESH_NAMESPACE_HPP__
+#pragma once
 
 /**
- * @brief       The namespace opVTKMesh contains interface class for mesh and an implementation of a VTK mesher.
+ * @brief       The namespace opVTKMesh contains an implementation of a VTK mesher.
  */
 namespace opVTKMesh
 {
@@ -22,5 +21,3 @@ namespace action
 } // namespace action
 
 } // namespace opVTKMesh
-
-#endif /* __OPVTKMESH_NAMESPACE_HPP__ */

@@ -1,17 +1,16 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWMEMORY_FILEHOLDER_HPP__
-#define __FWMEMORY_FILEHOLDER_HPP__
+#pragma once
+
+#include "fwMemory/config.hpp"
 
 #include <fwCore/macros.hpp>
 
 #include <boost/filesystem/path.hpp>
-
-#include "fwMemory/config.hpp"
 
 namespace fwMemory
 {
@@ -24,17 +23,21 @@ public:
     FileHolder()
     {
     }
-    FWMEMORY_API FileHolder(const ::boost::filesystem::path &file, bool autodelete = false);
+    FWMEMORY_API FileHolder(const ::boost::filesystem::path& file, bool autodelete = false);
 
-    operator :: boost::filesystem::path () const
+    operator :: boost::filesystem::path() const
     {
         return m_path;
     }
+
+    //------------------------------------------------------------------------------
 
     bool empty() const
     {
         return m_path.empty();
     }
+
+    //------------------------------------------------------------------------------
 
     void clear()
     {
@@ -42,7 +45,9 @@ public:
         m_autoDelete.reset();
     }
 
-    std::string string()
+    //------------------------------------------------------------------------------
+
+    std::string string() const
     {
         return m_path.string();
     }
@@ -52,8 +57,4 @@ protected:
     SPTR(FileAutoDelete) m_autoDelete;
 };
 
-
 } // namespace fwMemory
-
-#endif // __FWMEMORY_FILEHOLDER_HPP__
-

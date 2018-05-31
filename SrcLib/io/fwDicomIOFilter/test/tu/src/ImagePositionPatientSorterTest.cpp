@@ -1,14 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "ImagePositionPatientSorterTest.hpp"
 
-#include <fwDicomIOFilter/IFilter.hpp>
 #include <fwDicomIOFilter/factory/new.hpp>
 #include <fwDicomIOFilter/helper/Filter.hpp>
+#include <fwDicomIOFilter/IFilter.hpp>
 
 #include <fwGdcmIO/reader/SeriesDB.hpp>
 
@@ -16,12 +16,12 @@
 
 #include <fwTest/Data.hpp>
 
-#include <gdcmScanner.h>
-
 #include <boost/algorithm/string.hpp>
 #include <boost/algorithm/string/split.hpp>
 #include <boost/filesystem/path.hpp>
 #include <boost/lexical_cast.hpp>
+
+#include <gdcmScanner.h>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwDicomIOFilter::ut::ImagePositionPatientSorterTest );
@@ -79,12 +79,16 @@ void ImagePositionPatientSorterTest::simpleApplication()
     dicomSeries = dicomSeriesContainer[0];
 
     // Create the list of files
-    ::fwMedData::DicomSeries::DicomPathContainerType dicomPaths = dicomSeries->getLocalDicomPaths();
     std::vector< std::string > filenames;
-    ::fwMedData::DicomSeries::DicomPathContainerType::iterator itPath = dicomPaths.begin();
-    for(; itPath != dicomPaths.end(); ++itPath)
+    ::boost::filesystem::directory_iterator currentEntry(path);
+    ::boost::filesystem::directory_iterator endEntry;
+    for(; currentEntry != endEntry; ++currentEntry)
     {
-        filenames.push_back(itPath->second.string());
+        const ::boost::filesystem::path entryPath = *currentEntry;
+        if (::boost::filesystem::is_regular_file(entryPath))
+        {
+            filenames.push_back(entryPath.string());
+        }
     }
 
     // Read the instance number of each file
@@ -144,7 +148,6 @@ void ImagePositionPatientSorterTest::simpleApplication()
         CPPUNIT_ASSERT_MESSAGE(ss.str(), position > oldPosition);
         oldPosition = position;
     }
-
 }
 
 //------------------------------------------------------------------------------

@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWDCMTKIO_READER_MAIN_IMAGELAZYREADER_HPP__
-#define __FWDCMTKIO_READER_MAIN_IMAGELAZYREADER_HPP__
+#pragma once
 
 #include "fwDcmtkIO/config.hpp"
 #include "fwDcmtkIO/helper/Codec.hpp"
@@ -17,6 +16,7 @@
 #include <dcmtk/config/osconfig.h>
 #include <dcmtk/dcmdata/dcdeftag.h>
 #include <dcmtk/dcmdata/dcfilefo.h>
+#include <dcmtk/dcmdata/dcistrmb.h>
 #include <dcmtk/dcmimgle/dcmimage.h>
 #include <dcmtk/dcmnet/diutil.h>
 
@@ -44,9 +44,11 @@ public:
      * @param[in] imageType Type of the image used to create the buffer
      */
     FWDCMTKIO_API static void* createInstanceBuffer(unsigned int rows, unsigned int columns,
-                                                    const ::boost::filesystem::path& instance, double rescaleSlope,
+                                                    const ::fwMemory::BufferObject::sptr& instance,
+                                                    double rescaleSlope,
                                                     double rescaleIntercept,
-                                                    unsigned short pixelRepresentation, ::fwTools::Type imageType)
+                                                    unsigned short pixelRepresentation,
+                                                    ::fwTools::Type imageType)
     {
         if (pixelRepresentation == 0)
         {
@@ -94,7 +96,8 @@ protected:
      */
     template< typename T >
     FWDCMTKIO_API static void* createInstanceBuffer(unsigned int rows, unsigned int columns,
-                                                    const ::boost::filesystem::path& instance, double rescaleSlope,
+                                                    const ::fwMemory::BufferObject::sptr& instance,
+                                                    double rescaleSlope,
                                                     double rescaleIntercept,
                                                     ::fwTools::Type imageType)
     {
@@ -167,8 +170,10 @@ protected:
      * @param[in] rescaleIntercept Intercept parameter
      */
     template< typename T, typename U >
-    FWDCMTKIO_API static U* createInstanceBuffer(unsigned int rows, unsigned int columns,
-                                                 const ::boost::filesystem::path& instance, double rescaleSlope,
+    FWDCMTKIO_API static U* createInstanceBuffer(unsigned int rows,
+                                                 unsigned int columns,
+                                                 const ::fwMemory::BufferObject::sptr& instance,
+                                                 double rescaleSlope,
                                                  double rescaleIntercept)
     {
         DcmFileFormat fileFormat;
@@ -182,9 +187,23 @@ protected:
         U* tempoBuffer = new U[rows * columns];
 
         // Read instance
-        const std::string filename = instance.string();
-        status = fileFormat.loadFile(filename.c_str());
-        FW_RAISE_IF("Unable to read the file: \""+filename+"\"", status.bad());
+        const size_t buffSize       = instance->getSize();
+        const std::string dicomPath = instance->getStreamInfo().fsFile.string();
+        ::fwMemory::BufferObject::Lock lock(instance);
+        char* buffer = static_cast< char* >( lock.getBuffer() );
+
+        DcmInputBufferStream is;
+        is.setBuffer(buffer, offile_off_t(buffSize));
+        is.setEos();
+
+        fileFormat.transferInit();
+        if (!fileFormat.read(is).good())
+        {
+            FW_RAISE("Unable to read Dicom file '"<< dicomPath <<"'");
+        }
+
+        fileFormat.loadAllDataIntoMemory();
+        fileFormat.transferEnd();
 
         dataset = fileFormat.getDataset();
 
@@ -231,11 +250,8 @@ protected:
 
         return tempoBuffer;
     }
-
 };
 
 } //main
 } //reader
 } //fwDcmtkIO
-
-#endif /* __FWDCMTKIO_READER_MAIN_IMAGELAZYREADER_HPP__ */

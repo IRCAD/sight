@@ -63,11 +63,11 @@ throw(::fwGdcmIO::exception::Failed)
     // Create result
     ::fwMedData::Series::sptr result;
 
-    if(!dicomSeries->getLocalDicomPaths().empty())
+    if(!dicomSeries->getDicomContainer().empty())
     {
         // Get SOPClassUID
         ::fwMedData::DicomSeries::SOPClassUIDContainerType sopClassUIDContainer = dicomSeries->getSOPClassUIDs();
-        std::string sopClassUID = *sopClassUIDContainer.begin();
+        const std::string sopClassUID = *sopClassUIDContainer.begin();
 
         // If the DicomSeries contains an image (ImageSeries)
         if (::gdcm::MediaStorage::IsImage(::gdcm::MediaStorage::GetMSType(sopClassUID.c_str())) &&
@@ -75,7 +75,8 @@ throw(::fwGdcmIO::exception::Failed)
         {
             // Read the image
             ::fwMedData::ImageSeries::sptr imageSeries = ::fwDicomTools::Series::convertToImageSeries(dicomSeries);
-            ::fwData::Image::sptr image                = ::fwData::Image::New();
+            imageSeries->setDicomReference(dicomSeries);
+            ::fwData::Image::sptr image = ::fwData::Image::New();
             imageSeries->setImage(image);
 
             // Create IOD Reader
@@ -103,7 +104,7 @@ throw(::fwGdcmIO::exception::Failed)
                  ::gdcm::MediaStorage::SurfaceSegmentationStorage)
         {
             ::fwMedData::ModelSeries::sptr modelSeries = ::fwDicomTools::Series::convertToModelSeries(dicomSeries);
-
+            modelSeries->setDicomReference(dicomSeries);
             // Create IOD Reader
             ::fwGdcmIO::reader::iod::SurfaceSegmentationIOD iod(dicomSeries, instance, m_logger,
                                                                 m_progressCallback, m_cancelRequestedCallback);
@@ -134,6 +135,8 @@ throw(::fwGdcmIO::exception::Failed)
                 ::fwMedData::ImageSeries::sptr imageSeries =
                     ::fwMedData::ImageSeries::dynamicCast(m_seriesContainerMap[imageInstance]);
 
+                imageSeries->setDicomReference(dicomSeries);
+
                 // Create IOD Reader
                 ::fwGdcmIO::reader::iod::SpatialFiducialsIOD iod(dicomSeries, instance, m_logger,
                                                                  m_progressCallback, m_cancelRequestedCallback);
@@ -162,16 +165,22 @@ throw(::fwGdcmIO::exception::Failed)
                                                                  // == ::gdcm::MediaStorage::Comprehensive3DSR"
         {
             // Retrieve referenced image instance
-            SPTR(::fwGdcmIO::container::DicomInstance) imageInstance =
+            SPTR(::fwGdcmIO::container::DicomInstance) referencedInstance =
                 this->getStructuredReportReferencedSeriesInstance(dicomSeries);
 
-            ::fwMedData::ImageSeries::sptr imageSeries =
-                ::fwMedData::ImageSeries::dynamicCast(m_seriesContainerMap[imageInstance]);
-
-            if(imageInstance && imageSeries)
+            ::fwMedData::ImageSeries::sptr imageSeries;
+            const auto& iter = m_seriesContainerMap.find(referencedInstance);
+            if(iter != m_seriesContainerMap.end())
             {
+                imageSeries = ::fwMedData::ImageSeries::dynamicCast(iter->second);
+            }
+
+            if(referencedInstance && imageSeries)
+            {
+                imageSeries->setDicomReference(dicomSeries);
+
                 // Create readers
-                ::fwGdcmIO::reader::iod::ComprehensiveSRIOD iod(dicomSeries, imageInstance, m_logger,
+                ::fwGdcmIO::reader::iod::ComprehensiveSRIOD iod(dicomSeries, referencedInstance, m_logger,
                                                                 m_progressCallback, m_cancelRequestedCallback);
 
                 try
@@ -199,8 +208,10 @@ throw(::fwGdcmIO::exception::Failed)
     }
 
     // Store series in instance map
-    m_seriesContainerMap[instance] = result;
-
+    if(result)
+    {
+        m_seriesContainerMap[instance] = result;
+    }
     return result;
 }
 
@@ -211,13 +222,16 @@ SPTR(::fwGdcmIO::container::DicomInstance) Series::getSpatialFiducialsReferenced
 {
     SPTR(::fwGdcmIO::container::DicomInstance) result;
 
-    // Path container
-    ::fwMedData::DicomSeries::DicomPathContainerType pathContainer = dicomSeries->getLocalDicomPaths();
-    const std::string filename = pathContainer.begin()->second.string();
+    // Dicom container
+    ::fwMedData::DicomSeries::DicomContainerType dicomContainer = dicomSeries->getDicomContainer();
 
     // Create Reader
-    ::boost::shared_ptr< ::gdcm::Reader > reader = ::boost::shared_ptr< ::gdcm::Reader >( new ::gdcm::Reader );
-    reader->SetFileName( filename.c_str() );
+    ::boost::shared_ptr< ::gdcm::Reader > reader =
+        ::boost::shared_ptr< ::gdcm::Reader >( new ::gdcm::Reader );
+    const ::fwMemory::BufferObject::sptr bufferObj         = dicomContainer.begin()->second;
+    const ::fwMemory::BufferManager::StreamInfo streamInfo = bufferObj->getStreamInfo();
+    SPTR(std::istream) is = streamInfo.stream;
+    reader->SetStream(*is);
 
     // Series Instance UID of the referenced Series
     std::string seriesInstanceUID = "";
@@ -268,13 +282,16 @@ SPTR(::fwGdcmIO::container::DicomInstance) Series::getStructuredReportReferenced
 
     SPTR(::fwGdcmIO::container::DicomInstance) result;
 
-    // Path container
-    ::fwMedData::DicomSeries::DicomPathContainerType pathContainer = dicomSeries->getLocalDicomPaths();
-    const std::string filename = pathContainer.begin()->second.string();
+    // Dicom container
+    ::fwMedData::DicomSeries::DicomContainerType dicomContainer = dicomSeries->getDicomContainer();
 
     // Create Reader
-    ::boost::shared_ptr< ::gdcm::Reader > reader = ::boost::shared_ptr< ::gdcm::Reader >( new ::gdcm::Reader );
-    reader->SetFileName( filename.c_str() );
+    ::boost::shared_ptr< ::gdcm::Reader > reader =
+        ::boost::shared_ptr< ::gdcm::Reader >( new ::gdcm::Reader );
+    const ::fwMemory::BufferObject::sptr bufferObj         = dicomContainer.begin()->second;
+    const ::fwMemory::BufferManager::StreamInfo streamInfo = bufferObj->getStreamInfo();
+    SPTR(std::istream) is = streamInfo.stream;
+    reader->SetStream(*is);
 
     // Series Instance UID of the referenced Series
     std::string seriesInstanceUID = "";

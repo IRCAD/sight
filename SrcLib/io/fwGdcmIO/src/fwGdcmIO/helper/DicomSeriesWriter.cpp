@@ -41,51 +41,6 @@ DicomSeriesWriter::DicomSeriesWriter(::fwDataIO::writer::IObjectWriter::Key key)
 
 //------------------------------------------------------------------------------
 
-::boost::filesystem::path longestCommonPrefix( const ::fwMedData::DicomSeries::DicomPathContainerType& paths )
-{
-    ::boost::filesystem::path longestPrefix;
-    if( !paths.empty() )
-    {
-        longestPrefix = paths.begin()->second;
-    }
-
-    for(const ::fwMedData::DicomSeries::DicomPathContainerType::value_type& value : paths)
-    {
-        std::pair< ::boost::filesystem::path::const_iterator, ::boost::filesystem::path::const_iterator > p
-            = std::mismatch(longestPrefix.begin(), longestPrefix.end(), value.second.begin());
-
-        if (p.first != longestPrefix.end())
-        {
-            ::boost::filesystem::path newPrefix;
-            BOOST_FOREACH( const ::boost::filesystem::path& subpath, std::make_pair(longestPrefix.begin(), p.first))
-            {
-                newPrefix /= subpath;
-            }
-            longestPrefix = newPrefix;
-        }
-    }
-
-    return longestPrefix;
-}
-
-//------------------------------------------------------------------------------
-
-::boost::filesystem::path removePathPrefix(const ::boost::filesystem::path& path,
-                                           const ::boost::filesystem::path& prefix)
-{
-    std::pair< ::boost::filesystem::path::const_iterator, ::boost::filesystem::path::const_iterator > p
-        = std::mismatch(path.begin(), path.end(), prefix.begin());
-
-    ::boost::filesystem::path newPrefix;
-    BOOST_FOREACH( const ::boost::filesystem::path& subpath, std::make_pair(p.first,  path.end()))
-    {
-        newPrefix /= subpath;
-    }
-    return newPrefix;
-}
-
-//------------------------------------------------------------------------------
-
 void DicomSeriesWriter::setAnonymizer(const SPTR(helper::DicomAnonymizer)& anonymizer)
 {
     m_anonymizer = anonymizer;
@@ -115,22 +70,20 @@ void DicomSeriesWriter::write()
 
 //------------------------------------------------------------------------------
 
-std::string DicomSeriesWriter::getFilename(const std::string& defaultName)
+std::string DicomSeriesWriter::getFilename(const size_t& instanceIndex)
 {
-    std::string filename;
-
+    std::stringstream ss;
+    ss << std::setfill('0') << std::setw(7);
     if(m_anonymizer)
     {
-        std::stringstream ss;
-        ss << "im" << std::setfill('0') << std::setw(5) << m_anonymizer->getNextIndex();
-        filename = ss.str();
+        ss << m_anonymizer->getNextIndex();
     }
     else
     {
-        filename = defaultName;
+        ss << instanceIndex;
     }
 
-    return filename;
+    return ss.str();
 }
 
 //------------------------------------------------------------------------------
@@ -153,9 +106,6 @@ void DicomSeriesWriter::processWrite()
 {
     ::fwMedData::DicomSeries::csptr dicomSeries = this->getConcreteObject();
 
-    FW_RAISE_IF("Dicom series should contain binaries.",
-                dicomSeries->getDicomAvailability() == ::fwMedData::DicomSeries::NONE);
-
     // Create folder
     ::boost::filesystem::path folder = this->getFolder();
 
@@ -177,86 +127,38 @@ void DicomSeriesWriter::processWrite()
     unsigned int count = 0;
 
     // Write binary files
-    if(dicomSeries->getDicomAvailability() == ::fwMedData::DicomSeries::BINARIES)
+    for(const auto& value : dicomSeries->getDicomContainer())
     {
-        for(const auto& value : dicomSeries->getDicomBinaries())
+        if(m_job->cancelRequested())
         {
-            if(m_job->cancelRequested())
-            {
-                return;
-            }
-
-            const std::string filename = this->getFilename(value.first);
-
-            ::fwData::Array::sptr array = value.second;
-            ::fwDataTools::helper::Array arrayHelper(array);
-            char* buffer = static_cast<char*>(arrayHelper.getBuffer());
-            size_t size  = array->getSizeInBytes();
-
-            std::ifstream stream;
-            stream.rdbuf()->pubsetbuf(buffer, size);
-
-            const ::boost::filesystem::path& dest_dir =
-                m_anonymizer ? folder/m_subPath : folder;
-
-            if(!::boost::filesystem::exists(dest_dir))
-            {
-                ::boost::filesystem::create_directories(dest_dir);
-            }
-
-            const ::boost::filesystem::path& dest_file = dest_dir / filename;
-
-            ::boost::filesystem::ofstream fs(dest_file, std::ios::binary|std::ios::trunc);
-            FW_RAISE_IF("Can't open '" <<  dest_file.string() << "' for write.", !fs.good());
-
-            this->processStream(stream, fs);
-            stream.close();
-
-            m_job->doneWork(++count);
+            return;
         }
-    }
-    else
-    {
-        ::boost::filesystem::path longestPrefix = longestCommonPrefix(dicomSeries->getLocalDicomPaths()).parent_path();
-        SLM_TRACE("Longest prefix :" + longestPrefix.string());
 
-        for(const ::fwMedData::DicomSeries::DicomPathContainerType::value_type& value :
-            dicomSeries->getLocalDicomPaths())
+        const std::string filename = this->getFilename(value.first);
+
+        const ::fwMemory::BufferObject::sptr sourceBuffer = value.second;
+        ::fwMemory::BufferObject::Lock sourceLocker(sourceBuffer);
+        const ::fwMemory::BufferManager::StreamInfo& streamInfo = sourceBuffer->getStreamInfo();
+        SPTR(std::istream) stream = streamInfo.stream;
+
+        const ::boost::filesystem::path& dest_dir = m_anonymizer ? folder/m_subPath : folder;
+
+        if(!::boost::filesystem::exists(dest_dir))
         {
-            if(m_job->cancelRequested())
-            {
-                break;
-            }
-
-            const ::boost::filesystem::path& src = value.second;
-            const std::string filename           = this->getFilename(src.filename().string());
-
-            const ::boost::filesystem::path& dest_dir = folder /
-                                                        (m_anonymizer ? m_subPath : removePathPrefix(src.parent_path(),
-                                                                                                     longestPrefix));
-
-            if(!::boost::filesystem::exists(dest_dir))
-            {
-                ::boost::filesystem::create_directories(dest_dir);
-            }
-
-            // Read file from filesystem
-            ::boost::filesystem::ifstream stream(src, std::ios::binary);
-
-            const ::boost::filesystem::path& dest_file = dest_dir / filename;
-
-            ::boost::filesystem::ofstream fs(dest_file, std::ios::binary|std::ios::trunc);
-            FW_RAISE_IF("Can't open '" <<  dest_file.string() << "' for write.", !fs.good());
-
-            this->processStream(stream, fs);
-            stream.close();
-
-            m_job->doneWork(++count);
+            ::boost::filesystem::create_directories(dest_dir);
         }
+
+        const ::boost::filesystem::path& dest_file = dest_dir / filename;
+
+        ::boost::filesystem::ofstream fs(dest_file, std::ios::binary|std::ios::trunc);
+        FW_RAISE_IF("Can't open '" <<  dest_file.string() << "' for write.", !fs.good());
+
+        this->processStream(*(stream.get()), fs);
+
+        m_job->doneWork(++count);
     }
 
     m_job->finish();
-
     m_writeCount++;
 }
 
@@ -268,81 +170,39 @@ void DicomSeriesWriter::processWriteArchive()
 
     ::fwMedData::DicomSeries::csptr dicomSeries = this->getConcreteObject();
 
-    FW_RAISE_IF("Dicom series should contain binaries.",
-                dicomSeries->getDicomAvailability() == ::fwMedData::DicomSeries::NONE);
-
     const size_t nbInstances = dicomSeries->getNumberOfInstances();
     unsigned int count       = 0;
 
     m_job->setTotalWorkUnits(nbInstances);
-    if(dicomSeries->getDicomAvailability() == ::fwMedData::DicomSeries::BINARIES)
+
+    for(const auto& value : dicomSeries->getDicomContainer())
     {
-        for(::fwMedData::DicomSeries::DicomBinaryContainerType::value_type value : dicomSeries->getDicomBinaries())
+        if(m_job->cancelRequested())
         {
-            if(m_job->cancelRequested())
-            {
-                break;
-            }
-
-            const std::string filename = this->getFilename(value.first);
-
-            ::fwData::Array::sptr array = value.second;
-            ::fwDataTools::helper::Array arrayHelper(array);
-            char* buffer = static_cast<char*>(arrayHelper.getBuffer());
-            size_t size  = array->getSizeInBytes();
-
-            std::ifstream stream;
-            stream.rdbuf()->pubsetbuf(buffer, size);
-
-            const ::boost::filesystem::path& dest_dir =
-                m_anonymizer ? m_subPath : "";
-
-            const ::boost::filesystem::path& dest_file = dest_dir / filename;
-            SPTR(std::ostream) fs = m_archive->createFile(dest_file);
-            FW_RAISE_IF("Can't open '" << dest_file.string() << "' for write.", !fs->good());
-
-            this->processStream(stream, *fs);
-            stream.close();
-
-            m_job->doneWork(++count);
+            break;
         }
-    }
-    else
-    {
-        ::boost::filesystem::path longestPrefix = longestCommonPrefix(dicomSeries->getLocalDicomPaths()).parent_path();
-        SLM_TRACE("Longest prefix :" + longestPrefix.string());
 
-        for(const auto& value : dicomSeries->getLocalDicomPaths())
-        {
-            if(m_job->cancelRequested())
-            {
-                break;
-            }
+        const std::string filename = this->getFilename(value.first);
 
-            const ::boost::filesystem::path& src = value.second;
-            const std::string filename           = this->getFilename(src.filename().string());
+        const ::fwMemory::BufferObject::sptr sourceBuffer = value.second;
+        ::fwMemory::BufferObject::Lock sourceLocker(sourceBuffer);
+        const ::fwMemory::BufferManager::StreamInfo& streamInfo = sourceBuffer->getStreamInfo();
+        SPTR(std::istream) stream = streamInfo.stream;
 
-            const ::boost::filesystem::path& dest_dir =
-                m_anonymizer ? m_subPath : removePathPrefix(src.parent_path(), longestPrefix);
+        const ::boost::filesystem::path& dest_dir =
+            m_anonymizer ? m_subPath : "";
 
-            // Read file from filesystem
-            ::boost::filesystem::ifstream stream(src, std::ios::binary);
-            FW_RAISE_IF("Can't open '" << src.string() << "' for read.", !stream.good());
+        const ::boost::filesystem::path& dest_file = dest_dir / filename;
+        SPTR(std::ostream) fs = m_archive->createFile(dest_file);
+        FW_RAISE_IF("Can't open '" << dest_file.string() << "' for write.", !fs->good());
 
-            const ::boost::filesystem::path& dest_file = dest_dir / filename;
-            SPTR(std::ostream) fs = m_archive->createFile(dest_file);
-            FW_RAISE_IF("Can't open '" << dest_file.string() << "' for write.", !fs->good());
+        this->processStream(*(stream.get()), *fs);
 
-            this->processStream(stream, *fs);
-            stream.close();
-
-            m_job->doneWork(++count);
-        }
+        m_job->doneWork(++count);
     }
 
     m_job->done();
     m_job->finish();
-
     ++m_writeCount;
 }
 

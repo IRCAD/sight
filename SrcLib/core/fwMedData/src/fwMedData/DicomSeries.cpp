@@ -6,9 +6,10 @@
 
 #include "fwMedData/DicomSeries.hpp"
 
-#include <fwData/Array.hpp>
 #include <fwData/Exception.hpp>
 #include <fwData/registry/macros.hpp>
+
+#include <fwMemory/stream/in/Raw.hpp>
 
 #include <boost/filesystem/operations.hpp>
 
@@ -19,7 +20,6 @@ namespace fwMedData
 
 DicomSeries::DicomSeries(::fwData::Object::Key key) :
     Series(key),
-    m_dicomAvailability(NONE),
     m_numberOfInstances(0),
     m_firstInstanceNumber(0)
 {
@@ -42,14 +42,11 @@ void DicomSeries::shallowCopy(const ::fwData::Object::csptr& _source)
 
     this->::fwMedData::Series::shallowCopy(_source);
 
-    m_dicomAvailability   = other->m_dicomAvailability;
     m_numberOfInstances   = other->m_numberOfInstances;
-    m_localDicomPaths     = other->m_localDicomPaths;
-    m_dicomBinaries       = other->m_dicomBinaries;
+    m_dicomContainer      = other->m_dicomContainer;
     m_SOPClassUIDs        = other->m_SOPClassUIDs;
     m_computedTagValues   = other->m_computedTagValues;
     m_firstInstanceNumber = other->m_firstInstanceNumber;
-
 }
 
 //------------------------------------------------------------------------------
@@ -63,17 +60,30 @@ void DicomSeries::cachedDeepCopy(const ::fwData::Object::csptr& _source, DeepCop
 
     this->::fwMedData::Series::cachedDeepCopy(_source, cache);
 
-    m_dicomAvailability   = other->m_dicomAvailability;
     m_numberOfInstances   = other->m_numberOfInstances;
-    m_localDicomPaths     = other->m_localDicomPaths;
     m_SOPClassUIDs        = other->m_SOPClassUIDs;
     m_computedTagValues   = other->m_computedTagValues;
     m_firstInstanceNumber = other->m_firstInstanceNumber;
 
-    m_dicomBinaries.clear();
-    for(const DicomBinaryContainerType::value_type& array : other->m_dicomBinaries)
+    m_dicomContainer.clear();
+    for(const auto& elt : other->m_dicomContainer)
     {
-        m_dicomBinaries[array.first] = ::fwData::Object::copy(array.second);
+        const ::fwMemory::BufferObject::sptr& bufferSrc = elt.second;
+        ::fwMemory::BufferObject::Lock lockerSource(bufferSrc);
+
+        if( !bufferSrc->isEmpty() )
+        {
+            ::fwMemory::BufferObject::sptr bufferDest = ::fwMemory::BufferObject::New();
+            ::fwMemory::BufferObject::Lock lockerDest(bufferDest);
+
+            bufferDest->allocate(bufferSrc->getSize());
+
+            char* buffDest = static_cast< char* >( lockerDest.getBuffer() );
+            char* buffSrc  = static_cast< char* >( lockerSource.getBuffer() );
+            std::copy(buffSrc, buffSrc + bufferSrc->getSize(), buffDest );
+
+            m_dicomContainer[elt.first] = bufferDest;
+        }
     }
 }
 
@@ -81,40 +91,26 @@ void DicomSeries::cachedDeepCopy(const ::fwData::Object::csptr& _source, DeepCop
 
 void DicomSeries::addDicomPath(std::size_t instanceIndex, const ::boost::filesystem::path& path)
 {
-    m_localDicomPaths[instanceIndex] = path;
+    ::fwMemory::BufferObject::sptr buffer = ::fwMemory::BufferObject::New();
+    const size_t buffSize = ::boost::filesystem::file_size(path);
+    buffer->setIStreamFactory( std::make_shared< ::fwMemory::stream::in::Raw >(path),
+                               buffSize, path, ::fwMemory::RAW);
+    m_dicomContainer[instanceIndex] = buffer;
 }
 
 //------------------------------------------------------------------------------
 
-void DicomSeries::addBinary(const std::string& filename, const SPTR(::fwData::Array)& binary)
+void DicomSeries::addBinary(std::size_t instanceIndex, const ::fwMemory::BufferObject::sptr& buffer)
 {
-    m_dicomBinaries[filename] = binary;
+    m_dicomContainer[instanceIndex] = buffer;
 }
 
 //------------------------------------------------------------------------------
 
 bool DicomSeries::isInstanceAvailable(std::size_t instanceIndex) const
 {
-    DicomPathContainerType::const_iterator localPathIter;
-
-    bool available = false;
-
-    switch(m_dicomAvailability)
-    {
-        case NONE:
-        case PATHS:
-            localPathIter = m_localDicomPaths.find(instanceIndex);
-            available     = localPathIter != m_localDicomPaths.end() && ::boost::filesystem::exists(
-                localPathIter->second);
-            break;
-        case BINARIES:
-            available = instanceIndex < m_dicomBinaries.size();
-            break;
-        default:
-            SLM_ASSERT("You shall not pass.", 0);
-    }
-
-    return available;
+    const auto& dicomContainerIter = m_dicomContainer.find(instanceIndex);
+    return (dicomContainerIter != m_dicomContainer.end());
 }
 
 //------------------------------------------------------------------------------

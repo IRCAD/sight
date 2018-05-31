@@ -39,18 +39,15 @@ namespace ioGdcm
 fwServicesRegisterMacro( ::fwIO::IReader, ::ioGdcm::SDicomSeriesDBReader, ::fwMedData::SeriesDB );
 
 static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
-static const ::fwCom::Signals::SignalKeyType FILES_ADDED_SIGNAL = "filesAdded";
 
 //------------------------------------------------------------------------------
 
 SDicomSeriesDBReader::SDicomSeriesDBReader() noexcept :
     m_cancelled(false),
     m_showLogDialog(true),
-    m_dicomDirSupport(USER_SELECTION),
-    m_readerMode(USER_SELECTION_MODE)
+    m_dicomDirSupport(USER_SELECTION)
 {
     m_sigJobCreated = newSignal<JobCreatedSignal>(JOB_CREATED_SIGNAL);
-    m_sigFilesAdded = newSignal<FilesAddedSignal>(FILES_ADDED_SIGNAL);
 }
 
 //------------------------------------------------------------------------------
@@ -95,29 +92,6 @@ void SDicomSeriesDBReader::configuring()
             m_dicomDirSupport = USER_SELECTION;
         }
     }
-
-    // Reader mode
-    ::fwRuntime::ConfigurationElement::sptr mode = m_configuration->findConfigurationElement("mode");
-    if(mode)
-    {
-        const std::string modeStr = mode->getValue();
-        SLM_ASSERT("<mode> value must be 'direct' or 'copy' or 'user_selection'",
-                   modeStr == "direct" || modeStr == "copy" || modeStr == "user_selection");
-
-        if(modeStr == "direct")
-        {
-            m_readerMode = DIRECT;
-        }
-        else if(modeStr == "copy")
-        {
-            m_readerMode = COPY;
-        }
-        else if(modeStr == "user_selection")
-        {
-            m_readerMode = USER_SELECTION_MODE;
-        }
-    }
-
 }
 
 //------------------------------------------------------------------------------
@@ -146,14 +120,12 @@ void SDicomSeriesDBReader::configureWithIHM()
 
 void SDicomSeriesDBReader::starting()
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 void SDicomSeriesDBReader::stopping()
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
@@ -175,8 +147,8 @@ std::string SDicomSeriesDBReader::getSelectorDialogTitle()
 ::fwMedData::SeriesDB::sptr SDicomSeriesDBReader::createSeriesDB(const ::boost::filesystem::path& dicomDir)
 {
     ::fwGdcmIO::reader::SeriesDB::sptr reader = ::fwGdcmIO::reader::SeriesDB::New();
-    ::fwMedData::SeriesDB::sptr dummy         = ::fwMedData::SeriesDB::New();
-    reader->setObject(dummy);
+    ::fwMedData::SeriesDB::sptr seriesDB      = ::fwMedData::SeriesDB::New();
+    reader->setObject(seriesDB);
     reader->setFolder(dicomDir);
 
     auto job = reader->getJob();
@@ -214,16 +186,15 @@ std::string SDicomSeriesDBReader::getSelectorDialogTitle()
         // Display logger dialog if enabled
         if(m_showLogDialog && !logger->empty())
         {
-
             std::stringstream ss;
-            if(dummy->size() > 1)
+            if(seriesDB->size() > 1)
             {
-                ss << "The reading process is over : <b>" << dummy->size() << " series</b> have been found. "
+                ss << "The reading process is over : <b>" << seriesDB->size() << " series</b> have been found. "
                     "<br>Please verify the log report to be informed of the potential errors.";
             }
             else
             {
-                ss << "The reading process is over : <b>" << dummy->size() << " series</b> has been found. "
+                ss << "The reading process is over : <b>" << seriesDB->size() << " series</b> has been found. "
                     "<br>Please verify the log report to be informed of the potential errors.";
             }
 
@@ -236,7 +207,7 @@ std::string SDicomSeriesDBReader::getSelectorDialogTitle()
             // If the user cancel the reading process we delete the loaded series
             if(!result || reader->getJob()->cancelRequested())
             {
-                ::fwMedDataTools::helper::SeriesDB sDBhelper(dummy);
+                ::fwMedDataTools::helper::SeriesDB sDBhelper(seriesDB);
                 sDBhelper.clear();
             }
         }
@@ -256,112 +227,44 @@ std::string SDicomSeriesDBReader::getSelectorDialogTitle()
 
     m_cancelled = job->cancelRequested();
 
-    return dummy;
-}
-
-//------------------------------------------------------------------------------
-
-bool mustCopyDialog()
-{
-    ::fwGui::dialog::MessageDialog::sptr dialog = ::fwGui::dialog::MessageDialog::New();
-
-    bool copy = false;
-    dialog->addCustomButton("Copy", [&copy]()
-        {
-            copy = true;
-        });
-    dialog->addCustomButton("Direct read", [&copy]()
-        {
-            copy = false;
-        });
-
-    const std::string message = "Do you want to copy files before the reading process ?<br />"
-                                "<b>Warning :</b> reading files directly may be slow on external media (DVD, USB key, etc.).";
-    dialog->setMessage(message);
-    dialog->show();
-
-    return copy;
-
-}
-
-//------------------------------------------------------------------------------
-
-bool hasEnoughSpaceToCopy(const std::vector< ::boost::filesystem::path >& files, unsigned int safetyCoefficient = 1)
-{
-    std::size_t size = 0;
-    for(auto file: files)
-    {
-        size += ::boost::filesystem::file_size(file);
-    }
-
-    ::boost::filesystem::path destinationFolder = ::fwTools::System::getTemporaryFolder();
-    auto available = ::boost::filesystem::space(destinationFolder).available;
-
-    OSLM_TRACE("Copying file - Size : " << size << " Available : " << available);
-
-    return (safetyCoefficient * size) < available;
+    return seriesDB;
 }
 
 //------------------------------------------------------------------------------
 
 void SDicomSeriesDBReader::updating()
 {
-    SLM_TRACE_FUNC();
     if( this->hasLocationDefined() )
     {
         ::fwGui::Cursor cursor;
         cursor.setCursor(::fwGui::ICursor::BUSY);
-
-        bool mustCopy = (m_readerMode == COPY);
-        if(m_readerMode == USER_SELECTION_MODE)
-        {
-            mustCopy = mustCopyDialog();
-        }
 
         ::fwMedData::SeriesDB::sptr seriesDB = createSeriesDB(this->getFolder() );
 
         if( seriesDB->size() > 0 && !m_cancelled)
         {
             // Retrieve dataStruct associated with this service
-            ::fwMedData::SeriesDB::sptr associatedSeriesDB = this->getObject< ::fwMedData::SeriesDB >();
+            ::fwMedData::SeriesDB::sptr associatedSeriesDB =
+                this->getInOut< ::fwMedData::SeriesDB >(::fwIO::s_DATA_KEY);
             SLM_ASSERT("associated SeriesDB not instanced", associatedSeriesDB);
 
-            // Retrieve added files
-            std::vector< ::boost::filesystem::path > files;
-            for(auto series: seriesDB->getContainer())
+            // Clear SeriesDB and add new series
+            ::fwMedDataTools::helper::SeriesDB sDBhelper(associatedSeriesDB);
+            ::fwData::mt::ObjectWriteLock lock(associatedSeriesDB);
+            sDBhelper.clear();
+            // Notify removal.
+            sDBhelper.notify();
             {
-                ::fwMedData::DicomSeries::sptr dicomSeries = ::fwMedData::DicomSeries::dynamicCast(series);
-                SLM_ASSERT("The reader should retrieve only DicomSeries.", dicomSeries);
-                for(auto entry: dicomSeries->getLocalDicomPaths())
-                {
-                    files.push_back(entry.second);
-                }
+                ::fwData::mt::ObjectWriteLock lock(seriesDB);
+                associatedSeriesDB->shallowCopy(seriesDB);
             }
 
-            // If we must copy, check that we have enough space to copy and
-            // to anonymize files
-            if(!mustCopy || hasEnoughSpaceToCopy(files, 2))
-            {
-                // Add series to SeriesDB
-                ::fwMedDataTools::helper::SeriesDB sDBhelper(associatedSeriesDB);
-                ::fwData::mt::ObjectWriteLock lock(associatedSeriesDB);
-                sDBhelper.merge(seriesDB);
+            ::fwMedData::SeriesDB::ContainerType addedSeries = associatedSeriesDB->getContainer();
 
-                // Notify SeriesDB
-                sDBhelper.notify();
-
-                // Notify added files
-                m_sigFilesAdded->asyncEmit(mustCopy, files);
-            }
-            else
-            {
-                ::fwGui::dialog::MessageDialog::showMessageDialog(
-                    "Copy error", "There is not enough space on your main hard drive to copy those files.",
-                    ::fwGui::dialog::IMessageDialog::CRITICAL);
-            }
-
+            auto sig = associatedSeriesDB->signal< ::fwMedData::SeriesDB::AddedSeriesSignalType >(
+                ::fwMedData::SeriesDB::s_ADDED_SERIES_SIG);
+            sig->asyncEmit(addedSeries);
         }
-
         cursor.setDefaultCursor();
     }
 }

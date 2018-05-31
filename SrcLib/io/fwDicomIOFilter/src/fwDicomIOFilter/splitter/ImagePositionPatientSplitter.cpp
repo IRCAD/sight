@@ -1,20 +1,22 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwDicomIOFilter/registry/macros.hpp"
-#include "fwDicomIOFilter/exceptions/FilterFailure.hpp"
 #include "fwDicomIOFilter/splitter/ImagePositionPatientSplitter.hpp"
+
+#include "fwDicomIOFilter/exceptions/FilterFailure.hpp"
+#include "fwDicomIOFilter/registry/macros.hpp"
 
 #include <fwMath/VectorFunctions.hpp>
 
 #include <dcmtk/config/osconfig.h>
-#include <dcmtk/dcmnet/diutil.h>
-#include <dcmtk/dcmdata/dcfilefo.h>
 #include <dcmtk/dcmdata/dcdeftag.h>
+#include <dcmtk/dcmdata/dcfilefo.h>
+#include <dcmtk/dcmdata/dcistrmb.h>
 #include <dcmtk/dcmimgle/dcmimage.h>
+#include <dcmtk/dcmnet/diutil.h>
 
 fwDicomIOFilterRegisterMacro( ::fwDicomIOFilter::splitter::ImagePositionPatientSplitter );
 
@@ -30,7 +32,8 @@ const std::string ImagePositionPatientSplitter::s_FILTER_DESCRIPTION =
 
 //-----------------------------------------------------------------------------
 
-ImagePositionPatientSplitter::ImagePositionPatientSplitter(::fwDicomIOFilter::IFilter::Key key) : ISplitter()
+ImagePositionPatientSplitter::ImagePositionPatientSplitter(::fwDicomIOFilter::IFilter::Key key) :
+    ISplitter()
 {
 }
 
@@ -62,20 +65,36 @@ const
 {
     DicomSeriesContainerType result;
 
-    DcmFileFormat fileFormat;
     OFCondition status;
     DcmDataset* dataset;
 
-    double previousIndex        = 0;
+    double previousIndex        = 0.;
     unsigned int instanceNumber = 0;
-    double spacingBetweenSlices = 0;
+    double spacingBetweenSlices = 0.;
     const double epsilon        = 1e-2; // Value used to find a gap
     ::fwMedData::DicomSeries::sptr currentSeries;
-    for(const ::fwMedData::DicomSeries::DicomPathContainerType::value_type& file :  series->getLocalDicomPaths())
+    for(const auto& item :  series->getDicomContainer())
     {
-        const std::string& filename = file.second.string();
-        status = fileFormat.loadFile(filename.c_str());
-        FW_RAISE_IF("Unable to read the file: \""+filename+"\"", status.bad());
+        const ::fwMemory::BufferObject::sptr bufferObj = item.second;
+        const size_t buffSize                          = bufferObj->getSize();
+        ::fwMemory::BufferObject::Lock lock(bufferObj);
+        char* buffer = static_cast< char* >( lock.getBuffer() );
+
+        DcmInputBufferStream is;
+        is.setBuffer(buffer, offile_off_t(buffSize));
+        is.setEos();
+
+        DcmFileFormat fileFormat;
+        fileFormat.transferInit();
+        if (!fileFormat.read(is).good())
+        {
+            FW_RAISE("Unable to read Dicom file '"<< bufferObj->getStreamInfo().fsFile.string() <<"' "<<
+                     "(slice: '" << item.first << "')");
+        }
+
+        fileFormat.loadAllDataIntoMemory();
+        fileFormat.transferEnd();
+
         dataset = fileFormat.getDataset();
 
         if(!dataset->tagExists(DCM_ImagePositionPatient) || !dataset->tagExists(DCM_ImageOrientationPatient))
@@ -85,7 +104,6 @@ const
                 "Tag(s) missing.";
             throw ::fwDicomIOFilter::exceptions::FilterFailure(msg);
         }
-
 
         fwVec3d imagePosition;
         for(unsigned int i = 0; i < 3; ++i)
@@ -102,41 +120,39 @@ const
         }
 
         //Compute Z direction (cross product)
-        fwVec3d zVector = ::fwMath::cross(imageOrientationU, imageOrientationV);
+        const fwVec3d zVector = ::fwMath::cross(imageOrientationU, imageOrientationV);
 
         //Compute dot product to get the index
-        double index = ::fwMath::dot(imagePosition, zVector);
+        const double index = ::fwMath::dot(imagePosition, zVector);
 
         //Compute spacing
-        double spacing = index - previousIndex;
-        if(currentSeries && spacingBetweenSlices == 0)
+        const double spacing = index - previousIndex;
+        if(currentSeries && fabs(spacingBetweenSlices) < epsilon)
         {
             spacingBetweenSlices = spacing;
         }
 
         // First frame or volume detected: We create a new Series
-        if(!currentSeries || (fabs(spacing-spacingBetweenSlices) > epsilon) )
+        if(!currentSeries || (fabs(spacing - spacingBetweenSlices) > epsilon) )
         {
             if(currentSeries)
             {
                 result.push_back(currentSeries);
-                currentSeries->setNumberOfInstances((unsigned int)(currentSeries->getLocalDicomPaths().size()));
+                currentSeries->setNumberOfInstances(currentSeries->getDicomContainer().size());
             }
             instanceNumber = 0;
             currentSeries  = ::fwMedData::DicomSeries::New();
             currentSeries->deepCopy(series);
-            ::fwMedData::DicomSeries::DicomPathContainerType dicomPathContainer;
-            currentSeries->setLocalDicomPaths(dicomPathContainer);
+            currentSeries->clearDicomContainer();
         }
 
-        currentSeries->addDicomPath(instanceNumber++, filename);
+        currentSeries->addBinary(instanceNumber++, bufferObj);
         previousIndex = index;
-
     }
 
     // Push last series created
     result.push_back(currentSeries);
-    currentSeries->setNumberOfInstances((unsigned int)(currentSeries->getLocalDicomPaths().size()));
+    currentSeries->setNumberOfInstances(currentSeries->getDicomContainer().size());
 
     if(result.size() > 1)
     {
@@ -144,7 +160,6 @@ const
     }
 
     return result;
-
 }
 
 } // namespace splitter

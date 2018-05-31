@@ -152,7 +152,8 @@ void SSliceIndexDicomEditor::starting()
     dicomReader = ::fwIO::IReader::dynamicCast(srvFactory->create(m_dicomReaderType));
     SLM_ASSERT("Unable to create a reader of type: \"" + m_dicomReaderType + "\" in "
                "::ioDicom::SSliceIndexDicomEditor.", dicomReader);
-    ::fwServices::OSR::registerService(m_tempSeriesDB, dicomReader);
+    ::fwServices::OSR::registerService(m_tempSeriesDB, ::fwIO::s_DATA_KEY,
+                                       ::fwServices::IService::AccessType::INOUT, dicomReader);
 
     if(m_readerConfig)
     {
@@ -281,60 +282,21 @@ void SSliceIndexDicomEditor::readImage(std::size_t selectedSliceIndex)
     SLM_INFO("Create " + tmpPath.string());
     ::boost::filesystem::create_directories(tmpPath);
 
-    SLM_ASSERT("Dicom data shall be available before reading them.",
-               dicomSeries->getDicomAvailability() != ::fwMedData::DicomSeries::NONE
-               || dicomSeries->isInstanceAvailable(selectedSliceIndex));
+    const auto& binaries = dicomSeries->getDicomContainer();
+    auto iter            = binaries.find(selectedSliceIndex);
+    OSLM_ASSERT("Index '"<<selectedSliceIndex<<"' is not found in DicomSeries", iter != binaries.end());
 
-    if(dicomSeries->getDicomAvailability() != ::fwMedData::DicomSeries::BINARIES )
-    {
-        ::fwMedData::DicomSeries::DicomPathContainerType paths = dicomSeries->getLocalDicomPaths();
-        ::boost::filesystem::path& src                         = paths[selectedSliceIndex];
+    const ::fwMemory::BufferObject::sptr bufferObj = iter->second;
+    const ::fwMemory::BufferObject::Lock lockerDest(bufferObj);
+    const char* buffer = static_cast<char*>(lockerDest.getBuffer());
+    const size_t size  = bufferObj->getSize();
 
-        const ::boost::filesystem::path& dest = tmpPath / src.filename();
+    const ::boost::filesystem::path dest = tmpPath / std::to_string(selectedSliceIndex);
+    ::boost::filesystem::ofstream fs(dest, std::ios::binary|std::ios::trunc);
+    FW_RAISE_IF("Can't open '" << tmpPath << "' for write.", !fs.good());
 
-        ::boost::system::error_code err;
-        ::boost::filesystem::create_hard_link(src, dest, err);
-
-        // If the hard-link fails (different mount volumes for instance) then copy the file
-        if (err.value() != 0)
-        {
-            SLM_INFO("Copying " + src.string() + " to " + dest.string());
-
-            // Use stream instead of boost::copy_file (Unix c++11 issue)
-            ::boost::filesystem::ifstream inStream(src, std::ios::binary);
-            OSLM_ERROR_IF("Unable to read file :" << src.string(), !inStream.good());
-            ::boost::filesystem::ofstream outStream(dest, std::ios::binary);
-            OSLM_ERROR_IF("Unable to write file :" << dest.string(), !outStream.good());
-
-            outStream << inStream.rdbuf();
-
-            inStream.close();
-            outStream.close();
-
-            ::boost::system::error_code errPerm;
-            ::boost::filesystem::permissions(dest, ::boost::filesystem::owner_all, errPerm);
-            SLM_ERROR_IF("set permission error : " + errPerm.message(), errPerm.value());
-        }
-    }
-    else if(dicomSeries->getDicomAvailability() == ::fwMedData::DicomSeries::BINARIES)
-    {
-
-        const ::fwMedData::DicomSeries::DicomBinaryContainerType& binaries = dicomSeries->getDicomBinaries();
-        ::fwMedData::DicomSeries::DicomBinaryContainerType::const_iterator binary = binaries.begin();
-        std::advance(binary, selectedSliceIndex);
-
-        ::fwData::Array::sptr array = binary->second;
-        ::fwDataTools::helper::Array arrayHelper(array);
-        char* buffer = static_cast<char*>(arrayHelper.getBuffer());
-        size_t size  = array->getSizeInBytes();
-
-        const ::boost::filesystem::path dest = tmpPath / binary->first;
-        ::boost::filesystem::ofstream fs(dest, std::ios::binary|std::ios::trunc);
-        FW_RAISE_IF("Can't open '" << tmpPath << "' for write.", !fs.good());
-
-        fs.write(buffer, static_cast<long>(size));
-        fs.close();
-    }
+    fs.write(buffer, static_cast<long>(size));
+    fs.close();
 
     // Read image
     m_dicomReader.lock()->setFolder(tmpPath);

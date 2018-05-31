@@ -1,10 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "opImageFilter/action/SThreshold.hpp"
+#include "opImageFilter/SThreshold.hpp"
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
@@ -14,26 +14,27 @@
 #include <fwDataTools/helper/Image.hpp>
 #include <fwDataTools/helper/ImageGetter.hpp>
 
+#include <fwMedData/ImageSeries.hpp>
+
 #include <fwServices/macros.hpp>
 
 #include <fwTools/Dispatcher.hpp>
 #include <fwTools/DynamicTypeKeyTypeMapping.hpp>
-#include <fwTools/IntrinsicTypes.hpp>
 #include <fwTools/fwID.hpp>
+#include <fwTools/IntrinsicTypes.hpp>
 
 namespace opImageFilter
 {
 
-namespace action
-{
+//-----------------------------------------------------------------------------
+
+static const std::string s_IMAGE_INPUT  = "source";
+static const std::string s_IMAGE_OUTPUT = "target";
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::opImageFilter::action::SThreshold );
-
-//-----------------------------------------------------------------------------
-
-SThreshold::SThreshold() noexcept
+SThreshold::SThreshold() noexcept :
+    m_threshold(50.0)
 {
 }
 
@@ -47,24 +48,27 @@ SThreshold::~SThreshold() noexcept
 
 void SThreshold::starting()
 {
-    SLM_TRACE_FUNC();
-    this->actionServiceStarting();
 }
 
 //-----------------------------------------------------------------------------
 
 void SThreshold::stopping()
 {
-    SLM_TRACE_FUNC();
-    this->actionServiceStopping();
 }
 
 //-----------------------------------------------------------------------------
 
 void SThreshold::configuring()
 {
-    SLM_TRACE_FUNC();
-    this->initialize();
+    const ::fwServices::IService::ConfigType& srvConfig = this->getConfigTree();
+
+    SLM_ASSERT("You must have one <config/> element.", srvConfig.count("config") == 1 );
+
+    const ::fwServices::IService::ConfigType& config = srvConfig.get_child("config");
+
+    SLM_ASSERT("You must have one <threshold/> element.", config.count("threshold") == 1);
+    const ::fwServices::IService::ConfigType& thresholdCfg = config.get_child("threshold");
+    m_threshold = thresholdCfg.get_value<double>();
 }
 
 //-----------------------------------------------------------------------------
@@ -111,7 +115,7 @@ struct ThresholdFilter
         const size_t NbPixels = imageIn->getSize()[0] * imageIn->getSize()[1] * imageIn->getSize()[2];
 
         // Fill the target buffer considering the thresholding
-        for( size_t i = 0; i<NbPixels; ++i, ++buffer1, ++buffer2 )
+        for( size_t i = 0; i < NbPixels; ++i, ++buffer1, ++buffer2 )
         {
             * buffer2 = ( *buffer1 < thresholdValue ) ? 0 : std::numeric_limits<PIXELTYPE>::max();
         }
@@ -122,23 +126,41 @@ struct ThresholdFilter
 
 void SThreshold::updating()
 {
-    SLM_TRACE_FUNC();
-
-    // threshold value: the pixel with the value less than 50 will be set to 0, else the value is set to the maximum
-    // value of the image pixel type.
-    const double threshold = 50.0;
-
     ThresholdFilter::Parameter param; // filter parameters: threshold value, image source, image target
 
-    // Get source image
-    param.imageIn = this->getInput< ::fwData::Image >("source");
-    SLM_ASSERT("'source' key not found", param.imageIn);
+    ::fwData::Object::csptr input                  = this->getInput< ::fwData::Object >(s_IMAGE_INPUT);
+    ::fwMedData::ImageSeries::csptr imageSeriesSrc = ::fwMedData::ImageSeries::dynamicConstCast(input);
+    ::fwData::Image::csptr imageSrc                = ::fwData::Image::dynamicConstCast(input);
+    ::fwData::Object::sptr output;
 
-    // Get target image
-    param.imageOut = this->getInOut< ::fwData::Image >("target");
-    SLM_ASSERT("'target' key not found", param.imageOut);
+    // Get source/target image
+    if(imageSeriesSrc)
+    {
+        param.imageIn                                  = imageSeriesSrc->getImage();
+        ::fwMedData::ImageSeries::sptr imageSeriesDest = ::fwMedData::ImageSeries::New();
 
-    param.thresholdValue = threshold;
+        ::fwData::Object::DeepCopyCacheType cache;
+        imageSeriesDest->::fwMedData::Series::cachedDeepCopy(imageSeriesSrc, cache);
+        imageSeriesDest->setDicomReference(imageSeriesSrc->getDicomReference());
+
+        ::fwData::Image::sptr imageOut = ::fwData::Image::New();
+        imageSeriesDest->setImage(imageOut);
+        param.imageOut = imageOut;
+        output         = imageSeriesDest;
+    }
+    else if(imageSrc)
+    {
+        param.imageIn                  = imageSrc;
+        ::fwData::Image::sptr imageOut = ::fwData::Image::New();
+        param.imageOut                 = imageOut;
+        output                         = imageOut;
+    }
+    else
+    {
+        FW_RAISE("Wrong type: source type must be an ImageSeries or an Image");
+    }
+
+    param.thresholdValue = m_threshold;
 
     /*
      * The dispatcher allows to apply the filter on any type of image.
@@ -149,15 +171,9 @@ void SThreshold::updating()
     // Invoke filter functor
     ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes, ThresholdFilter >::invoke( type, param );
 
-    // Notify that the image target is modified
-    auto sig = param.imageOut->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
-    {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
-        sig->asyncEmit();
-    }
+    this->setOutput(s_IMAGE_OUTPUT, output);
 }
 
 //-----------------------------------------------------------------------------
 
-} // namespace action
 } // namespace opImageFilter

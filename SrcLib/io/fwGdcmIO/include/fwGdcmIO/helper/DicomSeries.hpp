@@ -12,6 +12,7 @@
 
 #include <boost/filesystem/path.hpp>
 
+#include <gdcmDataSet.h>
 #include <gdcmScanner.h>
 
 #include <cstdint>
@@ -106,27 +107,21 @@ protected:
 
     /**
      * @brief Create a patient from the dataset and store it in the patient map
-     * @param[in] scanner GDCM Scanner used to read information
-     * @param[in] filename Filename from which the information must be read
+     * @param[in] dataset GDCM Dataset used to read information
      */
-    SPTR(::fwMedData::Patient) createPatient(const ::gdcm::Scanner& scanner,
-                                             const std::string& filename);
+    SPTR(::fwMedData::Patient) createPatient(const ::gdcm::DataSet& dataset);
 
     /**
      * @brief Create a study from the dataset and store it in the study map
-     * @param[in] scanner GDCM Scanner used to read information
-     * @param[in] filename Filename from which the information must be read
+     * @param[in] dataset GDCM Dataset used to read information
      */
-    SPTR(::fwMedData::Study) createStudy(const ::gdcm::Scanner& scanner,
-                                         const std::string& filename);
+    SPTR(::fwMedData::Study) createStudy(const ::gdcm::DataSet& dataset);
 
     /**
      * @brief Create an equipment from the dataset and store it in the equipment map
-     * @param[in] scanner GDCM Scanner used to read information
-     * @param[in] filename Filename from which the information must be read
+     * @param[in] dataset GDCM Dataset used to read information
      */
-    SPTR(::fwMedData::Equipment) createEquipment(const ::gdcm::Scanner& scanner,
-                                                 const std::string& filename);
+    SPTR(::fwMedData::Equipment) createEquipment(const ::gdcm::DataSet& dataset);
 
     typedef std::map< std::string, SPTR(::fwMedData::Patient) > PatientMapType;
     typedef std::map< std::string, SPTR(::fwMedData::Study) > StudyMapType;

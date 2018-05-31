@@ -1,12 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <dcmtk/config/osconfig.h>
-
 #include "fwPacsIO/SeriesEnquirer.hpp"
+
 #include "fwPacsIO/exceptions/NegociateAssociationFailure.hpp"
 #include "fwPacsIO/exceptions/NetworkInitializationFailure.hpp"
 #include "fwPacsIO/exceptions/PresentationContextMissing.hpp"
@@ -14,15 +13,17 @@
 #include "fwPacsIO/exceptions/TagMissing.hpp"
 
 #include <fwCore/spyLog.hpp>
-#include <fwTools/System.hpp>
 
 #include <fwDcmtkTools/Dictionary.hpp>
 
-#include <dcmtk/dcmdata/dcfilefo.h>
-#include <dcmtk/dcmnet/diutil.h>
+#include <fwTools/System.hpp>
 
 #include <boost/filesystem/operations.hpp>
 #include <boost/foreach.hpp>
+
+#include <dcmtk/config/osconfig.h>
+#include <dcmtk/dcmdata/dcfilefo.h>
+#include <dcmtk/dcmnet/diutil.h>
 
 namespace fwPacsIO
 {
@@ -267,7 +268,26 @@ OFCondition SeriesEnquirer::sendStoreRequest(const ::boost::filesystem::path& pa
     OFCondition result = this->sendSTORERequest(presID, OFString(path.string().c_str()), 0, rspStatusCode);
     OSLM_WARN("PACS RESPONSE :" << rspStatusCode);
     return result;
+}
 
+// ----------------------------------------------------------------------------
+
+OFCondition SeriesEnquirer::sendStoreRequest(const CSPTR(DcmDataset)& dataset)
+{
+    // Try to find a presentation context
+    T_ASC_PresentationContextID presID = this->findUncompressedPC(UID_MOVEStudyRootQueryRetrieveInformationModel);
+
+    if (presID == 0)
+    {
+        SLM_WARN("There is no uncompressed presentation context for Study Root GET");
+    }
+
+    Uint16 rspStatusCode;
+    // const_cast required to use bad DCMTK sendSTORERequest API
+    DcmDataset* datasetPtr = const_cast<DcmDataset*>(dataset.get());
+    OFCondition result     = this->sendSTORERequest(presID, OFString(""), datasetPtr, rspStatusCode);
+    OSLM_WARN("PACS RESPONSE :" << rspStatusCode);
+    return result;
 }
 
 // ----------------------------------------------------------------------------
@@ -577,6 +597,36 @@ void SeriesEnquirer::pushSeries(const InstancePathContainer& pathContainer)
 
 // ----------------------------------------------------------------------------
 
+void SeriesEnquirer::pushSeries(const DatasetContainer& datasetContainer)
+{
+    // Reset instance count
+    m_instanceIndex = 0;
+    OFCondition result;
+    // Send images to pacs
+    for(const auto& dataset : datasetContainer)
+    {
+        result = this->sendStoreRequest(dataset);
+
+        if (result.good())
+        {
+            SLM_TRACE("Instance sent.");
+        }
+        else
+        {
+            const std::string msg = "Unable to send a C-STORE request to the server : " + std::string(result.text());
+            throw ::fwPacsIO::exceptions::RequestFailure(msg);
+        }
+
+        // Notify callback
+        if(m_progressCallback)
+        {
+            m_progressCallback->asyncRun("", ++m_instanceIndex, "");
+        }
+    }
+}
+
+// ----------------------------------------------------------------------------
+
 OFCondition SeriesEnquirer::handleMOVEResponse(
     const T_ASC_PresentationContextID presID, RetrieveResponse* response, OFBool& waitForNextResponse)
 {
@@ -645,4 +695,3 @@ OFCondition SeriesEnquirer::handleSTORERequest (
 // ----------------------------------------------------------------------------
 
 } //namespace fwPacsIO
-
