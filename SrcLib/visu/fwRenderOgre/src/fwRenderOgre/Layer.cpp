@@ -596,7 +596,7 @@ void Layer::setSelectInteractor(::fwRenderOgre::interactor::IInteractor::sptr in
     {
         // This function is only kept to maintain compatibility with SInteractorStyle which will be removed soon
         // We return the first select interactor found
-        auto selectInteractor = ::fwRenderOgre::interactor::IPickerInteractor::dynamicCast(interactor.lock());
+        const auto selectInteractor = ::fwRenderOgre::interactor::IPickerInteractor::dynamicCast(interactor.lock());
         if(selectInteractor)
         {
             return selectInteractor;
