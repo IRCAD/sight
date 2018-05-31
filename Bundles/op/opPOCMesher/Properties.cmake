@@ -14,6 +14,5 @@ set( DEPENDENCIES
             fwDataTools
             fwMedData
             fwCom
-            opVTKMesh
-            )
+)
 set( REQUIREMENTS   )

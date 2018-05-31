@@ -1,18 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "opPOCMesher/CGoGNMesher.hpp"
 
-#include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
-#include <fwCom/Signals.hpp>
-#include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
-#include <fwData/Composite.hpp>
 #include <fwData/Image.hpp>
 #include <fwData/Mesh.hpp>
 #include <fwData/Reconstruction.hpp>
@@ -36,10 +32,11 @@ namespace opPOCMesher
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::opVTKMesh::IMesher, ::opPOCMesher::CGoGNMesher, ::fwData::Composite);
-
 static const ::fwCom::Slots::SlotKeyType SET_INTEGER_SLOT = "setInteger";
 static const ::fwCom::Slots::SlotKeyType SET_BOOLEAN_SLOT = "setBoolean";
+
+static const std::string s_IMAGE_INPUT  = "image";
+static const std::string s_MODEL_OUTPUT = "modelSeries";
 
 //-----------------------------------------------------------------------------
 
@@ -126,11 +123,10 @@ void CGoGNMesher::updating()
 {
     SLM_TRACE_FUNC();
 
-    ::fwData::Image::csptr image               = this->getInput< ::fwData::Image >("image");
-    ::fwMedData::ModelSeries::sptr modelSeries = this->getInOut< ::fwMedData::ModelSeries >("modelSeries");
+    ::fwData::Image::csptr image               = this->getInput< ::fwData::Image >(s_IMAGE_INPUT);
+    ::fwMedData::ModelSeries::sptr modelSeries = ::fwMedData::ModelSeries::New();
 
     SLM_ASSERT( "'image' doesn't exist or is not an image", image);
-    SLM_ASSERT( "'modelSeries' doesn't exist or is not a ModelSeries", modelSeries);
 
     ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
 
@@ -202,10 +198,7 @@ void CGoGNMesher::updating()
     recs.push_back(reconstruction);
     modelSeries->setReconstructionDB(recs);
 
-    /// Notification
-    auto sig = modelSeries->signal< ::fwMedData::ModelSeries::ReconstructionsAddedSignalType >
-                   (::fwMedData::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG);
-    sig->asyncEmit(recs);
+    this->setOutput(s_MODEL_OUTPUT, modelSeries);
 }
 
 //-----------------------------------------------------------------------------

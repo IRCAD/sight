@@ -20,6 +20,7 @@
         <appConfig id="mesher">
             <parameters>
                 <parameter replace="imageUid" by="@values.imageSeries.image" />
+                <parameter replace="imageSeriesUid" by="@values.imageSeries" />
             </parameters>
         </appConfig>
     </extension>
