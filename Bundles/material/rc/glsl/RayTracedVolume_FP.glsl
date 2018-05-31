@@ -415,6 +415,16 @@ void main(void)
             vec3 cVector = normalize(u_cameraPos - closestPt) * volSize;
             vec3 cOrig2RayEntry = rayEntry * volSize - closestPt * volSize;
             rayDepth = dot(cVector, cOrig2RayEntry) / length(cVector);
+
+#if CSG_DISABLE_CONTEXT == 1
+            // If the new entry point hits a transparent zone then we discard it.
+            float entryIntensity = texture(u_image, rayEntry).r;
+            float entryOpacity = sampleTransferFunction(entryIntensity).a;
+            if(entryOpacity == 0)
+            {
+                discard;
+            }
+#endif // CSG_DISABLE_CONTEXT == 1
         }
 
 #if CSG_DISABLE_CONTEXT == 1
