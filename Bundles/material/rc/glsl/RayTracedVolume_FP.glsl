@@ -375,6 +375,7 @@ void main(void)
 
     float rayDepth = 0.;
     vec4 jfaDistance = vec4(0.);
+    bool isCsg = false; // true if this ray hits the csg.
 
     vec4 importance = texelFetch(u_IC, ivec2(gl_FragCoord.xy), 0);
 
@@ -416,11 +417,14 @@ void main(void)
             vec3 cOrig2RayEntry = rayEntry * volSize - closestPt * volSize;
             rayDepth = dot(cVector, cOrig2RayEntry) / length(cVector);
 
-#if CSG_DISABLE_CONTEXT == 1
             // If the new entry point hits a transparent zone then we discard it.
             float entryIntensity = texture(u_image, rayEntry).r;
             float entryOpacity = sampleTransferFunction(entryIntensity).a;
-            if(entryOpacity == 0)
+
+            isCsg = entryOpacity > 0;
+
+#if CSG_DISABLE_CONTEXT == 1
+            if(isCsg)
             {
                 discard;
             }
@@ -459,7 +463,7 @@ void main(void)
         if(rayDepth > u_csgBorderThickness
 #ifdef CSG_DEPTH_LINES
            && mod(int(rayDepthIntegralPart), u_depthLinesSpacing) == 0
-                && (rayDepthFractPart < u_depthLinesWidth)
+                && (rayDepthFractPart < u_depthLinesWidth) && isCsg
 #endif // CSG_DEPTH_LINES == 1
         )
         {
