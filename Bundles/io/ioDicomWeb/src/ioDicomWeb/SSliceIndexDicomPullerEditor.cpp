@@ -293,10 +293,6 @@ void SSliceIndexDicomPullerEditor::readImage(size_t selectedSliceIndex)
         return;
     }
 
-    // Clear temporary seriesDB
-    ::fwMedDataTools::helper::SeriesDB sDBTempohelper(m_tempSeriesDB);
-    sDBTempohelper.clear();
-
     // Creates unique temporary folder, no need to check if exists before (see ::fwTools::System::getTemporaryFolder)
     ::boost::filesystem::path path    = ::fwTools::System::getTemporaryFolder("dicom");
     ::boost::filesystem::path tmpPath = path / "tmp";
