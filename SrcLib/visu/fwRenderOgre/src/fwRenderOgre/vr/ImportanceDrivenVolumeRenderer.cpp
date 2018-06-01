@@ -115,7 +115,6 @@ const std::string s_CSG_MOD_GRAYSCALE_LUMINOSITY_DEFINE = "CSG_MODULATION=3";
 const std::string s_CSG_MOD_COLOR1_DEFINE               = "CSG_MODULATION=4";
 const std::string s_CSG_MOD_COLOR2_DEFINE               = "CSG_MODULATION=5";
 const std::string s_CSG_MOD_COLOR3_DEFINE               = "CSG_MODULATION=6";
-const std::string s_CSG_MOD_COLOR4_DEFINE               = "CSG_MODULATION=7";
 
 const std::string s_IMPORTANCE_COMPOSITING_TEXTURE = "IC";
 const std::string s_JUMP_FLOOD_ALGORITHM_TEXTURE   = "JFA";
@@ -147,7 +146,7 @@ ImportanceDrivenVolumeRenderer::ImportanceDrivenVolumeRenderer(std::string paren
     m_idvrCSGBorderColor(::Ogre::ColourValue(1.f, 0.f, 0.f)),
     m_idvrCSGModulation(false),
     m_idvrCSGModulationMethod(IDVRCSGModulationMethod::COLOR1),
-    m_idvrCSGModulationFactor(1.f),
+    m_idvrCSGModulationFactor(0.f),
     m_idvrCSGOpacityDecrease(false),
     m_idvrCSGOpacityDecreaseFactor(1.f),
     m_idvrCSGDepthLines(false),
@@ -639,9 +638,6 @@ std::tuple<std::string, std::string, size_t> ImportanceDrivenVolumeRenderer::com
                             break;
                         case IDVRCSGModulationMethod::COLOR3:
                             fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << s_CSG_MOD_COLOR3_DEFINE;
-                            break;
-                        case IDVRCSGModulationMethod::COLOR4:
-                            fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << s_CSG_MOD_COLOR4_DEFINE;
                             break;
                     }
 

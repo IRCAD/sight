@@ -988,25 +988,20 @@ void SVolumeRender::setEnumParameter(std::string val, std::string key)
             rayCastVolumeRenderer->setIDVRCSModulationMethod(
                 ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer::IDVRCSGModulationMethod::LUMINOSITY_GRAYSCALE);
         }
-        else if(val == "Brightness_increase")
+        else if(val == "Brightness")
         {
             rayCastVolumeRenderer->setIDVRCSModulationMethod(
                 ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer::IDVRCSGModulationMethod::COLOR1);
         }
-        else if(val == "Saturation_increase")
+        else if(val == "Saturation")
         {
             rayCastVolumeRenderer->setIDVRCSModulationMethod(
                 ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer::IDVRCSGModulationMethod::COLOR2);
         }
-        else if(val == "SaturationBrightness_increase")
+        else if(val == "SaturationBrightness")
         {
             rayCastVolumeRenderer->setIDVRCSModulationMethod(
                 ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer::IDVRCSGModulationMethod::COLOR3);
-        }
-        else if(val == "Saturation_decrease")
-        {
-            rayCastVolumeRenderer->setIDVRCSModulationMethod(
-                ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer::IDVRCSGModulationMethod::COLOR4);
         }
     }
 

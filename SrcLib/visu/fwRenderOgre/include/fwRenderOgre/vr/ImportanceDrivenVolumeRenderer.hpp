@@ -27,8 +27,7 @@ public:
         LUMINOSITY_GRAYSCALE,
         COLOR1,
         COLOR2,
-        COLOR3,
-        COLOR4
+        COLOR3
     };
 
     FWRENDEROGRE_API ImportanceDrivenVolumeRenderer(std::string parentId,
