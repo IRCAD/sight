@@ -47,6 +47,7 @@
                     <menuItem name="DICOM PACS Writer" icon="media-0.1/icons/Push.svg" />
                     <menuItem name="DICOM Filtering" icon="media-0.1/icons/icon-DICOM-Filtering.svg" />
                     <menuItem name="DICOM Web Reader" icon="media-0.1/icons/Pull.svg" />
+                    <menuItem name="DICOM Web Writer" icon="media-0.1/icons/Push.svg" />
                 </layout>
             </gui>
             <registry>
@@ -61,6 +62,7 @@
                 <menuItem sid="action_dicomPacsWriter" start="yes" />
                 <menuItem sid="action_dicomFiltering" start="yes" />
                 <menuItem sid="action_dicomWebReader" start="yes" />
+                <menuItem sid="action_dicomWebWriter" start="yes" />
             </registry>
         </service>
 
@@ -215,6 +217,21 @@
             </config>
         </service>
 
+        <service uid="action_dicomWebWriter" type="::activities::action::SActivityLauncher">
+            <in key="series" uid="selections" />
+            <config>
+                <parameters>
+                    <parameter replace="ICON_PATH" by="${ICON_PATH}" />
+                    <parameter replace="APP_NAME" by="VRRender" />
+                    <parameter replace="PROGRESS_CHANNEL" by="${PROGRESS_CHANNEL}" />
+                </parameters>
+                <filter>
+                    <mode>include</mode>
+                    <id>DicomWebWriterActivity</id>
+                </filter>
+            </config>
+        </service>
+
         <service uid="action_createActivity" type="::activities::action::SCreateActivity">
             <in key="series" uid="selections" />
             <filter>
@@ -276,6 +293,7 @@
             <signal>action_dicomPacsWriter/activityLaunched</signal>
             <signal>action_dicomFiltering/activityLaunched</signal>
             <signal>action_dicomWebReader/activityLaunched</signal>
+            <signal>action_dicomWebWriter/activityLaunched</signal>
         </connect>
 
         <connect>

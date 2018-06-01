@@ -37,6 +37,7 @@ set( REQUIREMENTS
     dicomPacsWriterActivity
 
     DicomWebReaderActivity
+    DicomWebWriterActivity
 
     media
     style
