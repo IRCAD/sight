@@ -139,7 +139,7 @@ ImportanceDrivenVolumeRenderer::ImportanceDrivenVolumeRenderer(std::string paren
     m_maskTexture(maskTexture),
     m_idvrMethod(s_NONE),
     m_idvrCSG(false),
-    m_idvrCSGSlope(0.3f),
+    m_idvrCSGSlope(0.25f),
     m_idvrCSGBlurWeight(0.01f),
     m_idvrCSGBorder(false),
     m_idvrCSGDisableContext(false),
