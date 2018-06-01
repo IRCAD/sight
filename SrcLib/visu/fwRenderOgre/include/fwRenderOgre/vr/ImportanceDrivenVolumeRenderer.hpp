@@ -88,9 +88,6 @@ public:
     /// Toggle the depth lines for MImP countersink geometry.
     FWRENDEROGRE_API void toggleIDVRDepthLines(bool);
 
-    /// Setup the depth lines gradation threshold used in the MImP CSG.
-    FWRENDEROGRE_API void setIDVRCSGDepthLinesThreshold(double);
-
     /// Setup the alpha correction factor used in the VPImC method.
     FWRENDEROGRE_API void setIDVRAImCAlphaCorrection(double);
 
@@ -176,9 +173,6 @@ private:
 
     /// Sets usage of depth lines for MImP CSG.
     bool m_idvrCSGDepthLines;
-
-    /// Sets the gradation threshold of MImP CSG's depth lines.
-    float m_idvrCSGDepthLinesThreshold;
 
     /// Sets the alpha correction for AImC.
     float m_idvrAImCAlphaCorrection;

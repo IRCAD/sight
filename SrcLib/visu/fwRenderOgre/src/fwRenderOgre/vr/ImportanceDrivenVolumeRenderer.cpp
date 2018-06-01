@@ -151,7 +151,6 @@ ImportanceDrivenVolumeRenderer::ImportanceDrivenVolumeRenderer(std::string paren
     m_idvrCSGOpacityDecrease(false),
     m_idvrCSGOpacityDecreaseFactor(1.f),
     m_idvrCSGDepthLines(false),
-    m_idvrCSGDepthLinesThreshold(0.07f),
     m_idvrAImCAlphaCorrection(0.05f),
     m_idvrVPImCAlphaCorrection(0.3f)
 {
@@ -161,7 +160,6 @@ ImportanceDrivenVolumeRenderer::ImportanceDrivenVolumeRenderer(std::string paren
     m_RTVSharedParameters->addConstantDefinition("u_opacityDecreaseFactor", ::Ogre::GCT_FLOAT1);
     m_RTVSharedParameters->addConstantDefinition("u_vpimcAlphaCorrection", ::Ogre::GCT_FLOAT1);
     m_RTVSharedParameters->addConstantDefinition("u_aimcAlphaCorrection", ::Ogre::GCT_FLOAT1);
-    m_RTVSharedParameters->addConstantDefinition("u_depthLinesThreshold", ::Ogre::GCT_FLOAT1);
     m_RTVSharedParameters->addConstantDefinition("u_csgBorderColor", ::Ogre::GCT_FLOAT3);
     m_RTVSharedParameters->addConstantDefinition("u_imageSpacing", ::Ogre::GCT_FLOAT3);
     m_RTVSharedParameters->addConstantDefinition("u_depthLinesSpacing", ::Ogre::GCT_INT1);
@@ -174,7 +172,6 @@ ImportanceDrivenVolumeRenderer::ImportanceDrivenVolumeRenderer(std::string paren
     m_RTVSharedParameters->setNamedConstant("u_csgBorderColor", m_idvrCSGBorderColor);
     m_RTVSharedParameters->setNamedConstant("u_aimcAlphaCorrection", m_idvrAImCAlphaCorrection);
     m_RTVSharedParameters->setNamedConstant("u_vpimcAlphaCorrection", m_idvrVPImCAlphaCorrection);
-    m_RTVSharedParameters->setNamedConstant("u_depthLinesThreshold", m_idvrCSGDepthLinesThreshold);
     m_RTVSharedParameters->setNamedConstant("u_depthLinesSpacing", 10);
     m_RTVSharedParameters->setNamedConstant("u_depthLinesWidth", 0.5f);
 
@@ -526,19 +523,6 @@ void ImportanceDrivenVolumeRenderer::toggleIDVRDepthLines(bool depthLines)
     if(m_idvrMethod == s_MIMP && this->m_idvrCSG && this->m_idvrCSGBorder)
     {
         this->createMaterialAndIDVRTechnique();
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-void ImportanceDrivenVolumeRenderer::setIDVRCSGDepthLinesThreshold(double threshold)
-{
-    m_idvrCSGDepthLinesThreshold = static_cast<float>(threshold);
-
-    if(m_idvrMethod == s_MIMP && this->m_idvrCSG && this->m_idvrCSGBorder && this->m_idvrCSGDepthLines)
-    {
-        m_RTVSharedParameters->setNamedConstant("u_depthLinesThreshold", m_idvrCSGDepthLinesThreshold);
-        this->getLayer()->requestRender();
     }
 }
 

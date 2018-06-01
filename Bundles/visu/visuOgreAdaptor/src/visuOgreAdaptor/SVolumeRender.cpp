@@ -923,13 +923,6 @@ void SVolumeRender::setDoubleParameter(double val, std::string key)
         OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
         rayCastVolumeRenderer->setIDVRCSGBorderThickness(val);
     }
-    else if(key == "idvrCSGDepthLinesThreshold")
-    {
-        auto rayCastVolumeRenderer =
-            dynamic_cast< ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer* >(m_volumeRenderer);
-        OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
-        rayCastVolumeRenderer->setIDVRCSGDepthLinesThreshold(val);
-    }
     else if(key == "idvrCSGModulationFactor")
     {
         auto rayCastVolumeRenderer =

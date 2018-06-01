@@ -71,10 +71,6 @@ uniform float u_aimcAlphaCorrection;
 uniform float u_vpimcAlphaCorrection;
 #endif
 
-#ifdef CSG_DEPTH_LINES
-uniform float u_depthLinesThreshold;
-#endif // CSG_DEPTH_LINES
-
 #if CSG_MODULATION == 4 || CSG_MODULATION == 5 || CSG_MODULATION == 6 || CSG_MODULATION == 7
 uniform float u_colorModulationFactor;
 #endif
