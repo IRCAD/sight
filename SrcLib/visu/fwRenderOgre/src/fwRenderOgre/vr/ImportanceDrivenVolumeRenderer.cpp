@@ -8,6 +8,8 @@
 
 #include "fwRenderOgre/Layer.hpp"
 
+#include <glm/common.hpp>
+
 #include <OGRE/OgreCompositionPass.h>
 #include <OGRE/OgreCompositionTargetPass.h>
 #include <OGRE/OgreCompositor.h>
@@ -380,7 +382,7 @@ void ImportanceDrivenVolumeRenderer::toggleIDVRCountersinkGeometry(bool CSG)
 
 void ImportanceDrivenVolumeRenderer::setIDVRCountersinkSlope(double slope)
 {
-    m_idvrCSGSlope = static_cast<float>(slope);
+    m_idvrCSGSlope = ::glm::radians(static_cast<float>(slope));
 
     if(m_idvrMethod == s_MIMP && m_idvrCSG)
     {
