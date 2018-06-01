@@ -75,9 +75,9 @@ uniform float u_vpimcAlphaCorrection;
 uniform float u_colorModulationFactor;
 #endif
 
-#ifdef CSG_OPACITY_DECREASE
-uniform float u_opacityDecreaseFactor;
-#endif // CSG_OPACITY_DECREASE
+#ifdef CSG_OPACITY
+uniform float u_opacityFactor;
+#endif // CSG_OPACITY
 
 out vec4 fragColor;
 
@@ -496,23 +496,27 @@ void main(void)
 // Brightness increase (CSG_MODULATION == 4)
 // Saturation increase (CSG_MODULATION == 5)
 // Saturation and brightness increase (CSG_MODULATION == 6)
+#if CSG_MODULATION == 4 || CSG_MODULATION == 5 || CSG_MODULATION == 6 ||  CSG_OPACITY
+            float factor = ((camDepth - rayDepth) / camDepth);
+#endif CSG_MODULATION == 4 || CSG_MODULATION == 5 || CSG_MODULATION == 6 ||  CSG_OPACITY
+
 #if CSG_MODULATION == 4 || CSG_MODULATION == 5 || CSG_MODULATION == 6
             vec3 hsv = rgb2hsv(color.rgb);
 
 #if CSG_MODULATION == 5 || CSG_MODULATION == 6
-            hsv.g += ((camDepth - rayDepth) / camDepth) * u_colorModulationFactor;
+            hsv.g += factor * u_colorModulationFactor;
 #endif // CSG_MODULATION == 5 || CSG_MODULATION == 6
 
 #if CSG_MODULATION == 4 || CSG_MODULATION == 6
-            hsv.b += ((camDepth - rayDepth) / camDepth) * u_colorModulationFactor;
+            hsv.b += factor * u_colorModulationFactor;
 #endif // CSG_MODULATION == 4 || CSG_MODULATION == 6
 
             color.rgb = hsv2rgb(hsv);
 #endif // CSG_MODULATION == 4 || CSG_MODULATION == 5 || CSG_MODULATION == 6
 
-#ifdef CSG_OPACITY_DECREASE
-            color.a -= 1. - rayDepth * u_opacityDecreaseFactor;
-#endif // CSG_OPACITY_DECREASE
+#ifdef CSG_OPACITY
+            color.a += factor * u_opacityFactor;
+#endif // CSG_OPACITY
 
             result = color;
 #if CSG_BORDER == 1

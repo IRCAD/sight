@@ -103,11 +103,11 @@ const std::string s_MIMP_DEFINE  = "IDVR=1";
 const std::string s_AIMC_DEFINE  = "IDVR=2";
 const std::string s_VPIMC_DEFINE = "IDVR=3";
 
-const std::string s_CSG_DEFINE                  = "CSG=1";
-const std::string s_CSG_BORDER_DEFINE           = "CSG_BORDER=1";
-const std::string s_CSG_DISABLE_CONTEXT_DEFINE  = "CSG_DISABLE_CONTEXT=1";
-const std::string s_CSG_OPACITY_DECREASE_DEFINE = "CSG_OPACITY_DECREASE=1";
-const std::string s_CSG_DEPTH_LINES_DEFINE      = "CSG_DEPTH_LINES=1";
+const std::string s_CSG_DEFINE                 = "CSG=1";
+const std::string s_CSG_BORDER_DEFINE          = "CSG_BORDER=1";
+const std::string s_CSG_DISABLE_CONTEXT_DEFINE = "CSG_DISABLE_CONTEXT=1";
+const std::string s_CSG_OPACITY_DEFINE         = "CSG_OPACITY=1";
+const std::string s_CSG_DEPTH_LINES_DEFINE     = "CSG_DEPTH_LINES=1";
 
 const std::string s_CSG_MOD_GRAYSCALE_AVERAGE_DEFINE    = "CSG_MODULATION=1";
 const std::string s_CSG_MOD_GRAYSCALE_LIGHTNESS_DEFINE  = "CSG_MODULATION=2";
@@ -147,8 +147,8 @@ ImportanceDrivenVolumeRenderer::ImportanceDrivenVolumeRenderer(std::string paren
     m_idvrCSGModulation(false),
     m_idvrCSGModulationMethod(IDVRCSGModulationMethod::COLOR1),
     m_idvrCSGModulationFactor(0.f),
-    m_idvrCSGOpacityDecrease(false),
-    m_idvrCSGOpacityDecreaseFactor(1.f),
+    m_idvrCSGOpacity(false),
+    m_idvrCSGOpacityFactor(0.f),
     m_idvrCSGDepthLines(false),
     m_idvrAImCAlphaCorrection(0.05f),
     m_idvrVPImCAlphaCorrection(0.3f)
@@ -156,7 +156,7 @@ ImportanceDrivenVolumeRenderer::ImportanceDrivenVolumeRenderer(std::string paren
     m_RTVSharedParameters->addConstantDefinition("u_countersinkSlope", ::Ogre::GCT_FLOAT1);
     m_RTVSharedParameters->addConstantDefinition("u_csgBorderThickness", ::Ogre::GCT_FLOAT1);
     m_RTVSharedParameters->addConstantDefinition("u_colorModulationFactor", ::Ogre::GCT_FLOAT1);
-    m_RTVSharedParameters->addConstantDefinition("u_opacityDecreaseFactor", ::Ogre::GCT_FLOAT1);
+    m_RTVSharedParameters->addConstantDefinition("u_opacityFactor", ::Ogre::GCT_FLOAT1);
     m_RTVSharedParameters->addConstantDefinition("u_vpimcAlphaCorrection", ::Ogre::GCT_FLOAT1);
     m_RTVSharedParameters->addConstantDefinition("u_aimcAlphaCorrection", ::Ogre::GCT_FLOAT1);
     m_RTVSharedParameters->addConstantDefinition("u_csgBorderColor", ::Ogre::GCT_FLOAT3);
@@ -167,7 +167,7 @@ ImportanceDrivenVolumeRenderer::ImportanceDrivenVolumeRenderer(std::string paren
     m_RTVSharedParameters->setNamedConstant("u_countersinkSlope", m_idvrCSGSlope);
     m_RTVSharedParameters->setNamedConstant("u_csgBorderThickness", m_idvrCSGBorderThickness);
     m_RTVSharedParameters->setNamedConstant("u_colorModulationFactor", m_idvrCSGModulationFactor);
-    m_RTVSharedParameters->setNamedConstant("u_opacityDecreaseFactor", m_idvrCSGOpacityDecreaseFactor);
+    m_RTVSharedParameters->setNamedConstant("u_opacityFactor", m_idvrCSGOpacityFactor);
     m_RTVSharedParameters->setNamedConstant("u_csgBorderColor", m_idvrCSGBorderColor);
     m_RTVSharedParameters->setNamedConstant("u_aimcAlphaCorrection", m_idvrAImCAlphaCorrection);
     m_RTVSharedParameters->setNamedConstant("u_vpimcAlphaCorrection", m_idvrVPImCAlphaCorrection);
@@ -490,9 +490,9 @@ void ImportanceDrivenVolumeRenderer::setIDVRCSGModulationFactor(double modulatio
 
 //-----------------------------------------------------------------------------
 
-void ImportanceDrivenVolumeRenderer::toggleIDVRCSGOpacityDecrease(bool opacityDecrease)
+void ImportanceDrivenVolumeRenderer::toggleIDVRCSGOpacity(bool _opacity)
 {
-    m_idvrCSGOpacityDecrease = opacityDecrease;
+    m_idvrCSGOpacity = _opacity;
 
     if(m_idvrMethod == s_MIMP && this->m_idvrCSG)
     {
@@ -502,13 +502,13 @@ void ImportanceDrivenVolumeRenderer::toggleIDVRCSGOpacityDecrease(bool opacityDe
 
 //-----------------------------------------------------------------------------
 
-void ImportanceDrivenVolumeRenderer::setIDVRCSGOpacityDecreaseFactor(double opacityDecrease)
+void ImportanceDrivenVolumeRenderer::setIDVRCSGOpacityFactor(double _opacity)
 {
-    m_idvrCSGOpacityDecreaseFactor = static_cast<float>(opacityDecrease);
+    m_idvrCSGOpacityFactor = static_cast<float>(_opacity);
 
     if(m_idvrMethod == s_MIMP && this->m_idvrCSG)
     {
-        m_RTVSharedParameters->setNamedConstant("u_opacityDecreaseFactor", m_idvrCSGOpacityDecreaseFactor);
+        m_RTVSharedParameters->setNamedConstant("u_opacityFactor", m_idvrCSGOpacityFactor);
         this->getLayer()->requestRender();
     }
 }
@@ -607,9 +607,9 @@ std::tuple<std::string, std::string, size_t> ImportanceDrivenVolumeRenderer::com
                 {
                     fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << s_CSG_DISABLE_CONTEXT_DEFINE;
                 }
-                if(m_idvrCSGOpacityDecrease)
+                if(m_idvrCSGOpacity)
                 {
-                    fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << s_CSG_OPACITY_DECREASE_DEFINE;
+                    fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << s_CSG_OPACITY_DEFINE;
                 }
                 if(m_idvrCSGDepthLines)
                 {

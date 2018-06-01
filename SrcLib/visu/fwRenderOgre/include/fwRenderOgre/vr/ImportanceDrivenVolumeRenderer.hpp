@@ -78,11 +78,11 @@ public:
     /// Setup the wheighting factor for MImP CSG color modulation.
     FWRENDEROGRE_API void setIDVRCSGModulationFactor(double);
 
-    /// Toggle the opacity decrease for MImP countersink geometry.
-    FWRENDEROGRE_API void toggleIDVRCSGOpacityDecrease(bool);
+    /// Toggle the opacity for MImP countersink geometry.
+    FWRENDEROGRE_API void toggleIDVRCSGOpacity(bool);
 
-    /// Setup the opacity decrease factor used in the MImP CSG.
-    FWRENDEROGRE_API void setIDVRCSGOpacityDecreaseFactor(double);
+    /// Setup the opacity factor used in the MImP CSG.
+    FWRENDEROGRE_API void setIDVRCSGOpacityFactor(double);
 
     /// Toggle the depth lines for MImP countersink geometry.
     FWRENDEROGRE_API void toggleIDVRDepthLines(bool);
@@ -164,11 +164,11 @@ private:
     /// Sets the wheighting factor for MImP CSG color modulation.
     float m_idvrCSGModulationFactor;
 
-    /// Sets usage of opacity decrease for MImP CSG.
-    bool m_idvrCSGOpacityDecrease;
+    /// Sets usage of opacity for MImP CSG.
+    bool m_idvrCSGOpacity;
 
-    /// Sets the opacity decrease factor used in MImP CSG.
-    float m_idvrCSGOpacityDecreaseFactor;
+    /// Sets the opacity factor used in MImP CSG.
+    float m_idvrCSGOpacityFactor;
 
     /// Sets usage of depth lines for MImP CSG.
     bool m_idvrCSGDepthLines;

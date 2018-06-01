@@ -825,12 +825,12 @@ void SVolumeRender::setBoolParameter(bool val, std::string key)
         OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
         rayCastVolumeRenderer->toggleIDVRCSGModulation(val);
     }
-    else if(key == "idvrCSGOpacityDecrease")
+    else if(key == "idvrCSGOpacity")
     {
         auto rayCastVolumeRenderer =
             dynamic_cast< ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer* >(m_volumeRenderer);
         OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
-        rayCastVolumeRenderer->toggleIDVRCSGOpacityDecrease(val);
+        rayCastVolumeRenderer->toggleIDVRCSGOpacity(val);
     }
     else if(key == "idvrCSGDepthLines")
     {
@@ -930,12 +930,12 @@ void SVolumeRender::setDoubleParameter(double val, std::string key)
         OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
         rayCastVolumeRenderer->setIDVRCSGModulationFactor(val);
     }
-    else if(key == "idvrCSGOpacityDecreaseFactor")
+    else if(key == "idvrCSGOpacityFactor")
     {
         auto rayCastVolumeRenderer =
             dynamic_cast< ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer* >(m_volumeRenderer);
         OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
-        rayCastVolumeRenderer->setIDVRCSGOpacityDecreaseFactor(val);
+        rayCastVolumeRenderer->setIDVRCSGOpacityFactor(val);
     }
     else if(key == "idvrVPImCAlphaCorrection")
     {
