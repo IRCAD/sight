@@ -17,7 +17,6 @@ set( REQUIREMENTS
     ioAtoms
     ioCalibration
     ioActivity
-    ioARActivity
 
     uiIO
     uiGenericQt

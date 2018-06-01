@@ -33,7 +33,7 @@
         <service uid="activityCreator" type="::uiMedDataQt::editor::SActivityWizard" >
             <inout key="series" uid="${SERIESDB}" />
             <ioSelectorConfig>SDBReaderIOSelectorConfig</ioSelectorConfig>
-            <sdbIoSelectorConfig>ARFullSDBReaderIOSelectorConfig</sdbIoSelectorConfig>
+            <sdbIoSelectorConfig>FullSDBReaderIOSelectorConfig</sdbIoSelectorConfig>
             <confirm>false</confirm>
             <icons>
                 <icon type="::fwMedData::ImageSeries" icon="media-0.1/icons/ImageSeries.svg" />
