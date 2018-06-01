@@ -15,7 +15,7 @@
         <object uid="${SERIESDB}" type="::fwMedData::SeriesDB" src="ref"/>
         <object uid="${LOADING_SERIESDB}" type="::fwMedData::SeriesDB" src="ref" />
 
-        <service uid="mainview" type="::gui::view::SDefaultView" autoConnect="yes">
+        <service uid="mainview" type="::gui::view::SDefaultView">
             <gui>
                 <layout type="::fwGui::CardinalLayoutManager">
                     <view align="center" minWidth="200" visible="false" />
@@ -41,7 +41,7 @@
         </service>
 
         <!-- Editor to select an activity. -->
-        <service uid="selector" type="::activities::editor::SCreateActivity" autoConnect="yes">
+        <service uid="selector" type="::activities::editor::SCreateActivity">
             <filter>
                 <mode>include</mode>
                 <id>2DVisualization</id>
@@ -56,7 +56,7 @@
         </service>
 
         <service uid="seriesSignal" type="::activities::SSeriesSignal" autoConnect="yes">
-            <in key="${SERIESDB}" uid="${LOADING_SERIESDB}" />
+            <in key="seriesDB" uid="${LOADING_SERIESDB}" />
             <filter>
                 <mode>include</mode>
                 <type>::fwMedData::ActivitySeries</type>
