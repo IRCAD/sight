@@ -109,9 +109,9 @@ const std::string s_CSG_DISABLE_CONTEXT_DEFINE = "CSG_DISABLE_CONTEXT=1";
 const std::string s_CSG_OPACITY_DEFINE         = "CSG_OPACITY=1";
 const std::string s_CSG_DEPTH_LINES_DEFINE     = "CSG_DEPTH_LINES=1";
 
-const std::string s_CSG_MOD_GRAYSCALE_AVERAGE_DEFINE    = "CSG_MODULATION=1";
-const std::string s_CSG_MOD_GRAYSCALE_LIGHTNESS_DEFINE  = "CSG_MODULATION=2";
-const std::string s_CSG_MOD_GRAYSCALE_LUMINOSITY_DEFINE = "CSG_MODULATION=3";
+const std::string s_CSG_MOD_GRAYSCALE_AVERAGE_DEFINE    = "CSG_GRAYSCALE=1";
+const std::string s_CSG_MOD_GRAYSCALE_LIGHTNESS_DEFINE  = "CSG_GRAYSCALE=2";
+const std::string s_CSG_MOD_GRAYSCALE_LUMINOSITY_DEFINE = "CSG_GRAYSCALE=3";
 const std::string s_CSG_MOD_COLOR1_DEFINE               = "CSG_MODULATION=4";
 const std::string s_CSG_MOD_COLOR2_DEFINE               = "CSG_MODULATION=5";
 const std::string s_CSG_MOD_COLOR3_DEFINE               = "CSG_MODULATION=6";
@@ -147,6 +147,8 @@ ImportanceDrivenVolumeRenderer::ImportanceDrivenVolumeRenderer(std::string paren
     m_idvrCSGModulation(false),
     m_idvrCSGModulationMethod(IDVRCSGModulationMethod::COLOR1),
     m_idvrCSGModulationFactor(0.f),
+    m_idvrCSGGrayScale(false),
+    m_idvrCSGgrayscaleMethod(IDVRCSGGrayScaleMethod::AVERAGE_GRAYSCALE),
     m_idvrCSGOpacity(false),
     m_idvrCSGOpacityFactor(0.f),
     m_idvrCSGDepthLines(false),
@@ -451,6 +453,30 @@ void ImportanceDrivenVolumeRenderer::setIDVRCSGBorderColor(std::array<std::uint8
     }
 }
 
+//------------------------------------------------------------------------------
+
+void ImportanceDrivenVolumeRenderer::toggleIDVRCSGGrayScale(bool _grayScale)
+{
+    m_idvrCSGGrayScale = _grayScale;
+
+    if(this->m_idvrMethod == s_MIMP && this->m_idvrCSG)
+    {
+        this->createMaterialAndIDVRTechnique();
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void ImportanceDrivenVolumeRenderer::setIDVRCSGrayScaleMethod(IDVRCSGGrayScaleMethod _method)
+{
+    m_idvrCSGgrayscaleMethod = _method;
+
+    if(this->m_idvrMethod == s_MIMP && this->m_idvrCSG && this->m_idvrCSGModulation)
+    {
+        this->createMaterialAndIDVRTechnique();
+    }
+}
+
 //-----------------------------------------------------------------------------
 
 void ImportanceDrivenVolumeRenderer::toggleIDVRCSGModulation(bool modulation)
@@ -620,16 +646,6 @@ std::tuple<std::string, std::string, size_t> ImportanceDrivenVolumeRenderer::com
                 {
                     switch(m_idvrCSGModulationMethod)
                     {
-                        case IDVRCSGModulationMethod::AVERAGE_GRAYSCALE:
-                            fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << s_CSG_MOD_GRAYSCALE_AVERAGE_DEFINE;
-                            break;
-                        case IDVRCSGModulationMethod::LIGHTNESS_GRAYSCALE:
-                            fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << s_CSG_MOD_GRAYSCALE_LIGHTNESS_DEFINE;
-                            break;
-                        case IDVRCSGModulationMethod::LUMINOSITY_GRAYSCALE:
-                            fpPPDefs <<
-                            (fpPPDefs.str() == "" ? "" : ",") << s_CSG_MOD_GRAYSCALE_LUMINOSITY_DEFINE;
-                            break;
                         case IDVRCSGModulationMethod::COLOR1:
                             fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << s_CSG_MOD_COLOR1_DEFINE;
                             break;
@@ -638,6 +654,24 @@ std::tuple<std::string, std::string, size_t> ImportanceDrivenVolumeRenderer::com
                             break;
                         case IDVRCSGModulationMethod::COLOR3:
                             fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << s_CSG_MOD_COLOR3_DEFINE;
+                            break;
+                    }
+
+                }
+
+                if(m_idvrCSGGrayScale)
+                {
+                    switch(m_idvrCSGgrayscaleMethod)
+                    {
+                        case IDVRCSGGrayScaleMethod::AVERAGE_GRAYSCALE:
+                            fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << s_CSG_MOD_GRAYSCALE_AVERAGE_DEFINE;
+                            break;
+                        case IDVRCSGGrayScaleMethod::LIGHTNESS_GRAYSCALE:
+                            fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << s_CSG_MOD_GRAYSCALE_LIGHTNESS_DEFINE;
+                            break;
+                        case IDVRCSGGrayScaleMethod::LUMINOSITY_GRAYSCALE:
+                            fpPPDefs <<
+                            (fpPPDefs.str() == "" ? "" : ",") << s_CSG_MOD_GRAYSCALE_LUMINOSITY_DEFINE;
                             break;
                     }
 

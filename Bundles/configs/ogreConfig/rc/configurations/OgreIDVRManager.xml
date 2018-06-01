@@ -43,8 +43,10 @@
                 <param type="double" name="Countersink geometry border thickness" key="idvrCSGBorderThickness" defaultValue="0.05" min="0.01" max="1.0" />
                 <param type="color" name="Countersink geometry border color" key="idvrCSGBorderColor" defaultValue="#ff0000ff" />
                 <param type="bool" name="Enable Countersink geometry depth lines for MImP" key="idvrCSGDepthLines" defaultValue="false" />
+                <param type="bool" name="Enable gray scale for countersink geometry" key="idvrCSGGrayScale" defaultValue="false" />
+                <param type="enum" name="Countersink geometry gray scale methods" key="idvrCSGGrayScaleMethod" defaultValue="Average_grayscale" values="Average_grayscale,Lightness_grayscale,Luminosity_grayscale" />
                 <param type="bool" name="Enable modulation for countersink geometry" key="idvrCSGModulation" defaultValue="false" />
-                <param type="enum" name="Countersink geometry modulation methods" key="idvrCSGModulationMethod" defaultValue="Brightness" values="Average_grayscale,Lightness_grayscale,Luminosity_grayscale,Brightness,Saturation,SaturationBrightness" />
+                <param type="enum" name="Countersink geometry modulation methods" key="idvrCSGModulationMethod" defaultValue="Brightness" values="Brightness,Saturation,SaturationBrightness" />
                 <param type="double" name="Countersink geometry modulation factor" key="idvrCSGModulationFactor" defaultValue="0.0" min="-1.0" max="1.0" />
                 <param type="bool" name="Countersink geometry opacity" key="idvrCSGOpacity" defaultValue="false" />
                 <param type="double" name="Opacity decrease factor" key="idvrCSGOpacityFactor" defaultValue="0.0" min="-1.0" max="1.0" />

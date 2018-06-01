@@ -22,12 +22,16 @@ public:
 
     enum class IDVRCSGModulationMethod
     {
-        AVERAGE_GRAYSCALE,
-        LIGHTNESS_GRAYSCALE,
-        LUMINOSITY_GRAYSCALE,
         COLOR1,
         COLOR2,
         COLOR3
+    };
+
+    enum class IDVRCSGGrayScaleMethod
+    {
+        AVERAGE_GRAYSCALE,
+        LIGHTNESS_GRAYSCALE,
+        LUMINOSITY_GRAYSCALE
     };
 
     FWRENDEROGRE_API ImportanceDrivenVolumeRenderer(std::string parentId,
@@ -69,14 +73,20 @@ public:
     /// Setup the countersink geometry border color used in the MImP method.
     FWRENDEROGRE_API void setIDVRCSGBorderColor(std::array<std::uint8_t, 4>);
 
-    /// Toggle the grayscale modulation for MImP countersink geometry.
+    /// Toggle the modulation for MImP countersink geometry.
     FWRENDEROGRE_API void toggleIDVRCSGModulation(bool);
 
-    /// Setup the grayscale modulation method used for MImP countersink geometry.
+    /// Setup the modulation method used for MImP countersink geometry.
     FWRENDEROGRE_API void setIDVRCSModulationMethod(IDVRCSGModulationMethod);
 
     /// Setup the wheighting factor for MImP CSG color modulation.
     FWRENDEROGRE_API void setIDVRCSGModulationFactor(double);
+
+    /// Toggle the grayscale for MImP countersink geometry.
+    FWRENDEROGRE_API void toggleIDVRCSGGrayScale(bool);
+
+    /// Setup the grayscale method used for MImP countersink geometry.
+    FWRENDEROGRE_API void setIDVRCSGrayScaleMethod(IDVRCSGGrayScaleMethod);
 
     /// Toggle the opacity for MImP countersink geometry.
     FWRENDEROGRE_API void toggleIDVRCSGOpacity(bool);
@@ -163,6 +173,12 @@ private:
 
     /// Sets the wheighting factor for MImP CSG color modulation.
     float m_idvrCSGModulationFactor;
+
+    /// Sets usage of grayscale for MImP CSG.
+    bool m_idvrCSGGrayScale;
+
+    /// Name of the method used to compute the new color values in CSG.
+    IDVRCSGGrayScaleMethod m_idvrCSGgrayscaleMethod;
 
     /// Sets usage of opacity for MImP CSG.
     bool m_idvrCSGOpacity;
