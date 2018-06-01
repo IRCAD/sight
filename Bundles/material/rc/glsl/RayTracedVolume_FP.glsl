@@ -424,7 +424,7 @@ void main(void)
             isCsg = entryOpacity > 0;
 
 #if CSG_DISABLE_CONTEXT == 1
-            if(isCsg)
+            if(entryOpacity == 0)
             {
                 discard;
             }
@@ -452,7 +452,7 @@ void main(void)
 #else
     vec4 result;
 
-    if(rayDepth > 0)
+    if(rayDepth > 0 && isCsg)
     {
 
 #ifdef CSG_DEPTH_LINES
@@ -463,7 +463,7 @@ void main(void)
         if(rayDepth > u_csgBorderThickness
 #ifdef CSG_DEPTH_LINES
            && mod(int(rayDepthIntegralPart), u_depthLinesSpacing) == 0
-                && (rayDepthFractPart < u_depthLinesWidth) && isCsg
+                && (rayDepthFractPart < u_depthLinesWidth)
 #endif // CSG_DEPTH_LINES == 1
         )
         {
