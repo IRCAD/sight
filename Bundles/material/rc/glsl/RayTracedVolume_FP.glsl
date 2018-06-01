@@ -370,6 +370,7 @@ void main(void)
 #if IDVR == 1
 
     float rayDepth = 0.;
+    float camDepth = 0.;
     vec4 jfaDistance = vec4(0.);
     bool isCsg = false; // true if this ray hits the csg.
 
@@ -412,7 +413,7 @@ void main(void)
             vec3 cVector = normalize(u_cameraPos - closestPt) * volSize;
             vec3 cOrig2RayEntry = rayEntry * volSize - closestPt * volSize;
             rayDepth = dot(cVector, cOrig2RayEntry) / length(cVector);
-
+            camDepth = length(cVector);
             // If the new entry point hits a transparent zone then we discard it.
             float entryIntensity = texture(u_image, rayEntry).r;
             float entryOpacity = sampleTransferFunction(entryIntensity).a;
@@ -492,23 +493,23 @@ void main(void)
 #endif // CSG_MODULATION == 3
 
 // CSG luminance and saturation modulations
+// Brightness increase (CSG_MODULATION == 4)
+// Saturation increase (CSG_MODULATION == 5)
+// Saturation and brightness increase (CSG_MODULATION == 6)
+// Saturation decrease (CSG_MODULATION == 7)
 #if CSG_MODULATION == 4 || CSG_MODULATION == 5 || CSG_MODULATION == 6 || CSG_MODULATION == 7
             vec3 hsv = rgb2hsv(color.rgb);
 
-// Saturation increase (CSG_MODULATION == 5)
-// Saturation and brightness increase (CSG_MODULATION == 6)
 #if CSG_MODULATION == 5 || CSG_MODULATION == 6
-            hsv.g += rayDepth * u_colorModulationFactor;
+            hsv.g += ((camDepth - rayDepth) / camDepth) * u_colorModulationFactor;
 #endif // CSG_MODULATION == 5 || CSG_MODULATION == 6
 
-// Saturation decrease (CSG_MODULATION == 7)
 #if CSG_MODULATION == 7
             hsv.g -= rayDepth * u_colorModulationFactor;
 #endif // CSG_MODULATION == 7
 
-// Brightness increase (CSG_MODULATION == 4)
 #if CSG_MODULATION == 4 || CSG_MODULATION == 6 || CSG_MODULATION == 7
-            hsv.b += rayDepth * u_colorModulationFactor;
+            hsv.b += ((camDepth - rayDepth) / camDepth) * u_colorModulationFactor;
 #endif // CSG_MODULATION == 4 || CSG_MODULATION == 6 || CSG_MODULATION == 7
 
             color.rgb = hsv2rgb(hsv);
