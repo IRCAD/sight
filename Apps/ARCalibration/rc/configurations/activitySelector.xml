@@ -57,7 +57,7 @@
         </service>
 
         <service uid="seriesSignal" type="::activities::SSeriesSignal" autoConnect="yes">
-            <in key="${SERIESDB}" uid="${LOADING_SERIESDB}" />
+            <in key="seriesDB" uid="${LOADING_SERIESDB}" />
             <filter>
                 <mode>include</mode>
                 <type>::fwMedData::ActivitySeries</type>
