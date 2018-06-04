@@ -28,8 +28,27 @@ namespace videoCalibration
         <in key="camera" uid="..."/>
         <in key="extrinsic" uid="..."/>
         <inout key="frameTL" uid="..." />
-        <out key="error" uid="doubleError" />
+        <out key="error" uid="..." />
         <patternWidth>80</patternWidth>
+     </service>
+
+     or
+
+     <service uid="..." type="::registrationCV::SReprojectionError">
+         <in group="matrix">
+             <key uid="..." />
+             <key uid="..." />
+             <key uid="..." />
+             <key uid="..." />
+         </in>
+         <in group="markerMap" autoConnect="yes">
+             <key uid="..." />
+             <key uid="..." />
+         </in>
+         <in key="camera" uid="..."/>
+         <in key="extrinsic" uid="..." />
+         <inout key="frame" uid="..." />
+         <patternWidth>80</patternWidth>
      </service>
    @endcode
  * @subsection Input Input
@@ -38,7 +57,8 @@ namespace videoCalibration
  * - \b extrinsic [::fwData::TransformationMatrix3D]: extrinsic matrix, only used if you have two cameras configured.
  * - \b matrixTL [::arData::MatrixTL]: timeline of 3D transformation matrices.
  * @subsection InOut InOut
- *  - \b frameTL [::arData::FrameTL] : frame timeline used to draw reprojected points (optional)
+ * - \b frameTL [::arData::FrameTL] : frame timeline used to draw reprojected points (optional)
+ * - \b frame [::fwData::Image]: video frame.
  * @subsection Output Output
  * - \b error [::fwData::Float] : computed error
  * @subsection Configuration Configuration

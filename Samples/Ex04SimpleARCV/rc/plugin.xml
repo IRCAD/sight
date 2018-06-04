@@ -451,14 +451,16 @@
             </service>
 
             <!-- This will compute the reprojection error -->
-            <!--<service uid="error" type="::videoCalibration::SReprojectionError" worker="error">
-                <in key="matrixTL" uid="matrixTL" autoConnect="yes" />
-                <in key="markerTL" uid="tagTL" />
-                <inout key="frameTL" uid="frameTL" />
+            <service uid="error" type="::videoCalibration::SReprojectionError" worker="error">
+                <in group="matrix" autoConnect="yes">
+                    <key uid="matrix" />
+                </in>
+                <in key="markerMap" uid="markerMap" />
                 <in key="camera" uid="camera" />
                 <in key="extrinsic" uid="matrix" />
+                <inout key="frame" uid="sourceFrame" />
                 <patternWidth>60</patternWidth>
-            </service> -->
+            </service>
 
             <!-- To synchronize matrix, frame and detection -->
             <service uid="synchronizer" type="::videoTools::SFrameMatrixSynchronizer" >
@@ -594,7 +596,7 @@
             <start uid="Extractor" />
             <start uid="matrixReverser" />
             <start uid="genericScene" />
-            <!--<start uid="error" /> -->
+            <start uid="error" />
             <start uid="hideAxis" />
             <start uid="undistorter" />
             <start uid="distorter" />

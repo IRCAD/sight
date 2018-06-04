@@ -8,15 +8,20 @@
 
 #include <arData/Camera.hpp>
 #include <arData/FrameTL.hpp>
+#include <arData/MarkerMap.hpp>
 #include <arData/MarkerTL.hpp>
 #include <arData/MatrixTL.hpp>
 
 #include <calibration3d/helper.hpp>
 
+#include <cvIO/Camera.hpp>
+#include <cvIO/Image.hpp>
+
 #include <fwCom/Signal.hxx>
-#include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
+#include <fwData/Image.hpp>
+#include <fwData/mt/ObjectWriteLock.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
 
 #include <fwServices/macros.hpp>
@@ -37,10 +42,13 @@ const ::fwCom::Slots::SlotKeyType SReprojectionError::s_SET_COLOR_PARAMETER_SLOT
 static const ::fwCom::Signals::SignalKeyType s_ERROR_COMPUTED_SIG = "errorComputed";
 
 const ::fwServices::IService::KeyType s_MARKERTL_INPUT  = "markerTL";
+const ::fwServices::IService::KeyType s_MARKERMAP_INPUT = "markerMap";
 const ::fwServices::IService::KeyType s_CAMERA_INPUT    = "camera";
 const ::fwServices::IService::KeyType s_EXTRINSIC_INPUT = "extrinsic";
 const ::fwServices::IService::KeyType s_MATRIXTL_INPUT  = "matrixTL";
+const ::fwServices::IService::KeyType s_MATRIX_INPUT    = "matrix";
 const ::fwServices::IService::KeyType s_FRAMETL_INOUT   = "frameTL";
+const ::fwServices::IService::KeyType s_FRAME_INOUT     = "frame";
 
 //-----------------------------------------------------------------------------
 
@@ -92,25 +100,14 @@ void SReprojectionError::starting()
     // --> configure height, width and square size(in mm)
 
     auto camera = this->getInput< ::arData::Camera >(s_CAMERA_INPUT);
-
     SLM_ASSERT("Camera is not found", camera);
 
-    m_cameraMatrix                  = ::cv::Mat::eye(3, 3, CV_64F);
-    m_cameraMatrix.at<double>(0, 0) = camera->getFx();
-    m_cameraMatrix.at<double>(1, 1) = camera->getFy();
-    m_cameraMatrix.at<double>(0, 2) = camera->getCx();
-    m_cameraMatrix.at<double>(1, 2) = camera->getCy();
-
-    m_distorsionCoef = ::cv::Mat(5, 1, CV_64F);
-    for (std::uint8_t i = 0; i < 5; ++i)
-    {
-        m_distorsionCoef.at<double>(i) = camera->getDistortionCoefficient()[i];
-    }
+    ::cv::Size imgSize;
+    std::tie(m_cameraMatrix, imgSize, m_distorsionCoef) = ::cvIO::Camera::copyToCv(camera);
 
     m_extrinsic = ::cv::Mat::eye(4, 4, CV_64F);
 
     auto extrinsic = this->getInput< ::fwData::TransformationMatrix3D>(s_EXTRINSIC_INPUT);
-
     if(extrinsic != nullptr)
     {
         for(std::uint8_t i = 0; i < 4; ++i )
@@ -134,7 +131,6 @@ void SReprojectionError::stopping()
 
 void SReprojectionError::compute(fwCore::HiResClock::HiResClockType timestamp)
 {
-
     if(!this->isStarted())
     {
         return;
@@ -142,89 +138,164 @@ void SReprojectionError::compute(fwCore::HiResClock::HiResClockType timestamp)
 
     if(timestamp > m_lastTimestamp)
     {
-        auto matrixTL = this->getInput< ::arData::MatrixTL >(s_MATRIXTL_INPUT);
         auto markerTL = this->getInput< ::arData::MarkerTL >(s_MARKERTL_INPUT);
-        ::fwCore::HiResClock::HiResClockType ts = matrixTL->getNewerTimestamp();
-        if(ts <= 0)
+        if(markerTL)
         {
-            OSLM_WARN("No matrix found in a timeline for timestamp '"<<ts<<"'.");
-            return;
-        }
-
-        const CSPTR(::arData::MatrixTL::BufferType) matBuff = matrixTL->getClosestBuffer(ts);
-        const CSPTR(::arData::MarkerTL::BufferType) buffer  = markerTL->getClosestBuffer(ts);
-
-        if(matBuff == nullptr || buffer == nullptr)
-        {
-            return;
-        }
-
-        const size_t nbMatrices = matBuff->getMaxElementNum();
-        const size_t nbMarkers  = buffer->getMaxElementNum();
-
-        SLM_ASSERT("Number of matrices should be equal to the number of marker", nbMatrices == nbMarkers);
-
-        for(unsigned int i = 0; i < nbMatrices; ++i)
-        {
-            const float* marker = buffer->getElement(i);
-            const float* matrix = matBuff->getElement(i);
-            std::vector< ::cv::Point2f >points2D;
-
-            ::cv::Mat rot = ::cv::Mat(3, 3, CV_64F);
-            ::cv::Mat mat = ::cv::Mat::eye(4, 4, CV_64F);
-
-            for(int r = 0; r < 4; ++r)
+            auto matrixTL = this->getInput< ::arData::MatrixTL >(s_MATRIXTL_INPUT);
+            ::fwCore::HiResClock::HiResClockType ts = matrixTL->getNewerTimestamp();
+            if(ts <= 0)
             {
-                for(int c = 0; c < 4; ++c)
+                OSLM_WARN("No matrix found in a timeline for timestamp '"<<ts<<"'.");
+                return;
+            }
+
+            const CSPTR(::arData::MatrixTL::BufferType) matBuff = matrixTL->getClosestBuffer(ts);
+            const CSPTR(::arData::MarkerTL::BufferType) buffer  = markerTL->getClosestBuffer(ts);
+
+            if(matBuff == nullptr || buffer == nullptr)
+            {
+                return;
+            }
+
+            const size_t nbMatrices = matBuff->getMaxElementNum();
+            const size_t nbMarkers  = buffer->getMaxElementNum();
+
+            SLM_ASSERT("Number of matrices should be equal to the number of marker", nbMatrices == nbMarkers);
+
+            for(unsigned int i = 0; i < nbMatrices; ++i)
+            {
+                const float* marker = buffer->getElement(i);
+                const float* matrix = matBuff->getElement(i);
+                std::vector< ::cv::Point2f >points2D;
+
+                ::cv::Mat rot = ::cv::Mat(3, 3, CV_64F);
+                ::cv::Mat mat = ::cv::Mat::eye(4, 4, CV_64F);
+
+                for(int r = 0; r < 4; ++r)
                 {
-                    mat.at<double>(r, c) = static_cast<double>(matrix[r * 4 + c]);
+                    for(int c = 0; c < 4; ++c)
+                    {
+                        mat.at<double>(r, c) = static_cast<double>(matrix[r * 4 + c]);
+                    }
+                }
+
+                ::cv::Mat pose = m_extrinsic * mat;
+
+                rot = pose( ::cv::Rect(0, 0, 3, 3));
+
+                ::cv::Mat tvec     = ::cv::Mat(3, 1, CV_64F);
+                tvec.at<double>(0) = pose.at<double>(0, 3);
+                tvec.at<double>(1) = pose.at<double>(1, 3);
+                tvec.at<double>(2) = pose.at<double>(2, 3);
+
+                ::cv::Mat rvec;
+
+                ::cv::Rodrigues(rot, rvec);
+
+                for(size_t p = 0; p < 4; ++p)
+                {
+                    points2D.push_back(::cv::Point2f(marker[p*2], marker[p*2 +1]));
+                }
+
+                ::calibration3d::helper::ErrorAndPointsType errP =
+                    ::calibration3d::helper::computeReprojectionError(m_objectPoints, points2D, rvec, tvec,
+                                                                      m_cameraMatrix, m_distorsionCoef);
+
+                this->signal<ErrorComputedSignalType>(s_ERROR_COMPUTED_SIG)->asyncEmit(errP.first);
+
+                if(m_display) //draw reprojected points
+                {
+                    auto frameTL = this->getInOut< ::arData::FrameTL >(s_FRAMETL_INOUT);
+                    SLM_ASSERT("The input "+ s_FRAMETL_INOUT +" is not valid.", frameTL);
+
+                    CSPTR(::arData::FrameTL::BufferType) bufferFrame = frameTL->getClosestBuffer(ts);
+
+                    if(bufferFrame != nullptr)
+                    {
+                        const std::uint8_t* frameData = &bufferFrame->getElement(0);
+                        const int width               = static_cast< int >( frameTL->getWidth() );
+                        const int height              = static_cast< int >( frameTL->getHeight() );
+                        ::cv::Mat img( ::cv::Size( width, height ), CV_8UC4 );
+                        img.data = const_cast< uchar*>(frameData);
+
+                        std::vector< ::cv::Point2f > reprojectedP = errP.second;
+
+                        for(size_t i = 0; i < reprojectedP.size(); ++i)
+                        {
+                            ::cv::circle(img, reprojectedP[i], 7, m_cvColor, 1, ::cv::LINE_8);
+                        }
+                    }
                 }
             }
+        }
+        else
+        {
+            auto markerMap = this->getInput< ::arData::MarkerMap >(s_MARKERMAP_INPUT);
 
-            ::cv::Mat pose = m_extrinsic * mat;
+            const size_t numMatrices = this->getKeyGroupSize(s_MATRIX_INPUT);
+            const size_t numMarkers  = markerMap->count();
 
-            rot = pose( ::cv::Rect(0, 0, 3, 3));
+            SLM_ASSERT("Number of matrices should be equal to the number of marker", numMatrices == numMarkers);
 
-            ::cv::Mat tvec     = ::cv::Mat(3, 1, CV_64F);
-            tvec.at<double>(0) = pose.at<double>(0, 3);
-            tvec.at<double>(1) = pose.at<double>(1, 3);
-            tvec.at<double>(2) = pose.at<double>(2, 3);
-
-            ::cv::Mat rvec;
-
-            ::cv::Rodrigues(rot, rvec);
-
-            for(size_t p = 0; p < 4; ++p)
+            for(unsigned int i = 0; i < numMatrices; ++i)
             {
-                points2D.push_back(::cv::Point2f(marker[p*2], marker[p*2 +1]));
-            }
+                auto matrix = this->getInput< ::fwData::TransformationMatrix3D >(s_MATRIX_INPUT, i);
 
-            ::calibration3d::helper::ErrorAndPointsType errP =
-                ::calibration3d::helper::computeReprojectionError(m_objectPoints, points2D, rvec, tvec,
-                                                                  m_cameraMatrix, m_distorsionCoef);
+                const auto& marker = markerMap->getMarker(i);
+                std::vector< ::cv::Point2f >points2D;
 
-            this->signal<ErrorComputedSignalType>(s_ERROR_COMPUTED_SIG)->asyncEmit(errP.first);
+                ::cv::Mat rot = ::cv::Mat(3, 3, CV_64F);
+                ::cv::Mat mat = ::cv::Mat::eye(4, 4, CV_64F);
 
-            if(m_display) //draw reprojected points
-            {
-                auto frameTL = this->getInOut< ::arData::FrameTL >(s_FRAMETL_INOUT);
-                SLM_ASSERT("The input "+ s_FRAMETL_INOUT +" is not valid.", frameTL);
-
-                CSPTR(::arData::FrameTL::BufferType) bufferFrame = frameTL->getClosestBuffer(ts);
-
-                if(bufferFrame != nullptr)
+                for(std::uint8_t r = 0; r < 4; ++r)
                 {
-                    const std::uint8_t* frameData = &bufferFrame->getElement(0);
-                    const int width               = static_cast< int >( frameTL->getWidth() );
-                    const int height              = static_cast< int >( frameTL->getHeight() );
-                    ::cv::Mat img( ::cv::Size( width, height ), CV_8UC4 );
-                    img.data = const_cast< uchar*>(frameData);
-
-                    std::vector< ::cv::Point2f > reprojectedP = errP.second;
-
-                    for(size_t i = 0; i < reprojectedP.size(); ++i)
+                    for(std::uint8_t c = 0; c < 4; ++c)
                     {
-                        ::cv::circle(img, reprojectedP[i], 7, m_cvColor, 1, ::cv::LINE_8);
+                        mat.at<double>(r, c) = static_cast<double>(matrix->getCoefficient(r, c));
+                    }
+                }
+
+                const ::cv::Mat pose = m_extrinsic * mat;
+
+                rot = pose( ::cv::Rect(0, 0, 3, 3));
+
+                ::cv::Mat tvec     = ::cv::Mat(3, 1, CV_64F);
+                tvec.at<double>(0) = pose.at<double>(0, 3);
+                tvec.at<double>(1) = pose.at<double>(1, 3);
+                tvec.at<double>(2) = pose.at<double>(2, 3);
+
+                ::cv::Mat rvec;
+
+                ::cv::Rodrigues(rot, rvec);
+
+                for(size_t p = 0; p < 4; ++p)
+                {
+                    points2D.push_back( ::cv::Point2f(marker[i][p*2], marker[i][p*2 +1]));
+                }
+
+                ::calibration3d::helper::ErrorAndPointsType errP =
+                    ::calibration3d::helper::computeReprojectionError(m_objectPoints, points2D, rvec, tvec,
+                                                                      m_cameraMatrix, m_distorsionCoef);
+
+                this->signal<ErrorComputedSignalType>(s_ERROR_COMPUTED_SIG)->asyncEmit(errP.first);
+
+                if(m_display) //draw reprojected points
+                {
+                    auto frame = this->getInOut< ::fwData::Image >(s_FRAME_INOUT);
+                    SLM_ASSERT("The input "+ s_FRAMETL_INOUT +" is not valid.", frame);
+
+                    ::fwData::mt::ObjectWriteLock lock(frame);
+
+                    if(frame->getSizeInBytes() > 0)
+                    {
+                        ::cv::Mat cvImage = ::cvIO::Image::moveToCv(frame);
+
+                        std::vector< ::cv::Point2f > reprojectedP = errP.second;
+
+                        for(size_t i = 0; i < reprojectedP.size(); ++i)
+                        {
+                            ::cv::circle(cvImage, reprojectedP[i], 7, m_cvColor, 1, ::cv::LINE_8);
+                        }
                     }
                 }
             }
@@ -264,8 +335,11 @@ void SReprojectionError::setColorParameter(std::array<uint8_t, 4> _val, std::str
 
 void SReprojectionError::updating()
 {
-    this->stopping();
-    this->starting();
+    // When working with a frame (newest design), we do not rely on the timetamp
+    // So we can just send the current one.
+    // When removing timelines from the service then we could get rid of it
+    auto timestamp = ::fwCore::HiResClock::getTimeInMilliSec();
+    this->compute(timestamp);
 }
 
 //-----------------------------------------------------------------------------
@@ -275,6 +349,7 @@ void SReprojectionError::updating()
     KeyConnectionsMap connections;
 
     connections.push( s_MATRIXTL_INPUT, ::arData::TimeLine::s_OBJECT_PUSHED_SIG, s_COMPUTE_SLOT );
+    connections.push( s_MATRIX_INPUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT );
 
     return connections;
 }
