@@ -100,7 +100,7 @@ void IService::setOutput(const IService::KeyType& key, const fwData::Object::spt
 
 ::fwData::Object::sptr IService::getObject()
 {
-    FW_DEPRECATED("getObject()", "getInput() or getInOut()", "fw4spl_20.0");
+    FW_DEPRECATED("getObject()", "getInput() or getInOut()", "20.0");
 
     // Handle compatibility with new behavior
     if(m_associatedObject.expired())
@@ -762,7 +762,7 @@ void IService::autoConnect()
                 // This also allows to get the default connection with the s_UPDATE_SLOT. When we remove this
                 // function, we will have to implement this behavior with getAutoConnections()
                 connections = this->getObjSrvConnections();
-                FW_DEPRECATED_IF("getObjSrvConnections()", "getAutoConnections()", "fw4spl_20.0", !connections.empty());
+                FW_DEPRECATED_IF("getObjSrvConnections()", "getAutoConnections()", "20.0", !connections.empty());
             }
 
             ::fwData::Object::csptr obj;
