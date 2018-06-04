@@ -119,7 +119,7 @@ void SImageSeriesWriter::updating()
         ::fwMedData::ImageSeries::sptr iseries = this->getInOut< ::fwMedData::ImageSeries >(::fwIO::s_DATA_KEY);
         if (!iseries)
         {
-            FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "fw4spl_18.0");
+            FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "18.0");
             iseries = this->getObject< ::fwMedData::ImageSeries >();
         }
         const ::fwData::Image::sptr& associatedImage = iseries->getImage();

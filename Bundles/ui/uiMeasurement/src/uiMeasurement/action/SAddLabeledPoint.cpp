@@ -86,7 +86,7 @@ void SAddLabeledPoint::updating()
     ::fwData::PointList::sptr landmarks = this->getInOut< ::fwData::PointList >(s_POINTLIST_INOUT);
     if (!landmarks)
     {
-        FW_DEPRECATED_KEY(s_POINTLIST_INOUT, "inout", "fw4spl_18.0");
+        FW_DEPRECATED_KEY(s_POINTLIST_INOUT, "inout", "18.0");
         landmarks = this->getObject< ::fwData::PointList >();
     }
     SLM_ASSERT("landmarks not instanced", landmarks);

@@ -278,7 +278,7 @@ void SActivityWizard::createActivity(std::string activityID)
         ::fwMedData::SeriesDB::sptr seriesDB = this->getInOut< ::fwMedData::SeriesDB >(s_SERIESDB_INOUT);
         if (!seriesDB)
         {
-            FW_DEPRECATED_KEY(s_SERIESDB_INOUT, "inout", "fw4spl_18.0");
+            FW_DEPRECATED_KEY(s_SERIESDB_INOUT, "inout", "18.0");
             seriesDB = this->getObject< ::fwMedData::SeriesDB >();
         }
 
@@ -471,7 +471,7 @@ void SActivityWizard::onBuildActivity()
                     ::fwMedData::SeriesDB::sptr seriesDB = this->getInOut< ::fwMedData::SeriesDB >(s_SERIESDB_INOUT);
                     if (!seriesDB)
                     {
-                        FW_DEPRECATED_KEY(s_SERIESDB_INOUT, "inout", "fw4spl_18.0");
+                        FW_DEPRECATED_KEY(s_SERIESDB_INOUT, "inout", "18.0");
                         seriesDB = this->getObject< ::fwMedData::SeriesDB >();
                     }
                     ::fwMedDataTools::helper::SeriesDB helper(seriesDB);

@@ -134,7 +134,7 @@ void SJpgImageSeriesWriter::updating()
         ::fwMedData::ImageSeries::sptr imageSeries = this->getInOut< ::fwMedData::ImageSeries >(::fwIO::s_DATA_KEY);
         if (!imageSeries)
         {
-            FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "fw4spl_18.0");
+            FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "18.0");
             imageSeries = this->getObject< ::fwMedData::ImageSeries >();
         }
         SLM_ASSERT("Image series is not instanced", imageSeries);

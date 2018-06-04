@@ -131,7 +131,7 @@ void SModelSeriesReader::updating()
         ::fwMedData::ModelSeries::sptr modelSeries = this->getInOut< ::fwMedData::ModelSeries >(::fwIO::s_DATA_KEY);
         if (!modelSeries)
         {
-            FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "fw4spl_18.0");
+            FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "18.0");
             modelSeries = this->getObject< ::fwMedData::ModelSeries >();
         }
 

@@ -149,7 +149,7 @@ void SInrSeriesDBReader::updating()
         ::fwMedData::SeriesDB::sptr seriesDB = this->getInOut< ::fwMedData::SeriesDB >(::fwIO::s_DATA_KEY);
         if (!seriesDB)
         {
-            FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "fw4spl_18.0");
+            FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "18.0");
             seriesDB = this->getObject< ::fwMedData::SeriesDB >();
         }
         SLM_ASSERT("SeriesDB not instanced", seriesDB);

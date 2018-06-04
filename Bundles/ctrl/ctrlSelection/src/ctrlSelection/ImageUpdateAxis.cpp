@@ -58,7 +58,7 @@ void ImageUpdateAxis::updateSliceType(int from, int to)
 
 void ImageUpdateAxis::starting()
 {
-    FW_DEPRECATED_MSG("This service is deprecated.", "fw4spl_18.0");
+    FW_DEPRECATED_MSG("This service is deprecated.", "18.0");
     this->updating();
 }
 

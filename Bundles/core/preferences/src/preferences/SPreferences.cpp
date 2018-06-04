@@ -75,7 +75,7 @@ void SPreferences::load()
 
         if (!data)
         {
-            FW_DEPRECATED_KEY(::fwPreferences::s_PREFERENCES_KEY, "inout",  "fw4spl_18.0");
+            FW_DEPRECATED_KEY(::fwPreferences::s_PREFERENCES_KEY, "inout",  "18.0");
             data = this->getObject< ::fwData::Object >();
         }
 
@@ -108,7 +108,7 @@ void SPreferences::save()
 
     if (!obj)
     {
-        FW_DEPRECATED_KEY(::fwPreferences::s_PREFERENCES_KEY, "inout",  "fw4spl_18.0");
+        FW_DEPRECATED_KEY(::fwPreferences::s_PREFERENCES_KEY, "inout",  "18.0");
         obj = this->getObject< ::fwData::Object >();
     }
 

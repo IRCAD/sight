@@ -105,7 +105,7 @@ void LoadLandmark::configuring()
 
 void LoadLandmark::starting()
 {
-    FW_DEPRECATED_MSG("This service is deprecated", "fw4spl_18.0.");
+    FW_DEPRECATED_MSG("This service is deprecated", "18.0.");
     this->::fwGui::IActionSrv::actionServiceStarting();
 }
 

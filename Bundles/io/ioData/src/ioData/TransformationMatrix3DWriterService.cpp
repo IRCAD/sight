@@ -110,7 +110,7 @@ void TransformationMatrix3DWriterService::updating()
             this->getInOut< ::fwData::TransformationMatrix3D >(::fwIO::s_DATA_KEY);
         if (!matrix)
         {
-            FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "fw4spl_18.0");
+            FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "18.0");
             matrix = this->getObject< ::fwData::TransformationMatrix3D >();
         }
         SLM_ASSERT("matrix not instanced", matrix);

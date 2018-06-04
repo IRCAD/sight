@@ -67,7 +67,7 @@ void SInitNewSeries::info(std::ostream& _sstream )
 
 void SInitNewSeries::starting()
 {
-    FW_DEPRECATED_MSG("This service is no longer supported.", "fw4spl_18.0");
+    FW_DEPRECATED_MSG("This service is no longer supported.", "18.0");
     this->actionServiceStarting();
 }
 

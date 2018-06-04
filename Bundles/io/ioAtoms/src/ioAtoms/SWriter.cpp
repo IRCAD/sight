@@ -307,7 +307,7 @@ void SWriter::updating()
     ::fwData::Object::sptr obj = this->getInOut< ::fwData::Object >(::fwIO::s_DATA_KEY);
     if (!obj)
     {
-        FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "fw4spl_18.0");
+        FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "18.0");
         obj = this->getObject< ::fwData::Object >();
     }
 

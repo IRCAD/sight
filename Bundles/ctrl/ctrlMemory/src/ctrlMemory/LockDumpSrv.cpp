@@ -36,7 +36,7 @@ void LockDumpSrv::starting()
     ::fwData::Object::sptr object = this->getInOut< ::fwData::Object >(s_TARGET_INOUT);
     if (!object)
     {
-        FW_DEPRECATED_KEY(s_TARGET_INOUT, "inout",  "fw4spl_18.0");
+        FW_DEPRECATED_KEY(s_TARGET_INOUT, "inout",  "18.0");
         object = this->getObject();
     }
     m_objLock = ::fwData::ObjectLock( object );

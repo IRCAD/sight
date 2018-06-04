@@ -140,7 +140,7 @@ void SIOSelector::updating()
         // FIXME: support for old version using getObject(): all the 'in' or 'inout' keys were possible
         if (!obj && classname.empty())
         {
-            FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "fw4spl_18.0");
+            FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "18.0");
             obj = this->getObject();
         }
         if (obj)
@@ -159,7 +159,7 @@ void SIOSelector::updating()
         // FIXME: support for old version using getObject(): all the 'in' or 'inout' keys were possible
         if (!obj)
         {
-            FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "fw4spl_18.0");
+            FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "18.0");
             obj = this->getObject();
         }
         availableExtensionsId =

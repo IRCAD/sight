@@ -194,7 +194,7 @@ void SImageWriter::updating()
         ::fwData::Image::sptr pImage = this->getInOut< ::fwData::Image >(::fwIO::s_DATA_KEY);
         if (!pImage)
         {
-            FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "fw4spl_18.0");
+            FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "18.0");
             pImage = this->getObject< ::fwData::Image >();
         }
         SLM_ASSERT("Image not instanced", pImage);

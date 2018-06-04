@@ -114,7 +114,7 @@ void SMeshWriter::updating()
         ::fwData::Mesh::csptr pMesh = this->getInOut< ::fwData::Mesh >(::fwIO::s_DATA_KEY);
         if (!pMesh)
         {
-            FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "fw4spl_18.0");
+            FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "18.0");
             pMesh = this->getObject< ::fwData::Mesh >();
         }
         SLM_ASSERT("pMesh not instanced", pMesh);

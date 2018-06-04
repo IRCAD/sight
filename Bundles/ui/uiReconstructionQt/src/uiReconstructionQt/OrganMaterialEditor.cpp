@@ -126,7 +126,7 @@ void OrganMaterialEditor::onColorButton()
     ::fwData::Reconstruction::sptr reconstruction = this->getInOut< ::fwData::Reconstruction >(s_RECONSTRUCTION_INOUT);
     if (!reconstruction)
     {
-        FW_DEPRECATED_KEY(s_RECONSTRUCTION_INOUT, "inout", "fw4spl_18.0");
+        FW_DEPRECATED_KEY(s_RECONSTRUCTION_INOUT, "inout", "18.0");
         reconstruction = this->getObject< ::fwData::Reconstruction >();
     }
     SLM_ASSERT("No Reconstruction!", reconstruction);
@@ -162,7 +162,7 @@ void OrganMaterialEditor::onOpacitySlider(int value )
     ::fwData::Reconstruction::sptr reconstruction = this->getInOut< ::fwData::Reconstruction >(s_RECONSTRUCTION_INOUT);
     if (!reconstruction)
     {
-        FW_DEPRECATED_KEY(s_RECONSTRUCTION_INOUT, "inout", "fw4spl_18.0");
+        FW_DEPRECATED_KEY(s_RECONSTRUCTION_INOUT, "inout", "18.0");
         reconstruction = this->getObject< ::fwData::Reconstruction >();
     }
     SLM_ASSERT("No Reconstruction!", reconstruction);
@@ -183,7 +183,7 @@ void OrganMaterialEditor::refreshMaterial( )
     ::fwData::Reconstruction::csptr reconstruction = this->getInOut< ::fwData::Reconstruction >(s_RECONSTRUCTION_INOUT);
     if (!reconstruction)
     {
-        FW_DEPRECATED_KEY(s_RECONSTRUCTION_INOUT, "inout", "fw4spl_18.0");
+        FW_DEPRECATED_KEY(s_RECONSTRUCTION_INOUT, "inout", "18.0");
         reconstruction = this->getObject< ::fwData::Reconstruction >();
     }
     SLM_ASSERT("No Reconstruction!", reconstruction);
@@ -223,7 +223,7 @@ void OrganMaterialEditor::materialNotification( )
     ::fwData::Reconstruction::csptr reconstruction = this->getInOut< ::fwData::Reconstruction >(s_RECONSTRUCTION_INOUT);
     if (!reconstruction)
     {
-        FW_DEPRECATED_KEY(s_RECONSTRUCTION_INOUT, "inout", "fw4spl_18.0");
+        FW_DEPRECATED_KEY(s_RECONSTRUCTION_INOUT, "inout", "18.0");
         reconstruction = this->getObject< ::fwData::Reconstruction >();
     }
     SLM_ASSERT("No Reconstruction!", reconstruction);

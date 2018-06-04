@@ -56,7 +56,7 @@ void SAddField::configuring()
 
 void SAddField::starting()
 {
-    FW_DEPRECATED("::ctrlSelection::SAddField", "::crrlSelection::SManage", "fw4spl_18.0");
+    FW_DEPRECATED("::ctrlSelection::SAddField", "::crrlSelection::SManage", "18.0");
 }
 
 // ----------------------------------------------------------------------------

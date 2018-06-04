@@ -87,7 +87,7 @@ void SObjFromSlot::add(::fwData::Object::sptr obj)
 
 void SObjFromSlot::addOrSwap(::fwData::Object::sptr obj)
 {
-    FW_DEPRECATED("addOrSwap", "add", "fw4spl_18.0");
+    FW_DEPRECATED("addOrSwap", "add", "18.0");
     this->setOutput(s_OBJECT, obj);
 }
 
@@ -95,7 +95,7 @@ void SObjFromSlot::addOrSwap(::fwData::Object::sptr obj)
 
 void SObjFromSlot::swap(::fwData::Object::sptr obj)
 {
-    FW_DEPRECATED("addOrSwap", "add", "fw4spl_18.0");
+    FW_DEPRECATED("addOrSwap", "add", "18.0");
     this->setOutput(s_OBJECT, obj);
 }
 
@@ -110,7 +110,7 @@ void SObjFromSlot::remove()
 
 void SObjFromSlot::removeIfPresent()
 {
-    FW_DEPRECATED("removeIfPresent", "remove", "fw4spl_18.0");
+    FW_DEPRECATED("removeIfPresent", "remove", "18.0");
     this->setOutput(s_OBJECT, nullptr);
 }
 

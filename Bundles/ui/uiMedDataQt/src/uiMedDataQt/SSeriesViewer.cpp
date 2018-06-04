@@ -72,7 +72,7 @@ void SSeriesViewer::updating()
     ::fwData::Vector::csptr vector = this->getInput< ::fwData::Vector >(s_SERIES_INPUT);
     if (!vector)
     {
-        FW_DEPRECATED_KEY(s_SERIES_INPUT, "in", "fw4spl_18.0");
+        FW_DEPRECATED_KEY(s_SERIES_INPUT, "in", "18.0");
         vector = this->getObject< ::fwData::Vector >();
     }
 

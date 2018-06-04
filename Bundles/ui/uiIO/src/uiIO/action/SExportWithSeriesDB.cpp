@@ -81,7 +81,7 @@ void SExportWithSeriesDB::updating( )
 
     if (!series)
     {
-        FW_DEPRECATED_KEY(s_SERIES_INOUT, "inout", "fw4spl_18.0");
+        FW_DEPRECATED_KEY(s_SERIES_INOUT, "inout", "18.0");
         series = this->getObject< ::fwMedData::Series >();
     }
     // Create a new SeriesDB
@@ -129,7 +129,7 @@ void SExportWithSeriesDB::starting()
 
     if (!series)
     {
-        FW_DEPRECATED_KEY(s_SERIES_INOUT, "inout", "fw4spl_18.0");
+        FW_DEPRECATED_KEY(s_SERIES_INOUT, "inout", "18.0");
         series = this->getObject< ::fwMedData::Series >();
     }
     SLM_FATAL_IF( "The associated object must be a ::fwMedData::Series.", !series);

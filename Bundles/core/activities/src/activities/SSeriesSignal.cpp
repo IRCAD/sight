@@ -132,7 +132,7 @@ void SSeriesSignal::updating()
     // FIXME hack to support old getObject (with any 'in' or 'inout' key)
     if (!this->getInput< ::fwMedData::SeriesDB >("seriesDB"))
     {
-        FW_DEPRECATED_KEY("seriesDB", "in", "fw4spl_18.0");
+        FW_DEPRECATED_KEY("seriesDB", "in", "18.0");
     }
     else
     {

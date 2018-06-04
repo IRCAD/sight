@@ -173,7 +173,7 @@ void RepresentationEditor::updating()
     ::fwData::Reconstruction::sptr reconstruction = this->getInOut< ::fwData::Reconstruction >(s_RECONSTRUCTION_INOUT);
     if (!reconstruction)
     {
-        FW_DEPRECATED_KEY(s_RECONSTRUCTION_INOUT, "inout", "fw4spl_18.0");
+        FW_DEPRECATED_KEY(s_RECONSTRUCTION_INOUT, "inout", "18.0");
         reconstruction = this->getObject< ::fwData::Reconstruction >();
     }
     SLM_ASSERT("No Reconstruction!", reconstruction);
@@ -354,7 +354,7 @@ void RepresentationEditor::onShowNormals(int state )
     ::fwData::Reconstruction::sptr reconstruction = this->getInOut< ::fwData::Reconstruction >(s_RECONSTRUCTION_INOUT);
     if (!reconstruction)
     {
-        FW_DEPRECATED_KEY(s_RECONSTRUCTION_INOUT, "inout", "fw4spl_18.0");
+        FW_DEPRECATED_KEY(s_RECONSTRUCTION_INOUT, "inout", "18.0");
         reconstruction = this->getObject< ::fwData::Reconstruction >();
     }
     SLM_ASSERT("No Reconstruction!", reconstruction);
@@ -387,7 +387,7 @@ void RepresentationEditor::notifyMaterial()
     ::fwData::Reconstruction::sptr reconstruction = this->getInOut< ::fwData::Reconstruction >(s_RECONSTRUCTION_INOUT);
     if (!reconstruction)
     {
-        FW_DEPRECATED_KEY(s_RECONSTRUCTION_INOUT, "inout", "fw4spl_18.0");
+        FW_DEPRECATED_KEY(s_RECONSTRUCTION_INOUT, "inout", "18.0");
         reconstruction = this->getObject< ::fwData::Reconstruction >();
     }
     SLM_ASSERT("No Reconstruction!", reconstruction);

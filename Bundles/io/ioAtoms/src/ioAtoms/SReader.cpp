@@ -206,7 +206,7 @@ void SReader::updating()
         ::fwData::Object::sptr data = this->getInOut< ::fwData::Object >(::fwIO::s_DATA_KEY);
         if (!data)
         {
-            FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "fw4spl_18.0");
+            FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "18.0");
             data = this->getObject< ::fwData::Object >();
         }
 
@@ -420,7 +420,7 @@ void SReader::notificationOfUpdate()
     ::fwData::Object::sptr object = this->getInOut< ::fwData::Object >(::fwIO::s_DATA_KEY);
     if (!object)
     {
-        FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "fw4spl_18.0");
+        FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "18.0");
         object = this->getObject< ::fwData::Object >();
     }
     auto sig = object->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);

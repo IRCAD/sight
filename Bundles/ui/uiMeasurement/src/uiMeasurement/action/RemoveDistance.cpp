@@ -145,7 +145,7 @@ void RemoveDistance::updating( )
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     if (!image)
     {
-        FW_DEPRECATED_KEY(s_IMAGE_INOUT, "inout", "fw4spl_18.0");
+        FW_DEPRECATED_KEY(s_IMAGE_INOUT, "inout", "18.0");
         image = this->getObject< ::fwData::Image >();
     }
 

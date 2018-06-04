@@ -364,6 +364,6 @@
  * @brief Use this macro when deprecating a service key to warn the developer.
  */
 #define FW_DEPRECATED_KEY(newKey, access, version) \
-    OSLM_ERROR(  "[DEPRECATED] The key '" << newKey << "' is not correctly set. Please correct the configuration to" \
+    OSLM_ERROR(  "[DEPRECATED] The key '" << newKey << "' is not correctly set. Please correct the configuration to " \
                  "set an '" << access << "' key named '" << newKey << "'. The support of the old key will be removed " \
                  "in '" << version << "'.");

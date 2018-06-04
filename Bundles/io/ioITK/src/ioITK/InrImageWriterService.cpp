@@ -147,7 +147,7 @@ void InrImageWriterService::updating()
         ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(::fwIO::s_DATA_KEY);
         if (!image)
         {
-            FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "fw4spl_18.0");
+            FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "18.0");
             image = this->getObject< ::fwData::Image >();
         }
         SLM_ASSERT("'" + ::fwIO::s_DATA_KEY + "' key is not defined", image);

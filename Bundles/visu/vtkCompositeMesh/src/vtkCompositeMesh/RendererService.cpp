@@ -99,7 +99,7 @@ RendererService::~RendererService() noexcept
 
 void RendererService::starting()
 {
-    FW_DEPRECATED_MSG("This service is no longer supported.", "fw4spl_18.0");
+    FW_DEPRECATED_MSG("This service is no longer supported.", "18.0");
 
     this->IGuiContainerSrv::create();
 
