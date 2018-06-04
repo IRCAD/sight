@@ -215,6 +215,32 @@ SCreateActivity::ActivityInfoContainer SCreateActivity::getEnabledActivities(con
 
 void SCreateActivity::updating()
 {
+    ActivityInfoContainer infos = ::fwActivities::registry::Activities::getDefault()->getInfos();
+    infos = this->getEnabledActivities(infos);
+
+    if ( !infos.empty())
+    {
+        ::fwActivities::registry::ActivityInfo info;
+        if((m_keys.size() == 1 && m_filterMode == "include") || (infos.size() == 1))
+        {
+            info = infos[0];
+        }
+        else
+        {
+            info = this->show( infos );
+        }
+
+        if( !info.id.empty() )
+        {
+            m_sigActivityIDSelected->asyncEmit(info.id);
+        }
+    }
+    else
+    {
+        ::fwGui::dialog::MessageDialog::showMessageDialog("Activity launcher",
+                                                          "No available activity for the current selection.",
+                                                          ::fwGui::dialog::MessageDialog::WARNING);
+    }
 }
 
 //------------------------------------------------------------------------------
