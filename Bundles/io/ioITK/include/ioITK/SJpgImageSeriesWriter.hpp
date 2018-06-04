@@ -35,7 +35,7 @@ namespace ioITK
  * @subsection In-Out In-Out
  * - \b data [::fwMedData::ImageSeries]: image series to save.
  * @subsection Configuration Configuration
- * - \b folder (optional): path of the folder, if it not defined, 'configureWithIHM()' should be called to define
+ * - \b folder (optional): path of the folder, if it is not defined, 'configureWithIHM()' should be called to define
  * the path.
  */
 class IOITK_CLASS_API SJpgImageSeriesWriter : public ::fwIO::IWriter

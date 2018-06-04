@@ -22,7 +22,7 @@ class Image;
 namespace ioITK
 {
 /**
- * @brief Reader for .ing.gz image
+ * @brief Reader for .inr.gz image
  *
  * @section XML XML Configuration
  *
@@ -35,8 +35,8 @@ namespace ioITK
  * @subsection In-Out In-Out
  * - \b data [::fwData::Image]: loaded image.
  * @subsection Configuration Configuration
- * - \b file (optional): path of the image to load, if it not defined, 'configureWithIHM()' should be called to define
- * the path.
+ * - \b file (optional): path of the image to load, if it is not defined, 'configureWithIHM()' should be called to
+ * define the path.
  */
 class IOITK_CLASS_API InrImageReaderService : public ::fwIO::IReader
 {

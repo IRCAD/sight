@@ -47,7 +47,7 @@ class ValueView;
  *
  * @section Signals Signals
  * - \b reconstructionSelected(::fwData::Object::sptr) : this signal emits the selected reconstruction
- * - \b emptiedSelection() : this signal is emitted when no reconstruction are selected
+ * - \b emptiedSelection() : this signal is emitted when no reconstruction is selected
  *
  * @section Slots Slots
  * - \b showReconstructions(bool) : slot called to show or hide all the reconstructions
@@ -72,7 +72,7 @@ class ValueView;
  *
  * \b columns : defines colums to be shown in reconstruction list. XML child element names follow
  * ::fwData::Reconstruction serialization attribute names. The name of the tag will be used as the column name.
- * The attribute 'view' is optional and can has the following values :
+ * The attribute 'view' is optional and has the following values :
  *  - positive : a numeric value is displayed only if it is positive. Otherwise, 'Unknown' is displayed.
  */
 class UIMEDDATAQT_CLASS_API SModelSeriesList :  public QObject,

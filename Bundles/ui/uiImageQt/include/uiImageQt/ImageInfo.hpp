@@ -24,7 +24,7 @@ namespace uiImageQt
 {
 
 /**
- * @brief   ImageInfo service allows to display image pixel information when it receive the mouse cursor coordinates.
+ * @brief   ImageInfo service allows to display image pixel information when it receives the mouse cursor coordinates.
  *
  * @warnig The interaction must be received in pixel coordinates into the image (for example from the the adaptor
  *         ::visuVTKAdaptor::SImagePickerInteractor)

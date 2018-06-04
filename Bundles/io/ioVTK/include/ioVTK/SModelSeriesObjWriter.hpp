@@ -50,7 +50,7 @@ namespace ioVTK
  * @subsection In-Out In-Out
  * - \b data [::fwMedData::ModelSeries]: model to save.
  * @subsection Configuration Configuration
- * - \b folder (optional): path of the folder, if it not defined, 'configureWithIHM()' should be called to define
+ * - \b folder (optional): path of the folder, if it is not defined, 'configureWithIHM()' should be called to define
  * the path.
  */
 class IOVTK_CLASS_API SModelSeriesObjWriter : public ::fwIO::IWriter

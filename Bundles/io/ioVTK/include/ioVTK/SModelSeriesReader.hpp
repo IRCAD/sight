@@ -45,8 +45,8 @@ namespace ioVTK
  * @subsection In-Out In-Out
  * - \b data [::fwMedData::ModelSeries]: model to save.
  * @subsection Configuration Configuration
- * - \b file (optional): path of the files to load, if it not defined, 'configureWithIHM()' should be called to define
- * the path.
+ * - \b file (optional): path of the files to load, if it is not defined, 'configureWithIHM()' should be called to
+ * define the path.
  */
 class IOVTK_CLASS_API SModelSeriesReader : public ::fwIO::IReader
 {

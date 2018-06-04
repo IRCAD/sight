@@ -21,7 +21,7 @@ namespace ioITK
 {
 
 /**
- * @brief Writer for .ing.gz image
+ * @brief Writer for .inr.gz image
  *
  * @section XML XML Configuration
  *
