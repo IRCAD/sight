@@ -105,11 +105,11 @@ const std::string s_MIMP_DEFINE  = "IDVR=1";
 const std::string s_AIMC_DEFINE  = "IDVR=2";
 const std::string s_VPIMC_DEFINE = "IDVR=3";
 
-const std::string s_CSG_DEFINE                 = "CSG=1";
-const std::string s_CSG_BORDER_DEFINE          = "CSG_BORDER=1";
-const std::string s_CSG_DISABLE_CONTEXT_DEFINE = "CSG_DISABLE_CONTEXT=1";
-const std::string s_CSG_OPACITY_DEFINE         = "CSG_OPACITY=1";
-const std::string s_CSG_DEPTH_LINES_DEFINE     = "CSG_DEPTH_LINES=1";
+const std::string s_CSG_DEFINE                  = "CSG=1";
+const std::string s_CSG_BORDER_DEFINE           = "CSG_BORDER=1";
+const std::string s_CSG_DISABLE_CONTEXT_DEFINE  = "CSG_DISABLE_CONTEXT=1";
+const std::string s_CSG_OPACITY_DECREASE_DEFINE = "CSG_OPACITY_DECREASE=1";
+const std::string s_CSG_DEPTH_LINES_DEFINE      = "CSG_DEPTH_LINES=1";
 
 const std::string s_CSG_MOD_GRAYSCALE_AVERAGE_DEFINE    = "CSG_GRAYSCALE=1";
 const std::string s_CSG_MOD_GRAYSCALE_LIGHTNESS_DEFINE  = "CSG_GRAYSCALE=2";
@@ -469,7 +469,7 @@ void ImportanceDrivenVolumeRenderer::toggleIDVRCSGGrayScale(bool _grayScale)
 
 //------------------------------------------------------------------------------
 
-void ImportanceDrivenVolumeRenderer::setIDVRCSGrayScaleMethod(IDVRCSGGrayScaleMethod _method)
+void ImportanceDrivenVolumeRenderer::setIDVRCSGGrayScaleMethod(IDVRCSGGrayScaleMethod _method)
 {
     m_idvrCSGgrayscaleMethod = _method;
 
@@ -493,7 +493,7 @@ void ImportanceDrivenVolumeRenderer::toggleIDVRCSGModulation(bool modulation)
 
 //-----------------------------------------------------------------------------
 
-void ImportanceDrivenVolumeRenderer::setIDVRCSModulationMethod(IDVRCSGModulationMethod method)
+void ImportanceDrivenVolumeRenderer::setIDVRCSGModulationMethod(IDVRCSGModulationMethod method)
 {
     m_idvrCSGModulationMethod = method;
 
@@ -530,7 +530,7 @@ void ImportanceDrivenVolumeRenderer::toggleIDVRCSGOpacity(bool _opacity)
 
 //-----------------------------------------------------------------------------
 
-void ImportanceDrivenVolumeRenderer::setIDVRCSGOpacityFactor(double _opacity)
+void ImportanceDrivenVolumeRenderer::setIDVRCSGOpacityDecreaseFactor(double _opacity)
 {
     m_idvrCSGOpacityFactor = static_cast<float>(_opacity);
 
@@ -637,7 +637,7 @@ std::tuple<std::string, std::string, size_t> ImportanceDrivenVolumeRenderer::com
                 }
                 if(m_idvrCSGOpacity)
                 {
-                    fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << s_CSG_OPACITY_DEFINE;
+                    fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << s_CSG_OPACITY_DECREASE_DEFINE;
                 }
                 if(m_idvrCSGDepthLines)
                 {

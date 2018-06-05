@@ -937,12 +937,12 @@ void SVolumeRender::setDoubleParameter(double val, std::string key)
         OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
         rayCastVolumeRenderer->setIDVRCSGModulationFactor(val);
     }
-    else if(key == "idvrCSGOpacityFactor")
+    else if(key == "idvrCSGOpacityDecreaseFactor")
     {
         auto rayCastVolumeRenderer =
             dynamic_cast< ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer* >(m_volumeRenderer);
         OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
-        rayCastVolumeRenderer->setIDVRCSGOpacityFactor(val);
+        rayCastVolumeRenderer->setIDVRCSGOpacityDecreaseFactor(val);
     }
     else if(key == "idvrVPImCAlphaCorrection")
     {
@@ -982,17 +982,17 @@ void SVolumeRender::setEnumParameter(std::string val, std::string key)
 
         if(val == "Brightness")
         {
-            rayCastVolumeRenderer->setIDVRCSModulationMethod(
+            rayCastVolumeRenderer->setIDVRCSGModulationMethod(
                 ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer::IDVRCSGModulationMethod::COLOR1);
         }
         else if(val == "Saturation")
         {
-            rayCastVolumeRenderer->setIDVRCSModulationMethod(
+            rayCastVolumeRenderer->setIDVRCSGModulationMethod(
                 ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer::IDVRCSGModulationMethod::COLOR2);
         }
         else if(val == "SaturationBrightness")
         {
-            rayCastVolumeRenderer->setIDVRCSModulationMethod(
+            rayCastVolumeRenderer->setIDVRCSGModulationMethod(
                 ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer::IDVRCSGModulationMethod::COLOR3);
         }
     }
@@ -1004,17 +1004,17 @@ void SVolumeRender::setEnumParameter(std::string val, std::string key)
 
         if(val == "Average_grayscale")
         {
-            rayCastVolumeRenderer->setIDVRCSGrayScaleMethod(
+            rayCastVolumeRenderer->setIDVRCSGGrayScaleMethod(
                 ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer::IDVRCSGGrayScaleMethod::AVERAGE_GRAYSCALE);
         }
         else if(val == "Lightness_grayscale")
         {
-            rayCastVolumeRenderer->setIDVRCSGrayScaleMethod(
+            rayCastVolumeRenderer->setIDVRCSGGrayScaleMethod(
                 ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer::IDVRCSGGrayScaleMethod::LIGHTNESS_GRAYSCALE);
         }
         else if(val == "Luminosity_grayscale")
         {
-            rayCastVolumeRenderer->setIDVRCSGrayScaleMethod(
+            rayCastVolumeRenderer->setIDVRCSGGrayScaleMethod(
                 ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer::IDVRCSGGrayScaleMethod::LUMINOSITY_GRAYSCALE);
         }
     }

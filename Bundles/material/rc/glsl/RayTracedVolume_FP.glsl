@@ -75,9 +75,9 @@ uniform float u_vpimcAlphaCorrection;
 uniform float u_colorModulationFactor;
 #endif
 
-#ifdef CSG_OPACITY
+#ifdef CSG_OPACITY_DECREASE
 uniform float u_opacityFactor;
-#endif // CSG_OPACITY
+#endif // CSG_OPACITY_DECREASE
 
 out vec4 fragColor;
 
@@ -219,6 +219,18 @@ bool rayConeIntersection(in vec3 coneOrigin, in vec3 coneDir, in float coneAngle
     rayOrigin = intersection;
     return true;
 }
+
+#ifdef CSG_MODULATION
+
+// Computes the orthogonal distance from a point to a line.
+float pointLineDistance(in vec3 point, in vec3 linePoint, in vec3 lineUnitDir)
+{
+    vec3 line2Point = point - linePoint;
+    return length(line2Point - dot(line2Point, lineUnitDir) * lineUnitDir);
+}
+
+#endif // CSG_MODULATION
+
 #endif
 
 //-----------------------------------------------------------------------------
@@ -369,10 +381,17 @@ void main(void)
 
 #if IDVR == 1
 
-    float rayDepth = 0.;
-    float camDepth = 0.;
-    vec4 jfaDistance = vec4(0.);
+#ifdef CSG
+    float rayDepth = 0.f;
+
+    vec4 jfaDistance = vec4(0.f);
     bool isCsg = false; // true if this ray hits the csg.
+
+#if CSG_MODULATION || CSG_OPACITY_DECREASE
+    float coneDistance = 0.f;
+#endif // CSG_MODULATION || CSG_OPACITY_DECREASE
+
+#endif // CSG
 
     vec4 importance = texelFetch(u_IC, ivec2(gl_FragCoord.xy), 0);
 
@@ -404,6 +423,12 @@ void main(void)
 
         if(hit)
         {
+#if CSG_MODULATION || CSG_OPACITY_DECREASE
+            // Ray entry to central cone line distance.
+            coneDistance = pointLineDistance(scaledEntry, scaledClosestPt, coneDir);
+#endif // CSG_MODULATION || CSG_OPACITY_DECREASE
+
+            // Back to volume texture space.
             rayEntry = scaledEntry / normSpacing;
 
             vec3 volDimensions = vec3(textureSize(u_image, 0));
@@ -413,15 +438,15 @@ void main(void)
             vec3 cVector = normalize(u_cameraPos - closestPt) * volSize;
             vec3 cOrig2RayEntry = rayEntry * volSize - closestPt * volSize;
             rayDepth = dot(cVector, cOrig2RayEntry) / length(cVector);
-            camDepth = length(cVector);
+
             // If the new entry point hits a transparent zone then we discard it.
             float entryIntensity = texture(u_image, rayEntry).r;
             float entryOpacity = sampleTransferFunction(entryIntensity).a;
 
-            isCsg = entryOpacity > 0;
+            isCsg = entryOpacity > 0.f;
 
 #if CSG_DISABLE_CONTEXT == 1
-            if(entryOpacity == 0)
+            if(!isCsg)
             {
                 discard;
             }
@@ -474,7 +499,7 @@ void main(void)
 // Average grayscale
 #if CSG_GRAYSCALE == 1
             // The average method simply averages the values
-            float grayScale = (color.r + color.g + color.g) / 3.;
+            float grayScale = (color.r + color.g + color.b) / 3.;
             color.rgb = vec3(grayScale);
 #endif // CSG_GRAYSCALE == 1
 // Lightness grayscale
@@ -499,27 +524,28 @@ void main(void)
 // Brightness increase (CSG_MODULATION == 4)
 // Saturation increase (CSG_MODULATION == 5)
 // Saturation and brightness increase (CSG_MODULATION == 6)
-#if CSG_MODULATION == 4 || CSG_MODULATION == 5 || CSG_MODULATION == 6 ||  CSG_OPACITY
-            float factor = ((camDepth - rayDepth) / camDepth);
-#endif CSG_MODULATION == 4 || CSG_MODULATION == 5 || CSG_MODULATION == 6 ||  CSG_OPACITY
+#if CSG_MODULATION == 4 || CSG_MODULATION == 5 || CSG_MODULATION == 6
+            float modIncr = max(1.f - (coneDistance / abs(u_colorModulationFactor)), 0.f);
+#endif CSG_MODULATION == 4 || CSG_MODULATION == 5 || CSG_MODULATION == 6 ||  CSG_OPACITY_DECREASE
 
 #if CSG_MODULATION == 4 || CSG_MODULATION == 5 || CSG_MODULATION == 6
             vec3 hsv = rgb2hsv(color.rgb);
 
 #if CSG_MODULATION == 5 || CSG_MODULATION == 6
-            hsv.g += factor * u_colorModulationFactor;
+            hsv.g += modIncr * sign(u_colorModulationFactor);
 #endif // CSG_MODULATION == 5 || CSG_MODULATION == 6
 
 #if CSG_MODULATION == 4 || CSG_MODULATION == 6
-            hsv.b += factor * u_colorModulationFactor;
+            hsv.b += modIncr * sign(u_colorModulationFactor);
 #endif // CSG_MODULATION == 4 || CSG_MODULATION == 6
 
             color.rgb = hsv2rgb(hsv);
 #endif // CSG_MODULATION == 4 || CSG_MODULATION == 5 || CSG_MODULATION == 6
 
-#ifdef CSG_OPACITY
-            color.a += factor * u_opacityFactor;
-#endif // CSG_OPACITY
+#ifdef CSG_OPACITY_DECREASE
+            float alphaModDecr = max(1.f - (coneDistance / u_opacityFactor), 0.f);
+            color.a -= alphaModDecr;
+#endif // CSG_OPACITY_DECREASE
 
             result = color;
 #if CSG_BORDER == 1

@@ -77,7 +77,7 @@ public:
     FWRENDEROGRE_API void toggleIDVRCSGModulation(bool);
 
     /// Setup the modulation method used for MImP countersink geometry.
-    FWRENDEROGRE_API void setIDVRCSModulationMethod(IDVRCSGModulationMethod);
+    FWRENDEROGRE_API void setIDVRCSGModulationMethod(IDVRCSGModulationMethod);
 
     /// Setup the wheighting factor for MImP CSG color modulation.
     FWRENDEROGRE_API void setIDVRCSGModulationFactor(double);
@@ -86,13 +86,13 @@ public:
     FWRENDEROGRE_API void toggleIDVRCSGGrayScale(bool);
 
     /// Setup the grayscale method used for MImP countersink geometry.
-    FWRENDEROGRE_API void setIDVRCSGrayScaleMethod(IDVRCSGGrayScaleMethod);
+    FWRENDEROGRE_API void setIDVRCSGGrayScaleMethod(IDVRCSGGrayScaleMethod);
 
     /// Toggle the opacity for MImP countersink geometry.
     FWRENDEROGRE_API void toggleIDVRCSGOpacity(bool);
 
     /// Setup the opacity factor used in the MImP CSG.
-    FWRENDEROGRE_API void setIDVRCSGOpacityFactor(double);
+    FWRENDEROGRE_API void setIDVRCSGOpacityDecreaseFactor(double);
 
     /// Toggle the depth lines for MImP countersink geometry.
     FWRENDEROGRE_API void toggleIDVRDepthLines(bool);
