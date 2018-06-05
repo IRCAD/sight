@@ -104,6 +104,10 @@ private:
     ::fwCom::helper::SigSlotConnection m_connections;
     /// Mask for picking requests
     std::uint32_t m_queryFlags {0};
+    /// Pointer on move interactor
+    ::fwRenderOgre::interactor::IInteractor::sptr m_moveInteractor;
+    /// Pointer on select interactor
+    ::fwRenderOgre::interactor::IInteractor::sptr m_selectInteractor;
 };
 
 } //namespace visuOgreAdaptor

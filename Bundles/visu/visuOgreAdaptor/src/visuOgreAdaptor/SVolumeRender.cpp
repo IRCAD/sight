@@ -376,7 +376,7 @@ void SVolumeRender::stopping()
     // Disconnect widget to interactor.
     {
         ::fwRenderOgre::Layer::sptr layer                        = this->getRenderService()->getLayer(m_layerID);
-        ::fwRenderOgre::interactor::IInteractor::sptr interactor = layer->getInteractor();
+        ::fwRenderOgre::interactor::IInteractor::sptr interactor = layer->getMoveInteractor();
 
         auto vrInteractor =
             std::dynamic_pointer_cast< ::fwRenderOgre::interactor::VRWidgetsInteractor >(interactor);
@@ -1055,7 +1055,7 @@ void SVolumeRender::initWidgets()
     // Connect widgets to interactor.
     {
         ::fwRenderOgre::Layer::sptr layer                        = this->getRenderService()->getLayer(m_layerID);
-        ::fwRenderOgre::interactor::IInteractor::sptr interactor = layer->getInteractor();
+        ::fwRenderOgre::interactor::IInteractor::sptr interactor = layer->getMoveInteractor();
 
         auto vrInteractor = std::dynamic_pointer_cast< ::fwRenderOgre::interactor::VRWidgetsInteractor >(interactor);
 

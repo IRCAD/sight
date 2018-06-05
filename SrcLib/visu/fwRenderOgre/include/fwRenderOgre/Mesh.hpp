@@ -52,7 +52,7 @@ public:
     FWRENDEROGRE_API void setDynamic(bool _isDynamic);
 
     FWRENDEROGRE_API void setVisible(bool _visible);
-    FWRENDEROGRE_API void updateMesh(const ::fwData::Mesh::sptr& _mesh);
+    FWRENDEROGRE_API void updateMesh(const ::fwData::Mesh::sptr& _mesh, bool _pointsOnly = false);
     FWRENDEROGRE_API void updateMesh(const ::fwData::PointList::csptr& _pointList);
     FWRENDEROGRE_API std::pair<bool, std::vector<R2VBRenderable*> > updateR2VB(const ::fwData::Mesh::sptr& _mesh,
                                                                                ::Ogre::SceneManager& _sceneMgr,
