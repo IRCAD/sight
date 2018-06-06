@@ -49,6 +49,16 @@ SAxis::~SAxis() noexcept
 void SAxis::updateVisibility(bool isVisible)
 {
     m_isVisible = isVisible;
+
+    if(m_sceneNode)
+    {
+        m_sceneNode->setVisible(m_isVisible);
+        for(auto& label : m_axisLabels)
+        {
+            label->setVisible(isVisible);
+        }
+    }
+
     this->updating();
 }
 
@@ -56,8 +66,7 @@ void SAxis::updateVisibility(bool isVisible)
 
 void SAxis::toggleVisibility()
 {
-    m_isVisible = !m_isVisible;
-    this->updating();
+    this->updateVisibility(!m_isVisible);
 }
 
 //-----------------------------------------------------------------------------
@@ -101,12 +110,7 @@ void SAxis::starting()
 
     ::Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
 
-    ::Ogre::SceneNode* transNode = ::fwRenderOgre::helper::Scene::getNodeById(this->getTransformId(), rootSceneNode);
-    if (transNode == nullptr)
-    {
-        transNode = rootSceneNode->createChildSceneNode(this->getTransformId());
-        transNode->setVisible(m_isVisible);
-    }
+    m_sceneNode = rootSceneNode->createChildSceneNode(this->getTransformId());
 
     ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
 
@@ -149,7 +153,7 @@ void SAxis::starting()
                                                          cylinderRadius,
                                                          cylinderLength,
                                                          sample);
-    ::Ogre::SceneNode* xLineNode = transNode->createChildSceneNode(
+    ::Ogre::SceneNode* xLineNode = m_sceneNode->createChildSceneNode(
         this->getTransformId() + "_" + this->getID() + "_xLine");
     xLine->setBoundingBox(::Ogre::AxisAlignedBox(::Ogre::Vector3(0.f, -coneRadius, -coneRadius),
                                                  ::Ogre::Vector3(m_length, coneRadius, coneRadius)));
@@ -163,7 +167,7 @@ void SAxis::starting()
                                                          cylinderRadius,
                                                          cylinderLength,
                                                          sample);
-    ::Ogre::SceneNode* yLineNode = transNode->createChildSceneNode(
+    ::Ogre::SceneNode* yLineNode = m_sceneNode->createChildSceneNode(
         this->getTransformId() + "_" + this->getID() + "_yLine");
     yLine->setBoundingBox(::Ogre::AxisAlignedBox(::Ogre::Vector3(-coneRadius, 0.f, -coneRadius),
                                                  ::Ogre::Vector3(coneRadius, m_length, coneRadius)));
@@ -177,7 +181,7 @@ void SAxis::starting()
                                                          cylinderRadius,
                                                          cylinderLength,
                                                          sample);
-    ::Ogre::SceneNode* zLineNode = transNode->createChildSceneNode(
+    ::Ogre::SceneNode* zLineNode = m_sceneNode->createChildSceneNode(
         this->getTransformId() + "_" + this->getID() + "_zLine");
     yLine->setBoundingBox(::Ogre::AxisAlignedBox(::Ogre::Vector3(-coneRadius, -coneRadius, 0.f),
                                                  ::Ogre::Vector3(coneRadius, coneRadius, m_length)));
@@ -194,7 +198,7 @@ void SAxis::starting()
                                                      coneRadius,
                                                      coneLength,
                                                      sample);
-    ::Ogre::SceneNode* xConeNode = transNode->createChildSceneNode(
+    ::Ogre::SceneNode* xConeNode = m_sceneNode->createChildSceneNode(
         this->getTransformId() + "_" + this->getID() + "_xCone");
 
     m_axisLabels[0] = ::fwRenderOgre::Text::New(
@@ -212,7 +216,7 @@ void SAxis::starting()
                                                      coneRadius,
                                                      coneLength,
                                                      sample);
-    ::Ogre::SceneNode* yConeNode = transNode->createChildSceneNode(
+    ::Ogre::SceneNode* yConeNode = m_sceneNode->createChildSceneNode(
         this->getTransformId() + "_" + this->getID() + "_yCone");
     yConeNode->attachObject(yCone);
 
@@ -231,7 +235,7 @@ void SAxis::starting()
                                                      coneRadius,
                                                      coneLength,
                                                      sample);
-    ::Ogre::SceneNode* zConeNode = transNode->createChildSceneNode(
+    ::Ogre::SceneNode* zConeNode = m_sceneNode->createChildSceneNode(
         this->getTransformId() + "_" + this->getID() + "_zCone");
     zConeNode->attachObject(zCone);
 
@@ -243,6 +247,8 @@ void SAxis::starting()
 
     zConeNode->translate(0.f, 0.f, cylinderLength);
     zConeNode->yaw(::Ogre::Degree(-90));
+
+    this->updateVisibility(m_isVisible);
 
     this->requestRender();
 }
@@ -258,14 +264,12 @@ void SAxis::updating()
 
 void SAxis::stopping()
 {
-    ::Ogre::SceneManager* sceneMgr   = this->getSceneManager();
-    ::Ogre::SceneNode* rootSceneNode = sceneMgr->getRootSceneNode();
-    ::Ogre::SceneNode* transNode     =
-        ::fwRenderOgre::helper::Scene::getNodeById(this->getTransformId(), rootSceneNode);
+    ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
 
-    if(transNode != nullptr)
+    if(m_sceneNode != nullptr)
     {
-        transNode->removeAndDestroyAllChildren();
+        m_sceneNode->removeAndDestroyAllChildren();
+        sceneMgr->destroySceneNode(m_sceneNode);
     }
 
     for(auto& label : m_axisLabels)

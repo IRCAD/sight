@@ -90,13 +90,16 @@ private:
     /// Handles the visibility of the axis
     bool m_isVisible { true };
 
-    ::Ogre::ManualObject* xLine;
-    ::Ogre::ManualObject* yLine;
-    ::Ogre::ManualObject* zLine;
+    ::Ogre::ManualObject* xLine { nullptr };
+    ::Ogre::ManualObject* yLine { nullptr };
+    ::Ogre::ManualObject* zLine { nullptr };
 
-    ::Ogre::ManualObject* xCone;
-    ::Ogre::ManualObject* yCone;
-    ::Ogre::ManualObject* zCone;
+    ::Ogre::ManualObject* xCone { nullptr };
+    ::Ogre::ManualObject* yCone { nullptr };
+    ::Ogre::ManualObject* zCone { nullptr };
+
+    /// Scene node where all of our manual objects are attached
+    ::Ogre::SceneNode* m_sceneNode { nullptr };
 
     std::array< ::fwRenderOgre::Text*, 3> m_axisLabels {{ nullptr, nullptr, nullptr }};
 };

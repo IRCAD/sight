@@ -61,6 +61,9 @@ public:
     /// Text color, white by default.
     FWRENDEROGRE_API void setTextColor(::Ogre::ColourValue _color);
 
+    /// Set the visibility of the text. Beware this hides ::Ogre::MovableObject::setVisible() which is not virtual !
+    FWRENDEROGRE_API void setVisible(bool _visible);
+
     /// Returns this MovableObject's type as a string.
     FWRENDEROGRE_API virtual const ::Ogre::String& getMovableType() const override;
 

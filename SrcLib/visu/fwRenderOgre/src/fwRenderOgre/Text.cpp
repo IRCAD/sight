@@ -10,6 +10,7 @@
 
 #include <OGRE/OgreGpuProgramParams.h>
 #include <OGRE/OgreMaterial.h>
+#include <OGRE/OgreMaterialManager.h>
 #include <OGRE/OgreNode.h>
 #include <OGRE/OgreSceneManager.h>
 #include <OGRE/OgreTechnique.h>
@@ -60,10 +61,11 @@ Text::Text(const std::string& _id) :
 
 Text::~Text()
 {
-    const ::Ogre::String& overlayTextName = m_overlayText->getName();
+    auto material = m_overlayText->getMaterial();
+    m_parentContainer->removeChild(m_overlayText->getName());
+    ::Ogre::OverlayManager::getSingleton().destroyOverlayElement(m_overlayText);
 
-    m_parentContainer->removeChild(overlayTextName);
-    ::Ogre::OverlayManager::getSingleton().destroyOverlayElement(overlayTextName);
+    ::Ogre::MaterialManager::getSingleton().remove(material);
 }
 
 //------------------------------------------------------------------------------
@@ -106,6 +108,20 @@ void Text::setTextColor(Ogre::ColourValue _color)
 
 //------------------------------------------------------------------------------
 
+void Text::setVisible(bool _visible)
+{
+    if(_visible)
+    {
+        m_overlayText->show();
+    }
+    else
+    {
+        m_overlayText->hide();
+    }
+}
+
+//------------------------------------------------------------------------------
+
 const Ogre::String& Text::getMovableType() const
 {
     return factory::Text::FACTORY_TYPE_NAME;
@@ -130,12 +146,6 @@ Ogre::Real Text::getBoundingRadius() const
 void Text::_updateRenderQueue(Ogre::RenderQueue*)
 {
     ::Ogre::Node* parentNode = this->getParentNode();
-
-    if(!mVisible)
-    {
-        m_overlayText->hide();
-        return;
-    }
 
     if(parentNode != nullptr)
     {
