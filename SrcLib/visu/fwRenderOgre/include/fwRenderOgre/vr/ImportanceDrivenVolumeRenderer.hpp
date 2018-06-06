@@ -55,8 +55,8 @@ public:
     /// Toggle countersink geometry when using Importance Driven Volume Rendering.
     FWRENDEROGRE_API void toggleIDVRCountersinkGeometry(bool);
 
-    /// Setup the countersink geometry slope used in the MImP method.
-    FWRENDEROGRE_API void setIDVRCountersinkSlope(double);
+    /// Set the countersink's geometry angle (in degrees).
+    FWRENDEROGRE_API void setIDVRCountersinkAngle(double);
 
     /// Setup the countersink geometry blur weight factor used in the MImP method.
     FWRENDEROGRE_API void setIDVRCSGBlurWeight(double);
@@ -147,8 +147,8 @@ private:
     /// Sets usage of countersink geometry for MImP.
     bool m_idvrCSG;
 
-    /// Sets countersink geometry slope for MImP.
-    float m_idvrCSGSlope;
+    /// Sets the csg's angle cosine for MImP.
+    float m_idvrCSGAngleCosine;
 
     /// Sets countersink geometry blur weight for MImP.
     float m_idvrCSGBlurWeight;

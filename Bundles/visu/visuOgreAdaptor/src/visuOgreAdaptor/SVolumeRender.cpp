@@ -909,12 +909,12 @@ void SVolumeRender::setDoubleParameter(double val, std::string key)
     {
         this->updateColorBleedingFactor(val);
     }
-    else if(key == "idvrCSGSlope")
+    else if(key == "idvrCSGAngle")
     {
         auto rayCastVolumeRenderer =
             dynamic_cast< ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer* >(m_volumeRenderer);
         OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
-        rayCastVolumeRenderer->setIDVRCountersinkSlope(val);
+        rayCastVolumeRenderer->setIDVRCountersinkAngle(val);
     }
     else if(key == "idvrCSGBlurWeight")
     {
@@ -1056,7 +1056,9 @@ void SVolumeRender::setImageSpacing()
 
         SLM_ASSERT("Image must be 3D.", spacing.size() == 3);
 
-        rayCastVolumeRenderer->setImageSpacing(::Ogre::Vector3(spacing[0], spacing[1], spacing[2]));
+        rayCastVolumeRenderer->setImageSpacing(::Ogre::Vector3(static_cast<float>(spacing[0]),
+                                                               static_cast<float>(spacing[1]),
+                                                               static_cast<float>(spacing[2])));
     }
 }
 

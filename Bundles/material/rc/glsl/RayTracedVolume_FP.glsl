@@ -54,7 +54,7 @@ uniform float u_opacityCorrectionFactor;
 #endif // PREINTEGRATION
 
 #if IDVR == 1
-uniform float u_countersinkSlope;
+uniform float u_csgAngleCos;
 uniform float u_csgBorderThickness;
 uniform vec3 u_csgBorderColor;
 uniform vec3 u_imageSpacing;
@@ -162,12 +162,11 @@ void composite(inout vec4 dest, in vec4 src)
 #if IDVR == 1 && CSG
 
 // Returns true if the ray hits the cone, the origin is then moved to the intersection point.
-bool rayConeIntersection(in vec3 coneOrigin, in vec3 coneDir, in float coneAngle, inout vec3 rayOrigin, in vec3 rayDir)
+bool rayConeIntersection(in vec3 coneOrigin, in vec3 coneDir, in float coneAngleCos, inout vec3 rayOrigin, in vec3 rayDir)
 {
     // Vector from the cone origin to the ray origin.
     vec3 origDir = rayOrigin - coneOrigin;
-    float angleCos = cos(coneAngle);
-    float squaredAngleCos = angleCos * angleCos;
+    float squaredAngleCos = coneAngleCos * coneAngleCos;
 
     float dirDot = dot(rayDir, coneDir);
     float origConeDirDot = dot(origDir, coneDir);
@@ -419,7 +418,7 @@ void main(void)
         vec3 scaledDir   = normalize(rayDir * normSpacing);
 
         vec3 oldEntry = rayEntry;
-        bool hit = rayConeIntersection(scaledClosestPt, coneDir, u_countersinkSlope, scaledEntry, scaledDir);
+        bool hit = rayConeIntersection(scaledClosestPt, coneDir, u_csgAngleCos, scaledEntry, scaledDir);
 
         if(hit)
         {

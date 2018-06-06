@@ -9,6 +9,7 @@
 #include "fwRenderOgre/Layer.hpp"
 
 #include <glm/common.hpp>
+#include <glm/gtc/constants.hpp>
 
 #include <OGRE/OgreCompositionPass.h>
 #include <OGRE/OgreCompositionTargetPass.h>
@@ -140,7 +141,7 @@ ImportanceDrivenVolumeRenderer::ImportanceDrivenVolumeRenderer(std::string paren
     m_maskTexture(maskTexture),
     m_idvrMethod(s_NONE),
     m_idvrCSG(false),
-    m_idvrCSGSlope(0.25f),
+    m_idvrCSGAngleCosine(std::cos(::glm::pi<float>() / 12.f)) /* cos(15°) */,
     m_idvrCSGBlurWeight(0.01f),
     m_idvrCSGBorder(false),
     m_idvrCSGDisableContext(false),
@@ -157,7 +158,7 @@ ImportanceDrivenVolumeRenderer::ImportanceDrivenVolumeRenderer(std::string paren
     m_idvrAImCAlphaCorrection(0.05f),
     m_idvrVPImCAlphaCorrection(0.3f)
 {
-    m_RTVSharedParameters->addConstantDefinition("u_countersinkSlope", ::Ogre::GCT_FLOAT1);
+    m_RTVSharedParameters->addConstantDefinition("u_csgAngleCos", ::Ogre::GCT_FLOAT1);
     m_RTVSharedParameters->addConstantDefinition("u_csgBorderThickness", ::Ogre::GCT_FLOAT1);
     m_RTVSharedParameters->addConstantDefinition("u_colorModulationFactor", ::Ogre::GCT_FLOAT1);
     m_RTVSharedParameters->addConstantDefinition("u_opacityFactor", ::Ogre::GCT_FLOAT1);
@@ -168,7 +169,7 @@ ImportanceDrivenVolumeRenderer::ImportanceDrivenVolumeRenderer(std::string paren
     m_RTVSharedParameters->addConstantDefinition("u_depthLinesSpacing", ::Ogre::GCT_INT1);
     m_RTVSharedParameters->addConstantDefinition("u_depthLinesWidth", ::Ogre::GCT_FLOAT1);
 
-    m_RTVSharedParameters->setNamedConstant("u_countersinkSlope", m_idvrCSGSlope);
+    m_RTVSharedParameters->setNamedConstant("u_csgAngleCos", m_idvrCSGAngleCosine);
     m_RTVSharedParameters->setNamedConstant("u_csgBorderThickness", m_idvrCSGBorderThickness);
     m_RTVSharedParameters->setNamedConstant("u_colorModulationFactor", m_idvrCSGModulationFactor);
     m_RTVSharedParameters->setNamedConstant("u_opacityFactor", m_idvrCSGOpacityFactor);
@@ -380,13 +381,13 @@ void ImportanceDrivenVolumeRenderer::toggleIDVRCountersinkGeometry(bool CSG)
 
 //-----------------------------------------------------------------------------
 
-void ImportanceDrivenVolumeRenderer::setIDVRCountersinkSlope(double slope)
+void ImportanceDrivenVolumeRenderer::setIDVRCountersinkAngle(double angle)
 {
-    m_idvrCSGSlope = ::glm::radians(static_cast<float>(slope));
+    m_idvrCSGAngleCosine = static_cast<float>(std::cos(::glm::radians(angle)));
 
     if(m_idvrMethod == s_MIMP && m_idvrCSG)
     {
-        m_RTVSharedParameters->setNamedConstant("u_countersinkSlope", m_idvrCSGSlope);
+        m_RTVSharedParameters->setNamedConstant("u_csgAngleCos", m_idvrCSGAngleCosine);
         this->getLayer()->requestRender();
     }
 }
