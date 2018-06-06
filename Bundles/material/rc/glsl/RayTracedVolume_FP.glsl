@@ -76,7 +76,7 @@ uniform float u_colorModulationFactor;
 #endif
 
 #ifdef CSG_OPACITY_DECREASE
-uniform float u_opacityFactor;
+uniform float u_opacityDecreaseFactor;
 #endif // CSG_OPACITY_DECREASE
 
 out vec4 fragColor;
@@ -219,7 +219,7 @@ bool rayConeIntersection(in vec3 coneOrigin, in vec3 coneDir, in float coneAngle
     return true;
 }
 
-#ifdef CSG_MODULATION
+#if CSG_MODULATION || CSG_OPACITY_DECREASE
 
 // Computes the orthogonal distance from a point to a line.
 float pointLineDistance(in vec3 point, in vec3 linePoint, in vec3 lineUnitDir)
@@ -228,7 +228,7 @@ float pointLineDistance(in vec3 point, in vec3 linePoint, in vec3 lineUnitDir)
     return length(line2Point - dot(line2Point, lineUnitDir) * lineUnitDir);
 }
 
-#endif // CSG_MODULATION
+#endif // CSG_MODULATION || CSG_OPACITY_DECREASE
 
 #endif
 
@@ -525,7 +525,7 @@ void main(void)
 // Saturation and brightness increase (CSG_MODULATION == 6)
 #if CSG_MODULATION == 4 || CSG_MODULATION == 5 || CSG_MODULATION == 6
             float modIncr = max(1.f - (coneDistance / abs(u_colorModulationFactor)), 0.f);
-#endif CSG_MODULATION == 4 || CSG_MODULATION == 5 || CSG_MODULATION == 6 ||  CSG_OPACITY_DECREASE
+#endif CSG_MODULATION == 4 || CSG_MODULATION == 5 || CSG_MODULATION == 6
 
 #if CSG_MODULATION == 4 || CSG_MODULATION == 5 || CSG_MODULATION == 6
             vec3 hsv = rgb2hsv(color.rgb);
@@ -542,7 +542,7 @@ void main(void)
 #endif // CSG_MODULATION == 4 || CSG_MODULATION == 5 || CSG_MODULATION == 6
 
 #ifdef CSG_OPACITY_DECREASE
-            float alphaModDecr = max(1.f - (coneDistance / u_opacityFactor), 0.f);
+            float alphaModDecr = max(1.f - (coneDistance / u_opacityDecreaseFactor), 0.f);
             color.a -= alphaModDecr;
 #endif // CSG_OPACITY_DECREASE
 

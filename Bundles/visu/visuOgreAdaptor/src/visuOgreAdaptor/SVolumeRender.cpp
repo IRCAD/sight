@@ -832,12 +832,12 @@ void SVolumeRender::setBoolParameter(bool val, std::string key)
         OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
         rayCastVolumeRenderer->toggleIDVRCSGModulation(val);
     }
-    else if(key == "idvrCSGOpacity")
+    else if(key == "idvrCSGOpacityDecrease")
     {
         auto rayCastVolumeRenderer =
             dynamic_cast< ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer* >(m_volumeRenderer);
         OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
-        rayCastVolumeRenderer->toggleIDVRCSGOpacity(val);
+        rayCastVolumeRenderer->toggleIDVRCSGOpacityDecrease(val);
     }
     else if(key == "idvrCSGDepthLines")
     {

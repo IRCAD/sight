@@ -89,7 +89,7 @@ public:
     FWRENDEROGRE_API void setIDVRCSGGrayScaleMethod(IDVRCSGGrayScaleMethod);
 
     /// Toggle the opacity for MImP countersink geometry.
-    FWRENDEROGRE_API void toggleIDVRCSGOpacity(bool);
+    FWRENDEROGRE_API void toggleIDVRCSGOpacityDecrease(bool);
 
     /// Setup the opacity factor used in the MImP CSG.
     FWRENDEROGRE_API void setIDVRCSGOpacityDecreaseFactor(double);
@@ -181,10 +181,10 @@ private:
     IDVRCSGGrayScaleMethod m_idvrCSGgrayscaleMethod;
 
     /// Sets usage of opacity for MImP CSG.
-    bool m_idvrCSGOpacity;
+    bool m_idvrCSGOpacityDecrease;
 
     /// Sets the opacity factor used in MImP CSG.
-    float m_idvrCSGOpacityFactor;
+    float m_idvrCSGOpacityDecreaseFactor;
 
     /// Sets usage of depth lines for MImP CSG.
     bool m_idvrCSGDepthLines;
