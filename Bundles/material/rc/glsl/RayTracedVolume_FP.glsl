@@ -55,6 +55,7 @@ uniform float u_opacityCorrectionFactor;
 
 #if IDVR == 1
 uniform float u_csgAngleCos;
+// FIXME: find a new way to display the csg border.
 uniform float u_csgBorderThickness;
 uniform vec3 u_csgBorderColor;
 uniform vec3 u_imageSpacing;
@@ -170,6 +171,15 @@ bool rayConeIntersection(in vec3 coneOrigin, in vec3 coneDir, in float coneAngle
 
     float dirDot = dot(rayDir, coneDir);
     float origConeDirDot = dot(origDir, coneDir);
+
+    // Angle cosine between the cone direction and the origin to origin vector.
+    float origAngleCos = dot(normalize(origDir), normalize(coneDir));
+
+    // Ensure that the ray origin is 'inside' the cone.
+    if(origAngleCos < coneAngleCos && origAngleCos > 0)
+    {
+        return false;
+    }
 
     // We're looking for a point P belonging to the ray and the cone, P should therefore verify the following equations:
     //     · ((P - coneOrigin) /  length(P - coneOrigin)) * coneDir = cos(coneAngle)
@@ -479,20 +489,14 @@ void main(void)
 #ifdef CSG_DEPTH_LINES
         float rayDepthIntegralPart;
         float rayDepthFractPart = modf(rayDepth, rayDepthIntegralPart);
-#endif // CSG_DEPTH_LINES
-#if CSG_BORDER == 1
-        if(rayDepth > u_csgBorderThickness
-#ifdef CSG_DEPTH_LINES
-           && mod(int(rayDepthIntegralPart), u_depthLinesSpacing) == 0
-                && (rayDepthFractPart < u_depthLinesWidth)
-#endif // CSG_DEPTH_LINES == 1
-        )
+
+        if(mod(int(rayDepthIntegralPart), u_depthLinesSpacing) == 0 && (rayDepthFractPart < u_depthLinesWidth))
         {
             result = vec4(u_csgBorderColor, 1.);
         }
         else
         {
-#endif // CSG_BORDER == 1
+#endif // CSG_DEPTH_LINES
             vec4 color = launchRay(rayPos, rayDir, rayLength, u_sampleDistance);
 
 // Average grayscale
@@ -547,9 +551,9 @@ void main(void)
 #endif // CSG_OPACITY_DECREASE
 
             result = color;
-#if CSG_BORDER == 1
+#ifdef CSG_DEPTH_LINES
         }
-#endif // CSG_BORDER == 1
+#endif // CSG_DEPTH_LINES
     }
     else
     {

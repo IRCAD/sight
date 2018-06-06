@@ -177,7 +177,7 @@ ImportanceDrivenVolumeRenderer::ImportanceDrivenVolumeRenderer(std::string paren
     m_RTVSharedParameters->setNamedConstant("u_aimcAlphaCorrection", m_idvrAImCAlphaCorrection);
     m_RTVSharedParameters->setNamedConstant("u_vpimcAlphaCorrection", m_idvrVPImCAlphaCorrection);
     m_RTVSharedParameters->setNamedConstant("u_depthLinesSpacing", 10);
-    m_RTVSharedParameters->setNamedConstant("u_depthLinesWidth", 0.5f);
+    m_RTVSharedParameters->setNamedConstant("u_depthLinesWidth", 1.f);
 
     m_fragmentShaderAttachements.push_back("ColorFormats_FP");
 
@@ -408,6 +408,7 @@ void ImportanceDrivenVolumeRenderer::setIDVRCSGBlurWeight(double blurWeight)
 
 void ImportanceDrivenVolumeRenderer::toggleIDVRCSGBorder(bool border)
 {
+    // FIXME: find a new way to display the csg border.
     m_idvrCSGBorder = border;
 
     if(this->m_idvrMethod == s_MIMP && this->m_idvrCSG)
@@ -449,7 +450,7 @@ void ImportanceDrivenVolumeRenderer::setIDVRCSGBorderColor(std::array<std::uint8
     m_idvrCSGBorderColor.g = color[1] / 256.f;
     m_idvrCSGBorderColor.b = color[2] / 256.f;
 
-    if(m_idvrMethod == s_MIMP && this->m_idvrCSG && this->m_idvrCSGBorder)
+    if(m_idvrMethod == s_MIMP && m_idvrCSG && (m_idvrCSGBorder || m_idvrCSGDepthLines))
     {
         m_RTVSharedParameters->setNamedConstant("u_csgBorderColor", m_idvrCSGBorderColor);
         this->getLayer()->requestRender();
@@ -548,7 +549,7 @@ void ImportanceDrivenVolumeRenderer::toggleIDVRDepthLines(bool depthLines)
 {
     m_idvrCSGDepthLines = depthLines;
 
-    if(m_idvrMethod == s_MIMP && this->m_idvrCSG && this->m_idvrCSGBorder)
+    if(m_idvrMethod == s_MIMP && this->m_idvrCSG)
     {
         this->createMaterialAndIDVRTechnique();
     }
