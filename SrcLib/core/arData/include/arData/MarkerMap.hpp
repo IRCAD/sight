@@ -10,6 +10,8 @@
 
 #include <fwData/Object.hpp>
 
+#include <array>
+
 namespace arData
 {
 
