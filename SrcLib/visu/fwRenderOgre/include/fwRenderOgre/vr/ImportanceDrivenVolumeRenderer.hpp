@@ -49,7 +49,7 @@ public:
 
     FWRENDEROGRE_API virtual ~ImportanceDrivenVolumeRenderer();
 
-    /// Allows to setup the importance driven method used during the rendering.
+    /// Set the importance driven method used during the rendering.
     FWRENDEROGRE_API void setIDVRMethod(std::string method);
 
     /// Toggle countersink geometry when using Importance Driven Volume Rendering.
@@ -58,7 +58,7 @@ public:
     /// Set the countersink's geometry angle (in degrees).
     FWRENDEROGRE_API void setIDVRCountersinkAngle(double);
 
-    /// Setup the countersink geometry blur weight factor used in the MImP method.
+    /// Set the countersink geometry blur weight factor used in the MImP method.
     FWRENDEROGRE_API void setIDVRCSGBlurWeight(double);
 
     /// Toggle countersink geometry border used in the MImP method.
@@ -67,42 +67,43 @@ public:
     /// Toggle context discard when using MImP countersink geometry.
     FWRENDEROGRE_API void toggleIDVRCSGDisableContext(bool);
 
-    /// Setup the countersink geometry border thickness used in the MImP method.
+    /// Set the countersink geometry border thickness used in the MImP method.
     FWRENDEROGRE_API void setIDVRCSGBorderThickness(double);
 
-    /// Setup the countersink geometry border color used in the MImP method.
+    /// Set the countersink geometry border color used in the MImP method.
     FWRENDEROGRE_API void setIDVRCSGBorderColor(std::array<std::uint8_t, 4>);
 
     /// Toggle the modulation for MImP countersink geometry.
     FWRENDEROGRE_API void toggleIDVRCSGModulation(bool);
 
-    /// Setup the modulation method used for MImP countersink geometry.
+    /// Set the modulation method used for MImP countersink geometry.
     FWRENDEROGRE_API void setIDVRCSGModulationMethod(IDVRCSGModulationMethod);
 
-    /// Setup the wheighting factor for MImP CSG color modulation.
+    /// Set the weighting factor for MImP CSG color modulation.
     FWRENDEROGRE_API void setIDVRCSGModulationFactor(double);
 
     /// Toggle the grayscale for MImP countersink geometry.
     FWRENDEROGRE_API void toggleIDVRCSGGrayScale(bool);
 
-    /// Setup the grayscale method used for MImP countersink geometry.
+    /// Set the grayscale method used for MImP countersink geometry.
     FWRENDEROGRE_API void setIDVRCSGGrayScaleMethod(IDVRCSGGrayScaleMethod);
 
-    /// Toggle the opacity for MImP countersink geometry.
+    /// Toggle the opacity decrease for MImP countersink geometry.
     FWRENDEROGRE_API void toggleIDVRCSGOpacityDecrease(bool);
 
-    /// Setup the opacity factor used in the MImP CSG.
+    /// Set the opacity decrease factor used in the MImP CSG.
     FWRENDEROGRE_API void setIDVRCSGOpacityDecreaseFactor(double);
 
     /// Toggle the depth lines for MImP countersink geometry.
     FWRENDEROGRE_API void toggleIDVRDepthLines(bool);
 
-    /// Setup the alpha correction factor used in the VPImC method.
+    /// Set the alpha correction factor used in the VPImC method.
     FWRENDEROGRE_API void setIDVRAImCAlphaCorrection(double);
 
-    /// Setup the alpha correction factor used in the VPImC method.
+    /// Set the alpha correction factor used in the VPImC method.
     FWRENDEROGRE_API void setIDVRVPImCAlphaCorrection(double);
 
+    /// Set the visualized image's spacing.
     FWRENDEROGRE_API void setImageSpacing(const ::Ogre::Vector3& _spacing);
 
     /// Slot: Called when the size of the viewport changes.
@@ -110,32 +111,32 @@ public:
 
 protected:
 
-    /// Updates the current compositor name according to VR effects flags.
+    /// Update the current compositor name according to VR effects flags.
     /// @return tuple containing a
     /// - Comma separated list of preprocessor defines to use in vertex shaders.
     /// - Comma separated list of preprocessor defines to use in fragment shaders.
     /// - Hash allowing to identify the material
     FWRENDEROGRE_API virtual std::tuple<std::string, std::string, size_t> computeRayTracingDefines() const override;
 
-    /// Sets all texture units needed by the material during the ray casting pass.
+    /// Set all texture units needed by the material during the ray casting pass.
     FWRENDEROGRE_API virtual void setRayCastingPassTextureUnits(::Ogre::Pass* _rayCastingPass,
                                                                 const std::string& _fpPPDefines) const override;
 
 private:
 
-    /// Adds the IDVR technique to the volume ray tracing material.
+    /// Add the IDVR technique to the volume ray tracing material.
     void createIDVRTechnique();
 
-    /// Generates the material with the IDVR technique.
+    /// Generate the material with the IDVR technique.
     void createMaterialAndIDVRTechnique();
 
-    /// Initializes the compositors used after the step computing the ray entry points
+    /// Initialize the compositors used after the step computing the ray entry points
     void initCompositors();
 
-    /// Creates and adds importance compositing compositors to the chain (MImP + JFA, AImC or VPImC).
+    /// Create and adds importance compositing compositors to the chain (MImP + JFA, AImC or VPImC).
     void buildICCompositors(::Ogre::Viewport* _vp);
 
-    /// Removes all listeners and compositors from the current chain.
+    /// Remove all listeners and compositors from the current chain.
     void cleanCompositorChain(::Ogre::Viewport* _vp);
 
     /// Texture of the segmentation mask.
@@ -180,10 +181,10 @@ private:
     /// Name of the method used to compute the new color values in CSG.
     IDVRCSGGrayScaleMethod m_idvrCSGgrayscaleMethod;
 
-    /// Sets usage of opacity for MImP CSG.
+    /// Sets usage of opacity decrease for MImP CSG.
     bool m_idvrCSGOpacityDecrease;
 
-    /// Sets the opacity factor used in MImP CSG.
+    /// Sets the opacity decrease factor used in MImP CSG.
     float m_idvrCSGOpacityDecreaseFactor;
 
     /// Sets usage of depth lines for MImP CSG.
