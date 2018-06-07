@@ -445,7 +445,7 @@
                     <key uid="camera" />
                 </in>
                 <inout group="matrix">
-                    <key uid="matrix" />
+                    <key uid="matrix" id="101" />
                 </inout>
                 <patternWidth>60</patternWidth>
             </service>
@@ -453,11 +453,10 @@
             <!-- This will compute the reprojection error -->
             <service uid="error" type="::videoCalibration::SReprojectionError" worker="error">
                 <in group="matrix" autoConnect="yes">
-                    <key uid="matrix" />
+                    <key uid="matrix" id="101" />
                 </in>
                 <in key="markerMap" uid="markerMap" />
                 <in key="camera" uid="camera" />
-                <in key="extrinsic" uid="matrix" />
                 <inout key="frame" uid="sourceFrame" />
                 <patternWidth>60</patternWidth>
             </service>

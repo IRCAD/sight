@@ -8,6 +8,8 @@
 
 #include "videoCalibration/config.hpp"
 
+#include <arData/MarkerMap.hpp>
+
 #include <fwServices/IController.hpp>
 
 #include <opencv2/core.hpp>
@@ -41,10 +43,7 @@ namespace videoCalibration
              <key uid="..." />
              <key uid="..." />
          </in>
-         <in group="markerMap" autoConnect="yes">
-             <key uid="..." />
-             <key uid="..." />
-         </in>
+         <in key="markerMap" uid="..." />
          <in key="camera" uid="..."/>
          <in key="extrinsic" uid="..." />
          <inout key="frame" uid="..." />
@@ -53,9 +52,12 @@ namespace videoCalibration
    @endcode
  * @subsection Input Input
  * - \b markerTL [::arData::MarkerTL]: timeline for markers.
+ * - \b markerMap [::arData::MarkerMap]: list of markers maps where the tags.
  * - \b camera [::arData::Camera]: calibrated cameras.
  * - \b extrinsic [::fwData::TransformationMatrix3D]: extrinsic matrix, only used if you have two cameras configured.
  * - \b matrixTL [::arData::MatrixTL]: timeline of 3D transformation matrices.
+ * - \b matrix [::fwData::TransformationMatrix3D]: list of matrices, one for each marker. You must also specify what is
+ * the tag \b id in the markerMap you want to be associated with each matrix.
  * @subsection InOut InOut
  * - \b frameTL [::arData::FrameTL] : frame timeline used to draw reprojected points (optional)
  * - \b frame [::fwData::Image]: video frame.
@@ -67,7 +69,7 @@ namespace videoCalibration
 class VIDEOCALIBRATION_CLASS_API SReprojectionError : public ::fwServices::IController
 {
 public:
-    fwCoreServiceClassDefinitionsMacro((SReprojectionError)(fwServices::IController));
+    fwCoreServiceClassDefinitionsMacro((SReprojectionError)(fwServices::IController))
 
     /// Double changed signal type
     typedef ::fwCom::Signal< void (double) > ErrorComputedSignalType;
@@ -135,6 +137,8 @@ private:
     /// extrinsic matrix (can be identity)
     ::cv::Mat m_extrinsic;
 
+    /// List of tags associated with each input matrix
+    std::vector< ::arData::MarkerMap::KeyType> m_matricesTag;
 };
 
 }//namespace videoCalibration
