@@ -5,8 +5,9 @@
  * ****** END LICENSE BLOCK ****** */
 
 #pragma once
-
 #include "registrationCV/config.hpp"
+
+#include <arData/MarkerMap.hpp>
 
 #include <fwCore/HiResClock.hpp>
 #include <fwCore/mt/types.hpp>
@@ -55,30 +56,30 @@ namespace registrationCV
          </in>
          <in key="extrinsic" uid="..." />
          <in group="matrix">
-             <key uid="..." />
-             <key uid="..." />
-             <key uid="..." />
-             <key uid="..." />
+             <key uid="..." id="101"/>
+             <key uid="..." id="102"/>
+             <key uid="..." id="103"/>
+             <key uid="..." id="104"/>
          </in>
          <patternWidth>80</patternWidth>
      </service>
    @endcode
  * @subsection Input Input
  * - \b markerTL [::arData::MarkerTL]: timeline for markers.
- * - \b markerMap [::arData::MarkerMap]: list of markers maps where the tags. The number of keys must match
- * the number of \b markers entries in the config below. for markers.
+ * - \b markerMap [::arData::MarkerMap]: list of markers maps where the tags.
  * - \b camera [::arData::Camera]: calibrated cameras.
  * - \b extrinsic [::fwData::TransformationMatrix3D]: extrinsic matrix, only used if you have two cameras configured.
  * @subsection In-Out In-Out
  * - \b matrixTL [::arData::MatrixTL]: timeline of 3D transformation matrices.
- * - \b matrix [::fwData::TransformationMatrix3D]: list of matrices, one for each marker.
+ * - \b matrix [::fwData::TransformationMatrix3D]: list of matrices, one for each marker. You must also specify what is
+ * the tag \b id in the markerMap you want to be associated with each matrix.
  * @subsection Configuration Configuration
  * - \b patternWidth : width of the tag.
  */
 class REGISTRATIONCV_CLASS_API SPoseFrom2d : public ::fwServices::IRegisterer
 {
 public:
-    fwCoreServiceClassDefinitionsMacro((SPoseFrom2d)(::fwServices::IRegisterer));
+    fwCoreServiceClassDefinitionsMacro((SPoseFrom2d)(::fwServices::IRegisterer))
 
     typedef std::vector<std::string> VectKeyType;
 
@@ -177,12 +178,14 @@ private:
     /// 3d model
     std::vector< ::cv::Point3f > m_3dModel;
 
-    ///std::vector of cameras
+    /// std::vector of cameras
     std::vector < Camera > m_cameras;
 
-    ///Extrinsic matrix
+    /// Extrinsic matrix
     Extrinsic m_extrinsic;
 
+    /// List of tags associated with each inout matrix
+    std::vector< ::arData::MarkerMap::KeyType> m_matricesTag;
 };
 
 } // namespace registrationCV

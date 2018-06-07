@@ -8,7 +8,6 @@
 
 #include <arData/Camera.hpp>
 #include <arData/FrameTL.hpp>
-#include <arData/MarkerMap.hpp>
 #include <arData/MarkerTL.hpp>
 #include <arData/MatrixTL.hpp>
 
@@ -58,8 +57,24 @@ SPoseFrom2d::~SPoseFrom2d() noexcept
 void SPoseFrom2d::configuring()
 {
     ::fwServices::IService::ConfigType config = this->getConfigTree();
-    m_patternWidth                            = config.get<double>("patternWidth", 80);
+    m_patternWidth                            = config.get<double>("patternWidth", m_patternWidth);
     OSLM_ASSERT("patternWidth setting is set to " << m_patternWidth << " but should be > 0.", m_patternWidth > 0);
+
+    auto inoutCfg = config.equal_range("inout");
+    for (auto itCfg = inoutCfg.first; itCfg != inoutCfg.second; ++itCfg)
+    {
+        const auto group = itCfg->second.get<std::string>("<xmlattr>.group");
+        if(group == s_MATRIX_INOUT)
+        {
+            auto keyCfg = itCfg->second.equal_range("key");
+            for (auto itKeyCfg = keyCfg.first; itKeyCfg != keyCfg.second; ++itKeyCfg)
+            {
+                const ::arData::MarkerMap::KeyType key = itKeyCfg->second.get<std::string>("<xmlattr>.id");
+                m_matricesTag.push_back(key);
+            }
+            break;
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -223,16 +238,9 @@ void SPoseFrom2d::computeRegistration(::fwCore::HiResClock::HiResClockType times
         }
         else
         {
-            // We consider that all timeline have the same number of elements
-            // This is WRONG if we have more than two cameras
-            auto firstMarkerMap   = this->getInput< ::arData::MarkerMap >(s_MARKERMAP_INPUT, 0);
-            const auto numMarkers = firstMarkerMap->count();
-
-            // Push matrix in timeline
-            SPTR(::arData::MatrixTL::BufferType) matrixBuf;
-
             // For each marker
-            for(unsigned int markerIndex = 0; markerIndex < numMarkers; ++markerIndex)
+            unsigned int markerIndex = 0;
+            for(auto markerKey : m_matricesTag)
             {
                 std::vector< Marker > markers;
                 size_t indexTL = 0;
@@ -241,14 +249,17 @@ void SPoseFrom2d::computeRegistration(::fwCore::HiResClock::HiResClockType times
                 for(size_t i = 0; i < this->getKeyGroupSize(s_MARKERMAP_INPUT); ++i)
                 {
                     auto markerMap     = this->getInput< ::arData::MarkerMap >(s_MARKERMAP_INPUT, i);
-                    const auto& marker = markerMap->getMarker(markerIndex);
+                    const auto* marker = markerMap->getMarker(markerKey);
 
-                    Marker currentMarker;
-                    for(size_t i = 0; i < 4; ++i)
+                    if(marker)
                     {
-                        currentMarker.corners2D.push_back( ::cv::Point2f(marker[i][0], marker[i][1]));
+                        Marker currentMarker;
+                        for(size_t i = 0; i < 4; ++i)
+                        {
+                            currentMarker.corners2D.push_back( ::cv::Point2f((*marker)[i][0], (*marker)[i][1]));
+                        }
+                        markers.push_back(currentMarker);
                     }
-                    markers.push_back(currentMarker);
 
                     ++indexTL;
                 }
@@ -262,7 +273,6 @@ void SPoseFrom2d::computeRegistration(::fwCore::HiResClock::HiResClockType times
                 }
                 else
                 {
-
                     ::fwData::TransformationMatrix3D::TMCoefArray matrixValues;
                     ::cv::Matx44f Rt;
                     if(markers.size() == 1)
@@ -293,6 +303,8 @@ void SPoseFrom2d::computeRegistration(::fwCore::HiResClock::HiResClockType times
 
                 auto sig = matrix->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
                 sig->asyncEmit();
+
+                ++markerIndex;
             }
         }
     }
