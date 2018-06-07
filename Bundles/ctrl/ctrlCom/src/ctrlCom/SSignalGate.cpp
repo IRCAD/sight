@@ -11,9 +11,8 @@
 
 #include <fwData/Object.hpp>
 
-#include <boost/regex.hpp>
-
 #include <future>
+#include <regex>
 
 namespace ctrlCom
 {
@@ -48,14 +47,14 @@ void SSignalGate::starting()
 {
     ::fwServices::IService::ConfigType config = this->getConfigTree();
 
-    const ::boost::regex re("(.*)/(.*)");
-    ::boost::smatch match;
+    const std::regex re("(.*)/(.*)");
+    std::smatch match;
 
     auto signalsCfg = config.equal_range("signal");
     for (auto itCfg = signalsCfg.first; itCfg != signalsCfg.second; ++itCfg)
     {
         const std::string& signal = itCfg->second.get_value<std::string>();
-        if( ::boost::regex_match(signal, match, re) )
+        if( std::regex_match(signal, match, re) )
         {
             SLM_ASSERT("Wrong value for attribute src: " + signal, match.size() >= 3);
 
