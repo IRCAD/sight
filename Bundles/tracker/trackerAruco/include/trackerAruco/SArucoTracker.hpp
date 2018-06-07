@@ -134,8 +134,11 @@ public:
      */
     TRACKERARUCO_API virtual ~SArucoTracker() noexcept override;
 
-    ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 protected:
+    /// Depending on the configuration this connects:
+    /// - the input timeline to the tracking() slot
+    /// - the input frame modifications to the update() slot
+    ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /**
      * @brief Configuring method : This method is used to configure the service.
