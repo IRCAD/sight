@@ -40,7 +40,7 @@
                 <param type="double" name="Countersink geometry angle" key="idvrCSGAngle" defaultValue="15" min="0.0" max="45.0" />
                 <param type="double" name="Countersink geometry blur weight" key="idvrCSGBlurWeight" defaultValue="0.01" min="0.001" max="0.03" />
                 <param type="bool" name="Enable Countersink geometry depth lines for MImP" key="idvrCSGDepthLines" defaultValue="false" />
-                <param type="color" name="Depth lines color" key="idvrCSGBorderColor" defaultValue="#ff0000ff" />
+                <param type="color" name="Depth lines color" key="idvrCSGBorderColor" defaultValue="#FFFF99" />
                 <param type="bool" name="Enable gray scale for countersink geometry" key="idvrCSGGrayScale" defaultValue="false" />
                 <param type="enum" name="Countersink geometry gray scale method" key="idvrCSGGrayScaleMethod" defaultValue="Average_grayscale" values="Average_grayscale,Lightness_grayscale,Luminosity_grayscale" />
                 <param type="bool" name="Enable modulation for countersink geometry" key="idvrCSGModulation" defaultValue="false" />

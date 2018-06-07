@@ -146,7 +146,7 @@ ImportanceDrivenVolumeRenderer::ImportanceDrivenVolumeRenderer(std::string paren
     m_idvrCSGBorder(false),
     m_idvrCSGDisableContext(false),
     m_idvrCSGBorderThickness(0.05f),
-    m_idvrCSGBorderColor(::Ogre::ColourValue(1.f, 0.f, 0.f)),
+    m_idvrCSGBorderColor(::Ogre::ColourValue(1.f, 1.f, 0.6f)) /* light yellow lines */,
     m_idvrCSGModulation(false),
     m_idvrCSGModulationMethod(IDVRCSGModulationMethod::COLOR1),
     m_idvrCSGModulationFactor(0.f),
