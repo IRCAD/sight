@@ -36,15 +36,15 @@
         <service uid="IDVRMethodSelector" type="::guiQt::editor::SParameters">
             <parameters>
                 <param type="enum" name="Importance-driven VR Methods" key="idvrMethod" defaultValue="None" values="None,MImP,AImC,VPImC" />
-                <param type="bool" name="Enable Countersink geometry for MImP" key="idvrCSG" defaultValue="false" />
+                <param type="bool" name="Enable Countersink geometry for MImP" key="idvrCSG" defaultValue="true" />
                 <param type="double" name="Countersink geometry angle" key="idvrCSGAngle" defaultValue="15" min="0.0" max="45.0" />
                 <param type="double" name="Countersink geometry blur weight" key="idvrCSGBlurWeight" defaultValue="0.01" min="0.001" max="0.03" />
                 <param type="bool" name="Enable Countersink geometry depth lines for MImP" key="idvrCSGDepthLines" defaultValue="false" />
                 <param type="color" name="Depth lines color" key="idvrCSGBorderColor" defaultValue="#ff0000ff" />
                 <param type="bool" name="Enable gray scale for countersink geometry" key="idvrCSGGrayScale" defaultValue="false" />
-                <param type="enum" name="Countersink geometry gray scale methods" key="idvrCSGGrayScaleMethod" defaultValue="Average_grayscale" values="Average_grayscale,Lightness_grayscale,Luminosity_grayscale" />
+                <param type="enum" name="Countersink geometry gray scale method" key="idvrCSGGrayScaleMethod" defaultValue="Average_grayscale" values="Average_grayscale,Lightness_grayscale,Luminosity_grayscale" />
                 <param type="bool" name="Enable modulation for countersink geometry" key="idvrCSGModulation" defaultValue="false" />
-                <param type="enum" name="Countersink geometry modulation methods" key="idvrCSGModulationMethod" defaultValue="Brightness" values="Brightness,Saturation,SaturationBrightness" />
+                <param type="enum" name="Countersink geometry modulation method" key="idvrCSGModulationMethod" defaultValue="Brightness" values="Brightness,Saturation,SaturationBrightness" />
                 <param type="double" name="Countersink geometry modulation factor" key="idvrCSGModulationFactor" defaultValue="0.0" min="-1.0" max="1.0" />
                 <param type="bool" name="Countersink geometry opacity" key="idvrCSGOpacityDecrease" defaultValue="false" />
                 <param type="double" name="Opacity decrease factor" key="idvrCSGOpacityDecreaseFactor" defaultValue="0.0" min="0.0" max="1.0" />

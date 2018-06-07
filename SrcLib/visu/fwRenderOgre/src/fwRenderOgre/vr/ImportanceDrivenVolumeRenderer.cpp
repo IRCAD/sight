@@ -140,7 +140,7 @@ ImportanceDrivenVolumeRenderer::ImportanceDrivenVolumeRenderer(std::string paren
                                                ambientOcclusion, colorBleeding, shadows, aoFactor, colorBleedingFactor),
     m_maskTexture(maskTexture),
     m_idvrMethod(s_NONE),
-    m_idvrCSG(false),
+    m_idvrCSG(true),
     m_idvrCSGAngleCosine(std::cos(::glm::pi<float>() / 12.f)) /* cos(15°) */,
     m_idvrCSGBlurWeight(0.01f),
     m_idvrCSGBorder(false),
@@ -585,9 +585,10 @@ void ImportanceDrivenVolumeRenderer::setIDVRVPImCAlphaCorrection(double alphaCor
 
 void ImportanceDrivenVolumeRenderer::setImageSpacing(const ::Ogre::Vector3& _spacing)
 {
+    m_RTVSharedParameters->setNamedConstant("u_imageSpacing", _spacing);
+
     if(m_idvrMethod == s_MIMP && this->m_idvrCSG)
     {
-        m_RTVSharedParameters->setNamedConstant("u_imageSpacing", _spacing);
         this->getLayer()->requestRender();
     }
 }

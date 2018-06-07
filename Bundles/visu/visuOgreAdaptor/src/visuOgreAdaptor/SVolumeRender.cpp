@@ -808,8 +808,6 @@ void SVolumeRender::setBoolParameter(bool val, std::string key)
             dynamic_cast< ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer* >(m_volumeRenderer);
         OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
         rayCastVolumeRenderer->toggleIDVRCountersinkGeometry(val);
-
-        this->setImageSpacing();
     }
     else if(key == "idvrCSGBorder")
     {
