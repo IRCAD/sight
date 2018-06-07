@@ -18,7 +18,11 @@
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
 
+#include <fwData/PointList.hpp>
+#include <fwData/String.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
+
+#include <fwDataTools/fieldHelper/Image.hpp>
 
 fwServicesRegisterMacro(::fwServices::IRegisterer, ::registrationCV::SPoseFrom2d);
 
@@ -35,6 +39,7 @@ const ::fwServices::IService::KeyType s_CAMERA_INPUT    = "camera";
 const ::fwServices::IService::KeyType s_EXTRINSIC_INPUT = "extrinsic";
 const ::fwServices::IService::KeyType s_MATRIXTL_INOUT  = "matrixTL";
 const ::fwServices::IService::KeyType s_MATRIX_INOUT    = "matrix";
+const ::fwServices::IService::KeyType s_POINTLIST_INOUT = "pointList";
 
 //-----------------------------------------------------------------------------
 
@@ -88,6 +93,22 @@ void SPoseFrom2d::starting()
     m_3dModel.push_back( ::cv::Point3f(halfWidth, halfWidth, 0));
     m_3dModel.push_back( ::cv::Point3f(halfWidth, -halfWidth, 0));
     m_3dModel.push_back( ::cv::Point3f(-halfWidth, -halfWidth, 0));
+
+    ::fwData::PointList::sptr pl = this->getInOut< ::fwData::PointList >(s_POINTLIST_INOUT);
+    pl->pushBack(::fwData::Point::New(-halfWidth, halfWidth, 0));
+    pl->getPoints().at(0)->setField(::fwDataTools::fieldHelper::Image::m_labelId,
+                                    ::fwData::String::New(std::to_string(0)));
+    pl->pushBack(::fwData::Point::New( halfWidth, halfWidth, 0));
+    pl->getPoints().at(1)->setField(::fwDataTools::fieldHelper::Image::m_labelId,
+                                    ::fwData::String::New(std::to_string(1)));
+    pl->pushBack(::fwData::Point::New( halfWidth, -halfWidth, 0));
+    pl->getPoints().at(2)->setField(::fwDataTools::fieldHelper::Image::m_labelId,
+                                    ::fwData::String::New(std::to_string(2)));
+    pl->pushBack(::fwData::Point::New(-halfWidth, -halfWidth, 0));
+    pl->getPoints().at(3)->setField(::fwDataTools::fieldHelper::Image::m_labelId,
+                                    ::fwData::String::New(std::to_string(3)));
+    auto sig = pl->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+    sig->asyncEmit();
 }
 
 //-----------------------------------------------------------------------------
