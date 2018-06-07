@@ -1,20 +1,15 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2018.
+ * FW4SPL - Copyright (C) IRCAD, 2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #pragma once
 
-#ifndef __CTRLCAMERA_NAMESPACE_HPP__
-#define __CTRLCAMERA_NAMESPACE_HPP__
-
 /**
- * @brief       The namespace ctrlCamera contains services to configure Camera.
+ * @brief   The namespace ctrlCom contains services that control the execution flow with signals and slots.
  */
-namespace ctrlCamera
+namespace ctrlCom
 {
 
-} // namespace ctrlCamera
-
-#endif /* __CTRLCAMERA_NAMESPACE_HPP__ */
+} // namespace ctrlCom
