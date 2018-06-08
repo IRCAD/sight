@@ -15,6 +15,8 @@
 
 #include <fwServices/IController.hpp>
 
+#include <opencv2/aruco/dictionary.hpp>
+
 namespace videoCharucoCalibration
 {
 
@@ -51,7 +53,7 @@ namespace videoCharucoCalibration
                 <key uid="..." />
             </inout>
            <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" squareSize="CHESSBOARD_SQUARE_SIZE"
- * markerSize="CHESSBOARD_MARKER_SIZE"/>
+ * markerSize="CHESSBOARD_MARKER_SIZE" markerSizeInBits="CHESSBOARD_MARKER_SIZE_IN_BITS"/>
        </service>
    @endcode
  * @subsection Input Input:
@@ -91,7 +93,7 @@ public:
     VIDEOCHARUCOCALIBRATION_API SCharucoBoardDetector() noexcept;
 
     /// Destructor
-    VIDEOCHARUCOCALIBRATION_API ~SCharucoBoardDetector() noexcept;
+    VIDEOCHARUCOCALIBRATION_API virtual ~SCharucoBoardDetector() noexcept;
 
     /**
      * @brief Detect charuco board points
@@ -103,12 +105,9 @@ public:
      * @param markerSize the size of the aruco's markers used for calibration
      * @return a pointlist where x, y are image coordinates of detected points, and z their ids.
      */
-    static SPTR(::fwData::PointList) detectCharucoBoard(const ::arData::FrameTL::csptr tl,
-                                                        const ::fwCore::HiResClock::HiResClockType timestamp,
-                                                        const size_t xDim, const size_t yDim,
-                                                        const float squareSize, const float markerSize,
-                                                        const int markerSizeInBits,
-                                                        ::arData::FrameTL::sptr tlDetection = nullptr);
+    ::fwData::PointList::sptr detectCharucoBoard(const ::arData::FrameTL::csptr tl,
+                                                 const ::fwCore::HiResClock::HiResClockType timestamp,
+                                                 ::arData::FrameTL::sptr tlDetection = nullptr);
 
 protected:
 
@@ -142,6 +141,11 @@ private:
      * @brief SLOT: update the charucoBoard size.
      */
     VIDEOCHARUCOCALIBRATION_API void updateCharucoBoardSize();
+
+    /**
+     * @brief generateCharucoDictionnary
+     */
+    void generateCharucoDictionary();
 
     /**
      * @brief Creates an image from frame timeline
@@ -192,6 +196,9 @@ private:
 
     /// Size in pixels of marker
     int m_markerSizeInBits;
+
+    /// Charuco dictionary
+    cv::Ptr< ::cv::aruco::Dictionary > m_dictionary;
 
 };
 
