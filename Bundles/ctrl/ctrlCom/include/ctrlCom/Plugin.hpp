@@ -14,7 +14,7 @@ namespace ctrlCom
 {
 
 /**
- * @brief   This class is started when the bundles is loaded.
+ * @brief   This class is started when the bundle is loaded.
  */
 class CTRLCOM_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
@@ -22,14 +22,11 @@ public:
     /// Destructor. Do nothing.
     CTRLCOM_API ~Plugin() noexcept;
 
-    /**
-     * @brief Overrides start method. Object declarations.
-     */
+    /// Do nothing.
     CTRLCOM_API void start();
 
-    /// Overrides stop method. Do nothing
+    /// Do nothing
     CTRLCOM_API void stop() noexcept;
-
 };
 
 } // namespace ctrlCom

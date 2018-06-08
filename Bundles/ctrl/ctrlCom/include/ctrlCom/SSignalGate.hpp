@@ -14,8 +14,13 @@
 
 namespace ctrlCom
 {
+
 /**
- * @brief This service extract camera informations in configuration using android device name.
+ * @brief   This service triggers a signal each time all configured signals are received. Once it triggers the signal
+ * it resets its internal state and wait again for all signals to be received.
+ *
+ * @section Signals Signals
+ * - \b allReceived(int) : Emitted each time all configured signals are received.
  *
  * @section XML XML Configuration
  *
@@ -27,7 +32,7 @@ namespace ctrlCom
         </service>
    @endcode
  * @subsection Configuration Configuration
- *  - \b signal: list of signals to trigger
+ *  - \b signal: list of signals to wait for
  */
 class CTRLCOM_CLASS_API SSignalGate : public ::fwServices::IController
 {
@@ -48,10 +53,11 @@ public:
     CTRLCOM_API SSignalGate();
 
     /// Destructor
-    CTRLCOM_API virtual ~SSignalGate();
+    CTRLCOM_API virtual ~SSignalGate() override;
 
-    /// Slot: called when one of the signal is called
+    /// Slot: called when one of the signals is called
     void received(size_t _index);
+
 protected:
 
     /// Does nothing
@@ -68,12 +74,12 @@ protected:
 
 private:
 
-    /// Kepp track of received signals
+    /// Keep track of received signals
     std::vector<bool> m_flags;
 
     std::vector< ReceivedSignalType::sptr > m_waitingSlots;
 
-    /// Store all internal signals connection
+    /// Store all internal signal connections
     ::fwCom::helper::SigSlotConnection m_connections;
 };
 
