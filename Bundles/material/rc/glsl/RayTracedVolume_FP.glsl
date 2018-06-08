@@ -548,7 +548,7 @@ void main(void)
 #endif // CSG_MODULATION == 4 || CSG_MODULATION == 5 || CSG_MODULATION == 6
 
 #ifdef CSG_OPACITY_DECREASE
-            float alphaModDecr = max(1.f - (coneDistance / u_opacityDecreaseFactor), 0.f);
+            float alphaModDecr = max((coneDistance / (1.f - u_opacityDecreaseFactor)), 0.f);
             color.a -= alphaModDecr;
 #endif // CSG_OPACITY_DECREASE
 

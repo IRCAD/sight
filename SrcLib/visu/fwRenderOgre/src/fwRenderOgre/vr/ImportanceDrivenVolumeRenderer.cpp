@@ -154,7 +154,7 @@ ImportanceDrivenVolumeRenderer::ImportanceDrivenVolumeRenderer(std::string _pare
     m_idvrCSGGrayScale(false),
     m_idvrCSGgrayscaleMethod(IDVRCSGGrayScaleMethod::AVERAGE_GRAYSCALE),
     m_idvrCSGOpacityDecrease(false),
-    m_idvrCSGOpacityDecreaseFactor(0.04f),
+    m_idvrCSGOpacityDecreaseFactor(0.8f),
     m_idvrCSGDepthLines(false),
     m_idvrAImCAlphaCorrection(0.05f),
     m_idvrVPImCAlphaCorrection(0.3f)
