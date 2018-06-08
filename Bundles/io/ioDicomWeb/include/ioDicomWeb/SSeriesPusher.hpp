@@ -64,16 +64,16 @@ public:
 
 protected:
 
-    /// Does nothing.
+    /// Gets the configuration.
     IODICOMWEB_API virtual void configuring() override;
 
-    /// Override
+    /// Instantiate the worker.
     IODICOMWEB_API virtual void starting() override;
 
-    /// Override
+    /// Does nothing.
     IODICOMWEB_API virtual void stopping() override;
 
-    /// Override
+    /// Checks the configuration and push the series.
     IODICOMWEB_API void updating() override;
 
 private:
@@ -97,11 +97,8 @@ private:
     /// Push Worker
     ::fwThread::Worker::sptr m_pushSeriesWorker;
 
-    /// Is pushing is set to true when we are puishing series
+    /// Set to true when pushing series
     bool m_isPushing;
-
-    /// Total number of instances that must be uploaded
-    long unsigned int m_instanceCount;
 
     /// Returns a well formatted preferences key
     std::string getPreferenceKey(const std::string& key) const;

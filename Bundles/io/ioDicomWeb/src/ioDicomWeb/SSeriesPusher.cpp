@@ -35,6 +35,8 @@ namespace ioDicomWeb
 
 //------------------------------------------------------------------------------
 
+static const ::fwServices::IService::KeyType s_SERIES_IN = "selectedSeries";
+
 const ::fwCom::Slots::SlotKeyType SSeriesPusher::s_DISPLAY_SLOT = "displayMessage";
 
 //------------------------------------------------------------------------------
@@ -133,7 +135,7 @@ void SSeriesPusher::updating()
         }
     }
 
-    ::fwData::Vector::csptr selectedSeries = this->getInput< ::fwData::Vector >("selectedSeries");
+    ::fwData::Vector::csptr selectedSeries = this->getInput< ::fwData::Vector >(s_SERIES_IN);
 
     if(m_isPushing)
     {
@@ -167,14 +169,11 @@ void SSeriesPusher::updating()
 
 void SSeriesPusher::pushSeries()
 {
-    ::fwData::Vector::csptr seriesVector = this->getInput< ::fwData::Vector >("selectedSeries");
+    ::fwData::Vector::csptr seriesVector = this->getInput< ::fwData::Vector >(s_SERIES_IN);
 
     // Catch any errors
     try
     {
-        // List of dicom slice that must be pushed
-        std::vector< CSPTR(DcmDataset) > dicomContainer;
-
         // Connect to PACS
         for(const auto& series : *seriesVector)
         {
@@ -217,9 +216,6 @@ void SSeriesPusher::pushSeries()
 
             }
         }
-
-        // Number of instances that must be uploaded
-        m_instanceCount = dicomContainer.size();
     }
     catch (::fwNetworkIO::exceptions::Base& exception)
     {
