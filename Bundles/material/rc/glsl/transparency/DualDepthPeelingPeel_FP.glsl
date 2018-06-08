@@ -5,8 +5,7 @@ uniform sampler2D u_nearestDepthBuffer;
 uniform sampler2D u_farthestDepthBuffer;
 uniform sampler2D u_forwardColorBuffer;
 uniform sampler2D u_forwardAlphasBuffer;
-uniform float u_vpWidth;
-uniform float u_vpHeight;
+uniform vec4 u_viewport;
 uniform vec4 u_diffuse;
 
 // Output render targets
@@ -29,7 +28,7 @@ vec2 unpackColor(float value);
   **/
 void main()
 {
-    vec2 texCoord = gl_FragCoord.xy / vec2( u_vpWidth, u_vpHeight );
+    vec2 texCoord = gl_FragCoord.xy * u_viewport.zw;
 
     // window-space depth interpolated linearly in screen space
     float fragDepth = gl_FragCoord.z;

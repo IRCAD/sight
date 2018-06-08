@@ -20,8 +20,7 @@ geometry_program Default/Billboard_GP glsl
         param_named_auto u_diffuse surface_diffuse_colour
         param_named_auto u_proj projection_matrix
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_vpWidth viewport_width
-        param_named_auto u_vpHeight viewport_height
+        param_named_auto u_viewport viewport_size
         param_named u_billboardSize float 10.
     }
 }
@@ -37,8 +36,7 @@ geometry_program Default/Billboard_FixedSize_GP glsl
         param_named_auto u_diffuse surface_diffuse_colour
         param_named_auto u_proj projection_matrix
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_vpWidth viewport_width
-        param_named_auto u_vpHeight viewport_height
+        param_named_auto u_viewport viewport_size
         param_named u_billboardSize float 10.
     }
 }
@@ -53,8 +51,7 @@ geometry_program Default/Billboard_Depth_GP glsl
     {
         param_named_auto u_proj projection_matrix
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_vpWidth viewport_width
-        param_named_auto u_vpHeight viewport_height
+        param_named_auto u_viewport viewport_size
         param_named u_billboardSize float 10.
     }
 }
@@ -69,8 +66,7 @@ geometry_program Default/Billboard_FixedSize_Depth_GP glsl
     {
         param_named_auto u_proj projection_matrix
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_vpWidth viewport_width
-        param_named_auto u_vpHeight viewport_height
+        param_named_auto u_viewport viewport_size
         param_named u_billboardSize float 10.
     }
 }

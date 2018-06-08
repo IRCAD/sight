@@ -12,15 +12,14 @@ uniform float u_nbPasses;
 uniform sampler2D u_inputTexture;
 
 /* screen resolution: needed as gl_FragCoord is in window space */
-uniform float u_viewportWidth;
-uniform float u_viewportHeight;
+uniform vec4 u_viewport;
 
 /* Output fragment color */
 out vec4 fragColor;
 
 void main()
 {
-    vec2 coords = gl_FragCoord.xy / vec2(u_viewportWidth, u_viewportHeight);
+    vec2 coords = gl_FragCoord.xy * u_viewport.zw;
     coords = (coords - 0.5) * 2.;
 
     float stepwidth = exp2(u_nbPasses - u_passIndex - 1.0);
@@ -37,7 +36,7 @@ void main()
         for (int x = -1; x <= 1; x++)
         {
             /* Compute the coordinate of the current sample */
-            vec2 neighborSampleCoords = (gl_FragCoord.xy + vec2(x,y) * stepwidth) / vec2(u_viewportWidth, u_viewportHeight);
+            vec2 neighborSampleCoords = (gl_FragCoord.xy + vec2(x,y) * stepwidth) * u_viewport.zw;
             /* Get the value for the sample */
             vec4 neighborSampleValue = texture(u_inputTexture, neighborSampleCoords);
 

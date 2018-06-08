@@ -11,8 +11,7 @@ uniform mat4 u_worldViewProj;
 
 uniform float u_sampleDistance;
 
-uniform float u_viewportWidth;
-uniform float u_viewportHeight;
+uniform vec4 u_viewport;
 
 uniform float u_clippingNear;
 uniform float u_clippingFar;
@@ -31,8 +30,7 @@ out vec4 mrt_IC_RayTracing;
 
 vec3 getFragmentImageSpacePosition(in float depth, in mat4 invWorldViewProj)
 {
-    // TODO: Simplify this -> uniforms
-    vec3 screenPos = vec3(gl_FragCoord.xy / vec2(u_viewportWidth, u_viewportHeight), depth);
+    vec3 screenPos = vec3(gl_FragCoord.xy * u_viewport.zw, depth);
     screenPos -= 0.5;
     screenPos *= 2.0;
 
@@ -94,7 +92,7 @@ void launchRay(inout vec3 rayPos, in vec3 rayDir, in float rayLength, inout vec4
 #if IDVR == 1
             IC_RayTracing = vec4(rayPos, 1.);
 
-            vec2 ndcScreenPos = (gl_FragCoord.xy / vec2(u_viewportWidth, u_viewportHeight) - 0.5) * 2.;
+            vec2 ndcScreenPos = (gl_FragCoord.xy * u_viewport.zw - 0.5) * 2.;
             float rayScreenDepth = voxelScreenDepth(rayPos);
 
             IC_JFA = vec4(ndcScreenPos, rayScreenDepth, 1.);

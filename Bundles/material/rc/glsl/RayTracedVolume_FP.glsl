@@ -39,8 +39,7 @@ uniform vec3 u_lightSpecular[MAX_LIGHTS];
 
 uniform float u_sampleDistance;
 
-uniform float u_viewportWidth;
-uniform float u_viewportHeight;
+uniform vec4 u_viewport;
 
 uniform float u_clippingNear;
 uniform float u_clippingFar;
@@ -130,7 +129,7 @@ vec3 gradientNormal(vec3 uvw)
 /// Converts OpenGL fragment coordinates to normalized device coordinates (NDC).
 vec3 fragCoordsToNDC(in vec3 fragCoord)
 {
-    vec3 ndcCoords  =vec3(fragCoord.xy / vec2(u_viewportWidth, u_viewportHeight), fragCoord.z);
+    vec3 ndcCoords  = vec3(fragCoord.xy * u_viewport.zw, fragCoord.z);
     ndcCoords = (ndcCoords - 0.5) * 2.;
     return ndcCoords;
 }
