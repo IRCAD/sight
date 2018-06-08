@@ -19,7 +19,7 @@ namespace videoCharucoCalibration
 {
 
 /**
- * @brief This service updates CalibrationInfo objects with the points detected from charucoBoard.
+ * @brief This service updates CalibrationInfo objects with the points detected from charuco board.
  *
  * This service is used by calling 'detectPoints' slot. It checks on each timeline if points are visible in each
  * frame. Then it adds the detected points and the associated image in the CalibrationInfo.
@@ -58,7 +58,7 @@ namespace videoCharucoCalibration
  * - \b timeline [::arData::FrameTL]: timelines containing the images to detect the charucoBoard.
  * @subsection In-Out In-Out:
  * - \b calInfo [::arData::CalibrationInfo]: calibration object where to store the detected images.
- * - \b detection [::fwData::PointList] (optional): detected charucoBoard points in image coordinates.
+ * - \b detection [::fwData::PointList] (optional): detected chessboard points in image coordinates.
  * @subsection Configuration Configuration:
  * - \b board : preference key to retrieve the number of squares of the board in width and height.
  */
@@ -94,27 +94,28 @@ public:
     VIDEOCHARUCOCALIBRATION_API ~SCharucoBoardDetector() noexcept;
 
     /**
-     * @brief Detect charucoBoard points
+     * @brief Detect charuco board points
      * @param tl the timeline containing frames displaying the charucoBoard
      * @param timestamp time corresponding to the frame to process in the timeline
      * @param xDim the number of charucoBoard squares horizontally
      * @param yDim the number of charucoBoard squares vertically
      * @param squareSize the size of the charucoBoard'square used for calibration
-     * @param markerSize the dize of the aruco's markers used for calibration
-     * @return The list of charucoBoard points or NULL if no points are detected
+     * @param markerSize the size of the aruco's markers used for calibration
+     * @return a pointlist where x, y are image coordinates of detected points, and z their ids.
      */
-    static SPTR(::fwData::PointList) detectCharucoBoard(::arData::FrameTL::csptr tl,
-                                                        ::fwCore::HiResClock::HiResClockType timestamp,
-                                                        size_t xDim, size_t yDim,
-                                                        double squareSize, double markerSize,
-                                                        ::arData::FrameTL::sptr tlDetection = 0);
+    static SPTR(::fwData::PointList) detectCharucoBoard(const ::arData::FrameTL::csptr tl,
+                                                        const ::fwCore::HiResClock::HiResClockType timestamp,
+                                                        const size_t xDim, const size_t yDim,
+                                                        const float squareSize, const float markerSize,
+                                                        const int markerSizeInBits,
+                                                        ::arData::FrameTL::sptr tlDetection = nullptr);
 
 protected:
 
-    /// Configure the service.
+    /// Configures the service.
     VIDEOCHARUCOCALIBRATION_API void configuring() override;
 
-    /// Does nothing.
+    /// Starts the service by initializing size of pointlist.
     VIDEOCHARUCOCALIBRATION_API void starting() override;
 
     /// Does nothing.
@@ -165,6 +166,9 @@ private:
     /// Preference key to retrieve height of the charucoBoard used for calibration
     std::string m_markerSizeKey;
 
+    /// Preference key to retrieve marker size in bits.
+    std::string m_markerSizeInBitsKey;
+
     /// Width of the charucoBoard used for calibration
     size_t m_width;
 
@@ -185,6 +189,10 @@ private:
 
     /// Timestamp of the last managed image
     ::fwCore::HiResClock::HiResClockType m_lastTimestamp;
+
+    /// Size in pixels of marker
+    int m_markerSizeInBits;
+
 };
 
 } //namespace videoCharucoCalibration

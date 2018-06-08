@@ -284,7 +284,7 @@
                 <key uid="${calibrationInfo1}" />
                 <key uid="${calibrationInfo2}" />
             </inout>
-            <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" squareSize="CHESSBOARD_SQUARE_SIZE" markerSize="CHESSBOARD_MARKER_SIZE"/>
+            <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" squareSize="CHESSBOARD_SQUARE_SIZE" markerSize="CHESSBOARD_MARKER_SIZE" markerSizeInBits="CHESSBOARD_MARKER_SIZE_IN_BITS" />
         </service>
 
         <service uid="DisplayCalibrationInfo" type="::uiCalibration::SDisplayCalibrationInfo">

@@ -55,7 +55,8 @@ SCharucoBoardDetector::SCharucoBoardDetector() noexcept :
     m_width(11),
     m_height(8),
     m_isDetected(false),
-    m_lastTimestamp(0)
+    m_lastTimestamp(0),
+    m_markerSizeInBits(6)
 {
     m_sigCharucoBoardDetected    = newSignal< CharucoBoardDetectedSignalType >( s_CHARUCOBOARD_DETECTED_SIG );
     m_sigCharucoBoardNotDetected = newSignal< CharucoBoardNotDetectedSignalType >( s_CHARUCOBOARD_NOT_DETECTED_SIG );
@@ -78,46 +79,20 @@ void SCharucoBoardDetector::configuring()
     SLM_ASSERT("You must have the same number of 'timeline' keys and 'calInfo' keys",
                this->getKeyGroupSize(s_TIMELINE_INPUT) == this->getKeyGroupSize(s_CALIBRATION_INOUT));
 
-    ::fwRuntime::ConfigurationElement::sptr cfgBoard = m_configuration->findConfigurationElement("board");
-    SLM_ASSERT("Tag 'board' not found.", cfgBoard);
+    const auto configTree = this->getConfigTree();
+    const auto cfgBoard   = configTree.get_child_optional("board.<xmlattr>");
 
-    SLM_ASSERT("Attribute 'width' is missing.", cfgBoard->hasAttribute("width"));
-    m_widthKey = cfgBoard->getAttributeValue("width");
-    SLM_ASSERT("Attribute 'width' is empty", !m_widthKey.empty());
-
-    SLM_ASSERT("Attribute 'height' is missing.", cfgBoard->hasAttribute("height"));
-    m_heightKey = cfgBoard->getAttributeValue("height");
-    SLM_ASSERT("Attribute 'height' is empty", !m_heightKey.empty());
-
-    SLM_ASSERT("Attribute 'squareSize' is missing.", cfgBoard->hasAttribute("squareSize"));
-    m_squareSizeKey = cfgBoard->getAttributeValue("squareSize");
-    SLM_ASSERT("Attribute 'squareSize' is empty", !m_squareSizeKey.empty());
-
-    SLM_ASSERT("Attribute 'markerSize' is missing.", cfgBoard->hasAttribute("markerSize"));
-    m_markerSizeKey = cfgBoard->getAttributeValue("markerSize");
-    SLM_ASSERT("Attribute 'markerSize' is empty", !m_markerSizeKey.empty());
-
-    const std::string widthStr = ::fwPreferences::getPreference(m_widthKey);
-    if(!widthStr.empty())
+    if(cfgBoard)
     {
-        m_width = std::stoi(widthStr);
-    }
-    const std::string heightStr = ::fwPreferences::getPreference(m_heightKey);
-    if(!heightStr.empty())
-    {
-        m_height = std::stoi(heightStr);
-    }
-    const std::string squareSizeStr = ::fwPreferences::getPreference(m_squareSizeKey);
-    if(!squareSizeStr.empty())
-    {
-        m_squareSize = std::stod(squareSizeStr);
-    }
-    const std::string markerSizeStr = ::fwPreferences::getPreference(m_markerSizeKey);
-    if(!markerSizeStr.empty())
-    {
-        m_markerSize = std::stod(markerSizeStr);
+        m_widthKey            = cfgBoard->get<std::string>("width", "CHESSBOARD_WIDTH");
+        m_heightKey           = cfgBoard->get<std::string>("height", "CHESSBOARD_HEIGHT");
+        m_squareSizeKey       = cfgBoard->get<std::string>("squareSize", "CHESSBOARD_SQUARE_SIZE");
+        m_markerSizeKey       = cfgBoard->get<std::string>("markerSize", "CHESSBOARD_MARKER_SIZE");
+        m_markerSizeInBitsKey = cfgBoard->get<std::string>("markerSizeInBits", "CHESSBOARD_MARKER_SIZE_IN_BITS");
+
     }
 
+    this->updateCharucoBoardSize();
 }
 
 // ----------------------------------------------------------------------------
@@ -125,7 +100,6 @@ void SCharucoBoardDetector::configuring()
 void SCharucoBoardDetector::starting()
 {
     m_cornerAndIdLists.resize( this->getKeyGroupSize(s_TIMELINE_INPUT) );
-    this->updateCharucoBoardSize();
 }
 
 // ----------------------------------------------------------------------------
@@ -178,12 +152,12 @@ void SCharucoBoardDetector::checkPoints( ::fwCore::HiResClock::HiResClockType ti
                     tlDetection->initPoolSize(tl->getWidth(), tl->getHeight(), ::fwTools::Type::s_UINT8, 4);
                 }
                 charucoBoardPoints = this->detectCharucoBoard(tl, lastTimestamp, m_width, m_height, m_squareSize,
-                                                              m_markerSize, tlDetection);
+                                                              m_markerSize, m_markerSizeInBits, tlDetection);
             }
             else
             {
                 charucoBoardPoints = this->detectCharucoBoard(tl, lastTimestamp, m_width, m_height, m_squareSize,
-                                                              m_markerSize);
+                                                              m_markerSize, m_markerSizeInBits);
 
             }
 
@@ -241,22 +215,27 @@ void SCharucoBoardDetector::updateCharucoBoardSize()
     const std::string widthStr = ::fwPreferences::getPreference(m_widthKey);
     if(!widthStr.empty())
     {
-        m_width = std::stoi(widthStr);
+        m_width = std::stoul(widthStr);
     }
     const std::string heightStr = ::fwPreferences::getPreference(m_heightKey);
     if(!heightStr.empty())
     {
-        m_height = std::stoi(heightStr);
+        m_height = std::stoul(heightStr);
     }
     const std::string squareSizeStr = ::fwPreferences::getPreference(m_squareSizeKey);
     if(!squareSizeStr.empty())
     {
-        m_squareSize = std::stod(squareSizeStr);
+        m_squareSize = std::stof(squareSizeStr);
     }
     const std::string markerSizeStr = ::fwPreferences::getPreference(m_markerSizeKey);
     if(!markerSizeStr.empty())
     {
-        m_markerSize = std::stod(markerSizeStr);
+        m_markerSize = std::stof(markerSizeStr);
+    }
+    const std::string markerSizeInBitsStr = ::fwPreferences::getPreference(m_markerSizeInBitsKey);
+    if(!markerSizeInBitsStr.empty())
+    {
+        m_markerSizeInBits = std::stoi(markerSizeInBitsStr);
     }
 }
 
@@ -301,10 +280,11 @@ void SCharucoBoardDetector::updateCharucoBoardSize()
 
 // ----------------------------------------------------------------------------
 
-SPTR(::fwData::PointList) SCharucoBoardDetector::detectCharucoBoard(::arData::FrameTL::csptr tl,
-                                                                    ::fwCore::HiResClock::HiResClockType timestamp,
-                                                                    size_t xDim, size_t yDim,
-                                                                    double squareSize, double markerSize,
+SPTR(::fwData::PointList) SCharucoBoardDetector::detectCharucoBoard(const ::arData::FrameTL::csptr tl,
+                                                                    const ::fwCore::HiResClock::HiResClockType timestamp,
+                                                                    const size_t xDim, const size_t yDim,
+                                                                    const float squareSize, const float markerSize,
+                                                                    const int markerSizeInBits,
                                                                     ::arData::FrameTL::sptr tlDetection)
 {
 
@@ -329,20 +309,25 @@ SPTR(::fwData::PointList) SCharucoBoardDetector::detectCharucoBoard(::arData::Fr
         {
             ::cv::cvtColor(img, grayImg, CV_RGB2GRAY);
         }
-        else
+        else if(tl->getNumberOfComponents() == 4)
         {
             ::cv::cvtColor(img, grayImg, CV_RGBA2GRAY);
+        }
+        else
+        {
+            OSLM_FATAL("Wrong type of image (nb of components = "<<tl->getNumberOfComponents()<<").");
         }
 
         std::vector<std::vector< ::cv::Point2f> > arucoCorners;
         std::vector<int> arucoIds;
 
         ::cv::Size boardSize(static_cast<int>(xDim), static_cast<int>(yDim));
+        const int nbMarkers = ( boardSize.height * boardSize.width ) / 2;
+
+        //FIXME: rendre modulable
+
         ::cv::Ptr< ::cv::aruco::Dictionary > dictionary =
-            ::cv::aruco::generateCustomDictionary((int) (boardSize.height*boardSize.width)/2.0, 6, ::cv::aruco::Dictionary::get(
-                                                      ::cv::aruco::DICT_6X6_1000 ));                                                                                                //A
-        // rendre
-        // modulable
+            ::cv::aruco::generateCustomDictionary(nbMarkers, markerSizeInBits);                                                                                                //A
 
         ::cv::Ptr< ::cv::aruco::CharucoBoard > board = ::cv::aruco::CharucoBoard::create(boardSize.width,
                                                                                          boardSize.height, squareSize,
@@ -358,15 +343,14 @@ SPTR(::fwData::PointList) SCharucoBoardDetector::detectCharucoBoard(::arData::Fr
 
             pointlist                                       = ::fwData::PointList::New();
             ::fwData::PointList::PointListContainer& points = pointlist->getPoints();
-            points.reserve(chessBoardCorners.size[0]);
+            points.reserve(static_cast< size_t >(chessBoardCorners.size[0]));
 
-            for(size_t i = 0; i < chessBoardCorners.size[0]; i++)
+            for(int i = 0; i < chessBoardCorners.size[0]; ++i)
             {
-                ::fwData::Point::sptr point = ::fwData::Point::New((chessBoardCorners.at< ::cv::Point2f>(cv::Point(0,
-                                                                                                                   i))).x,
-                                                                   (chessBoardCorners.at< ::cv::Point2f>(cv::Point(0,
-                                                                                                                   i))).y,
-                                                                   (chessBoardIds.at<int>(cv::Point(0, i))));
+                ::fwData::Point::sptr point =
+                    ::fwData::Point::New((chessBoardCorners.at< ::cv::Point2f>( ::cv::Point(0, i))).x,
+                                         (chessBoardCorners.at< ::cv::Point2f>( ::cv::Point(0, i))).y,
+                                         (static_cast<float>(chessBoardIds.at<int>(0, i))));
                 points.push_back(point);
             }
 
