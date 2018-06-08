@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -19,7 +19,6 @@
 
 #include <fwServices/IService.hpp>
 #include <fwServices/macros.hpp>
-
 
 namespace videoCalibration
 {
@@ -89,18 +88,18 @@ void SMarkerToPoint::addPoint()
     {
         for(unsigned int j = 0; j < 4; ++j)
         {
-            matrix3D->setCoefficient(i,j,values[i*4+j]);
+            matrix3D->setCoefficient(i, j, values[i*4+j]);
         }
     }
 
-    OSLM_DEBUG("Marker Center Position : "<< matrix3D->getCoefficient(0,3)<<" , "
-                                          <<matrix3D->getCoefficient(1,3)<<" , "
-                                          <<matrix3D->getCoefficient(2,3));
+    OSLM_DEBUG("Marker Center Position : "<< matrix3D->getCoefficient(0, 3)<<" , "
+                                          <<matrix3D->getCoefficient(1, 3)<<" , "
+                                          <<matrix3D->getCoefficient(2, 3));
 
     //Save the position and drop the orientation
-    ::fwData::Point::sptr p = ::fwData::Point::New(matrix3D->getCoefficient(0,3),
-                                                   matrix3D->getCoefficient(1,3),
-                                                   matrix3D->getCoefficient(2,3));
+    ::fwData::Point::sptr p = ::fwData::Point::New(matrix3D->getCoefficient(0, 3),
+                                                   matrix3D->getCoefficient(1, 3),
+                                                   matrix3D->getCoefficient(2, 3));
 
     pl->pushBack(p);
     auto sig = pl->signal< ::fwData::PointList::PointAddedSignalType >(::fwData::PointList::s_POINT_ADDED_SIG);
@@ -109,10 +108,8 @@ void SMarkerToPoint::addPoint()
         sig->asyncEmit(p);
     }
 
-
 }
 
 // ----------------------------------------------------------------------------
 
 } //namespace videoCalibration
-
