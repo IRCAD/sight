@@ -121,12 +121,12 @@ void SSignalGate::received(size_t _index)
 
     if(allReceived)
     {
+        // Reset all flags before sending the signal
+        std::fill(m_flags.begin(), m_flags.end(), false);
+
         OSLM_DEBUG("'" << this->getID() << "' received all signals, sending 'allReceived' now.");
         auto sig = this->signal<AllReceivedSignalType>(s_ALL_RECEIVED_SIG);
         sig->asyncEmit();
-
-        // Reset all flags
-        std::fill(m_flags.begin(), m_flags.end(), false);
     }
 }
 
