@@ -490,7 +490,9 @@ void main(void)
         float rayDepthIntegralPart;
         float rayDepthFractPart = modf(rayDepth, rayDepthIntegralPart);
 
-        if(mod(int(rayDepthIntegralPart), u_depthLinesSpacing) == 0 && (rayDepthFractPart < u_depthLinesWidth))
+        int distToDepthLine = int(mod(rayDepthIntegralPart, u_depthLinesSpacing));
+
+        if( int(rayDepthIntegralPart) != 0 && distToDepthLine == 0 && (rayDepthFractPart < u_depthLinesWidth))
         {
             result = vec4(u_csgBorderColor, 1.);
         }

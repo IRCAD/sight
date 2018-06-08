@@ -889,6 +889,13 @@ void SVolumeRender::setIntParameter(int val, std::string key)
     {
         this->updateSatConeSamples(val);
     }
+    else if(key == "idvrDepthLinesSpacing")
+    {
+        auto rayCastVolumeRenderer =
+            dynamic_cast< ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer* >(m_volumeRenderer);
+        OSLM_ASSERT("The current VolumeRenderer must be an ImportanceDrivenVolumeRenderer", rayCastVolumeRenderer);
+        rayCastVolumeRenderer->setIDVRDepthLinesSpacing(val);
+    }
 
     this->requestRender();
 }
@@ -1014,6 +1021,21 @@ void SVolumeRender::setEnumParameter(std::string val, std::string key)
         {
             rayCastVolumeRenderer->setIDVRCSGGrayScaleMethod(
                 ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer::IDVRCSGGrayScaleMethod::LUMINOSITY_GRAYSCALE);
+        }
+    }
+    else if(key == "idvrDepthLinesSpacing")
+    {
+        auto rayCastVolumeRenderer =
+            dynamic_cast< ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer* >(m_volumeRenderer);
+        OSLM_ASSERT("The current VolumeRenderer must be an ImportanceDrivenVolumeRenderer", rayCastVolumeRenderer);
+
+        const bool toggle = val != "Off";
+        rayCastVolumeRenderer->toggleIDVRDepthLines(toggle);
+
+        if(toggle)
+        {
+            const int spacing = std::stoi(val);
+            rayCastVolumeRenderer->setIDVRDepthLinesSpacing(spacing);
         }
     }
 

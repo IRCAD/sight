@@ -39,15 +39,15 @@
                 <param type="bool" name="Enable Countersink geometry for MImP" key="idvrCSG" defaultValue="true" />
                 <param type="double" name="Countersink geometry angle" key="idvrCSGAngle" defaultValue="15" min="0.0" max="45.0" />
                 <param type="double" name="Countersink geometry blur weight" key="idvrCSGBlurWeight" defaultValue="0.01" min="0.001" max="0.03" />
-                <param type="bool" name="Enable Countersink geometry depth lines for MImP" key="idvrCSGDepthLines" defaultValue="false" />
+                <param type="enum" name="Depth lines spacing (mm)" key="idvrDepthLinesSpacing" defaultValue="Off" values="Off;5;10;20;30" />
                 <param type="color" name="Depth lines color" key="idvrCSGBorderColor" defaultValue="#FFFF99" />
                 <param type="bool" name="Enable gray scale for countersink geometry" key="idvrCSGGrayScale" defaultValue="false" />
                 <param type="enum" name="Countersink geometry gray scale method" key="idvrCSGGrayScaleMethod" defaultValue="Average_grayscale" values="Average_grayscale,Lightness_grayscale,Luminosity_grayscale" />
                 <param type="bool" name="Enable modulation for countersink geometry" key="idvrCSGModulation" defaultValue="false" />
                 <param type="enum" name="Countersink geometry modulation method" key="idvrCSGModulationMethod" defaultValue="Brightness" values="Brightness,Saturation,SaturationBrightness" />
-                <param type="double" name="Countersink geometry modulation factor" key="idvrCSGModulationFactor" defaultValue="0.0" min="-1.0" max="1.0" />
+                <param type="double" name="Countersink geometry modulation factor" key="idvrCSGModulationFactor" defaultValue="0.02" min="-1.0" max="1.0" />
                 <param type="bool" name="Countersink geometry opacity" key="idvrCSGOpacityDecrease" defaultValue="false" />
-                <param type="double" name="Opacity decrease factor" key="idvrCSGOpacityDecreaseFactor" defaultValue="0.0" min="0.0" max="1.0" />
+                <param type="double" name="Opacity decrease factor" key="idvrCSGOpacityDecreaseFactor" defaultValue="0.04" min="0.01" max="1.0" />
                 <param type="bool" name="Disable context around countersink geometry for MImP" key="idvrCSGDisableContext" defaultValue="false" />
                 <param type="double" name="Alpha correction for AImC" key="idvrAImCAlphaCorrection" defaultValue="0.05" min="0.0" max="1.0" />
                 <param type="double" name="Alpha correction for VPImP" key="idvrVPImCAlphaCorrection" defaultValue="0.3" min="0.0" max="1.0" />

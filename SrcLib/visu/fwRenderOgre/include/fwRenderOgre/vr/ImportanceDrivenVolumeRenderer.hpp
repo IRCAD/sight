@@ -34,18 +34,18 @@ public:
         LUMINOSITY_GRAYSCALE
     };
 
-    FWRENDEROGRE_API ImportanceDrivenVolumeRenderer(std::string parentId,
-                                                    Layer::sptr layer,
-                                                    ::Ogre::SceneNode* parentNode,
-                                                    ::Ogre::TexturePtr imageTexture,
-                                                    ::Ogre::TexturePtr maskTexture,
-                                                    const TransferFunction::sptr& gpuTF,
-                                                    PreIntegrationTable& preintegrationTable,
-                                                    bool ambientOcclusion,
-                                                    bool colorBleeding,
-                                                    bool shadows               = false,
-                                                    double aoFactor            = 1.,
-                                                    double colorBleedingFactor = 1.);
+    FWRENDEROGRE_API ImportanceDrivenVolumeRenderer(std::string _parentId,
+                                                    Layer::sptr _layer,
+                                                    ::Ogre::SceneNode* _parentNode,
+                                                    ::Ogre::TexturePtr _imageTexture,
+                                                    ::Ogre::TexturePtr _maskTexture,
+                                                    const TransferFunction::sptr& _gpuTF,
+                                                    PreIntegrationTable& _preintegrationTable,
+                                                    bool _ambientOcclusion,
+                                                    bool _colorBleeding,
+                                                    bool _shadows               = false,
+                                                    double _aoFactor            = 1.,
+                                                    double _colorBleedingFactor = 1.);
 
     FWRENDEROGRE_API virtual ~ImportanceDrivenVolumeRenderer();
 
@@ -97,6 +97,9 @@ public:
     /// Toggle the depth lines for MImP countersink geometry.
     FWRENDEROGRE_API void toggleIDVRDepthLines(bool);
 
+    /// Set the number of image spacing units between depth lines.
+    FWRENDEROGRE_API void setIDVRDepthLinesSpacing(int);
+
     /// Set the alpha correction factor used in the VPImC method.
     FWRENDEROGRE_API void setIDVRAImCAlphaCorrection(double);
 
@@ -107,7 +110,7 @@ public:
     FWRENDEROGRE_API void setImageSpacing(const ::Ogre::Vector3& _spacing);
 
     /// Slot: Called when the size of the viewport changes.
-    FWRENDEROGRE_API virtual void resizeViewport(int w, int h) override;
+    FWRENDEROGRE_API virtual void resizeViewport(int _w, int _h) override;
 
 protected:
 

@@ -124,21 +124,22 @@ const std::string s_JUMP_FLOOD_ALGORITHM_TEXTURE   = "JFA";
 
 //-----------------------------------------------------------------------------
 
-ImportanceDrivenVolumeRenderer::ImportanceDrivenVolumeRenderer(std::string parentId,
-                                                               Layer::sptr layer,
-                                                               ::Ogre::SceneNode* parentNode,
-                                                               ::Ogre::TexturePtr imageTexture,
-                                                               ::Ogre::TexturePtr maskTexture,
-                                                               const TransferFunction::sptr& gpuTF,
-                                                               PreIntegrationTable& preintegrationTable,
-                                                               bool ambientOcclusion,
-                                                               bool colorBleeding,
-                                                               bool shadows,
-                                                               double aoFactor,
-                                                               double colorBleedingFactor) :
-    fwRenderOgre::vr::RayTracingVolumeRenderer(parentId, layer, parentNode, imageTexture, gpuTF, preintegrationTable,
-                                               ambientOcclusion, colorBleeding, shadows, aoFactor, colorBleedingFactor),
-    m_maskTexture(maskTexture),
+ImportanceDrivenVolumeRenderer::ImportanceDrivenVolumeRenderer(std::string _parentId,
+                                                               Layer::sptr _layer,
+                                                               ::Ogre::SceneNode* _parentNode,
+                                                               ::Ogre::TexturePtr _imageTexture,
+                                                               ::Ogre::TexturePtr _maskTexture,
+                                                               const TransferFunction::sptr& _gpuTF,
+                                                               PreIntegrationTable& _preintegrationTable,
+                                                               bool _ambientOcclusion,
+                                                               bool _colorBleeding,
+                                                               bool _shadows,
+                                                               double _aoFactor,
+                                                               double _colorBleedingFactor) :
+    fwRenderOgre::vr::RayTracingVolumeRenderer(_parentId, _layer, _parentNode, _imageTexture, _gpuTF,
+                                               _preintegrationTable, _ambientOcclusion, _colorBleeding, _shadows,
+                                               _aoFactor, _colorBleedingFactor),
+    m_maskTexture(_maskTexture),
     m_idvrMethod(s_NONE),
     m_idvrCSG(true),
     m_idvrCSGAngleCosine(std::cos(::glm::pi<float>() / 12.f)) /* cos(15°) */,
@@ -149,11 +150,11 @@ ImportanceDrivenVolumeRenderer::ImportanceDrivenVolumeRenderer(std::string paren
     m_idvrCSGBorderColor(::Ogre::ColourValue(1.f, 1.f, 0.6f)) /* light yellow lines */,
     m_idvrCSGModulation(false),
     m_idvrCSGModulationMethod(IDVRCSGModulationMethod::COLOR1),
-    m_idvrCSGModulationFactor(0.f),
+    m_idvrCSGModulationFactor(0.02f),
     m_idvrCSGGrayScale(false),
     m_idvrCSGgrayscaleMethod(IDVRCSGGrayScaleMethod::AVERAGE_GRAYSCALE),
     m_idvrCSGOpacityDecrease(false),
-    m_idvrCSGOpacityDecreaseFactor(0.f),
+    m_idvrCSGOpacityDecreaseFactor(0.04f),
     m_idvrCSGDepthLines(false),
     m_idvrAImCAlphaCorrection(0.05f),
     m_idvrVPImCAlphaCorrection(0.3f)
@@ -196,20 +197,20 @@ ImportanceDrivenVolumeRenderer::~ImportanceDrivenVolumeRenderer()
 
 //-----------------------------------------------------------------------------
 
-void ImportanceDrivenVolumeRenderer::setIDVRMethod(std::string method)
+void ImportanceDrivenVolumeRenderer::setIDVRMethod(std::string _method)
 {
     bool isSupported(false);
 
-    if(method == s_NONE ||
-       method == s_MIMP ||
-       method == s_AIMC ||
-       method == s_VPIMC)
+    if(_method == s_NONE ||
+       _method == s_MIMP ||
+       _method == s_AIMC ||
+       _method == s_VPIMC)
     {
         isSupported = true;
     }
 
-    SLM_FATAL_IF("IDVR method '" + method + "' isn't supported by the ray tracing volume renderer.", !isSupported);
-    m_idvrMethod = method;
+    SLM_FATAL_IF("IDVR method '" + _method + "' isn't supported by the ray tracing volume renderer.", !isSupported);
+    m_idvrMethod = _method;
 
     this->createMaterialAndIDVRTechnique();
 }
@@ -369,9 +370,9 @@ void ImportanceDrivenVolumeRenderer::cleanCompositorChain(Ogre::Viewport* _vp)
 
 //-----------------------------------------------------------------------------
 
-void ImportanceDrivenVolumeRenderer::toggleIDVRCountersinkGeometry(bool CSG)
+void ImportanceDrivenVolumeRenderer::toggleIDVRCountersinkGeometry(bool _CSG)
 {
-    m_idvrCSG = CSG;
+    m_idvrCSG = _CSG;
 
     if(this->m_idvrMethod == s_MIMP)
     {
@@ -381,9 +382,9 @@ void ImportanceDrivenVolumeRenderer::toggleIDVRCountersinkGeometry(bool CSG)
 
 //-----------------------------------------------------------------------------
 
-void ImportanceDrivenVolumeRenderer::setIDVRCountersinkAngle(double angle)
+void ImportanceDrivenVolumeRenderer::setIDVRCountersinkAngle(double _angle)
 {
-    m_idvrCSGAngleCosine = static_cast<float>(std::cos(::glm::radians(angle)));
+    m_idvrCSGAngleCosine = static_cast<float>(std::cos(::glm::radians(_angle)));
 
     if(m_idvrMethod == s_MIMP && m_idvrCSG)
     {
@@ -394,9 +395,9 @@ void ImportanceDrivenVolumeRenderer::setIDVRCountersinkAngle(double angle)
 
 //-----------------------------------------------------------------------------
 
-void ImportanceDrivenVolumeRenderer::setIDVRCSGBlurWeight(double blurWeight)
+void ImportanceDrivenVolumeRenderer::setIDVRCSGBlurWeight(double _blurWeight)
 {
-    m_idvrCSGBlurWeight = static_cast<float>(blurWeight);
+    m_idvrCSGBlurWeight = static_cast<float>(_blurWeight);
 
     if(m_idvrMethod == s_MIMP && m_idvrCSG)
     {
@@ -406,10 +407,10 @@ void ImportanceDrivenVolumeRenderer::setIDVRCSGBlurWeight(double blurWeight)
 
 //-----------------------------------------------------------------------------
 
-void ImportanceDrivenVolumeRenderer::toggleIDVRCSGBorder(bool border)
+void ImportanceDrivenVolumeRenderer::toggleIDVRCSGBorder(bool _border)
 {
     // FIXME: find a new way to display the csg border.
-    m_idvrCSGBorder = border;
+    m_idvrCSGBorder = _border;
 
     if(this->m_idvrMethod == s_MIMP && this->m_idvrCSG)
     {
@@ -419,9 +420,9 @@ void ImportanceDrivenVolumeRenderer::toggleIDVRCSGBorder(bool border)
 
 //-----------------------------------------------------------------------------
 
-void ImportanceDrivenVolumeRenderer::toggleIDVRCSGDisableContext(bool discard)
+void ImportanceDrivenVolumeRenderer::toggleIDVRCSGDisableContext(bool _discard)
 {
-    m_idvrCSGDisableContext = discard;
+    m_idvrCSGDisableContext = _discard;
 
     if(this->m_idvrMethod == s_MIMP && this->m_idvrCSG)
     {
@@ -431,9 +432,9 @@ void ImportanceDrivenVolumeRenderer::toggleIDVRCSGDisableContext(bool discard)
 
 //-----------------------------------------------------------------------------
 
-void ImportanceDrivenVolumeRenderer::setIDVRCSGBorderThickness(double thickness)
+void ImportanceDrivenVolumeRenderer::setIDVRCSGBorderThickness(double _thickness)
 {
-    m_idvrCSGBorderThickness = static_cast<float>(thickness);
+    m_idvrCSGBorderThickness = static_cast<float>(_thickness);
 
     if(m_idvrMethod == s_MIMP && this->m_idvrCSG && this->m_idvrCSGBorder)
     {
@@ -444,11 +445,11 @@ void ImportanceDrivenVolumeRenderer::setIDVRCSGBorderThickness(double thickness)
 
 //-----------------------------------------------------------------------------
 
-void ImportanceDrivenVolumeRenderer::setIDVRCSGBorderColor(std::array<std::uint8_t, 4> color)
+void ImportanceDrivenVolumeRenderer::setIDVRCSGBorderColor(std::array<std::uint8_t, 4> _color)
 {
-    m_idvrCSGBorderColor.r = color[0] / 256.f;
-    m_idvrCSGBorderColor.g = color[1] / 256.f;
-    m_idvrCSGBorderColor.b = color[2] / 256.f;
+    m_idvrCSGBorderColor.r = _color[0] / 256.f;
+    m_idvrCSGBorderColor.g = _color[1] / 256.f;
+    m_idvrCSGBorderColor.b = _color[2] / 256.f;
 
     if(m_idvrMethod == s_MIMP && m_idvrCSG && (m_idvrCSGBorder || m_idvrCSGDepthLines))
     {
@@ -483,9 +484,9 @@ void ImportanceDrivenVolumeRenderer::setIDVRCSGGrayScaleMethod(IDVRCSGGrayScaleM
 
 //-----------------------------------------------------------------------------
 
-void ImportanceDrivenVolumeRenderer::toggleIDVRCSGModulation(bool modulation)
+void ImportanceDrivenVolumeRenderer::toggleIDVRCSGModulation(bool _modulation)
 {
-    m_idvrCSGModulation = modulation;
+    m_idvrCSGModulation = _modulation;
 
     if(this->m_idvrMethod == s_MIMP && this->m_idvrCSG)
     {
@@ -495,9 +496,9 @@ void ImportanceDrivenVolumeRenderer::toggleIDVRCSGModulation(bool modulation)
 
 //-----------------------------------------------------------------------------
 
-void ImportanceDrivenVolumeRenderer::setIDVRCSGModulationMethod(IDVRCSGModulationMethod method)
+void ImportanceDrivenVolumeRenderer::setIDVRCSGModulationMethod(IDVRCSGModulationMethod _method)
 {
-    m_idvrCSGModulationMethod = method;
+    m_idvrCSGModulationMethod = _method;
 
     if(this->m_idvrMethod == s_MIMP && this->m_idvrCSG && this->m_idvrCSGModulation)
     {
@@ -507,9 +508,9 @@ void ImportanceDrivenVolumeRenderer::setIDVRCSGModulationMethod(IDVRCSGModulatio
 
 //-----------------------------------------------------------------------------
 
-void ImportanceDrivenVolumeRenderer::setIDVRCSGModulationFactor(double modulationFactor)
+void ImportanceDrivenVolumeRenderer::setIDVRCSGModulationFactor(double _modulationFactor)
 {
-    m_idvrCSGModulationFactor = static_cast<float>(modulationFactor);
+    m_idvrCSGModulationFactor = static_cast<float>(_modulationFactor);
 
     if(m_idvrMethod == s_MIMP && this->m_idvrCSG)
     {
@@ -545,9 +546,9 @@ void ImportanceDrivenVolumeRenderer::setIDVRCSGOpacityDecreaseFactor(double _opa
 
 //-----------------------------------------------------------------------------
 
-void ImportanceDrivenVolumeRenderer::toggleIDVRDepthLines(bool depthLines)
+void ImportanceDrivenVolumeRenderer::toggleIDVRDepthLines(bool _depthLines)
 {
-    m_idvrCSGDepthLines = depthLines;
+    m_idvrCSGDepthLines = _depthLines;
 
     if(m_idvrMethod == s_MIMP && this->m_idvrCSG)
     {
@@ -557,9 +558,16 @@ void ImportanceDrivenVolumeRenderer::toggleIDVRDepthLines(bool depthLines)
 
 //-----------------------------------------------------------------------------
 
-void ImportanceDrivenVolumeRenderer::setIDVRAImCAlphaCorrection(double alphaCorrection)
+void ImportanceDrivenVolumeRenderer::setIDVRDepthLinesSpacing(int _spacing)
 {
-    m_idvrAImCAlphaCorrection = static_cast<float>(alphaCorrection);
+    m_RTVSharedParameters->setNamedConstant("u_depthLinesSpacing", _spacing);
+}
+
+//-----------------------------------------------------------------------------
+
+void ImportanceDrivenVolumeRenderer::setIDVRAImCAlphaCorrection(double _alphaCorrection)
+{
+    m_idvrAImCAlphaCorrection = static_cast<float>(_alphaCorrection);
 
     if(m_idvrMethod == s_AIMC)
     {
@@ -570,9 +578,9 @@ void ImportanceDrivenVolumeRenderer::setIDVRAImCAlphaCorrection(double alphaCorr
 
 //-----------------------------------------------------------------------------
 
-void ImportanceDrivenVolumeRenderer::setIDVRVPImCAlphaCorrection(double alphaCorrection)
+void ImportanceDrivenVolumeRenderer::setIDVRVPImCAlphaCorrection(double _alphaCorrection)
 {
-    m_idvrVPImCAlphaCorrection = static_cast<float>(alphaCorrection);
+    m_idvrVPImCAlphaCorrection = static_cast<float>(_alphaCorrection);
 
     if(m_idvrMethod == s_VPIMC)
     {
@@ -595,9 +603,9 @@ void ImportanceDrivenVolumeRenderer::setImageSpacing(const ::Ogre::Vector3& _spa
 
 //-----------------------------------------------------------------------------
 
-void ImportanceDrivenVolumeRenderer::resizeViewport(int w, int h)
+void ImportanceDrivenVolumeRenderer::resizeViewport(int _w, int _h)
 {
-    this->RayTracingVolumeRenderer::resizeViewport(w, h);
+    this->RayTracingVolumeRenderer::resizeViewport(_w, _h);
 
     auto layer    = this->getLayer();
     auto viewport = layer->getViewport();
