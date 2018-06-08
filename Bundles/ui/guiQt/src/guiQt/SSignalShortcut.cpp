@@ -10,12 +10,19 @@
 
 #include <fwCore/base.hpp>
 
+#include <fwGui/container/fwContainer.hpp>
+#include <fwGui/GuiRegistry.hpp>
+
+#include <fwGuiQt/container/QtContainer.hpp>
+
 #include <fwServices/macros.hpp>
 
 #include <QEvent>
 #include <QKeyEvent>
 #include <QKeySequence>
 #include <QWidget>
+
+#include <memory>
 
 namespace guiQt
 {
@@ -26,10 +33,11 @@ fwServicesRegisterMacro( ::fwServices::IService, ::guiQt::SSignalShortcut );
 
 //-----------------------------------------------------------------------------
 
-SSignalShortcut::SSignalShortcut() noexcept
+SSignalShortcut::SSignalShortcut() noexcept :
+    m_shortcut(""),
+    m_wid("")
 {
     newSignal< TriggeredShortcutSignalType >(s_TRIGGERED_SIG);
-
 }
 
 //-----------------------------------------------------------------------------
@@ -40,27 +48,61 @@ SSignalShortcut::~SSignalShortcut() noexcept
 
 //-----------------------------------------------------------------------------
 
+void SSignalShortcut::configuring()
+{
+    const auto configTree     = this->getConfigTree();
+    const auto configShortcut = configTree.get_child("config.<xmlattr>");
+    m_shortcut = configShortcut.get<std::string>("shortcut", m_shortcut);
+    SLM_ASSERT("Shortcut must not be empty", shortcut != "");
+
+    m_wid = configShortcut.get<std::string>("wid", m_wid);
+    SLM_ASSERT("The wid attribute must be specified for SSignalShortcut", m_wid != "");
+}
+
+//-----------------------------------------------------------------------------
+
 void SSignalShortcut::starting()
 {
-    qApp->activeWindow()->installEventFilter(this);
-
+    // Attempt to setup the event filter on the registered window
+    ::fwGui::container::fwContainer::sptr fwc = ::fwGui::GuiRegistry::getWIDContainer(m_wid);
+    if(fwc != nullptr)
+    {
+        ::fwGuiQt::container::QtContainer::sptr qtc =
+            std::dynamic_pointer_cast< ::fwGuiQt::container::QtContainer >(fwc);
+        if(qtc != nullptr)
+        {
+            QWidget* widget = qtc->getQtContainer();
+            if(widget != nullptr)
+            {
+                widget->installEventFilter(this);
+            }
+        }
+    }
+    else
+    {
+        SLM_WARN("Cannot setup shortcut " << m_shortcut << " on invalid wid " << m_wid);
+    }
 }
 
 //-----------------------------------------------------------------------------
 
 void SSignalShortcut::stopping()
 {
-    // delete event filter
-    this->removeEventFilter( qApp->activeWindow());
-}
-
-//-----------------------------------------------------------------------------
-
-void SSignalShortcut::configuring()
-{
-    const auto configTree     = this->getConfigTree();
-    const auto configShortcut = configTree.get_child("config.<xmlattr>");
-    m_shortcut = configShortcut.get<std::string>("shortcut", "");
+    // Delete event filter
+    ::fwGui::container::fwContainer::sptr fwc = ::fwGui::GuiRegistry::getWIDContainer(m_wid);
+    if(fwc != nullptr)
+    {
+        ::fwGuiQt::container::QtContainer::sptr qtc =
+            std::dynamic_pointer_cast< ::fwGuiQt::container::QtContainer >(fwc);
+        if(qtc != nullptr)
+        {
+            QWidget* widget = qtc->getQtContainer();
+            if(widget != nullptr)
+            {
+                this->removeEventFilter( qApp->activeWindow());
+            }
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
