@@ -85,7 +85,7 @@ void SFrameMatrixSynchronizer::configuring()
 {
     const auto cfg = this->getConfigTree();
 
-    auto framerate = cfg.get<unsigned int>("framerate", 30);
+    const auto framerate = cfg.get<unsigned int>("framerate", 30);
     m_timeStep  = framerate != 0 ? 1000 / cfg.get<unsigned int>("framerate", 30) : 0;
     m_tolerance = cfg.get<unsigned int>("tolerance", 500);
 
