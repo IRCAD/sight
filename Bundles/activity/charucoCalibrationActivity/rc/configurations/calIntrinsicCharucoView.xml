@@ -1,0 +1,193 @@
+<extension implements="::fwServices::registry::AppConfig">
+    <id>calIntrinsicCharucoView</id>
+    <parameters>
+        <param name="WID_PARENT" />
+        <param name="camera" />
+        <param name="calibrationInfo" />
+        <param name="preferencesModifiedProxy" />
+    </parameters>
+    <config>
+        <!-- ******************************* Objects declaration ****************************** -->
+        <object uid="${calibrationInfo}" type="::arData::CalibrationInfo" src="ref" />
+        <object uid="${camera}" type="::arData::Camera" src="ref" />
+        <object uid="FrameTL" type="::arData::FrameTL" />
+        <!-- ******************************* UI declaration *********************************** -->
+        <service uid="intrinsicCameraView" type="::gui::view::SDefaultView">
+            <gui>
+                <layout type="::fwGui::CardinalLayoutManager">
+                    <view align="center" />
+                    <view align="bottom" caption="Calibration" />
+                    <view align="bottom" caption="Information" />
+                </layout>
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <view wid="cameraView" />
+                <view sid="CalibrationInfoView" start="yes" />
+                <view sid="cameraInfo" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="CalibrationInfoView" type="::gui::view::SDefaultView">
+            <gui>
+                <layout type="::fwGui::CardinalLayoutManager">
+                    <view align="center" />
+                </layout>
+                <toolBar align="left">
+                    <toolBitmapSize height="24" width="24" />
+                </toolBar>
+            </gui>
+            <registry>
+                <toolBar sid="intrinsicCamera" start="yes" />
+                <view sid="CalibrationInfoEditor" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="intrinsicCamera" type="::gui::aspect::SDefaultToolBar">
+            <gui>
+                <layout>
+                    <editor/>
+                    <menuItem name="Add" icon="media-0.1/icons/Import.svg" />
+                    <menuItem name="Remove" icon="arMedia-0.1/icons/remove.svg" />
+                    <menuItem name="Reset" icon="arMedia-0.1/icons/reset.svg" />
+                    <menuItem name="Calibrate with openCV" icon="arMedia-0.1/icons/CheckButton.svg" />
+                    <menuItem name="Draw" icon="media-0.1/icons/Preview.svg" />
+                    <menuItem name="Edit" icon="arMedia-0.1/icons/configuration.svg" />
+                </layout>
+            </gui>
+            <registry>
+                <editor sid="Status" start="yes" />
+                <menuItem sid="ActionAdd" start="yes" />
+                <menuItem sid="ActionRemove" start="yes" />
+                <menuItem sid="ActionReset" start="yes" />
+                <menuItem sid="ActionGoOpenCV" start="yes" />
+                <menuItem sid="ActionDisplayImage" start="yes" />
+                <menuItem sid="ActionEdition" start="yes" />
+            </registry>
+        </service>
+
+        <!-- ******************************* Actions ****************************************** -->
+        <service uid="ActionAdd" type="::gui::action::SSlotCaller">
+            <slots>
+                <slot>CharucoBoardDetector/detectPoints</slot>
+            </slots>
+        </service>
+
+        <service uid="ActionReset" type="::gui::action::SSlotCaller">
+            <slots>
+                <slot>CalibrationInfoEditor/reset</slot>
+            </slots>
+        </service>
+
+        <service uid="ActionRemove" type="::gui::action::SSlotCaller">
+            <slots>
+                <slot>CalibrationInfoEditor/remove</slot>
+            </slots>
+        </service>
+
+        <service uid="ActionEdition" type="::gui::action::SSlotCaller">
+            <slots>
+                <slot>intrinsicEdition/update</slot>
+            </slots>
+        </service>
+
+        <service uid="ActionGoOpenCV" type="::gui::action::SSlotCaller">
+            <slots>
+                <slot>OpenCVIntrinsicCal/update</slot>
+                <slot>Status/changeToOrange</slot>
+            </slots>
+        </service>
+
+        <service uid="ActionDisplayImage" type="::gui::action::SSlotCaller">
+            <slots>
+                <slot>CalibrationInfoEditor/getSelection</slot>
+            </slots>
+        </service>
+
+        <!-- ******************************* Services ***************************************** -->
+        <service uid="cameraLauncher" type="::fwServices::SConfigController">
+            <appConfig id="calCameraCharucoView" />
+            <inout key="camera" uid="${camera}" />
+            <inout key="timeLine" uid="FrameTL" />
+            <parameter replace="WID_PARENT" uid="cameraView" />
+        </service>
+
+        <service uid="Status" type="::uiTools::editor::SStatus">
+            <green>Point are visible</green>
+            <orange>Calibration in progress</orange>
+            <red>Points are NOT visible</red>
+        </service>
+
+        <service uid="CharucoBoardDetector" type="::videoCharucoCalibration::SCharucoBoardDetector" worker="intr_chess_checker">
+            <in group="timeline">
+                <key uid="FrameTL" />
+            </in>
+            <inout group="calInfo">
+                <key uid="${calibrationInfo}" />
+            </inout>
+            <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" squareSize="CHESSBOARD_SQUARE_SIZE" markerSize="CHESSBOARD_MARKER_SIZE"/>
+        </service>
+
+        <service uid="DisplayCalibrationInfo" type="::uiCalibration::SDisplayCalibrationInfo">
+            <in key="calInfo1" uid="${calibrationInfo}" />
+        </service>
+
+        <service uid="CalibrationInfoEditor" type="::uiCalibration::SCalibrationInfoEditor" autoConnect="yes">
+            <inout key="calInfo1" uid="${calibrationInfo}" />
+        </service>
+
+        <service uid="OpenCVIntrinsicCal" type="::videoCharucoCalibration::SOpenCVIntrinsic" worker="intr_chess_checker">
+            <in key="calibrationInfo" uid="${calibrationInfo}" />
+            <inout key="camera" uid="${camera}" />
+            <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" squareSize="CHESSBOARD_SQUARE_SIZE" markerSize="CHESSBOARD_MARKER_SIZE"/>
+        </service>
+
+        <service uid="cameraInfo" type="::uiCalibration::SCameraInformationEditor" autoConnect="yes">
+            <in key="camera" uid="${camera}" />
+        </service>
+
+        <service uid="intrinsicEdition" type="::uiCalibration::SIntrinsicEdition">
+            <in key="camera" uid="${camera}" />
+        </service>
+
+        <!-- ******************************* Connections ************************************** -->
+        <connect>
+            <signal>FrameTL/objectPushed</signal>
+            <slot>CharucoBoardDetector/checkPoints</slot>
+        </connect>
+
+        <connect>
+            <signal>CharucoBoardDetector/charucoBoardDetected</signal>
+            <slot>Status/changeToGreen</slot>
+        </connect>
+
+        <connect>
+            <signal>CharucoBoardDetector/charucoBoardNotDetected</signal>
+            <slot>Status/changeToRed</slot>
+        </connect>
+
+        <connect>
+            <signal>${calibrationInfo}/getRecord</signal>
+            <slot>DisplayCalibrationInfo/displayImage</slot>
+        </connect>
+
+        <connect>
+            <signal>${calibrationInfo}/addedRecord</signal>
+            <signal>${calibrationInfo}/removedRecord</signal>
+            <signal>${calibrationInfo}/resetRecord</signal>
+            <slot>CalibrationInfoEditor/update</slot>
+        </connect>
+
+        <connect channel="${preferencesModifiedProxy}">
+            <slot>OpenCVIntrinsicCal/updateCharucoBoardSize</slot>
+            <slot>CharucoBoardDetector/updateCharucoBoardSize</slot>
+        </connect>
+
+        <start uid="intrinsicCameraView" />
+        <start uid="OpenCVIntrinsicCal" />
+        <start uid="CharucoBoardDetector" />
+        <start uid="DisplayCalibrationInfo" />
+        <start uid="cameraLauncher" />
+        <start uid="intrinsicEdition" />
+    </config>
+</extension>
