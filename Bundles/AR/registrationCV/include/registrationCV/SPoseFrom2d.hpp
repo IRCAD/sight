@@ -66,13 +66,13 @@ namespace registrationCV
    @endcode
  * @subsection Input Input
  * - \b markerTL [::arData::MarkerTL]: timeline for markers.
- * - \b markerMap [::arData::MarkerMap]: list of markers maps where the tags.
+ * - \b markerMap [::arData::MarkerMap]: markers map list.
  * - \b camera [::arData::Camera]: calibrated cameras.
  * - \b extrinsic [::fwData::TransformationMatrix3D]: extrinsic matrix, only used if you have two cameras configured.
  * @subsection In-Out In-Out
  * - \b matrixTL [::arData::MatrixTL]: timeline of 3D transformation matrices.
- * - \b matrix [::fwData::TransformationMatrix3D]: list of matrices, one for each marker. You must also specify what is
- * the tag \b id in the markerMap you want to be associated with each matrix.
+ * - \b matrix [::fwData::TransformationMatrix3D]: list of matrices related to the markers. The marker's id must be
+ * specified using the \b id tag to be found in the marker map.
  * @subsection Configuration Configuration
  * - \b patternWidth : width of the tag.
  */
