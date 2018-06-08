@@ -86,13 +86,10 @@ MarkerMap::MarkerType* MarkerMap::getMarker(const KeyType& _id)
 const MarkerMap::MarkerType& MarkerMap::getMarker(size_t index) const
 {
     SLM_ASSERT("Marker map is empty", !m_markers.empty());
+    SLM_ASSERT("Index is bigger than map's size", index < m_markers.size() );
 
     auto it = m_markers.begin();
-    while(index--)
-    {
-        ++it;
-        SLM_ASSERT("Marker not found", it != m_markers.end());
-    }
+    std::advance(it, index);
     return it->second;
 }
 
@@ -101,13 +98,10 @@ const MarkerMap::MarkerType& MarkerMap::getMarker(size_t index) const
 MarkerMap::MarkerType& MarkerMap::getMarker(size_t index)
 {
     SLM_ASSERT("Marker map is empty", !m_markers.empty());
+    SLM_ASSERT("Index is bigger than map's size", index < m_markers.size() );
 
     auto it = m_markers.begin();
-    while(index--)
-    {
-        ++it;
-        SLM_ASSERT("Marker not found", it != m_markers.end());
-    }
+    std::advance(it, index);
     return it->second;
 }
 
@@ -122,15 +116,7 @@ size_t MarkerMap::count() const
 
 void MarkerMap::setMarker(const KeyType& _id, const MarkerMap::MarkerType& _marker )
 {
-    auto it = m_markers.find(_id);
-    if(it != m_markers.end())
-    {
-        it->second = _marker;
-    }
-    else
-    {
-        m_markers[_id] = _marker;
-    }
+    m_markers[_id] = _marker;
 }
 
 //------------------------------------------------------------------------------
