@@ -15,7 +15,17 @@
 
 #include <fwServices/IController.hpp>
 
-#include <opencv2/aruco/dictionary.hpp>
+#include <opencv2/core.hpp>
+
+namespace cv
+{
+namespace aruco
+{
+class Dictionary;
+class CharucoBoard;
+
+} //namespace cv
+} //namespace aruco
 
 namespace videoCharucoCalibration
 {
@@ -143,11 +153,6 @@ private:
     VIDEOCHARUCOCALIBRATION_API void updateCharucoBoardSize();
 
     /**
-     * @brief generateCharucoDictionnary
-     */
-    void generateCharucoDictionary();
-
-    /**
      * @brief Creates an image from frame timeline
      */
     ::fwData::Image::sptr createImage(arData::FrameTL::csptr tl, ::fwCore::HiResClock::HiResClockType timestamp);
@@ -199,6 +204,9 @@ private:
 
     /// Charuco dictionary
     cv::Ptr< ::cv::aruco::Dictionary > m_dictionary;
+
+    /// Chessboard-aruco board
+    ::cv::Ptr< ::cv::aruco::CharucoBoard > m_board;
 
 };
 

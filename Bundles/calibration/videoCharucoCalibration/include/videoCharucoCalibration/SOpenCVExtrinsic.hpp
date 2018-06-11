@@ -10,6 +10,18 @@
 
 #include <arServices/ICalibration.hpp>
 
+#include <opencv2/core.hpp>
+
+namespace cv
+{
+namespace aruco
+{
+class Dictionary;
+class CharucoBoard;
+
+} //namespace cv
+} //namespace aruco
+
 namespace videoCharucoCalibration
 {
 /**
@@ -43,6 +55,9 @@ class VIDEOCHARUCOCALIBRATION_CLASS_API SOpenCVExtrinsic : public ::arServices::
 {
 public:
     fwCoreServiceClassDefinitionsMacro((SOpenCVExtrinsic)(::arServices::ICalibration));
+
+    /// Double changed signal type
+    typedef ::fwCom::Signal< void (double) > ErrorComputedSignalType;
 
     /// Constructor.
     VIDEOCHARUCOCALIBRATION_API SOpenCVExtrinsic() noexcept;
@@ -89,14 +104,14 @@ private:
     /// Preference key to retrieve size of the chessboard'square used for calibration
     std::string m_squareSizeKey;
 
-    /// Preference key to retrieve height of the chessboard used for calibration
+    /// Preference key to retrieve marker size in mm.
     std::string m_markerSizeKey;
 
     /// Width of the chessboard used for calibration
-    unsigned int m_width;
+    size_t m_width;
 
     /// Height of the chessboard used for calibration
-    unsigned int m_height;
+    size_t m_height;
 
     /// Size of the chessboard'square used for calibration
     float m_squareSize;

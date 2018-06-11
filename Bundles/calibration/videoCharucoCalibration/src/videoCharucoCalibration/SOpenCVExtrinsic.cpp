@@ -10,6 +10,9 @@
 #include <arData/Camera.hpp>
 #include <arData/CameraSeries.hpp>
 
+#include <calibration3d/helper.hpp>
+
+#include <fwCom/Signal.hxx>
 #include <fwCom/Slot.hxx>
 #include <fwCom/Slots.hxx>
 
@@ -46,6 +49,8 @@ namespace videoCharucoCalibration
 
 static const ::fwCom::Slots::SlotKeyType s_UPDATE_CHARUCOBOARD_SIZE_SLOT = "updateCharucoBoardSize";
 
+static const ::fwCom::Signals::SignalKeyType s_ERROR_COMPUTED_SIG = "errorComputed";
+
 // ----------------------------------------------------------------------------
 
 SOpenCVExtrinsic::SOpenCVExtrinsic() noexcept :
@@ -54,6 +59,7 @@ SOpenCVExtrinsic::SOpenCVExtrinsic() noexcept :
     m_squareSize(20.0),
     m_camIndex(1)
 {
+    newSignal<ErrorComputedSignalType>(s_ERROR_COMPUTED_SIG);
     newSlot(s_UPDATE_CHARUCOBOARD_SIZE_SLOT, &SOpenCVExtrinsic::updateCharucoBoardSize, this);
 }
 
@@ -67,32 +73,17 @@ SOpenCVExtrinsic::~SOpenCVExtrinsic() noexcept
 
 void SOpenCVExtrinsic::configuring()
 {
-    ::fwRuntime::ConfigurationElement::sptr cfgIdx = m_configuration->findConfigurationElement("camIndex");
-    if(cfgIdx)
-    {
-        std::string idxStr = cfgIdx->getValue();
-        SLM_ASSERT("'camIndex' is empty.", !idxStr.empty());
-        m_camIndex = ::boost::lexical_cast<size_t>(idxStr);
-    }
+    const auto configTree = this->getConfigTree();
+    m_camIndex = configTree.get<size_t>("camIndex", m_camIndex);
 
-    ::fwRuntime::ConfigurationElement::sptr cfgBoard = m_configuration->findConfigurationElement("board");
-    SLM_ASSERT("Tag 'board' not found.", cfgBoard);
+    const auto cfgBoard = configTree.get_child("board.<xmlattr>");
 
-    SLM_ASSERT("Attribute 'width' is missing.", cfgBoard->hasAttribute("width"));
-    m_widthKey = cfgBoard->getAttributeValue("width");
-    SLM_ASSERT("Attribute 'width' is empty", !m_widthKey.empty());
+    m_widthKey      = cfgBoard.get<std::string>("width", "CHESSBOARD_WIDTH");
+    m_heightKey     = cfgBoard.get<std::string>("height", "CHESSBOARD_HEIGHT");
+    m_squareSizeKey = cfgBoard.get<std::string>("squareSize", "CHESSBOARD_SQUARE_SIZE");
+    m_markerSizeKey = cfgBoard.get<std::string>("markerSize", "CHESSBOARD_MARKER_SIZE");
 
-    SLM_ASSERT("Attribute 'height' is missing.", cfgBoard->hasAttribute("height"));
-    m_heightKey = cfgBoard->getAttributeValue("height");
-    SLM_ASSERT("Attribute 'height' is empty", !m_heightKey.empty());
-
-    SLM_ASSERT("Attribute 'squareSize' is missing.", cfgBoard->hasAttribute("squareSize"));
-    m_squareSizeKey = cfgBoard->getAttributeValue("squareSize");
-    SLM_ASSERT("Attribute 'squareSize' is empty", !m_squareSizeKey.empty());
-
-    SLM_ASSERT("Attribute 'markerSize' is missing.", cfgBoard->hasAttribute("markerSize"));
-    m_markerSizeKey = cfgBoard->getAttributeValue("markerSize");
-    SLM_ASSERT("Attribute 'markerSize' is empty", !m_markerSizeKey.empty());
+    this->updateCharucoBoardSize();
 }
 
 // ----------------------------------------------------------------------------
@@ -238,24 +229,16 @@ void SOpenCVExtrinsic::updating()
             }
         }
 
-        ::cv::Size boardSize(m_width, m_height);
-        ::cv::Ptr< ::cv::aruco::Dictionary > dictionary =
-            ::cv::aruco::generateCustomDictionary((int) (boardSize.height*boardSize.width)/2.0, 6,
-                                                  ::cv::aruco::Dictionary::get(
-                                                      ::cv::aruco::DICT_6X6_1000));
-
-        ::cv::Ptr< ::cv::aruco::CharucoBoard > board = ::cv::aruco::CharucoBoard::create(boardSize.width,
-                                                                                         boardSize.height, m_squareSize,
-                                                                                         m_markerSize, dictionary);
+        ::cv::Size boardSize(static_cast<int>(m_width), static_cast<int>(m_height));
 
         ::cv::Mat allBoardCoord = ::cv::Mat::ones(3, (boardSize.width-1)*(boardSize.height-1), CV_64F);
         std::vector<int> allIds;
 
         //We create a list of the charuco board's points coordinates
-        for(size_t i = 0; i < (boardSize.width-1)*(boardSize.height-1); i++)
+        for(int i = 0; i < (boardSize.width-1)*(boardSize.height-1); i++)
         {
-            allBoardCoord.at<double>(0, i) = (i%(boardSize.width-1)+1)*m_squareSize;
-            allBoardCoord.at<double>(1, i) = ((int) (i/(boardSize.width-1))+1)*m_squareSize;
+            allBoardCoord.at<double>(0, i) = static_cast< double > ((i%(boardSize.width-1)+1) * m_squareSize );
+            allBoardCoord.at<double>(1, i) = static_cast<double >(((i/(boardSize.width-1))+1) * m_squareSize );
             allIds.push_back(i);
         }
 
@@ -270,8 +253,10 @@ void SOpenCVExtrinsic::updating()
             //Create the list of points present in the image with theire corresponding coordinates in the board
             for(size_t j = 0; j < ids1[i].size(); j++)
             {
-                ::cv::Point2f temp((ids1[i][j]%(boardSize.width-1)+1)*m_squareSize,
-                                   ((int) (ids1[i][j]/(boardSize.width-1))+1)*m_squareSize);
+                const float x = static_cast<float>(ids1[i][j]%(boardSize.width-1)+1) * m_squareSize;
+                const float y = ((ids1[i][j]/(boardSize.width-1))+1 ) * m_squareSize;
+
+                ::cv::Point2f temp(x, y);
                 boardCoords1.push_back(temp);
             }
 
@@ -325,6 +310,8 @@ void SOpenCVExtrinsic::updating()
                                            ::cv::TermCriteria(::cv::TermCriteria::MAX_ITER + ::cv::TermCriteria::EPS,
                                                               100, 1e-5));
 
+        this->signal<ErrorComputedSignalType>(s_ERROR_COMPUTED_SIG)->asyncEmit(err);
+
         ::fwData::TransformationMatrix3D::sptr matrix = ::fwData::TransformationMatrix3D::New();
         for (size_t i = 0; i < 3; ++i)
         {
@@ -357,23 +344,24 @@ void SOpenCVExtrinsic::updateCharucoBoardSize()
     const std::string widthStr = ::fwPreferences::getPreference(m_widthKey);
     if(!widthStr.empty())
     {
-        m_width = std::stoi(widthStr);
+        m_width = std::stoul(widthStr);
     }
     const std::string heightStr = ::fwPreferences::getPreference(m_heightKey);
     if(!heightStr.empty())
     {
-        m_height = std::stoi(heightStr);
+        m_height = std::stoul(heightStr);
     }
     const std::string squareSizeStr = ::fwPreferences::getPreference(m_squareSizeKey);
     if(!squareSizeStr.empty())
     {
-        m_squareSize = std::stod(squareSizeStr);
+        m_squareSize = std::stof(squareSizeStr);
     }
     const std::string markerSizeStr = ::fwPreferences::getPreference(m_markerSizeKey);
     if(!markerSizeStr.empty())
     {
-        m_markerSize = std::stod(markerSizeStr);
+        m_markerSize = std::stof(markerSizeStr);
     }
+
 }
 
 //------------------------------------------------------------------------------

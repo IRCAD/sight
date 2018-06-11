@@ -9,6 +9,8 @@
 #include <arData/CalibrationInfo.hpp>
 #include <arData/Camera.hpp>
 
+#include <calibration3d/helper.hpp>
+
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
 
@@ -34,7 +36,6 @@
 #include <opencv2/aruco/charuco.hpp>
 #include <opencv2/calib3d.hpp>
 #include <opencv2/core.hpp>
-#include <opencv2/highgui/highgui.hpp>
 #include <opencv2/opencv.hpp>
 
 fwServicesRegisterMacro(::arServices::ICalibration, ::videoCharucoCalibration::SOpenCVIntrinsic, ::arData::Camera);
@@ -44,6 +45,8 @@ namespace videoCharucoCalibration
 
 static const ::fwCom::Slots::SlotKeyType s_UPDATE_CHARUCOBOARD_SIZE_SLOT = "updateCharucoBoardSize";
 
+static const ::fwCom::Signals::SignalKeyType s_ERROR_COMPUTED_SIG = "errorComputed";
+
 // ----------------------------------------------------------------------------
 
 SOpenCVIntrinsic::SOpenCVIntrinsic() noexcept :
@@ -51,6 +54,7 @@ SOpenCVIntrinsic::SOpenCVIntrinsic() noexcept :
     m_height(8),
     m_squareSize(20.0)
 {
+    newSignal<ErrorComputedSignalType>(s_ERROR_COMPUTED_SIG);
     newSlot(s_UPDATE_CHARUCOBOARD_SIZE_SLOT, &SOpenCVIntrinsic::updateCharucoBoardSize, this);
 }
 
@@ -64,24 +68,16 @@ SOpenCVIntrinsic::~SOpenCVIntrinsic() noexcept
 
 void SOpenCVIntrinsic::configuring()
 {
-    ::fwRuntime::ConfigurationElement::sptr cfgBoard = m_configuration->findConfigurationElement("board");
-    SLM_ASSERT("Tag 'board' not found.", cfgBoard);
+    const auto configTree = this->getConfigTree();
+    const auto cfgBoard   = configTree.get_child("board.<xmlattr>");
 
-    SLM_ASSERT("Attribute 'width' is missing.", cfgBoard->hasAttribute("width"));
-    m_widthKey = cfgBoard->getAttributeValue("width");
-    SLM_ASSERT("Attribute 'width' is empty", !m_widthKey.empty());
+    m_widthKey            = cfgBoard.get<std::string>("width", "CHESSBOARD_WIDTH");
+    m_heightKey           = cfgBoard.get<std::string>("height", "CHESSBOARD_HEIGHT");
+    m_squareSizeKey       = cfgBoard.get<std::string>("squareSize", "CHESSBOARD_SQUARE_SIZE");
+    m_markerSizeKey       = cfgBoard.get<std::string>("markerSize", "CHESSBOARD_MARKER_SIZE");
+    m_markerSizeInBitsKey = cfgBoard.get<std::string>("markerSizeInBits", "CHESSBOARD_MARKER_SIZE_IN_BITS");
 
-    SLM_ASSERT("Attribute 'height' is missing.", cfgBoard->hasAttribute("height"));
-    m_heightKey = cfgBoard->getAttributeValue("height");
-    SLM_ASSERT("Attribute 'height' is empty", !m_heightKey.empty());
-
-    SLM_ASSERT("Attribute 'squareSize' is missing.", cfgBoard->hasAttribute("squareSize"));
-    m_squareSizeKey = cfgBoard->getAttributeValue("squareSize");
-    SLM_ASSERT("Attribute 'squareSize' is empty", !m_squareSizeKey.empty());
-
-    SLM_ASSERT("Attribute 'markerSize' is missing.", cfgBoard->hasAttribute("markerSize"));
-    m_markerSizeKey = cfgBoard->getAttributeValue("markerSize");
-    SLM_ASSERT("Attribute 'markerSize' is empty", !m_markerSizeKey.empty());
+    this->updateCharucoBoardSize();
 }
 
 // ----------------------------------------------------------------------------
@@ -150,21 +146,11 @@ void SOpenCVIntrinsic::updating()
         ::cv::Size2i imgsize(static_cast<int>(img->getSize()[0]), static_cast<int>(img->getSize()[1]));
 
         ::cv::Size boardSize(m_width, m_height);
-        ::cv::Ptr< ::cv::aruco::Dictionary > dictionary =
-            ::cv::aruco::generateCustomDictionary((int) (boardSize.height*boardSize.width)/2.0, 6,
-                                                  ::cv::aruco::Dictionary::get(
-                                                      ::cv::aruco::DICT_6X6_1000));                                                                     //A
-                                                                                                                                                        // rendre
-                                                                                                                                                        // modulable
 
-        ::cv::Ptr< ::cv::aruco::CharucoBoard > board = ::cv::aruco::CharucoBoard::create(boardSize.width,
-                                                                                         boardSize.height, m_squareSize,
-                                                                                         m_markerSize, dictionary);
-
-        double err = ::cv::aruco::calibrateCameraCharuco(cornersPoints, ids, board, imgsize, cameraMatrix, distCoeffs,
+        double err = ::cv::aruco::calibrateCameraCharuco(cornersPoints, ids, m_board, imgsize, cameraMatrix, distCoeffs,
                                                          rvecs, tvecs);
 
-        std::cout<<"Erreur : "<<err;
+        this->signal<ErrorComputedSignalType>(s_ERROR_COMPUTED_SIG)->asyncEmit(err);
 
         if(poseCamera)
         {
@@ -225,23 +211,35 @@ void SOpenCVIntrinsic::updateCharucoBoardSize()
     const std::string widthStr = ::fwPreferences::getPreference(m_widthKey);
     if(!widthStr.empty())
     {
-        m_width = std::stoi(widthStr);
+        m_width = std::stoul(widthStr);
     }
     const std::string heightStr = ::fwPreferences::getPreference(m_heightKey);
     if(!heightStr.empty())
     {
-        m_height = std::stoi(heightStr);
+        m_height = std::stoul(heightStr);
     }
     const std::string squareSizeStr = ::fwPreferences::getPreference(m_squareSizeKey);
     if(!squareSizeStr.empty())
     {
-        m_squareSize = std::stod(squareSizeStr);
+        m_squareSize = std::stof(squareSizeStr);
     }
     const std::string markerSizeStr = ::fwPreferences::getPreference(m_markerSizeKey);
     if(!markerSizeStr.empty())
     {
-        m_markerSize = std::stod(markerSizeStr);
+        m_markerSize = std::stof(markerSizeStr);
     }
+    const std::string markerSizeInBitsStr = ::fwPreferences::getPreference(m_markerSizeInBitsKey);
+    if(!markerSizeInBitsStr.empty())
+    {
+        m_markerSizeInBits = std::stoi(markerSizeInBitsStr);
+    }
+
+    m_dictionary = ::calibration3d::helper::generateArucoDictionary(m_width, m_height, m_markerSizeInBits);
+
+    ::cv::Size boardSize(static_cast<int>(m_width), static_cast<int>(m_height));
+
+    m_board = ::cv::aruco::CharucoBoard::create(boardSize.width, boardSize.height, m_squareSize,
+                                                m_markerSize, m_dictionary);
 }
 
 //------------------------------------------------------------------------------
