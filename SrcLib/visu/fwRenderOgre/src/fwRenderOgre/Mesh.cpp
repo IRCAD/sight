@@ -285,7 +285,9 @@ void Mesh::updateMesh(const ::fwData::Mesh::sptr& _mesh, bool _pointsOnly)
 
     for(unsigned int i = 0; i < cellsType.size(); ++i)
     {
-        auto cellType = _pointsOnly ? ::fwData::Mesh::POINT : cellsType[static_cast<int>(i)];
+        auto cellType = _pointsOnly ?
+                        ::fwData::Mesh::POINT :
+                        static_cast< ::fwData::Mesh::CellTypesEnum>(cellsType[static_cast<int>(i)]);
         if(cellType == ::fwData::Mesh::POINT)
         {
             numIndices[::fwData::Mesh::POINT] += 1;
