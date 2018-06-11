@@ -145,8 +145,6 @@ void SOpenCVIntrinsic::updating()
         std::vector<cv::Mat> tvecs;
         ::cv::Size2i imgsize(static_cast<int>(img->getSize()[0]), static_cast<int>(img->getSize()[1]));
 
-        ::cv::Size boardSize(m_width, m_height);
-
         double err = ::cv::aruco::calibrateCameraCharuco(cornersPoints, ids, m_board, imgsize, cameraMatrix, distCoeffs,
                                                          rvecs, tvecs);
 

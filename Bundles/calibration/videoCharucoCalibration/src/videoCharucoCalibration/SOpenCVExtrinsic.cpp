@@ -128,11 +128,12 @@ void SOpenCVExtrinsic::updating()
         std::vector<std::vector< ::cv::Point3f > > objectPoints;
 
         std::vector< ::cv::Point3f > points;
-        for (unsigned int y = 0; y < m_height - 1; ++y)
+        for (size_t y = 0; y < m_height - 1; ++y)
         {
-            for (unsigned int x = 0; x < m_width - 1; ++x)
+            for (size_t x = 0; x < m_width - 1; ++x)
             {
-                points.push_back(::cv::Point3f(float(y*m_squareSize), float(x*m_squareSize), 0));
+                points.push_back(::cv::Point3f(static_cast<float>(y)*m_squareSize, static_cast<float>(x)*m_squareSize,
+                                               0));
             }
         }
 
@@ -237,8 +238,10 @@ void SOpenCVExtrinsic::updating()
         //We create a list of the charuco board's points coordinates
         for(int i = 0; i < (boardSize.width-1)*(boardSize.height-1); i++)
         {
-            allBoardCoord.at<double>(0, i) = static_cast< double > ((i%(boardSize.width-1)+1) * m_squareSize );
-            allBoardCoord.at<double>(1, i) = static_cast<double >(((i/(boardSize.width-1))+1) * m_squareSize );
+            allBoardCoord.at<double>(0, i) =
+                static_cast< double > (static_cast< float >(i%(boardSize.width-1)+1) * m_squareSize );
+            allBoardCoord.at<double>(1, i) =
+                static_cast< double > (static_cast< float >(i/(boardSize.width-1)+1) * m_squareSize );
             allIds.push_back(i);
         }
 
@@ -254,7 +257,7 @@ void SOpenCVExtrinsic::updating()
             for(size_t j = 0; j < ids1[i].size(); j++)
             {
                 const float x = static_cast<float>(ids1[i][j]%(boardSize.width-1)+1) * m_squareSize;
-                const float y = ((ids1[i][j]/(boardSize.width-1))+1 ) * m_squareSize;
+                const float y = static_cast<float>((ids1[i][j]/(boardSize.width-1))+1 ) * m_squareSize;
 
                 ::cv::Point2f temp(x, y);
                 boardCoords1.push_back(temp);
@@ -268,10 +271,10 @@ void SOpenCVExtrinsic::updating()
             ::cv::Mat allBoardCoord1 = H1*allBoardCoord;
 
             //Homogenize the new coordinates
-            for(size_t j = 0; j < (boardSize.width-1)*(boardSize.height-1); j++)
+            for(int j = 0; j < (boardSize.width-1)*(boardSize.height-1); j++)
             {
-                ::cv::Point2f temp(allBoardCoord1.at<double>(0, j)/allBoardCoord1.at<double>(2, j),
-                                   allBoardCoord1.at<double>(1, j)/allBoardCoord1.at<double>(2, j));
+                ::cv::Point2f temp(static_cast<float>(allBoardCoord1.at<double>(0, j)/allBoardCoord1.at<double>(2, j)),
+                                   static_cast<float>(allBoardCoord1.at<double>(1, j)/allBoardCoord1.at<double>(2, j)));
                 tempBoardCoords1.push_back(temp);
 
             }
@@ -283,17 +286,17 @@ void SOpenCVExtrinsic::updating()
             std::vector< ::cv::Point2f > imagePointsUndistored2;
             for(size_t j = 0; j < ids2[i].size(); j++)
             {
-                ::cv::Point2f temp((ids2[i][j]%(boardSize.width-1)+1)*m_squareSize,
-                                   (int) ((ids2[i][j]/(boardSize.width-1))+1)*m_squareSize);
+                ::cv::Point2f temp(static_cast<float>(ids2[i][j]%(boardSize.width-1)+1)*m_squareSize,
+                                   static_cast<float>((ids2[i][j]/(boardSize.width-1))+1)*m_squareSize);
                 boardCoords2.push_back(temp);
             }
             ::cv::Mat H2             = ::cv::findHomography(boardCoords2, imagePoints2[i]);
             ::cv::Mat allBoardCoord2 = H2*allBoardCoord;
             ::cv::undistortPoints(imagePoints2[i], imagePointsUndistored2, cameraMatrix2, distortionCoefficients2);
-            for(size_t j = 0; j < (boardSize.width-1)*(boardSize.height-1); j++)
+            for(int j = 0; j < (boardSize.width-1)*(boardSize.height-1); j++)
             {
-                ::cv::Point2f temp(allBoardCoord2.at<double>(0, j)/allBoardCoord2.at<double>(2, j),
-                                   allBoardCoord2.at<double>(1, j)/allBoardCoord2.at<double>(2, j));
+                ::cv::Point2f temp(static_cast<float>(allBoardCoord2.at<double>(0, j)/allBoardCoord2.at<double>(2, j)),
+                                   static_cast<float>(allBoardCoord2.at<double>(1, j)/allBoardCoord2.at<double>(2, j)));
                 tempBoardCoords2.push_back(temp);
             }
             allPoints2.push_back(tempBoardCoords2);
