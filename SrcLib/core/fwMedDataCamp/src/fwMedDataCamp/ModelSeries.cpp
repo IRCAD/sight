@@ -4,6 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "fwMedDataCamp/ModelSeries.hpp"
+
 #include <fwCamp/UserObject.hpp>
 
 #include <fwData/Reconstruction.hpp>
