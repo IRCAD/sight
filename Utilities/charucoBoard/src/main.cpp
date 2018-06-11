@@ -4,6 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <calibration3d/helper.hpp>
+
 #include <boost/program_options.hpp>
 
 #include <opencv2/aruco.hpp>
@@ -18,8 +20,9 @@ namespace po = boost::program_options;
 
 int main(int argc, char** argv)
 {
-    int squareX, squareY, markerBits;
-    size_t pX, pY;
+    size_t squareX, squareY;
+    int markerBits;
+    int pX, pY;
     float squareLength, markerLength;
     ::cv::Size outSize;
     std::string file;
@@ -28,12 +31,12 @@ int main(int argc, char** argv)
         po::options_description options("charucoBoard Usage");
         options.add_options()
             ("help,h", "produce help message")
-            ("squareX,x", po::value<int>(&squareX)->required()->default_value(7),
+            ("squareX,x", po::value<size_t>(&squareX)->required()->default_value(7),
             "set the number of square on the board's width")
-            ("squareY,y", po::value<int>(&squareY)->required()->default_value(5),
+            ("squareY,y", po::value<size_t>(&squareY)->required()->default_value(5),
             "set the number of square on the board's height")
-            ("pixelX,w", po::value<size_t>(&pX)->required()->default_value(1920), "set image witdh (in pixel)")
-            ("pixelY,e", po::value<size_t>(&pY)->required()->default_value(1080), "set image height (in pixel)")
+            ("pixelX,w", po::value<int>(&pX)->required()->default_value(1920), "set image witdh (in pixel)")
+            ("pixelY,e", po::value<int>(&pY)->required()->default_value(1080), "set image height (in pixel)")
             ("squareLength,s", po::value<float>(&squareLength)->required()->default_value(10),
             "set the chessboard square side length")
             ("markerLength,m", po::value<float>(&markerLength)->required()->default_value(8),
@@ -63,100 +66,12 @@ int main(int argc, char** argv)
 
         ::cv::Mat boardImg;
 
-        const int nbMarkers = ( squareX * squareY ) / 2;
+        ::cv::Ptr< ::cv::aruco::Dictionary > dictionary =
+            ::calibration3d::helper::generateArucoDictionary(squareX, squareY, markerBits);
 
-        //Determine which dictionary to use
-        ::cv::aruco::PREDEFINED_DICTIONARY_NAME dictionaryName;
-        if(markerBits == 4)
-        {
-            if(nbMarkers <= 50)
-            {
-                dictionaryName = ::cv::aruco::DICT_4X4_50;
-            }
-            else if(nbMarkers <= 100)
-            {
-                dictionaryName = ::cv::aruco::DICT_4X4_100;
-            }
-            else if(nbMarkers <= 250)
-            {
-                dictionaryName = ::cv::aruco::DICT_4X4_250;
-            }
-            else
-            {
-                dictionaryName = ::cv::aruco::DICT_4X4_1000;
-            }
-        }
-        else if(markerBits == 5)
-        {
-            if(nbMarkers <= 50)
-            {
-                dictionaryName = ::cv::aruco::DICT_5X5_50;
-            }
-            else if(nbMarkers <= 100)
-            {
-                dictionaryName = ::cv::aruco::DICT_5X5_100;
-            }
-            else if(nbMarkers <= 250)
-            {
-                dictionaryName = ::cv::aruco::DICT_5X5_250;
-            }
-            else
-            {
-                dictionaryName = ::cv::aruco::DICT_5X5_1000;
-            }
-        }
-        else if(markerBits == 6)
-        {
-            if(nbMarkers <= 50)
-            {
-                dictionaryName = ::cv::aruco::DICT_6X6_50;
-            }
-            else if(nbMarkers <= 100)
-            {
-                dictionaryName = ::cv::aruco::DICT_6X6_100;
-            }
-            else if(nbMarkers <= 250)
-            {
-                dictionaryName = ::cv::aruco::DICT_6X6_250;
-            }
-            else
-            {
-                dictionaryName = ::cv::aruco::DICT_6X6_1000;
-            }
-        }
-        else if(markerBits == 7)
-        {
-            if(nbMarkers <= 50)
-            {
-                dictionaryName = ::cv::aruco::DICT_7X7_50;
-            }
-            else if(nbMarkers <= 100)
-            {
-                dictionaryName = ::cv::aruco::DICT_7X7_100;
-            }
-            else if(nbMarkers <= 250)
-            {
-                dictionaryName = ::cv::aruco::DICT_7X7_250;
-            }
-            else
-            {
-                dictionaryName = ::cv::aruco::DICT_7X7_1000;
-            }
-        }
-        else
-        {
-            std::cerr<<"Cannot generate dictionary with marker size of :"<<markerBits<<std::endl;
-            return EXIT_FAILURE;
-        }
-
-        std::cout<<"Generating board with dictionary of type: "<<dictionaryName<<std::endl;
-
-        ::cv::Ptr< ::cv::aruco::Dictionary > dictionary = ::cv::aruco::generateCustomDictionary(nbMarkers, markerBits,
-                                                                                                ::cv::aruco::getPredefinedDictionary(
-                                                                                                    dictionaryName));
-
-        cv::Ptr< ::cv::aruco::CharucoBoard > board = ::cv::aruco::CharucoBoard::create(squareX, squareY, squareLength,
-                                                                                       markerLength, dictionary);
+        cv::Ptr< ::cv::aruco::CharucoBoard > board =
+            ::cv::aruco::CharucoBoard::create(static_cast<int>(squareX), static_cast<int>(squareY),
+                                              squareLength, markerLength, dictionary);
 
         board->draw(outSize, boardImg);
 
