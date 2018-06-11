@@ -260,6 +260,10 @@ void SRender::configuring()
     {
         m_renderMode = RenderMode::TIMER;
     }
+    else if (renderMode == "sync")
+    {
+        m_renderMode = RenderMode::SYNC;
+    }
     else if (renderMode == "none")
     {
         m_renderMode = RenderMode::NONE;
@@ -428,7 +432,6 @@ bool SRender::isShownOnScreen()
     {
         return true;
     }
-    return false;
 }
 
 //-----------------------------------------------------------------------------
@@ -438,7 +441,15 @@ void SRender::requestRender()
     if ( this->isShownOnScreen() && !this->getPendingRenderRequest())
     {
         this->setPendingRenderRequest(true);
-        this->slot(SRender::s_RENDER_SLOT)->asyncRun();
+        if(m_renderMode == RenderMode::SYNC)
+        {
+            OSLM_DEBUG("sync SRender: " << this->getID());
+            this->slot(SRender::s_RENDER_SLOT)->run();
+        }
+        else
+        {
+            this->slot(SRender::s_RENDER_SLOT)->asyncRun();
+        }
     }
 }
 

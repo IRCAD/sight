@@ -642,8 +642,12 @@ IService::SharedFutureType IService::updateSlot()
 
 IService::SharedFutureType IService::internalUpdate(bool _async)
 {
-    OSLM_ASSERT("INVOKING update WHILE STOPPED ("<<m_globalState<<") on service '" << this->getID() <<
-                "' of type '" << this->getClassname() << "'", m_globalState == STARTED );
+    if(m_globalState != STARTED)
+    {
+        OSLM_WARN("INVOKING update WHILE STOPPED ("<<m_globalState<<") on service '" << this->getID() <<
+                  "' of type '" << this->getClassname() << "': update is discarded." );
+        return SharedFutureType();
+    }
     OSLM_ASSERT("INVOKING update WHILE NOT IDLE ("<<m_updatingState<<") on service '" << this->getID() <<
                 "' of type '" << this->getClassname() << "'", m_updatingState == NOTUPDATING );
 

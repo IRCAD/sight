@@ -56,7 +56,7 @@ class IVtkRenderWindowInteractorManager;
  *
  * @code{.xml}
     <service uid="generiSceneUID" impl="::fwRenderVTK::SRender" type="::fwRender::IRender">
-        <scene renderMode="auto|timer|none" width="1920" height="1080">
+        <scene renderMode="auto|sync|timer|none" width="1920" height="1080">
             <renderer id="background" layer="0" background="0.0" />
             <vtkObject id="transform" class="vtkTransform" />
             <picker id="negatodefault" vtkclass="fwVtkCellPicker" tolerance="0.002"/>
@@ -75,8 +75,10 @@ class IVtkRenderWindowInteractorManager;
  * @subsection Configuration Configuration
  * - \b renderMode (optional, "auto" by default): this attribute is forwarded to all adaptors. For each adaptor,
  *   if renderMode="auto",  the scene is automatically rendered after doStart, doUpdate, doSwap, doStop
- *   and m_vtkPipelineModified=true. If renderMode="timer" the scene is rendered at N frame per seconds (N is
- *   defined by fps tag). If renderMode="none" you should call 'render' slot to call reder the scene.
+ *   and m_vtkPipelineModified=true. If renderMode="sync" the adaptors do not trigger the rendering; instead the SRender
+ *   is responsible of triggering the rendering when its slot "requestRender" is called. If renderMode="timer" the scene
+ *   is rendered at N frames per second (N is defined by fps tag). If renderMode="none" you should call 'render' slot
+ *   to render the scene.
  * - \b width (optional, "1280" by default): width for off screen render
  * - \b height (optional, "720" by default): height for off screen render
  * - \b renderer
@@ -142,7 +144,8 @@ public:
     {
         NONE,
         AUTO,
-        TIMER
+        TIMER,
+        SYNC
     };
 
     /// Gets the render mode
