@@ -59,6 +59,7 @@ const SReader::FileExtension2NameType SReader::s_EXTENSIONS
 //-----------------------------------------------------------------------------
 
 SReader::SReader() :
+    m_outputMode(false),
     m_uuidPolicy("Change"),
     m_useAtomsPatcher(false),
     m_context("Undefined"),
@@ -83,6 +84,10 @@ void SReader::starting()
 
 void SReader::stopping()
 {
+    if (m_outputMode)
+    {
+        this->setOutput(::fwIO::s_DATA_KEY, nullptr);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -166,8 +171,6 @@ void SReader::configuring()
                "', available policies : 'Strict','Change' or 'Reuse'.",
                "Strict" == m_uuidPolicy || "Change" == m_uuidPolicy || "Reuse" == m_uuidPolicy );
 
-    SLM_ASSERT("'Reuse' policy is not yet available", "Reuse" != m_uuidPolicy);
-
     const auto patcherCfg = config.get_child_optional("patcher");
 
     if (patcherCfg)
@@ -177,6 +180,14 @@ void SReader::configuring()
                                                  ::fwMDSemanticPatch::PatchLoader::getCurrentVersion());
         m_useAtomsPatcher = true;
     }
+
+    const std::string output = config.get<std::string>("out.<xmlattr>.key", "");
+    if (output == ::fwIO::s_DATA_KEY )
+    {
+        m_outputMode = true;
+    }
+
+    SLM_ASSERT("'Reuse' policy is only available when data is set as 'out'", m_outputMode || "Reuse" != m_uuidPolicy);
 }
 
 //-----------------------------------------------------------------------------
@@ -186,7 +197,7 @@ void SReader::updating()
     if(this->hasLocationDefined())
     {
         ::fwData::Object::sptr data = this->getInOut< ::fwData::Object >(::fwIO::s_DATA_KEY);
-        if (!data)
+        if (!m_outputMode && !data)
         {
             FW_DEPRECATED_MSG("The object to read is not set correctly, you must set '" + ::fwIO::s_DATA_KEY
                               + "' as <inout>.");
@@ -340,24 +351,33 @@ void SReader::updating()
 
             FW_RAISE_IF( "Unable to load '" << filePath << "' : invalid data.", !newData );
 
-            FW_RAISE_IF( "Unable to load '" << filePath
-                                            << "' : trying to load a '" << newData->getClassname()
-                                            << "' where a '" << data->getClassname() << "' was expected",
-                         newData->getClassname() != data->getClassname() );
-
-            // Workaround to read a fwData::Array.
-            // The shallowCopy of a fwData::Array is not allowed due to unknown buffer owner.
-            // So in the case of reading an Array we swap buffers.
-            if(newData->getClassname() == ::fwData::Array::classname())
+            if (m_outputMode)
             {
-                ::fwData::Array::dynamicCast(data)->swap( ::fwData::Array::dynamicCast(newData) );
+                this->setOutput(::fwIO::s_DATA_KEY, newData);
             }
             else
             {
-                data->shallowCopy(newData);
-            }
+                SLM_ASSERT("'" + ::fwIO::s_DATA_KEY + "' key is not defined", data);
 
-            this->notificationOfUpdate();
+                FW_RAISE_IF( "Unable to load '" << filePath
+                                                << "' : trying to load a '" << newData->getClassname()
+                                                << "' where a '" << data->getClassname() << "' was expected",
+                             newData->getClassname() != data->getClassname() );
+
+                // Workaround to read a fwData::Array.
+                // The shallowCopy of a fwData::Array is not allowed due to unknown buffer owner.
+                // So in the case of reading an Array we swap buffers.
+                if(newData->getClassname() == ::fwData::Array::classname())
+                {
+                    ::fwData::Array::dynamicCast(data)->swap( ::fwData::Array::dynamicCast(newData) );
+                }
+                else
+                {
+                    data->shallowCopy(newData);
+                }
+
+                this->notificationOfUpdate();
+            }
         }
         catch( std::exception& e )
         {

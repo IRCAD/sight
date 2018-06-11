@@ -36,6 +36,7 @@ namespace ioAtoms
  * @code{.xml}
    <service type="::ioAtoms::SReader">
        <inout key="data" uid="..." />
+       <out key="data" uid="..." />
        <uuidPolicy>Strict|Change</uuidPolicy>
        <patcher context="..." version="..." />
        <filter>...</filter>
@@ -58,12 +59,14 @@ namespace ioAtoms
    </service>
    @endcode
  * @subsection In-Out In-Out
+ * - \b data [::fwData::Object]: object to read. If an 'out' data is set it will be ignored.
+ * @subsection Output Output
  * - \b data [::fwData::Object]: object to read.
  * @subsection Configuration Configuration
  * - \b uuidPolicy(optional, default ChangePolicy): defines the policy for atoms conversion. 'ChangePolicy' changes the
  *      object uuid only if it already exists in the application. 'StrictPolicy' keeps the object uuid and throws an
  *      exception if the loaded uuid already exists. 'ReusePolicy' uses the existing object in the application with the
- *      uuid (it is not yet supported, the reader should be in output mode).
+ *      uuid ( only if the reader should be in output mode).
  * - \b patcher(optional): defines the atom patcher to use to convert the atoms (see ::fwAtomsPatch::PatchingManager)
  *    - \b context (optional, default=MedicalData): context of the atom patcher
  *    - \b version (optional, default=version of MedicalData): version of the atom patcher, by default it uses the
@@ -132,6 +135,9 @@ private:
 
     /// Notify modification on associated object if reading succeeded
     void notificationOfUpdate();
+
+    /// true if the data is set as 'out'
+    bool m_outputMode;
 
     /// fwAtomsConversion uuid policy
     std::string m_uuidPolicy;
