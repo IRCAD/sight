@@ -11,6 +11,7 @@
 #include <fwData/TransformationMatrix3D.hpp>
 #include <fwData/Vector.hpp>
 
+#include <opencv2/aruco.hpp>
 #include <opencv2/calib3d.hpp>
 
 #include <vector>
@@ -90,6 +91,16 @@ CALIBRATION3D_API void calibratePointingTool(
     const ::fwData::Vector::csptr _matricesVector,
     ::fwData::TransformationMatrix3D::sptr _calibrationMatrix,
     ::fwData::TransformationMatrix3D::sptr _centerMatrix);
+
+/**
+ * @brief generateArucoDictionary
+ * @param _width
+ * @param _height
+ * @param _markerSizeInBits
+ * @return
+ */
+CALIBRATION3D_API cv::Ptr< ::cv::aruco::Dictionary > generateArucoDictionary(const size_t _width, const size_t _height,
+                                                                             const int _markerSizeInBits);
 
 }
 

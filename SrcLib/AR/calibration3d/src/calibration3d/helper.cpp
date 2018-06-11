@@ -245,5 +245,99 @@ void calibratePointingTool(const ::fwData::Vector::csptr _matricesVector,
 
 //-----------------------------------------------------------------------------
 
+cv::Ptr<cv::aruco::Dictionary> generateArucoDictionary(const size_t _width, const size_t _height,
+                                                       const int _markerSizeInBits)
+{
+    //Determine which dictionary to use
+    // nb of markers (< 50,< 100 < 250, < 1000)
+    const size_t nbMarkers = (_width * _height) / 2;
+    ::cv::aruco::PREDEFINED_DICTIONARY_NAME dictionary = ::cv::aruco::DICT_6X6_100;
+    if(_markerSizeInBits == 4)
+    {
+        if(nbMarkers <= 50)
+        {
+            dictionary = ::cv::aruco::DICT_4X4_50;
+        }
+        else if(nbMarkers <= 100)
+        {
+            dictionary = ::cv::aruco::DICT_4X4_100;
+        }
+        else if(nbMarkers <= 250)
+        {
+            dictionary = ::cv::aruco::DICT_4X4_250;
+        }
+        else
+        {
+            dictionary = ::cv::aruco::DICT_4X4_1000;
+        }
+    }
+    else if(_markerSizeInBits == 5)
+    {
+        if(nbMarkers <= 50)
+        {
+            dictionary = ::cv::aruco::DICT_5X5_50;
+        }
+        else if(nbMarkers <= 100)
+        {
+            dictionary = ::cv::aruco::DICT_5X5_100;
+        }
+        else if(nbMarkers <= 250)
+        {
+            dictionary = ::cv::aruco::DICT_5X5_250;
+        }
+        else
+        {
+            dictionary = ::cv::aruco::DICT_5X5_1000;
+        }
+    }
+    else if(_markerSizeInBits == 6)
+    {
+        if(nbMarkers <= 50)
+        {
+            dictionary = ::cv::aruco::DICT_6X6_50;
+        }
+        else if(nbMarkers <= 100)
+        {
+            dictionary = ::cv::aruco::DICT_6X6_100;
+        }
+        else if(nbMarkers <= 250)
+        {
+            dictionary = ::cv::aruco::DICT_6X6_250;
+        }
+        else
+        {
+            dictionary = ::cv::aruco::DICT_6X6_1000;
+        }
+    }
+    else if(_markerSizeInBits == 7)
+    {
+        if(nbMarkers <= 50)
+        {
+            dictionary = ::cv::aruco::DICT_7X7_50;
+        }
+        else if(nbMarkers <= 100)
+        {
+            dictionary = ::cv::aruco::DICT_7X7_100;
+        }
+        else if(nbMarkers <= 250)
+        {
+            dictionary = ::cv::aruco::DICT_7X7_250;
+        }
+        else
+        {
+            dictionary = ::cv::aruco::DICT_7X7_1000;
+        }
+    }
+    else
+    {
+        OSLM_ERROR("Cannot generate dictionary with marker size of: "<<_markerSizeInBits);
+    }
+
+    return ::cv::aruco::generateCustomDictionary(static_cast<int>(nbMarkers), _markerSizeInBits,
+                                                 ::cv::aruco::getPredefinedDictionary(dictionary));
+}
+
+//-----------------------------------------------------------------------------
+
 }//namespace calibration3d
 }//namespace helper
