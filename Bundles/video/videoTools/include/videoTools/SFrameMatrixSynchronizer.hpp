@@ -46,6 +46,9 @@ namespace videoTools
  * - \b allMatricesFound(::fwCore::HiResClock::HiResClockType) : Emitted when the sync is done, contains a boolean to
  *  signal if all the matrices are synchronized.
  *
+ * @section Slots Slots
+ * - \b synchronize(): Actual synchronization function.
+ *
  * @section XML XML Configuration
  *
  * @code{.xml}
@@ -93,7 +96,8 @@ namespace videoTools
  * - \b matrices defines the matrixTL to synchronize.
  *   - \b from: key of the matrix timeline to extract matrix.
  *   - \b to: key of the TransformationMatrix3D where to extract the matrix.
- * - \b framerate defines the framerate to call synchronization (default: 30).
+ * - \b framerate defines the framerate to call synchronization (default: 30). If it is set to 0, then the service does
+ * not synchronize periodically. You'll have then to call the slot "synchronize" yourself.
  * - \b tolerance defines the maximum distance between two frames (default: 500).
  *  If a timeline exceeds this tolerance it will not be synchronized.
  */
@@ -101,7 +105,7 @@ class VIDEOTOOLS_CLASS_API SFrameMatrixSynchronizer : public ::arServices::ISync
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro((SFrameMatrixSynchronizer)(fwServices::IController));
+    fwCoreServiceClassDefinitionsMacro((SFrameMatrixSynchronizer)(fwServices::IController))
 
     /**
      * @name Signal API
@@ -122,9 +126,7 @@ public:
     /**
      * @brief Destructor.
      */
-    VIDEOTOOLS_API virtual ~SFrameMatrixSynchronizer() noexcept
-    {
-    }
+    VIDEOTOOLS_API virtual ~SFrameMatrixSynchronizer() noexcept override;
 
     /**
      * @brief Return proposals to connect service slots to associated object signals,
@@ -149,13 +151,21 @@ protected:
     /// Synchronizes TLs
     VIDEOTOOLS_API void synchronize();
 
-    /// Do nothing.
+    /// Called when new objects are pushed into the timeline.
     VIDEOTOOLS_API void updating() override;
 
 private:
 
     /// Reset the last timestamp when the timeline is cleared
     VIDEOTOOLS_API void resetTimeline();
+
+    enum : std::uint8_t
+    {
+        OBJECT_RECEIVED = 0x1,
+        SYNC_REQUESTED  = 0x2
+    };
+
+    std::uint8_t m_updateMask { SYNC_REQUESTED };
 
     /// Tolerance to take into account matrix
     ::fwCore::HiResClock::HiResClockType m_tolerance;
