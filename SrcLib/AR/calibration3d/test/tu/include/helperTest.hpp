@@ -22,6 +22,7 @@ CPPUNIT_TEST(reprojectionRealDatasetTest1);
 CPPUNIT_TEST(reprojectionRealDatasetTest2);
 CPPUNIT_TEST(toolCalibrationBasic);
 CPPUNIT_TEST(toolCalibration);
+CPPUNIT_TEST(generateChauroDict);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -34,6 +35,7 @@ public:
     void reprojectionIdentity();
     void toolCalibrationBasic();
     void toolCalibration();
+    void generateChauroDict();
 };
 
 } //namespace ut

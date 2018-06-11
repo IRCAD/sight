@@ -349,5 +349,49 @@ void helperTest::toolCalibration()
 
 //------------------------------------------------------------------------------
 
+void helperTest::generateChauroDict()
+{
+    //Test extrem cases
+    int x[32] =
+    {4, 50, 51, 100, 101, 250, 251, 1000,
+     4, 50, 51, 100, 101, 250, 251, 1000,
+     4, 50, 51, 100, 101, 250, 251, 1000,
+     4, 50, 51, 100, 101, 250, 251, 1000};
+
+    int bits[32] = {4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 6, 6, 6, 6, 6, 6, 6, 6, 7, 7, 7, 7, 7, 7, 7, 7};
+
+    ::cv::Ptr< ::cv::aruco::Dictionary> generatedDict;
+
+    //Test case 4x4_50
+    for(int ii = 0; ii < 32; ++ii)
+    {
+        ::cv::Ptr< ::cv::aruco::Dictionary> DictExpected =
+            ::cv::aruco::generateCustomDictionary(x[ii], bits[ii], ::cv::aruco::getPredefinedDictionary(ii/2));
+
+        generatedDict = ::calibration3d::helper::generateArucoDictionary(x[ii], 2, bits[ii]);
+
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("markerSize are not equal", DictExpected->markerSize, generatedDict->markerSize);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("maxCorrectionBits are not equal", DictExpected->maxCorrectionBits,
+                                     generatedDict->maxCorrectionBits);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("bytesList.size are not equal", DictExpected->bytesList.size,
+                                     generatedDict->bytesList.size);
+
+        for(int i = 0; i < DictExpected->bytesList.rows; ++i)
+        {
+            for(int j = 0; j < DictExpected->bytesList.cols; ++j)
+            {
+                for(int k = 0; k < DictExpected->bytesList.channels(); ++k)
+                {
+                    CPPUNIT_ASSERT_EQUAL_MESSAGE("Values of bytesList are not equal",
+                                                 DictExpected->bytesList.at< ::cv::Vec4b >(i, j)[k],
+                                                 generatedDict->bytesList.at< ::cv::Vec4b >(i, j)[k]);
+                }
+            }
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+
 }//namespace ut
 }//namespace calibration3d
