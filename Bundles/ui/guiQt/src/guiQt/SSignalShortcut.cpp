@@ -12,13 +12,13 @@
 
 #include <fwGui/container/fwContainer.hpp>
 #include <fwGui/GuiRegistry.hpp>
+#include <fwGui/IGuiContainerSrv.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
 #include <fwServices/macros.hpp>
+#include <fwServices/op/Get.hpp>
 
-#include <QEvent>
-#include <QKeyEvent>
 #include <QKeySequence>
 #include <QWidget>
 
@@ -27,7 +27,7 @@
 namespace guiQt
 {
 
-static const ::fwCom::Signals::SignalKeyType s_TRIGGERED_SIG = "triggered";
+static const ::fwCom::Signals::SignalKeyType s_ACTIVATED_SIG = "activated";
 
 fwServicesRegisterMacro( ::fwServices::IService, ::guiQt::SSignalShortcut );
 
@@ -35,9 +35,11 @@ fwServicesRegisterMacro( ::fwServices::IService, ::guiQt::SSignalShortcut );
 
 SSignalShortcut::SSignalShortcut() noexcept :
     m_shortcut(""),
-    m_wid("")
+    m_sid(""),
+    m_wid(""),
+    m_shortcutObject(nullptr)
 {
-    newSignal< TriggeredShortcutSignalType >(s_TRIGGERED_SIG);
+    newSignal< ActivatedShortcutSignalType >(s_ACTIVATED_SIG);
 }
 
 //-----------------------------------------------------------------------------
@@ -53,34 +55,69 @@ void SSignalShortcut::configuring()
     const auto configTree     = this->getConfigTree();
     const auto configShortcut = configTree.get_child("config.<xmlattr>");
     m_shortcut = configShortcut.get<std::string>("shortcut", m_shortcut);
-    SLM_ASSERT("Shortcut must not be empty", shortcut != "");
+    OSLM_ASSERT("Shortcut must not be empty", m_shortcut != "");
 
     m_wid = configShortcut.get<std::string>("wid", m_wid);
-    SLM_ASSERT("The wid attribute must be specified for SSignalShortcut", m_wid != "");
+    m_sid = configShortcut.get<std::string>("sid", m_sid);
+    OSLM_ASSERT("Either The wid or sid attribute must be specified for SSignalShortcut", m_wid != "" || m_sid != "");
 }
 
 //-----------------------------------------------------------------------------
 
 void SSignalShortcut::starting()
 {
-    // Attempt to setup the event filter on the registered window
-    ::fwGui::container::fwContainer::sptr fwc = ::fwGui::GuiRegistry::getWIDContainer(m_wid);
+    ::fwGui::container::fwContainer::sptr fwc = nullptr;
+
+    // Either get the container via a service id
+    if(m_sid != "")
+    {
+        bool sidExists = ::fwTools::fwID::exist(m_sid);
+
+        if(sidExists)
+        {
+            ::fwServices::IService::sptr service         = ::fwServices::get( m_sid );
+            ::fwGui::IGuiContainerSrv::sptr containerSrv = ::fwGui::IGuiContainerSrv::dynamicCast(service);
+            fwc                                          = containerSrv->getContainer();
+        }
+        else
+        {
+            OSLM_ERROR("Invalid service id " << m_sid);
+        }
+    }
+    // or a window id
+    else if(m_wid != "")
+    {
+        fwc = ::fwGui::GuiRegistry::getWIDContainer(m_wid);
+        if(!fwc)
+        {
+            OSLM_ERROR("Invalid window id " << m_wid);
+        }
+    }
+
     if(fwc != nullptr)
     {
         ::fwGuiQt::container::QtContainer::sptr qtc =
             std::dynamic_pointer_cast< ::fwGuiQt::container::QtContainer >(fwc);
         if(qtc != nullptr)
         {
-            QWidget* widget = qtc->getQtContainer();
-            if(widget != nullptr)
+
+            if(!m_shortcutObject)
             {
-                widget->installEventFilter(this);
+                // Get the associated widget to use as parent for the shortcut
+                QWidget* widget = qtc->getQtContainer();
+                // Create a key sequence from the string and its associated QShortcut
+                QKeySequence shortcutSequence = QKeySequence(QString::fromStdString(m_shortcut));
+                m_shortcutObject = new QShortcut(shortcutSequence, widget);
             }
+
+            // Connect the activated signal to the onActivation method of this class
+            QObject::connect(m_shortcutObject, SIGNAL(activated()), this, SLOT(onActivation()));
         }
     }
     else
     {
-        SLM_WARN("Cannot setup shortcut " << m_shortcut << " on invalid wid " << m_wid);
+        OSLM_ERROR("Cannot setup shortcut " << m_shortcut << " on invalid "
+                                            << (m_wid != "" ? "wid " + m_wid : "sid " + m_sid));
     }
 }
 
@@ -88,20 +125,10 @@ void SSignalShortcut::starting()
 
 void SSignalShortcut::stopping()
 {
-    // Delete event filter
-    ::fwGui::container::fwContainer::sptr fwc = ::fwGui::GuiRegistry::getWIDContainer(m_wid);
-    if(fwc != nullptr)
+    if(m_shortcutObject)
     {
-        ::fwGuiQt::container::QtContainer::sptr qtc =
-            std::dynamic_pointer_cast< ::fwGuiQt::container::QtContainer >(fwc);
-        if(qtc != nullptr)
-        {
-            QWidget* widget = qtc->getQtContainer();
-            if(widget != nullptr)
-            {
-                this->removeEventFilter( qApp->activeWindow());
-            }
-        }
+        // Connect the activated signal to the onActivation method of this class
+        QObject::disconnect(m_shortcutObject, SIGNAL(activated()), this, SLOT(onActivation()));
     }
 }
 
@@ -111,21 +138,11 @@ void SSignalShortcut::updating()
 
 }
 
-//-----------------------------------------------------------------------------
-bool SSignalShortcut::eventFilter(QObject* obj, QEvent* event)
+//------------------------------------------------------------------------------
+
+void SSignalShortcut::onActivation()
 {
-    // Update the widget position when the parent is moved or resized
-    if (event->type() == QEvent::KeyPress)
-    {
-        QKeySequence shortcutSequence = QKeySequence(QString::fromStdString(m_shortcut));
-        QKeyEvent* keyEvent           = static_cast<QKeyEvent*>(event);
-        QKeySequence seq              = QKeySequence(keyEvent->key() | keyEvent->modifiers());
-        if(seq.matches(shortcutSequence))
-        {
-            this->signal<TriggeredShortcutSignalType>(s_TRIGGERED_SIG)->asyncEmit();
-        }
-    }
-    return QObject::eventFilter(obj, event);
+    this->signal<ActivatedShortcutSignalType>(s_ACTIVATED_SIG)->asyncEmit();
 }
 
 } // namespace gui

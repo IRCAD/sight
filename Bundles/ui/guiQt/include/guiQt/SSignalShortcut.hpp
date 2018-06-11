@@ -10,25 +10,26 @@
 
 #include <fwServices/IService.hpp>
 
-#include <QApplication>
+#include <QShortcut>
 
 namespace guiQt
 {
 
 /**
- * @brief   This service sends a signal when the associated shortcut is triggered.
+ * @brief   This service sends a signal when the associated shortcut is activated.
  * @section XML XML configuration
  * @code{.xml}
    <service uid="..." impl="::guiQt::SSignalShortcut" >
-        <config shortcut="..." wid="${WID_PARENT}" />
+        <config shortcut="..." sid="..." />
    </service>
    @endcode
  * @subsection Configuration Configuration
  * - \b shortcut: associated shortcut
- * - \b wid: window id in which the shortcut will be enabled
+ * - \b sid/wid (exclusive): id of the service/window associated to the gui container
+ *   to which the shortcut will be associated
  *
  * @section Signals Signals
- * - \b triggered(): This signal is emitted when the shortcut is received.
+ * - \b activated(): This signal is emitted when the shortcut is received.
  */
 class GUIQT_CLASS_API SSignalShortcut : public QObject,
                                         public ::fwServices::IService
@@ -39,7 +40,7 @@ public:
     fwCoreServiceClassDefinitionsMacro( (SSignalShortcut)(::fwServices::IService) );
 
     /// Signal emitted when the shortcut is received.
-    typedef ::fwCom::Signal< void () > TriggeredShortcutSignalType;
+    typedef ::fwCom::Signal< void () > ActivatedShortcutSignalType;
 
     /// Constructor. Do nothing.
     GUIQT_API SSignalShortcut() noexcept;
@@ -71,16 +72,24 @@ protected:
      */
     GUIQT_API virtual void updating() override;
 
-    /// Filter specified shortcut
-    bool eventFilter(QObject* obj, QEvent* event) override;
+private Q_SLOTS:
+    void onActivation();
 
 private:
 
     /// string containing the shortcut to trigger
     std::string m_shortcut;
 
+    /// Service id used to get the QtContainer of the activity to set up a shortcut in
+    /// Either this member or m_wid has to be specified
+    std::string m_sid;
+
     /// Window id used to get the QtContainer of the activity to set up a shortcut in
+    /// Either this member or m_sid has to be specified
     std::string m_wid;
+
+    /// Qt shortcut object
+    QShortcut* m_shortcutObject;
 };
 
 }

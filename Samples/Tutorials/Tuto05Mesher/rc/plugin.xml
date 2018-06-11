@@ -123,11 +123,10 @@
                 <percentReduction value="0" />
             </service>
 
-            <!-- Add a shortcut in the application  (key "v") -->
+            <!-- Add a shortcut in the application (key "v") -->
             <service uid="ActionShortcut" type="::guiQt::SSignalShortcut">
-                <config shortcut="v" />
+                <config shortcut="v" sid="myDefaultView" />
             </service>
-
 
             <!--
                 Services associated to the Image data :
@@ -167,7 +166,7 @@
 
             <!-- Connect the shortcut "v" to the update slot of 'actionCreateVTKMesh'-->
             <connect>
-                <signal>ActionShortcut/triggered</signal>
+                <signal>ActionShortcut/activated</signal>
                 <slot>actionCreateVTKMesh/update</slot>
             </connect>
 
