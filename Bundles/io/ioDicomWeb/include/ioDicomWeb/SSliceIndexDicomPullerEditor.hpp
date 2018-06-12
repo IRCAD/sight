@@ -48,7 +48,7 @@ namespace ioDicomWeb
  * *
  * @section Slots Slots
  * - \b readImage(size_t) : Read the given slice.
- * - \b displayErrorMessage(size_t) : display an error message.
+ * - \b displayErrorMessage(const std::string&) : display an error message.
 
  * @section XML XML Configuration
  *

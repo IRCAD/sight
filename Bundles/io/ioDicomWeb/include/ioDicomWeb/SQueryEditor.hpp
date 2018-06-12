@@ -29,6 +29,9 @@ namespace ioDicomWeb
 /**
  * @brief   This editor service is used to perform an HTTP query on a Pacs.
  *
+ * @section Slots Slots
+ * - \b displayErrorMessage(const std::string&) : display an error message.
+
  * @section XML XML Configuration
  *
  * @code{.xml}

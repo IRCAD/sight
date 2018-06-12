@@ -31,6 +31,9 @@ namespace ioDicomWeb
 /**
  * @brief   This service is used to push a DICOM series to a PACS.
  *
+ * @section Slots Slots
+ * - \b displayMessage(const std::string&, bool) : display a message.
+
  * @section XML XML Configuration
  *
  * @code{.xml}
@@ -41,6 +44,9 @@ namespace ioDicomWeb
    @endcode
  * @subsection Input Input:
  * - \b selectedSeries [::fwData::Vector]: List of DICOM series to push to the PACS.
+ * @subsection Configuration Configuration:
+ * - \b server : server URL. Need hostname and port in this format addr:port (default value is 127.0.0.1:4242).
+ * @note : hostname and port of this service are from the preference settings.
  */
 class IODICOMWEB_CLASS_API SSeriesPusher : public ::fwServices::IController
 {
