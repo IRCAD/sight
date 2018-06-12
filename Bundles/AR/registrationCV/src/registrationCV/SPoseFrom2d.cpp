@@ -97,18 +97,19 @@ void SPoseFrom2d::starting()
     ::fwData::PointList::sptr pl = this->getInOut< ::fwData::PointList >(s_POINTLIST_INOUT);
     if(pl)
     {
-        pl->pushBack(::fwData::Point::New(-halfWidth, halfWidth, 0));
-        pl->getPoints().at(0)->setField(::fwDataTools::fieldHelper::Image::m_labelId,
-                                        ::fwData::String::New(std::to_string(0)));
-        pl->pushBack(::fwData::Point::New( halfWidth, halfWidth, 0));
-        pl->getPoints().at(1)->setField(::fwDataTools::fieldHelper::Image::m_labelId,
-                                        ::fwData::String::New(std::to_string(1)));
+        pl->clear();
+        pl->pushBack(::fwData::Point::New(-halfWidth,  halfWidth, 0));
+        pl->pushBack(::fwData::Point::New( halfWidth,  halfWidth, 0));
         pl->pushBack(::fwData::Point::New( halfWidth, -halfWidth, 0));
-        pl->getPoints().at(2)->setField(::fwDataTools::fieldHelper::Image::m_labelId,
-                                        ::fwData::String::New(std::to_string(2)));
         pl->pushBack(::fwData::Point::New(-halfWidth, -halfWidth, 0));
-        pl->getPoints().at(3)->setField(::fwDataTools::fieldHelper::Image::m_labelId,
-                                        ::fwData::String::New(std::to_string(3)));
+
+        const ::fwData::PointList::PointListContainer points = pl->getPoints();
+        for(size_t i = 0; i < 4; ++i)
+        {
+            const ::fwData::Point::sptr point = points.at(i);
+            point->setField(::fwDataTools::fieldHelper::Image::m_labelId, ::fwData::String::New(std::to_string(i)));
+        }
+
         auto sig = pl->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
         sig->asyncEmit();
     }
