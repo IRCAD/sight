@@ -24,7 +24,7 @@
                 <parent wid="${WID_PARENT}" />
                 <view wid="cameraView" />
                 <view sid="CalibrationInfoView" start="yes" />
-                <view sid="cameraInfo" start="yes" />
+                <view sid="cameraInfoView" start="yes" />
             </registry>
         </service>
 
@@ -40,6 +40,19 @@
             <registry>
                 <toolBar sid="intrinsicCamera" start="yes" />
                 <view sid="CalibrationInfoEditor" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="cameraInfoView" type="::gui::view::SDefaultView">
+            <gui>
+                <layout type="::fwGui::CardinalLayoutManager">
+                    <view align="center" />
+                    <view align="bottom" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="cameraInfo" start="yes" />
+                <view sid="errorLabel" start="yes" />
             </registry>
         </service>
 
@@ -118,6 +131,10 @@
             <red>Points are NOT visible</red>
         </service>
 
+        <service uid="errorLabel" type="::uiTools::editor::STextStatus">
+            <label>Reprojection Error (RMSE)</label>
+        </service>
+
         <service uid="ChessboardDetector" type="::videoCalibration::SChessBoardDetector" worker="intr_chess_checker">
             <in group="timeline">
                 <key uid="FrameTL" />
@@ -176,6 +193,11 @@
             <signal>${calibrationInfo}/removedRecord</signal>
             <signal>${calibrationInfo}/resetRecord</signal>
             <slot>CalibrationInfoEditor/update</slot>
+        </connect>
+
+        <connect>
+            <signal>OpenCVIntrinsicCal/errorComputed</signal>
+            <slot>errorLabel/setDoubleParameter</slot>
         </connect>
 
         <connect channel="${preferencesModifiedProxy}">

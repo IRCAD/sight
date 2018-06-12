@@ -40,6 +40,8 @@ namespace videoCalibration
 
 static const ::fwCom::Slots::SlotKeyType s_UPDATE_CHESSBOARD_SIZE_SLOT = "updateChessboardSize";
 
+static const ::fwCom::Signals::SignalKeyType s_ERROR_COMPUTED_SIG = "errorComputed";
+
 // ----------------------------------------------------------------------------
 
 SOpenCVIntrinsic::SOpenCVIntrinsic() noexcept :
@@ -47,6 +49,7 @@ SOpenCVIntrinsic::SOpenCVIntrinsic() noexcept :
     m_height(8),
     m_squareSize(20.0)
 {
+    newSignal<ErrorComputedSignalType>(s_ERROR_COMPUTED_SIG);
     newSlot(s_UPDATE_CHESSBOARD_SIZE_SLOT, &SOpenCVIntrinsic::updateChessboardSize, this);
 }
 
@@ -151,6 +154,8 @@ void SOpenCVIntrinsic::updating()
         ::cv::Size2i imgsize(static_cast<int>(img->getSize()[0]), static_cast<int>(img->getSize()[1]));
 
         double err = ::cv::calibrateCamera(objectPoints, imagePoints, imgsize, cameraMatrix, distCoeffs, rvecs, tvecs);
+
+        this->signal<ErrorComputedSignalType>(s_ERROR_COMPUTED_SIG)->asyncEmit(err);
 
         if(poseCamera)
         {
