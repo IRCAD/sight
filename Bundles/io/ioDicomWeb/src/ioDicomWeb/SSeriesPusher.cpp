@@ -26,10 +26,6 @@
 
 #include <fwServices/macros.hpp>
 
-#include <boost/foreach.hpp>
-
-#include <dcmtk/dcmdata/dcistrmb.h>
-
 namespace ioDicomWeb
 {
 
