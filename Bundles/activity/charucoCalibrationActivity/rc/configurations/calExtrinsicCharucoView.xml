@@ -139,12 +139,14 @@
                     <view caption="camera 1" />
                     <view caption="camera 2" />
                     <view caption="camera series" />
+                    <view align="bottom" />
                 </layout>
             </gui>
             <registry>
                 <view sid="cameraInfo1" start="yes" />
                 <view sid="cameraInfo2" start="yes" />
                 <view sid="cameraSeriesInfo" start="yes" />
+                <view sid="errorLabel" start="yes" />
             </registry>
         </service>
 
@@ -275,6 +277,10 @@
             <red>Points are NOT visible</red>
         </service>
 
+        <service uid="errorLabel" type="::uiTools::editor::STextStatus">
+            <label>Reprojection Error (RMSE)</label>
+        </service>
+
         <service uid="CharucoBoardDetector" type="::videoCharucoCalibration::SCharucoBoardDetector" worker="extr_chess_checker">
             <in group="timeline">
                 <key uid="Frame1TL" />
@@ -377,6 +383,11 @@
             <signal>${calibrationInfo1}/removedRecord</signal>
             <signal>${calibrationInfo1}/resetRecord</signal>
             <slot>ExtrinsicCalibrationInfoEditor/update</slot>
+        </connect>
+
+        <connect>
+            <signal>openCVExtrinsicCal/errorComputed</signal>
+            <slot>errorLabel/setDoubleParameter</slot>
         </connect>
 
         <connect channel="${preferencesModifiedProxy}">

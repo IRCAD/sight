@@ -180,7 +180,7 @@ void SOpenCVIntrinsic::updating()
             }
         }
 
-        OSLM_DEBUG("Calibration error :" << err);
+        this->signal<ErrorComputedSignalType>(s_ERROR_COMPUTED_SIG)->asyncEmit(err);
 
         ::fwData::mt::ObjectWriteLock camLock(cam);
 
