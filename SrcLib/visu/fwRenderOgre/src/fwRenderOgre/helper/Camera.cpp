@@ -111,7 +111,6 @@ Ogre::Vector3 Camera::convertPixelToViewSpace(const ::Ogre::Camera* _camera, con
 {
     const ::Ogre::Viewport* viewport = _camera->getViewport();
 
-    // shift the pixel's coordinates by the viewport's dimensions.
     const ::Ogre::Vector3 clippingCoordinatePixel(  _pixelPoint[0]/viewport->getActualWidth() *2 - 1,
                                                     -(_pixelPoint[1]/viewport->getActualHeight() * 2 - 1),
                                                     _pixelPoint[2]);
