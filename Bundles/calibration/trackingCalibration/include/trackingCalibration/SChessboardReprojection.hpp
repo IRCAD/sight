@@ -35,6 +35,7 @@ namespace trackingCalibration
         <in key="handEyeZ" uid="..." />
         <in key="trackerMatrix" uid="..." />
         <inout key="reprojectedChessboard" uid="..." />
+        <out key="chessboardModel" uid="..." />
         <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" squareSize="CHESSBOARD_SQUARE_SIZE" />
         <config movingCamera="false" />
     </service>
@@ -50,6 +51,10 @@ namespace trackingCalibration
  *
  * @subsection InOut InOut
  * - \b reprojectedChessboard [::fwData::PointList]: chessboard reprojection in image space
+ *
+ * @subsection Output Output
+ * - \b chessboardModel [::fwData::PointList] (optional): chessboard model constructed from board configuration
+ * parameters
  *
  * @subsection Configuration Configuration
  * - \b board (mandatory): chessboard preferences (width, height and square size)
