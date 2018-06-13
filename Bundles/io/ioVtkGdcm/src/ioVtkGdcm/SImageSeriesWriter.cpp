@@ -102,7 +102,14 @@ void SImageSeriesWriter::updating()
     if( this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
-        ::fwMedData::ImageSeries::sptr series = this->getObject< ::fwMedData::ImageSeries >();
+        ::fwMedData::ImageSeries::csptr series = this->getInput< ::fwMedData::ImageSeries >(::fwIO::s_DATA_KEY);
+        if (!series)
+        {
+            FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "18.0");
+            series = this->getObject< ::fwMedData::ImageSeries >();
+        }
+        SLM_ASSERT("ImageSeries is not instanced", series);
+
         const ::boost::filesystem::path& folder = this->getFolder();
         if(!::boost::filesystem::is_empty(folder))
         {
@@ -145,7 +152,7 @@ void SImageSeriesWriter::updating()
 //------------------------------------------------------------------------------
 
 void SImageSeriesWriter::saveImageSeries( const ::boost::filesystem::path folder,
-                                          ::fwMedData::ImageSeries::sptr series )
+                                          ::fwMedData::ImageSeries::csptr series )
 {
     ::vtkGdcmIO::ImageSeriesWriter::sptr writer = ::vtkGdcmIO::ImageSeriesWriter::New();
 
