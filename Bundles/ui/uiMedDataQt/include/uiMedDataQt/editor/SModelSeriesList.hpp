@@ -40,17 +40,17 @@ class ValueView;
  *
  * It allows to show/hide a Reconstruction when it is associated to a render scene with a Model series adaptor
  * (for example fwRenderVTK::SRender with ::visuVTKAdaptor::SModelSeries).
- * It also allows to select a Reconstruction, associated to the ::ctrlSelection::updater::SObjFromSlot the
+ * It also allows to select a Reconstruction: associated to the ::ctrlSelection::updater::SObjFromSlot, the
  * reconstruction is available to be used by other services.
  * It is mostly associated to ::uiReconstructionQt::OrganMaterialEditor and
  * ::uiReconstructionQt::RepresentationEditor to update the reconstrution color, transparency, ....
  *
  * @section Signals Signals
- * - \b reconstructionSelected(::fwData::Object::sptr) : this signal emits the selected reconstruction
- * - \b emptiedSelection() : this signal is emitted when no reconstruction is selected
+ * - \b reconstructionSelected(::fwData::Object::sptr): this signal emits the selected reconstruction
+ * - \b emptiedSelection(): this signal is emitted when no reconstruction is selected
  *
  * @section Slots Slots
- * - \b showReconstructions(bool) : slot called to show or hide all the reconstructions
+ * - \b showReconstructions(bool): slot called to show or hide all the reconstructions
  *
  * @section XML XML Configuration
  *
@@ -67,13 +67,13 @@ class ValueView;
  * @subsection In-Out In-Out
  * - \b modelSeries [::fwMedData::ModelSeries]: model series containing the organs to list
  * @subsection Configuration Configuration
- * \b enable_hide_all : if 'true', allows to hide all models through a single checkbox displayed in UI (default
+ * \b enable_hide_all: if 'true', allows to hide all models through a single checkbox displayed in UI (default
  * value is 'true', allowed values are 'true' and 'false').
  *
- * \b columns : defines colums to be shown in reconstruction list. XML child element names follow
+ * \b column: defines colums to be shown in reconstruction list. XML child element names follow
  * ::fwData::Reconstruction serialization attribute names. The name of the tag will be used as the column name.
- * The attribute 'view' is optional and has the following values :
- *  - positive : a numeric value is displayed only if it is positive. Otherwise, 'Unknown' is displayed.
+ * The attribute 'view' is optional and has the following values:
+ *  - positive: a numeric value is displayed only if it is positive. Otherwise, 'Unknown' is displayed.
  */
 class UIMEDDATAQT_CLASS_API SModelSeriesList :  public QObject,
                                                 public ::fwGui::editor::IEditor

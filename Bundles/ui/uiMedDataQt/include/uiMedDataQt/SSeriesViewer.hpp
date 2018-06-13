@@ -41,14 +41,14 @@ namespace uiMedDataQt
  * @subsection Input Input
  * - \b series [::fwData::Vector]: vector containing the series to preview.
  * @subsection Configuration Configuration
- * - \b parentView : wid of the view where the config will install its windows.
- * - \b config : gives the available association between data type and associated config.
- *   - \b id : identifier of the AppConfig to launch
- *   - \b type : classname of the object stored in Vector associated to this config.
- *   - \b parameter : allow to pass specific value to the associated config
- *     - \b replace : name of the parameter to be replaced
- *     - \b by : specific value to replace for the parameter
- * - \b extract : extracts the object from the path and replaces pattern with its fwID
+ * - \b parentView: wid of the view where the config will install its windows.
+ * - \b config: gives the available association between data type and associated config.
+ *   - \b id: identifier of the AppConfig to launch
+ *   - \b type: classname of the object stored in Vector associated to this config.
+ *   - \b parameter: allow to pass specific value to the associated config
+ *     - \b replace: name of the parameter to be replaced
+ *     - \b by: specific value to replace for the parameter
+ * - \b extract: extracts the object from the path and replaces pattern with its fwID
  */
 class UIMEDDATAQT_CLASS_API SSeriesViewer : public ::fwServices::IController
 {

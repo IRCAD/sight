@@ -37,17 +37,18 @@ namespace ioVTK
  * Service writing a model series as .vtk files using the fwVtkIO lib.
  *
  * @section Signals Signals
- * - \b jobCreated(SPTR(::fwJobs::IJob)): emitted when the image is loading to display a progress bar.
+ * - \b jobCreated(SPTR(::fwJobs::IJob)): emitted to display a progress bar while the image is written (it should be
+ * connected to a SJobBar).
  *
  * @section XML XML Configuration
  *
  * @code{.xml}
    <service type="::ioVTK::SModelSeriesWriter">
-       <inout key="data" uid="..." />
+       <in key="data" uid="..." />
        <folder>...</folder>
    </service>
    @endcode
- * @subsection In-Out In-Out
+ * @subsection Input Input
  * - \b data [::fwMedData::ModelSeries]: model to save.
  * @subsection Configuration Configuration
  * - \b folder (optional): path of the folder, if it is not defined, 'configureWithIHM()' should be called to define

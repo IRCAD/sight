@@ -122,8 +122,8 @@ void ImageInfo::getInteraction(::fwDataTools::PickingInfo info)
 
             if (point[0] < 0 || point[1] < 0 || point[2] < 0)
             {
-                SLM_ERROR("The received coordinates are not in the image space, maybe you use the wrong picker "
-                          "interator (see ::visuVTKAdaptor::SImagePickerInteractor)");
+                SLM_ERROR("The received coordinates are not in image space, maybe you used the wrong picker "
+                          "interactor (see ::visuVTKAdaptor::SImagePickerInteractor)");
                 return;
             }
 
@@ -144,8 +144,8 @@ void ImageInfo::getInteraction(::fwDataTools::PickingInfo info)
 
             if (!isInside)
             {
-                SLM_ERROR("The received coordinates are not in the image space, maybe you use the wrong picker "
-                          "interator (see ::visuVTKAdaptor::SImagePickerInteractor)");
+                SLM_ERROR("The received coordinates are not in image space, maybe you used the wrong picker "
+                          "interactor (see ::visuVTKAdaptor::SImagePickerInteractor)");
                 return;
             }
 

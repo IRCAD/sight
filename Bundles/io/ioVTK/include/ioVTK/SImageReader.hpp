@@ -30,7 +30,8 @@ namespace ioVTK
  * @brief Service reading a VTK Image using the fwVtkIO lib.
  *
  * @section Signals Signals
- * - \b jobCreated(SPTR(::fwJobs::IJob)): emitted when the image is loading to display a progress bar.
+ * - \b jobCreated(SPTR(::fwJobs::IJob)): emitted to display a progress bar while the image is loading (it should be
+ * connected to a SJobBar).
  *
  * @section Slots Slots
  * - \b readFile(::boost::filesystem::path) : read the given file

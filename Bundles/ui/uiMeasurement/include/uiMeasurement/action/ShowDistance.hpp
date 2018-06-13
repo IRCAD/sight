@@ -21,7 +21,7 @@ namespace action
  * @brief   This action allows to show/hide image distances.
  *
  * @section Slots Slots
- * - \b showDistance(bool) : slot called to check/uncheck the action when the distance are visible or not.
+ * - \b showDistance(bool): slot called to check/uncheck the action when the distance are visible or not.
  *
  * @section XML XML Configuration
  *

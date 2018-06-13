@@ -33,7 +33,8 @@ namespace ioVTK
  * Service writing a VTK Image using the fwVtkIO lib.
  *
  * @section Signals Signals
- * - \b jobCreated(SPTR(::fwJobs::IJob)): emitted when the image is writing to display a progress bar.
+ * - \b jobCreated(SPTR(::fwJobs::IJob)): emitted to display a progress bar while the image is written (it should be
+ * connected to a SJobBar).
  *
  * @section XML XML Configuration
  *
