@@ -83,25 +83,25 @@
             <preference>
                 <type>number</type>
                 <name>Chessboard width</name>
-                <key>CHESSBOARD_WIDTH</key>
+                <key>CHARUCO_WIDTH</key>
                 <default_value>7</default_value>
             </preference>
             <preference>
                 <type>number</type>
                 <name>Chessboard height</name>
-                <key>CHESSBOARD_HEIGHT</key>
+                <key>CHARUCO_HEIGHT</key>
                 <default_value>5</default_value>
             </preference>
             <preference>
                 <type>number</type>
                 <name>Chessboard square size (mm)</name>
-                <key>CHESSBOARD_SQUARE_SIZE</key>
+                <key>CHARUCO_SQUARE_SIZE</key>
                 <default_value>40</default_value>
             </preference>
             <preference>
                 <type>number</type>
                 <name>Chessboard marker size (mm)</name>
-                <key>CHESSBOARD_MARKER_SIZE</key>
+                <key>CHARUCO_MARKER_SIZE</key>
                 <default_value>32</default_value>
             </preference>
             <preference>
