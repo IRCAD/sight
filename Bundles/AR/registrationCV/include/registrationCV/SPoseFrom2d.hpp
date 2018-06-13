@@ -38,9 +38,9 @@ namespace registrationCV
              <key uid="..." />
              <key uid="..." />
          </in>
-         <in key="extrinsic" uid="matrix1" />
-         <inout key="matrixTL" uid="matrixTL1" />
-         <inout key="pointList" uid="pointList" />
+         <in key="extrinsic" uid="..." />
+         <inout key="matrixTL" uid="..." />
+         <inout key="pointList" uid="..." />
          <patternWidth>80</patternWidth>
      </service>
 
@@ -74,7 +74,7 @@ namespace registrationCV
  * - \b matrixTL [::arData::MatrixTL]: timeline of 3D transformation matrices.
  * - \b matrix [::fwData::TransformationMatrix3D]: list of matrices related to the markers. The marker's id must be
  * specified using the \b id tag to be found in the marker map.
- * - \b pointList [::fwData::PointList]: pointlist containing the 4 points of the model.
+ * - \b pointList [::fwData::PointList] (optional): list of points corresponding to the model.
  * @subsection Configuration Configuration
  * - \b patternWidth : width of the tag.
  */
