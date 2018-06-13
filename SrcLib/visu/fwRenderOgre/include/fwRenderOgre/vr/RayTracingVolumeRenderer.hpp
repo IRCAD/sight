@@ -6,7 +6,6 @@
 
 #pragma once
 
-#include "fwRenderOgre/compositor/listener/AutoStereo.hpp"
 #include "fwRenderOgre/config.hpp"
 #include "fwRenderOgre/Layer.hpp"
 #include "fwRenderOgre/R2VBRenderable.hpp"
@@ -103,9 +102,6 @@ public:
     /// Computes image positions, updates the proxy geometry.
     FWRENDEROGRE_API virtual void clipImage(const ::Ogre::AxisAlignedBox& clippingBox);
 
-    /// Slot: Called when the size of the viewport changes.
-    FWRENDEROGRE_API virtual void resizeViewport(int w, int h);
-
     /// IllumVolume getter.
     FWRENDEROGRE_API SATVolumeIllumination::sptr getIllumVolume();
 
@@ -141,17 +137,11 @@ protected:
     /// List of file names to attach to the fragment shader for compiling.
     std::vector<std::string> m_fragmentShaderAttachements;
 
-    /// Ray entry and exit points for each pixel of each viewpoint.
-    std::vector< ::Ogre::TexturePtr> m_entryPointsTextures;
-
 private:
     void compileShaderPrograms(const std::string& _vpPPDefines, const std::string& _fpPPDefines);
 
     /// Creates the proxy geometry defining the entry points for rays.
     void initEntryPoints();
-
-    /// Renders the proxy geometry to fill the entry point texture.
-    void computeEntryPointsTexture();
 
     /// Compute the focal length in camera space.
     void computeRealFocalLength();
@@ -198,10 +188,8 @@ private:
 
     ::fwRenderOgre::Layer::wptr m_layer;
 
-    /// Autostereo listener
-    compositor::listener::AutoStereoCompositorListener* m_autostereoListener;
-
-    ::Ogre::Rectangle2D* m_fullScreenQuad;
+    /// Name of the compositor used to compute
+    std::string m_entryPointsCompositor;
 };
 
 //-----------------------------------------------------------------------------

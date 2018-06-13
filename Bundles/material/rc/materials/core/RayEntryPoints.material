@@ -71,9 +71,11 @@ fragment_program RayEntryPoints_NearPlane_FP glsl
 
 material RayEntryPoints
 {
-    technique
+    technique BackFacesMax
     {
-        pass BackFacesMax
+        scheme VolumeEntries_BackFacesMax
+
+        pass
         {
             scene_blend src_colour dest_colour
             scene_blend_op min
@@ -81,6 +83,7 @@ material RayEntryPoints
             depth_write off
             cull_hardware clockwise
             cull_software none
+
 
             vertex_program_ref RayEntryPoints_VP
             {
@@ -90,8 +93,13 @@ material RayEntryPoints
             {
             }
         }
+    }
 
-        pass BackFaces
+    technique BackFaces
+    {
+        scheme VolumeEntries_BackFaces
+
+        pass
         {
             scene_blend src_colour dest_colour
             scene_blend_op min
@@ -109,8 +117,13 @@ material RayEntryPoints
             {
             }
         }
+    }
 
-        pass FrontFaces
+    technique FrontFaces
+    {
+        scheme VolumeEntries_FrontFaces
+
+        pass
         {
             scene_blend src_colour dest_colour
             scene_blend_op min
@@ -128,8 +141,14 @@ material RayEntryPoints
             {
             }
         }
+    }
+}
 
-        pass NearPlane
+material RayEntryPointsNearClipping
+{
+    technique
+    {
+        pass
         {
             scene_blend src_colour dest_colour
             scene_blend_op min

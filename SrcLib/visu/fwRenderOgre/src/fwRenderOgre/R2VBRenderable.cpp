@@ -112,7 +112,7 @@ void R2VBRenderable::_updateRenderQueue(::Ogre::RenderQueue* _queue)
             m_dirty = false;
         }
         // Add the output vertex buffer in the render queue
-        _queue->addRenderable(this);
+        _queue->addRenderable(this, mRenderQueueID, mRenderQueueID);
     }
 }
 

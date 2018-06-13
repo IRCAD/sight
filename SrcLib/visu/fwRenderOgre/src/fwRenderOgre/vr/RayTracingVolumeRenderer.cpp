@@ -15,14 +15,12 @@
 
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 
-#include <OGRE/OgreException.h>
 #include <OGRE/OgreGpuProgramManager.h>
 #include <OGRE/OgreHardwarePixelBuffer.h>
 #include <OGRE/OgreHighLevelGpuProgram.h>
 #include <OGRE/OgreHighLevelGpuProgramManager.h>
 #include <OGRE/OgreLight.h>
 #include <OGRE/OgreMaterial.h>
-#include <OGRE/OgreRenderTexture.h>
 #include <OGRE/OgreTexture.h>
 #include <OGRE/OgreTextureManager.h>
 #include <OGRE/OgreViewport.h>
@@ -84,9 +82,6 @@ struct RayTracingVolumeRenderer::CameraListener : public ::Ogre::Camera::Listene
                     }
                 }
 
-                // Recompute the focal length in case the camera moved.
-                m_renderer->computeEntryPointsTexture();
-
                 m_frameId = frameId;
             }
         }
@@ -138,39 +133,25 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
     m_opacityCorrectionFactor(200.f),
     m_focalLength(0.f),
     m_cameraListener(nullptr),
-    m_layer(layer),
-    m_autostereoListener(nullptr),
-    m_fullScreenQuad(new ::Ogre::Rectangle2D())
+    m_layer(layer)
 {
-    m_fullScreenQuad->setCorners(-1, 1, 1, -1);
+    const std::uint8_t numViewPoints = this->getLayer()->getNumberOfCameras();
 
-    const unsigned int numViewPoints = this->getLayer()->getNumberOfCameras();
-
-    const float wRatio = numViewPoints != 1 && numViewPoints != 2 ? 3.f / static_cast<float>(numViewPoints) : 1.f;
-    const float hRatio = numViewPoints != 1 ? 0.5f : 1.f;
-
-    const float width  = static_cast< float >(m_camera->getViewport()->getActualWidth()) * wRatio;
-    const float height = static_cast< float >(m_camera->getViewport()->getActualHeight()) * hRatio;
-
-    for(unsigned int i = 0; i < numViewPoints; ++i)
-    {
-        m_entryPointsTextures.push_back(::Ogre::TextureManager::getSingleton().createManual(
-                                            m_parentId + "_entryPointsTexture" + std::to_string(i),
-                                            ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-                                            ::Ogre::TEX_TYPE_2D,
-                                            static_cast< unsigned int >(width),
-                                            static_cast< unsigned int >(height),
-                                            1,
-                                            0,
-                                            ::Ogre::PF_FLOAT32_GR,
-                                            ::Ogre::TU_RENDERTARGET ));
-    }
+    ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
+    auto viewport = layer->getViewport();
 
     if(numViewPoints > 1)
     {
-        m_autostereoListener = new compositor::listener::AutoStereoCompositorListener(&m_entryPointsTextures);
-        ::Ogre::MaterialManager::getSingleton().addListener(m_autostereoListener);
+        m_entryPointsCompositor = "VolumeEntriesStereo" + std::to_string(numViewPoints);
     }
+    else // Mono rendering
+    {
+        m_entryPointsCompositor = "VolumeEntries";
+    }
+
+    auto compositorInstance = compositorManager.addCompositor(viewport, m_entryPointsCompositor, 0);
+    SLM_ERROR_IF("Compositor '" + m_entryPointsCompositor + "' not found.", compositorInstance == nullptr);
+    compositorInstance->setEnabled(true);
 
     // First check that we did not already instance Shared parameters
     // This can happen when reinstancing this class (e.g. switching 3D mode)
@@ -195,16 +176,9 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
     m_RTVSharedParameters->addConstantDefinition("u_tfWindow", ::Ogre::GCT_FLOAT2);
     m_RTVSharedParameters->setNamedConstant("u_opacityCorrectionFactor", m_opacityCorrectionFactor);
 
-    for(::Ogre::TexturePtr entryPtsText : m_entryPointsTextures)
-    {
-        ::Ogre::RenderTexture* renderTexture = entryPtsText->getBuffer()->getRenderTarget();
-        renderTexture->addViewport(m_camera);
-    }
-
     m_fragmentShaderAttachements.push_back("TransferFunction_FP");
-    this->createRayTracingMaterial();
-
     this->initEntryPoints();
+    this->createRayTracingMaterial();
 
     this->setSampling(m_nbSlices);
 }
@@ -213,15 +187,7 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
 
 RayTracingVolumeRenderer::~RayTracingVolumeRenderer()
 {
-    delete m_fullScreenQuad;
     m_camera->removeListener(m_cameraListener);
-
-    if(m_autostereoListener)
-    {
-        ::Ogre::MaterialManager::getSingleton().removeListener(m_autostereoListener);
-        delete m_autostereoListener;
-        m_autostereoListener = nullptr;
-    }
 
     m_camera->removeListener(m_cameraListener);
     delete m_cameraListener;
@@ -233,11 +199,11 @@ RayTracingVolumeRenderer::~RayTracingVolumeRenderer()
     m_sceneManager->destroyManualObject(m_entryPointGeometry);
     m_sceneManager->destroyMovableObject(m_proxyGeometry);
 
-    for(auto& texture : m_entryPointsTextures)
-    {
-        ::Ogre::TextureManager::getSingleton().remove(texture->getHandle());
-    }
-    m_entryPointsTextures.clear();
+    ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
+    auto viewport = this->getLayer()->getViewport();
+
+    compositorManager.setCompositorEnabled(viewport, m_entryPointsCompositor, false);
+    compositorManager.removeCompositor(viewport, m_entryPointsCompositor);
 
     m_RTVSharedParameters->removeAllConstantDefinitions();
 }
@@ -290,7 +256,7 @@ void RayTracingVolumeRenderer::imageUpdate(::fwData::Image::sptr image, ::fwData
 
 //-----------------------------------------------------------------------------
 
-void RayTracingVolumeRenderer::tfUpdate(fwData::TransferFunction::sptr tf)
+void RayTracingVolumeRenderer::tfUpdate(fwData::TransferFunction::sptr)
 {
     FW_PROFILE("TF Update")
     if(!m_preIntegratedRendering)
@@ -301,7 +267,9 @@ void RayTracingVolumeRenderer::tfUpdate(fwData::TransferFunction::sptr tf)
         auto pass = technique->getPass(0);
         m_gpuTF.lock()->bind(pass, s_TF_TEXUNIT_NAME, m_RTVSharedParameters);
     }
+    m_proxyGeometry->setVisible(false);
     m_proxyGeometry->computeGrid();
+    m_proxyGeometry->setVisible(true);
 }
 
 //-----------------------------------------------------------------------------
@@ -430,28 +398,6 @@ void RayTracingVolumeRenderer::clipImage(const ::Ogre::AxisAlignedBox& clippingB
 
 //-----------------------------------------------------------------------------
 
-void RayTracingVolumeRenderer::resizeViewport(int w, int h)
-{
-    const auto numViewPoints = m_entryPointsTextures.size();
-    const float wRatio       = numViewPoints != 1 && numViewPoints != 2 ? 3.f / static_cast<float>(numViewPoints) : 1.f;
-    const float hRatio       = numViewPoints != 1 ? 0.5f : 1.f;
-
-    for(::Ogre::TexturePtr entryPtsTexture : m_entryPointsTextures)
-    {
-        entryPtsTexture->freeInternalResources();
-
-        entryPtsTexture->setWidth(static_cast< ::Ogre::uint32>(static_cast< float >(w) * wRatio));
-        entryPtsTexture->setHeight(static_cast< ::Ogre::uint32>(static_cast< float >(h) * hRatio));
-
-        entryPtsTexture->createInternalResources();
-
-        ::Ogre::RenderTexture* renderTexture = entryPtsTexture->getBuffer()->getRenderTarget();
-        renderTexture->addViewport(m_camera);
-    }
-}
-
-//-----------------------------------------------------------------------------
-
 void RayTracingVolumeRenderer::setRayCastingPassTextureUnits(Ogre::Pass* _rayCastingPass,
                                                              const std::string& _fpPPDefines) const
 {
@@ -498,7 +444,13 @@ void RayTracingVolumeRenderer::setRayCastingPassTextureUnits(Ogre::Pass* _rayCas
     // Entry points texture
     texUnitState = _rayCastingPass->createTextureUnitState();
     texUnitState->setName("entryPoints");
-    texUnitState->setTexture(m_entryPointsTextures[0]);
+
+    if(this->getLayer()->getNumberOfCameras() == 1)
+    {
+        texUnitState->setContentType(::Ogre::TextureUnitState::CONTENT_COMPOSITOR);
+        texUnitState->setCompositorReference("VolumeEntries", "VolumeEntryPoints");
+    }
+
     texUnitState->setTextureFiltering(::Ogre::TFO_NONE);
     texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
 
@@ -624,6 +576,8 @@ void RayTracingVolumeRenderer::createRayTracingMaterial()
     ///////////////////////////////////////////////////////////////////////////
     /// Setup texture unit states
     this->setRayCastingPassTextureUnits(pass, fpPPDefines);
+
+    m_entryPointGeometry->setMaterialName(0, m_currentMtlName);
 }
 
 //-----------------------------------------------------------------------------
@@ -655,79 +609,13 @@ void RayTracingVolumeRenderer::initEntryPoints()
     m_proxyGeometry = ::fwRenderOgre::vr::GridProxyGeometry::New(this->m_parentId + "_GridProxyGeometry",
                                                                  m_sceneManager, m_3DOgreTexture,
                                                                  m_gpuTF.lock(), "RayEntryPoints");
+
+    m_proxyGeometry->setRenderQueueGroup(101);
+    m_proxyGeometry->setVisible(true);
     m_volumeSceneNode->attachObject(m_proxyGeometry);
 
     m_cameraListener = new CameraListener(this);
     m_camera->addListener(m_cameraListener);
-}
-
-//-----------------------------------------------------------------------------
-
-void RayTracingVolumeRenderer::computeEntryPointsTexture()
-{
-    m_proxyGeometry->setVisible(false);
-
-    ::Ogre::RenderOperation renderOp;
-    m_proxyGeometry->getRenderOperation(renderOp);
-    m_entryPointGeometry->setMaterialName(0, m_currentMtlName);
-
-    ::Ogre::Matrix4 worldMat;
-    m_proxyGeometry->getWorldTransforms(&worldMat);
-
-    ::Ogre::RenderOperation fsRenderOp;
-    m_fullScreenQuad->getRenderOperation(fsRenderOp);
-
-    std::uint8_t textureIdx = 0;
-    for(::Ogre::TexturePtr entryPtsText : m_entryPointsTextures)
-    {
-        ::Ogre::Matrix4 projMat = this->getLayer()->getCameraProjMat(textureIdx++);
-
-        ::Ogre::Viewport* entryPtsVp = entryPtsText->getBuffer()->getRenderTarget()->getViewport(0);
-        entryPtsVp->clear(::Ogre::FBT_COLOUR | ::Ogre::FBT_DEPTH | ::Ogre::FBT_STENCIL, ::Ogre::ColourValue::White);
-
-        // FIRST STEP - Back Faces max: find the exit points of the geometry.
-        ::Ogre::RenderSystem* rs = ::Ogre::Root::getSingleton().getRenderSystem();
-        rs->setStencilCheckEnabled(true);
-
-        // Set the stencil buffer to 1 where back faces are rasterized.
-        rs->setStencilBufferParams(::Ogre::CMPF_ALWAYS_PASS, 0x1, 0xFFFFFFFF, 0xFFFFFFFF, ::Ogre::SOP_KEEP,
-                                   ::Ogre::SOP_KEEP,
-                                   ::Ogre::SOP_REPLACE);
-
-        ::Ogre::Pass* pass = m_proxyGeometry->getMaterial()->getTechnique(0)->getPass("BackFacesMax");
-        m_sceneManager->manualRender(&renderOp, pass, entryPtsVp, worldMat, m_camera->getViewMatrix(), projMat);
-
-        // SECOND STEP - Back Faces: find the closest back faces and initialize the entry points with their depths.
-        rs->setStencilCheckEnabled(false);
-        pass = m_proxyGeometry->getMaterial()->getTechnique(0)->getPass("BackFaces");
-        m_sceneManager->manualRender(&renderOp, pass, entryPtsVp, worldMat, m_camera->getViewMatrix(), projMat);
-
-        // THIRD STEP - Front Faces: update the entry points depths with the closest front faces occluding closest back
-        // faces.
-        rs->setStencilCheckEnabled(true);
-
-        // Set the stencil buffer to 2 where front faces are rasterized.
-        rs->setStencilBufferParams(::Ogre::CMPF_ALWAYS_PASS, 0x2, 0xFFFFFFFF, 0xFFFFFFFF, ::Ogre::SOP_KEEP,
-                                   ::Ogre::SOP_KEEP,
-                                   ::Ogre::SOP_REPLACE);
-
-        pass = m_proxyGeometry->getMaterial()->getTechnique(0)->getPass("FrontFaces");
-        m_sceneManager->manualRender(&renderOp, pass, entryPtsVp, worldMat, m_camera->getViewMatrix(), projMat);
-
-        // FOURTH STEP - Near Plane: update the entry points depths with the near plane depth when when it is inside a
-        // brick.
-        // The stencil test passes if the current stencil buffer value is equal to 1.
-        // That is, where no front faces have been rasterized.
-        rs->setStencilBufferParams(::Ogre::CMPF_EQUAL, 0x1, 0xFFFFFFFF);
-
-        ::Ogre::Matrix4 identity;
-        pass = m_proxyGeometry->getMaterial()->getTechnique(0)->getPass("NearPlane");
-
-        m_sceneManager->manualRender(&fsRenderOp, pass, entryPtsVp, identity, m_camera->getViewMatrix(), projMat);
-
-        rs->setStencilCheckEnabled(false);
-        rs->setStencilBufferParams();
-    }
 }
 
 //-----------------------------------------------------------------------------

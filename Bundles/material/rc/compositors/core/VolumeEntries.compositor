@@ -1,0 +1,107 @@
+compositor VolumeEntries
+{
+    technique
+    {
+        texture VolumeEntryPoints target_width target_height PF_FLOAT32_GR chain_scope
+
+        target VolumeEntryPoints
+        {
+            input none
+
+            pass clear
+            {
+                buffers colour depth stencil
+                colour_value 1 1 1 1
+            }
+
+            pass stencil
+            {
+                check on
+                comp_func always_pass
+                ref_value 1
+                pass_op replace
+            }
+
+            pass render_scene
+            {
+                material_scheme VolumeEntries_BackFacesMax
+
+                first_render_queue 101
+                last_render_queue 101
+            }
+        }
+
+        target VolumeEntryPoints
+        {
+            input none
+
+            pass stencil
+            {
+                check off
+            }
+
+            pass render_scene
+            {
+                material_scheme VolumeEntries_BackFaces
+
+                first_render_queue 101
+                last_render_queue 101
+            }
+        }
+
+        target VolumeEntryPoints
+        {
+            input none
+
+            pass stencil
+            {
+                check on
+                comp_func always_pass
+                ref_value 2
+                pass_op replace
+            }
+
+            pass render_scene
+            {
+                material_scheme VolumeEntries_FrontFaces
+
+                first_render_queue 101
+                last_render_queue 101
+            }
+        }
+
+        target VolumeEntryPoints
+        {
+            input none
+
+            pass stencil
+            {
+                check on
+                comp_func equal
+                ref_value 1
+                pass_op keep
+            }
+
+            pass render_quad
+            {
+                material RayEntryPointsNearClipping
+            }
+        }
+
+        target VolumeEntryPoints
+        {
+            input none
+
+            pass stencil
+            {
+                check off
+            }
+        }
+
+        target_output
+        {
+            input previous
+        }
+
+    }
+}
