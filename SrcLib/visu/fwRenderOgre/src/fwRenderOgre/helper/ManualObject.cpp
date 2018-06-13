@@ -6,6 +6,8 @@
 
 #include "fwRenderOgre/helper/ManualObject.hpp"
 
+#include <OgreMath.h>
+
 namespace fwRenderOgre
 {
 
@@ -142,6 +144,136 @@ void ManualObject::createCone(::Ogre::ManualObject* _object,
         p2 = rot * p2;
 
         normal = rot * normal;
+    }
+    _object->end();
+}
+
+//------------------------------------------------------------------------------
+
+void ManualObject::createCube(::Ogre::ManualObject* _object,
+                              const std::string& _material,
+                              const ::Ogre::ColourValue& _color,
+                              float _length)
+{
+    float length = _length/2.0f;
+
+    _object->begin(_material);
+    _object->colour(_color);
+
+    _object->position(-length, -length, length);
+    _object->normal(Ogre::Vector3::UNIT_Z);
+    _object->position(-length, length, length);
+    _object->normal(Ogre::Vector3::UNIT_Z);
+    _object->position(length, length, length);
+    _object->normal(Ogre::Vector3::UNIT_Z);
+    _object->position(length, -length, length);
+    _object->normal(Ogre::Vector3::UNIT_Z);
+
+    _object->triangle(0, 1, 2);
+    _object->triangle(2, 3, 0);
+
+    _object->position(-length, -length, -length);
+    _object->normal(Ogre::Vector3::NEGATIVE_UNIT_Z);
+    _object->position(-length, length, -length);
+    _object->normal(Ogre::Vector3::NEGATIVE_UNIT_Z);
+    _object->position(length, length, -length);
+    _object->normal(Ogre::Vector3::NEGATIVE_UNIT_Z);
+    _object->position(length, -length, -length);
+    _object->normal(Ogre::Vector3::NEGATIVE_UNIT_Z);
+
+    _object->triangle(4, 5, 6);
+    _object->triangle(6, 7, 4);
+
+    _object->position(-length, -length, length);
+    _object->normal(Ogre::Vector3::NEGATIVE_UNIT_X);
+    _object->position(-length, length, length);
+    _object->normal(Ogre::Vector3::NEGATIVE_UNIT_X);
+    _object->position(-length, length, -length);
+    _object->normal(Ogre::Vector3::NEGATIVE_UNIT_X);
+    _object->position(-length, -length, -length);
+    _object->normal(Ogre::Vector3::NEGATIVE_UNIT_X);
+
+    _object->triangle(8, 9, 10);
+    _object->triangle(10, 11, 8);
+
+    _object->position(length, -length, length);
+    _object->normal(Ogre::Vector3::UNIT_X);
+    _object->position(length, length, length);
+    _object->normal(Ogre::Vector3::UNIT_X);
+    _object->position(length, length, -length);
+    _object->normal(Ogre::Vector3::UNIT_X);
+    _object->position(length, -length, -length);
+    _object->normal(Ogre::Vector3::UNIT_X);
+
+    _object->triangle(12, 13, 14);
+    _object->triangle(14, 15, 12);
+
+    _object->position(-length, -length, length);
+    _object->normal(Ogre::Vector3::NEGATIVE_UNIT_Y);
+    _object->position(length, -length, length);
+    _object->normal(Ogre::Vector3::NEGATIVE_UNIT_Y);
+    _object->position(length, -length, -length);
+    _object->normal(Ogre::Vector3::NEGATIVE_UNIT_Y);
+    _object->position(-length, -length, -length);
+    _object->normal(Ogre::Vector3::NEGATIVE_UNIT_Y);
+
+    _object->triangle(16, 17, 18);
+    _object->triangle(18, 19, 16);
+
+    _object->position(-length, length, length);
+    _object->normal(Ogre::Vector3::UNIT_Y);
+    _object->position(length, length, length);
+    _object->normal(Ogre::Vector3::UNIT_Y);
+    _object->position(length, length, -length);
+    _object->normal(Ogre::Vector3::UNIT_Y);
+    _object->position(-length, length, -length);
+    _object->normal(Ogre::Vector3::UNIT_Y);
+
+    _object->triangle(20, 21, 22);
+    _object->triangle(22, 23, 20);
+
+    _object->end();
+}
+
+//------------------------------------------------------------------------------
+
+void ManualObject::createSphere(::Ogre::ManualObject* _object,
+                                const std::string& _material,
+                                const ::Ogre::ColourValue& _color,
+                                float _radius,
+                                unsigned int _sample)
+{
+    _object->begin(_material);
+    _object->colour(_color);
+
+    const float deltaRing = (static_cast< float >(::Ogre::Math::PI) / static_cast< float >(_sample));
+    const float deltaSeg  = (2 * static_cast< float >(::Ogre::Math::PI) / static_cast< float >(_sample));
+    ::Ogre::uint32 index = 0;
+
+    for(unsigned ring = 0; ring <= _sample; ++ring)
+    {
+        const float r0 = _radius * sinf(static_cast< float >(ring) * deltaRing);
+        const float y0 = _radius * cosf(static_cast< float >(ring) * deltaRing);
+
+        for(unsigned seg = 0; seg <= _sample; ++seg)
+        {
+            const float x0 = r0 * sinf(static_cast< float >(seg) * deltaSeg);
+            const float z0 = r0 * cosf(static_cast< float >(seg) * deltaSeg);
+
+            _object->position( x0, y0, z0);
+            _object->normal(::Ogre::Vector3(x0, y0, z0).normalisedCopy());
+
+            if (ring != _sample)
+            {
+                _object->index(index + _sample + 1);
+                _object->index(index);
+                _object->index(index + _sample);
+                _object->index(index + _sample + 1);
+                _object->index(index + 1);
+                _object->index(index);
+                ++index;
+            }
+        }
     }
     _object->end();
 }
