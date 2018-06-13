@@ -739,7 +739,6 @@
         <!-- *************************** End Connections *************************** -->
 
         <start uid="mainView" />
-        <start uid="frameWriter" />
         <start uid="extractor" />
         <start uid="register" />
         <start uid="frameGrabber" />
