@@ -30,7 +30,7 @@ namespace action
    </service>
    @endcode
  * @subsection In-Out In-Out
- * - \b image [::fwData::Image]: image containing the landarks field.
+ * - \b image [::fwData::Image]: image containing the field of landmarks.
  */
 class UIMEASUREMENT_CLASS_API RemoveLandmark : public ::fwGui::IActionSrv
 {
