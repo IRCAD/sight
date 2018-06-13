@@ -40,11 +40,11 @@ namespace ioVTK
  *
  * @code{.xml}
    <service type="::ioVTK::SImageWriter">
-       <inout key="data" uid="..." />
+       <in key="data" uid="..." />
        <file>...</file>
    </service>
    @endcode
- * @subsection In-Out In-Out
+ * @subsection Input Input
  * - \b data [::fwData::Image]: image to save.
  * @subsection Configuration Configuration
  * - \b file (optional): path of the file to save, if it is not defined, 'configureWithIHM()' should be called to define
@@ -87,7 +87,7 @@ public:
      * Returns \b true if the image saving is a success and \b false if it fails
      */
     IOVTK_API static bool saveImage( const ::boost::filesystem::path& imgFile,
-                                     const SPTR(::fwData::Image)& image,
+                                     const CSPTR(::fwData::Image)& image,
                                      const SPTR(JobCreatedSignalType)& sigJobCreated);
 
 protected:

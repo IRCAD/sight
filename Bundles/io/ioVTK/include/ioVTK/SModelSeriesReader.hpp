@@ -44,7 +44,7 @@ namespace ioVTK
    </service>
    @endcode
  * @subsection In-Out In-Out
- * - \b data [::fwMedData::ModelSeries]: model to save.
+ * - \b data [::fwMedData::ModelSeries]: model series that will contain the loaded meshes.
  * @subsection Configuration Configuration
  * - \b file (optional): path of the files to load, if it is not defined, 'configureWithIHM()' should be called to
  * define the path.

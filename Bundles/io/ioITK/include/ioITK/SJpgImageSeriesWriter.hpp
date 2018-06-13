@@ -28,11 +28,11 @@ namespace ioITK
  *
  * @code{.xml}
    <service type="::ioITK::SJpgImageSeriesWriter">
-       <inout key="data" uid="..." />
+       <in key="data" uid="..." />
        <folder>...</folder>
    </service>
    @endcode
- * @subsection In-Out In-Out
+ * @subsection Input Input
  * - \b data [::fwMedData::ImageSeries]: image series to save.
  * @subsection Configuration Configuration
  * - \b folder (optional): path of the folder, if it is not defined, 'configureWithIHM()' should be called to define

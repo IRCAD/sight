@@ -111,7 +111,7 @@ void SMeshWriter::updating()
     if(  this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
-        ::fwData::Mesh::csptr pMesh = this->getInOut< ::fwData::Mesh >(::fwIO::s_DATA_KEY);
+        ::fwData::Mesh::csptr pMesh = this->getInput< ::fwData::Mesh >(::fwIO::s_DATA_KEY);
         if (!pMesh)
         {
             FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "18.0");

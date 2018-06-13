@@ -27,11 +27,11 @@ namespace ioITK
  *
  * @code{.xml}
    <service type="::ioITK::InrImageWriterService">
-       <inout key="data" uid="..." />
+       <in key="data" uid="..." />
        <file>...</file>
    </service>
    @endcode
- * @subsection In-Out In-Out
+ * @subsection Input Input
  * - \b data [::fwData::Image]: image to save.
  * @subsection Configuration Configuration
  * - \b file (optional): path of the file to save, if it not defined, 'configureWithIHM()' should be called to define
@@ -47,7 +47,7 @@ public:
 
     IOITK_API virtual ~InrImageWriterService() noexcept;
 
-    IOITK_API static void saveImage( const ::boost::filesystem::path& inrFile, const SPTR(::fwData::Image)& image );
+    IOITK_API static void saveImage( const ::boost::filesystem::path& inrFile, const CSPTR(::fwData::Image)& image );
 
 protected:
 

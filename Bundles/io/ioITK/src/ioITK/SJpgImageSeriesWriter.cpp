@@ -131,7 +131,7 @@ void SJpgImageSeriesWriter::updating()
     if( this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
-        ::fwMedData::ImageSeries::sptr imageSeries = this->getInOut< ::fwMedData::ImageSeries >(::fwIO::s_DATA_KEY);
+        ::fwMedData::ImageSeries::csptr imageSeries = this->getInput< ::fwMedData::ImageSeries >(::fwIO::s_DATA_KEY);
         if (!imageSeries)
         {
             FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "18.0");

@@ -116,13 +116,13 @@ void SImageSeriesWriter::updating()
     {
         // Retrieve dataStruct associated with this service
 
-        ::fwMedData::ImageSeries::sptr iseries = this->getInOut< ::fwMedData::ImageSeries >(::fwIO::s_DATA_KEY);
+        ::fwMedData::ImageSeries::csptr iseries = this->getInput< ::fwMedData::ImageSeries >(::fwIO::s_DATA_KEY);
         if (!iseries)
         {
             FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "18.0");
             iseries = this->getObject< ::fwMedData::ImageSeries >();
         }
-        const ::fwData::Image::sptr& associatedImage = iseries->getImage();
+        const ::fwData::Image::csptr& associatedImage = iseries->getImage();
         SLM_ASSERT("associatedImage not instanced", associatedImage);
 
         ::fwGui::Cursor cursor;

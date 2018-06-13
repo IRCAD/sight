@@ -103,7 +103,7 @@ void JpgImageWriterService::info(std::ostream& _sstream )
 
 //------------------------------------------------------------------------------
 
-void JpgImageWriterService::saveImage(const ::boost::filesystem::path& imgPath, const SPTR(::fwData::Image)& img)
+void JpgImageWriterService::saveImage(const ::boost::filesystem::path& imgPath, const CSPTR(::fwData::Image)& img)
 {
     SLM_TRACE_FUNC();
     ::fwItkIO::JpgImageWriter::sptr writer = ::fwItkIO::JpgImageWriter::New();
@@ -145,7 +145,7 @@ void JpgImageWriterService::updating()
     if( this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
-        ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(::fwIO::s_DATA_KEY);
+        ::fwData::Image::csptr image = this->getInput< ::fwData::Image >(::fwIO::s_DATA_KEY);
         if (!image)
         {
             FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "18.0");

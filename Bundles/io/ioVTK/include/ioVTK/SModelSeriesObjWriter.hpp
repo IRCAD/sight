@@ -44,11 +44,11 @@ namespace ioVTK
  *
  * @code{.xml}
    <service type="::ioVTK::SModelSeriesObjWriter">
-       <inout key="data" uid="..." />
+       <in key="data" uid="..." />
        <folder>...</folder>
    </service>
    @endcode
- * @subsection In-Out In-Out
+ * @subsection Input Input
  * - \b data [::fwMedData::ModelSeries]: model to save.
  * @subsection Configuration Configuration
  * - \b folder (optional): path of the folder, if it is not defined, 'configureWithIHM()' should be called to define

@@ -40,14 +40,14 @@ namespace ioVTK
  *
  * @code{.xml}
    <service type="::ioVTK::SImageSeriesWriter">
-       <inout key="data" uid="..." />
+       <in key="data" uid="..." />
        <file>...</file>
    </service>
    @endcode
- * @subsection In-Out In-Out
+ * @subsection Input Input
  * - \b data [::fwMedData::ImageSeries]: image series to save.
  * @subsection Configuration Configuration
- * - \b file (optional): path of the image to load, if it is not defined, 'configureWithIHM()' should be called to
+ * - \b file (optional): path of the image to save, if it is not defined, 'configureWithIHM()' should be called to
  * define the path.
  */
 class IOVTK_CLASS_API SImageSeriesWriter : public ::fwIO::IWriter

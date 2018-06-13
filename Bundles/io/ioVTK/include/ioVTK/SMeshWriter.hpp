@@ -40,11 +40,11 @@ namespace ioVTK
  *
  * @code{.xml}
    <service type="::ioVTK::SMeshWriter">
-       <inout key="data" uid="..." />
+       <in key="data" uid="..." />
        <file>...</file>
    </service>
    @endcode
- * @subsection In-Out In-Out
+ * @subsection Input Input
  * - \b data [::fwData::Mesh]: mesh to save.
  * @subsection Configuration Configuration
  * - \b file (optional): path of the file to save, if it is not defined, 'configureWithIHM()' should be called to define

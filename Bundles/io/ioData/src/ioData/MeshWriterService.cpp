@@ -91,7 +91,7 @@ void MeshWriterService::updating()
     if(this->hasLocationDefined())
     {
         // Retrieve object
-        ::fwData::Mesh::sptr mesh = this->getInOut< ::fwData::Mesh >(::fwIO::s_DATA_KEY);
+        ::fwData::Mesh::csptr mesh = this->getInput< ::fwData::Mesh >(::fwIO::s_DATA_KEY);
         if (!mesh)
         {
             FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "18.0");

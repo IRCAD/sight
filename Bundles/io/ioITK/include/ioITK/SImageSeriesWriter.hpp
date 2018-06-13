@@ -24,12 +24,12 @@ namespace ioITK
  *
  * @code{.xml}
    <service type="::ioITK::SImageSeriesWriter">
-       <inout key="data" uid="..." />
+       <in key="data" uid="..." />
        <file>...</file>
    </service>
    @endcode
- * @subsection In-Out In-Out
- * - \b data [::fwMedData::ImageSeries]: image series  to save.
+ * @subsection Input Input
+ * - \b data [::fwMedData::ImageSeries]: image series to save.
  * @subsection Configuration Configuration
  * - \b file (optional): path of the file to save, if it not defined, 'configureWithIHM()' should be called to define
  * the path.

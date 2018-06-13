@@ -139,7 +139,7 @@ void SModelSeriesWriter::updating()
     if(  this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
-        ::fwMedData::ModelSeries::sptr modelSeries = this->getInOut< ::fwMedData::ModelSeries >(::fwIO::s_DATA_KEY);
+        ::fwMedData::ModelSeries::csptr modelSeries = this->getInput< ::fwMedData::ModelSeries >(::fwIO::s_DATA_KEY);
         if (!modelSeries)
         {
             FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "18.0");
@@ -151,7 +151,7 @@ void SModelSeriesWriter::updating()
         cursor.setCursor(::fwGui::ICursor::BUSY);
 
         const ::fwMedData::ModelSeries::ReconstructionVectorType& recs = modelSeries->getReconstructionDB();
-        for(const SPTR(::fwData::Reconstruction)& rec :  recs)
+        for(const ::fwData::Reconstruction::csptr& rec :  recs)
         {
             SLM_ASSERT("Reconstruction from model series is not instanced", rec);
             ::fwData::Mesh::sptr mesh = rec->getMesh();

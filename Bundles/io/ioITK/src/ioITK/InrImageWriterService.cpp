@@ -104,7 +104,7 @@ void InrImageWriterService::info(std::ostream& _sstream )
 
 //------------------------------------------------------------------------------
 
-void InrImageWriterService::saveImage( const ::boost::filesystem::path& inrFile, const ::fwData::Image::sptr& image )
+void InrImageWriterService::saveImage( const ::boost::filesystem::path& inrFile, const ::fwData::Image::csptr& image )
 {
     SLM_TRACE_FUNC();
     ::fwItkIO::ImageWriter::sptr myWriter = ::fwItkIO::ImageWriter::New();
@@ -144,7 +144,7 @@ void InrImageWriterService::updating()
     if( this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
-        ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(::fwIO::s_DATA_KEY);
+        ::fwData::Image::csptr image = this->getInput< ::fwData::Image >(::fwIO::s_DATA_KEY);
         if (!image)
         {
             FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "18.0");

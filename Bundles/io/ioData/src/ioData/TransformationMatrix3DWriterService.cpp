@@ -106,8 +106,8 @@ void TransformationMatrix3DWriterService::updating()
     if(this->hasLocationDefined())
     {
         // Retrieve object
-        ::fwData::TransformationMatrix3D::sptr matrix =
-            this->getInOut< ::fwData::TransformationMatrix3D >(::fwIO::s_DATA_KEY);
+        ::fwData::TransformationMatrix3D::csptr matrix =
+            this->getInput< ::fwData::TransformationMatrix3D >(::fwIO::s_DATA_KEY);
         if (!matrix)
         {
             FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "18.0");
