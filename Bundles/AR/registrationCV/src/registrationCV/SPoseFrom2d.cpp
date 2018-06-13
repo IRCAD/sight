@@ -97,23 +97,18 @@ void SPoseFrom2d::starting()
     ::fwData::PointList::sptr pl = this->getInOut< ::fwData::PointList >(s_POINTLIST_INOUT);
     if(pl)
     {
-        pl->clear();
-        pl->pushBack(::fwData::Point::New(-halfWidth,  halfWidth, 0));
-        pl->pushBack(::fwData::Point::New( halfWidth,  halfWidth, 0));
-        pl->pushBack(::fwData::Point::New( halfWidth, -halfWidth, 0));
-        pl->pushBack(::fwData::Point::New(-halfWidth, -halfWidth, 0));
-
-        const ::fwData::PointList::PointListContainer points = pl->getPoints();
-        for(size_t i = 0; i < 4; ++i)
+        for(size_t i = 0; i < m_3dModel.size(); ++i)
         {
-            const ::fwData::Point::sptr point = points.at(i);
-            point->setField(::fwDataTools::fieldHelper::Image::m_labelId, ::fwData::String::New(std::to_string(i)));
+            const ::cv::Point3f cvPoint        = m_3dModel.at(i);
+            const ::fwData::Point::sptr point  = ::fwData::Point::New(cvPoint.x, cvPoint.y, cvPoint.z);
+            const ::fwData::String::sptr label = ::fwData::String::New(std::to_string(i));
+            point->setField(::fwDataTools::fieldHelper::Image::m_labelId, label);
+            pl->pushBack(point);
         }
 
         auto sig = pl->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
         sig->asyncEmit();
     }
-
 }
 
 //-----------------------------------------------------------------------------
@@ -124,6 +119,11 @@ void SPoseFrom2d::stopping()
     m_3dModel.clear();
     m_lastTimestamp = 0;
     m_isInitialized = false;
+
+    ::fwData::PointList::sptr pl = this->getInOut< ::fwData::PointList >(s_POINTLIST_INOUT);
+    pl->clear();
+    auto sig = pl->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+    sig->asyncEmit();
 }
 
 //-----------------------------------------------------------------------------
