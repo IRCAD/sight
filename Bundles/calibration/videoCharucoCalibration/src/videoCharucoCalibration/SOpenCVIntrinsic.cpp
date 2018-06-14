@@ -141,8 +141,8 @@ void SOpenCVIntrinsic::updating()
 
         ::cv::Mat cameraMatrix;
         std::vector<float> distCoeffs;
-        std::vector<cv::Mat> rvecs;
-        std::vector<cv::Mat> tvecs;
+        std::vector< ::cv::Mat> rvecs;
+        std::vector< ::cv::Mat> tvecs;
         ::cv::Size2i imgsize(static_cast<int>(img->getSize()[0]), static_cast<int>(img->getSize()[1]));
 
         double err = ::cv::aruco::calibrateCameraCharuco(cornersPoints, ids, m_board, imgsize, cameraMatrix, distCoeffs,
@@ -172,7 +172,7 @@ void SOpenCVIntrinsic::updating()
                     }
                     mat3D->setCoefficient(i, 3, tmat.at< double >(static_cast<int>(i)));
                 }
-                //::fwDataTools::TransformationMatrix3D::invert(mat3D, mat3D);
+
                 poseCamera->getContainer().push_back(mat3D);
                 auto sig = poseCamera->signal< ::fwData::Vector::AddedObjectsSignalType >(
                     ::fwData::Vector::s_ADDED_OBJECTS_SIG);

@@ -14,7 +14,7 @@
 
 #include <iostream>
 
-namespace po = boost::program_options;
+namespace po = ::boost::program_options;
 
 //------------------------------------------------------------------------------
 
@@ -58,7 +58,7 @@ int main(int argc, char** argv)
                 " nmberOfSquarePerLength nmberOfSquarePerWidth imageWitdhInPixels imageHeightInPixels squareSize markerSize outfile.(jpg|png|tiff|...) "
                       << std::endl;
             std::cout << options << std::endl;
-            return 0;
+            return EXIT_FAILURE;
         }
         po::notify(vm);
 
@@ -69,7 +69,7 @@ int main(int argc, char** argv)
         ::cv::Ptr< ::cv::aruco::Dictionary > dictionary =
             ::calibration3d::helper::generateArucoDictionary(squareX, squareY, markerBits);
 
-        cv::Ptr< ::cv::aruco::CharucoBoard > board =
+        ::cv::Ptr< ::cv::aruco::CharucoBoard > board =
             ::cv::aruco::CharucoBoard::create(static_cast<int>(squareX), static_cast<int>(squareY),
                                               squareLength, markerLength, dictionary);
 
@@ -80,12 +80,12 @@ int main(int argc, char** argv)
     catch(std::exception& e)
     {
         std::cerr << "Error: " << e.what() << std::endl;
-        return 0;
+        return EXIT_FAILURE;
     }
     catch(...)
     {
         std::cerr << "Unknown error" << std::endl;
-        return 0;
+        return EXIT_FAILURE;
     }
-    return 1;
+    return EXIT_SUCCESS;
 }

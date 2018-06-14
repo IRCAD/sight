@@ -2,8 +2,8 @@ link_directories(${CMAKE_PREFIX_PATH}/lib)
 
 fwLoadProperties()
 
-find_package (Boost COMPONENTS program_options REQUIRED)
-find_package(OpenCV REQUIRED core aruco)
+find_package (Boost QUIET COMPONENTS program_options REQUIRED)
+find_package(OpenCV QUIET REQUIRED core aruco)
 
 fwInclude(
     ${Boost_INCLUDE_DIRS}

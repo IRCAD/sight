@@ -141,6 +141,7 @@ void SOpenCVExtrinsic::updating()
         std::vector<std::vector< ::cv::Point2f > > imagePoints2;
         std::vector<std::vector<int> > ids1;
         std::vector<std::vector<int> > ids2;
+
         {
             const ::fwData::mt::ObjectReadLock calInfo1Lock(calInfo1);
             const ::fwData::mt::ObjectReadLock calInfo2Lock(calInfo2);
@@ -154,6 +155,11 @@ void SOpenCVExtrinsic::updating()
             ::arData::CalibrationInfo::PointListContainerType::iterator itr2    = ptlists2.begin();
             ::arData::CalibrationInfo::PointListContainerType::iterator itr1End = ptlists1.end();
 
+            imagePoints1.reserve(ptlists1.size());
+            ids1.reserve(ptlists1.size());
+            imagePoints2.reserve(ptlists2.size());
+            ids2.reserve(ptlists2.size());
+
             for(; itr1 != itr1End; ++itr1, ++itr2)
             {
 
@@ -163,6 +169,11 @@ void SOpenCVExtrinsic::updating()
                 std::vector< ::cv::Point2f > imgPoint2;
                 std::vector<int> tempIds1;
                 std::vector<int> tempIds2;
+
+                imgPoint1.reserve(ptList1->getPoints().size());
+                tempIds1.reserve(imgPoint1.size());
+                imgPoint2.reserve(ptList2->getPoints().size());
+                tempIds2.reserve(imgPoint2.size());
 
                 for(fwData::Point::csptr point : ptList1->getPoints())
                 {
@@ -197,10 +208,10 @@ void SOpenCVExtrinsic::updating()
 
         std::vector<float> distortionCoefficients1(5);
         std::vector<float> distortionCoefficients2(5);
-        const ::cv::Mat rotationMatrix    = cv::Mat::zeros(3, 3, CV_64F);
+        const ::cv::Mat rotationMatrix    = ::cv::Mat::zeros(3, 3, CV_64F);
         const ::cv::Mat translationVector = ::cv::Mat::zeros(3, 1, CV_64F);
-        const ::cv::Mat essentialMatrix   = cv::Mat::zeros(3, 3, CV_64F);
-        const ::cv::Mat fundamentalMatrix = cv::Mat::zeros(3, 3, CV_64F);
+        const ::cv::Mat essentialMatrix   = ::cv::Mat::zeros(3, 3, CV_64F);
+        const ::cv::Mat fundamentalMatrix = ::cv::Mat::zeros(3, 3, CV_64F);
 
         ::fwData::Image::sptr img = calInfo1->getImageContainer().front();
         ::cv::Size2i imgsize(static_cast<int>(img->getSize()[0]), static_cast<int>(img->getSize()[1]));
@@ -233,6 +244,7 @@ void SOpenCVExtrinsic::updating()
 
         ::cv::Mat allBoardCoord = ::cv::Mat::ones(3, (boardSize.width-1)*(boardSize.height-1), CV_64F);
         std::vector<int> allIds;
+        allIds.reserve((boardSize.width-1)*(boardSize.height-1));
 
         //We create a list of the charuco board's points coordinates
         for(int i = 0; i < (boardSize.width-1)*(boardSize.height-1); i++)
@@ -246,11 +258,18 @@ void SOpenCVExtrinsic::updating()
 
         std::vector<std::vector< ::cv::Point2f > > allPoints1;
         std::vector<std::vector< ::cv::Point2f > > allPoints2;
+
+        allPoints1.reserve(imagePoints1.size());
+        allPoints2.reserve(imagePoints1.size());
+
         for(size_t i = 0; i < imagePoints1.size(); i++)
         {
             std::vector< ::cv::Point2f > tempBoardCoords1;
             std::vector< ::cv::Point2f > boardCoords1;
             std::vector< ::cv::Point2f > imagePointsUndistored1;
+
+            boardCoords1.reserve(ids1[i].size());
+            imagePointsUndistored1.reserve(ids1[i].size());
 
             //Create the list of points present in the image with theire corresponding coordinates in the board
             for(size_t j = 0; j < ids1[i].size(); j++)
@@ -269,6 +288,8 @@ void SOpenCVExtrinsic::updating()
             ::cv::Mat H1             = ::cv::findHomography(boardCoords1, imagePoints1[i]);
             ::cv::Mat allBoardCoord1 = H1*allBoardCoord;
 
+            tempBoardCoords1.reserve((boardSize.width-1)*(boardSize.height-1));
+
             //Homogenize the new coordinates
             for(int j = 0; j < (boardSize.width-1)*(boardSize.height-1); j++)
             {
@@ -283,6 +304,10 @@ void SOpenCVExtrinsic::updating()
             std::vector< ::cv::Point2f > tempBoardCoords2;
             std::vector< ::cv::Point2f > boardCoords2;
             std::vector< ::cv::Point2f > imagePointsUndistored2;
+
+            boardCoords2.reserve(ids2[i].size());
+            imagePointsUndistored2.reserve(ids2[i].size());
+
             for(size_t j = 0; j < ids2[i].size(); j++)
             {
                 ::cv::Point2f temp(static_cast<float>(ids2[i][j]%(boardSize.width-1)+1)*m_squareSize,
@@ -292,6 +317,9 @@ void SOpenCVExtrinsic::updating()
             ::cv::Mat H2             = ::cv::findHomography(boardCoords2, imagePoints2[i]);
             ::cv::Mat allBoardCoord2 = H2*allBoardCoord;
             ::cv::undistortPoints(imagePoints2[i], imagePointsUndistored2, cameraMatrix2, distortionCoefficients2);
+
+            tempBoardCoords2.reserve((boardSize.width-1)*(boardSize.height-1));
+
             for(int j = 0; j < (boardSize.width-1)*(boardSize.height-1); j++)
             {
                 ::cv::Point2f temp(static_cast<float>(allBoardCoord2.at<double>(0, j)/allBoardCoord2.at<double>(2, j)),

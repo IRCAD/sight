@@ -110,7 +110,7 @@ private:
     int m_markerSizeInBits;
 
     /// Charuco dictionary
-    cv::Ptr< ::cv::aruco::Dictionary > m_dictionary;
+    ::cv::Ptr< ::cv::aruco::Dictionary > m_dictionary;
 
     /// Chessboard-aruco board
     ::cv::Ptr< ::cv::aruco::CharucoBoard > m_board;

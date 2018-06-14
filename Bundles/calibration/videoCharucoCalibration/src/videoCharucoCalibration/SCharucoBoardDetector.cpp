@@ -300,7 +300,7 @@ void SCharucoBoardDetector::updateCharucoBoardSize()
         std::uint8_t* frameBuff = const_cast< std::uint8_t*>( &buffer->getElement(0) );
 
         ::cv::Mat grayImg;
-        ::cv::Mat img = ::cvIO::FrameTL::moveToCv(tl, frameBuff);
+        const ::cv::Mat img = ::cvIO::FrameTL::moveToCv(tl, frameBuff);
         if (tl->getNumberOfComponents() == 1)
         {
             grayImg = img;

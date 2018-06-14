@@ -245,8 +245,8 @@ void calibratePointingTool(const ::fwData::Vector::csptr _matricesVector,
 
 //-----------------------------------------------------------------------------
 
-cv::Ptr<cv::aruco::Dictionary> generateArucoDictionary(const size_t _width, const size_t _height,
-                                                       const int _markerSizeInBits)
+cv::Ptr< ::cv::aruco::Dictionary> generateArucoDictionary(const size_t _width, const size_t _height,
+                                                          const int _markerSizeInBits)
 {
     //Determine which dictionary to use
     // nb of markers (< 50,< 100 < 250, < 1000)

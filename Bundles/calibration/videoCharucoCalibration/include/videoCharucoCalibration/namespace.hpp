@@ -11,10 +11,4 @@
 namespace videoCharucoCalibration
 {
 
-/// The namespace helper contains helpers used to calibrate cameras.
-namespace helper
-{
-
-} // namespace helper
-
 } // namespace videoCharucoCalibration

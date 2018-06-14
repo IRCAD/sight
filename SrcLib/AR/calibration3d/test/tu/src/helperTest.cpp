@@ -349,7 +349,7 @@ void helperTest::toolCalibration()
 
 //------------------------------------------------------------------------------
 
-void helperTest::generateChauroDict()
+void helperTest::generateCharucoDict()
 {
     //Test extrem cases
     int x[32] =
