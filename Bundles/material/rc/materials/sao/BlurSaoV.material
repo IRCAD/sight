@@ -3,8 +3,7 @@ fragment_program BlurSaoV_FP glsl
     source BlurSaoV_FP.glsl
     default_params
     {
-        param_named_auto u_vpHeight viewport_height
-        param_named_auto u_vpWidth viewport_width
+        param_named_auto u_viewport viewport_size
     }
 }
 

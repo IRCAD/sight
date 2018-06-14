@@ -18,8 +18,7 @@ fragment_program JFA_FP glsl
 
     default_params
     {
-        param_named_auto u_viewportWidth viewport_width
-        param_named_auto u_viewportHeight viewport_height
+        param_named_auto u_viewport viewport_size
         param_named u_passIndex float 0
         param_named u_nbPasses float 0
         param_named u_inputTexture int 0

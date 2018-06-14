@@ -39,8 +39,7 @@ uniform vec3 u_lightSpecular[MAX_LIGHTS];
 
 uniform float u_sampleDistance;
 
-uniform float u_viewportWidth;
-uniform float u_viewportHeight;
+uniform vec4 u_viewport;
 
 uniform float u_clippingNear;
 uniform float u_clippingFar;
@@ -54,10 +53,17 @@ uniform float u_opacityCorrectionFactor;
 #endif // PREINTEGRATION
 
 #if IDVR == 1
-uniform float u_countersinkSlope;
+uniform float u_csgAngleCos;
+// FIXME: find a new way to display the csg border.
 uniform float u_csgBorderThickness;
 uniform vec3 u_csgBorderColor;
-#endif
+uniform vec3 u_imageSpacing;
+#ifdef CSG_DEPTH_LINES
+// Number of image spacing units (millimeters usually) separating depth lines.
+uniform int u_depthLinesSpacing;
+uniform float u_depthLinesWidth;
+#endif // CSG_DEPTH_LINES
+#endif // IDVR == 1
 #if IDVR == 2
 uniform float u_aimcAlphaCorrection;
 #endif
@@ -65,11 +71,7 @@ uniform float u_aimcAlphaCorrection;
 uniform float u_vpimcAlphaCorrection;
 #endif
 
-#ifdef CSG_DEPTH_LINES
-uniform float u_depthLinesThreshold;
-#endif // CSG_DEPTH_LINES
-
-#if CSG_MODULATION == 4 || CSG_MODULATION == 5 || CSG_MODULATION == 6 || CSG_MODULATION == 7
+#if CSG_MODULATION == 4 || CSG_MODULATION == 5 || CSG_MODULATION == 6
 uniform float u_colorModulationFactor;
 #endif
 
@@ -124,16 +126,22 @@ vec3 gradientNormal(vec3 uvw)
 
 //-----------------------------------------------------------------------------
 
-vec3 getFragmentImageSpacePosition(in float depth, in mat4 invWorldViewProj)
+/// Converts OpenGL fragment coordinates to normalized device coordinates (NDC).
+vec3 fragCoordsToNDC(in vec3 fragCoord)
 {
-    // TODO: Simplify this -> uniforms
-    vec3 screenPos = vec3(gl_FragCoord.xy / vec2(u_viewportWidth, u_viewportHeight), depth);
-    screenPos -= 0.5;
-    screenPos *= 2.0;
+    vec3 ndcCoords  = vec3(fragCoord.xy * u_viewport.zw, fragCoord.z);
+    ndcCoords = (ndcCoords - 0.5) * 2.;
+    return ndcCoords;
+}
 
+//-----------------------------------------------------------------------------
+
+/// Converts a position in OpenGL's normalized device coordinates (NDC) to object space.
+vec3 ndcToVolumeSpacePosition(in vec3 ndcPos, in mat4 invWorldViewProj)
+{
     vec4 clipPos;
-    clipPos.w   = (2 * u_clippingNear * u_clippingFar) / (u_clippingNear + u_clippingFar + screenPos.z * (u_clippingNear - u_clippingFar));
-    clipPos.xyz = screenPos * clipPos.w;
+    clipPos.w   = (2 * u_clippingNear * u_clippingFar)  / (u_clippingNear + u_clippingFar + ndcPos.z * (u_clippingNear - u_clippingFar));
+    clipPos.xyz = ndcPos * clipPos.w;
 
     vec4 imgPos = invWorldViewProj * clipPos;
 
@@ -148,6 +156,90 @@ void composite(inout vec4 dest, in vec4 src)
     dest.rgb = dest.rgb + (1 - dest.a) * src.a * src.rgb;
     dest.a   = dest.a   + (1 - dest.a) * src.a;
 }
+
+//-----------------------------------------------------------------------------
+
+#if IDVR == 1 && CSG
+
+// Returns true if the ray hits the cone, the origin is then moved to the intersection point.
+bool rayConeIntersection(in vec3 coneOrigin, in vec3 coneDir, in float coneAngleCos, inout vec3 rayOrigin, in vec3 rayDir)
+{
+    // Vector from the cone origin to the ray origin.
+    vec3 origDir = rayOrigin - coneOrigin;
+    float squaredAngleCos = coneAngleCos * coneAngleCos;
+
+    float dirDot = dot(rayDir, coneDir);
+    float origConeDirDot = dot(origDir, coneDir);
+
+    // Angle cosine between the cone direction and the origin to origin vector.
+    float origAngleCos = dot(normalize(origDir), normalize(coneDir));
+
+    // Ensure that the ray origin is 'inside' the cone.
+    if(origAngleCos < coneAngleCos && origAngleCos > 0)
+    {
+        return false;
+    }
+
+    // We're looking for a point P belonging to the ray and the cone, P should therefore verify the following equations:
+    //     · ((P - coneOrigin) /  length(P - coneOrigin)) * coneDir = cos(coneAngle)
+    //     · P = rayOrigin + t * rayDir
+    // When simplifying this system we end up with a second degree polynomial a * t² + b * t + c with the following
+    // coefficients :
+    float a = dirDot * dirDot - squaredAngleCos;
+    float b = 2 * (dirDot * origConeDirDot - dot(rayDir, origDir) * squaredAngleCos);
+    float c = origConeDirDot * origConeDirDot - dot(origDir, origDir) * squaredAngleCos;
+
+    // Solving the polynomial is trivial.
+    float delta = b * b - 4. * a * c;
+
+    vec3 intersection;
+    if(delta > 0)
+    {
+        float sqrtDelta = sqrt(delta);
+        float t1 = (-b - sqrtDelta) / (2. * a);
+        float t2 = (-b + sqrtDelta) / (2. * a);
+
+        // We're looking for the point closest to the ray origin.
+        float t = min(t1, t2);
+
+        if (t < 0.)
+        {
+            return false;
+        }
+
+        intersection = rayOrigin + t * rayDir;
+
+        // Check if we hit the cone or its 'shadow'
+        // i.e. check if the intersection is 'in front' or 'behind' the cone origin.
+        vec3 cp = intersection - coneOrigin;
+        float h = dot(cp, coneDir);
+
+        if (h < 0.) // We hit the shadow ...
+        {
+            return false;
+        }
+    }
+    else // No solution to the polynomial = no intersection
+    {
+        return false;
+    }
+
+    rayOrigin = intersection;
+    return true;
+}
+
+#if CSG_MODULATION || CSG_OPACITY_DECREASE
+
+// Computes the orthogonal distance from a point to a line.
+float pointLineDistance(in vec3 point, in vec3 linePoint, in vec3 lineUnitDir)
+{
+    vec3 line2Point = point - linePoint;
+    return length(line2Point - dot(line2Point, lineUnitDir) * lineUnitDir);
+}
+
+#endif // CSG_MODULATION || CSG_OPACITY_DECREASE
+
+#endif
 
 //-----------------------------------------------------------------------------
 
@@ -285,20 +377,34 @@ void main(void)
     mat4x4 invWorldViewProj = u_invWorldViewProj;
 #endif
 
-    vec3 rayEntry = getFragmentImageSpacePosition(entryDepth, invWorldViewProj);
-    vec3 rayExit  = getFragmentImageSpacePosition(exitDepth, invWorldViewProj);
+    // Entry points in window space.
+    vec3 entryFrag = fragCoordsToNDC(vec3(gl_FragCoord.xy, entryDepth));
+    vec3 exitFrag = fragCoordsToNDC(vec3(gl_FragCoord.xy, exitDepth));
+
+    // Entry points in volume texture space.
+    vec3 rayEntry = ndcToVolumeSpacePosition(entryFrag, invWorldViewProj);
+    vec3 rayExit  = ndcToVolumeSpacePosition(exitFrag, invWorldViewProj);
 
     vec3 rayDir   = normalize(rayExit - rayEntry);
 
 #if IDVR == 1
 
-    float csg = 0.;
-    vec4 jfaDistance = vec4(0.);
+#ifdef CSG
+    float rayDepth = 0.f;
+
+    vec4 jfaDistance = vec4(0.f);
+    bool isCsg = false; // true if this ray hits the csg.
+
+#if CSG_MODULATION || CSG_OPACITY_DECREASE
+    float coneDistance = 0.f;
+#endif // CSG_MODULATION || CSG_OPACITY_DECREASE
+
+#endif // CSG
 
     vec4 importance = texelFetch(u_IC, ivec2(gl_FragCoord.xy), 0);
 
     // If we have an importance factor, we move the ray accordingly
-    if(importance.r > 0.)
+    if(importance.a > 0.)
     {
         rayEntry = importance.rgb;
     }
@@ -309,14 +415,52 @@ void main(void)
     {
         jfaDistance = texelFetch(u_JFA, ivec2(gl_FragCoord.xy), 0);
 
-        // Compute the countersink factor to adjust the rayEntry
-        csg = (jfaDistance.b - jfaDistance.a * (1. / u_countersinkSlope));
+        vec3 normSpacing = normalize(u_imageSpacing);
 
-        // Ensure that we have a correct distance for the csg factor
-        if(csg > 0.)
+        // Closest mask point to the entry point.
+        vec3 closestPt = ndcToVolumeSpacePosition(jfaDistance.xyz, invWorldViewProj);
+        vec3 scaledClosestPt = closestPt * normSpacing;
+
+        // Scale points and vectors to take voxel anisotropy into account when computing the countersink geometry.
+        vec3 coneDir = normalize(u_cameraPos * normSpacing - scaledClosestPt);
+        vec3 scaledEntry = rayEntry * normSpacing;
+        vec3 scaledDir   = normalize(rayDir * normSpacing);
+
+        vec3 oldEntry = rayEntry;
+        bool hit = rayConeIntersection(scaledClosestPt, coneDir, u_csgAngleCos, scaledEntry, scaledDir);
+
+        if(hit)
         {
-            rayEntry += rayDir * csg;
+#if CSG_MODULATION || CSG_OPACITY_DECREASE
+            // Ray entry to central cone line distance.
+            coneDistance = pointLineDistance(scaledEntry, scaledClosestPt, coneDir);
+#endif // CSG_MODULATION || CSG_OPACITY_DECREASE
+
+            // Back to volume texture space.
+            rayEntry = scaledEntry / normSpacing;
+
+            vec3 volDimensions = vec3(textureSize(u_image, 0));
+            vec3 volSize = u_imageSpacing * volDimensions;
+
+            // Compute the ray depth in the image spacing's unit (typically millimeters for medical images).
+            vec3 cVector = normalize(u_cameraPos - closestPt) * volSize;
+            vec3 cOrig2RayEntry = rayEntry * volSize - closestPt * volSize;
+            rayDepth = dot(cVector, cOrig2RayEntry) / length(cVector);
+
+            // If the new entry point hits a transparent zone then we discard it.
+            float entryIntensity = texture(u_image, rayEntry).r;
+            float entryOpacity = sampleTransferFunction(entryIntensity).a;
+
+            isCsg = entryOpacity > 0.f;
+
+#if CSG_DISABLE_CONTEXT == 1
+            if(!isCsg)
+            {
+                discard;
+            }
+#endif // CSG_DISABLE_CONTEXT == 1
         }
+
 #if CSG_DISABLE_CONTEXT == 1
         else
         {
@@ -338,92 +482,79 @@ void main(void)
 #else
     vec4 result;
 
-    if(csg > 0)
+    if(rayDepth > 0 && isCsg)
     {
-#if CSG_BORDER == 1
-        if(csg < u_csgBorderThickness
+
 #ifdef CSG_DEPTH_LINES
-           && int(jfaDistance.a * 1000.) % 16 == 0)
-#else
-        )
-#endif // CSG_DEPTH_LINES == 1
+        float rayDepthIntegralPart;
+        float rayDepthFractPart = modf(rayDepth, rayDepthIntegralPart);
+
+        int distToDepthLine = int(mod(rayDepthIntegralPart, u_depthLinesSpacing));
+
+        if( int(rayDepthIntegralPart) != 0 && distToDepthLine == 0 && (rayDepthFractPart < u_depthLinesWidth))
         {
-#ifndef CSG_DEPTH_LINES
             result = vec4(u_csgBorderColor, 1.);
-#else
-            vec3 red   = vec3(1., 0., 0.);
-            vec3 green = vec3(0., 1., 0.);
-            vec3 blue  = vec3(0., 0., 1.);
-
-            float scale = 1. / u_depthLinesThreshold;
-
-            if(jfaDistance.a < u_depthLinesThreshold)
-            {
-                result = vec4(mix(blue, green, jfaDistance.a * scale), 1.);
-            }
-            else
-            {
-                result = vec4(mix(green, red, (jfaDistance.a - u_depthLinesThreshold) * scale), 1.);
-            }
-#endif // CSG_DEPTH_LINES
         }
         else
         {
-#endif // CSG_BORDER == 1
+#endif // CSG_DEPTH_LINES
             vec4 color = launchRay(rayPos, rayDir, rayLength, u_sampleDistance);
 
-#if CSG_MODULATION == 1 // Average grayscale
+// Average grayscale
+#if CSG_GRAYSCALE == 1
             // The average method simply averages the values
-            float grayScale = (color.r + color.g + color.g) / 3.;
+            float grayScale = (color.r + color.g + color.b) / 3.;
             color.rgb = vec3(grayScale);
-#endif // CSG_MODULATION == 1
-#if CSG_MODULATION == 2 // Lightness grayscale
+#endif // CSG_GRAYSCALE == 1
+// Lightness grayscale
+#if CSG_GRAYSCALE == 2
             // The lightness method averages the most prominent and least prominent colors
             float grayScale =
                 (max(color.r, max(color.g, color.b)) +
                  min(color.r, min(color.g, color.b))) / 2.;
 
             color.rgb = vec3(grayScale);
-#endif // CSG_MODULATION == 2
-#if CSG_MODULATION == 3 // Luminosity grayscale
+#endif // CSG_GRAYSCALE == 2
+// Luminosity grayscale
+#if CSG_GRAYSCALE == 3
             // The luminosity method is a more sophisticated version of the average method.
             // It also averages the values, but it forms a weighted average to account for human perception.
             // We’re more sensitive to green than other colors, so green is weighted most heavily.
             float grayScale = 0.21 * color.r + 0.72 * color.g + 0.07 * color.b;
             color.rgb = vec3(grayScale);
-#endif // CSG_MODULATION == 3
+#endif // CSG_GRAYSCALE == 3
 
 // CSG luminance and saturation modulations
-#if CSG_MODULATION == 4 || CSG_MODULATION == 5 || CSG_MODULATION == 6 || CSG_MODULATION == 7
-            vec3 hsv = rgb2hsv(color.rgb);
-
+// Brightness increase (CSG_MODULATION == 4)
 // Saturation increase (CSG_MODULATION == 5)
 // Saturation and brightness increase (CSG_MODULATION == 6)
+#if CSG_MODULATION == 4 || CSG_MODULATION == 5 || CSG_MODULATION == 6
+            float modIncr = max(1.f - (coneDistance / abs(u_colorModulationFactor)), 0.f);
+#endif CSG_MODULATION == 4 || CSG_MODULATION == 5 || CSG_MODULATION == 6
+
+#if CSG_MODULATION == 4 || CSG_MODULATION == 5 || CSG_MODULATION == 6
+            vec3 hsv = rgb2hsv(color.rgb);
+
 #if CSG_MODULATION == 5 || CSG_MODULATION == 6
-            hsv.g += csg * u_colorModulationFactor;
+            hsv.g += modIncr * sign(u_colorModulationFactor);
 #endif // CSG_MODULATION == 5 || CSG_MODULATION == 6
 
-// Saturation decrease (CSG_MODULATION == 7)
-#if CSG_MODULATION == 7
-            hsv.g -= csg * u_colorModulationFactor;
-#endif // CSG_MODULATION == 7
-
-// Brightness increase (CSG_MODULATION == 4)
-#if CSG_MODULATION == 4 || CSG_MODULATION == 6 || CSG_MODULATION == 7
-            hsv.b += csg * u_colorModulationFactor;
-#endif // CSG_MODULATION == 4 || CSG_MODULATION == 6 || CSG_MODULATION == 7
+#if CSG_MODULATION == 4 || CSG_MODULATION == 6
+            hsv.b += modIncr * sign(u_colorModulationFactor);
+#endif // CSG_MODULATION == 4 || CSG_MODULATION == 6
 
             color.rgb = hsv2rgb(hsv);
-#endif // CSG_MODULATION == 4 || CSG_MODULATION == 5 || CSG_MODULATION == 6 || CSG_MODULATION == 7
+#endif // CSG_MODULATION == 4 || CSG_MODULATION == 5 || CSG_MODULATION == 6
 
 #ifdef CSG_OPACITY_DECREASE
-            color.a -= 1. - csg * u_opacityDecreaseFactor;
+            float alphaModDecr = max((coneDistance / (1.f - u_opacityDecreaseFactor)), 0.f);
+            color.a -= alphaModDecr;
 #endif // CSG_OPACITY_DECREASE
 
             result = color;
-#if CSG_BORDER == 1
+#ifdef CSG_DEPTH_LINES
         }
-#endif // CSG_BORDER == 1
+#endif // CSG_DEPTH_LINES
     }
     else
     {

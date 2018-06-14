@@ -5,8 +5,7 @@ in vec2 uv;
 uniform sampler2D u_fragData;
 uniform sampler2D u_map;
 
-uniform float u_vpWidth;
-uniform float u_vpHeight;
+uniform vec4 u_viewport;
 
 out vec4 FragColor;
 
@@ -15,8 +14,8 @@ void main()
     // We have to compute the uv inside the map according to the location of the video plane
     // This plane is always stretched in height and centered in X
     ivec2 mapSize = textureSize(u_map, 0).xy;
-    float videoRatio = u_vpHeight / mapSize.y;
-    float normalizedVideoPlaneWidth = mapSize.x * videoRatio / u_vpWidth;
+    float videoRatio = u_viewport.y / mapSize.y;
+    float normalizedVideoPlaneWidth = mapSize.x * videoRatio * u_viewport.z;
 
     float normalizedCenterX = uv.x - 0.5;
     float scaledX = normalizedCenterX / normalizedVideoPlaneWidth;

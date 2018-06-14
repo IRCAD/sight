@@ -9,8 +9,7 @@ uniform vec4 u_diffuse;
 uniform float u_billboardSize;
 uniform mat4 u_proj;
 uniform vec3 u_cameraPos;
-uniform float u_vpWidth;
-uniform float u_vpHeight;
+uniform vec4 u_viewport;
 
 #ifndef DEPTH
 out vec4 oColor;
@@ -20,7 +19,7 @@ out vec2 oTexCoord;
 void main()
 {
     // Compute the size and adjust the ratio to be 1:1
-    vec2 size = vec2(1., u_vpWidth/u_vpHeight) * u_billboardSize;
+    vec2 size = vec2(1., u_viewport.x/u_viewport.y) * u_billboardSize;
 #ifdef FIXED_SIZE
     size *= 0.01;
 #endif
