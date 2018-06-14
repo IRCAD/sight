@@ -120,7 +120,7 @@ void SRender::configuring()
     if(showOverlay)
     {
         FW_DEPRECATED_MSG("The 'showOverlay' tag is deprecated, you should explicitly add the 'LogoOverlay' overlay "
-                          "to the new 'overlays' list.");
+                          "to the new 'overlays' list.", "18.0");
 
         m_showOverlay = showOverlay.value();
     }
