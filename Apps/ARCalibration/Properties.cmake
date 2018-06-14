@@ -28,7 +28,6 @@ set( REQUIREMENTS
 
     activities
     calibrationActivity
-    charucoCalibrationActivity
     trackedCameraRegistrationActivity
     handEyeActivity
     toolCalibrationActivity
