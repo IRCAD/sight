@@ -129,7 +129,8 @@ private:
         CHECKBOX,
         U_INT,
         PATH,
-        COMBOBOX
+        COMBOBOX,
+        DOUBLE
     };
 
     struct PreferenceElt
