@@ -15,6 +15,9 @@
 namespace ioTuto
 {
 
+/**
+ * @deprecated This service is deprecated and will be removed
+ */
 class IOTUTO_CLASS_API ExternalDataReaderService : public ::fwIO::IReader
 {
 
@@ -48,6 +51,7 @@ protected:
      */
     IOTUTO_API virtual void starting() override
     {
+        FW_DEPRECATED_MSG("This service is deprecated", "18.0");
     }
 
     /**

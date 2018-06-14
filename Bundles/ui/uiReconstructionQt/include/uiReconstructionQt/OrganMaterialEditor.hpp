@@ -21,8 +21,19 @@ class QLabel;
 
 namespace uiReconstructionQt
 {
+
 /**
- * @brief   OrganMaterialEditor service.
+ * @brief Display a widget to change the reconstruction material (color and transparency).
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+   <service type="::uiReconstructionQt::OrganMaterialEditor">
+       <inout key="reconstruction" uid="..." />
+   </service>
+   @endcode
+ * @subsection In-Out In-Out
+ * - \b reconstruction [::fwData::Reconstruction]: reconstruction containing the material to update.
  */
 class UIRECONSTRUCTIONQT_CLASS_API OrganMaterialEditor : public QObject,
                                                          public ::fwGui::editor::IEditor
@@ -43,22 +54,22 @@ protected:
 
     typedef ::fwRuntime::ConfigurationElement::sptr Configuration;
 
-    ///This method launches the IEditor::starting method.
+    /// Initialize the UI
     virtual void starting() override;
 
-    ///This method launches the IEditor::stopping method.
+    /// Clean the UI
     virtual void stopping() override;
 
+    /// Update the UI according to the material (color and transparency widgets)
     virtual void updating() override;
 
-    virtual void swapping() override;
-
+    /// Do nothing
     virtual void configuring() override;
 
-    /// Overrides
-    virtual void info( std::ostream& _sstream ) override;
-
+    /// Update the UI according to the material (color and transparency widgets)
     void refreshMaterial( );
+
+    /// Notify the material changes
     void materialNotification( );
 
 protected Q_SLOTS:

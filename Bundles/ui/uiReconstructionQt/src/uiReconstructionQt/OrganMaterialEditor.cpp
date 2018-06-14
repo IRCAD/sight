@@ -37,6 +37,8 @@ namespace uiReconstructionQt
 fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiReconstructionQt::OrganMaterialEditor,
                          ::fwData::Reconstruction );
 
+static const ::fwServices::IService::KeyType s_RECONSTRUCTION_INOUT = "reconstruction";
+
 OrganMaterialEditor::OrganMaterialEditor() noexcept
 {
     //handlingEventOff();
@@ -119,22 +121,14 @@ void OrganMaterialEditor::updating()
 
 //------------------------------------------------------------------------------
 
-void OrganMaterialEditor::swapping()
-{
-    this->updating();
-}
-
-//------------------------------------------------------------------------------
-
-void OrganMaterialEditor::info( std::ostream& _sstream )
-{
-}
-
-//------------------------------------------------------------------------------
-
 void OrganMaterialEditor::onColorButton()
 {
-    ::fwData::Reconstruction::sptr reconstruction = this->getObject< ::fwData::Reconstruction>();
+    ::fwData::Reconstruction::sptr reconstruction = this->getInOut< ::fwData::Reconstruction >(s_RECONSTRUCTION_INOUT);
+    if (!reconstruction)
+    {
+        FW_DEPRECATED_KEY(s_RECONSTRUCTION_INOUT, "inout", "18.0");
+        reconstruction = this->getObject< ::fwData::Reconstruction >();
+    }
     SLM_ASSERT("No Reconstruction!", reconstruction);
 
     ::fwData::Material::sptr material = reconstruction->getMaterial();
@@ -165,7 +159,12 @@ void OrganMaterialEditor::onColorButton()
 
 void OrganMaterialEditor::onOpacitySlider(int value )
 {
-    ::fwData::Reconstruction::sptr reconstruction = this->getObject< ::fwData::Reconstruction>();
+    ::fwData::Reconstruction::sptr reconstruction = this->getInOut< ::fwData::Reconstruction >(s_RECONSTRUCTION_INOUT);
+    if (!reconstruction)
+    {
+        FW_DEPRECATED_KEY(s_RECONSTRUCTION_INOUT, "inout", "18.0");
+        reconstruction = this->getObject< ::fwData::Reconstruction >();
+    }
     SLM_ASSERT("No Reconstruction!", reconstruction);
 
     ::fwData::Material::sptr material = reconstruction->getMaterial();
@@ -181,7 +180,12 @@ void OrganMaterialEditor::onOpacitySlider(int value )
 
 void OrganMaterialEditor::refreshMaterial( )
 {
-    ::fwData::Reconstruction::sptr reconstruction = this->getObject< ::fwData::Reconstruction>();
+    ::fwData::Reconstruction::csptr reconstruction = this->getInOut< ::fwData::Reconstruction >(s_RECONSTRUCTION_INOUT);
+    if (!reconstruction)
+    {
+        FW_DEPRECATED_KEY(s_RECONSTRUCTION_INOUT, "inout", "18.0");
+        reconstruction = this->getObject< ::fwData::Reconstruction >();
+    }
     SLM_ASSERT("No Reconstruction!", reconstruction);
 
     ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
@@ -191,7 +195,7 @@ void OrganMaterialEditor::refreshMaterial( )
 
     container->setEnabled(!reconstruction->getOrganName().empty());
 
-    ::fwData::Material::sptr material = reconstruction->getMaterial();
+    ::fwData::Material::csptr material = reconstruction->getMaterial();
     QColor materialColor = QColor(
         material->diffuse()->red()*255,
         material->diffuse()->green()*255,
@@ -216,7 +220,12 @@ void OrganMaterialEditor::refreshMaterial( )
 
 void OrganMaterialEditor::materialNotification( )
 {
-    ::fwData::Reconstruction::sptr reconstruction = this->getObject< ::fwData::Reconstruction>();
+    ::fwData::Reconstruction::csptr reconstruction = this->getInOut< ::fwData::Reconstruction >(s_RECONSTRUCTION_INOUT);
+    if (!reconstruction)
+    {
+        FW_DEPRECATED_KEY(s_RECONSTRUCTION_INOUT, "inout", "18.0");
+        reconstruction = this->getObject< ::fwData::Reconstruction >();
+    }
     SLM_ASSERT("No Reconstruction!", reconstruction);
 
     ::fwData::Object::ModifiedSignalType::sptr sig;

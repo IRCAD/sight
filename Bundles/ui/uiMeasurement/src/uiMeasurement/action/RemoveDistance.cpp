@@ -34,6 +34,8 @@ namespace action
 
 fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiMeasurement::action::RemoveDistance, ::fwData::Image );
 
+static const ::fwServices::IService::KeyType s_IMAGE_INOUT = "image";
+
 //------------------------------------------------------------------------------
 
 RemoveDistance::RemoveDistance( ) noexcept
@@ -46,12 +48,6 @@ RemoveDistance::~RemoveDistance() noexcept
 {
 }
 
-//------------------------------------------------------------------------------
-
-void RemoveDistance::info(std::ostream& _sstream )
-{
-    _sstream << "Action for remove distance" << std::endl;
-}
 //------------------------------------------------------------------------------
 
 std::string distanceToStr(double dist)
@@ -146,7 +142,12 @@ void RemoveDistance::notifyNewDistance(const ::fwData::Image::csptr& image,
 
 void RemoveDistance::updating( )
 {
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    if (!image)
+    {
+        FW_DEPRECATED_KEY(s_IMAGE_INOUT, "inout", "18.0");
+        image = this->getObject< ::fwData::Image >();
+    }
 
     ::fwData::Vector::sptr vectDist;
     vectDist = image->getField< ::fwData::Vector >(::fwDataTools::fieldHelper::Image::m_imageDistancesId);

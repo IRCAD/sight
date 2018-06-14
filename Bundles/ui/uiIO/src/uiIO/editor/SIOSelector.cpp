@@ -140,9 +140,7 @@ void SIOSelector::updating()
         // FIXME: support for old version using getObject(): all the 'in' or 'inout' keys were possible
         if (!obj && classname.empty())
         {
-            FW_DEPRECATED_MSG("The object to read is not set correctly, you must set '" + ::fwIO::s_DATA_KEY
-                              + "' as <inout> or define the 'class' of the output object");
-
+            FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "18.0");
             obj = this->getObject();
         }
         if (obj)
@@ -161,8 +159,7 @@ void SIOSelector::updating()
         // FIXME: support for old version using getObject(): all the 'in' or 'inout' keys were possible
         if (!obj)
         {
-            FW_DEPRECATED_MSG("The object to save is not set correctly, you must set '" + ::fwIO::s_DATA_KEY
-                              + "' as <inout>");
+            FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "18.0");
             obj = this->getObject();
         }
         availableExtensionsId =

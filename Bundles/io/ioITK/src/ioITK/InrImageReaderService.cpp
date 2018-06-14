@@ -137,7 +137,15 @@ void InrImageReaderService::updating()
 
     if( this->hasLocationDefined() )
     {
-        if ( this->createImage( this->getFile(), this->getObject< ::fwData::Image >() ) )
+        ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(::fwIO::s_DATA_KEY);
+        if (!image)
+        {
+            FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "18.0");
+            image = this->getObject< ::fwData::Image >();
+        }
+        SLM_ASSERT("'" + ::fwIO::s_DATA_KEY + "' key is not defined", image);
+
+        if ( this->createImage( this->getFile(), image) )
         {
             ::fwGui::Cursor cursor;
             cursor.setCursor(::fwGui::ICursor::BUSY);
@@ -152,10 +160,15 @@ void InrImageReaderService::updating()
 void InrImageReaderService::notificationOfDBUpdate()
 {
     SLM_TRACE_FUNC();
-    ::fwData::Image::sptr pImage = this->getObject< ::fwData::Image >();
-    SLM_ASSERT("pImage not instanced", pImage);
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(::fwIO::s_DATA_KEY);
+    if (!image)
+    {
+        FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "18.0");
+        image = this->getObject< ::fwData::Image >();
+    }
+    SLM_ASSERT("'" + ::fwIO::s_DATA_KEY + "' key is not defined", image);
 
-    auto sig = pImage->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+    auto sig = image->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
     {
         ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();

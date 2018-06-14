@@ -128,7 +128,12 @@ void SModelSeriesReader::updating()
     if(  this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
-        ::fwMedData::ModelSeries::sptr modelSeries = this->getObject< ::fwMedData::ModelSeries >();
+        ::fwMedData::ModelSeries::sptr modelSeries = this->getInOut< ::fwMedData::ModelSeries >(::fwIO::s_DATA_KEY);
+        if (!modelSeries)
+        {
+            FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "18.0");
+            modelSeries = this->getObject< ::fwMedData::ModelSeries >();
+        }
 
         ::fwGui::Cursor cursor;
         cursor.setCursor(::fwGui::ICursor::BUSY);

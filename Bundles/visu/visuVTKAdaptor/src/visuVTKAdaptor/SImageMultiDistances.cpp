@@ -131,7 +131,7 @@ public:
                         ::fwData::PointList::csptr plist =
                             plAdaptor->getInput< ::fwData::PointList >(SPointList::s_POINTLIST_INPUT);
 
-                        ::fwData::Image::sptr image = m_service->getObject< ::fwData::Image >();
+                        ::fwData::Image::sptr image = m_service->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
                         auto sig = image->signal< ::fwData::Image::DistanceRemovedSignalType >(
                             ::fwData::Image::s_DISTANCE_REMOVED_SIG );
                         sig->asyncEmit(plist);

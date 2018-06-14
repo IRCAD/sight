@@ -307,8 +307,7 @@ void SWriter::updating()
     ::fwData::Object::sptr obj = this->getInOut< ::fwData::Object >(::fwIO::s_DATA_KEY);
     if (!obj)
     {
-        FW_DEPRECATED_MSG("The object to write is not set correctly, you must set '" + ::fwIO::s_DATA_KEY
-                          + "' as <inout>.");
+        FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "18.0");
         obj = this->getObject< ::fwData::Object >();
     }
 

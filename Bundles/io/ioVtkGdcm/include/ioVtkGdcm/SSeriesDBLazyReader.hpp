@@ -28,7 +28,30 @@ class IJob;
 namespace ioVtkGdcm
 {
 
-/// This service reads a dicom dir in lazy mode, and provides a ::fwMedData::SeriesDB.
+/**
+ * @brief This service reads a dicom dir in lazy mode, and provides a ::fwMedData::SeriesDB.
+ *
+ * @section Signals Signals
+ * - \b jobCreated(SPTR(::fwJobs::IJob)): emitted to display a progress bar while the image is loading (it should be
+ * connected to a SJobBar).
+ *
+ * @section Slots Slots
+ * - \b readFolder(::boost::filesystem::path) : read the given file
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+   <service type="::ioVtkGdcm::SSeriesDBLazyReader">
+       <inout key="data" uid="..." />
+       <folder>...</folder>
+   </service>
+   @endcode
+ * @subsection In-Out In-Out
+ * - \b data [::fwMedData::SeriesDB]: seriesDB that will contain the loaded image series and modelSeries.
+ * @subsection Configuration Configuration
+ * - \b folder (optional): path of the folder containing the dicom files, if it is not defined, 'configureWithIHM()'
+ *      should be called to define the path.
+ */
 class IOVTKGDCM_CLASS_API SSeriesDBLazyReader : public ::fwIO::IReader
 {
 

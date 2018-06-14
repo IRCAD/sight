@@ -29,7 +29,17 @@ namespace uiReconstructionQt
 {
 
 /**
- * @brief   RepresentationEditor service.
+ * @brief Display a widget to change the reconstruction representation (surface, point, edge, ...).
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+   <service type="::uiReconstructionQt::RepresentationEditor">
+       <inout key="reconstruction" uid="..." />
+   </service>
+   @endcode
+ * @subsection In-Out In-Out
+ * - \b reconstruction [::fwData::Reconstruction]: reconstruction that will be updated
  */
 class UIRECONSTRUCTIONQT_CLASS_API RepresentationEditor : public QObject,
                                                           public ::fwGui::editor::IEditor
@@ -46,31 +56,23 @@ public:
     /// Destructor. Do nothing.
     UIRECONSTRUCTIONQT_API virtual ~RepresentationEditor() noexcept;
 
-    /**
-     * @name Signals API
-     * @{
-     */
-    /// normals mode (0: none, 1: point, 2: cell), reconstruction fwID
-    typedef ::fwCom::Signal< void ( std::uint8_t, std::string ) > NormalsModeModifiedSignalType;
-    UIRECONSTRUCTIONQT_API static const ::fwCom::Signals::SignalKeyType s_NORMALS_MODE_MODIFIED_SIG;
-    /** @} */
-
 protected:
 
     typedef ::fwRuntime::ConfigurationElement::sptr Configuration;
 
-    ///This method launches the IEditor::starting method.
+    /// Initialize the UI
     virtual void starting() override;
 
-    ///This method launches the IEditor::stopping method.
+    /// Clean the UI
     virtual void stopping() override;
 
+    /// Update the UI according to the reconstruction
     virtual void updating() override;
 
-    virtual void swapping() override;
-
+    /// Do nothing.
     virtual void configuring() override;
 
+    /// Notify the changes
     void notifyMaterial();
 
 protected Q_SLOTS:

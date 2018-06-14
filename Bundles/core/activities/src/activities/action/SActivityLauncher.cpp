@@ -278,7 +278,7 @@ void SActivityLauncher::updating()
     ::fwData::Vector::csptr selection = this->getInput< ::fwData::Vector >(s_SERIES_INPUT);
     if (!selection)
     {
-        FW_DEPRECATED_MSG("SActivityLauncher should have an 'series' input, using default object");
+        FW_DEPRECATED_KEY(s_SERIES_INPUT, "in",  "18.0");
         selection = this->getObject< ::fwData::Vector >();
     }
 
@@ -321,7 +321,7 @@ void SActivityLauncher::updateState()
     ::fwData::Vector::csptr selection = this->getInput< ::fwData::Vector >(s_SERIES_INPUT);
     if (!selection)
     {
-        FW_DEPRECATED_MSG("SActivityLauncher should have an 'series' input, using default object");
+        FW_DEPRECATED_KEY(s_SERIES_INPUT, "in",  "18.0");
         selection = this->getObject< ::fwData::Vector >();
     }
 
@@ -466,7 +466,7 @@ void SActivityLauncher::sendConfig( const ::fwActivities::registry::ActivityInfo
     ::fwData::Vector::csptr selection = this->getInput< ::fwData::Vector >(s_SERIES_INPUT);
     if (!selection)
     {
-        FW_DEPRECATED_MSG("SActivityLauncher should have an 'series' input, using default object");
+        FW_DEPRECATED_KEY(s_SERIES_INPUT, "in",  "18.0");
         selection = this->getObject< ::fwData::Vector >();
     }
 
@@ -610,7 +610,7 @@ SActivityLauncher::ParametersType SActivityLauncher::translateParameters( const 
     ::fwData::Object::csptr workingObj = this->getInput< ::fwData::Object >(s_SERIES_INPUT);
     if (!workingObj)
     {
-        FW_DEPRECATED_MSG("SActivityLauncher should have an 'series' input, using default object");
+        FW_DEPRECATED_KEY(s_SERIES_INPUT, "in",  "18.0");
         workingObj = this->getObject();
     }
     for(ParametersType::value_type& param :  transParams)

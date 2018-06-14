@@ -33,6 +33,8 @@ namespace action
 
 fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiMeasurement::action::RemoveLandmark, ::fwData::Image );
 
+static const ::fwServices::IService::KeyType s_IMAGE_INOUT = "image";
+
 //------------------------------------------------------------------------------
 
 RemoveLandmark::RemoveLandmark( ) noexcept
@@ -108,9 +110,12 @@ void RemoveLandmark::notify( ::fwData::Image::sptr image, ::fwData::Point::sptr 
 
 void RemoveLandmark::updating( )
 {
-    SLM_TRACE_FUNC();
-
-    ::fwData::Image::sptr image         = this->getObject< ::fwData::Image >();
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    if (!image)
+    {
+        FW_DEPRECATED_KEY(s_IMAGE_INOUT, "inout", "18.0");
+        image = this->getObject< ::fwData::Image >();
+    }
     ::fwData::PointList::sptr landmarks = image->getField< ::fwData::PointList >(
         ::fwDataTools::fieldHelper::Image::m_imageLandmarksId );
 

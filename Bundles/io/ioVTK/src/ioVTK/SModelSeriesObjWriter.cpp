@@ -136,7 +136,12 @@ void SModelSeriesObjWriter::updating()
     if(  this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
-        ::fwMedData::ModelSeries::sptr modelSeries = this->getObject< ::fwMedData::ModelSeries >();
+        ::fwMedData::ModelSeries::csptr modelSeries = this->getInput< ::fwMedData::ModelSeries >(::fwIO::s_DATA_KEY);
+        if (!modelSeries)
+        {
+            FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "18.0");
+            modelSeries = this->getObject< ::fwMedData::ModelSeries >();
+        }
         SLM_ASSERT("ModelSeries is not instanced", modelSeries);
 
         ::fwVtkIO::ModelSeriesObjWriter::sptr writer = ::fwVtkIO::ModelSeriesObjWriter::New();

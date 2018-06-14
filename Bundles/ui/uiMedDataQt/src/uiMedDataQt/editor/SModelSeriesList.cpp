@@ -130,6 +130,8 @@ const ::fwCom::Signals::SignalKeyType SModelSeriesList::s_RECONSTRUCTION_SELECTE
 const ::fwCom::Signals::SignalKeyType SModelSeriesList::s_EMPTIED_SELECTION_SIG       = "emptiedSelection";
 const ::fwCom::Slots::SlotKeyType SModelSeriesList::s_SHOW_RECONSTRUCTIONS_SLOT       = "showReconstructions";
 
+const ::fwServices::IService::KeyType s_MODEL_SERIES_INOUT = "modelSeries";
+
 SModelSeriesList::SModelSeriesList() noexcept :
     m_tree(new QTreeWidget()),
     m_enableHideAll(true)
@@ -282,7 +284,13 @@ void SModelSeriesList::updateReconstructions()
     QWidget* const container = qtContainer->getQtContainer();
 
     SLM_ASSERT("container not instanced", container);
-    ::fwMedData::ModelSeries::sptr modelSeries = this->getObject< ::fwMedData::ModelSeries >();
+
+    ::fwMedData::ModelSeries::sptr modelSeries = this->getInOut< ::fwMedData::ModelSeries >(s_MODEL_SERIES_INOUT);
+    if (!modelSeries)
+    {
+        FW_DEPRECATED_KEY(s_MODEL_SERIES_INOUT, "inout", "18.0");
+        modelSeries = this->getObject< ::fwMedData::ModelSeries >();
+    }
 
     bool hasReconstructions = !modelSeries->getReconstructionDB().empty();
     container->setEnabled( hasReconstructions );
@@ -302,7 +310,12 @@ void SModelSeriesList::updateReconstructions()
 
 void SModelSeriesList::fillTree()
 {
-    ::fwMedData::ModelSeries::sptr modelSeries = this->getObject< ::fwMedData::ModelSeries >();
+    ::fwMedData::ModelSeries::sptr modelSeries = this->getInOut< ::fwMedData::ModelSeries >(s_MODEL_SERIES_INOUT);
+    if (!modelSeries)
+    {
+        FW_DEPRECATED_KEY(s_MODEL_SERIES_INOUT, "inout", "18.0");
+        modelSeries = this->getObject< ::fwMedData::ModelSeries >();
+    }
     auto& reconstructions = modelSeries->getReconstructionDB();
 
     if(!m_tree->selectedItems().empty())
@@ -384,7 +397,12 @@ void SModelSeriesList::onShowReconstructions(int state )
     m_unCheckAllButton->setEnabled(!visible);
     m_tree->setEnabled(!visible);
 
-    ::fwMedData::ModelSeries::sptr modelSeries = this->getObject< ::fwMedData::ModelSeries >();
+    ::fwMedData::ModelSeries::sptr modelSeries = this->getInOut< ::fwMedData::ModelSeries >(s_MODEL_SERIES_INOUT);
+    if (!modelSeries)
+    {
+        FW_DEPRECATED_KEY(s_MODEL_SERIES_INOUT, "inout", "18.0");
+        modelSeries = this->getObject< ::fwMedData::ModelSeries >();
+    }
     {
         ::fwDataTools::helper::Field helper( modelSeries );
         helper.addOrSwap("ShowReconstructions", ::fwData::Boolean::New(state == Qt::Unchecked));
@@ -422,6 +440,23 @@ void SModelSeriesList::showReconstructions(bool show)
     connections.push_back( std::make_pair( ::fwMedData::ModelSeries::s_MODIFIED_SIG, s_UPDATE_SLOT ) );
     connections.push_back( std::make_pair( ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG, s_UPDATE_SLOT ) );
     connections.push_back( std::make_pair( ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG, s_UPDATE_SLOT ) );
+
+    return connections;
+}
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsMap SModelSeriesList::getAutoConnections() const
+{
+    KeyConnectionsMap connections;
+
+    // FIXME hack to support deprecated getObject() with any key
+    if (this->getInOut< ::fwMedData::ModelSeries >(s_MODEL_SERIES_INOUT))
+    {
+        connections.push(s_MODEL_SERIES_INOUT, ::fwMedData::ModelSeries::s_MODIFIED_SIG, s_UPDATE_SLOT);
+        connections.push(s_MODEL_SERIES_INOUT, ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG, s_UPDATE_SLOT);
+        connections.push(s_MODEL_SERIES_INOUT, ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG, s_UPDATE_SLOT);
+    }
 
     return connections;
 }

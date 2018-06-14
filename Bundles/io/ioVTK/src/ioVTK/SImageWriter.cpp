@@ -116,7 +116,7 @@ void SImageWriter::info(std::ostream& _sstream )
 //------------------------------------------------------------------------------
 
 bool SImageWriter::saveImage( const ::boost::filesystem::path& imgFile,
-                              const SPTR(::fwData::Image)& image,
+                              const CSPTR(::fwData::Image)& image,
                               const SPTR(JobCreatedSignalType)& sigJobCreated )
 {
     SLM_TRACE_FUNC();
@@ -191,7 +191,12 @@ void SImageWriter::updating()
     if( this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
-        ::fwData::Image::sptr pImage = this->getObject< ::fwData::Image >();
+        ::fwData::Image::csptr pImage = this->getInput< ::fwData::Image >(::fwIO::s_DATA_KEY);
+        if (!pImage)
+        {
+            FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "18.0");
+            pImage = this->getObject< ::fwData::Image >();
+        }
         SLM_ASSERT("Image not instanced", pImage);
 
         ::fwGui::Cursor cursor;

@@ -151,12 +151,15 @@ void SMeshReader::loadMesh( const ::boost::filesystem::path vtkFile, ::fwData::M
 
 void SMeshReader::updating()
 {
-    SLM_TRACE_FUNC();
-
     if( this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
-        ::fwData::Mesh::sptr pMesh = this->getObject< ::fwData::Mesh >();
+        ::fwData::Mesh::sptr pMesh = this->getInOut< ::fwData::Mesh >(::fwIO::s_DATA_KEY);
+        if (!pMesh)
+        {
+            FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "18.0");
+            pMesh = this->getObject< ::fwData::Mesh >();
+        }
         SLM_ASSERT("pMesh not instanced", pMesh);
 
         ::fwGui::Cursor cursor;
@@ -173,8 +176,12 @@ void SMeshReader::updating()
 
 void SMeshReader::notificationOfUpdate()
 {
-    SLM_TRACE_FUNC();
-    ::fwData::Mesh::sptr pMesh = this->getObject< ::fwData::Mesh >();
+    ::fwData::Mesh::sptr pMesh = this->getInOut< ::fwData::Mesh >(::fwIO::s_DATA_KEY);
+    if (!pMesh)
+    {
+        FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "18.0");
+        pMesh = this->getObject< ::fwData::Mesh >();
+    }
     SLM_ASSERT("pMesh not instanced", pMesh);
 
     ::fwData::Object::ModifiedSignalType::sptr sig;

@@ -75,8 +75,7 @@ void SPreferences::load()
 
         if (!data)
         {
-            FW_DEPRECATED_MSG("The 'preferences' object is not set correctly, you must define the object as: "
-                              "<inout key=\"preferences\" uid=\"...\".");
+            FW_DEPRECATED_KEY(::fwPreferences::s_PREFERENCES_KEY, "inout",  "18.0");
             data = this->getObject< ::fwData::Object >();
         }
 
@@ -109,8 +108,7 @@ void SPreferences::save()
 
     if (!obj)
     {
-        FW_DEPRECATED_MSG("The 'preferences' object is not set correctly, you must define the object as: "
-                          "<inout key=\"preferences\" uid=\"...\".");
+        FW_DEPRECATED_KEY(::fwPreferences::s_PREFERENCES_KEY, "inout",  "18.0");
         obj = this->getObject< ::fwData::Object >();
     }
 

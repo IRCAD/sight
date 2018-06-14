@@ -99,7 +99,7 @@ void SliceIndexPositionEditor::starting()
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     if (!image)
     {
-        FW_DEPRECATED_MSG("The service image is not correctly set, it must have an 'image' as 'inout'");
+        FW_DEPRECATED_KEY(s_IMAGE_INOUT, "inout", "18.0");
         image = this->getObject< ::fwData::Image >();
     }
     this->updateImageInfos(image);
@@ -159,7 +159,7 @@ void SliceIndexPositionEditor::updating()
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     if (!image)
     {
-        FW_DEPRECATED_MSG("The service image is not correctly set, it must have an 'image' as 'inout'");
+        FW_DEPRECATED_KEY(s_IMAGE_INOUT, "inout", "18.0");
         image = this->getObject< ::fwData::Image >();
     }
     bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
@@ -186,7 +186,7 @@ void SliceIndexPositionEditor::updateSliceIndex(int axial, int frontal, int sagi
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     if (!image)
     {
-        FW_DEPRECATED_MSG("The service image is not correctly set, it must have an 'image' as 'inout'");
+        FW_DEPRECATED_KEY(s_IMAGE_INOUT, "inout", "18.0");
         image = this->getObject< ::fwData::Image >();
     }
 
@@ -224,7 +224,7 @@ void SliceIndexPositionEditor::updateSliceIndexFromImg()
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     if (!image)
     {
-        FW_DEPRECATED_MSG("The service image is not correctly set, it must have an 'image' as 'inout'");
+        FW_DEPRECATED_KEY(s_IMAGE_INOUT, "inout", "18.0");
         image = this->getObject< ::fwData::Image >();
     }
 
@@ -256,7 +256,7 @@ void SliceIndexPositionEditor::updateSliceTypeFromImg(Orientation type )
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     if (!image)
     {
-        FW_DEPRECATED_MSG("The service image is not correctly set, it must have an 'image' as 'inout'");
+        FW_DEPRECATED_KEY(s_IMAGE_INOUT, "inout", "18.0");
         image = this->getObject< ::fwData::Image >();
     }
     this->updateSliceIndexFromImg();
@@ -269,7 +269,7 @@ void SliceIndexPositionEditor::sliceIndexNotification( unsigned int index)
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     if (!image)
     {
-        FW_DEPRECATED_MSG("The service image is not correctly set, it must have an 'image' as 'inout'");
+        FW_DEPRECATED_KEY(s_IMAGE_INOUT, "inout", "18.0");
         image = this->getObject< ::fwData::Image >();
     }
 
@@ -300,7 +300,7 @@ void SliceIndexPositionEditor::sliceTypeNotification( int _type )
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     if (!image)
     {
-        FW_DEPRECATED_MSG("The service image is not correctly set, it must have an 'image' as 'inout'");
+        FW_DEPRECATED_KEY(s_IMAGE_INOUT, "inout", "18.0");
         image = this->getObject< ::fwData::Image >();
     }
     auto sig = image->signal< ::fwData::Image::SliceTypeModifiedSignalType >(

@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __UIMEDDATAQT_ACTION_SINITNEWSERIES_HPP__
-#define __UIMEDDATAQT_ACTION_SINITNEWSERIES_HPP__
+#pragma once
 
 #include "uiMedDataQt/config.hpp"
 
@@ -20,6 +19,7 @@ namespace action
 /**
  * @brief   This action allows to update ::uiMedDataQt::editor::SSelector UI in order to add new series.
  * @note The action adds an empty series in each patient/study group to select where the series must be added.
+ * @deprecated This service is no longer supported and will be removed
  */
 class UIMEDDATAQT_CLASS_API SInitNewSeries : public ::fwGui::IActionSrv
 {
@@ -70,6 +70,3 @@ private:
 
 } // namespace action
 } // namespace uiMedDataQt
-
-#endif // __UIMEDDATAQT_ACTION_SINITNEWSERIES_HPP__
-

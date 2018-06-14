@@ -103,7 +103,7 @@ void JpgImageWriterService::info(std::ostream& _sstream )
 
 //------------------------------------------------------------------------------
 
-void JpgImageWriterService::saveImage(const ::boost::filesystem::path& imgPath, const SPTR(::fwData::Image)& img)
+void JpgImageWriterService::saveImage(const ::boost::filesystem::path& imgPath, const CSPTR(::fwData::Image)& img)
 {
     SLM_TRACE_FUNC();
     ::fwItkIO::JpgImageWriter::sptr writer = ::fwItkIO::JpgImageWriter::New();
@@ -145,12 +145,17 @@ void JpgImageWriterService::updating()
     if( this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
-        ::fwData::Image::sptr associatedImage = this->getObject< ::fwData::Image >();
-        SLM_ASSERT("associatedImage not instanced", associatedImage);
+        ::fwData::Image::csptr image = this->getInput< ::fwData::Image >(::fwIO::s_DATA_KEY);
+        if (!image)
+        {
+            FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "18.0");
+            image = this->getObject< ::fwData::Image >();
+        }
+        SLM_ASSERT("'" + ::fwIO::s_DATA_KEY + "' key is not defined", image);
 
         ::fwGui::Cursor cursor;
         cursor.setCursor(::fwGui::ICursor::BUSY);
-        saveImage(this->getFolder(), associatedImage);
+        saveImage(this->getFolder(), image);
         cursor.setDefaultCursor();
     }
 }
