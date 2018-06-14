@@ -63,7 +63,7 @@ namespace videoCharucoCalibration
                 <key uid="..." />
             </inout>
            <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" squareSize="CHESSBOARD_SQUARE_SIZE"
- * markerSize="CHESSBOARD_MARKER_SIZE" markerSizeInBits="CHESSBOARD_MARKER_SIZE_IN_BITS"/>
+   markerSize="CHESSBOARD_MARKER_SIZE" markerSizeInBits="CHESSBOARD_MARKER_SIZE_IN_BITS"/>
        </service>
    @endcode
  * @subsection Input Input:
@@ -77,7 +77,7 @@ namespace videoCharucoCalibration
 class VIDEOCHARUCOCALIBRATION_CLASS_API SCharucoBoardDetector : public ::fwServices::IController
 {
 public:
-    fwCoreServiceClassDefinitionsMacro((SCharucoBoardDetector)(::fwServices::IController));
+    fwCoreServiceClassDefinitionsMacro((SCharucoBoardDetector)(::fwServices::IController))
 
     /**
      * @name Signals API

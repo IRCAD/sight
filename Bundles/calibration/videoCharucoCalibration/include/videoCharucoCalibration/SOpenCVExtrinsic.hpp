@@ -54,7 +54,7 @@ namespace videoCharucoCalibration
 class VIDEOCHARUCOCALIBRATION_CLASS_API SOpenCVExtrinsic : public ::arServices::ICalibration
 {
 public:
-    fwCoreServiceClassDefinitionsMacro((SOpenCVExtrinsic)(::arServices::ICalibration));
+    fwCoreServiceClassDefinitionsMacro((SOpenCVExtrinsic)(::arServices::ICalibration))
 
     /// Double changed signal type
     typedef ::fwCom::Signal< void (double) > ErrorComputedSignalType;

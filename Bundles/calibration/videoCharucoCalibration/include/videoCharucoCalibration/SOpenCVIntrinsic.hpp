@@ -47,7 +47,7 @@ public:
     /// Double changed signal type
     typedef ::fwCom::Signal< void (double) > ErrorComputedSignalType;
 
-    fwCoreServiceClassDefinitionsMacro((SOpenCVIntrinsic)(::arServices::ICalibration));
+    fwCoreServiceClassDefinitionsMacro((SOpenCVIntrinsic)(::arServices::ICalibration))
 
     /// Constructor.
     VIDEOCHARUCOCALIBRATION_API SOpenCVIntrinsic() noexcept;

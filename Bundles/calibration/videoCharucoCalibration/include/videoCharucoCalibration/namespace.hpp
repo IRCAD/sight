@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 /**
- * @brief       The namespace videoCharucoCalibration contains services to calibrate cameras.
+ * @brief The namespace videoCharucoCalibration contains services to calibrate cameras.
  */
 #pragma once
 

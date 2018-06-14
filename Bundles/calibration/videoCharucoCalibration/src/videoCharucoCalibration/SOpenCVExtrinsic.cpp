@@ -142,8 +142,8 @@ void SOpenCVExtrinsic::updating()
         std::vector<std::vector<int> > ids1;
         std::vector<std::vector<int> > ids2;
         {
-            ::fwData::mt::ObjectReadLock calInfo1Lock(calInfo1);
-            ::fwData::mt::ObjectReadLock calInfo2Lock(calInfo2);
+            const ::fwData::mt::ObjectReadLock calInfo1Lock(calInfo1);
+            const ::fwData::mt::ObjectReadLock calInfo2Lock(calInfo2);
 
             ::arData::CalibrationInfo::PointListContainerType ptlists1 = calInfo1->getPointListContainer();
             ::arData::CalibrationInfo::PointListContainerType ptlists2 = calInfo2->getPointListContainer();
@@ -197,17 +197,16 @@ void SOpenCVExtrinsic::updating()
 
         std::vector<float> distortionCoefficients1(5);
         std::vector<float> distortionCoefficients2(5);
-        ::cv::Mat rotationMatrix    = cv::Mat::zeros(3, 3, CV_64F);
-        ::cv::Mat rotationVector    = ::cv::Mat::zeros(3, 1, CV_64F);
-        ::cv::Mat translationVector = ::cv::Mat::zeros(3, 1, CV_64F);
-        ::cv::Mat essentialMatrix   = cv::Mat::zeros(3, 3, CV_64F);
-        ::cv::Mat fundamentalMatrix = cv::Mat::zeros(3, 3, CV_64F);
+        const ::cv::Mat rotationMatrix    = cv::Mat::zeros(3, 3, CV_64F);
+        const ::cv::Mat translationVector = ::cv::Mat::zeros(3, 1, CV_64F);
+        const ::cv::Mat essentialMatrix   = cv::Mat::zeros(3, 3, CV_64F);
+        const ::cv::Mat fundamentalMatrix = cv::Mat::zeros(3, 3, CV_64F);
 
         ::fwData::Image::sptr img = calInfo1->getImageContainer().front();
         ::cv::Size2i imgsize(static_cast<int>(img->getSize()[0]), static_cast<int>(img->getSize()[1]));
         {
 
-            ::fwData::mt::ObjectReadLock camSeriesLock(camSeries);
+            const ::fwData::mt::ObjectReadLock camSeriesLock(camSeries);
             ::arData::Camera::sptr cam1 = camSeries->getCamera(0);
             ::arData::Camera::sptr cam2 = camSeries->getCamera(m_camIndex);
 

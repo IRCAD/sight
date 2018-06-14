@@ -184,18 +184,18 @@ void SCharucoBoardDetector::detectPoints()
 {
     if(m_isDetected)
     {
-        size_t numInfo = this->getKeyGroupSize(s_CALIBRATION_INOUT);
+        const size_t numInfo = this->getKeyGroupSize(s_CALIBRATION_INOUT);
         for(size_t i = 0; i < numInfo; ++i)
         {
-            auto calInfo = this->getInOut< ::arData::CalibrationInfo >(s_CALIBRATION_INOUT, i);
-            auto frameTL = this->getInput< ::arData::FrameTL >(s_TIMELINE_INPUT, i);
-            ::fwData::Image::sptr image = this->createImage( frameTL, m_lastTimestamp);
+            auto calInfo                      = this->getInOut< ::arData::CalibrationInfo >(s_CALIBRATION_INOUT, i);
+            const auto frameTL                = this->getInput< ::arData::FrameTL >(s_TIMELINE_INPUT, i);
+            const ::fwData::Image::sptr image = this->createImage( frameTL, m_lastTimestamp);
 
             calInfo->addRecord(image, m_cornerAndIdLists[i]);
 
             // Notify
-            ::arData::CalibrationInfo::AddedRecordSignalType::sptr sig;
-            sig = calInfo->signal< ::arData::CalibrationInfo::AddedRecordSignalType >
+            const ::arData::CalibrationInfo::AddedRecordSignalType::sptr sig
+                = calInfo->signal< ::arData::CalibrationInfo::AddedRecordSignalType >
                       (::arData::CalibrationInfo::s_ADDED_RECORD_SIG);
 
             sig->asyncEmit();
@@ -235,7 +235,7 @@ void SCharucoBoardDetector::updateCharucoBoardSize()
 
     m_dictionary = ::calibration3d::helper::generateArucoDictionary(m_width, m_height, m_markerSizeInBits);
 
-    ::cv::Size boardSize(static_cast<int>(m_width), static_cast<int>(m_height));
+    const ::cv::Size boardSize(static_cast<int>(m_width), static_cast<int>(m_height));
 
     m_board = ::cv::aruco::CharucoBoard::create(boardSize.width, boardSize.height, m_squareSize,
                                                 m_markerSize, m_dictionary);
