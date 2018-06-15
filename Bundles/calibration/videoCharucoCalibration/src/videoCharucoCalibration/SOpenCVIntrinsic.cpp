@@ -110,6 +110,7 @@ void SOpenCVIntrinsic::updating()
     ::fwData::Vector::sptr poseCamera        = this->getInOut< ::fwData::Vector >("poseVector");
 
     SLM_ASSERT("Object with 'calibrationInfo' is not found", calInfo);
+    SLM_ASSERT("'camera' should not be null", cam);
     SLM_WARN_IF("Calibration info is empty.", calInfo->getPointListContainer().empty());
 
     if(!calInfo->getPointListContainer().empty())
