@@ -18,6 +18,7 @@
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
 
+#include <fwData/mt/ObjectWriteLock.hpp>
 #include <fwData/PointList.hpp>
 #include <fwData/String.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
@@ -95,6 +96,7 @@ void SPoseFrom2d::starting()
     m_3dModel.push_back( ::cv::Point3f(-halfWidth, -halfWidth, 0));
 
     ::fwData::PointList::sptr pl = this->getInOut< ::fwData::PointList >(s_POINTLIST_INOUT);
+    ::fwData::mt::ObjectWriteLock lock(pl);
     if(pl)
     {
         for(size_t i = 0; i < m_3dModel.size(); ++i)
@@ -121,6 +123,7 @@ void SPoseFrom2d::stopping()
     m_isInitialized = false;
 
     ::fwData::PointList::sptr pl = this->getInOut< ::fwData::PointList >(s_POINTLIST_INOUT);
+    ::fwData::mt::ObjectWriteLock lock(pl);
     pl->clear();
     auto sig = pl->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
     sig->asyncEmit();
