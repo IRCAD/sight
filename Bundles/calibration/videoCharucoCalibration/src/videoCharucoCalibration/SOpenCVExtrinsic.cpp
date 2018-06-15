@@ -284,8 +284,39 @@ void SOpenCVExtrinsic::updating()
             //Undistort the image points
             ::cv::undistortPoints(imagePoints1[i], imagePointsUndistored1, cameraMatrix1, distortionCoefficients1);
 
+            ::cv::Mat M = ::cv::Mat::zeros(2*imagePointsUndistored1.size(), 9, CV_32F), u, w, vt;
+            //Verifiy that this is not a degenerate configuration
+            if(imagePointsUndistored1.size() < std::max(boardSize.width, boardSize.height)+2)
+            {
+                for(int i = 0; i < imagePointsUndistored1.size(); i++)
+                {
+                    M.at<float>(i*2, 3) = -boardCoords1[i].x;
+                    M.at<float>(i*2, 4) = -boardCoords1[i].y;
+                    M.at<float>(i*2, 5) = -1;
+
+                    M.at<float>(i*2, 6) = imagePointsUndistored1[i].y*boardCoords1[i].x;
+                    M.at<float>(i*2, 7) = imagePointsUndistored1[i].y*boardCoords1[i].y;
+                    M.at<float>(i*2, 8) = imagePointsUndistored1[i].y;
+
+                    M.at<float>(i*2+1, 0) = boardCoords1[i].x;
+                    M.at<float>(i*2+1, 1) = boardCoords1[i].y;
+                    M.at<float>(i*2+1, 2) = 1;
+
+                    M.at<float>(i*2+1, 6) = -imagePointsUndistored1[i].x*boardCoords1[i].x;
+                    M.at<float>(i*2+1, 7) = -imagePointsUndistored1[i].x*boardCoords1[i].y;
+                    M.at<float>(i*2+1, 8) = -imagePointsUndistored1[i].x;
+                }
+                ::cv::SVDecomp(M, w, u, vt);
+                if(w.at<float>(w.size().height-1) < 0.001)
+                {
+                    this->signal<ErrorComputedSignalType>(s_ERROR_COMPUTED_SIG)->asyncEmit(-1);
+                    OSLM_WARN("The "<<i+1<<"th picture is a degenerate configuration.");
+                    return;
+                }
+            }
+
             //Find the corresponding homography between the board and the image plan
-            ::cv::Mat H1             = ::cv::findHomography(boardCoords1, imagePoints1[i]);
+            ::cv::Mat H1             = ::cv::findHomography(boardCoords1, imagePointsUndistored1);
             ::cv::Mat allBoardCoord1 = H1*allBoardCoord;
 
             tempBoardCoords1.reserve((boardSize.width-1)*(boardSize.height-1));
@@ -314,9 +345,9 @@ void SOpenCVExtrinsic::updating()
                                    static_cast<float>((ids2[i][j]/(boardSize.width-1))+1)*m_squareSize);
                 boardCoords2.push_back(temp);
             }
-            ::cv::Mat H2             = ::cv::findHomography(boardCoords2, imagePoints2[i]);
-            ::cv::Mat allBoardCoord2 = H2*allBoardCoord;
             ::cv::undistortPoints(imagePoints2[i], imagePointsUndistored2, cameraMatrix2, distortionCoefficients2);
+            ::cv::Mat H2             = ::cv::findHomography(boardCoords2, imagePointsUndistored2);
+            ::cv::Mat allBoardCoord2 = H2*allBoardCoord;
 
             tempBoardCoords2.reserve((boardSize.width-1)*(boardSize.height-1));
 
@@ -330,7 +361,7 @@ void SOpenCVExtrinsic::updating()
         }
 
         ::cv::Mat identity = ::cv::Mat::eye(3, 3, CV_64F);
-        ::cv::Mat nullVec;
+        ::cv::Mat nullVec  = ::cv::Mat::zeros(1, 5, CV_32F);
         double err = ::cv::stereoCalibrate(objectPoints, allPoints1, allPoints2,
                                            identity, nullVec,
                                            identity, nullVec,
