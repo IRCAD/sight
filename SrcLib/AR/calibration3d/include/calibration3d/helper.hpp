@@ -93,7 +93,7 @@ CALIBRATION3D_API void calibratePointingTool(
     ::fwData::TransformationMatrix3D::sptr _centerMatrix);
 
 /**
- * @brief generateArucoDictionary generates a Charuco Dictionary regarding othe number of marker wanted
+ * @brief generateArucoDictionary generates an Aruco Dictionary regarding the number of marker wanted
  * ((width * height)/2) and marker size in bits (4, 5, 6 or 7)
  * @param _width: width of charuco board
  * @param _height: height of charuco board

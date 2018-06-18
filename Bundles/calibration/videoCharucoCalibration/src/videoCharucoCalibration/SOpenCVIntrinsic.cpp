@@ -153,6 +153,7 @@ void SOpenCVIntrinsic::updating()
 
         if(poseCamera)
         {
+            ::fwData::mt::ObjectWriteLock lock(poseCamera);
             poseCamera->getContainer().clear();
 
             for(size_t index = 0; index < rvecs.size(); ++index)
@@ -235,10 +236,8 @@ void SOpenCVIntrinsic::updateCharucoBoardSize()
 
     m_dictionary = ::calibration3d::helper::generateArucoDictionary(m_width, m_height, m_markerSizeInBits);
 
-    ::cv::Size boardSize(static_cast<int>(m_width), static_cast<int>(m_height));
-
-    m_board = ::cv::aruco::CharucoBoard::create(boardSize.width, boardSize.height, m_squareSize,
-                                                m_markerSize, m_dictionary);
+    m_board = ::cv::aruco::CharucoBoard::create(static_cast<int>(m_width), static_cast<int>(m_height),
+                                                m_squareSize, m_markerSize, m_dictionary);
 }
 
 //------------------------------------------------------------------------------

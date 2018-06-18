@@ -18,6 +18,7 @@
 
 #include <fwData/Array.hpp>
 #include <fwData/Composite.hpp>
+#include <fwData/mt/ObjectWriteLock.hpp>
 
 #include <fwDataTools/helper/Array.hpp>
 
@@ -123,7 +124,8 @@ void SCharucoBoardDetector::checkPoints( ::fwCore::HiResClock::HiResClockType ti
         const size_t numTimeline  = this->getKeyGroupSize(s_TIMELINE_INPUT);
         const size_t numDetection = this->getKeyGroupSize(s_DETECTION_INOUT);
 
-        //OSLM_ERROR_IF("Number of input and detection timelines are different", numTimeline != numDetection);
+        OSLM_ERROR_IF("Different number of input timelines and detected point lists.",
+                      numDetection > 0 && numTimeline != numDetection);
 
         const bool detection = (numDetection > 0) && (numTimeline == numDetection);
 
@@ -191,6 +193,7 @@ void SCharucoBoardDetector::detectPoints()
             const auto frameTL                = this->getInput< ::arData::FrameTL >(s_TIMELINE_INPUT, i);
             const ::fwData::Image::sptr image = this->createImage( frameTL, m_lastTimestamp);
 
+            ::fwData::mt::ObjectWriteLock lock(calInfo);
             calInfo->addRecord(image, m_cornerAndIdLists[i]);
 
             // Notify
@@ -235,10 +238,8 @@ void SCharucoBoardDetector::updateCharucoBoardSize()
 
     m_dictionary = ::calibration3d::helper::generateArucoDictionary(m_width, m_height, m_markerSizeInBits);
 
-    const ::cv::Size boardSize(static_cast<int>(m_width), static_cast<int>(m_height));
-
-    m_board = ::cv::aruco::CharucoBoard::create(boardSize.width, boardSize.height, m_squareSize,
-                                                m_markerSize, m_dictionary);
+    m_board = ::cv::aruco::CharucoBoard::create(static_cast<int>(m_width), static_cast<int>(m_height),
+                                                m_squareSize, m_markerSize, m_dictionary);
 
 }
 

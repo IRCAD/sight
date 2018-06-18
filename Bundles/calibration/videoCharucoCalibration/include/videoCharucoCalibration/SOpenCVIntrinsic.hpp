@@ -20,12 +20,12 @@ namespace videoCharucoCalibration
  * @brief   SOpenCVIntrinsic service that computes intrinsic calibration with openCV.
  *
  * @section Slots Slots
- * - \b updateChessboardSize(unsigned int, unsigned int, float) : Received when the chessboard parameters change.
+ * - \b updateCharucoBoardSize(unsigned int, unsigned int, float) : Received when the Charuco board parameters change.
 
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::videoCalibration::SOpenCVIntrinsic">
+        <service type="::videoCharucoCalibration::SOpenCVIntrinsic">
             <in key="calibrationInfo" uid="..." />
             <inout key="camera" uid="..." />
             <inout key="poseVector" uid="..." />

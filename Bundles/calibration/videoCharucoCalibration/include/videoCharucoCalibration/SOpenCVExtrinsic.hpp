@@ -28,12 +28,12 @@ namespace videoCharucoCalibration
  * @brief   SOpenCVExtrinsic service that computes extrinsic calibration with openCV.
  *
  * @section Slots Slots
- * - \b updateChessboardSize() : Received when the chessboard preferences parameters change.
+ * - \b updateCharucoBoardSize() : Received when the Charuco board preferences parameters change.
 
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::videoCalibration::SOpenCVExtrinsic">
+        <service type="::videoCharucoCalibration::SOpenCVExtrinsic">
             <in key="calibrationInfo1" uid="..." />
             <in key="calibrationInfo2" uid="..." />
             <inout key="cameraSeries" uid="..." />
@@ -47,7 +47,7 @@ namespace videoCharucoCalibration
  * @subsection In-Out In-Out:
  * - \b camera [::arData::CameraSeries]: Output calibration.
  * @subsection Configuration Configuration:
- * - \b camIndex (optional, default: 1): index of the camera in \b cameraSeries used to compute extrinsic matrix
+ * - \b camIndex (optional, default: 1): index of the camera in cameraSeries used to compute extrinsic matrix
  *      (from camera[0] to camera[index]).
  * - \b board : preference key to retrieve the number of square in 2 dimensions of the chessboard.
  */
