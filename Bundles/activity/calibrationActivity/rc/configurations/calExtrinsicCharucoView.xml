@@ -224,7 +224,7 @@
             <framerate>30</framerate>
         </service>
 
-        <!-- *************************** Begin generic scene *************************** -->
+        <!-- *************************** Begin camera 1 scene *************************** -->
 
         <service uid="camera1" type="::fwRenderVTK::SRender">
             <scene renderMode="timer">
@@ -243,9 +243,9 @@
             <config renderer="default" style="InteractorStyle2DForNegato" />
         </service>
 
-        <!-- *************************** End generic scene *************************** -->
+        <!-- *************************** End camera 1 scene *************************** -->
 
-        <!-- *************************** Begin generic scene *************************** -->
+        <!-- *************************** Begin camera 2 scene *************************** -->
 
         <service uid="camera2" type="::fwRenderVTK::SRender" >
             <scene renderMode="timer">
@@ -264,7 +264,7 @@
             <config renderer="default" style="InteractorStyle2DForNegato" />
         </service>
 
-        <!-- *************************** End generic scene *************************** -->
+        <!-- *************************** End camera 2 scene *************************** -->
 
         <service uid="ExtrinsicCalibrationInfoEditor" type="::uiCalibration::SCalibrationInfoEditor" autoConnect="yes">
             <inout key="calInfo1" uid="${calibrationInfo1}" />
