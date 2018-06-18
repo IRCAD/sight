@@ -45,6 +45,7 @@ const ::fwServices::IService::KeyType s_MATRICES_INOUT = "matrices";
 
 // Private slot
 const ::fwCom::Slots::SlotKeyType s_RESET_TIMELINE_SLOT = "reset";
+const ::fwCom::Slots::SlotKeyType s_SYNCHRONIZE_SLOT    = "synchronize";
 
 // ----------------------------------------------------------------------------
 
@@ -52,12 +53,19 @@ SFrameMatrixSynchronizer::SFrameMatrixSynchronizer() noexcept :
     m_tolerance(500.),
     m_imagesInitialized(false),
     m_timeStep(33),
-    m_lastTimestamp(0.)
+    m_lastTimestamp(std::numeric_limits<double>::lowest())
 {
     m_sigSynchronizationDone = newSignal<SynchronizationDoneSignalType>(s_SYNCHRONIZATION_DONE_SIG);
     m_sigAllMatricesFound    = newSignal<AllMatricesFoundSignalType>(s_ALL_MATRICES_FOUND_SIG);
 
     newSlot(s_RESET_TIMELINE_SLOT, &SFrameMatrixSynchronizer::resetTimeline, this);
+    newSlot(s_SYNCHRONIZE_SLOT, &SFrameMatrixSynchronizer::synchronize, this);
+}
+
+//-----------------------------------------------------------------------------
+
+SFrameMatrixSynchronizer::~SFrameMatrixSynchronizer() noexcept
+{
 }
 
 //-----------------------------------------------------------------------------
@@ -66,6 +74,8 @@ SFrameMatrixSynchronizer::SFrameMatrixSynchronizer() noexcept :
 {
     KeyConnectionsMap connections;
     connections.push( s_FRAMETL_INPUT, ::arData::TimeLine::s_CLEARED_SIG, s_RESET_TIMELINE_SLOT );
+    connections.push( s_FRAMETL_INPUT, ::arData::TimeLine::s_OBJECT_PUSHED_SIG, s_UPDATE_SLOT );
+    connections.push( s_MATRIXTL_INPUT, ::arData::TimeLine::s_OBJECT_PUSHED_SIG, s_UPDATE_SLOT );
     return connections;
 }
 
@@ -75,8 +85,11 @@ void SFrameMatrixSynchronizer::configuring()
 {
     const auto cfg = this->getConfigTree();
 
-    m_timeStep  = 1000 / cfg.get<unsigned int>("framerate", 30);
+    const auto framerate = cfg.get<unsigned int>("framerate", 30);
+    m_timeStep  = framerate != 0 ? 1000 / cfg.get<unsigned int>("framerate", 30) : 0;
     m_tolerance = cfg.get<unsigned int>("tolerance", 500);
+
+    m_updateMask = framerate != 0 ? OBJECT_RECEIVED : m_updateMask;
 }
 
 // ----------------------------------------------------------------------------
@@ -118,18 +131,24 @@ void SFrameMatrixSynchronizer::starting()
     }
 
     SLM_ASSERT("No valid worker for timer.", m_associatedWorker);
-    m_timer = m_associatedWorker->createTimer();
-    const auto duration = std::chrono::milliseconds(m_timeStep);
-    m_timer->setFunction(std::bind( &SFrameMatrixSynchronizer::synchronize, this));
-    m_timer->setDuration(duration);
-    m_timer->start();
+    if(m_timeStep)
+    {
+        m_timer = m_associatedWorker->createTimer();
+        const auto duration = std::chrono::milliseconds(m_timeStep);
+        m_timer->setFunction(std::bind( &SFrameMatrixSynchronizer::synchronize, this));
+        m_timer->setDuration(duration);
+        m_timer->start();
+    }
 }
 
 // ----------------------------------------------------------------------------
 
 void SFrameMatrixSynchronizer::stopping()
 {
-    m_timer->stop();
+    if(m_timeStep)
+    {
+        m_timer->stop();
+    }
 
     m_frameTLs.clear();
     m_images.clear();
@@ -141,6 +160,13 @@ void SFrameMatrixSynchronizer::stopping()
 
 void SFrameMatrixSynchronizer::synchronize()
 {
+    m_updateMask |= SYNC_REQUESTED;
+
+    if( !(m_updateMask & OBJECT_RECEIVED) )
+    {
+        return;
+    }
+
     // Timestamp reference for the synchronization
     ::fwCore::HiResClock::HiResClockType frameTimestamp = 0;
 
@@ -215,6 +241,7 @@ void SFrameMatrixSynchronizer::synchronize()
     {
         return;
     }
+
     m_lastTimestamp = matrixTimestamp;
 
     for(size_t i = 0; i != m_frameTLs.size(); ++i)
@@ -244,11 +271,6 @@ void SFrameMatrixSynchronizer::synchronize()
             image->setWindowCenter(0);
 
             m_imagesInitialized = true;
-
-            // Notify (needed for instance to update the texture in ::visuVTKARAdaptor::SVideoAdapter)
-            auto sig = image->signal< ::fwData::Image::ModifiedSignalType >(
-                ::fwData::Image::s_MODIFIED_SIG );
-            sig->asyncEmit();
         }
 
         ::fwData::mt::ObjectWriteLock destLock(image);
@@ -309,6 +331,8 @@ void SFrameMatrixSynchronizer::synchronize()
         }
     }
 
+    m_updateMask = m_timeStep != 0 ? OBJECT_RECEIVED : 0;
+
     if (matrixFound)
     {
         m_sigSynchronizationDone->asyncEmit(matrixTimestamp);
@@ -320,6 +344,12 @@ void SFrameMatrixSynchronizer::synchronize()
 
 void SFrameMatrixSynchronizer::updating()
 {
+    m_updateMask |= OBJECT_RECEIVED;
+
+    if(m_updateMask & SYNC_REQUESTED)
+    {
+        this->synchronize();
+    }
 }
 
 //-----------------------------------------------------------------------------

@@ -8,15 +8,21 @@
 
 #include <arData/Camera.hpp>
 #include <arData/FrameTL.hpp>
+#include <arData/MarkerMap.hpp>
 #include <arData/MarkerTL.hpp>
 
 #include <cvIO/Camera.hpp>
 #include <cvIO/FrameTL.hpp>
+#include <cvIO/Image.hpp>
 
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
 
+#include <fwData/Image.hpp>
+#include <fwData/mt/ObjectReadToWriteLock.hpp>
+
 #include <boost/foreach.hpp>
+#include <boost/make_unique.hpp>
 #include <boost/tokenizer.hpp>
 
 #include <opencv2/core.hpp>
@@ -36,8 +42,9 @@ const ::fwCom::Slots::SlotKeyType SArucoTracker::s_SET_DOUBLE_PARAMETER_SLOT = "
 const ::fwCom::Slots::SlotKeyType SArucoTracker::s_SET_INT_PARAMETER_SLOT    = "setIntParameter";
 const ::fwCom::Slots::SlotKeyType SArucoTracker::s_SET_BOOL_PARAMETER_SLOT   = "setBoolParameter";
 
-const ::fwServices::IService::KeyType s_CAMERA_INPUT      = "camera";
-const ::fwServices::IService::KeyType s_TAGTL_INOUT_GROUP = "tagTL";
+const ::fwServices::IService::KeyType s_CAMERA_INPUT           = "camera";
+const ::fwServices::IService::KeyType s_TAGTL_INOUT_GROUP      = "tagTL";
+const ::fwServices::IService::KeyType s_MARKER_MAP_INOUT_GROUP = "markerMap";
 
 //-----------------------------------------------------------------------------
 
@@ -78,6 +85,19 @@ SArucoTracker::SArucoTracker() noexcept :
 
 SArucoTracker::~SArucoTracker() noexcept
 {
+}
+
+//-----------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsMap SArucoTracker::getAutoConnections() const
+{
+    KeyConnectionsMap connections;
+
+    connections.push( s_TIMELINE_INPUT, ::arData::TimeLine::s_OBJECT_PUSHED_SIG, s_TRACK_SLOT );
+    connections.push( s_FRAME_INOUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push( s_FRAME_INOUT, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT );
+
+    return connections;
 }
 
 //-----------------------------------------------------------------------------
@@ -126,9 +146,11 @@ void SArucoTracker::starting()
     for(size_t i = 0; i < numTagTL; ++i)
     {
         ::arData::MarkerTL::sptr markerTL = this->getInOut< ::arData::MarkerTL >(s_TAGTL_INOUT_GROUP, i);
-        OSLM_ASSERT("Marker timeline #" << i << " not found", markerTL);
-        OSLM_ASSERT("Marker id(s) for timeline #" << i << " not found", i < m_markers.size());
-        markerTL->initPoolSize(static_cast<unsigned int>(m_markers[i].size()));
+        if(markerTL)
+        {
+            OSLM_ASSERT("Marker id(s) for timeline #" << i << " not found", i < m_markers.size());
+            markerTL->initPoolSize(static_cast<unsigned int>(m_markers[i].size()));
+        }
     }
     m_isTracking = true;
 }
@@ -145,14 +167,17 @@ void SArucoTracker::stopping()
 
 void SArucoTracker::updating()
 {
+    // When working with a frame (newest design), we do not rely on the timetamp
+    // So we can just send the current one.
+    // When removing timelines from the service then we could get rid of it
+    auto timestamp = ::fwCore::HiResClock::getTimeInMilliSec();
+    this->tracking(timestamp);
 }
 
 //-----------------------------------------------------------------------------
 
 void SArucoTracker::tracking(::fwCore::HiResClock::HiResClockType& timestamp)
 {
-    ::arData::FrameTL::csptr frameTL = this->getInput< ::arData::FrameTL >(s_TIMELINE_INPUT);
-
     if(!m_isInitialized)
     {
         ::arData::Camera::csptr arCam = this->getInput< ::arData::Camera >(s_CAMERA_INPUT);
@@ -163,30 +188,50 @@ void SArucoTracker::tracking(::fwCore::HiResClock::HiResClockType& timestamp)
         m_isInitialized = true;
     }
 
-    const CSPTR(::arData::FrameTL::BufferType) buffer = frameTL->getClosestBuffer(timestamp);
+    ::cv::Mat inImage;
 
-    OSLM_WARN_IF("Buffer not found with timestamp "<< timestamp, !buffer );
-    if(buffer)
+    auto frame = this->getInOut< ::fwData::Image >(s_FRAME_INOUT);
+    std::unique_ptr< ::fwData::mt::ObjectReadToWriteLock> lockFrame;
+    if(frame)
     {
-        bool foundMarker = false;
-        m_lastTimestamp = timestamp;
+        lockFrame = ::boost::make_unique< ::fwData::mt::ObjectReadToWriteLock>(frame);
+        inImage   = ::cvIO::Image::moveToCv(frame);
+    }
+    else
+    {
+        ::arData::FrameTL::csptr frameTL = this->getInput< ::arData::FrameTL >(s_TIMELINE_INPUT);
 
-        const std::uint8_t* frameBuff = &buffer->getElement(0);
+        if(frameTL)
+        {
+            const CSPTR(::arData::FrameTL::BufferType) buffer = frameTL->getClosestBuffer(timestamp);
 
-        std::vector<std::vector< ::cv::Point2f> > detectedMarkers;
-        std::vector< int > detectedMarkersIds;
+            OSLM_WARN_IF("Buffer not found with timestamp "<< timestamp, !buffer );
+            if(buffer)
+            {
+                m_lastTimestamp = timestamp;
 
-        // read the input image
-        const ::cv::Size frameSize(static_cast<int>(frameTL->getWidth()),
-                                   static_cast<int>(frameTL->getHeight()));
+                const std::uint8_t* frameBuff = &buffer->getElement(0);
 
-        ::cv::Mat inImage = ::cvIO::FrameTL::moveToCv(frameTL, frameBuff);
+                // read the input image
+                const ::cv::Size frameSize(static_cast<int>(frameTL->getWidth()),
+                                           static_cast<int>(frameTL->getHeight()));
 
+                inImage = ::cvIO::FrameTL::moveToCv(frameTL, frameBuff);
+            }
+        }
+    }
+
+    if(!inImage.empty())
+    {
         // aruco expects a grey image and make a conversion at the beginning of the detect() method if it receives
         // a RGB image. However we have a RGBA image so we must make the conversion ourselves.
         cv::Mat grey, bgr;
         // inImage is BGRA (see constructor of ::cv::Mat)
         cv::cvtColor(inImage, grey, CV_BGRA2GRAY);
+
+        bool foundMarker = false;
+        std::vector<std::vector< ::cv::Point2f> > detectedMarkers;
+        std::vector< int > detectedMarkersIds;
 
         // Ok, let's detect
         ::cv::aruco::detectMarkers(grey, m_dictionary, detectedMarkers, detectedMarkersIds, m_detectorParams,
@@ -196,6 +241,10 @@ void SArucoTracker::tracking(::fwCore::HiResClock::HiResClockType& timestamp)
         //Note: This draws all detected markers
         if(m_debugMarkers)
         {
+            if(lockFrame)
+            {
+                lockFrame->upgrade();
+            }
             // since drawDetectedMarkers does not handle 4 channels ::cv::mat
             ::cv::cvtColor(inImage, bgr, CV_BGRA2BGR);
             ::cv::aruco::drawDetectedMarkers(bgr, detectedMarkers, detectedMarkersIds);
@@ -205,8 +254,12 @@ void SArucoTracker::tracking(::fwCore::HiResClock::HiResClockType& timestamp)
         size_t tagTLIndex = 0;
         for(const auto& markersID : m_markers)
         {
-            ::arData::MarkerTL::sptr markerTL =
-                this->getInOut< ::arData::MarkerTL >(s_TAGTL_INOUT_GROUP, tagTLIndex);
+            ::arData::MarkerTL::sptr markerTL;
+
+            if(this->getKeyGroupSize(s_TAGTL_INOUT_GROUP))
+            {
+                markerTL = this->getInOut< ::arData::MarkerTL >(s_TAGTL_INOUT_GROUP, tagTLIndex);
+            }
             SPTR(::arData::MarkerTL::BufferType) trackerObject;
 
             unsigned int markerPosition = 0;
@@ -219,18 +272,38 @@ void SArucoTracker::tracking(::fwCore::HiResClock::HiResClockType& timestamp)
                         foundMarker = true;
 
                         // Push matrix
-                        float markerBuffer[8];
-                        for (size_t j = 0; j < 4; ++j)
+                        if(markerTL)
                         {
-                            markerBuffer[j*2]     = detectedMarkers[i][j].x;
-                            markerBuffer[j*2 + 1] = detectedMarkers[i][j].y;
+                            float markerBuffer[8];
+                            for (size_t j = 0; j < 4; ++j)
+                            {
+                                markerBuffer[j*2]     = detectedMarkers[i][j].x;
+                                markerBuffer[j*2 + 1] = detectedMarkers[i][j].y;
+                            }
+
+                            if(trackerObject == nullptr)
+                            {
+                                trackerObject = markerTL->createBuffer(timestamp);
+                                markerTL->pushObject(trackerObject);
+                            }
+                            trackerObject->setElement(markerBuffer, markerPosition);
                         }
-                        if(trackerObject == nullptr)
+                        else
                         {
-                            trackerObject = markerTL->createBuffer(timestamp);
-                            markerTL->pushObject(trackerObject);
+                            auto markerMap =
+                                this->getInOut< ::arData::MarkerMap >(s_MARKER_MAP_INOUT_GROUP, tagTLIndex);
+                            SLM_ASSERT("Marker map not found", markerMap);
+
+                            ::arData::MarkerMap::MarkerType marker;
+                            marker.resize(4);
+                            for (size_t j = 0; j < 4; ++j)
+                            {
+                                marker[j][0] = detectedMarkers[i][j].x;
+                                marker[j][1] = detectedMarkers[i][j].y;
+                            }
+
+                            markerMap->setMarker(std::to_string(markerID), marker);
                         }
-                        trackerObject->setElement(markerBuffer, markerPosition);
                     }
                 }
                 ++markerPosition;
@@ -243,6 +316,14 @@ void SArucoTracker::tracking(::fwCore::HiResClock::HiResClockType& timestamp)
                 sig = markerTL->signal< ::arData::TimeLine::ObjectPushedSignalType >(
                     ::arData::TimeLine::s_OBJECT_PUSHED_SIG );
                 sig->asyncEmit(timestamp);
+            }
+            if(this->getKeyGroupSize(s_MARKER_MAP_INOUT_GROUP))
+            {
+                auto markerMap = this->getInOut< ::arData::MarkerMap >(s_MARKER_MAP_INOUT_GROUP, tagTLIndex);
+                // Always send the signal even if we did not find anything.
+                // This allows to keep updating the whole processing pipeline.
+                auto sig = markerMap->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG );
+                sig->asyncEmit();
             }
 
             this->signal<MarkerDetectedSignalType>(s_MARKER_DETECTED_SIG)->asyncEmit(foundMarker);

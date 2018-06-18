@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __ARSERVICES_ITRACKER_HPP__
-#define __ARSERVICES_ITRACKER_HPP__
+#pragma once
 
 #include "arServices/config.hpp"
 
@@ -48,6 +47,7 @@ public:
     ARSERVICES_API static const ::fwCom::Slots::SlotKeyType s_STOP_TRACKING_SLOT;
 
     ARSERVICES_API static const ::fwServices::IService::KeyType s_TIMELINE_INPUT;
+    ARSERVICES_API static const ::fwServices::IService::KeyType s_FRAME_INOUT;
 
     /// Defines the auto-connection between the timeline and the 'track' slot
     ARSERVICES_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
@@ -111,5 +111,3 @@ protected:
 
 };
 } // arServices
-
-#endif // __ARSERVICES_ITRACKER_HPP__
