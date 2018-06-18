@@ -388,6 +388,27 @@ void Plane::setOrientationMode(OrientationMode _newMode)
 
 //------------------------------------------------------------------------------
 
+void Plane::enableAlpha(bool _enable)
+{
+    const ::Ogre::Material::Techniques& techniques = m_texMaterial->getTechniques();
+
+    for(const auto tech : techniques)
+    {
+        SLM_ASSERT("Technique is not set", tech);
+
+        if(::fwRenderOgre::helper::Shading::isColorTechnique(*tech))
+        {
+            ::Ogre::Pass* pass = tech->getPass(0);
+
+            SLM_ASSERT("Can't find Ogre pass", pass);
+            pass->getFragmentProgramParameters()->setNamedConstant("u_enableAlpha", _enable );
+        }
+    }
+
+}
+
+//------------------------------------------------------------------------------
+
 void Plane::setEntityOpacity(float _f)
 {
     SLM_ASSERT("2D negato Plane, cannot change opacity", m_is3D);

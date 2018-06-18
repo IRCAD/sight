@@ -40,6 +40,8 @@ const ::fwCom::Slots::SlotKeyType SNegato3D::s_UPDATE_VISIBILITY_SLOT = "updateV
 static const std::string s_IMAGE_INOUT = "image";
 static const std::string s_TF_INOUT    = "tf";
 
+static const std::string s_ENABLE_APLHA_CONFIG = "enableAlpha";
+
 //------------------------------------------------------------------------------
 
 SNegato3D::SNegato3D() noexcept :
@@ -115,6 +117,8 @@ void SNegato3D::configuring()
 
         this->setFiltering(filtering);
     }
+
+    m_enableAlpha = config.get<bool>(s_ENABLE_APLHA_CONFIG, m_enableAlpha);
 }
 
 //------------------------------------------------------------------------------
@@ -228,6 +232,7 @@ void SNegato3D::createPlanes(const ::fwData::Image::SpacingType& _spacing, const
         m_planes[i]->setDepthSpacing(_spacing);
         m_planes[i]->setOriginPosition(origin);
         m_planes[i]->initialize3DPlane();
+        m_planes[i]->enableAlpha(m_enableAlpha);
     }
 }
 

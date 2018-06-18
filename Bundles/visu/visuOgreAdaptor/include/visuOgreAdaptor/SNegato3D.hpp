@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VISUOGREADAPTOR_SNEGATO3D_HPP__
-#define __VISUOGREADAPTOR_SNEGATO3D_HPP__
+#pragma once
 
 #include "visuOgreAdaptor/config.hpp"
 
@@ -126,6 +125,8 @@ private:
     /// Sets whether the camera must be auto reset when a mesh is updated or not.
     bool m_autoResetCamera;
 
+    bool m_enableAlpha {false};
+
     /// Ogre texture which will be displayed on the negato
     ::Ogre::TexturePtr m_3DOgreTexture;
 
@@ -156,5 +157,3 @@ inline void SNegato3D::setFiltering( ::fwRenderOgre::Plane::FilteringEnumType _f
 //------------------------------------------------------------------------------
 
 } // visuOgreAdaptor
-
-#endif // __VISUOGREADAPTOR_SNEGATO3D_HPP__

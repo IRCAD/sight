@@ -6,6 +6,7 @@ uniform float u_slice;
 uniform int u_threshold = 0;
 uniform int u_orientation = 0;
 uniform vec4 u_diffuse;
+uniform int u_enableAlpha; //bool
 
 in vec2 uv;
 
@@ -30,7 +31,10 @@ vec4 getFragmentColor()
 
     vec4 windowedColor = sampleTransferFunction(value);
 
-    return vec4( windowedColor.rgb, /*windowedColor.a **/ u_diffuse.a );
+    /// float alpha = u_diffuse.a; if(u_enableAlpha == 1){alpha = windowedColor.a}
+    float alpha = (1 - u_enableAlpha) * u_diffuse.a + u_enableAlpha * windowedColor.a;
+
+    return vec4( windowedColor.rgb, alpha );
 }
 
 // Compute alpha channel

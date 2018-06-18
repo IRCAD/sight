@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VISUOGREADAPTOR_SNEGATO2D_HPP__
-#define __VISUOGREADAPTOR_SNEGATO2D_HPP__
+#pragma once
 
 #include "visuOgreAdaptor/config.hpp"
 
@@ -116,6 +115,8 @@ private:
     /// The plane on which we will apply our texture
     ::fwRenderOgre::Plane* m_plane;
 
+    bool m_enableAlpha {false};
+
     /// The scene node allowing to move the entire negato
     ::Ogre::SceneNode* m_negatoSceneNode;
 
@@ -139,5 +140,3 @@ inline void SNegato2D::setFiltering( ::fwRenderOgre::Plane::FilteringEnumType _f
 
 //------------------------------------------------------------------------------
 } // visuOgreAdaptor
-
-#endif // __VISUOGREADAPTOR_SNEGATO2D_HPP__

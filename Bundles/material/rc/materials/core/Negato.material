@@ -47,6 +47,7 @@ fragment_program Default/Negato_FP glsl
         param_named u_texture int 0
         param_named u_tfTexture int 1
         param_named u_tfWindow float2 0 0
+        param_named u_enableAlpha int 0
         param_named_auto u_diffuse surface_diffuse_colour
     }
 }
