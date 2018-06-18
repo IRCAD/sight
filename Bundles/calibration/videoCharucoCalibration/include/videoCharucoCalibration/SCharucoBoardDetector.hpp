@@ -49,7 +49,7 @@ namespace videoCharucoCalibration
  * @section XML XML Configuration
  *
  * @code{.xml}
-       <service uid="..." impl="::videoCalibration::SChessBoardDetector" >
+       <service uid="..." impl="::videoCalibration::SCharucoBoardDetector" >
             <in group="timeline">
                 <key uid="..." />
                 <key uid="..." />
@@ -72,7 +72,8 @@ namespace videoCharucoCalibration
  * - \b calInfo [::arData::CalibrationInfo]: calibration object where to store the detected images.
  * - \b detection [::fwData::PointList] (optional): detected chessboard points in image coordinates.
  * @subsection Configuration Configuration:
- * - \b board : preference key to retrieve the number of squares of the board in width and height.
+ * - \b board : preference key to retrieve the number of squares of the board in width and height, the size of each
+ * square in mm, the size of aruco Markers in mm and the size of aruco markers in term of bits (4,5,6 or 7).
  */
 class VIDEOCHARUCOCALIBRATION_CLASS_API SCharucoBoardDetector : public ::fwServices::IController
 {
@@ -109,10 +110,6 @@ public:
      * @brief Detect charuco board points
      * @param tl the timeline containing frames displaying the charucoBoard
      * @param timestamp time corresponding to the frame to process in the timeline
-     * @param xDim the number of charucoBoard squares horizontally
-     * @param yDim the number of charucoBoard squares vertically
-     * @param squareSize the size of the charucoBoard'square used for calibration
-     * @param markerSize the size of the aruco's markers used for calibration
      * @return a pointlist where x, y are image coordinates of detected points, and z their ids.
      */
     ::fwData::PointList::sptr detectCharucoBoard(const ::arData::FrameTL::csptr tl,
@@ -136,24 +133,24 @@ protected:
 private:
 
     /**
-     * @brief SLOT : check if charucoBoard is visible and send corresponding signal
+     * @brief SLOT : Check if charucoBoard is visible and send corresponding signal
      * @param timestamp timestamp used to gets image frame
      */
     VIDEOCHARUCOCALIBRATION_API void checkPoints(::fwCore::HiResClock::HiResClockType timestamp);
 
     /**
-     * @brief SLOT: Checks on each timeline if points are visible in each frame. Then it add the detected points and the
+     * @brief SLOT: Check on each timeline if points are visible in each frame. Then add the detected points and the
      * associated image in the CalibrationInfo.
      */
     VIDEOCHARUCOCALIBRATION_API void detectPoints();
 
     /**
-     * @brief SLOT: update the charucoBoard size.
+     * @brief SLOT: Update the charucoBoard size.
      */
     VIDEOCHARUCOCALIBRATION_API void updateCharucoBoardSize();
 
     /**
-     * @brief Creates an image from frame timeline
+     * @brief Create an image from frame timeline
      */
     ::fwData::Image::sptr createImage(arData::FrameTL::csptr tl, ::fwCore::HiResClock::HiResClockType timestamp);
 
@@ -169,10 +166,10 @@ private:
     /// Preference key to retrieve height of the charucoBoard used for calibration
     std::string m_heightKey;
 
-    /// Preference key to retrieve height of the charucoBoard used for calibration
+    /// Preference key to retrieve square size of the charucoBoard used for calibration
     std::string m_squareSizeKey;
 
-    /// Preference key to retrieve height of the charucoBoard used for calibration
+    /// Preference key to retrieve marker size of the charucoBoard used for calibration
     std::string m_markerSizeKey;
 
     /// Preference key to retrieve marker size in bits.
