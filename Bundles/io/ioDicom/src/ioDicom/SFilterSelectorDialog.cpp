@@ -40,6 +40,8 @@ namespace ioDicom
 
 fwServicesRegisterMacro( ::fwGui::editor::IDialogEditor, ::ioDicom::SFilterSelectorDialog, ::fwData::String );
 
+static const ::fwServices::IService::KeyType s_FILTER_INOUT = "filter";
+
 //------------------------------------------------------------------------------
 
 SFilterSelectorDialog::SFilterSelectorDialog() :
@@ -174,7 +176,12 @@ void SFilterSelectorDialog::updating()
 
             ::fwDicomIOFilter::IFilter::sptr filter = availableFiltersMap[filterName];
 
-            ::fwData::String::sptr obj = this->getObject< ::fwData::String >();
+            ::fwData::String::sptr obj = this->getInOut< ::fwData::String >(s_FILTER_INOUT);
+            if (!obj)
+            {
+                FW_DEPRECATED_KEY(s_FILTER_INOUT, "inout", "fw4spl_18.0");
+                obj = this->getObject< ::fwData::String >();
+            }
             SLM_ASSERT("The filter selector service must work on a ::fwData::String object.", obj);
             obj->setValue(filter->getClassname());
 

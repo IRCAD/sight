@@ -28,6 +28,16 @@ namespace ioPacs
 
 /**
  * @brief   This editor service is used to edit a pacs configuration
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+    <service type="::ioPacs::SPacsConfigurationEditor">
+        <inout key="config" uid="..." />
+    </service>
+   @endcode
+ * @subsection In-Out In-Out
+ * - \b config [::fwPacsIO::data::PacsConfiguration]: pacs configuration.
  */
 class IOPACS_CLASS_API SPacsConfigurationEditor : public QObject,
                                                   public ::fwGui::editor::IEditor
