@@ -346,6 +346,39 @@ void SOpenCVExtrinsic::updating()
                 boardCoords2.push_back(temp);
             }
             ::cv::undistortPoints(imagePoints2[i], imagePointsUndistored2, cameraMatrix2, distortionCoefficients2);
+
+            //Verifiy that this is not a degenerate configuration
+            ::cv::Mat M2 = ::cv::Mat::zeros(2*imagePointsUndistored2.size(), 9, CV_32F), u2, w2, vt2;
+
+            if(imagePointsUndistored2.size() < std::max(boardSize.width, boardSize.height)+2)
+            {
+                for(int i = 0; i < imagePointsUndistored2.size(); i++)
+                {
+                    M2.at<float>(i*2, 3) = -boardCoords2[i].x;
+                    M2.at<float>(i*2, 4) = -boardCoords2[i].y;
+                    M2.at<float>(i*2, 5) = -1;
+
+                    M2.at<float>(i*2, 6) = imagePointsUndistored2[i].y*boardCoords2[i].x;
+                    M2.at<float>(i*2, 7) = imagePointsUndistored2[i].y*boardCoords2[i].y;
+                    M2.at<float>(i*2, 8) = imagePointsUndistored2[i].y;
+
+                    M2.at<float>(i*2+1, 0) = boardCoords2[i].x;
+                    M2.at<float>(i*2+1, 1) = boardCoords2[i].y;
+                    M2.at<float>(i*2+1, 2) = 1;
+
+                    M2.at<float>(i*2+1, 6) = -imagePointsUndistored2[i].x*boardCoords2[i].x;
+                    M2.at<float>(i*2+1, 7) = -imagePointsUndistored2[i].x*boardCoords2[i].y;
+                    M2.at<float>(i*2+1, 8) = -imagePointsUndistored2[i].x;
+                }
+                ::cv::SVDecomp(M2, w2, u2, vt2);
+                if(w2.at<float>(w2.size().height-1) < 0.001)
+                {
+                    this->signal<ErrorComputedSignalType>(s_ERROR_COMPUTED_SIG)->asyncEmit(-1);
+                    OSLM_WARN("The "<<i+1<<"th picture is a degenerate configuration.");
+                    return;
+                }
+            }
+
             ::cv::Mat H2             = ::cv::findHomography(boardCoords2, imagePointsUndistored2);
             ::cv::Mat allBoardCoord2 = H2*allBoardCoord;
 
