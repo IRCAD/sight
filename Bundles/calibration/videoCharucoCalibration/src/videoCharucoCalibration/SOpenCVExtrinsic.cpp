@@ -244,7 +244,7 @@ void SOpenCVExtrinsic::updating()
 
         ::cv::Mat allBoardCoord = ::cv::Mat::ones(3, (boardSize.width-1)*(boardSize.height-1), CV_64F);
         std::vector<int> allIds;
-        allIds.reserve((boardSize.width-1)*(boardSize.height-1));
+        allIds.reserve(static_cast<size_t>((boardSize.width-1)*(boardSize.height-1)));
 
         //We create a list of the charuco board's points coordinates
         for(int i = 0; i < (boardSize.width-1)*(boardSize.height-1); i++)
@@ -271,7 +271,7 @@ void SOpenCVExtrinsic::updating()
             boardCoords1.reserve(ids1[i].size());
             imagePointsUndistored1.reserve(ids1[i].size());
 
-            //Create the list of points present in the image with theire corresponding coordinates in the board
+            //Create the list of points present in the image with theirs corresponding coordinates in the board
             for(size_t j = 0; j < ids1[i].size(); j++)
             {
                 const float x = static_cast<float>(ids1[i][j]%(boardSize.width-1)+1) * m_squareSize;
@@ -284,30 +284,34 @@ void SOpenCVExtrinsic::updating()
             //Undistort the image points
             ::cv::undistortPoints(imagePoints1[i], imagePointsUndistored1, cameraMatrix1, distortionCoefficients1);
 
-            ::cv::Mat M = ::cv::Mat::zeros(2*imagePointsUndistored1.size(), 9, CV_32F), u, w, vt;
-            //Verifiy that this is not a degenerate configuration
-            if(imagePointsUndistored1.size() < std::max(boardSize.width, boardSize.height)+2)
+            ::cv::Mat M = ::cv::Mat::zeros(2* static_cast<int>(imagePointsUndistored1.size()), 9, CV_32F), u, w, vt;
+            //Verify that this is not a degenerate configuration
+            if(imagePointsUndistored1.size() <
+               std::max(static_cast<size_t>(boardSize.width), static_cast<size_t>(boardSize.height))+2)
             {
-                for(int i = 0; i < imagePointsUndistored1.size(); i++)
+                for(int i = 0; i < static_cast<int>(imagePointsUndistored1.size()); i++)
                 {
-                    M.at<float>(i*2, 3) = -boardCoords1[i].x;
-                    M.at<float>(i*2, 4) = -boardCoords1[i].y;
+                    //avoid conversion warning between opencv (int) and std::vector (size_t)
+                    const size_t index = static_cast<size_t>(i);
+
+                    M.at<float>(i*2, 3) = -boardCoords1[index].x;
+                    M.at<float>(i*2, 4) = -boardCoords1[index].y;
                     M.at<float>(i*2, 5) = -1;
 
-                    M.at<float>(i*2, 6) = imagePointsUndistored1[i].y*boardCoords1[i].x;
-                    M.at<float>(i*2, 7) = imagePointsUndistored1[i].y*boardCoords1[i].y;
-                    M.at<float>(i*2, 8) = imagePointsUndistored1[i].y;
+                    M.at<float>(i*2, 6) = imagePointsUndistored1[index].y*boardCoords1[index].x;
+                    M.at<float>(i*2, 7) = imagePointsUndistored1[index].y*boardCoords1[index].y;
+                    M.at<float>(i*2, 8) = imagePointsUndistored1[index].y;
 
-                    M.at<float>(i*2+1, 0) = boardCoords1[i].x;
-                    M.at<float>(i*2+1, 1) = boardCoords1[i].y;
+                    M.at<float>(i*2+1, 0) = boardCoords1[index].x;
+                    M.at<float>(i*2+1, 1) = boardCoords1[index].y;
                     M.at<float>(i*2+1, 2) = 1;
 
-                    M.at<float>(i*2+1, 6) = -imagePointsUndistored1[i].x*boardCoords1[i].x;
-                    M.at<float>(i*2+1, 7) = -imagePointsUndistored1[i].x*boardCoords1[i].y;
-                    M.at<float>(i*2+1, 8) = -imagePointsUndistored1[i].x;
+                    M.at<float>(i*2+1, 6) = -imagePointsUndistored1[index].x*boardCoords1[index].x;
+                    M.at<float>(i*2+1, 7) = -imagePointsUndistored1[index].x*boardCoords1[index].y;
+                    M.at<float>(i*2+1, 8) = -imagePointsUndistored1[index].x;
                 }
                 ::cv::SVDecomp(M, w, u, vt);
-                if(w.at<float>(w.size().height-1) < 0.001)
+                if(w.at<float>(w.size().height-1) < 0.001f)
                 {
                     this->signal<ErrorComputedSignalType>(s_ERROR_COMPUTED_SIG)->asyncEmit(-1);
                     OSLM_WARN("The "<<i+1<<"th picture is a degenerate configuration.");
@@ -319,7 +323,7 @@ void SOpenCVExtrinsic::updating()
             ::cv::Mat H1             = ::cv::findHomography(boardCoords1, imagePointsUndistored1);
             ::cv::Mat allBoardCoord1 = H1*allBoardCoord;
 
-            tempBoardCoords1.reserve((boardSize.width-1)*(boardSize.height-1));
+            tempBoardCoords1.reserve(static_cast<size_t>((boardSize.width-1)*(boardSize.height-1)));
 
             //Homogenize the new coordinates
             for(int j = 0; j < (boardSize.width-1)*(boardSize.height-1); j++)
@@ -382,7 +386,7 @@ void SOpenCVExtrinsic::updating()
             ::cv::Mat H2             = ::cv::findHomography(boardCoords2, imagePointsUndistored2);
             ::cv::Mat allBoardCoord2 = H2*allBoardCoord;
 
-            tempBoardCoords2.reserve((boardSize.width-1)*(boardSize.height-1));
+            tempBoardCoords2.reserve(static_cast<size_t>((boardSize.width-1)*(boardSize.height-1)));
 
             for(int j = 0; j < (boardSize.width-1)*(boardSize.height-1); j++)
             {
