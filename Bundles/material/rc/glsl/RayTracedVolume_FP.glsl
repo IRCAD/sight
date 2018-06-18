@@ -530,7 +530,7 @@ void main(void)
 // Saturation and brightness increase (CSG_MODULATION == 6)
 #if CSG_MODULATION == 4 || CSG_MODULATION == 5 || CSG_MODULATION == 6
             float modIncr = max(1.f - (coneDistance / abs(u_colorModulationFactor)), 0.f);
-#endif CSG_MODULATION == 4 || CSG_MODULATION == 5 || CSG_MODULATION == 6
+#endif // CSG_MODULATION == 4 || CSG_MODULATION == 5 || CSG_MODULATION == 6
 
 #if CSG_MODULATION == 4 || CSG_MODULATION == 5 || CSG_MODULATION == 6
             vec3 hsv = rgb2hsv(color.rgb);
