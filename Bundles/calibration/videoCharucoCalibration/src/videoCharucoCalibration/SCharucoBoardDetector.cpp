@@ -84,11 +84,11 @@ void SCharucoBoardDetector::configuring()
     const auto configTree = this->getConfigTree();
     const auto cfgBoard   = configTree.get_child("board.<xmlattr>");
 
-    m_widthKey            = cfgBoard.get<std::string>("width", "CHESSBOARD_WIDTH");
-    m_heightKey           = cfgBoard.get<std::string>("height", "CHESSBOARD_HEIGHT");
-    m_squareSizeKey       = cfgBoard.get<std::string>("squareSize", "CHESSBOARD_SQUARE_SIZE");
-    m_markerSizeKey       = cfgBoard.get<std::string>("markerSize", "CHESSBOARD_MARKER_SIZE");
-    m_markerSizeInBitsKey = cfgBoard.get<std::string>("markerSizeInBits", "CHESSBOARD_MARKER_SIZE_IN_BITS");
+    m_widthKey            = cfgBoard.get<std::string>("width", "CHARUCO_WIDTH");
+    m_heightKey           = cfgBoard.get<std::string>("height", "CHARUCO_HEIGHT");
+    m_squareSizeKey       = cfgBoard.get<std::string>("squareSize", "CHARUCO_SQUARE_SIZE");
+    m_markerSizeKey       = cfgBoard.get<std::string>("markerSize", "CHARUCO_MARKER_SIZE");
+    m_markerSizeInBitsKey = cfgBoard.get<std::string>("markerSizeInBits", "CHARUCO_MARKER_SIZE_IN_BITS");
 
     this->updateCharucoBoardSize();
 }
