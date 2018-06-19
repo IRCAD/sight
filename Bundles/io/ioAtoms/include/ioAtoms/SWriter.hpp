@@ -34,7 +34,7 @@ namespace ioAtoms
  *
  * @code{.xml}
    <service type="::ioAtoms::SWriter">
-       <inout key="data" uid="..." />
+       <in key="data" uid="..." />
        <config>
         <patcher context="..." version="..." />
 
@@ -58,7 +58,7 @@ namespace ioAtoms
        </config>
    </service>
    @endcode
- * @subsection In-Out In-Out
+ * @subsection Input Input
  * - \b data [::fwData::Object]: object to write.
  * @subsection Configuration Configuration
  * - \b patcher defines the atom patcher to use to convert the atoms (see ::fwAtomsPatch::PatchingManager)
