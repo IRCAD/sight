@@ -55,10 +55,10 @@ int main(int argc, char** argv)
         if (vm.count("help"))
         {
             std::cout << "usage: " << argv[0] <<
-                " nmberOfSquarePerLength nmberOfSquarePerWidth imageWitdhInPixels imageHeightInPixels squareSize markerSize outfile.(jpg|png|tiff|...) "
+                " numberOfSquarePerLength numberOfSquarePerWidth imageWidthInPixels imageHeightInPixels squareSize markerSize outfile.(jpg|png|tiff|...) "
                       << std::endl;
             std::cout << options << std::endl;
-            return EXIT_FAILURE;
+            return EXIT_SUCCESS;
         }
         po::notify(vm);
 
