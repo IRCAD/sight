@@ -70,6 +70,13 @@ void SChessboardReprojection::configuring()
     m_boardSquareSizeKey = boardConfig.get<std::string>("squareSize");
 
     m_movingCamera = configTree.get<bool>("config.<xmlattr>.movingCamera", false);
+
+    const std::string outputKey = configTree.get_optional<std::string>("out.<xmlattr>.key").get_value_or("");
+    if(outputKey == s_CHESSBOARD_MODEL_OUTPUT)
+    {
+        m_hasOutputChessboard = true;
+    }
+
 }
 
 //------------------------------------------------------------------------------
@@ -232,7 +239,10 @@ void SChessboardReprojection::updateChessboardSize()
         }
     }
 
-    this->setOutput(s_CHESSBOARD_MODEL_OUTPUT, pl_chessboardModel);
+    if(m_hasOutputChessboard)
+    {
+        this->setOutput(s_CHESSBOARD_MODEL_OUTPUT, pl_chessboardModel);
+    }
 }
 
 //------------------------------------------------------------------------------

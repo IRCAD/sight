@@ -447,7 +447,7 @@
             <in key="pointList3d" uid="chessboardModel" />
             <in key="calibration" uid="camera" />
             <inout key="matrix" uid="matrixCameraPose" />
-            <config inverse="false" videoRef="top_left"/>
+            <config inverse="false" />
         </service>
 
         <service uid="Status" type="::uiTools::editor::SStatus" >

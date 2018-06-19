@@ -97,9 +97,9 @@ void SPoseFrom2d::starting()
     m_3dModel.push_back( ::cv::Point3f(-halfWidth, -halfWidth, 0));
 
     ::fwData::PointList::sptr pl = this->getInOut< ::fwData::PointList >(s_POINTLIST_INOUT);
-    ::fwData::mt::ObjectWriteLock lock(pl);
     if(pl)
     {
+        ::fwData::mt::ObjectWriteLock lock(pl);
         for(size_t i = 0; i < m_3dModel.size(); ++i)
         {
             const ::cv::Point3f cvPoint        = m_3dModel.at(i);
@@ -297,7 +297,6 @@ void SPoseFrom2d::computeRegistration(::fwCore::HiResClock::HiResClockType times
 
                 ::fwData::TransformationMatrix3D::sptr matrix = this->getInOut< ::fwData::TransformationMatrix3D >(
                     s_MATRIX_INOUT, markerIndex);
-                ::fwData::mt::ObjectWriteLock lock(matrix);
                 OSLM_ASSERT("Matrix " << markerIndex << " not found", matrix);
                 if(markers.empty())
                 {
@@ -330,11 +329,12 @@ void SPoseFrom2d::computeRegistration(::fwCore::HiResClock::HiResClockType times
                         }
                     }
 
+                    ::fwData::mt::ObjectWriteLock lock(matrix);
                     matrix->setCoefficients(matrixValues);
-                }
 
-                auto sig = matrix->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
-                sig->asyncEmit();
+                    auto sig = matrix->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+                    sig->asyncEmit();
+                }
 
                 ++markerIndex;
             }

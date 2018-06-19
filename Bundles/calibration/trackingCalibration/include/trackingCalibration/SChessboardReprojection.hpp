@@ -118,8 +118,11 @@ private:
     /// Chessboard model based on the preferences.
     std::vector< ::cv::Point3d > m_chessboardModel;
 
+    /// Store if the camera is moving or the chessboard
     bool m_movingCamera;
 
+    /// Has the output chessboard
+    bool m_hasOutputChessboard {false};
 };
 
 } // namespace trackingCalibration
