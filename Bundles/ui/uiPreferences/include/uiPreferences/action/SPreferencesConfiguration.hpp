@@ -74,7 +74,7 @@ namespace action
             </preference>
        </service>
    @endcode
- * - \b type: the type of the parameter field (path, text, checkbox, number, combobox).
+ * - \b type: the type of the parameter field (path, text, checkbox, int, double, combobox).
  * - \b name: the name of the parameter.
  * - \b key: the key of the parameter.
  * - \b default_value: the default value of the parameter.
@@ -129,7 +129,8 @@ private:
         CHECKBOX,
         U_INT,
         PATH,
-        COMBOBOX
+        COMBOBOX,
+        DOUBLE
     };
 
     struct PreferenceElt

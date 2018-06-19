@@ -24,6 +24,7 @@
 #include <boost/tokenizer.hpp>
 
 #include <QDialog>
+#include <QDoubleValidator>
 #include <QGridLayout>
 #include <QHBoxLayout>
 #include <QIntValidator>
@@ -109,6 +110,9 @@ void SPreferencesConfiguration::configuring()
         }
         else if (typeCfg->getValue() == "number")
         {
+            FW_DEPRECATED_MSG("'number' configuration element will be deprecated in further version please use 'int'",
+                              "18.0");
+
             pref.m_type = PreferenceType::U_INT;
         }
         else if(typeCfg->getValue() == "path")
@@ -118,6 +122,14 @@ void SPreferencesConfiguration::configuring()
         else if(typeCfg->getValue() == "combobox")
         {
             pref.m_type = PreferenceType::COMBOBOX;
+        }
+        else if(typeCfg->getValue() == "double")
+        {
+            pref.m_type = PreferenceType::DOUBLE;
+        }
+        else if(typeCfg->getValue() == "int")
+        {
+            pref.m_type = PreferenceType::U_INT;
         }
         else
         {
@@ -149,6 +161,11 @@ void SPreferencesConfiguration::configuring()
         {
             pref.m_lineEdit = new QLineEdit(QString::fromStdString(pref.m_defaultValue));
             pref.m_lineEdit->setValidator( new QIntValidator( 0, 999999));
+        }
+        else if(pref.m_type == PreferenceType::DOUBLE)
+        {
+            pref.m_lineEdit = new QLineEdit(QString::fromStdString(pref.m_defaultValue));
+            pref.m_lineEdit->setValidator( new QDoubleValidator( -1000000.0, 1000000.0, 6));
         }
         else if(pref.m_type == PreferenceType::COMBOBOX)
         {
@@ -192,7 +209,7 @@ void SPreferencesConfiguration::updating()
             pref.m_checkBox->setChecked(pref.m_dataPreference->value() == "true");
             layout->addWidget(pref.m_checkBox, index, 1);
         }
-        else if(pref.m_type == PreferenceType::U_INT)
+        else if(pref.m_type == PreferenceType::U_INT || pref.m_type == PreferenceType::DOUBLE)
         {
             pref.m_lineEdit->setText(QString::fromStdString(pref.m_dataPreference->value()));
             layout->addWidget(pref.m_lineEdit, index, 1);
@@ -255,7 +272,7 @@ void SPreferencesConfiguration::updating()
             {
                 pref.m_dataPreference->value() = pref.m_checkBox->isChecked() ? "true" : "false";
             }
-            else if(pref.m_type == PreferenceType::U_INT)
+            else if(pref.m_type == PreferenceType::U_INT || pref.m_type == PreferenceType::DOUBLE)
             {
                 pref.m_dataPreference->value() = pref.m_lineEdit->text().toStdString();
             }
