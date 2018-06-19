@@ -368,7 +368,7 @@ void helperTest::generateCharucoDict()
         ::cv::Ptr< ::cv::aruco::Dictionary> DictExpected =
             ::cv::aruco::generateCustomDictionary(x[ii], bits[ii], ::cv::aruco::getPredefinedDictionary(ii/2));
 
-        generatedDict = ::calibration3d::helper::generateArucoDictionary(x[ii], 2, bits[ii]);
+        CPPUNIT_ASSERT_NO_THROW( generatedDict = ::calibration3d::helper::generateArucoDictionary(x[ii], 2, bits[ii]));
 
         CPPUNIT_ASSERT_EQUAL_MESSAGE("markerSize are not equal", DictExpected->markerSize, generatedDict->markerSize);
         CPPUNIT_ASSERT_EQUAL_MESSAGE("maxCorrectionBits are not equal", DictExpected->maxCorrectionBits,

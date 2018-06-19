@@ -330,7 +330,8 @@ cv::Ptr< ::cv::aruco::Dictionary> generateArucoDictionary(const size_t _width, c
     }
     else
     {
-        OSLM_ERROR("Cannot generate dictionary with marker size of: "<<_markerSizeInBits);
+        throw std::invalid_argument("Cannot generate dictionary with marker size of: "
+                                    + std::to_string(_markerSizeInBits));
     }
 
     return ::cv::aruco::generateCustomDictionary(static_cast<int>(nbMarkers), _markerSizeInBits,

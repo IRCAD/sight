@@ -52,7 +52,8 @@ static const ::fwCom::Signals::SignalKeyType s_ERROR_COMPUTED_SIG = "errorComput
 SOpenCVIntrinsic::SOpenCVIntrinsic() noexcept :
     m_width(11),
     m_height(8),
-    m_squareSize(20.0)
+    m_squareSize(20.0),
+    m_markerSizeInBits(6)
 {
     newSignal<ErrorComputedSignalType>(s_ERROR_COMPUTED_SIG);
     newSlot(s_UPDATE_CHARUCOBOARD_SIZE_SLOT, &SOpenCVIntrinsic::updateCharucoBoardSize, this);
@@ -234,7 +235,14 @@ void SOpenCVIntrinsic::updateCharucoBoardSize()
         m_markerSizeInBits = std::stoi(markerSizeInBitsStr);
     }
 
-    m_dictionary = ::calibration3d::helper::generateArucoDictionary(m_width, m_height, m_markerSizeInBits);
+    try
+    {
+        m_dictionary = ::calibration3d::helper::generateArucoDictionary(m_width, m_height, m_markerSizeInBits);
+    }
+    catch (const std::exception& e )
+    {
+        OSLM_FATAL("Error when generating dictionary: " << e.what());
+    }
 
     m_board = ::cv::aruco::CharucoBoard::create(static_cast<int>(m_width), static_cast<int>(m_height),
                                                 m_squareSize, m_markerSize, m_dictionary);
