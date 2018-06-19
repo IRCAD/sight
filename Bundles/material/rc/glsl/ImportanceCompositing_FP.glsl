@@ -7,7 +7,7 @@ uniform sampler2D u_entryPoints;
 uniform mat4 u_invWorldViewProj;
 #if IDVR == 1
 uniform mat4 u_worldViewProj;
-#endif IDVR == 1
+#endif // IDVR == 1
 
 uniform float u_sampleDistance;
 

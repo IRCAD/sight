@@ -1,7 +1,6 @@
 #version 330
 
-uniform float w;
-uniform float h;
+uniform vec4 u_viewport;
 uniform sampler2D Occlusion_Map;
 uniform sampler2D scene;
 uniform int u_blend;
@@ -14,7 +13,7 @@ out vec4 FragColor;
 
 void main()
 {
-    vec2 texCoord = gl_FragCoord.xy / vec2(w,h);
+    vec2 texCoord = gl_FragCoord.xy * u_viewport.zw;
 
     // get ao value for the current point
     float ao = texture(Occlusion_Map,texCoord).r;
