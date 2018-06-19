@@ -89,6 +89,18 @@ private:
      */
     void updateCharucoBoardSize();
 
+    /**
+     * @brief checkDegeneratedConfiguration is a private function only used in updating(),
+     * this is used to check if a particular set of detected points is a degenerate configuration.
+     * @param _undistortedPoints: point detected in image undistorted.
+     * @param _boardCoords: coordinates on CharucoBoard.
+     * @param _boardSize: board size.
+     * @return true if a degenerateConfiguration is detected, false otherwise.
+     */
+    bool checkDegeneratedConfiguration(const std::vector< ::cv::Point2f >& _undistortedPoints,
+                                       const std::vector< ::cv::Point2f >& _boardCoords,
+                                       const cv::Size& _boardSize);
+
     /// FwId of the first calibrationInfo
     std::string m_calibrationInfo1ID;
 

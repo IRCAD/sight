@@ -144,6 +144,8 @@ void SOpenCVExtrinsic::updating()
         std::vector<std::vector<int> > ids1;
         std::vector<std::vector<int> > ids2;
 
+        std::vector< size_t > degeneratedImagesCam1, degeneratedImagesCam2;
+
         {
             const ::fwData::mt::ObjectReadLock calInfo1Lock(calInfo1);
             const ::fwData::mt::ObjectReadLock calInfo2Lock(calInfo2);
@@ -286,45 +288,32 @@ void SOpenCVExtrinsic::updating()
             //Undistort the image points
             ::cv::undistortPoints(imagePoints1[i], imagePointsUndistored1, cameraMatrix1, distortionCoefficients1);
 
-            ::cv::Mat M = ::cv::Mat::zeros(2* static_cast<int>(imagePointsUndistored1.size()), 9, CV_32F), u, w, vt;
-            //Verify that this is not a degenerate configuration
-            if(imagePointsUndistored1.size() <
-               std::max(static_cast<size_t>(boardSize.width), static_cast<size_t>(boardSize.height))+2)
+            // verify if points are not a degenerated configuration
+            if(this->checkDegeneratedConfiguration(imagePointsUndistored1, boardCoords1, boardSize))
             {
-                for(int i = 0; i < static_cast<int>(imagePointsUndistored1.size()); i++)
-                {
-                    //avoid conversion warning between opencv (int) and std::vector (size_t)
-                    const size_t index = static_cast<size_t>(i);
+                degeneratedImagesCam1.push_back(i+1);
+            }
 
-                    M.at<float>(i*2, 3) = -boardCoords1[index].x;
-                    M.at<float>(i*2, 4) = -boardCoords1[index].y;
-                    M.at<float>(i*2, 5) = -1;
+            //We do the same with the image from the second camera
+            std::vector< ::cv::Point2f > tempBoardCoords2;
+            std::vector< ::cv::Point2f > boardCoords2;
+            std::vector< ::cv::Point2f > imagePointsUndistored2;
 
-                    M.at<float>(i*2, 6) = imagePointsUndistored1[index].y*boardCoords1[index].x;
-                    M.at<float>(i*2, 7) = imagePointsUndistored1[index].y*boardCoords1[index].y;
-                    M.at<float>(i*2, 8) = imagePointsUndistored1[index].y;
+            boardCoords2.reserve(ids2[i].size());
+            imagePointsUndistored2.reserve(ids2[i].size());
 
-                    M.at<float>(i*2+1, 0) = boardCoords1[index].x;
-                    M.at<float>(i*2+1, 1) = boardCoords1[index].y;
-                    M.at<float>(i*2+1, 2) = 1;
+            for(size_t j = 0; j < ids2[i].size(); j++)
+            {
+                ::cv::Point2f temp(static_cast<float>(ids2[i][j]%(boardSize.width-1)+1)*m_squareSize,
+                                   static_cast<float>((ids2[i][j]/(boardSize.width-1))+1)*m_squareSize);
+                boardCoords2.push_back(temp);
+            }
+            ::cv::undistortPoints(imagePoints2[i], imagePointsUndistored2, cameraMatrix2, distortionCoefficients2);
 
-                    M.at<float>(i*2+1, 6) = -imagePointsUndistored1[index].x*boardCoords1[index].x;
-                    M.at<float>(i*2+1, 7) = -imagePointsUndistored1[index].x*boardCoords1[index].y;
-                    M.at<float>(i*2+1, 8) = -imagePointsUndistored1[index].x;
-                }
-                ::cv::SVDecomp(M, w, u, vt);
-                if(w.at<float>(w.size().height-1) < 0.001f)
-                {
-                    ::fwGui::dialog::MessageDialog::sptr dialog = ::fwGui::dialog::MessageDialog::New();
-                    dialog->setTitle("Calibration Error");
-                    dialog->setIcon(::fwGui::dialog::IMessageDialog::Icons::WARNING);
-                    dialog->setMessage("Extrinsic Calibration cannot be performed due to degenerate configuration."
-                                       " Please check the image " + std::to_string( i + 1 ) + " of camera 1");
-                    dialog->show();
-
-                    this->signal<ErrorComputedSignalType>(s_ERROR_COMPUTED_SIG)->asyncEmit(-1);
-                    return;
-                }
+            // verify if points are not a degenerated configuration
+            if(this->checkDegeneratedConfiguration(imagePointsUndistored2, boardCoords2, boardSize))
+            {
+                degeneratedImagesCam2.push_back(i+1);
             }
 
             //Find the corresponding homography between the board and the image plan
@@ -343,65 +332,6 @@ void SOpenCVExtrinsic::updating()
             }
             allPoints1.push_back(tempBoardCoords1);
 
-            //We do the same with the image from the second camera
-            std::vector< ::cv::Point2f > tempBoardCoords2;
-            std::vector< ::cv::Point2f > boardCoords2;
-            std::vector< ::cv::Point2f > imagePointsUndistored2;
-
-            boardCoords2.reserve(ids2[i].size());
-            imagePointsUndistored2.reserve(ids2[i].size());
-
-            for(size_t j = 0; j < ids2[i].size(); j++)
-            {
-                ::cv::Point2f temp(static_cast<float>(ids2[i][j]%(boardSize.width-1)+1)*m_squareSize,
-                                   static_cast<float>((ids2[i][j]/(boardSize.width-1))+1)*m_squareSize);
-                boardCoords2.push_back(temp);
-            }
-            ::cv::undistortPoints(imagePoints2[i], imagePointsUndistored2, cameraMatrix2, distortionCoefficients2);
-
-            //Verify that this is not a degenerate configuration
-            ::cv::Mat M2 = ::cv::Mat::zeros(2* static_cast<int>(imagePointsUndistored2.size()), 9, CV_32F), u2, w2, vt2;
-
-            if(imagePointsUndistored2.size() < std::max(static_cast<size_t>(boardSize.width),
-                                                        static_cast<size_t>(boardSize.height))+2)
-            {
-
-                for(int i = 0; i < static_cast<int>(imagePointsUndistored2.size()); i++)
-                {
-                    //avoid conversion warning between opencv (int) and std::vector (size_t)
-                    const size_t index = static_cast<size_t>(i);
-
-                    M2.at<float>(i*2, 3) = -boardCoords2[index].x;
-                    M2.at<float>(i*2, 4) = -boardCoords2[index].y;
-                    M2.at<float>(i*2, 5) = -1;
-
-                    M2.at<float>(i*2, 6) = imagePointsUndistored2[index].y*boardCoords2[index].x;
-                    M2.at<float>(i*2, 7) = imagePointsUndistored2[index].y*boardCoords2[index].y;
-                    M2.at<float>(i*2, 8) = imagePointsUndistored2[index].y;
-
-                    M2.at<float>(i*2+1, 0) = boardCoords2[index].x;
-                    M2.at<float>(i*2+1, 1) = boardCoords2[index].y;
-                    M2.at<float>(i*2+1, 2) = 1;
-
-                    M2.at<float>(i*2+1, 6) = -imagePointsUndistored2[index].x*boardCoords2[index].x;
-                    M2.at<float>(i*2+1, 7) = -imagePointsUndistored2[index].x*boardCoords2[index].y;
-                    M2.at<float>(i*2+1, 8) = -imagePointsUndistored2[index].x;
-                }
-                ::cv::SVDecomp(M2, w2, u2, vt2);
-                if(w2.at<float>(w2.size().height-1) < 0.001f)
-                {
-                    ::fwGui::dialog::MessageDialog::sptr dialog = ::fwGui::dialog::MessageDialog::New();
-                    dialog->setTitle("Calibration Error");
-                    dialog->setIcon(::fwGui::dialog::IMessageDialog::Icons::WARNING);
-                    dialog->setMessage("Extrinsic Calibration cannot be performed due to degenerate configuration."
-                                       " Please check the image " + std::to_string( i + 1 ) + " of camera 2");
-                    dialog->show();
-
-                    this->signal<ErrorComputedSignalType>(s_ERROR_COMPUTED_SIG)->asyncEmit(-1);
-                    return;
-                }
-            }
-
             ::cv::Mat H2             = ::cv::findHomography(boardCoords2, imagePointsUndistored2);
             ::cv::Mat allBoardCoord2 = H2*allBoardCoord;
 
@@ -416,6 +346,44 @@ void SOpenCVExtrinsic::updating()
             allPoints2.push_back(tempBoardCoords2);
         }
 
+        // check if we have some degenerated configuration
+        // display the list of problematic images
+        std::stringstream messageIm1, messageIm2;
+        if(!degeneratedImagesCam1.empty())
+        {
+            messageIm1<<"please check image(s): " + std::to_string(degeneratedImagesCam1[0]);
+            for(size_t i = 1; i < degeneratedImagesCam1.size(); ++i)
+            {
+                messageIm1 <<", "<< std::to_string(i);
+            }
+            messageIm1 << " of camera 1 ";
+        }
+
+        if(!degeneratedImagesCam2.empty())
+        {
+            messageIm1 << " & ";
+            messageIm2<<"please check image(s): " + std::to_string(degeneratedImagesCam2[0]);
+            for(size_t i = 1; i < degeneratedImagesCam2.size(); ++i)
+            {
+                messageIm2 << ", " << std::to_string(i);
+            }
+            messageIm2 << " of camera 2 ";
+        }
+
+        // if one of those stringstream are not empty we should display the popup and not perform calibration.
+        if(!messageIm1.str().empty() || !messageIm2.str().empty())
+        {
+            ::fwGui::dialog::MessageDialog::sptr dialog = ::fwGui::dialog::MessageDialog::New();
+            dialog->setTitle("Calibration Error");
+            dialog->setIcon(::fwGui::dialog::IMessageDialog::Icons::WARNING);
+            dialog->setMessage("Extrinsic Calibration cannot be performed due to degenerate configuration."
+                               + messageIm1.str() + messageIm2.str());
+            dialog->show();
+
+            return;
+        }
+
+        // compute stereo calibration
         ::cv::Mat identity = ::cv::Mat::eye(3, 3, CV_64F);
         ::cv::Mat nullVec  = ::cv::Mat::zeros(1, 5, CV_32F);
         double err = ::cv::stereoCalibrate(objectPoints, allPoints1, allPoints2,
@@ -479,6 +447,49 @@ void SOpenCVExtrinsic::updateCharucoBoardSize()
         m_markerSize = std::stof(markerSizeStr);
     }
 
+}
+
+//------------------------------------------------------------------------------
+
+bool SOpenCVExtrinsic::checkDegeneratedConfiguration(const std::vector<cv::Point2f>& _undistortedPoints,
+                                                     const std::vector< ::cv::Point2f >& _boardCoords,
+                                                     const cv::Size& _boardSize)
+{
+    ::cv::Mat M = ::cv::Mat::zeros(2* static_cast<int>(_undistortedPoints.size()), 9, CV_32F), u, w, vt;
+
+    //Verify that this is not a degenerate configuration
+    if(_undistortedPoints.size() <
+       std::max(static_cast<size_t>(_boardSize.width), static_cast<size_t>(_boardSize.height))+2)
+    {
+        for(int i = 0; i < static_cast<int>(_undistortedPoints.size()); i++)
+        {
+            //avoid conversion warning between opencv (int) and std::vector (size_t)
+            const size_t index = static_cast<size_t>(i);
+
+            M.at<float>(i*2, 3) = -_boardCoords[index].x;
+            M.at<float>(i*2, 4) = -_boardCoords[index].y;
+            M.at<float>(i*2, 5) = -1;
+
+            M.at<float>(i*2, 6) = _undistortedPoints[index].y*_boardCoords[index].x;
+            M.at<float>(i*2, 7) = _undistortedPoints[index].y*_boardCoords[index].y;
+            M.at<float>(i*2, 8) = _undistortedPoints[index].y;
+
+            M.at<float>(i*2+1, 0) = _boardCoords[index].x;
+            M.at<float>(i*2+1, 1) = _boardCoords[index].y;
+            M.at<float>(i*2+1, 2) = 1;
+
+            M.at<float>(i*2+1, 6) = -_undistortedPoints[index].x*_boardCoords[index].x;
+            M.at<float>(i*2+1, 7) = -_undistortedPoints[index].x*_boardCoords[index].y;
+            M.at<float>(i*2+1, 8) = -_undistortedPoints[index].x;
+        }
+        ::cv::SVDecomp(M, w, u, vt);
+        if(w.at<float>(w.size().height-1) < 0.001f)
+        {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 //------------------------------------------------------------------------------
