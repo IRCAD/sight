@@ -58,7 +58,6 @@ Distance::~Distance() noexcept
 
 void Distance::starting()
 {
-    SLM_TRACE_FUNC();
     this->::fwGui::IGuiContainerSrv::create();
 
     ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
@@ -85,8 +84,6 @@ void Distance::starting()
 
 void Distance::stopping()
 {
-    SLM_TRACE_FUNC();
-
     QObject::disconnect(m_distButton, SIGNAL(clicked()), this, SLOT(onDistanceButton()));
 
     this->destroy();
@@ -96,15 +93,7 @@ void Distance::stopping()
 
 void Distance::configuring()
 {
-    SLM_TRACE_FUNC();
     this->::fwGui::IGuiContainerSrv::initialize();
-
-    std::vector < Configuration > placeInSceneConfig = m_configuration->find("placeInScene");
-    if(!placeInSceneConfig.empty())
-    {
-        SLM_ASSERT("UID attribute is missing", placeInSceneConfig.at(0)->hasAttribute("uid"));
-        m_scenesUID = placeInSceneConfig.at(0)->getAttributeValue("uid");
-    }
 }
 
 //------------------------------------------------------------------------------
@@ -115,24 +104,8 @@ void Distance::updating()
 
 //------------------------------------------------------------------------------
 
-void Distance::swapping()
-{
-
-}
-
-//------------------------------------------------------------------------------
-
-void Distance::info( std::ostream& _sstream )
-{
-}
-
-//------------------------------------------------------------------------------
-
 void Distance::onDistanceButton()
 {
-    SLM_ASSERT("No scene UID!", !m_scenesUID.empty());
-    SLM_TRACE_FUNC();
-
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >("image");
     SLM_ASSERT("'image' key is not found.", image);
 
