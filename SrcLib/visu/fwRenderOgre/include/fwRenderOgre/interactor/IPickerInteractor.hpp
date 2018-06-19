@@ -14,6 +14,8 @@
 
 #include <fwCore/BaseObject.hpp>
 
+#include <fwData/Object.hpp>
+
 #include <OGRE/OgreSceneManager.h>
 #include <OGRE/OgreVector3.h>
 

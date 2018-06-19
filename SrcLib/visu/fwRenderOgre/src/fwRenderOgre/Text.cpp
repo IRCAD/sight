@@ -8,6 +8,8 @@
 
 #include "fwRenderOgre/helper/Font.hpp"
 
+#include <fwCore/spyLog.hpp>
+
 #include <OGRE/OgreGpuProgramParams.h>
 #include <OGRE/OgreMaterial.h>
 #include <OGRE/OgreMaterialManager.h>

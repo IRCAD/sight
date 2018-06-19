@@ -6,6 +6,8 @@
 
 #include "fwRenderOgre/helper/Font.hpp"
 
+#include <fwCore/spyLog.hpp>
+
 #include <OGRE/OgreMaterialManager.h>
 #include <OGRE/OgrePass.h>
 #include <OGRE/OgreTechnique.h>
