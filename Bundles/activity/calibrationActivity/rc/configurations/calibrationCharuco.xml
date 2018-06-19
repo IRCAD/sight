@@ -107,7 +107,7 @@
             <preference>
                 <type>number</type>
                 <name>Chessboard marker size in bits (bit)</name>
-                <key>CHESSBOARD_MARKER_SIZE_IN_BITS</key>
+                <key>CHARUCO_MARKER_SIZE_IN_BITS</key>
                 <default_value>6</default_value>
             </preference>
         </service>

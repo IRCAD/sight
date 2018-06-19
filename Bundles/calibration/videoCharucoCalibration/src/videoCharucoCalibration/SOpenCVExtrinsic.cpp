@@ -319,7 +319,7 @@ void SOpenCVExtrinsic::updating()
                     dialog->setTitle("Calibration Error");
                     dialog->setIcon(::fwGui::dialog::IMessageDialog::Icons::WARNING);
                     dialog->setMessage("Extrinsic Calibration cannot be performed due to degenerate configuration."
-                                       "please check the " + std::to_string( i + 1 ) + "image of camera 1");
+                                       " Please check the image " + std::to_string( i + 1 ) + " of camera 1");
                     dialog->show();
 
                     this->signal<ErrorComputedSignalType>(s_ERROR_COMPUTED_SIG)->asyncEmit(-1);
@@ -394,7 +394,7 @@ void SOpenCVExtrinsic::updating()
                     dialog->setTitle("Calibration Error");
                     dialog->setIcon(::fwGui::dialog::IMessageDialog::Icons::WARNING);
                     dialog->setMessage("Extrinsic Calibration cannot be performed due to degenerate configuration."
-                                       "please check the " + std::to_string( i+1 ) + "image of camera 2");
+                                       " Please check the image " + std::to_string( i + 1 ) + " of camera 2");
                     dialog->show();
 
                     this->signal<ErrorComputedSignalType>(s_ERROR_COMPUTED_SIG)->asyncEmit(-1);
