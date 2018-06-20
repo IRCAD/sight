@@ -5,6 +5,7 @@ set( TYPE LIBRARY )
 set( DEPENDENCIES
     fwAtoms
     fwAtomsPatch
+    fwMDSemanticPatch
     fwCore
     fwTools
     fwMedData

@@ -123,12 +123,12 @@
 
         <service uid="actionOpen" type="::uiIO::action::SSeriesDBMerger" >
             <inout key="seriesDB" uid="seriesDB" />
-            <IOSelectorSrvConfig name="ARSDBAtomsReaderIOSelectorConfig" />
+            <IOSelectorSrvConfig name="SDBAtomsReaderIOSelectorConfig" />
         </service>
 
         <service uid="actionOpenActivity" type="::uiIO::action::SSeriesDBMerger">
             <inout key="series" uid="loadingSeriesDB" />
-            <IOSelectorSrvConfig name="ARActivityReaderConfig" />
+            <IOSelectorSrvConfig name="ActivityReaderConfig" />
         </service>
 
         <!-- Actions to save all type of series (jsonz, json, ...). -->
@@ -136,7 +136,7 @@
             <start uid="SDBWriter" />
         </service>
 
-        <service uid="SDBWriter" type="::uiIO::editor::SIOSelector" config="ARSDBAtomsWriterIOSelectorConfig" >
+        <service uid="SDBWriter" type="::uiIO::editor::SIOSelector" config="SDBAtomsWriterIOSelectorConfig" >
             <inout key="data" uid="seriesDB" />
         </service>
 
@@ -148,7 +148,7 @@
         <!-- Save current activity. -->
         <service uid="actionSaveActivity" type="::uiIO::action::SExportWithSeriesDB" >
             <inout key="series" uid="currentActivity" />
-            <IOSelectorSrvConfig name="ARActivityWriterConfig" />
+            <IOSelectorSrvConfig name="ActivityWriterConfig" />
         </service>
 
         <service uid="actionQuit" type="::gui::action::SQuit" />

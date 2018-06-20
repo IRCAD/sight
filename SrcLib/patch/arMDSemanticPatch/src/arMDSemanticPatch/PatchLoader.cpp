@@ -8,8 +8,12 @@
 
 #include <fwAtomsPatch/VersionsManager.hpp>
 
+#include <fwMDSemanticPatch/PatchLoader.hpp>
+
 namespace arMDSemanticPatch
 {
+
+std::string PatchLoader::s_currentVersion = "V13AR";
 
 //------------------------------------------------------------------------------
 
@@ -18,13 +22,15 @@ void PatchLoader::loadPatches()
     SPTR(::fwAtomsPatch::VersionsManager) versionManager = ::fwAtomsPatch::VersionsManager::getDefault();
     versionManager->buildVersionTable("./share/arMDSemanticPatch-" ARMDSEMANTICPATCH_VER "/");
     versionManager->buildLinkTable("./share/arMDSemanticPatch-" ARMDSEMANTICPATCH_VER "/");
+
+    ::fwMDSemanticPatch::PatchLoader::setCurrentVersion(s_currentVersion);
 }
 
 //------------------------------------------------------------------------------
 
 std::string PatchLoader::getCurrentVersion()
 {
-    return "V13AR";
+    return s_currentVersion;
 }
 
 //------------------------------------------------------------------------------
