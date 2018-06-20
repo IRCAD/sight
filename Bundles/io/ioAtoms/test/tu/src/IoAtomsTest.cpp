@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -13,10 +13,13 @@
 
 #include <fwDataTools/helper/Array.hpp>
 
+#include <fwIO/ioTypes.hpp>
+
 #include <fwMedData/SeriesDB.hpp>
 
 #include <fwRuntime/EConfigurationElement.hpp>
 
+#include <fwServices/op/Add.hpp>
 #include <fwServices/registry/ActiveWorkers.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/registry/ServiceFactory.hpp>
@@ -27,6 +30,7 @@
 #include <fwTools/System.hpp>
 
 #include <boost/filesystem/operations.hpp>
+#include <boost/property_tree/ptree.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::ioAtoms::ut::IoAtomsTest );
@@ -70,12 +74,12 @@ void compareLog(T& comparator)
 //------------------------------------------------------------------------------
 
 template <typename T>
-void write(const ::fwRuntime::EConfigurationElement::sptr& srvCfg, const SPTR(T)& obj, const std::string& writer)
+void write(const ::fwServices::IService::ConfigType& srvCfg, const SPTR(T)& obj, const std::string& writer)
 {
-    ::fwServices::IService::sptr writerSrv = ::fwServices::registry::ServiceFactory::getDefault()->create( writer );
+    ::fwServices::IService::sptr writerSrv = ::fwServices::add( writer );
     CPPUNIT_ASSERT(writerSrv);
 
-    ::fwServices::OSR::registerService( obj, writerSrv );
+    ::fwServices::OSR::registerService( obj, ::fwIO::s_DATA_KEY, ::fwServices::IService::AccessType::INOUT, writerSrv );
     writerSrv->setConfiguration(srvCfg);
     writerSrv->configure();
     writerSrv->start().wait();
@@ -85,14 +89,15 @@ void write(const ::fwRuntime::EConfigurationElement::sptr& srvCfg, const SPTR(T)
 }
 
 template <typename T>
-SPTR(T) read(const ::fwRuntime::EConfigurationElement::sptr &srvCfg, const std::string &reader)
+SPTR(T) read(const ::fwServices::IService::ConfigType& srvCfg, const std::string& reader)
 {
 
-    typename T::sptr readObj               = T::New();
-    ::fwServices::IService::sptr readerSrv = ::fwServices::registry::ServiceFactory::getDefault()->create( reader );
+    typename T::sptr readObj = T::New();
+    ::fwServices::IService::sptr readerSrv = ::fwServices::add( reader );
     CPPUNIT_ASSERT(readerSrv);
 
-    ::fwServices::OSR::registerService( readObj, readerSrv );
+    ::fwServices::OSR::registerService( readObj, ::fwIO::s_DATA_KEY, ::fwServices::IService::AccessType::INOUT,
+                                        readerSrv );
     readerSrv->setConfiguration(srvCfg);
     readerSrv->configure();
     readerSrv->start().wait();
@@ -103,10 +108,30 @@ SPTR(T) read(const ::fwRuntime::EConfigurationElement::sptr &srvCfg, const std::
     return readObj;
 }
 
+template <typename T>
+SPTR(T) readOut(const ::fwServices::IService::ConfigType& srvCfg, const std::string& reader)
+{
+    ::fwServices::IService::ConfigType config(srvCfg);
+    config.add("out.<xmlattr>.key", ::fwIO::s_DATA_KEY);
+
+    ::fwServices::IService::sptr readerSrv = ::fwServices::add( reader );
+    CPPUNIT_ASSERT(readerSrv);
+
+    readerSrv->setConfiguration(config);
+    readerSrv->configure();
+    readerSrv->start().wait();
+    readerSrv->update().wait();
+    typename T::sptr readObj = readerSrv->getOutput<T>(::fwIO::s_DATA_KEY);
+    readerSrv->stop().wait();
+    ::fwServices::OSR::unregisterService( readerSrv );
+
+    return readObj;
+}
+
 //------------------------------------------------------------------------------
 
 template <typename T>
-void writeReadFile(const ::fwRuntime::EConfigurationElement::sptr& srvCfg, const SPTR(T)& obj,
+void writeReadFile(const ::fwServices::IService::ConfigType& srvCfg, const SPTR(T)& obj,
                    const std::string& writer, const std::string& reader)
 {
     write(srvCfg, obj, writer);
@@ -127,10 +152,8 @@ void writeReadFile(const ::fwRuntime::EConfigurationElement::sptr& srvCfg, const
 
 void atomTest(const ::boost::filesystem::path& filePath)
 {
-    ::fwRuntime::EConfigurationElement::sptr srvCfg  = ::fwRuntime::EConfigurationElement::New("service");
-    ::fwRuntime::EConfigurationElement::sptr fileCfg = ::fwRuntime::EConfigurationElement::New("file");
-    fileCfg->setValue(filePath.string());
-    srvCfg->addConfigurationElement(fileCfg);
+    ::fwServices::IService::ConfigType srvCfg;
+    srvCfg.add("file", filePath.string());
 
     ::fwMedData::SeriesDB::sptr seriesDB      = ::fwTest::generator::SeriesDB::createSeriesDB(2, 2, 2);
     ::fwData::Composite::sptr workspace       = ::fwData::Composite::New();
@@ -153,11 +176,17 @@ void atomTest(const ::boost::filesystem::path& filePath)
         CPPUNIT_ASSERT_MESSAGE("Objects not equal", visitor.getDifferences()->empty() );
     }
 
-    // 'Change' UUID policy
-    ::fwRuntime::EConfigurationElement::sptr uuidPolicyCfg = ::fwRuntime::EConfigurationElement::New("uuidPolicy");
-    uuidPolicyCfg->setValue("Change");
+    readSeriesDB = readOut< ::fwMedData::SeriesDB >(srvCfg, "::ioAtoms::SReader");
 
-    srvCfg->addConfigurationElement(uuidPolicyCfg);
+    {
+        ::fwDataCamp::visitor::CompareObjects visitor;
+        visitor.compare(readSeriesDB, seriesDB);
+        compareLog(visitor);
+        CPPUNIT_ASSERT_MESSAGE("Objects not equal", visitor.getDifferences()->empty() );
+    }
+
+    // 'Change' UUID policy
+    srvCfg.add("uuidPolicy", "Change");
 
     readSeriesDB = read< ::fwMedData::SeriesDB >(srvCfg, "::ioAtoms::SReader");
 
@@ -168,8 +197,19 @@ void atomTest(const ::boost::filesystem::path& filePath)
         CPPUNIT_ASSERT_MESSAGE("Objects not equal", visitor.getDifferences()->empty() );
     }
 
+    // Output with 'Change' UUID policy
+    readSeriesDB = readOut< ::fwMedData::SeriesDB >(srvCfg, "::ioAtoms::SReader");
+
+    {
+        ::fwDataCamp::visitor::CompareObjects visitor;
+        visitor.compare(readSeriesDB, seriesDB);
+        compareLog(visitor);
+        CPPUNIT_ASSERT_MESSAGE("Objects not equal", visitor.getDifferences()->empty() );
+    }
+
     // 'Strict' UUID policy
-    uuidPolicyCfg->setValue("Strict");
+    srvCfg.put("uuidPolicy", "Strict");
+
     readSeriesDB = read< ::fwMedData::SeriesDB >(srvCfg, "::ioAtoms::SReader");
 
     {
@@ -179,31 +219,20 @@ void atomTest(const ::boost::filesystem::path& filePath)
         CPPUNIT_ASSERT_MESSAGE("Loaded data should be empty", readSeriesDB->empty());
     }
 
-    // 'Reuse' UUID policy
-    uuidPolicyCfg->setValue("Reuse");
+    // Output with 'Reuse' UUID policy
+    srvCfg.put("uuidPolicy", "Reuse");
 
-    ::fwRuntime::EConfigurationElement::sptr injectCfg = ::fwRuntime::EConfigurationElement::New("inject");
-    injectCfg->setValue("seriesDB");
-    srvCfg->addConfigurationElement(injectCfg);
-
-    ::fwData::Composite::sptr composite = read< ::fwData::Composite >(srvCfg, "::ioAtoms::SReader");
+    readSeriesDB = readOut< ::fwMedData::SeriesDB >(srvCfg, "::ioAtoms::SReader");
 
     {
+        CPPUNIT_ASSERT_MESSAGE("Failed to retrieve output SeriesDB", readSeriesDB);
+
+        CPPUNIT_ASSERT_MESSAGE("Data have not the same pointer", seriesDB == readSeriesDB);
+
         ::fwDataCamp::visitor::CompareObjects visitor;
-        visitor.compare(workspace, composite);
+        visitor.compare(seriesDB, readSeriesDB);
         compareLog(visitor);
-        CPPUNIT_ASSERT_MESSAGE("Objects should  be different", !visitor.getDifferences()->empty() );
-        CPPUNIT_ASSERT(composite->find("seriesDB") != composite->end());
-
-        {
-            ::fwMedData::SeriesDB::sptr newSeriesDB = ::fwMedData::SeriesDB::dynamicCast( (*composite)["seriesDB"] );
-            CPPUNIT_ASSERT_MESSAGE("Failed to retrieve SeriesDB inside composite with key 'seriesDB'", newSeriesDB);
-
-            ::fwDataCamp::visitor::CompareObjects visitor;
-            visitor.compare(seriesDB, newSeriesDB);
-            compareLog(visitor);
-            CPPUNIT_ASSERT_MESSAGE("Objects not equal", visitor.getDifferences()->empty() );
-        }
+        CPPUNIT_ASSERT_MESSAGE("Objects not equal", visitor.getDifferences()->empty() );
     }
 }
 
@@ -211,10 +240,8 @@ void atomTest(const ::boost::filesystem::path& filePath)
 
 void atomTestSimpleData(const ::boost::filesystem::path& filePath)
 {
-    ::fwRuntime::EConfigurationElement::sptr srvCfg  = ::fwRuntime::EConfigurationElement::New("service");
-    ::fwRuntime::EConfigurationElement::sptr fileCfg = ::fwRuntime::EConfigurationElement::New("file");
-    fileCfg->setValue(filePath.string());
-    srvCfg->addConfigurationElement(fileCfg);
+    ::fwServices::IService::ConfigType srvCfg;
+    srvCfg.add("file", filePath.string());
 
     ::fwData::Array::sptr array = ::fwData::Array::New();
     ::fwDataTools::helper::Array arrayHelper(array);
@@ -241,7 +268,7 @@ void atomTestSimpleData(const ::boost::filesystem::path& filePath)
         ::fwDataCamp::visitor::CompareObjects visitor;
         visitor.compare(array, readArray);
         compareLog(visitor);
-        for(const auto& it : * visitor.getDifferences())
+        for(const auto& it : *visitor.getDifferences())
         {
             std::cout<<"first : "<<it.first<<" second "<<it.second<<std::endl;
         }
@@ -286,4 +313,3 @@ void IoAtomsTest::XMLZTest()
 
 } // namespace ut
 } // namespace ioAtoms
-

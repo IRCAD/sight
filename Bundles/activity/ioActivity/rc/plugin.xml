@@ -152,7 +152,7 @@
         <id>MDAtomsConfig</id>
         <desc>Json/Xml Reader/Writer (FW4SPL)</desc>
         <config>
-            <patcher context="MedicalData" version="V11" />
+            <patcher />
             <filter>VRRenderMedicalDataV2</filter>
         </config>
     </extension>
@@ -167,7 +167,7 @@
             <extensions>
                 <extension label="Zipped Activity Project">.apz</extension>
             </extensions>
-            <patcher context="MedicalData" version="V11" />
+            <patcher />
         </config>
     </extension>
 

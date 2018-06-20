@@ -37,38 +37,41 @@ namespace ioAtoms
  * @code{.xml}
    <service type="::ioAtoms::SReader">
        <inout key="data" uid="..." />
-       <config>
-           <uuidPolicy>Strict|Change|Reuse</uuidPolicy>
-           <patcher context="..." version="..." />
-           <filter>...</filter>
-           <archive backend="json">
-               <extension>.j</extension>
-           </archive>
+       <out key="data" uid="..." />
+       <uuidPolicy>Strict|Change</uuidPolicy>
+       <patcher context="..." version="..." />
+       <filter>...</filter>
+       <archive backend="json">
+           <extension>.j</extension>
+       </archive>
 
-           <archive backend="jsonz">
-               <extension>.vpz</extension>
-           </archive>
+       <archive backend="jsonz">
+           <extension>.vpz</extension>
+       </archive>
 
-           <extensions>
-               <extension label="XML">.xml</extension>
-               <extension label="Zipped XML>.xmlz</extension>
-               <extension>.f4s</extension>
-               <extension>.j</extension>
-               <extension label="Medical workspace">.mw</extension>
-               <extension>.vpz</extension>
-           </extensions>
-
-       </config>
+       <extensions>
+           <extension label="XML">.xml</extension>
+           <extension label="Zipped XML>.xmlz</extension>
+           <extension>.f4s</extension>
+           <extension>.j</extension>
+           <extension label="Medical workspace">.mw</extension>
+           <extension>.vpz</extension>
+       </extensions>
    </service>
    @endcode
  * @subsection In-Out In-Out
+ * - \b data [::fwData::Object]: object to read. If an 'out' data is set it will be ignored.
+ * @subsection Output Output
  * - \b data [::fwData::Object]: object to read.
  * @subsection Configuration Configuration
  * - \b uuidPolicy(optional, default ChangePolicy): defines the policy for atoms conversion. 'ChangePolicy' changes the
  *      object uuid only if it already exists in the application. 'StrictPolicy' keeps the object uuid and throws an
  *      exception if the loaded uuid already exists. 'ReusePolicy' uses the existing object in the application with the
- *      uuid.
- * - \b patcher defines the atom patcher to use to convert the atoms (see ::fwAtomsPatch::PatchingManager)
+ *      uuid ( only if the reader should be in output mode).
+ * - \b patcher(optional): defines the atom patcher to use to convert the atoms (see ::fwAtomsPatch::PatchingManager)
+ *    - \b context (optional, default=MedicalData): context of the atom patcher
+ *    - \b version (optional, default=version of MedicalData): version of the atom patcher, by default it uses the
+ *         current version of the MedicalData context.
  * - \b filter(optional): filter applied on the read atom before the conversion to the object. (see
  *      ::fwAtomsFilter::IFilter)
  * - \b archive(optional): defines custom file extensions. The file to be read with an extension given in 'archive' tag
@@ -134,8 +137,8 @@ private:
     /// Notify modification on associated object if reading succeeded
     void notificationOfUpdate();
 
-    /// fwAtomsConversion uuid policy
-    std::string m_inject;
+    /// true if the data is set as 'out'
+    bool m_outputMode;
 
     /// fwAtomsConversion uuid policy
     std::string m_uuidPolicy;

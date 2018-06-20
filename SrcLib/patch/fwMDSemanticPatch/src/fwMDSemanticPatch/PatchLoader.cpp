@@ -13,6 +13,8 @@
 namespace fwMDSemanticPatch
 {
 
+std::string PatchLoader::s_currentVersion = "V11";
+
 //------------------------------------------------------------------------------
 
 void PatchLoader::loadPatches()
@@ -25,9 +27,16 @@ void PatchLoader::loadPatches()
 
 //------------------------------------------------------------------------------
 
+void PatchLoader::setCurrentVersion(const std::string& version)
+{
+    s_currentVersion = version;
+}
+
+//------------------------------------------------------------------------------
+
 std::string PatchLoader::getCurrentVersion()
 {
-    return "V11";
+    return s_currentVersion;
 }
 
 //------------------------------------------------------------------------------

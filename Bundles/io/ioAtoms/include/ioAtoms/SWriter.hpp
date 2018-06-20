@@ -62,6 +62,9 @@ namespace ioAtoms
  * - \b data [::fwData::Object]: object to write.
  * @subsection Configuration Configuration
  * - \b patcher defines the atom patcher to use to convert the atoms (see ::fwAtomsPatch::PatchingManager)
+ *    - \b context (optional, default=MedicalData): context of the atom patcher
+ *    - \b version (optional, default=version of MedicalData): version of the atom patcher, by default it uses the
+ *         current version of the MedicalData context.
  * - \b archive(optional): defines custom file extensions. The file to be read with an extension given in 'archive' tag
  *      will be processed with the given backend in archive tag (the 'backend' attribute is mandatory). Extensions must
  *      begin with '.'. Available 'backend' values are json, xml, jsonz and xmlz.

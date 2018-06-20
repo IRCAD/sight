@@ -13,6 +13,7 @@ set( DEPENDENCIES
     fwMedData
     fwGui
     fwThread
+    fwIO
 )
 set( REQUIREMENTS ioAtoms)
 
