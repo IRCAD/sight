@@ -1,26 +1,25 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
+
+#include "ObjectServiceTest.hpp"
+
+#include "TestService.hpp"
+
+#include <fwServices/IService.hpp>
+#include <fwServices/macros.hpp>
+#include <fwServices/op/Add.hpp>
+#include <fwServices/op/Get.hpp>
+#include <fwServices/registry/ServiceFactory.hpp>
 
 #include <fwCore/Profiling.hpp>
 
 #include <fwData/Float.hpp>
 #include <fwData/Integer.hpp>
 
-#include <fwServices/IService.hpp>
-#include <fwServices/macros.hpp>
-
-#include <fwServices/op/Add.hpp>
-#include <fwServices/op/Get.hpp>
-
-#include <fwServices/registry/ServiceFactory.hpp>
-
 #include <fwThread/Worker.hpp>
-
-#include "TestService.hpp"
-#include "ObjectServiceTest.hpp"
 
 #include <unordered_set>
 
@@ -33,6 +32,8 @@ namespace fwServices
 {
 namespace ut
 {
+
+//------------------------------------------------------------------------------
 
 void ObjectServiceTest::setUp()
 {
@@ -150,6 +151,16 @@ void ObjectServiceTest::registerKeyTest()
     service1->setObjectId("key1", "uid1");
     service1->setObjectId("key2", "uid2");
     service1->setObjectId("key3", "uid3");
+
+    CPPUNIT_ASSERT_EQUAL(true, service1->hasObjectId("key1"));
+    CPPUNIT_ASSERT_EQUAL(true, service1->hasObjectId("key2"));
+    CPPUNIT_ASSERT_EQUAL(true, service1->hasObjectId("key3"));
+    CPPUNIT_ASSERT_EQUAL(false, service1->hasObjectId("another_key"));
+
+    CPPUNIT_ASSERT_EQUAL(std::string("uid1"), service1->getObjectId("key1"));
+    CPPUNIT_ASSERT_EQUAL(std::string("uid2"), service1->getObjectId("key2"));
+    CPPUNIT_ASSERT_EQUAL(std::string("uid3"), service1->getObjectId("key3"));
+    CPPUNIT_ASSERT_THROW(service1->getObjectId("another_key"), ::fwCore::Exception);
 
     service2->setObjectId("key1", "uid1");
     service2->setObjectId("key2", "uid2");

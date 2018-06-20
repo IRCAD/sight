@@ -517,6 +517,12 @@ public:
     FWSERVICES_API friend std::ostream& operator<<(std::ostream& _sstream, IService& _service);
 
     /**
+     * @brief Return true if the object with the given key has an identifier.
+     * @param _key object key
+     */
+    FWSERVICES_API bool hasObjectId(const KeyType& _key) const;
+
+    /**
      * @brief Return the id of the object, throw if it is not found
      */
     FWSERVICES_API IdType getObjectId(const KeyType& _key) const;

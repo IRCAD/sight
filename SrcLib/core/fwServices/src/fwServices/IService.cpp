@@ -161,10 +161,18 @@ void IService::registerInOut(const ::fwData::Object::sptr& obj, const std::strin
 
 //-----------------------------------------------------------------------------
 
+bool IService::hasObjectId(const KeyType& _key) const
+{
+    auto it = m_idsMap.find(_key);
+    return (it != m_idsMap.end());
+}
+
+//-----------------------------------------------------------------------------
+
 IService::IdType IService::getObjectId(const IService::KeyType& _key) const
 {
     auto it = m_idsMap.find(_key);
-    SLM_ASSERT("Object key '" + _key + "' not found in service " + this->getID() + ".", it != m_idsMap.end());
+    FW_RAISE_IF("Object key '" + _key + "' not found in service " + this->getID() + ".", it == m_idsMap.end());
     return it->second;
 }
 
