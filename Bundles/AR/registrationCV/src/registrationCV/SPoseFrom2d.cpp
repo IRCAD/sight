@@ -124,10 +124,13 @@ void SPoseFrom2d::stopping()
     m_isInitialized = false;
 
     ::fwData::PointList::sptr pl = this->getInOut< ::fwData::PointList >(s_POINTLIST_INOUT);
-    ::fwData::mt::ObjectWriteLock lock(pl);
-    pl->clear();
-    auto sig = pl->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
-    sig->asyncEmit();
+    if(pl)
+    {
+        ::fwData::mt::ObjectWriteLock lock(pl);
+        pl->clear();
+        auto sig = pl->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+        sig->asyncEmit();
+    }
 }
 
 //-----------------------------------------------------------------------------
