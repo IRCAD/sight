@@ -18,7 +18,13 @@
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
 
+#include <fwData/mt/ObjectReadLock.hpp>
+#include <fwData/mt/ObjectWriteLock.hpp>
+#include <fwData/PointList.hpp>
+#include <fwData/String.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
+
+#include <fwDataTools/fieldHelper/Image.hpp>
 
 fwServicesRegisterMacro(::fwServices::IRegisterer, ::registrationCV::SPoseFrom2d);
 
@@ -35,6 +41,7 @@ const ::fwServices::IService::KeyType s_CAMERA_INPUT    = "camera";
 const ::fwServices::IService::KeyType s_EXTRINSIC_INPUT = "extrinsic";
 const ::fwServices::IService::KeyType s_MATRIXTL_INOUT  = "matrixTL";
 const ::fwServices::IService::KeyType s_MATRIX_INOUT    = "matrix";
+const ::fwServices::IService::KeyType s_POINTLIST_INOUT = "pointList";
 
 //-----------------------------------------------------------------------------
 
@@ -88,6 +95,23 @@ void SPoseFrom2d::starting()
     m_3dModel.push_back( ::cv::Point3f(halfWidth, halfWidth, 0));
     m_3dModel.push_back( ::cv::Point3f(halfWidth, -halfWidth, 0));
     m_3dModel.push_back( ::cv::Point3f(-halfWidth, -halfWidth, 0));
+
+    ::fwData::PointList::sptr pl = this->getInOut< ::fwData::PointList >(s_POINTLIST_INOUT);
+    if(pl)
+    {
+        ::fwData::mt::ObjectWriteLock lock(pl);
+        for(size_t i = 0; i < m_3dModel.size(); ++i)
+        {
+            const ::cv::Point3f cvPoint        = m_3dModel.at(i);
+            const ::fwData::Point::sptr point  = ::fwData::Point::New(cvPoint.x, cvPoint.y, cvPoint.z);
+            const ::fwData::String::sptr label = ::fwData::String::New(std::to_string(i));
+            point->setField(::fwDataTools::fieldHelper::Image::m_labelId, label);
+            pl->pushBack(point);
+        }
+
+        auto sig = pl->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+        sig->asyncEmit();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -98,6 +122,15 @@ void SPoseFrom2d::stopping()
     m_3dModel.clear();
     m_lastTimestamp = 0;
     m_isInitialized = false;
+
+    ::fwData::PointList::sptr pl = this->getInOut< ::fwData::PointList >(s_POINTLIST_INOUT);
+    if(pl)
+    {
+        ::fwData::mt::ObjectWriteLock lock(pl);
+        pl->clear();
+        auto sig = pl->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+        sig->asyncEmit();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -248,7 +281,8 @@ void SPoseFrom2d::computeRegistration(::fwCore::HiResClock::HiResClockType times
                 // For each camera timeline
                 for(size_t i = 0; i < this->getKeyGroupSize(s_MARKERMAP_INPUT); ++i)
                 {
-                    auto markerMap     = this->getInput< ::arData::MarkerMap >(s_MARKERMAP_INPUT, i);
+                    auto markerMap = this->getInput< ::arData::MarkerMap >(s_MARKERMAP_INPUT, i);
+                    ::fwData::mt::ObjectReadLock lock(markerMap);
                     const auto* marker = markerMap->getMarker(markerKey);
 
                     if(marker)
@@ -298,11 +332,12 @@ void SPoseFrom2d::computeRegistration(::fwCore::HiResClock::HiResClockType times
                         }
                     }
 
+                    ::fwData::mt::ObjectWriteLock lock(matrix);
                     matrix->setCoefficients(matrixValues);
-                }
 
-                auto sig = matrix->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
-                sig->asyncEmit();
+                    auto sig = matrix->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+                    sig->asyncEmit();
+                }
 
                 ++markerIndex;
             }
@@ -338,6 +373,7 @@ void SPoseFrom2d::initialize()
     {
         ::arData::Camera::csptr camera = this->getInput< ::arData::Camera >(s_CAMERA_INPUT, idx);
         OSLM_FATAL_IF("Camera[" << idx << "] not found", !camera);
+        ::fwData::mt::ObjectReadLock cameraLock(camera);
 
         Camera cam;
         std::tie(cam.intrinsicMat, cam.imageSize, cam.distCoef) = ::cvIO::Camera::copyToCv(camera);
@@ -346,6 +382,7 @@ void SPoseFrom2d::initialize()
         if (idx == 1)
         {
             auto extrinsicMatrix = this->getInput< ::fwData::TransformationMatrix3D >(s_EXTRINSIC_INPUT);
+            ::fwData::mt::ObjectReadLock matrixLock(extrinsicMatrix);
 
             SLM_FATAL_IF("Extrinsic matrix with key '" + s_EXTRINSIC_INPUT + "' not found", !extrinsicMatrix);
 

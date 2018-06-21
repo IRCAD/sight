@@ -34,6 +34,8 @@ static const ::fwServices::IService::KeyType s_TRACKER_MATRIX_INPUT      = "trac
 
 static const ::fwServices::IService::KeyType s_REPROJECTED_CHESSBOARD_INOUT = "reprojectedChessboard";
 
+static const ::fwServices::IService::KeyType s_CHESSBOARD_MODEL_OUTPUT = "chessboardModel";
+
 static const ::fwCom::Slots::SlotKeyType s_UPDATE_CHESSBOARD_SIZE_SLOT = "updateChessboardSize";
 static const ::fwCom::Slots::SlotKeyType s_SET_MOVING_CAMERA_SLOT      = "setMovingCamera";
 
@@ -68,6 +70,13 @@ void SChessboardReprojection::configuring()
     m_boardSquareSizeKey = boardConfig.get<std::string>("squareSize");
 
     m_movingCamera = configTree.get<bool>("config.<xmlattr>.movingCamera", false);
+
+    const std::string outputKey = configTree.get_optional<std::string>("out.<xmlattr>.key").get_value_or("");
+    if(outputKey == s_CHESSBOARD_MODEL_OUTPUT)
+    {
+        m_hasOutputChessboard = true;
+    }
+
 }
 
 //------------------------------------------------------------------------------
@@ -216,6 +225,8 @@ void SChessboardReprojection::updateChessboardSize()
 
     m_chessboardModel.clear();
 
+    ::fwData::PointList::sptr pl_chessboardModel = ::fwData::PointList::New();
+
     for(unsigned long i = 0; i < height - 1; ++i)
     {
         const double x = i * squareSize;
@@ -224,7 +235,13 @@ void SChessboardReprojection::updateChessboardSize()
         {
             const double y = j * squareSize;
             m_chessboardModel.push_back(::cv::Point3d(x, y, 0.));
+            pl_chessboardModel->pushBack(::fwData::Point::New(x, y, 0.));
         }
+    }
+
+    if(m_hasOutputChessboard)
+    {
+        this->setOutput(s_CHESSBOARD_MODEL_OUTPUT, pl_chessboardModel);
     }
 }
 

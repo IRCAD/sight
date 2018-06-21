@@ -21,12 +21,13 @@
         <object uid="cameraMatrix" type="::fwData::TransformationMatrix3D" />
         <object uid="chessMatrix" type="::fwData::TransformationMatrix3D" />
         <object uid="trackerHEXMatrix" type="::fwData::TransformationMatrix3D" />
+        <object uid="matrixCameraPose" type="::fwData::TransformationMatrix3D" />
         <object uid="matrixVectorPose" type="::fwData::Vector" />
         <object uid="matrixVectorSensor" type="::fwData::Vector" />
-        <object uid="identityMatrix" type="::fwData::TransformationMatrix3D" />
         <object uid="calibInfo" type="::arData::CalibrationInfo" />
         <object uid="detectedPoints" type="::fwData::PointList" />
         <object uid="reprojectedPoints" type="::fwData::PointList" />
+        <object uid="chessboardModel" type="::fwData::PointList" src="deferred"/>
 
 
         <!-- *************************** Begin Layouts *************************** -->
@@ -210,6 +211,13 @@
             <slots>
                 <slot>chessboardDetector/detectPoints</slot>
                 <slot>pushMatrixSensor/addCopy</slot>
+                <slot>register/update</slot>
+            </slots>
+        </service>
+
+        <service uid="register" type="::uiTools::action::STimestampSlotCaller">
+            <slots>
+                <slot>solvePnP/computeRegistration</slot>
             </slots>
         </service>
 
@@ -222,13 +230,7 @@
             </slots>
         </service>
 
-        <service uid="actionCalibrate" type="::gui::action::SSlotCaller">
-            <slots>
-                <slot>cameraPose/update</slot>
-            </slots>
-        </service>
-
-        <service uid="computeRegistration" type="::uiTools::action::STimestampSlotCaller">
+        <service uid="actionCalibrate" type="::uiTools::action::STimestampSlotCaller">
             <slots>
                 <slot>handEyeCalibration/computeRegistration</slot>
             </slots>
@@ -422,6 +424,7 @@
             <in key="handEyeZ" uid="handEyeMatZ" />
             <in key="trackerMatrix" uid="trackerMatrix0" />
             <inout key="reprojectedChessboard" uid="reprojectedPoints" />
+            <out key="chessboardModel" uid="chessboardModel" />
             <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" squareSize="CHESSBOARD_SQUARE_SIZE" />
             <config movingCamera="true" />
         </service>
@@ -439,11 +442,12 @@
             <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" />
         </service>
 
-        <service uid="cameraPose" type="::videoCalibration::SOpenCVIntrinsic" >
-            <in key="calibrationInfo" uid="calibInfo" />
-            <inout key="camera" uid="camera" />
-            <inout key="poseVector" uid="matrixVectorPose" />
-            <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" squareSize="CHESSBOARD_SQUARE_SIZE" />
+        <service uid="solvePnP" type="::registrationCV::SSolvePnP">
+            <in key="pointList2d" uid="detectedPoints" />
+            <in key="pointList3d" uid="chessboardModel" />
+            <in key="calibration" uid="camera" />
+            <inout key="matrix" uid="matrixCameraPose" />
+            <config inverse="false" />
         </service>
 
         <service uid="Status" type="::uiTools::editor::SStatus" >
@@ -455,6 +459,11 @@
         <service uid="pushMatrixSensor" type="::ctrlSelection::SManage">
            <inout key="object" uid="trackerMatrix0" />
            <inout key="vector" uid="matrixVectorSensor" />
+        </service>
+
+        <service uid="pushMatrixPose" type="::ctrlSelection::SManage">
+           <inout key="object" uid="matrixCameraPose" />
+           <inout key="vector" uid="matrixVectorPose" />
         </service>
 
         <service uid="extractor" type="::ctrlCamp::SExtractObj">
@@ -530,7 +539,7 @@
 
         <!-- *************************** Begin resultView *************************** -->
 
-        <service uid="resultView" type="::fwRenderVTK::SRender" autoConnect="yes">
+        <service uid="resultView" type="::fwRenderVTK::SRender" >
             <scene>
                 <renderer id="video" layer="0" background="0.0" />
                 <renderer id="default" layer="1" background="0.0" />
@@ -652,12 +661,6 @@
             <signal>actionChessBoardSize/parametersModified</signal>
             <slot>chessboardDetector/updateChessboardSize</slot>
             <slot>chessboardReprojection/updateChessboardSize</slot>
-            <slot>cameraPose/updateChessboardSize</slot>
-        </connect>
-
-        <connect>
-            <signal>camera/intrinsicCalibrated</signal>
-            <slot>computeRegistration/update</slot>
         </connect>
 
         <connect>
@@ -728,18 +731,24 @@
             <slot>reprojectionLabel/setDoubleParameter</slot>
         </connect>
 
+        <connect>
+            <signal>matrixCameraPose/modified</signal>
+            <slot>pushMatrixPose/addCopy</slot>
+        </connect>
+
         <!-- *************************** End Connections *************************** -->
 
         <start uid="mainView" />
         <start uid="extractor" />
+        <start uid="register" />
         <start uid="frameGrabber" />
         <start uid="synchronizer" />
         <start uid="handEyeCalibration" />
         <start uid="csvReader" />
         <start uid="chessboardDetector" />
-        <start uid="cameraPose" />
+        <start uid="solvePnP" />
         <start uid="pushMatrixSensor" />
-        <start uid="computeRegistration" />
+        <start uid="pushMatrixPose" />
         <start uid="cameraSelector" />
         <start uid="handEyeXMatrixWriter" />
         <start uid="handEyeZMatrixWriter" />
