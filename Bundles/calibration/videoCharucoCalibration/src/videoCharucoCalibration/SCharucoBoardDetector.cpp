@@ -36,8 +36,6 @@
 
 namespace videoCharucoCalibration
 {
-fwServicesRegisterMacro(::fwServices::IController, ::videoCharucoCalibration::SCharucoBoardDetector,
-                        ::fwData::Composite);
 
 const ::fwCom::Slots::SlotKeyType SCharucoBoardDetector::s_CHECK_POINTS_SLOT             = "checkPoints";
 const ::fwCom::Slots::SlotKeyType SCharucoBoardDetector::s_DETECT_POINTS_SLOT            = "detectPoints";
@@ -47,9 +45,9 @@ const ::fwCom::Signals::SignalKeyType SCharucoBoardDetector::s_CHARUCOBOARD_DETE
 const ::fwCom::Signals::SignalKeyType SCharucoBoardDetector::s_CHARUCOBOARD_NOT_DETECTED_SIG
     = "charucoBoardNotDetected";
 
-const ::fwServices::IService::KeyType s_TIMELINE_INPUT    = "timeline";
-const ::fwServices::IService::KeyType s_CALIBRATION_INOUT = "calInfo";
-const ::fwServices::IService::KeyType s_DETECTION_INOUT   = "detection";
+static const ::fwServices::IService::KeyType s_TIMELINE_INPUT    = "timeline";
+static const ::fwServices::IService::KeyType s_CALIBRATION_INOUT = "calInfo";
+static const ::fwServices::IService::KeyType s_DETECTION_INOUT   = "detection";
 
 // ----------------------------------------------------------------------------
 

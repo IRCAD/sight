@@ -12,6 +12,8 @@
 
 #include <calibration3d/helper.hpp>
 
+#include <cvIO/Matrix.hpp>
+
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slot.hxx>
 #include <fwCom/Slots.hxx>
@@ -281,7 +283,7 @@ void SOpenCVExtrinsic::updating()
                 const float x = static_cast<float>(ids1[i][j]%(boardSize.width-1)+1) * m_squareSize;
                 const float y = static_cast<float>((ids1[i][j]/(boardSize.width-1))+1 ) * m_squareSize;
 
-                ::cv::Point2f temp(x, y);
+                const ::cv::Point2f temp(x, y);
                 boardCoords1.push_back(temp);
             }
 
@@ -304,8 +306,8 @@ void SOpenCVExtrinsic::updating()
 
             for(size_t j = 0; j < ids2[i].size(); j++)
             {
-                ::cv::Point2f temp(static_cast<float>(ids2[i][j]%(boardSize.width-1)+1)*m_squareSize,
-                                   static_cast<float>((ids2[i][j]/(boardSize.width-1))+1)*m_squareSize);
+                const ::cv::Point2f temp(static_cast<float>(ids2[i][j]%(boardSize.width-1)+1)*m_squareSize,
+                                         static_cast<float>((ids2[i][j]/(boardSize.width-1))+1)*m_squareSize);
                 boardCoords2.push_back(temp);
             }
             ::cv::undistortPoints(imagePoints2[i], imagePointsUndistored2, cameraMatrix2, distortionCoefficients2);
@@ -316,37 +318,41 @@ void SOpenCVExtrinsic::updating()
                 degeneratedImagesCam2.push_back(i);
             }
 
-            if((!degeneratedImagesCam1.empty() && (degeneratedImagesCam1[degeneratedImagesCam1.size()-1] == i)) ||
-               (!degeneratedImagesCam2.empty() && (degeneratedImagesCam2[degeneratedImagesCam2.size()-1] == i)))
+            if((!degeneratedImagesCam1.empty() && (degeneratedImagesCam1.back() == i)) ||
+               (!degeneratedImagesCam2.empty() && (degeneratedImagesCam2.back() == i)))
             {
                 continue;
             }
 
             //Find the corresponding homography between the board and the image plan
-            ::cv::Mat H1             = ::cv::findHomography(boardCoords1, imagePointsUndistored1);
-            ::cv::Mat allBoardCoord1 = H1*allBoardCoord;
+            const ::cv::Mat H1             = ::cv::findHomography(boardCoords1, imagePointsUndistored1);
+            const ::cv::Mat allBoardCoord1 = H1*allBoardCoord;
 
             tempBoardCoords1.reserve(static_cast<size_t>((boardSize.width-1)*(boardSize.height-1)));
 
             //Homogenize the new coordinates
             for(int j = 0; j < (boardSize.width-1)*(boardSize.height-1); j++)
             {
-                ::cv::Point2f temp(static_cast<float>(allBoardCoord1.at<double>(0, j)/allBoardCoord1.at<double>(2, j)),
-                                   static_cast<float>(allBoardCoord1.at<double>(1, j)/allBoardCoord1.at<double>(2, j)));
+                const ::cv::Point2f temp(static_cast<float>(allBoardCoord1.at<double>(0, j)/allBoardCoord1.at<double>(2,
+                                                                                                                      j)),
+                                         static_cast<float>(allBoardCoord1.at<double>(1, j)/allBoardCoord1.at<double>(2,
+                                                                                                                      j)));
                 tempBoardCoords1.push_back(temp);
 
             }
             allPoints1.push_back(tempBoardCoords1);
 
-            ::cv::Mat H2             = ::cv::findHomography(boardCoords2, imagePointsUndistored2);
-            ::cv::Mat allBoardCoord2 = H2*allBoardCoord;
+            const ::cv::Mat H2             = ::cv::findHomography(boardCoords2, imagePointsUndistored2);
+            const ::cv::Mat allBoardCoord2 = H2*allBoardCoord;
 
             tempBoardCoords2.reserve(static_cast<size_t>((boardSize.width-1)*(boardSize.height-1)));
 
             for(int j = 0; j < (boardSize.width-1)*(boardSize.height-1); j++)
             {
-                ::cv::Point2f temp(static_cast<float>(allBoardCoord2.at<double>(0, j)/allBoardCoord2.at<double>(2, j)),
-                                   static_cast<float>(allBoardCoord2.at<double>(1, j)/allBoardCoord2.at<double>(2, j)));
+                const ::cv::Point2f temp(static_cast<float>(allBoardCoord2.at<double>(0, j)/allBoardCoord2.at<double>(2,
+                                                                                                                      j)),
+                                         static_cast<float>(allBoardCoord2.at<double>(1, j)/allBoardCoord2.at<double>(2,
+                                                                                                                      j)));
                 tempBoardCoords2.push_back(temp);
             }
             allPoints2.push_back(tempBoardCoords2);
@@ -357,7 +363,7 @@ void SOpenCVExtrinsic::updating()
         std::stringstream messageIm1, messageIm2;
         if(!degeneratedImagesCam1.empty())
         {
-            messageIm1<<"please check image(s): " + std::to_string(degeneratedImagesCam1[0]);
+            messageIm1<<"Please check image(s): " + std::to_string(degeneratedImagesCam1[0]);
             for(size_t i = 1; i < degeneratedImagesCam1.size(); ++i)
             {
                 messageIm1 <<", "<< std::to_string(degeneratedImagesCam1[i]);
@@ -371,7 +377,7 @@ void SOpenCVExtrinsic::updating()
             {
                 messageIm1 << " & ";
             }
-            messageIm2<<"please check image(s): " + std::to_string(degeneratedImagesCam2[0]);
+            messageIm2<<"Please check image(s): " + std::to_string(degeneratedImagesCam2[0]);
             for(size_t i = 1; i < degeneratedImagesCam2.size(); ++i)
             {
                 messageIm2 << ", " << std::to_string(degeneratedImagesCam2[i]);
@@ -385,7 +391,7 @@ void SOpenCVExtrinsic::updating()
             ::fwGui::dialog::MessageDialog::sptr dialog = ::fwGui::dialog::MessageDialog::New();
             dialog->setTitle("Calibration Error");
             dialog->setIcon(::fwGui::dialog::IMessageDialog::Icons::WARNING);
-            dialog->setMessage("Extrinsic Calibration cannot be performed due to degenerate configuration."
+            dialog->setMessage("Extrinsic Calibration cannot be performed due to degenerate configuration. "
                                + messageIm1.str() + messageIm2.str());
             dialog->show();
 
@@ -393,20 +399,22 @@ void SOpenCVExtrinsic::updating()
         }
 
         // compute stereo calibration
-        ::cv::Mat identity = ::cv::Mat::eye(3, 3, CV_64F);
-        ::cv::Mat nullVec  = ::cv::Mat::zeros(1, 5, CV_32F);
-        double err = ::cv::stereoCalibrate(objectPoints, allPoints1, allPoints2,
-                                           identity, nullVec,
-                                           identity, nullVec,
-                                           imgsize, rotationMatrix, translationVector, essentialMatrix,
-                                           fundamentalMatrix,
-                                           CV_CALIB_FIX_INTRINSIC,
-                                           ::cv::TermCriteria(::cv::TermCriteria::MAX_ITER + ::cv::TermCriteria::EPS,
-                                                              100, 1e-5));
+        const ::cv::Mat identity = ::cv::Mat::eye(3, 3, CV_64F);
+        const ::cv::Mat nullVec  = ::cv::Mat::zeros(1, 5, CV_32F);
+        const double err         = ::cv::stereoCalibrate(objectPoints, allPoints1, allPoints2,
+                                                         identity, nullVec,
+                                                         identity, nullVec,
+                                                         imgsize, rotationMatrix, translationVector, essentialMatrix,
+                                                         fundamentalMatrix,
+                                                         CV_CALIB_FIX_INTRINSIC,
+                                                         ::cv::TermCriteria(::cv::TermCriteria::MAX_ITER +
+                                                                            ::cv::TermCriteria::EPS,
+                                                                            100, 1e-5));
 
         this->signal<ErrorComputedSignalType>(s_ERROR_COMPUTED_SIG)->asyncEmit(err);
 
         ::fwData::TransformationMatrix3D::sptr matrix = ::fwData::TransformationMatrix3D::New();
+
         for (size_t i = 0; i < 3; ++i)
         {
             for (size_t j = 0; j < 3; ++j)

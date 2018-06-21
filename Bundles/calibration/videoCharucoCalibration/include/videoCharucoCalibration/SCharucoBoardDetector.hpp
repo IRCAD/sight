@@ -49,7 +49,7 @@ namespace videoCharucoCalibration
  * @section XML XML Configuration
  *
  * @code{.xml}
-       <service uid="..." impl="::videoCalibration::SCharucoBoardDetector" >
+       <service uid="..." type="::videoCharucoCalibration::SCharucoBoardDetector" >
             <in group="timeline">
                 <key uid="..." />
                 <key uid="..." />

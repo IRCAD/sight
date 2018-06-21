@@ -22,6 +22,8 @@
 
 #include <fwDataTools/TransformationMatrix3D.hpp>
 
+#include <fwGui/dialog/MessageDialog.hpp>
+
 #include <fwPreferences/helper.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
@@ -241,7 +243,15 @@ void SOpenCVIntrinsic::updateCharucoBoardSize()
     }
     catch (const std::exception& e )
     {
-        OSLM_FATAL("Error when generating dictionary: " << e.what());
+        // Warn user that something went wrong with dictionary generation.
+        ::fwGui::dialog::MessageDialog::sptr errorDialog = ::fwGui::dialog::MessageDialog::New();
+        errorDialog->setTitle("Error in dictionary generation");
+        errorDialog->setIcon(::fwGui::dialog::IMessageDialog::Icons::CRITICAL);
+        errorDialog->setMessage("Error when generating dictionary: " + std::string(e.what()));
+        errorDialog->show();
+
+        // Exit the function.
+        return;
     }
 
     m_board = ::cv::aruco::CharucoBoard::create(static_cast<int>(m_width), static_cast<int>(m_height),
