@@ -291,7 +291,7 @@ void SOpenCVExtrinsic::updating()
             // verify if points are not a degenerated configuration
             if(this->checkDegeneratedConfiguration(imagePointsUndistored1, boardCoords1, boardSize))
             {
-                degeneratedImagesCam1.push_back(i+1);
+                degeneratedImagesCam1.push_back(i);
             }
 
             //We do the same with the image from the second camera
@@ -313,7 +313,13 @@ void SOpenCVExtrinsic::updating()
             // verify if points are not a degenerated configuration
             if(this->checkDegeneratedConfiguration(imagePointsUndistored2, boardCoords2, boardSize))
             {
-                degeneratedImagesCam2.push_back(i+1);
+                degeneratedImagesCam2.push_back(i);
+            }
+
+            if((!degeneratedImagesCam1.empty() && (degeneratedImagesCam1[degeneratedImagesCam1.size()-1] == i)) ||
+               (!degeneratedImagesCam2.empty() && (degeneratedImagesCam2[degeneratedImagesCam2.size()-1] == i)))
+            {
+                continue;
             }
 
             //Find the corresponding homography between the board and the image plan
@@ -354,18 +360,21 @@ void SOpenCVExtrinsic::updating()
             messageIm1<<"please check image(s): " + std::to_string(degeneratedImagesCam1[0]);
             for(size_t i = 1; i < degeneratedImagesCam1.size(); ++i)
             {
-                messageIm1 <<", "<< std::to_string(i);
+                messageIm1 <<", "<< std::to_string(degeneratedImagesCam1[i]);
             }
             messageIm1 << " of camera 1 ";
         }
 
         if(!degeneratedImagesCam2.empty())
         {
-            messageIm1 << " & ";
+            if(!degeneratedImagesCam1.empty())
+            {
+                messageIm1 << " & ";
+            }
             messageIm2<<"please check image(s): " + std::to_string(degeneratedImagesCam2[0]);
             for(size_t i = 1; i < degeneratedImagesCam2.size(); ++i)
             {
-                messageIm2 << ", " << std::to_string(i);
+                messageIm2 << ", " << std::to_string(degeneratedImagesCam2[i]);
             }
             messageIm2 << " of camera 2 ";
         }
