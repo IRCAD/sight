@@ -79,11 +79,14 @@ AutoStereoCompositorListener::~AutoStereoCompositorListener()
 
         if(::Ogre::StringUtil::startsWith( _schemeName, "VolumeEntries"))
         {
-            const size_t suffixPos         = _schemeName.find("_") + 1;
-            const size_t suffixSize        = _schemeName.size() - 1 - suffixPos;
-            const std::string schemeSuffix = _schemeName.substr(suffixPos, suffixSize);
+            // Volume entries technique names follow this pattern : VolumeEntries<AutoStereo>_<technique><viewport>
+            const size_t techNamePos   = _schemeName.find("_") + 1;
+            const size_t techNameSize  = _schemeName.size() - 1 - techNamePos;
+            const std::string techName = _schemeName.substr(techNamePos, techNameSize);
 
-            matchingTech = _originalMaterial->getTechnique(schemeSuffix);
+            auto entryPointsMtl = ::Ogre::MaterialManager::getSingleton().getByName("RayEntryPoints");
+
+            matchingTech = entryPointsMtl->getTechnique(techName);
         }
         else
         {

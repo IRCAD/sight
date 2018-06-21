@@ -35,6 +35,14 @@ MaterialMgrListener::~MaterialMgrListener()
                                                                                        const ::Ogre::Renderable*
                                                                                        /*_renderable*/)
 {
+    const auto mtlName = _originalMaterial->getName();
+
+    // Volume rendering techniques don't handle OIT. Ignore them.
+    if(::Ogre::StringUtil::startsWith(mtlName, "RTV_Mat") || mtlName == "RayEntryPoints")
+    {
+        return nullptr;
+    }
+
     // Don't know what is this for exactly, but we don't care so we filter this out
     if(_schemeName == "ShaderGeneratorDefaultScheme")
     {

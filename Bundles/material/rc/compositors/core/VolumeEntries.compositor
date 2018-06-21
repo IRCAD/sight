@@ -42,6 +42,23 @@ compositor VolumeEntries
 
             pass render_scene
             {
+                material_scheme VolumeEntries_FrontFacesMin
+
+                last_render_queue 50
+            }
+        }
+
+        target VolumeEntryPoints
+        {
+            input none
+
+            pass stencil
+            {
+                check off
+            }
+
+            pass render_scene
+            {
                 material_scheme VolumeEntries_BackFaces
 
                 first_render_queue 101

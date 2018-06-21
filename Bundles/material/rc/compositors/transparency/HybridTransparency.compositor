@@ -42,6 +42,7 @@ compositor HybridTransparency
 
             pass render_scene
             {
+                last_render_queue 50
             }
         }
 
@@ -70,6 +71,7 @@ compositor HybridTransparency
 
             pass render_scene
             {
+                last_render_queue 50
             }
         }
 
@@ -101,6 +103,7 @@ compositor HybridTransparency
 
             pass render_scene
             {
+                last_render_queue 50
             }
         }
 
@@ -128,6 +131,7 @@ compositor HybridTransparency
 
             pass render_scene
             {
+                last_render_queue 50
             }
         }
 
@@ -177,6 +181,7 @@ compositor HybridTransparency
 
             pass render_scene
             {
+                last_render_queue 50
             }
         }
 
@@ -195,6 +200,7 @@ compositor HybridTransparency
 
             pass render_scene
             {
+                last_render_queue 50
             }
         }
 
@@ -226,12 +232,25 @@ compositor HybridTransparency
         target_output
         {
             input none
+
+            pass clear
+            {
+            }
+
             pass render_quad
             {
                 material HybridTransparency/Final
                 input 0 gbuffer
                 input 1 backDepth
             }
+
+            // Render volumes on top.
+            pass render_scene
+            {
+                first_render_queue 51
+                last_render_queue 52
+            }
         }
+
     }
 }

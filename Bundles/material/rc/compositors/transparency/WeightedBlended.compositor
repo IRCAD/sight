@@ -25,6 +25,7 @@ compositor WeightedBlended
 
              pass render_scene
              {
+                last_render_queue 50
              }
          }
 
@@ -43,6 +44,7 @@ compositor WeightedBlended
 
              pass render_scene
              {
+                last_render_queue 50
              }
          }
 
@@ -61,6 +63,7 @@ compositor WeightedBlended
 
              pass render_scene
              {
+                last_render_queue 50
              }
          }
 
@@ -68,12 +71,25 @@ compositor WeightedBlended
          target_output
          {
              input none
+
+            pass clear
+            {
+            }
+
              pass render_quad
              {
                  material WeightedBlended_blend
                  input 0 weightedColor
                  input 1 transmittance
              }
+
+            // Render volumes on top.
+            pass render_scene
+            {
+                first_render_queue 51
+                last_render_queue 52
+            }
+
          }
     }
 }

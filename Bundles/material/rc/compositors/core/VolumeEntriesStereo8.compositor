@@ -49,6 +49,23 @@ compositor VolumeEntriesStereo8
 
             pass render_scene
             {
+                material_scheme VolumeEntriesAutoStereo_FrontFacesMin0
+
+                last_render_queue 50
+            }
+        }
+
+        target VolumeEntryPoints0
+        {
+            input none
+
+            pass stencil
+            {
+                check off
+            }
+
+            pass render_scene
+            {
                 material_scheme VolumeEntriesAutoStereo_BackFaces0
 
                 first_render_queue 101
@@ -129,6 +146,23 @@ compositor VolumeEntriesStereo8
 
                 first_render_queue 101
                 last_render_queue 101
+            }
+        }
+
+        target VolumeEntryPoints1
+        {
+            input none
+
+            pass stencil
+            {
+                check off
+            }
+
+            pass render_scene
+            {
+                material_scheme VolumeEntriesAutoStereo_FrontFacesMin1
+
+                last_render_queue 50
             }
         }
 
@@ -237,6 +271,23 @@ compositor VolumeEntriesStereo8
 
             pass render_scene
             {
+                material_scheme VolumeEntriesAutoStereo_FrontFacesMin2
+
+                last_render_queue 50
+            }
+        }
+
+        target VolumeEntryPoints2
+        {
+            input none
+
+            pass stencil
+            {
+                check off
+            }
+
+            pass render_scene
+            {
                 material_scheme VolumeEntriesAutoStereo_BackFaces2
 
                 first_render_queue 101
@@ -317,6 +368,23 @@ compositor VolumeEntriesStereo8
 
                 first_render_queue 101
                 last_render_queue 101
+            }
+        }
+
+        target VolumeEntryPoints3
+        {
+            input none
+
+            pass stencil
+            {
+                check off
+            }
+
+            pass render_scene
+            {
+                material_scheme VolumeEntriesAutoStereo_FrontFacesMin3
+
+                last_render_queue 50
             }
         }
 
@@ -425,6 +493,23 @@ compositor VolumeEntriesStereo8
 
             pass render_scene
             {
+                material_scheme VolumeEntriesAutoStereo_FrontFacesMin4
+
+                last_render_queue 50
+            }
+        }
+
+        target VolumeEntryPoints4
+        {
+            input none
+
+            pass stencil
+            {
+                check off
+            }
+
+            pass render_scene
+            {
                 material_scheme VolumeEntriesAutoStereo_BackFaces4
 
                 first_render_queue 101
@@ -505,6 +590,23 @@ compositor VolumeEntriesStereo8
 
                 first_render_queue 101
                 last_render_queue 101
+            }
+        }
+
+        target VolumeEntryPoints5
+        {
+            input none
+
+            pass stencil
+            {
+                check off
+            }
+
+            pass render_scene
+            {
+                material_scheme VolumeEntriesAutoStereo_FrontFacesMin5
+
+                last_render_queue 50
             }
         }
 
@@ -614,6 +716,23 @@ compositor VolumeEntriesStereo8
 
             pass render_scene
             {
+                material_scheme VolumeEntriesAutoStereo_FrontFacesMin6
+
+                last_render_queue 50
+            }
+        }
+
+        target VolumeEntryPoints6
+        {
+            input none
+
+            pass stencil
+            {
+                check off
+            }
+
+            pass render_scene
+            {
                 material_scheme VolumeEntriesAutoStereo_BackFaces6
 
                 first_render_queue 101
@@ -694,6 +813,23 @@ compositor VolumeEntriesStereo8
 
                 first_render_queue 101
                 last_render_queue 101
+            }
+        }
+
+        target VolumeEntryPoints7
+        {
+            input none
+
+            pass stencil
+            {
+                check off
+            }
+
+            pass render_scene
+            {
+                material_scheme VolumeEntriesAutoStereo_FrontFacesMin7
+
+                last_render_queue 50
             }
         }
 

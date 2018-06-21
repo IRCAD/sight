@@ -57,6 +57,17 @@ fragment_program RayEntryPoints_BackFacesMax_FP glsl
 
 //-----------------------------------------------
 
+fragment_program RayEntryPoints_FrontFacesMin_FP glsl
+{
+    source RayEntryPoints_FP.glsl
+    preprocessor_defines FRONT_FACES_MIN=1
+    default_params
+    {
+    }
+}
+
+//-----------------------------------------------
+
 fragment_program RayEntryPoints_NearPlane_FP glsl
 {
     source RayEntryPoints_FP.glsl
@@ -138,6 +149,30 @@ material RayEntryPoints
             }
 
             fragment_program_ref RayEntryPoints_FrontFaces_FP
+            {
+            }
+        }
+    }
+
+    // Computes exit points when a ray hits a mesh.
+    technique FrontFacesMin
+    {
+        scheme VolumeEntries_FrontFacesMin
+
+        pass
+        {
+            scene_blend src_colour dest_colour
+            scene_blend_op max
+            depth_check off
+            depth_write off
+            cull_hardware none
+            cull_software none
+
+            vertex_program_ref RayEntryPoints_VP
+            {
+            }
+
+            fragment_program_ref RayEntryPoints_FrontFacesMin_FP
             {
             }
         }

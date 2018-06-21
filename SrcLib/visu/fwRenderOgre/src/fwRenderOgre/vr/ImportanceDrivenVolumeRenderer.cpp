@@ -811,7 +811,7 @@ void ImportanceDrivenVolumeRenderer::createIDVRTechnique()
         texUnitState = pass->createTextureUnitState();
         texUnitState->setName("entryPoints");
         texUnitState->setContentType(::Ogre::TextureUnitState::CONTENT_COMPOSITOR);
-        texUnitState->setCompositorReference("VolumeEntries0", "VolumeEntryPoints0");
+        texUnitState->setCompositorReference("VolumeEntries", "VolumeEntryPoints");
         texUnitState->setTextureFiltering(::Ogre::TFO_NONE);
         texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
     }

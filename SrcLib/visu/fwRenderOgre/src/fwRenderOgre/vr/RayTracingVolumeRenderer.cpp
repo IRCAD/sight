@@ -6,6 +6,8 @@
 
 #include "fwRenderOgre/vr/RayTracingVolumeRenderer.hpp"
 
+#include "fwRenderOgre/compositor/Core.hpp"
+#include "fwRenderOgre/compositor/listener/RayExitDepth.hpp"
 #include "fwRenderOgre/helper/Camera.hpp"
 #include "fwRenderOgre/helper/Shading.hpp"
 #include "fwRenderOgre/SRender.hpp"
@@ -136,6 +138,9 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
     m_layer(layer)
 {
     const std::uint8_t numViewPoints = this->getLayer()->getNumberOfCameras();
+
+    auto* exitDepthListener = new compositor::listener::RayExitDepthListener();
+    ::Ogre::MaterialManager::getSingleton().addListener(exitDepthListener);
 
     ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
     auto viewport = layer->getViewport();
@@ -602,6 +607,8 @@ void RayTracingVolumeRenderer::initEntryPoints()
     }
     m_entryPointGeometry->end();
 
+    // Render volumes after surfaces.
+    m_entryPointGeometry->setRenderQueueGroup(compositor::Core::s_VOLUME_RQ_GROUP_ID);
     m_entryPointGeometry->setVisible(true);
 
     m_volumeSceneNode->attachObject(m_entryPointGeometry);

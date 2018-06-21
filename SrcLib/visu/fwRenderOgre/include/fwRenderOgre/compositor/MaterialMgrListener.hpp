@@ -43,10 +43,11 @@ private:
      * @param[in] _algoPassName new suffix to use
      * @param[in] _baseName new suffix to use
      */
-    FWRENDEROGRE_API static ::Ogre::GpuProgramPtr ensureFPCreated(const std::string& _name,
-                                                                  const std::string& _algoName,
-                                                                  const std::string& _algoPassName,
-                                                                  const std::string& _baseName);
+    static ::Ogre::GpuProgramPtr ensureFPCreated(const std::string& _name,
+                                                 const std::string& _algoName,
+                                                 const std::string& _algoPassName,
+                                                 const std::string& _baseName);
+
 };
 
 } // namespace compositor

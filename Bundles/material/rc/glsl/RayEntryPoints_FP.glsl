@@ -15,24 +15,32 @@ void main()
 
 #endif // BACK_FACES
 
+#if FRONT_FACES_MIN == 1
+
+    // SECOND STEP - Front faces min : find the exit points when a ray hits a surface.
+    fragColour = vec2(-FLT_MAX, -gl_FragCoord.z);
+
+#endif // FRONT_FACES_MIN
+
 #if BACK_FACES == 1
 
-    // SECOND STEP - Back Faces: find the closest back faces and initialize the entry points with their depths.
+    // THIRD STEP - Back Faces: find the closest back faces and initialize the entry points with their depths.
     fragColour = vec2(gl_FragCoord.z, FLT_MAX);
 
 #endif // BACK_FACES
 
 #if FRONT_FACES == 1
 
-    // THIRD STEP - Front Faces: update the entry points depths with the closest front faces occluding closest back faces
+    // FOURTH STEP - Front Faces: update the entry points depths with the closest front faces occluding closest back faces
     fragColour = vec2(gl_FragCoord.z, FLT_MAX);
 
 #endif // FRONT_FACES
 
 #if NEAR_PLANE == 1
 
-    // FOURTH STEP - Near Plane: update the entry points depths with the near plane depth when when it is inside a brick
+    // FIFTH STEP - Near Plane: update the entry points depths with the near plane depth when when it is inside a brick
     fragColour = vec2(0., FLT_MAX);
 
 #endif //  NEAR_PLANE
+
 }

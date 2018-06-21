@@ -138,7 +138,6 @@ protected:
     std::vector<std::string> m_fragmentShaderAttachements;
 
 private:
-    void compileShaderPrograms(const std::string& _vpPPDefines, const std::string& _fpPPDefines);
 
     /// Creates the proxy geometry defining the entry points for rays.
     void initEntryPoints();
@@ -188,7 +187,7 @@ private:
 
     ::fwRenderOgre::Layer::wptr m_layer;
 
-    /// Name of the compositor used to compute
+    /// Name of the compositor used to compute entry points.
     std::string m_entryPointsCompositor;
 };
 

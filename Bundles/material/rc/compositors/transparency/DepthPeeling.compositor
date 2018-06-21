@@ -27,6 +27,7 @@ compositor DepthPeeling
 
             pass render_scene
             {
+                last_render_queue 50
             }
         }
 
@@ -53,6 +54,7 @@ compositor DepthPeeling
 
             pass render_scene
             {
+                last_render_queue 50
             }
          }
 
@@ -84,6 +86,7 @@ compositor DepthPeeling
 
              pass render_scene
              {
+                last_render_queue 50
              }
          }
 
@@ -111,6 +114,7 @@ compositor DepthPeeling
 
              pass render_scene
              {
+                last_render_queue 50
              }
          }
 
@@ -129,12 +133,25 @@ compositor DepthPeeling
         target_output
         {
             input none
+
+            pass clear
+            {
+            }
+
             pass render_quad
             {
                 material DepthPeeling/Final
                 input 0 gbuffer
                 input 1 depth_map
             }
+
+            // Render volumes on top.
+            pass render_scene
+            {
+                first_render_queue 51
+                last_render_queue 52
+            }
+
         }
     }
 }

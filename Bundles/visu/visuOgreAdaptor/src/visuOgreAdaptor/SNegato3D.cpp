@@ -356,10 +356,15 @@ void SNegato3D::setPlanesOpacity()
     ::fwData::Integer::sptr transparency = image->setDefaultField(TRANSPARENCY_FIELD, ::fwData::Integer::New(0));
     ::fwData::Boolean::sptr isVisible    = image->setDefaultField(VISIBILITY_FIELD, ::fwData::Boolean::New(true));
 
-    const float opacity = isVisible->getValue() ? (100.f - static_cast<float>(transparency->getValue()))/100.f : 0.f;
+    const bool visible  = isVisible->getValue();
+    const float opacity = (100.f - static_cast<float>(transparency->getValue()))/100.f;
 
     if(m_planes[0] && m_planes[1] && m_planes[2])
     {
+        m_planes[0]->setVisible(visible);
+        m_planes[1]->setVisible(visible);
+        m_planes[2]->setVisible(visible);
+
         m_planes[0]->setEntityOpacity(opacity);
         m_planes[1]->setEntityOpacity(opacity);
         m_planes[2]->setEntityOpacity(opacity);

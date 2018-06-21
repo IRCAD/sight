@@ -364,7 +364,7 @@ void main(void)
     float entryDepth =  rayEntryExit.r;
     float exitDepth  = -rayEntryExit.g;
 
-    if(exitDepth == -1)
+    if(exitDepth == -1 || exitDepth < entryDepth)
     {
         discard;
     }

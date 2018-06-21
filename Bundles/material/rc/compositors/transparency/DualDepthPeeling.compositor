@@ -26,6 +26,7 @@ compositor DualDepthPeeling
 
              pass render_scene
              {
+                last_render_queue 50
              }
          }
 
@@ -53,6 +54,7 @@ compositor DualDepthPeeling
 
              pass render_scene
              {
+                last_render_queue 50
              }
          }
 
@@ -83,6 +85,7 @@ compositor DualDepthPeeling
 
              pass render_scene
              {
+                last_render_queue 50
              }
          }
 
@@ -113,6 +116,7 @@ compositor DualDepthPeeling
 
              pass render_scene
              {
+                last_render_queue 50
              }
          }
 
@@ -143,6 +147,7 @@ compositor DualDepthPeeling
 
              pass render_scene
              {
+                last_render_queue 50
              }
          }
 
@@ -173,6 +178,7 @@ compositor DualDepthPeeling
 
              pass render_scene
              {
+                last_render_queue 50
              }
          }
 
@@ -203,6 +209,7 @@ compositor DualDepthPeeling
 
              pass render_scene
              {
+                last_render_queue 50
              }
          }
 
@@ -222,6 +229,11 @@ compositor DualDepthPeeling
         target_output
         {
             input none
+
+            pass clear
+            {
+            }
+
             pass render_quad
             {
                 material DualDepthPeeling/Final
@@ -229,6 +241,14 @@ compositor DualDepthPeeling
                 input 1 pingBuffer 2
                 input 2 pingBuffer 4
             }
+
+            // Render volumes on top.
+            pass render_scene
+            {
+                first_render_queue 51
+                last_render_queue 52
+            }
+
         }
     }
 }

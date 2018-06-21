@@ -39,6 +39,14 @@ class FWRENDEROGRE_CLASS_API Core   //TODO : Manage occlusion query
 
 {
 public:
+
+    // Render queue group for surface rendering.
+    static const std::uint8_t s_SURFACE_RQ_GROUP_ID = ::Ogre::RenderQueueGroupID::RENDER_QUEUE_MAIN;
+
+    // Render queue group for volume rendering. Leave an extra render queue between
+    // surfaces and volumes for some effects.
+    static const std::uint8_t s_VOLUME_RQ_GROUP_ID = s_SURFACE_RQ_GROUP_ID + 2;
+
     typedef std::shared_ptr < Core > sptr;
 
     /// Default Compositor, one per "default" layer

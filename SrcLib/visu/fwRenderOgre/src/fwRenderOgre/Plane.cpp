@@ -413,6 +413,13 @@ void Plane::setEntityOpacity(float _f)
 
 //------------------------------------------------------------------------------
 
+void Plane::setVisible(bool _visible)
+{
+    m_planeSceneNode->setVisible(_visible, true);
+}
+
+//------------------------------------------------------------------------------
+
 void Plane::changeSlice(float sliceIndex)
 {
     const ::Ogre::Material::Techniques& techniques = m_texMaterial->getTechniques();

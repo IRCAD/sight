@@ -43,6 +43,23 @@ compositor VolumeEntriesStereo2
 
             pass render_scene
             {
+                material_scheme VolumeEntriesAutoStereo_FrontFacesMin0
+
+                last_render_queue 50
+            }
+        }
+
+        target VolumeEntryPoints0
+        {
+            input none
+
+            pass stencil
+            {
+                check off
+            }
+
+            pass render_scene
+            {
                 material_scheme VolumeEntriesAutoStereo_BackFaces0
 
                 first_render_queue 101
@@ -123,6 +140,23 @@ compositor VolumeEntriesStereo2
 
                 first_render_queue 101
                 last_render_queue 101
+            }
+        }
+
+        target VolumeEntryPoints1
+        {
+            input none
+
+            pass stencil
+            {
+                check off
+            }
+
+            pass render_scene
+            {
+                material_scheme VolumeEntriesAutoStereo_FrontFacesMin1
+
+                last_render_queue 50
             }
         }
 
