@@ -56,6 +56,7 @@ void SAtomNetworkReader::configureWithIHM()
 
 void SAtomNetworkReader::starting()
 {
+    FW_DEPRECATED_MSG("'ioZMQ' bundle and the associated services are no longer suported.", "19.0");
 }
 
 //-----------------------------------------------------------------------------

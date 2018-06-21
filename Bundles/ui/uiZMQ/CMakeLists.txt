@@ -17,3 +17,4 @@ fwLink(
 
 set_target_properties(${FWPROJECT_NAME} PROPERTIES AUTOMOC TRUE)
 
+message(WARNING "'uiZMQ' bundle is no longer suported and will be removed  in 19.0")
