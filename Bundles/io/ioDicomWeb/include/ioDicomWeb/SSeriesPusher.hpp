@@ -16,8 +16,6 @@
 
 #include <fwServices/IController.hpp>
 
-#include <fwThread/Worker.hpp>
-
 #include <vector>
 
 namespace fwMedData
@@ -31,9 +29,6 @@ namespace ioDicomWeb
 /**
  * @brief   This service is used to push a DICOM series to a PACS.
  *
- * @section Slots Slots
- * - \b displayMessage(const std::string&, bool) : display a message.
-
  * @section XML XML Configuration
  *
  * @code{.xml}
@@ -74,7 +69,7 @@ protected:
     /// Gets the configuration.
     IODICOMWEB_API virtual void configuring() override;
 
-    /// Instantiate the worker.
+    /// Does nothing.
     IODICOMWEB_API virtual void starting() override;
 
     /// Does nothing.
@@ -86,23 +81,17 @@ protected:
 private:
 
     /// Push Series
-    IODICOMWEB_API void pushSeries();
+    void pushSeries();
 
     /**
      * @brief Display a message
      * @param[in] message Message to display
      * @param[in] error True if the message is an error messsage
      */
-    IODICOMWEB_API void displayMessage(const std::string& message, bool error) const;
-
-    /// Slot to call displayMessage method;
-    DisplayMessageSlotType::sptr m_slotDisplayMessage;
+    void displayMessage(const std::string& message, bool error) const;
 
     /// Http Qt Client
     ::fwNetworkIO::http::ClientQt m_clientQt;
-
-    /// Push Worker
-    ::fwThread::Worker::sptr m_pushSeriesWorker;
 
     /// Set to true when pushing series
     bool m_isPushing;

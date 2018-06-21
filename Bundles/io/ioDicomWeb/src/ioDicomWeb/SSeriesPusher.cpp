@@ -33,15 +33,11 @@ namespace ioDicomWeb
 
 static const ::fwServices::IService::KeyType s_SERIES_IN = "selectedSeries";
 
-const ::fwCom::Slots::SlotKeyType SSeriesPusher::s_DISPLAY_SLOT = "displayMessage";
-
 //------------------------------------------------------------------------------
 
 SSeriesPusher::SSeriesPusher() noexcept :
     m_isPushing(false)
 {
-    // Internal slots
-    m_slotDisplayMessage = newSlot(s_DISPLAY_SLOT, &SSeriesPusher::displayMessage, this);
 }
 //------------------------------------------------------------------------------
 
@@ -100,8 +96,6 @@ std::string SSeriesPusher::getPreferenceKey(const std::string& key) const
 
 void SSeriesPusher::starting()
 {
-    // Worker
-    m_pushSeriesWorker = ::fwThread::Worker::New();
 }
 
 //------------------------------------------------------------------------------
@@ -157,7 +151,7 @@ void SSeriesPusher::updating()
     else
     {
         // Push series to the PACS
-        m_pushSeriesWorker->post(std::bind(&::ioDicomWeb::SSeriesPusher::pushSeries, this));
+        this->pushSeries();
     }
 }
 
@@ -165,61 +159,49 @@ void SSeriesPusher::updating()
 
 void SSeriesPusher::pushSeries()
 {
+    m_isPushing                          = true;
     ::fwData::Vector::csptr seriesVector = this->getInput< ::fwData::Vector >(s_SERIES_IN);
 
-    // Catch any errors
-    try
+    // Connect to PACS
+    for(const auto& series : *seriesVector)
     {
-        // Connect to PACS
-        for(const auto& series : *seriesVector)
+        ::fwMedData::DicomSeries::csptr dicomSeries = ::fwMedData::DicomSeries::dynamicCast(series);
+        SLM_ASSERT("The SeriesDB should contain only DicomSeries.", dicomSeries);
+
+        for(const auto& item : dicomSeries->getDicomContainer())
         {
-            ::fwMedData::DicomSeries::csptr dicomSeries = ::fwMedData::DicomSeries::dynamicCast(series);
-            SLM_ASSERT("The SeriesDB should contain only DicomSeries.", dicomSeries);
+            const ::fwMemory::BufferObject::sptr bufferObj = item.second;
+            const ::fwMemory::BufferObject::Lock lockerDest(bufferObj);
+            const char* buffer = static_cast<char*>(lockerDest.getBuffer());
+            const size_t size  = bufferObj->getSize();
 
-            for(const auto& item : dicomSeries->getDicomContainer())
+            const QByteArray fileBuffer = QByteArray::fromRawData(buffer, size);
+
+            /// Url PACS
+            const std::string pacsServer("http://" + m_serverHostname + ":" + std::to_string(m_serverPort));
+            ::fwNetworkIO::http::Request::sptr request =
+                ::fwNetworkIO::http::Request::New(pacsServer + "/instances");
+            QByteArray seriesAnswer;
+            if (fileBuffer.size() != 0)
             {
-
-                const ::fwMemory::BufferObject::sptr bufferObj = item.second;
-                const ::fwMemory::BufferObject::Lock lockerDest(bufferObj);
-                const char* buffer = static_cast<char*>(lockerDest.getBuffer());
-                const size_t size  = bufferObj->getSize();
-
-                const QByteArray fileBuffer = QByteArray::fromRawData(buffer, size);
-
-                /// Url PACS
-                const std::string pacsServer("http://" + m_serverHostname + ":" + std::to_string(m_serverPort));
-                ::fwNetworkIO::http::Request::sptr request =
-                    ::fwNetworkIO::http::Request::New(pacsServer + "/instances");
-                QByteArray seriesAnswer;
                 try
                 {
-                    if (fileBuffer.size() != 0)
-                    {
-                        seriesAnswer = m_clientQt.post(request, fileBuffer);
-                    }
+                    seriesAnswer = m_clientQt.post(request, fileBuffer);
+                    this->displayMessage("Upload successful.", false);
                 }
-                catch  (::fwNetworkIO::exceptions::HostNotFound& exception)
+                catch (::fwNetworkIO::exceptions::HostNotFound& exception)
                 {
-                    std::stringstream ss;
-                    ss << "Host not found:\n"
-                       << " Please check your configuration: \n"
+                    ::std::stringstream ss;
+                    ss << "Host not found.\n"
+                       << "Please check your configuration: \n"
                        << "Pacs host name: " << m_serverHostname << "\n"
                        << "Pacs port: " << m_serverPort << "\n";
-
                     this->displayMessage(ss.str(), true);
                     SLM_WARN(exception.what());
                 }
-
             }
         }
     }
-    catch (::fwNetworkIO::exceptions::Base& exception)
-    {
-        ::std::stringstream ss;
-        m_slotDisplayMessage->asyncRun(ss.str(), true);
-        SLM_WARN(exception.what());
-    }
-
     // Set pushing boolean to false
     m_isPushing = false;
 
