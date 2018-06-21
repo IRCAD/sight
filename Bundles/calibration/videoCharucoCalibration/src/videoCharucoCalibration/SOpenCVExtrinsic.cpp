@@ -368,21 +368,25 @@ void SOpenCVExtrinsic::updating()
             {
                 messageIm1 <<", "<< std::to_string(degeneratedImagesCam1[i]);
             }
-            messageIm1 << " of camera 1 ";
+            messageIm1 << " of camera 1";
         }
 
         if(!degeneratedImagesCam2.empty())
         {
             if(!degeneratedImagesCam1.empty())
             {
-                messageIm1 << " & ";
+                messageIm1 << " & please ";
             }
-            messageIm2<<"Please check image(s): " + std::to_string(degeneratedImagesCam2[0]);
+            else
+            {
+                messageIm2 << "Please ";
+            }
+            messageIm2<<"check image(s): " + std::to_string(degeneratedImagesCam2[0]);
             for(size_t i = 1; i < degeneratedImagesCam2.size(); ++i)
             {
                 messageIm2 << ", " << std::to_string(degeneratedImagesCam2[i]);
             }
-            messageIm2 << " of camera 2 ";
+            messageIm2 << " of camera 2";
         }
 
         // if one of those stringstream are not empty we should display the popup and not perform calibration.
@@ -392,7 +396,7 @@ void SOpenCVExtrinsic::updating()
             dialog->setTitle("Calibration Error");
             dialog->setIcon(::fwGui::dialog::IMessageDialog::Icons::WARNING);
             dialog->setMessage("Extrinsic Calibration cannot be performed due to degenerate configuration. "
-                               + messageIm1.str() + messageIm2.str());
+                               + messageIm1.str() + messageIm2.str() + ".");
             dialog->show();
 
             return;
