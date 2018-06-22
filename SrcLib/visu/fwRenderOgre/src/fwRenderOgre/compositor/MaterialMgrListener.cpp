@@ -347,7 +347,7 @@ MaterialMgrListener::~MaterialMgrListener()
 
 // ----------------------------------------------------------------------------
 
-Ogre::Technique* MaterialMgrListener::copyTechnique(::Ogre::Technique* _tech,
+Ogre::Technique* MaterialMgrListener::copyTechnique(const ::Ogre::Technique* _tech,
                                                     const ::Ogre::String& _schemeName,
                                                     ::Ogre::Material* _originalMaterial)
 {
@@ -356,9 +356,7 @@ Ogre::Technique* MaterialMgrListener::copyTechnique(::Ogre::Technique* _tech,
     newTech->setName(_schemeName);
     newTech->setSchemeName(_schemeName);
 
-    ::Ogre::Pass* pass = newTech->getPass(0);
-    (void)(pass);
-    SLM_ASSERT("Empty pass", pass);
+    SLM_ASSERT("Empty pass", newTech->getPass(0));
 
     return newTech;
 }

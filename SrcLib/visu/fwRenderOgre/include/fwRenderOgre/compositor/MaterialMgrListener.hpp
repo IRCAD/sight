@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWRENDEROGRE_COMPOSITOR_MATERIALMGRLISTENER_HPP__
-#define __FWRENDEROGRE_COMPOSITOR_MATERIALMGRLISTENER_HPP__
+#pragma once
 
 #include "fwRenderOgre/config.hpp"
 
@@ -32,8 +31,8 @@ public:
                                                     const ::Ogre::Renderable* _renderable);
 private:
     /// Helper function to copy the given technique and return the first pass
-    ::Ogre::Technique* copyTechnique(::Ogre::Technique* _tech, const ::Ogre::String &_schemeName,
-                                     ::Ogre::Material *_originalMaterial);
+    ::Ogre::Technique* copyTechnique(const ::Ogre::Technique* _tech, const ::Ogre::String& _schemeName,
+                                     ::Ogre::Material* _originalMaterial);
 
     /**
      * @brief Ensure that a given fragment program is created.
@@ -53,5 +52,3 @@ private:
 } // namespace compositor
 
 } // namespace fwRenderOgre
-
-#endif // __FWRENDEROGRE_COMPOSITOR_MATERIALMGRLISTENER_HPP__
