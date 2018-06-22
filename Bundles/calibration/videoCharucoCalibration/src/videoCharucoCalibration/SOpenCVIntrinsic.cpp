@@ -22,8 +22,6 @@
 
 #include <fwDataTools/TransformationMatrix3D.hpp>
 
-#include <fwGui/dialog/MessageDialog.hpp>
-
 #include <fwPreferences/helper.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
@@ -144,7 +142,7 @@ void SOpenCVIntrinsic::updating()
         ::fwData::Image::sptr img = calInfo->getImageContainer().front();
 
         ::cv::Mat cameraMatrix;
-        std::vector<float> distCoeffs;
+        std::vector<double> distCoeffs;
         std::vector< ::cv::Mat> rvecs;
         std::vector< ::cv::Mat> tvecs;
         ::cv::Size2i imgsize(static_cast<int>(img->getSize()[0]), static_cast<int>(img->getSize()[1]));
@@ -244,11 +242,8 @@ void SOpenCVIntrinsic::updateCharucoBoardSize()
     catch (const std::exception& e )
     {
         // Warn user that something went wrong with dictionary generation.
-        ::fwGui::dialog::MessageDialog::sptr errorDialog = ::fwGui::dialog::MessageDialog::New();
-        errorDialog->setTitle("Error in dictionary generation");
-        errorDialog->setIcon(::fwGui::dialog::IMessageDialog::Icons::CRITICAL);
-        errorDialog->setMessage("Error when generating dictionary: " + std::string(e.what()));
-        errorDialog->show();
+        // We are not using dialog here since SCharucoDetector already displays one.
+        SLM_ERROR("Error when generating dictionary: " + std::string(e.what()));
 
         // Exit the function.
         return;

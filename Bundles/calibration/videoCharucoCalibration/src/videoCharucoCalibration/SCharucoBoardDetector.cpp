@@ -22,6 +22,8 @@
 
 #include <fwDataTools/helper/Array.hpp>
 
+#include <fwGui/dialog/MessageDialog.hpp>
+
 #include <fwPreferences/helper.hpp>
 
 #include <fwServices/IService.hpp>
@@ -234,7 +236,22 @@ void SCharucoBoardDetector::updateCharucoBoardSize()
         m_markerSizeInBits = std::stoi(markerSizeInBitsStr);
     }
 
-    m_dictionary = ::calibration3d::helper::generateArucoDictionary(m_width, m_height, m_markerSizeInBits);
+    try
+    {
+        m_dictionary = ::calibration3d::helper::generateArucoDictionary(m_width, m_height, m_markerSizeInBits);
+    }
+    catch (const std::exception& e )
+    {
+        // Warn user that something went wrong with dictionary generation.
+        ::fwGui::dialog::MessageDialog::sptr errorDialog = ::fwGui::dialog::MessageDialog::New();
+        errorDialog->setTitle("Error in dictionary generation");
+        errorDialog->setIcon(::fwGui::dialog::IMessageDialog::Icons::CRITICAL);
+        errorDialog->setMessage("Error when generating dictionary: " + std::string(e.what()));
+        errorDialog->show();
+
+        // Exit the function.
+        return;
+    }
 
     m_board = ::cv::aruco::CharucoBoard::create(static_cast<int>(m_width), static_cast<int>(m_height),
                                                 m_squareSize, m_markerSize, m_dictionary);

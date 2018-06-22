@@ -82,10 +82,10 @@ void SOpenCVExtrinsic::configuring()
 
     const auto cfgBoard = configTree.get_child("board.<xmlattr>");
 
+    // Only width height and square size are used.
     m_widthKey      = cfgBoard.get<std::string>("width", "CHARUCO_WIDTH");
     m_heightKey     = cfgBoard.get<std::string>("height", "CHARUCO_HEIGHT");
     m_squareSizeKey = cfgBoard.get<std::string>("squareSize", "CHARUCO_SQUARE_SIZE");
-    m_markerSizeKey = cfgBoard.get<std::string>("markerSize", "CHARUCO_MARKER_SIZE");
 
     this->updateCharucoBoardSize();
 }
@@ -208,7 +208,7 @@ void SOpenCVExtrinsic::updating()
             }
         }
 
-        // Set the cameras
+        // Set the cameras.
         ::cv::Mat cameraMatrix1 = ::cv::Mat::eye(3, 3, CV_64F);
         ::cv::Mat cameraMatrix2 = ::cv::Mat::eye(3, 3, CV_64F);
 
@@ -252,7 +252,7 @@ void SOpenCVExtrinsic::updating()
         std::vector<int> allIds;
         allIds.reserve(static_cast<size_t>((boardSize.width-1)*(boardSize.height-1)));
 
-        //We create a list of the charuco board's points coordinates
+        // We create a list of the charuco board's points coordinates.
         for(int i = 0; i < (boardSize.width-1)*(boardSize.height-1); i++)
         {
             allBoardCoord.at<double>(0, i) =
@@ -277,7 +277,7 @@ void SOpenCVExtrinsic::updating()
             boardCoords1.reserve(ids1[i].size());
             imagePointsUndistored1.reserve(ids1[i].size());
 
-            //Create the list of points present in the image with theirs corresponding coordinates in the board
+            // Create the list of points present in the image with theirs corresponding coordinates in the board.
             for(size_t j = 0; j < ids1[i].size(); j++)
             {
                 const float x = static_cast<float>(ids1[i][j]%(boardSize.width-1)+1) * m_squareSize;
@@ -287,16 +287,16 @@ void SOpenCVExtrinsic::updating()
                 boardCoords1.push_back(temp);
             }
 
-            //Undistort the image points
+            // Undistort the image points.
             ::cv::undistortPoints(imagePoints1[i], imagePointsUndistored1, cameraMatrix1, distortionCoefficients1);
 
-            // verify if points are not a degenerated configuration
+            // Verify if points are not a degenerated configuration.
             if(this->checkDegeneratedConfiguration(imagePointsUndistored1, boardCoords1, boardSize))
             {
                 degeneratedImagesCam1.push_back(i);
             }
 
-            //We do the same with the image from the second camera
+            // We do the same with the images from the second camera.
             std::vector< ::cv::Point2f > tempBoardCoords2;
             std::vector< ::cv::Point2f > boardCoords2;
             std::vector< ::cv::Point2f > imagePointsUndistored2;
@@ -312,7 +312,7 @@ void SOpenCVExtrinsic::updating()
             }
             ::cv::undistortPoints(imagePoints2[i], imagePointsUndistored2, cameraMatrix2, distortionCoefficients2);
 
-            // verify if points are not a degenerated configuration
+            // Verify if points are not a degenerated configuration.
             if(this->checkDegeneratedConfiguration(imagePointsUndistored2, boardCoords2, boardSize))
             {
                 degeneratedImagesCam2.push_back(i);
@@ -324,13 +324,13 @@ void SOpenCVExtrinsic::updating()
                 continue;
             }
 
-            //Find the corresponding homography between the board and the image plan
+            // Find the corresponding homography between the board and the image plan.
             const ::cv::Mat H1             = ::cv::findHomography(boardCoords1, imagePointsUndistored1);
             const ::cv::Mat allBoardCoord1 = H1*allBoardCoord;
 
             tempBoardCoords1.reserve(static_cast<size_t>((boardSize.width-1)*(boardSize.height-1)));
 
-            //Homogenize the new coordinates
+            // Homogenize the new coordinates.
             for(int j = 0; j < (boardSize.width-1)*(boardSize.height-1); j++)
             {
                 const ::cv::Point2f temp(static_cast<float>(allBoardCoord1.at<double>(0, j)/allBoardCoord1.at<double>(2,
@@ -358,8 +358,8 @@ void SOpenCVExtrinsic::updating()
             allPoints2.push_back(tempBoardCoords2);
         }
 
-        // check if we have some degenerated configuration
-        // display the list of problematic images
+        // Check if we have some degenerated configuration.
+        // Display the list of problematic images.
         std::stringstream messageIm1, messageIm2;
         if(!degeneratedImagesCam1.empty())
         {
@@ -389,7 +389,7 @@ void SOpenCVExtrinsic::updating()
             messageIm2 << " of camera 2";
         }
 
-        // if one of those stringstream are not empty we should display the popup and not perform calibration.
+        // If one of those stringstream are not empty we should display the popup and not perform calibration.
         if(!messageIm1.str().empty() || !messageIm2.str().empty())
         {
             ::fwGui::dialog::MessageDialog::sptr dialog = ::fwGui::dialog::MessageDialog::New();
@@ -461,11 +461,6 @@ void SOpenCVExtrinsic::updateCharucoBoardSize()
     if(!squareSizeStr.empty())
     {
         m_squareSize = std::stof(squareSizeStr);
-    }
-    const std::string markerSizeStr = ::fwPreferences::getPreference(m_markerSizeKey);
-    if(!markerSizeStr.empty())
-    {
-        m_markerSize = std::stof(markerSizeStr);
     }
 
 }

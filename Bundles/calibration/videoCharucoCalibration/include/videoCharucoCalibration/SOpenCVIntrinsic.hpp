@@ -17,7 +17,7 @@ namespace videoCharucoCalibration
 {
 
 /**
- * @brief   SOpenCVIntrinsic service that computes intrinsic calibration with openCV.
+ * @brief   SOpenCVIntrinsic service that computes intrinsic charuco calibration with openCV.
  *
  * @section Slots Slots
  * - \b updateCharucoBoardSize(unsigned int, unsigned int, float) : Received when the Charuco board parameters change.
@@ -29,7 +29,8 @@ namespace videoCharucoCalibration
             <in key="calibrationInfo" uid="..." />
             <inout key="camera" uid="..." />
             <inout key="poseVector" uid="..." />
-            <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" squareSize="CHESSBOARD_SQUARE_SIZE" />
+            <board width="CHARUCO_WIDTH" height="CHARUCO_HEIGHT" squareSize="CHARUCO_SQUARE_SIZE"
+                   markerSize="CHARUCO_MARKER_SIZE" markerSizeInBits="CHARUCO_MARKER_SIZE_IN_BITS"/>
        </service>
    @endcode
  * @subsection Input Input:
@@ -38,7 +39,8 @@ namespace videoCharucoCalibration
  * - \b camera [::arData::Camera]: Output calibration.
  * - \b poseVector [::fwData::Vector] (optional): Camera calibration pose vector
  * @subsection Configuration Configuration:
- * - \b board : preference key to defines the number of square in 2 dimensions of the chessboard.
+ * - \b board : preferences keys to retrieve the number of squares of the board in width and height, the size of each
+ * square in mm, the size of aruco markers in mm and the size of aruco markers in term of bits (4,5,6 or 7).
  */
 class VIDEOCHARUCOCALIBRATION_CLASS_API SOpenCVIntrinsic : public ::arServices::ICalibration
 {

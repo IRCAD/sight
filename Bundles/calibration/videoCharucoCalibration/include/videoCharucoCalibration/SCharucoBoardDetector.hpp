@@ -62,8 +62,8 @@ namespace videoCharucoCalibration
                 <key uid="..." />
                 <key uid="..." />
             </inout>
-           <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" squareSize="CHESSBOARD_SQUARE_SIZE"
-   markerSize="CHESSBOARD_MARKER_SIZE" markerSizeInBits="CHESSBOARD_MARKER_SIZE_IN_BITS"/>
+            <board width="CHARUCO_WIDTH" height="CHARUCO_HEIGHT" squareSize="CHARUCO_SQUARE_SIZE"
+                   markerSize="CHARUCO_MARKER_SIZE" markerSizeInBits="CHARUCO_MARKER_SIZE_IN_BITS"/>
        </service>
    @endcode
  * @subsection Input Input:
@@ -72,7 +72,7 @@ namespace videoCharucoCalibration
  * - \b calInfo [::arData::CalibrationInfo]: calibration object where to store the detected images.
  * - \b detection [::fwData::PointList] (optional): detected chessboard points in image coordinates.
  * @subsection Configuration Configuration:
- * - \b board : preference key to retrieve the number of squares of the board in width and height, the size of each
+ * - \b board : preferences keys to retrieve the number of squares of the board in width and height, the size of each
  * square in mm, the size of aruco Markers in mm and the size of aruco markers in term of bits (4,5,6 or 7).
  */
 class VIDEOCHARUCOCALIBRATION_CLASS_API SCharucoBoardDetector : public ::fwServices::IController
