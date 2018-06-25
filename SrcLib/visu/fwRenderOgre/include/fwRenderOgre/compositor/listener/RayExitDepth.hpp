@@ -37,12 +37,6 @@ public:
                                                     ::Ogre::Material* _originalMaterial, unsigned short _lodIndex,
                                                     const ::Ogre::Renderable* _renderable);
 
-private:
-
-    /// Creates a new technique in the material and copies the given one to it.
-    Ogre::Technique* copyTechnique(const ::Ogre::Technique* _tech, const ::Ogre::String& _schemeName,
-                                   ::Ogre::Material* _originalMaterial);
-
 };
 
 } // namespace listener

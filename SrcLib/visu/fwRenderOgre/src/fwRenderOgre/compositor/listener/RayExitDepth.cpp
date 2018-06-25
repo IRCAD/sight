@@ -6,6 +6,8 @@
 
 #include "fwRenderOgre/compositor/listener/RayExitDepth.hpp"
 
+#include "fwRenderOgre/helper/Technique.hpp"
+
 #include <fwCore/spyLog.hpp>
 
 #include <OGRE/OgrePass.h>
@@ -47,25 +49,11 @@ RayExitDepthListener::~RayExitDepthListener()
         auto entryPointsMtl   = ::Ogre::MaterialManager::getSingleton().getByName("RayEntryPoints");
         auto frontFaceMinTech = entryPointsMtl->getTechnique("FrontFacesMin");
 
-        newTechnique = this->copyTechnique(frontFaceMinTech, _schemeName, _originalMaterial);
+        newTechnique = ::fwRenderOgre::helper::Technique::copyToMaterial(frontFaceMinTech, _schemeName,
+                                                                         _originalMaterial);
     }
 
     return newTechnique;
-}
-
-//------------------------------------------------------------------------------
-
-Ogre::Technique* RayExitDepthListener::copyTechnique(const Ogre::Technique* _tech, const Ogre::String& _schemeName,
-                                                     Ogre::Material* _originalMaterial)
-{
-    ::Ogre::Technique* newTech = _originalMaterial->createTechnique();
-    *newTech                   = *_tech;
-    newTech->setName(_schemeName);
-    newTech->setSchemeName(_schemeName);
-
-    SLM_ASSERT("Empty pass", newTech->getPass(0));
-
-    return newTech;
 }
 
 //------------------------------------------------------------------------------

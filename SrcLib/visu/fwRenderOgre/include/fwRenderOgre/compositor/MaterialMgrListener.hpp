@@ -30,9 +30,6 @@ public:
                                                     ::Ogre::Material* _originalMaterial, unsigned short _lodIndex,
                                                     const ::Ogre::Renderable* _renderable);
 private:
-    /// Helper function to copy the given technique and return the first pass
-    ::Ogre::Technique* copyTechnique(const ::Ogre::Technique* _tech, const ::Ogre::String& _schemeName,
-                                     ::Ogre::Material* _originalMaterial);
 
     /**
      * @brief Ensure that a given fragment program is created.

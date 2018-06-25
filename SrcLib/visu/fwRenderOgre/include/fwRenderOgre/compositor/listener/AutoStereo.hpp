@@ -34,8 +34,6 @@ public:
                                                     const ::Ogre::Renderable* _renderable);
 
 private:
-    Ogre::Technique* copyTechnique(::Ogre::Technique* _tech, const ::Ogre::String& _schemeName,
-                                   ::Ogre::Material* _originalMaterial);
 
     /// list of techniques to be removed from the material when destroying the listener
     std::vector< ::Ogre::Technique*> m_createdTechniques;

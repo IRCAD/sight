@@ -8,6 +8,7 @@
 
 #include "fwRenderOgre/helper/Camera.hpp"
 #include "fwRenderOgre/helper/Shading.hpp"
+#include "fwRenderOgre/helper/Technique.hpp"
 
 #include <OGRE/OgreCamera.h>
 #include <OGRE/OgreGpuProgramManager.h>
@@ -93,7 +94,7 @@ AutoStereoCompositorListener::~AutoStereoCompositorListener()
             matchingTech = _originalMaterial->getTechnique(0);
         }
 
-        newTech = this->copyTechnique(matchingTech, _schemeName, _originalMaterial);
+        newTech = ::fwRenderOgre::helper::Technique::copyToMaterial(matchingTech, _schemeName, _originalMaterial);
 
         const auto pass = newTech->getPass(0);
         {
@@ -174,22 +175,6 @@ AutoStereoCompositorListener::~AutoStereoCompositorListener()
 
         m_createdTechniques.push_back(newTech);
     }
-
-    return newTech;
-}
-
-// ----------------------------------------------------------------------------
-
-Ogre::Technique* AutoStereoCompositorListener::copyTechnique(::Ogre::Technique* _tech,
-                                                             const ::Ogre::String& _schemeName,
-                                                             ::Ogre::Material* _originalMaterial)
-{
-    ::Ogre::Technique* newTech = _originalMaterial->createTechnique();
-    *newTech                   = *_tech;
-    newTech->setName(_schemeName);
-    newTech->setSchemeName(_schemeName);
-
-    SLM_ASSERT("Empty pass", newTech->getPass(0));
 
     return newTech;
 }
