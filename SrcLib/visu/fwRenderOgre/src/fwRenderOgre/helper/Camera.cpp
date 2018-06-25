@@ -111,9 +111,11 @@ Ogre::Vector3 Camera::convertPixelToViewSpace(const ::Ogre::Camera* _camera, con
 {
     const ::Ogre::Viewport* viewport = _camera->getViewport();
 
-    const ::Ogre::Vector3 clippingCoordinatePixel(  _pixelPoint[0]/viewport->getActualWidth() *2 - 1,
-                                                    -(_pixelPoint[1]/viewport->getActualHeight() * 2 - 1),
-                                                    _pixelPoint[2]);
+    const float x = _pixelPoint[0]/static_cast<float>(viewport->getActualWidth()) *2.f - 1.f;
+    const float y = -(_pixelPoint[1]/static_cast<float>(viewport->getActualHeight()) * 2.f - 1.f);
+    const float z = _pixelPoint[2];
+
+    const ::Ogre::Vector3 clippingCoordinatePixel(x, y, z);
 
     const ::Ogre::Matrix4 viewMat = _camera->getViewMatrix();
     const ::Ogre::Matrix4 projMat = _camera->getProjectionMatrixWithRSDepth();
