@@ -99,6 +99,7 @@ CALIBRATION3D_API void calibratePointingTool(
  * @param _height: height of charuco board
  * @param _markerSizeInBits : bits size of marker (can be 4, 5, 6 or 7)
  * @return a ::cv::Ptr of ::cv::aruco::Dictionary.
+ * @throw std::invalid_argument if _markerSizeInBits != [4, 5, 6, 7]
  */
 CALIBRATION3D_API ::cv::Ptr< ::cv::aruco::Dictionary > generateArucoDictionary(const size_t _width,
                                                                                const size_t _height,
