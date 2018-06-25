@@ -96,11 +96,12 @@ vec3 lighting(vec3 _normal, vec3 _position, vec3 _diffuse)
 
     for(int i = 0; i < int(u_numLights); ++i)
     {
-        float fLitDiffuse = clamp(dot( normalize(-u_lightDir[i]), _normal ), 0, 1);
+        // We use the Blinn-Phong lighting model.
+        float fLitDiffuse = clamp(abs(dot( normalize(-u_lightDir[i]), _normal )), 0, 1);
         diffuse += fLitDiffuse * u_lightDiffuse[i] * _diffuse;
 
-        vec3 r = reflect(u_lightDir[i], _normal);
-        float fLitSpecular = pow( clamp(dot( r, vecToCam ), 0, 1), u_shininess);
+        vec3 H = normalize(u_lightDir[i] + vecToCam);
+        float fLitSpecular = clamp(pow( abs(dot( _normal, H )), u_shininess), 0, 1);
         specular += fLitSpecular * u_lightSpecular[i];
     }
 

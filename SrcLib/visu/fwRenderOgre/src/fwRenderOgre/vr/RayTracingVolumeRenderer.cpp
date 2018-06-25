@@ -570,7 +570,8 @@ void RayTracingVolumeRenderer::createRayTracingMaterial()
     for(size_t i = 0; i < 10; ++i)
     {
         auto number = "[" + std::to_string(i) + "]";
-        fpParams->setNamedAutoConstant("u_lightDir" + number, ::Ogre::GpuProgramParameters::ACT_LIGHT_POSITION, i);
+        fpParams->setNamedAutoConstant("u_lightDir" + number,
+                                       ::Ogre::GpuProgramParameters::ACT_LIGHT_DIRECTION_OBJECT_SPACE, i);
         fpParams->setNamedAutoConstant("u_lightDiffuse" + number,
                                        ::Ogre::GpuProgramParameters::ACT_LIGHT_DIFFUSE_COLOUR, i);
         fpParams->setNamedAutoConstant("u_lightSpecular" + number,
@@ -698,7 +699,7 @@ void RayTracingVolumeRenderer::setMaterialLightParams(::Ogre::MaterialPtr mtl)
 
     ::Ogre::ColourValue specular(2.5f, 2.5f, 2.5f, 1.f);
     mtl->setSpecular( specular );
-    mtl->setShininess( 10 );
+    mtl->setShininess( 20 );
 }
 
 //-----------------------------------------------------------------------------
