@@ -51,6 +51,7 @@
             <gui>
                 <layout>
                     <menuItem name="Show/Hide vr editor" icon="OgreViewer-0.1/icons/hide-view_horizontal.png" style="check" />
+                    <menuItem name="Show volume" icon="media-0.1/icons/icon-2D.png" style="check" />
                     <separator/>
                     <editor/>
                     <menuItem name="Play" icon="arMedia-0.1/icons/start-cam.svg" />
@@ -60,6 +61,7 @@
             </gui>
             <registry>
                 <menuItem sid="actionVolumeRenderingEditor" start="yes" />
+                <menuItem sid="action_showVolume" start="yes" />
                 <editor sid="videoSelector" start="yes" />
                 <menuItem sid="action_startVideo" start="yes" />
                 <menuItem sid="action_pauseVideo" start="yes" />
@@ -122,6 +124,13 @@
             <config>
                 <show_or_hide sid="volumeRenderingEditorView" />
             </config>
+        </service>
+
+        <service uid="action_showVolume" type="::gui::action::SBooleanSlotCaller">
+            <slots>
+                <slot>volumeAdaptor/updateVisibility</slot>
+            </slots>
+            <state active="true" />
         </service>
 
         <service uid="action_startVideo" type="::gui::action::SSlotCaller">
