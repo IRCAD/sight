@@ -37,7 +37,7 @@ namespace visuOgreAdaptor
  * @subsection Input Input:
  * - \b camera [::arData::Camera]:  camera containing calibration information.
  * @subsection Configuration Configuration:
- * - \b layer (mandatorye): defines the frustum's layer
+ * - \b layer (mandatory): defines the frustum's layer
  * - \b transform (optional): transform applied to the frustum's scene node
  * - \b near (optional): near clipping distance of the ::Ogre::Camera
  * - \b far (optional): far clipping distance of the ::Ogre::Camera
