@@ -286,11 +286,14 @@ void SAxis::stopping()
         sceneMgr->destroySceneNode(m_sceneNode);
     }
 
-    for(auto& label : m_axisLabels)
+    if(m_labelVisible)
     {
-        label->detachFromParent();
-        sceneMgr->destroyMovableObject(label);
-        label = nullptr;
+        for(auto& label : m_axisLabels)
+        {
+            label->detachFromParent();
+            sceneMgr->destroyMovableObject(label);
+            label = nullptr;
+        }
     }
 
     sceneMgr->destroyManualObject(xLine);
