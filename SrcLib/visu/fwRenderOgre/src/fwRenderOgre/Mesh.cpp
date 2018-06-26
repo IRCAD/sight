@@ -182,11 +182,20 @@ void Mesh::updateMesh(const ::fwData::Mesh::sptr& _mesh, bool _pointsOnly)
     ::fwDataTools::helper::MeshGetter meshHelper(_mesh);
 
     /// The values in this table refer to vertices in the above table
-    size_t uiNumVertices = _mesh->getNumberOfPoints();
-    OSLM_DEBUG("Vertices #" << uiNumVertices);
+    const size_t numVertices = _mesh->getNumberOfPoints();
+    OSLM_DEBUG("Vertices #" << numVertices);
 
-    // Check if mesh attributes
-    m_hasNormal = (_mesh->getPointNormalsArray() != nullptr);
+    // Check if the mesh has normals - we assume we should have as many normals as points
+    // If this is not the case, normals will be ignored or regenerated if needed and if the number of vertices changed
+    m_hasNormal = false;
+    if( auto normals = _mesh->getPointNormalsArray() )
+    {
+        const auto numNormals = normals->getNumberOfElements() / normals->getNumberOfComponents();
+        if(numNormals >= numVertices)
+        {
+            m_hasNormal = true;
+        }
+    }
 
     //------------------------------------------
     // Create vertex arrays
@@ -199,13 +208,13 @@ void Mesh::updateMesh(const ::fwData::Mesh::sptr& _mesh, bool _pointsOnly)
     }
 
     ::Ogre::VertexBufferBinding& bind = *m_ogreMesh->sharedVertexData->vertexBufferBinding;
-    size_t uiPrevNumVertices = 0;
+    size_t prevNumVertices = 0;
     if(bind.isBufferBound(m_binding[POSITION_NORMAL]))
     {
-        uiPrevNumVertices = bind.getBuffer(m_binding[POSITION_NORMAL])->getNumVertices();
+        prevNumVertices = bind.getBuffer(m_binding[POSITION_NORMAL])->getNumVertices();
     }
 
-    if(uiPrevNumVertices < uiNumVertices)
+    if(prevNumVertices < numVertices)
     {
         FW_PROFILE("REALLOC MESH");
 
@@ -229,14 +238,13 @@ void Mesh::updateMesh(const ::fwData::Mesh::sptr& _mesh, bool _pointsOnly)
 
             if(computeNormals)
             {
-                _mesh->allocatePointNormals();
                 ::fwDataTools::Mesh::generatePointNormals(_mesh);
                 m_hasNormal = true;
             }
         }
 
         // We need to reallocate
-        m_ogreMesh->sharedVertexData->vertexCount = uiNumVertices;
+        m_ogreMesh->sharedVertexData->vertexCount = numVertices;
 
         // Allocate vertex buffer of the requested number of vertices (vertexCount)
         // and bytes per vertex (offset)
@@ -265,13 +273,13 @@ void Mesh::updateMesh(const ::fwData::Mesh::sptr& _mesh, bool _pointsOnly)
 
         // Set vertex buffer binding so buffer 0 is bound to our vertex buffer
         ::Ogre::HardwareBufferManager& mgr = ::Ogre::HardwareBufferManager::getSingleton();
-        vbuf                               = mgr.createVertexBuffer(offset, uiNumVertices, usage, false);
+        vbuf                               = mgr.createVertexBuffer(offset, numVertices, usage, false);
         bind.setBinding(m_binding[POSITION_NORMAL], vbuf);
     }
     else
     {
         // We don't reallocate, we keep the same vertex buffers and only update the number of vertices
-        m_ogreMesh->sharedVertexData->vertexCount = uiNumVertices;
+        m_ogreMesh->sharedVertexData->vertexCount = numVertices;
     }
 
     //------------------------------------------
@@ -319,8 +327,8 @@ void Mesh::updateMesh(const ::fwData::Mesh::sptr& _mesh, bool _pointsOnly)
     void* indexBuffer[ s_numPrimitiveTypes ];
     memset(indexBuffer, 0, sizeof(indexBuffer));
 
-    const bool indices32Bits     = uiNumVertices >= (1 << 16);
-    const bool indicesPrev32Bits = uiPrevNumVertices >= (1 << 16);
+    const bool indices32Bits     = numVertices >= (1 << 16);
+    const bool indicesPrev32Bits = prevNumVertices >= (1 << 16);
     const bool hasPrimitiveColor = (_mesh->getCellColorsArray() != nullptr);
 
     {
