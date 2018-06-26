@@ -162,14 +162,14 @@ void SSeriesPusher::pushSeries()
     m_isPushing                          = true;
     ::fwData::Vector::csptr seriesVector = this->getInput< ::fwData::Vector >(s_SERIES_IN);
 
+    const std::vector< ::fwMedData::DicomSeries::sptr > dataVector =
+        seriesVector->getDataContainer< ::fwMedData::DicomSeries >();
     // Connect to PACS
     const size_t seriesVectorSize = seriesVector->size();
     size_t nbSeriesSuccess        = 0;
-    for(const auto& series : *seriesVector)
+    for(const auto& dicomSeries : dataVector)
     {
         nbSeriesSuccess++;
-        ::fwMedData::DicomSeries::csptr dicomSeries = ::fwMedData::DicomSeries::dynamicCast(series);
-        SLM_ASSERT("The SeriesDB should contain only DicomSeries.", dicomSeries);
 
         ::fwMedData::DicomSeries::DicomContainerType dicomContainer = dicomSeries->getDicomContainer();
         const size_t dicomContainerSize = dicomContainer.size();
