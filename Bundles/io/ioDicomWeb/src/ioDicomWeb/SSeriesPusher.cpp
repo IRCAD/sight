@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2018.
+ * FW4SPL - Copyright (C) IRCAD, 2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -191,7 +191,7 @@ void SSeriesPusher::pushSeries()
                 }
                 catch (::fwNetworkIO::exceptions::HostNotFound& exception)
                 {
-                    ::std::stringstream ss;
+                    std::stringstream ss;
                     ss << "Host not found.\n"
                        << "Please check your configuration: \n"
                        << "Pacs host name: " << m_serverHostname << "\n"
@@ -209,7 +209,7 @@ void SSeriesPusher::pushSeries()
 
 //------------------------------------------------------------------------------
 
-void SSeriesPusher::displayMessage(const ::std::string& message, bool error) const
+void SSeriesPusher::displayMessage(const std::string& message, bool error) const
 {
     SLM_WARN_IF("Error: " + message, error);
     ::fwGui::dialog::MessageDialog messageBox;
