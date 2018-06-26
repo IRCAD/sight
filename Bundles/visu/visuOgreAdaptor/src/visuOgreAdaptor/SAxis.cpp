@@ -54,9 +54,12 @@ void SAxis::updateVisibility(bool isVisible)
     if(m_sceneNode)
     {
         m_sceneNode->setVisible(m_isVisible);
-        for(auto& label : m_axisLabels)
+        if(m_labelVisible)
         {
-            label->setVisible(isVisible);
+            for(auto& label : m_axisLabels)
+            {
+                label->setVisible(isVisible);
+            }
         }
     }
 
@@ -203,8 +206,14 @@ void SAxis::starting()
     ::Ogre::SceneNode* xConeNode = m_sceneNode->createChildSceneNode(
         this->getTransformId() + "_" + this->getID() + "_xCone");
 
-    m_axisLabels[0] = ::fwRenderOgre::Text::New(
-        this->getID() + "_xAxisLabel", sceneMgr, textContainer, dejaVuSansFont, cam);
+    if(m_labelVisible)
+    {
+        m_axisLabels[0] = ::fwRenderOgre::Text::New(
+            this->getID() + "_xAxisLabel", sceneMgr, textContainer, dejaVuSansFont, cam);
+        m_axisLabels[0]->setText("X");
+        m_axisLabels[0]->setCharHeight(0.1f);
+        xConeNode->attachObject(m_axisLabels[0]);
+    }
 
     if(m_labelVisible)
     {
@@ -226,8 +235,14 @@ void SAxis::starting()
         this->getTransformId() + "_" + this->getID() + "_yCone");
     yConeNode->attachObject(yCone);
 
-    m_axisLabels[1] = ::fwRenderOgre::Text::New(
-        this->getID() + "_yAxisLabel", sceneMgr, textContainer, dejaVuSansFont, cam);
+    if(m_labelVisible)
+    {
+        m_axisLabels[1] = ::fwRenderOgre::Text::New(
+            this->getID() + "_yAxisLabel", sceneMgr, textContainer, dejaVuSansFont, cam);
+        m_axisLabels[1]->setText("Y");
+        m_axisLabels[1]->setCharHeight(0.1f);
+        yConeNode->attachObject(m_axisLabels[1]);
+    }
 
     if(m_labelVisible)
     {
@@ -249,8 +264,14 @@ void SAxis::starting()
         this->getTransformId() + "_" + this->getID() + "_zCone");
     zConeNode->attachObject(zCone);
 
-    m_axisLabels[2] = ::fwRenderOgre::Text::New(
-        this->getID() + "_zAxisLabel", sceneMgr, textContainer, dejaVuSansFont, cam);
+    if(m_labelVisible)
+    {
+        m_axisLabels[2] = ::fwRenderOgre::Text::New(
+            this->getID() + "_zAxisLabel", sceneMgr, textContainer, dejaVuSansFont, cam);
+        m_axisLabels[2]->setText("Z");
+        m_axisLabels[2]->setCharHeight(0.1f);
+        zConeNode->attachObject(m_axisLabels[2]);
+    }
 
     if(m_labelVisible)
     {
