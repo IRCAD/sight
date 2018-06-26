@@ -215,13 +215,6 @@ void SAxis::starting()
         xConeNode->attachObject(m_axisLabels[0]);
     }
 
-    if(m_labelVisible)
-    {
-        m_axisLabels[0]->setText("X");
-        m_axisLabels[0]->setCharHeight(0.1f);
-        xConeNode->attachObject(m_axisLabels[0]);
-    }
-
     xConeNode->attachObject(xCone);
     xConeNode->translate(cylinderLength, 0.f, 0.f);
 
@@ -244,13 +237,6 @@ void SAxis::starting()
         yConeNode->attachObject(m_axisLabels[1]);
     }
 
-    if(m_labelVisible)
-    {
-        m_axisLabels[1]->setText("Y");
-        m_axisLabels[1]->setCharHeight(0.1f);
-        yConeNode->attachObject(m_axisLabels[1]);
-    }
-
     yConeNode->translate(0.f, cylinderLength, 0.f);
     yConeNode->roll(::Ogre::Degree(90));
 
@@ -268,13 +254,6 @@ void SAxis::starting()
     {
         m_axisLabels[2] = ::fwRenderOgre::Text::New(
             this->getID() + "_zAxisLabel", sceneMgr, textContainer, dejaVuSansFont, cam);
-        m_axisLabels[2]->setText("Z");
-        m_axisLabels[2]->setCharHeight(0.1f);
-        zConeNode->attachObject(m_axisLabels[2]);
-    }
-
-    if(m_labelVisible)
-    {
         m_axisLabels[2]->setText("Z");
         m_axisLabels[2]->setCharHeight(0.1f);
         zConeNode->attachObject(m_axisLabels[2]);
