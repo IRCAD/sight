@@ -163,12 +163,19 @@ void SSeriesPusher::pushSeries()
     ::fwData::Vector::csptr seriesVector = this->getInput< ::fwData::Vector >(s_SERIES_IN);
 
     // Connect to PACS
+    const size_t seriesVectorSize = seriesVector->size();
+    size_t nbSeriesSuccess        = 0;
     for(const auto& series : *seriesVector)
     {
+        nbSeriesSuccess++;
         ::fwMedData::DicomSeries::csptr dicomSeries = ::fwMedData::DicomSeries::dynamicCast(series);
         SLM_ASSERT("The SeriesDB should contain only DicomSeries.", dicomSeries);
 
-        for(const auto& item : dicomSeries->getDicomContainer())
+        ::fwMedData::DicomSeries::DicomContainerType dicomContainer = dicomSeries->getDicomContainer();
+        const size_t dicomContainerSize = dicomContainer.size();
+
+        size_t nbInstanceSuccess = 0;
+        for(const auto& item : dicomContainer)
         {
             const ::fwMemory::BufferObject::sptr bufferObj = item.second;
             const ::fwMemory::BufferObject::Lock lockerDest(bufferObj);
@@ -187,7 +194,7 @@ void SSeriesPusher::pushSeries()
                 try
                 {
                     seriesAnswer = m_clientQt.post(request, fileBuffer);
-                    this->displayMessage("Upload successful.", false);
+                    nbInstanceSuccess++;
                 }
                 catch (::fwNetworkIO::exceptions::HostNotFound& exception)
                 {
@@ -200,8 +207,14 @@ void SSeriesPusher::pushSeries()
                     SLM_WARN(exception.what());
                 }
             }
+            if (dicomContainerSize == nbInstanceSuccess)
+            {
+                this->displayMessage("Upload successful: " + std::to_string(nbSeriesSuccess) + "/" +
+                                     std::to_string(seriesVectorSize), false);
+            }
         }
     }
+
     // Set pushing boolean to false
     m_isPushing = false;
 
