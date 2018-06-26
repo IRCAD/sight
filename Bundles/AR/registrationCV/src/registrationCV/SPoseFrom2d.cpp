@@ -334,10 +334,12 @@ void SPoseFrom2d::computeRegistration(::fwCore::HiResClock::HiResClockType times
 
                     ::fwData::mt::ObjectWriteLock lock(matrix);
                     matrix->setCoefficients(matrixValues);
-
-                    auto sig = matrix->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
-                    sig->asyncEmit();
                 }
+
+                // Always send the signal even if we did not find anything.
+                // This allows to keep updating the whole processing pipeline.
+                auto sig = matrix->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+                sig->asyncEmit();
 
                 ++markerIndex;
             }
