@@ -58,6 +58,7 @@ void SAxis::updateVisibility(bool isVisible)
         {
             for(auto& label : m_axisLabels)
             {
+                SLM_ASSERT("label should not be null", label);
                 label->setVisible(isVisible);
             }
         }
@@ -290,6 +291,7 @@ void SAxis::stopping()
     {
         for(auto& label : m_axisLabels)
         {
+            SLM_ASSERT("label should not be null", label);
             label->detachFromParent();
             sceneMgr->destroyMovableObject(label);
             label = nullptr;
