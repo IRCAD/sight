@@ -75,6 +75,8 @@ void SLandmarks::starting()
 {
     this->initialize();
 
+    this->getRenderService()->makeCurrent();
+
     ::Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
     m_transNode                      =
         ::fwRenderOgre::helper::Scene::getNodeById(this->getTransformId(), rootSceneNode);
@@ -107,6 +109,8 @@ void SLandmarks::starting()
 
 void SLandmarks::updating()
 {
+    this->getRenderService()->makeCurrent();
+
     this->clearData();
 
     ::Ogre::Camera* cam            = this->getLayer()->getDefaultCamera();
@@ -186,6 +190,8 @@ void SLandmarks::updating()
 
 void SLandmarks::stopping()
 {
+    this->getRenderService()->makeCurrent();
+
     this->clearData();
 
     this->unregisterServices();
