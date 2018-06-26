@@ -12,6 +12,10 @@
     <xi:include href="configurations/calibrationEdition.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/videoEdition.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/rgbdCalibration.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/calibrationCharuco.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/calIntrinsicCharucoView.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/calExtrinsicCharucoView.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/calCameraCharucoView.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
     <extension implements="::fwActivities::registry::Activities">
         <id>Calibration</id>
@@ -65,4 +69,21 @@
         </appConfig>
     </extension>
 
+    <extension implements="::fwActivities::registry::Activities">
+        <id>CalibrationCharuco</id>
+        <title>Calibration Charuco</title>
+        <desc>Calibrate the intrinsic and extrinsic parameters of cameras with charuco boards.</desc>
+        <icon>arMedia-0.1/icons/calibrationActivity.svg</icon>
+        <requirements>
+             <requirement name="cameraSeries" type="::arData::CameraSeries" minOccurs="0" maxOccurs="0" />
+        </requirements>
+        <builder>::fwActivities::builder::ActivitySeriesInitData</builder>
+        <appConfig id="calibrationCharuco">
+            <parameters>
+                <parameter replace="cameraSeries" by="@values.cameraSeries" />
+            </parameters>
+        </appConfig>
+    </extension>
+
 </plugin>
+

@@ -1,5 +1,5 @@
 <extension implements="::fwServices::registry::AppConfig">
-    <id>calIntrinsicView</id>
+    <id>calIntrinsicCharucoView</id>
     <parameters>
         <param name="WID_PARENT" />
         <param name="camera" />
@@ -82,7 +82,7 @@
         <!-- ******************************* Actions ****************************************** -->
         <service uid="ActionAdd" type="::gui::action::SSlotCaller">
             <slots>
-                <slot>ChessboardDetector/detectPoints</slot>
+                <slot>CharucoBoardDetector/detectPoints</slot>
             </slots>
         </service>
 
@@ -119,7 +119,7 @@
 
         <!-- ******************************* Services ***************************************** -->
         <service uid="cameraLauncher" type="::fwServices::SConfigController">
-            <appConfig id="calCameraView" />
+            <appConfig id="calCameraCharucoView" />
             <inout key="camera" uid="${camera}" />
             <inout key="timeLine" uid="FrameTL" />
             <parameter replace="WID_PARENT" uid="cameraView" />
@@ -135,14 +135,14 @@
             <label>Reprojection Error (RMSE)</label>
         </service>
 
-        <service uid="ChessboardDetector" type="::videoCalibration::SChessBoardDetector" worker="intr_chess_checker">
+        <service uid="CharucoBoardDetector" type="::videoCharucoCalibration::SCharucoBoardDetector" worker="intr_chess_checker">
             <in group="timeline">
                 <key uid="FrameTL" />
             </in>
             <inout group="calInfo">
                 <key uid="${calibrationInfo}" />
             </inout>
-            <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" />
+            <board width="CHARUCO_WIDTH" height="CHARUCO_HEIGHT" squareSize="CHARUCO_SQUARE_SIZE" markerSize="CHARUCO_MARKER_SIZE" markerSizeInBits="CHARUCO_MARKER_SIZE_IN_BITS"/>
         </service>
 
         <service uid="DisplayCalibrationInfo" type="::uiCalibration::SDisplayCalibrationInfo">
@@ -153,10 +153,10 @@
             <inout key="calInfo1" uid="${calibrationInfo}" />
         </service>
 
-        <service uid="OpenCVIntrinsicCal" type="::videoCalibration::SOpenCVIntrinsic" worker="intr_chess_checker">
+        <service uid="OpenCVIntrinsicCal" type="::videoCharucoCalibration::SOpenCVIntrinsic" worker="intr_chess_checker">
             <in key="calibrationInfo" uid="${calibrationInfo}" />
             <inout key="camera" uid="${camera}" />
-            <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" squareSize="CHESSBOARD_SQUARE_SIZE" />
+            <board width="CHARUCO_WIDTH" height="CHARUCO_HEIGHT" squareSize="CHARUCO_SQUARE_SIZE" markerSize="CHARUCO_MARKER_SIZE" markerSizeInBits="CHARUCO_MARKER_SIZE_IN_BITS"/>
         </service>
 
         <service uid="cameraInfo" type="::uiCalibration::SCameraInformationEditor" autoConnect="yes">
@@ -170,16 +170,16 @@
         <!-- ******************************* Connections ************************************** -->
         <connect>
             <signal>FrameTL/objectPushed</signal>
-            <slot>ChessboardDetector/checkPoints</slot>
+            <slot>CharucoBoardDetector/checkPoints</slot>
         </connect>
 
         <connect>
-            <signal>ChessboardDetector/chessboardDetected</signal>
+            <signal>CharucoBoardDetector/charucoBoardDetected</signal>
             <slot>Status/changeToGreen</slot>
         </connect>
 
         <connect>
-            <signal>ChessboardDetector/chessboardNotDetected</signal>
+            <signal>CharucoBoardDetector/charucoBoardNotDetected</signal>
             <slot>Status/changeToRed</slot>
         </connect>
 
@@ -201,13 +201,13 @@
         </connect>
 
         <connect channel="${preferencesModifiedProxy}">
-            <slot>OpenCVIntrinsicCal/updateChessboardSize</slot>
-            <slot>ChessboardDetector/updateChessboardSize</slot>
+            <slot>OpenCVIntrinsicCal/updateCharucoBoardSize</slot>
+            <slot>CharucoBoardDetector/updateCharucoBoardSize</slot>
         </connect>
 
         <start uid="intrinsicCameraView" />
         <start uid="OpenCVIntrinsicCal" />
-        <start uid="ChessboardDetector" />
+        <start uid="CharucoBoardDetector" />
         <start uid="DisplayCalibrationInfo" />
         <start uid="cameraLauncher" />
         <start uid="intrinsicEdition" />

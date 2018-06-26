@@ -1,5 +1,5 @@
 <extension implements="::fwServices::registry::AppConfig">
-    <id>calExtrinsicView</id>
+    <id>calExtrinsicCharucoView</id>
     <parameters>
         <param name="WID_PARENT" />
         <param name="cameraSeries" />
@@ -153,7 +153,7 @@
         <!-- ******************************* Actions ****************************************** -->
         <service uid="ActionAdd" type="::gui::action::SSlotCaller">
             <slots>
-                <slot>ChessboardDetector/detectPoints</slot>
+                <slot>CharucoBoardDetector/detectPoints</slot>
             </slots>
         </service>
 
@@ -224,9 +224,9 @@
             <framerate>30</framerate>
         </service>
 
-        <!-- *************************** Begin generic scene *************************** -->
+        <!-- *************************** Begin camera 1 scene *************************** -->
 
-        <service uid="camera1" type="::fwRenderVTK::SRender" >
+        <service uid="camera1" type="::fwRenderVTK::SRender">
             <scene renderMode="timer">
                 <renderer id="default" background="0.0" />
                 <adaptor uid="videoAdapter1" />
@@ -243,11 +243,11 @@
             <config renderer="default" style="InteractorStyle2DForNegato" />
         </service>
 
-        <!-- *************************** End generic scene *************************** -->
+        <!-- *************************** End camera 1 scene *************************** -->
 
-        <!-- *************************** Begin generic scene *************************** -->
+        <!-- *************************** Begin camera 2 scene *************************** -->
 
-        <service uid="camera2" type="::fwRenderVTK::SRender">
+        <service uid="camera2" type="::fwRenderVTK::SRender" >
             <scene renderMode="timer">
                 <renderer id="default" background="0.0" />
                 <adaptor uid="videoAdapter2" />
@@ -264,7 +264,7 @@
             <config renderer="default" style="InteractorStyle2DForNegato" />
         </service>
 
-        <!-- *************************** End generic scene *************************** -->
+        <!-- *************************** End camera 2 scene *************************** -->
 
         <service uid="ExtrinsicCalibrationInfoEditor" type="::uiCalibration::SCalibrationInfoEditor" autoConnect="yes">
             <inout key="calInfo1" uid="${calibrationInfo1}" />
@@ -281,7 +281,7 @@
             <label>Reprojection Error (RMSE)</label>
         </service>
 
-        <service uid="ChessboardDetector" type="::videoCalibration::SChessBoardDetector" worker="extr_chess_checker">
+        <service uid="CharucoBoardDetector" type="::videoCharucoCalibration::SCharucoBoardDetector" worker="extr_chess_checker">
             <in group="timeline">
                 <key uid="Frame1TL" />
                 <key uid="Frame2TL" />
@@ -290,7 +290,7 @@
                 <key uid="${calibrationInfo1}" />
                 <key uid="${calibrationInfo2}" />
             </inout>
-            <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" />
+            <board width="CHARUCO_WIDTH" height="CHARUCO_HEIGHT" squareSize="CHARUCO_SQUARE_SIZE" markerSize="CHARUCO_MARKER_SIZE" markerSizeInBits="CHARUCO_MARKER_SIZE_IN_BITS" />
         </service>
 
         <service uid="DisplayCalibrationInfo" type="::uiCalibration::SDisplayCalibrationInfo">
@@ -314,12 +314,12 @@
             </config>
         </service>
 
-        <service uid="openCVExtrinsicCal" type="::videoCalibration::SOpenCVExtrinsic" worker="extr_chess_checker">
+        <service uid="openCVExtrinsicCal" type="::videoCharucoCalibration::SOpenCVExtrinsic" worker="extr_chess_checker">
             <in key="calibrationInfo1" uid="${calibrationInfo1}" />
             <in key="calibrationInfo2" uid="${calibrationInfo2}" />
             <inout key="cameraSeries" uid="${cameraSeries}" />
             <camIndex>${camIndex}</camIndex>
-            <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" squareSize="CHESSBOARD_SQUARE_SIZE" />
+            <board width="CHARUCO_WIDTH" height="CHARUCO_HEIGHT" squareSize="CHARUCO_SQUARE_SIZE" markerSize="CHARUCO_MARKER_SIZE"/>
         </service>
 
         <service uid="cameraSeriesInfo" type="::uiCalibration::SCameraSeriesEditor" autoConnect="yes">
@@ -338,21 +338,21 @@
         <!-- ******************************* Connections ************************************** -->
         <connect>
             <signal>Frame1TL/objectPushed</signal>
-            <slot>ChessboardDetector/checkPoints</slot>
+            <slot>CharucoBoardDetector/checkPoints</slot>
         </connect>
 
         <connect>
             <signal>Frame2TL/objectPushed</signal>
-            <slot>ChessboardDetector/checkPoints</slot>
+            <slot>CharucoBoardDetector/checkPoints</slot>
         </connect>
 
         <connect>
-            <signal>ChessboardDetector/chessboardDetected</signal>
+            <signal>CharucoBoardDetector/charucoBoardDetected</signal>
             <slot>Status/changeToGreen</slot>
         </connect>
 
         <connect>
-            <signal>ChessboardDetector/chessboardNotDetected</signal>
+            <signal>CharucoBoardDetector/charucoBoardNotDetected</signal>
             <slot>Status/changeToRed</slot>
         </connect>
 
@@ -391,13 +391,13 @@
         </connect>
 
         <connect channel="${preferencesModifiedProxy}">
-            <slot>openCVExtrinsicCal/updateChessboardSize</slot>
-            <slot>ChessboardDetector/updateChessboardSize</slot>
+            <slot>openCVExtrinsicCal/updateCharucoBoardSize</slot>
+            <slot>CharucoBoardDetector/updateCharucoBoardSize</slot>
         </connect>
 
         <start uid="extrinsicView" />
         <start uid="openCVExtrinsicCal" />
-        <start uid="ChessboardDetector" />
+        <start uid="CharucoBoardDetector" />
         <start uid="DisplayCalibrationInfo" />
         <start uid="synchronizer" />
         <start uid="VideoGrabber1" />

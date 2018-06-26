@@ -10,6 +10,7 @@
 #include <arData/Camera.hpp>
 #include <arData/CameraSeries.hpp>
 
+#include <fwCom/Signal.hxx>
 #include <fwCom/Slot.hxx>
 #include <fwCom/Slots.hxx>
 
@@ -38,6 +39,8 @@ namespace videoCalibration
 
 static const ::fwCom::Slots::SlotKeyType s_UPDATE_CHESSBOARD_SIZE_SLOT = "updateChessboardSize";
 
+static const ::fwCom::Signals::SignalKeyType s_ERROR_COMPUTED_SIG = "errorComputed";
+
 // ----------------------------------------------------------------------------
 
 SOpenCVExtrinsic::SOpenCVExtrinsic() noexcept :
@@ -46,6 +49,7 @@ SOpenCVExtrinsic::SOpenCVExtrinsic() noexcept :
     m_squareSize(20.0),
     m_camIndex(1)
 {
+    newSignal<ErrorComputedSignalType>(s_ERROR_COMPUTED_SIG);
     newSlot(s_UPDATE_CHESSBOARD_SIZE_SLOT, &SOpenCVExtrinsic::updateChessboardSize, this);
 }
 
@@ -225,7 +229,7 @@ void SOpenCVExtrinsic::updating()
                                            ::cv::TermCriteria(::cv::TermCriteria::MAX_ITER + ::cv::TermCriteria::EPS,
                                                               100, 1e-5));
 
-        OSLM_DEBUG("Calibration error :" << err);
+        this->signal<ErrorComputedSignalType>(s_ERROR_COMPUTED_SIG)->asyncEmit(err);
 
         ::fwData::TransformationMatrix3D::sptr matrix = ::fwData::TransformationMatrix3D::New();
         for (size_t i = 0; i < 3; ++i)

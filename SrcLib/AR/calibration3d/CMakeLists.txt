@@ -11,5 +11,6 @@ fwInclude(
 fwLink(
     opencv_core
     opencv_calib3d
+    opencv_aruco
     ${CERES_LIBRARIES}
 )
