@@ -252,13 +252,13 @@ void ManualObject::createSphere(::Ogre::ManualObject* _object,
 
     for(unsigned ring = 0; ring <= _sample; ++ring)
     {
-        const float r0 = _radius * sinf(static_cast< float >(ring) * deltaRing);
-        const float y0 = _radius * cosf(static_cast< float >(ring) * deltaRing);
+        const float r0 = _radius * std::sin(static_cast< float >(ring) * deltaRing);
+        const float y0 = _radius * std::cos(static_cast< float >(ring) * deltaRing);
 
         for(unsigned seg = 0; seg <= _sample; ++seg)
         {
-            const float x0 = r0 * sinf(static_cast< float >(seg) * deltaSeg);
-            const float z0 = r0 * cosf(static_cast< float >(seg) * deltaSeg);
+            const float x0 = r0 * std::sin(static_cast< float >(seg) * deltaSeg);
+            const float z0 = r0 * std::cos(static_cast< float >(seg) * deltaSeg);
 
             _object->position( x0, y0, z0);
             _object->normal(::Ogre::Vector3(x0, y0, z0).normalisedCopy());

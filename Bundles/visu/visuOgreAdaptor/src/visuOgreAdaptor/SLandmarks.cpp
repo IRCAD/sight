@@ -61,7 +61,8 @@ void SLandmarks::configuring()
 {
     this->configureParams();
 
-    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
+    const ConfigType configType = this->getConfigTree();
+    const ConfigType config     = configType.get_child("config.<xmlattr>");
 
     const std::string transformId = config.get<std::string>(s_CONFIG_TRANSFORM, this->getID() + "_transform");
 

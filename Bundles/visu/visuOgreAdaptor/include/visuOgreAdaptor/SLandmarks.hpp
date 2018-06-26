@@ -29,7 +29,7 @@ namespace visuOgreAdaptor
     </service>
    @endcode
  * @subsection Input Input:
- * - \b landmarks [::fwData::Landmarks]: landmarks to displayed.
+ * - \b landmarks [::fwData::Landmarks]: landmarks to display.
  * @subsection Configuration Configuration:
  * -\b layer (mandatory): defines landmarks layer.
  * -\b transform (optional): the name of the Ogre transform node where to attach the mesh, as it was specified
@@ -78,17 +78,17 @@ private:
     /// Root node.
     ::Ogre::SceneNode* m_transNode {nullptr};
 
-    /// Use to store manual objects.
-    std::vector< ::Ogre::ManualObject* > m_manualObjects {};
+    /// Used to store manual objects.
+    std::vector< ::Ogre::ManualObject* > m_manualObjects;
 
-    /// Use to store label of each landmark.
-    std::vector< ::fwRenderOgre::Text* > m_labels {};
+    /// Used to store label of each landmark.
+    std::vector< ::fwRenderOgre::Text* > m_labels;
 
     /// Text container.
-    ::Ogre::OverlayContainer* m_text = {nullptr};
+    ::Ogre::OverlayContainer* m_text {nullptr};
 
     /// Font.
-    ::Ogre::FontPtr m_font = {nullptr};
+    ::Ogre::FontPtr m_font {nullptr};
 };
 
 } //namespace visuOgreAdaptor
