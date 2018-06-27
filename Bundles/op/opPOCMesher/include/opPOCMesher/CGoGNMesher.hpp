@@ -1,17 +1,16 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __OPPOCMESHER_CGOGNMESHER_HPP__
-#define __OPPOCMESHER_CGOGNMESHER_HPP__
+#pragma once
 
 #include "opPOCMesher/config.hpp"
 
 #include <fwCom/Slots.hpp>
 
-#include <opVTKMesh/IMesher.hpp>
+#include <fwServices/IOperator.hpp>
 
 #include <string>
 
@@ -22,9 +21,9 @@ namespace opPOCMesher
  * @brief Service used to generate a mesh from an image.
  * Example of this service configuration
  * @code{.xml}
-   <service impl="::opPOCMesher::CGoGNMesher" >
-        <inout key="image" uid="..." />
-        <inout key="modelSeries" uid="..." />
+   <service type="::opPOCMesher::CGoGNMesher" >
+        <in key="image" uid="..." />
+        <out key="modelSeries" uid="..." />
        <config>
             <!-- Optionnal -->
             <valueMin>1</valueMin>
@@ -39,8 +38,8 @@ namespace opPOCMesher
    @endcode
  * @subsection Input Input
  * - \b image [::fwData::Image]: Image used to generate the mesh.
- * @subsection In-Out In-Out
- * - \b modelSeries [::fwData::ModelSeries]: model where the generated mesh is pushed.
+ * @subsection Output Output
+ * - \b modelSeries [::fwMedData::ModelSeries]: model where the generated mesh is pushed.
  * @subsection Configuration Configuration
  * - \b valueMin : The minimum value in the image mesh
  * - \b valueMax : The maximum value to mesh
@@ -50,12 +49,12 @@ namespace opPOCMesher
  * - \b percentage : If true the variable faces is a percentage, if false it is a number
  * - \b closing : If true the mesh is closed at the border of the image
  */
-class OPPOCMESHER_CLASS_API CGoGNMesher : public ::opVTKMesh::IMesher
+class OPPOCMESHER_CLASS_API CGoGNMesher : public ::fwServices::IOperator
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro((CGoGNMesher)(::opVTKMesh::IMesher) );
+    fwCoreServiceClassDefinitionsMacro((CGoGNMesher)(::fwServices::IOperator) );
 
     /**
      * @brief Constructor. Initializes slots.
@@ -125,5 +124,3 @@ private:
 };
 
 } // namespace opPOCMesher
-
-#endif // __OPPOCMESHER_CGOGNMESHER_HPP__

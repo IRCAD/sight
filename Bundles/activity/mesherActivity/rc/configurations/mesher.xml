@@ -4,16 +4,15 @@
         <param name="WID_PARENT" />
         <param name="GENERIC_UID" />
         <param name="ICON_PATH" />
-        <param name="SERIESDB" />
-        <param name="AS_UID" />
+        <param name="imageSeriesUid" />
         <param name="imageUid" />
     </parameters>
     <config>
-        <object uid="${SERIESDB}" src="ref" type="::fwMedData::SeriesDB" />
-        <object uid="${AS_UID}" src="ref" type="::fwMedData::ActivitySeries" />
+        <object uid="${imageSeriesUid}" src="ref" type="::fwMedData::ImageSeries" />
         <object uid="${imageUid}" src="ref" type="::fwData::Image" />
-        <object uid="modelSeriesUID" type="::fwMedData::ModelSeries" />
+        <object uid="modelSeriesUID" type="::fwMedData::ModelSeries" src="deferred" />
         <object uid="reconstructionUID" type="::fwData::Reconstruction" src="deferred" />
+
         <service uid="mainView" type="::gui::view::SDefaultView">
             <gui>
                 <layout type="::fwGui::CardinalLayoutManager">
@@ -102,7 +101,7 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="list_organ_editor" start="yes" />
+                <view sid="list_organ_editor" start="no" />
                 <view sid="organ_material_editor" start="no" />
                 <view sid="representation_editor" start="no" />
             </registry>
@@ -180,8 +179,8 @@
         </service>
 
         <service uid="mesher1" type="::opVTKMesh::SVTKMesher">
-            <in key="image" uid="${imageUid}" />
-            <inout key="modelSeries" uid="modelSeriesUID" />
+            <in key="imageSeries" uid="${imageSeriesUid}" />
+            <out key="modelSeries" uid="modelSeriesUID" />
             <config>
                 <percentReduction>50</percentReduction>
             </config>
@@ -189,7 +188,7 @@
 
         <service uid="mesher2" type="::opPOCMesher::CGoGNMesher">
             <in key="image" uid="${imageUid}" />
-            <inout key="modelSeries" uid="modelSeriesUID" />
+            <out key="modelSeries" uid="modelSeriesUID" />
             <config>
                 <valueMin>2</valueMin>
                 <valueMax>254</valueMax>
@@ -215,7 +214,7 @@
 
         <!-- *************************** Begin generic scene *************************** -->
 
-        <service uid="generic_scene" type="::fwRenderVTK::SRender" autoConnect="yes">
+        <service uid="generic_scene" type="::fwRenderVTK::SRender">
             <scene>
                 <picker id="picker" vtkclass="fwVtkCellPicker" />
                 <renderer id="default" background="0.0" />
@@ -255,11 +254,6 @@
             <columns>
                 <organ_name>@organ_name</organ_name>
             </columns>
-        </service>
-
-        <service uid="model_series_writer" type="::uiIO::editor::SIOSelector">
-            <inout key="data" uid="modelSeriesUID" />
-            <type mode="writer" />
         </service>
 
         <connect>
@@ -304,10 +298,13 @@
         <start uid="action_open_vp_website" />
         <start uid="updater_reconst_UID" />
         <start uid="MedicalImageSrv" />
-        <start uid="mesher2" />
+
         <!-- deferred -->
         <start uid="organ_material_editor" />
         <start uid="representation_editor" />
+        <start uid="list_organ_editor" />
+        <start uid="mesher2" />
+
         <!-- VTK scene 'generic_scene' -->
         <start uid="model_series_adaptor" />
         <start uid="MPRNegato3D" />

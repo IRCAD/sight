@@ -70,7 +70,7 @@
             </registry>
         </service>
 
-        <service uid="mainview" type="::gui::view::SDefaultView" autoConnect="yes">
+        <service uid="mainview" type="::gui::view::SDefaultView">
             <gui>
                 <layout type="::fwGui::CardinalLayoutManager">
                     <view align="center" />
@@ -105,7 +105,7 @@
         </service>
 
         <service uid="actionOpenActivity" type="::uiIO::action::SSeriesDBMerger">
-            <inout key="series" uid="loadingSeriesDB" />
+            <inout key="seriesDB" uid="loadingSeriesDB" />
             <IOSelectorSrvConfig name="ActivityReaderConfig" />
         </service>
 
@@ -125,7 +125,7 @@
 
         <!-- Save current activity. -->
         <service uid="actionSaveActivity" type="::uiIO::action::SExportWithSeriesDB" >
-            <in key="series" uid="currentActivity" />
+            <inout key="series" uid="currentActivity" />
             <IOSelectorSrvConfig name="ActivityWriterConfig" />
         </service>
 
@@ -141,7 +141,7 @@
             <parameter replace="PROGRESS_CHANNEL" uid="progressStatus" />
         </service>
 
-        <service uid="dynamicView" type="::guiQt::editor::SDynamicView" autoConnect="yes">
+        <service uid="dynamicView" type="::guiQt::editor::SDynamicView">
             <mainActivity id="activitySelector" closable="false" />
             <parameters>
                 <parameter replace="SERIESDB" uid="seriesDB" />
