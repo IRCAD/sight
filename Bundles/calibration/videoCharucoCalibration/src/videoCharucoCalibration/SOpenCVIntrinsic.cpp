@@ -1,13 +1,15 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2018.
+ * FW4SPL - Copyright (C) IRCAD, 2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "videoCalibration/SOpenCVIntrinsic.hpp"
+#include "videoCharucoCalibration/SOpenCVIntrinsic.hpp"
 
 #include <arData/CalibrationInfo.hpp>
 #include <arData/Camera.hpp>
+
+#include <calibration3d/helper.hpp>
 
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
@@ -30,24 +32,31 @@
 #include <fwTools/fwID.hpp>
 #include <fwTools/Object.hpp>
 
+#include <opencv2/aruco.hpp>
+#include <opencv2/aruco/charuco.hpp>
 #include <opencv2/calib3d.hpp>
 #include <opencv2/core.hpp>
+#include <opencv2/opencv.hpp>
 
-fwServicesRegisterMacro(::arServices::ICalibration, ::videoCalibration::SOpenCVIntrinsic, ::arData::Camera);
+fwServicesRegisterMacro(::arServices::ICalibration, ::videoCharucoCalibration::SOpenCVIntrinsic, ::arData::Camera);
 
-namespace videoCalibration
+namespace videoCharucoCalibration
 {
 
-static const ::fwCom::Slots::SlotKeyType s_UPDATE_CHESSBOARD_SIZE_SLOT = "updateChessboardSize";
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_CHARUCOBOARD_SIZE_SLOT = "updateCharucoBoardSize";
+
+static const ::fwCom::Signals::SignalKeyType s_ERROR_COMPUTED_SIG = "errorComputed";
 
 // ----------------------------------------------------------------------------
 
 SOpenCVIntrinsic::SOpenCVIntrinsic() noexcept :
     m_width(11),
     m_height(8),
-    m_squareSize(20.0)
+    m_squareSize(20.0),
+    m_markerSizeInBits(6)
 {
-    newSlot(s_UPDATE_CHESSBOARD_SIZE_SLOT, &SOpenCVIntrinsic::updateChessboardSize, this);
+    newSignal<ErrorComputedSignalType>(s_ERROR_COMPUTED_SIG);
+    newSlot(s_UPDATE_CHARUCOBOARD_SIZE_SLOT, &SOpenCVIntrinsic::updateCharucoBoardSize, this);
 }
 
 // ----------------------------------------------------------------------------
@@ -60,29 +69,23 @@ SOpenCVIntrinsic::~SOpenCVIntrinsic() noexcept
 
 void SOpenCVIntrinsic::configuring()
 {
-    ::fwRuntime::ConfigurationElement::sptr cfgBoard = m_configuration->findConfigurationElement("board");
-    SLM_ASSERT("Tag 'board' not found.", cfgBoard);
+    const auto configTree = this->getConfigTree();
+    const auto cfgBoard   = configTree.get_child("board.<xmlattr>");
 
-    SLM_ASSERT("Attribute 'width' is missing.", cfgBoard->hasAttribute("width"));
-    m_widthKey = cfgBoard->getAttributeValue("width");
-    SLM_ASSERT("Attribute 'width' is empty", !m_widthKey.empty());
+    m_widthKey            = cfgBoard.get<std::string>("width", "CHARUCO_WIDTH");
+    m_heightKey           = cfgBoard.get<std::string>("height", "CHARUCO_HEIGHT");
+    m_squareSizeKey       = cfgBoard.get<std::string>("squareSize", "CHARUCO_SQUARE_SIZE");
+    m_markerSizeKey       = cfgBoard.get<std::string>("markerSize", "CHARUCO_MARKER_SIZE");
+    m_markerSizeInBitsKey = cfgBoard.get<std::string>("markerSizeInBits", "CHARUCO_MARKER_SIZE_IN_BITS");
 
-    SLM_ASSERT("Attribute 'height' is missing.", cfgBoard->hasAttribute("height"));
-    m_heightKey = cfgBoard->getAttributeValue("height");
-    SLM_ASSERT("Attribute 'height' is empty", !m_heightKey.empty());
-
-    if( cfgBoard->hasAttribute("squareSize"))
-    {
-        m_squareSizeKey = cfgBoard->getAttributeValue("squareSize");
-        SLM_ASSERT("Attribute 'squareSize' is empty", !m_squareSizeKey.empty());
-    }
+    this->updateCharucoBoardSize();
 }
 
 // ----------------------------------------------------------------------------
 
 void SOpenCVIntrinsic::starting()
 {
-    this->updateChessboardSize();
+    this->updateCharucoBoardSize();
 }
 
 // ----------------------------------------------------------------------------
@@ -108,52 +111,50 @@ void SOpenCVIntrinsic::updating()
     ::fwData::Vector::sptr poseCamera        = this->getInOut< ::fwData::Vector >("poseVector");
 
     SLM_ASSERT("Object with 'calibrationInfo' is not found", calInfo);
+    SLM_ASSERT("'camera' should not be null", cam);
     SLM_WARN_IF("Calibration info is empty.", calInfo->getPointListContainer().empty());
 
     if(!calInfo->getPointListContainer().empty())
     {
-        std::vector<std::vector< ::cv::Point3f > > objectPoints;
-
-        std::vector< ::cv::Point3f > points;
-        for (unsigned int y = 0; y < m_height - 1; ++y)
-        {
-            for (unsigned int x = 0; x < m_width - 1; ++x)
-            {
-                points.push_back(::cv::Point3f(float(y*m_squareSize), float(x*m_squareSize), 0));
-            }
-        }
-
-        std::vector<std::vector< ::cv::Point2f > > imagePoints;
+        std::vector<std::vector< ::cv::Point2f > > cornersPoints;
+        std::vector<std::vector< int > > ids;
 
         {
             ::fwData::mt::ObjectReadLock calInfoLock(calInfo);
             for(::fwData::PointList::sptr capture : calInfo->getPointListContainer())
             {
-                std::vector< ::cv::Point2f > dst;
+                std::vector< ::cv::Point2f > cdst;
+                std::vector< int > idst;
 
                 for(::fwData::Point::csptr point : capture->getPoints())
                 {
                     SLM_ASSERT("point is null", point);
-                    dst.push_back(::cv::Point2f(static_cast<float>(point->getCoord()[0]),
-                                                static_cast<float>(point->getCoord()[1])));
+                    cdst.push_back(::cv::Point2f(static_cast<float>(point->getCoord()[0]),
+                                                 static_cast<float>(point->getCoord()[1])));
+                    idst.push_back(static_cast<int>(point->getCoord()[2]));
                 }
-                imagePoints.push_back(dst);
-                objectPoints.push_back(points);
+                cornersPoints.push_back(cdst);
+                ids.push_back(idst);
+
             }
         }
 
         ::fwData::Image::sptr img = calInfo->getImageContainer().front();
 
         ::cv::Mat cameraMatrix;
-        std::vector<float> distCoeffs;
-        std::vector<cv::Mat> rvecs;
-        std::vector<cv::Mat> tvecs;
+        std::vector<double> distCoeffs;
+        std::vector< ::cv::Mat> rvecs;
+        std::vector< ::cv::Mat> tvecs;
         ::cv::Size2i imgsize(static_cast<int>(img->getSize()[0]), static_cast<int>(img->getSize()[1]));
 
-        double err = ::cv::calibrateCamera(objectPoints, imagePoints, imgsize, cameraMatrix, distCoeffs, rvecs, tvecs);
+        double err = ::cv::aruco::calibrateCameraCharuco(cornersPoints, ids, m_board, imgsize, cameraMatrix, distCoeffs,
+                                                         rvecs, tvecs);
+
+        this->signal<ErrorComputedSignalType>(s_ERROR_COMPUTED_SIG)->asyncEmit(err);
 
         if(poseCamera)
         {
+            ::fwData::mt::ObjectWriteLock lock(poseCamera);
             poseCamera->getContainer().clear();
 
             for(size_t index = 0; index < rvecs.size(); ++index)
@@ -174,7 +175,7 @@ void SOpenCVIntrinsic::updating()
                     }
                     mat3D->setCoefficient(i, 3, tmat.at< double >(static_cast<int>(i)));
                 }
-                //::fwDataTools::TransformationMatrix3D::invert(mat3D, mat3D);
+
                 poseCamera->getContainer().push_back(mat3D);
                 auto sig = poseCamera->signal< ::fwData::Vector::AddedObjectsSignalType >(
                     ::fwData::Vector::s_ADDED_OBJECTS_SIG);
@@ -182,7 +183,7 @@ void SOpenCVIntrinsic::updating()
             }
         }
 
-        OSLM_DEBUG("Calibration error :" << err);
+        this->signal<ErrorComputedSignalType>(s_ERROR_COMPUTED_SIG)->asyncEmit(err);
 
         ::fwData::mt::ObjectWriteLock camLock(cam);
 
@@ -206,25 +207,52 @@ void SOpenCVIntrinsic::updating()
 
 //------------------------------------------------------------------------------
 
-void SOpenCVIntrinsic::updateChessboardSize()
+void SOpenCVIntrinsic::updateCharucoBoardSize()
 {
     const std::string widthStr = ::fwPreferences::getPreference(m_widthKey);
     if(!widthStr.empty())
     {
-        m_width = std::stoi(widthStr);
+        m_width = std::stoul(widthStr);
     }
     const std::string heightStr = ::fwPreferences::getPreference(m_heightKey);
     if(!heightStr.empty())
     {
-        m_height = std::stoi(heightStr);
+        m_height = std::stoul(heightStr);
     }
     const std::string squareSizeStr = ::fwPreferences::getPreference(m_squareSizeKey);
     if(!squareSizeStr.empty())
     {
         m_squareSize = std::stof(squareSizeStr);
     }
+    const std::string markerSizeStr = ::fwPreferences::getPreference(m_markerSizeKey);
+    if(!markerSizeStr.empty())
+    {
+        m_markerSize = std::stof(markerSizeStr);
+    }
+    const std::string markerSizeInBitsStr = ::fwPreferences::getPreference(m_markerSizeInBitsKey);
+    if(!markerSizeInBitsStr.empty())
+    {
+        m_markerSizeInBits = std::stoi(markerSizeInBitsStr);
+    }
+
+    try
+    {
+        m_dictionary = ::calibration3d::helper::generateArucoDictionary(m_width, m_height, m_markerSizeInBits);
+    }
+    catch (const std::exception& e )
+    {
+        // Warn user that something went wrong with dictionary generation.
+        // We are not using dialog here since SCharucoDetector already displays one.
+        SLM_ERROR("Error when generating dictionary: " + std::string(e.what()));
+
+        // Exit the function.
+        return;
+    }
+
+    m_board = ::cv::aruco::CharucoBoard::create(static_cast<int>(m_width), static_cast<int>(m_height),
+                                                m_squareSize, m_markerSize, m_dictionary);
 }
 
 //------------------------------------------------------------------------------
 
-} // namespace videoCalibration
+} // namespace videoCharucoCalibration

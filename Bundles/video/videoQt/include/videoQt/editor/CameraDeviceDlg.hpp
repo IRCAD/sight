@@ -1,22 +1,21 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VIDEOQT_EDITOR_CAMERADEVICEDLG_HPP__
-#define __VIDEOQT_EDITOR_CAMERADEVICEDLG_HPP__
+#pragma once
 
 #include "videoQt/config.hpp"
 
 #include <fwCore/macros.hpp>
 
-#include <QObject>
-#include <QDialog>
-#include <QComboBox>
-#include <QListWidget>
 #include <QCameraInfo>
 #include <QCameraViewfinderSettings>
+#include <QComboBox>
+#include <QDialog>
+#include <QListWidget>
+#include <QObject>
 
 namespace arData
 {
@@ -47,8 +46,6 @@ public:
 
 private Q_SLOTS:
 
-    void onValidate();
-
     void onSelectDevice(int index);
 
 private:
@@ -59,5 +56,3 @@ private:
 
 } // editor
 } // videoQt
-
-#endif // __VIDEOQT_EDITOR_CAMERADEVICEDLG_HPP__

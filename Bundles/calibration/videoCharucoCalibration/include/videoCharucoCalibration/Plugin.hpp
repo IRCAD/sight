@@ -1,17 +1,16 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VIDEOCALIBRATION_PLUGIN_HPP__
-#define __VIDEOCALIBRATION_PLUGIN_HPP__
+#pragma once
+
+#include <videoCharucoCalibration/config.hpp>
 
 #include <fwRuntime/Plugin.hpp>
 
-#include <videoCalibration/config.hpp>
-
-namespace videoCalibration
+namespace videoCharucoCalibration
 {
 
 struct Plugin : public ::fwRuntime::Plugin
@@ -35,6 +34,4 @@ struct Plugin : public ::fwRuntime::Plugin
     void stop() noexcept;
 };
 
-} // namespace videoCalibration
-
-#endif // __VIDEOCALIBRATION_PLUGIN_HPP__
+} // namespace videoCharucoCalibration

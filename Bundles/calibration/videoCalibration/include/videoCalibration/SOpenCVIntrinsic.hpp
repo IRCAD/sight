@@ -40,6 +40,10 @@ namespace videoCalibration
 class VIDEOCALIBRATION_CLASS_API SOpenCVIntrinsic : public ::arServices::ICalibration
 {
 public:
+
+    /// Double changed signal type
+    typedef ::fwCom::Signal< void (double) > ErrorComputedSignalType;
+
     fwCoreServiceClassDefinitionsMacro((SOpenCVIntrinsic)(::arServices::ICalibration));
 
     /// Constructor.

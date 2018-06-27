@@ -13,15 +13,14 @@
             <object uid="cameraSeries" type="::arData::CameraSeries" />
             <object uid="camera" type="::arData::Camera" src="deferred" />
             <object uid="frameTL" type="::arData::FrameTL" />
-            <object uid="tagTL" type="::arData::MarkerTL" />
-            <object uid="rawVideoImage" type="::fwData::Image" />
-            <object uid="videoImage" type="::fwData::Image" />
+
+            <object uid="sourceFrame" type="::fwData::Image" />
             <object uid="offscreen3DImage" type="::fwData::Image" />
+            <object uid="finalFrame" type="::fwData::Image" />
             <object uid="distortedVideoImage" type="::fwData::Image" />
 
-            <object uid="matrixTL" type="::arData::MatrixTL" />
+            <object uid="markerMap" type="::arData::MarkerMap" />
             <object uid="matrix" type="::fwData::TransformationMatrix3D" />
-            <object uid="identity" type="::fwData::TransformationMatrix3D" />
             <object uid="inverseMat" type="::fwData::TransformationMatrix3D" />
 
             <object uid="tagMesh" type="::fwData::Mesh" />
@@ -33,50 +32,11 @@
                         <name>Ex04SimpleARCV</name>
                         <icon>Ex04SimpleARCV-@PROJECT_VERSION@/app.ico</icon>
                     </frame>
-                    <menuBar/>
                     <toolBar/>
                 </gui>
                 <registry>
-                    <menuBar sid="menuBar" start="yes" />
                     <toolBar sid="toolbar" start="yes" />
                     <view sid="cameraView" start="yes" />
-                </registry>
-            </service>
-
-            <service uid="menuBar" type="::gui::aspect::SDefaultMenuBar">
-                <gui>
-                    <layout>
-                        <menu name="File" />
-                        <menu name="Preferences" />
-                    </layout>
-                </gui>
-                <registry>
-                    <menu sid="menuFile" start="yes" />
-                    <menu sid="menuPreferences" start="yes" />
-                </registry>
-            </service>
-
-            <service uid="menuFile" type="::gui::aspect::SDefaultMenu">
-                <gui>
-                    <layout>
-                        <menuItem name="Show Settings" shortcut="Ctrl+H" style="check" />
-                        <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
-                    </layout>
-                </gui>
-                <registry>
-                    <menuItem sid="actionHide" start="yes" />
-                    <menuItem sid="actionQuit" start="yes" />
-                </registry>
-            </service>
-
-            <service uid="menuPreferences" type="::gui::aspect::SDefaultMenu">
-                <gui>
-                    <layout>
-                        <menuItem name="Video directory" />
-                    </layout>
-                </gui>
-                <registry>
-                    <menuItem sid="actionVideoDir" start="yes" />
                 </registry>
             </service>
 
@@ -88,6 +48,7 @@
                         <menuItem name="Start" icon="arMedia-0.1/icons/start-cam.svg" />
                         <menuItem name="Stop" icon="arMedia-0.1/icons/stop-cam.svg" />
                         <menuItem name="Pause" icon="arMedia-0.1/icons/pause-cam.svg" />
+                        <menuItem name="Loop" icon="arMedia-0.1/icons/loop-cam.svg" style="check"/>
                         <separator/>
                         <menuItem name="Undistort video image" icon="arMedia-0.1/icons/distortion.svg" />
                         <menuItem name="Disable video image undistortion" icon="arMedia-0.1/icons/disableDistortion.svg" />
@@ -95,6 +56,8 @@
                         <menuItem name="Disable 3D rendering distortion" icon="arMedia-0.1/icons/disableDistortion.svg" />
                         <separator/>
                         <menuItem name="Show Mesh on tag" icon="arMedia-0.1/icons/show.svg" icon2="arMedia-0.1/icons/hide.svg" style="check"/>
+                        <separator/>
+                        <menuItem name="Settings" icon="media-0.1/icons/Settings.svg" style="check"/>
                     </layout>
                 </gui>
                 <registry>
@@ -103,11 +66,13 @@
                     <menuItem sid="startVideo" start="yes" />
                     <menuItem sid="stopVideo" start="yes" />
                     <menuItem sid="pauseVideo" start="yes" />
+                    <menuItem sid="loopVideo" start="yes" />
                     <menuItem sid="actionStartUndistort" start="yes" />
                     <menuItem sid="actionStopUndistort" start="yes" />
                     <menuItem sid="actionStartDistort" start="yes" />
                     <menuItem sid="actionStopDistort" start="yes" />
                     <menuItem sid="showMesh" start="yes" />
+                    <menuItem sid="actionShowParameters" start="yes" />
                 </registry>
             </service>
 
@@ -155,8 +120,7 @@
             </service>
 
             <!-- declaration of actions/slot callers -->
-            <service uid="actionQuit" type="::gui::action::SQuit" />
-            <service uid="actionHide" type="::gui::action::SModifyLayout">
+            <service uid="actionShowParameters" type="::gui::action::SModifyLayout">
                 <config>
                     <show_or_hide sid="parameters" />
                 </config>
@@ -191,6 +155,12 @@
                 </slots>
             </service>
 
+            <service uid="loopVideo" type="::gui::action::SSlotCaller">
+                <slots>
+                    <slot>frameGrabber/loopVideo</slot>
+                </slots>
+            </service>
+
             <service uid="actionStartUndistort" type="::gui::action::SSlotCaller">
                 <slots>
                     <slot>undistorter/changeState</slot>
@@ -220,6 +190,8 @@
                     <slot>showActors/deactivate</slot>
                     <slot>showDistortionActor/update</slot>
                     <slot>showActors/update</slot>
+                    <slot>startGenericSceneSync/update</slot>
+                    <slot>startOffscreenSync/update</slot>
                 </slots>
             </service>
 
@@ -234,6 +206,9 @@
                     <slot>showActors/activate</slot>
                     <slot>showDistortionActor/update</slot>
                     <slot>showActors/update</slot>
+                    <slot>startGenericSceneSync/update</slot>
+                    <slot>startOffscreenSync/update</slot>
+                    <slot>synchronizer/synchronize</slot>
                 </slots>
             </service>
 
@@ -242,6 +217,17 @@
                 <slots>
                     <slot>videoARAdpt/show</slot>
                 </slots>
+            </service>
+
+            <!-- Started at launch -->
+            <service uid="startGenericSceneSync" type="::gui::action::SStarter" >
+                <start_or_stop uid="syncGenericScene" />
+            </service>
+
+            <!-- Stopped at launch -->
+            <service uid="startOffscreenSync" type="::gui::action::SStarter" >
+                <start_or_stop uid="syncOffscreenRender" />
+                <start_or_stop uid="syncGenericSceneAndOffscreen" />
             </service>
 
             <service uid="showActors" type="::gui::action::SBooleanSlotCaller" >
@@ -270,16 +256,6 @@
                 <inout key="data" uid="cameraSeries" />
             </service>
 
-            <!-- preference save the video directory and re-open the same directory at next launch of the app -->
-            <service uid="actionVideoDir" type="::uiPreferences::action::SPreferencesConfiguration">
-                <preference>
-                    <type>path</type>
-                    <name>Video directory</name>
-                    <key>VIDEO_DIR_PREF</key>
-                    <default_value>...</default_value>
-                </preference>
-            </service>
-
             <!-- extract a ::arData::Camera from the ::arData::CameraSeries -->
             <service uid="Extractor" type="::ctrlCamp::SExtractObj">
                 <inout key="source" uid="cameraSeries">
@@ -292,8 +268,8 @@
             <!-- Scene in which the video and the 3D will be rendered -->
             <!-- *************************** Begin generic scene *************************** -->
 
-            <service uid="genericScene" type="::fwRenderVTK::SRender" autoConnect="yes">
-                <scene>
+            <service uid="genericScene" type="::fwRenderVTK::SRender" >
+                <scene renderMode="sync">
                     <renderer id="video" layer="0" background="0.0" />
                     <renderer id="ar" layer="1" background="0.0" />
                     <renderer id="default" layer="2" background="0.0" />
@@ -307,7 +283,7 @@
             </service>
 
             <service uid="videoAdpt" type="::visuVTKARAdaptor::SVideo" autoConnect="yes">
-                <in key="frame" uid="videoImage" />
+                <in key="frame" uid="finalFrame" />
                 <config renderer="video" />
             </service>
 
@@ -339,10 +315,10 @@
 
             <!-- *************************** Begin offscreen scene *************************** -->
 
-            <service uid="offscreenRender" type="::fwRenderVTK::SRender" autoConnect="yes">
+            <service uid="offscreenRender" type="::fwRenderVTK::SRender">
                 <inout key="offScreen" uid="offscreen3DImage" />
                 <flip>true</flip>
-                <scene>
+                <scene renderMode="sync">
                     <renderer id="default" layer="0" background="0.0" />
                     <adaptor uid="interactorStyleOffscreen" />
                     <adaptor uid="meshAdptOffscreen" />
@@ -448,10 +424,10 @@
 
             <!-- Aruco tracker service -->
             <service uid="tracker" type="::trackerAruco::SArucoTracker" worker="tracking">
-                <in key="timeline" uid="frameTL" autoConnect="yes" />
                 <in key="camera" uid="camera" />
-                <inout group="tagTL">
-                    <key uid="tagTL" /> <!-- timeline of detected tag(s) -->
+                <inout key="frame" uid="sourceFrame" autoConnect="yes" />
+                <inout group="markerMap">
+                    <key uid="markerMap" /> <!-- timeline of detected tag(s) -->
                 </inout>
                 <track>
                     <!-- list of tag's id -->
@@ -462,42 +438,39 @@
 
             <!-- This will compute the pose of the camera with tag(s) detected by aruco -->
             <service uid="registration" type="::registrationCV::SPoseFrom2d" worker="registration">
-                <in group="markerTL" autoConnect="yes">
-                    <key uid="tagTL" />
+                <in group="markerMap" autoConnect="yes">
+                    <key uid="markerMap" />
                 </in>
                 <in group="camera">
                     <key uid="camera" />
                 </in>
-                <inout key="matrixTL" uid="matrixTL" />
+                <inout group="matrix">
+                    <key uid="matrix" id="101" />
+                </inout>
                 <patternWidth>60</patternWidth>
             </service>
 
             <!-- This will compute the reprojection error -->
             <service uid="error" type="::videoCalibration::SReprojectionError" worker="error">
-                <in key="matrixTL" uid="matrixTL" autoConnect="yes" /> <!-- automaticaly updates when matrixTL is modified -->
-                <in key="markerTL" uid="tagTL" />
-                <inout key="frameTL" uid="frameTL" />
+                <in group="matrix" autoConnect="yes">
+                    <key uid="matrix" id="101" />
+                </in>
+                <in key="markerMap" uid="markerMap" />
                 <in key="camera" uid="camera" />
-                <in key="extrinsic" uid="matrix" />
+                <inout key="frame" uid="sourceFrame" />
                 <patternWidth>60</patternWidth>
             </service>
 
             <!-- To synchronize matrix, frame and detection -->
-            <service uid="synchronizer" type="::videoTools::SFrameMatrixSynchronizer" worker="videoWorker">
+            <service uid="synchronizer" type="::videoTools::SFrameMatrixSynchronizer" >
                 <in group="frameTL">
-                    <key uid="frameTL" />
+                    <key uid="frameTL" autoConnect="yes"/>
                 </in>
                 <inout group="image">
-                    <key uid="rawVideoImage" />
+                    <key uid="sourceFrame" />
                 </inout>
-                <in group="matrixTL">
-                    <key uid="matrixTL" />
-                </in>
-                <inout group="matrices0">
-                    <key uid="matrix" />
-                </inout>
-                <framerate>30</framerate>
                 <tolerance>100</tolerance>
+                <framerate>0</framerate>
             </service>
 
             <!-- to multiply matrices (here only used to inverse "matrix" )-->
@@ -510,16 +483,30 @@
 
             <service uid="undistorter" type="::videoCalibration::SDistortion" worker="distortion">
                 <in key="camera" uid="camera" />
-                <in key="input" uid="rawVideoImage" autoConnect="yes" />
-                <inout key="output" uid="videoImage" />
+                <in key="input" uid="sourceFrame" />
+                <inout key="output" uid="finalFrame" />
                 <mode>undistort</mode>
            </service>
+
+            <service uid="syncGenericScene" type="::ctrlCom::SSignalGate">
+                <signal>finalFrame/bufferModified</signal>
+                <signal>inverseMat/modified</signal>
+            </service>
 
             <service uid="distorter" type="::videoCalibration::SDistortion" worker="distortion">
                 <in key="camera" uid="camera" />
                 <in key="input" uid="offscreen3DImage" autoConnect="yes" />
                 <inout key="output" uid="distortedVideoImage" />
                 <mode>distort</mode>
+            </service>
+
+            <service uid="syncGenericSceneAndOffscreen" type="::ctrlCom::SSignalGate">
+                <signal>distortedVideoImage/bufferModified</signal>
+                <signal>inverseMat/modified</signal>
+            </service>
+
+            <service uid="syncOffscreenRender" type="::ctrlCom::SSignalGate">
+                <signal>inverseMat/modified</signal>
             </service>
 
             <!-- signal/slot connection -->
@@ -577,17 +564,35 @@
             <connect>
                 <signal>tracker/markerDetected</signal>
                 <slot>axis/updateVisibility</slot>
+                <slot>undistorter/update</slot>
+            </connect>
+
+            <connect>
+                <signal>syncGenericScene/allReceived</signal>
+                <slot>genericScene/requestRender</slot>
+                <slot>synchronizer/synchronize</slot>
+            </connect>
+
+            <connect>
+                <signal>syncGenericSceneAndOffscreen/allReceived</signal>
+                <slot>genericScene/requestRender</slot>
+                <slot>synchronizer/synchronize</slot>
+            </connect>
+
+            <connect>
+                <signal>syncOffscreenRender/allReceived</signal>
+                <slot>offscreenRender/requestRender</slot>
             </connect>
 
             <!-- start services -->
             <start uid="mainFrame" />
             <start uid="frameGrabber" />
             <start uid="synchronizer" />
+            <start uid="registration" />
             <start uid="tracker" />
             <start uid="CalibrationReader" />
             <start uid="CameraSelector" />
             <start uid="Extractor" />
-            <start uid="registration" />
             <start uid="matrixReverser" />
             <start uid="genericScene" />
             <start uid="error" />
@@ -595,6 +600,8 @@
             <start uid="undistorter" />
             <start uid="distorter" />
             <start uid="showDistortionActor" />
+            <start uid="startGenericSceneSync" />
+            <start uid="startOffscreenSync" />
             <start uid="showActors" />
             <start uid="loadMesh" />
 
@@ -612,7 +619,8 @@
             <start uid="meshAdptOffscreen" />
             <start uid="cameraAdptOffscreen" />
 
-            <update uid="actionHide" />
+            <update uid="startGenericSceneSync" />
+            <update uid="actionShowParameters" />
             <update uid="hideAxis" />
             <update uid="loadMesh" />
             <update uid="showMesh" />

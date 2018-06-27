@@ -108,8 +108,8 @@ CameraDeviceDlg::CameraDeviceDlg() :
     this->onSelectDevice(m_devicesComboBox->currentIndex());
 
     QObject::connect(m_devicesComboBox, SIGNAL(activated(int)), this, SLOT(onSelectDevice(int)));
-    QObject::connect(validateButton, SIGNAL(clicked()), this, SLOT(onValidate()));
-    QObject::connect(cancelButton, SIGNAL(clicked()), this, SLOT(close()));
+    QObject::connect(validateButton, SIGNAL(clicked()), this, SLOT(accept()));
+    QObject::connect(cancelButton, SIGNAL(clicked()), this, SLOT(reject()));
 }
 
 //-----------------------------------------------------------------------------
@@ -258,13 +258,6 @@ void CameraDeviceDlg::onSelectDevice(int index)
 
         delete cam;
     }
-}
-
-//-----------------------------------------------------------------------------
-
-void CameraDeviceDlg::onValidate()
-{
-    this->close();
 }
 
 //-----------------------------------------------------------------------------

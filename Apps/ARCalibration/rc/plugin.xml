@@ -34,7 +34,7 @@
                 <type mode="writer" />
                 <selection mode="include" />
                 <addSelection service="::ioAtoms::SWriter" />
-                <config id="ARMDAtomsConfig" service="::ioAtoms::SWriter" />
+                <config id="MDAtomsConfig" service="::ioAtoms::SWriter" />
             </service>
             <start uid="export_selection" />
             <update uid="export_selection" />

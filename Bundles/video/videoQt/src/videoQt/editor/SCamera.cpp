@@ -355,8 +355,11 @@ void SCamera::onChooseDevice()
     {
         ::videoQt::editor::CameraDeviceDlg camDialog;
         camDialog.setWindowTitle(QString("Camera device selector for video source #%1").arg(count++));
-        camDialog.exec();
 
+        if(camDialog.exec() != QDialog::Accepted)
+        {
+            return;
+        }
         bool isSelected = camDialog.getSelectedCamera(camera);
         if(isSelected)
         {

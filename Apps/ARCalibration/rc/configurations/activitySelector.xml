@@ -33,7 +33,7 @@
         <service uid="activityCreator" type="::uiMedDataQt::editor::SActivityWizard" >
             <inout key="series" uid="${SERIESDB}" />
             <ioSelectorConfig>SDBReaderIOSelectorConfig</ioSelectorConfig>
-            <sdbIoSelectorConfig>ARFullSDBReaderIOSelectorConfig</sdbIoSelectorConfig>
+            <sdbIoSelectorConfig>FullSDBReaderIOSelectorConfig</sdbIoSelectorConfig>
             <confirm>false</confirm>
             <icons>
                 <icon type="::fwMedData::ImageSeries" icon="media-0.1/icons/ImageSeries.svg" />
@@ -47,6 +47,7 @@
             <filter>
                 <mode>include</mode>
                 <id>Calibration</id>
+                <id>CalibrationCharuco</id>
                 <id>RGBDCalibration</id>
                 <id>calibrationEdition</id>
                 <id>TrackedCameraRegistration</id>
@@ -57,7 +58,7 @@
         </service>
 
         <service uid="seriesSignal" type="::activities::SSeriesSignal" autoConnect="yes">
-            <in key="${SERIESDB}" uid="${LOADING_SERIESDB}" />
+            <in key="seriesDB" uid="${LOADING_SERIESDB}" />
             <filter>
                 <mode>include</mode>
                 <type>::fwMedData::ActivitySeries</type>

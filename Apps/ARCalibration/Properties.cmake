@@ -1,6 +1,6 @@
 
 set( NAME ARCalibration )
-set( VERSION 0.4 )
+set( VERSION 0.5 )
 set( TYPE APP )
 set( DEPENDENCIES  )
 set( REQUIREMENTS
@@ -17,7 +17,6 @@ set( REQUIREMENTS
     ioAtoms
     ioCalibration
     ioActivity
-    ioARActivity
 
     uiIO
     uiGenericQt

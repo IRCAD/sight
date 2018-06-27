@@ -8,6 +8,8 @@
 
 #include "videoCalibration/config.hpp"
 
+#include <arData/MarkerMap.hpp>
+
 #include <fwServices/IController.hpp>
 
 #include <opencv2/core.hpp>
@@ -28,17 +30,37 @@ namespace videoCalibration
         <in key="camera" uid="..."/>
         <in key="extrinsic" uid="..."/>
         <inout key="frameTL" uid="..." />
-        <out key="error" uid="doubleError" />
+        <out key="error" uid="..." />
         <patternWidth>80</patternWidth>
+     </service>
+
+     or
+
+     <service uid="..." type="::registrationCV::SReprojectionError">
+         <in group="matrix">
+             <key uid="..." />
+             <key uid="..." />
+             <key uid="..." />
+             <key uid="..." />
+         </in>
+         <in key="markerMap" uid="..." />
+         <in key="camera" uid="..."/>
+         <in key="extrinsic" uid="..." />
+         <inout key="frame" uid="..." />
+         <patternWidth>80</patternWidth>
      </service>
    @endcode
  * @subsection Input Input
  * - \b markerTL [::arData::MarkerTL]: timeline for markers.
+ * - \b markerMap [::arData::MarkerMap]: markers map list.
  * - \b camera [::arData::Camera]: calibrated cameras.
  * - \b extrinsic [::fwData::TransformationMatrix3D]: extrinsic matrix, only used if you have two cameras configured.
  * - \b matrixTL [::arData::MatrixTL]: timeline of 3D transformation matrices.
+ * - \b matrix [::fwData::TransformationMatrix3D]: list of matrices related to the markers. The marker's id must be
+ * specified using the \b id tag to be found in the marker map.
  * @subsection InOut InOut
- *  - \b frameTL [::arData::FrameTL] : frame timeline used to draw reprojected points (optional)
+ * - \b frameTL [::arData::FrameTL] : frame timeline used to draw reprojected points (optional)
+ * - \b frame [::fwData::Image]: video frame.
  * @subsection Output Output
  * - \b error [::fwData::Float] : computed error
  * @subsection Configuration Configuration
@@ -47,7 +69,7 @@ namespace videoCalibration
 class VIDEOCALIBRATION_CLASS_API SReprojectionError : public ::fwServices::IController
 {
 public:
-    fwCoreServiceClassDefinitionsMacro((SReprojectionError)(fwServices::IController));
+    fwCoreServiceClassDefinitionsMacro((SReprojectionError)(fwServices::IController))
 
     /// Double changed signal type
     typedef ::fwCom::Signal< void (double) > ErrorComputedSignalType;
@@ -115,6 +137,8 @@ private:
     /// extrinsic matrix (can be identity)
     ::cv::Mat m_extrinsic;
 
+    /// List of tags associated with each input matrix
+    std::vector< ::arData::MarkerMap::KeyType> m_matricesTag;
 };
 
 }//namespace videoCalibration

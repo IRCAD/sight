@@ -5,8 +5,9 @@
  * ****** END LICENSE BLOCK ****** */
 
 #pragma once
-
 #include "registrationCV/config.hpp"
+
+#include <arData/MarkerMap.hpp>
 
 #include <fwCore/HiResClock.hpp>
 #include <fwCore/mt/types.hpp>
@@ -30,31 +31,57 @@ namespace registrationCV
  * @code{.xml}
      <service uid="..." type="::registrationCV::SPoseFrom2d">
          <in group="markerTL" autoConnect="yes">
-             <key uid="markerTL1" />
-             <key uid="markerTL2" />
+             <key uid="..." />
+             <key uid="..." />
          </in>
          <in group="camera">
-             <key uid="cam1" />
-             <key uid="cam2" />
+             <key uid="..." />
+             <key uid="..." />
          </in>
-         <in key="extrinsic" uid="matrix1" />
-         <inout key="matrixTL" uid="matrixTL1" />
+         <in key="extrinsic" uid="..." />
+         <inout key="matrixTL" uid="..." />
+         <inout key="pointList" uid="..." />
+         <patternWidth>80</patternWidth>
+     </service>
+
+     or
+
+     <service uid="..." type="::registrationCV::SPoseFrom2d">
+         <in group="markerMap" autoConnect="yes">
+             <key uid="..." />
+             <key uid="..." />
+         </in>
+         <in group="camera">
+             <key uid="..." />
+             <key uid="..." />
+         </in>
+         <in key="extrinsic" uid="..." />
+         <in group="matrix">
+             <key uid="..." id="101"/>
+             <key uid="..." id="102"/>
+             <key uid="..." id="103"/>
+             <key uid="..." id="104"/>
+         </in>
          <patternWidth>80</patternWidth>
      </service>
    @endcode
  * @subsection Input Input
  * - \b markerTL [::arData::MarkerTL]: timeline for markers.
+ * - \b markerMap [::arData::MarkerMap]: markers map list.
  * - \b camera [::arData::Camera]: calibrated cameras.
  * - \b extrinsic [::fwData::TransformationMatrix3D]: extrinsic matrix, only used if you have two cameras configured.
  * @subsection In-Out In-Out
  * - \b matrixTL [::arData::MatrixTL]: timeline of 3D transformation matrices.
+ * - \b matrix [::fwData::TransformationMatrix3D]: list of matrices related to the markers. The marker's id must be
+ * specified using the \b id tag to be found in the marker map.
+ * - \b pointList [::fwData::PointList] (optional): list of points corresponding to the model.
  * @subsection Configuration Configuration
  * - \b patternWidth : width of the tag.
  */
 class REGISTRATIONCV_CLASS_API SPoseFrom2d : public ::fwServices::IRegisterer
 {
 public:
-    fwCoreServiceClassDefinitionsMacro((SPoseFrom2d)(::fwServices::IRegisterer));
+    fwCoreServiceClassDefinitionsMacro((SPoseFrom2d)(::fwServices::IRegisterer))
 
     typedef std::vector<std::string> VectKeyType;
 
@@ -153,12 +180,14 @@ private:
     /// 3d model
     std::vector< ::cv::Point3f > m_3dModel;
 
-    ///std::vector of cameras
+    /// std::vector of cameras
     std::vector < Camera > m_cameras;
 
-    ///Extrinsic matrix
+    /// Extrinsic matrix
     Extrinsic m_extrinsic;
 
+    /// List of tags associated with each inout matrix
+    std::vector< ::arData::MarkerMap::KeyType> m_matricesTag;
 };
 
 } // namespace registrationCV

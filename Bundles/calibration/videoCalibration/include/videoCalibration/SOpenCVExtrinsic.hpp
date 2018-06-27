@@ -44,6 +44,9 @@ class VIDEOCALIBRATION_CLASS_API SOpenCVExtrinsic : public ::arServices::ICalibr
 public:
     fwCoreServiceClassDefinitionsMacro((SOpenCVExtrinsic)(::arServices::ICalibration));
 
+    /// Double changed signal type
+    typedef ::fwCom::Signal< void (double) > ErrorComputedSignalType;
+
     /// Constructor.
     VIDEOCALIBRATION_API SOpenCVExtrinsic() noexcept;
 
