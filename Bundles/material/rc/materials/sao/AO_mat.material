@@ -12,8 +12,7 @@ fragment_program Ao_compute_FP glsl
     source AO_compute_FP.glsl
     default_params
     {
-        param_named_auto h viewport_height
-        param_named_auto w viewport_width
+        param_named_auto u_viewport viewport_size
         param_named_auto VerticalFieldOfView fov
         param_named_auto FAR_PLANE far_clip_distance
         param_named eu_projInfo float4 0 0 0 0

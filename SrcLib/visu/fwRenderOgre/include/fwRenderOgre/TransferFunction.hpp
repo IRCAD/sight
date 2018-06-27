@@ -12,7 +12,9 @@
 
 #include <boost/noncopyable.hpp>
 
+#include <OGRE/OgrePass.h>
 #include <OGRE/OgreTexture.h>
+#include <OGRE/OgreVector2.h>
 
 namespace fwRenderOgre
 {

@@ -218,7 +218,7 @@
             <start uid="materialAdaptor" />
             <start uid="meshAdaptor" />
             <start uid="negato3DAdaptor" />
-            <start uid="axisAdaptor" />
+            <update uid="actionShowAxis" />
 
         </config>
     </extension>

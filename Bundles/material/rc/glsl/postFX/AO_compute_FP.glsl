@@ -4,8 +4,7 @@
 const float PI = 3.141592653589793238462643383;
 in vec4 vertex;
 uniform sampler2D MipMap_tex; // MIP MAP texture
-uniform float h; // height
-uniform float w; // width
+uniform vec4 u_viewport;
 uniform int u_numSamples; // samples number
 uniform float u_radius; // radius (spiral)
 //uniform int tau; // number spiral turn
@@ -82,7 +81,7 @@ void main()
 
 
     // get the texture coordinate
-    vec2 text_coord = gl_FragCoord.xy/vec2(w,h);
+    vec2 text_coord = gl_FragCoord.xy * u_viewport.zw;
 
     // we first compute the depth of the camera point
     float zc = textureLod(MipMap_tex,text_coord,0).r;
@@ -116,7 +115,7 @@ void main()
 //    float S = 500.0;
 
     // correct calcul from paper
-    float S = -h/ (2.0f * tan(VerticalFieldOfView * 0.5));
+    float S = -u_viewport.y/ (2.0f * tan(VerticalFieldOfView * 0.5));
 
     //-------------------------
     // Calcul de r'
@@ -156,7 +155,7 @@ void main()
 
 
         // convert in texture coordinate -> normalisation
-        vec2 pixel_coord_i = pixel_i/vec2(w,h);
+        vec2 pixel_coord_i = pixel_i * u_viewport.zw;
 
 //        vec2 uv_i = clamp (pixel_coord_i,vec2(0),textureSize(MipMap_tex,m_i) - vec2(1));
 

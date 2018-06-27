@@ -3,8 +3,7 @@ fragment_program Blend_FP glsl
     source Blend_FP.glsl
     default_params
     {
-        param_named_auto h viewport_height
-        param_named_auto w viewport_width
+        param_named_auto u_viewport viewport_size
         param_named Occlusion_Map int 0
         param_named scene int 1
         param_named u_blend int 1

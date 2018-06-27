@@ -163,9 +163,6 @@ private:
     /// Sets the default diffuse, specular and shininess in the material.
     void setMaterialLightParams(::Ogre::MaterialPtr mtl);
 
-    /// Sets the entry points texture's dimensions to the layer's current ones.
-    void resizeEntryPointsTexture();
-
     /// Object containing the proxy geometry, this is a cube for now.
     ::Ogre::ManualObject* m_entryPointGeometry;
 
@@ -205,10 +202,6 @@ private:
     compositor::listener::AutoStereoCompositorListener* m_autostereoListener;
 
     ::Ogre::Rectangle2D* m_fullScreenQuad;
-
-    /// Flag set when we need to resize the entry points texture (e.g. when resizing the viewport).
-    bool m_entryPointsResizeRequired {false};
-
 };
 
 //-----------------------------------------------------------------------------

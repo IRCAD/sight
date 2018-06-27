@@ -5,8 +5,7 @@ fragment_program Remap_FP glsl
     {
         param_named u_fragData int 0
         param_named u_map int 1
-        param_named_auto u_vpWidth viewport_width
-        param_named_auto u_vpHeight viewport_height
+        param_named_auto u_viewport viewport_size
     }
 }
 

@@ -28,6 +28,8 @@ IPickerInteractor::IPickerInteractor()
 
     m_sigAddPoint    = newSignal< PointClickedSigType >( s_ADD_POINT_SIG );
     m_sigRemovePoint = newSignal< PointClickedSigType >( s_REMOVE_POINT_SIG );
+
+    m_sigRenderRequested = newSignal< RenderRequestedSigType >( s_RENDER_REQUESTED_SIG );
 }
 
 // ----------------------------------------------------------------------------

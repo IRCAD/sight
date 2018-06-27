@@ -1,7 +1,6 @@
 #version 330
 
-uniform float u_vpWidth;
-uniform float u_vpHeight;
+uniform vec4 u_viewport;
 
 uniform int scale; // here we take scale = 2
 uniform sampler2D AO_map;
@@ -17,7 +16,7 @@ out vec4 fragColour;
 void main()
 {
     // normalisation
-    vec2 texCoord = gl_FragCoord.xy/vec2(u_vpWidth,u_vpHeight);
+    vec2 texCoord = gl_FragCoord.xy* u_viewport.zw;
 
 //    fragColour.rgb = vec3(texture(AO_map,texCoord).rgb);
 
@@ -43,7 +42,7 @@ void main()
         if (r!=0)
         {
             // horizontal = vec2(1,0)
-            vec2 uv =  (gl_FragCoord.xy + vec2(1,0) * (r * scale))/vec2(u_vpWidth,u_vpHeight) ;
+            vec2 uv =  (gl_FragCoord.xy + vec2(1,0) * (r * scale))* u_viewport.zw ;
             tmp = texture(AO_map,uv);
             float tapKey = tmp.g * (256.0 / 257.0) + tmp.b * (1.0 / 257.0);
             float value = tmp.r;

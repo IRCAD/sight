@@ -5,11 +5,11 @@ fragment_program IDVR_MImP_FP glsl
 
     default_params
     {
-        param_named_auto u_viewportWidth viewport_width
-        param_named_auto u_viewportHeight viewport_height
+        param_named_auto u_viewport viewport_size
         param_named_auto u_clippingNear near_clip_distance
         param_named_auto u_clippingFar far_clip_distance
         param_named_auto u_invWorldViewProj inverse_worldviewproj_matrix
+        param_named_auto u_worldViewProj worldviewproj_matrix
         param_named u_sampleDistance float 0.002
         param_named u_mask int 0
         param_named u_entryPoints int 1
@@ -25,8 +25,7 @@ fragment_program IDVR_AImC_FP glsl
 
     default_params
     {
-        param_named_auto u_viewportWidth viewport_width
-        param_named_auto u_viewportHeight viewport_height
+        param_named_auto u_viewport viewport_size
         param_named_auto u_clippingNear near_clip_distance
         param_named_auto u_clippingFar far_clip_distance
         param_named_auto u_invWorldViewProj inverse_worldviewproj_matrix
@@ -45,8 +44,7 @@ fragment_program IDVR_VPImC_FP glsl
 
     default_params
     {
-        param_named_auto u_viewportWidth viewport_width
-        param_named_auto u_viewportHeight viewport_height
+        param_named_auto u_viewport viewport_size
         param_named_auto u_clippingNear near_clip_distance
         param_named_auto u_clippingFar far_clip_distance
         param_named_auto u_invWorldViewProj inverse_worldviewproj_matrix

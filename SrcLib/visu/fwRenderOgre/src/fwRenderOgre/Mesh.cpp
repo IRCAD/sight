@@ -177,7 +177,7 @@ void Mesh::setVisible(bool _visible)
 
 //------------------------------------------------------------------------------
 
-void Mesh::updateMesh(const ::fwData::Mesh::sptr& _mesh)
+void Mesh::updateMesh(const ::fwData::Mesh::sptr& _mesh, bool _pointsOnly)
 {
     ::fwDataTools::helper::MeshGetter meshHelper(_mesh);
 
@@ -209,20 +209,21 @@ void Mesh::updateMesh(const ::fwData::Mesh::sptr& _mesh)
     {
         FW_PROFILE("REALLOC MESH");
 
-        if(!m_hasNormal)
+        if(!m_hasNormal && !_pointsOnly)
         {
             // Verify if mesh contains Tetra, Edge or Point
             // If not, generate normals
             ::fwData::Mesh::ConstCellTypesMultiArrayType cellsType = meshHelper.getCellTypes();
             bool computeNormals = true;
 
-            for(unsigned int i = 0; i < cellsType.size() && computeNormals; ++i)
+            for(unsigned int i = 0; i < cellsType.size(); ++i)
             {
                 auto cellType = cellsType[static_cast<int>(i)];
                 if(cellType == ::fwData::Mesh::EDGE || cellType == ::fwData::Mesh::TETRA
                    || cellType == ::fwData::Mesh::POINT)
                 {
                     computeNormals = false;
+                    break;
                 }
             }
 
@@ -285,7 +286,9 @@ void Mesh::updateMesh(const ::fwData::Mesh::sptr& _mesh)
 
     for(unsigned int i = 0; i < cellsType.size(); ++i)
     {
-        auto cellType = cellsType[static_cast<int>(i)];
+        auto cellType = _pointsOnly ?
+                        ::fwData::Mesh::POINT :
+                        static_cast< ::fwData::Mesh::CellTypesEnum>(cellsType[static_cast<int>(i)]);
         if(cellType == ::fwData::Mesh::POINT)
         {
             numIndices[::fwData::Mesh::POINT] += 1;
@@ -424,17 +427,20 @@ void Mesh::updateMesh(const ::fwData::Mesh::sptr& _mesh)
 
     // 3 - Copy indices data
 
-    if(indices32Bits)
+    if(!_pointsOnly)
     {
-        copyIndices< std::uint32_t >( indexBuffer[::fwData::Mesh::TRIANGLE], indexBuffer[::fwData::Mesh::QUAD],
-                                      indexBuffer[::fwData::Mesh::EDGE], indexBuffer[::fwData::Mesh::TETRA],
-                                      meshHelper, _mesh->getNumberOfCells() );
-    }
-    else
-    {
-        copyIndices< std::uint16_t >( indexBuffer[::fwData::Mesh::TRIANGLE], indexBuffer[::fwData::Mesh::QUAD],
-                                      indexBuffer[::fwData::Mesh::EDGE], indexBuffer[::fwData::Mesh::TETRA],
-                                      meshHelper, _mesh->getNumberOfCells() );
+        if(indices32Bits)
+        {
+            copyIndices< std::uint32_t >( indexBuffer[::fwData::Mesh::TRIANGLE], indexBuffer[::fwData::Mesh::QUAD],
+                                          indexBuffer[::fwData::Mesh::EDGE], indexBuffer[::fwData::Mesh::TETRA],
+                                          meshHelper, _mesh->getNumberOfCells() );
+        }
+        else
+        {
+            copyIndices< std::uint16_t >( indexBuffer[::fwData::Mesh::TRIANGLE], indexBuffer[::fwData::Mesh::QUAD],
+                                          indexBuffer[::fwData::Mesh::EDGE], indexBuffer[::fwData::Mesh::TETRA],
+                                          meshHelper, _mesh->getNumberOfCells() );
+        }
     }
 
     for(size_t i = 0; i < s_numPrimitiveTypes; ++i)

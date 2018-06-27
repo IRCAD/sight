@@ -25,7 +25,9 @@ namespace interactor
 /**
  * @brief Interface implementation for all movement interaction with the mouse
  */
-class FWRENDEROGRE_CLASS_API IMovementInteractor : public ::fwRenderOgre::interactor::IInteractor
+class FWRENDEROGRE_CLASS_API IMovementInteractor : public ::fwRenderOgre::interactor::IInteractor,
+                                                   public ::fwCore::BaseObject,
+                                                   public ::fwCom::HasSignals
 {
 
 public:

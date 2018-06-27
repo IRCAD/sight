@@ -84,6 +84,7 @@ struct RayTracingVolumeRenderer::CameraListener : public ::Ogre::Camera::Listene
                     }
                 }
 
+                // Recompute the focal length in case the camera moved.
                 m_renderer->computeEntryPointsTexture();
 
                 m_frameId = frameId;
@@ -431,8 +432,22 @@ void RayTracingVolumeRenderer::clipImage(const ::Ogre::AxisAlignedBox& clippingB
 
 void RayTracingVolumeRenderer::resizeViewport(int w, int h)
 {
-    // Require a resize but only resize before rendering thereby avoiding many useless resizes.
-    m_entryPointsResizeRequired = true;
+    const auto numViewPoints = m_entryPointsTextures.size();
+    const float wRatio       = numViewPoints != 1 && numViewPoints != 2 ? 3.f / static_cast<float>(numViewPoints) : 1.f;
+    const float hRatio       = numViewPoints != 1 ? 0.5f : 1.f;
+
+    for(::Ogre::TexturePtr entryPtsTexture : m_entryPointsTextures)
+    {
+        entryPtsTexture->freeInternalResources();
+
+        entryPtsTexture->setWidth(static_cast< ::Ogre::uint32>(static_cast< float >(w) * wRatio));
+        entryPtsTexture->setHeight(static_cast< ::Ogre::uint32>(static_cast< float >(h) * hRatio));
+
+        entryPtsTexture->createInternalResources();
+
+        ::Ogre::RenderTexture* renderTexture = entryPtsTexture->getBuffer()->getRenderTarget();
+        renderTexture->addViewport(m_camera);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -587,11 +602,10 @@ void RayTracingVolumeRenderer::createRayTracingMaterial()
     // Fragment program
     pass->setFragmentProgram(fpName);
     ::Ogre::GpuProgramParametersSharedPtr fpParams = pass->getFragmentProgramParameters();
-    fpParams->setNamedAutoConstant("u_viewportWidth", ::Ogre::GpuProgramParameters::ACT_VIEWPORT_WIDTH);
-    fpParams->setNamedAutoConstant("u_viewportHeight", ::Ogre::GpuProgramParameters::ACT_VIEWPORT_HEIGHT);
+    fpParams->setNamedAutoConstant("u_viewport", ::Ogre::GpuProgramParameters::ACT_VIEWPORT_SIZE);
     fpParams->setNamedAutoConstant("u_clippingNear", ::Ogre::GpuProgramParameters::ACT_NEAR_CLIP_DISTANCE);
     fpParams->setNamedAutoConstant("u_clippingFar", ::Ogre::GpuProgramParameters::ACT_FAR_CLIP_DISTANCE);
-    fpParams->setNamedAutoConstant("u_cameraPos", ::Ogre::GpuProgramParameters::ACT_LOD_CAMERA_POSITION);
+    fpParams->setNamedAutoConstant("u_cameraPos", ::Ogre::GpuProgramParameters::ACT_CAMERA_POSITION_OBJECT_SPACE);
     fpParams->setNamedAutoConstant("u_shininess", ::Ogre::GpuProgramParameters::ACT_SURFACE_SHININESS);
     fpParams->setNamedAutoConstant("u_invWorldViewProj",
                                    ::Ogre::GpuProgramParameters::ACT_INVERSE_WORLDVIEWPROJ_MATRIX);
@@ -651,12 +665,6 @@ void RayTracingVolumeRenderer::initEntryPoints()
 
 void RayTracingVolumeRenderer::computeEntryPointsTexture()
 {
-    if(m_entryPointsResizeRequired)
-    {
-        this->resizeEntryPointsTexture();
-        m_entryPointsResizeRequired = false;
-    }
-
     m_proxyGeometry->setVisible(false);
 
     ::Ogre::RenderOperation renderOp;
@@ -796,31 +804,6 @@ void RayTracingVolumeRenderer::setMaterialLightParams(::Ogre::MaterialPtr mtl)
     ::Ogre::ColourValue specular(2.5f, 2.5f, 2.5f, 1.f);
     mtl->setSpecular( specular );
     mtl->setShininess( 10 );
-}
-
-//-----------------------------------------------------------------------------
-
-void RayTracingVolumeRenderer::resizeEntryPointsTexture()
-{
-    const auto numViewPoints = m_entryPointsTextures.size();
-    const float wRatio       = numViewPoints != 1 && numViewPoints != 2 ? 3.f / static_cast<float>(numViewPoints) : 1.f;
-    const float hRatio       = numViewPoints != 1 ? 0.5f : 1.f;
-
-    const float width  = static_cast< float >(m_camera->getViewport()->getActualWidth()) * wRatio;
-    const float height = static_cast< float >(m_camera->getViewport()->getActualHeight()) * hRatio;
-
-    for(::Ogre::TexturePtr entryPtsTexture : m_entryPointsTextures)
-    {
-        entryPtsTexture->freeInternalResources();
-
-        entryPtsTexture->setWidth(static_cast< ::Ogre::uint32>(width));
-        entryPtsTexture->setHeight(static_cast< ::Ogre::uint32>(height));
-
-        entryPtsTexture->createInternalResources();
-
-        ::Ogre::RenderTexture* renderTexture = entryPtsTexture->getBuffer()->getRenderTarget();
-        renderTexture->addViewport(m_camera);
-    }
 }
 
 //-----------------------------------------------------------------------------

@@ -5,11 +5,13 @@ uniform sampler3D u_mask;
 uniform sampler2D u_entryPoints;
 
 uniform mat4 u_invWorldViewProj;
+#if IDVR == 1
+uniform mat4 u_worldViewProj;
+#endif // IDVR == 1
 
 uniform float u_sampleDistance;
 
-uniform float u_viewportWidth;
-uniform float u_viewportHeight;
+uniform vec4 u_viewport;
 
 uniform float u_clippingNear;
 uniform float u_clippingFar;
@@ -28,8 +30,7 @@ out vec4 mrt_IC_RayTracing;
 
 vec3 getFragmentImageSpacePosition(in float depth, in mat4 invWorldViewProj)
 {
-    // TODO: Simplify this -> uniforms
-    vec3 screenPos = vec3(gl_FragCoord.xy / vec2(u_viewportWidth, u_viewportHeight), depth);
+    vec3 screenPos = vec3(gl_FragCoord.xy * u_viewport.zw, depth);
     screenPos -= 0.5;
     screenPos *= 2.0;
 
@@ -41,6 +42,17 @@ vec3 getFragmentImageSpacePosition(in float depth, in mat4 invWorldViewProj)
 
     return imgPos.xyz / imgPos.w;
 }
+
+//-----------------------------------------------------------------------------
+
+#if IDVR == 1
+float voxelScreenDepth(in vec3 pos)
+{
+    vec4 projPos = u_worldViewProj * vec4(pos, 1);
+
+    return projPos.z / projPos.w;
+}
+#endif
 
 //-----------------------------------------------------------------------------
 
@@ -57,7 +69,7 @@ void launchRay(inout vec3 rayPos, in vec3 rayDir, in float rayLength, inout vec4
 {
 #if IDVR == 1 // MImP
     IC_JFA = vec4(0.0);
-    IC_RayTracing = vec4(0.0, 0.0, 0.0, 1.0);
+    IC_RayTracing = vec4(0.0, 0.0, 0.0, 0.0);
 #else
     IC_RayTracing = vec4(0.0, 0.0, 0.0, 0.0);
 #endif
@@ -79,7 +91,11 @@ void launchRay(inout vec3 rayPos, in vec3 rayDir, in float rayLength, inout vec4
 // Maximum Importance compositing
 #if IDVR == 1
             IC_RayTracing = vec4(rayPos, 1.);
-            IC_JFA = vec4(vec2(gl_FragCoord.xy / vec2(u_viewportWidth, u_viewportHeight)), rayPos.z, 1.);
+
+            vec2 ndcScreenPos = (gl_FragCoord.xy * u_viewport.zw - 0.5) * 2.;
+            float rayScreenDepth = voxelScreenDepth(rayPos);
+
+            IC_JFA = vec4(ndcScreenPos, rayScreenDepth, 1.);
 #else
 // Average Importance compositing & Visibility preserving Importance Compositing
 // We count the number of samples until the first important object

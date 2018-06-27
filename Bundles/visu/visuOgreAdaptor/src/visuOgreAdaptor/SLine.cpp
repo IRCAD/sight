@@ -22,6 +22,7 @@
 namespace visuOgreAdaptor
 {
 
+const ::fwCom::Slots::SlotKeyType SLine::s_UPDATE_LENGTH_SLOT     = "updateLength";
 const ::fwCom::Slots::SlotKeyType SLine::s_UPDATE_VISIBILITY_SLOT = "updateVisibility";
 const ::fwCom::Slots::SlotKeyType SLine::s_TOGGLE_VISIBILITY_SLOT = "toggleVisibility";
 
@@ -33,11 +34,13 @@ static const std::string s_LENGTH_CONFIG = "length";
 
 SLine::SLine() noexcept :
     m_material(nullptr),
+    m_line(nullptr),
     m_length(0.f),
     m_isVisible(true)
 {
     newSlot(s_UPDATE_VISIBILITY_SLOT, &SLine::updateVisibility, this);
     newSlot(s_TOGGLE_VISIBILITY_SLOT, &SLine::toggleVisibility, this);
+    newSlot(s_UPDATE_LENGTH_SLOT, &SLine::updateLength, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -103,7 +106,9 @@ void SLine::starting()
 
     ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
 
-    ::Ogre::ManualObject* line = sceneMgr->createManualObject(this->getID() + "_line");
+    m_line = sceneMgr->createManualObject(this->getID() + "_line");
+    // Set the line as dynamic, so we can update it later on, when the length changes
+    m_line->setDynamic(true);
 
     // set the material
     m_material = ::fwData::Material::New();
@@ -123,19 +128,19 @@ void SLine::starting()
     materialAdaptor->update();
 
     // Draw
-    line->begin(materialAdaptor->getMaterialName(), ::Ogre::RenderOperation::OT_LINE_LIST);
-    line->position(0, 0, 0);
-    line->colour(m_color);
-    line->position(0, 0, m_length);
-    line->colour(m_color);
-    line->end();
+    m_line->begin(materialAdaptor->getMaterialName(), ::Ogre::RenderOperation::OT_LINE_LIST);
+    m_line->position(0, 0, 0);
+    m_line->colour(m_color);
+    m_line->position(0, 0, m_length);
+    m_line->colour(m_color);
+    m_line->end();
 
     // Set the bounding box of your Manual Object
     ::Ogre::Vector3 bbMin(-0.1f, -0.1f, 0.f);
     ::Ogre::Vector3 bbMax(0.1f, 0.1f, m_length);
     ::Ogre::AxisAlignedBox box(bbMin, bbMax);
-    line->setBoundingBox(box);
-    this->attachNode(line);
+    m_line->setBoundingBox(box);
+    this->attachNode(m_line);
 
     this->requestRender();
 }
@@ -160,6 +165,12 @@ void SLine::stopping()
 {
     this->unregisterServices();
     m_material = nullptr;
+    if(m_line)
+    {
+        m_line->detachFromParent();
+        this->getSceneManager()->destroyManualObject(m_line);
+        m_line = nullptr;
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -179,5 +190,26 @@ void SLine::attachNode(::Ogre::MovableObject* object)
 }
 
 //-----------------------------------------------------------------------------
+
+void SLine::updateLength(float length)
+{
+    m_length = length;
+
+    // Update the line length with the new length
+    m_line->beginUpdate(0);
+    m_line->position(0, 0, 0);
+    m_line->colour(m_color);
+    m_line->position(0, 0, m_length);
+    m_line->colour(m_color);
+    m_line->end();
+
+    // Update the bouding box
+    ::Ogre::Vector3 bbMin(-0.1f, -0.1f, 0.f);
+    ::Ogre::Vector3 bbMax(0.1f, 0.1f, m_length);
+    ::Ogre::AxisAlignedBox box(bbMin, bbMax);
+    m_line->setBoundingBox(box);
+
+    this->requestRender();
+}
 
 } //visuOgreAdaptor

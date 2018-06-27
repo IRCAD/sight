@@ -22,40 +22,43 @@ public:
 
     enum class IDVRCSGModulationMethod
     {
-        AVERAGE_GRAYSCALE,
-        LIGHTNESS_GRAYSCALE,
-        LUMINOSITY_GRAYSCALE,
         COLOR1,
         COLOR2,
-        COLOR3,
-        COLOR4
+        COLOR3
     };
 
-    FWRENDEROGRE_API ImportanceDrivenVolumeRenderer(std::string parentId,
-                                                    Layer::sptr layer,
-                                                    ::Ogre::SceneNode* parentNode,
-                                                    ::Ogre::TexturePtr imageTexture,
-                                                    ::Ogre::TexturePtr maskTexture,
-                                                    const TransferFunction::sptr& gpuTF,
-                                                    PreIntegrationTable& preintegrationTable,
-                                                    bool ambientOcclusion,
-                                                    bool colorBleeding,
-                                                    bool shadows               = false,
-                                                    double aoFactor            = 1.,
-                                                    double colorBleedingFactor = 1.);
+    enum class IDVRCSGGrayScaleMethod
+    {
+        AVERAGE_GRAYSCALE,
+        LIGHTNESS_GRAYSCALE,
+        LUMINOSITY_GRAYSCALE
+    };
+
+    FWRENDEROGRE_API ImportanceDrivenVolumeRenderer(std::string _parentId,
+                                                    Layer::sptr _layer,
+                                                    ::Ogre::SceneNode* _parentNode,
+                                                    ::Ogre::TexturePtr _imageTexture,
+                                                    ::Ogre::TexturePtr _maskTexture,
+                                                    const TransferFunction::sptr& _gpuTF,
+                                                    PreIntegrationTable& _preintegrationTable,
+                                                    bool _ambientOcclusion,
+                                                    bool _colorBleeding,
+                                                    bool _shadows               = false,
+                                                    double _aoFactor            = 1.,
+                                                    double _colorBleedingFactor = 1.);
 
     FWRENDEROGRE_API virtual ~ImportanceDrivenVolumeRenderer();
 
-    /// Allows to setup the importance driven method used during the rendering.
+    /// Set the importance driven method used during the rendering.
     FWRENDEROGRE_API void setIDVRMethod(std::string method);
 
     /// Toggle countersink geometry when using Importance Driven Volume Rendering.
     FWRENDEROGRE_API void toggleIDVRCountersinkGeometry(bool);
 
-    /// Setup the countersink geometry slope used in the MImP method.
-    FWRENDEROGRE_API void setIDVRCountersinkSlope(double);
+    /// Set the countersink's geometry angle (in degrees).
+    FWRENDEROGRE_API void setIDVRCountersinkAngle(double);
 
-    /// Setup the countersink geometry blur weight factor used in the MImP method.
+    /// Set the countersink geometry blur weight factor used in the MImP method.
     FWRENDEROGRE_API void setIDVRCSGBlurWeight(double);
 
     /// Toggle countersink geometry border used in the MImP method.
@@ -64,70 +67,79 @@ public:
     /// Toggle context discard when using MImP countersink geometry.
     FWRENDEROGRE_API void toggleIDVRCSGDisableContext(bool);
 
-    /// Setup the countersink geometry border thickness used in the MImP method.
+    /// Set the countersink geometry border thickness used in the MImP method.
     FWRENDEROGRE_API void setIDVRCSGBorderThickness(double);
 
-    /// Setup the countersink geometry border color used in the MImP method.
+    /// Set the countersink geometry border color used in the MImP method.
     FWRENDEROGRE_API void setIDVRCSGBorderColor(std::array<std::uint8_t, 4>);
 
-    /// Toggle the grayscale modulation for MImP countersink geometry.
+    /// Toggle the modulation for MImP countersink geometry.
     FWRENDEROGRE_API void toggleIDVRCSGModulation(bool);
 
-    /// Setup the grayscale modulation method used for MImP countersink geometry.
-    FWRENDEROGRE_API void setIDVRCSModulationMethod(IDVRCSGModulationMethod);
+    /// Set the modulation method used for MImP countersink geometry.
+    FWRENDEROGRE_API void setIDVRCSGModulationMethod(IDVRCSGModulationMethod);
 
-    /// Setup the wheighting factor for MImP CSG color modulation.
+    /// Set the weighting factor for MImP CSG color modulation.
     FWRENDEROGRE_API void setIDVRCSGModulationFactor(double);
+
+    /// Toggle the grayscale for MImP countersink geometry.
+    FWRENDEROGRE_API void toggleIDVRCSGGrayScale(bool);
+
+    /// Set the grayscale method used for MImP countersink geometry.
+    FWRENDEROGRE_API void setIDVRCSGGrayScaleMethod(IDVRCSGGrayScaleMethod);
 
     /// Toggle the opacity decrease for MImP countersink geometry.
     FWRENDEROGRE_API void toggleIDVRCSGOpacityDecrease(bool);
 
-    /// Setup the opacity decrease factor used in the MImP CSG.
+    /// Set the opacity decrease factor used in the MImP CSG.
     FWRENDEROGRE_API void setIDVRCSGOpacityDecreaseFactor(double);
 
     /// Toggle the depth lines for MImP countersink geometry.
     FWRENDEROGRE_API void toggleIDVRDepthLines(bool);
 
-    /// Setup the depth lines gradation threshold used in the MImP CSG.
-    FWRENDEROGRE_API void setIDVRCSGDepthLinesThreshold(double);
+    /// Set the number of image spacing units between depth lines.
+    FWRENDEROGRE_API void setIDVRDepthLinesSpacing(int);
 
-    /// Setup the alpha correction factor used in the VPImC method.
+    /// Set the alpha correction factor used in the VPImC method.
     FWRENDEROGRE_API void setIDVRAImCAlphaCorrection(double);
 
-    /// Setup the alpha correction factor used in the VPImC method.
+    /// Set the alpha correction factor used in the VPImC method.
     FWRENDEROGRE_API void setIDVRVPImCAlphaCorrection(double);
 
+    /// Set the visualized image's spacing.
+    FWRENDEROGRE_API void setImageSpacing(const ::Ogre::Vector3& _spacing);
+
     /// Slot: Called when the size of the viewport changes.
-    FWRENDEROGRE_API virtual void resizeViewport(int w, int h) override;
+    FWRENDEROGRE_API virtual void resizeViewport(int _w, int _h) override;
 
 protected:
 
-    /// Updates the current compositor name according to VR effects flags.
+    /// Update the current compositor name according to VR effects flags.
     /// @return tuple containing a
     /// - Comma separated list of preprocessor defines to use in vertex shaders.
     /// - Comma separated list of preprocessor defines to use in fragment shaders.
     /// - Hash allowing to identify the material
     FWRENDEROGRE_API virtual std::tuple<std::string, std::string, size_t> computeRayTracingDefines() const override;
 
-    /// Sets all texture units needed by the material during the ray casting pass.
+    /// Set all texture units needed by the material during the ray casting pass.
     FWRENDEROGRE_API virtual void setRayCastingPassTextureUnits(::Ogre::Pass* _rayCastingPass,
                                                                 const std::string& _fpPPDefines) const override;
 
 private:
 
-    /// Adds the IDVR technique to the volume ray tracing material.
+    /// Add the IDVR technique to the volume ray tracing material.
     void createIDVRTechnique();
 
-    /// Generates the material with the IDVR technique.
+    /// Generate the material with the IDVR technique.
     void createMaterialAndIDVRTechnique();
 
-    /// Initializes the compositors used after the step computing the ray entry points
+    /// Initialize the compositors used after the step computing the ray entry points
     void initCompositors();
 
-    /// Creates and adds importance compositing compositors to the chain (MImP + JFA, AImC or VPImC).
+    /// Create and adds importance compositing compositors to the chain (MImP + JFA, AImC or VPImC).
     void buildICCompositors(::Ogre::Viewport* _vp);
 
-    /// Removes all listeners and compositors from the current chain.
+    /// Remove all listeners and compositors from the current chain.
     void cleanCompositorChain(::Ogre::Viewport* _vp);
 
     /// Texture of the segmentation mask.
@@ -139,8 +151,8 @@ private:
     /// Sets usage of countersink geometry for MImP.
     bool m_idvrCSG;
 
-    /// Sets countersink geometry slope for MImP.
-    float m_idvrCSGSlope;
+    /// Sets the csg's angle cosine for MImP.
+    float m_idvrCSGAngleCosine;
 
     /// Sets countersink geometry blur weight for MImP.
     float m_idvrCSGBlurWeight;
@@ -166,6 +178,12 @@ private:
     /// Sets the wheighting factor for MImP CSG color modulation.
     float m_idvrCSGModulationFactor;
 
+    /// Sets usage of grayscale for MImP CSG.
+    bool m_idvrCSGGrayScale;
+
+    /// Name of the method used to compute the new color values in CSG.
+    IDVRCSGGrayScaleMethod m_idvrCSGgrayscaleMethod;
+
     /// Sets usage of opacity decrease for MImP CSG.
     bool m_idvrCSGOpacityDecrease;
 
@@ -174,9 +192,6 @@ private:
 
     /// Sets usage of depth lines for MImP CSG.
     bool m_idvrCSGDepthLines;
-
-    /// Sets the gradation threshold of MImP CSG's depth lines.
-    float m_idvrCSGDepthLinesThreshold;
 
     /// Sets the alpha correction for AImC.
     float m_idvrAImCAlphaCorrection;

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -29,8 +29,8 @@ MaterialMgrListener::~MaterialMgrListener()
 // ----------------------------------------------------------------------------
 
 ::Ogre::Technique* fwRenderOgre::compositor::MaterialMgrListener::handleSchemeNotFound(unsigned short /*_schemeIndex*/,
-                                                                                       const ::Ogre::String &_schemeName,
-                                                                                       ::Ogre::Material *_originalMaterial,
+                                                                                       const ::Ogre::String& _schemeName,
+                                                                                       ::Ogre::Material* _originalMaterial,
                                                                                        unsigned short /*_lodIndex*/,
                                                                                        const ::Ogre::Renderable*
                                                                                        /*_renderable*/)
@@ -147,8 +147,7 @@ MaterialMgrListener::~MaterialMgrListener()
 
             auto params = pass->getFragmentProgramParameters();
             params->setNamedConstant("u_nearestDepthBuffer", numTexUnit);
-            params->setNamedAutoConstant("u_vpWidth", ::Ogre::GpuProgramParameters::ACT_VIEWPORT_WIDTH);
-            params->setNamedAutoConstant("u_vpHeight", ::Ogre::GpuProgramParameters::ACT_VIEWPORT_HEIGHT);
+            params->setNamedAutoConstant("u_viewport", ::Ogre::GpuProgramParameters::ACT_VIEWPORT_SIZE);
             params->setNamedAutoConstant("u_diffuse", ::Ogre::GpuProgramParameters::ACT_SURFACE_DIFFUSE_COLOUR);
         }
     }
@@ -211,8 +210,7 @@ MaterialMgrListener::~MaterialMgrListener()
             texState->setCompositorReference(algoName, "occlusion", 0);
 
             params->setNamedConstant("u_occlusionDepthBuffer", numTexUnit);
-            params->setNamedAutoConstant("u_vpWidth", ::Ogre::GpuProgramParameters::ACT_VIEWPORT_WIDTH);
-            params->setNamedAutoConstant("u_vpHeight", ::Ogre::GpuProgramParameters::ACT_VIEWPORT_HEIGHT);
+            params->setNamedAutoConstant("u_viewport", ::Ogre::GpuProgramParameters::ACT_VIEWPORT_SIZE);
             params->setNamedAutoConstant("u_near", ::Ogre::GpuProgramParameters::ACT_NEAR_CLIP_DISTANCE);
             params->setNamedAutoConstant("u_far", ::Ogre::GpuProgramParameters::ACT_FAR_CLIP_DISTANCE);
         }
@@ -256,8 +254,7 @@ MaterialMgrListener::~MaterialMgrListener()
             texState->setCompositorReference(algoName, "occlusion", 0);
 
             params->setNamedConstant("u_occlusionDepthBuffer", numTexUnit);
-            params->setNamedAutoConstant("u_vpWidth", ::Ogre::GpuProgramParameters::ACT_VIEWPORT_WIDTH);
-            params->setNamedAutoConstant("u_vpHeight", ::Ogre::GpuProgramParameters::ACT_VIEWPORT_HEIGHT);
+            params->setNamedAutoConstant("u_viewport", ::Ogre::GpuProgramParameters::ACT_VIEWPORT_SIZE);
             params->setNamedAutoConstant("u_diffuse", ::Ogre::GpuProgramParameters::ACT_SURFACE_DIFFUSE_COLOUR);
         }
     }
@@ -328,8 +325,7 @@ MaterialMgrListener::~MaterialMgrListener()
             params->setNamedConstant("u_farthestDepthBuffer", numTexUnit + 1);
             params->setNamedConstant("u_forwardColorBuffer", numTexUnit + 2);
             params->setNamedConstant("u_forwardAlphasBuffer", numTexUnit + 3);
-            params->setNamedAutoConstant("u_vpWidth", ::Ogre::GpuProgramParameters::ACT_VIEWPORT_WIDTH);
-            params->setNamedAutoConstant("u_vpHeight", ::Ogre::GpuProgramParameters::ACT_VIEWPORT_HEIGHT);
+            params->setNamedAutoConstant("u_viewport", ::Ogre::GpuProgramParameters::ACT_VIEWPORT_SIZE);
             params->setNamedAutoConstant("u_diffuse", ::Ogre::GpuProgramParameters::ACT_SURFACE_DIFFUSE_COLOUR);
         }
     }

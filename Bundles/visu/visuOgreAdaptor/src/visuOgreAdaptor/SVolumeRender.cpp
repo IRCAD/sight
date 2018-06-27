@@ -376,7 +376,7 @@ void SVolumeRender::stopping()
     // Disconnect widget to interactor.
     {
         ::fwRenderOgre::Layer::sptr layer                        = this->getRenderService()->getLayer(m_layerID);
-        ::fwRenderOgre::interactor::IInteractor::sptr interactor = layer->getInteractor();
+        ::fwRenderOgre::interactor::IInteractor::sptr interactor = layer->getMoveInteractor();
 
         auto vrInteractor =
             std::dynamic_pointer_cast< ::fwRenderOgre::interactor::VRWidgetsInteractor >(interactor);
@@ -444,6 +444,7 @@ void SVolumeRender::updateImage()
 
     // Retrieves or creates the slice index fields
     this->updateImageInfos(image);
+    this->setImageSpacing();
 
     ::fwRenderOgre::Utils::convertImageForNegato(m_3DOgreTexture.get(), image);
 
@@ -819,6 +820,13 @@ void SVolumeRender::setBoolParameter(bool val, std::string key)
         OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
         rayCastVolumeRenderer->toggleIDVRCSGBorder(val);
     }
+    else if(key == "idvrCSGGrayScale")
+    {
+        auto rayCastVolumeRenderer =
+            dynamic_cast< ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer* >(m_volumeRenderer);
+        OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
+        rayCastVolumeRenderer->toggleIDVRCSGGrayScale(val);
+    }
     else if(key == "idvrCSGModulation")
     {
         auto rayCastVolumeRenderer =
@@ -885,6 +893,13 @@ void SVolumeRender::setIntParameter(int val, std::string key)
     {
         this->updateSatConeSamples(val);
     }
+    else if(key == "idvrDepthLinesSpacing")
+    {
+        auto rayCastVolumeRenderer =
+            dynamic_cast< ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer* >(m_volumeRenderer);
+        OSLM_ASSERT("The current VolumeRenderer must be an ImportanceDrivenVolumeRenderer", rayCastVolumeRenderer);
+        rayCastVolumeRenderer->setIDVRDepthLinesSpacing(val);
+    }
 
     this->requestRender();
 }
@@ -903,12 +918,12 @@ void SVolumeRender::setDoubleParameter(double val, std::string key)
     {
         this->updateColorBleedingFactor(val);
     }
-    else if(key == "idvrCSGSlope")
+    else if(key == "idvrCSGAngle")
     {
         auto rayCastVolumeRenderer =
             dynamic_cast< ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer* >(m_volumeRenderer);
         OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
-        rayCastVolumeRenderer->setIDVRCountersinkSlope(val);
+        rayCastVolumeRenderer->setIDVRCountersinkAngle(val);
     }
     else if(key == "idvrCSGBlurWeight")
     {
@@ -923,13 +938,6 @@ void SVolumeRender::setDoubleParameter(double val, std::string key)
             dynamic_cast< ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer* >(m_volumeRenderer);
         OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
         rayCastVolumeRenderer->setIDVRCSGBorderThickness(val);
-    }
-    else if(key == "idvrCSGDepthLinesThreshold")
-    {
-        auto rayCastVolumeRenderer =
-            dynamic_cast< ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer* >(m_volumeRenderer);
-        OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
-        rayCastVolumeRenderer->setIDVRCSGDepthLinesThreshold(val);
     }
     else if(key == "idvrCSGModulationFactor")
     {
@@ -981,40 +989,57 @@ void SVolumeRender::setEnumParameter(std::string val, std::string key)
             dynamic_cast< ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer* >(m_volumeRenderer);
         OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
 
+        if(val == "Brightness")
+        {
+            rayCastVolumeRenderer->setIDVRCSGModulationMethod(
+                ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer::IDVRCSGModulationMethod::COLOR1);
+        }
+        else if(val == "Saturation")
+        {
+            rayCastVolumeRenderer->setIDVRCSGModulationMethod(
+                ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer::IDVRCSGModulationMethod::COLOR2);
+        }
+        else if(val == "SaturationBrightness")
+        {
+            rayCastVolumeRenderer->setIDVRCSGModulationMethod(
+                ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer::IDVRCSGModulationMethod::COLOR3);
+        }
+    }
+    else if(key == "idvrCSGGrayScaleMethod")
+    {
+        auto rayCastVolumeRenderer =
+            dynamic_cast< ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer* >(m_volumeRenderer);
+        OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
+
         if(val == "Average_grayscale")
         {
-            rayCastVolumeRenderer->setIDVRCSModulationMethod(
-                ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer::IDVRCSGModulationMethod::AVERAGE_GRAYSCALE);
+            rayCastVolumeRenderer->setIDVRCSGGrayScaleMethod(
+                ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer::IDVRCSGGrayScaleMethod::AVERAGE_GRAYSCALE);
         }
         else if(val == "Lightness_grayscale")
         {
-            rayCastVolumeRenderer->setIDVRCSModulationMethod(
-                ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer::IDVRCSGModulationMethod::LIGHTNESS_GRAYSCALE);
+            rayCastVolumeRenderer->setIDVRCSGGrayScaleMethod(
+                ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer::IDVRCSGGrayScaleMethod::LIGHTNESS_GRAYSCALE);
         }
         else if(val == "Luminosity_grayscale")
         {
-            rayCastVolumeRenderer->setIDVRCSModulationMethod(
-                ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer::IDVRCSGModulationMethod::LUMINOSITY_GRAYSCALE);
+            rayCastVolumeRenderer->setIDVRCSGGrayScaleMethod(
+                ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer::IDVRCSGGrayScaleMethod::LUMINOSITY_GRAYSCALE);
         }
-        else if(val == "Brightness_increase")
+    }
+    else if(key == "idvrDepthLinesSpacing")
+    {
+        auto rayCastVolumeRenderer =
+            dynamic_cast< ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer* >(m_volumeRenderer);
+        OSLM_ASSERT("The current VolumeRenderer must be an ImportanceDrivenVolumeRenderer", rayCastVolumeRenderer);
+
+        const bool toggle = val != "Off";
+        rayCastVolumeRenderer->toggleIDVRDepthLines(toggle);
+
+        if(toggle)
         {
-            rayCastVolumeRenderer->setIDVRCSModulationMethod(
-                ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer::IDVRCSGModulationMethod::COLOR1);
-        }
-        else if(val == "Saturation_increase")
-        {
-            rayCastVolumeRenderer->setIDVRCSModulationMethod(
-                ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer::IDVRCSGModulationMethod::COLOR2);
-        }
-        else if(val == "SaturationBrightness_increase")
-        {
-            rayCastVolumeRenderer->setIDVRCSModulationMethod(
-                ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer::IDVRCSGModulationMethod::COLOR3);
-        }
-        else if(val == "Saturation_decrease")
-        {
-            rayCastVolumeRenderer->setIDVRCSModulationMethod(
-                ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer::IDVRCSGModulationMethod::COLOR4);
+            const int spacing = std::stoi(val);
+            rayCastVolumeRenderer->setIDVRDepthLinesSpacing(spacing);
         }
     }
 
@@ -1040,6 +1065,29 @@ void SVolumeRender::setColorParameter(std::array<std::uint8_t, 4> color, std::st
 
 //-----------------------------------------------------------------------------
 
+void SVolumeRender::setImageSpacing()
+{
+    auto img = this->getImage();
+
+    const bool isValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(img);
+
+    auto rayCastVolumeRenderer =
+        dynamic_cast< ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer* >(m_volumeRenderer);
+
+    if(rayCastVolumeRenderer && isValid)
+    {
+        const auto& spacing = img->getSpacing();
+
+        SLM_ASSERT("Image must be 3D.", spacing.size() == 3);
+
+        rayCastVolumeRenderer->setImageSpacing(::Ogre::Vector3(static_cast<float>(spacing[0]),
+                                                               static_cast<float>(spacing[1]),
+                                                               static_cast<float>(spacing[2])));
+    }
+}
+
+//-----------------------------------------------------------------------------
+
 void SVolumeRender::initWidgets()
 {
     // Create widgets.
@@ -1055,7 +1103,7 @@ void SVolumeRender::initWidgets()
     // Connect widgets to interactor.
     {
         ::fwRenderOgre::Layer::sptr layer                        = this->getRenderService()->getLayer(m_layerID);
-        ::fwRenderOgre::interactor::IInteractor::sptr interactor = layer->getInteractor();
+        ::fwRenderOgre::interactor::IInteractor::sptr interactor = layer->getMoveInteractor();
 
         auto vrInteractor = std::dynamic_pointer_cast< ::fwRenderOgre::interactor::VRWidgetsInteractor >(interactor);
 

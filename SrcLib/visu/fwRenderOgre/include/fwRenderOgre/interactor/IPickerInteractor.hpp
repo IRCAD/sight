@@ -14,6 +14,8 @@
 
 #include <fwCore/BaseObject.hpp>
 
+#include <fwData/Object.hpp>
+
 #include <OGRE/OgreSceneManager.h>
 #include <OGRE/OgreVector3.h>
 
@@ -26,7 +28,9 @@ namespace interactor
 /**
  * @brief Interface implementation for all selection with the mouse
  */
-class FWRENDEROGRE_CLASS_API IPickerInteractor : public ::fwRenderOgre::interactor::IInteractor
+class FWRENDEROGRE_CLASS_API IPickerInteractor : public ::fwRenderOgre::interactor::IInteractor,
+                                                 public ::fwCore::BaseObject,
+                                                 public ::fwCom::HasSignals
 {
 
 public:

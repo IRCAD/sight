@@ -246,7 +246,7 @@ void SPointList::updateMesh(const ::fwData::PointList::csptr& _pointList)
     {
         m_entity = m_meshGeometry->createEntity(*sceneMgr);
         m_entity->setVisible(m_isVisible);
-        m_entity->setQueryFlags(m_queryFlags);
+        m_entity->addQueryFlags(m_queryFlags);
         sceneMgr->getRootSceneNode()->detachObject(m_entity);
     }
 
@@ -296,7 +296,7 @@ void SPointList::updateMesh(const ::fwData::Mesh::csptr& _mesh)
 
     this->getRenderService()->makeCurrent();
 
-    m_meshGeometry->updateMesh(::std::const_pointer_cast< ::fwData::Mesh >(_mesh));
+    m_meshGeometry->updateMesh(::std::const_pointer_cast< ::fwData::Mesh >(_mesh), true);
 
     //------------------------------------------
     // Create entity and attach it in the scene graph
@@ -306,7 +306,7 @@ void SPointList::updateMesh(const ::fwData::Mesh::csptr& _mesh)
     {
         m_entity = m_meshGeometry->createEntity(*sceneMgr);
         m_entity->setVisible(m_isVisible);
-        m_entity->setQueryFlags(m_queryFlags);
+        m_entity->addQueryFlags(m_queryFlags);
         sceneMgr->getRootSceneNode()->detachObject(m_entity);
     }
 
