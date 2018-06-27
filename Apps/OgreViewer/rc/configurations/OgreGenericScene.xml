@@ -7,6 +7,7 @@
         <!-- 3D negato image -->
         <param name="imageUID" />
         <param name="TF" />
+        <param name="landmarks" />
         <param name="maskUID" />
         <param name="idvrEnumParamChannel" />
         <param name="idvrBoolParamChannel" />
@@ -26,6 +27,7 @@
         <object uid="pointList" type="::fwData::PointList" />
 
         <object uid="${TF}" type="::fwData::TransferFunction" src="deferred" />
+        <object uid="${landmarks}" type="::fwData::Landmarks" src="ref" />
 
         <!-- ******************************* UI declaration *********************************** -->
         <service uid="OgreSceneView" type="::gui::view::SDefaultView">
@@ -165,6 +167,7 @@
                 <adaptor uid="negato3DAdaptor" />
                 <adaptor uid="volumeAdaptor" />
                 <adaptor uid="pointListAdaptor" />
+                <adaptor uid="landmarkAdaptor" />
             </scene>
         </service>
 
@@ -208,6 +211,11 @@
         <service uid="pointListAdaptor" type="::visuOgreAdaptor::SPointList" autoConnect="yes">
             <in key="pointList" uid="pointList" />
             <config layer="default" autoresetcamera="no" color="#ff0000" radius="1" fixedSize="true"/>
+        </service>
+
+        <service uid="landmarkAdaptor" type="::visuOgreAdaptor::SLandmarks" autoConnect="yes">
+            <in key="landmarks" uid="${landmarks}" />
+            <config layer="default" />
         </service>
 
         <!-- ********************************* End Generic Scene ******************************* -->
@@ -312,6 +320,7 @@
         <start uid="negato3DAdaptor" />
         <start uid="pointListAdaptor" />
         <start uid="addPointInList" />
+        <start uid="landmarkAdaptor" />
 
         <update uid="actionVolumeRenderingEditor" />
 

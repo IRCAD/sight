@@ -15,6 +15,14 @@
     <xi:include href="configurations/OgreNegato2D.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/ManageOgreOrganWithSeries.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
+    <extension implements="::fwServices::registry::ServiceConfig">
+        <id>LandmarksAtomsConfig</id>
+        <desc>Json/Xml Reader (FW4SPL)</desc>
+        <config>
+            <patcher context="Landmark" version="V2" />
+        </config>
+    </extension>
+
     <extension implements="::fwServices::registry::AppConfig">
         <id>OgreViewer_Extension</id>
         <config>
@@ -24,6 +32,7 @@
             <object uid="modelSeriesUID" type="::fwMedData::ModelSeries" />
             <object uid="imageUID" type="::fwData::Image" />
             <object uid="maskUID" type="::fwData::Image" />
+            <object uid="landmarksUID" type="::fwData::Landmarks" />
 
             <object uid="cameraTF_UID" type="::fwData::TransformationMatrix3D" />
             <object uid="TF" type="::fwData::TransferFunction" src="deferred" />
@@ -138,6 +147,8 @@
                         <menuItem name="Open image..." shortcut="Ctrl+O" />
                         <menuItem name="Save model series..." shortcut="Ctrl+S" />
                         <separator />
+                        <menuItem name="Load landmarks..." />
+                        <separator />
                         <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
                     </layout>
                 </gui>
@@ -145,6 +156,7 @@
                     <menuItem sid="action_openMesh" start="yes" />
                     <menuItem sid="action_openNegato" start="yes" />
                     <menuItem sid="action_saveFile" start="yes" />
+                    <menuItem sid="action_loadLandmarks" start="yes" />
                     <menuItem sid="action_quit" start="yes" />
                 </registry>
             </service>
@@ -161,6 +173,12 @@
 
             <service uid="action_saveFile" type="::gui::action::SStarter" >
                 <start uid="writerPathMeshFile" />
+            </service>
+
+            <service uid="action_loadLandmarks" type="::gui::action::SSlotCaller" >
+                <slots>
+                    <slot>landmarksReader/update</slot>
+                </slots>
             </service>
 
             <service uid="action_quit" type="::gui::action::SQuit"  />
@@ -180,6 +198,7 @@
                 <inout key="imageUID" uid="imageUID" />
                 <inout key="TF" uid="TF" optional="yes" />
                 <inout key="maskUID" uid="maskUID" />
+                <inout key="landmarks" uid="landmarksUID" />
                 <parameter replace="WID_PARENT" by="OgreSceneView" />
                 <parameter replace="compositorChannel" by="compositorChannel" />
                 <parameter replace="idvrEnumParamChannel" by="idvrEnumParamChannel" />
@@ -253,6 +272,14 @@
                 <inout key="image" uid="imageUID" autoConnect="yes" />
             </service>
 
+            <service uid="landmarksReader" type="::uiIO::editor::SIOSelector" >
+                <inout key="data" uid="landmarksUID" />
+                <type mode="reader" />
+                <selection mode="include" />
+                <addSelection service="::ioAtoms::SReader" />
+                <config id="LandmarksAtomsConfig" service="::ioAtoms::SReader" />
+            </service>
+
             <!-- Shared channels between OgreVolumeRendering and OgreIDVR configurations -->
             <connect channel="idvrEnumParamChannel" />
             <connect channel="idvrBoolParamChannel" />
@@ -275,6 +302,7 @@
             <start uid="compositorSelector" />
             <start uid="compositorParameters" />
             <start uid="CoreEditor" />
+            <start uid="landmarksReader" />
 
         </config>
 

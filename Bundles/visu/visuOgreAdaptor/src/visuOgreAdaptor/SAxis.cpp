@@ -92,7 +92,8 @@ void SAxis::configuring()
 {
     this->configureParams();
 
-    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
+    const ConfigType configType = this->getConfigTree();
+    const ConfigType config     = configType.get_child("config.<xmlattr>");
 
     // parsing transform or create an "empty" one
     const std::string transformId = config.get<std::string>(::visuOgreAdaptor::STransform::s_CONFIG_TRANSFORM,
@@ -107,6 +108,8 @@ void SAxis::configuring()
 void SAxis::starting()
 {
     this->initialize();
+
+    this->getRenderService()->makeCurrent();
 
     ::Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
 
@@ -264,6 +267,8 @@ void SAxis::updating()
 
 void SAxis::stopping()
 {
+    this->getRenderService()->makeCurrent();
+
     ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
 
     if(m_sceneNode != nullptr)
