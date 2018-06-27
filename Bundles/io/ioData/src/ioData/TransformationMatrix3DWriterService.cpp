@@ -106,12 +106,11 @@ void TransformationMatrix3DWriterService::updating()
     if(this->hasLocationDefined())
     {
         // Retrieve object
-        ::fwData::TransformationMatrix3D::sptr matrix =
-            this->getInOut< ::fwData::TransformationMatrix3D >(::fwIO::s_DATA_KEY);
+        ::fwData::TransformationMatrix3D::csptr matrix =
+            this->getInput< ::fwData::TransformationMatrix3D >(::fwIO::s_DATA_KEY);
         if (!matrix)
         {
-            FW_DEPRECATED_MSG("The object to write is not set correctly, you must set '" + ::fwIO::s_DATA_KEY
-                              + "' as <inout>.");
+            FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "18.0");
             matrix = this->getObject< ::fwData::TransformationMatrix3D >();
         }
         SLM_ASSERT("matrix not instanced", matrix);

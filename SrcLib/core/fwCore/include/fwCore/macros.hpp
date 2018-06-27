@@ -158,13 +158,13 @@
     }
 
 #define __FWCORE_GENERATE_ONE_FACTORY(_r_, _data_, _args_)             \
-    __FWCORE_GENERATE_FACTORY( BOOST_PP_SEQ_ELEM(0, _data_), _args_);
+    __FWCORE_GENERATE_FACTORY( BOOST_PP_SEQ_ELEM(0, _data_), _args_)
 
 #define __FWCORE_GENERATE_FACTORIES( _factory_, _args_ )                      \
     BOOST_PP_SEQ_FOR_EACH(__FWCORE_GENERATE_ONE_FACTORY, (_factory_), _args_)
 
 #define __FWCORE_GENERATE_ONE_FACTORY_WITH_N_FACTORIES(_r_, _data_, _factory_args_)                                \
-    __FWCORE_GENERATE_FACTORY( BOOST_PP_TUPLE_ELEM(2, 0, _factory_args_), BOOST_PP_TUPLE_ELEM(2, 1, _factory_args_));
+    __FWCORE_GENERATE_FACTORY( BOOST_PP_TUPLE_ELEM(2, 0, _factory_args_), BOOST_PP_TUPLE_ELEM(2, 1, _factory_args_))
 
 #define __FWCORE_GENERATE_FACTORIES_WITH_N_FACTORIES_I( _factories_args_ )                                    \
     BOOST_PP_SEQ_FOR_EACH(__FWCORE_GENERATE_ONE_FACTORY_WITH_N_FACTORIES, (BOOST_PP_EMPTY), _factories_args_)

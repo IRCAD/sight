@@ -102,7 +102,7 @@ void ShowLandmark::swapping()
 
 //------------------------------------------------------------------------------
 
-void ShowLandmark::showLandmark(bool isShown)
+void ShowLandmark::showLandmark(bool)
 {
     this->swapping();
 }
@@ -118,8 +118,8 @@ void ShowLandmark::configuring()
 
 void ShowLandmark::starting()
 {
+    FW_DEPRECATED_MSG("This service is deprecated", "18.0.");
     this->::fwGui::IActionSrv::actionServiceStarting();
-    FW_DEPRECATED_MSG("This service is deprecated and will be removed.")
 }
 
 //------------------------------------------------------------------------------

@@ -104,7 +104,7 @@ void InrImageWriterService::info(std::ostream& _sstream )
 
 //------------------------------------------------------------------------------
 
-void InrImageWriterService::saveImage( const ::boost::filesystem::path& inrFile, const ::fwData::Image::sptr& image )
+void InrImageWriterService::saveImage( const ::boost::filesystem::path& inrFile, const ::fwData::Image::csptr& image )
 {
     SLM_TRACE_FUNC();
     ::fwItkIO::ImageWriter::sptr myWriter = ::fwItkIO::ImageWriter::New();
@@ -144,12 +144,17 @@ void InrImageWriterService::updating()
     if( this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
-        ::fwData::Image::sptr associatedImage = this->getObject< ::fwData::Image >();
-        SLM_ASSERT("associatedImage not instanced", associatedImage);
+        ::fwData::Image::csptr image = this->getInput< ::fwData::Image >(::fwIO::s_DATA_KEY);
+        if (!image)
+        {
+            FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "18.0");
+            image = this->getObject< ::fwData::Image >();
+        }
+        SLM_ASSERT("'" + ::fwIO::s_DATA_KEY + "' key is not defined", image);
 
         ::fwGui::Cursor cursor;
         cursor.setCursor(::fwGui::ICursor::BUSY);
-        saveImage(this->getFile(), associatedImage);
+        saveImage(this->getFile(), image);
         cursor.setDefaultCursor();
     }
 }

@@ -12,14 +12,11 @@
 
 #include <fwData/factory/new.hpp>
 
+#include <fwMemory/BufferObject.hpp>
+
 #include <boost/filesystem/path.hpp>
 
 fwCampAutoDeclareDataMacro((fwMedData)(DicomSeries), FWMEDDATA_API);
-
-namespace fwData
-{
-class Array;
-}
 
 namespace fwMedData
 {
@@ -31,14 +28,13 @@ class FWMEDDATA_CLASS_API DicomSeries : public ::fwMedData::Series
 {
 
 public:
+
     fwCoreClassDefinitionsWithFactoryMacro( (DicomSeries)(::fwData::Object), (()),
                                             ::fwData::factory::New< DicomSeries >);
 
     fwCampMakeFriendDataMacro((fwMedData)(DicomSeries));
 
-    typedef std::map < std::size_t, ::boost::filesystem::path > DicomPathContainerType;
-
-    typedef std::map < std::string, SPTR(::fwData::Array) > DicomBinaryContainerType;
+    typedef std::map < std::size_t, ::fwMemory::BufferObject::sptr > DicomContainerType;
 
     typedef std::set < std::string > SOPClassUIDContainerType;
 
@@ -62,8 +58,8 @@ public:
     /// Add dicom path
     FWMEDDATA_API void addDicomPath(std::size_t instanceIndex, const ::boost::filesystem::path& path);
 
-    /// Add binary array
-    FWMEDDATA_API void addBinary(const std::string& filename, const SPTR(::fwData::Array)& binary);
+    /// Add binary buffer
+    FWMEDDATA_API void addBinary(std::size_t instanceIndex, const ::fwMemory::BufferObject::sptr& buffer);
 
     /**
      * @brief Return true if the instance is available on the local computer
@@ -91,51 +87,6 @@ public:
     FWMEDDATA_API bool hasComputedValues(const std::string& tagName) const;
 
     /**
-     * @brief Availability
-     */
-    typedef enum
-    {
-        NONE     = 1,   /*! The DICOM files are not available on the local machine but may be available on the pacs. */
-        PATHS    = 2,   /*! The paths to the DICOM files are saved in this DicomSeries. */
-        BINARIES = 3    /*! The binaries of the DICOM files are saved in this DicomSeries. */
-    } DICOM_AVAILABILITY;
-
-    /**
-     * @name Getters / Setters
-     * @{ */
-
-    /**
-     * @brief Dicom files availability
-     * @{ */
-    DICOM_AVAILABILITY  getDicomAvailability () const
-    {
-        return m_dicomAvailability;
-    }
-
-    //------------------------------------------------------------------------------
-
-    void setDicomAvailability(DICOM_AVAILABILITY val)
-    {
-        m_dicomAvailability = val;
-    }
-    /**  @} */
-
-    /**
-     * @brief Local paths of Dicom files
-     * @{ */
-    const DicomPathContainerType& getLocalDicomPaths() const
-    {
-        return m_localDicomPaths;
-    }
-    //------------------------------------------------------------------------------
-
-    void setLocalDicomPaths(const DicomPathContainerType& val)
-    {
-        m_localDicomPaths = val;
-    }
-    /**  @} */
-
-    /**
      * @brief Number of instances in the series (0020,1009)
      * @{ */
     size_t  getNumberOfInstances () const
@@ -151,17 +102,24 @@ public:
     /**  @} */
 
     /**
-     * @brief Dicom binaries
+     * @brief Dicom container
      * @{ */
-    const DicomBinaryContainerType& getDicomBinaries () const
+    const DicomContainerType& getDicomContainer () const
     {
-        return m_dicomBinaries;
+        return m_dicomContainer;
     }
     //------------------------------------------------------------------------------
 
-    void setDicomBinaries (const DicomBinaryContainerType& val)
+    void setDicomContainer (const DicomContainerType& dicomContainer)
     {
-        m_dicomBinaries = val;
+        m_dicomContainer = dicomContainer;
+    }
+
+    //------------------------------------------------------------------------------
+
+    void clearDicomContainer()
+    {
+        m_dicomContainer.clear();
     }
     /**  @} */
 
@@ -215,17 +173,11 @@ public:
 
 protected:
 
-    /// Dicom Availability
-    DICOM_AVAILABILITY m_dicomAvailability;
-
     /// Number of instances in the series (0020,1209)
     size_t m_numberOfInstances;
 
-    /// Local paths of Dicom files
-    DicomPathContainerType m_localDicomPaths;
-
-    /// Dicom binaries
-    DicomBinaryContainerType m_dicomBinaries;
+    /// Dicom container
+    DicomContainerType m_dicomContainer;
 
     /// SOP Class UIDs
     SOPClassUIDContainerType m_SOPClassUIDs;

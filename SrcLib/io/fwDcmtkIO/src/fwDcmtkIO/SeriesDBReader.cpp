@@ -32,6 +32,7 @@
 #include <dcmtk/config/osconfig.h>
 #include <dcmtk/dcmdata/dcdeftag.h>
 #include <dcmtk/dcmdata/dcfilefo.h>
+#include <dcmtk/dcmdata/dcistrmb.h>
 #include <dcmtk/dcmnet/diutil.h>
 
 fwDataIOReaderRegisterMacro( ::fwDcmtkIO::SeriesDBReader );
@@ -122,7 +123,7 @@ void SeriesDBReader::readFromDicomSeriesDB(::fwMedData::SeriesDB::csptr dicomSer
                                            ::fwServices::IService::sptr notifier)
 {
     // Read series
-    for(::fwMedData::Series::csptr series: dicomSeriesDB->getContainer())
+    for(const ::fwMedData::Series::csptr& series : dicomSeriesDB->getContainer())
     {
         ::fwMedData::DicomSeries::csptr dicomSeries = ::fwMedData::DicomSeries::dynamicCast(series);
         OSLM_ASSERT("Trying to read a series which is not a DicomSeries.", dicomSeries);
@@ -134,7 +135,6 @@ void SeriesDBReader::readFromDicomSeriesDB(::fwMedData::SeriesDB::csptr dicomSer
 
 void SeriesDBReader::readDicomSeries()
 {
-    SLM_TRACE_FUNC();
     ::fwMedData::SeriesDB::sptr seriesDB = this->getConcreteObject();
     ::fwMedDataTools::helper::SeriesDB seriesDBHelper(seriesDB);
 
@@ -164,9 +164,9 @@ bool SeriesDBReader::isDicomDirAvailable()
 
 void SeriesDBReader::addSeries(const std::vector< std::string >& filenames)
 {
-    DcmFileFormat fileFormat;
-    for(std::string filename: filenames)
+    for(const std::string& filename : filenames)
     {
+        DcmFileFormat fileFormat;
         OFCondition status = fileFormat.loadFile(filename.c_str());
         FW_RAISE_IF("Unable to read the file: \""+filename+"\"", status.bad());
 
@@ -174,22 +174,35 @@ void SeriesDBReader::addSeries(const std::vector< std::string >& filenames)
 
         // Create Series
         this->createSeries(dataset, filename);
-
     }
 
     // Fill series
-    for(::fwMedData::DicomSeries::sptr series: m_dicomSeriesContainer)
+    for(const ::fwMedData::DicomSeries::sptr& series : m_dicomSeriesContainer)
     {
         // Compute number of instances
-        series->setNumberOfInstances(series->getLocalDicomPaths().size());
+        series->setNumberOfInstances(series->getDicomContainer().size());
 
-        // Get first instance filename
-        const std::string filename = series->getLocalDicomPaths().begin()->second.string();
+        // Get first instance
+        const auto& bufferObj = series->getDicomContainer().begin()->second;
+        const size_t buffSize = bufferObj->getSize();
+        ::fwMemory::BufferObject::Lock lock(bufferObj);
+        char* buffer = static_cast< char* >( lock.getBuffer() );
+
+        DcmInputBufferStream is;
+        is.setBuffer(buffer, offile_off_t(buffSize));
+        is.setEos();
 
         // Load first instance
         DcmFileFormat fileFormat;
-        OFCondition status = fileFormat.loadFile(filename.c_str());
-        FW_RAISE_IF("Unable to read the file: \""+filename+"\"", status.bad());
+        fileFormat.transferInit();
+        if (!fileFormat.read(is).good())
+        {
+            FW_RAISE("Unable to read Dicom file '"<< bufferObj->getStreamInfo().fsFile.string() <<"'");
+        }
+
+        fileFormat.loadAllDataIntoMemory();
+        fileFormat.transferEnd();
+
         DcmDataset* dataset = fileFormat.getDataset();
 
         // Create data objects from first instance
@@ -335,7 +348,7 @@ void SeriesDBReader::createSeries(DcmDataset* dataset, const std::string& filena
     std::string seriesInstanceUID = data.c_str();
 
     // Check if the series already exists
-    for(::fwMedData::DicomSeries::sptr dicomSeries: m_dicomSeriesContainer)
+    for(const ::fwMedData::DicomSeries::sptr& dicomSeries : m_dicomSeriesContainer)
     {
         if(dicomSeries->getInstanceUID() == seriesInstanceUID)
         {
@@ -348,8 +361,6 @@ void SeriesDBReader::createSeries(DcmDataset* dataset, const std::string& filena
     if(!series)
     {
         series = ::fwMedData::DicomSeries::New();
-        series->setDicomAvailability(::fwMedData::DicomSeries::PATHS);
-
         m_dicomSeriesContainer.push_back(series);
 
         //Instance UID
@@ -378,7 +389,6 @@ void SeriesDBReader::createSeries(DcmDataset* dataset, const std::string& filena
             performingPhysiciansName.push_back(data.c_str());
         }
         series->setPerformingPhysiciansName(performingPhysiciansName);
-
     }
 
     // Add the SOPClassUID to the series
@@ -388,7 +398,7 @@ void SeriesDBReader::createSeries(DcmDataset* dataset, const std::string& filena
     series->setSOPClassUIDs(sopClassUIDContainer);
 
     // Add the instance to the series
-    std::size_t instanceNumber = series->getLocalDicomPaths().size();
+    const std::size_t instanceNumber = series->getDicomContainer().size();
     series->addDicomPath(instanceNumber, filename);
 }
 

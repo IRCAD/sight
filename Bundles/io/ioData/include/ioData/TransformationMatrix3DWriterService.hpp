@@ -23,11 +23,11 @@ namespace ioData
  *
  * @code{.xml}
    <service type="::ioData::TransformationMatrix3DWriterService">
-       <inout key="data" uid="..." />
+       <in key="data" uid="..." />
    </service>
    @endcode
- * @subsection In-Out In-Out
- * - \b data [::fwData::TransformationMatrix3D]: matrix to read.
+ * @subsection Input Input
+ * - \b data [::fwData::TransformationMatrix3D]: matrix to save.
  */
 class IODATA_CLASS_API TransformationMatrix3DWriterService : public ::fwIO::IWriter
 {

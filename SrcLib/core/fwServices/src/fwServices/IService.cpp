@@ -100,7 +100,7 @@ void IService::setOutput(const IService::KeyType& key, const fwData::Object::spt
 
 ::fwData::Object::sptr IService::getObject()
 {
-    FW_DEPRECATED("getObject()", "getInput() or getInOut()");
+    FW_DEPRECATED("getObject()", "getInput() or getInOut()", "20.0");
 
     // Handle compatibility with new behavior
     if(m_associatedObject.expired())
@@ -642,8 +642,12 @@ IService::SharedFutureType IService::updateSlot()
 
 IService::SharedFutureType IService::internalUpdate(bool _async)
 {
-    OSLM_ASSERT("INVOKING update WHILE STOPPED ("<<m_globalState<<") on service '" << this->getID() <<
-                "' of type '" << this->getClassname() << "'", m_globalState == STARTED );
+    if(m_globalState != STARTED)
+    {
+        OSLM_WARN("INVOKING update WHILE STOPPED ("<<m_globalState<<") on service '" << this->getID() <<
+                  "' of type '" << this->getClassname() << "': update is discarded." );
+        return SharedFutureType();
+    }
     OSLM_ASSERT("INVOKING update WHILE NOT IDLE ("<<m_updatingState<<") on service '" << this->getID() <<
                 "' of type '" << this->getClassname() << "'", m_updatingState == NOTUPDATING );
 
@@ -762,7 +766,7 @@ void IService::autoConnect()
                 // This also allows to get the default connection with the s_UPDATE_SLOT. When we remove this
                 // function, we will have to implement this behavior with getAutoConnections()
                 connections = this->getObjSrvConnections();
-                FW_DEPRECATED_IF("getObjSrvConnections()", "getAutoConnections()", !connections.empty());
+                FW_DEPRECATED_IF("getObjSrvConnections()", "getAutoConnections()", "20.0", !connections.empty());
             }
 
             ::fwData::Object::csptr obj;

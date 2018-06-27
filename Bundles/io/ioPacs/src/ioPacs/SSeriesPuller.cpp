@@ -119,8 +119,8 @@ void SSeriesPuller::starting()
         ::fwIO::IReader::dynamicCast(srvFactory->create(m_dicomReaderType));
     SLM_ASSERT("Unable to create a reader of type: \"" + m_dicomReaderType + "\" in ::ioPacs::SSeriesPuller.",
                m_dicomReader);
-    ::fwServices::OSR::registerService(m_tempSeriesDB, m_dicomReader);
-
+    ::fwServices::OSR::registerService(m_tempSeriesDB, ::fwIO::s_DATA_KEY,
+                                       ::fwServices::IService::AccessType::INOUT, m_dicomReader);
     if(!m_dicomReaderSrvConfig.empty())
     {
         // Get the config
@@ -190,7 +190,6 @@ void SSeriesPuller::updating()
     {
         m_pullSeriesWorker->post(std::bind(&::ioPacs::SSeriesPuller::pullSeries, this));
     }
-
 }
 
 //------------------------------------------------------------------------------
@@ -327,20 +326,17 @@ void SSeriesPuller::readLocalSeries(DicomSeriesContainerType selectedSeries)
 
     for(const ::fwMedData::Series::sptr& series: selectedSeries)
     {
-        ::fwMedData::DicomSeries::sptr dicomSeries = ::fwMedData::DicomSeries::dynamicCast(series);
-        dicomSeries->setDicomAvailability(::fwMedData::DicomSeries::PATHS);
-
-        ::std::string selectedSeriesUID = series->getInstanceUID();
+        const std::string selectedSeriesUID = series->getInstanceUID();
 
         // Add the series to the local series vector
-        if(::std::find(m_localSeries.begin(), m_localSeries.end(), selectedSeriesUID) == m_localSeries.end())
+        if(std::find(m_localSeries.begin(), m_localSeries.end(), selectedSeriesUID) == m_localSeries.end())
         {
             m_localSeries.push_back(selectedSeriesUID);
         }
 
         // Check if the series is loaded
-        if(::std::find(alreadyLoadedSeries.begin(), alreadyLoadedSeries.end(),
-                       selectedSeriesUID) == alreadyLoadedSeries.end())
+        if(std::find(alreadyLoadedSeries.begin(), alreadyLoadedSeries.end(),
+                     selectedSeriesUID) == alreadyLoadedSeries.end())
         {
             // Clear temporary series
             tempSDBhelper.clear();
@@ -354,9 +350,7 @@ void SSeriesPuller::readLocalSeries(DicomSeriesContainerType selectedSeries)
             sDBhelper.merge(m_tempSeriesDB);
             sDBhelper.notify();
         }
-
     }
-
 }
 
 //------------------------------------------------------------------------------

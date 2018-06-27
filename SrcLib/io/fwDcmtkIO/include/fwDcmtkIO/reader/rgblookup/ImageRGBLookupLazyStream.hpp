@@ -101,7 +101,7 @@ private:
     char* m_frame;
 
     /// Current path
-    ::fwMedData::DicomSeries::DicomPathContainerType::const_iterator m_currentPath;
+    ::fwMedData::DicomSeries::DicomContainerType::const_iterator m_currentDicom;
 
     /// Red lookup table
     void* m_redLookup;

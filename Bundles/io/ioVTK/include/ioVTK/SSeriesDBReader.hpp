@@ -34,6 +34,26 @@ namespace ioVTK
  * @brief   VTK File Reader.
  *
  * Service reading a VTK file (mesh or image) using the fwVtkIO lib.
+ *
+ * @section Signals Signals
+ * - \b jobCreated(SPTR(::fwJobs::IJob)): emitted to display a progress bar while the image is loading (it should be
+ * connected to a SJobBar).
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+   <service type="::ioVTK::SSeriesDBReader">
+      <inout key="data" uid="..." />
+      <file>...</file>
+      <file>...</file>
+      <file>...</file>
+   </service>
+   @endcode
+ * @subsection In-Out In-Out
+ * - \b data [::fwMedData::SeriesDB]: seriesDB to load.
+ * @subsection Configuration Configuration
+ * - \b file (optional): path of the files to load, if it is not defined, 'configureWithIHM()' should be called to
+ * define the path.
  */
 class IOVTK_CLASS_API SSeriesDBReader : public ::fwIO::IReader
 {

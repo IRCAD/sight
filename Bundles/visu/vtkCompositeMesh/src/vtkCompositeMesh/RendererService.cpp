@@ -99,7 +99,8 @@ RendererService::~RendererService() noexcept
 
 void RendererService::starting()
 {
-    FW_DEPRECATED_MSG("This service is deprecated and will be removed.");
+    FW_DEPRECATED_MSG("This service is no longer supported.", "18.0");
+
     this->IGuiContainerSrv::create();
 
     m_bPipelineIsInit = false;

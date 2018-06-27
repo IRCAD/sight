@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWATOMCONVERSION_CAMP_EXT_VALUEMAPPER_HPP__
-#define __FWATOMCONVERSION_CAMP_EXT_VALUEMAPPER_HPP__
+#pragma once
+
 #include <fwAtoms/Blob.hpp>
 
 #include <fwMemory/BufferObject.hpp>
@@ -25,7 +25,7 @@ struct ValueMapper< ::fwAtoms::Blob::sptr >
 
     //------------------------------------------------------------------------------
 
-    static const  ::fwMemory::BufferObject::sptr to(const ReturnType& source)
+    static const ::fwMemory::BufferObject::sptr to(const ReturnType& source)
     {
         return source->getBufferObject();
     }
@@ -75,5 +75,3 @@ struct ValueMapper< ::fwAtoms::Blob::sptr >
 };
 
 }
-
-#endif /* __FWATOMCONVERSION_CAMP_EXT_VALUEMAPPER_HPP__ */

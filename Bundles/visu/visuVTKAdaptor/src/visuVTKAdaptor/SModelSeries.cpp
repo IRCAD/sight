@@ -149,7 +149,8 @@ void SModelSeries::updateNormalMode(std::uint8_t mode, std::string recID)
         if(service)
         {
             auto reconstructionAdaptor = ::visuVTKAdaptor::SReconstruction::dynamicCast(service);
-            if (reconstructionAdaptor && reconstructionAdaptor->getObject()->getID() == recID)
+            if (reconstructionAdaptor && reconstructionAdaptor->getInput< ::fwData::Object >(
+                    SReconstruction::s_RECONSTRUCTION_INPUT)->getID() == recID)
             {
                 reconstructionAdaptor->updateNormalMode(mode);
                 break;

@@ -18,8 +18,22 @@ namespace ioITK
 {
 
 /**
- * @brief Write an image to inr format
- **/
+ * @brief Writer for .inr.gz image series
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+   <service type="::ioITK::SImageSeriesWriter">
+       <in key="data" uid="..." />
+       <file>...</file>
+   </service>
+   @endcode
+ * @subsection Input Input
+ * - \b data [::fwMedData::ImageSeries]: image series to save.
+ * @subsection Configuration Configuration
+ * - \b file (optional): path of the file to save, if it not defined, 'configureWithIHM()' should be called to define
+ * the path.
+ */
 class IOITK_CLASS_API SImageSeriesWriter : public ::fwIO::IWriter
 {
 

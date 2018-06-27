@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -209,7 +209,8 @@ void SMeshNormals::stopping()
 
 void SMeshNormals::updateVertex()
 {
-    ::fwData::Mesh::sptr mesh = this->getObject < ::fwData::Mesh >();
+    ::fwData::Mesh::csptr mesh = this->getInput< ::fwData::Mesh >(s_MESH_INPUT);
+    SLM_ASSERT("Missing mesh", mesh);
     ::fwVtkIO::helper::Mesh::updatePolyDataPoints(m_polyData, mesh);
     ::fwVtkIO::helper::Mesh::updatePolyDataPointNormals(m_polyData, mesh);
     ::fwVtkIO::helper::Mesh::updatePolyDataPointNormals(m_polyData, mesh);
@@ -221,7 +222,8 @@ void SMeshNormals::updateVertex()
 
 void SMeshNormals::updatePointNormals()
 {
-    ::fwData::Mesh::sptr mesh = this->getObject < ::fwData::Mesh >();
+    ::fwData::Mesh::csptr mesh = this->getInput< ::fwData::Mesh >(s_MESH_INPUT);
+    SLM_ASSERT("Missing mesh", mesh);
     ::fwVtkIO::helper::Mesh::updatePolyDataPointNormals(m_polyData, mesh);
     this->setVtkPipelineModified();
     this->requestRender();
@@ -231,7 +233,8 @@ void SMeshNormals::updatePointNormals()
 
 void SMeshNormals::updateCellNormals()
 {
-    ::fwData::Mesh::sptr mesh = this->getObject < ::fwData::Mesh >();
+    ::fwData::Mesh::csptr mesh = this->getInput< ::fwData::Mesh >(s_MESH_INPUT);
+    SLM_ASSERT("Missing mesh", mesh);
     ::fwVtkIO::helper::Mesh::updatePolyDataCellNormals(m_polyData, mesh);
     this->setVtkPipelineModified();
     this->requestRender();

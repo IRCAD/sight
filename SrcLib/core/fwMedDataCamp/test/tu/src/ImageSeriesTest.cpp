@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -33,6 +33,8 @@ namespace fwMedDataCamp
 namespace ut
 {
 
+//------------------------------------------------------------------------------
+
 void ImageSeriesTest::setUp()
 {
     // Set up context before running a test.
@@ -40,6 +42,8 @@ void ImageSeriesTest::setUp()
     const int version = ::fwMedDataCamp::Version::s_CURRENT_VERSION;
     FwCoreNotUsedMacro(version);
 }
+
+//------------------------------------------------------------------------------
 
 void ImageSeriesTest::tearDown()
 {
@@ -66,7 +70,8 @@ void ImageSeriesTest::propertiesTest()
                                                                     ("date")
                                                                     ("time")
                                                                     ("performing_physicians_name")
-                                                                    ("description");
+                                                                    ("description")
+                                                                    ("dicom_reference");
 
     ::fwData::Image::sptr img = ::fwData::Image::New();
     ::fwTest::generator::Image::generateRandomImage(img, ::fwTools::Type::create("uint8"));

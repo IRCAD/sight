@@ -3,7 +3,7 @@
 function(doxygenGenerator)
     include(${CMAKE_ROOT}/Modules/Documentation.cmake)
     find_package(Doxygen QUIET)
-    
+
     if(DOXYGEN_FOUND)
         set(INCLUDE_DIRS)
         foreach(PROJECT ${PROJECT_LIST})
@@ -21,7 +21,7 @@ function(doxygenGenerator)
         endforeach()
         list(REMOVE_DUPLICATES INCLUDE_DIRS)
         string(REPLACE ";" " " INCLUDE_DIRS "${INCLUDE_DIRS}")
-        configure_file(${CMAKE_CURRENT_SOURCE_DIR}/CMake/doxygen/Doxyfile.in 
+        configure_file(${CMAKE_CURRENT_SOURCE_DIR}/CMake/doxygen/Doxyfile.in
                        ${CMAKE_CURRENT_BINARY_DIR}/Documentation/Doxygen/Doxyfile @ONLY)
         add_custom_target(doc ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Documentation/Doxygen/Doxyfile
             WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMENT
@@ -72,17 +72,17 @@ function(docsetGenerator)
         message(WARNING "A Python3 interpreter is required to build the Dash docset, but none was found.")
         return()
     else()
-        add_custom_target(docset ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/cmake/doxygen/build_docset.py
+        add_custom_target(docset ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/CMake/doxygen/build_docset.py
                           WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/Documentation/Docset
                           DEPENDS docset_doxygen ${CMAKE_CURRENT_BINARY_DIR}/Documentation/Docset/projects.json
                           COMMENT "Generating dash docset"
                           VERBATIM)
         add_custom_command(TARGET docset POST_BUILD
-                           COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/cmake/doxygen/Info.plist
+                           COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/CMake/doxygen/Info.plist
                                                             ${CMAKE_CURRENT_BINARY_DIR}/Documentation/Docset/fw4spl.docset/Contents
-                           COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/cmake/doxygen/f4s_logo_16x16.png
+                           COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/CMake/doxygen/f4s_logo_16x16.png
                                                             ${CMAKE_CURRENT_BINARY_DIR}/Documentation/Docset/fw4spl.docset/icon.png
-                           COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/cmake/doxygen/f4s_logo_32x32.png
+                           COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/CMake/doxygen/f4s_logo_32x32.png
                                                             ${CMAKE_CURRENT_BINARY_DIR}/Documentation/Docset/fw4spl.docset/icon@2x.png
                            COMMENT "Copying dash docset configuration files"
                            VERBATIM)

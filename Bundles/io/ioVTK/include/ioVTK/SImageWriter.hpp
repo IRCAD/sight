@@ -31,6 +31,24 @@ namespace ioVTK
  * @brief   VTK Image Writer
  *
  * Service writing a VTK Image using the fwVtkIO lib.
+ *
+ * @section Signals Signals
+ * - \b jobCreated(SPTR(::fwJobs::IJob)): emitted to display a progress bar while the image is written (it should be
+ * connected to a SJobBar).
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+   <service type="::ioVTK::SImageWriter">
+       <in key="data" uid="..." />
+       <file>...</file>
+   </service>
+   @endcode
+ * @subsection Input Input
+ * - \b data [::fwData::Image]: image to save.
+ * @subsection Configuration Configuration
+ * - \b file (optional): path of the file to save, if it is not defined, 'configureWithIHM()' should be called to define
+ * the path.
  */
 class IOVTK_CLASS_API SImageWriter : public ::fwIO::IWriter
 {
@@ -69,7 +87,7 @@ public:
      * Returns \b true if the image saving is a success and \b false if it fails
      */
     IOVTK_API static bool saveImage( const ::boost::filesystem::path& imgFile,
-                                     const SPTR(::fwData::Image)& image,
+                                     const CSPTR(::fwData::Image)& image,
                                      const SPTR(JobCreatedSignalType)& sigJobCreated);
 
 protected:

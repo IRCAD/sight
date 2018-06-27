@@ -118,13 +118,13 @@ void SSeriesDBWriter::updating()
         }
 
         // Retrieve dataStruct associated with this service
-        ::fwData::Vector::sptr vector = this->getObject< ::fwData::Vector >();
+        ::fwData::Vector::csptr vector = this->getInput< ::fwData::Vector >(::fwIO::s_DATA_KEY);
 
         // Create SeriesDB
         ::fwMedData::SeriesDB::sptr seriesDB = ::fwMedData::SeriesDB::New();
         ::fwMedDataTools::helper::SeriesDB seriesDBHelper(seriesDB);
 
-        for(::fwData::Object::sptr object: vector->getContainer())
+        for(const ::fwData::Object::sptr& object : vector->getContainer())
         {
             ::fwMedData::Series::sptr series = ::fwMedData::Series::dynamicCast(object);
             SLM_ASSERT("The container should only contain series.", series);
@@ -181,13 +181,13 @@ void SSeriesDBWriter::saveSeriesDB( const ::boost::filesystem::path folder, ::fw
 bool SSeriesDBWriter::selectFiducialsExportMode()
 {
     // Retrieve dataStruct associated with this service
-    ::fwData::Vector::sptr vector = this->getObject< ::fwData::Vector >();
+    ::fwData::Vector::csptr vector = this->getInput< ::fwData::Vector >(::fwIO::s_DATA_KEY);
 
     // Create SeriesDB
     ::fwMedData::SeriesDB::sptr seriesDB = ::fwMedData::SeriesDB::New();
     ::fwMedDataTools::helper::SeriesDB seriesDBHelper(seriesDB);
 
-    for(::fwData::Object::sptr object: vector->getContainer())
+    for(const ::fwData::Object::sptr& object : vector->getContainer())
     {
         ::fwMedData::Series::sptr series = ::fwMedData::Series::dynamicCast(object);
         SLM_ASSERT("The container should only contain series.", series);
@@ -240,7 +240,6 @@ bool SSeriesDBWriter::selectFiducialsExportMode()
     }
 
     return true;
-
 }
 
 } // namespace ioGdcm

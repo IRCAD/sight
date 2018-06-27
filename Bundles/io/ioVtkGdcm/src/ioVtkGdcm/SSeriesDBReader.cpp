@@ -164,7 +164,13 @@ void SSeriesDBReader::updating()
             }
 
             // Retrieve dataStruct associated with this service
-            ::fwMedData::SeriesDB::sptr associatedSeriesDB = this->getObject< ::fwMedData::SeriesDB >();
+            ::fwMedData::SeriesDB::sptr associatedSeriesDB =
+                this->getInOut< ::fwMedData::SeriesDB >(::fwIO::s_DATA_KEY);
+            if (!associatedSeriesDB)
+            {
+                FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "18.0");
+                associatedSeriesDB = this->getObject< ::fwMedData::SeriesDB >();
+            }
             SLM_ASSERT("associated SeriesDB not instanced", associatedSeriesDB);
             associatedSeriesDB->shallowCopy( seriesDB );
 
@@ -187,7 +193,12 @@ void SSeriesDBReader::updating()
 void SSeriesDBReader::notificationOfDBUpdate()
 {
     SLM_TRACE_FUNC();
-    ::fwMedData::SeriesDB::sptr seriesDB = this->getObject< ::fwMedData::SeriesDB >();
+    ::fwMedData::SeriesDB::sptr seriesDB = this->getInOut< ::fwMedData::SeriesDB >(::fwIO::s_DATA_KEY);
+    if (!seriesDB)
+    {
+        FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "18.0");
+        seriesDB = this->getObject< ::fwMedData::SeriesDB >();
+    }
     SLM_ASSERT("Unable to get seriesDB", seriesDB);
 
     ::fwMedData::SeriesDB::ContainerType addedSeries;

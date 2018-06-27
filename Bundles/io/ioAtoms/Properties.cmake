@@ -8,6 +8,7 @@ set( DEPENDENCIES
     fwAtomsBoostIO
     fwAtomsPatch
     fwAtomsFilter
+    fwMDSemanticPatch
     fwTools
     fwCore
     fwData

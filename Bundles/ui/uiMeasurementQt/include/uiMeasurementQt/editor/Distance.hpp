@@ -35,14 +35,11 @@ namespace editor
  * @code{.xml}
    <service uid="..." type="::uiMeasurementQt::editor::Distance" >
        <inout key="image" uid="..." />
-       <placeInScene uid="genericScene" />
    </service>
    @endcode
 
  * @subsection In-Out In-Out
  * -\b image [::fwData::Image]: Image in which we calculate the distance.
- * @subsection Configuration Configuration
-   \b genericScene is the uid of the ::fwRenderVTK::SRender representing the generic scene which will be printed.
  */
 class UIMEASUREMENTQT_CLASS_API Distance : public QObject,
                                            public ::fwGui::editor::IEditor
@@ -50,13 +47,13 @@ class UIMEASUREMENTQT_CLASS_API Distance : public QObject,
 Q_OBJECT
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (Distance)(::fwGui::editor::IEditor) );
+    fwCoreServiceClassDefinitionsMacro( (Distance)(::fwGui::editor::IEditor) )
 
     /// Constructor. Do nothing.
     UIMEASUREMENTQT_API Distance() noexcept;
 
     /// Destructor. Do nothing.
-    UIMEASUREMENTQT_API virtual ~Distance() noexcept;
+    UIMEASUREMENTQT_API virtual ~Distance() noexcept override;
 
     /**
      * @name Signal
@@ -88,13 +85,8 @@ protected:
     /// Do nothing
     virtual void updating() override;
 
-    /// Do nothing
-    virtual void swapping() override;
-
+    /// Initialize the widget
     virtual void configuring() override;
-
-    /// Overrides
-    virtual void info( std::ostream& _sstream ) override;
 
 protected Q_SLOTS:
     /**
@@ -103,8 +95,6 @@ protected Q_SLOTS:
     void onDistanceButton();
 
 private:
-
-    std::string m_scenesUID;
     QPointer< QPushButton > m_distButton;
 
     DistanceRequestedSignalType::sptr m_sigDistanceRequested; /// signal emitted when a distance is requested

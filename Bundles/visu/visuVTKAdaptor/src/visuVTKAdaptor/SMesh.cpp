@@ -496,8 +496,11 @@ void SMesh::createTransformService()
     ::fwData::Mesh::csptr mesh = this->getInput < ::fwData::Mesh >(s_MESH_INPUT);
     SLM_ASSERT("Missing mesh", mesh);
 
-    ::fwData::TransformationMatrix3D::sptr fieldTransform =
-        mesh->getField< ::fwData::TransformationMatrix3D >(s_MATRIX_FIELD_NAME);
+    ::fwData::TransformationMatrix3D::sptr fieldTransform;
+    {
+        ::fwData::mt::ObjectReadLock lock(mesh);
+        fieldTransform = mesh->getField< ::fwData::TransformationMatrix3D >(s_MATRIX_FIELD_NAME);
+    }
 
     if (fieldTransform)
     {
@@ -883,6 +886,7 @@ void SMesh::updatePointColors()
     SLM_ASSERT("Missing mesh", mesh);
     SLM_ASSERT("m_polyData not instanced", m_polyData);
 
+    ::fwData::mt::ObjectReadLock lock(mesh);
     ::fwVtkIO::helper::Mesh::updatePolyDataPointColor(m_polyData, mesh);
     this->setVtkPipelineModified();
     this->requestRender();
@@ -896,6 +900,7 @@ void SMesh::updateCellColors()
     SLM_ASSERT("Missing mesh", mesh);
     SLM_ASSERT("m_polyData not instanced", m_polyData);
 
+    ::fwData::mt::ObjectReadLock lock(mesh);
     ::fwVtkIO::helper::Mesh::updatePolyDataCellColor(m_polyData, mesh);
     this->setVtkPipelineModified();
     this->requestRender();
@@ -909,6 +914,7 @@ void SMesh::updateVertex()
     SLM_ASSERT("Missing mesh", mesh);
     SLM_ASSERT("m_polyData not instanced", m_polyData);
 
+    ::fwData::mt::ObjectReadLock lock(mesh);
     ::fwVtkIO::helper::Mesh::updatePolyDataPoints(m_polyData, mesh);
 
     if (m_autoResetCamera)
@@ -925,6 +931,7 @@ void SMesh::updatePointNormals()
 {
     ::fwData::Mesh::csptr mesh = this->getInput < ::fwData::Mesh >(s_MESH_INPUT);
     SLM_ASSERT("Missing mesh", mesh);
+    ::fwData::mt::ObjectReadLock lock(mesh);
     ::fwVtkIO::helper::Mesh::updatePolyDataPointNormals(m_polyData, mesh);
     this->setVtkPipelineModified();
     this->requestRender();
@@ -936,6 +943,7 @@ void SMesh::updateCellNormals()
 {
     ::fwData::Mesh::csptr mesh = this->getInput < ::fwData::Mesh >(s_MESH_INPUT);
     SLM_ASSERT("Missing mesh", mesh);
+    ::fwData::mt::ObjectReadLock lock(mesh);
     ::fwVtkIO::helper::Mesh::updatePolyDataCellNormals(m_polyData, mesh);
     this->setVtkPipelineModified();
     this->requestRender();
@@ -947,6 +955,7 @@ void SMesh::updatePointTexCoords()
 {
     ::fwData::Mesh::csptr mesh = this->getInput < ::fwData::Mesh >(s_MESH_INPUT);
     SLM_ASSERT("Missing mesh", mesh);
+    ::fwData::mt::ObjectReadLock lock(mesh);
     ::fwVtkIO::helper::Mesh::updatePolyDataPointTexCoords(m_polyData, mesh);
     this->setVtkPipelineModified();
     this->requestRender();
@@ -958,6 +967,7 @@ void SMesh::updateCellTexCoords()
 {
     ::fwData::Mesh::csptr mesh = this->getInput < ::fwData::Mesh >(s_MESH_INPUT);
     SLM_ASSERT("Missing mesh", mesh);
+    ::fwData::mt::ObjectReadLock lock(mesh);
     ::fwVtkIO::helper::Mesh::updatePolyDataCellTexCoords(m_polyData, mesh);
     this->setVtkPipelineModified();
     this->requestRender();

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -21,6 +21,8 @@ namespace fwDcmtkIO
 namespace helper
 {
 
+//------------------------------------------------------------------------------
+
 void DicomSearch::searchRecursively(const ::boost::filesystem::path& dirPath, std::vector<std::string>& dicomFiles)
 {
     std::vector<std::string> extensions;
@@ -30,7 +32,6 @@ void DicomSearch::searchRecursively(const ::boost::filesystem::path& dirPath, st
 
     std::string filePath;
     std::string filename;
-    DcmFileFormat fileFormat;
     for( ::boost::filesystem::recursive_directory_iterator it(dirPath);
          it != ::boost::filesystem::recursive_directory_iterator(); ++it)
     {
@@ -41,6 +42,7 @@ void DicomSearch::searchRecursively(const ::boost::filesystem::path& dirPath, st
 
             if(!DicomSearch::checkFilenameExtension( filePath, &extensions) )
             {
+                DcmFileFormat fileFormat;
                 OFCondition ofCondition = fileFormat.loadFile(filePath.c_str());
                 if(ofCondition.good())
                 {
@@ -72,5 +74,3 @@ bool DicomSearch::checkFilenameExtension(const std::string& filename, std::vecto
 
 } //namespace helper
 } //namespace fwDcmtkIO
-
-

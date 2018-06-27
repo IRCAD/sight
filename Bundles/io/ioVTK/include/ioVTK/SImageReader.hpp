@@ -30,7 +30,8 @@ namespace ioVTK
  * @brief Service reading a VTK Image using the fwVtkIO lib.
  *
  * @section Signals Signals
- * - \b jobCreated(SPTR(::fwJobs::IJob)): emitted when the image is loading to display a progress bar.
+ * - \b jobCreated(SPTR(::fwJobs::IJob)): emitted to display a progress bar while the image is loading (it should be
+ * connected to a SJobBar).
  *
  * @section Slots Slots
  * - \b readFile(::boost::filesystem::path) : read the given file
@@ -46,8 +47,8 @@ namespace ioVTK
  * @subsection In-Out In-Out
  * - \b data [::fwData::Image]: loaded image.
  * @subsection Configuration Configuration
- * - \b file (optional): path of the image to load, if it not defined, 'configureWithIHM()' should be called to define
- * the path.
+ * - \b file (optional): path of the image to load, if it is not defined, 'configureWithIHM()' should be called to
+ * define the path.
  */
 class IOVTK_CLASS_API SImageReader : public ::fwIO::IReader
 {
@@ -72,6 +73,16 @@ public:
      * @brief Constructor. Do nothing.
      */
     IOVTK_API SImageReader() noexcept;
+
+    /**
+     * @brief This method is used to load an vtk image using a file path.
+     * @param[in] vtkFile file system path of vtk image
+     * @param[out] image new empty image that will contain image loaded, if reading process is a success.
+     * @return bool  \b true if the image loading is a success and \b false if it fails
+     */
+    IOVTK_API static bool loadImage( const ::boost::filesystem::path& vtkFile,
+                                     const SPTR(::fwData::Image)& image,
+                                     const SPTR(JobCreatedSignalType)& sigJobCreated);
 
 protected:
 
@@ -98,14 +109,6 @@ protected:
     IOVTK_API void info(std::ostream& _sstream ) override;
 
 private:
-
-    /**
-     * @brief This method is used to load an vtk image using a file path.
-     * @param[in] _vtkFile file system path of vtk image
-     * @param[out] _pImage new empty image that will contain image loaded, if reading process is a success.
-     * @return bool  \b true if the image loading is a success and \b false if it fails
-     */
-    bool loadImage( const ::boost::filesystem::path _vtkFile, std::shared_ptr< ::fwData::Image > _pImage );
 
     /// This value is \b true if the path image is known.
     bool m_bServiceIsConfigured;

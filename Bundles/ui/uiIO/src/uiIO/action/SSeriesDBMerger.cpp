@@ -34,6 +34,8 @@ fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiIO::action::SSeriesDBMerger, :
 static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 static const ::fwCom::Slots::SlotKeyType FORWARD_JOB_SLOT       = "forwardJob";
 
+static const ::fwServices::IService::KeyType s_SERIES_INOUT = "seriesDB";
+
 //------------------------------------------------------------------------------
 
 SSeriesDBMerger::SSeriesDBMerger( ) noexcept :
@@ -78,7 +80,13 @@ void SSeriesDBMerger::updating( )
 {
     SLM_TRACE_FUNC();
     ::fwGui::LockAction lock(this->getSptr());
-    ::fwMedData::SeriesDB::sptr seriesDB = this->getObject< ::fwMedData::SeriesDB >();
+
+    ::fwMedData::SeriesDB::sptr seriesDB = this->getInOut< ::fwMedData::SeriesDB >(s_SERIES_INOUT);
+    if (!seriesDB)
+    {
+        seriesDB = this->getObject< ::fwMedData::SeriesDB >();
+        FW_DEPRECATED_KEY(s_SERIES_INOUT, "inout", "18.0");
+    }
     SLM_ASSERT("SeriesDB not instanced", seriesDB);
 
     // Create a new SeriesDB

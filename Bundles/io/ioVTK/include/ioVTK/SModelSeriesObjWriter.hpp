@@ -35,6 +35,24 @@ namespace ioVTK
  * @brief   Wavefront OBJ files.
  *
  * Service writing a model series as .obj files using the fwVtkIO lib.
+ *
+ * @section Signals Signals
+ * - \b jobCreated(SPTR(::fwJobs::IJob)): emitted to display a progress bar while the image is written (it should be
+ * connected to a SJobBar).
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+   <service type="::ioVTK::SModelSeriesObjWriter">
+       <in key="data" uid="..." />
+       <folder>...</folder>
+   </service>
+   @endcode
+ * @subsection Input Input
+ * - \b data [::fwMedData::ModelSeries]: model to save.
+ * @subsection Configuration Configuration
+ * - \b folder (optional): path of the folder, if it is not defined, 'configureWithIHM()' should be called to define
+ * the path.
  */
 class IOVTK_CLASS_API SModelSeriesObjWriter : public ::fwIO::IWriter
 {

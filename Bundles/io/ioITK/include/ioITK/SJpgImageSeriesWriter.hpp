@@ -20,6 +20,24 @@ namespace ioITK
 /**
  * @brief Write an image to jpg format
  **/
+
+/**
+ * @brief Write an image series to jpg format
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+   <service type="::ioITK::SJpgImageSeriesWriter">
+       <in key="data" uid="..." />
+       <folder>...</folder>
+   </service>
+   @endcode
+ * @subsection Input Input
+ * - \b data [::fwMedData::ImageSeries]: image series to save.
+ * @subsection Configuration Configuration
+ * - \b folder (optional): path of the folder, if it is not defined, 'configureWithIHM()' should be called to define
+ * the path.
+ */
 class IOITK_CLASS_API SJpgImageSeriesWriter : public ::fwIO::IWriter
 {
 

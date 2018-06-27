@@ -20,6 +20,7 @@ set( REQUIREMENTS
     opVTKMesh
     fwlauncher
     appXml
+    ctrlCamp
 )
 
 bundleParam(appXml PARAM_LIST config PARAM_VALUES Tuto09MesherWithGenericScene)

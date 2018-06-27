@@ -341,7 +341,7 @@ void SeriesDB::convertDicomSeries(const ::fwServices::IService::sptr& notifier)
     std::uint64_t totalWorkUnits = 0;
     for(const ::fwMedData::DicomSeries::sptr& dicomSeries : m_dicomSeriesContainer)
     {
-        totalWorkUnits += dicomSeries->getLocalDicomPaths().size();
+        totalWorkUnits += dicomSeries->getDicomContainer().size();
     }
     m_converterJob->setTotalWorkUnits(totalWorkUnits);
 
@@ -357,7 +357,7 @@ void SeriesDB::convertDicomSeries(const ::fwServices::IService::sptr& notifier)
         ::fwMedData::DicomSeries::SOPClassUIDContainerType sopClassUIDContainer = dicomSeries->getSOPClassUIDs();
         FW_RAISE_IF("The series contains several SOPClassUIDs. Try to apply a filter in order to split the series.",
                     sopClassUIDContainer.size() != 1);
-        std::string sopClassUID = sopClassUIDContainer.begin()->c_str();
+        const std::string sopClassUID = sopClassUIDContainer.begin()->c_str();
 
         const SupportedSOPClassContainerType::iterator bIt = m_supportedSOPClassContainer.begin();
         const SupportedSOPClassContainerType::iterator eIt = m_supportedSOPClassContainer.end();
@@ -368,7 +368,6 @@ void SeriesDB::convertDicomSeries(const ::fwServices::IService::sptr& notifier)
             seriesReader->setCancelRequestedCallback(m_converterJob->cancelRequestedCallback());
             try
             {
-
                 ::fwMedData::Series::sptr series = seriesReader->read(dicomSeries);
 
                 if(series)

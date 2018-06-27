@@ -1,17 +1,12 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-
 #include "ioGdcm/SDicomSeriesAnonymizer.hpp"
 
-#include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
-#include <fwCom/Signals.hpp>
-
-#include <fwCore/base.hpp>
 
 #include <fwData/Vector.hpp>
 
@@ -30,14 +25,12 @@
 
 #include <fwServices/macros.hpp>
 
-#include <boost/foreach.hpp>
-
 #include <vector>
 
 namespace ioGdcm
 {
 
-fwServicesRegisterMacro( ::fwServices::IController, ::ioGdcm::SDicomSeriesAnonymizer, ::fwData::Object );
+fwServicesRegisterMacro( ::fwServices::IController, ::ioGdcm::SDicomSeriesAnonymizer);
 
 static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
@@ -65,8 +58,6 @@ void SDicomSeriesAnonymizer::configuring()
 
 void SDicomSeriesAnonymizer::starting()
 {
-    m_seriesDB = this->getInOut< ::fwMedData::SeriesDB>("seriesDB");
-    SLM_ASSERT("The SeriesDB key doesn't exist.", m_seriesDB);
 }
 
 //------------------------------------------------------------------------------
@@ -122,8 +113,10 @@ void SDicomSeriesAnonymizer::info(std::ostream& _sstream )
 
 void SDicomSeriesAnonymizer::anonymize()
 {
-    ::fwData::Vector::sptr vector = this->getInOut< ::fwData::Vector >("selectedSeries");
-    ::fwMedDataTools::helper::SeriesDB sDBhelper(m_seriesDB);
+    ::fwMedData::SeriesDB::sptr seriesDB = this->getInOut< ::fwMedData::SeriesDB>("seriesDB");
+    ::fwData::Vector::sptr vector        = this->getInOut< ::fwData::Vector >("selectedSeries");
+
+    ::fwMedDataTools::helper::SeriesDB sDBhelper(seriesDB);
 
     ::fwGdcmIO::helper::DicomSeriesAnonymizer::sptr anonymizer =
         ::fwGdcmIO::helper::DicomSeriesAnonymizer::New();
@@ -131,7 +124,7 @@ void SDicomSeriesAnonymizer::anonymize()
 
     std::vector< ::fwMedData::DicomSeries::sptr > anonymizedDicomSeriesVector;
 
-    for(::fwData::Vector::ContainerType::value_type value: vector->getContainer())
+    for(const auto& value : vector->getContainer())
     {
         ::fwMedData::DicomSeries::sptr dicomSeries           = ::fwMedData::DicomSeries::dynamicCast(value);
         ::fwMedData::DicomSeries::sptr anonymizedDicomSeries = ::fwMedData::DicomSeries::New();
@@ -147,13 +140,13 @@ void SDicomSeriesAnonymizer::anonymize()
 
     if(!m_cancelled)
     {
-        for(::fwData::Vector::ContainerType::value_type value: vector->getContainer())
+        for(const auto& value : vector->getContainer())
         {
             ::fwMedData::DicomSeries::sptr dicomSeries = ::fwMedData::DicomSeries::dynamicCast(value);
             sDBhelper.remove(dicomSeries);
         }
 
-        for(auto anonymizedDicomSeries: anonymizedDicomSeriesVector)
+        for(const auto& anonymizedDicomSeries : anonymizedDicomSeriesVector)
         {
             sDBhelper.add(anonymizedDicomSeries);
         }

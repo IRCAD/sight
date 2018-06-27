@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -15,7 +15,8 @@ fwDataRegisterMacro( ::fwMedData::ImageSeries );
 namespace fwMedData
 {
 
-ImageSeries::ImageSeries(::fwData::Object::Key key) : Series(key)
+ImageSeries::ImageSeries(::fwData::Object::Key key) :
+    Series(key)
 {
 }
 
@@ -27,7 +28,7 @@ ImageSeries::~ImageSeries()
 
 //------------------------------------------------------------------------------
 
-void ImageSeries::shallowCopy(const ::fwData::Object::csptr &_source)
+void ImageSeries::shallowCopy(const ::fwData::Object::csptr& _source)
 {
     ImageSeries::csptr other = ImageSeries::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
@@ -36,12 +37,13 @@ void ImageSeries::shallowCopy(const ::fwData::Object::csptr &_source)
 
     this->::fwMedData::Series::shallowCopy(_source);
 
-    m_image = other->m_image;
+    m_image          = other->m_image;
+    m_dicomReference = other->m_dicomReference;
 }
 
 //------------------------------------------------------------------------------
 
-void ImageSeries::cachedDeepCopy(const ::fwData::Object::csptr &_source, DeepCopyCacheType &cache)
+void ImageSeries::cachedDeepCopy(const ::fwData::Object::csptr& _source, DeepCopyCacheType& cache)
 {
     ImageSeries::csptr other = ImageSeries::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
@@ -50,10 +52,10 @@ void ImageSeries::cachedDeepCopy(const ::fwData::Object::csptr &_source, DeepCop
 
     this->::fwMedData::Series::cachedDeepCopy(_source, cache);
 
-    m_image = ::fwData::Object::copy(other->m_image);
+    m_image          = ::fwData::Object::copy(other->m_image);
+    m_dicomReference = ::fwData::Object::copy(other->m_dicomReference);
 }
 
 //------------------------------------------------------------------------------
 
 } // namespace fwMedData
-

@@ -83,8 +83,8 @@ DynamicView::~DynamicView() noexcept
 
 void DynamicView::starting()
 {
-    FW_DEPRECATED_MSG("The service '::guiQt::editor::DynamicView' is deprecated and will be removed, "
-                      "use '::guiQt::editor::SDynamicView' instead");
+    FW_DEPRECATED_MSG("The service '::guiQt::editor::DynamicView' is deprecated, use '::guiQt::editor::SDynamicView' "
+                      "instead", "18.0");
 
     this->::fwGui::IGuiContainerSrv::create();
 

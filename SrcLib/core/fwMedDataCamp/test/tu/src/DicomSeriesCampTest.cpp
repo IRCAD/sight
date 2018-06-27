@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -55,13 +55,11 @@ void DicomSeriesCampTest::propertiesTest()
     const std::string time                       = "143328";
     const std::string performing_physicians_name = "John Doe";
     const std::string description                = "description";
+    const std::string filename                   = "dicom.dcm";
     //DicomSeries
-    //const std::string dicom_availability  = "PATHS";
     ::DataCampHelper::PropertiesNameType dataProperties = ::boost::assign::list_of("fields")
-                                                              ("dicom_availability")
                                                               ("number_of_instances")
-                                                              ("local_dicom_paths")
-                                                              ("dicom_binaries")
+                                                              ("dicom_container")
                                                               ("patient")
                                                               ("study")
                                                               ("equipment")
@@ -75,9 +73,17 @@ void DicomSeriesCampTest::propertiesTest()
                                                               ("computed_tag_values")
                                                               ("first_instance_number");
 
+    ::fwMemory::BufferObject::sptr bufferObj = ::fwMemory::BufferObject::New();
 
-    ::fwData::Array::sptr binary   = ::fwData::Array::New();
-    ::boost::filesystem::path path = "mypath";
+    const ::boost::filesystem::path path = ::fwTools::System::getTemporaryFolder() / "DicomSeriesCampTest";
+    ::boost::filesystem::create_directories(path);
+    const ::boost::filesystem::path dicomFile = path / filename;
+    {
+        std::ofstream file;
+        file.open(dicomFile.string().c_str(), std::ofstream::out);
+        file << "42";
+        file.close();
+    }
 
     ::fwMedData::DicomValuesType performing_physicians_names;
     performing_physicians_names.push_back(performing_physicians_name);
@@ -90,13 +96,11 @@ void DicomSeriesCampTest::propertiesTest()
     obj->setPerformingPhysiciansName(performing_physicians_names);
     obj->setDescription(description);
     obj->setNumberOfInstances(100);
-    obj->setDicomAvailability(::fwMedData::DicomSeries::PATHS);
-    obj->addDicomPath(42, path);
-    obj->addBinary(path.string(),binary);
+    obj->addDicomPath(42, dicomFile);
+    obj->addBinary(1664, bufferObj);
     obj->addSOPClassUID("1.2.840.10008.5.1.4.1.1.2");
     obj->addComputedTagValue("(0020,0100)", "1664");
     obj->setFirstInstanceNumber(1);
-
 
     ::DataCampHelper::visitProperties(obj->getClassname(), dataProperties);
     ::DataCampHelper::compareSimplePropertyValue(obj, "@instance_uid", instance_uid);
@@ -109,20 +113,14 @@ void DicomSeriesCampTest::propertiesTest()
     ::DataCampHelper::compareObjectPropertyValue(obj, "@study", obj->getStudy());
     ::DataCampHelper::compareObjectPropertyValue(obj, "@equipment", obj->getEquipment());
 
-    // Dicom availability
-    //TODO: Enum are not supported yet, so we cannot make unit tests on this part...
-    //::DataCampHelper::compareSimplePropertyValue(obj, "@dicom_availability", std::string("PATH"));
-
     // Number of instances
     ::std::stringstream ss;
     ss << obj->getNumberOfInstances();
     ::DataCampHelper::compareSimplePropertyValue(obj, "@number_of_instances", ss.str());
 
-    // Local dicom paths
-    ::DataCampHelper::compareSimplePropertyValue(obj, "@local_dicom_paths.42", "mypath");
-
     // Dicom binaries
-    ::DataCampHelper::compareObjectPropertyValue(obj, "@dicom_binaries.mypath", obj->getDicomBinaries().at("mypath"));
+    // TODO: BufferObject is not supported yet, so we cannot make unit tests on this part...
+    //::DataCampHelper::compareObjectPropertyValue(obj, "@dicom_container.1664", obj->getDicomContainer().at(1664));
 
     // SOP class UID
     ::DataCampHelper::compareSimplePropertyValue(obj, "@sop_class_uids.0", "1.2.840.10008.5.1.4.1.1.2");

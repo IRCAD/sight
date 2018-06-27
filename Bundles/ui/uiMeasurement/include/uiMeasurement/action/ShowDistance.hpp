@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __UIMEASUREMENT_ACTION_SHOWDISTANCE_HPP__
-#define __UIMEASUREMENT_ACTION_SHOWDISTANCE_HPP__
+#pragma once
 
 #include "uiMeasurement/config.hpp"
 
@@ -20,6 +19,19 @@ namespace action
 
 /**
  * @brief   This action allows to show/hide image distances.
+ *
+ * @section Slots Slots
+ * - \b showDistance(bool): slot called to check/uncheck the action when the distance are visible or not.
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+   <service type="::uiMeasurement::action::ShowDistance">
+       <inout key="image" uid="..." />
+   </service>
+   @endcode
+ * @subsection In-Out In-Out
+ * - \b image [::fwData::Image]: image containing the distances.
  */
 class UIMEASUREMENT_CLASS_API ShowDistance : public ::fwGui::IActionSrv
 {
@@ -39,8 +51,6 @@ public:
      */
     UIMEASUREMENT_API virtual KeyConnectionsMap getAutoConnections() const override;
 protected:
-
-    void swapping() override;
 
     void configuring() override;
 
@@ -62,5 +72,3 @@ private:
 } // namespace action
 
 } // namespace uiMeasurement
-
-#endif // __UIMEASUREMENT_ACTION_SHOWDISTANCE_HPP__

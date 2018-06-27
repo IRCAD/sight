@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -24,6 +24,8 @@
 #include <fwServices/macros.hpp>
 
 #include <boost/foreach.hpp>
+
+#include <dcmtk/dcmdata/dcistrmb.h>
 
 namespace ioPacs
 {
@@ -77,8 +79,6 @@ void SSeriesPusher::configuring()
 
 void SSeriesPusher::starting()
 {
-    SLM_TRACE_FUNC();
-
     // Create enquirer
     m_seriesEnquirer = ::fwPacsIO::SeriesEnquirer::New();
 
@@ -245,36 +245,54 @@ void SSeriesPusher::pushSeries()
     // Catch any errors
     try
     {
-        // List of files that must be pushed
-        DicomFileContainer dicomFilesContainer;
+        // List of dicom slice that must be pushed
+        std::vector< CSPTR(DcmDataset) > dicomContainer;
 
         // Connect to PACS
-        ::fwData::Vector::ConstIteratorType it = seriesVector->begin();
-        for(; it != seriesVector->end(); ++it)
+        for(const auto& series : *seriesVector)
         {
-            ::fwMedData::DicomSeries::csptr series = ::fwMedData::DicomSeries::dynamicCast(*it);
-            SLM_ASSERT("The SeriesDB should contain only DicomSeries.", series);
+            ::fwMedData::DicomSeries::csptr dicomSeries = ::fwMedData::DicomSeries::dynamicCast(series);
+            SLM_ASSERT("The SeriesDB should contain only DicomSeries.", dicomSeries);
 
-            BOOST_FOREACH(::fwMedData::DicomSeries::DicomPathContainerType::value_type value,
-                          series->getLocalDicomPaths())
+            for(const auto& item : dicomSeries->getDicomContainer())
             {
-                dicomFilesContainer.push_back(value.second);
+                DcmFileFormat fileFormat;
+                ::fwMemory::BufferObject::sptr bufferObj = item.second;
+                const size_t buffSize = bufferObj->getSize();
+                ::fwMemory::BufferObject::Lock lock(bufferObj);
+                char* buffer = static_cast< char* >( lock.getBuffer() );
+
+                DcmInputBufferStream is;
+                is.setBuffer(buffer, offile_off_t(buffSize));
+                is.setEos();
+
+                fileFormat.transferInit();
+                if (!fileFormat.read(is).good())
+                {
+                    FW_RAISE("Unable to read Dicom file '"<< bufferObj->getStreamInfo().fsFile.string() <<"'");
+                }
+
+                fileFormat.loadAllDataIntoMemory();
+                fileFormat.transferEnd();
+
+                const DcmDataset* dataset = fileFormat.getAndRemoveDataset();
+                CSPTR(DcmDataset) datasetPtr(dataset);
+                dicomContainer.push_back(datasetPtr);
             }
         }
 
         // Number of instances that must be uploaded
-        m_instanceCount = dicomFilesContainer.size();
+        m_instanceCount = dicomContainer.size();
 
         // Connect from PACS
         m_seriesEnquirer->connect();
         m_sigStartedProgress->asyncEmit(m_progressbarId);
 
         // Push series
-        m_seriesEnquirer->pushSeries(dicomFilesContainer);
+        m_seriesEnquirer->pushSeries(dicomContainer);
 
         // Disconnect from PACS
         m_seriesEnquirer->disconnect();
-
     }
     catch (::fwPacsIO::exceptions::Base& exception)
     {

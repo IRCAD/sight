@@ -18,7 +18,7 @@ namespace ctrlSelection
 
 IManagerSrv::IManagerSrv()
 {
-    FW_DEPRECATED_MSG("The IManagerSrv type of service is deprecated and will be removed.");
+    FW_DEPRECATED_MSG("The IManagerSrv type of service is deprecated.", "18.0.");
 }
 
 //-----------------------------------------------------------------------------

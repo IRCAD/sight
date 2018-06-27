@@ -70,13 +70,12 @@
 
         <service uid="distanceNegatoEditor" type="::uiMeasurementQt::editor::Distance">
             <inout key="image" uid="optionalInputImage" />
-            <placeInScene uid="negato" />
         </service>
 
         <!-- Generic Scene Negato -->
         <!-- *************************** Begin generic scene *************************** -->
 
-        <service uid="negato" type="::fwRenderVTK::SRender" autoConnect="yes">
+        <service uid="negato" type="::fwRenderVTK::SRender" >
             <scene>
                 <picker id="negatodefault" vtkclass="fwVtkCellPicker" />
                 <renderer id="default" background="0.0" />

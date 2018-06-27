@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWPACSIO_SERIESENQUIRER_HPP__
-#define __FWPACSIO_SERIESENQUIRER_HPP__
+#pragma once
 
 #include "fwPacsIO/config.hpp"
 
@@ -13,6 +12,8 @@
 #include <fwCom/Slots.hpp>
 
 #include <fwCore/BaseObject.hpp>
+
+#include <fwMemory/BufferObject.hpp>
 
 #include <boost/filesystem/path.hpp>
 
@@ -41,6 +42,8 @@ public:
 
     typedef std::vector< ::boost::filesystem::path > InstancePathContainer;
 
+    typedef std::vector< CSPTR(DcmDataset) > DatasetContainer;
+
     /// Constructor
     FWPACSIO_API SeriesEnquirer();
 
@@ -60,7 +63,7 @@ public:
     FWPACSIO_API void initialize(const std::string& applicationTitle,
                                  const std::string& peerHostName, unsigned short peerPort,
                                  const std::string& peerApplicationTitle,
-                                 const std::string& moveApplicationTitle = "",
+                                 const std::string& moveApplicationTitle         = "",
                                  ProgressCallbackSlotType::sptr progressCallback = ProgressCallbackSlotType::sptr());
 
     /// Negotiate Association
@@ -139,6 +142,12 @@ public:
      */
     FWPACSIO_API void pushSeries(const InstancePathContainer& pathContainer);
 
+    /**
+     * @brief Push instances using C-STORE requests
+     * @param[in] DatasetContainer DICOM dataset container
+     */
+    FWPACSIO_API void pushSeries(const DatasetContainer& datasetContainer);
+
 protected:
 
     /**
@@ -169,6 +178,13 @@ protected:
      */
     FWPACSIO_API OFCondition sendStoreRequest(const ::boost::filesystem::path& path);
 
+    /**
+     * @brief Send Store Request
+     * @param[in] dataset Dicom dataset
+     * @return OFTrue on success
+     */
+    FWPACSIO_API OFCondition sendStoreRequest(const CSPTR(DcmDataset)& dataset);
+
     /// Handle MOVE Response (Override)
     FWPACSIO_API virtual OFCondition handleMOVEResponse(
         const T_ASC_PresentationContextID presID, RetrieveResponse* response, OFBool& waitForNextResponse) override;
@@ -198,5 +214,3 @@ protected:
 };
 
 } // namespace fwPacsIO
-
-#endif /*__FWPACSIO_SERIESENQUIRER_HPP__*/

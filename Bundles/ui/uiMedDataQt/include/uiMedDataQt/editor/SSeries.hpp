@@ -32,6 +32,7 @@ namespace editor
 {
 /**
  * @brief Shows and edit fwMedData::Series information
+ * @deprecated This service is no longer supported and will be removed
  */
 class UIMEDDATAQT_CLASS_API SSeries : public QObject,
                                       public ::fwGui::editor::IEditor

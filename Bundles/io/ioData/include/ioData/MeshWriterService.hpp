@@ -38,10 +38,10 @@ namespace ioData
  *
  * @code{.xml}
    <service type="::ioData::MeshWriterService">
-       <inout key="data" uid="..." />
+       <in key="data" uid="..." />
    </service>
    @endcode
- * @subsection In-Out In-Out
+ * @subsection Input Input
  * - \b data [::fwData::Mesh]: mesh to write.
  */
 class IODATA_CLASS_API MeshWriterService : public ::fwIO::IWriter

@@ -31,6 +31,24 @@ namespace ioVTK
  * @brief  VTK Mesh Writer.
  *
  * Service writing a VTK Mesh using the fwVtkIO lib.
+ *
+ * @section Signals Signals
+ * - \b jobCreated(SPTR(::fwJobs::IJob)): emitted to display a progress bar while the image is written (it should be
+ * connected to a SJobBar).
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+   <service type="::ioVTK::SMeshWriter">
+       <in key="data" uid="..." />
+       <file>...</file>
+   </service>
+   @endcode
+ * @subsection Input Input
+ * - \b data [::fwData::Mesh]: mesh to save.
+ * @subsection Configuration Configuration
+ * - \b file (optional): path of the file to save, if it is not defined, 'configureWithIHM()' should be called to define
+ * the path.
  */
 class IOVTK_CLASS_API SMeshWriter : public ::fwIO::IWriter
 {

@@ -18,7 +18,7 @@ namespace fwData
 
 Spline::Spline(::fwData::Object::Key key)
 {
-    FW_DEPRECATED_MSG("This data is deprecated and will be removed, use ::fwData::PointList instead");
+    FW_DEPRECATED_MSG("This data is deprecated, use ::fwData::PointList instead", "18.0");
 }
 
 //------------------------------------------------------------------------------

@@ -29,6 +29,24 @@ namespace ioVtkGdcm
 
 /**
  * @brief Services to write an ImageSeries in DICOM format.
+ *
+ * @section Signals Signals
+ * - \b jobCreated(SPTR(::fwJobs::IJob)): emitted to display a progress bar while the image is loading (it should be
+ * connected to a SJobBar).
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+   <service type="::ioVtkGdcm::SImageSeriesWriter">
+       <in key="data" uid="..." />
+       <folder>...</folder>
+   </service>
+   @endcode
+ * @subsection Input Input
+ * - \b data [::fwMedData::ImageSeries]: image series to save.
+ * @subsection Configuration Configuration
+ *  - \b folder (optional): path of the folder, if it is not defined, 'configureWithIHM()' should be called to define
+ * the path.
  */
 class IOVTKGDCM_CLASS_API SImageSeriesWriter : public ::fwIO::IWriter
 {
@@ -70,7 +88,7 @@ protected:
 
 private:
 
-    void saveImageSeries( const ::boost::filesystem::path folder, SPTR(::fwMedData::ImageSeries) series );
+    void saveImageSeries( const ::boost::filesystem::path folder, CSPTR(::fwMedData::ImageSeries) series );
 
     SPTR(JobCreatedSignalType) m_sigJobCreated;
 };

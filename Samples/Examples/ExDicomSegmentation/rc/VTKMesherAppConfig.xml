@@ -1,0 +1,222 @@
+<extension implements="::fwServices::registry::AppConfig">
+    <id>vtkMesherAppConfig</id>
+    <parameters>
+        <param name="WID_PARENT" />
+        <param name="GENERIC_UID" />
+        <param name="SERIESDB" />
+        <param name="imageSeries" />
+        <param name="image" />
+    </parameters>
+    <config>
+        <object uid="${SERIESDB}" type="::fwMedData::SeriesDB" src="ref" />
+        <object uid="${imageSeries}"  type="::fwMedData::ImageSeries" src="ref" />
+        <object uid="${image}"  type="::fwData::Image" src="ref" />
+        <object uid="modelSeries" type="::fwMedData::ModelSeries" src="deferred" />
+        <object uid="reconstructionUID" type="::fwData::Reconstruction" src="deferred" />
+
+        <service uid="mainView" type="::gui::view::SDefaultView">
+            <gui>
+                <layout type="::fwGui::CardinalLayoutManager">
+                    <view align="center" />
+                    <view align="right" minWidth="300" />
+                </layout>
+                <toolBar/>
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <toolBar sid="toolBar" start="yes" />
+                <view sid="multiView_scene1_center" start="yes" />
+                <view sid="multiView_scene1_right" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="toolBar" type="::gui::aspect::SDefaultToolBar">
+            <gui>
+                <layout>
+                    <menuItem name="VTK Mesher" icon="ExDicomSegmentation-0.1/vtk.png" />
+                    <menuItem name="Export ModelSeries" icon="media-0.1/icons/Export.svg" />
+                </layout>
+            </gui>
+            <registry>
+                <menuItem sid="mesherAction" start="yes" />
+                <menuItem sid="exportAction" start="no" />
+            </registry>
+        </service>
+
+        <service uid="multiView_scene1_center" type="::gui::view::SDefaultView">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="vertical" />
+                    <view proportion="1" />
+                    <view proportion="0" minHeight="30" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="generic_scene" start="yes" />
+                <view sid="multiView_scene1_bottom" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="multiView_scene1_bottom" type="::gui::view::SDefaultView">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="horizontal" />
+                    <view proportion="0" minWidth="30" />
+                    <view proportion="0" minWidth="50" />
+                    <view proportion="1" />
+                    <view proportion="0" minWidth="30" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="slice_list_editor" start="yes" />
+                <view sid="show_scan_editor" start="yes" />
+                <view sid="slider_index_editor" start="yes" />
+                <view sid="snapshot_scene_editor" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="multiView_scene1_right" type="::gui::view::SDefaultView">
+            <gui>
+                <layout type="::fwGui::ToolboxLayoutManager">
+                    <orientation value="vertical" />
+                    <view caption="Organs" expanded="true" />
+                    <view caption="Material" expanded="true" />
+                    <view caption="Representation" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="list_organ_editor" start="no" />
+                <view sid="organ_material_editor" start="no" />
+                <view sid="representation_editor" start="no" />
+            </registry>
+        </service>
+
+        <service uid="slice_list_editor" type="::guiQt::editor::SSelectionMenuButton">
+            <toolTip>Manage slice visibility</toolTip>
+            <selected>3</selected>
+            <items>
+                <item text="One slice" value="1" />
+                <item text="three slices" value="3" />
+            </items>
+        </service>
+
+        <service uid="show_scan_editor" type="::guiQt::editor::SSignalButton">
+            <config>
+                <checkable>true</checkable>
+                <icon>media-0.1/icons/sliceHide.png</icon>
+                <icon2>media-0.1/icons/sliceShow.png</icon2>
+                <iconWidth>40</iconWidth>
+                <iconHeight>16</iconHeight>
+                <checked>true</checked>
+            </config>
+        </service>
+
+        <service uid="snapshot_scene_editor" type="::uiVisuQt::SnapshotEditor">
+            <snap>
+                <scene uid="generic_scene" />
+            </snap>
+        </service>
+
+        <service uid="mesherAction" type="::opVTKMesh::SVTKMesher">
+            <in key="imageSeries" uid="${imageSeries}" />
+            <out key="modelSeries" uid="modelSeries" />
+            <config>
+                <percentReduction>50</percentReduction>
+            </config>
+        </service>
+
+        <service uid="exportAction" type="::uiMedDataQt::action::SExportSeries" autoConnect="yes">
+            <inout key="seriesDB" uid="${SERIESDB}" />
+            <inout key="series" uid="modelSeries" />
+        </service>
+
+        <service uid="updater_reconst_UID" type="::ctrlSelection::updater::SObjFromSlot">
+            <out key="object" uid="reconstructionUID" />
+        </service>
+
+        <service uid="organ_material_editor" type="::uiReconstructionQt::OrganMaterialEditor" autoConnect="yes">
+            <inout key="reconstruction" uid="reconstructionUID" />
+        </service>
+
+        <service uid="representation_editor" type="::uiReconstructionQt::RepresentationEditor" autoConnect="yes">
+            <inout key="reconstruction" uid="reconstructionUID" />
+        </service>
+
+        <!-- *************************** Begin generic scene *************************** -->
+
+        <service uid="generic_scene" type="::fwRenderVTK::SRender">
+            <scene>
+                <picker id="picker" vtkclass="fwVtkCellPicker" />
+                <renderer id="default" background="0.0" />
+                <adaptor uid="model_series_adaptor" />
+                <adaptor uid="MPRNegato3D" />
+                <adaptor uid="snapshot" />
+            </scene>
+        </service>
+
+        <service uid="model_series_adaptor" type="::visuVTKAdaptor::SModelSeries" autoConnect="yes">
+            <in key="model" uid="modelSeries" />
+            <config renderer="default" picker="" />
+        </service>
+
+        <service uid="MPRNegato3D" type="::visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
+            <inout key="image" uid="${image}" />
+            <config renderer="default" picker="picker" mode="3D" slices="3" sliceIndex="axial" />
+        </service>
+
+        <service uid="snapshot" type="::visuVTKAdaptor::SSnapshot">
+            <config renderer="default" />
+        </service>
+
+        <!-- *************************** End generic scene *************************** -->
+
+        <service uid="MedicalImageSrv" type="::ctrlSelection::MedicalImageSrv" autoConnect="yes">
+            <inout key="image" uid="${image}" />
+        </service>
+
+        <service uid="slider_index_editor" type="::uiImageQt::SliceIndexPositionEditor" autoConnect="yes">
+            <inout key="image" uid="${image}" />
+            <sliceIndex>axial</sliceIndex>
+        </service>
+
+        <service uid="list_organ_editor" type="::uiMedDataQt::editor::SModelSeriesList" autoConnect="yes">
+            <inout key="modelSeries" uid="modelSeries" />
+            <columns>
+                <organ_name>@organ_name</organ_name>
+            </columns>
+        </service>
+
+        <connect>
+            <signal>list_organ_editor/reconstructionSelected</signal>
+            <slot>updater_reconst_UID/addOrSwap</slot>
+        </connect>
+
+        <connect>
+            <signal>show_scan_editor/toggled</signal>
+            <slot>MPRNegato3D/showSlice</slot>
+        </connect>
+
+        <connect>
+            <signal>slice_list_editor/selected</signal>
+            <slot>MPRNegato3D/updateSliceMode</slot>
+        </connect>
+
+        <connect>
+            <signal>snapshot_scene_editor/snapped</signal>
+            <slot>snapshot/snap</slot>
+        </connect>
+
+        <start uid="mainView" />
+        <start uid="updater_reconst_UID" />
+        <start uid="MedicalImageSrv" />
+        <!-- deferred -->
+        <start uid="organ_material_editor" />
+        <start uid="representation_editor" />
+        <start uid="list_organ_editor" />
+        <!-- VTK scene 'generic_scene' -->
+        <start uid="model_series_adaptor" />
+        <start uid="MPRNegato3D" />
+        <start uid="snapshot" />
+        <start uid="exportAction" />
+    </config>
+</extension>

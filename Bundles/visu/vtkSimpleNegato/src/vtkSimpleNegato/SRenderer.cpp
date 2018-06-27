@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -44,7 +44,7 @@ static const std::string s_IMAGE_KEY = "image";
 //-----------------------------------------------------------------------------
 
 SRenderer::SRenderer() noexcept :
-    m_render( 0 ),
+    m_render( nullptr ),
     m_bPipelineIsInit(false)
 {
     SLM_TRACE_FUNC();
@@ -81,13 +81,14 @@ void SRenderer::starting()
     m_render = vtkRenderer::New();
     m_interactorManager->getInteractor()->GetRenderWindow()->AddRenderer(m_render);
 
+    this->refresh();
 }
 
 //-----------------------------------------------------------------------------
 
 void SRenderer::stopping()
 {
-    if( m_render == 0 )
+    if( m_render == nullptr )
     {
         return;
     }
@@ -102,12 +103,11 @@ void SRenderer::stopping()
 
     SLM_ASSERT("m_render not instanced", m_render);
     m_render->Delete();
-    m_render = 0;
+    m_render = nullptr;
 
     m_interactorManager->uninstallInteractor();
     m_interactorManager.reset();
 
-//    this->getContainer()->clean();
     this->destroy();
 }
 
@@ -115,9 +115,7 @@ void SRenderer::stopping()
 
 void SRenderer::updating()
 {
-
-//    m_interactorManager->getInteractor()->Render();
-    refresh();
+    this->refresh();
 }
 
 //-----------------------------------------------------------------------------
@@ -138,7 +136,6 @@ void SRenderer::refresh()
         {
             updateVTKPipeline();
         }
-
 
         //
         int axialIndex    = static_cast<int>(img->getSize()[2]/2);
@@ -180,7 +177,7 @@ void SRenderer::initVTKPipeline()
     m_negatoSagittal->SetInteractor( m_interactorManager->getInteractor() );
     m_negatoSagittal->SetKeyPressActivationValue('x');
     m_negatoSagittal->SetPicker(picker);
-    m_negatoSagittal->GetPlaneProperty()->SetColor(1,0,0);
+    m_negatoSagittal->GetPlaneProperty()->SetColor(1, 0, 0);
     m_negatoSagittal->TextureInterpolateOn();
     m_negatoSagittal->SetInputData(vtkImg);
     m_negatoSagittal->SetPlaneOrientationToXAxes();
@@ -192,7 +189,7 @@ void SRenderer::initVTKPipeline()
     m_negatoFrontal->SetInteractor( m_interactorManager->getInteractor() );
     m_negatoFrontal->SetKeyPressActivationValue('y');
     m_negatoFrontal->SetPicker(picker);
-    m_negatoFrontal->GetPlaneProperty()->SetColor(0,1,0);
+    m_negatoFrontal->GetPlaneProperty()->SetColor(0, 1, 0);
     m_negatoFrontal->TextureInterpolateOn();
     m_negatoFrontal->SetInputData(vtkImg);
     m_negatoFrontal->SetPlaneOrientationToYAxes();
@@ -205,7 +202,7 @@ void SRenderer::initVTKPipeline()
     m_negatoAxial->SetInteractor( m_interactorManager->getInteractor() );
     m_negatoAxial->SetKeyPressActivationValue('z');
     m_negatoAxial->SetPicker(picker);
-    m_negatoAxial->GetPlaneProperty()->SetColor(0,0,1);
+    m_negatoAxial->GetPlaneProperty()->SetColor(0, 0, 1);
     m_negatoAxial->TextureInterpolateOn();
     m_negatoAxial->SetInputData(vtkImg);
     m_negatoAxial->SetPlaneOrientationToZAxes();

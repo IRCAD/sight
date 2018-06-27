@@ -20,6 +20,23 @@ class Image;
 namespace ioITK
 {
 
+/**
+ * @brief Writer for .inr.gz image
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+   <service type="::ioITK::InrImageWriterService">
+       <in key="data" uid="..." />
+       <file>...</file>
+   </service>
+   @endcode
+ * @subsection Input Input
+ * - \b data [::fwData::Image]: image to save.
+ * @subsection Configuration Configuration
+ * - \b file (optional): path of the file to save, if it not defined, 'configureWithIHM()' should be called to define
+ * the path.
+ */
 class IOITK_CLASS_API InrImageWriterService : public ::fwIO::IWriter
 {
 
@@ -30,7 +47,7 @@ public:
 
     IOITK_API virtual ~InrImageWriterService() noexcept;
 
-    IOITK_API static void saveImage( const ::boost::filesystem::path& inrFile, const SPTR(::fwData::Image)& image );
+    IOITK_API static void saveImage( const ::boost::filesystem::path& inrFile, const CSPTR(::fwData::Image)& image );
 
 protected:
 

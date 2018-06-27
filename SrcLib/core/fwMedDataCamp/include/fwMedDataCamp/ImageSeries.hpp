@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWMEDDATACAMP_IMAGESERIES_HPP__
-#define __FWMEDDATACAMP_IMAGESERIES_HPP__
+#pragma once
 
 #include "fwMedDataCamp/config.hpp"
 
@@ -13,8 +12,8 @@
 
 #include <fwData/Image.hpp>
 
+#include <fwMedData/DicomSeries.hpp>
 #include <fwMedData/ImageSeries.hpp>
 
 fwCampDeclareAccessor((fwMedData)(ImageSeries), (fwData)(Image));
-
-#endif /* __FWMEDDATACAMP_IMAGESERIES_HPP__ */
+fwCampDeclareAccessor((fwMedData)(ImageSeries), (fwMedData)(DicomSeries));

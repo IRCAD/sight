@@ -6,6 +6,8 @@
 
 #include "fwGdcmIO/container/DicomInstance.hpp"
 
+#include "fwGdcmIO/helper/DicomDataReader.hxx"
+
 #include <fwData/Image.hpp>
 
 #include <fwMedData/DicomSeries.hpp>
@@ -14,6 +16,7 @@
 #include <fwMedData/Series.hpp>
 #include <fwMedData/Study.hpp>
 
+#include <gdcmReader.h>
 #include <gdcmScanner.h>
 #include <gdcmUIDGenerator.h>
 
@@ -58,20 +61,18 @@ DicomInstance::DicomInstance(const ::fwMedData::Series::csptr& series,
 
 DicomInstance::DicomInstance(const ::fwMedData::DicomSeries::csptr& dicomSeries,
                              const ::fwLog::Logger::sptr& logger) :
-    m_isMultiFiles(dicomSeries->getLocalDicomPaths().size() > 1),
+    m_isMultiFiles(dicomSeries->getDicomContainer().size() > 1),
     m_studyInstanceUID(dicomSeries->getStudy()->getInstanceUID()),
     m_seriesInstanceUID(dicomSeries->getInstanceUID()),
     m_logger(logger)
 {
     SLM_ASSERT("DicomSeries is not instantiated", dicomSeries);
-    SLM_ASSERT("DicomSeries availability shall be PATHS.",
-               dicomSeries->getDicomAvailability() == ::fwMedData::DicomSeries::PATHS);
 
     // Get SOPClassUID
     ::fwMedData::DicomSeries::SOPClassUIDContainerType sopClassUIDContainer = dicomSeries->getSOPClassUIDs();
     if(!sopClassUIDContainer.empty())
     {
-        m_SOPClassUID = sopClassUIDContainer.begin()->c_str();
+        m_SOPClassUID = *(sopClassUIDContainer.begin());
     }
 
     this->readUIDFromDicomSeries(dicomSeries);
@@ -81,7 +82,6 @@ DicomInstance::DicomInstance(const ::fwMedData::DicomSeries::csptr& dicomSeries,
 
 DicomInstance::DicomInstance(const DicomInstance& dicomInstance)
 {
-    SLM_TRACE_FUNC();
     m_isMultiFiles            = dicomInstance.m_isMultiFiles;
     m_SOPClassUID             = dicomInstance.m_SOPClassUID;
     m_SOPInstanceUIDContainer = dicomInstance.m_SOPInstanceUIDContainer;
@@ -92,7 +92,6 @@ DicomInstance::DicomInstance(const DicomInstance& dicomInstance)
 
 DicomInstance::~DicomInstance()
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
@@ -147,7 +146,7 @@ void DicomInstance::generateSOPInstanceUIDs(const ::fwMedData::Series::csptr& se
     ::fwMedData::ImageSeries::csptr imageSeries = ::fwMedData::ImageSeries::dynamicConstCast(series);
 
     // Compute number of instances
-    std::size_t nbInstances = (imageSeries && m_isMultiFiles) ? (imageSeries->getImage()->getSize()[2]) : (1);
+    const std::size_t nbInstances = (imageSeries && m_isMultiFiles) ? (imageSeries->getImage()->getSize()[2]) : (1);
 
     // Create generator
     ::gdcm::UIDGenerator uidGenerator;
@@ -163,33 +162,32 @@ void DicomInstance::generateSOPInstanceUIDs(const ::fwMedData::Series::csptr& se
 
 void DicomInstance::readUIDFromDicomSeries(const ::fwMedData::DicomSeries::csptr& dicomSeries)
 {
-    ::gdcm::Scanner scanner;
-    const ::gdcm::Tag SOPInstanceUIDTag = ::gdcm::Tag(0x0008, 0x0018);    // SOP Instance UID
-    scanner.AddTag(SOPInstanceUIDTag);
+    const ::gdcm::Tag SOPInstanceUIDTag      = ::gdcm::Tag(0x0008, 0x0018); // SOP Instance UID
     const ::gdcm::Tag frameOfReferenceUIDTag = ::gdcm::Tag(0x0020, 0x0052);    // Frame of Reference UID
-    scanner.AddTag(frameOfReferenceUIDTag);
+    std::set< ::gdcm::Tag > selectedtags;
+    selectedtags.insert( SOPInstanceUIDTag );
+    selectedtags.insert( frameOfReferenceUIDTag );
 
-    std::vector< std::string > filenames;
-    for(const auto& entry : dicomSeries->getLocalDicomPaths())
+    std::set<std::string> frameOfReferenceUIDContainer;
+    for(const auto& item : dicomSeries->getDicomContainer())
     {
-        const std::string path = entry.second.string();
-        filenames.push_back(path);
-    }
+        const ::fwMemory::BufferObject::sptr bufferObj         = item.second;
+        const ::fwMemory::BufferManager::StreamInfo streamInfo = bufferObj->getStreamInfo();
+        SPTR(std::istream) is = streamInfo.stream;
 
-    const bool status = scanner.Scan( filenames );
-    FW_RAISE_IF("Unable to read the files.", !status);
-
-    const ::gdcm::Directory::FilenamesType keys = scanner.GetKeys();
-    ::gdcm::Directory::FilenamesType::const_iterator it;
-    for(const std::string& filename : keys)
-    {
+        ::gdcm::Reader reader;
+        reader.SetStream(*is);
+        if(!reader.ReadSelectedTags(selectedtags))
+        {
+            FW_RAISE("Unable to read Dicom file '"<< bufferObj->getStreamInfo().fsFile.string() <<"' "<<
+                     "(slice: '" << item.first << "')");
+        }
+        const ::gdcm::DataSet& dataset = reader.GetFile().GetDataSet();
         // SOP Instance UID
-        const std::string SOPInstanceUID = scanner.GetValue( filename.c_str(), SOPInstanceUIDTag );
-        m_SOPInstanceUIDContainer.push_back(SOPInstanceUID);
+        m_SOPInstanceUIDContainer.push_back(::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0008, 0x0018>(dataset));
+        // Retrieve frame of reference UID
+        frameOfReferenceUIDContainer.insert(::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0020, 0x0052>(dataset));
     }
-
-    // Retrieve frame of reference UID
-    std::set<std::string> frameOfReferenceUIDContainer = scanner.GetValues(frameOfReferenceUIDTag);
 
     if(frameOfReferenceUIDContainer.size() == 1)
     {
@@ -213,7 +211,6 @@ void DicomInstance::readUIDFromDicomSeries(const ::fwMedData::DicomSeries::csptr
             m_logger->critical(msg);
         }
     }
-
 }
 
 //------------------------------------------------------------------------------

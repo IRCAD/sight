@@ -51,11 +51,12 @@ SurfaceSegmentation::~SurfaceSegmentation()
 
 void SurfaceSegmentation::write()
 {
-    const ::fwMedData::ModelSeries::csptr srcModelSeries = this->getConcreteObject();
+    const ::fwMedData::ModelSeries::csptr srcModelSeries        = this->getConcreteObject();
+    const ::fwMedData::DicomSeries::csptr associatedDicomSeries = srcModelSeries->getDicomReference();
 
     SLM_ASSERT("::fwMedData::ModelSeries not instanced", srcModelSeries);
 
-    if(!m_associatedDicomSeries)
+    if(!associatedDicomSeries)
     {
         m_logger->critical("Unable to retrieve information from the associated image series.");
         m_writerJob->done();
@@ -65,7 +66,7 @@ void SurfaceSegmentation::write()
 
     // Verify matching Patient's names
     const std::string& modelPatientName = srcModelSeries->getPatient()->getName();
-    const std::string& imagePatientName = m_associatedDicomSeries->getPatient()->getName();
+    const std::string& imagePatientName = associatedDicomSeries->getPatient()->getName();
     if(modelPatientName != imagePatientName)
     {
         m_logger->warning("The patient's name of the model (\"" + modelPatientName + "\") "
@@ -74,7 +75,7 @@ void SurfaceSegmentation::write()
 
     // Verify matching Patient ID
     const std::string& modelPatientID = srcModelSeries->getPatient()->getPatientId();
-    const std::string& imagePatientID = m_associatedDicomSeries->getPatient()->getPatientId();
+    const std::string& imagePatientID = associatedDicomSeries->getPatient()->getPatientId();
     if(modelPatientID != imagePatientID)
     {
         m_logger->warning("The patient ID of the model (\"" + modelPatientID + "\") "
@@ -83,7 +84,7 @@ void SurfaceSegmentation::write()
 
     // Verify matching Study Instance UID
     const std::string& modelStudyInstanceUID = srcModelSeries->getStudy()->getInstanceUID();
-    const std::string& imageStudyInstanceUID = m_associatedDicomSeries->getStudy()->getInstanceUID();
+    const std::string& imageStudyInstanceUID = associatedDicomSeries->getStudy()->getInstanceUID();
     if(modelStudyInstanceUID != imageStudyInstanceUID)
     {
         m_logger->warning("The study instance UID of the model (\"" + modelStudyInstanceUID + "\") "
@@ -93,11 +94,11 @@ void SurfaceSegmentation::write()
     // Complete Model Series with information from associated Image Series
     const ::fwMedData::ModelSeries::sptr modelSeries = ::fwMedData::ModelSeries::New();
     modelSeries->shallowCopy(srcModelSeries);
-    modelSeries->setPatient(m_associatedDicomSeries->getPatient());
-    modelSeries->setStudy(m_associatedDicomSeries->getStudy());
+    modelSeries->setPatient(associatedDicomSeries->getPatient());
+    modelSeries->setStudy(associatedDicomSeries->getStudy());
 
     SPTR(::fwGdcmIO::container::DicomInstance) associatedDicomInstance =
-        std::make_shared< ::fwGdcmIO::container::DicomInstance >(m_associatedDicomSeries, m_logger);
+        std::make_shared< ::fwGdcmIO::container::DicomInstance >(associatedDicomSeries, m_logger);
 
     SPTR(::fwGdcmIO::container::DicomInstance) modelInstance =
         std::make_shared< ::fwGdcmIO::container::DicomInstance >(modelSeries, m_logger, false);
@@ -129,13 +130,6 @@ void SurfaceSegmentation::write()
 std::string SurfaceSegmentation::extension()
 {
     return std::string("");
-}
-
-//------------------------------------------------------------------------------
-
-void SurfaceSegmentation::setAssociatedDicomSeries(const CSPTR(::fwMedData::DicomSeries)& dicomSeries)
-{
-    m_associatedDicomSeries = dicomSeries;
 }
 
 //------------------------------------------------------------------------------

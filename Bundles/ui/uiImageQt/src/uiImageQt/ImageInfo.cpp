@@ -16,7 +16,7 @@
 #include <fwData/Image.hpp>
 
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
-#include <fwDataTools/helper/Image.hpp>
+#include <fwDataTools/helper/ImageGetter.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
@@ -36,6 +36,8 @@ fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiImageQt::ImageInfo, ::fwD
 
 static const ::fwCom::Slots::SlotKeyType s_GET_INTERACTION_SLOT = "getInteraction";
 
+static const ::fwServices::IService::KeyType s_IMAGE_INPUT = "image";
+
 ImageInfo::ImageInfo() noexcept
 {
     newSlot(s_GET_INTERACTION_SLOT, &ImageInfo::getInteraction, this);
@@ -51,9 +53,7 @@ ImageInfo::~ImageInfo() noexcept
 
 void ImageInfo::starting()
 {
-    SLM_TRACE_FUNC();
     this->::fwGui::IGuiContainerSrv::create();
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
 
     ::fwGuiQt::container::QtContainer::sptr qtContainer
         = ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer() );
@@ -74,8 +74,6 @@ void ImageInfo::starting()
 
 void ImageInfo::stopping()
 {
-    SLM_TRACE_FUNC();
-
     this->destroy();
 }
 
@@ -83,7 +81,6 @@ void ImageInfo::stopping()
 
 void ImageInfo::configuring()
 {
-    SLM_TRACE_FUNC();
     this->::fwGui::IGuiContainerSrv::initialize();
 }
 
@@ -91,14 +88,14 @@ void ImageInfo::configuring()
 
 void ImageInfo::updating()
 {
-}
-
-//------------------------------------------------------------------------------
-
-void ImageInfo::swapping()
-{
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-    bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
+    ::fwData::Image::csptr image = this->getInput< ::fwData::Image >(s_IMAGE_INPUT);
+    if (!image)
+    {
+        FW_DEPRECATED_KEY(s_IMAGE_INPUT, "in", "18.0");
+        image = this->getObject< ::fwData::Image >();
+    }
+    SLM_ASSERT("The input '" + s_IMAGE_INPUT + "' is not defined", image);
+    const bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
     m_valueText->setEnabled(imageIsValid);
 }
 
@@ -106,20 +103,55 @@ void ImageInfo::swapping()
 
 void ImageInfo::getInteraction(::fwDataTools::PickingInfo info)
 {
-    SLM_TRACE_FUNC();
-
     if (info.m_eventId == ::fwDataTools::PickingInfo::Event::MOUSE_MOVE)
     {
-        ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-        bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
+        ::fwData::Image::csptr image = this->getInput< ::fwData::Image >(s_IMAGE_INPUT);
+        if (!image)
+        {
+            FW_DEPRECATED_KEY(s_IMAGE_INPUT, "in", "18.0");
+            image = this->getObject< ::fwData::Image >();
+        }
+        SLM_ASSERT("The input '" + s_IMAGE_INPUT + "' is not defined", image);
+
+        const bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
         m_valueText->setEnabled(imageIsValid);
         if (imageIsValid)
         {
-            double* point = info.m_worldPos;
+            const double* point                  = info.m_worldPos;
+            const ::fwData::Image::SizeType size = image->getSize();
 
-            ::fwDataTools::helper::Image imageHelper(image);
+            if (point[0] < 0 || point[1] < 0 || point[2] < 0)
+            {
+                SLM_ERROR("The received coordinates are not in image space, maybe you used the wrong picker "
+                          "interactor (see ::visuVTKAdaptor::SImagePickerInteractor)");
+                return;
+            }
 
-            std::string intensity = imageHelper.getPixelAsString(point[0], point[1], point[2] );
+            const ::fwData::Image::SizeType coords =
+            {{ static_cast< ::fwData::Image::SizeType::value_type >(point[0]),
+               static_cast< ::fwData::Image::SizeType::value_type >(point[1]),
+               static_cast< ::fwData::Image::SizeType::value_type >(point[2])}};
+
+            bool isInside = (coords[0] < size[0] && coords[1] < size[1]);
+            if (image->getNumberOfDimensions() < 3)
+            {
+                isInside = (isInside && coords[2] == 0);
+            }
+            else
+            {
+                isInside = (isInside && coords[2] < size[2]);
+            }
+
+            if (!isInside)
+            {
+                SLM_ERROR("The received coordinates are not in image space, maybe you used the wrong picker "
+                          "interactor (see ::visuVTKAdaptor::SImagePickerInteractor)");
+                return;
+            }
+
+            ::fwDataTools::helper::ImageGetter imageHelper(image);
+
+            const std::string intensity = imageHelper.getPixelAsString(coords[0], coords[1], coords[2] );
             m_valueText->setText(QString::fromStdString(intensity));
         }
     }
@@ -130,6 +162,18 @@ void ImageInfo::getInteraction(::fwDataTools::PickingInfo info)
 void ImageInfo::info( std::ostream& _sstream )
 {
     _sstream << "Image Info Editor";
+}
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsMap ImageInfo::getAutoConnections() const
+{
+    KeyConnectionsMap connections;
+
+    connections.push(s_IMAGE_INPUT, ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_IMAGE_INPUT, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
+
+    return connections;
 }
 
 //------------------------------------------------------------------------------

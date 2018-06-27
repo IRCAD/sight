@@ -13,7 +13,7 @@
         <object uid="${SERIESDB}" type="::fwMedData::SeriesDB" src="ref" />
         <object uid="selections" type="::fwData::Vector" />
 
-        <service uid="mainview" type="::gui::view::SDefaultView">
+        <service uid="mainview" type="::gui::view::SDefaultView" >
             <gui>
                 <layout type="::fwGui::CardinalLayoutManager">
                     <view caption="Information" align="center" minWidth="200" />
@@ -65,7 +65,7 @@
         </service>
 
         <service uid="action_import" type="::uiIO::action::SSeriesDBMerger">
-            <in key="seriesDB" uid="${SERIESDB}" />
+            <inout key="seriesDB" uid="${SERIESDB}" />
             <IOSelectorSrvConfig name="SDBReaderIOSelectorConfig" />
         </service>
         <service uid="selector" type="::uiMedDataQt::editor::SSelector" autoConnect="yes">
@@ -235,7 +235,7 @@
                     <mode>include</mode>
                     <id>ImageSeriesExport</id>
                     <id>ModelSeriesExport</id>
-                    <id>DicomSeriesExport</id>
+                    <id>DicomSegmentationSurfaceExport</id>
                 </filter>
             </config>
         </service>

@@ -61,12 +61,6 @@ public:
     /// Does nothing
     FWGDCMIO_API std::string extension() override;
 
-    /**
-     * @brief Set associated DICOM series (Associated image instances)
-     * @param[in] dicomSeries Associated DICOM series
-     */
-    FWGDCMIO_API void setAssociatedDicomSeries(const CSPTR(::fwMedData::DicomSeries)& dicomSeries);
-
     /// Returns logger
     FWGDCMIO_API SPTR(::fwLog::Logger) getLogger() const;
 
@@ -74,9 +68,6 @@ public:
     FWGDCMIO_API SPTR(::fwJobs::IJob) getJob() const override;
 
 private:
-
-    /// Associated DICOM series (Associated image instances)
-    CSPTR(::fwMedData::DicomSeries) m_associatedDicomSeries;
 
     /// Logger
     ::fwLog::Logger::sptr m_logger;

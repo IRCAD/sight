@@ -108,12 +108,15 @@ void SMeshWriter::info(std::ostream& _sstream )
 
 void SMeshWriter::updating()
 {
-    SLM_TRACE_FUNC();
-
     if(  this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
-        ::fwData::Mesh::sptr pMesh = this->getObject< ::fwData::Mesh >();
+        ::fwData::Mesh::csptr pMesh = this->getInput< ::fwData::Mesh >(::fwIO::s_DATA_KEY);
+        if (!pMesh)
+        {
+            FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "18.0");
+            pMesh = this->getObject< ::fwData::Mesh >();
+        }
         SLM_ASSERT("pMesh not instanced", pMesh);
 
         ::fwGui::Cursor cursor;
