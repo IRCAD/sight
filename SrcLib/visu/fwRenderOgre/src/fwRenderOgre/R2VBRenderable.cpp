@@ -73,6 +73,8 @@ void fwRenderOgre::R2VBRenderable::setOutputSettings(size_t _vertexCount, bool _
 
     // Define feedback vertex declarations
     ::Ogre::VertexDeclaration* vtxDecl = m_r2vbBuffer->getVertexDeclaration();
+    vtxDecl->removeAllElements();
+
     size_t ofst = 0;
     ofst += vtxDecl->addElement(0, ofst, ::Ogre::VET_FLOAT3, ::Ogre::VES_POSITION).getSize();
     ofst += vtxDecl->addElement(0, ofst, ::Ogre::VET_FLOAT3, ::Ogre::VES_NORMAL).getSize();
