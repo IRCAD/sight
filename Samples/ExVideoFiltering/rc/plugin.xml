@@ -99,7 +99,7 @@
 
             <!-- *************************** Begin generic scene *************************** -->
 
-            <service uid="genericScene1" type="::fwRenderVTK::SRender" autoConnect="yes">
+            <service uid="genericScene1" type="::fwRenderVTK::SRender" >
                 <scene>
                     <renderer id="default" background="0.0" />
                     <adaptor uid="videoAdpt1" />
@@ -120,7 +120,7 @@
 
             <!-- *************************** Begin generic scene *************************** -->
 
-            <service uid="genericScene2" type="::fwRenderVTK::SRender" autoConnect="yes">
+            <service uid="genericScene2" type="::fwRenderVTK::SRender" >
                 <scene>
                     <renderer id="default" background="0.0" />
                     <adaptor uid="videoAdpt2" />
@@ -141,7 +141,7 @@
 
             <!-- *************************** Begin generic scene *************************** -->
 
-            <service uid="genericScene3" type="::fwRenderVTK::SRender" autoConnect="yes">
+            <service uid="genericScene3" type="::fwRenderVTK::SRender" >
                 <scene>
                     <renderer id="default" background="0.0" />
                     <adaptor uid="videoAdpt3" />
@@ -162,7 +162,7 @@
 
             <!-- *************************** Begin generic scene *************************** -->
 
-            <service uid="genericScene4" type="::fwRenderVTK::SRender" autoConnect="yes">
+            <service uid="genericScene4" type="::fwRenderVTK::SRender" >
                 <scene>
                     <renderer id="default" background="0.0" />
                     <adaptor uid="videoAdpt4" />

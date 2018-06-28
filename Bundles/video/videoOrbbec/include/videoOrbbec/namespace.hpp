@@ -7,9 +7,9 @@
 #pragma once
 
 /**
- * @brief   Contains video grabber services for RGBD cameras (Kinect, Sense) using the OpenNI library.
+ * @brief This namespace contains services to capture and display video on the Orbbec Astra Pro camera.
  */
-namespace videoOpenni
+namespace videoOrbbec
 {
 
 }

@@ -1,8 +1,13 @@
-#ifndef __VIDEOFILTER_SCROPVIDEOQUAD_HPP__
-#define __VIDEOFILTER_SCROPVIDEOQUAD_HPP__
+/* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2018.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
+
+#pragma once
 
 #include "videoFilter/config.hpp"
-#include <videoFilter/IVideoFilter.hpp>
+#include "videoFilter/IVideoFilter.hpp"
 
 #include <arData/FrameTL.hpp>
 
@@ -12,7 +17,11 @@ namespace videoFilter
 {
 
 /**
- * @brief   Defines the service which grabs video frames.
+ * @brief   Service that receives frames, split them in four regions, and push these new smaller frames in four
+ * timelines.
+ *
+ * @section Slots Slots
+ * - \b cropFrame(::fwCore::HiResClock::HiResClockType) : splits the current frame.
  *
  * @section XML XML Configuration
  *
@@ -74,5 +83,3 @@ private:
     ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 };
 } //namespace videoFilter
-
-#endif /*__VIDEOFILTER_SCROPVIDEOQUAD_HPP__*/

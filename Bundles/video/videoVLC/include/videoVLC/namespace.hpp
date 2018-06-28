@@ -7,9 +7,9 @@
 #pragma once
 
 /**
- * @brief   Contains video grabber services for RGBD cameras (Kinect, Sense) using the OpenNI library.
- */
-namespace videoOpenni
+ * @brief  The namespace videoVLC contains service to display and capture video with VLC.
+ **/
+namespace videoVLC
 {
 
-}
+} // namespace videoVLC

@@ -1,3 +1,9 @@
+/* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2018.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
+
 #include "videoFilter/SCropVideoQuad.hpp"
 
 #include <fwCom/Signal.hxx>
@@ -109,7 +115,6 @@ void SCropVideoQuad::cropFrame(::fwCore::HiResClock::HiResClockType timestamp)
         const ::cv::Rect roi3(0, heightCropped, widthCropped, heightCropped);
         const ::cv::Rect roi4(widthCropped, heightCropped, widthCropped, heightCropped);
 
-
         this->pushFrameInTimeline(imgIn, roi1, frameTL1, newerTimestamp);
         this->pushFrameInTimeline(imgIn, roi2, frameTL2, newerTimestamp);
         this->pushFrameInTimeline(imgIn, roi3, frameTL3, newerTimestamp);
@@ -118,7 +123,6 @@ void SCropVideoQuad::cropFrame(::fwCore::HiResClock::HiResClockType timestamp)
 }
 
 //----------------------------------------------------------------------------
-
 
 void SCropVideoQuad::pushFrameInTimeline(::cv::Mat& imgIn,
                                          const ::cv::Rect& roi,
@@ -160,4 +164,3 @@ void SCropVideoQuad::pushFrameInTimeline(::cv::Mat& imgIn,
 
 //----------------------------------------------------------------------------
 } // namespace videoFilter
-
