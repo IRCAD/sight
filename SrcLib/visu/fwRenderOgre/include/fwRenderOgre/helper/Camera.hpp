@@ -40,7 +40,7 @@ public:
      * @param _camera[in] camera of the layer where the pixel is picked
      * @param _pixelPoint[in] point in pixel coordinates to convert
      */
-    static FWRENDEROGRE_API ::Ogre::Vector3 convertPixelToViewSpace(const ::Ogre::Camera* _camera,
+    static FWRENDEROGRE_API ::Ogre::Vector3 convertPixelToViewSpace(const ::Ogre::Camera& _camera,
                                                                     const float _pixelPoint[3]);
 
 };

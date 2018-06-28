@@ -11,7 +11,10 @@
 #include "fwRenderOgre/Utils.hpp"
 #include <fwRenderOgre/helper/Camera.hpp>
 
+#include <OgreLogManager.h>
 #include <OgreMatrix4.h>
+#include <OgreRenderWindow.h>
+#include <OgreViewport.h>
 
 #include <limits>
 #include <tuple>
@@ -159,6 +162,74 @@ void CameraTest::computeProjectionMatrix()
             compareMatrix(expected, actual);
         }
     }
+}
+
+//------------------------------------------------------------------------------
+
+void CameraTest::convertPixelToWorldSpace()
+{
+    // Sorry for this incomprehensible test but this is better than 16 loops
+    const size_t width  = 1920;
+    const size_t height = 1080;
+    const double cx     = static_cast<double>(width)/2.;
+    const double cy     = static_cast<double>(height)/2.;
+    const double fx     = 10;
+    const double fy     = 10;
+    const float n       = 0.1f;
+    const float f       = 100;
+
+    // Original camera
+    ::arData::Camera::sptr camera = ::arData::Camera::New();
+    camera->setCx(cx);
+    camera->setCy(cy);
+    camera->setFx(fx);
+    camera->setFy(fy);
+    camera->setWidth(width);
+    camera->setHeight(height);
+
+    ::Ogre::Matrix4 m =
+        ::fwRenderOgre::helper::Camera::computeProjectionMatrix(*camera, width, height, n, f);
+
+    ::Ogre::Camera* ogreCamera;
+
+    auto root = ::fwRenderOgre::Utils::getOgreRoot();
+
+    auto ogreRenderWindow = root->createRenderWindow("Dummy-RenderWindow",
+                                                     static_cast<unsigned int>(1),
+                                                     static_cast<unsigned int>(1),
+                                                     false,
+                                                     nullptr);
+
+    ogreRenderWindow->setVisible(false);
+
+    ogreRenderWindow->setAutoUpdated(false);
+
+    auto sceneManager = root->createSceneManager("DefaultSceneManager", "Testing");
+
+    ogreCamera = sceneManager->createCamera("DefaultCam");
+
+    auto viewport = ogreRenderWindow->addViewport(ogreCamera, 0);
+
+    viewport->setDimensions(0, 0, width, height);
+
+    float point1[3] = {0, 0, 0};
+    float point2[3] = {12, 34, 56};
+    float point3[3] = {-65, -43, -21};
+
+    // All math was done by taking into account ogre multiplaction methods.
+    Ogre::Vector3 point1Expected = {-110.34660339355469, 82.75994873046875, -199.8001708984375};
+    Ogre::Vector3 point2Expected = {2.0101823806762695, -1.4128586053848267, 3.6401357650756836};
+    Ogre::Vector3 point3Expected = {-5.028173923492432, 4.069128513336182, -9.0991792678833};
+
+    auto result1 = ::fwRenderOgre::helper::Camera::convertPixelToViewSpace(*ogreCamera, point1);
+    auto result2 = ::fwRenderOgre::helper::Camera::convertPixelToViewSpace(*ogreCamera, point2);
+    auto result3 = ::fwRenderOgre::helper::Camera::convertPixelToViewSpace(*ogreCamera, point3);
+
+    Utils::destroyOgreRoot();
+
+    CPPUNIT_ASSERT(result1 == point1Expected);
+    CPPUNIT_ASSERT(result2 == point2Expected);
+    CPPUNIT_ASSERT(result3 == point3Expected);
 }
 
 //------------------------------------------------------------------------------
