@@ -81,10 +81,9 @@ void SLine::configuring()
     const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
 
     // parsing transform or create an "empty" one
-    const std::string transformId = config.get<std::string>(::visuOgreAdaptor::STransform::s_CONFIG_TRANSFORM,
-                                                            this->getID() + "_transform");
+    this->setTransformId(config.get<std::string>( ::fwRenderOgre::ITransformable::s_CONFIG_TRANSFORM,
+                                                  this->getID() + "_transform"));
 
-    this->setTransformId(transformId);
     m_length = config.get<float>(s_LENGTH_CONFIG, 50.f);
 
     const std::string color = config.get("color", "#FFFFFF");
@@ -150,12 +149,8 @@ void SLine::starting()
 void SLine::updating()
 {
     ::Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
-    ::Ogre::SceneNode* transNode     =
-        ::fwRenderOgre::helper::Scene::getNodeById(this->getTransformId(), rootSceneNode);
-    if (transNode != nullptr)
-    {
-        transNode->setVisible(m_isVisible);
-    }
+    ::Ogre::SceneNode* transNode     = this->getTransformNode(rootSceneNode);
+    transNode->setVisible(m_isVisible);
     this->requestRender();
 }
 
@@ -178,14 +173,8 @@ void SLine::stopping()
 void SLine::attachNode(::Ogre::MovableObject* object)
 {
     ::Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
-    ::Ogre::SceneNode* transNode     =
-        ::fwRenderOgre::helper::Scene::getNodeById(this->getTransformId(), rootSceneNode);
-
-    if (transNode == nullptr)
-    {
-        transNode = rootSceneNode->createChildSceneNode(this->getTransformId());
-        transNode->setVisible(m_isVisible);
-    }
+    ::Ogre::SceneNode* transNode     = this->getTransformNode(rootSceneNode);
+    transNode->setVisible(m_isVisible);
     transNode->attachObject(object);
 }
 

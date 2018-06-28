@@ -66,9 +66,8 @@ void SLandmarks::configuring()
     const ConfigType configType = this->getConfigTree();
     const ConfigType config     = configType.get_child("config.<xmlattr>");
 
-    const std::string transformId = config.get<std::string>(s_CONFIG_TRANSFORM, this->getID() + "_transform");
-
-    this->setTransformId(transformId);
+    this->setTransformId(config.get<std::string>( ::fwRenderOgre::ITransformable::s_CONFIG_TRANSFORM,
+                                                  this->getID() + "_transform"));
 }
 
 //-----------------------------------------------------------------------------
@@ -80,12 +79,7 @@ void SLandmarks::starting()
     this->getRenderService()->makeCurrent();
 
     ::Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
-    m_transNode                      =
-        ::fwRenderOgre::helper::Scene::getNodeById(this->getTransformId(), rootSceneNode);
-    if (m_transNode == nullptr)
-    {
-        m_transNode = rootSceneNode->createChildSceneNode(this->getTransformId());
-    }
+    m_transNode                      = this->getTransformNode(rootSceneNode);
 
     m_material = ::fwData::Material::New();
 

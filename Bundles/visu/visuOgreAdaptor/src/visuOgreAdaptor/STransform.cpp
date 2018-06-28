@@ -72,10 +72,7 @@ void STransform::starting()
     this->initialize();
 
     ::Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
-    if(!this->getTransformId().empty())
-    {
-        m_transformNode = ::fwRenderOgre::helper::Scene::getNodeById(this->getTransformId(), rootSceneNode);
-    }
+    m_transformNode                  = this->getTransformNode(rootSceneNode);
 
     if (!m_parentTransformId.empty())
     {

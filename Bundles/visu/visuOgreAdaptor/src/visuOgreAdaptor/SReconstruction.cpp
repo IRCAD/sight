@@ -54,9 +54,8 @@ void SReconstruction::configuring()
 
     const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
 
-    // The transform attribute is mandatory in the XML configuration
-    this->setTransformId(config.get<std::string>("transform"));
-
+    this->setTransformId(config.get<std::string>( ::fwRenderOgre::ITransformable::s_CONFIG_TRANSFORM,
+                                                  this->getID() + "_transform"));
     if (config.count("autoresetcamera"))
     {
         m_autoResetCamera = config.get<std::string>("autoresetcamera") == "yes";

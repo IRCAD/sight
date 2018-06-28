@@ -135,10 +135,8 @@ void SMesh::configuring()
         }
     }
 
-    if(config.count("transform"))
-    {
-        this->setTransformId(config.get<std::string>("transform"));
-    }
+    this->setTransformId(config.get<std::string>( ::fwRenderOgre::ITransformable::s_CONFIG_TRANSFORM,
+                                                  this->getID() + "_transform"));
 
     m_isDynamic         = config.get<bool>("dynamic", m_isDynamic);
     m_isDynamicVertices = config.get<bool>("dynamicVertices", m_isDynamicVertices);
@@ -150,11 +148,6 @@ void SMesh::configuring()
 void SMesh::starting()
 {
     this->initialize();
-
-    if (this->getTransformId().empty())
-    {
-        this->setTransformId(this->getID() + "_TF");
-    }
 
     m_meshGeometry = ::std::make_shared< ::fwRenderOgre::Mesh>(this->getID());
     m_meshGeometry->setDynamic(m_isDynamic);
@@ -508,19 +501,8 @@ void SMesh::modifyTexCoords()
 void SMesh::attachNode(::Ogre::MovableObject* _node)
 {
     ::Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
-    ::Ogre::SceneNode* transNode     =
-        ::fwRenderOgre::helper::Scene::getNodeById(this->getTransformId(), rootSceneNode);
-
-    if (transNode == nullptr)
-    {
-        transNode = rootSceneNode->createChildSceneNode(this->getTransformId());
-    }
-    ::Ogre::SceneNode* node = _node->getParentSceneNode();
-    if ((node != transNode) && transNode)
-    {
-        _node->detachFromParent();
-        transNode->attachObject(_node);
-    }
+    ::Ogre::SceneNode* transNode     = this->getTransformNode(rootSceneNode);
+    transNode->attachObject(_node);
 }
 
 //-----------------------------------------------------------------------------

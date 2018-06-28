@@ -82,6 +82,8 @@ void SFrustumList::configuring()
     m_color    = config.get< std::string >("color", "#0000ffff");
     m_capacity = config.get< unsigned int > ("nbMax", 200);
 
+    this->setTransformId(config.get<std::string>( ::fwRenderOgre::ITransformable::s_CONFIG_TRANSFORM,
+                                                  this->getID() + "_transform"));
 }
 
 //-----------------------------------------------------------------------------
@@ -223,20 +225,8 @@ void SFrustumList::clear()
 
 void SFrustumList::updating()
 {
-    if (m_sceneNode == nullptr)
-    {
-        // Add camera to ogre scene
-        ::Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
-        ::Ogre::SceneNode* sceneNode     = ::fwRenderOgre::helper::Scene::getNodeById(this->getTransformId(),
-                                                                                      rootSceneNode);
-
-        if(sceneNode == nullptr)
-        {
-            sceneNode = rootSceneNode->createChildSceneNode(this->getID() + "_transform_" + std::to_string(0));
-        }
-        m_sceneNode = sceneNode;
-    }
-
+    ::Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
+    m_sceneNode                      = this->getTransformNode(rootSceneNode);
     m_sceneNode->attachObject(m_frustumList.front());
 
     this->requestRender();
@@ -246,11 +236,6 @@ void SFrustumList::updating()
 
 void SFrustumList::stopping()
 {
-    if (m_sceneNode != nullptr)
-    {
-        this->getSceneManager()->destroySceneNode(m_sceneNode);
-    }
-
     this->unregisterServices();
     this->clear();
     m_materialAdaptor.reset();

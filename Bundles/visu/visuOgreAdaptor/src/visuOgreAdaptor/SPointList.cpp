@@ -117,14 +117,8 @@ void SPointList::configuring()
         m_textureName = config.get<std::string>("textureName");
     }
 
-    if(config.count("transform"))
-    {
-        this->setTransformId(config.get<std::string>("transform"));
-    }
-    else
-    {
-        this->setTransformId(this->getID() + "_TF");
-    }
+    this->setTransformId(config.get<std::string>( ::fwRenderOgre::ITransformable::s_CONFIG_TRANSFORM,
+                                                  this->getID() + "_transform"));
 
     m_queryFlags = config.get<std::uint32_t>("queryFlags", m_queryFlags);
     m_radius     = config.get("radius", 1.f);
@@ -135,11 +129,6 @@ void SPointList::configuring()
 void SPointList::starting()
 {
     this->initialize();
-
-    if (this->getTransformId().empty())
-    {
-        this->setTransformId(this->getID() + "_TF");
-    }
 
     m_meshGeometry = ::std::make_shared< ::fwRenderOgre::Mesh>(this->getID());
     m_meshGeometry->setDynamic(true);
@@ -423,14 +412,8 @@ void SPointList::attachNode(::Ogre::MovableObject* _node)
     auto transformService = ::visuOgreAdaptor::STransform::dynamicCast(m_transformService.lock());
 
     ::Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
-    ::Ogre::SceneNode* transNode     =
-        ::fwRenderOgre::helper::Scene::getNodeById(this->getTransformId(), rootSceneNode);
-
-    if (transNode == nullptr)
-    {
-        transNode = rootSceneNode->createChildSceneNode(this->getTransformId());
-    }
-    ::Ogre::SceneNode* node = _node->getParentSceneNode();
+    ::Ogre::SceneNode* transNode     = this->getTransformNode(rootSceneNode);
+    ::Ogre::SceneNode* node          = _node->getParentSceneNode();
     if ((node != transNode) && transNode)
     {
         _node->detachFromParent();

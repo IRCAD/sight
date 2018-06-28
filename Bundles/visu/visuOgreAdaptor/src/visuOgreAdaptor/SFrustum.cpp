@@ -128,12 +128,7 @@ void SFrustum::starting()
 
     // Add camera to ogre scene
     ::Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
-    ::Ogre::SceneNode* transNode     =
-        ::fwRenderOgre::helper::Scene::getNodeById(this->getTransformId(), rootSceneNode);
-    if (transNode == nullptr)
-    {
-        transNode = rootSceneNode->createChildSceneNode(this->getTransformId());
-    }
+    ::Ogre::SceneNode* transNode     = this->getTransformNode(rootSceneNode);
     transNode->attachObject(m_ogreCamera);
 
     this->requestRender();
@@ -151,19 +146,13 @@ void SFrustum::updating()
 
 void SFrustum::stopping()
 {
-    ::Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
-    ::Ogre::SceneNode* transNode     =
-        ::fwRenderOgre::helper::Scene::getNodeById(this->getTransformId(), rootSceneNode);
-    if (transNode != nullptr)
-    {
-        transNode->removeAndDestroyAllChildren();
-    }
     this->unregisterServices();
 
+    m_ogreCamera->detachFromParent();
     this->getSceneManager()->destroyCamera(m_ogreCamera);
-    m_ogreCamera = nullptr;
 
-    m_material = nullptr;
+    m_ogreCamera = nullptr;
+    m_material   = nullptr;
 }
 
 //-----------------------------------------------------------------------------
