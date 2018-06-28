@@ -62,16 +62,13 @@ private:
     /// Ogre transform node.
     mutable ::Ogre::SceneNode* m_transformNode;
 
-protected:
+    /// This transform identifier
+    ::fwRenderOgre::SRender::OgreObjectIdType m_transformId;
 
-    /// Ogre transformation of this service
-    ::Ogre::Matrix4 m_ogreTransform;
+protected:
 
     /// Attached transform service
     ::fwRenderOgre::IAdaptor::wptr m_transformService;
-
-    /// This transform identifier
-    ::fwRenderOgre::SRender::OgreObjectIdType m_transformId;
 
     /// This parent transform identifier
     ::fwRenderOgre::SRender::OgreObjectIdType m_parentTransformId;

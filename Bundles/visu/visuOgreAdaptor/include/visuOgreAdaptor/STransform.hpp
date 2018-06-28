@@ -54,6 +54,7 @@ public:
 
     /// Constructor,
     VISUOGREADAPTOR_API STransform() noexcept;
+
     /// Destructor, does nothing
     VISUOGREADAPTOR_API virtual ~STransform() noexcept;
 
@@ -75,17 +76,24 @@ public:
 protected:
     /// Takes the attribute "parent" from m_config, and then puts it in m_parentTransformUID
     VISUOGREADAPTOR_API void configuring() override;
+
     /// Creates the ::Ogre::SceneNode corresonding to the associated transform matrix.
     VISUOGREADAPTOR_API void starting() override;
+
     /// Unregisters the service
     VISUOGREADAPTOR_API void stopping() override;
+
     /// Updates m_transform and m_ogreTransformNode from ::fwData::TransformationMatrix3D
     VISUOGREADAPTOR_API void updating() override;
 
     /// Ogre transform node.
     ::Ogre::SceneNode* m_transformNode;
+
     /// Ogre parent Transform sceneNode
     ::Ogre::SceneNode* m_parentTransformNode;
+
+    /// Ogre transformation of this service
+    ::Ogre::Matrix4 m_ogreTransform;
 
 };
 
