@@ -40,20 +40,6 @@ void ITransformable::setTransformId(::fwRenderOgre::SRender::OgreObjectIdType _i
     return m_transformNode;
 }
 
-//------------------------------------------------------------------------------
-
-::fwRenderOgre::SRender::OgreObjectIdType ITransformable::getParentTransformId() const
-{
-    return m_parentTransformId;
-}
-
-//------------------------------------------------------------------------------
-
-void ITransformable::setParentTransformId(::fwRenderOgre::SRender::OgreObjectIdType _id)
-{
-    m_parentTransformId = _id;
-}
-
 //-----------------------------------------------------------------------------
 
 } // namespace fwRenderOgre

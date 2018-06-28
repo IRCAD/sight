@@ -41,18 +41,6 @@ public:
     FWRENDEROGRE_API ::Ogre::SceneNode* getTransformNode(::Ogre::SceneNode* _rootNode) const;
 
     /**
-     * @brief Get the parent transform Id.
-     * @return This parent transform service UID.
-     */
-    FWRENDEROGRE_API ::fwRenderOgre::SRender::OgreObjectIdType getParentTransformId() const;
-
-    /**
-     * @brief Set the parent transform Id.
-     * @param _id This new parent transform service UID
-     */
-    FWRENDEROGRE_API void setParentTransformId(::fwRenderOgre::SRender::OgreObjectIdType _id);
-
-    /**
      * @brief s_CONFIG_TRANSFORM The key used in xml configuration.
      */
     FWRENDEROGRE_API static const std::string s_CONFIG_TRANSFORM;
@@ -64,14 +52,6 @@ private:
 
     /// This transform identifier
     ::fwRenderOgre::SRender::OgreObjectIdType m_transformId;
-
-protected:
-
-    /// Attached transform service
-    ::fwRenderOgre::IAdaptor::wptr m_transformService;
-
-    /// This parent transform identifier
-    ::fwRenderOgre::SRender::OgreObjectIdType m_parentTransformId;
 };
 
 } //namespace fwRenderOgre
