@@ -27,9 +27,7 @@ static const ::fwServices::IService::KeyType s_TRANSFORM_INOUT = "transform";
 
 //------------------------------------------------------------------------------
 
-STransform::STransform() noexcept :
-    m_transformNode(nullptr),
-    m_parentTransformNode(nullptr)
+STransform::STransform() noexcept
 {
 }
 
@@ -59,10 +57,7 @@ void STransform::configuring()
 
     this->setTransformId( config.get<std::string>("transform") );
 
-    if ( config.count( "parent" ) )
-    {
-        m_parentTransformId = config.get<std::string>("parent");
-    }
+    m_parentTransformId = config.get<std::string>("parent", m_parentTransformId);
 }
 
 //------------------------------------------------------------------------------
@@ -70,38 +65,21 @@ void STransform::configuring()
 void STransform::starting()
 {
     this->initialize();
+    ::Ogre::SceneManager* sceneManager = this->getSceneManager();
 
-    ::Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
-    m_transformNode                  = this->getTransformNode(rootSceneNode);
+
 
     if (!m_parentTransformId.empty())
     {
-        m_parentTransformNode = ::fwRenderOgre::helper::Scene::getNodeById(m_parentTransformId, rootSceneNode);
-    }
-
-    ::Ogre::SceneManager* sceneManager = this->getSceneManager();
-
-    if (!m_parentTransformNode)
-    {
-        if (!m_parentTransformId.empty())
-        {
-            m_parentTransformNode = sceneManager->getRootSceneNode()->createChildSceneNode(m_parentTransformId);
-        }
-        else
-        {
-            m_parentTransformNode = sceneManager->getRootSceneNode();
-        }
-    }
-
-    if (!m_transformNode)
-    {
-        m_transformNode = m_parentTransformNode->createChildSceneNode(this->getTransformId());
+        m_parentTransformNode = sceneManager->getRootSceneNode()->createChildSceneNode(m_parentTransformId);
     }
     else
     {
-        m_transformNode->getParent()->removeChild(m_transformNode);
-        m_parentTransformNode->addChild(m_transformNode);
+        m_parentTransformNode = sceneManager->getRootSceneNode();
     }
+
+    m_transformNode = this->getTransformNode(m_parentTransformNode);
+
     this->updating();
 }
 

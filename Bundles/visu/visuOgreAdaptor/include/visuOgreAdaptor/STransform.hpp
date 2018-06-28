@@ -50,6 +50,7 @@ class VISUOGREADAPTOR_CLASS_API STransform : public ::fwRenderOgre::IAdaptor,
 {
 
 public:
+
     fwCoreServiceClassDefinitionsMacro((STransform)(::fwRenderOgre::IAdaptor))
 
     /// Constructor,
@@ -74,6 +75,7 @@ public:
     VISUOGREADAPTOR_API void updateFromOgre();
 
 protected:
+
     /// Takes the attribute "parent" from m_config, and then puts it in m_parentTransformUID
     VISUOGREADAPTOR_API void configuring() override;
 
@@ -86,11 +88,14 @@ protected:
     /// Updates m_transform and m_ogreTransformNode from ::fwData::TransformationMatrix3D
     VISUOGREADAPTOR_API void updating() override;
 
+    /// The Parent transform identifier
+    ::fwRenderOgre::SRender::OgreObjectIdType m_parentTransformId {""};
+
     /// Ogre transform node.
-    ::Ogre::SceneNode* m_transformNode;
+    ::Ogre::SceneNode* m_transformNode {nullptr};
 
     /// Ogre parent Transform sceneNode
-    ::Ogre::SceneNode* m_parentTransformNode;
+    ::Ogre::SceneNode* m_parentTransformNode {nullptr};
 
     /// Ogre transformation of this service
     ::Ogre::Matrix4 m_ogreTransform;

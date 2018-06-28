@@ -409,16 +409,9 @@ void SPointList::updateMaterialAdaptor()
 
 void SPointList::attachNode(::Ogre::MovableObject* _node)
 {
-    auto transformService = ::visuOgreAdaptor::STransform::dynamicCast(m_transformService.lock());
-
     ::Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
     ::Ogre::SceneNode* transNode     = this->getTransformNode(rootSceneNode);
-    ::Ogre::SceneNode* node          = _node->getParentSceneNode();
-    if ((node != transNode) && transNode)
-    {
-        _node->detachFromParent();
-        transNode->attachObject(_node);
-    }
+    transNode->attachObject(_node);
 
     // Needed to recompute world bounding boxes of the scene node using its attached mesh bounds
     transNode->_update(true, false);
