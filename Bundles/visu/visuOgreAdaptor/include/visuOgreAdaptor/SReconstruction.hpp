@@ -39,7 +39,7 @@ namespace visuOgreAdaptor
  * @subsection Input Input:
  * - \b reconstruction [::fwData::Reconstruction]: reconstruction to display.
  * @subsection Configuration Configuration:
- * - \b transform (mandatory) : the transformation matrix to associate to the adaptor.
+ * - \b transform (optional) : the transformation matrix to associate to the adaptor.
  * - \b autoresetcamera (optional, default="yes"): reset the camera when this mesh is modified, "yes" or "no".
  * - \b queryFlags (optional) : Used for picking. Picked only by pickers with the same flag.
  */
