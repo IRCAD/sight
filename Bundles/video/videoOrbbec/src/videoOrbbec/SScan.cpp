@@ -18,8 +18,8 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ActiveWorkers.hpp>
 
-#include <videoQt/helper/formats.hpp>
-#include <videoQt/player/VideoRegistry.hpp>
+#include <fwVideoQt/helper/formats.hpp>
+#include <fwVideoQt/Registry.hpp>
 
 #include <QCameraInfo>
 
@@ -101,7 +101,7 @@ void SScan::startCamera()
         FW_RAISE_IF("Cannot open depth stream", m_oniStatus != ::openni::STATUS_OK);
         m_depthStream.setMirroringEnabled(false);
 
-        m_qtPlayer = ::videoQt::player::VideoRegistry::getInstance().requestPlayer(m_rgbCamera);
+        m_qtPlayer = ::fwVideoQt::Registry::getInstance().requestPlayer(m_rgbCamera);
 
         // Initialize timelines
         const auto depthWidth  = m_depthStream.getVideoMode().getResolutionX(),
@@ -115,7 +115,7 @@ void SScan::startCamera()
 
         // Start workers
         m_workerColor->moveToThread(&m_colorWorkerThread);
-        FW_RAISE_IF("Cannot connect QVideoPlayer::frameAvailable to worker.",
+        FW_RAISE_IF("Cannot connect videoQt::Player::frameAvailable to worker.",
                     !QObject::connect(m_qtPlayer, SIGNAL(frameAvailable(QVideoFrame const&)),
                                       m_workerColor, SLOT(presentFrame(QVideoFrame const&))));
         m_qtPlayer->play();
@@ -175,7 +175,7 @@ void SScan::stopCamera()
                     !QObject::disconnect(m_qtPlayer, SIGNAL(frameAvailable(QVideoFrame)),
                                          m_workerColor, SLOT(presentFrame(QVideoFrame))));
         m_qtPlayer->stop();
-        ::videoQt::player::VideoRegistry::getInstance().releasePlayer(m_qtPlayer);
+        ::fwVideoQt::Registry::getInstance().releasePlayer(m_qtPlayer);
         m_qtPlayer = nullptr;
         m_colorWorkerThread.quit();
     }

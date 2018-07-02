@@ -1,3 +1,9 @@
+/* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2018.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
+
 #include "videoOrbbec/SScanIR.hpp"
 
 #include <fwCom/Slots.hxx>
@@ -9,8 +15,8 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ActiveWorkers.hpp>
 
-#include <videoQt/helper/formats.hpp>
-#include <videoQt/player/VideoRegistry.hpp>
+#include <fwVideoQt/helper/formats.hpp>
+#include <fwVideoQt/Registry.hpp>
 
 #include <QCameraInfo>
 
@@ -118,7 +124,7 @@ void SScanIR::startCamera()
         m_depthStream.setMirroringEnabled(false);
         m_irStream.setMirroringEnabled(false);
 
-        m_qtPlayer = ::videoQt::player::VideoRegistry::getInstance().requestPlayer(m_rgbCamera);
+        m_qtPlayer = ::fwVideoQt::Registry::getInstance().requestPlayer(m_rgbCamera);
 
         // Initialize timelines
         const auto irWidth     = m_irStream.getVideoMode().getResolutionX(),
@@ -136,7 +142,7 @@ void SScanIR::startCamera()
 
         // Start workers
         m_workerColor->moveToThread(&m_colorWorkerThread);
-        FW_RAISE_IF("Cannot connect QVideoPlayer::frameAvailable to worker.",
+        FW_RAISE_IF("Cannot connect videoQt::Player::frameAvailable to worker.",
                     !QObject::connect(m_qtPlayer, SIGNAL(frameAvailable(QVideoFrame const&)),
                                       m_workerColor, SLOT(presentFrame(QVideoFrame const&))));
         m_qtPlayer->play();
@@ -199,7 +205,7 @@ void SScanIR::stopCamera()
                     !QObject::disconnect(m_qtPlayer, SIGNAL(frameAvailable(QVideoFrame)),
                                          m_workerColor, SLOT(presentFrame(QVideoFrame))));
         m_qtPlayer->stop();
-        ::videoQt::player::VideoRegistry::getInstance().releasePlayer(m_qtPlayer);
+        ::fwVideoQt::Registry::getInstance().releasePlayer(m_qtPlayer);
         m_qtPlayer = nullptr;
         m_colorWorkerThread.quit();
     }

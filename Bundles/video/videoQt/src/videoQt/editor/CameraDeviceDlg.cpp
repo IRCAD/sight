@@ -6,7 +6,7 @@
 
 #include "videoQt/editor/CameraDeviceDlg.hpp"
 
-#include "videoQt/helper/formats.hpp"
+#include "fwVideoQt/helper/formats.hpp"
 
 #include <arData/Camera.hpp>
 
@@ -136,10 +136,10 @@ bool CameraDeviceDlg::getSelectedCamera(::arData::Camera::sptr& camera)
             camera->setHeight(static_cast<size_t>(settings.resolution().height()));
             camera->setWidth(static_cast<size_t>(settings.resolution().width()));
 
-            ::videoQt::helper::PixelFormatTranslatorType::left_const_iterator iter;
-            iter = ::videoQt::helper::pixelFormatTranslator.left.find(settings.pixelFormat());
+            ::fwVideoQt::helper::PixelFormatTranslatorType::left_const_iterator iter;
+            iter = ::fwVideoQt::helper::pixelFormatTranslator.left.find(settings.pixelFormat());
 
-            if(iter != ::videoQt::helper::pixelFormatTranslator.left.end())
+            if(iter != ::fwVideoQt::helper::pixelFormatTranslator.left.end())
             {
                 format = iter->second;
             }
@@ -193,10 +193,10 @@ void CameraDeviceDlg::onSelectDevice(int index)
             {
                 ::arData::Camera::PixelFormat format = ::arData::Camera::PixelFormat::INVALID;
 
-                ::videoQt::helper::PixelFormatTranslatorType::left_const_iterator iter;
-                iter = ::videoQt::helper::pixelFormatTranslator.left.find(pixFormat);
+                ::fwVideoQt::helper::PixelFormatTranslatorType::left_const_iterator iter;
+                iter = ::fwVideoQt::helper::pixelFormatTranslator.left.find(pixFormat);
 
-                if(iter != ::videoQt::helper::pixelFormatTranslator.left.end())
+                if(iter != ::fwVideoQt::helper::pixelFormatTranslator.left.end())
                 {
                     format = iter->second;
                 }
@@ -231,10 +231,10 @@ void CameraDeviceDlg::onSelectDevice(int index)
         {
             ::arData::Camera::PixelFormat format = ::arData::Camera::PixelFormat::INVALID;
 
-            ::videoQt::helper::PixelFormatTranslatorType::left_const_iterator iter;
-            iter = ::videoQt::helper::pixelFormatTranslator.left.find(settings.pixelFormat());
+            ::fwVideoQt::helper::PixelFormatTranslatorType::left_const_iterator iter;
+            iter = ::fwVideoQt::helper::pixelFormatTranslator.left.find(settings.pixelFormat());
 
-            if(iter != ::videoQt::helper::pixelFormatTranslator.left.end())
+            if(iter != ::fwVideoQt::helper::pixelFormatTranslator.left.end())
             {
                 format = iter->second;
             }

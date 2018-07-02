@@ -4,11 +4,8 @@ set( TYPE BUNDLE )
 set( DEPENDENCIES
         arData
         arServices
-        fwCom
-        fwCore
         fwData
         fwServices
-        fwThread
-        videoQt
+        fwVideoQt
     )
 set( REQUIREMENTS )

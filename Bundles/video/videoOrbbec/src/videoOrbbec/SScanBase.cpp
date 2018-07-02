@@ -8,8 +8,8 @@
 
 #include <fwGui/dialog/MessageDialog.hpp>
 
-#include <videoQt/helper/formats.hpp>
-#include <videoQt/player/VideoRegistry.hpp>
+#include <fwVideoQt/helper/formats.hpp>
+#include <fwVideoQt/Registry.hpp>
 
 #include <QCamera>
 #include <QCameraInfo>
@@ -171,9 +171,9 @@ void SScanBase::detectCameraOpenni()
                 });
             FW_RAISE_IF("No valid videomodes detected", settings == settingsList.end());
             const auto resolution = settings->resolution();
-            const auto formatIter = ::videoQt::helper::pixelFormatTranslator.left.find(settings->pixelFormat());
+            const auto formatIter = ::fwVideoQt::helper::pixelFormatTranslator.left.find(settings->pixelFormat());
             FW_RAISE_IF("No compatible pixel format detected",
-                        formatIter == ::videoQt::helper::pixelFormatTranslator.left.end());
+                        formatIter == ::fwVideoQt::helper::pixelFormatTranslator.left.end());
 
             // startCamera needs to know the frame size, so we set it here
             cameraData->setWidth(resolution.width());

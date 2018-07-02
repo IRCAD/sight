@@ -1,12 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "videoQt/helper/formats.hpp"
+#include "fwVideoQt/helper/formats.hpp"
 
-namespace videoQt
+#include <boost/assign.hpp>
+
+namespace fwVideoQt
 {
 namespace helper
 {
@@ -83,4 +85,4 @@ PixelFormatTranslatorType pixelFormatTranslator = ::boost::assign::list_of< Pixe
                                                       ::arData::Camera::PixelFormat::USER                  );
 
 } // helper
-} // videoQt
+} // fwVideoQt

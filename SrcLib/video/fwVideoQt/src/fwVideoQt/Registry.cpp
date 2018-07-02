@@ -4,11 +4,11 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "videoQt/player/VideoRegistry.hpp"
+#include "fwVideoQt/Registry.hpp"
 
-#include "videoQt/helper/formats.hpp"
-#include "videoQt/player/QVideoPlayer.hpp"
-#include "videoQt/player/QVideoSurface.hpp"
+#include "fwVideoQt/helper/formats.hpp"
+#include "fwVideoQt/Player.hpp"
+#include "fwVideoQt/Surface.hpp"
 
 #include <arPreferences/preferences.hpp>
 
@@ -17,22 +17,20 @@
 
 #include <fwGui/dialog/MessageDialog.hpp>
 
-namespace videoQt
-{
-namespace player
+namespace fwVideoQt
 {
 
 //-----------------------------------------------------------------------------
 
-VideoRegistry& VideoRegistry::getInstance()
+Registry& Registry::getInstance()
 {
-    static VideoRegistry instance;
+    static Registry instance;
     return instance;
 }
 
 //-----------------------------------------------------------------------------
 
-VideoRegistry::VideoRegistry() :
+Registry::Registry() :
     m_mapVideoPlayer(Key::less),
     m_mapRefCount(Key::less)
 {
@@ -40,14 +38,14 @@ VideoRegistry::VideoRegistry() :
 
 //-----------------------------------------------------------------------------
 
-VideoRegistry::~VideoRegistry()
+Registry::~Registry()
 {
     SLM_ASSERT("VideoPlayer map must be empty.", m_mapVideoPlayer.size() == 0 );
 }
 
 //-----------------------------------------------------------------------------
 
-QVideoPlayer* VideoRegistry::requestPlayer(const ::arData::Camera::csptr& camera)
+Player* Registry::requestPlayer(const ::arData::Camera::csptr& camera)
 {
     const ::arData::Camera::SourceType type = camera->getCameraSource();
 
@@ -72,7 +70,7 @@ QVideoPlayer* VideoRegistry::requestPlayer(const ::arData::Camera::csptr& camera
     MapRefCountType::const_iterator refCountIter  = m_mapRefCount.find(videoKey);
     std::uint8_t nbRef                            = 1;
 
-    QVideoPlayer* player;
+    Player* player;
     if(playerIter != m_mapVideoPlayer.end())
     {
         nbRef  = refCountIter->second + 1;
@@ -80,7 +78,7 @@ QVideoPlayer* VideoRegistry::requestPlayer(const ::arData::Camera::csptr& camera
     }
     else
     {
-        player = new QVideoPlayer();
+        player = new Player();
         switch(type)
         {
             case ::arData::Camera::FILE:
@@ -121,10 +119,10 @@ QVideoPlayer* VideoRegistry::requestPlayer(const ::arData::Camera::csptr& camera
                 ::QVideoFrame::PixelFormat qtPixelFormat = QVideoFrame::PixelFormat::Format_Invalid;
                 ::arData::Camera::PixelFormat f4sFormat  = camera->getPixelFormat();
 
-                ::videoQt::helper::PixelFormatTranslatorType::right_const_iterator iter;
-                iter = ::videoQt::helper::pixelFormatTranslator.right.find(f4sFormat);
+                ::fwVideoQt::helper::PixelFormatTranslatorType::right_const_iterator iter;
+                iter = ::fwVideoQt::helper::pixelFormatTranslator.right.find(f4sFormat);
 
-                if(iter != ::videoQt::helper::pixelFormatTranslator.right.end())
+                if(iter != ::fwVideoQt::helper::pixelFormatTranslator.right.end())
                 {
                     qtPixelFormat = iter->second;
                 }
@@ -151,7 +149,7 @@ QVideoPlayer* VideoRegistry::requestPlayer(const ::arData::Camera::csptr& camera
 
 //-----------------------------------------------------------------------------
 
-void VideoRegistry::releasePlayer(QVideoPlayer* player)
+void Registry::releasePlayer(Player* player)
 {
     for(const MapVideoPlayerType::value_type elt : m_mapVideoPlayer)
     {
@@ -178,5 +176,4 @@ void VideoRegistry::releasePlayer(QVideoPlayer* player)
 
 //-----------------------------------------------------------------------------
 
-} //namespace player
-} //namespace videoQt
+} //namespace fwVideoQt

@@ -1,22 +1,20 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VIDEOQT_HELPER_FORMATS_HPP__
-#define __VIDEOQT_HELPER_FORMATS_HPP__
+#pragma once
 
-#include "arData/Camera.hpp"
+#include "fwVideoQt/config.hpp"
 
-#include "videoQt/config.hpp"
+#include <arData/Camera.hpp>
 
 #include <boost/bimap/bimap.hpp>
-#include <boost/assign.hpp>
 
 #include <QVideoFrame>
 
-namespace videoQt
+namespace fwVideoQt
 {
 namespace helper
 {
@@ -24,9 +22,7 @@ namespace helper
 //-----------------------------------------------------------------------------
 
 typedef ::boost::bimaps::bimap< QVideoFrame::PixelFormat, ::arData::Camera::PixelFormat > PixelFormatTranslatorType;
-extern VIDEOQT_API PixelFormatTranslatorType pixelFormatTranslator;
+extern FWVIDEOQT_API PixelFormatTranslatorType pixelFormatTranslator;
 
 } // helper
-} // videoQt
-
-#endif // __VIDEOQT_HELPER_FORMATS_HPP__
+} // fwVideoQt

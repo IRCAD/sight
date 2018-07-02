@@ -1,31 +1,30 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "videoQt/player/QVideoSurface.hpp"
+#include "fwVideoQt/Surface.hpp"
 
-#include <fwCore/spyLog.hpp>
 #include <fwCore/exceptionmacros.hpp>
+#include <fwCore/spyLog.hpp>
 
 #include <QAbstractVideoSurface>
 #include <QVideoSurfaceFormat>
 
-namespace videoQt
-{
-namespace player
+namespace fwVideoQt
 {
 
 //-----------------------------------------------------------------------------
 
-QVideoSurface::QVideoSurface(QObject *parent) : QAbstractVideoSurface(parent)
+Surface::Surface(QObject* parent) :
+    QAbstractVideoSurface(parent)
 {
 }
 
 //-----------------------------------------------------------------------------
 
-QList<QVideoFrame::PixelFormat> QVideoSurface::supportedPixelFormats(QAbstractVideoBuffer::HandleType handleType) const
+QList<QVideoFrame::PixelFormat> Surface::supportedPixelFormats(QAbstractVideoBuffer::HandleType handleType) const
 {
     if (handleType == QAbstractVideoBuffer::NoHandle)
     {
@@ -42,7 +41,7 @@ QList<QVideoFrame::PixelFormat> QVideoSurface::supportedPixelFormats(QAbstractVi
 
 //-----------------------------------------------------------------------------
 
-bool QVideoSurface::present(const QVideoFrame& frame)
+bool Surface::present(const QVideoFrame& frame)
 {
     if (surfaceFormat().pixelFormat() != frame.pixelFormat()
         || surfaceFormat().frameSize() != frame.size())
@@ -63,5 +62,4 @@ bool QVideoSurface::present(const QVideoFrame& frame)
 
 //-----------------------------------------------------------------------------
 
-} //namespace player
-} //namespace videoQt
+} //namespace fwVideoQt

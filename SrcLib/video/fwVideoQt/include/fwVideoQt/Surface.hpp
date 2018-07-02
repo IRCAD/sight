@@ -1,13 +1,12 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VIDEOQT_PLAYER_QVIDEOSURFACE_HPP__
-#define __VIDEOQT_PLAYER_QVIDEOSURFACE_HPP__
+#pragma once
 
-#include "videoQt/config.hpp"
+#include "fwVideoQt/config.hpp"
 
 #include <QAbstractVideoSurface>
 #include <QObject>
@@ -15,27 +14,22 @@
 
 class QAbstractVideoSurface;
 
-namespace videoQt
-{
-namespace player
+namespace fwVideoQt
 {
 
-class VIDEOQT_CLASS_API QVideoSurface : public QAbstractVideoSurface
+class FWVIDEOQT_CLASS_API Surface : public QAbstractVideoSurface
 {
 Q_OBJECT
 public:
 
-    VIDEOQT_API QVideoSurface(QObject *parent);
+    FWVIDEOQT_API Surface(QObject* parent);
 
     QList<QVideoFrame::PixelFormat> supportedPixelFormats(QAbstractVideoBuffer::HandleType handleType) const;
 
-    VIDEOQT_API bool present(const QVideoFrame &frame);
+    FWVIDEOQT_API bool present(const QVideoFrame& frame);
 
 Q_SIGNALS:
     void frameAvailable(const QVideoFrame& frame);
 };
 
-} //namespace player
-} //namespace videoQt
-
-#endif // __VIDEOQT_PLAYER_QVIDEOSURFACE_HPP__
+} //namespace fwVideoQt

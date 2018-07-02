@@ -4,10 +4,10 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "videoQt/player/QVideoPlayer.hpp"
+#include "fwVideoQt/Player.hpp"
 
-#include "videoQt/helper/formats.hpp"
-#include "videoQt/player/QVideoSurface.hpp"
+#include "fwVideoQt/helper/formats.hpp"
+#include "fwVideoQt/Surface.hpp"
 
 #include <fwCore/exceptionmacros.hpp>
 #include <fwCore/spyLog.hpp>
@@ -20,26 +20,24 @@
 #include <QCameraViewfinderSettings>
 #include <QVideoSurfaceFormat>
 
-namespace videoQt
-{
-namespace player
+namespace fwVideoQt
 {
 
-QVideoPlayer::QVideoPlayer() :
+Player::Player() :
     m_loopVideo(false)
 {
 }
 
 //------------------------------------------------------------------------------
 
-QVideoPlayer::~QVideoPlayer()
+Player::~Player()
 {
     this->stop();
 }
 
 //-----------------------------------------------------------------------------
 
-void QVideoPlayer::initCameraFile(const ::boost::filesystem::path& videoPath)
+void Player::initCameraFile(const ::boost::filesystem::path& videoPath)
 {
     FW_RAISE_IF("Invalid video path '"+videoPath.string()+"'", !::boost::filesystem::exists(videoPath));
 
@@ -60,7 +58,7 @@ void QVideoPlayer::initCameraFile(const ::boost::filesystem::path& videoPath)
     m_playlist->setCurrentIndex(0);
 
     m_mediaPlayer->setPlaylist(m_playlist);
-    m_videoSurface = new QVideoSurface(this);
+    m_videoSurface = new Surface(this);
     m_mediaPlayer->setVideoOutput(m_videoSurface);
 
     QObject::connect(m_videoSurface, SIGNAL(frameAvailable(QVideoFrame)), this, SIGNAL(frameAvailable(QVideoFrame)));
@@ -70,7 +68,7 @@ void QVideoPlayer::initCameraFile(const ::boost::filesystem::path& videoPath)
 
 //-----------------------------------------------------------------------------
 
-void QVideoPlayer::initCameraStream(const std::string& strVideoUrl)
+void Player::initCameraStream(const std::string& strVideoUrl)
 {
     m_mediaPlayer = new QMediaPlayer(0, QMediaPlayer::VideoSurface);
 
@@ -86,7 +84,7 @@ void QVideoPlayer::initCameraStream(const std::string& strVideoUrl)
     m_playlist->setCurrentIndex(0);
 
     m_mediaPlayer->setPlaylist( m_playlist );
-    m_videoSurface = new QVideoSurface(this);
+    m_videoSurface = new Surface(this);
     m_mediaPlayer->setVideoOutput(m_videoSurface);
 
     QObject::connect(m_videoSurface, SIGNAL(frameAvailable(QVideoFrame)), this, SIGNAL(frameAvailable(QVideoFrame)));
@@ -94,8 +92,8 @@ void QVideoPlayer::initCameraStream(const std::string& strVideoUrl)
 
 //-----------------------------------------------------------------------------
 
-void QVideoPlayer::initCameraDevice(const std::string& cameraID, size_t width, size_t height, float maximumFrameRate,
-                                    ::QVideoFrame::PixelFormat pxFormat)
+void Player::initCameraDevice(const std::string& cameraID, size_t width, size_t height, float maximumFrameRate,
+                              ::QVideoFrame::PixelFormat pxFormat)
 {
     m_camera = new QCamera(QByteArray(cameraID.c_str(), static_cast<int>(cameraID.size())));
     QCameraViewfinderSettings viewfinderSettings;
@@ -110,7 +108,7 @@ void QVideoPlayer::initCameraDevice(const std::string& cameraID, size_t width, s
         m_camera.clear();
         FW_RAISE("Camera not available, please choose another device.");
     }
-    m_videoSurface = new QVideoSurface(this);
+    m_videoSurface = new Surface(this);
     m_camera->setViewfinder(m_videoSurface);
     m_camera->setCaptureMode(QCamera::CaptureVideo);
 
@@ -119,7 +117,7 @@ void QVideoPlayer::initCameraDevice(const std::string& cameraID, size_t width, s
 
 //-----------------------------------------------------------------------------
 
-void QVideoPlayer::play()
+void Player::play()
 {
     if(m_mediaPlayer)
     {
@@ -133,14 +131,14 @@ void QVideoPlayer::play()
 
 //------------------------------------------------------------------------------
 
-void QVideoPlayer::onError(QMediaPlayer::Error error) const
+void Player::onError(QMediaPlayer::Error error) const
 {
     ::fwGui::dialog::MessageDialog::showMessageDialog("QMediaPlayer error", m_mediaPlayer->errorString().toStdString());
 }
 
 //-----------------------------------------------------------------------------
 
-void QVideoPlayer::pause()
+void Player::pause()
 {
     if(m_mediaPlayer)
     {
@@ -157,7 +155,7 @@ void QVideoPlayer::pause()
 
 //-----------------------------------------------------------------------------
 
-void QVideoPlayer::stop()
+void Player::stop()
 {
     if(m_camera)
     {
@@ -194,7 +192,7 @@ void QVideoPlayer::stop()
 
 //-----------------------------------------------------------------------------
 
-void QVideoPlayer::toggleLoopMode(bool isLoopEnable)
+void Player::toggleLoopMode(bool isLoopEnable)
 {
     if(m_playlist)
     {
@@ -211,7 +209,7 @@ void QVideoPlayer::toggleLoopMode(bool isLoopEnable)
 
 //-----------------------------------------------------------------------------
 
-void QVideoPlayer::setPosition(int64_t position)
+void Player::setPosition(int64_t position)
 {
     if(m_mediaPlayer)
     {
@@ -221,5 +219,4 @@ void QVideoPlayer::setPosition(int64_t position)
 
 //-----------------------------------------------------------------------------
 
-} //namespace player
-} //namespace videoQt
+} //namespace fwVideoQt

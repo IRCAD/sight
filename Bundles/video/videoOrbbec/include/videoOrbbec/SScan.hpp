@@ -1,3 +1,8 @@
+/* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2018.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
 
 #pragma once
 
@@ -9,7 +14,7 @@
 
 #include <fwThread/Worker.hpp>
 
-#include <videoQt/player/QVideoPlayer.hpp>
+#include <fwVideoQt/Player.hpp>
 
 #include <OpenNI.h>
 #include <QObject>
@@ -19,9 +24,6 @@ namespace videoOrbbec
 {
 
 class ColorFrameWorker;
-
-// TODO:
-// * Eventually, remove dependency on videoQt bundle
 
 /**
  * @brief   Orbbec Astra Pro camera
@@ -133,7 +135,7 @@ private:
     /// Qt thread owning the color worker.
     QThread m_colorWorkerThread;
     /// Grabs color frames from the camera.
-    ::videoQt::player::QVideoPlayer* m_qtPlayer;
+    ::fwVideoQt::Player* m_qtPlayer;
     /// Worker grabbing color frames.
     ColorFrameWorker* m_workerColor;
     /// Whether we are in pause

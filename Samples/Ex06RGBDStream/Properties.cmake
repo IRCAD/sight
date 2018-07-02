@@ -25,6 +25,7 @@ set( REQUIREMENTS
 
     videoOpenni
     videoOpenCV
+    videoOrbbec
     videoQt
     videoTools
 
