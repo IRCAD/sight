@@ -61,6 +61,7 @@
         <service uid="action_pushSeriesToPacs" type="::gui::action::SSlotCaller" >
             <slots>
                 <slot>pushSeriesController/update</slot>
+                <slot>action_pushSeriesToPacs/setInexecutable</slot>
             </slots>
         </service>
 
@@ -94,6 +95,11 @@
 
         <connect channel="${PROGRESS_CHANNEL}">
             <signal>anonymizeController/jobCreated</signal>
+        </connect>
+
+        <connect>
+            <signal>pushSeriesController/updated</signal>
+            <slot>action_pushSeriesToPacs/setExecutable</slot>
         </connect>
 
         <!-- START AND STOP SERVICES -->
