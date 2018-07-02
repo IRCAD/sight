@@ -254,11 +254,12 @@ void ObjectService::registerServiceOutput(::fwData::Object::sptr object, const :
     ::fwCore::mt::WriteLock writeLock(m_containerMutex);
     this->internalRegisterService(object, service, objKey, ::fwServices::IService::AccessType::OUTPUT);
 
-    auto sig = this->signal<RegisterSignalType>(s_REGISTERED_SIG);
-
-    if (sig->getNumberOfConnections() > 0)
+    const bool hasID = service->hasObjectId(objKey);
+    OSLM_DEBUG_IF("No output is defined for '" + objKey + "', the object is not emitted to the configuration", !hasID);
+    if (hasID)
     {
         const auto id = service->getObjectId(objKey);
+        auto sig      = this->signal<RegisterSignalType>(s_REGISTERED_SIG);
         sig->asyncEmit(object, id);
     }
 }
@@ -372,11 +373,10 @@ void ObjectService::unregisterServiceOutput( const ::fwServices::IService::KeyTy
 {
     ::fwData::Object::wptr obj = service->m_outputsMap[objKey];
 
-    auto sig = this->signal<RegisterSignalType>(s_UNREGISTERED_SIG);
-
-    if (sig->getNumberOfConnections() > 0)
+    if (service->hasObjectId(objKey))
     {
         const auto id = service->getObjectId(objKey);
+        auto sig      = this->signal<RegisterSignalType>(s_UNREGISTERED_SIG);
         sig->asyncEmit(obj.lock(), id);
     }
     service->m_outputsMap.erase(objKey);
