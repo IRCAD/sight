@@ -181,7 +181,6 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
     m_RTVSharedParameters->addConstantDefinition("u_tfWindow", ::Ogre::GCT_FLOAT2);
     m_RTVSharedParameters->setNamedConstant("u_opacityCorrectionFactor", m_opacityCorrectionFactor);
 
-    m_fragmentShaderAttachements.push_back("TransferFunction_FP");
     this->initEntryPoints();
     this->createRayTracingMaterial();
 
@@ -531,6 +530,11 @@ void RayTracingVolumeRenderer::createRayTracingMaterial()
         for(const std::string& attachement: m_fragmentShaderAttachements)
         {
             fsp->setParameter("attach", attachement);
+        }
+
+        if(fpPPDefines.find(s_PREINTEGRATION_DEFINE) == std::string::npos)
+        {
+            fsp->setParameter("attach", "TransferFunction_FP");
         }
 
         if(fpPPDefines.size() > 0)
