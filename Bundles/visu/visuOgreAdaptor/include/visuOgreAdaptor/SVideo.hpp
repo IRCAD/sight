@@ -27,13 +27,14 @@ namespace visuOgreAdaptor
         <service type="::visuOgreAdaptor::SVideo" autoConnect="yes" >
             <in key="image" uid="..." />
             <in key="tf" uid="..." optional="yes" />
-            <config renderer="default" reversed="true" />
+            <config layer="default" reversed="true" />
         </service>
    @endcode
  * @subsection Input Input:
  * - \b image [::fwData::Image]: frame displayed.
  * - \b tf [::fwData::TransferFunction] (optional): a transfer function that can be applied to the video.
  * @subsection Configuration Configuration:
+ * - \b layer (mandatory): defines the video's layer
  * - \b reverse (optional)(default: true) : if true, the actor is rotated by 180° along the z and y axis.
  */
 class VISUOGREADAPTOR_CLASS_API SVideo : public ::fwRenderOgre::IAdaptor

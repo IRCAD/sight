@@ -30,20 +30,21 @@ namespace visuOgreAdaptor
  * @code{.xml}
         <service type="::visuOgreAdaptor::SModelSeries">
             <in key="model" uid="..." />
-            <config transform="transform" material="mat" autoresetcamera="autoresetcamera" dynamic="no" />
+            <config layer="..." transform="transform" material="mat" autoresetcamera="autoresetcamera" dynamic="no" />
        </service>
    @endcode
  * @subsection In-Out In-Out:
  * - \b model [::fwData::ModelSeries]: adapted model series.
  * @subsection Configuration Configuration:
- *  - \b transform (mandatory) : the transformation matrix to associate to the adaptor.
- *  - \b material : the name of the base Ogre material to pass to the mesh adaptors.
- *  - \b autoresetcamera (optional, default="yes"): reset the camera when this mesh is modified, "yes" or "no".
- *  - \b dynamic (optional, default=no) : if the modelSeries topolgy is likely to be updated frequently. This is a
+ * - \b layer (mandatory): defines the modelSeries's layer
+ * - \b transform (mandatory) : the transformation matrix to associate to the adaptor.
+ * - \b material : the name of the base Ogre material to pass to the mesh adaptors.
+ * - \b autoresetcamera (optional, default="yes"): reset the camera when this mesh is modified, "yes" or "no".
+ * - \b dynamic (optional, default=no) : if the modelSeries topolgy is likely to be updated frequently. This is a
  * performance hint that will choose a specific GPU memory pool accordingly.
- *  - \b dynamicVertices (optional, default=no) : if the modelSeries geometry is likely to be updated frequently. This
+ * - \b dynamicVertices (optional, default=no) : if the modelSeries geometry is likely to be updated frequently. This
  * is a performance hint that will choose a specific GPU memory pool accordingly.
- *  - \b queryFlags (optional) : Used for picking. Picked only by pickers with the same flag.
+ * - \b queryFlags (optional) : Used for picking. Picked only by pickers with the same flag.
  */
 class VISUOGREADAPTOR_CLASS_API SModelSeries : public ::fwRenderOgre::IAdaptor,
                                                public ::fwRenderOgre::ITransformable

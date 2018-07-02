@@ -58,7 +58,7 @@ namespace visuOgreAdaptor
  * @code{.xml}
     <service uid="..." type="::visuOgreAdaptor::SMesh" >
         <inout key="mesh" uid="..." />
-        <config renderer="rendererId" transform="transformUID" materialAdaptor="materialName" shadingMode="gouraud"
+        <config layer="layerId" transform="transformUID" materialAdaptor="materialName" shadingMode="gouraud"
                 textureName="texAdaptorUID" />
     </service>
    @endcode
@@ -66,7 +66,7 @@ namespace visuOgreAdaptor
  * - \b mesh [::fwData::Mesh]: adapted mesh. It can not be a read-only data because we may generate normals or add some
  * fields.
  * @subsection Configuration Configuration:
- *  - \b renderer (mandatory) : defines the mesh's layer
+ *  - \b layer (mandatory) : defines the mesh's layer
  *  - \b autoresetcamera (optional, default="yes"): reset the camera when this mesh is modified, "yes" or "no".
  *  - \b transform (optional) : the name of the Ogre transform node where to attach the mesh, as it was specified
  * in the STransform adaptor.
