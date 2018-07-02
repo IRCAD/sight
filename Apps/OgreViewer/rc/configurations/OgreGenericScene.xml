@@ -100,7 +100,7 @@
         <service uid="vrBasicEditor" type="::guiQt::editor::SParameters" >
             <parameters>
                 <param type="bool" name="Widgets" key="widgets" defaultValue="false" />
-                <param type="int" name="Samples" key="sampling" defaultValue="512" min="128" max="1024" />
+                <param type="int" name="Samples" key="sampling" defaultValue="512" min="128" max="8192" />
                 <param type="int" name="Opacity correction" key="opacityCorrection" defaultValue="200" min="1" max="200" />
                 <param type="bool" name="Pre-integration" key="preIntegration" defaultValue="false" />
                 <param type="bool" name="Ambient occlusion" key="ambientOcclusion" defaultValue="false" />
