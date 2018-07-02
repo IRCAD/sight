@@ -35,7 +35,7 @@ const std::string s_VR_MATERIALS_GROUP = "VRMaterials";
 
 //-----------------------------------------------------------------------------
 
-VRWidget::VRWidget(const std::string id,
+VRWidget::VRWidget(const std::string& id,
                    ::Ogre::SceneNode* parentSceneNode,
                    ::Ogre::Camera* camera,
                    SRender::sptr renderService,
@@ -85,6 +85,13 @@ VRWidget::~VRWidget() noexcept
 
     m_sceneManager->destroyManualObject(m_selectedFace);
     m_sceneManager->destroyManualObject(m_boundingBox);
+}
+
+//-----------------------------------------------------------------------------
+
+bool VRWidget::belongsToWidget(const Ogre::MovableObject* const _object) const
+{
+    return m_widgets.find(_object) != m_widgets.end();
 }
 
 //-----------------------------------------------------------------------------
@@ -323,14 +330,15 @@ void VRWidget::widgetPicked(::Ogre::MovableObject* _pickedWidget, int _screenX, 
     int height = m_camera->getViewport()->getActualHeight();
     int width  = m_camera->getViewport()->getActualWidth();
 
-    auto face = m_widgets.find(_pickedWidget);
+    SLM_ASSERT("The picked widget does not belong to this widget.", this->belongsToWidget(_pickedWidget));
+    auto face = m_widgets.at(_pickedWidget);
 
     this->deselectFace();
 
-    if(this->getVisibility() && face != m_widgets.end())
+    if(this->getVisibility())
     {
-        ::fwRenderOgre::vr::IVolumeRenderer::CubeFace widgetFace = face->second.first;
-        ::Ogre::SceneNode* widgetSceneNode                       = face->second.second;
+        ::fwRenderOgre::vr::IVolumeRenderer::CubeFace widgetFace = face.first;
+        ::Ogre::SceneNode* widgetSceneNode                       = face.second;
 
         ::Ogre::Ray mouseRay = m_camera->getCameraToViewportRay(
             static_cast< ::Ogre::Real>(_screenX) / static_cast< ::Ogre::Real>(width),
@@ -380,10 +388,6 @@ void VRWidget::widgetPicked(::Ogre::MovableObject* _pickedWidget, int _screenX, 
         m_selectedWidget->setRenderQueueGroupAndPriority(compositor::Core::s_SURFACE_RQ_GROUP_ID, 65535);
 
         m_renderService->requestRender();
-    }
-    else
-    {
-        OSLM_WARN("The object picked is not a VR widget.");
     }
 }
 
