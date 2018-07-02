@@ -159,7 +159,8 @@ void SSeriesPusher::updating()
 
 void SSeriesPusher::pushSeries()
 {
-    m_isPushing                          = true;
+    m_isPushing = true;
+
     ::fwData::Vector::csptr seriesVector = this->getInput< ::fwData::Vector >(s_SERIES_IN);
 
     const std::vector< ::fwMedData::DicomSeries::sptr > dataVector =
@@ -175,49 +176,51 @@ void SSeriesPusher::pushSeries()
         const size_t dicomContainerSize = dicomContainer.size();
 
         size_t nbInstanceSuccess = 0;
-        for(const auto& item : dicomContainer)
+        try
         {
-            const ::fwMemory::BufferObject::sptr bufferObj = item.second;
-            const ::fwMemory::BufferObject::Lock lockerDest(bufferObj);
-            const char* buffer = static_cast<char*>(lockerDest.getBuffer());
-            const size_t size  = bufferObj->getSize();
-
-            const QByteArray fileBuffer = QByteArray::fromRawData(buffer, size);
-
-            /// Url PACS
-            const std::string pacsServer("http://" + m_serverHostname + ":" + std::to_string(m_serverPort));
-            ::fwNetworkIO::http::Request::sptr request =
-                ::fwNetworkIO::http::Request::New(pacsServer + "/instances");
-            QByteArray seriesAnswer;
-            if (fileBuffer.size() != 0)
+            for(const auto& item : dicomContainer)
             {
-                try
+                const ::fwMemory::BufferObject::sptr bufferObj = item.second;
+                const ::fwMemory::BufferObject::Lock lockerDest(bufferObj);
+                const char* buffer = static_cast<char*>(lockerDest.getBuffer());
+                const size_t size  = bufferObj->getSize();
+
+                const QByteArray fileBuffer = QByteArray::fromRawData(buffer, size);
+
+                /// Url PACS
+                const std::string pacsServer("http://" + m_serverHostname + ":" + std::to_string(m_serverPort));
+                ::fwNetworkIO::http::Request::sptr request =
+                    ::fwNetworkIO::http::Request::New(pacsServer + "/instances");
+                QByteArray seriesAnswer;
+                if (fileBuffer.size() != 0)
                 {
                     seriesAnswer = m_clientQt.post(request, fileBuffer);
-                    nbInstanceSuccess++;
+                    if (!seriesAnswer.isEmpty())
+                    {
+                        nbInstanceSuccess++;
+                    }
                 }
-                catch (::fwNetworkIO::exceptions::HostNotFound& exception)
+                if (dicomContainerSize == nbInstanceSuccess)
                 {
-                    std::stringstream ss;
-                    ss << "Host not found.\n"
-                       << "Please check your configuration: \n"
-                       << "Pacs host name: " << m_serverHostname << "\n"
-                       << "Pacs port: " << m_serverPort << "\n";
-                    this->displayMessage(ss.str(), true);
-                    SLM_WARN(exception.what());
+                    this->displayMessage("Upload successful: " + std::to_string(nbSeriesSuccess) + "/" +
+                                         std::to_string(seriesVectorSize), false);
                 }
             }
-            if (dicomContainerSize == nbInstanceSuccess)
-            {
-                this->displayMessage("Upload successful: " + std::to_string(nbSeriesSuccess) + "/" +
-                                     std::to_string(seriesVectorSize), false);
-            }
+        }
+        catch (::fwNetworkIO::exceptions::HostNotFound& exception)
+        {
+            std::stringstream ss;
+            ss << "Host not found.\n"
+               << "Please check your configuration: \n"
+               << "Pacs host name: " << m_serverHostname << "\n"
+               << "Pacs port: " << m_serverPort << "\n";
+            this->displayMessage(ss.str(), true);
+            SLM_WARN(exception.what());
         }
     }
 
     // Set pushing boolean to false
     m_isPushing = false;
-
 }
 
 //------------------------------------------------------------------------------
