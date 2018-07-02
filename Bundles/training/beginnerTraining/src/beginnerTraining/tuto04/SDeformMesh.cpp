@@ -20,8 +20,6 @@
 #include <qpalette.h>
 #include <qwidget.h>
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::beginnerTraining::tuto04::SDeformMesh );
-
 namespace beginnerTraining
 {
 namespace tuto04

@@ -20,8 +20,6 @@
 #include <qpalette.h>
 #include <qwidget.h>
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::beginnerTraining::tuto03::SStringEditor );
-
 namespace beginnerTraining
 {
 namespace tuto03
@@ -110,6 +108,16 @@ void SStringEditor::onTextChanged()
 
     // Then, notifies listeners that the image has been modified
     this->notifyMessage();
+}
+
+//-----------------------------------------------------------------------------
+
+fwServices::IService::KeyConnectionsMap SStringEditor::getAutoConnections() const
+{
+    KeyConnectionsMap connections;
+    connections.push(s_EDIT_STRING_KEY, ::fwData::String::s_MODIFIED_SIG, s_UPDATE_SLOT);
+
+    return connections;
 }
 
 //-----------------------------------------------------------------------------

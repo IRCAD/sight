@@ -8,7 +8,7 @@
         <object uid="${mesh}" type="::fwData::Mesh" src="ref" />
         <!-- *************************** Begin generic scene *************************** -->
 
-        <service uid="genericScene" type="::fwRenderVTK::SRender" autoConnect="yes">
+        <service uid="genericScene" type="::fwRenderVTK::SRender">
             <scene>
                 <!-- Renderer -->
                 <renderer id="default" background="0.0" />

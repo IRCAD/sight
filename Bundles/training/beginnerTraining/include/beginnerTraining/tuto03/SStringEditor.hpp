@@ -29,7 +29,7 @@ namespace tuto03
        </service>
    @endcode
  * @subsection In-Out In-Out:
- * - \b string [::fwData::String]: string to display and to modify.
+ * - \b editString [::fwData::String]: string to display and to modify.
  */
 class BEGINNERTRAINING_CLASS_API SStringEditor : public QObject,
                                                  public ::fwGui::editor::IEditor
@@ -61,6 +61,14 @@ protected:
 
     /// Overrides
     BEGINNERTRAINING_API virtual void updating() override;
+
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect String::s_MODIFIED_SIG to this::s_UPDATE_SLOT
+     */
+    BEGINNERTRAINING_API KeyConnectionsMap getAutoConnections() const override;
 
     /// Method to notify modification on data
     BEGINNERTRAINING_API void notifyMessage();

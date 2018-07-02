@@ -30,7 +30,7 @@ namespace tuto04
        </service>
    @endcode
  * @subsection In-Out In-Out:
- * - \b string [::fwData::String]: string to display and to modify.
+ * - \b editString [::fwData::String]: string to display and to modify.
  */
 class BEGINNERTRAINING_CLASS_API SDeformMesh : public QObject,
                                                public ::fwGui::editor::IEditor

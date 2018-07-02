@@ -99,7 +99,7 @@
 
             <service uid="myReader" type="::beginnerTraining::tuto03::SStringReader" >
                 <inout key="targetString" uid="string" />
-                <file>beginnerTraining-0.1/data.txt</file>
+                <file>share/beginnerTraining-0.1/data.txt</file>
             </service>
 
             <!-- Mesh displayed in the scene -->
