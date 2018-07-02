@@ -155,4 +155,3 @@ inline void STexture::setUseAlpha(bool _useAlpha)
 //------------------------------------------------------------------------------
 
 } // namespace visuOgreAdaptor
-
