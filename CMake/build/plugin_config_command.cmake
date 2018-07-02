@@ -41,7 +41,7 @@ foreach(CPP_FILE ${PRJ_CPP_FILES})
     endif()
 
     file(STRINGS ${CPP_FILE} CPP_FILE_CONTENT NEWLINE_CONSUME)
-    set(SRV_REGISTER_REGEX "fwServicesRegisterMacro\\(([ :a-zA-Z1-9_]+)[,\n\t\r ]*([ :a-zA-Z1-9_]+)[,\n\t\r ]*([ :a-zA-Z1-9_]*)\\);")
+    set(SRV_REGISTER_REGEX "fwServicesRegisterMacro\\(([ :a-zA-Z0-9_]+)[,\n\t\r ]*([ :a-zA-Z0-9_]+)[,\n\t\r ]*([ :a-zA-Z0-9_]*)\\);")
 
     if("${CPP_FILE_CONTENT}" MATCHES ${SRV_REGISTER_REGEX})
         string(STRIP ${CMAKE_MATCH_1} SRV_TYPE)
@@ -59,7 +59,7 @@ foreach(CPP_FILE ${PRJ_CPP_FILES})
                                        "         <service>${SRV_IMPL}</service>")
         endif()
 
-        set(SRV_REGISTER_OBJECT_REGEX "fwServicesRegisterObjectMacro\\(([ :a-zA-Z1-9_]+)[,\n\t\r ]*([ :a-zA-Z1-9_]*)\\);")
+        set(SRV_REGISTER_OBJECT_REGEX "fwServicesRegisterObjectMacro\\(([ :a-zA-Z0-9_]+)[,\n\t\r ]*([ :a-zA-Z0-9_]*)\\);")
 
         file(STRINGS ${CPP_FILE} CPP_FILE_LINES_CONTENT)
         foreach(LINE ${CPP_FILE_LINES_CONTENT})
@@ -78,7 +78,7 @@ foreach(CPP_FILE ${PRJ_CPP_FILES})
         # Guess everything from the doxygen
 
         # 1. Find the service type from fwCoreServiceClassDefinitionsMacro, we assume there is only one occurrence
-        set(SRV_TYPE_REGEX "fwCoreServiceClassDefinitionsMacro\\([\n\t\r ]*\\([\n\t\r ]*([ :a-zA-Z1-9_]+)\\)[\n\t\r ]*\\([\n\t\r ]*([ :a-zA-Z1-9_]+)\\)")
+        set(SRV_TYPE_REGEX "fwCoreServiceClassDefinitionsMacro\\([\n\t\r ]*\\([\n\t\r ]*([ :a-zA-Z0-9_]+)\\)[\n\t\r ]*\\([\n\t\r ]*([ :a-zA-Z0-9_]+)\\)")
 
         if("${HPP_FILE_CONTENT}" MATCHES ${SRV_TYPE_REGEX})
 
@@ -86,7 +86,7 @@ foreach(CPP_FILE ${PRJ_CPP_FILES})
 
 
             # 2. Find the service implementation from the XML configuration doxygen
-            set(SRV_IMPL_REGEX "<service[\n\t\r ]*(uid[\n\t\r ]*=[\n\t\r ]*\".*\")?[\n\t\r ]*type[\n\t\r ]*=[\n\t\r ]*\"([:a-zA-Z1-9_]*)\".*>")
+            set(SRV_IMPL_REGEX "<service[\n\t\r ]*(uid[\n\t\r ]*=[\n\t\r ]*\".*\")?[\n\t\r ]*type[\n\t\r ]*=[\n\t\r ]*\"([:a-zA-Z0-9_]*)\".*>")
 
             if("${HPP_FILE_CONTENT}" MATCHES ${SRV_IMPL_REGEX})
 
@@ -99,7 +99,7 @@ foreach(CPP_FILE ${PRJ_CPP_FILES})
                 list(APPEND REGISTER_SERVICES "fwServicesRegisterMacro( ${SRV_TYPE}, ${SRV_IMPL} )\n")
 
                 # 3. Find the objects from input, inouts section
-                set(OBJECT_REGEX "-[\n\t\r ]*\\\\b*[\n\t\r ]*([a-zA-Z1-9_]*)[\n\t\r ]*\\[(.*)\\]")
+                set(OBJECT_REGEX "-[\n\t\r ]*\\\\b*[\n\t\r ]*([a-zA-Z0-9_]*)[\n\t\r ]*\\[(.*)\\]")
                 foreach(LINE ${HPP_FILE_LINES_CONTENT})
                     if("${LINE}" MATCHES ${OBJECT_REGEX})
                         string(STRIP ${CMAKE_MATCH_1} OBJECT_KEY)
@@ -108,7 +108,7 @@ foreach(CPP_FILE ${PRJ_CPP_FILES})
                         list(APPEND EXTENSION_LIST "         <object key=\"${OBJECT_KEY}\">${OBJECT_IMPL}</object>")
                         list(APPEND REGISTER_SERVICES "fwServicesRegisterObjectMacro( ${SRV_IMPL}, ${OBJECT_IMPL} )\n")
 
-                        set(OBJECT_INCLUDE_REGEX "::([a-zA-Z1-9_]*)::([a-zA-Z1-9_]*)")
+                        set(OBJECT_INCLUDE_REGEX "::([a-zA-Z0-9_]*)::([a-zA-Z0-9_]*)")
                         if("${OBJECT_IMPL}" MATCHES ${OBJECT_INCLUDE_REGEX})
                             list(APPEND INCLUDE_SERVICES "#include <${CMAKE_MATCH_1}/${CMAKE_MATCH_2}.hpp>")
                         else()
@@ -120,7 +120,7 @@ foreach(CPP_FILE ${PRJ_CPP_FILES})
                 list(APPEND EXTENSION_LIST "         <desc>${SRV_DESC}</desc>")
 
                 # 4. Find the tags
-                set(TAGS_REGEX "\\\\b*[\n\t\r ]*Tags[\n\t\r ]*:[\n\t\r]*([a-zA-Z1-9_ ,]*)")
+                set(TAGS_REGEX "\\\\b*[\n\t\r ]*Tags[\n\t\r ]*:[\n\t\r]*([a-zA-Z0-9_ ,]*)")
                 if("${HPP_FILE_CONTENT}" MATCHES ${TAGS_REGEX})
                     string(STRIP ${CMAKE_MATCH_1} SRV_TAGS)
                     list(APPEND EXTENSION_LIST "         <tags>${SRV_TAGS}</tags>")
