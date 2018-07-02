@@ -31,6 +31,8 @@ namespace ioPacs
 fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::ioPacs::SPacsConfigurationEditor,
                          ::fwPacsIO::data::PacsConfiguration );
 
+static const ::fwServices::IService::KeyType s_CONFIG_INOUT = "config";
+
 //------------------------------------------------------------------------------
 
 SPacsConfigurationEditor::SPacsConfigurationEditor() noexcept
@@ -55,8 +57,13 @@ void SPacsConfigurationEditor::starting()
 {
     SLM_TRACE_FUNC();
 
-    ::fwPacsIO::data::PacsConfiguration::sptr pacsConfiguration =
-        this->getObject< ::fwPacsIO::data::PacsConfiguration >();
+    ::fwPacsIO::data::PacsConfiguration::sptr pacsConfiguration = this->getInOut< ::fwPacsIO::data::PacsConfiguration >(
+        s_CONFIG_INOUT);
+    if (!pacsConfiguration)
+    {
+        FW_DEPRECATED_KEY(s_CONFIG_INOUT, "inout", "fw4spl_18.0");
+        pacsConfiguration = this->getObject< ::fwPacsIO::data::PacsConfiguration >();
+    }
     SLM_ASSERT("Pacs configuration object should not be null.", pacsConfiguration);
 
     ::fwGui::IGuiContainerSrv::create();
@@ -178,8 +185,13 @@ void SPacsConfigurationEditor::updating()
 
 void SPacsConfigurationEditor::pingPacs()
 {
-    ::fwPacsIO::data::PacsConfiguration::sptr pacsConfiguration
-        = this->getObject< ::fwPacsIO::data::PacsConfiguration >();
+    ::fwPacsIO::data::PacsConfiguration::sptr pacsConfiguration = this->getInOut< ::fwPacsIO::data::PacsConfiguration >(
+        s_CONFIG_INOUT);
+    if (!pacsConfiguration)
+    {
+        FW_DEPRECATED_KEY(s_CONFIG_INOUT, "inout", "fw4spl_18.0");
+        pacsConfiguration = this->getObject< ::fwPacsIO::data::PacsConfiguration >();
+    }
 
     ::fwPacsIO::SeriesEnquirer::sptr seriesEnquirer = ::fwPacsIO::SeriesEnquirer::New();
 
@@ -234,8 +246,13 @@ void SPacsConfigurationEditor::modifiedNotify(::fwPacsIO::data::PacsConfiguratio
 
 void SPacsConfigurationEditor::localApplicationTitleChanged()
 {
-    ::fwPacsIO::data::PacsConfiguration::sptr pacsConfiguration =
-        this->getObject< ::fwPacsIO::data::PacsConfiguration >();
+    ::fwPacsIO::data::PacsConfiguration::sptr pacsConfiguration = this->getInOut< ::fwPacsIO::data::PacsConfiguration >(
+        s_CONFIG_INOUT);
+    if (!pacsConfiguration)
+    {
+        FW_DEPRECATED_KEY(s_CONFIG_INOUT, "inout", "fw4spl_18.0");
+        pacsConfiguration = this->getObject< ::fwPacsIO::data::PacsConfiguration >();
+    }
     pacsConfiguration->setLocalApplicationTitle(m_localApplicationTitleWidget->text().toStdString());
 
     modifiedNotify(pacsConfiguration);
@@ -245,8 +262,13 @@ void SPacsConfigurationEditor::localApplicationTitleChanged()
 
 void SPacsConfigurationEditor::pacsHostNameChanged()
 {
-    ::fwPacsIO::data::PacsConfiguration::sptr pacsConfiguration =
-        this->getObject< ::fwPacsIO::data::PacsConfiguration >();
+    ::fwPacsIO::data::PacsConfiguration::sptr pacsConfiguration = this->getInOut< ::fwPacsIO::data::PacsConfiguration >(
+        s_CONFIG_INOUT);
+    if (!pacsConfiguration)
+    {
+        FW_DEPRECATED_KEY(s_CONFIG_INOUT, "inout", "fw4spl_18.0");
+        pacsConfiguration = this->getObject< ::fwPacsIO::data::PacsConfiguration >();
+    }
     pacsConfiguration->setPacsHostName(m_pacsHostNameWidget->text().toStdString());
 
     modifiedNotify(pacsConfiguration);
@@ -256,8 +278,13 @@ void SPacsConfigurationEditor::pacsHostNameChanged()
 
 void SPacsConfigurationEditor::pacsApplicationTitleChanged()
 {
-    ::fwPacsIO::data::PacsConfiguration::sptr pacsConfiguration =
-        this->getObject< ::fwPacsIO::data::PacsConfiguration >();
+    ::fwPacsIO::data::PacsConfiguration::sptr pacsConfiguration = this->getInOut< ::fwPacsIO::data::PacsConfiguration >(
+        s_CONFIG_INOUT);
+    if (!pacsConfiguration)
+    {
+        FW_DEPRECATED_KEY(s_CONFIG_INOUT, "inout", "fw4spl_18.0");
+        pacsConfiguration = this->getObject< ::fwPacsIO::data::PacsConfiguration >();
+    }
     pacsConfiguration->setPacsApplicationTitle(m_pacsApplicationTitleWidget->text().toStdString());
 
     modifiedNotify(pacsConfiguration);
@@ -267,8 +294,13 @@ void SPacsConfigurationEditor::pacsApplicationTitleChanged()
 
 void SPacsConfigurationEditor::pacsApplicationPortChanged(int value)
 {
-    ::fwPacsIO::data::PacsConfiguration::sptr pacsConfiguration =
-        this->getObject< ::fwPacsIO::data::PacsConfiguration >();
+    ::fwPacsIO::data::PacsConfiguration::sptr pacsConfiguration = this->getInOut< ::fwPacsIO::data::PacsConfiguration >(
+        s_CONFIG_INOUT);
+    if (!pacsConfiguration)
+    {
+        FW_DEPRECATED_KEY(s_CONFIG_INOUT, "inout", "fw4spl_18.0");
+        pacsConfiguration = this->getObject< ::fwPacsIO::data::PacsConfiguration >();
+    }
     pacsConfiguration->setPacsApplicationPort(static_cast<unsigned short>(value));
 
     modifiedNotify(pacsConfiguration);
@@ -278,8 +310,13 @@ void SPacsConfigurationEditor::pacsApplicationPortChanged(int value)
 
 void SPacsConfigurationEditor::moveApplicationTitleChanged()
 {
-    ::fwPacsIO::data::PacsConfiguration::sptr pacsConfiguration =
-        this->getObject< ::fwPacsIO::data::PacsConfiguration >();
+    ::fwPacsIO::data::PacsConfiguration::sptr pacsConfiguration = this->getInOut< ::fwPacsIO::data::PacsConfiguration >(
+        s_CONFIG_INOUT);
+    if (!pacsConfiguration)
+    {
+        FW_DEPRECATED_KEY(s_CONFIG_INOUT, "inout", "fw4spl_18.0");
+        pacsConfiguration = this->getObject< ::fwPacsIO::data::PacsConfiguration >();
+    }
     pacsConfiguration->setMoveApplicationTitle(m_moveApplicationTitleWidget->text().toStdString());
 
     modifiedNotify(pacsConfiguration);
@@ -289,8 +326,13 @@ void SPacsConfigurationEditor::moveApplicationTitleChanged()
 
 void SPacsConfigurationEditor::moveApplicationPortChanged(int value)
 {
-    ::fwPacsIO::data::PacsConfiguration::sptr pacsConfiguration =
-        this->getObject< ::fwPacsIO::data::PacsConfiguration >();
+    ::fwPacsIO::data::PacsConfiguration::sptr pacsConfiguration = this->getInOut< ::fwPacsIO::data::PacsConfiguration >(
+        s_CONFIG_INOUT);
+    if (!pacsConfiguration)
+    {
+        FW_DEPRECATED_KEY(s_CONFIG_INOUT, "inout", "fw4spl_18.0");
+        pacsConfiguration = this->getObject< ::fwPacsIO::data::PacsConfiguration >();
+    }
     pacsConfiguration->setMoveApplicationPort(static_cast<unsigned short>(value));
 
     modifiedNotify(pacsConfiguration);
@@ -300,8 +342,13 @@ void SPacsConfigurationEditor::moveApplicationPortChanged(int value)
 
 void SPacsConfigurationEditor::retrieveMethodChanged(int index)
 {
-    ::fwPacsIO::data::PacsConfiguration::sptr pacsConfiguration =
-        this->getObject< ::fwPacsIO::data::PacsConfiguration >();
+    ::fwPacsIO::data::PacsConfiguration::sptr pacsConfiguration = this->getInOut< ::fwPacsIO::data::PacsConfiguration >(
+        s_CONFIG_INOUT);
+    if (!pacsConfiguration)
+    {
+        FW_DEPRECATED_KEY(s_CONFIG_INOUT, "inout", "fw4spl_18.0");
+        pacsConfiguration = this->getObject< ::fwPacsIO::data::PacsConfiguration >();
+    }
     pacsConfiguration->setRetrieveMethod(
         (index ==
          0) ? (::fwPacsIO::data::PacsConfiguration::MOVE_RETRIEVE_METHOD): (::fwPacsIO::data::PacsConfiguration::

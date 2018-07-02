@@ -14,7 +14,26 @@ namespace ioDicom
 {
 
 /**
- * @brief   Defines the service interface managing the editor service for object.
+ * @brief   Display a dialog to select a dicom filter.
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+   <service type="::ioDicom::SFilterSelectorDialog">
+       <inout key="filter" uid="..." />
+       <selection mode="include" />
+       <addSelection filter="::fwDicomIOFilter::custom::NoFilter" />
+   </service>
+   @endcode
+ * @subsection In-Out In-Out
+ * - \b filter [::fwData::String]: string that will contain the identifier of the choosen filter.
+ * @subsection Configuration Configuration
+ * None of these parameters are mandatory.
+ *  - \b selection
+ *      - \b mode (mandatory) : must be include (to add the selection to selector list ) or exclude (to exclude the
+ * selection of the selector list).
+ *  - \b addSelection
+ *      - \b filter (mandatory) : Name of the filter to include/exclude to the choice list of the selector.
  */
 class IODICOM_CLASS_API SFilterSelectorDialog : public ::fwGui::editor::IDialogEditor
 {
@@ -47,22 +66,6 @@ protected:
      * The method verifies if the configuration is well written and retrieves user parameter values.
      * Thanks to this method, SFilterSelectorDialog::m_selectedFilters value is up to date (cleared before
      * reconfiguring).
-     *
-     * Sample of configuration :
-     * @code{.xml}
-          <service uid="GENERIC_UID_filter" type="::fwGui::editor::IDialogEditor"
-     * impl="::ioDicom::dcmtk::editor::SFilterSelectorDialog" autoConnect="no">
-              <selection mode="include" />
-              <addSelection filter="::fwDicomIOFilter::custom::NoFilter" />
-          </service>
-     * @endcode
-     * With :
-     * None of these parameters are mandatory.
-     *  - \b selection
-     *      - \b mode (mandatory) : must be include (to add the selection to selector list ) or exclude (to exclude the
-     * selection of the selector list).
-     *  - \b addSelection
-     *      - \b filter (mandatory) : Name of the filter to include/exclude to the choice list of the selector.
      **/
     IODICOM_API void configuring() override;
 
