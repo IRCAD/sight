@@ -98,7 +98,7 @@ WARN_LOGFILE           = doxygen.log
 #---------------------------------------------------------------------------
 # Configuration options related to the input files
 #---------------------------------------------------------------------------
-INPUT                  = @CMAKE_CURRENT_SOURCE_DIR@ @ADDITIONAL_PROJECTS_SOURCE_DIR@
+INPUT                  = @CMAKE_CURRENT_SOURCE_DIR@ @ADDITIONAL_REPOSITORIES_SOURCE_DIR@
 INPUT_ENCODING         = UTF-8
 FILE_PATTERNS          = 
 RECURSIVE              = YES
