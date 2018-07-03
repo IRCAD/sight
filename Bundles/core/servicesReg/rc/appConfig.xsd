@@ -47,8 +47,8 @@
             <xs:element name="colors"  type="ColorType"  minOccurs="0" maxOccurs="unbounded" />
             <xs:element name="param" minOccurs="0" maxOccurs="unbounded" />
         </xs:sequence>
-        <xs:attribute name='uid' type='xs:string' />
-        <xs:attribute name='type' type='xs:string'/>
+        <xs:attribute name='uid' type='xs:string' use="required" />
+        <xs:attribute name='type' type='xs:string' />
         <xs:attribute name='src' type='xs:string' />
     </xs:complexType>
 
@@ -65,7 +65,7 @@
         <xs:sequence>
             <xs:any processContents="skip" maxOccurs="unbounded" minOccurs="0"/>
         </xs:sequence>
-        <xs:attribute name='uid' type='xs:string' use="optional"/>
+        <xs:attribute name='uid' type='xs:string' use="required"/>
         <xs:attribute name='type' type='xs:string' use="required" />
         <xs:attribute name='autoConnect' type='AutoConnectType' />
         <xs:attribute name='worker' type='xs:string' />
