@@ -110,7 +110,7 @@
             <inout key="seriesDB" uid="previewSeriesDB" />
         </service>
 
-        <service uid="queryEditor" type="::ioDicomWeb::SQueryEditor" autoConnect="yes">
+        <service uid="queryEditor" type="::ioDicomWeb::SQueryEditor">
             <inout key="seriesDB" uid="previewSeriesDB" />
             <server>%PACS_SERVER_HOSTNAME%:%PACS_SERVER_PORT%</server>
         </service>

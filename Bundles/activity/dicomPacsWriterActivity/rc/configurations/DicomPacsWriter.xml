@@ -49,7 +49,7 @@
         <!-- ******************************* Actions ****************************************** -->
 
         <service uid="action_import" type="::uiIO::action::SSeriesDBMerger" >
-            <in key="seriesDB" uid="seriesDB" />
+            <inout key="seriesDB" uid="seriesDB" />
             <IOSelectorSrvConfig name="IOSelectorServiceConfigVRRenderExtDicomSeriesDBReader" />
         </service>
 
@@ -82,7 +82,7 @@
             <inout key="selection" uid="selections" />
         </service>
 
-        <service uid="pacsConfigurationInitializer" type="::ioPacs::SPacsConfigurationInitializer" autoConnect="yes">
+        <service uid="pacsConfigurationInitializer" type="::ioPacs::SPacsConfigurationInitializer">
             <inout key="config" uid="pacsConfiguration" />
             <config
                 localApplicationTitle="${APP_NAME}"

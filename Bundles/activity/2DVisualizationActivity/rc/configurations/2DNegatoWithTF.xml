@@ -112,11 +112,11 @@
         <!-- *************************** End generic scene *************************** -->
 
         <service uid="LockImageSrv" type="::ctrlMemory::LockDumpSrv">
-            <in key="image" uid="${image}" />
+            <inout key="target" uid="${image}" />
         </service>
 
         <service uid="slider_negato" type="::uiImageQt::SliceIndexPositionEditor" autoConnect="yes">
-            <in key="image" uid="${image}" />
+            <inout key="image" uid="${image}" />
             <sliceIndex>${orientation}</sliceIndex>
         </service>
 

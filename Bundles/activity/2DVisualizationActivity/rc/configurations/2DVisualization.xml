@@ -150,13 +150,13 @@
             </slots>
         </service>
         <service uid="ActionAddDistance" type="::uiMeasurement::action::AddDistance" >
-            <in key="image" uid="${image}" />
+            <inout key="image" uid="${image}" />
         </service>
         <service uid="ActionRemoveDistance" type="::uiMeasurement::action::RemoveDistance" >
-            <in key="image" uid="${image}" />
+            <inout key="image" uid="${image}" />
         </service>
         <service uid="ActionHideDistance" type="::uiMeasurement::action::ShowDistance" autoConnect="yes" >
-            <in key="image" uid="${image}" />
+            <inout key="image" uid="${image}" />
         </service>
 
         <!-- The action "previous" and "next" are visible only if the application use a "SActivitySequencer".
