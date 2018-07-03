@@ -287,7 +287,7 @@
                 <inout key="result" uid="imageResult" />
             </service>
 
-            <service uid="MedicalImageSrv3" type="::ctrlSelection::MedicalImageSrv" autoConnect="yes">
+            <service uid="medicalImageSrv3" type="::ctrlSelection::MedicalImageSrv" autoConnect="yes">
                 <inout key="image" uid="imageResult" />
             </service>
 
@@ -311,7 +311,7 @@
             <!-- Generic Scene (Negato) for the first tab -->
             <!-- *************************** Begin generic scene *************************** -->
 
-            <service uid="negato1" type="::fwRenderVTK::SRender" autoConnect="yes">
+            <service uid="negato1" type="::fwRenderVTK::SRender">
                 <scene>
                     <picker id="negato1default" vtkclass="fwVtkCellPicker" />
                     <renderer id="default" background="0.0" />
@@ -345,7 +345,7 @@
             <!-- Generic Scene (Negato) for the second tab -->
             <!-- *************************** Begin generic scene *************************** -->
 
-            <service uid="negato2" type="::fwRenderVTK::SRender" autoConnect="yes">
+            <service uid="negato2" type="::fwRenderVTK::SRender">
                 <scene>
                     <picker id="negato2default" vtkclass="fwVtkCellPicker" />
                     <renderer id="default" background="0.0" />
@@ -379,7 +379,7 @@
             <!-- Generic Scene (Negato) for the Third tab -->
             <!-- *************************** Begin generic scene *************************** -->
 
-            <service uid="negato3" type="::fwRenderVTK::SRender" autoConnect="yes">
+            <service uid="negato3" type="::fwRenderVTK::SRender">
                 <scene>
                     <picker id="negato3default" vtkclass="fwVtkCellPicker" />
                     <renderer id="default" background="0.0" />
@@ -430,6 +430,7 @@
             <start uid="mainFrame" />
             <start uid="medicalImageSrv1" />
             <start uid="medicalImageSrv2" />
+            <start uid="medicalImageSrv3" />
             <start uid="sliderNegato1" />
             <start uid="sliderNegato2" />
             <start uid="sliderNegato3" />
