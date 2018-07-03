@@ -27,7 +27,7 @@
 #include <fwRuntime/operations.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/registry/ObjectService.hpp>
+#include <fwServices/op/Add.hpp>
 
 #include <boost/filesystem/convenience.hpp>
 #include <boost/filesystem/operations.hpp>
@@ -396,17 +396,15 @@ void TransferFunctionEditor::importTF()
     ::fwDataTools::helper::Composite compositeHelper(poolTF);
 
     ::fwData::TransferFunction::sptr tf = ::fwData::TransferFunction::New();
-    ::fwServices::IService::sptr srv    =
-        ::fwServices::registry::ServiceFactory::getDefault()->create("::ioAtoms::SReader");
+    ::fwIO::IReader::sptr reader        = ::fwServices::add< ::fwIO::IReader >("::ioAtoms::SReader");
 
-    ::fwServices::OSR::registerService(tf, srv);
+    reader->registerInOut(tf, ::fwIO::s_DATA_KEY);
 
-    ::fwIO::IReader::sptr reader = ::fwIO::IReader::dynamicCast(srv);
     reader->start();
     reader->configureWithIHM();
     reader->update().wait();
     reader->stop().wait();
-    ::fwServices::OSR::unregisterService(srv);
+    ::fwServices::OSR::unregisterService(reader);
 
     if (!tf->getName().empty())
     {
@@ -427,17 +425,15 @@ void TransferFunctionEditor::importTF()
 
 void TransferFunctionEditor::exportTF()
 {
-    ::fwServices::IService::sptr srv =
-        ::fwServices::registry::ServiceFactory::getDefault()->create("::ioAtoms::SWriter");
+    ::fwIO::IWriter::sptr writer = ::fwServices::add< ::fwIO::IWriter >("::ioAtoms::SWriter");
 
-    ::fwServices::OSR::registerService(m_selectedTF, srv);
+    writer->registerInput(m_selectedTF, ::fwIO::s_DATA_KEY);
 
-    ::fwIO::IWriter::sptr writer = ::fwIO::IWriter::dynamicCast(srv);
     writer->start();
     writer->configureWithIHM();
     writer->update().wait();
     writer->stop().wait();
-    ::fwServices::OSR::unregisterService(srv);
+    ::fwServices::OSR::unregisterService(writer);
 }
 
 //------------------------------------------------------------------------------
@@ -478,10 +474,8 @@ void TransferFunctionEditor::initTransferFunctions()
         }
 
         ::fwData::TransferFunction::sptr tf = ::fwData::TransferFunction::New();
-        ::fwServices::IService::sptr srv    =
-            ::fwServices::registry::ServiceFactory::getDefault()->create("::ioAtoms::SReader");
-        ::fwServices::OSR::registerService(tf, srv);
-        ::fwIO::IReader::sptr reader = ::fwIO::IReader::dynamicCast(srv);
+        ::fwIO::IReader::sptr reader        = ::fwServices::add< ::fwIO::IReader >("::ioAtoms::SReader");
+        reader->registerInOut(tf, ::fwIO::s_DATA_KEY);
 
         ::fwRuntime::EConfigurationElement::sptr srvCfg  = ::fwRuntime::EConfigurationElement::New("service");
         ::fwRuntime::EConfigurationElement::sptr fileCfg = ::fwRuntime::EConfigurationElement::New("file");
@@ -508,7 +502,7 @@ void TransferFunctionEditor::initTransferFunctions()
             }
             tf->initTF();
         }
-        ::fwServices::OSR::unregisterService(srv);
+        ::fwServices::OSR::unregisterService(reader);
     }
     compositeHelper.notify();
 
