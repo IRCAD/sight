@@ -7,9 +7,9 @@
 #pragma once
 
 /**
- * @brief   Contains video grabber services for RGBD cameras (Kinect, Sense) using the OpenNI library.
+ * @brief The namespace videoRealSense contains services related to video grabbing with Intel RealSense cameras
  */
-namespace videoOpenni
+namespace videoRealSense
 {
 
 }
