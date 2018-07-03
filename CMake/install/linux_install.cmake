@@ -1,7 +1,7 @@
 
 #Find all sub-folders containing external libraries
 function(findExtLibDir EXTERNAL_LIBRARIES_DIRECTORIES)
-    file(GLOB_RECURSE LIBS ${EXTERNAL_LIBRARIES}/*${CMAKE_SHARED_LIBRARY_SUFFIX}.*)
+    file(GLOB_RECURSE LIBS ${EXTERNAL_LIBRARIES}/*${CMAKE_SHARED_LIBRARY_SUFFIX}*)
     list(REMOVE_DUPLICATES LIBS)
     set(FOLDERS)
     foreach(LIB ${LIBS})
