@@ -58,8 +58,8 @@ class Layer;
  *
  * @subsection Configuration Configuration
  *  - \b scene
- *    - \b renderMode (optional): 'auto' (only when something has changed) or 'always' (render continuously).
- *         Default is 'auto'.
+ *    - \b renderMode (optional): 'auto' (only when something has changed), 'always' (render continuously) or 'sync'
+ *        (only when the slot "requestRender" is called). Default is 'auto'.
  *    - \b width (optional, "1280" by default): width for off-screen rendering
  *    - \b height (optional, "720" by default): height for off-screen rendering
  *    - \b overlays (optional): list of overlay names (separated by semicolons) rendered on top of this scene.
@@ -86,6 +86,13 @@ public:
 
     FWRENDEROGRE_API SRender() noexcept;
     FWRENDEROGRE_API virtual ~SRender() noexcept;
+
+    enum class RenderMode
+    {
+        ALWAYS,
+        AUTO,
+        SYNC
+    };
 
     typedef std::string AdaptorIdType;
     typedef std::string OgreObjectIdType;
@@ -157,6 +164,9 @@ public:
     template<class T>
     std::vector<SPTR(T)> getAdaptors() const;
 
+    /// Returns the rendering mode
+    RenderMode getRenderMode() const;
+
 protected:
 
     /// Renders the scene.
@@ -207,8 +217,8 @@ private:
     /// Show or not ogre overlay
     bool m_showOverlay;
 
-    /// True if the rendering is done only when requested
-    bool m_renderOnDemand;
+    /// How the rendering is triggered ?
+    RenderMode m_renderMode;
 
     /// True if the render window is in fullscreen.
     bool m_fullscreen;
@@ -247,6 +257,13 @@ std::vector<SPTR(T)> SRender::getAdaptors() const
     }
 
     return resultVector;
+}
+
+//------------------------------------------------------------------------------
+
+inline SRender::RenderMode SRender::getRenderMode() const
+{
+    return m_renderMode;
 }
 
 //-----------------------------------------------------------------------------

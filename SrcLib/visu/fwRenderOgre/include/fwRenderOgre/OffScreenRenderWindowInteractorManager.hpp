@@ -29,6 +29,9 @@ public:
     /// Destructor
     FWRENDEROGRE_API virtual ~OffScreenRenderWindowInteractorManager();
 
+    /// Call Widget render immediately
+    FWRENDEROGRE_API virtual void renderNow() override;
+
     /// Call Widget render
     FWRENDEROGRE_API virtual void requestRender() override;
 
@@ -59,6 +62,7 @@ public:
     FWRENDEROGRE_API ::Ogre::TexturePtr getRenderTexture() const;
 
 private:
+    void render();
 
     /// Needed to get the widget Id
     static int m_counter;
