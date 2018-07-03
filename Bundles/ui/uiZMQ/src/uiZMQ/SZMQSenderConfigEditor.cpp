@@ -24,7 +24,7 @@ namespace uiZMQ
 SZMQSenderConfigEditor::SZMQSenderConfigEditor() :
     SZMQConfigEditor()
 {
-    FW_DEPRECATED_MSG("'uiZMQ' bundle and the assiated services are no longer suported.", "19.0");
+    FW_DEPRECATED_MSG("'uiZMQ' bundle and the associated services are no longer supported.", "19.0");
 }
 
 //-----------------------------------------------------------------------------

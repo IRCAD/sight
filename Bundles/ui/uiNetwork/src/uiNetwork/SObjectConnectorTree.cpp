@@ -56,7 +56,7 @@ void SObjectConnectorTree::configuring()
 
 void SObjectConnectorTree::starting()
 {
-    FW_DEPRECATED_MSG("'uiNetwork' bundle and the assiated services are no longer suported.", "19.0");
+    FW_DEPRECATED_MSG("'uiNetwork' bundle and the associated services are no longer supported.", "19.0");
     QHBoxLayout* searchLayout;
     QPushButton* refreshButton;
     QLabel* searchLabel;

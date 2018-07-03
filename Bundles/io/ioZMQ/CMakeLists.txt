@@ -1,4 +1,4 @@
 
 fwLoadProperties()
 
-message(WARNING "'ioZMQ' bundle is no longer suported and will be removed  in 19.0")
+message(WARNING "'ioZMQ' bundle is no longer supported and will be removed  in 19.0")

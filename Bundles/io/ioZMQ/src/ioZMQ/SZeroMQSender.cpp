@@ -88,7 +88,7 @@ void SZeroMQSender::setPort (std::uint16_t const port)
 
 void SZeroMQSender::starting()
 {
-    FW_DEPRECATED_MSG("'ioZMQ' bundle and the associated services are no longer suported.", "19.0");
+    FW_DEPRECATED_MSG("'ioZMQ' bundle and the associated services are no longer supported.", "19.0");
     try
     {
         m_socket = std::make_shared< ::zmqNetwork::Socket >(m_sockMode, m_patternMode);

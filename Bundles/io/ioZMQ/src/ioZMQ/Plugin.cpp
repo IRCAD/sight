@@ -25,7 +25,7 @@ Plugin::~Plugin() noexcept
 
 void Plugin::start()
 {
-    FW_DEPRECATED_MSG("'ioZMQ' bundle and the associated services are no longer suported.", "19.0");
+    FW_DEPRECATED_MSG("'ioZMQ' bundle and the associated services are no longer supported.", "19.0");
 }
 
 //-----------------------------------------------------------------------------

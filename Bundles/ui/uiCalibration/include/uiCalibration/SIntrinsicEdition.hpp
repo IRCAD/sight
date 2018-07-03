@@ -25,7 +25,8 @@ namespace uiCalibration
 /**
  * @brief   SIntrinsicEdition service is used to set the intrinsic parameter infos.
  *
- * This services displays a dialog to change the resolution of your calibration, it computes the new intrinic parameters
+ * This services displays a dialog to change the resolution of your calibration, it computes the new intrinsic
+ * parameters
  *
  * @section XML XML Configuration
  *
@@ -35,7 +36,7 @@ namespace uiCalibration
    </service>
    @endcode
  * @subsection In-Out In-Out
- * - \b camera [::arData::Camera]: camera on which the intrinsic parameters wil be modified.
+ * - \b camera [::arData::Camera]: camera on which the intrinsic parameters will be modified.
  */
 class UICALIBRATION_CLASS_API SIntrinsicEdition : public QObject,
                                                   public ::fwServices::IService

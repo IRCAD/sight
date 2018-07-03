@@ -138,7 +138,7 @@ void SZeroMQListener::updateConfiguration(::zmqNetwork::Socket::PatternMode cons
 
 void SZeroMQListener::starting()
 {
-    FW_DEPRECATED_MSG("'ioZMQ' bundle and the associated services are no longer suported.", "19.0");
+    FW_DEPRECATED_MSG("'ioZMQ' bundle and the associated services are no longer supported.", "19.0");
     std::function<void() > task = std::bind(&SZeroMQListener::runReceiver, this);
 
     m_socket        = ::zmqNetwork::Socket::sptr(new ::zmqNetwork::Socket(m_sockMode, m_patternMode));
