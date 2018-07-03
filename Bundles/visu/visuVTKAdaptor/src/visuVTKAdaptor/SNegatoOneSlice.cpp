@@ -150,7 +150,7 @@ void SNegatoOneSlice::cleanImageSource()
         ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction >(s_TF_INOUT);
         if (tf)
         {
-            imgAdaptor->registerInOut(tf, s_TF_INOUT, true, true);
+            imgAdaptor->registerInOut(tf, s_TF_INOUT, false, true);
         }
 
         imgAdaptor->setImageOpacity(1.);
@@ -207,7 +207,7 @@ void SNegatoOneSlice::swapping(const KeyType& key)
         ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction >(s_TF_INOUT);
         if (tf)
         {
-            imageAdaptor->registerInOut(tf, s_TF_INOUT, true, true);
+            imageAdaptor->registerInOut(tf, s_TF_INOUT, false, true);
             imageAdaptor->swapKey(s_TF_INOUT, nullptr);
         }
         else if(::fwServices::OSR::isRegistered(s_TF_INOUT, AccessType::INOUT, imageAdaptor))

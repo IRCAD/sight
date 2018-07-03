@@ -131,7 +131,7 @@ void SImageSeries::updating()
     ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction >(s_TF_INOUT);
     if (tf)
     {
-        negato->registerInOut(tf, SNegatoMPR::s_TF_INOUT, true);
+        negato->registerInOut(tf, SNegatoMPR::s_TF_INOUT, false);
     }
 
     negato->setTransformId( this->getTransformId() );

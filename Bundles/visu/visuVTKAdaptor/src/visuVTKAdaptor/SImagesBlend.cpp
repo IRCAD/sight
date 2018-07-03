@@ -179,7 +179,7 @@ void SImagesBlend::swapping(const KeyType& key)
                 ::fwServices::IService::sptr service = wsrv.lock();
                 if (tf)
                 {
-                    service->registerInOut(tf, SImage::s_TF_INOUT, true, true);
+                    service->registerInOut(tf, SImage::s_TF_INOUT, false, true);
                     service->swapKey(SImage::s_TF_INOUT, nullptr);
                 }
                 else if(::fwServices::OSR::isRegistered(SImage::s_TF_INOUT, AccessType::INOUT, service))
