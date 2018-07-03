@@ -57,7 +57,7 @@ namespace visuOgreAdaptor
  * - \b material [::fwData::Material]: adapted material. The material may be modified to comply to the configuration
  * of the adaptor.
  * @subsection Configuration Configuration:
- *  - \b materialTemplate (mandatory) : name of the base Ogre material
+ *  - \b materialTemplate (optional) : name of the base Ogre material
  *  - \b materialName (optional) : name of the Ogre material. This is necessary to bind a ::visuOgreAdaptor:SMesh or a
  * ::visuOgreAdaptor:SModelSeries to this material; simply specify the same Ogre material in its configuration.
  *  - \b textureName (optional) : the Ogre texture name used the material. Use it if you want to reference a texture

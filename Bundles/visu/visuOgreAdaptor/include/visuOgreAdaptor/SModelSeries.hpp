@@ -30,7 +30,7 @@ namespace visuOgreAdaptor
  * @code{.xml}
         <service type="::visuOgreAdaptor::SModelSeries">
             <in key="model" uid="..." />
-            <config layer="..." transform="transform" material="mat" autoresetcamera="autoresetcamera" dynamic="no" />
+            <config layer="..." transform="transform" material="mat" autoresetcamera="yes|no" dynamic="yes|no" />
        </service>
    @endcode
  * @subsection In-Out In-Out:

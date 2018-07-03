@@ -45,7 +45,7 @@ namespace visuOgreAdaptor
  *      <config layer="..." />
  *  </service>
  * @endcode
- * @subsection Configuration Configuration:
+ * @subsection Configuration Configuration
  * - \b layer (mandatory): defines the camera's layer
  * @subsection Input Input
  * - \b transform [::fwData::TransformationMatrix3D]: transform matrix for the camera.
