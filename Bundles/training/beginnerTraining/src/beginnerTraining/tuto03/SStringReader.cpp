@@ -117,7 +117,8 @@ void SStringReader::configureWithIHM()
 void SStringReader::notifyMessage()
 {
     SLM_TRACE_FUNC();
-    ::fwData::String::sptr associatedObj = this->getObject< ::fwData::String >();
+    auto associatedObj = this->getInOut< ::fwData::String >("targetString");
+    SLM_ASSERT("Data not found", associatedObj);
 
     // Notifies to all service listeners
     ::fwData::Object::ModifiedSignalType::sptr sig;
