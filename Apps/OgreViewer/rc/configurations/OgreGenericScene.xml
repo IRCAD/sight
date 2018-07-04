@@ -62,7 +62,7 @@
                 </layout>
             </gui>
             <registry>
-                <menuItem sid="actionVolumeRenderingEditor" start="yes" />
+                <menuItem sid="action_volumeRenderingEditor" start="yes" />
                 <menuItem sid="action_showVolume" start="yes" />
                 <editor sid="videoSelector" start="yes" />
                 <menuItem sid="action_startVideo" start="yes" />
@@ -122,7 +122,7 @@
         </service>
 
         <!-- ************************************* Actions ************************************ -->
-        <service uid="actionVolumeRenderingEditor" type="::gui::action::SModifyLayout">
+        <service uid="action_volumeRenderingEditor" type="::gui::action::SModifyLayout">
             <config>
                 <show_or_hide sid="volumeRenderingEditorView" />
             </config>
@@ -322,7 +322,7 @@
         <start uid="addPointInList" />
         <start uid="landmarkAdaptor" />
 
-        <update uid="actionVolumeRenderingEditor" />
+        <update uid="action_volumeRenderingEditor" />
 
     </config>
 </extension>
