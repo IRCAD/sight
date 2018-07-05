@@ -30,6 +30,7 @@ compositor VolumeEntriesStereo5
             {
                 material_scheme VolumeEntriesAutoStereo_BackFacesMax0
 
+                // Volume proxy geometry is in render queue 101.
                 first_render_queue 101
                 last_render_queue 101
             }
@@ -48,6 +49,7 @@ compositor VolumeEntriesStereo5
             {
                 material_scheme VolumeEntriesAutoStereo_FrontFacesMin0
 
+                // Regular surface models are in render queues 50 and below.
                 last_render_queue 50
             }
         }

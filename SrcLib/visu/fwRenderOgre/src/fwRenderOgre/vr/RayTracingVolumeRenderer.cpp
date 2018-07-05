@@ -622,6 +622,7 @@ void RayTracingVolumeRenderer::initEntryPoints()
                                                                  m_sceneManager, m_3DOgreTexture,
                                                                  m_gpuTF.lock(), "RayEntryPoints");
 
+    // We put proxy geometry in render queue 101. Rq 101 is not used by default and must be explicitly called.
     m_proxyGeometry->setRenderQueueGroup(101);
     m_proxyGeometry->setVisible(true);
     m_volumeSceneNode->attachObject(m_proxyGeometry);

@@ -10,86 +10,87 @@ compositor WeightedBlended
         texture transmittance target_width target_height PF_R8
 
 
-         // Occlusion map
-         target occlusion
-         {
-             input none
-             pass clear
-             {
-                 buffers colour depth
-                 colour_value 1 1 1 1
-             }
+        // Occlusion map
+        target occlusion
+        {
+            input none
+            pass clear
+            {
+                buffers colour depth
+                colour_value 1 1 1 1
+            }
 
-             shadows off
-             material_scheme WeightedBlended/occlusionMap
+            shadows off
+            material_scheme WeightedBlended/occlusionMap
 
-             pass render_scene
-             {
-                last_render_queue 50
-             }
-         }
+            pass render_scene
+            {
+               // Surface models are in render queues 50 and below.
+               last_render_queue 50
+            }
+        }
 
-         // Weight blend
-         target weightedColor
-         {
-             input none
-             pass clear
-             {
-                 buffers colour
-                 colour_value 0 0 0 0
-             }
+        // Weight blend
+        target weightedColor
+        {
+            input none
+            pass clear
+            {
+                buffers colour
+                colour_value 0 0 0 0
+            }
 
-             shadows off
-             material_scheme WeightedBlended/weightBlend
+            shadows off
+            material_scheme WeightedBlended/weightBlend
 
-             pass render_scene
-             {
-                last_render_queue 50
-             }
-         }
+            pass render_scene
+            {
+               last_render_queue 50
+            }
+        }
 
-         // Transmittance blend
-         target transmittance
-         {
-             input none
-             pass clear
-             {
-                 buffers colour depth
-                 colour_value 1 1 1 1
-             }
+        // Transmittance blend
+        target transmittance
+        {
+            input none
+            pass clear
+            {
+                buffers colour depth
+                colour_value 1 1 1 1
+            }
 
-             shadows off
-             material_scheme WeightedBlended/transmittanceBlend
+            shadows off
+            material_scheme WeightedBlended/transmittanceBlend
 
-             pass render_scene
-             {
-                last_render_queue 50
-             }
-         }
+            pass render_scene
+            {
+               last_render_queue 50
+            }
+        }
 
          // WBOIT blend
-         target_output
-         {
-             input none
+        target_output
+        {
+            input none
 
             pass clear
             {
             }
 
-             pass render_quad
-             {
-                 material WeightedBlended_blend
-                 input 0 weightedColor
-                 input 1 transmittance
-             }
+            pass render_quad
+            {
+                material WeightedBlended_blend
+                input 0 weightedColor
+                input 1 transmittance
+            }
 
             // Render volumes on top.
             pass render_scene
             {
+                // Volumes are in rq 52 and some of their widgets in rq 51.
                 first_render_queue 51
                 last_render_queue 52
             }
-
-         }
+        }
     }
 }

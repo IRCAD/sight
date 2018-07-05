@@ -26,6 +26,7 @@ compositor VolumeEntries
             {
                 material_scheme VolumeEntries_BackFacesMax
 
+                // Volume proxy geometry is in render queue 101.
                 first_render_queue 101
                 last_render_queue 101
             }
@@ -44,6 +45,7 @@ compositor VolumeEntries
             {
                 material_scheme VolumeEntries_FrontFacesMin
 
+                // Regular surface models are in render queues 50 and below.
                 last_render_queue 50
             }
         }
