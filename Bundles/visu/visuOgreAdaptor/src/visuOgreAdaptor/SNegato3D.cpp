@@ -257,6 +257,9 @@ void SNegato3D::newImage()
     {
         this->getRenderService()->resetCameraCoordinates(m_layerID);
     }
+
+    this->setPlanesOpacity();
+
     this->requestRender();
 }
 
