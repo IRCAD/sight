@@ -48,7 +48,8 @@ fwRenderOgre::R2VBRenderable::R2VBRenderable(const ::Ogre::String& _name) :
 
 //-----------------------------------------------------------------------------
 
-void fwRenderOgre::R2VBRenderable::setOutputSettings(size_t _vertexCount, bool _hasColor, bool _hasTexCoord)
+void fwRenderOgre::R2VBRenderable::setOutputSettings(size_t _vertexCount, bool _hasColor, bool _hasTexCoord,
+                                                     bool _hasNormals)
 {
     if(m_maxOutputVertexCount < _vertexCount)
     {
@@ -75,7 +76,10 @@ void fwRenderOgre::R2VBRenderable::setOutputSettings(size_t _vertexCount, bool _
     ::Ogre::VertexDeclaration* vtxDecl = m_r2vbBuffer->getVertexDeclaration();
     size_t ofst = 0;
     ofst += vtxDecl->addElement(0, ofst, ::Ogre::VET_FLOAT3, ::Ogre::VES_POSITION).getSize();
-    ofst += vtxDecl->addElement(0, ofst, ::Ogre::VET_FLOAT3, ::Ogre::VES_NORMAL).getSize();
+    if(_hasNormals)
+    {
+        ofst += vtxDecl->addElement(0, ofst, ::Ogre::VET_FLOAT3, ::Ogre::VES_NORMAL).getSize();
+    }
     if(_hasColor)
     {
         ofst += vtxDecl->addElement(0, ofst, ::Ogre::VET_COLOUR, ::Ogre::VES_DIFFUSE).getSize();

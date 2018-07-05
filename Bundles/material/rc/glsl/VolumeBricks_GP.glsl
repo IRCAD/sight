@@ -17,7 +17,6 @@ uniform vec3 u_boundingBoxMin;
 uniform vec3 u_boundingBoxMax;
 
 out vec3 oPos;
-out vec3 oNormal;
 
 //-----------------------------------------------------------------------------
 
@@ -115,11 +114,7 @@ void main()
 
     for(int i = 0; i < 6; ++i)
     {
-        ivec3 normal = faceNormals[i];
-
-        ivec3 neighbour = gridPos + normal;
-
-        oNormal = vec3(normal);
+        ivec3 neighbour = gridPos + faceNormals[i];
 
         // Discard face if its neighbour is not empty.
         // We only want to generate the outer hull.
@@ -132,6 +127,5 @@ void main()
             }
             EndPrimitive();
         }
-
     }
 }
