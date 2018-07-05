@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWSERVICES_REGISTRY_OBJECTSERVICE_HPP__
-#define __FWSERVICES_REGISTRY_OBJECTSERVICE_HPP__
+#pragma once
 
 #include "fwServices/config.hpp"
 #include "fwServices/IService.hpp"
@@ -214,6 +213,7 @@ public:
 
     /**
      * @brief Return a container with all services of type SERVICE associated to obj in m_container
+     * @deprecated This method will be removed in 20.0
      */
     template<class SERVICE>
     std::set< SPTR(SERVICE) > getServices(::fwData::Object::sptr obj) const;
@@ -228,13 +228,13 @@ public:
 
     /**
      * @brief Return a container of services of type serviceType which are attached to obj
-     *
+     * @deprecated This method will be removed in 20.0
      */
     FWSERVICES_API ServiceVectorType getServices( ::fwData::Object::sptr obj, const std::string& serviceType ) const;
 
     /**
      * @brief return a vector containing all services associated with the object obj
-     *
+     * @deprecated This method will be removed in 20.0
      */
     FWSERVICES_API ServiceVectorType getServices( ::fwData::Object::sptr obj ) const;
 
@@ -274,7 +274,7 @@ public:
 
     /**
      * @brief Move service (service) to object objDst in the m_container
-     *
+     * @deprecated Use service->swapKey(key, object)
      */
     FWSERVICES_API void swapService( ::fwData::Object::sptr objDst, ::fwServices::IService::sptr service );
 
@@ -376,6 +376,7 @@ FWSERVICES_API ::fwServices::registry::ObjectService::ServiceVectorType getServi
  *
  * @param obj Object to add to the OSR
  * @param srvType Type of the service
+ * @deprecated This method is deprecated
  */
 FWSERVICES_API bool has( ::fwData::Object::sptr obj, const std::string& srvType);
 
@@ -393,6 +394,9 @@ FWSERVICES_API void registerService( ::fwServices::IService::sptr service );
  *
  * @param object Object to register
  * @param service Service whose key should be added
+ * @deprecated Use the new API:
+ *      registerService(::fwData::Object::sptr obj, const ::fwServices::IService::KeyType& objKey,
+ *                      ::fwServices::IService::AccessType access, ::fwServices::IService::sptr service)
  */
 FWSERVICES_API void registerService( ::fwData::Object::sptr obj, ::fwServices::IService::sptr service );
 
@@ -433,6 +437,7 @@ FWSERVICES_API void registerServiceOutput(::fwData::Object::sptr obj, const ::fw
 
 /**
  * @brief Wraps ObjectService::swapService
+ * @deprecated
  */
 FWSERVICES_API void swapService( ::fwData::Object::sptr objDst, ::fwServices::IService::sptr service );
 
@@ -493,6 +498,3 @@ FWSERVICES_API SPTR( ::fwServices::registry::ObjectService::RegisterSignalType )
 } // namespace fwServices
 
 #include "fwServices/registry/ObjectService.hxx"
-
-#endif // __FWSERVICES_REGISTRY_OBJECTSERVICE_HPP__
-

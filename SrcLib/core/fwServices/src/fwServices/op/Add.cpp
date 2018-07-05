@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -26,6 +26,7 @@ namespace fwServices
                                   const std::string& _implType,
                                   const std::string& _uid)
 {
+    FW_DEPRECATED_MSG("'fwServices::add(object, srvType, srvImpl[,uid])' is deprecated.", "20.0");
     ::fwServices::IService::sptr srv;
     srv = ::fwServices::registry::ServiceFactory::getDefault()->create( _serviceType, _implType );
     FW_RAISE_IF("Failed to add " + _implType, !srv );
@@ -57,4 +58,3 @@ namespace fwServices
 //------------------------------------------------------------------------------
 
 }
-
