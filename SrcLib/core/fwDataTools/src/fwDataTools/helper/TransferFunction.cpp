@@ -9,15 +9,10 @@
 #include "fwDataTools/fieldHelper/Image.hpp"
 #include "fwDataTools/fieldHelper/MedicalImageHelpers.hpp"
 #include "fwDataTools/helper/Composite.hpp"
-#include "fwDataTools/helper/Image.hpp"
 
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slot.hxx>
-#include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
 #include <fwData/Image.hpp>
-#include <fwData/TransferFunction.hpp>
 
 namespace fwDataTools
 {

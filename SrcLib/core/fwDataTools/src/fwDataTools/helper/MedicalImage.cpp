@@ -11,11 +11,6 @@
 #include "fwDataTools/helper/Composite.hpp"
 #include "fwDataTools/helper/Image.hpp"
 
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slot.hxx>
-#include <fwCom/Slots.hpp>
-#include <fwCom/Slots.hxx>
-
 #include <fwData/Image.hpp>
 
 namespace fwDataTools
@@ -23,9 +18,6 @@ namespace fwDataTools
 
 namespace helper
 {
-
-static const ::fwCom::Slots::SlotKeyType s_UPDATE_TF_POINTS_SLOT    = "updateTFPoints";
-static const ::fwCom::Slots::SlotKeyType s_UPDATE_TF_WINDOWING_SLOT = "updateTFWindowing";
 
 //------------------------------------------------------------------------------
 

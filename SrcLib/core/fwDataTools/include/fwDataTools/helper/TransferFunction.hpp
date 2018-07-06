@@ -11,14 +11,8 @@
 
 #include <fwCom/helper/SigSlotConnection.hpp>
 #include <fwCom/Slot.hpp>
-#include <fwCom/Slots.hpp>
 
-#include <fwData/Composite.hpp>
-#include <fwData/Integer.hpp>
-#include <fwData/String.hpp>
 #include <fwData/TransferFunction.hpp>
-
-#include <vector>
 
 namespace fwDataTools
 {
@@ -27,7 +21,7 @@ namespace helper
 {
 
 /**
- * @brief   Helpers for medical image.
+ * @brief   Helpers for transfer function.
  *
  * @section Slots Slots
  *
@@ -39,6 +33,7 @@ class FWDATATOOLS_CLASS_API TransferFunction
 {
 
 public:
+
     fwCoreBaseClassDefinitionsMacro( (TransferFunction) );
 
     /// Destructor. Do nothing.
@@ -104,6 +99,7 @@ protected:
     FWDATATOOLS_API virtual void updateTFWindowing(double window, double level);
 
     typedef ::fwCom::Slot<void ()> UpdateTFPointsSlotType;
+
     typedef ::fwCom::Slot<void (double, double)> UpdateTFWindowingSlotType;
 
     /// Slot called when transfer function points are modified
@@ -125,6 +121,7 @@ private:
 
     /// Connections to the transfer function
     ::fwCom::helper::SigSlotConnection m_tfConnections;
+
 };
 
 } //namespace helper

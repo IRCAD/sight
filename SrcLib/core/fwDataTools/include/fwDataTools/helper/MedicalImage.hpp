@@ -6,21 +6,11 @@
 
 #pragma once
 
-#ifndef __FWDATATOOLS_HELPER_MEDICALIMAGEADAPTOR_HPP__
-#define __FWDATATOOLS_HELPER_MEDICALIMAGEADAPTOR_HPP__
-
 #include "fwDataTools/config.hpp"
 #include "fwDataTools/helper/ImageGetter.hpp"
 
-#include <fwCom/helper/SigSlotConnection.hpp>
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slots.hpp>
-
 #include <fwData/Composite.hpp>
 #include <fwData/Integer.hpp>
-#include <fwData/String.hpp>
-
-#include <vector>
 
 namespace fwDataTools
 {
@@ -35,6 +25,7 @@ class FWDATATOOLS_CLASS_API MedicalImage
 {
 
 public:
+
     fwCoreBaseClassDefinitionsMacro( (MedicalImage) );
 
     /// Image orientation
@@ -163,6 +154,7 @@ protected:
 
     /// Set the slice index
     FWDATATOOLS_API bool setSliceIndex(const int index[3]);
+
     /// Get the slice index
     FWDATATOOLS_API void getSliceIndex(::fwData::Integer::sptr index[3]);
 
@@ -174,8 +166,10 @@ protected:
 
     /// Axial slice index
     ::fwData::Integer::sptr m_axialIndex;
+
     /// Frontal slice index
     ::fwData::Integer::sptr m_frontalIndex;
+
     /// Sagittal slice index
     ::fwData::Integer::sptr m_sagittalIndex;
 
@@ -187,6 +181,7 @@ private:
 };
 
 //------------------------------------------------------------------------------
+
 template< typename FLOAT_ARRAY_3 >
 void MedicalImage::getImageSpacing(FLOAT_ARRAY_3 spacing)
 {
@@ -197,6 +192,7 @@ void MedicalImage::getImageSpacing(FLOAT_ARRAY_3 spacing)
 }
 
 //------------------------------------------------------------------------------
+
 template< typename INT_INDEX >
 void MedicalImage::getImageDataSize(INT_INDEX size)
 {
@@ -251,5 +247,3 @@ void MedicalImage::worldToImageSliceIndex(const WORLD world, INT_INDEX* index )
 } //namespace helper
 
 } //namespace fwDataTools
-
-#endif // __FWDATATOOLS_HELPER_MEDICALIMAGEADAPTOR_HPP__
