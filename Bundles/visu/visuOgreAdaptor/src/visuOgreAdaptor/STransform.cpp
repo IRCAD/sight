@@ -67,8 +67,6 @@ void STransform::starting()
     this->initialize();
     ::Ogre::SceneManager* sceneManager = this->getSceneManager();
 
-
-
     if (!m_parentTransformId.empty())
     {
         m_parentTransformNode = sceneManager->getRootSceneNode()->createChildSceneNode(m_parentTransformId);
