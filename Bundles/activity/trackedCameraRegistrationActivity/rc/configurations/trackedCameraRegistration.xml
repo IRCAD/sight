@@ -219,6 +219,8 @@
             <slots>
                 <slot>firstVideoGrabber/stopCamera</slot>
                 <slot>secondVideoGrabber/stopCamera</slot>
+                <slot>firstVideoGrabber/reconfigure</slot>
+                <slot>secondVideoGrabber/reconfigure</slot>
             </slots>
         </service>
 
