@@ -17,7 +17,6 @@
 #include <fwCom/Slots.hxx>
 
 #include <fwData/Image.hpp>
-#include <fwData/TransferFunction.hpp>
 
 namespace fwDataTools
 {
@@ -260,131 +259,10 @@ void MedicalImage::updateImageInfos( ::fwData::Image::sptr image )
 
 //------------------------------------------------------------------------------
 
-void MedicalImage::createTransferFunction( ::fwData::Image::sptr image )
-{
-    ::fwData::Composite::sptr tfPool =
-        image->setDefaultField(::fwDataTools::fieldHelper::Image::m_transferFunctionCompositeId,
-                               ::fwData::Composite::New());
-
-    // create the default transfer function in the image tf field if it does not exist
-    if (tfPool->find(::fwData::TransferFunction::s_DEFAULT_TF_NAME) == tfPool->end())
-    {
-        ::fwData::TransferFunction::sptr tfGreyLevel = ::fwData::TransferFunction::createDefaultTF();
-        if (image->getWindowWidth() != 0 )
-        {
-            tfGreyLevel->setWindow( image->getWindowWidth() );
-            tfGreyLevel->setLevel( image->getWindowCenter() );
-        }
-        else if(::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
-        {
-            double min, max;
-            ::fwDataTools::fieldHelper::MedicalImageHelpers::getMinMax(image, min, max);
-            ::fwData::TransferFunction::TFValuePairType wlMinMax(min, max);
-            tfGreyLevel->setWLMinMax(wlMinMax);
-        }
-
-        ::fwDataTools::helper::Composite compositeHelper(tfPool);
-        compositeHelper.add(::fwData::TransferFunction::s_DEFAULT_TF_NAME, tfGreyLevel);
-        compositeHelper.notify();
-    }
-
-    if (m_transferFunction.expired())
-    {
-        ::fwData::TransferFunction::sptr tfGreyLevel =
-            tfPool->at< ::fwData::TransferFunction >(::fwData::TransferFunction::s_DEFAULT_TF_NAME);
-        m_transferFunction = tfGreyLevel;
-    }
-    else if (m_transferFunction.lock()->getTFValues().empty())
-    {
-        ::fwData::TransferFunction::sptr tfGreyLevel =
-            tfPool->at< ::fwData::TransferFunction >(::fwData::TransferFunction::s_DEFAULT_TF_NAME);
-        m_transferFunction.lock()->deepCopy(tfGreyLevel);
-    }
-}
-
-//------------------------------------------------------------------------------v
-
-void MedicalImage::setOrCreateTF(const fwData::TransferFunction::sptr& _tf, const fwData::Image::sptr& _image)
-{
-    this->removeTFConnections();
-    if (_tf)
-    {
-        this->setTransferFunction(_tf);
-    }
-    else
-    {
-        this->createTransferFunction(_image);
-    }
-    this->installTFConnections();
-}
-
-//------------------------------------------------------------------------------
-
-::fwData::TransferFunction::sptr MedicalImage::getTransferFunction() const
-{
-    SLM_ASSERT("Transfer funtion is not defined, you must call setTransferFunction() or createTransferFunction() first."
-               , !m_transferFunction.expired());
-    return m_transferFunction.lock();
-}
-
-//------------------------------------------------------------------------------
-
 ::fwData::Image::sptr MedicalImage::getImage() const
 {
     SLM_ASSERT("Image weak pointer empty !", !m_weakImage.expired());
     return m_weakImage.lock();
-}
-
-//------------------------------------------------------------------------------
-
-void MedicalImage::setTransferFunction(const ::fwData::TransferFunction::sptr& tf )
-{
-    m_transferFunction = tf;
-}
-
-//------------------------------------------------------------------------------
-
-void MedicalImage::installTFConnections()
-{
-    ::fwCom::Connection connection;
-
-    ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
-
-    connection = tf->signal(::fwData::TransferFunction::s_POINTS_MODIFIED_SIG)->connect(m_slotUpdateTFPoints);
-    m_tfConnections.addConnection(connection);
-    connection = tf->signal(::fwData::TransferFunction::s_WINDOWING_MODIFIED_SIG)->connect(m_slotUpdateTFWindowing);
-    m_tfConnections.addConnection(connection);
-}
-
-//------------------------------------------------------------------------------
-
-void MedicalImage::removeTFConnections()
-{
-    m_tfConnections.disconnect();
-}
-
-//------------------------------------------------------------------------------
-
-void MedicalImage::installTFSlots(::fwCom::HasSlots* hasslots)
-{
-    m_slotUpdateTFPoints    = hasslots->newSlot(s_UPDATE_TF_POINTS_SLOT, &MedicalImage::updateTFPoints, this);
-    m_slotUpdateTFWindowing =
-        hasslots->newSlot(s_UPDATE_TF_WINDOWING_SLOT, &MedicalImage::updateTFWindowing, this);
-}
-
-//------------------------------------------------------------------------------
-
-void MedicalImage::updateTFPoints()
-{
-    SLM_ASSERT("This methods (updateTFPoints) must be reimplemented in subclass to manage TF modifications", false);
-}
-
-//------------------------------------------------------------------------------
-
-void MedicalImage::updateTFWindowing(double /*window*/, double /*level*/)
-{
-    SLM_ASSERT("This methods (updateTFWindowing) must be reimplemented in subclass to manage TF modifications",
-               false);
 }
 
 //------------------------------------------------------------------------------

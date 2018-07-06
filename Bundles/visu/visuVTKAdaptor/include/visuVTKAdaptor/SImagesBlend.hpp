@@ -11,6 +11,7 @@
 #include <fwCom/helper/SigSlotConnection.hpp>
 
 #include <fwData/Image.hpp>
+#include <fwData/TransferFunction.hpp>
 
 #include <fwDataTools/helper/MedicalImage.hpp>
 

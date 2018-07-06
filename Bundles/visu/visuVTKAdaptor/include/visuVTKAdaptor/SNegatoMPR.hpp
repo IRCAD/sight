@@ -11,6 +11,7 @@
 #include <fwCom/helper/SigSlotConnection.hpp>
 
 #include <fwDataTools/helper/MedicalImage.hpp>
+#include <fwDataTools/helper/TransferFunction.hpp>
 
 #include <fwRenderVTK/IAdaptor.hpp>
 
@@ -60,13 +61,15 @@ class SliceCursor;
  *    - \b vtkimagesource (optional): source image, used for blend
  *    - \b actorOpacity (optional, default=1.0): actor opacity (float)
  */
-class VISUVTKADAPTOR_CLASS_API SNegatoMPR : public ::fwDataTools::helper::MedicalImage,
+class VISUVTKADAPTOR_CLASS_API SNegatoMPR : public ::fwDataTools::helper::TransferFunction,
                                             public ::fwRenderVTK::IAdaptor
 {
 
 public:
 
     fwCoreServiceClassDefinitionsMacro( (SNegatoMPR)(::fwRenderVTK::IAdaptor) );
+
+    typedef ::fwDataTools::helper::MedicalImage::Orientation OrientationMode;
 
     VISUVTKADAPTOR_API SNegatoMPR() noexcept;
 
@@ -81,6 +84,8 @@ public:
         ONE_SLICE,
         THREE_SLICES
     } SliceMode;
+
+    void setOrientation(OrientationMode);
 
     //------------------------------------------------------------------------------
 
@@ -171,6 +176,9 @@ private:
     ::fwCom::helper::SigSlotConnection m_connections; /// store subservices connections
 
     ::fwRenderVTK::IAdaptor::wptr m_sliceCursor;
+
+    /// Image orientation
+    OrientationMode m_orientation;
 };
 
 } //namespace visuVTKAdaptor

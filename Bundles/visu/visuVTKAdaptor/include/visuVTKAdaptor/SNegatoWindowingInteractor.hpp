@@ -10,7 +10,7 @@
 
 #include <fwData/TransferFunction.hpp>
 
-#include <fwDataTools/helper/MedicalImage.hpp>
+#include <fwDataTools/helper/TransferFunction.hpp>
 
 #include <fwRenderVTK/IAdaptor.hpp>
 
@@ -40,7 +40,7 @@ namespace visuVTKAdaptor
  * - \b config(mandatory) : contains the adaptor configuration
  *    - \b picker (mandatory): identifier of the picker
  */
-class VISUVTKADAPTOR_CLASS_API SNegatoWindowingInteractor : public ::fwDataTools::helper::MedicalImage,
+class VISUVTKADAPTOR_CLASS_API SNegatoWindowingInteractor : public ::fwDataTools::helper::TransferFunction,
                                                             public ::fwRenderVTK::IAdaptor
 {
 

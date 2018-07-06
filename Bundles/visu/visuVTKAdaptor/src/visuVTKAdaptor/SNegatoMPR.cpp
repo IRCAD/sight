@@ -136,9 +136,9 @@ void SNegatoMPR::updating()
             }
             else if(this->getSliceMode() == THREE_SLICES)
             {
-                this->addAdaptor("::visuVTKAdaptor::SNegatoOneSlice", X_AXIS);
-                this->addAdaptor("::visuVTKAdaptor::SNegatoOneSlice", Y_AXIS);
-                this->addAdaptor("::visuVTKAdaptor::SNegatoOneSlice", Z_AXIS);
+                this->addAdaptor("::visuVTKAdaptor::SNegatoOneSlice", OrientationMode::X_AXIS);
+                this->addAdaptor("::visuVTKAdaptor::SNegatoOneSlice", OrientationMode::Y_AXIS);
+                this->addAdaptor("::visuVTKAdaptor::SNegatoOneSlice", OrientationMode::Z_AXIS);
             }
 
             ::fwRenderVTK::IAdaptor::sptr sliceCursor;
@@ -212,11 +212,11 @@ void SNegatoMPR::updateSliceType(int from, int to)
 {
     if( to == static_cast<int>(m_orientation) )
     {
-        setOrientation( static_cast< Orientation >( from ));
+        this->setOrientation( static_cast< OrientationMode >( from ));
     }
     else if(from == static_cast<int>(m_orientation))
     {
-        setOrientation( static_cast< Orientation >( to ));
+        this->setOrientation( static_cast< OrientationMode >( to ));
     }
 }
 
@@ -331,15 +331,15 @@ void SNegatoMPR::configuring()
     const std::string orientation = config.get<std::string>("sliceIndex", "axial");
     if(orientation == "axial" )
     {
-        m_orientation = Z_AXIS;
+        m_orientation = OrientationMode::Z_AXIS;
     }
     else if(orientation == "frontal" )
     {
-        m_orientation = Y_AXIS;
+        m_orientation = OrientationMode::Y_AXIS;
     }
     else if(orientation == "sagittal" )
     {
-        m_orientation = X_AXIS;
+        m_orientation = OrientationMode::X_AXIS;
     }
 
     const std::string tfalpha = config.get<std::string>("tfalpha", "no");
@@ -389,6 +389,13 @@ void SNegatoMPR::set3dMode( bool enabled )
 
 //------------------------------------------------------------------------------
 
+void SNegatoMPR::setOrientation( OrientationMode _orientation )
+{
+    m_orientation = _orientation;
+}
+
+//------------------------------------------------------------------------------
+
 ::fwRenderVTK::IAdaptor::sptr SNegatoMPR::addAdaptor(const std::string& adaptorType, int axis)
 {
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
@@ -403,7 +410,7 @@ void SNegatoMPR::set3dMode( bool enabled )
     {
         auto adaptorSrv = ::fwDataTools::helper::MedicalImage::dynamicCast(service);
         SLM_ASSERT("adaptorSrv not instanced", adaptorSrv);
-        adaptorSrv->setOrientation((Orientation) axis);
+        adaptorSrv->setOrientation( static_cast< OrientationMode >(axis));
     }
 
     auto negatoAdaptor = ::visuVTKAdaptor::SNegatoOneSlice::dynamicCast(service);
