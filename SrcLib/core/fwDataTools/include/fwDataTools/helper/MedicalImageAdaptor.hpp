@@ -34,6 +34,9 @@ namespace helper
  * The two slots must be reimplemented by the services managing transfer function
  * - \b updateTFPoints(): called when the transfer function points are modified
  * - \b updateTFWindowing(double window, double level): called when the transfer function windowing is modified
+ *
+ * @deprecated this class is deprecated since 17.0, please use fwDataTools::helper::MedicalImage or
+ * fwDataTools::helper::TransferFunction instead
  */
 class FWDATATOOLS_CLASS_API MedicalImageAdaptor
 {
