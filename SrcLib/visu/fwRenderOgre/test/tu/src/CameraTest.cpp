@@ -55,6 +55,15 @@ void compareMatrix(const ::Ogre::Matrix4& _m1, const ::Ogre::Matrix4& _m2)
 
 //------------------------------------------------------------------------------
 
+void comparePoint(const Ogre::Vector3& _p1, const Ogre::Vector3& _p2)
+{
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(_p1[0], _p2[0], 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(_p1[0], _p2[0], 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(_p1[0], _p2[0], 0.00001);
+}
+
+//------------------------------------------------------------------------------
+
 void CameraTest::computeProjectionMatrix()
 {
     // Sorry for this incomprehensible test but this is better than 16 loops
@@ -168,7 +177,6 @@ void CameraTest::computeProjectionMatrix()
 
 void CameraTest::convertPixelToWorldSpace()
 {
-    // Sorry for this incomprehensible test but this is better than 16 loops
     const size_t width  = 1920;
     const size_t height = 1080;
     const double cx     = static_cast<double>(width)/2.;
@@ -227,9 +235,9 @@ void CameraTest::convertPixelToWorldSpace()
 
     Utils::destroyOgreRoot();
 
-    CPPUNIT_ASSERT(result1 == point1Expected);
-    CPPUNIT_ASSERT(result2 == point2Expected);
-    CPPUNIT_ASSERT(result3 == point3Expected);
+    comparePoint(result1, point1Expected);
+    comparePoint(result1, point1Expected);
+    comparePoint(result1, point1Expected);
 }
 
 //------------------------------------------------------------------------------
