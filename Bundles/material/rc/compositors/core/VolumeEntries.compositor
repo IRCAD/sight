@@ -10,57 +10,14 @@ compositor VolumeEntries
 
             pass clear
             {
-                buffers colour depth stencil
-                colour_value 1 1 1 1
-            }
-
-            pass stencil
-            {
-                check on
-                comp_func always_pass
-                ref_value 1
-                pass_op replace
+                // Write near depth coordinate (i.e. 0 in NDC) to the red channel.
+                buffers colour depth
+                colour_value 0 1 1 1
             }
 
             pass render_scene
             {
-                material_scheme VolumeEntries_BackFacesMax
-
                 // Volume proxy geometry is in render queue 101.
-                first_render_queue 101
-                last_render_queue 101
-            }
-        }
-
-        target VolumeEntryPoints
-        {
-            input none
-
-            pass stencil
-            {
-                check off
-            }
-
-            pass render_scene
-            {
-                material_scheme VolumeEntries_FrontFacesMin
-
-                // Regular surface models are in render queues 50 and below.
-                last_render_queue 50
-            }
-        }
-
-        target VolumeEntryPoints
-        {
-            input none
-
-            pass stencil
-            {
-                check off
-            }
-
-            pass render_scene
-            {
                 material_scheme VolumeEntries_BackFaces
 
                 first_render_queue 101
@@ -71,14 +28,6 @@ compositor VolumeEntries
         target VolumeEntryPoints
         {
             input none
-
-            pass stencil
-            {
-                check on
-                comp_func always_pass
-                ref_value 2
-                pass_op replace
-            }
 
             pass render_scene
             {
@@ -93,17 +42,12 @@ compositor VolumeEntries
         {
             input none
 
-            pass stencil
+            pass render_scene
             {
-                check on
-                comp_func equal
-                ref_value 1
-                pass_op keep
-            }
+                material_scheme VolumeEntries_BackFacesMax
 
-            pass render_quad
-            {
-                material RayEntryPointsNearClipping
+                first_render_queue 101
+                last_render_queue 101
             }
         }
 
@@ -111,9 +55,12 @@ compositor VolumeEntries
         {
             input none
 
-            pass stencil
+            pass render_scene
             {
-                check off
+                material_scheme VolumeEntries_FrontFacesMin
+
+                // Regular surface models are in render queues 50 and below.
+                last_render_queue 50
             }
         }
 
@@ -121,6 +68,5 @@ compositor VolumeEntries
         {
             input previous
         }
-
     }
 }

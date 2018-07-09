@@ -17,55 +17,14 @@ compositor VolumeEntriesStereo8
 
             pass clear
             {
-                buffers colour depth stencil
-                colour_value 1 1 1 1
-            }
-
-            pass stencil
-            {
-                check on
-                comp_func always_pass
-                ref_value 1
-                pass_op replace
+                // Write near clipping depth (i.e. 0 in NDC) to the red channel.
+                buffers colour depth
+                colour_value 0 1 1 1
             }
 
             pass render_scene
             {
-                material_scheme VolumeEntriesAutoStereo_BackFacesMax0
-
-                first_render_queue 101
-                last_render_queue 101
-            }
-        }
-
-        target VolumeEntryPoints0
-        {
-            input none
-
-            pass stencil
-            {
-                check off
-            }
-
-            pass render_scene
-            {
-                material_scheme VolumeEntriesAutoStereo_FrontFacesMin0
-
-                last_render_queue 50
-            }
-        }
-
-        target VolumeEntryPoints0
-        {
-            input none
-
-            pass stencil
-            {
-                check off
-            }
-
-            pass render_scene
-            {
+                // Volume proxy geometry is in render queue 101.
                 material_scheme VolumeEntriesAutoStereo_BackFaces0
 
                 first_render_queue 101
@@ -76,14 +35,6 @@ compositor VolumeEntriesStereo8
         target VolumeEntryPoints0
         {
             input none
-
-            pass stencil
-            {
-                check on
-                comp_func always_pass
-                ref_value 2
-                pass_op replace
-            }
 
             pass render_scene
             {
@@ -98,17 +49,12 @@ compositor VolumeEntriesStereo8
         {
             input none
 
-            pass stencil
+            pass render_scene
             {
-                check on
-                comp_func equal
-                ref_value 1
-                pass_op keep
-            }
+                material_scheme VolumeEntriesAutoStereo_BackFacesMax0
 
-            pass render_quad
-            {
-                material RayEntryPointsNearClipping
+                first_render_queue 101
+                last_render_queue 101
             }
         }
 
@@ -116,67 +62,30 @@ compositor VolumeEntriesStereo8
         {
             input none
 
-            pass stencil
+            pass render_scene
             {
-                check off
+                material_scheme VolumeEntriesAutoStereo_FrontFacesMin0
+
+                // Regular surface models are in render queues 50 and below.
+                last_render_queue 50
             }
         }
 
+        // Repeat for each viewpoint.
         target VolumeEntryPoints1
         {
             input none
 
             pass clear
             {
-                buffers colour depth stencil
-                colour_value 1 1 1 1
-            }
-
-            pass stencil
-            {
-                check on
-                comp_func always_pass
-                ref_value 1
-                pass_op replace
+                // Write near depth coordinate (i.e. 0 in NDC) to the red channel.
+                buffers colour depth
+                colour_value 0 1 1 1
             }
 
             pass render_scene
             {
-                material_scheme VolumeEntriesAutoStereo_BackFacesMax1
-
-                first_render_queue 101
-                last_render_queue 101
-            }
-        }
-
-        target VolumeEntryPoints1
-        {
-            input none
-
-            pass stencil
-            {
-                check off
-            }
-
-            pass render_scene
-            {
-                material_scheme VolumeEntriesAutoStereo_FrontFacesMin1
-
-                last_render_queue 50
-            }
-        }
-
-        target VolumeEntryPoints1
-        {
-            input none
-
-            pass stencil
-            {
-                check off
-            }
-
-            pass render_scene
-            {
+                // Volume proxy geometry is in render queue 101.
                 material_scheme VolumeEntriesAutoStereo_BackFaces1
 
                 first_render_queue 101
@@ -187,14 +96,6 @@ compositor VolumeEntriesStereo8
         target VolumeEntryPoints1
         {
             input none
-
-            pass stencil
-            {
-                check on
-                comp_func always_pass
-                ref_value 2
-                pass_op replace
-            }
 
             pass render_scene
             {
@@ -209,17 +110,12 @@ compositor VolumeEntriesStereo8
         {
             input none
 
-            pass stencil
+            pass render_scene
             {
-                check on
-                comp_func equal
-                ref_value 1
-                pass_op keep
-            }
+                material_scheme VolumeEntriesAutoStereo_BackFacesMax1
 
-            pass render_quad
-            {
-                material RayEntryPointsNearClipping
+                first_render_queue 101
+                last_render_queue 101
             }
         }
 
@@ -227,9 +123,12 @@ compositor VolumeEntriesStereo8
         {
             input none
 
-            pass stencil
+            pass render_scene
             {
-                check off
+                material_scheme VolumeEntriesAutoStereo_FrontFacesMin1
+
+                // Regular surface models are in render queues 50 and below.
+                last_render_queue 50
             }
         }
 
@@ -239,55 +138,14 @@ compositor VolumeEntriesStereo8
 
             pass clear
             {
-                buffers colour depth stencil
-                colour_value 1 1 1 1
-            }
-
-            pass stencil
-            {
-                check on
-                comp_func always_pass
-                ref_value 1
-                pass_op replace
+                // Write near depth coordinate (i.e. 0 in NDC) to the red channel.
+                buffers colour depth
+                colour_value 0 1 1 1
             }
 
             pass render_scene
             {
-                material_scheme VolumeEntriesAutoStereo_BackFacesMax2
-
-                first_render_queue 101
-                last_render_queue 101
-            }
-        }
-
-        target VolumeEntryPoints2
-        {
-            input none
-
-            pass stencil
-            {
-                check off
-            }
-
-            pass render_scene
-            {
-                material_scheme VolumeEntriesAutoStereo_FrontFacesMin2
-
-                last_render_queue 50
-            }
-        }
-
-        target VolumeEntryPoints2
-        {
-            input none
-
-            pass stencil
-            {
-                check off
-            }
-
-            pass render_scene
-            {
+                // Volume proxy geometry is in render queue 101.
                 material_scheme VolumeEntriesAutoStereo_BackFaces2
 
                 first_render_queue 101
@@ -298,14 +156,6 @@ compositor VolumeEntriesStereo8
         target VolumeEntryPoints2
         {
             input none
-
-            pass stencil
-            {
-                check on
-                comp_func always_pass
-                ref_value 2
-                pass_op replace
-            }
 
             pass render_scene
             {
@@ -320,17 +170,12 @@ compositor VolumeEntriesStereo8
         {
             input none
 
-            pass stencil
+            pass render_scene
             {
-                check on
-                comp_func equal
-                ref_value 1
-                pass_op keep
-            }
+                material_scheme VolumeEntriesAutoStereo_BackFacesMax2
 
-            pass render_quad
-            {
-                material RayEntryPointsNearClipping
+                first_render_queue 101
+                last_render_queue 101
             }
         }
 
@@ -338,9 +183,12 @@ compositor VolumeEntriesStereo8
         {
             input none
 
-            pass stencil
+            pass render_scene
             {
-                check off
+                material_scheme VolumeEntriesAutoStereo_FrontFacesMin2
+
+                // Regular surface models are in render queues 50 and below.
+                last_render_queue 50
             }
         }
 
@@ -350,55 +198,14 @@ compositor VolumeEntriesStereo8
 
             pass clear
             {
-                buffers colour depth stencil
-                colour_value 1 1 1 1
-            }
-
-            pass stencil
-            {
-                check on
-                comp_func always_pass
-                ref_value 1
-                pass_op replace
+                // Write near depth coordinate (i.e. 0 in NDC) to the red channel.
+                buffers colour depth
+                colour_value 0 1 1 1
             }
 
             pass render_scene
             {
-                material_scheme VolumeEntriesAutoStereo_BackFacesMax3
-
-                first_render_queue 101
-                last_render_queue 101
-            }
-        }
-
-        target VolumeEntryPoints3
-        {
-            input none
-
-            pass stencil
-            {
-                check off
-            }
-
-            pass render_scene
-            {
-                material_scheme VolumeEntriesAutoStereo_FrontFacesMin3
-
-                last_render_queue 50
-            }
-        }
-
-        target VolumeEntryPoints3
-        {
-            input none
-
-            pass stencil
-            {
-                check off
-            }
-
-            pass render_scene
-            {
+                // Volume proxy geometry is in render queue 101.
                 material_scheme VolumeEntriesAutoStereo_BackFaces3
 
                 first_render_queue 101
@@ -409,14 +216,6 @@ compositor VolumeEntriesStereo8
         target VolumeEntryPoints3
         {
             input none
-
-            pass stencil
-            {
-                check on
-                comp_func always_pass
-                ref_value 2
-                pass_op replace
-            }
 
             pass render_scene
             {
@@ -431,17 +230,12 @@ compositor VolumeEntriesStereo8
         {
             input none
 
-            pass stencil
+            pass render_scene
             {
-                check on
-                comp_func equal
-                ref_value 1
-                pass_op keep
-            }
+                material_scheme VolumeEntriesAutoStereo_BackFacesMax3
 
-            pass render_quad
-            {
-                material RayEntryPointsNearClipping
+                first_render_queue 101
+                last_render_queue 101
             }
         }
 
@@ -449,9 +243,12 @@ compositor VolumeEntriesStereo8
         {
             input none
 
-            pass stencil
+            pass render_scene
             {
-                check off
+                material_scheme VolumeEntriesAutoStereo_FrontFacesMin3
+
+                // Regular surface models are in render queues 50 and below.
+                last_render_queue 50
             }
         }
 
@@ -461,55 +258,14 @@ compositor VolumeEntriesStereo8
 
             pass clear
             {
-                buffers colour depth stencil
-                colour_value 1 1 1 1
-            }
-
-            pass stencil
-            {
-                check on
-                comp_func always_pass
-                ref_value 1
-                pass_op replace
+                // Write near depth coordinate (i.e. 0 in NDC) to the red channel.
+                buffers colour depth
+                colour_value 0 1 1 1
             }
 
             pass render_scene
             {
-                material_scheme VolumeEntriesAutoStereo_BackFacesMax4
-
-                first_render_queue 101
-                last_render_queue 101
-            }
-        }
-
-        target VolumeEntryPoints4
-        {
-            input none
-
-            pass stencil
-            {
-                check off
-            }
-
-            pass render_scene
-            {
-                material_scheme VolumeEntriesAutoStereo_FrontFacesMin4
-
-                last_render_queue 50
-            }
-        }
-
-        target VolumeEntryPoints4
-        {
-            input none
-
-            pass stencil
-            {
-                check off
-            }
-
-            pass render_scene
-            {
+                // Volume proxy geometry is in render queue 101.
                 material_scheme VolumeEntriesAutoStereo_BackFaces4
 
                 first_render_queue 101
@@ -520,14 +276,6 @@ compositor VolumeEntriesStereo8
         target VolumeEntryPoints4
         {
             input none
-
-            pass stencil
-            {
-                check on
-                comp_func always_pass
-                ref_value 2
-                pass_op replace
-            }
 
             pass render_scene
             {
@@ -542,17 +290,12 @@ compositor VolumeEntriesStereo8
         {
             input none
 
-            pass stencil
+            pass render_scene
             {
-                check on
-                comp_func equal
-                ref_value 1
-                pass_op keep
-            }
+                material_scheme VolumeEntriesAutoStereo_BackFacesMax4
 
-            pass render_quad
-            {
-                material RayEntryPointsNearClipping
+                first_render_queue 101
+                last_render_queue 101
             }
         }
 
@@ -560,9 +303,12 @@ compositor VolumeEntriesStereo8
         {
             input none
 
-            pass stencil
+            pass render_scene
             {
-                check off
+                material_scheme VolumeEntriesAutoStereo_FrontFacesMin4
+
+                // Regular surface models are in render queues 50 and below.
+                last_render_queue 50
             }
         }
 
@@ -572,55 +318,14 @@ compositor VolumeEntriesStereo8
 
             pass clear
             {
-                buffers colour depth stencil
-                colour_value 1 1 1 1
-            }
-
-            pass stencil
-            {
-                check on
-                comp_func always_pass
-                ref_value 1
-                pass_op replace
+                // Write near depth coordinate (i.e. 0 in NDC) to the red channel.
+                buffers colour depth
+                colour_value 0 1 1 1
             }
 
             pass render_scene
             {
-                material_scheme VolumeEntriesAutoStereo_BackFacesMax5
-
-                first_render_queue 101
-                last_render_queue 101
-            }
-        }
-
-        target VolumeEntryPoints5
-        {
-            input none
-
-            pass stencil
-            {
-                check off
-            }
-
-            pass render_scene
-            {
-                material_scheme VolumeEntriesAutoStereo_FrontFacesMin5
-
-                last_render_queue 50
-            }
-        }
-
-        target VolumeEntryPoints5
-        {
-            input none
-
-            pass stencil
-            {
-                check off
-            }
-
-            pass render_scene
-            {
+                // Volume proxy geometry is in render queue 101.
                 material_scheme VolumeEntriesAutoStereo_BackFaces5
 
                 first_render_queue 101
@@ -631,14 +336,6 @@ compositor VolumeEntriesStereo8
         target VolumeEntryPoints5
         {
             input none
-
-            pass stencil
-            {
-                check on
-                comp_func always_pass
-                ref_value 2
-                pass_op replace
-            }
 
             pass render_scene
             {
@@ -653,17 +350,12 @@ compositor VolumeEntriesStereo8
         {
             input none
 
-            pass stencil
+            pass render_scene
             {
-                check on
-                comp_func equal
-                ref_value 1
-                pass_op keep
-            }
+                material_scheme VolumeEntriesAutoStereo_BackFacesMax5
 
-            pass render_quad
-            {
-                material RayEntryPointsNearClipping
+                first_render_queue 101
+                last_render_queue 101
             }
         }
 
@@ -671,53 +363,11 @@ compositor VolumeEntriesStereo8
         {
             input none
 
-            pass stencil
-            {
-                check off
-            }
-        }
-
-
-        target VolumeEntryPoints6
-        {
-            input none
-
-            pass clear
-            {
-                buffers colour depth stencil
-                colour_value 1 1 1 1
-            }
-
-            pass stencil
-            {
-                check on
-                comp_func always_pass
-                ref_value 1
-                pass_op replace
-            }
-
             pass render_scene
             {
-                material_scheme VolumeEntriesAutoStereo_BackFacesMax6
+                material_scheme VolumeEntriesAutoStereo_FrontFacesMin5
 
-                first_render_queue 101
-                last_render_queue 101
-            }
-        }
-
-        target VolumeEntryPoints6
-        {
-            input none
-
-            pass stencil
-            {
-                check off
-            }
-
-            pass render_scene
-            {
-                material_scheme VolumeEntriesAutoStereo_FrontFacesMin6
-
+                // Regular surface models are in render queues 50 and below.
                 last_render_queue 50
             }
         }
@@ -726,13 +376,16 @@ compositor VolumeEntriesStereo8
         {
             input none
 
-            pass stencil
+            pass clear
             {
-                check off
+                // Write near depth coordinate (i.e. 0 in NDC) to the red channel.
+                buffers colour depth
+                colour_value 0 1 1 1
             }
 
             pass render_scene
             {
+                // Volume proxy geometry is in render queue 101.
                 material_scheme VolumeEntriesAutoStereo_BackFaces6
 
                 first_render_queue 101
@@ -743,14 +396,6 @@ compositor VolumeEntriesStereo8
         target VolumeEntryPoints6
         {
             input none
-
-            pass stencil
-            {
-                check on
-                comp_func always_pass
-                ref_value 2
-                pass_op replace
-            }
 
             pass render_scene
             {
@@ -765,17 +410,12 @@ compositor VolumeEntriesStereo8
         {
             input none
 
-            pass stencil
+            pass render_scene
             {
-                check on
-                comp_func equal
-                ref_value 1
-                pass_op keep
-            }
+                material_scheme VolumeEntriesAutoStereo_BackFacesMax6
 
-            pass render_quad
-            {
-                material RayEntryPointsNearClipping
+                first_render_queue 101
+                last_render_queue 101
             }
         }
 
@@ -783,9 +423,12 @@ compositor VolumeEntriesStereo8
         {
             input none
 
-            pass stencil
+            pass render_scene
             {
-                check off
+                material_scheme VolumeEntriesAutoStereo_FrontFacesMin6
+
+                // Regular surface models are in render queues 50 and below.
+                last_render_queue 50
             }
         }
 
@@ -795,55 +438,14 @@ compositor VolumeEntriesStereo8
 
             pass clear
             {
-                buffers colour depth stencil
-                colour_value 1 1 1 1
-            }
-
-            pass stencil
-            {
-                check on
-                comp_func always_pass
-                ref_value 1
-                pass_op replace
+                // Write near depth coordinate (i.e. 0 in NDC) to the red channel.
+                buffers colour depth
+                colour_value 0 1 1 1
             }
 
             pass render_scene
             {
-                material_scheme VolumeEntriesAutoStereo_BackFacesMax7
-
-                first_render_queue 101
-                last_render_queue 101
-            }
-        }
-
-        target VolumeEntryPoints7
-        {
-            input none
-
-            pass stencil
-            {
-                check off
-            }
-
-            pass render_scene
-            {
-                material_scheme VolumeEntriesAutoStereo_FrontFacesMin7
-
-                last_render_queue 50
-            }
-        }
-
-        target VolumeEntryPoints7
-        {
-            input none
-
-            pass stencil
-            {
-                check off
-            }
-
-            pass render_scene
-            {
+                // Volume proxy geometry is in render queue 101.
                 material_scheme VolumeEntriesAutoStereo_BackFaces7
 
                 first_render_queue 101
@@ -854,14 +456,6 @@ compositor VolumeEntriesStereo8
         target VolumeEntryPoints7
         {
             input none
-
-            pass stencil
-            {
-                check on
-                comp_func always_pass
-                ref_value 2
-                pass_op replace
-            }
 
             pass render_scene
             {
@@ -876,17 +470,12 @@ compositor VolumeEntriesStereo8
         {
             input none
 
-            pass stencil
+            pass render_scene
             {
-                check on
-                comp_func equal
-                ref_value 1
-                pass_op keep
-            }
+                material_scheme VolumeEntriesAutoStereo_BackFacesMax7
 
-            pass render_quad
-            {
-                material RayEntryPointsNearClipping
+                first_render_queue 101
+                last_render_queue 101
             }
         }
 
@@ -894,9 +483,12 @@ compositor VolumeEntriesStereo8
         {
             input none
 
-            pass stencil
+            pass render_scene
             {
-                check off
+                material_scheme VolumeEntriesAutoStereo_FrontFacesMin7
+
+                // Regular surface models are in render queues 50 and below.
+                last_render_queue 50
             }
         }
 
@@ -906,4 +498,3 @@ compositor VolumeEntriesStereo8
         }
     }
 }
-
