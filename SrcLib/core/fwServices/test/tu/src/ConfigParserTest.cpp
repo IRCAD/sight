@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -63,15 +63,16 @@ void ConfigParserTest::testObjectCreationWithConfig()
     // Test object uid
     CPPUNIT_ASSERT_EQUAL(objectUUID, image->getID());
 
-    // Test if object's service is created
-    CPPUNIT_ASSERT( ::fwServices::OSR::has(image, "::fwServices::ut::TestConfigService"));
-
     // Test start services
     configManager->start();
     const auto& srv1 = ::fwServices::get(serviceUUID1);
     const auto& srv2 = ::fwServices::get(serviceUUID2);
     CPPUNIT_ASSERT( srv1->isStarted() );
     CPPUNIT_ASSERT( srv2->isStarted() );
+
+    // Test if object's service is created
+    CPPUNIT_ASSERT(::fwServices::OSR::isRegistered("data", ::fwServices::IService::AccessType::INPUT, srv1));
+    CPPUNIT_ASSERT(image == ::fwServices::OSR::getRegistered("data", ::fwServices::IService::AccessType::INPUT, srv1));
 
     // Test update services
     configManager->update();

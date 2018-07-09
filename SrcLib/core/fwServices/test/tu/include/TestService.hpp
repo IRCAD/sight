@@ -8,10 +8,9 @@
 
 #include <fwServices/IService.hpp>
 
+#include <fwCom/HasSlots.hpp>
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
-#include <fwCom/Slots.hpp>
-#include <fwCom/Slots.hxx>
 
 #include <fwData/Image.hpp>
 
@@ -164,6 +163,19 @@ public:
     {
         m_swappedObjectKey = key;
         m_swappedObject    = this->getInput< ::fwData::Object>(key);
+    }
+
+    //-------------------------------------------------------------------------
+    virtual KeyConnectionsMap getAutoConnections() const override
+    {
+        KeyConnectionsMap connections;
+        connections.push("data", ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+        connections.push("data1", ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+        connections.push("data2", ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+        connections.push("data3", ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+        connections.push("data4", ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+        connections.push("dataGroup", ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+        return connections;
     }
 
     //-------------------------------------------------------------------------

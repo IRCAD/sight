@@ -50,6 +50,31 @@ void AppConfigTest::setUp()
 
     ::fwServices::registry::ActiveWorkers::sptr activeWorkers = ::fwServices::registry::ActiveWorkers::getDefault();
     activeWorkers->initRegistry();
+
+    // Set up context before running a test.
+    //Bundles location
+    ::fwRuntime::Runtime* runtime = ::fwRuntime::Runtime::getDefault();
+    runtime->addDefaultBundles();
+
+    ::boost::filesystem::path location = runtime->getWorkingPath() / "share/tu_exec_fwServices-0.0";
+    CPPUNIT_ASSERT(::boost::filesystem::exists(location));
+
+    runtime->addBundles(location);
+    CPPUNIT_ASSERT(runtime->bundlesBegin() != runtime->bundlesEnd());
+
+    std::shared_ptr< ::fwRuntime::Bundle > bundle = runtime->findBundle("servicesReg");
+    CPPUNIT_ASSERT_MESSAGE("'servicesReg bundle not found !'", bundle);
+    bundle->setEnable(true);
+    CPPUNIT_ASSERT(bundle->isEnable());
+
+    // Test bundle servicesReg
+    std::shared_ptr< ::fwRuntime::Bundle > bundle2 = runtime->findBundle("AppConfigTest");
+    CPPUNIT_ASSERT_MESSAGE("'AppConfigTest' bundle not found", bundle2);
+    bundle2->setEnable(true);
+    CPPUNIT_ASSERT(bundle2->isEnable());
+
+    ::fwServices::registry::AppConfig::sptr appConfig = ::fwServices::registry::AppConfig::getDefault();
+    appConfig->parseBundleInformation();
 }
 
 //------------------------------------------------------------------------------
@@ -66,8 +91,61 @@ void AppConfigTest::tearDown()
         m_appConfigMgr = nullptr;
     }
 
+    // Clean up after the test run.
+    ::fwServices::registry::AppConfig::sptr appConfig;
+    appConfig = ::fwServices::registry::AppConfig::getDefault();
+    appConfig->clearRegistry();
+
     ::fwServices::registry::ActiveWorkers::sptr activeWorkers = ::fwServices::registry::ActiveWorkers::getDefault();
     activeWorkers->clearRegistry();
+}
+
+//------------------------------------------------------------------------------
+
+void AppConfigTest::addConfigTest()
+{
+    ::fwServices::registry::AppConfig::sptr currentAppConfig = ::fwServices::registry::AppConfig::getDefault();
+
+    const std::string configId(::fwServices::registry::AppConfig::getUniqueIdentifier());
+    const std::string group("TestGroup");
+    const std::string desc("Description");
+    const std::string bundleId("dataReg");
+    const std::string bundleVersion("0.1");
+    ::fwServices::registry::AppInfo::ParametersType parameters;
+
+    ::fwRuntime::ConfigurationElement::csptr config = this->buildConfig();
+
+    currentAppConfig->addAppInfo(configId, group, desc, parameters, config, bundleId, bundleVersion);
+
+    std::vector< std::string > allCconfigs = currentAppConfig->getAllConfigs();
+    CPPUNIT_ASSERT_EQUAL(false, allCconfigs.empty());
+
+    std::vector< std::string > configs = currentAppConfig->getConfigsFromGroup(group);
+    CPPUNIT_ASSERT_EQUAL(size_t(1), configs.size());
+    CPPUNIT_ASSERT_EQUAL(configId, configs.front());
+
+    auto bundle = currentAppConfig->getBundle(configId);
+    CPPUNIT_ASSERT(bundle);
+    CPPUNIT_ASSERT_EQUAL(bundleId, bundle->getIdentifier());
+    CPPUNIT_ASSERT_EQUAL(bundleVersion, bundle->getVersion().string());
+
+    ::fwServices::registry::FieldAdaptorType replaceFields;
+
+    ::fwRuntime::ConfigurationElement::csptr configEltAdaptedConst;
+    configEltAdaptedConst = currentAppConfig->getAdaptedTemplateConfig(configId, replaceFields, false);
+
+    ::fwRuntime::ConfigurationElement::sptr configEltAdapted;
+    configEltAdapted = ::fwRuntime::ConfigurationElement::constCast(configEltAdaptedConst);
+
+    std::vector< ::fwRuntime::ConfigurationElement::sptr >  objCfg = configEltAdapted->find("object");
+
+    const std::string uid = objCfg.at(0)->getAttributeValue("uid");
+    CPPUNIT_ASSERT_EQUAL(std::string("image"), uid );
+
+    std::vector< ::fwRuntime::ConfigurationElement::sptr >  servicesCfg = configEltAdapted->find("service");
+
+    const std::string serviceUid1 = servicesCfg.at(0)->getAttributeValue("uid");
+    CPPUNIT_ASSERT_EQUAL( std::string("myTestService1"), serviceUid1);
 }
 
 //------------------------------------------------------------------------------
@@ -76,28 +154,15 @@ void AppConfigTest::parametersConfigTest()
 {
     ::fwServices::registry::AppConfig::sptr currentAppConfig = ::fwServices::registry::AppConfig::getDefault();
 
-    const std::string configId(::fwServices::registry::AppConfig::getUniqueIdentifier());
+    const std::string configId("parametersConfigTest1");
     const std::string group("parametersGroup");
-    const std::string desc("Description");
-    const std::string bundleId("dataReg");
-    const std::string bundleVersion("0-1");
-    ::fwServices::registry::AppInfo::ParametersType parameters;
-
-    parameters["TEST_IMAGE"]   = "";
-    parameters["UID_SERVICE2"] = "myTestService2";
-
-    ::fwRuntime::ConfigurationElement::csptr config = this->buildParametersConfig();
-
-    currentAppConfig->addAppInfo(configId, group, desc, parameters, config, bundleId, bundleVersion);
-
-    std::vector< std::string > allCconfigs = currentAppConfig->getAllConfigs();
-    CPPUNIT_ASSERT( !allCconfigs.empty());
-
-    std::vector< std::string > configs = currentAppConfig->getConfigsFromGroup(group);
-    CPPUNIT_ASSERT(!configs.empty());
 
     ::fwServices::registry::FieldAdaptorType replaceFields;
     replaceFields["TEST_IMAGE"] = "objectUUID";
+
+    std::vector< std::string > allCconfigs = currentAppConfig->getAllConfigs();
+    auto it                                = std::find(allCconfigs.begin(), allCconfigs.end(), configId);
+    CPPUNIT_ASSERT(it != allCconfigs.end());
 
     ::fwRuntime::ConfigurationElement::csptr configEltAdaptedConst;
     configEltAdaptedConst = currentAppConfig->getAdaptedTemplateConfig(configId, replaceFields, false);
@@ -105,15 +170,17 @@ void AppConfigTest::parametersConfigTest()
     ::fwRuntime::ConfigurationElement::sptr configEltAdapted;
     configEltAdapted = ::fwRuntime::ConfigurationElement::constCast(configEltAdaptedConst);
 
-    std::string uid = configEltAdapted->getAttributeValue("uid");
+    std::vector< ::fwRuntime::ConfigurationElement::sptr >  objCfg = configEltAdapted->find("object");
+
+    const std::string uid = objCfg.at(0)->getAttributeValue("uid");
     CPPUNIT_ASSERT_EQUAL(std::string("objectUUID"), uid );
 
     std::vector< ::fwRuntime::ConfigurationElement::sptr >  servicesCfg = configEltAdapted->find("service");
 
-    std::string serviceUid1 = servicesCfg.at(0)->getAttributeValue("uid");
+    const std::string serviceUid1 = servicesCfg.at(0)->getAttributeValue("uid");
     CPPUNIT_ASSERT_EQUAL( std::string("myTestService1"), serviceUid1);
 
-    std::string serviceUid2 = servicesCfg.at(1)->getAttributeValue("uid");
+    const std::string serviceUid2 = servicesCfg.at(1)->getAttributeValue("uid");
     CPPUNIT_ASSERT_EQUAL( std::string("myTestService2"), serviceUid2);
 }
 
@@ -121,24 +188,13 @@ void AppConfigTest::parametersConfigTest()
 
 ::fwServices::AppConfigManager::sptr AppConfigTest::launchAppConfigMgr(
     const std::string& name,
-    const ::fwRuntime::ConfigurationElement::csptr& config,
     bool autoPrefix)
 {
-    const std::string configId(name);
-    const std::string group("parametersGroup");
-    const std::string desc("Description");
-    const std::string bundleId("dummy");
-    const std::string bundleVersion("0-1");
-    ::fwServices::registry::AppInfo::ParametersType parameters;
-
-    ::fwServices::registry::AppConfig::sptr currentAppConfig = ::fwServices::registry::AppConfig::getDefault();
-    currentAppConfig->addAppInfo(configId, group, desc, parameters, config, bundleId, bundleVersion);
-
     auto appConfigMgr = ::fwServices::AppConfigManager::New();
     appConfigMgr->setIsUnitTest(!autoPrefix);
 
     const ::fwServices::registry::FieldAdaptorType fields;
-    appConfigMgr->setConfig( configId, fields );
+    appConfigMgr->setConfig( name, fields );
     appConfigMgr->launch();
 
     return appConfigMgr;
@@ -148,8 +204,7 @@ void AppConfigTest::parametersConfigTest()
 
 void AppConfigTest::startStopTest()
 {
-    ::fwRuntime::ConfigurationElement::csptr config = this->buildStartStopConfig();
-    m_appConfigMgr                                  = this->launchAppConfigMgr("startStopTest", config);
+    m_appConfigMgr = this->launchAppConfigMgr("startStopTest");
 
     // =================================================================================================================
     // Test manual start and stop of services, with or without data
@@ -177,11 +232,11 @@ void AppConfigTest::startStopTest()
         fwTools::Object::sptr gnsrv2 = ::fwTools::fwID::getObject("TestService2Uid");
         auto srv2                    = ::fwServices::IService::dynamicCast(gnsrv2);
         CPPUNIT_ASSERT(srv2 != nullptr);
-        CPPUNIT_ASSERT_EQUAL(::fwServices::IService::STOPPED, srv2->getStatus());
-        srv2->start().wait();
         CPPUNIT_ASSERT_EQUAL(::fwServices::IService::STARTED, srv2->getStatus());
         srv2->stop().wait();
         CPPUNIT_ASSERT_EQUAL(::fwServices::IService::STOPPED, srv2->getStatus());
+        srv2->start().wait();
+        CPPUNIT_ASSERT_EQUAL(::fwServices::IService::STARTED, srv2->getStatus());
     }
 
     // This service has a data and is NOT started by the config
@@ -189,7 +244,7 @@ void AppConfigTest::startStopTest()
         fwTools::Object::sptr gnsrv3 = ::fwTools::fwID::getObject("TestService3Uid");
         auto srv3                    = ::fwServices::IService::dynamicCast(gnsrv3);
         CPPUNIT_ASSERT(srv3 != nullptr);
-        CPPUNIT_ASSERT_EQUAL(::fwServices::IService::STOPPED, srv3->getStatus());
+        CPPUNIT_ASSERT_EQUAL(::fwServices::IService::STARTED, srv3->getStatus());
     }
 
     // This service has a data that is not present yet (WID), so it is even not created
@@ -340,8 +395,7 @@ void AppConfigTest::startStopTest()
 
 void AppConfigTest::autoConnectTest()
 {
-    ::fwRuntime::ConfigurationElement::csptr config = this->buildAutoConnectTestConfig();
-    m_appConfigMgr                                  = this->launchAppConfigMgr("autoConnectTest", config);
+    m_appConfigMgr = this->launchAppConfigMgr("autoConnectTest");
 
     // =================================================================================================================
     // Test autoconnect with available data
@@ -497,8 +551,7 @@ void AppConfigTest::autoConnectTest()
 
 void AppConfigTest::connectionTest()
 {
-    ::fwRuntime::ConfigurationElement::csptr config = this->buildConnectionConfig();
-    m_appConfigMgr                                  = this->launchAppConfigMgr("connectionTest", config);
+    m_appConfigMgr = this->launchAppConfigMgr("connectionTest");
 
     // =================================================================================================================
     // Test connection without data
@@ -742,8 +795,7 @@ void AppConfigTest::connectionTest()
 
 void AppConfigTest::optionalKeyTest()
 {
-    ::fwRuntime::ConfigurationElement::csptr config = this->buildOptionalKeyConfig();
-    m_appConfigMgr                                  = this->launchAppConfigMgr("optionalKeyTest", config);
+    m_appConfigMgr = this->launchAppConfigMgr("optionalKeyTest");
 
     // Service used to generate data
     auto genDataSrv = ::fwServices::ut::TestService::dynamicCast(::fwTools::fwID::getObject("SGenerateData"));
@@ -988,8 +1040,7 @@ void AppConfigTest::optionalKeyTest()
 
 void AppConfigTest::keyGroupTest()
 {
-    ::fwRuntime::ConfigurationElement::csptr config = this->buildKeyGroupConfig();
-    m_appConfigMgr                                  = this->launchAppConfigMgr("keyGroupTest", config);
+    m_appConfigMgr = this->launchAppConfigMgr("keyGroupTest");
 
     // Service used to generate data
     auto genDataSrv = ::fwServices::ut::TestService::dynamicCast(::fwTools::fwID::getObject("SGenerateData"));
@@ -1166,8 +1217,7 @@ void AppConfigTest::concurentAccessToAppConfigTest()
 
 void AppConfigTest::parameterReplaceTest()
 {
-    ::fwRuntime::ConfigurationElement::csptr config = this->buildParameterReplaceConfig();
-    m_appConfigMgr                                  = this->launchAppConfigMgr("", config, true);
+    m_appConfigMgr = this->launchAppConfigMgr("parameterReplaceTest", true);
 
     unsigned int i = 0;
     fwTools::Object::sptr gnsrv1;
@@ -1175,7 +1225,7 @@ void AppConfigTest::parameterReplaceTest()
     // Not really elegant, but we have to "guess" how it is replaced
     while (gnsrv1 == nullptr && i++ < 200)
     {
-        gnsrv1 = ::fwTools::fwID::getObject("AppConfigManager_" + std::to_string(i) + "_TestService2Uid");
+        gnsrv1 = ::fwTools::fwID::getObject("parameterReplaceTest_" + std::to_string(i) + "_TestService2Uid");
     }
 
     auto srv1 = ::fwServices::ut::TestService::dynamicCast(gnsrv1);
@@ -1189,728 +1239,46 @@ void AppConfigTest::parameterReplaceTest()
     std::string replaceBy;
 
     replaceBy = paramsCfg[0]->getAttributeValue("by");
-    CPPUNIT_ASSERT_EQUAL(std::string("AppConfigManager_" + std::to_string(i) + "_data2Id"), replaceBy);
+    CPPUNIT_ASSERT_EQUAL(std::string("parameterReplaceTest_" + std::to_string(i) + "_data2Id"), replaceBy);
 
     replaceBy = paramsCfg[1]->getAttributeValue("by");
     CPPUNIT_ASSERT_EQUAL(std::string("name"), replaceBy);
 
     replaceBy = paramsCfg[2]->getAttributeValue("by");
-    CPPUNIT_ASSERT_EQUAL(std::string("AppConfigManager_" + std::to_string(i) + "_Channel No5"), replaceBy);
+    CPPUNIT_ASSERT_EQUAL(std::string("parameterReplaceTest_" + std::to_string(i) + "_Channel No5"), replaceBy);
 
     replaceBy = paramsCfg[3]->getAttributeValue("by");
-    CPPUNIT_ASSERT_EQUAL(std::string("AppConfigManager_" + std::to_string(i) + "_view1"), replaceBy);
+    CPPUNIT_ASSERT_EQUAL(std::string("parameterReplaceTest_" + std::to_string(i) + "_view1"), replaceBy);
 }
 
 //------------------------------------------------------------------------------
 
-::fwRuntime::ConfigurationElement::sptr AppConfigTest::buildParametersConfig()
+::fwRuntime::ConfigurationElement::sptr AppConfigTest::buildConfig()
 {
-    // Configuration on fwTools::Object which uid is objectUUID
+    // Object
     std::shared_ptr< ::fwRuntime::EConfigurationElement > cfg( new ::fwRuntime::EConfigurationElement("object"));
-    cfg->setAttributeValue( "uid", "${TEST_IMAGE}");
+    cfg->setAttributeValue( "uid", "image");
     cfg->setAttributeValue( "type", "::fwData::Image");
 
-    // Service A
+    // Service
     std::shared_ptr< ::fwRuntime::EConfigurationElement > serviceA = cfg->addConfigurationElement("service");
     serviceA->setAttributeValue( "uid", "myTestService1" );
     serviceA->setAttributeValue("type", "::fwServices::ut::TestServiceImplementationImage" );
     serviceA->setAttributeValue( "autoConnect", "no" );
 
-    // Service B
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > serviceB = cfg->addConfigurationElement("service");
-    serviceB->setAttributeValue( "uid", "${UID_SERVICE2}" );
-    serviceB->setAttributeValue("type", "::fwServices::ut::TestServiceImplementationImage" );
-    serviceB->setAttributeValue( "autoConnect", "no" );
-
     // Connections
     std::shared_ptr< ::fwRuntime::EConfigurationElement > connect1 = cfg->addConfigurationElement("connect");
     connect1->setAttributeValue( "channel", "channel1" );
-    connect1->addConfigurationElement("signal")->setValue( "${TEST_IMAGE}/modified" );
+    connect1->addConfigurationElement("signal")->setValue( "image/modified" );
     connect1->addConfigurationElement("slot")->setValue( "myTestService1/update" );
 
     // Start method from object's services
     std::shared_ptr< ::fwRuntime::EConfigurationElement > startA = cfg->addConfigurationElement("start");
     startA->setAttributeValue( "uid", "myTestService1" );
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > startB = cfg->addConfigurationElement("start");
-    startB->setAttributeValue( "uid", "myTestService2" );
 
     // Update method from object's services
     std::shared_ptr< ::fwRuntime::EConfigurationElement > updateA = cfg->addConfigurationElement("update");
     updateA->setAttributeValue( "uid", "myTestService1" );
-
-    return cfg;
-}
-
-//------------------------------------------------------------------------------
-
-::fwRuntime::ConfigurationElement::sptr AppConfigTest::buildStartStopConfig()
-{
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > cfg( new ::fwRuntime::EConfigurationElement("config"));
-
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > objCfg = cfg->addConfigurationElement("object");
-    objCfg->setAttributeValue( "uid", "data1Id");
-    objCfg->setAttributeValue( "type", "::fwData::Image");
-
-    objCfg = cfg->addConfigurationElement("object");
-    objCfg->setAttributeValue( "uid", "data2Id");
-    objCfg->setAttributeValue( "type", "::fwData::Image");
-    objCfg->setAttributeValue( "src", "deferred");
-
-    objCfg = cfg->addConfigurationElement("object");
-    objCfg->setAttributeValue( "uid", "data3Id");
-    objCfg->setAttributeValue( "type", "::fwData::Image");
-
-    objCfg = cfg->addConfigurationElement("object");
-    objCfg->setAttributeValue( "uid", "data4Id");
-    objCfg->setAttributeValue( "type", "::fwData::Image");
-    objCfg->setAttributeValue( "src", "deferred");
-
-    // Service used to generate data
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > genDataSrv = cfg->addConfigurationElement("service");
-    genDataSrv->setAttributeValue( "uid", "SGenerateData" );
-    genDataSrv->setAttributeValue("type", "::fwServices::ut::TestServiceImplementation" );
-    genDataSrv->setAttributeValue( "autoConnect", "no" );
-
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > genDataService2 = genDataSrv->addConfigurationElement("out");
-    genDataService2->setAttributeValue( "key", "out2" );
-    genDataService2->setAttributeValue( "uid", "data2Id" );
-
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > genDataService4 = genDataSrv->addConfigurationElement("out");
-    genDataService4->setAttributeValue( "key", "out4" );
-    genDataService4->setAttributeValue( "uid", "data4Id" );
-
-    // Service #1
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > service1 = cfg->addConfigurationElement("service");
-    service1->setAttributeValue( "uid", "TestService1Uid" );
-    service1->setAttributeValue("type", "::fwServices::ut::TestServiceImplementation" );
-    service1->setAttributeValue( "autoConnect", "no" );
-
-    // Service #2
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > service2 = cfg->addConfigurationElement("service");
-    service2->setAttributeValue( "uid", "TestService2Uid" );
-    service2->setAttributeValue("type", "::fwServices::ut::TestServiceImplementation" );
-    service2->setAttributeValue( "autoConnect", "no" );
-
-    // Service #3 with one data
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > service3 = cfg->addConfigurationElement("service");
-    service3->setAttributeValue( "uid", "TestService3Uid" );
-    service3->setAttributeValue("type", "::fwServices::ut::TestServiceImplementation" );
-    service3->setAttributeValue( "autoConnect", "no" );
-
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > dataService3 = service3->addConfigurationElement("in");
-    dataService3->setAttributeValue( "key", "data" );
-    dataService3->setAttributeValue( "uid", "data1Id" );
-
-    // Service #4 with one deferred data
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > service4 = cfg->addConfigurationElement("service");
-    service4->setAttributeValue( "uid", "TestService4Uid" );
-    service4->setAttributeValue("type", "::fwServices::ut::TestServiceImplementation" );
-    service4->setAttributeValue( "autoConnect", "no" );
-
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > dataService4 = service4->addConfigurationElement("in");
-    dataService4->setAttributeValue( "key", "data" );
-    dataService4->setAttributeValue( "uid", "data2Id" );
-
-    // Service #5 with two deferred data
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > service5 = cfg->addConfigurationElement("service");
-    service5->setAttributeValue( "uid", "TestService5Uid" );
-    service5->setAttributeValue("type", "::fwServices::ut::TestServiceImplementation" );
-    service5->setAttributeValue( "autoConnect", "no" );
-
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > dataService5_1 = service5->addConfigurationElement("in");
-    dataService5_1->setAttributeValue( "key", "data1" );
-    dataService5_1->setAttributeValue( "uid", "data1Id" );
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > dataService5_2 = service5->addConfigurationElement("in");
-    dataService5_2->setAttributeValue( "key", "data2" );
-    dataService5_2->setAttributeValue( "uid", "data2Id" );
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > dataService5_3 = service5->addConfigurationElement("in");
-    dataService5_3->setAttributeValue( "key", "data3" );
-    dataService5_3->setAttributeValue( "uid", "data3Id" );
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > dataService5_4 = service5->addConfigurationElement("inout");
-    dataService5_4->setAttributeValue( "key", "data4" );
-    dataService5_4->setAttributeValue( "uid", "data4Id" );
-
-    // Start method from object's services
-    cfg->addConfigurationElement("start")->setAttributeValue( "uid", "SGenerateData" );
-    cfg->addConfigurationElement("start")->setAttributeValue( "uid", "TestService1Uid" );
-    cfg->addConfigurationElement("start")->setAttributeValue( "uid", "TestService5Uid" );
-    cfg->addConfigurationElement("start")->setAttributeValue( "uid", "TestService4Uid" );
-
-    // Update method from object's services
-    cfg->addConfigurationElement("update")->setAttributeValue( "uid", "TestService1Uid" );
-    cfg->addConfigurationElement("update")->setAttributeValue( "uid", "TestService4Uid" );
-    cfg->addConfigurationElement("update")->setAttributeValue( "uid", "TestService5Uid" );
-
-    return cfg;
-}
-
-//------------------------------------------------------------------------------
-
-fwRuntime::ConfigurationElement::sptr AppConfigTest::buildAutoConnectTestConfig()
-{
-    // Configuration on fwTools::Object which uid is objectUUID
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > cfg( new ::fwRuntime::EConfigurationElement("config"));
-
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > objCfg = cfg->addConfigurationElement("object");
-    objCfg->setAttributeValue( "uid", "data1Id");
-    objCfg->setAttributeValue( "type", "::fwData::Image");
-
-    objCfg = cfg->addConfigurationElement("object");
-    objCfg->setAttributeValue( "uid", "data2Id");
-    objCfg->setAttributeValue( "type", "::fwData::Image");
-
-    objCfg = cfg->addConfigurationElement("object");
-    objCfg->setAttributeValue( "uid", "data3Id");
-    objCfg->setAttributeValue( "type", "::fwData::Image");
-    objCfg->setAttributeValue( "src", "deferred");
-
-    // Service used to generate data
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > genDataSrv = cfg->addConfigurationElement("service");
-    genDataSrv->setAttributeValue( "uid", "SGenerateData" );
-    genDataSrv->setAttributeValue("type", "::fwServices::ut::TestServiceImplementation" );
-    genDataSrv->setAttributeValue( "autoConnect", "no" );
-
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > genDataService3 = genDataSrv->addConfigurationElement("out");
-    genDataService3->setAttributeValue( "key", "out3" );
-    genDataService3->setAttributeValue( "uid", "data3Id" );
-
-    // Service #1 - "autoconnect" = "no"
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > service1 = cfg->addConfigurationElement("service");
-    service1->setAttributeValue( "uid", "TestService1Uid" );
-    service1->setAttributeValue("type", "::fwServices::ut::TestSrvAutoconnect" );
-    service1->setAttributeValue( "autoConnect", "no" );
-
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > dataService1_1 = service1->addConfigurationElement("in");
-    dataService1_1->setAttributeValue( "key", "data1" );
-    dataService1_1->setAttributeValue( "uid", "data1Id" );
-
-    // Service #2 - global "autoconnect" = "yes"
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > service2 = cfg->addConfigurationElement("service");
-    service2->setAttributeValue( "uid", "TestService2Uid" );
-    service2->setAttributeValue("type", "::fwServices::ut::TestServiceImplementation" );
-    service2->setAttributeValue( "autoConnect", "yes" );
-
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > dataService2_1 = service2->addConfigurationElement("in");
-    dataService2_1->setAttributeValue( "key", "data1" );
-    dataService2_1->setAttributeValue( "uid", "data1Id" );
-
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > dataService2_2 = service2->addConfigurationElement("inout");
-    dataService2_2->setAttributeValue( "key", "data2" );
-    dataService2_2->setAttributeValue( "uid", "data2Id" );
-
-    // Service #3 - local "autoconnect" = "yes"
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > service3 = cfg->addConfigurationElement("service");
-    service3->setAttributeValue( "uid", "TestService3Uid" );
-    service3->setAttributeValue("type", "::fwServices::ut::TestSrvAutoconnect" );
-
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > dataService3_1 = service3->addConfigurationElement("in");
-    dataService3_1->setAttributeValue( "key", "data1" );
-    dataService3_1->setAttributeValue( "uid", "data1Id" );
-    dataService3_1->setAttributeValue( "autoConnect", "yes" );
-
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > dataService3_2 = service3->addConfigurationElement("inout");
-    dataService3_2->setAttributeValue( "key", "data2" );
-    dataService3_2->setAttributeValue( "uid", "data2Id" );
-    dataService3_2->setAttributeValue( "autoConnect", "yes" );
-
-    // Service #4 - "autoconnect" = "no" with unavailable data at start
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > service4 = cfg->addConfigurationElement("service");
-    service4->setAttributeValue( "uid", "TestService4Uid" );
-    service4->setAttributeValue("type", "::fwServices::ut::TestSrvAutoconnect" );
-    service4->setAttributeValue( "autoConnect", "no" );
-
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > dataService4_1 = service4->addConfigurationElement("in");
-    dataService4_1->setAttributeValue( "key", "data3" );
-    dataService4_1->setAttributeValue( "uid", "data3Id" );
-
-    // Service #5 - "autoconnect" = "yes" with unavailable data at start
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > service5 = cfg->addConfigurationElement("service");
-    service5->setAttributeValue( "uid", "TestService5Uid" );
-    service5->setAttributeValue("type", "::fwServices::ut::TestSrvAutoconnect" );
-    service5->setAttributeValue( "autoConnect", "yes" );
-
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > itemService5_1 = service5->addConfigurationElement("in");
-    itemService5_1->setAttributeValue( "key", "data1" );
-    itemService5_1->setAttributeValue( "uid", "data1Id" );
-
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > itemService5_2 = service5->addConfigurationElement("in");
-    itemService5_2->setAttributeValue( "key", "data3" );
-    itemService5_2->setAttributeValue( "uid", "data3Id" );
-
-    // Start method from object's services
-    cfg->addConfigurationElement("start")->setAttributeValue( "uid", "SGenerateData" );
-    cfg->addConfigurationElement("start")->setAttributeValue( "uid", "TestService1Uid" );
-    cfg->addConfigurationElement("start")->setAttributeValue( "uid", "TestService2Uid" );
-    cfg->addConfigurationElement("start")->setAttributeValue( "uid", "TestService3Uid" );
-    cfg->addConfigurationElement("start")->setAttributeValue( "uid", "TestService4Uid" );
-    cfg->addConfigurationElement("start")->setAttributeValue( "uid", "TestService5Uid" );
-
-    return cfg;
-}
-
-//------------------------------------------------------------------------------
-
-fwRuntime::ConfigurationElement::sptr AppConfigTest::buildConnectionConfig()
-{
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > cfg( new ::fwRuntime::EConfigurationElement("config"));
-
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > objCfg = cfg->addConfigurationElement("object");
-    objCfg->setAttributeValue( "uid", "data1Id");
-    objCfg->setAttributeValue( "type", "::fwData::Image");
-
-    objCfg = cfg->addConfigurationElement("object");
-    objCfg->setAttributeValue( "uid", "data2Id");
-    objCfg->setAttributeValue( "type", "::fwData::Image");
-    objCfg->setAttributeValue( "src", "deferred");
-
-    objCfg = cfg->addConfigurationElement("object");
-    objCfg->setAttributeValue( "uid", "data3Id");
-    objCfg->setAttributeValue( "type", "::fwData::Image");
-    objCfg->setAttributeValue( "src", "deferred");
-
-    objCfg = cfg->addConfigurationElement("object");
-    objCfg->setAttributeValue( "uid", "data4Id");
-    objCfg->setAttributeValue( "type", "::fwData::Image");
-
-    // Service used to generate data
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > genDataSrv = cfg->addConfigurationElement("service");
-    genDataSrv->setAttributeValue( "uid", "SGenerateData" );
-    genDataSrv->setAttributeValue("type", "::fwServices::ut::TestServiceImplementation" );
-    genDataSrv->setAttributeValue( "autoConnect", "no" );
-
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > genDataService2 = genDataSrv->addConfigurationElement("out");
-    genDataService2->setAttributeValue( "key", "out2" );
-    genDataService2->setAttributeValue( "uid", "data2Id" );
-
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > genDataService3 = genDataSrv->addConfigurationElement("out");
-    genDataService3->setAttributeValue( "key", "out3" );
-    genDataService3->setAttributeValue( "uid", "data3Id" );
-
-    // Service #1 - we use don't use autoconnect and we connect manually at the end of the configuration
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > service1 = cfg->addConfigurationElement("service");
-    service1->setAttributeValue( "uid", "TestService1Uid" );
-    service1->setAttributeValue("type", "::fwServices::ut::TestServiceImplementation" );
-    service1->setAttributeValue( "autoConnect", "no" );
-
-    // Service #2 - we use don't use autoconnect and we connect manually at the end of the configuration
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > service2 = cfg->addConfigurationElement("service");
-    service2->setAttributeValue( "uid", "TestService2Uid" );
-    service2->setAttributeValue("type", "::fwServices::ut::TestServiceImplementation" );
-    service2->setAttributeValue( "autoConnect", "no" );
-
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > dataService2_1 = service2->addConfigurationElement("in");
-    dataService2_1->setAttributeValue( "key", "data1" );
-    dataService2_1->setAttributeValue( "uid", "data1Id" );
-
-    // Service #3 - we use don't use autoconnect and we connect manually at the end of the configuration
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > service3 = cfg->addConfigurationElement("service");
-    service3->setAttributeValue( "uid", "TestService3Uid" );
-    service3->setAttributeValue("type", "::fwServices::ut::TestServiceImplementation" );
-    service3->setAttributeValue( "autoConnect", "no" );
-
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > dataService3_1 = service3->addConfigurationElement("in");
-    dataService3_1->setAttributeValue( "key", "data1" );
-    dataService3_1->setAttributeValue( "uid", "data1Id" );
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > dataService3_2 = service3->addConfigurationElement("out");
-    dataService3_2->setAttributeValue( "key", "data2" );
-    dataService3_2->setAttributeValue( "uid", "data2Id" );
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > dataService3_3 = service3->addConfigurationElement("inout");
-    dataService3_3->setAttributeValue( "key", "data3" );
-    dataService3_3->setAttributeValue( "uid", "data3Id" );
-
-    // Service #4 - used to test "started" and "stopped" signals
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > service4 = cfg->addConfigurationElement("service");
-    service4->setAttributeValue( "uid", "TestService4Uid" );
-    service4->setAttributeValue("type", "::fwServices::ut::TestServiceImplementation" );
-
-    // Connections
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > connect1 = cfg->addConfigurationElement("connect");
-    connect1->addConfigurationElement("signal")->setValue( "data1Id/modified" );
-    connect1->addConfigurationElement("slot")->setValue( "TestService1Uid/update" );
-
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > connect2 = cfg->addConfigurationElement("connect");
-    connect2->setAttributeValue( "channel", "2" );
-    connect2->addConfigurationElement("signal")->setValue( "data1Id/modified" );
-    connect2->addConfigurationElement("slot")->setValue( "TestService2Uid/update" );
-    connect2->addConfigurationElement("slot")->setValue( "TestService3Uid/update" );
-
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > connect3 = cfg->addConfigurationElement("connect");
-    connect3->addConfigurationElement("signal")->setValue( "data2Id/modified" );
-    connect3->addConfigurationElement("slot")->setValue( "TestService1Uid/update" );
-    connect3->addConfigurationElement("slot")->setValue( "TestService3Uid/update" );
-
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > connect4 = cfg->addConfigurationElement("connect");
-    connect4->setAttributeValue( "channel", "4" );
-    connect4->addConfigurationElement("signal")->setValue( "data3Id/modified" );
-    connect4->addConfigurationElement("signal")->setValue( "data4Id/modified" );
-    connect4->addConfigurationElement("slot")->setValue( "TestService2Uid/update" );
-    connect4->addConfigurationElement("slot")->setValue( "TestService3Uid/update" );
-
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > connect5 = cfg->addConfigurationElement("connect");
-    connect5->addConfigurationElement("signal")->setValue( "TestService3Uid/started" );
-    connect5->addConfigurationElement("slot")->setValue( "TestService4Uid/update" );
-
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > connect6 = cfg->addConfigurationElement("connect");
-    connect6->addConfigurationElement("signal")->setValue( "TestService3Uid/stopped" );
-    connect6->addConfigurationElement("slot")->setValue( "TestService4Uid/update2" );
-
-    // Start method from object's services
-    cfg->addConfigurationElement("start")->setAttributeValue( "uid", "SGenerateData" );
-    cfg->addConfigurationElement("start")->setAttributeValue( "uid", "TestService1Uid" );
-    cfg->addConfigurationElement("start")->setAttributeValue( "uid", "TestService2Uid" );
-    cfg->addConfigurationElement("start")->setAttributeValue( "uid", "TestService3Uid" );
-    cfg->addConfigurationElement("start")->setAttributeValue( "uid", "TestService4Uid" );
-
-    return cfg;
-}
-
-//------------------------------------------------------------------------------
-
-fwRuntime::ConfigurationElement::sptr AppConfigTest::buildOptionalKeyConfig()
-{
-    ::fwServices::IService::ConfigType config;
-
-    ::fwServices::IService::ConfigType objCfg;
-    objCfg.add("<xmlattr>.uid", "data1Id");
-    objCfg.add("<xmlattr>.type", "::fwData::Image");
-    config.add_child("object", objCfg);
-
-    ::fwServices::IService::ConfigType objCfg2;
-    objCfg2.add("<xmlattr>.uid", "data2Id");
-    objCfg2.add("<xmlattr>.type", "::fwData::Boolean");
-    objCfg2.add("<xmlattr>.src", "deferred");
-    config.add_child("object", objCfg2);
-
-    ::fwServices::IService::ConfigType objCfg3;
-    objCfg3.add("<xmlattr>.uid", "data3Id");
-    objCfg3.add("<xmlattr>.type", "::fwData::Boolean");
-    objCfg3.add("<xmlattr>.src", "deferred");
-    config.add_child("object", objCfg3);
-
-    ::fwServices::IService::ConfigType objCfg4;
-    objCfg4.add("<xmlattr>.uid", "data4Id");
-    objCfg4.add("<xmlattr>.type", "::fwData::Boolean");
-    objCfg4.add("<xmlattr>.src", "deferred");
-    config.add_child("object", objCfg4);
-
-    ::fwServices::IService::ConfigType objCfg5;
-    objCfg5.add("<xmlattr>.uid", "data5Id");
-    objCfg5.add("<xmlattr>.type", "::fwData::Boolean");
-    objCfg5.add("<xmlattr>.src", "deferred");
-    config.add_child("object", objCfg5);
-
-    // Service used to generate data
-    {
-        ::fwServices::IService::ConfigType genDataSrv;
-        genDataSrv.add("<xmlattr>.uid", "SGenerateData");
-        genDataSrv.add("<xmlattr>.type", "::fwServices::ut::TestServiceImplementation");
-
-        ::fwServices::IService::ConfigType genDataService2;
-        genDataService2.add("<xmlattr>.key", "out2");
-        genDataService2.add("<xmlattr>.uid", "data2Id");
-
-        ::fwServices::IService::ConfigType genDataService3;
-        genDataService3.add("<xmlattr>.key", "out3");
-        genDataService3.add("<xmlattr>.uid", "data3Id");
-
-        ::fwServices::IService::ConfigType genDataService4;
-        genDataService4.add("<xmlattr>.key", "out4");
-        genDataService4.add("<xmlattr>.uid", "data4Id");
-
-        ::fwServices::IService::ConfigType genDataService5;
-        genDataService5.add("<xmlattr>.key", "out5");
-        genDataService5.add("<xmlattr>.uid", "data5Id");
-
-        genDataSrv.add_child("out", genDataService2);
-        genDataSrv.add_child("out", genDataService3);
-        genDataSrv.add_child("out", genDataService4);
-        genDataSrv.add_child("out", genDataService5);
-        config.add_child("service", genDataSrv);
-    }
-
-    // Second service used to generate data
-    {
-        ::fwServices::IService::ConfigType genDataSrv;
-        genDataSrv.add("<xmlattr>.uid", "SGenerateData2");
-        genDataSrv.add("<xmlattr>.type", "::fwServices::ut::TestServiceImplementation");
-
-        ::fwServices::IService::ConfigType genDataService;
-        genDataService.add("<xmlattr>.key", "out");
-        genDataService.add("<xmlattr>.uid", "data2Id");
-
-        genDataSrv.add_child("out", genDataService);
-        config.add_child("service", genDataSrv);
-    }
-
-    // Service #1
-    {
-        ::fwServices::IService::ConfigType service1;
-        service1.add("<xmlattr>.uid", "TestService1Uid");
-        service1.add("<xmlattr>.type", "::fwServices::ut::TestServiceImplementation");
-
-        ::fwServices::IService::ConfigType dataService1;
-        dataService1.add("<xmlattr>.key", "data1");
-        dataService1.add("<xmlattr>.uid", "data1Id");
-        dataService1.add("<xmlattr>.autoConnect", "yes");
-
-        ::fwServices::IService::ConfigType dataService2;
-        dataService2.add("<xmlattr>.key", "data2");
-        dataService2.add("<xmlattr>.uid", "data2Id");
-        dataService2.add("<xmlattr>.autoConnect", "no");
-        dataService2.add("<xmlattr>.optional", "yes");
-
-        ::fwServices::IService::ConfigType dataService3;
-        dataService3.add("<xmlattr>.key", "data3");
-        dataService3.add("<xmlattr>.uid", "data3Id");
-        dataService3.add("<xmlattr>.autoConnect", "no");
-        dataService3.add("<xmlattr>.optional", "yes");
-
-        ::fwServices::IService::ConfigType dataService4;
-        dataService4.add("<xmlattr>.key", "data4");
-        dataService4.add("<xmlattr>.uid", "data4Id");
-        dataService4.add("<xmlattr>.autoConnect", "yes");
-        dataService4.add("<xmlattr>.optional", "yes");
-
-        service1.add_child("in", dataService1);
-        service1.add_child("in", dataService2);
-        service1.add_child("in", dataService3);
-        service1.add_child("in", dataService4);
-        config.add_child("service", service1);
-    }
-
-    // Service #2
-    {
-        ::fwServices::IService::ConfigType service2;
-        service2.add("<xmlattr>.uid", "TestService2Uid");
-        service2.add("<xmlattr>.type", "::fwServices::ut::TestServiceImplementation");
-
-        ::fwServices::IService::ConfigType dataService1;
-        dataService1.add("<xmlattr>.key", "data5");
-        dataService1.add("<xmlattr>.uid", "data5Id");
-        dataService1.add("<xmlattr>.autoConnect", "yes");
-
-        ::fwServices::IService::ConfigType dataService2;
-        dataService2.add("<xmlattr>.key", "data2");
-        dataService2.add("<xmlattr>.uid", "data2Id");
-        dataService2.add("<xmlattr>.autoConnect", "no");
-        dataService2.add("<xmlattr>.optional", "yes");
-
-        ::fwServices::IService::ConfigType dataService3;
-        dataService3.add("<xmlattr>.key", "data3");
-        dataService3.add("<xmlattr>.uid", "data3Id");
-        dataService3.add("<xmlattr>.autoConnect", "no");
-        dataService3.add("<xmlattr>.optional", "yes");
-
-        ::fwServices::IService::ConfigType dataService4;
-        dataService4.add("<xmlattr>.key", "data4");
-        dataService4.add("<xmlattr>.uid", "data4Id");
-        dataService4.add("<xmlattr>.autoConnect", "yes");
-        dataService4.add("<xmlattr>.optional", "yes");
-
-        service2.add_child("in", dataService1);
-        service2.add_child("in", dataService2);
-        service2.add_child("in", dataService3);
-        service2.add_child("in", dataService4);
-        config.add_child("service", service2);
-    }
-
-    // Connections
-    ::fwServices::IService::ConfigType connect;
-    connect.add("signal", "data3Id/modified");
-    connect.add("slot", "TestService1Uid/update");
-    connect.add("slot", "TestService2Uid/update");
-    config.add_child("connect", connect);
-
-    // Start method from object's services
-    ::fwServices::IService::ConfigType startGen;
-    startGen.add("<xmlattr>.uid", "SGenerateData");
-    config.add_child("start", startGen);
-    ::fwServices::IService::ConfigType startGen2;
-    startGen2.add("<xmlattr>.uid", "SGenerateData2");
-    config.add_child("start", startGen2);
-    ::fwServices::IService::ConfigType start1;
-    start1.add("<xmlattr>.uid", "TestService1Uid");
-    config.add_child("start", start1);
-    ::fwServices::IService::ConfigType start2;
-    start2.add("<xmlattr>.uid", "TestService2Uid");
-    config.add_child("start", start2);
-
-    ::fwServices::IService::ConfigType serviceCfg;
-    serviceCfg.add_child("config", config);
-
-    return ::fwRuntime::Convert::fromPropertyTree(serviceCfg);
-}
-
-//------------------------------------------------------------------------------
-
-fwRuntime::ConfigurationElement::sptr AppConfigTest::buildKeyGroupConfig()
-{
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > cfg( new ::fwRuntime::EConfigurationElement("config"));
-
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > objCfg = cfg->addConfigurationElement("object");
-    objCfg->setAttributeValue( "uid", "data1Id");
-    objCfg->setAttributeValue( "type", "::fwData::String");
-
-    objCfg = cfg->addConfigurationElement("object");
-    objCfg->setAttributeValue( "uid", "data2Id");
-    objCfg->setAttributeValue( "type", "::fwData::Boolean");
-    objCfg->setAttributeValue( "src", "deferred");
-
-    objCfg = cfg->addConfigurationElement("object");
-    objCfg->setAttributeValue( "uid", "data3Id");
-    objCfg->setAttributeValue( "type", "::fwData::Image");
-    objCfg->setAttributeValue( "src", "deferred");
-
-    objCfg = cfg->addConfigurationElement("object");
-    objCfg->setAttributeValue( "uid", "data4Id");
-    objCfg->setAttributeValue( "type", "::fwData::Image");
-
-    objCfg = cfg->addConfigurationElement("object");
-    objCfg->setAttributeValue( "uid", "data5Id");
-    objCfg->setAttributeValue( "type", "::fwData::Image");
-
-    // Service used to generate data
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > genDataSrv = cfg->addConfigurationElement("service");
-    genDataSrv->setAttributeValue( "uid", "SGenerateData" );
-    genDataSrv->setAttributeValue("type", "::fwServices::ut::TestServiceImplementation" );
-
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > genDataService2 = genDataSrv->addConfigurationElement("out");
-    genDataService2->setAttributeValue( "key", "out2" );
-    genDataService2->setAttributeValue( "uid", "data2Id" );
-
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > genDataService3 = genDataSrv->addConfigurationElement("out");
-    genDataService3->setAttributeValue( "key", "out3" );
-    genDataService3->setAttributeValue( "uid", "data3Id" );
-
-    // Service #1
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > service1 = cfg->addConfigurationElement("service");
-    service1->setAttributeValue( "uid", "TestService1Uid" );
-    service1->setAttributeValue("type", "::fwServices::ut::TestServiceImplementation" );
-
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > dataService1_1 = service1->addConfigurationElement("in");
-    dataService1_1->setAttributeValue( "key", "data1" );
-    dataService1_1->setAttributeValue( "uid", "data1Id" );
-    dataService1_1->setAttributeValue( "autoConnect", "yes" );
-
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > dataGroup1 = service1->addConfigurationElement("in");
-    dataGroup1->setAttributeValue( "group", "dataGroup" );
-    dataGroup1->setAttributeValue( "autoConnect", "yes" );
-
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > dataService1_2 = dataGroup1->addConfigurationElement("key");
-    dataService1_2->setAttributeValue( "uid", "data2Id" );
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > dataService1_3 = dataGroup1->addConfigurationElement("key");
-    dataService1_3->setAttributeValue( "uid", "data3Id" );
-    dataService1_3->setAttributeValue( "optional", "yes" );
-
-    // Service #2
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > service2 = cfg->addConfigurationElement("service");
-    service2->setAttributeValue( "uid", "TestService2Uid" );
-    service2->setAttributeValue("type", "::fwServices::ut::TestSrvAutoconnect" );
-
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > dataGroup2 = service2->addConfigurationElement("in");
-    dataGroup2->setAttributeValue( "group", "dataGroup0" );
-
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > dataService2_1 = dataGroup2->addConfigurationElement("key");
-    dataService2_1->setAttributeValue( "uid", "data1Id" );
-    dataService2_1->setAttributeValue( "autoConnect", "no" );
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > dataService2_2 = dataGroup2->addConfigurationElement("key");
-    dataService2_2->setAttributeValue( "uid", "data2Id" );
-    dataService2_2->setAttributeValue( "autoConnect", "yes" );
-    dataService2_2->setAttributeValue( "optional", "yes" );
-
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > dataGroup3 = service2->addConfigurationElement("in");
-    dataGroup3->setAttributeValue( "group", "dataGroup1" );
-
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > dataService2_3 = dataGroup3->addConfigurationElement("key");
-    dataService2_3->setAttributeValue( "uid", "data3Id" );
-    dataService2_3->setAttributeValue( "autoConnect", "no" );
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > dataService2_4 = dataGroup3->addConfigurationElement("key");
-    dataService2_4->setAttributeValue( "uid", "data4Id" );
-    dataService2_4->setAttributeValue( "autoConnect", "yes" );
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > dataService2_5 = dataGroup3->addConfigurationElement("key");
-    dataService2_5->setAttributeValue( "uid", "data5Id" );
-    dataService2_5->setAttributeValue( "autoConnect", "no" );
-
-    // Connections
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > connect1 = cfg->addConfigurationElement("connect");
-    connect1->addConfigurationElement("signal")->setValue( "data1Id/modified" );
-    connect1->addConfigurationElement("slot")->setValue( "TestService2Uid/update" );
-
-    // Start method from object's services
-    cfg->addConfigurationElement("start")->setAttributeValue( "uid", "SGenerateData" );
-    cfg->addConfigurationElement("start")->setAttributeValue( "uid", "TestService1Uid" );
-    cfg->addConfigurationElement("start")->setAttributeValue( "uid", "TestService2Uid" );
-
-    return cfg;
-}
-
-//------------------------------------------------------------------------------
-
-fwRuntime::ConfigurationElement::sptr AppConfigTest::buildParameterReplaceConfig()
-{
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > cfg( new ::fwRuntime::EConfigurationElement("config"));
-
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > objCfg = cfg->addConfigurationElement("object");
-    objCfg->setAttributeValue( "uid", "data1Id");
-    objCfg->setAttributeValue( "type", "::fwData::String");
-
-    objCfg = cfg->addConfigurationElement("object");
-    objCfg->setAttributeValue( "uid", "data2Id");
-    objCfg->setAttributeValue( "type", "::fwData::Boolean");
-
-    objCfg = cfg->addConfigurationElement("object");
-    objCfg->setAttributeValue( "uid", "data3Id");
-    objCfg->setAttributeValue( "type", "::fwData::Image");
-
-    // Service #1
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > service1 = cfg->addConfigurationElement("service");
-    service1->setAttributeValue( "uid", "TestService1Uid" );
-    service1->setAttributeValue("type", "::fwServices::ut::TestServiceImplementation" );
-
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > dataService1_1 = service1->addConfigurationElement("in");
-    dataService1_1->setAttributeValue( "key", "data1" );
-    dataService1_1->setAttributeValue( "uid", "data1Id" );
-    dataService1_1->setAttributeValue( "autoConnect", "yes" );
-
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > configService1 = service1->addConfigurationElement("view");
-    configService1->setAttributeValue( "wid", "view1" );
-
-    // Service #2
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > service2 = cfg->addConfigurationElement("service");
-    service2->setAttributeValue( "uid", "TestService2Uid" );
-    service2->setAttributeValue("type", "::fwServices::ut::TestServiceImplementation" );
-
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > dataService2_1 =
-        service2->addConfigurationElement("parameter");
-    dataService2_1->setAttributeValue( "replace", "data2" );
-    dataService2_1->setAttributeValue( "by", "data2Id" );
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > dataService2_2 =
-        service2->addConfigurationElement("parameter");
-    dataService2_2->setAttributeValue( "replace", "patient" );
-    dataService2_2->setAttributeValue( "by", "name" );
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > dataService2_3 =
-        service2->addConfigurationElement("parameter");
-    dataService2_3->setAttributeValue( "replace", "channel1" );
-    dataService2_3->setAttributeValue( "by", "Channel No5" );
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > dataService2_4 =
-        service2->addConfigurationElement("parameter");
-    dataService2_4->setAttributeValue( "replace", "WID_PARENT" );
-    dataService2_4->setAttributeValue( "by", "view1" );
-
-    // Connections
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > connect1 = cfg->addConfigurationElement("connect");
-    connect1->setAttributeValue( "channel", "disneyChannel" );
-    connect1->addConfigurationElement("signal")->setValue( "data1Id/modified" );
-    connect1->addConfigurationElement("slot")->setValue( "TestService2Uid/update" );
-
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > connect2 = cfg->addConfigurationElement("connect");
-    connect2->setAttributeValue( "channel", "Channel No5" );
-    connect2->addConfigurationElement("signal")->setValue( "data2Id/modified" );
-    connect2->addConfigurationElement("slot")->setValue( "TestService2Uid/update" );
-
-    // Start method from object's services
-    cfg->addConfigurationElement("start")->setAttributeValue( "uid", "TestService1Uid" );
-    cfg->addConfigurationElement("start")->setAttributeValue( "uid", "TestService2Uid" );
 
     return cfg;
 }
