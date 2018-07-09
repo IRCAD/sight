@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -12,7 +12,8 @@ namespace fwDataTools
 namespace helper
 {
 
-Array::Array( ::fwData::Array::sptr array ) : m_array (array)
+Array::Array( ::fwData::Array::sptr array ) :
+    m_array(array)
 {
     SLM_ASSERT("Array ptr is null.", array);
     m_lock = array->getBufferObject()->lock();
@@ -41,7 +42,7 @@ const void* Array::getBuffer() const
 
 //------------------------------------------------------------------------------
 
-void Array::setBuffer(void* buf, bool takeOwnership)
+void Array::setBuffer(void* buf, bool takeOwnership, ::fwMemory::BufferAllocationPolicy::sptr policy)
 {
     if(m_array->getIsBufferOwner())
     {
@@ -56,7 +57,7 @@ void Array::setBuffer(void* buf, bool takeOwnership)
         ::fwMemory::BufferObject::sptr oldBufferObject = m_array->getBufferObject();
         oldBufferObject->swap(newBufferObject);
     }
-    m_array->getBufferObject()->setBuffer(buf, (buf == NULL) ? 0 : m_array->getSizeInBytes());
+    m_array->getBufferObject()->setBuffer(buf, (buf == NULL) ? 0 : m_array->getSizeInBytes(), policy);
     m_array->setIsBufferOwner(takeOwnership);
 }
 
@@ -66,11 +67,12 @@ void Array::setBuffer(
     void* buf,
     bool takeOwnership,
     const ::fwTools::Type& type,
-    const  ::fwData::Array::SizeType& size,
-    size_t nbOfComponents )
+    const ::fwData::Array::SizeType& size,
+    size_t nbOfComponents,
+    ::fwMemory::BufferAllocationPolicy::sptr policy)
 {
     m_array->resize( type, size, nbOfComponents, false);
-    this->setBuffer(buf, takeOwnership);
+    this->setBuffer(buf, takeOwnership, policy);
 }
 
 //-----------------------------------------------------------------------------
@@ -132,7 +134,6 @@ void Array::setItem(const ::fwData::Array::IndexType& id, const void* value)
 }
 //------------------------------------------------------------------------------
 
-
 void Array::setItem(const ::fwData::Array::IndexType& id, const size_t component, const void* value)
 {
     size_t sizeOf   = m_array->getType().sizeOf();
@@ -140,7 +141,6 @@ void Array::setItem(const ::fwData::Array::IndexType& id, const size_t component
     char* item      = this->getBufferPtr(id, component, sizeOf);
     std::copy(val, val + sizeOf, item);
 }
-
 
 //------------------------------------------------------------------------------
 
