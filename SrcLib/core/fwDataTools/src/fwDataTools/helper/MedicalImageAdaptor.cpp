@@ -1,10 +1,12 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwDataTools/helper/MedicalImageAdaptor.hpp"
+
+#include "fwCore/macros.hpp"
 
 #include "fwDataTools/fieldHelper/Image.hpp"
 #include "fwDataTools/fieldHelper/MedicalImageHelpers.hpp"
@@ -33,6 +35,9 @@ static const ::fwCom::Slots::SlotKeyType s_UPDATE_TF_WINDOWING_SLOT = "updateTFW
 MedicalImageAdaptor::MedicalImageAdaptor() :
     m_orientation(Z_AXIS)
 {
+    FW_DEPRECATED_MSG(
+        "fwDataTools::helper::MedicalImageAdaptor is deprecated, please use fwDataTools::helper::MedicalImage or fwDataTools::helper::TransferFunction instead",
+        19.0);
 }
 
 //------------------------------------------------------------------------------
