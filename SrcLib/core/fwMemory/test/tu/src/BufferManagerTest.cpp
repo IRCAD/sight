@@ -175,6 +175,10 @@ void BufferManagerTest::memoryInfoTest()
         { ::fwMemory::BufferObject::Lock lock(bo->lock()); }
         { ::fwMemory::BufferObject::Lock lock(bo1->lock()); }
         { ::fwMemory::BufferObject::Lock lock(bo2->lock()); }
+
+        bo->destroy();
+        bo1->destroy();
+        bo2->destroy();
     }
     SLM_INFO(manager->toString().get());
 }
