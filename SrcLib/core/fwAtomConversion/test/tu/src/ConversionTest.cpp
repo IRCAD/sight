@@ -475,6 +475,11 @@ void ConversionTest::recursiveObjectTest()
     ::fwData::Composite::ContainerType& dataMap = newComposite->getContainer();
     CPPUNIT_ASSERT( dataMap.find("key") != dataMap.end() );
     CPPUNIT_ASSERT( newComposite == dataMap["key"] );
+
+    // Same hack as before to deallocate the new composite.
+    newComposite->getContainer().erase("key");
+    // The atom also references itself, clear it to prevent a memory leak.
+    atom->clearAttribute();
 }
 
 //-----------------------------------------------------------------------------
