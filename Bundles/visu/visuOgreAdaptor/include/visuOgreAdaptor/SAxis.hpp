@@ -91,7 +91,7 @@ private:
     /// Handles axis visibility.
     bool m_isVisible { true };
     /// Handles the visibility of axis labels
-    bool m_labelVisible { true };
+    bool m_enableLabel { true };
 
     ::Ogre::ManualObject* xLine { nullptr };
     ::Ogre::ManualObject* yLine { nullptr };

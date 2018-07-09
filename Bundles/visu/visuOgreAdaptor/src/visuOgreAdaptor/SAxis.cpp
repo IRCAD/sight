@@ -54,7 +54,7 @@ void SAxis::updateVisibility(bool isVisible)
     if(m_sceneNode)
     {
         m_sceneNode->setVisible(m_isVisible);
-        if(m_labelVisible)
+        if(m_enableLabel)
         {
             for(auto& label : m_axisLabels)
             {
@@ -104,8 +104,8 @@ void SAxis::configuring()
                                                             this->getID() + "_transform");
 
     this->setTransformId(transformId);
-    m_length       = config.get<float>(s_LENGTH_CONFIG, m_length);
-    m_labelVisible = config.get<bool>(s_LABEL_CONFIG, m_labelVisible);
+    m_length      = config.get<float>(s_LENGTH_CONFIG, m_length);
+    m_enableLabel = config.get<bool>(s_LABEL_CONFIG, m_enableLabel);
 }
 
 //-----------------------------------------------------------------------------
@@ -207,7 +207,7 @@ void SAxis::starting()
     ::Ogre::SceneNode* xConeNode = m_sceneNode->createChildSceneNode(
         this->getTransformId() + "_" + this->getID() + "_xCone");
 
-    if(m_labelVisible)
+    if(m_enableLabel)
     {
         m_axisLabels[0] = ::fwRenderOgre::Text::New(
             this->getID() + "_xAxisLabel", sceneMgr, textContainer, dejaVuSansFont, cam);
@@ -229,7 +229,7 @@ void SAxis::starting()
         this->getTransformId() + "_" + this->getID() + "_yCone");
     yConeNode->attachObject(yCone);
 
-    if(m_labelVisible)
+    if(m_enableLabel)
     {
         m_axisLabels[1] = ::fwRenderOgre::Text::New(
             this->getID() + "_yAxisLabel", sceneMgr, textContainer, dejaVuSansFont, cam);
@@ -251,7 +251,7 @@ void SAxis::starting()
         this->getTransformId() + "_" + this->getID() + "_zCone");
     zConeNode->attachObject(zCone);
 
-    if(m_labelVisible)
+    if(m_enableLabel)
     {
         m_axisLabels[2] = ::fwRenderOgre::Text::New(
             this->getID() + "_zAxisLabel", sceneMgr, textContainer, dejaVuSansFont, cam);
@@ -287,7 +287,7 @@ void SAxis::stopping()
         sceneMgr->destroySceneNode(m_sceneNode);
     }
 
-    if(m_labelVisible)
+    if(m_enableLabel)
     {
         for(auto& label : m_axisLabels)
         {
