@@ -65,7 +65,7 @@ material RayEntryPoints
         pass
         {
             // This technique doesn't write any color, only the depth of the nearest backfaces.
-            scene_blend zero one
+            colour_write off
             depth_check on
             depth_write on
             depth_func less
