@@ -85,10 +85,10 @@ void TextTest::factoryTest()
     auto overlayTextPanel =
         static_cast< ::Ogre::OverlayContainer* >(overlayManager.createOverlayElement("Panel", "_GUI"));
 
-    ::Ogre::FontPtr dejaVuSansFont = ::fwRenderOgre::helper::Font::getFont("Courier.ttf", 32);
+    ::Ogre::FontPtr courrierFont = ::fwRenderOgre::helper::Font::getFont("Courier.ttf", 32);
 
     ::fwRenderOgre::Text* textObj1 = ::fwRenderOgre::Text::New("testTest", sceneManager, overlayTextPanel,
-                                                               dejaVuSansFont);
+                                                               courrierFont);
     CPPUNIT_ASSERT(textObj1 != nullptr); // See if it has the right type.
 
     ::Ogre::MovableObject* movableText1 = textObj1;

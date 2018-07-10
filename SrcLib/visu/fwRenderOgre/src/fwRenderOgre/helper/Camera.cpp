@@ -121,7 +121,7 @@ Ogre::Vector3 Camera::convertPixelToViewSpace(const ::Ogre::Camera& _camera, con
     const ::Ogre::Matrix4 projMat = _camera.getProjectionMatrixWithRSDepth();
 
     // We multiply by the inverse since we are performing the usual projection in the other way around.
-    ::Ogre::Vector3 result = viewMat.inverse() * projMat.inverse() * clippingCoordinatePixel;
+    const ::Ogre::Vector3 result = viewMat.inverse() * projMat.inverse() * clippingCoordinatePixel;
 
     return result;
 }
