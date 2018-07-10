@@ -1,17 +1,17 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "ZipTest.hpp"
 
+#include <fwZip/ReadZipArchive.hpp>
+#include <fwZip/WriteZipArchive.hpp>
+
 #include <fwTest/Data.hpp>
 
 #include <fwTools/System.hpp>
-
-#include <fwZip/ReadZipArchive.hpp>
-#include <fwZip/WriteZipArchive.hpp>
 
 #include <boost/filesystem/convenience.hpp>
 #include <boost/filesystem/path.hpp>
@@ -24,15 +24,21 @@ namespace fwZip
 namespace ut
 {
 
+//------------------------------------------------------------------------------
+
 void ZipTest::setUp()
 {
     // Set up context before running a test.
 }
 
+//------------------------------------------------------------------------------
+
 void ZipTest::tearDown()
 {
     // Clean up after the test run.
 }
+
+//------------------------------------------------------------------------------
 
 void ZipTest::commentTest()
 {
@@ -47,10 +53,8 @@ void ZipTest::commentTest()
     CPPUNIT_ASSERT_MESSAGE("The file '" + sourceFile.string() + "' does not exist",
                            ::boost::filesystem::exists(sourceFile));
 
-
     SPTR(WriteZipArchive) writer = std::make_shared<WriteZipArchive>(path, writerComment);
     writer->putFile(sourceFile, archiveFile);
-    writer->createFile("");
 
     SPTR(ReadZipArchive) reader = std::make_shared<ReadZipArchive>(path);
     std::string readerComment = reader->getComment();
