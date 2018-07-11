@@ -30,7 +30,7 @@
                 </registry>
             </service>
 
-            <service uid="mainview" type="::gui::view::SDefaultView" autoConnect="yes">
+            <service uid="mainview" type="::gui::view::SDefaultView">
                 <gui>
                     <layout type="::fwGui::CardinalLayoutManager">
                         <view align="center" minWidth="200" />
@@ -43,7 +43,7 @@
                 </registry>
             </service>
 
-            <service uid="subViews" type="::gui::view::SDefaultView" autoConnect="yes">
+            <service uid="subViews" type="::gui::view::SDefaultView">
                 <gui>
                     <layout type="::fwGui::CardinalLayoutManager">
                         <view caption="Information" align="center"/>

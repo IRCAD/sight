@@ -5,7 +5,6 @@
         <config>
 
         <object uid="image" type="::fwData::Image" />
-        <object uid="identityMatrix" type="::fwData::TransformationMatrix3D" />
         <object uid="transform" type="::fwData::TransformationMatrix3D" />
 
         <service uid="mainFrame" type="::gui::frame::SDefaultFrame">
@@ -59,7 +58,7 @@
 
         <!-- *************************** Start generic scene *************************** -->
 
-        <service uid="genericScene" type="::fwRenderVTK::SRender" autoConnect="yes">
+        <service uid="genericScene" type="::fwRenderVTK::SRender">
             <scene>
                 <picker id="picker" vtkclass="fwVtkCellPicker" />
                 <renderer id="default" background="#052833" />

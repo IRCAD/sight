@@ -200,7 +200,7 @@ Detail of the ToolBar
             <!-- Generic Scene (Negato) for the first tab -->
             <!-- *************************** Begin generic scene *************************** -->
 
-            <service uid="negato1" type="::fwRenderVTK::SRender" autoConnect="yes">
+            <service uid="negato1" type="::fwRenderVTK::SRender">
                 <scene>
                     <picker id="negato1default" vtkclass="fwVtkCellPicker" />
                     <renderer id="default" background="0.0" />
@@ -251,7 +251,7 @@ Detail of the ToolBar
             <!-- Generic Scene (Negato) for the second tab -->
             <!-- *************************** Begin generic scene *************************** -->
 
-            <service uid="negato2" type="::fwRenderVTK::SRender" autoConnect="yes">
+            <service uid="negato2" type="::fwRenderVTK::SRender">
                 <scene>
                     <picker id="negato2default" vtkclass="fwVtkCellPicker" />
                     <renderer id="default" background="0.0" />
@@ -285,7 +285,7 @@ Detail of the ToolBar
             <!-- Generic Scene (Negato) for the Third tab -->
             <!-- *************************** Begin generic scene *************************** -->
 
-            <service uid="negato3" type="::fwRenderVTK::SRender" autoConnect="yes">
+            <service uid="negato3" type="::fwRenderVTK::SRender">
                 <scene>
                     <picker id="negato3default" vtkclass="fwVtkCellPicker" />
                     <renderer id="default" background="0.0" />
@@ -337,7 +337,7 @@ Detail of the ToolBar
 
             <!-- Editors for Negato1 -->
             <service uid="sliderNegato1" type="::uiImageQt::SliceIndexPositionEditor" autoConnect="yes">
-                <inout key="target" uid="myImage" />
+                <inout key="image" uid="myImage" />
                 <sliceIndex>axial</sliceIndex>
             </service>
 

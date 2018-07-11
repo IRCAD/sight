@@ -194,7 +194,7 @@ void SNegatoMPR::swapping(const KeyType& key)
             ::fwServices::IService::sptr service = srv.lock();
             if (tf)
             {
-                service->registerInOut(tf, s_TF_INOUT, true, true);
+                service->registerInOut(tf, s_TF_INOUT, false, true);
                 service->swapKey(s_TF_INOUT, nullptr);
             }
             else if(::fwServices::OSR::isRegistered(s_TF_INOUT, AccessType::INOUT, service))
@@ -423,7 +423,7 @@ void SNegatoMPR::set3dMode( bool enabled )
     if (tf)
     {
         // register the TF as optional
-        service->registerInOut(tf, s_TF_INOUT, true, true);
+        service->registerInOut(tf, s_TF_INOUT, false, true);
     }
 
     service->setRenderService(this->getRenderService());

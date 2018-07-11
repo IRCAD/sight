@@ -236,4 +236,19 @@ void OrganMaterialEditor::materialNotification( )
 
 //------------------------------------------------------------------------------
 
+::fwServices::IService::KeyConnectionsMap OrganMaterialEditor::getAutoConnections() const
+{
+    KeyConnectionsMap connections;
+
+    //FIXME hack to support deprecated getObject()
+    if (this->getInOut< ::fwData::Reconstruction >(s_RECONSTRUCTION_INOUT))
+    {
+        connections.push(s_RECONSTRUCTION_INOUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    }
+
+    return connections;
+}
+
+//------------------------------------------------------------------------------
+
 }
