@@ -4,8 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef ANDROID
-
 #include "visuVTKAdaptor/SPoint.hpp"
 
 #include "fwRenderVTK/vtk/Helpers.hpp"
@@ -325,5 +323,3 @@ void SPoint::setInteraction(const bool interaction)
 //------------------------------------------------------------------------------
 
 } //namespace visuVTKAdaptor
-
-#endif // ANDROID

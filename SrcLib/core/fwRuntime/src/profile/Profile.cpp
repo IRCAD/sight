@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -61,11 +61,8 @@ Profile::sptr getCurrentProfile()
 
 Profile::Profile() :
     m_checkSingleInstance(false),
-#ifdef ANDROID
-    m_app(nullptr),
-#endif
     m_argc(0),
-    m_argv(NULL)
+    m_argv(nullptr)
 {
     m_run = std::bind(&Profile::defaultRun, this);
 }
@@ -128,7 +125,7 @@ void Profile::start()
         SPTR( Extension ) extension( *i );
         OSLM_FATAL_IF(
             "Validation not ok for bundle = '" << extension->getBundle()->getIdentifier() << "'  (extension id = '" << extension->getIdentifier() << "' )",
-            extension->getBundle()->isEnable() && extension->validate() == Extension::Invalid );
+                extension->getBundle()->isEnable() && extension->validate() == Extension::Invalid );
     }
 
     std::for_each( m_starters.begin(), m_starters.end(), Apply< StarterContainer::value_type >() );

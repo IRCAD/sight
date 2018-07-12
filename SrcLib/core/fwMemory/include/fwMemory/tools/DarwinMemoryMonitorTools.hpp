@@ -1,13 +1,12 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWMEMORY_TOOLS_DARWINMEMORYMONITORTOOLS_HPP__
-#define __FWMEMORY_TOOLS_DARWINMEMORYMONITORTOOLS_HPP__
+#pragma once
 
-#ifdef __MACOSX__
+#ifdef __APPLE__
 
 #include "fwMemory/config.hpp"
 
@@ -51,5 +50,3 @@ public:
 } // namespace fwMemory
 
 #endif
-
-#endif // __FWMEMORY_TOOLS_DARWINMEMORYMONITORTOOLS_HPP__

@@ -1,13 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VISUVTKADAPTOR_SPLANELIST_HPP__
-#define __VISUVTKADAPTOR_SPLANELIST_HPP__
-
-#ifndef ANDROID
+#pragma once
 
 #include "visuVTKAdaptor/config.hpp"
 
@@ -80,7 +77,7 @@ public:
 protected:
 
     /// Type of signal emitted when plane selection changed
-    typedef  ::fwCom::Signal< void (::fwData::Plane::sptr) > SelectedignalType;
+    typedef ::fwCom::Signal< void (::fwData::Plane::sptr) > SelectedignalType;
 
     VISUVTKADAPTOR_API void configuring() override;
     VISUVTKADAPTOR_API void starting() override;
@@ -120,7 +117,3 @@ private:
 };
 
 } //namespace visuVTKAdaptor
-
-#endif // ANDROID
-
-#endif // __VISUVTKADAPTOR_SPLANELIST_HPP__

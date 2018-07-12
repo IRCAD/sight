@@ -1,25 +1,14 @@
 fwLoadProperties()
 
-if(NOT ANDROID)
-    find_package(VTK QUIET COMPONENTS
-        vtkFiltersModeling
-        vtkIOImage
-        vtkIOLegacy
-        vtkIOXML
-        vtkFiltersGeometry
-        vtkIOExport
-        REQUIRED
-        NO_MODULE)
-else()
-    find_package(VTK QUIET COMPONENTS
-        vtkFiltersModeling
-        vtkIOImage
-        vtkIOLegacy
-        vtkIOXML
-        vtkFiltersGeometry
-        REQUIRED
-        NO_MODULE)
-endif()
+find_package(VTK QUIET COMPONENTS
+    vtkFiltersModeling
+    vtkIOImage
+    vtkIOLegacy
+    vtkIOXML
+    vtkFiltersGeometry
+    vtkIOExport
+    REQUIRED
+    NO_MODULE)
 
 include(${VTK_USE_FILE})
 

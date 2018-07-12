@@ -1,9 +1,7 @@
 fwLoadProperties()
 
-if(NOT ANDROID)
-    find_package(VTK QUIET COMPONENTS vtkIOImport REQUIRED NO_MODULE)
-    include(${VTK_USE_FILE})
-endif()
+find_package(VTK QUIET COMPONENTS vtkIOImport REQUIRED NO_MODULE)
+include(${VTK_USE_FILE})
 
 fwForwardInclude(
     ${VTK_INCLUDE_DIRS}

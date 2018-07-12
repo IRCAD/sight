@@ -4,8 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef ANDROID
-
 #include "visuVTKAdaptor/SPointList.hpp"
 
 #include <fwCom/Slot.hpp>
@@ -241,5 +239,3 @@ void SPointList::setInteraction(const bool interaction)
 //------------------------------------------------------------------------------
 
 } //namespace visuVTKAdaptor
-
-#endif // ANDROID

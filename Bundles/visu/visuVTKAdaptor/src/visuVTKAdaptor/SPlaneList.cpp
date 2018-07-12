@@ -4,8 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef ANDROID
-
 #include "visuVTKAdaptor/SPlaneList.hpp"
 
 #include "visuVTKAdaptor/SPlane.hpp"
@@ -338,5 +336,3 @@ SPlaneList::KeyConnectionsMap SPlaneList::getAutoConnections() const
 }
 
 } //namespace visuVTKAdaptor
-
-#endif // ANDROID

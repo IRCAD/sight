@@ -4,8 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef ANDROID
-
 #include "visuVTKAdaptor/SPlane.hpp"
 
 #include "visuVTKAdaptor/SPoint.hpp"
@@ -261,5 +259,3 @@ void SPlane::selectPlane(bool select)
 //------------------------------------------------------------------------------
 
 } //namespace visuVTKAdaptor
-
-#endif //ANDROID
