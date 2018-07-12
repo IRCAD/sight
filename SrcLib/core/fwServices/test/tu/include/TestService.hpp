@@ -174,6 +174,7 @@ public:
         connections.push("data2", ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
         connections.push("data3", ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
         connections.push("data4", ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+        connections.push("data5", ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
         connections.push("dataGroup", ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
         return connections;
     }
@@ -290,6 +291,7 @@ public:
         connections.push("data1", ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
         connections.push("data2", ::fwData::Object::s_MODIFIED_SIG, s_SLOT_1);
         connections.push("data3", ::fwData::Object::s_MODIFIED_SIG, s_SLOT_1);
+        connections.push("dataGroup0", ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
         connections.push("dataGroup1", ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
 
         return connections;
