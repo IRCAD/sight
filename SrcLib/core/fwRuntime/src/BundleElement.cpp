@@ -16,7 +16,7 @@ BundleElement::BundleElement() :
     m_enable(true)
 {
     // Post-condition
-    SLM_ASSERT("bundle '" << m_bundle->getIdentifier() << "' not initialized", m_bundle != 0 );
+    SLM_ASSERT("bundle '" << m_bundle.lock()->getIdentifier() << "' not initialized", m_bundle.lock() != nullptr );
 }
 
 //------------------------------------------------------------------------------
@@ -26,7 +26,7 @@ BundleElement::BundleElement( std::shared_ptr< Bundle > bundle ) :
     m_enable(true)
 {
     // Post-condition
-    SLM_ASSERT("bundle '" << m_bundle->getIdentifier() << "' not initialized", m_bundle != 0 );
+    SLM_ASSERT("bundle '" << m_bundle.lock()->getIdentifier() << "' not initialized", m_bundle.lock() != nullptr );
 }
 
 //------------------------------------------------------------------------------
@@ -41,7 +41,7 @@ std::shared_ptr<Bundle> BundleElement::getBundle() const
 bool BundleElement::isEnable() const
 {
     // Pre-condition.
-    SLM_ASSERT("bundle '" << m_bundle->getIdentifier() << "' not initialized", m_bundle != 0 );
+    SLM_ASSERT("bundle '" << m_bundle.lock()->getIdentifier() << "' not initialized", m_bundle.lock() != nullptr );
     return m_bundle.lock()->isEnable() && m_enable;
 }
 
