@@ -10,6 +10,7 @@
 
 #include <fwCamp/camp/ExtendedClassVisitor.hpp>
 
+#include <fwCore/macros.hpp>
 #include <fwCore/mt/types.hpp>
 
 #include <vector>
