@@ -194,8 +194,9 @@ public:
      * @param access Access (INPUT, INOUT, OUTPUT) of this key
      * @param service Service where to look for the key
      */
-    ::fwData::Object::csptr getRegistered(const ::fwServices::IService::KeyType& objKey,
-                                          ::fwServices::IService::AccessType access, IService::sptr service) const;
+    FWSERVICES_API ::fwData::Object::csptr getRegistered(const ::fwServices::IService::KeyType& objKey,
+                                                         ::fwServices::IService::AccessType access,
+                                                         IService::sptr service) const;
     //@}
 
     /**
