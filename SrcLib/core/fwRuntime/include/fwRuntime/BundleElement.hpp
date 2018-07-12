@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWRUNTIME_BUNDLEELEMENT_HPP__
-#define __FWRUNTIME_BUNDLEELEMENT_HPP__
+#pragma once
 
 #include "fwRuntime/config.hpp"
 
@@ -16,17 +15,11 @@ namespace fwRuntime
 struct Bundle;
 }
 
-
 namespace fwRuntime
 {
 
-
-
 /**
  * @brief   Implements the base class for all element managed by a bundle.
- * @struct  BundleElement
- * @date    2006-2009
- *
  */
 struct BundleElement
 {
@@ -81,18 +74,11 @@ struct BundleElement
          */
         BundleElement( std::shared_ptr< Bundle > bundle );
 
-
     private:
 
-        std::shared_ptr< Bundle >  m_bundle;///< a shared pointer to the bundle managing the element
+        std::weak_ptr< Bundle >  m_bundle;///< Weak pointer to the bundle managing the element
         bool m_enable;                          ///< to know if bundle element is enabled
 
 };
 
-
-
 } // namespace fwRuntime
-
-
-
-#endif /*__FWRUNTIME_BUNDLEELEMENT_HPP__*/
