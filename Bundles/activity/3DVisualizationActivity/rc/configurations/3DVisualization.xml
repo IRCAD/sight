@@ -167,7 +167,7 @@
         </service>
 
         <service uid="LockImageSrv" type="::ctrlMemory::LockDumpSrv" >
-            <inout key="image" uid="optionalInputImage" />
+            <inout key="target" uid="optionalInputImage" />
         </service>
 
         <service uid="cfgNegato2" type="::fwServices::SConfigController" >

@@ -188,4 +188,15 @@ void SImageSeries::set3dMode( bool enabled )
 
 //------------------------------------------------------------------------------
 
+::fwServices::IService::KeyConnectionsMap SImageSeries::getAutoConnections() const
+{
+    KeyConnectionsMap connections;
+
+    connections.push(s_IMAGE_SERIES_INOUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+
+    return connections;
+}
+
+//------------------------------------------------------------------------------
+
 } //namespace visuVTKAdaptor

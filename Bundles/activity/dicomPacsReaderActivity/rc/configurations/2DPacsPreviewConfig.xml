@@ -25,7 +25,7 @@
 
         <!-- *************************** Begin generic scene *************************** -->
 
-        <service uid="gs" type="::fwRenderVTK::SRender" autoConnect="yes">
+        <service uid="gs" type="::fwRenderVTK::SRender">
             <scene>
                 <picker id="picker" vtkclass="fwVtkCellPicker" />
                 <vtkObject id="imageBlend" class="vtkImageBlend" />
@@ -59,14 +59,14 @@
         <!-- *************************** End generic scene *************************** -->
 
         <service uid="imageDumpLocker" type="::ctrlMemory::LockDumpSrv">
-            <in key="image" uid="image" />
+            <inout key="target" uid="image" />
         </service>
 
         <service uid="medicalImgConverter" type="::ctrlSelection::MedicalImageSrv">
             <inout key="image" uid="image" />
         </service>
 
-        <service uid="sliderIndexDicomPullerEditor" type="::ioPacs::SSliceIndexDicomPullerEditor" autoConnect="yes">
+        <service uid="sliderIndexDicomPullerEditor" type="::ioPacs::SSliceIndexDicomPullerEditor">
             <in key="pacsConfig" uid="${PACS_CONFIGURATION}" />
             <inout key="series" uid="${objectID}" />
             <out key="image" uid="image" />

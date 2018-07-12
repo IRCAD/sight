@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VISUVTKADAPTOR_SDISTANCE_HPP__
-#define __VISUVTKADAPTOR_SDISTANCE_HPP__
+#pragma once
 
 #ifndef ANDROID
 
@@ -65,6 +64,14 @@ protected:
     VISUVTKADAPTOR_API void updating() override;
     VISUVTKADAPTOR_API void stopping() override;
 
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect PointList::s_MODIFIED_SIG to this::s_UPDATE_SLOT
+     */
+    VISUVTKADAPTOR_API virtual KeyConnectionsMap getAutoConnections() const override;
+
 private:
 
     vtkDistanceRepresentation2D* m_distanceRepresentation;
@@ -85,5 +92,3 @@ private:
 } //namespace visuVTKAdaptor
 
 #endif // ANDROID
-
-#endif // __VISUVTKADAPTOR_SDISTANCE_HPP__

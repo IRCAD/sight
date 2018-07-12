@@ -35,7 +35,7 @@
             </registry>
         </service>
 
-        <service uid="pacsConfigurationEditor" type="::ioPacs::SPacsConfigurationEditor" autoConnect="yes">
+        <service uid="pacsConfigurationEditor" type="::ioPacs::SPacsConfigurationEditor">
             <inout key="config" uid="${PACS_CONFIGURATION}" />
         </service>
 

@@ -16,7 +16,7 @@
         <object uid="${tfBackgroundImage}" type="::fwData::TransferFunction" src="deferred" />
         <object uid="${tfFrontImage}" type="::fwData::TransferFunction" src="deferred" />
 
-        <service uid="mainView" type="::gui::view::SDefaultView" autoConnect="no">
+        <service uid="mainView" type="::gui::view::SDefaultView">
             <gui>
                 <layout type="::fwGui::CardinalLayoutManager">
                     <view caption="Blend" align="center" />
@@ -30,7 +30,7 @@
             </registry>
         </service>
 
-        <service uid="bottomView" type="::gui::view::SDefaultView" autoConnect="no">
+        <service uid="bottomView" type="::gui::view::SDefaultView">
             <gui>
                 <layout type="::fwGui::LineLayoutManager">
                     <orientation value="vertical" />
@@ -44,7 +44,7 @@
             </registry>
         </service>
 
-        <service uid="sliderView" type="::gui::view::SDefaultView" autoConnect="no">
+        <service uid="sliderView" type="::gui::view::SDefaultView">
             <gui>
                 <layout type="::fwGui::LineLayoutManager">
                     <orientation value="horizontal" />
@@ -58,7 +58,7 @@
             </registry>
         </service>
 
-        <service uid="editorsView" type="::gui::view::SDefaultView" autoConnect="no">
+        <service uid="editorsView" type="::gui::view::SDefaultView">
             <gui>
                 <layout type="::fwGui::LineLayoutManager">
                     <orientation value="horizontal" />
@@ -72,7 +72,7 @@
             </registry>
         </service>
 
-        <service uid="bgBottomView" type="::gui::view::SDefaultView" autoConnect="no">
+        <service uid="bgBottomView" type="::gui::view::SDefaultView">
             <gui>
                 <layout type="::fwGui::LineLayoutManager">
                     <orientation value="vertical" />
@@ -85,7 +85,7 @@
             </registry>
         </service>
 
-        <service uid="frontBottomView" type="::gui::view::SDefaultView" autoConnect="no">
+        <service uid="frontBottomView" type="::gui::view::SDefaultView">
             <gui>
                 <layout type="::fwGui::LineLayoutManager">
                     <orientation value="vertical" />
@@ -102,8 +102,8 @@
 
         <service uid="snapshot" type="::uiVisuQt::SnapshotEditor" />
 
-        <service type="::ctrlMemory::LockDumpSrv" autoConnect="no">
-            <in key="image" uid="${backgroundImageUid}" />
+        <service uid="bgLockDump" type="::ctrlMemory::LockDumpSrv">
+            <inout key="target" uid="${backgroundImageUid}" />
         </service>
 
         <!-- This service convert a stypee fwData::Image to medical Image -->
@@ -119,12 +119,12 @@
             <inout key="tf" uid="${tfBackgroundImage}" />
         </service>
 
-        <service type="::ctrlMemory::LockDumpSrv" autoConnect="no">
-            <in key="image" uid="${frontImageUid}" />
+        <service uid="frontLockDump" type="::ctrlMemory::LockDumpSrv">
+            <inout key="target" uid="${frontImageUid}" />
         </service>
 
         <!-- This service convert a stypee fwData::Image to medical Image -->
-        <service type="::ctrlSelection::MedicalImageSrv" autoConnect="yes">
+        <service uid="frontMedicalImageConverter" type="::ctrlSelection::MedicalImageSrv" autoConnect="yes">
             <inout key="image" uid="${frontImageUid}" />
         </service>
 
@@ -141,7 +141,7 @@
         <!-- Generic scene to show merging of backgroung and front images -->
         <!-- *************************** Begin generic scene *************************** -->
 
-        <service uid="blendGenericScene" type="::fwRenderVTK::SRender" autoConnect="yes">
+        <service uid="blendGenericScene" type="::fwRenderVTK::SRender">
             <scene>
                 <picker id="myPicker" vtkclass="fwVtkCellPicker" />
                 <vtkObject id="imageBlend" class="vtkImageBlend" />
@@ -226,6 +226,10 @@
         <start uid="nameAdaptor" />
         <start uid="myImagesProbeCursor" />
         <start uid="MPRNegato3D" />
+        <start uid="bgLockDump" />
+        <start uid="frontLockDump" />
+        <start uid="bg_medicalImageConverter" />
+        <start uid="frontMedicalImageConverter" />
 
         <!-- deferred -->
         <start uid="bg_windowLevel" />

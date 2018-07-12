@@ -73,22 +73,6 @@
             </registry>
         </service>
 
-        <service uid="TFScene2D" type="::gui::view::SDefaultView">
-            <gui>
-                <layout type="::fwGui::LineLayoutManager">
-                    <orientation value="vertical" />
-                    <view proportion="0" minHeight="100" />
-                    <view proportion="1" />
-                    <view proportion="0" minHeight="30" />
-                </layout>
-            </gui>
-            <registry>
-                <view sid="Scene2D_Shutter" start="no" />
-                <view sid="Scene2D" start="no" />
-                <view sid="FloatEditor" start="no" />
-            </registry>
-        </service>
-
         <service uid="ActionExportActivity" type="::uiMedDataQt::action::SExportSeries" autoConnect="yes">
             <inout key="seriesDB" uid="${SERIESDB}" />
             <inout key="series" uid="${AS_UID}" />
@@ -114,7 +98,7 @@
         <!-- Generic Scene VR -->
         <!-- *************************** Begin generic scene *************************** -->
 
-        <service uid="vr" type="::fwRenderVTK::SRender" autoConnect="yes">
+        <service uid="vr" type="::fwRenderVTK::SRender">
             <scene>
                 <picker id="negato1default" vtkclass="fwVtkCellPicker" />
                 <renderer id="default" background="0.0" />
@@ -161,27 +145,11 @@
 
         <!-- Services working on input image -->
         <service uid="LockImageSrv" type="::ctrlMemory::LockDumpSrv">
-            <in key="image" uid="${image}" />
+            <inout key="target" uid="${image}" />
         </service>
 
         <service uid="MedicalImageSrv" type="::ctrlSelection::MedicalImageSrv">
             <inout key="image" uid="${image}" />
-        </service>
-
-        <service uid="ActionHideCross" type="::uiVisu::action::CrossTypeAction">
-            <in key="image" uid="${image}" />
-            <crossType>hide</crossType>
-        </service>
-
-        <service uid="ActionShowNormalCross" type="::uiVisu::action::CrossTypeAction">
-            <in key="image" uid="${image}" />
-            <crossType>half</crossType>
-            <state active="true" />
-        </service>
-
-        <service uid="ActionShowFullCross" type="::uiVisu::action::CrossTypeAction">
-            <in key="image" uid="${image}" />
-            <crossType>full</crossType>
         </service>
 
         <service uid="ActionShowHideBoxWidget" type="::gui::action::SBooleanSlotCaller">

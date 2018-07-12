@@ -166,6 +166,17 @@ void SDistance::stopping()
 
 //------------------------------------------------------------------------------
 
+::fwServices::IService::KeyConnectionsMap SDistance::getAutoConnections() const
+{
+    KeyConnectionsMap connections;
+
+    connections.push(s_POINTLIST_INPUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+
+    return connections;
+}
+
+//------------------------------------------------------------------------------
+
 } //namespace visuVTKAdaptor
 
 #endif // ANDROID

@@ -105,7 +105,7 @@
                 <default_value>127.0.0.1</default_value>
             </preference>
             <preference>
-                <type>number</type>
+                <type>int</type>
                 <name>Pacs Server Port</name>
                 <key>PACS_SERVER_PORT</key>
                 <default_value>80</default_value>
@@ -126,7 +126,7 @@
             <url>http://www.ircad.fr/softwares/vr-render/Software.php</url>
         </service>
 
-        <service uid="dynamicView" type="::guiQt::editor::SDynamicView" autoConnect="yes">
+        <service uid="dynamicView" type="::guiQt::editor::SDynamicView">
             <inout key="SERIESDB" uid="seriesDB" />
             <mainActivity id="SDBVRRender" closable="false" />
             <parameters>

@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VISUVTKADAPTOR_SIMAGESERIES_HPP__
-#define __VISUVTKADAPTOR_SIMAGESERIES_HPP__
+#pragma once
 
 #include "visuVTKAdaptor/config.hpp"
 #include "visuVTKAdaptor/SNegatoMPR.hpp"
@@ -97,6 +96,14 @@ protected:
     /// Stops and unregister image subservice.
     VISUVTKADAPTOR_API void stopping() override;
 
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect ImageSeries::s_MODIFIED_SIG to this::s_UPDATE_SLOT
+     */
+    VISUVTKADAPTOR_API virtual KeyConnectionsMap getAutoConnections() const override;
+
     /// Sets adaptor slice mode (NO_SLICE, ONE_SLICE, THREE_SLICES)
     void setSliceMode(SNegatoMPR::SliceMode sliceMode);
 
@@ -121,5 +128,3 @@ private:
 };
 
 } //namespace visuVTKAdaptor
-
-#endif // __VISUVTKADAPTOR_SIMAGESERIES_HPP__
