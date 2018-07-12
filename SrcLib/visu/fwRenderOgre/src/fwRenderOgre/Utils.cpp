@@ -32,7 +32,7 @@
 #include <OgreResourceGroupManager.h>
 #include <OgreTextureManager.h>
 
-#ifdef __MACOSX__
+#ifdef __APPLE__
 #define PLUGIN_PATH "plugins_osx.cfg"
 #elif _WIN32
 #   ifdef _DEBUG
@@ -256,13 +256,9 @@ void Utils::addResourcesPath(const ::boost::filesystem::path& path)
         }
         SLM_ASSERT("Abort render system configuration, no render system found", rs);
 
-        /*
-           Setting size and VSync on windows will solve a lot of problems
-         */
-//        std::string dimensions = this->width() + " x " + this->height();
-//        rs->setConfigOption("Video Mode", dimensions.toStdString());
+        // Setting size and VSync on windows will solve a lot of problems
         rs->setConfigOption("Full Screen", "No");
-#ifdef __MACOSX__
+#ifdef __APPLE__
         rs->setConfigOption("vsync", "No");
 #else
         rs->setConfigOption("VSync", "No");
