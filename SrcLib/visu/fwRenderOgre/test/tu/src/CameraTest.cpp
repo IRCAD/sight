@@ -58,8 +58,8 @@ void compareMatrix(const ::Ogre::Matrix4& _m1, const ::Ogre::Matrix4& _m2)
 void comparePoint(const Ogre::Vector3& _p1, const Ogre::Vector3& _p2)
 {
     CPPUNIT_ASSERT_DOUBLES_EQUAL(_p1[0], _p2[0], 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(_p1[0], _p2[0], 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(_p1[0], _p2[0], 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(_p1[1], _p2[1], 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(_p1[2], _p2[2], 0.00001);
 }
 
 //------------------------------------------------------------------------------
