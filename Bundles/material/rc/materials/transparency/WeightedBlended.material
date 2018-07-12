@@ -20,6 +20,9 @@ material WeightedBlended_blend
     {
         pass
         {
+            depth_check off
+            depth_write off
+
             vertex_program_ref RenderQuad_VP
             {
             }

@@ -241,7 +241,7 @@ void ImportanceDrivenVolumeRenderer::buildICCompositors(::Ogre::Viewport* _vp)
 
     if(m_idvrMethod == s_MIMP)
     {
-        compositorInstance = compositorManager.addCompositor(_vp, s_MIMP_COMPOSITOR, 0);
+        compositorInstance = compositorManager.addCompositor(_vp, s_MIMP_COMPOSITOR, 1);
         SLM_ASSERT("Compositor could not be initialized", compositorInstance);
         compositorInstance->setEnabled(true);
 
@@ -249,7 +249,7 @@ void ImportanceDrivenVolumeRenderer::buildICCompositors(::Ogre::Viewport* _vp)
             std::nearbyint(std::max(std::log(m_camera->getViewport()->getActualWidth()) / std::log(2.0),
                                     std::log(m_camera->getViewport()->getActualHeight()) / std::log(2.0)));
 
-        int chainIndex = 1;
+        int chainIndex = 2;
         compositorInstance = compositorManager.addCompositor(_vp, s_JFAINIT_COMPOSITOR, chainIndex++);
         SLM_ASSERT("Compositor could not be initialized", compositorInstance);
         compositorInstance->setEnabled(true);
@@ -810,7 +810,8 @@ void ImportanceDrivenVolumeRenderer::createIDVRTechnique()
 
         texUnitState = pass->createTextureUnitState();
         texUnitState->setName("entryPoints");
-        texUnitState->setTexture(m_entryPointsTextures[0]);
+        texUnitState->setContentType(::Ogre::TextureUnitState::CONTENT_COMPOSITOR);
+        texUnitState->setCompositorReference("VolumeEntries", "VolumeEntryPoints");
         texUnitState->setTextureFiltering(::Ogre::TFO_NONE);
         texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
     }

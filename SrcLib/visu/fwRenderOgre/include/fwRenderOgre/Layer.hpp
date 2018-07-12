@@ -7,6 +7,7 @@
 #pragma once
 
 #include "fwRenderOgre/compositor/ChainManager.hpp"
+#include "fwRenderOgre/compositor/listener/AutoStereo.hpp"
 #include "fwRenderOgre/compositor/types.hpp"
 #include "fwRenderOgre/config.hpp"
 #include "fwRenderOgre/interactor/IInteractor.hpp"
@@ -363,6 +364,10 @@ private:
     /// Camera listener class used to pass the projection matrix for autostereo shaders.
     struct LayerCameraListener;
     LayerCameraListener* m_cameraListener;
+
+    /// Autostereo listener
+    compositor::listener::AutoStereoCompositorListener* m_autostereoListener {nullptr};
+
 };
 
 }

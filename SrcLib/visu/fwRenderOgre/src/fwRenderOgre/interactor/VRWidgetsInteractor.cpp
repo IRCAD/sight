@@ -90,7 +90,15 @@ void VRWidgetsInteractor::buttonPressEvent(MouseButton button, int x, int y)
     if(button == LEFT)
     {
         m_pickedObject = pickObject(x, y);
-        m_widget->widgetPicked(m_pickedObject, x, y);
+
+        if(m_widget->belongsToWidget(m_pickedObject))
+        {
+            m_widget->widgetPicked(m_pickedObject, x, y);
+        }
+        else
+        {
+            m_pickedObject = nullptr;
+        }
     }
     else if(button == MIDDLE)
     {

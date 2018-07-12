@@ -26,6 +26,8 @@ compositor DualDepthPeeling
 
              pass render_scene
              {
+                // Surface models are in render queues 50 and below.
+                last_render_queue 50
              }
          }
 
@@ -53,6 +55,7 @@ compositor DualDepthPeeling
 
              pass render_scene
              {
+                last_render_queue 50
              }
          }
 
@@ -83,6 +86,7 @@ compositor DualDepthPeeling
 
              pass render_scene
              {
+                last_render_queue 50
              }
          }
 
@@ -113,6 +117,7 @@ compositor DualDepthPeeling
 
              pass render_scene
              {
+                last_render_queue 50
              }
          }
 
@@ -143,6 +148,7 @@ compositor DualDepthPeeling
 
              pass render_scene
              {
+                last_render_queue 50
              }
          }
 
@@ -173,6 +179,7 @@ compositor DualDepthPeeling
 
              pass render_scene
              {
+                last_render_queue 50
              }
          }
 
@@ -203,6 +210,7 @@ compositor DualDepthPeeling
 
              pass render_scene
              {
+                last_render_queue 50
              }
          }
 
@@ -222,6 +230,11 @@ compositor DualDepthPeeling
         target_output
         {
             input none
+
+            pass clear
+            {
+            }
+
             pass render_quad
             {
                 material DualDepthPeeling/Final
@@ -229,6 +242,15 @@ compositor DualDepthPeeling
                 input 1 pingBuffer 2
                 input 2 pingBuffer 4
             }
+
+            // Render volumes on top.
+            pass render_scene
+            {
+                // Volumes are in rq 52 and some of their widgets in rq 51.
+                first_render_queue 51
+                last_render_queue 52
+            }
+
         }
     }
 }

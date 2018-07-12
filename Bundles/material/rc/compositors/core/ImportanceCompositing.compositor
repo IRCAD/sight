@@ -15,6 +15,8 @@ compositor IDVR_MImP_Comp
             pass render_scene
             {
                 material_scheme IDVR_MImP_Mat
+                first_render_queue 52
+                last_render_queue 52
             }
         }
 
@@ -42,6 +44,8 @@ compositor IDVR_AImC_Comp
             pass render_scene
             {
                 material_scheme IDVR_AImC_Mat
+                first_render_queue 52
+                last_render_queue 52
             }
         }
 
@@ -69,6 +73,8 @@ compositor IDVR_VPImC_Comp
             pass render_scene
             {
                 material_scheme IDVR_VPImC_Mat
+                first_render_queue 52
+                last_render_queue 52
             }
         }
 

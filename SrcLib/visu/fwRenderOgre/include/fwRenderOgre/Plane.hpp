@@ -70,6 +70,8 @@ public:
 
     FWRENDEROGRE_API void setEntityOpacity( float _f );
 
+    FWRENDEROGRE_API void setVisible( bool _visible );
+
     /// Adds or updates the texture containing the transfer function data in the negato passes
     FWRENDEROGRE_API void setTFData(const ::fwRenderOgre::TransferFunction& _tfTexture);
 

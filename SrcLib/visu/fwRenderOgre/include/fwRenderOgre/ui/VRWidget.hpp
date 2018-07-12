@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2016-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2016-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWRENDEROGRE_UI_VRWIDGET_HPP__
-#define __FWRENDEROGRE_UI_VRWIDGET_HPP__
+#pragma once
 
 #include <fwRenderOgre/registry/macros.hpp>
 #include <fwRenderOgre/SRender.hpp>
@@ -46,7 +45,7 @@ public:
      * @param imgPositions         image bounding box positions.
      * @param imgClippedPositions  image positions after clipping.
      */
-    FWRENDEROGRE_API VRWidget(const std::string id,
+    FWRENDEROGRE_API VRWidget(const std::string& id,
                               ::Ogre::SceneNode* parentSceneNode,
                               ::Ogre::Camera* camera,
                               SRender::sptr renderService,
@@ -57,8 +56,13 @@ public:
     /// Destructor.
     FWRENDEROGRE_API virtual ~VRWidget() noexcept;
 
+    /// Find out if a movable object belongs to this widget.
+    bool belongsToWidget(const Ogre::MovableObject* const _object) const;
+
     /**
      * @brief Drags a widget toward a screen position.
+     *
+     * @pre the _pickedWidget must belong to this widget.
      *
      * @param _pickedWidget picked widget.
      * @param _screenX cursor's horizontal position.
@@ -147,7 +151,7 @@ private:
     ::Ogre::SceneNode* m_widgetSceneNode;
 
     /// Maps widget objects to their scene node and to a cube face.
-    std::map< ::Ogre::MovableObject*,
+    std::map< const ::Ogre::MovableObject*,
               std::pair< ::fwRenderOgre::vr::IVolumeRenderer::CubeFace, ::Ogre::SceneNode* > >  m_widgets;
 
     /// Renders the volume.
@@ -177,5 +181,3 @@ private:
 
 } // namespace ui
 } // namespace fwRenderOgre
-
-#endif // __FWRENDEROGRE_UI_VRWIDGET_HPP__
