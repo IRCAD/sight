@@ -18,7 +18,7 @@ void main()
     // FIRST STEP - Back Faces : find the nearest back face depth.
     // Don't do anything, we're not writing any colours anyway we just want the depth.
 
-#endif BACK_FACES == 1
+#endif // BACK_FACES == 1
 
 #if FRONT_FACES == 1
 
@@ -30,14 +30,16 @@ void main()
 #if BACK_FACES_MAX == 1
 
     // THIRD STEP - Back Faces max: find the exit points of the geometry.
-    fragColour = vec2(FLT_MAX, -gl_FragCoord.z);
+    // The red channel is disabled, writes to the green channel only.
+    fragColour.g = -gl_FragCoord.z;
 
 #endif // BACK_FACES_MAX
 
 #if FRONT_FACES_MIN == 1
 
     // FOURTH STEP - Front faces min : find the exit points when a ray hits a surface.
-    fragColour = vec2(-FLT_MAX, -gl_FragCoord.z);
+    // The red channel is disabled, writes to the green channel only.
+    fragColour.g = -gl_FragCoord.z;
 
 #endif // FRONT_FACES_MIN
 
