@@ -236,8 +236,8 @@ void CameraTest::convertPixelToWorldSpace()
     Utils::destroyOgreRoot();
 
     comparePoint(result1, point1Expected);
-    comparePoint(result1, point1Expected);
-    comparePoint(result1, point1Expected);
+    comparePoint(result2, point2Expected);
+    comparePoint(result3, point3Expected);
 }
 
 //------------------------------------------------------------------------------
