@@ -8,7 +8,7 @@
 
 #include "visuVTKARAdaptor/config.hpp"
 
-#include <fwDataTools/helper/MedicalImage.hpp>
+#include <fwData/Array.hpp>
 
 #include <fwRenderVTK/IAdaptor.hpp>
 
