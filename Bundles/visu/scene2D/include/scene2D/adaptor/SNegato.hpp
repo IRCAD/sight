@@ -60,15 +60,14 @@ namespace adaptor
  *    - \b orientation (optional, default axial): image orientation, axial, sagittal or frontal
  *    - \b changeSliceType (optional, default true): specify if the negato allow slice type events
  */
-class SCENE2D_CLASS_API SNegato : public ::fwDataTools::helper::TransferFunction,
+class SCENE2D_CLASS_API SNegato : public ::fwDataTools::helper::MedicalImage,
+                                  public ::fwDataTools::helper::TransferFunction,
                                   public ::fwRenderQt::IAdaptor
 {
 
 public:
 
     fwCoreServiceClassDefinitionsMacro( (SNegato)(::fwRenderQt::IAdaptor) );
-
-    typedef ::fwDataTools::helper::MedicalImage::Orientation OrientationMode;
 
     SCENE2D_API SNegato() noexcept;
     SCENE2D_API virtual ~SNegato() noexcept;
@@ -144,14 +143,6 @@ private:
 
     /// Specify if the negato allow slice type events
     bool m_changeSliceTypeAllowed;
-
-    /// Axial slice index
-    size_t m_axialIndex {0};
-    /// Frontal slice index
-    size_t m_frontalIndex {0};
-    /// Sagittal slice index
-    size_t m_sagittalIndex {0};
-
 };
 
 } // namespace adaptor
