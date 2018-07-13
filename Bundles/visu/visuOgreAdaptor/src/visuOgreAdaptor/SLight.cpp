@@ -134,6 +134,10 @@ void SLight::starting()
 
     m_lightName = this->getID() + "_" + m_lightName;
     m_light     = this->getSceneManager()->createLight(m_lightName);
+
+    // Set the default light direction to the camera's view direction,
+    // Z used to be the default until ogre 1.10 but was replaced with -Z in 1.11
+    m_light->setDirection(::Ogre::Vector3::UNIT_Z);
     m_light->setType(m_lightType ? m_lightType : ::Ogre::Light::LT_DIRECTIONAL);
     m_light->setVisible(m_switchedOn);
 

@@ -49,7 +49,7 @@ public:
 
 protected:
     /// Ogre transformation of this service
-    ::Ogre::Matrix4 m_ogreTransform;
+    ::Ogre::Affine3 m_ogreTransform;
     /// Attached transform service
     ::fwRenderOgre::IAdaptor::wptr m_transformService;
 

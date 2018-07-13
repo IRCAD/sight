@@ -44,7 +44,6 @@
 #   define PLUGIN_PATH "plugins.cfg"
 #endif
 
-#define PLUGIN_FOLDER_NAME "PluginFolder"
 #define FILE_SYSTEM_NAME "FileSystem"
 
 namespace fwRenderOgre
@@ -183,42 +182,67 @@ void Utils::addResourcesPath(const ::boost::filesystem::path& path)
     {
         const auto& confPath = ::fwRuntime::getLibraryResourceFilePath("fwRenderOgre-0.1/" PLUGIN_PATH);
 
-        // Check file existance
+        // Check file existence
         if(!::boost::filesystem::exists(confPath))
         {
             OSLM_FATAL("File '" + confPath.string() +"' doesn't exist. Ogre needs it to be configured");
         }
 
-        // Fix file with correct path
-        boost::property_tree::ptree pt;
-        boost::property_tree::ini_parser::read_ini(confPath.string(), pt);
+        const auto tmpPluginCfg = ::boost::filesystem::temp_directory_path() / ::boost::filesystem::unique_path();
 
-        if(!pt.get< ::boost::filesystem::path >(PLUGIN_FOLDER_NAME).is_absolute())
+        // Set the actual plugin path in the plugin config file.
+        std::ifstream pluginCfg(confPath.string());
+        std::string token;
+        token.reserve(30);
+
+        bool tokenFound = false;
+
+        std::ofstream newPlugin(tmpPluginCfg.string());
+
+        if(!::boost::filesystem::exists(tmpPluginCfg))
         {
-            const auto newConfpath = (::fwRuntime::Runtime::getDefault()->getWorkingPath()
-                                      / pt.get<std::string>(PLUGIN_FOLDER_NAME)).normalize();
-            pt.put(PLUGIN_FOLDER_NAME, newConfpath.string() + '/');
+            OSLM_FATAL("Can't create temporary config file'" + tmpPluginCfg.string() + "'");
         }
 
-        // Create temp file and give it to Ogre
-        const auto tmpPath = boost::filesystem::temp_directory_path() / boost::filesystem::unique_path();
-        ::boost::filesystem::ofstream tmpFile(tmpPath.string());
-        if(!::boost::filesystem::exists(tmpPath))
+        while(!pluginCfg.eof())
         {
-            OSLM_FATAL("Can't create the file '" + tmpPath.string() + "'");
-        }
-        {
-            for(auto ptr = pt.begin(); ptr != pt.end(); ++ptr)
+            pluginCfg >> token;
+
+            // Skip comments, go to the next line.
+            if(token[0] == '#')
             {
-                const std::string& fi = ptr->first;
-                const std::string& se = ptr->second.data();
-                tmpFile << fi << " = " << se << std::endl;
+                std::getline(pluginCfg, token);
             }
-            tmpFile.close();
+            else if(token.substr(0, 12) == "PluginFolder")
+            {
+                const auto currentPluginPath = ::boost::filesystem::path(token.substr(13));
 
-            root = new ::Ogre::Root(tmpPath.string().c_str());
+                if(!currentPluginPath.is_absolute())
+                {
+                    const auto realPluginPath = ::fwRuntime::Runtime::getDefault()->getWorkingPath() / currentPluginPath;
+
+                    newPlugin << "PluginFolder=" << realPluginPath.string() << std::endl;
+                }
+                else
+                {
+                    newPlugin << token << std::endl;
+                }
+
+                tokenFound = true;
+            }
+            else
+            {
+                newPlugin << token << std::endl;
+            }
         }
-        ::boost::filesystem::remove(tmpPath);
+
+        newPlugin.close();
+
+        SLM_FATAL_IF("No 'PluginFolder' folder set in " + confPath.string(), !tokenFound);
+
+        root = new ::Ogre::Root(tmpPluginCfg.string().c_str());
+
+        ::boost::filesystem::remove(tmpPluginCfg);
 
         s_overlaySystem = new ::Ogre::OverlaySystem();
 
@@ -658,7 +682,7 @@ void copyNegatoImage( ::Ogre::Texture* _texture, const ::fwData::Image::sptr& _i
 
         pixelBuffer->lock(::Ogre::HardwareBuffer::HBL_DISCARD);
         const ::Ogre::PixelBox& pixelBox = pixelBuffer->getCurrentLock();
-        auto pDest                       = static_cast< unsignedType*>(pixelBox.data);
+        auto pDest                       = reinterpret_cast< unsignedType*>(pixelBox.data);
 
         const DST_TYPE lowBound = std::numeric_limits< DST_TYPE >::min();
 

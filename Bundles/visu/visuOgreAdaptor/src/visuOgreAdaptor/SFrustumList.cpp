@@ -150,7 +150,7 @@ void SFrustumList::addFrustum()
     camera->setDirection(::Ogre::Vector3(::Ogre::Real(0), ::Ogre::Real(0), ::Ogre::Real(1)));
     camera->setDebugDisplayEnabled(m_visibility);
 
-    ::Ogre::Matrix4 ogreMat;
+    ::Ogre::Affine3 ogreMat;
     const auto fwTransform = this->getInput< ::fwData::TransformationMatrix3D >(s_TRANSFORM_INPUT);
 
     // Multithreaded lock

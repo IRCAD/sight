@@ -68,8 +68,8 @@ VRWidget::VRWidget(const std::string& id,
                 m_ogreTransform[ct][lt] = static_cast< ::Ogre::Real >(m_clippingMatrix->getCoefficient(ct, lt));
             }
         }
-        m_clippingCube[0] = m_ogreTransform.transformAffine(m_clippingCube[0]);
-        m_clippingCube[1] = m_ogreTransform.transformAffine(m_clippingCube[1]);
+        m_clippingCube[0] = m_ogreTransform * m_clippingCube[0];
+        m_clippingCube[1] = m_ogreTransform * m_clippingCube[1];
     }
     initWidgets();
 }

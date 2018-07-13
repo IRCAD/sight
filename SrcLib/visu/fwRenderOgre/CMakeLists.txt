@@ -21,7 +21,7 @@ endif ()
 # Most developers executes apps inside the build directory so this is done as a convenience
 if(NOT APPLE)
     if(WIN32)
-        file(GLOB OGRE_PLUGINS "${OGRE_CONFIG_DIR}/RenderSystem*.dll" "${OGRE_CONFIG_DIR}/Plugin_*.dll")
+        file(GLOB OGRE_PLUGINS "${OGRE_CONFIG_DIR}/RenderSystem*.dll" "${OGRE_CONFIG_DIR}/Plugin_*.dll" "${OGRE_CONFIG_DIR}/Codec_*.dll")
         set(FW_OGRE_PLUGINS_DIR "${PROJECT_BINARY_DIR}/ogreplugins/")
 
         # This copies the plugins into the build directory

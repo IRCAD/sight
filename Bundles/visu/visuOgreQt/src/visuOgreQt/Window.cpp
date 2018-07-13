@@ -15,8 +15,8 @@
 #include <fwRenderOgre/Utils.hpp>
 #include <fwRenderOgre/WindowManager.hpp>
 
-#include <OgreOverlay.h>
-#include <OgreOverlayManager.h>
+#include <OGRE/Overlay/OgreOverlay.h>
+#include <OGRE/Overlay/OgreOverlayManager.h>
 
 // Set this to 1 to display the FPS in the console output
 #ifndef DISPLAY_OGRE_FPS
