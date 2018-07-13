@@ -39,10 +39,10 @@ namespace visuOgreAdaptor
  * - \b transform [::fwData::TransformationMatrix3D]: each time this transform is modified, a frustum is created.
  *
  * @subsection Configuration Configuration:
- * -\b layer (mandatory): defines the frustum's layer
- * -\b near (optional): near clipping distance of the ::Ogre::Camera
- * -\b far (optional): far clipping distance of the ::Ogre::Camera
- * -\b color (optional): color of frustums
+ * - \b layer (mandatory): defines the frustum's layer
+ * - \b near (optional): near clipping distance of the ::Ogre::Camera
+ * - \b far (optional): far clipping distance of the ::Ogre::Camera
+ * - \b color (optional): color of frustums
  */
 class VISUOGREADAPTOR_CLASS_API SFrustumList : public ::fwRenderOgre::IAdaptor,
                                                public ::fwRenderOgre::ITransformable

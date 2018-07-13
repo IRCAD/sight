@@ -32,11 +32,11 @@ namespace visuOgreAdaptor
  * @section XML XML Configuration
  * @code{.xml}
         <service type=" ::visuOgreAdaptor::SInteractorStyle ">
-            <config render=" ... " movement=" ... " picker=" ..." queryFlags="..."/>
+            <config layer=" ... " movement=" ... " picker=" ..." queryFlags="..."/>
        </service>
    @endcode
  * @subsection Configuration Configuration:
- * - \b render (mandatory) : Layer on which the interactions will be done.
+ * - \b layer (mandatory) : Layer on which the interactions will be done.
  * - \b movement (optional) : Style of the movement interactor: 'Trackball', 'Fixed', 'Negato2D', or 'VR'.
  * - \b picker (optional) : Style of the picker interactor: 'Mesh' or 'Video'.
  * - \b queryFlags (optional) : Used for picking. Picked only displayed entities with the same flag.

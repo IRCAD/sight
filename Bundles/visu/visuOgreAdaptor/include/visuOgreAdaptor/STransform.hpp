@@ -41,6 +41,7 @@ namespace visuOgreAdaptor
  * - \b transform [::fwData::TransformationMatrix3D]: f4s transform matrix. The matrix will be updated as well if the
  * scene node is modified from Ogre.
  * @subsection Configuration Configuration:
+ * - \b layer (mandatory): defines the transform's layer
  * - \b transform: name of the Ogre Transform.
  * - \b parent: name of the parent Ogre Transform you want to attach to.
  */

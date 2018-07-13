@@ -42,9 +42,11 @@ namespace visuOgreAdaptor
  *  <service uid="cameraAdaptor" type="::visuOgreAdaptor::SCamera">
  *      <inout key="transform" uid="..." />
  *      <in key="calibration" uid="..." />
- *      <config renderer="scene" />
+ *      <config layer="..." />
  *  </service>
  * @endcode
+ * @subsection Configuration Configuration
+ * - \b layer (mandatory): defines the camera's layer
  * @subsection Input Input
  * - \b transform [::fwData::TransformationMatrix3D]: transform matrix for the camera.
  * - \b calibration [::arData::Camera]: camera containing calibration information.

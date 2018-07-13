@@ -37,10 +37,10 @@ namespace visuOgreAdaptor
     </service>
    @endcode
  * @subsection Configuration Configuration:
- * -\b layer (mandatory): defines the mesh's layer
- * -\b transform (optional): the name of the Ogre transform node where to attach the mesh, as it was specified
+ * - \b layer (mandatory): defines the line's layer
+ * - \b transform (optional): the name of the Ogre transform node where to attach the mesh, as it was specified
  * in the STransform adaptor
- * -\b length (optional): (float) length of the line in mm (default 50)
+ * - \b length (optional): (float) length of the line in mm (default 50)
  *
  */
 class VISUOGREADAPTOR_CLASS_API SLine : public ::fwRenderOgre::IAdaptor,

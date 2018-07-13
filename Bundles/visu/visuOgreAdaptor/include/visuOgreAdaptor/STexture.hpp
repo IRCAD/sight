@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VISUOGREADAPTOR_STEXTURE_HPP__
-#define __VISUOGREADAPTOR_STEXTURE_HPP__
+#pragma once
 
 #include "visuOgreAdaptor/config.hpp"
 
@@ -33,12 +32,13 @@ namespace visuOgreAdaptor
  * @code{.xml}
         <service type="::visuOgreAdaptor::STexture">
             <in key="image" uid="..." />
-            <config textureName="texName" filtering="linear" wrapping="repeat" useAlpha="false" />
+            <config layer="..." textureName="texName" filtering="linear" wrapping="repeat" useAlpha="false" />
        </service>
    @endcode
  * @subsection Input Input:
  * - \b key1 [::fwData::Image]: .
  * @subsection Configuration Configuration:
+ *  - \b layer (mandatory): defines the texture's layer
  *  - \b textureName (optional) : the name of the ogre texture managed by the adaptor
  *  - \b filtering (optional nearest/linear, default=linear) : filtering of the texture
  *  - \b wrapping (optional, clamp/repeat, default=repeat) : wrapping of the texture
@@ -155,5 +155,3 @@ inline void STexture::setUseAlpha(bool _useAlpha)
 //------------------------------------------------------------------------------
 
 } // namespace visuOgreAdaptor
-
-#endif // __VISUOGREADAPTOR_STEXTURE_HPP__
