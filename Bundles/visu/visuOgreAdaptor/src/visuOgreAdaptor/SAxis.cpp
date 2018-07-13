@@ -27,8 +27,9 @@ const ::fwCom::Slots::SlotKeyType SAxis::s_TOGGLE_VISIBILITY_SLOT = "toggleVisib
 
 fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SAxis);
 
-static const std::string s_LENGTH_CONFIG    = "length";
 static const std::string s_BILLBOARD_CONFIG = "billboard";
+static const std::string s_LABEL_CONFIG     = "label";
+static const std::string s_LENGTH_CONFIG    = "length";
 
 //-----------------------------------------------------------------------------
 
@@ -53,9 +54,13 @@ void SAxis::updateVisibility(bool isVisible)
     if(m_sceneNode)
     {
         m_sceneNode->setVisible(m_isVisible);
-        for(auto& label : m_axisLabels)
+        if(m_enableLabel)
         {
-            label->setVisible(isVisible);
+            for(auto& label : m_axisLabels)
+            {
+                SLM_ASSERT("label should not be null", label);
+                label->setVisible(isVisible);
+            }
         }
     }
 
@@ -100,7 +105,8 @@ void SAxis::configuring()
                                                             this->getID() + "_transform");
 
     this->setTransformId(transformId);
-    m_length = config.get<float>(s_LENGTH_CONFIG, m_length);
+    m_length      = config.get<float>(s_LENGTH_CONFIG, m_length);
+    m_enableLabel = config.get<bool>(s_LABEL_CONFIG, m_enableLabel);
 }
 
 //-----------------------------------------------------------------------------
@@ -204,11 +210,14 @@ void SAxis::starting()
     ::Ogre::SceneNode* xConeNode = m_sceneNode->createChildSceneNode(
         this->getTransformId() + "_" + this->getID() + "_xCone");
 
-    m_axisLabels[0] = ::fwRenderOgre::Text::New(
-        this->getID() + "_xAxisLabel", sceneMgr, textContainer, dejaVuSansFont, cam);
-    m_axisLabels[0]->setText("X");
-    m_axisLabels[0]->setCharHeight(0.1f);
-    xConeNode->attachObject(m_axisLabels[0]);
+    if(m_enableLabel)
+    {
+        m_axisLabels[0] = ::fwRenderOgre::Text::New(
+            this->getID() + "_xAxisLabel", sceneMgr, textContainer, dejaVuSansFont, cam);
+        m_axisLabels[0]->setText("X");
+        m_axisLabels[0]->setCharHeight(0.1f);
+        xConeNode->attachObject(m_axisLabels[0]);
+    }
 
     xConeNode->attachObject(xCone);
     xConeNode->translate(cylinderLength, 0.f, 0.f);
@@ -223,11 +232,14 @@ void SAxis::starting()
         this->getTransformId() + "_" + this->getID() + "_yCone");
     yConeNode->attachObject(yCone);
 
-    m_axisLabels[1] = ::fwRenderOgre::Text::New(
-        this->getID() + "_yAxisLabel", sceneMgr, textContainer, dejaVuSansFont, cam);
-    m_axisLabels[1]->setText("Y");
-    m_axisLabels[1]->setCharHeight(0.1f);
-    yConeNode->attachObject(m_axisLabels[1]);
+    if(m_enableLabel)
+    {
+        m_axisLabels[1] = ::fwRenderOgre::Text::New(
+            this->getID() + "_yAxisLabel", sceneMgr, textContainer, dejaVuSansFont, cam);
+        m_axisLabels[1]->setText("Y");
+        m_axisLabels[1]->setCharHeight(0.1f);
+        yConeNode->attachObject(m_axisLabels[1]);
+    }
 
     yConeNode->translate(0.f, cylinderLength, 0.f);
     yConeNode->roll(::Ogre::Degree(90));
@@ -242,11 +254,14 @@ void SAxis::starting()
         this->getTransformId() + "_" + this->getID() + "_zCone");
     zConeNode->attachObject(zCone);
 
-    m_axisLabels[2] = ::fwRenderOgre::Text::New(
-        this->getID() + "_zAxisLabel", sceneMgr, textContainer, dejaVuSansFont, cam);
-    m_axisLabels[2]->setText("Z");
-    m_axisLabels[2]->setCharHeight(0.1f);
-    zConeNode->attachObject(m_axisLabels[2]);
+    if(m_enableLabel)
+    {
+        m_axisLabels[2] = ::fwRenderOgre::Text::New(
+            this->getID() + "_zAxisLabel", sceneMgr, textContainer, dejaVuSansFont, cam);
+        m_axisLabels[2]->setText("Z");
+        m_axisLabels[2]->setCharHeight(0.1f);
+        zConeNode->attachObject(m_axisLabels[2]);
+    }
 
     zConeNode->translate(0.f, 0.f, cylinderLength);
     zConeNode->yaw(::Ogre::Degree(-90));
@@ -277,11 +292,15 @@ void SAxis::stopping()
         sceneMgr->destroySceneNode(m_sceneNode);
     }
 
-    for(auto& label : m_axisLabels)
+    if(m_enableLabel)
     {
-        label->detachFromParent();
-        sceneMgr->destroyMovableObject(label);
-        label = nullptr;
+        for(auto& label : m_axisLabels)
+        {
+            SLM_ASSERT("label should not be null", label);
+            label->detachFromParent();
+            sceneMgr->destroyMovableObject(label);
+            label = nullptr;
+        }
     }
 
     sceneMgr->destroyManualObject(xLine);

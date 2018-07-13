@@ -35,14 +35,15 @@ namespace visuOgreAdaptor
  * @section XML XML Configuration
  * @code{.xml}
     <service uid="..." type="::visuOgreAdaptor::SAxis">
-        <config layer="default" transform="transformUID" length="30" />
+        <config layer="default" transform="transformUID" length="30" label="true" />
     </service>
    @endcode
  * @subsection Configuration Configuration:
- * -\b layer (mandatory): defines the mesh's layer
- * -\b transform (optional): the name of the Ogre transform node where to attach the mesh, as it was specified
+ * - \b layer (mandatory) : defines the mesh's layer
+ * - \b transform (optional): the name of the Ogre transform node where to attach the mesh, as it was specified
  * in the STransform adaptor
- * -\b length (optional): (float) length of the axis in mm (default 50)
+ * - \b length (optional) : (float) axis length in mm (default 50)
+ * - \b label (optional) : (boolean) display axis names (default : true)
  *
  */
 class VISUOGREADAPTOR_CLASS_API SAxis : public ::fwRenderOgre::IAdaptor,
@@ -85,10 +86,12 @@ private:
 
     /// Pointer to the Material data
     ::fwData::Material::sptr m_material {nullptr};
-    /// Handle the length of each axes (in mm)
+    /// Axis length (in mm)
     float m_length { 50.f };
-    /// Handles the visibility of the axis
+    /// Handles axis visibility.
     bool m_isVisible { true };
+    /// Handles the visibility of axis labels
+    bool m_enableLabel { true };
 
     ::Ogre::ManualObject* xLine { nullptr };
     ::Ogre::ManualObject* yLine { nullptr };
