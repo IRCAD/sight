@@ -63,6 +63,7 @@ void SImageText::starting()
 
     this->setOrCreateTF(tf, image);
 
+    this->updateImageInfos(image);
     this->updating();
 }
 
@@ -92,6 +93,9 @@ void SImageText::updating()
     if (::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
     {
         ::fwDataTools::helper::Image imageHelper(image);
+        size_t axialIndex    = static_cast<size_t>(m_axialIndex->value());
+        size_t frontalIndex  = static_cast<size_t>(m_frontalIndex->value());
+        size_t sagittalIndex = static_cast<size_t>(m_sagittalIndex->value());
 
         ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
 
@@ -103,8 +107,8 @@ void SImageText::updating()
 
         ss <<  ( ::boost::format("[% 3li,% 3li]") % min % max ) << std::endl;
         ss <<  ( ::boost::format("W:% 3lg L:% 3lg") % window % level ) << std::endl;
-        ss <<  ( ::boost::format("(% 4li,% 4li,% 4li): %s") % m_sagittalIndex % m_frontalIndex % m_axialIndex %
-                 imageHelper.getPixelAsString(m_sagittalIndex, m_frontalIndex, m_axialIndex ));
+        ss <<  ( ::boost::format("(% 4li,% 4li,% 4li): %s") % sagittalIndex % frontalIndex % axialIndex %
+                 imageHelper.getPixelAsString(sagittalIndex, frontalIndex, axialIndex ));
     }
 
     this->setText(ss.str());
@@ -132,9 +136,9 @@ void SImageText::swapping(const KeyType& key)
 
 void SImageText::updateSliceIndex(int axial, int frontal, int sagittal)
 {
-    m_axialIndex    = axial;
-    m_frontalIndex  = frontal;
-    m_sagittalIndex = sagittal;
+    m_axialIndex->value()    = axial;
+    m_frontalIndex->value()  = frontal;
+    m_sagittalIndex->value() = sagittal;
 
     this->updating();
 }

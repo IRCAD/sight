@@ -9,6 +9,7 @@
 #include "visuVTKAdaptor/config.hpp"
 #include "visuVTKAdaptor/SText.hpp"
 
+#include <fwDataTools/helper/MedicalImage.hpp>
 #include <fwDataTools/helper/TransferFunction.hpp>
 
 #include <fwRenderVTK/IAdaptor.hpp>
@@ -68,6 +69,7 @@ namespace visuVTKAdaptor
  *   that for the attribute are applied.
  */
 class VISUVTKADAPTOR_CLASS_API SImageText : public SText,
+                                            public ::fwDataTools::helper::MedicalImage,
                                             public ::fwDataTools::helper::TransferFunction
 {
 
@@ -113,13 +115,6 @@ protected:
     /**
      * @}
      */
-
-    /// Axial slice index
-    size_t m_axialIndex {0};
-    /// Frontal slice index
-    size_t m_frontalIndex {0};
-    /// Sagittal slice index
-    size_t m_sagittalIndex {0};
 };
 
 } //namespace visuVTKAdaptor
