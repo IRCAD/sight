@@ -66,7 +66,6 @@ static const ::fwCom::Slots::SlotKeyType s_REMOVE_OBJECTS_SLOT = "removeObjects"
 SRender::SRender() noexcept :
     m_interactorManager(nullptr),
     m_overlayTextPanel(nullptr),
-    m_showOverlay(false),
     m_renderMode(RenderMode::AUTO),
     m_fullscreen(false)
 {
@@ -115,16 +114,6 @@ void SRender::configuring()
         this->initialize();
     }
 
-    const auto showOverlay = sceneCfg.get_optional<bool>("<xmlattr>.overlay");
-
-    if(showOverlay)
-    {
-        FW_DEPRECATED_MSG("The 'showOverlay' tag is deprecated, you should explicitly add the 'LogoOverlay' overlay "
-                          "to the new 'overlays' list.", "18.0");
-
-        m_showOverlay = showOverlay.value();
-    }
-
     m_fullscreen = sceneCfg.get<bool>("<xmlattr>.fullscreen", false);
 
     const std::string renderMode = sceneCfg.get<std::string>("<xmlattr>.renderMode", "auto");
@@ -165,7 +154,6 @@ void SRender::starting()
     if (!m_offScreen)
     {
         this->create();
-
     }
     const ConfigType config = this->getConfigTree();
 
@@ -226,13 +214,6 @@ void SRender::starting()
 
     // Initialize resources to load overlay scripts.
     ::Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
-
-    // TODO: remove this conditional in the next major version.
-    if(m_showOverlay)
-    {
-        ::Ogre::Overlay* logoOverlay = ::Ogre::OverlayManager::getSingleton().getByName("LogoOverlay");
-        m_enabledOverlays.insert(logoOverlay);
-    }
 
     std::istringstream overlays(sceneCfg.get<std::string>("<xmlattr>.overlays", ""));
 
