@@ -20,10 +20,7 @@
 
 #include <fwRuntime/operations.hpp>
 
-#include <boost/algorithm/string.hpp>
 #include <boost/filesystem.hpp>
-#include <boost/property_tree/ini_parser.hpp>
-#include <boost/property_tree/ptree.hpp>
 
 #include <OgreConfigFile.h>
 #include <OgreException.h>
@@ -44,8 +41,6 @@
 #   define PLUGIN_PATH "plugins.cfg"
 #endif
 
-#define FILE_SYSTEM_NAME "FileSystem"
-
 namespace fwRenderOgre
 {
 
@@ -58,7 +53,7 @@ static std::set<std::string> s_resourcesPath;
 
 //------------------------------------------------------------------------------
 
-void loadResources()
+void Utils::loadResources()
 {
     ::Ogre::ConfigFile cf;
     ::Ogre::String resourceGroupName, typeName, archName;
@@ -73,60 +68,20 @@ void loadResources()
                 OSLM_FATAL("File '" + path +"' doesn't exist. Ogre needs it to load resources");
             }
 
-            // Create string with file content but with correct path
-            std::string res = "";
-            {
-                std::ifstream fichier(path);
-                std::string ligne;
-
-                while(std::getline(fichier, ligne))
-                {
-                    std::vector<std::string> results;
-                    ::boost::split(results, ligne, [](char c){return c == '='; });
-                    for(size_t i = 0; i < results.size(); ++i)
-                    {
-                        if(results[i].compare(FILE_SYSTEM_NAME) == 0)
-                        {
-                            res                                 += results[i];
-                            ::boost::filesystem::path wantedPath = i+1 < results.size() ? results[i+1] : "";
-                            ::boost::filesystem::path newConfpath;
-
-                            if(wantedPath.string().compare("") == 0)
-                            {
-                                newConfpath = ::fwRuntime::Runtime::getDefault()->getWorkingPath();
-                            }
-                            else if(!wantedPath.is_absolute())
-                            {
-                                newConfpath = (::fwRuntime::Runtime::getDefault()->getWorkingPath()
-                                               / wantedPath).normalize();
-                                ++i;
-                            }
-                            else
-                            {
-                                newConfpath = wantedPath;
-                                ++i;
-                            }
-                            res += "=" + (newConfpath / "/").string();
-
-                        }
-                        else
-                        {
-                            res += results[i];
-                        }
-                    }
-                    res += '\n';
-                }
-            }
-
-            // Create temp file and give it to Ogre
             const auto tmpPath = boost::filesystem::temp_directory_path() / boost::filesystem::unique_path();
-            ::boost::filesystem::ofstream tmpFile(tmpPath.string());
+            std::ofstream newResourceFile(tmpPath.string());
+
             if(!::boost::filesystem::exists(tmpPath))
             {
                 OSLM_FATAL("Can't create the file '" + tmpPath.string() + "'");
             }
-            tmpFile << res << std::endl;
-            tmpFile.close();
+
+            // Copy the resource file and make paths absolute.
+            std::ifstream resourceFile(path);
+
+            makePathsAbsolute("FileSystem", resourceFile, newResourceFile);
+
+            newResourceFile.close();
             cf.load(tmpPath.string());
             ::boost::filesystem::remove(tmpPath);
 
@@ -192,11 +147,6 @@ void Utils::addResourcesPath(const ::boost::filesystem::path& path)
 
         // Set the actual plugin path in the plugin config file.
         std::ifstream pluginCfg(confPath.string());
-        std::string token;
-        token.reserve(30);
-
-        bool tokenFound = false;
-
         std::ofstream newPlugin(tmpPluginCfg.string());
 
         if(!::boost::filesystem::exists(tmpPluginCfg))
@@ -204,37 +154,7 @@ void Utils::addResourcesPath(const ::boost::filesystem::path& path)
             OSLM_FATAL("Can't create temporary config file'" + tmpPluginCfg.string() + "'");
         }
 
-        while(!pluginCfg.eof())
-        {
-            pluginCfg >> token;
-
-            // Skip comments, go to the next line.
-            if(token[0] == '#')
-            {
-                std::getline(pluginCfg, token);
-            }
-            else if(token.substr(0, 12) == "PluginFolder")
-            {
-                const auto currentPluginPath = ::boost::filesystem::path(token.substr(13));
-
-                if(!currentPluginPath.is_absolute())
-                {
-                    const auto realPluginPath = ::fwRuntime::Runtime::getDefault()->getWorkingPath() / currentPluginPath;
-
-                    newPlugin << "PluginFolder=" << realPluginPath.string() << std::endl;
-                }
-                else
-                {
-                    newPlugin << token << std::endl;
-                }
-
-                tokenFound = true;
-            }
-            else
-            {
-                newPlugin << token << std::endl;
-            }
-        }
+        const bool tokenFound = makePathsAbsolute("PluginFolder", pluginCfg, newPlugin);
 
         newPlugin.close();
 
@@ -783,6 +703,52 @@ void Utils::allocateTexture(::Ogre::Texture* _texture, size_t _width, size_t _he
     fwColor->setRGBA(_ogreColor.r, _ogreColor.g, _ogreColor.b, _ogreColor.a);
 
     return fwColor;
+}
+
+//------------------------------------------------------------------------------
+
+bool Utils::makePathsAbsolute(const std::string& key, std::istream& input, std::ostream& output)
+{
+    std::string token;
+    bool keyFound = false;
+
+    const size_t keySize = key.size();
+
+    while(!input.eof())
+    {
+        input >> token;
+
+        // Skip comments, go to the next line.
+        if(token[0] == '#')
+        {
+            std::getline(input, token);
+        }
+        else if(token.substr(0, keySize) == key)
+        {
+            SLM_FATAL_IF("Key '" + key + "' has no value bound to it.", token.size() < keySize + 1 );
+
+            const auto currentPluginPath = ::boost::filesystem::path(token.substr(keySize + 1));
+
+            if(!currentPluginPath.is_absolute())
+            {
+                const auto realPluginPath = ::fwRuntime::Runtime::getDefault()->getWorkingPath() / currentPluginPath;
+
+                output << key << "=" << realPluginPath.string() << std::endl;
+            }
+            else
+            {
+                output << token << std::endl;
+            }
+
+            keyFound = true;
+        }
+        else
+        {
+            output << token << std::endl;
+        }
+    }
+
+    return keyFound;
 }
 
 //------------------------------------------------------------------------------

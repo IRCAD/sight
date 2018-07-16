@@ -136,6 +136,20 @@ public:
     FWRENDEROGRE_API static ::fwData::Color::sptr convertOgreColorToFwColor(const Ogre::ColourValue& _ogreColor);
 
 private:
+
+    /// Parses all resources.cfg files and adds resource locations to the resource group manager.
+    static void loadResources();
+
+    /**
+     * @brief Copies an ogre config stream and turns paths absolute.
+     *
+     * @param[in] key Path parameter name whose value needs to be absolute.
+     * @param[in] input Input stream, must be from an ogre configuration file.
+     * @param[out] output Output stream, where the new config is copied to.
+     * @return whether or not the key was found in the input.
+     */
+    static bool makePathsAbsolute(const std::string& key, std::istream& input, std::ostream& output);
+
     static ::Ogre::OverlaySystem* s_overlaySystem;
 
     static ::fwRenderOgre::factory::R2VBRenderable* s_R2VBRenderableFactory;
