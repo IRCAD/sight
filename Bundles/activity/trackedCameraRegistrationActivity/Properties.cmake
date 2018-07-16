@@ -15,6 +15,7 @@ set( REQUIREMENTS
     trackerAruco
     uiIO
     videoOpenni
+    videoVLC
     videoQt
     videoTools
     visuVTKAdaptor
