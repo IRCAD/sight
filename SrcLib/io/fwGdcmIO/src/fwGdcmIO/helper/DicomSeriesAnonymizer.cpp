@@ -65,7 +65,7 @@ void DicomSeriesAnonymizer::anonymize(const ::fwMedData::DicomSeries::sptr& sour
     m_job->add(anonymizerObserver, 10);
     m_job->add(readerObserver);
 
-    m_job->run();
+    const auto future = m_job->run();
 
     // Create destination directory
     const ::boost::filesystem::path destPath = ::fwTools::System::getTemporaryFolder("AnonymizedSeries");
@@ -101,6 +101,9 @@ void DicomSeriesAnonymizer::anonymize(const ::fwMedData::DicomSeries::sptr& sour
     {
         return;
     }
+
+    // Wait for the aggregator to finish and catch exceptions
+    future.get();
 
     // Update DicomSeries
     ::fwMedData::DicomSeries::sptr anonymizedSeries =
