@@ -326,7 +326,7 @@ void Window::renderNow(const bool force)
     static float fps           = 0.f;
     static const int numFrames = 500;
 
-    fps += m_ogreRenderWindow->getLastFPS();
+    fps += m_ogreRenderWindow->getStatistics().lastFPS;
     if(++i == numFrames)
     {
         std::cout << "FPS average : " << fps/numFrames << std::endl;
