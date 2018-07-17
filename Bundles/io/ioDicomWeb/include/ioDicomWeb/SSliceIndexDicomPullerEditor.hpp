@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2018.
+ * FW4SPL - Copyright (C) IRCAD, 2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -48,7 +48,7 @@ namespace ioDicomWeb
  * *
  * @section Slots Slots
  * - \b readImage(size_t) : Read the given slice.
- * - \b displayErrorMessage(size_t) : display an error message.
+ * - \b displayErrorMessage(const std::string&) : display an error message.
 
  * @section XML XML Configuration
  *

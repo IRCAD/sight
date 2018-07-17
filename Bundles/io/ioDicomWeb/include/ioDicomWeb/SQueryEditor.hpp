@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2018.
+ * FW4SPL - Copyright (C) IRCAD, 2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -29,6 +29,9 @@ namespace ioDicomWeb
 /**
  * @brief   This editor service is used to perform an HTTP query on a Pacs.
  *
+ * @section Slots Slots
+ * - \b displayErrorMessage(const std::string&) : display an error message.
+
  * @section XML XML Configuration
  *
  * @code{.xml}

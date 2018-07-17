@@ -1,14 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwAtomConversion/AtomToDataMappingVisitor.hpp"
 
-#include "fwAtomConversion/DataVisitor.hpp"
 #include "fwAtomConversion/camp_ext/ValueMapper.hpp"
 #include "fwAtomConversion/convert.hpp"
+#include "fwAtomConversion/DataVisitor.hpp"
 #include "fwAtomConversion/exception/ConversionNotManaged.hpp"
 #include "fwAtomConversion/mapper/Base.hpp"
 
@@ -35,7 +35,7 @@ class NumericSimplePropertyVisitor : public boost::static_visitor<void>
 public:
 
     ::fwAtoms::Numeric::sptr m_typedAtom;
-    ::camp::UserObject & m_campDataObj;
+    ::camp::UserObject& m_campDataObj;
     const camp::SimpleProperty& m_property;
 
     NumericSimplePropertyVisitor( const ::fwAtoms::Numeric::sptr& typedAtom,
@@ -77,7 +77,7 @@ class NumericArrayPropertyVisitor : public boost::static_visitor<void>
 public:
 
     ::fwAtoms::Numeric::sptr m_typedAtom;
-    ::camp::UserObject & m_campDataObj;
+    ::camp::UserObject& m_campDataObj;
     const camp::ArrayProperty& m_property;
     unsigned int m_index;
 
@@ -142,7 +142,7 @@ class NumericMapPropertyVisitor : public boost::static_visitor<void>
 public:
 
     ::fwAtoms::Numeric::sptr m_typedAtom;
-    ::camp::UserObject & m_campDataObj;
+    ::camp::UserObject& m_campDataObj;
     const camp::MapProperty& m_property;
     std::string m_key;
 
@@ -453,15 +453,23 @@ void AtomToDataMappingVisitor::visit(const camp::MapProperty& property)
                     property.set( m_campDataObj, elemAtom.first, objectData );
                     break;
                 }
+                case ::fwAtoms::Base::BLOB:
+                {
+                    ::fwAtoms::Blob::sptr blobAtom = ::fwAtoms::Blob::dynamicCast(elemAtom.second);
+                    ::fwMemory::BufferObject::sptr buffer;
+                    buffer = ::camp_ext::ValueMapper< ::fwAtoms::Blob::sptr >::to(blobAtom);
+                    FW_RAISE_EXCEPTION_IF( exception::ConversionNotManaged(
+                                               "A blob cannot contain a null buffer pointer"),
+                                           !buffer );
+                    property.set( m_campDataObj, elemAtom.first, ::camp::UserObject(buffer) );
+                    break;
+                }
                 default:
                 {
                     std::stringstream msg;
                     msg << "fwAtoms::Map value elements of type '";
                     switch( elemAtom.second->type() )
                     {
-                        case ::fwAtoms::Base::BLOB:
-                            msg << "BLOB";
-                            break;
                         case ::fwAtoms::Base::MAP:
                             msg << "MAP";
                             break;
