@@ -1,20 +1,20 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "SigSlotConnectionTest.hpp"
 
-#include <fwCom/helper/SigSlotConnection.hpp>
+#include "SlotsSignalsStuff.hpp"
 
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ActiveWorkers.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
-#include <fwTest/Exception.hpp>
+#include <fwCom/helper/SigSlotConnection.hpp>
 
-#include "SlotsSignalsStuff.hpp"
+#include <fwTest/Exception.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwServices::ut::SigSlotConnectionTest );
@@ -49,24 +49,21 @@ void SigSlotConnectionTest::basicTest()
     Buffer::sptr buffer = Buffer::New();
 
     SShowTest::sptr showTestSrv = ::fwServices::factory::New<SShowTest>();
-    ::fwServices::OSR::registerService(buffer, showTestSrv);
+    ::fwServices::OSR::registerService(showTestSrv);
+    showTestSrv->registerInOut(buffer, "buffer", true);
+    showTestSrv->setWorker(activeWorkers->getWorker(registry::ActiveWorkers::s_DEFAULT_WORKER));
 
     ::fwData::Object::ModifiedSignalType::sptr sig =
         buffer->signal< ::fwData::Object::ModifiedSignalType >( ::fwData::Object::s_MODIFIED_SIG );
+    sig->asyncEmit();
+    CPPUNIT_ASSERT_EQUAL(0, showTestSrv->m_receiveCount);
 
-    ::fwCom::helper::SigSlotConnection helper;
-
-    showTestSrv->setWorker(activeWorkers->getWorker(registry::ActiveWorkers::s_DEFAULT_WORKER));
-    helper.connect( buffer, showTestSrv, showTestSrv->getObjSrvConnections() );
     showTestSrv->start().wait();
     sig->asyncEmit();
     showTestSrv->stop().wait();
     CPPUNIT_ASSERT_EQUAL(1, showTestSrv->m_receiveCount);
 
-    helper.disconnect();
-    showTestSrv->start().wait();
     sig->asyncEmit();
-    showTestSrv->stop().wait();
     CPPUNIT_ASSERT_EQUAL(1, showTestSrv->m_receiveCount);
 
     ::fwServices::OSR::unregisterService(showTestSrv);

@@ -13,6 +13,7 @@
 #include <fwServices/registry/ActiveWorkers.hpp>
 
 #include <fwCom/helper/SigSlotConnection.hpp>
+#include <fwCom/Slots.hxx>
 
 #include <fwCore/TimeStamp.hpp>
 
@@ -58,6 +59,7 @@ void ServiceTest::tearDown()
 
 void ServiceTest::testServiceCreation()
 {
+    FW_DEPRECATED_MSG("Deprecated test", "20.0");
     ::fwData::Integer::sptr obj = ::fwData::Integer::New();
     ::fwServices::IService::sptr service;
 
@@ -65,7 +67,7 @@ void ServiceTest::testServiceCreation()
     CPPUNIT_ASSERT( ::fwServices::registry::ServiceFactory::getDefault()->support(obj->getClassname(),
                                                                                   "::fwServices::ut::TestService") );
 
-    // Test adding service
+    // deprecated: Test adding service
     ::fwServices::add(obj, "::fwServices::ut::TestService", "::fwServices::ut::TestServiceImplementation");
     CPPUNIT_ASSERT(::fwServices::OSR::has(obj, "::fwServices::ut::TestService") );
 
@@ -83,50 +85,52 @@ void ServiceTest::testServiceCreation()
 
 void ServiceTest::testServiceCreationWithMultipleData()
 {
+    const std::string dataKey = "data";
     ::fwData::Integer::sptr obj = ::fwData::Integer::New();
-    ::fwServices::IService::sptr service;
 
     // Test if the object support the service
     CPPUNIT_ASSERT( ::fwServices::registry::ServiceFactory::getDefault()->support(obj->getClassname(),
                                                                                   "::fwServices::ut::TestService") );
 
     // Test adding service
-    ::fwServices::add(obj, "::fwServices::ut::TestService", "::fwServices::ut::TestServiceImplementation");
-    CPPUNIT_ASSERT(::fwServices::OSR::has(obj, "::fwServices::ut::TestService") );
+    ::fwServices::IService::sptr srv = ::fwServices::add("::fwServices::ut::TestServiceImplementation");
+    srv->registerInOut(obj, dataKey);
+    CPPUNIT_ASSERT(::fwServices::OSR::isRegistered(dataKey, ::fwServices::IService::AccessType::INOUT, srv));
+    CPPUNIT_ASSERT(obj == ::fwServices::OSR::getRegistered(dataKey, ::fwServices::IService::AccessType::INOUT, srv));
 
-    // Test getting the service its object
-    service = ::fwServices::get(obj, "::fwServices::ut::TestService");
-    CPPUNIT_ASSERT(service);
-    CPPUNIT_ASSERT_EQUAL(obj, service->getObject< ::fwData::Integer >());
+    // Test getting the service object
+    CPPUNIT_ASSERT_EQUAL(srv, srv);
+    CPPUNIT_ASSERT_EQUAL(obj, srv->getInOut< ::fwData::Integer >(dataKey));
 
     // Test erasing service
-    ::fwServices::OSR::unregisterService(service);
-    CPPUNIT_ASSERT( ::fwServices::OSR::has(obj, "::fwServices::ut::TestService") == false );
+    ::fwServices::OSR::unregisterService(srv);
+    CPPUNIT_ASSERT_EQUAL(false,
+                         ::fwServices::OSR::isRegistered(dataKey, ::fwServices::IService::AccessType::INOUT, srv));
 }
 
 //------------------------------------------------------------------------------
 
 void ServiceTest::testServiceCreationWithTemplateMethods()
 {
+    const std::string dataKey = "data";
     ::fwData::Integer::sptr obj = ::fwData::Integer::New();
-    ::fwServices::ut::TestService::sptr service;
 
     // Test if the object support the service
     CPPUNIT_ASSERT( ::fwServices::registry::ServiceFactory::getDefault()->support(obj->getClassname(),
                                                                                   "::fwServices::ut::TestService") );
 
     // Test adding service
-    ::fwServices::add< ::fwServices::ut::TestService >(obj, "::fwServices::ut::TestServiceImplementation");
-    CPPUNIT_ASSERT(::fwServices::OSR::has(obj, "::fwServices::ut::TestService") );
+    ::fwServices::ut::TestService::sptr srv =
+        ::fwServices::add< ::fwServices::ut::TestService > ("::fwServices::ut::TestServiceImplementation");
+    srv->registerInOut(obj, dataKey);
+    CPPUNIT_ASSERT(::fwServices::OSR::isRegistered(dataKey, ::fwServices::IService::AccessType::INOUT, srv));
+    CPPUNIT_ASSERT(obj == ::fwServices::OSR::getRegistered(dataKey, ::fwServices::IService::AccessType::INOUT, srv));
 
     // Test getting the service its object
-    service = ::fwServices::get< ::fwServices::ut::TestService >(obj);
-    CPPUNIT_ASSERT(service);
-    CPPUNIT_ASSERT_EQUAL(obj, service->getObject< ::fwData::Integer >());
+    CPPUNIT_ASSERT_EQUAL(obj, srv->getInOut< ::fwData::Integer >(dataKey));
 
     // Test erasing service
-    ::fwServices::OSR::unregisterService(service);
-    CPPUNIT_ASSERT( ::fwServices::OSR::has(obj, "::fwServices::ut::TestService") == false );
+    ::fwServices::OSR::unregisterService(srv);
 }
 
 //------------------------------------------------------------------------------
@@ -136,6 +140,7 @@ void ServiceTest::testServiceCreationWithUUID()
     const std::string myUUID  = "myUUID";
     const std::string myUUID2 = "myUUID2";
     const std::string myUUID3 = "myUUID3";
+    const std::string dataKey = "data";
     size_t nbServices         = 0;
 
     ::fwData::Integer::sptr obj = ::fwData::Integer::New();
@@ -147,27 +152,30 @@ void ServiceTest::testServiceCreationWithUUID()
                                                                                   "::fwServices::ut::TestService") );
 
     // Test adding service
-    service = ::fwServices::add(obj, "::fwServices::ut::TestService", "::fwServices::ut::TestServiceImplementation",
-                                myUUID);
-    ::fwServices::add(obj, "::fwServices::ut::TestService", "::fwServices::ut::TestServiceImplementation", myUUID2);
+    service = ::fwServices::add("::fwServices::ut::TestServiceImplementation", myUUID);
+    CPPUNIT_ASSERT(service);
+    service->registerInOut(obj, dataKey);
+
+    service2 = ::fwServices::add("::fwServices::ut::TestServiceImplementation", myUUID2);
+    CPPUNIT_ASSERT(service2);
+    service2->registerInOut(obj, dataKey);
+
     nbServices = 2;
-    CPPUNIT_ASSERT(::fwServices::OSR::has(obj, "::fwServices::ut::TestService") );
     CPPUNIT_ASSERT(::fwTools::fwID::exist(myUUID) );
     CPPUNIT_ASSERT(::fwTools::fwID::exist(myUUID2));
 
     // Test getting the service its object
-    service2 = ::fwServices::get(myUUID2);
-    CPPUNIT_ASSERT(service);
-    CPPUNIT_ASSERT(service2);
-    CPPUNIT_ASSERT_EQUAL(obj, service2->getObject< ::fwData::Integer >());
-    CPPUNIT_ASSERT_EQUAL(myUUID2, service2->getID());
+    ::fwServices::IService::sptr service2bis = ::fwServices::get(myUUID2);
+    CPPUNIT_ASSERT(service2bis);
+    CPPUNIT_ASSERT_EQUAL(obj, service2bis->getInOut< ::fwData::Integer >(dataKey));
+    CPPUNIT_ASSERT_EQUAL(myUUID2, service2bis->getID());
     CPPUNIT_ASSERT( !::fwTools::fwID::exist(myUUID3) );
-    CPPUNIT_ASSERT_EQUAL( nbServices, ::fwServices::OSR::getServices(obj, "::fwServices::ut::TestService").size() );
+    CPPUNIT_ASSERT_EQUAL( nbServices, ::fwServices::OSR::getServices("::fwServices::ut::TestService").size() );
 
     // Test erasing service
     ::fwServices::OSR::unregisterService(service);
     nbServices--;
-    CPPUNIT_ASSERT_EQUAL( nbServices, ::fwServices::OSR::getServices(obj, "::fwServices::ut::TestService").size() );
+    CPPUNIT_ASSERT_EQUAL( nbServices, ::fwServices::OSR::getServices("::fwServices::ut::TestService").size() );
     ::fwServices::OSR::unregisterService(service2);
 }
 
@@ -183,11 +191,7 @@ void ServiceTest::testStartStopUpdate()
     // Add service
     CPPUNIT_ASSERT( ::fwServices::registry::ServiceFactory::getDefault()->support(obj->getClassname(),
                                                                                   "::fwServices::ut::TestService") );
-    ::fwServices::add(obj, "::fwServices::ut::TestService", "::fwServices::ut::TestServiceImplementation", myUUID);
-    CPPUNIT_ASSERT(::fwServices::OSR::has(obj, "::fwServices::ut::TestService") );
-
-    // Get service
-    service = ::fwServices::ut::TestService::dynamicCast( ::fwServices::get(myUUID) );
+    service = ::fwServices::add< ::fwServices::ut::TestService >("::fwServices::ut::TestServiceImplementation", myUUID);
     CPPUNIT_ASSERT(service);
 
     // Service must be stop when it is created
@@ -210,7 +214,6 @@ void ServiceTest::testStartStopUpdate()
 
     // Erase Service
     ::fwServices::OSR::unregisterService(service);
-    CPPUNIT_ASSERT(::fwServices::OSR::has(obj, "::fwServices::ut::TestService") == false );
 }
 
 //------------------------------------------------------------------------------
@@ -292,6 +295,7 @@ void ServiceTest::testCommunication()
     activeWorkers->initRegistry();
 
     const std::string EVENT        = "EVENT";
+    const std::string dataKey      = "data";
     const std::string service1UUID = "service1UUID";
     const std::string service2UUID = "service2UUID";
 
@@ -300,18 +304,15 @@ void ServiceTest::testCommunication()
     ::fwServices::ut::TestService::sptr service2;
 
     // Add services
-    CPPUNIT_ASSERT( ::fwServices::registry::ServiceFactory::getDefault()->support(obj->getClassname(),
-                                                                                  "::fwServices::ut::TestService") );
-    ::fwServices::add(obj, "::fwServices::ut::TestService", "::fwServices::ut::TestServiceImplementation",
-                      service1UUID);
-    CPPUNIT_ASSERT(::fwServices::OSR::has(obj, "::fwServices::ut::TestService") );
+    ::fwServices::add("::fwServices::ut::TestServiceImplementation", service1UUID);
     service1 = ::fwServices::ut::TestService::dynamicCast( ::fwServices::get(service1UUID) );
     CPPUNIT_ASSERT(service1);
+    service1->registerInput(obj, dataKey, true);
 
-    ::fwServices::add(obj, "::fwServices::ut::TestService", "::fwServices::ut::TestServiceImplementation",
-                      service2UUID);
-    service2 = ::fwServices::ut::TestService::dynamicCast( ::fwServices::get(service2UUID) );
+    service2 = ::fwServices::add< ::fwServices::ut::TestService >("::fwServices::ut::TestServiceImplementation",
+                                                                  service2UUID);
     CPPUNIT_ASSERT(service2);
+    service2->registerInput(obj, dataKey, true);
 
     // Object used to check service signals
     TestServiceSignals::sptr receiver1 = std::make_shared< TestServiceSignals>();
@@ -349,8 +350,6 @@ void ServiceTest::testCommunication()
     CPPUNIT_ASSERT_EQUAL(false, receiver2->m_stopped);
 
     // Register communication channel
-    comHelper.connect( obj, service1, service1->getObjSrvConnections() );
-    comHelper.connect( obj, service2, service2->getObjSrvConnections() );
     comHelper.connect( service1, ::fwServices::ut::TestServiceImplementation::s_MSG_SENT_SIG,
                        service2, ::fwServices::ut::TestServiceImplementation::s_UPDATE2_SLOT );
 

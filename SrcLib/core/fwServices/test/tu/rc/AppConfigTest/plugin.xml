@@ -1,0 +1,331 @@
+<plugin id="AppConfigTest" version="@PROJECT_VERSION@" >
+
+    <extension implements="::fwServices::registry::AppConfig">
+        <id>parametersConfigTest1</id>
+        <parameters>
+            <param name="TEST_IMAGE" />
+            <param name="UID_SERVICE2" default="myTestService2" />
+        </parameters>
+        <desc>Test configuration with parameters</desc>
+        <config>
+            <object uid="${TEST_IMAGE}" type="::fwData::Image" />
+
+            <service uid="myTestService1" type="::fwServices::ut::TestServiceImplementationImage" autoConnect="no">
+                <in key="data" uid="${TEST_IMAGE}" />
+            </service>
+
+            <service uid="${UID_SERVICE2}" type="::fwServices::ut::TestServiceImplementationImage" />
+
+            <connect channel="channel1">
+                <signal>${TEST_IMAGE}/modified</signal>
+                <slot>myTestService1/update</slot>
+            </connect>
+
+            <start uid="myTestService1" />
+            <start uid="${UID_SERVICE2}" />
+
+            <update uid="myTestService1" />
+        </config>
+    </extension>
+
+
+    <extension implements="::fwServices::registry::AppConfig">
+        <id>startStopTest</id>
+        <desc>Test configuration for start and stop</desc>
+        <config>
+
+            <object uid="data1Id" type="::fwData::Image" />
+            <object uid="data2Id" type="::fwData::Image" src="deferred" />
+            <object uid="data3Id" type="::fwData::Image" />
+            <object uid="data4Id" type="::fwData::Image" src="deferred" />
+
+            <!-- Service used to generate data -->
+            <service uid="SGenerateData" type="::fwServices::ut::TestServiceImplementation">
+                <out key="out2" uid="data2Id" />
+                <out key="out4" uid="data4Id" />
+            </service>
+
+            <service uid="TestService1Uid" type="::fwServices::ut::TestServiceImplementation" />
+            <service uid="TestService2Uid" type="::fwServices::ut::TestServiceImplementation" />
+            <service uid="TestService3Uid" type="::fwServices::ut::TestServiceImplementation">
+                <in key="data" uid="data2Id" optional="yes" />
+            </service>
+            <service uid="TestService4Uid" type="::fwServices::ut::TestServiceImplementation">
+                <in key="data" uid="data2Id" />
+            </service>
+            <service uid="TestService5Uid" type="::fwServices::ut::TestServiceImplementation">
+                <in key="data1" uid="data1Id" />
+                <in key="data2" uid="data2Id" />
+                <in key="data3" uid="data3Id" />
+                <in key="data4" uid="data4Id" />
+            </service>
+
+            <start uid="SGenerateData" />
+            <start uid="TestService1Uid" />
+            <start uid="TestService2Uid" />
+            <start uid="TestService3Uid" />
+            <start uid="TestService5Uid" />
+            <start uid="TestService4Uid" />
+
+            <update uid="TestService1Uid" />
+            <update uid="TestService4Uid" />
+            <update uid="TestService5Uid" />
+
+        </config>
+    </extension>
+
+    <extension implements="::fwServices::registry::AppConfig">
+        <id>autoConnectTest</id>
+        <desc>Test configuration for auto connect</desc>
+        <config>
+
+            <object uid="data1Id" type="::fwData::Image" />
+            <object uid="data2Id" type="::fwData::Image" />
+            <object uid="data3Id" type="::fwData::Image" src="deferred" />
+
+            <!-- Service used to generate data -->
+            <service uid="SGenerateData" type="::fwServices::ut::TestServiceImplementation">
+                <out key="out3" uid="data3Id" />
+            </service>
+
+            <service uid="TestService1Uid" type="::fwServices::ut::TestSrvAutoconnect">
+                <in key="data1" uid="data1Id" />
+            </service>
+            <service uid="TestService2Uid" type="::fwServices::ut::TestServiceImplementation" autoConnect="yes">
+                <in key="data1" uid="data1Id" />
+                <inout key="data2" uid="data2Id" />
+            </service>
+            <service uid="TestService3Uid" type="::fwServices::ut::TestSrvAutoconnect">
+                <in key="data1" uid="data1Id" autoConnect="yes" />
+                <inout key="data2" uid="data2Id" autoConnect="yes" />
+            </service>
+            <service uid="TestService4Uid" type="::fwServices::ut::TestSrvAutoconnect">
+                <in key="data3" uid="data3Id" />
+            </service>
+            <service uid="TestService5Uid" type="::fwServices::ut::TestSrvAutoconnect" autoConnect="yes">
+                <in key="data1" uid="data1Id" />
+                <in key="data3" uid="data3Id" />
+            </service>
+
+            <start uid="SGenerateData" />
+            <start uid="TestService1Uid" />
+            <start uid="TestService2Uid" />
+            <start uid="TestService3Uid" />
+            <start uid="TestService5Uid" />
+            <start uid="TestService4Uid" />
+
+        </config>
+    </extension>
+
+    <extension implements="::fwServices::registry::AppConfig">
+        <id>connectionTest</id>
+        <desc>Test configuration for connections</desc>
+        <config>
+
+            <object uid="data1Id" type="::fwData::Image" />
+            <object uid="data2Id" type="::fwData::Image" src="deferred" />
+            <object uid="data3Id" type="::fwData::Image" src="deferred" />
+            <object uid="data4Id" type="::fwData::Image" />
+
+            <!-- Service used to generate data -->
+            <service uid="SGenerateData" type="::fwServices::ut::TestServiceImplementation">
+                <out key="out2" uid="data2Id" />
+                <out key="out3" uid="data3Id" />
+            </service>
+
+            <service uid="TestService1Uid" type="::fwServices::ut::TestServiceImplementation" />
+            <service uid="TestService2Uid" type="::fwServices::ut::TestServiceImplementation" >
+                <in key="data1" uid="data1Id" />
+            </service>
+            <service uid="TestService3Uid" type="::fwServices::ut::TestServiceImplementation">
+                <in key="data1" uid="data1Id" />
+                <out key="data2" uid="data2Id" />
+                <inout key="data3" uid="data3Id" />
+                <inout key="data4" uid="data4Id" />
+            </service>
+            <service uid="TestService4Uid" type="::fwServices::ut::TestServiceImplementation" />
+
+            <connect>
+                <signal>data1Id/modified</signal>
+                <slot>TestService1Uid/update</slot>
+            </connect>
+
+            <connect channel="2">
+                <signal>data1Id/modified</signal>
+                <slot>TestService2Uid/update</slot>
+                <slot>TestService3Uid/update</slot>
+            </connect>
+
+            <connect>
+                <signal>data2Id/modified</signal>
+                <slot>TestService1Uid/update</slot>
+                <slot>TestService3Uid/update</slot>
+            </connect>
+
+            <connect channel="4">
+                <signal>data3Id/modified</signal>
+                <signal>data4Id/modified</signal>
+                <slot>TestService2Uid/update</slot>
+                <slot>TestService3Uid/update</slot>
+            </connect>
+
+            <connect>
+                <signal>TestService3Uid/started</signal>
+                <slot>TestService4Uid/update</slot>
+            </connect>
+
+            <connect>
+                <signal>TestService3Uid/stopped</signal>
+                <slot>TestService4Uid/update2</slot>
+            </connect>
+
+            <start uid="SGenerateData" />
+            <start uid="TestService1Uid" />
+            <start uid="TestService2Uid" />
+            <start uid="TestService3Uid" />
+            <start uid="TestService4Uid" />
+
+        </config>
+    </extension>
+
+
+    <extension implements="::fwServices::registry::AppConfig">
+        <id>optionalKeyTest</id>
+        <desc>Test configuration for optional keys</desc>
+        <config>
+
+            <object uid="data1Id" type="::fwData::Image" />
+            <object uid="data2Id" type="::fwData::Boolean" src="deferred" />
+            <object uid="data3Id" type="::fwData::Boolean" src="deferred" />
+            <object uid="data4Id" type="::fwData::Boolean" src="deferred" />
+            <object uid="data5Id" type="::fwData::Boolean" src="deferred" />
+
+            <!-- Service used to generate data -->
+            <service uid="SGenerateData" type="::fwServices::ut::TestServiceImplementation">
+                <out key="out2" uid="data2Id" />
+                <out key="out3" uid="data3Id" />
+                <out key="out4" uid="data4Id" />
+                <out key="out5" uid="data5Id" />
+            </service>
+
+            <service uid="SGenerateData2" type="::fwServices::ut::TestServiceImplementation">
+                <out key="out" uid="data2Id" />
+            </service>
+
+            <service uid="TestService1Uid" type="::fwServices::ut::TestServiceImplementation">
+                <in key="data1" uid="data1Id" autoConnect="yes" />
+                <in key="data2" uid="data2Id" autoConnect="no"  optional="yes" />
+                <in key="data3" uid="data3Id" autoConnect="no"  optional="yes" />
+                <in key="data4" uid="data4Id" autoConnect="yes" optional="yes" />
+            </service>
+            <service uid="TestService2Uid" type="::fwServices::ut::TestServiceImplementation" >
+                <in key="data5" uid="data5Id" autoConnect="yes" />
+                <in key="data2" uid="data2Id" autoConnect="no"  optional="yes" />
+                <in key="data3" uid="data3Id" autoConnect="no"  optional="yes" />
+                <in key="data4" uid="data4Id" autoConnect="yes" optional="yes" />
+            </service>
+
+            <connect>
+                <signal>data3Id/modified</signal>
+                <slot>TestService1Uid/update</slot>
+                <slot>TestService2Uid/update</slot>
+            </connect>
+
+
+            <start uid="SGenerateData" />
+            <start uid="SGenerateData2" />
+            <start uid="TestService1Uid" />
+            <start uid="TestService2Uid" />
+
+        </config>
+    </extension>
+
+
+    <extension implements="::fwServices::registry::AppConfig">
+        <id>keyGroupTest</id>
+        <desc>Test configuration for key groups</desc>
+        <config>
+
+            <object uid="data1Id" type="::fwData::String" />
+            <object uid="data2Id" type="::fwData::Boolean" src="deferred" />
+            <object uid="data3Id" type="::fwData::Image" src="deferred" />
+            <object uid="data4Id" type="::fwData::Image" />
+            <object uid="data5Id" type="::fwData::Image" />
+
+            <!-- Service used to generate data -->
+            <service uid="SGenerateData" type="::fwServices::ut::TestServiceImplementation">
+                <out key="out2" uid="data2Id" />
+                <out key="out3" uid="data3Id" />
+            </service>
+
+            <service uid="TestService1Uid" type="::fwServices::ut::TestServiceImplementation">
+                <in key="data1" uid="data1Id" autoConnect="yes" />
+                <in group="dataGroup" autoConnect="yes">
+                    <key uid="data2Id" />
+                    <key uid="data3Id" optional="yes" />
+                </in>
+            </service>
+            <service uid="TestService2Uid" type="::fwServices::ut::TestSrvAutoconnect" >
+                <in group="dataGroup0">
+                    <key uid="data1Id" />
+                    <key uid="data2Id" autoConnect="yes" optional="yes" />
+                </in>
+                <in group="dataGroup1">
+                    <key uid="data3Id" />
+                    <key uid="data4Id" autoConnect="yes" />
+                    <key uid="data5Id" />
+                </in>
+            </service>
+
+            <connect>
+                <signal>data1Id/modified</signal>
+                <slot>TestService2Uid/update</slot>
+            </connect>
+
+
+            <start uid="SGenerateData" />
+            <start uid="TestService1Uid" />
+            <start uid="TestService2Uid" />
+
+        </config>
+    </extension>
+
+
+    <extension implements="::fwServices::registry::AppConfig">
+        <id>parameterReplaceTest</id>
+        <desc>Test configuration for parameter replace</desc>
+        <config>
+
+            <object uid="data1Id" type="::fwData::String" />
+            <object uid="data2Id" type="::fwData::Boolean" />
+
+            <service uid="TestService1Uid" type="::fwServices::ut::TestServiceImplementation">
+                <in key="data1" uid="data1Id" autoConnect="yes" />
+                <in key="data2" uid="data2Id" autoConnect="yes" />
+                <view wid="view1" />
+            </service>
+
+            <service uid="TestService2Uid" type="::fwServices::ut::TestServiceImplementation" >
+                <parameter replace="data2" by="data2Id" />
+                <parameter replace="patient" by="name" />
+                <parameter replace="channel1" by="Channel No5" />
+                <parameter replace="WID_PARENT" by="view1" />
+            </service>
+
+            <connect channel="disneyChannel">
+                <signal>data1Id/modified</signal>
+                <slot>TestService2Uid/update</slot>
+            </connect>
+
+            <connect channel="Channel No5">
+                <signal>data2Id/modified</signal>
+                <slot>TestService2Uid/update</slot>
+            </connect>
+
+            <start uid="TestService1Uid" />
+            <start uid="TestService2Uid" />
+
+        </config>
+    </extension>
+
+</plugin>

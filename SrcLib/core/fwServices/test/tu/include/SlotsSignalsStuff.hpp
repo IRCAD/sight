@@ -68,6 +68,8 @@ class IBasicTest : public ::fwServices::IService
 {
 public:
     fwCoreServiceClassDefinitionsMacro( (IBasicTest)(::fwServices::IService) )
+
+    static const KeyType s_BUFFER_INOUT;
 };
 
 class SBasicTest : public IBasicTest,
@@ -91,7 +93,7 @@ protected:
     }
     virtual void starting() override;
     virtual void stopping() override;
-    virtual void swapping() override;
+    virtual void swapping(const KeyType& key) override;
     virtual void updating() override;
 };
 
@@ -215,6 +217,8 @@ protected:
     {
     }
     virtual void updating() override;
+
+    virtual KeyConnectionsMap getAutoConnections() const override;
 
     ChangeSlotType::sptr m_slotChange;
 
