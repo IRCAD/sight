@@ -13,9 +13,9 @@
 
 #include <fwRuntime/EConfigurationElement.hpp>
 
+#include <fwServices/op/Add.hpp>
 #include <fwServices/registry/ActiveWorkers.hpp>
 #include <fwServices/registry/ObjectService.hpp>
-#include <fwServices/registry/ServiceFactory.hpp>
 
 #include <fwTest/Data.hpp>
 #include <fwTest/generator/Image.hpp>
@@ -66,11 +66,10 @@ void executeService(
     const std::string& srvImpl,
     const SPTR(::fwRuntime::EConfigurationElement)& cfg )
 {
-    ::fwServices::IService::sptr srv
-        = ::fwServices::registry::ServiceFactory::getDefault()->create(srvType, srvImpl);
+    ::fwServices::IService::sptr srv = ::fwServices::add(srvImpl);
 
     CPPUNIT_ASSERT(srv);
-    ::fwServices::OSR::registerService( obj, srv );
+    srv->registerInOut(obj, "data");
     srv->setConfiguration(cfg);
     CPPUNIT_ASSERT_NO_THROW(srv->configure());
     CPPUNIT_ASSERT_NO_THROW(srv->start().wait());

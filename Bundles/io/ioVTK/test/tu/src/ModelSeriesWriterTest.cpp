@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -16,6 +16,7 @@
 #include <fwRuntime/EConfigurationElement.hpp>
 
 #include <fwServices/macros.hpp>
+#include <fwServices/op/Add.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
 #include <fwTest/generator/SeriesDB.hpp>
@@ -62,11 +63,18 @@ void runModelSeriesSrv(
     const SPTR(::fwRuntime::EConfigurationElement)& cfg,
     const SPTR(::fwData::Object)& obj)
 {
-    ::fwServices::IService::sptr srv = ::fwServices::registry::ServiceFactory::getDefault()->create(impl);
+    ::fwServices::IService::sptr srv = ::fwServices::add(impl);
 
     CPPUNIT_ASSERT_MESSAGE(std::string("Failed to create service ") + impl, srv);
 
-    ::fwServices::OSR::registerService(obj, srv);
+    if (srv->isA("::fwIO::IReader"))
+    {
+        srv->registerInOut(obj, "data");
+    }
+    else
+    {
+        srv->registerInput(obj, "data");
+    }
 
     CPPUNIT_ASSERT_NO_THROW( srv->setConfiguration( cfg ) );
     CPPUNIT_ASSERT_NO_THROW( srv->configure() );
@@ -245,4 +253,3 @@ void ModelSeriesWriterTest::testWriteReconstructions()
 
 } //namespace ut
 } //namespace ioVTK
-

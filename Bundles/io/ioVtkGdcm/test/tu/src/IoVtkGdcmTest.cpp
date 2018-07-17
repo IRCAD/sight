@@ -16,6 +16,7 @@
 #include <fwRuntime/EConfigurationElement.hpp>
 
 #include <fwServices/macros.hpp>
+#include <fwServices/op/Add.hpp>
 #include <fwServices/registry/ActiveWorkers.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
@@ -80,11 +81,10 @@ void IoVtkGdcmTest::readerDicomTest( std::string srvImpl )
     folderCfg->setValue(dicomDataPath.string());
     readerCfg->addConfigurationElement(folderCfg);
 
-    ::fwServices::IService::sptr srv =
-        ::fwServices::registry::ServiceFactory::getDefault()->create( "::fwIO::IReader", srvImpl );
+    ::fwServices::IService::sptr srv = ::fwServices::add( srvImpl );
     CPPUNIT_ASSERT(srv);
 
-    ::fwServices::OSR::registerService( seriesDB, srv );
+    srv->registerInOut(seriesDB, "data");
 
     srv->setConfiguration( readerCfg );
     srv->configure();
@@ -197,11 +197,10 @@ void IoVtkGdcmTest::imageSeriesWriterTest()
     ::fwMedData::ImageSeries::sptr imgSeries;
     imgSeries = ::fwTest::generator::SeriesDB::createImageSeries();
 
-    ::fwServices::IService::sptr writerSrv = ::fwServices::registry::ServiceFactory::getDefault()->create(
-        "::fwIO::IWriter", "::ioVtkGdcm::SImageSeriesWriter" );
+    ::fwServices::IService::sptr writerSrv = ::fwServices::add( "::ioVtkGdcm::SImageSeriesWriter" );
     CPPUNIT_ASSERT(writerSrv);
 
-    ::fwServices::OSR::registerService( imgSeries, writerSrv );
+    writerSrv->registerInput(imgSeries, "data");
 
     writerSrv->setConfiguration( srvConfig );
     writerSrv->configure();
@@ -213,11 +212,10 @@ void IoVtkGdcmTest::imageSeriesWriterTest()
     // Load Dicom from disk
     ::fwMedData::SeriesDB::sptr seriesDB = ::fwMedData::SeriesDB::New();
 
-    ::fwServices::IService::sptr readerSrv = ::fwServices::registry::ServiceFactory::getDefault()->create(
-        "::fwIO::IReader", "::ioVtkGdcm::SSeriesDBReader" );
+    ::fwServices::IService::sptr readerSrv = ::fwServices::add( "::ioVtkGdcm::SSeriesDBReader" );
     CPPUNIT_ASSERT(readerSrv);
 
-    ::fwServices::OSR::registerService( seriesDB, readerSrv );
+    readerSrv->registerInOut(seriesDB, "data");
 
     readerSrv->setConfiguration( srvConfig ); // use same config as writer
     readerSrv->configure();

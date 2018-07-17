@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -13,6 +13,7 @@
 
 #include <fwServices/AppConfigManager.hpp>
 #include <fwServices/macros.hpp>
+#include <fwServices/op/Add.hpp>
 #include <fwServices/registry/AppConfig.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
@@ -53,12 +54,8 @@ void GuiQtTest::testDefaultFrame()
     frameConfig.put("gui.frame.minSize.<xmlattr>.width", "800");
     frameConfig.put("gui.frame.minSize.<xmlattr>.height", "600");
 
-    ::fwServices::IService::sptr srv;
-    srv = ::fwServices::registry::ServiceFactory::getDefault()->create(  "::fwGui::IFrameSrv",
-                                                                         "::gui::frame::SDefaultFrame" );
+    ::fwServices::IService::sptr srv = ::fwServices::add( "::gui::frame::SDefaultFrame" );
     CPPUNIT_ASSERT(srv);
-
-    ::fwServices::OSR::registerService( object, srv );
 
     srv->setConfiguration( frameConfig );
     srv->configure();
