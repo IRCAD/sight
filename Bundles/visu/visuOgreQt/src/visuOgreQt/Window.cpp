@@ -592,13 +592,13 @@ void Window::ogreResize(const QSize& newSize)
     {
         ::Ogre::CompositorChain* chain = ::Ogre::CompositorManager::getSingleton().getCompositorChain(
             viewport);
-        size_t length = chain->getNumCompositors();
-        for(size_t i = 0; i < length; i++)
+
+        for(auto instance : chain->getCompositorInstances())
         {
-            if( chain->getCompositor(i)->getEnabled() )
+            if( instance->getEnabled() )
             {
-                chain->setCompositorEnabled(i, false);
-                chain->setCompositorEnabled(i, true);
+                instance->setEnabled(false);
+                instance->setEnabled(true);
             }
         }
     }
