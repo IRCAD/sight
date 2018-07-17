@@ -8,8 +8,6 @@ out float rayEntry; // Use only the red channel when writing entry points.
 out vec2 fragColour;
 #endif // FRONT_FACES == 1 || BACK_FACES == 1
 
-#define FLT_MAX 1e9f
-
 void main()
 {
 
