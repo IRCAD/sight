@@ -11,6 +11,8 @@
 
 #include <calibration3d/helper.hpp>
 
+#include <cvIO/Matrix.hpp>
+
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
 
@@ -161,20 +163,8 @@ void SOpenCVIntrinsic::updating()
             {
                 ::fwData::TransformationMatrix3D::sptr mat3D = ::fwData::TransformationMatrix3D::New();
 
-                ::cv::Mat rmat;
-                ::cv::Rodrigues(rvecs.at(index), rmat);
-
-                ::cv::Mat tmat = tvecs.at(index);
-
-                for(size_t i = 0; i < 3; ++i)
-                {
-                    for(size_t j = 0; j < 3; ++j)
-                    {
-                        mat3D->setCoefficient(i, j, rmat.at< double >(static_cast<int>(i),
-                                                                      static_cast<int>(j)));
-                    }
-                    mat3D->setCoefficient(i, 3, tmat.at< double >(static_cast<int>(i)));
-                }
+                // Convert from cv to fw4spl.
+                ::cvIO::Matrix::copyFromCv(rvecs.at(index), tvecs.at(index), mat3D);
 
                 poseCamera->getContainer().push_back(mat3D);
                 auto sig = poseCamera->signal< ::fwData::Vector::AddedObjectsSignalType >(
