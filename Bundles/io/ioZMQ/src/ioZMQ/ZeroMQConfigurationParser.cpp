@@ -15,6 +15,7 @@ namespace ioZMQ
 
 ZeroMQConfigurationParser::ZeroMQConfigurationParser (::fwRuntime::ConfigurationElement::sptr configuration)
 {
+    FW_DEPRECATED_MSG("'ioZMQ' bundle and the associated services are no longer supported.", "19.0");
     m_configuration = configuration;
 }
 

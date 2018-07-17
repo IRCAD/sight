@@ -56,6 +56,7 @@ void SImageNetworkReader::configureWithIHM()
 
 void SImageNetworkReader::starting()
 {
+    FW_DEPRECATED_MSG("'ioZMQ' bundle and the associated services are no longer supported.", "19.0");
 }
 
 //-----------------------------------------------------------------------------

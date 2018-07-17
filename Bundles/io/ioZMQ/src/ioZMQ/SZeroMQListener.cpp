@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -138,6 +138,7 @@ void SZeroMQListener::updateConfiguration(::zmqNetwork::Socket::PatternMode cons
 
 void SZeroMQListener::starting()
 {
+    FW_DEPRECATED_MSG("'ioZMQ' bundle and the associated services are no longer supported.", "19.0");
     std::function<void() > task = std::bind(&SZeroMQListener::runReceiver, this);
 
     m_socket        = ::zmqNetwork::Socket::sptr(new ::zmqNetwork::Socket(m_sockMode, m_patternMode));
@@ -156,4 +157,3 @@ void SZeroMQListener::stopping()
 //-----------------------------------------------------------------------------
 
 } // namespace ioZMQ
-

@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VIDEOTOOLS_SMATRIXTLSELECTOR_HPP__
-#define __VIDEOTOOLS_SMATRIXTLSELECTOR_HPP__
+#pragma once
 
 #include "videoTools/config.hpp"
 
@@ -36,6 +35,7 @@ namespace videoTools
 {
 /**
  * @brief   SMatrixTLSelector service synchronizes video frame and tracking matrixes.
+ * @deprecated This service will be removed in 19.0.
  */
 class VIDEOTOOLS_CLASS_API SMatrixTLSelector : public ::arServices::ISynchronizer
 {
@@ -149,4 +149,3 @@ private:
 };
 
 } //namespace videoTools
-#endif  // __VIDEOTOOLS_SMATRIXTLSELECTOR_HPP__

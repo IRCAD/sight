@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2015-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2015-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VIDEOTOOLS_SFRAMERESIZER_HPP__
-#define __VIDEOTOOLS_SFRAMERESIZER_HPP__
+#pragma once
 
 #include "videoTools/config.hpp"
 
@@ -19,6 +18,7 @@ namespace videoTools
 /**
  * @brief   Operator that resizes buffer coming from an input arData::FrameTL and pushes them into an output timeline.
  *          This service uses OpenCV to perform the resize processing.
+ * @deprecated This service will be removed in 19.0.
  */
 class VIDEOTOOLS_CLASS_API SFrameResizer : public ::fwServices::IOperator
 {
@@ -87,5 +87,3 @@ private:
 };
 
 } // videoTools
-
-#endif // __VIDEOTOOLS_SFRAMERESIZER_HPP__
