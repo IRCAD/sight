@@ -1,15 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
+#include "activities/Plugin.hpp"
 
-#include <fwMedData/ActivitySeries.hpp>
 #include <fwActivities/registry/Activities.hpp>
 
-#include "activities/Plugin.hpp"
+#include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 
 namespace activities
 {
@@ -18,15 +17,16 @@ static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("
 
 Plugin::~Plugin() noexcept
 {
-    //Hack: force link with fwActivities
-    ::fwMedData::ActivitySeries::sptr aSeries = ::fwMedData::ActivitySeries::New();
-    aSeries->getClassname();
 }
+
+//------------------------------------------------------------------------------
 
 void Plugin::start()
 {
     ::fwActivities::registry::Activities::getDefault()->parseBundleInformation();
 }
+
+//------------------------------------------------------------------------------
 
 void Plugin::stop() noexcept
 {
