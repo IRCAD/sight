@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -53,7 +53,7 @@ void IHasServices::unregisterService(const fwTools::fwID::IDType& _id)
         const ::fwServices::IService::sptr& service = itSrv->lock();
         if(service && (service->getID() == _id))
         {
-            service->stop();
+            service->stop().wait();
             ::fwServices::OSR::unregisterService(service);
             itSrv = m_subServices.erase(itSrv);
         }
@@ -77,7 +77,7 @@ void IHasServices::unregisterService(const IService::sptr& _service)
     SLM_ASSERT("service '" + _service->getID() + "' is not registered", iter != m_subServices.end());
     m_subServices.erase(iter);
 
-    _service->stop();
+    _service->stop().wait();
     ::fwServices::OSR::unregisterService(_service);
 }
 
@@ -100,7 +100,7 @@ void IHasServices::unregisterServices(const std::string& _classname)
         const ::fwServices::IService::sptr& srv = itSrv->lock();
         if(srv && (_classname.empty() || ( !_classname.empty() && srv->getClassname() == _classname)))
         {
-            srv->stop();
+            srv->stop().wait();
             ::fwServices::OSR::unregisterService(srv);
             itSrv = m_subServices.erase(itSrv);
         }
