@@ -164,9 +164,8 @@ void SMatricesReader::readPrevious()
     {
         if(m_tsMatricesCount > m_step)
         {
-            m_tsMatricesCount = m_tsMatricesCount - (2*m_step);// m_tsMatricesCount is pointing to previous image,so
-                                                               // -1 = present
-            // image
+            m_tsMatricesCount = m_tsMatricesCount - (2*m_step);// m_tsMatricesCount is pointing to previous matrix,so
+                                                               // -1 = present matrix
             m_timer->stop();
             m_timer->start();
         }

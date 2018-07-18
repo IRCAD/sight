@@ -54,6 +54,7 @@ namespace videoOpenCV
  * - \b setPositionVideo(int) : Force the current time in the video.
  * - \b nextImage() : Read the next image (in frame-by-frame mode).
  * - \b previousImage() : Read the previous image (in frame-by-frame mode).
+ * - \b setStep() : set the step value between two images when calling readNext/readPrevious on onShot mode
  *
  * @section XML XML Configuration
  *
@@ -65,6 +66,7 @@ namespace videoOpenCV
             <oneShot>false</oneShot>
             <createTimestamp>false</createTimestamp>
             <useTimelapse>true</useTimelapse>
+            <step>5</step>
         </service>
    @endcode
  * @subsection Input Input
@@ -79,6 +81,7 @@ namespace videoOpenCV
  *  (only available if reading set of images) (default: false).
  * - \b createTimestamp (optional) : create a new timestamp instead of using name of image
  * (only available if reading set of images) (default: false).
+ * - \b step (optionnal): value to jump between two images when calling readNext/readPrevious slots (default: 1)
  */
 class VIDEOOPENCV_CLASS_API SFrameGrabber : public ::arServices::IGrabber
 {
@@ -129,6 +132,9 @@ protected:
     virtual void previousImage() override;
 
 private:
+
+    /// SLOT: Set step used on readPrevious/readNext slots
+    void setStep(unsigned int _step);
 
     typedef std::vector< ::boost::filesystem::path > ImageFilesType;
     typedef std::vector< double > ImageTimestampsType;
@@ -185,6 +191,9 @@ private:
 
     /// if true: the grabber is paused
     bool m_isPaused;
+
+    /// Step between two images when calling readNext() and readPrevious() slots
+    unsigned int m_step;
 };
 
 } // namespace videoOpenCV

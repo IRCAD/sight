@@ -63,7 +63,7 @@ namespace ioTimeline
  * - \b windowTitle: allow overriding the default title of the modal file selection window. \see io::IReader
  * - \b useTimelapse: if set to true, ignore the fps value and use the matrix
  *     timestamps to figure out at which speed to read the matrices. (default: false)
- * - \b step (optionnal): value to jump between two images when calling readNext/readPrevious slots (default: 1)
+ * - \b step (optionnal): value to jump between two matrices when calling readNext/readPrevious slots (default: 1)
  */
 
 class IOTIMELINE_CLASS_API SMatricesReader : public ::fwIO::IReader
@@ -153,7 +153,7 @@ private:
     /// If set to true, ignore the fps value and use the interval between timestamps for the timer
     bool m_useTimelapse;
 
-    /// Step between two images when calling readNext() and readPrevious() slots
+    /// Step between two matrices when calling readNext() and readPrevious() slots
     unsigned int m_step;
 };
 

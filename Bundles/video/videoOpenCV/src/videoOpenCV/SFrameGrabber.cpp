@@ -36,6 +36,8 @@ namespace videoOpenCV
 
 static const ::fwServices::IService::KeyType s_FRAMETL = "frameTL";
 
+static const ::fwCom::Slots::SlotKeyType s_SET_STEP = "setStep";
+
 // -----------------------------------------------------------------------------
 
 SFrameGrabber::SFrameGrabber() noexcept :
@@ -46,9 +48,12 @@ SFrameGrabber::SFrameGrabber() noexcept :
     m_oneShot(false),
     m_createNewTS(false),
     m_useTimelapse(true),
-    m_isPaused(false)
+    m_isPaused(false),
+    m_step(1)
 {
     m_worker = ::fwThread::Worker::New();
+
+    newSlot(s_SET_STEP, &SFrameGrabber::setStep, this);
 }
 
 // -----------------------------------------------------------------------------
@@ -85,6 +90,9 @@ void SFrameGrabber::configuring()
     m_useTimelapse = config.get<bool>("useTimelapse", true);
 
     OSLM_FATAL_IF("Fps setting is set to " << m_fps << " but should be in ]0;60].", m_fps == 0 || m_fps > 60);
+
+    m_step = config.get<unsigned int>("step", m_step);
+    OSLM_ASSERT("Step value is set to " << m_step << " but should be > 0.", m_step > 0);
 }
 
 // -----------------------------------------------------------------------------
@@ -533,14 +541,14 @@ void SFrameGrabber::grabImage()
                 const double currentTime       = m_imageTimestamps[currentImage] + elapsedTime;
 
                 // If the next image delay is already passed, drop the image and check the next one.
-                while (nextDuration < elapsedTime && m_imageCount+1 < m_imageTimestamps.size())
+                while (nextDuration < elapsedTime && m_imageCount + m_step < m_imageTimestamps.size())
                 {
-                    nextDuration = m_imageTimestamps[m_imageCount+1] - currentTime;
-                    ++m_imageCount;
+                    nextDuration  = m_imageTimestamps[m_imageCount + m_step] - currentTime;
+                    m_imageCount += m_step;
                 }
 
                 // If it is the last image: stop the timer or loop
-                if (m_imageCount+1 == m_imageToRead.size())
+                if (m_imageCount + m_step == m_imageToRead.size())
                 {
                     m_timer->stop();
                     if (m_loopVideo)
@@ -562,7 +570,7 @@ void SFrameGrabber::grabImage()
             }
             else
             {
-                ++m_imageCount;
+                m_imageCount += m_step;
             }
         }
         else
@@ -629,9 +637,9 @@ void SFrameGrabber::previousImage()
 {
     if(m_oneShot)
     {
-        if(m_imageCount > 1)
+        if(m_imageCount > m_step)
         {
-            m_imageCount = m_imageCount - 2;// m_imageCount is pointing to next image,so -1 = present image
+            m_imageCount = m_imageCount - (2*m_step); // m_imageCount is pointing to next image,so -1 = present image
             m_timer->stop();
             m_timer->start();
         }
@@ -645,5 +653,13 @@ void SFrameGrabber::previousImage()
 }
 
 //-----------------------------------------------------------------------------
+
+void SFrameGrabber::setStep(unsigned int _step)
+{
+    OSLM_ASSERT("Needed step value (" << _step << ") should be > 0.", _step > 0);
+    m_step = _step;
+}
+
+//------------------------------------------------------------------------------
 
 } // namespace videoOpenCV
