@@ -38,6 +38,7 @@ static const ::fwCom::Slots::SlotKeyType s_PAUSE         = "pause";
 
 static const ::fwCom::Slots::SlotKeyType s_READ_NEXT     = "readNext";
 static const ::fwCom::Slots::SlotKeyType s_READ_PREVIOUS = "readPrevious";
+static const ::fwCom::Slots::SlotKeyType s_SET_STEP      = "setStep";
 
 //------------------------------------------------------------------------------
 
@@ -48,7 +49,8 @@ SMatricesReader::SMatricesReader() noexcept :
     m_createNewTS(false),
     m_fps(30),
     m_oneShot(false),
-    m_useTimelapse(false)
+    m_useTimelapse(false),
+    m_step(1)
 {
 
     m_worker = ::fwThread::Worker::New();
@@ -58,6 +60,7 @@ SMatricesReader::SMatricesReader() noexcept :
 
     newSlot(s_READ_NEXT, &SMatricesReader::readNext, this);
     newSlot(s_READ_PREVIOUS, &SMatricesReader::readPrevious, this);
+    newSlot(s_SET_STEP, &SMatricesReader::setStep, this);
 }
 
 //------------------------------------------------------------------------------
@@ -89,11 +92,14 @@ void SMatricesReader::configuring()
     m_fps = config.get<unsigned int>("fps", 30);
     OSLM_ASSERT("Fps setting is set to " << m_fps << " but should be > 0.", m_fps > 0);
 
-    m_useTimelapse = config.get<bool>("useTimelapse", false);
+    m_useTimelapse = config.get<bool>("useTimelapse", m_useTimelapse);
 
-    m_createNewTS = config.get<bool>("createTimestamp", false);
+    m_createNewTS = config.get<bool>("createTimestamp", m_createNewTS);
 
-    m_oneShot = config.get<bool>("oneShot", false);
+    m_oneShot = config.get<bool>("oneShot", m_oneShot);
+
+    m_step = config.get<unsigned int>("step", m_step);
+    OSLM_ASSERT("Step value is set to " << m_step << " but should be > 0.", m_step > 0);
 }
 
 //------------------------------------------------------------------------------
@@ -156,10 +162,11 @@ void SMatricesReader::readPrevious()
 {
     if(m_oneShot)
     {
-        if(m_tsMatricesCount > 1)
+        if(m_tsMatricesCount > m_step)
         {
-            m_tsMatricesCount = m_tsMatricesCount - 2;// m_tsMatricesCount is pointing to previous image,so -1 = present
-                                                      // image
+            m_tsMatricesCount = m_tsMatricesCount - (2*m_step);// m_tsMatricesCount is pointing to previous image,so
+                                                               // -1 = present
+            // image
             m_timer->stop();
             m_timer->start();
         }
@@ -189,6 +196,14 @@ void SMatricesReader::readNext()
                 "MatricesReader", "No more matrices to read.");
         }
     }
+}
+
+//------------------------------------------------------------------------------
+
+void SMatricesReader::setStep(unsigned int _step)
+{
+    OSLM_ASSERT("Needed step value (" << _step << ") should be > 0.", _step > 0);
+    m_step = _step;
 }
 
 //------------------------------------------------------------------------------
@@ -372,29 +387,29 @@ void SMatricesReader::readMatrices()
             matrixBuf->setElement(mat, i);
         }
 
-        if(m_useTimelapse && m_tsMatricesCount + 1 < m_tsMatrices.size())
+        if(m_useTimelapse && (m_tsMatricesCount + m_step) < m_tsMatrices.size())
         {
             const auto elapsedTime          = ::fwCore::HiResClock::getTimeInMilliSec() - tStart;
             const std::size_t currentMatrix = m_tsMatricesCount;
             const double currentTime        = m_tsMatrices[currentMatrix].timestamp + elapsedTime;
-            double nextDuration             = m_tsMatrices[m_tsMatricesCount + 1].timestamp - currentTime;
+            double nextDuration             = m_tsMatrices[m_tsMatricesCount + m_step].timestamp - currentTime;
 
             // If the next matrix delay is already passed, drop the matrices and check the next one.
-            while (nextDuration < elapsedTime && (m_tsMatricesCount + 1) < m_tsMatrices.size())
+            while (nextDuration < elapsedTime && (m_tsMatricesCount + m_step) < m_tsMatrices.size())
             {
-                nextDuration = m_tsMatrices[m_tsMatricesCount + 1].timestamp - currentTime;
-                ++m_tsMatricesCount;
+                nextDuration       = m_tsMatrices[m_tsMatricesCount + m_step].timestamp - currentTime;
+                m_tsMatricesCount += m_step;
                 SLM_DEBUG("Skipping a matrix");
             }
 
             // If it is the last matrix array: stop the timer or loop
-            if (m_tsMatricesCount+1 == m_tsMatrices.size())
+            if ( (m_tsMatricesCount + m_step) == m_tsMatrices.size())
             {
                 m_timer->stop();
             }
             else
             {
-                nextDuration = m_tsMatrices[m_tsMatricesCount + 1].timestamp -
+                nextDuration = m_tsMatrices[m_tsMatricesCount + m_step].timestamp -
                                currentTime;
                 ::fwThread::Timer::TimeDurationType duration =
                     std::chrono::milliseconds(static_cast<std::int64_t>(nextDuration));
@@ -410,7 +425,7 @@ void SMatricesReader::readMatrices()
             ::arData::TimeLine::s_OBJECT_PUSHED_SIG );
         sig->asyncEmit(timestamp);
 
-        m_tsMatricesCount++;
+        m_tsMatricesCount += m_step;
 
     }
 }

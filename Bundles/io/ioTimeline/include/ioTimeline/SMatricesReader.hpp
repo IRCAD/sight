@@ -35,6 +35,7 @@ namespace ioTimeline
  * - \b pause(): pause reading.
  * - \b readNext() : read next matrices
  * - \b readPrevious() : read previous matrices
+ * - \b setStep() : set the step value between two matrices when calling readNext/readPrevious on onShot mode
  *
  * @section XML XML Configuration
  *
@@ -46,6 +47,7 @@ namespace ioTimeline
        <useTimelapse>true</useTimelapse>
        <createTimestamp>false</createTimestamp>
        <windowTitle>Select the matrix timeline to load</windowTitle>
+       <step>5</step>
    </service>
    @endcode
  * @subsection In-Out In-Out
@@ -61,6 +63,7 @@ namespace ioTimeline
  * - \b windowTitle: allow overriding the default title of the modal file selection window. \see io::IReader
  * - \b useTimelapse: if set to true, ignore the fps value and use the matrix
  *     timestamps to figure out at which speed to read the matrices. (default: false)
+ * - \b step (optionnal): value to jump between two images when calling readNext/readPrevious slots (default: 1)
  */
 
 class IOTIMELINE_CLASS_API SMatricesReader : public ::fwIO::IReader
@@ -123,6 +126,9 @@ private:
     /// SLOT: pause reading
     void pause();
 
+    /// SLOT: Set step used on readPrevious/readNext slots
+    void setStep(unsigned int _step);
+
     /// Read matrices (this function is set to the worker)
     void readMatrices();
 
@@ -146,6 +152,9 @@ private:
 
     /// If set to true, ignore the fps value and use the interval between timestamps for the timer
     bool m_useTimelapse;
+
+    /// Step between two images when calling readNext() and readPrevious() slots
+    unsigned int m_step;
 };
 
 } // ioTimeline
