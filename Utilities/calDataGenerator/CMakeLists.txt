@@ -1,7 +1,7 @@
 fwLoadProperties()
 
-find_package (Boost QUIET COMPONENTS program_options filesystem REQUIRED)
-find_package(OpenCV QUIET REQUIRED core )
+find_package(Boost QUIET COMPONENTS program_options filesystem REQUIRED)
+find_package(OpenCV QUIET REQUIRED core imgproc imgcodecs)
 
 fwInclude(
     ${Boost_INCLUDE_DIRS}
