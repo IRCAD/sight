@@ -81,6 +81,7 @@ void Utils::loadResources()
 
             makePathsAbsolute("FileSystem", resourceFile, newResourceFile);
 
+            resourceFile.close();
             newResourceFile.close();
             cf.load(tmpPath.string());
             ::boost::filesystem::remove(tmpPath);
@@ -156,6 +157,7 @@ void Utils::addResourcesPath(const ::boost::filesystem::path& path)
 
         const bool tokenFound = makePathsAbsolute("PluginFolder", pluginCfg, newPlugin);
 
+        pluginCfg.close();
         newPlugin.close();
 
         SLM_FATAL_IF("No 'PluginFolder' folder set in " + confPath.string(), !tokenFound);
@@ -709,42 +711,38 @@ void Utils::allocateTexture(::Ogre::Texture* _texture, size_t _width, size_t _he
 
 bool Utils::makePathsAbsolute(const std::string& key, std::istream& input, std::ostream& output)
 {
-    std::string token;
     bool keyFound = false;
 
     const size_t keySize = key.size();
 
-    while(!input.eof())
+    for(std::string token; std::getline(input, token);)
     {
-        input >> token;
-
         // Skip comments, go to the next line.
-        if(token[0] == '#')
+        if(token[0] != '#')
         {
-            std::getline(input, token);
-        }
-        else if(token.substr(0, keySize) == key)
-        {
-            SLM_FATAL_IF("Key '" + key + "' has no value bound to it.", token.size() < keySize + 1 );
-
-            const auto currentPluginPath = ::boost::filesystem::path(token.substr(keySize + 1));
-
-            if(!currentPluginPath.is_absolute())
+            if(token.substr(0, keySize) == key)
             {
-                const auto realPluginPath = ::fwRuntime::Runtime::getDefault()->getWorkingPath() / currentPluginPath;
+                SLM_FATAL_IF("Key '" + key + "' has no value bound to it.", token.size() < keySize + 1 );
 
-                output << key << "=" << realPluginPath.string() << std::endl;
+                const auto currentPath = ::boost::filesystem::path(token.substr(keySize + 1));
+
+                if(!currentPath.is_absolute())
+                {
+                    const auto absPath = ::fwRuntime::Runtime::getDefault()->getWorkingPath() / currentPath;
+
+                    output << key << "=" << absPath.string() << std::endl;
+                }
+                else
+                {
+                    output << token << std::endl;
+                }
+
+                keyFound = true;
             }
             else
             {
                 output << token << std::endl;
             }
-
-            keyFound = true;
-        }
-        else
-        {
-            output << token << std::endl;
         }
     }
 
