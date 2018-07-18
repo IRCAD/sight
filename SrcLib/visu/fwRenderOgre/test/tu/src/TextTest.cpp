@@ -62,6 +62,7 @@ void TextTest::tearDown()
 
 void TextTest::factoryTest()
 {
+    //This is needed for the TextureManager to be instanced, no better way has be found.
     auto ogreRenderWindow = m_ogreRoot->createRenderWindow("Dummy-RenderWindow",
                                                            static_cast<unsigned int>(1),
                                                            static_cast<unsigned int>(1),
