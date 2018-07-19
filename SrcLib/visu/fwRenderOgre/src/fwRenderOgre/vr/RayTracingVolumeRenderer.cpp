@@ -17,6 +17,7 @@
 
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 
+#include <OGRE/OgreCompositorManager.h>
 #include <OGRE/OgreGpuProgramManager.h>
 #include <OGRE/OgreHardwarePixelBuffer.h>
 #include <OGRE/OgreHighLevelGpuProgram.h>

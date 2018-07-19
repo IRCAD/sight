@@ -6,6 +6,8 @@
 
 #include "fwRenderOgre/helper/Technique.hpp"
 
+#include <fwCore/spyLog.hpp>
+
 namespace fwRenderOgre
 {
 
