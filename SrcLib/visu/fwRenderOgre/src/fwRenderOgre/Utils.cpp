@@ -13,8 +13,6 @@
 
 #include <fwCore/spyLog.hpp>
 
-#include <fwData/TransferFunction.hpp>
-
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 #include <fwDataTools/helper/ImageGetter.hpp>
 
@@ -25,9 +23,11 @@
 #include <OgreConfigFile.h>
 #include <OgreException.h>
 #include <OgreHardwarePixelBuffer.h>
-#include <OgreLog.h>
 #include <OgreResourceGroupManager.h>
 #include <OgreTextureManager.h>
+
+#include <algorithm>
+#include <cctype> // Needed for isspace()
 
 #ifdef __MACOSX__
 #define PLUGIN_PATH "plugins_osx.cfg"
@@ -132,7 +132,7 @@ void Utils::addResourcesPath(const ::boost::filesystem::path& path)
 
 ::Ogre::Root* Utils::getOgreRoot()
 {
-    ::Ogre::Root* root = ::Ogre::Singleton< ::Ogre::Root >::getSingletonPtr();
+    ::Ogre::Root* root = ::Ogre::Root::getSingletonPtr();
 
     if(root == nullptr)
     {
@@ -715,16 +715,19 @@ bool Utils::makePathsAbsolute(const std::string& key, std::istream& input, std::
 
     const size_t keySize = key.size();
 
-    for(std::string token; std::getline(input, token);)
+    for(std::string line; std::getline(input, line);)
     {
-        // Skip comments, go to the next line.
-        if(token[0] != '#')
-        {
-            if(token.substr(0, keySize) == key)
-            {
-                SLM_FATAL_IF("Key '" + key + "' has no value bound to it.", token.size() < keySize + 1 );
+        // Remove all whitespace from the line.
+        line.erase(std::remove_if(line.begin(), line.end(), isspace));
 
-                const auto currentPath = ::boost::filesystem::path(token.substr(keySize + 1));
+        // Skip comments, go to the next line.
+        if(line[0] != '#')
+        {
+            if(line.substr(0, keySize) == key)
+            {
+                SLM_FATAL_IF("Key '" + key + "' has no value bound to it.", line.size() < keySize + 1 );
+
+                const auto currentPath = ::boost::filesystem::path(line.substr(keySize + 1));
 
                 if(!currentPath.is_absolute())
                 {
@@ -734,14 +737,14 @@ bool Utils::makePathsAbsolute(const std::string& key, std::istream& input, std::
                 }
                 else
                 {
-                    output << token << std::endl;
+                    output << line << std::endl;
                 }
 
                 keyFound = true;
             }
             else
             {
-                output << token << std::endl;
+                output << line << std::endl;
             }
         }
     }
