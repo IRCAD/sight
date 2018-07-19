@@ -9,8 +9,14 @@ include(CMakeParseArguments)
 include(GNUInstallDirs)
 include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/profile_config.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/plugin_config.cmake)
+
 include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/install/generic_install.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/install/helper.cmake)
+
+option(USE_CONAN "Use Conan package manager for dependencies" ON)
+if(USE_CONAN)
+    include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/conan.cmake)
+endif()
 
 option(ENABLE_PCH "Use pre-compiled headers to speedup the compilation" ON)
 option(VERBOSE_PCH "Display debug messages to help debugging PCH" OFF)
@@ -53,9 +59,11 @@ endif()
 
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D_DEBUG")  #racy backward compatibility
 
-option(USE_SYSTEM_LIB "Use system libraries to compile fw4spl" OFF)
+if(NOT USE_CONAN)
+    option(USE_SYSTEM_LIB "Use system libraries to compile fw4spl" OFF)
+endif()
 
-if(NOT USE_SYSTEM_LIB)
+if(NOT USE_SYSTEM_LIB AND NOT USE_CONAN)
     set(EXTERNAL_LIBRARIES CACHE PATH "External libraries location")
 endif()
 
@@ -1111,7 +1119,7 @@ if(PROJECTS_TO_INSTALL)
     unset(PROJECT_FOUND)
 endif()
 
-if(EXTERNAL_LIBRARIES OR USE_SYSTEM_LIB)
+if(EXTERNAL_LIBRARIES OR USE_SYSTEM_LIB OR USE_CONAN)
     set(APP_TO_BUILD)
     foreach(PROJECT ${PROJECT_LIST})
         addProject(${PROJECT})

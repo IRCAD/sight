@@ -1,0 +1,13 @@
+[requires]
+boost/1.67.0@fw4spl/stable
+
+[generators]
+cmake
+
+[options]
+boost:shared=True
+
+[imports]
+bin, *.dll -> ./bin
+lib, *.dylib* -> ./bin
+lib, *.so* -> ./bin
