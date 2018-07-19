@@ -290,13 +290,17 @@ bool Window::event(QEvent* event)
 
 void Window::exposeEvent(QExposeEvent* exposeEvent)
 {
+    const bool nonEmptyRegion = !exposeEvent->region().isEmpty();
 #if defined(__APPLE__)
-    // This allow correct renderring on dual screen display when dragging window to another screen
-    ogreResize(this->size());
+    if(nonEmptyRegion)
+    {
+        // This allow correct renderring on dual screen display when dragging window to another screen
+        ogreResize(this->size());
+    }
 #endif
 
     // Force rendering
-    this->renderNow(!exposeEvent->region().isEmpty());
+    this->renderNow(nonEmptyRegion);
 }
 
 // ----------------------------------------------------------------------------

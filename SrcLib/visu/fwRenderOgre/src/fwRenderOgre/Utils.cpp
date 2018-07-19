@@ -201,16 +201,9 @@ void Utils::addResourcesPath(const ::boost::filesystem::path& path)
         }
         SLM_ASSERT("Abort render system configuration, no render system found", rs);
 
-        /*
-           Setting size and VSync on windows will solve a lot of problems
-         */
-//        std::string dimensions = this->width() + " x " + this->height();
-//        rs->setConfigOption("Video Mode", dimensions.toStdString());
         rs->setConfigOption("Full Screen", "No");
-#ifdef __MACOSX__
-        rs->setConfigOption("vsync", "No");
-#else
         rs->setConfigOption("VSync", "No");
+#ifndef __APPLE__
         rs->setConfigOption("Display Frequency", "60");
 #endif
 
