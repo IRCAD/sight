@@ -536,7 +536,7 @@ public:
     /**
      * @brief Register an input object for this service
      * @param[in] obj input object used by the service
-     * @param[in] key key of the object in the new adaptor
+     * @param[in] key key of the object
      * @param[in] autoConnect if true, the service will be connected to the object's signals
      * @param[in] optional if true, the service can be started even if the objet is not present
      * @return
@@ -545,15 +545,45 @@ public:
                                       const bool autoConnect = false, const bool optional = false);
 
     /**
+     * @brief Unregister an input object for this service
+     * @param[in] key key of the object
+     */
+    FWSERVICES_API void unregisterInput(const std::string& key);
+
+    /**
      * @brief Register an in/out object for this service
      * @param[in] obj in/out object used by the service
-     * @param[in] key key of the object in the new adaptor
+     * @param[in] key key of the object
      * @param[in] autoConnect if true, the service will be connected to the object's signals
      * @param[in] optional if true, the service can be started even if the objet is not present
      * @return
      */
     FWSERVICES_API void registerInOut(const ::fwData::Object::sptr& obj, const std::string& key,
                                       const bool autoConnect = false, const bool optional = false);
+
+    /**
+     * @brief Unregister an inout object for this service
+     * @param[in] key key of the object
+     */
+    FWSERVICES_API void unregisterInOut(const std::string& key);
+
+    /**
+     * @brief Register an object for this service
+     * @param[in] obj input object used by the service
+     * @param[in] key key of the object
+     * @param[in] access access to the object (in or inout)
+     * @param[in] autoConnect if true, the service will be connected to the object's signals
+     * @param[in] optional if true, the service can be started even if the objet is not present
+     * @return
+     */
+    FWSERVICES_API void registerObject(const ::fwData::Object::sptr& obj, const std::string& key,
+                                       AccessType access, const bool autoConnect = false, const bool optional = false);
+
+    /**
+     * @brief Unregister an object for this service
+     * @param[in] key key of the object
+     */
+    FWSERVICES_API void unregisterObject(const std::string& key, AccessType access);
 
 protected:
 

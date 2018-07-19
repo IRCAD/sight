@@ -85,27 +85,61 @@ void ServiceTest::testServiceCreation()
 
 void ServiceTest::testServiceCreationWithMultipleData()
 {
-    const std::string dataKey = "data";
-    ::fwData::Integer::sptr obj = ::fwData::Integer::New();
+    const std::string dataKey1 = "data1";
+    const std::string dataKey2 = "data2";
+    const std::string dataKey3 = "data3";
+    ::fwData::Integer::sptr obj1 = ::fwData::Integer::New();
+    ::fwData::Integer::sptr obj2 = ::fwData::Integer::New();
+    ::fwData::Integer::sptr obj3 = ::fwData::Integer::New();
 
     // Test if the object support the service
-    CPPUNIT_ASSERT( ::fwServices::registry::ServiceFactory::getDefault()->support(obj->getClassname(),
+    CPPUNIT_ASSERT( ::fwServices::registry::ServiceFactory::getDefault()->support(obj1->getClassname(),
                                                                                   "::fwServices::ut::TestService") );
+    typedef ::fwServices::IService::AccessType AccessType;
 
     // Test adding service
     ::fwServices::IService::sptr srv = ::fwServices::add("::fwServices::ut::TestServiceImplementation");
-    srv->registerInOut(obj, dataKey);
-    CPPUNIT_ASSERT(::fwServices::OSR::isRegistered(dataKey, ::fwServices::IService::AccessType::INOUT, srv));
-    CPPUNIT_ASSERT(obj == ::fwServices::OSR::getRegistered(dataKey, ::fwServices::IService::AccessType::INOUT, srv));
+    srv->registerInOut(obj1, dataKey1);
+    CPPUNIT_ASSERT_EQUAL(true, ::fwServices::OSR::isRegistered(dataKey1, AccessType::INOUT, srv));
+    CPPUNIT_ASSERT(obj1 == ::fwServices::OSR::getRegistered(dataKey1, AccessType::INOUT, srv));
+    CPPUNIT_ASSERT_EQUAL(false, ::fwServices::OSR::isRegistered(dataKey2, AccessType::INOUT, srv));
+    CPPUNIT_ASSERT_EQUAL(false, ::fwServices::OSR::isRegistered(dataKey3, AccessType::INOUT, srv));
 
     // Test getting the service object
-    CPPUNIT_ASSERT_EQUAL(srv, srv);
-    CPPUNIT_ASSERT_EQUAL(obj, srv->getInOut< ::fwData::Integer >(dataKey));
+    CPPUNIT_ASSERT_EQUAL(obj1, srv->getInOut< ::fwData::Integer >(dataKey1));
+
+    srv->registerObject(obj2, dataKey2, AccessType::INOUT);
+    CPPUNIT_ASSERT_EQUAL(true, ::fwServices::OSR::isRegistered(dataKey2, AccessType::INOUT, srv));
+    CPPUNIT_ASSERT(obj2 == ::fwServices::OSR::getRegistered(dataKey2, AccessType::INOUT, srv));
+
+    // Test getting the service object
+    CPPUNIT_ASSERT_EQUAL(obj2, srv->getInOut< ::fwData::Integer >(dataKey2));
+
+    srv->registerInput(obj3, dataKey3);
+    CPPUNIT_ASSERT_EQUAL(true, ::fwServices::OSR::isRegistered(dataKey3, AccessType::INPUT, srv));
+    CPPUNIT_ASSERT(obj3 == ::fwServices::OSR::getRegistered(dataKey3, AccessType::INPUT, srv));
+
+    // Test getting the service object
+    CPPUNIT_ASSERT(obj3 == srv->getInput< ::fwData::Integer >(dataKey3));
+
+    // Test unregistering the objects
+    srv->unregisterInOut(dataKey1);
+    CPPUNIT_ASSERT_EQUAL(false, ::fwServices::OSR::isRegistered(dataKey1, AccessType::INOUT, srv));
+    CPPUNIT_ASSERT_EQUAL(true, ::fwServices::OSR::isRegistered(dataKey2, AccessType::INOUT, srv));
+    CPPUNIT_ASSERT_EQUAL(true, ::fwServices::OSR::isRegistered(dataKey3, AccessType::INPUT, srv));
+
+    srv->unregisterInOut(dataKey2);
+    CPPUNIT_ASSERT_EQUAL(false, ::fwServices::OSR::isRegistered(dataKey1, AccessType::INOUT, srv));
+    CPPUNIT_ASSERT_EQUAL(false, ::fwServices::OSR::isRegistered(dataKey2, AccessType::INOUT, srv));
+    CPPUNIT_ASSERT_EQUAL(true, ::fwServices::OSR::isRegistered(dataKey3, AccessType::INPUT, srv));
+
+    srv->unregisterInput(dataKey3);
+    CPPUNIT_ASSERT_EQUAL(false, ::fwServices::OSR::isRegistered(dataKey1, AccessType::INOUT, srv));
+    CPPUNIT_ASSERT_EQUAL(false, ::fwServices::OSR::isRegistered(dataKey2, AccessType::INOUT, srv));
+    CPPUNIT_ASSERT_EQUAL(false, ::fwServices::OSR::isRegistered(dataKey3, AccessType::INPUT, srv));
 
     // Test erasing service
     ::fwServices::OSR::unregisterService(srv);
-    CPPUNIT_ASSERT_EQUAL(false,
-                         ::fwServices::OSR::isRegistered(dataKey, ::fwServices::IService::AccessType::INOUT, srv));
 }
 
 //------------------------------------------------------------------------------
@@ -128,6 +162,10 @@ void ServiceTest::testServiceCreationWithTemplateMethods()
 
     // Test getting the service its object
     CPPUNIT_ASSERT_EQUAL(obj, srv->getInOut< ::fwData::Integer >(dataKey));
+
+    srv->unregisterInOut(dataKey);
+    CPPUNIT_ASSERT_EQUAL(false,
+                         ::fwServices::OSR::isRegistered(dataKey, ::fwServices::IService::AccessType::INOUT, srv));
 
     // Test erasing service
     ::fwServices::OSR::unregisterService(srv);
@@ -534,6 +572,12 @@ void ServiceTest::testWithInAndOut()
 
     CPPUNIT_ASSERT_EQUAL(false, ::fwServices::OSR::isRegistered(::fwServices::ut::TestServiceWithData::s_OUTPUT,
                                                                 ::fwServices::IService::AccessType::OUTPUT, service));
+
+    CPPUNIT_ASSERT_EQUAL(true, ::fwServices::OSR::isRegistered(::fwServices::ut::TestServiceWithData::s_INPUT,
+                                                               ::fwServices::IService::AccessType::INPUT, service));
+    service->unregisterInput(::fwServices::ut::TestServiceWithData::s_INPUT);
+    CPPUNIT_ASSERT_EQUAL(false, ::fwServices::OSR::isRegistered(::fwServices::ut::TestServiceWithData::s_INPUT,
+                                                                ::fwServices::IService::AccessType::INPUT, service));
     ::fwServices::OSR::unregisterService(service);
 }
 

@@ -145,18 +145,55 @@ void IService::registerInput(const ::fwData::Object::csptr& obj, const std::stri
 
 //------------------------------------------------------------------------------
 
+void IService::unregisterInput(const std::string& key)
+{
+    this->unregisterObject(key, AccessType::INPUT);
+}
+
+//------------------------------------------------------------------------------
+
 void IService::registerInOut(const ::fwData::Object::sptr& obj, const std::string& key, const bool autoConnect,
                              const bool optional)
 {
-    ::fwServices::OSR::registerService(obj, key, AccessType::INOUT, this->getSptr());
+    this->registerObject(obj, key, AccessType::INOUT, autoConnect, optional);
+}
+
+//------------------------------------------------------------------------------
+
+void IService::unregisterInOut(const std::string& key)
+{
+    this->unregisterObject(key, AccessType::INOUT);
+}
+
+//------------------------------------------------------------------------------
+
+void IService::registerObject(const ::fwData::Object::sptr& obj, const std::string& key,
+                              AccessType access, const bool autoConnect, const bool optional)
+{
+    ::fwServices::OSR::registerService(obj, key, access, this->getSptr());
 
     ObjectServiceConfig objConfig;
     objConfig.m_key         = key;
-    objConfig.m_access      = AccessType::INOUT;
+    objConfig.m_access      = access;
     objConfig.m_autoConnect = autoConnect;
     objConfig.m_optional    = optional;
 
     m_serviceConfig.m_objects.push_back(objConfig);
+}
+
+//------------------------------------------------------------------------------
+
+void IService::unregisterObject(const std::string& key, AccessType access)
+{
+    auto newItr = std::remove_if( m_serviceConfig.m_objects.begin(),  m_serviceConfig.m_objects.end(),
+                                  [&](const ObjectServiceConfig& config)
+        {
+            return (config.m_key == key && config.m_access == access);
+        });
+
+    m_serviceConfig.m_objects.erase(newItr);
+
+    ::fwServices::OSR::unregisterService(key, access, this->getSptr());
 }
 
 //-----------------------------------------------------------------------------
