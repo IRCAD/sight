@@ -38,10 +38,10 @@ int main(int argc, char** argv)
         po::options_description options("calDataGenerator Usage");
         options.add_options()
             ("help,h", "produce help message")
-            ("pixelX,w", po::value<int>(&pX)->required()->default_value(1920), "set image witdh (in pixel)")
-            ("pixelY,e", po::value<int>(&pY)->required()->default_value(1080), "set image height (in pixel)")
+            ("pixelX,x", po::value<int>(&pX)->required()->default_value(1920), "set image width (in pixel)")
+            ("pixelY,y", po::value<int>(&pY)->required()->default_value(1080), "set image height (in pixel)")
             ("nImg,n", po::value<size_t>(&nImg)->required()->default_value(20), "set number of image to produce")
-            ("sizeInmm,s", po::value<double>(&sizeImgInmm)->required()->default_value(276.25),
+            ("sizeInmm,s", po::value<double>(&sizeImgInmm)->required()->default_value(320),
             "set total width of board in mm")
             ("file,f", po::value<std::string>(&file)->required()->default_value("charucoBoard_13_9.bmp"),
             "set the input file")
@@ -57,7 +57,7 @@ int main(int argc, char** argv)
         if (vm.count("help"))
         {
             std::cout << "usage: " << argv[0] <<
-                " outputImageWidth outputImageHeigh numberOfImageToProduce sizeImgInmm infile.(jpg|png|tiff|...) outputFolder "
+                " outputImageWidth outputImageHeight numberOfImageToProduce sizeImgInmm infile.(jpg|png|tiff|...) outputFolder "
                       << std::endl;
             std::cout << options << std::endl;
             return EXIT_SUCCESS;
@@ -71,6 +71,23 @@ int main(int argc, char** argv)
             fs::create_directory(outFolder);
         }
 
+        // Create cam1 and cam2 folders.
+
+        const std::string cam1folder = outFolder + "/cam1";
+        const std::string cam2folder = outFolder + "/cam2";
+
+        if(!fs::exists(cam1folder) || !fs::is_directory(cam1folder))
+        {
+            std::cerr<<"cam1 directory: '"<< cam1folder <<"' didn't exists, it will be created."<<std::endl;
+            fs::create_directory(cam1folder);
+        }
+
+        if(!fs::exists(cam2folder) || !fs::is_directory(cam2folder))
+        {
+            std::cerr<<"cam2 directory: '"<< cam2folder <<"' didn't exists, it will be created."<<std::endl;
+            fs::create_directory(cam2folder);
+        }
+
         ::cv::Mat K1, K2, c0 = ::cv::Mat::zeros(3, 1, CV_64F), c1, T0 = ::cv::Mat::eye(4, 4, CV_64F);
         ::cv::Size imSize(pX, pY);
         std::vector< ::cv::Mat > centAndT;
@@ -81,13 +98,15 @@ int main(int argc, char** argv)
 
         centAndT = generateExtrinsicCalibration();
 
+        // Save generated calibration in a file.
         std::ofstream out;
         out.open(outFolder + "/Calibration.txt");
-
         out<<"K1 :"<<std::endl<<K1<<std::endl;
         out<<"K2 :"<<std::endl<<K2<<std::endl;
         out<<"T :"<<std::endl<<centAndT[1]<<std::endl;
+        out.close();
 
+        // Print calibration.
         std::cout<<"K1 :"<<std::endl<<K1<<std::endl;
         std::cout<<"K2 :"<<std::endl<<K2<<std::endl;
         std::cout<<"T :"<<std::endl<<centAndT[1]<<std::endl;
@@ -95,9 +114,9 @@ int main(int argc, char** argv)
         c1 = -(centAndT[1].rowRange(0, 3).colRange(0, 3)).t() * centAndT[1].rowRange(0, 3).col(3);
         Tc = generatePositionAndOrientationOfChessBoard(nImg, c0, c1, centAndT[0]);
         std::cout<<std::endl<<std::endl;
-        generatePhoto(K1, T0, Tc, imSize, sizeImgInmm, file, outFolder, 1);
+        generatePhoto(K1, T0, Tc, imSize, sizeImgInmm, file, cam1folder, 1);
         std::cout<<std::endl;
-        generatePhoto(K2, centAndT[1], Tc, imSize, sizeImgInmm, file, outFolder, 2);
+        generatePhoto(K2, centAndT[1], Tc, imSize, sizeImgInmm, file, cam2folder, 2);
 
     }
     catch(std::exception& e)
@@ -332,7 +351,7 @@ void generatePhoto(const cv::Mat& K, const cv::Mat& T0, const std::vector<cv::Ma
                     solH.at<double>(1, 0) = sol.at<double>(1, 0);
                     solH.at<double>(2, 0) = sol.at<double>(2, 0);
 
-                    dampos = T1[k]*solH*inImg.size[1]/sizeImgInmm+ imgOffset;
+                    dampos = T1[k]* solH* std::max(inImg.size[0], inImg.size[1])/sizeImgInmm + imgOffset;
                     double dampos1 = dampos.at<double>(0, 0);
                     double dampos2 = dampos.at<double>(1, 0);
                     if((dampos1 > 0) && (dampos1 < (inImg.size[1]-1)) && (dampos2 > 0) && (dampos2 < (inImg.size[0]-1)))
@@ -352,13 +371,14 @@ void generatePhoto(const cv::Mat& K, const cv::Mat& T0, const std::vector<cv::Ma
             }
         }
 
-        ::cv::imwrite(outFolder + "/Cam" + std::to_string(nCam) + "_Pic" + std::to_string(k+1) + ".bmp", photo);
+        // Generate filename and write image.
+        const std::string filename = outFolder + "/Cam" + std::to_string(nCam) + "_Pic_" + std::to_string(k+1) + ".bmp";
+
+        ::cv::imwrite(filename, photo);
 
         const double percentage = static_cast<double>(((nCam - 1) * T1.size() + k + 1)) /
                                   static_cast<double>((T1.size() * 2));
 
-        std::cout<< static_cast<int>(percentage * 100)<<"%\t| Generating '"<<
-        (outFolder + "/Cam" + std::to_string(nCam) + "_Pic" + std::to_string(k+1) + ".bmp")<<
-            "' done. "<<std::endl;
+        std::cout<< static_cast<int>(percentage * 100)<<"%\t| Generating '"<< filename <<"' done. "<<std::endl;
     }
 }
