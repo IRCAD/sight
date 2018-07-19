@@ -54,7 +54,8 @@ namespace videoOpenCV
  * - \b setPositionVideo(int) : Force the current time in the video.
  * - \b nextImage() : Read the next image (in frame-by-frame mode).
  * - \b previousImage() : Read the previous image (in frame-by-frame mode).
- * - \b setStep() : set the step value between two images when calling readNext/readPrevious on onShot mode
+ * - \b setStep(int step, std::string key) : set the step value between two images when calling nextImage/previousImage
+ * slots on oneShot mode (supported key: "step")
  *
  * @section XML XML Configuration
  *
@@ -134,7 +135,7 @@ protected:
 private:
 
     /// SLOT: Set step used on readPrevious/readNext slots
-    void setStep(int _step);
+    void setStep(int _step, std::string _key);
 
     typedef std::vector< ::boost::filesystem::path > ImageFilesType;
     typedef std::vector< double > ImageTimestampsType;
@@ -192,8 +193,11 @@ private:
     /// if true: the grabber is paused
     bool m_isPaused;
 
-    /// Step between two images when calling readNext() and readPrevious() slots
+    /// Step between two images when calling nexImage()/previousImage() slots
     unsigned long m_step;
+    /// Step value updated in setStep() slot used to compute a shift value when calling nextImage()/previousImage()
+    // slots
+    unsigned long m_stepChanged;
 };
 
 } // namespace videoOpenCV

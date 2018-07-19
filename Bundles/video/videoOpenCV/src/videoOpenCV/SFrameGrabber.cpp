@@ -49,7 +49,8 @@ SFrameGrabber::SFrameGrabber() noexcept :
     m_createNewTS(false),
     m_useTimelapse(true),
     m_isPaused(false),
-    m_step(1)
+    m_step(1),
+    m_stepChanged(1)
 {
     m_worker = ::fwThread::Worker::New();
 
@@ -93,6 +94,7 @@ void SFrameGrabber::configuring()
 
     m_step = config.get<unsigned int>("step", m_step);
     OSLM_ASSERT("Step value is set to " << m_step << " but should be > 0.", m_step > 0);
+    m_stepChanged = m_step;
 }
 
 // -----------------------------------------------------------------------------
@@ -619,8 +621,15 @@ void SFrameGrabber::nextImage()
 {
     if(m_oneShot)
     {
-        if(m_imageCount < m_imageToRead.size())
+        // Compute difference between a possible step change in setStep() slot and the current step value
+        const unsigned long shift = m_stepChanged - m_step;
+
+        if(m_imageCount + shift < m_imageToRead.size())
         {
+            // Update image position index
+            m_imageCount += shift;
+            m_step        = m_stepChanged;
+
             m_timer->stop();
             m_timer->start();
         }
@@ -639,9 +648,16 @@ void SFrameGrabber::previousImage()
 {
     if(m_oneShot)
     {
-        if(m_imageCount > m_step)
+        if(m_imageCount - m_step >= m_stepChanged)
         {
-            m_imageCount = m_imageCount - (2*m_step); // m_imageCount is pointing to next image,so -1 = present image
+            // Compute difference between a possible step change in setStep() slot and the current step value
+            const unsigned long shift = m_stepChanged - m_step;
+
+            // Update image position index
+            m_imageCount = m_imageCount - (2*m_step) - shift; // m_imageCount is pointing to next image,so -1 = present
+                                                              // image
+            m_step = m_stepChanged;
+
             m_timer->stop();
             m_timer->start();
         }
@@ -656,14 +672,18 @@ void SFrameGrabber::previousImage()
 
 //-----------------------------------------------------------------------------
 
-void SFrameGrabber::setStep(int _step)
+void SFrameGrabber::setStep(int _step, std::string _key)
 {
-    OSLM_ASSERT("Needed step value (" << _step << ") should be > 0.", _step > 0);
-    // Update matrix position index
-    const unsigned long shift = static_cast<unsigned long>(_step) - m_step;
-    m_imageCount += shift;
-    // Set the new step
-    m_step = static_cast<unsigned long>(_step);
+    if(_key == "step")
+    {
+        OSLM_ASSERT("Needed step value (" << _step << ") should be > 0.", _step > 0);
+        // Save the changed step value
+        m_stepChanged = static_cast<unsigned long>(_step);
+    }
+    else
+    {
+        OSLM_WARN("Only 'step' key is supported (current key value is : '" << _key << "').");
+    }
 }
 
 //------------------------------------------------------------------------------

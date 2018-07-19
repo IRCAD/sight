@@ -35,7 +35,8 @@ namespace ioTimeline
  * - \b pause(): pause reading.
  * - \b readNext() : read next matrices
  * - \b readPrevious() : read previous matrices
- * - \b setStep() : set the step value between two matrices when calling readNext/readPrevious on onShot mode
+ * - \b setStep(int step, std::string key) : set the step value between two matrices when calling readNext/readPrevious
+ * slots on oneShot mode (supported key: "step")
  *
  * @section XML XML Configuration
  *
@@ -127,7 +128,7 @@ private:
     void pause();
 
     /// SLOT: Set step used on readPrevious/readNext slots
-    void setStep(int _step);
+    void setStep(int _step, std::string _key);
 
     /// Read matrices (this function is set to the worker)
     void readMatrices();
@@ -153,8 +154,10 @@ private:
     /// If set to true, ignore the fps value and use the interval between timestamps for the timer
     bool m_useTimelapse;
 
-    /// Step between two matrices when calling readNext() and readPrevious() slots
+    /// Step between two matrices when calling readNext()/readPrevious() slots
     unsigned long m_step;
+    /// Step value updated in setStep() slot used to compute a shift value when calling readPrevious()/readNext() slots
+    unsigned long m_stepChanged;
 };
 
 } // ioTimeline

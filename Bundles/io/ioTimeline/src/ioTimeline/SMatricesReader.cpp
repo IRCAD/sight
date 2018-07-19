@@ -50,7 +50,8 @@ SMatricesReader::SMatricesReader() noexcept :
     m_fps(30),
     m_oneShot(false),
     m_useTimelapse(false),
-    m_step(1)
+    m_step(1),
+    m_stepChanged(1)
 {
 
     m_worker = ::fwThread::Worker::New();
@@ -100,6 +101,7 @@ void SMatricesReader::configuring()
 
     m_step = config.get<unsigned long>("step", m_step);
     OSLM_ASSERT("Step value is set to " << m_step << " but should be > 0.", m_step > 0);
+    m_stepChanged = m_step;
 }
 
 //------------------------------------------------------------------------------
@@ -162,10 +164,15 @@ void SMatricesReader::readPrevious()
 {
     if(m_oneShot)
     {
-        if(m_tsMatricesCount > m_step)
+        if(m_tsMatricesCount- m_step >= m_stepChanged)
         {
-            m_tsMatricesCount = m_tsMatricesCount - (2*m_step);// m_tsMatricesCount is pointing to previous matrix,so
-                                                               // -1 = present matrix
+            // Compute difference between a possible step change in setStep() slot and the current step value
+            const unsigned long shift = m_stepChanged - m_step;
+
+            m_tsMatricesCount = m_tsMatricesCount - (2*m_step) - shift;// m_tsMatricesCount is pointing to previous
+                                                                       // matrix,so -1 = present matrix
+            m_step = m_stepChanged;
+
             m_timer->stop();
             m_timer->start();
         }
@@ -184,8 +191,15 @@ void SMatricesReader::readNext()
 {
     if(m_oneShot)
     {
-        if(m_tsMatricesCount < m_tsMatrices.size())
+        // Compute difference between a possible step change in setStep() slot and the current step value
+        const unsigned long shift = m_stepChanged - m_step;
+
+        if(m_tsMatricesCount + shift < m_tsMatrices.size())
         {
+            // Update matrix position index
+            m_tsMatricesCount += shift;
+            m_step             = m_stepChanged;
+
             m_timer->stop();
             m_timer->start();
         }
@@ -199,14 +213,18 @@ void SMatricesReader::readNext()
 
 //------------------------------------------------------------------------------
 
-void SMatricesReader::setStep(int _step)
+void SMatricesReader::setStep(int _step, std::string _key)
 {
-    OSLM_ASSERT("Needed step value (" << _step << ") should be > 0.", _step > 0);
-    // Update matrix position index
-    const unsigned long shift = static_cast<unsigned long>(_step) - m_step;
-    m_tsMatricesCount += shift;
-    // Set the new step
-    m_step = static_cast<unsigned long>(_step);
+    if(_key == "step")
+    {
+        OSLM_ASSERT("Needed step value (" << _step << ") should be > 0.", _step > 0);
+        // Save the changed step value
+        m_stepChanged = static_cast<unsigned long>(_step);
+    }
+    else
+    {
+        OSLM_WARN("Only 'step' key is supported (current key value is : '" << _key << "').");
+    }
 }
 
 //------------------------------------------------------------------------------
