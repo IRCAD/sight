@@ -1,0 +1,9 @@
+<plugin id="Tuto08GenericSceneCtrl" class="::Tuto08GenericSceneCtrl::Plugin"  version="@PROJECT_VERSION@" >
+
+    <requirement id="dataReg" />
+    <requirement id="servicesReg" />
+    <requirement id="visuVTKQt" />
+
+    <library name="Tuto08GenericSceneCtrl" />
+    
+</plugin>
