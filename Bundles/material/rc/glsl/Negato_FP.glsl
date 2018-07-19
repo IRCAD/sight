@@ -31,7 +31,6 @@ vec4 getFragmentColor()
 
     vec4 windowedColor = sampleTransferFunction(value);
 
-    /// float alpha = u_diffuse.a; if(u_enableAlpha == 1){alpha = windowedColor.a}
     float alpha = (1 - u_enableAlpha) * u_diffuse.a + u_enableAlpha * windowedColor.a;
 
     return vec4( windowedColor.rgb, alpha );

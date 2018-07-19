@@ -40,7 +40,7 @@ const ::fwCom::Slots::SlotKeyType SNegato3D::s_UPDATE_VISIBILITY_SLOT = "updateV
 static const std::string s_IMAGE_INOUT = "image";
 static const std::string s_TF_INOUT    = "tf";
 
-static const std::string s_ENABLE_APLHA_CONFIG = "enableAlpha";
+static const std::string s_ENABLE_APLHA_CONFIG = "tfalpha";
 
 //------------------------------------------------------------------------------
 

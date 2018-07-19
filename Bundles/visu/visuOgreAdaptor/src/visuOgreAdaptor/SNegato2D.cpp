@@ -36,7 +36,7 @@ const ::fwCom::Slots::SlotKeyType s_SLICEINDEX_SLOT = "sliceIndex";
 static const ::fwServices::IService::KeyType s_IMAGE_INOUT = "image";
 static const ::fwServices::IService::KeyType s_TF_INOUT    = "tf";
 
-static const std::string s_ENABLE_APLHA_CONFIG = "enableAlpha";
+static const std::string s_ENABLE_APLHA_CONFIG = "tfalpha";
 
 //------------------------------------------------------------------------------
 

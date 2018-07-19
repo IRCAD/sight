@@ -33,7 +33,7 @@ namespace visuOgreAdaptor
         <service type="::visuOgreAdaptor::SNegato2D">
             <inout key="image" uid="..." />
             <inout key="tf" uid="..." optional="yes" />
-            <config layer="default" sliceIndex="axial" filtering="none" />
+            <config layer="default" sliceIndex="axial" filtering="none" tfalpha="true" />
        </service>
    @endcode
  * @subsection In-Out In-Out:
@@ -46,6 +46,7 @@ namespace visuOgreAdaptor
  * - \b layer (mandatory): id of the layer where this adaptor applies.
  * - \b sliceIndex (optional, axial/frontal/sagittal, default=axial): orientation of the negato
  * - \b filtering (optional, none/linear/anisotropic, default=none): texture filter type of the negato
+ * - \b tfalpha (optional, true/false, default=false): alpha channel of the transfer function
  */
 class VISUOGREADAPTOR_CLASS_API SNegato2D : public ::fwRenderOgre::IAdaptor,
                                             public ::fwDataTools::helper::MedicalImageAdaptor
