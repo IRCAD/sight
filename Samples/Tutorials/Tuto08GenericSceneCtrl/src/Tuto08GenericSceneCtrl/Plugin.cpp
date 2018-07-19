@@ -115,6 +115,7 @@ void Plugin::initialize()
     ::fwServices::IService::ConfigType menuItem4;
     menuItem4.put("<xmlattr>.name", "Quit");
     menuItem4.put("<xmlattr>.shortcut", "Ctrl+Q");
+    menuItem4.put("<xmlattr>.specialAction", "QUIT");
 
     menuConfig.add_child("gui.layout.menuItem", menuItem1);
     menuConfig.add_child("gui.layout.menuItem", menuItem2);
@@ -138,14 +139,8 @@ void Plugin::initialize()
     menuConfig.add_child("registry.menuItem", menuItem2Reg);
     menuConfig.add_child("registry.menuItem", menuItem3Reg);
     menuConfig.add_child("registry.menuItem", menuItem4Reg);
-
     menu->setConfiguration(menuConfig);
     menu->configure();
-
-    actionOpenImage->configure();
-    actionOpenMesh->configure();
-    actionOpenTexture->configure();
-    actionQuit->configure();
 
     ::fwServices::IService::ConfigType mainViewConfig;
     ::fwServices::IService::ConfigType mainViewLayoutConfig;
@@ -158,7 +153,6 @@ void Plugin::initialize()
     mainView2.put("<xmlattr>.minHeight", "30");
     mainViewLayoutConfig.add_child("view", mainView1);
     mainViewLayoutConfig.add_child("view", mainView2);
-    menuConfig.add_child("gui.layout", mainViewLayoutConfig);
     mainViewConfig.add_child("gui.layout", mainViewLayoutConfig);
     ::fwServices::IService::ConfigType mainView1Reg;
     mainView1Reg.put("<xmlattr>.sid", "genericScene");
@@ -231,6 +225,8 @@ void Plugin::initialize()
     actionOpenTextureConfig.add("start.<xmlattr>.uid", "textureReader");
     actionOpenTexture->setConfiguration(actionOpenTextureConfig);
     actionOpenTexture->configure();
+
+    actionQuit->configure();
 
     /* **************************************************************************************
     *              readers configuration
@@ -361,11 +357,13 @@ void Plugin::initialize()
     *              start the services
     ****************************************************************************************/
     frameSrv->start();
+    progressBar->start();
     imageAdaptor->start();
     meshAdaptor->start();
     textureAdaptor->start();
     snapshotAdaptor->start();
     m_startedService.emplace_back(frameSrv);
+    m_startedService.emplace_back(progressBar);
     m_startedService.emplace_back(imageAdaptor);
     m_startedService.emplace_back(meshAdaptor);
     m_startedService.emplace_back(textureAdaptor);

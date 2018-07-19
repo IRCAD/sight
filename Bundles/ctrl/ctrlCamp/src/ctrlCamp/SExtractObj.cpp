@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -43,11 +43,6 @@ void SExtractObj::configuring()
 
     const std::vector< ConfigurationType > extractCfg = inoutCfg->find("extract");
     SLM_ASSERT("At least one 'extract' tag is required.", !extractCfg.empty());
-
-    const ConfigurationType outCfg = m_configuration->findConfigurationElement("out");
-
-    const std::vector< ConfigurationType > outKeyCfg = outCfg->find("key");
-    SLM_ASSERT("You must have as many 'from' tags as 'out' keys.", extractCfg.size() == outKeyCfg.size());
 
     for(ConfigurationType cfg : extractCfg)
     {
