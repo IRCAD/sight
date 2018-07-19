@@ -493,6 +493,8 @@ void SFrameGrabber::grabImage()
             timestamp = m_imageTimestamps[m_imageCount];
         }
 
+        OSLM_DEBUG("Reading image index " << m_imageCount << " with timestamp " << timestamp);
+
         const size_t width  = static_cast<size_t>(image.size().width);
         const size_t height = static_cast<size_t>(image.size().height);
 
@@ -654,10 +656,14 @@ void SFrameGrabber::previousImage()
 
 //-----------------------------------------------------------------------------
 
-void SFrameGrabber::setStep(unsigned int _step)
+void SFrameGrabber::setStep(int _step)
 {
     OSLM_ASSERT("Needed step value (" << _step << ") should be > 0.", _step > 0);
-    m_step = _step;
+    // Update matrix position index
+    const unsigned long shift = static_cast<unsigned long>(_step) - m_step;
+    m_imageCount += shift;
+    // Set the new step
+    m_step = static_cast<unsigned long>(_step);
 }
 
 //------------------------------------------------------------------------------

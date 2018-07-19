@@ -98,7 +98,7 @@ void SMatricesReader::configuring()
 
     m_oneShot = config.get<bool>("oneShot", m_oneShot);
 
-    m_step = config.get<unsigned int>("step", m_step);
+    m_step = config.get<unsigned long>("step", m_step);
     OSLM_ASSERT("Step value is set to " << m_step << " but should be > 0.", m_step > 0);
 }
 
@@ -199,10 +199,14 @@ void SMatricesReader::readNext()
 
 //------------------------------------------------------------------------------
 
-void SMatricesReader::setStep(unsigned int _step)
+void SMatricesReader::setStep(int _step)
 {
     OSLM_ASSERT("Needed step value (" << _step << ") should be > 0.", _step > 0);
-    m_step = _step;
+    // Update matrix position index
+    const unsigned long shift = static_cast<unsigned long>(_step) - m_step;
+    m_tsMatricesCount += shift;
+    // Set the new step
+    m_step = static_cast<unsigned long>(_step);
 }
 
 //------------------------------------------------------------------------------

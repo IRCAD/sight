@@ -127,7 +127,7 @@ private:
     void pause();
 
     /// SLOT: Set step used on readPrevious/readNext slots
-    void setStep(unsigned int _step);
+    void setStep(int _step);
 
     /// Read matrices (this function is set to the worker)
     void readMatrices();
@@ -154,7 +154,7 @@ private:
     bool m_useTimelapse;
 
     /// Step between two matrices when calling readNext() and readPrevious() slots
-    unsigned int m_step;
+    unsigned long m_step;
 };
 
 } // ioTimeline

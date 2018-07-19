@@ -134,7 +134,7 @@ protected:
 private:
 
     /// SLOT: Set step used on readPrevious/readNext slots
-    void setStep(unsigned int _step);
+    void setStep(int _step);
 
     typedef std::vector< ::boost::filesystem::path > ImageFilesType;
     typedef std::vector< double > ImageTimestampsType;
@@ -193,7 +193,7 @@ private:
     bool m_isPaused;
 
     /// Step between two images when calling readNext() and readPrevious() slots
-    unsigned int m_step;
+    unsigned long m_step;
 };
 
 } // namespace videoOpenCV
