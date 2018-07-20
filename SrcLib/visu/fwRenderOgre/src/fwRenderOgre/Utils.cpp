@@ -711,7 +711,7 @@ bool Utils::makePathsAbsolute(const std::string& key, std::istream& input, std::
     for(std::string line; std::getline(input, line);)
     {
         // Remove all whitespace from the line.
-        line.erase(std::remove_if(line.begin(), line.end(), isspace));
+        line.erase(std::remove_if(line.begin(), line.end(), isspace), line.end());
 
         // Skip comments, go to the next line.
         if(line[0] != '#')
