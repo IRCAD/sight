@@ -167,7 +167,7 @@ void SMatricesReader::readPrevious()
         if(m_tsMatricesCount- m_step >= m_stepChanged)
         {
             // Compute difference between a possible step change in setStep() slot and the current step value
-            const long shift = m_stepChanged - m_step;
+            const long shift = static_cast<long>(m_stepChanged - m_step);
 
             m_tsMatricesCount = m_tsMatricesCount - (2*m_step) - shift;// m_tsMatricesCount is pointing to previous
                                                                        // matrix,so -1 = present matrix
@@ -192,7 +192,7 @@ void SMatricesReader::readNext()
     if(m_oneShot)
     {
         // Compute difference between a possible step change in setStep() slot and the current step value
-        const long shift = m_stepChanged - m_step;
+        const long shift = static_cast<long>(m_stepChanged - m_step);
 
         if(m_tsMatricesCount + shift < m_tsMatrices.size())
         {

@@ -622,7 +622,7 @@ void SFrameGrabber::nextImage()
     if(m_oneShot)
     {
         // Compute difference between a possible step change in setStep() slot and the current step value
-        const long shift = m_stepChanged - m_step;
+        const long shift = static_cast<long>(m_stepChanged - m_step);
 
         if(m_imageCount + shift < m_imageToRead.size())
         {
@@ -651,7 +651,7 @@ void SFrameGrabber::previousImage()
         if(m_imageCount - m_step >= m_stepChanged)
         {
             // Compute difference between a possible step change in setStep() slot and the current step value
-            const long shift = m_stepChanged - m_step;
+            const long shift = static_cast<long>(m_stepChanged - m_step);
 
             // Update image position index
             m_imageCount = m_imageCount - (2*m_step) - shift; // m_imageCount is pointing to next image,so -1 = present
