@@ -43,21 +43,13 @@
 #include <sstream>
 
 #include <boost/lexical_cast.hpp>
-#include <windows.h>
-#include <dbghelp.h>
+#include <Windows.h>
+#include <DbgHelp.h>
 
 #endif
 
 namespace monitor
 {
-
-//------------------------------------------------------------------------------
-
-void generateSIGSEV()
-{
-    char* p = (char*)0xdeadbeef;
-    *p = 10;    /* CRASH here!! */
-}
 
 #ifndef WIN32
 //------------------------------------------------------------------------------
@@ -103,7 +95,6 @@ void bt_sighandler(int sig, siginfo_t* info,
 {
 
     void* trace[16];
-    char** messages = (char**)NULL;
     int i, trace_size = 0;
     ucontext_t* uc = (ucontext_t*)secret;
 
@@ -126,7 +117,7 @@ void bt_sighandler(int sig, siginfo_t* info,
     trace[1] = (void*) uc->uc_mcontext.gregs[REG_EIP];
 #endif
 
-    messages = backtrace_symbols(trace, trace_size);
+    char** messages = backtrace_symbols(trace, trace_size);
     /* skip first stack frame (points here) */
     ss <<  "    [bt] Execution path:" << std::endl;
     for (i = 1; i < trace_size; ++i)
@@ -155,8 +146,8 @@ void installSIGSEVBacktrace()
     sigemptyset(&sa.sa_mask);
     sa.sa_flags = SA_RESTART | SA_SIGINFO;
 
-    sigaction(SIGSEGV, &sa, NULL);
-    sigaction(SIGUSR1, &sa, NULL);
+    sigaction(SIGSEGV, &sa, nullptr);
+    sigaction(SIGUSR1, &sa, nullptr);
 }
 
 #else // if  win32
@@ -257,8 +248,8 @@ void LoadCallStack(EXCEPTION_POINTERS* exceptionInfos, HANDLE& hProcess, std::li
     DWORD lineDisplacement;
     IMAGEHLP_LINE64 lineInfo = { sizeof(IMAGEHLP_LINE64) };
 
-    while(StackWalk64(machineType, hProcess, GetCurrentThread(), &tempStackFrame, &context, NULL,
-                      SymFunctionTableAccess64, SymGetModuleBase64, NULL))
+    while(StackWalk64(machineType, hProcess, GetCurrentThread(), &tempStackFrame, &context, nullptr,
+                      SymFunctionTableAccess64, SymGetModuleBase64, nullptr))
     {
         // Sanity stack check
         if(tempStackFrame.AddrPC.Offset == 0)
@@ -306,7 +297,7 @@ static LONG WINAPI UnhandledExpFilter(PEXCEPTION_POINTERS pExceptionInfo)
     SymSetOptions(SYMOPT_UNDNAME|SYMOPT_DEFERRED_LOADS|SYMOPT_LOAD_LINES);
     hProcess = GetCurrentProcess();
 
-    if(SymInitialize(hProcess, NULL, TRUE))
+    if(SymInitialize(hProcess, nullptr, TRUE))
     {
         LoadCallStack(pExceptionInfo, hProcess, callStack, fileStack);
         ::EnumerateLoadedModules64(hProcess, EnumerateLoadedModules, &loadedModules);
