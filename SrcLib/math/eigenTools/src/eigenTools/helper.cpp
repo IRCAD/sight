@@ -6,6 +6,8 @@
 
 #include "eigenTools/helper.hpp"
 
+#include <Eigen/Geometry>
+
 namespace eigenTools
 {
 

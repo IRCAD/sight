@@ -11,8 +11,6 @@
 #include <fwData/TransformationMatrix3D.hpp>
 
 #include <Eigen/Core>
-#include <Eigen/Dense>
-#include <Eigen/Eigen>
 
 namespace eigenTools
 {
