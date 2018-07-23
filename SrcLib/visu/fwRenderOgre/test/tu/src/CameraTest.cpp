@@ -195,9 +195,6 @@ void CameraTest::convertPixelToWorldSpace()
     camera->setWidth(width);
     camera->setHeight(height);
 
-    ::Ogre::Matrix4 m =
-        ::fwRenderOgre::helper::Camera::computeProjectionMatrix(*camera, width, height, n, f);
-
     ::Ogre::Camera* ogreCamera;
 
     auto root = ::fwRenderOgre::Utils::getOgreRoot();
@@ -218,16 +215,33 @@ void CameraTest::convertPixelToWorldSpace()
 
     auto viewport = ogreRenderWindow->addViewport(ogreCamera, 0);
 
-    viewport->setDimensions(0, 0, width, height);
-
     float point1[3] = {0, 0, 0};
     float point2[3] = {12, 34, 56};
     float point3[3] = {-65, -43, -21};
 
-    // All math was done by taking into account ogre multiplaction methods.
-    Ogre::Vector3 point1Expected = {-110.34660339355469, 82.75994873046875, -199.8001708984375};
-    Ogre::Vector3 point2Expected = {2.0101823806762695, -1.4128586053848267, 3.6401357650756836};
-    Ogre::Vector3 point3Expected = {-5.028173923492432, 4.069128513336182, -9.0991792678833};
+    Ogre::Vector3 point1Expected = {0, 0, 0};
+    Ogre::Vector3 point2Expected = {0, 0, 56};
+    Ogre::Vector3 point3Expected = {0, 0, -21};
+
+    float actualWidth  = static_cast<float>(viewport->getActualWidth());
+    float actualHeight = static_cast<float>(viewport->getActualHeight());
+
+    // Since the viewport's dimensions are relative to each configuration, we must recalculate all conversions.
+    point1Expected[0] = point1[0]/static_cast<float>(viewport->getActualWidth()) *2.f - 1.f;
+    point1Expected[1] = -(point1[1]/static_cast<float>(viewport->getActualHeight()) * 2.f - 1.f);
+
+    point2Expected[0] = point2[0]/static_cast<float>(viewport->getActualWidth()) *2.f - 1.f;
+    point2Expected[1] = -(point2[1]/static_cast<float>(viewport->getActualHeight()) * 2.f - 1.f);
+
+    point3Expected[0] = point3[0]/static_cast<float>(viewport->getActualWidth()) *2.f - 1.f;
+    point3Expected[1] = -(point3[1]/static_cast<float>(viewport->getActualHeight()) * 2.f - 1.f);
+
+    const ::Ogre::Matrix4 viewMat = ogreCamera->getViewMatrix();
+    const ::Ogre::Matrix4 projMat = ogreCamera->getProjectionMatrixWithRSDepth();
+
+    point1Expected = viewMat.inverse() * projMat.inverse() * point1Expected;
+    point2Expected = viewMat.inverse() * projMat.inverse() * point2Expected;
+    point3Expected = viewMat.inverse() * projMat.inverse() * point3Expected;
 
     auto result1 = ::fwRenderOgre::helper::Camera::convertPixelToViewSpace(*ogreCamera, point1);
     auto result2 = ::fwRenderOgre::helper::Camera::convertPixelToViewSpace(*ogreCamera, point2);
