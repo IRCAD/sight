@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017.
+ * FW4SPL - Copyright (C) IRCAD, 2017-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,7 +10,7 @@
 
 #include <fwData/TransformationMatrix3D.hpp>
 
-#include <Eigen/Core>
+#include <Eigen/Geometry>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::eigenTools::ut::EigenToolsTest );
@@ -199,4 +199,3 @@ void EigenToolsTest::float16ToEigen()
 
 } // namespace ut
 } // namespace eigenTools
-
