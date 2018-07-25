@@ -15,7 +15,6 @@
             <object uid="image" type="::fwData::Image" />
 
             <object uid="transferFunction" type="::fwData::TransferFunction" src="deferred" />
-            <object uid="landmarks" type="::fwData::Landmarks" />
             <object uid="TFPool" type="::fwData::Composite" />
             <object uid="histogram" type="::fwData::Histogram" />
             <object uid="shift" type="::fwData::Integer" />
@@ -103,7 +102,7 @@
 
             <!-- Begin Generic Scene ***************************************** -->
             <service uid="stereoScene" type="::fwRenderOgre::SRender" >
-                <scene overlay="true" fullscreen="true" >
+                <scene overlays="LogoOverlay" fullscreen="true" >
                     <background topColor="#DDDDDD" bottomColor="#43958D" topScale="0.7" bottomScale="1.0" />
                     <layer id="default" depth="1" stereoMode="Stereo" />
                     <adaptor uid="interactorAdaptor" />
@@ -155,7 +154,7 @@
                 <parameter replace="WID_PARENT" by="tfScene"/>
             </service>
 
-            <service uid="parametersEditor" type="::guiQt::editor::SParameters" autoConnect="no">
+            <service uid="parametersEditor" type="::guiQt::editor::SParameters" >
                 <parameters>
                     <param type="bool" name="Show cropping box" key="widgets" defaultValue="false" />
                     <param type="bool" name="Invert lines" key="u_invertLines" defaultValue="false" />
