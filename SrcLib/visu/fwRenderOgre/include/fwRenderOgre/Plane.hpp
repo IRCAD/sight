@@ -63,6 +63,8 @@ public:
 
     FWRENDEROGRE_API void setOrientationMode(OrientationMode _newMode);
 
+    FWRENDEROGRE_API void enableAlpha(bool);
+
     FWRENDEROGRE_API void setOriginPosition(const ::Ogre::Vector3& _origPos);
 
     FWRENDEROGRE_API std::vector< ::Ogre::Real > getDepthSpacing();
