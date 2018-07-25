@@ -223,29 +223,31 @@ void CameraTest::convertPixelToWorldSpace()
     Ogre::Vector3 point2Expected = {0, 0, 56};
     Ogre::Vector3 point3Expected = {0, 0, -21};
 
-    float actualWidth  = static_cast<float>(viewport->getActualWidth());
-    float actualHeight = static_cast<float>(viewport->getActualHeight());
+    const float actualWidth  = static_cast<float>(viewport->getActualWidth());
+    const float actualHeight = static_cast<float>(viewport->getActualHeight());
 
     // Since the viewport's dimensions are relative to each configuration, we must recalculate all conversions.
-    point1Expected[0] = point1[0]/static_cast<float>(viewport->getActualWidth()) *2.f - 1.f;
-    point1Expected[1] = -(point1[1]/static_cast<float>(viewport->getActualHeight()) * 2.f - 1.f);
+    point1Expected[0] = point1[0]/actualWidth *2.f - 1.f;
+    point1Expected[1] = -(point1[1]/actualHeight * 2.f - 1.f);
 
-    point2Expected[0] = point2[0]/static_cast<float>(viewport->getActualWidth()) *2.f - 1.f;
-    point2Expected[1] = -(point2[1]/static_cast<float>(viewport->getActualHeight()) * 2.f - 1.f);
+    point2Expected[0] = point2[0]/actualWidth *2.f - 1.f;
+    point2Expected[1] = -(point2[1]/actualHeight * 2.f - 1.f);
 
-    point3Expected[0] = point3[0]/static_cast<float>(viewport->getActualWidth()) *2.f - 1.f;
-    point3Expected[1] = -(point3[1]/static_cast<float>(viewport->getActualHeight()) * 2.f - 1.f);
+    point3Expected[0] = point3[0]/actualWidth *2.f - 1.f;
+    point3Expected[1] = -(point3[1]/actualHeight * 2.f - 1.f);
 
     const ::Ogre::Matrix4 viewMat = ogreCamera->getViewMatrix();
     const ::Ogre::Matrix4 projMat = ogreCamera->getProjectionMatrixWithRSDepth();
 
-    point1Expected = viewMat.inverse() * projMat.inverse() * point1Expected;
-    point2Expected = viewMat.inverse() * projMat.inverse() * point2Expected;
-    point3Expected = viewMat.inverse() * projMat.inverse() * point3Expected;
+    const auto inversedCombinedMat = (projMat * viewMat).inverse();
 
-    auto result1 = ::fwRenderOgre::helper::Camera::convertPixelToViewSpace(*ogreCamera, point1);
-    auto result2 = ::fwRenderOgre::helper::Camera::convertPixelToViewSpace(*ogreCamera, point2);
-    auto result3 = ::fwRenderOgre::helper::Camera::convertPixelToViewSpace(*ogreCamera, point3);
+    point1Expected = inversedCombinedMat * point1Expected;
+    point2Expected = inversedCombinedMat * point2Expected;
+    point3Expected = inversedCombinedMat * point3Expected;
+
+    const auto result1 = ::fwRenderOgre::helper::Camera::convertPixelToViewSpace(*ogreCamera, point1);
+    const auto result2 = ::fwRenderOgre::helper::Camera::convertPixelToViewSpace(*ogreCamera, point2);
+    const auto result3 = ::fwRenderOgre::helper::Camera::convertPixelToViewSpace(*ogreCamera, point3);
 
     Utils::destroyOgreRoot();
 
