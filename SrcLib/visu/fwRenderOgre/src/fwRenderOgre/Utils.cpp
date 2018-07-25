@@ -250,7 +250,6 @@ void Utils::destroyOgreRoot()
 
     delete s_overlaySystem;
 
-    root->shutdown();
     delete root;
 }
 
