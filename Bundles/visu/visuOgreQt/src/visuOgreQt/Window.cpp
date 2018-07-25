@@ -294,8 +294,8 @@ void Window::exposeEvent(QExposeEvent* exposeEvent)
 #if defined(__APPLE__)
     if(nonEmptyRegion)
     {
-        // This allow correct renderring on dual screen display when dragging window to another screen
-        ogreResize(this->size());
+        // This allows correct rendering on dual screen displays when dragging the window to another screen.
+        this->ogreResize(this->size());
     }
 #endif
 
