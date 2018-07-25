@@ -596,7 +596,8 @@ void RayTracingVolumeRenderer::initEntryPoints()
 {
     m_entryPointGeometry = m_sceneManager->createManualObject(m_parentId + "_RayTracingVREntryPoints");
 
-    m_entryPointGeometry->begin(m_currentMtlName, ::Ogre::RenderOperation::OT_TRIANGLE_LIST);
+    // Use the default material before the raytracing material is created otherwise we get an error.
+    m_entryPointGeometry->begin("Default", ::Ogre::RenderOperation::OT_TRIANGLE_LIST);
     {
         for(const auto& face : s_cubeFaces)
         {
