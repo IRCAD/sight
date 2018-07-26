@@ -47,7 +47,10 @@ public:
     /// Destructor
     VISUOGREQT_API virtual ~RenderWindowInteractorManager();
 
-    /// Call Widget render
+    /// Call Widget render immediately
+    VISUOGREQT_API virtual void renderNow() override;
+
+    /// Call Widget render as soon as possible
     VISUOGREQT_API virtual void requestRender() override;
 
     /// Create the container that holds the QtWidget.

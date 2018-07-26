@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWRENDEROGRE_COMPOSITOR_MATERIALMGRLISTENER_HPP__
-#define __FWRENDEROGRE_COMPOSITOR_MATERIALMGRLISTENER_HPP__
+#pragma once
 
 #include "fwRenderOgre/config.hpp"
 
@@ -31,9 +30,6 @@ public:
                                                     ::Ogre::Material* _originalMaterial, unsigned short _lodIndex,
                                                     const ::Ogre::Renderable* _renderable);
 private:
-    /// Helper function to copy the given technique and return the first pass
-    ::Ogre::Technique* copyTechnique(::Ogre::Technique* _tech, const ::Ogre::String &_schemeName,
-                                     ::Ogre::Material *_originalMaterial);
 
     /**
      * @brief Ensure that a given fragment program is created.
@@ -43,14 +39,13 @@ private:
      * @param[in] _algoPassName new suffix to use
      * @param[in] _baseName new suffix to use
      */
-    FWRENDEROGRE_API static ::Ogre::GpuProgramPtr ensureFPCreated(const std::string& _name,
-                                                                  const std::string& _algoName,
-                                                                  const std::string& _algoPassName,
-                                                                  const std::string& _baseName);
+    static ::Ogre::GpuProgramPtr ensureFPCreated(const std::string& _name,
+                                                 const std::string& _algoName,
+                                                 const std::string& _algoPassName,
+                                                 const std::string& _baseName);
+
 };
 
 } // namespace compositor
 
 } // namespace fwRenderOgre
-
-#endif // __FWRENDEROGRE_COMPOSITOR_MATERIALMGRLISTENER_HPP__

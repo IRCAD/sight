@@ -45,6 +45,13 @@ RenderWindowInteractorManager::~RenderWindowInteractorManager()
 
 //-----------------------------------------------------------------------------
 
+void RenderWindowInteractorManager::renderNow()
+{
+    m_qOgreWidget->renderNow();
+}
+
+//-----------------------------------------------------------------------------
+
 void RenderWindowInteractorManager::requestRender()
 {
     m_qOgreWidget->requestRender();

@@ -83,6 +83,12 @@ private:
     /// Entity holding the source geometry used for proxy geometry rendering.
     ::Ogre::Entity* m_r2vbSource;
 
+    /// GPU pass generating the geometry from the grid.
+    ::Ogre::Pass* m_geomGeneratorPass { nullptr };
+
+    /// GPU pass filling the 3D texture grid.
+    ::Ogre::Pass* m_gridComputingPass { nullptr };
+
     /// Render operation used to compute the brick grid.
     ::Ogre::RenderOperation m_gridRenderOp;
 

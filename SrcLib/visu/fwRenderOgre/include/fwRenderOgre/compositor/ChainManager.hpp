@@ -1,13 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWRENDEROGRE_COMPOSITOR_CHAINMANAGER_HPP__
-#define __FWRENDEROGRE_COMPOSITOR_CHAINMANAGER_HPP__
+#pragma once
 
-#include "fwRenderOgre/compositor/listener/AutoStereo.hpp"
 #include "fwRenderOgre/config.hpp"
 
 #include "fwServices/IHasServices.hpp"
@@ -106,8 +104,6 @@ private:
     /// Map allowing to keep the objects of the created adaptors alive
     ::fwData::Composite::sptr m_adaptorsObjectsOwner;
 
-    /// Autostereo listener
-    listener::AutoStereoCompositorListener* m_autostereoListener;
 };
 
 //-----------------------------------------------------------------------------
@@ -130,5 +126,3 @@ inline void ChainManager::setOgreViewport(::Ogre::Viewport* _viewport)
 } // namespace compositor
 
 } // namespace fwRenderOgre
-
-#endif // __FWRENDEROGRE_COMPOSITOR_CHAINMANAGER_HPP__

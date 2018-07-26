@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017.
+ * FW4SPL - Copyright (C) IRCAD, 2017-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,6 +8,7 @@
 
 #include "fwRenderOgre/helper/Camera.hpp"
 #include "fwRenderOgre/helper/Shading.hpp"
+#include "fwRenderOgre/helper/Technique.hpp"
 
 #include <OGRE/OgreCamera.h>
 #include <OGRE/OgreGpuProgramManager.h>
@@ -25,15 +26,8 @@ namespace listener
 
 //-----------------------------------------------------------------------------
 
-AutoStereoCompositorListener::AutoStereoCompositorListener() :
-    m_renderTargets(nullptr)
-{
-}
-
-//-----------------------------------------------------------------------------
-
-AutoStereoCompositorListener::AutoStereoCompositorListener(std::vector<Ogre::TexturePtr>* renderTargets) :
-    m_renderTargets(renderTargets)
+AutoStereoCompositorListener::AutoStereoCompositorListener(std::uint8_t _viewpointNumber) :
+    m_viewpointNumber(_viewpointNumber)
 {
 }
 
@@ -42,7 +36,7 @@ AutoStereoCompositorListener::AutoStereoCompositorListener(std::vector<Ogre::Tex
 AutoStereoCompositorListener::~AutoStereoCompositorListener()
 {
     // We need to clean the VR techniques because we want to set the correct textures
-    // Cleanng the texture forces the listener to be triggered and then to create the techniques with the new textures
+    // Cleaning the texture forces the listener to be triggered and then to create the techniques with the new textures
     for(auto& tech : m_createdTechniques)
     {
         ::Ogre::Material* mtl = tech->getParent();
@@ -67,7 +61,6 @@ AutoStereoCompositorListener::~AutoStereoCompositorListener()
             mtl->removeTechnique(*it);
         }
     }
-    m_renderTargets = nullptr;
 }
 
 //------------------------------------------------------------------------------
@@ -81,27 +74,27 @@ AutoStereoCompositorListener::~AutoStereoCompositorListener()
     ::Ogre::Technique* newTech = nullptr;
     if(_schemeName.find("AutoStereo") != std::string::npos)
     {
-        const bool isRayTracedMtl = ::Ogre::StringUtil::startsWith( _originalMaterial->getName(), "RTV_");
-        if(  isRayTracedMtl && m_renderTargets == nullptr )
+        const std::string passIdStr = _schemeName.substr(_schemeName.size() - 1);
+
+        ::Ogre::Technique* matchingTech = nullptr;
+
+        if(::Ogre::StringUtil::startsWith( _schemeName, "VolumeEntries"))
         {
-            return nullptr;
+            // Volume entries technique names follow this pattern : VolumeEntries<AutoStereo>_<technique><viewport>
+            const size_t techNamePos   = _schemeName.find("_") + 1;
+            const size_t techNameSize  = _schemeName.size() - 1 - techNamePos;
+            const std::string techName = _schemeName.substr(techNamePos, techNameSize);
+
+            auto entryPointsMtl = ::Ogre::MaterialManager::getSingleton().getByName("RayEntryPoints");
+
+            matchingTech = entryPointsMtl->getTechnique(techName);
         }
-        if( !isRayTracedMtl && m_renderTargets != nullptr )
+        else
         {
-            return nullptr;
+            matchingTech = _originalMaterial->getTechnique(0);
         }
 
-        const std::string passIdStr = _schemeName.substr(11);
-        const int passId            = std::stoi(passIdStr);
-        if( m_renderTargets != nullptr && static_cast<unsigned>(passId) >= m_renderTargets->size())
-        {
-            // We reach this branch when switching between two stereo modes
-            // because the new compositor is instantiated but the volume adaptor is not yet restarted
-            return nullptr;
-        }
-
-        ::Ogre::Technique* defaultTech = _originalMaterial->getTechnique(0);
-        newTech                        = this->copyTechnique(defaultTech, _schemeName, _originalMaterial);
+        newTech = ::fwRenderOgre::helper::Technique::copyToMaterial(matchingTech, _schemeName, _originalMaterial);
 
         const auto pass = newTech->getPass(0);
         {
@@ -139,9 +132,10 @@ AutoStereoCompositorListener::~AutoStereoCompositorListener()
             {
                 ::Ogre::TextureUnitState* texUnitState = pass->getTextureUnitState("entryPoints");
 
-                OSLM_ASSERT("No texture named " << passId, texUnitState);
-                texUnitState->setTextureName((*m_renderTargets)[static_cast<size_t>(passId)]->getName());
-                m_createdTechniques.push_back(newTech);
+                SLM_ASSERT("No texture named 'entryPoints' in " + _originalMaterial->getName(), texUnitState);
+                texUnitState->setContentType(::Ogre::TextureUnitState::CONTENT_COMPOSITOR);
+                texUnitState->setCompositorReference("VolumeEntriesStereo" + std::to_string(
+                                                         m_viewpointNumber), "VolumeEntryPoints" + passIdStr);
             }
         }
 
@@ -178,25 +172,9 @@ AutoStereoCompositorListener::~AutoStereoCompositorListener()
             fpParams->setNamedAutoConstant("u_invWorldView",
                                            ::Ogre::GpuProgramParameters::ACT_INVERSE_WORLDVIEW_MATRIX);
         }
+
+        m_createdTechniques.push_back(newTech);
     }
-
-    return newTech;
-}
-
-// ----------------------------------------------------------------------------
-
-Ogre::Technique* AutoStereoCompositorListener::copyTechnique(::Ogre::Technique* _tech,
-                                                             const ::Ogre::String& _schemeName,
-                                                             ::Ogre::Material* _originalMaterial)
-{
-    ::Ogre::Technique* newTech = _originalMaterial->createTechnique();
-    *newTech                   = *_tech;
-    newTech->setName(_schemeName);
-    newTech->setSchemeName(_schemeName);
-
-    ::Ogre::Pass* pass = newTech->getPass(0);
-    (void)(pass);
-    SLM_ASSERT("Empty pass", pass);
 
     return newTech;
 }

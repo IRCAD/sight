@@ -31,8 +31,8 @@ namespace visuOgreAdaptor
  * @subsection Input Input:
  * - \b landmarks [::fwData::Landmarks]: landmarks to display.
  * @subsection Configuration Configuration:
- * -\b layer (mandatory): defines landmarks layer.
- * -\b transform (optional): the name of the Ogre transform node where to attach the mesh, as it was specified
+ * - \b layer (mandatory): defines landmarks layer.
+ * - \b transform (optional): the name of the Ogre transform node where to attach the mesh, as it was specified
  * in the STransform adaptor.
  *
  */

@@ -12,18 +12,6 @@ vertex_program RayEntryPoints_VP glsl
 
 //----------------------------------------------
 
-vertex_program RayEntryPoints_NearPlane_VP glsl
-{
-    source RayEntryPoints_VP.glsl
-    preprocessor_defines NEAR_PLANE=1
-
-    default_params
-    {
-    }
-}
-
-//----------------------------------------------
-
 fragment_program RayEntryPoints_FrontFaces_FP glsl
 {
     source RayEntryPoints_FP.glsl
@@ -57,11 +45,10 @@ fragment_program RayEntryPoints_BackFacesMax_FP glsl
 
 //-----------------------------------------------
 
-fragment_program RayEntryPoints_NearPlane_FP glsl
+fragment_program RayEntryPoints_FrontFacesMin_FP glsl
 {
     source RayEntryPoints_FP.glsl
-    preprocessor_defines NEAR_PLANE=1
-
+    preprocessor_defines FRONT_FACES_MIN=1
     default_params
     {
     }
@@ -71,30 +58,14 @@ fragment_program RayEntryPoints_NearPlane_FP glsl
 
 material RayEntryPoints
 {
-    technique
+    technique BackFaces
     {
-        pass BackFacesMax
+        scheme VolumeEntries_BackFaces
+
+        pass
         {
-            scene_blend src_colour dest_colour
-            scene_blend_op min
-            depth_check off
-            depth_write off
-            cull_hardware clockwise
-            cull_software none
-
-            vertex_program_ref RayEntryPoints_VP
-            {
-            }
-
-            fragment_program_ref RayEntryPoints_BackFacesMax_FP
-            {
-            }
-        }
-
-        pass BackFaces
-        {
-            scene_blend src_colour dest_colour
-            scene_blend_op min
+            // This technique doesn't write any color, only the depth of the nearest backfaces.
+            colour_write off
             depth_check on
             depth_write on
             depth_func less
@@ -109,11 +80,14 @@ material RayEntryPoints
             {
             }
         }
+    }
 
-        pass FrontFaces
+    technique FrontFaces
+    {
+        scheme VolumeEntries_FrontFaces
+
+        pass
         {
-            scene_blend src_colour dest_colour
-            scene_blend_op min
             depth_check on
             depth_write on
             depth_func less
@@ -128,21 +102,52 @@ material RayEntryPoints
             {
             }
         }
+    }
 
-        pass NearPlane
+    technique BackFacesMax
+    {
+        scheme VolumeEntries_BackFacesMax
+
+        pass
         {
             scene_blend src_colour dest_colour
             scene_blend_op min
-            depth_check off
-            depth_write off
-            cull_hardware anticlockwise
+            depth_check on
+            depth_write on
+            depth_func greater_equal
+            cull_hardware clockwise
             cull_software none
 
-            vertex_program_ref RayEntryPoints_NearPlane_VP
+            vertex_program_ref RayEntryPoints_VP
             {
             }
 
-            fragment_program_ref RayEntryPoints_NearPlane_FP
+            fragment_program_ref RayEntryPoints_BackFacesMax_FP
+            {
+            }
+        }
+    }
+
+    // Computes exit points when a ray hits a mesh.
+    technique FrontFacesMin
+    {
+        scheme VolumeEntries_FrontFacesMin
+
+        pass
+        {
+            scene_blend src_colour dest_colour
+            scene_blend_op max
+            depth_check on
+            depth_write on
+            depth_func less
+            cull_hardware none
+            cull_software none
+
+            vertex_program_ref RayEntryPoints_VP
+            {
+            }
+
+            fragment_program_ref RayEntryPoints_FrontFacesMin_FP
             {
             }
         }

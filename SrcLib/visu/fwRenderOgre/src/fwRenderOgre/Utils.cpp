@@ -56,6 +56,7 @@ static std::set<std::string> s_resourcesPath;
 ::fwRenderOgre::factory::R2VBRenderable* Utils::s_R2VBRenderableFactory         = nullptr;
 ::fwRenderOgre::factory::Text* Utils::s_textFactory                             = nullptr;
 ::fwRenderOgre::vr::GridProxyGeometryFactory* Utils::s_gridProxyGeometryFactory = nullptr;
+::fwRenderOgre::compositor::MaterialMgrListener* Utils::s_oitMaterialListener   = nullptr;
 
 //------------------------------------------------------------------------------
 
@@ -290,7 +291,8 @@ void Utils::addResourcesPath(const ::boost::filesystem::path& path)
         ::Ogre::Root::getSingleton().addMovableObjectFactory(s_gridProxyGeometryFactory);
 
         // Add the material manager listener that allows us to generate OIT techniques
-        ::Ogre::MaterialManager::getSingleton().addListener(new ::fwRenderOgre::compositor::MaterialMgrListener());
+        s_oitMaterialListener = new ::fwRenderOgre::compositor::MaterialMgrListener();
+        ::Ogre::MaterialManager::getSingleton().addListener(s_oitMaterialListener);
     }
 
     return root;
@@ -300,6 +302,12 @@ void Utils::addResourcesPath(const ::boost::filesystem::path& path)
 
 void Utils::destroyOgreRoot()
 {
+    ::Ogre::MaterialManager::getSingleton().removeListener(s_oitMaterialListener);
+    delete s_oitMaterialListener;
+
+    ::Ogre::Root::getSingleton().removeMovableObjectFactory(s_textFactory);
+    delete s_textFactory;
+
     ::Ogre::Root::getSingleton().removeMovableObjectFactory(s_gridProxyGeometryFactory);
     delete s_gridProxyGeometryFactory;
 

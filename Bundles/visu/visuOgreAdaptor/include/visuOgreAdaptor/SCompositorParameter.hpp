@@ -39,6 +39,7 @@ class CompositorListener;
  * @subsection InOut InOut:
  * - \b parameter [::fwData::Object]: parameter containing the data to upload.
  * @subsection Configuration Configuration:
+ * - \b layer (mandatory): defines the compositor's layer
  * - \b compositorName (mandatory) : the name of the associated Ogre compositor
  * - \b parameter (mandatory) : name of the shader parameter to set
  * - \b technique (optional) : name of the technique, default to the first in the compositor

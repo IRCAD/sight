@@ -40,6 +40,8 @@ const ::fwCom::Slots::SlotKeyType SNegato3D::s_UPDATE_VISIBILITY_SLOT = "updateV
 static const std::string s_IMAGE_INOUT = "image";
 static const std::string s_TF_INOUT    = "tf";
 
+static const std::string s_ENABLE_APLHA_CONFIG = "tfalpha";
+
 //------------------------------------------------------------------------------
 
 SNegato3D::SNegato3D() noexcept :
@@ -115,6 +117,8 @@ void SNegato3D::configuring()
 
         this->setFiltering(filtering);
     }
+
+    m_enableAlpha = config.get<bool>(s_ENABLE_APLHA_CONFIG, m_enableAlpha);
 }
 
 //------------------------------------------------------------------------------
@@ -228,6 +232,7 @@ void SNegato3D::createPlanes(const ::fwData::Image::SpacingType& _spacing, const
         m_planes[i]->setDepthSpacing(_spacing);
         m_planes[i]->setOriginPosition(origin);
         m_planes[i]->initialize3DPlane();
+        m_planes[i]->enableAlpha(m_enableAlpha);
     }
 }
 
@@ -257,6 +262,9 @@ void SNegato3D::newImage()
     {
         this->getRenderService()->resetCameraCoordinates(m_layerID);
     }
+
+    this->setPlanesOpacity();
+
     this->requestRender();
 }
 
@@ -356,10 +364,15 @@ void SNegato3D::setPlanesOpacity()
     ::fwData::Integer::sptr transparency = image->setDefaultField(TRANSPARENCY_FIELD, ::fwData::Integer::New(0));
     ::fwData::Boolean::sptr isVisible    = image->setDefaultField(VISIBILITY_FIELD, ::fwData::Boolean::New(true));
 
-    const float opacity = isVisible->getValue() ? (100.f - static_cast<float>(transparency->getValue()))/100.f : 0.f;
+    const bool visible  = isVisible->getValue();
+    const float opacity = (100.f - static_cast<float>(transparency->getValue()))/100.f;
 
     if(m_planes[0] && m_planes[1] && m_planes[2])
     {
+        m_planes[0]->setVisible(visible);
+        m_planes[1]->setVisible(visible);
+        m_planes[2]->setVisible(visible);
+
         m_planes[0]->setEntityOpacity(opacity);
         m_planes[1]->setEntityOpacity(opacity);
         m_planes[2]->setEntityOpacity(opacity);

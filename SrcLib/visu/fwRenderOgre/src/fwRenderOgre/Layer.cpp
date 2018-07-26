@@ -367,6 +367,9 @@ void Layer::createScene()
         if(m_stereoMode != StereoModeType::NONE)
         {
             compositorChain.push_back(s_stereoCompositorMap.at(m_stereoMode));
+
+            m_autostereoListener = new compositor::listener::AutoStereoCompositorListener(this->getNumberOfCameras());
+            ::Ogre::MaterialManager::getSingleton().addListener(m_autostereoListener);
         }
 
         m_compositorChainManager->setCompositorChain(compositorChain, m_id, m_renderService.lock());
@@ -922,6 +925,10 @@ void Layer::setStereoMode(StereoModeType mode)
     if(m_stereoMode != StereoModeType::NONE && m_compositorChainManager)
     {
         m_compositorChainManager->updateCompositorState(oldCompositorName, false, m_id, m_renderService.lock());
+
+        ::Ogre::MaterialManager::getSingleton().removeListener(m_autostereoListener);
+        delete m_autostereoListener;
+        m_autostereoListener = nullptr;
     }
 
     // Enable the new one
@@ -932,6 +939,9 @@ void Layer::setStereoMode(StereoModeType mode)
     if(m_stereoMode != StereoModeType::NONE && m_compositorChainManager)
     {
         m_compositorChainManager->updateCompositorState(compositorName, true, m_id, m_renderService.lock());
+
+        m_autostereoListener = new compositor::listener::AutoStereoCompositorListener(this->getNumberOfCameras());
+        ::Ogre::MaterialManager::getSingleton().addListener(m_autostereoListener);
     }
 
     auto sig = this->signal<StereoModeChangedSignalType>(s_STEREO_MODE_CHANGED_SIG);

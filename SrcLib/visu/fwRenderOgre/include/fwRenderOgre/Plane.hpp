@@ -63,12 +63,16 @@ public:
 
     FWRENDEROGRE_API void setOrientationMode(OrientationMode _newMode);
 
+    FWRENDEROGRE_API void enableAlpha(bool);
+
     FWRENDEROGRE_API void setOriginPosition(const ::Ogre::Vector3& _origPos);
 
     FWRENDEROGRE_API std::vector< ::Ogre::Real > getDepthSpacing();
     FWRENDEROGRE_API void setDepthSpacing(std::vector<double> _spacing);
 
     FWRENDEROGRE_API void setEntityOpacity( float _f );
+
+    FWRENDEROGRE_API void setVisible( bool _visible );
 
     /// Adds or updates the texture containing the transfer function data in the negato passes
     FWRENDEROGRE_API void setTFData(const ::fwRenderOgre::TransferFunction& _tfTexture);

@@ -13,7 +13,6 @@
     <xi:include href="configurations/vtkGenericScene.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/OgreGenericScene.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/OgreNegato2D.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
-    <xi:include href="configurations/OgreVolumeRendering.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/ManageOgreOrganWithSeries.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
     <extension implements="::fwServices::registry::ServiceConfig">
@@ -84,14 +83,12 @@
                     <layout type="::fwGui::TabLayoutManager">
                         <view caption="Ogre" selected="yes" />
                         <view caption="2D Negato Ogre" selected="no" />
-                        <view caption="Ogre VR" selected="no" />
                         <view caption="VTK" selected="no" />
                     </layout>
                 </gui>
                 <registry>
                     <view wid="OgreSceneView" start="yes" />
                     <view wid="OgreNegato2DView" start="yes" />
-                    <view wid="OgreVolumeRenderingView" start="yes" />
                     <view wid="VTKSceneView" start="yes" />
                 </registry>
             </service>
@@ -200,9 +197,14 @@
                 <inout key="cameraTF" uid="cameraTF_UID" />
                 <inout key="imageUID" uid="imageUID" />
                 <inout key="TF" uid="TF" optional="yes" />
+                <inout key="maskUID" uid="maskUID" />
                 <inout key="landmarks" uid="landmarksUID" />
                 <parameter replace="WID_PARENT" by="OgreSceneView" />
                 <parameter replace="compositorChannel" by="compositorChannel" />
+                <parameter replace="idvrEnumParamChannel" by="idvrEnumParamChannel" />
+                <parameter replace="idvrBoolParamChannel" by="idvrBoolParamChannel" />
+                <parameter replace="idvrDoubleParamChannel" by="idvrDoubleParamChannel" />
+                <parameter replace="idvrColorParamChannel" by="idvrColorParamChannel" />
             </service>
 
             <service uid="cfgOgreNegato2D" type="::fwServices::SConfigController" >
@@ -210,18 +212,6 @@
                 <inout key="imageUID" uid="imageUID" />
                 <inout key="TF" uid="TF" optional="yes" />
                 <parameter replace="WID_PARENT" by="OgreNegato2DView" />
-            </service>
-
-            <service uid="cfgOgreVolumeRendering" type="::fwServices::SConfigController" >
-                <appConfig id="OgreVolumeRendering" />
-                <inout key="imageUID" uid="imageUID" />
-                <inout key="maskUID" uid="maskUID" />
-                <inout key="TF" uid="TF" optional="yes" />
-                <parameter replace="WID_PARENT" by="OgreVolumeRenderingView" />
-                <parameter replace="idvrEnumParamChannel" by="idvrEnumParamChannel" />
-                <parameter replace="idvrBoolParamChannel" by="idvrBoolParamChannel" />
-                <parameter replace="idvrDoubleParamChannel" by="idvrDoubleParamChannel" />
-                <parameter replace="idvrColorParamChannel" by="idvrColorParamChannel" />
             </service>
 
             <service uid="cfgOrganManagerConfig"  type="::fwServices::SConfigController">
@@ -305,7 +295,6 @@
             <start uid="cfgVTKGenericScene" />
             <start uid="cfgOgreGenericScene" />
             <start uid="cfgOgreNegato2D" />
-            <start uid="cfgOgreVolumeRendering" />
             <start uid="cfgOrganManagerConfig" />
             <start uid="cfgLightManager" />
             <start uid="cfgHistogramManager" />

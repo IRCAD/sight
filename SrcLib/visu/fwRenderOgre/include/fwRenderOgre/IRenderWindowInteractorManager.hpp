@@ -101,7 +101,10 @@ public:
     /// Destructor. Do nothing.
     FWRENDEROGRE_API virtual ~IRenderWindowInteractorManager();
 
-    /// Call Ogre Widget render
+    /// Call Ogre Widget render immediately
+    FWRENDEROGRE_API virtual void renderNow() = 0;
+
+    /// Call Ogre Widget render as soon as possible
     FWRENDEROGRE_API virtual void requestRender() = 0;
 
     /// Creates an interactor and installs it in window.

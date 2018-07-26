@@ -7,6 +7,7 @@
 #include "fwRenderOgre/compositor/MaterialMgrListener.hpp"
 
 #include "fwRenderOgre/helper/Shading.hpp"
+#include "fwRenderOgre/helper/Technique.hpp"
 
 #include <fwCore/spyLog.hpp>
 
@@ -35,6 +36,14 @@ MaterialMgrListener::~MaterialMgrListener()
                                                                                        const ::Ogre::Renderable*
                                                                                        /*_renderable*/)
 {
+    const auto mtlName = _originalMaterial->getName();
+
+    // Volume rendering techniques don't handle OIT. Ignore them.
+    if(::Ogre::StringUtil::startsWith(mtlName, "RTV_Mat") || mtlName == "RayEntryPoints")
+    {
+        return nullptr;
+    }
+
     // Don't know what is this for exactly, but we don't care so we filter this out
     if(_schemeName == "ShaderGeneratorDefaultScheme")
     {
@@ -77,7 +86,7 @@ MaterialMgrListener::~MaterialMgrListener()
     if(_schemeName == "DepthPeeling/depthMap" ||
        _schemeName == "HybridTransparency/backDepth")
     {
-        newTech = this->copyTechnique(depthTech, _schemeName, _originalMaterial);
+        newTech = ::fwRenderOgre::helper::Technique::copyToMaterial(depthTech, _schemeName, _originalMaterial);
 
         const ::Ogre::Technique::Passes& passes = newTech->getPasses();
         for(const auto pass : passes)
@@ -97,7 +106,7 @@ MaterialMgrListener::~MaterialMgrListener()
              ::Ogre::StringUtil::startsWith(_schemeName, "CelShadingDepthPeeling/peel", false) ||
              ::Ogre::StringUtil::startsWith(_schemeName, "HybridTransparency/peel", false) )
     {
-        newTech = this->copyTechnique(defaultTech, _schemeName, _originalMaterial);
+        newTech = ::fwRenderOgre::helper::Technique::copyToMaterial(defaultTech, _schemeName, _originalMaterial);
 
         const ::Ogre::Technique::Passes& passes = newTech->getPasses();
         for(const auto pass : passes)
@@ -154,7 +163,7 @@ MaterialMgrListener::~MaterialMgrListener()
     else if(_schemeName == "WeightedBlended/occlusionMap" ||
             _schemeName == "HybridTransparency/occlusionMap")
     {
-        newTech = this->copyTechnique(defaultTech, _schemeName, _originalMaterial);
+        newTech = ::fwRenderOgre::helper::Technique::copyToMaterial(defaultTech, _schemeName, _originalMaterial);
 
         const ::Ogre::Technique::Passes& passes = newTech->getPasses();
         for(const auto pass : passes)
@@ -174,7 +183,7 @@ MaterialMgrListener::~MaterialMgrListener()
     else if(_schemeName == "WeightedBlended/weightBlend" ||
             _schemeName == "HybridTransparency/weightBlend")
     {
-        newTech = this->copyTechnique(defaultTech, _schemeName, _originalMaterial);
+        newTech = ::fwRenderOgre::helper::Technique::copyToMaterial(defaultTech, _schemeName, _originalMaterial);
 
         const ::Ogre::Technique::Passes& passes = newTech->getPasses();
         for(const auto pass : passes)
@@ -218,7 +227,7 @@ MaterialMgrListener::~MaterialMgrListener()
     else if(_schemeName == "WeightedBlended/transmittanceBlend"||
             _schemeName == "HybridTransparency/transmittanceBlend")
     {
-        newTech = this->copyTechnique(defaultTech, _schemeName, _originalMaterial);
+        newTech = ::fwRenderOgre::helper::Technique::copyToMaterial(defaultTech, _schemeName, _originalMaterial);
 
         const ::Ogre::Technique::Passes& passes = newTech->getPasses();
         for(const auto pass : passes)
@@ -260,7 +269,7 @@ MaterialMgrListener::~MaterialMgrListener()
     }
     else if( ::Ogre::StringUtil::startsWith(_schemeName, "DualDepthPeeling/peelInit", false) )
     {
-        newTech = this->copyTechnique(depthTech, _schemeName, _originalMaterial);
+        newTech = ::fwRenderOgre::helper::Technique::copyToMaterial(depthTech, _schemeName, _originalMaterial);
 
         const ::Ogre::Technique::Passes& passes = newTech->getPasses();
         for(const auto pass : passes)
@@ -277,7 +286,7 @@ MaterialMgrListener::~MaterialMgrListener()
     }
     else if( ::Ogre::StringUtil::startsWith(_schemeName, "DualDepthPeeling/peel", false) )
     {
-        newTech = this->copyTechnique(defaultTech, _schemeName, _originalMaterial);
+        newTech = ::fwRenderOgre::helper::Technique::copyToMaterial(defaultTech, _schemeName, _originalMaterial);
 
         const ::Ogre::Technique::Passes& passes = newTech->getPasses();
         for(const auto pass : passes)
@@ -333,24 +342,6 @@ MaterialMgrListener::~MaterialMgrListener()
     {
         OSLM_INFO("not found : " << _schemeName );
     }
-
-    return newTech;
-}
-
-// ----------------------------------------------------------------------------
-
-Ogre::Technique* MaterialMgrListener::copyTechnique(::Ogre::Technique* _tech,
-                                                    const ::Ogre::String& _schemeName,
-                                                    ::Ogre::Material* _originalMaterial)
-{
-    ::Ogre::Technique* newTech = _originalMaterial->createTechnique();
-    *newTech                   = *_tech;
-    newTech->setName(_schemeName);
-    newTech->setSchemeName(_schemeName);
-
-    ::Ogre::Pass* pass = newTech->getPass(0);
-    (void)(pass);
-    SLM_ASSERT("Empty pass", pass);
 
     return newTech;
 }

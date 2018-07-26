@@ -8,12 +8,18 @@
         <param name="imageUID" />
         <param name="TF" />
         <param name="landmarks" />
+        <param name="maskUID" />
+        <param name="idvrEnumParamChannel" />
+        <param name="idvrBoolParamChannel" />
+        <param name="idvrDoubleParamChannel" />
+        <param name="idvrColorParamChannel" />
     </parameters>
     <config>
         <!-- ******************************* Objects declaration ****************************** -->
 
         <object uid="${modelSeriesUID}" type="::fwMedData::ModelSeries" src="ref" />
         <object uid="${imageUID}" type="::fwData::Image" src="ref" />
+        <object uid="${maskUID}" type="::fwData::Image" src="ref" />
 
         <object uid="frameTL" type="::arData::FrameTL" />
         <object uid="videoImage" type="::fwData::Image" />
@@ -30,6 +36,7 @@
                     <orientation value="vertical" />
                     <view proportion="1" />
                     <view proportion="0" />
+                    <view proportion="0" />
                 </layout>
                 <toolBar/>
             </gui>
@@ -38,13 +45,15 @@
                 <toolBar sid="toolBar" start="yes" />
                 <view sid="genericScene" start="yes" />
                 <view sid="negato3DInteractor" start="yes" />
+                <view sid="volumeRenderingEditorView" start="yes" />
             </registry>
         </service>
 
         <service uid="toolBar" type="::gui::aspect::SDefaultToolBar">
             <gui>
                 <layout>
-                    <menuItem name="Show/Hide negato interactor" icon="OgreViewer-0.1/icons/hide-view_horizontal.png" style="check" />
+                    <menuItem name="Show/Hide vr editor" icon="OgreViewer-@PROJECT_VERSION@/icons/hide-view_horizontal.png" style="check" />
+                    <menuItem name="Show volume" icon="media-0.1/icons/icon-2D.png" style="check" />
                     <separator/>
                     <editor/>
                     <menuItem name="Play" icon="arMedia-0.1/icons/start-cam.svg" />
@@ -53,7 +62,8 @@
                 </layout>
             </gui>
             <registry>
-                <menuItem sid="actionNegato3DInteractor" start="yes" />
+                <menuItem sid="action_volumeRenderingEditor" start="yes" />
+                <menuItem sid="action_showVolume" start="yes" />
                 <editor sid="videoSelector" start="yes" />
                 <menuItem sid="action_startVideo" start="yes" />
                 <menuItem sid="action_pauseVideo" start="yes" />
@@ -66,8 +76,6 @@
                 <layout type="::fwGui::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="1" />
-                    <view proportion="1" />
-                    <view proportion="1" />
                 </layout>
             </gui>
             <registry>
@@ -75,11 +83,56 @@
             </registry>
         </service>
 
+        <service uid="volumeRenderingEditorView" type="::gui::view::SDefaultView" >
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="horizontal" />
+                    <view proportion="0" />
+                    <view proportion="0" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="vrBasicEditor" start="yes" />
+                <view sid="vrAdvancedEditor" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="vrBasicEditor" type="::guiQt::editor::SParameters" >
+            <parameters>
+                <param type="bool" name="Widgets" key="widgets" defaultValue="false" />
+                <param type="int" name="Samples" key="sampling" defaultValue="512" min="128" max="8192" />
+                <param type="int" name="Opacity correction" key="opacityCorrection" defaultValue="200" min="1" max="200" />
+                <param type="bool" name="Pre-integration" key="preIntegration" defaultValue="false" />
+                <param type="bool" name="Ambient occlusion" key="ambientOcclusion" defaultValue="false" />
+                <param type="bool" name="Color bleeding" key="colorBleeding" defaultValue="false" />
+            </parameters>
+        </service>
+
+        <service uid="vrAdvancedEditor" type="::guiQt::editor::SParameters" >
+            <parameters>
+                <param type="double" name="AO factor" key="aoFactor" defaultValue="1.0" min="0.1" max="10.0" />
+                <param type="double" name="Color bleeding factor" key="colorBleedingFactor" defaultValue="1.0" min="0.1" max="10.0" />
+                <param type="int" name="SAT size ratio" key="satSizeRatio" defaultValue="1" min="1" max="4" />
+                <param type="int" name="AO shells number" key="satShellsNumber" defaultValue="4" min="1" max="10" />
+                <param type="int" name="AO shell radius" key="satShellRadius" defaultValue="4" min="1" max="10" />
+                <param type="bool" name="Soft shadows" key="shadows" defaultValue="false" />
+                <param type="int" name="Shadow cone angle" key="satConeAngle" defaultValue="10" min="10" max="100" />
+                <param type="int" name="Shadow cone samples" key="satConeSamples" defaultValue="50" min="10" max="100" />
+            </parameters>
+        </service>
+
         <!-- ************************************* Actions ************************************ -->
-        <service uid="actionNegato3DInteractor" type="::gui::action::SModifyLayout">
+        <service uid="action_volumeRenderingEditor" type="::gui::action::SModifyLayout">
             <config>
-                <show_or_hide sid="negato3DInteractor" />
+                <show_or_hide sid="volumeRenderingEditorView" />
             </config>
+        </service>
+
+        <service uid="action_showVolume" type="::gui::action::SBooleanSlotCaller">
+            <slots>
+                <slot>volumeAdaptor/updateVisibility</slot>
+            </slots>
+            <state active="true" />
         </service>
 
         <service uid="action_startVideo" type="::gui::action::SSlotCaller">
@@ -112,6 +165,7 @@
                 <adaptor uid="selectInteractorAdaptor" />
                 <adaptor uid="modelSeriesAdaptor" />
                 <adaptor uid="negato3DAdaptor" />
+                <adaptor uid="volumeAdaptor" />
                 <adaptor uid="pointListAdaptor" />
                 <adaptor uid="landmarkAdaptor" />
             </scene>
@@ -129,7 +183,7 @@
         </service>
 
         <service uid="interactorAdaptor" type="::visuOgreAdaptor::SInteractorStyle">
-            <config layer="default" movement="Trackball" />
+            <config layer="default" movement="VR" />
         </service>
 
         <service uid="selectInteractorAdaptor" type="::visuOgreAdaptor::SInteractorStyle">
@@ -139,6 +193,13 @@
         <service uid="modelSeriesAdaptor" type="::visuOgreAdaptor::SModelSeries" autoConnect="yes">
             <in key="model" uid="${modelSeriesUID}" />
             <config layer="default" />
+        </service>
+
+        <service uid="volumeAdaptor" type="::visuOgreAdaptor::SVolumeRender">
+            <inout key="image" uid="${imageUID}" autoConnect="yes" />
+            <inout key="tf" uid="${TF}" optional="yes" />
+            <inout key="mask" uid="${maskUID}" autoConnect="yes" />
+            <config layer="default" widgets="no" preintegration="no" mode="raytracing" autoresetcamera="yes"/>
         </service>
 
         <service uid="negato3DAdaptor" type="::visuOgreAdaptor::SNegato3D">
@@ -198,6 +259,52 @@
             <signal>genericScene/compositorUpdated</signal>
         </connect>
 
+        <connect>
+            <signal>vrBasicEditor/boolChanged</signal>
+            <slot>volumeAdaptor/setBoolParameter</slot>
+        </connect>
+
+        <connect>
+            <signal>vrBasicEditor/enumChanged</signal>
+            <slot>volumeAdaptor/setEnumParameter</slot>
+        </connect>
+
+        <connect>
+            <signal>vrBasicEditor/intChanged</signal>
+            <slot>volumeAdaptor/setIntParameter</slot>
+        </connect>
+
+        <connect>
+            <signal>vrAdvancedEditor/boolChanged</signal>
+            <slot>volumeAdaptor/setBoolParameter</slot>
+        </connect>
+
+        <connect>
+            <signal>vrAdvancedEditor/intChanged</signal>
+            <slot>volumeAdaptor/setIntParameter</slot>
+        </connect>
+
+        <connect>
+            <signal>vrAdvancedEditor/doubleChanged</signal>
+            <slot>volumeAdaptor/setDoubleParameter</slot>
+        </connect>
+
+        <connect channel="${idvrEnumParamChannel}">
+            <slot>volumeAdaptor/setEnumParameter</slot>
+        </connect>
+
+        <connect channel="${idvrBoolParamChannel}">
+            <slot>volumeAdaptor/setBoolParameter</slot>
+        </connect>
+
+        <connect channel="${idvrDoubleParamChannel}">
+            <slot>volumeAdaptor/setDoubleParameter</slot>
+        </connect>
+
+        <connect channel="${idvrColorParamChannel}">
+            <slot>volumeAdaptor/setColorParameter</slot>
+        </connect>
+
         <!-- *************************************** Starts ************************************ -->
         <start uid="OgreSceneView" />
         <start uid="frameGrabber" />
@@ -209,12 +316,13 @@
         <start uid="interactorAdaptor" />
         <start uid="selectInteractorAdaptor" />
         <start uid="modelSeriesAdaptor" />
+        <start uid="volumeAdaptor" />
         <start uid="negato3DAdaptor" />
         <start uid="pointListAdaptor" />
         <start uid="addPointInList" />
         <start uid="landmarkAdaptor" />
 
-        <update uid="actionNegato3DInteractor" />
+        <update uid="action_volumeRenderingEditor" />
 
     </config>
 </extension>

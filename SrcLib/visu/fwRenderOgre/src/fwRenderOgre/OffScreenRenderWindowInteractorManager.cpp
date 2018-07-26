@@ -41,33 +41,16 @@ OffScreenRenderWindowInteractorManager::~OffScreenRenderWindowInteractorManager(
 
 //-----------------------------------------------------------------------------
 
+void OffScreenRenderWindowInteractorManager::renderNow()
+{
+    this->render();
+}
+
+//------------------------------------------------------------------------------
+
 void OffScreenRenderWindowInteractorManager::requestRender()
 {
-    if(m_ogreRenderWindow == nullptr)
-    {
-        return;
-    }
-
-    ::fwServices::IService::sptr renderService      = m_renderService.lock();
-    ::fwRenderOgre::SRender::sptr ogreRenderService = ::fwRenderOgre::SRender::dynamicCast( renderService );
-    ogreRenderService->slot(::fwRenderOgre::SRender::s_COMPUTE_CAMERA_CLIPPING_SLOT)->asyncRun();
-
-    ++m_frameId;
-    /*
-       How we tied in the render function for OGre3D with QWindow's render function. This is what gets call
-       repeatedly. Note that we don't call this function directly; rather we use the renderNow() function
-       to call this method as we don't want to render the Ogre3D scene unless everything is set up first.
-       That is what renderNow() does.
-
-       Theoretically you can have one function that does this check but from my experience it seems better
-       to keep things separate and keep the render function as simple as possible.
-     */
-
-    FW_PROFILE_FRAME_AVG("Ogre", 3);
-    FW_PROFILE_AVG("Ogre", 3);
-    this->makeCurrent();
-
-    m_ogreRoot->renderOneFrame();
+    this->render();
 }
 
 //-----------------------------------------------------------------------------
@@ -183,6 +166,37 @@ void OffScreenRenderWindowInteractorManager::makeCurrent()
             renderSystem->postExtraThreadsStarted();
         }
     }
+}
+
+//------------------------------------------------------------------------------
+
+void OffScreenRenderWindowInteractorManager::render()
+{
+    if(m_ogreRenderWindow == nullptr)
+    {
+        return;
+    }
+
+    ::fwServices::IService::sptr renderService      = m_renderService.lock();
+    ::fwRenderOgre::SRender::sptr ogreRenderService = ::fwRenderOgre::SRender::dynamicCast( renderService );
+    ogreRenderService->slot(::fwRenderOgre::SRender::s_COMPUTE_CAMERA_CLIPPING_SLOT)->asyncRun();
+
+    ++m_frameId;
+    /*
+       How we tied in the render function for OGre3D with QWindow's render function. This is what gets call
+       repeatedly. Note that we don't call this function directly; rather we use the renderNow() function
+       to call this method as we don't want to render the Ogre3D scene unless everything is set up first.
+       That is what renderNow() does.
+
+       Theoretically you can have one function that does this check but from my experience it seems better
+       to keep things separate and keep the render function as simple as possible.
+     */
+
+    FW_PROFILE_FRAME_AVG("Ogre", 3);
+    FW_PROFILE_AVG("Ogre", 3);
+    this->makeCurrent();
+
+    m_ogreRoot->renderOneFrame();
 }
 
 //-----------------------------------------------------------------------------

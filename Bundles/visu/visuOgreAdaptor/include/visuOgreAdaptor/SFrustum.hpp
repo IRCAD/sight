@@ -37,11 +37,11 @@ namespace visuOgreAdaptor
  * @subsection Input Input:
  * - \b camera [::arData::Camera]:  camera containing calibration information.
  * @subsection Configuration Configuration:
- * -\b layer (mandatory): defines the frustum's layer
- * -\b transform (optional): transform applied to the frustum's scene node
- * -\b near (optional): near clipping distance of the ::Ogre::Camera
- * -\b far (optional): far clipping distance of the ::Ogre::Camera
- * -\b color (optional): frustum's color
+ * - \b layer (mandatory): defines the frustum's layer
+ * - \b transform (optional): transform applied to the frustum's scene node
+ * - \b near (optional): near clipping distance of the ::Ogre::Camera
+ * - \b far (optional): far clipping distance of the ::Ogre::Camera
+ * - \b color (optional): frustum's color
  */
 class VISUOGREADAPTOR_CLASS_API SFrustum : public ::fwRenderOgre::IAdaptor,
                                            public ::fwRenderOgre::ITransformable

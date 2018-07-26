@@ -67,7 +67,7 @@ SRender::SRender() noexcept :
     m_interactorManager(nullptr),
     m_overlayTextPanel(nullptr),
     m_showOverlay(false),
-    m_renderOnDemand(true),
+    m_renderMode(RenderMode::AUTO),
     m_fullscreen(false)
 {
     m_ogreRoot = ::fwRenderOgre::Utils::getOgreRoot();
@@ -130,11 +130,19 @@ void SRender::configuring()
     const std::string renderMode = sceneCfg.get<std::string>("<xmlattr>.renderMode", "auto");
     if (renderMode == "auto")
     {
-        m_renderOnDemand = true;
+        m_renderMode = RenderMode::AUTO;
     }
     else if (renderMode == "always")
     {
-        m_renderOnDemand = false;
+        m_renderMode = RenderMode::ALWAYS;
+    }
+    else if (renderMode == "sync")
+    {
+        m_renderMode = RenderMode::SYNC;
+    }
+    else
+    {
+        SLM_ERROR("Unknown rendering mode '" + renderMode + "'");
     }
 
     auto adaptorConfigs = sceneCfg.equal_range("adaptor");
@@ -206,14 +214,14 @@ void SRender::starting()
         // Instantiate the manager that help to communicate between this service and the widget
         m_interactorManager = ::fwRenderOgre::OffScreenRenderWindowInteractorManager::New(m_width, m_height);
         m_interactorManager->setRenderService(this->getSptr());
-        m_interactorManager->createContainer( nullptr, m_renderOnDemand, m_fullscreen );
+        m_interactorManager->createContainer( nullptr, m_renderMode != RenderMode::ALWAYS, m_fullscreen );
     }
     else
     {
         // Instantiate the manager that help to communicate between this service and the widget
         m_interactorManager = ::fwRenderOgre::IRenderWindowInteractorManager::createManager();
         m_interactorManager->setRenderService(this->getSptr());
-        m_interactorManager->createContainer( this->getContainer(), m_renderOnDemand, m_fullscreen );
+        m_interactorManager->createContainer( this->getContainer(), m_renderMode != RenderMode::ALWAYS, m_fullscreen );
     }
 
     // Initialize resources to load overlay scripts.
@@ -371,7 +379,14 @@ void SRender::requestRender()
 {
     if( this->isShownOnScreen() )
     {
-        m_interactorManager->requestRender();
+        if ( m_renderMode == RenderMode::SYNC )
+        {
+            m_interactorManager->renderNow();
+        }
+        else
+        {
+            m_interactorManager->requestRender();
+        }
 
         if(m_offScreen)
         {
