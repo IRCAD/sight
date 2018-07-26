@@ -1,13 +1,12 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWSERVICES_REGISTRY_OBJECTSERVICE_HXX__
-#define __FWSERVICES_REGISTRY_OBJECTSERVICE_HXX__
+#pragma once
 
-#include <fwServices/IService.hpp>
+#include "fwServices/IService.hpp"
 
 #include <fwCom/Signal.hxx>
 
@@ -80,6 +79,8 @@ std::set< SPTR(SERVICE) > ObjectService::getServices() const
 template<class SERVICE>
 std::set< SPTR(SERVICE) > ObjectService::getServices(::fwData::Object::sptr obj) const
 {
+    FW_DEPRECATED_MSG("'ObjectService::getServices(object)' is deprecated.", "20.0");
+
     std::set< SPTR(SERVICE) > services;
     if(m_container.left.find(obj) != m_container.left.end())
     {
@@ -121,5 +122,3 @@ ObjectService::ObjectVectorType ObjectService::getObjects() const
 
 } // end registry
 } // end fwServices
-
-#endif // __FWSERVICES_REGISTRY_OBJECTSERVICE_HXX__

@@ -161,10 +161,18 @@ void IService::registerInOut(const ::fwData::Object::sptr& obj, const std::strin
 
 //-----------------------------------------------------------------------------
 
+bool IService::hasObjectId(const KeyType& _key) const
+{
+    auto it = m_idsMap.find(_key);
+    return (it != m_idsMap.end());
+}
+
+//-----------------------------------------------------------------------------
+
 IService::IdType IService::getObjectId(const IService::KeyType& _key) const
 {
     auto it = m_idsMap.find(_key);
-    SLM_ASSERT("Object key '" + _key + "' not found in service " + this->getID() + ".", it != m_idsMap.end());
+    FW_RAISE_IF("Object key '" + _key + "' not found in service " + this->getID() + ".", it == m_idsMap.end());
     return it->second;
 }
 
@@ -699,7 +707,16 @@ void IService::connectToConfig()
 
             ::fwCom::SignalBase::sptr sig = this->signal(signalCfg.second);
             SLM_ASSERT("Signal '" + signalCfg.second + "' not found in source '" + signalCfg.first + "'.", sig);
-            proxy->connect(proxyCfg.second.m_channel, sig);
+            try
+            {
+                proxy->connect(proxyCfg.second.m_channel, sig);
+
+            }
+            catch (const std::exception& e)
+            {
+                SLM_ERROR("Signal '" + signalCfg.second + "' from '" + signalCfg.first + "' can not be connected to the"
+                          " channel '" + proxyCfg.second.m_channel + "': " + std::string(e.what()));
+            }
         }
 
         for(const auto& slotCfg : proxyCfg.second.m_slots)
@@ -708,7 +725,16 @@ void IService::connectToConfig()
 
             ::fwCom::SlotBase::sptr slot = this->slot(slotCfg.second);
             SLM_ASSERT("Slot '" + slotCfg.second + "' not found in source '" + slotCfg.first + "'.", slot);
-            proxy->connect(proxyCfg.second.m_channel, slot);
+
+            try
+            {
+                proxy->connect(proxyCfg.second.m_channel, slot);
+            }
+            catch (const std::exception& e)
+            {
+                SLM_ERROR("Slot '" + slotCfg.second + "' from '" + slotCfg.first + "' can not be connected to the "
+                          "channel '" + proxyCfg.second.m_channel + "': " + std::string(e.what()));
+            }
         }
     }
 }
@@ -848,14 +874,31 @@ void IService::disconnectFromConfig()
             SLM_ASSERT("Invalid signal source", signalCfg.first == this->getID());
 
             ::fwCom::SignalBase::sptr sig = this->signal(signalCfg.second);
-            proxy->disconnect(proxyCfg.second.m_channel, sig);
+
+            try
+            {
+                proxy->disconnect(proxyCfg.second.m_channel, sig);
+            }
+            catch (const std::exception& e)
+            {
+                SLM_ERROR("Signal '" + signalCfg.second + "' from '" + signalCfg.first + "' can not be disconnected "
+                          "from the channel '" + proxyCfg.second.m_channel + "': " + std::string(e.what()));
+            }
         }
         for(const auto& slotCfg : proxyCfg.second.m_slots)
         {
             SLM_ASSERT("Invalid slot destination", slotCfg.first == this->getID());
 
             ::fwCom::SlotBase::sptr slot = this->slot(slotCfg.second);
-            proxy->disconnect(proxyCfg.second.m_channel, slot);
+            try
+            {
+                proxy->disconnect(proxyCfg.second.m_channel, slot);
+            }
+            catch (const std::exception& e)
+            {
+                SLM_ERROR("Slot '" + slotCfg.second + "' from '" + slotCfg.first + "' can not be disconnected from the "
+                          "channel '" + proxyCfg.second.m_channel + "': " + std::string(e.what()));
+            }
         }
     }
 }

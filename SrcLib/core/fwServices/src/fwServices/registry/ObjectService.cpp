@@ -221,6 +221,9 @@ void ObjectService::registerService( ::fwServices::IService::sptr service )
 void ObjectService::registerService( ::fwData::Object::sptr object, ::fwServices::IService::sptr service )
 {
     ::fwCore::mt::WriteLock writeLock(m_containerMutex);
+    FW_DEPRECATED_MSG("'ObjectService::registerSerice(object, service)' is deprecated. Use "
+                      "'ObjectService::registerService(object, key, INOUT, service)' or "
+                      "service->registerInOut(object, key)'.", "20.0");
     this->internalRegisterService(object, service, "", ::fwServices::IService::AccessType::INOUT);
 }
 
@@ -231,7 +234,6 @@ void ObjectService::registerService( ::fwData::Object::sptr object, const ::fwSe
 {
     ::fwCore::mt::WriteLock writeLock(m_containerMutex);
     this->internalRegisterService(object, service, objKey, access);
-
 }
 
 //------------------------------------------------------------------------------
@@ -242,7 +244,6 @@ void ObjectService::registerServiceInput( const ::fwData::Object::csptr& object,
 {
     ::fwCore::mt::WriteLock writeLock(m_containerMutex);
     this->internalRegisterServiceInput(object, service, objKey);
-
 }
 
 //------------------------------------------------------------------------------
@@ -254,11 +255,12 @@ void ObjectService::registerServiceOutput(::fwData::Object::sptr object, const :
     ::fwCore::mt::WriteLock writeLock(m_containerMutex);
     this->internalRegisterService(object, service, objKey, ::fwServices::IService::AccessType::OUTPUT);
 
-    auto sig = this->signal<RegisterSignalType>(s_REGISTERED_SIG);
-
-    if (sig->getNumberOfConnections() > 0)
+    const bool hasID = service->hasObjectId(objKey);
+    OSLM_DEBUG_IF("No output is defined for '" + objKey + "', the object is not emitted to the configuration", !hasID);
+    if (hasID)
     {
         const auto id = service->getObjectId(objKey);
+        auto sig      = this->signal<RegisterSignalType>(s_REGISTERED_SIG);
         sig->asyncEmit(object, id);
     }
 }
@@ -267,6 +269,8 @@ void ObjectService::registerServiceOutput(::fwData::Object::sptr object, const :
 
 void ObjectService::swapService( ::fwData::Object::sptr objDst, ::fwServices::IService::sptr service )
 {
+    FW_DEPRECATED_MSG("'ObjectService::swapService(object, service)' is deprecated. Use "
+                      "'service->swapKey(key, object)'.", "20.0");
     ::fwCore::mt::WriteLock lock(m_containerMutex);
     OSLM_ASSERT("Object "<< service->getObject()->getID()<<" is not registered in OSR",
                 m_container.left.find(service->getObject()) != m_container.left.end());
@@ -372,11 +376,10 @@ void ObjectService::unregisterServiceOutput( const ::fwServices::IService::KeyTy
 {
     ::fwData::Object::wptr obj = service->m_outputsMap[objKey];
 
-    auto sig = this->signal<RegisterSignalType>(s_UNREGISTERED_SIG);
-
-    if (sig->getNumberOfConnections() > 0)
+    if (service->hasObjectId(objKey))
     {
         const auto id = service->getObjectId(objKey);
+        auto sig      = this->signal<RegisterSignalType>(s_UNREGISTERED_SIG);
         sig->asyncEmit(obj.lock(), id);
     }
     service->m_outputsMap.erase(objKey);
@@ -533,6 +536,8 @@ ObjectService::ObjectVectorType ObjectService::getObjects() const
 ObjectService::ServiceVectorType ObjectService::getServices( ::fwData::Object::sptr obj,
                                                              const std::string& serviceType ) const
 {
+    FW_DEPRECATED_MSG("'ObjectService::getServices(object, srvType)' is deprecated.", "20.0");
+
     ServiceVectorType allServices = this->getServices(obj);
     ServiceVectorType services;
 
@@ -570,6 +575,7 @@ ObjectService::ServiceVectorType ObjectService::getServices( const std::string& 
 
 ObjectService::ServiceVectorType ObjectService::getServices( ::fwData::Object::sptr obj ) const
 {
+    FW_DEPRECATED_MSG("'ObjectService::getServices(object)' is deprecated.", "20.0");
     ServiceVectorType services;
     ::fwCore::mt::ReadLock lock(m_containerMutex);
 
@@ -589,6 +595,7 @@ ObjectService::ServiceVectorType ObjectService::getServices( ::fwData::Object::s
 
 bool ObjectService::has( ::fwData::Object::sptr obj, const std::string& srvType) const
 {
+    FW_DEPRECATED_MSG("'ObjectService::has(object, srvType)' is deprecated.", "20.0");
     bool hasServices = false;
     ::fwCore::mt::ReadLock lock(m_containerMutex);
     ServiceContainerType::left_map::const_iterator firstElement = m_container.left.find(obj);

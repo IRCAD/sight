@@ -131,7 +131,7 @@ void SImageSeries::updating()
     ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction >(s_TF_INOUT);
     if (tf)
     {
-        negato->registerInOut(tf, SNegatoMPR::s_TF_INOUT, true);
+        negato->registerInOut(tf, SNegatoMPR::s_TF_INOUT, false);
     }
 
     negato->setTransformId( this->getTransformId() );
@@ -184,6 +184,17 @@ SNegatoMPR::SliceMode SImageSeries::getSliceMode()
 void SImageSeries::set3dMode( bool enabled )
 {
     m_3dModeEnabled = enabled;
+}
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsMap SImageSeries::getAutoConnections() const
+{
+    KeyConnectionsMap connections;
+
+    connections.push(s_IMAGE_SERIES_INOUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+
+    return connections;
 }
 
 //------------------------------------------------------------------------------

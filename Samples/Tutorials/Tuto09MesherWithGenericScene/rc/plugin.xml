@@ -163,14 +163,14 @@
             </service>
 
             <service uid="listOrganEditor" type="::uiMedDataQt::editor::SModelSeriesList" autoConnect="yes">
-                <in key="modelSeries" uid="modelSeriesId" />
+                <inout key="modelSeries" uid="modelSeriesId" />
                 <columns>
                     <organ_name>@organ_name</organ_name>
                 </columns>
             </service>
 
             <service uid="sliderIndexEditor" type="::uiImageQt::SliceIndexPositionEditor" autoConnect="yes">
-                <in key="image" uid="imageId" />
+                <inout key="image" uid="imageId" />
                 <sliceIndex>axial</sliceIndex>
             </service>
 
@@ -269,7 +269,7 @@
 
             <connect>
                 <signal>listOrganEditor/reconstructionSelected</signal>
-                <slot>updaterReconstUID/addOrSwap</slot>
+                <slot>updaterReconstUID/add</slot>
             </connect>
 
             <!--

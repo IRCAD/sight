@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2018.
+ * FW4SPL - Copyright (C) IRCAD, 2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -30,6 +30,9 @@ namespace ioDicomWeb
  * @brief   This service is used to pull series from a PACS (Orthanc).
  *
 
+ * @section Slots Slots
+ * - \b displayErrorMessage(const std::string&) : display an error message.
+
  * @section XML XML Configuration
  *
  * @code{.xml}
@@ -47,7 +50,7 @@ namespace ioDicomWeb
  * @subsection Configuration Configuration:
  * - \b dicomReaderConfig Optional configuration for the DICOM Reader.
  * - \b server : server URL. Need hostname and port in this format addr:port (default value is 127.0.0.1:4242).
- * @note : hostname and port of this service can be a value or a nameKey from preference settings
+ * @note : hostname and port of this service are from the preference settings.
  */
 
 class IODICOMWEB_CLASS_API SSeriesPuller : public ::fwServices::IController

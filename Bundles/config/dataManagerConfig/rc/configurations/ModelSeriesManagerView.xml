@@ -57,7 +57,7 @@ Example
 
         <connect>
             <signal>listOrganEditor/reconstructionSelected</signal>
-            <slot>updaterReconst/addOrSwap</slot>
+            <slot>updaterReconst/add</slot>
         </connect>
 
         <start uid="multiViewOrgans" />

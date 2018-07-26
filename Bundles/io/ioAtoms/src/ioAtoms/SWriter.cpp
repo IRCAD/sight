@@ -306,7 +306,7 @@ void SWriter::updating()
         return;
     }
 
-    ::fwData::Object::sptr obj = this->getInOut< ::fwData::Object >(::fwIO::s_DATA_KEY);
+    ::fwData::Object::csptr obj = this->getInput< ::fwData::Object >(::fwIO::s_DATA_KEY);
     if (!obj)
     {
         FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "18.0");
@@ -381,7 +381,7 @@ void SWriter::updating()
         {
             runningJob.doneWork(progressBarOffset);
 
-            atom = ::fwAtomConversion::convert(obj);
+            atom = ::fwAtomConversion::convert(::fwData::Object::constCast(obj));
             runningJob.done();
         }, m_associatedWorker );
 

@@ -1,26 +1,25 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
+
+#include "ObjectServiceTest.hpp"
+
+#include "TestService.hpp"
+
+#include <fwServices/IService.hpp>
+#include <fwServices/macros.hpp>
+#include <fwServices/op/Add.hpp>
+#include <fwServices/op/Get.hpp>
+#include <fwServices/registry/ServiceFactory.hpp>
 
 #include <fwCore/Profiling.hpp>
 
 #include <fwData/Float.hpp>
 #include <fwData/Integer.hpp>
 
-#include <fwServices/IService.hpp>
-#include <fwServices/macros.hpp>
-
-#include <fwServices/op/Add.hpp>
-#include <fwServices/op/Get.hpp>
-
-#include <fwServices/registry/ServiceFactory.hpp>
-
 #include <fwThread/Worker.hpp>
-
-#include "TestService.hpp"
-#include "ObjectServiceTest.hpp"
 
 #include <unordered_set>
 
@@ -33,6 +32,8 @@ namespace fwServices
 {
 namespace ut
 {
+
+//------------------------------------------------------------------------------
 
 void ObjectServiceTest::setUp()
 {
@@ -50,6 +51,7 @@ void ObjectServiceTest::tearDown()
 
 void ObjectServiceTest::swapTest()
 {
+    FW_DEPRECATED_MSG("This test check a deprecated method.", "20.0");
     const std::string srvType("::fwServices::ut::TestService");
     const std::string srvImplementation("::fwServices::ut::TestServiceImplementation");
 
@@ -90,6 +92,8 @@ void ObjectServiceTest::swapTest()
 
 void ObjectServiceTest::registerTest()
 {
+    FW_DEPRECATED_MSG("This test check a deprecated method.", "20.0");
+
     const std::string srvType("::fwServices::ut::TestService");
     const std::string srvImplementation("::fwServices::ut::TestServiceImplementation");
 
@@ -151,6 +155,16 @@ void ObjectServiceTest::registerKeyTest()
     service1->setObjectId("key2", "uid2");
     service1->setObjectId("key3", "uid3");
 
+    CPPUNIT_ASSERT_EQUAL(true, service1->hasObjectId("key1"));
+    CPPUNIT_ASSERT_EQUAL(true, service1->hasObjectId("key2"));
+    CPPUNIT_ASSERT_EQUAL(true, service1->hasObjectId("key3"));
+    CPPUNIT_ASSERT_EQUAL(false, service1->hasObjectId("another_key"));
+
+    CPPUNIT_ASSERT_EQUAL(std::string("uid1"), service1->getObjectId("key1"));
+    CPPUNIT_ASSERT_EQUAL(std::string("uid2"), service1->getObjectId("key2"));
+    CPPUNIT_ASSERT_EQUAL(std::string("uid3"), service1->getObjectId("key3"));
+    CPPUNIT_ASSERT_THROW(service1->getObjectId("another_key"), ::fwCore::Exception);
+
     service2->setObjectId("key1", "uid1");
     service2->setObjectId("key2", "uid2");
 
@@ -160,34 +174,24 @@ void ObjectServiceTest::registerKeyTest()
     osr.registerService(obj2, "key2", ::fwServices::IService::AccessType::INOUT, service1);
     osr.registerService(obj3, "key3", ::fwServices::IService::AccessType::INOUT, service1);
 
-    CPPUNIT_ASSERT( osr.has(obj1, srvType) );
-    CPPUNIT_ASSERT( osr.has(obj2, srvType) );
-    CPPUNIT_ASSERT( osr.has(obj3, srvType) );
-
-    CPPUNIT_ASSERT( osr.has(obj1, srvImplementation1) );
-    CPPUNIT_ASSERT( osr.has(obj2, srvImplementation1) );
-    CPPUNIT_ASSERT( osr.has(obj3, srvImplementation1) );
+    CPPUNIT_ASSERT( osr.isRegistered("key1", ::fwServices::IService::AccessType::INOUT, service1) );
+    CPPUNIT_ASSERT( osr.isRegistered("key2", ::fwServices::IService::AccessType::INOUT, service1) );
+    CPPUNIT_ASSERT( osr.isRegistered("key3", ::fwServices::IService::AccessType::INOUT, service1) );
+    CPPUNIT_ASSERT( obj1 == osr.getRegistered("key1", ::fwServices::IService::AccessType::INOUT, service1) );
+    CPPUNIT_ASSERT( obj2 == osr.getRegistered("key2", ::fwServices::IService::AccessType::INOUT, service1) );
+    CPPUNIT_ASSERT( obj3 == osr.getRegistered("key3", ::fwServices::IService::AccessType::INOUT, service1) );
 
     osr.registerService(obj1, "key1", ::fwServices::IService::AccessType::INOUT, service2);
     osr.registerService(obj2, "key2", ::fwServices::IService::AccessType::INOUT, service2);
 
-    CPPUNIT_ASSERT( osr.has(obj1, srvType) );
-    CPPUNIT_ASSERT( osr.has(obj2, srvType) );
-    CPPUNIT_ASSERT( osr.has(obj3, srvType) );
-
-    CPPUNIT_ASSERT( osr.has(obj1, srvImplementation2) );
-    CPPUNIT_ASSERT( osr.has(obj2, srvImplementation2) );
-    CPPUNIT_ASSERT(!osr.has(obj3, srvImplementation2) );
+    CPPUNIT_ASSERT( osr.isRegistered("key1", ::fwServices::IService::AccessType::INOUT, service2) );
+    CPPUNIT_ASSERT( osr.isRegistered("key2", ::fwServices::IService::AccessType::INOUT, service2) );
+    CPPUNIT_ASSERT( obj1 == osr.getRegistered("key1", ::fwServices::IService::AccessType::INOUT, service2) );
+    CPPUNIT_ASSERT( obj2 == osr.getRegistered("key2", ::fwServices::IService::AccessType::INOUT, service2) );
 
     osr.registerService(obj3, "key3", ::fwServices::IService::AccessType::INOUT, service3);
-
-    CPPUNIT_ASSERT( osr.has(obj1, srvType) );
-    CPPUNIT_ASSERT( osr.has(obj2, srvType) );
-    CPPUNIT_ASSERT( osr.has(obj3, srvType) );
-
-    CPPUNIT_ASSERT( osr.has(obj1, srvImplementation1) );
-    CPPUNIT_ASSERT( osr.has(obj2, srvImplementation1) );
-    CPPUNIT_ASSERT( osr.has(obj3, srvImplementation1) );
+    CPPUNIT_ASSERT( osr.isRegistered("key3", ::fwServices::IService::AccessType::INOUT, service3) );
+    CPPUNIT_ASSERT( obj3 == osr.getRegistered("key3", ::fwServices::IService::AccessType::INOUT, service3) );
 
     // 3 services in total
     {
@@ -216,13 +220,12 @@ void ObjectServiceTest::registerKeyTest()
         CPPUNIT_ASSERT(std::equal(servicesByType.begin(), servicesByType.end(), servicesByTemplateType.begin()));
     }
 
+    // Begin deprecated methods
     // 2 services of type "::fwServices::ut::TestService" working on obj1
     {
-        auto srvByObjAndType1    = osr.getServices( obj1, srvType );
         auto srvByTplTypeAndObj1 = osr.getServices< ::fwServices::ut::TestService >( obj1 );
 
-        CPPUNIT_ASSERT_EQUAL(size_t(2), srvByObjAndType1.size());
-        CPPUNIT_ASSERT(std::equal(srvByObjAndType1.begin(), srvByObjAndType1.end(), srvByTplTypeAndObj1.begin()));
+        CPPUNIT_ASSERT_EQUAL(size_t(2), srvByTplTypeAndObj1.size());
     }
 
     // 1 service of type "::fwServices::ut::TestServiceImplementation" working on obj1
@@ -255,19 +258,9 @@ void ObjectServiceTest::registerKeyTest()
         CPPUNIT_ASSERT(std::equal(srvByObjAndType3.begin(), srvByObjAndType3.end(), srvByTplTypeAndObj3.begin()));
     }
 
-    auto srvByObjAndType1 = osr.getServices( obj1, srvType );
-    auto srvByObjAndType2 = osr.getServices( obj2, srvType );
-    auto srvByObjAndType3 = osr.getServices( obj3, srvType );
-
-    typedef ::fwServices::registry::ObjectService::ServiceVectorType ServiceVectorType;
-    ServiceVectorType allServices;
-    std::move(srvByObjAndType1.begin(), srvByObjAndType1.end(), std::inserter(allServices, allServices.begin()));
-    std::move(srvByObjAndType2.begin(), srvByObjAndType2.end(), std::inserter(allServices, allServices.begin()));
-    std::move(srvByObjAndType3.begin(), srvByObjAndType3.end(), std::inserter(allServices, allServices.begin()));
+    // End deprecated methods
 
     auto servicesByType = osr.getServices( srvType );
-    CPPUNIT_ASSERT(std::equal(servicesByType.begin(), servicesByType.end(), allServices.begin()));
-
     CPPUNIT_ASSERT_EQUAL(size_t(3), servicesByType.size());
 
     typedef ::fwServices::registry::ObjectService::ObjectVectorType ObjectVectorType;
@@ -284,43 +277,30 @@ void ObjectServiceTest::registerKeyTest()
 
     // Remove key 1 from service 1 and check consistency
     osr.unregisterService("key1", ::fwServices::IService::AccessType::INOUT, service1);
-    CPPUNIT_ASSERT( osr.has(obj1, srvType) == true );
-    CPPUNIT_ASSERT( osr.has(obj1, srvImplementation1) == false );
-    CPPUNIT_ASSERT( osr.has(obj1, srvImplementation2) == true );
-    CPPUNIT_ASSERT( osr.has(obj2, srvType) == true );
-    CPPUNIT_ASSERT( osr.has(obj2, srvImplementation1) == true );
-    CPPUNIT_ASSERT( osr.has(obj2, srvImplementation2) == true );
+    CPPUNIT_ASSERT( false == osr.isRegistered("key1", ::fwServices::IService::AccessType::INOUT, service1) );
     servicesByType = osr.getServices( srvType );
     CPPUNIT_ASSERT_EQUAL(size_t(3), servicesByType.size());
 
     osr.unregisterService(service1);
     servicesByType = osr.getServices( srvType );
-    CPPUNIT_ASSERT( osr.has(obj2, srvType) == true );
-    CPPUNIT_ASSERT( osr.has(obj2, srvImplementation1) == false );
-    CPPUNIT_ASSERT( osr.has(obj2, srvImplementation2) == true );
     CPPUNIT_ASSERT_EQUAL(size_t(2), servicesByType.size());
 
     // Remove key 2 from service 2 and check consistency
     osr.unregisterService("key2", ::fwServices::IService::AccessType::INOUT, service2);
-    CPPUNIT_ASSERT( osr.has(obj2, srvType) == false );
-    CPPUNIT_ASSERT( osr.has(obj2, srvImplementation1) == false );
-    CPPUNIT_ASSERT( osr.has(obj2, srvImplementation2) == false );
+    CPPUNIT_ASSERT( false == osr.isRegistered("key2", ::fwServices::IService::AccessType::INOUT, service2) );
+
     servicesByType = osr.getServices( srvType );
     CPPUNIT_ASSERT_EQUAL(size_t(2), servicesByType.size());
 
     // Register key 2 to service 1 just for fun
     osr.registerService(obj2, "key2", ::fwServices::IService::AccessType::INOUT, service1);
-    CPPUNIT_ASSERT( osr.has(obj2, srvType) == true );
-    CPPUNIT_ASSERT( osr.has(obj2, srvImplementation1) == true );
-    CPPUNIT_ASSERT( osr.has(obj2, srvImplementation2) == false );
+    CPPUNIT_ASSERT( osr.isRegistered("key2", ::fwServices::IService::AccessType::INOUT, service1) );
+    CPPUNIT_ASSERT( obj2 == osr.getRegistered("key2", ::fwServices::IService::AccessType::INOUT, service1) );
     servicesByType = osr.getServices( srvType );
     CPPUNIT_ASSERT_EQUAL(size_t(3), servicesByType.size());
 
     // Remove service 3 and check consistency
     osr.unregisterService(service3);
-    CPPUNIT_ASSERT( osr.has(obj3, srvType) == false );
-    CPPUNIT_ASSERT( osr.has(obj3, srvImplementation1) == false );
-    CPPUNIT_ASSERT( osr.has(obj3, srvImplementation2) == false );
     servicesByType = osr.getServices( srvType );
     CPPUNIT_ASSERT_EQUAL(size_t(2), servicesByType.size());
 

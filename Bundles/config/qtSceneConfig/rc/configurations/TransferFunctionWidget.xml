@@ -49,7 +49,7 @@ Example:
 
         <!-- ************************************* Services ************************************ -->
         <!-- Scene2D Shutter -->
-        <service uid="Scene2D_Shutter" type="::fwRenderQt::SRender" autoConnect="yes">
+        <service uid="Scene2D_Shutter" type="::fwRenderQt::SRender">
             <scene>
                 <scene x="-1100" y="-1.1" width="2400" height="1.2" />
 
@@ -81,7 +81,7 @@ Example:
 
         <service uid="shutterHistogram" type="::scene2D::adaptor::SHistogram" autoConnect="yes">
             <in key="histogram" uid="${histogram}" />
-            <inout key="point" uid="HistogramPoint" optional="yes" />
+            <inout key="point" uid="HistogramPoint" />
             <config color="green" xAxis="xAxis" yAxis="axeHistogramY" zValue="4" />
         </service>
 
@@ -91,7 +91,7 @@ Example:
         </service>
 
         <!-- Scene2D -->
-        <service uid="Scene2D" type="::fwRenderQt::SRender" autoConnect="yes">
+        <service uid="Scene2D" type="::fwRenderQt::SRender">
               <scene>
                 <scene x="-1100" y="-1.1" width="2400" height="1.2" antialiasing="true" />
 
@@ -136,7 +136,7 @@ Example:
 
         <service uid="curvedHistogram" type="::scene2D::adaptor::SCurvedHistogram" autoConnect="yes">
             <in key="histogram" uid="${histogram}" />
-            <inout key="point" uid="HistogramPoint" optional="yes" />
+            <inout key="point" uid="HistogramPoint" />
             <config xAxis="xAxis" yAxis="axeHistogramY" borderColor="lightGray" innerColor="gray" opacity="0.25" zValue="6" borderWidth="2.0" />
         </service>
 

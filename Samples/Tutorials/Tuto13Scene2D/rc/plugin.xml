@@ -8,9 +8,6 @@
     <extension implements="::fwServices::registry::AppConfig">
         <id>tutoScene2DConfig</id>
         <config>
-            <!-- ***************************************** Begin Objects declaration ***************************************** -->
-            <object uid="Float" type="::fwData::Float" />
-            <!-- ***************************************** End Objects declaration ******************************************* -->
 
             <!-- ***************************************** Begin layouts declaration ***************************************** -->
             <service uid="mainFrame" type="::gui::frame::SDefaultFrame" >
@@ -50,7 +47,7 @@
             </service>
 
             <!-- ***************************************** Begin render scenes declarations  ***************************************** -->
-            <service uid="Scene2D" type="::fwRenderQt::SRender" autoConnect="yes">
+            <service uid="Scene2D" type="::fwRenderQt::SRender">
                 <scene>
                     <viewport x="-100" y="-100" width="200" height="200" />
                     <axis id="axe1" origin="0.0" scale="1.0" scaleType="LINEAR" />
@@ -63,7 +60,7 @@
                 </scene>
             </service>
 
-            <service uid="grid" type="::scene2D::adaptor::SGrid2D" autoConnect="yes" >
+            <service uid="grid" type="::scene2D::adaptor::SGrid2D">
                 <config xMin="-150" xMax="150" yMin="-150" yMax="150" xSpacing="10" ySpacing="10" color="green" zValue="2" xAxis="axe1" yAxis="axe1" />
             </service>
 

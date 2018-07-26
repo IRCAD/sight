@@ -8,10 +8,9 @@
 
 #include <fwServices/IService.hpp>
 
+#include <fwCom/HasSlots.hpp>
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
-#include <fwCom/Slots.hpp>
-#include <fwCom/Slots.hxx>
 
 #include <fwData/Image.hpp>
 
@@ -167,6 +166,20 @@ public:
     }
 
     //-------------------------------------------------------------------------
+    virtual KeyConnectionsMap getAutoConnections() const override
+    {
+        KeyConnectionsMap connections;
+        connections.push("data", ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+        connections.push("data1", ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+        connections.push("data2", ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+        connections.push("data3", ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+        connections.push("data4", ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+        connections.push("data5", ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+        connections.push("dataGroup", ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+        return connections;
+    }
+
+    //-------------------------------------------------------------------------
     virtual void info(std::ostream& _sstream ) override
     {
         _sstream << "TestServiceImplementation";
@@ -278,6 +291,7 @@ public:
         connections.push("data1", ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
         connections.push("data2", ::fwData::Object::s_MODIFIED_SIG, s_SLOT_1);
         connections.push("data3", ::fwData::Object::s_MODIFIED_SIG, s_SLOT_1);
+        connections.push("dataGroup0", ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
         connections.push("dataGroup1", ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
 
         return connections;

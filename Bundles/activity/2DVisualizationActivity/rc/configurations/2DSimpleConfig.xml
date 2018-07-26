@@ -25,7 +25,7 @@
 
         <!-- *************************** Begin generic scene *************************** -->
 
-        <service uid="gs" type="::fwRenderVTK::SRender" autoConnect="yes">
+        <service uid="gs" type="::fwRenderVTK::SRender">
             <scene>
                 <picker id="picker" vtkclass="fwVtkCellPicker" />
                 <renderer id="default" background="0.0" />
@@ -68,14 +68,14 @@
         <!-- *************************** End generic scene *************************** -->
 
         <service uid="imageDumpLocker" type="::ctrlMemory::LockDumpSrv">
-            <in key="image" uid="${imageID}" />
+            <inout key="target" uid="${imageID}" />
         </service>
 
         <service uid="medicalImgConverter" type="::ctrlSelection::MedicalImageSrv">
             <inout key="image" uid="${imageID}" />
         </service>
         <service uid="sliderIndexEditor" type="::uiImageQt::SliceIndexPositionEditor" autoConnect="yes">
-            <in key="image" uid="${imageID}" />
+            <inout key="image" uid="${imageID}" />
             <sliceIndex>${orientation}</sliceIndex>
         </service>
 

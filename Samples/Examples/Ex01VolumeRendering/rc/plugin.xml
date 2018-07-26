@@ -208,11 +208,6 @@ Comment: Name inside the drawing are the uid of the service defined below.
                 </config>
             </service>
 
-            <service uid="sliderIndexEditor" type="::uiImageQt::SliceIndexPositionEditor" autoConnect="yes" >
-                <in key="image" uid="imageUID" />
-                <sliceIndex>axial</sliceIndex>
-            </service>
-
             <!-- This manager adds/removes a field (m_transferFunctionCompositeId) on Image (image) -->
             <service uid="fieldMgr" type="::gui::action::SPushField">
                 <inout key="source" uid="imageUID" />
@@ -227,7 +222,7 @@ Comment: Name inside the drawing are the uid of the service defined below.
 
             <!-- This generic scene (genericScene1) uses the TF transfer function stores -->
 
-            <service uid="genericScene1" type="::fwRenderVTK::SRender" autoConnect="yes">
+            <service uid="genericScene1" type="::fwRenderVTK::SRender">
                 <scene>
                     <picker id="picker" vtkclass="fwVtkCellPicker" />
                     <renderer id="default" background="0.0" />
@@ -254,7 +249,7 @@ Comment: Name inside the drawing are the uid of the service defined below.
 
             <!-- This generic scene (genericScene2) uses the default transfer function (CT-GreyLevel) -->
 
-            <service uid="genericScene2" type="::fwRenderVTK::SRender" autoConnect="yes">
+            <service uid="genericScene2" type="::fwRenderVTK::SRender">
                 <scene>
                     <picker id="picker" vtkclass="fwVtkCellPicker" />
                     <renderer id="default" background="0.0" />
@@ -284,7 +279,7 @@ Comment: Name inside the drawing are the uid of the service defined below.
 
             <!-- This negato (negato1) uses the transfer function selected in the editor -->
 
-            <service uid="negato1" type="::fwRenderVTK::SRender" autoConnect="yes">
+            <service uid="negato1" type="::fwRenderVTK::SRender">
                 <scene>
                     <picker id="picker" vtkclass="fwVtkCellPicker" />
                     <renderer id="default" background="0.0" />
@@ -315,7 +310,7 @@ Comment: Name inside the drawing are the uid of the service defined below.
 
             <!-- This negato (negato2) uses the default transfer function (CT-GreyLevel) -->
 
-            <service uid="negato2" type="::fwRenderVTK::SRender" autoConnect="yes">
+            <service uid="negato2" type="::fwRenderVTK::SRender">
                 <scene>
                     <picker id="picker" vtkclass="fwVtkCellPicker" />
                     <renderer id="default" background="0.0" />

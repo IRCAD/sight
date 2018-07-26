@@ -120,7 +120,7 @@
                 </config>
             </service>
 
-            <service uid="pointView" type="::uiVisuQt::PointEditor" autoConnect="yes" />
+            <service uid="pointView" type="::uiVisuQt::PointEditor" />
             <service uid="meshReader" type="::uiIO::editor::SIOSelector">
                 <inout key="data" uid="mesh" />
                 <type mode="reader" />
@@ -157,7 +157,7 @@
             <!-- ***************************************** Begin render scenes declarations    ***************************************** -->
             <!-- *************************** Begin generic scene *************************** -->
 
-            <service uid="genericScene" type="::fwRenderVTK::SRender" autoConnect="yes">
+            <service uid="genericScene" type="::fwRenderVTK::SRender">
                 <scene>
                     <picker id="myPicker" vtkclass="fwVtkCellPicker" />
                     <renderer id="default" background="0.0" />

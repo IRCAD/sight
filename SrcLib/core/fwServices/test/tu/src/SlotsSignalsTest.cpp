@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -54,7 +54,8 @@ void SlotsSignalsTest::basicTest()
     activeWorkers->addWorker("test", worker);
 
     SBasicTest::sptr basicTestSrv = ::fwServices::factory::New<SBasicTest>();
-    ::fwServices::OSR::registerService(buffer, basicTestSrv);
+    ::fwServices::OSR::registerService(basicTestSrv);
+    basicTestSrv->registerInOut(buffer, SBasicTest::s_BUFFER_INOUT);
 
     basicTestSrv->setWorker(worker);
 
@@ -68,7 +69,7 @@ void SlotsSignalsTest::basicTest()
     updateFuture.wait();
     CPPUNIT_ASSERT(basicTestSrv->m_updateFinished == true);
 
-    IService::SharedFutureType swapFuture = basicTestSrv->swap(buffer2);
+    IService::SharedFutureType swapFuture = basicTestSrv->swapKey(SBasicTest::s_BUFFER_INOUT, buffer2);
     CPPUNIT_ASSERT(basicTestSrv->m_swapFinished == false);
     swapFuture.wait();
     CPPUNIT_ASSERT(basicTestSrv->m_swapFinished == true);
@@ -100,10 +101,12 @@ void SlotsSignalsTest::comObjectServiceTest()
     {
 
         SReaderTest::sptr readerTestSrv = ::fwServices::factory::New<SReaderTest>();
-        ::fwServices::OSR::registerService(buffer, readerTestSrv);
+        ::fwServices::OSR::registerService(readerTestSrv);
+        readerTestSrv->registerInOut(buffer, IBasicTest::s_BUFFER_INOUT);
 
         SShowTest::sptr showTestSrv = ::fwServices::factory::New<SShowTest>();
-        ::fwServices::OSR::registerService(buffer, showTestSrv);
+        ::fwServices::OSR::registerService(showTestSrv);
+        showTestSrv->registerInOut(buffer, IBasicTest::s_BUFFER_INOUT);
         showTestSrv->setWorker(worker1);
 
         buffer->signal(::fwData::Object::s_MODIFIED_SIG)->connect(showTestSrv->slot(IService::s_UPDATE_SLOT));
@@ -128,21 +131,22 @@ void SlotsSignalsTest::comObjectServiceTest()
 
     {
         SReaderTest::sptr readerTestSrv = ::fwServices::factory::New<SReaderTest>();
-        ::fwServices::OSR::registerService(buffer, readerTestSrv);
+        ::fwServices::OSR::registerService(readerTestSrv);
+        readerTestSrv->registerInOut(buffer, IBasicTest::s_BUFFER_INOUT);
 
         SReaderTest::sptr reader2TestSrv = ::fwServices::factory::New<SReaderTest>();
-        ::fwServices::OSR::registerService(buffer, reader2TestSrv);
+        ::fwServices::OSR::registerService(reader2TestSrv);
+        reader2TestSrv->registerInOut(buffer, IBasicTest::s_BUFFER_INOUT);
         reader2TestSrv->setWorker(worker2);
 
         SShowTest::sptr showTestSrv = ::fwServices::factory::New<SShowTest>();
-        ::fwServices::OSR::registerService(buffer, showTestSrv);
+        ::fwServices::OSR::registerService(showTestSrv);
+        showTestSrv->registerInOut(buffer, IBasicTest::s_BUFFER_INOUT, true);
         showTestSrv->setWorker(worker1);
-
-        buffer->signal(::fwData::Object::s_MODIFIED_SIG)->connect(showTestSrv->slot(IService::s_UPDATE_SLOT));
 
         readerTestSrv->start();
         reader2TestSrv->start();
-        showTestSrv->start();
+        showTestSrv->start().wait();
 
         IService::SharedFutureType updateReaderFuture  = readerTestSrv->update();
         IService::SharedFutureType updateReader2Future = reader2TestSrv->update();
@@ -155,8 +159,6 @@ void SlotsSignalsTest::comObjectServiceTest()
         stopReaderFuture.wait();
         stopReader2Future.wait();
         stopShowFuture.wait();
-
-        buffer->signal(::fwData::Object::s_MODIFIED_SIG)->disconnect(showTestSrv->slot(IService::s_UPDATE_SLOT));
 
         CPPUNIT_ASSERT_EQUAL(2, showTestSrv->m_receiveCount);
 
@@ -180,10 +182,12 @@ void SlotsSignalsTest::comServiceToServiceTest()
     activeWorkers->addWorker("worker1", worker1);
 
     SReader2Test::sptr readerTestSrv = ::fwServices::factory::New<SReader2Test>();
-    ::fwServices::OSR::registerService(buffer, readerTestSrv);
+    ::fwServices::OSR::registerService(readerTestSrv);
+    readerTestSrv->registerInOut(buffer, IBasicTest::s_BUFFER_INOUT);
 
     SShowTest::sptr showTestSrv = ::fwServices::factory::New<SShowTest>();
-    ::fwServices::OSR::registerService(buffer, showTestSrv);
+    ::fwServices::OSR::registerService(showTestSrv);
+    showTestSrv->registerInOut(buffer, IBasicTest::s_BUFFER_INOUT);
     showTestSrv->setWorker(worker1);
 
     readerTestSrv->signal(SReader2Test::s_CHANGED_SIG)->connect(showTestSrv->slot(SShowTest::s_CHANGE_SLOT));
@@ -221,10 +225,12 @@ void SlotsSignalsTest::blockConnectionTest()
     activeWorkers->addWorker("worker1", worker1);
 
     SReaderTest::sptr readerTestSrv = ::fwServices::factory::New<SReaderTest>();
-    ::fwServices::OSR::registerService(buffer, readerTestSrv);
+    ::fwServices::OSR::registerService(readerTestSrv);
+    readerTestSrv->registerInOut(buffer, IBasicTest::s_BUFFER_INOUT);
 
     SShow2Test::sptr showTestSrv = ::fwServices::factory::New<SShow2Test>();
-    ::fwServices::OSR::registerService(buffer, showTestSrv);
+    ::fwServices::OSR::registerService(showTestSrv);
+    showTestSrv->registerInOut(buffer, IBasicTest::s_BUFFER_INOUT);
     showTestSrv->setWorker(worker1);
 
     ::fwCom::Connection connection;

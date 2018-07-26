@@ -73,7 +73,7 @@
 
         <!-- *************************** Begin generic scene *************************** -->
 
-        <service uid="genericScene" type="::fwRenderVTK::SRender" autoConnect="yes">
+        <service uid="genericScene" type="::fwRenderVTK::SRender">
             <scene>
                 <picker id="negato2default" vtkclass="fwVtkCellPicker" />
                 <renderer id="default" background="0.0" />
@@ -127,7 +127,7 @@
         </service>
 
         <service uid="LockImageSrv" type="::ctrlMemory::LockDumpSrv">
-            <in key="image" uid="${image}" />
+            <inout key="target" uid="${image}" />
         </service>
 
         <service uid="fieldMgr" type="::gui::action::SPushField">

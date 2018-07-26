@@ -762,7 +762,16 @@ void AppConfigManager::destroyProxy(const std::string& channel, const ProxyConne
             SLM_ASSERT(this->msgHead() + "Signal source not found '" + signalElt.first + "'", obj);
 
             ::fwCom::SignalBase::sptr sig = hasSignals->signal(signalElt.second);
-            proxy->disconnect(channel, sig);
+
+            try
+            {
+                proxy->disconnect(channel, sig);
+            }
+            catch (const std::exception& e)
+            {
+                SLM_ERROR("Signal '" + signalElt.second + "' from '" + signalElt.first + "' can not be disconnected "
+                          "from the channel '" + channel + "': " + std::string(e.what()));
+            }
         }
     }
     for(const ProxyConnections::ProxyEltType& slotElt : proxyCfg.m_slots)
@@ -774,7 +783,16 @@ void AppConfigManager::destroyProxy(const std::string& channel, const ProxyConne
             SLM_ASSERT(this->msgHead() + "Slot destination not found '" + slotElt.first + "'", hasSlots);
 
             ::fwCom::SlotBase::sptr slot = hasSlots->slot(slotElt.second);
-            proxy->disconnect(channel, slot);
+
+            try
+            {
+                proxy->disconnect(channel, slot);
+            }
+            catch (const std::exception& e)
+            {
+                SLM_ERROR("Slot '" + slotElt.second + "' from '" + slotElt.first + "' can not be disconnected from the "
+                          "channel '" + channel + "': " + std::string(e.what()));
+            }
         }
     }
 }
@@ -1086,7 +1104,16 @@ void AppConfigManager::connectProxy(const std::string& channel, const ProxyConne
 
         ::fwCom::SignalBase::sptr sig = hasSignals->signal(signalCfg.second);
         SLM_ASSERT("Signal '" + signalCfg.second + "' not found in source '" + signalCfg.first + "'.", sig);
-        proxy->connect(channel, sig);
+
+        try
+        {
+            proxy->connect(channel, sig);
+        }
+        catch (const std::exception& e)
+        {
+            SLM_ERROR("Signal '" + signalCfg.second + "' from '" + signalCfg.first + "' can not be connected to the "
+                      "channel '" + channel + "': " + std::string(e.what()));
+        }
     }
 
     for(const auto& slotCfg : connectCfg.m_slots)
@@ -1097,7 +1124,16 @@ void AppConfigManager::connectProxy(const std::string& channel, const ProxyConne
 
         ::fwCom::SlotBase::sptr slot = hasSlots->slot(slotCfg.second);
         SLM_ASSERT("Slot '" + slotCfg.second + "' not found in source '" + slotCfg.first + "'.", slot);
-        proxy->connect(channel, slot);
+
+        try
+        {
+            proxy->connect(channel, slot);
+        }
+        catch (const std::exception& e)
+        {
+            SLM_ERROR("Slot '" + slotCfg.second + "' from '" + slotCfg.first + "' can not be connected to the "
+                      "channel '" + channel + "': " + std::string(e.what()));
+        }
     }
 }
 

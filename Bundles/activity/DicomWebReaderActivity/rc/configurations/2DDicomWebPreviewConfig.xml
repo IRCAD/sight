@@ -57,14 +57,14 @@
         <!-- *************************** End generic scene *************************** -->
 
         <service uid="imageDumpLocker" type="::ctrlMemory::LockDumpSrv">
-            <in key="image" uid="image" />
+            <inout key="target" uid="image" />
         </service>
 
         <service uid="medicalImgConverter" type="::ctrlSelection::MedicalImageSrv">
             <inout key="image" uid="image" />
         </service>
 
-        <service uid="sliderIndexDicomPullerEditor" type="::ioDicomWeb::SSliceIndexDicomPullerEditor" autoConnect="yes">
+        <service uid="sliderIndexDicomPullerEditor" type="::ioDicomWeb::SSliceIndexDicomPullerEditor">
             <inout key="series" uid="${objectID}" />
             <out key="image" uid="image" />
             <server>%PACS_SERVER_HOSTNAME%:%PACS_SERVER_PORT%</server>

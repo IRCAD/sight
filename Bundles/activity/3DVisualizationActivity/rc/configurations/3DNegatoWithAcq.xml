@@ -60,11 +60,11 @@
         </service>
 
         <service uid="LockImageSrv" type="::ctrlMemory::LockDumpSrv">
-            <inout key="imageKey" uid="optionalInputImage" />
+            <inout key="target" uid="optionalInputImage" />
         </service>
 
         <service uid="sliderNegato" type="::uiImageQt::SliceIndexPositionEditor" autoConnect="yes">
-            <inout key="imageKey" uid="optionalInputImage" />
+            <inout key="image" uid="optionalInputImage" />
             <sliceIndex>${orientation}</sliceIndex>
         </service>
 

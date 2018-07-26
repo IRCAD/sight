@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -25,11 +25,18 @@ namespace ut
 
 fwDataRegisterMacro(Buffer);
 
-fwServicesRegisterMacro( ::fwServices::ut::IBasicTest, ::fwServices::ut::SBasicTest, ::fwServices::ut::Buffer );
-fwServicesRegisterMacro( ::fwServices::ut::IBasicTest, ::fwServices::ut::SReaderTest, ::fwServices::ut::Buffer );
-fwServicesRegisterMacro( ::fwServices::ut::IBasicTest, ::fwServices::ut::SShowTest, ::fwServices::ut::Buffer );
-fwServicesRegisterMacro( ::fwServices::ut::IBasicTest, ::fwServices::ut::SReader2Test, ::fwServices::ut::Buffer );
-fwServicesRegisterMacro( ::fwServices::ut::IBasicTest, ::fwServices::ut::SShow2Test, ::fwServices::ut::Buffer );
+fwServicesRegisterMacro( ::fwServices::ut::IBasicTest, ::fwServices::ut::SBasicTest );
+fwServicesRegisterObjectMacro( ::fwServices::ut::SBasicTest, ::fwServices::ut::Buffer );
+fwServicesRegisterMacro( ::fwServices::ut::IBasicTest, ::fwServices::ut::SReaderTest );
+fwServicesRegisterObjectMacro( ::fwServices::ut::SReaderTest, ::fwServices::ut::Buffer );
+fwServicesRegisterMacro( ::fwServices::ut::IBasicTest, ::fwServices::ut::SShowTest );
+fwServicesRegisterObjectMacro( ::fwServices::ut::SShowTest, ::fwServices::ut::Buffer );
+fwServicesRegisterMacro( ::fwServices::ut::IBasicTest, ::fwServices::ut::SReader2Test );
+fwServicesRegisterObjectMacro( ::fwServices::ut::SReader2Test, ::fwServices::ut::Buffer );
+fwServicesRegisterMacro( ::fwServices::ut::IBasicTest, ::fwServices::ut::SShow2Test );
+fwServicesRegisterObjectMacro( ::fwServices::ut::SShow2Test, ::fwServices::ut::Buffer );
+
+const ::fwServices::IService::KeyType IBasicTest::s_BUFFER_INOUT = "buffer";
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
@@ -56,7 +63,7 @@ void SBasicTest::stopping()
 
 //------------------------------------------------------------------------------
 
-void SBasicTest::swapping()
+void SBasicTest::swapping(const KeyType& )
 {
     std::this_thread::sleep_for(m_swapRetarder);
     m_swapFinished = true;
@@ -75,7 +82,7 @@ void SBasicTest::updating()
 
 void SReaderTest::updating()
 {
-    Buffer::sptr buff = this->getObject< Buffer >();
+    Buffer::sptr buff = this->getInOut< Buffer >(s_BUFFER_INOUT);
 
     // Emit object Modified
     ::fwData::Object::ModifiedSignalType::sptr sig;
@@ -106,7 +113,7 @@ SShowTest::SShowTest() :
 
 void SShowTest::updating()
 {
-    Buffer::sptr buffer = this->getObject<Buffer>();
+    Buffer::sptr buffer = this->getInOut<Buffer>(s_BUFFER_INOUT);
     std::this_thread::sleep_for(m_receiveRetarder);
     ::fwData::mt::ObjectWriteLock lock(buffer);
     ++m_receiveCount;
@@ -118,6 +125,15 @@ void SShowTest::change()
 {
     ::fwCore::mt::ScopedLock lock(m_mutex);
     ++m_changeCount;
+}
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsMap SShowTest::getAutoConnections() const
+{
+    KeyConnectionsMap connections;
+    connections.push(s_BUFFER_INOUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    return connections;
 }
 
 //------------------------------------------------------------------------------
@@ -161,7 +177,7 @@ SShow2Test::SShow2Test() :
 
 void SShow2Test::updating()
 {
-    Buffer::sptr buff = this->getObject< Buffer >();
+    Buffer::sptr buff = this->getInOut< Buffer >(s_BUFFER_INOUT);
 
     // Emit object Modified
     ::fwData::Object::ModifiedSignalType::sptr sig;
@@ -176,7 +192,7 @@ void SShow2Test::updating()
 
 void SShow2Test::updateBuffer()
 {
-    Buffer::sptr buffer = this->getObject<Buffer>();
+    Buffer::sptr buffer = this->getInOut<Buffer>(s_BUFFER_INOUT);
     std::this_thread::sleep_for(m_receiveRetarder);
     ::fwData::mt::ObjectWriteLock lock(buffer);
     ++m_receiveCount;

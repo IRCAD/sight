@@ -8,9 +8,12 @@
 
 #include <fwServices/macros.hpp>
 
+#include <fwCom/Slots.hxx>
+
 #include <fwData/Object.hpp>
 
-fwServicesRegisterMacro( ::fwServices::ut::TestService, ::fwServices::ut::TestServiceImplementation, ::fwData::Object );
+fwServicesRegisterMacro( ::fwServices::ut::TestService, ::fwServices::ut::TestServiceImplementation);
+fwServicesRegisterObjectMacro(::fwServices::ut::TestServiceImplementation, ::fwData::Object);
 fwServicesRegisterMacro( ::fwServices::ut::TestService, ::fwServices::ut::TestServiceImplementation2 );
 fwServicesRegisterMacro( ::fwServices::ut::TestService, ::fwServices::ut::TestSrvAutoconnect );
 fwServicesRegisterMacro( ::fwServices::IService, ::fwServices::ut::TestServiceWithData );

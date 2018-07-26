@@ -8,7 +8,7 @@
         <object uid="${objectID}" type="::fwMedData::ModelSeries" src="ref" />
         <!-- *************************** Begin generic scene *************************** -->
 
-        <service uid="gs" type="::fwRenderVTK::SRender" autoConnect="yes">
+        <service uid="gs" type="::fwRenderVTK::SRender">
             <registry>
                 <parent wid="${WID_PARENT}" />
             </registry>

@@ -24,6 +24,8 @@ namespace ioPacs
 fwServicesRegisterMacro( ::fwServices::IController, ::ioPacs::SPacsConfigurationInitializer,
                          ::fwPacsIO::data::PacsConfiguration );
 
+static const ::fwServices::IService::KeyType s_CONFIG_INOUT = "config";
+
 //------------------------------------------------------------------------------
 
 SPacsConfigurationInitializer::SPacsConfigurationInitializer() noexcept
@@ -137,8 +139,13 @@ void SPacsConfigurationInitializer::configuring()
     /// Preference Key
     m_preferenceKey = config->getAttributeValue("preferenceKey");
 
-    ::fwPacsIO::data::PacsConfiguration::sptr pacsConfiguration =
-        this->getObject< ::fwPacsIO::data::PacsConfiguration >();
+    ::fwPacsIO::data::PacsConfiguration::sptr pacsConfiguration = this->getInOut< ::fwPacsIO::data::PacsConfiguration >(
+        s_CONFIG_INOUT);
+    if (!pacsConfiguration)
+    {
+        FW_DEPRECATED_KEY(s_CONFIG_INOUT, "inout", "fw4spl_18.0");
+        pacsConfiguration = this->getObject< ::fwPacsIO::data::PacsConfiguration >();
+    }
 
     // Set information from xml and update PacsConfiguration
     if(!m_preferenceKey.empty())
@@ -175,9 +182,13 @@ void SPacsConfigurationInitializer::configuring()
 
 void SPacsConfigurationInitializer::updating()
 {
-    SLM_TRACE_FUNC();
-    ::fwPacsIO::data::PacsConfiguration::sptr pacsConfiguration =
-        this->getObject< ::fwPacsIO::data::PacsConfiguration >();
+    ::fwPacsIO::data::PacsConfiguration::sptr pacsConfiguration = this->getInOut< ::fwPacsIO::data::PacsConfiguration >(
+        s_CONFIG_INOUT);
+    if (!pacsConfiguration)
+    {
+        FW_DEPRECATED_KEY(s_CONFIG_INOUT, "inout", "fw4spl_18.0");
+        pacsConfiguration = this->getObject< ::fwPacsIO::data::PacsConfiguration >();
+    }
 
     // Check if the user has changed the Pacs configuration and update the local var
     if(pacsConfiguration->getLocalApplicationTitle() != m_localApplicationTitle

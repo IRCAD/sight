@@ -115,7 +115,7 @@
         <service uid="progressBarController" type="::ioPacs::SProgressBarController"  worker="progress" />
 
         <!-- PACS CONFIGURATION -->
-        <service uid="pacsConfigurationInitializer" type="::ioPacs::SPacsConfigurationInitializer" autoConnect="yes">
+        <service uid="pacsConfigurationInitializer" type="::ioPacs::SPacsConfigurationInitializer">
             <inout key="config" uid="pacsConfiguration" />
             <config
                 localApplicationTitle="${APP_NAME}"
@@ -135,7 +135,7 @@
             <inout key="seriesDB" uid="previewSeriesDB" />
         </service>
 
-        <service uid="queryEditor" type="::ioPacs::SQueryEditor" autoConnect="yes">
+        <service uid="queryEditor" type="::ioPacs::SQueryEditor">
             <in key="pacsConfig" uid="pacsConfiguration" />
             <inout key="seriesDB" uid="previewSeriesDB" />
         </service>

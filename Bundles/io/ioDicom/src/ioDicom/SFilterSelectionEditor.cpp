@@ -383,7 +383,8 @@ void SFilterSelectionEditor::applyFilters()
     typedef std::vector< ::fwDicomIOFilter::IFilter::sptr > FilterContainertype;
 
     // Get selected DicomSeries
-    ::fwData::Vector::sptr vector = this->getObject< ::fwData::Vector >();
+    ::fwData::Vector::csptr vector = this->getInput< ::fwData::Vector >("selection");
+    SLM_ASSERT("Vector object should not be null.", vector);
 
     // Display the informations
     ::fwGui::dialog::MessageDialog messageBox;

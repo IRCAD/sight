@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2018.
+ * FW4SPL - Copyright (C) IRCAD, 2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -375,7 +375,7 @@ void SSeriesPuller::readLocalSeries(DicomSeriesContainerType selectedSeries)
         const std::string& selectedSeriesUID = series->getInstanceUID();
 
         // Add the series to the local series vector
-        if(::std::find(m_localSeries.begin(), m_localSeries.end(), selectedSeriesUID) == m_localSeries.end())
+        if(std::find(m_localSeries.begin(), m_localSeries.end(), selectedSeriesUID) == m_localSeries.end())
         {
             m_localSeries.push_back(selectedSeriesUID);
         }
@@ -400,7 +400,7 @@ void SSeriesPuller::readLocalSeries(DicomSeriesContainerType selectedSeries)
 
 //------------------------------------------------------------------------------
 
-void SSeriesPuller::displayErrorMessage(const ::std::string& message) const
+void SSeriesPuller::displayErrorMessage(const std::string& message) const
 {
     SLM_WARN("Error: " + message);
     ::fwGui::dialog::MessageDialog messageBox;

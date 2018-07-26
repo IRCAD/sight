@@ -72,6 +72,14 @@ protected:
     /// Do nothing.
     virtual void configuring() override;
 
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect Reconstruction::s_MODIFIED_SIG to this::s_UPDATE_SLOT
+     */
+    virtual KeyConnectionsMap getAutoConnections() const override;
+
     /// Notify the changes
     void notifyMaterial();
 

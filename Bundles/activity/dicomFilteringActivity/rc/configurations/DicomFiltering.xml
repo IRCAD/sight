@@ -136,7 +136,7 @@
             </configs>
         </service>
 
-        <service uid="filterSelectionEditor" type="::ioDicom::SFilterSelectionEditor" autoConnect="yes">
+        <service uid="filterSelectionEditor" type="::ioDicom::SFilterSelectionEditor">
             <in key="selection" uid="readingSelection" />
             <inout key="target" uid="filteredSeriesDB" />
         </service>

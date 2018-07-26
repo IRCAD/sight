@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2018.
+ * FW4SPL - Copyright (C) IRCAD, 2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -292,10 +292,6 @@ void SSliceIndexDicomPullerEditor::readImage(size_t selectedSliceIndex)
     {
         return;
     }
-
-    // Clear temporary seriesDB
-    ::fwMedDataTools::helper::SeriesDB sDBTempohelper(m_tempSeriesDB);
-    sDBTempohelper.clear();
 
     // Creates unique temporary folder, no need to check if exists before (see ::fwTools::System::getTemporaryFolder)
     ::boost::filesystem::path path    = ::fwTools::System::getTemporaryFolder("dicom");

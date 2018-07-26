@@ -1,0 +1,112 @@
+<extension implements="::fwServices::registry::AppConfig">
+    <id>DicomWebWriterActivity</id>
+    <parameters>
+        <param name="WID_PARENT" />
+        <param name="AS_UID" />
+        <param name="APP_NAME" />
+        <param name="PROGRESS_CHANNEL" />
+    </parameters>
+    <config>
+        <object uid="seriesDB" type="::fwMedData::SeriesDB" />
+        <object uid="selections" type="::fwData::Vector" />
+
+        <!-- ******************************* UI declaration *********************************** -->
+
+        <service uid="mainView" type="::gui::view::SDefaultView" >
+            <gui>
+                <layout type="::fwGui::CardinalLayoutManager">
+                    <view caption="Information" align="center" minWidth="200" />
+                    <view caption="Preview" align="bottom" minHeight="200" />
+                </layout>
+                <toolBar />
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <toolBar sid="toolBar" start="yes" />
+                <view sid="selector" start="yes" />
+                <view wid="preview" />
+            </registry>
+        </service>
+
+        <service uid="toolBar" type="::gui::aspect::SDefaultToolBar" >
+            <gui>
+                <layout>
+                    <menuItem name="Import" icon="media-0.1/icons/Import.svg" />
+                    <menuItem name="Anonymize selected series" icon="media-0.1/icons/icon-Anonymization.svg" />
+                    <menuItem name="Push selected series to Pacs" icon="media-0.1/icons/Push.svg" />
+                </layout>
+            </gui>
+            <registry>
+                <menuItem sid="action_import" start="yes" />
+                <menuItem sid="action_anonymize" start="yes" />
+                <menuItem sid="action_pushSeriesToPacs" start="yes" />
+            </registry>
+        </service>
+
+        <!-- ******************************* Actions ****************************************** -->
+
+        <service uid="action_import" type="::uiIO::action::SSeriesDBMerger" >
+            <inout key="seriesDB" uid="seriesDB" />
+            <IOSelectorSrvConfig name="IOSelectorServiceConfigVRRenderExtDicomSeriesDBReader" />
+        </service>
+
+        <!-- Dicom Anonymization -->
+        <service uid="action_anonymize" type="::gui::action::SSlotCaller" >
+            <slots>
+                <slot>anonymizeController/update</slot>
+            </slots>
+        </service>
+
+        <!-- Push series -->
+        <service uid="action_pushSeriesToPacs" type="::gui::action::SSlotCaller" >
+            <slots>
+                <slot>pushSeriesController/update</slot>
+                <slot>action_pushSeriesToPacs/setInexecutable</slot>
+            </slots>
+        </service>
+
+        <service uid="pushSeriesController" type="::ioDicomWeb::SSeriesPusher">
+            <in key="selectedSeries" uid="selections" />
+            <server>%PACS_SERVER_HOSTNAME%:%PACS_SERVER_PORT%</server>
+        </service>
+
+        <!-- ******************************* Services ***************************************** -->
+
+        <service uid="selector" type="::uiMedDataQt::editor::SSelector" autoConnect="yes">
+            <inout key="seriesDB" uid="seriesDB" />
+            <inout key="selection" uid="selections" />
+        </service>
+
+        <!-- Preview -->
+        <service uid="viewer" type="::uiMedDataQt::SSeriesViewer" autoConnect="yes">
+            <in key="series" uid="selections" />
+            <parentView wid="preview" />
+            <configs>
+                <config id="2DLocalPreviewConfig" type="::fwMedData::DicomSeries" />
+            </configs>
+        </service>
+
+        <service uid="anonymizeController" type="::ioGdcm::SDicomSeriesAnonymizer">
+            <inout key="seriesDB" uid="seriesDB" />
+            <inout key="selectedSeries" uid="selections" />
+        </service>
+
+        <!-- ******************************* Connections ************************************** -->
+
+        <connect channel="${PROGRESS_CHANNEL}">
+            <signal>anonymizeController/jobCreated</signal>
+        </connect>
+
+        <connect>
+            <signal>pushSeriesController/updated</signal>
+            <slot>action_pushSeriesToPacs/setExecutable</slot>
+        </connect>
+
+        <!-- START AND STOP SERVICES -->
+        <start uid="mainView" />
+        <start uid="viewer" />
+        <start uid="anonymizeController" />
+        <start uid="pushSeriesController" />
+
+    </config>
+</extension>
