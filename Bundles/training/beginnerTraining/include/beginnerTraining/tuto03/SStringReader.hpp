@@ -27,7 +27,7 @@ namespace tuto03
        </service>
    @endcode
  * @subsection In-Out In-Out:
- * - \b string [::fwData::String]: output string.
+ * - \b targetString [::fwData::String]: output string.
  * @subsection Configuration Configuration:
  * - \b file: input file path.
  */

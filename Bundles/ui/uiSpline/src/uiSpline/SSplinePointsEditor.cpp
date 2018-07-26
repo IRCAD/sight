@@ -106,7 +106,7 @@ void SSplinePointsEditor::starting()
         m_list, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(onClickItem(QListWidgetItem*)));
 
     // Get the points for activity export
-    ::fwData::PointList::sptr pointList = this->getObject< ::fwData::PointList>();
+    ::fwData::PointList::sptr pointList = this->getInOut< ::fwData::PointList>(S_POINTS_KEY);
     SLM_ASSERT("Invalid pointList object", pointList);
 
     for(::fwData::Point::sptr point : pointList->getPoints())

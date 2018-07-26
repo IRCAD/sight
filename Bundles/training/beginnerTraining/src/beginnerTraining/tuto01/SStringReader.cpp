@@ -19,8 +19,6 @@
 #include <sstream>
 #include <string>
 
-fwServicesRegisterMacro( ::fwIO::IReader, ::beginnerTraining::tuto01::SStringReader, ::fwData::String );
-
 namespace beginnerTraining
 {
 namespace tuto01

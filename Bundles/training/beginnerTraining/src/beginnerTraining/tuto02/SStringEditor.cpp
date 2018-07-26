@@ -16,12 +16,12 @@
 #include <qpalette.h>
 #include <qwidget.h>
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::beginnerTraining::tuto02::SStringEditor );
-
 namespace beginnerTraining
 {
 namespace tuto02
 {
+
+static const std::string s_EDIT_STRING_KEY = "editString";
 
 //-----------------------------------------------------------------------------
 
@@ -63,7 +63,7 @@ void SStringEditor::starting()
     container->setAutoFillBackground( true );
 
     // Create textEditor
-    QVBoxLayout* layout = new QVBoxLayout( container );
+    QVBoxLayout* layout = new QVBoxLayout();
     m_textEditor = new QTextEdit( container );
     m_textEditor->setPlainText( "Edit text !" );
     layout->addWidget( m_textEditor );
@@ -83,7 +83,7 @@ void SStringEditor::stopping()
 void SStringEditor::updating()
 {
     // Update your textEditor from your associated object
-    ::fwData::String::sptr myAssociatedData = this->getInOut< ::fwData::String >("editString");
+    ::fwData::String::sptr myAssociatedData = this->getInOut< ::fwData::String >(s_EDIT_STRING_KEY);
     m_textEditor->setPlainText( myAssociatedData->getValue().c_str() );
 }
 
