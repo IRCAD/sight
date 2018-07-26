@@ -7,11 +7,12 @@
 #pragma once
 
 #include "videoQt/config.hpp"
-#include <videoQt/player/QVideoPlayer.hpp>
 
 #include <arServices/IGrabber.hpp>
 
 #include <fwThread/Worker.hpp>
+
+#include <fwVideoQt/Player.hpp>
 
 #include <QImage>
 #include <QObject>
@@ -131,7 +132,7 @@ private:
     QVideoFrame m_videoFrame;
 
     /// Camera
-    player::QVideoPlayer* m_videoPlayer;
+    ::fwVideoQt::Player* m_videoPlayer;
 
     /// Slot to call present frame method
     ::fwCom::Slot<void(const QVideoFrame& frame)>::sptr m_slotPresentFrame;

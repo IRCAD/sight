@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __UICALIBRATION_SINTRINSICEDITION_HPP__
-#define __UICALIBRATION_SINTRINSICEDITION_HPP__
+#pragma once
 
 #include "uiCalibration/config.hpp"
 #include "uiCalibration/SUpdateIntrinsicDialog.hpp"
@@ -22,8 +21,22 @@
 
 namespace uiCalibration
 {
+
 /**
  * @brief   SIntrinsicEdition service is used to set the intrinsic parameter infos.
+ *
+ * This services displays a dialog to change the resolution of your calibration, it computes the new intrinsic
+ * parameters
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+   <service type="::uiCalibration::SIntrinsicEdition">
+       <inout key="camera" uid="..." />
+   </service>
+   @endcode
+ * @subsection In-Out In-Out
+ * - \b camera [::arData::Camera]: camera on which the intrinsic parameters will be modified.
  */
 class UICALIBRATION_CLASS_API SIntrinsicEdition : public QObject,
                                                   public ::fwServices::IService
@@ -95,5 +108,3 @@ private:
 };
 
 } // namespace uiCalibration
-
-#endif // __UICALIBRATION_SINTRINSICEDITION_HPP__

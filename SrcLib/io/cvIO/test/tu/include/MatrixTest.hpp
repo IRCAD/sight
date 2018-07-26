@@ -26,6 +26,10 @@ public:
     CPPUNIT_TEST(copyToCvFloat);
     CPPUNIT_TEST(copyFromCvDouble);
     CPPUNIT_TEST(copyToCvDouble);
+    CPPUNIT_TEST(copyFromCvMat);
+    CPPUNIT_TEST(copyToCvMat);
+    CPPUNIT_TEST(copyFromRvecTvec);
+    CPPUNIT_TEST(copyToRvecTvec);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -39,6 +43,12 @@ public:
     ///Tests the copy from/to ::cv::Matx44d (double)
     void copyFromCvDouble();
     void copyToCvDouble();
+    ///Tests the copy from/to ::cv::Mat
+    void copyFromCvMat();
+    void copyToCvMat();
+    ///Tests the copy from/to ::cv::Mat rvec tvec
+    void copyFromRvecTvec();
+    void copyToRvecTvec();
 
 };
 

@@ -31,7 +31,7 @@
 
         <!-- Editor to create/update an activity. -->
         <service uid="activityCreator" type="::uiMedDataQt::editor::SActivityWizard" >
-            <inout key="series" uid="${SERIESDB}" />
+            <inout key="seriesDB" uid="${SERIESDB}" />
             <ioSelectorConfig>SDBReaderIOSelectorConfig</ioSelectorConfig>
             <sdbIoSelectorConfig>FullSDBReaderIOSelectorConfig</sdbIoSelectorConfig>
             <confirm>false</confirm>
@@ -51,7 +51,6 @@
                 <id>RGBDCalibration</id>
                 <id>calibrationEdition</id>
                 <id>TrackedCameraRegistration</id>
-                <id>TrackedSenseCameraRegistration</id>
                 <id>trackingHandEyeCalibration</id>
                 <id>toolCalibrationActivity</id>
             </filter>

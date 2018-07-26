@@ -6,20 +6,17 @@
     <xi:include href="configurations/trackedCameraRegistration.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/rgbCameraView.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
-    <xi:include href="configurations/grabbers/qtGrabber.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
-    <xi:include href="configurations/grabbers/openniGrabber.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
-
     <extension implements="::fwActivities::registry::Activities">
         <id>TrackedCameraRegistration</id>
         <title>Tracked camera registration</title>
-        <desc>Activity to compute the registration matrix between a camera and an aruco tag</desc>
+        <desc>Activity to compute the registration matrix between a camera and an aruco marker</desc>
         <icon>arMedia-0.1/icons/tagTracking.svg</icon>
         <requirements>
-            <requirement name="rgbCameraSeries" type="::arData::CameraSeries" minOccurs="1" maxOccurs="1">
-                <desc>CameraSeries containing the calibration for the RGB camera</desc>
+            <requirement name="firstCameraSeries" type="::arData::CameraSeries" minOccurs="1" maxOccurs="1">
+                <desc>CameraSeries containing the calibration for the first RGB camera that will see two markers</desc>
             </requirement>
-            <requirement name="senseCameraSeries" type="::arData::CameraSeries" minOccurs="1" maxOccurs="1">
-                <desc>CameraSeries containing the calibration for the second RGB camera</desc>
+            <requirement name="secondCameraSeries" type="::arData::CameraSeries" minOccurs="1" maxOccurs="1">
+                <desc>CameraSeries containing the calibration for the second RGB camera on which a marker is fixed</desc>
             </requirement>
             <requirement name="markerMesh" type="::fwData::Mesh" minOccurs="0" maxOccurs="1" create="true">
                 <desc>Optional mesh of a marker for augmented reality</desc>
@@ -28,38 +25,9 @@
         <builder>::fwActivities::builder::ActivitySeries</builder>
         <appConfig id="TrackedCameraRegistration">
             <parameters>
-                <parameter replace="rgbCameraSeries" by="@values.rgbCameraSeries" />
-                <parameter replace="senseCameraSeries" by="@values.senseCameraSeries" />
+                <parameter replace="firstCameraSeries" by="@values.firstCameraSeries" />
+                <parameter replace="secondCameraSeries" by="@values.secondCameraSeries" />
                 <parameter replace="markerMesh" by="@values.markerMesh" />
-                <parameter replace="mode" by="Qt" />
-            </parameters>
-        </appConfig>
-
-    </extension>
-
-    <extension implements="::fwActivities::registry::Activities">
-        <id>TrackedSenseCameraRegistration</id>
-        <title>Tracked sense camera registration</title>
-        <desc>Activity to compute the registration matrix between a sense camera and an aruco tag</desc>
-        <icon>arMedia-0.1/icons/tagTracking.svg</icon>
-        <requirements>
-            <requirement name="rgbCameraSeries" type="::arData::CameraSeries" minOccurs="1" maxOccurs="1">
-                <desc>CameraSeries containing the calibration for the RGB camera</desc>
-            </requirement>
-            <requirement name="senseCameraSeries" type="::arData::CameraSeries" minOccurs="1" maxOccurs="1">
-                <desc>CameraSeries containing the calibration for the Sense camera</desc>
-            </requirement>
-            <requirement name="markerMesh" type="::fwData::Mesh" minOccurs="0" maxOccurs="1" create="true">
-                <desc>Optional mesh of a marker for augmented reality</desc>
-            </requirement>
-        </requirements>
-        <builder>::fwActivities::builder::ActivitySeries</builder>
-        <appConfig id="TrackedCameraRegistration">
-            <parameters>
-                <parameter replace="rgbCameraSeries" by="@values.rgbCameraSeries" />
-                <parameter replace="senseCameraSeries" by="@values.senseCameraSeries" />
-                <parameter replace="markerMesh" by="@values.markerMesh" />
-                <parameter replace="mode" by="Openni" />
             </parameters>
         </appConfig>
 

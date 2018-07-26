@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -98,7 +98,7 @@ void SZMQConfigEditor::configuring()
     QObject::connect(validateButton, SIGNAL(clicked()), this, SLOT(onValidate()));
     QObject::connect(cancelButton, SIGNAL(clicked()), &m_dialog, SLOT(close()));
     m_protocol = m_protocolBox->currentText().toStdString() + "://";
-    QObject::connect(m_protocolBox, SIGNAL(currentIndexChanged( const QString &)), this,
+    QObject::connect(m_protocolBox, SIGNAL(currentIndexChanged(const QString&)), this,
                      SLOT(onChangeProtocol(QString const&)));
 }
 
@@ -106,6 +106,7 @@ void SZMQConfigEditor::configuring()
 
 void SZMQConfigEditor::starting()
 {
+    FW_DEPRECATED_MSG("'uiZMQ' bundle and the associated services are no longer supported.", "19.0");
 }
 
 //-----------------------------------------------------------------------------
@@ -175,4 +176,3 @@ void SZMQConfigEditor::swapping()
 //-----------------------------------------------------------------------------
 
 } // namespace uiZMQ
-

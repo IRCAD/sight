@@ -10,6 +10,8 @@
 #include <arData/Camera.hpp>
 #include <arData/CameraSeries.hpp>
 
+#include <cvIO/Matrix.hpp>
+
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slot.hxx>
 #include <fwCom/Slots.hxx>
@@ -232,16 +234,11 @@ void SOpenCVExtrinsic::updating()
         this->signal<ErrorComputedSignalType>(s_ERROR_COMPUTED_SIG)->asyncEmit(err);
 
         ::fwData::TransformationMatrix3D::sptr matrix = ::fwData::TransformationMatrix3D::New();
-        for (size_t i = 0; i < 3; ++i)
-        {
-            for (size_t j = 0; j < 3; ++j)
-            {
-                matrix->setCoefficient(i, j, rotationMatrix.at<double>(static_cast<int>(i), static_cast<int>(j)));
-            }
-        }
-        matrix->setCoefficient(0, 3, translationVector.at<double>(0, 0));
-        matrix->setCoefficient(1, 3, translationVector.at<double>(1, 0));
-        matrix->setCoefficient(2, 3, translationVector.at<double>(2, 0));
+        ::cv::Mat cv4x4                               = ::cv::Mat::eye(4, 4, CV_64F);
+        rotationMatrix.copyTo(cv4x4(::cv::Rect(0, 0, 3, 3)));
+        translationVector.copyTo(cv4x4(::cv::Rect(3, 0, 1, 3)));
+
+        ::cvIO::Matrix::copyFromCv(cv4x4, matrix);
 
         {
             ::fwData::mt::ObjectWriteLock camSeriesLock(camSeries);

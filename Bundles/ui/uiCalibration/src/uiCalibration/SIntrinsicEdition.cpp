@@ -1,27 +1,28 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "uiCalibration/SIntrinsicEdition.hpp"
 
+#include <arData/Camera.hpp>
+
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
-#include <fwThread/Worker.hpp>
-
 #include <fwCore/base.hpp>
-
-#include <arData/Camera.hpp>
-
-#include <fwTools/Object.hpp>
 
 #include <fwServices/macros.hpp>
 
+#include <fwThread/Worker.hpp>
+
+#include <fwTools/Object.hpp>
+
 namespace uiCalibration
 {
-fwServicesRegisterMacro( ::fwServices::IService, ::uiCalibration::SIntrinsicEdition, ::arData::Camera);
+
+static const ::fwServices::IService::KeyType s_CAMERA_INOUT = "camera";
 
 // -------------------------------------------------------------------------
 
@@ -30,9 +31,8 @@ SIntrinsicEdition::SIntrinsicEdition()
     ::fwCom::HasSlots::m_slots.setWorker( m_associatedWorker );
     m_dialog = new SUpdateIntrinsicDialog();
 
-
-    QObject::connect(m_dialog, SIGNAL(newCalibration(std::array< double, 12 >&)),
-                     this, SLOT(onNewCalibration(std::array< double, 12 >&)));
+    QObject::connect(m_dialog, SIGNAL(newCalibration(std::array< double,12 >&)),
+                     this, SLOT(onNewCalibration(std::array< double,12 >&)));
 
 }
 
@@ -40,8 +40,8 @@ SIntrinsicEdition::SIntrinsicEdition()
 
 SIntrinsicEdition::~SIntrinsicEdition()
 {
-    QObject::disconnect(m_dialog, SIGNAL(newCalibration(std::array< double, 12 >&)),
-                        this, SLOT(onNewCalibration(std::array< double, 12 >&)));
+    QObject::disconnect(m_dialog, SIGNAL(newCalibration(std::array< double,12 >&)),
+                        this, SLOT(onNewCalibration(std::array< double,12 >&)));
 }
 
 // -------------------------------------------------------------------------
@@ -53,12 +53,16 @@ void SIntrinsicEdition::onNewCalibration(std::array< double, 12 >& cal)
     this->updateCalibration();
 }
 
-
 // -------------------------------------------------------------------------
 
 void SIntrinsicEdition::updateCalibration()
 {
-    ::arData::Camera::sptr camera = this->getObject< ::arData::Camera >();
+    ::arData::Camera::sptr camera = this->getInOut< ::arData::Camera >(s_CAMERA_INOUT);
+    if (!camera)
+    {
+        FW_DEPRECATED_KEY(s_CAMERA_INOUT, "inout", "fw4spl_19.0");
+        camera = this->getObject< ::arData::Camera >();
+    }
 
     camera->setWidth( m_calibration[0]);
     camera->setHeight(m_calibration[1]);
@@ -72,7 +76,6 @@ void SIntrinsicEdition::updateCalibration()
                                      m_calibration[9], m_calibration[10]);
 
     camera->setSkew(m_calibration[11]);
-
 
     ::arData::Camera::IntrinsicCalibratedSignalType::sptr sig;
     sig = camera->signal< ::arData::Camera::IntrinsicCalibratedSignalType >(
@@ -95,7 +98,12 @@ void SIntrinsicEdition::configuring()
 
 void SIntrinsicEdition::readCalibration()
 {
-    ::arData::Camera::sptr camera = this->getObject< ::arData::Camera >();
+    ::arData::Camera::sptr camera = this->getInOut< ::arData::Camera >(s_CAMERA_INOUT);
+    if (!camera)
+    {
+        FW_DEPRECATED_KEY(s_CAMERA_INOUT, "inout", "fw4spl_19.0");
+        camera = this->getObject< ::arData::Camera >();
+    }
 
     m_calibration[0] = camera->getWidth();
     m_calibration[1] = camera->getHeight();
@@ -146,6 +154,5 @@ void SIntrinsicEdition::updating()
 }
 
 // -------------------------------------------------------------------------
-
 
 } // uiCalibration

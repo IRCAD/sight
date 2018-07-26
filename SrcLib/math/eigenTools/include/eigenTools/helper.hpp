@@ -11,8 +11,6 @@
 #include <fwData/TransformationMatrix3D.hpp>
 
 #include <Eigen/Core>
-#include <Eigen/Dense>
-#include <Eigen/Eigen>
 
 namespace eigenTools
 {
@@ -86,7 +84,7 @@ template< class T>
     {
         for(unsigned int c = 0; c < 4; ++c)
         {
-            mat(r, c) = _trf->getCoefficient(r, c);
+            mat(r, c) = static_cast<T>(_trf->getCoefficient(r, c));
         }
     }
 

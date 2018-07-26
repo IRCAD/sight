@@ -6,7 +6,7 @@
 
 #include "videoQt/SFrameGrabber.hpp"
 
-#include "videoQt/player/VideoRegistry.hpp"
+#include "fwVideoQt/Registry.hpp"
 
 #include <arData/Camera.hpp>
 #include <arData/FrameTL.hpp>
@@ -15,8 +15,6 @@
 #include <fwCom/Slots.hxx>
 
 #include <fwDataTools/helper/Image.hpp>
-
-#include <fwServices/macros.hpp>
 
 #include <boost/filesystem/operations.hpp>
 
@@ -101,7 +99,7 @@ void SFrameGrabber::startCamera()
         }
     #endif
 
-        player::VideoRegistry& registry = player::VideoRegistry::getInstance();
+        auto& registry = ::fwVideoQt::Registry::getInstance();
         m_videoPlayer = registry.requestPlayer(camera);
         if(m_videoPlayer)
         {
@@ -152,7 +150,7 @@ void SFrameGrabber::stopCamera()
         QObject::disconnect(m_videoPlayer, SIGNAL(frameAvailable(QVideoFrame)), this,
                             SLOT(onPresentFrame(QVideoFrame)));
 
-        player::VideoRegistry& registry = player::VideoRegistry::getInstance();
+        auto& registry = ::fwVideoQt::Registry::getInstance();
         registry.releasePlayer(m_videoPlayer);
 
         m_videoPlayer = nullptr;

@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __ECHOEDSIMU_SPROBEPOSITION_HPP__
-#define __ECHOEDSIMU_SPROBEPOSITION_HPP__
+#pragma once
 
 #include "echoEdSimu/config.hpp"
 
@@ -24,6 +23,7 @@ namespace echoEdSimu
  *
  * The scale of the image is hardcoded and match the size of the physical plane used in the demo of echo101 during
  * the Hacking Health Camp 2015.
+ * @deprecated This service will be removed in 19.0
  */
 class ECHOEDSIMU_CLASS_API SProbePosition : public ::arServices::ISimulator
 {
@@ -72,5 +72,3 @@ private:
 };
 
 } // echoEdSimu
-
-#endif // __ECHOEDSIMU_SPROBEPOSITION_HPP__

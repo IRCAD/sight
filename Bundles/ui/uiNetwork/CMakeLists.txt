@@ -21,3 +21,4 @@ fwLink(
 
 set_target_properties(${FWPROJECT_NAME} PROPERTIES AUTOMOC TRUE)
 
+message(WARNING "'uiNetwork' bundle is no longer supported and will be removed  in 19.0")
