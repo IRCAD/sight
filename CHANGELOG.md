@@ -1,3 +1,59 @@
+# fw4spl-ar 17.1.0
+
+## Bug fixes:
+
+### ARCalibration
+
+*Remove warnings by using seriesDB key instead of series.*
+
+Fix series keys to seriesDB used in various configurations because it will be removed in 18.0 version of FW4SPL.
+
+## Refactor:
+
+### getObject
+
+*Remove deprecated getObject().*
+
+Replace deprecated `getObject()` by `getInout()` in `::uiCalibration::SIntrinsicEdition`
+
+Depreciate some bundles and services:
+- bundles: ioZMQ, uiZMQ, uiNetwork
+- services: SProbeMesh and SProbePosition from echoEdSimu
+
+## New features:
+
+### cvIO
+
+*Add new conversion function between cv::Mat and f4s matrices.*
+
+Convert from/to `::cv::Mat`to ::fwData::TransformationMatrix3D
+Convert from/to `::cv::Mat`rvec & tvec convention to ::fwData::TransformationMatrix3D
+Add new unit tests cases.
+Refactor Calibration code to use new helpers.
+
+merge(54-refactor-trasformationmatrix3d-from-to-opencv-mat): into 'dev'
+
+### trackedCameraCalibration
+
+*Merge activities.*
+
+Fuse sense specific activity and rgb activity thanks to SGrabberProxy.
+
+### video
+
+*Import VLC, Orbbec and RealSense grabbers.*
+
+VLC, Orbbec and RealSense grabbers code is now open and imported into fw4pl-ar, as well as the video filtering. The VLC grabber is convenient especially for RTSP streams. It may also be used as a fallback when the QtMultimedia grabber fails... The Orbbec grabber works for Astra camera and the RealSense brings support for cameras based on Intel sensors.
+
+## Documentation:
+
+### eigenTools
+
+*Document helper namespace.*
+
+
+
+
 # fw4spl-ar 17.0.0
 
 ## Bug fixes:
