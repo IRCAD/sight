@@ -1,3 +1,75 @@
+# fw4spl-ogre 17.1.0
+
+## Bug fixes:
+
+### fwRenderOgre
+
+*Correct valgrind errors and leaks.*
+
+Memory errors were fixed and memory leaks detected by valgrind (memcheck) on the test suite:
+* One out of bounds in read `fwRenderOgre::helper::Mesh`
+* Memory leaks on Ogre root destruction
+
+### fwRenderOgre
+
+*Missing headers.*
+
+### fwRenderOgre
+
+*Remove clang specific hack about OpenMP.*
+
+Remove a clang specific OpenMP hack in our CMake code.
+
+### R2VBRenderable
+
+*Clear vertex declaration before filling it.*
+
+This caused the varying to be duplicated, and thus the program link to fail.
+
+### Mesh
+
+*Generate normals each time the mesh is modified.*
+
+For triangle based meshes, when we don't have normals, we generate them. The problem was that it was only done on the first update of the mesh. If points were added to the mesh, the corresponding normals were not computed accordingly, thus the normal layer ended to be be shorter than the position layer. This led eventually to crash at some  point...
+
+## New features:
+
+### fwRenderOgre
+
+*Add a helper to convert pixel to view space position.*
+
+The function `convertPixelToViewSpace` translates a pixel coordinates to view space coordinates.
+
+### SNegato2D,3D
+
+*Use the transparency of the transfer function (optionally).*
+
+A new option was added to use the transparency of the transfer function.
+
+### SAxis
+
+*Add a label configurable option.*
+
+SAxis now has an option `label` that can be set to `true` or `false`
+to display or hide the axis labels (`true` by default).
+
+### SRender
+
+*Add a 'sync' renderMode.*
+
+In the following of our recent rework of the synchronization for real-time augmented-reality, this new mode allows to make the Ogre generic scene compatible with the approach. The example ExSimpleARCVOgre was reworked to use the new sync mechanism and proves that this works.
+
+## Documentation:
+
+### visuOgreAdaptor
+
+*Update some documentation.*
+
+The documentation of several adaptors were fixed.
+
+
+
+
 # fw4spl-ogre 17.0.0
 
 ## Bug fixes:
