@@ -20,6 +20,7 @@ class CameraTest : public CPPUNIT_NS::TestFixture
 
 CPPUNIT_TEST_SUITE( CameraTest );
 CPPUNIT_TEST( computeProjectionMatrix );
+CPPUNIT_TEST( convertPixelToWorldSpace );
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -28,6 +29,7 @@ public:
     void tearDown() override;
 
     void computeProjectionMatrix();
+    void convertPixelToWorldSpace();
 
 };
 
