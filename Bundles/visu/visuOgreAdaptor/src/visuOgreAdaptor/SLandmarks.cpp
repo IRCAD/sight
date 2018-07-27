@@ -15,6 +15,8 @@
 #include <fwRenderOgre/helper/ManualObject.hpp>
 #include <fwRenderOgre/helper/Scene.hpp>
 
+#include <fwServices/macros.hpp>
+
 namespace visuOgreAdaptor
 {
 

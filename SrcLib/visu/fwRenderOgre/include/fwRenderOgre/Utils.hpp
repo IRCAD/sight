@@ -33,6 +33,10 @@ namespace vr
 {
 class GridProxyGeometryFactory;
 }
+namespace compositor
+{
+class MaterialMgrListener;
+}
 }
 
 namespace fwRenderOgre
@@ -155,6 +159,7 @@ private:
     static ::fwRenderOgre::factory::R2VBRenderable* s_R2VBRenderableFactory;
     static ::fwRenderOgre::factory::Text* s_textFactory;
     static ::fwRenderOgre::vr::GridProxyGeometryFactory* s_gridProxyGeometryFactory;
+    static ::fwRenderOgre::compositor::MaterialMgrListener* s_oitMaterialListener;
 };
 
 } // namespace fwRenderOgre

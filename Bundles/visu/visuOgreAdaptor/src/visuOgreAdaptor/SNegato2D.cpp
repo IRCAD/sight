@@ -36,6 +36,8 @@ const ::fwCom::Slots::SlotKeyType s_SLICEINDEX_SLOT = "sliceIndex";
 static const ::fwServices::IService::KeyType s_IMAGE_INOUT = "image";
 static const ::fwServices::IService::KeyType s_TF_INOUT    = "tf";
 
+static const std::string s_ENABLE_APLHA_CONFIG = "tfalpha";
+
 //------------------------------------------------------------------------------
 
 SNegato2D::SNegato2D() noexcept :
@@ -106,6 +108,8 @@ void SNegato2D::configuring()
 
         this->setFiltering(filtering);
     }
+
+    m_enableAlpha = config.get<bool>(s_ENABLE_APLHA_CONFIG, m_enableAlpha);
 }
 
 //------------------------------------------------------------------------------
@@ -329,6 +333,7 @@ void SNegato2D::createPlane(const fwData::Image::SpacingType& _spacing)
     // Fits the plane to the new texture
     m_plane->setDepthSpacing(_spacing);
     m_plane->initialize2DPlane();
+    m_plane->enableAlpha(m_enableAlpha);
 }
 
 //------------------------------------------------------------------------------

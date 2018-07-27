@@ -11,7 +11,10 @@
 #include "fwRenderOgre/Utils.hpp"
 #include <fwRenderOgre/helper/Camera.hpp>
 
+#include <OgreLogManager.h>
 #include <OgreMatrix4.h>
+#include <OgreRenderWindow.h>
+#include <OgreViewport.h>
 
 #include <limits>
 #include <tuple>
@@ -48,6 +51,15 @@ void compareMatrix(const ::Ogre::Matrix4& _m1, const ::Ogre::Matrix4& _m2)
             CPPUNIT_ASSERT_DOUBLES_EQUAL(_m1[i][j], _m2[i][j], 0.00000000000001);
         }
     }
+}
+
+//------------------------------------------------------------------------------
+
+void comparePoint(const Ogre::Vector3& _p1, const Ogre::Vector3& _p2)
+{
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(_p1[0], _p2[0], 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(_p1[1], _p2[1], 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(_p1[2], _p2[2], 0.00001);
 }
 
 //------------------------------------------------------------------------------
@@ -159,6 +171,89 @@ void CameraTest::computeProjectionMatrix()
             compareMatrix(expected, actual);
         }
     }
+}
+
+//------------------------------------------------------------------------------
+
+void CameraTest::convertPixelToWorldSpace()
+{
+    const size_t width  = 1920;
+    const size_t height = 1080;
+    const double cx     = static_cast<double>(width)/2.;
+    const double cy     = static_cast<double>(height)/2.;
+    const double fx     = 10;
+    const double fy     = 10;
+    const float n       = 0.1f;
+    const float f       = 100;
+
+    // Original camera
+    ::arData::Camera::sptr camera = ::arData::Camera::New();
+    camera->setCx(cx);
+    camera->setCy(cy);
+    camera->setFx(fx);
+    camera->setFy(fy);
+    camera->setWidth(width);
+    camera->setHeight(height);
+
+    ::Ogre::Camera* ogreCamera;
+
+    auto root = ::fwRenderOgre::Utils::getOgreRoot();
+
+    auto ogreRenderWindow = root->createRenderWindow("Dummy-RenderWindow",
+                                                     static_cast<unsigned int>(1),
+                                                     static_cast<unsigned int>(1),
+                                                     false,
+                                                     nullptr);
+
+    ogreRenderWindow->setVisible(false);
+
+    ogreRenderWindow->setAutoUpdated(false);
+
+    auto sceneManager = root->createSceneManager("DefaultSceneManager", "Testing");
+
+    ogreCamera = sceneManager->createCamera("DefaultCam");
+
+    auto viewport = ogreRenderWindow->addViewport(ogreCamera, 0);
+
+    float point1[3] = {0, 0, 0};
+    float point2[3] = {12, 34, 56};
+    float point3[3] = {-65, -43, -21};
+
+    Ogre::Vector3 point1Expected = {0, 0, 0};
+    Ogre::Vector3 point2Expected = {0, 0, 56};
+    Ogre::Vector3 point3Expected = {0, 0, -21};
+
+    const float actualWidth  = static_cast<float>(viewport->getActualWidth());
+    const float actualHeight = static_cast<float>(viewport->getActualHeight());
+
+    // Since the viewport's dimensions are relative to each configuration, we must recalculate all conversions.
+    point1Expected[0] = point1[0]/actualWidth *2.f - 1.f;
+    point1Expected[1] = -(point1[1]/actualHeight * 2.f - 1.f);
+
+    point2Expected[0] = point2[0]/actualWidth *2.f - 1.f;
+    point2Expected[1] = -(point2[1]/actualHeight * 2.f - 1.f);
+
+    point3Expected[0] = point3[0]/actualWidth *2.f - 1.f;
+    point3Expected[1] = -(point3[1]/actualHeight * 2.f - 1.f);
+
+    const ::Ogre::Matrix4 viewMat = ogreCamera->getViewMatrix();
+    const ::Ogre::Matrix4 projMat = ogreCamera->getProjectionMatrixWithRSDepth();
+
+    const auto inversedCombinedMat = (projMat * viewMat).inverse();
+
+    point1Expected = inversedCombinedMat * point1Expected;
+    point2Expected = inversedCombinedMat * point2Expected;
+    point3Expected = inversedCombinedMat * point3Expected;
+
+    const auto result1 = ::fwRenderOgre::helper::Camera::convertPixelToViewSpace(*ogreCamera, point1);
+    const auto result2 = ::fwRenderOgre::helper::Camera::convertPixelToViewSpace(*ogreCamera, point2);
+    const auto result3 = ::fwRenderOgre::helper::Camera::convertPixelToViewSpace(*ogreCamera, point3);
+
+    Utils::destroyOgreRoot();
+
+    comparePoint(result1, point1Expected);
+    comparePoint(result2, point2Expected);
+    comparePoint(result3, point3Expected);
 }
 
 //------------------------------------------------------------------------------
