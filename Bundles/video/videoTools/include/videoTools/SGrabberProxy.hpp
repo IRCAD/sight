@@ -44,6 +44,8 @@ namespace videoTools
  * - \b nextImage(): display the next image in step by step mode. Does nothing if not supported by the selected grabber.
  * - \b previousImage(): display the previous image in step by step mode. Does nothing if not supported by the
  * selected grabber.
+ * - \b setStep(): set the step value between two images when calling nextImage/previousImage. Does nothing if not
+ * supported by the selected grabber.
  *
  * @section XML XML Configuration
  *
@@ -133,6 +135,9 @@ protected:
 
     /// SLOT : get the next image in frame by frame mode.
     VIDEOTOOLS_API virtual void nextImage() override;
+
+    /// SLOT : set step used on readPrevious/readNext slots.
+    VIDEOTOOLS_API virtual void setStep(int step, std::string key) override;
 
 private:
 

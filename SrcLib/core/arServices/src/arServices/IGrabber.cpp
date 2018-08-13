@@ -29,6 +29,7 @@ const ::fwCom::Slots::SlotKeyType IGrabber::s_LOOP_VIDEO_SLOT         = "loopVid
 const ::fwCom::Slots::SlotKeyType IGrabber::s_SET_POSITION_VIDEO_SLOT = "setPositionVideo";
 const ::fwCom::Slots::SlotKeyType IGrabber::s_PREVIOUS_IMAGE_SLOT     = "previousImage";
 const ::fwCom::Slots::SlotKeyType IGrabber::s_NEXT_IMAGE_SLOT         = "nextImage";
+const ::fwCom::Slots::SlotKeyType IGrabber::s_SET_STEP_SLOT           = "setStep";
 
 const ::fwServices::IService::KeyType IGrabber::s_CAMERA_INPUT  = "camera";
 const ::fwServices::IService::KeyType IGrabber::s_FRAMETL_INOUT = "frameTL";
@@ -51,6 +52,7 @@ IGrabber::IGrabber() noexcept
     newSlot( s_SET_POSITION_VIDEO_SLOT, &IGrabber::setPosition, this );
     newSlot( s_PREVIOUS_IMAGE_SLOT, &IGrabber::previousImage, this);
     newSlot(s_NEXT_IMAGE_SLOT, &IGrabber::nextImage, this);
+    newSlot(s_SET_STEP_SLOT, &IGrabber::setStep, this);
 }
 
 // ----------------------------------------------------------------------------
@@ -70,6 +72,13 @@ void IGrabber::previousImage()
 // ----------------------------------------------------------------------------
 
 void IGrabber::nextImage()
+{
+    SLM_WARN("Frame by frame mode not implemented for this grabber type.");
+}
+
+// ----------------------------------------------------------------------------
+
+void IGrabber::setStep(int /*step*/, std::string /*key*/)
 {
     SLM_WARN("Frame by frame mode not implemented for this grabber type.");
 }

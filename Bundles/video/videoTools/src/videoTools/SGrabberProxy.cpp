@@ -516,6 +516,19 @@ void SGrabberProxy::nextImage()
 
 //-----------------------------------------------------------------------------
 
+void SGrabberProxy::setStep(int step, std::string key)
+{
+    for(auto& srv : m_services)
+    {
+        if(srv != nullptr)
+        {
+            srv->setStep(step, key);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+
 void SGrabberProxy::reconfigure()
 {
     m_connections.disconnect();

@@ -36,7 +36,7 @@ namespace videoOpenCV
 
 static const ::fwServices::IService::KeyType s_FRAMETL = "frameTL";
 
-static const ::fwCom::Slots::SlotKeyType s_SET_STEP = "setStep";
+static const ::fwCom::Slots::SlotKeyType s_SET_STEP_SLOT = "setStep";
 
 // -----------------------------------------------------------------------------
 
@@ -54,7 +54,7 @@ SFrameGrabber::SFrameGrabber() noexcept :
 {
     m_worker = ::fwThread::Worker::New();
 
-    newSlot(s_SET_STEP, &SFrameGrabber::setStep, this);
+    newSlot(s_SET_STEP_SLOT, &SFrameGrabber::setStep, this);
 }
 
 // -----------------------------------------------------------------------------
@@ -672,17 +672,17 @@ void SFrameGrabber::previousImage()
 
 //-----------------------------------------------------------------------------
 
-void SFrameGrabber::setStep(int _step, std::string _key)
+void SFrameGrabber::setStep(int step, std::string key)
 {
-    if(_key == "step")
+    if(key == "step")
     {
-        OSLM_ASSERT("Needed step value (" << _step << ") should be > 0.", _step > 0);
+        OSLM_ASSERT("Needed step value (" << step << ") should be > 0.", step > 0);
         // Save the changed step value
-        m_stepChanged = static_cast<unsigned long>(_step);
+        m_stepChanged = static_cast<unsigned long>(step);
     }
     else
     {
-        OSLM_WARN("Only 'step' key is supported (current key value is : '" << _key << "').");
+        OSLM_WARN("Only 'step' key is supported (current key value is : '" << key << "').");
     }
 }
 

@@ -36,6 +36,8 @@ namespace arServices
  * - \b setPositionVideo(int) : Force the current time in the video.
  * - \b nextImage(): display the next image in step by step mode. Does nothing if not overridden.
  * - \b previousImage(): display the previous image in step by step mode. Does nothing if not overridden.
+ * - \b setStep(): set the step value between two images when calling nextImage/previousImage. Does nothing if not
+ * overridden.
  */
 class ARSERVICES_CLASS_API IGrabber : public fwServices::IService
 {
@@ -57,6 +59,7 @@ public:
     ARSERVICES_API static const ::fwCom::Slots::SlotKeyType s_PRESENT_SLOT;
     ARSERVICES_API static const ::fwCom::Slots::SlotKeyType s_PREVIOUS_IMAGE_SLOT;
     ARSERVICES_API static const ::fwCom::Slots::SlotKeyType s_NEXT_IMAGE_SLOT;
+    ARSERVICES_API static const ::fwCom::Slots::SlotKeyType s_SET_STEP_SLOT;
     ///@}
 
     /**
@@ -132,6 +135,11 @@ public:
      * @brief API to get the next image in frame by frame mode.
      */
     ARSERVICES_API virtual void nextImage();
+
+    /**
+     * @brief API to set step used on readPrevious/readNext slots in frame by frame mode.
+     */
+    ARSERVICES_API virtual void setStep(int step, std::string key);
 
 protected:
     /**

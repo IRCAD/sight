@@ -132,10 +132,10 @@ protected:
     /// SLOT : read the previous image (only in file mode, and if m_oneShot is enabled)
     virtual void previousImage() override;
 
-private:
-
     /// SLOT: Set step used on readPrevious/readNext slots
-    void setStep(int _step, std::string _key);
+    virtual void setStep(int step, std::string key) override;
+
+private:
 
     typedef std::vector< ::boost::filesystem::path > ImageFilesType;
     typedef std::vector< double > ImageTimestampsType;
