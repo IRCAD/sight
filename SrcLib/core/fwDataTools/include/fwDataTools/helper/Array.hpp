@@ -45,7 +45,7 @@ public:
      * @param id Item id
      * @param component Component id to write data in.
      * @param value Valid buffer of elements of type \<m_type\> with a length equal to \<m_nbOfComponents\> to be copied
-     * to array 'id', component n° 'component'
+     * to array 'id', component index 'component'
      *
      */
     FWDATATOOLS_API virtual void setItem(const ::fwData::Array::IndexType& id, const size_t component,
