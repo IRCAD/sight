@@ -11,6 +11,7 @@
 #include <fwDataTools/TransformationMatrix3D.hpp>
 
 #include <glm/glm.hpp>
+#define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/transform.hpp>
 
 #include <opencv2/core.hpp>
