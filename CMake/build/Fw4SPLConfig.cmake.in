@@ -1,0 +1,17 @@
+
+
+set(_SUPPORTED_COMPONENTS @FW_COMPONENTS@)
+
+foreach(_comp ${Fw4SPL_FIND_COMPONENTS})
+  if (NOT ";${_SUPPORTED_COMPONENTS};" MATCHES ${_comp})
+    set(Fw4SPL_FOUND False)
+    set(Fw4SPL_NOT_FOUND_MESSAGE "Unsupported component: ${_comp}")
+  endif()
+  include("${CMAKE_CURRENT_LIST_DIR}/Fw4SPL-${_comp}Targets.cmake")
+endforeach()
+
+
+foreach(INCLUDE_INSTALL_DIR @INCLUDE_INSTALL_DIRS@)
+    set_and_check(${INCLUDE_INSTALL_DIR}_INCLUDE_DIR "@PACKAGE_INCLUDE_INSTALL_DIR@")
+endforeach()
+
