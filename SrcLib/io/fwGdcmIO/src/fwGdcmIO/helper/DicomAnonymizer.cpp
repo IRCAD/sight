@@ -559,7 +559,7 @@ void DicomAnonymizer::generateDummyValue(const ::gdcm::Tag& tag)
         }
         case ::gdcm::VR::CS:
         {
-            //Patient’s Sex
+            // Patient's sex
             if(tag == ::gdcm::Tag(0x0010, 0x0040))
             {
                 m_anonymizer.Replace(tag, "O");

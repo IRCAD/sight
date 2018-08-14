@@ -54,7 +54,7 @@ void Equipment::readGeneralEquipmentModule()
     // Manufacturer - Type 2
     // NOTE: Not used in FW4SPL
 
-    // Manufacturer’s Model Name - Type 3 (Type 1 for EnhancedGeneralEquipmentModule)
+    // Manufacturer's Model Name - Type 3 (Type 1 for EnhancedGeneralEquipmentModule)
     // NOTE: Not used in FW4SPL
 
     // Device Serial Number - Type 3 (Type 1 for EnhancedGeneralEquipmentModule)

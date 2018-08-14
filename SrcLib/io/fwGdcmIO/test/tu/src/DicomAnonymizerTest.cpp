@@ -278,7 +278,7 @@ std::string getDummyValue(const ::gdcm::Tag& tag)
         }
         case ::gdcm::VR::CS:
         {
-            //Patient’s Sex
+            //Patient's Sex
             if(tag == ::gdcm::Tag(0x0010, 0x0040))
             {
                 return "O";
@@ -400,20 +400,20 @@ void processTag(const ::gdcm::DataSet& dataset, const std::string& actionCode,
     // Retrieve tag value
     const std::string& dataStr = ::fwGdcmIO::helper::DicomDataReader::getTagValue<GROUP, ELEMENT>(dataset);
 
-    //X – remove
-    //X/Z – X unless Z is required to maintain IOD conformance (Type 3 versus Type 2)
-    //X/D – X unless D is required to maintain IOD conformance (Type 3 versus Type 1)
-    //X/Z/D – X unless Z or D is required to maintain IOD conformance (Type 3 versus Type 2 versus Type 1)
+    //X - remove
+    //X/Z - X unless Z is required to maintain IOD conformance (Type 3 versus Type 2)
+    //X/D - X unless D is required to maintain IOD conformance (Type 3 versus Type 1)
+    //X/Z/D - X unless Z or D is required to maintain IOD conformance (Type 3 versus Type 2 versus Type 1)
     //X/Z/U* - X unless Z or replacement of contained instance UIDs (U) is required to maintain IOD conformance
     if(actionCode == "X" || actionCode == "X/Z" || actionCode == "X/D" || actionCode == "X/Z/D" ||
        actionCode == "X/Z/U*")
     {
         CPPUNIT_ASSERT(!dataset.FindDataElement(::gdcm::Tag(GROUP, ELEMENT)) || dataStr.empty());
     }
-    //Z – replace with a zero length value, or a non-zero length value that may be a dummy value and consistent with the
+    //Z - replace with a zero length value, or a non-zero length value that may be a dummy value and consistent with the
     // VR
-    //D – replace with a non-zero length value that may be a dummy value and consistent with the VR
-    //Z/D – Z unless D is required to maintain IOD conformance (Type 2 versus Type 1)
+    //D - replace with a non-zero length value that may be a dummy value and consistent with the VR
+    //Z/D - Z unless D is required to maintain IOD conformance (Type 2 versus Type 1)
     else if(actionCode == "Z" || actionCode == "D" || actionCode == "Z/D")
     {
         if(::gdcm::Global::GetInstance().GetDicts().GetPublicDict().GetDictEntry(::gdcm::Tag(GROUP,
@@ -427,7 +427,7 @@ void processTag(const ::gdcm::DataSet& dataset, const std::string& actionCode,
             CPPUNIT_ASSERT_EQUAL(getDummyValue(::gdcm::Tag(GROUP, ELEMENT)), dataStr);
         }
     }
-    //K – keep (unchanged for non-sequence attributes, cleaned for sequences)
+    //K - keep (unchanged for non-sequence attributes, cleaned for sequences)
     else if(actionCode == "K")
     {
         if(::gdcm::Global::GetInstance().GetDicts().GetPublicDict().GetDictEntry(::gdcm::Tag(GROUP,
@@ -437,13 +437,13 @@ void processTag(const ::gdcm::DataSet& dataset, const std::string& actionCode,
             CPPUNIT_ASSERT(!dataset.FindDataElement(::gdcm::Tag(GROUP, ELEMENT)) || dataStr.empty());
         }
     }
-    //C – clean, that is replace with values of similar meaning known not to contain identifying information and
+    //C - clean, that is replace with values of similar meaning known not to contain identifying information and
     // consistent with the VR
     else if(actionCode == "C")
     {
         CPPUNIT_FAIL("We should not be there...");
     }
-    //U – replace with a non-zero length UID that is internally consistent within a set of Instances
+    //U - replace with a non-zero length UID that is internally consistent within a set of Instances
     else if(actionCode == "U")
     {
         // Check that the new UID is not in the old series
@@ -470,7 +470,7 @@ void DicomAnonymizerTest::testAnonymizedFile(const ::boost::filesystem::path& fi
     processTag<0x0018, 0x9424>(dataset, "X", m_uidContainer);        //Acquisition Protocol Description
     processTag<0x0008, 0x0032>(dataset, "X/Z", m_uidContainer);      //Acquisition Time
     processTag<0x0040, 0x4035>(dataset, "X", m_uidContainer);        //Actual Human Performers Sequence
-    processTag<0x0010, 0x21B0>(dataset, "X", m_uidContainer);        //Additional Patient’s History
+    processTag<0x0010, 0x21B0>(dataset, "X", m_uidContainer);        //Additional Patient's History
     processTag<0x0038, 0x0010>(dataset, "X", m_uidContainer);        //Admission ID
     processTag<0x0038, 0x0020>(dataset, "X", m_uidContainer);        //Admitting Date
     processTag<0x0008, 0x1084>(dataset, "X", m_uidContainer);        //Admitting Diagnoses Code Sequence
@@ -486,8 +486,8 @@ void DicomAnonymizerTest::testAnonymizedFile(const ::boost::filesystem::path& fi
     processTag<0x0020, 0x9161>(dataset, "U", m_uidContainer);        //Concatenation UID
     processTag<0x0040, 0x3001>(dataset, "X", m_uidContainer);        //Confidentiality Constraint on Patient Data
                                                                      // Description
-    processTag<0x0070, 0x0084>(dataset, "Z", m_uidContainer);        //Content Creator’s Name
-    processTag<0x0070, 0x0086>(dataset, "X", m_uidContainer);        //Content Creator’s Identification Code Sequence
+    processTag<0x0070, 0x0084>(dataset, "Z", m_uidContainer);        //Content Creator's Name
+    processTag<0x0070, 0x0086>(dataset, "X", m_uidContainer);        //Content Creator's Identification Code Sequence
     processTag<0x0008, 0x0023>(dataset, "Z/D", m_uidContainer);      //Content Date
     processTag<0x0040, 0xA730>(dataset, "X", m_uidContainer);        //Content Sequence
     processTag<0x0008, 0x0033>(dataset, "Z/D", m_uidContainer);      //Content Time
@@ -562,8 +562,8 @@ void DicomAnonymizerTest::testAnonymizedFile(const ::boost::filesystem::path& fi
     processTag<0x0008, 0x1060>(dataset, "X", m_uidContainer);        //Name of Physician(s) Reading Study
     processTag<0x0040, 0x1010>(dataset, "X", m_uidContainer);        //Names of Intended Recipient of Results
     processTag<0x0010, 0x2180>(dataset, "X", m_uidContainer);        //Occupation
-    processTag<0x0008, 0x1072>(dataset, "X/D", m_uidContainer);      //Operators’ Identification Sequence
-    processTag<0x0008, 0x1070>(dataset, "X/Z/D", m_uidContainer);    //Operators’ Name
+    processTag<0x0008, 0x1072>(dataset, "X/D", m_uidContainer);      //Operators' Identification Sequence
+    processTag<0x0008, 0x1070>(dataset, "X/Z/D", m_uidContainer);    //Operators' Name
     processTag<0x0400, 0x0561>(dataset, "X", m_uidContainer);        //Original Attributes Sequence
     processTag<0x0040, 0x2010>(dataset, "X", m_uidContainer);        //Order Callback Phone Number
     processTag<0x0040, 0x2008>(dataset, "X", m_uidContainer);        //Order Entered By
@@ -581,21 +581,21 @@ void DicomAnonymizerTest::testAnonymizedFile(const ::boost::filesystem::path& fi
     processTag<0x0010, 0x2203>(dataset, "X/Z", m_uidContainer);      //Patient Sex Neutered
     processTag<0x0038, 0x0500>(dataset, "X", m_uidContainer);        //Patient State
     processTag<0x0040, 0x1004>(dataset, "X", m_uidContainer);        //Patient Transport Arrangements
-    processTag<0x0010, 0x1010>(dataset, "X", m_uidContainer);        //Patient’s Age
-    processTag<0x0010, 0x0030>(dataset, "Z", m_uidContainer);        //Patient’s Birth Date
-    processTag<0x0010, 0x1005>(dataset, "X", m_uidContainer);        //Patient’s Birth Name
-    processTag<0x0010, 0x0032>(dataset, "X", m_uidContainer);        //Patient’s Birth Time
-    processTag<0x0038, 0x0400>(dataset, "X", m_uidContainer);        //Patient’s Institution Residence
-    processTag<0x0010, 0x0050>(dataset, "X", m_uidContainer);        //Patient’s Insurance Plan Code Sequence
-    processTag<0x0010, 0x1060>(dataset, "X", m_uidContainer);        //Patient’s Mother’s Birth Name
-    processTag<0x0010, 0x0010>(dataset, "Z", m_uidContainer);        //Patient’s Name
-    processTag<0x0010, 0x0101>(dataset, "X", m_uidContainer);        //Patient’s Primary Language Code Sequence
-    processTag<0x0010, 0x0102>(dataset, "X", m_uidContainer);        //Patient’s Primary Language Modifier Code Sequence
-    processTag<0x0010, 0x21F0>(dataset, "X", m_uidContainer);        //Patient’s Religious Preference
-    processTag<0x0010, 0x0040>(dataset, "Z", m_uidContainer);        //Patient’s Sex
-    processTag<0x0010, 0x1020>(dataset, "X", m_uidContainer);        //Patient’s Size
-    processTag<0x0010, 0x2154>(dataset, "X", m_uidContainer);        //Patient’s Telephone Number
-    processTag<0x0010, 0x1030>(dataset, "X", m_uidContainer);        //Patient’s Weight
+    processTag<0x0010, 0x1010>(dataset, "X", m_uidContainer);        //Patient's Age
+    processTag<0x0010, 0x0030>(dataset, "Z", m_uidContainer);        //Patient's Birth Date
+    processTag<0x0010, 0x1005>(dataset, "X", m_uidContainer);        //Patient's Birth Name
+    processTag<0x0010, 0x0032>(dataset, "X", m_uidContainer);        //Patient's Birth Time
+    processTag<0x0038, 0x0400>(dataset, "X", m_uidContainer);        //Patient's Institution Residence
+    processTag<0x0010, 0x0050>(dataset, "X", m_uidContainer);        //Patient's Insurance Plan Code Sequence
+    processTag<0x0010, 0x1060>(dataset, "X", m_uidContainer);        //Patient's Mother's Birth Name
+    processTag<0x0010, 0x0010>(dataset, "Z", m_uidContainer);        //Patient's Name
+    processTag<0x0010, 0x0101>(dataset, "X", m_uidContainer);        //Patient's Primary Language Code Sequence
+    processTag<0x0010, 0x0102>(dataset, "X", m_uidContainer);        //Patient's Primary Language Modifier Code Sequence
+    processTag<0x0010, 0x21F0>(dataset, "X", m_uidContainer);        //Patient's Religious Preference
+    processTag<0x0010, 0x0040>(dataset, "Z", m_uidContainer);        //Patient's Sex
+    processTag<0x0010, 0x1020>(dataset, "X", m_uidContainer);        //Patient's Size
+    processTag<0x0010, 0x2154>(dataset, "X", m_uidContainer);        //Patient's Telephone Number
+    processTag<0x0010, 0x1030>(dataset, "X", m_uidContainer);        //Patient's Weight
     processTag<0x0040, 0x0243>(dataset, "X", m_uidContainer);        //Performed Location
     processTag<0x0040, 0x0254>(dataset, "X", m_uidContainer);        //Performed Procedure Step Description
     processTag<0x0040, 0x0253>(dataset, "X", m_uidContainer);        //Performed Procedure Step ID
@@ -606,8 +606,8 @@ void DicomAnonymizerTest::testAnonymizedFile(const ::boost::filesystem::path& fi
                                                                      // Sequence
     processTag<0x0040, 0x0242>(dataset, "X", m_uidContainer);        //Performed Station Name
     // processTag<0x0040,0x0248>(dataset, "X", m_uidContainer);        //Performed Station Name Code Sequence
-    processTag<0x0008, 0x1052>(dataset, "X", m_uidContainer);        //Performing Physicians’ Identification Sequence
-    processTag<0x0008, 0x1050>(dataset, "X", m_uidContainer);        //Performing Physicians’ Name
+    processTag<0x0008, 0x1052>(dataset, "X", m_uidContainer);        //Performing Physicians' Identification Sequence
+    processTag<0x0008, 0x1050>(dataset, "X", m_uidContainer);        //Performing Physicians' Name
     processTag<0x0040, 0x1102>(dataset, "X", m_uidContainer);        //Person Address
     processTag<0x0040, 0x1101>(dataset, "D", m_uidContainer);        //Person Identification Code Sequence
     processTag<0x0040, 0xA123>(dataset, "D", m_uidContainer);        //Person Name
@@ -635,10 +635,10 @@ void DicomAnonymizerTest::testAnonymizedFile(const ::boost::filesystem::path& fi
     processTag<0x0008, 0x1155>(dataset, "U", m_uidContainer);        //Referenced SOP Instance UID
     processTag<0x0004, 0x1511>(dataset, "U", m_uidContainer);        //Referenced SOP Instance UID in File
     processTag<0x0008, 0x1110>(dataset, "X/Z", m_uidContainer);      //Referenced Study Sequence
-    processTag<0x0008, 0x0092>(dataset, "X", m_uidContainer);        //Referring Physician’s Address
-    processTag<0x0008, 0x0096>(dataset, "X", m_uidContainer);        //Referring Physician’s Identification Sequence
-    processTag<0x0008, 0x0090>(dataset, "Z", m_uidContainer);        //Referring Physician’s Name
-    processTag<0x0008, 0x0094>(dataset, "X", m_uidContainer);        //Referring Physician’s Telephone Numbers
+    processTag<0x0008, 0x0092>(dataset, "X", m_uidContainer);        //Referring Physician's Address
+    processTag<0x0008, 0x0096>(dataset, "X", m_uidContainer);        //Referring Physician's Identification Sequence
+    processTag<0x0008, 0x0090>(dataset, "Z", m_uidContainer);        //Referring Physician's Name
+    processTag<0x0008, 0x0094>(dataset, "X", m_uidContainer);        //Referring Physician's Telephone Numbers
     processTag<0x0010, 0x2152>(dataset, "X", m_uidContainer);        //Region of Residence
     processTag<0x3006, 0x00C2>(dataset, "U", m_uidContainer);        //Related Frame of Reference UID
     processTag<0x0040, 0x0275>(dataset, "X", m_uidContainer);        //Request Attributes Sequence
