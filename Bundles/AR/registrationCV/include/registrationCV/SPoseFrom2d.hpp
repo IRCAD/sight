@@ -126,7 +126,7 @@ private:
 
     /**
      * @brief The Marker struct:
-     * to handle marker object, with 4 corners 2D, and optionnaly a centroïd
+     * to handle marker object, with 4 corners 2D, and optionnaly a centroid
      */
     struct Marker
     {

@@ -318,7 +318,7 @@ void MatrixTest::copyFromRvecTvec()
         }
     }
 
-    // Values test (30° around X and translations on every axes).
+    // Values test (30 degrees around X and translations on every axes).
     cvMat = (::cv::Mat_<double>(4, 4) <<
              1., 0., 0., 4.,
              0., 0.86601905, -0.50001100, 8.,
