@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,14 +9,16 @@
 
 #include <glm/glm.hpp>
 #include <glm/mat4x4.hpp>
+#define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/euler_angles.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-
 
 namespace fwMath
 {
 
-void multVecMatrix(const fwMatrix4x4 & matrix, const fwVec3d& source,fwVec3d& dest)
+//------------------------------------------------------------------------------
+
+void multVecMatrix(const fwMatrix4x4& matrix, const fwVec3d& source, fwVec3d& dest)
 {
     // fwMatrix4x4 is stored row-major
     // glm matrices are stored column-major
@@ -36,7 +38,7 @@ void multVecMatrix(const fwMatrix4x4 & matrix, const fwVec3d& source,fwVec3d& de
 
 //------------------------------------------------------------------------------
 
-fwMatrix4x4  getInverse( const fwMatrix4x4 & matrix )
+fwMatrix4x4  getInverse( const fwMatrix4x4& matrix )
 {
     // fwMatrix4x4 is stored row-major
     // glm matrices are stored column-major
@@ -102,7 +104,9 @@ fwMatrix4x4  getRotationMatrix( const fwVec3d& _vecNorm )
 //------------------------------------------------------------------------------
 }
 
-fwMatrix4x4 operator*( const fwMatrix4x4 & matrix1, const fwMatrix4x4 & matrix2 )
+//------------------------------------------------------------------------------
+
+fwMatrix4x4 operator*( const fwMatrix4x4& matrix1, const fwMatrix4x4& matrix2 )
 {
     ::glm::dmat4x4 mat1(matrix1[0][0], matrix1[1][0], matrix1[2][0], matrix1[3][0],
                         matrix1[0][1], matrix1[1][1], matrix1[2][1], matrix1[3][1],
@@ -125,4 +129,3 @@ fwMatrix4x4 operator*( const fwMatrix4x4 & matrix1, const fwMatrix4x4 & matrix2 
 }
 
 //------------------------------------------------------------------------------
-
