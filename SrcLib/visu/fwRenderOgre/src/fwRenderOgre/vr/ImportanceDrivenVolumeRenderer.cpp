@@ -142,7 +142,7 @@ ImportanceDrivenVolumeRenderer::ImportanceDrivenVolumeRenderer(std::string _pare
     m_maskTexture(_maskTexture),
     m_idvrMethod(s_NONE),
     m_idvrCSG(true),
-    m_idvrCSGAngleCosine(std::cos(::glm::pi<float>() / 12.f)) /* cos(15°) */,
+    m_idvrCSGAngleCosine(std::cos(::glm::pi<float>() / 12.f)) /* cos(15 degrees) */,
     m_idvrCSGBlurWeight(0.01f),
     m_idvrCSGBorder(false),
     m_idvrCSGDisableContext(false),

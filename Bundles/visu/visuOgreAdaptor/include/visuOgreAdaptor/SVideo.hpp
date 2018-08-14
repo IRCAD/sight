@@ -35,7 +35,7 @@ namespace visuOgreAdaptor
  * - \b tf [::fwData::TransferFunction] (optional): a transfer function that can be applied to the video.
  * @subsection Configuration Configuration:
  * - \b layer (mandatory): defines the video's layer
- * - \b reverse (optional)(default: true) : if true, the actor is rotated by 180° along the z and y axis.
+ * - \b reverse (optional)(default: true) : if true, the actor is rotated by 180 degrees along the z and y axis.
  */
 class VISUOGREADAPTOR_CLASS_API SVideo : public ::fwRenderOgre::IAdaptor
 {
