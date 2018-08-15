@@ -29,7 +29,7 @@
 #include <algorithm>
 #include <cctype> // Needed for isspace()
 
-#ifdef __MACOSX__
+#ifdef __APPLE__
 #define PLUGIN_PATH "plugins_osx.cfg"
 #elif _WIN32
 #   ifdef _DEBUG
