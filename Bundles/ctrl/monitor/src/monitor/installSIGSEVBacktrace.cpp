@@ -96,7 +96,7 @@ void bt_sighandler(int sig, siginfo_t* info,
 
     void* trace[16];
     int i, trace_size = 0;
-    ucontext_t* uc = (ucontext_t*)secret;
+    const ucontext_t* uc = reinterpret_cast<const ucontext_t*>(secret);
 
     std::stringstream ss;
     ss << "Got signal " << sig;
@@ -114,7 +114,7 @@ void bt_sighandler(int sig, siginfo_t* info,
     trace_size = backtrace(trace, 16);
     /* overwrite sigaction with caller's address */
 #ifndef __APPLE__
-    trace[1] = (void*) uc->uc_mcontext.gregs[REG_EIP];
+    trace[1] = reinterpret_cast<void*>(uc->uc_mcontext.gregs[REG_EIP]);
 #endif
 
     char** messages = backtrace_symbols(trace, trace_size);
