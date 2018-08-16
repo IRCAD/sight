@@ -83,7 +83,7 @@ namespace action
  * @subsection Configuration Configuration
  * - \b mode (optional): there are two mode: "message" and "immediate"
  *    - \b message (used by default): the action send a signal containing the information needed to launch the
- *      choosen activity. The service '::guiQt::editor::DynamicView' allows to launch the activity in a new tab. For
+ *      chosen activity. The service '::guiQt::editor::DynamicView' allows to launch the activity in a new tab. For
  *      that, it must listen the action signal.
  *    - \b immediate: the activity is automatically started et stopped by this action. It is used to run a process
  *      without creating a new tab, for example, to save the selected data.
