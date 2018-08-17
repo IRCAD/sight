@@ -141,7 +141,7 @@ public:
     FWRENDEROGRE_API static ::fwData::Color::sptr convertOgreColorToFwColor(const Ogre::ColourValue& _ogreColor);
 
     /// Creates an ogre matrix from a f4s matrix.
-    FWRENDEROGRE_API static ::Ogre::Matrix4 convertFwMatrixToOgre(const ::fwData::TransformationMatrix3D::csptr& _tm3d);
+    FWRENDEROGRE_API static ::Ogre::Matrix4 convertTM3DToOgreMx(const ::fwData::TransformationMatrix3D::csptr& _tm3d);
 
     /// Copies an ogre matrix to a f4s matrix.
     FWRENDEROGRE_API static void copyOgreMxToTM3D(const ::Ogre::Matrix4& _mx,

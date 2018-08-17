@@ -60,7 +60,7 @@ VRWidget::VRWidget(const std::string& id,
     // Initialize the clipping cube with the clipping matrix if it is provided
     if(m_clippingMatrix != nullptr)
     {
-        const ::Ogre::Matrix4 ogreCropMx = Utils::convertFwMatrixToOgre(m_clippingMatrix);
+        const ::Ogre::Matrix4 ogreCropMx = Utils::convertTM3DToOgreMx(m_clippingMatrix);
 
         // Convert to world position because that's how VTK stores its crop matrices...
         const ::Ogre::Vector3 worldCubeMin = m_volumeSceneNode->convertLocalToWorldPosition(m_clippingCube[0]);

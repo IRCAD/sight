@@ -709,7 +709,7 @@ void Utils::allocateTexture(::Ogre::Texture* _texture, size_t _width, size_t _he
 
 //------------------------------------------------------------------------------
 
-Ogre::Matrix4 Utils::convertFwMatrixToOgre(const fwData::TransformationMatrix3D::csptr& _tm3d)
+Ogre::Matrix4 Utils::convertTM3DToOgreMx(const fwData::TransformationMatrix3D::csptr& _tm3d)
 {
     const std::array<double, 16> tm3dData = _tm3d->getCoefficients();
 
