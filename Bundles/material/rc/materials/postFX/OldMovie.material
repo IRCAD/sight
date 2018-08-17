@@ -44,7 +44,7 @@ material OldMovie
 
             texture_unit SplotchesTx
             {
-                texture 8x8PagesSplotches2.png 2d
+                texture 8x8PagesSplotches2.dds 2d
                 tex_coord_set 1
                 tex_address_mode wrap
                 filtering trilinear
@@ -52,7 +52,7 @@ material OldMovie
 
             texture_unit
             {
-                texture 1D_Noise.png 1d
+                texture 1D_Noise.dds 1d
                 tex_coord_set 2
                 tex_address_mode wrap
                 filtering point point none

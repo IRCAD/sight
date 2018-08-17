@@ -118,7 +118,7 @@ material Billboard_FixedSize
 
             texture_unit sprite
             {
-                texture sphere.png 2d
+                texture sphere.dds 2d
                 tex_coord_set 0
                 filtering bilinear
             }
@@ -169,7 +169,7 @@ material Billboard_Default
 
             texture_unit sprite
             {
-                texture sphere.png 2d
+                texture sphere.dds 2d
                 tex_coord_set 0
                 filtering bilinear
             }
