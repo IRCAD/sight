@@ -89,7 +89,7 @@ SliceVolumeRenderer::~SliceVolumeRenderer()
 
 void SliceVolumeRenderer::imageUpdate(fwData::Image::sptr image, fwData::TransferFunction::sptr tf)
 {
-    scaleCube(image->getSpacing());
+    this->scaleTranslateCube(image->getSpacing(), image->getOrigin());
 
     if(m_preIntegratedRendering)
     {

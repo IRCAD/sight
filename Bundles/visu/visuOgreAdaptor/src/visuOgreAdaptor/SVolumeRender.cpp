@@ -259,14 +259,6 @@ void SVolumeRender::starting()
     }
     m_volumeSceneNode = transformNode->createChildSceneNode(this->getID() + "_transform_origin");
 
-    const auto origin = image->getOrigin();
-    if(origin.size() == 3)
-    {
-        m_volumeSceneNode->translate(::Ogre::Vector3(static_cast<float>(origin[0]),
-                                                     static_cast<float>(origin[1]),
-                                                     static_cast<float>(origin[2])));
-    }
-
     m_camera = this->getLayer()->getDefaultCamera();
 
     // Create textures

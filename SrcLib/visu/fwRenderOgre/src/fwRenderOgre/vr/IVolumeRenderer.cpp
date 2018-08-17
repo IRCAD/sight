@@ -108,8 +108,14 @@ void IVolumeRenderer::resizeViewport(int /*w*/, int /*h*/)
 
 //-----------------------------------------------------------------------------
 
-void IVolumeRenderer::scaleCube(const fwData::Image::SpacingType& spacing)
+void IVolumeRenderer::scaleTranslateCube(const fwData::Image::SpacingType& spacing,
+                                         const ::fwData::Image::OriginType& origin)
 {
+    SLM_ASSERT("Image origin and spacing must be three-dimensional for volume rendering.",
+               spacing.size() == 3 && origin.size() == 3);
+
+    m_volumeSceneNode->resetToInitialState();
+
     const double width  = static_cast< double > (m_3DOgreTexture->getWidth() ) * spacing[0];
     const double height = static_cast< double > (m_3DOgreTexture->getHeight()) * spacing[1];
     const double depth  = static_cast< double > (m_3DOgreTexture->getDepth() ) * spacing[2];
@@ -119,7 +125,13 @@ void IVolumeRenderer::scaleCube(const fwData::Image::SpacingType& spacing)
         static_cast<float>(height),
         static_cast<float>(depth ));
 
+    const ::Ogre::Vector3 ogreOrigin(
+        static_cast<float>(origin[0]),
+        static_cast<float>(origin[1]),
+        static_cast<float>(origin[2]));
+
     m_volumeSceneNode->setScale(scaleFactors);
+    m_volumeSceneNode->setPosition(ogreOrigin);
 }
 
 //-----------------------------------------------------------------------------

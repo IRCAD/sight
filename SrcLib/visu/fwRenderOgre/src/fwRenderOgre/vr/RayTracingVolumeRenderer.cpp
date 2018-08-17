@@ -222,7 +222,7 @@ void RayTracingVolumeRenderer::imageUpdate(::fwData::Image::sptr image, ::fwData
         return;
     }
 
-    this->scaleCube(image->getSpacing());
+    this->scaleTranslateCube(image->getSpacing(), image->getOrigin());
 
     const ::fwData::Image::SizeType& newSize = image->getSize();
 
