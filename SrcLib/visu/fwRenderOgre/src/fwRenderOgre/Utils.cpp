@@ -709,6 +709,31 @@ void Utils::allocateTexture(::Ogre::Texture* _texture, size_t _width, size_t _he
 
 //------------------------------------------------------------------------------
 
+Ogre::Matrix4 Utils::convertFwMatrixToOgre(const fwData::TransformationMatrix3D::csptr& _tm3d)
+{
+    const std::array<double, 16> tm3dData = _tm3d->getCoefficients();
+
+    std::array< ::Ogre::Real, 16> floatData;
+    std::copy(tm3dData.begin(), tm3dData.end(), floatData.begin());
+
+    return ::Ogre::Matrix4(floatData.data());
+}
+
+//------------------------------------------------------------------------------
+
+void Utils::copyOgreMxToTM3D(const Ogre::Matrix4& _mx, const fwData::TransformationMatrix3D::sptr& _tm3d)
+{
+    for(std::uint8_t l = 0; l < 4; ++l)
+    {
+        for(std::uint8_t c = 0; c < 4; ++c)
+        {
+            _tm3d->setCoefficient(l, c, _mx[l][c]);
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+
 bool Utils::makePathsAbsolute(const std::string& key, std::istream& input, std::ostream& output)
 {
     bool keyFound = false;

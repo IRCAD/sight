@@ -10,6 +10,7 @@
 
 #include <fwData/Color.hpp>
 #include <fwData/Image.hpp>
+#include <fwData/TransformationMatrix3D.hpp>
 
 #include <OGRE/OgreColourValue.h>
 #include <OGRE/OgreImage.h>
@@ -138,6 +139,13 @@ public:
      * @return The converted f4s color
      */
     FWRENDEROGRE_API static ::fwData::Color::sptr convertOgreColorToFwColor(const Ogre::ColourValue& _ogreColor);
+
+    /// Creates an ogre matrix from a f4s matrix.
+    FWRENDEROGRE_API static ::Ogre::Matrix4 convertFwMatrixToOgre(const ::fwData::TransformationMatrix3D::csptr& _tm3d);
+
+    /// Copies an ogre matrix to a f4s matrix.
+    FWRENDEROGRE_API static void copyOgreMxToTM3D(const ::Ogre::Matrix4& _mx,
+                                                  const ::fwData::TransformationMatrix3D::sptr& _tm3d);
 
 private:
 
