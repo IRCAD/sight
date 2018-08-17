@@ -16,6 +16,7 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/install/helper.cmake)
 option(USE_CONAN "Use Conan package manager for dependencies" ON)
 if(USE_CONAN)
     include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/conan.cmake)
+    add_definitions(${CONAN_DEFINES})
 endif()
 
 option(ENABLE_PCH "Use pre-compiled headers to speedup the compilation" ON)

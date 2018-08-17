@@ -15,8 +15,3 @@ fwLink(
     ${Boost_LOG_SETUP_LIBRARY}
 )
 
-
-add_definitions(
-    -DBOOST_ALL_NO_LIB
-    -DBOOST_ALL_DYN_LINK
-)
