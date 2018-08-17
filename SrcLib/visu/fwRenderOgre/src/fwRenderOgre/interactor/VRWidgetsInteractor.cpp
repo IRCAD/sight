@@ -54,24 +54,27 @@ Ogre::MovableObject* VRWidgetsInteractor::pickObject(int x, int y)
 
 void VRWidgetsInteractor::mouseMoveEvent(MouseButton button, int x, int y, int dx, int dy)
 {
-    if(button == LEFT)
+    if(m_widget)
     {
-        if(!m_widget->getVisibility() || m_pickedObject == nullptr)
+        if(button == LEFT)
         {
-            TrackballInteractor::mouseMoveEvent(button, x, y, dx, dy);
+            if(!m_widget->getVisibility() || m_pickedObject == nullptr)
+            {
+                TrackballInteractor::mouseMoveEvent(button, x, y, dx, dy);
+            }
+            else
+            {
+                m_widget->widgetPicked(m_pickedObject, x, y);
+            }
         }
-        else
+        else if(button == MIDDLE)
         {
-            m_widget->widgetPicked(m_pickedObject, x, y);
+            m_widget->moveClippingBox(x, y, -dx, -dy);
         }
-    }
-    else if(button == MIDDLE)
-    {
-        m_widget->moveClippingBox(x, y, -dx, -dy);
-    }
-    else if(button == RIGHT)
-    {
-        m_widget->scaleClippingBox(x, y, dy);
+        else if(button == RIGHT)
+        {
+            m_widget->scaleClippingBox(x, y, dy);
+        }
     }
 }
 
@@ -79,34 +82,40 @@ void VRWidgetsInteractor::mouseMoveEvent(MouseButton button, int x, int y, int d
 
 void VRWidgetsInteractor::buttonReleaseEvent(MouseButton /*button*/, int /*x*/, int /*y*/)
 {
-    m_widget->widgetReleased();
-    m_pickedObject = nullptr;
+    if(m_widget)
+    {
+        m_widget->widgetReleased();
+        m_pickedObject = nullptr;
+    }
 }
 
 //------------------------------------------------------------------------------
 
 void VRWidgetsInteractor::buttonPressEvent(MouseButton button, int x, int y)
 {
-    if(button == LEFT)
+    if(m_widget)
     {
-        m_pickedObject = pickObject(x, y);
+        if(button == LEFT)
+        {
+            m_pickedObject = pickObject(x, y);
 
-        if(m_widget->belongsToWidget(m_pickedObject))
-        {
-            m_widget->widgetPicked(m_pickedObject, x, y);
+            if(m_widget->belongsToWidget(m_pickedObject))
+            {
+                m_widget->widgetPicked(m_pickedObject, x, y);
+            }
+            else
+            {
+                m_pickedObject = nullptr;
+            }
         }
-        else
+        else if(button == MIDDLE)
         {
-            m_pickedObject = nullptr;
+            m_widget->moveClippingBox(x, y, 0, 0);
         }
-    }
-    else if(button == MIDDLE)
-    {
-        m_widget->moveClippingBox(x, y, 0, 0);
-    }
-    else if(button == RIGHT)
-    {
-        m_widget->scaleClippingBox(x, y, 0);
+        else if(button == RIGHT)
+        {
+            m_widget->scaleClippingBox(x, y, 0);
+        }
     }
 }
 

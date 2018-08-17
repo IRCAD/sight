@@ -60,31 +60,37 @@ VRWidget::VRWidget(const std::string& id,
     // Initialize the clipping cube with the clipping matrix if it is provided
     if(m_clippingMatrix != nullptr)
     {
-        ::Ogre::Matrix4 m_ogreTransform;
-        for(size_t lt = 0; lt < 4; lt++)
-        {
-            for(size_t ct = 0; ct < 4; ct++)
-            {
-                m_ogreTransform[ct][lt] = static_cast< ::Ogre::Real >(m_clippingMatrix->getCoefficient(ct, lt));
-            }
-        }
-        m_clippingCube[0] = m_ogreTransform * m_clippingCube[0];
-        m_clippingCube[1] = m_ogreTransform * m_clippingCube[1];
+        const ::Ogre::Matrix4 ogreCropMx = Utils::convertFwMatrixToOgre(m_clippingMatrix);
+
+        // Convert to world position because that's how VTK stores its crop matrices...
+        const ::Ogre::Vector3 worldCubeMin = m_volumeSceneNode->convertLocalToWorldPosition(m_clippingCube[0]);
+        const ::Ogre::Vector3 worldCubeMax = m_volumeSceneNode->convertLocalToWorldPosition(m_clippingCube[1]);
+
+        m_clippingCube[0] = m_volumeSceneNode->convertWorldToLocalPosition(ogreCropMx * worldCubeMin);
+        m_clippingCube[1] = m_volumeSceneNode->convertWorldToLocalPosition(ogreCropMx * worldCubeMax);
     }
-    initWidgets();
+    this->initWidgets();
 }
 
 //-----------------------------------------------------------------------------
 
 VRWidget::~VRWidget() noexcept
 {
+    m_sceneManager->destroyManualObject(m_selectedFace);
+    m_sceneManager->destroyManualObject(m_boundingBox);
+
+    for(auto& widget : m_widgets)
+    {
+        const ::Ogre::MovableObject* mo = widget.first;
+        m_sceneManager->destroyMovableObject(mo->getName(), mo->getMovableType());
+    }
+
+    m_widgetSceneNode->removeAndDestroyAllChildren();
+
     ::Ogre::MaterialManager::getSingleton().remove(m_sphereHighlightMtl->getHandle());
     ::Ogre::MaterialManager::getSingleton().remove(m_frameMtl->getHandle());
     ::Ogre::MaterialManager::getSingleton().remove(m_frameHighlightMtl->getHandle());
     ::Ogre::MaterialManager::getSingleton().remove(m_faceMtl->getHandle());
-
-    m_sceneManager->destroyManualObject(m_selectedFace);
-    m_sceneManager->destroyManualObject(m_boundingBox);
 }
 
 //-----------------------------------------------------------------------------
@@ -103,7 +109,7 @@ VRWidget::getFacePositions(::fwRenderOgre::vr::IVolumeRenderer::CubeFace _faceNa
         m_renderer->s_cubeFaces.at(_faceName);
     std::array< ::Ogre::Vector3, 4 > facePositions;
 
-    auto BBpositions = getClippingBoxPositions();
+    const auto BBpositions = this->getClippingBoxPositions();
 
     std::transform(positionIndices.begin(), positionIndices.end(), facePositions.begin(),
                    [&](unsigned i){ return BBpositions[i]; });
@@ -147,15 +153,22 @@ void VRWidget::updateClippingCube()
     // Update clipping matrix if it is provided
     if(m_clippingMatrix != nullptr)
     {
-        const ::Ogre::Vector3 size = aaBox.getSize();
+        // VTK scales the cube along the box's center so we do the same for compatibility.
+        const ::Ogre::Vector3 initialCenter = m_volumeSceneNode->convertLocalToWorldPosition(::Ogre::Vector3(0.5f));
+        ::Ogre::Matrix4 invCenterTransMx = ::Ogre::Matrix4::IDENTITY;
+        invCenterTransMx.setTrans(-initialCenter);
 
-        m_clippingMatrix->setCoefficient(0, 0, static_cast<double>(size.x));
-        m_clippingMatrix->setCoefficient(1, 1, static_cast<double>(size.y));
-        m_clippingMatrix->setCoefficient(2, 2, static_cast<double>(size.z));
+        const ::Ogre::Vector3 scale = aaBox.getSize();
+        ::Ogre::Matrix4 scaleMx = ::Ogre::Matrix4::IDENTITY;
+        scaleMx.setScale(scale);
 
-        m_clippingMatrix->setCoefficient(0, 3, static_cast<double>(m_clippingCube[0].x));
-        m_clippingMatrix->setCoefficient(1, 3, static_cast<double>(m_clippingCube[0].y));
-        m_clippingMatrix->setCoefficient(2, 3, static_cast<double>(m_clippingCube[0].z));
+        const ::Ogre::Vector3 center = m_volumeSceneNode->convertLocalToWorldPosition(aaBox.getCenter());
+        ::Ogre::Matrix4 centerTransMx = ::Ogre::Matrix4::IDENTITY;
+        centerTransMx.setTrans(center);
+
+        const ::Ogre::Matrix4 clippingMx = centerTransMx * scaleMx * invCenterTransMx;
+
+        Utils::copyOgreMxToTM3D(clippingMx, m_clippingMatrix);
 
         auto sig = m_clippingMatrix->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
         sig->asyncEmit();
@@ -168,7 +181,7 @@ void VRWidget::updateClippingCube()
 
 void VRWidget::updateWidgets()
 {
-    const auto clippingBoxPositions = getClippingBoxPositions();
+    const auto clippingBoxPositions = this->getClippingBoxPositions();
 
     m_boundingBox->beginUpdate(0);
     {
@@ -182,8 +195,11 @@ void VRWidget::updateWidgets()
         // Cross
         for(unsigned i = 0; i < 6; i += 2)
         {
-            m_boundingBox->position(getFaceCenter(static_cast< ::fwRenderOgre::vr::IVolumeRenderer::CubeFace>(i  )));
-            m_boundingBox->position(getFaceCenter(static_cast< ::fwRenderOgre::vr::IVolumeRenderer::CubeFace>(i+1)));
+            const auto faceCenter         = this->getFaceCenter(static_cast< vr::IVolumeRenderer::CubeFace>(i  ));
+            const auto oppositeFaceCenter = this->getFaceCenter(static_cast< vr::IVolumeRenderer::CubeFace>(i+1));
+
+            m_boundingBox->position(faceCenter);
+            m_boundingBox->position(oppositeFaceCenter);
         }
     }
     m_boundingBox->end();
@@ -191,11 +207,12 @@ void VRWidget::updateWidgets()
     // Recenter widgets
     for(auto& widget : m_widgets)
     {
-        ::fwRenderOgre::vr::IVolumeRenderer::CubeFace cf = widget.second.first;
-        ::Ogre::Vector3 faceCenter                       = getFaceCenter(cf);
+        const auto& widgetFaceNodePair   = widget.second;
+        const ::Ogre::Vector3 faceCenter = this->getFaceCenter(widgetFaceNodePair.first);
 
-        widget.second.second->setPosition(faceCenter);
-        widget.second.second->needUpdate();
+        auto* widgetSceneNode = widgetFaceNodePair.second;
+        widgetSceneNode->setPosition(faceCenter);
+        widgetSceneNode->needUpdate();
     }
 }
 
@@ -237,9 +254,9 @@ void VRWidget::initWidgets()
     m_boundingBox  = m_sceneManager->createManualObject(m_id + "_VolumeBB");
     m_selectedFace = m_sceneManager->createManualObject(m_id +"_VRSelectedFace");
 
-    updateClippingCube();
+    this->updateClippingCube();
 
-    const auto clippingBoxPositions = getClippingBoxPositions();
+    const auto clippingBoxPositions = this->getClippingBoxPositions();
 
     m_boundingBox->begin(m_id + "_Frame", Ogre::RenderOperation::OT_LINE_LIST);
     {
@@ -252,8 +269,11 @@ void VRWidget::initWidgets()
         // Cross
         for(unsigned i = 0; i < 6; i += 2)
         {
-            m_boundingBox->position(getFaceCenter(static_cast< ::fwRenderOgre::vr::IVolumeRenderer::CubeFace>(i  )));
-            m_boundingBox->position(getFaceCenter(static_cast< ::fwRenderOgre::vr::IVolumeRenderer::CubeFace>(i+1)));
+            const auto faceCenter         = this->getFaceCenter(static_cast< vr::IVolumeRenderer::CubeFace>(i  ));
+            const auto oppositeFaceCenter = this->getFaceCenter(static_cast< vr::IVolumeRenderer::CubeFace>(i+1));
+
+            m_boundingBox->position(faceCenter);
+            m_boundingBox->position(oppositeFaceCenter);
         }
     }
     m_boundingBox->end();
@@ -275,7 +295,7 @@ void VRWidget::initWidgets()
     // Create a pickable sphere for each cube face
     for(unsigned i = 0; i < 6; ++i)
     {
-        auto currentFace = static_cast< ::fwRenderOgre::vr::IVolumeRenderer::CubeFace>(i);
+        const auto currentFace = static_cast< vr::IVolumeRenderer::CubeFace>(i);
 
         ::Ogre::Entity* newWidget = m_sceneManager->createEntity( ::Ogre::SceneManager::PT_SPHERE );
         newWidget->setMaterialName("Default");
@@ -284,13 +304,16 @@ void VRWidget::initWidgets()
 
         m_widgets[newWidget] = std::make_pair(currentFace, sphereSceneNode);
 
-        ::Ogre::Vector3 faceCenter = getFaceCenter(currentFace);
+        const ::Ogre::Vector3 faceCenter = this->getFaceCenter(currentFace);
 
         sphereSceneNode->setPosition(faceCenter);
         sphereSceneNode->setInheritScale(false);
 
-        const ::Ogre::Vector3 volumeScale = m_volumeSceneNode->getScale();
-        sphereSceneNode->setScale(volumeScale * 0.2f);
+        const auto volScale  = m_volumeSceneNode->getScale();
+        const float scaleMin = std::min(volScale[0], std::min(volScale[1], volScale[2]));
+
+        const ::Ogre::Vector3 widgetScale((0.05 * scaleMin) / newWidget->getBoundingRadius());
+        sphereSceneNode->setScale(widgetScale);
 
         sphereSceneNode->attachObject(newWidget);
     }
@@ -302,7 +325,7 @@ void VRWidget::selectFace(::fwRenderOgre::vr::IVolumeRenderer::CubeFace _faceNam
 {
     m_selectedFace->beginUpdate(0);
     {
-        std::array< ::Ogre::Vector3, 4 > facePositions = getFacePositions(_faceName);
+        const std::array< ::Ogre::Vector3, 4 > facePositions = this->getFacePositions(_faceName);
         m_selectedFace->position(facePositions[1]);
         m_selectedFace->position(facePositions[0]);
         m_selectedFace->position(facePositions[2]);
@@ -327,28 +350,28 @@ void VRWidget::deselectFace()
 
 void VRWidget::widgetPicked(::Ogre::MovableObject* _pickedWidget, int _screenX, int _screenY)
 {
-    int height = m_camera->getViewport()->getActualHeight();
-    int width  = m_camera->getViewport()->getActualWidth();
+    const int height = m_camera->getViewport()->getActualHeight();
+    const int width  = m_camera->getViewport()->getActualWidth();
 
     SLM_ASSERT("The picked widget does not belong to this widget.", this->belongsToWidget(_pickedWidget));
-    auto face = m_widgets.at(_pickedWidget);
+    const auto face = m_widgets.at(_pickedWidget);
 
     this->deselectFace();
 
     if(this->getVisibility())
     {
-        ::fwRenderOgre::vr::IVolumeRenderer::CubeFace widgetFace = face.first;
-        ::Ogre::SceneNode* widgetSceneNode                       = face.second;
+        const ::fwRenderOgre::vr::IVolumeRenderer::CubeFace widgetFace = face.first;
+        const ::Ogre::SceneNode* widgetSceneNode                       = face.second;
 
-        ::Ogre::Ray mouseRay = m_camera->getCameraToViewportRay(
+        const ::Ogre::Ray mouseRay = m_camera->getCameraToViewportRay(
             static_cast< ::Ogre::Real>(_screenX) / static_cast< ::Ogre::Real>(width),
             static_cast< ::Ogre::Real>(_screenY) / static_cast< ::Ogre::Real>(height));
 
-        ::Ogre::Vector3 oldPos = m_volumeSceneNode->convertLocalToWorldPosition(widgetSceneNode->getPosition());
+        const ::Ogre::Vector3 oldPos = m_volumeSceneNode->convertLocalToWorldPosition(widgetSceneNode->getPosition());
 
-        ::Ogre::Real distance = mouseRay.getOrigin().distance(oldPos);
+        const ::Ogre::Real distance = mouseRay.getOrigin().distance(oldPos);
 
-        ::Ogre::Vector3 newPos = m_volumeSceneNode->convertWorldToLocalPosition(mouseRay.getPoint(distance));
+        const ::Ogre::Vector3 newPos = m_volumeSceneNode->convertWorldToLocalPosition(mouseRay.getPoint(distance));
 
         std::array< ::Ogre::Vector3, 2> tmpClippingCube;
         std::copy(m_clippingCube.begin(), m_clippingCube.end(), tmpClippingCube.begin());
@@ -379,9 +402,9 @@ void VRWidget::widgetPicked(::Ogre::MovableObject* _pickedWidget, int _screenX, 
 
         std::copy(tmpClippingCube.begin(), tmpClippingCube.end(), m_clippingCube.begin());
 
-        updateClippingCube();
-        updateWidgets();
-        selectFace(widgetFace);
+        this->updateClippingCube();
+        this->updateWidgets();
+        this->selectFace(widgetFace);
 
         m_selectedWidget = dynamic_cast< ::Ogre::Entity*>(_pickedWidget);
         m_selectedWidget->setMaterialName(m_id + "_SphereHighlight");
@@ -397,7 +420,7 @@ void VRWidget::widgetReleased()
 {
     if(m_selectedWidget)
     {
-        deselectFace();
+        this->deselectFace();
         m_selectedWidget->setMaterialName("Default");
         m_selectedWidget = nullptr;
     }
@@ -416,17 +439,17 @@ void VRWidget::widgetReleased()
 
 void VRWidget::moveClippingBox(int x, int y, int dx, int dy)
 {
-    int width  = m_camera->getViewport()->getActualWidth();
-    int height = m_camera->getViewport()->getActualHeight();
+    const int width  = m_camera->getViewport()->getActualWidth();
+    const int height = m_camera->getViewport()->getActualHeight();
 
-    ::Ogre::Vector2 cursor(
+    const ::Ogre::Vector2 cursor(
         static_cast< ::Ogre::Real>(x) / static_cast< ::Ogre::Real>(width),
         static_cast< ::Ogre::Real>(y) / static_cast< ::Ogre::Real>(height));
 
-    ::Ogre::Ray oldPosRay = m_camera->getCameraToViewportRay(cursor.x, cursor.y);
+    const ::Ogre::Ray oldPosRay = m_camera->getCameraToViewportRay(cursor.x, cursor.y);
 
     // Get ray in image space.
-    ::Ogre::Ray mouseRayImgSpace(
+    const ::Ogre::Ray mouseRayImgSpace(
         m_volumeSceneNode->convertWorldToLocalPosition(oldPosRay.getOrigin()),
         m_volumeSceneNode->convertWorldToLocalDirection(oldPosRay.getDirection(), true)
         );
@@ -499,8 +522,8 @@ void VRWidget::moveClippingBox(int x, int y, int dx, int dy)
         m_camera->getParentNode()->translate(-d, ::Ogre::Node::TS_WORLD);
     }
 
-    updateClippingCube();
-    updateWidgets();
+    this->updateClippingCube();
+    this->updateWidgets();
 
     m_renderService->requestRender();
 }
@@ -512,14 +535,14 @@ void VRWidget::scaleClippingBox(int x, int y, int dy)
     const int width  = m_camera->getViewport()->getActualWidth();
     const int height = m_camera->getViewport()->getActualHeight();
 
-    ::Ogre::Vector2 cursor(
+    const ::Ogre::Vector2 cursor(
         static_cast< ::Ogre::Real>(x) / static_cast< ::Ogre::Real>(width),
         static_cast< ::Ogre::Real>(y) / static_cast< ::Ogre::Real>(height));
 
-    ::Ogre::Ray oldPosRay = m_camera->getCameraToViewportRay(cursor.x, cursor.y);
+    const ::Ogre::Ray oldPosRay = m_camera->getCameraToViewportRay(cursor.x, cursor.y);
 
     // Get ray in image space.
-    ::Ogre::Ray mouseRayImgSpace(
+    const ::Ogre::Ray mouseRayImgSpace(
         m_volumeSceneNode->convertWorldToLocalPosition(oldPosRay.getOrigin()),
         m_volumeSceneNode->convertWorldToLocalDirection(oldPosRay.getDirection(), true)
         );
@@ -575,8 +598,8 @@ void VRWidget::scaleClippingBox(int x, int y, int dy)
         m_clippingCube[1] = cc[1] * (::Ogre::Vector3(1.f, 1.f, 1.f) - ccCenter) + ccCenter;
     }
 
-    updateClippingCube();
-    updateWidgets();
+    this->updateClippingCube();
+    this->updateWidgets();
 
     m_renderService->requestRender();
 }

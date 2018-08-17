@@ -323,9 +323,6 @@ void SVolumeRender::starting()
     m_volumeConnection.connect(layer, ::fwRenderOgre::Layer::s_STEREO_MODE_CHANGED_SIG,
                                this->getSptr(), ::visuOgreAdaptor::SVolumeRender::s_SET_STEREO_MODE_SLOT);
 
-    this->initWidgets();
-    m_widgets->setVisibility(m_widgetVisibilty);
-
     const bool isValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image);
     if (isValid)
     {
@@ -466,8 +463,11 @@ void SVolumeRender::updateImage()
     }
 
     m_volumeRenderer->imageUpdate(image, this->getTransferFunction());
+    m_volumeSceneNode->setVisible(true, false);
 
-    m_volumeSceneNode->setVisible(true, m_widgets->getVisibility());
+    // Create widgets on image update to take the image's size into account.
+    this->initWidgets();
+    m_widgets->setVisibility(m_widgetVisibilty);
 
     this->requestRender();
 }
@@ -1082,28 +1082,25 @@ void SVolumeRender::setImageSpacing()
 
 void SVolumeRender::initWidgets()
 {
-    // Create widgets.
+    ::fwRenderOgre::Layer::sptr layer                        = this->getRenderService()->getLayer(m_layerID);
+    ::fwRenderOgre::interactor::IInteractor::sptr interactor = layer->getMoveInteractor();
+
+    auto vrInteractor = std::dynamic_pointer_cast< ::fwRenderOgre::interactor::VRWidgetsInteractor >(interactor);
+
+    if(vrInteractor)
     {
+        vrInteractor->detachWidget(m_widgets);
+        m_widgets = nullptr;
+
         auto clippingMatrix = this->getInOut< ::fwData::TransformationMatrix3D>(s_CLIPPING_MATRIX_INOUT);
 
         m_widgets = ::std::make_shared< ::fwRenderOgre::ui::VRWidget >(this->getID(), m_volumeSceneNode,
                                                                        m_camera, this->getRenderService(),
                                                                        m_sceneManager, m_volumeRenderer,
                                                                        clippingMatrix);
-    }
 
-    // Connect widgets to interactor.
-    {
-        ::fwRenderOgre::Layer::sptr layer                        = this->getRenderService()->getLayer(m_layerID);
-        ::fwRenderOgre::interactor::IInteractor::sptr interactor = layer->getMoveInteractor();
-
-        auto vrInteractor = std::dynamic_pointer_cast< ::fwRenderOgre::interactor::VRWidgetsInteractor >(interactor);
-
-        if(vrInteractor)
-        {
-            vrInteractor->initPicker();
-            vrInteractor->attachWidget(m_widgets);
-        }
+        vrInteractor->initPicker();
+        vrInteractor->attachWidget(m_widgets);
     }
 }
 
