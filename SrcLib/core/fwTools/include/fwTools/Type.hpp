@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWTOOLS_TYPE_HPP__
-#define __FWTOOLS_TYPE_HPP__
+#pragma once
 
 #include "fwTools/config.hpp"
 #include "fwTools/Stringizer.hpp"
@@ -13,7 +12,6 @@
 #include <fwCore/base.hpp>
 
 #include <boost/any.hpp>
-#include <boost/cstdint.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/type_traits/is_signed.hpp>
 
@@ -316,6 +314,3 @@ namespace std
 {
 FWTOOLS_API std::ostream& operator<< (std::ostream& os, const ::fwTools::Type& type);
 } // namespace std
-
-#endif /*__FWTOOLS_TYPE_HPP__*/
-

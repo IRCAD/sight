@@ -1,5 +1,9 @@
 [requires]
 boost/1.67.0@fw4spl/stable
+libxml2/2.9.8@fw4spl/stable
+winiconv/0.0.8@fw4spl/stable
+camp/0.8.2@fw4spl/stable
+glm/0.9.8.5@fw4spl/stable
 
 [generators]
 cmake
