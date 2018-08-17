@@ -88,7 +88,7 @@ private:
     ::Ogre::OverlayContainer* m_text {nullptr};
 
     /// Font.
-    ::Ogre::FontPtr m_font {nullptr};
+    ::Ogre::FontPtr m_font;
 };
 
 } //namespace visuOgreAdaptor

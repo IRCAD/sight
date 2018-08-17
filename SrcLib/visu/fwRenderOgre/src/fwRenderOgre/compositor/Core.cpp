@@ -135,14 +135,14 @@ void Core::setupDefaultTransparency()
 void Core::setupTransparency()
 {
     // Check if compositor is already existing
-    ::Ogre::CompositorChain* compChain = ::Ogre::CompositorManager::getSingleton().getCompositorChain(
-        m_viewport);
-    ::Ogre::CompositorChain::InstanceIterator compIter = compChain->getCompositors();
+    ::Ogre::CompositorChain* compChain = ::Ogre::CompositorManager::getSingleton().getCompositorChain(m_viewport);
+
+    auto& compInstances = compChain->getCompositorInstances();
 
     m_compositorInstance = nullptr;
-    while( compIter.hasMoreElements())
+
+    for(auto targetComp : compInstances)
     {
-        ::Ogre::CompositorInstance* targetComp = compIter.getNext();
         if(targetComp->getCompositor()->getName() == m_transparencyTechniqueName)
         {
             m_compositorInstance = targetComp;

@@ -41,10 +41,10 @@ void WindowManager::unregisterWindow(::Ogre::RenderWindow* _window)
     // If we are the last opened window, we shutdown Ogre completely
     if(m_windows.empty())
     {
-        root->destroyRenderTarget(m_firstWindow);
-        m_firstWindow = nullptr;
-
+        // We don't need to destroy the ogre target, it is done when shutting down ogre.
+        // Destroying the render target actually results in a double free segfault.
         ::fwRenderOgre::Utils::destroyOgreRoot();
+        m_firstWindow = nullptr;
     }
 }
 

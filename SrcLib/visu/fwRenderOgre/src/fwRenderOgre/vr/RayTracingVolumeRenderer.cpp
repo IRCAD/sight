@@ -427,7 +427,7 @@ void RayTracingVolumeRenderer::setRayCastingPassTextureUnits(Ogre::Pass* _rayCas
     else
     {
         auto gpuTF = m_gpuTF.lock();
-        texUnitState = _rayCastingPass->createTextureUnitState(gpuTF->getTexture()->getName());
+        texUnitState = _rayCastingPass->createTextureUnitState();
         texUnitState->setName(s_TF_TEXUNIT_NAME);
         gpuTF->bind(_rayCastingPass, texUnitState->getName(), fpParams);
     }
@@ -436,10 +436,10 @@ void RayTracingVolumeRenderer::setRayCastingPassTextureUnits(Ogre::Pass* _rayCas
 
     if(_fpPPDefines.find(s_AO_DEFINE) != std::string::npos)
     {
-        texUnitState =
-            _rayCastingPass->createTextureUnitState(m_illumVolume.lock()->getIlluminationVolume()->getName());
+        texUnitState = _rayCastingPass->createTextureUnitState();
         texUnitState->setTextureFiltering(::Ogre::TFO_BILINEAR);
         texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
+        texUnitState->setTexture(m_illumVolume.lock()->getIlluminationVolume());
 
         fpParams->setNamedConstant("u_illuminationVolume", numTexUnit++);
         // Update the shader parameter
@@ -597,7 +597,8 @@ void RayTracingVolumeRenderer::initEntryPoints()
 {
     m_entryPointGeometry = m_sceneManager->createManualObject(m_parentId + "_RayTracingVREntryPoints");
 
-    m_entryPointGeometry->begin(m_currentMtlName, ::Ogre::RenderOperation::OT_TRIANGLE_LIST);
+    // Use the default material before the raytracing material is created otherwise we get an error.
+    m_entryPointGeometry->begin("Default", ::Ogre::RenderOperation::OT_TRIANGLE_LIST);
     {
         for(const auto& face : s_cubeFaces)
         {

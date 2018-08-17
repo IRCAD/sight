@@ -294,8 +294,8 @@ void GridProxyGeometry::computeGrid()
             &m_gridRenderOp,
             m_gridComputingPass,
             rt->getViewport(0),
-            ::Ogre::Matrix4::IDENTITY,
-            ::Ogre::Matrix4::IDENTITY,
+            ::Ogre::Affine3::IDENTITY,
+            ::Ogre::Affine3::IDENTITY,
             ::Ogre::Matrix4::IDENTITY);
     }
 

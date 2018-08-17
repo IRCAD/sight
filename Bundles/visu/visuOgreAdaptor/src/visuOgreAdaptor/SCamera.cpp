@@ -107,7 +107,7 @@ void SCamera::stopping()
 
 void SCamera::updating()
 {
-    ::Ogre::Matrix4 ogreMatrix;
+    ::Ogre::Affine3 ogreMatrix;
 
     auto transform = this->getInOut< ::fwData::TransformationMatrix3D >("transform");
     {

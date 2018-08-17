@@ -88,6 +88,7 @@ material RayEntryPoints
 
         pass
         {
+            colour_write on off off off
             depth_check on
             depth_write on
             depth_func less
@@ -110,8 +111,7 @@ material RayEntryPoints
 
         pass
         {
-            scene_blend src_colour dest_colour
-            scene_blend_op min
+            colour_write off on off off
             depth_check on
             depth_write on
             depth_func greater_equal
@@ -135,8 +135,11 @@ material RayEntryPoints
 
         pass
         {
+            // Use the max blend operation to only write values where an exit is already defined.
+            // In this case exit depth channel (i.e. green) has the maximum depth value (i.e. 1).
             scene_blend src_colour dest_colour
             scene_blend_op max
+            colour_write off on off off
             depth_check on
             depth_write on
             depth_func less

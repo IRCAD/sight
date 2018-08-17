@@ -13,24 +13,21 @@
 
 #include <fwCore/spyLog.hpp>
 
-#include <fwData/TransferFunction.hpp>
-
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 #include <fwDataTools/helper/ImageGetter.hpp>
 
 #include <fwRuntime/operations.hpp>
 
-#include <boost/algorithm/string.hpp>
 #include <boost/filesystem.hpp>
-#include <boost/property_tree/ini_parser.hpp>
-#include <boost/property_tree/ptree.hpp>
 
 #include <OgreConfigFile.h>
 #include <OgreException.h>
 #include <OgreHardwarePixelBuffer.h>
-#include <OgreLog.h>
 #include <OgreResourceGroupManager.h>
 #include <OgreTextureManager.h>
+
+#include <algorithm>
+#include <cctype> // Needed for isspace()
 
 #ifdef __APPLE__
 #define PLUGIN_PATH "plugins_osx.cfg"
@@ -43,9 +40,6 @@
 #else
 #   define PLUGIN_PATH "plugins.cfg"
 #endif
-
-#define PLUGIN_FOLDER_NAME "PluginFolder"
-#define FILE_SYSTEM_NAME "FileSystem"
 
 namespace fwRenderOgre
 {
@@ -60,7 +54,7 @@ static std::set<std::string> s_resourcesPath;
 
 //------------------------------------------------------------------------------
 
-void loadResources()
+void Utils::loadResources()
 {
     ::Ogre::ConfigFile cf;
     ::Ogre::String resourceGroupName, typeName, archName;
@@ -75,60 +69,21 @@ void loadResources()
                 OSLM_FATAL("File '" + path +"' doesn't exist. Ogre needs it to load resources");
             }
 
-            // Create string with file content but with correct path
-            std::string res = "";
-            {
-                std::ifstream fichier(path);
-                std::string ligne;
-
-                while(std::getline(fichier, ligne))
-                {
-                    std::vector<std::string> results;
-                    ::boost::split(results, ligne, [](char c){return c == '='; });
-                    for(size_t i = 0; i < results.size(); ++i)
-                    {
-                        if(results[i].compare(FILE_SYSTEM_NAME) == 0)
-                        {
-                            res                                 += results[i];
-                            ::boost::filesystem::path wantedPath = i+1 < results.size() ? results[i+1] : "";
-                            ::boost::filesystem::path newConfpath;
-
-                            if(wantedPath.string().compare("") == 0)
-                            {
-                                newConfpath = ::fwRuntime::Runtime::getDefault()->getWorkingPath();
-                            }
-                            else if(!wantedPath.is_absolute())
-                            {
-                                newConfpath = (::fwRuntime::Runtime::getDefault()->getWorkingPath()
-                                               / wantedPath).normalize();
-                                ++i;
-                            }
-                            else
-                            {
-                                newConfpath = wantedPath;
-                                ++i;
-                            }
-                            res += "=" + (newConfpath / "/").string();
-
-                        }
-                        else
-                        {
-                            res += results[i];
-                        }
-                    }
-                    res += '\n';
-                }
-            }
-
-            // Create temp file and give it to Ogre
             const auto tmpPath = boost::filesystem::temp_directory_path() / boost::filesystem::unique_path();
-            ::boost::filesystem::ofstream tmpFile(tmpPath.string());
+            std::ofstream newResourceFile(tmpPath.string());
+
             if(!::boost::filesystem::exists(tmpPath))
             {
                 OSLM_FATAL("Can't create the file '" + tmpPath.string() + "'");
             }
-            tmpFile << res << std::endl;
-            tmpFile.close();
+
+            // Copy the resource file and make paths absolute.
+            std::ifstream resourceFile(path);
+
+            makePathsAbsolute("FileSystem", resourceFile, newResourceFile);
+
+            resourceFile.close();
+            newResourceFile.close();
             cf.load(tmpPath.string());
             ::boost::filesystem::remove(tmpPath);
 
@@ -178,48 +133,39 @@ void Utils::addResourcesPath(const ::boost::filesystem::path& path)
 
 ::Ogre::Root* Utils::getOgreRoot()
 {
-    ::Ogre::Root* root = ::Ogre::Singleton< ::Ogre::Root >::getSingletonPtr();
+    ::Ogre::Root* root = ::Ogre::Root::getSingletonPtr();
 
     if(root == nullptr)
     {
         const auto& confPath = ::fwRuntime::getLibraryResourceFilePath("fwRenderOgre-0.1/" PLUGIN_PATH);
 
-        // Check file existance
+        // Check file existence
         if(!::boost::filesystem::exists(confPath))
         {
             OSLM_FATAL("File '" + confPath.string() +"' doesn't exist. Ogre needs it to be configured");
         }
 
-        // Fix file with correct path
-        boost::property_tree::ptree pt;
-        boost::property_tree::ini_parser::read_ini(confPath.string(), pt);
+        const auto tmpPluginCfg = ::boost::filesystem::temp_directory_path() / ::boost::filesystem::unique_path();
 
-        if(!pt.get< ::boost::filesystem::path >(PLUGIN_FOLDER_NAME).is_absolute())
+        // Set the actual plugin path in the plugin config file.
+        std::ifstream pluginCfg(confPath.string());
+        std::ofstream newPlugin(tmpPluginCfg.string());
+
+        if(!::boost::filesystem::exists(tmpPluginCfg))
         {
-            const auto newConfpath = (::fwRuntime::Runtime::getDefault()->getWorkingPath()
-                                      / pt.get<std::string>(PLUGIN_FOLDER_NAME)).normalize();
-            pt.put(PLUGIN_FOLDER_NAME, newConfpath.string() + '/');
+            OSLM_FATAL("Can't create temporary config file'" + tmpPluginCfg.string() + "'");
         }
 
-        // Create temp file and give it to Ogre
-        const auto tmpPath = boost::filesystem::temp_directory_path() / boost::filesystem::unique_path();
-        ::boost::filesystem::ofstream tmpFile(tmpPath.string());
-        if(!::boost::filesystem::exists(tmpPath))
-        {
-            OSLM_FATAL("Can't create the file '" + tmpPath.string() + "'");
-        }
-        {
-            for(auto ptr = pt.begin(); ptr != pt.end(); ++ptr)
-            {
-                const std::string& fi = ptr->first;
-                const std::string& se = ptr->second.data();
-                tmpFile << fi << " = " << se << std::endl;
-            }
-            tmpFile.close();
+        const bool tokenFound = makePathsAbsolute("PluginFolder", pluginCfg, newPlugin);
 
-            root = new ::Ogre::Root(tmpPath.string().c_str());
-        }
-        ::boost::filesystem::remove(tmpPath);
+        pluginCfg.close();
+        newPlugin.close();
+
+        SLM_FATAL_IF("No 'PluginFolder' folder set in " + confPath.string(), !tokenFound);
+
+        root = new ::Ogre::Root(tmpPluginCfg.string().c_str());
+
+        ::boost::filesystem::remove(tmpPluginCfg);
 
         s_overlaySystem = new ::Ogre::OverlaySystem();
 
@@ -256,12 +202,9 @@ void Utils::addResourcesPath(const ::boost::filesystem::path& path)
         }
         SLM_ASSERT("Abort render system configuration, no render system found", rs);
 
-        // Setting size and VSync on windows will solve a lot of problems
         rs->setConfigOption("Full Screen", "No");
-#ifdef __APPLE__
-        rs->setConfigOption("vsync", "No");
-#else
         rs->setConfigOption("VSync", "No");
+#ifndef __APPLE__
         rs->setConfigOption("Display Frequency", "60");
 #endif
 
@@ -315,7 +258,6 @@ void Utils::destroyOgreRoot()
 
     delete s_overlaySystem;
 
-    root->shutdown();
     delete root;
 }
 
@@ -662,7 +604,7 @@ void copyNegatoImage( ::Ogre::Texture* _texture, const ::fwData::Image::sptr& _i
 
         pixelBuffer->lock(::Ogre::HardwareBuffer::HBL_DISCARD);
         const ::Ogre::PixelBox& pixelBox = pixelBuffer->getCurrentLock();
-        auto pDest                       = static_cast< unsignedType*>(pixelBox.data);
+        auto pDest                       = reinterpret_cast< unsignedType*>(pixelBox.data);
 
         const DST_TYPE lowBound = std::numeric_limits< DST_TYPE >::min();
 
@@ -763,6 +705,51 @@ void Utils::allocateTexture(::Ogre::Texture* _texture, size_t _width, size_t _he
     fwColor->setRGBA(_ogreColor.r, _ogreColor.g, _ogreColor.b, _ogreColor.a);
 
     return fwColor;
+}
+
+//------------------------------------------------------------------------------
+
+bool Utils::makePathsAbsolute(const std::string& key, std::istream& input, std::ostream& output)
+{
+    bool keyFound = false;
+
+    const size_t keySize = key.size();
+
+    for(std::string line; std::getline(input, line);)
+    {
+        // Remove all whitespace from the line.
+        line.erase(std::remove_if(line.begin(), line.end(), isspace), line.end());
+
+        // Skip comments, go to the next line.
+        if(line[0] != '#')
+        {
+            if(line.substr(0, keySize) == key)
+            {
+                SLM_FATAL_IF("Key '" + key + "' has no value bound to it.", line.size() < keySize + 1 );
+
+                const auto currentPath = ::boost::filesystem::path(line.substr(keySize + 1));
+
+                if(!currentPath.is_absolute())
+                {
+                    const auto absPath = ::fwRuntime::Runtime::getDefault()->getWorkingPath() / currentPath;
+
+                    output << key << "=" << absPath.string() << std::endl;
+                }
+                else
+                {
+                    output << line << std::endl;
+                }
+
+                keyFound = true;
+            }
+            else
+            {
+                output << line << std::endl;
+            }
+        }
+    }
+
+    return keyFound;
 }
 
 //------------------------------------------------------------------------------
