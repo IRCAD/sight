@@ -467,7 +467,7 @@ void VRWidget::moveClippingBox(int x, int y, int dx, int dy)
 
     if(m_selectionMode == NONE)
     {
-        if(inter.first && getVisibility())
+        if(inter.first && this->getVisibility())
         {
             // Get picked point in box space.
             m_pickedBoxPoint = (mouseRayImgSpace.getPoint(inter.second) - min) / (max - min);
@@ -555,7 +555,7 @@ void VRWidget::scaleClippingBox(int x, int y, int dy)
 
     if(m_selectionMode == NONE)
     {
-        if(inter.first && getVisibility())
+        if(inter.first && this->getVisibility())
         {
             // Get picked point in box space.
             m_selectionMode = BOX;
@@ -568,34 +568,33 @@ void VRWidget::scaleClippingBox(int x, int y, int dy)
         }
     }
 
-    const auto scale  = m_volumeSceneNode->getScale();
-    const float speed = scale.z / scale.length() / static_cast<float>(height);
-
     if(m_selectionMode == CAMERA)
     {
-        const float dz = static_cast<float>(dy) * speed;
-
-        const ::Ogre::Vector3 transVec(0.f, 0.f, dz);
+        const ::Ogre::Vector3 transVec(0.f, 0.f, static_cast<float>(dy));
 
         m_camera->getParentNode()->translate(transVec, ::Ogre::Node::TS_LOCAL);
     }
     else if(m_selectionMode == BOX)
     {
-        const float scale = 1.0f + static_cast<float>(dy) * speed * 10;
+        const auto volumeSize = m_volumeSceneNode->getScale();
+
+        // A displacement of 1 pixel along the height axis scales the box by 1/100th of the image's length.
+        const float speed = (volumeSize.length() / 100.f) / static_cast<float>(height);
+        const float scale = 1.0f + static_cast<float>(dy) * speed;
 
         const ::Ogre::Vector3 ccCenter = (m_clippingCube[1] + m_clippingCube[0]) / 2.f;
 
-        // Scale clipping cube along it's center.
+        // Scale clipping cube along its center.
         ::Ogre::Vector3 cc[2] = {
-            (m_clippingCube[0] - ccCenter) / (::Ogre::Vector3(1.f, 1.f, 1.f) - ccCenter),
-            (m_clippingCube[1] - ccCenter) / (::Ogre::Vector3(1.f, 1.f, 1.f) - ccCenter)
+            (m_clippingCube[0] - ccCenter) / (::Ogre::Vector3::UNIT_SCALE - ccCenter),
+            (m_clippingCube[1] - ccCenter) / (::Ogre::Vector3::UNIT_SCALE - ccCenter)
         };
 
         cc[0] *= scale;
         cc[1] *= scale;
 
-        m_clippingCube[0] = cc[0] * (::Ogre::Vector3(1.f, 1.f, 1.f) - ccCenter) + ccCenter;
-        m_clippingCube[1] = cc[1] * (::Ogre::Vector3(1.f, 1.f, 1.f) - ccCenter) + ccCenter;
+        m_clippingCube[0] = cc[0] * (::Ogre::Vector3::UNIT_SCALE - ccCenter) + ccCenter;
+        m_clippingCube[1] = cc[1] * (::Ogre::Vector3::UNIT_SCALE - ccCenter) + ccCenter;
     }
 
     this->updateClippingCube();

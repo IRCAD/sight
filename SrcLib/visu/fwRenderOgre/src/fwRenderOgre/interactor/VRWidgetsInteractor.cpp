@@ -54,11 +54,11 @@ Ogre::MovableObject* VRWidgetsInteractor::pickObject(int x, int y)
 
 void VRWidgetsInteractor::mouseMoveEvent(MouseButton button, int x, int y, int dx, int dy)
 {
-    if(m_widget)
+    if(m_widget) // If a widget is present in the scene.
     {
         if(button == LEFT)
         {
-            if(!m_widget->getVisibility() || m_pickedObject == nullptr)
+            if(m_pickedObject == nullptr) // Enable trackball if no face was picked.
             {
                 TrackballInteractor::mouseMoveEvent(button, x, y, dx, dy);
             }
@@ -75,6 +75,10 @@ void VRWidgetsInteractor::mouseMoveEvent(MouseButton button, int x, int y, int d
         {
             m_widget->scaleClippingBox(x, y, dy);
         }
+    }
+    else if(button == LEFT) // Fallback to trackball otherwise.
+    {
+        TrackballInteractor::mouseMoveEvent(button, x, y, dx, dy);
     }
 }
 
@@ -95,7 +99,7 @@ void VRWidgetsInteractor::buttonPressEvent(MouseButton button, int x, int y)
 {
     if(m_widget)
     {
-        if(button == LEFT)
+        if(button == LEFT && m_widget->getVisibility())
         {
             m_pickedObject = pickObject(x, y);
 
