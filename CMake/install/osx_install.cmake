@@ -11,7 +11,7 @@ function(osx_install PRJ_NAME)
     if("${${PRJ_NAME}_TYPE}" STREQUAL  "APP")
         # create a new executable equivalent to fwLauncher
         add_executable(${EXECUTABLE_NAME} MACOSX_BUNDLE ${fwlauncher_HEADERS} ${fwlauncher_SOURCES} rc/${ICON_FILENAME})
-        add_definitions(-DDEFAULT_PROFILE=${BUNDLE_RC_PREFIX}/${PRJ_NAME}-${${PRJ_NAME}_VERSION}/profile.xml)
+        add_definitions(-DDEFAULT_PROFILE=${FWBUNDLE_RC_PREFIX}/${PRJ_NAME}-${${PRJ_NAME}_VERSION}/profile.xml)
         get_target_property(LAUNCHER_DEFINITIONS fwlauncher COMPILE_DEFINITIONS)
         target_compile_definitions(${EXECUTABLE_NAME} PRIVATE ${LAUNCHER_DEFINITIONS})
         get_target_property(LINK_PROPERTIES fwlauncher LINK_LIBRARIES)
@@ -49,18 +49,18 @@ function(osx_install PRJ_NAME)
 
 
     install(CODE "
-        if (EXISTS \"${CMAKE_INSTALL_PREFIX}/${BUNDLE_RC_PREFIX}\")
-            file(INSTALL \"${CMAKE_INSTALL_PREFIX}/${BUNDLE_RC_PREFIX}\" DESTINATION \"${APP_INSTALL_PATH}/Contents\")
+        if (EXISTS \"${CMAKE_INSTALL_PREFIX}/${FWBUNDLE_RC_PREFIX}\")
+            file(INSTALL \"${CMAKE_INSTALL_PREFIX}/${FWBUNDLE_RC_PREFIX}\" DESTINATION \"${APP_INSTALL_PATH}/Contents\")
         endif()
-        
-        if (EXISTS ${CMAKE_INSTALL_PREFIX}/${BUNDLE_LIB_PREFIX})
-            file(INSTALL \"${CMAKE_INSTALL_PREFIX}/${BUNDLE_LIB_PREFIX}\" DESTINATION \"${APP_INSTALL_PATH}/Contents\")
+
+        if (EXISTS ${CMAKE_INSTALL_PREFIX}/${FWBUNDLE_LIB_PREFIX})
+            file(INSTALL \"${CMAKE_INSTALL_PREFIX}/${FWBUNDLE_LIB_PREFIX}\" DESTINATION \"${APP_INSTALL_PATH}/Contents\")
         endif()
-        
+
         if (EXISTS ${CMAKE_INSTALL_PREFIX}/lib/qt5/plugins)
             file(INSTALL \"${CMAKE_INSTALL_PREFIX}/lib/qt5/plugins\" DESTINATION \"${APP_INSTALL_PATH}/Contents/lib/qt5\")
         endif()
-        
+
         if (EXISTS ${CMAKE_INSTALL_PREFIX}/bin/Contents/Plugins)
             file(INSTALL \"${CMAKE_INSTALL_PREFIX}/bin/Contents/Plugins\" DESTINATION \"${APP_INSTALL_PATH}/Contents/\")
         endif()
@@ -70,8 +70,8 @@ function(osx_install PRJ_NAME)
 
         foreach(FILE \${FILES})
             if (NOT \${FILE} MATCHES \"${EXECUTABLE_NAME}\"
-                AND NOT \${FILE} MATCHES \"${BUNDLE_RC_PREFIX}\"
-                AND NOT \${FILE} MATCHES \"${BUNDLE_LIB_PREFIX}\"
+                AND NOT \${FILE} MATCHES \"${FWBUNDLE_RC_PREFIX}\"
+                AND NOT \${FILE} MATCHES \"${FWBUNDLE_LIB_PREFIX}\"
                 AND NOT \${FILE} MATCHES \"${CMAKE_INSTALL_LIBDIR}\"
                 AND NOT \${FILE} MATCHES \"bin\"
             )
@@ -81,9 +81,9 @@ function(osx_install PRJ_NAME)
     " COMPONENT ApplicationBundle)
 
     install(CODE "
-        file(GLOB_RECURSE OGREPLUGINS \"${APP_INSTALL_PATH}/Contents/Plugins/*${CMAKE_SHARED_LIBRARY_SUFFIX}\")            
+        file(GLOB_RECURSE OGREPLUGINS \"${APP_INSTALL_PATH}/Contents/Plugins/*${CMAKE_SHARED_LIBRARY_SUFFIX}\")
         file(GLOB_RECURSE QTPLUGINS \"${APP_INSTALL_PATH}/Contents/lib/qt5/plugins/*${CMAKE_SHARED_LIBRARY_SUFFIX}\")
-        file(GLOB_RECURSE BUNDLES \"${APP_INSTALL_PATH}/Contents/${BUNDLE_LIB_PREFIX}/*/*${CMAKE_SHARED_LIBRARY_SUFFIX}\")
+        file(GLOB_RECURSE BUNDLES \"${APP_INSTALL_PATH}/Contents/${FWBUNDLE_LIB_PREFIX}/*/*${CMAKE_SHARED_LIBRARY_SUFFIX}\")
 
         # Find Bundles for fixup
         if (BUNDLES)
@@ -114,7 +114,7 @@ function(osx_install PRJ_NAME)
             )
 
         execute_process(
-            COMMAND sh -c \"python ${CMAKE_SOURCE_DIR}/CMake/OSXTools/osx_install_name_tool.py -e MacOS/ $(find \"${BUNDLE_LIB_PREFIX}\" -iname '*.dylib') -f\"
+            COMMAND sh -c \"python ${CMAKE_SOURCE_DIR}/CMake/OSXTools/osx_install_name_tool.py -e MacOS/ $(find \"${FWBUNDLE_LIB_PREFIX}\" -iname '*.dylib') -f\"
             WORKING_DIRECTORY ${APP_INSTALL_PATH}/Contents
             )
     " COMPONENT ApplicationBundle)

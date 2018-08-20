@@ -56,7 +56,7 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D_DEBUG")  #racy backward c
 
 option(USE_SYSTEM_LIB "Use system libraries to compile fw4spl" OFF)
 
-option(INSTALL_HEADERS "Install development header files" OFF)
+option(BUILD_SDK "Build Fw4SPL as a SDK" OFF)
 
 if(NOT USE_SYSTEM_LIB)
     set(EXTERNAL_LIBRARIES CACHE PATH "External libraries location")
@@ -137,21 +137,23 @@ if(ADDITIONAL_REPOSITORIES)
     endforeach()
 endif()
 
-if(ANDROID)
-    set(BUNDLE_LIB_PREFIX "/data/data/com.fw4spl.${PROJECTS_TO_INSTALL}/Bundles")
-    set(BUNDLE_RC_PREFIX "/data/data/com.fw4spl.${PROJECTS_TO_INSTALL}/Bundles")
-else()
-    if(WIN32)
-        set(BUNDLE_LIB_PREFIX "${CMAKE_INSTALL_BINDIR}" CACHE PATH "Relative path where the bundles libraries are installed.")
-    else()
-        set(BUNDLE_LIB_PREFIX "${CMAKE_INSTALL_LIBDIR}" CACHE PATH "Relative path where the bundles libraries are installed.")
-    endif()
-
-    set(BUNDLE_RC_PREFIX "${CMAKE_INSTALL_DATADIR}" CACHE PATH "Relative path where the bundles resources are installed.")
+if(BUILD_SDK)
+    set(FW_INSTALL_PATH_SUFFIX "fw4spl")
 endif()
+
+if(WIN32)
+    set(BUNDLE_LIB_PREFIX "${CMAKE_INSTALL_BINDIR}" CACHE PATH "Relative path where the bundles libraries are installed.")
+else()
+    set(BUNDLE_LIB_PREFIX "${CMAKE_INSTALL_LIBDIR}" CACHE PATH "Relative path where the bundles libraries are installed.")
+endif()
+
+set(BUNDLE_RC_PREFIX "${CMAKE_INSTALL_DATADIR}" CACHE PATH "Relative path where the bundles resources are installed.")
 
 mark_as_advanced(BUNDLE_LIB_PREFIX)
 mark_as_advanced(BUNDLE_RC_PREFIX)
+
+set(FWBUNDLE_LIB_PREFIX "${BUNDLE_LIB_PREFIX}/${FW_INSTALL_PATH_SUFFIX}")
+set(FWBUNDLE_RC_PREFIX "${BUNDLE_RC_PREFIX}/${FW_INSTALL_PATH_SUFFIX}")
 
 # Set warning level and function export visibility on Unix
 if(UNIX)
@@ -430,16 +432,16 @@ macro(fwExec FWPROJECT_NAME PROJECT_VERSION)
     configureProject( ${FWPROJECT_NAME} ${PROJECT_VERSION} )
 
     if(EXISTS "${PRJ_SOURCE_DIR}/rc")
-        set(${FWPROJECT_NAME}_RC_BUILD_DIR "${CMAKE_BINARY_DIR}/${BUNDLE_RC_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}")
+        set(${FWPROJECT_NAME}_RC_BUILD_DIR "${CMAKE_BINARY_DIR}/${FWBUNDLE_RC_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}")
         createResourcesTarget( ${FWPROJECT_NAME}_rc "${PRJ_SOURCE_DIR}/rc" "${${FWPROJECT_NAME}_RC_BUILD_DIR}" )
         add_dependencies( ${FWPROJECT_NAME} ${FWPROJECT_NAME}_rc )
 
-        if(${FWPROJECT_NAME}_INSTALL)
-            createResourcesInstallTarget( "${${FWPROJECT_NAME}_RC_BUILD_DIR}" "${BUNDLE_RC_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}" )
+        if(${FWPROJECT_NAME}_INSTALL OR BUILD_SDK)
+            createResourcesInstallTarget( "${${FWPROJECT_NAME}_RC_BUILD_DIR}" "${FWBUNDLE_RC_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}" )
         endif()
     endif()
 
-    if(${FWPROJECT_NAME}_INSTALL)
+    if(${FWPROJECT_NAME}_INSTALL OR BUILD_SDK)
         install(
             TARGETS ${FWPROJECT_NAME}
             RUNTIME DESTINATION bin
@@ -480,18 +482,18 @@ macro(fwCppunitTest FWPROJECT_NAME)
         ${${FWPROJECT_NAME}_CMAKE_FILES})
 
     if(fwCppunitTest_BUNDLE)
-        add_definitions(-DBUNDLE_TEST_PROFILE=\"${BUNDLE_RC_PREFIX}/${TU_NAME}/profile.xml\")
+        add_definitions(-DBUNDLE_TEST_PROFILE=\"${FWBUNDLE_RC_PREFIX}/${TU_NAME}/profile.xml\")
     endif()
 
     configureProject( ${FWPROJECT_NAME} 0.0 )
 
     if(EXISTS "${PRJ_SOURCE_DIR}/tu/rc")
-        set(${FWPROJECT_NAME}_RC_BUILD_DIR "${CMAKE_BINARY_DIR}/${BUNDLE_RC_PREFIX}/${TU_NAME}")
+        set(${FWPROJECT_NAME}_RC_BUILD_DIR "${CMAKE_BINARY_DIR}/${FWBUNDLE_RC_PREFIX}/${TU_NAME}")
         createResourcesTarget( ${FWPROJECT_NAME}_rc "${PRJ_SOURCE_DIR}/tu/rc" "${${FWPROJECT_NAME}_RC_BUILD_DIR}" )
         add_dependencies( ${FWPROJECT_NAME} ${FWPROJECT_NAME}_rc )
 
-        if(${FWPROJECT_NAME}_INSTALL)
-            createResourcesInstallTarget( "${${FWPROJECT_NAME}_RC_BUILD_DIR}" "${BUNDLE_RC_PREFIX}/${TU_NAME}" )
+        if(${FWPROJECT_NAME}_INSTALL OR BUILD_SDK)
+            createResourcesInstallTarget( "${${FWPROJECT_NAME}_RC_BUILD_DIR}" "${FWBUNDLE_RC_PREFIX}/${TU_NAME}" )
         endif()
     endif()
 
@@ -563,12 +565,12 @@ macro(fwLib FWPROJECT_NAME PROJECT_VERSION)
     set_target_properties(${FWPROJECT_NAME} PROPERTIES COMPATIBLE_INTERFACE_STRING ${FWPROJECT_NAME}_MAJOR_VERSION)
 
     if(EXISTS "${PRJ_SOURCE_DIR}/rc")
-        set(${FWPROJECT_NAME}_RC_BUILD_DIR "${CMAKE_BINARY_DIR}/${BUNDLE_RC_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}")
+        set(${FWPROJECT_NAME}_RC_BUILD_DIR "${CMAKE_BINARY_DIR}/${FWBUNDLE_RC_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}")
         createResourcesTarget( ${FWPROJECT_NAME}_rc "${PRJ_SOURCE_DIR}/rc" "${${FWPROJECT_NAME}_RC_BUILD_DIR}" )
         add_dependencies( ${FWPROJECT_NAME} ${FWPROJECT_NAME}_rc )
 
-        if(${FWPROJECT_NAME}_INSTALL)
-            createResourcesInstallTarget( "${${FWPROJECT_NAME}_RC_BUILD_DIR}" "${BUNDLE_RC_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}" )
+        if(${FWPROJECT_NAME}_INSTALL OR BUILD_SDK)
+            createResourcesInstallTarget( "${${FWPROJECT_NAME}_RC_BUILD_DIR}" "${FWBUNDLE_RC_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}" )
         endif()
 
     endif()
@@ -585,64 +587,75 @@ macro(fwLib FWPROJECT_NAME PROJECT_VERSION)
 
     set(${FWPROJECT_NAME}_INCLUDE_INSTALL_DIR fw4spl/${FWPROJECT_NAME} PARENT_SCOPE)
 
-    if(INSTALL_HEADERS)
+
+    if(BUILD_SDK)
         install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/${FWPROJECT_NAME}
                 DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/fw4spl)
-    endif()
 
-    list(APPEND FW_COMPONENTS ${FWPROJECT_NAME} )
-    set(FW_COMPONENTS ${FW_COMPONENTS} PARENT_SCOPE)
-
-    install(
-        TARGETS ${FWPROJECT_NAME} EXPORT Fw4SPL-${FWPROJECT_NAME}Targets
-        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}/fw4spl
-        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}/fw4spl
-        INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/fw4spl/
-    )
-    # Add all targets to the build-tree export set
-    export( EXPORT Fw4SPL-${FWPROJECT_NAME}Targets
-            FILE "${CMAKE_BINARY_DIR}/cmake/Fw4SPL-${FWPROJECT_NAME}Targets.cmake"
-            NAMESPACE Fw4SPL::)
-
-    # Install the Fw4SPL-ProjectTargets.cmake
-    install(EXPORT Fw4SPL-${FWPROJECT_NAME}Targets
-    FILE
-      Fw4SPL-${FWPROJECT_NAME}Targets.cmake
-    NAMESPACE
-      Fw4SPL::
-    DESTINATION
-      ${FWCONFIG_PACKAGE_LOCATION}
-    )
-
-    # Add Fw4SPL targets depepndencies
-    if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/Dependencies.cmake")
-        configure_file( "${CMAKE_CURRENT_SOURCE_DIR}/Dependencies.cmake"
-                        "${CMAKE_CURRENT_BINARY_DIR}/Dependencies.cmake"
-                        COPYONLY IMMEDIATE)
-    else()
-        # Create empty file
-        file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/Dependencies.cmake" "")
-    endif()
-
-    set(FW_INSTALL_DEPENDENCIES ${${FWPROJECT_NAME}_DEPENDENCIES})
-    list(REMOVE_ITEM FW_INSTALL_DEPENDENCIES ${FWPROJECT_NAME})
-    if(FW_INSTALL_DEPENDENCIES)
-        file(APPEND "${CMAKE_CURRENT_BINARY_DIR}/Dependencies.cmake"
-            "find_package(Fw4SPL COMPONENTS ${FW_INSTALL_DEPENDENCIES} REQUIRED)")
-    endif()
-
-    # Install the Fw4SPL-ProjectDependencies.cmake
-    if(EXISTS "${CMAKE_CURRENT_BINARY_DIR}/Dependencies.cmake")
         install(
-        FILES
-          "${CMAKE_CURRENT_BINARY_DIR}/Dependencies.cmake"
-        RENAME
-            Fw4SPL-${FWPROJECT_NAME}Dependencies.cmake
-        DESTINATION
-          ${FWCONFIG_PACKAGE_LOCATION}
+            TARGETS ${FWPROJECT_NAME} EXPORT Fw4SPL-${FWPROJECT_NAME}Targets
+            RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+            ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}/fw4spl
+            LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}/fw4spl
+            INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/fw4spl/
         )
+
+        # Add all targets to the build-tree export set
+        export( EXPORT Fw4SPL-${FWPROJECT_NAME}Targets
+                FILE "${CMAKE_BINARY_DIR}/cmake/Fw4SPL-${FWPROJECT_NAME}Targets.cmake"
+                NAMESPACE Fw4SPL::)
+
+        # Install the Fw4SPL-ProjectTargets.cmake
+        install(EXPORT Fw4SPL-${FWPROJECT_NAME}Targets
+                FILE
+                  Fw4SPL-${FWPROJECT_NAME}Targets.cmake
+                NAMESPACE
+                  Fw4SPL::
+                DESTINATION
+                  ${FWCONFIG_PACKAGE_LOCATION}
+        )
+
+        list(APPEND FW_COMPONENTS ${FWPROJECT_NAME} )
+        set(FW_COMPONENTS ${FW_COMPONENTS} PARENT_SCOPE)
+
+        # Add Fw4SPL targets depepndencies
+        if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/Dependencies.cmake")
+            configure_file( "${CMAKE_CURRENT_SOURCE_DIR}/Dependencies.cmake"
+                            "${CMAKE_CURRENT_BINARY_DIR}/Dependencies.cmake"
+                            COPYONLY IMMEDIATE)
+        else()
+            # Create empty file
+            file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/Dependencies.cmake" "")
+        endif()
+
+        set(FW_INSTALL_DEPENDENCIES ${${FWPROJECT_NAME}_DEPENDENCIES})
+        list(REMOVE_ITEM FW_INSTALL_DEPENDENCIES ${FWPROJECT_NAME})
+        if(FW_INSTALL_DEPENDENCIES)
+            file(APPEND "${CMAKE_CURRENT_BINARY_DIR}/Dependencies.cmake"
+                "find_package(Fw4SPL COMPONENTS ${FW_INSTALL_DEPENDENCIES} REQUIRED)")
+        endif()
+
+        # Install the Fw4SPL-ProjectDependencies.cmake
+        if( EXISTS "${CMAKE_CURRENT_BINARY_DIR}/Dependencies.cmake")
+            install(FILES
+                      "${CMAKE_CURRENT_BINARY_DIR}/Dependencies.cmake"
+                    RENAME
+                        Fw4SPL-${FWPROJECT_NAME}Dependencies.cmake
+                    DESTINATION
+                      ${FWCONFIG_PACKAGE_LOCATION}
+            )
+        endif()
+    else()
+        if(${FWPROJECT_NAME}_INSTALL)
+            install(
+                TARGETS ${FWPROJECT_NAME}
+                RUNTIME DESTINATION bin
+                LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+                OPTIONAL NAMELINK_SKIP
+                )
+        endif()
     endif()
+
 
     # Adds project into folder lib
     set_target_properties(${FWPROJECT_NAME} PROPERTIES FOLDER "lib")
@@ -679,7 +692,7 @@ macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
         set(${FWPROJECT_NAME}_PCH_LIB $<TARGET_OBJECTS:${${FWPROJECT_NAME}_PCH_TARGET}_PCH_OBJ>)
     endif()
 
-    set(BUNDLE_DIR "${CMAKE_BINARY_DIR}/${BUNDLE_LIB_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}")
+    set(BUNDLE_DIR "${CMAKE_BINARY_DIR}/${FWBUNDLE_LIB_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}")
 
     if(EXISTS "${PRJ_SOURCE_DIR}/src")
 
@@ -714,12 +727,12 @@ macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
             set_target_properties(${FWPROJECT_NAME} PROPERTIES ARCHIVE_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${BUNDLE_DIR})
         endforeach()
 
-        if(${FWPROJECT_NAME}_INSTALL)
+        if(${FWPROJECT_NAME}_INSTALL OR BUILD_SDK)
             qt_plugins_setup() # search and setup qt plugins for each bundles
             install(
                 TARGETS ${FWPROJECT_NAME}
-                RUNTIME DESTINATION ${BUNDLE_LIB_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}
-                LIBRARY DESTINATION ${BUNDLE_LIB_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}
+                RUNTIME DESTINATION ${FWBUNDLE_LIB_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}
+                LIBRARY DESTINATION ${FWBUNDLE_LIB_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}
                 OPTIONAL NAMELINK_SKIP
                 )
         endif()
@@ -730,6 +743,7 @@ macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
             "${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/include/${FWPROJECT_NAME}/config.hpp"
             IMMEDIATE @ONLY)
 
+        target_include_directories(${FWPROJECT_NAME} PUBLIC ${${FWPROJECT_NAME}_INCLUDE_DIR})
         target_include_directories(${FWPROJECT_NAME} PUBLIC "${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/include/")
 
         if(ENABLE_PCH AND NOT ${FWPROJECT_NAME}_DISABLE_PCH)
@@ -763,7 +777,7 @@ macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
         if(MSVC_IDE)
             # create the launch config for the current app
             set(LAUNCHER "${CMAKE_BINARY_DIR}/bin/fwlauncher.exe")
-            set(PROFILE "${CMAKE_BINARY_DIR}/${BUNDLE_RC_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}/profile.xml")
+            set(PROFILE "${CMAKE_BINARY_DIR}/${FWBUNDLE_RC_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}/profile.xml")
             set(WORKING_DIRECTORY "${CMAKE_BINARY_DIR}")
             include(${FWCMAKE_RESOURCE_PATH}/install/win_install.cmake)
             if(NOT DEBUGGER_ENVIRONMENT)
@@ -797,14 +811,14 @@ macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
         set_target_properties(${FWPROJECT_NAME} PROPERTIES FOLDER "bundle")
     endif()
 
-    set(${FWPROJECT_NAME}_RC_BUILD_DIR "${CMAKE_BINARY_DIR}/${BUNDLE_RC_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}")
+    set(${FWPROJECT_NAME}_RC_BUILD_DIR "${CMAKE_BINARY_DIR}/${FWBUNDLE_RC_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}")
     if(EXISTS "${PRJ_SOURCE_DIR}/rc")
         createResourcesTarget( ${FWPROJECT_NAME}_rc "${PRJ_SOURCE_DIR}/rc" "${${FWPROJECT_NAME}_RC_BUILD_DIR}" )
         add_dependencies( ${FWPROJECT_NAME} ${FWPROJECT_NAME}_rc )
     endif()
 
-    if(${FWPROJECT_NAME}_INSTALL)
-        createResourcesInstallTarget( "${${FWPROJECT_NAME}_RC_BUILD_DIR}" "${BUNDLE_RC_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}" )
+    if(${FWPROJECT_NAME}_INSTALL OR BUILD_SDK)
+        createResourcesInstallTarget( "${${FWPROJECT_NAME}_RC_BUILD_DIR}" "${FWBUNDLE_RC_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}" )
     endif()
 endmacro()
 
@@ -1179,6 +1193,10 @@ endforeach()
 if(PROJECTS_TO_BUILD)
     set(PROJECT_LIST ${PROJECTS_TO_BUILD})
     findAllDependencies("${PROJECT_LIST}" PROJECT_LIST)
+
+    foreach(PROJECT ${PROJECTS_TO_INSTALL})
+        set(${PROJECT}_INSTALL 1)
+    endforeach()
     message(STATUS "Project configuration is restricted to : ${PROJECTS_TO_BUILD}")
 endif()
 

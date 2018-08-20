@@ -443,22 +443,25 @@ void Bundle::startPlugin()
         throw RuntimeException( getBundleStr(m_identifier, m_version) + ": unable to create a plugin instance." );
     }
 
-    SLM_TRACE("Starting " + getBundleStr(m_identifier, m_version) + " Bundle's plugin.");
-    // Stores and start the plugin.
-    try
+    if(::fwRuntime::profile::getCurrentProfile())
     {
-        SLM_TRACE("Register stopper for " + getBundleStr(m_identifier, m_version) + " Bundle's plugin.");
-        ::fwRuntime::profile::getCurrentProfile()->add(
-            SPTR(profile::Stopper) (new profile::Stopper(this->getIdentifier(), this->getVersion())));
-        m_plugin = plugin;
-        plugin->start();
-        ::fwRuntime::profile::getCurrentProfile()->add(
-            SPTR(profile::Initializer) (new profile::Initializer(this->getIdentifier(), this->getVersion())) );
-        m_started = true;
-    }
-    catch( std::exception& e )
-    {
-        throw RuntimeException( getBundleStr(m_identifier, m_version) + ": start plugin error : " + e.what() );
+        SLM_TRACE("Starting " + getBundleStr(m_identifier, m_version) + " Bundle's plugin.");
+        // Stores and start the plugin.
+        try
+        {
+            SLM_TRACE("Register stopper for " + getBundleStr(m_identifier, m_version) + " Bundle's plugin.");
+            ::fwRuntime::profile::getCurrentProfile()->add(
+                SPTR(profile::Stopper) (new profile::Stopper(this->getIdentifier(), this->getVersion())));
+            m_plugin = plugin;
+            m_plugin->start();
+            ::fwRuntime::profile::getCurrentProfile()->add(
+                SPTR(profile::Initializer) (new profile::Initializer(this->getIdentifier(), this->getVersion())) );
+            m_started = true;
+        }
+        catch( std::exception& e )
+        {
+            throw RuntimeException( getBundleStr(m_identifier, m_version) + ": start plugin error : " + e.what() );
+        }
     }
 }
 
