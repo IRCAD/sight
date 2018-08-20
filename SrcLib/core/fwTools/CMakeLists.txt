@@ -1,6 +1,8 @@
 fwLoadProperties()
 
-target_link_libraries(${FWPROJECT_NAME} PUBLIC fwCore PRIVATE Boost::regex)
+find_package(Boost QUIET COMPONENTS regex signals REQUIRED)
+
+target_link_libraries(${FWPROJECT_NAME} PRIVATE Boost::regex)
 
 if(WIN32 AND Boost_VERSION GREATER 106600)
     # Boost >= 1.67 changes the default random provider on Windows to use BCrypt

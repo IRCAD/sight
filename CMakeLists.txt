@@ -1228,10 +1228,6 @@ if(ECLIPSE_PROJECT)
     eclipseGenerator(${PROJECT_LIST})
 endif()
 
-if(EXTERNAL_LIBRARIES AND INSTALL_HEADERS)
-    install(DIRECTORY ${EXTERNAL_LIBRARIES}/include DESTINATION ${CMAKE_INSTALL_PREFIX})
-endif()
-
 # Export and install targets
 # ===============================
 
