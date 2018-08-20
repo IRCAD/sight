@@ -49,6 +49,8 @@ SFrameGrabber::SFrameGrabber() noexcept :
     m_createNewTS(false),
     m_useTimelapse(true),
     m_isPaused(false),
+    m_defaultDuration(5000)
+    m_isPaused(false),
     m_step(1),
     m_stepChanged(1)
 {
@@ -90,6 +92,8 @@ void SFrameGrabber::configuring()
 
     m_useTimelapse = config.get<bool>("useTimelapse", true);
 
+    m_defaultDuration = config.get<double>("defaultDuration", m_defaultDuration);
+
     OSLM_FATAL_IF("Fps setting is set to " << m_fps << " but should be in ]0;60].", m_fps == 0 || m_fps > 60);
 
     m_step = config.get<unsigned int>("step", m_step);
@@ -130,7 +134,7 @@ void SFrameGrabber::startCamera()
 
         const ::boost::filesystem::path ext = file.extension();
 
-        if (ext.string() == ".png" || ext.string() == ".jpg" || ext.string() == ".tiff" )
+        if (ext.string() == ".png" || ext.string() == ".jpg" || ext.string() == ".tiff" || ext.string() == ".bmp" )
         {
             this->readImages(file.parent_path(), ext.string());
         }
@@ -262,18 +266,29 @@ void SFrameGrabber::readImages(const ::boost::filesystem::path& folder, const st
     if (!m_imageToRead.empty())
     {
         // Find the timestamps of all the images
+        double stubTimestamp = 0.;
         for (const ::boost::filesystem::path& imagePath : m_imageToRead)
         {
             const std::string imageName = imagePath.filename().string();
             static const ::boost::regex s_TIMESTAMP("[^0-9]*([0-9]*)[^0-9]*");
             ::boost::smatch match;
-            if (!::boost::regex_match(imageName, match, s_TIMESTAMP))
+            if (::boost::regex_match(imageName, match, s_TIMESTAMP))
             {
-                SLM_ERROR("Could not find a timestamp in file name: " + imageName);
-                return;
+                const std::string timestampStr = match[1].str();
+                m_imageTimestamps.push_back(std::stod(timestampStr));
             }
-            const std::string timestampStr = match[1].str();
-            m_imageTimestamps.push_back(std::stod(timestampStr));
+            else
+            {
+                SLM_WARN("Could not find a timestamp in file name: " + imageName
+                         + ". Generating a timestamp duration of: " + std::to_string(m_defaultDuration)
+                         + "ms.");
+
+                m_imageTimestamps.push_back(stubTimestamp);
+
+                stubTimestamp += m_defaultDuration;
+
+            }
+
         }
 
         std::string file = m_imageToRead.front().string();
@@ -419,7 +434,7 @@ void SFrameGrabber::grabVideo()
                 m_isInitialized = true;
             }
 
-            // Get time slider position
+            // Get time slider position.
             const size_t ms  = static_cast<size_t>(m_videoCapture.get(::cv::CAP_PROP_POS_MSEC));
             auto sigPosition = this->signal< PositionModifiedSignalType >( s_POSITION_MODIFIED_SIG );
             sigPosition->asyncEmit(static_cast<std::int64_t>(ms));
@@ -428,17 +443,17 @@ void SFrameGrabber::grabVideo()
             SPTR(::arData::FrameTL::BufferType) bufferOut = frameTL->createBuffer(timestamp);
             std::uint8_t* frameBuffOut = bufferOut->addElement(0);
 
-            // Create an openCV mat that aliases the buffer created from the output timeline
+            // Create an OpenCV mat that aliases the buffer created from the output timeline.
             ::cv::Mat imgOut(image.size(), image.type(), (void*)frameBuffOut, ::cv::Mat::AUTO_STEP);
 
             if (image.type() == CV_8UC3)
             {
-                // convert the readded image from BGR to RGB
+                // Convert the read image from BGR to RGB.
                 ::cv::cvtColor(image, imgOut, ::cv::COLOR_BGR2RGB);
             }
             else if (image.type() == CV_8UC4)
             {
-                // convert the readded image from BGRA to RGBA
+                // Convert the read image from BGRA to RGBA.
                 ::cv::cvtColor(image, imgOut, ::cv::COLOR_BGRA2RGBA);
             }
             else
@@ -455,7 +470,7 @@ void SFrameGrabber::grabVideo()
 
         if (m_loopVideo)
         {
-            // loop the video
+            // Loop the video.
             const double ratio = m_videoCapture.get(::cv::CAP_PROP_POS_AVI_RATIO);
             if (ratio == 1.)
             {

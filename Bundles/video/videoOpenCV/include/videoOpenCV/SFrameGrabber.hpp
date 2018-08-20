@@ -67,6 +67,7 @@ namespace videoOpenCV
             <oneShot>false</oneShot>
             <createTimestamp>false</createTimestamp>
             <useTimelapse>true</useTimelapse>
+            <defaultDuration>5000</defaultDuration>
             <step>5</step>
         </service>
    @endcode
@@ -83,6 +84,10 @@ namespace videoOpenCV
  * - \b createTimestamp (optional) : create a new timestamp instead of using name of image
  * (only available if reading set of images) (default: false).
  * - \b step (optionnal): value to jump between two images when calling readNext/readPrevious slots (default: 1)
+ * - \b defaultDuration (optional): if duration (between each frames) cannot be deduced with filename
+ * this value is used (default: 5000), this is a very advanced option.
+ * It will have not effects if reading a video or if a timestamp can be deduced from images filenames
+ * (ex. img_642752427.jpg).
  */
 class VIDEOOPENCV_CLASS_API SFrameGrabber : public ::arServices::IGrabber
 {
@@ -111,25 +116,25 @@ protected:
     /// Do nothing.
     VIDEOOPENCV_API virtual void configuring() override;
 
-    /// SLOT : Initialize and start camera (restart camera if is already started)
+    /// SLOT : Initialize and start camera (restart camera if is already started).
     virtual void startCamera() override;
 
-    /// SLOT : Stop camera
+    /// SLOT : Stop camera.
     virtual void stopCamera() override;
 
-    /// SLOT : Pause camera
+    /// SLOT : Pause camera.
     virtual void pauseCamera() override;
 
-    /// SLOT : enable/disable loop in video
+    /// SLOT : enable/disable loop in video.
     virtual void toggleLoopMode() override;
 
     /// SLOT : set the new position in the video.
     virtual void setPosition(int64_t position) override;
 
-    /// SLOT : read the next image (only in file mode, and if m_oneShot is enabled)
+    /// SLOT : read the next image (only in file mode, and if m_oneShot is enabled).
     virtual void nextImage() override;
 
-    /// SLOT : read the previous image (only in file mode, and if m_oneShot is enabled)
+    /// SLOT : read the previous image (only in file mode, and if m_oneShot is enabled).
     virtual void previousImage() override;
 
     /// SLOT: Set step used on readPrevious/readNext slots
@@ -140,58 +145,61 @@ private:
     typedef std::vector< ::boost::filesystem::path > ImageFilesType;
     typedef std::vector< double > ImageTimestampsType;
 
-    /// Initializes the video reader, start the timer
+    /// Initializes the video reader, start the timer.
     void readVideo(const ::boost::filesystem::path& file);
 
-    /// Initializes the image reader, start the timer
+    /// Initializes the image reader, start the timer.
     void readImages(const ::boost::filesystem::path& folder, const std::string& extension);
 
-    /// Reads the next video frame
+    /// Reads the next video frame.
     void grabVideo();
 
-    /// Reads the next image
+    /// Reads the next image.
     void grabImage();
 
-    /// state of the loop mode
+    /// State of the loop mode.
     bool m_loopVideo;
 
-    /// state of the timeline initialization
+    /// State of the timeline initialization.
     bool m_isInitialized;
 
-    /// fps used to read the video
+    /// Fps used to read the video.
     unsigned int m_fps;
 
-    /// counter used by the image reader
+    /// Counter used by the image reader.
     size_t m_imageCount;
 
     ::fwThread::Timer::sptr m_timer;
 
-    /// Worker for the grabVideo or grabFrame timer
+    /// Worker for the grabVideo or grabFrame timer.
     ::fwThread::Worker::sptr m_worker;
 
-    /// openCV video grabber
+    /// OpenCV video grabber.
     ::cv::VideoCapture m_videoCapture;
 
-    /// list of image paths to read
+    /// List of image paths to read.
     ImageFilesType m_imageToRead;
 
-    /// list of the image timestamps
+    /// List of the image timestamps.
     ImageTimestampsType m_imageTimestamps;
 
-    /// Mutex to protect concurrent access for m_videoCapture and m_imageToRead
+    /// Mutex to protect concurrent access for m_videoCapture and m_imageToRead.
     mutable ::fwCore::mt::Mutex m_mutex;
 
-    /// frame -by-frame mode (true if enabled, false otherwise)
+    /// Frame -by-frame mode (true if enabled, false otherwise).
     bool m_oneShot;
 
-    /// if true: create a new timestamp when reading image, if false: use the name of the image file as timestamp.
+    /// If true: create a new timestamp when reading image, if false: use the name of the image file as timestamp.
     bool m_createNewTS;
 
-    /// if true: the difference between two image's timestamps will be use as timer duration
+    /// If true: the difference between two image's timestamps will be use as timer duration.
     bool m_useTimelapse;
 
-    /// if true: the grabber is paused
+    /// If true: the grabber is paused.
     bool m_isPaused;
+
+    /// If timestamp cannot be deduced from filename use the default duration (5000ms).
+    double m_defaultDuration;
 
     /// Step between two images when calling nexImage()/previousImage() slots
     unsigned long m_step;
