@@ -117,8 +117,6 @@ SVolumeRender::SVolumeRender() noexcept :
     newSlot(s_SET_ENUM_PARAMETER_SLOT, &SVolumeRender::setEnumParameter, this);
     newSlot(s_SET_COLOR_PARAMETER_SLOT, &SVolumeRender::setColorParameter, this);
     newSlot(s_UPDATE_VISIBILITY_SLOT, &SVolumeRender::updateVisibility, this);
-
-    m_renderingMode = VR_MODE_RAY_TRACING;
 }
 
 //-----------------------------------------------------------------------------

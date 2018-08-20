@@ -309,10 +309,10 @@ void VRWidget::initWidgets()
         sphereSceneNode->setPosition(faceCenter);
         sphereSceneNode->setInheritScale(false);
 
-        const auto volScale  = m_volumeSceneNode->getScale();
-        const float scaleMin = std::min(volScale[0], std::min(volScale[1], volScale[2]));
+        const auto volScale         = m_volumeSceneNode->getScale();
+        const ::Ogre::Real scaleMin = std::min(volScale[0], std::min(volScale[1], volScale[2]));
 
-        const ::Ogre::Vector3 widgetScale((0.05 * scaleMin) / newWidget->getBoundingRadius());
+        const ::Ogre::Vector3 widgetScale((0.05f * scaleMin) / newWidget->getBoundingRadius());
         sphereSceneNode->setScale(widgetScale);
 
         sphereSceneNode->attachObject(newWidget);
