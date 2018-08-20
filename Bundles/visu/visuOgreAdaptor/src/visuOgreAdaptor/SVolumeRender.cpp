@@ -22,9 +22,6 @@
 #include <fwRenderOgre/helper/Scene.hpp>
 #include <fwRenderOgre/helper/Shading.hpp>
 #include <fwRenderOgre/interactor/VRWidgetsInteractor.hpp>
-#include <fwRenderOgre/vr/ImportanceDrivenVolumeRenderer.hpp>
-#include <fwRenderOgre/vr/RayTracingVolumeRenderer.hpp>
-#include <fwRenderOgre/vr/SliceVolumeRenderer.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -142,23 +139,19 @@ void SVolumeRender::configuring()
     m_preIntegratedRendering = config.get<std::string>("preintegration", "no") == "yes";
     m_widgetVisibilty        = config.get<std::string>("widgets", "yes") == "yes";
     m_IDVRMethod             = config.get<std::string>("idvrMethod", "None");
-    m_renderingMode          = config.get<std::string>("mode", "raytracing") == "raytracing" ? VR_MODE_RAY_TRACING :
-                               VR_MODE_SLICE;
-    m_nbSamples = config.get<std::uint16_t>("samples", m_nbSamples);
+    m_nbSamples              = config.get<std::uint16_t>("samples", m_nbSamples);
 
-    if(m_renderingMode == VR_MODE_RAY_TRACING)
-    {
-        m_satSizeRatio        = config.get<float>("satSizeRatio", m_satSizeRatio);
-        m_satShells           = config.get<int>("satShells", m_satShells);
-        m_satShellRadius      = config.get<int>("satShellRadius", m_satShellRadius);
-        m_satConeAngle        = config.get<float>("satConeAngle", m_satConeAngle);
-        m_satConeSamples      = config.get<int>("satConeSamples", m_satConeSamples);
-        m_aoFactor            = config.get<double>("aoFactor", m_aoFactor);
-        m_colorBleedingFactor = config.get<double>("colorBleedingFactor", m_colorBleedingFactor);
-        m_ambientOcclusion    = config.get<bool>("ao", false);
-        m_colorBleeding       = config.get<bool>("colorBleeding", false);
-        m_shadows             = config.get<bool>("shadows", false);
-    }
+    // Advanced illumination parameters.
+    m_satSizeRatio        = config.get<float>("satSizeRatio", m_satSizeRatio);
+    m_satShells           = config.get<int>("satShells", m_satShells);
+    m_satShellRadius      = config.get<int>("satShellRadius", m_satShellRadius);
+    m_satConeAngle        = config.get<float>("satConeAngle", m_satConeAngle);
+    m_satConeSamples      = config.get<int>("satConeSamples", m_satConeSamples);
+    m_aoFactor            = config.get<double>("aoFactor", m_aoFactor);
+    m_colorBleedingFactor = config.get<double>("colorBleedingFactor", m_colorBleedingFactor);
+    m_ambientOcclusion    = config.get<bool>("ao", false);
+    m_colorBleeding       = config.get<bool>("colorBleeding", false);
+    m_shadows             = config.get<bool>("shadows", false);
 
     const std::string transformId = config.get<std::string>(::visuOgreAdaptor::STransform::s_CONFIG_TRANSFORM,
                                                             this->getID() + "_transform");
@@ -277,41 +270,24 @@ void SVolumeRender::starting()
 
     ::fwRenderOgre::Layer::sptr layer = this->getRenderService()->getLayer(m_layerID);
 
-    if(m_renderingMode == VR_MODE_SLICE)
-    {
-        m_volumeRenderer = new ::fwRenderOgre::vr::SliceVolumeRenderer(this->getID(),
-                                                                       m_sceneManager,
-                                                                       m_volumeSceneNode,
-                                                                       m_3DOgreTexture,
-                                                                       m_gpuTF,
-                                                                       m_preIntegrationTable);
-    }
-    else
-    {
-        m_volumeRenderer = new ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer(this->getID(),
-                                                                                  layer,
-                                                                                  m_volumeSceneNode,
-                                                                                  m_3DOgreTexture,
-                                                                                  m_maskTexture,
-                                                                                  m_gpuTF,
-                                                                                  m_preIntegrationTable,
-                                                                                  m_ambientOcclusion,
-                                                                                  m_colorBleeding);
+    m_volumeRenderer = new ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer(this->getID(),
+                                                                              layer,
+                                                                              m_volumeSceneNode,
+                                                                              m_3DOgreTexture,
+                                                                              m_maskTexture,
+                                                                              m_gpuTF,
+                                                                              m_preIntegrationTable,
+                                                                              m_ambientOcclusion,
+                                                                              m_colorBleeding);
 
-        // Initially focus on the image center.
-        this->setFocalDistance(50);
-    }
+    // Initially focus on the image center.
+    this->setFocalDistance(50);
 
-    auto rayCastVolumeRenderer =
-        dynamic_cast< ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer* >(m_volumeRenderer);
-    if(rayCastVolumeRenderer)
+    m_volumeRenderer->setIDVRMethod(m_IDVRMethod);
+
+    if(m_IDVRMethod != "None")
     {
-        rayCastVolumeRenderer->setIDVRMethod(m_IDVRMethod);
-
-        if(m_IDVRMethod != "None")
-        {
-            this->newMask();
-        }
+        this->newMask();
     }
 
     m_gpuTF->setSampleDistance(m_volumeRenderer->getSamplingRate());
@@ -518,10 +494,7 @@ void SVolumeRender::updateSampling(int nbSamples)
 
 void SVolumeRender::updateOpacityCorrection(int opacityCorrection)
 {
-    auto rayCastVolumeRenderer = dynamic_cast< ::fwRenderOgre::vr::RayTracingVolumeRenderer* >(m_volumeRenderer);
-    OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
-
-    rayCastVolumeRenderer->setOpacityCorrection(opacityCorrection);
+    m_volumeRenderer->setOpacityCorrection(opacityCorrection);
     this->requestRender();
 }
 
@@ -533,11 +506,7 @@ void SVolumeRender::updateAOFactor(double aoFactor)
     {
         m_aoFactor = aoFactor;
 
-        auto rayCastVolumeRenderer = dynamic_cast< ::fwRenderOgre::vr::RayTracingVolumeRenderer* >(m_volumeRenderer);
-
-        OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
-
-        rayCastVolumeRenderer->setAOFactor(m_aoFactor);
+        m_volumeRenderer->setAOFactor(m_aoFactor);
 
         this->requestRender();
     }
@@ -551,11 +520,7 @@ void SVolumeRender::updateColorBleedingFactor(double colorBleedingFactor)
     {
         m_colorBleedingFactor = colorBleedingFactor;
 
-        auto rayCastVolumeRenderer = dynamic_cast< ::fwRenderOgre::vr::RayTracingVolumeRenderer* >(m_volumeRenderer);
-
-        OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
-
-        rayCastVolumeRenderer->setColorBleedingFactor(m_colorBleedingFactor);
+        m_volumeRenderer->setColorBleedingFactor(m_colorBleedingFactor);
 
         this->requestRender();
     }
@@ -597,11 +562,7 @@ void SVolumeRender::updateSatShellsNumber(int shellsNumber)
 
         m_satShells = shellsNumber;
 
-        auto rayCastVolumeRenderer = dynamic_cast< ::fwRenderOgre::vr::RayTracingVolumeRenderer* >(m_volumeRenderer);
-
-        OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
-
-        auto illumVolume = rayCastVolumeRenderer->getIllumVolume();
+        auto illumVolume = m_volumeRenderer->getIllumVolume();
         illumVolume->setNbShells(m_satShells);
         illumVolume->updateVolIllum();
 
@@ -619,11 +580,7 @@ void SVolumeRender::updateSatShellRadius(int shellRadius)
 
         m_satShellRadius = shellRadius;
 
-        auto rayCastVolumeRenderer = dynamic_cast< ::fwRenderOgre::vr::RayTracingVolumeRenderer* >(m_volumeRenderer);
-
-        OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
-
-        auto illumVolume = rayCastVolumeRenderer->getIllumVolume();
+        auto illumVolume = m_volumeRenderer->getIllumVolume();
         illumVolume->setShellRadius(m_satShellRadius);
         illumVolume->updateVolIllum();
 
@@ -641,11 +598,7 @@ void SVolumeRender::updateSatConeAngle(int coneAngle)
 
         m_satConeAngle = static_cast<float>(coneAngle) / 100;
 
-        auto rayCastVolumeRenderer = dynamic_cast< ::fwRenderOgre::vr::RayTracingVolumeRenderer* >(m_volumeRenderer);
-
-        OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
-
-        auto illumVolume = rayCastVolumeRenderer->getIllumVolume();
+        auto illumVolume = m_volumeRenderer->getIllumVolume();
         illumVolume->setConeAngle(m_satConeAngle);
         illumVolume->updateVolIllum();
 
@@ -663,11 +616,7 @@ void SVolumeRender::updateSatConeSamples(int nbConeSamples)
 
         m_satConeSamples = nbConeSamples;
 
-        auto rayCastVolumeRenderer = dynamic_cast< ::fwRenderOgre::vr::RayTracingVolumeRenderer* >(m_volumeRenderer);
-
-        OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
-
-        auto illumVolume = rayCastVolumeRenderer->getIllumVolume();
+        auto illumVolume = m_volumeRenderer->getIllumVolume();
         illumVolume->setSamplesAlongCone(m_satConeSamples);
         illumVolume->updateVolIllum();
 
@@ -751,14 +700,7 @@ void SVolumeRender::setFocalDistance(int focalDistance)
 {
     if(this->getRenderService()->getLayer(m_layerID)->getStereoMode() != ::fwRenderOgre::Layer::StereoModeType::NONE)
     {
-        auto rayTracingRenderer = dynamic_cast< ::fwRenderOgre::vr::RayTracingVolumeRenderer*>(m_volumeRenderer);
-
-        if(rayTracingRenderer)
-        {
-            rayTracingRenderer->setFocalLength(static_cast<float>(focalDistance) / 100);
-
-            this->requestRender();
-        }
+        m_volumeRenderer->setFocalLength(static_cast<float>(focalDistance) / 100);
     }
 }
 
@@ -800,52 +742,31 @@ void SVolumeRender::setBoolParameter(bool val, std::string key)
     }
     else if(key == "idvrCSG")
     {
-        auto rayCastVolumeRenderer =
-            dynamic_cast< ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer* >(m_volumeRenderer);
-        OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
-        rayCastVolumeRenderer->toggleIDVRCountersinkGeometry(val);
+        m_volumeRenderer->toggleIDVRCountersinkGeometry(val);
     }
     else if(key == "idvrCSGBorder")
     {
-        auto rayCastVolumeRenderer =
-            dynamic_cast< ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer* >(m_volumeRenderer);
-        OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
-        rayCastVolumeRenderer->toggleIDVRCSGBorder(val);
+        m_volumeRenderer->toggleIDVRCSGBorder(val);
     }
     else if(key == "idvrCSGGrayScale")
     {
-        auto rayCastVolumeRenderer =
-            dynamic_cast< ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer* >(m_volumeRenderer);
-        OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
-        rayCastVolumeRenderer->toggleIDVRCSGGrayScale(val);
+        m_volumeRenderer->toggleIDVRCSGGrayScale(val);
     }
     else if(key == "idvrCSGModulation")
     {
-        auto rayCastVolumeRenderer =
-            dynamic_cast< ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer* >(m_volumeRenderer);
-        OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
-        rayCastVolumeRenderer->toggleIDVRCSGModulation(val);
+        m_volumeRenderer->toggleIDVRCSGModulation(val);
     }
     else if(key == "idvrCSGOpacityDecrease")
     {
-        auto rayCastVolumeRenderer =
-            dynamic_cast< ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer* >(m_volumeRenderer);
-        OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
-        rayCastVolumeRenderer->toggleIDVRCSGOpacityDecrease(val);
+        m_volumeRenderer->toggleIDVRCSGOpacityDecrease(val);
     }
     else if(key == "idvrCSGDepthLines")
     {
-        auto rayCastVolumeRenderer =
-            dynamic_cast< ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer* >(m_volumeRenderer);
-        OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
-        rayCastVolumeRenderer->toggleIDVRDepthLines(val);
+        m_volumeRenderer->toggleIDVRDepthLines(val);
     }
     else if(key == "idvrCSGDisableContext")
     {
-        auto rayCastVolumeRenderer =
-            dynamic_cast< ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer* >(m_volumeRenderer);
-        OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
-        rayCastVolumeRenderer->toggleIDVRCSGDisableContext(val);
+        m_volumeRenderer->toggleIDVRCSGDisableContext(val);
     }
 
     this->requestRender();
@@ -887,10 +808,7 @@ void SVolumeRender::setIntParameter(int val, std::string key)
     }
     else if(key == "idvrDepthLinesSpacing")
     {
-        auto rayCastVolumeRenderer =
-            dynamic_cast< ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer* >(m_volumeRenderer);
-        OSLM_ASSERT("The current VolumeRenderer must be an ImportanceDrivenVolumeRenderer", rayCastVolumeRenderer);
-        rayCastVolumeRenderer->setIDVRDepthLinesSpacing(val);
+        m_volumeRenderer->setIDVRDepthLinesSpacing(val);
     }
 
     this->requestRender();
@@ -912,52 +830,31 @@ void SVolumeRender::setDoubleParameter(double val, std::string key)
     }
     else if(key == "idvrCSGAngle")
     {
-        auto rayCastVolumeRenderer =
-            dynamic_cast< ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer* >(m_volumeRenderer);
-        OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
-        rayCastVolumeRenderer->setIDVRCountersinkAngle(val);
+        m_volumeRenderer->setIDVRCountersinkAngle(val);
     }
     else if(key == "idvrCSGBlurWeight")
     {
-        auto rayCastVolumeRenderer =
-            dynamic_cast< ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer* >(m_volumeRenderer);
-        OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
-        rayCastVolumeRenderer->setIDVRCSGBlurWeight(val);
+        m_volumeRenderer->setIDVRCSGBlurWeight(val);
     }
     else if(key == "idvrCSGBorderThickness")
     {
-        auto rayCastVolumeRenderer =
-            dynamic_cast< ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer* >(m_volumeRenderer);
-        OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
-        rayCastVolumeRenderer->setIDVRCSGBorderThickness(val);
+        m_volumeRenderer->setIDVRCSGBorderThickness(val);
     }
     else if(key == "idvrCSGModulationFactor")
     {
-        auto rayCastVolumeRenderer =
-            dynamic_cast< ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer* >(m_volumeRenderer);
-        OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
-        rayCastVolumeRenderer->setIDVRCSGModulationFactor(val);
+        m_volumeRenderer->setIDVRCSGModulationFactor(val);
     }
     else if(key == "idvrCSGOpacityDecreaseFactor")
     {
-        auto rayCastVolumeRenderer =
-            dynamic_cast< ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer* >(m_volumeRenderer);
-        OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
-        rayCastVolumeRenderer->setIDVRCSGOpacityDecreaseFactor(val);
+        m_volumeRenderer->setIDVRCSGOpacityDecreaseFactor(val);
     }
     else if(key == "idvrVPImCAlphaCorrection")
     {
-        auto rayCastVolumeRenderer =
-            dynamic_cast< ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer* >(m_volumeRenderer);
-        OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
-        rayCastVolumeRenderer->setIDVRVPImCAlphaCorrection(val);
+        m_volumeRenderer->setIDVRVPImCAlphaCorrection(val);
     }
     else if(key == "idvrAImCAlphaCorrection")
     {
-        auto rayCastVolumeRenderer =
-            dynamic_cast< ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer* >(m_volumeRenderer);
-        OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
-        rayCastVolumeRenderer->setIDVRAImCAlphaCorrection(val);
+        m_volumeRenderer->setIDVRAImCAlphaCorrection(val);
     }
 }
 
@@ -969,69 +866,54 @@ void SVolumeRender::setEnumParameter(std::string val, std::string key)
 
     if(key == "idvrMethod")
     {
-        auto rayCastVolumeRenderer =
-            dynamic_cast< ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer* >(m_volumeRenderer);
-        OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
-        rayCastVolumeRenderer->setIDVRMethod(val);
+        m_volumeRenderer->setIDVRMethod(val);
         this->requestRender();
     }
     else if(key == "idvrCSGModulationMethod")
     {
-        auto rayCastVolumeRenderer =
-            dynamic_cast< ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer* >(m_volumeRenderer);
-        OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
-
         if(val == "Brightness")
         {
-            rayCastVolumeRenderer->setIDVRCSGModulationMethod(
+            m_volumeRenderer->setIDVRCSGModulationMethod(
                 ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer::IDVRCSGModulationMethod::COLOR1);
         }
         else if(val == "Saturation")
         {
-            rayCastVolumeRenderer->setIDVRCSGModulationMethod(
+            m_volumeRenderer->setIDVRCSGModulationMethod(
                 ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer::IDVRCSGModulationMethod::COLOR2);
         }
         else if(val == "SaturationBrightness")
         {
-            rayCastVolumeRenderer->setIDVRCSGModulationMethod(
+            m_volumeRenderer->setIDVRCSGModulationMethod(
                 ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer::IDVRCSGModulationMethod::COLOR3);
         }
     }
     else if(key == "idvrCSGGrayScaleMethod")
     {
-        auto rayCastVolumeRenderer =
-            dynamic_cast< ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer* >(m_volumeRenderer);
-        OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
-
         if(val == "Average_grayscale")
         {
-            rayCastVolumeRenderer->setIDVRCSGGrayScaleMethod(
+            m_volumeRenderer->setIDVRCSGGrayScaleMethod(
                 ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer::IDVRCSGGrayScaleMethod::AVERAGE_GRAYSCALE);
         }
         else if(val == "Lightness_grayscale")
         {
-            rayCastVolumeRenderer->setIDVRCSGGrayScaleMethod(
+            m_volumeRenderer->setIDVRCSGGrayScaleMethod(
                 ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer::IDVRCSGGrayScaleMethod::LIGHTNESS_GRAYSCALE);
         }
         else if(val == "Luminosity_grayscale")
         {
-            rayCastVolumeRenderer->setIDVRCSGGrayScaleMethod(
+            m_volumeRenderer->setIDVRCSGGrayScaleMethod(
                 ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer::IDVRCSGGrayScaleMethod::LUMINOSITY_GRAYSCALE);
         }
     }
     else if(key == "idvrDepthLinesSpacing")
     {
-        auto rayCastVolumeRenderer =
-            dynamic_cast< ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer* >(m_volumeRenderer);
-        OSLM_ASSERT("The current VolumeRenderer must be an ImportanceDrivenVolumeRenderer", rayCastVolumeRenderer);
-
         const bool toggle = val != "Off";
-        rayCastVolumeRenderer->toggleIDVRDepthLines(toggle);
+        m_volumeRenderer->toggleIDVRDepthLines(toggle);
 
         if(toggle)
         {
             const int spacing = std::stoi(val);
-            rayCastVolumeRenderer->setIDVRDepthLinesSpacing(spacing);
+            m_volumeRenderer->setIDVRDepthLinesSpacing(spacing);
         }
     }
 
@@ -1046,10 +928,7 @@ void SVolumeRender::setColorParameter(std::array<std::uint8_t, 4> color, std::st
 
     if(key == "idvrCSGBorderColor")
     {
-        auto rayCastVolumeRenderer =
-            dynamic_cast< ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer* >(m_volumeRenderer);
-        OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
-        rayCastVolumeRenderer->setIDVRCSGBorderColor(color);
+        m_volumeRenderer->setIDVRCSGBorderColor(color);
     }
 
     this->requestRender();
@@ -1063,18 +942,15 @@ void SVolumeRender::setImageSpacing()
 
     const bool isValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(img);
 
-    auto rayCastVolumeRenderer =
-        dynamic_cast< ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer* >(m_volumeRenderer);
-
-    if(rayCastVolumeRenderer && isValid)
+    if(isValid)
     {
         const auto& spacing = img->getSpacing();
 
         SLM_ASSERT("Image must be 3D.", spacing.size() == 3);
 
-        rayCastVolumeRenderer->setImageSpacing(::Ogre::Vector3(static_cast<float>(spacing[0]),
-                                                               static_cast<float>(spacing[1]),
-                                                               static_cast<float>(spacing[2])));
+        m_volumeRenderer->setImageSpacing(::Ogre::Vector3(static_cast<float>(spacing[0]),
+                                                          static_cast<float>(spacing[1]),
+                                                          static_cast<float>(spacing[2])));
     }
 }
 
@@ -1112,14 +988,7 @@ void SVolumeRender::updateVolumeIllumination()
 
     m_illum->SATUpdate(m_3DOgreTexture, m_gpuTF, m_volumeRenderer->getSamplingRate());
 
-    // Volume illumination is only implemented for raycasting rendering
-    if(m_renderingMode == VR_MODE_RAY_TRACING)
-    {
-        ::fwRenderOgre::vr::RayTracingVolumeRenderer* rayTracingVolumeRenderer =
-            static_cast< ::fwRenderOgre::vr::RayTracingVolumeRenderer* >(m_volumeRenderer);
-
-        rayTracingVolumeRenderer->setIlluminationVolume(m_illum);
-    }
+    m_volumeRenderer->setIlluminationVolume(m_illum);
 }
 
 //-----------------------------------------------------------------------------
@@ -1128,10 +997,8 @@ void SVolumeRender::toggleVREffect(::visuOgreAdaptor::SVolumeRender::VREffectTyp
 {
     this->getRenderService()->makeCurrent();
 
-    auto rayCastVolumeRenderer = dynamic_cast< ::fwRenderOgre::vr::RayTracingVolumeRenderer* >(m_volumeRenderer);
-
     // Volume illumination is only implemented for raycasting rendering
-    if(rayCastVolumeRenderer && ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(this->getImage()))
+    if(::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(this->getImage()))
     {
         if((m_ambientOcclusion || m_colorBleeding || m_shadows) && !m_illum)
         {
@@ -1160,13 +1027,13 @@ void SVolumeRender::toggleVREffect(::visuOgreAdaptor::SVolumeRender::VREffectTyp
         switch(vrEffect)
         {
             case ::visuOgreAdaptor::SVolumeRender::VR_AMBIENT_OCCLUSION:
-                rayCastVolumeRenderer->setAmbientOcclusion(m_ambientOcclusion);
+                m_volumeRenderer->setAmbientOcclusion(m_ambientOcclusion);
                 break;
             case ::visuOgreAdaptor::SVolumeRender::VR_COLOR_BLEEDING:
-                rayCastVolumeRenderer->setColorBleeding(m_colorBleeding);
+                m_volumeRenderer->setColorBleeding(m_colorBleeding);
                 break;
             case ::visuOgreAdaptor::SVolumeRender::VR_SHADOWS:
-                rayCastVolumeRenderer->setShadows(m_shadows);
+                m_volumeRenderer->setShadows(m_shadows);
                 break;
         }
 

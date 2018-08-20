@@ -17,6 +17,7 @@
 #include <fwRenderOgre/ITransformable.hpp>
 #include <fwRenderOgre/TransferFunction.hpp>
 #include <fwRenderOgre/ui/VRWidget.hpp>
+#include <fwRenderOgre/vr/ImportanceDrivenVolumeRenderer.hpp>
 #include <fwRenderOgre/vr/PreIntegrationTable.hpp>
 #include <fwRenderOgre/vr/SATVolumeIllumination.hpp>
 
@@ -71,7 +72,7 @@ namespace visuOgreAdaptor
         <inout key="tf" uid="..." optional="yes" />
         <inout key="clippingMatrix" uid="..." />
         <config layer="default"
-                samples="1024" preintegration="yes" mode="raytracing" ao="no" colorBleeding="no" shadows="no"
+                samples="1024" preintegration="yes" ao="no" colorBleeding="no" shadows="no"
                 satSizeRatio="0.25" satShells="3" satShellRadius="7" satConeAngle="0.1" satConeSamples="50"
                 aoFactor="0.5" colorBleedingFactor="0.5" autoresetcamera="yes"/>
     </service>
@@ -89,8 +90,6 @@ namespace visuOgreAdaptor
  * - \b samples (optional, default=512): maximum number of samples per ray or number of slices.
  * - \b preintegration (optional, yes/no, default=no): use pre-integration.
  * - \b widgets (optional, yes/no, default=yes): display VR widgets.
- * - \b mode (optional, slice/raytracing, default=raytracing): Rendering mode.
- * Only if the raycasting render mode is activated :
  * - \b ao (optional, true/false, default=false): Ambient occlusion usage.
  * - \b colorBleeding (optional, true/false, default=false): Color bleeding usage.
  * - \b shadows (optional, true/false, default=false): Soft shadows usage.
@@ -230,15 +229,8 @@ private:
     /// Updates or creates the illumination volume according to the given VR effect.
     void toggleVREffect(VREffectType vrEffect);
 
-    /// Rendering mode.
-    enum
-    {
-        VR_MODE_SLICE,
-        VR_MODE_RAY_TRACING
-    } m_renderingMode;
-
     /// Renders the volume.
-    ::fwRenderOgre::vr::IVolumeRenderer* m_volumeRenderer;
+    ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer* m_volumeRenderer;
 
     /// 3D Image texture.
     ::Ogre::TexturePtr m_3DOgreTexture;
