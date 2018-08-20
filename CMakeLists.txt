@@ -586,7 +586,6 @@ macro(fwLib FWPROJECT_NAME PROJECT_VERSION)
     set(${FWPROJECT_NAME}_INCLUDE_INSTALL_DIR fw4spl/${FWPROJECT_NAME} PARENT_SCOPE)
 
     if(INSTALL_HEADERS)
-        message(${CMAKE_CURRENT_SOURCE_DIR}/include)
         install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/${FWPROJECT_NAME}
                 DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/fw4spl)
     endif()
@@ -603,10 +602,10 @@ macro(fwLib FWPROJECT_NAME PROJECT_VERSION)
     )
     # Add all targets to the build-tree export set
     export( EXPORT Fw4SPL-${FWPROJECT_NAME}Targets
-            FILE "${CMAKE_CURRENT_BINARY_DIR}/Fw4SPL-${FWPROJECT_NAME}Targets.cmake"
+            FILE "${CMAKE_BINARY_DIR}/cmake/Fw4SPL-${FWPROJECT_NAME}Targets.cmake"
             NAMESPACE Fw4SPL::)
 
-    # Install the Fw4SPLTargets.cmake
+    # Install the Fw4SPL-ProjectTargets.cmake
     install(EXPORT Fw4SPL-${FWPROJECT_NAME}Targets
     FILE
       Fw4SPL-${FWPROJECT_NAME}Targets.cmake
@@ -615,6 +614,35 @@ macro(fwLib FWPROJECT_NAME PROJECT_VERSION)
     DESTINATION
       ${FWCONFIG_PACKAGE_LOCATION}
     )
+
+    # Add Fw4SPL targets depepndencies
+    if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/Dependencies.cmake")
+        configure_file( "${CMAKE_CURRENT_SOURCE_DIR}/Dependencies.cmake"
+                        "${CMAKE_CURRENT_BINARY_DIR}/Dependencies.cmake"
+                        COPYONLY IMMEDIATE)
+    else()
+        # Create empty file
+        file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/Dependencies.cmake" "")
+    endif()
+
+    set(FW_INSTALL_DEPENDENCIES ${${FWPROJECT_NAME}_DEPENDENCIES})
+    list(REMOVE_ITEM FW_INSTALL_DEPENDENCIES ${FWPROJECT_NAME})
+    if(FW_INSTALL_DEPENDENCIES)
+        file(APPEND "${CMAKE_CURRENT_BINARY_DIR}/Dependencies.cmake"
+            "find_package(Fw4SPL COMPONENTS ${FW_INSTALL_DEPENDENCIES} REQUIRED)")
+    endif()
+
+    # Install the Fw4SPL-ProjectDependencies.cmake
+    if(EXISTS "${CMAKE_CURRENT_BINARY_DIR}/Dependencies.cmake")
+        install(
+        FILES
+          "${CMAKE_CURRENT_BINARY_DIR}/Dependencies.cmake"
+        RENAME
+            Fw4SPL-${FWPROJECT_NAME}Dependencies.cmake
+        DESTINATION
+          ${FWCONFIG_PACKAGE_LOCATION}
+        )
+    endif()
 
     # Adds project into folder lib
     set_target_properties(${FWPROJECT_NAME} PROPERTIES FOLDER "lib")
@@ -975,6 +1003,10 @@ macro(fwLoadProperties)
         fwReq( ${REQUIREMENTS} )
     endif()
 
+    if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/Dependencies.cmake")
+        include("Dependencies.cmake")
+    endif()
+
 endmacro()
 
 
@@ -1070,8 +1102,6 @@ endif()
 
 include(CMakePackageConfigHelpers)
 
-# Export the package for use from the build-tree
-export(PACKAGE Fw4SPL)
 set(FWCONFIG_PACKAGE_LOCATION lib/cmake/fw4spl)
 
 unset(PROJECT_LIST)
@@ -1208,12 +1238,12 @@ endif()
 # Create the Fw4SPLConfig.cmake file
 set(FWCONFIG_FILE ${CMAKE_SOURCE_DIR}/CMake/build/Fw4SPLConfig.cmake.in)
 
-configure_file(${FWCONFIG_FILE} "${CMAKE_BINARY_DIR}/Fw4SPLConfig.cmake" @ONLY)
+configure_file(${FWCONFIG_FILE} "${CMAKE_BINARY_DIR}/cmake/Fw4SPLConfig.cmake" @ONLY)
 
 # Create the Fw4SPLConfigVersion file
 set(FW4SPL_VERSION 17.1)
 write_basic_package_version_file(
-  "${CMAKE_BINARY_DIR}/Fw4SPLConfigVersion.cmake"
+  "${CMAKE_BINARY_DIR}/cmake/Fw4SPLConfigVersion.cmake"
   VERSION ${FW4SPL_VERSION}
   COMPATIBILITY AnyNewerVersion
 )
@@ -1221,8 +1251,8 @@ write_basic_package_version_file(
 # Install the FooBarConfig.cmake and FooBarConfigVersion.cmake
 install(
   FILES
-    "${CMAKE_CURRENT_BINARY_DIR}/Fw4SPLConfig.cmake"
-    "${CMAKE_CURRENT_BINARY_DIR}/Fw4SPLConfigVersion.cmake"
+    "${CMAKE_CURRENT_BINARY_DIR}/cmake/Fw4SPLConfig.cmake"
+    "${CMAKE_CURRENT_BINARY_DIR}/cmake/Fw4SPLConfigVersion.cmake"
   DESTINATION
     ${FWCONFIG_PACKAGE_LOCATION}
   COMPONENT
