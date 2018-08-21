@@ -9,7 +9,7 @@ elseif(UNIX)
 endif()
 
 macro(generic_install)
-    if(${FWPROJECT_NAME}_INSTALL)
+    if(${FWPROJECT_NAME}_INSTALL AND NOT BUILD_SDK)
 
         #qt plugins setup
         if(QT_REQUIREMENTS) # set by helper.cmake -> qt_setup() macros
