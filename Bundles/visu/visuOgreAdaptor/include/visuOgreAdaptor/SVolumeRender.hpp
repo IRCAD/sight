@@ -223,6 +223,9 @@ private:
     /// Creates widgets and connects its slots to interactor signals.
     void initWidgets();
 
+    /// Removes the widgets from the interactor and deletes it.
+    void destroyWidgets();
+
     /// Computes the volume illumination and applies it to the ray tracing renderer
     void updateVolumeIllumination();
 
@@ -230,7 +233,7 @@ private:
     void toggleVREffect(VREffectType vrEffect);
 
     /// Renders the volume.
-    ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer* m_volumeRenderer;
+    ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer* m_volumeRenderer { nullptr };
 
     /// 3D Image texture.
     ::Ogre::TexturePtr m_3DOgreTexture;
@@ -244,64 +247,64 @@ private:
     ::fwRenderOgre::vr::PreIntegrationTable m_preIntegrationTable;
 
     /// This object's scene manager.
-    ::Ogre::SceneManager* m_sceneManager;
+    ::Ogre::SceneManager* m_sceneManager { nullptr };
 
     /// This object's scene node.
-    ::Ogre::SceneNode* m_volumeSceneNode;
+    ::Ogre::SceneNode* m_volumeSceneNode { nullptr };
 
     /// Camera used for rendering.
-    ::Ogre::Camera* m_camera;
+    ::Ogre::Camera* m_camera { nullptr };
 
     /// Widgets used for clipping.
-    ::fwRenderOgre::ui::VRWidget::sptr m_widgets;
+    ::fwRenderOgre::ui::VRWidget* m_widget { nullptr };
 
     /// Sampling rate.
-    std::uint16_t m_nbSamples;
+    std::uint16_t m_nbSamples { 512 };
 
     /// Use pre-integration.
-    bool m_preIntegratedRendering;
+    bool m_preIntegratedRendering { false };
 
     /// Sets usage of ambient occlusion.
-    bool m_ambientOcclusion;
+    bool m_ambientOcclusion { false };
 
     /// Sets usage of color bleeding.
-    bool m_colorBleeding;
+    bool m_colorBleeding { false };
 
     /// Sets usage of soft shadows.
-    bool m_shadows;
+    bool m_shadows { false };
 
     /// Toggles widget visibility.
-    bool m_widgetVisibilty;
+    bool m_widgetVisibilty { true };
 
     /// Illumination volume used to render shadows and ambient occlusion.
     std::shared_ptr< ::fwRenderOgre::vr::SATVolumeIllumination> m_illum;
 
     /// Ratio used to determine the size of the SAT regarding of the associated image size.
-    float m_satSizeRatio;
+    float m_satSizeRatio {0.25f };
 
     /// Number of shells used to compute the volume illumination from the SAT.
-    int m_satShells;
+    int m_satShells { 4 };
 
     /// Radius of the shells used to compute the volume illumination from the SAT.
-    int m_satShellRadius;
+    int m_satShellRadius { 4 };
 
     /// Angle used to define the soft shadows cones.
-    float m_satConeAngle;
+    float m_satConeAngle { 0.1f };
 
     /// Number of samples along the soft shadows cones.
-    int m_satConeSamples;
+    int m_satConeSamples { 50 };
 
     /// Factor parameter used to weight the ambient occlusion.
-    double m_aoFactor;
+    double m_aoFactor { 1. };
 
     /// Factor parameter used to weight the color bleeding.
-    double m_colorBleedingFactor;
+    double m_colorBleedingFactor { 1. };
 
     /// Sets whether the camera must be auto reset when a mesh is updated or not.
-    bool m_autoResetCamera;
+    bool m_autoResetCamera { true };
 
     /// Default IDVR method
-    std::string m_IDVRMethod;
+    std::string m_IDVRMethod { "None" };
 
     /// Handle connections between the layer and the volume renderer.
     ::fwCom::helper::SigSlotConnection m_volumeConnection;

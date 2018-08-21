@@ -70,27 +70,7 @@ static const ::fwServices::IService::KeyType s_MASK_INOUT            = "mask";
 
 //-----------------------------------------------------------------------------
 
-SVolumeRender::SVolumeRender() noexcept :
-    m_volumeRenderer(nullptr),
-    m_sceneManager(nullptr),
-    m_volumeSceneNode(nullptr),
-    m_camera(nullptr),
-    m_nbSamples(512),
-    m_preIntegratedRendering(false),
-    m_ambientOcclusion(false),
-    m_colorBleeding(false),
-    m_shadows(false),
-    m_widgetVisibilty(true),
-    m_illum(nullptr),
-    m_satSizeRatio(0.25f),
-    m_satShells(4),
-    m_satShellRadius(4),
-    m_satConeAngle(0.1f),
-    m_satConeSamples(50),
-    m_aoFactor(1.),
-    m_colorBleedingFactor(1.),
-    m_autoResetCamera(true),
-    m_IDVRMethod("None")
+SVolumeRender::SVolumeRender() noexcept
 {
     this->installTFSlots(this);
     newSlot(s_NEW_IMAGE_SLOT, &SVolumeRender::newImage, this);
@@ -336,20 +316,7 @@ void SVolumeRender::stopping()
 
     m_preIntegrationTable.removeTexture();
 
-    // Disconnect widget to interactor.
-    {
-        ::fwRenderOgre::Layer::sptr layer                        = this->getRenderService()->getLayer(m_layerID);
-        ::fwRenderOgre::interactor::IInteractor::sptr interactor = layer->getMoveInteractor();
-
-        auto vrInteractor =
-            std::dynamic_pointer_cast< ::fwRenderOgre::interactor::VRWidgetsInteractor >(interactor);
-
-        if(vrInteractor)
-        {
-            vrInteractor->detachWidget(m_widgets);
-        }
-        m_widgets = nullptr;
-    }
+    this->destroyWidgets();
 }
 
 //-----------------------------------------------------------------------------
@@ -441,7 +408,7 @@ void SVolumeRender::updateImage()
 
     // Create widgets on image update to take the image's size into account.
     this->initWidgets();
-    m_widgets->setVisibility(m_widgetVisibilty);
+    m_widget->setVisibility(m_widgetVisibilty);
 
     this->requestRender();
 }
@@ -674,7 +641,7 @@ void SVolumeRender::toggleWidgets(bool visible)
 {
     m_widgetVisibilty = visible;
 
-    m_widgets->setVisibility(m_widgetVisibilty);
+    m_widget->setVisibility(m_widgetVisibilty);
 
     this->requestRender();
 }
@@ -956,14 +923,11 @@ void SVolumeRender::setImageSpacing()
 
 void SVolumeRender::initWidgets()
 {
-    m_widgets = nullptr;
-
     auto clippingMatrix = this->getInOut< ::fwData::TransformationMatrix3D>(s_CLIPPING_MATRIX_INOUT);
 
-    m_widgets = ::std::make_shared< ::fwRenderOgre::ui::VRWidget >(this->getID(), m_volumeSceneNode,
-                                                                   m_camera, this->getRenderService(),
-                                                                   m_sceneManager, m_volumeRenderer,
-                                                                   clippingMatrix);
+    this->destroyWidgets(); // Destroys the old widgets if they were created.
+    m_widget = new ::fwRenderOgre::ui::VRWidget(this->getID(), m_volumeSceneNode, m_camera, this->getRenderService(),
+                                                m_sceneManager, m_volumeRenderer, clippingMatrix);
 
     ::fwRenderOgre::Layer::sptr layer                        = this->getLayer();
     ::fwRenderOgre::interactor::IInteractor::sptr interactor = layer->getMoveInteractor();
@@ -972,9 +936,29 @@ void SVolumeRender::initWidgets()
 
     if(vrInteractor)
     {
-        vrInteractor->detachWidget(m_widgets);
         vrInteractor->initPicker();
-        vrInteractor->attachWidget(m_widgets);
+        vrInteractor->setWidget(m_widget);
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void SVolumeRender::destroyWidgets()
+{
+    if(m_widget)
+    {
+        ::fwRenderOgre::Layer::sptr layer                        = this->getLayer();
+        ::fwRenderOgre::interactor::IInteractor::sptr interactor = layer->getMoveInteractor();
+
+        auto vrInteractor = std::dynamic_pointer_cast< ::fwRenderOgre::interactor::VRWidgetsInteractor >(interactor);
+
+        if(vrInteractor)
+        {
+            vrInteractor->setWidget(nullptr);
+        }
+
+        delete m_widget;
+        m_widget = nullptr;
     }
 }
 
@@ -1059,7 +1043,7 @@ void SVolumeRender::toggleVREffect(::visuOgreAdaptor::SVolumeRender::VREffectTyp
 void SVolumeRender::updateVisibility(bool visibility)
 {
     m_volumeSceneNode->setVisible(visibility);
-    m_widgets->setVisibility(visibility && m_widgetVisibilty);
+    m_widget->setVisibility(visibility && m_widgetVisibilty);
 
     this->requestRender();
 }

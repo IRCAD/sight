@@ -41,7 +41,7 @@ VRWidget::VRWidget(const std::string& id,
                    SRender::sptr renderService,
                    ::Ogre::SceneManager* sceneManager,
                    ::fwRenderOgre::vr::IVolumeRenderer* renderer,
-                   ::fwData::TransformationMatrix3D::sptr clippingMatrix) noexcept :
+                   ::fwData::TransformationMatrix3D::sptr clippingMatrix) :
     m_selectionMode(NONE),
     m_id(id),
     m_sceneManager(sceneManager),
@@ -74,8 +74,10 @@ VRWidget::VRWidget(const std::string& id,
 
 //-----------------------------------------------------------------------------
 
-VRWidget::~VRWidget() noexcept
+VRWidget::~VRWidget()
 {
+    m_widgetSceneNode->detachAllObjects();
+
     m_sceneManager->destroyManualObject(m_selectedFace);
     m_sceneManager->destroyManualObject(m_boundingBox);
 
@@ -85,12 +87,12 @@ VRWidget::~VRWidget() noexcept
         m_sceneManager->destroyMovableObject(mo->getName(), mo->getMovableType());
     }
 
-    m_widgetSceneNode->removeAndDestroyAllChildren();
-
     ::Ogre::MaterialManager::getSingleton().remove(m_sphereHighlightMtl->getHandle());
     ::Ogre::MaterialManager::getSingleton().remove(m_frameMtl->getHandle());
     ::Ogre::MaterialManager::getSingleton().remove(m_frameHighlightMtl->getHandle());
     ::Ogre::MaterialManager::getSingleton().remove(m_faceMtl->getHandle());
+
+    m_sceneManager->destroySceneNode(m_widgetSceneNode);
 }
 
 //-----------------------------------------------------------------------------
@@ -121,7 +123,7 @@ VRWidget::getFacePositions(::fwRenderOgre::vr::IVolumeRenderer::CubeFace _faceNa
 
 Ogre::Vector3 VRWidget::getFaceCenter(::fwRenderOgre::vr::IVolumeRenderer::CubeFace _faceName) const
 {
-    const auto facePositions = getFacePositions(_faceName);
+    const auto facePositions = this->getFacePositions(_faceName);
     return std::accumulate(facePositions.cbegin() + 1, facePositions.cend(), facePositions[0]) / 4.f;
 }
 

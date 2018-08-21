@@ -25,8 +25,7 @@ namespace interactor
 //------------------------------------------------------------------------------
 
 VRWidgetsInteractor::VRWidgetsInteractor() noexcept :
-    m_pickedObject(nullptr),
-    m_widget(nullptr)
+    m_pickedObject(nullptr)
 {
 }
 
@@ -42,10 +41,10 @@ Ogre::MovableObject* VRWidgetsInteractor::pickObject(int x, int y)
 {
     ::Ogre::Camera* camera = m_sceneManager->getCamera(::fwRenderOgre::Layer::DEFAULT_CAMERA_NAME);
 
-    int height = camera->getViewport()->getActualHeight();
-    int width  = camera->getViewport()->getActualWidth();
+    const int height = camera->getViewport()->getActualHeight();
+    const int width  = camera->getViewport()->getActualWidth();
 
-    bool pickSuccess = m_picker.executeRaySceneQuery( x, y, width, height, 0 );
+    const bool pickSuccess = m_picker.executeRaySceneQuery( x, y, width, height, 0 );
 
     return pickSuccess ? m_picker.getSelectedObject() : nullptr;
 }
@@ -125,20 +124,9 @@ void VRWidgetsInteractor::buttonPressEvent(MouseButton button, int x, int y)
 
 //------------------------------------------------------------------------------
 
-void VRWidgetsInteractor::attachWidget(ui::VRWidget::sptr widget)
+void VRWidgetsInteractor::setWidget(ui::VRWidget* widget)
 {
-    OSLM_ASSERT("Only one widget can be attached to a VR interactor", !m_widget);
     m_widget = widget;
-}
-
-//------------------------------------------------------------------------------
-
-void VRWidgetsInteractor::detachWidget(ui::VRWidget::sptr widget)
-{
-    if(m_widget == widget)
-    {
-        m_widget = nullptr;
-    }
 }
 
 //------------------------------------------------------------------------------

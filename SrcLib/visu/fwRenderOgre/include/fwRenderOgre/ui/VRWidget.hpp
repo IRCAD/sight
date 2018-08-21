@@ -29,8 +29,9 @@ class VRWidget
 {
 public:
 
-    /// Shared pointer type.
+    /// Shared pointer types.
     typedef std::shared_ptr< VRWidget > sptr;
+    typedef std::weak_ptr< VRWidget > wptr;
 
     /**
      * @brief Constructor.
@@ -51,10 +52,10 @@ public:
                               SRender::sptr renderService,
                               ::Ogre::SceneManager* sceneManager,
                               ::fwRenderOgre::vr::IVolumeRenderer* renderer,
-                              ::fwData::TransformationMatrix3D::sptr clippingMatrix) noexcept;
+                              ::fwData::TransformationMatrix3D::sptr clippingMatrix);
 
     /// Destructor.
-    FWRENDEROGRE_API virtual ~VRWidget() noexcept;
+    FWRENDEROGRE_API virtual ~VRWidget();
 
     /// Find out if a movable object belongs to this widget.
     bool belongsToWidget(const Ogre::MovableObject* const _object) const;
