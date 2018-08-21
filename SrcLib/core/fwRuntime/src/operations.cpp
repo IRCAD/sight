@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -51,6 +51,17 @@ struct ConfigurationElementIdentifierPredicate
 
 }
 
+//------------------------------------------------------------------------------
+
+void init(const boost::filesystem::path& directory)
+{
+    Runtime* rntm = Runtime::getDefault();
+    SLM_ASSERT("Default runtime not found", rntm);
+
+    rntm->setWorkingPath(directory);
+    rntm->addDefaultBundles();
+
+}
 //------------------------------------------------------------------------------
 
 ConfigurationElement::sptr findConfigurationElement( const std::string& identifier,
@@ -209,7 +220,26 @@ std::shared_ptr< ExtensionPoint > findExtensionPoint(const std::string& identifi
 void addBundles( const ::boost::filesystem::path& directory)
 {
     Runtime* rntm = Runtime::getDefault();
+    SLM_ASSERT("Default runtime not found", rntm);
+
     rntm->addBundles( directory );
+}
+
+//------------------------------------------------------------------------------
+
+std::shared_ptr<Bundle> loadBundle(const std::string& identifier, const Version& version)
+{
+    Runtime* rntm = Runtime::getDefault();
+    SLM_ASSERT("Default runtime not found", rntm);
+
+    auto bundle = ::fwRuntime::Runtime::getDefault()->findBundle(identifier, version);
+    if(bundle)
+    {
+        bundle->setEnable(true);
+        bundle->start();
+    }
+
+    return bundle;
 }
 
 //------------------------------------------------------------------------------
