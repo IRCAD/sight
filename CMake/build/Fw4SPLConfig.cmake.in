@@ -23,16 +23,22 @@ if(EXTERNAL_LIBRARIES)
 endif()
 
 foreach(_comp ${Fw4SPL_FIND_COMPONENTS})
-  if (NOT ";${_SUPPORTED_COMPONENTS};" MATCHES ${_comp})
-    set(Fw4SPL_FOUND False)
-    set(Fw4SPL_NOT_FOUND_MESSAGE "Unsupported component: ${_comp}")
-  endif()
-  if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/Fw4SPL-${_comp}Dependencies.cmake")
-    include("${CMAKE_CURRENT_LIST_DIR}/Fw4SPL-${_comp}Dependencies.cmake")
-  endif()
-  include("${CMAKE_CURRENT_LIST_DIR}/Fw4SPL-${_comp}Targets.cmake")
+    if(NOT ${_comp}_FOUND)
+        message(STATUS "Looking for Fw4SPL component: ${_comp}")
+        if (NOT ";${_SUPPORTED_COMPONENTS};" MATCHES ${_comp})
+            set(Fw4SPL_FOUND False)
+            set(Fw4SPL_NOT_FOUND_MESSAGE "Unsupported component: ${_comp}")
+        endif()
+        if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/Fw4SPL-${_comp}Dependencies.cmake")
+        include("${CMAKE_CURRENT_LIST_DIR}/Fw4SPL-${_comp}Dependencies.cmake")
+        endif()
 
-  # For now I do not know how to unroll this loop when configuring the file... so for now just use the default log level
-  set_property( TARGET Fw4SPL::${_comp} PROPERTY
-                INTERFACE_COMPILE_DEFINITIONS SPYLOG_LEVEL=2)
+        include("${CMAKE_CURRENT_LIST_DIR}/Fw4SPL-${_comp}Targets.cmake")
+
+        # For now I do not know how to unroll this loop when configuring the file... so for now just use the default log level
+        set_property( TARGET Fw4SPL::${_comp} PROPERTY
+                    INTERFACE_COMPILE_DEFINITIONS SPYLOG_LEVEL=2)
+
+        set(${_comp}_FOUND 1)
+    endif()
 endforeach()
