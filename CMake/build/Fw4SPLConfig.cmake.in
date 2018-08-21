@@ -2,6 +2,26 @@ include(CMakeFindDependencyMacro)
 
 set(_SUPPORTED_COMPONENTS @FW_COMPONENTS@)
 
+set(EXTERNAL_LIBRARIES CACHE PATH "External libraries location (if not at a default location like /usr on Linux)")
+
+if(EXTERNAL_LIBRARIES)
+    list(APPEND CMAKE_PREFIX_PATH ${EXTERNAL_LIBRARIES})
+    list(APPEND CMAKE_MODULE_PATH ${EXTERNAL_LIBRARIES})
+    list(APPEND CMAKE_FIND_ROOT_PATH ${EXTERNAL_LIBRARIES})
+    include(${EXTERNAL_LIBRARIES}/lib/cmake/BinPkgsConfig.cmake)
+    include(${EXTERNAL_LIBRARIES}/lib/cmake/find_sse.cmake)
+
+    # I think all these files should go away soon...
+    file(GLOB LIB_CONFIGS ${EXTERNAL_LIBRARIES}/fw-*.cmake )
+    foreach(LIB_CONFIG ${LIB_CONFIGS})
+        if(NOT ${LIB_CONFIG}_FOUND)
+            message(STATUS "include: ${LIB_CONFIG}")
+            include("${LIB_CONFIG}")
+            set(${LIB_CONFIG}_FOUND 1)
+        endif()
+    endforeach()
+endif()
+
 foreach(_comp ${Fw4SPL_FIND_COMPONENTS})
   if (NOT ";${_SUPPORTED_COMPONENTS};" MATCHES ${_comp})
     set(Fw4SPL_FOUND False)
