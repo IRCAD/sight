@@ -64,6 +64,7 @@ namespace visuOgreAdaptor
  * - \b updateTFWindowing(double window, double level) : update the displayed transfer function according to the new
  *      window and level
  * - \b updateVisibility(bool): show or hide the volume.
+ * - \b updateClippingBox(): updates the cropping widget from the clipping matrix.
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -141,6 +142,7 @@ public:
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_ENUM_PARAMETER_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_COLOR_PARAMETER_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT;
+    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_CLIPPING_BOX_SLOT;
     /** @} */
 
     /// Volume rendering effects.
@@ -221,16 +223,22 @@ private:
     void updateVisibility(bool visibility);
 
     /// Creates widgets and connects its slots to interactor signals.
-    void initWidgets();
+    void createWidget();
 
     /// Removes the widgets from the interactor and deletes it.
-    void destroyWidgets();
+    void destroyWidget();
 
     /// Computes the volume illumination and applies it to the ray tracing renderer
     void updateVolumeIllumination();
 
     /// Updates or creates the illumination volume according to the given VR effect.
     void toggleVREffect(VREffectType vrEffect);
+
+    /// Updates the clipping box position from the inout clipping matrix.
+    void updateClippingBox();
+
+    /// Updates the inout clipping matrix from the clipping box positions.
+    void updateClippingTM3D();
 
     /// Renders the volume.
     ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer* m_volumeRenderer { nullptr };

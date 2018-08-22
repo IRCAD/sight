@@ -62,6 +62,7 @@ const ::fwCom::Slots::SlotKeyType SVolumeRender::s_SET_DOUBLE_PARAMETER_SLOT    
 const ::fwCom::Slots::SlotKeyType SVolumeRender::s_SET_ENUM_PARAMETER_SLOT           = "setEnumParameter";
 const ::fwCom::Slots::SlotKeyType SVolumeRender::s_SET_COLOR_PARAMETER_SLOT          = "setColorParameter";
 const ::fwCom::Slots::SlotKeyType SVolumeRender::s_UPDATE_VISIBILITY_SLOT            = "updateVisibility";
+const ::fwCom::Slots::SlotKeyType SVolumeRender::s_UPDATE_CLIPPING_BOX_SLOT          = "updateClippingBox";
 
 static const ::fwServices::IService::KeyType s_IMAGE_INOUT           = "image";
 static const ::fwServices::IService::KeyType s_TF_INOUT              = "tf";
@@ -97,6 +98,7 @@ SVolumeRender::SVolumeRender() noexcept
     newSlot(s_SET_ENUM_PARAMETER_SLOT, &SVolumeRender::setEnumParameter, this);
     newSlot(s_SET_COLOR_PARAMETER_SLOT, &SVolumeRender::setColorParameter, this);
     newSlot(s_UPDATE_VISIBILITY_SLOT, &SVolumeRender::updateVisibility, this);
+    newSlot(s_UPDATE_CLIPPING_BOX_SLOT, &SVolumeRender::updateClippingBox, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -196,7 +198,8 @@ void SVolumeRender::updateTFWindowing(double /*window*/, double /*level*/)
     connections.push( s_IMAGE_INOUT, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_IMAGE_SLOT );
     connections.push( s_MASK_INOUT, ::fwData::Image::s_MODIFIED_SIG, s_NEW_MASK_SLOT );
     connections.push( s_MASK_INOUT, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_NEW_MASK_SLOT );
-    connections.push( s_CLIPPING_MATRIX_INOUT, ::fwData::Image::s_MODIFIED_SIG, s_NEW_IMAGE_SLOT );
+    connections.push( s_CLIPPING_MATRIX_INOUT, ::fwData::TransformationMatrix3D::s_MODIFIED_SIG,
+                      s_UPDATE_CLIPPING_BOX_SLOT );
 
     return connections;
 }
@@ -316,7 +319,7 @@ void SVolumeRender::stopping()
 
     m_preIntegrationTable.removeTexture();
 
-    this->destroyWidgets();
+    this->destroyWidget();
 }
 
 //-----------------------------------------------------------------------------
@@ -404,10 +407,11 @@ void SVolumeRender::updateImage()
     }
 
     m_volumeRenderer->imageUpdate(image, this->getTransferFunction());
-    m_volumeSceneNode->setVisible(true, false);
 
     // Create widgets on image update to take the image's size into account.
-    this->initWidgets();
+    this->createWidget();
+
+    m_volumeSceneNode->setVisible(true, false);
     m_widget->setVisibility(m_widgetVisibilty);
 
     this->requestRender();
@@ -921,13 +925,22 @@ void SVolumeRender::setImageSpacing()
 
 //-----------------------------------------------------------------------------
 
-void SVolumeRender::initWidgets()
+void SVolumeRender::createWidget()
 {
     auto clippingMatrix = this->getInOut< ::fwData::TransformationMatrix3D>(s_CLIPPING_MATRIX_INOUT);
 
-    this->destroyWidgets(); // Destroys the old widgets if they were created.
-    m_widget = new ::fwRenderOgre::ui::VRWidget(this->getID(), m_volumeSceneNode, m_camera, this->getRenderService(),
-                                                m_sceneManager, m_volumeRenderer, clippingMatrix);
+    auto clippingMxUpdate = std::bind(&SVolumeRender::updateClippingTM3D, this);
+
+    ::Ogre::Matrix4 ogreClippingMx = ::Ogre::Matrix4::IDENTITY;
+
+    if(clippingMatrix)
+    {
+        ogreClippingMx = ::fwRenderOgre::Utils::convertTM3DToOgreMx(clippingMatrix);
+    }
+
+    this->destroyWidget(); // Destroys the old widgets if they were created.
+    m_widget = new ::fwRenderOgre::ui::VRWidget(this->getID(), m_volumeSceneNode, m_camera, m_sceneManager,
+                                                ogreClippingMx, clippingMxUpdate);
 
     ::fwRenderOgre::Layer::sptr layer                        = this->getLayer();
     ::fwRenderOgre::interactor::IInteractor::sptr interactor = layer->getMoveInteractor();
@@ -943,7 +956,7 @@ void SVolumeRender::initWidgets()
 
 //-----------------------------------------------------------------------------
 
-void SVolumeRender::destroyWidgets()
+void SVolumeRender::destroyWidget()
 {
     if(m_widget)
     {
@@ -1036,6 +1049,40 @@ void SVolumeRender::toggleVREffect(::visuOgreAdaptor::SVolumeRender::VREffectTyp
 
         this->requestRender();
     }
+}
+
+//-----------------------------------------------------------------------------
+
+void SVolumeRender::updateClippingBox()
+{
+    auto clippingMatrix = this->getInOut< ::fwData::TransformationMatrix3D>(s_CLIPPING_MATRIX_INOUT);
+    SLM_ASSERT("Can't update the 'clippingMatrix' if it doesn't exist.", clippingMatrix);
+
+    const ::Ogre::Matrix4 clippingMx = ::fwRenderOgre::Utils::convertTM3DToOgreMx(clippingMatrix);
+
+    m_widget->updateFromTransform(clippingMx);
+}
+
+//-----------------------------------------------------------------------------
+
+void SVolumeRender::updateClippingTM3D()
+{
+    auto clippingMatrix = this->getInOut< ::fwData::TransformationMatrix3D>(s_CLIPPING_MATRIX_INOUT);
+
+    if(clippingMatrix)
+    {
+        ::fwRenderOgre::Utils::copyOgreMxToTM3D(m_widget->getClippingTransform(), clippingMatrix);
+
+        auto sig = clippingMatrix->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+
+        ::fwCom::Connection::Blocker block(sig->getConnection(this->slot(s_UPDATE_CLIPPING_BOX_SLOT)));
+
+        sig->asyncEmit();
+    }
+
+    m_volumeRenderer->clipImage(m_widget->getClippingBox());
+
+    this->requestRender();
 }
 
 //-----------------------------------------------------------------------------

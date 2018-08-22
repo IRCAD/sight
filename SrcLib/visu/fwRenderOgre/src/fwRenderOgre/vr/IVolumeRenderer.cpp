@@ -108,7 +108,7 @@ void IVolumeRenderer::resizeViewport(int /*w*/, int /*h*/)
 
 //-----------------------------------------------------------------------------
 
-void IVolumeRenderer::scaleTranslateCube(const fwData::Image::SpacingType& spacing,
+void IVolumeRenderer::scaleTranslateCube(const ::fwData::Image::SpacingType& spacing,
                                          const ::fwData::Image::OriginType& origin)
 {
     SLM_ASSERT("Image origin and spacing must be three-dimensional for volume rendering.",
