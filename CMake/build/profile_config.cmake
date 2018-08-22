@@ -78,7 +78,7 @@ macro(profile_setup ${PROJECT})
         set(START_BUNDLE_LIST "${START_BUNDLE_LIST}\n    <start id=\"${CURRENT_BUNDLES}\" />")
     endforeach()
 
-    configure_file( "${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/profile.xml.in"
+    configure_file( "${FWCMAKE_BUILD_FILES_DIR}/profile.xml.in"
                     "${CMAKE_BINARY_DIR}/${FWBUNDLE_RC_PREFIX}/${PROJECT}-${${PROJECT}_VERSION}/profile.xml")
 endmacro()
 

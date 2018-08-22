@@ -1,14 +1,20 @@
 # Define some paths whether we are building Fw4SPL or using it
-if(fwCore_FOUND)
-    set(FWCMAKE_BUILD_FILES_DIR ${Fw4SPL_DIR}/build)
-    set(FWCMAKE_RESOURCE_PATH ${Fw4SPL_DIR})
+if(FW_BUILD_EXTERNAL)
+    set(FWCMAKE_BUILD_FILES_DIR ${CMAKE_CURRENT_LIST_DIR}/build)
+    set(FWCMAKE_INSTALL_FILES_DIR ${CMAKE_CURRENT_LIST_DIR}/install)
+    set(FWCMAKE_RESOURCE_PATH ${CMAKE_CURRENT_LIST_DIR})
 else()
     set(FWCMAKE_BUILD_FILES_DIR "${CMAKE_SOURCE_DIR}/CMake/build/")
+    set(FWCMAKE_INSTALL_FILES_DIR "${CMAKE_SOURCE_DIR}/CMake/install/")
     # FWCMAKE_RESOURCE_PATH already set in main CMakeLists.txt
 
 endif()
 
 include(${FWCMAKE_BUILD_FILES_DIR}/plugin_config.cmake)
+include(${FWCMAKE_BUILD_FILES_DIR}/profile_config.cmake)
+include(${FWCMAKE_INSTALL_FILES_DIR}/generic_install.cmake)
+
+file(REMOVE "${CMAKE_BINARY_DIR}/cmake/Fw4SPLRequirements.cmake")
 
 macro(groupMaker FWPROJECT_NAME)
     file(GLOB_RECURSE PRJ_SOURCES "${${FWPROJECT_NAME}_DIR}/*")
@@ -657,10 +663,13 @@ endmacro()
 #     fwReq( ioVTK ioITK )
 # WARNING : some part of this cmake file relies on this macro signature
 macro(fwReq)
-    add_dependencies(${FWPROJECT_NAME} ${ARGV})
+    foreach(DEPENDENCY ${ARGV})
+        if(NOT ${FWPROJECT_NAME}_TYPE)
+            add_dependencies(${FWPROJECT_NAME} ${ARGV})
+        endif()
+    endforeach()
 
     set(${FWPROJECT_NAME}_REQUIREMENTS)
-    set(${FWPROJECT_NAME}_BUNDLE_REQUIREMENTS)
 
     foreach(PROJECT ${ARGV})
         list(APPEND ${FWPROJECT_NAME}_REQUIREMENTS ${PROJECT})
@@ -668,7 +677,6 @@ macro(fwReq)
     endforeach()
 
     set(${FWPROJECT_NAME}_REQUIREMENTS ${${FWPROJECT_NAME}_REQUIREMENTS} PARENT_SCOPE)
-    set(${FWPROJECT_NAME}_BUNDLE_REQUIREMENTS ${${FWPROJECT_NAME}_BUNDLE_REQUIREMENTS} PARENT_SCOPE)
 
 endmacro()
 
@@ -770,6 +778,11 @@ endmacro()
 macro(fwLoadProperties)
     loadProperties("Properties.cmake")
 
+    if(FW_BUILD_EXTERNAL)
+        set(${NAME}_DEPENDENCIES "${DEPENDENCIES}")
+        set(${NAME}_REQUIREMENTS "${REQUIREMENTS}")
+    endif()
+
     string( TOUPPER "${TYPE}" TYPE )
 
     fwDefineDependencies( ${NAME} ${DEPENDENCIES} )
@@ -786,6 +799,10 @@ macro(fwLoadProperties)
     elseif( TYPE STREQUAL "APP" )
         set(${NAME}_TYPE "APP")
         fwBundle(${NAME} ${VERSION} ${OPTIONS})
+        if(NOT EXISTS "${${NAME}_DIR}/rc/profile.xml" )
+            set(PROJECT ${NAME})
+            profile_setup(${PROJECT})
+        endif()
     endif()
 
     if(DEPENDENCIES)
@@ -827,6 +844,17 @@ macro(addProject PROJECT)
             add_subdirectory(${${PROJECT}_DIR} ${PROJECT})
         else()
             message(SEND_ERROR "<${PROJECT}> dir '' not found.")
+        endif()
+
+        # Store requirements for the SDK
+        file(APPEND "${CMAKE_BINARY_DIR}/cmake/Fw4SPLRequirements.cmake"
+            "set(${PROJECT}_EXTERNAL 1)\n"
+            "set(${PROJECT}_REQUIREMENTS ${${PROJECT}_REQUIREMENTS})\n"
+            "set(${PROJECT}_VERSION ${${PROJECT}_VERSION})\n"
+            "set(${PROJECT}_TYPE ${${PROJECT}_TYPE})\n")
+        if(${PROJECT}_START)
+            file(APPEND "${CMAKE_BINARY_DIR}/cmake/Fw4SPLRequirements.cmake"
+                "set(${PROJECT}_START ${${PROJECT}_START})\n")
         endif()
 
     endif()

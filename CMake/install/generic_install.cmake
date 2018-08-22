@@ -1,11 +1,11 @@
 if(APPLE)
-    include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/install/osx_install.cmake)
+    include(${FWCMAKE_INSTALL_FILES_DIR}/osx_install.cmake)
 elseif(WIN32)
-    include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/install/win_install.cmake)
+    include(${FWCMAKE_INSTALL_FILES_DIR}/win_install.cmake)
 elseif(UNIX)
     #Don't use rpath at install step
     set(CMAKE_SKIP_INSTALL_RPATH ON)
-    include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/install/linux_install.cmake)
+    include(${FWCMAKE_INSTALL_FILES_DIR}/linux_install.cmake)
 endif()
 
 macro(generic_install)

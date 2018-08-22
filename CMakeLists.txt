@@ -10,9 +10,7 @@ include(CMakeParseArguments)
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 
-include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/profile_config.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/macros.cmake)
-include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/install/generic_install.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/install/helper.cmake)
 
 ########################################################################################################################
@@ -405,11 +403,6 @@ if(EXTERNAL_LIBRARIES OR USE_SYSTEM_LIB)
     set(APP_TO_BUILD)
     foreach(PROJECT ${PROJECT_LIST})
         addProject(${PROJECT})
-        if(${PROJECT}_TYPE STREQUAL "APP")
-            if(NOT EXISTS "${${PROJECT}_DIR}/rc/profile.xml" )
-                profile_setup("${PROJECT}")
-            endif()
-        endif()
     endforeach()
 else()
     message("EXTERNAL_LIBRARIES variable is missing. Please, specify external libraries location to generate CMake projects.")
@@ -437,9 +430,10 @@ write_basic_package_version_file(
 # Install the Fw4SPLConfig.cmake and Fw4SPLConfigVersion.cmake
 install(
   FILES
-    "${CMAKE_CURRENT_BINARY_DIR}/cmake/Fw4SPLConfig.cmake"
-    "${CMAKE_CURRENT_BINARY_DIR}/cmake/Fw4SPLConfigVersion.cmake"
-    "${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/macros.cmake"
+    "${CMAKE_BINARY_DIR}/cmake/Fw4SPLConfig.cmake"
+    "${CMAKE_BINARY_DIR}/cmake/Fw4SPLConfigVersion.cmake"
+    "${CMAKE_BINARY_DIR}/cmake/Fw4SPLRequirements.cmake"
+    "${CMAKE_SOURCE_DIR}/CMake/build/macros.cmake"
   DESTINATION
     ${FWCONFIG_PACKAGE_LOCATION}
   COMPONENT
@@ -449,14 +443,16 @@ install(
 # Install some files needed for the build
 install(
   FILES
-    "${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/configure_file.cmake"
+    "${CMAKE_SOURCE_DIR}/CMake/build/configure_file.cmake"
     "${FWCMAKE_RESOURCE_PATH}/cppunit/cppunit_main.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/config.hpp.in"
-    "${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/plugin.xml.in"
-    "${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/registerServices.cpp.in"
-    "${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/spyLogLevel.hpp.in"
-    "${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/plugin_config.cmake"
-    "${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/plugin_config_command.cmake"
+    "${CMAKE_SOURCE_DIR}/CMake/build/config.hpp.in"
+    "${CMAKE_SOURCE_DIR}/CMake/build/plugin_config.cmake"
+    "${CMAKE_SOURCE_DIR}/CMake/build/plugin_config_command.cmake"
+    "${CMAKE_SOURCE_DIR}/CMake/build/plugin.xml.in"
+    "${CMAKE_SOURCE_DIR}/CMake/build/profile_config.cmake"
+    "${CMAKE_SOURCE_DIR}/CMake/build/profile.xml.in"
+    "${CMAKE_SOURCE_DIR}/CMake/build/registerServices.cpp.in"
+    "${CMAKE_SOURCE_DIR}/CMake/build/spyLogLevel.hpp.in"
   DESTINATION
     ${FWCONFIG_PACKAGE_LOCATION}/build
   COMPONENT
@@ -466,7 +462,10 @@ install(
 # Install some files needed for the install
 install(
   FILES
-    "${CMAKE_CURRENT_SOURCE_DIR}/CMake/install/win_install.cmake"
+    "${CMAKE_SOURCE_DIR}/CMake/install/generic_install.cmake"
+    "${CMAKE_SOURCE_DIR}/CMake/install/linux_install.cmake"
+    "${CMAKE_SOURCE_DIR}/CMake/install/osx_install.cmake"
+    "${CMAKE_SOURCE_DIR}/CMake/install/win_install.cmake"
   DESTINATION
     ${FWCONFIG_PACKAGE_LOCATION}/install
   COMPONENT
@@ -476,7 +475,7 @@ install(
 # Install some files needed for the install
 install(
   FILES
-    "${CMAKE_CURRENT_SOURCE_DIR}/CMake/install/linux/template.sh.in"
+    "${CMAKE_SOURCE_DIR}/CMake/install/linux/template.sh.in"
   DESTINATION
     ${FWCONFIG_PACKAGE_LOCATION}/install/linux
   COMPONENT
