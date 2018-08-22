@@ -24,7 +24,7 @@ function(plugin_setup PROJECT HEADERS_DEPENDS)
                                 -DPROJECT_VERSION="${${PROJECT}_VERSION}"
                                 -DPROJECT_DIR="${${PROJECT}_DIR}"
                                 -DPROJECT_REQUIREMENTS="${PROJECT_REQUIREMENTS}"
-                                -DCMAKE_SCRIPTS_DIR="${CMAKE_SOURCE_DIR}/CMake/build"
+                                -DCMAKE_SCRIPTS_DIR="${FWCMAKE_BUILD_FILES_DIR}"
                                 -DPLUGIN_OUTPUT_PATH="${CMAKE_BINARY_DIR}/${FWBUNDLE_RC_PREFIX}/${PROJECT}-${${PROJECT}_VERSION}"
                                 -DREGISTERSERVICES_OUTPUT_PATH="${CMAKE_BINARY_DIR}/${PROJECT}"
                                 -P "${FWCMAKE_RESOURCE_PATH}/build/plugin_config_command.cmake"
@@ -35,8 +35,8 @@ function(plugin_setup PROJECT HEADERS_DEPENDS)
     add_custom_command(
         OUTPUT "${CMAKE_BINARY_DIR}/${PROJECT}/registerServices.cpp"
         COMMAND ${PLUGIN_CONFIG_COMMAND}
-        MAIN_DEPENDENCY "${CMAKE_SOURCE_DIR}/CMake/build/registerServices.cpp.in"
-        DEPENDS ${PLUGIN_CONFIG_COMMAND_DEPENDS} ${HEADERS_DEPENDS} "${CMAKE_SOURCE_DIR}/CMake/build/plugin.xml.in"
+        MAIN_DEPENDENCY "${FWCMAKE_BUILD_FILES_DIR}/registerServices.cpp.in"
+        DEPENDS ${PLUGIN_CONFIG_COMMAND_DEPENDS} ${HEADERS_DEPENDS} "${FWCMAKE_BUILD_FILES_DIR}/plugin.xml.in"
         COMMENT "Generating files plugin for ${PROJECT}"
         )
 

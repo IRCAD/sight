@@ -1,3 +1,14 @@
+# Define some paths whether we are building Fw4SPL or using it
+if(fwCore_FOUND)
+    set(FWCMAKE_BUILD_FILES_DIR ${Fw4SPL_DIR}/build)
+    set(FWCMAKE_RESOURCE_PATH ${Fw4SPL_DIR})
+else()
+    set(FWCMAKE_BUILD_FILES_DIR "${CMAKE_SOURCE_DIR}/CMake/build/")
+    # FWCMAKE_RESOURCE_PATH already set in main CMakeLists.txt
+
+endif()
+
+include(${FWCMAKE_BUILD_FILES_DIR}/plugin_config.cmake)
 
 macro(groupMaker FWPROJECT_NAME)
     file(GLOB_RECURSE PRJ_SOURCES "${${FWPROJECT_NAME}_DIR}/*")
@@ -19,7 +30,7 @@ macro(configure_header_file FWPROJECT_NAME FILENAME)
 
     set(HEADER_FILE_DESTINATION "${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/include/${FWPROJECT_NAME}/${FILENAME}")
     configure_file(
-        "${CMAKE_SOURCE_DIR}/CMake/build/${FILENAME}.in"
+        "${FWCMAKE_BUILD_FILES_DIR}/${FILENAME}.in"
         ${HEADER_FILE_DESTINATION}
         IMMEDIATE @ONLY)
 
@@ -56,7 +67,8 @@ macro(initProject PRJNAME )
     endforeach()
 
     set (${FWPROJECT_NAME}_INCLUDE_DIR ${${FWPROJECT_NAME}_INCLUDE_DIR} PARENT_SCOPE)
-    set (${FWPROJECT_NAME}_DIR     ${CMAKE_CURRENT_SOURCE_DIR}  PARENT_SCOPE)
+    set (${FWPROJECT_NAME}_DIR       ${CMAKE_CURRENT_SOURCE_DIR})
+    set (${FWPROJECT_NAME}_DIR       ${${FWPROJECT_NAME}_DIR}  PARENT_SCOPE)
     set (${FWPROJECT_NAME}_BUILD_DIR ${CMAKE_BINARY_DIR}/${FWPROJECT_NAME})
     set (${FWPROJECT_NAME}_BUILD_DIR ${${FWPROJECT_NAME}_BUILD_DIR} PARENT_SCOPE)
 
@@ -317,7 +329,7 @@ macro(fwLib FWPROJECT_NAME PROJECT_VERSION)
         set(${FWPROJECT_NAME}_PCH_LIB $<TARGET_OBJECTS:${${FWPROJECT_NAME}_PCH_TARGET}_PCH_OBJ>)
     endif()
 
-    add_library(${FWPROJECT_NAME} ${ARGN}
+    add_library(${FWPROJECT_NAME} SHARED ${ARGN}
         ${${FWPROJECT_NAME}_HEADERS}
         ${${FWPROJECT_NAME}_SOURCES}
         ${${FWPROJECT_NAME}_RC_FILES}
@@ -462,7 +474,7 @@ macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
 
     if(EXISTS "${PRJ_SOURCE_DIR}/src")
 
-        add_library(${FWPROJECT_NAME} ${ARGN}
+        add_library(${FWPROJECT_NAME} SHARED ${ARGN}
             ${${FWPROJECT_NAME}_HEADERS}
             ${${FWPROJECT_NAME}_SOURCES}
             ${${FWPROJECT_NAME}_RC_FILES}
@@ -505,7 +517,7 @@ macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
 
         # create the config.hpp for the current library
         configure_file(
-            "${CMAKE_SOURCE_DIR}/CMake/build/config.hpp.in"
+            "${FWCMAKE_BUILD_FILES_DIR}/config.hpp.in"
             "${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/include/${FWPROJECT_NAME}/config.hpp"
             IMMEDIATE @ONLY)
 
@@ -515,7 +527,7 @@ macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
         if(ENABLE_PCH AND NOT ${FWPROJECT_NAME}_DISABLE_PCH)
             # create the spyLogLevel.hpp for the current library
             configure_file(
-                "${CMAKE_SOURCE_DIR}/CMake/build/spyLogLevel.hpp.in"
+                "${FWCMAKE_BUILD_FILES_DIR}/spyLogLevel.hpp.in"
                 "${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/include/${FWPROJECT_NAME}/spyLogLevel.hpp"
                 IMMEDIATE @ONLY)
 

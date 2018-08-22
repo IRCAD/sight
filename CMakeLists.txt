@@ -11,7 +11,6 @@ include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/profile_config.cmake)
-include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/plugin_config.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/macros.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/install/generic_install.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/install/helper.cmake)
@@ -42,8 +41,6 @@ if(MSVC)
         variable_watch(CMAKE_BACKWARDS_COMPATIBILITY pch_msvc_hook)
     endif()
 endif(MSVC)
-
-set(BUILD_SHARED_LIBS ON)
 
 set(CMAKE_BUILD_TYPE ${CMAKE_BUILD_TYPE} CACHE STRING "Choose the type of build, options are: Debug Release RelWithDebInfo MinSizeRel")
 set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug;Release;RelWithDebInfo;MinSizeRel")
@@ -442,8 +439,46 @@ install(
   FILES
     "${CMAKE_CURRENT_BINARY_DIR}/cmake/Fw4SPLConfig.cmake"
     "${CMAKE_CURRENT_BINARY_DIR}/cmake/Fw4SPLConfigVersion.cmake"
+    "${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/macros.cmake"
   DESTINATION
     ${FWCONFIG_PACKAGE_LOCATION}
+  COMPONENT
+    dev
+)
+
+# Install some files needed for the build
+install(
+  FILES
+    "${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/configure_file.cmake"
+    "${FWCMAKE_RESOURCE_PATH}/cppunit/cppunit_main.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/config.hpp.in"
+    "${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/plugin.xml.in"
+    "${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/registerServices.cpp.in"
+    "${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/spyLogLevel.hpp.in"
+    "${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/plugin_config.cmake"
+    "${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/plugin_config_command.cmake"
+  DESTINATION
+    ${FWCONFIG_PACKAGE_LOCATION}/build
+  COMPONENT
+    dev
+)
+
+# Install some files needed for the install
+install(
+  FILES
+    "${CMAKE_CURRENT_SOURCE_DIR}/CMake/install/win_install.cmake"
+  DESTINATION
+    ${FWCONFIG_PACKAGE_LOCATION}/install
+  COMPONENT
+    dev
+)
+
+# Install some files needed for the install
+install(
+  FILES
+    "${CMAKE_CURRENT_SOURCE_DIR}/CMake/install/linux/template.sh.in"
+  DESTINATION
+    ${FWCONFIG_PACKAGE_LOCATION}/install/linux
   COMPONENT
     dev
 )
