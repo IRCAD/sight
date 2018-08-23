@@ -10,6 +10,7 @@
 
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/vector_angle.hpp>
+#undef GLM_ENABLE_EXPERIMENTAL
 #include <glm/vec2.hpp>
 
 #include <vtkActor2D.h>

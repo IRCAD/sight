@@ -18,6 +18,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/transform.hpp>
+#undef GLM_ENABLE_EXPERIMENTAL
 #include <glm/vec3.hpp>
 
 #include <vtkAbstractPropPicker.h>
