@@ -13,6 +13,7 @@
 #include <glm/glm.hpp>
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/transform.hpp>
+#undef GLM_ENABLE_EXPERIMENTAL
 
 #include <opencv2/core.hpp>
 
