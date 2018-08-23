@@ -153,7 +153,7 @@ private:
               std::pair< vr::IVolumeRenderer::CubeFace, ::Ogre::SceneNode* > >  m_widgets;
 
     /// Axis aligned clipping cube.
-    std::array< ::Ogre::Vector3, 2> m_clippingCube { ::Ogre::Vector3::ZERO, ::Ogre::Vector3::UNIT_SCALE};
+    std::array< ::Ogre::Vector3, 2> m_clippingCube {{ ::Ogre::Vector3::ZERO, ::Ogre::Vector3::UNIT_SCALE }};
 
     /// Object used to display the clipping box.
     ::Ogre::ManualObject* m_boundingBox { nullptr };
