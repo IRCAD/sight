@@ -32,6 +32,7 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/euler_angles.hpp>
 #include <glm/gtx/quaternion.hpp>
+#undef GLM_ENABLE_EXPERIMENTAL
 #include <glm/mat4x4.hpp>
 
 #include <itkImage.h>
