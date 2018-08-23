@@ -505,3 +505,12 @@ if(ECLIPSE_PROJECT)
     include(${FWCMAKE_RESOURCE_PATH}eclipse/eclipse_generator.cmake)
     eclipseGenerator(${PROJECT_LIST})
 endif()
+
+########################################################################################################################
+# Packaging for the SDK
+########################################################################################################################
+if(BUILD_SDK)
+    set(FWPROJECT_NAME fw4spl)
+    set(VERSION ${FW4SPL_VERSION})
+    generic_install()
+endif()

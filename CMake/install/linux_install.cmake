@@ -15,7 +15,7 @@ endfunction()
 #Linux install
 macro(linux_install PRJ_NAME)
 
-    if(NOT USE_SYSTEM_LIB)
+    if(NOT USE_SYSTEM_LIB AND NOT BUILD_SDK)
         findExtLibDir(EXTERNAL_LIBRARIES_DIRECTORIES)
     endif()
     set(CPACK_GENERATOR TGZ)
@@ -34,12 +34,14 @@ macro(linux_install PRJ_NAME)
         set(LAUNCHER "${PRJ_NAME}-${${PRJ_NAME}_VERSION}")
         set(PROFILE_PATH "")
 
-    else()
+    elseif(NOT BUILD_SDK)
         message(FATAL_ERROR "'${PRJ_NAME}' is not a installable (type : ${${PRJ_NAME}_TYPE})")
     endif()
 
-    configure_file(${FWCMAKE_RESOURCE_PATH}/install/linux/linux_fixup.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/linux_fixup.cmake @ONLY)
-    install(SCRIPT ${CMAKE_CURRENT_BINARY_DIR}/linux_fixup.cmake)
+    if(NOT BUILD_SDK)
+        configure_file(${FWCMAKE_RESOURCE_PATH}/install/linux/linux_fixup.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/linux_fixup.cmake @ONLY)
+        install(SCRIPT ${CMAKE_CURRENT_BINARY_DIR}/linux_fixup.cmake)
+    endif()
 
     set(CPACK_OUTPUT_FILE_PREFIX packages)
     set(CPACK_INSTALLED_DIRECTORIES "${CMAKE_INSTALL_PREFIX};.") #look inside install dir for packaging
@@ -56,7 +58,7 @@ macro(linux_install PRJ_NAME)
         install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/${APP_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
     endif()
 
-    if(NOT USE_SYSTEM_LIB)
+    if(NOT USE_SYSTEM_LIB AND NOT BUILD_SDK)
         #Copy the qt font directory inside install/libs
         install(DIRECTORY "${EXTERNAL_LIBRARIES}/lib/fonts" DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/")
     endif()
