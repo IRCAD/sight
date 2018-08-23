@@ -1,4 +1,3 @@
-
 cmake_minimum_required (VERSION 3.1)
 
 project (fw4spl)
@@ -1031,12 +1030,12 @@ foreach(PROPERTIES_FILE ${PROJECTS_PROPERTIES})
 
     list(FIND DEPENDENCIES ${NAME} DEP_LOOP)
     if(DEP_LOOP GREATER -1)
-        message(FATAL_ERROR "${PROPERTIES_FILE}: A project can not be it's own dependency.")
+        message(FATAL_ERROR "${PROPERTIES_FILE}: A project can not be its own dependency.")
     endif()
 
     list(FIND REQUIREMENTS ${NAME} REQ_LOOP)
     if(REQ_LOOP GREATER -1)
-        message(FATAL_ERROR "${PROPERTIES_FILE}: A project can not be it's own requirement.")
+        message(FATAL_ERROR "${PROPERTIES_FILE}: A project can not be its own requirement.")
     endif()
 
     if(${NAME}_DIR)
