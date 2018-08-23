@@ -6,7 +6,8 @@
 
 #pragma once
 
-#include <fwRenderOgre/registry/macros.hpp>
+#include "fwRenderOgre/registry/macros.hpp"
+#include "fwRenderOgre/vr/IVolumeRenderer.hpp"
 
 #include <OGRE/OgreCamera.h>
 #include <OGRE/OgreSceneNode.h>
@@ -109,10 +110,10 @@ private:
     } m_selectionMode { NONE };
 
     /// Get the face's image positions.
-    std::array< ::Ogre::Vector3, 4 > getFacePositions(::fwRenderOgre::vr::IVolumeRenderer::CubeFace _faceName) const;
+    std::array< ::Ogre::Vector3, 4 > getFacePositions(vr::IVolumeRenderer::CubeFace _faceName) const;
 
     /// Get the center of a clipping box face.
-    ::Ogre::Vector3 getFaceCenter(::fwRenderOgre::vr::IVolumeRenderer::CubeFace _faceName) const;
+    ::Ogre::Vector3 getFaceCenter(vr::IVolumeRenderer::CubeFace _faceName) const;
 
     /// Returns the clipping box's image space positions.
     std::array< ::Ogre::Vector3, 8 > getClippingBoxPositions() const;
@@ -124,7 +125,7 @@ private:
     void updateWidgets();
 
     /// Highlight a clipping box face.
-    void selectFace(::fwRenderOgre::vr::IVolumeRenderer::CubeFace _faceName);
+    void selectFace(vr::IVolumeRenderer::CubeFace _faceName);
 
     /// Unhighlight face.
     void deselectFace();
@@ -149,7 +150,7 @@ private:
 
     /// Maps widget objects to their scene node and to a cube face.
     std::map< const ::Ogre::MovableObject*,
-              std::pair< ::fwRenderOgre::vr::IVolumeRenderer::CubeFace, ::Ogre::SceneNode* > >  m_widgets;
+              std::pair< vr::IVolumeRenderer::CubeFace, ::Ogre::SceneNode* > >  m_widgets;
 
     /// Axis aligned clipping cube.
     std::array< ::Ogre::Vector3, 2> m_clippingCube { ::Ogre::Vector3::ZERO, ::Ogre::Vector3::UNIT_SCALE};

@@ -82,7 +82,7 @@ bool VRWidget::belongsToWidget(const Ogre::MovableObject* const _object) const
 std::array< ::Ogre::Vector3, 4 >
 VRWidget::getFacePositions(::fwRenderOgre::vr::IVolumeRenderer::CubeFace _faceName) const
 {
-    const ::fwRenderOgre::vr::IVolumeRenderer::CubeFacePositionList positionIndices =
+    const vr::IVolumeRenderer::CubeFacePositionList positionIndices =
         vr::IVolumeRenderer::s_cubeFaces.at(_faceName);
     std::array< ::Ogre::Vector3, 4 > facePositions;
 
@@ -321,12 +321,12 @@ void VRWidget::widgetPicked(::Ogre::MovableObject* _pickedWidget, int _screenX, 
 
         switch(widgetFace)
         {
-            case ::fwRenderOgre::vr::IVolumeRenderer::X_NEGATIVE: tmpClippingCube[0].x = newPos.x; break;
-            case ::fwRenderOgre::vr::IVolumeRenderer::X_POSITIVE: tmpClippingCube[1].x = newPos.x; break;
-            case ::fwRenderOgre::vr::IVolumeRenderer::Y_NEGATIVE: tmpClippingCube[0].y = newPos.y; break;
-            case ::fwRenderOgre::vr::IVolumeRenderer::Y_POSITIVE: tmpClippingCube[1].y = newPos.y; break;
-            case ::fwRenderOgre::vr::IVolumeRenderer::Z_NEGATIVE: tmpClippingCube[0].z = newPos.z; break;
-            case ::fwRenderOgre::vr::IVolumeRenderer::Z_POSITIVE: tmpClippingCube[1].z = newPos.z; break;
+            case vr::IVolumeRenderer::X_NEGATIVE: tmpClippingCube[0].x = newPos.x; break;
+            case vr::IVolumeRenderer::X_POSITIVE: tmpClippingCube[1].x = newPos.x; break;
+            case vr::IVolumeRenderer::Y_NEGATIVE: tmpClippingCube[0].y = newPos.y; break;
+            case vr::IVolumeRenderer::Y_POSITIVE: tmpClippingCube[1].y = newPos.y; break;
+            case vr::IVolumeRenderer::Z_NEGATIVE: tmpClippingCube[0].z = newPos.z; break;
+            case vr::IVolumeRenderer::Z_POSITIVE: tmpClippingCube[1].z = newPos.z; break;
         }
 
         // Check for overlap.
