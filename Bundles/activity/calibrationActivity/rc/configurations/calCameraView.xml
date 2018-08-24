@@ -76,7 +76,7 @@
         <!-- ******************************* Services ***************************************** -->
         <!-- *************************** Begin generic scene *************************** -->
 
-        <service uid="camera" type="::fwRenderVTK::SRender" autoConnect="yes">
+        <service uid="camera" type="::fwRenderVTK::SRender" >
             <scene renderMode="timer">
                 <renderer id="default" background="0.0" />
                 <adaptor uid="videoAdapter" />
@@ -98,6 +98,10 @@
         <service uid="VideoGrabber" type="::videoTools::SGrabberProxy">
             <in key="camera" uid="${camera}" />
             <inout key="frameTL" uid="${timeLine}" />
+            <config>
+                <selection mode="exclude" />
+                <addSelection service="::videoOpenCV::SFrameGrabber" config="FrameByFrameOpenCVGrabberConfig" />
+            </config>
         </service>
 
         <service uid="FrameUpdater" type="::videoTools::SFrameUpdater">
