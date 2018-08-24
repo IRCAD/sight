@@ -27,12 +27,9 @@
 #include <fwTools/DynamicTypeKeyTypeMapping.hpp>
 #include <fwTools/IntrinsicTypes.hpp>
 
-#include <glm/gtc/quaternion.hpp>
 #include <glm/gtc/matrix_access.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#define GLM_ENABLE_EXPERIMENTAL
-#include <glm/gtx/euler_angles.hpp>
-#undef GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtc/quaternion.hpp>
 #include <glm/mat4x4.hpp>
 
 #include <itkImage.h>
