@@ -9,8 +9,8 @@
 #include <fwServices/macros.hpp>
 
 #include <glm/common.hpp>
-#include <glm/ext/vec1.hpp>
 #include <glm/gtc/constants.hpp>
+#include <glm/gtc/vec1.hpp>
 
 #include <vtkCellArray.h>
 #include <vtkCellData.h>
