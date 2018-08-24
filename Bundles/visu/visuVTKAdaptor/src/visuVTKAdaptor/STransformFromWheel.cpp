@@ -16,9 +16,6 @@
 #include <fwServices/macros.hpp>
 
 #include <glm/gtc/matrix_transform.hpp>
-#define GLM_ENABLE_EXPERIMENTAL
-#include <glm/gtx/transform.hpp>
-#undef GLM_ENABLE_EXPERIMENTAL
 #include <glm/vec3.hpp>
 
 #include <vtkAbstractPropPicker.h>
@@ -189,7 +186,7 @@ void STransformFromWheel::rotateTransform(double cx, double cy, double wheelAngl
         }
     }
 
-    const ::glm::dmat4 invTransMat = ::glm::translate(pos);
+    const ::glm::dmat4 invTransMat = ::glm::translate(::glm::dmat4(1.), pos);
     const ::glm::dmat4 rotMat      = ::glm::rotate(invTransMat, angle, rotAxis);
     const ::glm::dmat4 centeredRot = ::glm::translate(rotMat, -pos);
 
@@ -226,7 +223,7 @@ void STransformFromWheel::translateTransform(fwDataTools::PickingInfo info)
             }
         }
 
-        const ::glm::dmat4 transMat = ::glm::translate(transVec);
+        const ::glm::dmat4 transMat = ::glm::translate(::glm::dmat4(1.), transVec);
 
         this->applyTransformToOutput(transMat);
 
