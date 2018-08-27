@@ -1,10 +1,8 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
-
-#include <fwCore/base.hpp>
 
 #include "fwRuntime/ConfigurationElement.hpp"
 
@@ -12,11 +10,14 @@
 #include "fwRuntime/IExecutable.hpp"
 #include "fwRuntime/RuntimeException.hpp"
 
+#include <fwCore/base.hpp>
 
 namespace fwRuntime
 {
 
-std::ostream & operator<<(std::ostream & _sstream, ConfigurationElement& _configurationElement)
+//------------------------------------------------------------------------------
+
+std::ostream& operator<<(std::ostream& _sstream, ConfigurationElement& _configurationElement)
 {
     _sstream << "Configuration element " << _configurationElement.getName() << " value = " <<
         _configurationElement.getValue() << std::endl;
@@ -38,10 +39,10 @@ std::ostream & operator<<(std::ostream & _sstream, ConfigurationElement& _config
 
 //------------------------------------------------------------------------------
 
-ConfigurationElement::ConfigurationElement( const std::shared_ptr< Bundle > bundle, const std::string & name )
-    :   m_bundle( bundle    ),
-      m_name  ( name      ),
-      m_value ( std::string("") )
+ConfigurationElement::ConfigurationElement( const std::shared_ptr< Bundle > bundle, const std::string& name ) :
+    m_bundle( bundle    ),
+    m_name( name      ),
+    m_value( std::string("") )
 {
 }
 
@@ -49,7 +50,7 @@ ConfigurationElement::ConfigurationElement( const std::shared_ptr< Bundle > bund
 
 const std::shared_ptr<Bundle> ConfigurationElement::getBundle() const noexcept
 {
-    return m_bundle;
+    return m_bundle.lock();
 }
 
 //------------------------------------------------------------------------------
