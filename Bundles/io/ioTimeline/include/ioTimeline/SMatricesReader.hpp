@@ -35,6 +35,8 @@ namespace ioTimeline
  * - \b pause(): pause reading.
  * - \b readNext() : read next matrices
  * - \b readPrevious() : read previous matrices
+ * - \b setStep(int step, std::string key) : set the step value between two matrices when calling readNext/readPrevious
+ * slots on oneShot mode (supported key: "step")
  *
  * @section XML XML Configuration
  *
@@ -46,6 +48,7 @@ namespace ioTimeline
        <useTimelapse>true</useTimelapse>
        <createTimestamp>false</createTimestamp>
        <windowTitle>Select the matrix timeline to load</windowTitle>
+       <step>5</step>
    </service>
    @endcode
  * @subsection In-Out In-Out
@@ -61,6 +64,7 @@ namespace ioTimeline
  * - \b windowTitle: allow overriding the default title of the modal file selection window. \see io::IReader
  * - \b useTimelapse: if set to true, ignore the fps value and use the matrix
  *     timestamps to figure out at which speed to read the matrices. (default: false)
+ * - \b step (optionnal): value to jump between two matrices when calling readNext/readPrevious slots (default: 1)
  */
 
 class IOTIMELINE_CLASS_API SMatricesReader : public ::fwIO::IReader
@@ -123,6 +127,9 @@ private:
     /// SLOT: pause reading
     void pause();
 
+    /// SLOT: Set step used on readPrevious/readNext slots
+    void setStep(int _step, std::string _key);
+
     /// Read matrices (this function is set to the worker)
     void readMatrices();
 
@@ -146,6 +153,11 @@ private:
 
     /// If set to true, ignore the fps value and use the interval between timestamps for the timer
     bool m_useTimelapse;
+
+    /// Step between two matrices when calling readNext()/readPrevious() slots
+    unsigned long m_step;
+    /// Step value updated in setStep() slot used to compute a shift value when calling readPrevious()/readNext() slots
+    unsigned long m_stepChanged;
 };
 
 } // ioTimeline

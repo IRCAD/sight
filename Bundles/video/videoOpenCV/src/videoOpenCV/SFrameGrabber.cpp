@@ -36,6 +36,8 @@ namespace videoOpenCV
 
 static const ::fwServices::IService::KeyType s_FRAMETL = "frameTL";
 
+static const ::fwCom::Slots::SlotKeyType s_SET_STEP_SLOT = "setStep";
+
 // -----------------------------------------------------------------------------
 
 SFrameGrabber::SFrameGrabber() noexcept :
@@ -46,9 +48,13 @@ SFrameGrabber::SFrameGrabber() noexcept :
     m_oneShot(false),
     m_createNewTS(false),
     m_useTimelapse(true),
-    m_isPaused(false)
+    m_isPaused(false),
+    m_step(1),
+    m_stepChanged(1)
 {
     m_worker = ::fwThread::Worker::New();
+
+    newSlot(s_SET_STEP_SLOT, &SFrameGrabber::setStep, this);
 }
 
 // -----------------------------------------------------------------------------
@@ -85,6 +91,10 @@ void SFrameGrabber::configuring()
     m_useTimelapse = config.get<bool>("useTimelapse", true);
 
     OSLM_FATAL_IF("Fps setting is set to " << m_fps << " but should be in ]0;60].", m_fps == 0 || m_fps > 60);
+
+    m_step = config.get<unsigned int>("step", m_step);
+    OSLM_ASSERT("Step value is set to " << m_step << " but should be > 0.", m_step > 0);
+    m_stepChanged = m_step;
 }
 
 // -----------------------------------------------------------------------------
@@ -485,6 +495,8 @@ void SFrameGrabber::grabImage()
             timestamp = m_imageTimestamps[m_imageCount];
         }
 
+        OSLM_DEBUG("Reading image index " << m_imageCount << " with timestamp " << timestamp);
+
         const size_t width  = static_cast<size_t>(image.size().width);
         const size_t height = static_cast<size_t>(image.size().height);
 
@@ -533,14 +545,14 @@ void SFrameGrabber::grabImage()
                 const double currentTime       = m_imageTimestamps[currentImage] + elapsedTime;
 
                 // If the next image delay is already passed, drop the image and check the next one.
-                while (nextDuration < elapsedTime && m_imageCount+1 < m_imageTimestamps.size())
+                while (nextDuration < elapsedTime && m_imageCount + m_step < m_imageTimestamps.size())
                 {
-                    nextDuration = m_imageTimestamps[m_imageCount+1] - currentTime;
-                    ++m_imageCount;
+                    nextDuration  = m_imageTimestamps[m_imageCount + m_step] - currentTime;
+                    m_imageCount += m_step;
                 }
 
                 // If it is the last image: stop the timer or loop
-                if (m_imageCount+1 == m_imageToRead.size())
+                if (m_imageCount + m_step == m_imageToRead.size())
                 {
                     m_timer->stop();
                     if (m_loopVideo)
@@ -562,7 +574,7 @@ void SFrameGrabber::grabImage()
             }
             else
             {
-                ++m_imageCount;
+                m_imageCount += m_step;
             }
         }
         else
@@ -609,8 +621,15 @@ void SFrameGrabber::nextImage()
 {
     if(m_oneShot)
     {
-        if(m_imageCount < m_imageToRead.size())
+        // Compute difference between a possible step change in setStep() slot and the current step value
+        const long shift = static_cast<long>(m_stepChanged - m_step);
+
+        if(m_imageCount + shift < m_imageToRead.size())
         {
+            // Update image position index
+            m_imageCount += shift;
+            m_step        = m_stepChanged;
+
             m_timer->stop();
             m_timer->start();
         }
@@ -629,9 +648,16 @@ void SFrameGrabber::previousImage()
 {
     if(m_oneShot)
     {
-        if(m_imageCount > 1)
+        if(m_imageCount - m_step >= m_stepChanged)
         {
-            m_imageCount = m_imageCount - 2;// m_imageCount is pointing to next image,so -1 = present image
+            // Compute difference between a possible step change in setStep() slot and the current step value
+            const long shift = static_cast<long>(m_stepChanged - m_step);
+
+            // Update image position index
+            m_imageCount = m_imageCount - (2*m_step) - shift; // m_imageCount is pointing to next image,so -1 = present
+                                                              // image
+            m_step = m_stepChanged;
+
             m_timer->stop();
             m_timer->start();
         }
@@ -645,5 +671,21 @@ void SFrameGrabber::previousImage()
 }
 
 //-----------------------------------------------------------------------------
+
+void SFrameGrabber::setStep(int step, std::string key)
+{
+    if(key == "step")
+    {
+        OSLM_ASSERT("Needed step value (" << step << ") should be > 0.", step > 0);
+        // Save the changed step value
+        m_stepChanged = static_cast<unsigned long>(step);
+    }
+    else
+    {
+        OSLM_WARN("Only 'step' key is supported (current key value is : '" << key << "').");
+    }
+}
+
+//------------------------------------------------------------------------------
 
 } // namespace videoOpenCV

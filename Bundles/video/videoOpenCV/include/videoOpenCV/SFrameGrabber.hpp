@@ -54,6 +54,8 @@ namespace videoOpenCV
  * - \b setPositionVideo(int) : Force the current time in the video.
  * - \b nextImage() : Read the next image (in frame-by-frame mode).
  * - \b previousImage() : Read the previous image (in frame-by-frame mode).
+ * - \b setStep(int step, std::string key) : set the step value between two images when calling nextImage/previousImage
+ * slots on oneShot mode (supported key: "step")
  *
  * @section XML XML Configuration
  *
@@ -65,6 +67,7 @@ namespace videoOpenCV
             <oneShot>false</oneShot>
             <createTimestamp>false</createTimestamp>
             <useTimelapse>true</useTimelapse>
+            <step>5</step>
         </service>
    @endcode
  * @subsection Input Input
@@ -79,6 +82,7 @@ namespace videoOpenCV
  *  (only available if reading set of images) (default: false).
  * - \b createTimestamp (optional) : create a new timestamp instead of using name of image
  * (only available if reading set of images) (default: false).
+ * - \b step (optionnal): value to jump between two images when calling readNext/readPrevious slots (default: 1)
  */
 class VIDEOOPENCV_CLASS_API SFrameGrabber : public ::arServices::IGrabber
 {
@@ -127,6 +131,9 @@ protected:
 
     /// SLOT : read the previous image (only in file mode, and if m_oneShot is enabled)
     virtual void previousImage() override;
+
+    /// SLOT: Set step used on readPrevious/readNext slots
+    virtual void setStep(int step, std::string key) override;
 
 private:
 
@@ -185,6 +192,12 @@ private:
 
     /// if true: the grabber is paused
     bool m_isPaused;
+
+    /// Step between two images when calling nexImage()/previousImage() slots
+    unsigned long m_step;
+    /// Step value updated in setStep() slot used to compute a shift value when calling nextImage()/previousImage()
+    // slots
+    unsigned long m_stepChanged;
 };
 
 } // namespace videoOpenCV
