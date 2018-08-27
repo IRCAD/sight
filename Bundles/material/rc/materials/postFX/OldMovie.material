@@ -61,7 +61,7 @@ material OldMovie
 
             texture_unit SepiaTx
             {
-                texture Sepia1D.tga 1d
+                texture Sepia1D.dds 1d
                 tex_coord_set 3
                 tex_address_mode mirror
                 filtering point point none
