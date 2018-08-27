@@ -1,37 +1,36 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <iosfwd>    // streamsize
+#include "fwZip/ReadZipArchive.hpp"
 
+#include "fwZip/exception/Read.hpp"
 
-#include <boost/filesystem/path.hpp>
-#include <boost/filesystem/operations.hpp>
-
-#include <boost/iostreams/stream.hpp>
-#include <boost/iostreams/categories.hpp>  // source_tag
+#include "minizip/unzip.h"
 
 #include <fwCore/exceptionmacros.hpp>
 
-#include "minizip/unzip.h"
-#include "fwZip/ReadZipArchive.hpp"
-#include "fwZip/exception/Read.hpp"
+#include <boost/filesystem/operations.hpp>
+#include <boost/filesystem/path.hpp>
+#include <boost/iostreams/categories.hpp>  // source_tag
+#include <boost/iostreams/stream.hpp>
 
+#include <iosfwd>    // streamsize
 
 namespace fwZip
 {
 
+//------------------------------------------------------------------------------
 
-
-void * openReadZipArchive( const ::boost::filesystem::path &archive )
+void* openReadZipArchive( const ::boost::filesystem::path& archive )
 {
     FW_RAISE_EXCEPTION_IF(
         ::fwZip::exception::Read("Archive '" + archive.string() + "' doesn't exist."),
         !::boost::filesystem::exists(archive));
 
-    void * zip = unzOpen(archive.string().c_str());
+    void* zip = unzOpen(archive.string().c_str());
 
     FW_RAISE_EXCEPTION_IF(
         ::fwZip::exception::Read("Archive '" + archive.string() + "' cannot be opened."),
@@ -48,15 +47,14 @@ public:
     typedef char char_type;
     typedef ::boost::iostreams::source_tag category;
 
-    ZipSource( const ::boost::filesystem::path &archive) :
+    ZipSource( const ::boost::filesystem::path& archive) :
         m_zipDescriptor( openReadZipArchive(archive), &unzClose ),
         m_archive(archive)
     {
 
     }
 
-
-    ZipSource( const ::boost::filesystem::path &archive, const ::boost::filesystem::path &path ) :
+    ZipSource( const ::boost::filesystem::path& archive, const ::boost::filesystem::path& path ) :
         m_zipDescriptor( openReadZipArchive(archive), &unzClose ),
         m_archive(archive),
         m_path(path)
@@ -75,6 +73,7 @@ public:
             nRet != UNZ_OK);
     }
 
+    //------------------------------------------------------------------------------
 
     std::streamsize read(char* s, std::streamsize n)
     {
@@ -85,6 +84,8 @@ public:
             nRet < 0);
         return nRet;
     }
+
+    //------------------------------------------------------------------------------
 
     std::string getComment()
     {
@@ -107,8 +108,8 @@ public:
 
         std::string stringComment(comment, info->size_comment);
 
-        delete(info);
-        delete(comment);
+        delete info;
+        delete[] comment;
 
         return stringComment;
     }
@@ -119,18 +120,16 @@ protected:
     ::boost::filesystem::path m_path;
 };
 
-
-
 //-----------------------------------------------------------------------------
 
-ReadZipArchive::ReadZipArchive( const ::boost::filesystem::path &archive ) :
+ReadZipArchive::ReadZipArchive( const ::boost::filesystem::path& archive ) :
     m_archive(archive)
 {
 }
 
 //-----------------------------------------------------------------------------
 
-SPTR(std::istream) ReadZipArchive::getFile(const ::boost::filesystem::path &path)
+SPTR(std::istream) ReadZipArchive::getFile(const ::boost::filesystem::path& path)
 {
     SPTR(::boost::iostreams::stream<ZipSource>) is
         = std::make_shared< ::boost::iostreams::stream<ZipSource> >(m_archive, path);
@@ -154,6 +153,4 @@ const ::boost::filesystem::path ReadZipArchive::getArchivePath() const
     return m_archive;
 }
 
-
 }
-

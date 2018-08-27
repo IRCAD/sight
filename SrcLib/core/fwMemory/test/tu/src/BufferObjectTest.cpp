@@ -208,6 +208,7 @@ void BufferObjectTest::allocateZeroTest()
     CPPUNIT_ASSERT_EQUAL( static_cast< ::fwMemory::BufferObject::SizeType>(SIZE), bo->getSize() );
     CPPUNIT_ASSERT( bo->lock().getBuffer() != NULL );
 
+    bo->destroy();
 }
 
 //------------------------------------------------------------------------------

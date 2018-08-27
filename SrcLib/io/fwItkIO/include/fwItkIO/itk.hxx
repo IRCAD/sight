@@ -6,9 +6,6 @@
 
 #pragma once
 
-#ifndef __FWITKIO_ITK_HXX__
-#define __FWITKIO_ITK_HXX__
-
 #include <fwDataTools/helper/Array.hpp>
 #include <fwDataTools/helper/ImageGetter.hpp>
 
@@ -54,8 +51,9 @@ void dataImageFactory( typename ITKIMAGE::Pointer itkImage, ::fwData::Image::spt
     {
         SLM_ASSERT("Sorry, this method requires that itkImage manages its buffer.",
                    itkImage->GetPixelContainer()->GetContainerManageMemory() );
-        arrayHelper.setBuffer( static_cast<void*>(itkImage->GetBufferPointer()), true, _dataImage->getType(), _vSize,
-                               1 );
+        arrayHelper.setBuffer(
+            static_cast<void*>(itkImage->GetBufferPointer()), true, _dataImage->getType(), _vSize, 1,
+            ::fwMemory::BufferNewPolicy::New());
         /// itk image release its management buffer. dataImage must now deal memory
         itkImage->GetPixelContainer()->SetContainerManageMemory( false );
     }
@@ -156,5 +154,3 @@ typename ITKIMAGE::Pointer itkImageFactory( ::fwData::Image::csptr imageData, bo
 //------------------------------------------------------------------------------
 
 } // end namespace
-
-#endif // __FWITKIO_ITK_HXX__

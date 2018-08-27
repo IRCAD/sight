@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -18,6 +18,9 @@
 #include <fwData/Integer.hpp>
 #include <fwData/Line.hpp>
 #include <fwData/List.hpp>
+#include <fwData/location/Folder.hpp>
+#include <fwData/location/MultiFiles.hpp>
+#include <fwData/location/SingleFile.hpp>
 #include <fwData/Material.hpp>
 #include <fwData/Mesh.hpp>
 #include <fwData/Node.hpp>
@@ -27,11 +30,11 @@
 #include <fwData/PointList.hpp>
 #include <fwData/Port.hpp>
 #include <fwData/ProcessObject.hpp>
-#include <fwData/ROITraits.hpp>
 #include <fwData/Reconstruction.hpp>
 #include <fwData/ReconstructionTraits.hpp>
 #include <fwData/Resection.hpp>
 #include <fwData/ResectionDB.hpp>
+#include <fwData/ROITraits.hpp>
 #include <fwData/Spline.hpp>
 #include <fwData/String.hpp>
 #include <fwData/StructureTraits.hpp>
@@ -40,9 +43,6 @@
 #include <fwData/TransferFunction.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
 #include <fwData/Vector.hpp>
-#include <fwData/location/Folder.hpp>
-#include <fwData/location/MultiFiles.hpp>
-#include <fwData/location/SingleFile.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwData::ut::CopyTest);
@@ -225,6 +225,13 @@ void CopyTest::recursiveCopyTest()
     list->getContainer().push_back(vector);
     list->setField("F1", vector);
 
+    // Break cyclic references to avoid memory leaks
+    compositeCopy->getContainer().clear();
+    compositeCopy->setFields(zeroFields);
+    vectorCopy->getContainer().clear();
+    vectorCopy->setFields(zeroFields);
+    listCopy->getContainer().clear();
+    listCopy->setFields(zeroFields);
     compositeCopy = ::fwData::Object::copy(composite);
     vectorCopy    = ::fwData::Object::copy(vector);
     listCopy      = ::fwData::Object::copy(list);
@@ -310,6 +317,8 @@ void CopyTest::recursiveCopyTest()
     list->getContainer().push_back(vector);
     list->setField("F1", composite);
 
+    compositeCopy->getContainer().clear();
+    compositeCopy->setFields(zeroFields);
     compositeCopy = ::fwData::Object::copy(composite);
 
     {
@@ -329,13 +338,22 @@ void CopyTest::recursiveCopyTest()
     }
 
     //get rid of circular references
+    ::fwData::List::sptr insideList = L((*compositeCopy)["A"]);
+    insideList->getContainer().clear();
+    insideList->setFields(zeroFields);
+    compositeCopy->getContainer().clear();
+    compositeCopy->setFields(zeroFields);
+    vectorCopy->getContainer().clear();
+    vectorCopy->setFields(zeroFields);
+    listCopy->getContainer().clear();
+    listCopy->setFields(zeroFields);
+
     composite->getContainer().clear();
     vector->getContainer().clear();
     list->getContainer().clear();
     composite->setFields(zeroFields);
     vector->setFields(zeroFields);
     list->setFields(zeroFields);
-
 }
 
 } //namespace ut
