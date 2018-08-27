@@ -583,9 +583,13 @@ macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
             # Install shortcut
             string(TOLOWER ${FWPROJECT_NAME} APP_NAME)
 
-            set(LAUNCHER_PATH "bin/fwlauncher-${fwlauncher_VERSION}")
             set(LAUNCHER "fwlauncher-${fwlauncher_VERSION}")
             set(PROFILE_PATH "${${FWPROJECT_NAME}_FULLNAME}/profile.xml")
+            if(FW_BUILD_EXTERNAL)
+                set(LAUNCHER_PATH "${Fw4SPL_BINARY_DIR}")
+            else()
+                set(LAUNCHER_PATH "$me")
+            endif()
 
             configure_file(${FWCMAKE_RESOURCE_PATH}/install/linux/template.sh.in ${CMAKE_CURRENT_BINARY_DIR}/${APP_NAME} @ONLY)
             file(COPY ${CMAKE_CURRENT_BINARY_DIR}/${APP_NAME} DESTINATION ${CMAKE_BINARY_DIR}/bin
@@ -664,8 +668,8 @@ endmacro()
 # WARNING : some part of this cmake file relies on this macro signature
 macro(fwReq)
     foreach(DEPENDENCY ${ARGV})
-        if(NOT ${FWPROJECT_NAME}_TYPE)
-            add_dependencies(${FWPROJECT_NAME} ${ARGV})
+        if(NOT ${DEPENDENCY}_EXTERNAL)
+            add_dependencies(${FWPROJECT_NAME} ${DEPENDENCY})
         endif()
     endforeach()
 

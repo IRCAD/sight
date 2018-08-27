@@ -248,9 +248,7 @@ set(BUNDLE_RC_PREFIX "${CMAKE_INSTALL_DATADIR}" CACHE PATH "Relative path where 
 mark_as_advanced(BUNDLE_LIB_PREFIX)
 mark_as_advanced(BUNDLE_RC_PREFIX)
 
-if(BUILD_SDK)
-    set(FW_INSTALL_PATH_SUFFIX "fw4spl")
-endif()
+set(FW_INSTALL_PATH_SUFFIX "fw4spl")
 set(FWBUNDLE_LIB_PREFIX "${BUNDLE_LIB_PREFIX}/${FW_INSTALL_PATH_SUFFIX}")
 set(FWBUNDLE_RC_PREFIX "${BUNDLE_RC_PREFIX}/${FW_INSTALL_PATH_SUFFIX}")
 
@@ -464,6 +462,7 @@ install(
   FILES
     "${CMAKE_SOURCE_DIR}/CMake/install/generic_install.cmake"
     "${CMAKE_SOURCE_DIR}/CMake/install/linux_install.cmake"
+    "${CMAKE_SOURCE_DIR}/CMake/install/linux_install.cmake"
     "${CMAKE_SOURCE_DIR}/CMake/install/osx_install.cmake"
     "${CMAKE_SOURCE_DIR}/CMake/install/win_install.cmake"
   DESTINATION
@@ -472,10 +471,12 @@ install(
     dev
 )
 
+
 # Install some files needed for the install
 install(
   FILES
     "${CMAKE_SOURCE_DIR}/CMake/install/linux/template.sh.in"
+    "${CMAKE_SOURCE_DIR}/CMake/install/linux/linux_fixup.cmake.in"
   DESTINATION
     ${FWCONFIG_PACKAGE_LOCATION}/install/linux
   COMPONENT
