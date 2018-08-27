@@ -22,6 +22,37 @@ namespace fwServices
  * This class allows to manage the service used by an application.
  * We can easily manage its inputs/inouts and the connections.It connect/disconnect the signals and slots when the
  * service is started/stopped and when an object is added/removed.
+ *
+ * @code{.cpp}
+    m_appMgr =
+            std::unique_ptr< ::fwServices::AppManager >(new ::fwServices::AppManager);
+
+    // Initialize the manager
+    m_appMgr->create();
+    // Create and register a service
+    // - readerService will be automatically started and updated
+    // - mesherService will be automatically started but not updated
+    auto readerService = m_appMgr->registerService("::uiIO::editor::SIOSelector", "", true, true);
+    auto mesherService = m_appMgr->registerService("::opVTKMesh::SVTKMesher", "", true, false);
+
+    // configure the services ...
+
+    // Register the objects to associate with the services:
+    // - readerService will generate an output image, it is registered as "loadedImage" in the application
+    // - mesherService require an input image registered as "loadedImage" in the application
+    // - mesherService will generate an output model series, it is registered as "generatedModel" in the application
+    m_appMgr->registerObject(readerService, "loadedImage", "image", AccessType::OUTPUT, true);
+    m_appMgr->registerObject(mesherService, "loadedImage", "image", AccessType::INPUT, true);
+    m_appMgr->registerObject(mesherService, "generatedModel", "modelSeries", AccessType::OUTUT, true);
+
+    // Start the reader service:
+    // - readerService will be started because it does not require input or inout. It will also be updated.
+    // - mesherService will not be started because it requires an input image.
+    m_appMgr->startServices();
+
+    // When readerService will be updated, it will generate the image required by the mesher service. As the image is
+    // registered with the same identifier in the application, the mesherService will be automatically started.
+   @endcode
  */
 class FWSERVICES_CLASS_API AppManager : public ::fwCom::HasSlots
 {
@@ -51,7 +82,7 @@ public:
      * @param autoUpdate if true, the service will be updated after starting.
      * @return Return the created service
      */
-    FWSERVICES_API ::fwServices::IService::sptr registerService(const std::string& type, const std::string& uid,
+    FWSERVICES_API ::fwServices::IService::sptr registerService(const std::string& type, const std::string& uid = "",
                                                                 bool autoStart = false, bool autoUpdate = false);
 
     /**
@@ -116,7 +147,7 @@ public:
      * @param objId the identifier of the object, this identifier is only used to retrieve the object inside this
      *        AppManager, it is different from the uid.
      * @param key key of the object used into the service
-     * @param access access of the object into the service INPUT or INOUT
+     * @param access access of the object into the service INPUT, INOUT or OUTPUT
      * @param autoConnect true if the service will be connected to the object signals
      * @param optional true if the object is optional (i.e. the service can be started even if the object is not
      *        present).

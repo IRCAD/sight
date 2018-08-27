@@ -54,7 +54,7 @@ bool AppManager::ServiceInfo::requireObject(const std::string& objId) const
                              [&](const ::fwServices::IService::ObjectServiceConfig& objInfo)
         {
 
-            return (objInfo.m_uid == objId);
+            return (objInfo.m_uid == objId && objInfo.m_access != ::fwServices::IService::AccessType::OUTPUT);
         });
 
     return (itr != m_objects.end());
@@ -262,18 +262,25 @@ void AppManager::registerObject(const ::fwServices::IService::sptr& srv, const s
 
     info.addObject(objId, key, access, autoConnect, optional);
 
-    auto it = m_registeredObject.find(objId);
-    if (it != m_registeredObject.end())
+    if (access == ::fwServices::IService::AccessType::OUTPUT)
     {
-        srv->registerObject(it->second, key, access, autoConnect, optional);
-
-        if (info.m_autoStart && info.hasAllRequiredObjects())
+        srv->setObjectId(key, objId);
+    }
+    else
+    {
+        auto it = m_registeredObject.find(objId);
+        if (it != m_registeredObject.end())
         {
-            this->start(info);
+            srv->registerObject(it->second, key, access, autoConnect, optional);
 
-            if (info.m_autoUpdate)
+            if (info.m_autoStart && info.hasAllRequiredObjects())
             {
-                srv->update().wait();
+                this->start(info);
+
+                if (info.m_autoUpdate)
+                {
+                    srv->update().wait();
+                }
             }
         }
     }

@@ -27,6 +27,7 @@ CPPUNIT_TEST( managerCreationTest );
 CPPUNIT_TEST( managerWithObjectTest );
 CPPUNIT_TEST( managerWithObjectConnectionTest );
 CPPUNIT_TEST( managerWithServiceConnectionTest );
+CPPUNIT_TEST( managerWithOutputCreationTest );
 
 CPPUNIT_TEST_SUITE_END();
 
@@ -39,6 +40,7 @@ public:
     void managerWithObjectTest();
     void managerWithObjectConnectionTest();
     void managerWithServiceConnectionTest();
+    void managerWithOutputCreationTest();
 
 private:
 

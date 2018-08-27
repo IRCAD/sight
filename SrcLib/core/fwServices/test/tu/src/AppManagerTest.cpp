@@ -14,6 +14,7 @@
 
 #include <fwData/Boolean.hpp>
 #include <fwData/Image.hpp>
+#include <fwData/Integer.hpp>
 
 #include <fwTest/helper/wait.hpp>
 
@@ -324,6 +325,73 @@ void AppManagerTest::managerWithServiceConnectionTest()
     CPPUNIT_ASSERT_EQUAL(false, service2->getReceived());
     CPPUNIT_ASSERT_EQUAL(true, service3->getReceived());
     CPPUNIT_ASSERT_EQUAL(false, service4->getReceived());
+}
+
+//------------------------------------------------------------------------------
+
+void AppManagerTest::managerWithOutputCreationTest()
+{
+    m_appMgr = std::unique_ptr< ::fwServices::AppManager >(new ::fwServices::AppManager);
+    CPPUNIT_ASSERT(m_appMgr);
+
+    m_appMgr->create();
+
+    const std::string integerId           = "integerId";
+    const std::string generatedIntegerId  = "generatedIntegerId";
+    const std::string generatedInteger2Id = "generatedInteger2Id";
+
+    ::fwData::Integer::sptr integer1 = ::fwData::Integer::New(15);
+
+    auto service1 = m_appMgr->registerService< ::fwServices::ut::TestServiceWithData >(
+        "::fwServices::ut::TestServiceWithData", "", true, true);
+    auto service2 = m_appMgr->registerService< ::fwServices::ut::TestServiceWithData >(
+        "::fwServices::ut::TestServiceWithData", "", true);
+    auto service3 = m_appMgr->registerService< ::fwServices::ut::TestServiceWithData >(
+        "::fwServices::ut::TestServiceWithData", "", true);
+    auto service4 = m_appMgr->registerService< ::fwServices::ut::TestServiceWithData >(
+        "::fwServices::ut::TestServiceWithData", "", true);
+
+    CPPUNIT_ASSERT(service1);
+    CPPUNIT_ASSERT(service2);
+    CPPUNIT_ASSERT(service3);
+    CPPUNIT_ASSERT(service4);
+
+    m_appMgr->registerObject(service1, integerId, ::fwServices::ut::TestServiceWithData::s_INPUT,
+                             ::fwServices::IService::AccessType::INPUT);
+    m_appMgr->registerObject(service1, generatedIntegerId, ::fwServices::ut::TestServiceWithData::s_OUTPUT,
+                             ::fwServices::IService::AccessType::OUTPUT);
+
+    m_appMgr->registerObject(service2, generatedIntegerId, ::fwServices::ut::TestServiceWithData::s_INPUT,
+                             ::fwServices::IService::AccessType::INPUT);
+
+    m_appMgr->registerObject(service3, integerId, ::fwServices::ut::TestServiceWithData::s_INPUT,
+                             ::fwServices::IService::AccessType::INPUT);
+    m_appMgr->registerObject(service3, generatedInteger2Id, ::fwServices::ut::TestServiceWithData::s_OUTPUT,
+                             ::fwServices::IService::AccessType::OUTPUT);
+
+    m_appMgr->registerObject(service4, generatedInteger2Id,  ::fwServices::ut::TestServiceWithData::s_INPUT,
+                             ::fwServices::IService::AccessType::INPUT);
+
+    m_appMgr->addObject(integer1, integerId);
+
+    CPPUNIT_ASSERT_EQUAL(true, service1->isStarted());
+    CPPUNIT_ASSERT_EQUAL(true, service2->isStarted());
+    CPPUNIT_ASSERT_EQUAL(true, service3->isStarted());
+    CPPUNIT_ASSERT_EQUAL(false, service4->isStarted());
+
+    auto integer2 = service1->getOutput< ::fwData::Integer >(::fwServices::ut::TestServiceWithData::s_OUTPUT);
+    CPPUNIT_ASSERT(integer2);
+    CPPUNIT_ASSERT_EQUAL(integer1->getValue(), integer2->value());
+    CPPUNIT_ASSERT(nullptr ==
+                   service3->getOutput< ::fwData::Integer >(::fwServices::ut::TestServiceWithData::s_OUTPUT));
+
+    service3->update().wait();
+
+    auto integer3 = service3->getOutput< ::fwData::Integer >(::fwServices::ut::TestServiceWithData::s_OUTPUT);
+
+    CPPUNIT_ASSERT(integer3);
+    CPPUNIT_ASSERT_EQUAL(integer1->getValue(), integer3->getValue());
+    CPPUNIT_ASSERT_EQUAL(true, service4->isStarted());
 }
 
 //------------------------------------------------------------------------------
