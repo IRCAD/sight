@@ -3,15 +3,11 @@
     <parameters>
         <param name="WID_PARENT" />
         <param name="GENERIC_UID" />
-        <param name="SERIESDB" />
-        <param name="AS_UID" />
         <param name="targetImageUid" />
         <param name="referenceImageUid" />
         <param name="transformUid" />
     </parameters>
     <config>
-        <object uid="${SERIESDB}" type="::fwMedData::SeriesDB" src="ref" />
-        <object uid="${AS_UID}" type="::fwMedData::ActivitySeries" src="ref" />
         <object uid="${referenceImageUid}" type="::fwData::Image" src="ref" />
         <object uid="${targetImageUid}" type="::fwData::Image" src="ref" />
         <object uid="${transformUid}" type="::fwData::TransformationMatrix3D" src="ref" />
@@ -284,13 +280,6 @@
             <parameter replace="WID_PARENT" by="tfWidgetView"/>
         </service>
 
-        <service uid="computeCenter" type="::guiQt::editor::SSignalButton">
-            <config>
-                <checkable>false</checkable>
-                <text>Fast registration</text>
-            </config>
-        </service>
-
         <service uid="actionFastRegistration" type="::guiQt::editor::SSignalButton">
             <config>
                 <checkable>false</checkable>
@@ -329,8 +318,8 @@
             <parameter replace="WID_PARENT" by="landmarkScene" />
         </service>
 
-        <service uid="referenceTFSelector" type="::uiTF::TransferFunctionEditor" autoConnect="yes">
-            <inout key="tfPool" uid="referenceTFComposite" />
+        <service uid="referenceTFSelector" type="::uiTF::TransferFunctionEditor">
+            <inout key="tfPool" uid="referenceTFComposite" autoConnect="yes"/>
             <out key="tf" uid="referenceTransferFunction" />
         </service>
 
