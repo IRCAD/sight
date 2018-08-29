@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017.
+ * FW4SPL - Copyright (C) IRCAD, 2017-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,7 +8,8 @@
 
 #include <fwServices/macros.hpp>
 
-#include <glm/gtx/vector_angle.hpp>
+#include <glm/geometric.hpp>
+#include <glm/gtc/vec1.hpp> // hack, some glm functions won't compile without this.
 #include <glm/vec2.hpp>
 
 #include <vtkActor2D.h>
@@ -107,8 +108,9 @@ void fwVtkWheelWidget::MoveAction(vtkAbstractWidget* w)
         const auto v2 = ::glm::normalize(::glm::dvec2(x - center.x, y - center.y));
 
         const double vectProd = v1.x * v2.y - v1.y * v2.x;
+        const double vectDot  = ::glm::dot(v1, v2);
         const double angleSin = std::asin(vectProd);
-        const double angleCos = ::glm::angle(v1, v2);
+        const double angleCos = std::acos(vectDot);
 
         const double angle = ::glm::sign(angleSin) * angleCos;
 
@@ -195,4 +197,3 @@ fwVtkWheelRepresentation* fwVtkWheelWidget::GetRepresentation() const
 {
     return dynamic_cast<fwVtkWheelRepresentation*>(this->WidgetRep);
 }
-

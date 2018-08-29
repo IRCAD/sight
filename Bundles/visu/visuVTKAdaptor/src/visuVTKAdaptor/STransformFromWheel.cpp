@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017.
+ * FW4SPL - Copyright (C) IRCAD, 2017-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -16,7 +16,6 @@
 #include <fwServices/macros.hpp>
 
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform.hpp>
 #include <glm/vec3.hpp>
 
 #include <vtkAbstractPropPicker.h>
@@ -187,7 +186,7 @@ void STransformFromWheel::rotateTransform(double cx, double cy, double wheelAngl
         }
     }
 
-    const ::glm::dmat4 invTransMat = ::glm::translate(pos);
+    const ::glm::dmat4 invTransMat = ::glm::translate(::glm::dmat4(1.), pos);
     const ::glm::dmat4 rotMat      = ::glm::rotate(invTransMat, angle, rotAxis);
     const ::glm::dmat4 centeredRot = ::glm::translate(rotMat, -pos);
 
@@ -224,7 +223,7 @@ void STransformFromWheel::translateTransform(fwDataTools::PickingInfo info)
             }
         }
 
-        const ::glm::dmat4 transMat = ::glm::translate(transVec);
+        const ::glm::dmat4 transMat = ::glm::translate(::glm::dmat4(1.), transVec);
 
         this->applyTransformToOutput(transMat);
 
