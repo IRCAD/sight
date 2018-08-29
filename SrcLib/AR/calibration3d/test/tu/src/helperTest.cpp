@@ -11,7 +11,7 @@
 #include <fwDataTools/TransformationMatrix3D.hpp>
 
 #include <glm/glm.hpp>
-#include <glm/gtx/transform.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 #include <opencv2/core.hpp>
 
@@ -261,7 +261,7 @@ void helperTest::toolCalibrationBasic()
         ::glm::dvec3 axis(x, y, z);
         axis = glm::normalize(axis);
 
-        ::glm::dmat4 matrix = ::glm::translate(center);
+        ::glm::dmat4 matrix = ::glm::translate(::glm::dmat4(1.), center);
 
         matrix = ::glm::rotate(matrix, angle, axis);
 
@@ -318,7 +318,7 @@ void helperTest::toolCalibration()
         ::glm::dvec3 axis(x, y, z);
         axis = glm::normalize(axis);
 
-        ::glm::dmat4 matrix = ::glm::translate(center);
+        ::glm::dmat4 matrix = ::glm::translate(::glm::dmat4(1.), center);
         matrix              = ::glm::rotate(matrix, angle, axis);
         matrix              = ::glm::translate(matrix, translation);
 
