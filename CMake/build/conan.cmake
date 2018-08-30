@@ -11,5 +11,5 @@ conan_add_remote(NAME fw4spl-conan INDEX 1
                  URL http://5.39.78.163:8081/artifactory/api/conan/conan-local)
                  
 conan_cmake_run(CONANFILE conanfile.py
-                BASIC_SETUP CMAKE_TARGETS
+                BASIC_SETUP CMAKE_TARGETS NO_OUTPUT_DIRS
                 BUILD missing)
