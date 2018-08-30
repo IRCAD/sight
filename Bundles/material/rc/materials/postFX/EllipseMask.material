@@ -38,7 +38,7 @@ material EllipseMask
 
             texture_unit
             {
-                texture ellipse.png 2d
+                texture ellipse.dds 2d
                 tex_coord_set 1
                 tex_address_mode clamp
                 filtering linear linear linear
