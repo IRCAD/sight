@@ -1,9 +1,15 @@
 fwLoadProperties()
 
-if(WIN32)
-    set(FW_QT5_PLUGINS_PATH "bin/qt5/plugins")
+if(USE_CONAN)
+    set(FW_QT5_PLUGINS_PREFIX "${CONAN_QT_ROOT}")
+    set(FW_QT5_PLUGINS_PATH "plugins")
 else()
-    set(FW_QT5_PLUGINS_PATH "lib/qt5/plugins")
+    set(FW_QT5_PLUGINS_PREFIX "${QT_DIR}")
+    if(WIN32)
+        set(FW_QT5_PLUGINS_PATH "bin/qt5/plugins")
+    else()
+        set(FW_QT5_PLUGINS_PATH "lib/qt5/plugins")
+    endif()
 endif()
 
 configure_file("${CMAKE_CURRENT_LIST_DIR}/bin/qt.conf" "${CMAKE_BINARY_DIR}/bin/qt.conf")
