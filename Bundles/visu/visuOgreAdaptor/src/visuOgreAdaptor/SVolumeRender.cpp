@@ -952,6 +952,8 @@ void SVolumeRender::createWidget()
         vrInteractor->initPicker();
         vrInteractor->setWidget(m_widget);
     }
+
+    m_volumeRenderer->clipImage(m_widget->getClippingBox());
 }
 
 //-----------------------------------------------------------------------------
