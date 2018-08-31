@@ -264,7 +264,7 @@ private:
     ::Ogre::Camera* m_camera { nullptr };
 
     /// Widgets used for clipping.
-    ::fwRenderOgre::ui::VRWidget* m_widget { nullptr };
+    ::fwRenderOgre::ui::VRWidget::sptr m_widget;
 
     /// Sampling rate.
     std::uint16_t m_nbSamples { 512 };

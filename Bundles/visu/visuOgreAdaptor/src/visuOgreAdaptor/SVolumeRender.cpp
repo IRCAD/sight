@@ -939,8 +939,9 @@ void SVolumeRender::createWidget()
     }
 
     this->destroyWidget(); // Destroys the old widgets if they were created.
-    m_widget = new ::fwRenderOgre::ui::VRWidget(this->getID(), m_volumeSceneNode, m_camera, m_sceneManager,
-                                                ogreClippingMx, clippingMxUpdate);
+    m_widget = std::make_shared< ::fwRenderOgre::ui::VRWidget>(this->getID(), m_volumeSceneNode,
+                                                               m_camera, m_sceneManager,
+                                                               ogreClippingMx, clippingMxUpdate);
 
     ::fwRenderOgre::Layer::sptr layer                        = this->getLayer();
     ::fwRenderOgre::interactor::IInteractor::sptr interactor = layer->getMoveInteractor();
@@ -972,7 +973,9 @@ void SVolumeRender::destroyWidget()
             vrInteractor->setWidget(nullptr);
         }
 
-        delete m_widget;
+        SLM_ASSERT("There should be only one remaining instance of 'm_widget' at this points.",
+                   m_widget.use_count() != 1);
+
         m_widget = nullptr;
     }
 }

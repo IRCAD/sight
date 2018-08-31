@@ -27,6 +27,8 @@ class VRWidget
 public:
 
     typedef std::function< void (void) > ClippingUpdateCallbackType;
+    typedef std::shared_ptr<VRWidget> sptr;
+    typedef std::weak_ptr<VRWidget> wptr;
 
     /**
      * @brief Constructor.

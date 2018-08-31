@@ -53,7 +53,8 @@ Ogre::MovableObject* VRWidgetsInteractor::pickObject(int x, int y)
 
 void VRWidgetsInteractor::mouseMoveEvent(MouseButton button, int x, int y, int dx, int dy)
 {
-    if(m_widget) // If a widget is present in the scene.
+    auto widget = m_widget.lock();
+    if(widget) // If a widget is present in the scene.
     {
         if(button == LEFT)
         {
@@ -63,16 +64,16 @@ void VRWidgetsInteractor::mouseMoveEvent(MouseButton button, int x, int y, int d
             }
             else
             {
-                m_widget->widgetPicked(m_pickedObject, x, y);
+                widget->widgetPicked(m_pickedObject, x, y);
             }
         }
         else if(button == MIDDLE)
         {
-            m_widget->moveClippingBox(x, y, -dx, -dy);
+            widget->moveClippingBox(x, y, -dx, -dy);
         }
         else if(button == RIGHT)
         {
-            m_widget->scaleClippingBox(x, y, dy);
+            widget->scaleClippingBox(x, y, dy);
         }
     }
     else if(button == LEFT) // Fallback to trackball otherwise.
@@ -85,9 +86,10 @@ void VRWidgetsInteractor::mouseMoveEvent(MouseButton button, int x, int y, int d
 
 void VRWidgetsInteractor::buttonReleaseEvent(MouseButton /*button*/, int /*x*/, int /*y*/)
 {
-    if(m_widget)
+    auto widget = m_widget.lock();
+    if(widget)
     {
-        m_widget->widgetReleased();
+        widget->widgetReleased();
         m_pickedObject = nullptr;
     }
 }
@@ -96,15 +98,16 @@ void VRWidgetsInteractor::buttonReleaseEvent(MouseButton /*button*/, int /*x*/, 
 
 void VRWidgetsInteractor::buttonPressEvent(MouseButton button, int x, int y)
 {
-    if(m_widget)
+    auto widget = m_widget.lock();
+    if(widget)
     {
-        if(button == LEFT && m_widget->getVisibility())
+        if(button == LEFT && widget->getVisibility())
         {
             m_pickedObject = pickObject(x, y);
 
-            if(m_widget->belongsToWidget(m_pickedObject))
+            if(widget->belongsToWidget(m_pickedObject))
             {
-                m_widget->widgetPicked(m_pickedObject, x, y);
+                widget->widgetPicked(m_pickedObject, x, y);
             }
             else
             {
@@ -113,18 +116,18 @@ void VRWidgetsInteractor::buttonPressEvent(MouseButton button, int x, int y)
         }
         else if(button == MIDDLE)
         {
-            m_widget->moveClippingBox(x, y, 0, 0);
+            widget->moveClippingBox(x, y, 0, 0);
         }
         else if(button == RIGHT)
         {
-            m_widget->scaleClippingBox(x, y, 0);
+            widget->scaleClippingBox(x, y, 0);
         }
     }
 }
 
 //------------------------------------------------------------------------------
 
-void VRWidgetsInteractor::setWidget(ui::VRWidget* widget)
+void VRWidgetsInteractor::setWidget(ui::VRWidget::sptr widget)
 {
     m_widget = widget;
 }
