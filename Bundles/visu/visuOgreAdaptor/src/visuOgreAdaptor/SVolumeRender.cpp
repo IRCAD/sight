@@ -974,7 +974,7 @@ void SVolumeRender::destroyWidget()
         }
 
         SLM_ASSERT("There should be only one remaining instance of 'm_widget' at this points.",
-                   m_widget.use_count() != 1);
+                   m_widget.use_count() == 1);
 
         m_widget = nullptr;
     }
