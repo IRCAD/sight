@@ -25,8 +25,7 @@ namespace interactor
 //------------------------------------------------------------------------------
 
 VRWidgetsInteractor::VRWidgetsInteractor() noexcept :
-    m_pickedObject(nullptr),
-    m_widget(nullptr)
+    m_pickedObject(nullptr)
 {
 }
 
@@ -42,10 +41,10 @@ Ogre::MovableObject* VRWidgetsInteractor::pickObject(int x, int y)
 {
     ::Ogre::Camera* camera = m_sceneManager->getCamera(::fwRenderOgre::Layer::DEFAULT_CAMERA_NAME);
 
-    int height = camera->getViewport()->getActualHeight();
-    int width  = camera->getViewport()->getActualWidth();
+    const int height = camera->getViewport()->getActualHeight();
+    const int width  = camera->getViewport()->getActualWidth();
 
-    bool pickSuccess = m_picker.executeRaySceneQuery( x, y, width, height, 0 );
+    const bool pickSuccess = m_picker.executeRaySceneQuery( x, y, width, height, 0 );
 
     return pickSuccess ? m_picker.getSelectedObject() : nullptr;
 }
@@ -54,24 +53,32 @@ Ogre::MovableObject* VRWidgetsInteractor::pickObject(int x, int y)
 
 void VRWidgetsInteractor::mouseMoveEvent(MouseButton button, int x, int y, int dx, int dy)
 {
-    if(button == LEFT)
+    auto widget = m_widget.lock();
+    if(widget) // If a widget is present in the scene.
     {
-        if(!m_widget->getVisibility() || m_pickedObject == nullptr)
+        if(button == LEFT)
         {
-            TrackballInteractor::mouseMoveEvent(button, x, y, dx, dy);
+            if(m_pickedObject == nullptr) // Enable trackball if no face was picked.
+            {
+                TrackballInteractor::mouseMoveEvent(button, x, y, dx, dy);
+            }
+            else
+            {
+                widget->widgetPicked(m_pickedObject, x, y);
+            }
         }
-        else
+        else if(button == MIDDLE)
         {
-            m_widget->widgetPicked(m_pickedObject, x, y);
+            widget->moveClippingBox(x, y, -dx, -dy);
+        }
+        else if(button == RIGHT)
+        {
+            widget->scaleClippingBox(x, y, dy);
         }
     }
-    else if(button == MIDDLE)
+    else if(button == LEFT) // Fallback to trackball otherwise.
     {
-        m_widget->moveClippingBox(x, y, -dx, -dy);
-    }
-    else if(button == RIGHT)
-    {
-        m_widget->scaleClippingBox(x, y, dy);
+        TrackballInteractor::mouseMoveEvent(button, x, y, dx, dy);
     }
 }
 
@@ -79,53 +86,50 @@ void VRWidgetsInteractor::mouseMoveEvent(MouseButton button, int x, int y, int d
 
 void VRWidgetsInteractor::buttonReleaseEvent(MouseButton /*button*/, int /*x*/, int /*y*/)
 {
-    m_widget->widgetReleased();
-    m_pickedObject = nullptr;
+    auto widget = m_widget.lock();
+    if(widget)
+    {
+        widget->widgetReleased();
+        m_pickedObject = nullptr;
+    }
 }
 
 //------------------------------------------------------------------------------
 
 void VRWidgetsInteractor::buttonPressEvent(MouseButton button, int x, int y)
 {
-    if(button == LEFT)
+    auto widget = m_widget.lock();
+    if(widget)
     {
-        m_pickedObject = pickObject(x, y);
+        if(button == LEFT && widget->getVisibility())
+        {
+            m_pickedObject = pickObject(x, y);
 
-        if(m_widget->belongsToWidget(m_pickedObject))
-        {
-            m_widget->widgetPicked(m_pickedObject, x, y);
+            if(widget->belongsToWidget(m_pickedObject))
+            {
+                widget->widgetPicked(m_pickedObject, x, y);
+            }
+            else
+            {
+                m_pickedObject = nullptr;
+            }
         }
-        else
+        else if(button == MIDDLE)
         {
-            m_pickedObject = nullptr;
+            widget->moveClippingBox(x, y, 0, 0);
         }
-    }
-    else if(button == MIDDLE)
-    {
-        m_widget->moveClippingBox(x, y, 0, 0);
-    }
-    else if(button == RIGHT)
-    {
-        m_widget->scaleClippingBox(x, y, 0);
+        else if(button == RIGHT)
+        {
+            widget->scaleClippingBox(x, y, 0);
+        }
     }
 }
 
 //------------------------------------------------------------------------------
 
-void VRWidgetsInteractor::attachWidget(ui::VRWidget::sptr widget)
+void VRWidgetsInteractor::setWidget(ui::VRWidget::sptr widget)
 {
-    OSLM_ASSERT("Only one widget can be attached to a VR interactor", !m_widget);
     m_widget = widget;
-}
-
-//------------------------------------------------------------------------------
-
-void VRWidgetsInteractor::detachWidget(ui::VRWidget::sptr widget)
-{
-    if(m_widget == widget)
-    {
-        m_widget = nullptr;
-    }
 }
 
 //------------------------------------------------------------------------------

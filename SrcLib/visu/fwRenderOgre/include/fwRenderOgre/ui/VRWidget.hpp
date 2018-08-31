@@ -6,11 +6,8 @@
 
 #pragma once
 
-#include <fwRenderOgre/registry/macros.hpp>
-#include <fwRenderOgre/SRender.hpp>
-#include <fwRenderOgre/vr/IVolumeRenderer.hpp>
-
-#include <fwData/TransformationMatrix3D.hpp>
+#include "fwRenderOgre/registry/macros.hpp"
+#include "fwRenderOgre/vr/IVolumeRenderer.hpp"
 
 #include <OGRE/OgreCamera.h>
 #include <OGRE/OgreSceneNode.h>
@@ -29,32 +26,29 @@ class VRWidget
 {
 public:
 
-    /// Shared pointer type.
-    typedef std::shared_ptr< VRWidget > sptr;
+    typedef std::function< void (void) > ClippingUpdateCallbackType;
+    typedef std::shared_ptr<VRWidget> sptr;
+    typedef std::weak_ptr<VRWidget> wptr;
 
     /**
      * @brief Constructor.
      *
-     * @param id                   parent service id.
-     * @param parentSceneNode      holds the volume object.
-     * @param camera               render target.
-     * @param renderService        service that renders this scene.
-     * @param sceneManager         scene manager handling thos object.
-     * @param cubeFaces            maps cube faces to vertex indices.
-     * @param edges                all pairs of vertex indices forming edges.
-     * @param imgPositions         image bounding box positions.
-     * @param imgClippedPositions  image positions after clipping.
+     * @param id                     parent service id.
+     * @param parentSceneNode        holds the volume object.
+     * @param camera                 camera viewing this scene.
+     * @param sceneManager           scene manager handling this object.
+     * @param clippingMatrix         the initial clipping transform in world space
+     * @param clippingUpdateCallback function called when the widget is modified through interaction.
      */
     FWRENDEROGRE_API VRWidget(const std::string& id,
                               ::Ogre::SceneNode* parentSceneNode,
                               ::Ogre::Camera* camera,
-                              SRender::sptr renderService,
                               ::Ogre::SceneManager* sceneManager,
-                              ::fwRenderOgre::vr::IVolumeRenderer* renderer,
-                              ::fwData::TransformationMatrix3D::sptr clippingMatrix) noexcept;
+                              const ::Ogre::Matrix4& clippingMatrix,
+                              const ClippingUpdateCallbackType& clippingUpdateCallback);
 
     /// Destructor.
-    FWRENDEROGRE_API virtual ~VRWidget() noexcept;
+    FWRENDEROGRE_API virtual ~VRWidget();
 
     /// Find out if a movable object belongs to this widget.
     bool belongsToWidget(const Ogre::MovableObject* const _object) const;
@@ -98,6 +92,15 @@ public:
     /// Hides or shows the widget.
     FWRENDEROGRE_API void setVisibility(bool visibility);
 
+    /// Returns the axis aligned coordinates of the clipping widget in volume image space.
+    FWRENDEROGRE_API ::Ogre::AxisAlignedBox getClippingBox() const;
+
+    /// Returns the clipping box transform in world space.
+    FWRENDEROGRE_API ::Ogre::Matrix4 getClippingTransform() const;
+
+    /// Sets the clipping cube from the input transform.
+    FWRENDEROGRE_API void updateFromTransform(const ::Ogre::Matrix4& _clippingMx);
+
 private:
 
     /// The current selection mode.
@@ -106,13 +109,13 @@ private:
         NONE,
         BOX,
         CAMERA
-    } m_selectionMode;
+    } m_selectionMode { NONE };
 
     /// Get the face's image positions.
-    std::array< ::Ogre::Vector3, 4 > getFacePositions(::fwRenderOgre::vr::IVolumeRenderer::CubeFace _faceName) const;
+    std::array< ::Ogre::Vector3, 4 > getFacePositions(vr::IVolumeRenderer::CubeFace _faceName) const;
 
     /// Get the center of a clipping box face.
-    ::Ogre::Vector3 getFaceCenter(::fwRenderOgre::vr::IVolumeRenderer::CubeFace _faceName) const;
+    ::Ogre::Vector3 getFaceCenter(vr::IVolumeRenderer::CubeFace _faceName) const;
 
     /// Returns the clipping box's image space positions.
     std::array< ::Ogre::Vector3, 8 > getClippingBoxPositions() const;
@@ -120,54 +123,48 @@ private:
     /// Creates the widget objects and scene nodes.
     void initWidgets();
 
-    /// Recomputes the intersection between the volume and it's clipping box.
-    void updateClippingCube();
-
     /// Updates the widget's positions based on the clipping box.
     void updateWidgets();
 
     /// Highlight a clipping box face.
-    void selectFace(::fwRenderOgre::vr::IVolumeRenderer::CubeFace _faceName);
+    void selectFace(vr::IVolumeRenderer::CubeFace _faceName);
 
     /// Unhighlight face.
     void deselectFace();
+
+    /// Computes the axis aligned clipping box positions from the input transform.
+    void applyTransform(const ::Ogre::Matrix4& _clippingMx);
 
     /// ID of the service using this widget.
     const std::string m_id;
 
     /// This object's scene manager.
-    ::Ogre::SceneManager* m_sceneManager;
+    ::Ogre::SceneManager* m_sceneManager { nullptr };
 
     /// Camera too which the volume is rendered.
-    ::Ogre::Camera* m_camera;
-
-    /// Render service in charge of rendering these widgets.
-    SRender::sptr m_renderService;
+    ::Ogre::Camera* m_camera { nullptr };
 
     /// Parent node containing the volume.
-    ::Ogre::SceneNode* m_volumeSceneNode;
+    ::Ogre::SceneNode* m_volumeSceneNode { nullptr };
 
     /// Node holding widget objects.
-    ::Ogre::SceneNode* m_widgetSceneNode;
+    ::Ogre::SceneNode* m_widgetSceneNode { nullptr };
 
     /// Maps widget objects to their scene node and to a cube face.
     std::map< const ::Ogre::MovableObject*,
-              std::pair< ::fwRenderOgre::vr::IVolumeRenderer::CubeFace, ::Ogre::SceneNode* > >  m_widgets;
-
-    /// Renders the volume.
-    ::fwRenderOgre::vr::IVolumeRenderer* m_renderer;
+              std::pair< vr::IVolumeRenderer::CubeFace, ::Ogre::SceneNode* > >  m_widgets;
 
     /// Axis aligned clipping cube.
-    std::array< ::Ogre::Vector3, 2> m_clippingCube;
+    std::array< ::Ogre::Vector3, 2> m_clippingCube {{ ::Ogre::Vector3::ZERO, ::Ogre::Vector3::UNIT_SCALE }};
 
     /// Object used to display the clipping box.
-    ::Ogre::ManualObject* m_boundingBox;
+    ::Ogre::ManualObject* m_boundingBox { nullptr };
 
     /// Oject holding the highlighted face geometry.
-    ::Ogre::ManualObject* m_selectedFace;
+    ::Ogre::ManualObject* m_selectedFace { nullptr };
 
     /// Widget currently being dragged.
-    ::Ogre::Entity* m_selectedWidget;
+    ::Ogre::Entity* m_selectedWidget { nullptr };
 
     /// Picked box point.
     ::Ogre::Vector3 m_pickedBoxPoint;
@@ -175,8 +172,8 @@ private:
     /// Materials
     ::Ogre::MaterialPtr m_sphereHighlightMtl, m_frameMtl, m_frameHighlightMtl, m_faceMtl;
 
-    /// Pointer to the adaptor clipping matrix
-    ::fwData::TransformationMatrix3D::sptr m_clippingMatrix;
+    /// Called when the clipping box is modified through interaction.
+    ClippingUpdateCallbackType m_clippingUpdateCallback;
 };
 
 } // namespace ui

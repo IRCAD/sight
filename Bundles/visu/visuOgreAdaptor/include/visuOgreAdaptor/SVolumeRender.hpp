@@ -17,6 +17,7 @@
 #include <fwRenderOgre/ITransformable.hpp>
 #include <fwRenderOgre/TransferFunction.hpp>
 #include <fwRenderOgre/ui/VRWidget.hpp>
+#include <fwRenderOgre/vr/ImportanceDrivenVolumeRenderer.hpp>
 #include <fwRenderOgre/vr/PreIntegrationTable.hpp>
 #include <fwRenderOgre/vr/SATVolumeIllumination.hpp>
 
@@ -63,6 +64,7 @@ namespace visuOgreAdaptor
  * - \b updateTFWindowing(double window, double level) : update the displayed transfer function according to the new
  *      window and level
  * - \b updateVisibility(bool): show or hide the volume.
+ * - \b updateClippingBox(): updates the cropping widget from the clipping matrix.
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -71,7 +73,7 @@ namespace visuOgreAdaptor
         <inout key="tf" uid="..." optional="yes" />
         <inout key="clippingMatrix" uid="..." />
         <config layer="default"
-                samples="1024" preintegration="yes" mode="raytracing" ao="no" colorBleeding="no" shadows="no"
+                samples="1024" preintegration="yes" ao="no" colorBleeding="no" shadows="no"
                 satSizeRatio="0.25" satShells="3" satShellRadius="7" satConeAngle="0.1" satConeSamples="50"
                 aoFactor="0.5" colorBleedingFactor="0.5" autoresetcamera="yes"/>
     </service>
@@ -89,8 +91,6 @@ namespace visuOgreAdaptor
  * - \b samples (optional, default=512): maximum number of samples per ray or number of slices.
  * - \b preintegration (optional, yes/no, default=no): use pre-integration.
  * - \b widgets (optional, yes/no, default=yes): display VR widgets.
- * - \b mode (optional, slice/raytracing, default=raytracing): Rendering mode.
- * Only if the raycasting render mode is activated :
  * - \b ao (optional, true/false, default=false): Ambient occlusion usage.
  * - \b colorBleeding (optional, true/false, default=false): Color bleeding usage.
  * - \b shadows (optional, true/false, default=false): Soft shadows usage.
@@ -142,6 +142,7 @@ public:
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_ENUM_PARAMETER_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_COLOR_PARAMETER_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT;
+    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_CLIPPING_BOX_SLOT;
     /** @} */
 
     /// Volume rendering effects.
@@ -222,7 +223,10 @@ private:
     void updateVisibility(bool visibility);
 
     /// Creates widgets and connects its slots to interactor signals.
-    void initWidgets();
+    void createWidget();
+
+    /// Removes the widgets from the interactor and deletes it.
+    void destroyWidget();
 
     /// Computes the volume illumination and applies it to the ray tracing renderer
     void updateVolumeIllumination();
@@ -230,15 +234,14 @@ private:
     /// Updates or creates the illumination volume according to the given VR effect.
     void toggleVREffect(VREffectType vrEffect);
 
-    /// Rendering mode.
-    enum
-    {
-        VR_MODE_SLICE,
-        VR_MODE_RAY_TRACING
-    } m_renderingMode;
+    /// Updates the clipping box position from the inout clipping matrix.
+    void updateClippingBox();
+
+    /// Updates the inout clipping matrix from the clipping box positions.
+    void updateClippingTM3D();
 
     /// Renders the volume.
-    ::fwRenderOgre::vr::IVolumeRenderer* m_volumeRenderer;
+    ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer* m_volumeRenderer { nullptr };
 
     /// 3D Image texture.
     ::Ogre::TexturePtr m_3DOgreTexture;
@@ -252,64 +255,64 @@ private:
     ::fwRenderOgre::vr::PreIntegrationTable m_preIntegrationTable;
 
     /// This object's scene manager.
-    ::Ogre::SceneManager* m_sceneManager;
+    ::Ogre::SceneManager* m_sceneManager { nullptr };
 
     /// This object's scene node.
-    ::Ogre::SceneNode* m_volumeSceneNode;
+    ::Ogre::SceneNode* m_volumeSceneNode { nullptr };
 
     /// Camera used for rendering.
-    ::Ogre::Camera* m_camera;
+    ::Ogre::Camera* m_camera { nullptr };
 
     /// Widgets used for clipping.
-    ::fwRenderOgre::ui::VRWidget::sptr m_widgets;
+    ::fwRenderOgre::ui::VRWidget::sptr m_widget;
 
     /// Sampling rate.
-    std::uint16_t m_nbSamples;
+    std::uint16_t m_nbSamples { 512 };
 
     /// Use pre-integration.
-    bool m_preIntegratedRendering;
+    bool m_preIntegratedRendering { false };
 
     /// Sets usage of ambient occlusion.
-    bool m_ambientOcclusion;
+    bool m_ambientOcclusion { false };
 
     /// Sets usage of color bleeding.
-    bool m_colorBleeding;
+    bool m_colorBleeding { false };
 
     /// Sets usage of soft shadows.
-    bool m_shadows;
+    bool m_shadows { false };
 
     /// Toggles widget visibility.
-    bool m_widgetVisibilty;
+    bool m_widgetVisibilty { true };
 
     /// Illumination volume used to render shadows and ambient occlusion.
     std::shared_ptr< ::fwRenderOgre::vr::SATVolumeIllumination> m_illum;
 
     /// Ratio used to determine the size of the SAT regarding of the associated image size.
-    float m_satSizeRatio;
+    float m_satSizeRatio {0.25f };
 
     /// Number of shells used to compute the volume illumination from the SAT.
-    int m_satShells;
+    int m_satShells { 4 };
 
     /// Radius of the shells used to compute the volume illumination from the SAT.
-    int m_satShellRadius;
+    int m_satShellRadius { 4 };
 
     /// Angle used to define the soft shadows cones.
-    float m_satConeAngle;
+    float m_satConeAngle { 0.1f };
 
     /// Number of samples along the soft shadows cones.
-    int m_satConeSamples;
+    int m_satConeSamples { 50 };
 
     /// Factor parameter used to weight the ambient occlusion.
-    double m_aoFactor;
+    double m_aoFactor { 1. };
 
     /// Factor parameter used to weight the color bleeding.
-    double m_colorBleedingFactor;
+    double m_colorBleedingFactor { 1. };
 
     /// Sets whether the camera must be auto reset when a mesh is updated or not.
-    bool m_autoResetCamera;
+    bool m_autoResetCamera { true };
 
     /// Default IDVR method
-    std::string m_IDVRMethod;
+    std::string m_IDVRMethod { "None" };
 
     /// Handle connections between the layer and the volume renderer.
     ::fwCom::helper::SigSlotConnection m_volumeConnection;
