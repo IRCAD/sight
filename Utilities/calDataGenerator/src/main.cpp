@@ -20,10 +20,10 @@ namespace fs = ::boost::filesystem;
 ::cv::Mat rotMat(const double, const double, const double);
 ::cv::Mat generateIntrinsicCalibration(const ::cv::Size&);
 std::vector< ::cv::Mat > generateExtrinsicCalibration();
-std::vector< ::cv::Mat > generatePositionAndOrientationOfChessBoard(const size_t, const ::cv::Mat&, const ::cv::Mat&,
+std::vector< ::cv::Mat > generatePositionAndOrientationOfChessboard(const size_t, const ::cv::Mat&, const ::cv::Mat&,
                                                                     const ::cv::Mat&);
 void generatePhoto(const ::cv::Mat&, const ::cv::Mat&, const std::vector< ::cv::Mat >&, const ::cv::Size&, const double,
-                   const std::string&, const std::string&, const size_t nCam);
+                   const std::string&, const fs::path&, const size_t nCam);
 
 //------------------------------------------------------------------------------
 
@@ -72,19 +72,18 @@ int main(int argc, char** argv)
         }
 
         // Create cam1 and cam2 folders.
-
-        const std::string cam1folder = outFolder + "/cam1";
-        const std::string cam2folder = outFolder + "/cam2";
+        const fs::path cam1folder = outFolder + "/cam1";
+        const fs::path cam2folder = outFolder + "/cam2";
 
         if(!fs::exists(cam1folder) || !fs::is_directory(cam1folder))
         {
-            std::cerr<<"cam1 directory: '"<< cam1folder <<"' didn't exists, it will be created."<<std::endl;
+            std::cerr<<"cam1 directory: '"<< cam1folder.string() <<"' didn't exists, it will be created."<<std::endl;
             fs::create_directory(cam1folder);
         }
 
         if(!fs::exists(cam2folder) || !fs::is_directory(cam2folder))
         {
-            std::cerr<<"cam2 directory: '"<< cam2folder <<"' didn't exists, it will be created."<<std::endl;
+            std::cerr<<"cam2 directory: '"<< cam2folder.string() <<"' didn't exists, it will be created."<<std::endl;
             fs::create_directory(cam2folder);
         }
 
@@ -112,7 +111,7 @@ int main(int argc, char** argv)
         std::cout<<"T :"<<std::endl<<centAndT[1]<<std::endl;
 
         c1 = -(centAndT[1].rowRange(0, 3).colRange(0, 3)).t() * centAndT[1].rowRange(0, 3).col(3);
-        Tc = generatePositionAndOrientationOfChessBoard(nImg, c0, c1, centAndT[0]);
+        Tc = generatePositionAndOrientationOfChessboard(nImg, c0, c1, centAndT[0]);
         std::cout<<std::endl<<std::endl;
         generatePhoto(K1, T0, Tc, imSize, sizeImgInmm, file, cam1folder, 1);
         std::cout<<std::endl;
@@ -170,10 +169,10 @@ int main(int argc, char** argv)
     std::random_device generator;
     std::normal_distribution<double> distribution(0, 1);
 
-    double d       = 0.03*1280.0/imSize.width;
-    double f       = distribution(generator) + 18;
-    double alpha_u = f/d;
-    double alpha_v = alpha_u + distribution(generator)*4;
+    const double d       = 0.03*1280.0/imSize.width;
+    const double f       = distribution(generator) + 18;
+    const double alpha_u = f/d;
+    const double alpha_v = alpha_u + distribution(generator)*4;
 
     ::cv::Mat K = ::cv::Mat::zeros(3, 3, CV_64F);
 
@@ -198,7 +197,7 @@ std::vector< ::cv::Mat > generateExtrinsicCalibration()
 
     ::cv::Mat R, Rt, T         = ::cv::Mat::zeros(4, 4, CV_64F);
     ::cv::Mat centerOfRotation = ::cv::Mat::zeros(3, 1, CV_64F), c;
-    double theta = unifDistribution(generator) * M_PI/8 + M_PI/8;
+    const double theta = unifDistribution(generator) * CV_PI/8 + CV_PI/8;
     std::vector< ::cv::Mat > returnObj;
 
     R = rotMat(theta, 0, 0);
@@ -226,7 +225,7 @@ std::vector< ::cv::Mat > generateExtrinsicCalibration()
 
 //------------------------------------------------------------------------------
 
-std::vector< ::cv::Mat > generatePositionAndOrientationOfChessBoard(const size_t nImg, const ::cv::Mat& c1,
+std::vector< ::cv::Mat > generatePositionAndOrientationOfChessboard(const size_t nImg, const ::cv::Mat& c1,
                                                                     const ::cv::Mat& c2,
                                                                     const ::cv::Mat& centerOfRotation)
 {
@@ -257,9 +256,9 @@ std::vector< ::cv::Mat > generatePositionAndOrientationOfChessBoard(const size_t
     for(size_t k = 0; k < nImg; k++)
     {
         ::cv::Mat T = ::cv::Mat::zeros(4, 4, CV_64F);
-        double angles[3] = {normDistribution(generator) * M_PI/10,
-                            normDistribution(generator) * M_PI/10,
-                            normDistribution(generator) * M_PI/10};
+        const double angles[3] = {normDistribution(generator) * M_PI/10,
+                                  normDistribution(generator) * M_PI/10,
+                                  normDistribution(generator) * M_PI/10};
         R = R0*rotMat(angles[0], angles[1], angles[2]);
         ::cv::invert(R, Rt);
         centers.at<double>(0, 0) =
@@ -287,10 +286,10 @@ std::vector< ::cv::Mat > generatePositionAndOrientationOfChessBoard(const size_t
 //-----------------------------------------------------------------------------
 
 void generatePhoto(const cv::Mat& K, const cv::Mat& T0, const std::vector<cv::Mat>& T1, const cv::Size& imgSize,
-                   const double sizeImgInmm, const std::string& boardFile, const std::string& outFolder,
+                   const double sizeImgInmm, const std::string& boardFile, const fs::path& outFolder,
                    const size_t nCam)
 {
-    ::cv::Mat inImgt = ::cv::imread(boardFile);
+    const ::cv::Mat inImgt = ::cv::imread(boardFile);
     ::cv::Mat inImg;
     ::cv::cvtColor(inImgt, inImg, CV_RGB2GRAY);
     ::cv::GaussianBlur(inImg, inImg, ::cv::Size(5, 5), 1);
@@ -352,8 +351,8 @@ void generatePhoto(const cv::Mat& K, const cv::Mat& T0, const std::vector<cv::Ma
                     solH.at<double>(2, 0) = sol.at<double>(2, 0);
 
                     dampos = T1[k]* solH* std::max(inImg.size[0], inImg.size[1])/sizeImgInmm + imgOffset;
-                    double dampos1 = dampos.at<double>(0, 0);
-                    double dampos2 = dampos.at<double>(1, 0);
+                    const double dampos1 = dampos.at<double>(0, 0);
+                    const double dampos2 = dampos.at<double>(1, 0);
                     if((dampos1 > 0) && (dampos1 < (inImg.size[1]-1)) && (dampos2 > 0) && (dampos2 < (inImg.size[0]-1)))
                     {
                         const double deltav = dampos1 - static_cast<int>(dampos1);
@@ -372,7 +371,7 @@ void generatePhoto(const cv::Mat& K, const cv::Mat& T0, const std::vector<cv::Ma
         }
 
         // Generate filename and write image.
-        const std::string filename = outFolder + "/Cam" + std::to_string(nCam) + "_Pic_" + std::to_string(k+1) + ".bmp";
+        const std::string filename = outFolder.string() + "/Pic_" + std::to_string(k+1) + ".bmp";
 
         ::cv::imwrite(filename, photo);
 
