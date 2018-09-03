@@ -60,6 +60,12 @@ public:
     /// Connect ::fwData::Object::s_MODIFIED_SIG of the transform data to s_UPDATE_SLOT
     VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
+    /// Get Ogre transform matrix
+    VISUOGREADAPTOR_API const ::Ogre::Matrix4& getTransform() const;
+
+    /// Sets the Transformation Matrix to the ::Ogre::Matrix t, then updates it in F4S by copy from Ogre
+    VISUOGREADAPTOR_API void setTransform(const ::Ogre::Matrix4& t);
+
     /// Ogre transform sceneNode getter.
     VISUOGREADAPTOR_API ::Ogre::SceneNode* getSceneNode() const;
 

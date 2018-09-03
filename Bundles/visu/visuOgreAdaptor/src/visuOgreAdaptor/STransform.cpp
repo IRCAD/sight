@@ -163,6 +163,21 @@ void STransform::updating()
 
 //------------------------------------------------------------------------------
 
+void STransform::setTransform(const ::Ogre::Matrix4& t)
+{
+    m_ogreTransform = t;
+    this->updateFromOgre();
+}
+
+//------------------------------------------------------------------------------
+
+const ::Ogre::Matrix4& STransform::getTransform() const
+{
+    return m_ogreTransform;
+}
+
+//------------------------------------------------------------------------------
+
 ::Ogre::SceneNode* STransform::getSceneNode() const
 {
     return m_transformNode;
