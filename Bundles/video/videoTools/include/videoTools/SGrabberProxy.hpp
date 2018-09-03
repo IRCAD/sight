@@ -115,16 +115,16 @@ protected:
     /// Parses the XML configuration of the service.
     VIDEOTOOLS_API virtual void configuring() final;
 
-    /// SLOT : Initialize and start camera (restart camera if is already started)
+    /// SLOT : Initialize and start camera (restart camera if is already started).
     VIDEOTOOLS_API virtual void startCamera() final;
 
-    /// SLOT : Stop camera
+    /// SLOT : Stop camera.
     VIDEOTOOLS_API virtual void stopCamera() final;
 
-    /// SLOT : Pause camera
+    /// SLOT : Pause camera.
     VIDEOTOOLS_API virtual void pauseCamera() final;
 
-    /// SLOT : enable/disable loop in video
+    /// SLOT : enable/disable loop in video.
     VIDEOTOOLS_API virtual void toggleLoopMode() final;
 
     /// SLOT : set the new position in the video.
@@ -161,7 +161,7 @@ private:
     /// Camera type (RGB, RGBD,...)
     CameraType m_type { CameraType::RGB };
 
-    /// grabber implementation chosen by the user
+    /// Grabber implementation chosen by the user.
     std::string m_grabberImpl;
 
     /// Config to use with the current grabber.
@@ -170,10 +170,10 @@ private:
     /// Title of the GUI selector window
     std::string m_guiTitle { "Please select a video grabber implementation" };
 
-    /// actual grabber service
+    /// Actual grabber service.
     std::vector< ::arServices::IGrabber::sptr > m_services;
 
-    /// connections with service signals
+    /// Connections with service signals.
     ::fwCom::helper::SigSlotConnection m_connections;
 
     /// List of services to be included or excluded.
@@ -182,7 +182,7 @@ private:
     /// Map that specifies all configuration extensions for a service.
     std::map< std::string, std::vector< std::string > > m_serviceToConfig;
 
-    /// state of the loop mode
+    /// State of the loop mode.
     bool m_loopVideo { false };
 
     /// Configure if selected services are excluded (true) or included (false).
