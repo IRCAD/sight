@@ -143,12 +143,17 @@ void AppManagerTest::managerWithObjectTest()
     CPPUNIT_ASSERT_EQUAL(true, service3->isStarted());
     CPPUNIT_ASSERT_EQUAL(false, service4->isStarted());
 
+    CPPUNIT_ASSERT(nullptr == m_appMgr->getObject(imageId));
+    CPPUNIT_ASSERT(nullptr == m_appMgr->getObject(booleanId));
+
     m_appMgr->addObject(image, imageId);
 
     CPPUNIT_ASSERT_EQUAL(true, service->isStarted());
     CPPUNIT_ASSERT_EQUAL(true, service2->isStarted());
     CPPUNIT_ASSERT_EQUAL(true, service3->isStarted());
     CPPUNIT_ASSERT_EQUAL(false, service4->isStarted());
+
+    CPPUNIT_ASSERT(image == m_appMgr->getObject(imageId));
 
     m_appMgr->addObject(boolean, booleanId);
 
@@ -157,7 +162,10 @@ void AppManagerTest::managerWithObjectTest()
     CPPUNIT_ASSERT_EQUAL(true, service3->isStarted());
     CPPUNIT_ASSERT_EQUAL(true, service4->isStarted());
 
+    CPPUNIT_ASSERT(boolean == m_appMgr->getObject(booleanId));
+
     m_appMgr->removeObject(image, imageId);
+    CPPUNIT_ASSERT(nullptr == m_appMgr->getObject(imageId));
 
     CPPUNIT_ASSERT_EQUAL(false, service->isStarted());
     CPPUNIT_ASSERT_EQUAL(false, service2->isStarted());
@@ -165,6 +173,7 @@ void AppManagerTest::managerWithObjectTest()
     CPPUNIT_ASSERT_EQUAL(false, service4->isStarted());
 
     m_appMgr->removeObject(boolean, booleanId);
+    CPPUNIT_ASSERT(nullptr == m_appMgr->getObject(booleanId));
 
     CPPUNIT_ASSERT_EQUAL(false, service->isStarted());
     CPPUNIT_ASSERT_EQUAL(false, service2->isStarted());

@@ -469,6 +469,20 @@ void AppManager::removeObject(::fwData::Object::sptr obj, const std::string& id)
 
 //------------------------------------------------------------------------------
 
+::fwData::Object::sptr AppManager::getObject(const std::string& id) const
+{
+    ::fwData::Object::sptr obj;
+
+    auto itr = m_registeredObject.find(id);
+    if (itr != m_registeredObject.end())
+    {
+        obj = itr->second;
+    }
+    return obj;
+}
+
+//------------------------------------------------------------------------------
+
 AppManager::ServiceInfo& AppManager::getServiceInfo(const ::fwServices::IService::sptr& srv)
 {
     auto itr = std::find_if( m_services.begin(), m_services.end(), [&](const ServiceInfo& srvInfo)

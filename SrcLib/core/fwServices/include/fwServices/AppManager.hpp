@@ -53,6 +53,8 @@ namespace fwServices
     // When readerService will be updated, it will generate the image required by the mesher service. As the image is
     // registered with the same identifier in the application, the mesherService will be automatically started.
    @endcode
+ *
+ * You can access the objects managed by the configuration using addObject(), getObject() and removeObject().
  */
 class FWSERVICES_CLASS_API AppManager : public ::fwCom::HasSlots
 {
@@ -216,6 +218,13 @@ public:
      *        AppManager, it is different from the uid.
      */
     FWSERVICES_API void removeObject(::fwData::Object::sptr obj, const std::string& id);
+
+    /**
+     * @brief Return the object registered with the given identifier.
+     * @param id object identifier
+     * @return Return the object registered with the given identifier or nullptr if it is not present
+     */
+    FWSERVICES_API ::fwData::Object::sptr getObject(const std::string& id) const;
 
 protected:
 
