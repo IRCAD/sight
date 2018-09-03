@@ -31,7 +31,7 @@ void ITransformable::setTransformId(::fwRenderOgre::SRender::OgreObjectIdType _i
 
 ::Ogre::SceneNode* ITransformable::getTransformNode(::Ogre::SceneNode* _rootNode) const
 {
-    SLM_ASSERT("Transform id is not set, please call setTransformId before.", !m_transformId.empty())
+    SLM_ASSERT("Transform id is not set, please call setTransformId before.", !m_transformId.empty());
     m_transformNode = ::fwRenderOgre::helper::Scene::getNodeById(m_transformId, _rootNode);
     if (m_transformNode == nullptr)
     {
