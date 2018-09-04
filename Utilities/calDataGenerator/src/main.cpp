@@ -54,7 +54,7 @@ int main(int argc, char** argv)
         po::variables_map vm;
         po::store(po::command_line_parser(argc, argv).options(options).positional(pos).run(), vm);
 
-        if (vm.count("help"))
+        if (vm.count("help") || argc == 1)
         {
             std::cout << "usage: " << argv[0] <<
                 " outputImageWidth outputImageHeight numberOfImageToProduce sizeImgInmm infile.(jpg|png|tiff|...) outputFolder "
