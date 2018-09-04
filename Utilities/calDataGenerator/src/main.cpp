@@ -256,9 +256,9 @@ std::vector< ::cv::Mat > generatePositionAndOrientationOfChessboard(const size_t
     for(size_t k = 0; k < nImg; k++)
     {
         ::cv::Mat T = ::cv::Mat::zeros(4, 4, CV_64F);
-        const double angles[3] = {normDistribution(generator) * M_PI/10,
-                                  normDistribution(generator) * M_PI/10,
-                                  normDistribution(generator) * M_PI/10};
+        const double angles[3] = {normDistribution(generator) * CV_PI/10,
+                                  normDistribution(generator) * CV_PI/10,
+                                  normDistribution(generator) * CV_PI/10};
         R = R0*rotMat(angles[0], angles[1], angles[2]);
         ::cv::invert(R, Rt);
         centers.at<double>(0, 0) =
