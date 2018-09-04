@@ -203,8 +203,8 @@ private:
 
     /// Step between two images when calling nexImage()/previousImage() slots
     unsigned long m_step;
+
     /// Step value updated in setStep() slot used to compute a shift value when calling nextImage()/previousImage()
-    // slots
     unsigned long m_stepChanged;
 };
 

@@ -26,10 +26,11 @@
 #include <fwTools/Type.hpp>
 
 #include <boost/filesystem/operations.hpp>
-#include <boost/regex.hpp>
 
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/imgproc.hpp>
+
+#include <regex>
 
 namespace videoOpenCV
 {
@@ -49,8 +50,7 @@ SFrameGrabber::SFrameGrabber() noexcept :
     m_createNewTS(false),
     m_useTimelapse(true),
     m_isPaused(false),
-    m_defaultDuration(5000)
-    m_isPaused(false),
+    m_defaultDuration(5000),
     m_step(1),
     m_stepChanged(1)
 {
@@ -96,7 +96,7 @@ void SFrameGrabber::configuring()
 
     OSLM_FATAL_IF("Fps setting is set to " << m_fps << " but should be in ]0;60].", m_fps == 0 || m_fps > 60);
 
-    m_step = config.get<unsigned int>("step", m_step);
+    m_step = config.get<unsigned long>("step", m_step);
     OSLM_ASSERT("Step value is set to " << m_step << " but should be > 0.", m_step > 0);
     m_stepChanged = m_step;
 }
@@ -270,9 +270,9 @@ void SFrameGrabber::readImages(const ::boost::filesystem::path& folder, const st
         for (const ::boost::filesystem::path& imagePath : m_imageToRead)
         {
             const std::string imageName = imagePath.filename().string();
-            static const ::boost::regex s_TIMESTAMP("[^0-9]*([0-9]*)[^0-9]*");
-            ::boost::smatch match;
-            if (::boost::regex_match(imageName, match, s_TIMESTAMP))
+            static const std::regex s_TIMESTAMP("[^0-9]*([0-9]{5,})[^0-9]*");
+            std::smatch match;
+            if (std::regex_match(imageName, match, s_TIMESTAMP))
             {
                 const std::string timestampStr = match[1].str();
                 m_imageTimestamps.push_back(std::stod(timestampStr));
