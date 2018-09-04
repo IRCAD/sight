@@ -237,7 +237,7 @@ std::vector< ::cv::Mat > generatePositionAndOrientationOfChessboard(const size_t
     Rt, temp;
 
     directionVector = centerOfRotation -(c2+c1)/2;
-    directionVector = directionVector*1/ ::cv::norm(directionVector);
+    directionVector = directionVector / ::cv::norm(directionVector);
 
     x0                  = (c2 - c1)/ ::cv::norm(c2-c1);
     x0                  = x0 - directionVector * directionVector.dot(x0);
@@ -371,9 +371,9 @@ void generatePhoto(const cv::Mat& K, const cv::Mat& T0, const std::vector<cv::Ma
         }
 
         // Generate filename and write image.
-        const std::string filename = outFolder.string() + "/Pic_" + std::to_string(k+1) + ".bmp";
+        const fs::path filename = outFolder.string() + "/Pic_" + std::to_string(k+1) + ".bmp";
 
-        ::cv::imwrite(filename, photo);
+        ::cv::imwrite(filename.string(), photo);
 
         const double percentage = static_cast<double>(((nCam - 1) * T1.size() + k + 1)) /
                                   static_cast<double>((T1.size() * 2));
