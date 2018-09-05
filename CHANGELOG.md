@@ -1,3 +1,23 @@
+# fw4spl-ext 17.2.0
+
+## Bug fixes:
+
+### registrationActivity
+
+*Fix all errors in the registration app.*
+
+- fix all log errors
+- remove useless autoConnects
+
+### glm
+
+*Add missing GLM_ENABLE_EXPERIMENTAL define.*
+
+Unused glm extensions have been removed
+
+
+
+
 # fw4spl-ext 17.1.0
 
 ## Refactor:
