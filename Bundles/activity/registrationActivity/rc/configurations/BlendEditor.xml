@@ -1,0 +1,73 @@
+<extension implements="::fwServices::registry::AppConfig">
+    <id>BlendEditor</id>
+    <parameters>
+        <param name="WID_PARENT" />
+        <param name="modifyTransparencyChannel" />
+        <param name="modifyCheckerboardDivisionsChannel" />
+        <param name="changeBlendModeChannel" />
+    </parameters>
+    <config>
+
+        <service uid="blendEditor" type="::gui::view::SDefaultView">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="vertical" />
+                    <view proportion="1" />
+                    <view proportion="1" />
+                </layout>
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <view sid="blendTransparencyAndModeEditor" start="yes" />
+                <view sid="checkerBoardCellSlider" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="blendTransparencyAndModeEditor" type="::gui::view::SDefaultView">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="horizontal" />
+                    <view proportion="1" />
+                    <view proportion="0" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="transparencySlider" start="yes" />
+                <view sid="blendMode" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="transparencySlider" type="::guiQt::editor::SParameters">
+            <parameters>
+                <param type="int" name="Transparency" key="transparency" defaultValue="128" min="0" max="255" />
+            </parameters>
+        </service>
+
+        <service uid="blendMode" type="::guiQt::editor::SParameters">
+            <parameters>
+                <param type="enum" name="Blend mode:" key="ImageSource" defaultValue="BLEND" values="BLEND=imageBlend,CHECKERBOARD=imageCheckerboard" />
+            </parameters>
+        </service>
+
+        <service uid="checkerBoardCellSlider" type="::guiQt::editor::SParameters">
+            <parameters>
+                <param type="int" name="Checkerboard # of cells" key="checkerBoardSlider" defaultValue="10" min="0" max="100" />
+            </parameters>
+        </service>
+
+        <connect channel="${modifyTransparencyChannel}" >
+            <signal>transparencySlider/intChanged</signal>
+        </connect>
+
+        <connect channel="${modifyCheckerboardDivisionsChannel}" >
+            <signal>checkerBoardCellSlider/intChanged</signal>
+        </connect>
+
+        <connect channel="${changeBlendModeChannel}">
+            <signal>blendMode/enumChanged</signal>
+        </connect>
+
+        <start uid="blendEditor" />
+
+    </config>
+</extension>
