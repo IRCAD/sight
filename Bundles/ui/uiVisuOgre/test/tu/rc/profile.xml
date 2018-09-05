@@ -1,0 +1,14 @@
+<profile name="UiVisuOgreTest" version="0.1">
+
+    <activate id="dataReg" version="0.1" />
+    <activate id="servicesReg" version="0.1" />
+
+    <activate id="gui" version="0.1" />
+    <activate id="uiIO" version="0.1" />
+    <activate id="material" version="0.1" />
+
+    <activate id="uiVisuOgre" version="0.1" />
+
+    <start id="uiVisuOgre" />
+
+</profile>

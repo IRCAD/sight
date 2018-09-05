@@ -1,0 +1,150 @@
+<extension implements="::fwServices::registry::AppConfig">
+    <id>calCameraView</id>
+    <parameters>
+        <param name="WID_PARENT" />
+        <param name="camera" />
+        <param name="timeLine" />
+    </parameters>
+    <config>
+        <!-- ******************************* Objects declaration ****************************** -->
+        <object uid="${timeLine}" type="::arData::FrameTL" src="ref" />
+        <object uid="${camera}" type="::arData::Camera" src="ref" />
+        <object uid="frame" type="::fwData::Image" />
+        <!-- ******************************* UI declaration *********************************** -->
+        <service uid="cameraView" type="::gui::view::SDefaultView">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="vertical" />
+                    <view proportion="0" />
+                    <view proportion="0" />
+                </layout>
+                <toolBar/>
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <toolBar sid="toolBar" start="yes" />
+                <view sid="camera" start="yes" />
+                <view sid="VideoSlider" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="toolBar" type="::gui::aspect::SDefaultToolBar">
+            <gui>
+                <layout>
+                    <editor/>
+                    <menuItem name="Start camera" icon="arMedia-0.1/icons/start-cam.svg" />
+                    <menuItem name="Stop camera" icon="arMedia-0.1/icons/stop-cam.svg" />
+                    <menuItem name="Pause video" icon="arMedia-0.1/icons/pause-cam.svg" />
+                    <menuItem name="Loop video" icon="arMedia-0.1/icons/loop-cam.svg" style="check" />
+                </layout>
+            </gui>
+            <registry>
+                <editor sid="CameraSelector" start="yes" />
+                <menuItem sid="ActionStartCamera" start="yes" />
+                <menuItem sid="ActionStopCamera" start="yes" />
+                <menuItem sid="PauseVideo" start="yes" />
+                <menuItem sid="LoopVideo" start="yes" />
+            </registry>
+        </service>
+
+        <!-- ******************************* Actions ****************************************** -->
+        <service uid="ActionStartCamera" type="::gui::action::SSlotCaller">
+            <slots>
+                <slot>VideoGrabber/startCamera</slot>
+            </slots>
+        </service>
+
+        <service uid="ActionStopCamera" type="::gui::action::SSlotCaller">
+            <slots>
+                <slot>VideoGrabber/stopCamera</slot>
+            </slots>
+        </service>
+
+        <service uid="PauseVideo" type="::gui::action::SSlotCaller">
+            <slots>
+                <slot>VideoGrabber/pauseCamera</slot>
+            </slots>
+        </service>
+
+        <service uid="LoopVideo" type="::gui::action::SSlotCaller">
+            <slots>
+                <slot>VideoGrabber/loopVideo</slot>
+            </slots>
+        </service>
+
+        <service uid="VideoSlider" type="::videoQt::editor::SSlider" />
+        <!-- ******************************* Services ***************************************** -->
+        <!-- *************************** Begin generic scene *************************** -->
+
+        <service uid="camera" type="::fwRenderVTK::SRender" >
+            <scene renderMode="timer">
+                <renderer id="default" background="0.0" />
+                <adaptor uid="videoAdapter" />
+                <adaptor uid="interactorStyle" />
+            </scene>
+        </service>
+
+        <service uid="videoAdapter" type="::visuVTKARAdaptor::SVideo" autoConnect="yes">
+            <in key="frame" uid="frame" />
+            <config renderer="default" />
+        </service>
+
+        <service uid="interactorStyle" type="::visuVTKAdaptor::SInteractorStyle">
+            <config renderer="default" style="InteractorStyle2DForNegato" />
+        </service>
+
+        <!-- *************************** End generic scene *************************** -->
+
+        <service uid="VideoGrabber" type="::videoTools::SGrabberProxy">
+            <in key="camera" uid="${camera}" />
+            <inout key="frameTL" uid="${timeLine}" />
+            <config>
+                <selection mode="exclude" />
+                <addSelection service="::videoOpenCV::SFrameGrabber" config="FrameByFrameOpenCVGrabberConfig" />
+            </config>
+        </service>
+
+        <service uid="FrameUpdater" type="::videoTools::SFrameUpdater">
+            <in key="frameTL" uid="${timeLine}" autoConnect="yes" />
+            <inout key="frame" uid="frame" />
+        </service>
+
+        <service uid="CameraSelector" type="::videoQt::editor::SCamera">
+            <inout key="camera" uid="${camera}" />
+            <videoSupport>yes</videoSupport>
+        </service>
+
+        <!-- ******************************* Connections ************************************** -->
+        <connect>
+            <signal>${camera}/idModified</signal>
+            <slot>VideoGrabber/stopCamera</slot>
+        </connect>
+
+        <connect>
+            <signal>VideoSlider/positionChanged</signal>
+            <slot>VideoGrabber/setPositionVideo</slot>
+        </connect>
+
+        <connect>
+            <signal>VideoGrabber/positionModified</signal>
+            <slot>VideoSlider/setPositionSlider</slot>
+        </connect>
+
+        <connect>
+            <signal>VideoGrabber/durationModified</signal>
+            <slot>VideoSlider/setDurationSlider</slot>
+        </connect>
+
+        <connect>
+            <signal>CameraSelector/configuredCameras</signal>
+            <slot>VideoGrabber/reconfigure</slot>
+        </connect>
+
+        <start uid="cameraView" />
+        <start uid="VideoGrabber" />
+        <start uid="FrameUpdater" />
+        <!-- VTK scene 'camera' -->
+        <start uid="videoAdapter" />
+        <start uid="interactorStyle" />
+    </config>
+</extension>

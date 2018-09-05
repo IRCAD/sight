@@ -1,0 +1,68 @@
+<plugin id="ioARActivity" version="@PROJECT_VERSION@">
+
+    <requirement id="filterVRRender" />
+
+    <!-- Service config used to read a seriesDB using ioAtoms. -->
+    <extension implements="::fwServices::registry::ServiceConfig">
+        <id>ARSDBAtomsReaderIOSelectorConfig</id>
+        <service>::uiIO::editor::SIOSelector</service>
+        <desc>Atoms seriesDB reader for arData.</desc>
+        <config>
+            <type mode="reader" />
+            <selection mode="include" />
+            <addSelection service="::ioAtoms::SReader" />
+            <config id="MDAtomsConfig" service="::ioAtoms::SReader" />
+        </config>
+    </extension>
+
+    <!-- Service config used to write a seriesDB using ioAtoms. -->
+    <extension implements="::fwServices::registry::ServiceConfig">
+        <id>ARSDBAtomsWriterIOSelectorConfig</id>
+        <service>::uiIO::editor::SIOSelector</service>
+        <desc>Atoms seriesDB reader for arData.</desc>
+        <config>
+            <type mode="writer" />
+            <selection mode="include" />
+            <addSelection service="::ioAtoms::SWriter" />
+            <config id="MDAtomsConfig" service="::ioAtoms::SWriter" />
+        </config>
+    </extension>
+
+    <!-- Service config used to read SeriesDB with all the available reader for SeriesDB. -->
+    <extension implements="::fwServices::registry::ServiceConfig">
+        <id>ARFullSDBReaderIOSelectorConfig</id>
+        <service>::uiIO::editor::SIOSelector</service>
+        <desc>IOSelectorService config for SeriesDB reader</desc>
+        <config>
+            <type mode="reader" />
+            <selection mode="exclude" />
+            <addSelection service="::ioData::SAttachmentSeriesReader" />
+            <config id="MDAtomsConfig" service="::ioAtoms::SReader" />
+        </config>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceConfig">
+        <id>ARActivityReaderConfig</id>
+        <service>::uiIO::editor::SIOSelector</service>
+        <desc>Atoms seriesDB reader for arData.</desc>
+        <config>
+            <type mode="reader" />
+            <selection mode="include" />
+            <addSelection service="::ioAtoms::SReader" />
+            <config id="ActivityMDAtomsConfig" service="::ioAtoms::SReader" />
+        </config>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceConfig">
+        <id>ARActivityWriterConfig</id>
+        <service>::uiIO::editor::SIOSelector</service>
+        <desc>SExportWithSeriesDB config for SeriesDB writer</desc>
+        <config>
+            <type mode="writer" />
+            <selection mode="include" />
+            <addSelection service="::ioAtoms::SWriter" />
+            <config id="ActivityMDAtomsConfig" service="::ioAtoms::SWriter" />
+        </config>
+    </extension>
+
+</plugin>

@@ -1,0 +1,77 @@
+<extension implements="::fwServices::registry::AppConfig">
+    <id>OgreHistogramManager</id>
+    <parameters>
+        <param name="WID_PARENT" />
+        <param name="IMAGE" />
+        <param name="TF" />
+    </parameters>
+
+    <config>
+
+        <!-- *********************************** Begin Objects declaration *********************************** -->
+        <object uid="${IMAGE}"     type="::fwData::Image"     src="ref" />
+        <object uid="${TF}" type="::fwData::TransferFunction" src="deferred" />
+
+        <object uid="TFPool" type="::fwData::Composite" />
+        <object uid="histogram" type="::fwData::Histogram" />
+        <!-- *********************************** End Objects declaration *********************************** -->
+
+        <!-- *********************************** Begin layouts declaration *********************************** -->
+        <service uid="HistogramView" type="::gui::view::SDefaultView" >
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="vertical" />
+                    <view proportion="0" minHeight="30" />
+                    <view proportion="1" />
+                    <view proportion="0" />
+                    <view proportion="0" />
+                </layout>
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <view sid="TransferFunctionEditor" start="yes" />
+                <view wid="TFScene" />
+                <view sid="WindowLevel" start="no" />
+                <view sid="TransparencyEditor" start="yes" />
+            </registry>
+        </service>
+        <!-- *********************************** End layouts declaration *********************************** -->
+
+        <!-- *********************************** Begin services declarations *********************************** -->
+        <service uid="TFWidget" type="::fwServices::SConfigController">
+            <appConfig id="TransferFunctionWidget" />
+            <inout key="image" uid="${IMAGE}"/>
+            <inout key="histogram" uid="histogram"/>
+            <inout key="transferFunction" uid="${TF}" />
+            <parameter replace="WID_PARENT" by="TFScene"/>
+        </service>
+
+        <service uid="WindowLevel" type="::uiImageQt::WindowLevel" autoConnect="yes">
+            <inout key="image" uid="${IMAGE}" />
+            <inout key="tf" uid="${TF}" optional="yes" />
+        </service>
+
+        <service uid="TransparencyEditor" type="::uiImageQt::ImageTransparency" autoConnect="yes" >
+            <inout key="image" uid="${IMAGE}" />
+        </service>
+
+        <service uid="TransferFunctionEditor" type="::uiTF::TransferFunctionEditor" >
+            <inout key="tfPool" uid="TFPool" autoConnect="yes"/>
+            <out key="tf" uid="${TF}" />
+        </service>
+
+        <service uid="computeHistogram" type="::scene2D::processing::SComputeHistogram" autoConnect="yes" worker="COMPUTING_THREAD">
+            <in key="image" uid="${IMAGE}" />
+            <inout key="histogram" uid="histogram" />
+            <binsWidth>5.0</binsWidth>
+        </service>
+        <!-- *********************************** End services declarations *********************************** -->
+
+        <!-- *********************************** Begin start services *********************************** -->
+        <start uid="HistogramView" />
+        <start uid="TFWidget" />
+        <start uid="computeHistogram" />
+        <start uid="WindowLevel" />
+        <!-- *********************************** End start services *********************************** -->
+    </config>
+</extension>

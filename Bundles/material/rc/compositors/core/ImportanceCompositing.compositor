@@ -1,0 +1,86 @@
+// Maximum importance projection (MImP) with support for countersink geometry (CSG)
+compositor IDVR_MImP_Comp
+{
+    technique
+    {
+        texture IC target_width target_height PF_FLOAT32_RGBA PF_FLOAT32_RGBA pooled chain_scope
+
+        target IC
+        {
+            input none
+            pass clear
+            {
+            }
+
+            pass render_scene
+            {
+                material_scheme IDVR_MImP_Mat
+                first_render_queue 52
+                last_render_queue 52
+            }
+        }
+
+        target_output
+        {
+            input previous
+        }
+    }
+}
+
+// Average importance projection (AImC)
+compositor IDVR_AImC_Comp
+{
+    technique
+    {
+        texture IC target_width target_height PF_FLOAT32_RGBA pooled chain_scope
+
+        target IC
+        {
+            input none
+            pass clear
+            {
+            }
+
+            pass render_scene
+            {
+                material_scheme IDVR_AImC_Mat
+                first_render_queue 52
+                last_render_queue 52
+            }
+        }
+
+        target_output
+        {
+            input previous
+        }
+    }
+}
+
+// VIsibility Preserving Importance Compositing (VPImC)
+compositor IDVR_VPImC_Comp
+{
+    technique
+    {
+        texture IC target_width target_height PF_FLOAT32_RGBA pooled chain_scope
+
+        target IC
+        {
+            input none
+            pass clear
+            {
+            }
+
+            pass render_scene
+            {
+                material_scheme IDVR_VPImC_Mat
+                first_render_queue 52
+                last_render_queue 52
+            }
+        }
+
+        target_output
+        {
+            input previous
+        }
+    }
+}

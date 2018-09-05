@@ -1,0 +1,48 @@
+fragment_program EllipseMask_FP glsl
+{
+    source EllipseMask_FP.glsl
+    default_params
+    {
+        param_named u_fragData int 0
+        param_named u_ellipseTex int 1
+        param_named u_center float2 0.5 0.5
+        param_named u_size float2 0.5 0.5
+        param_named u_theta float 0.0
+        param_named u_minAlpha float 0.5
+        param_named u_bkgColor float4 1.0 0.0 0.0 0.0
+    }
+}
+
+//---------------------------------------------------------------------------
+
+material EllipseMask
+{
+    technique
+    {
+        pass final
+        {
+            vertex_program_ref RenderQuad_VP
+            {
+            }
+
+            fragment_program_ref EllipseMask_FP
+            {
+            }
+
+            texture_unit
+            {
+                tex_coord_set 0
+                tex_address_mode clamp
+                filtering none
+            }
+
+            texture_unit
+            {
+                texture ellipse.dds 2d
+                tex_coord_set 1
+                tex_address_mode clamp
+                filtering linear linear linear
+            }
+        }
+    }
+}

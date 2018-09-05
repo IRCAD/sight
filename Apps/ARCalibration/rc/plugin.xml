@@ -1,0 +1,71 @@
+<plugin id="ARCalibration" version="@PROJECT_VERSION@">
+
+    <requirement id="dataReg" />
+    <requirement id="servicesReg" />
+    <requirement id="arDataReg" />
+    <requirement id="patchMedicalData" />
+    <requirement id="arPatchMedicalData" />
+    <requirement id="memory" />
+    <requirement id="preferences" />
+    <requirement id="activities" />
+    <requirement id="filterVRRender" />
+
+    <xi:include href="configurations/activitySelector.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/ARCalibrationBase.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/sdb.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+
+    <extension implements="::fwServices::registry::AppConfigParameters">
+        <id>ARCalibrationAppBase</id>
+        <parameters>
+            <param name="appName" value="ARCalibration @PROJECT_VERSION@" />
+            <param name="appIconPath" value="ARCalibration-@PROJECT_VERSION@/arcalibration.ico" />
+        </parameters>
+    </extension>
+
+    <extension implements="::fwServices::registry::AppConfig">
+        <id>CameraExportSelection</id>
+        <parameters>
+            <param name="selection" />
+        </parameters>
+        <config>
+            <object uid="${selection}" src="ref" />
+            <service uid="export_selection" type="::uiIO::editor::SIOSelector">
+                <inout key="data" uid="${selection}" />
+                <type mode="writer" />
+                <selection mode="include" />
+                <addSelection service="::ioAtoms::SWriter" />
+                <config id="MDAtomsConfig" service="::ioAtoms::SWriter" />
+            </service>
+            <start uid="export_selection" />
+            <update uid="export_selection" />
+        </config>
+    </extension>
+
+    <extension implements="::fwActivities::registry::Activities">
+        <id>CameraSeriesExport</id>
+        <title>CameraSeries Export</title>
+        <desc>CameraSeries Export</desc>
+        <icon>media-0.1/icons/Export.svg</icon>
+        <requirements>
+            <requirement name="series" type="::arData::CameraSeries" minOccurs="1" maxOccurs="1" />
+        </requirements>
+        <builder>::fwActivities::builder::ActivitySeries</builder>
+        <appConfig id="CameraExportSelection">
+            <parameters>
+                <parameter replace="selection" by="@values.series" />
+            </parameters>
+        </appConfig>
+    </extension>
+
+    <extension implements="::fwActivities::registry::Activities">
+        <id>activitySelector</id>
+        <title>Choose your activity</title>
+        <desc>Activity selector for ARSurg</desc>
+        <icon>media-0.1/icons/selector.svg</icon>
+        <requirements />
+        <appConfig id="activitySelector">
+            <parameters />
+        </appConfig>
+    </extension>
+
+</plugin>

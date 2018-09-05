@@ -1,0 +1,51 @@
+fragment_program ASCII_FP glsl
+{
+    source ASCIIFP.glsl
+    default_params
+    {
+        param_named iNumTiles float2 0.010 0.02
+        param_named iNumTiles2 float2 0.005 0.01
+        param_named numTiles float2 100 50
+        param_named lum float4 0.30 0.59 0.11 0.0
+        param_named charBias float 0.734375
+        param_named RT int 0
+        param_named chars int 1
+    }
+}
+
+material ASCII
+{
+    technique
+    {
+        pass
+        {
+            cull_hardware none
+            cull_software none
+            depth_func always_pass
+            polygon_mode_overrideable false
+
+            vertex_program_ref StdQuad_Tex2a_VP
+            {
+            }
+
+            fragment_program_ref ASCII_FP
+            {
+            }
+
+            texture_unit RT
+            {
+                tex_coord_set 0
+                tex_address_mode clamp
+                filtering trilinear
+            }
+
+            texture_unit chars
+            {
+                texture ASCII.dds 3d
+                filtering none
+                tex_address_mode clamp
+            }
+
+        }
+    }
+}

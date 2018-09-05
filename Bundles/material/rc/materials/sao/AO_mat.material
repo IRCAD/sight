@@ -1,0 +1,52 @@
+vertex_program Ao_compute_VP glsl
+{
+    source StdQuad_Tex2a_VP.glsl
+    default_params
+    {
+        param_named_auto worldViewProj worldviewproj_matrix
+    }
+}
+
+fragment_program Ao_compute_FP glsl
+{
+    source AO_compute_FP.glsl
+    default_params
+    {
+        param_named_auto u_viewport viewport_size
+        param_named_auto VerticalFieldOfView fov
+        param_named_auto FAR_PLANE far_clip_distance
+        param_named eu_projInfo float4 0 0 0 0
+    }
+}
+
+material AO_mat
+{
+    technique
+    {
+        pass
+        {
+            vertex_program_ref Ao_compute_VP
+            {
+            }
+
+            fragment_program_ref Ao_compute_FP
+            {
+                param_named u_numSamples int 11
+                // we will change this value if s change, the best value is 7 for s = 9
+                // param_named tau int 7
+                param_named u_radius float 0.85
+                param_named eu_MaxMipLevels int 8
+                param_named u_q int 5
+
+                param_named u_k int 1
+                param_named u_sigma int 1
+                param_named u_epsilon float 0.001
+                param_named u_beta float 0.0001
+            }
+
+            texture_unit MipMap_tex
+            {
+            }
+        }
+    }
+}

@@ -1,0 +1,241 @@
+<plugin id="ExVideoFiltering" version="@PROJECT_VERSION@">
+    <requirement id="dataReg" />
+    <requirement id="arDataReg" />
+    <requirement id="servicesReg" />
+    <requirement id="visuVTKQt" />
+    <extension implements="::fwServices::registry::AppConfig">
+        <id>ExVideoFilteringConfig</id>
+        <config>
+            <object uid="camera" type="::arData::Camera" />
+            <object uid="frameTL" type="::arData::FrameTL">
+                <value>100</value>
+            </object>
+
+            <object uid="frameTL1" type="::arData::FrameTL">
+                <value>100</value>
+            </object>
+
+            <object uid="frameTL2" type="::arData::FrameTL">
+                <value>100</value>
+            </object>
+
+            <object uid="frameTL3" type="::arData::FrameTL">
+                <value>100</value>
+            </object>
+
+            <object uid="frameTL4" type="::arData::FrameTL">
+                <value>100</value>
+            </object>
+
+            <object uid="videoImage1" type="::fwData::Image" />
+            <object uid="videoImage2" type="::fwData::Image" />
+            <object uid="videoImage3" type="::fwData::Image" />
+            <object uid="videoImage4" type="::fwData::Image" />
+            <service uid="mainFrame" type="::gui::frame::SDefaultFrame">
+                <gui>
+                    <frame>
+                        <name>ExVideoFiltering</name>
+                        <icon>ExVideoFiltering-0.1/ExVideoFiltering.ico</icon>
+                    </frame>
+                    <toolBar/>
+                </gui>
+                <registry>
+                    <toolBar sid="toolbar" start="yes" />
+                    <view sid="cameraView" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="toolbar" type="::gui::aspect::SDefaultToolBar">
+                <gui>
+                    <layout>
+                        <editor/>
+                        <menuItem name="start" icon="arMedia-0.1/icons/start-cam.svg" />
+                        <menuItem name="stop" icon="arMedia-0.1/icons/stop-cam.svg" />
+                        <menuItem name="pause" icon="arMedia-0.1/icons/pause-cam.svg" />
+                    </layout>
+                </gui>
+                <registry>
+                    <editor sid="cameraSelector" start="yes" />
+                    <menuItem sid="startVideo" start="yes" />
+                    <menuItem sid="stopVideo" start="yes" />
+                    <menuItem sid="pauseVideo" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="startVideo" type="::gui::action::SSlotCaller">
+                <slots>
+                    <slot>frameGrabber/startCamera</slot>
+                </slots>
+            </service>
+
+            <service uid="stopVideo" type="::gui::action::SSlotCaller">
+                <slots>
+                    <slot>frameGrabber/stopCamera</slot>
+                </slots>
+            </service>
+
+            <service uid="pauseVideo" type="::gui::action::SSlotCaller">
+                <slots>
+                    <slot>frameGrabber/pauseCamera</slot>
+                </slots>
+            </service>
+
+            <service uid="cameraView" type="::gui::view::SDefaultView">
+                <gui>
+                    <layout type="::fwGui::CardinalLayoutManager">
+                        <view align="left" />
+                        <view align="right" />
+                        <view align="left" />
+                        <view align="right" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="genericScene1" start="yes" />
+                    <view sid="genericScene2" start="yes" />
+                    <view sid="genericScene3" start="yes" />
+                    <view sid="genericScene4" start="yes" />
+                </registry>
+            </service>
+
+            <!-- *************************** Begin generic scene *************************** -->
+
+            <service uid="genericScene1" type="::fwRenderVTK::SRender" >
+                <scene>
+                    <renderer id="default" background="0.0" />
+                    <adaptor uid="videoAdpt1" />
+                    <adaptor uid="interactorStyle1" />
+                </scene>
+            </service>
+
+            <service uid="videoAdpt1" type="::visuVTKARAdaptor::SVideo" autoConnect="yes">
+                <in key="frame" uid="videoImage1" />
+                <config renderer="default" />
+            </service>
+
+            <service uid="interactorStyle1" type="::visuVTKAdaptor::SInteractorStyle">
+                <config renderer="default" style="InteractorStyle2DForNegato" />
+            </service>
+
+            <!-- *************************** End generic scene *************************** -->
+
+            <!-- *************************** Begin generic scene *************************** -->
+
+            <service uid="genericScene2" type="::fwRenderVTK::SRender" >
+                <scene>
+                    <renderer id="default" background="0.0" />
+                    <adaptor uid="videoAdpt2" />
+                    <adaptor uid="interactorStyle2" />
+                </scene>
+            </service>
+
+            <service uid="videoAdpt2" type="::visuVTKARAdaptor::SVideo" autoConnect="yes">
+                <in key="frame" uid="videoImage2" />
+                <config renderer="default" />
+            </service>
+
+            <service uid="interactorStyle2" type="::visuVTKAdaptor::SInteractorStyle">
+                <config renderer="default" style="InteractorStyle2DForNegato" />
+            </service>
+
+            <!-- *************************** End generic scene *************************** -->
+
+            <!-- *************************** Begin generic scene *************************** -->
+
+            <service uid="genericScene3" type="::fwRenderVTK::SRender" >
+                <scene>
+                    <renderer id="default" background="0.0" />
+                    <adaptor uid="videoAdpt3" />
+                    <adaptor uid="interactorStyle3" />
+                </scene>
+            </service>
+
+            <service uid="videoAdpt3" type="::visuVTKARAdaptor::SVideo" autoConnect="yes">
+                <in key="frame" uid="videoImage3" />
+                <config renderer="default" />
+            </service>
+
+            <service uid="interactorStyle3" type="::visuVTKAdaptor::SInteractorStyle">
+                <config renderer="default" style="InteractorStyle2DForNegato" />
+            </service>
+
+            <!-- *************************** End generic scene *************************** -->
+
+            <!-- *************************** Begin generic scene *************************** -->
+
+            <service uid="genericScene4" type="::fwRenderVTK::SRender" >
+                <scene>
+                    <renderer id="default" background="0.0" />
+                    <adaptor uid="videoAdpt4" />
+                    <adaptor uid="interactorStyle4" />
+                </scene>
+            </service>
+
+            <service uid="videoAdpt4" type="::visuVTKARAdaptor::SVideo" autoConnect="yes">
+                <in key="frame" uid="videoImage4" />
+                <config renderer="default" />
+            </service>
+
+            <service uid="interactorStyle4" type="::visuVTKAdaptor::SInteractorStyle">
+                <config renderer="default" style="InteractorStyle2DForNegato" />
+            </service>
+
+            <!-- *************************** End generic scene *************************** -->
+
+            <service uid="cropFilter" type="::videoFilter::SCropVideoQuad" worker="videoWorker">
+                <in key="quadFrameTL" uid="frameTL" autoConnect="yes" />
+                <inout key="frameTL1" uid="frameTL1" />
+                <inout key="frameTL2" uid="frameTL2" />
+                <inout key="frameTL3" uid="frameTL3" />
+                <inout key="frameTL4" uid="frameTL4" />
+            </service>
+
+            <service uid="synchronizer" type="::videoTools::SFrameMatrixSynchronizer" worker="videoWorker">
+                <in group="frameTL">
+                    <key uid="frameTL1" />
+                    <key uid="frameTL2" />
+                    <key uid="frameTL3" />
+                    <key uid="frameTL4" />
+                </in>
+                <inout group="image">
+                    <key uid="videoImage1" />
+                    <key uid="videoImage2" />
+                    <key uid="videoImage3" />
+                    <key uid="videoImage4" />
+                </inout>
+                <framerate>30</framerate>
+            </service>
+
+            <service uid="cameraSelector" type="::videoQt::editor::SCamera">
+                <inout key="camera" uid="camera" />
+                <videoSupport>yes</videoSupport>
+            </service>
+
+            <service uid="frameGrabber" type="::videoQt::SFrameGrabber">
+                <in key="camera" uid="camera" />
+                <inout key="frameTL" uid="frameTL" />
+            </service>
+
+            <connect>
+                <signal>camera/idModified</signal>
+                <slot>frameGrabber/stopCamera</slot>
+            </connect>
+
+            <start uid="mainFrame" />
+            <start uid="frameGrabber" />
+            <start uid="synchronizer" />
+            <start uid="cropFilter" />
+            <!-- VTK scene 'genericScene1' -->
+            <start uid="videoAdpt1" />
+            <start uid="interactorStyle1" />
+            <!-- VTK scene 'genericScene2' -->
+            <start uid="videoAdpt2" />
+            <start uid="interactorStyle2" />
+            <!-- VTK scene 'genericScene3' -->
+            <start uid="videoAdpt3" />
+            <start uid="interactorStyle3" />
+            <!-- VTK scene 'genericScene4' -->
+            <start uid="videoAdpt4" />
+            <start uid="interactorStyle4" />
+        </config>
+    </extension>
+</plugin>

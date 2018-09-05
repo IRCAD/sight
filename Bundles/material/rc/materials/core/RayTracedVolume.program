@@ -1,0 +1,9 @@
+vertex_program RayTracedVolume_VP glsl
+{
+    source RayTracedVolume_VP.glsl
+
+    default_params
+    {
+        param_named_auto u_worldViewProj worldviewproj_matrix
+    }
+}

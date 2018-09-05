@@ -1,0 +1,55 @@
+//----------------------------------------------
+
+vertex_program JFA_VP glsl
+{
+    source JFA_VP.glsl
+
+    default_params
+    {
+        param_named_auto u_worldViewProj worldviewproj_matrix
+    }
+}
+
+//----------------------------------------------
+
+fragment_program JFA_FP glsl
+{
+    source JFA_FP.glsl
+
+    default_params
+    {
+        param_named_auto u_viewport viewport_size
+        param_named u_passIndex float 0
+        param_named u_nbPasses float 0
+        param_named u_inputTexture int 0
+    }
+}
+
+//----------------------------------------------
+
+material JFA
+{
+    technique
+    {
+        pass
+        {
+            cull_hardware none
+            cull_software none
+            alpha_rejection always_pass
+
+            vertex_program_ref JFA_VP
+            {
+            }
+
+            fragment_program_ref JFA_FP
+            {
+            }
+
+            texture_unit inputTexture
+            {
+                filtering none
+            }
+        }
+    }
+}
+

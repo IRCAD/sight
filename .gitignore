@@ -5,12 +5,13 @@ syntax: glob
 # eclipse stuff
 *.cproject
 *.project
+# python
 *.pyc
 *.pyo
 # tmp files
 .*~
 *.autosave
-#qtcreator cmake preferences
+# qtcreator cmake preferences
 *.txt.user
 # reject and backup file
 *.rej

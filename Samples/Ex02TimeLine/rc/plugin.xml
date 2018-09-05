@@ -1,0 +1,67 @@
+﻿<plugin id="Ex02TimeLine" class="::Ex02TimeLine::Plugin" version="@PROJECT_VERSION@" >
+
+    <library name="Ex02TimeLine" />
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwServices::IService</type>
+        <service>::Ex02TimeLine::SProducer</service>
+        <object>::Ex02TimeLine::MessageTL</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwServices::IService</type>
+        <service>::Ex02TimeLine::SConsumer</service>
+        <object>::Ex02TimeLine::MessageTL</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::AppConfig">
+        <id>Ex02TimeLineConfig</id>
+        <config>
+
+            <object uid="messageTL" type="::Ex02TimeLine::MessageTL" />
+
+            <service uid="producer1" type="::Ex02TimeLine::SProducer" worker="producer">
+                <inout key="timeline" uid="messageTL" />
+                <message>Hello</message>
+                <id>0</id>
+                <period>1000</period>
+                <timelineSize>2</timelineSize>
+            </service>
+            <service uid="producer2" type="::Ex02TimeLine::SProducer" worker="producer">
+                <inout key="timeline" uid="messageTL" />
+                <message>World</message>
+                <id>1</id>
+                <period>2000</period>
+            </service>
+            <service uid="producer3" type="::Ex02TimeLine::SProducer" worker="producer">
+                <inout key="timeline" uid="messageTL" />
+                <message>!!!!!</message>
+                <id>1</id>
+                <period>5000</period>
+            </service>
+
+            <service uid="consumer1" type="::Ex02TimeLine::SConsumer" worker="consumer">
+                <in key="timeline" uid="messageTL" />
+                <id>100</id>
+            </service>
+            <service uid="consumer2" type="::Ex02TimeLine::SConsumer" worker="consumer">
+                <in key="timeline" uid="messageTL" />
+                <id>200</id>
+                <period>5000</period>
+            </service>
+
+            <connect>
+                <signal>messageTL/objectPushed</signal>
+                <slot>consumer1/consume</slot>
+            </connect>
+
+            <start uid="producer1" />
+            <start uid="producer2" />
+            <start uid="producer3" />
+            <start uid="consumer1" />
+            <start uid="consumer2" />
+
+        </config>
+    </extension>
+
+</plugin>

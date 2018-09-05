@@ -1,0 +1,59 @@
+// Default material
+
+//-----------------------------------------------------------------------------
+
+fragment_program OrenNayar_FP glsl
+{
+    source OrenNayar_FP.glsl
+}
+
+//-----------------------------------------------------------------------------
+
+fragment_program Default/OrenNayar_FP glsl
+{
+    source Main_FP.glsl
+    attach OrenNayar_FP
+    default_params
+    {
+        param_named_auto u_cameraPos camera_position
+        param_named_auto u_lightDir light_position 0
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named u_roughness int 35
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+material OrenNayar
+{
+    technique
+    {
+        pass
+        {
+            ambient 0.05 0.05 0.05
+            specular 0.5 0.5 0.5 25.0
+
+            scene_blend alpha_blend
+            cull_hardware none
+            cull_software none
+
+            vertex_program_ref Default/PixelLit_VP
+            {
+            }
+
+            fragment_program_ref Default/OrenNayar_FP
+            {
+            }
+        }
+    }
+
+    technique depth
+    {
+        pass
+        {
+            vertex_program_ref Render_VP
+            {
+            }
+        }
+    }
+}

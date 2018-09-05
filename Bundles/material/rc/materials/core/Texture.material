@@ -1,0 +1,61 @@
+vertex_program myTextureVertProgram glsl
+{
+        source SimpleTex_VP.glsl
+        default_params
+        {
+            param_named_auto u_worldViewProj worldviewproj_matrix
+        }
+}
+
+fragment_program myTextureFragProgram glsl
+{
+        source SimpleTex_FP.glsl
+        default_params
+        {
+                param_named colorMap int 0
+                param_named depthMap int 1
+                param_named normalMap int 2
+        }
+}
+
+material Texture
+{
+        technique
+        {
+                pass
+                {
+                        cull_hardware none
+                        cull_software none
+                        depth_check off
+
+                        vertex_program_ref myTextureVertProgram
+                        {
+                        }
+
+                        fragment_program_ref myTextureFragProgram
+                        {
+                        }
+
+                        texture_unit colorMap
+                        {
+                                tex_coord_set 0
+                                tex_address_mode clamp
+                                filtering none
+                        }
+
+                        texture_unit depthMap
+                        {
+                                tex_coord_set 1
+                                tex_address_mode clamp
+                                filtering none
+                        }
+
+                        texture_unit normalMap
+                        {
+                                tex_coord_set 2
+                                tex_address_mode clamp
+                                filtering none
+                        }
+                }
+        }
+}

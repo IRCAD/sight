@@ -1,0 +1,138 @@
+vertex_program Blur_VP glsl
+{
+    source Blur_vs.glsl
+    default_params
+    {
+        param_named_auto worldViewProj worldviewproj_matrix
+    }
+}
+
+//----------------------------------------------
+
+fragment_program BlurH_FP glsl
+{
+    source BlurH_ps20.glsl
+}
+
+//----------------------------------------------
+
+fragment_program BlurV_FP glsl
+{
+    source BlurV_ps20.glsl
+}
+
+//----------------------------------------------
+
+fragment_program Bloom2_FP glsl
+{
+    source Bloom2_ps20.glsl
+    default_params
+    {
+        param_named RT int 0
+        param_named Blur1 int 1
+    }
+}
+
+//----------------------------------------------
+
+//Blur: Horizontal Gaussian pass
+material BlurH
+{
+    technique
+    {
+        pass
+        {
+            cull_hardware none
+            cull_software none
+            depth_check off
+            polygon_mode_overrideable false
+
+            vertex_program_ref Blur_VP
+            {
+            }
+
+            fragment_program_ref BlurH_FP
+            {
+            }
+
+            texture_unit
+            {
+                tex_coord_set 0
+                tex_address_mode clamp
+                filtering trilinear
+            }
+        }
+    }
+}
+
+//----------------------------------------------
+
+//Blur: Vertical Gaussian pass
+material BlurV
+{
+    technique
+    {
+        pass
+        {
+            cull_hardware none
+            cull_software none
+            depth_check off
+            polygon_mode_overrideable false
+
+            vertex_program_ref Blur_VP
+            {
+            }
+
+            fragment_program_ref BlurV_FP
+            {
+            }
+
+            texture_unit
+            {
+                tex_coord_set 0
+                tex_address_mode clamp
+                filtering trilinear
+            }
+        }
+    }
+}
+
+//----------------------------------------------
+
+//Final Bloom pass: Blends the blurred with the sharp image
+material BloomBlend
+{
+    technique
+    {
+        pass
+        {
+            cull_hardware none
+            cull_software none
+            depth_check off
+            polygon_mode_overrideable false
+
+            vertex_program_ref Blur_VP
+            {
+            }
+
+            fragment_program_ref Bloom2_FP
+            {
+                param_named OriginalImageWeight float 1.0
+                param_named BlurWeight float 0.65
+            }
+
+            texture_unit
+            {
+                tex_coord_set 0
+                tex_address_mode clamp
+                filtering none
+            }
+            texture_unit
+            {
+                tex_coord_set 0
+                tex_address_mode clamp
+                filtering trilinear
+            }
+        }
+    }
+}

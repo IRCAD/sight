@@ -1,0 +1,66 @@
+// Default material
+
+//-----------------------------------------------------------------------------
+
+fragment_program Foggy_FP glsl
+{
+    source Foggy_FP.glsl
+    preprocessor_defines PIXEL_LIT=1
+}
+
+//-----------------------------------------------------------------------------
+
+fragment_program Default/Foggy_FP glsl
+{
+    source Main_FP.glsl
+    attach Foggy_FP
+    attach Lighting_FP
+    default_params
+    {
+        param_named_auto u_cameraPos camera_position
+        param_named_auto u_lightDir light_position_array 1
+        param_named_auto u_ambient surface_ambient_colour
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_specular surface_specular_colour
+        param_named_auto u_shininess surface_shininess
+        param_named u_fogParams float2 100. 1000.
+        param_named u_fogColor float4 0.5 0.5 0.5 1.0
+        param_named u_fog int 1
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+material Foggy
+{
+    technique
+    {
+        pass
+        {
+            ambient 0.05 0.05 0.05
+            specular 0.5 0.5 0.5 25.0
+
+            scene_blend alpha_blend
+            cull_hardware none
+            cull_software none
+
+            vertex_program_ref Default/PixelLit_VP
+            {
+            }
+
+            fragment_program_ref Default/Foggy_FP
+            {
+            }
+        }
+    }
+
+    technique depth
+    {
+        pass
+        {
+            vertex_program_ref Render_VP
+            {
+            }
+        }
+    }
+}

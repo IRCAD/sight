@@ -1,0 +1,32 @@
+fragment_program Embossed_FP glsl
+{
+    source EmbossedFp.glsl
+}
+
+material Embossed
+{
+    technique
+    {
+
+        pass
+        {
+            depth_check off
+            polygon_mode_overrideable false
+
+            vertex_program_ref StdQuad_Tex2a_VP
+            {
+            }
+
+            fragment_program_ref Embossed_FP
+            {
+            }
+
+            texture_unit RT
+            {
+                tex_coord_set 0
+                tex_address_mode clamp
+                filtering linear linear linear
+            }
+        }
+    }
+}

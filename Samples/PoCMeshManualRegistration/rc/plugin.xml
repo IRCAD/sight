@@ -1,0 +1,405 @@
+<plugin id="PoCMeshManualRegistration" version="@PROJECT_VERSION@">
+    <requirement id="dataReg" />
+    <requirement id="servicesReg" />
+    <requirement id="visuVTKQt" />
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude" href="configurations/manualRegistrationEditorConfig.xml" />
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude" href="configurations/camViewManagerConfig.xml" />
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude" href="configurations/worldViewConfig.xml" />
+    <extension implements="::fwServices::registry::AppConfig">
+        <id>PoCMeshManualRegistration</id>
+        <config>
+            <!-- ***************************************** Begin Objects declaration ***************************************** -->
+            <object uid="image" type="::fwData::Image" />
+            <object uid="modelSeries" type="::fwMedData::ModelSeries" />
+            <object uid="view1" type="::fwData::TransformationMatrix3D" />
+            <object uid="view2" type="::fwData::TransformationMatrix3D" />
+            <object uid="camPosMatrix" type="::fwData::TransformationMatrix3D" />
+            <object uid="cam2Mesh" type="::fwData::Mesh" />
+            <object uid="cam1Mesh" type="::fwData::Mesh" />
+            <object uid="meshDB" type="::fwData::Composite" />
+            <object uid="imageComposite" type="::fwData::Composite" />
+            <!-- ***************************************** End Objects declaration ******************************************* -->
+            <!-- ***************************************** Begin layouts declaration ***************************************** -->
+            <service uid="IHM" type="::gui::frame::SDefaultFrame">
+                <gui>
+                    <frame>
+                        <name>PoC Mesh Manual Registration</name>
+                        <icon>PoCMeshManualRegistration-0.1/tuto.ico</icon>
+                        <minSize width="800" height="600" />
+                    </frame>
+                    <menuBar/>
+                </gui>
+                <registry>
+                    <menuBar sid="menuBar" start="yes" />
+                    <view sid="viewSplitter" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="menuBar" type="::gui::aspect::SDefaultMenuBar">
+                <gui>
+                    <layout>
+                        <menu name="File" />
+                        <menu name="Tools" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menu sid="menu_File" start="yes" />
+                    <menu sid="menu_Tools" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="menu_File" type="::gui::aspect::SDefaultMenu">
+                <gui>
+                    <layout>
+                        <menuItem name="Load image" shortcut="Ctrl+I" />
+                        <menuItem name="Load meshes" shortcut="Ctrl+M" />
+                        <separator/>
+                        <menuItem name="Load camera representation" shortcut="Ctrl+P" />
+                        <separator/>
+                        <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="action_openImage" start="yes" />
+                    <menuItem sid="action_openMeshes" start="yes" />
+                    <menuItem sid="action_openCamFile" start="yes" />
+                    <menuItem sid="action_quit" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="menu_Tools" type="::gui::aspect::SDefaultMenu">
+                <gui>
+                    <layout>
+                        <menuItem name="Manage organs colors" shortcut="F9" style="check" />
+                        <menuItem name="Manual registration" shortcut="F10" style="check" />
+                        <menuItem name="View manager" shortcut="F11" style="check" />
+                        <menuItem name="View world" shortcut="F12" style="check" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="action_manageOrgansColors" start="yes" />
+                    <menuItem sid="action_manageRegistration" start="yes" />
+                    <menuItem sid="action_manageView" start="yes" />
+                    <menuItem sid="action_worldView" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="viewSplitter" type="::gui::view::SDefaultView">
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="horizontal" />
+                        <view proportion="1" />
+                        <view proportion="1" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="multiView_scene1" start="yes" />
+                    <view sid="genericScene2" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="multiView_scene1" type="::gui::view::SDefaultView">
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="vertical" />
+                        <view proportion="1" />
+                        <view proportion="0" minHeight="30" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="genericScene" start="yes" />
+                    <view sid="multiView_scene1_bottom" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="multiView_scene1_bottom" type="::gui::view::SDefaultView">
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="horizontal" />
+                        <view proportion="0" minWidth="30" />
+                        <view proportion="0" minWidth="50" />
+                        <view proportion="1" />
+                        <view proportion="0" minWidth="30" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="sliceListEditor" start="no" />
+                    <view sid="showScanEditor" start="no" />
+                    <view sid="sliderIndexEditor" start="no" />
+                    <view sid="snapshotScene1Editor" start="yes" />
+                </registry>
+            </service>
+
+            <!-- ***************************************** End layouts declaration ***************************************** -->
+            <!-- ***************************************** Begin services declarations    ************************************ -->
+            <service uid="action_manageOrgansColors" type="::gui::action::SConfigLauncher">
+                <appConfig id="ModelSeriesManagerWindow" />
+                <inout key="ORGAN_MANAGER_MODELSERIES" uid="modelSeries" />
+                <parameter replace="ICON_PATH" by="PoCMeshManualRegistration-0.1/tuto.ico" />
+            </service>
+
+            <service uid="action_manageView" type="::gui::action::SConfigLauncher">
+                <appConfig id="camViewManagerConfig" />
+                <inout key="modelSeries" uid="modelSeries" />
+                <inout key="image" uid="image" />
+                <inout key="camPosMatrix" uid="camPosMatrix" />
+            </service>
+
+            <service uid="action_manageRegistration" type="::gui::action::SConfigLauncher">
+                <appConfig id="manualRegistrationEditorConfig" />
+                <inout key="modelSeriesUid" uid="modelSeries" />
+                <inout key="meshDBUid" uid="meshDB" />
+            </service>
+
+            <service uid="action_worldView" type="::gui::action::SConfigLauncher">
+                <appConfig id="worldViewConfig" />
+                <inout key="modelSeriesUid" uid="modelSeries" />
+                <inout key="cam1MeshUid" uid="cam1Mesh" />
+                <inout key="cam2MeshUid" uid="cam2Mesh" />
+                <inout key="view1Uid" uid="view1" />
+                <inout key="view2Uid" uid="view2" />
+            </service>
+
+            <service uid="action_openImage" type="::gui::action::SStarter">
+                <start uid="imageReaderUid" />
+            </service>
+
+            <service uid="action_openMeshes" type="::gui::action::SStarter">
+                <start uid="modelSeriesReaderUid" />
+            </service>
+
+            <service uid="action_openCamFile" type="::gui::action::SStarter">
+                <start uid="camReaderFile" />
+            </service>
+
+            <service uid="action_quit" type="::gui::action::SQuit" />
+            <service uid="snapshotScene1Editor" type="::uiVisuQt::SnapshotEditor" />
+            <service uid="imageReaderUid" type="::uiIO::editor::SIOSelector">
+                <inout key="data" uid="image" />
+                <type mode="reader" />
+                <selection mode="exclude" />
+                <addSelection service="::ioXML::FwXMLGenericReaderService" />
+            </service>
+
+            <service uid="updaterImageUID" type="::ctrlSelection::SManage">
+                <inout key="object" uid="image" />
+                <inout key="composite" uid="imageComposite" />
+                <compositeKey>image</compositeKey>
+            </service>
+
+            <!-- This service convert a simple fwData::Image to medical Image -->
+            <service uid="medicalImageConverter" type="::ctrlSelection::MedicalImageSrv">
+                <inout key="image" uid="image" />
+            </service>
+
+            <service uid="sliceListEditor" type="::guiQt::editor::SSelectionMenuButton">
+                <toolTip>Manage slice visibility</toolTip>
+                <selected>3</selected>
+                <items>
+                    <item text="One slice" value="1" />
+                    <item text="three slices" value="3" />
+                </items>
+            </service>
+
+            <service uid="showScanEditor" type="::guiQt::editor::SSignalButton">
+                <config>
+                    <checkable>true</checkable>
+                    <icon>media-0.1/icons/sliceHide.png</icon>
+                    <icon2>media-0.1/icons/sliceShow.png</icon2>
+                    <iconWidth>40</iconWidth>
+                    <iconHeight>16</iconHeight>
+                    <checked>true</checked>
+                </config>
+            </service>
+
+            <service uid="sliderIndexEditor" type="::uiImageQt::SliceIndexPositionEditor" autoConnect="yes">
+                <inout key="image" uid="image" />
+                <sliceIndex>axial</sliceIndex>
+            </service>
+
+            <service uid="modelSeriesReaderUid" type="::uiIO::editor::SIOSelector">
+                <inout key="data" uid="modelSeries" />
+                <type mode="reader" />
+                <selection mode="exclude" />
+                <addSelection service="::ioXML::FwXMLGenericReaderService" />
+            </service>
+
+            <service uid="camReaderFile" type="::uiIO::editor::SIOSelector">
+                <inout key="data" uid="cam2Mesh" />
+                <type mode="reader" />
+                <selection mode="exclude" />
+                <addSelection service="::ioXML::FwXMLGenericReaderService" />
+            </service>
+
+            <service uid="cam2ReaderFile" type="::ioData::STrianMeshReader">
+                <inout key="data" uid="cam2Mesh" />
+                <resource>PoCMeshManualRegistration-0.1/cam.trian</resource>
+            </service>
+
+            <service uid="cam1ReaderFile" type="::ioData::STrianMeshReader">
+                <inout key="data" uid="cam1Mesh" />
+                <resource>PoCMeshManualRegistration-0.1/cam.trian</resource>
+            </service>
+
+            <!-- ***************************************** Begin render scenes declarations    ***************************************** -->
+            <!-- *************************** Begin generic scene *************************** -->
+
+            <service uid="genericScene" type="::fwRenderVTK::SRender">
+                <scene>
+                    <vtkObject id="cam2PosMatrixTransform" class="vtkTransform" />
+                    <picker id="picker" vtkclass="fwVtkCellPicker" />
+                    <renderer id="default" background="0.0" />
+                    <adaptor uid="modelSeriesAdaptor" />
+                    <adaptor uid="MPRNegato3D" />
+                    <adaptor uid="snapshot1" />
+                    <adaptor uid="CamPosMatrix" />
+                    <adaptor uid="CamPos2MatrixTransformAdaptor" />
+                    <adaptor uid="Cam2MeshAdaptor" />
+                    <adaptor uid="MeshCompositeAdaptor" />
+                </scene>
+            </service>
+
+            <service uid="modelSeriesAdaptor" type="::visuVTKAdaptor::SModelSeries" autoConnect="yes">
+                <in key="model" uid="modelSeries" />
+                <config renderer="default" picker="" autoresetcamera="no" />
+            </service>
+
+            <service uid="MPRNegato3D" type="::visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
+                <inout key="image" uid="image" />
+                <config renderer="default" picker="picker" slices="3" sliceIndex="axial" />
+            </service>
+
+            <service uid="snapshot1" type="::visuVTKAdaptor::SSnapshot">
+                <config renderer="default" />
+            </service>
+
+            <service uid="CamPosMatrix" type="::visuVTKAdaptor::SCamera" autoConnect="yes">
+                <inout key="transform" uid="view1" />
+                <config renderer="default" picker="" />
+            </service>
+
+            <service uid="CamPos2MatrixTransformAdaptor" type="::visuVTKAdaptor::STransform" autoConnect="yes">
+                <inout key="tm3d" uid="view2" />
+                <config renderer="default" picker="" transform="cam2PosMatrixTransform" />
+            </service>
+
+            <service uid="Cam2MeshAdaptor" type="::visuVTKAdaptor::SMesh" autoConnect="yes">
+                <in key="mesh" uid="cam2Mesh" />
+                <config renderer="default" picker="picker" transform="cam2PosMatrixTransform" autoresetcamera="no" />
+            </service>
+
+            <service uid="MeshCompositeAdaptor" type="::visuVTKAdaptor::SMeshesBoxWidget" autoConnect="yes">
+                <in key="composite" uid="meshDB" />
+                <config renderer="default" picker="picker" />
+            </service>
+
+            <!-- *************************** End generic scene *************************** -->
+
+            <!-- *************************** Begin generic scene *************************** -->
+
+            <service uid="genericScene2" type="::fwRenderVTK::SRender">
+                <scene>
+                    <vtkObject id="cam1PosMatrixTransform" class="vtkTransform" />
+                    <picker id="picker" vtkclass="fwVtkCellPicker" />
+                    <renderer id="default" background="0.0" />
+                    <adaptor uid="modelSeriesAdaptor2" />
+                    <adaptor uid="CamPosMatrix2" />
+                    <adaptor uid="CamPos1MatrixTransformAdaptor" />
+                    <adaptor uid="Cam1MeshAdaptor" />
+                    <adaptor uid="MeshCompositeAdaptor2" />
+                </scene>
+            </service>
+
+            <service uid="modelSeriesAdaptor2" type="::visuVTKAdaptor::SModelSeries" autoConnect="yes">
+                <in key="model" uid="modelSeries" />
+                <config renderer="default" picker="" autoresetcamera="no" />
+            </service>
+
+            <service uid="CamPosMatrix2" type="::visuVTKAdaptor::SCamera" autoConnect="yes">
+                <inout key="transform" uid="view2" />
+                <config renderer="default" picker="" />
+            </service>
+
+            <service uid="CamPos1MatrixTransformAdaptor" type="::visuVTKAdaptor::STransform" autoConnect="yes">
+                <inout key="tm3d" uid="view1" />
+                <config renderer="default" picker="" transform="cam1PosMatrixTransform" />
+            </service>
+
+            <service uid="Cam1MeshAdaptor" type="::visuVTKAdaptor::SMesh" autoConnect="yes">
+                <in key="mesh" uid="cam1Mesh" />
+                <config renderer="default" picker="picker" transform="cam1PosMatrixTransform" autoresetcamera="no" />
+            </service>
+
+            <service uid="MeshCompositeAdaptor2" type="::visuVTKAdaptor::SMeshesBoxWidget" autoConnect="yes">
+                <in key="composite" uid="meshDB" />
+                <config renderer="default" picker="picker" />
+            </service>
+
+            <!-- *************************** End generic scene *************************** -->
+
+            <!-- ***************************************** End render scenes declaration ***************************************** -->
+            <!-- ***************************************** End services declarations    ************************************************ -->
+            <!-- ***************************************** Begin connections declarations    *************************************** -->
+            <connect>
+                <signal>image/modified</signal>
+                <slot>updaterImageUID/addOrSwap</slot>
+            </connect>
+
+            <connect>
+                <signal>showScanEditor/toggled</signal>
+                <slot>sliceListEditor/setEnabled</slot>
+            </connect>
+
+            <connect channel="snapshotChannel">
+                <signal>snapshotScene1Editor/snapped</signal>
+            </connect>
+
+            <connect channel="showSliceChannel">
+                <signal>showScanEditor/toggled</signal>
+            </connect>
+
+            <connect channel="sliceModeChannel">
+                <signal>sliceListEditor/selected</signal>
+            </connect>
+
+            <!-- ***************************************** End connections declarations    ***************************************** -->
+
+            <connect channel="snapshotChannel">
+                <slot>snapshot1/snap</slot>
+            </connect>
+
+            <connect channel="showSliceChannel">
+                <slot>MPRNegato3D/showSlice</slot>
+            </connect>
+
+            <connect channel="sliceModeChannel">
+                <slot>MPRNegato3D/updateSliceMode</slot>
+            </connect>
+
+            <start uid="IHM" />
+            <start uid="updaterImageUID" />
+            <start uid="cam1ReaderFile" />
+            <start uid="cam2ReaderFile" />
+
+            <!-- genericScene -->
+            <start uid="modelSeriesAdaptor" />
+            <start uid="MPRNegato3D" />
+            <start uid="snapshot1" />
+            <start uid="CamPosMatrix" />
+            <start uid="CamPos2MatrixTransformAdaptor" />
+            <start uid="Cam2MeshAdaptor" />
+            <start uid="MeshCompositeAdaptor" />
+
+            <!-- genericScene2 -->
+            <start uid="modelSeriesAdaptor2" />
+            <start uid="CamPosMatrix2" />
+            <start uid="CamPos1MatrixTransformAdaptor" />
+            <start uid="Cam1MeshAdaptor" />
+            <start uid="MeshCompositeAdaptor2" />
+
+            <update uid="cam1ReaderFile" />
+            <update uid="cam2ReaderFile" />
+        </config>
+    </extension>
+</plugin>

@@ -1,0 +1,91 @@
+<extension implements="::fwServices::registry::AppConfig">
+    <id>OgreOrganManagerWithSeries</id>
+    <parameters>
+        <param name="WID_PARENT" />
+        <param name="ORGAN_MANAGER_MODELSERIES" />
+        <param name="ICON_PATH" />
+    </parameters>
+
+    <config>
+
+        <object uid="${ORGAN_MANAGER_MODELSERIES}" type="::fwMedData::ModelSeries" src="ref" />
+        <object uid="reconstruction" type="::fwData::Reconstruction" src="deferred" />
+
+        <service uid="organView" type="::gui::view::SDefaultView" >
+            <gui>
+                <layout type="::fwGui::ToolboxLayoutManager" >
+                    <view caption="Organs" expanded="true"  />
+                    <view caption="Material" expanded="true" />
+                    <view caption="Representation" expanded="true" />
+                    <view caption="Texture" expanded="true" />
+                    <view caption="Material selector" expanded="true" />
+                    <view caption="Shader parameters" expanded="true" />
+                </layout>
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <view sid="listOrganEditor" start="yes" />
+                <view sid="organMaterialEditor" start="no" />
+                <view sid="representationEditor" start="no" />
+                <view sid="textureSelector" start="no" />
+                <view sid="materialSelector" start="no" />
+                <view sid="shaderParameters" start="no" />
+            </registry>
+        </service>
+
+        <service uid="updaterReconst" type="::ctrlSelection::updater::SObjFromSlot" >
+            <out key="object" uid="reconstruction" />
+        </service>
+
+        <service uid="organMaterialEditor" type="::uiReconstructionQt::OrganMaterialEditor" >
+            <inout key="reconstruction" uid="reconstruction" />
+        </service>
+        <service uid="representationEditor" type="::uiReconstructionQt::RepresentationEditor" >
+            <inout key="reconstruction" uid="reconstruction" />
+        </service>
+        <service uid="textureSelector" type="::uiVisuOgre::STextureSelector" >
+            <inout key="reconstruction" uid="reconstruction" />
+        </service>
+        <service uid="materialSelector" type="::uiVisuOgre::SMaterialSelector" >
+            <inout key="reconstruction" uid="reconstruction" />
+        </service>
+        <service uid="shaderParameters" type="::uiVisuOgre::SShaderParameterEditor" >
+            <inout key="reconstruction" uid="reconstruction" />
+        </service>
+
+        <service uid="listOrganEditor" type="::uiMedDataQt::editor::SModelSeriesList" autoConnect="yes" >
+            <inout key="modelSeries" uid="${ORGAN_MANAGER_MODELSERIES}" />
+            <columns>
+                <organ_name>@organ_name</organ_name>
+                <volume_cc view="positive" >@volume</volume_cc>
+            </columns>
+        </service>
+
+        <connect>
+            <signal>listOrganEditor/reconstructionSelected</signal>
+            <slot>updaterReconst/addOrSwap</slot>
+        </connect>
+
+        <connect>
+            <signal>listOrganEditor/emptiedSelection</signal>
+            <slot>updaterReconst/remove</slot>
+        </connect>
+
+        <connect>
+            <signal>materialSelector/selected</signal>
+            <slot>shaderParameters/update</slot>
+        </connect>
+
+        <!-- START AND STOP SERVICES -->
+        <start uid="organView" />
+        <start uid="updaterReconst" />
+
+        <!-- Deferred start -->
+        <start uid="materialSelector" />
+        <start uid="representationEditor" />
+        <start uid="shaderParameters" />
+        <start uid="organMaterialEditor" />
+        <start uid="textureSelector" />
+
+    </config>
+</extension>

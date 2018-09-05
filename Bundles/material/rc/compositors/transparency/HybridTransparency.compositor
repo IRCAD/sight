@@ -1,0 +1,258 @@
+compositor HybridTransparency
+{
+    technique
+    {
+        // Depth peeling texture
+        // Color buffer - used for blending
+        texture gbuffer target_width target_height PF_R8G8B8A8
+        // Ping buffer
+        texture pingBuffer target_width target_height PF_R8G8B8A8 PF_R8G8B8A8
+        // Pong buffer
+        texture pongBuffer target_width target_height PF_R8G8B8A8 PF_R8G8B8A8
+        // Depth map
+        texture backDepth target_width target_height PF_R8G8B8A8
+        // Fake texture for the first
+        texture peelInit target_width target_height PF_R8G8B8A8 depth_pool 0
+
+        // WBOIT texture
+        // Occlusion computing
+        texture occlusion target_width target_height PF_FLOAT32_R
+        // Weight computing
+        texture weightedColor target_width target_height PF_FLOAT16_RGBA
+        // Transmittance computing
+        texture transmittance target_width target_height PF_R8
+        // WBOIT render
+        texture WBOIT_output target_width target_height PF_R8G8B8A8
+
+        // Back depth buffer
+        target backDepth
+        {
+            input none
+            pass clear
+            {
+            }
+            pass clear
+            {
+                buffers depth
+                depth_value 0
+            }
+
+            shadows off
+            material_scheme HybridTransparency/backDepth
+
+            pass render_scene
+            {
+                // Surface models are in render queues 50 and below.
+                last_render_queue 50
+            }
+        }
+
+        // Init the fake depth texture used for the first peel
+        target peelInit
+        {
+            input none
+            pass render_quad
+            {
+               material ClearDepth
+            }
+        }
+
+        /// Depth Peeling - core kernels
+
+        // Init peel buffer
+        target pingBuffer
+        {
+            input none
+            pass clear
+            {
+            }
+
+            shadows off
+            material_scheme HybridTransparency/peelInit
+
+            pass render_scene
+            {
+                last_render_queue 50
+            }
+        }
+
+        // Init blend buffer
+        target gbuffer
+        {
+            input none
+            pass clear
+            {
+                colour_value 0 0 0 1
+            }
+            pass render_quad
+            {
+                material DepthPeeling/Blend
+                input 0 pingBuffer 0
+            }
+        }
+
+        // Peel 1
+        target pongBuffer
+        {
+            input none
+            pass clear
+            {
+            }
+
+            shadows off
+            material_scheme HybridTransparency/peelPong
+
+            pass render_scene
+            {
+                last_render_queue 50
+            }
+        }
+
+        // Blend 1
+        target gbuffer
+        {
+            input none
+            pass render_quad
+            {
+                material DepthPeeling/Blend
+                input 0 pongBuffer 0
+            }
+        }
+
+        // Peel 2
+        target pingBuffer
+        {
+            input none
+            pass clear
+            {
+            }
+
+            shadows off
+            material_scheme HybridTransparency/peelPing
+
+            pass render_scene
+            {
+                last_render_queue 50
+            }
+        }
+
+        // Blend 2
+        target gbuffer
+        {
+            input none
+            pass render_quad
+            {
+                material DepthPeeling/Blend
+                input 0 pingBuffer 0
+            }
+        }
+
+        /// WBOIT - tail kernels
+
+        // Occlusion map
+        target occlusion
+        {
+            input none
+            pass clear
+            {
+                buffers colour depth
+                colour_value 1 1 1 1
+            }
+
+            shadows off
+            material_scheme HybridTransparency/occlusionMap
+
+            pass render_scene
+            {
+            }
+        }
+
+        // Weight blend
+        target weightedColor
+        {
+            input none
+            pass clear
+            {
+                buffers colour
+                colour_value 0 0 0 0
+            }
+
+            shadows off
+            material_scheme HybridTransparency/weightBlend
+
+            pass render_scene
+            {
+                last_render_queue 50
+            }
+        }
+
+        // Transmittance blend
+        target transmittance
+        {
+            input none
+            pass clear
+            {
+                buffers colour depth
+                colour_value 1 1 1 1
+            }
+
+            shadows off
+            material_scheme HybridTransparency/transmittanceBlend
+
+            pass render_scene
+            {
+                last_render_queue 50
+            }
+        }
+
+        // WBOIT blend
+        target WBOIT_output
+        {
+            input none
+            pass render_quad
+            {
+                material HybridTransparency/WBOITBlend
+                input 0 weightedColor
+                input 1 transmittance
+            }
+        }
+
+        // Blend final
+        target gbuffer
+        {
+            input none
+            pass render_quad
+            {
+                material HybridTransparency/BlendFinal
+                input 0 WBOIT_output
+            }
+        }
+
+
+        // Final pass
+        target_output
+        {
+            input none
+
+            pass clear
+            {
+            }
+
+            pass render_quad
+            {
+                material HybridTransparency/Final
+                input 0 gbuffer
+                input 1 backDepth
+            }
+
+            // Render volumes on top.
+            pass render_scene
+            {
+                // Volumes are in rq 52 and some of their widgets in rq 51.
+                first_render_queue 51
+                last_render_queue 52
+            }
+        }
+
+    }
+}

@@ -1,0 +1,327 @@
+<extension implements="::fwServices::registry::AppConfig">
+    <id>TrackedCameraRegistration</id>
+    <parameters>
+        <param name="WID_PARENT" />
+        <param name="AS_UID" />
+        <param name="firstCameraSeries" />
+        <param name="secondCameraSeries" />
+        <param name="markerMesh" />
+    </parameters>
+    <config>
+
+        <object uid="${firstCameraSeries}" type="::arData::CameraSeries" src="ref"/>
+        <object uid="${secondCameraSeries}" type="::arData::CameraSeries" src="ref"/>
+
+        <object uid="${markerMesh}" type="::fwData::Mesh" src="ref"/>
+
+        <object uid="firstCamera" type="::arData::Camera" src="deferred" />
+        <object uid="secondCamera" type="::arData::Camera" src="deferred" />
+
+        <object uid="secondFrameTL" type="::arData::FrameTL" />
+        <object uid="firstFrameTL" type="::arData::FrameTL" />
+
+        <object uid="firstImageVideo" type="::fwData::Image" />
+        <object uid="secondImageVideo" type="::fwData::Image" />
+
+        <object uid="firstMatrixTL" type="::arData::MatrixTL" />
+        <object uid="secondMatrixTL" type="::arData::MatrixTL" />
+
+        <object uid="firstTag1Matrix" type="::fwData::TransformationMatrix3D" >
+            <matrix>
+                   <![CDATA[
+                       1  0  0  1000
+                       0  1  0  1000
+                       0  0  1  -1000
+                       0  0  0  1
+                   ]]>
+            </matrix>
+        </object>
+
+        <object uid="firstTag2Matrix" type="::fwData::TransformationMatrix3D" >
+            <matrix>
+                   <![CDATA[
+                       1  0  0  1000
+                       0  1  0  1000
+                       0  0  1  -1000
+                       0  0  0  1
+                   ]]>
+            </matrix>
+        </object>
+
+        <object uid="secondTag1Matrix" type="::fwData::TransformationMatrix3D" >
+            <matrix>
+                   <![CDATA[
+                       1  0  0  1000
+                       0  1  0  1000
+                       0  0  1  -1000
+                       0  0  0  1
+                   ]]>
+            </matrix>
+        </object>
+
+        <object uid="secondTag2Matrix" type="::fwData::TransformationMatrix3D" >
+            <matrix>
+                   <![CDATA[
+                       1  0  0  1000
+                       0  1  0  1000
+                       0  0  1  -1000
+                       0  0  0  1
+                   ]]>
+            </matrix>
+        </object>
+
+        <object uid="registrationMatrix" type="::fwData::TransformationMatrix3D" />
+        <object uid="secondCameraOpticalCenterMatrix" type="::fwData::TransformationMatrix3D" />
+        <object uid="arTag1Matrix" type="::fwData::TransformationMatrix3D" />
+        <object uid="currentTag1Matrix" type="::fwData::TransformationMatrix3D" />
+
+        <!-- ***************************************** Begin layouts declaration ***************************************** -->
+
+        <service uid="mainView" type="::gui::view::SDefaultView">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="horizontal" />
+                    <view proportion="0" />
+                    <view proportion="0" />
+                </layout>
+                <toolBar />
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <toolBar sid="toolbar" start="yes" />
+                <view wid="firstVideoView" start="yes" />
+                <view wid="secondVideoView" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="toolbar" type="::gui::aspect::SDefaultToolBar">
+            <gui>
+                <layout>
+                    <menuItem name="start" icon="arMedia-0.1/icons/start.svg" />
+                    <menuItem name="stop" icon="arMedia-0.1/icons/stop.svg" />
+                    <separator />
+                    <menuItem name="Compute registration matrix" icon="arMedia-0.1/icons/calibrationActivity.svg"/>
+                    <menuItem name="Switch matrices" style="check" icon="arMedia-0.1/icons/reset.svg"/>
+                    <separator />
+                    <menuItem name="Export registration matrix" icon="arMedia-0.1/icons/save.svg"/>
+                </layout>
+            </gui>
+            <registry>
+                <menuItem sid="startVideo" start="yes" />
+                <menuItem sid="stopVideo" start="yes" />
+                <menuItem sid="actionConcatenateRegistrationMatrix" start="yes" />
+                <menuItem sid="actionSwitchMatrices" start="yes" />
+                <menuItem sid="actionSaveMatrix" start="yes"/>
+            </registry>
+        </service>
+
+        <!-- *************************** End layouts declaration ****************************** -->
+
+        <!-- *************************** Begin services declaration ***************** -->
+
+        <service uid="loadFirstCameraView" type="::fwServices::SConfigController">
+            <appConfig id="rgbCameraView" />
+            <parameter replace="WID_PARENT" uid="firstVideoView" />
+
+            <inout key="camera" uid="firstCamera" />
+            <inout key="frameTL" uid="firstFrameTL" />
+            <inout key="imageVideo" uid="firstImageVideo" />
+            <inout key="markerMesh" uid="${markerMesh}" />
+
+            <inout key="matrixTL" uid="firstMatrixTL" />
+            <inout key="tagMatrix1" uid="currentTag1Matrix" />
+            <inout key="tagMatrix2" uid="firstTag2Matrix" />
+            <inout key="registrationMatrix" uid="secondCameraOpticalCenterMatrix" />
+            <parameter replace="tagsToDetect" by="101,128" />
+        </service>
+
+        <service uid="loadSecondCameraView" type="::fwServices::SConfigController">
+            <appConfig id="rgbCameraView" />
+            <parameter replace="WID_PARENT" uid="secondVideoView" />
+
+            <inout key="camera" uid="secondCamera" />
+            <inout key="frameTL" uid="secondFrameTL" />
+            <inout key="imageVideo" uid="secondImageVideo" />
+            <inout key="markerMesh" uid="${markerMesh}" />
+
+            <inout key="matrixTL" uid="secondMatrixTL" />
+            <inout key="tagMatrix1" uid="secondTag1Matrix" />
+            <inout key="tagMatrix2" uid="secondTag2Matrix" />
+            <inout key="registrationMatrix" uid="secondTag2Matrix" />
+            <parameter replace="tagsToDetect" by="101" />
+        </service>
+
+        <service uid="synchronizer" type="::videoTools::SFrameMatrixSynchronizer" worker="synchronizer">
+            <in group="frameTL">
+                <key uid="firstFrameTL"/>
+                <key uid="secondFrameTL"/>
+            </in>
+            <inout group="image">
+                <key uid="firstImageVideo"/>
+                <key uid="secondImageVideo"/>
+            </inout>
+            <in group="matrixTL">
+                <key uid="firstMatrixTL"/>
+                <key uid="secondMatrixTL"/>
+            </in>
+            <inout group="matrices0">
+                <key uid="firstTag1Matrix"/>
+                <key uid="firstTag2Matrix"/>
+            </inout>
+            <inout group="matrices1">
+                <key uid="secondTag1Matrix"/>
+            </inout>
+            <framerate>30</framerate>
+        </service>
+
+        <service uid="firstVideoGrabber" type="::videoTools::SGrabberProxy">
+            <in key="camera" uid="firstCamera" autoConnect="yes" />
+            <inout key="frameTL" uid="firstFrameTL" />
+            <config>
+                <gui title="Please select the first camera grabber" />
+            </config>
+        </service>
+
+        <service uid="secondVideoGrabber" type="::videoTools::SGrabberProxy">
+            <in key="camera" uid="secondCamera" autoConnect="yes" />
+            <inout key="frameTL" uid="secondFrameTL" />
+            <config>
+                <gui title="Please select the second camera grabber" />
+            </config>
+        </service>
+
+        <service uid="extractFirstCamera" type="::ctrlCamp::SExtractObj">
+            <inout key="source" uid="${firstCameraSeries}">
+                <extract from="@cameras.0" />
+            </inout>
+           <out group="target">
+               <key uid="firstCamera"/>
+           </out>
+        </service>
+
+        <service uid="extractSecondCamera" type="::ctrlCamp::SExtractObj">
+            <inout key="source" uid="${secondCameraSeries}" >
+                <extract from="@cameras.0" />
+            </inout>
+           <out group="target">
+               <key uid="secondCamera"/>
+           </out>
+        </service>
+
+        <service uid="startVideo" type="::gui::action::SSlotCaller" >
+            <slots>
+                <slot>firstVideoGrabber/startCamera</slot>
+                <slot>secondVideoGrabber/startCamera</slot>
+            </slots>
+        </service>
+
+        <service uid="stopVideo" type="::gui::action::SSlotCaller" >
+            <slots>
+                <slot>firstVideoGrabber/stopCamera</slot>
+                <slot>secondVideoGrabber/stopCamera</slot>
+                <slot>firstVideoGrabber/reconfigure</slot>
+                <slot>secondVideoGrabber/reconfigure</slot>
+            </slots>
+        </service>
+
+        <service uid="actionConcatenateRegistrationMatrix" type="::gui::action::SSlotCaller">
+            <slots>
+                <slot>concatenateRegistrationMatrix/update</slot>
+            </slots>
+        </service>
+
+        <service uid="actionSwitchMatrices" type="::gui::action::SSlotCaller">
+            <slots>
+                <slot>switchMatrices/switchMatrix</slot>
+            </slots>
+        </service>
+
+        <service uid="actionSaveMatrix" type="::gui::action::SSlotCaller">
+            <slots>
+                <slot>matrixWriter/update</slot>
+            </slots>
+        </service>
+
+        <service uid="matrixWriter" type="::uiIO::editor::SIOSelector">
+            <inout key="data" uid="registrationMatrix" />
+            <type mode="writer" />
+            <selection mode="include" />
+            <addSelection service="::ioData::TransformationMatrix3DWriterService" />
+        </service>
+
+        <service uid="concatenateRegistrationMatrix" type="::maths::SConcatenateMatrices" >
+            <in group="matrix">
+                <key uid="firstTag2Matrix" inverse="true" />
+                <key uid="firstTag1Matrix" />
+                <key uid="secondTag1Matrix" inverse="true" />
+            </in>
+            <inout key="output" uid="registrationMatrix" />
+        </service>
+
+        <service uid="concatenatesSecondCameraOpticalCenterMatrix" type="::maths::SConcatenateMatrices" >
+            <in group="matrix">
+                <key uid="firstTag2Matrix" autoConnect="yes"/>
+                <key uid="registrationMatrix" autoConnect="yes" />
+            </in>
+            <inout key="output" uid="secondCameraOpticalCenterMatrix" />
+        </service>
+
+        <service uid="concatenateTag1ARMatrix" type="::maths::SConcatenateMatrices" >
+            <in group="matrix">
+                <key uid="firstTag2Matrix" autoConnect="yes" />
+                <key uid="registrationMatrix" autoConnect="yes" />
+                <key uid="secondTag1Matrix" autoConnect="yes" />
+            </in>
+            <inout key="output" uid="arTag1Matrix" />
+        </service>
+
+        <service uid="switchMatrices" type="::maths::SSwitchMatrices" autoConnect="yes">
+            <in group="matrix">
+                <key uid="firstTag1Matrix" />
+                <key uid="arTag1Matrix" />
+            </in>
+            <inout key="output" uid="currentTag1Matrix" />
+       </service>
+
+        <!-- *************************** End services declaration ***************************** -->
+
+        <!-- *************************** Begin proxies declaration **************************** -->
+
+        <!-- *************************** End proxies declaration ****************************** -->
+
+        <!-- *************************** Begin connect declaration **************************** -->
+
+        <connect>
+            <signal>synchronizer/allMatricesFound</signal>
+            <slot>actionConcatenateRegistrationMatrix/setIsExecutable</slot>
+        </connect>
+
+        <!-- *************************** End connect declaration ****************************** -->
+
+        <!-- *************************** Begin Start ****************************************** -->
+
+        <start uid="mainView" />
+        <start uid="concatenateRegistrationMatrix" />
+        <start uid="concatenatesSecondCameraOpticalCenterMatrix" />
+        <start uid="concatenateTag1ARMatrix" />
+        <start uid="switchMatrices" />
+        <start uid="matrixWriter" />
+        <start uid="extractFirstCamera" />
+        <start uid="extractSecondCamera" />
+        <start uid="synchronizer" />
+        <start uid="loadFirstCameraView" />
+        <start uid="loadSecondCameraView" />
+        <start uid="secondVideoGrabber" />
+        <start uid="firstVideoGrabber" />
+
+        <!-- *************************** End Start ****************************************** -->
+
+        <!-- *************************** Begin Update ****************************************** -->
+
+        <update uid="extractFirstCamera" />
+        <update uid="extractSecondCamera"/>
+
+        <!-- *************************** End Update ****************************************** -->
+
+    </config>
+</extension>

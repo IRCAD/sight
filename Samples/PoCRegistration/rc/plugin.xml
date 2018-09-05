@@ -1,0 +1,38 @@
+<plugin id="PoCRegistration" version="@PROJECT_VERSION@" >
+
+    <requirement id="servicesReg" />
+    <requirement id="dataReg" />
+
+    <requirement id="patchMedicalData" />
+
+    <requirement id="filterVRRender" />
+    <requirement id="activities" />
+    <requirement id="preferences" />
+
+    <requirement id="guiQt" />
+
+    <xi:include href="configurations/activitySelector.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/PoCRegistrationBase.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/sdb.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+
+    <extension implements="::fwServices::registry::AppConfigParameters">
+        <id>PoCRegistrationAppBase</id>
+        <parameters>
+            <param name="appName" value="PoCRegistration @PROJECT_VERSION@" />
+            <param name="appIconPath" value="PoCRegistration-@PROJECT_VERSION@/app.ico" />
+            <param name="appVersion" value="@PROJECT_VERSION@" />
+        </parameters>
+    </extension>
+
+    <extension implements="::fwActivities::registry::Activities">
+        <id>activitySelector</id>
+        <title>Choose your activity</title>
+        <desc>Activity selector for PoCRegistrationExt</desc>
+        <icon>media-0.1/icons/selector.svg</icon>
+        <requirements />
+        <appConfig id="activitySelector">
+            <parameters />
+        </appConfig>
+    </extension>
+
+</plugin>
