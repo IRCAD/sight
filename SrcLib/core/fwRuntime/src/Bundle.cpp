@@ -395,7 +395,7 @@ void Bundle::start()
         throw RuntimeException( getBundleStr(m_identifier, m_version) + ": bundle is not enabled." );
     }
 
-    if( m_plugin == 0 )
+    if( m_plugin == nullptr )
     {
         loadRequirements();
         loadLibraries();
@@ -451,7 +451,7 @@ void Bundle::startPlugin()
         ::fwRuntime::profile::getCurrentProfile()->add(
             SPTR(profile::Stopper) (new profile::Stopper(this->getIdentifier(), this->getVersion())));
         m_plugin = plugin;
-        m_plugin->start();
+        plugin->start();
         ::fwRuntime::profile::getCurrentProfile()->add(
             SPTR(profile::Initializer) (new profile::Initializer(this->getIdentifier(), this->getVersion())) );
         m_started = true;
@@ -467,7 +467,7 @@ void Bundle::startPlugin()
 void Bundle::stop()
 {
     SLM_ASSERT("Bundle "+ getBundleStr(m_identifier, m_version) + " not started.", m_started );
-    SLM_ASSERT(getBundleStr(m_identifier, m_version) + " : m_plugin not an intance.", m_plugin != 0 );
+    SLM_ASSERT(getBundleStr(m_identifier, m_version) + " : m_plugin not an intance.", m_plugin != nullptr );
     SLM_ASSERT("Bundle " + getBundleStr(m_identifier, m_version) + " not uninitialized.", !m_initialized );
 
     SLM_TRACE("Stopping " + getBundleStr(m_identifier, m_version) + " Bundle's plugin.");
@@ -519,7 +519,8 @@ void Bundle::initialize()
 
 void Bundle::uninitialize()
 {
-    SLM_ASSERT("Bundle '"+ getBundleStr(m_identifier, m_version) + "' has not been started.", m_plugin );
+    SLM_ASSERT("Bundle '"+ getBundleStr(m_identifier, m_version) + "' has not been started.",
+               m_plugin != nullptr);
     SLM_ASSERT("Bundle '"+ getBundleStr(m_identifier, m_version) + "' not initialized.", m_initialized );
     try
     {

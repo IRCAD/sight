@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWDATATOOLS_HELPER_ARRAY_HPP__
-#define __FWDATATOOLS_HELPER_ARRAY_HPP__
+#pragma once
 
 #include "fwDataTools/config.hpp"
 
@@ -46,7 +45,7 @@ public:
      * @param id Item id
      * @param component Component id to write data in.
      * @param value Valid buffer of elements of type \<m_type\> with a length equal to \<m_nbOfComponents\> to be copied
-     * to array 'id', component n° 'component'
+     * to array 'id', component index 'component'
      *
      */
     FWDATATOOLS_API virtual void setItem(const ::fwData::Array::IndexType& id, const size_t component,
@@ -104,11 +103,16 @@ public:
      * @param type           Type of the array view
      * @param size           Size of the array view
      * @param nbOfComponents Number of components of the array view, Min value : 1
+     * @param policy If the array takes ownership of the buffer, specifies the buffer allocation policy.
      */
-    FWDATATOOLS_API void setBuffer( void* buf, bool takeOwnership,
-                                    const ::fwTools::Type& type,
-                                    const ::fwData::Array::SizeType& size,
-                                    size_t nbOfComponents );
+    FWDATATOOLS_API void setBuffer(
+        void* buf,
+        bool takeOwnership,
+        const ::fwTools::Type& type,
+        const ::fwData::Array::SizeType& size,
+        size_t nbOfComponents,
+        ::fwMemory::BufferAllocationPolicy::sptr policy = ::fwMemory::BufferMallocPolicy::New()
+        );
 
     /// Returns the begining/end of the buffer interpreted as a char buffer
     FWDATATOOLS_API virtual char* begin();
@@ -146,8 +150,13 @@ protected:
      *
      * @param buf Buffer to set as Array's buffer
      * @param takeOwnership if true, the Array will manage allocation and destroy the buffer when needed.
+     * @param policy If the array takes ownership of the buffer, specifies the buffer allocation policy.
      */
-    FWDATATOOLS_API virtual void setBuffer(void* buf, bool takeOwnership = false);
+    FWDATATOOLS_API virtual void setBuffer(
+        void* buf,
+        bool takeOwnership                              = false,
+        ::fwMemory::BufferAllocationPolicy::sptr policy = ::fwMemory::BufferMallocPolicy::New()
+        );
 
     ::fwData::Array::sptr m_array;
     ::fwMemory::BufferObject::Lock m_lock;
@@ -173,7 +182,7 @@ T* Array::end()
 //------------------------------------------------------------------------------
 
 template< typename T >
-T* Array::getItem(const  ::fwData::Array::IndexType& id, const size_t component)
+T* Array::getItem(const ::fwData::Array::IndexType& id, const size_t component)
 {
     return static_cast<T*> (this->getItem(id, component));
 }
@@ -181,5 +190,3 @@ T* Array::getItem(const  ::fwData::Array::IndexType& id, const size_t component)
 } // namespace helper
 
 } // namespace fwData
-
-#endif // __FWDATATOOLS_HELPER_ARRAY_HPP__

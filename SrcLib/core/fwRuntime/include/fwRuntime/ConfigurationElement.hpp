@@ -216,11 +216,6 @@ struct FWRUNTIME_CLASS_API ConfigurationElement :   public ConfigurationElementC
         typedef std::map<std::string, std::string> AttributeContainer;
 
         /**
-         * @brief   A pointer to the bundle the configuration element is attached to.
-         */
-        const std::shared_ptr<Bundle> m_bundle;
-
-        /**
          * @brief   A string containing the configuration element name.
          */
         const std::string m_name;
@@ -241,6 +236,11 @@ struct FWRUNTIME_CLASS_API ConfigurationElement :   public ConfigurationElementC
          * @remark  Assignement is forbidden for this class.
          */
         void operator=(const ConfigurationElement&) noexcept;
+
+        /**
+         * @brief   A pointer to the bundle the configuration element is attached to.
+         */
+        const std::weak_ptr<Bundle> m_bundle;
 };
 
 } // namespace fwRuntime

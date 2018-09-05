@@ -32,7 +32,7 @@ namespace editor
  * When the user select an item, the signal \c selected(int selection) is emitted: it sends the value of the selected
  * item.
  *
- * @note This service doesn’t modify its associated object, so it can work on any type of object.
+ * @note This service doesn't modify its associated object, so it can work on any type of object.
  *
  * @section XML Example of configuration
  * @code{.xml}
@@ -48,7 +48,7 @@ namespace editor
     </service>
    @endcode
  *
- * - \b text (optional, default “>”): text displayed on the button
+ * - \b text (optional, default ">"): text displayed on the button
  * - \b toolTip (optional): button tool tip
  * - \b items: list of the menu items
  * - \b item: one item

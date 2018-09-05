@@ -18,6 +18,7 @@
 #include <fwRuntime/EConfigurationElement.hpp>
 
 #include <fwServices/macros.hpp>
+#include <fwServices/op/Add.hpp>
 #include <fwServices/registry/ActiveWorkers.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
@@ -53,12 +54,18 @@ void runImageSrv(
     const SPTR(::fwData::Object)& image)
 {
 
-    ::fwServices::IService::sptr srv;
-    srv = ::fwServices::registry::ServiceFactory::getDefault()->create( srvtype, srvname );
+    ::fwServices::IService::sptr srv = ::fwServices::add( srvname );
 
     CPPUNIT_ASSERT_MESSAGE(std::string("Failed to create service ") + srvname, srv);
 
-    ::fwServices::OSR::registerService( image, srv );
+    if (srv->isA("::fwIO::IReader"))
+    {
+        srv->registerInOut(image, "data");
+    }
+    else
+    {
+        srv->registerInput(image, "data");
+    }
 
     CPPUNIT_ASSERT_NO_THROW( srv->setConfiguration(cfg) );
     CPPUNIT_ASSERT_NO_THROW( srv->configure() );
@@ -277,12 +284,11 @@ void ImageReaderWriterTest::testImageReaderExtension()
         const std::string srvtype("::fwIO::IReader");
         const std::string srvname("::ioVTK::SImageReader");
 
-        ::fwServices::IService::sptr srv;
-        srv = ::fwServices::registry::ServiceFactory::getDefault()->create( srvtype, srvname );
+        ::fwServices::IService::sptr srv = ::fwServices::add( srvname );
 
         CPPUNIT_ASSERT_MESSAGE(std::string("Failed to create service ") + srvname, srv);
 
-        ::fwServices::OSR::registerService( image, srv );
+        srv->registerInOut(image, "data");
 
         CPPUNIT_ASSERT_NO_THROW( srv->setConfiguration(getIOConfiguration(file)) );
         CPPUNIT_ASSERT_NO_THROW( srv->configure() );
@@ -543,13 +549,11 @@ void ImageReaderWriterTest::testImageWriterExtension()
         const std::string srvtype("::fwIO::IWriter");
         const std::string srvname("::ioVTK::SImageWriter");
 
-        ::fwServices::IService::sptr srv;
-        srv = ::fwServices::registry::ServiceFactory::getDefault()->create( srvtype, srvname );
+        ::fwServices::IService::sptr srv = ::fwServices::add( srvname );
 
         CPPUNIT_ASSERT_MESSAGE(std::string("Failed to create service ") + srvname, srv);
 
-        ::fwServices::OSR::registerService( image, srv );
-
+        srv->registerInput(image, "data");
         CPPUNIT_ASSERT_NO_THROW( srv->setConfiguration(getIOConfiguration(file)) );
         CPPUNIT_ASSERT_NO_THROW( srv->configure() );
         CPPUNIT_ASSERT_NO_THROW( srv->start().wait() );

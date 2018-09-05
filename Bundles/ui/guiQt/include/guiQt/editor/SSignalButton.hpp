@@ -28,7 +28,7 @@ namespace editor
  *
  * If the mode is "checkable", it sends a signal with a boolean in parameter representing the "check" state.
  *
- * @note This service doesn’t modify its associated object, so it can work on any type of object.
+ * @note This service doesn't modify its associated object, so it can work on any type of object.
  *
  * @section XML XML configuration
  * @code{.xml}

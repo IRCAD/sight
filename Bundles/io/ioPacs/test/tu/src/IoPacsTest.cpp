@@ -1,24 +1,24 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwRuntime/EConfigurationElement.hpp>
-#include <fwRuntime/profile/Profile.hpp>
-
-#include <fwServices/macros.hpp>
-#include <fwServices/AppConfigManager.hpp>
-#include <fwServices/registry/AppConfig.hpp>
-#include <fwServices/registry/ObjectService.hpp>
+#include "IoPacsTest.hpp"
 
 #include <fwPacsIO/data/PacsConfiguration.hpp>
 
-#include "IoPacsTest.hpp"
+#include <fwRuntime/EConfigurationElement.hpp>
+#include <fwRuntime/profile/Profile.hpp>
+
+#include <fwServices/AppConfigManager.hpp>
+#include <fwServices/macros.hpp>
+#include <fwServices/op/Add.hpp>
+#include <fwServices/registry/AppConfig.hpp>
+#include <fwServices/registry/ObjectService.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::ioPacs::ut::IoPacsTest );
-
 
 namespace ioPacs
 {
@@ -47,9 +47,7 @@ void IoPacsTest::pacsConfigurationInitializer()
     ::fwPacsIO::data::PacsConfiguration::sptr pacsConfiguration = ::fwPacsIO::data::PacsConfiguration::New();
 
     // Create service
-    ::fwServices::IService::sptr srv =
-        ::fwServices::registry::ServiceFactory::getDefault()->create( "::fwServices::IController",
-                                                                      "::ioPacs::SPacsConfigurationInitializer" );
+    ::fwServices::IService::sptr srv = ::fwServices::add( "::ioPacs::SPacsConfigurationInitializer" );
     CPPUNIT_ASSERT(srv);
 
     // Create service configuration
@@ -65,7 +63,7 @@ void IoPacsTest::pacsConfigurationInitializer()
     configElement->setAttributeValue("retrieveMethod", "GET");
 
     // Use the service
-    ::fwServices::OSR::registerService( pacsConfiguration, srv );
+    srv->registerInOut(pacsConfiguration, "config" );
     srv->setConfiguration( srvElement );
     srv->configure();
     srv->start();
@@ -85,7 +83,6 @@ void IoPacsTest::pacsConfigurationInitializer()
                          pacsConfiguration->getRetrieveMethod());
 
 }
-
 
 //------------------------------------------------------------------------------
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -16,11 +16,14 @@
 #include <fwVtkIO/vtk.hpp>
 
 #include <vtkImageData.h>
+#include <vtkOpenGLRenderWindow.h>
+#include <vtkOpenGLTexture.h>
 #include <vtkProperty.h>
 #include <vtkRenderer.h>
 #include <vtkRenderWindowInteractor.h>
 #include <vtkSmartPointer.h>
 #include <vtkTexture.h>
+#include <vtkTextureObject.h>
 
 fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SMaterial );
 
@@ -142,12 +145,37 @@ void SMaterial::updateMaterial( CSPTR(::fwData::Material)material )
             vtkSmartPointer< vtkImageData > vtkImage = vtkSmartPointer< vtkImageData >::New();
             ::fwVtkIO::toVTKImage( diffTex, vtkImage );
 
-            vtkSmartPointer<vtkTexture> vtkTex = vtkSmartPointer< vtkTexture >::New();
-            vtkTex->SetInputData(vtkImage);
+            vtkRenderWindow* win = this->getRenderer()->GetRenderWindow();
 
-            ::fwData::Material::WrappingType wrapping = material->getDiffuseTextureWrapping();
+            vtkSmartPointer<vtkTexture> vtkTex;
+            if(win->IsA("vtkOpenGLRenderWindow"))
+            {
+                int dims[3];
+                vtkImage->GetDimensions(dims);
+                const int type = vtkImage->GetScalarType();
+                const int noc  = vtkImage->GetNumberOfScalarComponents();
+
+                // Use a Texture object to finely create the texture
+                vtkSmartPointer<vtkTextureObject> to = vtkSmartPointer< vtkTextureObject >::New();
+                to->SetContext(dynamic_cast<vtkOpenGLRenderWindow*>(this->getRenderer()->GetRenderWindow()));
+                to->Create2DFromRaw(dims[0], dims[1], noc, type,
+                                    const_cast<void*>(static_cast<const void* const>(vtkImage->GetScalarPointer())));
+
+                vtkSmartPointer<vtkOpenGLTexture> vtkGLTex = vtkSmartPointer< vtkOpenGLTexture >::New();
+                vtkGLTex->SetTextureObject(to);
+                vtkTex = vtkGLTex;
+            }
+            else
+            {
+                vtkTex = vtkSmartPointer< vtkTexture >::New();
+                vtkTex->SetInputData(vtkImage);
+            }
+
+            ::fwData::Material::FilteringType filtering = material->getDiffuseTextureFiltering();
+            ::fwData::Material::WrappingType wrapping   = material->getDiffuseTextureWrapping();
             vtkTex->SetRepeat( wrapping == ::fwData::Material::REPEAT );
             vtkTex->SetEdgeClamp( wrapping == ::fwData::Material::CLAMP );
+            vtkTex->SetInterpolate( filtering == ::fwData::Material::LINEAR );
             m_property->RemoveTexture("diffuse");
             m_property->SetTexture("diffuse", vtkTex);
         }

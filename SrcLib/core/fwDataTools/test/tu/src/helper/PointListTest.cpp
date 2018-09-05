@@ -239,7 +239,7 @@ void PointListTest::transform()
         pl2->pushBack(::fwData::Point::New(-1.0f, -1.0f, 1.0f));
         pl2->pushBack(::fwData::Point::New(0.0f, -1.0f, 1.0f));
 
-        // Perform a 180° rotation around Z
+        // Perform a 180 degrees rotation around Z
         const ::fwData::TransformationMatrix3D::sptr tf1 = ::fwData::TransformationMatrix3D::New();
         tf1->setCoefficient(0, 0, -1.0f);
         tf1->setCoefficient(0, 1, 0.0f);
@@ -369,7 +369,7 @@ void PointListTest::associate()
         // Shift the points in Z
         tf1->setCoefficient(2, 3, 4.2);
 
-        // Add a 90° rotation around Y
+        // Add a 90 degrees rotation around Y
         tf1->setCoefficient(0, 0, 0.0f);
         tf1->setCoefficient(0, 2, 1.0f);
         tf1->setCoefficient(2, 0, 1.0f);
@@ -381,7 +381,7 @@ void PointListTest::associate()
         ::fwDataTools::helper::PointList::associate(pl1, pl2);
 
         // Check that the two lists are equal
-        // The second one corresponds to a Z translation + a 90° Y translation of the first one
+        // The second one corresponds to a Z translation + a 90 degrees Y translation of the first one
         const ::fwData::PointList::PointListContainer points1 = pl1->getPoints();
         const ::fwData::PointList::PointListContainer points2 = pl2->getPoints();
 

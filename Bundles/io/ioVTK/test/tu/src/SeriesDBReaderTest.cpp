@@ -24,6 +24,7 @@
 #include <fwRuntime/EConfigurationElement.hpp>
 
 #include <fwServices/macros.hpp>
+#include <fwServices/op/Add.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
 #include <fwTest/Data.hpp>
@@ -94,12 +95,11 @@ void SeriesDBReaderTest::testSeriesDBReader()
 
     ::fwMedData::SeriesDB::sptr seriesDB = ::fwMedData::SeriesDB::New();
 
-    ::fwServices::IService::sptr srv;
-    srv = ::fwServices::registry::ServiceFactory::getDefault()->create("::fwIO::IReader", "::ioVTK::SSeriesDBReader" );
+    ::fwServices::IService::sptr srv = ::fwServices::add( "::ioVTK::SSeriesDBReader" );
 
     CPPUNIT_ASSERT_MESSAGE("Create SSeriesDBReader failed", srv);
 
-    ::fwServices::OSR::registerService(seriesDB, srv);
+    srv->registerInOut(seriesDB, "data");
     srv->setConfiguration(readerSrvCfg);
     srv->configure();
     srv->start();
@@ -184,12 +184,11 @@ void SeriesDBReaderTest::testMergeSeriesDBReader()
     ::fwMedData::SeriesDB::sptr seriesDB       = ::fwMedData::SeriesDB::New();
     seriesDB->getContainer().push_back(imageSeries);
 
-    ::fwServices::IService::sptr srv;
-    srv = ::fwServices::registry::ServiceFactory::getDefault()->create("::fwIO::IReader", "::ioVTK::SSeriesDBReader" );
+    ::fwServices::IService::sptr srv = ::fwServices::add( "::ioVTK::SSeriesDBReader" );
 
     CPPUNIT_ASSERT_MESSAGE("Create SSeriesDBReader failed", srv);
 
-    ::fwServices::OSR::registerService(seriesDB, srv);
+    srv->registerInOut(seriesDB, "data");
     srv->setConfiguration(readerSrvCfg);
     srv->configure();
     srv->start().wait();
