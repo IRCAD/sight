@@ -170,7 +170,7 @@
         </service>
 
         <!-- -->
-        <service uid="referenceScene" type="::fwRenderVTK::SRender" autoConnect="yes">
+        <service uid="referenceScene" type="::fwRenderVTK::SRender">
             <scene renderMode="auto">
                 <picker id="picker" vtkclass="fwVtkCellPicker" />
                 <renderer id="default" background="#052833" />
@@ -201,7 +201,7 @@
         </service>
 
         <!-- Target and blend scene -->
-        <service uid="targetAndBlendScene" type="::fwRenderVTK::SRender" autoConnect="yes">
+        <service uid="targetAndBlendScene" type="::fwRenderVTK::SRender">
             <scene renderMode="auto">
                 <picker id="picker" vtkclass="fwVtkCellPicker" />
                 <renderer id="default" background="#052833" />

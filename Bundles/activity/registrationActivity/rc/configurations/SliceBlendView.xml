@@ -43,7 +43,7 @@
 
         <!-- *************************** Begin generic scene *************************** -->
 
-        <service uid="blendScene" type="::fwRenderVTK::SRender" autoConnect="yes">
+        <service uid="blendScene" type="::fwRenderVTK::SRender">
             <scene renderMode="auto">
                 <picker id="picker" vtkclass="fwVtkCellPicker" />
                 <vtkObject id="imageBlend" class="vtkImageBlend" />
