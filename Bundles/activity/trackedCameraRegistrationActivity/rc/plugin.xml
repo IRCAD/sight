@@ -1,0 +1,36 @@
+<plugin id="trackedCameraRegistrationActivity" version="@PROJECT_VERSION@">
+
+    <requirement id="activities" />
+    <requirement id="visuVTKQt" />
+
+    <xi:include href="configurations/trackedCameraRegistration.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/rgbCameraView.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+
+    <extension implements="::fwActivities::registry::Activities">
+        <id>TrackedCameraRegistration</id>
+        <title>Tracked camera registration</title>
+        <desc>Activity to compute the registration matrix between a camera and an aruco marker</desc>
+        <icon>arMedia-0.1/icons/tagTracking.svg</icon>
+        <requirements>
+            <requirement name="firstCameraSeries" type="::arData::CameraSeries" minOccurs="1" maxOccurs="1">
+                <desc>CameraSeries containing the calibration for the first RGB camera that will see two markers</desc>
+            </requirement>
+            <requirement name="secondCameraSeries" type="::arData::CameraSeries" minOccurs="1" maxOccurs="1">
+                <desc>CameraSeries containing the calibration for the second RGB camera on which a marker is fixed</desc>
+            </requirement>
+            <requirement name="markerMesh" type="::fwData::Mesh" minOccurs="0" maxOccurs="1" create="true">
+                <desc>Optional mesh of a marker for augmented reality</desc>
+            </requirement>
+        </requirements>
+        <builder>::fwActivities::builder::ActivitySeries</builder>
+        <appConfig id="TrackedCameraRegistration">
+            <parameters>
+                <parameter replace="firstCameraSeries" by="@values.firstCameraSeries" />
+                <parameter replace="secondCameraSeries" by="@values.secondCameraSeries" />
+                <parameter replace="markerMesh" by="@values.markerMesh" />
+            </parameters>
+        </appConfig>
+
+    </extension>
+
+</plugin>

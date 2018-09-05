@@ -1,0 +1,221 @@
+<extension implements="::fwServices::registry::AppConfig">
+    <id>ARCalibrationBase</id>
+    <parameters>
+        <param name="appName" />
+        <param name="appIconPath" />
+    </parameters>
+    <config>
+        <object uid="seriesDB" type="::fwMedData::SeriesDB" />
+        <object uid="loadingSeriesDB" type="::fwMedData::SeriesDB" />
+        <object uid="currentActivity" type="::fwMedData::ActivitySeries" src="deferred" />
+        <object uid="selections" type="::fwData::Vector" />
+
+        <service uid="mainFrame" type="::gui::frame::SDefaultFrame" >
+            <gui>
+                <frame>
+                    <name>${appName}</name>
+                    <icon>${appIconPath}</icon>
+                    <minSize width="1280" height="800" />
+                </frame>
+                <menuBar />
+            </gui>
+            <registry>
+                <menuBar sid="menuBar" start="yes" />
+                <view sid="mainview" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="menuBar" type="::gui::aspect::SDefaultMenuBar" >
+            <gui>
+                <layout>
+                    <menu name="File" />
+                    <menu name="Tools" />
+                    <menu name="Preferences" />
+                </layout>
+            </gui>
+            <registry>
+                <menu sid="menuFile" start="yes" />
+                <menu sid="menuTools" start="yes" />
+                <menu sid="menuPreferences" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="menuFile" type="::gui::aspect::SDefaultMenu" >
+            <gui>
+                <layout>
+                    <menuItem name="New Activity..." shortcut="Ctrl+N" />
+                    <menuItem name="Open Series..." shortcut="Ctrl+O" />
+                    <menuItem name="Open Activity..." shortcut="Ctrl+Shift+O" />
+                    <menuItem name="Save..." shortcut="Ctrl+S" />
+                    <menuItem name="Save Activity..." shortcut="Ctrl+Shift+S" />
+                    <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
+                </layout>
+            </gui>
+            <registry>
+                <menuItem sid="actionNewActivity" start="yes" />
+                <menuItem sid="actionOpen" start="yes" />
+                <menuItem sid="actionOpenActivity" start="yes" />
+                <menuItem sid="actionSave" start="yes" />
+                <menuItem sid="actionSaveActivity" start="no" />
+                <menuItem sid="actionQuit" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="menuTools" type="::gui::aspect::SDefaultMenu" >
+            <gui>
+                <layout>
+                    <menuItem name="Show selector" style="check"/>
+                </layout>
+            </gui>
+            <registry>
+                <menuItem sid="actionSelector" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="menuPreferences" type="::gui::aspect::SDefaultMenu" >
+            <gui>
+                <layout>
+                    <menuItem name="Video directory" />
+                </layout>
+            </gui>
+            <registry>
+                <menuItem sid="actionVideoDir" start="yes" />
+            </registry>
+        </service>
+
+
+        <service uid="mainview" type="::gui::view::SDefaultView" >
+            <gui>
+                <layout type="::fwGui::CardinalLayoutManager">
+                    <view align="center" />
+                    <view align="bottom" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="dynamicView" start="yes" />
+                <view wid="selector" />
+            </registry>
+        </service>
+
+        <service uid="actionVideoDir" type="::uiPreferences::action::SPreferencesConfiguration" >
+            <preference>
+                <type>path</type>
+                <name>Video directory</name>
+                <key>VIDEO_DIR_PREF</key>
+                <default_value>...</default_value>
+            </preference>
+        </service>
+
+        <!-- Action to create/update an activity. -->
+        <service uid="actionNewActivity" type="::activities::action::SCreateActivity">
+            <in key="series" uid="selections" />
+            <filter>
+                <mode>include</mode>
+                <id>Calibration</id>
+                <id>CalibrationCharuco</id>
+                <id>RGBDCalibration</id>
+                <id>calibrationEdition</id>
+                <id>TrackedCameraRegistration</id>
+                <id>trackingHandEyeCalibration</id>
+                <id>toolCalibrationActivity</id>
+            </filter>
+        </service>
+
+        <service uid="actionOpen" type="::uiIO::action::SSeriesDBMerger" >
+            <inout key="seriesDB" uid="seriesDB" />
+            <IOSelectorSrvConfig name="SDBAtomsReaderIOSelectorConfig" />
+        </service>
+
+        <service uid="actionOpenActivity" type="::uiIO::action::SSeriesDBMerger">
+            <inout key="series" uid="loadingSeriesDB" />
+            <IOSelectorSrvConfig name="ActivityReaderConfig" />
+        </service>
+
+        <!-- Actions to save all type of series (jsonz, json, ...). -->
+        <service uid="actionSave" type="::gui::action::SStarter">
+            <start uid="SDBWriter" />
+        </service>
+
+        <service uid="SDBWriter" type="::uiIO::editor::SIOSelector" config="SDBAtomsWriterIOSelectorConfig" >
+            <inout key="data" uid="seriesDB" />
+        </service>
+
+        <!-- Service to select the current activity into the composite. -->
+        <service uid="activitySeriesUpdater" type="::ctrlSelection::updater::SObjFromSlot">
+            <out key="object" uid="currentActivity" />
+        </service>
+
+        <!-- Save current activity. -->
+        <service uid="actionSaveActivity" type="::uiIO::action::SExportWithSeriesDB" >
+            <inout key="series" uid="currentActivity" />
+            <IOSelectorSrvConfig name="ActivityWriterConfig" />
+        </service>
+
+        <service uid="actionQuit" type="::gui::action::SQuit" />
+
+        <service uid="actionSelector" type="::gui::action::SConfigLauncher" >
+            <appConfig id="SDBARCalibration" />
+            <inout key="SERIESDB" uid="seriesDB" />
+            <parameter replace="WID_PARENT" uid="selector" />
+            <parameter replace="ICON_PATH" by="${appIconPath}" />
+            <parameter replace="DYNAMICVIEW_CHANNEL" uid="dynamicView" />
+        </service>
+
+        <service uid="dynamicView" type="::guiQt::editor::SDynamicView" >
+            <mainActivity id="activitySelector" closable="false" />
+            <parameters>
+                <parameter replace="SERIESDB" uid="seriesDB" />
+                <parameter replace="LOADING_SERIESDB" uid="loadingSeriesDB" />
+                <parameter replace="ICON_PATH" by="${appIconPath}" />
+                <parameter replace="DYNAMICVIEW_CHANNEL" uid="dynamicView" />
+                <parameter replace="CREATE_ACTIVITY_CHANNEL" uid="create_activity_channel" />
+                <parameter replace="LAUNCH_ACTIVITY_CHANNEL" uid="launch_activity_channel" />
+                <parameter replace="LAUNCH_ACTIVITY_SERIES_CHANNEL" uid="launch_activity_series_channel" />
+                <parameter replace="LOAD_ACTIVITY_CHANNEL" uid="load_activity_series_channel" />
+            </parameters>
+        </service>
+
+        <!-- Add the current tab activity in the root composite. -->
+        <connect>
+            <signal>dynamicView/activitySelected</signal>
+            <slot>activitySeriesUpdater/addOrSwap</slot>
+        </connect>
+
+        <!-- When an activity is opened: it calls the creator's update activity slot. -->
+        <connect channel="launch_activity_series_channel">
+            <slot>dynamicView/launchActivitySeries</slot>
+        </connect>
+
+        <!-- Remove the activity from the root composite when no tab is selected. -->
+        <connect>
+            <signal>dynamicView/nothingSelected</signal>
+            <slot>activitySeriesUpdater/remove</slot>
+        </connect>
+
+        <!-- connect to show the creator editor when the activity should be created. -->
+        <connect channel="create_activity_channel">
+            <signal>actionNewActivity/activityIDSelected</signal>
+        </connect>
+
+        <!-- connect to launch the activity when it is created/updated. -->
+        <connect channel="launch_activity_channel">
+            <slot>dynamicView/launchActivity</slot>
+        </connect>
+
+        <!-- connect to load the activity . -->
+        <connect channel="load_activity_series_channel">
+            <slot>actionOpenActivity/update</slot>
+        </connect>
+
+        <connect channel="dynamicView">
+            <slot>dynamicView/createTab</slot>
+        </connect>
+
+        <start uid="mainFrame" />
+        <start uid="activitySeriesUpdater" />
+
+        <!-- Deferred start -->
+        <start uid="actionSaveActivity" />
+
+    </config>
+</extension>

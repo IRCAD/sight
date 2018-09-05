@@ -1,0 +1,12 @@
+{
+    "context" : "MedicalData",
+    "origin_version" : "V08AR",
+    "target_version" : "V09AR",
+    "patcher" : "DefaultPatcher",
+    "links" : [
+        {
+            "::arData::Camera" : "1",
+            "::arData::Camera" : "2"
+        }
+    ]
+}

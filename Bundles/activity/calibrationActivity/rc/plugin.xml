@@ -1,0 +1,89 @@
+<plugin id="calibrationActivity" class="::calibrationActivity::Plugin" version="@PROJECT_VERSION@" >
+
+    <library name="calibrationActivity" />
+    <requirement id="visuVTKQt" />
+
+    <xi:include href="configurations/calibration.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/calIntrinsicView.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/calExtrinsicView.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/calCameraView.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/displayImageConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/displayTwoImagesConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/calibrationEdition.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/videoEdition.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/rgbdCalibration.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/calibrationCharuco.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/calIntrinsicCharucoView.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/calExtrinsicCharucoView.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/calCameraCharucoView.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+
+    <extension implements="::fwActivities::registry::Activities">
+        <id>Calibration</id>
+        <title>Calibration</title>
+        <desc>Calibrate the intrinsic and extrinsic parameters of cameras.</desc>
+        <icon>arMedia-0.1/icons/calibrationActivity.svg</icon>
+        <requirements>
+             <requirement name="cameraSeries" type="::arData::CameraSeries" minOccurs="0" maxOccurs="0" />
+        </requirements>
+        <builder>::fwActivities::builder::ActivitySeriesInitData</builder>
+        <appConfig id="calibration">
+            <parameters>
+                <parameter replace="cameraSeries" by="@values.cameraSeries" />
+            </parameters>
+        </appConfig>
+    </extension>
+
+    <extension implements="::fwActivities::registry::Activities">
+        <id>calibrationEdition</id>
+        <title>Calibration Edition</title>
+        <desc>
+            <![CDATA[
+                This activity allows to edit a calibration: <br />
+                - edit the video file/stream<br />
+                - edit the resolution
+            ]]>
+        </desc>
+        <icon>arMedia-0.1/icons/configuration.svg</icon>
+        <requirements>
+             <requirement name="cameraSeries" type="::arData::CameraSeries" minOccurs="1" maxOccurs="1">
+                <desc>Calibrated camera series.</desc>
+             </requirement>
+        </requirements>
+        <appConfig id="calibrationEdition">
+            <parameters>
+                <parameter replace="cameraSeries" by="@values.cameraSeries" />
+            </parameters>
+        </appConfig>
+    </extension>
+
+    <extension implements="::fwActivities::registry::Activities">
+        <id>RGBDCalibration</id>
+        <title>RGBD camera calibration</title>
+        <desc>Calibrate the intrinsic and extrinsic parameters of a RGBD camera.</desc>
+        <icon>arMedia-0.1/icons/calibrationActivity.svg</icon>
+        <requirements>
+        </requirements>
+        <appConfig id="RGBDCalibration">
+            <parameters>
+            </parameters>
+        </appConfig>
+    </extension>
+
+    <extension implements="::fwActivities::registry::Activities">
+        <id>CalibrationCharuco</id>
+        <title>Calibration Charuco</title>
+        <desc>Calibrate the intrinsic and extrinsic parameters of cameras with charuco boards.</desc>
+        <icon>arMedia-0.1/icons/calibrationActivity.svg</icon>
+        <requirements>
+             <requirement name="cameraSeries" type="::arData::CameraSeries" minOccurs="0" maxOccurs="0" />
+        </requirements>
+        <builder>::fwActivities::builder::ActivitySeriesInitData</builder>
+        <appConfig id="calibrationCharuco">
+            <parameters>
+                <parameter replace="cameraSeries" by="@values.cameraSeries" />
+            </parameters>
+        </appConfig>
+    </extension>
+
+</plugin>
+

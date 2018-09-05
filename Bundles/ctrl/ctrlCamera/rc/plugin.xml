@@ -1,0 +1,11 @@
+<plugin id="ctrlCamera" class="::ctrlCamera::Plugin" version="@PROJECT_VERSION@" >
+    
+    <library name="ctrlCamera" />
+    
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwServices::IController</type>
+        <service>::ctrlCamera::SExtractDeviceInfo</service>
+        <object>::fwData::Object</object>
+    </extension>
+    
+</plugin>

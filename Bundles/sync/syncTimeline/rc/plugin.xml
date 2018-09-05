@@ -1,0 +1,11 @@
+<plugin id="syncTimeline" class="syncTimeline::Plugin" version="@PROJECT_VERSION@" >
+
+    <library name="syncTimeline" />
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::arServices::ISynchronizer</type>
+        <service>::syncTimeline::SMatrixTLSynchronizer</service>
+        <object>::arData::MatrixTL</object>
+    </extension>
+
+</plugin>

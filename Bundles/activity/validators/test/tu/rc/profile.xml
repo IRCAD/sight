@@ -1,0 +1,10 @@
+<profile name="validatorsTest" version="0.1">
+
+    <activate id="dataReg" version="0.1" />
+    <activate id="servicesReg" version="0.1" />
+
+    <activate id="validators" version="0.1" />
+
+    <start id="validators" />
+
+</profile>

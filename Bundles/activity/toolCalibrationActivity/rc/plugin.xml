@@ -1,0 +1,20 @@
+<plugin id="toolCalibrationActivity" version="@PROJECT_VERSION@">
+
+    <requirement id="visuVTKQt"/>
+
+    <xi:include href="configurations/toolCalibration.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+
+    <extension implements="::fwActivities::registry::Activities">
+        <id>toolCalibrationActivity</id>
+        <title>Tool calibration</title>
+        <desc>Tool Calibration Activity using a tracking system</desc>
+        <icon>arMedia-0.1/icons/calibrationActivity.svg</icon>
+        <requirements>
+        </requirements>
+        <appConfig id="toolCalibration">
+            <parameters>
+            </parameters>
+        </appConfig>
+    </extension>
+
+</plugin>
