@@ -1,3 +1,55 @@
+# fw4spl-ar 17.2.0
+
+## Refactor:
+
+### cmake
+
+*Remove racy backward compatibility.*
+
+### registerService
+
+*Replace deprecated methods to register a service.*
+
+Replace the `::OSR::registerService(obj, srv)` by `srv->registerInOut(obj, key)`
+and use `::fwServices::add(srv)` helper instead of calling directly `ServiceFactory
+
+## Bug fixes:
+
+### SGrabberProxy
+
+*Include/exclude mode wasn't working as expected.*
+
+- Improve include/exclude filtering. We can include/exclude a specific service or a specific configuration of a service or both.
+- Grabbers are now always displayed in same order in selector dialog.
+- Frame by Frame mode from `::videoOpenCV::SFrameGrabber`has been excluded from calibration
+
+### glm
+
+*Add missing GLM_ENABLE_EXPERIMENTAL define.*
+
+Unused glm extensions have been removed
+
+## New features:
+
+### calDataGenerator
+
+*Add an utility program to generate stereo pair of chessboard/charucoboard images.*
+
+This can be useful to test calibration algorithms.
+
+### handEyeActivity
+
+*Handling a step value in SMatricesReader and SFrameGrabber.*
+
+Add a step value in readNext()/readPrevious() slots in SMatricesReader and SFrameGrabber when configured on oneShot mode.
+
+This step value can be changed calling a setStep slot, connected with an int SParameter withstep` key.
+
+We also needed to add this setStep slot in the SGrabberProxy and IGrabber in order to call it properly when using a SGrabberProxy instead of a SFrameGrabber directly.
+
+
+
+
 # fw4spl-ar 17.1.0
 
 ## Bug fixes:
