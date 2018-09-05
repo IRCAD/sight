@@ -212,6 +212,9 @@ void ImportanceDrivenVolumeRenderer::setIDVRMethod(std::string _method)
     SLM_FATAL_IF("IDVR method '" + _method + "' isn't supported by the ray tracing volume renderer.", !isSupported);
     m_idvrMethod = _method;
 
+    SLM_FATAL_IF("IDVR isn't compatible with stereo rendering yet.",
+                 this->getLayer()->getStereoMode() != Layer::StereoModeType::NONE && m_idvrMethod != s_NONE);
+
     this->createMaterialAndIDVRTechnique();
 }
 
@@ -808,10 +811,11 @@ void ImportanceDrivenVolumeRenderer::createIDVRTechnique()
         texUnitState->setTextureFiltering(::Ogre::TFO_BILINEAR);
         texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
 
+        const auto& rayEntryCompositorName = m_rayEntryCompositor->getName();
         texUnitState = pass->createTextureUnitState();
         texUnitState->setName("entryPoints");
         texUnitState->setContentType(::Ogre::TextureUnitState::CONTENT_COMPOSITOR);
-        texUnitState->setCompositorReference("VolumeEntries", "VolumeEntryPoints");
+        texUnitState->setCompositorReference(rayEntryCompositorName, rayEntryCompositorName + "Texture");
         texUnitState->setTextureFiltering(::Ogre::TFO_NONE);
         texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
     }

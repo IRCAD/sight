@@ -11,6 +11,7 @@
 #include "fwRenderOgre/R2VBRenderable.hpp"
 #include "fwRenderOgre/vr/GridProxyGeometry.hpp"
 #include "fwRenderOgre/vr/IVolumeRenderer.hpp"
+#include "fwRenderOgre/vr/RayEntryCompositor.hpp"
 #include "fwRenderOgre/vr/SATVolumeIllumination.hpp"
 
 #include <OGRE/OgreCompositorInstance.h>
@@ -137,6 +138,9 @@ protected:
     /// List of file names to attach to the fragment shader for compiling.
     std::vector<std::string> m_fragmentShaderAttachements;
 
+    /// Compositor used to compute volume ray entry/exit points.
+    RayEntryCompositor::uptr m_rayEntryCompositor {nullptr};
+
 private:
 
     /// Creates the proxy geometry defining the entry points for rays.
@@ -186,9 +190,6 @@ private:
     CameraListener* m_cameraListener;
 
     ::fwRenderOgre::Layer::wptr m_layer;
-
-    /// Name of the compositor used to compute entry points.
-    std::string m_entryPointsCompositor;
 };
 
 //-----------------------------------------------------------------------------
