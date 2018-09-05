@@ -1,0 +1,15 @@
+compositor AlphaModulator
+{
+    technique
+    {
+        target_output
+        {
+            input previous
+
+            pass render_quad
+            {
+                material AlphaModulator
+            }
+        }
+    }
+}

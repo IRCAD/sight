@@ -1,0 +1,99 @@
+//---------------------------------------------------------------------------
+
+fragment_program SummedAreaTable/Init_FP glsl
+{
+    source ApplyTransferFunction_FP.glsl
+    attach TransferFunction_FP
+
+    default_params
+    {
+        param_named u_sliceDepth float 0
+        param_named u_image int 0
+        param_named u_tfTexture int 1
+        param_named u_sampleDistance float 1.0
+        param_named u_tfWindow float2 0 0
+    }
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program SummedAreaTable/SAT_FP glsl
+{
+    source SummedAreaTable_FP.glsl
+    preprocessor_defines TEXREADS=32
+
+    default_params
+    {
+        param_named u_readOffset int 0
+        param_named u_passOrientation int 0
+        param_named u_sliceIndex int 0
+        param_named u_src int 0
+    }
+}
+
+//---------------------------------------------------------------------------
+
+material SummedAreaTableInit
+{
+    technique
+    {
+        pass
+        {
+            cull_hardware none
+            cull_software none
+
+            depth_check off
+
+            vertex_program_ref RenderQuad_VP
+            {
+            }
+
+            fragment_program_ref SummedAreaTable/Init_FP
+            {
+            }
+
+            texture_unit image
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+
+            texture_unit transferFunction
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+        }
+    }
+}
+
+//---------------------------------------------------------------------------
+
+material SummedAreaTable
+{
+    technique
+    {
+        pass
+        {
+            cull_hardware none
+            cull_software none
+
+            depth_check off
+
+            vertex_program_ref RenderQuad_VP
+            {
+            }
+
+            fragment_program_ref SummedAreaTable/SAT_FP
+            {
+            }
+
+            texture_unit source
+            {
+                tex_address_mode border
+                tex_border_colour 0.0 0.0 0.0 0.0
+                filtering none
+            }
+        }
+    }
+}

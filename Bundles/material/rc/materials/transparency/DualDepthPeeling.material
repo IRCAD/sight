@@ -1,0 +1,103 @@
+/// Dual depth peeling material shaders
+
+//---------------------------------------------------------------------------
+
+fragment_program DualDepthPeeling/Blend_FP glsl
+{
+    source DualDepthPeelingBlend_FP.glsl
+    attach DepthPeelingCommon_FP
+    default_params
+    {
+        param_named u_backColorRGBuffer int 0
+        param_named u_backColorBABuffer int 1
+    }
+}
+
+//---------------------------------------------------------------------------
+
+/// Dual depth peeling quad final render
+
+fragment_program DualDepthPeeling/Final_FP glsl
+{
+    source DualDepthPeelingFinal_FP.glsl
+    attach DepthPeelingCommon_FP
+    default_params
+    {
+        param_named u_backColorBuffer int 0
+        param_named u_frontColorRGBuffer int 1
+        param_named u_frontColorBABuffer int 2
+    }
+}
+
+//---------------------------------------------------------------------------
+
+material DualDepthPeeling/Final
+{
+    technique
+    {
+        pass
+        {
+            depth_check off
+            depth_write off
+
+            vertex_program_ref RenderQuad_VP
+            {
+            }
+
+            fragment_program_ref DualDepthPeeling/Final_FP
+            {
+            }
+
+            texture_unit
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+            texture_unit
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+            texture_unit
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+        }
+    }
+}
+
+//---------------------------------------------------------------------------
+
+material DualDepthPeeling/Blend
+{
+    technique
+    {
+        pass
+        {
+            scene_blend_op add
+            scene_blend src_alpha one_minus_src_alpha
+            depth_check off
+            cull_hardware none
+            cull_software none
+            vertex_program_ref RenderQuad_VP
+            {
+            }
+
+            fragment_program_ref DualDepthPeeling/Blend_FP
+            {
+            }
+
+            texture_unit
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+            texture_unit
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+        }
+    }
+}

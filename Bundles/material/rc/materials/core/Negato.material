@@ -1,0 +1,133 @@
+
+
+//---------------------------------------------------------------------------
+
+vertex_program Negato2D_VP glsl
+{
+    source Negato2D_VP.glsl
+
+    default_params
+    {
+        param_named u_orientation int 2
+        param_named_auto u_worldViewProj worldviewproj_matrix
+    }
+}
+
+//---------------------------------------------------------------------------
+
+vertex_program Negato3D_VP glsl
+{
+    source Negato3D_VP.glsl
+    default_params
+    {
+        param_named u_orientation int 2
+        param_named_auto u_worldViewProj worldviewproj_matrix
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+fragment_program Negato_FP glsl
+{
+    source Negato_FP.glsl
+}
+
+//-----------------------------------------------------------------------------
+
+fragment_program Default/Negato_FP glsl
+{
+    source Main_FP.glsl
+    attach Negato_FP
+    attach TransferFunction_FP
+    default_params
+    {
+        // Negato
+        param_named u_slice float 0
+        param_named u_orientation int 2
+        param_named u_texture int 0
+        param_named u_tfTexture int 1
+        param_named u_tfWindow float2 0 0
+        param_named u_enableAlpha int 0
+        param_named_auto u_diffuse surface_diffuse_colour
+    }
+}
+
+//---------------------------------------------------------------------------
+
+// Default Negato2D material
+material Negato2D
+{
+    // Default technique
+    technique
+    {
+        pass
+        {
+            vertex_program_ref Negato2D_VP
+            {
+            }
+
+            fragment_program_ref Default/Negato_FP
+            {
+            }
+            // This will be used by Plane class
+            texture_unit image
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+            texture_unit tfTexture
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+        }
+    }
+}
+
+//---------------------------------------------------------------------------
+
+// Default Negato3D material
+material Negato3D
+{
+    // Default technique
+    technique
+    {
+        pass
+        {
+            scene_blend alpha_blend
+            cull_hardware none
+            cull_software none
+
+            vertex_program_ref Negato3D_VP
+            {
+            }
+
+            fragment_program_ref Default/Negato_FP
+            {
+            }
+
+            // This will be used by Plane class
+            texture_unit image
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+            texture_unit tfTexture
+            {
+                tex_address_mode clamp
+                filtering bilinear
+            }
+        }
+    }
+
+    technique depth
+    {
+        pass
+        {
+            vertex_program_ref Render_VP
+            {
+            }
+        }
+    }
+
+}

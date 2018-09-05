@@ -1,0 +1,37 @@
+fragment_program Laplace_FP glsl
+{
+    source LaplaceFP.glsl
+}
+
+material Laplace
+{
+    technique
+    {
+
+        pass
+        {
+            cull_hardware none
+            cull_software none
+            depth_func always_pass
+            polygon_mode_overrideable false
+
+            vertex_program_ref StdQuad_Tex2a_VP
+            {
+            }
+
+            fragment_program_ref Laplace_FP
+            {
+                param_named pixelSize float 0.0031
+                param_named scale float 1.0
+            }
+
+            texture_unit RT
+            {
+                tex_coord_set 0
+                tex_address_mode clamp
+                filtering trilinear
+            }
+
+        }
+    }
+}

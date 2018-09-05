@@ -1,0 +1,64 @@
+vertex_program myTextureSobelVertProgram glsl
+{
+    source TexSobel_VP.glsl
+    default_params
+    {
+        param_named_auto u_worldViewProj worldviewproj_matrix
+    }
+}
+
+fragment_program myTextureSobelFragProgram glsl
+{
+    source TexSobel_FP.glsl
+    default_params
+    {
+        param_named depthMap int 0
+        param_named normalMap int 1
+        param_named_auto near_clip near_clip_distance
+        param_named_auto far_clip far_clip_distance
+
+        param_named filterType int 0
+        param_named normalStep float 0.1
+        param_named linearNormalStep int 1
+        param_named depthStep float 0.1
+        param_named linearDepthStep int 0
+        param_named normalizeGradient int 1
+        param_named lowPass float 0.3
+        param_named highCut float 0.8
+    }
+}
+
+material TexEdge
+{
+    technique
+    {
+        pass
+        {
+            cull_hardware none
+            cull_software none
+            depth_check off
+
+            vertex_program_ref myTextureSobelVertProgram
+            {
+            }
+
+            fragment_program_ref myTextureSobelFragProgram
+            {
+            }
+
+            texture_unit depthMap
+            {
+                tex_coord_set 0
+                tex_address_mode clamp
+                filtering none
+            }
+
+            texture_unit normalMap
+            {
+                tex_coord_set 1
+                tex_address_mode clamp
+                filtering none
+            }
+        }
+    }
+}

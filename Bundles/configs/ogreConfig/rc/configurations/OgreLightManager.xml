@@ -1,0 +1,43 @@
+<extension implements="::fwServices::registry::AppConfig">
+    <id>OgreLightManager</id>
+    <parameters>
+        <param name="WID_PARENT" />
+    </parameters>
+
+    <config>
+
+        <!-- ******************************* Objects declaration ****************************** -->
+
+        <!-- ******************************* UI declaration *********************************** -->
+
+        <service uid="LightView" type="::gui::view::SDefaultView" >
+            <gui>
+                <layout type="::fwGui::ToolboxLayoutManager" >
+                    <orientation value="vertical" />
+                    <view caption="Light selector" expanded="true" />
+                    <view caption="Light editor" expanded="true" />
+                </layout>
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <view sid="LightSelector" start="yes" />
+                <view sid="LightEditor" start="yes" />
+            </registry>
+        </service>
+
+        <!-- ************************************* Services ************************************ -->
+
+        <service uid="LightSelector" type="::uiVisuOgre::SLightSelector"  />
+        <service uid="LightEditor" type="::uiVisuOgre::SLightEditor" />
+
+        <!-- ************************************* Actions ************************************* -->
+
+        <connect>
+            <signal>LightSelector/lightSelected</signal>
+            <slot>LightEditor/editLight</slot>
+        </connect>
+
+        <start uid="LightView" />
+
+    </config>
+</extension>

@@ -1,0 +1,1169 @@
+//---------------------------------------------------------------------------
+// File generated with genMaterials.py
+//
+// DO NOT EDIT MANUALLY !!!
+//
+//---------------------------------------------------------------------------
+
+
+vertex_program Lighting_VP glsl
+{
+    source Lighting.glsl
+    preprocessor_defines MAX_LIGHTS=10
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program Lighting_FP glsl
+{
+    source Lighting.glsl
+    preprocessor_defines MAX_LIGHTS=10
+}
+
+//-----------------------------------------------------------------------------
+// Vertex shader materials
+//-----------------------------------------------------------------------------
+
+
+//---------------------------------------------------------------------------
+
+vertex_program Default/Ambient_VP glsl
+{
+    source RenderScene_VP.glsl
+    
+    preprocessor_defines AMBIENT=1
+    default_params
+    {
+        // Common
+        param_named_auto u_worldViewProj worldviewproj_matrix
+        param_named_auto u_world world_matrix
+        param_named_auto u_normalMatrix inverse_transpose_world_matrix
+        // Ambient
+        param_named_auto u_ambient surface_ambient_colour
+        param_named_auto u_diffuse surface_diffuse_colour
+    }
+}
+
+//---------------------------------------------------------------------------
+
+vertex_program Default/Ambient+VT_VP glsl
+{
+    source RenderScene_VP.glsl
+    
+    preprocessor_defines AMBIENT=1,VERTEX_COLOR=1
+    default_params
+    {
+        // Common
+        param_named_auto u_worldViewProj worldviewproj_matrix
+        param_named_auto u_world world_matrix
+        param_named_auto u_normalMatrix inverse_transpose_world_matrix
+        // Ambient
+        param_named_auto u_ambient surface_ambient_colour
+        param_named_auto u_diffuse surface_diffuse_colour
+    }
+}
+
+//---------------------------------------------------------------------------
+
+vertex_program Default/Ambient+DfsTex_VP glsl
+{
+    source RenderScene_VP.glsl
+    
+    preprocessor_defines AMBIENT=1,DIFFUSE_TEX=1
+    default_params
+    {
+        // Common
+        param_named_auto u_worldViewProj worldviewproj_matrix
+        param_named_auto u_world world_matrix
+        param_named_auto u_normalMatrix inverse_transpose_world_matrix
+        // Ambient
+        param_named_auto u_ambient surface_ambient_colour
+        param_named_auto u_diffuse surface_diffuse_colour
+    }
+}
+
+//---------------------------------------------------------------------------
+
+vertex_program Default/Ambient+VT+DfsTex_VP glsl
+{
+    source RenderScene_VP.glsl
+    
+    preprocessor_defines AMBIENT=1,VERTEX_COLOR=1,DIFFUSE_TEX=1
+    default_params
+    {
+        // Common
+        param_named_auto u_worldViewProj worldviewproj_matrix
+        param_named_auto u_world world_matrix
+        param_named_auto u_normalMatrix inverse_transpose_world_matrix
+        // Ambient
+        param_named_auto u_ambient surface_ambient_colour
+        param_named_auto u_diffuse surface_diffuse_colour
+    }
+}
+
+//---------------------------------------------------------------------------
+
+vertex_program Default/Flat_VP glsl
+{
+    source RenderScene_VP.glsl
+    attach Lighting_VP
+    preprocessor_defines FLAT=1
+    default_params
+    {
+        // Common
+        param_named_auto u_worldViewProj worldviewproj_matrix
+        param_named_auto u_world world_matrix
+        param_named_auto u_normalMatrix inverse_transpose_world_matrix
+        // Lighting
+        param_named_auto u_cameraPos camera_position
+        param_named u_numLights int 1
+        param_named_auto u_lightDir light_position_array 10
+        param_named_auto u_lightAmbient ambient_light_colour
+        param_named_auto u_lightDiffuse light_diffuse_colour_array 10
+        param_named_auto u_lightSpecular light_specular_colour_array 10
+        param_named_auto u_ambient surface_ambient_colour
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_specular surface_specular_colour
+        param_named_auto u_shininess surface_shininess
+    }
+}
+
+//---------------------------------------------------------------------------
+
+vertex_program Default/Flat+VT_VP glsl
+{
+    source RenderScene_VP.glsl
+    attach Lighting_VP
+    preprocessor_defines FLAT=1,VERTEX_COLOR=1
+    default_params
+    {
+        // Common
+        param_named_auto u_worldViewProj worldviewproj_matrix
+        param_named_auto u_world world_matrix
+        param_named_auto u_normalMatrix inverse_transpose_world_matrix
+        // Lighting
+        param_named_auto u_cameraPos camera_position
+        param_named u_numLights int 1
+        param_named_auto u_lightDir light_position_array 10
+        param_named_auto u_lightAmbient ambient_light_colour
+        param_named_auto u_lightDiffuse light_diffuse_colour_array 10
+        param_named_auto u_lightSpecular light_specular_colour_array 10
+        param_named_auto u_ambient surface_ambient_colour
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_specular surface_specular_colour
+        param_named_auto u_shininess surface_shininess
+    }
+}
+
+//---------------------------------------------------------------------------
+
+vertex_program Default/Flat+DfsTex_VP glsl
+{
+    source RenderScene_VP.glsl
+    attach Lighting_VP
+    preprocessor_defines FLAT=1,DIFFUSE_TEX=1
+    default_params
+    {
+        // Common
+        param_named_auto u_worldViewProj worldviewproj_matrix
+        param_named_auto u_world world_matrix
+        param_named_auto u_normalMatrix inverse_transpose_world_matrix
+        // Lighting
+        param_named_auto u_cameraPos camera_position
+        param_named u_numLights int 1
+        param_named_auto u_lightDir light_position_array 10
+        param_named_auto u_lightAmbient ambient_light_colour
+        param_named_auto u_lightDiffuse light_diffuse_colour_array 10
+        param_named_auto u_lightSpecular light_specular_colour_array 10
+        param_named_auto u_ambient surface_ambient_colour
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_specular surface_specular_colour
+        param_named_auto u_shininess surface_shininess
+    }
+}
+
+//---------------------------------------------------------------------------
+
+vertex_program Default/Flat+VT+DfsTex_VP glsl
+{
+    source RenderScene_VP.glsl
+    attach Lighting_VP
+    preprocessor_defines FLAT=1,VERTEX_COLOR=1,DIFFUSE_TEX=1
+    default_params
+    {
+        // Common
+        param_named_auto u_worldViewProj worldviewproj_matrix
+        param_named_auto u_world world_matrix
+        param_named_auto u_normalMatrix inverse_transpose_world_matrix
+        // Lighting
+        param_named_auto u_cameraPos camera_position
+        param_named u_numLights int 1
+        param_named_auto u_lightDir light_position_array 10
+        param_named_auto u_lightAmbient ambient_light_colour
+        param_named_auto u_lightDiffuse light_diffuse_colour_array 10
+        param_named_auto u_lightSpecular light_specular_colour_array 10
+        param_named_auto u_ambient surface_ambient_colour
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_specular surface_specular_colour
+        param_named_auto u_shininess surface_shininess
+    }
+}
+
+//---------------------------------------------------------------------------
+
+vertex_program Default/Gouraud_VP glsl
+{
+    source RenderScene_VP.glsl
+    attach Lighting_VP
+    
+    default_params
+    {
+        // Common
+        param_named_auto u_worldViewProj worldviewproj_matrix
+        param_named_auto u_world world_matrix
+        param_named_auto u_normalMatrix inverse_transpose_world_matrix
+        // Lighting
+        param_named_auto u_cameraPos camera_position
+        param_named u_numLights int 1
+        param_named_auto u_lightDir light_position_array 10
+        param_named_auto u_lightAmbient ambient_light_colour
+        param_named_auto u_lightDiffuse light_diffuse_colour_array 10
+        param_named_auto u_lightSpecular light_specular_colour_array 10
+        param_named_auto u_ambient surface_ambient_colour
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_specular surface_specular_colour
+        param_named_auto u_shininess surface_shininess
+    }
+}
+
+//---------------------------------------------------------------------------
+
+vertex_program Default/Gouraud+VT_VP glsl
+{
+    source RenderScene_VP.glsl
+    attach Lighting_VP
+    preprocessor_defines VERTEX_COLOR=1
+    default_params
+    {
+        // Common
+        param_named_auto u_worldViewProj worldviewproj_matrix
+        param_named_auto u_world world_matrix
+        param_named_auto u_normalMatrix inverse_transpose_world_matrix
+        // Lighting
+        param_named_auto u_cameraPos camera_position
+        param_named u_numLights int 1
+        param_named_auto u_lightDir light_position_array 10
+        param_named_auto u_lightAmbient ambient_light_colour
+        param_named_auto u_lightDiffuse light_diffuse_colour_array 10
+        param_named_auto u_lightSpecular light_specular_colour_array 10
+        param_named_auto u_ambient surface_ambient_colour
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_specular surface_specular_colour
+        param_named_auto u_shininess surface_shininess
+    }
+}
+
+//---------------------------------------------------------------------------
+
+vertex_program Default/Gouraud+DfsTex_VP glsl
+{
+    source RenderScene_VP.glsl
+    attach Lighting_VP
+    preprocessor_defines DIFFUSE_TEX=1
+    default_params
+    {
+        // Common
+        param_named_auto u_worldViewProj worldviewproj_matrix
+        param_named_auto u_world world_matrix
+        param_named_auto u_normalMatrix inverse_transpose_world_matrix
+        // Lighting
+        param_named_auto u_cameraPos camera_position
+        param_named u_numLights int 1
+        param_named_auto u_lightDir light_position_array 10
+        param_named_auto u_lightAmbient ambient_light_colour
+        param_named_auto u_lightDiffuse light_diffuse_colour_array 10
+        param_named_auto u_lightSpecular light_specular_colour_array 10
+        param_named_auto u_ambient surface_ambient_colour
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_specular surface_specular_colour
+        param_named_auto u_shininess surface_shininess
+    }
+}
+
+//---------------------------------------------------------------------------
+
+vertex_program Default/Gouraud+VT+DfsTex_VP glsl
+{
+    source RenderScene_VP.glsl
+    attach Lighting_VP
+    preprocessor_defines VERTEX_COLOR=1,DIFFUSE_TEX=1
+    default_params
+    {
+        // Common
+        param_named_auto u_worldViewProj worldviewproj_matrix
+        param_named_auto u_world world_matrix
+        param_named_auto u_normalMatrix inverse_transpose_world_matrix
+        // Lighting
+        param_named_auto u_cameraPos camera_position
+        param_named u_numLights int 1
+        param_named_auto u_lightDir light_position_array 10
+        param_named_auto u_lightAmbient ambient_light_colour
+        param_named_auto u_lightDiffuse light_diffuse_colour_array 10
+        param_named_auto u_lightSpecular light_specular_colour_array 10
+        param_named_auto u_ambient surface_ambient_colour
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_specular surface_specular_colour
+        param_named_auto u_shininess surface_shininess
+    }
+}
+
+//---------------------------------------------------------------------------
+
+vertex_program Default/PixelLit_VP glsl
+{
+    source RenderScene_VP.glsl
+    
+    preprocessor_defines PIXEL_LIT=1
+    default_params
+    {
+        // Common
+        param_named_auto u_worldViewProj worldviewproj_matrix
+        param_named_auto u_world world_matrix
+        param_named_auto u_normalMatrix inverse_transpose_world_matrix
+    }
+}
+
+//---------------------------------------------------------------------------
+
+vertex_program Default/PixelLit+VT_VP glsl
+{
+    source RenderScene_VP.glsl
+    
+    preprocessor_defines PIXEL_LIT=1,VERTEX_COLOR=1
+    default_params
+    {
+        // Common
+        param_named_auto u_worldViewProj worldviewproj_matrix
+        param_named_auto u_world world_matrix
+        param_named_auto u_normalMatrix inverse_transpose_world_matrix
+    }
+}
+
+//---------------------------------------------------------------------------
+
+vertex_program Default/PixelLit+DfsTex_VP glsl
+{
+    source RenderScene_VP.glsl
+    
+    preprocessor_defines PIXEL_LIT=1,DIFFUSE_TEX=1
+    default_params
+    {
+        // Common
+        param_named_auto u_worldViewProj worldviewproj_matrix
+        param_named_auto u_world world_matrix
+        param_named_auto u_normalMatrix inverse_transpose_world_matrix
+    }
+}
+
+//---------------------------------------------------------------------------
+
+vertex_program Default/PixelLit+VT+DfsTex_VP glsl
+{
+    source RenderScene_VP.glsl
+    
+    preprocessor_defines PIXEL_LIT=1,VERTEX_COLOR=1,DIFFUSE_TEX=1
+    default_params
+    {
+        // Common
+        param_named_auto u_worldViewProj worldviewproj_matrix
+        param_named_auto u_world world_matrix
+        param_named_auto u_normalMatrix inverse_transpose_world_matrix
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Common color materials
+//-----------------------------------------------------------------------------
+
+
+//---------------------------------------------------------------------------
+
+fragment_program MaterialColor/Ambient_FP glsl
+{
+    source MaterialColor_FP.glsl
+    preprocessor_defines AMBIENT=1
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program MaterialColor/Ambient+VT_FP glsl
+{
+    source MaterialColor_FP.glsl
+    preprocessor_defines AMBIENT=1,VERTEX_COLOR=1
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program MaterialColor/Ambient+DfsTex_FP glsl
+{
+    source MaterialColor_FP.glsl
+    preprocessor_defines AMBIENT=1,DIFFUSE_TEX=1
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program MaterialColor/Ambient+VT+DfsTex_FP glsl
+{
+    source MaterialColor_FP.glsl
+    preprocessor_defines AMBIENT=1,VERTEX_COLOR=1,DIFFUSE_TEX=1
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program MaterialColor/Flat_FP glsl
+{
+    source MaterialColor_FP.glsl
+    preprocessor_defines FLAT=1
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program MaterialColor/Flat+VT_FP glsl
+{
+    source MaterialColor_FP.glsl
+    preprocessor_defines FLAT=1,VERTEX_COLOR=1
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program MaterialColor/Flat+DfsTex_FP glsl
+{
+    source MaterialColor_FP.glsl
+    preprocessor_defines FLAT=1,DIFFUSE_TEX=1
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program MaterialColor/Flat+VT+DfsTex_FP glsl
+{
+    source MaterialColor_FP.glsl
+    preprocessor_defines FLAT=1,VERTEX_COLOR=1,DIFFUSE_TEX=1
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program MaterialColor/Gouraud_FP glsl
+{
+    source MaterialColor_FP.glsl
+    
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program MaterialColor/Gouraud+VT_FP glsl
+{
+    source MaterialColor_FP.glsl
+    preprocessor_defines VERTEX_COLOR=1
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program MaterialColor/Gouraud+DfsTex_FP glsl
+{
+    source MaterialColor_FP.glsl
+    preprocessor_defines DIFFUSE_TEX=1
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program MaterialColor/Gouraud+VT+DfsTex_FP glsl
+{
+    source MaterialColor_FP.glsl
+    preprocessor_defines VERTEX_COLOR=1,DIFFUSE_TEX=1
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program MaterialColor/PixelLit_FP glsl
+{
+    source MaterialColor_FP.glsl
+    preprocessor_defines PIXEL_LIT=1
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program MaterialColor/PixelLit+VT_FP glsl
+{
+    source MaterialColor_FP.glsl
+    preprocessor_defines PIXEL_LIT=1,VERTEX_COLOR=1
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program MaterialColor/PixelLit+DfsTex_FP glsl
+{
+    source MaterialColor_FP.glsl
+    preprocessor_defines PIXEL_LIT=1,DIFFUSE_TEX=1
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program MaterialColor/PixelLit+VT+DfsTex_FP glsl
+{
+    source MaterialColor_FP.glsl
+    preprocessor_defines PIXEL_LIT=1,VERTEX_COLOR=1,DIFFUSE_TEX=1
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program MaterialColor/Edge_Normal_FP glsl
+{
+    source MaterialColor_FP.glsl
+    preprocessor_defines EDGE_NORMAL=1
+}
+
+//-----------------------------------------------------------------------------
+// Default technique
+//-----------------------------------------------------------------------------
+
+
+//-----------------------------------------------------------------------------
+
+fragment_program Default/Ambient_FP glsl
+{
+    source Main_FP.glsl
+    attach MaterialColor/Ambient_FP
+    
+    default_params
+    {
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+fragment_program Default/Ambient+VT_FP glsl
+{
+    source Main_FP.glsl
+    attach MaterialColor/Ambient+VT_FP
+    
+    default_params
+    {
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+fragment_program Default/Ambient+DfsTex_FP glsl
+{
+    source Main_FP.glsl
+    attach MaterialColor/Ambient+DfsTex_FP
+    
+    default_params
+    {
+        // Diffuse texture
+        param_named u_texture int 0
+        // Use alpha channel from the texture
+        param_named u_useTextureAlpha int 0
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+fragment_program Default/Ambient+VT+DfsTex_FP glsl
+{
+    source Main_FP.glsl
+    attach MaterialColor/Ambient+VT+DfsTex_FP
+    
+    default_params
+    {
+        // Diffuse texture
+        param_named u_texture int 0
+        // Use alpha channel from the texture
+        param_named u_useTextureAlpha int 0
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+fragment_program Default/Flat_FP glsl
+{
+    source Main_FP.glsl
+    attach MaterialColor/Flat_FP
+    
+    default_params
+    {
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+fragment_program Default/Flat+VT_FP glsl
+{
+    source Main_FP.glsl
+    attach MaterialColor/Flat+VT_FP
+    
+    default_params
+    {
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+fragment_program Default/Flat+DfsTex_FP glsl
+{
+    source Main_FP.glsl
+    attach MaterialColor/Flat+DfsTex_FP
+    
+    default_params
+    {
+        // Diffuse texture
+        param_named u_texture int 0
+        // Use alpha channel from the texture
+        param_named u_useTextureAlpha int 0
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+fragment_program Default/Flat+VT+DfsTex_FP glsl
+{
+    source Main_FP.glsl
+    attach MaterialColor/Flat+VT+DfsTex_FP
+    
+    default_params
+    {
+        // Diffuse texture
+        param_named u_texture int 0
+        // Use alpha channel from the texture
+        param_named u_useTextureAlpha int 0
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+fragment_program Default/Gouraud_FP glsl
+{
+    source Main_FP.glsl
+    attach MaterialColor/Gouraud_FP
+    
+    default_params
+    {
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+fragment_program Default/Gouraud+VT_FP glsl
+{
+    source Main_FP.glsl
+    attach MaterialColor/Gouraud+VT_FP
+    
+    default_params
+    {
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+fragment_program Default/Gouraud+DfsTex_FP glsl
+{
+    source Main_FP.glsl
+    attach MaterialColor/Gouraud+DfsTex_FP
+    
+    default_params
+    {
+        // Diffuse texture
+        param_named u_texture int 0
+        // Use alpha channel from the texture
+        param_named u_useTextureAlpha int 0
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+fragment_program Default/Gouraud+VT+DfsTex_FP glsl
+{
+    source Main_FP.glsl
+    attach MaterialColor/Gouraud+VT+DfsTex_FP
+    
+    default_params
+    {
+        // Diffuse texture
+        param_named u_texture int 0
+        // Use alpha channel from the texture
+        param_named u_useTextureAlpha int 0
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+fragment_program Default/PixelLit_FP glsl
+{
+    source Main_FP.glsl
+    attach MaterialColor/PixelLit_FP
+    attach Lighting_FP
+    default_params
+    {
+        // Lighting
+        param_named_auto u_cameraPos camera_position
+        param_named u_numLights int 1
+        param_named_auto u_lightDir light_position_array 10
+        param_named_auto u_lightAmbient ambient_light_colour
+        param_named_auto u_lightDiffuse light_diffuse_colour_array 10
+        param_named_auto u_lightSpecular light_specular_colour_array 10
+        param_named_auto u_ambient surface_ambient_colour
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_specular surface_specular_colour
+        param_named_auto u_shininess surface_shininess
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+fragment_program Default/PixelLit+VT_FP glsl
+{
+    source Main_FP.glsl
+    attach MaterialColor/PixelLit+VT_FP
+    attach Lighting_FP
+    default_params
+    {
+        // Lighting
+        param_named_auto u_cameraPos camera_position
+        param_named u_numLights int 1
+        param_named_auto u_lightDir light_position_array 10
+        param_named_auto u_lightAmbient ambient_light_colour
+        param_named_auto u_lightDiffuse light_diffuse_colour_array 10
+        param_named_auto u_lightSpecular light_specular_colour_array 10
+        param_named_auto u_ambient surface_ambient_colour
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_specular surface_specular_colour
+        param_named_auto u_shininess surface_shininess
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+fragment_program Default/PixelLit+DfsTex_FP glsl
+{
+    source Main_FP.glsl
+    attach MaterialColor/PixelLit+DfsTex_FP
+    attach Lighting_FP
+    default_params
+    {
+        // Lighting
+        param_named_auto u_cameraPos camera_position
+        param_named u_numLights int 1
+        param_named_auto u_lightDir light_position_array 10
+        param_named_auto u_lightAmbient ambient_light_colour
+        param_named_auto u_lightDiffuse light_diffuse_colour_array 10
+        param_named_auto u_lightSpecular light_specular_colour_array 10
+        param_named_auto u_ambient surface_ambient_colour
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_specular surface_specular_colour
+        param_named_auto u_shininess surface_shininess
+        // Diffuse texture
+        param_named u_texture int 0
+        // Use alpha channel from the texture
+        param_named u_useTextureAlpha int 0
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+fragment_program Default/PixelLit+VT+DfsTex_FP glsl
+{
+    source Main_FP.glsl
+    attach MaterialColor/PixelLit+VT+DfsTex_FP
+    attach Lighting_FP
+    default_params
+    {
+        // Lighting
+        param_named_auto u_cameraPos camera_position
+        param_named u_numLights int 1
+        param_named_auto u_lightDir light_position_array 10
+        param_named_auto u_lightAmbient ambient_light_colour
+        param_named_auto u_lightDiffuse light_diffuse_colour_array 10
+        param_named_auto u_lightSpecular light_specular_colour_array 10
+        param_named_auto u_ambient surface_ambient_colour
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_specular surface_specular_colour
+        param_named_auto u_shininess surface_shininess
+        // Diffuse texture
+        param_named u_texture int 0
+        // Use alpha channel from the texture
+        param_named u_useTextureAlpha int 0
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+fragment_program Default/Edge_Normal_FP glsl
+{
+    source Main_FP.glsl
+    attach MaterialColor/Edge_Normal_FP
+    
+    default_params
+    {
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Cell shading + depth peeling technique
+//-----------------------------------------------------------------------------
+
+
+//---------------------------------------------------------------------------
+
+vertex_program CelShadingDepthPeeling/Ambient_VP glsl
+{
+    source RenderScene_VP.glsl
+    
+    preprocessor_defines CEL_SHADING=1,AMBIENT=1
+    default_params
+    {
+        // CelShadingDepthPeeling
+        param_named_auto u_worldViewProj worldviewproj_matrix
+        param_named_auto u_world world_matrix
+        param_named_auto u_normalMatrix inverse_transpose_world_matrix
+        // Ambient
+        param_named_auto u_ambient surface_ambient_colour
+        param_named_auto u_diffuse surface_diffuse_colour
+    }
+}
+
+//---------------------------------------------------------------------------
+
+vertex_program CelShadingDepthPeeling/Ambient+VT_VP glsl
+{
+    source RenderScene_VP.glsl
+    
+    preprocessor_defines CEL_SHADING=1,AMBIENT=1,VERTEX_COLOR=1
+    default_params
+    {
+        // CelShadingDepthPeeling
+        param_named_auto u_worldViewProj worldviewproj_matrix
+        param_named_auto u_world world_matrix
+        param_named_auto u_normalMatrix inverse_transpose_world_matrix
+        // Ambient
+        param_named_auto u_ambient surface_ambient_colour
+        param_named_auto u_diffuse surface_diffuse_colour
+    }
+}
+
+//---------------------------------------------------------------------------
+
+vertex_program CelShadingDepthPeeling/Ambient+DfsTex_VP glsl
+{
+    source RenderScene_VP.glsl
+    
+    preprocessor_defines CEL_SHADING=1,AMBIENT=1,DIFFUSE_TEX=1
+    default_params
+    {
+        // CelShadingDepthPeeling
+        param_named_auto u_worldViewProj worldviewproj_matrix
+        param_named_auto u_world world_matrix
+        param_named_auto u_normalMatrix inverse_transpose_world_matrix
+        // Ambient
+        param_named_auto u_ambient surface_ambient_colour
+        param_named_auto u_diffuse surface_diffuse_colour
+    }
+}
+
+//---------------------------------------------------------------------------
+
+vertex_program CelShadingDepthPeeling/Ambient+VT+DfsTex_VP glsl
+{
+    source RenderScene_VP.glsl
+    
+    preprocessor_defines CEL_SHADING=1,AMBIENT=1,VERTEX_COLOR=1,DIFFUSE_TEX=1
+    default_params
+    {
+        // CelShadingDepthPeeling
+        param_named_auto u_worldViewProj worldviewproj_matrix
+        param_named_auto u_world world_matrix
+        param_named_auto u_normalMatrix inverse_transpose_world_matrix
+        // Ambient
+        param_named_auto u_ambient surface_ambient_colour
+        param_named_auto u_diffuse surface_diffuse_colour
+    }
+}
+
+//---------------------------------------------------------------------------
+
+vertex_program CelShadingDepthPeeling/Flat_VP glsl
+{
+    source RenderScene_VP.glsl
+    attach Lighting_VP
+    preprocessor_defines CEL_SHADING=1,FLAT=1
+    default_params
+    {
+        // CelShadingDepthPeeling
+        param_named_auto u_worldViewProj worldviewproj_matrix
+        param_named_auto u_world world_matrix
+        param_named_auto u_normalMatrix inverse_transpose_world_matrix
+        // Lighting
+        param_named_auto u_cameraPos camera_position
+        param_named u_numLights int 1
+        param_named_auto u_lightDir light_position_array 10
+        param_named_auto u_lightAmbient ambient_light_colour
+        param_named_auto u_lightDiffuse light_diffuse_colour_array 10
+        param_named_auto u_lightSpecular light_specular_colour_array 10
+        param_named_auto u_ambient surface_ambient_colour
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_specular surface_specular_colour
+        param_named_auto u_shininess surface_shininess
+    }
+}
+
+//---------------------------------------------------------------------------
+
+vertex_program CelShadingDepthPeeling/Flat+VT_VP glsl
+{
+    source RenderScene_VP.glsl
+    attach Lighting_VP
+    preprocessor_defines CEL_SHADING=1,FLAT=1,VERTEX_COLOR=1
+    default_params
+    {
+        // CelShadingDepthPeeling
+        param_named_auto u_worldViewProj worldviewproj_matrix
+        param_named_auto u_world world_matrix
+        param_named_auto u_normalMatrix inverse_transpose_world_matrix
+        // Lighting
+        param_named_auto u_cameraPos camera_position
+        param_named u_numLights int 1
+        param_named_auto u_lightDir light_position_array 10
+        param_named_auto u_lightAmbient ambient_light_colour
+        param_named_auto u_lightDiffuse light_diffuse_colour_array 10
+        param_named_auto u_lightSpecular light_specular_colour_array 10
+        param_named_auto u_ambient surface_ambient_colour
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_specular surface_specular_colour
+        param_named_auto u_shininess surface_shininess
+    }
+}
+
+//---------------------------------------------------------------------------
+
+vertex_program CelShadingDepthPeeling/Flat+DfsTex_VP glsl
+{
+    source RenderScene_VP.glsl
+    attach Lighting_VP
+    preprocessor_defines CEL_SHADING=1,FLAT=1,DIFFUSE_TEX=1
+    default_params
+    {
+        // CelShadingDepthPeeling
+        param_named_auto u_worldViewProj worldviewproj_matrix
+        param_named_auto u_world world_matrix
+        param_named_auto u_normalMatrix inverse_transpose_world_matrix
+        // Lighting
+        param_named_auto u_cameraPos camera_position
+        param_named u_numLights int 1
+        param_named_auto u_lightDir light_position_array 10
+        param_named_auto u_lightAmbient ambient_light_colour
+        param_named_auto u_lightDiffuse light_diffuse_colour_array 10
+        param_named_auto u_lightSpecular light_specular_colour_array 10
+        param_named_auto u_ambient surface_ambient_colour
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_specular surface_specular_colour
+        param_named_auto u_shininess surface_shininess
+    }
+}
+
+//---------------------------------------------------------------------------
+
+vertex_program CelShadingDepthPeeling/Flat+VT+DfsTex_VP glsl
+{
+    source RenderScene_VP.glsl
+    attach Lighting_VP
+    preprocessor_defines CEL_SHADING=1,FLAT=1,VERTEX_COLOR=1,DIFFUSE_TEX=1
+    default_params
+    {
+        // CelShadingDepthPeeling
+        param_named_auto u_worldViewProj worldviewproj_matrix
+        param_named_auto u_world world_matrix
+        param_named_auto u_normalMatrix inverse_transpose_world_matrix
+        // Lighting
+        param_named_auto u_cameraPos camera_position
+        param_named u_numLights int 1
+        param_named_auto u_lightDir light_position_array 10
+        param_named_auto u_lightAmbient ambient_light_colour
+        param_named_auto u_lightDiffuse light_diffuse_colour_array 10
+        param_named_auto u_lightSpecular light_specular_colour_array 10
+        param_named_auto u_ambient surface_ambient_colour
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_specular surface_specular_colour
+        param_named_auto u_shininess surface_shininess
+    }
+}
+
+//---------------------------------------------------------------------------
+
+vertex_program CelShadingDepthPeeling/Gouraud_VP glsl
+{
+    source RenderScene_VP.glsl
+    attach Lighting_VP
+    preprocessor_defines CEL_SHADING=1
+    default_params
+    {
+        // CelShadingDepthPeeling
+        param_named_auto u_worldViewProj worldviewproj_matrix
+        param_named_auto u_world world_matrix
+        param_named_auto u_normalMatrix inverse_transpose_world_matrix
+        // Lighting
+        param_named_auto u_cameraPos camera_position
+        param_named u_numLights int 1
+        param_named_auto u_lightDir light_position_array 10
+        param_named_auto u_lightAmbient ambient_light_colour
+        param_named_auto u_lightDiffuse light_diffuse_colour_array 10
+        param_named_auto u_lightSpecular light_specular_colour_array 10
+        param_named_auto u_ambient surface_ambient_colour
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_specular surface_specular_colour
+        param_named_auto u_shininess surface_shininess
+    }
+}
+
+//---------------------------------------------------------------------------
+
+vertex_program CelShadingDepthPeeling/Gouraud+VT_VP glsl
+{
+    source RenderScene_VP.glsl
+    attach Lighting_VP
+    preprocessor_defines CEL_SHADING=1,VERTEX_COLOR=1
+    default_params
+    {
+        // CelShadingDepthPeeling
+        param_named_auto u_worldViewProj worldviewproj_matrix
+        param_named_auto u_world world_matrix
+        param_named_auto u_normalMatrix inverse_transpose_world_matrix
+        // Lighting
+        param_named_auto u_cameraPos camera_position
+        param_named u_numLights int 1
+        param_named_auto u_lightDir light_position_array 10
+        param_named_auto u_lightAmbient ambient_light_colour
+        param_named_auto u_lightDiffuse light_diffuse_colour_array 10
+        param_named_auto u_lightSpecular light_specular_colour_array 10
+        param_named_auto u_ambient surface_ambient_colour
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_specular surface_specular_colour
+        param_named_auto u_shininess surface_shininess
+    }
+}
+
+//---------------------------------------------------------------------------
+
+vertex_program CelShadingDepthPeeling/Gouraud+DfsTex_VP glsl
+{
+    source RenderScene_VP.glsl
+    attach Lighting_VP
+    preprocessor_defines CEL_SHADING=1,DIFFUSE_TEX=1
+    default_params
+    {
+        // CelShadingDepthPeeling
+        param_named_auto u_worldViewProj worldviewproj_matrix
+        param_named_auto u_world world_matrix
+        param_named_auto u_normalMatrix inverse_transpose_world_matrix
+        // Lighting
+        param_named_auto u_cameraPos camera_position
+        param_named u_numLights int 1
+        param_named_auto u_lightDir light_position_array 10
+        param_named_auto u_lightAmbient ambient_light_colour
+        param_named_auto u_lightDiffuse light_diffuse_colour_array 10
+        param_named_auto u_lightSpecular light_specular_colour_array 10
+        param_named_auto u_ambient surface_ambient_colour
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_specular surface_specular_colour
+        param_named_auto u_shininess surface_shininess
+    }
+}
+
+//---------------------------------------------------------------------------
+
+vertex_program CelShadingDepthPeeling/Gouraud+VT+DfsTex_VP glsl
+{
+    source RenderScene_VP.glsl
+    attach Lighting_VP
+    preprocessor_defines CEL_SHADING=1,VERTEX_COLOR=1,DIFFUSE_TEX=1
+    default_params
+    {
+        // CelShadingDepthPeeling
+        param_named_auto u_worldViewProj worldviewproj_matrix
+        param_named_auto u_world world_matrix
+        param_named_auto u_normalMatrix inverse_transpose_world_matrix
+        // Lighting
+        param_named_auto u_cameraPos camera_position
+        param_named u_numLights int 1
+        param_named_auto u_lightDir light_position_array 10
+        param_named_auto u_lightAmbient ambient_light_colour
+        param_named_auto u_lightDiffuse light_diffuse_colour_array 10
+        param_named_auto u_lightSpecular light_specular_colour_array 10
+        param_named_auto u_ambient surface_ambient_colour
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_specular surface_specular_colour
+        param_named_auto u_shininess surface_shininess
+    }
+}
+
+//---------------------------------------------------------------------------
+
+vertex_program CelShadingDepthPeeling/PixelLit_VP glsl
+{
+    source RenderScene_VP.glsl
+    
+    preprocessor_defines CEL_SHADING=1,PIXEL_LIT=1
+    default_params
+    {
+        // CelShadingDepthPeeling
+        param_named_auto u_worldViewProj worldviewproj_matrix
+        param_named_auto u_world world_matrix
+        param_named_auto u_normalMatrix inverse_transpose_world_matrix
+    }
+}
+
+//---------------------------------------------------------------------------
+
+vertex_program CelShadingDepthPeeling/PixelLit+VT_VP glsl
+{
+    source RenderScene_VP.glsl
+    
+    preprocessor_defines CEL_SHADING=1,PIXEL_LIT=1,VERTEX_COLOR=1
+    default_params
+    {
+        // CelShadingDepthPeeling
+        param_named_auto u_worldViewProj worldviewproj_matrix
+        param_named_auto u_world world_matrix
+        param_named_auto u_normalMatrix inverse_transpose_world_matrix
+    }
+}
+
+//---------------------------------------------------------------------------
+
+vertex_program CelShadingDepthPeeling/PixelLit+DfsTex_VP glsl
+{
+    source RenderScene_VP.glsl
+    
+    preprocessor_defines CEL_SHADING=1,PIXEL_LIT=1,DIFFUSE_TEX=1
+    default_params
+    {
+        // CelShadingDepthPeeling
+        param_named_auto u_worldViewProj worldviewproj_matrix
+        param_named_auto u_world world_matrix
+        param_named_auto u_normalMatrix inverse_transpose_world_matrix
+    }
+}
+
+//---------------------------------------------------------------------------
+
+vertex_program CelShadingDepthPeeling/PixelLit+VT+DfsTex_VP glsl
+{
+    source RenderScene_VP.glsl
+    
+    preprocessor_defines CEL_SHADING=1,PIXEL_LIT=1,VERTEX_COLOR=1,DIFFUSE_TEX=1
+    default_params
+    {
+        // CelShadingDepthPeeling
+        param_named_auto u_worldViewProj worldviewproj_matrix
+        param_named_auto u_world world_matrix
+        param_named_auto u_normalMatrix inverse_transpose_world_matrix
+    }
+}

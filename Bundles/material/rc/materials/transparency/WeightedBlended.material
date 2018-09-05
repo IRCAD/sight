@@ -1,0 +1,46 @@
+/// WBOIT material
+
+//---------------------------------------------------------------------------
+
+fragment_program WeightedBlended_blend_FP glsl
+{
+        source WeightedBlended_Blend_FP.glsl
+        default_params
+        {
+            param_named u_sumColorBuffer int 0
+            param_named u_transmittanceBuffer int 1
+        }
+}
+
+//---------------------------------------------------------------------------
+
+material WeightedBlended_blend
+{
+    technique
+    {
+        pass
+        {
+            depth_check off
+            depth_write off
+
+            vertex_program_ref RenderQuad_VP
+            {
+            }
+
+            fragment_program_ref WeightedBlended_blend_FP
+            {
+            }
+
+            texture_unit
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+            texture_unit
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+        }
+    }
+}

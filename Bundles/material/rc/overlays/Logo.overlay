@@ -1,0 +1,33 @@
+overlay LogoOverlay
+{
+    overlay_element MyOverlayElements/EmptyPanel Panel
+    {
+        left 0
+        top 0.8
+        width 1
+        height 0.2
+
+        overlay_element MyOverlayElements/IrcadPanel Panel
+        {
+            metrics_mode pixels
+            horz_align right
+            vert_align bottom
+            left -220
+            top -95
+            width 210
+            height 75
+            material IrcadLogo
+        }
+
+        overlay_element MyOverlayElements/IHUPanel Panel
+        {
+            metrics_mode pixels
+            vert_align bottom
+            left 10
+            top -110
+            width 100
+            height 100
+            material IHULogo
+        }
+    }
+}

@@ -1,0 +1,328 @@
+<extension implements="::fwServices::registry::AppConfig">
+    <id>OgreGenericScene</id>
+    <parameters>
+        <param name="WID_PARENT" />
+        <param name="modelSeriesUID" />
+        <param name="compositorChannel" />
+        <!-- 3D negato image -->
+        <param name="imageUID" />
+        <param name="TF" />
+        <param name="landmarks" />
+        <param name="maskUID" />
+        <param name="idvrEnumParamChannel" />
+        <param name="idvrBoolParamChannel" />
+        <param name="idvrDoubleParamChannel" />
+        <param name="idvrColorParamChannel" />
+    </parameters>
+    <config>
+        <!-- ******************************* Objects declaration ****************************** -->
+
+        <object uid="${modelSeriesUID}" type="::fwMedData::ModelSeries" src="ref" />
+        <object uid="${imageUID}" type="::fwData::Image" src="ref" />
+        <object uid="${maskUID}" type="::fwData::Image" src="ref" />
+
+        <object uid="frameTL" type="::arData::FrameTL" />
+        <object uid="videoImage" type="::fwData::Image" />
+        <object uid="camera" type="::arData::Camera" />
+        <object uid="pointList" type="::fwData::PointList" />
+
+        <object uid="${TF}" type="::fwData::TransferFunction" src="deferred" />
+        <object uid="${landmarks}" type="::fwData::Landmarks" src="ref" />
+
+        <!-- ******************************* UI declaration *********************************** -->
+        <service uid="OgreSceneView" type="::gui::view::SDefaultView">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="vertical" />
+                    <view proportion="1" />
+                    <view proportion="0" />
+                    <view proportion="0" />
+                </layout>
+                <toolBar/>
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <toolBar sid="toolBar" start="yes" />
+                <view sid="genericScene" start="yes" />
+                <view sid="negato3DInteractor" start="yes" />
+                <view sid="volumeRenderingEditorView" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="toolBar" type="::gui::aspect::SDefaultToolBar">
+            <gui>
+                <layout>
+                    <menuItem name="Show/Hide vr editor" icon="OgreViewer-@PROJECT_VERSION@/icons/hide-view_horizontal.png" style="check" />
+                    <menuItem name="Show volume" icon="media-0.1/icons/icon-2D.png" style="check" />
+                    <separator/>
+                    <editor/>
+                    <menuItem name="Play" icon="arMedia-0.1/icons/start-cam.svg" />
+                    <menuItem name="Pause" icon="arMedia-0.1/icons/pause-cam.svg" />
+                    <menuItem name="Stop" icon="arMedia-0.1/icons/stop-cam.svg" />
+                </layout>
+            </gui>
+            <registry>
+                <menuItem sid="action_volumeRenderingEditor" start="yes" />
+                <menuItem sid="action_showVolume" start="yes" />
+                <editor sid="videoSelector" start="yes" />
+                <menuItem sid="action_startVideo" start="yes" />
+                <menuItem sid="action_pauseVideo" start="yes" />
+                <menuItem sid="action_stopVideo" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="negato3DInteractor" type="::gui::view::SDefaultView">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="vertical" />
+                    <view proportion="1" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="sliderIndexEditor3D" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="volumeRenderingEditorView" type="::gui::view::SDefaultView" >
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="horizontal" />
+                    <view proportion="0" />
+                    <view proportion="0" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="vrBasicEditor" start="yes" />
+                <view sid="vrAdvancedEditor" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="vrBasicEditor" type="::guiQt::editor::SParameters" >
+            <parameters>
+                <param type="bool" name="Widgets" key="widgets" defaultValue="false" />
+                <param type="int" name="Samples" key="sampling" defaultValue="512" min="128" max="8192" />
+                <param type="int" name="Opacity correction" key="opacityCorrection" defaultValue="200" min="1" max="200" />
+                <param type="bool" name="Pre-integration" key="preIntegration" defaultValue="false" />
+                <param type="bool" name="Ambient occlusion" key="ambientOcclusion" defaultValue="false" />
+                <param type="bool" name="Color bleeding" key="colorBleeding" defaultValue="false" />
+            </parameters>
+        </service>
+
+        <service uid="vrAdvancedEditor" type="::guiQt::editor::SParameters" >
+            <parameters>
+                <param type="double" name="AO factor" key="aoFactor" defaultValue="1.0" min="0.1" max="10.0" />
+                <param type="double" name="Color bleeding factor" key="colorBleedingFactor" defaultValue="1.0" min="0.1" max="10.0" />
+                <param type="int" name="SAT size ratio" key="satSizeRatio" defaultValue="1" min="1" max="4" />
+                <param type="int" name="AO shells number" key="satShellsNumber" defaultValue="4" min="1" max="10" />
+                <param type="int" name="AO shell radius" key="satShellRadius" defaultValue="4" min="1" max="10" />
+                <param type="bool" name="Soft shadows" key="shadows" defaultValue="false" />
+                <param type="int" name="Shadow cone angle" key="satConeAngle" defaultValue="10" min="10" max="100" />
+                <param type="int" name="Shadow cone samples" key="satConeSamples" defaultValue="50" min="10" max="100" />
+            </parameters>
+        </service>
+
+        <!-- ************************************* Actions ************************************ -->
+        <service uid="action_volumeRenderingEditor" type="::gui::action::SModifyLayout">
+            <config>
+                <show_or_hide sid="volumeRenderingEditorView" />
+            </config>
+        </service>
+
+        <service uid="action_showVolume" type="::gui::action::SBooleanSlotCaller">
+            <slots>
+                <slot>volumeAdaptor/updateVisibility</slot>
+            </slots>
+            <state active="true" />
+        </service>
+
+        <service uid="action_startVideo" type="::gui::action::SSlotCaller">
+            <slots>
+                <slot>frameGrabber/startCamera</slot>
+            </slots>
+        </service>
+
+        <service uid="action_pauseVideo" type="::gui::action::SSlotCaller">
+            <slots>
+                <slot>frameGrabber/pauseCamera</slot>
+            </slots>
+        </service>
+
+        <service uid="action_stopVideo" type="::gui::action::SSlotCaller">
+            <slots>
+                <slot>frameGrabber/stopCamera</slot>
+            </slots>
+        </service>
+
+        <!-- ******************************* Begin Generic Scene ******************************* -->
+        <service uid="genericScene" type="::fwRenderOgre::SRender">
+            <scene overlays="LogoOverlay">
+                <background topColor="#DDDDDD" bottomColor="#43958D" topScale="0.7" bottomScale="1.0" />
+                <layer id="video" depth="1" />
+                <layer id="default" depth="2" transparency="HybridTransparency" numPeels="3"/>
+                <adaptor uid="videoAdapter" />
+                <adaptor uid="interactorAdaptorVideo" />
+                <adaptor uid="interactorAdaptor" />
+                <adaptor uid="selectInteractorAdaptor" />
+                <adaptor uid="modelSeriesAdaptor" />
+                <adaptor uid="negato3DAdaptor" />
+                <adaptor uid="volumeAdaptor" />
+                <adaptor uid="pointListAdaptor" />
+                <adaptor uid="landmarkAdaptor" />
+            </scene>
+        </service>
+
+        <service uid="videoAdapter" type="::visuOgreAdaptor::SVideo">
+            <in key="image" uid="videoImage" autoConnect="yes" />
+            <in key="camera" uid="camera" />
+            <config layer="video" />
+        </service>
+
+        <service uid="interactorAdaptorVideo" type="::visuOgreAdaptor::SInteractorStyle">
+            <in key="object" uid="camera" />
+            <config layer="video" movement="Fixed" />
+        </service>
+
+        <service uid="interactorAdaptor" type="::visuOgreAdaptor::SInteractorStyle">
+            <config layer="default" movement="VR" />
+        </service>
+
+        <service uid="selectInteractorAdaptor" type="::visuOgreAdaptor::SInteractorStyle">
+            <config layer="default" picker="Mesh" />
+        </service>
+
+        <service uid="modelSeriesAdaptor" type="::visuOgreAdaptor::SModelSeries" autoConnect="yes">
+            <in key="model" uid="${modelSeriesUID}" />
+            <config layer="default" />
+        </service>
+
+        <service uid="volumeAdaptor" type="::visuOgreAdaptor::SVolumeRender">
+            <inout key="image" uid="${imageUID}" autoConnect="yes" />
+            <inout key="tf" uid="${TF}" optional="yes" />
+            <inout key="mask" uid="${maskUID}" autoConnect="yes" />
+            <config layer="default" widgets="no" preintegration="no" mode="raytracing" autoresetcamera="yes"/>
+        </service>
+
+        <service uid="negato3DAdaptor" type="::visuOgreAdaptor::SNegato3D">
+            <inout key="image" uid="${imageUID}" autoConnect="yes" />
+            <inout key="tf" uid="${TF}" optional="yes" />
+            <config layer="default" />
+        </service>
+
+        <service uid="pointListAdaptor" type="::visuOgreAdaptor::SPointList" autoConnect="yes">
+            <in key="pointList" uid="pointList" />
+            <config layer="default" autoresetcamera="no" color="#ff0000" radius="1" fixedSize="true"/>
+        </service>
+
+        <service uid="landmarkAdaptor" type="::visuOgreAdaptor::SLandmarks" autoConnect="yes">
+            <in key="landmarks" uid="${landmarks}" />
+            <config layer="default" />
+        </service>
+
+        <!-- ********************************* End Generic Scene ******************************* -->
+
+        <!-- ************************************* Services ************************************ -->
+        <service uid="synchronizer" type="::videoTools::SFrameMatrixSynchronizer" worker="videoWorker">
+            <in group="frameTL">
+                <key uid="frameTL" />
+            </in>
+            <inout group="image">
+                <key uid="videoImage" />
+            </inout>
+            <framerate>30</framerate>
+        </service>
+
+        <service uid="sliderIndexEditor3D" type="::uiImageQt::SliceIndexPositionEditor" autoConnect="yes">
+            <inout key="image" uid="${imageUID}" />
+            <sliceIndex>Sagittal</sliceIndex>
+        </service>
+
+        <service uid="frameGrabber" type="::videoQt::SFrameGrabber">
+            <in key="camera" uid="camera" />
+            <inout key="frameTL" uid="frameTL" />
+        </service>
+
+        <service uid="videoSelector" type="::videoQt::editor::SCamera">
+            <inout key="camera" uid="camera" />
+            <videoSupport>yes</videoSupport>
+        </service>
+
+        <service uid="addPointInList" type="::uiVisuOgre::SAddPoint">
+            <inout key="pointList" uid="pointList" />
+        </service>
+
+        <connect>
+            <signal>selectInteractorAdaptor/pointAdded</signal>
+            <slot>addPointInList/addPoint</slot>
+        </connect>
+
+        <connect channel="${compositorChannel}">
+            <signal>genericScene/compositorUpdated</signal>
+        </connect>
+
+        <connect>
+            <signal>vrBasicEditor/boolChanged</signal>
+            <slot>volumeAdaptor/setBoolParameter</slot>
+        </connect>
+
+        <connect>
+            <signal>vrBasicEditor/enumChanged</signal>
+            <slot>volumeAdaptor/setEnumParameter</slot>
+        </connect>
+
+        <connect>
+            <signal>vrBasicEditor/intChanged</signal>
+            <slot>volumeAdaptor/setIntParameter</slot>
+        </connect>
+
+        <connect>
+            <signal>vrAdvancedEditor/boolChanged</signal>
+            <slot>volumeAdaptor/setBoolParameter</slot>
+        </connect>
+
+        <connect>
+            <signal>vrAdvancedEditor/intChanged</signal>
+            <slot>volumeAdaptor/setIntParameter</slot>
+        </connect>
+
+        <connect>
+            <signal>vrAdvancedEditor/doubleChanged</signal>
+            <slot>volumeAdaptor/setDoubleParameter</slot>
+        </connect>
+
+        <connect channel="${idvrEnumParamChannel}">
+            <slot>volumeAdaptor/setEnumParameter</slot>
+        </connect>
+
+        <connect channel="${idvrBoolParamChannel}">
+            <slot>volumeAdaptor/setBoolParameter</slot>
+        </connect>
+
+        <connect channel="${idvrDoubleParamChannel}">
+            <slot>volumeAdaptor/setDoubleParameter</slot>
+        </connect>
+
+        <connect channel="${idvrColorParamChannel}">
+            <slot>volumeAdaptor/setColorParameter</slot>
+        </connect>
+
+        <!-- *************************************** Starts ************************************ -->
+        <start uid="OgreSceneView" />
+        <start uid="frameGrabber" />
+        <start uid="synchronizer" />
+
+        <!-- Ogre scene 'genericScene' -->
+        <start uid="videoAdapter" />
+        <start uid="interactorAdaptorVideo" />
+        <start uid="interactorAdaptor" />
+        <start uid="selectInteractorAdaptor" />
+        <start uid="modelSeriesAdaptor" />
+        <start uid="volumeAdaptor" />
+        <start uid="negato3DAdaptor" />
+        <start uid="pointListAdaptor" />
+        <start uid="addPointInList" />
+        <start uid="landmarkAdaptor" />
+
+        <update uid="action_volumeRenderingEditor" />
+
+    </config>
+</extension>

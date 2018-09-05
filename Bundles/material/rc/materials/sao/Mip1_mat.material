@@ -1,0 +1,38 @@
+fragment_program Mip_FP_def glsl
+{
+    source Mip_FP_def.glsl
+    default_params
+    {
+        param_named eu_vpWidth float 0
+        param_named eu_vpHeight float 0
+    }
+}
+
+
+
+// argument de texture à compléter surement
+
+material Mip1_mat
+{
+    technique
+    {
+        pass
+        {
+            vertex_program_ref stdPos_VP
+            {
+            }
+
+            fragment_program_ref Mip_FP_def
+            {
+
+            }
+
+            texture_unit Mip_prev
+            {
+            }
+        }
+    }
+}
+
+
+

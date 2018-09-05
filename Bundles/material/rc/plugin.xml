@@ -1,0 +1,5 @@
+<plugin id="material" class="::material::Plugin"  version="@PROJECT_VERSION@" >
+    
+    <library name="material" />
+
+</plugin>

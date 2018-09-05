@@ -1,0 +1,547 @@
+<plugin id="ExSimpleARCVOgre" version="@PROJECT_VERSION@">
+    <requirement id="dataReg" />
+    <requirement id="arDataReg" />
+    <requirement id="servicesReg" />
+    <requirement id="visuOgreQt" />
+    <requirement id="preferences" />
+
+    <extension implements="::fwServices::registry::AppConfig">
+        <id>ExSimpleARCVOgreConfig</id>
+        <config>
+            <!-- objects declarations -->
+            <object uid="cameraSeries" type="::arData::CameraSeries" />
+            <object uid="camera" type="::arData::Camera" src="deferred" />
+            <object uid="frameTL" type="::arData::FrameTL" />
+            <object uid="videoImage" type="::fwData::Image" />
+            <object uid="distortionMap" type="::fwData::Image" />
+
+            <object uid="cube" type="::fwData::Mesh" />
+            <object uid="plane" type="::fwData::Mesh" />
+
+            <object uid="markerMap" type="::arData::MarkerMap" />
+            <object uid="matrix" type="::fwData::TransformationMatrix3D" />
+            <object uid="inverseMat" type="::fwData::TransformationMatrix3D" />
+
+            <object uid="arAlpha" type="::fwData::Float" >
+                <value>1</value>
+            </object>
+
+            <!-- declaration of the views, menu and toolbar -->
+            <service uid="mainFrame" type="::gui::frame::SDefaultFrame">
+                <gui>
+                    <frame>
+                        <name>ExSimpleARCVOgre</name>
+                        <icon>ExSimpleARCVOgre-@PROJECT_VERSION@/app.ico</icon>
+                    </frame>
+                    <menuBar/>
+                    <toolBar/>
+                </gui>
+                <registry>
+                    <toolBar sid="toolbar" start="yes" />
+                    <view sid="cameraView" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="toolbar" type="::gui::aspect::SDefaultToolBar">
+                <gui>
+                    <layout>
+                        <menuItem name="Load Calibration" icon="media-0.1/icons/Plus.svg" />
+                        <editor/>
+                        <menuItem name="Start" icon="arMedia-0.1/icons/start-cam.svg" />
+                        <menuItem name="Stop" icon="arMedia-0.1/icons/stop-cam.svg" />
+                        <menuItem name="Pause" icon="arMedia-0.1/icons/pause-cam.svg" />
+                        <menuItem name="Loop" icon="arMedia-0.1/icons/loop-cam.svg" style="check"/>
+                        <separator/>
+                        <menuItem name="Show Plane on tag" icon="arMedia-0.1/icons/show.svg" icon2="arMedia-0.1/icons/hide.svg" style="check"/>
+                        <menuItem name="Show Cube on tag" icon="media-0.1/icons/icon-box.png" style="check"/>
+                        <separator/>
+                        <menuItem name="Settings" icon="media-0.1/icons/Settings.svg" style="check"/>
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="loadCalib" start="yes" />
+                    <editor sid="CameraSelector" />
+                    <menuItem sid="startVideo" start="yes" />
+                    <menuItem sid="stopVideo" start="yes" />
+                    <menuItem sid="pauseVideo" start="yes" />
+                    <menuItem sid="loopVideo" start="yes" />
+                    <menuItem sid="actionUpdatePlaneVisibility" start="yes" />
+                    <menuItem sid="actionUpdateCubeVisibility" start="yes" />
+                    <menuItem sid="actionShowParameters" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="cameraView" type="::gui::view::SDefaultView">
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="horizontal" />
+                        <view proportion="1" />
+                        <view proportion="0" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="videoView" start="yes" />
+                    <view sid="parameters" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="parameters" type="::gui::view::SDefaultView">
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="vertical" />
+                        <view proportion="3" caption="aruco" />
+                        <view proportion="2" caption="reprojection" />
+                        <spacer/>
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="arucoParams" start="yes" />
+                    <view sid="reprojectionParams" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="videoView" type="::gui::view::SDefaultView">
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="vertical" />
+                        <view proportion="3" />
+                        <view proportion="0" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="sceneView"  start="yes"/>
+                    <view sid="errorLabel" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="sceneView" type="::gui::view::SDefaultView">
+                <gui>
+                    <layout type="::fwGui::CardinalLayoutManager">
+                        <view align="center" />
+                        <view align="bottom" minHeight="300" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="genericScene" start="yes" />
+                    <view sid="debugScene" start="yes" />
+                </registry>
+            </service>
+
+            <!-- declaration of actions/slot callers -->
+
+            <service uid="actionShowParameters" type="::gui::action::SModifyLayout">
+                <config>
+                    <show_or_hide sid="parameters" />
+                </config>
+            </service>
+
+            <service uid="loadCalib" type="::gui::action::SSlotCaller">
+                <slots>
+                    <slot>CalibrationReader/update</slot>
+                </slots>
+            </service>
+
+            <service uid="startVideo" type="::gui::action::SSlotCaller">
+                <slots>
+                    <slot>frameGrabber/startCamera</slot>
+                </slots>
+            </service>
+
+            <service uid="stopVideo" type="::gui::action::SSlotCaller">
+                <slots>
+                    <slot>frameGrabber/stopCamera</slot>
+                </slots>
+            </service>
+
+            <service uid="pauseVideo" type="::gui::action::SSlotCaller">
+                <slots>
+                    <slot>frameGrabber/pauseCamera</slot>
+                </slots>
+            </service>
+
+            <service uid="loopVideo" type="::gui::action::SSlotCaller">
+                <slots>
+                    <slot>frameGrabber/loopVideo</slot>
+                </slots>
+            </service>
+
+            <!-- hide axis adaptor until a marker is found -->
+            <service uid="actionUpdateAxesVisibility" type="::gui::action::SBooleanSlotCaller" >
+                <slots>
+                    <slot>axis/updateVisibility</slot>
+                    <slot>axis2/updateVisibility</slot>
+                </slots>
+            </service>
+
+            <service uid="actionUpdateCubeVisibility" type="::gui::action::SBooleanSlotCaller" >
+                <slots>
+                    <slot>meshAdpt/updateVisibility</slot>
+                    <slot>meshAdpt2/updateVisibility</slot>
+                </slots>
+            </service>
+
+            <service uid="actionUpdatePlaneVisibility" type="::gui::action::SBooleanSlotCaller" >
+                <state active="true" />
+                <slots>
+                    <slot>meshPlaneAdpt/updateVisibility</slot>
+                    <slot>meshPlaneAdpt2/updateVisibility</slot>
+                </slots>
+            </service>
+
+            <!-- Calibration reader (here OpenCV's XML/YAML) -->
+            <service uid="CalibrationReader" type="::ioCalibration::SOpenCVReader">
+                <inout key="data" uid="cameraSeries" />
+            </service>
+
+            <!-- extract a ::arData::Camera from the ::arData::CameraSeries -->
+            <service uid="Extractor" type="::ctrlCamp::SExtractObj">
+                <inout key="source" uid="cameraSeries">
+                    <extract from="@cameras.0" /> <!-- Camp path of the first camera in cameraSeries -->
+                </inout>
+                <out group="target">
+                    <key uid="camera" /> <!-- destination -->
+                </out>
+            </service>
+
+            <service uid="meshReader" type="::ioVTK::SMeshReader">
+                <inout key="data" uid="cube" />
+                <resource>ExSimpleARCVOgre-@PROJECT_VERSION@/cube60.vtk</resource>
+            </service>
+
+            <service uid="meshPlaneReader" type="::ioData::STrianMeshReader">
+                <inout key="data" uid="plane" />
+                <resource>ExSimpleARCVOgre-@PROJECT_VERSION@/plane_60.trian</resource>
+            </service>
+
+            <!-- Scene in which the video and the 3D will be rendered -->
+
+            <service uid="genericScene" type="::fwRenderOgre::SRender" >
+                <scene renderMode="sync">
+                    <background topColor="#46455A" bottomColor="#46455A" />
+                    <layer id="video" depth="1" />
+                    <layer id="default" depth="2" compositors="Remap;AlphaModulator" />
+                    <adaptor uid="videoAdpt" />
+                    <adaptor uid="interactorStyle" />
+                    <adaptor uid="interactorStyle2" />
+                    <adaptor uid="axis" />
+                    <adaptor uid="cameraAdpt" />
+                    <adaptor uid="meshAdpt" />
+                    <adaptor uid="layerTransparencyCompositor" />
+                    <adaptor uid="meshPlaneAdpt" />
+                    <adaptor uid="remapTextureAdpt" />
+                </scene>
+            </service>
+
+            <service uid="videoAdpt" type="::visuOgreAdaptor::SVideo" >
+                <in key="image" uid="videoImage" />
+                <in key="camera" uid="camera" />
+                <config layer="video" />
+            </service>
+
+            <service uid="interactorStyle" type="::visuOgreAdaptor::SInteractorStyle">
+                <config layer="default" movement="Fixed" />
+            </service>
+
+            <service uid="interactorStyle2" type="::visuOgreAdaptor::SInteractorStyle">
+                <config layer="video" movement="Fixed" />
+            </service>
+
+            <service uid="axis" type="::visuOgreAdaptor::SAxis">
+                <config layer="default" transform="id" length="30" />
+            </service>
+
+            <service uid="cameraAdpt" type="::visuOgreAdaptor::SCamera" autoConnect="yes">
+                <inout key="transform" uid="inverseMat" />
+                <in key="calibration" uid="camera" />
+                <config layer="default" />
+            </service>
+
+            <service uid="meshAdpt" type="::visuOgreAdaptor::SMesh" autoConnect="yes">
+                <inout key="mesh" uid="cube" />
+                <config layer="default" color="#ffffffda" />
+            </service>
+
+            <service uid="meshPlaneAdpt" type="::visuOgreAdaptor::SMesh" autoConnect="yes">
+                <inout key="mesh" uid="plane" />
+                <config layer="default" color="#ffffffda" />
+            </service>
+
+            <service uid="layerTransparencyCompositor" type="::visuOgreAdaptor::SCompositorParameter">
+                <inout key="parameter" uid="arAlpha" />
+                <config layer="default" compositorName="AlphaModulator" parameter="u_alpha" shaderType="fragment" />
+            </service>
+
+            <service uid="remapTextureAdpt" type="::visuOgreAdaptor::SCompositorParameter" autoConnect="yes">
+                <inout key="parameter" uid="distortionMap" />
+                <config layer="default" compositorName="Remap" parameter="u_map" shaderType="fragment" />
+            </service>
+
+            <!-- Debug 3D Scene -->
+            <service uid="debugScene" type="::fwRenderOgre::SRender" >
+                <scene>
+                    <background topColor="#46455A" bottomColor="#46455A" />
+                    <layer id="default" depth="1" />
+                    <adaptor uid="axis2" />
+                    <adaptor uid="trfAdpt" />
+                    <adaptor uid="meshAdpt2" />
+                    <adaptor uid="meshPlaneAdpt2" />
+                    <adaptor uid="frustumAdpt" />
+                    <adaptor uid="frustumListAdpt" />
+                </scene>
+            </service>
+
+            <service uid="axis2" type="::visuOgreAdaptor::SAxis">
+                <config layer="default" transform="id" length="30" />
+            </service>
+
+            <service uid="trfAdpt" type="::visuOgreAdaptor::STransform" autoConnect="yes">
+                <inout key="transform" uid="inverseMat" />
+                <config layer="default" picker="" transform="cameraMatrixTrf" />
+            </service>
+
+            <service uid="meshAdpt2" type="::visuOgreAdaptor::SMesh" autoConnect="yes">
+                <inout key="mesh" uid="cube" />
+                <config layer="default" color="#ffffffda" />
+            </service>
+
+            <service uid="meshPlaneAdpt2" type="::visuOgreAdaptor::SMesh" autoConnect="yes">
+                <inout key="mesh" uid="plane" />
+                <config layer="default" color="#ffffffda" />
+            </service>
+
+            <service uid="frustumAdpt" type="::visuOgreAdaptor::SFrustum" autoConnect="yes">
+                <in key="camera" uid="camera" />
+                <config layer="default" transform="cameraMatrixTrf" near="1" far="100"/>
+            </service>
+
+            <service uid="frustumListAdpt" type="::visuOgreAdaptor::SFrustumList" autoConnect="yes">
+                <in key="camera" uid="camera" />
+                <in key="transform" uid="inverseMat" />
+                <config layer="default" nbMax="200" near="1.f" far="20.f" />
+            </service>
+
+            <!-- *************************** End generic scene *************************** -->
+
+            <!-- GUI to handle aruco tracking parameters -->
+            <service uid="arucoParams" type="::guiQt::editor::SParameters">
+                <parameters>
+                    <param type="bool" name="Show Marker" key="debugMode" defaultValue="true" />
+                    <param type="bool" name="Corner refinement." key="corner" defaultValue="true" />
+                    <param type="int" name="adpt. Threshold win size min" key="adaptiveThreshWinSizeMin" defaultValue="3" min="1" max="100" />
+                    <param type="int" name="adpt. Threshold win size max" key="adaptiveThreshWinSizeMax" defaultValue="23" min="1" max="100" />
+                    <param type="int" name="adpt. Threshold win size step" key="adaptiveThreshWinSizeStep" defaultValue="10" min="1" max="100" />
+                    <param type="double" name="adpt. threshold constant" key="adaptiveThreshConstant" defaultValue="7." min="0." max="30." />
+                    <param type="double" name="Min. Marker Perimeter Rate" key="minMarkerPerimeterRate" defaultValue="0.03" min="0.01" max="1.0" />
+                    <param type="double" name="Max. Marker Perimeter Rate" key="maxMarkerPerimeterRate" defaultValue="4.0" min="1." max="10." />
+                    <param type="double" name="Polygonal Approx. Accuracy Rate" key="polygonalApproxAccuracyRate" defaultValue="0.03" min="0.01" max="1." />
+                    <param type="double" name="Min. Corner Distance Rate" key="minCornerDistanceRate" defaultValue="0.01" min="0." max="1." />
+                    <param type="int" name="Min. Distance to Border" key="minDistanceToBorder" defaultValue="1" min="0" max="10" />
+                    <param type="double" name="Min. Marker Distance Rate" key="minMarkerDistanceRate" defaultValue="0.01" min="0." max="1." />
+                    <param type="int" name="Corner Refinement Win. Size" key="cornerRefinementWinSize" defaultValue="5" min="1" max="100" />
+                    <param type="int" name="Corner Refinement Max Iterations" key="cornerRefinementMaxIterations" defaultValue="30" min="0" max="10" />
+                    <param type="double" name="Corner Refinement Min. Accuracy" key="cornerRefinementMinAccuracy" defaultValue="0.1" min="0." max="10." />
+                    <param type="int" name="Marker Border Bits" key="markerBorderBits" defaultValue="1" min="1" max="100" />
+                    <param type="int" name="Perspective Remove Pixel per Cell" key="perspectiveRemovePixelPerCell" defaultValue="8" min="1" max="32" />
+                    <param type="double" name="Perspective Remove Ignored Margin Per Cell" key="perspectiveRemoveIgnoredMarginPerCell" defaultValue="0.13" min="0." max="1." />
+                    <param type="double" name="Max. Erroneous Bits In Border Rate" key="maxErroneousBitsInBorderRate" defaultValue="0.35" min="0." max="1." />
+                    <param type="double" name="Min. Otsu Std. Dev." key="minOtsuStdDev" defaultValue="5.0" min="0." max="100." />
+                    <param type="double" name="Error Correction Rate" key="errorCorrectionRate" defaultValue="0.6" min="0." max="1." />
+                </parameters>
+            </service>
+
+            <service uid="reprojectionParams" type="::guiQt::editor::SParameters">
+                <parameters>
+                    <param type="bool" name="Show reprojection" key="display" defaultValue="true" />
+                    <param type="color" name="Circle color" key="color" defaultValue="#00ff00" />
+                    <param type="double" name="Opacity" key="u_alpha" defaultValue="1" min="0" max="1" widget="slider" />
+                </parameters>
+            </service>
+
+            <!-- Gui Service to display a value in a QLabel -->
+            <service uid="errorLabel" type="::uiTools::editor::STextStatus">
+                <label>Reprojection Error (RMSE)</label>
+            </service>
+
+            <!-- GUI to select camera (device, file, or stream) -->
+            <service uid="CameraSelector" type="::videoQt::editor::SCamera">
+                <inout key="camera" uid="camera" />
+                <videoSupport>yes</videoSupport>
+            </service>
+
+            <!-- Grab image from camera device and fill a frame timeline -->
+            <service uid="frameGrabber" type="::videoQt::SFrameGrabber">
+                <in key="camera" uid="camera" />
+                <inout key="frameTL" uid="frameTL" />
+            </service>
+
+            <!-- Aruco tracker service -->
+            <service uid="tracker" type="::trackerAruco::SArucoTracker" worker="tracking">
+                <in key="camera" uid="camera" />
+                <inout key="frame" uid="videoImage" autoConnect="yes" />
+                <inout group="markerMap">
+                    <key uid="markerMap" />
+                </inout>
+                <track>
+                    <!-- list of tag's id -->
+                    <marker id="101" />
+                </track>
+                <debugMarkers>yes</debugMarkers>
+            </service>
+
+            <!-- This will compute the pose of the camera with tag(s) detected by aruco -->
+            <service uid="registration" type="::registrationCV::SPoseFrom2d" worker="registration">
+                <in group="markerMap" autoConnect="yes">
+                    <key uid="markerMap" />
+                </in>
+                <in group="camera">
+                    <key uid="camera" />
+                </in>
+                <inout group="matrix">
+                    <key uid="matrix" id="101" />
+                </inout>
+                <patternWidth>60</patternWidth>
+            </service>
+
+            <!-- This will compute the reprojection error -->
+            <service uid="error" type="::videoCalibration::SReprojectionError" worker="error">
+                <in group="matrix" autoConnect="yes">
+                    <key uid="matrix" id="101" />
+                </in>
+                <in key="markerMap" uid="markerMap" />
+                <in key="camera" uid="camera" />
+                <inout key="frame" uid="videoImage" />
+                <patternWidth>60</patternWidth>
+            </service>
+
+            <!-- To synchronize matrix, frame and detection -->
+            <service uid="synchronizer" type="::videoTools::SFrameMatrixSynchronizer">
+                <in group="frameTL">
+                    <key uid="frameTL" autoConnect="yes"/>
+                </in>
+                <inout group="image">
+                    <key uid="videoImage" />
+                </inout>
+                <tolerance>100</tolerance>
+                <framerate>0</framerate>
+            </service>
+
+            <!-- to multiply matrices (here only used to inverse "matrix" )-->
+            <service uid="matrixReverser" type="::maths::SConcatenateMatrices">
+                <in group="matrix">
+                    <key uid="matrix" autoConnect="yes" inverse="true" />
+                </in>
+                <inout key="output" uid="inverseMat" />
+            </service>
+
+            <service uid="distorter" type="::videoCalibration::SDistortion" >
+                <in key="camera" uid="camera" autoConnect="yes" />
+                <inout key="map" uid="distortionMap" />
+                <mode>distort</mode>
+            </service>
+
+            <!-- signal/slot connection -->
+            <connect>
+                <signal>reprojectionParams/colorChanged</signal>
+                <slot>error/setColorParameter</slot>
+            </connect>
+
+            <connect>
+                <signal>reprojectionParams/boolChanged</signal>
+                <slot>error/setBoolParameter</slot>
+            </connect>
+
+            <connect>
+                <signal>reprojectionParams/doubleChanged</signal>
+                <slot>layerTransparencyCompositor/setDoubleParameter</slot>
+            </connect>
+
+            <connect>
+                <signal>error/errorComputed</signal>
+                <slot>errorLabel/setDoubleParameter</slot>
+            </connect>
+
+            <connect>
+                <signal>arucoParams/boolChanged</signal>
+                <slot>tracker/setBoolParameter</slot>
+            </connect>
+
+            <connect>
+                <signal>arucoParams/intChanged</signal>
+                <slot>tracker/setIntParameter</slot>
+            </connect>
+
+            <connect>
+                <signal>arucoParams/doubleChanged</signal>
+                <slot>tracker/setDoubleParameter</slot>
+            </connect>
+
+            <connect>
+                <signal>cameraSeries/addedCamera</signal>
+                <slot>Extractor/update</slot>
+            </connect>
+
+            <connect>
+                <signal>camera/idModified</signal>
+                <slot>frameGrabber/stopCamera</slot>
+            </connect>
+
+            <connect>
+                <signal>tracker/markerDetected</signal>
+                <slot>axis/updateVisibility</slot>
+            </connect>
+
+            <connect>
+                <signal>cameraAdpt/updated</signal>
+                <slot>videoAdpt/update</slot>
+            </connect>
+            <connect>
+                <signal>videoAdpt/updated</signal>
+                <slot>genericScene/requestRender</slot>
+                <slot>synchronizer/synchronize</slot>
+            </connect>
+
+            <!-- start services -->
+            <start uid="mainFrame" />
+            <start uid="frameGrabber" />
+            <start uid="synchronizer" />
+            <start uid="tracker" />
+            <start uid="CalibrationReader" />
+            <start uid="CameraSelector" />
+            <start uid="Extractor" />
+            <start uid="registration" />
+            <start uid="matrixReverser" />
+            <start uid="error" />
+            <start uid="meshReader" />
+            <start uid="meshPlaneReader" />
+            <start uid="actionUpdateAxesVisibility" />
+            <start uid="distorter" />
+
+            <!-- Ogre scene 'genericScene' -->
+            <start uid="videoAdpt" />
+            <start uid="interactorStyle" />
+            <start uid="interactorStyle2" />
+            <start uid="axis" />
+            <start uid="cameraAdpt" />
+            <start uid="meshAdpt" />
+            <start uid="layerTransparencyCompositor" />
+            <start uid="meshPlaneAdpt" />
+            <start uid="remapTextureAdpt" />
+
+            <!-- Ogre debug scene -->
+            <start uid="axis2" />
+            <start uid="trfAdpt" />
+            <start uid="meshAdpt2" />
+            <start uid="meshPlaneAdpt2" />
+            <start uid="frustumAdpt" />
+            <start uid="frustumListAdpt" />
+
+            <update uid="actionShowParameters" />
+            <update uid="actionUpdateAxesVisibility" />
+            <update uid="actionUpdateCubeVisibility" />
+
+            <update uid="meshReader" />
+            <update uid="meshPlaneReader" />
+
+        </config>
+    </extension>
+</plugin>

@@ -1,0 +1,155 @@
+/// Hybrid transparency material shaders
+
+//---------------------------------------------------------------------------
+
+fragment_program HybridTransparency_blend_FP glsl
+{
+    source DepthPeelingBlend_FP.glsl
+    attach DepthPeelingCommon_FP
+    default_params
+    {
+        param_named u_fragData0 int 0
+    }
+}
+
+//---------------------------------------------------------------------------
+
+material HybridTransparency_Blend
+{
+    technique
+    {
+        pass
+        {
+            cull_hardware none
+            cull_software none
+
+            depth_check off
+            scene_blend_op add
+            separate_scene_blend dest_alpha one zero one_minus_src_alpha
+
+            vertex_program_ref RenderQuad_VP
+            {
+            }
+
+            fragment_program_ref HybridTransparency_blend_FP
+            {
+            }
+
+            texture_unit
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+        }
+    }
+}
+
+//---------------------------------------------------------------------------
+
+material HybridTransparency/BlendFinal
+{
+    technique
+    {
+        pass
+        {
+            cull_hardware none
+            cull_software none
+
+            depth_check off
+            scene_blend_op add
+            separate_scene_blend dest_alpha one zero one_minus_src_alpha
+
+            vertex_program_ref RenderQuad_VP
+            {
+            }
+
+            fragment_program_ref DepthPeeling/Blend_FP
+            {
+            }
+
+            texture_unit
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+        }
+    }
+}
+
+//------------------------------------------------------------------
+
+/// WBOIT blended render
+
+fragment_program HybridTransparency/WBOITBlend_FP glsl
+{
+        source HybridTransparency_WBOIT_Blend_FP.glsl
+        default_params
+        {
+            param_named u_fragData0 int 0
+            param_named u_fragData1 int 1
+            param_named_auto u_diffuse surface_diffuse_colour
+        }
+}
+
+//---------------------------------------------------------------------------
+
+material HybridTransparency/WBOITBlend
+{
+    technique
+    {
+        pass
+        {
+            vertex_program_ref RenderQuad_VP
+            {
+            }
+
+            fragment_program_ref HybridTransparency/WBOITBlend_FP
+            {
+            }
+
+            texture_unit
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+            texture_unit
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+        }
+    }
+}
+
+//---------------------------------------------------------------------------
+
+material HybridTransparency/Final
+{
+    technique
+    {
+        pass
+        {
+            depth_check off
+            depth_write off
+
+            vertex_program_ref RenderQuad_VP
+            {
+            }
+
+            fragment_program_ref DepthPeeling/Final_FP
+            {
+            }
+
+            texture_unit
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+            texture_unit
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+        }
+    }
+}

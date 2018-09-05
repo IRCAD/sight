@@ -1,0 +1,43 @@
+/// Default program material
+
+//---------------------------------------------------------------------------
+
+material ClearDepth
+{
+    technique
+    {
+        pass final
+        {
+            vertex_program_ref RenderQuad_VP
+            {
+            }
+
+            fragment_program_ref ClearDepth_FP
+            {
+            }
+        }
+    }
+}
+
+material RenderQuad
+{
+    technique
+    {
+        pass final
+        {
+            vertex_program_ref RenderQuad_VP
+            {
+            }
+
+            fragment_program_ref RenderQuad_FP
+            {
+            }
+
+            texture_unit
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+        }
+    }
+}
