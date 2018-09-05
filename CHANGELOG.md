@@ -1,3 +1,41 @@
+# fw4spl 17.2.0
+
+## Refactor:
+
+### ut
+
+*Replace deprecated methods to register a service.*
+
+Replace the `::OSR::registerService(obj, srv)` by `srv->registerInOut(obj, key)`
+in the unit tests.
+
+## Bug fixes:
+
+### glm
+
+*Add missing GLM_ENABLE_EXPERIMENTAL define.*
+
+Unused glm extensions have been removed
+
+### fwRuntime
+
+*Fix memory leaks.*
+
+Fix leaks in fwRuntime
+
+### SMaterial
+
+*Texture rendering on other formats than 8 bits.*
+
+### IHasServices
+
+*Add wait() when stopping services.*
+
+- add wait() when stopping services in unregisterService and unregisterServices methods.
+
+
+
+
 # fw4spl 17.1.0
 
 ## Refactor:
