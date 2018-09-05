@@ -29,7 +29,6 @@ set( REQUIREMENTS
     ioActivity
 
     media
-    mediaExt
 
     patchMedicalData
     filterVRRender
