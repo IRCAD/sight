@@ -218,7 +218,6 @@ void SVideo::swapping(const KeyType& key)
 
 void SVideo::stopping()
 {
-    this->unregisterServices();
     this->removeAllPropFromRenderer();
     if (this->getPicker())
     {

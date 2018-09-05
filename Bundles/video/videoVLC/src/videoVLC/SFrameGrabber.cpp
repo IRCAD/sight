@@ -323,7 +323,7 @@ void SFrameGrabber::startCamera()
         {
 #ifdef WIN32
             const std::string mode = "dshow";
-#elif defined(__MACOSX__)
+#elif defined(__APPLE__)
             const std::string mode = "qtcapture";
 #else
             const std::string mode = "v4l2";

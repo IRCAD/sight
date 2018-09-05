@@ -18,9 +18,9 @@
 
 #include <fwRuntime/EConfigurationElement.hpp>
 
+#include <fwServices/op/Add.hpp>
 #include <fwServices/registry/ActiveWorkers.hpp>
 #include <fwServices/registry/ObjectService.hpp>
-#include <fwServices/registry/ServiceFactory.hpp>
 
 #include <fwTest/Data.hpp>
 #include <fwTest/generator/Image.hpp>
@@ -65,10 +65,10 @@ SPTR(T) read(const ::fwRuntime::EConfigurationElement::sptr& srvCfg, const std::
 {
 
     typename T::sptr readObj = T::New();
-    ::fwServices::IService::sptr readerSrv = ::fwServices::registry::ServiceFactory::getDefault()->create( reader );
-    CPPUNIT_ASSERT(readerSrv);
 
-    ::fwServices::OSR::registerService( readObj, readerSrv );
+    ::fwServices::IService::sptr readerSrv = ::fwServices::add( reader );
+    CPPUNIT_ASSERT(readerSrv);
+    readerSrv->registerInOut(readObj, "data");
     readerSrv->setConfiguration(srvCfg);
     readerSrv->configure();
     readerSrv->start().wait();

@@ -46,7 +46,7 @@ namespace visuVTKARAdaptor
  *
  * @subsection Configuration Configuration
  * - \b renderer : ID of the renderer the adaptor must use
- * - \b reverse (optional)(default: true) : if true, the actor is rotated by 180° along the z and y axis.
+ * - \b reverse (optional)(default: true) : if true, the actor is rotated by 180 degrees along the z and y axis.
  * - \b interpolate (optional)(default: true) : turn on/off the linear interpolation of the vtkImageActor.
  */
 class VISUVTKARADAPTOR_CLASS_API SVideo : public ::fwRenderVTK::IAdaptor
@@ -113,7 +113,7 @@ private:
     bool m_isTextureInit; /// true if the texture is initialized
     bool m_isCameraInit; /// true if the vtk camera is initialized (it is only valid when the actor is visible)
 
-    bool m_reverse; ///< if true, the actor is rotated by 180° along the z and y axis.
+    bool m_reverse; ///< if true, the actor is rotated by 180 degrees along the z and y axis.
 
     bool m_interpolate; ///< turn on/off the linear interpolation of the vtkImageActor
 

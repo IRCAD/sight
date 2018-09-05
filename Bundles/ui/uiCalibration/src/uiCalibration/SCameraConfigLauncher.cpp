@@ -23,6 +23,7 @@
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
+#include <fwIO/ioTypes.hpp>
 #include <fwIO/IReader.hpp>
 
 #include <fwMedData/SeriesDB.hpp>
@@ -30,6 +31,7 @@
 #include <fwRuntime/operations.hpp>
 
 #include <fwServices/macros.hpp>
+#include <fwServices/op/Add.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
 #include <QHBoxLayout>
@@ -207,9 +209,8 @@ void SCameraConfigLauncher::onAddClicked()
 void SCameraConfigLauncher::onImportClicked()
 {
     auto sdb = ::fwMedData::SeriesDB::New();
-    ::fwServices::IService::sptr readerService =
-        ::fwServices::registry::ServiceFactory::getDefault()->create("::ioAtoms::SReader");
-    ::fwServices::OSR::registerService(sdb, readerService);
+    ::fwServices::IService::sptr readerService = ::fwServices::add("::ioAtoms::SReader");
+    readerService->registerInOut(sdb, ::fwIO::s_DATA_KEY);
 
     try
     {

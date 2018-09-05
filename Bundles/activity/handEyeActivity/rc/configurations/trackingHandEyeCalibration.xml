@@ -115,6 +115,7 @@
                     <menuItem name="Stop Tracker client" icon="arMedia-0.1/icons/Network-Stop-Receiving.svg" />
                     <menuItem name="Configure Tracker client" icon="media-0.1/icons/Settings.svg" />
                     <menuItem name="Previous" icon="media-0.1/icons/Back.svg" shortcut="p" />
+                    <editor/>
                     <menuItem name="Next" icon="media-0.1/icons/Next.svg" shortcut="n" />
                     <separator/>
                     <menuItem name="Chessboard size" icon="arMedia-0.1/icons/chessboard.svg" />
@@ -132,6 +133,7 @@
                 <menuItem sid="actionStopOpenIGTLinkClient" start="yes" />
                 <menuItem sid="configureClient" start="yes" />
                 <menuItem sid="actionPrevious" start="yes" />
+                <editor sid="stepParameter" start="yes" />
                 <menuItem sid="actionNext" start="yes" />
                 <menuItem sid="actionChessBoardSize" start="yes" />
                 <menuItem sid="actionExportHandEyeX" start="yes" />
@@ -147,6 +149,12 @@
         <service uid="movingCameraParameter" type="::guiQt::editor::SParameters" >
             <parameters>
                 <param type="bool" name="Moving camera" key="boolParam" defaultValue="true" />
+            </parameters>
+        </service>
+
+        <service uid="stepParameter" type="::guiQt::editor::SParameters">
+            <parameters>
+                <param type="int" name="Step" key="step" defaultValue="1" min="1"/>
             </parameters>
         </service>
 
@@ -734,6 +742,12 @@
         <connect>
             <signal>matrixCameraPose/modified</signal>
             <slot>pushMatrixPose/addCopy</slot>
+        </connect>
+
+        <connect>
+            <signal>stepParameter/intChanged</signal>
+            <slot>csvReader/setStep</slot>
+            <slot>frameGrabber/setStep</slot>
         </connect>
 
         <!-- *************************** End Connections *************************** -->
