@@ -914,7 +914,7 @@ void Mesh::updateColors(const ::fwData::Mesh::csptr& _mesh)
         ::Ogre::HardwarePixelBufferSharedPtr pixelBuffer = m_perPrimitiveColorTexture->getBuffer();
         pixelBuffer->lock(::Ogre::HardwareBuffer::HBL_DISCARD);
         const ::Ogre::PixelBox& pixelBox = pixelBuffer->getCurrentLock();
-        ::Ogre::RGBA* pColorDest = static_cast< ::Ogre::RGBA* >( pixelBox.data );
+        ::Ogre::RGBA* pColorDest = reinterpret_cast< ::Ogre::RGBA* >( pixelBox.data );
 
         // Destination
         auto colors                 = meshHelper.getCellColors();

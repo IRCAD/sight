@@ -173,7 +173,7 @@
 
         <service uid="videoAdapter" type="::visuOgreAdaptor::SVideo">
             <in key="image" uid="videoImage" autoConnect="yes" />
-            <in key="camera" uid="camera" autoConnect="yes" />
+            <in key="camera" uid="camera" />
             <config layer="video" />
         </service>
 

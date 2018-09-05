@@ -34,20 +34,17 @@ public:
     /// Destructor.
     FWRENDEROGRE_API virtual ~VRWidgetsInteractor() noexcept;
 
-    /// Behaviour on mouseMoveEvent
+    /// Interacts with the widget if it was previously picked, behaves like a trackball otherwise.
     FWRENDEROGRE_API virtual void mouseMoveEvent(MouseButton, int, int, int, int) override;
 
-    /// Behaviour on button release.
+    /// Ends all interactions with the widget.
     FWRENDEROGRE_API virtual void buttonReleaseEvent(MouseButton, int, int) override;
 
-    /// Behaviour on button press.
+    /// Picks the object at the (x,y) position on a left click, scales or translates the widget otherwise.
     FWRENDEROGRE_API virtual void buttonPressEvent(MouseButton, int, int) override;
 
-    /// Attaches a widget
-    FWRENDEROGRE_API void attachWidget(ui::VRWidget::sptr widget);
-
-    /// Detaches a widget.
-    FWRENDEROGRE_API void detachWidget(ui::VRWidget::sptr widget);
+    /// Sets the widget handled by this interactor.
+    FWRENDEROGRE_API void setWidget(ui::VRWidget::sptr widget);
 
     /// Initializes the picker.
     FWRENDEROGRE_API void initPicker();
@@ -55,10 +52,10 @@ public:
 private:
 
     /// Currently selected widget.
-    ::Ogre::MovableObject* m_pickedObject;
+    ::Ogre::MovableObject* m_pickedObject { nullptr };
 
-    /// All widgets with whom we interact.
-    ui::VRWidget::sptr m_widget;
+    /// The widget with whom we interact.
+    ui::VRWidget::wptr m_widget;
 
     /// The picker used by this interactor.
     fwRenderOgre::picker::IPicker m_picker;

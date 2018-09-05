@@ -21,7 +21,7 @@ endif ()
 # Most developers executes apps inside the build directory so this is done as a convenience
 if(NOT APPLE)
     if(WIN32)
-        file(GLOB OGRE_PLUGINS "${OGRE_CONFIG_DIR}/RenderSystem*.dll" "${OGRE_CONFIG_DIR}/Plugin_*.dll")
+        file(GLOB OGRE_PLUGINS "${OGRE_CONFIG_DIR}/RenderSystem*.dll" "${OGRE_CONFIG_DIR}/Plugin_*.dll" "${OGRE_CONFIG_DIR}/Codec_*.dll")
         set(FW_OGRE_PLUGINS_DIR "${PROJECT_BINARY_DIR}/ogreplugins/")
 
         # This copies the plugins into the build directory
@@ -62,7 +62,11 @@ if(WIN32)
         if(IS_ABSOLUTE ${OGRE_LIB})
             list(APPEND OGRE_FIXED_LIBRARIES ${OGRE_LIB})
         else()
-            list(APPEND OGRE_FIXED_LIBRARIES "${OGRE_LIBRARY_DIRS}/${OGRE_LIB}.lib")
+            if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
+                list(APPEND OGRE_FIXED_LIBRARIES "${OGRE_LIBRARY_DIRS}/${OGRE_LIB}_d.lib")
+            else()
+                list(APPEND OGRE_FIXED_LIBRARIES "${OGRE_LIBRARY_DIRS}/${OGRE_LIB}.lib")
+            endif()
         endif()
     endforeach()
 

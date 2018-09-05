@@ -1,13 +1,13 @@
-LogoOverlay
+overlay LogoOverlay
 {
-    container Panel(MyOverlayElements/EmptyPanel)
+    overlay_element MyOverlayElements/EmptyPanel Panel
     {
         left 0
         top 0.8
         width 1
         height 0.2
 
-        container Panel(MyOverlayElements/IrcadPanel
+        overlay_element MyOverlayElements/IrcadPanel Panel
         {
             metrics_mode pixels
             horz_align right
@@ -19,7 +19,7 @@ LogoOverlay
             material IrcadLogo
         }
 
-        container Panel(MyOverlayElements/IHUPanel
+        overlay_element MyOverlayElements/IHUPanel Panel
         {
             metrics_mode pixels
             vert_align bottom

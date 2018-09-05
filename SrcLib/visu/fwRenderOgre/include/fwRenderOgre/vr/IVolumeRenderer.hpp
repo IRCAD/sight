@@ -101,8 +101,9 @@ public:
 
 protected:
 
-    /// Scale the volume based on the image's spacing.
-    FWRENDEROGRE_API void scaleCube(const fwData::Image::SpacingType& spacing);
+    /// Scale the volume based on the image's spacing and move it to the image origin.
+    FWRENDEROGRE_API void scaleTranslateCube(const ::fwData::Image::SpacingType& spacing,
+                                             const ::fwData::Image::OriginType& origin);
 
     /// Computes the camera's plane.
     FWRENDEROGRE_API ::Ogre::Plane getCameraPlane() const;

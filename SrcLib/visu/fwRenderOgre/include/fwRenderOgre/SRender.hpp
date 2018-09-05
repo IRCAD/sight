@@ -214,9 +214,6 @@ private:
     /// Ogre root
     ::Ogre::Root* m_ogreRoot;
 
-    /// Show or not ogre overlay
-    bool m_showOverlay;
-
     /// How the rendering is triggered ?
     RenderMode m_renderMode;
 

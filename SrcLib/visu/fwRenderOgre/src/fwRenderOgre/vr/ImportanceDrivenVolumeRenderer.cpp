@@ -142,7 +142,7 @@ ImportanceDrivenVolumeRenderer::ImportanceDrivenVolumeRenderer(std::string _pare
     m_maskTexture(_maskTexture),
     m_idvrMethod(s_NONE),
     m_idvrCSG(true),
-    m_idvrCSGAngleCosine(std::cos(::glm::pi<float>() / 12.f)) /* cos(15°) */,
+    m_idvrCSGAngleCosine(std::cos(::glm::pi<float>() / 12.f)) /* cos(15 degrees) */,
     m_idvrCSGBlurWeight(0.01f),
     m_idvrCSGBorder(false),
     m_idvrCSGDisableContext(false),
@@ -322,13 +322,14 @@ void ImportanceDrivenVolumeRenderer::cleanCompositorChain(Ogre::Viewport* _vp)
     ::Ogre::CompositorChain* compChain = compositorManager.getCompositorChain(_vp);
     SLM_ASSERT("Can't find compositor chain", compChain);
 
+    auto& compInstances = compChain->getCompositorInstances();
     // Then clean the whole chain
-    const size_t numCompositors = compChain->getNumCompositors();
+    const size_t numCompositors = compInstances.size();
     std::vector<size_t> removeCompositors;
 
     for(size_t i = 0; i < numCompositors; ++i)
     {
-        ::Ogre::CompositorInstance* targetComp = compChain->getCompositor(i);
+        ::Ogre::CompositorInstance* targetComp = compInstances[i];
         SLM_ASSERT("Compositor instance is null", targetComp);
         if(targetComp->getCompositor()->getName() == s_MIMP_COMPOSITOR ||
            targetComp->getCompositor()->getName() == s_AIMC_COMPOSITOR||
@@ -356,14 +357,13 @@ void ImportanceDrivenVolumeRenderer::cleanCompositorChain(Ogre::Viewport* _vp)
     m_compositorListeners.clear();
 
     // Reallocate chain resources, i.e. force chain recompiling.
-    for(size_t i = 0; i < compChain->getNumCompositors(); ++i)
+    for(::Ogre::CompositorInstance* instance : compInstances)
     {
-        auto compIntance = compChain->getCompositor(i);
-        if(compIntance->getEnabled())
+        if(instance->getEnabled())
         {
             // Mark the instance as being dead for the resources to be allocated again when enabled.
-            compIntance->setAlive(false);
-            compIntance->setEnabled(true);
+            instance->setAlive(false);
+            instance->setEnabled(true);
         }
     }
 }

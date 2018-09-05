@@ -21,7 +21,7 @@
 
         <!-- *************************** Begin generic scene *************************** -->
 
-        <service uid="genericScene" type="::fwRenderVTK::SRender" autoConnect="yes">
+        <service uid="genericScene" type="::fwRenderVTK::SRender" >
             <!-- <scene autoRender="false"> -->
             <scene>
                 <picker id="defaultPicker" vtkclass="fwVtkCellPicker" />

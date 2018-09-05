@@ -10,6 +10,7 @@
 
 #include <fwData/Color.hpp>
 #include <fwData/Image.hpp>
+#include <fwData/TransformationMatrix3D.hpp>
 
 #include <OGRE/OgreColourValue.h>
 #include <OGRE/OgreImage.h>
@@ -139,7 +140,28 @@ public:
      */
     FWRENDEROGRE_API static ::fwData::Color::sptr convertOgreColorToFwColor(const Ogre::ColourValue& _ogreColor);
 
+    /// Creates an ogre matrix from a f4s matrix.
+    FWRENDEROGRE_API static ::Ogre::Matrix4 convertTM3DToOgreMx(const ::fwData::TransformationMatrix3D::csptr& _tm3d);
+
+    /// Copies an ogre matrix to a f4s matrix.
+    FWRENDEROGRE_API static void copyOgreMxToTM3D(const ::Ogre::Matrix4& _mx,
+                                                  const ::fwData::TransformationMatrix3D::sptr& _tm3d);
+
 private:
+
+    /// Parses all resources.cfg files and adds resource locations to the resource group manager.
+    static void loadResources();
+
+    /**
+     * @brief Copies an ogre config stream and turns paths absolute.
+     *
+     * @param[in] key Path parameter name whose value needs to be absolute.
+     * @param[in] input Input stream, must be from an ogre configuration file.
+     * @param[out] output Output stream, where the new config is copied to.
+     * @return whether or not the key was found in the input.
+     */
+    static bool makePathsAbsolute(const std::string& key, std::istream& input, std::ostream& output);
+
     static ::Ogre::OverlaySystem* s_overlaySystem;
 
     static ::fwRenderOgre::factory::R2VBRenderable* s_R2VBRenderableFactory;

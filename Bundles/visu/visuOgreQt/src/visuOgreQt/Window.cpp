@@ -15,8 +15,8 @@
 #include <fwRenderOgre/Utils.hpp>
 #include <fwRenderOgre/WindowManager.hpp>
 
-#include <OgreOverlay.h>
-#include <OgreOverlayManager.h>
+#include <OGRE/Overlay/OgreOverlay.h>
+#include <OGRE/Overlay/OgreOverlayManager.h>
 
 // Set this to 1 to display the FPS in the console output
 #ifndef DISPLAY_OGRE_FPS
@@ -290,13 +290,17 @@ bool Window::event(QEvent* event)
 
 void Window::exposeEvent(QExposeEvent* exposeEvent)
 {
+    const bool nonEmptyRegion = !exposeEvent->region().isEmpty();
 #if defined(__APPLE__)
-    // This allow correct renderring on dual screen display when dragging window to another screen
-    ogreResize(this->size());
+    if(nonEmptyRegion)
+    {
+        // This allows correct rendering on dual screen displays when dragging the window to another screen.
+        this->ogreResize(this->size());
+    }
 #endif
 
     // Force rendering
-    this->renderNow(!exposeEvent->region().isEmpty());
+    this->renderNow(nonEmptyRegion);
 }
 
 // ----------------------------------------------------------------------------
@@ -326,7 +330,7 @@ void Window::renderNow(const bool force)
     static float fps           = 0.f;
     static const int numFrames = 500;
 
-    fps += m_ogreRenderWindow->getLastFPS();
+    fps += m_ogreRenderWindow->getStatistics().lastFPS;
     if(++i == numFrames)
     {
         std::cout << "FPS average : " << fps/numFrames << std::endl;
@@ -592,13 +596,13 @@ void Window::ogreResize(const QSize& newSize)
     {
         ::Ogre::CompositorChain* chain = ::Ogre::CompositorManager::getSingleton().getCompositorChain(
             viewport);
-        size_t length = chain->getNumCompositors();
-        for(size_t i = 0; i < length; i++)
+
+        for(auto instance : chain->getCompositorInstances())
         {
-            if( chain->getCompositor(i)->getEnabled() )
+            if( instance->getEnabled() )
             {
-                chain->setCompositorEnabled(i, false);
-                chain->setCompositorEnabled(i, true);
+                instance->setEnabled(false);
+                instance->setEnabled(true);
             }
         }
     }
