@@ -1,3 +1,48 @@
+# fw4spl-ogre 17.2.0
+
+## Refactor:
+
+### SVolumeRender
+
+*Store clipping matrices the same way VTK does.*
+
+Now clipping box transforms are stored in world space instead of texture space. Clipping transforms can be passed from/to VTK that way.
+
+Removes the **broken** slice based volume renderer.
+
+### plugins
+
+*Remove the freeimage plugin.*
+
+### textures
+
+*Convert all png and tga textures to dds.*
+
+DDS is supported natively by ogre without the freeimage plugin.
+
+The freeimage BinPkg is awful to maintain and should be considered as deprecated from now on.
+
+### cmake
+
+*Removed racy backward compatibility.*
+
+## New features:
+
+### *
+
+*Update ogre to 1.11.*
+
+This brings a bunch of fixes following API changes. Among them :
+
+* default light direction is set to the camera's view direction, was implicitly the case in ogre 1.10 but changed in 1.11
+* `Codec_FreeImage` plugin loaded to support common image file formats
+* plugin config parsing was modified to be able to load multiple plugins
+* `::Ogre::Affine3` replaces `::Ogre::Matrix4` when we need to decompose a matrix
+* colour masks are enabled when computing volume ray entry points
+
+
+
+
 # fw4spl-ogre 17.1.0
 
 ## Bug fixes:
