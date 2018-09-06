@@ -1028,8 +1028,11 @@ void SVolumeRender::toggleVREffect(::visuOgreAdaptor::SVolumeRender::VREffectTyp
 {
     this->getRenderService()->makeCurrent();
 
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
+
     // Volume illumination is only implemented for raycasting rendering
-    if(::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(this->getImage()))
+    if(::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
     {
         if((m_ambientOcclusion || m_colorBleeding || m_shadows) && !m_illum)
         {
@@ -1077,9 +1080,6 @@ void SVolumeRender::toggleVREffect(::visuOgreAdaptor::SVolumeRender::VREffectTyp
 
         if(m_preIntegratedRendering)
         {
-            ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-            SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
-
             ::fwData::TransferFunction::sptr tf = m_helperTF.getTransferFunction();
             ::fwData::mt::ObjectWriteLock tfLock(tf);
             m_volumeRenderer->imageUpdate(image, tf);
