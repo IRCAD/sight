@@ -96,6 +96,7 @@ void  initSeries(::fwMedData::Series::sptr series, const std::string& instanceUI
 
 SAttachmentSeriesReader::SAttachmentSeriesReader()
 {
+    FW_DEPRECATED_MSG("'SAttachmentSeriesReader' is deprecated.", "20.0");
 }
 
 //-----------------------------------------------------------------------------

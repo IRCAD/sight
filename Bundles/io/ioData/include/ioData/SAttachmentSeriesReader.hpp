@@ -17,6 +17,7 @@ namespace ioData
 
 /**
  * @brief   SAttachmentSeries reader service.
+ * @deprecated This service will be removed in FW4SPL 20.0.
  *
  * @section XML XML Configuration
  *

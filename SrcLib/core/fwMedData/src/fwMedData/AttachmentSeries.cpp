@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -18,10 +18,12 @@ fwDataRegisterMacro( ::fwMedData::AttachmentSeries );
 namespace fwMedData
 {
 
-AttachmentSeries::AttachmentSeries(::fwData::Object::Key key) : Series(key),
-                                                                m_buffer(::fwMemory::BufferObject::New()),
-                                                                m_attachmentAvailability(NONE)
+AttachmentSeries::AttachmentSeries(::fwData::Object::Key key) :
+    Series(key),
+    m_buffer(::fwMemory::BufferObject::New()),
+    m_attachmentAvailability(NONE)
 {
+    FW_DEPRECATED_MSG("'AttachmentSeries' is deprecated.", "20.0");
 }
 
 //------------------------------------------------------------------------------
@@ -106,4 +108,3 @@ void AttachmentSeries::setMediaType(const std::string& mediaType)
 //------------------------------------------------------------------------------
 
 } // namespace fwMedData
-

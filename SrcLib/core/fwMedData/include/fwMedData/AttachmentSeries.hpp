@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWMEDDATA_ATTACHMENTSERIES_HPP__
-#define __FWMEDDATA_ATTACHMENTSERIES_HPP__
+#pragma once
 
 #include "fwMedData/config.hpp"
 #include "fwMedData/Series.hpp"
@@ -24,6 +23,7 @@ namespace fwMedData
 
 /**
  * @brief Holds attachment file
+ * @deprecated This data will be removed in FW4SPL 20.0.
  */
 class FWMEDDATA_CLASS_API AttachmentSeries : public ::fwMedData::Series
 {
@@ -92,6 +92,3 @@ protected:
 };
 
 }   //end namespace fwMedData
-
-#endif // __FWMEDDATA_ATTACHMENTSERIES_HPP__
-
