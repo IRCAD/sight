@@ -10,7 +10,6 @@
 #include "fwRenderOgre/Layer.hpp"
 
 #include <OgreCompositor.h>
-#include <OgreMovableObject.h>
 
 namespace fwRenderOgre
 {

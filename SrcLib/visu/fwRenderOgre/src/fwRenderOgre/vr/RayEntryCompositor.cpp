@@ -13,8 +13,6 @@
 #include <OgreCompositionTechnique.h>
 #include <OgreCompositorManager.h>
 
-#include <iostream>
-
 namespace fwRenderOgre
 {
 namespace vr

@@ -14,11 +14,9 @@
 #include "fwRenderOgre/vr/RayEntryCompositor.hpp"
 #include "fwRenderOgre/vr/SATVolumeIllumination.hpp"
 
-#include <OGRE/OgreCompositorInstance.h>
 #include <OGRE/OgreGpuProgramParams.h>
 #include <OGRE/OgreManualObject.h>
 #include <OGRE/OgreMaterialManager.h>
-#include <OGRE/OgreRectangle2D.h>
 #include <OGRE/OgreTechnique.h>
 
 #include <vector>
