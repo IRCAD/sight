@@ -28,6 +28,8 @@
 #include <OGRE/OgreTextureManager.h>
 #include <OGRE/OgreViewport.h>
 
+#include <boost/make_unique.hpp>
+
 #include <algorithm>
 #include <map>
 #include <string>
@@ -152,9 +154,8 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
     const std::uint8_t numViewPoints  = this->getLayer()->getNumberOfCameras();
     const auto stereoMode             = layer->getStereoMode();
     const auto rayEntryCompositorName = parentId + "_VolumeEntries" + std::to_string(numViewPoints);
-    m_rayEntryCompositor = std::make_unique<RayEntryCompositor> (rayEntryCompositorName,
-                                                                 s_PROXY_GEOMETRY_RQ_GROUP,
-                                                                 stereoMode, true);
+    m_rayEntryCompositor = ::boost::make_unique<RayEntryCompositor> (rayEntryCompositorName, s_PROXY_GEOMETRY_RQ_GROUP,
+                                                                     stereoMode, true);
 
     auto compositorInstance = compositorManager.addCompositor(viewport, rayEntryCompositorName, 0);
     SLM_ERROR_IF("Compositor '" + rayEntryCompositorName + "' not found.", compositorInstance == nullptr);
