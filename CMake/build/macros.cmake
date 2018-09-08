@@ -1,4 +1,4 @@
-# Define some paths whether we are building Fw4SPL or using it
+# Define some paths whether we are building Sight or using it
 if(FW_BUILD_EXTERNAL)
     set(FWCMAKE_BUILD_FILES_DIR ${CMAKE_CURRENT_LIST_DIR}/build)
     set(FWCMAKE_INSTALL_FILES_DIR ${CMAKE_CURRENT_LIST_DIR}/install)
@@ -14,7 +14,7 @@ include(${FWCMAKE_BUILD_FILES_DIR}/plugin_config.cmake)
 include(${FWCMAKE_BUILD_FILES_DIR}/profile_config.cmake)
 include(${FWCMAKE_INSTALL_FILES_DIR}/generic_install.cmake)
 
-file(REMOVE "${CMAKE_BINARY_DIR}/cmake/Fw4SPLRequirements.cmake")
+file(REMOVE "${CMAKE_BINARY_DIR}/cmake/SightRequirements.cmake")
 
 macro(groupMaker FWPROJECT_NAME)
     file(GLOB_RECURSE PRJ_SOURCES "${${FWPROJECT_NAME}_DIR}/*")
@@ -41,7 +41,7 @@ macro(configure_header_file FWPROJECT_NAME FILENAME)
         IMMEDIATE @ONLY)
 
     install(FILES ${HEADER_FILE_DESTINATION}
-            DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/fw4spl/${FWPROJECT_NAME})
+            DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/sight/${FWPROJECT_NAME})
 endmacro()
 
 macro(initProject PRJNAME )
@@ -371,32 +371,32 @@ macro(fwLib FWPROJECT_NAME PROJECT_VERSION)
       $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/include/>
     )
 
-    set(${FWPROJECT_NAME}_INCLUDE_INSTALL_DIR fw4spl/${FWPROJECT_NAME} PARENT_SCOPE)
+    set(${FWPROJECT_NAME}_INCLUDE_INSTALL_DIR sight/${FWPROJECT_NAME} PARENT_SCOPE)
 
 
     if(BUILD_SDK)
         install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/${FWPROJECT_NAME}
-                DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/fw4spl)
+                DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/sight)
 
         install(
-            TARGETS ${FWPROJECT_NAME} EXPORT Fw4SPL-${FWPROJECT_NAME}Targets
+            TARGETS ${FWPROJECT_NAME} EXPORT Sight-${FWPROJECT_NAME}Targets
             RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-            ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}/fw4spl
-            LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}/fw4spl
-            INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/fw4spl/
+            ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}/sight
+            LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}/sight
+            INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/sight/
         )
 
         # Add all targets to the build-tree export set
-        export( EXPORT Fw4SPL-${FWPROJECT_NAME}Targets
-                FILE "${CMAKE_BINARY_DIR}/cmake/Fw4SPL-${FWPROJECT_NAME}Targets.cmake"
-                NAMESPACE Fw4SPL::)
+        export( EXPORT Sight-${FWPROJECT_NAME}Targets
+                FILE "${CMAKE_BINARY_DIR}/cmake/Sight-${FWPROJECT_NAME}Targets.cmake"
+                NAMESPACE Sight::)
 
-        # Install the Fw4SPL-ProjectTargets.cmake
-        install(EXPORT Fw4SPL-${FWPROJECT_NAME}Targets
+        # Install the Sight-ProjectTargets.cmake
+        install(EXPORT Sight-${FWPROJECT_NAME}Targets
                 FILE
-                  Fw4SPL-${FWPROJECT_NAME}Targets.cmake
+                  Sight-${FWPROJECT_NAME}Targets.cmake
                 NAMESPACE
-                  Fw4SPL::
+                  Sight::
                 DESTINATION
                   ${FWCONFIG_PACKAGE_LOCATION}
         )
@@ -404,7 +404,7 @@ macro(fwLib FWPROJECT_NAME PROJECT_VERSION)
         list(APPEND FW_COMPONENTS ${FWPROJECT_NAME} )
         set(FW_COMPONENTS ${FW_COMPONENTS} PARENT_SCOPE)
 
-        # Add Fw4SPL targets depepndencies
+        # Add Sight targets depepndencies
         if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/Dependencies.cmake")
             configure_file( "${CMAKE_CURRENT_SOURCE_DIR}/Dependencies.cmake"
                             "${CMAKE_CURRENT_BINARY_DIR}/Dependencies.cmake"
@@ -418,15 +418,15 @@ macro(fwLib FWPROJECT_NAME PROJECT_VERSION)
         list(REMOVE_ITEM FW_INSTALL_DEPENDENCIES ${FWPROJECT_NAME})
         if(FW_INSTALL_DEPENDENCIES)
             file(APPEND "${CMAKE_CURRENT_BINARY_DIR}/Dependencies.cmake"
-                "find_package(Fw4SPL COMPONENTS ${FW_INSTALL_DEPENDENCIES} REQUIRED)")
+                "find_package(Sight COMPONENTS ${FW_INSTALL_DEPENDENCIES} REQUIRED)")
         endif()
 
-        # Install the Fw4SPL-ProjectDependencies.cmake
+        # Install the Sight-ProjectDependencies.cmake
         if( EXISTS "${CMAKE_CURRENT_BINARY_DIR}/Dependencies.cmake")
             install(FILES
                       "${CMAKE_CURRENT_BINARY_DIR}/Dependencies.cmake"
                     RENAME
-                        Fw4SPL-${FWPROJECT_NAME}Dependencies.cmake
+                        Sight-${FWPROJECT_NAME}Dependencies.cmake
                     DESTINATION
                       ${FWCONFIG_PACKAGE_LOCATION}
             )
@@ -588,7 +588,7 @@ macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
             set(LAUNCHER "fwlauncher-${fwlauncher_VERSION}")
             set(PROFILE_PATH "${${FWPROJECT_NAME}_FULLNAME}/profile.xml")
             if(FW_BUILD_EXTERNAL)
-                set(LAUNCHER_PATH "${Fw4SPL_BINARY_DIR}")
+                set(LAUNCHER_PATH "${Sight_BINARY_DIR}")
             else()
                 set(LAUNCHER_PATH "$me")
             endif()
@@ -853,13 +853,13 @@ macro(addProject PROJECT)
         endif()
 
         # Store requirements for the SDK
-        file(APPEND "${CMAKE_BINARY_DIR}/cmake/Fw4SPLRequirements.cmake"
+        file(APPEND "${CMAKE_BINARY_DIR}/cmake/SightRequirements.cmake"
             "set(${PROJECT}_EXTERNAL 1)\n"
             "set(${PROJECT}_REQUIREMENTS ${${PROJECT}_REQUIREMENTS})\n"
             "set(${PROJECT}_VERSION ${${PROJECT}_VERSION})\n"
             "set(${PROJECT}_TYPE ${${PROJECT}_TYPE})\n")
         if(${PROJECT}_START)
-            file(APPEND "${CMAKE_BINARY_DIR}/cmake/Fw4SPLRequirements.cmake"
+            file(APPEND "${CMAKE_BINARY_DIR}/cmake/SightRequirements.cmake"
                 "set(${PROJECT}_START ${${PROJECT}_START})\n")
         endif()
 

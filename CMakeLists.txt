@@ -1,7 +1,7 @@
 
 cmake_minimum_required (VERSION 3.1)
 
-project (fw4spl)
+project (sight)
 
 enable_testing()
 
@@ -141,9 +141,9 @@ endif()
 
 set(LIBRARY_OUTPUT_DIR lib)
 
-option(USE_SYSTEM_LIB "Use system libraries to compile fw4spl" OFF)
+option(USE_SYSTEM_LIB "Use system libraries to compile sight" OFF)
 
-option(BUILD_SDK "Build Fw4SPL as a SDK" OFF)
+option(BUILD_SDK "Build Sight as a SDK" OFF)
 
 if(NOT USE_SYSTEM_LIB)
     set(EXTERNAL_LIBRARIES CACHE PATH "External libraries location")
@@ -161,7 +161,7 @@ if(EXTERNAL_LIBRARIES)
     include(${EXTERNAL_LIBRARIES}/lib/cmake/find_sse.cmake)
 
     # This serves two purposes:
-    # - The CUDA bundles/libs in FW4SPL projects will automatically find a working CUDA toolkit.
+    # - The CUDA bundles/libs in Sight projects will automatically find a working CUDA toolkit.
     # - Dependencies using CUDA such as OpenCV can find the toolkit they were compiled with, they might otherwise pick
     #   another one if you have several toolkits installed, which would cause an error.
     set(CUDA_TOOLKIT_ROOT_DIR ${BINPKGS_CUDA_TOOLKIT_ROOT_DIR} CACHE PATH
@@ -196,16 +196,16 @@ elseif(USE_SYSTEM_LIB)
 endif()
 
 ########################################################################################################################
-# Automatic detection of additional repositories using .fw4spl files
+# Automatic detection of additional repositories using .sight files
 ########################################################################################################################
-file(GLOB ADDITIONAL_REPOSITORIES_FILES ${CMAKE_CURRENT_SOURCE_DIR}/../*/.fw4spl)
+file(GLOB ADDITIONAL_REPOSITORIES_FILES ${CMAKE_CURRENT_SOURCE_DIR}/../*/.sight)
 
 foreach(REPOSITORY ${ADDITIONAL_REPOSITORIES_FILES})
     file(READ ${REPOSITORY} REPO_RAW_NAME)
     string(STRIP ${REPO_RAW_NAME} REPO_RAW_NAME)
     string(TOUPPER ${REPO_RAW_NAME} REPO_NAME)
 
-    if(NOT ${REPO_NAME} STREQUAL "FW4SPL")
+    if(NOT ${REPO_NAME} STREQUAL "SIGHT")
 
         get_filename_component(REPO_DIR ${REPOSITORY} DIRECTORY)
         get_filename_component(REPO_DIR ${REPO_DIR} ABSOLUTE)
@@ -248,7 +248,7 @@ set(BUNDLE_RC_PREFIX "${CMAKE_INSTALL_DATADIR}" CACHE PATH "Relative path where 
 mark_as_advanced(BUNDLE_LIB_PREFIX)
 mark_as_advanced(BUNDLE_RC_PREFIX)
 
-set(FW_INSTALL_PATH_SUFFIX "fw4spl")
+set(FW_INSTALL_PATH_SUFFIX "sight")
 set(FWBUNDLE_LIB_PREFIX "${BUNDLE_LIB_PREFIX}/${FW_INSTALL_PATH_SUFFIX}")
 set(FWBUNDLE_RC_PREFIX "${BUNDLE_RC_PREFIX}/${FW_INSTALL_PATH_SUFFIX}")
 
@@ -292,7 +292,7 @@ if(ADDITIONAL_REPOSITORIES)
     endforeach()
 endif()
 
-set(FWCONFIG_PACKAGE_LOCATION lib/cmake/fw4spl)
+set(FWCONFIG_PACKAGE_LOCATION lib/cmake/sight)
 
 unset(PROJECT_LIST)
 
@@ -411,26 +411,26 @@ endif()
 # Export and install targets
 ########################################################################################################################
 
-# Create the Fw4SPLConfig.cmake file
-set(FWCONFIG_FILE ${CMAKE_SOURCE_DIR}/CMake/build/Fw4SPLConfig.cmake.in)
+# Create the SightConfig.cmake file
+set(FWCONFIG_FILE ${CMAKE_SOURCE_DIR}/CMake/build/SightConfig.cmake.in)
 
-configure_file(${FWCONFIG_FILE} "${CMAKE_BINARY_DIR}/cmake/Fw4SPLConfig.cmake" @ONLY)
+configure_file(${FWCONFIG_FILE} "${CMAKE_BINARY_DIR}/cmake/SightConfig.cmake" @ONLY)
 
-# Create the Fw4SPLConfigVersion file
-set(FW4SPL_VERSION 17.1)
+# Create the SightConfigVersion file
+set(SIGHT_VERSION 17.1)
 
 write_basic_package_version_file(
-  "${CMAKE_BINARY_DIR}/cmake/Fw4SPLConfigVersion.cmake"
-  VERSION ${FW4SPL_VERSION}
+  "${CMAKE_BINARY_DIR}/cmake/SightConfigVersion.cmake"
+  VERSION ${SIGHT_VERSION}
   COMPATIBILITY AnyNewerVersion
 )
 
-# Install the Fw4SPLConfig.cmake and Fw4SPLConfigVersion.cmake
+# Install the SightConfig.cmake and SightConfigVersion.cmake
 install(
   FILES
-    "${CMAKE_BINARY_DIR}/cmake/Fw4SPLConfig.cmake"
-    "${CMAKE_BINARY_DIR}/cmake/Fw4SPLConfigVersion.cmake"
-    "${CMAKE_BINARY_DIR}/cmake/Fw4SPLRequirements.cmake"
+    "${CMAKE_BINARY_DIR}/cmake/SightConfig.cmake"
+    "${CMAKE_BINARY_DIR}/cmake/SightConfigVersion.cmake"
+    "${CMAKE_BINARY_DIR}/cmake/SightRequirements.cmake"
     "${CMAKE_SOURCE_DIR}/CMake/build/macros.cmake"
   DESTINATION
     ${FWCONFIG_PACKAGE_LOCATION}
@@ -511,7 +511,7 @@ endif()
 # Packaging for the SDK
 ########################################################################################################################
 if(BUILD_SDK)
-    set(FWPROJECT_NAME fw4spl)
-    set(VERSION ${FW4SPL_VERSION})
+    set(FWPROJECT_NAME sight)
+    set(VERSION ${SIGHT_VERSION})
     generic_install()
 endif()
