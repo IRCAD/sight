@@ -25,6 +25,13 @@ if(EXTERNAL_LIBRARIES)
     endforeach()
 endif()
 
+set(FWBUNDLE_LIB_PREFIX @FWBUNDLE_LIB_PREFIX@)
+set(FWBUNDLE_RC_PREFIX @FWBUNDLE_RC_PREFIX@)
+
+set(Sight_BINARY_DIR  "${Sight_DIR}../../../bin")
+set(Sight_LIBRARY_DIR "${Sight_DIR}../../../${FWBUNDLE_LIB_PREFIX}")
+set(Sight_BUNDLES_DIR "${Sight_DIR}../../../${FWBUNDLE_RC_PREFIX}")
+
 foreach(_comp ${Sight_FIND_COMPONENTS})
     if(NOT ${_comp}_FOUND)
         message(STATUS "Looking for Sight component: ${_comp}")
@@ -39,7 +46,7 @@ foreach(_comp ${Sight_FIND_COMPONENTS})
         include("${CMAKE_CURRENT_LIST_DIR}/Sight-${_comp}Targets.cmake")
 
         # For now I do not know how to unroll this loop when configuring the file... so for now just use the default log level
-        set_property( TARGET Sight::${_comp} PROPERTY INTERFACE_COMPILE_DEFINITIONS SPYLOG_LEVEL=2)
+        set_property( TARGET Sight::${_comp} PROPERTY INTERFACE_COMPILE_DEFINITIONS SPYLOG_LEVEL=2 SIGHT_DIR="${Sight_DIR}../../../")
         set(${_comp}_FOUND 1)
     endif()
 endforeach()
@@ -54,10 +61,3 @@ set(SPYLOG_LEVEL_MAP_info 4)
 set(SPYLOG_LEVEL_MAP_debug 5)
 set(SPYLOG_LEVEL_MAP_trace 6)
 set_property(CACHE SPYLOG_LEVEL PROPERTY STRINGS ${SPYLOG_LEVEL_VALUES} )
-
-set(FWBUNDLE_LIB_PREFIX @FWBUNDLE_LIB_PREFIX@)
-set(FWBUNDLE_RC_PREFIX @FWBUNDLE_RC_PREFIX@)
-
-set(Sight_BINARY_DIR  "${Sight_DIR}/../../../bin")
-set(Sight_LIBRARY_DIR "${Sight_DIR}/../../../${FWBUNDLE_LIB_PREFIX}")
-set(Sight_BUNDLES_DIR "${Sight_DIR}/../../../${FWBUNDLE_RC_PREFIX}")
