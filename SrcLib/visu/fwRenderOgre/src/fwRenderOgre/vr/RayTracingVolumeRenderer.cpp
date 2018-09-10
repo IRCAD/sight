@@ -17,6 +17,8 @@
 
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 
+#include <boost/make_unique.hpp>
+
 #include <OGRE/OgreCompositorManager.h>
 #include <OGRE/OgreGpuProgramManager.h>
 #include <OGRE/OgreHardwarePixelBuffer.h>
@@ -27,8 +29,6 @@
 #include <OGRE/OgreTexture.h>
 #include <OGRE/OgreTextureManager.h>
 #include <OGRE/OgreViewport.h>
-
-#include <boost/make_unique.hpp>
 
 #include <algorithm>
 #include <map>
