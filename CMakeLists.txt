@@ -377,7 +377,7 @@ if(PROJECTS_TO_BUILD)
     set(PROJECT_LIST ${PROJECTS_TO_BUILD})
     findAllDependencies("${PROJECT_LIST}" PROJECT_LIST)
 
-    foreach(PROJECT ${PROJECTS_TO_BUILD})
+    foreach(PROJECT ${PROJECT_LIST})
         set(${PROJECT}_INSTALL 1)
     endforeach()
     message(STATUS "Project configuration is restricted to : ${PROJECTS_TO_BUILD}")
@@ -422,7 +422,7 @@ set(FWCONFIG_FILE ${CMAKE_SOURCE_DIR}/CMake/build/SightConfig.cmake.in)
 configure_file(${FWCONFIG_FILE} "${CMAKE_BINARY_DIR}/cmake/SightConfig.cmake" @ONLY)
 
 # Create the SightConfigVersion file
-set(SIGHT_VERSION 17.1)
+set(SIGHT_VERSION 18.0)
 
 write_basic_package_version_file(
   "${CMAKE_BINARY_DIR}/cmake/SightConfigVersion.cmake"
