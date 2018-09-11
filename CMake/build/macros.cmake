@@ -503,7 +503,6 @@ macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
 
         configureProject( ${FWPROJECT_NAME} ${PROJECT_VERSION} )
 
-        set_target_properties(${FWPROJECT_NAME} PROPERTIES OUTPUT_NAME ${${FWPROJECT_NAME}_FULLNAME})
         set_target_properties(${FWPROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${BUNDLE_DIR})
         set_target_properties(${FWPROJECT_NAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${BUNDLE_DIR})
         # Fixed path for multi-config builds (e.g. msvc)
