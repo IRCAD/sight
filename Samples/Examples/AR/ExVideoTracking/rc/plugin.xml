@@ -1,10 +1,10 @@
-<plugin id="Ex01VideoTracking" version="@PROJECT_VERSION@">
+<plugin id="ExVideoTracking" version="@PROJECT_VERSION@">
     <requirement id="dataReg" />
     <requirement id="arDataReg" />
     <requirement id="servicesReg" />
     <requirement id="visuVTKQt" />
     <extension implements="::fwServices::registry::AppConfig">
-        <id>Ex01VideoTrackingConfig</id>
+        <id>ExVideoTrackingConfig</id>
         <config>
             <object uid="camera" type="::arData::Camera" />
             <object uid="frameTL" type="::arData::FrameTL">
@@ -16,8 +16,8 @@
             <service uid="mainFrame" type="::gui::frame::SDefaultFrame">
                 <gui>
                     <frame>
-                        <name>Ex01VideoTracking</name>
-                        <icon>Ex01VideoTracking-0.1/videotracking.ico</icon>
+                        <name>ExVideoTracking</name>
+                        <icon>ExVideoTracking-0.1/videotracking.ico</icon>
                     </frame>
                     <toolBar/>
                 </gui>
@@ -78,7 +78,7 @@
 
             <!-- *************************** Begin generic scene *************************** -->
 
-            <service uid="genericScene" type="::fwRenderVTK::SRender" autoConnect="yes">
+            <service uid="genericScene" type="::fwRenderVTK::SRender" >
                 <scene>
                     <renderer id="default" background="0.0" />
                     <adaptor uid="videoAdpt" />

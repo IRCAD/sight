@@ -1,23 +1,22 @@
-<plugin id="Ex05FrameByFrame" version="@PROJECT_VERSION@">
+<plugin id="ExFrameByFrame" version="@PROJECT_VERSION@">
     <requirement id="dataReg" />
     <requirement id="arDataReg" />
     <requirement id="servicesReg" />
     <requirement id="visuVTKQt" />
     <extension implements="::fwServices::registry::AppConfig">
-        <id>Ex05FrameByFrameConfig</id>
+        <id>ExFrameByFrameConfig</id>
         <config>
             <object uid="camera" type="::arData::Camera" />
             <object uid="frameTL" type="::arData::FrameTL">
                 <value>100</value>
             </object>
 
-            <object uid="tagTL" type="::arData::MarkerTL" />
             <object uid="videoImage" type="::fwData::Image" />
             <service uid="mainFrame" type="::gui::frame::SDefaultFrame">
                 <gui>
                     <frame>
                         <name>ExFrameByFrame</name>
-                        <icon>Ex05FrameByFrame-@PROJECT_VERSION@/ex05framebyframe.ico</icon>
+                        <icon>ExFrameByFrame-@PROJECT_VERSION@/exframebyframe.ico</icon>
                     </frame>
                     <toolBar/>
                 </gui>
@@ -81,7 +80,7 @@
 
             <!-- *************************** Begin generic scene *************************** -->
 
-            <service uid="genericScene" type="::fwRenderVTK::SRender" autoConnect="yes">
+            <service uid="genericScene" type="::fwRenderVTK::SRender">
                 <scene>
                     <renderer id="default" background="0.0" />
                     <adaptor uid="videoAdpt" />

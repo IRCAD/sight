@@ -1,12 +1,11 @@
 
-set( NAME Ex05FrameByFrame )
-set( VERSION 0.1 )
+set( NAME ExIgtl )
+set( VERSION 0.2 )
 set( TYPE APP )
 set( UNIQUE TRUE)
 set( DEPENDENCIES  )
 set( REQUIREMENTS
     dataReg
-    arDataReg
     gui
     guiQt
     servicesReg
@@ -15,12 +14,14 @@ set( REQUIREMENTS
     visuVTK
     visuVTKQt
     visuVTKAdaptor
-    visuVTKARAdaptor
-    videoQt
-    videoOpenCV
-    videoTools
-    arMedia
+    media
     preferences
+    ioVTK
+    ioNetwork
+    ioIGTL
+    ioData
+    uiIO
+    uiPreferences
     )
 
-bundleParam(appXml PARAM_LIST config PARAM_VALUES Ex05FrameByFrameConfig)
+bundleParam(appXml PARAM_LIST config PARAM_VALUES ExIgtlConfig)

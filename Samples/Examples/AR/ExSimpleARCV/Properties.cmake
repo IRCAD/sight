@@ -1,5 +1,5 @@
 
-set( NAME Ex04SimpleARCV )
+set( NAME ExSimpleARCV )
 set( VERSION 0.3 )
 set( TYPE APP )
 set( DEPENDENCIES  )
@@ -33,4 +33,4 @@ set( REQUIREMENTS
     visuVTKQt
     )
 
-bundleParam(appXml PARAM_LIST config PARAM_VALUES Ex04SimpleARCVConfig)
+bundleParam(appXml PARAM_LIST config PARAM_VALUES ExSimpleARCVConfig)

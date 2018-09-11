@@ -1,5 +1,5 @@
 
-set( NAME Ex07RGBDManualAR )
+set( NAME ExRGBDManualAR )
 set( VERSION 0.1 )
 set( TYPE APP )
 set( DEPENDENCIES  )
@@ -35,4 +35,4 @@ set( REQUIREMENTS
 
     )
 
-bundleParam(appXml PARAM_LIST config PARAM_VALUES Ex07RGBDManualARConfig)
+bundleParam(appXml PARAM_LIST config PARAM_VALUES ExRGBDManualARConfig)

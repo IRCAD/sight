@@ -1,11 +1,11 @@
-<plugin id="Ex06RGBDStream" version="@PROJECT_VERSION@">
+<plugin id="ExRGBDStream" version="@PROJECT_VERSION@">
     <requirement id="dataReg" />
     <requirement id="arDataReg" />
     <requirement id="scene2D" />
     <requirement id="servicesReg" />
     <requirement id="visuVTKQt" />
     <extension implements="::fwServices::registry::AppConfig">
-        <id>Ex06RGBDStream</id>
+        <id>ExRGBDStream</id>
         <config>
             <object uid="frameTLVideo" type="::arData::FrameTL" />
             <object uid="frameTLDepth" type="::arData::FrameTL" />
@@ -29,8 +29,8 @@
             <service uid="mainView" type="::gui::frame::SDefaultFrame">
                 <gui>
                     <frame>
-                        <name>Ex06RGBDStream</name>
-                        <icon>Ex06RGBDStream-@PROJECT_VERSION@/ex06rgbdstream.ico</icon>
+                        <name>ExRGBDStream</name>
+                        <icon>ExRGBDStream-@PROJECT_VERSION@/exrgbdstream.ico</icon>
                         <minSize width="800" height="600" />
                     </frame>
                     <toolBar/>
@@ -103,7 +103,7 @@
             <!-- ***************************************** Begin render scenes declarations ***************************************** -->
             <!-- *************************** Begin generic scene *************************** -->
 
-            <service uid="distanceMapRender" type="::fwRenderVTK::SRender" autoConnect="yes">
+            <service uid="distanceMapRender" type="::fwRenderVTK::SRender" >
                 <scene>
                     <picker id="picker" vtkclass="fwVtkCellPicker" />
                     <renderer id="default" layer="0" background="0.0" />
@@ -126,7 +126,7 @@
 
             <!-- *************************** Begin generic scene *************************** -->
 
-            <service uid="videoViewRender" type="::fwRenderVTK::SRender" autoConnect="yes">
+            <service uid="videoViewRender" type="::fwRenderVTK::SRender" >
                 <scene renderMode="timer">
                     <renderer id="default" layer="0" background="0.0" />
                     <adaptor uid="videoAdaptor" />
@@ -134,7 +134,7 @@
                 </scene>
             </service>
 
-            <service uid="videoAdaptor" type="::visuVTKARAdaptor::SVideo" autoConnect="yes">
+            <service uid="videoAdaptor" type="::visuVTKARAdaptor::SVideo" >
                 <in key="frame" uid="imageVideo" />
                 <config renderer="default" />
             </service>
@@ -212,7 +212,7 @@
                 <config min="-1024" max="1024" interval="100" align="bottom" tickSize="5" viewportUID="viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="11" />
             </service>
 
-            <service uid="TFEditorSettings" type="::fwRenderQt::SRender" autoConnect="yes">
+            <service uid="TFEditorSettings" type="::fwRenderQt::SRender" >
                 <scene>
                     <scene x="-20" y="-1.1" width="5020" height="1.2" />
                     <viewport x="-20" y="-1.1" width="5020" height="1.2" />

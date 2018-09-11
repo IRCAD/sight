@@ -1,11 +1,12 @@
 
-set( NAME Ex03Igtl )
-set( VERSION 0.2 )
+set( NAME ExVideoTracking )
+set( VERSION 0.1 )
 set( TYPE APP )
 set( UNIQUE TRUE)
 set( DEPENDENCIES  )
 set( REQUIREMENTS
     dataReg
+    arDataReg
     gui
     guiQt
     servicesReg
@@ -14,14 +15,12 @@ set( REQUIREMENTS
     visuVTK
     visuVTKQt
     visuVTKAdaptor
-    media
+    visuVTKARAdaptor
+    videoQt
+    videoTools
+    trackerAruco
+    arMedia
     preferences
-    ioVTK
-    ioNetwork
-    ioIGTL
-    ioData
-    uiIO
-    uiPreferences
     )
 
-bundleParam(appXml PARAM_LIST config PARAM_VALUES Ex03IgtlConfig)
+bundleParam(appXml PARAM_LIST config PARAM_VALUES ExVideoTrackingConfig)

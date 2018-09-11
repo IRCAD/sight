@@ -1,4 +1,4 @@
-<plugin id="Ex04SimpleARCV" version="@PROJECT_VERSION@">
+<plugin id="ExSimpleARCV" version="@PROJECT_VERSION@">
     <requirement id="dataReg" />
     <requirement id="arDataReg" />
     <requirement id="servicesReg" />
@@ -7,7 +7,7 @@
     <requirement id="visuVTKARAdaptor" />
 
     <extension implements="::fwServices::registry::AppConfig">
-        <id>Ex04SimpleARCVConfig</id>
+        <id>ExSimpleARCVConfig</id>
         <config>
             <!-- objects declarations -->
             <object uid="cameraSeries" type="::arData::CameraSeries" />
@@ -29,8 +29,8 @@
             <service uid="mainFrame" type="::gui::frame::SDefaultFrame">
                 <gui>
                     <frame>
-                        <name>Ex04SimpleARCV</name>
-                        <icon>Ex04SimpleARCV-@PROJECT_VERSION@/app.ico</icon>
+                        <name>ExSimpleARCV</name>
+                        <icon>ExSimpleARCV-@PROJECT_VERSION@/app.ico</icon>
                     </frame>
                     <toolBar/>
                 </gui>
@@ -134,7 +134,7 @@
 
             <service uid="loadMesh" type="::ioData::STrianMeshReader">
                 <inout key="data" uid="tagMesh" />
-                <resource>Ex04SimpleARCV-@PROJECT_VERSION@/plane_60.trian</resource>
+                <resource>ExSimpleARCV-@PROJECT_VERSION@/plane_60.trian</resource>
             </service>
 
             <service uid="startVideo" type="::gui::action::SSlotCaller">

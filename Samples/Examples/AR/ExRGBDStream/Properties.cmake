@@ -1,5 +1,5 @@
 
-set( NAME Ex06RGBDStream )
+set( NAME ExRGBDStream )
 set( VERSION 0.1 )
 set( TYPE APP )
 set( UNIQUE TRUE )
@@ -35,4 +35,4 @@ set( REQUIREMENTS
     preferences
 )
 
-bundleParam(appXml PARAM_LIST config PARAM_VALUES Ex06RGBDStream)
+bundleParam(appXml PARAM_LIST config PARAM_VALUES ExRGBDStream)

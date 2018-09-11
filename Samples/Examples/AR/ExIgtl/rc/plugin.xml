@@ -1,10 +1,10 @@
-<plugin id="Ex03Igtl" version="@PROJECT_VERSION@">
+<plugin id="ExIgtl" version="@PROJECT_VERSION@">
     <requirement id="dataReg" />
     <requirement id="servicesReg" />
     <requirement id="visuVTKQt" />
     <requirement id="preferences" />
     <extension implements="::fwServices::registry::AppConfig">
-        <id>Ex03IgtlConfig</id>
+        <id>ExIgtlConfig</id>
         <config>
             <object uid="objectMeshUid" type="::fwData::Mesh" />
             <object uid="cameraMatrix" type="::fwData::TransformationMatrix3D" />
@@ -21,8 +21,8 @@
             <service uid="mainFrame" type="::gui::frame::SDefaultFrame">
                 <gui>
                     <frame>
-                        <name>Ex03Igtl</name>
-                        <icon>Ex03Igtl-@PROJECT_VERSION@/tuto.ico</icon>
+                        <name>ExIgtl</name>
+                        <icon>ExIgtl-@PROJECT_VERSION@/tuto.ico</icon>
                     </frame>
                     <toolBar/>
                 </gui>
@@ -109,7 +109,7 @@
 
             <!-- *************************** Begin generic scene *************************** -->
 
-            <service uid="3DView" type="::fwRenderVTK::SRender" autoConnect="yes">
+            <service uid="3DView" type="::fwRenderVTK::SRender" >
                 <scene>
                     <renderer id="default" layer="1" background="0.0" />
                     <renderer id="background" layer="0" background="0.0" />
@@ -124,17 +124,17 @@
                 <inout key="transform" uid="cameraMatrix" />
                 <config renderer="default" />
             </service>
-            
+
             <service uid="boxWidgetAdaptor" type="::visuVTKAdaptor::SBoxWidget" autoConnect="yes">
                <inout key="transform" uid="meshMatrix" />
                <config renderer="default" transform="meshMatrixTransform" enableScaling="yes" />
            </service>
-   
+
             <service uid="meshMatrixAdaptor" type="::visuVTKAdaptor::STransform" autoConnect="yes">
                 <inout key="tm3d" uid="meshMatrix" />
                 <config renderer="default" picker="" transform="meshMatrixTransform" />
             </service>
-            
+
             <service uid="meshAdaptor" type="::visuVTKAdaptor::SMesh" autoConnect="yes">
                 <in key="mesh" uid="objectMeshUid" />
                 <config renderer="default" picker="" transform="meshMatrixTransform" autoresetcamera="no" />
