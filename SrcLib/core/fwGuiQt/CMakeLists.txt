@@ -7,6 +7,14 @@ else()
 endif()
 
 configure_file("${CMAKE_CURRENT_LIST_DIR}/bin/qt.conf" "${CMAKE_BINARY_DIR}/bin/qt.conf")
+if(BUILD_SDK)
+    install(
+      FILES
+        "${CMAKE_BINARY_DIR}/bin/qt.conf"
+      DESTINATION
+        ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR}
+    )
+endif()
 
 target_compile_definitions(${FWPROJECT_NAME} PUBLIC "-DQT_NO_KEYWORDS")
 
