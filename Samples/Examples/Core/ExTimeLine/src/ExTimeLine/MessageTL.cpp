@@ -1,17 +1,18 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "Ex02TimeLine/MessageTL.hpp"
+#include "ExTimeLine/MessageTL.hpp"
 
 #include <fwData/registry/macros.hpp>
+
 #include <fwTools/Object.hpp>
 
-namespace Ex02TimeLine
+namespace ExTimeLine
 {
 
-fwDataRegisterMacro( ::Ex02TimeLine::MessageTL )
+fwDataRegisterMacro( ::ExTimeLine::MessageTL )
 
 } // namespace arData

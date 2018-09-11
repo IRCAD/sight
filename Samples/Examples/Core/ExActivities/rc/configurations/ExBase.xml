@@ -1,5 +1,5 @@
 <extension implements="::fwServices::registry::AppConfig">
-    <id>Ex05Base</id>
+    <id>ExBase</id>
     <parameters>
         <param name="appName" />
         <param name="appIconPath" />
@@ -95,8 +95,8 @@
         <!-- Launch the activity sequentially -->
         <service uid="activitySequencer" type="::activities::SActivitySequencer">
             <inout key="seriesDB" uid="seriesDB" autoConnect="yes" />
-                <activity>Ex05ImageReading</activity>
-                <activity>Ex05ImageDisplaying</activity>
+                <activity>ExImageReading</activity>
+                <activity>ExImageDisplaying</activity>
         </service>
 
         <!-- Action to launch next activity -->

@@ -1,4 +1,4 @@
-<plugin id="Ex06Dump" version="@PROJECT_VERSION@">
+<plugin id="ExDump" version="@PROJECT_VERSION@">
 
     <requirement id="servicesReg" />
     <requirement id="dataReg" />
@@ -8,7 +8,7 @@
 
     <!-- This exmaple allows to test the different dump policy. -->
     <extension implements="::fwServices::registry::AppConfig">
-        <id>Ex06DumpConfig</id>
+        <id>ExDumpConfig</id>
         <config>
 
             <object uid="seriesDB" type="::fwMedData::SeriesDB" />
@@ -17,7 +17,7 @@
             <service uid="mainFrame" type="::gui::frame::SDefaultFrame">
                 <gui>
                     <frame>
-                        <name>Example 06 Dump @PROJECT_VERSION@</name>
+                        <name>ExDump @PROJECT_VERSION@</name>
                         <minSize width="800" height="600" />
                     </frame>
                     <menuBar />

@@ -1,12 +1,12 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "Ex02TimeLine/SConsumer.hpp"
+#include "ExTimeLine/SConsumer.hpp"
 
-#include "Ex02TimeLine/MessageTL.hpp"
+#include "ExTimeLine/MessageTL.hpp"
 
 #include <fwCom/Slots.hxx>
 
@@ -16,9 +16,9 @@
 
 #include <functional>
 
-fwServicesRegisterMacro( ::fwServices::IService, ::Ex02TimeLine::SConsumer );
+fwServicesRegisterMacro( ::fwServices::IService, ::ExTimeLine::SConsumer );
 
-namespace Ex02TimeLine
+namespace ExTimeLine
 {
 
 //------------------------------------------------------------------------------
@@ -75,14 +75,14 @@ void SConsumer::stopping()
 
 void SConsumer::updating()
 {
-    ::Ex02TimeLine::MessageTL::csptr timeline = this->getInput< ::Ex02TimeLine::MessageTL >("timeline");
+    ::ExTimeLine::MessageTL::csptr timeline = this->getInput< ::ExTimeLine::MessageTL >("timeline");
 
     const ::fwCore::HiResClock::HiResClockType timestamp = ::fwCore::HiResClock::getTimeInMilliSec();
-    const CSPTR(::Ex02TimeLine::MessageTL::BufferType) buffer = timeline->getClosestBuffer(timestamp);
+    const CSPTR(::ExTimeLine::MessageTL::BufferType) buffer = timeline->getClosestBuffer(timestamp);
 
     if(buffer)
     {
-        const ::Ex02TimeLine::MsgData& element = buffer->getElement(0);
+        const ::ExTimeLine::MsgData& element = buffer->getElement(0);
 
         std::cout << "Message received (timer): CONSUMER: " << m_receiverId << " SENDER: " << element.uidSender <<
             " MESSAGE: \"" << element.szMsg << "\"" << std::endl;
@@ -93,13 +93,13 @@ void SConsumer::updating()
 
 void SConsumer::consume(fwCore::HiResClock::HiResClockType timestamp)
 {
-    ::Ex02TimeLine::MessageTL::csptr timeline = this->getInput< ::Ex02TimeLine::MessageTL >("timeline");
+    ::ExTimeLine::MessageTL::csptr timeline = this->getInput< ::ExTimeLine::MessageTL >("timeline");
 
-    const CSPTR(::Ex02TimeLine::MessageTL::BufferType) buffer = timeline->getClosestBuffer(timestamp);
+    const CSPTR(::ExTimeLine::MessageTL::BufferType) buffer = timeline->getClosestBuffer(timestamp);
 
     if(buffer)
     {
-        const ::Ex02TimeLine::MsgData& element = buffer->getElement(0);
+        const ::ExTimeLine::MsgData& element = buffer->getElement(0);
 
         std::cout << "Message received (slot) : CONSUMER: " << m_receiverId << " SENDER: " << element.uidSender <<
             " MESSAGE: \"" << element.szMsg << "\"" << std::endl;
@@ -108,4 +108,4 @@ void SConsumer::consume(fwCore::HiResClock::HiResClockType timestamp)
 
 //------------------------------------------------------------------------------
 
-} // namespace Ex02TimeLine
+} // namespace ExTimeLine

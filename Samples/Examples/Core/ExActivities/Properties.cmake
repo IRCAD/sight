@@ -1,5 +1,5 @@
 
-set( NAME Ex05Activities )
+set( NAME ExActivities )
 set( VERSION 0.1 )
 set( TYPE APP )
 set( DEPENDENCIES  )
@@ -34,4 +34,4 @@ set( REQUIREMENTS
     ctrlCamp
 )
 
-bundleParam(appXml PARAM_LIST config parameters PARAM_VALUES Ex05Base Ex05AppBase)
+bundleParam(appXml PARAM_LIST config parameters PARAM_VALUES ExBase ExAppBase)

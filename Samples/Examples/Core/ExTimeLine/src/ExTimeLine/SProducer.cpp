@@ -1,12 +1,12 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "Ex02TimeLine/SProducer.hpp"
+#include "ExTimeLine/SProducer.hpp"
 
-#include "Ex02TimeLine/MessageTL.hpp"
+#include "ExTimeLine/MessageTL.hpp"
 
 #include <fwCom/Signal.hxx>
 
@@ -16,9 +16,9 @@
 
 #include <functional>
 
-fwServicesRegisterMacro( ::fwServices::IService, ::Ex02TimeLine::SProducer );
+fwServicesRegisterMacro( ::fwServices::IService, ::ExTimeLine::SProducer );
 
-namespace Ex02TimeLine
+namespace ExTimeLine
 {
 
 //------------------------------------------------------------------------------
@@ -62,7 +62,7 @@ void SProducer::starting()
     // Init timeline pool
     if(m_timelineSize)
     {
-        ::Ex02TimeLine::MessageTL::sptr timeline = this->getInOut< ::Ex02TimeLine::MessageTL >("timeline");
+        ::ExTimeLine::MessageTL::sptr timeline = this->getInOut< ::ExTimeLine::MessageTL >("timeline");
 
         // This wouldn't hurt to initialize the timeline several times since it will be erased each time
         // but this would be a mess to know who is the last to initialize
@@ -86,17 +86,17 @@ void SProducer::stopping()
 
 void SProducer::updating()
 {
-    ::Ex02TimeLine::MessageTL::sptr timeline = this->getInOut< ::Ex02TimeLine::MessageTL >("timeline");
+    ::ExTimeLine::MessageTL::sptr timeline = this->getInOut< ::ExTimeLine::MessageTL >("timeline");
 
     const ::fwCore::HiResClock::HiResClockType timestamp = ::fwCore::HiResClock::getTimeInMilliSec();
-    SPTR(::Ex02TimeLine::MessageTL::BufferType) buffer = timeline->createBuffer(timestamp);
+    SPTR(::ExTimeLine::MessageTL::BufferType) buffer = timeline->createBuffer(timestamp);
 
-    ::Ex02TimeLine::MsgData* data = buffer->addElement(0);
+    ::ExTimeLine::MsgData* data = buffer->addElement(0);
 
     const std::string message = m_message + " #" + std::to_string( m_msgCount++ );
 
     data->uidSender = m_senderId;
-    strncpy(data->szMsg, message.c_str(), ::Ex02TimeLine::MsgData::MAX_MSG_SIZE);
+    strncpy(data->szMsg, message.c_str(), ::ExTimeLine::MsgData::MAX_MSG_SIZE);
 
     timeline->pushObject(buffer);
 
@@ -108,4 +108,4 @@ void SProducer::updating()
 
 //------------------------------------------------------------------------------
 
-} // namespace Ex02TimeLine
+} // namespace ExTimeLine

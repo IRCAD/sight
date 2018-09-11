@@ -1,19 +1,18 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __EX02TIMELINE_SPRODUCER_HPP__
-#define __EX02TIMELINE_SPRODUCER_HPP__
+#pragma once
 
-#include "Ex02TimeLine/config.hpp"
+#include "ExTimeLine/config.hpp"
 
 #include <fwServices/IService.hpp>
 
 #include <fwThread/Timer.hpp>
 
-namespace Ex02TimeLine
+namespace ExTimeLine
 {
 /**
  * @brief   Service that produces messages and stores them into a timeline.
@@ -36,14 +35,14 @@ namespace Ex02TimeLine
  * - \b period : time between two messages, in milliseconds.
  * - \b timelineSize (optional): maximum number of messages inside the timeline.
  */
-class EX02TIMELINE_CLASS_API SProducer : public ::fwServices::IService
+class EXTIMELINE_CLASS_API SProducer : public ::fwServices::IService
 {
 public:
 
     fwCoreServiceClassDefinitionsMacro( (SProducer)(::fwServices::IService) );
 
-    EX02TIMELINE_API SProducer() noexcept;
-    EX02TIMELINE_API virtual ~SProducer() noexcept;
+    EXTIMELINE_API SProducer() noexcept;
+    EXTIMELINE_API virtual ~SProducer() noexcept;
 
 protected:
 
@@ -80,6 +79,4 @@ private:
     unsigned int m_timelineSize;
 };
 
-}  // namespace Ex02TimeLine
-
-#endif  // __EX02TIMELINE_SPRODUCER_HPP__
+}  // namespace ExTimeLine

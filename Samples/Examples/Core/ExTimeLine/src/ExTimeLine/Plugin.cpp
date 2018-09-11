@@ -1,29 +1,29 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "ExTimeLine/Plugin.hpp"
 
-#include <fwTools/Object.hpp>
-#include <fwRuntime/profile/Profile.hpp>
-#include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
+#include "ExTimeLine/SConsumer.hpp"
 
 #include <fwCore/spyLog.hpp>
+
+#include <fwRuntime/profile/Profile.hpp>
+#include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 
 #include <fwServices/registry/ActiveWorkers.hpp>
 #include <fwServices/registry/ServiceFactory.hpp>
 
+#include <fwTools/Object.hpp>
 
-#include "Ex02TimeLine/Plugin.hpp"
-#include "Ex02TimeLine/SConsumer.hpp"
-
-namespace Ex02TimeLine
+namespace ExTimeLine
 {
 
 //-----------------------------------------------------------------------------
 
-static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::Ex02TimeLine::Plugin");
+static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::ExTimeLine::Plugin");
 
 //-----------------------------------------------------------------------------
 
@@ -51,4 +51,4 @@ void Plugin::stop() noexcept
 
 //------------------------------------------------------------------------------
 
-} // namespace Ex02TimeLine
+} // namespace ExTimeLine

@@ -1,6 +1,6 @@
 <!-- This configuration allows to display an image in a  scene -->
 <extension implements="::fwServices::registry::AppConfig">
-    <id>Ex05ImageDisplaying</id>
+    <id>ExImageDisplaying</id>
     <parameters>
         <param name="WID_PARENT" />
         <param name="SERIESDB" />

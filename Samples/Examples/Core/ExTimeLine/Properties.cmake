@@ -1,4 +1,4 @@
-set( NAME Ex02TimeLine )
+set( NAME ExTimeLine )
 set( VERSION 0.1 )
 set( TYPE APP )
 set( DEPENDENCIES
@@ -15,4 +15,4 @@ set( REQUIREMENTS
     console
 )
 
-bundleParam(appXml PARAM_LIST config PARAM_VALUES Ex02TimeLineConfig)
+bundleParam(appXml PARAM_LIST config PARAM_VALUES ExTimeLineConfig)

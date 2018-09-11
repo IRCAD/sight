@@ -1,13 +1,12 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __EX02TIMELINE_SCONSUMER_HPP__
-#define __EX02TIMELINE_SCONSUMER_HPP__
+#pragma once
 
-#include "Ex02TimeLine/config.hpp"
+#include "ExTimeLine/config.hpp"
 
 #include <fwServices/IService.hpp>
 
@@ -16,7 +15,7 @@ namespace fwThread
 class Timer;
 }
 
-namespace Ex02TimeLine
+namespace ExTimeLine
 {
 
 /**
@@ -42,15 +41,15 @@ namespace Ex02TimeLine
  * - \b id : id of the receiver.
  * - \b period (optional): time between two messages display, in milliseconds.
  */
-class EX02TIMELINE_CLASS_API SConsumer : public ::fwServices::IService
+class EXTIMELINE_CLASS_API SConsumer : public ::fwServices::IService
 {
 public:
-    EX02TIMELINE_API static const ::fwCom::Slots::SlotKeyType s_CONSUME_SLOT;
+    EXTIMELINE_API static const ::fwCom::Slots::SlotKeyType s_CONSUME_SLOT;
 
     fwCoreServiceClassDefinitionsMacro( (SConsumer)(::fwServices::IService) );
 
-    EX02TIMELINE_API SConsumer() noexcept;
-    EX02TIMELINE_API virtual ~SConsumer() noexcept;
+    EXTIMELINE_API SConsumer() noexcept;
+    EXTIMELINE_API virtual ~SConsumer() noexcept;
 
 protected:
 
@@ -81,6 +80,4 @@ private:
     unsigned int m_period;
 };
 
-}  // namespace Ex02TimeLine
-
-#endif  // __EX02TIMELINE_SCONSUMER_HPP__
+}  // namespace ExTimeLine
