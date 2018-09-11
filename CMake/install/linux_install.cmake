@@ -44,6 +44,24 @@ macro(linux_install PRJ_NAME)
     endif()
 
     if(NOT BUILD_SDK)
+        set(PROJECT_REQUIREMENTS ${${PROJECT}_REQUIREMENTS})
+
+        if(${FW_BUILD_EXTERNAL})
+            # install the launcher
+            install(FILES "${Sight_BINARY_DIR}/${LAUNCHER}" DESTINATION "${CMAKE_INSTALL_PREFIX}/bin")
+
+            # install requirements
+            foreach(REQUIREMENT  ${${PROJECT}_REQUIREMENTS})
+                if(${REQUIREMENT}_EXTERNAL AND ${REQUIREMENT}_TYPE STREQUAL "BUNDLE")
+                    qt_plugins_setup(${REQUIREMENT}) # search and setup qt plugins for each bundles
+                    install(DIRECTORY "${Sight_LIBRARY_DIR}/${REQUIREMENT}-${${REQUIREMENT}_VERSION}" DESTINATION ${CMAKE_INSTALL_PREFIX}/${FWBUNDLE_LIB_PREFIX})
+                    install(DIRECTORY "${Sight_BUNDLES_DIR}/${REQUIREMENT}-${${REQUIREMENT}_VERSION}" DESTINATION ${CMAKE_INSTALL_PREFIX}/${FWBUNDLE_RC_PREFIX})
+                endif()
+            endforeach()
+
+            install_qt_plugins()
+        endif()
+
         configure_file(${FWCMAKE_RESOURCE_PATH}/install/linux/linux_fixup.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/linux_fixup.cmake @ONLY)
         install(SCRIPT ${CMAKE_CURRENT_BINARY_DIR}/linux_fixup.cmake)
     endif()

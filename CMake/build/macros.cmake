@@ -10,6 +10,7 @@ else()
 
 endif()
 
+include(${FWCMAKE_INSTALL_FILES_DIR}/helper.cmake)
 include(${FWCMAKE_BUILD_FILES_DIR}/plugin_config.cmake)
 include(${FWCMAKE_BUILD_FILES_DIR}/profile_config.cmake)
 include(${FWCMAKE_INSTALL_FILES_DIR}/generic_install.cmake)
@@ -514,7 +515,7 @@ macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
         endforeach()
 
         if(${FWPROJECT_NAME}_INSTALL OR BUILD_SDK)
-            qt_plugins_setup() # search and setup qt plugins for each bundles
+            qt_plugins_setup(${FWPROJECT_NAME}) # search and setup qt plugins for each bundles
             install(
                 TARGETS ${FWPROJECT_NAME}
                 RUNTIME DESTINATION ${FWBUNDLE_LIB_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}
@@ -776,6 +777,7 @@ macro(loadProperties PROPERTIES_FILE)
     unset(USE_PCH_FROM_TARGET)
     unset(DISABLE_PCH)
     unset(START_BEFORE)
+    unset(PLUGINS)
 
     include("${PROPERTIES_FILE}")
 endmacro()
@@ -816,6 +818,10 @@ macro(fwLoadProperties)
     endif()
     if(REQUIREMENTS)
         fwReq( ${REQUIREMENTS} )
+    endif()
+
+    if(PLUGINS)
+        set(${NAME}_PLUGINS ${PLUGINS} PARENT_SCOPE)
     endif()
 
     if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/Dependencies.cmake")
@@ -861,6 +867,10 @@ macro(addProject PROJECT)
         if(${PROJECT}_START)
             file(APPEND "${CMAKE_BINARY_DIR}/cmake/SightRequirements.cmake"
                 "set(${PROJECT}_START ${${PROJECT}_START})\n")
+        endif()
+        if(${PROJECT}_PLUGINS)
+            file(APPEND "${CMAKE_BINARY_DIR}/cmake/SightRequirements.cmake"
+                "set(${PROJECT}_PLUGINS ${${PROJECT}_PLUGINS})\n")
         endif()
 
     endif()

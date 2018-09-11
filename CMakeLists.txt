@@ -11,7 +11,6 @@ include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/macros.cmake)
-include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/install/helper.cmake)
 
 ########################################################################################################################
 # User options
@@ -466,6 +465,7 @@ install(
 install(
   FILES
     "${CMAKE_SOURCE_DIR}/CMake/install/generic_install.cmake"
+    "${CMAKE_SOURCE_DIR}/CMake/install/helper.cmake"
   DESTINATION
     ${FWCONFIG_PACKAGE_LOCATION}/install
   COMPONENT

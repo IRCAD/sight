@@ -9,17 +9,7 @@ elseif(UNIX)
 endif()
 
 macro(generic_install)
-    if( ${FWPROJECT_NAME}_INSTALL AND NOT BUILD_SDK)
-
-        #qt plugins setup
-        if(QT_REQUIREMENTS AND NOT BUILD_SDK) # set by helper.cmake -> qt_setup() macros
-             foreach(QT_REQUIREMENT ${QT_REQUIREMENTS})
-                 get_filename_component(QT_REQ_DIR ${QT_REQUIREMENT} DIRECTORY)
-                 install(DIRECTORY "${EXTERNAL_LIBRARIES}/${QT_REQUIREMENT}" DESTINATION "${QT_REQ_DIR}" )
-            endforeach()
-
-        endif()
-    endif()
+    install_qt_plugins()
 
     if(APPLE)
         osx_install(${FWPROJECT_NAME})

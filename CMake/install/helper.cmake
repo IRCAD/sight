@@ -1,7 +1,7 @@
-macro(qt_plugins_setup)
+macro(qt_plugins_setup PROJECT_NAME)
 
     # check if there is a PLUGINS variable in the current bundle properties.cmake
-    if(PLUGINS)
+    if(${PROJECT_NAME}_PLUGINS)
         string(LENGTH "${EXTERNAL_LIBRARIES}/" QT_LENGTH)
 
         if(WIN32)
@@ -15,7 +15,7 @@ macro(qt_plugins_setup)
         foreach(CURRENT_DIR ${QT_DIRS})
 
             get_filename_component(QT_NAME ${CURRENT_DIR} NAME)
-            string(FIND "${PLUGINS}" ${QT_NAME} QT_TEST)
+            string(FIND "${${PROJECT_NAME}_PLUGINS}" ${QT_NAME} QT_TEST)
             if( NOT ${QT_TEST} EQUAL -1 )
 
                 file(GLOB_RECURSE QT_FILES  "${CURRENT_DIR}/*")
@@ -29,8 +29,21 @@ macro(qt_plugins_setup)
             endif()
          endforeach()
 
-         set( QT_REQUIREMENTS "${QT_REQUIREMENTS};${PLUGINS_LIST}" PARENT_SCOPE)
+         set( QT_REQUIREMENTS "${QT_REQUIREMENTS};${PLUGINS_LIST}" )
+         set( QT_REQUIREMENTS "${QT_REQUIREMENTS}" PARENT_SCOPE)
 
     endif()
 
 endmacro(qt_plugins_setup)
+
+macro(install_qt_plugins)
+
+    #qt plugins setup
+    if(QT_REQUIREMENTS AND NOT BUILD_SDK) # set by helper.cmake -> qt_setup() macros
+         foreach(QT_REQUIREMENT ${QT_REQUIREMENTS})
+             get_filename_component(QT_REQ_DIR ${QT_REQUIREMENT} DIRECTORY)
+             install(DIRECTORY "${EXTERNAL_LIBRARIES}/${QT_REQUIREMENT}" DESTINATION "${QT_REQ_DIR}" )
+        endforeach()
+    endif()
+
+endmacro(install_qt_plugins)
