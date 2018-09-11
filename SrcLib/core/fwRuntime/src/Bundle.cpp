@@ -64,11 +64,11 @@ Bundle::Bundle( const ::boost::filesystem::path& location,
 
     // Starting from FW4SPL 13.0, the plugin.xml is now likely to be separated from the libraries in the build/install
     std::string strLocation       = location.string();
-    const std::string strRCPrefix = BUNDLE_RC_PREFIX;
-    const auto itBundle           = strLocation.find(strRCPrefix);
+    ::boost::filesystem::path strRCPrefix = BUNDLE_RC_PREFIX;
+    const auto itBundle           = strLocation.find(strRCPrefix.normalize().string());
     if(itBundle != std::string::npos)
     {
-        strLocation.replace(itBundle, strRCPrefix.length(), std::string(BUNDLE_LIB_PREFIX));
+        strLocation.replace(itBundle, strRCPrefix.string().length(), std::string(BUNDLE_LIB_PREFIX));
     }
     m_libraryLocation = ::boost::filesystem::path(strLocation);
 }

@@ -1,6 +1,11 @@
 
 #Find all sub-folders containing external libraries
 function(findExtLibDir EXTERNAL_LIBRARIES_DIRECTORIES)
+
+    if(NOT EXTERNAL_LIBRARIES)
+        message(FATAL_ERROR "EXTERNAL_LIBRARIES variable is missing. Please, specify external libraries location to generate CMake projects.")
+    endif()
+
     file(GLOB_RECURSE LIBS ${EXTERNAL_LIBRARIES}/*${CMAKE_SHARED_LIBRARY_SUFFIX})
     list(REMOVE_DUPLICATES LIBS)
     set(FOLDERS)
@@ -14,7 +19,10 @@ endfunction()
 
 #Windows install
 macro(win_install PRJ_NAME)
-    findExtLibDir(EXTERNAL_LIBRARIES_DIRECTORIES)
+
+    if(NOT USE_SYSTEM_LIB AND NOT BUILD_SDK)
+        findExtLibDir(EXTERNAL_LIBRARIES_DIRECTORIES)
+    endif()
 
     set(CPACK_GENERATOR NSIS)
 
@@ -28,15 +36,17 @@ macro(win_install PRJ_NAME)
     elseif("${${PRJ_NAME}_TYPE}" STREQUAL  "EXECUTABLE")
         set(LAUNCHER_PATH "bin/${PRJ_NAME}.exe")
         set(PROFILE_PATH "")
-    else()
+    elseif(NOT BUILD_SDK)
         message(FATAL_ERROR "'${PRJ_NAME}' is not a installable (type : ${${PRJ_NAME}_TYPE})")
     endif()
 
     list(APPEND CMAKE_MODULE_PATH ${FWCMAKE_RESOURCE_PATH}/install/windows/NSIS/)
 
     #configure the 'fixup' script
-    configure_file(${FWCMAKE_RESOURCE_PATH}/install/windows/windows_fixup.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/windows_fixup.cmake @ONLY)
-    install(SCRIPT ${CMAKE_CURRENT_BINARY_DIR}/windows_fixup.cmake)
+    if(NOT BUILD_SDK)
+        configure_file(${FWCMAKE_RESOURCE_PATH}/install/windows/windows_fixup.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/windows_fixup.cmake @ONLY)
+        install(SCRIPT ${CMAKE_CURRENT_BINARY_DIR}/windows_fixup.cmake)
+    endif()
 
     if(CMAKE_CL_64)
         set(CPACK_NSIS_INSTALL_DIR "$PROGRAMFILES64")
@@ -45,7 +55,7 @@ macro(win_install PRJ_NAME)
     set(CPACK_NSIS_ENABLE_UNINSTALL_BEFORE_INSTALL ON)
     set(CPACK_INSTALLED_DIRECTORIES "${CMAKE_INSTALL_PREFIX};.") #look inside install dir for packaging
 
-    set(CPACK_PACKAGE_VENDOR "FW4SPL")
+    set(CPACK_PACKAGE_VENDOR "Sight")
     set(CPACK_NSIS_URL_INFO_ABOUT "https://github.com/fw4spl-org")
     set(CPACK_NSIS_CONTACT "fw4spl@gmail.com")
 

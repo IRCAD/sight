@@ -119,6 +119,22 @@ if(MSVC_IDE)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
 endif()
 
+if(EXTERNAL_LIBRARIES)
+    list(APPEND CMAKE_PREFIX_PATH ${EXTERNAL_LIBRARIES})
+    list(APPEND CMAKE_MODULE_PATH ${EXTERNAL_LIBRARIES})
+    list(APPEND CMAKE_FIND_ROOT_PATH ${EXTERNAL_LIBRARIES})
+    include(${EXTERNAL_LIBRARIES}/lib/cmake/BinPkgsConfig.cmake)
+    include(${EXTERNAL_LIBRARIES}/lib/cmake/find_sse.cmake)
+
+    # This serves two purposes:
+    # - The CUDA bundles/libs in Sight projects will automatically find a working CUDA toolkit.
+    # - Dependencies using CUDA such as OpenCV can find the toolkit they were compiled with, they might otherwise pick
+    #   another one if you have several toolkits installed, which would cause an error.
+    set(CUDA_TOOLKIT_ROOT_DIR ${BINPKGS_CUDA_TOOLKIT_ROOT_DIR} CACHE PATH
+        "Version of the CUDA toolkit used for this build, if any. Read-only."
+        FORCE)
+endif()
+
 if(BINPKGS_HAS_SSE)
     message(STATUS "SSE support detected in the dependencies, enabling SSE.")
     # Build with SSE support if possible
@@ -128,7 +144,6 @@ if(BINPKGS_HAS_SSE)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SSE_FLAGS}")
     add_definitions("${SSE_DEFINITIONS}")
 endif()
-
 
 if(CMAKE_SYSTEM_NAME MATCHES "Darwin")
     #http://stackoverflow.com/questions/6802903/c-ifdef-mac-os-x-question
@@ -157,16 +172,6 @@ if(EXTERNAL_LIBRARIES)
     list(APPEND CMAKE_PREFIX_PATH ${EXTERNAL_LIBRARIES})
     list(APPEND CMAKE_MODULE_PATH ${EXTERNAL_LIBRARIES})
     list(APPEND CMAKE_FIND_ROOT_PATH ${EXTERNAL_LIBRARIES})
-    include(${EXTERNAL_LIBRARIES}/lib/cmake/BinPkgsConfig.cmake)
-    include(${EXTERNAL_LIBRARIES}/lib/cmake/find_sse.cmake)
-
-    # This serves two purposes:
-    # - The CUDA bundles/libs in Sight projects will automatically find a working CUDA toolkit.
-    # - Dependencies using CUDA such as OpenCV can find the toolkit they were compiled with, they might otherwise pick
-    #   another one if you have several toolkits installed, which would cause an error.
-    set(CUDA_TOOLKIT_ROOT_DIR ${BINPKGS_CUDA_TOOLKIT_ROOT_DIR} CACHE PATH
-        "Version of the CUDA toolkit used for this build, if any. Read-only."
-        FORCE)
 
 elseif(USE_SYSTEM_LIB)
 
@@ -461,27 +466,70 @@ install(
 install(
   FILES
     "${CMAKE_SOURCE_DIR}/CMake/install/generic_install.cmake"
-    "${CMAKE_SOURCE_DIR}/CMake/install/linux_install.cmake"
-    "${CMAKE_SOURCE_DIR}/CMake/install/linux_install.cmake"
-    "${CMAKE_SOURCE_DIR}/CMake/install/osx_install.cmake"
-    "${CMAKE_SOURCE_DIR}/CMake/install/win_install.cmake"
   DESTINATION
     ${FWCONFIG_PACKAGE_LOCATION}/install
   COMPONENT
     dev
 )
 
+if(APPLE)
+    install(
+      FILES
+        "${CMAKE_SOURCE_DIR}/CMake/install/osx_install.cmake"
+      DESTINATION
+        ${FWCONFIG_PACKAGE_LOCATION}/install
+      COMPONENT
+        dev
+    )
+elseif(WIN32)
+    install(
+      FILES
+        "${CMAKE_SOURCE_DIR}/CMake/install/win_install.cmake"
+      DESTINATION
+        ${FWCONFIG_PACKAGE_LOCATION}/install
+      COMPONENT
+        dev
+    )
+    install(
+      FILES
+        "${CMAKE_SOURCE_DIR}/CMake/install/windows/windows_fixup.cmake.in"
+      DESTINATION
+        ${FWCONFIG_PACKAGE_LOCATION}/install/windows
+      COMPONENT
+        dev
+    )
+    install(
+      FILES
+        "${CMAKE_SOURCE_DIR}/CMake/install/windows/NSIS/rc/banner_nsis.bmp"
+        "${CMAKE_SOURCE_DIR}/CMake/install/windows/NSIS/rc/dialog_nsis.bmp"
+        "${CMAKE_SOURCE_DIR}/CMake/install/windows/NSIS/rc/app.ico"
+        "${CMAKE_SOURCE_DIR}/CMake/install/windows/NSIS/rc/license.rtf"
+      DESTINATION
+        ${FWCONFIG_PACKAGE_LOCATION}/install/windows/NSIS/rc/
+      COMPONENT
+        dev
+    )
+elseif(UNIX)
+    install(
+      FILES
+        "${CMAKE_SOURCE_DIR}/CMake/install/linux_install.cmake"
+      DESTINATION
+        ${FWCONFIG_PACKAGE_LOCATION}/install
+      COMPONENT
+        dev
+    )
 
-# Install some files needed for the install
-install(
-  FILES
-    "${CMAKE_SOURCE_DIR}/CMake/install/linux/template.sh.in"
-    "${CMAKE_SOURCE_DIR}/CMake/install/linux/linux_fixup.cmake.in"
-  DESTINATION
-    ${FWCONFIG_PACKAGE_LOCATION}/install/linux
-  COMPONENT
-    dev
-)
+    install(
+      FILES
+        "${CMAKE_SOURCE_DIR}/CMake/install/linux/template.sh.in"
+        "${CMAKE_SOURCE_DIR}/CMake/install/linux/linux_fixup.cmake.in"
+      DESTINATION
+        ${FWCONFIG_PACKAGE_LOCATION}/install/linux
+      COMPONENT
+        dev
+    )
+endif()
+
 
 ########################################################################################################################
 # Misc generators

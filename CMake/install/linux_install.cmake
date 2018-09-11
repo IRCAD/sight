@@ -1,6 +1,11 @@
 
 #Find all sub-folders containing external libraries
 function(findExtLibDir EXTERNAL_LIBRARIES_DIRECTORIES)
+
+    if(NOT EXTERNAL_LIBRARIES)
+        message(FATAL_ERROR "EXTERNAL_LIBRARIES variable is missing. Please, specify external libraries location to generate CMake projects.")
+    endif()
+
     file(GLOB_RECURSE LIBS ${EXTERNAL_LIBRARIES}/*${CMAKE_SHARED_LIBRARY_SUFFIX}*)
     list(REMOVE_DUPLICATES LIBS)
     set(FOLDERS)
