@@ -273,6 +273,8 @@ macro(fwCppunitTest FWPROJECT_NAME)
 
     configureProject( ${FWPROJECT_NAME} 0.0 )
 
+    target_include_directories(${FWPROJECT_NAME} PUBLIC ${${FWPROJECT_NAME}_INCLUDE_DIR})
+
     if(EXISTS "${PRJ_SOURCE_DIR}/tu/rc")
         set(${FWPROJECT_NAME}_RC_BUILD_DIR "${CMAKE_BINARY_DIR}/${FWBUNDLE_RC_PREFIX}/${TU_NAME}")
         createResourcesTarget( ${FWPROJECT_NAME}_rc "${PRJ_SOURCE_DIR}/tu/rc" "${${FWPROJECT_NAME}_RC_BUILD_DIR}" )
