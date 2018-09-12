@@ -18,7 +18,6 @@
             <object uid="cube" type="::fwData::Mesh" />
 
             <object uid="registrationMatrix" type="::fwData::TransformationMatrix3D" />
-            <object uid="identity" type="::fwData::TransformationMatrix3D" />
 
             <object uid="2dPoints" type="::fwData::PointList" />
             <object uid="3dPoints" type="::fwData::PointList" />
@@ -218,7 +217,7 @@
             <!-- Scene in which the video and the 3D will be rendered -->
             <!-- *************************** Begin generic scene *************************** -->
 
-            <service uid="genericScene" type="::fwRenderVTK::SRender" autoConnect="yes">
+            <service uid="genericScene" type="::fwRenderVTK::SRender" >
                 <scene>
                     <picker id="videoPicker" vtkclass="fwVtkCellPicker" />
                     <renderer id="video" layer="0" background="#46455A" />
@@ -261,7 +260,7 @@
                 <config renderer="video" picker="videoPicker" color="#00ff00" />
             </service>
 
-            <service uid="debugScene" type="::fwRenderVTK::SRender" autoConnect="yes">
+            <service uid="debugScene" type="::fwRenderVTK::SRender" >
                 <scene>
                     <picker id="default" vtkclass="fwVtkCellPicker" />
                     <renderer id="default" layer="0"  background="#46455A"/>
