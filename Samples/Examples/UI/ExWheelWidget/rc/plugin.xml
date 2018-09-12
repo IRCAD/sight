@@ -1,6 +1,6 @@
-<plugin id="Ex07WheelWidget" version="@PROJECT_VERSION@">
+<plugin id="ExWheelWidget" version="@PROJECT_VERSION@">
     <extension implements="::fwServices::registry::AppConfig">
-        <id>Ex07WheelWidget</id>
+        <id>ExWheelWidget</id>
         <desc>Wheel widget interaction example.</desc>
         <config>
 
@@ -10,7 +10,7 @@
         <service uid="mainFrame" type="::gui::frame::SDefaultFrame">
             <gui>
                 <frame>
-                    <name>Example 07 - Wheel Widget @PROJECT_VERSION@</name>
+                    <name>Example - Wheel Widget @PROJECT_VERSION@</name>
                     <minSize width="1280" height="720" />
                 </frame>
                 <menuBar />

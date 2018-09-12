@@ -1,5 +1,5 @@
 
-set( NAME Ex07WheelWidget )
+set( NAME ExWheelWidget )
 set( VERSION 0.1 )
 set( TYPE APP )
 set( DEPENDENCIES  )
@@ -22,4 +22,4 @@ set( REQUIREMENTS
     visuVTKAdaptor
 )
 
-bundleParam(appXml PARAM_LIST config PARAM_VALUES Ex07WheelWidget)
+bundleParam(appXml PARAM_LIST config PARAM_VALUES ExWheelWidget)
