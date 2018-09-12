@@ -1,5 +1,5 @@
 
-set( NAME Ex02ImageMix )
+set( NAME ExImageMix )
 set( VERSION 0.1 )
 set( TYPE APP )
 set( UNIQUE TRUE )
@@ -22,4 +22,4 @@ set( REQUIREMENTS
     appXml
 )
 
-bundleParam(appXml PARAM_LIST config PARAM_VALUES Ex02ImageMix)
+bundleParam(appXml PARAM_LIST config PARAM_VALUES ExImageMix)

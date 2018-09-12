@@ -1,5 +1,5 @@
 
-set( NAME Ex03Registration)
+set( NAME ExRegistration)
 set( VERSION 0.1 )
 set( TYPE APP )
 set( DEPENDENCIES  )
@@ -28,4 +28,4 @@ set( REQUIREMENTS
 
 )
 
-bundleParam(appXml PARAM_LIST config PARAM_VALUES Ex03RegistrationConfig)
+bundleParam(appXml PARAM_LIST config PARAM_VALUES ExRegistrationConfig)

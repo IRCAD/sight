@@ -1,9 +1,9 @@
-<plugin id="Ex02ImageMix" version="@PROJECT_VERSION@">
+<plugin id="ExImageMix" version="@PROJECT_VERSION@">
     <requirement id="dataReg" />
     <requirement id="servicesReg" />
     <requirement id="visuVTKQt" />
     <extension implements="::fwServices::registry::AppConfig">
-        <id>Ex02ImageMix</id>
+        <id>ExImageMix</id>
         <config>
             <!-- backgroundImage description -->
             <object uid="backgroundImage" type="::fwData::Image" src="deferred" />
@@ -13,8 +13,8 @@
             <service uid="mainFrame" type="::gui::frame::SDefaultFrame">
                 <gui>
                     <frame>
-                        <name>Ex02ImageMix</name>
-                        <icon>Ex02ImageMix-0.1/tuto.ico</icon>
+                        <name>ExImageMix</name>
+                        <icon>ExImageMix-0.1/tuto.ico</icon>
                         <minSize width="1280" height="720" />
                     </frame>
                     <menuBar/>

@@ -54,12 +54,12 @@ Detail of the ToolBar
  Step 5 : The user clicks on the register button (Yin_Yang symbol) to do the registration and visualize the result on the
           third tab (RegisterAction).
  -->
-<plugin id="Ex03Registration" version="@PROJECT_VERSION@">
+<plugin id="ExRegistration" version="@PROJECT_VERSION@">
     <requirement id="dataReg" />
     <requirement id="servicesReg" />
     <requirement id="visuVTKQt" />
     <extension implements="::fwServices::registry::AppConfig">
-        <id>Ex03RegistrationConfig</id>
+        <id>ExRegistrationConfig</id>
         <config>
             <!-- Object to store the image loading in the first tab -->
             <object uid="myImage" type="::fwData::Image" />
@@ -74,7 +74,7 @@ Detail of the ToolBar
             <service uid="mainFrame" type="::gui::frame::SDefaultFrame">
                 <gui>
                     <frame>
-                        <name>Ex03Registration</name>
+                        <name>ExRegistration</name>
                         <minSize width="800" height="600" />
                     </frame>
                 </gui>
@@ -100,13 +100,13 @@ Detail of the ToolBar
             <service uid="toolBar" type="::gui::aspect::SDefaultToolBar">
                 <gui>
                     <layout>
-                        <menuItem name="Load Image" icon="Ex03Registration-0.1/icons/icon-load1.png" />
-                        <menuItem name="Load Mesh1" icon="Ex03Registration-0.1/icons/icon-load1.png" />
+                        <menuItem name="Load Image" icon="ExRegistration-0.1/icons/icon-load1.png" />
+                        <menuItem name="Load Mesh1" icon="ExRegistration-0.1/icons/icon-load1.png" />
                         <separator/>
-                        <menuItem name="Load Mesh2" icon="Ex03Registration-0.1/icons/icon-load2.png" />
+                        <menuItem name="Load Mesh2" icon="ExRegistration-0.1/icons/icon-load2.png" />
                         <separator/>
-                        <menuItem name="Register" icon="Ex03Registration-0.1/icons/Fusion-tmp.png" />
-                        <menuItem name="Quit" icon="Ex03Registration-0.1/icons/unreadable.png" />
+                        <menuItem name="Register" icon="ExRegistration-0.1/icons/Fusion-tmp.png" />
+                        <menuItem name="Quit" icon="ExRegistration-0.1/icons/unreadable.png" />
                     </layout>
                 </gui>
                 <registry>
