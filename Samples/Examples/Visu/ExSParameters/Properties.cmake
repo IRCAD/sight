@@ -1,5 +1,5 @@
 
-set( NAME Ex08SParameters )
+set( NAME ExSParameters )
 set( VERSION 0.1 )
 set( TYPE APP )
 set( DEPENDENCIES  )

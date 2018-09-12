@@ -1,5 +1,5 @@
 
-set( NAME Ex01VolumeRendering )
+set( NAME ExVolumeRendering )
 set( VERSION 0.1 )
 set( TYPE APP )
 set( DEPENDENCIES  )
@@ -26,4 +26,4 @@ set( REQUIREMENTS
     visuVTKVRAdaptor
 )
 
-bundleParam(appXml PARAM_LIST config PARAM_VALUES Ex01VolumeRendering)
+bundleParam(appXml PARAM_LIST config PARAM_VALUES ExVolumeRendering)

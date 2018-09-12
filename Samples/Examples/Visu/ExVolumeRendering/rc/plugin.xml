@@ -30,13 +30,13 @@ Comment: Name inside the drawing are the uid of the service defined below.
  by the gray range in Scene2D_Shutter.
 
  -->
-<plugin id="Ex01VolumeRendering" version="@PROJECT_VERSION@">
+<plugin id="ExVolumeRendering" version="@PROJECT_VERSION@">
     <requirement id="dataReg" />
     <requirement id="servicesReg" />
     <requirement id="visuVTKQt" />
     <requirement id="scene2D" />
     <extension implements="::fwServices::registry::AppConfig">
-        <id>Ex01VolumeRendering</id>
+        <id>ExVolumeRendering</id>
         <config>
             <object uid="imageUID" type="::fwData::Image" />
             <object uid="TFSet" type="::fwData::Composite" src="deferred" />
@@ -46,8 +46,8 @@ Comment: Name inside the drawing are the uid of the service defined below.
             <service uid="IHM" type="::gui::frame::SDefaultFrame">
                 <gui>
                     <frame>
-                        <name>Ex01VolumeRendering</name>
-                        <icon>Ex01VolumeRendering-0.1/tuto.ico</icon>
+                        <name>ExVolumeRendering</name>
+                        <icon>ExVolumeRendering-0.1/tuto.ico</icon>
                     </frame>
                     <menuBar/>
                 </gui>
