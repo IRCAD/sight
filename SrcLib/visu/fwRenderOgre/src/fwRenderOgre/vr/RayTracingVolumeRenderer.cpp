@@ -153,7 +153,7 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
 
     const std::uint8_t numViewPoints  = this->getLayer()->getNumberOfCameras();
     const auto stereoMode             = layer->getStereoMode();
-    const auto rayEntryCompositorName = parentId + "_VolumeEntries" + std::to_string(numViewPoints);
+    const auto rayEntryCompositorName = "VolumeEntries" + std::to_string(numViewPoints);
     m_rayEntryCompositor = ::boost::make_unique<RayEntryCompositor> (rayEntryCompositorName, s_PROXY_GEOMETRY_RQ_GROUP,
                                                                      stereoMode, true);
 
