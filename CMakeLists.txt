@@ -500,6 +500,15 @@ elseif(WIN32)
     )
     install(
       FILES
+        "${CMAKE_SOURCE_DIR}/CMake/install/windows/NSIS/NSIS.InstallOptions.ini.in"
+        "${CMAKE_SOURCE_DIR}/CMake/install/windows/NSIS/NSIS.template.in"
+      DESTINATION
+        ${FWCONFIG_PACKAGE_LOCATION}/install/windows/NSIS/
+      COMPONENT
+        dev
+    )
+    install(
+      FILES
         "${CMAKE_SOURCE_DIR}/CMake/install/windows/NSIS/rc/banner_nsis.bmp"
         "${CMAKE_SOURCE_DIR}/CMake/install/windows/NSIS/rc/dialog_nsis.bmp"
         "${CMAKE_SOURCE_DIR}/CMake/install/windows/NSIS/rc/app.ico"

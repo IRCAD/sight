@@ -7,7 +7,6 @@ else()
     set(FWCMAKE_BUILD_FILES_DIR "${CMAKE_SOURCE_DIR}/CMake/build/")
     set(FWCMAKE_INSTALL_FILES_DIR "${CMAKE_SOURCE_DIR}/CMake/install/")
     # FWCMAKE_RESOURCE_PATH already set in main CMakeLists.txt
-
 endif()
 
 include(${FWCMAKE_INSTALL_FILES_DIR}/helper.cmake)

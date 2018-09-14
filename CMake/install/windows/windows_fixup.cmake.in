@@ -1,21 +1,7 @@
-#This script is called at install time only on Windows OS
-#It will be configured at configure time, only '@' variables will be replaced.
+cmake_policy(SET CMP0011 NEW)
+cmake_policy(SET CMP0053 NEW)
 
-#function to find libs and Bundles/* directories
-function(findFwlibsAndBundles FWLIBS_BUNDLES_DIRECTORIES)
-    file(GLOB_RECURSE LIBS @CMAKE_INSTALL_PREFIX@/@FWBUNDLE_LIB_PREFIX@/*@CMAKE_SHARED_LIBRARY_SUFFIX@)
-    list(REMOVE_DUPLICATES LIBS)
-    set(FOLDERS)
-    foreach(LIB ${LIBS})
-        get_filename_component(LIB_DIR "${LIB}" DIRECTORY)
-        list(APPEND FOLDERS ${LIB_DIR})
-    endforeach()
-    if(FOLDERS)
-        list(REMOVE_DUPLICATES FOLDERS)
-    endif()
-    set(${FWLIBS_BUNDLES_DIRECTORIES} ${FOLDERS} PARENT_SCOPE)
-endfunction()
-
+include(@FWCMAKE_INSTALL_FILES_DIR@/helper.cmake)
 
 # Run the script when installing but not a second time when running CPack
 if ( NOT ${CMAKE_INSTALL_PREFIX} MATCHES "/_CPack_Packages/.*/(TGZ|ZIP)/")
@@ -28,13 +14,30 @@ if ( NOT ${CMAKE_INSTALL_PREFIX} MATCHES "/_CPack_Packages/.*/(TGZ|ZIP)/")
     include(BundleUtilities)
 
     set(LIBS)
-    list(APPEND LIBS ${BUNDLES} ${PLUGINS})
-    #Look for all directories containing '.dll' files
+    list(APPEND LIBS ${BUNDLES} ${PLUGINS} @QT_PLUGINS@)
+    # Also add bundles from the SDK
+    if(@FW_BUILD_EXTERNAL@)
+        #file(GLOB_RECURSE BUNDLES FOLLOW_SYMLINKS "@Sight_LIBRARY_DIR@/*@CMAKE_SHARED_LIBRARY_SUFFIX@*")
 
+        foreach(REQUIREMENT @PROJECT_REQUIREMENTS@)
+            file(GLOB_RECURSE BUNDLES FOLLOW_SYMLINKS "@Sight_LIBRARY_DIR@/${REQUIREMENT}*/*@CMAKE_SHARED_LIBRARY_SUFFIX@*")
+            if(BUNDLES)
+                list(APPEND LIBS ${BUNDLES})
+            endif()
+        endforeach()
+
+    endif()
+
+    #Look for all directories containing '.dll' files
     findFwlibsAndBundles(FWLIBS_BUNDLES_DIRECTORIES)
     list(APPEND FWLIBS_BUNDLES_DIRECTORIES @EXTERNAL_LIBRARIES_DIRECTORIES@)
 
+    if(@FW_BUILD_EXTERNAL@)
+        list(APPEND FWLIBS_BUNDLES_DIRECTORIES @Sight_LIBRARY_DIR@)
+    endif()
+    set(LAUNCHER_PATH @CMAKE_INSTALL_PREFIX@/@LAUNCHER_PATH@)
+
     #Call fixup bundle on the fwlauncher and on all 'plugins' libraries (like bundle, plugins and share)
-    fixup_bundle("@CMAKE_INSTALL_PREFIX@/@LAUNCHER_PATH@" "${LIBS}" "${FWLIBS_BUNDLES_DIRECTORIES}")
+    fixup_bundle("${LAUNCHER_PATH}" "${LIBS}" "${FWLIBS_BUNDLES_DIRECTORIES}")
 
 endif()

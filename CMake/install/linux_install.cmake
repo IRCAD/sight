@@ -33,6 +33,10 @@ macro(linux_install PRJ_NAME)
         set(LAUNCHER "fwlauncher-${fwlauncher_VERSION}")
         set(PROFILE_PATH "${PRJ_NAME}-${PROJECT_VERSION}/profile.xml")
 
+        if(${FW_BUILD_EXTERNAL})
+            # install the launcher
+            install(PROGRAMS "${Sight_BINARY_DIR}/${LAUNCHER}" DESTINATION "bin")
+        endif
     elseif("${${PRJ_NAME}_TYPE}" STREQUAL  "EXECUTABLE")
 
         set(LAUNCHER_PATH "bin/${PRJ_NAME}-${${PRJ_NAME}_VERSION}")
@@ -47,9 +51,6 @@ macro(linux_install PRJ_NAME)
         set(PROJECT_REQUIREMENTS ${${PROJECT}_REQUIREMENTS})
 
         if(${FW_BUILD_EXTERNAL})
-            # install the launcher
-            install(PROGRAMS "${Sight_BINARY_DIR}/${LAUNCHER}" DESTINATION "${CMAKE_INSTALL_PREFIX}/bin")
-
             # install requirements
             findAllDependencies("${PROJECT}" PROJECT_LIST)
 
@@ -59,10 +60,10 @@ macro(linux_install PRJ_NAME)
                     qt_plugins_setup(${REQUIREMENT})
 
                     if(EXISTS "${Sight_LIBRARY_DIR}/${REQUIREMENT}-${${REQUIREMENT}_VERSION}")
-                        install(DIRECTORY "${Sight_LIBRARY_DIR}/${REQUIREMENT}-${${REQUIREMENT}_VERSION}" DESTINATION ${CMAKE_INSTALL_PREFIX}/${FWBUNDLE_LIB_PREFIX})
+                        install(DIRECTORY "${Sight_LIBRARY_DIR}/${REQUIREMENT}-${${REQUIREMENT}_VERSION}" DESTINATION ${FWBUNDLE_LIB_PREFIX})
                     endif()
                     if(EXISTS "${Sight_BUNDLES_DIR}/${REQUIREMENT}-${${REQUIREMENT}_VERSION}")
-                        install(DIRECTORY "${Sight_BUNDLES_DIR}/${REQUIREMENT}-${${REQUIREMENT}_VERSION}" DESTINATION ${CMAKE_INSTALL_PREFIX}/${FWBUNDLE_RC_PREFIX})
+                        install(DIRECTORY "${Sight_BUNDLES_DIR}/${REQUIREMENT}-${${REQUIREMENT}_VERSION}" DESTINATION ${FWBUNDLE_RC_PREFIX})
                     endif()
                 endif()
             endforeach()
