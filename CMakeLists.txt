@@ -898,6 +898,7 @@ macro(loadProperties PROPERTIES_FILE)
     unset(USE_PCH_FROM_TARGET)
     unset(DISABLE_PCH)
     unset(START_BEFORE)
+    unset(CONAN_DEPS)
 
     include("${PROPERTIES_FILE}")
 endmacro()
@@ -1029,6 +1030,7 @@ if(ADDITIONAL_REPOSITORIES)
 endif()
 
 unset(PROJECT_LIST)
+unset(CONAN_DEPS_LIST)
 foreach(PROPERTIES_FILE ${PROJECTS_PROPERTIES})
     get_filename_component(PROJECT_DIR ${PROPERTIES_FILE} PATH)
 
@@ -1056,6 +1058,7 @@ foreach(PROPERTIES_FILE ${PROJECTS_PROPERTIES})
     set(${NAME}_DEPENDENCIES "${DEPENDENCIES}")
     set(${NAME}_REQUIREMENTS "${REQUIREMENTS}")
     set(${NAME}_DISABLE_PCH  "${DISABLE_PCH}")
+    set(${NAME}_CONAN_DEPS   "${CONAN_DEPS}")
 
     # Get the pch target, test the existence of type variable to exclude unbuilt projects
     if(ENABLE_PCH AND TYPE AND NOT ${NAME}_DISABLE_PCH)
@@ -1103,6 +1106,10 @@ if(BUILD_TESTS)
     findTests("${PROJECT_LIST}" "${TESTS_FILTER}" PROJECT_TESTS)
     list(APPEND PROJECT_LIST ${PROJECT_TESTS})
 endif()
+
+# Find and install Conan packages
+findConanDeps("${PROJECT_LIST}" CONAN_DEPS_LIST)
+installConanDeps("${CONAN_DEPS_LIST}")
 
 if(PROJECTS_TO_INSTALL)
     message(STATUS "Installation rules will be created for : ${PROJECTS_TO_INSTALL}")

@@ -9,7 +9,22 @@ include(${CMAKE_BINARY_DIR}/conan.cmake)
 conan_check(VERSION 1.0.0 REQUIRED)
 conan_add_remote(NAME fw4spl-conan INDEX 1
                  URL http://5.39.78.163:8081/artifactory/api/conan/conan-local)
-                 
-conan_cmake_run(CONANFILE conanfile.py
-                BASIC_SETUP CMAKE_TARGETS NO_OUTPUT_DIRS
-                BUILD missing)
+
+macro(findConanDeps PROJECT_LIST CONAN_DEPS_LIST)
+    unset(RESULT_LIST)
+
+    foreach(PROJECT ${PROJECT_LIST})
+        if(${PROJECT}_CONAN_DEPS)
+            list(APPEND RESULT_LIST ${${PROJECT}_CONAN_DEPS})
+        endif()
+    endforeach()
+
+    list(REMOVE_DUPLICATES RESULT_LIST)
+    set(CONAN_DEPS_LIST ${RESULT_LIST})
+endmacro()
+
+macro(installConanDeps CONAN_DEPS_LIST)
+    conan_cmake_run(REQUIRES ${CONAN_DEPS_LIST}
+                    BASIC_SETUP CMAKE_TARGETS NO_OUTPUT_DIRS
+                    BUILD missing)
+endmacro()
