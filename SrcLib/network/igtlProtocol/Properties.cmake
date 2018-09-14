@@ -16,3 +16,7 @@ set( DEPENDENCIES
 )
 set( REQUIREMENTS  )
 
+set( CONAN_DEPS
+    libarchive/3.1.2@fw4spl/stable
+    openigtlink/2.1@fw4spl/stable
+)

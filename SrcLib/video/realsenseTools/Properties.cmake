@@ -7,3 +7,6 @@ set( DEPENDENCIES
     fwRuntime
 )
 set( REQUIREMENTS  )
+set( CONAN_DEPS
+    librealsense/0.9.1.1@fw4spl/stable
+)

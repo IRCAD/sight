@@ -8,3 +8,6 @@ set( DEPENDENCIES   fwCore
                     igtlProtocol
 )
 set( REQUIREMENTS  )
+set( CONAN_DEPS
+    openigtlink/2.1@fw4spl/stable
+)

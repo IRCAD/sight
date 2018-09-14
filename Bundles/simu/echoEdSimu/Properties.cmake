@@ -10,3 +10,6 @@ set( DEPENDENCIES
 
 )
 set( REQUIREMENTS )
+set( CONAN_DEPS
+    glm/0.9.8.5@fw4spl/stable
+)

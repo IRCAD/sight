@@ -5,3 +5,6 @@ set( TYPE LIBRARY )
 set( DEPENDENCIES fwCore )
 set( REQUIREMENTS  )
 
+set( CONAN_DEPS
+    camp/0.8.2@fw4spl/stable
+)

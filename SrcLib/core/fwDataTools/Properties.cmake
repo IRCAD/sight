@@ -5,3 +5,6 @@ set( TYPE LIBRARY )
 set( DEPENDENCIES fwData fwMath fwRuntime)
 set( REQUIREMENTS  )
 set( USE_PCH_FROM_TARGET pchData )
+set( CONAN_DEPS
+    glm/0.9.8.5@fw4spl/stable
+)

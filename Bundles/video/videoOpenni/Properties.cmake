@@ -12,3 +12,6 @@ set( DEPENDENCIES
         fwThread
 )
 set( REQUIREMENTS )
+set( CONAN_DEPS
+    openni/2.2.0-rev-958951f@fw4spl/stable
+)
