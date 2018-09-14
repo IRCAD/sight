@@ -87,12 +87,10 @@ const ::boost::regex Native::getNativeName() const
         "[0-9\\.]*" );
 #elif defined(WIN32)
     nativeName = ::boost::regex(
-        fullModulePath.filename().string() + m_bundle->getVersion().string() +
-        "\\.dll");
+        fullModulePath.filename().string() + "\\.dll");
 #elif defined (__MACOSX__)
     nativeName = ::boost::regex(
-        "lib" + fullModulePath.filename().string() + m_bundle->getVersion().string() + "[0-9\\.]*" +
-        "\\.dylib" );
+        "lib" + fullModulePath.filename().string() + "\\.dylib" );
 #endif
 
     return nativeName;
