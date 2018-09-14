@@ -29,7 +29,7 @@ if ( NOT ${CMAKE_INSTALL_PREFIX} MATCHES "/_CPack_Packages/.*/(TGZ|ZIP)/")
 
     include(BundleUtilities)
     set(LIBS "")
-    list(APPEND LIBS ${BUNDLES} ${PLUGINS})
+    list(APPEND LIBS ${BUNDLES} ${PLUGINS} @QT_PLUGINS@)
     # Also add bundles from the SDK
     if(@FW_BUILD_EXTERNAL@)
         #file(GLOB_RECURSE BUNDLES FOLLOW_SYMLINKS "@Sight_LIBRARY_DIR@/*@CMAKE_SHARED_LIBRARY_SUFFIX@*")

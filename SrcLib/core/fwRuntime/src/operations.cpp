@@ -174,7 +174,7 @@ std::shared_ptr< ExtensionPoint > findExtensionPoint(const std::string& identifi
     // Currently the library resources are at the same location than bundles
     // This might change in the future
     Runtime* rntm = Runtime::getDefault();
-    return rntm->getWorkingPath() / BUNDLE_RC_PREFIX / path;
+    return (rntm->getWorkingPath() / BUNDLE_RC_PREFIX / path).normalize();
 }
 
 //------------------------------------------------------------------------------

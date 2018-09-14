@@ -594,7 +594,7 @@ macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
                 set(LAUNCHER_PATH "$me")
             endif()
 
-            configure_file(${FWCMAKE_RESOURCE_PATH}/install/linux/template.sh.in ${CMAKE_CURRENT_BINARY_DIR}/${APP_NAME} @ONLY)
+            configure_file(${FWCMAKE_RESOURCE_PATH}/build/linux/template.sh.in ${CMAKE_CURRENT_BINARY_DIR}/${APP_NAME} @ONLY)
             file(COPY ${CMAKE_CURRENT_BINARY_DIR}/${APP_NAME} DESTINATION ${CMAKE_BINARY_DIR}/bin
                 FILE_PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
         endif()
@@ -862,6 +862,7 @@ macro(addProject PROJECT)
         file(APPEND "${CMAKE_BINARY_DIR}/cmake/SightRequirements.cmake"
             "set(${PROJECT}_EXTERNAL 1)\n"
             "set(${PROJECT}_REQUIREMENTS ${${PROJECT}_REQUIREMENTS})\n"
+            "set(${PROJECT}_DEPENDENCIES ${${PROJECT}_DEPENDENCIES})\n"
             "set(${PROJECT}_VERSION ${${PROJECT}_VERSION})\n"
             "set(${PROJECT}_TYPE ${${PROJECT}_TYPE})\n")
         if(${PROJECT}_START)

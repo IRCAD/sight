@@ -19,6 +19,7 @@ macro(qt_plugins_setup PROJECT_NAME)
             if( NOT ${QT_TEST} EQUAL -1 )
 
                 file(GLOB_RECURSE QT_FILES  "${CURRENT_DIR}/*")
+                list(APPEND QT_PLUGINS ${QT_FILES})
 
                 string(LENGTH ${CURRENT_DIR} CURRENT_LENGTH)
                 MATH( EXPR FINAL_LENGTH "${CURRENT_LENGTH} - ${QT_LENGTH}" )
@@ -30,7 +31,8 @@ macro(qt_plugins_setup PROJECT_NAME)
          endforeach()
 
          set( QT_REQUIREMENTS "${QT_REQUIREMENTS};${PLUGINS_LIST}" )
-         set( QT_REQUIREMENTS "${QT_REQUIREMENTS}" PARENT_SCOPE)
+         set( QT_REQUIREMENTS ${QT_REQUIREMENTS} PARENT_SCOPE)
+         set( QT_PLUGINS ${QT_PLUGINS} PARENT_SCOPE)
 
     endif()
 

@@ -40,13 +40,7 @@ function(osx_install PRJ_NAME)
     set(APP_PATH "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${EXECUTABLE_NAME}")
     set(APP_INSTALL_PATH "${CMAKE_INSTALL_PREFIX}/${EXECUTABLE_NAME}")
 
-    # configure qt.conf
-    set(FW_QT5_PLUGINS_PATH "lib/qt5/plugins")
-    set(QT_DIR "./")
-    configure_file("${fwGuiQt_DIR}/bin/qt.conf" "${APP_PATH}/Contents/Resources/qt.conf")
-
     install(TARGETS ${EXECUTABLE_NAME} BUNDLE DESTINATION . COMPONENT ApplicationBundle)
-
 
     install(CODE "
         if (EXISTS \"${CMAKE_INSTALL_PREFIX}/${FWBUNDLE_RC_PREFIX}\")

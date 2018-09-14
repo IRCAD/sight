@@ -48,14 +48,22 @@ macro(linux_install PRJ_NAME)
 
         if(${FW_BUILD_EXTERNAL})
             # install the launcher
-            install(FILES "${Sight_BINARY_DIR}/${LAUNCHER}" DESTINATION "${CMAKE_INSTALL_PREFIX}/bin")
+            install(PROGRAMS "${Sight_BINARY_DIR}/${LAUNCHER}" DESTINATION "${CMAKE_INSTALL_PREFIX}/bin")
 
             # install requirements
-            foreach(REQUIREMENT  ${${PROJECT}_REQUIREMENTS})
-                if(${REQUIREMENT}_EXTERNAL AND ${REQUIREMENT}_TYPE STREQUAL "BUNDLE")
-                    qt_plugins_setup(${REQUIREMENT}) # search and setup qt plugins for each bundles
-                    install(DIRECTORY "${Sight_LIBRARY_DIR}/${REQUIREMENT}-${${REQUIREMENT}_VERSION}" DESTINATION ${CMAKE_INSTALL_PREFIX}/${FWBUNDLE_LIB_PREFIX})
-                    install(DIRECTORY "${Sight_BUNDLES_DIR}/${REQUIREMENT}-${${REQUIREMENT}_VERSION}" DESTINATION ${CMAKE_INSTALL_PREFIX}/${FWBUNDLE_RC_PREFIX})
+            findAllDependencies("${PROJECT}" PROJECT_LIST)
+
+            foreach(REQUIREMENT ${PROJECT_LIST})
+                if(${REQUIREMENT}_EXTERNAL)
+                    # search and setup qt plugins for each bundles
+                    qt_plugins_setup(${REQUIREMENT})
+
+                    if(EXISTS "${Sight_LIBRARY_DIR}/${REQUIREMENT}-${${REQUIREMENT}_VERSION}")
+                        install(DIRECTORY "${Sight_LIBRARY_DIR}/${REQUIREMENT}-${${REQUIREMENT}_VERSION}" DESTINATION ${CMAKE_INSTALL_PREFIX}/${FWBUNDLE_LIB_PREFIX})
+                    endif()
+                    if(EXISTS "${Sight_BUNDLES_DIR}/${REQUIREMENT}-${${REQUIREMENT}_VERSION}")
+                        install(DIRECTORY "${Sight_BUNDLES_DIR}/${REQUIREMENT}-${${REQUIREMENT}_VERSION}" DESTINATION ${CMAKE_INSTALL_PREFIX}/${FWBUNDLE_RC_PREFIX})
+                    endif()
                 endif()
             endforeach()
 
@@ -78,6 +86,7 @@ macro(linux_install PRJ_NAME)
 
     if("${${PRJ_NAME}_TYPE}" STREQUAL  "APP")
         string(TOLOWER ${PRJ_NAME} APP_NAME)
+        configure_file(${FWCMAKE_RESOURCE_PATH}/install/linux/template.sh.in ${CMAKE_CURRENT_BINARY_DIR}/${APP_NAME} @ONLY)
         install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/${APP_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
     endif()
 

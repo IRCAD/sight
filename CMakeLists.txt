@@ -512,6 +512,14 @@ elseif(WIN32)
 elseif(UNIX)
     install(
       FILES
+      "${CMAKE_SOURCE_DIR}/CMake/build/linux/template.sh.in"
+      DESTINATION
+        ${FWCONFIG_PACKAGE_LOCATION}/build/linux
+      COMPONENT
+        dev
+    )
+    install(
+      FILES
         "${CMAKE_SOURCE_DIR}/CMake/install/linux_install.cmake"
       DESTINATION
         ${FWCONFIG_PACKAGE_LOCATION}/install
