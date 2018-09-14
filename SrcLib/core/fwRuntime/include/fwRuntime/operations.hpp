@@ -37,10 +37,10 @@ namespace fwRuntime
 {
 
 /**
- * @brief   Initializes Fw4SPL runtime and discovers default bundles. To be used when building an external application
- *          with Fw4SPL.
+ * @brief   Initializes Sight runtime and discovers default bundles. To be used when building an external application
+ *          with Sight.
  *
- * @param   directory   a path to the directory where Fw4SPL is installed
+ * @param   directory   a path to the directory where Sight is installed
  */
 FWRUNTIME_API void init( const boost::filesystem::path& directory );
 
