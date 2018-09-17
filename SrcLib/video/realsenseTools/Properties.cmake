@@ -9,4 +9,5 @@ set( DEPENDENCIES
 set( REQUIREMENTS  )
 set( CONAN_DEPS
     librealsense/0.9.1.1@fw4spl/stable
+    pcl/1.8.1-rev-9dae1ea@fw4spl/stable
 )

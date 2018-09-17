@@ -17,4 +17,5 @@ set( DEPENDENCIES
 set( REQUIREMENTS  )
 set( CONAN_DEPS
     boost/1.67.0@fw4spl/stable
+    pcl/1.8.1-rev-9dae1ea@fw4spl/stable
 )
