@@ -36,7 +36,7 @@ macro(linux_install PRJ_NAME)
         if(${FW_BUILD_EXTERNAL})
             # install the launcher
             install(PROGRAMS "${Sight_BINARY_DIR}/${LAUNCHER}" DESTINATION "bin")
-        endif
+        endif()
     elseif("${${PRJ_NAME}_TYPE}" STREQUAL  "EXECUTABLE")
 
         set(LAUNCHER_PATH "bin/${PRJ_NAME}-${${PRJ_NAME}_VERSION}")
