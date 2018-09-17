@@ -792,6 +792,10 @@ macro(fwLoadProperties)
 
     string( TOUPPER "${TYPE}" TYPE )
 
+    if(PLUGINS)
+        set(${NAME}_PLUGINS ${PLUGINS} PARENT_SCOPE)
+    endif()
+
     fwDefineDependencies( ${NAME} ${DEPENDENCIES} )
 
     if( TYPE STREQUAL "EXECUTABLE" )
@@ -817,10 +821,6 @@ macro(fwLoadProperties)
     endif()
     if(REQUIREMENTS)
         fwReq( ${REQUIREMENTS} )
-    endif()
-
-    if(PLUGINS)
-        set(${NAME}_PLUGINS ${PLUGINS} PARENT_SCOPE)
     endif()
 
     if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/Dependencies.cmake")
