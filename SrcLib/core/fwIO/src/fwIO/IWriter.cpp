@@ -19,13 +19,15 @@ namespace fwIO
 const ::fwCom::Slots::SlotKeyType IWriter::s_SET_FILE_FOLDER = "setFileFolder";
 
 // Private slot
-static const ::fwCom::Slots::SlotKeyType s_CONFIGURE_WITH_IHM = "configureWithIHM";
+static const ::fwCom::Slots::SlotKeyType s_WRITE_WITH_IHM_SLOT = "writeWithIHM";
+static const ::fwCom::Slots::SlotKeyType s_CONFIGURE_WITH_IHM  = "configureWithIHM";
 
 //-----------------------------------------------------------------------------
 
 IWriter::IWriter() noexcept
 {
     newSlot(s_CONFIGURE_WITH_IHM, &IWriter::configureWithIHM, this);
+    newSlot(s_WRITE_WITH_IHM_SLOT, &IWriter::writeWithIHM, this);
     newSlot(s_SET_FILE_FOLDER, &IWriter::setFileFolder, this);
 }
 
@@ -100,6 +102,19 @@ void IWriter::setFileFolder(boost::filesystem::path folder)
         file = file.filename();
         file = folder / file;
     }
+}
+
+//-----------------------------------------------------------------------------
+
+void IWriter::writeWithIHM()
+{
+    auto previousLocation = m_locations;
+
+    this->configureWithIHM();
+
+    this->update();
+
+    m_locations = previousLocation;
 }
 
 //-----------------------------------------------------------------------------

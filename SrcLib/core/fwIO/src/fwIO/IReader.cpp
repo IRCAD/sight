@@ -24,6 +24,7 @@ const ::fwCom::Slots::SlotKeyType IReader::s_SET_FILE_FOLDER = "setFileFolder";
 static const ::fwCom::Slots::SlotKeyType s_READ_FOLDER_SLOT   = "readFolder";
 static const ::fwCom::Slots::SlotKeyType s_READ_FILE_SLOT     = "readFile";
 static const ::fwCom::Slots::SlotKeyType s_READ_FILES_SLOT    = "readFiles";
+static const ::fwCom::Slots::SlotKeyType s_READ_WITH_IHM_SLOT = "readWithIHM";
 static const ::fwCom::Slots::SlotKeyType s_CONFIGURE_WITH_IHM = "configureWithIHM";
 
 //-----------------------------------------------------------------------------
@@ -33,6 +34,7 @@ IReader::IReader() noexcept
     newSlot(s_READ_FOLDER_SLOT, &IReader::readFolder, this);
     newSlot(s_READ_FILE_SLOT, &IReader::readFile, this);
     newSlot(s_READ_FILES_SLOT, &IReader::readFiles, this);
+    newSlot(s_READ_WITH_IHM_SLOT, &IReader::readWithIHM, this);
     newSlot(s_CONFIGURE_WITH_IHM, &IReader::configureWithIHM, this);
     newSlot(s_SET_FILE_FOLDER, &IReader::setFileFolder, this);
 }
@@ -122,6 +124,19 @@ void IReader::setFileFolder(boost::filesystem::path folder)
         file = file.filename();
         file = folder / file;
     }
+}
+
+//-----------------------------------------------------------------------------
+
+void IReader::readWithIHM()
+{
+    auto previousLocation = m_locations;
+
+    this->configureWithIHM();
+
+    this->update();
+
+    m_locations = previousLocation;
 }
 
 //-----------------------------------------------------------------------------

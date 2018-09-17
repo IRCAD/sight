@@ -22,6 +22,7 @@ namespace fwIO
  * @section Slots Slots
  * - \b setFileFolder(const ::boost::filesystem::path&) : Sets the folder when a path is configured in FILE or
  * FILES mode
+ * - \b writeWithIHM() : Calls configureWithIHM followed by an update but leaves the location untouched.
  *
  * This class represents the base interface for writer services.
  * Use the base service methods :
@@ -118,6 +119,11 @@ public:
      * @pre exception if service does not support FILE or FILES mode
      */
     FWIO_API void setFileFolder(::boost::filesystem::path folder);
+
+    /**
+     * @brief Slot: Calls configureWithIHM followed by an update but leaves the location untouched.
+     */
+    FWIO_API void writeWithIHM();
 
     /// Returns if a location has been defined ( by the configuration process or directly by user )
     FWIO_API bool hasLocationDefined() const;
