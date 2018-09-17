@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VISUVTKADAPTOR_SMESHESBOXWIDGET_HPP__
-#define __VISUVTKADAPTOR_SMESHESBOXWIDGET_HPP__
+#pragma once
 
 #include "visuVTKAdaptor/config.hpp"
 
@@ -16,8 +15,6 @@
 #include <fwData/Composite.hpp>
 
 #include <fwRenderVTK/IAdaptor.hpp>
-
-#ifndef ANDROID
 
 class vtkBoxWidget2;
 class vtkCommand;
@@ -124,7 +121,3 @@ private:
 };
 
 } //namespace visuVTKAdaptor
-
-#endif // ANDROID
-
-#endif // __VISUVTKADAPTOR_SMESHESBOXWIDGET_HPP__

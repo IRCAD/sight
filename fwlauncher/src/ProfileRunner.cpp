@@ -86,7 +86,7 @@ inline ostream& operator<<(ostream& s, vector<A1, A2> const& vec)
 
 //-----------------------------------------------------------------------------
 
-#ifdef __MACOSX__
+#ifdef __APPLE__
 std::pair<std::string, std::string> parsePns(const std::string& s)
 {
     if (s.substr(0, 5) == "-psn_")
@@ -163,7 +163,7 @@ int main(int argc, char* argv[])
     // Hidden options
     po::options_description hidden("Hidden options");
     hidden.add_options()
-#ifdef __MACOSX__
+#ifdef __APPLE__
     ("psn", po::value<std::string>(), "Application PSN number")
         ("NSDocumentRevisionsDebugMode", po::value<std::string>()->zero_tokens(), "DocumentRevisionsDebugMode")
 #endif
@@ -185,7 +185,7 @@ int main(int argc, char* argv[])
     {
         po::store(po::command_line_parser(argc, argv)
                   .options(cmdline_options)
-#ifdef __MACOSX__
+#ifdef __APPLE__
                   .extra_parser(parsePns)
 #endif
                   .positional(p)
@@ -244,7 +244,7 @@ int main(int argc, char* argv[])
         fclose(pFile);
     }
 
-#ifdef __MACOSX__
+#ifdef __APPLE__
     fs::path execPath = argv[0];
 
     if ( execPath.string().find(".app/") != std::string::npos || vm.count("psn"))

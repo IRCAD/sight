@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -113,8 +113,6 @@ bool getNearestPickedPosition(vtkAbstractPropPicker* picker, vtkRenderer* render
 }
 
 //------------------------------------------------------------------------------
-
-#ifndef ANDROID
 
 #if VTK_MAJOR_VERSION >= 7
 vtkSmartPointer<vtkShaderProgram>
@@ -276,9 +274,6 @@ buildShaderFromFile( vtkRenderWindow* pWindow,
 
     return pProgram;
 }
-#endif
 
 } //vtk
-
 } //fwRenderVTK
-

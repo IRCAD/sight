@@ -40,11 +40,7 @@ Native::~Native() noexcept
 
 const ::boost::filesystem::path Native::getBundleLocation() const
 {
-#ifdef ANDROID
-    return ::fwRuntime::Runtime::getDefault()->getWorkingPath() / "lib";
-#else
     return m_bundle->getLibraryLocation();
-#endif
 }
 
 //------------------------------------------------------------------------------
@@ -88,7 +84,7 @@ const ::boost::regex Native::getNativeName() const
 #elif defined(WIN32)
     nativeName = ::boost::regex(
         fullModulePath.filename().string() + "\\.dll");
-#elif defined (__MACOSX__)
+#elif defined (__APPLE__)
     nativeName = ::boost::regex(
         "lib" + fullModulePath.filename().string() + "\\.dylib" );
 #endif

@@ -1,15 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWRUNTIME_DL_LIBRARY_HPP__
-#define __FWRUNTIME_DL_LIBRARY_HPP__
+#pragma once
 
-#include "fwRuntime/RuntimeException.hpp"
 #include "fwRuntime/dl/Posix.hpp"
 #include "fwRuntime/dl/Win32.hpp"
+#include "fwRuntime/RuntimeException.hpp"
 
 #include <boost/filesystem/path.hpp>
 
@@ -36,8 +35,8 @@ struct LibraryBridge
      * @param[in]   modulePath      a path pointing the module to load without any extension
      *                          information
      */
-    LibraryBridge( const boost::filesystem::path & modulePath ) noexcept
-        : m_implementor( modulePath )
+    LibraryBridge( const boost::filesystem::path& modulePath ) noexcept :
+        m_implementor( modulePath )
     {
     }
 
@@ -47,7 +46,6 @@ struct LibraryBridge
     ~LibraryBridge() noexcept
     {
     }
-
 
     /**
      * @brief   Tells if the module is loaded.
@@ -123,14 +121,12 @@ struct LibraryBridge
         m_implementor.unload();
     }
 
-
     private:
 
         /**
          * @brief   The native module implementator.
          */
         Implementor m_implementor;
-
 
         /**
          * @brief   Assignment operator.
@@ -142,17 +138,12 @@ struct LibraryBridge
         }
 };
 
-
-#if defined(linux) || defined(__linux) || defined(__MACOSX__)
+#if defined(linux) || defined(__linux) || defined(__APPLE__)
 typedef struct LibraryBridge< Posix > Library;
 #else
 typedef struct LibraryBridge< Win32 > Library;
 #endif
 
-
 } // namespace dl
 
 } // namespace fwRuntime
-
-
-#endif // __FWRUNTIME_DL_LIBRARY_HPP__

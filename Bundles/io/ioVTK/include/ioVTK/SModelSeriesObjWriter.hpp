@@ -6,8 +6,6 @@
 
 #pragma once
 
-#ifndef ANDROID
-
 #include "ioVTK/config.hpp"
 
 #include <fwData/Mesh.hpp>
@@ -138,5 +136,3 @@ private:
 };
 
 } // namespace ioVTK
-
-#endif //ANDROID

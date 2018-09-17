@@ -4,8 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef ANDROID
-
 #include "visuVTKAdaptor/SDistance.hpp"
 
 #include <fwData/Material.hpp>
@@ -178,5 +176,3 @@ void SDistance::stopping()
 //------------------------------------------------------------------------------
 
 } //namespace visuVTKAdaptor
-
-#endif // ANDROID

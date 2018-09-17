@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -24,18 +24,14 @@
 
 #include <vtkCamera.h>
 #include <vtkCommand.h>
-#ifndef ANDROID
 #include <vtkInteractorStyleTrackballCamera.h>
-#else
-#include <vtkInteractorStyleMultiTouchCamera.h>
-#endif
 #include <vtkMatrix4x4.h>
 #include <vtkPolyData.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkPolyDataNormals.h>
 #include <vtkProperty.h>
-#include <vtkRenderWindow.h>
 #include <vtkRenderer.h>
+#include <vtkRenderWindow.h>
 #include <vtkTransform.h>
 
 fwServicesRegisterMacro( ::fwRender::IRender, ::vtkSimpleMesh::SRenderer, ::fwData::Mesh );
@@ -195,11 +191,7 @@ void SRenderer::initVTKPipeline()
 
     // Add the actors
     m_render->AddActor( actor);
-#ifndef ANDROID
     m_interactorManager->getInteractor()->SetInteractorStyle(vtkInteractorStyleTrackballCamera::New());
-#else
-    m_interactorManager->getInteractor()->SetInteractorStyle(vtkInteractorStyleMultiTouchCamera::New());
-#endif
     m_loc = new vtkLocalCommand(this);
 
     m_interactorManager->getInteractor()->AddObserver(vtkCommand::AnyEvent, m_loc);

@@ -1,4 +1,3 @@
-
 cmake_minimum_required (VERSION 3.1)
 
 project (sight)
@@ -306,68 +305,56 @@ foreach(PROPERTIES_FILE ${PROJECTS_PROPERTIES})
     get_filename_component(PROJECT_DIR ${PROPERTIES_FILE} PATH)
 
     loadProperties("${PROPERTIES_FILE}")
-
-    # Check if project is compatible with the current platform
-    set(APPEND_PROJECT OFF)
-    if( NOT PLATFORM OR PLATFORM STREQUAL "ALL")
-        set(APPEND_PROJECT ON)
-    elseif(PLATFORM STREQUAL "DESKTOP")
-        set(APPEND_PROJECT ON)
+    if(NOT NAME)
+        message(FATAL_ERROR "${PROPERTIES_FILE}: Project NAME can not be empty.")
     endif()
 
-    if (APPEND_PROJECT)
-
-        if(NOT NAME)
-            message(FATAL_ERROR "${PROPERTIES_FILE}: Project NAME can not be empty.")
-        endif()
-
-        list(FIND DEPENDENCIES ${NAME} DEP_LOOP)
-        if(DEP_LOOP GREATER -1)
-            message(FATAL_ERROR "${PROPERTIES_FILE}: A project can not be it's own dependency.")
-        endif()
-
-        list(FIND REQUIREMENTS ${NAME} REQ_LOOP)
-        if(REQ_LOOP GREATER -1)
-            message(FATAL_ERROR "${PROPERTIES_FILE}: A project can not be it's own requirement.")
-        endif()
-
-        if(${NAME}_DIR)
-            message(FATAL_ERROR "${PROPERTIES_FILE}: A project NAME must be unique in the workspace. ${NAME} already defined there : ${${NAME}_DIR}")
-        endif()
-
-        string( TOUPPER "${TYPE}" TYPE )
-
-        set(${NAME}_DEPENDENCIES "${DEPENDENCIES}")
-        set(${NAME}_REQUIREMENTS "${REQUIREMENTS}")
-        set(${NAME}_DISABLE_PCH  "${DISABLE_PCH}")
-
-        # Get the pch target, test the existence of type variable to exclude unbuilt projects
-        if(ENABLE_PCH AND TYPE AND NOT ${NAME}_DISABLE_PCH)
-            set(${NAME}_PROJECT_DIR "${PROJECT_DIR}")
-
-            getPchTarget(${NAME} ${PROJECT_DIR} ${TYPE} ${USE_PCH_FROM_TARGET})
-
-            # Append the pch target as a dependency (duplicate will be stripped later if it was already a dependency)
-            if(NOT ${${NAME}_PCH_TARGET} STREQUAL ${NAME})
-                list(APPEND ${NAME}_REQUIREMENTS ${${NAME}_PCH_TARGET})
-            endif()
-        endif()
-
-        set(${NAME}_VERSION "${VERSION}")
-        set(${NAME}_DIR "${PROJECT_DIR}")
-
-        if(TYPE STREQUAL "APP")
-            set(${NAME}_UNIQUE "${UNIQUE}")
-        endif()
-
-        if( TYPE STREQUAL "BUNDLE" OR TYPE STREQUAL "APP" AND START)
-            set(${NAME}_START "${START}")
-        endif()
-
-        set(${NAME}_START_BEFORE "${START_BEFORE}")
-
-        list(APPEND PROJECT_LIST ${NAME})
+    list(FIND DEPENDENCIES ${NAME} DEP_LOOP)
+    if(DEP_LOOP GREATER -1)
+        message(FATAL_ERROR "${PROPERTIES_FILE}: A project can not be its own dependency.")
     endif()
+
+    list(FIND REQUIREMENTS ${NAME} REQ_LOOP)
+    if(REQ_LOOP GREATER -1)
+        message(FATAL_ERROR "${PROPERTIES_FILE}: A project can not be its own requirement.")
+    endif()
+
+    if(${NAME}_DIR)
+        message(FATAL_ERROR "${PROPERTIES_FILE}: A project NAME must be unique in the workspace. ${NAME} already defined there : ${${NAME}_DIR}")
+    endif()
+
+    string( TOUPPER "${TYPE}" TYPE )
+
+    set(${NAME}_DEPENDENCIES "${DEPENDENCIES}")
+    set(${NAME}_REQUIREMENTS "${REQUIREMENTS}")
+    set(${NAME}_DISABLE_PCH  "${DISABLE_PCH}")
+
+    # Get the pch target, test the existence of type variable to exclude unbuilt projects
+    if(ENABLE_PCH AND TYPE AND NOT ${NAME}_DISABLE_PCH)
+        set(${NAME}_PROJECT_DIR "${PROJECT_DIR}")
+
+        getPchTarget(${NAME} ${PROJECT_DIR} ${TYPE} ${USE_PCH_FROM_TARGET})
+
+        # Append the pch target as a dependency (duplicate will be stripped later if it was already a dependency)
+        if(NOT ${${NAME}_PCH_TARGET} STREQUAL ${NAME})
+            list(APPEND ${NAME}_REQUIREMENTS ${${NAME}_PCH_TARGET})
+        endif()
+    endif()
+
+    set(${NAME}_VERSION "${VERSION}")
+    set(${NAME}_DIR "${PROJECT_DIR}")
+
+    if(TYPE STREQUAL "APP")
+        set(${NAME}_UNIQUE "${UNIQUE}")
+    endif()
+
+    if( TYPE STREQUAL "BUNDLE" OR TYPE STREQUAL "APP" AND START)
+        set(${NAME}_START "${START}")
+    endif()
+
+    set(${NAME}_START_BEFORE "${START_BEFORE}")
+
+    list(APPEND PROJECT_LIST ${NAME})
 
 endforeach()
 

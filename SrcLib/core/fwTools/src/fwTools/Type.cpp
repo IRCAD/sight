@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -259,7 +259,7 @@ void Type::setType<char>()
 
 //-----------------------------------------------------------------------------
 
-#if (defined(linux) || defined(__linux)) && !defined(ANDROID)
+#if (defined(linux) || defined(__linux))
 
 template <>
 void Type::setType<std::int64_t>()
@@ -294,4 +294,3 @@ void Type::setType<void>()
 }
 
 } // namespace fwTools
-

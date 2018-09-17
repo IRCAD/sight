@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWMEDDATATOOLS_FUNCTIONS_HPP__
-#define __FWMEDDATATOOLS_FUNCTIONS_HPP__
+#pragma once
 
 #include "fwMedDataTools/config.hpp"
 
@@ -13,9 +12,6 @@
 
 namespace fwMedDataTools
 {
-
-// Skip this for now on Android, this allows us to get rid of GDCM
-#ifndef ANDROID
 
 /**
  * @brief Generates a random Dicom Patient ID using GDCM.
@@ -31,8 +27,4 @@ FWMEDDATATOOLS_API std::string generatePatientId();
  */
 FWMEDDATATOOLS_API std::string generateStudyInstanceUid();
 
-#endif // ANDROID
-
 } // namespace fwMedDataTools
-
-#endif //__FWMEDDATATOOLS_FUNCTIONS_HPP__
