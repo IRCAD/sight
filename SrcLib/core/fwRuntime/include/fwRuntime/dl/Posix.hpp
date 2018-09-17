@@ -1,15 +1,12 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWRUNTIME_DL_POSIX_HPP__
-#define __FWRUNTIME_DL_POSIX_HPP__
+#pragma once
 
-
-#if defined(linux) || defined(__linux) || defined (__MACOSX__)
-
+#if defined(linux) || defined(__linux) || defined (__APPLE__)
 
 #include "fwRuntime/dl/Native.hpp"
 
@@ -20,7 +17,6 @@ namespace fwRuntime
 
 namespace dl
 {
-
 
 /**
  * @brief   Implements a posix native module.
@@ -34,13 +30,12 @@ struct Posix : public Native
      *
      * @param[in]   modulePath  a path to the module to manage
      */
-    Posix( const boost::filesystem::path & modulePath ) noexcept;
+    Posix( const boost::filesystem::path& modulePath ) noexcept;
 
     /**
      * @brief   Destructor.
      */
     ~Posix() noexcept;
-
 
     /**
      * @see ::fwRuntime::dl::Native#isLoaded
@@ -54,7 +49,7 @@ struct Posix : public Native
      *
      * @return      a pointer to the found symbol or null if none has been found
      */
-    void* getSymbol( const std::string & name ) const;
+    void* getSymbol( const std::string& name ) const;
 
     /**
      * @see ::fwRuntime::dl::Native#load
@@ -66,23 +61,17 @@ struct Posix : public Native
      */
     void unload();
 
-
     private:
 
         /**
          * @brief   The handle of the loaded module.
          */
-        void * m_handle;
+        void* m_handle;
 
 };
-
 
 } // namespace dl
 
 } // namespace fwRuntime
 
-
 #endif // #ifdef linux
-
-
-#endif // __FWRUNTIME_DL_POSIX_HPP__

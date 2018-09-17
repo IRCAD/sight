@@ -6,8 +6,6 @@
 
 #pragma once
 
-#ifndef ANDROID
-
 #include "visuVTKAdaptor/config.hpp"
 
 #include <fwRenderVTK/IAdaptor.hpp>
@@ -60,5 +58,3 @@ protected:
     vtkSmartPointer<vtkOrientationMarkerWidget> m_widget;
 };
 } //namespace visuVTKAdaptor
-
-#endif // ANDROID

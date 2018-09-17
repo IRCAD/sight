@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWRUNTIME_PROFILE_PROFILE_HPP__
-#define __FWRUNTIME_PROFILE_PROFILE_HPP__
+#pragma once
 
 #include "fwRuntime/config.hpp"
 
@@ -17,10 +16,6 @@
 
 #include <functional>
 #include <vector>
-
-#ifdef ANDROID
-class android_app;
-#endif
 
 namespace fwRuntime
 {
@@ -176,19 +171,6 @@ public:
         m_checkSingleInstance = _checkSingleInstance;
     }
 
-#ifdef ANDROID
-    /// Returns android native activity interface
-    android_app* getApp() const
-    {
-        return m_app;
-    }
-    //------------------------------------------------------------------------------
-
-    void setApp(android_app* app)
-    {
-        m_app = app;
-    }
-#endif
     //------------------------------------------------------------------------------
 
     ParamsContainer getParams() const
@@ -240,9 +222,6 @@ private:
     bool m_checkSingleInstance;
     RunCallbackType m_run;
 
-#ifdef ANDROID
-    android_app* m_app; ///< native android activity interface
-#endif
     ParamsContainer m_params;
     int m_argc;
     char**          m_argv;
@@ -263,5 +242,3 @@ FWRUNTIME_API Profile::sptr getCurrentProfile();
 } // namespace profile
 
 } // namespace fwRuntime
-
-#endif /*__FWRUNTIME_PROFILE_PROFILE_HPP__*/

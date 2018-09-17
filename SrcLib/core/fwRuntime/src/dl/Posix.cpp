@@ -1,13 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#if defined(linux) || defined(__linux) || defined (__MACOSX__)
+#if defined(linux) || defined(__linux) || defined (__APPLE__)
+
+#include "fwRuntime/dl/Posix.hpp"
 
 #include "fwRuntime/Bundle.hpp"
-#include "fwRuntime/dl/Posix.hpp"
 
 namespace fwRuntime
 {
@@ -17,9 +18,9 @@ namespace dl
 
 //------------------------------------------------------------------------------
 
-Posix::Posix( const boost::filesystem::path & modulePath ) noexcept :
+Posix::Posix( const boost::filesystem::path& modulePath ) noexcept :
     Native(modulePath),
-    m_handle  ( 0 )
+    m_handle( 0 )
 {
 }
 
@@ -38,7 +39,7 @@ bool Posix::isLoaded() const noexcept
 
 //------------------------------------------------------------------------------
 
-void * Posix::getSymbol( const std::string & name ) const
+void* Posix::getSymbol( const std::string& name ) const
 {
     void* result = 0;
     if(isLoaded() == true)
@@ -96,5 +97,4 @@ void Posix::unload()
 
 } // namespace fwRuntime
 
-
-#endif // #if defined(linux) || defined(__linux) || defined (__MACOSX__)
+#endif // #if defined(linux) || defined(__linux) || defined (__APPLE__)

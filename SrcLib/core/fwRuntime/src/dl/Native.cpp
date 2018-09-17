@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -40,11 +40,7 @@ Native::~Native() noexcept
 
 const ::boost::filesystem::path Native::getBundleLocation() const
 {
-#ifdef ANDROID
-    return ::fwRuntime::Runtime::getDefault()->getWorkingPath() / "lib";
-#else
     return m_bundle->getLibraryLocation();
-#endif
 }
 
 //------------------------------------------------------------------------------
@@ -89,7 +85,7 @@ const ::boost::regex Native::getNativeName() const
     nativeName = ::boost::regex(
         fullModulePath.filename().string() + Bundle::s_VERSION_DELIMITER + m_bundle->getVersion().string() +
         "\\.dll");
-#elif defined (__MACOSX__)
+#elif defined (__APPLE__)
     nativeName = ::boost::regex(
         "lib" + fullModulePath.filename().string() + Bundle::s_VERSION_DELIMITER + m_bundle->getVersion().string() + "[0-9\\.]*" +
         "\\.dylib" );

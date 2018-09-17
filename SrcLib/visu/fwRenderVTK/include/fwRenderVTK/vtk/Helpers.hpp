@@ -1,24 +1,21 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWRENDERVTK_VTK_HELPERS_HPP__
-#define __FWRENDERVTK_VTK_HELPERS_HPP__
+#pragma once
+
+#include "fwRenderVTK/config.hpp"
 
 #include <vtkType.h>
 #include <vtkSmartPointer.h>
-
-#include "fwRenderVTK/config.hpp"
 
 class vtkProp;
 class vtkPoints;
 class vtkRenderer;
 class vtkAbstractPropPicker;
 class vtkRenderWindow;
-
-#ifndef ANDROID
 
 #if VTK_MAJOR_VERSION < 7
 #include <vtkShaderProgram2.h>
@@ -28,8 +25,6 @@ class vtkRenderWindow;
 #include <vtkShaderProgram.h>
 #include <vtkShader.h>
 #endif // VTK_MAJOR_VERSION < 7
-
-#endif // ANDROID
 
 namespace fwRenderVTK
 {
@@ -41,7 +36,6 @@ FWRENDERVTK_API vtkProp* getNearestPickedProp(vtkAbstractPropPicker* picker, vtk
 FWRENDERVTK_API bool     getNearestPickedPosition(vtkAbstractPropPicker* picker, vtkRenderer* renderer,
                                                   double* position);
 
-#ifndef ANDROID
 #if VTK_MAJOR_VERSION < 7
 FWRENDERVTK_API vtkSmartPointer<vtkShaderProgram2> buildShader(vtkRenderWindow* pWindow,
                                                                const char* pcVertexShader,
@@ -59,10 +53,6 @@ FWRENDERVTK_API vtkSmartPointer<vtkShaderProgram> buildShaderFromFile( vtkRender
                                                                        const char* pcVertexName,
                                                                        const char* pcFragmentName );
 #endif // VTK_MAJOR_VERSION < 7
-#endif
 
 } //vtk
 } //fwRenderVTK
-
-#endif //__FWRENDERVTK_VTK_HELPERS_HPP__
-

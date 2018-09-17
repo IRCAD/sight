@@ -6,8 +6,6 @@
 
 #pragma once
 
-#ifndef ANDROID
-
 #include "visuVTKAdaptor/config.hpp"
 
 #include <fwData/Color.hpp>
@@ -90,5 +88,3 @@ private:
 };
 
 } //namespace visuVTKAdaptor
-
-#endif // ANDROID

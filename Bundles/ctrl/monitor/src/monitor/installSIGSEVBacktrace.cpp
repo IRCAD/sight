@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -25,7 +25,6 @@
 #include <string.h>
 #include <sstream>
 
-
 /* get REG_EIP from ucontext.h */
 //#define __USE_GNU // already defined
 #if !defined(__APPLE__) || (__ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__ - 1060) <= 0
@@ -44,24 +43,20 @@
 #include <sstream>
 
 #include <boost/lexical_cast.hpp>
-#include <windows.h>
-#include <dbghelp.h>
+#include <Windows.h>
+#include <DbgHelp.h>
 
 #endif
 
 namespace monitor
 {
 
-void generateSIGSEV()
-{
-    char *p = (char *)0xdeadbeef;
-    *p = 10;    /* CRASH here!! */
-}
-
 #ifndef WIN32
+//------------------------------------------------------------------------------
+
 std::string demangle( std::string mangled )
 {
-    char * c_demangled = abi::__cxa_demangle( mangled.c_str(), 0, 0, 0);
+    char* c_demangled = abi::__cxa_demangle( mangled.c_str(), 0, 0, 0);
     if (c_demangled)
     {
         std::string res(c_demangled);
@@ -74,7 +69,9 @@ std::string demangle( std::string mangled )
     }
 }
 
-std::string decode( char *message)
+//------------------------------------------------------------------------------
+
+std::string decode( char* message)
 {
     std::string msg(message);
     std::string res(message);
@@ -83,7 +80,7 @@ std::string decode( char *message)
     if ( popen != std::string::npos )
     {
         std::string::size_type plus = msg.find('+');
-        res = std::string(message,popen+1) + " ";
+        res = std::string(message, popen+1) + " ";
         std::string mangled( message, popen+1, plus -popen -1 );
         res += demangle(mangled) + " ";
         res += std::string( message + plus, message + strlen(message) );
@@ -91,14 +88,15 @@ std::string decode( char *message)
     return res;
 }
 
-void bt_sighandler(int sig, siginfo_t *info,
-                   void *secret)
+//------------------------------------------------------------------------------
+
+void bt_sighandler(int sig, siginfo_t* info,
+                   void* secret)
 {
 
-    void *trace[16];
-    char **messages = (char **)NULL;
+    void* trace[16];
     int i, trace_size = 0;
-    ucontext_t *uc = (ucontext_t *)secret;
+    const ucontext_t* uc = reinterpret_cast<const ucontext_t*>(secret);
 
     std::stringstream ss;
     ss << "Got signal " << sig;
@@ -107,7 +105,7 @@ void bt_sighandler(int sig, siginfo_t *info,
     if (sig == SIGSEGV)
     {
         ss << " faulty address is " << info->si_addr;
-#ifndef __MACOSX__
+#ifndef __APPLE__
         ss << " from " << uc->uc_mcontext.gregs[REG_EIP];
 #endif
     }
@@ -115,14 +113,14 @@ void bt_sighandler(int sig, siginfo_t *info,
 
     trace_size = backtrace(trace, 16);
     /* overwrite sigaction with caller's address */
-#ifndef __MACOSX__
-    trace[1] = (void *) uc->uc_mcontext.gregs[REG_EIP];
+#ifndef __APPLE__
+    trace[1] = reinterpret_cast<void*>(uc->uc_mcontext.gregs[REG_EIP]);
 #endif
 
-    messages = backtrace_symbols(trace, trace_size);
+    char** messages = backtrace_symbols(trace, trace_size);
     /* skip first stack frame (points here) */
     ss <<  "    [bt] Execution path:" << std::endl;
-    for (i = 1; i<trace_size; ++i)
+    for (i = 1; i < trace_size; ++i)
     {
         ss <<  "    [bt] " <<  decode(messages[i]) << std::endl;
     }
@@ -138,38 +136,43 @@ void bt_sighandler(int sig, siginfo_t *info,
     }
 
 }
+//------------------------------------------------------------------------------
+
 void installSIGSEVBacktrace()
 {
     struct sigaction sa;
 
     sa.sa_sigaction = bt_sighandler;
-    sigemptyset (&sa.sa_mask);
+    sigemptyset(&sa.sa_mask);
     sa.sa_flags = SA_RESTART | SA_SIGINFO;
 
-    sigaction(SIGSEGV, &sa, NULL);
-    sigaction(SIGUSR1, &sa, NULL);
+    sigaction(SIGSEGV, &sa, nullptr);
+    sigaction(SIGUSR1, &sa, nullptr);
 }
-
 
 #else // if  win32
 
 const size_t nbChar = 100;
 #if _MSC_VER > 1499 // Visual C++ 2008 only
+//------------------------------------------------------------------------------
+
 BOOL CALLBACK EnumerateLoadedModules(LPCSTR ModuleName, DWORD64 ModuleBase, ULONG ModuleSize, PVOID UserContext)
 #else
+//------------------------------------------------------------------------------
+
 BOOL CALLBACK EnumerateLoadedModules(LPSTR ModuleName, DWORD64 ModuleBase, ULONG ModuleSize, PVOID UserContext)
 #endif
 {
     std::list<std::string>* pLoadedModules = reinterpret_cast<std::list<std::string>*>(UserContext);
-    pLoadedModules->push_back(std::string((char *)ModuleName) + "\t" + ::boost::lexical_cast<std::string>(ModuleBase));
+    pLoadedModules->push_back(std::string((char*)ModuleName) + "\t" + ::boost::lexical_cast<std::string>(ModuleBase));
     return true;
 }
 
 /**
  * Dumps the backtrace on a stream
  */
-void printDump(std::list<std::string> &loadedModules, std::list<std::string> &callStack,
-               std::list<std::string> &fileStack)
+void printDump(std::list<std::string>& loadedModules, std::list<std::string>& callStack,
+               std::list<std::string>& fileStack)
 {
     std::stringstream stream;
 
@@ -198,8 +201,8 @@ void printDump(std::list<std::string> &loadedModules, std::list<std::string> &ca
  * Loads the elements of the call stack in a list
  * @param exceptionInfos are useful information on the exception
  */
-void LoadCallStack(EXCEPTION_POINTERS* exceptionInfos, HANDLE &hProcess, std::list<std::string> &callStack,
-                   std::list<std::string> &fileStack)
+void LoadCallStack(EXCEPTION_POINTERS* exceptionInfos, HANDLE& hProcess, std::list<std::string>& callStack,
+                   std::list<std::string>& fileStack)
 {
     STACKFRAME64 tempStackFrame;
     CONTEXT context = *(exceptionInfos->ContextRecord);
@@ -245,8 +248,8 @@ void LoadCallStack(EXCEPTION_POINTERS* exceptionInfos, HANDLE &hProcess, std::li
     DWORD lineDisplacement;
     IMAGEHLP_LINE64 lineInfo = { sizeof(IMAGEHLP_LINE64) };
 
-    while(StackWalk64(machineType, hProcess, GetCurrentThread(), &tempStackFrame, &context, NULL,
-                      SymFunctionTableAccess64, SymGetModuleBase64, NULL))
+    while(StackWalk64(machineType, hProcess, GetCurrentThread(), &tempStackFrame, &context, nullptr,
+                      SymFunctionTableAccess64, SymGetModuleBase64, nullptr))
     {
         // Sanity stack check
         if(tempStackFrame.AddrPC.Offset == 0)
@@ -294,7 +297,7 @@ static LONG WINAPI UnhandledExpFilter(PEXCEPTION_POINTERS pExceptionInfo)
     SymSetOptions(SYMOPT_UNDNAME|SYMOPT_DEFERRED_LOADS|SYMOPT_LOAD_LINES);
     hProcess = GetCurrentProcess();
 
-    if(SymInitialize(hProcess, NULL, TRUE))
+    if(SymInitialize(hProcess, nullptr, TRUE))
     {
         LoadCallStack(pExceptionInfo, hProcess, callStack, fileStack);
         ::EnumerateLoadedModules64(hProcess, EnumerateLoadedModules, &loadedModules);
@@ -306,6 +309,8 @@ static LONG WINAPI UnhandledExpFilter(PEXCEPTION_POINTERS pExceptionInfo)
     return EXCEPTION_CONTINUE_SEARCH;
 }
 
+//------------------------------------------------------------------------------
+
 void installSIGSEVBacktrace()
 {
     SetUnhandledExceptionFilter(UnhandledExpFilter);
@@ -313,7 +318,4 @@ void installSIGSEVBacktrace()
 
 #endif
 
-
-
 } // namespace monitor
-

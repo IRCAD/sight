@@ -1,30 +1,27 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef ANDROID
-
-#include "vtkAssemblyPath.h"
-#include "vtkCellPicker.h"
-#include "vtkCamera.h"
-#include "vtkCleanPolyData.h"
-#include "vtkCoordinate.h"
-#include "vtkCylinderSource.h"
-#include "vtkFollower.h"
-#include "vtkInteractorObserver.h"
-#include "vtkLine.h"
-#include "vtkMath.h"
-#include "vtkObjectFactory.h"
-#include "vtkPolyDataMapper.h"
-#include "vtkPolyDataNormals.h"
-#include "vtkProperty.h"
-#include "vtkRenderer.h"
-#include "vtkRenderWindow.h"
-
-
 #include "fwRenderVTK/vtk/MarkedSphereHandleRepresentation.hpp"
+
+#include <vtkAssemblyPath.h>
+#include <vtkCamera.h>
+#include <vtkCellPicker.h>
+#include <vtkCleanPolyData.h>
+#include <vtkCoordinate.h>
+#include <vtkCylinderSource.h>
+#include <vtkFollower.h>
+#include <vtkInteractorObserver.h>
+#include <vtkLine.h>
+#include <vtkMath.h>
+#include <vtkObjectFactory.h>
+#include <vtkPolyDataMapper.h>
+#include <vtkPolyDataNormals.h>
+#include <vtkProperty.h>
+#include <vtkRenderer.h>
+#include <vtkRenderWindow.h>
 
 namespace fwRenderVTK
 {
@@ -35,10 +32,11 @@ namespace vtk
 vtkStandardNewMacro(MarkedSphereHandleRepresentation);
 
 //----------------------------------------------------------------------
-MarkedSphereHandleRepresentation::MarkedSphereHandleRepresentation() : vtkSphereHandleRepresentation()
+MarkedSphereHandleRepresentation::MarkedSphereHandleRepresentation() :
+    vtkSphereHandleRepresentation()
 {
     this->Marker = vtkCylinderSource::New();
-    this->Marker->SetCenter(0.,-1.,0.);
+    this->Marker->SetCenter(0., -1., 0.);
     this->Marker->SetResolution(64);
     this->Marker->SetHeight(0.);
 
@@ -47,7 +45,7 @@ MarkedSphereHandleRepresentation::MarkedSphereHandleRepresentation() : vtkSphere
     this->CleanPolyData->CreateDefaultLocator();
     this->CleanPolyData->SetInputConnection(0, this->Marker->GetOutputPort(0));
 
-    vtkPolyDataNormals *MarkerNormals = vtkPolyDataNormals::New();
+    vtkPolyDataNormals* MarkerNormals = vtkPolyDataNormals::New();
     MarkerNormals->SetInputConnection( 0, this->CleanPolyData->GetOutputPort(0) );
 
     this->MarkerMapper = vtkPolyDataMapper::New();
@@ -117,21 +115,21 @@ void MarkedSphereHandleRepresentation::BuildRepresentation()
 }
 //
 //----------------------------------------------------------------------
-void MarkedSphereHandleRepresentation::GetActors(vtkPropCollection *pc)
+void MarkedSphereHandleRepresentation::GetActors(vtkPropCollection* pc)
 {
     this->Actor->GetActors(pc);
     this->Follower->GetActors(pc);
 }
 
 //----------------------------------------------------------------------
-void MarkedSphereHandleRepresentation::ReleaseGraphicsResources(vtkWindow *win)
+void MarkedSphereHandleRepresentation::ReleaseGraphicsResources(vtkWindow* win)
 {
     this->Actor->ReleaseGraphicsResources(win);
     this->Follower->ReleaseGraphicsResources(win);
 }
 
 //----------------------------------------------------------------------
-int MarkedSphereHandleRepresentation::RenderOpaqueGeometry(vtkViewport *viewport)
+int MarkedSphereHandleRepresentation::RenderOpaqueGeometry(vtkViewport* viewport)
 {
     this->BuildRepresentation();
     int ret = 0;
@@ -143,7 +141,7 @@ int MarkedSphereHandleRepresentation::RenderOpaqueGeometry(vtkViewport *viewport
 }
 
 //----------------------------------------------------------------------
-int MarkedSphereHandleRepresentation::RenderTranslucentPolygonalGeometry(vtkViewport *viewport)
+int MarkedSphereHandleRepresentation::RenderTranslucentPolygonalGeometry(vtkViewport* viewport)
 {
     this->BuildRepresentation();
     int ret = 0;
@@ -161,7 +159,7 @@ int MarkedSphereHandleRepresentation::HasTranslucentPolygonalGeometry()
 }
 
 //----------------------------------------------------------------------
-void MarkedSphereHandleRepresentation::SetMarkerProperty(vtkProperty * p)
+void MarkedSphereHandleRepresentation::SetMarkerProperty(vtkProperty* p)
 {
     vtkSetObjectBodyMacro(MarkerProperty, vtkProperty, p);
     if (p)
@@ -173,7 +171,7 @@ void MarkedSphereHandleRepresentation::SetMarkerProperty(vtkProperty * p)
 //----------------------------------------------------------------------
 void MarkedSphereHandleRepresentation::PrintSelf(ostream& os, vtkIndent indent)
 {
-    this->vtkSphereHandleRepresentation::PrintSelf(os,indent);
+    this->vtkSphereHandleRepresentation::PrintSelf(os, indent);
 
     if ( this->MarkerProperty )
     {
@@ -184,11 +182,9 @@ void MarkedSphereHandleRepresentation::PrintSelf(ostream& os, vtkIndent indent)
         os << indent << "Marker Property: (none)\n";
     }
 
-    this->Sphere->PrintSelf(os,indent.GetNextIndent());
+    this->Sphere->PrintSelf(os, indent.GetNextIndent());
 }
 
 } // namespace vtk
 
 } // namespace fwRenderVTK
-
-#endif //ANDROID

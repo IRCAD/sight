@@ -1,22 +1,20 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWRENDERVTK_VTK_MARKEDSPHEREHANDLEREPRESENTATION_HPP__
-#define __FWRENDERVTK_VTK_MARKEDSPHEREHANDLEREPRESENTATION_HPP__
-#ifndef ANDROID
+#pragma once
 
-#include "vtkHandleRepresentation.h"
-#include "vtkSphereHandleRepresentation.h"
-#include "vtkCylinderSource.h" // Needed for delegation to sphere
+#include "fwRenderVTK/config.hpp"
+
+#include <vtkCylinderSource.h> // Needed for delegation to sphere
+#include <vtkHandleRepresentation.h>
+#include <vtkSphereHandleRepresentation.h>
 
 class vtkProperty;
 class vtkFollower;
 class vtkCleanPolyData;
-
-#include "fwRenderVTK/config.hpp"
 
 namespace fwRenderVTK
 {
@@ -78,6 +76,3 @@ private:
 } // namespace vtk
 
 } // namespace fwRenderVTK
-
-#endif //ANDROID
-#endif //__FWRENDERVTK_VTK_MARKEDSPHEREHANDLEREPRESENTATION_HPP__

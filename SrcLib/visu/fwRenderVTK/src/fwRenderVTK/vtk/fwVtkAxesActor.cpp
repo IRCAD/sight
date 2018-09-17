@@ -1,24 +1,22 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef ANDROID
-
 #include "fwRenderVTK/vtk/fwVtkAxesActor.hpp"
 
-#include <vtkObjectFactory.h>
 #include <vtkActor.h>
+#include <vtkObjectFactory.h>
 #include <vtkPolyData.h>
 #include <vtkPolyDataMapper.h>
-
 
 vtkStandardNewMacro(fwVtkAxesActor);
 
 //------------------------------------------------------------------------------
 
-fwVtkAxesActor::fwVtkAxesActor() : vtkAxesActor()
+fwVtkAxesActor::fwVtkAxesActor() :
+    vtkAxesActor()
 {
 
 }
@@ -32,7 +30,7 @@ fwVtkAxesActor::~fwVtkAxesActor()
 
 //------------------------------------------------------------------------------
 
-double *fwVtkAxesActor::GetBounds()
+double* fwVtkAxesActor::GetBounds()
 {
     double bounds[6];
     int i;
@@ -67,7 +65,7 @@ double *fwVtkAxesActor::GetBounds()
             (bounds[2*i] < this->Bounds[2*i]) ? (bounds[2*i]) : (this->Bounds[2*i]);
 
         this->Bounds[2*i+1] =
-            (bounds[2*i+1]>this->Bounds[2*i+1]) ? (bounds[2*i+1]) : (this->Bounds[2*i+1]);
+            (bounds[2*i+1] > this->Bounds[2*i+1]) ? (bounds[2*i+1]) : (this->Bounds[2*i+1]);
     }
 
     this->YAxisTip->GetBounds(bounds);
@@ -77,7 +75,7 @@ double *fwVtkAxesActor::GetBounds()
             (bounds[2*i] < this->Bounds[2*i]) ? (bounds[2*i]) : (this->Bounds[2*i]);
 
         this->Bounds[2*i+1] =
-            (bounds[2*i+1]>this->Bounds[2*i+1]) ? (bounds[2*i+1]) : (this->Bounds[2*i+1]);
+            (bounds[2*i+1] > this->Bounds[2*i+1]) ? (bounds[2*i+1]) : (this->Bounds[2*i+1]);
     }
 
     this->ZAxisTip->GetBounds(bounds);
@@ -87,7 +85,7 @@ double *fwVtkAxesActor::GetBounds()
             (bounds[2*i] < this->Bounds[2*i]) ? (bounds[2*i]) : (this->Bounds[2*i]);
 
         this->Bounds[2*i+1] =
-            (bounds[2*i+1]>this->Bounds[2*i+1]) ? (bounds[2*i+1]) : (this->Bounds[2*i+1]);
+            (bounds[2*i+1] > this->Bounds[2*i+1]) ? (bounds[2*i+1]) : (this->Bounds[2*i+1]);
     }
 
     double dbounds[6];
@@ -100,21 +98,18 @@ double *fwVtkAxesActor::GetBounds()
             (dbounds[2*i] < this->Bounds[2*i]) ? (dbounds[2*i]) : (this->Bounds[2*i]);
 
         this->Bounds[2*i+1] =
-            (dbounds[2*i+1]>this->Bounds[2*i+1]) ? (dbounds[2*i+1]) : (this->Bounds[2*i+1]);
+            (dbounds[2*i+1] > this->Bounds[2*i+1]) ? (dbounds[2*i+1]) : (this->Bounds[2*i+1]);
     }
-
 
     return this->Bounds;
 }
 
 //------------------------------------------------------------------------------
 
-void fwVtkAxesActor::PrintSelf(std::ostream &os, vtkIndent indent)
+void fwVtkAxesActor::PrintSelf(std::ostream& os, vtkIndent indent)
 {
     os << indent << "fwVtkPicker: \n";
-    this->Superclass::PrintSelf(os,indent);
+    this->Superclass::PrintSelf(os, indent);
 }
 
 //------------------------------------------------------------------------------
-
-#endif //ANDROID

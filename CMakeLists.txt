@@ -1,4 +1,3 @@
-
 cmake_minimum_required (VERSION 3.1)
 
 project (fw4spl)
@@ -135,18 +134,13 @@ if(ADDITIONAL_REPOSITORIES)
     endforeach()
 endif()
 
-if(ANDROID)
-    set(BUNDLE_LIB_PREFIX "/data/data/com.fw4spl.${PROJECTS_TO_INSTALL}/Bundles")
-    set(BUNDLE_RC_PREFIX "/data/data/com.fw4spl.${PROJECTS_TO_INSTALL}/Bundles")
+if(WIN32)
+    set(BUNDLE_LIB_PREFIX "${CMAKE_INSTALL_BINDIR}" CACHE PATH "Relative path where the bundles libraries are installed.")
 else()
-    if(WIN32)
-        set(BUNDLE_LIB_PREFIX "${CMAKE_INSTALL_BINDIR}" CACHE PATH "Relative path where the bundles libraries are installed.")
-    else()
-        set(BUNDLE_LIB_PREFIX "${CMAKE_INSTALL_LIBDIR}" CACHE PATH "Relative path where the bundles libraries are installed.")
-    endif()
-
-    set(BUNDLE_RC_PREFIX "${CMAKE_INSTALL_DATADIR}" CACHE PATH "Relative path where the bundles resources are installed.")
+    set(BUNDLE_LIB_PREFIX "${CMAKE_INSTALL_LIBDIR}" CACHE PATH "Relative path where the bundles libraries are installed.")
 endif()
+
+set(BUNDLE_RC_PREFIX "${CMAKE_INSTALL_DATADIR}" CACHE PATH "Relative path where the bundles resources are installed.")
 
 mark_as_advanced(BUNDLE_LIB_PREFIX)
 mark_as_advanced(BUNDLE_RC_PREFIX)
@@ -193,12 +187,6 @@ endif()
 
 set(LIBRARY_OUTPUT_DIR lib)
 
-if(CMAKE_SYSTEM_NAME MATCHES "Darwin")
-    #http://stackoverflow.com/questions/6802903/c-ifdef-mac-os-x-question
-    add_definitions(-D__MACOSX__) #racy backward compatibility
-endif()
-
-
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/${LIBRARY_OUTPUT_DIR})
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/${LIBRARY_OUTPUT_DIR})
@@ -222,12 +210,8 @@ set(SPYLOG_LEVEL_MAP_trace 6)
 set_property(CACHE SPYLOG_LEVEL PROPERTY STRINGS ${SPYLOG_LEVEL_VALUES} )
 
 # require C++11 standard by default
-if(ANDROID)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++11")
-else()
-    set(CMAKE_CXX_STANDARD 11)
-    set(CMAKE_CXX_STANDARD_REQUIRED ON)
-endif()
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 macro(groupMaker FWPROJECT_NAME)
     file(GLOB_RECURSE PRJ_SOURCES "${${FWPROJECT_NAME}_DIR}/*")
@@ -1040,70 +1024,56 @@ foreach(PROPERTIES_FILE ${PROJECTS_PROPERTIES})
     get_filename_component(PROJECT_DIR ${PROPERTIES_FILE} PATH)
 
     loadProperties("${PROPERTIES_FILE}")
-
-    # Check if project is compatible with the current platform
-    set(APPEND_PROJECT OFF)
-    if( NOT PLATFORM OR PLATFORM STREQUAL "ALL")
-        set(APPEND_PROJECT ON)
-    elseif(PLATFORM STREQUAL "DROID" AND ANDROID)
-        set(APPEND_PROJECT ON)
-    elseif(PLATFORM STREQUAL "DESKTOP" AND NOT ANDROID)
-        set(APPEND_PROJECT ON)
+    if(NOT NAME)
+        message(FATAL_ERROR "${PROPERTIES_FILE}: Project NAME can not be empty.")
     endif()
 
-    if (APPEND_PROJECT)
-
-        if(NOT NAME)
-            message(FATAL_ERROR "${PROPERTIES_FILE}: Project NAME can not be empty.")
-        endif()
-
-        list(FIND DEPENDENCIES ${NAME} DEP_LOOP)
-        if(DEP_LOOP GREATER -1)
-            message(FATAL_ERROR "${PROPERTIES_FILE}: A project can not be it's own dependency.")
-        endif()
-
-        list(FIND REQUIREMENTS ${NAME} REQ_LOOP)
-        if(REQ_LOOP GREATER -1)
-            message(FATAL_ERROR "${PROPERTIES_FILE}: A project can not be it's own requirement.")
-        endif()
-
-        if(${NAME}_DIR)
-            message(FATAL_ERROR "${PROPERTIES_FILE}: A project NAME must be unique in the workspace. ${NAME} already defined there : ${${NAME}_DIR}")
-        endif()
-
-        string( TOUPPER "${TYPE}" TYPE )
-
-        set(${NAME}_DEPENDENCIES "${DEPENDENCIES}")
-        set(${NAME}_REQUIREMENTS "${REQUIREMENTS}")
-        set(${NAME}_DISABLE_PCH  "${DISABLE_PCH}")
-
-        # Get the pch target, test the existence of type variable to exclude unbuilt projects
-        if(ENABLE_PCH AND TYPE AND NOT ${NAME}_DISABLE_PCH)
-            set(${NAME}_PROJECT_DIR "${PROJECT_DIR}")
-
-            getPchTarget(${NAME} ${PROJECT_DIR} ${TYPE} ${USE_PCH_FROM_TARGET})
-
-            # Append the pch target as a dependency (duplicate will be stripped later if it was already a dependency)
-            if(NOT ${${NAME}_PCH_TARGET} STREQUAL ${NAME})
-                list(APPEND ${NAME}_REQUIREMENTS ${${NAME}_PCH_TARGET})
-            endif()
-        endif()
-
-        set(${NAME}_VERSION "${VERSION}")
-        set(${NAME}_DIR "${PROJECT_DIR}")
-
-        if(TYPE STREQUAL "APP")
-            set(${NAME}_UNIQUE "${UNIQUE}")
-        endif()
-
-        if( TYPE STREQUAL "BUNDLE" OR TYPE STREQUAL "APP" AND START)
-            set(${NAME}_START "${START}")
-        endif()
-
-        set(${NAME}_START_BEFORE "${START_BEFORE}")
-
-        list(APPEND PROJECT_LIST ${NAME})
+    list(FIND DEPENDENCIES ${NAME} DEP_LOOP)
+    if(DEP_LOOP GREATER -1)
+        message(FATAL_ERROR "${PROPERTIES_FILE}: A project can not be its own dependency.")
     endif()
+
+    list(FIND REQUIREMENTS ${NAME} REQ_LOOP)
+    if(REQ_LOOP GREATER -1)
+        message(FATAL_ERROR "${PROPERTIES_FILE}: A project can not be its own requirement.")
+    endif()
+
+    if(${NAME}_DIR)
+        message(FATAL_ERROR "${PROPERTIES_FILE}: A project NAME must be unique in the workspace. ${NAME} already defined there : ${${NAME}_DIR}")
+    endif()
+
+    string( TOUPPER "${TYPE}" TYPE )
+
+    set(${NAME}_DEPENDENCIES "${DEPENDENCIES}")
+    set(${NAME}_REQUIREMENTS "${REQUIREMENTS}")
+    set(${NAME}_DISABLE_PCH  "${DISABLE_PCH}")
+
+    # Get the pch target, test the existence of type variable to exclude unbuilt projects
+    if(ENABLE_PCH AND TYPE AND NOT ${NAME}_DISABLE_PCH)
+        set(${NAME}_PROJECT_DIR "${PROJECT_DIR}")
+
+        getPchTarget(${NAME} ${PROJECT_DIR} ${TYPE} ${USE_PCH_FROM_TARGET})
+
+        # Append the pch target as a dependency (duplicate will be stripped later if it was already a dependency)
+        if(NOT ${${NAME}_PCH_TARGET} STREQUAL ${NAME})
+            list(APPEND ${NAME}_REQUIREMENTS ${${NAME}_PCH_TARGET})
+        endif()
+    endif()
+
+    set(${NAME}_VERSION "${VERSION}")
+    set(${NAME}_DIR "${PROJECT_DIR}")
+
+    if(TYPE STREQUAL "APP")
+        set(${NAME}_UNIQUE "${UNIQUE}")
+    endif()
+
+    if( TYPE STREQUAL "BUNDLE" OR TYPE STREQUAL "APP" AND START)
+        set(${NAME}_START "${START}")
+    endif()
+
+    set(${NAME}_START_BEFORE "${START_BEFORE}")
+
+    list(APPEND PROJECT_LIST ${NAME})
 
 endforeach()
 
