@@ -16,7 +16,6 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/install/helper.cmake)
 option(USE_CONAN "Use Conan package manager for dependencies" ON)
 if(USE_CONAN)
     include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/conan.cmake)
-    add_definitions(${CONAN_DEFINES})
 endif()
 
 option(ENABLE_PCH "Use pre-compiled headers to speedup the compilation" ON)
@@ -1008,8 +1007,6 @@ set(PROJECTS_TO_INSTALL CACHE STRING
 
 file(GLOB_RECURSE PROJECTS_PROPERTIES */Properties.cmake)
 
-add_subdirectory(${FWCMAKE_RESOURCE_PATH}/pcl)
-
 if(ADDITIONAL_REPOSITORIES)
 
     list(LENGTH ADDITIONAL_REPOSITORIES ADDITIONAL_REPOSITORIES_LEN)
@@ -1108,8 +1105,13 @@ if(BUILD_TESTS)
 endif()
 
 # Find and install Conan packages
-findConanDeps("${PROJECT_LIST}" CONAN_DEPS_LIST)
-installConanDeps("${CONAN_DEPS_LIST}")
+if(USE_CONAN)
+    findConanDeps("${PROJECT_LIST}" CONAN_DEPS_LIST)
+    installConanDeps("${CONAN_DEPS_LIST}")
+    add_definitions(${CONAN_DEFINES})
+endif()
+
+add_subdirectory(${FWCMAKE_RESOURCE_PATH}/pcl)
 
 if(PROJECTS_TO_INSTALL)
     message(STATUS "Installation rules will be created for : ${PROJECTS_TO_INSTALL}")
