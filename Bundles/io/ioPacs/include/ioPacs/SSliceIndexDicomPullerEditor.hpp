@@ -18,9 +18,6 @@
 #include <fwPacsIO/SeriesEnquirer.hpp>
 
 #include <fwThread/Worker.hpp>
-
-#include <boost/asio/deadline_timer.hpp>
-#include <boost/asio/io_service.hpp>
 #include <boost/filesystem/path.hpp>
 
 #include <QLineEdit>
