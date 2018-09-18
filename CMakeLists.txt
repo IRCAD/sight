@@ -143,11 +143,6 @@ if(BINPKGS_HAS_SSE)
     add_definitions("${SSE_DEFINITIONS}")
 endif()
 
-if(CMAKE_SYSTEM_NAME MATCHES "Darwin")
-    #http://stackoverflow.com/questions/6802903/c-ifdef-mac-os-x-question
-    add_definitions(-D__MACOSX__) #racy backward compatibility
-endif()
-
 ########################################################################################################################
 # External libraries management
 ########################################################################################################################
@@ -465,6 +460,30 @@ if(APPLE)
         "${CMAKE_SOURCE_DIR}/CMake/install/osx_install.cmake"
       DESTINATION
         ${FWCONFIG_PACKAGE_LOCATION}/install
+      COMPONENT
+        dev
+    )
+    install(
+      FILES
+        "${CMAKE_SOURCE_DIR}/CMake/install/macos/rc/app.icns"
+      DESTINATION
+        ${FWCONFIG_PACKAGE_LOCATION}/install/macos/rc
+      COMPONENT
+        dev
+    )
+    install(
+      FILES
+      "${CMAKE_SOURCE_DIR}/CMake/install/macos/osx_install_name_tool.py"
+      DESTINATION
+        ${FWCONFIG_PACKAGE_LOCATION}/install/macos/
+      COMPONENT
+        dev
+    )
+    install(
+      FILES
+      "${CMAKE_SOURCE_DIR}/CMake/build/linux/template.sh.in"
+      DESTINATION
+        ${FWCONFIG_PACKAGE_LOCATION}/build/linux
       COMPONENT
         dev
     )
