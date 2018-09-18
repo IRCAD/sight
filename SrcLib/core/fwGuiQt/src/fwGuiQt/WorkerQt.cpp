@@ -259,7 +259,7 @@ void WorkerQt::init( int& argc, char** argv, bool guiEnabled )
     }
     else
     {
-        SLM_ERROR("Could not determine Qt5 plugins path.");
+        SLM_ERROR("Could not determine Qt5 plugins path, tried with: " + qt5PluginsDir.string());
     }
 
     m_argc = argc;
