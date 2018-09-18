@@ -52,6 +52,7 @@ endif()
 
 fwForwardInclude(
     ${OGRE_INCLUDE_DIRS}
+    ${OGRE_PREFIX_DIR}/include
     ${OGRE_Overlay_INCLUDE_DIRS}
 )
 
