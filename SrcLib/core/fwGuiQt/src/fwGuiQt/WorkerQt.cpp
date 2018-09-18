@@ -26,8 +26,10 @@
 #include <QTimer>
 
 #include <functional>
-#ifndef WIN32
-#include <link.h>
+#if defined(__APPLE__)
+#   include <mach-o/dyld.h>
+#elif !defined(WIN32)
+#   include <link.h>
 #endif
 #include <regex>
 
@@ -186,7 +188,7 @@ WorkerQt::WorkerQt() :
 
 //------------------------------------------------------------------------------
 
-#ifdef WIN32
+#if defined(WIN32)
 static std::string getQt5CorePath()
 {
     char path[MAX_PATH];
@@ -206,7 +208,7 @@ static std::string getQt5CorePath()
     }
     return path;
 }
-#else
+#elif !defined(__APPLE__)
 struct FindQt5Functor
 {
     //------------------------------------------------------------------------------
@@ -241,8 +243,23 @@ void WorkerQt::init( int& argc, char** argv, bool guiEnabled )
     // Thus the strategy here is to locate the Qt5Core library and then compute the path relatively
     // This work in all cases when we use our binpkgs. If we use the system libraries, the qt.conf file
     // of the system should do the job and the following might be useless.
-#ifdef WIN32
+#if defined(WIN32)
     const auto path = getQt5CorePath();
+#elif defined(__APPLE__)
+    const std::regex matchQt5Core("libQt5Core");
+    ::boost::filesystem::path path;
+    for (int32_t i = _dyld_image_count(); i >= 0; i--)
+    {
+        const char* image_name = _dyld_get_image_name(i);
+        if (image_name)
+        {
+            const std::string libName(image_name);
+            if(std::regex_search(libName, matchQt5Core))
+            {
+                path = ::boost::filesystem::path(libName);
+            }
+        }
+    }
 #else
     FindQt5Functor functor;
     dl_iterate_phdr(&FindQt5Functor::dl_iterate_phdr_callback, nullptr);
