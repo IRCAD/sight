@@ -4,26 +4,18 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD,2018.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
-
 #include "Tuto08GenericSceneCtrl/Plugin.hpp"
 
-#include <fwRuntime/operations.hpp>
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
-
-#include <fwServices/op/Add.hpp>
-#include <fwServices/registry/ObjectService.hpp>
-
-#include <boost/foreach.hpp>
 
 namespace Tuto08GenericSceneCtrl
 {
 
 static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::Tuto08GenericSceneCtrl::Plugin");
+
+static const std::string s_IMAGE_ID   = "image";
+static const std::string s_TEXTURE_ID = "texture";
+static const std::string s_MESH_ID    = "mesh";
 
 //------------------------------------------------------------------------------
 
@@ -47,36 +39,36 @@ void Plugin::start()
 
 void Plugin::initialize()
 {
-    // create an empty image
-    m_image   = ::fwData::Image::New();
-    m_texture = ::fwData::Image::New();
-    m_mesh    = ::fwData::Mesh::New();
+    m_appManager = std::unique_ptr< ::fwServices::AppManager >(new ::fwServices::AppManager );
+    m_appManager->create();
 
     /* **************************************************************************************
     *              create and register the services in the OSR
     ****************************************************************************************/
-    auto frameSrv          = ::fwServices::add("::gui::frame::SDefaultFrame");
-    auto menuBar           = ::fwServices::add("::gui::aspect::SDefaultMenuBar", "menuBar");
-    auto menu              = ::fwServices::add("::gui::aspect::SDefaultMenu", "menuFile");
-    auto actionOpenImage   = ::fwServices::add("::gui::action::SStarter", "actionOpenImage");
-    auto actionOpenMesh    = ::fwServices::add("::gui::action::SStarter", "actionOpenMesh");
-    auto actionOpenTexture = ::fwServices::add("::gui::action::SStarter", "actionOpenTexture");
-    auto actionQuit        = ::fwServices::add("::gui::action::SQuit", "actionQuit");
-    auto mainView          = ::fwServices::add("::gui::view::SDefaultView", "mainView");
-    auto editorsView       = ::fwServices::add("::gui::view::SDefaultView", "editorsView");
-    auto snapshotEditor    = ::fwServices::add("::uiVisuQt::SnapshotEditor", "snapshotEditor");
-    auto sliceListEditor   = ::fwServices::add("::guiQt::editor::SSelectionMenuButton", "sliceListEditor");
-    auto showScanEditor    = ::fwServices::add("::guiQt::editor::SSignalButton", "showScanEditor");
-    auto sliderIndexEditor = ::fwServices::add("::uiImageQt::SliceIndexPositionEditor", "sliderIndexEditor");
-    auto imageReaderSrv    = ::fwServices::add("::uiIO::editor::SIOSelector", "imageReader");
-    auto meshReaderSrv     = ::fwServices::add("::uiIO::editor::SIOSelector", "meshReader");
-    auto textureReaderSrv  = ::fwServices::add("::uiIO::editor::SIOSelector", "textureReader");
-    auto renderSrv         = ::fwServices::add("::fwRenderVTK::SRender", "genericScene");
-    auto imageAdaptor      = ::fwServices::add("::visuVTKAdaptor::SNegatoMPR", "imageAdaptor");
-    auto meshAdaptor       = ::fwServices::add("::visuVTKAdaptor::SMesh", "meshAdaptor");
-    auto textureAdaptor    = ::fwServices::add("::visuVTKAdaptor::STexture", "textureAdaptor");
-    auto snapshotAdaptor   = ::fwServices::add("::visuVTKAdaptor::SSnapshot", "snapshotAdaptor");
-    auto progressBar       = ::fwServices::add("::gui::editor::SJobBar");
+    auto frameSrv          = m_appManager->registerService("::gui::frame::SDefaultFrame", "", true);
+    auto menuBar           = m_appManager->registerService("::gui::aspect::SDefaultMenuBar", "menuBar", true);
+    auto menu              = m_appManager->registerService("::gui::aspect::SDefaultMenu", "menuFile", true);
+    auto actionOpenImage   = m_appManager->registerService("::gui::action::SStarter", "actionOpenImage", true);
+    auto actionOpenMesh    = m_appManager->registerService("::gui::action::SStarter", "actionOpenMesh", true);
+    auto actionOpenTexture = m_appManager->registerService("::gui::action::SStarter", "actionOpenTexture", true);
+    auto actionQuit        = m_appManager->registerService("::gui::action::SQuit", "actionQuit", true);
+    auto mainView          = m_appManager->registerService("::gui::view::SDefaultView", "mainView", true);
+    auto editorsView       = m_appManager->registerService("::gui::view::SDefaultView", "editorsView", true);
+    auto snapshotEditor    = m_appManager->registerService("::uiVisuQt::SnapshotEditor", "snapshotEditor", true);
+    auto sliceListEditor   = m_appManager->registerService("::guiQt::editor::SSelectionMenuButton", "sliceListEditor",
+                                                           true);
+    auto showScanEditor    = m_appManager->registerService("::guiQt::editor::SSignalButton", "showScanEditor", true);
+    auto sliderIndexEditor = m_appManager->registerService("::uiImageQt::SliceIndexPositionEditor", "sliderIndexEditor",
+                                                           true);
+    auto imageReaderSrv   = m_appManager->registerService("::uiIO::editor::SIOSelector", "imageReader", true);
+    auto meshReaderSrv    = m_appManager->registerService("::uiIO::editor::SIOSelector", "meshReader", true);
+    auto textureReaderSrv = m_appManager->registerService("::uiIO::editor::SIOSelector", "textureReader", true);
+    auto renderSrv        = m_appManager->registerService("::fwRenderVTK::SRender", "genericScene", true);
+    auto imageAdaptor     = m_appManager->registerService("::visuVTKAdaptor::SNegatoMPR", "imageAdaptor", true);
+    auto meshAdaptor      = m_appManager->registerService("::visuVTKAdaptor::SMesh", "meshAdaptor", true);
+    auto textureAdaptor   = m_appManager->registerService("::visuVTKAdaptor::STexture", "textureAdaptor", true);
+    auto snapshotAdaptor  = m_appManager->registerService("::visuVTKAdaptor::SSnapshot", "snapshotAdaptor", true);
+    auto progressBar      = m_appManager->registerService("::gui::editor::SJobBar", "", true);
 
     /* **************************************************************************************
     *              GUI configuration
@@ -87,9 +79,7 @@ void Plugin::initialize()
     frameConfig.put("gui.frame.icon", "Tuto08GenericSceneCtrl-0.1/tuto.ico");
     frameConfig.put("gui.menuBar", "");
     frameConfig.put("registry.menuBar.<xmlattr>.sid", "menuBar");
-    frameConfig.put("registry.menuBar.<xmlattr>.start", "yes");
     frameConfig.put("registry.view.<xmlattr>.sid", "mainView");
-    frameConfig.put("registry.view.<xmlattr>.start", "yes");
     frameSrv->setConfiguration( frameConfig );
     frameSrv->configure();
 
@@ -97,7 +87,6 @@ void Plugin::initialize()
     ::fwServices::IService::ConfigType menuBarConfig;
     menuBarConfig.put("gui.layout.menu.<xmlattr>.name", "File");
     menuBarConfig.put("registry.menu.<xmlattr>.sid", "menuFile");
-    menuBarConfig.put("registry.menu.<xmlattr>.start", "yes");
     menuBar->setConfiguration(menuBarConfig);
     menuBar->configure();
 
@@ -125,16 +114,12 @@ void Plugin::initialize()
 
     ::fwServices::IService::ConfigType menuItem1Reg;
     menuItem1Reg.put("<xmlattr>.sid", "actionOpenImage");
-    menuItem1Reg.put("<xmlattr>.start", "yes");
     ::fwServices::IService::ConfigType menuItem2Reg;
     menuItem2Reg.put("<xmlattr>.sid", "actionOpenMesh");
-    menuItem2Reg.put("<xmlattr>.start", "yes");
     ::fwServices::IService::ConfigType menuItem3Reg;
     menuItem3Reg.put("<xmlattr>.sid", "actionOpenTexture");
-    menuItem3Reg.put("<xmlattr>.start", "yes");
     ::fwServices::IService::ConfigType menuItem4Reg;
     menuItem4Reg.put("<xmlattr>.sid", "actionQuit");
-    menuItem4Reg.put("<xmlattr>.start", "yes");
     menuConfig.add_child("registry.menuItem", menuItem1Reg);
     menuConfig.add_child("registry.menuItem", menuItem2Reg);
     menuConfig.add_child("registry.menuItem", menuItem3Reg);
@@ -156,10 +141,8 @@ void Plugin::initialize()
     mainViewConfig.add_child("gui.layout", mainViewLayoutConfig);
     ::fwServices::IService::ConfigType mainView1Reg;
     mainView1Reg.put("<xmlattr>.sid", "genericScene");
-    mainView1Reg.put("<xmlattr>.start", "yes");
     ::fwServices::IService::ConfigType mainView2Reg;
     mainView2Reg.put("<xmlattr>.sid", "editorsView");
-    mainView2Reg.put("<xmlattr>.start", "yes");
     mainViewConfig.add_child("registry.view", mainView1Reg);
     mainViewConfig.add_child("registry.view", mainView2Reg);
     mainView->setConfiguration(mainViewConfig);
@@ -190,19 +173,15 @@ void Plugin::initialize()
     editorsViewConfig.add_child("gui.layout", editorsViewLayoutConfig);
     ::fwServices::IService::ConfigType editorsView1Reg;
     editorsView1Reg.put("<xmlattr>.sid", "sliceListEditor");
-    editorsView1Reg.put("<xmlattr>.start", "yes");
     editorsViewConfig.add_child("registry.view", editorsView1Reg);
     ::fwServices::IService::ConfigType editorsView2Reg;
     editorsView2Reg.put("<xmlattr>.sid", "showScanEditor");
-    editorsView2Reg.put("<xmlattr>.start", "yes");
     editorsViewConfig.add_child("registry.view", editorsView2Reg);
     ::fwServices::IService::ConfigType editorsView3Reg;
     editorsView3Reg.put("<xmlattr>.sid", "sliderIndexEditor");
-    editorsView3Reg.put("<xmlattr>.start", "yes");
     editorsViewConfig.add_child("registry.view", editorsView3Reg);
     ::fwServices::IService::ConfigType editorsView4Reg;
     editorsView4Reg.put("<xmlattr>.sid", "snapshotEditor");
-    editorsView4Reg.put("<xmlattr>.start", "yes");
     editorsViewConfig.add_child("registry.view", editorsView4Reg);
     editorsView->setConfiguration(editorsViewConfig);
     editorsView->configure();
@@ -232,8 +211,22 @@ void Plugin::initialize()
     *              readers configuration
     ****************************************************************************************/
 
+    ::fwServices::IService::ConfigType imageReaderConfig;
+    imageReaderConfig.put("type.<xmlattr>.mode", "reader");
+    imageReaderConfig.put("type.<xmlattr>.class", "::fwData::Image");
+    imageReaderSrv->setConfiguration(imageReaderConfig);
     imageReaderSrv->configure();
+
+    ::fwServices::IService::ConfigType meshReaderConfig;
+    meshReaderConfig.put("type.<xmlattr>.mode", "reader");
+    meshReaderConfig.put("type.<xmlattr>.class", "::fwData::Mesh");
+    meshReaderSrv->setConfiguration(meshReaderConfig);
     meshReaderSrv->configure();
+
+    ::fwServices::IService::ConfigType textureReaderConfig;
+    textureReaderConfig.put("type.<xmlattr>.mode", "reader");
+    textureReaderConfig.put("type.<xmlattr>.class", "::fwData::Image");
+    textureReaderSrv->setConfiguration(textureReaderConfig);
     textureReaderSrv->configure();
 
     /* **************************************************************************************
@@ -328,46 +321,47 @@ void Plugin::initialize()
     *              register inputs/inouts
     ****************************************************************************************/
 
-    sliderIndexEditor->registerInOut(m_image, "image", true);
-    imageReaderSrv->registerInOut(m_image, "data");
-    meshReaderSrv->registerInOut(m_mesh, "data");
-    textureReaderSrv->registerInOut(m_texture, "data");
-    imageAdaptor->registerInOut(m_image, "image", true);
-    meshAdaptor->registerInput(m_mesh, "mesh", true);
-    textureAdaptor->registerInOut(m_texture, "texture", true);
+    m_appManager->registerObject(sliderIndexEditor, s_IMAGE_ID, "image", ::fwServices::IService::AccessType::INOUT,
+                                 true);
+    m_appManager->registerObject(imageReaderSrv, s_IMAGE_ID, "data", ::fwServices::IService::AccessType::OUTPUT, true);
+    m_appManager->registerObject(meshReaderSrv, s_MESH_ID, "data", ::fwServices::IService::AccessType::OUTPUT, true);
+    m_appManager->registerObject(textureReaderSrv, s_TEXTURE_ID, "data", ::fwServices::IService::AccessType::OUTPUT,
+                                 true);
+    m_appManager->registerObject(imageAdaptor, s_IMAGE_ID, "image", ::fwServices::IService::AccessType::INOUT, true);
+    m_appManager->registerObject(meshAdaptor, s_MESH_ID, "mesh", ::fwServices::IService::AccessType::INPUT, true);
+    m_appManager->registerObject(textureAdaptor, s_TEXTURE_ID, "texture", ::fwServices::IService::AccessType::INOUT,
+                                 true);
 
     /* **************************************************************************************
     *              connect the services
     ****************************************************************************************/
 
-    meshReaderSrv->signal("jobCreated")->connect(progressBar->slot("showJob"));
-    imageReaderSrv->signal("jobCreated")->connect(progressBar->slot("showJob"));
-    textureReaderSrv->signal("jobCreated")->connect(progressBar->slot("showJob"));
+    m_appManager->connectSignal("jobsChannel", meshReaderSrv, "jobCreated");
+    m_appManager->connectSignal("jobsChannel", imageReaderSrv, "jobCreated");
+    m_appManager->connectSignal("jobsChannel", textureReaderSrv, "jobCreated");
+    m_appManager->connectSlot("jobsChannel", progressBar, "showJob");
 
-    showScanEditor->signal("toggled")->connect(sliceListEditor->slot("setEnabled"));
-    showScanEditor->signal("toggled")->connect(imageAdaptor->slot("showSlice"));
+    m_appManager->connectSignal("showScanChannel", showScanEditor, "toggled");
+    m_appManager->connectSlot("showScanChannel", sliceListEditor, "setEnabled");
+    m_appManager->connectSlot("showScanChannel", imageAdaptor, "showSlice");
 
-    snapshotEditor->signal("snapped")->connect(snapshotAdaptor->slot("snap"));
+    m_appManager->connectSignal("snapChannel", snapshotEditor, "snapped");
+    m_appManager->connectSlot("snapChannel", snapshotAdaptor, "snap");
 
-    sliceListEditor->signal("selected")->connect(imageAdaptor->slot("updateSliceMode"));
+    m_appManager->connectSignal("sliceListChannel", sliceListEditor, "selected");
+    m_appManager->connectSlot("sliceListChannel", imageAdaptor, "updateSliceMode");
 
-    meshAdaptor->signal("textureApplied")->connect(textureAdaptor->slot("applyTexture"));
+    m_appManager->connectSignal("textureChannel", meshAdaptor, "textureApplied");
+    m_appManager->connectSlot("textureChannel", textureAdaptor, "applyTexture");
+
+    m_appManager->connectSignal("textureUpdatedChannel", textureAdaptor, "started");
+    m_appManager->connectSlot("textureUpdatedChannel", meshAdaptor, "update");
 
     /* **************************************************************************************
     *              start the services
     ****************************************************************************************/
-    frameSrv->start();
-    progressBar->start();
-    imageAdaptor->start();
-    meshAdaptor->start();
-    textureAdaptor->start();
-    snapshotAdaptor->start();
-    m_startedService.emplace_back(frameSrv);
-    m_startedService.emplace_back(progressBar);
-    m_startedService.emplace_back(imageAdaptor);
-    m_startedService.emplace_back(meshAdaptor);
-    m_startedService.emplace_back(textureAdaptor);
-    m_startedService.emplace_back(snapshotAdaptor);
+
+    m_appManager->startServices();
 }
 
 //------------------------------------------------------------------------------
@@ -380,25 +374,8 @@ void Plugin::stop() noexcept
 
 void Plugin::uninitialize() noexcept
 {
-    std::vector< ::fwServices::IService::SharedFutureType > futures;
-
-    // stop the started services
-    BOOST_REVERSE_FOREACH(auto& srv, m_startedService)
-    {
-        futures.emplace_back(srv->stop());
-    }
-    std::for_each(futures.begin(), futures.end(), std::mem_fn(&::std::shared_future<void>::wait));
-
-    // unregister the services
-    auto services = ::fwServices::OSR::getServices("::fwServices::IService");
-    for(auto& srv : services)
-    {
-        ::fwServices::OSR::unregisterService(srv);
-    }
-    m_startedService.clear();
-    m_image.reset();
-    m_texture.reset();
-    m_mesh.reset();
+    m_appManager->destroy();
+    m_appManager.reset();
 }
 
 //------------------------------------------------------------------------------

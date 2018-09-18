@@ -8,12 +8,9 @@
 
 #include "Tuto08GenericSceneCtrl/config.hpp"
 
-#include <fwData/Image.hpp>
-#include <fwData/Mesh.hpp>
-
 #include <fwRuntime/Plugin.hpp>
 
-#include <fwServices/IService.hpp>
+#include <fwServices/AppManager.hpp>
 
 namespace Tuto08GenericSceneCtrl
 {
@@ -41,11 +38,8 @@ public:
     TUTO08GENERICSCENECTRL_API void uninitialize() noexcept;
 
 private:
-    ::fwData::Image::sptr m_image;
-    ::fwData::Image::sptr m_texture;
-    ::fwData::Mesh::sptr m_mesh;
 
-    std::vector< ::fwServices::IService::sptr > m_startedService;
+    std::unique_ptr< ::fwServices::AppManager > m_appManager;
 };
 
-} // namespace Tuto02DataServiceBasicCtrl
+} // namespace Tuto08GenericSceneCtrl
