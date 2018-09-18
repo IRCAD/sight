@@ -86,7 +86,7 @@ const ::boost::regex Native::getNativeName() const
         fullModulePath.filename().string() + "\\.dll");
 #elif defined (__APPLE__)
     nativeName = ::boost::regex(
-        "lib" + fullModulePath.filename().string() + "\\.dylib" );
+        "lib" + fullModulePath.filename().string() + "[0-9\\.]*\\.dylib" );
 #endif
 
     return nativeName;
