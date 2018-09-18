@@ -29,6 +29,9 @@
         <object uid="reprojectedPoints" type="::fwData::PointList" />
         <object uid="chessboardModel" type="::fwData::PointList" src="deferred"/>
 
+        <object uid="loadedZMovingCamera" type="::fwData::TransformationMatrix3D" />
+        <object uid="loadedZMovingChessboard" type="::fwData::TransformationMatrix3D" />
+        <object uid="cameraPoseOnHandEyeLoad" type="::fwData::TransformationMatrix3D" />
 
         <!-- *************************** Begin Layouts *************************** -->
 
@@ -120,6 +123,7 @@
                     <separator/>
                     <menuItem name="Chessboard size" icon="arMedia-0.1/icons/chessboard.svg" />
                     <separator/>
+                    <menuItem name="Load Hand Eye X matrix" icon="handEyeActivity-0.1/icons/LoadXMatrix.svg" />
                     <menuItem name="Save Hand Eye X matrix" icon="handEyeActivity-0.1/icons/ExportXMatrix.svg" />
                     <menuItem name="Save Hand Eye Z matrix" icon="handEyeActivity-0.1/icons/ExportZMatrix.svg" />
                 </layout>
@@ -136,8 +140,9 @@
                 <editor sid="stepParameter" start="yes" />
                 <menuItem sid="actionNext" start="yes" />
                 <menuItem sid="actionChessBoardSize" start="yes" />
-                <menuItem sid="actionExportHandEyeX" start="yes" />
-                <menuItem sid="actionExportHandEyeZ" start="yes" />
+                <menuItem sid="handEyeXMatrixReader" start="yes" />
+                <menuItem sid="handEyeXMatrixWriter" start="yes" />
+                <menuItem sid="handEyeZMatrixWriter" start="yes" />
             </registry>
         </service>
 
@@ -278,18 +283,6 @@
             </slots>
         </service>
 
-        <service uid="actionExportHandEyeX" type="::gui::action::SSlotCaller">
-            <slots>
-                <slot>handEyeXMatrixWriter/update</slot>
-            </slots>
-        </service>
-
-        <service uid="actionExportHandEyeZ" type="::gui::action::SSlotCaller">
-            <slots>
-                <slot>handEyeZMatrixWriter/update</slot>
-            </slots>
-        </service>
-
         <service uid="actionShowHideVisibility" type="::gui::action::SBooleanSlotCaller">
             <state active="false" />
             <slots>
@@ -305,19 +298,19 @@
 
         <service uid="actionChessBoardSize" type="::uiPreferences::action::SPreferencesConfiguration">
             <preference>
-                <type>number</type>
+                <type>int</type>
                 <name>Chessboard width</name>
                 <key>CHESSBOARD_WIDTH</key>
                 <default_value>7</default_value>
             </preference>
             <preference>
-                <type>number</type>
+                <type>int</type>
                 <name>Chessboard height</name>
                 <key>CHESSBOARD_HEIGHT</key>
                 <default_value>4</default_value>
             </preference>
             <preference>
-                <type>number</type>
+                <type>int</type>
                 <name>Chessboard square size (mm)</name>
                 <key>CHESSBOARD_SQUARE_SIZE</key>
                 <default_value>100</default_value>
@@ -483,6 +476,13 @@
             </out>
         </service>
 
+        <service uid="handEyeXMatrixReader" type="::uiIO::editor::SIOSelector" >
+            <inout key="data" uid="handEyeMatX" />
+            <type mode="reader" />
+            <selection mode="include" />
+            <addSelection service="::ioData::TransformationMatrix3DReaderService" />
+        </service>
+
         <service uid="handEyeXMatrixWriter" type="::uiIO::editor::SIOSelector" >
             <inout key="data" uid="handEyeMatX" />
             <type mode="writer" />
@@ -506,7 +506,7 @@
                 <default_value>127.0.0.1</default_value>
             </preference>
             <preference>
-                <type>number</type>
+                <type>int</type>
                 <name>Tracker port</name>
                 <key>TRACKER_PORT</key>
                 <default_value>6767</default_value>
@@ -527,6 +527,32 @@
             <inout key="output" uid="trackerHEXMatrix" />
         </service>
 
+        <service uid="computePoseOnHandEyeLoad" type="::registrationCV::SSolvePnP">
+            <in key="pointList2d" uid="detectedPoints" />
+            <in key="pointList3d" uid="chessboardModel" />
+            <in key="calibration" uid="camera" />
+            <inout key="matrix" uid="cameraPoseOnHandEyeLoad" />
+            <config inverse="false" />
+        </service>
+
+        <service uid="computeZFromXMovingCamera" type="::maths::SConcatenateMatrices">
+            <in group="matrix">
+                <key uid="trackerMatrix0" />
+                <key uid="handEyeMatX" />
+                <key uid="cameraPoseOnHandEyeLoad" autoConnect="yes" />
+            </in>
+            <inout key="output" uid="loadedZMovingCamera" />
+        </service>
+
+        <service uid="computeZFromXMovingChessboard" type="::maths::SConcatenateMatrices">
+            <in group="matrix">
+                <key uid="trackerMatrix0" />
+                <key uid="handEyeMatX" />
+                <key uid="cameraPoseOnHandEyeLoad" autoConnect="yes" inverse="true" />
+            </in>
+            <inout key="output" uid="loadedZMovingChessboard" />
+        </service>
+
         <service uid="cameraSwitcher" type="::maths::SSwitchMatrices" autoConnect="yes">
             <in group="matrix">
                 <key uid="trackerHEXMatrix" />
@@ -541,6 +567,14 @@
                 <key uid="trackerHEXMatrix" />
             </in>
             <inout key="output" uid="chessMatrix" />
+        </service>
+
+        <service uid="loadedZSwitcher" type="::maths::SSwitchMatrices" autoConnect="yes">
+            <in group="matrix">
+                <key uid="loadedZMovingCamera" />
+                <key uid="loadedZMovingChessboard" />
+            </in>
+            <inout key="output" uid="handEyeMatZ" />
         </service>
 
         <!-- *************************** End Services *************************** -->
@@ -726,6 +760,7 @@
             <slot>chessboardReprojection/setMovingCamera</slot>
             <slot>chessSwitcher/switchMatrix</slot>
             <slot>cameraSwitcher/switchMatrix</slot>
+            <slot>loadedZSwitcher/switchMatrix</slot>
         </connect>
 
         <connect>
@@ -750,6 +785,13 @@
             <slot>frameGrabber/setStep</slot>
         </connect>
 
+        <connect>
+            <signal>handEyeXMatrixReader/updated</signal>
+            <slot>computePoseOnHandEyeLoad/update</slot>
+            <slot>computeZFromXMovingCamera/update</slot>
+            <slot>computeZFromXMovingChessboard/update</slot>
+        </connect>
+
         <!-- *************************** End Connections *************************** -->
 
         <start uid="mainView" />
@@ -764,13 +806,15 @@
         <start uid="pushMatrixSensor" />
         <start uid="pushMatrixPose" />
         <start uid="cameraSelector" />
-        <start uid="handEyeXMatrixWriter" />
-        <start uid="handEyeZMatrixWriter" />
         <start uid="displayCalibrationInfo" />
         <start uid="concatTrackerHEX" />
+        <start uid="computePoseOnHandEyeLoad" />
+        <start uid="computeZFromXMovingCamera" />
+        <start uid="computeZFromXMovingChessboard" />
         <start uid="trackerTLMatrixSynchronizer" />
         <start uid="chessSwitcher" />
         <start uid="cameraSwitcher" />
+        <start uid="loadedZSwitcher" />
         <!-- VTK scene 'resultView' -->
         <start uid="videoAdpt" />
         <start uid="trackerAxis0" />
