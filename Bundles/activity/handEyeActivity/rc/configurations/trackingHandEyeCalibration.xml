@@ -29,6 +29,7 @@
         <object uid="reprojectedPoints" type="::fwData::PointList" />
         <object uid="chessboardModel" type="::fwData::PointList" src="deferred"/>
 
+        <!-- Matrices computed when an X calibration is loaded. -->
         <object uid="loadedZMovingCamera" type="::fwData::TransformationMatrix3D" />
         <object uid="loadedZMovingChessboard" type="::fwData::TransformationMatrix3D" />
         <object uid="cameraPoseOnHandEyeLoad" type="::fwData::TransformationMatrix3D" />
@@ -422,7 +423,7 @@
             <in key="camera" uid="camera" />
             <in key="detectedChessboard" uid="detectedPoints" autoConnect="yes" />
             <in key="handEyeX" uid="handEyeMatX" />
-            <in key="handEyeZ" uid="handEyeMatZ" />
+            <in key="handEyeZ" uid="handEyeMatZ" autoConnect="yes" />
             <in key="trackerMatrix" uid="trackerMatrix0" />
             <inout key="reprojectedChessboard" uid="reprojectedPoints" />
             <out key="chessboardModel" uid="chessboardModel" />
