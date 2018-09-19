@@ -11,6 +11,8 @@
 #include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/registry/Proxy.hpp>
 
+#include <fwCom/Slots.hxx>
+
 #include <boost/foreach.hpp>
 
 namespace fwServices
@@ -145,7 +147,7 @@ void AppManager::destroy()
 {
     this->stopAndUnregisterServices();
 
-    /// remove all the registered objects
+    // remove all the registered objects
     for (auto obj: m_registeredObject)
     {
         this->removeObject(obj.second, obj.first);
