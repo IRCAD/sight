@@ -134,8 +134,9 @@ AutoStereoCompositorListener::~AutoStereoCompositorListener()
 
                 SLM_ASSERT("No texture named 'entryPoints' in " + _originalMaterial->getName(), texUnitState);
                 texUnitState->setContentType(::Ogre::TextureUnitState::CONTENT_COMPOSITOR);
-                texUnitState->setCompositorReference("VolumeEntriesStereo" + std::to_string(
-                                                         m_viewpointNumber), "VolumeEntryPoints" + passIdStr);
+
+                const auto compName = "VolumeEntries" + std::to_string(m_viewpointNumber);
+                texUnitState->setCompositorReference(compName, compName + "Texture" + passIdStr);
             }
         }
 

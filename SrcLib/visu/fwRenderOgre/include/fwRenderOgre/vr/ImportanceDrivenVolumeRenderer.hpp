@@ -8,6 +8,8 @@
 
 #include "fwRenderOgre/vr/RayTracingVolumeRenderer.hpp"
 
+#include <OGRE/OgreCompositorInstance.h>
+
 namespace fwRenderOgre
 {
 namespace vr

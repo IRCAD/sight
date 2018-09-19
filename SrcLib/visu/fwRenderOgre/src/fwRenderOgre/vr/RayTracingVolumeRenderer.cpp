@@ -17,6 +17,8 @@
 
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 
+#include <boost/make_unique.hpp>
+
 #include <OGRE/OgreCompositorManager.h>
 #include <OGRE/OgreGpuProgramManager.h>
 #include <OGRE/OgreHardwarePixelBuffer.h>
@@ -36,6 +38,11 @@ namespace fwRenderOgre
 {
 namespace vr
 {
+
+//-----------------------------------------------------------------------------
+
+// We put proxy geometry in render queue 101. Rq 101 is not used by default and must be explicitly called.
+const static std::uint8_t s_PROXY_GEOMETRY_RQ_GROUP = 101;
 
 //-----------------------------------------------------------------------------
 
@@ -138,25 +145,20 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
     m_cameraListener(nullptr),
     m_layer(layer)
 {
-    const std::uint8_t numViewPoints = this->getLayer()->getNumberOfCameras();
-
     auto* exitDepthListener = new compositor::listener::RayExitDepthListener();
     ::Ogre::MaterialManager::getSingleton().addListener(exitDepthListener);
 
     ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
     auto viewport = layer->getViewport();
 
-    if(numViewPoints > 1)
-    {
-        m_entryPointsCompositor = "VolumeEntriesStereo" + std::to_string(numViewPoints);
-    }
-    else // Mono rendering
-    {
-        m_entryPointsCompositor = "VolumeEntries";
-    }
+    const std::uint8_t numViewPoints  = this->getLayer()->getNumberOfCameras();
+    const auto stereoMode             = layer->getStereoMode();
+    const auto rayEntryCompositorName = "VolumeEntries" + std::to_string(numViewPoints);
+    m_rayEntryCompositor = ::boost::make_unique<RayEntryCompositor> (rayEntryCompositorName, s_PROXY_GEOMETRY_RQ_GROUP,
+                                                                     stereoMode, true);
 
-    auto compositorInstance = compositorManager.addCompositor(viewport, m_entryPointsCompositor, 0);
-    SLM_ERROR_IF("Compositor '" + m_entryPointsCompositor + "' not found.", compositorInstance == nullptr);
+    auto compositorInstance = compositorManager.addCompositor(viewport, rayEntryCompositorName, 0);
+    SLM_ERROR_IF("Compositor '" + rayEntryCompositorName + "' not found.", compositorInstance == nullptr);
     compositorInstance->setEnabled(true);
 
     // First check that we did not already instance Shared parameters
@@ -207,8 +209,9 @@ RayTracingVolumeRenderer::~RayTracingVolumeRenderer()
     ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
     auto viewport = this->getLayer()->getViewport();
 
-    compositorManager.setCompositorEnabled(viewport, m_entryPointsCompositor, false);
-    compositorManager.removeCompositor(viewport, m_entryPointsCompositor);
+    const auto& rayEntryCompositorName = m_rayEntryCompositor->getName();
+    compositorManager.setCompositorEnabled(viewport, rayEntryCompositorName, false);
+    compositorManager.removeCompositor(viewport, rayEntryCompositorName);
 
     m_RTVSharedParameters->removeAllConstantDefinitions();
 }
@@ -452,8 +455,9 @@ void RayTracingVolumeRenderer::setRayCastingPassTextureUnits(Ogre::Pass* _rayCas
 
     if(this->getLayer()->getNumberOfCameras() == 1)
     {
+        const auto& rayEntryCompositorName = m_rayEntryCompositor->getName();
         texUnitState->setContentType(::Ogre::TextureUnitState::CONTENT_COMPOSITOR);
-        texUnitState->setCompositorReference("VolumeEntries", "VolumeEntryPoints");
+        texUnitState->setCompositorReference(rayEntryCompositorName, rayEntryCompositorName + "Texture");
     }
 
     texUnitState->setTextureFiltering(::Ogre::TFO_NONE);
@@ -624,8 +628,7 @@ void RayTracingVolumeRenderer::initEntryPoints()
                                                                  m_sceneManager, m_3DOgreTexture,
                                                                  m_gpuTF.lock(), "RayEntryPoints");
 
-    // We put proxy geometry in render queue 101. Rq 101 is not used by default and must be explicitly called.
-    m_proxyGeometry->setRenderQueueGroup(101);
+    m_proxyGeometry->setRenderQueueGroup(s_PROXY_GEOMETRY_RQ_GROUP);
     m_proxyGeometry->setVisible(true);
     m_volumeSceneNode->attachObject(m_proxyGeometry);
 
