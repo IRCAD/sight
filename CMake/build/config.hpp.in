@@ -22,17 +22,30 @@
 
         #define @PROJECT_NAME_UPCASE@_CLASS_API
 
+        #ifdef @PROJECT_NAME_UPCASE@_EXPORTS
+            #define @PROJECT_NAME_UPCASE@_CLASS_QT_API __declspec(dllexport)
+        #else
+            #define @PROJECT_NAME_UPCASE@_CLASS_QT_API __declspec(dllimport)
+        #endif
+
+        #define @PROJECT_NAME_UPCASE@_QT_API
+
         #pragma warning(disable: 4290)
 
-    #elif defined(__GNUC__) && (__GNUC__>=4)
+        #elif defined(__GNUC__) && (__GNUC__>=4)
 
         #define @PROJECT_NAME_UPCASE@_API __attribute__ ((visibility("default")))
         #define @PROJECT_NAME_UPCASE@_CLASS_API __attribute__ ((visibility("default")))
 
-    #else
+        #define @PROJECT_NAME_UPCASE@_QT_API __attribute__ ((visibility("default")))
+        #define @PROJECT_NAME_UPCASE@_CLASS_QT_API __attribute__ ((visibility("default")))
+
+        #else
 
         #define @PROJECT_NAME_UPCASE@_API
         #define @PROJECT_NAME_UPCASE@_CLASS_API
+        #define @PROJECT_NAME_UPCASE@_QT_API
+        #define @PROJECT_NAME_UPCASE@_CLASS_QT_API
 
     #endif
 

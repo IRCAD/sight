@@ -23,8 +23,8 @@ namespace fwQml
     qmlRegisterType<MyEditor>("myBundle", versionMajor, versionMinor, "MyEditor");
    @endcode
  */
-class FWQML_CLASS_API IQmlEditor : public QObject,
-                                   public ::fwServices::IService
+class FWQML_CLASS_QT_API IQmlEditor : public QObject,
+                                      public ::fwServices::IService
 {
 
 Q_OBJECT
@@ -33,10 +33,10 @@ public:
     fwCoreServiceClassDefinitionsMacro( (IQmlEditor)(::fwServices::IService) );
 
     /// Constructor. Do nothing.
-    IQmlEditor() noexcept;
+    FWQML_QT_API IQmlEditor() noexcept;
 
     /// Destructor. Do nothing.
-    virtual ~IQmlEditor() noexcept;
+    FWQML_QT_API virtual ~IQmlEditor() noexcept;
 
 Q_SIGNALS:
 
@@ -49,10 +49,10 @@ Q_SIGNALS:
 protected:
 
     /// call updating and emit 'started' qt signal
-    FWQML_API virtual void starting() override;
+    FWQML_QT_API virtual void starting() override;
 
     /// emit 'stopped' qt signal
-    FWQML_API virtual void stopping() override;
+    FWQML_QT_API virtual void stopping() override;
 
 };
 
