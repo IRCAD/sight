@@ -392,160 +392,162 @@ endif()
 # Export and install targets
 ########################################################################################################################
 
-# Create the SightConfig.cmake file
-set(FWCONFIG_FILE ${CMAKE_SOURCE_DIR}/CMake/build/SightConfig.cmake.in)
+if(BUILD_SDK)
+    # Create the SightConfig.cmake file
+    set(FWCONFIG_FILE ${CMAKE_SOURCE_DIR}/CMake/build/SightConfig.cmake.in)
 
-configure_file(${FWCONFIG_FILE} "${CMAKE_BINARY_DIR}/cmake/SightConfig.cmake" @ONLY)
+    configure_file(${FWCONFIG_FILE} "${CMAKE_BINARY_DIR}/cmake/SightConfig.cmake" @ONLY)
 
-# Create the SightConfigVersion file
-set(SIGHT_VERSION 18.0)
+    # Create the SightConfigVersion file
+    set(SIGHT_VERSION 18.0)
 
-write_basic_package_version_file(
-  "${CMAKE_BINARY_DIR}/cmake/SightConfigVersion.cmake"
-  VERSION ${SIGHT_VERSION}
-  COMPATIBILITY AnyNewerVersion
-)
+    write_basic_package_version_file(
+      "${CMAKE_BINARY_DIR}/cmake/SightConfigVersion.cmake"
+      VERSION ${SIGHT_VERSION}
+      COMPATIBILITY AnyNewerVersion
+    )
 
-# Install the SightConfig.cmake and SightConfigVersion.cmake
-install(
-  FILES
-    "${CMAKE_BINARY_DIR}/cmake/SightConfig.cmake"
-    "${CMAKE_BINARY_DIR}/cmake/SightConfigVersion.cmake"
-    "${CMAKE_BINARY_DIR}/cmake/SightRequirements.cmake"
-    "${CMAKE_SOURCE_DIR}/CMake/build/macros.cmake"
-  DESTINATION
-    ${FWCONFIG_PACKAGE_LOCATION}
-  COMPONENT
-    dev
-)
+    # Install the SightConfig.cmake and SightConfigVersion.cmake
+    install(
+      FILES
+        "${CMAKE_BINARY_DIR}/cmake/SightConfig.cmake"
+        "${CMAKE_BINARY_DIR}/cmake/SightConfigVersion.cmake"
+        "${CMAKE_BINARY_DIR}/cmake/SightRequirements.cmake"
+        "${CMAKE_SOURCE_DIR}/CMake/build/macros.cmake"
+      DESTINATION
+        ${FWCONFIG_PACKAGE_LOCATION}
+      COMPONENT
+        dev
+    )
 
-# Install some files needed for the build
-install(
-  FILES
-    "${CMAKE_SOURCE_DIR}/CMake/build/configure_file.cmake"
-    "${FWCMAKE_RESOURCE_PATH}/cppunit/cppunit_main.cpp"
-    "${CMAKE_SOURCE_DIR}/CMake/build/config.hpp.in"
-    "${CMAKE_SOURCE_DIR}/CMake/build/plugin_config.cmake"
-    "${CMAKE_SOURCE_DIR}/CMake/build/plugin_config_command.cmake"
-    "${CMAKE_SOURCE_DIR}/CMake/build/plugin.xml.in"
-    "${CMAKE_SOURCE_DIR}/CMake/build/profile_config.cmake"
-    "${CMAKE_SOURCE_DIR}/CMake/build/profile.xml.in"
-    "${CMAKE_SOURCE_DIR}/CMake/build/registerServices.cpp.in"
-    "${CMAKE_SOURCE_DIR}/CMake/build/spyLogLevel.hpp.in"
-  DESTINATION
-    ${FWCONFIG_PACKAGE_LOCATION}/build
-  COMPONENT
-    dev
-)
+    # Install some files needed for the build
+    install(
+      FILES
+        "${CMAKE_SOURCE_DIR}/CMake/build/configure_file.cmake"
+        "${FWCMAKE_RESOURCE_PATH}/cppunit/cppunit_main.cpp"
+        "${CMAKE_SOURCE_DIR}/CMake/build/config.hpp.in"
+        "${CMAKE_SOURCE_DIR}/CMake/build/plugin_config.cmake"
+        "${CMAKE_SOURCE_DIR}/CMake/build/plugin_config_command.cmake"
+        "${CMAKE_SOURCE_DIR}/CMake/build/plugin.xml.in"
+        "${CMAKE_SOURCE_DIR}/CMake/build/profile_config.cmake"
+        "${CMAKE_SOURCE_DIR}/CMake/build/profile.xml.in"
+        "${CMAKE_SOURCE_DIR}/CMake/build/registerServices.cpp.in"
+        "${CMAKE_SOURCE_DIR}/CMake/build/spyLogLevel.hpp.in"
+      DESTINATION
+        ${FWCONFIG_PACKAGE_LOCATION}/build
+      COMPONENT
+        dev
+    )
 
-# Install some files needed for the install
-install(
-  FILES
-    "${CMAKE_SOURCE_DIR}/CMake/install/generic_install.cmake"
-    "${CMAKE_SOURCE_DIR}/CMake/install/helper.cmake"
-  DESTINATION
-    ${FWCONFIG_PACKAGE_LOCATION}/install
-  COMPONENT
-    dev
-)
-
-if(APPLE)
+    # Install some files needed for the install
     install(
       FILES
-        "${CMAKE_SOURCE_DIR}/CMake/install/osx_install.cmake"
-      DESTINATION
-        ${FWCONFIG_PACKAGE_LOCATION}/install
-      COMPONENT
-        dev
-    )
-    install(
-      FILES
-        "${CMAKE_SOURCE_DIR}/CMake/install/macos/rc/app.icns"
-      DESTINATION
-        ${FWCONFIG_PACKAGE_LOCATION}/install/macos/rc
-      COMPONENT
-        dev
-    )
-    install(
-      FILES
-      "${CMAKE_SOURCE_DIR}/CMake/install/macos/osx_install_name_tool.py"
-      DESTINATION
-        ${FWCONFIG_PACKAGE_LOCATION}/install/macos/
-      COMPONENT
-        dev
-    )
-    install(
-      FILES
-      "${CMAKE_SOURCE_DIR}/CMake/build/linux/template.sh.in"
-      DESTINATION
-        ${FWCONFIG_PACKAGE_LOCATION}/build/linux
-      COMPONENT
-        dev
-    )
-elseif(WIN32)
-    install(
-      FILES
-        "${CMAKE_SOURCE_DIR}/CMake/install/win_install.cmake"
-      DESTINATION
-        ${FWCONFIG_PACKAGE_LOCATION}/install
-      COMPONENT
-        dev
-    )
-    install(
-      FILES
-        "${CMAKE_SOURCE_DIR}/CMake/install/windows/windows_fixup.cmake.in"
-      DESTINATION
-        ${FWCONFIG_PACKAGE_LOCATION}/install/windows
-      COMPONENT
-        dev
-    )
-    install(
-      FILES
-        "${CMAKE_SOURCE_DIR}/CMake/install/windows/NSIS/NSIS.InstallOptions.ini.in"
-        "${CMAKE_SOURCE_DIR}/CMake/install/windows/NSIS/NSIS.template.in"
-      DESTINATION
-        ${FWCONFIG_PACKAGE_LOCATION}/install/windows/NSIS/
-      COMPONENT
-        dev
-    )
-    install(
-      FILES
-        "${CMAKE_SOURCE_DIR}/CMake/install/windows/NSIS/rc/banner_nsis.bmp"
-        "${CMAKE_SOURCE_DIR}/CMake/install/windows/NSIS/rc/dialog_nsis.bmp"
-        "${CMAKE_SOURCE_DIR}/CMake/install/windows/NSIS/rc/app.ico"
-        "${CMAKE_SOURCE_DIR}/CMake/install/windows/NSIS/rc/license.rtf"
-      DESTINATION
-        ${FWCONFIG_PACKAGE_LOCATION}/install/windows/NSIS/rc/
-      COMPONENT
-        dev
-    )
-elseif(UNIX)
-    install(
-      FILES
-      "${CMAKE_SOURCE_DIR}/CMake/build/linux/template.sh.in"
-      DESTINATION
-        ${FWCONFIG_PACKAGE_LOCATION}/build/linux
-      COMPONENT
-        dev
-    )
-    install(
-      FILES
-        "${CMAKE_SOURCE_DIR}/CMake/install/linux_install.cmake"
+        "${CMAKE_SOURCE_DIR}/CMake/install/generic_install.cmake"
+        "${CMAKE_SOURCE_DIR}/CMake/install/helper.cmake"
       DESTINATION
         ${FWCONFIG_PACKAGE_LOCATION}/install
       COMPONENT
         dev
     )
 
-    install(
-      FILES
-        "${CMAKE_SOURCE_DIR}/CMake/install/linux/template.sh.in"
-        "${CMAKE_SOURCE_DIR}/CMake/install/linux/linux_fixup.cmake.in"
-      DESTINATION
-        ${FWCONFIG_PACKAGE_LOCATION}/install/linux
-      COMPONENT
-        dev
-    )
+    if(APPLE)
+        install(
+          FILES
+            "${CMAKE_SOURCE_DIR}/CMake/install/osx_install.cmake"
+          DESTINATION
+            ${FWCONFIG_PACKAGE_LOCATION}/install
+          COMPONENT
+            dev
+        )
+        install(
+          FILES
+            "${CMAKE_SOURCE_DIR}/CMake/install/macos/rc/app.icns"
+          DESTINATION
+            ${FWCONFIG_PACKAGE_LOCATION}/install/macos/rc
+          COMPONENT
+            dev
+        )
+        install(
+          FILES
+          "${CMAKE_SOURCE_DIR}/CMake/install/macos/osx_install_name_tool.py"
+          DESTINATION
+            ${FWCONFIG_PACKAGE_LOCATION}/install/macos/
+          COMPONENT
+            dev
+        )
+        install(
+          FILES
+          "${CMAKE_SOURCE_DIR}/CMake/build/linux/template.sh.in"
+          DESTINATION
+            ${FWCONFIG_PACKAGE_LOCATION}/build/linux
+          COMPONENT
+            dev
+        )
+    elseif(WIN32)
+        install(
+          FILES
+            "${CMAKE_SOURCE_DIR}/CMake/install/win_install.cmake"
+          DESTINATION
+            ${FWCONFIG_PACKAGE_LOCATION}/install
+          COMPONENT
+            dev
+        )
+        install(
+          FILES
+            "${CMAKE_SOURCE_DIR}/CMake/install/windows/windows_fixup.cmake.in"
+          DESTINATION
+            ${FWCONFIG_PACKAGE_LOCATION}/install/windows
+          COMPONENT
+            dev
+        )
+        install(
+          FILES
+            "${CMAKE_SOURCE_DIR}/CMake/install/windows/NSIS/NSIS.InstallOptions.ini.in"
+            "${CMAKE_SOURCE_DIR}/CMake/install/windows/NSIS/NSIS.template.in"
+          DESTINATION
+            ${FWCONFIG_PACKAGE_LOCATION}/install/windows/NSIS/
+          COMPONENT
+            dev
+        )
+        install(
+          FILES
+            "${CMAKE_SOURCE_DIR}/CMake/install/windows/NSIS/rc/banner_nsis.bmp"
+            "${CMAKE_SOURCE_DIR}/CMake/install/windows/NSIS/rc/dialog_nsis.bmp"
+            "${CMAKE_SOURCE_DIR}/CMake/install/windows/NSIS/rc/app.ico"
+            "${CMAKE_SOURCE_DIR}/CMake/install/windows/NSIS/rc/license.rtf"
+          DESTINATION
+            ${FWCONFIG_PACKAGE_LOCATION}/install/windows/NSIS/rc/
+          COMPONENT
+            dev
+        )
+    elseif(UNIX)
+        install(
+          FILES
+          "${CMAKE_SOURCE_DIR}/CMake/build/linux/template.sh.in"
+          DESTINATION
+            ${FWCONFIG_PACKAGE_LOCATION}/build/linux
+          COMPONENT
+            dev
+        )
+        install(
+          FILES
+            "${CMAKE_SOURCE_DIR}/CMake/install/linux_install.cmake"
+          DESTINATION
+            ${FWCONFIG_PACKAGE_LOCATION}/install
+          COMPONENT
+            dev
+        )
+
+        install(
+          FILES
+            "${CMAKE_SOURCE_DIR}/CMake/install/linux/template.sh.in"
+            "${CMAKE_SOURCE_DIR}/CMake/install/linux/linux_fixup.cmake.in"
+          DESTINATION
+            ${FWCONFIG_PACKAGE_LOCATION}/install/linux
+          COMPONENT
+            dev
+        )
+    endif()
 endif()
 
 
