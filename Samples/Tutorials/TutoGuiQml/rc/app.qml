@@ -6,7 +6,7 @@ import QtQuick.Dialogs 1.0
 
 ApplicationWindow {
     id: mainWindow
-    title: qsTr("TutoGUI")
+    title: qsTr("TutoGuiQml 0.1")
     visible: true
 
     minimumWidth: 800
@@ -114,7 +114,7 @@ ApplicationWindow {
 
     toolBar: ToolBar {
         width: parent.width
-        height: 35
+        height: 45
         RowLayout {
             anchors.fill: parent
             ToolButton {
@@ -141,14 +141,18 @@ ApplicationWindow {
                     togglePlayPause(false, false);
                 }
             }
-            ToolBarSeparator {}
+            ToolBarSeparator {
+                Layout.fillHeight: true
+            }
             ToolButton {
                 id: myItem1
                 checkable: true
                 checked: true
                 iconSource: "icons/important.png"
             }
-            ToolBarSeparator {}
+            ToolBarSeparator {
+                Layout.fillHeight: true
+            }
             ToolButton {
                 property bool force: false
 
@@ -184,7 +188,9 @@ ApplicationWindow {
                     force = false
                 }
             }
-            ToolBarSeparator {}
+            ToolBarSeparator {
+                Layout.fillHeight: true
+            }
             ToolButton {
                 property bool force: false
 
@@ -226,7 +232,9 @@ ApplicationWindow {
                     force = false
                 }
             }
-            ToolBarSeparator {}
+            ToolBarSeparator {
+                Layout.fillHeight: true
+            }
             ToolButton {
                 property bool force: false
 
@@ -263,8 +271,7 @@ ApplicationWindow {
             Item { Layout.fillWidth: true }
             Button {
                 id: myDropDown
-                anchors.top: parent.top
-                anchors.bottom: parent.bottom
+                Layout.fillHeight: true
                 onClicked: menu.popup()
                 text: "hide/show"
                 menu: Menu {
@@ -314,51 +321,51 @@ ApplicationWindow {
             Layout.preferredWidth: parent.width
             Layout.preferredHeight: parent.height / 2
             content: [
-               RowLayout {
-                   anchors.fill: parent
+                RowLayout {
+                    anchors.fill: parent
 
-                   View {
-                    name: "View 3"
-                    Layout.preferredHeight: parent.height
-                    Layout.fillWidth: true
-                    implicitWidth: parent.width * 0.3
-                    Layout.fillHeight: true
-                    content: [
-                        TabView {
-                            height: parent.height - 20
-                            width: parent.width - 20
-                            x: 10
-                            y: 10
+                    View {
+                        name: "View 3"
+                        Layout.preferredHeight: parent.height
+                        Layout.fillWidth: true
+                        implicitWidth: parent.width * 0.3
+                        Layout.fillHeight: true
+                        content: [
+                            TabView {
+                                height: parent.height - 20
+                                width: parent.width - 20
+                                x: 10
+                                y: 10
 
-                            Tab {
-                                title: "Tab1"
+                                Tab {
+                                    title: "Tab1"
+                                }
+                                Tab {
+                                    title: "Tab2"
+                                }
+                                Tab {
+                                    title: "Tab3"
+                                }
                             }
-                            Tab {
-                                title: "Tab2"
-                            }
-                            Tab {
-                                title: "Tab3"
-                            }
-                        }
 
-                    ]
-                   }
-                   View {
-                       name: "View 4"
-                       Layout.preferredHeight: parent.height
-                       Layout.fillWidth: true
-                       Layout.fillHeight: true
-                       implicitWidth: parent.width * 0.3
-                   }
-                   View {
-                       name: "View 5"
-                       Layout.preferredHeight: parent.height
-                       Layout.fillWidth: true
-                       Layout.fillHeight: true
-                       implicitWidth: parent.width * 0.3
-                   }
-               }
-           ]
+                        ]
+                    }
+                    View {
+                        name: "View 4"
+                        Layout.preferredHeight: parent.height
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                        implicitWidth: parent.width * 0.3
+                    }
+                    View {
+                        name: "View 5"
+                        Layout.preferredHeight: parent.height
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                        implicitWidth: parent.width * 0.3
+                    }
+                }
+            ]
         }
         View {
             name: "View 2"
@@ -385,7 +392,7 @@ ApplicationWindow {
                                 height: 35
                                 style: ToolBarStyle {
                                     background: Rectangle {
-                                       color: "transparent"
+                                        color: "transparent"
                                     }
                                 }
                                 RowLayout {
@@ -409,7 +416,9 @@ ApplicationWindow {
                                             myItem3.checked = checked
                                         }
                                     }
-                                    ToolBarSeparator {}
+                                    ToolBarSeparator {
+                                        Layout.fillHeight: true
+                                    }
                                     ToolButton {
                                         id: myMonkey1Fork
                                         enabled: myMonkey1.enabled

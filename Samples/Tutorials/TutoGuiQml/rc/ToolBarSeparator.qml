@@ -2,8 +2,6 @@ import QtQuick 2.0
 
 Item {
     width: 8
-    anchors.top: parent.top
-    anchors.bottom: parent.bottom
     anchors.margins: 6
     Rectangle {
         width: 1

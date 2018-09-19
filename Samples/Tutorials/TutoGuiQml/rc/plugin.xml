@@ -1,23 +1,13 @@
 <!-- Application name and version (the version is automatically replaced by CMake
      using the version defined in the Properties.cmake) -->
-<plugin id="TutoQML" version="@PROJECT_VERSION@">
+<plugin id="TutoGuiQml" class="::TutoGuiQml::Plugin" version="@PROJECT_VERSION@">
+
+    <library name="TutoGuiQml" />
 
     <!-- The bundles in requirements are automatically started when this 
          Application is launched. -->
+
     <requirement id="dataReg" />
     <requirement id="servicesReg" />
-    <requirement id="servicesReg" />
 
-    <!-- Defines the App-config -->
-    <extension implements="::fwServices::registry::AppConfig">
-        <id>tutoBasicConfig</id><!-- identifier of the configuration -->
-        <config>
-            <qml>
-                <file>share/TutoQML-@PROJECT_VERSION@/app.qml</file>
-                <!--<ctx>
-                    <class name="QMLObjectName" type="::test"/>
-                </ctx>-->
-            </qml>
-        </config>
-    </extension>
 </plugin>
