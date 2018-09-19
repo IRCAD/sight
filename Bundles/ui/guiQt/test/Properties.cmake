@@ -2,7 +2,7 @@
 set( NAME guiQtTest )
 set( VERSION  )
 set( TYPE TEST )
-set( DEPENDENCIES 
+set( DEPENDENCIES
     fwTest
     fwCore
     fwData
@@ -17,8 +17,6 @@ set( REQUIREMENTS
     ioVTK
     visuVTKQt
     vtkSimpleNegato
-    Tuto01Basic
-    Tuto02DataServiceBasic
     appXml
 )
 
