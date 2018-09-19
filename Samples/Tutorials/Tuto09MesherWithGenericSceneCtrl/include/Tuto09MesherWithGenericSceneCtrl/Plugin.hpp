@@ -8,11 +8,11 @@
 
 #include "Tuto09MesherWithGenericSceneCtrl/config.hpp"
 
-#include <fwCom/Slot.hpp>
+#include <fwCom/SlotBase.hpp>
 
 #include <fwRuntime/Plugin.hpp>
 
-#include <fwServices/IService.hpp>
+#include <fwServices/AppManager.hpp>
 
 namespace Tuto09MesherWithGenericSceneCtrl
 {
@@ -40,10 +40,11 @@ public:
     TUTO09MESHERWITHGENERICSCENECTRL_API void uninitialize() noexcept;
 
 private:
-    std::vector< ::fwServices::IService::sptr > m_startedService;
 
-    std::vector< ::fwCom::SlotBase::sptr > m_slots;
+    std::unique_ptr< ::fwServices::AppManager > m_appManager;
 
+    ::fwCom::SlotBase::sptr m_slotRecSelected;
+    ::fwCom::SlotBase::sptr m_slotEmptySelection;
 };
 
 } // namespace Tuto02DataServiceBasicCtrl

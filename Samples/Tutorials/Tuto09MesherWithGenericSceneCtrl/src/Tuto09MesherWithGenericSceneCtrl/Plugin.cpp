@@ -4,40 +4,28 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD,2018.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
-
 #include "Tuto09MesherWithGenericSceneCtrl/Plugin.hpp"
 
-#include <fwCom/Signal.hxx>
 #include <fwCom/Slot.hxx>
-
-#include <fwData/Image.hpp>
-#include <fwData/Reconstruction.hpp>
-
-#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
-#include <fwDataTools/helper/Image.hpp>
-
-#include <fwMedData/ImageSeries.hpp>
-#include <fwMedData/ModelSeries.hpp>
 
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 
-#include <fwServices/op/Add.hpp>
-#include <fwServices/op/Get.hpp>
 #include <fwServices/registry/ActiveWorkers.hpp>
-#include <fwServices/registry/ObjectService.hpp>
-
-#include <boost/foreach.hpp>
+#include <fwServices/registry/Proxy.hpp>
 
 namespace Tuto09MesherWithGenericSceneCtrl
 {
 
 static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar(
     "::Tuto09MesherWithGenericSceneCtrl::Plugin");
+
+static const std::string s_IMAGE_ID          = "image";
+static const std::string s_IMAGE_SERIES_ID   = "imageSeries";
+static const std::string s_MODEL_SERIES_ID   = "modelSeries";
+static const std::string s_RECONSTRUCTION_ID = "reconstruction";
+
+static const std::string s_REC_SELECTED_CHANNEL    = "recSelected";
+static const std::string s_EMPTY_SELECTION_CHANNEL = "emptySelection";
 
 //------------------------------------------------------------------------------
 
@@ -61,51 +49,61 @@ void Plugin::start()
 
 void Plugin::initialize()
 {
+    m_appManager = std::unique_ptr< ::fwServices::AppManager >(new ::fwServices::AppManager );
+    m_appManager->create();
+
     /* **************************************************************************************
     *              create and register the services in the OSR
     ****************************************************************************************/
     // GUI
-    auto frameSrv         = ::fwServices::add("::gui::frame::SDefaultFrame");
-    auto menuBar          = ::fwServices::add("::gui::aspect::SDefaultMenuBar", "menuBar");
-    auto menuFile         = ::fwServices::add("::gui::aspect::SDefaultMenu", "menuFile");
-    auto menuMesher       = ::fwServices::add("::gui::aspect::SDefaultMenu", "menuMesher");
-    auto mainView         = ::fwServices::add("::gui::view::SDefaultView", "mainView");
-    auto multiViewOrgans  = ::fwServices::add("::gui::view::SDefaultView", "multiViewOrgans");
-    auto sceneEditorsView = ::fwServices::add("::gui::view::SDefaultView", "scenesceneEditorsView");
+    auto frameSrv         = m_appManager->registerService("::gui::frame::SDefaultFrame", "", true);
+    auto menuBar          = m_appManager->registerService("::gui::aspect::SDefaultMenuBar", "menuBar", true);
+    auto menuFile         = m_appManager->registerService("::gui::aspect::SDefaultMenu", "menuFile", true);
+    auto menuMesher       = m_appManager->registerService("::gui::aspect::SDefaultMenu", "menuMesher", true);
+    auto mainView         = m_appManager->registerService("::gui::view::SDefaultView", "mainView", true);
+    auto multiViewOrgans  = m_appManager->registerService("::gui::view::SDefaultView", "multiViewOrgans", true);
+    auto sceneEditorsView = m_appManager->registerService("::gui::view::SDefaultView", "scenesceneEditorsView", true);
 
     // actions
-    auto actionOpenImage       = ::fwServices::add("::gui::action::SStarter", "actionOpenImage");
-    auto actionSaveModelSeries = ::fwServices::add("::gui::action::SStarter", "actionSaveModelSeries");
-    auto actionCreateMesh50    = ::fwServices::add("::gui::action::SStarter", "actionCreateMesh50");
-    auto actionCreateMesh80    = ::fwServices::add("::gui::action::SStarter", "actionCreateMesh80");
-    auto actionQuit            = ::fwServices::add("::gui::action::SQuit", "actionQuit");
+    auto actionOpenImage       = m_appManager->registerService("::gui::action::SStarter", "actionOpenImage", true);
+    auto actionSaveModelSeries = m_appManager->registerService("::gui::action::SStarter", "actionSaveModelSeries");
+    auto actionCreateMesh50    = m_appManager->registerService("::gui::action::SStarter", "actionCreateMesh50", true);
+    auto actionCreateMesh80    = m_appManager->registerService("::gui::action::SStarter", "actionCreateMesh80", true);
+    auto actionQuit            = m_appManager->registerService("::gui::action::SQuit", "actionQuit", true);
 
     //readers/writers
-    auto imageSeriesReader = ::fwServices::add("::uiIO::editor::SIOSelector", "imageSeriesReader");
-    auto modelSeriesWriter = ::fwServices::add("::uiIO::editor::SIOSelector", "modelSeriesWriter");
+    auto imageSeriesReader = m_appManager->registerService("::uiIO::editor::SIOSelector", "imageSeriesReader", true);
+    auto modelSeriesWriter = m_appManager->registerService("::uiIO::editor::SIOSelector", "modelSeriesWriter", true);
 
     // extrator/converter
-    auto medicaImageConverter = ::fwServices::add("::ctrlSelection::MedicalImageSrv", "medicaImageConverter");
+    auto extractImage         = m_appManager->registerService("::ctrlCamp::SExtractObj", "", true, true);
+    auto medicaImageConverter = m_appManager->registerService("::ctrlSelection::MedicalImageSrv", "", true);
 
     //editors
-    auto snapshotEditor       = ::fwServices::add("::uiVisuQt::SnapshotEditor", "snapshotEditor");
-    auto sliceListEditor      = ::fwServices::add("::guiQt::editor::SSelectionMenuButton", "sliceListEditor");
-    auto showScanEditor       = ::fwServices::add("::guiQt::editor::SSignalButton", "showScanEditor");
-    auto sliderIndexEditor    = ::fwServices::add("::uiImageQt::SliceIndexPositionEditor", "sliderIndexEditor");
-    auto listOrganEditor      = ::fwServices::add("::uiMedDataQt::editor::SModelSeriesList", "listOrganEditor");
-    auto organMaterialEditor  = ::fwServices::add("::uiReconstructionQt::OrganMaterialEditor", "organMaterialEditor");
-    auto representationEditor = ::fwServices::add("::uiReconstructionQt::RepresentationEditor", "representationEditor");
-    auto progressBar          = ::fwServices::add("::gui::editor::SJobBar");
+    auto snapshotEditor  = m_appManager->registerService("::uiVisuQt::SnapshotEditor", "snapshotEditor", true);
+    auto sliceListEditor = m_appManager->registerService("::guiQt::editor::SSelectionMenuButton",
+                                                         "sliceListEditor", true);
+    auto showScanEditor    = m_appManager->registerService("::guiQt::editor::SSignalButton", "showScanEditor", true);
+    auto sliderIndexEditor = m_appManager->registerService("::uiImageQt::SliceIndexPositionEditor",
+                                                           "sliderIndexEditor", true);
+    auto listOrganEditor = m_appManager->registerService("::uiMedDataQt::editor::SModelSeriesList",
+                                                         "listOrganEditor", true);
+    auto organMaterialEditor = m_appManager->registerService("::uiReconstructionQt::OrganMaterialEditor",
+                                                             "organMaterialEditor", true);
+    auto representationEditor = m_appManager->registerService("::uiReconstructionQt::RepresentationEditor",
+                                                              "representationEditor", true);
+    auto progressBar = m_appManager->registerService("::gui::editor::SJobBar", "", true);
 
     // meshers
-    auto mesher50 = ::fwServices::add("::opVTKMesh::SVTKMesher", "mesher50");
-    auto mesher80 = ::fwServices::add("::opVTKMesh::SVTKMesher", "mesher80");
+    auto mesher50 = m_appManager->registerService("::opVTKMesh::SVTKMesher", "mesher50", true);
+    auto mesher80 = m_appManager->registerService("::opVTKMesh::SVTKMesher", "mesher80", true);
 
     // generic scene
-    auto renderSrv          = ::fwServices::add("::fwRenderVTK::SRender", "genericScene");
-    auto imageAdaptor       = ::fwServices::add("::visuVTKAdaptor::SNegatoMPR", "imageAdaptor");
-    auto modelSeriesAdaptor = ::fwServices::add("::visuVTKAdaptor::SModelSeries", "modelSeriesAdaptor");
-    auto snapshotAdaptor    = ::fwServices::add("::visuVTKAdaptor::SSnapshot", "snapshotAdaptor");
+    auto renderSrv          = m_appManager->registerService("::fwRenderVTK::SRender", "genericScene", true);
+    auto imageAdaptor       = m_appManager->registerService("::visuVTKAdaptor::SNegatoMPR", "imageAdaptor", true);
+    auto modelSeriesAdaptor =
+        m_appManager->registerService("::visuVTKAdaptor::SModelSeries", "modelSeriesAdaptor", true);
+    auto snapshotAdaptor = m_appManager->registerService("::visuVTKAdaptor::SSnapshot", "snapshotAdaptor", true);
 
     /* **************************************************************************************
     *              GUI configuration
@@ -116,9 +114,7 @@ void Plugin::initialize()
     frameConfig.put("gui.frame.icon", "Tuto09MesherWithGenericSceneCtrl-0.1/tuto.ico");
     frameConfig.put("gui.menuBar", "");
     frameConfig.put("registry.menuBar.<xmlattr>.sid", "menuBar");
-    frameConfig.put("registry.menuBar.<xmlattr>.start", "yes");
     frameConfig.put("registry.view.<xmlattr>.sid", "mainView");
-    frameConfig.put("registry.view.<xmlattr>.start", "yes");
     frameSrv->setConfiguration( frameConfig );
     frameSrv->configure();
 
@@ -132,11 +128,9 @@ void Plugin::initialize()
     menuBarConfig.add_child("gui.layout.menu", menuBarMenu2Config);
     ::fwServices::IService::ConfigType menuBarMenu1ConfigReg;
     menuBarMenu1ConfigReg.put("<xmlattr>.sid", "menuFile");
-    menuBarMenu1ConfigReg.put("<xmlattr>.start", "yes");
     menuBarConfig.add_child("registry.menu", menuBarMenu1ConfigReg);
     ::fwServices::IService::ConfigType menuBarMenu2ConfigReg;
     menuBarMenu2ConfigReg.put("<xmlattr>.sid", "menuMesher");
-    menuBarMenu2ConfigReg.put("<xmlattr>.start", "yes");
     menuBarConfig.add_child("registry.menu", menuBarMenu2ConfigReg);
     menuBar->setConfiguration(menuBarConfig);
     menuBar->configure();
@@ -160,12 +154,10 @@ void Plugin::initialize()
 
     ::fwServices::IService::ConfigType menuFileItem1Reg;
     menuFileItem1Reg.put("<xmlattr>.sid", "actionOpenImage");
-    menuFileItem1Reg.put("<xmlattr>.start", "yes");
     ::fwServices::IService::ConfigType menuFileItem2Reg;
     menuFileItem2Reg.put("<xmlattr>.sid", "actionSaveModelSeries");
     ::fwServices::IService::ConfigType menuFileItem3Reg;
     menuFileItem3Reg.put("<xmlattr>.sid", "actionQuit");
-    menuFileItem3Reg.put("<xmlattr>.start", "yes");
     menuFileConfig.add_child("registry.menuItem", menuFileItem1Reg);
     menuFileConfig.add_child("registry.menuItem", menuFileItem2Reg);
     menuFileConfig.add_child("registry.menuItem", menuFileItem3Reg);
@@ -208,15 +200,12 @@ void Plugin::initialize()
     mainViewConfig.add_child("gui.layout", mainViewLayoutConfig);
     ::fwServices::IService::ConfigType mainView1ConfigReg;
     mainView1ConfigReg.put("<xmlattr>.sid", "genericScene");
-    mainView1ConfigReg.put("<xmlattr>.start", "yes");
     mainViewConfig.add_child("registry.view", mainView1ConfigReg);
     ::fwServices::IService::ConfigType mainView2ConfigReg;
     mainView2ConfigReg.put("<xmlattr>.sid", "multiViewOrgans");
-    mainView2ConfigReg.put("<xmlattr>.start", "yes");
     mainViewConfig.add_child("registry.view", mainView2ConfigReg);
     ::fwServices::IService::ConfigType mainView3ConfigReg;
     mainView3ConfigReg.put("<xmlattr>.sid", "scenesceneEditorsView");
-    mainView3ConfigReg.put("<xmlattr>.start", "yes");
     mainViewConfig.add_child("registry.view", mainView3ConfigReg);
     mainView->setConfiguration(mainViewConfig);
     mainView->configure();
@@ -275,18 +264,15 @@ void Plugin::initialize()
     sceneEditorsViewConfig.add_child("gui.layout", sceneEditorsViewLayoutConfig);
     ::fwServices::IService::ConfigType sceneEditorsView1Reg;
     sceneEditorsView1Reg.put("<xmlattr>.sid", "sliceListEditor");
-    sceneEditorsView1Reg.put("<xmlattr>.start", "yes");
     sceneEditorsViewConfig.add_child("registry.view", sceneEditorsView1Reg);
     ::fwServices::IService::ConfigType sceneEditorsView2Reg;
     sceneEditorsView2Reg.put("<xmlattr>.sid", "showScanEditor");
-    sceneEditorsView2Reg.put("<xmlattr>.start", "yes");
     sceneEditorsViewConfig.add_child("registry.view", sceneEditorsView2Reg);
     ::fwServices::IService::ConfigType sceneEditorsView3Reg;
     sceneEditorsView3Reg.put("<xmlattr>.sid", "sliderIndexEditor");
     sceneEditorsViewConfig.add_child("registry.view", sceneEditorsView3Reg);
     ::fwServices::IService::ConfigType sceneEditorsView4Reg;
     sceneEditorsView4Reg.put("<xmlattr>.sid", "snapshotEditor");
-    sceneEditorsView4Reg.put("<xmlattr>.start", "yes");
     sceneEditorsViewConfig.add_child("registry.view", sceneEditorsView4Reg);
     sceneEditorsView->setConfiguration(sceneEditorsViewConfig);
     sceneEditorsView->configure();
@@ -306,11 +292,13 @@ void Plugin::initialize()
     actionSaveModelSeries->configure();
 
     ::fwServices::IService::ConfigType actionCreateMesh50Config;
+    actionCreateMesh50Config.add("state.<xmlattr>.executable", false);
     actionCreateMesh50Config.add("start.<xmlattr>.uid", "mesher50");
     actionCreateMesh50->setConfiguration(actionCreateMesh50Config);
     actionCreateMesh50->configure();
 
     ::fwServices::IService::ConfigType actionCreateMesh80Config;
+    actionCreateMesh80Config.add("state.<xmlattr>.executable", false);
     actionCreateMesh80Config.add("start.<xmlattr>.uid", "mesher80");
     actionCreateMesh80->setConfiguration(actionCreateMesh80Config);
     actionCreateMesh80->configure();
@@ -331,6 +319,15 @@ void Plugin::initialize()
     modelSeriesWriterConfig.put("type.<xmlattr>.mode", "writer");
     modelSeriesWriter->setConfiguration(modelSeriesWriterConfig);
     modelSeriesWriter->configure();
+
+    /* **************************************************************************************
+    *              extractor configuration
+    ****************************************************************************************/
+
+    ::fwServices::IService::ConfigType extractImageConfig;
+    extractImageConfig.put("inout.extract.<xmlattr>.from", "@image");
+    extractImage->setConfiguration(extractImageConfig);
+    extractImage->configure();
 
     /* **************************************************************************************
     *              editors configuration
@@ -418,6 +415,43 @@ void Plugin::initialize()
     snapshotAdaptor->configure();
 
     /* **************************************************************************************
+    *              register inputs/inouts
+    ****************************************************************************************/
+
+    m_appManager->registerObject(sliderIndexEditor, s_IMAGE_ID, "image", ::fwServices::IService::AccessType::INOUT,
+                                 true);
+    m_appManager->registerObject(imageSeriesReader, s_IMAGE_SERIES_ID, "data",
+                                 ::fwServices::IService::AccessType::OUTPUT, true);
+    m_appManager->registerObject(modelSeriesWriter, s_MODEL_SERIES_ID, "data",
+                                 ::fwServices::IService::AccessType::INPUT, true);
+
+    m_appManager->registerObject(extractImage, s_IMAGE_SERIES_ID, "source", ::fwServices::IService::AccessType::INOUT,
+                                 true);
+    m_appManager->registerObject(extractImage, s_IMAGE_ID, "target", ::fwServices::IService::AccessType::OUTPUT, true);
+    m_appManager->registerObject(medicaImageConverter, s_IMAGE_ID, "image", ::fwServices::IService::AccessType::INOUT,
+                                 true);
+
+    m_appManager->registerObject(listOrganEditor, s_MODEL_SERIES_ID, "modelSeries",
+                                 ::fwServices::IService::AccessType::INOUT, true);
+    m_appManager->registerObject(organMaterialEditor, s_RECONSTRUCTION_ID, "reconstruction",
+                                 ::fwServices::IService::AccessType::INOUT, true);
+    m_appManager->registerObject(representationEditor, s_RECONSTRUCTION_ID, "reconstruction",
+                                 ::fwServices::IService::AccessType::INOUT, true);
+
+    m_appManager->registerObject(mesher50, s_IMAGE_SERIES_ID, "imageSeries", ::fwServices::IService::AccessType::INPUT,
+                                 true);
+    m_appManager->registerObject(mesher50, s_MODEL_SERIES_ID, "modelSeries", ::fwServices::IService::AccessType::OUTPUT,
+                                 true);
+    m_appManager->registerObject(mesher80, s_IMAGE_SERIES_ID, "imageSeries", ::fwServices::IService::AccessType::INPUT,
+                                 true);
+    m_appManager->registerObject(mesher80, s_MODEL_SERIES_ID, "modelSeries", ::fwServices::IService::AccessType::OUTPUT,
+                                 true);
+
+    m_appManager->registerObject(imageAdaptor, s_IMAGE_ID, "image", ::fwServices::IService::AccessType::INOUT, true);
+    m_appManager->registerObject(modelSeriesAdaptor, s_MODEL_SERIES_ID, "model",
+                                 ::fwServices::IService::AccessType::INPUT, true);
+
+    /* **************************************************************************************
     *              connect the services
     ****************************************************************************************/
 
@@ -425,162 +459,58 @@ void Plugin::initialize()
     auto workerRegistry = ::fwServices::registry::ActiveWorkers::getDefault();
     workerRegistry->addWorker("Tuto09", worker);
 
-    std::function<void()>  imageSeriesFct =
-        [ = ] ()
-        {
-            SLM_ASSERT("imageSeriesReader is expired !", imageSeriesReader);
-            auto imageSeries =
-                imageSeriesReader->getOutput< ::fwMedData::ImageSeries >("data");
-            if (imageSeries)
-            {
-                ::fwData::Image::sptr image = imageSeries->getImage();
-
-                if(::fwDataTools::fieldHelper::MedicalImageHelpers::
-                   checkImageValidity(image))
-                {
-                    ::fwDataTools::helper::Image helper( image );
-
-                    helper.createLandmarks();
-                    helper.createTransferFunctionPool();
-                    helper.createImageSliceIndex();
-
-                    sliceListEditor->signal("selected")->connect(imageAdaptor->slot(
-                                                                     "updateSliceMode"));
-                    showScanEditor->signal("toggled")->connect(sliceListEditor->slot(
-                                                                   "setEnabled"));
-                    showScanEditor->signal("toggled")->connect(imageAdaptor->slot(
-                                                                   "showSlice"));
-
-                    if (::fwServices::OSR::isRegistered("image",
-                                                        ::fwServices::IService::
-                                                        AccessType::INOUT,
-                                                        imageAdaptor))
-                    {
-                        imageAdaptor->stop();
-                        ::fwServices::OSR::unregisterService("image",
-                                                             ::fwServices::IService::AccessType::INOUT,
-                                                             imageAdaptor);
-                        sliderIndexEditor->stop();
-                        ::fwServices::OSR::unregisterService("image",
-                                                             ::fwServices::IService::AccessType::INOUT,
-                                                             sliderIndexEditor);
-                        mesher50->stop();
-                        ::fwServices::OSR::unregisterService("imageSeries",
-                                                             ::fwServices::IService::AccessType::INPUT,
-                                                             mesher50);
-                        mesher80->stop();
-                        ::fwServices::OSR::unregisterService("imageSeries",
-                                                             ::fwServices::IService::AccessType::INPUT,
-                                                             mesher80);
-                    }
-                    imageAdaptor->registerInOut(image, "image", true);
-                    sliderIndexEditor->registerInOut(image, "image", true);
-                    mesher50->registerInput(imageSeries, "imageSeries");
-                    mesher80->registerInput(imageSeries, "imageSeries");
-                    imageAdaptor->start();
-                    sliderIndexEditor->start();
-                    mesher50->start();
-                    mesher80->start();
-                    actionCreateMesh50->start();
-                    actionCreateMesh80->start();
-
-                    m_startedService.emplace_back(imageAdaptor);
-                    m_startedService.emplace_back(sliderIndexEditor);
-                    m_startedService.emplace_back(mesher50);
-                    m_startedService.emplace_back(mesher80);
-                    m_startedService.emplace_back(actionCreateMesh50);
-                    m_startedService.emplace_back(actionCreateMesh80);
-                }
-            }
-        };
-    auto imageReaderSlot = ::fwCom::newSlot(imageSeriesFct);
-    imageReaderSlot->setWorker(worker);
-    m_slots.push_back(imageReaderSlot);
+    auto proxy = ::fwServices::registry::Proxy::getDefault();
 
     std::function<void(::fwData::Object::sptr)>  recSelectedFct =
         [ = ] (::fwData::Object::sptr rec)
         {
-            if (organMaterialEditor->isStarted())
-            {
-                organMaterialEditor->stop();
-                ::fwServices::OSR::unregisterService("reconstruction",
-                                                     ::fwServices::IService::
-                                                     AccessType::INOUT,
-                                                     organMaterialEditor);
-
-                representationEditor->stop();
-                ::fwServices::OSR::unregisterService("reconstruction",
-                                                     ::fwServices::IService::
-                                                     AccessType::INOUT,
-                                                     representationEditor);
-            }
-            organMaterialEditor->registerInOut(rec, "reconstruction", true);
-            representationEditor->registerInOut(rec, "reconstruction", true);
-            organMaterialEditor->start();
-            representationEditor->start();
-            m_startedService.emplace_back(organMaterialEditor);
-            m_startedService.emplace_back(representationEditor);
+            m_appManager->addObject(rec, s_RECONSTRUCTION_ID);
         };
-    auto recSelectedSlot = ::fwCom::newSlot(recSelectedFct);
-    recSelectedSlot->setWorker(worker);
-    m_slots.push_back(recSelectedSlot);
+    m_slotRecSelected = ::fwCom::newSlot(recSelectedFct);
+    m_slotRecSelected->setWorker(worker);
+    proxy->connect(s_REC_SELECTED_CHANNEL, m_slotRecSelected);
 
-    auto modelSeriesFct =
-        [ = ] (::fwServices::IService::sptr mesher)
+    std::function<void()>  emptySelectionFct =
+        [ = ] ()
         {
-            ::fwMedData::ModelSeries::sptr model = mesher->getOutput< ::fwMedData::ModelSeries >(
-                "modelSeries");
-            if (model)
-            {
-                if (modelSeriesAdaptor->isStarted())
-                {
-                    modelSeriesAdaptor->stop();
-                    ::fwServices::OSR::unregisterService("modelSeries",
-                                                         ::fwServices::IService::
-                                                         AccessType::INPUT,
-                                                         modelSeriesAdaptor);
-                    listOrganEditor->stop();
-                    ::fwServices::OSR::unregisterService("modelSeries",
-                                                         ::fwServices::IService::
-                                                         AccessType::INOUT,
-                                                         listOrganEditor);
-                }
-                modelSeriesAdaptor->registerInput(model, "model", true);
-                listOrganEditor->registerInOut(model, "modelSeries", true);
-                modelSeriesAdaptor->start();
-                listOrganEditor->start();
-                m_startedService.emplace_back(modelSeriesAdaptor);
-                m_startedService.emplace_back(listOrganEditor);
-
-                listOrganEditor->signal("reconstructionSelected")->connect(recSelectedSlot);
-            }
+            m_appManager->removeObject(nullptr, s_RECONSTRUCTION_ID);
         };
+    m_slotEmptySelection = ::fwCom::newSlot(emptySelectionFct);
+    m_slotEmptySelection->setWorker(worker);
+    proxy->connect(s_EMPTY_SELECTION_CHANNEL, m_slotEmptySelection);
 
-    std::function<void()> mesher50Fct = std::bind(modelSeriesFct, mesher50);
-    auto mesher50Slot                 = ::fwCom::newSlot(mesher50Fct);
-    mesher50Slot->setWorker(worker);
-    m_slots.push_back(mesher50Slot);
-    std::function<void()> mesher80Fct = std::bind(modelSeriesFct, mesher80);
-    auto mesher80Slot                 = ::fwCom::newSlot(mesher80Fct);
-    mesher80Slot->setWorker(worker);
-    m_slots.push_back(mesher80Slot);
+    m_appManager->connectSignal("jobsChannel", imageSeriesReader, "jobCreated");
+    m_appManager->connectSignal("jobsChannel", modelSeriesWriter, "jobCreated");
+    m_appManager->connectSlot("jobsChannel", progressBar, "showJob");
 
-    imageSeriesReader->signal("jobCreated")->connect(progressBar->slot("showJob"));
-    modelSeriesWriter->signal("jobCreated")->connect(progressBar->slot("showJob"));
-    snapshotEditor->signal("snapped")->connect(snapshotAdaptor->slot("snap"));
+    m_appManager->connectSignal("snapChannel", snapshotEditor, "snapped");
+    m_appManager->connectSlot("snapChannel", snapshotAdaptor, "snap");
 
-    imageSeriesReader->signal("updated")->connect(imageReaderSlot);
-    mesher50->signal("updated")->connect(mesher50Slot);
-    mesher80->signal("updated")->connect(mesher80Slot);
+    m_appManager->connectSignal("showScanChannel", showScanEditor, "toggled");
+    m_appManager->connectSlot("showScanChannel", sliceListEditor, "setEnabled");
+    m_appManager->connectSlot("showScanChannel", imageAdaptor, "showSlice");
+
+    m_appManager->connectSignal("sliceListChannel", sliceListEditor, "selected");
+    m_appManager->connectSlot("sliceListChannel", imageAdaptor, "updateSliceMode");
+
+    m_appManager->connectSignal(s_REC_SELECTED_CHANNEL, listOrganEditor, "reconstructionSelected");
+    m_appManager->connectSignal(s_EMPTY_SELECTION_CHANNEL, listOrganEditor, "emptiedSelection");
+
+    m_appManager->connectSignal("mesherOnChannel", mesher50, "started");
+    m_appManager->connectSignal("mesherOnChannel", mesher80, "started");
+    m_appManager->connectSlot("mesherOnChannel", actionCreateMesh50, "setExecutable");
+    m_appManager->connectSlot("mesherOnChannel", actionCreateMesh80, "setExecutable");
+
+    m_appManager->connectSignal("mesherOffChannel", mesher50, "stopped");
+    m_appManager->connectSignal("mesherOffChannel", mesher80, "stopped");
+    m_appManager->connectSlot("mesherOffChannel", actionCreateMesh50, "setInexecutable");
+    m_appManager->connectSlot("mesherOffChannel", actionCreateMesh80, "setInexecutable");
 
     /* **************************************************************************************
     *              start the services
     ****************************************************************************************/
 
-    frameSrv->start();
-    snapshotAdaptor->start();
-    m_startedService.emplace_back(frameSrv);
-    m_startedService.emplace_back(snapshotAdaptor);
+    m_appManager->startServices();
 }
 
 //------------------------------------------------------------------------------
@@ -593,22 +523,12 @@ void Plugin::stop() noexcept
 
 void Plugin::uninitialize() noexcept
 {
-    std::vector< ::fwServices::IService::SharedFutureType > futures;
+    auto proxy = ::fwServices::registry::Proxy::getDefault();
 
-    // stop the started services
-    BOOST_REVERSE_FOREACH(auto& srv, m_startedService)
-    {
-        futures.emplace_back(srv->stop());
-    }
-    std::for_each(futures.begin(), futures.end(), std::mem_fn(&::std::shared_future<void>::wait));
+    proxy->disconnect(s_REC_SELECTED_CHANNEL, m_slotRecSelected);
+    proxy->disconnect(s_EMPTY_SELECTION_CHANNEL, m_slotEmptySelection);
 
-    // unregister the services
-    auto services = ::fwServices::OSR::getServices("::fwServices::IService");
-    for(auto& srv : services)
-    {
-        ::fwServices::OSR::unregisterService(srv);
-    }
-    m_startedService.clear();
+    m_appManager->destroy();
 }
 
 //------------------------------------------------------------------------------
