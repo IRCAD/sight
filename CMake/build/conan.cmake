@@ -24,7 +24,15 @@ macro(findConanDeps PROJECT_LIST CONAN_DEPS_LIST)
 endmacro()
 
 macro(installConanDeps CONAN_DEPS_LIST)
-    conan_cmake_run(REQUIRES ${CONAN_DEPS_LIST}
-                    BASIC_SETUP CMAKE_TARGETS NO_OUTPUT_DIRS
-                    BUILD missing)
+    set (CONAN_IMPORTS
+      "bin, *.dll -> ./bin"
+      "lib, *.dylib -> ./lib"
+      "lib, *.so -> ./lib"
+   )
+    conan_cmake_run(
+        REQUIRES ${CONAN_DEPS_LIST}
+        BASIC_SETUP CMAKE_TARGETS NO_OUTPUT_DIRS
+        BUILD missing
+        IMPORTS ${CONAN_IMPORTS}
+    )
 endmacro()
