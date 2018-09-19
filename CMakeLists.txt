@@ -147,8 +147,6 @@ endif()
 # External libraries management
 ########################################################################################################################
 
-set(LIBRARY_OUTPUT_DIR lib)
-
 option(USE_SYSTEM_LIB "Use system libraries to compile sight" OFF)
 
 option(BUILD_SDK "Build Sight as a SDK" OFF)
@@ -232,23 +230,20 @@ if(ADDITIONAL_REPOSITORIES)
 endif()
 
 ########################################################################################################################
-# Default paths settings for bundles and resources
+# Default paths settings for libraries, bundles and resources
 ########################################################################################################################
 
 if(WIN32)
-    set(BUNDLE_LIB_PREFIX "${CMAKE_INSTALL_BINDIR}" CACHE PATH "Relative path where the bundles libraries are installed.")
+    set(FW_INSTALL_PATH_SUFFIX )
+    set(FWBUNDLE_LIB_PREFIX "${CMAKE_INSTALL_BINDIR}")
+    set(FWBUNDLE_RC_PREFIX "${CMAKE_INSTALL_DATADIR}")
 else()
-    set(BUNDLE_LIB_PREFIX "${CMAKE_INSTALL_LIBDIR}" CACHE PATH "Relative path where the bundles libraries are installed.")
+    set(FW_INSTALL_PATH_SUFFIX "sight")
+    set(FWBUNDLE_LIB_PREFIX "${CMAKE_INSTALL_LIBDIR}/${FW_INSTALL_PATH_SUFFIX}")
+    set(FWBUNDLE_RC_PREFIX "${CMAKE_INSTALL_DATADIR}/${FW_INSTALL_PATH_SUFFIX}")
 endif()
 
-set(BUNDLE_RC_PREFIX "${CMAKE_INSTALL_DATADIR}" CACHE PATH "Relative path where the bundles resources are installed.")
-
-mark_as_advanced(BUNDLE_LIB_PREFIX)
-mark_as_advanced(BUNDLE_RC_PREFIX)
-
-set(FW_INSTALL_PATH_SUFFIX "sight")
-set(FWBUNDLE_LIB_PREFIX "${BUNDLE_LIB_PREFIX}/${FW_INSTALL_PATH_SUFFIX}")
-set(FWBUNDLE_RC_PREFIX "${BUNDLE_RC_PREFIX}/${FW_INSTALL_PATH_SUFFIX}")
+set(LIBRARY_OUTPUT_DIR lib/${FW_INSTALL_PATH_SUFFIX})
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/${LIBRARY_OUTPUT_DIR})
