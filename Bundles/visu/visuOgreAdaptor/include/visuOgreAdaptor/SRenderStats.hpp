@@ -18,6 +18,8 @@
 namespace visuOgreAdaptor
 {
 
+class PostWindowRenderListener;
+
 /**
  * @brief Adaptor displaying rendering statistics in the window overlay.
  *
@@ -45,7 +47,7 @@ public:
     VISUOGREADAPTOR_API SRenderStats() noexcept;
 
     /// Destructor.
-    VISUOGREADAPTOR_API virtual ~SRenderStats() noexcept;
+    VISUOGREADAPTOR_API virtual ~SRenderStats() noexcept override;
 
 protected:
 
@@ -63,10 +65,10 @@ protected:
 
 private:
 
-    friend class PreWindowRenderListener;
+    friend class PostWindowRenderListener;
 
     /// Listens to frame update events and updates the stats text.
-    std::unique_ptr< PreWindowRenderListener > m_listener;
+    std::unique_ptr< PostWindowRenderListener > m_listener;
 
     /// Displays stats in the overlay.
     ::fwRenderOgre::Text* m_statsText { nullptr };

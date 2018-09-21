@@ -21,11 +21,11 @@
 namespace visuOgreAdaptor
 {
 
-class PreWindowRenderListener : public ::Ogre::RenderTargetListener
+class PostWindowRenderListener : public ::Ogre::RenderTargetListener
 {
 public:
 
-    PreWindowRenderListener(SRenderStats& _renderStatsAdaptor) :
+    PostWindowRenderListener(SRenderStats& _renderStatsAdaptor) :
         m_renderStatsAdaptor(_renderStatsAdaptor)
     {
 
@@ -117,7 +117,7 @@ void SRenderStats::starting()
 
     auto* renderWindow = renderSrv->getInteractorManager()->getRenderTarget();
 
-    m_listener = ::boost::make_unique<visuOgreAdaptor::PreWindowRenderListener>(*this);
+    m_listener = ::boost::make_unique<visuOgreAdaptor::PostWindowRenderListener>(*this);
     renderWindow->addListener(m_listener.get());
 }
 
