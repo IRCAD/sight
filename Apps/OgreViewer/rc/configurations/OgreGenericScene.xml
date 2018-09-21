@@ -168,6 +168,7 @@
                 <adaptor uid="volumeAdaptor" />
                 <adaptor uid="pointListAdaptor" />
                 <adaptor uid="landmarkAdaptor" />
+                <adaptor uid="renderStatsAdaptor" />
             </scene>
         </service>
 
@@ -216,6 +217,10 @@
         <service uid="landmarkAdaptor" type="::visuOgreAdaptor::SLandmarks" autoConnect="yes">
             <in key="landmarks" uid="${landmarks}" />
             <config layer="default" />
+        </service>
+
+        <service uid="renderStatsAdaptor" type="::visuOgreAdaptor::SRenderStats">
+            <config layer="default" color="#ff0000" height="0.02"/>
         </service>
 
         <!-- ********************************* End Generic Scene ******************************* -->
@@ -321,6 +326,7 @@
         <start uid="pointListAdaptor" />
         <start uid="addPointInList" />
         <start uid="landmarkAdaptor" />
+        <start uid="renderStatsAdaptor" />
 
         <update uid="action_volumeRenderingEditor" />
 
