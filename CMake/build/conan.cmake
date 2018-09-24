@@ -27,7 +27,7 @@ macro(installConanDeps CONAN_DEPS_LIST)
     set (CONAN_IMPORTS
       "bin, *.dll -> ./bin"
       "lib, *.dylib -> ./lib"
-      "lib, *.so -> ./lib"
+      "lib, *.so* -> ./lib"
    )
     conan_cmake_run(
         REQUIRES ${CONAN_DEPS_LIST}
