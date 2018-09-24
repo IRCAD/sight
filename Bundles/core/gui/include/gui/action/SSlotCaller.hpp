@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __GUI_ACTION_SSLOTCALLER_HPP__
-#define __GUI_ACTION_SSLOTCALLER_HPP__
+#pragma once
 
 #include "gui/config.hpp"
 
@@ -70,9 +69,9 @@ protected:
 
     // Vector representing slots
     SlotInfoContainerType m_slotInfos;
+
+    bool m_wait{ false };
 };
 
 } // namespace action
 } // namespace gui
-
-#endif /*__GUI_ACTION_SSLOTCALLER_HPP__*/
