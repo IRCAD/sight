@@ -36,7 +36,7 @@ public:
     virtual void postRenderTargetUpdate(const Ogre::RenderTargetEvent& evt) override
     {
         // update text every 100th frame
-        if((m_frameCount++) % 100 == 0)
+        if(m_frameCount++ > 100)
         {
             auto frameStats = evt.source->getStatistics();
 
@@ -54,7 +54,7 @@ private:
 
     SRenderStats& m_renderStatsAdaptor;
 
-    std::uint8_t m_frameCount {1};
+    std::uint8_t m_frameCount {100}; // Start at 100 to trigger text creation after the first frame.
 
 };
 
