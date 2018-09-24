@@ -27,11 +27,13 @@ namespace action
  * This action works on a ::fwData::Object. It does the action specify by the specify config.
  * @code{.xml}
    <service uid="..." type="::gui::action::SSlotCaller" >
+      <sync>true</sync>
       <slots>
           <slot>hasSlotsId/slotKey</slot>
       </slots>
    </service>
-   @endcode
+ * @subsection Configuration Configuration
+ * - \b syncedCall : Determines whether slots are called asynchronously ("false") or synchronously ("true")
  */
 
 class GUI_CLASS_API SSlotCaller : public ::fwGui::IActionSrv
@@ -70,7 +72,8 @@ protected:
     // Vector representing slots
     SlotInfoContainerType m_slotInfos;
 
-    bool m_wait{ false };
+    /// Determines whether slots are called asynchronously or synchronously
+    bool m_synchronized{ false };
 };
 
 } // namespace action

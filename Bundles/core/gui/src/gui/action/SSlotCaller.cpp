@@ -29,9 +29,9 @@ namespace gui
 namespace action
 {
 
-static const ::fwServices::IService::KeyType s_SLOT_KEY  = "slot";
-static const ::fwServices::IService::KeyType s_SLOTS_KEY = "slots";
-static const ::fwServices::IService::KeyType s_WAIT_KEY  = "wait";
+static const ::fwServices::IService::KeyType s_SLOT_KEY        = "slot";
+static const ::fwServices::IService::KeyType s_SLOTS_KEY       = "slots";
+static const ::fwServices::IService::KeyType s_SYNCED_CALL_KEY = "sync";
 
 fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::SSlotCaller );
 
@@ -92,7 +92,7 @@ void SSlotCaller::updating()
 
                 const ::fwCom::SlotBase::csptr slot = hasSlots->slot(slotKey);
 
-                if(m_wait)
+                if(m_synchronized)
                 {
                     slot->run();
                 }
@@ -112,9 +112,9 @@ void SSlotCaller::configuring()
     SLM_TRACE_FUNC();
     this->initialize();
 
-    ConfigurationType waitCfg = m_configuration->findConfigurationElement(s_WAIT_KEY);
+    ConfigurationType syncCfg = m_configuration->findConfigurationElement(s_SYNCED_CALL_KEY);
 
-    m_wait = waitCfg && waitCfg->getValue() == "true";
+    m_synchronized = syncCfg && syncCfg->getValue() == "true";
 
     OSLM_ASSERT("Missing slots configuration element in " << this->getID(),
                 m_configuration->hasConfigurationElement(s_SLOTS_KEY));
