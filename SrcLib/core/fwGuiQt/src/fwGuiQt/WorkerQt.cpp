@@ -208,7 +208,38 @@ static std::string getQt5CorePath()
     }
     return path;
 }
-#elif !defined(__APPLE__)
+
+#elif defined(__APPLE__)
+//------------------------------------------------------------------------------
+
+static std::string getQt5CorePath()
+{
+    const std::regex matchQt5CoreLib("libQt5Core");
+    const std::regex matchQt5CoreFramework("QtCore");
+    std::string path;
+    for (int32_t i = _dyld_image_count(); i >= 0; i--)
+    {
+        const char* image_name = _dyld_get_image_name(i);
+        if (image_name)
+        {
+            const std::string libName(image_name);
+            if(std::regex_search(libName, matchQt5CoreLib))
+            {
+                path = libName;
+                break;
+            }
+            else if(std::regex_search(libName, matchQt5CoreFramework))
+            {
+                // get the path of the .framework folder
+                auto cut = libName.find(".framework");
+                path = libName.substr(0, cut + 10); // cut after .framework
+                break;
+            }
+        }
+    }
+    return path;
+}
+#else
 struct FindQt5Functor
 {
     //------------------------------------------------------------------------------
@@ -243,23 +274,8 @@ void WorkerQt::init( int& argc, char** argv, bool guiEnabled )
     // Thus the strategy here is to locate the Qt5Core library and then compute the path relatively
     // This work in all cases when we use our binpkgs. If we use the system libraries, the qt.conf file
     // of the system should do the job and the following might be useless.
-#if defined(WIN32)
+#if defined(WIN32) || defined(__APPLE__)
     const auto path = getQt5CorePath();
-#elif defined(__APPLE__)
-    const std::regex matchQt5Core("libQt5Core");
-    ::boost::filesystem::path path;
-    for (int32_t i = _dyld_image_count(); i >= 0; i--)
-    {
-        const char* image_name = _dyld_get_image_name(i);
-        if (image_name)
-        {
-            const std::string libName(image_name);
-            if(std::regex_search(libName, matchQt5Core))
-            {
-                path = ::boost::filesystem::path(libName);
-            }
-        }
-    }
 #else
     FindQt5Functor functor;
     dl_iterate_phdr(&FindQt5Functor::dl_iterate_phdr_callback, nullptr);

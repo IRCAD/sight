@@ -12,7 +12,7 @@ function(osx_install PRJ_NAME)
 
     set_source_files_properties(${${PRJ_NAME}_ICON_PATH} PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
 
-    if(NOT BUILD_SDK)
+    if(NOT BUILD_SDK AND TARGET fwlauncher)
         if("${${PRJ_NAME}_TYPE}" STREQUAL  "APP")
             # create a new executable equivalent to fwLauncher
             add_executable(${EXECUTABLE_NAME} MACOSX_BUNDLE ${fwlauncher_HEADERS} ${fwlauncher_SOURCES} ${${PRJ_NAME}_ICON_PATH})
@@ -34,36 +34,38 @@ function(osx_install PRJ_NAME)
         endif()
 
         set_target_properties( ${EXECUTABLE_NAME} PROPERTIES OUTPUT_NAME ${PRJ_NAME})
-        set_target_properties( ${EXECUTABLE_NAME} PROPERTIES MACOSX_BUNDLE_ICON_FILE ${${PRJ_NAME}_ICON_PATH})
+        set_target_properties( ${EXECUTABLE_NAME} PROPERTIES MACOSX_BUNDLE_ICON_FILE ${ICON_FILENAME})
         set_target_properties( ${EXECUTABLE_NAME} PROPERTIES MACOSX_BUNDLE_INFO_STRING "${PRJ_NAME}")
         set_target_properties( ${EXECUTABLE_NAME} PROPERTIES MACOSX_BUNDLE_SHORT_VERSION_STRING "${${PRJ_NAME}_VERSION}")
         set_target_properties( ${EXECUTABLE_NAME} PROPERTIES MACOSX_BUNDLE_LONG_VERSION_STRING "${${PRJ_NAME}_VERSION}")
         set_target_properties( ${EXECUTABLE_NAME} PROPERTIES MACOSX_BUNDLE_BUNDLE_NAME "${PRJ_NAME}")
         set_target_properties( ${EXECUTABLE_NAME} PROPERTIES MACOSX_BUNDLE_COPYRIGHT "Copyright 2012-2018 IRCAD-IHU")
-        set_target_properties( ${EXECUTABLE_NAME} PROPERTIES MACOSX_BUNDLE_GUI_IDENTIFIER "com.fw4spl.${LOWER_PRJ_NAME}")
+        set_target_properties( ${EXECUTABLE_NAME} PROPERTIES MACOSX_BUNDLE_GUI_IDENTIFIER "com.sight.${LOWER_PRJ_NAME}")
 
         set(APP_PATH "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${EXECUTABLE_NAME}")
         set(APP_INSTALL_PATH "${CMAKE_INSTALL_PREFIX}/${EXECUTABLE_NAME}")
 
+        # configure qt.conf
+        install(FILES "${CMAKE_SOURCE_DIR}/CMake/install/macos/rc/qt.conf" DESTINATION "${APP_INSTALL_PATH}/Contents/Resources/" COMPONENT ApplicationBundle)
+
         install(TARGETS ${EXECUTABLE_NAME} BUNDLE DESTINATION . COMPONENT ApplicationBundle)
 
         install(CODE "
-            file(INSTALL \"${CMAKE_INSTALL_PREFIX}/bin/${APP_NAME}\" DESTINATION \"${APP_INSTALL_PATH}/Contents/MacOS\")
 
             if (EXISTS \"${CMAKE_INSTALL_PREFIX}/${FWBUNDLE_RC_PREFIX}\")
-                file(INSTALL \"${CMAKE_INSTALL_PREFIX}/${FWBUNDLE_RC_PREFIX}\" DESTINATION \"${APP_INSTALL_PATH}/Contents\")
+                file(INSTALL \"${CMAKE_INSTALL_PREFIX}/${FWBUNDLE_RC_PREFIX}/\" DESTINATION \"${APP_INSTALL_PATH}/Contents/${FWBUNDLE_RC_PREFIX}\")
             endif()
 
             if (EXISTS ${CMAKE_INSTALL_PREFIX}/${FWBUNDLE_LIB_PREFIX})
-                file(INSTALL \"${CMAKE_INSTALL_PREFIX}/${FWBUNDLE_LIB_PREFIX}\" DESTINATION \"${APP_INSTALL_PATH}/Contents/MacOS\")
+                file(INSTALL \"${CMAKE_INSTALL_PREFIX}/${FWBUNDLE_LIB_PREFIX}/\" DESTINATION \"${APP_INSTALL_PATH}/Contents/${FWBUNDLE_LIB_PREFIX}\")
             endif()
 
             if (EXISTS ${CMAKE_INSTALL_PREFIX}/lib/qt5/plugins)
-                file(INSTALL \"${CMAKE_INSTALL_PREFIX}/lib/qt5/plugins\" DESTINATION \"${APP_INSTALL_PATH}/Contents/lib/qt5\")
+                file(INSTALL \"${CMAKE_INSTALL_PREFIX}/lib/qt5/plugins/\" DESTINATION \"${APP_INSTALL_PATH}/Contents/MacOS/qt5/plugins\")
             endif()
 
             if (EXISTS ${CMAKE_INSTALL_PREFIX}/bin/Contents/Plugins)
-                file(INSTALL \"${CMAKE_INSTALL_PREFIX}/bin/Contents/Plugins\" DESTINATION \"${APP_INSTALL_PATH}/Contents/\")
+                file(INSTALL \"${CMAKE_INSTALL_PREFIX}/bin/Contents/Plugins/\" DESTINATION \"${APP_INSTALL_PATH}/Contents/Plugins\")
             endif()
 
             # copy the other installed files or directories (not .app, lib, bin, share)
@@ -84,8 +86,8 @@ function(osx_install PRJ_NAME)
 
         install(CODE "
             file(GLOB_RECURSE OGREPLUGINS \"${APP_INSTALL_PATH}/Contents/Plugins/*${CMAKE_SHARED_LIBRARY_SUFFIX}\")
-            file(GLOB_RECURSE QTPLUGINS \"${APP_INSTALL_PATH}/Contents/lib/qt5/plugins/*${CMAKE_SHARED_LIBRARY_SUFFIX}\")
-            file(GLOB_RECURSE BUNDLES \"${APP_INSTALL_PATH}/Contents/${FWBUNDLE_LIB_PREFIX}/*/*${CMAKE_SHARED_LIBRARY_SUFFIX}\")
+            file(GLOB_RECURSE QTPLUGINS \"${APP_INSTALL_PATH}/Contents/MacOS/qt5/plugins/*${CMAKE_SHARED_LIBRARY_SUFFIX}\")
+            file(GLOB_RECURSE BUNDLES \"${APP_INSTALL_PATH}/Contents/lib/*/*${CMAKE_SHARED_LIBRARY_SUFFIX}\")
 
             # Find Bundles for fixup
             if (BUNDLES)
