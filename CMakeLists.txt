@@ -1101,6 +1101,7 @@ endif()
 # Append tests to the project list
 if(BUILD_TESTS)
     findTests("${PROJECT_LIST}" "${TESTS_FILTER}" PROJECT_TESTS)
+    findAllDependencies("${PROJECT_TESTS}" PROJECT_TESTS)
     list(APPEND PROJECT_LIST ${PROJECT_TESTS})
 endif()
 
