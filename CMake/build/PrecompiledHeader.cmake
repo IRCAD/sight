@@ -80,41 +80,9 @@ function(pch_msvc_hook variable access value current_list_file stack)
     foreach(index RANGE -${length} -1)
         list(GET CMAKE_PCH_COMPILER_TARGETS ${index} target)
         list(GET CMAKE_PCH_COMPILER_TARGET_FLAGS ${index} flags)
-        set(pch_target ${target}.pch)
 
         # Find OBJ pch target dependencies
-        get_target_property(DIRINC ${target} INCLUDE_DIRECTORIES)
-        list(APPEND listinc ${DIRINC})
-
-        list(APPEND srcTargets ${target})
-        while(srcTargets)
-            list(GET srcTargets 0 srcTarget)
-            list(APPEND visited ${srcTarget})
-            list(REMOVE_AT srcTargets 0)
-            foreach(depends ${${srcTarget}_DEPENDENCIES})
-                list(APPEND targets ${depends})
-
-                list(FIND visited ${depends} targetFound)
-                if(targetFound EQUAL -1)
-                    list(APPEND srcTargets ${depends})
-                endif()
-
-            endforeach()
-        endwhile()
-
-        if(targets)
-            list(REMOVE_DUPLICATES targets)
-        endif()
-        list(APPEND targets ${target})
-
-        # In the following we configure the object library used to compile the pch
-
-        # 1. Add the same include directories than the regular target
-        foreach(depends ${targets})
-            get_target_property(DIRINC ${depends} INTERFACE_INCLUDE_DIRECTORIES)
-            list(APPEND listinc ${DIRINC})
-        endforeach()
-        target_include_directories(${target}_PCH_OBJ SYSTEM PRIVATE "${listinc}")
+        target_include_directories(${target}_PCH_OBJ SYSTEM PRIVATE "$<TARGET_PROPERTY:${target},INTERFACE_INCLUDE_DIRECTORIES>")
 
         # 2. Add the same compile definitions
         get_target_property(def ${target} COMPILE_DEFINITIONS)

@@ -8,14 +8,21 @@
 me=$(cd "$(dirname "$0")"; pwd)
 
 # Setup the directories
-bindir="$me"
+bindir="@LAUNCHER_PATH@"
 rootdir=`cd "$me/.." ; pwd`
 libdir="$rootdir/lib"
+sdkdir="@Sight_LIBRARY_DIR@"
+extdir="@EXTERNAL_LIBRARIES@/lib"
 
 bundledir="$rootdir/@FWBUNDLE_RC_PREFIX@"
+bundleopt="-B $bundledir"
+
+if [ -n "$sdkdir" ]; then
+    bundleopt="$bundleopt -B @Sight_BUNDLES_DIR@"
+fi
 
 # export LD_LIBRARY_PATH
-LD_LIBRARY_PATH=$libdir:$libdir/sight:${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
+LD_LIBRARY_PATH=$libdir:$sdkdir:$extdir:${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
 export LD_LIBRARY_PATH
 
 # export the path to the fonts if it exists (mandatory for Qt)
@@ -25,4 +32,4 @@ if [ -d $QT_QPA_FONTDIR ]; then
 fi
 
 # Use CMAKE Variable of fwlauncher and Profile.xml path
-exec "$bindir/@LAUNCHER@" "$bundledir/@PROFILE_PATH@"
+exec "$bindir/@LAUNCHER@" "$bundledir/@PROFILE_PATH@" $bundleopt
