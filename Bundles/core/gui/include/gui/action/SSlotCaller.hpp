@@ -33,7 +33,7 @@ namespace action
       </slots>
    </service>
  * @subsection Configuration Configuration
- * - \b syncedCall : Determines whether slots are called asynchronously ("false") or synchronously ("true")
+ * - \b sync : Determines whether slots are called asynchronously ("false") or synchronously ("true")
  */
 
 class GUI_CLASS_API SSlotCaller : public ::fwGui::IActionSrv
