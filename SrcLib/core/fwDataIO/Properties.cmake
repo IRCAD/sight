@@ -11,6 +11,8 @@ set( DEPENDENCIES
 )
 set( REQUIREMENTS  )
 set( USE_PCH_FROM_TARGET pchData )
-set( CONAN_DEPS
-    zlib/1.2.11@fw4spl/stable
-)
+if(WIN32 OR APPLE)
+    set( CONAN_DEPS
+        zlib/1.2.11@fw4spl/stable
+    )
+endif()
