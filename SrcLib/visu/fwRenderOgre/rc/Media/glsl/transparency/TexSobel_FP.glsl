@@ -101,23 +101,26 @@ layout(location = 0) out vec4 edgeMap;
 
 //---------------------------------------------------------------------------------------------------------------------
 
-float computeFilter(sampler2D map, float[9] filter, bool normalized)
+float computeFilter(sampler2D map, float[9] convFilter, bool normalized)
 {
     // Because filters change intervals, we must compute sum of its coefficients
     float normalize = 0;
     vec3 g = vec3(0.0);
+    vec2 size = textureSize(map, 0);
+    vec2 offset = 1.F/size;
+    
     for(int i = 0; i < 9; i++)
     {
         // Getting map values in [-1;1]
-        g += (textureOffset(map, uv, offs[i]) * 2.0 - 1.0).xyz * filter[i];
-        normalize += abs(filter[i]);
+        g += (texture(map, uv + offset * offs[i]).rgb * 2.0 - 1.0) * convFilter[i];
+        normalize += abs(convFilter[i]);
     }
     return normalized ? length(g) / normalize : length(g);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 
-vec3 computeFilterInterpolateWithDistance(sampler2D map, float[9] filter)
+vec3 computeFilterInterpolateWithDistance(sampler2D map, float[9] convFilter)
 {
     vec3 g = vec3(0.0);
 
@@ -139,11 +142,14 @@ vec3 computeFilterInterpolateWithDistance(sampler2D map, float[9] filter)
     b = 1 - a * lowPercent;
     float interpolation;
 
+    vec2 size = textureSize(map, 0);
+    vec2 offset = 1.F/size;
+    
     // TODO : Find best interpolation function (linear or not)
 
     for(int i = 0; i < 9; i++)
     {
-        currentPixel = normalize(textureOffset(map, uv, offs[i]).xyz * 2.0 - 1.0);
+        currentPixel = normalize(texture(map, uv + offset * offs[i]).rgb * 2.0 - 1.0);
 
         if (centerDepth < lowPercent)
         {
@@ -158,14 +164,14 @@ vec3 computeFilterInterpolateWithDistance(sampler2D map, float[9] filter)
         }
 
         // Getting map values in [-1;1]
-        g += interpolatedPixel * filter[i];
+        g += interpolatedPixel * convFilter[i];
     }
     return g;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 
-float computeMeanAngle(sampler2D map, float[9] filter)
+float computeMeanAngle(sampler2D map, float[9] convFilter)
 {
     // Because filters change intervals, we must compute sum of its coefficients
     float norm = 0;
@@ -173,27 +179,35 @@ float computeMeanAngle(sampler2D map, float[9] filter)
     vec3 centerPixel = texture(map,uv).xyz * 2.0 - 1.0;
     centerPixel = normalize(centerPixel);
     vec3 neighborPixel;
+    
+    vec2 size = textureSize(map, 0);
+    vec2 offset = 1.F/size;
+    
     for(int i = 0; i < 9; i++)
     {
         // Getting map values in [-1;1]
-        neighborPixel = normalize(textureOffset(map, uv, offs[i]) * 2.0 - 1.0).xyz;
+        neighborPixel = normalize(texture(map, uv + offset * offs[i]).rgb * 2.0 - 1.0);
 
-        g += filter[i] * acos(dot(centerPixel, neighborPixel));
+        g += convFilter[i] * acos(dot(centerPixel, neighborPixel));
 
-        norm += abs(filter[i]);
+        norm += abs(convFilter[i]);
     }
     return g / norm;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 
-vec3 computeFilterVec4(sampler2D map, float[9] filter)
+vec3 computeFilterVec4(sampler2D map, float[9] convFilter)
 {
     vec3 g = vec3(0.0);
+    
+    vec2 size = textureSize(map, 0);
+    vec2 offset = 1.F/size;
+    
     for(int i = 0; i < 9; i++)
     {
         // Getting map values in [-1;1]
-        g += (textureOffset(map, uv, offs[i]) * 2.0 - 1.0).xyz * filter[i];
+        g += (texture(map, uv + offset * offs[i]).rgb * convFilter[i]);
     }
     return g;
 }
