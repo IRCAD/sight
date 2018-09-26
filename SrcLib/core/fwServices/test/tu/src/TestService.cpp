@@ -32,6 +32,10 @@ const ::fwCom::Slots::SlotKeyType TestSrvAutoconnect::s_SLOT_1    = "slot1";
 unsigned int TestService::s_START_COUNTER  = 0;
 unsigned int TestService::s_UPDATE_COUNTER = 0;
 
+const std::string TestService::s_OPTION_KEY   = "option";
+const std::string TestService::s_UNCONFIGURED = "UNCONFIGURED";
+const std::string TestService::s_NOT_DEFINED  = "NOT_DEFINED";
+
 const ::fwServices::IService::KeyType TestServiceWithData::s_INPUT  = "input";
 const ::fwServices::IService::KeyType TestServiceWithData::s_OUTPUT = "output";
 

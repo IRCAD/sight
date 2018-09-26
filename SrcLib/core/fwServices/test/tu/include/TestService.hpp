@@ -29,6 +29,9 @@ public:
 
     static unsigned int s_START_COUNTER;
     static unsigned int s_UPDATE_COUNTER;
+    static const std::string s_OPTION_KEY;
+    static const std::string s_UNCONFIGURED;
+    static const std::string s_NOT_DEFINED;
 
     fwCoreServiceClassDefinitionsMacro( (TestService)(::fwServices::IService) );
     TestService() noexcept
@@ -43,6 +46,9 @@ public:
 
     virtual void configuring() final
     {
+        const ConfigType cfg = this->getConfigTree();
+
+        m_option = cfg.get(s_OPTION_KEY, s_NOT_DEFINED);
     }
     virtual void starting() override;
     //------------------------------------------------------------------------------
@@ -107,6 +113,13 @@ public:
         m_raiseException = raiseException;
     }
 
+    //------------------------------------------------------------------------------
+
+    const std::string& getOption() const
+    {
+        return m_option;
+    }
+
 protected:
     bool m_isUpdated { false };
     bool m_isUpdated2 { false };
@@ -114,6 +127,7 @@ protected:
     bool m_raiseException { false };
     unsigned int m_startOrder { 0 };
     unsigned int m_updateOrder { 0 };
+    std::string m_option{s_UNCONFIGURED};
 };
 
 /**

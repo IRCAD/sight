@@ -219,11 +219,18 @@ public:
     FWSERVICES_API void setConfiguration( const ConfigType& ptree );
 
     /**
+     * @brief Set configuration and then invoke configuring() if m_globalState == STOPPED or reconfiguring() if
+     *  m_globalState == STARTED.
+     * @post m_configurationState == CONFIGURED
+     * @param[in] ptree property tree
+     */
+    FWSERVICES_API void configure( const ConfigType& ptree );
+
+    /**
      * @brief Invoke configuring() if m_globalState == STOPPED. Invoke reconfiguring() if m_globalState == STARTED. Does
      * nothing otherwise.
      * @pre m_configurationState == UNCONFIGURED
      * @post m_configurationState == CONFIGURED
-     * @note invoke checkConfiguration()
      */
     FWSERVICES_API void configure();
 

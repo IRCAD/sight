@@ -331,11 +331,28 @@ void IService::configure()
 
 //-----------------------------------------------------------------------------
 
+void IService::configure(const ConfigType& ptree)
+{
+    ::fwRuntime::ConfigurationElement::sptr ce;
+
+    ConfigType serviceConfig;
+    serviceConfig.add_child("service", ptree);
+
+    ce = ::fwRuntime::Convert::fromPropertyTree(serviceConfig);
+
+    SLM_ASSERT( "Invalid ConfigurationElement", ce );
+
+    this->setConfiguration(ce);
+    this->configure();
+}
+
+//-----------------------------------------------------------------------------
+
 void IService::reconfiguring()
 {
     OSLM_FATAL(
-        "If this method (reconfiguring) is called, it must be overriden in the implementation ("<<this->getClassname()<<", "<< this->getID() <<
-            ")" );
+        "If this method (reconfiguring) is called, it must be overriden in the implementation ("
+            << this->getClassname() <<", "<< this->getID() << ")" );
 }
 
 //-----------------------------------------------------------------------------

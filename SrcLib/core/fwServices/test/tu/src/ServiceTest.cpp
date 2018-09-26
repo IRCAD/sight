@@ -53,6 +53,17 @@ void ServiceTest::setUp()
 void ServiceTest::tearDown()
 {
     // Clean up after the test run.
+    // unregister the services that have not been unregistered because a test failed.
+
+    auto services = ::fwServices::OSR::getServices< ::fwServices::IService >();
+    for (auto srv: services)
+    {
+        if (srv->isStarted())
+        {
+            srv->stop();
+        }
+        ::fwServices::OSR::unregisterService(srv);
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -79,6 +90,50 @@ void ServiceTest::testServiceCreation()
     // Test erasing service
     ::fwServices::OSR::unregisterService(service);
     CPPUNIT_ASSERT( ::fwServices::OSR::has(obj, "::fwServices::ut::TestService") == false );
+}
+
+//------------------------------------------------------------------------------
+
+void ServiceTest::testServiceConfiguration()
+{
+    // Test adding service
+    auto srv  = ::fwServices::add< ::fwServices::ut::TestService >("::fwServices::ut::TestServiceImplementation");
+    auto srv2 = ::fwServices::add< ::fwServices::ut::TestService >("::fwServices::ut::TestServiceImplementation");
+
+    CPPUNIT_ASSERT_EQUAL(::fwServices::IService::ConfigurationStatus::UNCONFIGURED, srv->getConfigurationStatus());
+    CPPUNIT_ASSERT_EQUAL(TestService::s_UNCONFIGURED, srv->getOption());
+    srv->configure();
+    CPPUNIT_ASSERT_EQUAL(::fwServices::IService::ConfigurationStatus::CONFIGURED, srv->getConfigurationStatus());
+    CPPUNIT_ASSERT_EQUAL(TestService::s_NOT_DEFINED, srv->getOption());
+
+    const std::string OPTION1 = "configuredOption1";
+    const std::string OPTION2 = "configuredOption2";
+
+    ::fwServices::IService::ConfigType config;
+    config.add(TestService::s_OPTION_KEY, OPTION1);
+
+    srv->setConfiguration(config);
+    CPPUNIT_ASSERT_EQUAL(::fwServices::IService::ConfigurationStatus::UNCONFIGURED, srv->getConfigurationStatus());
+
+    srv->configure();
+
+    CPPUNIT_ASSERT_EQUAL(::fwServices::IService::ConfigurationStatus::CONFIGURED, srv->getConfigurationStatus());
+    CPPUNIT_ASSERT_EQUAL(OPTION1, srv->getOption());
+
+    ::fwServices::IService::ConfigType config2;
+    config2.add(TestService::s_OPTION_KEY, OPTION2);
+
+    CPPUNIT_ASSERT_EQUAL(::fwServices::IService::ConfigurationStatus::UNCONFIGURED, srv2->getConfigurationStatus());
+    CPPUNIT_ASSERT_EQUAL(TestService::s_UNCONFIGURED, srv2->getOption());
+
+    srv2->configure(config2);
+
+    CPPUNIT_ASSERT_EQUAL(::fwServices::IService::ConfigurationStatus::CONFIGURED, srv2->getConfigurationStatus());
+    CPPUNIT_ASSERT_EQUAL(OPTION2, srv2->getOption());
+
+    // Test erasing service
+    ::fwServices::OSR::unregisterService(srv);
+    ::fwServices::OSR::unregisterService(srv2);
 }
 
 //------------------------------------------------------------------------------
