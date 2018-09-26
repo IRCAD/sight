@@ -20,20 +20,19 @@ namespace fwServices
  * @brief Base class for application using qml
  *
  * This class allows to manage the service used by an application.
- * We can easily manage its inputs/inouts and the connections.It connect/disconnect the signals and slots when the
+ * We can easily manage its inputs/inouts and the connections. It connects/disconnects the signals and slots when the
  * service is started/stopped and when an object is added/removed.
  *
  * @code{.cpp}
-    m_appMgr =
-            std::unique_ptr< ::fwServices::AppManager >(new ::fwServices::AppManager);
+    m_appMgr = ::boost::make_unique< ::fwServices::AppManager >();
 
     // Initialize the manager
     m_appMgr->create();
     // Create and register a service
     // - readerService will be automatically started and updated
     // - mesherService will be automatically started but not updated
-    auto readerService = m_appMgr->registerService("::uiIO::editor::SIOSelector", "", true, true);
-    auto mesherService = m_appMgr->registerService("::opVTKMesh::SVTKMesher", "", true, false);
+    auto readerService = m_appMgr->addService("::uiIO::editor::SIOSelector", true, true);
+    auto mesherService = m_appMgr->addService("::opVTKMesh::SVTKMesher", true, false);
 
     // configure the services ...
 
@@ -74,9 +73,9 @@ public:
     /**
      * @brief Create and register the service in the OSR
      *
-     * This method does not start the service enven if autoStart=true, you must call startService(srv), startServices()
+     * This method does not start the service even if autoStart=true, you must call startService(srv), startServices()
      * or registerObj() to start the service when all its required inputs are present.
-     * To define the required inputs, use IService::preregisterInput() or IService::preregisterInOut().
+     * To define the required inputs, use registerObject().
      *
      * @param type service classname
      * @param uid service uid. If it is empty, it will be generated
@@ -84,13 +83,28 @@ public:
      * @param autoUpdate if true, the service will be updated after starting.
      * @return Return the created service
      */
-    FWSERVICES_API ::fwServices::IService::sptr registerService(const std::string& type, const std::string& uid = "",
-                                                                bool autoStart = false, bool autoUpdate = false);
+    FWSERVICES_API ::fwServices::IService::sptr addService(const std::string& type, const std::string& uid,
+                                                           bool autoStart, bool autoUpdate);
+
+    /**
+     * @brief Create and register the service in the OSR. Its uid will be generated.
+     *
+     * This method does not start the service enven if autoStart=true, you must call startService(srv), startServices()
+     * or registerObj() to start the service when all its required inputs are present.
+     * To define the required inputs, use registerObject().
+     *
+     * @param type service classname
+     * @param autoStart if true, the service will be started when all its required inputs are present.
+     * @param autoUpdate if true, the service will be updated after starting.
+     * @return Return the created service
+     */
+    FWSERVICES_API ::fwServices::IService::sptr addService(const std::string& type, bool autoStart = false,
+                                                           bool autoUpdate = false);
 
     /**
      * @brief Create and register the service in the OSR
      *
-     * This method does not start the service enven if autoStart=true, you must call startService(srv), startServices()
+     * This method does not start the service even if autoStart=true, you must call startService(srv), startServices()
      * or registerObj() to start the service when all its required inputs are present.
      * To define the required inputs, use IService::preregisterInput() or IService::preregisterInOut().
      *
@@ -100,21 +114,34 @@ public:
      * @return Return the created service
      */
     template<class SERVICE>
-    SPTR(SERVICE) registerService( const std::string& type, const std::string& uid = "", bool autoStart = false,
-                                   bool autoUpdate                                 = false);
+    SPTR(SERVICE) addService( const std::string& type, const std::string& uid, bool autoStart, bool autoUpdate);
+
+    /**
+     * @brief Create and register the service in the OSR. Its uid will be generated.
+     *
+     * This method does not start the service even if autoStart=true, you must call startService(srv), startServices()
+     * or registerObj() to start the service when all its required inputs are present.
+     * To define the required inputs, use registerObject().
+     *
+     * @param type service classname
+     * @param autoStart if true, the service will be started when all its required inputs are present.
+     * @return Return the created service
+     */
+    template<class SERVICE>
+    SPTR(SERVICE) addService( const std::string& type, bool autoStart = false, bool autoUpdate = false);
 
     /**
      * @brief Register the service in the OSR.
      *
      * This method does not start the service enven if autoStart=true, you must call startService(srv), startServices()
      * or registerObj() to start the service when all its required inputs are present.
-     * To define the required inputs, use IService::preregisterInput() or IService::preregisterInOut().
+     * To define the required inputs, use registerObject().
      *
      * @param srv service to register
      * @param autoStart if true, the service will be started when all its required inputs are present.
      */
-    FWSERVICES_API void registerService(const ::fwServices::IService::sptr& srv, bool autoStart = false,
-                                        bool autoUpdate = false);
+    FWSERVICES_API void addService(const ::fwServices::IService::sptr& srv, bool autoStart = false,
+                                   bool autoUpdate = false);
 
     /**
      * @brief Start the service and register it in the started service container
@@ -137,7 +164,7 @@ public:
     FWSERVICES_API void startServices();
 
     /// Stop all the started service and unregister all the registered service
-    FWSERVICES_API void stopAndUnregisterServices();
+    FWSERVICES_API void stopAndUnaddServices();
 
     /**
      * @brief Define the object required by a service.
@@ -226,7 +253,7 @@ public:
      */
     FWSERVICES_API ::fwData::Object::sptr getObject(const std::string& id) const;
 
-protected:
+private:
 
     /// Information about connection <channel, sig/slot name>
     typedef std::unordered_map< std::string, std::string > ConnectionInfo;
@@ -243,8 +270,8 @@ protected:
                                       const ::fwServices::IService::AccessType access, const bool autoConnect = false,
                                       const bool optional = false);
 
-        /// Return true if the service contain this object into its requirement
-        FWSERVICES_API bool requireObject(const std::string& objId) const;
+        /// Return true if the service contains this object into its requirement
+        FWSERVICES_API bool isObjectRequired(const std::string& objId) const;
 
         /// Return true if all the non-optional object required by the service are present
         FWSERVICES_API bool hasAllRequiredObjects() const;
@@ -273,8 +300,6 @@ protected:
         /// True if the service will be automatically updated after starting
         bool m_autoUpdate;
     };
-
-private:
 
     /// Return the service information
     ServiceInfo& getServiceInfo(const ::fwServices::IService::sptr& srv);
@@ -308,16 +333,24 @@ private:
 //------------------------------------------------------------------------------
 
 template<class SERVICE>
-SPTR(SERVICE) AppManager::registerService( const std::string& type, const std::string& uid, bool autoStart,
-                                           bool autoUpdate)
+SPTR(SERVICE) AppManager::addService( const std::string& type, const std::string& uid, bool autoStart,
+                                      bool autoUpdate)
 {
-    auto srv = this->registerService(type, uid, autoStart, autoUpdate);
+    auto srv = this->addService(type, uid, autoStart, autoUpdate);
 
     auto castedSrv = std::dynamic_pointer_cast< SERVICE >(srv);
     FW_RAISE_IF("Failed to cast service from factory type '" + type + "' into '" +
                 ::fwCore::TypeDemangler<SERVICE>().getClassname() + "'", !srv );
 
     return castedSrv;
+}
+
+//------------------------------------------------------------------------------
+
+template<class SERVICE>
+SPTR(SERVICE) AppManager::addService( const std::string& type, bool autoStart, bool autoUpdate)
+{
+    return this->addService<SERVICE>(type, "", autoStart, autoUpdate);
 }
 
 } // fwServices

@@ -45,30 +45,30 @@ void Plugin::initialize()
     /* **************************************************************************************
     *              create and register the services in the OSR
     ****************************************************************************************/
-    auto frameSrv          = m_appManager->registerService("::gui::frame::SDefaultFrame", "", true);
-    auto menuBar           = m_appManager->registerService("::gui::aspect::SDefaultMenuBar", "menuBar", true);
-    auto menu              = m_appManager->registerService("::gui::aspect::SDefaultMenu", "menuFile", true);
-    auto actionOpenImage   = m_appManager->registerService("::gui::action::SStarter", "actionOpenImage", true);
-    auto actionOpenMesh    = m_appManager->registerService("::gui::action::SStarter", "actionOpenMesh", true);
-    auto actionOpenTexture = m_appManager->registerService("::gui::action::SStarter", "actionOpenTexture", true);
-    auto actionQuit        = m_appManager->registerService("::gui::action::SQuit", "actionQuit", true);
-    auto mainView          = m_appManager->registerService("::gui::view::SDefaultView", "mainView", true);
-    auto editorsView       = m_appManager->registerService("::gui::view::SDefaultView", "editorsView", true);
-    auto snapshotEditor    = m_appManager->registerService("::uiVisuQt::SnapshotEditor", "snapshotEditor", true);
-    auto sliceListEditor   = m_appManager->registerService("::guiQt::editor::SSelectionMenuButton", "sliceListEditor",
-                                                           true);
-    auto showScanEditor    = m_appManager->registerService("::guiQt::editor::SSignalButton", "showScanEditor", true);
-    auto sliderIndexEditor = m_appManager->registerService("::uiImageQt::SliceIndexPositionEditor", "sliderIndexEditor",
-                                                           true);
-    auto imageReaderSrv   = m_appManager->registerService("::uiIO::editor::SIOSelector", "imageReader", true);
-    auto meshReaderSrv    = m_appManager->registerService("::uiIO::editor::SIOSelector", "meshReader", true);
-    auto textureReaderSrv = m_appManager->registerService("::uiIO::editor::SIOSelector", "textureReader", true);
-    auto renderSrv        = m_appManager->registerService("::fwRenderVTK::SRender", "genericScene", true);
-    auto imageAdaptor     = m_appManager->registerService("::visuVTKAdaptor::SNegatoMPR", "imageAdaptor", true);
-    auto meshAdaptor      = m_appManager->registerService("::visuVTKAdaptor::SMesh", "meshAdaptor", true);
-    auto textureAdaptor   = m_appManager->registerService("::visuVTKAdaptor::STexture", "textureAdaptor", true);
-    auto snapshotAdaptor  = m_appManager->registerService("::visuVTKAdaptor::SSnapshot", "snapshotAdaptor", true);
-    auto progressBar      = m_appManager->registerService("::gui::editor::SJobBar", "", true);
+    auto frameSrv          = m_appManager->addService("::gui::frame::SDefaultFrame", true, false);
+    auto menuBar           = m_appManager->addService("::gui::aspect::SDefaultMenuBar", "menuBar", true, false);
+    auto menu              = m_appManager->addService("::gui::aspect::SDefaultMenu", "menuFile", true, false);
+    auto actionOpenImage   = m_appManager->addService("::gui::action::SStarter", "actionOpenImage", true, false);
+    auto actionOpenMesh    = m_appManager->addService("::gui::action::SStarter", "actionOpenMesh", true, false);
+    auto actionOpenTexture = m_appManager->addService("::gui::action::SStarter", "actionOpenTexture", true, false);
+    auto actionQuit        = m_appManager->addService("::gui::action::SQuit", "actionQuit", true, false);
+    auto mainView          = m_appManager->addService("::gui::view::SDefaultView", "mainView", true, false);
+    auto editorsView       = m_appManager->addService("::gui::view::SDefaultView", "editorsView", true, false);
+    auto snapshotEditor    = m_appManager->addService("::uiVisuQt::SnapshotEditor", "snapshotEditor", true, false);
+    auto sliceListEditor   = m_appManager->addService("::guiQt::editor::SSelectionMenuButton", "sliceListEditor",
+                                                      true, false);
+    auto showScanEditor    = m_appManager->addService("::guiQt::editor::SSignalButton", "showScanEditor", true, false);
+    auto sliderIndexEditor = m_appManager->addService("::uiImageQt::SliceIndexPositionEditor", "sliderIndexEditor",
+                                                      true, false);
+    auto imageReaderSrv   = m_appManager->addService("::uiIO::editor::SIOSelector", "imageReader", true, false);
+    auto meshReaderSrv    = m_appManager->addService("::uiIO::editor::SIOSelector", "meshReader", true, false);
+    auto textureReaderSrv = m_appManager->addService("::uiIO::editor::SIOSelector", "textureReader", true, false);
+    auto renderSrv        = m_appManager->addService("::fwRenderVTK::SRender", "genericScene", true, false);
+    auto imageAdaptor     = m_appManager->addService("::visuVTKAdaptor::SNegatoMPR", "imageAdaptor", true, false);
+    auto meshAdaptor      = m_appManager->addService("::visuVTKAdaptor::SMesh", "meshAdaptor", true, false);
+    auto textureAdaptor   = m_appManager->addService("::visuVTKAdaptor::STexture", "textureAdaptor", true, false);
+    auto snapshotAdaptor  = m_appManager->addService("::visuVTKAdaptor::SSnapshot", "snapshotAdaptor", true, false);
+    auto progressBar      = m_appManager->addService("::gui::editor::SJobBar", true, false);
 
     /* **************************************************************************************
     *              GUI configuration

@@ -14,6 +14,9 @@
 #include <fwCom/Slots.hxx>
 
 #include <boost/foreach.hpp>
+#include <boost/make_unique.hpp>
+#include <boost/shared_ptr.hpp>
+#include <boost/smart_ptr.hpp>
 
 namespace fwServices
 {
@@ -29,7 +32,6 @@ AppManager::ServiceInfo::ServiceInfo(const ::fwServices::IService::sptr& srv, co
     m_autoStart(autoStart),
     m_autoUpdate(autoUpdate)
 {
-
 }
 
 //------------------------------------------------------------------------------
@@ -50,7 +52,7 @@ void AppManager::ServiceInfo::addObject(const std::string& objId, const ::fwServ
 
 //------------------------------------------------------------------------------
 
-bool AppManager::ServiceInfo::requireObject(const std::string& objId) const
+bool AppManager::ServiceInfo::isObjectRequired(const std::string& objId) const
 {
     auto itr = std::find_if( m_objects.begin(), m_objects.end(),
                              [&](const ::fwServices::IService::ObjectServiceConfig& objInfo)
@@ -145,7 +147,7 @@ void AppManager::create()
 
 void AppManager::destroy()
 {
-    this->stopAndUnregisterServices();
+    this->stopAndUnaddServices();
 
     // remove all the registered objects
     for (auto obj: m_registeredObject)
@@ -157,8 +159,8 @@ void AppManager::destroy()
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::sptr AppManager::registerService(const std::string& type, const std::string& uid,
-                                                         bool autoStart, bool autoUpdate)
+::fwServices::IService::sptr AppManager::addService(const std::string& type, const std::string& uid,
+                                                    bool autoStart, bool autoUpdate)
 {
     auto srv = ::fwServices::add(type, uid);
     ServiceInfo info(srv, autoStart, autoUpdate);
@@ -169,7 +171,14 @@ void AppManager::destroy()
 
 //------------------------------------------------------------------------------
 
-void AppManager::AppManager::registerService(const ::fwServices::IService::sptr& srv, bool autoStart, bool autoUpdate)
+::fwServices::IService::sptr AppManager::addService(const std::string& type, bool autoStart, bool autoUpdate)
+{
+    return this->addService(type, "", autoStart, autoUpdate);
+}
+
+//------------------------------------------------------------------------------
+
+void AppManager::AppManager::addService(const ::fwServices::IService::sptr& srv, bool autoStart, bool autoUpdate)
 {
     ServiceInfo info(srv, autoStart, autoUpdate);
     m_services.emplace_back(info);
@@ -232,7 +241,7 @@ void AppManager::startServices()
 
 //------------------------------------------------------------------------------
 
-void AppManager::stopAndUnregisterServices()
+void AppManager::stopAndUnaddServices()
 {
     std::vector< ::fwServices::IService::SharedFutureType > futures;
 
@@ -362,7 +371,7 @@ void AppManager::addObject(::fwData::Object::sptr obj, const std::string& id)
 
     for (auto& srvInfo : m_services)
     {
-        if (srvInfo.requireObject(id))
+        if (srvInfo.isObjectRequired(id))
         {
             ::fwServices::IService::sptr srv = srvInfo.m_service.lock();
 
@@ -431,7 +440,7 @@ void AppManager::removeObject(::fwData::Object::sptr obj, const std::string& id)
 
     for (auto& srvInfo : m_services)
     {
-        if (srvInfo.requireObject(id))
+        if (srvInfo.isObjectRequired(id))
         {
             ::fwServices::IService::sptr srv = srvInfo.m_service.lock();
             const ::fwServices::IService::ObjectServiceConfig& objCfg = srvInfo.getObjInfo(id);

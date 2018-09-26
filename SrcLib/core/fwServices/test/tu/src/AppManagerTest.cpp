@@ -9,6 +9,7 @@
 #include "fwServices/registry/ActiveWorkers.hpp"
 #include "fwServices/registry/AppConfig.hpp"
 #include "fwServices/registry/ObjectService.hpp"
+#include "fwServices/registry/ServiceFactory.hpp"
 
 #include <fwCom/Signal.hxx>
 
@@ -27,11 +28,6 @@ namespace fwServices
 {
 namespace ut
 {
-
-#define WAIT_SERVICE_STARTED(srv)  \
-    fwTestWaitMacro(::fwTools::fwID::getObject(srv) != nullptr && \
-                    ::fwServices::IService::dynamicCast(::fwTools::fwID::getObject(srv))->getStatus() \
-                    == ::fwServices::IService::STARTED)
 
 //------------------------------------------------------------------------------
 
@@ -70,24 +66,35 @@ void AppManagerTest::managerCreationTest()
 
     m_appMgr->create();
 
-    auto service  = m_appMgr->registerService("::fwServices::ut::TestServiceImplementation", "srv1Uid");
-    auto service2 = m_appMgr->registerService< ::fwServices::ut::TestService >(
-        "::fwServices::ut::TestServiceImplementation", "srv2Uid", true);
-    auto service3 = m_appMgr->registerService< ::fwServices::ut::TestService >(
-        "::fwServices::ut::TestServiceImplementation", "", true, true);
+    auto service  = m_appMgr->addService("::fwServices::ut::TestServiceImplementation", "srv1Uid", false, false);
+    auto service2 = m_appMgr->addService< ::fwServices::ut::TestService >(
+        "::fwServices::ut::TestServiceImplementation", "srv2Uid", true, false);
+    auto service3 = m_appMgr->addService< ::fwServices::ut::TestService >(
+        "::fwServices::ut::TestServiceImplementation", true, true);
+    auto service4 = m_appMgr->addService("::fwServices::ut::TestServiceImplementation");
+
+    auto service5 =
+        ::fwServices::registry::ServiceFactory::getDefault()->create("::fwServices::ut::TestServiceImplementation");
+    m_appMgr->addService(service5, true);
 
     CPPUNIT_ASSERT(service);
     CPPUNIT_ASSERT(service2);
     CPPUNIT_ASSERT(service3);
+    CPPUNIT_ASSERT(service4);
+    CPPUNIT_ASSERT(service5);
 
     CPPUNIT_ASSERT_EQUAL(false, service->isStarted());
     CPPUNIT_ASSERT_EQUAL(false, service2->isStarted());
     CPPUNIT_ASSERT_EQUAL(false, service3->isStarted());
+    CPPUNIT_ASSERT_EQUAL(false, service4->isStarted());
+    CPPUNIT_ASSERT_EQUAL(false, service5->isStarted());
 
     m_appMgr->startServices();
     CPPUNIT_ASSERT_EQUAL(false, service->isStarted());
     CPPUNIT_ASSERT_EQUAL(true, service2->isStarted());
     CPPUNIT_ASSERT_EQUAL(true, service3->isStarted());
+    CPPUNIT_ASSERT_EQUAL(false, service4->isStarted());
+    CPPUNIT_ASSERT_EQUAL(true, service5->isStarted());
 
     CPPUNIT_ASSERT_EQUAL(false, service2->getIsUpdated());
     CPPUNIT_ASSERT_EQUAL(true, service3->getIsUpdated());
@@ -97,6 +104,8 @@ void AppManagerTest::managerCreationTest()
     CPPUNIT_ASSERT_EQUAL(false, service->isStarted());
     CPPUNIT_ASSERT_EQUAL(false, service2->isStarted());
     CPPUNIT_ASSERT_EQUAL(false, service3->isStarted());
+    CPPUNIT_ASSERT_EQUAL(false, service4->isStarted());
+    CPPUNIT_ASSERT_EQUAL(false, service5->isStarted());
 }
 
 //------------------------------------------------------------------------------
@@ -111,13 +120,13 @@ void AppManagerTest::managerWithObjectTest()
     const std::string imageId   = "imageTest";
     const std::string booleanId = "booleanTest";
 
-    auto service  = m_appMgr->registerService("::fwServices::ut::TestServiceImplementation", "srv1Uid", true);
-    auto service2 = m_appMgr->registerService< ::fwServices::ut::TestService >(
-        "::fwServices::ut::TestServiceImplementation", "srv2Uid", true);
-    auto service3 = m_appMgr->registerService< ::fwServices::ut::TestService >(
+    auto service  = m_appMgr->addService("::fwServices::ut::TestServiceImplementation", "srv1Uid", true, false);
+    auto service2 = m_appMgr->addService< ::fwServices::ut::TestService >(
+        "::fwServices::ut::TestServiceImplementation", "srv2Uid", true, false);
+    auto service3 = m_appMgr->addService< ::fwServices::ut::TestService >(
         "::fwServices::ut::TestServiceImplementation", "srv3Uid", true, true);
-    auto service4 = m_appMgr->registerService< ::fwServices::ut::TestService >(
-        "::fwServices::ut::TestServiceImplementation", "", true, true);
+    auto service4 = m_appMgr->addService< ::fwServices::ut::TestService >(
+        "::fwServices::ut::TestServiceImplementation", true, true);
 
     CPPUNIT_ASSERT(service);
     CPPUNIT_ASSERT(service2);
@@ -195,14 +204,14 @@ void AppManagerTest::managerWithObjectConnectionTest()
     const std::string booleanId    = "booleanTest";
     const std::string imageChannel = "imageChannel";
 
-    auto service1 = m_appMgr->registerService< ::fwServices::ut::TestSrvAutoconnect >(
-        "::fwServices::ut::TestSrvAutoconnect", "", true);
-    auto service2 = m_appMgr->registerService< ::fwServices::ut::TestSrvAutoconnect >(
-        "::fwServices::ut::TestSrvAutoconnect", "", true);
-    auto service3 = m_appMgr->registerService< ::fwServices::ut::TestSrvAutoconnect >(
-        "::fwServices::ut::TestSrvAutoconnect", "", true);
-    auto service4 = m_appMgr->registerService< ::fwServices::ut::TestSrvAutoconnect >(
-        "::fwServices::ut::TestSrvAutoconnect", "", true);
+    auto service1 = m_appMgr->addService< ::fwServices::ut::TestSrvAutoconnect >(
+        "::fwServices::ut::TestSrvAutoconnect", true);
+    auto service2 = m_appMgr->addService< ::fwServices::ut::TestSrvAutoconnect >(
+        "::fwServices::ut::TestSrvAutoconnect", true);
+    auto service3 = m_appMgr->addService< ::fwServices::ut::TestSrvAutoconnect >(
+        "::fwServices::ut::TestSrvAutoconnect", true);
+    auto service4 = m_appMgr->addService< ::fwServices::ut::TestSrvAutoconnect >(
+        "::fwServices::ut::TestSrvAutoconnect", true);
 
     CPPUNIT_ASSERT(service1);
     CPPUNIT_ASSERT(service2);
@@ -292,14 +301,14 @@ void AppManagerTest::managerWithServiceConnectionTest()
     const std::string channel1 = "channel1";
     const std::string channel2 = "channel2";
 
-    auto service1 = m_appMgr->registerService< ::fwServices::ut::TestSrvAutoconnect >(
-        "::fwServices::ut::TestSrvAutoconnect", "", true);
-    auto service2 = m_appMgr->registerService< ::fwServices::ut::TestSrvAutoconnect >(
-        "::fwServices::ut::TestSrvAutoconnect", "", true);
-    auto service3 = m_appMgr->registerService< ::fwServices::ut::TestSrvAutoconnect >(
-        "::fwServices::ut::TestSrvAutoconnect", "", true);
-    auto service4 = m_appMgr->registerService< ::fwServices::ut::TestSrvAutoconnect >(
-        "::fwServices::ut::TestSrvAutoconnect", "", true);
+    auto service1 = m_appMgr->addService< ::fwServices::ut::TestSrvAutoconnect >(
+        "::fwServices::ut::TestSrvAutoconnect", true);
+    auto service2 = m_appMgr->addService< ::fwServices::ut::TestSrvAutoconnect >(
+        "::fwServices::ut::TestSrvAutoconnect", true);
+    auto service3 = m_appMgr->addService< ::fwServices::ut::TestSrvAutoconnect >(
+        "::fwServices::ut::TestSrvAutoconnect", true);
+    auto service4 = m_appMgr->addService< ::fwServices::ut::TestSrvAutoconnect >(
+        "::fwServices::ut::TestSrvAutoconnect", true);
 
     m_appMgr->connectSignal(channel1, service1, ::fwServices::ut::TestSrvAutoconnect::s_SIG_1);
     m_appMgr->connectSignal(channel2, service1, ::fwServices::ut::TestSrvAutoconnect::s_UPDATED_SIG);
@@ -351,14 +360,14 @@ void AppManagerTest::managerWithOutputCreationTest()
 
     ::fwData::Integer::sptr integer1 = ::fwData::Integer::New(15);
 
-    auto service1 = m_appMgr->registerService< ::fwServices::ut::TestServiceWithData >(
-        "::fwServices::ut::TestServiceWithData", "", true, true);
-    auto service2 = m_appMgr->registerService< ::fwServices::ut::TestServiceWithData >(
-        "::fwServices::ut::TestServiceWithData", "", true);
-    auto service3 = m_appMgr->registerService< ::fwServices::ut::TestServiceWithData >(
-        "::fwServices::ut::TestServiceWithData", "", true);
-    auto service4 = m_appMgr->registerService< ::fwServices::ut::TestServiceWithData >(
-        "::fwServices::ut::TestServiceWithData", "", true);
+    auto service1 = m_appMgr->addService< ::fwServices::ut::TestServiceWithData >(
+        "::fwServices::ut::TestServiceWithData", true, true);
+    auto service2 = m_appMgr->addService< ::fwServices::ut::TestServiceWithData >(
+        "::fwServices::ut::TestServiceWithData", true);
+    auto service3 = m_appMgr->addService< ::fwServices::ut::TestServiceWithData >(
+        "::fwServices::ut::TestServiceWithData", true);
+    auto service4 = m_appMgr->addService< ::fwServices::ut::TestServiceWithData >(
+        "::fwServices::ut::TestServiceWithData", true);
 
     CPPUNIT_ASSERT(service1);
     CPPUNIT_ASSERT(service2);
@@ -384,9 +393,10 @@ void AppManagerTest::managerWithOutputCreationTest()
     m_appMgr->addObject(integer1, integerId);
 
     CPPUNIT_ASSERT_EQUAL(true, service1->isStarted());
-    CPPUNIT_ASSERT_EQUAL(true, service2->isStarted());
     CPPUNIT_ASSERT_EQUAL(true, service3->isStarted());
     CPPUNIT_ASSERT_EQUAL(false, service4->isStarted());
+    fwTestWaitMacro(service2->isStarted()); // wait until service1 generate its output to start service2
+    CPPUNIT_ASSERT_EQUAL(true, service2->isStarted());
 
     auto integer2 = service1->getOutput< ::fwData::Integer >(::fwServices::ut::TestServiceWithData::s_OUTPUT);
     CPPUNIT_ASSERT(integer2);

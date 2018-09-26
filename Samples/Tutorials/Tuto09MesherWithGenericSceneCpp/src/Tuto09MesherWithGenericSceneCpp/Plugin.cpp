@@ -56,54 +56,55 @@ void Plugin::initialize()
     *              create and register the services in the OSR
     ****************************************************************************************/
     // GUI
-    auto frameSrv         = m_appManager->registerService("::gui::frame::SDefaultFrame", "", true);
-    auto menuBar          = m_appManager->registerService("::gui::aspect::SDefaultMenuBar", "menuBar", true);
-    auto menuFile         = m_appManager->registerService("::gui::aspect::SDefaultMenu", "menuFile", true);
-    auto menuMesher       = m_appManager->registerService("::gui::aspect::SDefaultMenu", "menuMesher", true);
-    auto mainView         = m_appManager->registerService("::gui::view::SDefaultView", "mainView", true);
-    auto multiViewOrgans  = m_appManager->registerService("::gui::view::SDefaultView", "multiViewOrgans", true);
-    auto sceneEditorsView = m_appManager->registerService("::gui::view::SDefaultView", "scenesceneEditorsView", true);
+    auto frameSrv         = m_appManager->addService("::gui::frame::SDefaultFrame", true, false);
+    auto menuBar          = m_appManager->addService("::gui::aspect::SDefaultMenuBar", "menuBar", true, false);
+    auto menuFile         = m_appManager->addService("::gui::aspect::SDefaultMenu", "menuFile", true, false);
+    auto menuMesher       = m_appManager->addService("::gui::aspect::SDefaultMenu", "menuMesher", true, false);
+    auto mainView         = m_appManager->addService("::gui::view::SDefaultView", "mainView", true, false);
+    auto multiViewOrgans  = m_appManager->addService("::gui::view::SDefaultView", "multiViewOrgans", true, false);
+    auto sceneEditorsView = m_appManager->addService("::gui::view::SDefaultView", "scenesceneEditorsView", true, false);
 
     // actions
-    auto actionOpenImage       = m_appManager->registerService("::gui::action::SStarter", "actionOpenImage", true);
-    auto actionSaveModelSeries = m_appManager->registerService("::gui::action::SStarter", "actionSaveModelSeries");
-    auto actionCreateMesh50    = m_appManager->registerService("::gui::action::SStarter", "actionCreateMesh50", true);
-    auto actionCreateMesh80    = m_appManager->registerService("::gui::action::SStarter", "actionCreateMesh80", true);
-    auto actionQuit            = m_appManager->registerService("::gui::action::SQuit", "actionQuit", true);
+    auto actionOpenImage       = m_appManager->addService("::gui::action::SStarter", "actionOpenImage", true, false);
+    auto actionSaveModelSeries = m_appManager->addService("::gui::action::SStarter", "actionSaveModelSeries", false,
+                                                          false);
+    auto actionCreateMesh50 = m_appManager->addService("::gui::action::SStarter", "actionCreateMesh50", true, false);
+    auto actionCreateMesh80 = m_appManager->addService("::gui::action::SStarter", "actionCreateMesh80", true, false);
+    auto actionQuit         = m_appManager->addService("::gui::action::SQuit", "actionQuit", true, false);
 
     //readers/writers
-    auto imageSeriesReader = m_appManager->registerService("::uiIO::editor::SIOSelector", "imageSeriesReader", true);
-    auto modelSeriesWriter = m_appManager->registerService("::uiIO::editor::SIOSelector", "modelSeriesWriter", true);
+    auto imageSeriesReader = m_appManager->addService("::uiIO::editor::SIOSelector", "imageSeriesReader", true, false);
+    auto modelSeriesWriter = m_appManager->addService("::uiIO::editor::SIOSelector", "modelSeriesWriter", true, false);
 
     // extrator/converter
-    auto extractImage         = m_appManager->registerService("::ctrlCamp::SExtractObj", "", true, true);
-    auto medicaImageConverter = m_appManager->registerService("::ctrlSelection::MedicalImageSrv", "", true);
+    auto extractImage         = m_appManager->addService("::ctrlCamp::SExtractObj", true, true);
+    auto medicaImageConverter = m_appManager->addService("::ctrlSelection::MedicalImageSrv", true);
 
     //editors
-    auto snapshotEditor  = m_appManager->registerService("::uiVisuQt::SnapshotEditor", "snapshotEditor", true);
-    auto sliceListEditor = m_appManager->registerService("::guiQt::editor::SSelectionMenuButton",
-                                                         "sliceListEditor", true);
-    auto showScanEditor    = m_appManager->registerService("::guiQt::editor::SSignalButton", "showScanEditor", true);
-    auto sliderIndexEditor = m_appManager->registerService("::uiImageQt::SliceIndexPositionEditor",
-                                                           "sliderIndexEditor", true);
-    auto listOrganEditor = m_appManager->registerService("::uiMedDataQt::editor::SModelSeriesList",
-                                                         "listOrganEditor", true);
-    auto organMaterialEditor = m_appManager->registerService("::uiReconstructionQt::OrganMaterialEditor",
-                                                             "organMaterialEditor", true);
-    auto representationEditor = m_appManager->registerService("::uiReconstructionQt::RepresentationEditor",
-                                                              "representationEditor", true);
-    auto progressBar = m_appManager->registerService("::gui::editor::SJobBar", "", true);
+    auto snapshotEditor  = m_appManager->addService("::uiVisuQt::SnapshotEditor", "snapshotEditor", true, false);
+    auto sliceListEditor = m_appManager->addService("::guiQt::editor::SSelectionMenuButton",
+                                                    "sliceListEditor", true, false);
+    auto showScanEditor    = m_appManager->addService("::guiQt::editor::SSignalButton", "showScanEditor", true, false);
+    auto sliderIndexEditor = m_appManager->addService("::uiImageQt::SliceIndexPositionEditor",
+                                                      "sliderIndexEditor", true, false);
+    auto listOrganEditor = m_appManager->addService("::uiMedDataQt::editor::SModelSeriesList",
+                                                    "listOrganEditor", true, false);
+    auto organMaterialEditor = m_appManager->addService("::uiReconstructionQt::OrganMaterialEditor",
+                                                        "organMaterialEditor", true, false);
+    auto representationEditor = m_appManager->addService("::uiReconstructionQt::RepresentationEditor",
+                                                         "representationEditor", true, false);
+    auto progressBar = m_appManager->addService("::gui::editor::SJobBar", true, false);
 
     // meshers
-    auto mesher50 = m_appManager->registerService("::opVTKMesh::SVTKMesher", "mesher50", true);
-    auto mesher80 = m_appManager->registerService("::opVTKMesh::SVTKMesher", "mesher80", true);
+    auto mesher50 = m_appManager->addService("::opVTKMesh::SVTKMesher", "mesher50", true, false);
+    auto mesher80 = m_appManager->addService("::opVTKMesh::SVTKMesher", "mesher80", true, false);
 
     // generic scene
-    auto renderSrv          = m_appManager->registerService("::fwRenderVTK::SRender", "genericScene", true);
-    auto imageAdaptor       = m_appManager->registerService("::visuVTKAdaptor::SNegatoMPR", "imageAdaptor", true);
-    auto modelSeriesAdaptor =
-        m_appManager->registerService("::visuVTKAdaptor::SModelSeries", "modelSeriesAdaptor", true);
-    auto snapshotAdaptor = m_appManager->registerService("::visuVTKAdaptor::SSnapshot", "snapshotAdaptor", true);
+    auto renderSrv          = m_appManager->addService("::fwRenderVTK::SRender", "genericScene", true, false);
+    auto imageAdaptor       = m_appManager->addService("::visuVTKAdaptor::SNegatoMPR", "imageAdaptor", true, false);
+    auto modelSeriesAdaptor = m_appManager->addService("::visuVTKAdaptor::SModelSeries", "modelSeriesAdaptor", true,
+                                                       false);
+    auto snapshotAdaptor = m_appManager->addService("::visuVTKAdaptor::SSnapshot", "snapshotAdaptor", true, false);
 
     /* **************************************************************************************
     *              GUI configuration
