@@ -570,8 +570,8 @@
             <inout key="output" uid="chessMatrix" />
         </service>
 
-        <service uid="loadedZSwitcher" type="::maths::SSwitchMatrices" autoConnect="yes">
-            <in group="matrix">
+        <service uid="loadedZSwitcher" type="::maths::SSwitchMatrices">
+            <in group="matrix" autoConnect="yes" >
                 <key uid="loadedZMovingCamera" />
                 <key uid="loadedZMovingChessboard" />
             </in>
