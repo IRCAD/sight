@@ -8,6 +8,7 @@
 
 #include <fwData/Boolean.hpp>
 #include <fwData/Material.hpp>
+#include <fwData/mt/ObjectWriteLock.hpp>
 #include <fwData/Reconstruction.hpp>
 
 #include <fwMedData/ImageSeries.hpp>
@@ -128,9 +129,10 @@ void SImageSeries::updating()
     ::fwData::Image::sptr image = series->getImage();
     negato->registerInOut(image, SNegatoMPR::s_IMAGE_INOUT, true);
 
-    ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction >(s_TF_INOUT);
-    if (tf)
+    ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
+    if(tf != nullptr)
     {
+        ::fwData::mt::ObjectWriteLock tfLock(tf);
         negato->registerInOut(tf, SNegatoMPR::s_TF_INOUT, false);
     }
 

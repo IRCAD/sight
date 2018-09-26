@@ -14,6 +14,8 @@
 
 #include <fwData/Composite.hpp>
 #include <fwData/Image.hpp>
+#include <fwData/mt/ObjectReadLock.hpp>
+#include <fwData/mt/ObjectWriteLock.hpp>
 #include <fwData/TransferFunction.hpp>
 
 #include <fwDataTools/fieldHelper/Image.hpp>
@@ -58,7 +60,6 @@ WindowLevel::WindowLevel() noexcept :
     m_autoWindowing(false),
     m_enableSquareTF(true)
 {
-    this->installTFSlots(this);
 }
 
 //------------------------------------------------------------------------------
@@ -148,8 +149,16 @@ void WindowLevel::starting()
     QObject::connect(m_dynamicRangeSelection, SIGNAL(triggered(QAction*)), this,
                      SLOT(onDynamicRangeSelectionChanged(QAction*)));
 
-    ::fwData::TransferFunction::sptr tf = this->getInOut < ::fwData::TransferFunction >(s_TF_INOUT);
-    this->setOrCreateTF(tf, image);
+    const ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
+    if(tf != nullptr)
+    {
+        ::fwData::mt::ObjectReadLock tfLock(tf);
+        this->setOrCreateTF(tf, image);
+    }
+    else
+    {
+        this->setOrCreateTF(tf, image);
+    }
 
     this->updating();
 }
@@ -215,9 +224,10 @@ void WindowLevel::updating()
             this->updateImageWindowLevel(min, max);
         }
 
-        ::fwData::TransferFunction::sptr pTF = this->getTransferFunction();
-        SLM_ASSERT("TransferFunction null pointer", pTF);
-        ::fwData::TransferFunction::TFValuePairType minMax = pTF->getWLMinMax();
+        const ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
+        SLM_ASSERT("TransferFunction null pointer", tf);
+        ::fwData::mt::ObjectReadLock tfLock(tf);
+        ::fwData::TransferFunction::TFValuePairType minMax = tf->getWLMinMax();
         this->onImageWindowLevelChanged( minMax.first, minMax.second );
     }
 }
@@ -228,13 +238,21 @@ void WindowLevel::swapping(const KeyType& key)
 {
     if (key == s_TF_INOUT)
     {
-        ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction >(s_TF_INOUT);
+        {
+            ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+            SLM_ASSERT("Missing image", image);
 
-        ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-        SLM_ASSERT("Missing image", image);
-
-        this->setOrCreateTF(tf, image);
-
+            const ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
+            if(tf != nullptr)
+            {
+                ::fwData::mt::ObjectReadLock tfLock(tf);
+                this->setOrCreateTF(tf, image);
+            }
+            else
+            {
+                this->setOrCreateTF(tf, image);
+            }
+        }
         this->updating();
     }
 }
@@ -250,9 +268,10 @@ void WindowLevel::updateTFPoints()
 
 void WindowLevel::updateTFWindowing(double /*window*/, double /*level*/)
 {
-    ::fwData::TransferFunction::sptr pTF = this->getTransferFunction();
-    SLM_ASSERT("TransferFunction null pointer", pTF);
-    ::fwData::TransferFunction::TFValuePairType minMax = pTF->getWLMinMax();
+    const ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
+    SLM_ASSERT("TransferFunction null pointer", tf);
+    ::fwData::mt::ObjectReadLock tfLock(tf);
+    ::fwData::TransferFunction::TFValuePairType minMax = tf->getWLMinMax();
     this->onImageWindowLevelChanged( minMax.first, minMax.second );
 }
 
@@ -267,10 +286,10 @@ void WindowLevel::info( std::ostream& _sstream )
 
 WindowLevel::WindowLevelMinMaxType WindowLevel::getImageWindowMinMax()
 {
-    ::fwData::TransferFunction::sptr pTF = this->getTransferFunction();
-    SLM_ASSERT("TransferFunction null pointer", pTF);
-
-    return pTF->getWLMinMax();
+    const ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
+    SLM_ASSERT("TransferFunction null pointer", tf);
+    ::fwData::mt::ObjectWriteLock tfLock(tf);
+    return tf->getWLMinMax();
 }
 
 //------------------------------------------------------------------------------
@@ -310,9 +329,9 @@ double WindowLevel::toWindowLevel(double _val)
 void WindowLevel::updateImageWindowLevel(double _imageMin, double _imageMax)
 {
     ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
-
-    this->getTransferFunction()->setWLMinMax( ::fwData::TransferFunction::TFValuePairType(_imageMin,
-                                                                                          _imageMax) );
+    ::fwData::mt::ObjectWriteLock tfLock(tf);
+    tf->setWLMinMax( ::fwData::TransferFunction::TFValuePairType(_imageMin,
+                                                                 _imageMax) );
     auto sig = tf->signal< ::fwData::TransferFunction::WindowingModifiedSignalType >(
         ::fwData::TransferFunction::s_WINDOWING_MODIFIED_SIG);
     {
@@ -393,6 +412,8 @@ void WindowLevel::updateTextWindowLevel(double _imageMin, double _imageMax)
 void WindowLevel::onToggleTF(bool squareTF)
 {
     ::fwData::TransferFunction::sptr currentTF = this->getTransferFunction();
+    ::fwData::mt::ObjectWriteLock tfLock(currentTF);
+
     ::fwData::TransferFunction::sptr newTF;
 
     if( squareTF )

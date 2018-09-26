@@ -17,6 +17,7 @@
 #include <fwData/Color.hpp>
 #include <fwData/Image.hpp>
 #include <fwData/Integer.hpp>
+#include <fwData/mt/ObjectWriteLock.hpp>
 #include <fwData/String.hpp>
 #include <fwData/TransferFunction.hpp>
 
@@ -175,11 +176,15 @@ void SImagesBlend::swapping(const KeyType& key)
 
             if (!wsrv.expired())
             {
-                ::fwData::TransferFunction::sptr tf  = this->getInOut< ::fwData::TransferFunction >(s_TF_GROUP, index);
+                const ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_GROUP,
+                                                                                                        index);
                 ::fwServices::IService::sptr service = wsrv.lock();
-                if (tf)
+                if(tf != nullptr)
                 {
-                    service->registerInOut(tf, SImage::s_TF_INOUT, false, true);
+                    {
+                        ::fwData::mt::ObjectWriteLock tfLock(tf);
+                        service->registerInOut(tf, SImage::s_TF_INOUT, false, true);
+                    }
                     service->swapKey(SImage::s_TF_INOUT, nullptr);
                 }
                 else if(::fwServices::OSR::isRegistered(SImage::s_TF_INOUT, AccessType::INOUT, service))
@@ -292,6 +297,7 @@ void SImagesBlend::addImageAdaptors()
             bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( img );
             if (imageIsValid)
             {
+                ::fwData::mt::ObjectWriteLock tfLock(tf);
                 this->addImage(img, tf, info);
 
                 ++addedImageCount;
@@ -310,6 +316,7 @@ void SImagesBlend::addImageAdaptors()
             tf = this->getInOut< ::fwData::TransferFunction >(s_TF_GROUP, lastValidIndex);
         }
         const ImageInfo& info = m_imagesInfo[lastValidIndex];
+        ::fwData::mt::ObjectWriteLock tfLock(tf);
         this->addImage(img, tf, info);
     }
 }

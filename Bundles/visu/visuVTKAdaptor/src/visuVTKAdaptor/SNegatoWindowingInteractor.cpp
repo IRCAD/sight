@@ -12,6 +12,8 @@
 
 #include <fwData/Image.hpp>
 #include <fwData/Integer.hpp>
+#include <fwData/mt/ObjectReadLock.hpp>
+#include <fwData/mt/ObjectWriteLock.hpp>
 #include <fwData/TransferFunction.hpp>
 
 #include <fwDataTools/fieldHelper/Image.hpp>
@@ -192,16 +194,19 @@ void SNegatoWindowingInteractor::starting()
 {
     this->initialize();
 
-    ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction >(s_TF_INOUT);
-    if (tf)
+    const ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
     {
-        this->setTransferFunction(tf);
-    }
-    else
-    {
-        ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-        SLM_ASSERT("Missing image", image);
-        this->createTransferFunction(image);
+        if(tf != nullptr)
+        {
+            const ::fwData::mt::ObjectReadLock tfLock(tf);
+            this->setTransferFunction(tf);
+        }
+        else
+        {
+            ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+            SLM_ASSERT("Missing image", image);
+            this->createTransferFunction(image);
+        }
     }
 
     NegatoWindowingCallback* observer = NegatoWindowingCallback::New();
@@ -245,16 +250,19 @@ void SNegatoWindowingInteractor::swapping(const KeyType& key)
 {
     if (key == s_TF_INOUT)
     {
-        ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction >(s_TF_INOUT);
-        if (tf)
+        const ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
         {
-            this->setTransferFunction(tf);
-        }
-        else
-        {
-            ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-            SLM_ASSERT("Missing image", image);
-            this->createTransferFunction(image);
+            if(tf != nullptr)
+            {
+                const ::fwData::mt::ObjectReadLock tfLock(tf);
+                this->setTransferFunction(tf);
+            }
+            else
+            {
+                ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+                SLM_ASSERT("Missing image", image);
+                this->createTransferFunction(image);
+            }
         }
         this->updating();
     }
@@ -269,8 +277,9 @@ void SNegatoWindowingInteractor::startWindowing( )
 
     this->updating();
 
-    ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
+    const ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
 
+    const ::fwData::mt::ObjectReadLock tfLock(tf);
     m_initialLevel  = tf->getLevel();
     m_initialWindow = tf->getWindow();
 }
@@ -287,19 +296,22 @@ void SNegatoWindowingInteractor::updateWindowing( double dw, double dl )
 {
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("Missing image", image);
-    ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
 
     double newWindow = m_initialWindow + dw;
     double newLevel  = m_initialLevel - dl;
 
-    tf->setWindow( newWindow );
-    tf->setLevel( newLevel );
-
-    auto sig = tf->signal< ::fwData::TransferFunction::WindowingModifiedSignalType >(
-        ::fwData::TransferFunction::s_WINDOWING_MODIFIED_SIG);
+    ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
     {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdateTFWindowing));
-        sig->asyncEmit( newWindow, newLevel);
+        ::fwData::mt::ObjectWriteLock tfLock(tf);
+
+        tf->setWindow( newWindow );
+        tf->setLevel( newLevel );
+        auto sig = tf->signal< ::fwData::TransferFunction::WindowingModifiedSignalType >(
+            ::fwData::TransferFunction::s_WINDOWING_MODIFIED_SIG);
+        {
+            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdateTFWindowing));
+            sig->asyncEmit( newWindow, newLevel);
+        }
     }
 
     this->setVtkPipelineModified();
@@ -311,21 +323,24 @@ void SNegatoWindowingInteractor::resetWindowing()
 {
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("Missing image", image);
-    ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
 
     double newWindow = image->getWindowWidth();
     double newLevel  = image->getWindowCenter();
 
-    tf->setWindow( newWindow );
-    tf->setLevel( newLevel );
-
-    auto sig = tf->signal< ::fwData::TransferFunction::WindowingModifiedSignalType >(
-        ::fwData::TransferFunction::s_WINDOWING_MODIFIED_SIG);
+    ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
     {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdateTFWindowing));
-        sig->asyncEmit( newWindow, newLevel);
-    }
+        ::fwData::mt::ObjectWriteLock tfLock(tf);
 
+        tf->setWindow( newWindow );
+        tf->setLevel( newLevel );
+
+        auto sig = tf->signal< ::fwData::TransferFunction::WindowingModifiedSignalType >(
+            ::fwData::TransferFunction::s_WINDOWING_MODIFIED_SIG);
+        {
+            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdateTFWindowing));
+            sig->asyncEmit( newWindow, newLevel);
+        }
+    }
     this->setVtkPipelineModified();
 }
 

@@ -9,6 +9,7 @@
 #include <fwCom/Slot.hxx>
 #include <fwCom/Slots.hxx>
 
+#include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/TransferFunction.hpp>
 
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
@@ -158,8 +159,6 @@ SVolume::SVolume() noexcept :
     newSlot(s_RESET_BOX_WIDGET_SLOT, &SVolume::resetBoxWidget, this);
     newSlot(s_ACTIVATE_BOX_CLIPPING_SLOT, &SVolume::activateBoxClipping, this);
     newSlot(s_SHOW_SLOT, &SVolume::show, this);
-
-    this->installTFSlots(this);
 }
 
 //------------------------------------------------------------------------------
@@ -236,11 +235,19 @@ void SVolume::starting()
 {
     this->initialize();
 
-    ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction >(s_TF_INOUT);
-    ::fwData::Image::sptr image         = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("Missing image", image);
 
-    this->setOrCreateTF(tf, image);
+    const ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
+    if(tf != nullptr)
+    {
+        ::fwData::mt::ObjectReadLock tfLock(tf);
+        this->setOrCreateTF(tf, image);
+    }
+    else
+    {
+        this->setOrCreateTF(tf, image);
+    }
 
     this->addToRenderer(m_volume);
 
@@ -316,11 +323,20 @@ void SVolume::swapping(const KeyType& key)
 {
     if (key == s_TF_INOUT)
     {
-        ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction >(s_TF_INOUT);
-        ::fwData::Image::sptr image         = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+        ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
         SLM_ASSERT("Missing image", image);
 
-        this->setOrCreateTF(tf, image);
+        const ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
+        if(tf != nullptr)
+        {
+            ::fwData::mt::ObjectReadLock tfLock(tf);
+            this->setOrCreateTF(tf, image);
+        }
+        else
+        {
+            this->setOrCreateTF(tf, image);
+        }
+
         this->updating();
     }
 }
@@ -392,20 +408,22 @@ void SVolume::updateImage( ::fwData::Image::sptr image  )
 
 void SVolume::updateVolumeTransferFunction( ::fwData::Image::sptr image )
 {
-    ::fwData::TransferFunction::sptr pTF = this->getTransferFunction();
-    SLM_ASSERT("TransferFunction null pointer", pTF);
+    const ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
+    SLM_ASSERT("TransferFunction null pointer", tf);
+
+    ::fwData::mt::ObjectReadLock tfLock(tf);
 
     m_colorTransferFunction->RemoveAllPoints();
     m_opacityTransferFunction->RemoveAllPoints();
 
-    ::fwData::TransferFunction::TFValueVectorType values              = pTF->getScaledValues();
+    ::fwData::TransferFunction::TFValueVectorType values              = tf->getScaledValues();
     ::fwData::TransferFunction::TFValueVectorType::iterator valueIter = values.begin();
-    if(pTF->getInterpolationMode() == ::fwData::TransferFunction::NEAREST)
+    if(tf->getInterpolationMode() == ::fwData::TransferFunction::NEAREST)
     {
         m_colorTransferFunction->AllowDuplicateScalarsOn();
         m_opacityTransferFunction->AllowDuplicateScalarsOn();
 
-        for(const ::fwData::TransferFunction::TFDataType::value_type& tfPoint :  pTF->getTFData())
+        for(const ::fwData::TransferFunction::TFDataType::value_type& tfPoint :  tf->getTFData())
         {
             const ::fwData::TransferFunction::TFValueType& value = *valueIter;
             ::fwData::TransferFunction::TFValueType valuePrevious = *valueIter;
@@ -433,7 +451,7 @@ void SVolume::updateVolumeTransferFunction( ::fwData::Image::sptr image )
     }
     else
     {
-        for(const ::fwData::TransferFunction::TFDataType::value_type& tfPoint :  pTF->getTFData())
+        for(const ::fwData::TransferFunction::TFDataType::value_type& tfPoint :  tf->getTFData())
         {
             const ::fwData::TransferFunction::TFValueType& value = *(valueIter++);
             const ::fwData::TransferFunction::TFColor& color     = tfPoint.second;
@@ -443,13 +461,13 @@ void SVolume::updateVolumeTransferFunction( ::fwData::Image::sptr image )
         }
     }
 
-    m_colorTransferFunction->SetClamping(!pTF->getIsClamped());
-    m_opacityTransferFunction->SetClamping(!pTF->getIsClamped());
+    m_colorTransferFunction->SetClamping(!tf->getIsClamped());
+    m_opacityTransferFunction->SetClamping(!tf->getIsClamped());
 
     if(m_blendMode == "average")
     {
         //use the TF windowing min and max values to set up the average blend range
-        std::pair< double, double > averageRange = this->getTransferFunction()->getWLMinMax();
+        std::pair< double, double > averageRange = tf->getWLMinMax();
         m_volumeMapper->SetAverageIPScalarRange(averageRange.first, averageRange.second);
     }
 

@@ -13,6 +13,7 @@
 
 #include <fwData/Boolean.hpp>
 #include <fwData/Image.hpp>
+#include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/TransferFunction.hpp>
 
 #include <fwDataTools/fieldHelper/Image.hpp>
@@ -51,7 +52,6 @@ SImage::SImage() noexcept :
     m_map2colors(vtkSmartPointer<vtkImageMapToColors>::New()),
     m_imageData(vtkSmartPointer<vtkImageData>::New())
 {
-    this->installTFSlots(this);
     newSlot(s_UPDATE_IMAGE_OPACITY_SLOT, &SImage::updateImageOpacity, this);
 }
 
@@ -67,11 +67,21 @@ void SImage::starting()
 {
     this->initialize();
 
-    ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction >(s_TF_INOUT);
-    ::fwData::Image::sptr image         = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("Missing image", image);
 
-    this->setOrCreateTF(tf, image);
+    ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
+    {
+        if(tf != nullptr)
+        {
+            ::fwData::mt::ObjectReadLock tfLock(tf);
+            this->setOrCreateTF(tf, image);
+        }
+        else
+        {
+            this->setOrCreateTF(tf, image);
+        }
+    }
 
     this->updating();
 }
@@ -110,11 +120,21 @@ void SImage::swapping(const KeyType& key)
 {
     if (key == s_TF_INOUT)
     {
-        ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction >(s_TF_INOUT);
-        ::fwData::Image::sptr image         = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+        ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
         SLM_ASSERT("Missing image", image);
 
-        this->setOrCreateTF(tf, image);
+        ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
+        {
+            if(tf != nullptr)
+            {
+                ::fwData::mt::ObjectReadLock tfLock(tf);
+                this->setOrCreateTF(tf, image);
+            }
+            else
+            {
+                this->setOrCreateTF(tf, image);
+            }
+        }
         this->updating();
     }
 }
@@ -172,12 +192,14 @@ void SImage::updateImage( ::fwData::Image::sptr image  )
 void SImage::updateImageTransferFunction()
 {
     ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
+    {
+        ::fwData::mt::ObjectReadLock tfLock(tf);
+        ::fwVtkIO::helper::TransferFunction::toVtkLookupTable(tf, m_lut, m_allowAlphaInTF, 256 );
 
-    ::fwVtkIO::helper::TransferFunction::toVtkLookupTable( tf, m_lut, m_allowAlphaInTF, 256 );
-
-    m_lut->SetClamping( !tf->getIsClamped() );
-    m_lut->SetWindow(tf->getWindow());
-    m_lut->SetLevel(tf->getLevel());
+        m_lut->SetClamping(!tf->getIsClamped());
+        m_lut->SetWindow(tf->getWindow());
+        m_lut->SetLevel(tf->getLevel());
+    }
 
     this->setVtkPipelineModified();
 }

@@ -40,7 +40,7 @@ public:
     FWDATATOOLS_API virtual ~TransferFunction();
 
     /// Set the current TransferFunction
-    FWDATATOOLS_API void setTransferFunction( const ::fwData::TransferFunction::sptr& tf );
+    FWDATATOOLS_API void setTransferFunction(const fwData::TransferFunction::sptr& tf );
 
 protected:
 
@@ -76,15 +76,6 @@ protected:
 
     /// Remove the TF connections
     FWDATATOOLS_API void removeTFConnections();
-
-    /**
-     * @brief Install the slots to managed TF modifications.
-     *
-     * Creates slots to listen TF selection Composite and TransferFunction signals.
-     *
-     * @warning It must be called in the service constructor
-     */
-    FWDATATOOLS_API void installTFSlots(::fwCom::HasSlots* hasslots);
 
     /// Slot: called when transfer function points are modified
     FWDATATOOLS_API virtual void updateTFPoints();

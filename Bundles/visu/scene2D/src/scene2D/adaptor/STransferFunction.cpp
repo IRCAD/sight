@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -12,6 +12,8 @@
 #include <fwCom/Slot.hxx>
 
 #include <fwData/Composite.hpp>
+#include <fwData/mt/ObjectReadLock.hpp>
+#include <fwData/mt/ObjectWriteLock.hpp>
 #include <fwData/String.hpp>
 
 #include <fwDataTools/fieldHelper/Image.hpp>
@@ -84,8 +86,10 @@ void STransferFunction::configuring()
 void STransferFunction::buildTFPoints()
 {
     // Get the selected tf of the image
-    ::fwData::TransferFunction::sptr selectedTF = this->getInOut< ::fwData::TransferFunction >(s_TF_INOUT);
+    const ::fwData::TransferFunction::sptr selectedTF = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
     SLM_ASSERT("inout '" + s_TF_INOUT + "' is not defined", selectedTF);
+
+    ::fwData::mt::ObjectReadLock tfLock(selectedTF);
 
     // Clear the tf points map
     m_TFPoints.clear();
@@ -179,8 +183,10 @@ QGraphicsEllipseItem* STransferFunction::buildCircle(::fwData::TransferFunction:
 
 void STransferFunction::buildLinesAndPolygons()
 {
-    ::fwData::TransferFunction::sptr selectedTF = this->getInOut< ::fwData::TransferFunction >(s_TF_INOUT);
+    const ::fwData::TransferFunction::sptr selectedTF = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
     SLM_ASSERT("inout '" + s_TF_INOUT + "' is not defined", selectedTF);
+
+    ::fwData::mt::ObjectReadLock tfLock(selectedTF);
 
     // Remove line and polygon items from the scene and clear the lines and polygons vector
     for( QGraphicsItem* linesAndPolygons : m_linesAndPolygons)
@@ -281,7 +287,7 @@ void STransferFunction::buildLinearLinesAndPolygons()
 {
     SLM_ASSERT("Circles must not be empty", !m_circles.empty());
 
-    ::fwData::TransferFunction::sptr selectedTF = this->getInOut< ::fwData::TransferFunction >(s_TF_INOUT);
+    const ::fwData::TransferFunction::sptr selectedTF = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
     SLM_ASSERT("inout '" + s_TF_INOUT + "' is not defined", selectedTF);
 
     ::fwRenderQt::data::Viewport::sptr viewport = this->getScene2DRender()->getViewport();
@@ -296,6 +302,7 @@ void STransferFunction::buildLinearLinesAndPolygons()
     double xEnd;
     xBegin = firtsCircle->rect().x() + firtsCircle->pos().x() + m_circleWidth / 2;
     xEnd   = lastCircle->rect().x() + lastCircle->pos().x() + m_circleWidth / 2;
+
     if (selectedTF->getIsClamped())
     {
         vect.append(QPointF(xBegin, 0));
@@ -456,13 +463,16 @@ void STransferFunction::buildLayer()
 void STransferFunction::updateImageTF()
 {
     // Get the selected tf of the image
-    ::fwData::TransferFunction::sptr selectedTF = this->getInOut< ::fwData::TransferFunction >(s_TF_INOUT);
+    ::fwData::TransferFunction::sptr selectedTF = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
     SLM_ASSERT("inout '" + s_TF_INOUT + "' is not defined", selectedTF);
+
+    ::fwData::mt::ObjectWriteLock tfLock(selectedTF);
 
     ::fwData::TransferFunction::TFValuePairType minMax = selectedTF->getMinMaxTFValues();
     ::fwData::TransferFunction::TFValueType window     = selectedTF->getWindow();
     ::fwData::TransferFunction::TFValueType wlMin      = selectedTF->getWLMinMax().first;
     ::fwData::TransferFunction::TFValueType val;
+
     selectedTF->clear();
 
     // Rebuild the selected tf from the tf points map
@@ -891,7 +901,7 @@ void STransferFunction::doubleClickEvent( ::fwRenderQt::data::Event& _event)
         ::fwData::TransferFunction::TFDataType::iterator prevTFPointIt = nextTFPointIt;
         --prevTFPointIt;
 
-        // Check if the new point is not placed on an already existing point
+        // Check if the new point is not placed on an alWritey existing point
         if ( (values.first != (*nextTFPointIt).first) && (values.first != (*prevTFPointIt).first) )
         {
             // Calculate the relative position of the event between the 2 encompassing points
@@ -949,4 +959,3 @@ double STransferFunction::pointValue(QGraphicsEllipseItem* circle)
 
 } // namespace adaptor
 } // namespace scene2D
-

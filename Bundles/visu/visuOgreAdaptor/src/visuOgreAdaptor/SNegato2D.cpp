@@ -11,6 +11,7 @@
 #include <fwCom/Slots.hxx>
 
 #include <fwData/Image.hpp>
+#include <fwData/mt/ObjectReadLock.hpp>
 
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 
@@ -46,8 +47,6 @@ SNegato2D::SNegato2D() noexcept :
     m_negatoSceneNode(nullptr),
     m_filtering( ::fwRenderOgre::Plane::FilteringEnumType::NONE )
 {
-    this->installTFSlots(this);
-
     m_currentSliceIndex = {0.f, 0.f, 0.f};
 
     newSlot(s_NEWIMAGE_SLOT, &SNegato2D::newImage, this);
@@ -121,8 +120,16 @@ void SNegato2D::starting()
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing.", image);
 
-    ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction >(s_TF_INOUT);
-    this->setOrCreateTF(tf, image);
+    ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
+    if(tf != nullptr)
+    {
+        ::fwData::mt::ObjectReadLock tfLock(tf);
+        this->setOrCreateTF(tf, image);
+    }
+    else
+    {
+        this->setOrCreateTF(tf, image);
+    }
 
     // 3D source texture instantiation
     m_3DOgreTexture = ::Ogre::TextureManager::getSingleton().create(
@@ -182,11 +189,19 @@ void SNegato2D::swapping(const KeyType& key)
 {
     if (key == s_TF_INOUT)
     {
-        ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction >(s_TF_INOUT);
-        ::fwData::Image::sptr image         = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+        ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
         SLM_ASSERT("Missing image", image);
 
-        this->setOrCreateTF(tf, image);
+        ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
+        if(tf != nullptr)
+        {
+            ::fwData::mt::ObjectReadLock tfLock(tf);
+            this->setOrCreateTF(tf, image);
+        }
+        else
+        {
+            this->setOrCreateTF(tf, image);
+        }
         this->updateTFPoints();
     }
 }
@@ -243,7 +258,11 @@ void SNegato2D::changeSliceType(int /*_from*/, int _to)
     m_plane->setOrientationMode(newOrientationMode);
 
     // Update TF
-    this->updateTFWindowing(this->getTransferFunction()->getWindow(), this->getTransferFunction()->getLevel());
+    ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
+    {
+        ::fwData::mt::ObjectReadLock tfLock(tf);
+        this->updateTFWindowing(tf->getWindow(), tf->getLevel());
+    }
 
     // Update threshold if necessary
     this->updateTFPoints();
@@ -286,10 +305,12 @@ void SNegato2D::updateShaderSliceIndexParameter()
 void SNegato2D::updateTFPoints()
 {
     ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
+    {
+        ::fwData::mt::ObjectReadLock tfLock(tf);
+        m_gpuTF->updateTexture(tf);
 
-    m_gpuTF->updateTexture(tf);
-
-    m_plane->switchThresholding(tf->getIsClamped());
+        m_plane->switchThresholding(tf->getIsClamped());
+    }
 
     // Sends the TF texture to the negato-related passes
     m_plane->setTFData(*m_gpuTF.get());
@@ -302,8 +323,10 @@ void SNegato2D::updateTFPoints()
 void SNegato2D::updateTFWindowing(double /*window*/, double /*leve*/)
 {
     ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
-
-    m_gpuTF->updateTexture(tf);
+    {
+        ::fwData::mt::ObjectReadLock tfLock(tf);
+        m_gpuTF->updateTexture(tf);
+    }
 
     this->requestRender();
 }

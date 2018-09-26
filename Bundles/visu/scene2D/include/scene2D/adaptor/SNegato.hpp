@@ -126,7 +126,7 @@ private:
     void changeImageMinMaxFromCoord( ::fwRenderQt::data::Coord& oldCoord, ::fwRenderQt::data::Coord& newCoord );
 
     static QRgb getQImageVal(const size_t index, const short* buffer, double wlMin,
-                             double tfWin, const ::fwData::TransferFunction::sptr& tf);
+                             double tfWin, const fwData::TransferFunction::csptr& tf);
 
     QImage* m_qimg;
     QGraphicsPixmapItem* m_pixmapItem;

@@ -15,6 +15,8 @@
 #include <fwCom/Slots.hxx>
 
 #include <fwData/Image.hpp>
+#include <fwData/mt/ObjectReadLock.hpp>
+#include <fwData/mt/ObjectWriteLock.hpp>
 #include <fwData/TransferFunction.hpp>
 
 #include <fwDataTools/fieldHelper/Image.hpp>
@@ -56,7 +58,6 @@ SNegato::SNegato() noexcept :
     m_pointIsCaptured(false),
     m_changeSliceTypeAllowed(true)
 {
-    this->installTFSlots(this);
     newSlot(s_UPDATE_SLICE_INDEX_SLOT, &SNegato::updateSliceIndex, this);
     newSlot(s_UPDATE_SLICE_TYPE_SLOT, &SNegato::updateSliceType, this);
     newSlot(s_UPDATE_BUFFER_SLOT, &SNegato::updateBuffer, this);
@@ -120,6 +121,7 @@ void SNegato::updateBufferFromImage( QImage* qimg )
     }
     // Window min/max
     ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
+    ::fwData::mt::ObjectReadLock tfLock(tf);
     const double wlMin = tf->getWLMinMax().first;
 
     // Window max
@@ -203,7 +205,7 @@ void SNegato::updateBufferFromImage( QImage* qimg )
 //-----------------------------------------------------------------------------
 
 QRgb SNegato::getQImageVal(const size_t index, const short* buffer, double wlMin, double tfWin,
-                           const fwData::TransferFunction::sptr& tf)
+                           const fwData::TransferFunction::csptr& tf)
 {
     const short val16 = buffer[index];
 
@@ -291,8 +293,17 @@ QImage* SNegato::createQImage()
 
 void SNegato::starting()
 {
-    ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction >(s_TF_INOUT);
-    this->setTransferFunction(tf);
+
+    ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
+    if(tf != nullptr)
+    {
+        ::fwData::mt::ObjectReadLock tfLock(tf);
+        this->setTransferFunction(tf);
+    }
+    else
+    {
+        this->setTransferFunction(tf);
+    }
 
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     this->updateImageInfos( image );
@@ -330,11 +341,19 @@ void SNegato::swapping(const KeyType& key)
 {
     if (key == s_TF_INOUT)
     {
-        ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction >(s_TF_INOUT);
-        ::fwData::Image::sptr image         = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+        ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
         SLM_ASSERT("Missing image", image);
 
-        this->setOrCreateTF(tf, image);
+        ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
+        if(tf != nullptr)
+        {
+            ::fwData::mt::ObjectReadLock tfLock(tf);
+            this->setOrCreateTF(tf, image);
+        }
+        else
+        {
+            this->setOrCreateTF(tf, image);
+        }
         this->updating();
     }
 }
@@ -529,8 +548,10 @@ void SNegato::processInteraction( ::fwRenderQt::data::Event& _event )
 
 void SNegato::changeImageMinMaxFromCoord( ::fwRenderQt::data::Coord& oldCoord, ::fwRenderQt::data::Coord& newCoord )
 {
-    ::fwData::Image::sptr image         = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+
     ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
+    ::fwData::mt::ObjectWriteLock tfLock(tf);
 
     const double min = tf->getWLMinMax().first;
     const double max = tf->getWLMinMax().second;

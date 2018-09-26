@@ -13,6 +13,7 @@
 #include <fwData/Boolean.hpp>
 #include <fwData/Image.hpp>
 #include <fwData/Integer.hpp>
+#include <fwData/mt/ObjectReadLock.hpp>
 
 #include <fwDataTools/fieldHelper/Image.hpp>
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
@@ -55,8 +56,6 @@ SNegato3D::SNegato3D() noexcept :
     m_negatoSceneNode(nullptr),
     m_filtering( ::fwRenderOgre::Plane::FilteringEnumType::NONE )
 {
-    this->installTFSlots(this);
-
     newSlot(s_NEWIMAGE_SLOT, &SNegato3D::newImage, this);
     newSlot(s_SLICETYPE_SLOT, &SNegato3D::changeSliceType, this);
     newSlot(s_SLICEINDEX_SLOT, &SNegato3D::changeSliceIndex, this);
@@ -134,7 +133,15 @@ void SNegato3D::starting()
     this->initialize();
 
     ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
-    this->setTransferFunction(tf);
+    if(tf != nullptr)
+    {
+        ::fwData::mt::ObjectReadLock tfLock(tf);
+        this->setTransferFunction(tf);
+    }
+    else
+    {
+        this->setTransferFunction(tf);
+    }
 
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
@@ -214,11 +221,19 @@ void SNegato3D::swapping(const KeyType& key)
 {
     if (key == s_TF_INOUT)
     {
-        ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction >(s_TF_INOUT);
-        ::fwData::Image::sptr image         = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+        ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
         SLM_ASSERT("Missing image", image);
 
-        this->setOrCreateTF(tf, image);
+        ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
+        if(tf != nullptr)
+        {
+            ::fwData::mt::ObjectReadLock tfLock(tf);
+            this->setOrCreateTF(tf, image);
+        }
+        else
+        {
+            this->setOrCreateTF(tf, image);
+        }
         this->updateTFPoints();
     }
 }
@@ -280,7 +295,11 @@ void SNegato3D::changeSliceType(int /*_from*/, int _to)
     this->getRenderService()->makeCurrent();
 
     // Update TF
-    this->updateTFWindowing(this->getTransferFunction()->getWindow(), this->getTransferFunction()->getLevel());
+    ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
+    {
+        ::fwData::mt::ObjectReadLock tfLock(tf);
+        this->updateTFWindowing(tf->getWindow(), tf->getLevel());
+    }
 
     // Update threshold if necessary
     this->updateTFPoints();
@@ -328,15 +347,17 @@ void SNegato3D::changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagitt
 void SNegato3D::updateTFPoints()
 {
     ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
-
-    m_gpuTF->updateTexture(tf);
-
-    for(int i(0); i < 3; ++i)
     {
-        m_planes[i]->switchThresholding(tf->getIsClamped());
+        ::fwData::mt::ObjectReadLock tfLock(tf);
+        m_gpuTF->updateTexture(tf);
 
-        // Sends the TF texture to the negato-related passes
-        m_planes[i]->setTFData(*m_gpuTF.get());
+        for(int i(0); i < 3; ++i)
+        {
+            m_planes[i]->switchThresholding(tf->getIsClamped());
+
+            // Sends the TF texture to the negato-related passes
+            m_planes[i]->setTFData(*m_gpuTF.get());
+        }
     }
 
     this->requestRender();
@@ -347,8 +368,10 @@ void SNegato3D::updateTFPoints()
 void SNegato3D::updateTFWindowing(double /*window*/, double /*level*/)
 {
     ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
-
-    m_gpuTF->updateTexture(tf);
+    {
+        ::fwData::mt::ObjectReadLock tfLock(tf);
+        m_gpuTF->updateTexture(tf);
+    }
 
     this->requestRender();
 }

@@ -16,6 +16,7 @@
 
 #include <fwData/Color.hpp>
 #include <fwData/Image.hpp>
+#include <fwData/mt/ObjectWriteLock.hpp>
 #include <fwData/String.hpp>
 #include <fwData/TransferFunction.hpp>
 
@@ -147,10 +148,13 @@ void SNegatoOneSlice::cleanImageSource()
 
         imgAdaptor->setVtkImageRegister(this->getImageSource());
 
-        ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction >(s_TF_INOUT);
-        if (tf)
+        ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
         {
-            imgAdaptor->registerInOut(tf, s_TF_INOUT, false, true);
+            if(tf != nullptr)
+            {
+                ::fwData::mt::ObjectWriteLock tfLock(tf);
+                imgAdaptor->registerInOut(tf, s_TF_INOUT, false, true);
+            }
         }
 
         imgAdaptor->setImageOpacity(1.);
@@ -204,16 +208,22 @@ void SNegatoOneSlice::swapping(const KeyType& key)
         && nullptr == vtkImageCheckerboard::SafeDownCast(this->getImageSource()))
     {
         IAdaptor::sptr imageAdaptor = this->getImageAdaptor();
-        ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction >(s_TF_INOUT);
-        if (tf)
+
+        ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
         {
-            imageAdaptor->registerInOut(tf, s_TF_INOUT, false, true);
-            imageAdaptor->swapKey(s_TF_INOUT, nullptr);
-        }
-        else if(::fwServices::OSR::isRegistered(s_TF_INOUT, AccessType::INOUT, imageAdaptor))
-        {
-            ::fwServices::OSR::unregisterService(s_TF_INOUT, AccessType::INOUT, imageAdaptor);
-            imageAdaptor->swapKey(s_TF_INOUT, nullptr);
+            if(tf != nullptr)
+            {
+                {
+                    ::fwData::mt::ObjectWriteLock tfLock(tf);
+                    imageAdaptor->registerInOut(tf, s_TF_INOUT, false, true);
+                }
+                imageAdaptor->swapKey(s_TF_INOUT, nullptr);
+            }
+            else if(::fwServices::OSR::isRegistered(s_TF_INOUT, AccessType::INOUT, imageAdaptor))
+            {
+                ::fwServices::OSR::unregisterService(s_TF_INOUT, AccessType::INOUT, imageAdaptor);
+                imageAdaptor->swapKey(s_TF_INOUT, nullptr);
+            }
         }
     }
 }

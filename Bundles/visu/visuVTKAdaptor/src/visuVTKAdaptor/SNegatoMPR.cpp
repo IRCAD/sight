@@ -19,6 +19,8 @@
 #include <fwData/Boolean.hpp>
 #include <fwData/Image.hpp>
 #include <fwData/Integer.hpp>
+#include <fwData/mt/ObjectReadLock.hpp>
+#include <fwData/mt/ObjectWriteLock.hpp>
 #include <fwData/String.hpp>
 
 #include <fwDataTools/fieldHelper/Image.hpp>
@@ -186,15 +188,27 @@ void SNegatoMPR::swapping(const KeyType& key)
 {
     if (key == s_TF_INOUT)
     {
-        ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction >(s_TF_INOUT);
-        this->setTransferFunction(tf);
+        ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
+
+        if(tf != nullptr)
+        {
+            ::fwData::mt::ObjectReadLock tfLock(tf);
+            this->setTransferFunction(tf);
+        }
+        else
+        {
+            this->setTransferFunction(tf);
+        }
 
         for (const auto& srv: this->getRegisteredServices())
         {
             ::fwServices::IService::sptr service = srv.lock();
-            if (tf)
+            if(tf != nullptr)
             {
-                service->registerInOut(tf, s_TF_INOUT, false, true);
+                {
+                    ::fwData::mt::ObjectWriteLock tfLock(tf);
+                    service->registerInOut(tf, s_TF_INOUT, false, true);
+                }
                 service->swapKey(s_TF_INOUT, nullptr);
             }
             else if(::fwServices::OSR::isRegistered(s_TF_INOUT, AccessType::INOUT, service))
@@ -426,11 +440,14 @@ void SNegatoMPR::setOrientation( OrientationMode _orientation )
         negatoAdaptor->setActorOpacity(m_actorOpacity);
     }
 
-    ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction >(s_TF_INOUT);
-    if (tf)
+    ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
     {
-        // register the TF as optional
-        service->registerInOut(tf, s_TF_INOUT, false, true);
+        if(tf != nullptr)
+        {
+            ::fwData::mt::ObjectWriteLock tfLock(tf);
+            // register the TF as optional
+            service->registerInOut(tf, s_TF_INOUT, false, true);
+        }
     }
 
     service->setRenderService(this->getRenderService());

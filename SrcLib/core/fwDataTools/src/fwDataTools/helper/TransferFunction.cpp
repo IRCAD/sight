@@ -14,6 +14,8 @@
 
 #include <fwData/Image.hpp>
 
+#include <fwServices/registry/ActiveWorkers.hpp>
+
 namespace fwDataTools
 {
 
@@ -27,6 +29,11 @@ static const ::fwCom::Slots::SlotKeyType s_UPDATE_TF_WINDOWING_SLOT = "updateTFW
 
 TransferFunction::TransferFunction()
 {
+    auto defaultWorker = ::fwServices::registry::ActiveWorkers::getDefaultWorker();
+    m_slotUpdateTFPoints = ::fwCom::newSlot(&TransferFunction::updateTFPoints, this);
+    m_slotUpdateTFPoints->setWorker(defaultWorker);
+    m_slotUpdateTFWindowing = ::fwCom::newSlot(&TransferFunction::updateTFWindowing, this);
+    m_slotUpdateTFWindowing->setWorker(defaultWorker);
 }
 
 //------------------------------------------------------------------------------
@@ -130,15 +137,6 @@ void TransferFunction::installTFConnections()
 void TransferFunction::removeTFConnections()
 {
     m_tfConnections.disconnect();
-}
-
-//------------------------------------------------------------------------------
-
-void TransferFunction::installTFSlots(::fwCom::HasSlots* hasslots)
-{
-    m_slotUpdateTFPoints    = hasslots->newSlot(s_UPDATE_TF_POINTS_SLOT, &TransferFunction::updateTFPoints, this);
-    m_slotUpdateTFWindowing =
-        hasslots->newSlot(s_UPDATE_TF_WINDOWING_SLOT, &TransferFunction::updateTFWindowing, this);
 }
 
 //------------------------------------------------------------------------------

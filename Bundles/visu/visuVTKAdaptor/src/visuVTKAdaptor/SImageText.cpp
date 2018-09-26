@@ -13,6 +13,8 @@
 
 #include <fwData/Image.hpp>
 #include <fwData/Integer.hpp>
+#include <fwData/mt/ObjectReadLock.hpp>
+#include <fwData/mt/ObjectWriteLock.hpp>
 
 #include <fwDataTools/fieldHelper/Image.hpp>
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
@@ -41,7 +43,6 @@ static const ::fwServices::IService::KeyType s_TF_INOUT    = "tf";
 
 SImageText::SImageText() noexcept
 {
-    this->installTFSlots(this);
     newSlot(s_UPDATE_SLICE_INDEX_SLOT, &SImageText::updateSliceIndex, this);
 }
 
@@ -59,9 +60,19 @@ void SImageText::starting()
 
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("Missing image", image);
-    ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction >(s_TF_INOUT);
 
-    this->setOrCreateTF(tf, image);
+    const ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
+    {
+        if(tf != nullptr)
+        {
+            ::fwData::mt::ObjectReadLock tfLock(tf);
+            this->setOrCreateTF(tf, image);
+        }
+        else
+        {
+            this->setOrCreateTF(tf, image);
+        }
+    }
 
     this->updateImageInfos(image);
     this->updating();
@@ -98,7 +109,7 @@ void SImageText::updating()
         size_t sagittalIndex = static_cast<size_t>(m_sagittalIndex->value());
 
         ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
-
+        ::fwData::mt::ObjectReadLock tfLock(tf);
         double min = tf->getLevel() - tf->getWindow()/2.0;
         double max = tf->getLevel() + tf->getWindow()/2.0;
 
@@ -123,11 +134,21 @@ void SImageText::swapping(const KeyType& key)
 {
     if (key == s_TF_INOUT)
     {
-        ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction >(s_TF_INOUT);
-        ::fwData::Image::sptr image         = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+        ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
         SLM_ASSERT("Missing image", image);
 
-        this->setOrCreateTF(tf, image);
+        ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
+        {
+            if(tf != nullptr)
+            {
+                ::fwData::mt::ObjectReadLock tfLock(tf);
+                this->setOrCreateTF(tf, image);
+            }
+            else
+            {
+                this->setOrCreateTF(tf, image);
+            }
+        }
         this->updating();
     }
 }
