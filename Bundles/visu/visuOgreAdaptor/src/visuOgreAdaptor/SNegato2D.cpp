@@ -216,7 +216,7 @@ void SNegato2D::newImage()
     this->updateCameraWindowBounds();
 
     // Update Slice
-    this->changeSliceIndex(m_axialIndex->value(), m_frontalIndex->value(), m_sagittalIndex->value());
+    this->changeSliceIndex(m_axialIndex, m_frontalIndex, m_sagittalIndex);
 
     // Update tranfer function in Gpu programs
     this->updateTFPoints();
@@ -262,9 +262,9 @@ void SNegato2D::changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagitt
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
 
-    m_axialIndex->value()    = _axialIndex;
-    m_frontalIndex->value()  = _frontalIndex;
-    m_sagittalIndex->value() = _sagittalIndex;
+    m_axialIndex    = _axialIndex;
+    m_frontalIndex  = _frontalIndex;
+    m_sagittalIndex = _sagittalIndex;
 
     m_currentSliceIndex = {
         static_cast<float>(_sagittalIndex ) / (static_cast<float>(image->getSize()[0] - 1)),

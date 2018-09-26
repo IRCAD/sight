@@ -259,7 +259,7 @@ void SNegato3D::newImage()
     createPlanes(image->getSpacing(), image->getOrigin());
 
     // Update Slice
-    this->changeSliceIndex(m_axialIndex->value(), m_frontalIndex->value(), m_sagittalIndex->value());
+    this->changeSliceIndex(m_axialIndex, m_frontalIndex, m_sagittalIndex);
 
     // Update tranfer function in Gpu programs
     this->updateTFPoints();

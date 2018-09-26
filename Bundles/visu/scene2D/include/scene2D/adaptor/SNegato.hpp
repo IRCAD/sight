@@ -145,6 +145,13 @@ private:
     /// Specify if the negato allow slice type events
     bool m_changeSliceTypeAllowed;
 
+    /// Axial slice index
+    size_t m_axialIndex {0};
+    /// Frontal slice index
+    size_t m_frontalIndex {0};
+    /// Sagittal slice index
+    size_t m_sagittalIndex {0};
+
 };
 
 } // namespace adaptor

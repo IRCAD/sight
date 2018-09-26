@@ -137,12 +137,10 @@ void SNegato::updateBufferFromImage( QImage* qimg )
     // Fill image according to current slice type:
     if( m_orientation == OrientationMode::X_AXIS ) // sagittal
     {
-        const size_t sagitalIndex = static_cast<size_t>(m_sagittalIndex->value());
-
         for( size_t z = 0; z < size[2]; ++z)
         {
             const size_t zOffset  = (size[2] - 1 - z) * imageZOffset;
-            const size_t zxOffset = zOffset + sagitalIndex;
+            const size_t zxOffset = zOffset + m_sagittalIndex;
 
             for( size_t y = 0; y < size[1]; ++y )
             {
@@ -156,8 +154,7 @@ void SNegato::updateBufferFromImage( QImage* qimg )
     }
     else if( m_orientation == OrientationMode::Y_AXIS ) // frontal
     {
-        const size_t frontalIndex = static_cast<size_t>(m_frontalIndex->value());
-        const size_t yOffset      = frontalIndex * size[0];
+        const size_t yOffset = m_frontalIndex * size[0];
 
         for( size_t z = 0; z < size[2]; ++z)
         {
@@ -176,8 +173,7 @@ void SNegato::updateBufferFromImage( QImage* qimg )
     }
     else if( m_orientation == OrientationMode::Z_AXIS ) // axial
     {
-        const size_t axialIndex = static_cast<size_t>(m_axialIndex->value());
-        const size_t zOffset    = axialIndex * imageZOffset;
+        const size_t zOffset = m_axialIndex * imageZOffset;
 
         for( size_t y = 0; y < size[1]; ++y )
         {
@@ -342,9 +338,9 @@ void SNegato::swapping(const KeyType& key)
 
 void SNegato::updateSliceIndex(int axial, int frontal, int sagittal)
 {
-    m_axialIndex->value()    = axial;
-    m_frontalIndex->value()  = frontal;
-    m_sagittalIndex->value() = sagittal;
+    m_axialIndex    = axial;
+    m_frontalIndex  = frontal;
+    m_sagittalIndex = sagittal;
 
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     this->updateImageInfos( image );

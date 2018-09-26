@@ -52,88 +52,8 @@ protected:
     /// Constructor. Do nothing.
     FWDATATOOLS_API TransferFunction(); // this class VISUVTKADAPTOR_CLASS_API must be specialized
 
-    /**
-     * @brief Get the image spacing.
-     * @param[out] spacing : the image spacing
-     */
-    FWDATATOOLS_API void getImageSpacing(double spacing[3]) const;
-
-    /**
-     * @brief Get the image origin.
-     * @param[out] origin : the image origin
-     */
-    FWDATATOOLS_API void getImageOrigin(double origin[3]) const;
-
-    /**
-     * @brief Get the image data size (number of slices).
-     * @param[out] size : the image size
-     */
-    FWDATATOOLS_API void getImageDataSize(int size[3]) const;
-
-    /**
-     * @brief Get the image size ( = dataSize * spacing ).
-     * @param[out] size : the image size
-     */
-    FWDATATOOLS_API void getImageSize(double size[3]) const;
-
-    /**
-     * @brief Convert world coordinates to slice index coordinates
-     * @param[in] world : coordinate in the world
-     * @param[out] index : coordinate in the slice index
-     */
-    FWDATATOOLS_API void worldToSliceIndex(const double world[3], int index[3] );
-
-    /**
-     * @brief Convert coordinates in the world to coordinates in the image
-     * @param[in] world : coordinate in the world
-     * @param[out] index : coordinate in the image
-     */
-    FWDATATOOLS_API void worldToImageSliceIndex(const double world[3], int index[3] );
-
-    /**
-     * @brief Convert from world coordinates system to image coordinates system
-     * @param[in] index : coordinate in the image
-     * @param[out] world : coordinate in the world
-     */
-    FWDATATOOLS_API void sliceIndexToWorld(const int index[3], double world[3] );
-
     /// Return the image
     FWDATATOOLS_API ::fwData::Image::sptr getImage() const;
-
-    /**
-     * @brief Get the image spacing.
-     * @param[out] spacing : the image spacing
-     */
-    template< typename FLOAT_ARRAY_3 >
-    void getImageSpacing(FLOAT_ARRAY_3 spacing);
-
-    /**
-     * @brief Get the image data size (number of slices).
-     * @param[out] size : the image size
-     */
-    template< typename INT_INDEX >
-    void getImageDataSize(INT_INDEX size);
-
-    /**
-     * @brief Convert world coordinates to slice index coordinates
-     * @param[in] world : coordinate in the world
-     * @param[out] index : coordinate in the slice index
-     */
-    template< typename WORLD, typename INT_INDEX >
-    void worldToSliceIndex(const WORLD world, INT_INDEX* index );
-
-    /**
-     * @brief Convert coordinates in the world to coordinates in the image
-     * @param[in] world : coordinate in the world
-     * @param[out] index : coordinate in the image
-     */
-    template< typename WORLD, typename INT_INDEX >
-    void worldToImageSliceIndex(const WORLD world, INT_INDEX* index );
-
-    /// Set the slice index
-    FWDATATOOLS_API bool setSliceIndex(const int index[3]);
-    /// Get the slice index
-    FWDATATOOLS_API void getSliceIndex(::fwData::Integer::sptr index[3]);
 
     /// Update the image information (slice index, min/max,...)
     FWDATATOOLS_API void updateImageInfos( ::fwData::Image::sptr image  );
@@ -195,13 +115,6 @@ protected:
      * @}
      */
 
-    /// Axial slice index
-    ::fwData::Integer::sptr m_axialIndex;
-    /// Frontal slice index
-    ::fwData::Integer::sptr m_frontalIndex;
-    /// Sagittal slice index
-    ::fwData::Integer::sptr m_sagittalIndex;
-
 private:
 
     /// Current image
@@ -213,68 +126,6 @@ private:
     /// Connections to the transfer function
     ::fwCom::helper::SigSlotConnection m_tfConnections;
 };
-
-//------------------------------------------------------------------------------
-template< typename FLOAT_ARRAY_3 >
-void TransferFunction::getImageSpacing(FLOAT_ARRAY_3 spacing)
-{
-    ::fwData::Image::sptr image = this->getImage();
-
-    const ::fwData::Image::SpacingType imSpacing = image->getSpacing();
-    std::copy(imSpacing.begin(), imSpacing.end(), spacing);
-}
-
-//------------------------------------------------------------------------------
-template< typename INT_INDEX >
-void TransferFunction::getImageDataSize(INT_INDEX size)
-{
-    ::fwData::Image::sptr image = this->getImage();
-
-    const ::fwData::Image::SizeType imSize = image->getSize();
-    std::copy(imSize.begin(), imSize.end(), size);
-}
-
-//------------------------------------------------------------------------------
-
-template< typename WORLD, typename INT_INDEX >
-void TransferFunction::worldToSliceIndex(const WORLD world, INT_INDEX* index )
-{
-    double spacing[3];
-    this->getImageSpacing(spacing);
-    double origin[3];
-    this->getImageOrigin(origin);
-    for ( int i = 0; i < 3; ++i )
-    {
-        index[i] =
-            static_cast< INT_INDEX >( ( (world[i] - origin[i])/spacing[i] ) +
-                                      ( ( (world[i] - origin[i])/spacing[i] ) >= 0 ? 0.5 : -0.5 ) );
-    }
-}
-
-//------------------------------------------------------------------------------
-
-template< typename WORLD, typename INT_INDEX >
-void TransferFunction::worldToImageSliceIndex(const WORLD world, INT_INDEX* index )
-{
-    INT_INDEX imageSize[3];
-    this->getImageDataSize(imageSize);
-    this->worldToSliceIndex(world, index);
-
-    INT_INDEX idval;
-    for (int i = 0; i < 3; i++)
-    {
-        INT_INDEX max = imageSize[i]-1;
-        idval = index[i];
-        if (idval < 0)
-        {
-            index[i] = 0;
-        }
-        else if (idval > max)
-        {
-            index[i] = max;
-        }
-    }
-}
 
 } //namespace helper
 
