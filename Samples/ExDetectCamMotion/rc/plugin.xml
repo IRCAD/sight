@@ -169,9 +169,9 @@
                 <inout key="frame" uid="videoImage" />
             </service>
 
-            <service uid="opticalFlow" type="::videoTools::SOpticalFlow" worker="ofWorker"  >
+            <service uid="opticalFlow" type="::videoTools::SOpticalFlow" worker="ofWorker" >
                 <in key="timeline" uid="frameTL" autoConnect="yes" />
-                <config imgToDrop="10" scaleFactor="3.6" />
+                <config scaleFactor="3.6" />
             </service>
 
             <!-- ******************* begin connections ******************* -->

@@ -7,15 +7,12 @@ set( REQUIREMENTS
     appXml
     arDataReg
     arMedia
-    ctrlCamp
     dataReg
     fwlauncher
     gui
     guiQt
     uiPreferences
     uiTools
-    uiMeasurement
-    maths
     preferences
     servicesReg
     videoQt
