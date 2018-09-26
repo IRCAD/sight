@@ -190,16 +190,6 @@ void SNegatoMPR::swapping(const KeyType& key)
     {
         ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
 
-        if(tf != nullptr)
-        {
-            ::fwData::mt::ObjectReadLock tfLock(tf);
-            this->setTransferFunction(tf);
-        }
-        else
-        {
-            this->setTransferFunction(tf);
-        }
-
         for (const auto& srv: this->getRegisteredServices())
         {
             ::fwServices::IService::sptr service = srv.lock();

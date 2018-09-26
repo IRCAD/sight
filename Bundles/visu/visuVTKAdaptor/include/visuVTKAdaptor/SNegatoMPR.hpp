@@ -11,7 +11,6 @@
 #include <fwCom/helper/SigSlotConnection.hpp>
 
 #include <fwDataTools/helper/MedicalImage.hpp>
-#include <fwDataTools/helper/TransferFunction.hpp>
 
 #include <fwRenderVTK/IAdaptor.hpp>
 
@@ -61,8 +60,7 @@ class SliceCursor;
  *    - \b vtkimagesource (optional): source image, used for blend
  *    - \b actorOpacity (optional, default=1.0): actor opacity (float)
  */
-class VISUVTKADAPTOR_CLASS_API SNegatoMPR : public ::fwDataTools::helper::TransferFunction,
-                                            public ::fwRenderVTK::IAdaptor
+class VISUVTKADAPTOR_CLASS_API SNegatoMPR : public ::fwRenderVTK::IAdaptor
 {
 
 public:
@@ -76,6 +74,7 @@ public:
     VISUVTKADAPTOR_API virtual ~SNegatoMPR() noexcept;
 
     static const ::fwServices::IService::KeyType s_IMAGE_INOUT;
+
     static const ::fwServices::IService::KeyType s_TF_INOUT;
 
     typedef enum
@@ -89,30 +88,35 @@ public:
 
     //------------------------------------------------------------------------------
 
-    void setAllowAlphaInTF(bool allow)
+    inline void setAllowAlphaInTF(bool allow)
     {
         m_allowAlphaInTF = allow;
     }
+
     //------------------------------------------------------------------------------
 
-    void setInterpolation(bool interpolation)
+    inline void setInterpolation(bool interpolation)
     {
         m_interpolation = interpolation;
     }
+
     //------------------------------------------------------------------------------
 
-    void setVtkImageSourceId(std::string id)
+    inline void setVtkImageSourceId(std::string id)
     {
         m_imageSourceId = id;
     }
 
     VISUVTKADAPTOR_API void setSliceMode(SliceMode sliceMode);
+
     VISUVTKADAPTOR_API SliceMode getSliceMode() const;
+
     VISUVTKADAPTOR_API ::boost::logic::tribool is3dModeEnabled() const;
+
     VISUVTKADAPTOR_API void set3dMode( bool enabled );
 
     /// Set actor opacity
-    void setActorOpacity(double actorOpacity)
+    inline void setActorOpacity(double actorOpacity)
     {
         m_actorOpacity = actorOpacity;
     }
@@ -120,9 +124,13 @@ public:
 protected:
 
     VISUVTKADAPTOR_API void configuring() override;
+
     VISUVTKADAPTOR_API void starting() override;
+
     VISUVTKADAPTOR_API void updating() override;
+
     VISUVTKADAPTOR_API void stopping() override;
+
     VISUVTKADAPTOR_API void swapping(const KeyType& key) override;
 
     /**
@@ -162,17 +170,23 @@ private:
      */
 
     bool m_allowAlphaInTF;
+
     bool m_interpolation;
+
     double m_actorOpacity;
 
     std::string m_imageSourceId;
 
     std::string m_slicingStartingProxy; ///< channel of the proxy used to start slicing
+
     std::string m_slicingStoppingProxy; ///< channel of the proxy used to stop slicing
 
     ::boost::logic::tribool m_3dModeEnabled;
+
     SliceMode m_sliceMode;
+
     SliceMode m_backupedSliceMode;
+
     ::fwCom::helper::SigSlotConnection m_connections; /// store subservices connections
 
     ::fwRenderVTK::IAdaptor::wptr m_sliceCursor;

@@ -10,7 +10,7 @@
 #include "visuVTKAdaptor/SText.hpp"
 
 #include <fwDataTools/helper/MedicalImage.hpp>
-#include <fwDataTools/helper/TransferFunction.hpp>
+#include <fwDataTools/helper/TransferFunctionTMP.hpp>
 
 #include <fwRenderVTK/IAdaptor.hpp>
 
@@ -26,9 +26,6 @@ namespace visuVTKAdaptor
  *
  * @section Slots Slots
  * - \b updateSliceIndex(int axial, int frontal, int sagittal) : update image slice index
- * - \b updateTFPoints() : update the displayed information according to the new points
- * - \b updateTFWindowing(double window, double level) : update the displayed information according to the new
- *      window and level
  *
  * @section XML XML Configuration
  *
@@ -52,8 +49,7 @@ namespace visuVTKAdaptor
  * @subsection In-Out In-Out
  * - \b image [::fwData::Image]: image to display.
  * - \b tf [::fwData::TransferFunction] (optional): the current TransferFunction. If it is not defined, we use the
- *      image's default transferFunction (CT-GreyLevel). The transferFunction's signals are automatically connected to
- *      the slots 'updateTFPoints' and 'updateTFWindowing'.
+ *      image's default transferFunction (CT-GreyLevel).
  *
  * @subsection Configuration Configuration
  * - \b config(mandatory) : contains the adaptor configuration
@@ -69,8 +65,7 @@ namespace visuVTKAdaptor
  *   that for the attribute are applied.
  */
 class VISUVTKADAPTOR_CLASS_API SImageText : public SText,
-                                            public ::fwDataTools::helper::MedicalImage,
-                                            public ::fwDataTools::helper::TransferFunction
+                                            public ::fwDataTools::helper::MedicalImage
 {
 
 public:
@@ -84,9 +79,13 @@ public:
 protected:
 
     VISUVTKADAPTOR_API void configuring() override;
+
     VISUVTKADAPTOR_API void starting() override;
+
     VISUVTKADAPTOR_API void updating() override;
+
     VISUVTKADAPTOR_API void stopping() override;
+
     /// Select the current tf
     VISUVTKADAPTOR_API void swapping(const KeyType& key) override;
 
@@ -101,10 +100,7 @@ protected:
     VISUVTKADAPTOR_API virtual KeyConnectionsMap getAutoConnections() const override;
 
     /// Update the text according to the new windowing
-    VISUVTKADAPTOR_API virtual void updateTFPoints() override;
-
-    /// Update the text according to the new windowing
-    VISUVTKADAPTOR_API virtual void updateTFWindowing(double window, double level) override;
+    VISUVTKADAPTOR_API void updateTF();
 
     /**
      * @name Slots
@@ -115,6 +111,8 @@ protected:
     /**
      * @}
      */
+
+    ::fwDataTools::helper::TransferFunctionTMP m_helperTF;
 };
 
 } //namespace visuVTKAdaptor

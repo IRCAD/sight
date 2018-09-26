@@ -41,7 +41,8 @@ static const ::fwServices::IService::KeyType s_TF_INOUT    = "tf";
 
 //-----------------------------------------------------------------------------
 
-SImageText::SImageText() noexcept
+SImageText::SImageText() noexcept :
+    m_helperTF(std::bind(&SImageText::updateTF, this))
 {
     newSlot(s_UPDATE_SLICE_INDEX_SLOT, &SImageText::updateSliceIndex, this);
 }
@@ -66,11 +67,11 @@ void SImageText::starting()
         if(tf != nullptr)
         {
             ::fwData::mt::ObjectReadLock tfLock(tf);
-            this->setOrCreateTF(tf, image);
+            m_helperTF.setOrCreateTF(tf, image);
         }
         else
         {
-            this->setOrCreateTF(tf, image);
+            m_helperTF.setOrCreateTF(tf, image);
         }
     }
 
@@ -82,7 +83,7 @@ void SImageText::starting()
 
 void SImageText::stopping()
 {
-    this->removeTFConnections();
+    m_helperTF.removeTFConnections();
     this->SText::stopping();
 }
 
@@ -108,7 +109,7 @@ void SImageText::updating()
         size_t frontalIndex  = static_cast<size_t>(m_frontalIndex->value());
         size_t sagittalIndex = static_cast<size_t>(m_sagittalIndex->value());
 
-        ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
+        ::fwData::TransferFunction::sptr tf = m_helperTF.getTransferFunction();
         ::fwData::mt::ObjectReadLock tfLock(tf);
         double min = tf->getLevel() - tf->getWindow()/2.0;
         double max = tf->getLevel() + tf->getWindow()/2.0;
@@ -142,11 +143,11 @@ void SImageText::swapping(const KeyType& key)
             if(tf != nullptr)
             {
                 ::fwData::mt::ObjectReadLock tfLock(tf);
-                this->setOrCreateTF(tf, image);
+                m_helperTF.setOrCreateTF(tf, image);
             }
             else
             {
-                this->setOrCreateTF(tf, image);
+                m_helperTF.setOrCreateTF(tf, image);
             }
         }
         this->updating();
@@ -166,14 +167,7 @@ void SImageText::updateSliceIndex(int axial, int frontal, int sagittal)
 
 //------------------------------------------------------------------------------
 
-void SImageText::updateTFPoints()
-{
-    this->updating();
-}
-
-//------------------------------------------------------------------------------
-
-void SImageText::updateTFWindowing(double /*window*/, double /*level*/)
+void SImageText::updateTF()
 {
     this->updating();
 }

@@ -9,7 +9,7 @@
 #include "visuOgreAdaptor/config.hpp"
 
 #include <fwDataTools/helper/MedicalImage.hpp>
-#include <fwDataTools/helper/TransferFunction.hpp>
+#include <fwDataTools/helper/TransferFunctionTMP.hpp>
 
 #include <fwRenderOgre/IAdaptor.hpp>
 #include <fwRenderOgre/Plane.hpp>
@@ -25,10 +25,7 @@ namespace visuOgreAdaptor
  * - \b newImage() : update the image display to show the new content.
  * - \b sliceType(int, int) : update image slice index .
  * - \b sliceIndex(int, int, int) : update image slice type.
- * - \b updateTFPoints() : update the displayed transfer function according to the new points
- * - \b updateTFWindowing(double window, double level) : update the displayed transfer function according to the new
- *      window and level
-
+ *
  * @section XML XML Configuration
  * @code{.xml}
         <service type="::visuOgreAdaptor::SNegato2D">
@@ -40,8 +37,7 @@ namespace visuOgreAdaptor
  * @subsection In-Out In-Out:
  * - \b image [::fwData::Image]: image to display.
  * - \b tf [::fwData::TransferFunction] (optional): the current TransferFunction. If it is not defined, we use the
- *      image's default transferFunction (CT-GreyLevel). The transferFunction's signals are automatically connected to
- *      the slots 'updateTFPoints' and 'updateTFWindowing'.
+ *      image's default transferFunction (CT-GreyLevel).
  *
  * @subsection Configuration Configuration:
  * - \b layer (mandatory): id of the layer where this adaptor applies.
@@ -49,8 +45,7 @@ namespace visuOgreAdaptor
  * - \b filtering (optional, none/linear/anisotropic, default=none): texture filter type of the negato
  * - \b tfalpha (optional, true/false, default=false): if true, the alpha channel of the transfer function is used
  */
-class VISUOGREADAPTOR_CLASS_API SNegato2D : public ::fwRenderOgre::IAdaptor,
-                                            public ::fwDataTools::helper::TransferFunction
+class VISUOGREADAPTOR_CLASS_API SNegato2D : public ::fwRenderOgre::IAdaptor
 {
 public:
 
@@ -83,10 +78,7 @@ protected:
     VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Slot: update the displayed transfer function
-    VISUOGREADAPTOR_API virtual void updateTFPoints() override;
-
-    /// Slot: update the displayed transfer function
-    VISUOGREADAPTOR_API virtual void updateTFWindowing(double window, double level) override;
+    VISUOGREADAPTOR_API virtual void updateTF();
 
 private:
 
@@ -140,6 +132,8 @@ private:
     size_t m_frontalIndex {0};
     /// Sagittal slice index
     size_t m_sagittalIndex {0};
+
+    ::fwDataTools::helper::TransferFunctionTMP m_helperTF;
 };
 
 //------------------------------------------------------------------------------

@@ -168,6 +168,7 @@ protected:
 //------------------------------------------------------------------------------
 
 SNegatoWindowingInteractor::SNegatoWindowingInteractor() noexcept :
+    m_helperTF(std::bind(&SNegatoWindowingInteractor::updateTF, this)),
     m_vtkObserver(nullptr),
     m_initialWindow(0.),
     m_initialLevel(0.),
@@ -199,13 +200,13 @@ void SNegatoWindowingInteractor::starting()
         if(tf != nullptr)
         {
             const ::fwData::mt::ObjectReadLock tfLock(tf);
-            this->setTransferFunction(tf);
+            m_helperTF.setTransferFunction(tf);
         }
         else
         {
             ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
             SLM_ASSERT("Missing image", image);
-            this->createTransferFunction(image);
+            m_helperTF.createTransferFunction(image);
         }
     }
 
@@ -255,17 +256,24 @@ void SNegatoWindowingInteractor::swapping(const KeyType& key)
             if(tf != nullptr)
             {
                 const ::fwData::mt::ObjectReadLock tfLock(tf);
-                this->setTransferFunction(tf);
+                m_helperTF.setTransferFunction(tf);
             }
             else
             {
                 ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
                 SLM_ASSERT("Missing image", image);
-                this->createTransferFunction(image);
+                m_helperTF.createTransferFunction(image);
             }
         }
         this->updating();
     }
+}
+
+//------------------------------------------------------------------------------
+
+void SNegatoWindowingInteractor::updateTF()
+{
+
 }
 
 //------------------------------------------------------------------------------
@@ -277,7 +285,7 @@ void SNegatoWindowingInteractor::startWindowing( )
 
     this->updating();
 
-    const ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
+    const ::fwData::TransferFunction::sptr tf = m_helperTF.getTransferFunction();
 
     const ::fwData::mt::ObjectReadLock tfLock(tf);
     m_initialLevel  = tf->getLevel();
@@ -300,7 +308,7 @@ void SNegatoWindowingInteractor::updateWindowing( double dw, double dl )
     double newWindow = m_initialWindow + dw;
     double newLevel  = m_initialLevel - dl;
 
-    ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
+    ::fwData::TransferFunction::sptr tf = m_helperTF.getTransferFunction();
     {
         ::fwData::mt::ObjectWriteLock tfLock(tf);
 
@@ -309,7 +317,7 @@ void SNegatoWindowingInteractor::updateWindowing( double dw, double dl )
         auto sig = tf->signal< ::fwData::TransferFunction::WindowingModifiedSignalType >(
             ::fwData::TransferFunction::s_WINDOWING_MODIFIED_SIG);
         {
-            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdateTFWindowing));
+            ::fwCom::Connection::Blocker block(m_helperTF.getTFWindowingConnection());
             sig->asyncEmit( newWindow, newLevel);
         }
     }
@@ -327,7 +335,7 @@ void SNegatoWindowingInteractor::resetWindowing()
     double newWindow = image->getWindowWidth();
     double newLevel  = image->getWindowCenter();
 
-    ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
+    ::fwData::TransferFunction::sptr tf = m_helperTF.getTransferFunction();
     {
         ::fwData::mt::ObjectWriteLock tfLock(tf);
 
@@ -337,7 +345,7 @@ void SNegatoWindowingInteractor::resetWindowing()
         auto sig = tf->signal< ::fwData::TransferFunction::WindowingModifiedSignalType >(
             ::fwData::TransferFunction::s_WINDOWING_MODIFIED_SIG);
         {
-            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdateTFWindowing));
+            ::fwCom::Connection::Blocker block(m_helperTF.getTFWindowingConnection());
             sig->asyncEmit( newWindow, newLevel);
         }
     }

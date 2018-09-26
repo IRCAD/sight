@@ -44,6 +44,7 @@ const ::fwServices::IService::KeyType SImage::s_TF_INOUT    = "tf";
 //------------------------------------------------------------------------------
 
 SImage::SImage() noexcept :
+    m_helperTF(std::bind(&SImage::updateTFPoints, this), std::bind(&SImage::updateTFWindowing, this, 0, 0)),
     m_imageRegister(nullptr),
     m_imagePortId(-1),
     m_imageOpacity(0.),
@@ -75,11 +76,11 @@ void SImage::starting()
         if(tf != nullptr)
         {
             ::fwData::mt::ObjectReadLock tfLock(tf);
-            this->setOrCreateTF(tf, image);
+            m_helperTF.setOrCreateTF(tf, image);
         }
         else
         {
-            this->setOrCreateTF(tf, image);
+            m_helperTF.setOrCreateTF(tf, image);
         }
     }
 
@@ -90,7 +91,7 @@ void SImage::starting()
 
 void SImage::stopping()
 {
-    this->removeTFConnections();
+    m_helperTF.removeTFConnections();
     this->destroyPipeline();
 }
 
@@ -128,11 +129,11 @@ void SImage::swapping(const KeyType& key)
             if(tf != nullptr)
             {
                 ::fwData::mt::ObjectReadLock tfLock(tf);
-                this->setOrCreateTF(tf, image);
+                m_helperTF.setOrCreateTF(tf, image);
             }
             else
             {
-                this->setOrCreateTF(tf, image);
+                m_helperTF.setOrCreateTF(tf, image);
             }
         }
         this->updating();
@@ -191,7 +192,7 @@ void SImage::updateImage( ::fwData::Image::sptr image  )
 
 void SImage::updateImageTransferFunction()
 {
-    ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
+    ::fwData::TransferFunction::sptr tf = m_helperTF.getTransferFunction();
     {
         ::fwData::mt::ObjectReadLock tfLock(tf);
         ::fwVtkIO::helper::TransferFunction::toVtkLookupTable(tf, m_lut, m_allowAlphaInTF, 256 );

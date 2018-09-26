@@ -10,6 +10,7 @@
 #include "visuVTKAdaptor/SNegatoMPR.hpp"
 
 #include <fwDataTools/helper/MedicalImage.hpp>
+#include <fwDataTools/TransferFunction.hpp>
 
 #include <fwRenderVTK/IAdaptor.hpp>
 
@@ -65,19 +66,21 @@ public:
 
     //------------------------------------------------------------------------------
 
-    void setAllowAlphaInTF(bool allow)
+    inline void setAllowAlphaInTF(bool allow)
     {
         m_allowAlphaInTF = allow;
     }
+
     //------------------------------------------------------------------------------
 
-    void setInterpolation(bool interpolation)
+    inline void setInterpolation(bool interpolation)
     {
         m_interpolation = interpolation;
     }
+
     //------------------------------------------------------------------------------
 
-    void setVtkImageSourceId(std::string id)
+    inline void setVtkImageSourceId(std::string id)
     {
         m_imageSourceId = id;
     }
@@ -117,12 +120,15 @@ protected:
     void set3dMode( bool enabled );
 
 private:
+
     bool m_allowAlphaInTF;
+
     bool m_interpolation;
 
     std::string m_imageSourceId;
 
     ::boost::logic::tribool m_3dModeEnabled;
+
     SNegatoMPR::SliceMode m_sliceMode;
 
 };

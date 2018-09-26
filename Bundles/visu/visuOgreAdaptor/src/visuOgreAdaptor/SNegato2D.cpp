@@ -42,7 +42,7 @@ static const std::string s_ENABLE_APLHA_CONFIG = "tfalpha";
 //------------------------------------------------------------------------------
 
 SNegato2D::SNegato2D() noexcept :
-    ::fwDataTools::helper::TransferFunction(),
+    m_helperTF(std::bind(&SNegato2D::updateTF, this)),
     m_plane(nullptr),
     m_negatoSceneNode(nullptr),
     m_filtering( ::fwRenderOgre::Plane::FilteringEnumType::NONE )
@@ -124,11 +124,11 @@ void SNegato2D::starting()
     if(tf != nullptr)
     {
         ::fwData::mt::ObjectReadLock tfLock(tf);
-        this->setOrCreateTF(tf, image);
+        m_helperTF.setOrCreateTF(tf, image);
     }
     else
     {
-        this->setOrCreateTF(tf, image);
+        m_helperTF.setOrCreateTF(tf, image);
     }
 
     // 3D source texture instantiation
@@ -161,7 +161,7 @@ void SNegato2D::starting()
 
 void SNegato2D::stopping()
 {
-    this->removeTFConnections();
+    m_helperTF.removeTFConnections();
 
     if (!m_connection.expired())
     {
@@ -196,13 +196,13 @@ void SNegato2D::swapping(const KeyType& key)
         if(tf != nullptr)
         {
             ::fwData::mt::ObjectReadLock tfLock(tf);
-            this->setOrCreateTF(tf, image);
+            m_helperTF.setOrCreateTF(tf, image);
         }
         else
         {
-            this->setOrCreateTF(tf, image);
+            m_helperTF.setOrCreateTF(tf, image);
         }
-        this->updateTFPoints();
+        this->updateTF();
     }
 }
 
@@ -230,7 +230,7 @@ void SNegato2D::newImage()
     this->changeSliceIndex(m_axialIndex, m_frontalIndex, m_sagittalIndex);
 
     // Update tranfer function in Gpu programs
-    this->updateTFPoints();
+    this->updateTF();
 
     this->requestRender();
 }
@@ -258,14 +258,14 @@ void SNegato2D::changeSliceType(int /*_from*/, int _to)
     m_plane->setOrientationMode(newOrientationMode);
 
     // Update TF
-    ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
+    ::fwData::TransferFunction::sptr tf = m_helperTF.getTransferFunction();
     {
         ::fwData::mt::ObjectReadLock tfLock(tf);
-        this->updateTFWindowing(tf->getWindow(), tf->getLevel());
+        this->updateTF();
     }
 
     // Update threshold if necessary
-    this->updateTFPoints();
+    this->updateTF();
 
     this->updateShaderSliceIndexParameter();
 }
@@ -302,9 +302,9 @@ void SNegato2D::updateShaderSliceIndexParameter()
 
 //------------------------------------------------------------------------------
 
-void SNegato2D::updateTFPoints()
+void SNegato2D::updateTF()
 {
-    ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
+    ::fwData::TransferFunction::sptr tf = m_helperTF.getTransferFunction();
     {
         ::fwData::mt::ObjectReadLock tfLock(tf);
         m_gpuTF->updateTexture(tf);
@@ -314,19 +314,6 @@ void SNegato2D::updateTFPoints()
 
     // Sends the TF texture to the negato-related passes
     m_plane->setTFData(*m_gpuTF.get());
-
-    this->requestRender();
-}
-
-//-----------------------------------------------------------------------------
-
-void SNegato2D::updateTFWindowing(double /*window*/, double /*leve*/)
-{
-    ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
-    {
-        ::fwData::mt::ObjectReadLock tfLock(tf);
-        m_gpuTF->updateTexture(tf);
-    }
 
     this->requestRender();
 }

@@ -9,7 +9,7 @@
 #include "scene2D/config.hpp"
 
 #include <fwDataTools/helper/MedicalImage.hpp>
-#include <fwDataTools/helper/TransferFunction.hpp>
+#include <fwDataTools/helper/TransferFunctionTMP.hpp>
 
 #include <fwRenderQt/data/Coord.hpp>
 #include <fwRenderQt/IAdaptor.hpp>
@@ -31,9 +31,6 @@ namespace adaptor
  * - \b updateSliceType() : update image slice type
  * - \b updateBuffer() : update image buffer
  * - \b updateVisibility() : update image visibility
- * - \b updateTFPoints() : update the displayed image according to the new points
- * - \b updateTFWindowing(double window, double level) : update the displayed image according to the new
- *      window and level
  *
  * @section XML XML Configuration
  *
@@ -48,8 +45,7 @@ namespace adaptor
  * @subsection In-Out In-Out
  * - \b image [::fwData::Image]: image to display.
  * - \b tf [::fwData::TransferFunction] (optional): the current TransferFunction. If it is not defined, we use the
- *      image's default transferFunction (CT-GreyLevel). The transferFunction's signals are automatically connected to
- *      the slots 'updateTFPoints' and 'updateTFWindowing'.
+ *      image's default transferFunction (CT-GreyLevel).
  *
  * @subsection Configuration Configuration:
  * - \b config (mandatory): contains the adaptor configuration
@@ -61,7 +57,6 @@ namespace adaptor
  *    - \b changeSliceType (optional, default true): specify if the negato allow slice type events
  */
 class SCENE2D_CLASS_API SNegato : public ::fwDataTools::helper::MedicalImage,
-                                  public ::fwDataTools::helper::TransferFunction,
                                   public ::fwRenderQt::IAdaptor
 {
 
@@ -70,6 +65,7 @@ public:
     fwCoreServiceClassDefinitionsMacro( (SNegato)(::fwRenderQt::IAdaptor) );
 
     SCENE2D_API SNegato() noexcept;
+
     SCENE2D_API virtual ~SNegato() noexcept;
 
     /**
@@ -87,18 +83,20 @@ public:
 protected:
 
     SCENE2D_API void configuring() override;
+
     SCENE2D_API void starting() override;
+
     SCENE2D_API void updating() override;
+
     SCENE2D_API void stopping() override;
+
     /// Retrives the current transfer function
     SCENE2D_API void swapping(const KeyType& key) override;
+
     SCENE2D_API void processInteraction( ::fwRenderQt::data::Event& _event ) override;
 
-    /// Slot: updates the displayed image
-    SCENE2D_API virtual void updateTFPoints() override;
-
-    /// Slot: updates the displayed image
-    SCENE2D_API virtual void updateTFWindowing(double window, double level) override;
+    /// Slot: updates the TF
+    SCENE2D_API void updateTF();
 
 private:
 
@@ -122,14 +120,18 @@ private:
      */
 
     QImage* createQImage();
+
     void updateBufferFromImage( QImage* qimg );
+
     void changeImageMinMaxFromCoord( ::fwRenderQt::data::Coord& oldCoord, ::fwRenderQt::data::Coord& newCoord );
 
     static QRgb getQImageVal(const size_t index, const short* buffer, double wlMin,
                              double tfWin, const fwData::TransferFunction::csptr& tf);
 
     QImage* m_qimg;
+
     QGraphicsPixmapItem* m_pixmapItem;
+
     QGraphicsItemGroup* m_layer;
 
     /// The current orientation of the negato
@@ -143,6 +145,8 @@ private:
 
     /// Specify if the negato allow slice type events
     bool m_changeSliceTypeAllowed;
+
+    ::fwDataTools::helper::TransferFunctionTMP m_helperTF;
 };
 
 } // namespace adaptor

@@ -11,7 +11,7 @@
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
 
-#include <fwDataTools/helper/TransferFunction.hpp>
+#include <fwDataTools/helper/TransferFunctionTMP.hpp>
 
 #include <fwRenderOgre/IAdaptor.hpp>
 #include <fwRenderOgre/ITransformable.hpp>
@@ -60,9 +60,6 @@ namespace visuOgreAdaptor
  * - \b setDoubleParameter(double, string): Calls a double parameter slot according to the given key.
  * - \b setEnumParameter(string, string): Calls a double parameter slot according to the given key.
  * - \b setColorParameter(array<uint8_t, 4>, string): Calls a color parameter slot according to the given key.
- * - \b updateTFPoints() : update the displayed transfer function according to the new points
- * - \b updateTFWindowing(double window, double level) : update the displayed transfer function according to the new
- *      window and level
  * - \b updateVisibility(bool): show or hide the volume.
  * - \b updateClippingBox(): updates the cropping widget from the clipping matrix.
  *
@@ -82,8 +79,7 @@ namespace visuOgreAdaptor
  * - \b image [::fwData::Image]: input volume data.
  * @subsection In-Out In-Out
  * - \b tf [::fwData::TransferFunction] (optional): the current TransferFunction. If it is not defined, we use the
- *      image's default transferFunction (CT-GreyLevel). The transferFunction's signals are automatically connected to
- *      the slots 'updateTFPoints' and 'updateTFWindowing'.
+ *      image's default transferFunction (CT-GreyLevel).
  * - \b mask [::fwData::Image] (optional): segmented data.
  * - \b clippingMatrix [::fwData::TransformationMatrix3D]: matrix used to clip the volume.
  * @subsection Configuration Configuration
@@ -106,8 +102,7 @@ namespace visuOgreAdaptor
  * - \b autoresetcamera (optional, yes/no, default=yes): reset the camera at image update to view the whole volume.
  */
 class VISUOGREADAPTOR_CLASS_API SVolumeRender : public ::fwRenderOgre::IAdaptor,
-                                                public ::fwRenderOgre::ITransformable,
-                                                public ::fwDataTools::helper::TransferFunction
+                                                public ::fwRenderOgre::ITransformable
 {
 public:
 
@@ -177,10 +172,7 @@ protected:
     VISUOGREADAPTOR_API void swapping(const KeyType& key) override;
 
     /// Slot: update the displayed transfer function
-    VISUOGREADAPTOR_API virtual void updateTFPoints() override;
-
-    /// Slot: update the displayed transfer function
-    VISUOGREADAPTOR_API virtual void updateTFWindowing(double window, double level) override;
+    VISUOGREADAPTOR_API virtual void updateTF();
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,

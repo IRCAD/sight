@@ -51,6 +51,7 @@ typedef ::fwDataTools::helper::MedicalImage MedicalImage;
 //-----------------------------------------------------------------------------
 
 SNegato::SNegato() noexcept :
+    m_helperTF(std::bind(&SNegato::updateTF, this)),
     m_qimg(nullptr),
     m_pixmapItem(nullptr),
     m_layer(nullptr),
@@ -120,7 +121,7 @@ void SNegato::updateBufferFromImage( QImage* qimg )
         return;
     }
     // Window min/max
-    ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
+    ::fwData::TransferFunction::sptr tf = m_helperTF.getTransferFunction();
     ::fwData::mt::ObjectReadLock tfLock(tf);
     const double wlMin = tf->getWLMinMax().first;
 
@@ -298,16 +299,16 @@ void SNegato::starting()
     if(tf != nullptr)
     {
         ::fwData::mt::ObjectReadLock tfLock(tf);
-        this->setTransferFunction(tf);
+        m_helperTF.setTransferFunction(tf);
     }
     else
     {
-        this->setTransferFunction(tf);
+        m_helperTF.setTransferFunction(tf);
     }
 
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     this->updateImageInfos( image );
-    this->createTransferFunction( image );
+    m_helperTF.createTransferFunction( image );
 
     m_pixmapItem = new QGraphicsPixmapItem();
     m_pixmapItem->setShapeMode( QGraphicsPixmapItem::BoundingRectShape );
@@ -324,7 +325,7 @@ void SNegato::starting()
 
     this->getScene2DRender()->updateSceneSize( 1.f );
 
-    this->installTFConnections();
+    m_helperTF.installTFConnections();
 }
 
 //-----------------------------------------------------------------------------
@@ -348,11 +349,11 @@ void SNegato::swapping(const KeyType& key)
         if(tf != nullptr)
         {
             ::fwData::mt::ObjectReadLock tfLock(tf);
-            this->setOrCreateTF(tf, image);
+            m_helperTF.setOrCreateTF(tf, image);
         }
         else
         {
-            this->setOrCreateTF(tf, image);
+            m_helperTF.setOrCreateTF(tf, image);
         }
         this->updating();
     }
@@ -423,14 +424,7 @@ void SNegato::updateBuffer()
 
 //------------------------------------------------------------------------------
 
-void SNegato::updateTFPoints()
-{
-    this->updateBufferFromImage( m_qimg );
-}
-
-//------------------------------------------------------------------------------
-
-void SNegato::updateTFWindowing(double window, double level)
+void SNegato::updateTF()
 {
     this->updateBufferFromImage( m_qimg );
 }
@@ -439,7 +433,7 @@ void SNegato::updateTFWindowing(double window, double level)
 
 void SNegato::stopping()
 {
-    this->removeTFConnections();
+    m_helperTF.removeTFConnections();
 
     this->getScene2DRender()->getScene()->removeItem(m_layer);
 
@@ -550,7 +544,7 @@ void SNegato::changeImageMinMaxFromCoord( ::fwRenderQt::data::Coord& oldCoord, :
 {
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
 
-    ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
+    ::fwData::TransferFunction::sptr tf = m_helperTF.getTransferFunction();
     ::fwData::mt::ObjectWriteLock tfLock(tf);
 
     const double min = tf->getWLMinMax().first;
@@ -573,7 +567,7 @@ void SNegato::changeImageMinMaxFromCoord( ::fwRenderQt::data::Coord& oldCoord, :
     auto sig = tf->signal< ::fwData::TransferFunction::WindowingModifiedSignalType >(
         ::fwData::TransferFunction::s_WINDOWING_MODIFIED_SIG);
     {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdateTFWindowing));
+        ::fwCom::Connection::Blocker block(m_helperTF.getTFWindowingConnection());
         sig->asyncEmit( newImgWindow, newImgLevel);
     }
 }

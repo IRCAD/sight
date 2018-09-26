@@ -73,7 +73,28 @@ static const ::fwServices::IService::KeyType s_MASK_INOUT            = "mask";
 
 //-----------------------------------------------------------------------------
 
-SVolumeRender::SVolumeRender() noexcept
+SVolumeRender::SVolumeRender() noexcept :
+    m_helperTF(std::bind(&SVolumeRender::updateTF, this)),
+    m_volumeRenderer(nullptr),
+    m_sceneManager(nullptr),
+    m_volumeSceneNode(nullptr),
+    m_camera(nullptr),
+    m_nbSamples(512),
+    m_preIntegratedRendering(false),
+    m_ambientOcclusion(false),
+    m_colorBleeding(false),
+    m_shadows(false),
+    m_widgetVisibilty(true),
+    m_illum(nullptr),
+    m_satSizeRatio(0.25f),
+    m_satShells(4),
+    m_satShellRadius(4),
+    m_satConeAngle(0.1f),
+    m_satConeSamples(50),
+    m_aoFactor(1.),
+    m_colorBleedingFactor(1.),
+    m_autoResetCamera(true),
+    m_IDVRMethod("None")
 {
     newSlot(s_NEW_IMAGE_SLOT, &SVolumeRender::newImage, this);
     newSlot(s_NEW_MASK_SLOT, &SVolumeRender::newMask, this);
@@ -141,11 +162,11 @@ void SVolumeRender::configuring()
 
 //-----------------------------------------------------------------------------
 
-void SVolumeRender::updateTFPoints()
+void SVolumeRender::updateTF()
 {
     this->getRenderService()->makeCurrent();
 
-    ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
+    ::fwData::TransferFunction::sptr tf = m_helperTF.getTransferFunction();
     {
         ::fwData::mt::ObjectWriteLock tfLock(tf);
 
@@ -164,32 +185,6 @@ void SVolumeRender::updateTFPoints()
         }
     }
 
-    this->requestRender();
-}
-
-//-----------------------------------------------------------------------------
-
-void SVolumeRender::updateTFWindowing(double /*window*/, double /*level*/)
-{
-    this->getRenderService()->makeCurrent();
-
-    ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
-    {
-        ::fwData::mt::ObjectWriteLock tfLock(tf);
-        m_gpuTF->updateTexture(tf);
-
-        if(m_preIntegratedRendering)
-        {
-            m_preIntegrationTable.tfUpdate(tf, m_volumeRenderer->getSamplingRate());
-        }
-
-        m_volumeRenderer->tfUpdate(tf);
-
-        if(m_ambientOcclusion || m_colorBleeding || m_shadows)
-        {
-            this->updateVolumeIllumination();
-        }
-    }
     this->requestRender();
 }
 
@@ -226,11 +221,11 @@ void SVolumeRender::starting()
     if(tf != nullptr)
     {
         ::fwData::mt::ObjectReadLock tfLock(tf);
-        this->setOrCreateTF(tf, image);
+        m_helperTF.setOrCreateTF(tf, image);
     }
     else
     {
-        this->setOrCreateTF(tf, image);
+        m_helperTF.setOrCreateTF(tf, image);
     }
 
     m_sceneManager = this->getSceneManager();
@@ -317,7 +312,7 @@ void SVolumeRender::stopping()
 {
     this->getRenderService()->makeCurrent();
 
-    this->removeTFConnections();
+    m_helperTF.removeTFConnections();
 
     m_volumeConnection.disconnect();
     delete m_volumeRenderer;
@@ -363,13 +358,13 @@ void SVolumeRender::swapping(const KeyType& key)
         if(tf != nullptr)
         {
             ::fwData::mt::ObjectReadLock tfLock(tf);
-            this->setOrCreateTF(tf, image);
+            m_helperTF.setOrCreateTF(tf, image);
         }
         else
         {
-            this->setOrCreateTF(tf, image);
+            m_helperTF.setOrCreateTF(tf, image);
         }
-        this->updateTFPoints();
+        this->updateTF();
     }
 }
 
@@ -406,9 +401,9 @@ void SVolumeRender::updateImage()
 
     ::fwRenderOgre::Utils::convertImageForNegato(m_3DOgreTexture.get(), image);
 
-    this->createTransferFunction(image);
+    m_helperTF.createTransferFunction(image);
 
-    ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
+    ::fwData::TransferFunction::sptr tf = m_helperTF.getTransferFunction();
     {
         ::fwData::mt::ObjectWriteLock tfLock(tf);
         m_gpuTF->updateTexture(tf);
@@ -477,7 +472,7 @@ void SVolumeRender::updateSampling(int nbSamples)
 
     if(m_preIntegratedRendering)
     {
-        ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
+        ::fwData::TransferFunction::sptr tf = m_helperTF.getTransferFunction();
         ::fwData::mt::ObjectWriteLock tfLock(tf);
         m_preIntegrationTable.tfUpdate(tf, m_volumeRenderer->getSamplingRate());
     }
@@ -540,7 +535,7 @@ void SVolumeRender::updateSatSizeRatio(int sizeRatio)
             ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
             SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
 
-            ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
+            ::fwData::TransferFunction::sptr tf = m_helperTF.getTransferFunction();
             ::fwData::mt::ObjectWriteLock tfLock(tf);
             m_volumeRenderer->imageUpdate(image, tf);
             std::cout << __FUNCTION__ << std::endl;
@@ -637,7 +632,7 @@ void SVolumeRender::togglePreintegration(bool preintegration)
         ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
         SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
 
-        ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
+        ::fwData::TransferFunction::sptr tf = m_helperTF.getTransferFunction();
         ::fwData::mt::ObjectWriteLock tfLock(tf);
         m_volumeRenderer->imageUpdate(image, tf);
         m_preIntegrationTable.tfUpdate(tf, m_volumeRenderer->getSamplingRate());
@@ -1085,7 +1080,7 @@ void SVolumeRender::toggleVREffect(::visuOgreAdaptor::SVolumeRender::VREffectTyp
             ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
             SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
 
-            ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
+            ::fwData::TransferFunction::sptr tf = m_helperTF.getTransferFunction();
             ::fwData::mt::ObjectWriteLock tfLock(tf);
             m_volumeRenderer->imageUpdate(image, tf);
         }
