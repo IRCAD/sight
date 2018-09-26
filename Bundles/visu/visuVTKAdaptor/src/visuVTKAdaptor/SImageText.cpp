@@ -63,7 +63,6 @@ void SImageText::starting()
 
     this->setOrCreateTF(tf, image);
 
-    this->updateImageInfos(image);
     this->updating();
 }
 

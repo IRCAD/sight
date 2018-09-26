@@ -220,8 +220,6 @@ void SVolumeRender::starting()
     ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
     this->setOrCreateTF(tf, image);
 
-    this->updateImageInfos(image);
-
     m_sceneManager = this->getSceneManager();
 
     ::Ogre::SceneNode* rootSceneNode = m_sceneManager->getRootSceneNode();
@@ -372,12 +370,9 @@ void SVolumeRender::updateImage()
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
 
-    this->updateImageInfos(image);
-
     this->getRenderService()->makeCurrent();
 
     // Retrieves or creates the slice index fields
-    this->updateImageInfos(image);
     this->setImageSpacing();
 
     ::fwRenderOgre::Utils::convertImageForNegato(m_3DOgreTexture.get(), image);
@@ -908,7 +903,7 @@ void SVolumeRender::setColorParameter(std::array<std::uint8_t, 4> color, std::st
 
 void SVolumeRender::setImageSpacing()
 {
-    auto img = this->getImage();
+    auto img = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
 
     const bool isValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(img);
 

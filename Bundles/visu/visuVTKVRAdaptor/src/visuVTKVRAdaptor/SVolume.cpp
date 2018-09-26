@@ -347,8 +347,6 @@ void SVolume::updateTFWindowing(double /*window*/, double /*level*/)
 
 void SVolume::updateImage( ::fwData::Image::sptr image  )
 {
-    this->updateImageInfos(image);
-
     vtkImageImport* imageImport = vtkImageImport::New();
     ::fwVtkIO::configureVTKImageImport( imageImport, image );
 

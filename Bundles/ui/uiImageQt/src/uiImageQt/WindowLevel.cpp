@@ -208,8 +208,6 @@ void WindowLevel::updating()
 
     if(imageIsValid)
     {
-        this->updateImageInfos(image);
-
         if(m_autoWindowing)
         {
             double min, max;

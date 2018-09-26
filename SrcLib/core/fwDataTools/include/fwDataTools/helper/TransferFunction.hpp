@@ -47,12 +47,6 @@ protected:
     /// Constructor. Do nothing.
     FWDATATOOLS_API TransferFunction(); // this class VISUVTKADAPTOR_CLASS_API must be specialized
 
-    /// Return the image
-    FWDATATOOLS_API ::fwData::Image::sptr getImage() const;
-
-    /// Update the image information (slice index, min/max,...)
-    FWDATATOOLS_API void updateImageInfos( ::fwData::Image::sptr image  );
-
     /**
      * @brief Create and set the default transfer function.
      *
@@ -112,9 +106,6 @@ protected:
      */
 
 private:
-
-    /// Current image
-    ::fwData::Image::wptr m_weakImage;
 
     /// Transfer function selection
     ::fwData::TransferFunction::wptr m_transferFunction;

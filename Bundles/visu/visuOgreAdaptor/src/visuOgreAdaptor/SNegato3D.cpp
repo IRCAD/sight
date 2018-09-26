@@ -139,7 +139,6 @@ void SNegato3D::starting()
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
 
-    this->updateImageInfos(image);
     this->createTransferFunction(image);
 
     // 3D source texture instantiation
@@ -178,7 +177,7 @@ void SNegato3D::starting()
 
     this->installTFConnections();
 
-    bool isValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(this->getImage());
+    bool isValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image);
     if (isValid)
     {
         this->newImage();
@@ -250,9 +249,6 @@ void SNegato3D::newImage()
 
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
-
-    // Retrieves or creates the slice index fields
-    this->updateImageInfos(image);
 
     ::fwRenderOgre::Utils::convertImageForNegato(m_3DOgreTexture.get(), image);
 

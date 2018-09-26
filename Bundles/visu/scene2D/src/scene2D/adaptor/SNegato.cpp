@@ -290,7 +290,6 @@ void SNegato::starting()
     this->setTransferFunction(tf);
 
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    this->updateImageInfos( image );
     this->createTransferFunction( image );
 
     m_pixmapItem = new QGraphicsPixmapItem();
@@ -343,7 +342,6 @@ void SNegato::updateSliceIndex(int axial, int frontal, int sagittal)
     m_sagittalIndex = sagittal;
 
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    this->updateImageInfos( image );
     this->updateBufferFromImage( m_qimg );
 }
 

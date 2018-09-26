@@ -37,13 +37,6 @@ TransferFunction::~TransferFunction()
 
 //------------------------------------------------------------------------------
 
-void TransferFunction::updateImageInfos( ::fwData::Image::sptr image )
-{
-    m_weakImage = image;
-}
-
-//------------------------------------------------------------------------------
-
 void TransferFunction::createTransferFunction( ::fwData::Image::sptr image )
 {
     ::fwData::Composite::sptr tfPool =
@@ -109,14 +102,6 @@ void TransferFunction::setOrCreateTF(const fwData::TransferFunction::sptr& _tf, 
     SLM_ASSERT("Transfer funtion is not defined, you must call setTransferFunction() or createTransferFunction() first."
                , !m_transferFunction.expired());
     return m_transferFunction.lock();
-}
-
-//------------------------------------------------------------------------------
-
-::fwData::Image::sptr TransferFunction::getImage() const
-{
-    SLM_ASSERT("Image weak pointer empty !", !m_weakImage.expired());
-    return m_weakImage.lock();
 }
 
 //------------------------------------------------------------------------------

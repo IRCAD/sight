@@ -124,8 +124,6 @@ void SNegato2D::starting()
     ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction >(s_TF_INOUT);
     this->setOrCreateTF(tf, image);
 
-    this->updateImageInfos(this->getInOut< ::fwData::Image >(s_IMAGE_INOUT));
-
     // 3D source texture instantiation
     m_3DOgreTexture = ::Ogre::TextureManager::getSingleton().create(
         this->getID() + "_Texture",
@@ -208,8 +206,6 @@ void SNegato2D::newImage()
     SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
 
     // Retrieves or creates the slice index fields
-    this->updateImageInfos(image);
-
     ::fwRenderOgre::Utils::convertImageForNegato(m_3DOgreTexture.get(), image);
 
     this->createPlane( image->getSpacing() );
