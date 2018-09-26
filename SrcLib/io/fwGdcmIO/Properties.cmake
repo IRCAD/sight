@@ -3,24 +3,15 @@ set( NAME fwGdcmIO )
 set( VERSION 0.1 )
 set( TYPE LIBRARY )
 set( DEPENDENCIES
-    fwCore
-    fwData
-    fwMath
-    fwMedData
-    fwMedDataTools
-    fwDataIO
-    fwTools
-    fwRuntime
-    fwDicomIOFilter
-    fwMedDataTools
-    fwLog
-    fwJobs
-    fwCom
-    fwZip
-    fwDicomTools
     fwDataTools
-    fwServices
+    fwDataIO
+    fwDicomIOFilter
     fwDicomTools
+    fwJobs
+    fwMath
+    fwMedDataTools
+    fwServices
+    fwZip
     )
 set( REQUIREMENTS )
 set( CONAN_DEPS
