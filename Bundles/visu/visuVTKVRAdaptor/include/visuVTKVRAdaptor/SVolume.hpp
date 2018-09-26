@@ -10,7 +10,7 @@
 
 #include <fwData/Image.hpp>
 
-#include <fwDataTools/helper/TransferFunctionTMP.hpp>
+#include <fwDataTools/helper/TransferFunction.hpp>
 
 #include <fwRenderVTK/IAdaptor.hpp>
 #include <fwRenderVTK/SRender.hpp>
@@ -167,7 +167,7 @@ private:
 
     double m_reductionFactor;
 
-    ::fwDataTools::helper::TransferFunctionTMP m_helperTF;
+    ::fwDataTools::helper::TransferFunction m_helperTF;
 };
 
 } //namespace visuVTKVRAdaptor

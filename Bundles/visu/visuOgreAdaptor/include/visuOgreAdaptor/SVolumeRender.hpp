@@ -11,7 +11,7 @@
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
 
-#include <fwDataTools/helper/TransferFunctionTMP.hpp>
+#include <fwDataTools/helper/TransferFunction.hpp>
 
 #include <fwRenderOgre/IAdaptor.hpp>
 #include <fwRenderOgre/ITransformable.hpp>
@@ -228,6 +228,7 @@ private:
 
     /// Updates the clipping box position from the inout clipping matrix.
     void updateClippingBox();
+    ::fwDataTools::helper::TransferFunction m_helperTF;
 
     /// Updates the inout clipping matrix from the clipping box positions.
     void updateClippingTM3D();

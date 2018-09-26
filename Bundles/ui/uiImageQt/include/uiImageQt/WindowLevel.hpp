@@ -10,7 +10,7 @@
 
 #include <fwData/Integer.hpp>
 
-#include <fwDataTools/helper/TransferFunctionTMP.hpp>
+#include <fwDataTools/helper/TransferFunction.hpp>
 
 #include <fwGui/editor/IEditor.hpp>
 
@@ -169,7 +169,7 @@ private:
     /// Store previous TF, used in onToggleTF() to restore this TF when switching to the square TF
     ::fwData::TransferFunction::sptr m_previousTF;
 
-    ::fwDataTools::helper::TransferFunctionTMP m_helperTF;
+    ::fwDataTools::helper::TransferFunction m_helperTF;
 };
 
 } // uiImageQt

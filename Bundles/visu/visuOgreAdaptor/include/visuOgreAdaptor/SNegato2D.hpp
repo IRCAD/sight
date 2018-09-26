@@ -9,7 +9,7 @@
 #include "visuOgreAdaptor/config.hpp"
 
 #include <fwDataTools/helper/MedicalImage.hpp>
-#include <fwDataTools/helper/TransferFunctionTMP.hpp>
+#include <fwDataTools/helper/TransferFunction.hpp>
 
 #include <fwRenderOgre/IAdaptor.hpp>
 #include <fwRenderOgre/Plane.hpp>
@@ -133,7 +133,7 @@ private:
     /// Sagittal slice index
     size_t m_sagittalIndex {0};
 
-    ::fwDataTools::helper::TransferFunctionTMP m_helperTF;
+    ::fwDataTools::helper::TransferFunction m_helperTF;
 };
 
 //------------------------------------------------------------------------------

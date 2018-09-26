@@ -9,7 +9,7 @@
 #include "scene2D/config.hpp"
 
 #include <fwDataTools/helper/MedicalImage.hpp>
-#include <fwDataTools/helper/TransferFunctionTMP.hpp>
+#include <fwDataTools/helper/TransferFunction.hpp>
 
 #include <fwRenderQt/data/Coord.hpp>
 #include <fwRenderQt/IAdaptor.hpp>
@@ -146,7 +146,7 @@ private:
     /// Specify if the negato allow slice type events
     bool m_changeSliceTypeAllowed;
 
-    ::fwDataTools::helper::TransferFunctionTMP m_helperTF;
+    ::fwDataTools::helper::TransferFunction m_helperTF;
 };
 
 } // namespace adaptor

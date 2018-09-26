@@ -9,6 +9,7 @@
 #include "fwDataTools/config.hpp"
 #include "fwDataTools/helper/ImageGetter.hpp"
 
+#include <fwCom/Connection.hpp>
 #include <fwCom/helper/SigSlotConnection.hpp>
 #include <fwCom/Slot.hpp>
 
@@ -36,16 +37,14 @@ public:
 
     fwCoreBaseClassDefinitionsMacro( (TransferFunction) );
 
+    /// Constructor.
+    FWDATATOOLS_API TransferFunction(const std::function<void()>&);
+
+    /// Constructor.
+    FWDATATOOLS_API TransferFunction(const std::function<void()>&, const std::function<void(double, double)>&);
+
     /// Destructor. Do nothing.
     FWDATATOOLS_API virtual ~TransferFunction();
-
-    /// Set the current TransferFunction
-    FWDATATOOLS_API void setTransferFunction(const fwData::TransferFunction::sptr& tf );
-
-protected:
-
-    /// Constructor. Do nothing.
-    FWDATATOOLS_API TransferFunction(); // this class VISUVTKADAPTOR_CLASS_API must be specialized
 
     /**
      * @brief Create and set the default transfer function.
@@ -56,20 +55,18 @@ protected:
      */
     FWDATATOOLS_API void createTransferFunction( ::fwData::Image::sptr image );
 
+    /// Set the current TransferFunction
+    FWDATATOOLS_API void setTransferFunction(const fwData::TransferFunction::sptr&);
+
     /**
      * @brief Sets the transfer function, creates one if _tf is null (@see createTransferFunction).
      *
      * Connects the TF's signals to the updateTFPoints and updateTFWindowing slots.
      */
-    FWDATATOOLS_API void setOrCreateTF(const ::fwData::TransferFunction::sptr& _tf, const fwData::Image::sptr& _image);
+    FWDATATOOLS_API void setOrCreateTF(const ::fwData::TransferFunction::sptr&, const fwData::Image::sptr&);
 
     /// Get the current transfer function
     FWDATATOOLS_API ::fwData::TransferFunction::sptr getTransferFunction() const;
-
-    /**
-     * @name Connections to transfer function
-     * @{
-     */
 
     /// Install connections to listen TF modifications
     FWDATATOOLS_API void installTFConnections();
@@ -77,11 +74,22 @@ protected:
     /// Remove the TF connections
     FWDATATOOLS_API void removeTFConnections();
 
-    /// Slot: called when transfer function points are modified
-    FWDATATOOLS_API virtual void updateTFPoints();
+    FWDATATOOLS_API ::fwCom::Connection getTFUpdateConnection() const;
+
+    FWDATATOOLS_API ::fwCom::Connection getTFWindowingConnection() const;
+
+protected:
+
+    /**
+     * @name Connections to transfer function
+     * @{
+     */
+
+    /// Slot: called when transfer function are modified
+    FWDATATOOLS_API void updateTFPoints();
 
     /// Slot: called when transfer function windowing is modified
-    FWDATATOOLS_API virtual void updateTFWindowing(double window, double level);
+    FWDATATOOLS_API void updateTFWindowing(double, double);
 
     typedef ::fwCom::Slot<void ()> UpdateTFPointsSlotType;
 
@@ -103,6 +111,10 @@ private:
 
     /// Connections to the transfer function
     ::fwCom::helper::SigSlotConnection m_tfConnections;
+
+    std::function<void()> m_updateTFPoints;
+
+    std::function<void(double, double)> m_updateTFWindowing;
 
 };
 

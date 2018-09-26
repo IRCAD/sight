@@ -10,7 +10,7 @@
 
 #include <fwData/Image.hpp>
 
-#include <fwDataTools/helper/TransferFunctionTMP.hpp>
+#include <fwDataTools/helper/TransferFunction.hpp>
 
 #include <fwRenderVTK/IAdaptor.hpp>
 
@@ -155,7 +155,7 @@ private:
 
     vtkSmartPointer< vtkImageData > m_imageData;
 
-    ::fwDataTools::helper::TransferFunctionTMP m_helperTF;
+    ::fwDataTools::helper::TransferFunction m_helperTF;
 
 };
 

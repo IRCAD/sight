@@ -10,6 +10,7 @@
 #include "fwDataTools/fieldHelper/MedicalImageHelpers.hpp"
 #include "fwDataTools/helper/Composite.hpp"
 
+#include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
 
 #include <fwData/Image.hpp>
@@ -22,12 +23,23 @@ namespace fwDataTools
 namespace helper
 {
 
-static const ::fwCom::Slots::SlotKeyType s_UPDATE_TF_POINTS_SLOT    = "updateTFPoints";
-static const ::fwCom::Slots::SlotKeyType s_UPDATE_TF_WINDOWING_SLOT = "updateTFWindowing";
-
 //------------------------------------------------------------------------------
 
-TransferFunction::TransferFunction()
+TransferFunction::TransferFunction(const std::function<void()>& _function) :
+    m_updateTFPoints(_function)
+{
+    auto defaultWorker = ::fwServices::registry::ActiveWorkers::getDefaultWorker();
+    m_slotUpdateTFPoints = ::fwCom::newSlot(&TransferFunction::updateTFPoints, this);
+    m_slotUpdateTFPoints->setWorker(defaultWorker);
+    m_slotUpdateTFWindowing = ::fwCom::newSlot(&TransferFunction::updateTFWindowing, this);
+    m_slotUpdateTFWindowing->setWorker(defaultWorker);
+}
+
+TransferFunction::TransferFunction(
+    const std::function<void()>& _functionPoints, const std::function<void(double,
+                                                                           double)>& _functionWindow) :
+    m_updateTFPoints(_functionPoints),
+    m_updateTFWindowing(_functionWindow)
 {
     auto defaultWorker = ::fwServices::registry::ActiveWorkers::getDefaultWorker();
     m_slotUpdateTFPoints = ::fwCom::newSlot(&TransferFunction::updateTFPoints, this);
@@ -113,9 +125,9 @@ void TransferFunction::setOrCreateTF(const fwData::TransferFunction::sptr& _tf, 
 
 //------------------------------------------------------------------------------
 
-void TransferFunction::setTransferFunction(const ::fwData::TransferFunction::sptr& tf )
+void TransferFunction::setTransferFunction(const ::fwData::TransferFunction::sptr& _tf)
 {
-    m_transferFunction = tf;
+    m_transferFunction = _tf;
 }
 
 //------------------------------------------------------------------------------
@@ -141,17 +153,38 @@ void TransferFunction::removeTFConnections()
 
 //------------------------------------------------------------------------------
 
-void TransferFunction::updateTFPoints()
+::fwCom::Connection TransferFunction::getTFUpdateConnection() const
 {
-    SLM_ASSERT("This methods (updateTFPoints) must be reimplemented in subclass to manage TF modifications", false);
+    const ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
+    const auto sig                            = tf->signal< ::fwData::TransferFunction::PointsModifiedSignalType >(
+        ::fwData::TransferFunction::s_POINTS_MODIFIED_SIG);
+
+    return sig->getConnection(m_slotUpdateTFPoints);
 }
 
 //------------------------------------------------------------------------------
 
-void TransferFunction::updateTFWindowing(double /*window*/, double /*level*/)
+::fwCom::Connection TransferFunction::getTFWindowingConnection() const
 {
-    SLM_ASSERT("This methods (updateTFWindowing) must be reimplemented in subclass to manage TF modifications",
-               false);
+    const ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
+    const auto sig                            = tf->signal< ::fwData::TransferFunction::WindowingModifiedSignalType >(
+        ::fwData::TransferFunction::s_WINDOWING_MODIFIED_SIG);
+
+    return sig->getConnection(m_slotUpdateTFWindowing);
+}
+
+//------------------------------------------------------------------------------
+
+void TransferFunction::updateTFPoints()
+{
+    m_updateTFPoints();
+}
+
+//------------------------------------------------------------------------------
+
+void TransferFunction::updateTFWindowing(double _window, double _level)
+{
+    m_updateTFWindowing ? m_updateTFWindowing(_window, _level) : m_updateTFPoints();
 }
 
 //------------------------------------------------------------------------------

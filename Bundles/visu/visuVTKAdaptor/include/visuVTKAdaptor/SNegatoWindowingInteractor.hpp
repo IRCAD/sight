@@ -10,7 +10,7 @@
 
 #include <fwData/TransferFunction.hpp>
 
-#include <fwDataTools/helper/TransferFunctionTMP.hpp>
+#include <fwDataTools/helper/TransferFunction.hpp>
 
 #include <fwRenderVTK/IAdaptor.hpp>
 
@@ -91,7 +91,7 @@ protected:
 
     float m_priority;
 
-    ::fwDataTools::helper::TransferFunctionTMP m_helperTF;
+    ::fwDataTools::helper::TransferFunction m_helperTF;
 };
 
 } //namespace visuVTKAdaptor

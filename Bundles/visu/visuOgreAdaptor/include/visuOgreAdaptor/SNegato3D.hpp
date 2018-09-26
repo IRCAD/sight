@@ -13,7 +13,7 @@
 
 #include <fwData/Float.hpp>
 
-#include <fwDataTools/helper/TransferFunctionTMP.hpp>
+#include <fwDataTools/helper/TransferFunction.hpp>
 
 #include <fwRenderOgre/IAdaptor.hpp>
 #include <fwRenderOgre/ITransformable.hpp>
@@ -155,7 +155,7 @@ private:
     /// Sagittal slice index
     size_t m_sagittalIndex {0};
 
-    ::fwDataTools::helper::TransferFunctionTMP m_helperTF;
+    ::fwDataTools::helper::TransferFunction m_helperTF;
 };
 
 //------------------------------------------------------------------------------
