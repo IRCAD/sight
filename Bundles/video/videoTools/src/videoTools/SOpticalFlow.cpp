@@ -27,10 +27,11 @@ static const ::fwCom::Signals::SignalKeyType s_CAMERA_REMAINED_SIG = "cameraRema
 // ----------------------------------------------------------------------------
 
 SOpticalFlow::SOpticalFlow() noexcept :
-    m_nbDropFrame(10),
+    m_latency(333),
     m_imageScaleFactor(3.6f),
     m_initialization(false),
-    m_motion(false)
+    m_motion(false),
+    m_lastTimestamp(0)
 {
     m_motionSignal   = newSignal<MotionSignalType>(s_CAMERA_MOVED_SIG);
     m_noMotionSignal = newSignal<NoMotionSignalType>(s_CAMERA_REMAINED_SIG);
@@ -52,7 +53,7 @@ void SOpticalFlow::configuring()
 
     if(config)
     {
-        m_nbDropFrame      = config->get< unsigned int >("imgToDrop", m_nbDropFrame);
+        m_latency          = config->get< unsigned int >("latency", m_latency);
         m_imageScaleFactor = config->get< float >("scaleFactor", m_imageScaleFactor);
     }
 }
@@ -69,21 +70,26 @@ void SOpticalFlow::starting()
 
 void SOpticalFlow::updating()
 {
-    static unsigned int i = 0;
-
-    // Do not compute optical flow on every frame.
-    if(!(i % m_nbDropFrame))
+    if(!this->isStarted())
     {
-        i = 0;
-        const auto frameTL = this->getInput< ::arData::FrameTL >(s_FRAME_TIMELINE_INPUT);
-        SLM_ASSERT(" Input "+ s_FRAME_TIMELINE_INPUT + " cannot be null", frameTL);
+        OSLM_ERROR("Cannot call `update` when service is stopped.");
+        return;
+    }
 
+    const auto frameTL = this->getInput< ::arData::FrameTL >(s_FRAME_TIMELINE_INPUT);
+    SLM_ASSERT(" Input "+ s_FRAME_TIMELINE_INPUT + " cannot be null", frameTL);
+    ::fwCore::HiResClock::HiResClockType timestamp = frameTL->getNewerTimestamp();
+
+    if(timestamp > m_lastTimestamp + m_latency )
+    {
+        m_lastTimestamp = timestamp;
         ::fwData::mt::ObjectReadLock lock(frameTL);
 
         CSPTR(::arData::FrameTL::BufferType) buffer = frameTL->getClosestBuffer(frameTL->getNewerTimestamp());
         std::uint8_t* frameBuff = const_cast< std::uint8_t*>( &buffer->getElement(0) );
 
-        ::cv::Mat tempImg = ::cvIO::FrameTL::moveToCv(frameTL, frameBuff), grayImg;
+        ::cv::Mat tempImg = ::cvIO::FrameTL::moveToCv(frameTL, frameBuff);
+        ::cv::Mat grayImg;
 
         lock.unlock();
 
@@ -174,7 +180,7 @@ void SOpticalFlow::updating()
                 RMS = std::sqrt(RMS);
             }
             // If movement is > 100 pixel and at least 80% of detected points has moved:
-            // we can say that the camera is moving.
+            // we can say that the camera is moving (values find empirically).
             if((RMS > 100) && ((static_cast<float>(n_move)/(static_cast<float>(acc))) > 0.8f) && !m_motion)
             {
                 m_motion = !m_motion;
@@ -197,7 +203,7 @@ void SOpticalFlow::updating()
         }
 
     }
-    i++;
+
 }
 
 // ----------------------------------------------------------------------------

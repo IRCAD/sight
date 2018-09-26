@@ -32,13 +32,16 @@ namespace videoTools
  * @code{.xml}
      <service uid="..." type="::videoTools::SOpticalFlow" worker="ofWorker  >
         <in key="timeline" uid="..." autoConnect="yes" />
-        <config imgToDrop="10" scaleFactor="3.6" />
+        <config latency="333" scaleFactor="3.6" />
      </service>
    @endcode
  * @subsection Input Input:
  * - \b timeline [::arData::FrameTL]: timeline on which optical flow will be computed.
  * @subsection Configuration Configuration:
- * - \b imgToDrop (optionnal): number of image to drop (default: 10), usually you don't need to change the value.
+ * - \b latency (optionnal): There is no need to process every frames coming in.
+ * Use `latency` to wait between two consecutive frame. Ex: if set to 333 (in ms), it will compute ~1/10 frames at 30fps
+ * (Default: 333 ms).
+ * Usually you don't need to change the value.
  * - \b scaleFactor (optionnal): if image is > 640 x 480 the scaleFactor is applied to downscale image
  * to keep a good balance between computation time and feature tracking quality (default 3,6),
  *  usually you don't need to change the value.
@@ -85,8 +88,8 @@ private:
     ::cv::Mat m_lastGrayImg;
     /// Stores last corners.
     ::cv::Mat m_lastCorners;
-    /// Number of frame to drop
-    unsigned int m_nbDropFrame;
+    /// Waiting time between to frames.
+    unsigned int m_latency;
     /// Factor of re-scale: resize image to keep good balance between computation time and feature tracking quality.
     float m_imageScaleFactor;
     /// Optical flow can only be computed if a frame is already present (see: m_lastGrayImg).
@@ -94,6 +97,8 @@ private:
     bool m_initialization;
     /// Stores last behavior (true if motion, false otherwise).
     bool m_motion;
+    /// Stores last processed frame timestamp.
+    ::fwCore::HiResClock::HiResClockType m_lastTimestamp;
 };
 
 } //namespace videoTools
