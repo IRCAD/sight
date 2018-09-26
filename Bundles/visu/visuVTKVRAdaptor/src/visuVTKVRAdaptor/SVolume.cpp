@@ -131,7 +131,7 @@ const ::fwServices::IService::KeyType SVolume::s_TF_INOUT    = "tf";
 //------------------------------------------------------------------------------
 
 SVolume::SVolume() noexcept :
-    ::fwDataTools::helper::MedicalImage(),
+    ::fwDataTools::helper::TransferFunction(),
     ::fwRenderVTK::IAdaptor(),
     m_clippingPlanes(nullptr),
     m_volumeMapper( vtkSmartVolumeMapper::New()),

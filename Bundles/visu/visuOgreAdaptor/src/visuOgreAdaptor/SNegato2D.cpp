@@ -41,7 +41,7 @@ static const std::string s_ENABLE_APLHA_CONFIG = "tfalpha";
 //------------------------------------------------------------------------------
 
 SNegato2D::SNegato2D() noexcept :
-    ::fwDataTools::helper::MedicalImage(),
+    ::fwDataTools::helper::TransferFunction(),
     m_plane(nullptr),
     m_negatoSceneNode(nullptr),
     m_filtering( ::fwRenderOgre::Plane::FilteringEnumType::NONE )
@@ -75,15 +75,15 @@ void SNegato2D::configuring()
 
         if(orientation == "axial")
         {
-            m_orientation = Z_AXIS;
+            m_orientation = OrientationMode::Z_AXIS;
         }
         else if(orientation == "frontal")
         {
-            m_orientation = Y_AXIS;
+            m_orientation = OrientationMode::Y_AXIS;
         }
         else if(orientation == "sagittal")
         {
-            m_orientation = X_AXIS;
+            m_orientation = OrientationMode::X_AXIS;
         }
     }
     else

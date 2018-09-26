@@ -49,6 +49,7 @@ static const std::string VISIBILITY_FIELD   = "VISIBILITY";
 //------------------------------------------------------------------------------
 
 SNegato3D::SNegato3D() noexcept :
+    ::fwDataTools::helper::TransferFunction(),
     m_autoResetCamera(true),
     m_activePlane(nullptr),
     m_negatoSceneNode(nullptr),
@@ -87,15 +88,15 @@ void SNegato3D::configuring()
 
         if(orientation == "axial")
         {
-            m_orientation = Z_AXIS;
+            m_orientation = OrientationMode::Z_AXIS;
         }
         else if(orientation == "frontal")
         {
-            m_orientation = Y_AXIS;
+            m_orientation = OrientationMode::Y_AXIS;
         }
         else if(orientation == "sagittal")
         {
-            m_orientation = X_AXIS;
+            m_orientation = OrientationMode::X_AXIS;
         }
     }
     if(config.count("autoresetcamera"))

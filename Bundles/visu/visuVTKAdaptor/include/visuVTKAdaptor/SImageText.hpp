@@ -9,7 +9,7 @@
 #include "visuVTKAdaptor/config.hpp"
 #include "visuVTKAdaptor/SText.hpp"
 
-#include <fwDataTools/helper/MedicalImage.hpp>
+#include <fwDataTools/helper/TransferFunction.hpp>
 
 #include <fwRenderVTK/IAdaptor.hpp>
 
@@ -68,7 +68,7 @@ namespace visuVTKAdaptor
  *   that for the attribute are applied.
  */
 class VISUVTKADAPTOR_CLASS_API SImageText : public SText,
-                                            public ::fwDataTools::helper::MedicalImage
+                                            public ::fwDataTools::helper::TransferFunction
 {
 
 public:

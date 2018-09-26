@@ -13,7 +13,7 @@
 
 #include <fwData/Float.hpp>
 
-#include <fwDataTools/helper/MedicalImage.hpp>
+#include <fwDataTools/helper/TransferFunction.hpp>
 
 #include <fwRenderOgre/IAdaptor.hpp>
 #include <fwRenderOgre/ITransformable.hpp>
@@ -58,7 +58,7 @@ namespace visuOgreAdaptor
  */
 class VISUOGREADAPTOR_CLASS_API SNegato3D : public ::fwRenderOgre::IAdaptor,
                                             public ::fwRenderOgre::ITransformable,
-                                            public ::fwDataTools::helper::MedicalImage
+                                            public ::fwDataTools::helper::TransferFunction
 {
 public:
 
@@ -152,6 +152,9 @@ private:
 
     /// Defines the filtering type for this negato
     ::fwRenderOgre::Plane::FilteringEnumType m_filtering;
+
+    /// Image orientation
+    OrientationMode m_orientation;
 };
 
 //------------------------------------------------------------------------------

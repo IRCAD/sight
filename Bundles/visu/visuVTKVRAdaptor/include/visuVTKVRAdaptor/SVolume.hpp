@@ -10,7 +10,7 @@
 
 #include <fwData/Image.hpp>
 
-#include <fwDataTools/helper/MedicalImage.hpp>
+#include <fwDataTools/helper/TransferFunction.hpp>
 
 #include <fwRenderVTK/IAdaptor.hpp>
 #include <fwRenderVTK/SRender.hpp>
@@ -64,7 +64,7 @@ namespace visuVTKVRAdaptor
  * - \b blend (optional): vtk BlendMode used for rendering: composite, additive, min, max, average (default:
  *      composite). Warning: average mode will use the GPU.
  */
-class VISUVTKVRADAPTOR_CLASS_API SVolume : public ::fwDataTools::helper::MedicalImage,
+class VISUVTKVRADAPTOR_CLASS_API SVolume : public ::fwDataTools::helper::TransferFunction,
                                            public ::fwRenderVTK::IAdaptor
 {
 

@@ -9,6 +9,7 @@
 #include "scene2D/config.hpp"
 
 #include <fwDataTools/helper/MedicalImage.hpp>
+#include <fwDataTools/helper/TransferFunction.hpp>
 
 #include <fwRenderQt/data/Coord.hpp>
 #include <fwRenderQt/IAdaptor.hpp>
@@ -59,13 +60,15 @@ namespace adaptor
  *    - \b orientation (optional, default axial): image orientation, axial, sagittal or frontal
  *    - \b changeSliceType (optional, default true): specify if the negato allow slice type events
  */
-class SCENE2D_CLASS_API SNegato : public ::fwDataTools::helper::MedicalImage,
+class SCENE2D_CLASS_API SNegato : public ::fwDataTools::helper::TransferFunction,
                                   public ::fwRenderQt::IAdaptor
 {
 
 public:
 
     fwCoreServiceClassDefinitionsMacro( (SNegato)(::fwRenderQt::IAdaptor) );
+
+    typedef ::fwDataTools::helper::MedicalImage::Orientation OrientationMode;
 
     SCENE2D_API SNegato() noexcept;
     SCENE2D_API virtual ~SNegato() noexcept;
@@ -141,6 +144,7 @@ private:
 
     /// Specify if the negato allow slice type events
     bool m_changeSliceTypeAllowed;
+
 };
 
 } // namespace adaptor

@@ -10,7 +10,7 @@
 
 #include <fwData/Integer.hpp>
 
-#include <fwDataTools/helper/MedicalImage.hpp>
+#include <fwDataTools/helper/TransferFunction.hpp>
 
 #include <fwGui/editor/IEditor.hpp>
 
@@ -72,7 +72,7 @@ namespace uiImageQt
  * - \b enableSquareTF(optional, default: yes) : if 'yes' enable the button to switch between current TF and square TF
  */
 class UIIMAGEQT_CLASS_API WindowLevel : public QObject,
-                                        public ::fwDataTools::helper::MedicalImage,
+                                        public ::fwDataTools::helper::TransferFunction,
                                         public ::fwGui::editor::IEditor
 {
 Q_OBJECT

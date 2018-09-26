@@ -10,7 +10,7 @@
 
 #include <fwData/Image.hpp>
 
-#include <fwDataTools/helper/MedicalImage.hpp>
+#include <fwDataTools/helper/TransferFunction.hpp>
 
 #include <fwRenderVTK/IAdaptor.hpp>
 
@@ -58,7 +58,7 @@ namespace visuVTKAdaptor
  *    - \b vtkimageregister (optional): source image, used for blend
  *    - \b opacity (optional, default=1.0): actor opacity (float)
  */
-class VISUVTKADAPTOR_CLASS_API SImage : public ::fwDataTools::helper::MedicalImage,
+class VISUVTKADAPTOR_CLASS_API SImage : public ::fwDataTools::helper::TransferFunction,
                                         public ::fwRenderVTK::IAdaptor
 {
 
