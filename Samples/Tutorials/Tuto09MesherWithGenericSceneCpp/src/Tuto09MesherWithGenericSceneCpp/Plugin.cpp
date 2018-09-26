@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "Tuto09MesherWithGenericSceneCtrl/Plugin.hpp"
+#include "Tuto09MesherWithGenericSceneCpp/Plugin.hpp"
 
 #include <fwCom/Slot.hxx>
 
@@ -13,11 +13,11 @@
 #include <fwServices/registry/ActiveWorkers.hpp>
 #include <fwServices/registry/Proxy.hpp>
 
-namespace Tuto09MesherWithGenericSceneCtrl
+namespace Tuto09MesherWithGenericSceneCpp
 {
 
 static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar(
-    "::Tuto09MesherWithGenericSceneCtrl::Plugin");
+    "::Tuto09MesherWithGenericSceneCpp::Plugin");
 
 static const std::string s_IMAGE_ID          = "image";
 static const std::string s_IMAGE_SERIES_ID   = "imageSeries";
@@ -110,8 +110,8 @@ void Plugin::initialize()
     ****************************************************************************************/
     // create the frame configuration
     ::fwServices::IService::ConfigType frameConfig;
-    frameConfig.put("gui.frame.name", "Tuto09MesherWithGenericSceneCtrl");
-    frameConfig.put("gui.frame.icon", "Tuto09MesherWithGenericSceneCtrl-0.1/tuto.ico");
+    frameConfig.put("gui.frame.name", "Tuto09MesherWithGenericSceneCpp");
+    frameConfig.put("gui.frame.icon", "Tuto09MesherWithGenericSceneCpp-0.1/tuto.ico");
     frameConfig.put("gui.menuBar", "");
     frameConfig.put("registry.menuBar.<xmlattr>.sid", "menuBar");
     frameConfig.put("registry.view.<xmlattr>.sid", "mainView");
@@ -533,4 +533,4 @@ void Plugin::uninitialize() noexcept
 
 //------------------------------------------------------------------------------
 
-} // namespace Tuto09MesherWithGenericSceneCtrl
+} // namespace Tuto09MesherWithGenericSceneCpp

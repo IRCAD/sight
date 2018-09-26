@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include "Tuto09MesherWithGenericSceneCtrl/config.hpp"
+#include "Tuto09MesherWithGenericSceneCpp/config.hpp"
 
 #include <fwCom/SlotBase.hpp>
 
@@ -14,30 +14,30 @@
 
 #include <fwServices/AppManager.hpp>
 
-namespace Tuto09MesherWithGenericSceneCtrl
+namespace Tuto09MesherWithGenericSceneCpp
 {
 
 /**
  * @brief   This class is started when the bundles is loaded.
  */
-class TUTO09MESHERWITHGENERICSCENECTRL_CLASS_API Plugin : public ::fwRuntime::Plugin
+class TUTO09MESHERWITHGENERICSCENECPP_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
 public:
     /// Constructor.
-    TUTO09MESHERWITHGENERICSCENECTRL_API Plugin() noexcept;
+    TUTO09MESHERWITHGENERICSCENECPP_API Plugin() noexcept;
 
     /// Destructor. Do nothing.
-    TUTO09MESHERWITHGENERICSCENECTRL_API ~Plugin() noexcept;
+    TUTO09MESHERWITHGENERICSCENECPP_API ~Plugin() noexcept;
 
     /// Overrides start method. .
-    TUTO09MESHERWITHGENERICSCENECTRL_API void start();
+    TUTO09MESHERWITHGENERICSCENECPP_API void start();
 
     /// Overrides stop method. Do nothing
-    TUTO09MESHERWITHGENERICSCENECTRL_API void stop() noexcept;
+    TUTO09MESHERWITHGENERICSCENECPP_API void stop() noexcept;
 
-    TUTO09MESHERWITHGENERICSCENECTRL_API void initialize();
+    TUTO09MESHERWITHGENERICSCENECPP_API void initialize();
 
-    TUTO09MESHERWITHGENERICSCENECTRL_API void uninitialize() noexcept;
+    TUTO09MESHERWITHGENERICSCENECPP_API void uninitialize() noexcept;
 
 private:
 

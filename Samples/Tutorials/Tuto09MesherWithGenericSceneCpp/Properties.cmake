@@ -1,5 +1,5 @@
 
-set( NAME Tuto09MesherWithGenericSceneCtrl )
+set( NAME Tuto09MesherWithGenericSceneCpp )
 set( VERSION 0.1 )
 set( TYPE APP )
 set( START ON )

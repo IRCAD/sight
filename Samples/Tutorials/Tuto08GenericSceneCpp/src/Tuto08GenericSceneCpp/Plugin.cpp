@@ -4,14 +4,14 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "Tuto08GenericSceneCtrl/Plugin.hpp"
+#include "Tuto08GenericSceneCpp/Plugin.hpp"
 
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 
-namespace Tuto08GenericSceneCtrl
+namespace Tuto08GenericSceneCpp
 {
 
-static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::Tuto08GenericSceneCtrl::Plugin");
+static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::Tuto08GenericSceneCpp::Plugin");
 
 static const std::string s_IMAGE_ID   = "image";
 static const std::string s_TEXTURE_ID = "texture";
@@ -75,8 +75,8 @@ void Plugin::initialize()
     ****************************************************************************************/
     // create the frame configuration
     ::fwServices::IService::ConfigType frameConfig;
-    frameConfig.put("gui.frame.name", "Tuto08GenericSceneCtrl");
-    frameConfig.put("gui.frame.icon", "Tuto08GenericSceneCtrl-0.1/tuto.ico");
+    frameConfig.put("gui.frame.name", "Tuto08GenericSceneCpp");
+    frameConfig.put("gui.frame.icon", "Tuto08GenericSceneCpp-0.1/tuto.ico");
     frameConfig.put("gui.menuBar", "");
     frameConfig.put("registry.menuBar.<xmlattr>.sid", "menuBar");
     frameConfig.put("registry.view.<xmlattr>.sid", "mainView");
@@ -380,4 +380,4 @@ void Plugin::uninitialize() noexcept
 
 //------------------------------------------------------------------------------
 
-} // namespace Tuto08GenericSceneCtrl
+} // namespace Tuto08GenericSceneCpp

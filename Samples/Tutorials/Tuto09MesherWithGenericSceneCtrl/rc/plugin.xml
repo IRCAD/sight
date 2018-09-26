@@ -1,9 +1,0 @@
-<plugin id="Tuto09MesherWithGenericSceneCtrl" class="::Tuto09MesherWithGenericSceneCtrl::Plugin"  version="@PROJECT_VERSION@" >
-
-    <requirement id="dataReg" />
-    <requirement id="servicesReg" />
-    <requirement id="visuVTKQt" />
-
-    <library name="Tuto09MesherWithGenericSceneCtrl" />
-
-</plugin>

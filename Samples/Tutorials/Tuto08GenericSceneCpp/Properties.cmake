@@ -1,5 +1,5 @@
 
-set( NAME Tuto08GenericSceneCtrl )
+set( NAME Tuto08GenericSceneCpp )
 set( VERSION 0.1 )
 set( TYPE APP )
 set( START ON )
