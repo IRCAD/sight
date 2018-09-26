@@ -20,7 +20,7 @@ endfunction()
 #Linux install
 macro(linux_install PRJ_NAME)
 
-    if(NOT USE_SYSTEM_LIB AND NOT BUILD_SDK)
+    if(NOT USE_SYSTEM_LIB AND NOT BUILD_SDK AND NOT USE_CONAN)
         findExtLibDir(EXTERNAL_LIBRARIES_DIRECTORIES)
     endif()
     set(CPACK_GENERATOR TGZ)

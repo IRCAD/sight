@@ -779,6 +779,7 @@ macro(loadProperties PROPERTIES_FILE)
     unset(DISABLE_PCH)
     unset(START_BEFORE)
     unset(PLUGINS)
+    unset(CONAN_DEPS)
 
     include("${PROPERTIES_FILE}")
 endmacro()

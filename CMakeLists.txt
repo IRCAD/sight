@@ -15,6 +15,11 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/macros.cmake)
 # User options
 ########################################################################################################################
 
+option(USE_CONAN "Use Conan package manager for dependencies" OFF)
+if(USE_CONAN)
+    include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/conan.cmake)
+endif()
+
 # Tests build / run options
 set(BUILD_TESTS ON CACHE BOOL "Configures projects associated tests (<project>Test projects)")
 set(TESTS_XML_OUTPUT OFF CACHE BOOL "Tests will generate an xml output, suitable for CI integration")
@@ -147,11 +152,13 @@ endif()
 # External libraries management
 ########################################################################################################################
 
-option(USE_SYSTEM_LIB "Use system libraries to compile sight" OFF)
+if(NOT USE_CONAN)
+    option(USE_SYSTEM_LIB "Use system libraries to compile sight" OFF)
+endif()
 
 option(BUILD_SDK "Build Sight as a SDK" OFF)
 
-if(NOT USE_SYSTEM_LIB)
+if(NOT USE_SYSTEM_LIB AND NOT USE_CONAN)
     set(EXTERNAL_LIBRARIES CACHE PATH "External libraries location")
 endif()
 
@@ -262,9 +269,6 @@ endforeach()
 ########################################################################################################################
 file(GLOB_RECURSE PROJECTS_PROPERTIES */Properties.cmake)
 
-# Discover PCL only once as it takes a while and cache results...
-add_subdirectory(${FWCMAKE_RESOURCE_PATH}/pcl)
-
 # Do the same in additional repositories
 if(ADDITIONAL_REPOSITORIES)
 
@@ -288,6 +292,7 @@ endif()
 set(FWCONFIG_PACKAGE_LOCATION lib/cmake/sight)
 
 unset(PROJECT_LIST)
+unset(CONAN_DEPS_LIST)
 
 # Parse all Properties.cmake files and populate a list of CMake variables for each projet
 # to know its dependencies, requirements, version, pch usage, etc...
@@ -318,6 +323,7 @@ foreach(PROPERTIES_FILE ${PROJECTS_PROPERTIES})
     set(${NAME}_DEPENDENCIES "${DEPENDENCIES}")
     set(${NAME}_REQUIREMENTS "${REQUIREMENTS}")
     set(${NAME}_DISABLE_PCH  "${DISABLE_PCH}")
+    set(${NAME}_CONAN_DEPS   "${CONAN_DEPS}")
 
     # Get the pch target, test the existence of type variable to exclude unbuilt projects
     if(ENABLE_PCH AND TYPE AND NOT ${NAME}_DISABLE_PCH)
@@ -375,10 +381,20 @@ if(BUILD_TESTS)
     list(APPEND PROJECT_LIST ${PROJECT_TESTS})
 endif()
 
+# Find and install Conan packages
+if(USE_CONAN)
+    findConanDeps("${PROJECT_LIST}" CONAN_DEPS_LIST)
+    installConanDeps("${CONAN_DEPS_LIST}")
+    add_definitions(${CONAN_DEFINES})
+endif()
+
+# Discover PCL only once as it takes a while and cache results...
+add_subdirectory(${FWCMAKE_RESOURCE_PATH}/pcl)
+
 ########################################################################################################################
 # Second projects scan where we actually perform the add_subdirectory() for each project and its dependencies
 ########################################################################################################################
-if(EXTERNAL_LIBRARIES OR USE_SYSTEM_LIB)
+if(EXTERNAL_LIBRARIES OR USE_SYSTEM_LIB OR USE_CONAN)
     set(APP_TO_BUILD)
     foreach(PROJECT ${PROJECT_LIST})
         addProject(${PROJECT})
