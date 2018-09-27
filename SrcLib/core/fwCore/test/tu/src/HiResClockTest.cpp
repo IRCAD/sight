@@ -39,25 +39,25 @@ void HisResClockTest::tearDown()
 
 void HisResClockTest::getTimeTest()
 {
-    unsigned short time  = 1000;
-    unsigned short delta = 10;
+    const unsigned short time  = 1000;
+    const unsigned short delta = 10;
 
 #ifndef WIN32
     {
         timeval count;
         gettimeofday(&count, NULL);
 
-        auto start = (count.tv_sec * 1000000.0) + count.tv_usec * 0.001;
+        const auto start = (count.tv_sec * 1000000.0) + count.tv_usec * 0.001;
         std::this_thread::sleep_for(std::chrono::milliseconds(time));
-        auto end = HiResClock::getTimeInMilliSec();
+        const auto end = HiResClock::getTimeInMilliSec();
 
         CPPUNIT_ASSERT_DOUBLES_EQUAL(end-start, time, delta);
     }
 #endif
     {
-        auto start = HiResClock::getTimeInMilliSec();
+        const auto start = HiResClock::getTimeInMilliSec();
         std::this_thread::sleep_for(std::chrono::milliseconds(time));
-        auto end = HiResClock::getTimeInMilliSec();
+        const auto end = HiResClock::getTimeInMilliSec();
 
         CPPUNIT_ASSERT_DOUBLES_EQUAL(end-start, time, delta);
     }

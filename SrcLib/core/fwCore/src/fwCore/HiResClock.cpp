@@ -19,8 +19,8 @@ namespace HiResClock
 
 HiResClockType getTimeInMicroSec()
 {
-    auto now = std::chrono::system_clock::now();
-    auto res = std::chrono::duration_cast< std::chrono::microseconds >(now.time_since_epoch()).count();
+    const auto now = std::chrono::system_clock::now();
+    const auto res = std::chrono::duration_cast< std::chrono::microseconds >(now.time_since_epoch()).count();
     return static_cast<HiResClockType>(res);
 }
 
