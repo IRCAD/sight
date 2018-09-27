@@ -25,12 +25,17 @@ namespace videoCalibration
 fwServicesRegisterMacro(::fwServices::IController, ::videoCalibration::SMarkerToPoint, ::fwData::PointList);
 
 const ::fwCom::Slots::SlotKeyType SMarkerToPoint::s_ADD_POINT_SLOT = "addPoint";
+const ::fwCom::Slots::SlotKeyType SMarkerToPoint::s_CLEAR_SLOT     = "clear";
+
+const ::fwServices::IService::KeyType SMarkerToPoint::s_MATRIXTL_INPUT  = "matrixTL";
+const ::fwServices::IService::KeyType SMarkerToPoint::s_POINTLIST_INOUT = "pointList";
 
 // ----------------------------------------------------------------------------
 
 SMarkerToPoint::SMarkerToPoint() noexcept
 {
     newSlot( s_ADD_POINT_SLOT, &SMarkerToPoint::addPoint, this );
+    newSlot( s_CLEAR_SLOT, &SMarkerToPoint::clear, this );
 }
 
 // ----------------------------------------------------------------------------
@@ -73,8 +78,8 @@ void SMarkerToPoint::stopping()
 
 void SMarkerToPoint::addPoint()
 {
-    ::arData::MatrixTL::csptr matrixTL = this->getInput< ::arData::MatrixTL >("matrixTL");
-    ::fwData::PointList::sptr pl       = this->getInOut< ::fwData::PointList >("pointList");
+    ::arData::MatrixTL::csptr matrixTL = this->getInput< ::arData::MatrixTL >(s_MATRIXTL_INPUT);
+    ::fwData::PointList::sptr pl       = this->getInOut< ::fwData::PointList >(s_POINTLIST_INOUT);
 
     ::fwData::TransformationMatrix3D::sptr matrix3D = ::fwData::TransformationMatrix3D::New();
 
@@ -111,5 +116,21 @@ void SMarkerToPoint::addPoint()
 }
 
 // ----------------------------------------------------------------------------
+
+void SMarkerToPoint::clear()
+{
+    ::fwData::PointList::sptr pl = this->getInOut< ::fwData::PointList >(s_POINTLIST_INOUT);
+    if (pl && pl->getPoints().size() > 0)
+    {
+        ::fwData::Point::sptr p = pl->getPoints()[0];
+        pl->clear();
+
+        auto sig = pl->signal< ::fwData::PointList::PointAddedSignalType >(::fwData::PointList::s_POINT_REMOVED_SIG);
+        {
+            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+            sig->asyncEmit(p);
+        }
+    }
+}
 
 } //namespace videoCalibration

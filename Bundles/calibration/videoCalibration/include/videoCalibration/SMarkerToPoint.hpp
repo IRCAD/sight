@@ -27,6 +27,7 @@ namespace videoCalibration
  *
  * @section Slots Slots
  * - \b addPoint() : Add marker position in the pointList. Position is extracted from matrixTL.
+ * - \b clear() : Clear the pointList.
  *
  * @section XML XML Configuration
  *
@@ -46,11 +47,17 @@ class VIDEOCALIBRATION_CLASS_API SMarkerToPoint : public ::fwServices::IControll
 public:
     fwCoreServiceClassDefinitionsMacro((SMarkerToPoint)(::fwServices::IController));
 
+    /// Data xml keys
+    static const ::fwServices::IService::KeyType s_MATRIXTL_INPUT;
+    static const ::fwServices::IService::KeyType s_POINTLIST_INOUT;
+
     /**
      * @name Slots API
      * @{
      */
     VIDEOCALIBRATION_API static const ::fwCom::Slots::SlotKeyType s_ADD_POINT_SLOT;
+
+    VIDEOCALIBRATION_API static const ::fwCom::Slots::SlotKeyType s_CLEAR_SLOT;
     ///@}
 
     /// Constructor
@@ -78,6 +85,9 @@ protected:
 
     /// Slot called to extract position from the latest matrix of the MatrixTL and push it in the pointList
     VIDEOCALIBRATION_API void addPoint();
+
+    /// Slot called to clear the pointlist
+    VIDEOCALIBRATION_API void clear();
 };
 
 } //namespace videoCalibration
