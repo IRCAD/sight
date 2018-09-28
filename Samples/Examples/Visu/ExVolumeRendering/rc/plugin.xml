@@ -1,0 +1,509 @@
+<!--
+    graphical application overview.
+
+    =========================================================
+    |                   menuBar                             |
+    =========================================================
+    |                           |         |     TFEditor    |
+    |                           |         |=================|
+    |      genericScene1        | negato1 |                 |
+    |                           |         | Scene2D_Shutter |
+    |                           |         |                 |
+    =========================================================
+    |                           |         |                 |
+    |      genericScene2        |         |                 |
+    |                           | negato2 |     Scene2D     |
+    |===========================|         |                 |
+    | multiView_scene1_editors  |         |                 |
+    =========================================================
+
+Comment: Name inside the drawing are the uid of the service defined below.
+
+ This application allows to load an medical image and displays it:
+    - The genericscene1 displays the image with volume rendering by using the transfer function defined in TFEditor.
+    - The negato1 displays the image with a 2D multi-planar rendering by using the transfer function defined in TFEditor.
+
+    - The genericscene2 displays the image with a 3D multi-planar rendering by using the default transfer function (CT-GreyLevel).
+    - The negato2 displays the image with a 2D multi-planar rendering by using the default transfer function (CT-GreyLevel).
+
+ It also displays in Scene2D_Shutter the transfer function selected in TFEditor. Scene2D displays a range of the transfer function defined
+ by the gray range in Scene2D_Shutter.
+
+ -->
+<plugin id="ExVolumeRendering" version="@PROJECT_VERSION@">
+    <requirement id="dataReg" />
+    <requirement id="servicesReg" />
+    <requirement id="visuVTKQt" />
+    <requirement id="scene2D" />
+    <extension implements="::fwServices::registry::AppConfig">
+        <id>ExVolumeRendering</id>
+        <config>
+            <object uid="imageUID" type="::fwData::Image" />
+            <object uid="TFSet" type="::fwData::Composite" src="deferred" />
+            <object uid="TF" type="::fwData::TransferFunction" src="deferred" />
+            <object uid="viewportUID" type="::fwRenderQt::data::Viewport" />
+            <!-- Service entrance point for interface creation -->
+            <service uid="IHM" type="::gui::frame::SDefaultFrame">
+                <gui>
+                    <frame>
+                        <name>ExVolumeRendering</name>
+                        <icon>ExVolumeRendering-0.1/tuto.ico</icon>
+                    </frame>
+                    <menuBar/>
+                </gui>
+                <registry>
+                    <menuBar sid="menuBar" start="yes" />
+                    <view sid="multiView" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="menuBar" type="::gui::aspect::SDefaultMenuBar">
+                <gui>
+                    <layout>
+                        <menu name="File" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menu sid="menu_File" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="menu_File" type="::gui::aspect::SDefaultMenu">
+                <gui>
+                    <layout>
+                        <menuItem name="Open file" shortcut="Ctrl+O" />
+                        <menuItem name="Save file" shortcut="Ctrl+S" />
+                        <separator/>
+                        <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="action_openFile" start="yes" />
+                    <menuItem sid="action_saveFile" start="yes" />
+                    <menuItem sid="action_quit" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="action_openFile" type="::gui::action::SStarter">
+                <start uid="readerPathFile" />
+            </service>
+
+            <service uid="action_saveFile" type="::gui::action::SStarter">
+                <start uid="writerPathFile" />
+            </service>
+
+            <service uid="action_quit" type="::gui::action::SQuit" />
+            <service uid="multiView" type="::gui::view::SDefaultView">
+                <gui>
+                    <layout type="::fwGui::CardinalLayoutManager">
+                        <view align="center" />
+                        <view align="right" caption="Parameters" minWidth="400" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="leftMultiView" start="yes" />
+                    <view sid="rightMultiView" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="leftMultiView" type="::gui::view::SDefaultView">
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="vertical" />
+                        <view proportion="1" />
+                        <view proportion="1" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="leftUpperMultiView" start="yes" />
+                    <view sid="leftBottomMultiView" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="leftUpperMultiView" type="::gui::view::SDefaultView">
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="horizontal" />
+                        <view proportion="1" caption="Volume rendering" />
+                        <view proportion="1" caption="Negato 1" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="genericScene1" start="yes" />
+                    <view sid="negato1" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="leftBottomMultiView" type="::gui::view::SDefaultView">
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="horizontal" />
+                        <view proportion="1" caption="Negato 3D" />
+                        <view proportion="1" caption="Negato 2" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="multiView_scene1" start="yes" />
+                    <view sid="negato2" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="multiView_scene1" type="::gui::view::SDefaultView">
+                <gui>
+                    <layout type="::fwGui::CardinalLayoutManager">
+                        <view align="center" />
+                        <view align="bottom" minWidth="200" minHeight="30" resizable="no" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="genericScene2" start="yes" />
+                    <view wid="multiView_scene1_editors" />
+                </registry>
+            </service>
+
+            <service uid="rightMultiView" type="::gui::view::SDefaultView">
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="vertical" />
+                        <view proportion="0" />
+                        <view proportion="0" />
+                        <view proportion="0" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="TFEditor" start="no" />
+                    <view sid="Scene2D_Shutter" start="yes" />
+                    <view sid="Scene2D" start="yes" />
+                </registry>
+            </service>
+
+            <!-- Image reader/writer -->
+            <service uid="readerPathFile" type="::uiIO::editor::SIOSelector">
+                <inout key="data" uid="imageUID" />
+                <type mode="reader" />
+            </service>
+
+            <service uid="writerPathFile" type="::uiIO::editor::SIOSelector">
+                <inout key="data" uid="imageUID" />
+                <type mode="writer" />
+            </service>
+
+            <service uid="sliceListEditor" type="::guiQt::editor::SSelectionMenuButton">
+                <toolTip>Manage slice visibility</toolTip>
+                <selected>3</selected>
+                <items>
+                    <item text="One slice" value="1" />
+                    <item text="three slices" value="3" />
+                </items>
+            </service>
+
+            <service uid="showScanEditor" type="::guiQt::editor::SSignalButton">
+                <config>
+                    <checkable>true</checkable>
+                    <icon>media-0.1/icons/sliceHide.png</icon>
+                    <icon2>media-0.1/icons/sliceShow.png</icon2>
+                    <iconWidth>40</iconWidth>
+                    <iconHeight>16</iconHeight>
+                    <checked>true</checked>
+                </config>
+            </service>
+
+            <!-- This manager adds/removes a field (m_transferFunctionCompositeId) on Image (image) -->
+            <service uid="fieldMgr" type="::gui::action::SPushField">
+                <inout key="source" uid="imageUID" />
+                <out key="destination" uid="TFSet" />
+                <push field="m_transferFunctionCompositeId" />
+            </service>
+
+            <service uid="TFEditor" type="::uiTF::TransferFunctionEditor">
+                <inout key="tfPool" uid="TFSet" autoConnect="yes" />
+                <out key="tf" uid="TF" />
+            </service>
+
+            <!-- This generic scene (genericScene1) uses the TF transfer function stores -->
+
+            <service uid="genericScene1" type="::fwRenderVTK::SRender">
+                <scene>
+                    <picker id="picker" vtkclass="fwVtkCellPicker" />
+                    <renderer id="default" background="0.0" />
+
+                    <adaptor uid="vRAdaptor" />
+                    <adaptor uid="ImageText1" />
+                </scene>
+            </service>
+
+            <!-- Adaptor to visualize the medical image (image) with volume rendering. -->
+            <service uid="vRAdaptor" type="::visuVTKVRAdaptor::SVolume" autoConnect="yes">
+                <inout key="image" uid="imageUID" />
+                <inout key="tf" uid="TF" optional="yes" />
+                <config renderer="default" />
+            </service>
+
+            <service uid="ImageText1" type="::visuVTKAdaptor::SImageText" autoConnect="yes">
+                <inout key="image" uid="imageUID" />
+                <inout key="tf" uid="TF" optional="yes" />
+                <config renderer="default" picker="picker" text="" color="#FFFFFF" />
+            </service>
+
+            <!-- End genericScene1 -->
+
+            <!-- This generic scene (genericScene2) uses the default transfer function (CT-GreyLevel) -->
+
+            <service uid="genericScene2" type="::fwRenderVTK::SRender">
+                <scene>
+                    <picker id="picker" vtkclass="fwVtkCellPicker" />
+                    <renderer id="default" background="0.0" />
+
+                    <adaptor uid="MPRNegato3D" />
+                    <adaptor uid="ImageText2" />
+                    <adaptor uid="cameraScene3DID" />
+                </scene>
+            </service>
+
+            <!-- Adaptor to visualize the medical image (image) in a 3D multi-planar rendering -->
+            <service uid="MPRNegato3D" type="::visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
+                <inout key="image" uid="imageUID" />
+                <config renderer="default" picker="picker" mode="3D" slices="3" sliceIndex="axial" />
+            </service>
+
+            <service uid="ImageText2" type="::visuVTKAdaptor::SImageText" autoConnect="yes">
+                <inout key="image" uid="imageUID" />
+                <config renderer="default" picker="picker" text="" color="#FFFFFF" />
+            </service>
+
+            <service uid="cameraScene3DID" type="::visuVTKAdaptor::SMedical3DCamera">
+                <config renderer="default" sliceIndex="axial" />
+            </service>
+
+            <!-- End genericScene2 -->
+
+            <!-- This negato (negato1) uses the transfer function selected in the editor -->
+
+            <service uid="negato1" type="::fwRenderVTK::SRender">
+                <scene>
+                    <picker id="picker" vtkclass="fwVtkCellPicker" />
+                    <renderer id="default" background="0.0" />
+
+                    <adaptor uid="Interactor3Negato" />
+                    <adaptor uid="MPRNegato2D1" />
+                    <adaptor uid="ImageText3" />
+                </scene>
+            </service>
+
+            <service uid="Interactor3Negato" type="::visuVTKAdaptor::SInteractorStyle">
+                <config renderer="default" style="InteractorStyle2DForNegato" />
+            </service>
+
+            <service uid="MPRNegato2D1" type="::visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
+                <inout key="image" uid="imageUID" />
+                <inout key="tf" uid="TF" optional="yes" />
+                <config renderer="default" picker="picker" mode="2d" slices="1" sliceIndex="axial" />
+            </service>
+
+            <service uid="ImageText3" type="::visuVTKAdaptor::SImageText" autoConnect="yes">
+                <inout key="image" uid="imageUID" />
+                <inout key="tf" uid="TF" optional="yes" />
+                <config renderer="default" picker="picker" text="" color="#FFFFFF" />
+            </service>
+
+            <!-- End negato1 -->
+
+            <!-- This negato (negato2) uses the default transfer function (CT-GreyLevel) -->
+
+            <service uid="negato2" type="::fwRenderVTK::SRender">
+                <scene>
+                    <picker id="picker" vtkclass="fwVtkCellPicker" />
+                    <renderer id="default" background="0.0" />
+
+                    <adaptor uid="Interactor4Negato" />
+                    <adaptor uid="MPRNegato2D2" />
+                    <adaptor uid="ImageText4" />
+                </scene>
+            </service>
+
+            <service uid="Interactor4Negato" type="::visuVTKAdaptor::SInteractorStyle">
+                <config renderer="default" style="InteractorStyle2DForNegato" />
+            </service>
+
+            <service uid="MPRNegato2D2" type="::visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
+                <inout key="image" uid="imageUID" />
+                <config renderer="default" picker="picker" mode="2d" slices="1" sliceIndex="axial" />
+            </service>
+
+            <service uid="ImageText4" type="::visuVTKAdaptor::SImageText" autoConnect="yes">
+                <inout key="image" uid="imageUID" />
+                <config renderer="default" picker="picker" text="" color="#FFFFFF" />
+            </service>
+
+            <!-- End negato2 -->
+
+            <!-- Declaration of the 2D scene service uses to create the TF editor which draw the range of transfer function define by the Scene2D_Shutter -->
+            <service uid="Scene2D" type="::fwRenderQt::SRender" >
+                <scene>
+                    <viewport x="-500" y="-1.1" width="500" height="1.2" />
+                    <scene x="-1100" y="-1.1" width="2100" height="1.2" antialiasing="true" />
+                    <axis id="xAxis" origin="0.0" scale="1.0" scaleType="LINEAR" />
+                    <axis id="yAxis" origin="0.0" scale="-1.0" scaleType="LINEAR" />
+                    <adaptor uid="grid1" />
+                    <adaptor uid="tf2" />
+                    <adaptor uid="axisLeft" />
+                    <adaptor uid="scaleValuesBottom" />
+                    <adaptor uid="scaleValuesLeft" />
+                    <adaptor uid="scaleValuesTop" />
+                    <adaptor uid="scaleValuesRight" />
+                    <adaptor uid="axisTestBottom" />
+                    <adaptor uid="axisTestTop" />
+                    <adaptor uid="axisTestLeft" />
+                    <adaptor uid="axisTestRight" />
+                    <adaptor uid="viewportUpdater" />
+                </scene>
+            </service>
+            <service uid="grid1" type="::scene2D::adaptor::SGrid2D" >
+                <config xMin="-1000" xMax="1000" yMin="0" yMax="1" xSpacing="100" ySpacing="0.1" opacity="0.4" color="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="2" />
+            </service>
+            <service uid="tf2" type="::scene2D::adaptor::STransferFunction" autoConnect="yes" >
+                <in key="viewport" uid="viewportUID" />
+                <inout key="image" uid="imageUID" />
+                <inout key="tf" uid="TF" />
+                <config lineColor="lightGray" circleColor="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="5" pointSize="12" />
+            </service>
+            <service uid="axisLeft" type="::scene2D::adaptor::SAxis" autoConnect="yes">
+                <in key="viewport" uid="viewportUID" />
+                <config xAxis="xAxis" yAxis="yAxis" zValue="4" color="cyan" unit="%" align="left" min="0" max="1" step="0.1" />
+            </service>
+            <service uid="scaleValuesBottom" type="::scene2D::adaptor::SScaleValues" autoConnect="yes">
+                <in key="viewport" uid="viewportUID" />
+                <config min="-900" max="1500" interval="100" fontSize="6" align="bottom" unit="Hfd." color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="10" />
+            </service>
+            <service uid="scaleValuesLeft" type="::scene2D::adaptor::SScaleValues" autoConnect="yes">
+                <in key="viewport" uid="viewportUID" />
+                <config min="0.0" max="1.0" interval="0.1" fontSize="6" align="left" unit="%" color="cyan" xAxis="xAxis" yAxis="yAxis" zValue="10" />
+            </service>
+            <service uid="scaleValuesTop" type="::scene2D::adaptor::SScaleValues" autoConnect="yes">
+                <in key="viewport" uid="viewportUID" />
+                <config min="-900" max="1500" interval="100" fontSize="6" align="top" unit="Hfd." color="red" xAxis="xAxis" yAxis="yAxis" zValue="10" />
+            </service>
+            <service uid="scaleValuesRight" type="::scene2D::adaptor::SScaleValues" autoConnect="yes">
+                <in key="viewport" uid="viewportUID" />
+                <config min="0.0" max="1.0" interval="0.1" fontSize="6" align="right" unit="%" color="yellow" xAxis="xAxis" yAxis="yAxis" zValue="10" />
+            </service>
+            <service uid="axisTestBottom" type="::scene2D::adaptor::SAxis" autoConnect="yes">
+                <in key="viewport" uid="viewportUID" />
+                <config xAxis="xAxis" yAxis="yAxis" zValue="11" min="-900.0" max="1500" align="bottom" color="red" tickSize="5" interval="100" />
+            </service>
+            <service uid="axisTestTop" type="::scene2D::adaptor::SAxis" autoConnect="yes" >
+                <in key="viewport" uid="viewportUID" />
+                <config xAxis="xAxis" yAxis="yAxis" zValue="11" min="-900.0" max="1500" align="top" color="green" tickSize="5" interval="100" />
+            </service>
+            <service uid="axisTestLeft" type="::scene2D::adaptor::SAxis" autoConnect="yes" >
+                <in key="viewport" uid="viewportUID" />
+                <config xAxis="xAxis" yAxis="yAxis" zValue="11" min="0" max="1.0" align="left" color="cyan" tickSize="5" interval="0.1" />
+            </service>
+            <service uid="axisTestRight" type="::scene2D::adaptor::SAxis" autoConnect="yes" >
+                <in key="viewport" uid="viewportUID" />
+                <config xAxis="xAxis" yAxis="yAxis" zValue="12" min="0" max="1.0" align="right" color="yellow" tickSize="5" interval="0.1" />
+            </service>
+            <service uid="viewportUpdater" type="::scene2D::adaptor::SViewportUpdater" autoConnect="yes" >
+                <in key="viewport" uid="viewportUID" />
+                <config xAxis="xAxis" yAxis="yAxis" zValue="9" />
+            </service>
+
+            <!-- Declaration of the shutter service uses to focus a range of the transfer function which will be draw by the Scene2D service. -->
+            <service uid="Scene2D_Shutter" type="::fwRenderQt::SRender" >
+                <scene>
+                    <scene x="-1100" y="-1.1" width="2100" height="1.2" />
+                    <viewport x="-1100" y="-1.1" width="2100" height="1.2" />
+                    <axis id="xAxis" origin="0.0" scale="1.0" scaleType="LINEAR" />
+                    <axis id="yAxis" origin="0.0" scale="-1.0" scaleType="LINEAR" />
+                    <adaptor uid="grid1_Shutter" />
+                    <adaptor uid="tf2_Shutter" />
+                    <adaptor uid="viewportRangeSelector_Shutter" />
+                </scene>
+            </service>
+            <service uid="grid1_Shutter" type="::scene2D::adaptor::SGrid2D" >
+                <config xMin="-1100" xMax="3000" yMin="0.1" yMax="1.7" xSpacing="500" ySpacing="0.2" color="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="1"/>
+            </service>
+            <service uid="tf2_Shutter" type="::scene2D::adaptor::STransferFunction" autoConnect="yes" >
+                <inout key="image" uid="imageUID" />
+                <inout key="tf" uid="TF" />
+                <in key="viewport" uid="viewportUID" />
+                <config lineColor="lightGray" circleColor="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="5" pointSize="12" />
+            </service>
+            <service uid="viewportRangeSelector_Shutter" type="::scene2D::adaptor::SViewportRangeSelector" autoConnect="yes" >
+                <inout key="viewport"  uid="viewportUID" />
+                <config xAxis="xAxis" yAxis="yAxis" zValue="3" initialWidth="1000" initialPos="-100" />
+            </service>
+
+            <service uid="imageEditorsManager" type="::fwServices::SConfigController">
+                <appConfig id="ImageManager" />
+                <inout key="image" uid="imageUID" />
+                <inout key="transferFunction" uid="TF" />
+                <parameter replace="WID_PARENT" by="multiView_scene1_editors" />
+            </service>
+
+            <connect>
+                <signal>imageUID/modified</signal>
+                <slot>fieldMgr/update</slot>
+            </connect>
+
+            <connect>
+                <signal>showScanEditor/toggled</signal>
+                <slot>sliceListEditor/setEnabled</slot>
+            </connect>
+
+            <connect>
+                <signal>showScanEditor/toggled</signal>
+                <slot>MPRNegato3D/showSlice</slot>
+            </connect>
+
+            <connect>
+                <signal>sliceListEditor/selected</signal>
+                <slot>MPRNegato3D/updateSliceMode</slot>
+            </connect>
+
+            <start uid="fieldMgr" />
+            <start uid="IHM" />
+            <start uid="imageEditorsManager" />
+            <!-- Scene2D -->
+            <start uid="grid1" />
+            <start uid="tf2" />
+            <start uid="axisLeft" />
+            <start uid="scaleValuesBottom" />
+            <start uid="scaleValuesLeft" />
+            <start uid="scaleValuesTop" />
+            <start uid="scaleValuesRight" />
+            <start uid="axisTestBottom" />
+            <start uid="axisTestTop" />
+            <start uid="axisTestLeft" />
+            <start uid="axisTestRight" />
+            <start uid="viewportUpdater" />
+
+            <!-- Scene2D Shutter -->
+            <start uid="grid1_Shutter" />
+            <start uid="tf2_Shutter" />
+            <start uid="viewportRangeSelector_Shutter" />
+
+            <!-- genericScene1 -->
+            <start uid="vRAdaptor" />
+            <start uid="ImageText1" />
+
+            <!-- genericscene2 -->
+            <start uid="MPRNegato3D" />
+            <start uid="ImageText2" />
+            <start uid="cameraScene3DID" />
+
+            <!-- negato1 -->
+            <start uid="Interactor3Negato" />
+            <start uid="MPRNegato2D1" />
+            <start uid="ImageText3" />
+
+            <!-- negato2 -->
+            <start uid="Interactor4Negato" />
+            <start uid="MPRNegato2D2" />
+            <start uid="ImageText4" />
+
+            <!-- Deferred start -->
+            <start uid="TFEditor" />
+        </config>
+    </extension>
+</plugin>
