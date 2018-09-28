@@ -6,6 +6,8 @@
 
 #include "visuVTKARAdaptor/SPointList3D.hpp"
 
+#include <fwCom/Slots.hxx>
+
 #include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/Point.hpp>
 #include <fwData/PointList.hpp>
