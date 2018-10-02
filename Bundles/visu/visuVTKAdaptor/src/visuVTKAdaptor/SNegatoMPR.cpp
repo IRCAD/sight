@@ -401,7 +401,7 @@ void SNegatoMPR::set3dMode( bool enabled )
 
     if(axis >= 0)
     {
-        auto adaptorSrv = ::fwDataTools::helper::MedicalImageAdaptor::dynamicCast(service);
+        auto adaptorSrv = ::fwDataTools::helper::MedicalImage::dynamicCast(service);
         SLM_ASSERT("adaptorSrv not instanced", adaptorSrv);
         adaptorSrv->setOrientation((Orientation) axis);
     }

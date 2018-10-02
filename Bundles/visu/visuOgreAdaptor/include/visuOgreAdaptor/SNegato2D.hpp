@@ -8,7 +8,7 @@
 
 #include "visuOgreAdaptor/config.hpp"
 
-#include <fwDataTools/helper/MedicalImageAdaptor.hpp>
+#include <fwDataTools/helper/MedicalImage.hpp>
 
 #include <fwRenderOgre/IAdaptor.hpp>
 #include <fwRenderOgre/Plane.hpp>
@@ -49,11 +49,11 @@ namespace visuOgreAdaptor
  * - \b tfalpha (optional, true/false, default=false): if true, the alpha channel of the transfer function is used
  */
 class VISUOGREADAPTOR_CLASS_API SNegato2D : public ::fwRenderOgre::IAdaptor,
-                                            public ::fwDataTools::helper::MedicalImageAdaptor
+                                            public ::fwDataTools::helper::MedicalImage
 {
 public:
 
-    typedef ::fwDataTools::helper::MedicalImageAdaptor::Orientation OrientationMode;
+    typedef ::fwDataTools::helper::MedicalImage::Orientation OrientationMode;
 
     fwCoreServiceClassDefinitionsMacro( (SNegato2D)(::fwRenderOgre::IAdaptor) )
 

@@ -11,7 +11,7 @@
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
 
-#include <fwDataTools/helper/MedicalImageAdaptor.hpp>
+#include <fwDataTools/helper/MedicalImage.hpp>
 
 #include <fwRenderOgre/IAdaptor.hpp>
 #include <fwRenderOgre/ITransformable.hpp>
@@ -107,7 +107,7 @@ namespace visuOgreAdaptor
  */
 class VISUOGREADAPTOR_CLASS_API SVolumeRender : public ::fwRenderOgre::IAdaptor,
                                                 public ::fwRenderOgre::ITransformable,
-                                                public ::fwDataTools::helper::MedicalImageAdaptor
+                                                public ::fwDataTools::helper::MedicalImage
 {
 public:
 

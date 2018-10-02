@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -31,7 +31,7 @@ static const ::fwCom::Slots::SlotKeyType SET_AXIAL_SLOT    = "setAxial";
 static const ::fwCom::Slots::SlotKeyType SET_SAGITTAL_SLOT = "setSagittal";
 static const ::fwCom::Slots::SlotKeyType SET_FRONTAL_SLOT  = "setFrontal";
 
-std::map< std::string, ::fwDataTools::helper::MedicalImageAdaptor::Orientation >
+std::map< std::string, ::fwDataTools::helper::MedicalImage::Orientation >
 SMedical3DCamera::m_orientationConversion = ::boost::assign::map_list_of
                                                 (std::string("axial"), Z_AXIS)
                                                 (std::string("frontal"), Y_AXIS)
@@ -178,4 +178,3 @@ void SMedical3DCamera::resetAxialView()
 //------------------------------------------------------------------------------
 
 } //namespace visuVTKAdaptor
-

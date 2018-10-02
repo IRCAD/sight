@@ -1,16 +1,15 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VISUVTKADAPTOR_SIMAGETEXT_HPP__
-#define __VISUVTKADAPTOR_SIMAGETEXT_HPP__
+#pragma once
 
 #include "visuVTKAdaptor/config.hpp"
 #include "visuVTKAdaptor/SText.hpp"
 
-#include <fwDataTools/helper/MedicalImageAdaptor.hpp>
+#include <fwDataTools/helper/MedicalImage.hpp>
 
 #include <fwRenderVTK/IAdaptor.hpp>
 
@@ -69,7 +68,7 @@ namespace visuVTKAdaptor
  *   that for the attribute are applied.
  */
 class VISUVTKADAPTOR_CLASS_API SImageText : public SText,
-                                            public ::fwDataTools::helper::MedicalImageAdaptor
+                                            public ::fwDataTools::helper::MedicalImage
 {
 
 public:
@@ -117,5 +116,3 @@ protected:
 };
 
 } //namespace visuVTKAdaptor
-
-#endif //__VISUVTKADAPTOR_SIMAGETEXT_HPP__

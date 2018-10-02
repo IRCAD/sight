@@ -1,8 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
+
+#pragma once
 
 #ifndef __FWDATATOOLS_HELPER_MEDICALIMAGEADAPTOR_HPP__
 #define __FWDATATOOLS_HELPER_MEDICALIMAGEADAPTOR_HPP__
@@ -36,11 +38,11 @@ namespace helper
  * - \b updateTFPoints(): called when the transfer function points are modified
  * - \b updateTFWindowing(double window, double level): called when the transfer function windowing is modified
  */
-class FWDATATOOLS_CLASS_API MedicalImageAdaptor
+class FWDATATOOLS_CLASS_API MedicalImage
 {
 
 public:
-    fwCoreBaseClassDefinitionsMacro( (MedicalImageAdaptor) );
+    fwCoreBaseClassDefinitionsMacro( (MedicalImage) );
 
     /// Image orientation
     typedef enum
@@ -51,7 +53,7 @@ public:
     } Orientation;
 
     /// Destructor. Do nothing.
-    FWDATATOOLS_API virtual ~MedicalImageAdaptor();
+    FWDATATOOLS_API virtual ~MedicalImage();
 
     /// Set the image orientation.
     FWDATATOOLS_API virtual void setOrientation( Orientation orientation );
@@ -68,7 +70,7 @@ public:
 protected:
 
     /// Constructor. Do nothing.
-    FWDATATOOLS_API MedicalImageAdaptor(); // this class VISUVTKADAPTOR_CLASS_API must be specialized
+    FWDATATOOLS_API MedicalImage(); // this class VISUVTKADAPTOR_CLASS_API must be specialized
 
     /**
      * @brief Set the orientation of the image.
@@ -258,7 +260,7 @@ private:
 
 //------------------------------------------------------------------------------
 template< typename FLOAT_ARRAY_3 >
-void MedicalImageAdaptor::getImageSpacing(FLOAT_ARRAY_3 spacing)
+void MedicalImage::getImageSpacing(FLOAT_ARRAY_3 spacing)
 {
     ::fwData::Image::sptr image = this->getImage();
 
@@ -268,7 +270,7 @@ void MedicalImageAdaptor::getImageSpacing(FLOAT_ARRAY_3 spacing)
 
 //------------------------------------------------------------------------------
 template< typename INT_INDEX >
-void MedicalImageAdaptor::getImageDataSize(INT_INDEX size)
+void MedicalImage::getImageDataSize(INT_INDEX size)
 {
     ::fwData::Image::sptr image = this->getImage();
 
@@ -279,7 +281,7 @@ void MedicalImageAdaptor::getImageDataSize(INT_INDEX size)
 //------------------------------------------------------------------------------
 
 template< typename WORLD, typename INT_INDEX >
-void MedicalImageAdaptor::worldToSliceIndex(const WORLD world, INT_INDEX* index )
+void MedicalImage::worldToSliceIndex(const WORLD world, INT_INDEX* index )
 {
     double spacing[3];
     this->getImageSpacing(spacing);
@@ -296,7 +298,7 @@ void MedicalImageAdaptor::worldToSliceIndex(const WORLD world, INT_INDEX* index 
 //------------------------------------------------------------------------------
 
 template< typename WORLD, typename INT_INDEX >
-void MedicalImageAdaptor::worldToImageSliceIndex(const WORLD world, INT_INDEX* index )
+void MedicalImage::worldToImageSliceIndex(const WORLD world, INT_INDEX* index )
 {
     INT_INDEX imageSize[3];
     this->getImageDataSize(imageSize);
@@ -323,4 +325,3 @@ void MedicalImageAdaptor::worldToImageSliceIndex(const WORLD world, INT_INDEX* i
 } //namespace fwDataTools
 
 #endif // __FWDATATOOLS_HELPER_MEDICALIMAGEADAPTOR_HPP__
-

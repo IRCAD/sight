@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -44,7 +44,7 @@ static const ::fwCom::Slots::SlotKeyType s_UPDATE_SLICE_TYPE_SLOT  = "updateSlic
 static const ::fwCom::Slots::SlotKeyType s_UPDATE_BUFFER_SLOT      = "updateBuffer";
 static const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT  = "updateVisibility";
 
-typedef ::fwDataTools::helper::MedicalImageAdaptor MedicalImageAdaptor;
+typedef ::fwDataTools::helper::MedicalImage MedicalImageAdaptor;
 
 //-----------------------------------------------------------------------------
 
@@ -52,7 +52,7 @@ SNegato::SNegato() noexcept :
     m_qimg(nullptr),
     m_pixmapItem(nullptr),
     m_layer(nullptr),
-    m_orientation(MedicalImageAdaptor::Z_AXIS),
+    m_orientation(MedicalImage::Z_AXIS),
     m_pointIsCaptured(false),
     m_changeSliceTypeAllowed(true)
 {
@@ -83,15 +83,15 @@ void SNegato::configuring()
 
         if ( orientationValue == "axial" )
         {
-            m_orientation = MedicalImageAdaptor::Z_AXIS;
+            m_orientation = MedicalImage::Z_AXIS;
         }
         else if ( orientationValue == "sagittal" )
         {
-            m_orientation = MedicalImageAdaptor::X_AXIS;
+            m_orientation = MedicalImage::X_AXIS;
         }
         else if ( orientationValue == "frontal" )
         {
-            m_orientation = MedicalImageAdaptor::Y_AXIS;
+            m_orientation = MedicalImage::Y_AXIS;
         }
     }
 
@@ -136,7 +136,7 @@ void SNegato::updateBufferFromImage( QImage* qimg )
     std::uint8_t* pDest = qimg->bits();
 
     // Fill image according to current slice type:
-    if( m_orientation == MedicalImageAdaptor::X_AXIS ) // sagittal
+    if( m_orientation == MedicalImage::X_AXIS ) // sagittal
     {
         const size_t sagitalIndex = static_cast<size_t>(m_sagittalIndex->value());
 
@@ -155,7 +155,7 @@ void SNegato::updateBufferFromImage( QImage* qimg )
             }
         }
     }
-    else if( m_orientation == MedicalImageAdaptor::Y_AXIS ) // frontal
+    else if( m_orientation == MedicalImage::Y_AXIS ) // frontal
     {
         const size_t frontalIndex = static_cast<size_t>(m_frontalIndex->value());
         const size_t yOffset      = frontalIndex * size[0];
@@ -175,7 +175,7 @@ void SNegato::updateBufferFromImage( QImage* qimg )
             }
         }
     }
-    else if( m_orientation == MedicalImageAdaptor::Z_AXIS ) // axial
+    else if( m_orientation == MedicalImage::Z_AXIS ) // axial
     {
         const size_t axialIndex = static_cast<size_t>(m_axialIndex->value());
         const size_t zOffset    = axialIndex * imageZOffset;
@@ -236,7 +236,7 @@ QImage* SNegato::createQImage()
 
     switch ( m_orientation )
     {
-        case MedicalImageAdaptor::X_AXIS:// sagittal
+        case MedicalImage::X_AXIS:// sagittal
             this->m_yAxis->setScale(-1);
             qImageSize[0]    = static_cast<int>(size[1]);
             qImageSize[1]    = static_cast<int>(size[2]);
@@ -246,7 +246,7 @@ QImage* SNegato::createQImage()
             qImageOrigin[1]  = -( origin[2] + size[2] * spacing[2]  - 0.5f*spacing[2]);
             break;
 
-        case MedicalImageAdaptor::Y_AXIS:// frontal
+        case MedicalImage::Y_AXIS:// frontal
             qImageSize[0]    = static_cast<int>(size[0]);
             qImageSize[1]    = static_cast<int>(size[2]);
             qImageSpacing[0] = spacing[0];
@@ -255,7 +255,7 @@ QImage* SNegato::createQImage()
             qImageOrigin[1]  = -( origin[2] + size[2] * spacing[2]  - 0.5f*spacing[2]);
             break;
 
-        case MedicalImageAdaptor::Z_AXIS:// axial
+        case MedicalImage::Z_AXIS:// axial
             qImageSize[0]    = static_cast<int>(size[0]);
             qImageSize[1]    = static_cast<int>(size[1]);
             qImageSpacing[0] = spacing[0];
@@ -360,15 +360,15 @@ void SNegato::updateSliceType(int from, int to)
     {
         if( to == static_cast< int > ( m_orientation ) )
         {
-            m_orientation = static_cast< MedicalImageAdaptor::Orientation > ( from );
+            m_orientation = static_cast< MedicalImage::Orientation > ( from );
         }
         else if(from == static_cast<int>(m_orientation))
         {
-            m_orientation = static_cast< MedicalImageAdaptor::Orientation >( to );
+            m_orientation = static_cast< MedicalImage::Orientation >( to );
         }
 
         // manages the modification of axes
-        if ( m_orientation == MedicalImageAdaptor::Z_AXIS )
+        if ( m_orientation == MedicalImage::Z_AXIS )
         {
             this->m_yAxis->setScale(1);
         }
@@ -574,4 +574,3 @@ void SNegato::changeImageMinMaxFromCoord( ::fwRenderQt::data::Coord& oldCoord, :
 
 } // namespace adaptor
 } // namespace scene2D
-

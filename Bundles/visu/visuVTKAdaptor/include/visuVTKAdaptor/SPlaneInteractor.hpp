@@ -10,7 +10,7 @@
 
 #include <fwData/TransferFunction.hpp>
 
-#include <fwDataTools/helper/MedicalImageAdaptor.hpp>
+#include <fwDataTools/helper/MedicalImage.hpp>
 
 #include <fwRenderVTK/IAdaptor.hpp>
 
@@ -36,7 +36,7 @@ namespace visuVTKAdaptor
  * - \b config(mandatory) : contains the adaptor configuration
  *    - \b renderer(mandatory) : identifier of the renderer to use
  */
-class VISUVTKADAPTOR_CLASS_API SPlaneInteractor : public ::fwDataTools::helper::MedicalImageAdaptor,
+class VISUVTKADAPTOR_CLASS_API SPlaneInteractor : public ::fwDataTools::helper::MedicalImage,
                                                   public ::fwRenderVTK::IAdaptor
 {
 

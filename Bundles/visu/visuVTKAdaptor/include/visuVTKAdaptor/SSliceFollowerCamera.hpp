@@ -1,15 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VISUVTKADAPTOR_SSLICEFOLLOWERCAMERA_HPP__
-#define __VISUVTKADAPTOR_SSLICEFOLLOWERCAMERA_HPP__
+#pragma once
 
 #include "visuVTKAdaptor/config.hpp"
 
-#include <fwDataTools/helper/MedicalImageAdaptor.hpp>
+#include <fwDataTools/helper/MedicalImage.hpp>
 
 #include <fwRenderVTK/IAdaptor.hpp>
 
@@ -41,7 +40,7 @@ namespace visuVTKAdaptor
  *    - \b renderer (mandatory): defines the renderer to show the image
  *    - \b sliceIndex (optional, axial/frontal/sagittal, default=axial): orientation of the negato
  */
-class VISUVTKADAPTOR_CLASS_API SSliceFollowerCamera : public ::fwDataTools::helper::MedicalImageAdaptor,
+class VISUVTKADAPTOR_CLASS_API SSliceFollowerCamera : public ::fwDataTools::helper::MedicalImage,
                                                       public ::fwRenderVTK::IAdaptor
 {
 public:
@@ -90,5 +89,3 @@ private:
 };
 
 } //namespace visuVTKAdaptor
-
-#endif // __VISUVTKADAPTOR_SSLICEFOLLOWERCAMERA_HPP__

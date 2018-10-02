@@ -13,7 +13,7 @@
 
 #include <fwData/Float.hpp>
 
-#include <fwDataTools/helper/MedicalImageAdaptor.hpp>
+#include <fwDataTools/helper/MedicalImage.hpp>
 
 #include <fwRenderOgre/IAdaptor.hpp>
 #include <fwRenderOgre/ITransformable.hpp>
@@ -58,11 +58,11 @@ namespace visuOgreAdaptor
  */
 class VISUOGREADAPTOR_CLASS_API SNegato3D : public ::fwRenderOgre::IAdaptor,
                                             public ::fwRenderOgre::ITransformable,
-                                            public ::fwDataTools::helper::MedicalImageAdaptor
+                                            public ::fwDataTools::helper::MedicalImage
 {
 public:
 
-    typedef ::fwDataTools::helper::MedicalImageAdaptor::Orientation OrientationMode;
+    typedef ::fwDataTools::helper::MedicalImage::Orientation OrientationMode;
 
     fwCoreServiceClassDefinitionsMacro( (SNegato3D)(::fwRenderOgre::IAdaptor) )
 

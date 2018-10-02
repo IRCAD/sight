@@ -1,15 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __SCENE2D_ADAPTOR_SNEGATO_HPP__
-#define __SCENE2D_ADAPTOR_SNEGATO_HPP__
+#pragma once
 
 #include "scene2D/config.hpp"
 
-#include <fwDataTools/helper/MedicalImageAdaptor.hpp>
+#include <fwDataTools/helper/MedicalImage.hpp>
 
 #include <fwRenderQt/data/Coord.hpp>
 #include <fwRenderQt/IAdaptor.hpp>
@@ -60,7 +59,7 @@ namespace adaptor
  *    - \b orientation (optional, default axial): image orientation, axial, sagittal or frontal
  *    - \b changeSliceType (optional, default true): specify if the negato allow slice type events
  */
-class SCENE2D_CLASS_API SNegato : public ::fwDataTools::helper::MedicalImageAdaptor,
+class SCENE2D_CLASS_API SNegato : public ::fwDataTools::helper::MedicalImage,
                                   public ::fwRenderQt::IAdaptor
 {
 
@@ -132,7 +131,7 @@ private:
     QGraphicsItemGroup* m_layer;
 
     /// The current orientation of the negato
-    ::fwDataTools::helper::MedicalImageAdaptor::Orientation m_orientation;
+    ::fwDataTools::helper::MedicalImage::Orientation m_orientation;
 
     /// Used during negato interaction to manage window/level
     bool m_pointIsCaptured;
@@ -146,6 +145,3 @@ private:
 
 } // namespace adaptor
 } // namespace scene2D
-
-#endif // __SCENE2D_ADAPTOR_SNEGATO_HPP__
-

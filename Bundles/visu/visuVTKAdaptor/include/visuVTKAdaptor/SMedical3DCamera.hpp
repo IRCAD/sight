@@ -1,18 +1,17 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VISUVTKADAPTOR_SMEDICAL3DCAMERA_HPP__
-#define __VISUVTKADAPTOR_SMEDICAL3DCAMERA_HPP__
+#pragma once
 
 #include "visuVTKAdaptor/config.hpp"
 
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
 
-#include <fwDataTools/helper/MedicalImageAdaptor.hpp>
+#include <fwDataTools/helper/MedicalImage.hpp>
 
 #include <fwRenderVTK/IAdaptor.hpp>
 
@@ -45,7 +44,7 @@ namespace visuVTKAdaptor
  *      sagittal.
  *    - \b resetAtStart(optional, default: no): if "yes", it updates the view when the adaptor is started.
  */
-class VISUVTKADAPTOR_CLASS_API SMedical3DCamera : public ::fwDataTools::helper::MedicalImageAdaptor,
+class VISUVTKADAPTOR_CLASS_API SMedical3DCamera : public ::fwDataTools::helper::MedicalImage,
                                                   public ::fwRenderVTK::IAdaptor
 {
 public:
@@ -74,12 +73,10 @@ private:
     void setAxialView();
 
     vtkCamera* m_camera;
-    static std::map< std::string, ::fwDataTools::helper::MedicalImageAdaptor::Orientation > m_orientationConversion;
+    static std::map< std::string, ::fwDataTools::helper::MedicalImage::Orientation > m_orientationConversion;
 
     /// Update view when adaptor is started if true
     bool m_resetAtStart;
 };
 
 } //namespace visuVTKAdaptor
-
-#endif // __VISUVTKADAPTOR_SMEDICAL3DCAMERA_HPP__

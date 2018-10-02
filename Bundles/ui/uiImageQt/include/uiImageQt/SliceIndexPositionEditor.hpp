@@ -8,7 +8,7 @@
 
 #include "uiImageQt/config.hpp"
 
-#include <fwDataTools/helper/MedicalImageAdaptor.hpp>
+#include <fwDataTools/helper/MedicalImage.hpp>
 
 #include <fwGui/editor/IEditor.hpp>
 
@@ -41,7 +41,7 @@ namespace uiImageQt
  * - \b sliceIndex : Axis on which the index will be changed, must be "axial", "frontal" or "sagittal".
  */
 class UIIMAGEQT_CLASS_API SliceIndexPositionEditor : public ::fwGui::editor::IEditor,
-                                                     public ::fwDataTools::helper::MedicalImageAdaptor
+                                                     public ::fwDataTools::helper::MedicalImage
 {
 
 public:
@@ -68,7 +68,7 @@ public:
 protected:
 
     /// @brief The slice type: axial, frontal, sagittal.
-    using ::fwDataTools::helper::MedicalImageAdaptor::Orientation;
+    using ::fwDataTools::helper::MedicalImage::Orientation;
 
     /**
      * @brief Install the layout.

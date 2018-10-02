@@ -9,7 +9,7 @@
 #include "visuVTKAdaptor/config.hpp"
 #include "visuVTKAdaptor/SNegatoMPR.hpp"
 
-#include <fwDataTools/helper/MedicalImageAdaptor.hpp>
+#include <fwDataTools/helper/MedicalImage.hpp>
 
 #include <fwRenderVTK/IAdaptor.hpp>
 
@@ -51,7 +51,7 @@ namespace visuVTKAdaptor
  *    - \b vtkimagesource (optional): source image, used for blend
  *    - \b actorOpacity (optional, default=1.0): actor opacity (float)
  */
-class VISUVTKADAPTOR_CLASS_API SImageSeries : public ::fwDataTools::helper::MedicalImageAdaptor,
+class VISUVTKADAPTOR_CLASS_API SImageSeries : public ::fwDataTools::helper::MedicalImage,
                                               public ::fwRenderVTK::IAdaptor
 {
 

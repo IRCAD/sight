@@ -41,7 +41,7 @@ static const std::string s_ENABLE_APLHA_CONFIG = "tfalpha";
 //------------------------------------------------------------------------------
 
 SNegato2D::SNegato2D() noexcept :
-    ::fwDataTools::helper::MedicalImageAdaptor(),
+    ::fwDataTools::helper::MedicalImage(),
     m_plane(nullptr),
     m_negatoSceneNode(nullptr),
     m_filtering( ::fwRenderOgre::Plane::FilteringEnumType::NONE )

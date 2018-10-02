@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VISUVTKADAPTOR_SIMAGEPICKERINTERACTOR_HPP__
-#define __VISUVTKADAPTOR_SIMAGEPICKERINTERACTOR_HPP__
+#pragma once
 
 #include "visuVTKAdaptor/config.hpp"
 #include "visuVTKAdaptor/SPickerInteractor.hpp"
@@ -13,7 +12,7 @@
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signals.hpp>
 
-#include <fwDataTools/helper/MedicalImageAdaptor.hpp>
+#include <fwDataTools/helper/MedicalImage.hpp>
 #include <fwDataTools/PickingInfo.hpp>
 
 #include <fwRenderVTK/IAdaptor.hpp>
@@ -58,7 +57,7 @@ namespace visuVTKAdaptor
  *   - MOUSE_WHEELBACKWARD
  *   - MOUSE_MOVE
  */
-class VISUVTKADAPTOR_CLASS_API SImagePickerInteractor : public ::fwDataTools::helper::MedicalImageAdaptor,
+class VISUVTKADAPTOR_CLASS_API SImagePickerInteractor : public ::fwDataTools::helper::MedicalImage,
                                                         public ::visuVTKAdaptor::SPickerInteractor
 {
 
@@ -101,5 +100,3 @@ private:
 };
 
 } //namespace visuVTKAdaptor
-
-#endif // __VISUVTKADAPTOR_SIMAGEPICKERINTERACTOR_HPP__
