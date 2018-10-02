@@ -70,6 +70,7 @@ void ServiceTest::tearDown()
 
 void ServiceTest::testServiceCreation()
 {
+#ifndef REMOVE_DEPRECATED
     FW_DEPRECATED_MSG("Deprecated test", "20.0");
     ::fwData::Integer::sptr obj = ::fwData::Integer::New();
     ::fwServices::IService::sptr service;
@@ -90,6 +91,7 @@ void ServiceTest::testServiceCreation()
     // Test erasing service
     ::fwServices::OSR::unregisterService(service);
     CPPUNIT_ASSERT( ::fwServices::OSR::has(obj, "::fwServices::ut::TestService") == false );
+#endif
 }
 
 //------------------------------------------------------------------------------

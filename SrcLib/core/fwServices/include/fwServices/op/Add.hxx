@@ -14,7 +14,7 @@ namespace fwServices
 {
 
 //------------------------------------------------------------------------------
-
+#ifndef REMOVE_DEPRECATED
 template<class SERVICE>
 SPTR(SERVICE) add( ::fwData::Object::csptr _obj, const std::string& _implType, const std::string& _id)
 {
@@ -29,7 +29,7 @@ SPTR(SERVICE) add( ::fwData::Object::csptr _obj, const std::string& _implType, c
     SLM_ASSERT("DynamicCast failed", castedService );
     return castedService;
 }
-
+#endif
 //------------------------------------------------------------------------------
 
 template<class SERVICE>

@@ -59,8 +59,11 @@ IService::IService() :
     m_slotStart   = newSlot( s_START_SLOT, &IService::startSlot, this );
     m_slotStop    = newSlot( s_STOP_SLOT, &IService::stopSlot, this );
     m_slotUpdate  = newSlot( s_UPDATE_SLOT, &IService::updateSlot, this );
-    m_slotSwap    = newSlot( s_SWAP_SLOT, &IService::swapSlot, this );
     m_slotSwapKey = newSlot( s_SWAPKEY_SLOT, &IService::swapKeySlot, this );
+
+#ifndef REMOVE_DEPRECATED
+    m_slotSwap = newSlot( s_SWAP_SLOT, &IService::swapSlot, this );
+#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -399,20 +402,6 @@ IService::SharedFutureType IService::update()
 
 //-----------------------------------------------------------------------------
 
-IService::SharedFutureType IService::swap( ::fwData::Object::sptr _obj )
-{
-    if( !m_associatedWorker || ::fwThread::getCurrentThreadId() == m_associatedWorker->getThreadId() )
-    {
-        return this->internalSwap(_obj, false);
-    }
-    else
-    {
-        return m_slotSwap->asyncRun( _obj );
-    }
-}
-
-//-----------------------------------------------------------------------------
-
 IService::SharedFutureType IService::swapKey(const IService::KeyType& _key, fwData::Object::sptr _obj)
 {
     if( !m_associatedWorker || ::fwThread::getCurrentThreadId() == m_associatedWorker->getThreadId() )
@@ -591,54 +580,6 @@ IService::SharedFutureType IService::internalStop(bool _async)
 
     return future;
 
-}
-
-//-----------------------------------------------------------------------------
-
-IService::SharedFutureType IService::swapSlot(::fwData::Object::sptr _obj)
-{
-    return this->internalSwap(_obj, true);
-}
-
-//-----------------------------------------------------------------------------
-
-IService::SharedFutureType IService::internalSwap(::fwData::Object::sptr _obj, bool _async)
-{
-    OSLM_ASSERT("Swapping on "<< this->getID() << " with same Object " << _obj->getID(),
-                m_associatedObject.lock() != _obj );
-    OSLM_FATAL_IF("Service "<< this->getID() << " is not STARTED, no swapping with Object " << _obj->getID(),
-                  m_globalState != STARTED);
-
-    PackagedTaskType task( std::bind(static_cast<void (IService::*)()>(&IService::swapping), this) );
-    SharedFutureType future = task.get_future();
-
-    m_globalState = SWAPPING;
-    ::fwServices::OSR::swapService( _obj, this->getSptr() );
-    task();
-    m_globalState = STARTED;
-
-    try
-    {
-        // This allows to trigger the exception if there was one
-        future.get();
-    }
-    catch (std::exception& e)
-    {
-        SLM_ERROR("Error while SWAPPING service '" + this->getID() + "' : " + e.what());
-
-        if(!_async)
-        {
-            // The future is shared, thus the caller can still catch the exception if needed with ufuture.get()
-            return future;
-        }
-        else
-        {
-            // Rethrow the same exception
-            throw;
-        }
-    }
-
-    return future;
 }
 
 //-----------------------------------------------------------------------------
@@ -994,5 +935,67 @@ std::ostream& operator<<(std::ostream& _ostream, IService& _service)
 }
 
 //-----------------------------------------------------------------------------
+
+#ifndef REMOVE_DEPRECATED
+IService::SharedFutureType IService::swap( ::fwData::Object::sptr _obj )
+{
+    if( !m_associatedWorker || ::fwThread::getCurrentThreadId() == m_associatedWorker->getThreadId() )
+    {
+        return this->internalSwap(_obj, false);
+    }
+    else
+    {
+        return m_slotSwap->asyncRun( _obj );
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+IService::SharedFutureType IService::swapSlot(::fwData::Object::sptr _obj)
+{
+    return this->internalSwap(_obj, true);
+}
+
+//-----------------------------------------------------------------------------
+
+IService::SharedFutureType IService::internalSwap(::fwData::Object::sptr _obj, bool _async)
+{
+    OSLM_ASSERT("Swapping on "<< this->getID() << " with same Object " << _obj->getID(),
+                m_associatedObject.lock() != _obj );
+    OSLM_FATAL_IF("Service "<< this->getID() << " is not STARTED, no swapping with Object " << _obj->getID(),
+                  m_globalState != STARTED);
+
+    PackagedTaskType task( std::bind(static_cast<void (IService::*)()>(&IService::swapping), this) );
+    SharedFutureType future = task.get_future();
+
+    m_globalState = SWAPPING;
+    ::fwServices::OSR::swapService( _obj, this->getSptr() );
+    task();
+    m_globalState = STARTED;
+
+    try
+    {
+        // This allows to trigger the exception if there was one
+        future.get();
+    }
+    catch (std::exception& e)
+    {
+        SLM_ERROR("Error while SWAPPING service '" + this->getID() + "' : " + e.what());
+
+        if(!_async)
+        {
+            // The future is shared, thus the caller can still catch the exception if needed with ufuture.get()
+            return future;
+        }
+        else
+        {
+            // Rethrow the same exception
+            throw;
+        }
+    }
+
+    return future;
+}
+#endif
 
 }

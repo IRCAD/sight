@@ -17,7 +17,7 @@ namespace fwServices
  * @name Methods for creating and attaching services to object
  */
 //@{
-
+#ifndef REMOVE_DEPRECATED
 /**
  * @brief Create and attach to the object obj a service of type serviceType, implementation _implementationId with the
  * universal unique identifier _id
@@ -36,7 +36,7 @@ FWSERVICES_API ::fwServices::IService::sptr add(::fwData::Object::sptr obj, cons
  */
 template<class SERVICE>
 SPTR(SERVICE) add( ::fwData::Object::csptr obj, const std::string& _implType, const std::string& _id = "");
-
+#endif
 /**
  * @brief Create a service of type serviceType
  * @return a pointer to the new service

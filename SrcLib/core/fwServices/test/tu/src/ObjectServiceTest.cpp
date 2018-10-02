@@ -51,6 +51,7 @@ void ObjectServiceTest::tearDown()
 
 void ObjectServiceTest::swapTest()
 {
+#ifndef REMOVE_DEPRECATED
     FW_DEPRECATED_MSG("This test check a deprecated method.", "20.0");
     const std::string srvType("::fwServices::ut::TestService");
     const std::string srvImplementation("::fwServices::ut::TestServiceImplementation");
@@ -86,12 +87,14 @@ void ObjectServiceTest::swapTest()
     CPPUNIT_ASSERT_EQUAL(service, osrSrv);
 
     osr.unregisterService(service);
+#endif
 }
 
 //------------------------------------------------------------------------------
 
 void ObjectServiceTest::registerTest()
 {
+#ifndef REMOVE_DEPRECATED
     FW_DEPRECATED_MSG("This test check a deprecated method.", "20.0");
 
     const std::string srvType("::fwServices::ut::TestService");
@@ -131,6 +134,7 @@ void ObjectServiceTest::registerTest()
     CPPUNIT_ASSERT( osr.has(obj, srvType) == false );
     servicesByType = osr.getServices( srvType );
     CPPUNIT_ASSERT( servicesByType.empty() );
+#endif
 }
 
 //------------------------------------------------------------------------------
@@ -220,6 +224,7 @@ void ObjectServiceTest::registerKeyTest()
         CPPUNIT_ASSERT(std::equal(servicesByType.begin(), servicesByType.end(), servicesByTemplateType.begin()));
     }
 
+#ifndef REMOVE_DEPRECATED
     // Begin deprecated methods
     // 2 services of type "::fwServices::ut::TestService" working on obj1
     {
@@ -259,21 +264,24 @@ void ObjectServiceTest::registerKeyTest()
     }
 
     // End deprecated methods
+#endif
 
     auto servicesByType = osr.getServices( srvType );
     CPPUNIT_ASSERT_EQUAL(size_t(3), servicesByType.size());
 
-    typedef ::fwServices::registry::ObjectService::ObjectVectorType ObjectVectorType;
     CPPUNIT_ASSERT(servicesByType.find(service1) != servicesByType.end());
     CPPUNIT_ASSERT(servicesByType.find(service2) != servicesByType.end());
     CPPUNIT_ASSERT(servicesByType.find(service3) != servicesByType.end());
 
+#ifndef REMOVE_DEPRECATED
+    typedef ::fwServices::registry::ObjectService::ObjectVectorType ObjectVectorType;
     ObjectVectorType objects = osr.getObjects();
     CPPUNIT_ASSERT_EQUAL(size_t(3), objects.size());
 
     CPPUNIT_ASSERT(objects.find(obj1) != objects.end());
     CPPUNIT_ASSERT(objects.find(obj2) != objects.end());
     CPPUNIT_ASSERT(objects.find(obj3) != objects.end());
+#endif
 
     // Remove key 1 from service 1 and check consistency
     osr.unregisterService("key1", ::fwServices::IService::AccessType::INOUT, service1);
@@ -305,8 +313,11 @@ void ObjectServiceTest::registerKeyTest()
     CPPUNIT_ASSERT_EQUAL(size_t(2), servicesByType.size());
 
     osr.unregisterService(service2);
-    osr.unregisterService("key2", ::fwServices::IService::AccessType::INOUT, service1);
 
+    servicesByType = osr.getServices( srvType );
+    CPPUNIT_ASSERT_EQUAL(size_t(1), servicesByType.size());
+
+    osr.unregisterService(service1);
     servicesByType = osr.getServices( srvType );
     CPPUNIT_ASSERT( servicesByType.empty() );
 }

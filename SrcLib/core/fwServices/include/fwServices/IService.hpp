@@ -254,6 +254,7 @@ public:
      */
     FWSERVICES_API SharedFutureType update();
 
+#ifndef REMOVE_DEPRECATED
     /**
      * @brief Associate the service to another object
      * @param[in] _obj change association service from m_associatedObject to _obj
@@ -268,7 +269,7 @@ public:
      *
      */
     FWSERVICES_API SharedFutureType swap( ::fwData::Object::sptr _obj );
-
+#endif
     /**
      * @brief Associate the service to another object
      * @param[in] _obj change association service from m_associatedObject to _obj
@@ -542,55 +543,88 @@ public:
 
     /**
      * @brief Register an input object for this service
+     *
      * @param[in] obj input object used by the service
      * @param[in] key key of the object
      * @param[in] autoConnect if true, the service will be connected to the object's signals
      * @param[in] optional if true, the service can be started even if the objet is not present
-     * @return
      */
     FWSERVICES_API void registerInput(const ::fwData::Object::csptr& obj, const std::string& key,
                                       const bool autoConnect = false, const bool optional = false);
 
     /**
      * @brief Unregister an input object for this service
+     *
      * @param[in] key key of the object
      */
     FWSERVICES_API void unregisterInput(const std::string& key);
 
     /**
      * @brief Register an in/out object for this service
+     *
      * @param[in] obj in/out object used by the service
      * @param[in] key key of the object
      * @param[in] autoConnect if true, the service will be connected to the object's signals
      * @param[in] optional if true, the service can be started even if the objet is not present
-     * @return
      */
     FWSERVICES_API void registerInOut(const ::fwData::Object::sptr& obj, const std::string& key,
                                       const bool autoConnect = false, const bool optional = false);
 
     /**
      * @brief Unregister an inout object for this service
+     *
+     * If the service is defined with autoStart=true, it will be automatically stopped if the removed object is not
+     * optional.
+     *
      * @param[in] key key of the object
      */
     FWSERVICES_API void unregisterInOut(const std::string& key);
 
     /**
      * @brief Register an object for this service
+     *
      * @param[in] obj input object used by the service
      * @param[in] key key of the object
      * @param[in] access access to the object (in or inout)
      * @param[in] autoConnect if true, the service will be connected to the object's signals
      * @param[in] optional if true, the service can be started even if the objet is not present
-     * @return
      */
     FWSERVICES_API void registerObject(const ::fwData::Object::sptr& obj, const std::string& key,
                                        AccessType access, const bool autoConnect = false, const bool optional = false);
 
     /**
+     * @brief Define an object required by this service.
+     *
+     * This method is useful when the object does not exist yet and will be created later and managed by an AppManager
+     * or an AppConfigManager. The object identifier is used to retrieve the associated object and/or notify its
+     * creation when it is an output.
+     *
+     * @param[in] objId identifier of the object to be used by the service.
+     * @param[in] key key of the object
+     * @param[in] access access to the object (in or inout)
+     * @param[in] autoConnect if true, the service will be connected to the object's signals
+     * @param[in] optional if true, the service can be started even if the objet is not present
+     */
+    FWSERVICES_API void registerObject(const std::string& objId, const std::string& key,
+                                       AccessType access, const bool autoConnect = false, const bool optional = false);
+
+    /**
      * @brief Unregister an object for this service
+     *
      * @param[in] key key of the object
      */
     FWSERVICES_API void unregisterObject(const std::string& key, AccessType access);
+
+    /**
+     * @brief Unregister an object for this service
+     *
+     * @param[in] objId identifier of the object to be used by the service.
+     */
+    FWSERVICES_API void unregisterObject(const std::string& objId);
+
+
+    /// Return true if all the non-optional object required by the service are present
+    FWSERVICES_API bool hasAllRequiredObjects() const;
 
 protected:
 
@@ -747,9 +781,11 @@ private:
     SharedFutureType stopSlot();
     SharedFutureType internalStop(bool _async);
 
+#ifndef REMOVE_DEPRECATED
     // Slot: swap the object
     SharedFutureType swapSlot(::fwData::Object::sptr _obj);
     SharedFutureType internalSwap(::fwData::Object::sptr _obj, bool _async);
+#endif
 
     // Slot: swap an object
     SharedFutureType swapKeySlot(const KeyType& _key, ::fwData::Object::sptr _obj);
