@@ -13,6 +13,7 @@
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hxx>
 
+#include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/Point.hpp>
 #include <fwData/PointList.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
@@ -120,6 +121,9 @@ void SMarkerToPoint::addPoint()
 void SMarkerToPoint::clear()
 {
     ::fwData::PointList::sptr pl = this->getInOut< ::fwData::PointList >(s_POINTLIST_INOUT);
+
+    ::fwData::mt::ObjectReadLock lock(pl);
+
     if (pl && pl->getPoints().size() > 0)
     {
         ::fwData::Point::sptr p = pl->getPoints()[0];
