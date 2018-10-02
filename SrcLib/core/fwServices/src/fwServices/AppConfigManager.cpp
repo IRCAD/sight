@@ -598,6 +598,7 @@ void AppConfigManager::createServices(::fwRuntime::ConfigurationElement::csptr c
 {
     // Create and bind service
     const ::fwServices::IService::sptr srv = this->getNewService(srvConfig.m_uid, srvConfig.m_type);
+    ::fwServices::OSR::registerService(srv);
     m_createdSrv.push_back(srv);
 
     if (!srvConfig.m_worker.empty())
@@ -625,7 +626,7 @@ void AppConfigManager::createServices(::fwRuntime::ConfigurationElement::csptr c
                    (!objectCfg.m_optional && obj) || objectCfg.m_optional);
         if((obj || !objectCfg.m_optional) && objectCfg.m_access != ::fwServices::IService::AccessType::OUTPUT)
         {
-            ::fwServices::OSR::registerService(obj, objectCfg.m_key, objectCfg.m_access, srv);
+            srv->registerObject(obj, objectCfg.m_key, objectCfg.m_access);
         }
     }
 
@@ -635,8 +636,8 @@ void AppConfigManager::createServices(::fwRuntime::ConfigurationElement::csptr c
     {
         srv->setObjectId(::fwServices::IService::s_DEFAULT_OBJECT, "defaultObjectId");
 
-        ::fwServices::OSR::registerService(m_tmpRootObject, ::fwServices::IService::s_DEFAULT_OBJECT,
-                                           ::fwServices::IService::AccessType::INOUT, srv);
+        srv->registerObject(m_tmpRootObject, ::fwServices::IService::s_DEFAULT_OBJECT,
+                            ::fwServices::IService::AccessType::INOUT);
     }
 
     // Set the size of the key groups
@@ -907,14 +908,14 @@ void AppConfigManager::addObjects(fwData::Object::sptr obj, const std::string& i
                             // If this is not the object we have to swap, then unregister it
                             if(registeredObj != object)
                             {
-                                ::fwServices::OSR::unregisterService(objCfg.m_key, objCfg.m_access, srv);
+                                srv->unregisterObject(objCfg.m_key, objCfg.m_access);
                             }
                         }
 
                         if(registeredObj != object)
                         {
                             // Register the key on the service
-                            ::fwServices::OSR::registerService(object, objCfg.m_key, objCfg.m_access, srv);
+                            srv->registerObject(object, objCfg.m_key, objCfg.m_access);
 
                             // Call the swapping callback of the service and wait for it
                             srv->swapKey(objCfg.m_key, ::fwData::Object::constCast(registeredObj)).wait();
@@ -1011,7 +1012,7 @@ void AppConfigManager::removeObjects(fwData::Object::sptr obj, const std::string
                         {
                             if(::fwServices::OSR::isRegistered(objCfg.m_key, objCfg.m_access, srv))
                             {
-                                ::fwServices::OSR::unregisterService(objCfg.m_key, objCfg.m_access, srv);
+                                srv->unregisterObject(objCfg.m_key, objCfg.m_access);
 
                                 srv->swapKey(objCfg.m_key, obj).wait();
                             }

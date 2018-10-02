@@ -325,15 +325,25 @@ class TestServiceWithData : public ::fwServices::IService
 public:
 
     static const KeyType s_INPUT;
+    static const KeyType s_INOUT_GROUP;
     static const KeyType s_OUTPUT;
 
     fwCoreServiceClassDefinitionsMacro( (TestServiceWithData)(::fwServices::IService) );
     TestServiceWithData() noexcept
     {
+        this->registerObject(s_INPUT, AccessType::INPUT, true, false);
+        this->registerObject(s_OUTPUT, AccessType::OUTPUT, false, true);
     }
 
     virtual ~TestServiceWithData() noexcept
     {
+    }
+
+    //------------------------------------------------------------------------------
+
+    void registerGroup()
+    {
+        this->registerObjectGroup(s_INOUT_GROUP, AccessType::INOUT, 2, true, false);
     }
 
     //------------------------------------------------------------------------------

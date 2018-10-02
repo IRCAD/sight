@@ -135,15 +135,9 @@ void IService::setOutput(const IService::KeyType& key, const fwData::Object::spt
 void IService::registerInput(const ::fwData::Object::csptr& obj, const std::string& key, const bool autoConnect,
                              const bool optional)
 {
+    this->registerObject(obj->getID(), key, AccessType::INPUT, autoConnect, optional);
+
     ::fwServices::OSR::registerServiceInput(obj, key, this->getSptr());
-
-    ObjectServiceConfig objConfig;
-    objConfig.m_key         = key;
-    objConfig.m_access      = AccessType::INPUT;
-    objConfig.m_autoConnect = autoConnect;
-    objConfig.m_optional    = optional;
-
-    m_serviceConfig.m_objects.push_back(objConfig);
 }
 
 //------------------------------------------------------------------------------
@@ -173,37 +167,89 @@ void IService::unregisterInOut(const std::string& key)
 void IService::registerObject(const ::fwData::Object::sptr& obj, const std::string& key,
                               AccessType access, const bool autoConnect, const bool optional)
 {
+    this->registerObject(key, access, autoConnect, optional);
+
+    if (access == AccessType::INPUT)
+    {
+        m_inputsMap[key] = obj;
+    }
+    else if (access == AccessType::INOUT)
+    {
+        m_inOutsMap[key] = obj;
+    }
+    else if (access == AccessType::OUTPUT)
+    {
+        m_outputsMap[key] = obj;
+    }
+
     ::fwServices::OSR::registerService(obj, key, access, this->getSptr());
+}
 
-    ObjectServiceConfig objConfig;
-    objConfig.m_key         = key;
-    objConfig.m_access      = access;
-    objConfig.m_autoConnect = autoConnect;
-    objConfig.m_optional    = optional;
+//------------------------------------------------------------------------------
 
-    m_serviceConfig.m_objects.push_back(objConfig);
+void IService::registerObject(const std::string& objId,
+                              const ::fwServices::IService::KeyType& key,
+                              const ::fwServices::IService::AccessType access,
+                              const bool autoConnect, const bool optional)
+{
+    this->registerObject(key, access, autoConnect, optional);
+    SLM_ASSERT("Object id must be defined", !objId.empty());
+    this->setObjectId(key, objId);
 }
 
 //------------------------------------------------------------------------------
 
 void IService::unregisterObject(const std::string& key, AccessType access)
 {
-    auto newItr = std::remove_if( m_serviceConfig.m_objects.begin(),  m_serviceConfig.m_objects.end(),
-                                  [&](const ObjectServiceConfig& config)
+    ::fwServices::OSR::unregisterService(key, access, this->getSptr());
+
+    if(access == ::fwServices::IService::AccessType::INPUT)
+    {
+        m_inputsMap.erase(key);
+    }
+    else if(access == ::fwServices::IService::AccessType::INOUT)
+    {
+        m_inOutsMap.erase(key);
+    }
+    else
+    {
+        m_outputsMap.erase(key);
+    }
+}
+//------------------------------------------------------------------------------
+
+void IService::unregisterObject(const std::string& objId)
+{
+    auto keyItr = std::find_if( m_idsMap.begin(),  m_idsMap.end(),
+                                [&](const std::map<KeyType, IdType>::value_type& id)
         {
-            return (config.m_key == key && config.m_access == access);
+            return (id.second == objId);
+        });
+
+    if (keyItr == m_idsMap.end())
+    {
+        SLM_ERROR("object '" + objId + "' is not registered");
+        return;
+    }
+    const std::string key = keyItr->first;
+
+    auto newItr = std::find_if( m_serviceConfig.m_objects.begin(),  m_serviceConfig.m_objects.end(),
+                                [&](const ObjectServiceConfig& config)
+        {
+            return (config.m_key == key);
         });
 
     m_serviceConfig.m_objects.erase(newItr);
-
-    ::fwServices::OSR::unregisterService(key, access, this->getSptr());
+    auto it = m_idsMap.find(objId);
+    m_idsMap.erase(it);
 }
 
 //-----------------------------------------------------------------------------
 
 bool IService::hasObjectId(const KeyType& _key) const
 {
-    auto it = m_idsMap.find(_key);
+    auto it                = m_idsMap.find(_key);
+    const bool hasObjectId = (it != m_idsMap.end());
     return (it != m_idsMap.end());
 }
 
@@ -910,6 +956,120 @@ void IService::autoDisconnect()
 void IService::addProxyConnection(const helper::ProxyConnections& proxy)
 {
     m_proxies[proxy.m_channel] = proxy;
+}
+
+//-----------------------------------------------------------------------------
+
+bool IService::isObjectRequired(const std::string& objId) const
+{
+    auto itr = std::find_if( m_idsMap.begin(),  m_idsMap.end(),
+                             [&](const std::pair<KeyType, IdType>& id)
+        {
+            return (id.second == objId);
+        });
+
+    return (itr != m_idsMap.end());
+}
+
+//------------------------------------------------------------------------------
+
+bool IService::hasAllRequiredObjects() const
+{
+
+    bool hasAllObjects = true;
+
+    for (const auto& objectCfg : m_serviceConfig.m_objects)
+    {
+        if (objectCfg.m_optional == false)
+        {
+            if (objectCfg.m_access == ::fwServices::IService::AccessType::INPUT)
+            {
+                if (nullptr == this->getInput< ::fwData::Object >(objectCfg.m_key))
+                {
+                    SLM_DEBUG("The 'input' object with key '" + objectCfg.m_key + "' is missing for '" + srv->getID()
+                              + "'");
+                    hasAllObjects = false;
+                    break;
+                }
+            }
+            else if (objectCfg.m_access == ::fwServices::IService::AccessType::INOUT)
+            {
+                if (nullptr == this->getInOut< ::fwData::Object >(objectCfg.m_key))
+                {
+                    SLM_DEBUG("The 'input' object with key '" + objectCfg.m_key + "' is missing for '" + srv->getID()
+                              + "'");
+                    hasAllObjects = false;
+                    break;
+                }
+            }
+        }
+    }
+    return hasAllObjects;
+}
+
+//------------------------------------------------------------------------------
+
+const IService::ObjectServiceConfig& IService::getObjInfo(const std::string& objId) const
+{
+    auto keyItr = std::find_if( m_idsMap.begin(),  m_idsMap.end(),
+                                [&](const std::pair<KeyType, IdType>& id)
+        {
+            return (id.second == objId);
+        });
+
+    SLM_ASSERT("object '" + objId + "' is not registered", keyItr != m_idsMap.end());
+    const std::string key = keyItr->first;
+
+    auto itr = std::find_if( m_serviceConfig.m_objects.begin(),  m_serviceConfig.m_objects.end(),
+                             [&](const ObjectServiceConfig& config)
+        {
+            return (config.m_key == key);
+        });
+    SLM_ASSERT("Object '" + objId + "' is not registered.", itr != m_serviceConfig.m_objects.end());
+
+    return *itr;
+}
+
+//-----------------------------------------------------------------------------
+
+void IService::registerObject(const ::fwServices::IService::KeyType& key,
+                              const ::fwServices::IService::AccessType access,
+                              const bool autoConnect, const bool optional)
+{
+    auto itr = std::find_if( m_serviceConfig.m_objects.begin(), m_serviceConfig.m_objects.end(),
+                             [&](const ObjectServiceConfig& objInfo)
+        {
+
+            return (objInfo.m_key == key);
+        });
+    if (itr == m_serviceConfig.m_objects.end())
+    {
+        ObjectServiceConfig objConfig;
+        objConfig.m_key         = key;
+        objConfig.m_access      = access;
+        objConfig.m_autoConnect = autoConnect;
+        objConfig.m_optional    = optional;
+
+        m_serviceConfig.m_objects.push_back(objConfig);
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void IService::registerObjectGroup(const std::string& key, AccessType access, const std::uint8_t nbObject,
+                                   const bool autoConnect, const bool optional)
+{
+    for (std::uint8_t i = 0; i < nbObject; ++i)
+    {
+        ObjectServiceConfig objConfig;
+        objConfig.m_key         = KEY_GROUP_NAME(key, i);
+        objConfig.m_access      = access;
+        objConfig.m_autoConnect = autoConnect;
+        objConfig.m_optional    = optional;
+
+        m_serviceConfig.m_objects.push_back(objConfig);
+    }
+    m_keyGroupSize[key] = nbObject;
 }
 
 //-----------------------------------------------------------------------------

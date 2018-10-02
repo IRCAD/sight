@@ -6,6 +6,7 @@
 
 #include "AppManagerTest.hpp"
 
+#include "fwServices/helper/ProxyConnections.hpp"
 #include "fwServices/registry/ActiveWorkers.hpp"
 #include "fwServices/registry/AppConfig.hpp"
 #include "fwServices/registry/ObjectService.hpp"
@@ -136,12 +137,12 @@ void AppManagerTest::managerWithObjectTest()
     ::fwData::Image::sptr image     = ::fwData::Image::New();
     ::fwData::Boolean::sptr boolean = ::fwData::Boolean::New();
 
-    m_appMgr->registerObject(service, imageId, "data1", ::fwServices::IService::AccessType::INPUT);
-    m_appMgr->registerObject(service2, imageId, "data1", ::fwServices::IService::AccessType::INPUT, true);
-    m_appMgr->registerObject(service3, imageId, "data1", ::fwServices::IService::AccessType::INPUT, false, true);
-    m_appMgr->registerObject(service3, booleanId, "data2", ::fwServices::IService::AccessType::INPUT, true, true);
-    m_appMgr->registerObject(service4, booleanId, "data1", ::fwServices::IService::AccessType::INPUT, true);
-    m_appMgr->registerObject(service4, imageId, "data2", ::fwServices::IService::AccessType::INPUT, true);
+    service->registerObject(imageId, "data1", ::fwServices::IService::AccessType::INPUT);
+    service2->registerObject(imageId, "data1", ::fwServices::IService::AccessType::INPUT, true);
+    service3->registerObject(imageId, "data1", ::fwServices::IService::AccessType::INPUT, false, true);
+    service3->registerObject(booleanId, "data2", ::fwServices::IService::AccessType::INPUT, true, true);
+    service4->registerObject(booleanId, "data1", ::fwServices::IService::AccessType::INPUT, true);
+    service4->registerObject(imageId, "data2", ::fwServices::IService::AccessType::INPUT, true);
 
     CPPUNIT_ASSERT_THROW(m_appMgr->startService(service), ::fwCore::Exception);
 
@@ -205,13 +206,13 @@ void AppManagerTest::managerWithObjectConnectionTest()
     const std::string imageChannel = "imageChannel";
 
     auto service1 = m_appMgr->addService< ::fwServices::ut::TestSrvAutoconnect >(
-        "::fwServices::ut::TestSrvAutoconnect", true);
+        "::fwServices::ut::TestSrvAutoconnect", "myService1", true, false);
     auto service2 = m_appMgr->addService< ::fwServices::ut::TestSrvAutoconnect >(
-        "::fwServices::ut::TestSrvAutoconnect", true);
+        "::fwServices::ut::TestSrvAutoconnect", "myService2", true, false);
     auto service3 = m_appMgr->addService< ::fwServices::ut::TestSrvAutoconnect >(
-        "::fwServices::ut::TestSrvAutoconnect", true);
+        "::fwServices::ut::TestSrvAutoconnect", "myService3",  true, false);
     auto service4 = m_appMgr->addService< ::fwServices::ut::TestSrvAutoconnect >(
-        "::fwServices::ut::TestSrvAutoconnect", true);
+        "::fwServices::ut::TestSrvAutoconnect", "myService4", true, false);
 
     CPPUNIT_ASSERT(service1);
     CPPUNIT_ASSERT(service2);
@@ -221,12 +222,12 @@ void AppManagerTest::managerWithObjectConnectionTest()
     ::fwData::Image::sptr image     = ::fwData::Image::New();
     ::fwData::Boolean::sptr boolean = ::fwData::Boolean::New();
 
-    m_appMgr->registerObject(service1, imageId, "data1", ::fwServices::IService::AccessType::INPUT);
-    m_appMgr->registerObject(service2, imageId, "data1", ::fwServices::IService::AccessType::INPUT, true);
-    m_appMgr->registerObject(service3, imageId, "data1", ::fwServices::IService::AccessType::INPUT, false, true);
-    m_appMgr->registerObject(service3, booleanId, "data2", ::fwServices::IService::AccessType::INPUT, true, true);
-    m_appMgr->registerObject(service4, imageId, "data1", ::fwServices::IService::AccessType::INPUT, true);
-    m_appMgr->registerObject(service4, booleanId, "data2", ::fwServices::IService::AccessType::INPUT, true);
+    service1->registerObject(imageId, "data1", ::fwServices::IService::AccessType::INPUT);
+    service2->registerObject(imageId, "data1", ::fwServices::IService::AccessType::INPUT, true);
+    service3->registerObject(imageId, "data1", ::fwServices::IService::AccessType::INPUT, false, true);
+    service3->registerObject(booleanId, "data2", ::fwServices::IService::AccessType::INPUT, true, true);
+    service4->registerObject(imageId, "data1", ::fwServices::IService::AccessType::INPUT, true);
+    service4->registerObject(booleanId, "data2", ::fwServices::IService::AccessType::INPUT, true);
 
     m_appMgr->startServices();
 
@@ -255,8 +256,10 @@ void AppManagerTest::managerWithObjectConnectionTest()
     service2->resetIsUpdated();
 
     m_appMgr->removeObject(image, imageId);
-    m_appMgr->connectObjectSignal(imageChannel, imageId, ::fwData::Image::s_MODIFIED_SIG);
-    m_appMgr->connectSlot(imageChannel, service1, ::fwServices::ut::TestSrvAutoconnect::s_SLOT_1);
+    ::fwServices::helper::ProxyConnections connection(imageChannel);
+    connection.addSignalConnection(imageId,  ::fwData::Image::s_MODIFIED_SIG);
+    connection.addSlotConnection(service1->getID(), ::fwServices::ut::TestSrvAutoconnect::s_SLOT_1);
+    m_appMgr->addProxyConnection(connection);
     m_appMgr->addObject(image, imageId);
 
     sig->emit();
@@ -298,8 +301,7 @@ void AppManagerTest::managerWithServiceConnectionTest()
 
     m_appMgr->create();
 
-    const std::string channel1 = "channel1";
-    const std::string channel2 = "channel2";
+    const std::string channel = "channel";
 
     auto service1 = m_appMgr->addService< ::fwServices::ut::TestSrvAutoconnect >(
         "::fwServices::ut::TestSrvAutoconnect", true);
@@ -310,10 +312,15 @@ void AppManagerTest::managerWithServiceConnectionTest()
     auto service4 = m_appMgr->addService< ::fwServices::ut::TestSrvAutoconnect >(
         "::fwServices::ut::TestSrvAutoconnect", true);
 
-    m_appMgr->connectSignal(channel1, service1, ::fwServices::ut::TestSrvAutoconnect::s_SIG_1);
-    m_appMgr->connectSignal(channel2, service1, ::fwServices::ut::TestSrvAutoconnect::s_UPDATED_SIG);
-    m_appMgr->connectSlot(channel1, service2, ::fwServices::ut::TestSrvAutoconnect::s_SLOT_1);
-    m_appMgr->connectSlot(channel2, service3, ::fwServices::ut::TestSrvAutoconnect::s_SLOT_1);
+    ::fwServices::helper::ProxyConnections connection1;
+    connection1.addSignalConnection(service1->getID(), ::fwServices::ut::TestSrvAutoconnect::s_SIG_1);
+    connection1.addSlotConnection(service2->getID(), ::fwServices::ut::TestSrvAutoconnect::s_SLOT_1);
+    m_appMgr->addProxyConnection(connection1);
+
+    ::fwServices::helper::ProxyConnections connection2(channel);
+    connection2.addSignalConnection(service1->getID(), ::fwServices::ut::TestSrvAutoconnect::s_UPDATED_SIG);
+    connection2.addSlotConnection(service3->getID(), ::fwServices::ut::TestSrvAutoconnect::s_SLOT_1);
+    m_appMgr->addProxyConnection(connection2);
 
     CPPUNIT_ASSERT_NO_THROW(m_appMgr->startService(service1));
     CPPUNIT_ASSERT_NO_THROW(m_appMgr->startService(service2));
@@ -343,6 +350,8 @@ void AppManagerTest::managerWithServiceConnectionTest()
     CPPUNIT_ASSERT_EQUAL(false, service2->getReceived());
     CPPUNIT_ASSERT_EQUAL(true, service3->getReceived());
     CPPUNIT_ASSERT_EQUAL(false, service4->getReceived());
+
+    m_appMgr->destroy();
 }
 
 //------------------------------------------------------------------------------
@@ -374,21 +383,12 @@ void AppManagerTest::managerWithOutputCreationTest()
     CPPUNIT_ASSERT(service3);
     CPPUNIT_ASSERT(service4);
 
-    m_appMgr->registerObject(service1, integerId, ::fwServices::ut::TestServiceWithData::s_INPUT,
-                             ::fwServices::IService::AccessType::INPUT);
-    m_appMgr->registerObject(service1, generatedIntegerId, ::fwServices::ut::TestServiceWithData::s_OUTPUT,
-                             ::fwServices::IService::AccessType::OUTPUT);
-
-    m_appMgr->registerObject(service2, generatedIntegerId, ::fwServices::ut::TestServiceWithData::s_INPUT,
-                             ::fwServices::IService::AccessType::INPUT);
-
-    m_appMgr->registerObject(service3, integerId, ::fwServices::ut::TestServiceWithData::s_INPUT,
-                             ::fwServices::IService::AccessType::INPUT);
-    m_appMgr->registerObject(service3, generatedInteger2Id, ::fwServices::ut::TestServiceWithData::s_OUTPUT,
-                             ::fwServices::IService::AccessType::OUTPUT);
-
-    m_appMgr->registerObject(service4, generatedInteger2Id,  ::fwServices::ut::TestServiceWithData::s_INPUT,
-                             ::fwServices::IService::AccessType::INPUT);
+    service1->setObjectId(::fwServices::ut::TestServiceWithData::s_INPUT, integerId);
+    service1->setObjectId(::fwServices::ut::TestServiceWithData::s_OUTPUT, generatedIntegerId);
+    service2->setObjectId(::fwServices::ut::TestServiceWithData::s_INPUT, generatedIntegerId);
+    service3->setObjectId(::fwServices::ut::TestServiceWithData::s_INPUT, integerId);
+    service3->setObjectId(::fwServices::ut::TestServiceWithData::s_OUTPUT, generatedInteger2Id);
+    service4->setObjectId(::fwServices::ut::TestServiceWithData::s_INPUT, generatedInteger2Id);
 
     m_appMgr->addObject(integer1, integerId);
 
@@ -410,7 +410,10 @@ void AppManagerTest::managerWithOutputCreationTest()
 
     CPPUNIT_ASSERT(integer3);
     CPPUNIT_ASSERT_EQUAL(integer1->getValue(), integer3->getValue());
+    fwTestWaitMacro(service4->isStarted());
     CPPUNIT_ASSERT_EQUAL(true, service4->isStarted());
+
+    m_appMgr->destroy();
 }
 
 //------------------------------------------------------------------------------

@@ -40,9 +40,9 @@ namespace fwServices
     // - readerService will generate an output image, it is registered as "loadedImage" in the application
     // - mesherService require an input image registered as "loadedImage" in the application
     // - mesherService will generate an output model series, it is registered as "generatedModel" in the application
-    m_appMgr->registerObject(readerService, "loadedImage", "image", AccessType::OUTPUT, true);
-    m_appMgr->registerObject(mesherService, "loadedImage", "image", AccessType::INPUT, true);
-    m_appMgr->registerObject(mesherService, "generatedModel", "modelSeries", AccessType::OUTUT, true);
+    readerService->registerObject("loadedImage", "image", AccessType::OUTPUT, true);
+    mesherService->registerObject("loadedImage", "image", AccessType::INPUT, true);
+    mesherService->registerObject("generatedModel", "modelSeries", AccessType::OUTUT, true);
 
     // Start the reader service:
     // - readerService will be started because it does not require input or inout. It will also be updated.
@@ -253,6 +253,8 @@ public:
      */
     FWSERVICES_API ::fwData::Object::sptr getObject(const std::string& id) const;
 
+    /// Add a proxy connection
+    FWSERVICES_API void addProxyConnection(const helper::ProxyConnections& proxy);
 private:
 
     /// Information about connection <channel, sig/slot name>
@@ -265,28 +267,8 @@ private:
         FWSERVICES_API ServiceInfo(const ::fwServices::IService::sptr& srv, const bool autoStart,
                                    const bool autoUpdate);
 
-        /// add the object in the service requirement
-        FWSERVICES_API void addObject(const std::string& objId, const ::fwServices::IService::KeyType& key,
-                                      const ::fwServices::IService::AccessType access, const bool autoConnect = false,
-                                      const bool optional = false);
-
-        /// Return true if the service contains this object into its requirement
-        FWSERVICES_API bool isObjectRequired(const std::string& objId) const;
-
-        /// Return true if all the non-optional object required by the service are present
-        FWSERVICES_API bool hasAllRequiredObjects() const;
-
-        /// Return the information about the required object
-        FWSERVICES_API const ::fwServices::IService::ObjectServiceConfig& getObjInfo(const std::string& objId) const;
-
-        /// Identifier
-        std::string m_id;
-
         /// service
         ::fwServices::IService::wptr m_service;
-
-        /// required objects
-        std::vector < ::fwServices::IService::ObjectServiceConfig > m_objects;
 
         /// signal connection information <channel, signal_name>
         ConnectionInfo m_signalConnection;
@@ -324,6 +306,12 @@ private:
 
     /// Store the object connections <objId, connection >
     std::unordered_map< std::string, ConnectionInfo > m_objectConnection;
+
+    struct ServiceProxyType
+    {
+        std::unordered_map< std::string, helper::ProxyConnections > m_proxyCnt;
+    };
+    std::unordered_map< std::string, ServiceProxyType > m_proxies;
 
     /// Connections to the OSR
     ::fwCom::Connection m_addObjectConnection;

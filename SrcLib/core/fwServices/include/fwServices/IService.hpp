@@ -66,6 +66,7 @@ class FWSERVICES_CLASS_API IService : public ::fwTools::Object,
 // to give to OSR an access on IService.m_associatedObject;
 friend class registry::ObjectService;
 friend class AppConfigManager;
+friend class AppManager;
 
 public:
     fwCoreServiceClassDefinitionsMacro( (IService)(::fwTools::Object) );
@@ -89,22 +90,44 @@ public:
     /// Used to store object configuration in a service.
     struct ObjectServiceConfig
     {
+        /// Object identiifer
         std::string m_uid;
+
+        /// Object key used to by getInput()/getInOut()/...
         std::string m_key;
+
+        /// Obejt access (INPUT, INOUT, OUTPUT)
         AccessType m_access;
+
+        /// True if the service is autoConnected this object according to the auto-connection map
         bool m_autoConnect { false };
+
+        /// True if the object is optional (i.e. the service can start even if the object is not present)
         bool m_optional { false };
     };
 
     /// Used to store a service configuration.
     struct Config
     {
+        /// Service uid
         std::string m_uid;
+
+        /// Service implementation
         std::string m_type;
+
+        /// True if the service is autoConnected to all of its inputs/inouts according to the auto-connection map
         bool m_globalAutoConnect { false };
+
+        /// Service worker
         std::string m_worker;
+
+        /// list of required service's objects information (inputs, inouts and outputs)
         std::vector<ObjectServiceConfig> m_objects;
+
+        /// Number of elements in each group
         std::map<std::string, size_t> m_groupSize;
+
+        /// Service configuration (only used with XML config)
         CSPTR(::fwRuntime::ConfigurationElement) m_config;
     };
 
@@ -622,7 +645,6 @@ public:
      */
     FWSERVICES_API void unregisterObject(const std::string& objId);
 
-
     /// Return true if all the non-optional object required by the service are present
     FWSERVICES_API bool hasAllRequiredObjects() const;
 
@@ -735,6 +757,35 @@ protected:
     //@}
 
     /**
+     * @brief Define an object required by this service.
+     *
+     * This method allows to define the required objects to use the service. It can be called in the constructor of the
+     * service implementation. So you can call 'hasAllRequiredObjects()' to know if the service can be started.
+     *
+     * @param[in] key key of the object
+     * @param[in] access access to the object (in or inout)
+     * @param[in] autoConnect if true, the service will be connected to the object's signals
+     * @param[in] optional if true, the service can be started even if the objet is not present
+     */
+    FWSERVICES_API void registerObject(const std::string& key, AccessType access, const bool autoConnect = false,
+                                       const bool optional = false);
+
+    /**
+     * @brief Define an object group required by this service.
+     *
+     * This method allows to define the required objects to use the service. It can be called in the constructor of the
+     * service implementation. So you can call 'hasAllRequiredObjects()' to know if the service can be started.
+     *
+     * @param[in] key key of the object
+     * @param[in] access access to the object (in or inout)
+     * @param[in] nbObject number of object to register (it is the minimum number of objects required by the service)
+     * @param[in] autoConnect if true, the service will be connected to the object's signals
+     * @param[in] optional if true, the service can be started even if the objet is not present
+     */
+    FWSERVICES_API void registerObjectGroup(const std::string& key, AccessType access, const std::uint8_t nbObject,
+                                            const bool autoConnect = false, const bool optional = false);
+
+    /**
      * @brief Configuration element used to configure service internal state using a generic XML like structure
      * TODO Make this const, we are not supposed to edit that !
      */
@@ -796,19 +847,25 @@ private:
     SharedFutureType internalUpdate(bool _async);
 
     /// Connect the service with configuration services and objects
-    FWSERVICES_API void connectToConfig();
+    void connectToConfig();
 
     /// Disconnect the service from configuration services and objects
-    FWSERVICES_API void disconnectFromConfig();
+    void disconnectFromConfig();
 
     /// Connect the service with its data
-    FWSERVICES_API void autoConnect();
+    void autoConnect();
 
     /// Disconnect the service from its data
-    FWSERVICES_API void autoDisconnect();
+    void autoDisconnect();
 
     /// Add a known connection from the appConfig
-    FWSERVICES_API void addProxyConnection(const helper::ProxyConnections& info);
+    void addProxyConnection(const helper::ProxyConnections& info);
+
+    /// Return true if the service contains this object into its requirement
+    bool isObjectRequired(const std::string& objId) const;
+
+    /// Return the information about the required object
+    const ::fwServices::IService::ObjectServiceConfig& getObjInfo(const std::string& objId) const;
 
     /**
      * @brief associated inputs of the service ordered by key

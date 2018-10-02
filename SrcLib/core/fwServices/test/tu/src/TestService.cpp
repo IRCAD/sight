@@ -36,8 +36,9 @@ const std::string TestService::s_OPTION_KEY   = "option";
 const std::string TestService::s_UNCONFIGURED = "UNCONFIGURED";
 const std::string TestService::s_NOT_DEFINED  = "NOT_DEFINED";
 
-const ::fwServices::IService::KeyType TestServiceWithData::s_INPUT  = "input";
-const ::fwServices::IService::KeyType TestServiceWithData::s_OUTPUT = "output";
+const ::fwServices::IService::KeyType TestServiceWithData::s_INPUT       = "input";
+const ::fwServices::IService::KeyType TestServiceWithData::s_INOUT_GROUP = "inoutGroup";
+const ::fwServices::IService::KeyType TestServiceWithData::s_OUTPUT      = "output";
 
 //------------------------------------------------------------------------------
 

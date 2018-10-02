@@ -593,11 +593,21 @@ void ServiceTest::startStopUpdateExceptions(TestService::sptr _service)
 
 void ServiceTest::testWithInAndOut()
 {
-    ::fwData::Integer::sptr obj          = ::fwData::Integer::New(18);
-    ::fwServices::IService::sptr service = ::fwServices::add("::fwServices::ut::TestServiceWithData");
+    ::fwData::Integer::sptr obj                         = ::fwData::Integer::New(18);
+    ::fwData::Integer::sptr obj2                        = ::fwData::Integer::New(23);
+    ::fwServices::ut::TestServiceWithData::sptr service =
+        ::fwServices::add< ::fwServices::ut::TestServiceWithData >("::fwServices::ut::TestServiceWithData");
 
     CPPUNIT_ASSERT(service);
+    CPPUNIT_ASSERT_EQUAL(false, service->hasAllRequiredObjects());
     service->registerInput(obj, ::fwServices::ut::TestServiceWithData::s_INPUT);
+    CPPUNIT_ASSERT_EQUAL(true, service->hasAllRequiredObjects());
+
+    service->registerGroup();
+    CPPUNIT_ASSERT_EQUAL(false, service->hasAllRequiredObjects());
+    service->registerInOut(obj, KEY_GROUP_NAME(::fwServices::ut::TestServiceWithData::s_INOUT_GROUP, 0));
+    CPPUNIT_ASSERT_EQUAL(false, service->hasAllRequiredObjects());
+    service->registerInOut(obj2, KEY_GROUP_NAME(::fwServices::ut::TestServiceWithData::s_INOUT_GROUP, 1));
 
     service->start();
     CPPUNIT_ASSERT(service->isStarted());

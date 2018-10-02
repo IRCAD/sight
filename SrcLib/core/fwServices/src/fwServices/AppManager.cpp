@@ -35,89 +35,6 @@ AppManager::ServiceInfo::ServiceInfo(const ::fwServices::IService::sptr& srv, co
 }
 
 //------------------------------------------------------------------------------
-
-void AppManager::ServiceInfo::addObject(const std::string& objId, const ::fwServices::IService::KeyType& key,
-                                        const ::fwServices::IService::AccessType access, const bool autoConnect,
-                                        const bool optional)
-{
-    ::fwServices::IService::ObjectServiceConfig cfg;
-    cfg.m_uid         = objId;
-    cfg.m_key         = key;
-    cfg.m_access      = access;
-    cfg.m_autoConnect = autoConnect;
-    cfg.m_optional    = optional;
-
-    m_objects.emplace_back(cfg);
-}
-
-//------------------------------------------------------------------------------
-
-bool AppManager::ServiceInfo::isObjectRequired(const std::string& objId) const
-{
-    auto itr = std::find_if( m_objects.begin(), m_objects.end(),
-                             [&](const ::fwServices::IService::ObjectServiceConfig& objInfo)
-        {
-
-            return (objInfo.m_uid == objId && objInfo.m_access != ::fwServices::IService::AccessType::OUTPUT);
-        });
-
-    return (itr != m_objects.end());
-}
-
-//------------------------------------------------------------------------------
-
-bool AppManager::ServiceInfo::hasAllRequiredObjects() const
-{
-
-    bool hasAllObjects = true;
-
-    for (const auto& objectCfg : m_objects)
-    {
-        if (objectCfg.m_optional == false)
-        {
-            ::fwServices::IService::sptr srv = m_service.lock();
-            if (objectCfg.m_access == ::fwServices::IService::AccessType::INPUT)
-            {
-                if (nullptr == srv->getInput< ::fwData::Object >(objectCfg.m_key))
-                {
-                    SLM_DEBUG("The 'input' object with key '" + objectCfg.m_key + "' is missing for '" + srv->getID()
-                              + "'");
-                    hasAllObjects = false;
-                    break;
-                }
-            }
-            else if (objectCfg.m_access == ::fwServices::IService::AccessType::INOUT)
-            {
-                if (nullptr == srv->getInOut< ::fwData::Object >(objectCfg.m_key))
-                {
-                    SLM_DEBUG("The 'input' object with key '" + objectCfg.m_key + "' is missing for '" + srv->getID()
-                              + "'");
-                    hasAllObjects = false;
-                    break;
-                }
-            }
-        }
-    }
-    return hasAllObjects;
-}
-
-//------------------------------------------------------------------------------
-
-const ::fwServices::IService::ObjectServiceConfig& AppManager::ServiceInfo::getObjInfo(const std::string& objId) const
-{
-    auto itr = std::find_if( m_objects.begin(), m_objects.end(),
-                             [&](const ::fwServices::IService::ObjectServiceConfig& objInfo)
-        {
-
-            return (objInfo.m_uid == objId);
-        });
-
-    SLM_ASSERT("Object '" + objId + "' is not registered.", itr != m_objects.end());
-
-    return *itr;
-}
-
-//------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
 
 AppManager::AppManager()
@@ -150,9 +67,10 @@ void AppManager::destroy()
     this->stopAndUnaddServices();
 
     // remove all the registered objects
-    for (auto obj: m_registeredObject)
+    while (!m_registeredObject.empty())
     {
-        this->removeObject(obj.second, obj.first);
+        auto firstObj = m_registeredObject.begin();
+        this->removeObject(firstObj->second, firstObj->first);
     }
     m_registeredObject.clear();
 }
@@ -195,7 +113,7 @@ void AppManager::startService(const ::fwServices::IService::sptr& srv)
     const ServiceInfo& info = this->getServiceInfo(srv);
 
     FW_RAISE_IF("Service cannot be started because all the required objects are not present.",
-                !info.hasAllRequiredObjects());
+                !srv->hasAllRequiredObjects());
     this->start(info).wait();
 }
 
@@ -217,9 +135,9 @@ void AppManager::startServices()
 
     for (auto& srvInfo : m_services)
     {
-        if (srvInfo.m_autoStart && srvInfo.hasAllRequiredObjects())
+        ::fwServices::IService::sptr srv = srvInfo.m_service.lock();
+        if (srvInfo.m_autoStart && srv->hasAllRequiredObjects())
         {
-            ::fwServices::IService::sptr srv = srvInfo.m_service.lock();
             futures.push_back(this->start(srvInfo));
 
             if (srvInfo.m_autoUpdate)
@@ -269,29 +187,22 @@ void AppManager::registerObject(const ::fwServices::IService::sptr& srv, const s
                                 const ::fwServices::IService::AccessType access,
                                 const bool autoConnect, const bool optional)
 {
-    ServiceInfo& info = this->getServiceInfo(srv);
+    const ServiceInfo& info = this->getServiceInfo(srv);
 
-    info.addObject(objId, key, access, autoConnect, optional);
+    srv->registerObject(objId, key, access, autoConnect, optional);
 
-    if (access == ::fwServices::IService::AccessType::OUTPUT)
+    auto it = m_registeredObject.find(objId);
+    if (it != m_registeredObject.end())
     {
-        srv->setObjectId(key, objId);
-    }
-    else
-    {
-        auto it = m_registeredObject.find(objId);
-        if (it != m_registeredObject.end())
+        srv->registerObject(it->second, key, access, autoConnect, optional);
+
+        if (info.m_autoStart && srv->hasAllRequiredObjects())
         {
-            srv->registerObject(it->second, key, access, autoConnect, optional);
+            this->start(info);
 
-            if (info.m_autoStart && info.hasAllRequiredObjects())
+            if (info.m_autoUpdate)
             {
-                this->start(info);
-
-                if (info.m_autoUpdate)
-                {
-                    srv->update().wait();
-                }
+                srv->update().wait();
             }
         }
     }
@@ -338,6 +249,26 @@ void AppManager::connectObjectSignal(const std::string& channel, const std::stri
 
 //------------------------------------------------------------------------------
 
+void AppManager::addProxyConnection(const helper::ProxyConnections& proxy)
+{
+    for (const auto& sigInfo: proxy.m_signals)
+    {
+        auto& itSrv                        = m_proxies[sigInfo.first];
+        helper::ProxyConnections& objProxy = itSrv.m_proxyCnt[proxy.m_channel];
+        objProxy.addSignalConnection(sigInfo);
+        objProxy.m_channel = proxy.m_channel;
+    }
+    for (const auto& slotInfo: proxy.m_slots)
+    {
+        auto& itSrv                        = m_proxies[slotInfo.first];
+        helper::ProxyConnections& objProxy = itSrv.m_proxyCnt[proxy.m_channel];
+        objProxy.addSlotConnection(slotInfo);
+        objProxy.m_channel = proxy.m_channel;
+    }
+}
+
+//------------------------------------------------------------------------------
+
 void AppManager::addObject(::fwData::Object::sptr obj, const std::string& id)
 {
     auto it = m_registeredObject.find(id);
@@ -356,13 +287,17 @@ void AppManager::addObject(::fwData::Object::sptr obj, const std::string& id)
     }
 
     auto proxy = ::fwServices::registry::Proxy::getDefault();
-    auto cntIt = m_objectConnection.find(id);
-    if (cntIt != m_objectConnection.end())
+
+    auto proxyIt = m_proxies.find(id);
+    if (proxyIt != m_proxies.end())
     {
-        for (auto& sigInfo : cntIt->second)
+        for (auto& cntInfo : proxyIt->second.m_proxyCnt)
         {
-            auto sig = obj->signal(sigInfo.second);
-            proxy->connect(sigInfo.first, sig);
+            for (auto& sigInfo : cntInfo.second.m_signals)
+            {
+                auto sig = obj->signal(sigInfo.second);
+                proxy->connect(cntInfo.second.m_channel, sig);
+            }
         }
     }
 
@@ -371,11 +306,10 @@ void AppManager::addObject(::fwData::Object::sptr obj, const std::string& id)
 
     for (auto& srvInfo : m_services)
     {
-        if (srvInfo.isObjectRequired(id))
+        ::fwServices::IService::sptr srv = srvInfo.m_service.lock();
+        if (srv->isObjectRequired(id))
         {
-            ::fwServices::IService::sptr srv = srvInfo.m_service.lock();
-
-            const ::fwServices::IService::ObjectServiceConfig& objCfg = srvInfo.getObjInfo(id);
+            const ::fwServices::IService::ObjectServiceConfig& objCfg = srv->getObjInfo(id);
 
             auto registeredObj = ::fwServices::OSR::getRegistered(objCfg.m_key, objCfg.m_access, srv);
 
@@ -403,7 +337,7 @@ void AppManager::addObject(::fwData::Object::sptr obj, const std::string& id)
                 }
             }
 
-            if (srvInfo.m_autoStart && srvInfo.hasAllRequiredObjects() && !srv->isStarted())
+            if (srvInfo.m_autoStart && srv->hasAllRequiredObjects() && !srv->isStarted())
             {
                 serviceToStart.emplace_back(srvInfo);
 
@@ -440,10 +374,11 @@ void AppManager::removeObject(::fwData::Object::sptr obj, const std::string& id)
 
     for (auto& srvInfo : m_services)
     {
-        if (srvInfo.isObjectRequired(id))
+        FW_RAISE_IF("service is expired", srvInfo.m_service.expired());
+        ::fwServices::IService::sptr srv = srvInfo.m_service.lock();
+        if (srv->isObjectRequired(id))
         {
-            ::fwServices::IService::sptr srv = srvInfo.m_service.lock();
-            const ::fwServices::IService::ObjectServiceConfig& objCfg = srvInfo.getObjInfo(id);
+            const ::fwServices::IService::ObjectServiceConfig& objCfg = srv->getObjInfo(id);
 
             if (::fwServices::OSR::isRegistered(objCfg.m_key, objCfg.m_access, srv))
             {
@@ -461,20 +396,25 @@ void AppManager::removeObject(::fwData::Object::sptr obj, const std::string& id)
             }
         }
     }
+
+    auto proxy = ::fwServices::registry::Proxy::getDefault();
+
+    auto proxyIt = m_proxies.find(id);
+    if (proxyIt != m_proxies.end())
+    {
+        for (auto& cntInfo : proxyIt->second.m_proxyCnt)
+        {
+            for (auto& sigInfo : cntInfo.second.m_signals)
+            {
+                auto sig = obj->signal(sigInfo.second);
+                proxy->disconnect(cntInfo.second.m_channel, sig);
+            }
+        }
+    }
     auto it = m_registeredObject.find(id);
     if (it != m_registeredObject.end())
     {
         m_registeredObject.erase(it);
-    }
-    auto proxy = ::fwServices::registry::Proxy::getDefault();
-    auto cntIt = m_objectConnection.find(id);
-    if (cntIt != m_objectConnection.end())
-    {
-        for (auto& sigInfo : cntIt->second)
-        {
-            auto sig = obj->signal(sigInfo.second);
-            proxy->disconnect(sigInfo.first, sig);
-        }
     }
 }
 
@@ -526,18 +466,13 @@ const AppManager::ServiceInfo& AppManager::getServiceInfo(const ::fwServices::IS
 {
     ::fwServices::IService::sptr srv = info.m_service.lock();
 
-    auto proxy = ::fwServices::registry::Proxy::getDefault();
-
-    for (auto& sigInfo : info.m_signalConnection)
+    auto proxyIt = m_proxies.find(srv->getID());
+    if (proxyIt != m_proxies.end())
     {
-        auto sig = srv->signal(sigInfo.second);
-        proxy->connect(sigInfo.first, sig);
-    }
-
-    for (auto& slotInfo : info.m_slotConnection)
-    {
-        auto slot = srv->slot(slotInfo.second);
-        proxy->connect(slotInfo.first, slot);
+        for (const auto& proxyCnt: proxyIt->second.m_proxyCnt)
+        {
+            srv->addProxyConnection(proxyCnt.second);
+        }
     }
 
     ::fwServices::IService::SharedFutureType future = srv->start();
@@ -555,20 +490,6 @@ const AppManager::ServiceInfo& AppManager::getServiceInfo(const ::fwServices::IS
     ::fwServices::IService::SharedFutureType future = srv->stop();
     auto it = std::find(m_startedService.begin(), m_startedService.end(), srv);
     m_startedService.erase(it);
-
-    auto proxy = ::fwServices::registry::Proxy::getDefault();
-
-    for (auto& sigInfo : info.m_signalConnection)
-    {
-        auto sig = srv->signal(sigInfo.second);
-        proxy->disconnect(sigInfo.first, sig);
-    }
-
-    for (auto& slotInfo : info.m_slotConnection)
-    {
-        auto slot = srv->slot(slotInfo.second);
-        proxy->disconnect(slotInfo.first, slot);
-    }
 
     return future;
 }
