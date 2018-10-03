@@ -1017,7 +1017,7 @@ const IService::ObjectServiceConfig& IService::getObjInfo(const std::string& obj
             return (id.second == objId);
         });
 
-    SLM_ASSERT("object '" + objId + "' is not registered", keyItr != m_idsMap.end());
+    SLM_ASSERT("object '" + objId + "' is not registered for '" + this->getID() + "'.", keyItr != m_idsMap.end());
     const std::string key = keyItr->first;
 
     auto itr = std::find_if( m_serviceConfig.m_objects.begin(),  m_serviceConfig.m_objects.end(),
@@ -1025,7 +1025,8 @@ const IService::ObjectServiceConfig& IService::getObjInfo(const std::string& obj
         {
             return (config.m_key == key);
         });
-    SLM_ASSERT("Object '" + objId + "' is not registered.", itr != m_serviceConfig.m_objects.end());
+    SLM_ASSERT("Object '" + objId + "' is not registered '" + this->getID() + "'.",
+               itr != m_serviceConfig.m_objects.end());
 
     return *itr;
 }
@@ -1056,11 +1057,12 @@ void IService::registerObject(const ::fwServices::IService::KeyType& key,
 
 //-----------------------------------------------------------------------------
 
-void IService::registerObjectGroup(const std::string& key, AccessType access, const std::uint8_t nbObject,
-                                   const bool autoConnect, const bool optional)
+void IService::registerObjectGroup(const std::string& key, AccessType access, const std::uint8_t minNbObject,
+                                   const bool autoConnect, const std::uint8_t maxNbObject)
 {
-    for (std::uint8_t i = 0; i < nbObject; ++i)
+    for (std::uint8_t i = 0; i < maxNbObject; ++i)
     {
+        const bool optional = (i < minNbObject ? false : true);
         ObjectServiceConfig objConfig;
         objConfig.m_key         = KEY_GROUP_NAME(key, i);
         objConfig.m_access      = access;
@@ -1069,7 +1071,7 @@ void IService::registerObjectGroup(const std::string& key, AccessType access, co
 
         m_serviceConfig.m_objects.push_back(objConfig);
     }
-    m_keyGroupSize[key] = nbObject;
+    m_keyGroupSize[key] = minNbObject;
 }
 
 //-----------------------------------------------------------------------------

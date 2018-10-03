@@ -343,7 +343,7 @@ public:
 
     void registerGroup()
     {
-        this->registerObjectGroup(s_INOUT_GROUP, AccessType::INOUT, 2, true, false);
+        this->registerObjectGroup(s_INOUT_GROUP, AccessType::INOUT, 2, true);
     }
 
     //------------------------------------------------------------------------------

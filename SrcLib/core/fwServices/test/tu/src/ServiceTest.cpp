@@ -608,6 +608,7 @@ void ServiceTest::testWithInAndOut()
     service->registerInOut(obj, KEY_GROUP_NAME(::fwServices::ut::TestServiceWithData::s_INOUT_GROUP, 0));
     CPPUNIT_ASSERT_EQUAL(false, service->hasAllRequiredObjects());
     service->registerInOut(obj2, KEY_GROUP_NAME(::fwServices::ut::TestServiceWithData::s_INOUT_GROUP, 1));
+    CPPUNIT_ASSERT_EQUAL(true, service->hasAllRequiredObjects());
 
     service->start();
     CPPUNIT_ASSERT(service->isStarted());

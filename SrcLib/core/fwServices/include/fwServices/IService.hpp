@@ -778,12 +778,15 @@ protected:
      *
      * @param[in] key key of the object
      * @param[in] access access to the object (in or inout)
-     * @param[in] nbObject number of object to register (it is the minimum number of objects required by the service)
+     * @param[in] minNbObject number of object to register (it is the minimum number of objects required by the service)
      * @param[in] autoConnect if true, the service will be connected to the object's signals
-     * @param[in] optional if true, the service can be started even if the objet is not present
+     * @param[in] maxNbObject maximum number of object to register (they are defined as optional
+     *
+     * @note This method will register maxNbObject in the group named (<key>#0, <key>#1, ... <key>#<maxNbObject>). The
+     * first Nth objects (minNbObject) are required, the other are optional.
      */
-    FWSERVICES_API void registerObjectGroup(const std::string& key, AccessType access, const std::uint8_t nbObject,
-                                            const bool autoConnect = false, const bool optional = false);
+    FWSERVICES_API void registerObjectGroup(const std::string& key, AccessType access, const std::uint8_t minNbObject,
+                                            const bool autoConnect = false, const std::uint8_t maxNbObject = 10);
 
     /**
      * @brief Configuration element used to configure service internal state using a generic XML like structure
