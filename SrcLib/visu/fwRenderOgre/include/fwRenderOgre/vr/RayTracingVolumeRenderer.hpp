@@ -104,6 +104,9 @@ public:
     /// IllumVolume getter.
     FWRENDEROGRE_API SATVolumeIllumination::sptr getIllumVolume();
 
+    /// Returns whether or not the volume is visible.
+    FWRENDEROGRE_API bool isVisible() const;
+
     /// Layer getter
     ::fwRenderOgre::Layer::sptr getLayer() const;
 
