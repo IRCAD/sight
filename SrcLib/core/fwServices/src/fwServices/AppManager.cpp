@@ -251,19 +251,25 @@ void AppManager::connectObjectSignal(const std::string& channel, const std::stri
 
 void AppManager::addProxyConnection(const helper::ProxyConnections& proxy)
 {
+    static size_t count = 0;
+    std::string channel = proxy.m_channel;
+    if (channel == "undefined")
+    {
+        channel = "AppManager_channel_" + std::to_string(count++);
+    }
     for (const auto& sigInfo: proxy.m_signals)
     {
         auto& itSrv                        = m_proxies[sigInfo.first];
-        helper::ProxyConnections& objProxy = itSrv.m_proxyCnt[proxy.m_channel];
+        helper::ProxyConnections& objProxy = itSrv.m_proxyCnt[channel];
         objProxy.addSignalConnection(sigInfo);
-        objProxy.m_channel = proxy.m_channel;
+        objProxy.m_channel = channel;
     }
     for (const auto& slotInfo: proxy.m_slots)
     {
         auto& itSrv                        = m_proxies[slotInfo.first];
-        helper::ProxyConnections& objProxy = itSrv.m_proxyCnt[proxy.m_channel];
+        helper::ProxyConnections& objProxy = itSrv.m_proxyCnt[channel];
         objProxy.addSlotConnection(slotInfo);
-        objProxy.m_channel = proxy.m_channel;
+        objProxy.m_channel = channel;
     }
 }
 
