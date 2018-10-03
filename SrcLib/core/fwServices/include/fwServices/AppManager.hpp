@@ -167,62 +167,6 @@ public:
     FWSERVICES_API void stopAndUnaddServices();
 
     /**
-     * @brief Define the object required by a service.
-     *
-     * It the object is already registered in the AppManager, it will be registered into the service.
-     * If all the service objects are present and the service is registered with autoConnect=yes, it will be started.
-     *
-     * @param srv the service requiring the object
-     * @param objId the identifier of the object, this identifier is only used to retrieve the object inside this
-     *        AppManager, it is different from the uid.
-     * @param key key of the object used into the service
-     * @param access access of the object into the service INPUT, INOUT or OUTPUT
-     * @param autoConnect true if the service will be connected to the object signals
-     * @param optional true if the object is optional (i.e. the service can be started even if the object is not
-     *        present).
-     */
-    FWSERVICES_API void registerObject(const ::fwServices::IService::sptr& srv, const std::string& objId,
-                                       const ::fwServices::IService::KeyType& key,
-                                       const ::fwServices::IService::AccessType access,
-                                       const bool autoConnect = false, const bool optional = false);
-
-    /**
-     * @brief Register the connection of the service's signal to the channel
-     *
-     * The signal will be connected just before the service starting, and disconnected just after the service stopping.
-     *
-     * @param channel channel to connect
-     * @param srv service containig the signal
-     * @param sigName name of the signal
-     */
-    FWSERVICES_API void connectSignal(const std::string& channel, const ::fwServices::IService::sptr& srv,
-                                      const std::string sigName);
-
-    /**
-     * @brief Register the connection of the service's slot to the channel
-     *
-     * The slot will be connected just before the service starting, and disconnected just after the service stopping.
-     *
-     * @param channel channel to connect
-     * @param srv service containig the slot
-     * @param sigName name of the slot
-     */
-    FWSERVICES_API void connectSlot(const std::string& channel, const ::fwServices::IService::sptr& srv,
-                                    const std::string& slotName);
-
-    /**
-     * @brief Register the connection of the object's signal to the channel
-     *
-     * The signal will be connected just before the object is added, and disconnected just after the object is removed.
-     *
-     * @param channel channel to connect
-     * @param objId identifier of the object in the AppManager
-     * @param sigName name of the signal
-     */
-    FWSERVICES_API void connectObjectSignal(const std::string& channel, const std::string& objId,
-                                            const std::string& sigName);
-
-    /**
      * @brief Slot: register the added object into all the services that require it
      *
      * This slot is connected to the OSR to listen the created object, it could also be called by the AppManager
@@ -269,12 +213,6 @@ private:
 
         /// service
         ::fwServices::IService::wptr m_service;
-
-        /// signal connection information <channel, signal_name>
-        ConnectionInfo m_signalConnection;
-
-        /// slot connection information <channel, slot_name>
-        ConnectionInfo m_slotConnection;
 
         /// True if the service will be automatically started when all its required objects are present
         bool m_autoStart;
