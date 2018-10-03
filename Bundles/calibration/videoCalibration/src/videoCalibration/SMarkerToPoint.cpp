@@ -124,15 +124,14 @@ void SMarkerToPoint::clear()
 
     ::fwData::mt::ObjectReadLock lock(pl);
 
-    if (pl && pl->getPoints().size() > 0)
+    if (pl && !pl->getPoints().empty())
     {
-        ::fwData::Point::sptr p = pl->getPoints()[0];
         pl->clear();
 
-        auto sig = pl->signal< ::fwData::PointList::PointAddedSignalType >(::fwData::PointList::s_POINT_REMOVED_SIG);
+        auto sig = pl->signal< ::fwData::PointList::ModifiedSignalType >(::fwData::PointList::s_MODIFIED_SIG);
         {
             ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
-            sig->asyncEmit(p);
+            sig->asyncEmit();
         }
     }
 }
