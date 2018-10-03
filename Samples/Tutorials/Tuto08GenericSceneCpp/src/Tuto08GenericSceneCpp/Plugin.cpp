@@ -321,41 +321,50 @@ void Plugin::initialize()
     *              register inputs/inouts
     ****************************************************************************************/
 
-    m_appManager->registerObject(sliderIndexEditor, s_IMAGE_ID, "image", ::fwServices::IService::AccessType::INOUT,
-                                 true);
-    m_appManager->registerObject(imageReaderSrv, s_IMAGE_ID, "data", ::fwServices::IService::AccessType::OUTPUT, true);
-    m_appManager->registerObject(meshReaderSrv, s_MESH_ID, "data", ::fwServices::IService::AccessType::OUTPUT, true);
-    m_appManager->registerObject(textureReaderSrv, s_TEXTURE_ID, "data", ::fwServices::IService::AccessType::OUTPUT,
-                                 true);
-    m_appManager->registerObject(imageAdaptor, s_IMAGE_ID, "image", ::fwServices::IService::AccessType::INOUT, true);
-    m_appManager->registerObject(meshAdaptor, s_MESH_ID, "mesh", ::fwServices::IService::AccessType::INPUT, true);
-    m_appManager->registerObject(textureAdaptor, s_TEXTURE_ID, "texture", ::fwServices::IService::AccessType::INOUT,
-                                 true);
+    imageReaderSrv->registerObject(s_IMAGE_ID, "data", ::fwServices::IService::AccessType::OUTPUT, false, true);
+    meshReaderSrv->registerObject(s_MESH_ID, "data", ::fwServices::IService::AccessType::OUTPUT, false, true);
+    textureReaderSrv->registerObject(s_TEXTURE_ID, "data", ::fwServices::IService::AccessType::OUTPUT, false, true);
+    sliderIndexEditor->setObjectId("image", s_IMAGE_ID);
+    imageAdaptor->setObjectId("image", s_IMAGE_ID );
+    meshAdaptor->setObjectId("mesh", s_MESH_ID);
+    textureAdaptor->setObjectId("texture", s_TEXTURE_ID);
 
     /* **************************************************************************************
     *              connect the services
     ****************************************************************************************/
 
-    m_appManager->connectSignal("jobsChannel", meshReaderSrv, "jobCreated");
-    m_appManager->connectSignal("jobsChannel", imageReaderSrv, "jobCreated");
-    m_appManager->connectSignal("jobsChannel", textureReaderSrv, "jobCreated");
-    m_appManager->connectSlot("jobsChannel", progressBar, "showJob");
+    ::fwServices::helper::ProxyConnections jobCnt;
+    jobCnt.addSignalConnection(meshReaderSrv->getID(), "jobCreated");
+    jobCnt.addSignalConnection(imageReaderSrv->getID(), "jobCreated");
+    jobCnt.addSignalConnection(textureReaderSrv->getID(), "jobCreated");
+    jobCnt.addSlotConnection(progressBar->getID(), "showJob");
+    m_appManager->addProxyConnection(jobCnt);
 
-    m_appManager->connectSignal("showScanChannel", showScanEditor, "toggled");
-    m_appManager->connectSlot("showScanChannel", sliceListEditor, "setEnabled");
-    m_appManager->connectSlot("showScanChannel", imageAdaptor, "showSlice");
+    ::fwServices::helper::ProxyConnections showScanCnt;
+    showScanCnt.addSignalConnection(showScanEditor->getID(), "toggled");
+    showScanCnt.addSlotConnection(sliceListEditor->getID(), "setEnabled");
+    showScanCnt.addSlotConnection(imageAdaptor->getID(), "showSlice");
+    m_appManager->addProxyConnection(showScanCnt);
 
-    m_appManager->connectSignal("snapChannel", snapshotEditor, "snapped");
-    m_appManager->connectSlot("snapChannel", snapshotAdaptor, "snap");
+    ::fwServices::helper::ProxyConnections snapCnt;
+    snapCnt.addSignalConnection(snapshotEditor->getID(), "snapped");
+    snapCnt.addSlotConnection(snapshotAdaptor->getID(), "snap");
+    m_appManager->addProxyConnection(snapCnt);
 
-    m_appManager->connectSignal("sliceListChannel", sliceListEditor, "selected");
-    m_appManager->connectSlot("sliceListChannel", imageAdaptor, "updateSliceMode");
+    ::fwServices::helper::ProxyConnections sliceListCnt;
+    sliceListCnt.addSignalConnection(sliceListEditor->getID(), "selected");
+    sliceListCnt.addSlotConnection(imageAdaptor->getID(), "updateSliceMode");
+    m_appManager->addProxyConnection(sliceListCnt);
 
-    m_appManager->connectSignal("textureChannel", meshAdaptor, "textureApplied");
-    m_appManager->connectSlot("textureChannel", textureAdaptor, "applyTexture");
+    ::fwServices::helper::ProxyConnections textureCnt;
+    textureCnt.addSignalConnection(meshAdaptor->getID(), "textureApplied");
+    textureCnt.addSlotConnection(textureAdaptor->getID(), "applyTexture");
+    m_appManager->addProxyConnection(textureCnt);
 
-    m_appManager->connectSignal("textureUpdatedChannel", textureAdaptor, "started");
-    m_appManager->connectSlot("textureUpdatedChannel", meshAdaptor, "update");
+    ::fwServices::helper::ProxyConnections textureUpdatedCnt;
+    textureUpdatedCnt.addSignalConnection(textureAdaptor->getID(), "started");
+    textureUpdatedCnt.addSlotConnection(meshAdaptor->getID(), "update");
+    m_appManager->addProxyConnection(textureUpdatedCnt);
 
     /* **************************************************************************************
     *              start the services

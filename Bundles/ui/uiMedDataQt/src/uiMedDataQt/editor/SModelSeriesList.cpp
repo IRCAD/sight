@@ -140,6 +140,8 @@ SModelSeriesList::SModelSeriesList() noexcept :
     m_sigEmptiedSelection       = newSignal< EmptiedSelectionSignalType >( s_EMPTIED_SELECTION_SIG );
 
     newSlot(s_SHOW_RECONSTRUCTIONS_SLOT, &SModelSeriesList::showReconstructions, this);
+
+    this->registerObject("modelSeries", ::fwServices::IService::AccessType::INOUT, true);
 }
 
 //------------------------------------------------------------------------------

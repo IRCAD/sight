@@ -419,38 +419,23 @@ void Plugin::initialize()
     *              register inputs/inouts
     ****************************************************************************************/
 
-    m_appManager->registerObject(sliderIndexEditor, s_IMAGE_ID, "image", ::fwServices::IService::AccessType::INOUT,
-                                 true);
-    m_appManager->registerObject(imageSeriesReader, s_IMAGE_SERIES_ID, "data",
-                                 ::fwServices::IService::AccessType::OUTPUT, true);
-    m_appManager->registerObject(modelSeriesWriter, s_MODEL_SERIES_ID, "data",
-                                 ::fwServices::IService::AccessType::INPUT, true);
-
-    m_appManager->registerObject(extractImage, s_IMAGE_SERIES_ID, "source", ::fwServices::IService::AccessType::INOUT,
-                                 true);
-    m_appManager->registerObject(extractImage, s_IMAGE_ID, "target", ::fwServices::IService::AccessType::OUTPUT, true);
-    m_appManager->registerObject(medicaImageConverter, s_IMAGE_ID, "image", ::fwServices::IService::AccessType::INOUT,
-                                 true);
-
-    m_appManager->registerObject(listOrganEditor, s_MODEL_SERIES_ID, "modelSeries",
-                                 ::fwServices::IService::AccessType::INOUT, true);
-    m_appManager->registerObject(organMaterialEditor, s_RECONSTRUCTION_ID, "reconstruction",
-                                 ::fwServices::IService::AccessType::INOUT, true);
-    m_appManager->registerObject(representationEditor, s_RECONSTRUCTION_ID, "reconstruction",
-                                 ::fwServices::IService::AccessType::INOUT, true);
-
-    m_appManager->registerObject(mesher50, s_IMAGE_SERIES_ID, "imageSeries", ::fwServices::IService::AccessType::INPUT,
-                                 true);
-    m_appManager->registerObject(mesher50, s_MODEL_SERIES_ID, "modelSeries", ::fwServices::IService::AccessType::OUTPUT,
-                                 true);
-    m_appManager->registerObject(mesher80, s_IMAGE_SERIES_ID, "imageSeries", ::fwServices::IService::AccessType::INPUT,
-                                 true);
-    m_appManager->registerObject(mesher80, s_MODEL_SERIES_ID, "modelSeries", ::fwServices::IService::AccessType::OUTPUT,
-                                 true);
-
-    m_appManager->registerObject(imageAdaptor, s_IMAGE_ID, "image", ::fwServices::IService::AccessType::INOUT, true);
-    m_appManager->registerObject(modelSeriesAdaptor, s_MODEL_SERIES_ID, "model",
-                                 ::fwServices::IService::AccessType::INPUT, true);
+    imageSeriesReader->registerObject(s_IMAGE_SERIES_ID, "data", ::fwServices::IService::AccessType::OUTPUT, false,
+                                      true);
+    modelSeriesWriter->registerObject(s_MODEL_SERIES_ID, "data", ::fwServices::IService::AccessType::INPUT, false,
+                                      true);
+    sliderIndexEditor->setObjectId("image", s_IMAGE_ID);
+    imageAdaptor->setObjectId("image", s_IMAGE_ID);
+    extractImage->setObjectId("source", s_IMAGE_SERIES_ID);
+    extractImage->setObjectId("target#0", s_IMAGE_ID);
+    medicaImageConverter->setObjectId( "image", s_IMAGE_ID);
+    listOrganEditor->setObjectId("modelSeries", s_MODEL_SERIES_ID);
+    organMaterialEditor->setObjectId("reconstruction", s_RECONSTRUCTION_ID);
+    representationEditor->setObjectId("reconstruction", s_RECONSTRUCTION_ID);
+    mesher50->setObjectId("imageSeries", s_IMAGE_SERIES_ID);
+    mesher50->setObjectId("modelSeries", s_MODEL_SERIES_ID);
+    mesher80->setObjectId("imageSeries", s_IMAGE_SERIES_ID);
+    mesher80->setObjectId("modelSeries", s_MODEL_SERIES_ID);
+    modelSeriesAdaptor->setObjectId("model", s_MODEL_SERIES_ID);
 
     /* **************************************************************************************
     *              connect the services
@@ -480,32 +465,48 @@ void Plugin::initialize()
     m_slotEmptySelection->setWorker(worker);
     proxy->connect(s_EMPTY_SELECTION_CHANNEL, m_slotEmptySelection);
 
-    m_appManager->connectSignal("jobsChannel", imageSeriesReader, "jobCreated");
-    m_appManager->connectSignal("jobsChannel", modelSeriesWriter, "jobCreated");
-    m_appManager->connectSlot("jobsChannel", progressBar, "showJob");
+    ::fwServices::helper::ProxyConnections jobCnt;
+    jobCnt.addSignalConnection(imageSeriesReader->getID(), "jobCreated");
+    jobCnt.addSignalConnection(modelSeriesWriter->getID(), "jobCreated");
+    jobCnt.addSlotConnection(progressBar->getID(), "showJob");
+    m_appManager->addProxyConnection(jobCnt);
 
-    m_appManager->connectSignal("snapChannel", snapshotEditor, "snapped");
-    m_appManager->connectSlot("snapChannel", snapshotAdaptor, "snap");
+    ::fwServices::helper::ProxyConnections showScanCnt;
+    showScanCnt.addSignalConnection(showScanEditor->getID(), "toggled");
+    showScanCnt.addSlotConnection(sliceListEditor->getID(), "setEnabled");
+    showScanCnt.addSlotConnection(imageAdaptor->getID(), "showSlice");
+    m_appManager->addProxyConnection(showScanCnt);
 
-    m_appManager->connectSignal("showScanChannel", showScanEditor, "toggled");
-    m_appManager->connectSlot("showScanChannel", sliceListEditor, "setEnabled");
-    m_appManager->connectSlot("showScanChannel", imageAdaptor, "showSlice");
+    ::fwServices::helper::ProxyConnections snapCnt;
+    snapCnt.addSignalConnection(snapshotEditor->getID(), "snapped");
+    snapCnt.addSlotConnection(snapshotAdaptor->getID(), "snap");
+    m_appManager->addProxyConnection(snapCnt);
 
-    m_appManager->connectSignal("sliceListChannel", sliceListEditor, "selected");
-    m_appManager->connectSlot("sliceListChannel", imageAdaptor, "updateSliceMode");
+    ::fwServices::helper::ProxyConnections sliceListCnt;
+    sliceListCnt.addSignalConnection(sliceListEditor->getID(), "selected");
+    sliceListCnt.addSlotConnection(imageAdaptor->getID(), "updateSliceMode");
+    m_appManager->addProxyConnection(sliceListCnt);
 
-    m_appManager->connectSignal(s_REC_SELECTED_CHANNEL, listOrganEditor, "reconstructionSelected");
-    m_appManager->connectSignal(s_EMPTY_SELECTION_CHANNEL, listOrganEditor, "emptiedSelection");
+    ::fwServices::helper::ProxyConnections recSelectedCnt(s_REC_SELECTED_CHANNEL);
+    recSelectedCnt.addSignalConnection(listOrganEditor->getID(),  "reconstructionSelected");
+    m_appManager->addProxyConnection(recSelectedCnt);
+    ::fwServices::helper::ProxyConnections emptySelectionCnt(s_EMPTY_SELECTION_CHANNEL);
+    emptySelectionCnt.addSignalConnection(listOrganEditor->getID(),  "emptiedSelection");
+    m_appManager->addProxyConnection(emptySelectionCnt);
 
-    m_appManager->connectSignal("mesherOnChannel", mesher50, "started");
-    m_appManager->connectSignal("mesherOnChannel", mesher80, "started");
-    m_appManager->connectSlot("mesherOnChannel", actionCreateMesh50, "setExecutable");
-    m_appManager->connectSlot("mesherOnChannel", actionCreateMesh80, "setExecutable");
+    ::fwServices::helper::ProxyConnections mesherOnCnt;
+    mesherOnCnt.addSignalConnection(mesher50->getID(), "started");
+    mesherOnCnt.addSignalConnection(mesher80->getID(), "started");
+    mesherOnCnt.addSlotConnection(actionCreateMesh50->getID(), "setExecutable");
+    mesherOnCnt.addSlotConnection(actionCreateMesh80->getID(), "setExecutable");
+    m_appManager->addProxyConnection(mesherOnCnt);
 
-    m_appManager->connectSignal("mesherOffChannel", mesher50, "stopped");
-    m_appManager->connectSignal("mesherOffChannel", mesher80, "stopped");
-    m_appManager->connectSlot("mesherOffChannel", actionCreateMesh50, "setInexecutable");
-    m_appManager->connectSlot("mesherOffChannel", actionCreateMesh80, "setInexecutable");
+    ::fwServices::helper::ProxyConnections mesherOffCnt;
+    mesherOffCnt.addSignalConnection(mesher50->getID(), "stopped");
+    mesherOffCnt.addSignalConnection(mesher80->getID(), "stopped");
+    mesherOffCnt.addSlotConnection(actionCreateMesh50->getID(), "setInexecutable");
+    mesherOffCnt.addSlotConnection(actionCreateMesh80->getID(), "setInexecutable");
+    m_appManager->addProxyConnection(mesherOffCnt);
 
     /* **************************************************************************************
     *              start the services

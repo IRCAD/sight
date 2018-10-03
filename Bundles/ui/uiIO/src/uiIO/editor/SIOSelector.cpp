@@ -325,8 +325,7 @@ void SIOSelector::updating()
                 auto factory = ::fwServices::registry::ServiceFactory::getDefault();
                 ::fwIO::IWriter::sptr writer =
                     ::fwIO::IWriter::dynamicCast(factory->create( "::fwIO::IWriter", extensionId));
-                ::fwServices::OSR::registerService(obj, ::fwIO::s_DATA_KEY,
-                                                   ::fwServices::IService::AccessType::INPUT, writer);
+                writer->registerInput(obj, ::fwIO::s_DATA_KEY);
 
                 writer->setWorker(m_associatedWorker);
 

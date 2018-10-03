@@ -21,5 +21,6 @@ set( REQUIREMENTS
     uiImageQt
     visuVTKQt
     visuVTKAdaptor
+    media
     fwlauncher
 )

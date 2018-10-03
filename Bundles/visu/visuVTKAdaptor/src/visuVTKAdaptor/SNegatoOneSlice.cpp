@@ -212,7 +212,7 @@ void SNegatoOneSlice::swapping(const KeyType& key)
         }
         else if(::fwServices::OSR::isRegistered(s_TF_INOUT, AccessType::INOUT, imageAdaptor))
         {
-            ::fwServices::OSR::unregisterService(s_TF_INOUT, AccessType::INOUT, imageAdaptor);
+            imageAdaptor->unregisterInOut(s_TF_INOUT);
             imageAdaptor->swapKey(s_TF_INOUT, nullptr);
         }
     }

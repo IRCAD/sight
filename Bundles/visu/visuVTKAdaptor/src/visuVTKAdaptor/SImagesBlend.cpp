@@ -184,7 +184,7 @@ void SImagesBlend::swapping(const KeyType& key)
                 }
                 else if(::fwServices::OSR::isRegistered(SImage::s_TF_INOUT, AccessType::INOUT, service))
                 {
-                    ::fwServices::OSR::unregisterService(SImage::s_TF_INOUT, AccessType::INOUT, service);
+                    service->unregisterInOut(SImage::s_TF_INOUT);
                     service->swapKey(SImage::s_TF_INOUT, nullptr);
                 }
             }

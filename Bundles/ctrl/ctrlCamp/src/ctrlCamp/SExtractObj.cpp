@@ -19,11 +19,15 @@ namespace ctrlCamp
 
 fwServicesRegisterMacro(::ctrlCamp::ICamp, ::ctrlCamp::SExtractObj);
 
+static const std::string s_SOURCE_INOUT  = "source";
+static const std::string s_TARGET_OUTPUT = "target";
+
 //-----------------------------------------------------------------------------
 
 SExtractObj::SExtractObj()
 {
-
+    this->registerObject(s_SOURCE_INOUT, AccessType::INOUT);
+    this->registerObjectGroup(s_TARGET_OUTPUT, AccessType::OUTPUT, 0);
 }
 
 //-----------------------------------------------------------------------------
@@ -63,7 +67,7 @@ void SExtractObj::starting()
 
 void SExtractObj::updating()
 {
-    auto sourceObject = this->getInOut< ::fwData::Object >("source");
+    auto sourceObject = this->getInOut< ::fwData::Object >(s_SOURCE_INOUT);
 
     size_t index = 0;
     for(auto path : m_sourcePaths)
@@ -91,7 +95,7 @@ void SExtractObj::updating()
         SLM_WARN_IF("Object from '"+ from +"' not found", !object);
         if(object)
         {
-            this->setOutput("target", object, index);
+            this->setOutput(s_TARGET_OUTPUT, object, index);
         }
         ++index;
     }
@@ -102,7 +106,7 @@ void SExtractObj::updating()
 void SExtractObj::stopping()
 {
     // Unregister outputs
-    for (size_t i = 0; i < this->getKeyGroupSize("target"); ++i)
+    for (size_t i = 0; i < this->getKeyGroupSize(s_TARGET_OUTPUT); ++i)
     {
         this->setOutput("target", nullptr, i);
     }
