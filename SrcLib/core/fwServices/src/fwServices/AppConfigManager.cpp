@@ -615,6 +615,7 @@ void AppConfigManager::createServices(::fwRuntime::ConfigurationElement::csptr c
     }
 
     std::string errMsgTail = " when creating service '" + srvConfig.m_uid + "'.";
+    srv->setConfiguration(srvConfig);
 
     for(const auto& objectCfg : srvConfig.m_objects)
     {
@@ -634,10 +635,9 @@ void AppConfigManager::createServices(::fwRuntime::ConfigurationElement::csptr c
     // This is only true for services that will need to perform some stuff like adding new objects, etc...
     // We will see in the future if this should be replaced or not
     {
-        srv->setObjectId(::fwServices::IService::s_DEFAULT_OBJECT, "defaultObjectId");
-
         srv->registerObject(m_tmpRootObject, ::fwServices::IService::s_DEFAULT_OBJECT,
                             ::fwServices::IService::AccessType::INOUT);
+        srv->setObjectId(::fwServices::IService::s_DEFAULT_OBJECT, "defaultObjectId");
     }
 
     // Set the size of the key groups
@@ -654,7 +654,6 @@ void AppConfigManager::createServices(::fwRuntime::ConfigurationElement::csptr c
     }
 
     // Configure
-    srv->setConfiguration(srvConfig);
     srv->configure();
 
     return srv;

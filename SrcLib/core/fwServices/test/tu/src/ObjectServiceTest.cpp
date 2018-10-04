@@ -154,10 +154,10 @@ void ObjectServiceTest::registerKeyTest()
     auto service3 = ::fwServices::registry::ServiceFactory::getDefault()->create( srvType, srvImplementation1 );
 
     ::fwServices::registry::ObjectService osr;
-
-    service1->setObjectId("key1", "uid1");
-    service1->setObjectId("key2", "uid2");
-    service1->setObjectId("key3", "uid3");
+    CPPUNIT_ASSERT_EQUAL(false, service1->hasObjectId("key1"));
+    service1->registerObject("uid1", "key1", ::fwServices::IService::AccessType::INOUT);
+    service1->registerObject("uid2", "key2", ::fwServices::IService::AccessType::INOUT);
+    service1->registerObject("uid3", "key3", ::fwServices::IService::AccessType::INOUT);
 
     CPPUNIT_ASSERT_EQUAL(true, service1->hasObjectId("key1"));
     CPPUNIT_ASSERT_EQUAL(true, service1->hasObjectId("key2"));
@@ -168,11 +168,6 @@ void ObjectServiceTest::registerKeyTest()
     CPPUNIT_ASSERT_EQUAL(std::string("uid2"), service1->getObjectId("key2"));
     CPPUNIT_ASSERT_EQUAL(std::string("uid3"), service1->getObjectId("key3"));
     CPPUNIT_ASSERT_THROW(service1->getObjectId("another_key"), ::fwCore::Exception);
-
-    service2->setObjectId("key1", "uid1");
-    service2->setObjectId("key2", "uid2");
-
-    service3->setObjectId("key3", "uid3");
 
     osr.registerService(obj1, "key1", ::fwServices::IService::AccessType::INOUT, service1);
     osr.registerService(obj2, "key2", ::fwServices::IService::AccessType::INOUT, service1);
@@ -347,7 +342,7 @@ void ObjectServiceTest::registerConnectionTest()
 
     // Register callback test
     // Each time we wait the slot with a timeout to avoid blocking the test in case of failure
-    service1->setObjectId("key1", "uid1");
+    service1->registerObject("uid1", "key1", ::fwServices::IService::AccessType::OUTPUT);
     osr.registerServiceOutput(obj1, "key1", service1);
     {
         std::unique_lock<std::mutex> lock(m_mutex);
@@ -357,7 +352,7 @@ void ObjectServiceTest::registerConnectionTest()
         CPPUNIT_ASSERT(obj1 == m_obj);
     }
 
-    service1->setObjectId("key2", "uid2");
+    service1->registerObject("uid2", "key2", ::fwServices::IService::AccessType::OUTPUT);
     osr.registerServiceOutput(obj2, "key2", service1);
     {
         std::unique_lock<std::mutex> lock(m_mutex);

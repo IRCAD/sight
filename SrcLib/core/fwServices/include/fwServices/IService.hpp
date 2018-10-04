@@ -562,6 +562,11 @@ public:
      * @brief Set the id of an object key
      */
     FWSERVICES_API void setObjectId(const KeyType& _key, const IdType& _id);
+
+    /**
+     * @brief Set the id of an object key from a group
+     */
+    FWSERVICES_API void setObjectId(const IService::KeyType& _key, const size_t index, const IService::IdType& _id);
     //@}
 
     /**
@@ -865,10 +870,13 @@ private:
     void addProxyConnection(const helper::ProxyConnections& info);
 
     /// Return true if the service contains this object into its requirement
-    bool isObjectRequired(const std::string& objId) const;
+    bool hasObjInfoFromId(const std::string& objId) const;
 
     /// Return the information about the required object
-    const ::fwServices::IService::ObjectServiceConfig& getObjInfo(const std::string& objId) const;
+    const ::fwServices::IService::ObjectServiceConfig& getObjInfoFromId(const std::string& objId) const;
+
+    /// Return the information about the required object
+    const ::fwServices::IService::ObjectServiceConfig& getObjInfoFromKey(const std::string& key) const;
 
     /**
      * @brief associated inputs of the service ordered by key
@@ -884,11 +892,6 @@ private:
      * @brief associated outputs of the service ordered by key
      */
     OutputMapType m_outputsMap;
-
-    /**
-     * @brief associated objects of the service ordered by key
-     */
-    std::map<KeyType, IdType> m_idsMap;
 
     /**
      * @brief size of key groups if they exist

@@ -246,9 +246,9 @@ void AppManager::addObject(::fwData::Object::sptr obj, const std::string& id)
     for (auto& srvInfo : m_services)
     {
         ::fwServices::IService::sptr srv = srvInfo.m_service.lock();
-        if (srv->isObjectRequired(id))
+        if (srv->hasObjInfoFromId(id))
         {
-            const ::fwServices::IService::ObjectServiceConfig& objCfg = srv->getObjInfo(id);
+            const ::fwServices::IService::ObjectServiceConfig& objCfg = srv->getObjInfoFromId(id);
 
             auto registeredObj = ::fwServices::OSR::getRegistered(objCfg.m_key, objCfg.m_access, srv);
 
@@ -315,9 +315,9 @@ void AppManager::removeObject(::fwData::Object::sptr obj, const std::string& id)
     {
         FW_RAISE_IF("service is expired", srvInfo.m_service.expired());
         ::fwServices::IService::sptr srv = srvInfo.m_service.lock();
-        if (srv->isObjectRequired(id))
+        if (srv->hasObjInfoFromId(id))
         {
-            const ::fwServices::IService::ObjectServiceConfig& objCfg = srv->getObjInfo(id);
+            const ::fwServices::IService::ObjectServiceConfig& objCfg = srv->getObjInfoFromId(id);
 
             if (::fwServices::OSR::isRegistered(objCfg.m_key, objCfg.m_access, srv))
             {

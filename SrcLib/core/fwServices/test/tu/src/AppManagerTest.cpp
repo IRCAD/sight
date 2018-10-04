@@ -158,6 +158,7 @@ void AppManagerTest::managerWithObjectTest()
 
     m_appMgr->addObject(image, imageId);
 
+    fwTestWaitMacro(service->isStarted());
     CPPUNIT_ASSERT_EQUAL(true, service->isStarted());
     CPPUNIT_ASSERT_EQUAL(true, service2->isStarted());
     CPPUNIT_ASSERT_EQUAL(true, service3->isStarted());

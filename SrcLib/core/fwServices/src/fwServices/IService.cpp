@@ -220,53 +220,75 @@ void IService::unregisterObject(const std::string& key, AccessType access)
 
 void IService::unregisterObject(const std::string& objId)
 {
-    auto keyItr = std::find_if( m_idsMap.begin(),  m_idsMap.end(),
-                                [&](const std::map<KeyType, IdType>::value_type& id)
+    auto itr = std::find_if( m_serviceConfig.m_objects.begin(),  m_serviceConfig.m_objects.end(),
+                             [&](const ObjectServiceConfig& config)
         {
-            return (id.second == objId);
+            return (config.m_uid == objId);
         });
 
-    if (keyItr == m_idsMap.end())
+    if (itr == m_serviceConfig.m_objects.end())
     {
         SLM_ERROR("object '" + objId + "' is not registered");
         return;
     }
-    const std::string key = keyItr->first;
 
-    auto newItr = std::find_if( m_serviceConfig.m_objects.begin(),  m_serviceConfig.m_objects.end(),
-                                [&](const ObjectServiceConfig& config)
-        {
-            return (config.m_key == key);
-        });
-
-    m_serviceConfig.m_objects.erase(newItr);
-    auto it = m_idsMap.find(objId);
-    m_idsMap.erase(it);
+    m_serviceConfig.m_objects.erase(itr);
 }
 
 //-----------------------------------------------------------------------------
 
 bool IService::hasObjectId(const KeyType& _key) const
 {
-    auto it                = m_idsMap.find(_key);
-    const bool hasObjectId = (it != m_idsMap.end());
-    return (it != m_idsMap.end());
+    bool hasId = false;
+    auto itr   = std::find_if( m_serviceConfig.m_objects.begin(),  m_serviceConfig.m_objects.end(),
+                               [&](const ObjectServiceConfig& objCfg)
+        {
+            return (objCfg.m_key == _key);
+        });
+
+    if (itr != m_serviceConfig.m_objects.end())
+    {
+        hasId = (!itr->m_uid.empty());
+    }
+
+    return hasId;
 }
 
 //-----------------------------------------------------------------------------
 
 IService::IdType IService::getObjectId(const IService::KeyType& _key) const
 {
-    auto it = m_idsMap.find(_key);
-    FW_RAISE_IF("Object key '" + _key + "' not found in service " + this->getID() + ".", it == m_idsMap.end());
-    return it->second;
+    const ObjectServiceConfig& cfg = this->getObjInfoFromKey(_key);
+    FW_RAISE_IF("Object key '" + _key + "' is not found for service '" + this->getID() + "'", cfg.m_uid.empty());
+    return cfg.m_uid;
 }
 
 //-----------------------------------------------------------------------------
 
 void IService::setObjectId(const IService::KeyType& _key, const IService::IdType& _id)
 {
-    m_idsMap[_key] = _id;
+    auto keyItr = std::find_if( m_serviceConfig.m_objects.begin(),  m_serviceConfig.m_objects.end(),
+                                [&](const ObjectServiceConfig& objCfg)
+        {
+            return (objCfg.m_key == _key);
+        });
+    FW_RAISE_IF("key '" + _key + "' is not regisreted for '" + this->getID() + "'.",
+                keyItr == m_serviceConfig.m_objects.end());
+    ObjectServiceConfig& cfg = *keyItr;
+    cfg.m_uid = _id;
+}
+
+//-----------------------------------------------------------------------------
+
+void IService::setObjectId(const IService::KeyType& _key, const size_t index, const IService::IdType& _id)
+{
+    const std::string groupKey = KEY_GROUP_NAME(_key, index);
+
+    this->setObjectId(groupKey, _id);
+    if (index >= this->getKeyGroupSize(_key))
+    {
+        m_keyGroupSize[_key] = index+1;
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -870,7 +892,7 @@ void IService::autoConnect()
                 }
             }
 
-            SLM_ASSERT("Object '" + objectCfg.m_uid +
+            SLM_ASSERT("Object '" + objectCfg.m_key +
                        "' has not been found when autoConnecting service '" + m_serviceConfig.m_uid + "'.",
                        (!objectCfg.m_optional && obj) || objectCfg.m_optional);
 
@@ -960,15 +982,15 @@ void IService::addProxyConnection(const helper::ProxyConnections& proxy)
 
 //-----------------------------------------------------------------------------
 
-bool IService::isObjectRequired(const std::string& objId) const
+bool IService::hasObjInfoFromId(const std::string& objId) const
 {
-    auto itr = std::find_if( m_idsMap.begin(),  m_idsMap.end(),
-                             [&](const std::pair<KeyType, IdType>& id)
+    auto itr = std::find_if( m_serviceConfig.m_objects.begin(),  m_serviceConfig.m_objects.end(),
+                             [&](const ObjectServiceConfig& objCfg)
         {
-            return (id.second == objId);
+            return (objCfg.m_uid == objId);
         });
 
-    return (itr != m_idsMap.end());
+    return (itr != m_serviceConfig.m_objects.end());
 }
 
 //------------------------------------------------------------------------------
@@ -1009,26 +1031,31 @@ bool IService::hasAllRequiredObjects() const
 
 //------------------------------------------------------------------------------
 
-const IService::ObjectServiceConfig& IService::getObjInfo(const std::string& objId) const
+const IService::ObjectServiceConfig& IService::getObjInfoFromId(const std::string& objId) const
 {
-    auto keyItr = std::find_if( m_idsMap.begin(),  m_idsMap.end(),
-                                [&](const std::pair<KeyType, IdType>& id)
+    auto idItr = std::find_if( m_serviceConfig.m_objects.begin(),  m_serviceConfig.m_objects.end(),
+                               [&](const ObjectServiceConfig& objCfg)
         {
-            return (id.second == objId);
+            return (objCfg.m_uid == objId);
         });
+    FW_RAISE_IF("Object '" + objId + "' is not regisreted for '" + this->getID() + "'.",
+                idItr == m_serviceConfig.m_objects.end());
 
-    SLM_ASSERT("object '" + objId + "' is not registered for '" + this->getID() + "'.", keyItr != m_idsMap.end());
-    const std::string key = keyItr->first;
+    return *idItr;
+}
+//------------------------------------------------------------------------------
 
-    auto itr = std::find_if( m_serviceConfig.m_objects.begin(),  m_serviceConfig.m_objects.end(),
-                             [&](const ObjectServiceConfig& config)
+const IService::ObjectServiceConfig& IService::getObjInfoFromKey(const std::string& key) const
+{
+    auto keyItr = std::find_if( m_serviceConfig.m_objects.begin(),  m_serviceConfig.m_objects.end(),
+                                [&](const ObjectServiceConfig& objCfg)
         {
-            return (config.m_key == key);
+            return (objCfg.m_key == key);
         });
-    SLM_ASSERT("Object '" + objId + "' is not registered '" + this->getID() + "'.",
-               itr != m_serviceConfig.m_objects.end());
+    FW_RAISE_IF("key '" + key + "' is not regisreted for '" + this->getID() + "'.",
+                keyItr == m_serviceConfig.m_objects.end());
 
-    return *itr;
+    return *keyItr;
 }
 
 //-----------------------------------------------------------------------------
