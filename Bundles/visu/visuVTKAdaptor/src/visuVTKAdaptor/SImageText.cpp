@@ -66,7 +66,7 @@ void SImageText::starting()
     {
         if(tf != nullptr)
         {
-            ::fwData::mt::ObjectReadLock tfLock(tf);
+            const ::fwData::mt::ObjectWriteLock tfLock(tf);
             m_helperTF.setOrCreateTF(tf, image);
         }
         else
@@ -111,8 +111,8 @@ void SImageText::updating()
         size_t frontalIndex  = static_cast<size_t>(indexesPtr[1]->value());
         size_t sagittalIndex = static_cast<size_t>(indexesPtr[0]->value());
 
-        ::fwData::TransferFunction::sptr tf = m_helperTF.getTransferFunction();
-        ::fwData::mt::ObjectReadLock tfLock(tf);
+        const ::fwData::TransferFunction::csptr tf = m_helperTF.getTransferFunction();
+        const ::fwData::mt::ObjectReadLock tfLock(tf);
         double min = tf->getLevel() - tf->getWindow()/2.0;
         double max = tf->getLevel() + tf->getWindow()/2.0;
 
@@ -144,7 +144,7 @@ void SImageText::swapping(const KeyType& key)
         {
             if(tf != nullptr)
             {
-                ::fwData::mt::ObjectReadLock tfLock(tf);
+                const ::fwData::mt::ObjectReadLock tfLock(tf);
                 m_helperTF.setOrCreateTF(tf, image);
             }
             else

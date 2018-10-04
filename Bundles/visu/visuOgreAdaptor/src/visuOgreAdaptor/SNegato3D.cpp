@@ -14,6 +14,7 @@
 #include <fwData/Image.hpp>
 #include <fwData/Integer.hpp>
 #include <fwData/mt/ObjectReadLock.hpp>
+#include <fwData/mt/ObjectWriteLock.hpp>
 
 #include <fwDataTools/fieldHelper/Image.hpp>
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
@@ -135,7 +136,7 @@ void SNegato3D::starting()
     ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
     if(tf != nullptr)
     {
-        ::fwData::mt::ObjectReadLock tfLock(tf);
+        const ::fwData::mt::ObjectWriteLock tfLock(tf);
         m_helperTF.setTransferFunction(tf);
     }
     else
@@ -227,7 +228,7 @@ void SNegato3D::swapping(const KeyType& key)
         ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
         if(tf != nullptr)
         {
-            ::fwData::mt::ObjectReadLock tfLock(tf);
+            const ::fwData::mt::ObjectWriteLock tfLock(tf);
             m_helperTF.setOrCreateTF(tf, image);
         }
         else
@@ -295,9 +296,9 @@ void SNegato3D::changeSliceType(int /*_from*/, int _to)
     this->getRenderService()->makeCurrent();
 
     // Update TF
-    ::fwData::TransferFunction::sptr tf = m_helperTF.getTransferFunction();
+    const ::fwData::TransferFunction::csptr tf = m_helperTF.getTransferFunction();
     {
-        ::fwData::mt::ObjectReadLock tfLock(tf);
+        const ::fwData::mt::ObjectReadLock tfLock(tf);
         this->updateTF();
     }
 
@@ -346,9 +347,9 @@ void SNegato3D::changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagitt
 
 void SNegato3D::updateTF()
 {
-    ::fwData::TransferFunction::sptr tf = m_helperTF.getTransferFunction();
+    const ::fwData::TransferFunction::csptr tf = m_helperTF.getTransferFunction();
     {
-        ::fwData::mt::ObjectReadLock tfLock(tf);
+        const ::fwData::mt::ObjectReadLock tfLock(tf);
         m_gpuTF->updateTexture(tf);
 
         for(int i(0); i < 3; ++i)

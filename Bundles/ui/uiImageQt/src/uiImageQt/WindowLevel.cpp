@@ -153,7 +153,7 @@ void WindowLevel::starting()
     const ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
     if(tf != nullptr)
     {
-        ::fwData::mt::ObjectReadLock tfLock(tf);
+        const ::fwData::mt::ObjectWriteLock tfLock(tf);
         m_helperTF.setOrCreateTF(tf, image);
     }
     else
@@ -225,9 +225,9 @@ void WindowLevel::updating()
             this->updateImageWindowLevel(min, max);
         }
 
-        const ::fwData::TransferFunction::sptr tf = m_helperTF.getTransferFunction();
+        const ::fwData::TransferFunction::csptr tf = m_helperTF.getTransferFunction();
         SLM_ASSERT("TransferFunction null pointer", tf);
-        ::fwData::mt::ObjectReadLock tfLock(tf);
+        const ::fwData::mt::ObjectReadLock tfLock(tf);
         ::fwData::TransferFunction::TFValuePairType minMax = tf->getWLMinMax();
         this->onImageWindowLevelChanged( minMax.first, minMax.second );
     }
@@ -246,7 +246,7 @@ void WindowLevel::swapping(const KeyType& key)
             const ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
             if(tf != nullptr)
             {
-                ::fwData::mt::ObjectReadLock tfLock(tf);
+                const ::fwData::mt::ObjectWriteLock tfLock(tf);
                 m_helperTF.setOrCreateTF(tf, image);
             }
             else
@@ -276,9 +276,9 @@ void WindowLevel::info( std::ostream& _sstream )
 
 WindowLevel::WindowLevelMinMaxType WindowLevel::getImageWindowMinMax()
 {
-    const ::fwData::TransferFunction::sptr tf = m_helperTF.getTransferFunction();
+    const ::fwData::TransferFunction::csptr tf = m_helperTF.getTransferFunction();
     SLM_ASSERT("TransferFunction null pointer", tf);
-    ::fwData::mt::ObjectWriteLock tfLock(tf);
+    const ::fwData::mt::ObjectReadLock tfLock(tf);
     return tf->getWLMinMax();
 }
 

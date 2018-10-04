@@ -12,6 +12,7 @@
 
 #include <fwData/Image.hpp>
 #include <fwData/mt/ObjectReadLock.hpp>
+#include <fwData/mt/ObjectWriteLock.hpp>
 
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 
@@ -123,7 +124,7 @@ void SNegato2D::starting()
     ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
     if(tf != nullptr)
     {
-        ::fwData::mt::ObjectReadLock tfLock(tf);
+        const ::fwData::mt::ObjectWriteLock tfLock(tf);
         m_helperTF.setOrCreateTF(tf, image);
     }
     else
@@ -195,7 +196,7 @@ void SNegato2D::swapping(const KeyType& key)
         ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
         if(tf != nullptr)
         {
-            ::fwData::mt::ObjectReadLock tfLock(tf);
+            const ::fwData::mt::ObjectWriteLock tfLock(tf);
             m_helperTF.setOrCreateTF(tf, image);
         }
         else
@@ -257,13 +258,6 @@ void SNegato2D::changeSliceType(int /*_from*/, int _to)
     // The orientation update setter will change the fragment shader
     m_plane->setOrientationMode(newOrientationMode);
 
-    // Update TF
-    ::fwData::TransferFunction::sptr tf = m_helperTF.getTransferFunction();
-    {
-        ::fwData::mt::ObjectReadLock tfLock(tf);
-        this->updateTF();
-    }
-
     // Update threshold if necessary
     this->updateTF();
 
@@ -304,9 +298,9 @@ void SNegato2D::updateShaderSliceIndexParameter()
 
 void SNegato2D::updateTF()
 {
-    ::fwData::TransferFunction::sptr tf = m_helperTF.getTransferFunction();
+    const ::fwData::TransferFunction::csptr tf = m_helperTF.getTransferFunction();
     {
-        ::fwData::mt::ObjectReadLock tfLock(tf);
+        const ::fwData::mt::ObjectReadLock tfLock(tf);
         m_gpuTF->updateTexture(tf);
 
         m_plane->switchThresholding(tf->getIsClamped());

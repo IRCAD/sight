@@ -86,7 +86,7 @@ void STransferFunction::configuring()
 void STransferFunction::buildTFPoints()
 {
     // Get the selected tf of the image
-    const ::fwData::TransferFunction::sptr selectedTF = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
+    const ::fwData::TransferFunction::csptr selectedTF = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
     SLM_ASSERT("inout '" + s_TF_INOUT + "' is not defined", selectedTF);
 
     ::fwData::mt::ObjectReadLock tfLock(selectedTF);
@@ -183,7 +183,7 @@ QGraphicsEllipseItem* STransferFunction::buildCircle(::fwData::TransferFunction:
 
 void STransferFunction::buildLinesAndPolygons()
 {
-    const ::fwData::TransferFunction::sptr selectedTF = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
+    const ::fwData::TransferFunction::csptr selectedTF = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
     SLM_ASSERT("inout '" + s_TF_INOUT + "' is not defined", selectedTF);
 
     ::fwData::mt::ObjectReadLock tfLock(selectedTF);

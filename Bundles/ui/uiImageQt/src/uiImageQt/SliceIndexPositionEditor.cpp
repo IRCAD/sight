@@ -232,7 +232,7 @@ void SliceIndexPositionEditor::updateSliceIndexFromImg()
     if (::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
     {
         // Get Index
-        std::string fieldID = *SLICE_INDEX_FIELDID[m_helper.getOrientation()];
+        const std::string fieldID = *SLICE_INDEX_FIELDID[m_helper.getOrientation()];
         OSLM_ASSERT("Field "<<fieldID<<" is missing", image->getField( fieldID ) );
         unsigned int index = image->getField< ::fwData::Integer >( fieldID )->value();
 

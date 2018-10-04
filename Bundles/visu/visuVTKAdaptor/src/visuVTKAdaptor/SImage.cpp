@@ -75,7 +75,7 @@ void SImage::starting()
     {
         if(tf != nullptr)
         {
-            ::fwData::mt::ObjectReadLock tfLock(tf);
+            const ::fwData::mt::ObjectWriteLock tfLock(tf);
             m_helperTF.setOrCreateTF(tf, image);
         }
         else
@@ -128,7 +128,7 @@ void SImage::swapping(const KeyType& key)
         {
             if(tf != nullptr)
             {
-                ::fwData::mt::ObjectReadLock tfLock(tf);
+                const ::fwData::mt::ObjectWriteLock tfLock(tf);
                 m_helperTF.setOrCreateTF(tf, image);
             }
             else
@@ -192,9 +192,9 @@ void SImage::updateImage( ::fwData::Image::sptr image  )
 
 void SImage::updateImageTransferFunction()
 {
-    ::fwData::TransferFunction::sptr tf = m_helperTF.getTransferFunction();
+    const ::fwData::TransferFunction::csptr tf = m_helperTF.getTransferFunction();
     {
-        ::fwData::mt::ObjectReadLock tfLock(tf);
+        const ::fwData::mt::ObjectReadLock tfLock(tf);
         ::fwVtkIO::helper::TransferFunction::toVtkLookupTable(tf, m_lut, m_allowAlphaInTF, 256 );
 
         m_lut->SetClamping(!tf->getIsClamped());

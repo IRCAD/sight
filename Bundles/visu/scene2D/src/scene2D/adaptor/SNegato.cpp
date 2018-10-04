@@ -121,8 +121,8 @@ void SNegato::updateBufferFromImage( QImage* qimg )
         return;
     }
     // Window min/max
-    ::fwData::TransferFunction::sptr tf = m_helperTF.getTransferFunction();
-    ::fwData::mt::ObjectReadLock tfLock(tf);
+    const ::fwData::TransferFunction::csptr tf = m_helperTF.getTransferFunction();
+    const ::fwData::mt::ObjectReadLock tfLock(tf);
     const double wlMin = tf->getWLMinMax().first;
 
     // Window max
@@ -300,7 +300,7 @@ void SNegato::starting()
     ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
     if(tf != nullptr)
     {
-        ::fwData::mt::ObjectReadLock tfLock(tf);
+        const ::fwData::mt::ObjectWriteLock tfLock(tf);
         m_helperTF.setTransferFunction(tf);
     }
     else
@@ -350,7 +350,7 @@ void SNegato::swapping(const KeyType& key)
         ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
         if(tf != nullptr)
         {
-            ::fwData::mt::ObjectReadLock tfLock(tf);
+            const ::fwData::mt::ObjectWriteLock tfLock(tf);
             m_helperTF.setOrCreateTF(tf, image);
         }
         else

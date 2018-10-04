@@ -285,7 +285,7 @@ void SNegatoWindowingInteractor::startWindowing( )
 
     this->updating();
 
-    const ::fwData::TransferFunction::sptr tf = m_helperTF.getTransferFunction();
+    const ::fwData::TransferFunction::csptr tf = m_helperTF.getTransferFunction();
 
     const ::fwData::mt::ObjectReadLock tfLock(tf);
     m_initialLevel  = tf->getLevel();
