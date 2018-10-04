@@ -5,6 +5,7 @@
         <param name="modelSeries_UID" />
         <param name="image_UID" />
         <param name="imageTF_UID" />
+        <param name="maskTF_UID" />
         <param name="landmarks_UID" />
         <param name="mask_UID" />
         <param name="compositorChannel" />
@@ -26,6 +27,7 @@
         <object uid="pointList_UID" type="::fwData::PointList" />
 
         <object uid="${imageTF_UID}" type="::fwData::TransferFunction" src="deferred" />
+        <object uid="${maskTF_UID}" type="::fwData::TransferFunction" src="deferred" />
         <object uid="${landmarks_UID}" type="::fwData::Landmarks" src="ref" />
 
         <object uid="volumeClippingMatrix" type="::fwData::TransformationMatrix3D" />
@@ -228,6 +230,7 @@
         <service uid="volumeAdaptor" type="::visuOgreAdaptor::SVolumeRender">
             <inout key="image" uid="${image_UID}" autoConnect="yes" />
             <inout key="tf" uid="${imageTF_UID}" optional="yes" />
+            <inout key="maskTf" uid="${maskTF_UID}" optional="yes" />
             <inout key="mask" uid="${mask_UID}" autoConnect="yes" />
             <inout key="clippingMatrix" uid="volumeClippingMatrix" autoConnect="yes" />
             <config layer="default" widgets="no" preintegration="no" mode="raytracing" autoresetcamera="yes" samples="1024"/>
