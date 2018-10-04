@@ -80,15 +80,13 @@ void Plugin::initialize()
     frameConfig.put("gui.menuBar", "");
     frameConfig.put("registry.menuBar.<xmlattr>.sid", "menuBar");
     frameConfig.put("registry.view.<xmlattr>.sid", "mainView");
-    frameSrv->setConfiguration( frameConfig );
-    frameSrv->configure();
+    frameSrv->configure(frameConfig);
 
     // create the menuBar configuration
     ::fwServices::IService::ConfigType menuBarConfig;
     menuBarConfig.put("gui.layout.menu.<xmlattr>.name", "File");
     menuBarConfig.put("registry.menu.<xmlattr>.sid", "menuFile");
-    menuBar->setConfiguration(menuBarConfig);
-    menuBar->configure();
+    menuBar->configure(menuBarConfig);
 
     // create the menu configuration
     ::fwServices::IService::ConfigType menuConfig;
@@ -124,8 +122,7 @@ void Plugin::initialize()
     menuConfig.add_child("registry.menuItem", menuItem2Reg);
     menuConfig.add_child("registry.menuItem", menuItem3Reg);
     menuConfig.add_child("registry.menuItem", menuItem4Reg);
-    menu->setConfiguration(menuConfig);
-    menu->configure();
+    menu->configure(menuConfig);
 
     ::fwServices::IService::ConfigType mainViewConfig;
     ::fwServices::IService::ConfigType mainViewLayoutConfig;
@@ -145,8 +142,7 @@ void Plugin::initialize()
     mainView2Reg.put("<xmlattr>.sid", "editorsView");
     mainViewConfig.add_child("registry.view", mainView1Reg);
     mainViewConfig.add_child("registry.view", mainView2Reg);
-    mainView->setConfiguration(mainViewConfig);
-    mainView->configure();
+    mainView->configure(mainViewConfig);
 
     ::fwServices::IService::ConfigType editorsViewConfig;
     ::fwServices::IService::ConfigType editorsViewLayoutConfig;
@@ -183,8 +179,7 @@ void Plugin::initialize()
     ::fwServices::IService::ConfigType editorsView4Reg;
     editorsView4Reg.put("<xmlattr>.sid", "snapshotEditor");
     editorsViewConfig.add_child("registry.view", editorsView4Reg);
-    editorsView->setConfiguration(editorsViewConfig);
-    editorsView->configure();
+    editorsView->configure(editorsViewConfig);
 
     /* **************************************************************************************
     *              actions configuration
@@ -192,18 +187,15 @@ void Plugin::initialize()
 
     ::fwServices::IService::ConfigType actionOpenImageConfig;
     actionOpenImageConfig.add("start.<xmlattr>.uid", "imageReader");
-    actionOpenImage->setConfiguration(actionOpenImageConfig);
-    actionOpenImage->configure();
+    actionOpenImage->configure(actionOpenImageConfig);
 
     ::fwServices::IService::ConfigType actionOpenMeshConfig;
     actionOpenMeshConfig.add("start.<xmlattr>.uid", "meshReader");
-    actionOpenMesh->setConfiguration(actionOpenMeshConfig);
-    actionOpenMesh->configure();
+    actionOpenMesh->configure(actionOpenMeshConfig);
 
     ::fwServices::IService::ConfigType actionOpenTextureConfig;
     actionOpenTextureConfig.add("start.<xmlattr>.uid", "textureReader");
-    actionOpenTexture->setConfiguration(actionOpenTextureConfig);
-    actionOpenTexture->configure();
+    actionOpenTexture->configure(actionOpenTextureConfig);
 
     actionQuit->configure();
 
@@ -214,20 +206,17 @@ void Plugin::initialize()
     ::fwServices::IService::ConfigType imageReaderConfig;
     imageReaderConfig.put("type.<xmlattr>.mode", "reader");
     imageReaderConfig.put("type.<xmlattr>.class", "::fwData::Image");
-    imageReaderSrv->setConfiguration(imageReaderConfig);
-    imageReaderSrv->configure();
+    imageReaderSrv->configure(imageReaderConfig);
 
     ::fwServices::IService::ConfigType meshReaderConfig;
     meshReaderConfig.put("type.<xmlattr>.mode", "reader");
     meshReaderConfig.put("type.<xmlattr>.class", "::fwData::Mesh");
-    meshReaderSrv->setConfiguration(meshReaderConfig);
-    meshReaderSrv->configure();
+    meshReaderSrv->configure(meshReaderConfig);
 
     ::fwServices::IService::ConfigType textureReaderConfig;
     textureReaderConfig.put("type.<xmlattr>.mode", "reader");
     textureReaderConfig.put("type.<xmlattr>.class", "::fwData::Image");
-    textureReaderSrv->setConfiguration(textureReaderConfig);
-    textureReaderSrv->configure();
+    textureReaderSrv->configure(textureReaderConfig);
 
     /* **************************************************************************************
     *              editors configuration
@@ -243,8 +232,7 @@ void Plugin::initialize()
     sliceListEditorItem2Config.put("<xmlattr>.text", "Three slices");
     sliceListEditorItem2Config.put("<xmlattr>.value", "3");
     sliceListEditorConfig.add_child("items.item", sliceListEditorItem2Config);
-    sliceListEditor->setConfiguration(sliceListEditorConfig);
-    sliceListEditor->configure();
+    sliceListEditor->configure(sliceListEditorConfig);
 
     ::fwServices::IService::ConfigType showScanEditorConfig;
     showScanEditorConfig.add("config.checkable", true);
@@ -253,13 +241,11 @@ void Plugin::initialize()
     showScanEditorConfig.add("config.iconWidth", "40");
     showScanEditorConfig.add("config.iconHeight", "16");
     showScanEditorConfig.add("config.checked", true);
-    showScanEditor->setConfiguration(showScanEditorConfig);
-    showScanEditor->configure();
+    showScanEditor->configure(showScanEditorConfig);
 
     ::fwServices::IService::ConfigType sliderIndexEditorConfig;
     sliderIndexEditorConfig.put("sliceIndex", "axial");
-    sliderIndexEditor->setConfiguration(sliderIndexEditorConfig);
-    sliderIndexEditor->configure();
+    sliderIndexEditor->configure(sliderIndexEditorConfig);
 
     snapshotEditor->configure();
 
@@ -286,8 +272,7 @@ void Plugin::initialize()
     ::fwServices::IService::ConfigType adpt4Config;
     adpt4Config.put("<xmlattr>.uid", "snapshotAdaptor");
     renderConfig.add_child("scene.adaptor", adpt4Config);
-    renderSrv->setConfiguration(renderConfig);
-    renderSrv->configure();
+    renderSrv->configure(renderConfig);
 
     ::fwServices::IService::ConfigType imageAdaptorConfig;
     imageAdaptorConfig.add("config.<xmlattr>.renderer", "default");
@@ -295,27 +280,23 @@ void Plugin::initialize()
     imageAdaptorConfig.add("config.<xmlattr>.mode", "3d");
     imageAdaptorConfig.add("config.<xmlattr>.slice", "3");
     imageAdaptorConfig.add("config.<xmlattr>.sliceIndex", "axial");
-    imageAdaptor->setConfiguration(imageAdaptorConfig);
-    imageAdaptor->configure();
+    imageAdaptor->configure(imageAdaptorConfig);
 
     ::fwServices::IService::ConfigType meshAdaptorConfig;
     meshAdaptorConfig.add("config.<xmlattr>.renderer", "default");
     meshAdaptorConfig.add("config.<xmlattr>.picker", "");
     meshAdaptorConfig.add("config.<xmlattr>.uvgen", "sphere");
-    meshAdaptor->setConfiguration(meshAdaptorConfig);
-    meshAdaptor->configure();
+    meshAdaptor->configure(meshAdaptorConfig);
 
     ::fwServices::IService::ConfigType textureAdaptorConfig;
     textureAdaptorConfig.add("config.<xmlattr>.renderer", "default");
     textureAdaptorConfig.add("config.<xmlattr>.filtering", "linear");
     textureAdaptorConfig.add("config.<xmlattr>.wrapping", "repeat");
-    textureAdaptor->setConfiguration(textureAdaptorConfig);
-    textureAdaptor->configure();
+    textureAdaptor->configure(textureAdaptorConfig);
 
     ::fwServices::IService::ConfigType snapshotAdaptorConfig;
     snapshotAdaptorConfig.add("config.<xmlattr>.renderer", "default");
-    snapshotAdaptor->setConfiguration(snapshotAdaptorConfig);
-    snapshotAdaptor->configure();
+    snapshotAdaptor->configure(snapshotAdaptorConfig);
 
     /* **************************************************************************************
     *              register inputs/inouts
