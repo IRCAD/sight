@@ -80,6 +80,9 @@ namespace visuOgreAdaptor
  * @subsection In-Out In-Out
  * - \b tf [::fwData::TransferFunction] (optional): the current TransferFunction. If it is not defined, we use the
  *      image's default transferFunction (CT-GreyLevel).
+ * - \b maskTf [::fwData::TransferFunction] (optional): the TransferFunction used for the mask. If it is not defined, we
+ * use the
+ *      image's default transferFunction (CT-GreyLevel).
  * - \b mask [::fwData::Image] (optional): segmented data.
  * - \b clippingMatrix [::fwData::TransformationMatrix3D]: matrix used to clip the volume.
  * @subsection Configuration Configuration
@@ -174,6 +177,9 @@ protected:
     /// Slot: update the displayed transfer function
     VISUOGREADAPTOR_API virtual void updateImageTF();
 
+    /// Slot: update the displayed transfer function used for the IDVR
+    VISUOGREADAPTOR_API virtual void updateMaskTF();
+
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
      * this method is used for obj/srv auto connection
@@ -231,6 +237,8 @@ private:
 
     ::fwDataTools::helper::TransferFunction m_helperImageTF;
 
+    ::fwDataTools::helper::TransferFunction m_helperMaskTF;
+
     /// Updates the inout clipping matrix from the clipping box positions.
     void updateClippingTM3D();
 
@@ -244,6 +252,9 @@ private:
 
     /// TF texture used for rendering.
     ::fwRenderOgre::TransferFunction::sptr m_gpuImageTF;
+
+    /// TF texture used for rendering inside the IDVR.
+    ::fwRenderOgre::TransferFunction::sptr m_gpuMaskTF;
 
     /// Pre-integration table.
     ::fwRenderOgre::vr::PreIntegrationTable m_preIntegrationTable;
