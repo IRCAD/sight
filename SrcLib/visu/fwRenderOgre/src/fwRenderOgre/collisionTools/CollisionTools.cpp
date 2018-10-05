@@ -33,7 +33,9 @@
 
 #include "fwRenderOgre/collisionTools/CollisionTools.hpp"
 
+#include "fwRenderOgre/factory/R2VBRenderable.hpp"
 #include "fwRenderOgre/Layer.hpp"
+#include "fwRenderOgre/R2VBRenderable.hpp"
 
 namespace fwRenderOgre
 {
@@ -169,40 +171,84 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> CollisionTools::ray
             break;
         }
 
-        // only check this result if its a hit against an entity
-        if ((query_result[qr_idx].movable != nullptr)  &&
-            (query_result[qr_idx].movable->getMovableType().compare("Entity") == 0))
-        {
-            // get the entity to check
-            Ogre::MovableObject* pentity = static_cast<Ogre::MovableObject*>(query_result[qr_idx].movable);
+        // get the entity to check
+        Ogre::MovableObject* pentity = query_result[qr_idx].movable;
 
+        const bool isEntity = query_result[qr_idx].movable->getMovableType().compare("Entity") == 0;
+        const bool isR2VB   = query_result[qr_idx].movable->getMovableType().compare(
+            factory::R2VBRenderable::FACTORY_TYPE_NAME) == 0;
+
+        // only check this result if its a hit against an entity
+        if ((pentity != nullptr) && (isEntity || isR2VB) )
+        {
             if(!pentity->isVisible())
             {
                 continue;
             }
+
+            auto mesh = isEntity ?
+                        static_cast< ::Ogre::Entity*>(pentity)->getMesh() :
+                        static_cast< ::fwRenderOgre::R2VBRenderable*>(pentity)->getMesh();
+
             // mesh data to retrieve
-            size_t vertex_count;
-            size_t index_count;
-            Ogre::Vector3* vertices;
-            Ogre::uint32* indices;
+            std::vector< ::Ogre::Vector3> vertices;
+            std::vector< ::Ogre::uint32> indicesTri;
+            std::vector< ::Ogre::uint32> indicesQuad;
 
             // get the mesh information
-            GetMeshInformation(
-                (static_cast<Ogre::Entity*>(pentity))->getMesh(), vertex_count, vertices, index_count, indices,
-                pentity->getParentNode()->_getDerivedPosition(),
-                pentity->getParentNode()->_getDerivedOrientation(),
-                pentity->getParentNode()->_getDerivedScale());
+            std::tie( vertices, indicesTri, indicesQuad) =
+                GetMeshInformation(mesh,
+                                   pentity->getParentNode()->_getDerivedPosition(),
+                                   pentity->getParentNode()->_getDerivedOrientation(),
+                                   pentity->getParentNode()->_getDerivedScale());
 
             // test for hitting individual triangles on the mesh
             bool new_closest_found = false;
-            if(index_count)
+            if(indicesQuad.size())
             {
-                for (size_t i = 0; i < index_count; i += 3)
+                for (size_t i = 0; i < indicesQuad.size(); i += 4)
                 {
                     // check for a hit against this triangle
-                    std::pair<bool, Ogre::Real> hit = Ogre::Math::intersects(ray, vertices[indices[i]],
-                                                                             vertices[indices[i+1]],
-                                                                             vertices[indices[i+2]], true, false);
+                    std::pair<bool, Ogre::Real> hit = Ogre::Math::intersects(ray, vertices[indicesQuad[i]],
+                                                                             vertices[indicesQuad[i+1]],
+                                                                             vertices[indicesQuad[i+3]], true, false);
+
+                    // if it was a hit check if its the closest
+                    if (hit.first)
+                    {
+                        if ((closest_distance < 0.0f) || (hit.second < closest_distance))
+                        {
+                            // this is the closest so far, save it off
+                            closest_distance  = hit.second;
+                            new_closest_found = true;
+                        }
+                    }
+
+                    // check for a hit against this triangle
+                    hit = Ogre::Math::intersects(ray, vertices[indicesQuad[i+1]],
+                                                 vertices[indicesQuad[i+2]],
+                                                 vertices[indicesQuad[i+3]], true, false);
+
+                    // if it was a hit check if its the closest
+                    if (hit.first)
+                    {
+                        if ((closest_distance < 0.0f) || (hit.second < closest_distance))
+                        {
+                            // this is the closest so far, save it off
+                            closest_distance  = hit.second;
+                            new_closest_found = true;
+                        }
+                    }
+                }
+            }
+            else if(indicesTri.size())
+            {
+                for (size_t i = 0; i < indicesTri.size(); i += 3)
+                {
+                    // check for a hit against this triangle
+                    std::pair<bool, Ogre::Real> hit = Ogre::Math::intersects(ray, vertices[indicesTri[i]],
+                                                                             vertices[indicesTri[i+1]],
+                                                                             vertices[indicesTri[i+2]], true, false);
 
                     // if it was a hit check if its the closest
                     if (hit.first)
@@ -228,7 +274,7 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> CollisionTools::ray
                 const ::Ogre::Vector3 resPointWVP = viewProjMatrix * ray.getPoint(query_result[qr_idx].distance);
                 const ::Ogre::Vector2 resPointSS  = (resPointWVP.xy() / 2.f) + 0.5f;
 
-                for (size_t i = 0; i < vertex_count; ++i)
+                for (size_t i = 0; i < vertices.size(); ++i)
                 {
                     const ::Ogre::Vector3 pointWVP = viewProjMatrix * vertices[i];
                     const ::Ogre::Vector2 pointSS  = (pointWVP.xy() / 2.f) + 0.5f;
@@ -242,10 +288,6 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> CollisionTools::ray
                     }
                 }
             }
-
-            // free the verticies and indicies memory
-            delete[] vertices;
-            delete[] indices;
 
             // if we found a new closest raycast for this object, update the
             // closest_result before moving on to the next object.
@@ -273,79 +315,91 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> CollisionTools::ray
 
 // Get the mesh information for the given mesh.
 // Code found on this forum link: http://www.ogre3d.org/wiki/index.php/RetrieveVertexData
-void CollisionTools::GetMeshInformation(const Ogre::MeshPtr mesh,
-                                        size_t& vertex_count,
-                                        Ogre::Vector3*& vertices,
-                                        size_t& index_count,
-                                        Ogre::uint32*& indices,
-                                        const Ogre::Vector3& position,
-                                        const Ogre::Quaternion& orient,
-                                        const Ogre::Vector3& scale)
+std::tuple< std::vector< Ogre::Vector3>,
+            std::vector< Ogre::uint32>,
+            std::vector< Ogre::uint32> >
+CollisionTools::GetMeshInformation(const Ogre::MeshPtr mesh,
+                                   const Ogre::Vector3& position,
+                                   const Ogre::Quaternion& orient,
+                                   const Ogre::Vector3& scale)
 {
-    bool added_shared     = false;
-    size_t current_offset = 0;
-    size_t shared_offset  = 0;
-    size_t next_offset    = 0;
-    size_t index_offset   = 0;
+    bool added_shared    = false;
+    size_t currentOffset = 0;
+    size_t sharedOffset  = 0;
+    size_t nextOffset    = 0;
 
-    vertex_count = index_count = 0;
+    size_t vertexCount     = 0;
+    size_t indexTriCount   = 0;
+    size_t indexTriOffset  = 0;
+    size_t indexQuadCount  = 0;
+    size_t indexQuadOffset = 0;
 
     // Calculate how many vertices and indices we're going to need
     for (unsigned short i = 0; i < mesh->getNumSubMeshes(); ++i)
     {
-        Ogre::SubMesh* submesh = mesh->getSubMesh( i );
+        const Ogre::SubMesh* submesh = mesh->getSubMesh( i );
 
         // We only need to add the shared vertices once
         if(submesh->useSharedVertices)
         {
             if( !added_shared )
             {
-                vertex_count += mesh->sharedVertexData->vertexCount;
-                added_shared  = true;
+                vertexCount += mesh->sharedVertexData->vertexCount;
+                added_shared = true;
             }
         }
         else
         {
-            vertex_count += submesh->vertexData->vertexCount;
+            vertexCount += submesh->vertexData->vertexCount;
         }
 
         // Add the indices
-        index_count += submesh->indexData->indexCount;
+        if(submesh->operationType == ::Ogre::RenderOperation::OT_TRIANGLE_LIST)
+        {
+            indexTriCount += submesh->indexData->indexCount;
+        }
+        else if(submesh->operationType == ::Ogre::RenderOperation::OT_LINE_LIST)
+        {
+            indexQuadCount += submesh->indexData->indexCount;
+        }
     }
 
     // Allocate space for the vertices and indices
-    vertices = new Ogre::Vector3[vertex_count];
-    indices  = new Ogre::uint32[index_count];
+    std::vector< ::Ogre::Vector3> vertices;
+    vertices.resize(vertexCount);
+    std::vector< ::Ogre::uint32> indicesTri;
+    indicesTri.resize(indexTriCount);
+    std::vector< ::Ogre::uint32> indicesQuad;
+    indicesQuad.resize(indexQuadCount);
 
     added_shared = false;
 
     // Run through the submeshes again, adding the data into the arrays
     for ( unsigned short i = 0; i < mesh->getNumSubMeshes(); ++i)
     {
-        Ogre::SubMesh* submesh = mesh->getSubMesh(i);
+        const Ogre::SubMesh* submesh = mesh->getSubMesh(i);
 
-        Ogre::VertexData* vertex_data = submesh->useSharedVertices ? mesh->sharedVertexData : submesh->vertexData;
+        const Ogre::VertexData* vertex_data = submesh->useSharedVertices ? mesh->sharedVertexData : submesh->vertexData;
 
         if((!submesh->useSharedVertices)||(submesh->useSharedVertices && !added_shared))
         {
             if(submesh->useSharedVertices)
             {
-                added_shared  = true;
-                shared_offset = current_offset;
+                added_shared = true;
+                sharedOffset = currentOffset;
             }
 
             const Ogre::VertexElement* posElem =
                 vertex_data->vertexDeclaration->findElementBySemantic(::Ogre::VES_POSITION);
 
-            Ogre::HardwareVertexBufferSharedPtr vbuf =
+            const Ogre::HardwareVertexBufferSharedPtr vbuf =
                 vertex_data->vertexBufferBinding->getBuffer(posElem->getSource());
 
-            unsigned char* vertex =
-                static_cast<unsigned char*>(vbuf->lock(::Ogre::HardwareBuffer::HBL_READ_ONLY));
+            unsigned char* vertex = static_cast<unsigned char*>(vbuf->lock(::Ogre::HardwareBuffer::HBL_READ_ONLY));
 
             // There is _no_ baseVertexPointerToElement() which takes an Ogre::Ogre::Real or a double
             //  as second argument. So make it float, to avoid trouble when Ogre::Ogre::Real will
-            //  be comiled/typedefed as double:
+            //  be compiled/typedefed as double:
             //      Ogre::Ogre::Real* pOgre::Real;
             float* pReal;
 
@@ -355,54 +409,72 @@ void CollisionTools::GetMeshInformation(const Ogre::MeshPtr mesh,
 
                 Ogre::Vector3 pt(pReal[0], pReal[1], pReal[2]);
 
-                vertices[current_offset + j] = (orient * (pt * scale)) + position;
+                vertices[currentOffset + j] = (orient * (pt * scale)) + position;
             }
 
             vbuf->unlock();
-            next_offset += vertex_data->vertexCount;
+            nextOffset += vertex_data->vertexCount;
         }
 
-        Ogre::IndexData* index_data             = submesh->indexData;
-        size_t numTris                          = index_data->indexCount / 3;
-        Ogre::HardwareIndexBufferSharedPtr ibuf = index_data->indexBuffer;
+        const Ogre::IndexData* index_data             = submesh->indexData;
+        const Ogre::HardwareIndexBufferSharedPtr ibuf = index_data->indexBuffer;
 
         /*********************** FIX LUIS ***********************/
 
-        // When a mesh i picked, a billboard is created (for printing purposes), this line ensure theses billboars are
+        // When a mesh is picked, a billboard is created (for printing purposes), this line ensure theses billboars are
         // not picked by the same picker as they do not define an entity.
         if(index_data->indexCount == 0)
         {
-            return;
+            return std::tuple<std::vector< Ogre::Vector3>,
+                              std::vector< Ogre::uint32>,
+                              std::vector< Ogre::uint32> >(vertices, indicesTri, indicesQuad);
         }
 
         /*********************** END FIX LUIS ***********************/
 
-        bool use32bitindexes = (ibuf->getType() == Ogre::HardwareIndexBuffer::IT_32BIT);
+        bool use32bitindexes = (ibuf->getType() == ::Ogre::HardwareIndexBuffer::IT_32BIT);
 
-        Ogre::uint32*  pLong   = static_cast<Ogre::uint32*>(ibuf->lock(::Ogre::HardwareBuffer::HBL_READ_ONLY));
-        unsigned short* pShort = reinterpret_cast<unsigned short*>(pLong);
+        auto pLong  = static_cast< const ::Ogre::uint32*>(ibuf->lock(::Ogre::HardwareBuffer::HBL_READ_ONLY));
+        auto pShort = reinterpret_cast<const unsigned short*>(pLong);
 
-        size_t offset = (submesh->useSharedVertices) ? shared_offset : current_offset;
+        size_t offset = (submesh->useSharedVertices) ? sharedOffset : currentOffset;
+
+        std::vector< ::Ogre::uint32>* indices;
+        size_t* indexOffset;
+
+        if(submesh->operationType == ::Ogre::RenderOperation::OT_TRIANGLE_LIST)
+        {
+            indexOffset = &indexTriOffset;
+            indices     = &indicesTri;
+        }
+        else
+        {
+            indexOffset = &indexQuadOffset;
+            indices     = &indicesQuad;
+
+        }
 
         if ( use32bitindexes )
         {
-            for ( size_t k = 0; k < numTris*3; ++k)
+            for ( size_t k = 0; k < index_data->indexCount; ++k)
             {
-                indices[index_offset++] = pLong[k] + static_cast<Ogre::uint32>(offset);
+                (*indices)[(*indexOffset)++] = pLong[k] + static_cast<Ogre::uint32>(offset);
             }
         }
         else
         {
-            for ( size_t k = 0; k < numTris*3; ++k)
+            for ( size_t k = 0; k < index_data->indexCount; ++k)
             {
-                indices[index_offset++] = static_cast<Ogre::uint32>(pShort[k]) +
-                                          static_cast<Ogre::uint32>(offset);
+                (*indices)[(*indexOffset)++] = static_cast<Ogre::uint32>(pShort[k]) + static_cast<Ogre::uint32>(offset);
             }
         }
 
         ibuf->unlock();
-        current_offset = next_offset;
+        currentOffset = nextOffset;
     }
+    return std::tuple < std::vector< Ogre::Vector3>,
+                        std::vector< Ogre::uint32>,
+                        std::vector< Ogre::uint32> >(vertices, indicesTri, indicesQuad);
 }
 
 //------------------------------------------------------------------------------

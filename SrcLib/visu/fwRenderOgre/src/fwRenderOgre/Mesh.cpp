@@ -561,6 +561,10 @@ std::pair<bool, std::vector<R2VBRenderable*> > Mesh::updateR2VB(const ::fwData::
 
         *m_r2vbMesh->sharedVertexData->vertexBufferBinding = *m_ogreMesh->sharedVertexData->vertexBufferBinding;
         *m_r2vbMesh->sharedVertexData->vertexDeclaration   = *m_ogreMesh->sharedVertexData->vertexDeclaration;
+        m_r2vbMesh->sharedVertexData->vertexCount          = m_ogreMesh->sharedVertexData->vertexCount;
+
+        m_r2vbMesh->_setBounds( m_ogreMesh->getBounds() );
+        m_r2vbMesh->_setBoundingSphereRadius( m_ogreMesh->getBoundingSphereRadius() );
 
         // Add mesh to Ogre Root Scene Node if it doesn't exist yet
         if(!m_r2vbEntity)

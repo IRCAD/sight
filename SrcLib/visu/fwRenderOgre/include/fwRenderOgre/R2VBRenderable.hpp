@@ -58,6 +58,9 @@ public:
     /// @copydoc Renderable::getSquaredViewDepth
     FWRENDEROGRE_API virtual ::Ogre::Real getSquaredViewDepth(const Ogre::Camera* _cam) const override;
 
+    /// Return the parent mesh.
+    FWRENDEROGRE_API virtual const ::Ogre::MeshPtr& getMesh(void) const;
+
     /// Mark the output verex buffer as dirty, the r2vb process will be run on next update
     FWRENDEROGRE_API void setDirty();
 
