@@ -14,6 +14,7 @@
 #include <fwCom/Slots.hxx>
 
 #include <fwData/Image.hpp>
+#include <fwData/mt/ObjectWriteLock.hpp>
 
 #include <fwServices/registry/ActiveWorkers.hpp>
 
@@ -105,10 +106,12 @@ void TransferFunction::setOrCreateTF(const fwData::TransferFunction::sptr& _tf, 
     this->removeTFConnections();
     if (_tf)
     {
+        ::fwData::mt::ObjectWriteLock tfLock(_tf);
         this->setTransferFunction(_tf);
     }
     else
     {
+        ::fwData::mt::ObjectWriteLock tfLock(_image);
         this->createTransferFunction(_image);
     }
     this->installTFConnections();

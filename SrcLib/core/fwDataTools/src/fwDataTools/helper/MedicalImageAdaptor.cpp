@@ -315,10 +315,12 @@ void MedicalImageAdaptor::setOrCreateTF(const fwData::TransferFunction::sptr& _t
     this->removeTFConnections();
     if (_tf)
     {
+        ::fwData::mt::ObjectWriteLock tfLock(_tf);
         this->setTransferFunction(_tf);
     }
     else
     {
+        ::fwData::mt::ObjectWriteLock tfLock(_image);
         this->createTransferFunction(_image);
     }
     this->installTFConnections();

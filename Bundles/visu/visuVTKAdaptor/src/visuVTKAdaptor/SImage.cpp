@@ -72,17 +72,7 @@ void SImage::starting()
     SLM_ASSERT("Missing image", image);
 
     ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
-    {
-        if(tf != nullptr)
-        {
-            const ::fwData::mt::ObjectWriteLock tfLock(tf);
-            m_helperTF.setOrCreateTF(tf, image);
-        }
-        else
-        {
-            m_helperTF.setOrCreateTF(tf, image);
-        }
-    }
+    m_helperTF.setOrCreateTF(tf, image);
 
     this->updating();
 }
@@ -125,17 +115,8 @@ void SImage::swapping(const KeyType& key)
         SLM_ASSERT("Missing image", image);
 
         ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
-        {
-            if(tf != nullptr)
-            {
-                const ::fwData::mt::ObjectWriteLock tfLock(tf);
-                m_helperTF.setOrCreateTF(tf, image);
-            }
-            else
-            {
-                m_helperTF.setOrCreateTF(tf, image);
-            }
-        }
+        m_helperTF.setOrCreateTF(tf, image);
+
         this->updating();
     }
 }
