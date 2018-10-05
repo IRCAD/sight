@@ -172,7 +172,7 @@ protected:
     VISUOGREADAPTOR_API void swapping(const KeyType& key) override;
 
     /// Slot: update the displayed transfer function
-    VISUOGREADAPTOR_API virtual void updateTF();
+    VISUOGREADAPTOR_API virtual void updateImageTF();
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -228,7 +228,8 @@ private:
 
     /// Updates the clipping box position from the inout clipping matrix.
     void updateClippingBox();
-    ::fwDataTools::helper::TransferFunction m_helperTF;
+
+    ::fwDataTools::helper::TransferFunction m_helperImageTF;
 
     /// Updates the inout clipping matrix from the clipping box positions.
     void updateClippingTM3D();
@@ -242,7 +243,7 @@ private:
     ::Ogre::TexturePtr m_maskTexture;
 
     /// TF texture used for rendering.
-    ::fwRenderOgre::TransferFunction::sptr m_gpuTF;
+    ::fwRenderOgre::TransferFunction::sptr m_gpuImageTF;
 
     /// Pre-integration table.
     ::fwRenderOgre::vr::PreIntegrationTable m_preIntegrationTable;
