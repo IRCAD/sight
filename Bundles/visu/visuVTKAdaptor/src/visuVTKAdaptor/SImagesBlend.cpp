@@ -17,7 +17,7 @@
 #include <fwData/Color.hpp>
 #include <fwData/Image.hpp>
 #include <fwData/Integer.hpp>
-#include <fwData/mt/ObjectWriteLock.hpp>
+#include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/String.hpp>
 #include <fwData/TransferFunction.hpp>
 
@@ -182,7 +182,7 @@ void SImagesBlend::swapping(const KeyType& key)
                 if(tf != nullptr)
                 {
                     {
-                        ::fwData::mt::ObjectWriteLock tfLock(tf);
+                        ::fwData::mt::ObjectReadLock tfLock(tf);
                         service->registerInOut(tf, SImage::s_TF_INOUT, false, true);
                     }
                     service->swapKey(SImage::s_TF_INOUT, nullptr);
