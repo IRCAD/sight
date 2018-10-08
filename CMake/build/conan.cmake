@@ -10,6 +10,13 @@ conan_check(VERSION 1.0.0 REQUIRED)
 conan_add_remote(NAME sight-conan INDEX 1
                  URL http://5.39.78.163:8081/artifactory/api/conan/conan-local)
 
+unset(CONAN_OPTIONS)
+find_package(CUDA QUIET)
+if(CUDA_FOUND)
+    message(STATUS "CUDA ${CUDA_VERSION_STRING} found on your PC. Cuda Conan packages will be used")
+    set(CONAN_OPTIONS "*:use_cuda=True")
+endif()
+
 macro(findConanDeps PROJECT_LIST CONAN_DEPS_LIST)
     unset(RESULT_LIST)
 
@@ -33,5 +40,7 @@ macro(installConanDeps CONAN_DEPS_LIST)
         REQUIRES ${CONAN_DEPS_LIST}
         BASIC_SETUP CMAKE_TARGETS NO_OUTPUT_DIRS
         IMPORTS ${CONAN_IMPORTS}
+        OPTIONS ${CONAN_OPTIONS}
+        #BUILD missing
     )
 endmacro()
