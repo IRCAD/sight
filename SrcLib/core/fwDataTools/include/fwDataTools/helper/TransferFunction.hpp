@@ -26,9 +26,9 @@ namespace helper
  *
  * @section Slots Slots
  *
- * The two slots must be reimplemented by the services managing transfer function
- * - \b updateTFPoints(): called when the transfer function points are modified
- * - \b updateTFWindowing(double window, double level): called when the transfer function windowing is modified
+ * One function must be implemented by the service managing the transfer function. This function will be
+ * called when the transfer function points are modified. If the second function is implemented, it will
+ * be called when the transfer function windowing is modified, else, the first function will also be called.
  */
 class FWDATATOOLS_CLASS_API TransferFunction
 {
