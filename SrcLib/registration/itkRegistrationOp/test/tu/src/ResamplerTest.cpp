@@ -13,7 +13,6 @@
 
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 #include <fwDataTools/helper/Image.hpp>
-#include <fwDataTools/helper/MedicalImage.hpp>
 
 #include <fwTest/generator/Image.hpp>
 
