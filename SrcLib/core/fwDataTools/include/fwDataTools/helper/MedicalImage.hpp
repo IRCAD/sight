@@ -159,7 +159,7 @@ public:
     template< typename WORLD, typename INT_INDEX >
     void worldToImageSliceIndex(const WORLD world, INT_INDEX* index );
 
-//private:
+protected:
 
     /// Image orientation
     Orientation m_orientation;
