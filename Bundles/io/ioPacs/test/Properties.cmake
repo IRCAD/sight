@@ -15,5 +15,5 @@ set( REQUIREMENTS
 
 set(CPPUNITTEST_OPTIONS BUNDLE ioPacs WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
 set( CONAN_DEPS
-    cppunit/1.14.0@fw4spl/stable
+    cppunit/1.14.0@sight/stable
 )

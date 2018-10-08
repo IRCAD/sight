@@ -5,5 +5,5 @@ set( TYPE LIBRARY )
 set( DEPENDENCIES fwCamp fwCom fwTools )
 set( REQUIREMENTS  )
 set( CONAN_DEPS
-    boost/1.67.0@fw4spl/stable
+    boost/1.67.0@sight/stable
 )

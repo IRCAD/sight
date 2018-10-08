@@ -5,5 +5,5 @@ set( DEPENDENCIES fwCore fwTest fwTools fwData handEyeCalibration eigenTools fwD
 set( REQUIREMENTS  )
 
 set( CONAN_DEPS
-    ceres/1.14.0@fw4spl/stable
+    ceres/1.14.0@sight/stable
 )

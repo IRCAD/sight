@@ -7,7 +7,7 @@ endif()
 include(${CMAKE_BINARY_DIR}/conan.cmake)
 
 conan_check(VERSION 1.0.0 REQUIRED)
-conan_add_remote(NAME fw4spl-conan INDEX 1
+conan_add_remote(NAME sight-conan INDEX 1
                  URL http://5.39.78.163:8081/artifactory/api/conan/conan-local)
 
 macro(findConanDeps PROJECT_LIST CONAN_DEPS_LIST)

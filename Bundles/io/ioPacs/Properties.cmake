@@ -25,6 +25,6 @@ set( REQUIREMENTS
     servicesReg
     )
 set( CONAN_DEPS
-    dcmtk/3.6.3@fw4spl/stable
-    qt/5.11.1@fw4spl/stable
+    dcmtk/3.6.3@sight/stable
+    qt/5.11.1@sight/stable
 )

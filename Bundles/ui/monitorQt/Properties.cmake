@@ -6,6 +6,6 @@ set( DEPENDENCIES fwCom fwCore fwData fwGui fwGuiQt fwMemory fwRuntime fwService
 set( REQUIREMENTS  )
 
 set( CONAN_DEPS
-    qt/5.11.1@fw4spl/stable
-    libxml2/2.9.8@fw4spl/stable
+    qt/5.11.1@sight/stable
+    libxml2/2.9.8@sight/stable
 )

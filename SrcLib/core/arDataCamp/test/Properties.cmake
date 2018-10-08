@@ -15,5 +15,5 @@ set( DEPENDENCIES
 set( REQUIREMENTS  )
 
 set( CONAN_DEPS
-    camp/0.8.2@fw4spl/stable
+    camp/0.8.2@sight/stable
 )

@@ -24,6 +24,6 @@ set( REQUIREMENTS
     ctrlSelection
     )
 set( CONAN_DEPS
-    boost/1.67.0@fw4spl/stable
-    qt/5.11.1@fw4spl/stable
+    boost/1.67.0@sight/stable
+    qt/5.11.1@sight/stable
 )

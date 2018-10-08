@@ -6,5 +6,5 @@ set( DEPENDENCIES fwCore fwThread fwJobs)
 set( REQUIREMENTS )
 
 set( CONAN_DEPS
-    cppunit/1.14.0@fw4spl/stable
+    cppunit/1.14.0@sight/stable
 )

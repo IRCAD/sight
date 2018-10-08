@@ -15,5 +15,5 @@ set( DEPENDENCIES
 set( REQUIREMENTS  )
 set( USE_PCH_FROM_TARGET pchData )
 set( CONAN_DEPS
-    qt/5.11.1@fw4spl/stable
+    qt/5.11.1@sight/stable
 )

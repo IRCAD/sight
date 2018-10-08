@@ -16,5 +16,5 @@ set( DEPENDENCIES
 )
 set( REQUIREMENTS dataReg servicesReg)
 set( CONAN_DEPS
-    opencv/3.4.3@fw4spl/stable
+    opencv/3.4.3@sight/stable
 )

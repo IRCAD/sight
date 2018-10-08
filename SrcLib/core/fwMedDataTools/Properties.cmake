@@ -11,5 +11,5 @@ set( DEPENDENCIES
 set( REQUIREMENTS  )
 set( USE_PCH_FROM_TARGET pchData )
 set( CONAN_DEPS
-    gdcm/2.8.6@fw4spl/stable
+    gdcm/2.8.6@sight/stable
 )

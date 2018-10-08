@@ -10,7 +10,7 @@ set( DEPENDENCIES
 )
 set( REQUIREMENTS  )
 set( CONAN_DEPS
-    vtk/8.0.1@fw4spl/stable
-    qt/5.11.1@fw4spl/stable
-    itk/4.13.0@fw4spl/stable
+    vtk/8.0.1@sight/stable
+    qt/5.11.1@sight/stable
+    itk/4.13.0@sight/stable
 )
