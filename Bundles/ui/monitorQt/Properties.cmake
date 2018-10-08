@@ -7,5 +7,7 @@ set( REQUIREMENTS  )
 
 set( CONAN_DEPS
     qt/5.11.1@sight/stable
-    libxml2/2.9.8@sight/stable
 )
+if(WIN32 OR APPLE)
+    list(APPEND CONAN_DEPS libxml2/2.9.8@sight/stable)
+endif()
