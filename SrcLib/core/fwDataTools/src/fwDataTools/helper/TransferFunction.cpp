@@ -99,7 +99,7 @@ void TransferFunction::createTransferFunction( ::fwData::Image::sptr image )
     }
 }
 
-//------------------------------------------------------------------------------v
+//------------------------------------------------------------------------------
 
 void TransferFunction::setOrCreateTF(const fwData::TransferFunction::sptr& _tf, const fwData::Image::sptr& _image)
 {
