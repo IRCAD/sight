@@ -49,7 +49,7 @@ public:
     /// Bind the texture and the uniforms in a given pass
     template <class GPU_PARAMETERS>
     void bind(::Ogre::Pass* _ogrePass, const std::string& _texUnitName,
-              ::Ogre::SharedPtr<GPU_PARAMETERS> _params) const;
+              ::Ogre::SharedPtr<GPU_PARAMETERS> _params, const std::string& _uniform = "u_tfWindow") const;
 private:
 
     /// Texture containing the interpolated nodes of the transfer function.
@@ -92,7 +92,7 @@ inline void TransferFunction::setSampleDistance(const float& _sampleDistance)
 
 template <class GPU_PARAMETERS>
 inline void TransferFunction::bind(::Ogre::Pass* _pass, const std::string& _texUnitName,
-                                   ::Ogre::SharedPtr<GPU_PARAMETERS> _params) const
+                                   ::Ogre::SharedPtr<GPU_PARAMETERS> _params, const std::string& _uniform) const
 {
     SLM_ASSERT("Pass is null", _pass);
     SLM_ASSERT("Parameters pointer is null", _params);
@@ -118,7 +118,7 @@ inline void TransferFunction::bind(::Ogre::Pass* _pass, const std::string& _texU
         texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
     }
 
-    _params->setNamedConstant("u_tfWindow", m_tfWindow);
+    _params->setNamedConstant(_uniform, m_tfWindow);
 }
 
 //-----------------------------------------------------------------------------

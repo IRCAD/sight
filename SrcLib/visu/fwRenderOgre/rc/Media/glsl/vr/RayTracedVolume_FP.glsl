@@ -9,6 +9,8 @@ uniform sampler2D u_IC;
 #endif
 #if IDVR == 1
 uniform sampler2D u_JFA;
+uniform vec2 u_maskTFWindow;
+uniform sampler1D u_maskTFTexture;
 #endif
 #if IDVR == 2 || IDVR == 3
 uniform sampler3D u_mask;
@@ -87,6 +89,18 @@ out vec4 fragColor;
 //-----------------------------------------------------------------------------
 
 vec4 sampleTransferFunction(float intensity);
+
+//-----------------------------------------------------------------------------
+
+#if IDVR == 1
+vec4 sampleIDVRTransferFunction(float intensity)
+{
+    float intIntensity = intensity * 65535.f - 32768.f;
+    float scaledValue = ((intIntensity - u_maskTFWindow.x) / (u_maskTFWindow.y - u_maskTFWindow.x));
+
+    return texture(u_maskTFTexture, scaledValue);
+}
+#endif
 
 //-----------------------------------------------------------------------------
 

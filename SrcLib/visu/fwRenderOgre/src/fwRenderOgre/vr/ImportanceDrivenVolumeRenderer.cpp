@@ -174,6 +174,7 @@ ImportanceDrivenVolumeRenderer::ImportanceDrivenVolumeRenderer(std::string _pare
     m_RTVSharedParameters->addConstantDefinition("u_imageSpacing", ::Ogre::GCT_FLOAT3);
     m_RTVSharedParameters->addConstantDefinition("u_depthLinesSpacing", ::Ogre::GCT_INT1);
     m_RTVSharedParameters->addConstantDefinition("u_depthLinesWidth", ::Ogre::GCT_FLOAT1);
+    m_RTVSharedParameters->addConstantDefinition("u_maskTFWindow", ::Ogre::GCT_FLOAT2);
 
     m_RTVSharedParameters->setNamedConstant("u_csgAngleCos", m_idvrCSGAngleCosine);
     m_RTVSharedParameters->setNamedConstant("u_csgBorderThickness", m_idvrCSGBorderThickness);
@@ -757,6 +758,13 @@ void ImportanceDrivenVolumeRenderer::setRayCastingPassTextureUnits(Ogre::Pass* _
         texUnitState->setCompositorReference(s_JFAINIT_COMPOSITOR, "JFAFinal", 0);
 
         fpParams->setNamedConstant("u_" + s_JUMP_FLOOD_ALGORITHM_TEXTURE, nbTexUnits++);
+
+        auto gpuTF = m_gpuMaskTF.lock();
+        texUnitState = _rayCastingPass->createTextureUnitState();
+        texUnitState->setName("maskTransferFunction");
+        gpuTF->bind(_rayCastingPass, texUnitState->getName(), fpParams, "u_maskTFWindow");
+
+        fpParams->setNamedConstant("u_maskTFTexture", nbTexUnits++);
     }
 
     // Alpha Correction: AImC | VPImC

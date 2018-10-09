@@ -13,6 +13,8 @@ vec4 sampleTransferFunction(float intensity)
     return texture(u_tfTexture, scaledValue);
 }
 
+//-----------------------------------------------------------------------------
+
 vec4 sampleTransferFunction_uint16(int intensity)
 {
     float intIntensity = intensity ;
@@ -20,6 +22,8 @@ vec4 sampleTransferFunction_uint16(int intensity)
 
     return texture(u_tfTexture, scaledValue);
 }
+
+//-----------------------------------------------------------------------------
 
 vec4 sampleTransferFunction_float(float intensity)
 {
