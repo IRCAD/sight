@@ -93,7 +93,7 @@ vec4 sampleTransferFunction(float intensity);
 //-----------------------------------------------------------------------------
 
 #if IDVR == 1
-vec4 sampleIDVRTransferFunction(float intensity)
+vec4 sampleCSGTransferFunction(float intensity)
 {
     float intIntensity = intensity * 65535.f - 32768.f;
     float scaledValue = ((intIntensity - u_cgsTFWindow.x) / (u_cgsTFWindow.y - u_cgsTFWindow.x));
@@ -292,7 +292,7 @@ vec3 hsv2rgb(vec3 HSL);
 
 //-----------------------------------------------------------------------------
 
-vec4 launchRay(in vec3 rayPos, in vec3 rayDir, in float rayLength, in float sampleDistance)
+vec4 launchRay(in vec3 rayPos, in vec3 rayDir, in float rayLength, in float sampleDistance, in bool _csgTF)
 {
     vec4 result = vec4(0);
 
@@ -337,7 +337,20 @@ vec4 launchRay(in vec3 rayPos, in vec3 rayDir, in float rayLength, in float samp
 #else
         float intensity = texture(u_image, rayPos).r;
 
+#if IDVR == 1
+        vec4 tfColour;
+        if(_csgTF)
+        {
+            tfColour = sampleCSGTransferFunction(intensity);
+        }
+        else
+        {
+            tfColour = sampleTransferFunction(intensity);
+        }
+#else
         vec4  tfColour = sampleTransferFunction(intensity);
+#endif
+
 #endif // PREINTEGRATION
 
         if(tfColour.a > 0)
@@ -457,12 +470,14 @@ void main(void)
 
 #endif // CSG
 
+    vec3 rayCSGEntry = rayEntry;
     vec4 importance = texelFetch(u_IC, ivec2(gl_FragCoord.xy), 0);
 
     // If we have an importance factor, we move the ray accordingly
     if(importance.a > 0.)
     {
         rayEntry = importance.rgb;
+        rayCSGEntry = rayEntry;
     }
 #ifdef CSG
     // Otherwise, we use the distance to the closest important point
@@ -533,7 +548,7 @@ void main(void)
     vec3 rayPos = rayEntry;
 
 #ifndef CSG
-    vec4 result = launchRay(rayPos, rayDir, rayLength, u_sampleDistance);
+    vec4 result = launchRay(rayPos, rayDir, rayLength, u_sampleDistance, false);
 #else
     vec4 result;
 
@@ -553,7 +568,14 @@ void main(void)
         else
         {
 #endif // CSG_DEPTH_LINES
-            vec4 color = launchRay(rayPos, rayDir, rayLength, u_sampleDistance);
+            vec4 color = launchRay(rayPos, rayDir, rayLength, u_sampleDistance, false);
+#if IDVR ==1
+            float rayCSGLength = length(rayEntry - rayCSGEntry);
+            vec3 rayCSGPos = rayCSGEntry;
+            vec4 colorCSG = launchRay(rayCSGPos, rayDir, rayCSGLength, u_sampleDistance, true);
+            composite(colorCSG, color);
+            color = colorCSG;
+#endif
 
 // Average grayscale
 #if CSG_GRAYSCALE == 1
@@ -613,7 +635,7 @@ void main(void)
     }
     else
     {
-        result = launchRay(rayPos, rayDir, rayLength, u_sampleDistance);
+        result = launchRay(rayPos, rayDir, rayLength, u_sampleDistance, false);
     }
 #endif // CSG
 
