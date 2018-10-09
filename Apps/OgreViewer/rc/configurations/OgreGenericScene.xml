@@ -260,7 +260,7 @@
 
         <!-- ************************************* Services ************************************ -->
         <service uid="synchronizer" type="::videoTools::SFrameMatrixSynchronizer" worker="videoWorker">
-            <in group="frameTL_UID">
+            <in group="frameTL">
                 <key uid="frameTL_UID" />
             </in>
             <inout group="image">
