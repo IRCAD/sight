@@ -119,7 +119,7 @@ void SNegatoOneSlice::cleanImageSource()
         imgSliceAdaptor->setVtkImageSource(this->getImageSource());
         imgSliceAdaptor->setInterpolation(m_interpolation);
         imgSliceAdaptor->setActorOpacity(m_actorOpacity);
-        imgSliceAdaptor->setOrientation(m_orientation);
+        imgSliceAdaptor->setOrientation(m_helper.getOrientation());
 
         m_imageSliceAdaptor = imgSliceAdaptor;
     }
@@ -232,13 +232,13 @@ void SNegatoOneSlice::swapping(const KeyType& key)
 
 void SNegatoOneSlice::updateSliceType(int from, int to)
 {
-    if( to == static_cast<int>(m_orientation) )
+    if( to == static_cast<int>(m_helper.getOrientation()) )
     {
-        setOrientation( static_cast< Orientation >( from ));
+        m_helper.setOrientation( static_cast< Orientation >( from ));
     }
-    else if(from == static_cast<int>(m_orientation))
+    else if(from == static_cast<int>(m_helper.getOrientation()))
     {
-        setOrientation( static_cast< Orientation >( to ));
+        m_helper.setOrientation( static_cast< Orientation >( to ));
     }
 }
 
@@ -262,15 +262,15 @@ void SNegatoOneSlice::configuring()
     const std::string orientation = config.get<std::string>("sliceIndex", "axial");
     if(orientation == "axial" )
     {
-        m_orientation = Z_AXIS;
+        m_helper.setOrientation(Orientation::Z_AXIS);
     }
     else if(orientation == "frontal" )
     {
-        m_orientation = Y_AXIS;
+        m_helper.setOrientation(Orientation::Y_AXIS);
     }
     else if(orientation == "sagittal" )
     {
-        m_orientation = X_AXIS;
+        m_helper.setOrientation(Orientation::X_AXIS);
     }
 
     const std::string tfalpha = config.get<std::string>("tfalpha", "no");

@@ -49,12 +49,11 @@ namespace visuVTKAdaptor
  *
  */
 
-class VISUVTKADAPTOR_CLASS_API SProbeCursor : public ::fwDataTools::helper::MedicalImage,
-                                              public ::fwRenderVTK::IAdaptor
+class VISUVTKADAPTOR_CLASS_API SProbeCursor : public ::fwRenderVTK::IAdaptor
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro( (SProbeCursor)(::fwRenderVTK::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (SProbeCursor)(::fwRenderVTK::IAdaptor) )
 
     static const ::fwCom::Slots::SlotKeyType s_UPDATE_SLICE_INDEX_SLOT;
 
@@ -67,6 +66,13 @@ public:
     VISUVTKADAPTOR_API void setVisibility( bool visibility );
 
     VISUVTKADAPTOR_API void startSProbeCursor();
+
+    //------------------------------------------------------------------------------
+
+    void setOrientation(int _orientation)
+    {
+        m_helper.setOrientation(static_cast< ::fwDataTools::helper::MedicalImage::Orientation >(_orientation));
+    }
 
 protected:
 
@@ -100,6 +106,8 @@ protected:
     vtkPolyData* m_cursorPolyData;
     vtkPolyDataMapper* m_cursorMapper;
     vtkActor* m_cursorActor;
+
+    ::fwDataTools::helper::MedicalImage m_helper;
 
 private:
     /**

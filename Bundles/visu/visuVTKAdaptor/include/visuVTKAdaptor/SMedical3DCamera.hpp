@@ -44,16 +44,24 @@ namespace visuVTKAdaptor
  *      sagittal.
  *    - \b resetAtStart(optional, default: no): if "yes", it updates the view when the adaptor is started.
  */
-class VISUVTKADAPTOR_CLASS_API SMedical3DCamera : public ::fwDataTools::helper::MedicalImage,
-                                                  public ::fwRenderVTK::IAdaptor
+class VISUVTKADAPTOR_CLASS_API SMedical3DCamera : public ::fwRenderVTK::IAdaptor
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SMedical3DCamera)(::fwRenderVTK::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (SMedical3DCamera)(::fwRenderVTK::IAdaptor) )
+
+    typedef ::fwDataTools::helper::MedicalImage::Orientation Orientation;
 
     VISUVTKADAPTOR_API SMedical3DCamera() noexcept;
 
     VISUVTKADAPTOR_API virtual ~SMedical3DCamera() noexcept;
+
+    //------------------------------------------------------------------------------
+
+    void setOrientation(int _orientation)
+    {
+        m_helper.setOrientation(static_cast< Orientation >(_orientation));
+    }
 
 protected:
 
@@ -77,6 +85,9 @@ private:
 
     /// Update view when adaptor is started if true
     bool m_resetAtStart;
+
+    ::fwDataTools::helper::MedicalImage m_helper;
+
 };
 
 } //namespace visuVTKAdaptor

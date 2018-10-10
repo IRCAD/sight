@@ -40,15 +40,23 @@ namespace visuVTKAdaptor
  *    - \b renderer (mandatory): defines the renderer to show the image
  *    - \b sliceIndex (optional, axial/frontal/sagittal, default=axial): orientation of the negato
  */
-class VISUVTKADAPTOR_CLASS_API SSliceFollowerCamera : public ::fwDataTools::helper::MedicalImage,
-                                                      public ::fwRenderVTK::IAdaptor
+class VISUVTKADAPTOR_CLASS_API SSliceFollowerCamera : public ::fwRenderVTK::IAdaptor
 {
 public:
-    fwCoreServiceClassDefinitionsMacro( (SSliceFollowerCamera)(::fwRenderVTK::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (SSliceFollowerCamera)(::fwRenderVTK::IAdaptor) )
+
+    typedef ::fwDataTools::helper::MedicalImage::Orientation Orientation;
 
     VISUVTKADAPTOR_API SSliceFollowerCamera() noexcept;
 
     VISUVTKADAPTOR_API virtual ~SSliceFollowerCamera() noexcept;
+
+    //------------------------------------------------------------------------------
+
+    void setOrientation(int _orientation)
+    {
+        m_helper.setOrientation(static_cast< Orientation >(_orientation));
+    }
 
 protected:
 
@@ -86,6 +94,9 @@ private:
     /**
      * @}
      */
+
+    ::fwDataTools::helper::MedicalImage m_helper;
+
 };
 
 } //namespace visuVTKAdaptor

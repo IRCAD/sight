@@ -33,9 +33,9 @@ static const ::fwCom::Slots::SlotKeyType SET_FRONTAL_SLOT  = "setFrontal";
 
 std::map< std::string, ::fwDataTools::helper::MedicalImage::Orientation >
 SMedical3DCamera::m_orientationConversion = ::boost::assign::map_list_of
-                                                (std::string("axial"), Z_AXIS)
-                                                (std::string("frontal"), Y_AXIS)
-                                                (std::string("sagittal"), X_AXIS);
+                                                (std::string("axial"), Orientation::Z_AXIS)
+                                                (std::string("frontal"), Orientation::Y_AXIS)
+                                                (std::string("sagittal"), Orientation::X_AXIS);
 
 //------------------------------------------------------------------------------
 
@@ -64,7 +64,7 @@ void SMedical3DCamera::configuring()
 
     const std::string orientation = config.get<std::string>("sliceIndex", "axial");
     SLM_ASSERT("Unknown orientation", m_orientationConversion.find(orientation) != m_orientationConversion.end());
-    m_orientation = m_orientationConversion[orientation];
+    m_helper.setOrientation(m_orientationConversion[orientation]);
 
     const std::string reset = config.get<std::string>("resetAtStart", "no");
     SLM_ASSERT("'resetAtStart' value must be 'yes' or 'no'", reset == "yes" || reset == "no");
@@ -103,7 +103,7 @@ void SMedical3DCamera::stopping()
 
 void SMedical3DCamera::setSagittalView()
 {
-    m_orientation = X_AXIS;
+    m_helper.setOrientation(Orientation::X_AXIS);
     this->updating();
 }
 
@@ -111,7 +111,7 @@ void SMedical3DCamera::setSagittalView()
 
 void SMedical3DCamera::setFrontalView()
 {
-    m_orientation = Y_AXIS;
+    m_helper.setOrientation(Orientation::Y_AXIS);
     this->updating();
 }
 
@@ -119,7 +119,7 @@ void SMedical3DCamera::setFrontalView()
 
 void SMedical3DCamera::setAxialView()
 {
-    m_orientation = Z_AXIS;
+    m_helper.setOrientation(Orientation::Z_AXIS);
     this->updating();
 }
 
@@ -127,15 +127,15 @@ void SMedical3DCamera::setAxialView()
 
 void SMedical3DCamera::updateView()
 {
-    if(m_orientation == Z_AXIS )
+    if(m_helper.getOrientation() == Orientation::Z_AXIS )
     {
         this->resetAxialView();
     }
-    else if(m_orientation == Y_AXIS )
+    else if(m_helper.getOrientation() == Orientation::Y_AXIS )
     {
         this->resetFrontalView();
     }
-    else if(m_orientation == X_AXIS )
+    else if(m_helper.getOrientation() == Orientation::X_AXIS )
     {
         this->resetSagittalView();
     }

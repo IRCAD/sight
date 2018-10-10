@@ -53,12 +53,13 @@ namespace visuVTKAdaptor
  *    - \b transform (optional): the vtkTransform to associate to the adaptor
  *
  */
-class VISUVTKADAPTOR_CLASS_API SSlicesCursor : public ::fwDataTools::helper::MedicalImage,
-                                               public ::fwRenderVTK::IAdaptor
+class VISUVTKADAPTOR_CLASS_API SSlicesCursor : public ::fwRenderVTK::IAdaptor
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro( (SSlicesCursor)(::fwRenderVTK::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (SSlicesCursor)(::fwRenderVTK::IAdaptor) )
+
+    typedef ::fwDataTools::helper::MedicalImage::Orientation Orientation;
 
     VISUVTKADAPTOR_API SSlicesCursor()  noexcept;
 
@@ -77,6 +78,13 @@ public:
     /**
      * @}
      */
+
+    //------------------------------------------------------------------------------
+
+    void setOrientation(int _orientation)
+    {
+        m_helper.setOrientation(static_cast< Orientation >(_orientation));
+    }
 
 protected:
 
@@ -140,6 +148,8 @@ private:
     /// Compute points A' and B' on A------A'<---P--->B'---B
     static void computeCrossPoints( double _ptA[3], double _ptB[3], double _ptP[3], double _scale, double _ptAprime[3],
                                     double _ptBprime[3] );
+
+    ::fwDataTools::helper::MedicalImage m_helper;
 
 };
 

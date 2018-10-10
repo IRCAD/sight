@@ -51,13 +51,14 @@ namespace visuVTKAdaptor
  *    - \b vtkimagesource (optional): source image, used for blend
  *    - \b actorOpacity (optional, default=1.0): actor opacity (float)
  */
-class VISUVTKADAPTOR_CLASS_API SNegatoOneSlice : public ::fwDataTools::helper::MedicalImage,
-                                                 public ::fwRenderVTK::IAdaptor
+class VISUVTKADAPTOR_CLASS_API SNegatoOneSlice : public ::fwRenderVTK::IAdaptor
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SNegatoOneSlice)(::fwRenderVTK::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (SNegatoOneSlice)(::fwRenderVTK::IAdaptor) )
+
+    typedef ::fwDataTools::helper::MedicalImage::Orientation Orientation;
 
     VISUVTKADAPTOR_API SNegatoOneSlice() noexcept;
 
@@ -92,6 +93,13 @@ public:
     void setActorOpacity(double actorOpacity)
     {
         m_actorOpacity = actorOpacity;
+    }
+
+    //------------------------------------------------------------------------------
+
+    void setOrientation(int _orientation)
+    {
+        m_helper.setOrientation(static_cast< Orientation >(_orientation));
     }
 
 protected:
@@ -142,6 +150,9 @@ private:
     /**
      * @}
      */
+
+    ::fwDataTools::helper::MedicalImage m_helper;
+
 };
 
 } //namespace visuVTKAdaptor
