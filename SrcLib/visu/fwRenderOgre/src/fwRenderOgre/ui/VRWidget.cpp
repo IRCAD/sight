@@ -43,8 +43,8 @@ VRWidget::VRWidget(const std::string& id,
     m_widgetSceneNode(m_volumeSceneNode->createChildSceneNode()),
     m_clippingUpdateCallback(clippingUpdateCallback)
 {
-    this->applyTransform(clippingMatrix);
     this->initWidgets();
+    this->applyTransform(clippingMatrix);
 }
 
 //-----------------------------------------------------------------------------
@@ -591,12 +591,15 @@ void VRWidget::updateFromTransform(const ::Ogre::Matrix4& _clippingMx)
 
 void VRWidget::applyTransform(const ::Ogre::Matrix4& _clippingMx)
 {
+    // The clipping matrix is the transform from the initial box position to the new one.
     // Convert to world position because that's how VTK stores its crop matrices...
-    const ::Ogre::Vector3 worldCubeMin = m_volumeSceneNode->convertLocalToWorldPosition(m_clippingCube[0]);
-    const ::Ogre::Vector3 worldCubeMax = m_volumeSceneNode->convertLocalToWorldPosition(m_clippingCube[1]);
+    const ::Ogre::Vector3 worldCubeMin = m_volumeSceneNode->convertLocalToWorldPosition(::Ogre::Vector3::ZERO);
+    const ::Ogre::Vector3 worldCubeMax = m_volumeSceneNode->convertLocalToWorldPosition(::Ogre::Vector3::UNIT_SCALE);
 
     m_clippingCube[0] = m_volumeSceneNode->convertWorldToLocalPosition(_clippingMx * worldCubeMin);
     m_clippingCube[1] = m_volumeSceneNode->convertWorldToLocalPosition(_clippingMx * worldCubeMax);
+
+    this->updateWidgets();
 }
 
 //-----------------------------------------------------------------------------
