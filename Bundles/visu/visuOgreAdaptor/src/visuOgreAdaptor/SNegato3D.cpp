@@ -264,7 +264,14 @@ void SNegato3D::newImage()
     createPlanes(image->getSpacing(), image->getOrigin());
 
     // Update Slice
-    this->changeSliceIndex(m_axialIndex, m_frontalIndex, m_sagittalIndex);
+    int axialIndex =
+        image->getField< fwData::Integer >(::fwDataTools::fieldHelper::Image::m_axialSliceIndexId)->getValue();
+    int frontalIndex =
+        image->getField< fwData::Integer >(::fwDataTools::fieldHelper::Image::m_frontalSliceIndexId)->getValue();
+    int sagittalIndex =
+        image->getField< fwData::Integer >(::fwDataTools::fieldHelper::Image::m_sagittalSliceIndexId)->getValue();
+
+    this->changeSliceIndex(axialIndex, frontalIndex, sagittalIndex);
 
     // Update tranfer function in Gpu programs
     this->updateTF();

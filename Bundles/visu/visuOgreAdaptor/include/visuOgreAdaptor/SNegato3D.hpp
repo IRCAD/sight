@@ -148,13 +148,6 @@ private:
     /// Image orientation
     OrientationMode m_orientation;
 
-    /// Axial slice index
-    size_t m_axialIndex {0};
-    /// Frontal slice index
-    size_t m_frontalIndex {0};
-    /// Sagittal slice index
-    size_t m_sagittalIndex {0};
-
     ::fwDataTools::helper::TransferFunction m_helperTF;
 };
 

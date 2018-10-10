@@ -14,6 +14,7 @@
 #include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
 
+#include <fwDataTools/fieldHelper/Image.hpp>
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <fwRenderOgre/Utils.hpp>
@@ -213,7 +214,14 @@ void SNegato2D::newImage()
     this->updateCameraWindowBounds();
 
     // Update Slice
-    this->changeSliceIndex(m_axialIndex, m_frontalIndex, m_sagittalIndex);
+    int axialIndex =
+        image->getField< fwData::Integer >(::fwDataTools::fieldHelper::Image::m_axialSliceIndexId)->getValue();
+    int frontalIndex =
+        image->getField< fwData::Integer >(::fwDataTools::fieldHelper::Image::m_frontalSliceIndexId)->getValue();
+    int sagittalIndex =
+        image->getField< fwData::Integer >(::fwDataTools::fieldHelper::Image::m_sagittalSliceIndexId)->getValue();
+
+    this->changeSliceIndex(axialIndex, frontalIndex, sagittalIndex);
 
     // Update tranfer function in Gpu programs
     this->updateTF();
@@ -255,10 +263,6 @@ void SNegato2D::changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagitt
 {
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
-
-    m_axialIndex    = _axialIndex;
-    m_frontalIndex  = _frontalIndex;
-    m_sagittalIndex = _sagittalIndex;
 
     m_currentSliceIndex = {
         static_cast<float>(_sagittalIndex ) / (static_cast<float>(image->getSize()[0] - 1)),
