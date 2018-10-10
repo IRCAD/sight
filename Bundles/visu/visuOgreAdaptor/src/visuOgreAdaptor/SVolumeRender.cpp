@@ -189,7 +189,7 @@ void SVolumeRender::updateCSGTF()
 //            m_preIntegrationTable.tfUpdate(tf, m_volumeRenderer->getSamplingRate());
 //        }
 
-//        m_volumeRenderer->tfUpdate(tf);
+        m_volumeRenderer->updateCSGTF();
 
 //        if(m_ambientOcclusion || m_colorBleeding || m_shadows)
 //        {
@@ -310,6 +310,7 @@ void SVolumeRender::starting()
     }
 
     m_volumeRenderer->updateVolumeTF();
+    m_volumeRenderer->updateCSGTF();
 
     this->requestRender();
 }

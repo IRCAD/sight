@@ -176,7 +176,7 @@ ImportanceDrivenVolumeRenderer::ImportanceDrivenVolumeRenderer(std::string _pare
     m_RTVSharedParameters->addConstantDefinition("u_imageSpacing", ::Ogre::GCT_FLOAT3);
     m_RTVSharedParameters->addConstantDefinition("u_depthLinesSpacing", ::Ogre::GCT_INT1);
     m_RTVSharedParameters->addConstantDefinition("u_depthLinesWidth", ::Ogre::GCT_FLOAT1);
-    m_RTVSharedParameters->addConstantDefinition("u_maskTFWindow", ::Ogre::GCT_FLOAT2);
+    m_RTVSharedParameters->addConstantDefinition("u_CSGTFWindow", ::Ogre::GCT_FLOAT2);
 
     m_RTVSharedParameters->setNamedConstant("u_csgAngleCos", m_idvrCSGAngleCosine);
     m_RTVSharedParameters->setNamedConstant("u_csgBorderThickness", m_idvrCSGBorderThickness);
@@ -203,6 +203,20 @@ ImportanceDrivenVolumeRenderer::~ImportanceDrivenVolumeRenderer()
     this->cleanCompositorChain(viewport);
 }
 
+//------------------------------------------------------------------------------
+
+void ImportanceDrivenVolumeRenderer::updateCSGTF()
+{
+    if(m_idvrMethod == s_MIMP)
+    {
+        auto material  = ::Ogre::MaterialManager::getSingleton().getByName(m_currentMtlName);
+        auto technique = material->getTechnique(0);
+        SLM_ASSERT("Technique not found", technique);
+        auto pass = technique->getPass(0);
+        m_gpuCSGTF.lock()->bind(pass, s_CSG_TF_TEXUNIT_NAME, m_RTVSharedParameters, "u_CSGTFWindow");
+    }
+}
+
 //-----------------------------------------------------------------------------
 
 void ImportanceDrivenVolumeRenderer::setIDVRMethod(std::string _method)
@@ -224,6 +238,7 @@ void ImportanceDrivenVolumeRenderer::setIDVRMethod(std::string _method)
                  this->getLayer()->getStereoMode() != Layer::StereoModeType::NONE && m_idvrMethod != s_NONE);
 
     this->createMaterialAndIDVRTechnique();
+    updateCSGTF();
 }
 
 //-----------------------------------------------------------------------------
@@ -764,7 +779,7 @@ void ImportanceDrivenVolumeRenderer::setRayCastingPassTextureUnits(Ogre::Pass* _
         auto gpuTF = m_gpuCSGTF.lock();
         texUnitState = _rayCastingPass->createTextureUnitState();
         texUnitState->setName(s_CSG_TF_TEXUNIT_NAME);
-        gpuTF->bind(_rayCastingPass, texUnitState->getName(), fpParams, "u_csgTFWindow");
+        gpuTF->bind(_rayCastingPass, texUnitState->getName(), fpParams, "u_CSGTFWindow");
 
         fpParams->setNamedConstant("u_CSGTFTexture", nbTexUnits++);
     }

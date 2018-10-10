@@ -52,6 +52,9 @@ public:
 
     FWRENDEROGRE_API virtual ~ImportanceDrivenVolumeRenderer();
 
+    /// Called when the transfer function is updated.
+    FWRENDEROGRE_API virtual void updateCSGTF();
+
     /// Set the importance driven method used during the rendering.
     FWRENDEROGRE_API void setIDVRMethod(std::string method);
 
