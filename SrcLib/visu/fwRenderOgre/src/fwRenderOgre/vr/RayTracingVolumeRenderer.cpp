@@ -41,11 +41,6 @@ namespace vr
 
 //-----------------------------------------------------------------------------
 
-// We put proxy geometry in render queue 101. Rq 101 is not used by default and must be explicitly called.
-const static std::uint8_t s_PROXY_GEOMETRY_RQ_GROUP = 101;
-
-//-----------------------------------------------------------------------------
-
 struct RayTracingVolumeRenderer::CameraListener : public ::Ogre::Camera::Listener
 {
     RayTracingVolumeRenderer* m_renderer;
