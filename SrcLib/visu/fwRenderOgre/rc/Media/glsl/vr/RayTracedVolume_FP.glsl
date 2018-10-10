@@ -477,7 +477,9 @@ void main(void)
     if(importance.a > 0.)
     {
         rayEntry = importance.rgb;
-        rayCSGEntry = rayEntry;
+#ifdef CSG
+        isCsg = true;
+#endif // CSG
     }
 #ifdef CSG
     // Otherwise, we use the distance to the closest important point
@@ -517,18 +519,7 @@ void main(void)
             vec3 cOrig2RayEntry = rayEntry * volSize - closestPt * volSize;
             rayDepth = dot(cVector, cOrig2RayEntry) / length(cVector);
 
-            // If the new entry point hits a transparent zone then we discard it.
-            float entryIntensity = texture(u_image, rayEntry).r;
-            float entryOpacity = sampleTransferFunction(entryIntensity).a;
-
-            isCsg = entryOpacity > 0.f;
-
-#if CSG_DISABLE_CONTEXT == 1
-            if(!isCsg)
-            {
-                discard;
-            }
-#endif // CSG_DISABLE_CONTEXT == 1
+            isCsg = true;
         }
 
 #if CSG_DISABLE_CONTEXT == 1
@@ -552,7 +543,7 @@ void main(void)
 #else
     vec4 result;
 
-    if(rayDepth > 0 && isCsg)
+    if(isCsg)
     {
 
 #ifdef CSG_DEPTH_LINES
@@ -561,22 +552,21 @@ void main(void)
 
         int distToDepthLine = int(mod(rayDepthIntegralPart, u_depthLinesSpacing));
 
-        if( int(rayDepthIntegralPart) != 0 && distToDepthLine == 0 && (rayDepthFractPart < u_depthLinesWidth))
+        if(rayDepth > 0.0f && int(rayDepthIntegralPart) != 0 && distToDepthLine == 0 && (rayDepthFractPart < u_depthLinesWidth))
         {
             result = vec4(u_csgBorderColor, 1.);
+#if IDVR ==1
+            float rayCSGLength = length(rayEntry - rayCSGEntry);
+            vec3 rayCSGPos = rayCSGEntry;
+            vec4 colorCSG = launchRay(rayCSGPos, rayDir, rayCSGLength, u_sampleDistance, true);
+            composite(colorCSG, result);
+            result = colorCSG;
+#endif
         }
         else
         {
 #endif // CSG_DEPTH_LINES
             vec4 color = launchRay(rayPos, rayDir, rayLength, u_sampleDistance, false);
-#if IDVR ==1
-            float rayCSGLength = length(rayEntry - rayCSGEntry);
-            vec3 rayCSGPos = rayCSGEntry;
-            vec4 colorCSG = launchRay(rayCSGPos, rayDir, rayCSGLength, u_sampleDistance, true);
-            composite(colorCSG, color);
-            color = colorCSG;
-#endif
-
 // Average grayscale
 #if CSG_GRAYSCALE == 1
             // The average method simply averages the values
@@ -628,6 +618,13 @@ void main(void)
             color.a -= alphaModDecr;
 #endif // CSG_OPACITY_DECREASE
 
+#if IDVR ==1
+            float rayCSGLength = length(rayEntry - rayCSGEntry);
+            vec3 rayCSGPos = rayCSGEntry;
+            vec4 colorCSG = launchRay(rayCSGPos, rayDir, rayCSGLength, u_sampleDistance, true);
+            composite(colorCSG, color);
+            color = colorCSG;
+#endif
             result = color;
 #ifdef CSG_DEPTH_LINES
         }
