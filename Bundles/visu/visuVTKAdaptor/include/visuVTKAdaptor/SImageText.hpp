@@ -64,13 +64,12 @@ namespace visuVTKAdaptor
  *   (see second example). This is useful for multiline text. The same rules
  *   that for the attribute are applied.
  */
-class VISUVTKADAPTOR_CLASS_API SImageText : public SText,
-                                            public ::fwDataTools::helper::MedicalImage
+class VISUVTKADAPTOR_CLASS_API SImageText : public SText
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SImageText)(::fwRenderVTK::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (SImageText)(::fwRenderVTK::IAdaptor) )
 
     VISUVTKADAPTOR_API SImageText() noexcept;
 
@@ -113,6 +112,9 @@ protected:
      */
 
     ::fwDataTools::helper::TransferFunction m_helperTF;
+
+    ::fwDataTools::helper::MedicalImage m_helperImg;
+
 };
 
 } //namespace visuVTKAdaptor

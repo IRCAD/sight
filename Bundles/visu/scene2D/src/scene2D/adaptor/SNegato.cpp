@@ -55,7 +55,6 @@ SNegato::SNegato() noexcept :
     m_qimg(nullptr),
     m_pixmapItem(nullptr),
     m_layer(nullptr),
-    m_orientation(MedicalImage::Z_AXIS),
     m_pointIsCaptured(false),
     m_changeSliceTypeAllowed(true)
 {
@@ -63,6 +62,7 @@ SNegato::SNegato() noexcept :
     newSlot(s_UPDATE_SLICE_TYPE_SLOT, &SNegato::updateSliceType, this);
     newSlot(s_UPDATE_BUFFER_SLOT, &SNegato::updateBuffer, this);
     newSlot(s_UPDATE_VISIBILITY_SLOT, &SNegato::updateVisibility, this);
+    m_helperImg.setOrientation(MedicalImage::Z_AXIS);
 }
 
 //-----------------------------------------------------------------------------
@@ -85,15 +85,15 @@ void SNegato::configuring()
 
         if ( orientationValue == "axial" )
         {
-            m_orientation = MedicalImage::Z_AXIS;
+            m_helperImg.setOrientation(MedicalImage::Z_AXIS);
         }
         else if ( orientationValue == "sagittal" )
         {
-            m_orientation = MedicalImage::X_AXIS;
+            m_helperImg.setOrientation(MedicalImage::X_AXIS);
         }
         else if ( orientationValue == "frontal" )
         {
-            m_orientation = MedicalImage::Y_AXIS;
+            m_helperImg.setOrientation(MedicalImage::Y_AXIS);
         }
     }
 
@@ -138,10 +138,12 @@ void SNegato::updateBufferFromImage( QImage* qimg )
 
     std::uint8_t* pDest = qimg->bits();
 
+    ::fwData::Integer::sptr indexes[3];
+    m_helperImg.getSliceIndex(indexes);
     // Fill image according to current slice type:
-    if( m_orientation == MedicalImage::X_AXIS ) // sagittal
+    if( m_helperImg.getOrientation() == MedicalImage::X_AXIS ) // sagittal
     {
-        const size_t sagitalIndex = static_cast<size_t>(m_sagittalIndex->value());
+        const size_t sagitalIndex = static_cast<size_t>(indexes[0]->value());
 
         for( size_t z = 0; z < size[2]; ++z)
         {
@@ -158,9 +160,9 @@ void SNegato::updateBufferFromImage( QImage* qimg )
             }
         }
     }
-    else if( m_orientation == MedicalImage::Y_AXIS ) // frontal
+    else if( m_helperImg.getOrientation() == MedicalImage::Y_AXIS ) // frontal
     {
-        const size_t frontalIndex = static_cast<size_t>(m_frontalIndex->value());
+        const size_t frontalIndex = static_cast<size_t>(indexes[1]->value());
         const size_t yOffset      = frontalIndex * size[0];
 
         for( size_t z = 0; z < size[2]; ++z)
@@ -178,9 +180,9 @@ void SNegato::updateBufferFromImage( QImage* qimg )
             }
         }
     }
-    else if( m_orientation == MedicalImage::Z_AXIS ) // axial
+    else if( m_helperImg.getOrientation() == MedicalImage::Z_AXIS ) // axial
     {
-        const size_t axialIndex = static_cast<size_t>(m_axialIndex->value());
+        const size_t axialIndex = static_cast<size_t>(indexes[2]->value());
         const size_t zOffset    = axialIndex * imageZOffset;
 
         for( size_t y = 0; y < size[1]; ++y )
@@ -237,7 +239,7 @@ QImage* SNegato::createQImage()
     double qImageOrigin[2];
     int qImageSize[2];
 
-    switch ( m_orientation )
+    switch ( m_helperImg.getOrientation() )
     {
         case MedicalImage::X_AXIS:// sagittal
             this->m_yAxis->setScale(-1);
@@ -268,7 +270,7 @@ QImage* SNegato::createQImage()
             break;
 
         default:
-            SLM_FATAL("Unsupported value for m_orientation");
+            SLM_FATAL("Unsupported value for orientation");
             break;
     }
 
@@ -307,7 +309,7 @@ void SNegato::starting()
     }
 
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    this->updateImageInfos( image );
+    m_helperImg.updateImageInfos( image );
     m_helperTF.createTransferFunction( image );
 
     m_pixmapItem = new QGraphicsPixmapItem();
@@ -363,12 +365,11 @@ void SNegato::swapping(const KeyType& key)
 
 void SNegato::updateSliceIndex(int axial, int frontal, int sagittal)
 {
-    m_axialIndex->value()    = axial;
-    m_frontalIndex->value()  = frontal;
-    m_sagittalIndex->value() = sagittal;
+    const int indexes[] = {sagittal, frontal, axial};
+    m_helperImg.setSliceIndex(indexes);
 
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    this->updateImageInfos( image );
+    m_helperImg.updateImageInfos( image );
     this->updateBufferFromImage( m_qimg );
 }
 
@@ -378,17 +379,17 @@ void SNegato::updateSliceType(int from, int to)
 {
     if (m_changeSliceTypeAllowed)
     {
-        if( to == static_cast< int > ( m_orientation ) )
+        if( to == static_cast< int > ( m_helperImg.getOrientation() ) )
         {
-            m_orientation = static_cast< MedicalImage::Orientation > ( from );
+            m_helperImg.setOrientation( from );
         }
-        else if(from == static_cast<int>(m_orientation))
+        else if(from == static_cast<int>(m_helperImg.getOrientation()))
         {
-            m_orientation = static_cast< MedicalImage::Orientation >( to );
+            m_helperImg.setOrientation( to );
         }
 
         // manages the modification of axes
-        if ( m_orientation == MedicalImage::Z_AXIS )
+        if ( m_helperImg.getOrientation() == MedicalImage::Z_AXIS )
         {
             this->m_yAxis->setScale(1);
         }

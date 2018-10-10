@@ -52,13 +52,12 @@ namespace visuVTKAdaptor
  *    - \b vtkimagesource (optional): source image, used for blend
  *    - \b actorOpacity (optional, default=1.0): actor opacity (float)
  */
-class VISUVTKADAPTOR_CLASS_API SImageSeries : public ::fwDataTools::helper::MedicalImage,
-                                              public ::fwRenderVTK::IAdaptor
+class VISUVTKADAPTOR_CLASS_API SImageSeries : public ::fwRenderVTK::IAdaptor
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SImageSeries)(::fwRenderVTK::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (SImageSeries)(::fwRenderVTK::IAdaptor) )
 
     VISUVTKADAPTOR_API SImageSeries() noexcept;
 
@@ -130,6 +129,8 @@ private:
     ::boost::logic::tribool m_3dModeEnabled;
 
     SNegatoMPR::SliceMode m_sliceMode;
+
+    ::fwDataTools::helper::MedicalImage m_helper;
 
 };
 

@@ -24,6 +24,8 @@
 namespace visuVTKAdaptor
 {
 
+class ImagePickerInteractorCallback;
+
 /**
  * @brief This service emits a signal when the user click on the associated image in the scene
  *
@@ -57,13 +59,14 @@ namespace visuVTKAdaptor
  *   - MOUSE_WHEELBACKWARD
  *   - MOUSE_MOVE
  */
-class VISUVTKADAPTOR_CLASS_API SImagePickerInteractor : public ::fwDataTools::helper::MedicalImage,
-                                                        public ::visuVTKAdaptor::SPickerInteractor
+class VISUVTKADAPTOR_CLASS_API SImagePickerInteractor : public ::visuVTKAdaptor::SPickerInteractor
 {
+
+friend class ImagePickerInteractorCallback;
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SImagePickerInteractor)(::fwRenderVTK::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (SImagePickerInteractor)(::fwRenderVTK::IAdaptor) )
 
     VISUVTKADAPTOR_API SImagePickerInteractor() noexcept;
 
@@ -97,6 +100,8 @@ private:
     /**
      * @}
      */
+
+    ::fwDataTools::helper::MedicalImage m_helper;
 };
 
 } //namespace visuVTKAdaptor

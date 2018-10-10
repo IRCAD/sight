@@ -36,13 +36,12 @@ namespace visuVTKAdaptor
  * - \b config(mandatory) : contains the adaptor configuration
  *    - \b renderer(mandatory) : identifier of the renderer to use
  */
-class VISUVTKADAPTOR_CLASS_API SPlaneInteractor : public ::fwDataTools::helper::MedicalImage,
-                                                  public ::fwRenderVTK::IAdaptor
+class VISUVTKADAPTOR_CLASS_API SPlaneInteractor : public ::fwRenderVTK::IAdaptor
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SPlaneInteractor)(::fwRenderVTK::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (SPlaneInteractor)(::fwRenderVTK::IAdaptor) )
 
     VISUVTKADAPTOR_API SPlaneInteractor() noexcept;
 
@@ -66,6 +65,7 @@ protected:
 
     vtkCommand* m_vtkObserver;
     float m_priority;
+
 };
 
 } //namespace visuVTKAdaptor

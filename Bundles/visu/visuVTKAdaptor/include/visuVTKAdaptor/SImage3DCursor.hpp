@@ -44,12 +44,11 @@ namespace visuVTKAdaptor
  * - \b renderer : ID of the renderer the adaptor must use.
  * - \b transform (optional) : vtkTransform applied to the marker.
  */
-class VISUVTKADAPTOR_CLASS_API SImage3DCursor : public ::fwDataTools::helper::MedicalImage,
-                                                public ::fwRenderVTK::IAdaptor
+class VISUVTKADAPTOR_CLASS_API SImage3DCursor : public ::fwRenderVTK::IAdaptor
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro( (SImage3DCursor)(::fwRenderVTK::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (SImage3DCursor)(::fwRenderVTK::IAdaptor) )
 
     VISUVTKADAPTOR_API SImage3DCursor() noexcept;
 
@@ -95,6 +94,8 @@ private:
     /**
      * @}
      */
+
+    ::fwDataTools::helper::MedicalImage m_helper;
 
 };
 

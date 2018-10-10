@@ -63,13 +63,12 @@ namespace visuVTKAdaptor
  *    - \b actorOpacity (optional, default=1.0): actor opacity (float)
  */
 
-class VISUVTKADAPTOR_CLASS_API SImageSlice : public ::fwDataTools::helper::MedicalImage,
-                                             public ::fwRenderVTK::IAdaptor
+class VISUVTKADAPTOR_CLASS_API SImageSlice : public ::fwRenderVTK::IAdaptor
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SImageSlice)(::fwRenderVTK::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (SImageSlice)(::fwRenderVTK::IAdaptor) )
 
     VISUVTKADAPTOR_API SImageSlice() noexcept;
 
@@ -99,6 +98,13 @@ public:
     void setActorOpacity(double actorOpacity)
     {
         m_actorOpacity = actorOpacity;
+    }
+
+    //------------------------------------------------------------------------------
+
+    void setOrientation(::fwDataTools::helper::MedicalImage::Orientation _orientation)
+    {
+        m_helper.setOrientation(_orientation);
     }
 
 protected:
@@ -157,6 +163,8 @@ private:
     /**
      * @}
      */
+
+    ::fwDataTools::helper::MedicalImage m_helper;
 
 };
 

@@ -39,25 +39,14 @@ public:
     /// Destructor. Do nothing.
     FWDATATOOLS_API virtual ~MedicalImage();
 
-    /// Set the image orientation.
-    FWDATATOOLS_API virtual void setOrientation( Orientation orientation );
+    /// Constructor. Do nothing.
+    FWDATATOOLS_API MedicalImage();
 
     /// Return the image orientation.
     Orientation getOrientation() const
     {
         return m_orientation;
     }
-
-protected:
-
-    /// Constructor. Do nothing.
-    FWDATATOOLS_API MedicalImage(); // this class VISUVTKADAPTOR_CLASS_API must be specialized
-
-    /**
-     * @brief Set the orientation of the image.
-     * @param[in] orientation must be 0 (X_AXIS), 1 (Y_AXIS) or 2 (Z_AXIS).
-     */
-    FWDATATOOLS_API void setOrientation( int orientation );
 
     /**
      * @brief Get the image spacing.
@@ -89,6 +78,50 @@ protected:
      */
     FWDATATOOLS_API void getCurrentSliceCenter(double center[3]);
 
+    /// Return the image
+    FWDATATOOLS_API ::fwData::Image::sptr getImage() const;
+
+    /**
+     * @brief Get the image spacing.
+     * @param[out] spacing : the image spacing
+     */
+    template< typename FLOAT_ARRAY_3 >
+    void getImageSpacing(FLOAT_ARRAY_3 spacing);
+
+    /**
+     * @brief Get the image data size (number of slices).
+     * @param[out] size : the image size
+     */
+    template< typename INT_INDEX >
+    void getImageDataSize(INT_INDEX size);
+
+    /**
+     * @brief Return the 4 points of the image plane
+     *
+     * - points are ordered in the following way : image origin is the first point
+     * - points are inserted using the preference follow X axis if exists, if not exists follow Y axis
+     * if Y axis is not present follow Z axis
+     */
+    FWDATATOOLS_API void getPlane( double points[4][3], int sliceNumber );
+
+    /// Get the slice index
+    FWDATATOOLS_API void getSliceIndex(::fwData::Integer::sptr index[3]);
+
+    /// Set the slice index
+    FWDATATOOLS_API bool setSliceIndex(const int index[3]);
+
+    /**
+     * @brief Set the orientation of the image.
+     * @param[in] orientation must be 0 (X_AXIS), 1 (Y_AXIS) or 2 (Z_AXIS).
+     */
+    FWDATATOOLS_API void setOrientation( int orientation );
+
+    /// Set the image orientation.
+    FWDATATOOLS_API virtual void setOrientation( Orientation orientation );
+
+    /// Update the image information (slice index, min/max,...)
+    FWDATATOOLS_API void updateImageInfos( ::fwData::Image::sptr image  );
+
     /**
      * @brief Convert world coordinates to slice index coordinates
      * @param[in] world : coordinate in the world
@@ -110,23 +143,6 @@ protected:
      */
     FWDATATOOLS_API void sliceIndexToWorld(const int index[3], double world[3] );
 
-    /// Return the image
-    FWDATATOOLS_API ::fwData::Image::sptr getImage() const;
-
-    /**
-     * @brief Get the image spacing.
-     * @param[out] spacing : the image spacing
-     */
-    template< typename FLOAT_ARRAY_3 >
-    void getImageSpacing(FLOAT_ARRAY_3 spacing);
-
-    /**
-     * @brief Get the image data size (number of slices).
-     * @param[out] size : the image size
-     */
-    template< typename INT_INDEX >
-    void getImageDataSize(INT_INDEX size);
-
     /**
      * @brief Convert world coordinates to slice index coordinates
      * @param[in] world : coordinate in the world
@@ -143,23 +159,7 @@ protected:
     template< typename WORLD, typename INT_INDEX >
     void worldToImageSliceIndex(const WORLD world, INT_INDEX* index );
 
-    /**
-     * @brief Return the 4 points of the image plane
-     *
-     * - points are ordered in the following way : image origin is the first point
-     * - points are inserted using the preference follow X axis if exists, if not exists follow Y axis
-     * if Y axis is not present follow Z axis
-     */
-    FWDATATOOLS_API void getPlane( double points[4][3], int sliceNumber );
-
-    /// Set the slice index
-    FWDATATOOLS_API bool setSliceIndex(const int index[3]);
-
-    /// Get the slice index
-    FWDATATOOLS_API void getSliceIndex(::fwData::Integer::sptr index[3]);
-
-    /// Update the image information (slice index, min/max,...)
-    FWDATATOOLS_API void updateImageInfos( ::fwData::Image::sptr image  );
+//private:
 
     /// Image orientation
     Orientation m_orientation;
@@ -172,8 +172,6 @@ protected:
 
     /// Sagittal slice index
     ::fwData::Integer::sptr m_sagittalIndex;
-
-private:
 
     /// Current image
     ::fwData::Image::wptr m_weakImage;

@@ -75,7 +75,7 @@ void SImageText::starting()
         }
     }
 
-    this->updateImageInfos(image);
+    m_helperImg.updateImageInfos(image);
     this->updating();
 }
 
@@ -105,9 +105,11 @@ void SImageText::updating()
     if (::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
     {
         ::fwDataTools::helper::Image imageHelper(image);
-        size_t axialIndex    = static_cast<size_t>(m_axialIndex->value());
-        size_t frontalIndex  = static_cast<size_t>(m_frontalIndex->value());
-        size_t sagittalIndex = static_cast<size_t>(m_sagittalIndex->value());
+        ::fwData::Integer::sptr indexesPtr[3];
+        m_helperImg.getSliceIndex(indexesPtr);
+        size_t axialIndex    = static_cast<size_t>(indexesPtr[2]->value());
+        size_t frontalIndex  = static_cast<size_t>(indexesPtr[1]->value());
+        size_t sagittalIndex = static_cast<size_t>(indexesPtr[0]->value());
 
         ::fwData::TransferFunction::sptr tf = m_helperTF.getTransferFunction();
         ::fwData::mt::ObjectReadLock tfLock(tf);
@@ -158,9 +160,8 @@ void SImageText::swapping(const KeyType& key)
 
 void SImageText::updateSliceIndex(int axial, int frontal, int sagittal)
 {
-    m_axialIndex->value()    = axial;
-    m_frontalIndex->value()  = frontal;
-    m_sagittalIndex->value() = sagittal;
+    const int indexes[] = {sagittal, frontal, axial};
+    m_helperImg.setSliceIndex(indexes);
 
     this->updating();
 }

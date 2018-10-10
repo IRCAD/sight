@@ -102,8 +102,8 @@ void SliceIndexPositionEditor::starting()
         FW_DEPRECATED_KEY(s_IMAGE_INOUT, "inout", "18.0");
         image = this->getObject< ::fwData::Image >();
     }
-    this->updateImageInfos(image);
-    this->updateSliceTypeFromImg(m_orientation);
+    m_helper.updateImageInfos(image);
+    this->updateSliceTypeFromImg(m_helper.getOrientation());
 
     qtContainer->setLayout( layout );
 
@@ -135,15 +135,15 @@ void SliceIndexPositionEditor::configuring()
 
         if(orientation == "axial" )
         {
-            m_orientation = Z_AXIS;
+            m_helper.setOrientation(::fwDataTools::helper::MedicalImage::Z_AXIS);
         }
         else if(orientation == "frontal" )
         {
-            m_orientation = Y_AXIS;
+            m_helper.setOrientation(::fwDataTools::helper::MedicalImage::Y_AXIS);
         }
         else if(orientation == "sagittal" )
         {
-            m_orientation = X_AXIS;
+            m_helper.setOrientation(::fwDataTools::helper::MedicalImage::X_AXIS);
         }
         else
         {
@@ -164,7 +164,7 @@ void SliceIndexPositionEditor::updating()
     }
     bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
     m_sliceSelectorPanel->setEnable(imageIsValid);
-    this->updateImageInfos(image);
+    m_helper.updateImageInfos(image);
     this->updateSliceIndexFromImg();
 }
 
@@ -179,9 +179,8 @@ void SliceIndexPositionEditor::swapping()
 
 void SliceIndexPositionEditor::updateSliceIndex(int axial, int frontal, int sagittal)
 {
-    m_axialIndex->value()    = axial;
-    m_frontalIndex->value()  = frontal;
-    m_sagittalIndex->value() = sagittal;
+    const int indexes[] = {sagittal, frontal, axial};
+    m_helper.setSliceIndex(indexes);
 
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     if (!image)
@@ -190,9 +189,11 @@ void SliceIndexPositionEditor::updateSliceIndex(int axial, int frontal, int sagi
         image = this->getObject< ::fwData::Image >();
     }
 
-    image->setField( fwDataTools::fieldHelper::Image::m_axialSliceIndexId, m_axialIndex);
-    image->setField( fwDataTools::fieldHelper::Image::m_frontalSliceIndexId, m_frontalIndex);
-    image->setField( fwDataTools::fieldHelper::Image::m_sagittalSliceIndexId, m_sagittalIndex);
+    ::fwData::Integer::sptr indexesPtr[3];
+    m_helper.getSliceIndex(indexesPtr);
+    image->setField( fwDataTools::fieldHelper::Image::m_axialSliceIndexId, indexesPtr[2]);
+    image->setField( fwDataTools::fieldHelper::Image::m_frontalSliceIndexId, indexesPtr[1]);
+    image->setField( fwDataTools::fieldHelper::Image::m_sagittalSliceIndexId, indexesPtr[0]);
     this->updateSliceIndexFromImg();
 }
 
@@ -200,15 +201,15 @@ void SliceIndexPositionEditor::updateSliceIndex(int axial, int frontal, int sagi
 
 void SliceIndexPositionEditor::updateSliceType(int from, int to)
 {
-    if( to == static_cast< int > ( m_orientation ) )
+    if( to == static_cast< int > (m_helper.getOrientation()) )
     {
-        m_orientation = static_cast< Orientation > ( from );
+        m_helper.setOrientation(from);
     }
-    else if(from == static_cast<int>(m_orientation))
+    else if(from == static_cast<int>(m_helper.getOrientation()))
     {
-        m_orientation = static_cast< Orientation >( to );
+        m_helper.setOrientation(to);
     }
-    this->updateSliceTypeFromImg(m_orientation);
+    this->updateSliceTypeFromImg(m_helper.getOrientation());
 }
 
 //------------------------------------------------------------------------------
@@ -231,15 +232,15 @@ void SliceIndexPositionEditor::updateSliceIndexFromImg()
     if (::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
     {
         // Get Index
-        std::string fieldID = *SLICE_INDEX_FIELDID[m_orientation];
+        std::string fieldID = *SLICE_INDEX_FIELDID[m_helper.getOrientation()];
         OSLM_ASSERT("Field "<<fieldID<<" is missing", image->getField( fieldID ) );
         unsigned int index = image->getField< ::fwData::Integer >( fieldID )->value();
 
         // Update QSlider
         int max = 0;
-        if(image->getNumberOfDimensions() > m_orientation)
+        if(image->getNumberOfDimensions() > m_helper.getOrientation())
         {
-            max = static_cast<int>(image->getSize()[m_orientation]-1);
+            max = static_cast<int>(image->getSize()[m_helper.getOrientation()]-1);
         }
         m_sliceSelectorPanel->setSliceRange( 0, max );
         m_sliceSelectorPanel->setSliceValue( index );
@@ -273,14 +274,16 @@ void SliceIndexPositionEditor::sliceIndexNotification( unsigned int index)
         image = this->getObject< ::fwData::Image >();
     }
 
-    std::string fieldID = *SLICE_INDEX_FIELDID[m_orientation];
+    std::string fieldID = *SLICE_INDEX_FIELDID[m_helper.getOrientation()];
     OSLM_ASSERT("Field "<<fieldID<<" is missing", image->getField( fieldID ));
     image->getField< ::fwData::Integer >( fieldID )->value() = index;
 
     auto sig = image->signal< ::fwData::Image::SliceIndexModifiedSignalType >(
         ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG);
     ::fwCom::Connection::Blocker block(sig->getConnection(this->slot(s_UPDATE_SLICE_INDEX_SLOT)));
-    sig->asyncEmit(m_axialIndex->value(), m_frontalIndex->value(), m_sagittalIndex->value());
+    ::fwData::Integer::sptr indexes[3];
+    m_helper.getSliceIndex(indexes);
+    sig->asyncEmit(indexes[2]->value(), indexes[1]->value(), indexes[0]->value());
 }
 
 //------------------------------------------------------------------------------
@@ -288,13 +291,13 @@ void SliceIndexPositionEditor::sliceIndexNotification( unsigned int index)
 void SliceIndexPositionEditor::sliceTypeNotification( int _type )
 {
     Orientation type = static_cast< Orientation >( _type );
-    OSLM_ASSERT("Bad slice type "<<type, type == X_AXIS ||
-                type == Y_AXIS ||
-                type == Z_AXIS );
+    OSLM_ASSERT("Bad slice type "<<type, type == ::fwDataTools::helper::MedicalImage::X_AXIS ||
+                type == ::fwDataTools::helper::MedicalImage::Y_AXIS ||
+                type == ::fwDataTools::helper::MedicalImage::Z_AXIS );
 
-    int oldType = static_cast< int > ( m_orientation );
+    int oldType = static_cast< int > (m_helper.getOrientation());
     // Change slice type
-    m_orientation = type;
+    m_helper.setOrientation(type);
 
     // Fire the signal
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
