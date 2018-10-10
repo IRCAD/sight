@@ -564,6 +564,8 @@ void RayTracingVolumeRenderer::createRayTracingMaterial()
     ::Ogre::Pass* pass = tech->getPass(0);
     pass->setCullingMode(::Ogre::CULL_ANTICLOCKWISE);
     pass->setSceneBlending(::Ogre::SBT_TRANSPARENT_ALPHA);
+    pass->setDepthCheckEnabled(true);
+    pass->setDepthWriteEnabled(true);
 
     // Vertex program
     pass->setVertexProgram(vpName);
@@ -580,6 +582,7 @@ void RayTracingVolumeRenderer::createRayTracingMaterial()
     fpParams->setNamedAutoConstant("u_shininess", ::Ogre::GpuProgramParameters::ACT_SURFACE_SHININESS);
     fpParams->setNamedAutoConstant("u_invWorldViewProj",
                                    ::Ogre::GpuProgramParameters::ACT_INVERSE_WORLDVIEWPROJ_MATRIX);
+    fpParams->setNamedAutoConstant("u_worldViewProj", ::Ogre::GpuProgramParameters::ACT_WORLDVIEWPROJ_MATRIX);
     fpParams->setNamedAutoConstant("u_numLights", ::Ogre::GpuProgramParameters::ACT_LIGHT_COUNT);
     for(size_t i = 0; i < 10; ++i)
     {
