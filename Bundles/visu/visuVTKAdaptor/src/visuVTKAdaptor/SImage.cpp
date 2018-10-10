@@ -44,14 +44,14 @@ const ::fwServices::IService::KeyType SImage::s_TF_INOUT    = "tf";
 //------------------------------------------------------------------------------
 
 SImage::SImage() noexcept :
-    m_helperTF(std::bind(&SImage::updateTFPoints, this), std::bind(&SImage::updateTFWindowing, this, 0, 0)),
     m_imageRegister(nullptr),
     m_imagePortId(-1),
     m_imageOpacity(0.),
     m_allowAlphaInTF(false),
     m_lut(vtkSmartPointer<fwVtkWindowLevelLookupTable>::New()),
     m_map2colors(vtkSmartPointer<vtkImageMapToColors>::New()),
-    m_imageData(vtkSmartPointer<vtkImageData>::New())
+    m_imageData(vtkSmartPointer<vtkImageData>::New()),
+    m_helperTF(std::bind(&SImage::updateTFPoints, this), std::bind(&SImage::updateTFWindowing, this, 0, 0))
 {
     newSlot(s_UPDATE_IMAGE_OPACITY_SLOT, &SImage::updateImageOpacity, this);
 }
