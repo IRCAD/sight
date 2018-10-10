@@ -65,7 +65,7 @@ class VISUVTKADAPTOR_CLASS_API SNegatoMPR : public ::fwRenderVTK::IAdaptor
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SNegatoMPR)(::fwRenderVTK::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (SNegatoMPR)(::fwRenderVTK::IAdaptor) )
 
     typedef ::fwDataTools::helper::MedicalImage::Orientation OrientationMode;
 
@@ -142,7 +142,8 @@ protected:
      */
     VISUVTKADAPTOR_API virtual KeyConnectionsMap getAutoConnections() const override;
 
-    ::fwRenderVTK::IAdaptor::sptr addAdaptor(const std::string& adaptor, int axis = -1);
+    ::fwRenderVTK::IAdaptor::sptr addAdaptor(const std::string&,
+                                             const std::function< void(::fwRenderVTK::IAdaptor::sptr)>&);
 
 private:
 
