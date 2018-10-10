@@ -44,10 +44,10 @@ static const std::string s_ENABLE_APLHA_CONFIG = "tfalpha";
 //------------------------------------------------------------------------------
 
 SNegato2D::SNegato2D() noexcept :
-    m_helperTF(std::bind(&SNegato2D::updateTF, this)),
     m_plane(nullptr),
     m_negatoSceneNode(nullptr),
-    m_filtering( ::fwRenderOgre::Plane::FilteringEnumType::NONE )
+    m_filtering( ::fwRenderOgre::Plane::FilteringEnumType::NONE ),
+    m_helperTF(std::bind(&SNegato2D::updateTF, this))
 {
     m_currentSliceIndex = {0.f, 0.f, 0.f};
 

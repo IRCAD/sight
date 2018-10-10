@@ -51,11 +51,11 @@ static const std::string VISIBILITY_FIELD   = "VISIBILITY";
 //------------------------------------------------------------------------------
 
 SNegato3D::SNegato3D() noexcept :
-    m_helperTF(std::bind(&SNegato3D::updateTF, this)),
     m_autoResetCamera(true),
     m_activePlane(nullptr),
     m_negatoSceneNode(nullptr),
-    m_filtering( ::fwRenderOgre::Plane::FilteringEnumType::NONE )
+    m_filtering( ::fwRenderOgre::Plane::FilteringEnumType::NONE ),
+    m_helperTF(std::bind(&SNegato3D::updateTF, this))
 {
     newSlot(s_NEWIMAGE_SLOT, &SNegato3D::newImage, this);
     newSlot(s_SLICETYPE_SLOT, &SNegato3D::changeSliceType, this);
