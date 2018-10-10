@@ -230,7 +230,7 @@
         <service uid="volumeAdaptor" type="::visuOgreAdaptor::SVolumeRender">
             <inout key="image" uid="${image_UID}" autoConnect="yes" />
             <inout key="tf" uid="${volumeTF_UID}" optional="yes" />
-            <inout key="maskTf" uid="${CSGTF_UID}" optional="yes" />
+            <inout key="CSGTF" uid="${CSGTF_UID}" optional="yes" />
             <inout key="mask" uid="${mask_UID}" autoConnect="yes" />
             <inout key="clippingMatrix" uid="volumeClippingMatrix" autoConnect="yes" />
             <config layer="default" widgets="no" preintegration="no" mode="raytracing" autoresetcamera="yes" samples="1024"/>

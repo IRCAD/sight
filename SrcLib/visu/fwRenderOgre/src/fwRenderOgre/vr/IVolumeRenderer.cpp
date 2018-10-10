@@ -53,12 +53,12 @@ IVolumeRenderer::IVolumeRenderer(std::string parentId,
                                  ::Ogre::SceneManager* sceneManager,
                                  ::Ogre::SceneNode* volumeNode,
                                  ::Ogre::TexturePtr imageTexture,
-                                 const TransferFunction::sptr& gpuTF,
+                                 const TransferFunction::sptr& gpuVolumeTF,
                                  PreIntegrationTable& preintegrationTable) :
     m_parentId(parentId),
     m_sceneManager(sceneManager),
     m_3DOgreTexture(imageTexture),
-    m_gpuVolumeTF(gpuTF),
+    m_gpuVolumeTF(gpuVolumeTF),
     m_preIntegrationTable(preintegrationTable),
     m_volumeSceneNode(volumeNode),
     m_nbSlices(512),
@@ -78,7 +78,7 @@ IVolumeRenderer::~IVolumeRenderer()
 
 //-----------------------------------------------------------------------------
 
-void IVolumeRenderer::tfUpdate(fwData::TransferFunction::sptr /*tf*/)
+void IVolumeRenderer::updateVolumeTF()
 {
 
 }

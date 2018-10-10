@@ -109,7 +109,7 @@ static const std::string s_COLOR_BLEEDING_DEFINE = "COLOR_BLEEDING=1";
 static const std::string s_SHADOWS_DEFINE        = "SHADOWS=1";
 static const std::string s_PREINTEGRATION_DEFINE = "PREINTEGRATION=1";
 
-static const std::string s_TF_TEXUNIT_NAME = "transferFunction";
+static const std::string s_VOLUME_TF_TEXUNIT_NAME = "volumeTransferFunction";
 
 //-----------------------------------------------------------------------------
 
@@ -253,13 +253,13 @@ void RayTracingVolumeRenderer::imageUpdate(::fwData::Image::sptr image, ::fwData
         auto technique = material->getTechnique(0);
         SLM_ASSERT("Technique not found", technique);
         auto pass = technique->getPass(0);
-        m_gpuVolumeTF.lock()->bind(pass, s_TF_TEXUNIT_NAME, m_RTVSharedParameters);
+        m_gpuVolumeTF.lock()->bind(pass, s_VOLUME_TF_TEXUNIT_NAME, m_RTVSharedParameters);
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void RayTracingVolumeRenderer::tfUpdate(fwData::TransferFunction::sptr)
+void RayTracingVolumeRenderer::updateVolumeTF()
 {
     FW_PROFILE("TF Update")
     if(!m_preIntegratedRendering)
@@ -268,7 +268,7 @@ void RayTracingVolumeRenderer::tfUpdate(fwData::TransferFunction::sptr)
         auto technique = material->getTechnique(0);
         SLM_ASSERT("Technique not found", technique);
         auto pass = technique->getPass(0);
-        m_gpuVolumeTF.lock()->bind(pass, s_TF_TEXUNIT_NAME, m_RTVSharedParameters);
+        m_gpuVolumeTF.lock()->bind(pass, s_VOLUME_TF_TEXUNIT_NAME, m_RTVSharedParameters);
     }
     m_proxyGeometry->computeGrid();
 }
@@ -431,7 +431,7 @@ void RayTracingVolumeRenderer::setRayCastingPassTextureUnits(Ogre::Pass* _rayCas
     {
         auto gpuTF = m_gpuVolumeTF.lock();
         texUnitState = _rayCastingPass->createTextureUnitState();
-        texUnitState->setName(s_TF_TEXUNIT_NAME);
+        texUnitState->setName(s_VOLUME_TF_TEXUNIT_NAME);
         gpuTF->bind(_rayCastingPass, texUnitState->getName(), fpParams);
     }
 

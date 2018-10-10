@@ -9,8 +9,8 @@ uniform sampler2D u_IC;
 #endif
 #if IDVR == 1
 uniform sampler2D u_JFA;
-uniform vec2 u_cgsTFWindow;
-uniform sampler1D u_cgsTFTexture;
+uniform vec2 u_csgTFWindow;
+uniform sampler1D u_CSGTFTexture;
 #endif
 #if IDVR == 2 || IDVR == 3
 uniform sampler3D u_mask;
@@ -96,9 +96,9 @@ vec4 sampleTransferFunction(float intensity);
 vec4 sampleCSGTransferFunction(float intensity)
 {
     float intIntensity = intensity * 65535.f - 32768.f;
-    float scaledValue = ((intIntensity - u_cgsTFWindow.x) / (u_cgsTFWindow.y - u_cgsTFWindow.x));
+    float scaledValue = ((intIntensity - u_csgTFWindow.x) / (u_csgTFWindow.y - u_csgTFWindow.x));
 
-    return texture(u_cgsTFTexture, scaledValue);
+    return texture(u_CSGTFTexture, scaledValue);
 }
 #endif
 

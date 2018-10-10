@@ -123,6 +123,8 @@ const std::string s_CSG_MOD_COLOR3_DEFINE               = "CSG_MODULATION=6";
 const std::string s_IMPORTANCE_COMPOSITING_TEXTURE = "IC";
 const std::string s_JUMP_FLOOD_ALGORITHM_TEXTURE   = "JFA";
 
+static const std::string s_CSG_TF_TEXUNIT_NAME = "CSGTransferFunction";
+
 //-----------------------------------------------------------------------------
 
 ImportanceDrivenVolumeRenderer::ImportanceDrivenVolumeRenderer(std::string _parentId,
@@ -761,10 +763,10 @@ void ImportanceDrivenVolumeRenderer::setRayCastingPassTextureUnits(Ogre::Pass* _
 
         auto gpuTF = m_gpuCSGTF.lock();
         texUnitState = _rayCastingPass->createTextureUnitState();
-        texUnitState->setName("cgsTransferFunction");
-        gpuTF->bind(_rayCastingPass, texUnitState->getName(), fpParams, "u_cgsTFWindow");
+        texUnitState->setName(s_CSG_TF_TEXUNIT_NAME);
+        gpuTF->bind(_rayCastingPass, texUnitState->getName(), fpParams, "u_csgTFWindow");
 
-        fpParams->setNamedConstant("u_cgsTFTexture", nbTexUnits++);
+        fpParams->setNamedConstant("u_CSGTFTexture", nbTexUnits++);
     }
 
     // Alpha Correction: AImC | VPImC

@@ -175,10 +175,10 @@ protected:
     VISUOGREADAPTOR_API void swapping(const KeyType& key) override;
 
     /// Slot: update the displayed transfer function
-    VISUOGREADAPTOR_API virtual void updateImageTF();
+    VISUOGREADAPTOR_API virtual void updateVolumeTF();
 
     /// Slot: update the displayed transfer function used for the IDVR
-    VISUOGREADAPTOR_API virtual void updateMaskTF();
+    VISUOGREADAPTOR_API virtual void updateCSGTF();
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,

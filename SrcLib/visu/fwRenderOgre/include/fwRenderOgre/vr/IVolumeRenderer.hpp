@@ -65,14 +65,14 @@ public:
      * @param sceneManager         The scene manager being used.
      * @param volumeNode           This object's node.
      * @param imageTexture         Texture holding the 3D image to be rendered.
-     * @param gpuTF                Texture holding the transfer function.
+     * @param gpuVolumeTF          Texture holding the transfer function.
      * @param preintegrationTable  Texture holding the pre-integration table.
      */
     FWRENDEROGRE_API IVolumeRenderer(std::string parentId,
                                      ::Ogre::SceneManager* sceneManager,
                                      ::Ogre::SceneNode* volumeNode,
                                      ::Ogre::TexturePtr imageTexture,
-                                     const TransferFunction::sptr& gpuTF,
+                                     const TransferFunction::sptr& gpuVolumeTF,
                                      PreIntegrationTable& preintegrationTable);
 
     /// Destructor, does nothing.
@@ -82,7 +82,7 @@ public:
     FWRENDEROGRE_API virtual void imageUpdate(::fwData::Image::sptr image, ::fwData::TransferFunction::sptr tf) = 0;
 
     /// Called when the transfer function is updated.
-    FWRENDEROGRE_API virtual void tfUpdate(::fwData::TransferFunction::sptr tf);
+    FWRENDEROGRE_API virtual void updateVolumeTF();
 
     /// Sets the number of samples per view ray.
     FWRENDEROGRE_API virtual void setSampling(uint16_t nbSamples) = 0;
