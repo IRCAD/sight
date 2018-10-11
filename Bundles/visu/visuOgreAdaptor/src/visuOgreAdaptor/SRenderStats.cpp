@@ -139,6 +139,11 @@ void SRenderStats::stopping()
     renderWindow->removeListener(m_listener.get());
 
     m_listener.reset();
+
+    ::Ogre::SceneManager* sm = this->getLayer()->getSceneManager();
+    m_statsText->detachFromParent();
+    sm->destroyMovableObject(m_statsText);
+    m_statsText = nullptr;
 }
 
 //------------------------------------------------------------------------------
