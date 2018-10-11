@@ -627,7 +627,8 @@ void AppConfigManager::createServices(::fwRuntime::ConfigurationElement::csptr c
                    (!objectCfg.m_optional && obj) || objectCfg.m_optional);
         if((obj || !objectCfg.m_optional) && objectCfg.m_access != ::fwServices::IService::AccessType::OUTPUT)
         {
-            srv->registerObject(obj, objectCfg.m_key, objectCfg.m_access);
+            srv->registerObject(obj, objectCfg.m_key, objectCfg.m_access, objectCfg.m_autoConnect,
+                                objectCfg.m_optional);
         }
     }
 
@@ -914,7 +915,8 @@ void AppConfigManager::addObjects(fwData::Object::sptr obj, const std::string& i
                         if(registeredObj != object)
                         {
                             // Register the key on the service
-                            srv->registerObject(object, objCfg.m_key, objCfg.m_access);
+                            srv->registerObject(object, objCfg.m_key, objCfg.m_access, objCfg.m_autoConnect,
+                                                objCfg.m_optional);
 
                             // Call the swapping callback of the service and wait for it
                             srv->swapKey(objCfg.m_key, ::fwData::Object::constCast(registeredObj)).wait();
