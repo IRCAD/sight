@@ -222,7 +222,18 @@ void SVolumeRender::starting()
     m_helperVolumeTF.setOrCreateTF(volumeTF, image);
 
     ::fwData::TransferFunction::sptr CSGTF = this->getInOut< ::fwData::TransferFunction>(s_CSG_TF_INOUT);
-    m_helperCSGTF.setOrCreateTF(CSGTF, image);
+    if(CSGTF == nullptr)
+    {
+        CSGTF = ::fwData::TransferFunction::New();
+        ::fwData::TransferFunction::TFDataType tfData;
+        tfData[0.0] = ::fwData::TransferFunction::TFColor(0.0, 0.0, 0.0, 0.0);
+        CSGTF->setTFData( tfData );
+        m_helperCSGTF.setTransferFunction(CSGTF);
+    }
+    else
+    {
+        m_helperCSGTF.setTransferFunction(CSGTF);
+    }
 
     m_sceneManager = this->getSceneManager();
 
@@ -423,14 +434,6 @@ void SVolumeRender::updateImage()
             this->updateVolumeIllumination();
         }
         m_volumeRenderer->imageUpdate(image, volumeTF);
-    }
-
-    m_helperCSGTF.createTransferFunction(image);
-
-    ::fwData::TransferFunction::sptr CSGTF = m_helperCSGTF.getTransferFunction();
-    {
-        ::fwData::mt::ObjectWriteLock tfLock(CSGTF);
-        m_gpuCSGTF->updateTexture(CSGTF);
     }
 
     // Create widgets on image update to take the image's size into account.
