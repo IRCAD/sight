@@ -479,11 +479,9 @@ void SVolumeRender::updateSampling(int nbSamples)
 
     if(m_preIntegratedRendering)
     {
-        {
-            ::fwData::TransferFunction::sptr volumeTF = m_helperVolumeTF.getTransferFunction();
-            ::fwData::mt::ObjectWriteLock tfLock(volumeTF);
-            m_preIntegrationTable.tfUpdate(volumeTF, m_volumeRenderer->getSamplingRate());
-        }
+        ::fwData::TransferFunction::sptr volumeTF = m_helperVolumeTF.getTransferFunction();
+        ::fwData::mt::ObjectWriteLock tfLock(volumeTF);
+        m_preIntegrationTable.tfUpdate(volumeTF, m_volumeRenderer->getSamplingRate());
     }
 
     this->requestRender();
@@ -544,11 +542,9 @@ void SVolumeRender::updateSatSizeRatio(int sizeRatio)
             ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
             SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
 
-            {
-                ::fwData::TransferFunction::sptr volumeTF = m_helperVolumeTF.getTransferFunction();
-                ::fwData::mt::ObjectWriteLock tfLock(volumeTF);
-                m_volumeRenderer->imageUpdate(image, volumeTF);
-            }
+            ::fwData::TransferFunction::sptr volumeTF = m_helperVolumeTF.getTransferFunction();
+            ::fwData::mt::ObjectWriteLock tfLock(volumeTF);
+            m_volumeRenderer->imageUpdate(image, volumeTF);
         }
 
         this->requestRender();
@@ -642,12 +638,10 @@ void SVolumeRender::togglePreintegration(bool preintegration)
         ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
         SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
 
-        {
-            ::fwData::TransferFunction::sptr volumeTF = m_helperVolumeTF.getTransferFunction();
-            ::fwData::mt::ObjectWriteLock tfLock(volumeTF);
-            m_volumeRenderer->imageUpdate(image, volumeTF);
-            m_preIntegrationTable.tfUpdate(volumeTF, m_volumeRenderer->getSamplingRate());
-        }
+        ::fwData::TransferFunction::sptr volumeTF = m_helperVolumeTF.getTransferFunction();
+        ::fwData::mt::ObjectWriteLock tfLock(volumeTF);
+        m_volumeRenderer->imageUpdate(image, volumeTF);
+        m_preIntegrationTable.tfUpdate(volumeTF, m_volumeRenderer->getSamplingRate());
     }
 
     this->requestRender();
@@ -1092,11 +1086,9 @@ void SVolumeRender::toggleVREffect(::visuOgreAdaptor::SVolumeRender::VREffectTyp
 
         if(m_preIntegratedRendering)
         {
-            {
-                ::fwData::TransferFunction::sptr volumeTF = m_helperVolumeTF.getTransferFunction();
-                ::fwData::mt::ObjectWriteLock tfLock(volumeTF);
-                m_volumeRenderer->imageUpdate(image, volumeTF);
-            }
+            ::fwData::TransferFunction::sptr volumeTF = m_helperVolumeTF.getTransferFunction();
+            ::fwData::mt::ObjectWriteLock tfLock(volumeTF);
+            m_volumeRenderer->imageUpdate(image, volumeTF);
         }
 
         this->requestRender();
