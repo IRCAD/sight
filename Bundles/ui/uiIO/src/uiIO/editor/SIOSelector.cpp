@@ -110,6 +110,19 @@ void SIOSelector::configuring()
         m_serviceToConfig[service] = configId;
         SLM_DEBUG( "add config '" + configId + "' for service '" + service + "'");
     }
+
+    if (m_mode == WRITER_MODE)
+    {
+        this->registerObject(::fwIO::s_DATA_KEY, AccessType::INPUT);
+    }
+    else if (m_dataClassname.empty())
+    {
+        this->registerObject(::fwIO::s_DATA_KEY, AccessType::INOUT);
+    }
+    else
+    {
+        this->registerObject(::fwIO::s_DATA_KEY, AccessType::OUTPUT, false, true);
+    }
 }
 
 //------------------------------------------------------------------------------

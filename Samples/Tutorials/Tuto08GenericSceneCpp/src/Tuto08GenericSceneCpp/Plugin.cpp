@@ -6,6 +6,9 @@
 
 #include "Tuto08GenericSceneCpp/Plugin.hpp"
 
+#include <fwData/Image.hpp>
+#include <fwData/Mesh.hpp>
+
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 
 namespace Tuto08GenericSceneCpp
@@ -205,12 +208,10 @@ void Plugin::initialize()
 
     ::fwServices::IService::ConfigType imageReaderConfig;
     imageReaderConfig.put("type.<xmlattr>.mode", "reader");
-    imageReaderConfig.put("type.<xmlattr>.class", "::fwData::Image");
     imageReaderSrv->configure(imageReaderConfig);
 
     ::fwServices::IService::ConfigType meshReaderConfig;
     meshReaderConfig.put("type.<xmlattr>.mode", "reader");
-    meshReaderConfig.put("type.<xmlattr>.class", "::fwData::Mesh");
     meshReaderSrv->configure(meshReaderConfig);
 
     ::fwServices::IService::ConfigType textureReaderConfig;
@@ -302,13 +303,17 @@ void Plugin::initialize()
     *              register inputs/inouts
     ****************************************************************************************/
 
-    imageReaderSrv->registerObject(s_IMAGE_ID, "data", ::fwServices::IService::AccessType::OUTPUT, false, true);
-    meshReaderSrv->registerObject(s_MESH_ID, "data", ::fwServices::IService::AccessType::OUTPUT, false, true);
-    textureReaderSrv->registerObject(s_TEXTURE_ID, "data", ::fwServices::IService::AccessType::OUTPUT, false, true);
-    sliderIndexEditor->setObjectId("image", s_IMAGE_ID);
-    imageAdaptor->setObjectId("image", s_IMAGE_ID );
-    meshAdaptor->setObjectId("mesh", s_MESH_ID);
-    textureAdaptor->setObjectId("texture", s_TEXTURE_ID);
+    ::fwData::Image::sptr image   = ::fwData::Image::New();
+    ::fwData::Image::sptr texture = ::fwData::Image::New();
+    ::fwData::Mesh::sptr mesh     = ::fwData::Mesh::New();
+
+    imageReaderSrv->registerInOut(image, "data");
+    meshReaderSrv->registerInOut(mesh, "data");
+    textureReaderSrv->registerInOut(texture, "data");
+    sliderIndexEditor->registerInOut(image, "image", true);
+    imageAdaptor->registerInOut(image, "image", true );
+    meshAdaptor->registerInput(mesh, "mesh", true);
+    textureAdaptor->registerInOut(texture, "texture", true);
 
     /* **************************************************************************************
     *              connect the services
@@ -352,6 +357,10 @@ void Plugin::initialize()
     ****************************************************************************************/
 
     m_appManager->startServices();
+
+    m_appManager->addObject(image, image->getID());
+    m_appManager->addObject(mesh, mesh->getID());
+    m_appManager->addObject(texture, texture->getID());
 }
 
 //------------------------------------------------------------------------------

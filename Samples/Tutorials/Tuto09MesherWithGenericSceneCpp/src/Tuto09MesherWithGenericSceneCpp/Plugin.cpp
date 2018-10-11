@@ -397,10 +397,8 @@ void Plugin::initialize()
     *              register inputs/inouts
     ****************************************************************************************/
 
-    imageSeriesReader->registerObject(s_IMAGE_SERIES_ID, "data", ::fwServices::IService::AccessType::OUTPUT, false,
-                                      true);
-    modelSeriesWriter->registerObject(s_MODEL_SERIES_ID, "data", ::fwServices::IService::AccessType::INPUT, false,
-                                      true);
+    imageSeriesReader->setObjectId("data", s_IMAGE_SERIES_ID);
+    modelSeriesWriter->setObjectId("data", s_MODEL_SERIES_ID);
     sliderIndexEditor->setObjectId("image", s_IMAGE_ID);
     imageAdaptor->setObjectId("image", s_IMAGE_ID);
     extractImage->setObjectId("source", s_IMAGE_SERIES_ID);
