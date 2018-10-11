@@ -1080,6 +1080,16 @@ void IService::registerObject(const ::fwServices::IService::KeyType& key,
 
         m_serviceConfig.m_objects.push_back(objConfig);
     }
+    else
+    {
+        SLM_WARN("object '" + key + "' is already registered, it will be overriden");
+
+        ObjectServiceConfig& objConfig = *itr;
+        objConfig.m_key         = key;
+        objConfig.m_access      = access;
+        objConfig.m_autoConnect = autoConnect;
+        objConfig.m_optional    = optional;
+    }
 }
 
 //-----------------------------------------------------------------------------
