@@ -181,10 +181,7 @@ void SImagesBlend::swapping(const KeyType& key)
                 ::fwServices::IService::sptr service = wsrv.lock();
                 if(tf != nullptr)
                 {
-                    {
-                        ::fwData::mt::ObjectReadLock tfLock(tf);
-                        service->registerInOut(tf, SImage::s_TF_INOUT, false, true);
-                    }
+                    service->registerInOut(tf, SImage::s_TF_INOUT, false, true);
                     service->swapKey(SImage::s_TF_INOUT, nullptr);
                 }
                 else if(::fwServices::OSR::isRegistered(SImage::s_TF_INOUT, AccessType::INOUT, service))
@@ -297,7 +294,6 @@ void SImagesBlend::addImageAdaptors()
             bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( img );
             if (imageIsValid)
             {
-                ::fwData::mt::ObjectWriteLock tfLock(tf);
                 this->addImage(img, tf, info);
 
                 ++addedImageCount;
@@ -316,7 +312,6 @@ void SImagesBlend::addImageAdaptors()
             tf = this->getInOut< ::fwData::TransferFunction >(s_TF_GROUP, lastValidIndex);
         }
         const ImageInfo& info = m_imagesInfo[lastValidIndex];
-        ::fwData::mt::ObjectWriteLock tfLock(tf);
         this->addImage(img, tf, info);
     }
 }
