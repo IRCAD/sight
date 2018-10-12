@@ -169,6 +169,8 @@ private:
 
     bool m_enableHideAll;
 
+    QStringList m_headers;
+
     /// Signal emitted when a reconstruction is selected
     ReconstructionSelectedSignalType::sptr m_sigReconstructionSelected;
 

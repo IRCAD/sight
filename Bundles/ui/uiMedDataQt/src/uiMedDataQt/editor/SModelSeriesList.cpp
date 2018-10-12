@@ -133,7 +133,6 @@ const ::fwCom::Slots::SlotKeyType SModelSeriesList::s_SHOW_RECONSTRUCTIONS_SLOT 
 const ::fwServices::IService::KeyType s_MODEL_SERIES_INOUT = "modelSeries";
 
 SModelSeriesList::SModelSeriesList() noexcept :
-    m_tree(new QTreeWidget()),
     m_enableHideAll(true)
 {
     m_sigReconstructionSelected = newSignal< ReconstructionSelectedSignalType >( s_RECONSTRUCTION_SELECTED_SIG );
@@ -167,6 +166,11 @@ void SModelSeriesList::starting()
     QHBoxLayout* layoutButton = new QHBoxLayout;
     layout->addLayout(layoutButton);
 
+    m_tree = new QTreeWidget();
+
+    m_tree->setColumnCount(m_headers.size());
+    m_tree->setHeaderLabels(m_headers);
+
     if (m_enableHideAll)
     {
         // check box "show"
@@ -188,13 +192,13 @@ void SModelSeriesList::starting()
 
     qtContainer->setLayout( layout );
 
-    QObject::connect(m_tree, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)),
-                     this, SLOT(onCurrentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)));
+    QObject::connect(m_tree, SIGNAL(currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)),
+                     this, SLOT(onCurrentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)));
 
     this->updating();
 
-    QObject::connect(m_tree, SIGNAL(itemChanged(QTreeWidgetItem*,int)),
-                     this, SLOT(onCurrentItemChanged(QTreeWidgetItem*,int)));
+    QObject::connect(m_tree, SIGNAL(itemChanged(QTreeWidgetItem*, int)),
+                     this, SLOT(onCurrentItemChanged(QTreeWidgetItem*, int)));
 }
 
 //------------------------------------------------------------------------------
@@ -208,10 +212,10 @@ void SModelSeriesList::stopping()
         QObject::disconnect(m_showCheckBox, SIGNAL(stateChanged(int)), this, SLOT(onShowReconstructions(int)));
     }
 
-    QObject::disconnect(m_tree, SIGNAL(itemChanged(QTreeWidgetItem*,int)),
-                        this, SLOT(onCurrentItemChanged(QTreeWidgetItem*,int)));
-    QObject::disconnect(m_tree, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)),
-                        this, SLOT(onCurrentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)));
+    QObject::disconnect(m_tree, SIGNAL(itemChanged(QTreeWidgetItem*, int)),
+                        this, SLOT(onCurrentItemChanged(QTreeWidgetItem*, int)));
+    QObject::disconnect(m_tree, SIGNAL(currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)),
+                        this, SLOT(onCurrentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)));
 
     this->destroy();
 }
@@ -235,8 +239,7 @@ void SModelSeriesList::configuring()
     if(columns)
     {
         ::fwRuntime::ConfigurationElement::Container::const_iterator cIt = columns->begin();
-        m_tree->setColumnCount(static_cast<int>(columns->size()));
-        QStringList header;
+        m_headers.clear();
         for(; cIt != columns->end(); cIt++)
         {
             ValueView* view;
@@ -251,9 +254,8 @@ void SModelSeriesList::configuring()
             }
 
             m_displayedInfo.insert(DisplayedInformation::value_type((*cIt)->getValue(), view));
-            header << QString::fromStdString((*cIt)->getName());
+            m_headers << QString::fromStdString((*cIt)->getName());
         }
-        m_tree->setHeaderLabels(header);
     }
 }
 
