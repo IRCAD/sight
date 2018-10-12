@@ -240,6 +240,8 @@ private:
     /// Stop the service and connect its slots and signals
     ::fwServices::IService::SharedFutureType stop(const ServiceInfo& info);
 
+    bool m_isStarted {false};
+
     /// Store the information of the services (objects, autoStart, autoUpdate)
     std::vector< ServiceInfo > m_services;
 
