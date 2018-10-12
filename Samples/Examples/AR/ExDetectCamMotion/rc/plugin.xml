@@ -1,0 +1,208 @@
+<plugin id="ExDetectCamMotion" version="@PROJECT_VERSION@">
+    <requirement id="dataReg" />
+    <requirement id="arDataReg" />
+    <requirement id="servicesReg" />
+    <requirement id="visuVTKQt" />
+    <requirement id="preferences" />
+    <requirement id="visuVTKARAdaptor" />
+
+    <extension implements="::fwServices::registry::AppConfig">
+        <id>ExDetectCamMotionConfig</id>
+        <config>
+            <!-- ******************* begin data ******************* -->
+            <object uid="frameTL"    type="::arData::FrameTL" />
+            <object uid="videoImage" type="::fwData::Image" />
+            <object uid="camera"     type="::arData::Camera" />
+
+            <!-- declaration of the views, menu and toolbar -->
+            <!-- ******************* begin GUI ******************* -->
+            <service uid="mainFrame" type="::gui::frame::SDefaultFrame">
+                <gui>
+                    <frame>
+                        <name>ExDetectCamMotion</name>
+                        <icon>ExDetectCamMotion-@PROJECT_VERSION@/app.ico</icon>
+                    </frame>
+                    <menuBar/>
+                    <toolBar/>
+                </gui>
+                <registry>
+                    <menuBar sid="menuBar" start="yes" />
+                    <toolBar sid="toolbar" start="yes" />
+                    <view sid="genericScene" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="menuBar" type="::gui::aspect::SDefaultMenuBar">
+                <gui>
+                    <layout>
+                        <menu name="File" />
+                        <menu name="Preferences" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menu sid="menuFile" start="yes" />
+                    <menu sid="menuPreferences" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="menuFile" type="::gui::aspect::SDefaultMenu">
+                <gui>
+                    <layout>
+                        <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="actionQuit" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="menuPreferences" type="::gui::aspect::SDefaultMenu">
+                <gui>
+                    <layout>
+                        <menuItem name="Video directory" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="actionVideoDir" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="toolbar" type="::gui::aspect::SDefaultToolBar">
+                <gui>
+                    <layout>
+                        <editor/>
+                        <menuItem name="start" icon="arMedia-0.1/icons/start-cam.svg" />
+                        <menuItem name="stop" icon="arMedia-0.1/icons/stop-cam.svg" />
+                        <menuItem name="pause" icon="arMedia-0.1/icons/pause-cam.svg" />
+                        <separator/>
+                        <editor />
+                    </layout>
+                </gui>
+                <registry>
+                    <editor sid="cameraSelector" />
+                    <menuItem sid="startVideo" start="yes" />
+                    <menuItem sid="stopVideo" start="yes" />
+                    <menuItem sid="pauseVideo" start="yes" />
+                    <editor sid="motionStatus" start="yes" />
+                </registry>
+            </service>
+
+            <!-- ******************* begin actions ******************* -->
+            <!-- declaration of actions/slot callers -->
+            <service uid="actionQuit" type="::gui::action::SQuit" />
+
+            <service uid="startVideo" type="::gui::action::SSlotCaller">
+                <slots>
+                    <slot>frameGrabber/startCamera</slot>
+                </slots>
+            </service>
+
+            <service uid="stopVideo" type="::gui::action::SSlotCaller">
+                <slots>
+                    <slot>frameGrabber/stopCamera</slot>
+                </slots>
+            </service>
+
+            <service uid="pauseVideo" type="::gui::action::SSlotCaller">
+                <slots>
+                    <slot>frameGrabber/pauseCamera</slot>
+                </slots>
+            </service>
+
+            <!-- preference save the video directory and re-open the same directory at next launch of the app -->
+            <service uid="actionVideoDir" type="::uiPreferences::action::SPreferencesConfiguration">
+                <preference>
+                    <type>path</type>
+                    <name>Video directory</name>
+                    <key>VIDEO_DIR_PREF</key>
+                    <default_value>...</default_value>
+                </preference>
+            </service>
+
+            <!-- ******************* begin editors ******************* -->
+            <service uid="motionStatus" type="::uiTools::editor::SStatus">
+                <form>circle</form>
+                <size>
+                    <width>20</width>
+                    <height>20</height>
+                </size>
+                <labelStatus>Motion</labelStatus>
+                <red>No motion</red>
+                <green>Motion</green>
+                <orange>Computing...</orange>
+            </service>
+
+            <service uid="cameraSelector" type="::videoQt::editor::SCamera">
+                <inout key="camera" uid="camera" />
+                <videoSupport>yes</videoSupport>
+            </service>
+
+            <!-- *************************** Begin generic scene *************************** -->
+            <!-- Scene in which the video will be rendered -->
+            <service uid="genericScene" type="::fwRenderVTK::SRender">
+                <scene>
+                    <picker id="videoPicker" vtkclass="fwVtkCellPicker" />
+                    <renderer id="video" layer="0" background="#46455A" />
+                    <renderer id="default" layer="1" background="#46455A" />
+                    <adaptor uid="interactorStyle" />
+                    <adaptor uid="videoAdpt" />
+                </scene>
+            </service>
+
+            <service uid="interactorStyle" type="::visuVTKAdaptor::SInteractorStyle">
+                <config renderer="default" style="FixedInteractorStyle" />
+            </service>
+
+            <service uid="videoAdpt" type="::visuVTKARAdaptor::SVideo" autoConnect="yes">
+                <in key="frame" uid="videoImage" />
+                <config renderer="video" picker="videoPicker"/>
+            </service>
+
+            <!-- Grab image from camera device and fill a frame timeline -->
+            <service uid="frameGrabber" type="::videoQt::SFrameGrabber">
+                <in key="camera" uid="camera" />
+                <inout key="frameTL" uid="frameTL" />
+            </service>
+
+            <service uid="frameUpdater" type="::videoTools::SFrameUpdater">
+                <in key="frameTL" uid="frameTL" autoConnect="yes" />
+                <inout key="frame" uid="videoImage" />
+            </service>
+
+            <service uid="opticalFlow" type="::videoTools::SOpticalFlow" worker="ofWorker" >
+                <in key="timeline" uid="frameTL" autoConnect="yes" />
+                <config scaleFactor="3.6" />
+            </service>
+
+            <!-- ******************* begin connections ******************* -->
+            <connect>
+                <signal>camera/idModified</signal>
+                <slot>frameGrabber/stopCamera</slot>
+            </connect>
+
+            <connect>
+                <signal>opticalFlow/cameraMoved</signal>
+                <slot>motionStatus/changeToGreen</slot>
+            </connect>
+
+            <connect>
+                <signal>opticalFlow/cameraRemained</signal>
+                <slot>motionStatus/changeToRed</slot>
+            </connect>
+
+            <!-- ******************* begin starts ******************* -->
+            <!-- start services -->
+            <start uid="mainFrame" />
+            <start uid="cameraSelector" />
+            <start uid="frameGrabber" />
+            <start uid="frameUpdater" />
+            <start uid="opticalFlow" />
+
+            <!-- VTK scene 'genericScene' -->
+            <start uid="interactorStyle" />
+            <start uid="videoAdpt" />
+
+        </config>
+    </extension>
+</plugin>
+

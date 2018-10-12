@@ -275,9 +275,7 @@ void RayTracingVolumeRenderer::tfUpdate(fwData::TransferFunction::sptr)
         auto pass = technique->getPass(0);
         m_gpuTF.lock()->bind(pass, s_TF_TEXUNIT_NAME, m_RTVSharedParameters);
     }
-    m_proxyGeometry->setVisible(false);
     m_proxyGeometry->computeGrid();
-    m_proxyGeometry->setVisible(true);
 }
 
 //-----------------------------------------------------------------------------
@@ -402,6 +400,13 @@ void RayTracingVolumeRenderer::clipImage(const ::Ogre::AxisAlignedBox& clippingB
     m_entryPointGeometry->end();
 
     m_proxyGeometry->clipGrid(clippingBox);
+}
+
+//-----------------------------------------------------------------------------
+
+bool RayTracingVolumeRenderer::isVisible() const
+{
+    return m_entryPointGeometry->isVisible() && m_proxyGeometry->isVisible();
 }
 
 //-----------------------------------------------------------------------------
@@ -620,7 +625,6 @@ void RayTracingVolumeRenderer::initEntryPoints()
 
     // Render volumes after surfaces.
     m_entryPointGeometry->setRenderQueueGroup(compositor::Core::s_VOLUME_RQ_GROUP_ID);
-    m_entryPointGeometry->setVisible(true);
 
     m_volumeSceneNode->attachObject(m_entryPointGeometry);
 
@@ -629,7 +633,6 @@ void RayTracingVolumeRenderer::initEntryPoints()
                                                                  m_gpuTF.lock(), "RayEntryPoints");
 
     m_proxyGeometry->setRenderQueueGroup(s_PROXY_GEOMETRY_RQ_GROUP);
-    m_proxyGeometry->setVisible(true);
     m_volumeSceneNode->attachObject(m_proxyGeometry);
 
     m_cameraListener = new CameraListener(this);

@@ -14,6 +14,7 @@ set( DEPENDENCIES
         arData
         fwCom
         arServices
+        cvIO
 )
 set( REQUIREMENTS  )
 

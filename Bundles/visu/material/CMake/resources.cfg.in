@@ -1,0 +1,25 @@
+# Resources required by the sample browser and most samples.
+
+# This group must be loaded first
+[Materials]
+FileSystem=./@FWBUNDLE_RC_PREFIX@/@FWPROJECT_FULLNAME@/materials/core
+FileSystem=./@FWBUNDLE_RC_PREFIX@/@FWPROJECT_FULLNAME@/glsl/
+FileSystem=./@FWBUNDLE_RC_PREFIX@/@FWPROJECT_FULLNAME@/glsl/billboard
+FileSystem=./@FWBUNDLE_RC_PREFIX@/@FWPROJECT_FULLNAME@/overlays/
+FileSystem=./@FWBUNDLE_RC_PREFIX@/@FWPROJECT_FULLNAME@/textures/
+
+[compositors]
+FileSystem=./@FWBUNDLE_RC_PREFIX@/@FWPROJECT_FULLNAME@/materials/transparency
+FileSystem=./@FWBUNDLE_RC_PREFIX@/@FWPROJECT_FULLNAME@/materials/sao
+
+[compositorsPostFX]
+FileSystem=./@FWBUNDLE_RC_PREFIX@/@FWPROJECT_FULLNAME@/compositors/postFX
+FileSystem=./@FWBUNDLE_RC_PREFIX@/@FWPROJECT_FULLNAME@/glsl/postFX
+FileSystem=./@FWBUNDLE_RC_PREFIX@/@FWPROJECT_FULLNAME@/materials/postFX
+FileSystem=./@FWBUNDLE_RC_PREFIX@/@FWPROJECT_FULLNAME@/textures/postFX
+
+[materialsTemplate]
+FileSystem=./@FWBUNDLE_RC_PREFIX@/@FWPROJECT_FULLNAME@/materials/scene
+
+[fonts]
+FileSystem=./@FWBUNDLE_RC_PREFIX@/@FWPROJECT_FULLNAME@/fonts/
