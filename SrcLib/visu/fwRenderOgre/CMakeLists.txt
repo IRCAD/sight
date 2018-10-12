@@ -85,3 +85,10 @@ else()
     )
 
 endif()
+
+if(USE_CONAN)
+    # manage Ogre3D transitive dependencies
+    fwForwardLink(
+        CONAN_PKG::zzip
+    )
+endif()
