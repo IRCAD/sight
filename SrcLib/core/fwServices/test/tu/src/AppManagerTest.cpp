@@ -384,6 +384,12 @@ void AppManagerTest::managerWithOutputCreationTest()
     CPPUNIT_ASSERT(service3);
     CPPUNIT_ASSERT(service4);
 
+    m_appMgr->startServices();
+    CPPUNIT_ASSERT_EQUAL(false, service1->isStarted());
+    CPPUNIT_ASSERT_EQUAL(false, service3->isStarted());
+    CPPUNIT_ASSERT_EQUAL(false, service4->isStarted());
+    CPPUNIT_ASSERT_EQUAL(false, service2->isStarted());
+
     service1->setObjectId(::fwServices::ut::TestServiceWithData::s_INPUT, integerId);
     service1->setObjectId(::fwServices::ut::TestServiceWithData::s_OUTPUT, generatedIntegerId);
     service2->setObjectId(::fwServices::ut::TestServiceWithData::s_INPUT, generatedIntegerId);
