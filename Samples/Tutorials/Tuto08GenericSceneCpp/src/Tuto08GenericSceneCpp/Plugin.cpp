@@ -315,6 +315,10 @@ void Plugin::initialize()
     meshAdaptor->registerInput(mesh, "mesh", true);
     textureAdaptor->registerInOut(texture, "texture", true);
 
+    m_appManager->addObject(image, image->getID());
+    m_appManager->addObject(mesh, mesh->getID());
+    m_appManager->addObject(texture, texture->getID());
+
     /* **************************************************************************************
     *              connect the services
     ****************************************************************************************/
@@ -357,10 +361,6 @@ void Plugin::initialize()
     ****************************************************************************************/
 
     m_appManager->startServices();
-
-    m_appManager->addObject(image, image->getID());
-    m_appManager->addObject(mesh, mesh->getID());
-    m_appManager->addObject(texture, texture->getID());
 }
 
 //------------------------------------------------------------------------------
