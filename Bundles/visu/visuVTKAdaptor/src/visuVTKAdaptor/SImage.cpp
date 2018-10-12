@@ -51,7 +51,8 @@ SImage::SImage() noexcept :
     m_lut(vtkSmartPointer<fwVtkWindowLevelLookupTable>::New()),
     m_map2colors(vtkSmartPointer<vtkImageMapToColors>::New()),
     m_imageData(vtkSmartPointer<vtkImageData>::New()),
-    m_helperTF(std::bind(&SImage::updateTFPoints, this), std::bind(&SImage::updateTFWindowing, this, 0, 0))
+    m_helperTF(std::bind(&SImage::updateTFPoints, this),
+               std::bind(&SImage::updateTFWindowing, this, std::placeholders::_1, std::placeholders::_2))
 {
     newSlot(s_UPDATE_IMAGE_OPACITY_SLOT, &SImage::updateImageOpacity, this);
 }
