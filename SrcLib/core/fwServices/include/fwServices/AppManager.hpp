@@ -40,9 +40,9 @@ namespace fwServices
     // - readerService will generate an output image, it is registered as "loadedImage" in the application
     // - mesherService require an input image registered as "loadedImage" in the application
     // - mesherService will generate an output model series, it is registered as "generatedModel" in the application
-    readerService->registerObject("loadedImage", "image", AccessType::OUTPUT, true);
-    mesherService->registerObject("loadedImage", "image", AccessType::INPUT, true);
-    mesherService->registerObject("generatedModel", "modelSeries", AccessType::OUTUT, true);
+    readerService->setObjectId("imageSeries", "loadedImage");
+    mesherService->setObjectId("imageSeries", "loadedImage");
+    mesherService->setObjectId("modelSeries", "generatedModel");
 
     // Start the reader service:
     // - readerService will be started because it does not require input or inout. It will also be updated.
@@ -73,9 +73,9 @@ public:
     /**
      * @brief Create and register the service in the OSR
      *
-     * This method does not start the service even if autoStart=true, you must call startService(srv), startServices()
-     * or registerObj() to start the service when all its required inputs are present.
-     * To define the required inputs, use registerObject().
+     * This method does not start the service even if autoStart=true, you must call startService(srv) or startServices()
+     * to start the service when all its required inputs are present.
+     * To define the required inputs, use IService::registerObject().
      *
      * @param type service classname
      * @param uid service uid. If it is empty, it will be generated
@@ -89,9 +89,9 @@ public:
     /**
      * @brief Create and register the service in the OSR. Its uid will be generated.
      *
-     * This method does not start the service enven if autoStart=true, you must call startService(srv), startServices()
-     * or registerObj() to start the service when all its required inputs are present.
-     * To define the required inputs, use registerObject().
+     * This method does not start the service even if autoStart=true, you must call startService(srv) or startServices()
+     * to start the service when all its required inputs are present.
+     * To define the required inputs, use IService::registerObject().
      *
      * @param type service classname
      * @param autoStart if true, the service will be started when all its required inputs are present.
@@ -104,9 +104,9 @@ public:
     /**
      * @brief Create and register the service in the OSR
      *
-     * This method does not start the service even if autoStart=true, you must call startService(srv), startServices()
-     * or registerObj() to start the service when all its required inputs are present.
-     * To define the required inputs, use IService::preregisterInput() or IService::preregisterInOut().
+     * This method does not start the service even if autoStart=true, you must call startService(srv) or startServices()
+     * to start the service when all its required inputs are present.
+     * To define the required inputs, use IService::registerObject() or IService::registerObject().
      *
      * @param type service classname
      * @param uid service uid. If it is empty, it will be generated
@@ -119,9 +119,9 @@ public:
     /**
      * @brief Create and register the service in the OSR. Its uid will be generated.
      *
-     * This method does not start the service even if autoStart=true, you must call startService(srv), startServices()
-     * or registerObj() to start the service when all its required inputs are present.
-     * To define the required inputs, use registerObject().
+     * This method does not start the service even if autoStart=true, you must call startService(srv) or startServices()
+     * to start the service when all its required inputs are present.
+     * To define the required inputs, use IService::registerObject().
      *
      * @param type service classname
      * @param autoStart if true, the service will be started when all its required inputs are present.
@@ -133,9 +133,9 @@ public:
     /**
      * @brief Register the service in the OSR.
      *
-     * This method does not start the service enven if autoStart=true, you must call startService(srv), startServices()
-     * or registerObj() to start the service when all its required inputs are present.
-     * To define the required inputs, use registerObject().
+     * This method does not start the service even if autoStart=true, you must call startService(srv) or startServices()
+     * to start the service when all its required inputs are present.
+     * To define the required inputs, use IService::registerObject().
      *
      * @param srv service to register
      * @param autoStart if true, the service will be started when all its required inputs are present.
@@ -160,7 +160,11 @@ public:
      */
     FWSERVICES_API void stopService(const ::fwServices::IService::sptr& srv);
 
-    /// Start all the services with autoStart=true and with all the required objects
+    /**
+     * @brief Start all the services with autoStart=true and with all the required objects.
+     *
+     * It also define a flag that allow to start a service when adding an object.
+     */
     FWSERVICES_API void startServices();
 
     /// Stop all the started service and unregister all the registered service
@@ -171,6 +175,9 @@ public:
      *
      * This slot is connected to the OSR to listen the created object, it could also be called by the AppManager
      * inherited classes to register an object.
+     *
+     * If startServices() has been called previouly, the services that require this object and have all their required
+     * objects are started.
      *
      * @param obj the new object to register
      * @param id the identifier of the object, this identifier is only used to retrieve the object inside this
