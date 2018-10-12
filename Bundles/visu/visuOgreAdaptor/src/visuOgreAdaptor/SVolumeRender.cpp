@@ -1063,14 +1063,17 @@ void SVolumeRender::toggleVREffect(::visuOgreAdaptor::SVolumeRender::VREffectTyp
 
 void SVolumeRender::updateClippingBox()
 {
-    this->getRenderService()->makeCurrent();
+    if(m_widget)
+    {
+        this->getRenderService()->makeCurrent();
 
-    auto clippingMatrix = this->getInOut< ::fwData::TransformationMatrix3D>(s_CLIPPING_MATRIX_INOUT);
-    SLM_ASSERT("Can't update the 'clippingMatrix' if it doesn't exist.", clippingMatrix);
+        auto clippingMatrix = this->getInOut< ::fwData::TransformationMatrix3D>(s_CLIPPING_MATRIX_INOUT);
+        SLM_ASSERT("Can't update the 'clippingMatrix' if it doesn't exist.", clippingMatrix);
 
-    const ::Ogre::Matrix4 clippingMx = ::fwRenderOgre::Utils::convertTM3DToOgreMx(clippingMatrix);
+        const ::Ogre::Matrix4 clippingMx = ::fwRenderOgre::Utils::convertTM3DToOgreMx(clippingMatrix);
 
-    m_widget->updateFromTransform(clippingMx);
+        m_widget->updateFromTransform(clippingMx);
+    }
 }
 
 //-----------------------------------------------------------------------------
