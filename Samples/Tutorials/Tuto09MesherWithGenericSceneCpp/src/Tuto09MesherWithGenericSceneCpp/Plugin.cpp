@@ -402,7 +402,7 @@ void Plugin::initialize()
     sliderIndexEditor->setObjectId("image", s_IMAGE_ID);
     imageAdaptor->setObjectId("image", s_IMAGE_ID);
     extractImage->setObjectId("source", s_IMAGE_SERIES_ID);
-    extractImage->setObjectId("target#0", s_IMAGE_ID);
+    extractImage->setObjectId("target", 0, s_IMAGE_ID);
     medicaImageConverter->setObjectId( "image", s_IMAGE_ID);
     listOrganEditor->setObjectId("modelSeries", s_MODEL_SERIES_ID);
     organMaterialEditor->setObjectId("reconstruction", s_RECONSTRUCTION_ID);
