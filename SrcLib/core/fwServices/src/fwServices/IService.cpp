@@ -423,7 +423,7 @@ void IService::reconfiguring()
 {
     OSLM_FATAL(
         "If this method (reconfiguring) is called, it must be overriden in the implementation ("
-            << this->getClassname() <<", "<< this->getID() << ")" );
+        << this->getClassname() <<", "<< this->getID() << ")" );
 }
 
 //-----------------------------------------------------------------------------
@@ -1008,7 +1008,7 @@ bool IService::hasAllRequiredObjects() const
             {
                 if (nullptr == this->getInput< ::fwData::Object >(objectCfg.m_key))
                 {
-                    SLM_DEBUG("The 'input' object with key '" + objectCfg.m_key + "' is missing for '" + srv->getID()
+                    SLM_DEBUG("The 'input' object with key '" + objectCfg.m_key + "' is missing for '" + this->getID()
                               + "'");
                     hasAllObjects = false;
                     break;
@@ -1018,7 +1018,7 @@ bool IService::hasAllRequiredObjects() const
             {
                 if (nullptr == this->getInOut< ::fwData::Object >(objectCfg.m_key))
                 {
-                    SLM_DEBUG("The 'input' object with key '" + objectCfg.m_key + "' is missing for '" + srv->getID()
+                    SLM_DEBUG("The 'input' object with key '" + objectCfg.m_key + "' is missing for '" + this->getID()
                               + "'");
                     hasAllObjects = false;
                     break;
