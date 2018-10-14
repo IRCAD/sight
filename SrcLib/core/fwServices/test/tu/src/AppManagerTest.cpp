@@ -425,6 +425,82 @@ void AppManagerTest::managerWithOutputCreationTest()
 
 //------------------------------------------------------------------------------
 
+void AppManagerTest::managerWithGroup()
+{
+    m_appMgr = std::unique_ptr< ::fwServices::AppManager >(new ::fwServices::AppManager);
+    CPPUNIT_ASSERT(m_appMgr);
+
+    m_appMgr->create();
+
+    const std::string integerId0          = "integerId0";
+    const std::string integerId1          = "integerId1";
+    const std::string integerId2          = "integerId2";
+    const std::string integerId3          = "integerId3";
+    const std::string generatedIntegerId  = "generatedIntegerId";
+    const std::string generatedInteger2Id = "generatedInteger2Id";
+
+    ::fwData::Integer::sptr integer0 = ::fwData::Integer::New(1);
+    ::fwData::Integer::sptr integer1 = ::fwData::Integer::New(15);
+    ::fwData::Integer::sptr integer2 = ::fwData::Integer::New(25);
+    ::fwData::Integer::sptr integer3 = ::fwData::Integer::New(28);
+
+    auto service1 = m_appMgr->addService< ::fwServices::ut::TestServiceWithData >(
+        "::fwServices::ut::TestServiceWithData", true);
+    service1->registerGroup();
+
+    CPPUNIT_ASSERT_EQUAL(false, service1->hasAllRequiredObjects());
+    CPPUNIT_ASSERT_EQUAL(size_t(2), service1->getKeyGroupSize(::fwServices::ut::TestServiceWithData::s_INOUT_GROUP));
+    service1->setObjectId(::fwServices::ut::TestServiceWithData::s_INPUT, integerId0);
+    service1->setObjectId(::fwServices::ut::TestServiceWithData::s_INOUT_GROUP, 0, integerId1);
+    service1->setObjectId(::fwServices::ut::TestServiceWithData::s_INOUT_GROUP, 1, integerId2);
+    service1->setObjectId(::fwServices::ut::TestServiceWithData::s_INOUT_GROUP, 2, integerId3);
+    CPPUNIT_ASSERT_EQUAL(size_t(3), service1->getKeyGroupSize(::fwServices::ut::TestServiceWithData::s_INOUT_GROUP));
+    m_appMgr->addObject(integer0, integerId0);
+
+    m_appMgr->startServices();
+
+    CPPUNIT_ASSERT_EQUAL(true, service1->hasObjectId(
+                             KEY_GROUP_NAME(::fwServices::ut::TestServiceWithData::s_INOUT_GROUP, 0)));
+    CPPUNIT_ASSERT_EQUAL(integerId1, service1->getObjectId(
+                             KEY_GROUP_NAME(::fwServices::ut::TestServiceWithData::s_INOUT_GROUP, 0)));
+    CPPUNIT_ASSERT_EQUAL(true, service1->hasObjectId(
+                             KEY_GROUP_NAME(::fwServices::ut::TestServiceWithData::s_INOUT_GROUP, 1)));
+    CPPUNIT_ASSERT_EQUAL(integerId2, service1->getObjectId(
+                             KEY_GROUP_NAME(::fwServices::ut::TestServiceWithData::s_INOUT_GROUP, 1)));
+    CPPUNIT_ASSERT_EQUAL(true, service1->hasObjectId(
+                             KEY_GROUP_NAME(::fwServices::ut::TestServiceWithData::s_INOUT_GROUP, 2)));
+    CPPUNIT_ASSERT_EQUAL(integerId3, service1->getObjectId(
+                             KEY_GROUP_NAME(::fwServices::ut::TestServiceWithData::s_INOUT_GROUP, 2)));
+
+    m_appMgr->addObject(integer1, integerId1);
+    CPPUNIT_ASSERT_EQUAL(false, service1->hasAllRequiredObjects());
+    m_appMgr->addObject(integer2, integerId2);
+    CPPUNIT_ASSERT_EQUAL(true, service1->hasAllRequiredObjects());
+    m_appMgr->addObject(integer3, integerId3);
+    CPPUNIT_ASSERT_EQUAL(true, service1->hasAllRequiredObjects());
+
+    m_appMgr->removeObject(integer3, integerId3);
+    CPPUNIT_ASSERT_EQUAL(true, service1->hasAllRequiredObjects());
+    m_appMgr->removeObject(integer2, integerId2);
+    CPPUNIT_ASSERT_EQUAL(false, service1->hasAllRequiredObjects());
+
+    service1->unregisterObject(integerId3);
+    CPPUNIT_ASSERT_EQUAL(false, service1->hasObjectId(
+                             KEY_GROUP_NAME(::fwServices::ut::TestServiceWithData::s_INOUT_GROUP, 2)));
+
+    service1->unregisterObject(integerId2);
+    CPPUNIT_ASSERT_EQUAL(false, service1->hasObjectId(
+                             KEY_GROUP_NAME(::fwServices::ut::TestServiceWithData::s_INOUT_GROUP, 1)));
+
+    service1->unregisterObject(integerId1);
+    CPPUNIT_ASSERT_EQUAL(false, service1->hasObjectId(
+                             KEY_GROUP_NAME(::fwServices::ut::TestServiceWithData::s_INOUT_GROUP, 0)));
+
+    m_appMgr->destroy();
+}
+
+//------------------------------------------------------------------------------
+
 } //namespace ut
 
 } //namespace fwServices
