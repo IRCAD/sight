@@ -120,7 +120,7 @@ void AutomaticRegistrationTest::rigidTransformTest()
 
     //set a rotation around the Z axis
     const double rotAngle       = ::glm::radians(5.);
-    const ::glm::dmat4 rot      = ::glm::rotate(::glm::dmat4(), rotAngle, ::glm::dvec3(0., 0.5, 0.5));
+    const ::glm::dmat4 rot      = ::glm::rotate(::glm::dmat4(1.), rotAngle, ::glm::dvec3(0., 0.5, 0.5));
     const ::glm::dmat4 rigidTrf = ::glm::translate(rot, ::glm::dvec3(5., 3.2, 0.9));
 
     ::fwDataTools::TransformationMatrix3D::setTF3DFromMatrix(transform, rigidTrf);
@@ -211,7 +211,7 @@ void AutomaticRegistrationTest::rotationTransformTest()
 
     //set a rotation around the Z axis
     const double rotAngle  = ::glm::radians(12.);
-    const ::glm::dmat4 rot = ::glm::rotate(::glm::dmat4(), rotAngle, ::glm::dvec3(0., 0., 1.));
+    const ::glm::dmat4 rot = ::glm::rotate(::glm::dmat4(1.), rotAngle, ::glm::dvec3(0., 0., 1.));
 
     ::fwDataTools::TransformationMatrix3D::setTF3DFromMatrix(transform, rot);
 
@@ -258,7 +258,7 @@ void AutomaticRegistrationTest::multiresolutionRotationTransformTest()
 
     //set a rotation around the Z axis
     const double rotAngle  = ::glm::radians(12.);
-    const ::glm::dmat4 rot = ::glm::rotate(::glm::dmat4(), rotAngle, ::glm::dvec3(0., 0., 1.));
+    const ::glm::dmat4 rot = ::glm::rotate(::glm::dmat4(1.), rotAngle, ::glm::dvec3(0., 0., 1.));
 
     ::fwDataTools::TransformationMatrix3D::setTF3DFromMatrix(transform, rot);
 

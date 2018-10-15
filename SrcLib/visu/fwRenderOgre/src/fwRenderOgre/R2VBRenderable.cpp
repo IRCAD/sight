@@ -129,6 +129,13 @@ void R2VBRenderable::getRenderOperation(::Ogre::RenderOperation& _op)
     m_r2vbBuffer->getRenderOperation(_op);
 }
 
+//------------------------------------------------------------------------------
+
+const Ogre::MeshPtr& R2VBRenderable::getMesh() const
+{
+    return m_srcObject->getParent()->getMesh();
+}
+
 //-----------------------------------------------------------------------------
 
 } // namespace fwRenderOgre

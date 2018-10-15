@@ -379,7 +379,7 @@ void MeshTest::transformTest()
 
     ::fwData::Mesh::sptr meshOrig = ::fwData::Mesh::copy(mesh);
 
-    ::glm::dmat4x4 matrix;
+    ::glm::dmat4x4 matrix(1.);
     matrix = ::glm::rotate(matrix, ::glm::radians(90.), ::glm::dvec3(0., 0., 1.));
     matrix = ::glm::translate(matrix, ::glm::dvec3(10., 20., 30.));
     matrix = ::glm::scale(matrix, ::glm::dvec3(2., 2., 2.));

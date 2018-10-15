@@ -35,35 +35,35 @@ public:
      * @brief Constructor
      * @param[in] _key Private construction key
      */
-    FWDATA_API MarkerMap(::fwData::Object::Key _key);
+    ARDATA_API MarkerMap(::fwData::Object::Key _key);
     /**
      * @brief Destructor
      */
-    FWDATA_API virtual ~MarkerMap() override;
+    ARDATA_API virtual ~MarkerMap() override;
 
     /// Defines shallow copy
-    FWDATA_API void shallowCopy( const Object::csptr& _source ) override;
+    ARDATA_API void shallowCopy( const Object::csptr& _source ) override;
 
     /// Defines deep copy
-    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& _cache) override;
+    ARDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& _cache) override;
 
     /// Returns a marker given its identifier, null_ptr if not found
-    FWDATA_API const MarkerType* getMarker(const KeyType& _id) const;
+    ARDATA_API const MarkerType* getMarker(const KeyType& _id) const;
 
     /// Returns a marker given its identifier, null_ptr if not found
-    FWDATA_API MarkerType* getMarker(const KeyType& _id);
+    ARDATA_API MarkerType* getMarker(const KeyType& _id);
 
     /// Returns a marker given its index in the container, asserts if not found
-    FWDATA_API const MarkerType& getMarker(size_t index) const;
+    ARDATA_API const MarkerType& getMarker(size_t index) const;
 
     /// Returns a marker given its index in the container, asserts if not found
-    FWDATA_API MarkerType& getMarker(size_t index);
+    ARDATA_API MarkerType& getMarker(size_t index);
 
     /// Returns the number of markers in the container
-    FWDATA_API size_t count() const;
+    ARDATA_API size_t count() const;
 
     /// Adds a new marker in the container
-    FWDATA_API void setMarker(const KeyType& _id, const MarkerType& _marker );
+    ARDATA_API void setMarker(const KeyType& _id, const MarkerType& _marker );
 
 private:
     typedef std::map< KeyType, MarkerType > ContainerType;

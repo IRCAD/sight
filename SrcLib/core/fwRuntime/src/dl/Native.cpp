@@ -79,16 +79,14 @@ const ::boost::regex Native::getNativeName() const
 
 #if defined(linux) || defined(__linux)
     nativeName = ::boost::regex(
-        "lib" + fullModulePath.filename().string() + Bundle::s_VERSION_DELIMITER + m_bundle->getVersion().string()  + "\\.so" +
+        "lib" + fullModulePath.filename().string() + "\\.so" +
         "[0-9\\.]*" );
 #elif defined(WIN32)
     nativeName = ::boost::regex(
-        fullModulePath.filename().string() + Bundle::s_VERSION_DELIMITER + m_bundle->getVersion().string() +
-        "\\.dll");
+        fullModulePath.filename().string() + "\\.dll");
 #elif defined (__APPLE__)
     nativeName = ::boost::regex(
-        "lib" + fullModulePath.filename().string() + Bundle::s_VERSION_DELIMITER + m_bundle->getVersion().string() + "[0-9\\.]*" +
-        "\\.dylib" );
+        "lib" + fullModulePath.filename().string() + "[0-9\\.]*\\.dylib" );
 #endif
 
     return nativeName;

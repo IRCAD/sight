@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,6 +10,7 @@
 #include "fwGuiQt/util/FuncSlot.hpp"
 
 #include <fwRuntime/profile/Profile.hpp>
+#include <fwRuntime/Runtime.hpp>
 
 #include <fwServices/registry/ActiveWorkers.hpp>
 
@@ -25,6 +26,12 @@
 #include <QTimer>
 
 #include <functional>
+#if defined(__APPLE__)
+#   include <mach-o/dyld.h>
+#elif !defined(WIN32)
+#   include <link.h>
+#endif
+#include <regex>
 
 namespace fwGuiQt
 {
@@ -181,18 +188,111 @@ WorkerQt::WorkerQt() :
 
 //------------------------------------------------------------------------------
 
+#if defined(WIN32)
+static std::string getQt5CorePath()
+{
+    char path[MAX_PATH];
+    HMODULE hm = NULL;
+
+    if (GetModuleHandleEx(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS |
+                          GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+                          (LPCSTR) &QDir::drives, &hm) == 0)
+    {
+        int ret = GetLastError();
+        OSLM_ERROR("GetModuleHandle failed, error = %d\n" << ret);
+    }
+    if (GetModuleFileName(hm, path, sizeof(path)) == 0)
+    {
+        int ret = GetLastError();
+        OSLM_ERROR("GetModuleFileName failed, error = %d\n" << ret);
+    }
+    return path;
+}
+
+#elif defined(__APPLE__)
+//------------------------------------------------------------------------------
+
+static std::string getQt5CorePath()
+{
+    const std::regex matchQt5CoreLib("libQt5Core");
+    const std::regex matchQt5CoreFramework("QtCore");
+    std::string path;
+    for (int32_t i = _dyld_image_count(); i >= 0; i--)
+    {
+        const char* image_name = _dyld_get_image_name(i);
+        if (image_name)
+        {
+            const std::string libName(image_name);
+            if(std::regex_search(libName, matchQt5CoreLib))
+            {
+                path = libName;
+                break;
+            }
+            else if(std::regex_search(libName, matchQt5CoreFramework))
+            {
+                // get the path of the .framework folder
+                auto cut = libName.find(".framework");
+                path = libName.substr(0, cut + 10); // cut after .framework
+                break;
+            }
+        }
+    }
+    return path;
+}
+#else
+struct FindQt5Functor
+{
+    //------------------------------------------------------------------------------
+
+    static int dl_iterate_phdr_callback(struct dl_phdr_info* info, size_t, void*)
+    {
+        std::string libName(info->dlpi_name);
+        const std::regex matchQt5Core("libQt5Core");
+
+        if(std::regex_search(libName, matchQt5Core))
+        {
+            location = info->dlpi_name;
+        }
+        return 0;
+    }
+
+    static std::string location;
+};
+std::string FindQt5Functor::location;
+
+#endif
+
+//------------------------------------------------------------------------------
+
 void WorkerQt::init( int& argc, char** argv, bool guiEnabled )
 {
     OSLM_TRACE("Init Qt" << ::fwThread::getCurrentThreadId() <<" Start");
 
-#ifdef WIN32
-    QDir pluginDir("./bin/qt5/plugins");
+    // To get Qt initialized properly, we need to find its plugins
+    // This is difficult to do this, especially because the location of the deps is different whether
+    // you are executing the application in the build tree or in the install tree
+    // Thus the strategy here is to locate the Qt5Core library and then compute the path relatively
+    // This work in all cases when we use our binpkgs. If we use the system libraries, the qt.conf file
+    // of the system should do the job and the following might be useless.
+#if defined(WIN32) || defined(__APPLE__)
+    const auto path = getQt5CorePath();
 #else
-    QDir pluginDir("./lib/qt5/plugins");
+    FindQt5Functor functor;
+    dl_iterate_phdr(&FindQt5Functor::dl_iterate_phdr_callback, nullptr);
+    const auto path = functor.location;
 #endif
+
+    ::boost::filesystem::path qt5LibDir(path);
+    const ::boost::filesystem::path qt5PluginsDir = qt5LibDir.remove_filename() / "qt5" / "plugins";
+
+    QDir pluginDir(QString::fromStdString(qt5PluginsDir.string()));
     if (pluginDir.exists())
     {
         QCoreApplication::setLibraryPaths(QStringList(pluginDir.absolutePath()));
+    }
+    else
+    {
+        SLM_ERROR("Could not determine Qt5 plugins path, tried with: " + qt5PluginsDir.string());
     }
 
     m_argc = argc;
@@ -330,4 +430,3 @@ void TimerQt::updatedFunction()
 }
 
 } //namespace fwGuiQt
-

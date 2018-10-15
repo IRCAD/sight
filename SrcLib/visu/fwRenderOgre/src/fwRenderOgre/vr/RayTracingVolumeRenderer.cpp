@@ -17,6 +17,8 @@
 
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 
+#include <boost/make_unique.hpp>
+
 #include <OGRE/OgreCompositorManager.h>
 #include <OGRE/OgreGpuProgramManager.h>
 #include <OGRE/OgreHardwarePixelBuffer.h>
@@ -138,25 +140,20 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
     m_cameraListener(nullptr),
     m_layer(layer)
 {
-    const std::uint8_t numViewPoints = this->getLayer()->getNumberOfCameras();
-
     auto* exitDepthListener = new compositor::listener::RayExitDepthListener();
     ::Ogre::MaterialManager::getSingleton().addListener(exitDepthListener);
 
     ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
     auto viewport = layer->getViewport();
 
-    if(numViewPoints > 1)
-    {
-        m_entryPointsCompositor = "VolumeEntriesStereo" + std::to_string(numViewPoints);
-    }
-    else // Mono rendering
-    {
-        m_entryPointsCompositor = "VolumeEntries";
-    }
+    const std::uint8_t numViewPoints  = this->getLayer()->getNumberOfCameras();
+    const auto stereoMode             = layer->getStereoMode();
+    const auto rayEntryCompositorName = "VolumeEntries" + std::to_string(numViewPoints);
+    m_rayEntryCompositor = ::boost::make_unique<RayEntryCompositor> (rayEntryCompositorName, s_PROXY_GEOMETRY_RQ_GROUP,
+                                                                     stereoMode, true);
 
-    auto compositorInstance = compositorManager.addCompositor(viewport, m_entryPointsCompositor, 0);
-    SLM_ERROR_IF("Compositor '" + m_entryPointsCompositor + "' not found.", compositorInstance == nullptr);
+    auto compositorInstance = compositorManager.addCompositor(viewport, rayEntryCompositorName, 0);
+    SLM_ERROR_IF("Compositor '" + rayEntryCompositorName + "' not found.", compositorInstance == nullptr);
     compositorInstance->setEnabled(true);
 
     // First check that we did not already instance Shared parameters
@@ -207,8 +204,9 @@ RayTracingVolumeRenderer::~RayTracingVolumeRenderer()
     ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
     auto viewport = this->getLayer()->getViewport();
 
-    compositorManager.setCompositorEnabled(viewport, m_entryPointsCompositor, false);
-    compositorManager.removeCompositor(viewport, m_entryPointsCompositor);
+    const auto& rayEntryCompositorName = m_rayEntryCompositor->getName();
+    compositorManager.setCompositorEnabled(viewport, rayEntryCompositorName, false);
+    compositorManager.removeCompositor(viewport, rayEntryCompositorName);
 
     m_RTVSharedParameters->removeAllConstantDefinitions();
 }
@@ -272,9 +270,7 @@ void RayTracingVolumeRenderer::tfUpdate(fwData::TransferFunction::sptr)
         auto pass = technique->getPass(0);
         m_gpuTF.lock()->bind(pass, s_TF_TEXUNIT_NAME, m_RTVSharedParameters);
     }
-    m_proxyGeometry->setVisible(false);
     m_proxyGeometry->computeGrid();
-    m_proxyGeometry->setVisible(true);
 }
 
 //-----------------------------------------------------------------------------
@@ -403,6 +399,13 @@ void RayTracingVolumeRenderer::clipImage(const ::Ogre::AxisAlignedBox& clippingB
 
 //-----------------------------------------------------------------------------
 
+bool RayTracingVolumeRenderer::isVisible() const
+{
+    return m_entryPointGeometry->isVisible() && m_proxyGeometry->isVisible();
+}
+
+//-----------------------------------------------------------------------------
+
 void RayTracingVolumeRenderer::setRayCastingPassTextureUnits(Ogre::Pass* _rayCastingPass,
                                                              const std::string& _fpPPDefines) const
 {
@@ -452,8 +455,9 @@ void RayTracingVolumeRenderer::setRayCastingPassTextureUnits(Ogre::Pass* _rayCas
 
     if(this->getLayer()->getNumberOfCameras() == 1)
     {
+        const auto& rayEntryCompositorName = m_rayEntryCompositor->getName();
         texUnitState->setContentType(::Ogre::TextureUnitState::CONTENT_COMPOSITOR);
-        texUnitState->setCompositorReference("VolumeEntries", "VolumeEntryPoints");
+        texUnitState->setCompositorReference(rayEntryCompositorName, rayEntryCompositorName + "Texture");
     }
 
     texUnitState->setTextureFiltering(::Ogre::TFO_NONE);
@@ -555,6 +559,8 @@ void RayTracingVolumeRenderer::createRayTracingMaterial()
     ::Ogre::Pass* pass = tech->getPass(0);
     pass->setCullingMode(::Ogre::CULL_ANTICLOCKWISE);
     pass->setSceneBlending(::Ogre::SBT_TRANSPARENT_ALPHA);
+    pass->setDepthCheckEnabled(true);
+    pass->setDepthWriteEnabled(true);
 
     // Vertex program
     pass->setVertexProgram(vpName);
@@ -571,6 +577,7 @@ void RayTracingVolumeRenderer::createRayTracingMaterial()
     fpParams->setNamedAutoConstant("u_shininess", ::Ogre::GpuProgramParameters::ACT_SURFACE_SHININESS);
     fpParams->setNamedAutoConstant("u_invWorldViewProj",
                                    ::Ogre::GpuProgramParameters::ACT_INVERSE_WORLDVIEWPROJ_MATRIX);
+    fpParams->setNamedAutoConstant("u_worldViewProj", ::Ogre::GpuProgramParameters::ACT_WORLDVIEWPROJ_MATRIX);
     fpParams->setNamedAutoConstant("u_numLights", ::Ogre::GpuProgramParameters::ACT_LIGHT_COUNT);
     for(size_t i = 0; i < 10; ++i)
     {
@@ -616,7 +623,6 @@ void RayTracingVolumeRenderer::initEntryPoints()
 
     // Render volumes after surfaces.
     m_entryPointGeometry->setRenderQueueGroup(compositor::Core::s_VOLUME_RQ_GROUP_ID);
-    m_entryPointGeometry->setVisible(true);
 
     m_volumeSceneNode->attachObject(m_entryPointGeometry);
 
@@ -624,9 +630,7 @@ void RayTracingVolumeRenderer::initEntryPoints()
                                                                  m_sceneManager, m_3DOgreTexture,
                                                                  m_gpuTF.lock(), "RayEntryPoints");
 
-    // We put proxy geometry in render queue 101. Rq 101 is not used by default and must be explicitly called.
-    m_proxyGeometry->setRenderQueueGroup(101);
-    m_proxyGeometry->setVisible(true);
+    m_proxyGeometry->setRenderQueueGroup(s_PROXY_GEOMETRY_RQ_GROUP);
     m_volumeSceneNode->attachObject(m_proxyGeometry);
 
     m_cameraListener = new CameraListener(this);

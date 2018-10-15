@@ -232,6 +232,7 @@ void SVolumeRender::starting()
         transformNode = rootSceneNode->createChildSceneNode(this->getTransformId());
     }
     m_volumeSceneNode = transformNode->createChildSceneNode(this->getID() + "_transform_origin");
+    m_volumeSceneNode->setVisible(true, false);
 
     m_camera = this->getLayer()->getDefaultCamera();
 
@@ -410,9 +411,6 @@ void SVolumeRender::updateImage()
 
     // Create widgets on image update to take the image's size into account.
     this->createWidget();
-
-    m_volumeSceneNode->setVisible(true, false);
-    m_widget->setVisibility(m_widgetVisibilty);
 
     this->requestRender();
 }
@@ -645,9 +643,12 @@ void SVolumeRender::toggleWidgets(bool visible)
 {
     m_widgetVisibilty = visible;
 
-    m_widget->setVisibility(m_widgetVisibilty);
+    if(m_widget)
+    {
+        m_widget->setVisibility(m_widgetVisibilty && m_volumeRenderer->isVisible());
 
-    this->requestRender();
+        this->requestRender();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -955,6 +956,8 @@ void SVolumeRender::createWidget()
     }
 
     m_volumeRenderer->clipImage(m_widget->getClippingBox());
+
+    m_widget->setVisibility(m_widgetVisibilty && m_volumeRenderer->isVisible());
 }
 
 //-----------------------------------------------------------------------------
@@ -1060,12 +1063,17 @@ void SVolumeRender::toggleVREffect(::visuOgreAdaptor::SVolumeRender::VREffectTyp
 
 void SVolumeRender::updateClippingBox()
 {
-    auto clippingMatrix = this->getInOut< ::fwData::TransformationMatrix3D>(s_CLIPPING_MATRIX_INOUT);
-    SLM_ASSERT("Can't update the 'clippingMatrix' if it doesn't exist.", clippingMatrix);
+    if(m_widget)
+    {
+        this->getRenderService()->makeCurrent();
 
-    const ::Ogre::Matrix4 clippingMx = ::fwRenderOgre::Utils::convertTM3DToOgreMx(clippingMatrix);
+        auto clippingMatrix = this->getInOut< ::fwData::TransformationMatrix3D>(s_CLIPPING_MATRIX_INOUT);
+        SLM_ASSERT("Can't update the 'clippingMatrix' if it doesn't exist.", clippingMatrix);
 
-    m_widget->updateFromTransform(clippingMx);
+        const ::Ogre::Matrix4 clippingMx = ::fwRenderOgre::Utils::convertTM3DToOgreMx(clippingMatrix);
+
+        m_widget->updateFromTransform(clippingMx);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -1094,10 +1102,17 @@ void SVolumeRender::updateClippingTM3D()
 
 void SVolumeRender::updateVisibility(bool visibility)
 {
-    m_volumeSceneNode->setVisible(visibility);
-    m_widget->setVisibility(visibility && m_widgetVisibilty);
+    if(m_volumeSceneNode)
+    {
+        m_volumeSceneNode->setVisible(visibility);
 
-    this->requestRender();
+        if(m_widget)
+        {
+            m_widget->setVisibility(visibility && m_widgetVisibilty);
+        }
+
+        this->requestRender();
+    }
 }
 
 //-----------------------------------------------------------------------------

@@ -8,6 +8,8 @@
 
 #include "fwRenderOgre/vr/RayTracingVolumeRenderer.hpp"
 
+#include <OGRE/OgreCompositorInstance.h>
+
 namespace fwRenderOgre
 {
 namespace vr
@@ -198,6 +200,8 @@ private:
 
     /// Sets the alpha correction for VPImC.
     float m_idvrVPImCAlphaCorrection;
+
+    RayEntryCompositor m_idvrMaskRayEntriesCompositor;
 
     /// Compositor listener classes used to upload uniforms for mono/stereo ray tracing materials.
     class JFACompositorListener;

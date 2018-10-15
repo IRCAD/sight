@@ -1,7 +1,13 @@
 
 #Find all sub-folders containing external libraries
 function(findExtLibDir EXTERNAL_LIBRARIES_DIRECTORIES)
-    file(GLOB_RECURSE LIBS ${EXTERNAL_LIBRARIES}/*${CMAKE_SHARED_LIBRARY_SUFFIX})
+
+    if(NOT EXTERNAL_LIBRARIES)
+        message(FATAL_ERROR "EXTERNAL_LIBRARIES variable is missing. Please, specify external libraries location to generate CMake projects.")
+    endif()
+
+    file(TO_CMAKE_PATH ${EXTERNAL_LIBRARIES} FWEXTERNAL_LIBRARIES)
+    file(GLOB_RECURSE LIBS ${FWEXTERNAL_LIBRARIES}/*${CMAKE_SHARED_LIBRARY_SUFFIX})
     list(REMOVE_DUPLICATES LIBS)
     set(FOLDERS)
     foreach(LIB ${LIBS})
@@ -14,7 +20,10 @@ endfunction()
 
 #Windows install
 macro(win_install PRJ_NAME)
-    findExtLibDir(EXTERNAL_LIBRARIES_DIRECTORIES)
+
+    if(NOT USE_SYSTEM_LIB AND NOT BUILD_SDK)
+        findExtLibDir(EXTERNAL_LIBRARIES_DIRECTORIES)
+    endif()
 
     set(CPACK_GENERATOR NSIS)
 
@@ -23,20 +32,52 @@ macro(win_install PRJ_NAME)
     set(ICON_FILENAME ${LOWER_PRJ_NAME}.ico)
 
     if("${${PRJ_NAME}_TYPE}" STREQUAL  "APP")
-        set(LAUNCHER_PATH "bin/fwlauncher.exe")
+        set(LAUNCHER "fwlauncher.exe")
+        set(LAUNCHER_PATH "bin/${LAUNCHER}")
         set(PROFILE_PATH "${${PRJ_NAME}_BUNDLE_DIR}/profile.xml")
+
+        if(${FW_BUILD_EXTERNAL})
+            # install the launcher
+            install(PROGRAMS "${Sight_BINARY_DIR}/${LAUNCHER}" DESTINATION "bin")
+        endif()
     elseif("${${PRJ_NAME}_TYPE}" STREQUAL  "EXECUTABLE")
         set(LAUNCHER_PATH "bin/${PRJ_NAME}.exe")
         set(PROFILE_PATH "")
-    else()
+    elseif(NOT BUILD_SDK)
         message(FATAL_ERROR "'${PRJ_NAME}' is not a installable (type : ${${PRJ_NAME}_TYPE})")
     endif()
 
     list(APPEND CMAKE_MODULE_PATH ${FWCMAKE_RESOURCE_PATH}/install/windows/NSIS/)
 
     #configure the 'fixup' script
-    configure_file(${FWCMAKE_RESOURCE_PATH}/install/windows/windows_fixup.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/windows_fixup.cmake @ONLY)
-    install(SCRIPT ${CMAKE_CURRENT_BINARY_DIR}/windows_fixup.cmake)
+    if(NOT BUILD_SDK)
+        set(PROJECT_REQUIREMENTS ${${PROJECT}_REQUIREMENTS})
+
+        if(${FW_BUILD_EXTERNAL})
+            # install requirements
+            findAllDependencies("${PROJECT}" PROJECT_LIST)
+
+            # install requirements
+            foreach(REQUIREMENT ${PROJECT_LIST})
+                if(${REQUIREMENT}_EXTERNAL)
+                    # search and setup qt plugins for each bundles
+                    qt_plugins_setup(${REQUIREMENT})
+
+                    if(EXISTS "${Sight_LIBRARY_DIR}/${REQUIREMENT}-${${REQUIREMENT}_VERSION}")
+                        install(DIRECTORY "${Sight_LIBRARY_DIR}/${REQUIREMENT}-${${REQUIREMENT}_VERSION}" DESTINATION "${FWBUNDLE_LIB_PREFIX}")
+                    endif()
+                    if(EXISTS "${Sight_BUNDLES_DIR}/${REQUIREMENT}-${${REQUIREMENT}_VERSION}")
+                        install(DIRECTORY "${Sight_BUNDLES_DIR}/${REQUIREMENT}-${${REQUIREMENT}_VERSION}" DESTINATION "${FWBUNDLE_RC_PREFIX}")
+                    endif()
+                endif()
+            endforeach()
+
+            install_qt_plugins()
+        endif()
+
+        configure_file(${FWCMAKE_RESOURCE_PATH}/install/windows/windows_fixup.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/windows_fixup.cmake @ONLY)
+        install(SCRIPT ${CMAKE_CURRENT_BINARY_DIR}/windows_fixup.cmake)
+    endif()
 
     if(CMAKE_CL_64)
         set(CPACK_NSIS_INSTALL_DIR "$PROGRAMFILES64")
@@ -45,7 +86,7 @@ macro(win_install PRJ_NAME)
     set(CPACK_NSIS_ENABLE_UNINSTALL_BEFORE_INSTALL ON)
     set(CPACK_INSTALLED_DIRECTORIES "${CMAKE_INSTALL_PREFIX};.") #look inside install dir for packaging
 
-    set(CPACK_PACKAGE_VENDOR "FW4SPL")
+    set(CPACK_PACKAGE_VENDOR "Sight")
     set(CPACK_NSIS_URL_INFO_ABOUT "https://github.com/fw4spl-org")
     set(CPACK_NSIS_CONTACT "fw4spl@gmail.com")
 
@@ -53,7 +94,7 @@ macro(win_install PRJ_NAME)
     set(CPACK_NSIS_PACKAGE_NAME "${PRJ_NAME}-${${PRJ_NAME}_VERSION}")
     set(CPACK_NSIS_DISPLAY_NAME "${PRJ_NAME}")
     set(CPACK_PACKAGE_VERSION "${VERSION}")
-    set(CPACK_BUNDLE_RC_PREFIX "${BUNDLE_RC_PREFIX}")
+    set(CPACK_BUNDLE_RC_PREFIX "${FWBUNDLE_RC_PREFIX}")
 
     set(DEFAULT_NSIS_RC_PATH "${FWCMAKE_RESOURCE_PATH}/install/windows/NSIS/rc/")
 

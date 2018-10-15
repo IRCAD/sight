@@ -93,14 +93,15 @@ const std::string s_MIMP  = "MImP";
 const std::string s_AIMC  = "AImC";
 const std::string s_VPIMC = "VPImC";
 
-const std::string s_MIMP_COMPOSITOR         = "IDVR_MImP_Comp";
-const std::string s_AIMC_COMPOSITOR         = "IDVR_AImC_Comp";
-const std::string s_VPIMC_COMPOSITOR        = "IDVR_VPImC_Comp";
-const std::string s_JFAINIT_COMPOSITOR      = "JFAInit";
-const std::string s_JFAPING_COMPOSITOR      = "JFAPingComp";
-const std::string s_JFAPONG_COMPOSITOR      = "JFAPongComp";
-const std::string s_JFAFINALPING_COMPOSITOR = "JFAFinalPingComp";
-const std::string s_JFAFINALPONG_COMPOSITOR = "JFAFinalPongComp";
+const std::string s_IMPORTANCE_MASK_ENTRY_POINTS_COMPOSITOR = "ImportanceMask_EntryPointsComp";
+const std::string s_MIMP_COMPOSITOR                         = "IDVR_MImP_Comp";
+const std::string s_AIMC_COMPOSITOR                         = "IDVR_AImC_Comp";
+const std::string s_VPIMC_COMPOSITOR                        = "IDVR_VPImC_Comp";
+const std::string s_JFAINIT_COMPOSITOR                      = "JFAInit";
+const std::string s_JFAPING_COMPOSITOR                      = "JFAPingComp";
+const std::string s_JFAPONG_COMPOSITOR                      = "JFAPongComp";
+const std::string s_JFAFINALPING_COMPOSITOR                 = "JFAFinalPingComp";
+const std::string s_JFAFINALPONG_COMPOSITOR                 = "JFAFinalPongComp";
 
 const std::string s_MIMP_DEFINE  = "IDVR=1";
 const std::string s_AIMC_DEFINE  = "IDVR=2";
@@ -157,7 +158,9 @@ ImportanceDrivenVolumeRenderer::ImportanceDrivenVolumeRenderer(std::string _pare
     m_idvrCSGOpacityDecreaseFactor(0.8f),
     m_idvrCSGDepthLines(false),
     m_idvrAImCAlphaCorrection(0.05f),
-    m_idvrVPImCAlphaCorrection(0.3f)
+    m_idvrVPImCAlphaCorrection(0.3f),
+    m_idvrMaskRayEntriesCompositor(s_IMPORTANCE_MASK_ENTRY_POINTS_COMPOSITOR, s_PROXY_GEOMETRY_RQ_GROUP,
+                                   Layer::StereoModeType::NONE, false)
 {
     m_RTVSharedParameters->addConstantDefinition("u_csgAngleCos", ::Ogre::GCT_FLOAT1);
     m_RTVSharedParameters->addConstantDefinition("u_csgBorderThickness", ::Ogre::GCT_FLOAT1);
@@ -212,6 +215,9 @@ void ImportanceDrivenVolumeRenderer::setIDVRMethod(std::string _method)
     SLM_FATAL_IF("IDVR method '" + _method + "' isn't supported by the ray tracing volume renderer.", !isSupported);
     m_idvrMethod = _method;
 
+    SLM_FATAL_IF("IDVR isn't compatible with stereo rendering yet.",
+                 this->getLayer()->getStereoMode() != Layer::StereoModeType::NONE && m_idvrMethod != s_NONE);
+
     this->createMaterialAndIDVRTechnique();
 }
 
@@ -238,10 +244,18 @@ void ImportanceDrivenVolumeRenderer::buildICCompositors(::Ogre::Viewport* _vp)
     ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
 
     ::Ogre::CompositorInstance* compositorInstance = nullptr;
+    int compositorIndex = 1;
+
+    if(m_idvrMethod != s_NONE)
+    {
+        compositorInstance = compositorManager.addCompositor(_vp, s_IMPORTANCE_MASK_ENTRY_POINTS_COMPOSITOR,
+                                                             compositorIndex++);
+        compositorInstance->setEnabled(true);
+    }
 
     if(m_idvrMethod == s_MIMP)
     {
-        compositorInstance = compositorManager.addCompositor(_vp, s_MIMP_COMPOSITOR, 1);
+        compositorInstance = compositorManager.addCompositor(_vp, s_MIMP_COMPOSITOR, compositorIndex++);
         SLM_ASSERT("Compositor could not be initialized", compositorInstance);
         compositorInstance->setEnabled(true);
 
@@ -249,8 +263,7 @@ void ImportanceDrivenVolumeRenderer::buildICCompositors(::Ogre::Viewport* _vp)
             std::nearbyint(std::max(std::log(m_camera->getViewport()->getActualWidth()) / std::log(2.0),
                                     std::log(m_camera->getViewport()->getActualHeight()) / std::log(2.0)));
 
-        int chainIndex = 2;
-        compositorInstance = compositorManager.addCompositor(_vp, s_JFAINIT_COMPOSITOR, chainIndex++);
+        compositorInstance = compositorManager.addCompositor(_vp, s_JFAINIT_COMPOSITOR, compositorIndex++);
         SLM_ASSERT("Compositor could not be initialized", compositorInstance);
         compositorInstance->setEnabled(true);
 
@@ -264,13 +277,13 @@ void ImportanceDrivenVolumeRenderer::buildICCompositors(::Ogre::Viewport* _vp)
         {
             if(i % 2 == 0)
             {
-                compositorInstance = compositorManager.addCompositor(_vp, s_JFAPING_COMPOSITOR, chainIndex++);
+                compositorInstance = compositorManager.addCompositor(_vp, s_JFAPING_COMPOSITOR, compositorIndex++);
                 SLM_ASSERT("Compositor could not be initialized", compositorInstance);
                 compositorInstance->setEnabled(true);
             }
             else
             {
-                compositorInstance = compositorManager.addCompositor(_vp, s_JFAPONG_COMPOSITOR, chainIndex++);
+                compositorInstance = compositorManager.addCompositor(_vp, s_JFAPONG_COMPOSITOR, compositorIndex++);
                 SLM_ASSERT("Compositor could not be initialized", compositorInstance);
                 compositorInstance->setEnabled(true);
             }
@@ -283,13 +296,13 @@ void ImportanceDrivenVolumeRenderer::buildICCompositors(::Ogre::Viewport* _vp)
 
         if(i % 2 == 0)
         {
-            compositorInstance = compositorManager.addCompositor(_vp, s_JFAFINALPING_COMPOSITOR, chainIndex++);
+            compositorInstance = compositorManager.addCompositor(_vp, s_JFAFINALPING_COMPOSITOR, compositorIndex++);
             SLM_ASSERT("Compositor could not be initialized", compositorInstance);
             compositorInstance->setEnabled(true);
         }
         else
         {
-            compositorInstance = compositorManager.addCompositor(_vp, s_JFAFINALPONG_COMPOSITOR, chainIndex++);
+            compositorInstance = compositorManager.addCompositor(_vp, s_JFAFINALPONG_COMPOSITOR, compositorIndex++);
             SLM_ASSERT("Compositor could not be initialized", compositorInstance);
             compositorInstance->setEnabled(true);
         }
@@ -301,13 +314,13 @@ void ImportanceDrivenVolumeRenderer::buildICCompositors(::Ogre::Viewport* _vp)
     }
     else if(m_idvrMethod == s_AIMC)
     {
-        compositorInstance = compositorManager.addCompositor(_vp, s_AIMC_COMPOSITOR, 0);
+        compositorInstance = compositorManager.addCompositor(_vp, s_AIMC_COMPOSITOR, compositorIndex);
         SLM_ASSERT("Compositor could not be initialized", compositorInstance);
         compositorInstance->setEnabled(true);
     }
     else if(m_idvrMethod == s_VPIMC)
     {
-        compositorInstance = compositorManager.addCompositor(_vp, s_VPIMC_COMPOSITOR, 0);
+        compositorInstance = compositorManager.addCompositor(_vp, s_VPIMC_COMPOSITOR, compositorIndex);
         SLM_ASSERT("Compositor could not be initialized", compositorInstance);
         compositorInstance->setEnabled(true);
     }
@@ -330,15 +343,17 @@ void ImportanceDrivenVolumeRenderer::cleanCompositorChain(Ogre::Viewport* _vp)
     for(size_t i = 0; i < numCompositors; ++i)
     {
         ::Ogre::CompositorInstance* targetComp = compInstances[i];
+        const std::string& compName = targetComp->getCompositor()->getName();
         SLM_ASSERT("Compositor instance is null", targetComp);
-        if(targetComp->getCompositor()->getName() == s_MIMP_COMPOSITOR ||
-           targetComp->getCompositor()->getName() == s_AIMC_COMPOSITOR||
-           targetComp->getCompositor()->getName() == s_VPIMC_COMPOSITOR||
-           targetComp->getCompositor()->getName() == s_JFAINIT_COMPOSITOR ||
-           targetComp->getCompositor()->getName() == s_JFAPING_COMPOSITOR ||
-           targetComp->getCompositor()->getName() == s_JFAPONG_COMPOSITOR ||
-           targetComp->getCompositor()->getName() == s_JFAFINALPING_COMPOSITOR ||
-           targetComp->getCompositor()->getName() == s_JFAFINALPONG_COMPOSITOR
+        if(compName == s_MIMP_COMPOSITOR ||
+           compName == s_AIMC_COMPOSITOR||
+           compName == s_VPIMC_COMPOSITOR||
+           compName == s_JFAINIT_COMPOSITOR ||
+           compName == s_JFAPING_COMPOSITOR ||
+           compName == s_JFAPONG_COMPOSITOR ||
+           compName == s_JFAFINALPING_COMPOSITOR ||
+           compName == s_JFAFINALPONG_COMPOSITOR ||
+           compName == m_idvrMaskRayEntriesCompositor.getName()
            )
         {
             removeCompositors.push_back(i);
@@ -808,10 +823,11 @@ void ImportanceDrivenVolumeRenderer::createIDVRTechnique()
         texUnitState->setTextureFiltering(::Ogre::TFO_BILINEAR);
         texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
 
+        const auto& rayEntryCompositorName = m_idvrMaskRayEntriesCompositor.getName();
         texUnitState = pass->createTextureUnitState();
         texUnitState->setName("entryPoints");
         texUnitState->setContentType(::Ogre::TextureUnitState::CONTENT_COMPOSITOR);
-        texUnitState->setCompositorReference("VolumeEntries", "VolumeEntryPoints");
+        texUnitState->setCompositorReference(rayEntryCompositorName, rayEntryCompositorName + "Texture");
         texUnitState->setTextureFiltering(::Ogre::TFO_NONE);
         texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
     }

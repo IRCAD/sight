@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VISUVTKARADAPTOR_SPOINTLIST3D_HPP__
-#define __VISUVTKARADAPTOR_SPOINTLIST3D_HPP__
+#pragma once
 
 #include "visuVTKARAdaptor/config.hpp"
 
@@ -13,6 +12,7 @@
 
 #include <fwRenderVTK/IAdaptor.hpp>
 
+#include <vtkActor.h>
 #include <vtkPoints.h>
 #include <vtkSmartPointer.h>
 
@@ -21,6 +21,9 @@ namespace visuVTKARAdaptor
 
 /**
  * @brief Display a 3D point list.
+ *
+ * @section Slots Slots
+ * - \b updateVisibility(bool) : show/hide the pointlist
  *
  * @section XML XML Configuration
  *
@@ -82,6 +85,9 @@ protected:
 
 private:
 
+    /// Slot: update point list visibility (true = visible)
+    void updateVisibility ( bool isVisible );
+
     /// vtk point list.
     vtkSmartPointer<vtkPoints> m_points;
 
@@ -91,8 +97,9 @@ private:
     /// Point color.
     ::fwData::Color::sptr m_ptColor;
 
+    /// Point list actor.
+    vtkSmartPointer<vtkActor> m_actor;
+
 };
 
 } //namespace visuVTKRDAdaptor
-
-#endif // __VISUVTKARADAPTOR_SPOINTLIST3D_HPP__

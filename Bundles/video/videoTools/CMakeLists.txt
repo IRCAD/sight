@@ -9,5 +9,6 @@ fwInclude(
 fwLink(
     opencv_core
     opencv_imgproc
+    opencv_video
 )
 

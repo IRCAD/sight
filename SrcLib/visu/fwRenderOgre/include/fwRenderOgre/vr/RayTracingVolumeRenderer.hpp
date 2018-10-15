@@ -11,13 +11,12 @@
 #include "fwRenderOgre/R2VBRenderable.hpp"
 #include "fwRenderOgre/vr/GridProxyGeometry.hpp"
 #include "fwRenderOgre/vr/IVolumeRenderer.hpp"
+#include "fwRenderOgre/vr/RayEntryCompositor.hpp"
 #include "fwRenderOgre/vr/SATVolumeIllumination.hpp"
 
-#include <OGRE/OgreCompositorInstance.h>
 #include <OGRE/OgreGpuProgramParams.h>
 #include <OGRE/OgreManualObject.h>
 #include <OGRE/OgreMaterialManager.h>
-#include <OGRE/OgreRectangle2D.h>
 #include <OGRE/OgreTechnique.h>
 
 #include <vector>
@@ -34,6 +33,9 @@ namespace vr
 class FWRENDEROGRE_CLASS_API RayTracingVolumeRenderer : public IVolumeRenderer
 {
 public:
+
+    // We put proxy geometry in render queue 101. Rq 101 is not used by default and must be explicitly called.
+    const static std::uint8_t s_PROXY_GEOMETRY_RQ_GROUP = 101;
 
     /**
      * @brief Constructor.
@@ -105,6 +107,9 @@ public:
     /// IllumVolume getter.
     FWRENDEROGRE_API SATVolumeIllumination::sptr getIllumVolume();
 
+    /// Returns whether or not the volume is visible.
+    FWRENDEROGRE_API bool isVisible() const;
+
     /// Layer getter
     ::fwRenderOgre::Layer::sptr getLayer() const;
 
@@ -136,6 +141,9 @@ protected:
 
     /// List of file names to attach to the fragment shader for compiling.
     std::vector<std::string> m_fragmentShaderAttachements;
+
+    /// Compositor used to compute volume ray entry/exit points.
+    RayEntryCompositor::uptr m_rayEntryCompositor {nullptr};
 
 private:
 
@@ -186,9 +194,6 @@ private:
     CameraListener* m_cameraListener;
 
     ::fwRenderOgre::Layer::wptr m_layer;
-
-    /// Name of the compositor used to compute entry points.
-    std::string m_entryPointsCompositor;
 };
 
 //-----------------------------------------------------------------------------

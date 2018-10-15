@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWRUNTIME_OPERATIONS_HPP__
-#define __FWRUNTIME_OPERATIONS_HPP__
+#pragma once
 
 #include "fwRuntime/config.hpp"
 #include "fwRuntime/ConfigurationElement.hpp"
@@ -38,6 +37,14 @@ namespace fwRuntime
 {
 
 /**
+ * @brief   Initializes Sight runtime and discovers default bundles. To be used when building an external application
+ *          with Sight.
+ *
+ * @param   directory   a path to the directory where Sight is installed
+ */
+FWRUNTIME_API void init( const boost::filesystem::path& directory );
+
+/**
  * @brief       Retrieves the extension point having the specified identifier.
  *
  * @param[in]   identifier  a string containing an extension point identifier
@@ -60,7 +67,7 @@ FWRUNTIME_API std::shared_ptr<ExtensionPoint> findExtensionPoint( const std::str
 template<typename T>
 T* createExecutableInstance(
     const std::shared_ptr<Extension>    extension,
-    const std::string& element = "executable",
+    const std::string& element   = "executable",
     const std::string& attribute = "class" )
 {
     // Retrieves the right configuration element.
@@ -361,6 +368,16 @@ FWRUNTIME_API ::boost::filesystem::path getBundleResourcePath(const IExecutable*
 FWRUNTIME_API void addBundles( const boost::filesystem::path& directory );
 
 /**
+ * @brief   Load a bundle.
+ *
+ * @param   identifier  a string containing a bundle identifier
+ * @param   version     a version (none by default)
+ *
+ * @return  a shared pointer to the found bundle, or empty when it is not found
+ */
+FWRUNTIME_API std::shared_ptr<Bundle> loadBundle( const std::string& identifier, const Version& version = Version() );
+
+/**
  * @brief   Starts the given bundle set profile.
  *
  * @param   path    a path to an xml profile file
@@ -372,7 +389,7 @@ FWRUNTIME_API std::shared_ptr< ::fwRuntime::profile::Profile > startProfile( con
 /**
  * @brief   Retrieves the bundle with the given identifier and version
  *
- * @param   identifier  a string containing a bunle identifier
+ * @param   identifier  a string containing a bundle identifier
  * @param   version     a version (none by default)
  *
  * @return  a shared pointer to the found bundle, or empty when none
@@ -387,5 +404,3 @@ FWRUNTIME_API std::shared_ptr<Bundle> findBundle( const std::string& identifier,
 FWRUNTIME_API void startBundle(const std::string& identifier);
 
 } // namespace fwRuntime
-
-#endif // __FWRUNTIME_OPERATIONS_HPP__

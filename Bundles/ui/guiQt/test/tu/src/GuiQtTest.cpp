@@ -74,33 +74,5 @@ void GuiQtTest::testDefaultFrame()
 
 //------------------------------------------------------------------------------
 
-void GuiQtTest::testTuto01()
-{
-    std::vector<std::string> cfgs = ::fwServices::registry::AppConfig::getDefault()->getAllConfigs();
-    CPPUNIT_ASSERT_MESSAGE("Missing available configuration", !cfgs.empty());
-
-    ::fwServices::AppConfigManager::sptr appConfigMng = ::fwServices::AppConfigManager::New();
-    appConfigMng->setConfig( "tutoBasicConfig" );
-
-    appConfigMng->launch();
-    appConfigMng->stopAndDestroy();
-}
-
-//------------------------------------------------------------------------------
-
-void GuiQtTest::testTuto02()
-{
-    std::vector<std::string> cfgs = ::fwServices::registry::AppConfig::getDefault()->getAllConfigs();
-    CPPUNIT_ASSERT_MESSAGE("Missing available configuration", !cfgs.empty());
-
-    ::fwServices::AppConfigManager::sptr appConfigMng = ::fwServices::AppConfigManager::New();
-    appConfigMng->setConfig( "tutoDataServiceBasicConfig" );
-
-    appConfigMng->launch();
-    appConfigMng->stopAndDestroy();
-}
-
-//------------------------------------------------------------------------------
-
 } //namespace ut
 } //namespace guiQt

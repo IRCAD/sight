@@ -417,6 +417,8 @@ void Layer::updateCompositorState(std::string compositorName, bool isEnabled)
 
 void Layer::interaction(::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo info)
 {
+    this->getRenderService()->makeCurrent();
+
     switch(info.interactionType)
     {
         case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::MOUSEMOVE:
