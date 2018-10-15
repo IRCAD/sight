@@ -74,8 +74,15 @@ public:
 
 private:
 
+    /** return mesh properties
+     * @param mesh pointer to Ogre Mesh
+     * @param position world position of the entity using the mesh
+     * @param orientation world orientation of the entity using the mesh
+     * @param scale world scale of the entity using the mesh
+     * @return tuple containing <list of points, list of triangles, list of quads>
+     */
     std::tuple<std::vector<Ogre::Vector3>, std::vector<Ogre::uint32>, std::vector< Ogre::uint32> >
-    GetMeshInformation(const Ogre::MeshPtr mesh,
+    getMeshInformation(const Ogre::MeshPtr mesh,
                        const Ogre::Vector3& position,
                        const Ogre::Quaternion& orient,
                        const Ogre::Vector3& scale);

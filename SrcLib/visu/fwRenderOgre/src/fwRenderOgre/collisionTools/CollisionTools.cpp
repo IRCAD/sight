@@ -197,7 +197,7 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> CollisionTools::ray
 
             // get the mesh information
             std::tie( vertices, indicesTri, indicesQuad) =
-                GetMeshInformation(mesh,
+                getMeshInformation(mesh,
                                    pentity->getParentNode()->_getDerivedPosition(),
                                    pentity->getParentNode()->_getDerivedOrientation(),
                                    pentity->getParentNode()->_getDerivedScale());
@@ -318,7 +318,7 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> CollisionTools::ray
 std::tuple< std::vector< Ogre::Vector3>,
             std::vector< Ogre::uint32>,
             std::vector< Ogre::uint32> >
-CollisionTools::GetMeshInformation(const Ogre::MeshPtr mesh,
+CollisionTools::getMeshInformation(const Ogre::MeshPtr mesh,
                                    const Ogre::Vector3& position,
                                    const Ogre::Quaternion& orient,
                                    const Ogre::Vector3& scale)
