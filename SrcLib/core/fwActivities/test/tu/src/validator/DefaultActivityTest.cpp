@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2016-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2016-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -30,6 +30,7 @@
 #include <fwRuntime/Bundle.hpp>
 #include <fwRuntime/Extension.hpp>
 #include <fwRuntime/io/BundleDescriptorReader.hpp>
+#include <fwRuntime/operations.hpp>
 
 #include <fwTest/generator/Image.hpp>
 
@@ -56,7 +57,7 @@ void DefaultActivityTest::setUp()
     FwCoreNotUsedMacro(fwMedDataCampVersion);
 
     // Set up context before running a test.
-    ::boost::filesystem::path plugin = "share/tu_exec_fwActivities-0.0/tu_validator";
+    ::boost::filesystem::path plugin = ::fwRuntime::getResourceFilePath("tu_exec_fwActivities-0.0/tu_validator");
     m_bundle                         = ::fwRuntime::io::BundleDescriptorReader::createBundle(plugin);
 
     ::fwRuntime::Bundle::ExtensionContainer extensionsSet( m_bundle->extensionsBegin(), m_bundle->extensionsEnd());
