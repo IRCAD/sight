@@ -1,5 +1,7 @@
 #version 330
 
+#define MAX_ITERATIONS 8192
+
 uniform sampler3D u_image;
 
 #if IDVR >= 1
@@ -24,6 +26,7 @@ uniform mat4 u_invWorldView;
 uniform mat4 u_invProj;
 #else
 uniform mat4 u_invWorldViewProj;
+uniform mat4 u_worldViewProj;
 #endif // AUTOSTEREO
 
 uniform vec3 u_cameraPos;
@@ -137,6 +140,15 @@ vec3 fragCoordsToNDC(in vec3 fragCoord)
 
 //-----------------------------------------------------------------------------
 
+float voxelScreenDepth(in vec3 pos)
+{
+    vec4 projPos = u_worldViewProj * vec4(pos, 1);
+
+    return projPos.z / projPos.w;
+}
+
+//-----------------------------------------------------------------------------
+
 /// Converts a position in OpenGL's normalized device coordinates (NDC) to object space.
 vec3 ndcToVolumeSpacePosition(in vec3 ndcPos, in mat4 invWorldViewProj)
 {
@@ -148,6 +160,21 @@ vec3 ndcToVolumeSpacePosition(in vec3 ndcPos, in mat4 invWorldViewProj)
 
     return imgPos.xyz / imgPos.w;
 }
+
+//-----------------------------------------------------------------------------
+
+#ifdef PREINTEGRATION
+vec4 samplePreIntegrationTable(vec3 rayBack, vec3 rayFront)
+{
+    float sf = texture(u_image, rayBack).r;
+    float sb = texture(u_image, rayFront).r;
+
+    sf = ((sf * 65535.f) - float(u_min) - 32767.f) / float(u_max - u_min);
+    sb = ((sb * 65535.f) - float(u_min) - 32767.f) / float(u_max - u_min);
+
+    return texture(u_tfTexture, vec2(sf, sb));
+}
+#endif // PREINTEGRATION
 
 //-----------------------------------------------------------------------------
 
@@ -266,17 +293,33 @@ vec4 launchRay(in vec3 rayPos, in vec3 rayDir, in float rayLength, in float samp
 #endif
 
     int iterCount = 0;
-    for(float t = 0; iterCount < 65000 && t < rayLength; iterCount += 1, t += sampleDistance)
+    float t = 0.f;
+    // Move the ray to the first non transparent voxel.
+    for(; iterCount < MAX_ITERATIONS && t < rayLength; iterCount += 1, t += sampleDistance)
     {
 #ifdef PREINTEGRATION
-        float sf = texture(u_image, rayPos).r;
-        float sb = texture(u_image, rayPos + rayDir).r;
+        float tfAlpha = samplePreIntegrationTable(rayPos, rayPos + rayDir).a;
+#else
+        float intensity = texture(u_image, rayPos).r;
 
-        sf = ((sf * 65535.f) - float(u_min) - 32767.f) / float(u_max - u_min);
-        sb = ((sb * 65535.f) - float(u_min) - 32767.f) / float(u_max - u_min);
+        float tfAlpha = sampleTransferFunction(intensity).a;
+#endif // PREINTEGRATION
 
-        vec4 tfColour = texture(u_tfTexture, vec2(sf, sb));
+        if(tfAlpha != 0)
+        {
+            break;
+        }
 
+        rayPos += rayDir;
+    }
+
+    float rayScreenDepth = voxelScreenDepth(rayPos);
+    gl_FragDepth = rayScreenDepth * 0.5f + 0.5f; // Convert to NDC assuming no clipping planes are set.
+
+    for(; iterCount < MAX_ITERATIONS && t < rayLength; iterCount += 1, t += sampleDistance)
+    {
+#ifdef PREINTEGRATION
+        vec4 tfColour = samplePreIntegrationTable(rayPos, rayPos + rayDir);
 #else
         float intensity = texture(u_image, rayPos).r;
 
@@ -369,8 +412,6 @@ void main(void)
     {
         discard;
     }
-
-    gl_FragDepth = entryDepth;
 
 #ifdef AUTOSTEREO
     mat4x4 invWorldViewProj = u_invWorldView * u_invProj;

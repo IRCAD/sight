@@ -5,6 +5,7 @@ set( TYPE APP )
 set( DEPENDENCIES  )
 set( REQUIREMENTS
     dataReg
+    ctrlCamp
     ctrlSelection
     gui
     guiQt

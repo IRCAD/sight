@@ -30,9 +30,11 @@ namespace visuOgreAdaptor
  * - \b newImage() : update the image display to show the new content.
  * - \b sliceType(int, int) : update image slice index .
  * - \b sliceIndex(int, int, int) : update image slice type.
- * - \b updateTFPoints() : update the displayed transfer function according to the new points
+ * - \b updateTFPoints() : update the displayed transfer function according to the new points.
  * - \b updateTFWindowing(double window, double level) : update the displayed transfer function according to the new
- *      window and level
+ *      window and level.
+ * - \b updateVisibility() : updates the negato visibility from the image field.
+ * - \b setVisibility(bool) : sets the image visibility fields.
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -80,6 +82,7 @@ public:
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SLICEINDEX_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_OPACITY_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT;
+    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_VISIBILITY_SLOT;
     ///@}
 
 protected:
@@ -123,9 +126,13 @@ private:
     /// Also a slot called when image opacity is modified
     void setPlanesOpacity();
 
+    /// Slot: sets the negato's visibility
+    void setVisibility(bool visibility);
+
     /// Sets whether the camera must be auto reset when a mesh is updated or not.
     bool m_autoResetCamera;
 
+    /// Sets the opacity to that of the transfer function.
     bool m_enableAlpha {false};
 
     /// Ogre texture which will be displayed on the negato
@@ -137,7 +144,7 @@ private:
     /// Stores the planes on which we will apply our texture
     ::fwRenderOgre::Plane* m_planes[3];
 
-    // The current selected plane. This one will move in the scene
+    /// The current selected plane. This one will move in the scene
     ::fwRenderOgre::Plane* m_activePlane;
 
     /// The scene node allowing to move the entire negato

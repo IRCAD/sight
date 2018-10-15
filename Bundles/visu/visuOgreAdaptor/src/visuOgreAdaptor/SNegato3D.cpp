@@ -36,11 +36,15 @@ const ::fwCom::Slots::SlotKeyType SNegato3D::s_SLICETYPE_SLOT         = "sliceTy
 const ::fwCom::Slots::SlotKeyType SNegato3D::s_SLICEINDEX_SLOT        = "sliceIndex";
 const ::fwCom::Slots::SlotKeyType SNegato3D::s_UPDATE_OPACITY_SLOT    = "updateOpacity";
 const ::fwCom::Slots::SlotKeyType SNegato3D::s_UPDATE_VISIBILITY_SLOT = "updateVisibility";
+const ::fwCom::Slots::SlotKeyType SNegato3D::s_SET_VISIBILITY_SLOT    = "setVisibility";
 
 static const std::string s_IMAGE_INOUT = "image";
 static const std::string s_TF_INOUT    = "tf";
 
 static const std::string s_ENABLE_APLHA_CONFIG = "tfalpha";
+
+static const std::string TRANSPARENCY_FIELD = "TRANSPARENCY";
+static const std::string VISIBILITY_FIELD   = "VISIBILITY";
 
 //------------------------------------------------------------------------------
 
@@ -57,6 +61,7 @@ SNegato3D::SNegato3D() noexcept :
     newSlot(s_SLICEINDEX_SLOT, &SNegato3D::changeSliceIndex, this);
     newSlot(s_UPDATE_OPACITY_SLOT, &SNegato3D::setPlanesOpacity, this);
     newSlot(s_UPDATE_VISIBILITY_SLOT, &SNegato3D::setPlanesOpacity, this);
+    newSlot(s_SET_VISIBILITY_SLOT, &SNegato3D::setVisibility, this);
 }
 
 //------------------------------------------------------------------------------
@@ -358,9 +363,6 @@ void SNegato3D::setPlanesOpacity()
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
 
-    const std::string TRANSPARENCY_FIELD = "TRANSPARENCY";
-    const std::string VISIBILITY_FIELD   = "VISIBILITY";
-
     ::fwData::Integer::sptr transparency = image->setDefaultField(TRANSPARENCY_FIELD, ::fwData::Integer::New(0));
     ::fwData::Boolean::sptr isVisible    = image->setDefaultField(VISIBILITY_FIELD, ::fwData::Boolean::New(true));
 
@@ -379,6 +381,26 @@ void SNegato3D::setPlanesOpacity()
     }
 
     this->requestRender();
+}
+
+//------------------------------------------------------------------------------
+
+void SNegato3D::setVisibility(bool visibility)
+{
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
+
+    image->setField(VISIBILITY_FIELD, ::fwData::Boolean::New(visibility));
+
+    this->setPlanesOpacity();
+
+    using VisModSigType = ::fwData::Image::VisibilityModifiedSignalType;
+    auto visUpdateSig = image->signal<VisModSigType>( ::fwData::Image::s_VISIBILITY_MODIFIED_SIG );
+
+    {
+        ::fwCom::Connection::Blocker(visUpdateSig->getConnection(this->slot(s_UPDATE_VISIBILITY_SLOT)));
+        visUpdateSig->asyncEmit(visibility);
+    }
 }
 
 //------------------------------------------------------------------------------
