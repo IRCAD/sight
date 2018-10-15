@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -30,8 +30,6 @@
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
    THE SOFTWARE.
 ******************************************************************************************/
-#ifndef __FWRENDEROGRE_COLLISIONTOOLS_COLLISIONTOOLS_HPP__
-#define __FWRENDEROGRE_COLLISIONTOOLS_COLLISIONTOOLS_HPP__
 
 #include "fwRenderOgre/config.hpp"
 
@@ -44,6 +42,8 @@ namespace fwRenderOgre
  * @brief The CollisionTools class
  * Copy of MOC under MIT License, allows to do ray casts
  */
+#pragma once
+
 class FWRENDEROGRE_CLASS_API CollisionTools
 {
 public:
@@ -74,17 +74,19 @@ public:
 
 private:
 
-    void GetMeshInformation(const Ogre::MeshPtr mesh,
-                            size_t& vertex_count,
-                            Ogre::Vector3*& vertices,
-                            size_t& index_count,
-                            Ogre::uint32*& indices,
-                            const Ogre::Vector3& position,
-                            const Ogre::Quaternion& orient,
-                            const Ogre::Vector3& scale);
+    /** return mesh properties
+     * @param mesh pointer to Ogre Mesh
+     * @param position world position of the entity using the mesh
+     * @param orientation world orientation of the entity using the mesh
+     * @param scale world scale of the entity using the mesh
+     * @return tuple containing <list of points, list of triangles, list of quads>
+     */
+    std::tuple<std::vector<Ogre::Vector3>, std::vector<Ogre::uint32>, std::vector< Ogre::uint32> >
+    getMeshInformation(const Ogre::MeshPtr mesh,
+                       const Ogre::Vector3& position,
+                       const Ogre::Quaternion& orient,
+                       const Ogre::Vector3& scale);
 
 };
 
 }
-
-#endif // __FWRENDEROGRE_COLLISIONTOOLS_COLLISIONTOOLS_HPP__
