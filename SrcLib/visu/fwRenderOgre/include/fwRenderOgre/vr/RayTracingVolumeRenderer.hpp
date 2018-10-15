@@ -27,15 +27,15 @@ namespace fwRenderOgre
 namespace vr
 {
 
+// We put proxy geometry in render queue 101. Rq 101 is not used by default and must be explicitly called.
+static const std::uint8_t s_PROXY_GEOMETRY_RQ_GROUP = 101;
+
 /**
  * @brief Implements a simple GPU ray-tracing renderer.
  */
 class FWRENDEROGRE_CLASS_API RayTracingVolumeRenderer : public IVolumeRenderer
 {
 public:
-
-    // We put proxy geometry in render queue 101. Rq 101 is not used by default and must be explicitly called.
-    const static std::uint8_t s_PROXY_GEOMETRY_RQ_GROUP = 101;
 
     /**
      * @brief Constructor.
