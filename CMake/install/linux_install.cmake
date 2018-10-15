@@ -91,11 +91,6 @@ macro(linux_install PRJ_NAME)
         install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/${APP_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
     endif()
 
-    if(NOT USE_SYSTEM_LIB AND NOT BUILD_SDK)
-        #Copy the qt font directory inside install/libs
-        install(DIRECTORY "${EXTERNAL_LIBRARIES}/lib/fonts" DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/")
-    endif()
-
     include(CPack)
 
 endmacro()
