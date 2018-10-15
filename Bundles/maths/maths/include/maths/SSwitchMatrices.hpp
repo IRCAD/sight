@@ -71,8 +71,6 @@ public:
     MATHS_API static const ::fwCom::Slots::SlotKeyType s_SWITCH_TO_SLOT;
     typedef ::fwCom::Slot<void (size_t)> SwitchToSlotType;
 
-    MATHS_API virtual KeyConnectionsMap getAutoConnections() const override;
-
 protected:
 
     /// This method is used to configure the service.
@@ -92,6 +90,8 @@ protected:
 
     /// Switch to Matrix "index"
     MATHS_API void switchToMatrix(size_t index);
+
+    MATHS_API virtual KeyConnectionsMap getAutoConnections() const override;
 
 private:
 
