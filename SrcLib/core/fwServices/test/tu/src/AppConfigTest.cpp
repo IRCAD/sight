@@ -20,6 +20,7 @@
 
 #include <fwRuntime/Bundle.hpp>
 #include <fwRuntime/Convert.hpp>
+#include <fwRuntime/operations.hpp>
 #include <fwRuntime/Runtime.hpp>
 
 #include <fwTest/helper/wait.hpp>
@@ -56,7 +57,7 @@ void AppConfigTest::setUp()
     ::fwRuntime::Runtime* runtime = ::fwRuntime::Runtime::getDefault();
     runtime->addDefaultBundles();
 
-    ::boost::filesystem::path location = runtime->getWorkingPath() / "share/tu_exec_fwServices-0.0";
+    ::boost::filesystem::path location = ::fwRuntime::getResourceFilePath("tu_exec_fwServices-0.0");
     CPPUNIT_ASSERT(::boost::filesystem::exists(location));
 
     runtime->addBundles(location);
@@ -273,7 +274,7 @@ void AppConfigTest::startStopTest()
 
         // Remove the data
         ::fwServices::OSR::unregisterServiceOutput("out2", genDataSrv);
-        fwTestWaitMacro(::fwTools::fwID::getObject("TestService4Uid") == nullptr);
+        fwTestWaitMacro(::fwTools::fwID::exist("TestService4Uid") == false);
 
         // Now the service should have been stopped and destroyed automatically
         {
@@ -324,11 +325,11 @@ void AppConfigTest::startStopTest()
 
         // Now the service should have been stopped and destroyed automatically
         {
-            fwTestWaitMacro(::fwTools::fwID::getObject("TestService5Uid") == nullptr);
+            fwTestWaitMacro(::fwTools::fwID::exist("TestService5Uid") == false);
             auto gnsrv5 = ::fwTools::fwID::getObject("TestService5Uid");
             CPPUNIT_ASSERT(gnsrv5 == nullptr);
             // Test as well service 4, just to be sure
-            fwTestWaitMacro(::fwTools::fwID::getObject("TestService4Uid") == nullptr);
+            fwTestWaitMacro(::fwTools::fwID::exist("TestService4Uid") == false);
             auto gnsrv4 = ::fwTools::fwID::getObject("TestService4Uid");
             CPPUNIT_ASSERT(gnsrv4 == nullptr);
         }
@@ -374,7 +375,7 @@ void AppConfigTest::startStopTest()
         ::fwData::Boolean::sptr data5 = ::fwData::Boolean::New();
 
         ::fwServices::OSR::unregisterServiceOutput("out2", genDataSrv);
-        fwTestWaitMacro(::fwTools::fwID::getObject("TestService5Uid") == nullptr);
+        fwTestWaitMacro(::fwTools::fwID::exist("TestService5Uid") == false);
         ::fwServices::OSR::registerServiceOutput(data5, "out2", genDataSrv);
         WAIT_SERVICE_STARTED("TestService5Uid");
 
@@ -499,8 +500,8 @@ void AppConfigTest::autoConnectTest()
 
         // Remove one data
         ::fwServices::OSR::unregisterServiceOutput("out3", genDataSrv);
-        fwTestWaitMacro(::fwTools::fwID::getObject("TestService4Uid") == nullptr &&
-                        ::fwTools::fwID::getObject("TestService5Uid") == nullptr);
+        fwTestWaitMacro(::fwTools::fwID::exist("TestService4Uid") == false &&
+                        ::fwTools::fwID::exist("TestService5Uid") == false);
         {
             fwTools::Object::sptr gnsrv4 = ::fwTools::fwID::getObject("TestService4Uid");
             CPPUNIT_ASSERT(gnsrv4 == nullptr);
@@ -692,7 +693,7 @@ void AppConfigTest::connectionTest()
 
     // Remove one data
     ::fwServices::OSR::unregisterServiceOutput("out3", genDataSrv);
-    fwTestWaitMacro(::fwTools::fwID::getObject("TestService3Uid") == nullptr);
+    fwTestWaitMacro(::fwTools::fwID::exist("TestService3Uid") == false);
 
     // Service 3 should be removed
     {
@@ -835,7 +836,8 @@ void AppConfigTest::optionalKeyTest()
     CPPUNIT_ASSERT(data2 == srv1->getInput< ::fwData::Object>("data2") );
     CPPUNIT_ASSERT(nullptr == srv1->getInput< ::fwData::Object>("data3") );
 
-    CPPUNIT_ASSERT("data2" == srv1->getSwappedObjectKey() );
+    fwTestWaitMacro("data2" == srv1->getSwappedObjectKey());
+    CPPUNIT_ASSERT_EQUAL(std::string("data2"), srv1->getSwappedObjectKey() );
     CPPUNIT_ASSERT(data2 == srv1->getSwappedObject() );
 
     // Check no connection with data 2
@@ -877,14 +879,16 @@ void AppConfigTest::optionalKeyTest()
     ::fwServices::OSR::unregisterServiceOutput("out2", genDataSrv);
     fwTestWaitMacro(nullptr == srv1->getInput< ::fwData::Object>("data2"));
 
-    CPPUNIT_ASSERT("data2" == srv1->getSwappedObjectKey() );
+    fwTestWaitMacro("data2" == srv1->getSwappedObjectKey());
+    CPPUNIT_ASSERT_EQUAL(std::string("data2"), srv1->getSwappedObjectKey() );
     CPPUNIT_ASSERT(nullptr == srv1->getSwappedObject() );
     CPPUNIT_ASSERT(nullptr == srv1->getInput< ::fwData::Object>("data2") );
 
     ::fwServices::OSR::unregisterServiceOutput("out3", genDataSrv);
     fwTestWaitMacro(nullptr == srv1->getInput< ::fwData::Object>("data3"));
 
-    CPPUNIT_ASSERT("data3" == srv1->getSwappedObjectKey() );
+    fwTestWaitMacro("data3" == srv1->getSwappedObjectKey());
+    CPPUNIT_ASSERT_EQUAL(std::string("data3"), srv1->getSwappedObjectKey() );
     CPPUNIT_ASSERT(nullptr == srv1->getSwappedObject() );
     CPPUNIT_ASSERT(nullptr == srv1->getInput< ::fwData::Object>("data3") );
 
@@ -955,7 +959,7 @@ void AppConfigTest::optionalKeyTest()
     {
         ::fwServices::OSR::unregisterServiceOutput("out5", genDataSrv);
 
-        fwTestWaitMacro(nullptr == ::fwTools::fwID::getObject("TestService2Uid"));
+        fwTestWaitMacro(false == ::fwTools::fwID::exist("TestService2Uid"));
 
         fwTools::Object::sptr gnsrv5 = ::fwTools::fwID::getObject("TestService2Uid");
         CPPUNIT_ASSERT(gnsrv5 == nullptr);
@@ -1116,7 +1120,7 @@ void AppConfigTest::keyGroupTest()
     {
         ::fwServices::OSR::unregisterServiceOutput("out2", genDataSrv);
 
-        fwTestWaitMacro(nullptr == ::fwTools::fwID::getObject("TestService1Uid"));
+        fwTestWaitMacro(false == ::fwTools::fwID::exist("TestService1Uid"));
 
         fwTools::Object::sptr gnsrv5 = ::fwTools::fwID::getObject("TestService1Uid");
         CPPUNIT_ASSERT(gnsrv5 == nullptr);
