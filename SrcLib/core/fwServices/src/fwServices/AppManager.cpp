@@ -63,7 +63,7 @@ void AppManager::create()
 
 void AppManager::destroy()
 {
-    this->stopAndUnaddServices();
+    this->stopAndUnregisterServices();
 
     // remove all the registered objects
     while (!m_registeredObject.empty())
@@ -163,7 +163,7 @@ void AppManager::startServices()
 
 //------------------------------------------------------------------------------
 
-void AppManager::stopAndUnaddServices()
+void AppManager::stopAndUnregisterServices()
 {
     std::vector< ::fwServices::IService::SharedFutureType > futures;
 

@@ -168,7 +168,7 @@ public:
     FWSERVICES_API void startServices();
 
     /// Stop all the started service and unregister all the registered service
-    FWSERVICES_API void stopAndUnaddServices();
+    FWSERVICES_API void stopAndUnregisterServices();
 
     /**
      * @brief Slot: register the added object into all the services that require it
