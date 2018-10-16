@@ -30,8 +30,6 @@ macro(qt_plugins_setup PROJECT_NAME)
             set(FW_QT5_LOCATION ${EXTERNAL_LIBRARIES})
         endif()
 
-        string(LENGTH "${FW_QT5_LOCATION}/" QT_LENGTH)
-
         if(WIN32)
             set(FW_QT5_PLUGINS_PATH "${FW_QT5_LOCATION}/bin/qt5/plugins/*")
         else()
@@ -49,10 +47,7 @@ macro(qt_plugins_setup PROJECT_NAME)
                 file(GLOB_RECURSE QT_FILES  "${CURRENT_DIR}/*")
                 list(APPEND QT_PLUGINS ${QT_FILES})
 
-                string(LENGTH ${CURRENT_DIR} CURRENT_LENGTH)
-                MATH( EXPR FINAL_LENGTH "${CURRENT_LENGTH} - ${QT_LENGTH}" )
-                string(SUBSTRING ${CURRENT_DIR} ${QT_LENGTH} ${FINAL_LENGTH} SUB_DIR)
-
+                file(RELATIVE_PATH SUB_DIR ${FW_QT5_LOCATION} ${CURRENT_DIR})
                 list(APPEND PLUGINS_LIST ${SUB_DIR})
 
             endif()
