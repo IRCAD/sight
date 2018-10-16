@@ -36,6 +36,8 @@ void AppManager::initialize()
     m_string = ::fwData::String::New();
 
     this->addObject(m_string, s_EDITED_STRING);
+
+    this->startServices();
 }
 
 //------------------------------------------------------------------------------
@@ -58,8 +60,17 @@ void AppManager::onServiceCreated(const QVariant& obj)
         {
             // register the new service in the AppManager, it will be automatically started when the reconstruction is
             // added
-            this->registerService(srv, true);
-            this->registerObject(srv, s_EDITED_STRING, "string",  ::fwServices::IService::AccessType::INOUT, true);
+            srv->setObjectId("string", s_EDITED_STRING);
+            this->addService(srv, true);
+
+            try
+            {
+                this->startService(srv);
+            }
+            catch (std::exception& e)
+            {
+                SLM_ERROR("Try to start '" + srv->getID() + "': " + std::string(e.what()));
+            }
         }
     }
 }
