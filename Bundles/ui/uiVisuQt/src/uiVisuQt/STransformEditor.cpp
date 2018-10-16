@@ -36,6 +36,10 @@ fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuQt::STransformEditor,
 
 //------------------------------------------------------------------------------
 
+const ::fwServices::IService::KeyType s_MATRIX_INOUT = "matrix";
+
+//------------------------------------------------------------------------------
+
 STransformEditor::STransformEditor() noexcept :
     m_rotation("xyz"),
     m_translation("xyz")
@@ -207,11 +211,22 @@ void STransformEditor::updating()
     this->updateFromMatrix();
 }
 
+//-----------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsMap STransformEditor::getAutoConnections() const
+{
+    KeyConnectionsMap connections;
+
+    connections.push(s_MATRIX_INOUT, ::fwData::TransformationMatrix3D::s_MODIFIED_SIG, s_UPDATE_SLOT);
+
+    return connections;
+}
+
 //------------------------------------------------------------------------------
 
 void STransformEditor::onSliderChanged(int value)
 {
-    ::fwData::TransformationMatrix3D::sptr matrix = this->getInOut< ::fwData::TransformationMatrix3D >("matrix");
+    ::fwData::TransformationMatrix3D::sptr matrix = this->getInOut< ::fwData::TransformationMatrix3D >(s_MATRIX_INOUT);
 
     const double rx = ::glm::radians<double>(m_sliders[ROTATION_X].m_slider->value());
     const double ry = ::glm::radians<double>(m_sliders[ROTATION_Y].m_slider->value());

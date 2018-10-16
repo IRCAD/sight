@@ -68,6 +68,9 @@ protected:
     /// Updates Slider value
     UIVISUQT_API virtual void updating() override;
 
+    // Connect ::fwData::TransformationMatrix3D::s_MODIFIED_SIG to update slot
+    UIVISUQT_API virtual KeyConnectionsMap getAutoConnections() const override;
+
 private Q_SLOTS:
 
     /// Slot called when slider value changed.
