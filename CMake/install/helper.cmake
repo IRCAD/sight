@@ -24,12 +24,18 @@ macro(qt_plugins_setup PROJECT_NAME)
 
     # check if there is a PLUGINS variable in the current bundle properties.cmake
     if(${PROJECT_NAME}_PLUGINS)
-        string(LENGTH "${EXTERNAL_LIBRARIES}/" QT_LENGTH)
+        if(USE_CONAN)
+            set(FW_QT5_LOCATION "${CONAN_QT_ROOT}")
+        else()
+            set(FW_QT5_LOCATION ${EXTERNAL_LIBRARIES})
+        endif()
+
+        string(LENGTH "${FW_QT5_LOCATION}/" QT_LENGTH)
 
         if(WIN32)
-            set(FW_QT5_PLUGINS_PATH "${EXTERNAL_LIBRARIES}/bin/qt5/plugins/*")
+            set(FW_QT5_PLUGINS_PATH "${FW_QT5_LOCATION}/bin/qt5/plugins/*")
         else()
-            set(FW_QT5_PLUGINS_PATH "${EXTERNAL_LIBRARIES}/lib/qt5/plugins/*")
+            set(FW_QT5_PLUGINS_PATH "${FW_QT5_LOCATION}/lib/qt5/plugins/*")
         endif()
 
         # search in qml and plugins dirs
@@ -66,9 +72,15 @@ macro(install_qt_plugins)
 
     #qt plugins setup
     if(QT_REQUIREMENTS AND NOT BUILD_SDK) # set by helper.cmake -> qt_setup() macros
-         foreach(QT_REQUIREMENT ${QT_REQUIREMENTS})
+        if(USE_CONAN)
+            set(FW_QT5_LOCATION ${CONAN_QT_ROOT})
+        else()
+            set(FW_QT5_LOCATION ${EXTERNAL_LIBRARIES})
+        endif()
+
+        foreach(QT_REQUIREMENT ${QT_REQUIREMENTS})
              get_filename_component(QT_REQ_DIR ${QT_REQUIREMENT} DIRECTORY)
-             file(TO_CMAKE_PATH "${EXTERNAL_LIBRARIES}/${QT_REQUIREMENT}" QT_REQ_SRC_DIR)
+             file(TO_CMAKE_PATH "${FW_QT5_LOCATION}/${QT_REQUIREMENT}" QT_REQ_SRC_DIR)
              install(DIRECTORY "${QT_REQ_SRC_DIR}" DESTINATION "${QT_REQ_DIR}" )
         endforeach()
     endif()
