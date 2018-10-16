@@ -147,8 +147,8 @@ public:
      * @brief Start the service and register it in the started service container
      *
      * It also connect the service's signals and slots defined by connectSignal() and connectSlot().
+     * If service is register with autoUpdate=true, it will be updated.
      *
-     * @pre All the required inputs/inout must be pesent
      * @throw raise a ::fwCore::Exception if all the required objects are not present
      */
     FWSERVICES_API void startService(const ::fwServices::IService::sptr& srv);
@@ -227,6 +227,9 @@ private:
         /// True if the service will be automatically updated after starting
         bool m_autoUpdate;
     };
+
+    /// Add the service and register the existing object
+    void internalAddService(const ::fwServices::IService::sptr& srv, const bool autoStart, const bool autoUpdate);
 
     /// Return the service information
     ServiceInfo& getServiceInfo(const ::fwServices::IService::sptr& srv);

@@ -7,6 +7,7 @@
 #include "AppManagerTest.hpp"
 
 #include "fwServices/helper/ProxyConnections.hpp"
+#include "fwServices/op/Add.hpp"
 #include "fwServices/registry/ActiveWorkers.hpp"
 #include "fwServices/registry/AppConfig.hpp"
 #include "fwServices/registry/ObjectService.hpp"
@@ -175,6 +176,15 @@ void AppManagerTest::managerWithObjectTest()
 
     CPPUNIT_ASSERT(boolean == m_appMgr->getObject(booleanId));
 
+    // add a service when object are already added
+    auto service5 = ::fwServices::add("::fwServices::ut::TestServiceImplementation");
+    service5->registerObject(imageId, "data1", ::fwServices::IService::AccessType::INPUT, false, false);
+    service5->registerObject(booleanId, "data2", ::fwServices::IService::AccessType::INPUT, true, false);
+    m_appMgr->addService(service5, true, true);
+
+    CPPUNIT_ASSERT_NO_THROW(m_appMgr->startService(service5));
+    CPPUNIT_ASSERT_EQUAL(true, service5->isStarted());
+
     m_appMgr->removeObject(image, imageId);
     CPPUNIT_ASSERT(nullptr == m_appMgr->getObject(imageId));
 
@@ -182,6 +192,7 @@ void AppManagerTest::managerWithObjectTest()
     CPPUNIT_ASSERT_EQUAL(false, service2->isStarted());
     CPPUNIT_ASSERT_EQUAL(true, service3->isStarted());
     CPPUNIT_ASSERT_EQUAL(false, service4->isStarted());
+    CPPUNIT_ASSERT_EQUAL(false, service5->isStarted());
 
     m_appMgr->removeObject(boolean, booleanId);
     CPPUNIT_ASSERT(nullptr == m_appMgr->getObject(booleanId));
@@ -190,6 +201,7 @@ void AppManagerTest::managerWithObjectTest()
     CPPUNIT_ASSERT_EQUAL(false, service2->isStarted());
     CPPUNIT_ASSERT_EQUAL(true, service3->isStarted());
     CPPUNIT_ASSERT_EQUAL(false, service4->isStarted());
+    CPPUNIT_ASSERT_EQUAL(false, service5->isStarted());
 
     m_appMgr->destroy();
 }

@@ -13,7 +13,6 @@
 
 #include <fwCom/Slots.hxx>
 
-#include <boost/foreach.hpp>
 #include <boost/make_unique.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/smart_ptr.hpp>
@@ -81,9 +80,7 @@ void AppManager::destroy()
                                                     bool autoStart, bool autoUpdate)
 {
     auto srv = ::fwServices::add(type, uid);
-    ServiceInfo info(srv, autoStart, autoUpdate);
-    m_services.emplace_back(info);
-
+    this->internalAddService(srv, autoStart, autoUpdate);
     return srv;
 }
 
@@ -98,12 +95,11 @@ void AppManager::destroy()
 
 void AppManager::AppManager::addService(const ::fwServices::IService::sptr& srv, bool autoStart, bool autoUpdate)
 {
-    ServiceInfo info(srv, autoStart, autoUpdate);
-    m_services.emplace_back(info);
-
     ::fwServices::OSR::registerService(srv);
     auto worker = ::fwServices::registry::ActiveWorkers::getDefaultWorker();
     srv->setWorker(worker);
+
+    this->internalAddService(srv, autoStart, autoUpdate);
 }
 
 //------------------------------------------------------------------------------
@@ -115,6 +111,11 @@ void AppManager::startService(const ::fwServices::IService::sptr& srv)
     FW_RAISE_IF("Service cannot be started because all the required objects are not present.",
                 !srv->hasAllRequiredObjects());
     this->start(info).wait();
+
+    if (info.m_autoUpdate)
+    {
+        srv->update().wait();
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -136,7 +137,8 @@ void AppManager::startServices()
     for (auto& srvInfo : m_services)
     {
         ::fwServices::IService::sptr srv = srvInfo.m_service.lock();
-        if (srvInfo.m_autoStart && srv->hasAllRequiredObjects())
+
+        if (srv->isStopped() && srvInfo.m_autoStart && srv->hasAllRequiredObjects())
         {
             futures.push_back(this->start(srvInfo));
 
@@ -166,8 +168,9 @@ void AppManager::stopAndUnaddServices()
     std::vector< ::fwServices::IService::SharedFutureType > futures;
 
     // stop the started services
-    BOOST_REVERSE_FOREACH(auto& srv, m_startedService)
+    while (!m_startedService.empty())
     {
+        const auto& srv         = m_startedService.back();
         const ServiceInfo& info = this->getServiceInfo(srv);
         futures.emplace_back(this->stop(info));
     }
@@ -375,6 +378,27 @@ void AppManager::removeObject(::fwData::Object::sptr obj, const std::string& id)
         obj = itr->second;
     }
     return obj;
+}
+
+//------------------------------------------------------------------------------
+
+void AppManager::internalAddService(const ::fwServices::IService::sptr& srv, const bool autoStart,
+                                    const bool autoUpdate)
+{
+    ServiceInfo info(srv, autoStart, autoUpdate);
+    m_services.emplace_back(info);
+
+    // register the object to the service
+    for (const auto& obj : m_registeredObject)
+    {
+        if (srv->hasObjInfoFromId(obj.first))
+        {
+            const ::fwServices::IService::ObjectServiceConfig& objCfg = srv->getObjInfoFromId(obj.first);
+
+            // Register the key on the service
+            srv->registerObject(obj.second, objCfg.m_key, objCfg.m_access, objCfg.m_autoConnect, objCfg.m_optional);
+        }
+    }
 }
 
 //------------------------------------------------------------------------------
