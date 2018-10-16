@@ -19,6 +19,7 @@ static const ::fwServices::IService::KeyType s_STRING_INOUT = "string";
 
 SStringEditor::SStringEditor() noexcept
 {
+    this->registerObject(s_STRING_INOUT,  ::fwServices::IService::AccessType::INOUT, true);
 }
 
 //------------------------------------------------------------------------------
