@@ -18,6 +18,7 @@
 #include <fwPacsIO/SeriesEnquirer.hpp>
 
 #include <fwThread/Worker.hpp>
+
 #include <boost/filesystem/path.hpp>
 
 #include <QLineEdit>
