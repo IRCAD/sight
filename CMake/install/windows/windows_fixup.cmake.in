@@ -31,7 +31,7 @@ if ( NOT ${CMAKE_INSTALL_PREFIX} MATCHES "/_CPack_Packages/.*/(TGZ|ZIP|(NSIS.*))
     #Look for all directories containing '.dll' files
     findFwlibsAndBundles(FWLIBS_BUNDLES_DIRECTORIES)
     if(@USE_CONAN@)
-        list(APPEND FWLIBS_BUNDLES_DIRECTORIES @CONAN_LIB_DIRS@)
+        list(APPEND FWLIBS_BUNDLES_DIRECTORIES @CONAN_BIN_DIRS@)
     else()
         list(APPEND FWLIBS_BUNDLES_DIRECTORIES @EXTERNAL_LIBRARIES_DIRECTORIES@)
     endif()
