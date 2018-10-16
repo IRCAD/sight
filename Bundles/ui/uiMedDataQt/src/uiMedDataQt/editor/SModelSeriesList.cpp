@@ -192,13 +192,13 @@ void SModelSeriesList::starting()
 
     qtContainer->setLayout( layout );
 
-    QObject::connect(m_tree, SIGNAL(currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)),
-                     this, SLOT(onCurrentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)));
+    QObject::connect(m_tree, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)),
+                     this, SLOT(onCurrentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)));
 
     this->updating();
 
-    QObject::connect(m_tree, SIGNAL(itemChanged(QTreeWidgetItem*, int)),
-                     this, SLOT(onCurrentItemChanged(QTreeWidgetItem*, int)));
+    QObject::connect(m_tree, SIGNAL(itemChanged(QTreeWidgetItem*,int)),
+                     this, SLOT(onCurrentItemChanged(QTreeWidgetItem*,int)));
 }
 
 //------------------------------------------------------------------------------
@@ -212,10 +212,10 @@ void SModelSeriesList::stopping()
         QObject::disconnect(m_showCheckBox, SIGNAL(stateChanged(int)), this, SLOT(onShowReconstructions(int)));
     }
 
-    QObject::disconnect(m_tree, SIGNAL(itemChanged(QTreeWidgetItem*, int)),
-                        this, SLOT(onCurrentItemChanged(QTreeWidgetItem*, int)));
-    QObject::disconnect(m_tree, SIGNAL(currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)),
-                        this, SLOT(onCurrentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)));
+    QObject::disconnect(m_tree, SIGNAL(itemChanged(QTreeWidgetItem*,int)),
+                        this, SLOT(onCurrentItemChanged(QTreeWidgetItem*,int)));
+    QObject::disconnect(m_tree, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)),
+                        this, SLOT(onCurrentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)));
 
     this->destroy();
 }
