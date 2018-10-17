@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -18,6 +18,7 @@
 #include <fwRuntime/Bundle.hpp>
 #include <fwRuntime/Extension.hpp>
 #include <fwRuntime/io/BundleDescriptorReader.hpp>
+#include <fwRuntime/operations.hpp>
 
 #include <algorithm>
 
@@ -42,7 +43,7 @@ void ActivityRegistryTest::setUp()
 {
     m_pimpl = std::make_shared< ActivityRegistryTestPimpl >();
 
-    ::boost::filesystem::path plugin = "share/tu_exec_fwActivities-0.0/tu_registry";
+    ::boost::filesystem::path plugin = ::fwRuntime::getResourceFilePath("tu_exec_fwActivities-0.0/tu_registry");
     m_pimpl->bundle                  = ::fwRuntime::io::BundleDescriptorReader::createBundle(plugin);
 
     m_pimpl->activities = fwActivities::registry::Activities::New();
