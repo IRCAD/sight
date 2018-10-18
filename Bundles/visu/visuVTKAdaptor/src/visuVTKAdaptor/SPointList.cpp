@@ -242,11 +242,18 @@ void SPointList::setInteraction(const bool interaction)
 
 void SPointList::updateVisibility( bool isVisible)
 {
-    const auto services = this->getRegisteredServices();
+    const auto& services = this->getRegisteredServices();
     for(const auto& service : services)
     {
         auto srv = ::visuVTKAdaptor::SPoint::dynamicCast(service.lock());
-        srv->updateVisibility(isVisible);
+        if(srv)
+        {
+            srv->updateVisibility(isVisible);
+        }
+        else
+        {
+            SLM_WARN("::visuVTKAdaptor::SPoint cast failed");
+        }
     }
 }
 

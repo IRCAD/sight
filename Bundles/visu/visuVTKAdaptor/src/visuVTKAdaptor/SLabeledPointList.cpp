@@ -330,6 +330,10 @@ void SLabeledPointList::updateVisibility( bool isVisible)
             {
                 srv2->updateVisibility(isVisible);
             }
+            else
+            {
+                SLM_WARN("::visuVTKAdaptor::SPointLabel cast failed");
+            }
         }
     }
 }
