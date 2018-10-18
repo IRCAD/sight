@@ -115,6 +115,8 @@ void SCompositorParameter::starting()
     ::Ogre::CompositorChain* compChain =
         ::Ogre::CompositorManager::getSingleton().getCompositorChain(layer->getViewport());
 
+    this->getRenderService()->makeCurrent();
+
     m_compositor = compChain->getCompositor(m_compositorName);
     SLM_ASSERT("The given compositor '" + m_compositorName + "' doesn't exist in the compositor chain", m_compositor);
 
@@ -127,6 +129,8 @@ void SCompositorParameter::starting()
 
 void SCompositorParameter::stopping()
 {
+    this->getRenderService()->makeCurrent();
+
     this->IParameter::stopping();
 
     // Association of a listener attached to this adaptor to the configured compositor
