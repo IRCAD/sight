@@ -836,6 +836,7 @@ void SVolumeRender::setEnumParameter(std::string val, std::string key)
 
     if(key == "idvrMethod")
     {
+        this->newMask();
         m_volumeRenderer->setIDVRMethod(val);
         this->requestRender();
     }
