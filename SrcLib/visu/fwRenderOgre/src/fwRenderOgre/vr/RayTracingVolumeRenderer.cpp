@@ -162,7 +162,7 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
     // This can happen when reinstancing this class (e.g. switching 3D mode)
     ::Ogre::GpuProgramManager::SharedParametersMap spMap =
         ::Ogre::GpuProgramManager::getSingleton().getAvailableSharedParameters();
-    if(!spMap["RTVParams"])
+    if(!spMap[rtvSharedParamsName])
     {
         m_RTVSharedParameters = ::Ogre::GpuProgramManager::getSingleton().createSharedParameters(rtvSharedParamsName);
     }
