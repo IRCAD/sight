@@ -506,7 +506,12 @@ void Plugin::uninitialize() noexcept
     proxy->disconnect(s_REC_SELECTED_CHANNEL, m_slotRecSelected);
     proxy->disconnect(s_EMPTY_SELECTION_CHANNEL, m_slotEmptySelection);
 
+    auto workerRegistry = ::fwServices::registry::ActiveWorkers::getDefault();
+    auto worker         = workerRegistry->getWorker("Tuto09");
+    worker->stop();
+
     m_appManager->destroy();
+    m_appManager.reset();
 }
 
 //------------------------------------------------------------------------------
