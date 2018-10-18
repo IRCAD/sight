@@ -65,6 +65,7 @@ void AppManager::destroy()
 {
     this->stopAndUnregisterServices();
 
+    std::unique_lock<std::recursive_mutex> lock(m_objectMutex);
     // remove all the registered objects
     while (!m_registeredObject.empty())
     {
@@ -79,6 +80,8 @@ void AppManager::destroy()
 ::fwServices::IService::sptr AppManager::addService(const std::string& type, const std::string& uid,
                                                     bool autoStart, bool autoUpdate)
 {
+    std::unique_lock<std::mutex> lock(m_serviceMutex);
+
     auto srv = ::fwServices::add(type, uid);
     this->internalAddService(srv, autoStart, autoUpdate);
     return srv;
@@ -95,6 +98,8 @@ void AppManager::destroy()
 
 void AppManager::AppManager::addService(const ::fwServices::IService::sptr& srv, bool autoStart, bool autoUpdate)
 {
+    std::unique_lock<std::mutex> lock(m_serviceMutex);
+
     ::fwServices::OSR::registerService(srv);
     auto worker = ::fwServices::registry::ActiveWorkers::getDefaultWorker();
     srv->setWorker(worker);
@@ -106,6 +111,8 @@ void AppManager::AppManager::addService(const ::fwServices::IService::sptr& srv,
 
 void AppManager::startService(const ::fwServices::IService::sptr& srv)
 {
+    std::unique_lock<std::mutex> lock(m_serviceMutex);
+
     const ServiceInfo& info = this->getServiceInfo(srv);
 
     FW_RAISE_IF("Service cannot be started because all the required objects are not present.",
@@ -122,6 +129,8 @@ void AppManager::startService(const ::fwServices::IService::sptr& srv)
 
 void AppManager::stopService(const ::fwServices::IService::sptr& srv)
 {
+    std::unique_lock<std::mutex> lock(m_serviceMutex);
+
     const ServiceInfo& info = this->getServiceInfo(srv);
 
     this->stop(info).wait();
@@ -131,20 +140,24 @@ void AppManager::stopService(const ::fwServices::IService::sptr& srv)
 
 void AppManager::startServices()
 {
+
     std::vector< ::fwServices::IService::SharedFutureType > futures;
     std::vector< ::fwServices::IService::sptr > serviceToUpdate;
 
-    for (auto& srvInfo : m_services)
     {
-        ::fwServices::IService::sptr srv = srvInfo.m_service.lock();
-
-        if (srv->isStopped() && srvInfo.m_autoStart && srv->hasAllRequiredObjects())
+        std::unique_lock<std::mutex> lock(m_serviceMutex);
+        for (auto& srvInfo : m_services)
         {
-            futures.push_back(this->start(srvInfo));
+            ::fwServices::IService::sptr srv = srvInfo.m_service.lock();
 
-            if (srvInfo.m_autoUpdate)
+            if (srv->isStopped() && srvInfo.m_autoStart && srv->hasAllRequiredObjects())
             {
-                serviceToUpdate.emplace_back(srv);
+                futures.push_back(this->start(srvInfo));
+
+                if (srvInfo.m_autoUpdate)
+                {
+                    serviceToUpdate.emplace_back(srv);
+                }
             }
         }
     }
@@ -167,6 +180,8 @@ void AppManager::stopAndUnregisterServices()
 {
     std::vector< ::fwServices::IService::SharedFutureType > futures;
 
+    std::unique_lock<std::mutex> lock(m_serviceMutex);
+
     // stop the started services
     while (!m_startedService.empty())
     {
@@ -183,12 +198,15 @@ void AppManager::stopAndUnregisterServices()
     }
     m_startedService.clear();
     m_services.clear();
+    m_isStarted = false;
 }
 
 //------------------------------------------------------------------------------
 
 void AppManager::addProxyConnection(const helper::ProxyConnections& proxy)
 {
+    std::unique_lock<std::mutex> lock(m_serviceMutex);
+
     static size_t count = 0;
     std::string channel = proxy.m_channel;
     if (channel == "undefined")
@@ -215,6 +233,8 @@ void AppManager::addProxyConnection(const helper::ProxyConnections& proxy)
 
 void AppManager::addObject(::fwData::Object::sptr obj, const std::string& id)
 {
+    std::unique_lock<std::recursive_mutex> lock(m_objectMutex);
+
     auto it = m_registeredObject.find(id);
     if (it != m_registeredObject.end())
     {
@@ -247,6 +267,8 @@ void AppManager::addObject(::fwData::Object::sptr obj, const std::string& id)
 
     std::vector< ServiceInfo > serviceToStart;
     std::vector< ::fwServices::IService::sptr > serviceToUpdate;
+
+    std::unique_lock<std::mutex> lockSrv(m_serviceMutex);
 
     for (auto& srvInfo : m_services)
     {
@@ -318,28 +340,34 @@ void AppManager::addObject(::fwData::Object::sptr obj, const std::string& id)
 
 void AppManager::removeObject(::fwData::Object::sptr obj, const std::string& id)
 {
-    std::vector< ::fwServices::IService::sptr > serviceToStop;
+    std::unique_lock<std::recursive_mutex> lock(m_objectMutex);
 
-    for (auto& srvInfo : m_services)
     {
-        FW_RAISE_IF("service is expired", srvInfo.m_service.expired());
-        ::fwServices::IService::sptr srv = srvInfo.m_service.lock();
-        if (srv->hasObjInfoFromId(id))
+        std::unique_lock<std::mutex> lockSrv(m_serviceMutex);
+
+        std::vector< ::fwServices::IService::sptr > serviceToStop;
+
+        for (auto& srvInfo : m_services)
         {
-            const ::fwServices::IService::ObjectServiceConfig& objCfg = srv->getObjInfoFromId(id);
-
-            if (::fwServices::OSR::isRegistered(objCfg.m_key, objCfg.m_access, srv))
+            FW_RAISE_IF("service is expired", srvInfo.m_service.expired());
+            ::fwServices::IService::sptr srv = srvInfo.m_service.lock();
+            if (srv->hasObjInfoFromId(id))
             {
-                if (srv->isStarted() && !objCfg.m_optional)
-                {
-                    this->stop(srvInfo).wait();
-                }
+                const ::fwServices::IService::ObjectServiceConfig& objCfg = srv->getObjInfoFromId(id);
 
-                srv->unregisterObject(objCfg.m_key, objCfg.m_access);
-
-                if (objCfg.m_optional)
+                if (::fwServices::OSR::isRegistered(objCfg.m_key, objCfg.m_access, srv))
                 {
-                    srv->swapKey(objCfg.m_key, obj).wait();
+                    if (srv->isStarted() && !objCfg.m_optional)
+                    {
+                        this->stop(srvInfo).wait();
+                    }
+
+                    srv->unregisterObject(objCfg.m_key, objCfg.m_access);
+
+                    if (objCfg.m_optional)
+                    {
+                        srv->swapKey(objCfg.m_key, obj).wait();
+                    }
                 }
             }
         }
@@ -370,6 +398,8 @@ void AppManager::removeObject(::fwData::Object::sptr obj, const std::string& id)
 
 ::fwData::Object::sptr AppManager::getObject(const std::string& id) const
 {
+    std::unique_lock<std::recursive_mutex> lock(m_objectMutex);
+
     ::fwData::Object::sptr obj;
 
     auto itr = m_registeredObject.find(id);

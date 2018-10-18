@@ -13,6 +13,8 @@
 
 #include <fwData/Object.hpp>
 
+#include <mutex>
+
 namespace fwServices
 {
 
@@ -266,6 +268,9 @@ private:
     /// Connections to the OSR
     ::fwCom::Connection m_addObjectConnection;
     ::fwCom::Connection m_removeObjectConnection;
+
+    mutable std::recursive_mutex m_objectMutex;
+    std::mutex m_serviceMutex;
 };
 
 //------------------------------------------------------------------------------
