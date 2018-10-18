@@ -355,14 +355,6 @@ void Window::keyPressEvent(QKeyEvent* e)
             info.key = e->key();
     }
 
-    if(m_fullscreen && e->key() == ::Qt::Key_Escape)
-    {
-        ::fwGui::Cursor cursor;
-        cursor.setCursor(::fwGui::ICursor::BUSY);
-        ::fwGui::Application::New()->exit(0);
-        cursor.setDefaultCursor();
-    }
-
     Q_EMIT interacted(info);
 }
 
