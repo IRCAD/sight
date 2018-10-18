@@ -13,10 +13,15 @@
 #include <OgreCompositionTechnique.h>
 #include <OgreCompositorManager.h>
 
+#include <mutex>
+
 namespace fwRenderOgre
 {
 namespace vr
 {
+
+// Mutex to avoid concurrent compositor manager calls.
+static std::mutex s_compositorManagerLock;
 
 //------------------------------------------------------------------------------
 
@@ -25,6 +30,7 @@ RayEntryCompositor::RayEntryCompositor(const std::string& _compositorName, std::
     m_compositorName(_compositorName)
 {
     auto& cm = ::Ogre::CompositorManager::getSingleton();
+    s_compositorManagerLock.lock();
 
     m_compositor = cm.getByName(m_compositorName);
 
@@ -121,6 +127,8 @@ RayEntryCompositor::RayEntryCompositor(const std::string& _compositorName, std::
         auto* outputTargetPass = compTech->getOutputTargetPass();
         outputTargetPass->setInputMode(::Ogre::CompositionTargetPass::InputMode::IM_PREVIOUS);
     }
+
+    s_compositorManagerLock.unlock();
 }
 
 //------------------------------------------------------------------------------
@@ -128,7 +136,14 @@ RayEntryCompositor::RayEntryCompositor(const std::string& _compositorName, std::
 RayEntryCompositor::~RayEntryCompositor()
 {
     auto& cm = ::Ogre::CompositorManager::getSingleton();
-    cm.remove(m_compositor);
+
+    s_compositorManagerLock.lock();
+    // If this is the last reference. (Plus the one kept by the manager)
+    if(m_compositor.use_count() == 2)
+    {
+        cm.remove(m_compositor);
+    }
+    s_compositorManagerLock.unlock();
 }
 
 //------------------------------------------------------------------------------
