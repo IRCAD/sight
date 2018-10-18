@@ -35,6 +35,7 @@ namespace visuVTKAdaptor
 
 static const ::fwCom::Slots::SlotKeyType s_ADD_POINT_SLOT     = "addPoint";
 static const ::fwCom::Slots::SlotKeyType s_UPDATE_SPLINE_SLOT = "updateSpline";
+const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT    = "updateVisibility";
 
 const ::fwServices::IService::KeyType SPointList::s_POINTLIST_INPUT = "pointList";
 
@@ -46,6 +47,7 @@ SPointList::SPointList() noexcept :
 {
     newSlot(s_ADD_POINT_SLOT, &SPointList::addPoint, this);
     newSlot(s_UPDATE_SPLINE_SLOT, &SPointList::updateSpline, this);
+    newSlot(s_UPDATE_VISIBILITY_SLOT, &SPointList::updateVisibility, this);
 
     m_ptColor = ::fwData::Color::New();
 }
@@ -234,6 +236,18 @@ void SPointList::setColor(const fwData::Color::sptr ptColor)
 void SPointList::setInteraction(const bool interaction)
 {
     m_interaction = interaction;
+}
+
+//------------------------------------------------------------------------------
+
+void SPointList::updateVisibility( bool isVisible)
+{
+    const auto services = this->getRegisteredServices();
+    for(const auto& service : services)
+    {
+        auto srv = ::visuVTKAdaptor::SPoint::dynamicCast(service.lock());
+        srv->updateVisibility(isVisible);
+    }
 }
 
 //------------------------------------------------------------------------------
