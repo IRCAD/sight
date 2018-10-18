@@ -334,7 +334,7 @@ void SPoint::updateVisibility(bool isVisible)
 
     SLM_ASSERT("MarkedSphereHandleRepresentation cast failed", rep);
 
-    rep->GetProperty()->SetOpacity(isVisible);
+    rep->SetVisibility(isVisible);
     this->setVtkPipelineModified();
     this->requestRender();
 }
