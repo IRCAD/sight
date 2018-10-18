@@ -174,8 +174,6 @@ void Window::makeCurrent()
 
 void Window::destroyWindow()
 {
-    Window::m_counter--;
-
     if(m_ogreRenderWindow)
     {
         m_ogreRenderWindow->removeListener(this);
