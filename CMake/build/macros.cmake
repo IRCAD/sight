@@ -861,20 +861,26 @@ macro(addProject PROJECT)
             message(SEND_ERROR "<${PROJECT}> dir '' not found.")
         endif()
 
-        # Store requirements for the SDK
-        file(APPEND "${CMAKE_BINARY_DIR}/cmake/SightRequirements.cmake"
-            "set(${PROJECT}_EXTERNAL 1)\n"
-            "set(${PROJECT}_REQUIREMENTS ${${PROJECT}_REQUIREMENTS})\n"
-            "set(${PROJECT}_DEPENDENCIES ${${PROJECT}_DEPENDENCIES})\n"
-            "set(${PROJECT}_VERSION ${${PROJECT}_VERSION})\n"
-            "set(${PROJECT}_TYPE ${${PROJECT}_TYPE})\n")
-        if(${PROJECT}_START)
+        if(BUILD_SDK)
+            # Store requirements for the SDK
             file(APPEND "${CMAKE_BINARY_DIR}/cmake/SightRequirements.cmake"
-                "set(${PROJECT}_START ${${PROJECT}_START})\n")
-        endif()
-        if(${PROJECT}_PLUGINS)
-            file(APPEND "${CMAKE_BINARY_DIR}/cmake/SightRequirements.cmake"
-                "set(${PROJECT}_PLUGINS ${${PROJECT}_PLUGINS})\n")
+                "set(${PROJECT}_EXTERNAL 1)\n"
+                "set(${PROJECT}_REQUIREMENTS ${${PROJECT}_REQUIREMENTS})\n"
+                "set(${PROJECT}_DEPENDENCIES ${${PROJECT}_DEPENDENCIES})\n"
+                "set(${PROJECT}_VERSION ${${PROJECT}_VERSION})\n"
+                "set(${PROJECT}_TYPE ${${PROJECT}_TYPE})\n")
+            if(${PROJECT}_START)
+                file(APPEND "${CMAKE_BINARY_DIR}/cmake/SightRequirements.cmake"
+                    "set(${PROJECT}_START ${${PROJECT}_START})\n")
+            endif()
+            if(${PROJECT}_PLUGINS)
+                file(APPEND "${CMAKE_BINARY_DIR}/cmake/SightRequirements.cmake"
+                    "set(${PROJECT}_PLUGINS ${${PROJECT}_PLUGINS})\n")
+            endif()
+            if(${PROJECT}_CONAN_DEPS)
+                file(APPEND "${CMAKE_BINARY_DIR}/cmake/SightRequirements.cmake"
+                    "set(${PROJECT}_CONAN_DEPS ${${PROJECT}_CONAN_DEPS})\n")
+            endif()
         endif()
 
     endif()

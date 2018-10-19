@@ -17,20 +17,17 @@ if(CUDA_FOUND)
     set(CONAN_OPTIONS "*:use_cuda=True")
 endif()
 
-macro(findConanDeps PROJECT_LIST CONAN_DEPS_LIST)
-    unset(RESULT_LIST)
+macro(installConanDeps PROJECT_LIST)
+    unset(CONAN_DEPS_LIST)
 
     foreach(PROJECT ${PROJECT_LIST})
         if(${PROJECT}_CONAN_DEPS)
-            list(APPEND RESULT_LIST ${${PROJECT}_CONAN_DEPS})
+            list(APPEND CONAN_DEPS_LIST ${${PROJECT}_CONAN_DEPS})
         endif()
     endforeach()
 
-    list(REMOVE_DUPLICATES RESULT_LIST)
-    set(CONAN_DEPS_LIST ${RESULT_LIST})
-endmacro()
+    list(REMOVE_DUPLICATES CONAN_DEPS_LIST)
 
-macro(installConanDeps CONAN_DEPS_LIST)
     set (CONAN_IMPORTS
       "bin, *.dll -> ./bin"
       "lib, *.dylib -> ./lib"

@@ -132,7 +132,7 @@ if(EXTERNAL_LIBRARIES)
     get_filename_component(ABSOLUTE_EXTERNAL_LIBRARIES ${EXTERNAL_LIBRARIES} REALPATH)
     set(EXTERNAL_LIBRARIES ${ABSOLUTE_EXTERNAL_LIBRARIES})
     unset(ABSOLUTE_EXTERNAL_LIBRARIES)
-    
+
     list(APPEND CMAKE_PREFIX_PATH ${EXTERNAL_LIBRARIES})
     list(APPEND CMAKE_MODULE_PATH ${EXTERNAL_LIBRARIES})
     list(APPEND CMAKE_FIND_ROOT_PATH ${EXTERNAL_LIBRARIES})
@@ -302,7 +302,6 @@ endif()
 set(FWCONFIG_PACKAGE_LOCATION lib/cmake/sight)
 
 unset(PROJECT_LIST)
-unset(CONAN_DEPS_LIST)
 
 # Parse all Properties.cmake files and populate a list of CMake variables for each projet
 # to know its dependencies, requirements, version, pch usage, etc...
@@ -393,8 +392,7 @@ endif()
 
 # Find and install Conan packages
 if(USE_CONAN)
-    findConanDeps("${PROJECT_LIST}" CONAN_DEPS_LIST)
-    installConanDeps("${CONAN_DEPS_LIST}")
+    installConanDeps("${PROJECT_LIST}")
     add_definitions(${CONAN_DEFINES})
 endif()
 
@@ -433,6 +431,11 @@ if(BUILD_SDK)
       COMPATIBILITY AnyNewerVersion
     )
 
+    if(USE_CONAN)
+        file(APPEND "${CMAKE_BINARY_DIR}/cmake/SightRequirements.cmake"
+             "set(USE_CONAN 1)\n")
+    endif()
+
     # Install the SightConfig.cmake and SightConfigVersion.cmake
     install(
       FILES
@@ -440,6 +443,7 @@ if(BUILD_SDK)
         "${CMAKE_BINARY_DIR}/cmake/SightConfigVersion.cmake"
         "${CMAKE_BINARY_DIR}/cmake/SightRequirements.cmake"
         "${CMAKE_SOURCE_DIR}/CMake/build/macros.cmake"
+        "${CMAKE_SOURCE_DIR}/CMake/build/conan.cmake"
       DESTINATION
         ${FWCONFIG_PACKAGE_LOCATION}
       COMPONENT

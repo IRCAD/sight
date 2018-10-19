@@ -7,7 +7,15 @@ set(_SUPPORTED_COMPONENTS @FW_COMPONENTS@)
 
 set(EXTERNAL_LIBRARIES CACHE PATH "External libraries location (if not at a default location like /usr on Linux)")
 
-if(EXTERNAL_LIBRARIES)
+if(USE_CONAN AND NOT CONAN_CONFIGURED)
+    include(${CMAKE_CURRENT_LIST_DIR}/conan.cmake)
+    installConanDeps("@PROJECT_LIST@")
+    add_definitions(${CONAN_DEFINES})
+
+    # Just execute this branch only once per CMake run
+    set(CONAN_CONFIGURED 1)
+
+elseif(EXTERNAL_LIBRARIES)
     file(TO_CMAKE_PATH ${EXTERNAL_LIBRARIES} FWEXTERNAL_LIBRARIES)
     if(NOT ${FWEXTERNAL_LIBRARIES} IN_LIST CMAKE_PREFIX_PATH)
         list(APPEND CMAKE_PREFIX_PATH ${FWEXTERNAL_LIBRARIES})
@@ -42,7 +50,7 @@ foreach(_comp ${Sight_FIND_COMPONENTS})
             set(Sight_NOT_FOUND_MESSAGE "Unsupported component: ${_comp}")
         endif()
         if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/Sight-${_comp}Dependencies.cmake")
-        include("${CMAKE_CURRENT_LIST_DIR}/Sight-${_comp}Dependencies.cmake")
+            include("${CMAKE_CURRENT_LIST_DIR}/Sight-${_comp}Dependencies.cmake")
         endif()
 
         include("${CMAKE_CURRENT_LIST_DIR}/Sight-${_comp}Targets.cmake")
@@ -63,3 +71,4 @@ set(SPYLOG_LEVEL_MAP_info 4)
 set(SPYLOG_LEVEL_MAP_debug 5)
 set(SPYLOG_LEVEL_MAP_trace 6)
 set_property(CACHE SPYLOG_LEVEL PROPERTY STRINGS ${SPYLOG_LEVEL_VALUES} )
+
