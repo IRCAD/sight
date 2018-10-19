@@ -594,6 +594,11 @@ macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
             else()
                 set(LAUNCHER_PATH "$me")
             endif()
+            if(USE_CONAN AND FW_BUILD_EXTERNAL)
+                set(FW_EXTERNAL_LIBRARIES_DIR "${Sight_LIBRARY_DIR}/..")
+            else()
+                set(FW_EXTERNAL_LIBRARIES_DIR "${EXTERNAL_LIBRARIES_DIRECTORIES}/..")
+            endif()
 
             configure_file(${FWCMAKE_RESOURCE_PATH}/build/linux/template.sh.in ${CMAKE_CURRENT_BINARY_DIR}/${APP_NAME} @ONLY)
             file(COPY ${CMAKE_CURRENT_BINARY_DIR}/${APP_NAME} DESTINATION ${CMAKE_BINARY_DIR}/bin

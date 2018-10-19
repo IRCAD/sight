@@ -392,7 +392,8 @@ endif()
 
 # Find and install Conan packages
 if(USE_CONAN)
-    installConanDeps("${PROJECT_LIST}")
+    findConanDeps("${PROJECT_LIST}" CONAN_DEPS_LIST)
+    installConanDeps("${CONAN_DEPS_LIST}")
     add_definitions(${CONAN_DEFINES})
 endif()
 

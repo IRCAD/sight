@@ -17,16 +17,20 @@ if(CUDA_FOUND)
     set(CONAN_OPTIONS "*:use_cuda=True")
 endif()
 
-macro(installConanDeps PROJECT_LIST)
-    unset(CONAN_DEPS_LIST)
+macro(findConanDeps PROJECT_LIST CONAN_DEPS_LIST)
+    unset(RESULT_LIST)
 
     foreach(PROJECT ${PROJECT_LIST})
         if(${PROJECT}_CONAN_DEPS)
-            list(APPEND CONAN_DEPS_LIST ${${PROJECT}_CONAN_DEPS})
+            list(APPEND RESULT_LIST ${${PROJECT}_CONAN_DEPS})
         endif()
     endforeach()
 
-    list(REMOVE_DUPLICATES CONAN_DEPS_LIST)
+    list(REMOVE_DUPLICATES RESULT_LIST)
+    set(CONAN_DEPS_LIST ${RESULT_LIST})
+endmacro()
+
+macro(installConanDeps CONAN_DEPS_LIST)
 
     conan_cmake_run(
         REQUIRES ${CONAN_DEPS_LIST}
@@ -34,5 +38,15 @@ macro(installConanDeps PROJECT_LIST)
         OPTIONS ${CONAN_OPTIONS}
         #BUILD missing
     )
+
+endmacro()
+
+macro(installConanDepsForSDK CONAN_DEPS_LIST)
+
+    foreach(CONAN_DEP ${CONAN_DEPS_LIST})
+        string(REGEX REPLACE "([^\/]*)/.*" "\\1" CONAN_REQUIREMENT ${CONAN_DEP})
+        string(TOUPPER ${CONAN_REQUIREMENT} CONAN_REQUIREMENT )
+        install(DIRECTORY "${CONAN_${CONAN_REQUIREMENT}_ROOT}/" DESTINATION ${CMAKE_INSTALL_PREFIX})
+    endforeach()
 
 endmacro()
