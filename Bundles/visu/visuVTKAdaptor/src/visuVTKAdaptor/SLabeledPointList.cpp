@@ -315,7 +315,7 @@ void SLabeledPointList::stopping()
 
 void SLabeledPointList::updateVisibility( bool isVisible)
 {
-    const auto services = this->getRegisteredServices();
+    const auto& services = this->getRegisteredServices();
     for(const auto& service : services)
     {
         auto srv = ::visuVTKAdaptor::SPointList::dynamicCast(service.lock());
