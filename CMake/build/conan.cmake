@@ -28,16 +28,11 @@ macro(installConanDeps PROJECT_LIST)
 
     list(REMOVE_DUPLICATES CONAN_DEPS_LIST)
 
-    set (CONAN_IMPORTS
-      "bin, *.dll -> ./bin"
-      "lib, *.dylib -> ./lib"
-      "lib, *.so* -> ./lib"
-   )
     conan_cmake_run(
         REQUIRES ${CONAN_DEPS_LIST}
         BASIC_SETUP CMAKE_TARGETS NO_OUTPUT_DIRS
-        IMPORTS ${CONAN_IMPORTS}
         OPTIONS ${CONAN_OPTIONS}
         #BUILD missing
     )
+
 endmacro()

@@ -598,6 +598,22 @@ macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
             configure_file(${FWCMAKE_RESOURCE_PATH}/build/linux/template.sh.in ${CMAKE_CURRENT_BINARY_DIR}/${APP_NAME} @ONLY)
             file(COPY ${CMAKE_CURRENT_BINARY_DIR}/${APP_NAME} DESTINATION ${CMAKE_BINARY_DIR}/bin
                 FILE_PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
+        elseif(WIN32 AND USE_CONAN)
+            # Install shortcut
+            string(TOLOWER ${FWPROJECT_NAME} APP_NAME)
+
+            set(LAUNCHER "fwlauncher.exe")
+            set(PROFILE_PATH "${${FWPROJECT_NAME}_FULLNAME}/profile.xml")
+            if(FW_BUILD_EXTERNAL)
+                set(LAUNCHER_PATH "${Sight_BINARY_DIR}")
+            else()
+                set(LAUNCHER_PATH "$me")
+            endif()
+
+            file(TO_NATIVE_PATH "${CONAN_BIN_DIRS}" FW_CONAN_BIN_DIRS)
+            file(TO_NATIVE_PATH "${PROFILE_PATH}" PROFILE_PATH)
+            configure_file(${FWCMAKE_RESOURCE_PATH}/install/windows/template.bat.in ${CMAKE_BINARY_DIR}/bin/${APP_NAME}.bat @ONLY)
+            configure_file(${FWCMAKE_RESOURCE_PATH}/install/windows/setpath.bat.in ${CMAKE_BINARY_DIR}/bin/setpath.bat @ONLY)
         endif()
     else()
         set_target_properties(${FWPROJECT_NAME} PROPERTIES FOLDER "bundle")
