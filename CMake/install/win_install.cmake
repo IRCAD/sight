@@ -75,62 +75,70 @@ macro(win_install PRJ_NAME)
             install_qt_plugins()
         endif()
 
-        configure_file(${FWCMAKE_RESOURCE_PATH}/install/windows/windows_fixup.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/windows_fixup.cmake @ONLY)
-        install(SCRIPT ${CMAKE_CURRENT_BINARY_DIR}/windows_fixup.cmake)
     endif()
 
-    if(CMAKE_CL_64)
-        set(CPACK_NSIS_INSTALL_DIR "$PROGRAMFILES64")
+    if(NOT BUILD_SDK OR (BUILD_SDK AND ${PRJ_NAME} STREQUAL "sight") )
+
+        if(NOT BUILD_SDK)
+            configure_file(${FWCMAKE_RESOURCE_PATH}/install/windows/windows_fixup.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/windows_fixup.cmake @ONLY)
+            install(SCRIPT ${CMAKE_CURRENT_BINARY_DIR}/windows_fixup.cmake)
+        else()
+            installConanDepsForSDK("${CONAN_DEPS_LIST}")
+        endif()
+
+        if(CMAKE_CL_64)
+            set(CPACK_NSIS_INSTALL_DIR "$PROGRAMFILES64")
+        endif()
+
+        set(CPACK_NSIS_ENABLE_UNINSTALL_BEFORE_INSTALL ON)
+        set(CPACK_INSTALLED_DIRECTORIES "${CMAKE_INSTALL_PREFIX};.") #look inside install dir for packaging
+
+        set(CPACK_PACKAGE_VENDOR "Sight")
+        set(CPACK_NSIS_URL_INFO_ABOUT "https://github.com/fw4spl-org")
+        set(CPACK_NSIS_CONTACT "fw4spl@gmail.com")
+
+        set(CPACK_PACKAGE_NAME "${PRJ_NAME}")
+        set(CPACK_NSIS_PACKAGE_NAME "${PRJ_NAME}-${${PRJ_NAME}_VERSION}")
+        set(CPACK_NSIS_DISPLAY_NAME "${PRJ_NAME}")
+        set(CPACK_PACKAGE_VERSION "${VERSION}")
+        set(CPACK_BUNDLE_RC_PREFIX "${FWBUNDLE_RC_PREFIX}")
+
+        set(DEFAULT_NSIS_RC_PATH "${FWCMAKE_RESOURCE_PATH}/install/windows/NSIS/rc/")
+
+        # Clear variables otherwise they are not evaluated when we modify PROJECTS_TO_INSTALL
+        unset(CPACK_PACKAGE_ICON CACHE)
+        unset(CPACK_NSIS_WELCOMEFINISH_IMAGE CACHE)
+        unset(CPACK_NSIS_MUI_ICON CACHE)
+        unset(CPACK_NSIS_MUI_UNIICON CACHE)
+        unset(CPACK_RESOURCE_FILE_LICENSE CACHE)
+
+        find_file(CPACK_PACKAGE_ICON "banner_nsis.bmp" PATHS
+                  "${CMAKE_CURRENT_SOURCE_DIR}/rc/NSIS/" ${DEFAULT_NSIS_RC_PATH}
+                  NO_SYSTEM_ENVIRONMENT_PATH)
+        find_file(CPACK_NSIS_WELCOMEFINISH_IMAGE "dialog_nsis.bmp" PATHS
+                  "${CMAKE_CURRENT_SOURCE_DIR}/rc/NSIS/" ${DEFAULT_NSIS_RC_PATH}
+                  NO_SYSTEM_ENVIRONMENT_PATH)
+        find_file(CPACK_NSIS_MUI_ICON "${ICON_FILENAME}" "app.ico" PATHS
+                  "${CMAKE_CURRENT_SOURCE_DIR}/rc/" ${DEFAULT_NSIS_RC_PATH}
+                  NO_SYSTEM_ENVIRONMENT_PATH)
+        find_file(CPACK_NSIS_MUI_UNIICON "${ICON_FILENAME}" "app.ico" PATHS
+                  "${CMAKE_CURRENT_SOURCE_DIR}/rc/" ${DEFAULT_NSIS_RC_PATH}
+                  NO_SYSTEM_ENVIRONMENT_PATH)
+        find_file(CPACK_RESOURCE_FILE_LICENSE "license.rtf" PATHS
+                  "${CMAKE_CURRENT_SOURCE_DIR}/rc/NSIS/" ${DEFAULT_NSIS_RC_PATH}
+                  NO_SYSTEM_ENVIRONMENT_PATH)
+
+        # Extract the icon found for the installer and use it for every shortcut (Start menu, Desktop and Uninstall)
+        # The output variable is used in our NSIS.template
+        string(REGEX REPLACE ".*\/(.*)" "\\1" CPACK_NSIS_FW4SPL_APP_ICON ${CPACK_NSIS_MUI_ICON})
+
+        string(REPLACE "/" "\\\\" CPACK_PACKAGE_ICON ${CPACK_PACKAGE_ICON})
+        string(REPLACE "/" "\\\\" CPACK_NSIS_WELCOMEFINISH_IMAGE ${CPACK_NSIS_WELCOMEFINISH_IMAGE})
+        string(REPLACE "/" "\\\\" CPACK_NSIS_MUI_ICON ${CPACK_NSIS_MUI_ICON})
+        string(REPLACE "/" "\\\\" CPACK_NSIS_MUI_UNIICON ${CPACK_NSIS_MUI_UNIICON})
+        string(REPLACE "/" "\\\\" CPACK_RESOURCE_FILE_LICENSE ${CPACK_RESOURCE_FILE_LICENSE})
+
+        include(CPack)
     endif()
-
-    set(CPACK_NSIS_ENABLE_UNINSTALL_BEFORE_INSTALL ON)
-    set(CPACK_INSTALLED_DIRECTORIES "${CMAKE_INSTALL_PREFIX};.") #look inside install dir for packaging
-
-    set(CPACK_PACKAGE_VENDOR "Sight")
-    set(CPACK_NSIS_URL_INFO_ABOUT "https://github.com/fw4spl-org")
-    set(CPACK_NSIS_CONTACT "fw4spl@gmail.com")
-
-    set(CPACK_PACKAGE_NAME "${PRJ_NAME}")
-    set(CPACK_NSIS_PACKAGE_NAME "${PRJ_NAME}-${${PRJ_NAME}_VERSION}")
-    set(CPACK_NSIS_DISPLAY_NAME "${PRJ_NAME}")
-    set(CPACK_PACKAGE_VERSION "${VERSION}")
-    set(CPACK_BUNDLE_RC_PREFIX "${FWBUNDLE_RC_PREFIX}")
-
-    set(DEFAULT_NSIS_RC_PATH "${FWCMAKE_RESOURCE_PATH}/install/windows/NSIS/rc/")
-
-    # Clear variables otherwise they are not evaluated when we modify PROJECTS_TO_INSTALL
-    unset(CPACK_PACKAGE_ICON CACHE)
-    unset(CPACK_NSIS_WELCOMEFINISH_IMAGE CACHE)
-    unset(CPACK_NSIS_MUI_ICON CACHE)
-    unset(CPACK_NSIS_MUI_UNIICON CACHE)
-    unset(CPACK_RESOURCE_FILE_LICENSE CACHE)
-
-    find_file(CPACK_PACKAGE_ICON "banner_nsis.bmp" PATHS
-              "${CMAKE_CURRENT_SOURCE_DIR}/rc/NSIS/" ${DEFAULT_NSIS_RC_PATH}
-              NO_SYSTEM_ENVIRONMENT_PATH)
-    find_file(CPACK_NSIS_WELCOMEFINISH_IMAGE "dialog_nsis.bmp" PATHS
-              "${CMAKE_CURRENT_SOURCE_DIR}/rc/NSIS/" ${DEFAULT_NSIS_RC_PATH}
-              NO_SYSTEM_ENVIRONMENT_PATH)
-    find_file(CPACK_NSIS_MUI_ICON "${ICON_FILENAME}" "app.ico" PATHS
-              "${CMAKE_CURRENT_SOURCE_DIR}/rc/" ${DEFAULT_NSIS_RC_PATH}
-              NO_SYSTEM_ENVIRONMENT_PATH)
-    find_file(CPACK_NSIS_MUI_UNIICON "${ICON_FILENAME}" "app.ico" PATHS
-              "${CMAKE_CURRENT_SOURCE_DIR}/rc/" ${DEFAULT_NSIS_RC_PATH}
-              NO_SYSTEM_ENVIRONMENT_PATH)
-    find_file(CPACK_RESOURCE_FILE_LICENSE "license.rtf" PATHS
-              "${CMAKE_CURRENT_SOURCE_DIR}/rc/NSIS/" ${DEFAULT_NSIS_RC_PATH}
-              NO_SYSTEM_ENVIRONMENT_PATH)
-
-    # Extract the icon found for the installer and use it for every shortcut (Start menu, Desktop and Uninstall)
-    # The output variable is used in our NSIS.template
-    string(REGEX REPLACE ".*\/(.*)" "\\1" CPACK_NSIS_FW4SPL_APP_ICON ${CPACK_NSIS_MUI_ICON})
-
-    string(REPLACE "/" "\\\\" CPACK_PACKAGE_ICON ${CPACK_PACKAGE_ICON})
-    string(REPLACE "/" "\\\\" CPACK_NSIS_WELCOMEFINISH_IMAGE ${CPACK_NSIS_WELCOMEFINISH_IMAGE})
-    string(REPLACE "/" "\\\\" CPACK_NSIS_MUI_ICON ${CPACK_NSIS_MUI_ICON})
-    string(REPLACE "/" "\\\\" CPACK_NSIS_MUI_UNIICON ${CPACK_NSIS_MUI_UNIICON})
-    string(REPLACE "/" "\\\\" CPACK_RESOURCE_FILE_LICENSE ${CPACK_RESOURCE_FILE_LICENSE})
-
-    include(CPack)
 
 endmacro()

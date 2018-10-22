@@ -526,6 +526,8 @@ if(BUILD_SDK)
         )
         install(
           FILES
+            "${CMAKE_SOURCE_DIR}/CMake/install/windows/template.bat.in"
+            "${CMAKE_SOURCE_DIR}/CMake/install/windows/setpath.bat.in"
             "${CMAKE_SOURCE_DIR}/CMake/install/windows/windows_fixup.cmake.in"
           DESTINATION
             ${FWCONFIG_PACKAGE_LOCATION}/install/windows
