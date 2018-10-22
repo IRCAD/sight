@@ -277,28 +277,46 @@ int main(int argc, char* argv[])
 #endif
 
     OSLM_INFO_IF( "Runtime working directory: " << rwd << " => " << ::absolute(rwd), vm.count("rwd") );
-    for(const fs::path& bundlePath :  bundlePaths )
-    {
-        OSLM_INFO_IF( "Bundle paths are: " << bundlePath.string() << " => " << ::absolute(bundlePath),
-                      vm.count("bundle-path") );
-    }
+
     OSLM_INFO_IF( "Profile path: " << profileFile << " => " << ::absolute(profileFile), vm.count("profile"));
     OSLM_INFO_IF( "Profile-args: " << profileArgs, vm.count("profile-args") );
 
     // Check if path exist
     OSLM_FATAL_IF( "Runtime working directory doesn't exist: " << rwd.string() << " => " << ::absolute(
                        rwd), !::boost::filesystem::exists(rwd.string()) );
-    for(const fs::path& bundlePath :  bundlePaths )
-    {
-        OSLM_FATAL_IF( "Bundle paths doesn't exist: " << bundlePath.string() << " => " << ::absolute(
-                           bundlePath), !::boost::filesystem::exists(bundlePath.string()) );
-    }
+
     OSLM_FATAL_IF( "Profile path doesn't exist: " << profileFile.string() << " => " << ::absolute(
                        profileFile), !::boost::filesystem::exists(profileFile.string()));
 
     std::transform( bundlePaths.begin(), bundlePaths.end(), bundlePaths.begin(), ::absolute );
     profileFile = ::absolute(profileFile);
     rwd         = ::absolute(rwd);
+
+    // Automatically adds the bundle folders where the profile.xml is located if it was not already there
+    const auto profileBundlePath = profileFile.parent_path().parent_path();
+    bool findProfileBundlePath   = false;
+    for(const fs::path& bundlePath :  bundlePaths )
+    {
+        if(profileBundlePath == bundlePath)
+        {
+            findProfileBundlePath = true;
+        }
+    }
+    if(!findProfileBundlePath)
+    {
+        bundlePaths.push_back(profileBundlePath);
+    }
+
+    for(const fs::path& bundlePath :  bundlePaths )
+    {
+        OSLM_INFO_IF( "Bundle paths are: " << bundlePath.string() << " => " << ::absolute(bundlePath),
+                      vm.count("bundle-path") );
+    }
+    for(const fs::path& bundlePath :  bundlePaths )
+    {
+        OSLM_FATAL_IF( "Bundle paths doesn't exist: " << bundlePath.string() << " => " << ::absolute(
+                           bundlePath), !::boost::filesystem::exists(bundlePath.string()) );
+    }
 
 #ifdef _WIN32
     const bool isChdirOk = static_cast<bool>(SetCurrentDirectory(rwd.string().c_str()) != 0);
