@@ -6,7 +6,11 @@ include("${CMAKE_CURRENT_LIST_DIR}/macros.cmake")
 set(_SUPPORTED_COMPONENTS @FW_COMPONENTS@)
 
 if(USE_CONAN)
-    list(APPEND CMAKE_PREFIX_PATH "${Sight_DIR}/../../..")
+    if(NOT FW_CONAN_CONFIGURED)
+        list(APPEND CMAKE_PREFIX_PATH "${Sight_DIR}/../../..")
+        add_definitions(${CONAN_DEFINES})
+        set(FW_CONAN_CONFIGURED 1)
+    endif()
 else()
     set(EXTERNAL_LIBRARIES CACHE PATH "External libraries location (if not at a default location like /usr on Linux)")
 

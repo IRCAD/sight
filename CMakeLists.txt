@@ -434,7 +434,8 @@ if(BUILD_SDK)
 
     if(USE_CONAN)
         file(APPEND "${CMAKE_BINARY_DIR}/cmake/SightRequirements.cmake"
-             "set(USE_CONAN 1)\n")
+             "set(USE_CONAN 1)\n"
+             "set(CONAN_DEFINES ${CONAN_DEFINES})\n")
     endif()
 
     # Install the SightConfig.cmake and SightConfigVersion.cmake
