@@ -82,8 +82,7 @@ macro(linux_install PRJ_NAME)
             configure_file(${FWCMAKE_RESOURCE_PATH}/install/linux/linux_fixup.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/linux_fixup.cmake @ONLY)
             install(SCRIPT ${CMAKE_CURRENT_BINARY_DIR}/linux_fixup.cmake)
         else()
-            installConanDepsForSDK("${CONAN_DEPS_LIST}")
-
+            installConanDepsForSDK()
         endif()
 
         set(CPACK_OUTPUT_FILE_PREFIX packages)

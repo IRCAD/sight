@@ -41,7 +41,7 @@ macro(installConanDeps CONAN_DEPS_LIST)
 
 endmacro()
 
-macro(installConanDepsForSDK CONAN_DEPS_LIST)
+macro(installConanDepsForSDK)
 
     foreach(CONAN_DEP ${CONAN_DEPENDENCIES})
         string(REGEX REPLACE "([^\/]*)/.*" "\\1" CONAN_REQUIREMENT ${CONAN_DEP})
