@@ -97,9 +97,9 @@ void SImageText::updating()
         ::fwDataTools::helper::Image imageHelper(image);
         ::fwData::Integer::sptr indexesPtr[3];
         m_helperImg.getSliceIndex(indexesPtr);
-        size_t axialIndex    = static_cast<size_t>(indexesPtr[2]->value());
-        size_t frontalIndex  = static_cast<size_t>(indexesPtr[1]->value());
-        size_t sagittalIndex = static_cast<size_t>(indexesPtr[0]->value());
+        const size_t axialIndex    = static_cast<size_t>(indexesPtr[2]->value());
+        const size_t frontalIndex  = static_cast<size_t>(indexesPtr[1]->value());
+        const size_t sagittalIndex = static_cast<size_t>(indexesPtr[0]->value());
 
         const ::fwData::TransferFunction::csptr tf = m_helperTF.getTransferFunction();
         const ::fwData::mt::ObjectReadLock tfLock(tf);

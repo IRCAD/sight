@@ -59,7 +59,7 @@ class VISUVTKADAPTOR_CLASS_API SImage : public ::fwRenderVTK::IAdaptor
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SImage)(::fwRenderVTK::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (SImage)(::fwRenderVTK::IAdaptor) )
 
     VISUVTKADAPTOR_API SImage() noexcept;
 
@@ -71,28 +71,28 @@ public:
 
     //------------------------------------------------------------------------------
 
-    inline void setVtkImageRegisterId(std::string id)
+    void setVtkImageRegisterId(std::string id)
     {
         m_imageRegisterId = id;
     }
 
     //------------------------------------------------------------------------------
 
-    inline void setVtkImageRegister(vtkObject* obj)
+    void setVtkImageRegister(vtkObject* obj)
     {
         m_imageRegister = obj;
     }
 
     //------------------------------------------------------------------------------
 
-    inline void setImageOpacity(double opacity)
+    void setImageOpacity(double opacity)
     {
         m_imageOpacity = opacity;
     }
 
     //------------------------------------------------------------------------------
 
-    inline void setAllowAlphaInTF(bool allow)
+    void setAllowAlphaInTF(bool allow)
     {
         m_allowAlphaInTF = allow;
     }

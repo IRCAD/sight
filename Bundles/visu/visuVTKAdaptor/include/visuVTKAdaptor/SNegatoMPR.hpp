@@ -88,21 +88,21 @@ public:
 
     //------------------------------------------------------------------------------
 
-    inline void setAllowAlphaInTF(bool allow)
+    void setAllowAlphaInTF(bool allow)
     {
         m_allowAlphaInTF = allow;
     }
 
     //------------------------------------------------------------------------------
 
-    inline void setInterpolation(bool interpolation)
+    void setInterpolation(bool interpolation)
     {
         m_interpolation = interpolation;
     }
 
     //------------------------------------------------------------------------------
 
-    inline void setVtkImageSourceId(std::string id)
+    void setVtkImageSourceId(std::string id)
     {
         m_imageSourceId = id;
     }
@@ -116,7 +116,7 @@ public:
     VISUVTKADAPTOR_API void set3dMode( bool enabled );
 
     /// Set actor opacity
-    inline void setActorOpacity(double actorOpacity)
+    void setActorOpacity(double actorOpacity)
     {
         m_actorOpacity = actorOpacity;
     }

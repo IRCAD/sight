@@ -143,11 +143,11 @@ void SSliceFollowerCamera::initializeCamera()
         const int orientationToAxe[3] = { 2, 2, 1 };
         double imageSize[3];
         m_helper.getImageSize(imageSize);
-        int orientation = orientationToAxe [m_helper.getOrientation()];
-        double size     = imageSize[ orientation ];
+        const int orientation = orientationToAxe [m_helper.getOrientation()];
+        const double size     = imageSize[ orientation ];
 
-        double distance = (1.1 * size)
-                          / ( std::tan( m_camera->GetViewAngle() * (vtkMath::Pi() / 180.0) ) );
+        const double distance = (1.1 * size)
+                                / ( std::tan( m_camera->GetViewAngle() * (vtkMath::Pi() / 180.0) ) );
 
         m_camera->ParallelProjectionOn();
         setVtkPipelineModified();

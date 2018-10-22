@@ -208,7 +208,7 @@ void SNegato::updateBufferFromImage( QImage* qimg )
 //-----------------------------------------------------------------------------
 
 QRgb SNegato::getQImageVal(const size_t index, const short* buffer, double wlMin, double tfWin,
-                           const fwData::TransferFunction::csptr& tf)
+                           const ::fwData::TransferFunction::csptr& tf)
 {
     const short val16 = buffer[index];
 

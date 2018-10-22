@@ -901,7 +901,7 @@ void STransferFunction::doubleClickEvent( ::fwRenderQt::data::Event& _event)
         ::fwData::TransferFunction::TFDataType::iterator prevTFPointIt = nextTFPointIt;
         --prevTFPointIt;
 
-        // Check if the new point is not placed on an alWritey existing point
+        // Check if the new point is not placed on an already existing point
         if ( (values.first != (*nextTFPointIt).first) && (values.first != (*prevTFPointIt).first) )
         {
             // Calculate the relative position of the event between the 2 encompassing points

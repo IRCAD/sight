@@ -6,8 +6,6 @@
 
 #include "fwDataTools/helper/MedicalImageAdaptor.hpp"
 
-#include "fwCore/macros.hpp"
-
 #include "fwDataTools/fieldHelper/Image.hpp"
 #include "fwDataTools/fieldHelper/MedicalImageHelpers.hpp"
 #include "fwDataTools/helper/Composite.hpp"
@@ -17,6 +15,8 @@
 #include <fwCom/Slot.hxx>
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
+
+#include <fwCore/macros.hpp>
 
 #include <fwData/Image.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
