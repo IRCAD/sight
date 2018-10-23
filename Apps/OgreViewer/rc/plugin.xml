@@ -33,8 +33,8 @@
             <object uid="image_UID" type="::fwData::Image" />
             <object uid="mask_UID" type="::fwData::Image" />
             <object uid="landmarks_UID" type="::fwData::Landmarks" />
-            <object uid="imageTF_UID" type="::fwData::TransferFunction" src="deferred" />
-            <object uid="maskTF_UID" type="::fwData::TransferFunction" src="deferred" />
+            <object uid="volumeTF_UID" type="::fwData::TransferFunction" src="deferred" />
+            <object uid="CSGTF_UID" type="::fwData::TransferFunction" src="deferred" />
 
             <!-- ******************************* UI declaration *********************************** -->
 
@@ -98,8 +98,8 @@
                         <view caption="Compositor manager" />
                         <view caption="Organ manager" selected="yes" />
                         <view caption="Light manager" />
-                        <view caption="image TF manager" />
-                        <view caption="mask TF manager" />
+                        <view caption="volume TF manager" />
+                        <view caption="csg TF manager" />
                         <view caption="IDVR manager" />
                     </layout>
                 </gui>
@@ -107,8 +107,8 @@
                     <view sid="compositorView" start="yes" />
                     <view wid="organView" start="yes" />
                     <view wid="lightView" start="yes" />
-                    <view wid="imageTFVView" start="yes" />
-                    <view wid="maskTFVView" start="yes" />
+                    <view wid="volumeTFVView" start="yes" />
+                    <view wid="CSGTFVView" start="yes" />
                     <view wid="idvrView" start="yes" />
                 </registry>
             </service>
@@ -196,8 +196,8 @@
                 <appConfig id="OgreGenericScene" />
                 <inout key="modelSeries_UID" uid="modelSeries_UID" />
                 <inout key="image_UID" uid="image_UID" />
-                <inout key="imageTF_UID" uid="imageTF_UID" optional="yes" />
-                <inout key="maskTF_UID" uid="maskTF_UID" optional="yes" />
+                <inout key="volumeTF_UID" uid="volumeTF_UID" optional="yes" />
+                <inout key="CSGTF_UID" uid="CSGTF_UID" optional="yes" />
                 <inout key="mask_UID" uid="mask_UID" />
                 <inout key="landmarks_UID" uid="landmarks_UID" />
                 <parameter replace="WID_PARENT" by="OgreSceneView" />
@@ -211,7 +211,7 @@
             <service uid="cfgOgreNegato2D" type="::fwServices::SConfigController" >
                 <appConfig id="OgreNegato2D" />
                 <inout key="image_UID" uid="image_UID" />
-                <inout key="TF_UID" uid="imageTF_UID" optional="yes" />
+                <inout key="TF_UID" uid="volumeTF_UID" optional="yes" />
                 <parameter replace="WID_PARENT" by="OgreNegato2DView" />
             </service>
 
@@ -230,15 +230,15 @@
             <service uid="cfgImageTFManager" type="::fwServices::SConfigController">
                 <appConfig id="OgreHistogramManager" />
                 <inout key="IMAGE" uid="image_UID" />
-                <inout key="TF" uid="imageTF_UID" optional="yes" />
-                <parameter replace="WID_PARENT" by="imageTFVView" />
+                <inout key="TF" uid="volumeTF_UID" optional="yes" />
+                <parameter replace="WID_PARENT" by="volumeTFVView" />
             </service>
 
             <service uid="cfgMaskTFManager" type="::fwServices::SConfigController">
                 <appConfig id="OgreHistogramManager" />
                 <inout key="IMAGE" uid="image_UID" />
-                <inout key="TF" uid="maskTF_UID" optional="yes" />
-                <parameter replace="WID_PARENT" by="maskTFVView" />
+                <inout key="TF" uid="CSGTF_UID" optional="yes" />
+                <parameter replace="WID_PARENT" by="CSGTFVView" />
             </service>
 
             <service uid="cfgIDVRManager"  type="::fwServices::SConfigController">

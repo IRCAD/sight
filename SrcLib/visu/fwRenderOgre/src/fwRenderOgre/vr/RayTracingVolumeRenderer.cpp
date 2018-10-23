@@ -117,14 +117,14 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
                                                    Layer::sptr layer,
                                                    ::Ogre::SceneNode* parentNode,
                                                    ::Ogre::TexturePtr imageTexture,
-                                                   const TransferFunction::sptr& gpuTF,
+                                                   const TransferFunction::sptr& gpuVolumeTF,
                                                    PreIntegrationTable& preintegrationTable,
                                                    bool ambientOcclusion,
                                                    bool colorBleeding,
                                                    bool shadows,
                                                    double aoFactor,
                                                    double colorBleedingFactor) :
-    IVolumeRenderer(parentId, layer->getSceneManager(), parentNode, imageTexture, gpuTF, preintegrationTable),
+    IVolumeRenderer(parentId, layer->getSceneManager(), parentNode, imageTexture, gpuVolumeTF, preintegrationTable),
     m_entryPointGeometry(nullptr),
     m_proxyGeometry(nullptr),
     m_imageSize(::fwData::Image::SizeType({ 1, 1, 1 })),
@@ -253,7 +253,7 @@ void RayTracingVolumeRenderer::imageUpdate(::fwData::Image::sptr image, ::fwData
         auto technique = material->getTechnique(0);
         SLM_ASSERT("Technique not found", technique);
         auto pass = technique->getPass(0);
-        m_gpuTF.lock()->bind(pass, s_TF_TEXUNIT_NAME, m_RTVSharedParameters);
+        m_gpuVolumeTF.lock()->bind(pass, s_TF_TEXUNIT_NAME, m_RTVSharedParameters);
     }
 }
 
@@ -268,7 +268,7 @@ void RayTracingVolumeRenderer::tfUpdate(fwData::TransferFunction::sptr)
         auto technique = material->getTechnique(0);
         SLM_ASSERT("Technique not found", technique);
         auto pass = technique->getPass(0);
-        m_gpuTF.lock()->bind(pass, s_TF_TEXUNIT_NAME, m_RTVSharedParameters);
+        m_gpuVolumeTF.lock()->bind(pass, s_TF_TEXUNIT_NAME, m_RTVSharedParameters);
     }
     m_proxyGeometry->computeGrid();
 }
@@ -429,7 +429,7 @@ void RayTracingVolumeRenderer::setRayCastingPassTextureUnits(Ogre::Pass* _rayCas
     }
     else
     {
-        auto gpuTF = m_gpuTF.lock();
+        auto gpuTF = m_gpuVolumeTF.lock();
         texUnitState = _rayCastingPass->createTextureUnitState();
         texUnitState->setName(s_TF_TEXUNIT_NAME);
         gpuTF->bind(_rayCastingPass, texUnitState->getName(), fpParams);
@@ -628,7 +628,7 @@ void RayTracingVolumeRenderer::initEntryPoints()
 
     m_proxyGeometry = ::fwRenderOgre::vr::GridProxyGeometry::New(this->m_parentId + "_GridProxyGeometry",
                                                                  m_sceneManager, m_3DOgreTexture,
-                                                                 m_gpuTF.lock(), "RayEntryPoints");
+                                                                 m_gpuVolumeTF.lock(), "RayEntryPoints");
 
     m_proxyGeometry->setRenderQueueGroup(s_PROXY_GEOMETRY_RQ_GROUP);
     m_volumeSceneNode->attachObject(m_proxyGeometry);

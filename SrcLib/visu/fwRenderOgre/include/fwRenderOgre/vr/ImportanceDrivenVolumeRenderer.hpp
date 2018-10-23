@@ -41,8 +41,8 @@ public:
                                                     ::Ogre::SceneNode* _parentNode,
                                                     ::Ogre::TexturePtr _imageTexture,
                                                     ::Ogre::TexturePtr _maskTexture,
-                                                    const TransferFunction::sptr& _gpuImageTF,
-                                                    const TransferFunction::sptr& _gpuMaskTF,
+                                                    const TransferFunction::sptr& _gpuVolumeTF,
+                                                    const TransferFunction::sptr& _gpuCSGTF,
                                                     PreIntegrationTable& _preintegrationTable,
                                                     bool _ambientOcclusion,
                                                     bool _colorBleeding,
@@ -212,7 +212,7 @@ private:
     std::vector< ::Ogre::CompositorInstance::Listener*> m_compositorListeners;
 
     /// TF texture used for IDVR rendering.
-    TransferFunction::wptr m_gpuMaskTF;
+    TransferFunction::wptr m_gpuCSGTF;
 
 };
 

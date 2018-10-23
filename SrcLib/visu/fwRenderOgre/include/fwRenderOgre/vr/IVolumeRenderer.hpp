@@ -121,7 +121,7 @@ protected:
     ::Ogre::TexturePtr m_3DOgreTexture;
 
     /// TF texture used for rendering.
-    TransferFunction::wptr m_gpuTF;
+    TransferFunction::wptr m_gpuVolumeTF;
 
     /// Pre-integration table.
     PreIntegrationTable& m_preIntegrationTable;

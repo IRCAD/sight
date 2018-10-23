@@ -130,15 +130,15 @@ ImportanceDrivenVolumeRenderer::ImportanceDrivenVolumeRenderer(std::string _pare
                                                                ::Ogre::SceneNode* _parentNode,
                                                                ::Ogre::TexturePtr _imageTexture,
                                                                ::Ogre::TexturePtr _maskTexture,
-                                                               const TransferFunction::sptr& _gpuImageTF,
-                                                               const TransferFunction::sptr& _gpuMaskTF,
+                                                               const TransferFunction::sptr& _gpuVolumeTF,
+                                                               const TransferFunction::sptr& _gpuCSGTF,
                                                                PreIntegrationTable& _preintegrationTable,
                                                                bool _ambientOcclusion,
                                                                bool _colorBleeding,
                                                                bool _shadows,
                                                                double _aoFactor,
                                                                double _colorBleedingFactor) :
-    fwRenderOgre::vr::RayTracingVolumeRenderer(_parentId, _layer, _parentNode, _imageTexture, _gpuImageTF,
+    fwRenderOgre::vr::RayTracingVolumeRenderer(_parentId, _layer, _parentNode, _imageTexture, _gpuVolumeTF,
                                                _preintegrationTable, _ambientOcclusion, _colorBleeding, _shadows,
                                                _aoFactor, _colorBleedingFactor),
     m_maskTexture(_maskTexture),
@@ -162,7 +162,7 @@ ImportanceDrivenVolumeRenderer::ImportanceDrivenVolumeRenderer(std::string _pare
     m_idvrVPImCAlphaCorrection(0.3f),
     m_idvrMaskRayEntriesCompositor(s_IMPORTANCE_MASK_ENTRY_POINTS_COMPOSITOR, s_PROXY_GEOMETRY_RQ_GROUP,
                                    Layer::StereoModeType::NONE, false),
-    m_gpuMaskTF(_gpuMaskTF)
+    m_gpuCSGTF(_gpuCSGTF)
 {
     m_RTVSharedParameters->addConstantDefinition("u_csgAngleCos", ::Ogre::GCT_FLOAT1);
     m_RTVSharedParameters->addConstantDefinition("u_csgBorderThickness", ::Ogre::GCT_FLOAT1);
@@ -759,12 +759,12 @@ void ImportanceDrivenVolumeRenderer::setRayCastingPassTextureUnits(Ogre::Pass* _
 
         fpParams->setNamedConstant("u_" + s_JUMP_FLOOD_ALGORITHM_TEXTURE, nbTexUnits++);
 
-        auto gpuTF = m_gpuMaskTF.lock();
+        auto gpuTF = m_gpuCSGTF.lock();
         texUnitState = _rayCastingPass->createTextureUnitState();
-        texUnitState->setName("maskTransferFunction");
-        gpuTF->bind(_rayCastingPass, texUnitState->getName(), fpParams, "u_maskTFWindow");
+        texUnitState->setName("cgsTransferFunction");
+        gpuTF->bind(_rayCastingPass, texUnitState->getName(), fpParams, "u_cgsTFWindow");
 
-        fpParams->setNamedConstant("u_maskTFTexture", nbTexUnits++);
+        fpParams->setNamedConstant("u_cgsTFTexture", nbTexUnits++);
     }
 
     // Alpha Correction: AImC | VPImC

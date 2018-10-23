@@ -75,8 +75,8 @@ static const ::fwServices::IService::KeyType s_MASK_INOUT            = "mask";
 //-----------------------------------------------------------------------------
 
 SVolumeRender::SVolumeRender() noexcept :
-    m_helperImageTF(std::bind(&SVolumeRender::updateImageTF, this)),
-    m_helperMaskTF(std::bind(&SVolumeRender::updateMaskTF, this))
+    m_helperVolumeTF(std::bind(&SVolumeRender::updateImageTF, this)),
+    m_helperCSGTF(std::bind(&SVolumeRender::updateMaskTF, this))
 {
     /// Handle connections between the layer and the volume renderer.
     ::fwCom::helper::SigSlotConnection m_volumeConnection;
@@ -150,11 +150,11 @@ void SVolumeRender::updateImageTF()
 {
     this->getRenderService()->makeCurrent();
 
-    ::fwData::TransferFunction::sptr tf = m_helperImageTF.getTransferFunction();
+    ::fwData::TransferFunction::sptr tf = m_helperVolumeTF.getTransferFunction();
     {
         ::fwData::mt::ObjectWriteLock tfLock(tf);
 
-        m_gpuImageTF->updateTexture(tf);
+        m_gpuVolumeTF->updateTexture(tf);
 
         if(m_preIntegratedRendering)
         {
@@ -177,11 +177,11 @@ void SVolumeRender::updateMaskTF()
 {
     this->getRenderService()->makeCurrent();
 
-    ::fwData::TransferFunction::sptr tf = m_helperMaskTF.getTransferFunction();
+    ::fwData::TransferFunction::sptr tf = m_helperCSGTF.getTransferFunction();
     {
         ::fwData::mt::ObjectWriteLock tfLock(tf);
 
-        m_gpuMaskTF->updateTexture(tf);
+        m_gpuCSGTF->updateTexture(tf);
 
 //        TODO
 //        if(m_preIntegratedRendering)
@@ -224,19 +224,19 @@ void SVolumeRender::starting()
 
     this->getRenderService()->makeCurrent();
 
-    m_gpuImageTF = std::make_shared< ::fwRenderOgre::TransferFunction>();
+    m_gpuVolumeTF = std::make_shared< ::fwRenderOgre::TransferFunction>();
     //DONE
-    m_gpuMaskTF = std::make_shared< ::fwRenderOgre::TransferFunction>();
+    m_gpuCSGTF = std::make_shared< ::fwRenderOgre::TransferFunction>();
 
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("inout '" + s_IMAGE_INOUT +"' is missing.", image);
 
     ::fwData::TransferFunction::sptr imageTF = this->getInOut< ::fwData::TransferFunction>(s_TF_IMAGE_INOUT);
-    m_helperImageTF.setOrCreateTF(imageTF, image);
+    m_helperVolumeTF.setOrCreateTF(imageTF, image);
 
     //DONE
     ::fwData::TransferFunction::sptr maskTF = this->getInOut< ::fwData::TransferFunction>(s_TF_MASK_INOUT);
-    m_helperMaskTF.setOrCreateTF(maskTF, image);
+    m_helperCSGTF.setOrCreateTF(maskTF, image);
 
     m_sceneManager = this->getSceneManager();
 
@@ -263,9 +263,9 @@ void SVolumeRender::starting()
         ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
         true);
 
-    m_gpuImageTF->createTexture(this->getID() + "_imageGpuTF");
+    m_gpuVolumeTF->createTexture(this->getID() + "_imageGpuTF");
     //DONE
-    m_gpuMaskTF->createTexture(this->getID() + "_maskGpuTF");
+    m_gpuCSGTF->createTexture(this->getID() + "_maskGpuTF");
 
     m_preIntegrationTable.createTexture(this->getID());
 
@@ -276,8 +276,8 @@ void SVolumeRender::starting()
                                                                               m_volumeSceneNode,
                                                                               m_3DOgreTexture,
                                                                               m_maskTexture,
-                                                                              m_gpuImageTF,
-                                                                              m_gpuMaskTF,
+                                                                              m_gpuVolumeTF,
+                                                                              m_gpuCSGTF,
                                                                               m_preIntegrationTable,
                                                                               m_ambientOcclusion,
                                                                               m_colorBleeding);
@@ -292,9 +292,9 @@ void SVolumeRender::starting()
         this->newMask();
     }
 
-    m_gpuImageTF->setSampleDistance(m_volumeRenderer->getSamplingRate());
+    m_gpuVolumeTF->setSampleDistance(m_volumeRenderer->getSamplingRate());
     //DONE
-    m_gpuMaskTF->setSampleDistance(m_volumeRenderer->getSamplingRate());
+    m_gpuCSGTF->setSampleDistance(m_volumeRenderer->getSamplingRate());
 
     m_volumeRenderer->setPreIntegratedRendering(m_preIntegratedRendering);
 
@@ -328,9 +328,9 @@ void SVolumeRender::stopping()
 {
     this->getRenderService()->makeCurrent();
 
-    m_helperImageTF.removeTFConnections();
+    m_helperVolumeTF.removeTFConnections();
     //DONE
-    m_helperMaskTF.removeTFConnections();
+    m_helperCSGTF.removeTFConnections();
 
     m_volumeConnection.disconnect();
     delete m_volumeRenderer;
@@ -348,9 +348,9 @@ void SVolumeRender::stopping()
     ::Ogre::TextureManager::getSingleton().remove(m_maskTexture->getHandle());
     m_maskTexture.reset();
 
-    m_gpuImageTF.reset();
+    m_gpuVolumeTF.reset();
     //DONE
-    m_gpuMaskTF.reset();
+    m_gpuCSGTF.reset();
 
     m_preIntegrationTable.removeTexture();
 
@@ -375,7 +375,7 @@ void SVolumeRender::swapping(const KeyType& key)
     if (key == s_TF_IMAGE_INOUT)
     {
         ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_IMAGE_INOUT);
-        m_helperImageTF.setOrCreateTF(tf, image);
+        m_helperVolumeTF.setOrCreateTF(tf, image);
 
         this->updateImageTF();
     }
@@ -383,7 +383,7 @@ void SVolumeRender::swapping(const KeyType& key)
     else if (key == s_TF_MASK_INOUT)
     {
         ::fwData::TransferFunction::sptr maskTF = this->getInOut< ::fwData::TransferFunction>(s_TF_MASK_INOUT);
-        m_helperMaskTF.setOrCreateTF(maskTF, image);
+        m_helperCSGTF.setOrCreateTF(maskTF, image);
         this->updateMaskTF();
     }
 }
@@ -421,12 +421,12 @@ void SVolumeRender::updateImage()
 
     ::fwRenderOgre::Utils::convertImageForNegato(m_3DOgreTexture.get(), image);
 
-    m_helperImageTF.createTransferFunction(image);
+    m_helperVolumeTF.createTransferFunction(image);
 
-    ::fwData::TransferFunction::sptr imageTF = m_helperImageTF.getTransferFunction();
+    ::fwData::TransferFunction::sptr imageTF = m_helperVolumeTF.getTransferFunction();
     {
         ::fwData::mt::ObjectWriteLock tfLock(imageTF);
-        m_gpuImageTF->updateTexture(imageTF);
+        m_gpuVolumeTF->updateTexture(imageTF);
 
         if(m_preIntegratedRendering)
         {
@@ -451,12 +451,12 @@ void SVolumeRender::updateImage()
     }
 
     //DONE
-    m_helperMaskTF.createTransferFunction(image);
+    m_helperCSGTF.createTransferFunction(image);
 
-    ::fwData::TransferFunction::sptr maskTF = m_helperMaskTF.getTransferFunction();
+    ::fwData::TransferFunction::sptr maskTF = m_helperCSGTF.getTransferFunction();
     {
         ::fwData::mt::ObjectWriteLock tfLock(maskTF);
-        m_gpuMaskTF->updateTexture(maskTF);
+        m_gpuCSGTF->updateTexture(maskTF);
 
 //        TODO
 //        if(m_preIntegratedRendering)
@@ -514,9 +514,9 @@ void SVolumeRender::updateSampling(int nbSamples)
     m_nbSamples = static_cast<std::uint16_t>(nbSamples);
 
     m_volumeRenderer->setSampling(m_nbSamples);
-    m_gpuImageTF->setSampleDistance(m_volumeRenderer->getSamplingRate());
+    m_gpuVolumeTF->setSampleDistance(m_volumeRenderer->getSamplingRate());
     //DONE
-    m_gpuMaskTF->setSampleDistance(m_volumeRenderer->getSamplingRate());
+    m_gpuCSGTF->setSampleDistance(m_volumeRenderer->getSamplingRate());
 
     if(m_ambientOcclusion || m_colorBleeding || m_shadows)
     {
@@ -526,7 +526,7 @@ void SVolumeRender::updateSampling(int nbSamples)
     if(m_preIntegratedRendering)
     {
         {
-            ::fwData::TransferFunction::sptr imageTF = m_helperImageTF.getTransferFunction();
+            ::fwData::TransferFunction::sptr imageTF = m_helperVolumeTF.getTransferFunction();
             ::fwData::mt::ObjectWriteLock tfLock(imageTF);
             m_preIntegrationTable.tfUpdate(imageTF, m_volumeRenderer->getSamplingRate());
         }
@@ -597,7 +597,7 @@ void SVolumeRender::updateSatSizeRatio(int sizeRatio)
             SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
 
             {
-                ::fwData::TransferFunction::sptr imageTF = m_helperImageTF.getTransferFunction();
+                ::fwData::TransferFunction::sptr imageTF = m_helperVolumeTF.getTransferFunction();
                 ::fwData::mt::ObjectWriteLock tfLock(imageTF);
                 m_volumeRenderer->imageUpdate(image, imageTF);
             }
@@ -701,7 +701,7 @@ void SVolumeRender::togglePreintegration(bool preintegration)
         SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
 
         {
-            ::fwData::TransferFunction::sptr imageTF = m_helperImageTF.getTransferFunction();
+            ::fwData::TransferFunction::sptr imageTF = m_helperVolumeTF.getTransferFunction();
             ::fwData::mt::ObjectWriteLock tfLock(imageTF);
             m_volumeRenderer->imageUpdate(image, imageTF);
             m_preIntegrationTable.tfUpdate(imageTF, m_volumeRenderer->getSamplingRate());
@@ -1096,7 +1096,7 @@ void SVolumeRender::updateVolumeIllumination()
 {
     this->getRenderService()->makeCurrent();
 
-    m_illum->SATUpdate(m_3DOgreTexture, m_gpuImageTF, m_volumeRenderer->getSamplingRate());
+    m_illum->SATUpdate(m_3DOgreTexture, m_gpuVolumeTF, m_volumeRenderer->getSamplingRate());
 
     m_volumeRenderer->setIlluminationVolume(m_illum);
 }
@@ -1160,7 +1160,7 @@ void SVolumeRender::toggleVREffect(::visuOgreAdaptor::SVolumeRender::VREffectTyp
         if(m_preIntegratedRendering)
         {
             {
-                ::fwData::TransferFunction::sptr imageTF = m_helperImageTF.getTransferFunction();
+                ::fwData::TransferFunction::sptr imageTF = m_helperVolumeTF.getTransferFunction();
                 ::fwData::mt::ObjectWriteLock tfLock(imageTF);
                 m_volumeRenderer->imageUpdate(image, imageTF);
             }

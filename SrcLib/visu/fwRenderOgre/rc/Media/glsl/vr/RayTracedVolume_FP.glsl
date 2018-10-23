@@ -9,8 +9,8 @@ uniform sampler2D u_IC;
 #endif
 #if IDVR == 1
 uniform sampler2D u_JFA;
-uniform vec2 u_maskTFWindow;
-uniform sampler1D u_maskTFTexture;
+uniform vec2 u_cgsTFWindow;
+uniform sampler1D u_cgsTFTexture;
 #endif
 #if IDVR == 2 || IDVR == 3
 uniform sampler3D u_mask;
@@ -96,9 +96,9 @@ vec4 sampleTransferFunction(float intensity);
 vec4 sampleIDVRTransferFunction(float intensity)
 {
     float intIntensity = intensity * 65535.f - 32768.f;
-    float scaledValue = ((intIntensity - u_maskTFWindow.x) / (u_maskTFWindow.y - u_maskTFWindow.x));
+    float scaledValue = ((intIntensity - u_cgsTFWindow.x) / (u_cgsTFWindow.y - u_cgsTFWindow.x));
 
-    return texture(u_maskTFTexture, scaledValue);
+    return texture(u_cgsTFTexture, scaledValue);
 }
 #endif
 
@@ -482,7 +482,6 @@ void main(void)
         vec3 scaledEntry = rayEntry * normSpacing;
         vec3 scaledDir   = normalize(rayDir * normSpacing);
 
-        vec3 oldEntry = rayEntry;
         bool hit = rayConeIntersection(scaledClosestPt, coneDir, u_csgAngleCos, scaledEntry, scaledDir);
 
         if(hit)

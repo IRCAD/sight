@@ -235,9 +235,9 @@ private:
     /// Updates the clipping box position from the inout clipping matrix.
     void updateClippingBox();
 
-    ::fwDataTools::helper::TransferFunction m_helperImageTF;
+    ::fwDataTools::helper::TransferFunction m_helperVolumeTF;
 
-    ::fwDataTools::helper::TransferFunction m_helperMaskTF;
+    ::fwDataTools::helper::TransferFunction m_helperCSGTF;
 
     /// Updates the inout clipping matrix from the clipping box positions.
     void updateClippingTM3D();
@@ -251,10 +251,10 @@ private:
     ::Ogre::TexturePtr m_maskTexture;
 
     /// TF texture used for rendering.
-    ::fwRenderOgre::TransferFunction::sptr m_gpuImageTF;
+    ::fwRenderOgre::TransferFunction::sptr m_gpuVolumeTF;
 
     /// TF texture used for rendering inside the IDVR.
-    ::fwRenderOgre::TransferFunction::sptr m_gpuMaskTF;
+    ::fwRenderOgre::TransferFunction::sptr m_gpuCSGTF;
 
     /// Pre-integration table.
     ::fwRenderOgre::vr::PreIntegrationTable m_preIntegrationTable;
