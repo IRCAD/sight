@@ -41,7 +41,8 @@ public:
                                                     ::Ogre::SceneNode* _parentNode,
                                                     ::Ogre::TexturePtr _imageTexture,
                                                     ::Ogre::TexturePtr _maskTexture,
-                                                    const TransferFunction::sptr& _gpuTF,
+                                                    const TransferFunction::sptr& _gpuImageTF,
+                                                    const TransferFunction::sptr& _gpuMaskTF,
                                                     PreIntegrationTable& _preintegrationTable,
                                                     bool _ambientOcclusion,
                                                     bool _colorBleeding,
@@ -209,6 +210,9 @@ private:
     /// List of all listeners associated to the VR's compositor chain.
     /// If a compositor has no listener, we store a nullptr in the corresponding entry.
     std::vector< ::Ogre::CompositorInstance::Listener*> m_compositorListeners;
+
+    /// TF texture used for IDVR rendering.
+    TransferFunction::wptr m_gpuMaskTF;
 
 };
 

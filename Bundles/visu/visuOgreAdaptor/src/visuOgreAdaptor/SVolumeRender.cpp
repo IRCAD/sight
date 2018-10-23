@@ -277,6 +277,7 @@ void SVolumeRender::starting()
                                                                               m_3DOgreTexture,
                                                                               m_maskTexture,
                                                                               m_gpuImageTF,
+                                                                              m_gpuMaskTF,
                                                                               m_preIntegrationTable,
                                                                               m_ambientOcclusion,
                                                                               m_colorBleeding);

@@ -130,14 +130,15 @@ ImportanceDrivenVolumeRenderer::ImportanceDrivenVolumeRenderer(std::string _pare
                                                                ::Ogre::SceneNode* _parentNode,
                                                                ::Ogre::TexturePtr _imageTexture,
                                                                ::Ogre::TexturePtr _maskTexture,
-                                                               const TransferFunction::sptr& _gpuTF,
+                                                               const TransferFunction::sptr& _gpuImageTF,
+                                                               const TransferFunction::sptr& _gpuMaskTF,
                                                                PreIntegrationTable& _preintegrationTable,
                                                                bool _ambientOcclusion,
                                                                bool _colorBleeding,
                                                                bool _shadows,
                                                                double _aoFactor,
                                                                double _colorBleedingFactor) :
-    fwRenderOgre::vr::RayTracingVolumeRenderer(_parentId, _layer, _parentNode, _imageTexture, _gpuTF,
+    fwRenderOgre::vr::RayTracingVolumeRenderer(_parentId, _layer, _parentNode, _imageTexture, _gpuImageTF,
                                                _preintegrationTable, _ambientOcclusion, _colorBleeding, _shadows,
                                                _aoFactor, _colorBleedingFactor),
     m_maskTexture(_maskTexture),
@@ -160,7 +161,8 @@ ImportanceDrivenVolumeRenderer::ImportanceDrivenVolumeRenderer(std::string _pare
     m_idvrAImCAlphaCorrection(0.05f),
     m_idvrVPImCAlphaCorrection(0.3f),
     m_idvrMaskRayEntriesCompositor(s_IMPORTANCE_MASK_ENTRY_POINTS_COMPOSITOR, s_PROXY_GEOMETRY_RQ_GROUP,
-                                   Layer::StereoModeType::NONE, false)
+                                   Layer::StereoModeType::NONE, false),
+    m_gpuMaskTF(_gpuMaskTF)
 {
     m_RTVSharedParameters->addConstantDefinition("u_csgAngleCos", ::Ogre::GCT_FLOAT1);
     m_RTVSharedParameters->addConstantDefinition("u_csgBorderThickness", ::Ogre::GCT_FLOAT1);
