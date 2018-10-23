@@ -138,12 +138,7 @@ void InrImageReaderService::updating()
     if( this->hasLocationDefined() )
     {
         ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(::fwIO::s_DATA_KEY);
-        if (!image)
-        {
-            FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "18.0");
-            image = this->getObject< ::fwData::Image >();
-        }
-        SLM_ASSERT("'" + ::fwIO::s_DATA_KEY + "' key is not defined", image);
+        SLM_ASSERT("The inout key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", image);
 
         if ( this->createImage( this->getFile(), image) )
         {
@@ -161,12 +156,7 @@ void InrImageReaderService::notificationOfDBUpdate()
 {
     SLM_TRACE_FUNC();
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(::fwIO::s_DATA_KEY);
-    if (!image)
-    {
-        FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "18.0");
-        image = this->getObject< ::fwData::Image >();
-    }
-    SLM_ASSERT("'" + ::fwIO::s_DATA_KEY + "' key is not defined", image);
+    SLM_ASSERT("The inout key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", image);
 
     auto sig = image->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
     {

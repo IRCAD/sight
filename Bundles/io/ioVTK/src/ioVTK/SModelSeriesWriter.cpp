@@ -140,12 +140,7 @@ void SModelSeriesWriter::updating()
     {
         // Retrieve dataStruct associated with this service
         ::fwMedData::ModelSeries::csptr modelSeries = this->getInput< ::fwMedData::ModelSeries >(::fwIO::s_DATA_KEY);
-        if (!modelSeries)
-        {
-            FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "18.0");
-            modelSeries = this->getObject< ::fwMedData::ModelSeries >();
-        }
-        SLM_ASSERT("ModelSeries is not instanced", modelSeries);
+        SLM_ASSERT("The input key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", modelSeries);
 
         ::fwGui::Cursor cursor;
         cursor.setCursor(::fwGui::ICursor::BUSY);

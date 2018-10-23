@@ -97,11 +97,7 @@ void SliceIndexPositionEditor::starting()
     layout->setContentsMargins(0, 0, 0, 0);
 
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    if (!image)
-    {
-        FW_DEPRECATED_KEY(s_IMAGE_INOUT, "inout", "18.0");
-        image = this->getObject< ::fwData::Image >();
-    }
+    SLM_ASSERT("The inout key '" + s_IMAGE_INOUT + "' is not defined.", image);
     m_helper.updateImageInfos(image);
     this->updateSliceTypeFromImg(m_helper.getOrientation());
 
@@ -157,11 +153,8 @@ void SliceIndexPositionEditor::configuring()
 void SliceIndexPositionEditor::updating()
 {
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    if (!image)
-    {
-        FW_DEPRECATED_KEY(s_IMAGE_INOUT, "inout", "18.0");
-        image = this->getObject< ::fwData::Image >();
-    }
+    SLM_ASSERT("The inout key '" + s_IMAGE_INOUT + "' is not defined.", image);
+
     bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
     m_sliceSelectorPanel->setEnable(imageIsValid);
     m_helper.updateImageInfos(image);
@@ -183,11 +176,7 @@ void SliceIndexPositionEditor::updateSliceIndex(int axial, int frontal, int sagi
     m_helper.setSliceIndex(indexes);
 
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    if (!image)
-    {
-        FW_DEPRECATED_KEY(s_IMAGE_INOUT, "inout", "18.0");
-        image = this->getObject< ::fwData::Image >();
-    }
+    SLM_ASSERT("The inout key '" + s_IMAGE_INOUT + "' is not defined.", image);
 
     ::fwData::Integer::sptr indexesPtr[3];
     m_helper.getSliceIndex(indexesPtr);
@@ -223,11 +212,7 @@ void SliceIndexPositionEditor::info( std::ostream& _sstream )
 void SliceIndexPositionEditor::updateSliceIndexFromImg()
 {
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    if (!image)
-    {
-        FW_DEPRECATED_KEY(s_IMAGE_INOUT, "inout", "18.0");
-        image = this->getObject< ::fwData::Image >();
-    }
+    SLM_ASSERT("The inout key '" + s_IMAGE_INOUT + "' is not defined.", image);
 
     if (::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
     {
@@ -255,11 +240,8 @@ void SliceIndexPositionEditor::updateSliceTypeFromImg(Orientation type )
     m_sliceSelectorPanel->setTypeSelection( static_cast< int >( type ) );
 
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    if (!image)
-    {
-        FW_DEPRECATED_KEY(s_IMAGE_INOUT, "inout", "18.0");
-        image = this->getObject< ::fwData::Image >();
-    }
+    SLM_ASSERT("The inout key '" + s_IMAGE_INOUT + "' is not defined.", image);
+
     this->updateSliceIndexFromImg();
 }
 
@@ -268,11 +250,7 @@ void SliceIndexPositionEditor::updateSliceTypeFromImg(Orientation type )
 void SliceIndexPositionEditor::sliceIndexNotification( unsigned int index)
 {
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    if (!image)
-    {
-        FW_DEPRECATED_KEY(s_IMAGE_INOUT, "inout", "18.0");
-        image = this->getObject< ::fwData::Image >();
-    }
+    SLM_ASSERT("The inout key '" + s_IMAGE_INOUT + "' is not defined.", image);
 
     std::string fieldID = *SLICE_INDEX_FIELDID[m_helper.getOrientation()];
     OSLM_ASSERT("Field "<<fieldID<<" is missing", image->getField( fieldID ));
@@ -301,11 +279,8 @@ void SliceIndexPositionEditor::sliceTypeNotification( int _type )
 
     // Fire the signal
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    if (!image)
-    {
-        FW_DEPRECATED_KEY(s_IMAGE_INOUT, "inout", "18.0");
-        image = this->getObject< ::fwData::Image >();
-    }
+    SLM_ASSERT("The inout key '" + s_IMAGE_INOUT + "' is not defined.", image);
+
     auto sig = image->signal< ::fwData::Image::SliceTypeModifiedSignalType >(
         ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG);
     {
@@ -317,31 +292,14 @@ void SliceIndexPositionEditor::sliceTypeNotification( int _type )
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsType SliceIndexPositionEditor::getObjSrvConnections() const
-{
-    KeyConnectionsType connections;
-    connections.push_back( std::make_pair( ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT ) );
-    connections.push_back( std::make_pair( ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG, s_UPDATE_SLICE_INDEX_SLOT ) );
-    connections.push_back( std::make_pair( ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG, s_UPDATE_SLICE_TYPE_SLOT ) );
-    connections.push_back( std::make_pair( ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT ) );
-
-    return connections;
-}
-
-//------------------------------------------------------------------------------
-
 ::fwServices::IService::KeyConnectionsMap SliceIndexPositionEditor::getAutoConnections() const
 {
     KeyConnectionsMap connections;
 
-    //FIXME hack to support deprecated getObject()
-    if (this->getInOut< ::fwData::Image >(s_IMAGE_INOUT))
-    {
-        connections.push(s_IMAGE_INOUT, ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
-        connections.push(s_IMAGE_INOUT, ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG, s_UPDATE_SLICE_INDEX_SLOT);
-        connections.push(s_IMAGE_INOUT, ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG, s_UPDATE_SLICE_TYPE_SLOT);
-        connections.push(s_IMAGE_INOUT, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
-    }
+    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG, s_UPDATE_SLICE_INDEX_SLOT);
+    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG, s_UPDATE_SLICE_TYPE_SLOT);
+    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
 
     return connections;
 }

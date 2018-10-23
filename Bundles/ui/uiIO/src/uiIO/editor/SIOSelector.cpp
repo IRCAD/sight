@@ -137,12 +137,9 @@ void SIOSelector::updating()
     {
         std::string classname = m_dataClassname;
 
-        // FIXME: support for old version using getObject(): all the 'in' or 'inout' keys were possible
-        if (!obj && classname.empty())
-        {
-            FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "18.0");
-            obj = this->getObject();
-        }
+        SLM_ASSERT("An inout key '" + ::fwIO::s_DATA_KEY + "' must be defined if 'class' attribute is not defined.",
+                   obj || !classname.empty());
+
         if (obj)
         {
             SLM_WARN_IF("The 'class' attribute is defined, but the object is set as 'inout', only the object classname "
@@ -156,12 +153,8 @@ void SIOSelector::updating()
     }
     else // m_mode == WRITER_MODE
     {
-        // FIXME: support for old version using getObject(): all the 'in' or 'inout' keys were possible
-        if (!obj)
-        {
-            FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "18.0");
-            obj = this->getObject();
-        }
+        SLM_ASSERT("The inout key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", obj);
+
         availableExtensionsId =
             ::fwServices::registry::ServiceFactory::getDefault()->getImplementationIdFromObjectAndType(
                 obj->getClassname(), "::fwIO::IWriter");

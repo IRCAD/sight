@@ -72,12 +72,7 @@ void SPreferences::load()
         const ::boost::filesystem::path filename   = m_prefFile.filename();
 
         ::fwData::Object::sptr data = this->getInOut< ::fwData::Object >(::fwPreferences::s_PREFERENCES_KEY);
-
-        if (!data)
-        {
-            FW_DEPRECATED_KEY(::fwPreferences::s_PREFERENCES_KEY, "inout",  "18.0");
-            data = this->getObject< ::fwData::Object >();
-        }
+        SLM_ASSERT("The inout key '" + ::fwPreferences::s_PREFERENCES_KEY + "' is not correctly set.", data);
 
         // Read atom
         ::fwZip::IReadArchive::sptr readArchive = ::fwZip::ReadDirArchive::New(folderPath.string());
@@ -105,12 +100,7 @@ void SPreferences::save()
     const ::boost::filesystem::path filename   = m_prefFile.filename();
 
     ::fwData::Object::sptr obj = this->getInOut< ::fwData::Object >(::fwPreferences::s_PREFERENCES_KEY);
-
-    if (!obj)
-    {
-        FW_DEPRECATED_KEY(::fwPreferences::s_PREFERENCES_KEY, "inout",  "18.0");
-        obj = this->getObject< ::fwData::Object >();
-    }
+    SLM_ASSERT("The inout key '" + ::fwPreferences::s_PREFERENCES_KEY + "' is not correctly set.", obj);
 
     // Mutex data lock
     ::fwDataCamp::visitor::RecursiveLock recursiveLock(obj);

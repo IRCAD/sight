@@ -197,11 +197,7 @@ void SReader::updating()
     if(this->hasLocationDefined())
     {
         ::fwData::Object::sptr data = this->getInOut< ::fwData::Object >(::fwIO::s_DATA_KEY);
-        if (!m_outputMode && !data)
-        {
-            FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "18.0");
-            data = this->getObject< ::fwData::Object >();
-        }
+        SLM_ASSERT("The inout key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", m_outputMode || data);
 
         ::fwGui::Cursor cursor;
         cursor.setCursor(::fwGui::ICursor::BUSY);
@@ -407,11 +403,8 @@ void SReader::updating()
 void SReader::notificationOfUpdate()
 {
     ::fwData::Object::sptr object = this->getInOut< ::fwData::Object >(::fwIO::s_DATA_KEY);
-    if (!object)
-    {
-        FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "18.0");
-        object = this->getObject< ::fwData::Object >();
-    }
+    SLM_ASSERT("The inout key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", object);
+
     auto sig = object->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
     {
         ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));

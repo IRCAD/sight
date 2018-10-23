@@ -276,11 +276,7 @@ SActivityLauncher::ActivityInfoContainer SActivityLauncher::getEnabledActivities
 void SActivityLauncher::updating()
 {
     ::fwData::Vector::csptr selection = this->getInput< ::fwData::Vector >(s_SERIES_INPUT);
-    if (!selection)
-    {
-        FW_DEPRECATED_KEY(s_SERIES_INPUT, "in",  "18.0");
-        selection = this->getObject< ::fwData::Vector >();
-    }
+    SLM_ASSERT("The input key '" + s_SERIES_INPUT + "' is not correctly set.", selection);
 
     bool launchAS = this->launchAS(selection);
     if (!launchAS)
@@ -319,11 +315,7 @@ void SActivityLauncher::updating()
 void SActivityLauncher::updateState()
 {
     ::fwData::Vector::csptr selection = this->getInput< ::fwData::Vector >(s_SERIES_INPUT);
-    if (!selection)
-    {
-        FW_DEPRECATED_KEY(s_SERIES_INPUT, "in",  "18.0");
-        selection = this->getObject< ::fwData::Vector >();
-    }
+    SLM_ASSERT("The input key '" + s_SERIES_INPUT + "' is not correctly set.", selection);
 
     bool isExecutable = false;
 
@@ -464,11 +456,7 @@ void SActivityLauncher::sendConfig( const ::fwActivities::registry::ActivityInfo
     }
 
     ::fwData::Vector::csptr selection = this->getInput< ::fwData::Vector >(s_SERIES_INPUT);
-    if (!selection)
-    {
-        FW_DEPRECATED_KEY(s_SERIES_INPUT, "in",  "18.0");
-        selection = this->getObject< ::fwData::Vector >();
-    }
+    SLM_ASSERT("The input key '" + s_SERIES_INPUT + "' is not correctly set.", selection);
 
     ::fwActivities::IValidator::ValidationType validation;
     validation.first = true;
@@ -608,11 +596,8 @@ SActivityLauncher::ParametersType SActivityLauncher::translateParameters( const 
 {
     ParametersType transParams = parameters;
     ::fwData::Object::csptr workingObj = this->getInput< ::fwData::Object >(s_SERIES_INPUT);
-    if (!workingObj)
-    {
-        FW_DEPRECATED_KEY(s_SERIES_INPUT, "in",  "18.0");
-        workingObj = this->getObject();
-    }
+    SLM_ASSERT("The input key '" + s_SERIES_INPUT + "' is not correctly set.", workingObj);
+
     for(ParametersType::value_type& param :  transParams)
     {
         if(param.isSeshat())
@@ -642,27 +627,12 @@ SActivityLauncher::ParametersType SActivityLauncher::translateParameters( const 
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsType SActivityLauncher::getObjSrvConnections() const
-{
-    KeyConnectionsType connections;
-    connections.push_back( std::make_pair( ::fwData::Vector::s_ADDED_OBJECTS_SIG, s_UPDATE_STATE_SLOT ) );
-    connections.push_back( std::make_pair( ::fwData::Vector::s_REMOVED_OBJECTS_SIG, s_UPDATE_STATE_SLOT ) );
-
-    return connections;
-}
-
-//------------------------------------------------------------------------------
-
 ::fwServices::IService::KeyConnectionsMap SActivityLauncher::getAutoConnections() const
 {
     KeyConnectionsMap connections;
 
-    // FIXME hack to support the use of the deprecated getObject() and getObjSrvConnections()
-    if (this->getInput< ::fwData::Object >(s_SERIES_INPUT))
-    {
-        connections.push(s_SERIES_INPUT, ::fwData::Vector::s_ADDED_OBJECTS_SIG, s_UPDATE_STATE_SLOT );
-        connections.push(s_SERIES_INPUT, ::fwData::Vector::s_REMOVED_OBJECTS_SIG, s_UPDATE_STATE_SLOT );
-    }
+    connections.push(s_SERIES_INPUT, ::fwData::Vector::s_ADDED_OBJECTS_SIG, s_UPDATE_STATE_SLOT );
+    connections.push(s_SERIES_INPUT, ::fwData::Vector::s_REMOVED_OBJECTS_SIG, s_UPDATE_STATE_SLOT );
 
     return connections;
 }

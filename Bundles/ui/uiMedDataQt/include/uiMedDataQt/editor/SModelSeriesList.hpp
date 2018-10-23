@@ -89,16 +89,6 @@ public:
     /// Destructor. Do nothing.
     UIMEDDATAQT_API virtual ~SModelSeriesList() noexcept;
 
-    /**
-     * @brief Returns proposals to connect service slots to associated object signals,
-     * this method is used for obj/srv auto connection
-     *
-     * Connect ModelSeries::s_MODIFIED_SIG to this::s_UPDATE_SLOT
-     * Connect ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG to this::s_UPDATE_SLOT
-     * Connect ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG to this::s_UPDATE_SLOT
-     */
-    UIMEDDATAQT_API virtual KeyConnectionsType getObjSrvConnections() const override;
-
 protected:
 
     ///This method launches the IEditor::starting method.

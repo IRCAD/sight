@@ -343,7 +343,7 @@
             <!-- ***************************************** Begin connections declarations    *************************************** -->
             <connect>
                 <signal>image/modified</signal>
-                <slot>updaterImageUID/addOrSwap</slot>
+                <slot>updaterImageUID/add</slot>
             </connect>
 
             <connect>
@@ -381,6 +381,7 @@
             <start uid="updaterImageUID" />
             <start uid="cam1ReaderFile" />
             <start uid="cam2ReaderFile" />
+            <start uid="medicalImageConverter" />
 
             <!-- genericScene -->
             <start uid="modelSeriesAdaptor" />

@@ -70,11 +70,7 @@ void SSeriesViewer::stopping()
 void SSeriesViewer::updating()
 {
     ::fwData::Vector::csptr vector = this->getInput< ::fwData::Vector >(s_SERIES_INPUT);
-    if (!vector)
-    {
-        FW_DEPRECATED_KEY(s_SERIES_INPUT, "in", "18.0");
-        vector = this->getObject< ::fwData::Vector >();
-    }
+    SLM_ASSERT("The input key '" + s_SERIES_INPUT + "' is not defined.", vector);
 
     if(m_configTemplateManager)
     {
@@ -179,27 +175,12 @@ void SSeriesViewer::configuring()
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsType SSeriesViewer::getObjSrvConnections() const
-{
-    KeyConnectionsType connections;
-    connections.push_back( std::make_pair( ::fwData::Vector::s_ADDED_OBJECTS_SIG, s_UPDATE_SLOT ) );
-    connections.push_back( std::make_pair( ::fwData::Vector::s_REMOVED_OBJECTS_SIG, s_UPDATE_SLOT ) );
-
-    return connections;
-}
-
-//------------------------------------------------------------------------------
-
 ::fwServices::IService::KeyConnectionsMap SSeriesViewer::getAutoConnections() const
 {
     KeyConnectionsMap connections;
 
-    // FIXME hack to support deprecated getObjSrvConnection (connection to a object with a deprecated key)
-    if (this->getInput< ::fwData::Vector >(s_SERIES_INPUT))
-    {
-        connections.push(s_SERIES_INPUT, ::fwData::Vector::s_ADDED_OBJECTS_SIG, s_UPDATE_SLOT);
-        connections.push(s_SERIES_INPUT, ::fwData::Vector::s_REMOVED_OBJECTS_SIG, s_UPDATE_SLOT);
-    }
+    connections.push(s_SERIES_INPUT, ::fwData::Vector::s_ADDED_OBJECTS_SIG, s_UPDATE_SLOT);
+    connections.push(s_SERIES_INPUT, ::fwData::Vector::s_REMOVED_OBJECTS_SIG, s_UPDATE_SLOT);
 
     return connections;
 }
