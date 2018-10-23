@@ -358,7 +358,6 @@ void MedicalImageAdaptor::installTFConnections()
 
     ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
     {
-        ::fwData::mt::ObjectWriteLock tfLock(tf);
         connection = tf->signal(::fwData::TransferFunction::s_POINTS_MODIFIED_SIG)->connect(m_slotUpdateTFPoints);
         m_tfConnections.addConnection(connection);
         connection = tf->signal(::fwData::TransferFunction::s_WINDOWING_MODIFIED_SIG)->connect(m_slotUpdateTFWindowing);
