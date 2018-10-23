@@ -285,13 +285,6 @@ void SNegato3D::changeSliceType(int /*_from*/, int _to)
     this->getRenderService()->makeCurrent();
 
     // Update TF
-    const ::fwData::TransferFunction::csptr tf = m_helperTF.getTransferFunction();
-    {
-        const ::fwData::mt::ObjectReadLock tfLock(tf);
-        this->updateTF();
-    }
-
-    // Update threshold if necessary
     this->updateTF();
 
     this->requestRender();
