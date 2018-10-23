@@ -10,6 +10,7 @@
 #include "visuVTKAdaptor/SPointList.hpp"
 
 #include <fwCom/Signal.hxx>
+#include <fwCom/Slots.hxx>
 
 #include <fwData/Point.hpp>
 #include <fwData/PointList.hpp>
@@ -37,6 +38,8 @@ namespace visuVTKAdaptor
 {
 
 static const ::fwServices::IService::KeyType s_POINTLIST_INOUT = "pointList";
+
+const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT = "updateVisibility";
 
 //------------------------------------------------------------------------------
 
@@ -187,6 +190,7 @@ SLabeledPointList::SLabeledPointList() noexcept :
     m_radius(7.0),
     m_interaction(true)
 {
+    newSlot(s_UPDATE_VISIBILITY_SLOT, &SLabeledPointList::updateVisibility, this);
 }
 
 //------------------------------------------------------------------------------
@@ -305,6 +309,33 @@ void SLabeledPointList::stopping()
     connections.push(s_POINTLIST_INOUT, ::fwData::PointList::s_POINT_REMOVED_SIG, s_UPDATE_SLOT);
 
     return connections;
+}
+
+//------------------------------------------------------------------------------
+
+void SLabeledPointList::updateVisibility( bool isVisible)
+{
+    const auto& services = this->getRegisteredServices();
+    for(const auto& service : services)
+    {
+        auto srv = ::visuVTKAdaptor::SPointList::dynamicCast(service.lock());
+        if(srv)
+        {
+            srv->updateVisibility(isVisible);
+        }
+        else
+        {
+            auto srv2 = ::visuVTKAdaptor::SPointLabel::dynamicCast(service.lock());
+            if(srv2)
+            {
+                srv2->updateVisibility(isVisible);
+            }
+            else
+            {
+                SLM_WARN("::visuVTKAdaptor::SPointLabel cast failed");
+            }
+        }
+    }
 }
 
 //------------------------------------------------------------------------------

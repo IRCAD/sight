@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VISUVTKADAPTOR_SLABELEDPOINTLIST_HPP__
-#define __VISUVTKADAPTOR_SLABELEDPOINTLIST_HPP__
+#pragma once
 
 #include "visuVTKAdaptor/config.hpp"
 
@@ -19,6 +18,9 @@ namespace visuVTKAdaptor
 {
 /**
  * @brief Adaptor to display a labeled point list
+ *
+ * @section Slots Slots
+ * - \b updateVisibility(bool) : show/hide the pointlist
  *
  * @section XML XML Configuration
  *
@@ -66,6 +68,9 @@ protected:
      */
     VISUVTKADAPTOR_API virtual KeyConnectionsMap getAutoConnections() const override;
 
+    /// Slot: update point list visibility (true = visible)
+    VISUVTKADAPTOR_API void updateVisibility( bool isVisible );
+
     vtkCommand* m_rightButtonCommand;
 
     /// Points color
@@ -79,5 +84,3 @@ protected:
 };
 
 } //namespace visuVTKAdaptor
-
-#endif // __VISUVTKADAPTOR_SLABELEDPOINTLIST_HPP__
