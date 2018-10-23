@@ -298,19 +298,11 @@ void SNegato::starting()
 {
 
     ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
-    if(tf != nullptr)
-    {
-        const ::fwData::mt::ObjectWriteLock tfLock(tf);
-        m_helperTF.setTransferFunction(tf);
-    }
-    else
-    {
-        m_helperTF.setTransferFunction(tf);
-    }
 
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     m_helperImg.updateImageInfos( image );
-    m_helperTF.createTransferFunction( image );
+
+    m_helperTF.setOrCreateTF(tf, image);
 
     m_pixmapItem = new QGraphicsPixmapItem();
     m_pixmapItem->setShapeMode( QGraphicsPixmapItem::BoundingRectShape );
@@ -326,8 +318,6 @@ void SNegato::starting()
     this->updateBufferFromImage( m_qimg );
 
     this->getScene2DRender()->updateSceneSize( 1.f );
-
-    m_helperTF.installTFConnections();
 }
 
 //-----------------------------------------------------------------------------

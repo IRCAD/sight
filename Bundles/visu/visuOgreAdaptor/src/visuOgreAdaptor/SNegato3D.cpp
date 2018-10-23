@@ -134,20 +134,11 @@ void SNegato3D::starting()
     this->initialize();
 
     ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
-    if(tf != nullptr)
-    {
-        const ::fwData::mt::ObjectWriteLock tfLock(tf);
-        m_helperTF.setTransferFunction(tf);
-    }
-    else
-    {
-        m_helperTF.setTransferFunction(tf);
-    }
 
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
 
-    m_helperTF.createTransferFunction(image);
+    m_helperTF.setOrCreateTF(tf, image);
 
     // 3D source texture instantiation
     m_3DOgreTexture = ::Ogre::dynamic_pointer_cast< ::Ogre::Texture >(
@@ -182,8 +173,6 @@ void SNegato3D::starting()
     {
         this->getRenderService()->resetCameraCoordinates(m_layerID);
     }
-
-    m_helperTF.installTFConnections();
 
     bool isValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image);
     if (isValid)
