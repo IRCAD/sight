@@ -15,7 +15,9 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/macros.cmake)
 # User options
 ########################################################################################################################
 
-option(USE_CONAN "Use Conan package manager for dependencies" OFF)
+option(USE_CONAN "Use Conan package manager for dependencies (experimental)" OFF)
+mark_as_advanced(USE_CONAN)
+
 if(USE_CONAN)
     include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/conan.cmake)
 endif()
