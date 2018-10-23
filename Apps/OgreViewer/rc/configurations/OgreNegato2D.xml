@@ -2,12 +2,12 @@
     <id>OgreNegato2D</id>
     <parameters>
         <param name="WID_PARENT" />
-        <param name="imageUID" />
-        <param name="TF" />
+        <param name="image_UID" />
+        <param name="TF_UID" />
     </parameters>
     <config>
-        <object uid="${imageUID}" type="::fwData::Image" src="ref" />
-        <object uid="${TF}" type="::fwData::TransferFunction" src="deferred" />
+        <object uid="${image_UID}" type="::fwData::Image" src="ref" />
+        <object uid="${TF_UID}" type="::fwData::TransferFunction" src="deferred" />
 
         <service uid="OgreNegato2D" type="::gui::view::SDefaultView">
             <gui>
@@ -41,8 +41,8 @@
         </service>
 
         <service uid="negato2DAdaptor" type="::visuOgreAdaptor::SNegato2D">
-            <inout key="image" uid="${imageUID}" autoConnect="yes" />
-            <inout key="tf" uid="${TF}" optional="yes" />
+            <inout key="image" uid="${image_UID}" autoConnect="yes" />
+            <inout key="tf" uid="${TF_UID}" optional="yes" />
             <config layer="default" />
         </service>
 
@@ -52,7 +52,7 @@
 
         <!-- Slice editor service -->
         <service uid="sliderIndexEditor2D" type="::uiImageQt::SliceIndexPositionEditor" autoConnect="yes">
-            <inout key="image" uid="${imageUID}" />
+            <inout key="image" uid="${image_UID}" />
             <sliceIndex>Sagittal</sliceIndex>
         </service>
 
