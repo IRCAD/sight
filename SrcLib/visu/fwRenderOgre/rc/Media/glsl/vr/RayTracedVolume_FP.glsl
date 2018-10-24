@@ -21,12 +21,12 @@ uniform vec4 u_volIllumFactor;
 
 uniform sampler2D u_entryPoints;
 
+uniform mat4 u_worldViewProj;
 #ifdef AUTOSTEREO
 uniform mat4 u_invWorldView;
 uniform mat4 u_invProj;
 #else
 uniform mat4 u_invWorldViewProj;
-uniform mat4 u_worldViewProj;
 #endif // AUTOSTEREO
 
 uniform vec3 u_cameraPos;
