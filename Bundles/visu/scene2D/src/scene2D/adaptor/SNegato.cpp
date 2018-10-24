@@ -51,12 +51,12 @@ typedef ::fwDataTools::helper::MedicalImage MedicalImage;
 //-----------------------------------------------------------------------------
 
 SNegato::SNegato() noexcept :
-    m_helperTF(std::bind(&SNegato::updateTF, this)),
     m_qimg(nullptr),
     m_pixmapItem(nullptr),
     m_layer(nullptr),
     m_pointIsCaptured(false),
-    m_changeSliceTypeAllowed(true)
+    m_changeSliceTypeAllowed(true),
+    m_helperTF(std::bind(&SNegato::updateTF, this))
 {
     newSlot(s_UPDATE_SLICE_INDEX_SLOT, &SNegato::updateSliceIndex, this);
     newSlot(s_UPDATE_SLICE_TYPE_SLOT, &SNegato::updateSliceType, this);
