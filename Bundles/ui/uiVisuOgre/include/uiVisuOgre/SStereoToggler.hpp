@@ -26,8 +26,8 @@ namespace uiVisuOgre
     </service>
  *
  * @subsection Configuration Configuration
- * - \b layer : layer in which to activate stereo rendering
- * - \b stereoMode (values=interlace|AutoStereo5|AutoStereo8): mode to activate.
+ * - \b layer : layer in which to activate stereo rendering.
+ * - \b stereoMode (values=interlaced|AutoStereo5|AutoStereo8): mode to activate.
  *
  */
 class UIVISUOGRE_CLASS_API SStereoToggler : public ::fwGui::IActionSrv
