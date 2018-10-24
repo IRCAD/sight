@@ -1,14 +1,12 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWTHREAD_WORKER_HPP__
-#define __FWTHREAD_WORKER_HPP__
+#pragma once
 
 #include <boost/any.hpp>
-#include <boost/asio/io_service.hpp>
 #include <future>
 
 #include <fwCore/base.hpp>
@@ -118,5 +116,3 @@ protected:
 } //namespace fwThread
 
 #include "fwThread/Worker.hxx"
-
-#endif //__FWTHREAD_WORKER_HPP__

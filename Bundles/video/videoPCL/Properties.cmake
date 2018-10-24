@@ -15,3 +15,7 @@ set( DEPENDENCIES
         arPreferences
 )
 set( REQUIREMENTS  )
+set( CONAN_DEPS
+    boost/1.67.0@sight/stable
+    pcl/1.8.1-rev-9dae1ea@sight/stable
+)
