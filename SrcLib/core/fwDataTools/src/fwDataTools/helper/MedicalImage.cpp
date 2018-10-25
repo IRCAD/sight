@@ -1,26 +1,17 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2018.
+ * FW4SPL - Copyright (C) IRCAD, 2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwDataTools/helper/MedicalImageAdaptor.hpp"
+#include "fwDataTools/helper/MedicalImage.hpp"
 
 #include "fwDataTools/fieldHelper/Image.hpp"
 #include "fwDataTools/fieldHelper/MedicalImageHelpers.hpp"
 #include "fwDataTools/helper/Composite.hpp"
 #include "fwDataTools/helper/Image.hpp"
 
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slot.hxx>
-#include <fwCom/Slots.hpp>
-#include <fwCom/Slots.hxx>
-
-#include <fwCore/macros.hpp>
-
 #include <fwData/Image.hpp>
-#include <fwData/mt/ObjectWriteLock.hpp>
-#include <fwData/TransferFunction.hpp>
 
 namespace fwDataTools
 {
@@ -28,28 +19,22 @@ namespace fwDataTools
 namespace helper
 {
 
-static const ::fwCom::Slots::SlotKeyType s_UPDATE_TF_POINTS_SLOT    = "updateTFPoints";
-static const ::fwCom::Slots::SlotKeyType s_UPDATE_TF_WINDOWING_SLOT = "updateTFWindowing";
-
 //------------------------------------------------------------------------------
 
-MedicalImageAdaptor::MedicalImageAdaptor() :
+MedicalImage::MedicalImage() :
     m_orientation(Z_AXIS)
 {
-    FW_DEPRECATED_MSG(
-        "fwDataTools::helper::MedicalImageAdaptor is deprecated, please use fwDataTools::helper::MedicalImage or fwDataTools::helper::TransferFunction instead",
-        19.0);
 }
 
 //------------------------------------------------------------------------------
 
-MedicalImageAdaptor::~MedicalImageAdaptor()
+MedicalImage::~MedicalImage()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void MedicalImageAdaptor::getImageSpacing(double spacing[3]) const
+void MedicalImage::getImageSpacing(double spacing[3]) const
 {
     ::fwData::Image::sptr image = this->getImage();
 
@@ -59,7 +44,7 @@ void MedicalImageAdaptor::getImageSpacing(double spacing[3]) const
 
 //------------------------------------------------------------------------------
 
-void MedicalImageAdaptor::getImageOrigin(double origin[3]) const
+void MedicalImage::getImageOrigin(double origin[3]) const
 {
     ::fwData::Image::sptr image = this->getImage();
 
@@ -68,7 +53,7 @@ void MedicalImageAdaptor::getImageOrigin(double origin[3]) const
 
 //------------------------------------------------------------------------------
 
-void MedicalImageAdaptor::getImageDataSize(int size[3]) const
+void MedicalImage::getImageDataSize(int size[3]) const
 {
     ::fwData::Image::sptr image = this->getImage();
 
@@ -78,7 +63,7 @@ void MedicalImageAdaptor::getImageDataSize(int size[3]) const
 
 //------------------------------------------------------------------------------
 
-void MedicalImageAdaptor::getImageSize(double size[3]) const
+void MedicalImage::getImageSize(double size[3]) const
 {
     ::fwData::Image::sptr image = this->getImage();
     double spacing[3];
@@ -94,7 +79,7 @@ void MedicalImageAdaptor::getImageSize(double size[3]) const
 
 //------------------------------------------------------------------------------
 
-void MedicalImageAdaptor::getCurrentSliceCenter(double center[3])
+void MedicalImage::getCurrentSliceCenter(double center[3])
 {
     ::fwData::Image::sptr image = this->getImage();
     double imageSize[3];
@@ -121,18 +106,18 @@ void MedicalImageAdaptor::getCurrentSliceCenter(double center[3])
 
 //------------------------------------------------------------------------------
 
-void MedicalImageAdaptor::setOrientation( MedicalImageAdaptor::Orientation orientation )
+void MedicalImage::setOrientation( MedicalImage::Orientation orientation )
 {
     m_orientation = orientation;
 }
 
 //------------------------------------------------------------------------------
 
-void MedicalImageAdaptor::setOrientation( int orientation )
+void MedicalImage::setOrientation( int orientation )
 {
     OSLM_ASSERT("orientation value must be  0,1 or 2 (value = " << orientation << ")",
                 orientation == 0 || orientation == 1 || orientation == 2);
-    this->setOrientation(static_cast< ::fwDataTools::helper::MedicalImageAdaptor::Orientation >(orientation));
+    this->setOrientation(static_cast< ::fwDataTools::helper::MedicalImage::Orientation >(orientation));
 }
 
 //------------------------------------------------------------------------------
@@ -143,7 +128,7 @@ static const int indexX[12]   = { 0, 2, 4, 0, 2, 5,  0, 3, 5, 0, 3, 4 };
 static const int* indexSet[3] = { indexX, indexY, indexZ  };
 //------------------------------------------------------------------------------
 
-void MedicalImageAdaptor::getPlane( double points[4][3], int sliceNumber)
+void MedicalImage::getPlane( double points[4][3], int sliceNumber)
 {
     ::fwData::Image::sptr image = this->getImage();
     double extent[6];
@@ -167,7 +152,7 @@ void MedicalImageAdaptor::getPlane( double points[4][3], int sliceNumber)
 
 //------------------------------------------------------------------------------
 
-void MedicalImageAdaptor::sliceIndexToWorld(const int index[3], double world[3] )
+void MedicalImage::sliceIndexToWorld(const int index[3], double world[3] )
 {
     double spacing[3];
     this->getImageSpacing(spacing);
@@ -181,7 +166,7 @@ void MedicalImageAdaptor::sliceIndexToWorld(const int index[3], double world[3] 
 
 //------------------------------------------------------------------------------
 
-void MedicalImageAdaptor::worldToSliceIndex(const double world[3], int index[3] )
+void MedicalImage::worldToSliceIndex(const double world[3], int index[3] )
 {
     double spacing[3];
     this->getImageSpacing(spacing);
@@ -198,7 +183,7 @@ void MedicalImageAdaptor::worldToSliceIndex(const double world[3], int index[3] 
 
 //------------------------------------------------------------------------------
 
-void MedicalImageAdaptor::worldToImageSliceIndex(const double world[3], int index[3] )
+void MedicalImage::worldToImageSliceIndex(const double world[3], int index[3] )
 {
     int imageSize[3];
     this->getImageDataSize(imageSize);
@@ -222,7 +207,7 @@ void MedicalImageAdaptor::worldToImageSliceIndex(const double world[3], int inde
 
 //------------------------------------------------------------------------------
 
-void MedicalImageAdaptor::getSliceIndex(::fwData::Integer::sptr index[3])
+void MedicalImage::getSliceIndex(::fwData::Integer::sptr index[3])
 {
     index[0] = m_sagittalIndex;
     index[1] = m_frontalIndex;
@@ -231,7 +216,7 @@ void MedicalImageAdaptor::getSliceIndex(::fwData::Integer::sptr index[3])
 
 //------------------------------------------------------------------------------
 
-bool MedicalImageAdaptor::setSliceIndex(const int index[3])
+bool MedicalImage::setSliceIndex(const int index[3])
 {
     bool isModified = false;
 
@@ -253,7 +238,7 @@ bool MedicalImageAdaptor::setSliceIndex(const int index[3])
 
 //------------------------------------------------------------------------------
 
-void MedicalImageAdaptor::updateImageInfos( ::fwData::Image::sptr image )
+void MedicalImage::updateImageInfos( ::fwData::Image::sptr image )
 {
     m_weakImage  = image;
     m_axialIndex = image->setDefaultField(::fwDataTools::fieldHelper::Image::m_axialSliceIndexId,
@@ -266,134 +251,10 @@ void MedicalImageAdaptor::updateImageInfos( ::fwData::Image::sptr image )
 
 //------------------------------------------------------------------------------
 
-void MedicalImageAdaptor::createTransferFunction( ::fwData::Image::sptr image )
-{
-    ::fwData::Composite::sptr tfPool =
-        image->setDefaultField(::fwDataTools::fieldHelper::Image::m_transferFunctionCompositeId,
-                               ::fwData::Composite::New());
-
-    // create the default transfer function in the image tf field if it does not exist
-    if (tfPool->find(::fwData::TransferFunction::s_DEFAULT_TF_NAME) == tfPool->end())
-    {
-        ::fwData::TransferFunction::sptr tfGreyLevel = ::fwData::TransferFunction::createDefaultTF();
-        if (image->getWindowWidth() != 0 )
-        {
-            tfGreyLevel->setWindow( image->getWindowWidth() );
-            tfGreyLevel->setLevel( image->getWindowCenter() );
-        }
-        else if(::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
-        {
-            double min, max;
-            ::fwDataTools::fieldHelper::MedicalImageHelpers::getMinMax(image, min, max);
-            ::fwData::TransferFunction::TFValuePairType wlMinMax(min, max);
-            tfGreyLevel->setWLMinMax(wlMinMax);
-        }
-
-        ::fwDataTools::helper::Composite compositeHelper(tfPool);
-        compositeHelper.add(::fwData::TransferFunction::s_DEFAULT_TF_NAME, tfGreyLevel);
-        compositeHelper.notify();
-    }
-
-    if (m_transferFunction.expired())
-    {
-        ::fwData::TransferFunction::sptr tfGreyLevel =
-            tfPool->at< ::fwData::TransferFunction >(::fwData::TransferFunction::s_DEFAULT_TF_NAME);
-        m_transferFunction = tfGreyLevel;
-    }
-    else if (m_transferFunction.lock()->getTFValues().empty())
-    {
-        ::fwData::TransferFunction::sptr tfGreyLevel =
-            tfPool->at< ::fwData::TransferFunction >(::fwData::TransferFunction::s_DEFAULT_TF_NAME);
-        m_transferFunction.lock()->deepCopy(tfGreyLevel);
-    }
-}
-
-//------------------------------------------------------------------------------v
-
-void MedicalImageAdaptor::setOrCreateTF(const fwData::TransferFunction::sptr& _tf, const fwData::Image::sptr& _image)
-{
-    this->removeTFConnections();
-    if (_tf)
-    {
-        ::fwData::mt::ObjectWriteLock tfLock(_tf);
-        this->setTransferFunction(_tf);
-    }
-    else
-    {
-        ::fwData::mt::ObjectWriteLock tfLock(_image);
-        this->createTransferFunction(_image);
-    }
-    this->installTFConnections();
-}
-
-//------------------------------------------------------------------------------
-
-::fwData::TransferFunction::sptr MedicalImageAdaptor::getTransferFunction() const
-{
-    SLM_ASSERT("Transfer funtion is not defined, you must call setTransferFunction() or createTransferFunction() first."
-               , !m_transferFunction.expired());
-    return m_transferFunction.lock();
-}
-
-//------------------------------------------------------------------------------
-
-::fwData::Image::sptr MedicalImageAdaptor::getImage() const
+::fwData::Image::sptr MedicalImage::getImage() const
 {
     SLM_ASSERT("Image weak pointer empty !", !m_weakImage.expired());
     return m_weakImage.lock();
-}
-
-//------------------------------------------------------------------------------
-
-void MedicalImageAdaptor::setTransferFunction(const ::fwData::TransferFunction::sptr& tf )
-{
-    m_transferFunction = tf;
-}
-
-//------------------------------------------------------------------------------
-
-void MedicalImageAdaptor::installTFConnections()
-{
-    ::fwCom::Connection connection;
-
-    ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
-    {
-        connection = tf->signal(::fwData::TransferFunction::s_POINTS_MODIFIED_SIG)->connect(m_slotUpdateTFPoints);
-        m_tfConnections.addConnection(connection);
-        connection = tf->signal(::fwData::TransferFunction::s_WINDOWING_MODIFIED_SIG)->connect(m_slotUpdateTFWindowing);
-        m_tfConnections.addConnection(connection);
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void MedicalImageAdaptor::removeTFConnections()
-{
-    m_tfConnections.disconnect();
-}
-
-//------------------------------------------------------------------------------
-
-void MedicalImageAdaptor::installTFSlots(::fwCom::HasSlots* hasslots)
-{
-    m_slotUpdateTFPoints    = hasslots->newSlot(s_UPDATE_TF_POINTS_SLOT, &MedicalImageAdaptor::updateTFPoints, this);
-    m_slotUpdateTFWindowing =
-        hasslots->newSlot(s_UPDATE_TF_WINDOWING_SLOT, &MedicalImageAdaptor::updateTFWindowing, this);
-}
-
-//------------------------------------------------------------------------------
-
-void MedicalImageAdaptor::updateTFPoints()
-{
-    SLM_ASSERT("This methods (updateTFPoints) must be reimplemented in subclass to manage TF modifications", false);
-}
-
-//------------------------------------------------------------------------------
-
-void MedicalImageAdaptor::updateTFWindowing(double /*window*/, double /*level*/)
-{
-    SLM_ASSERT("This methods (updateTFWindowing) must be reimplemented in subclass to manage TF modifications",
-               false);
 }
 
 //------------------------------------------------------------------------------

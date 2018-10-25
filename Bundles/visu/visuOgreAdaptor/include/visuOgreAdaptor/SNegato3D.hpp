@@ -13,7 +13,7 @@
 
 #include <fwData/Float.hpp>
 
-#include <fwDataTools/helper/MedicalImageAdaptor.hpp>
+#include <fwDataTools/helper/TransferFunction.hpp>
 
 #include <fwRenderOgre/IAdaptor.hpp>
 #include <fwRenderOgre/ITransformable.hpp>
@@ -30,9 +30,6 @@ namespace visuOgreAdaptor
  * - \b newImage() : update the image display to show the new content.
  * - \b sliceType(int, int) : update image slice index .
  * - \b sliceIndex(int, int, int) : update image slice type.
- * - \b updateTFPoints() : update the displayed transfer function according to the new points.
- * - \b updateTFWindowing(double window, double level) : update the displayed transfer function according to the new
- *      window and level.
  * - \b updateVisibility() : updates the negato visibility from the image field.
  * - \b setVisibility(bool) : sets the image visibility fields.
  *
@@ -47,8 +44,7 @@ namespace visuOgreAdaptor
  * @subsection In-Out In-Out:
  * - \b image [::fwData::Image]: image to display.
  * - \b tf [::fwData::TransferFunction] (optional): the current TransferFunction. If it is not defined, we use the
- *      image's default transferFunction (CT-GreyLevel). The transferFunction's signals are automatically connected to
- *      the slots 'updateTFPoints' and 'updateTFWindowing'.
+ *      image's default transferFunction (CT-GreyLevel).
  *
  * @subsection Configuration Configuration:
  * - \b layer (mandatory): id of the layer where this adaptor applies.
@@ -57,12 +53,11 @@ namespace visuOgreAdaptor
  * - \b tfalpha (optional, true/false, default=false): if true, the alpha channel of the transfer function is used
  */
 class VISUOGREADAPTOR_CLASS_API SNegato3D : public ::fwRenderOgre::IAdaptor,
-                                            public ::fwRenderOgre::ITransformable,
-                                            public ::fwDataTools::helper::MedicalImageAdaptor
+                                            public ::fwRenderOgre::ITransformable
 {
 public:
 
-    typedef ::fwDataTools::helper::MedicalImageAdaptor::Orientation OrientationMode;
+    typedef ::fwDataTools::helper::MedicalImage::Orientation OrientationMode;
 
     fwCoreServiceClassDefinitionsMacro( (SNegato3D)(::fwRenderOgre::IAdaptor) )
 
@@ -103,10 +98,7 @@ protected:
     VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Slot: update the displayed transfer function
-    VISUOGREADAPTOR_API virtual void updateTFPoints() override;
-
-    /// Slot: update the displayed transfer function
-    VISUOGREADAPTOR_API virtual void updateTFWindowing(double window, double level) override;
+    VISUOGREADAPTOR_API virtual void updateTF();
 
 private:
 
@@ -152,6 +144,11 @@ private:
 
     /// Defines the filtering type for this negato
     ::fwRenderOgre::Plane::FilteringEnumType m_filtering;
+
+    /// Image orientation
+    OrientationMode m_orientation;
+
+    ::fwDataTools::helper::TransferFunction m_helperTF;
 };
 
 //------------------------------------------------------------------------------

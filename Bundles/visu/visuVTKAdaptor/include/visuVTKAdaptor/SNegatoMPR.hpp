@@ -1,17 +1,16 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VISUVTKADAPTOR_SNEGATOMPR_HPP__
-#define __VISUVTKADAPTOR_SNEGATOMPR_HPP__
+#pragma once
 
 #include "visuVTKAdaptor/config.hpp"
 
 #include <fwCom/helper/SigSlotConnection.hpp>
 
-#include <fwDataTools/helper/MedicalImageAdaptor.hpp>
+#include <fwDataTools/helper/MedicalImage.hpp>
 
 #include <fwRenderVTK/IAdaptor.hpp>
 
@@ -61,19 +60,21 @@ class SliceCursor;
  *    - \b vtkimagesource (optional): source image, used for blend
  *    - \b actorOpacity (optional, default=1.0): actor opacity (float)
  */
-class VISUVTKADAPTOR_CLASS_API SNegatoMPR : public ::fwDataTools::helper::MedicalImageAdaptor,
-                                            public ::fwRenderVTK::IAdaptor
+class VISUVTKADAPTOR_CLASS_API SNegatoMPR : public ::fwRenderVTK::IAdaptor
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SNegatoMPR)(::fwRenderVTK::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (SNegatoMPR)(::fwRenderVTK::IAdaptor) )
+
+    typedef ::fwDataTools::helper::MedicalImage::Orientation OrientationMode;
 
     VISUVTKADAPTOR_API SNegatoMPR() noexcept;
 
     VISUVTKADAPTOR_API virtual ~SNegatoMPR() noexcept;
 
     static const ::fwServices::IService::KeyType s_IMAGE_INOUT;
+
     static const ::fwServices::IService::KeyType s_TF_INOUT;
 
     typedef enum
@@ -83,18 +84,22 @@ public:
         THREE_SLICES
     } SliceMode;
 
+    void setOrientation(OrientationMode);
+
     //------------------------------------------------------------------------------
 
     void setAllowAlphaInTF(bool allow)
     {
         m_allowAlphaInTF = allow;
     }
+
     //------------------------------------------------------------------------------
 
     void setInterpolation(bool interpolation)
     {
         m_interpolation = interpolation;
     }
+
     //------------------------------------------------------------------------------
 
     void setVtkImageSourceId(std::string id)
@@ -103,8 +108,11 @@ public:
     }
 
     VISUVTKADAPTOR_API void setSliceMode(SliceMode sliceMode);
+
     VISUVTKADAPTOR_API SliceMode getSliceMode() const;
+
     VISUVTKADAPTOR_API ::boost::logic::tribool is3dModeEnabled() const;
+
     VISUVTKADAPTOR_API void set3dMode( bool enabled );
 
     /// Set actor opacity
@@ -116,9 +124,13 @@ public:
 protected:
 
     VISUVTKADAPTOR_API void configuring() override;
+
     VISUVTKADAPTOR_API void starting() override;
+
     VISUVTKADAPTOR_API void updating() override;
+
     VISUVTKADAPTOR_API void stopping() override;
+
     VISUVTKADAPTOR_API void swapping(const KeyType& key) override;
 
     /**
@@ -130,7 +142,8 @@ protected:
      */
     VISUVTKADAPTOR_API virtual KeyConnectionsMap getAutoConnections() const override;
 
-    ::fwRenderVTK::IAdaptor::sptr addAdaptor(const std::string& adaptor, int axis = -1);
+    ::fwRenderVTK::IAdaptor::sptr addAdaptor(const std::string&,
+                                             const std::function< void(::fwRenderVTK::IAdaptor::sptr)>&);
 
 private:
 
@@ -158,22 +171,29 @@ private:
      */
 
     bool m_allowAlphaInTF;
+
     bool m_interpolation;
+
     double m_actorOpacity;
 
     std::string m_imageSourceId;
 
     std::string m_slicingStartingProxy; ///< channel of the proxy used to start slicing
+
     std::string m_slicingStoppingProxy; ///< channel of the proxy used to stop slicing
 
     ::boost::logic::tribool m_3dModeEnabled;
+
     SliceMode m_sliceMode;
+
     SliceMode m_backupedSliceMode;
+
     ::fwCom::helper::SigSlotConnection m_connections; /// store subservices connections
 
     ::fwRenderVTK::IAdaptor::wptr m_sliceCursor;
+
+    /// Image orientation
+    OrientationMode m_orientation;
 };
 
 } //namespace visuVTKAdaptor
-
-#endif // __VISUVTKADAPTOR_SNEGATOMPR_HPP__

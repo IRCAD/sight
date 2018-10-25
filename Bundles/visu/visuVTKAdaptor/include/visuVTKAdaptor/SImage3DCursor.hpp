@@ -1,17 +1,16 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VISUVTKADAPTOR_SIMAGE3DCURSOR_HPP__
-#define __VISUVTKADAPTOR_SIMAGE3DCURSOR_HPP__
+#pragma once
 
 #include "visuVTKAdaptor/config.hpp"
 
 #include <fwData/Color.hpp>
 
-#include <fwDataTools/helper/MedicalImageAdaptor.hpp>
+#include <fwDataTools/helper/MedicalImage.hpp>
 
 #include <fwRenderVTK/IAdaptor.hpp>
 
@@ -45,12 +44,11 @@ namespace visuVTKAdaptor
  * - \b renderer : ID of the renderer the adaptor must use.
  * - \b transform (optional) : vtkTransform applied to the marker.
  */
-class VISUVTKADAPTOR_CLASS_API SImage3DCursor : public  ::fwDataTools::helper::MedicalImageAdaptor,
-                                                public ::fwRenderVTK::IAdaptor
+class VISUVTKADAPTOR_CLASS_API SImage3DCursor : public ::fwRenderVTK::IAdaptor
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro( (SImage3DCursor)(::fwRenderVTK::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (SImage3DCursor)(::fwRenderVTK::IAdaptor) )
 
     VISUVTKADAPTOR_API SImage3DCursor() noexcept;
 
@@ -97,8 +95,8 @@ private:
      * @}
      */
 
+    ::fwDataTools::helper::MedicalImage m_helper;
+
 };
 
 } //namespace visuVTKAdaptor
-
-#endif // __VISUVTKADAPTOR_SIMAGE3DCURSOR_HPP__

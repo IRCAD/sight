@@ -15,6 +15,8 @@
 #include <fwCore/Profiling.hpp>
 
 #include <fwData/Image.hpp>
+#include <fwData/mt/ObjectWriteLock.hpp>
+#include <fwData/mt/ObjectReadLock.hpp>
 
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 #include <fwDataTools/TransformationMatrix3D.hpp>
@@ -71,9 +73,11 @@ static const ::fwServices::IService::KeyType s_MASK_INOUT            = "mask";
 
 //-----------------------------------------------------------------------------
 
-SVolumeRender::SVolumeRender() noexcept
+SVolumeRender::SVolumeRender() noexcept :
+    m_helperTF(std::bind(&SVolumeRender::updateTF, this))
 {
-    this->installTFSlots(this);
+    /// Handle connections between the layer and the volume renderer.
+    ::fwCom::helper::SigSlotConnection m_volumeConnection;
     newSlot(s_NEW_IMAGE_SLOT, &SVolumeRender::newImage, this);
     newSlot(s_NEW_MASK_SLOT, &SVolumeRender::newMask, this);
     newSlot(s_UPDATE_IMAGE_SLOT, &SVolumeRender::updateImage, this);
@@ -140,49 +144,27 @@ void SVolumeRender::configuring()
 
 //-----------------------------------------------------------------------------
 
-void SVolumeRender::updateTFPoints()
+void SVolumeRender::updateTF()
 {
     this->getRenderService()->makeCurrent();
 
-    ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
-
-    m_gpuTF->updateTexture(tf);
-
-    if(m_preIntegratedRendering)
+    ::fwData::TransferFunction::sptr tf = m_helperTF.getTransferFunction();
     {
-        m_preIntegrationTable.tfUpdate(this->getTransferFunction(), m_volumeRenderer->getSamplingRate());
-    }
+        ::fwData::mt::ObjectWriteLock tfLock(tf);
 
-    m_volumeRenderer->tfUpdate(tf);
+        m_gpuTF->updateTexture(tf);
 
-    if(m_ambientOcclusion || m_colorBleeding || m_shadows)
-    {
-        this->updateVolumeIllumination();
-    }
+        if(m_preIntegratedRendering)
+        {
+            m_preIntegrationTable.tfUpdate(tf, m_volumeRenderer->getSamplingRate());
+        }
 
-    this->requestRender();
-}
+        m_volumeRenderer->tfUpdate(tf);
 
-//-----------------------------------------------------------------------------
-
-void SVolumeRender::updateTFWindowing(double /*window*/, double /*level*/)
-{
-    this->getRenderService()->makeCurrent();
-
-    ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
-
-    m_gpuTF->updateTexture(tf);
-
-    if(m_preIntegratedRendering)
-    {
-        m_preIntegrationTable.tfUpdate(this->getTransferFunction(), m_volumeRenderer->getSamplingRate());
-    }
-
-    m_volumeRenderer->tfUpdate(tf);
-
-    if(m_ambientOcclusion || m_colorBleeding || m_shadows)
-    {
-        this->updateVolumeIllumination();
+        if(m_ambientOcclusion || m_colorBleeding || m_shadows)
+        {
+            this->updateVolumeIllumination();
+        }
     }
 
     this->requestRender();
@@ -218,9 +200,7 @@ void SVolumeRender::starting()
     SLM_ASSERT("inout '" + s_IMAGE_INOUT +"' is missing.", image);
 
     ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
-    this->setOrCreateTF(tf, image);
-
-    this->updateImageInfos(image);
+    m_helperTF.setOrCreateTF(tf, image);
 
     m_sceneManager = this->getSceneManager();
 
@@ -287,7 +267,15 @@ void SVolumeRender::starting()
         this->newImage();
     }
 
-    m_volumeRenderer->tfUpdate(this->getTransferFunction());
+    if(tf != nullptr)
+    {
+        ::fwData::mt::ObjectWriteLock tfLock(tf);
+        m_volumeRenderer->tfUpdate(tf);
+    }
+    else
+    {
+        m_volumeRenderer->tfUpdate(tf);
+    }
 
     this->requestRender();
 }
@@ -298,7 +286,7 @@ void SVolumeRender::stopping()
 {
     this->getRenderService()->makeCurrent();
 
-    this->removeTFConnections();
+    m_helperTF.removeTFConnections();
 
     m_volumeConnection.disconnect();
     delete m_volumeRenderer;
@@ -337,12 +325,13 @@ void SVolumeRender::swapping(const KeyType& key)
 
     if (key == s_TF_INOUT)
     {
-        ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction >(s_TF_INOUT);
-        ::fwData::Image::sptr image         = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+        ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
         SLM_ASSERT("Missing image", image);
 
-        this->setOrCreateTF(tf, image);
-        this->updateTFPoints();
+        ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
+        m_helperTF.setOrCreateTF(tf, image);
+
+        this->updateTF();
     }
 }
 
@@ -372,42 +361,40 @@ void SVolumeRender::updateImage()
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
 
-    this->updateImageInfos(image);
-
     this->getRenderService()->makeCurrent();
 
     // Retrieves or creates the slice index fields
-    this->updateImageInfos(image);
     this->setImageSpacing();
 
     ::fwRenderOgre::Utils::convertImageForNegato(m_3DOgreTexture.get(), image);
 
-    this->createTransferFunction(image);
+    m_helperTF.createTransferFunction(image);
 
-    ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
-
-    m_gpuTF->updateTexture(tf);
-
-    if(m_preIntegratedRendering)
+    ::fwData::TransferFunction::sptr tf = m_helperTF.getTransferFunction();
     {
-        m_preIntegrationTable.tfUpdate(this->getTransferFunction(), m_volumeRenderer->getSamplingRate());
-    }
+        m_gpuTF->updateTexture(tf);
 
-    if(m_ambientOcclusion || m_colorBleeding || m_shadows)
-    {
-        if(m_illum == nullptr)
+        if(m_preIntegratedRendering)
         {
-            m_illum = std::make_shared< ::fwRenderOgre::vr::SATVolumeIllumination>(this->getID(), m_sceneManager,
-                                                                                   m_satSizeRatio,
-                                                                                   (m_ambientOcclusion ||
-                                                                                    m_colorBleeding), m_shadows,
-                                                                                   m_satShells, m_satShellRadius,
-                                                                                   m_satConeAngle, m_satConeSamples);
+            m_preIntegrationTable.tfUpdate(tf, m_volumeRenderer->getSamplingRate());
         }
-        this->updateVolumeIllumination();
-    }
 
-    m_volumeRenderer->imageUpdate(image, this->getTransferFunction());
+        if(m_ambientOcclusion || m_colorBleeding || m_shadows)
+        {
+            if(m_illum == nullptr)
+            {
+                m_illum = std::make_shared< ::fwRenderOgre::vr::SATVolumeIllumination>(this->getID(), m_sceneManager,
+                                                                                       m_satSizeRatio,
+                                                                                       (m_ambientOcclusion ||
+                                                                                        m_colorBleeding), m_shadows,
+                                                                                       m_satShells, m_satShellRadius,
+                                                                                       m_satConeAngle,
+                                                                                       m_satConeSamples);
+            }
+            this->updateVolumeIllumination();
+        }
+        m_volumeRenderer->imageUpdate(image, tf);
+    }
 
     // Create widgets on image update to take the image's size into account.
     this->createWidget();
@@ -451,7 +438,9 @@ void SVolumeRender::updateSampling(int nbSamples)
 
     if(m_preIntegratedRendering)
     {
-        m_preIntegrationTable.tfUpdate(this->getTransferFunction(), m_volumeRenderer->getSamplingRate());
+        ::fwData::TransferFunction::sptr tf = m_helperTF.getTransferFunction();
+        ::fwData::mt::ObjectWriteLock tfLock(tf);
+        m_preIntegrationTable.tfUpdate(tf, m_volumeRenderer->getSamplingRate());
     }
 
     this->requestRender();
@@ -512,7 +501,10 @@ void SVolumeRender::updateSatSizeRatio(int sizeRatio)
             ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
             SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
 
-            m_volumeRenderer->imageUpdate(image, this->getTransferFunction());
+            ::fwData::TransferFunction::sptr tf = m_helperTF.getTransferFunction();
+            ::fwData::mt::ObjectWriteLock tfLock(tf);
+            m_volumeRenderer->imageUpdate(image, tf);
+            std::cout << __FUNCTION__ << std::endl;
         }
 
         this->requestRender();
@@ -606,8 +598,10 @@ void SVolumeRender::togglePreintegration(bool preintegration)
         ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
         SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
 
-        m_volumeRenderer->imageUpdate(image, this->getTransferFunction());
-        m_preIntegrationTable.tfUpdate(this->getTransferFunction(), m_volumeRenderer->getSamplingRate());
+        ::fwData::TransferFunction::sptr tf = m_helperTF.getTransferFunction();
+        ::fwData::mt::ObjectWriteLock tfLock(tf);
+        m_volumeRenderer->imageUpdate(image, tf);
+        m_preIntegrationTable.tfUpdate(tf, m_volumeRenderer->getSamplingRate());
     }
 
     this->requestRender();
@@ -908,7 +902,7 @@ void SVolumeRender::setColorParameter(std::array<std::uint8_t, 4> color, std::st
 
 void SVolumeRender::setImageSpacing()
 {
-    auto img = this->getImage();
+    auto img = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
 
     const bool isValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(img);
 
@@ -1000,8 +994,11 @@ void SVolumeRender::toggleVREffect(::visuOgreAdaptor::SVolumeRender::VREffectTyp
 {
     this->getRenderService()->makeCurrent();
 
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
+
     // Volume illumination is only implemented for raycasting rendering
-    if(::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(this->getImage()))
+    if(::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
     {
         if((m_ambientOcclusion || m_colorBleeding || m_shadows) && !m_illum)
         {
@@ -1049,10 +1046,9 @@ void SVolumeRender::toggleVREffect(::visuOgreAdaptor::SVolumeRender::VREffectTyp
 
         if(m_preIntegratedRendering)
         {
-            ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-            SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
-
-            m_volumeRenderer->imageUpdate(image, this->getTransferFunction());
+            ::fwData::TransferFunction::sptr tf = m_helperTF.getTransferFunction();
+            ::fwData::mt::ObjectWriteLock tfLock(tf);
+            m_volumeRenderer->imageUpdate(image, tf);
         }
 
         this->requestRender();

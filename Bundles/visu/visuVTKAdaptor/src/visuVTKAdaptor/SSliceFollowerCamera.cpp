@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -60,15 +60,15 @@ void SSliceFollowerCamera::configuring()
     const std::string orientation = config.get<std::string>("sliceIndex", "axial");
     if(orientation == "axial" )
     {
-        m_orientation = Z_AXIS;
+        m_helper.setOrientation(Orientation::Z_AXIS);
     }
     else if(orientation == "frontal" )
     {
-        m_orientation = Y_AXIS;
+        m_helper.setOrientation(Orientation::Y_AXIS);
     }
     else if(orientation == "sagittal" )
     {
-        m_orientation = X_AXIS;
+        m_helper.setOrientation(Orientation::X_AXIS);
     }
 }
 
@@ -81,7 +81,7 @@ void SSliceFollowerCamera::starting()
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("Missing image", image);
 
-    this->updateImageInfos(image);
+    m_helper.updateImageInfos(image);
 
     m_camera = this->getRenderer()->GetActiveCamera();
     this->initializeCamera();
@@ -95,7 +95,7 @@ void SSliceFollowerCamera::updating()
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("Missing image", image);
 
-    this->updateImageInfos(image);
+    m_helper.updateImageInfos(image);
     this->initializeCamera();
 }
 
@@ -117,13 +117,13 @@ void SSliceFollowerCamera::updateSliceIndex(int /*axial*/, int /*frontal*/, int 
 
 void SSliceFollowerCamera::updateSliceType(int from, int to)
 {
-    if( to == static_cast<int>(m_orientation) )
+    if( to == static_cast<int>(m_helper.getOrientation()) )
     {
-        setOrientation( static_cast< Orientation >( from ));
+        m_helper.setOrientation( static_cast< Orientation >( from ));
     }
-    else if(from == static_cast<int>(m_orientation))
+    else if(from == static_cast<int>(m_helper.getOrientation()))
     {
-        setOrientation( static_cast< Orientation >( to ));
+        m_helper.setOrientation( static_cast< Orientation >( to ));
     }
     this->initializeCamera();
     this->requestRender();
@@ -142,12 +142,12 @@ void SSliceFollowerCamera::initializeCamera()
     {
         const int orientationToAxe[3] = { 2, 2, 1 };
         double imageSize[3];
-        this->getImageSize(imageSize);
-        int orientation = orientationToAxe [m_orientation];
-        double size     = imageSize[ orientation ];
+        m_helper.getImageSize(imageSize);
+        const int orientation = orientationToAxe [m_helper.getOrientation()];
+        const double size     = imageSize[ orientation ];
 
-        double distance = (1.1 * size)
-                          / ( std::tan( m_camera->GetViewAngle() * (vtkMath::Pi() / 180.0) ) );
+        const double distance = (1.1 * size)
+                                / ( std::tan( m_camera->GetViewAngle() * (vtkMath::Pi() / 180.0) ) );
 
         m_camera->ParallelProjectionOn();
         setVtkPipelineModified();
@@ -168,18 +168,18 @@ void SSliceFollowerCamera::updateCamera(double distance, double size)
         double center[ 3 ];
         double focalPoint[ 3 ];
         double position[ 3 ];
-        getCurrentSliceCenter( center );
+        m_helper.getCurrentSliceCenter( center );
         std::copy(center, center+3, focalPoint);
 
         double origin[ 3 ];
-        getImageOrigin( origin );
-        focalPoint[m_orientation] = origin[m_orientation];
+        m_helper.getImageOrigin( origin );
+        focalPoint[m_helper.getOrientation()] = origin[m_helper.getOrientation()];
 
         distance = m_camera->GetDistance();
 
         std::copy(focalPoint, focalPoint+3, position);
 
-        position[ m_orientation ] -= distance;
+        position[ m_helper.getOrientation() ] -= distance;
 
         m_camera->SetParallelScale(.51*size);
         m_camera->SetFocalPoint( focalPoint );
@@ -191,8 +191,8 @@ void SSliceFollowerCamera::updateCamera(double distance, double size)
     // m_orientation = 2 : 0,-1,0
     m_camera->SetViewUp(
         0,
-        (m_orientation == 2 ? -1 : 0),
-        (m_orientation <= 1 ?  1 : 0)
+        (m_helper.getOrientation() == 2 ? -1 : 0),
+        (m_helper.getOrientation() <= 1 ?  1 : 0)
         );
     m_camera->OrthogonalizeViewUp();
 
