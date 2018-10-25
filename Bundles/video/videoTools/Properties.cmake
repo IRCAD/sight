@@ -18,3 +18,6 @@ set( DEPENDENCIES
 )
 set( REQUIREMENTS  )
 
+set( CONAN_DEPS
+    opencv/3.4.3@sight/stable
+)

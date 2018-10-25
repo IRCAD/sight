@@ -10,6 +10,7 @@
 #include <fwServices/registry/AppConfigParameters.hpp>
 
 #include <fwRuntime/Bundle.hpp>
+#include <fwRuntime/operations.hpp>
 #include <fwRuntime/Runtime.hpp>
 
 #include <boost/filesystem/operations.hpp>
@@ -32,7 +33,7 @@ void AppConfigParametersTest::setUp()
     ::fwRuntime::Runtime* runtime = ::fwRuntime::Runtime::getDefault();
     runtime->addDefaultBundles();
 
-    ::boost::filesystem::path location = runtime->getWorkingPath() / "share/tu_exec_fwServices-0.0";
+    ::boost::filesystem::path location = ::fwRuntime::getResourceFilePath("tu_exec_fwServices-0.0");
     CPPUNIT_ASSERT(::boost::filesystem::exists(location));
 
     runtime->addBundles(location);

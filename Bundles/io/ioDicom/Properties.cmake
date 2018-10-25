@@ -25,3 +25,6 @@ set( REQUIREMENTS
     dataReg
     servicesReg
     )
+set( CONAN_DEPS
+    qt/5.11.1@sight/stable
+)

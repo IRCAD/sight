@@ -6,10 +6,6 @@
 
 #include "ioDicom/SSliceIndexDicomEditor.hpp"
 
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
-#include <fwCom/Signals.hpp>
-#include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
@@ -33,14 +29,12 @@
 #include <fwMedDataTools/helper/SeriesDB.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/registry/ActiveWorkers.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
 #include <fwThread/Timer.hpp>
 
 #include <fwTools/System.hpp>
 
-#include <boost/asio/placeholders.hpp>
 #include <boost/filesystem/fstream.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <boost/foreach.hpp>

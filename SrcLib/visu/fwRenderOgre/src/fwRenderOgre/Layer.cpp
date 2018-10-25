@@ -187,6 +187,13 @@ Layer::~Layer()
         m_cameraListener = nullptr;
     }
 
+    if(m_autostereoListener)
+    {
+        ::Ogre::MaterialManager::getSingleton().removeListener(m_autostereoListener);
+        delete m_autostereoListener;
+        m_autostereoListener = nullptr;
+    }
+
     if(m_sceneManager)
     {
         ::fwRenderOgre::Utils::getOgreRoot()->destroySceneManager(m_sceneManager);
@@ -417,6 +424,8 @@ void Layer::updateCompositorState(std::string compositorName, bool isEnabled)
 
 void Layer::interaction(::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo info)
 {
+    this->getRenderService()->makeCurrent();
+
     switch(info.interactionType)
     {
         case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::MOUSEMOVE:

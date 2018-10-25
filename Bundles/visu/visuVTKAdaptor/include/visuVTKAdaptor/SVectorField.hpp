@@ -1,17 +1,16 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VISUVTKADAPTOR_SVECTORFIELD_HPP__
-#define __VISUVTKADAPTOR_SVECTORFIELD_HPP__
+#pragma once
 
 #include "visuVTKAdaptor/config.hpp"
 
 #include <fwData/Image.hpp>
 
-#include <fwDataTools/helper/MedicalImageAdaptor.hpp>
+#include <fwDataTools/helper/MedicalImage.hpp>
 
 #include <fwRenderVTK/IAdaptor.hpp>
 
@@ -46,7 +45,7 @@ class VISUVTKADAPTOR_CLASS_API SVectorField : public ::fwRenderVTK::IAdaptor
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SVectorField)(::fwRenderVTK::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (SVectorField)(::fwRenderVTK::IAdaptor) )
 
     VISUVTKADAPTOR_API SVectorField() noexcept;
 
@@ -78,5 +77,3 @@ protected:
 };
 
 } //namespace visuVTKAdaptor
-
-#endif // __VISUVTKADAPTOR_SVECTORFIELD_HPP__

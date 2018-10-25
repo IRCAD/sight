@@ -91,6 +91,8 @@ protected:
     /// Switch to Matrix "index"
     MATHS_API void switchToMatrix(size_t index);
 
+    MATHS_API virtual KeyConnectionsMap getAutoConnections() const override;
+
 private:
 
     size_t m_indexOfDesiredMatrix;

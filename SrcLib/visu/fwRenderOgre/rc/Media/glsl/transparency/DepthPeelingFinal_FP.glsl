@@ -18,7 +18,13 @@ void main()
 
     // Manage surrounding background (like a stencil)
     if(depthMap == 0)
+    {
         FragColor.a = 0;
+        gl_FragDepth = 1.f;
+    }
     else
+    {
         FragColor = vec4(frontColorBuffer.rgb, 1.-frontColorBuffer.a);
+        gl_FragDepth = depthMap;
+    }
 }

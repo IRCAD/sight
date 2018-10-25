@@ -80,6 +80,8 @@ void SVideo::starting()
 
 void SVideo::stopping()
 {
+    this->getRenderService()->makeCurrent();
+
     this->clearEntity();
 
     m_material.reset();

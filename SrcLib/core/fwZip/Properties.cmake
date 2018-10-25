@@ -5,3 +5,8 @@ set( TYPE LIBRARY )
 set( DEPENDENCIES fwCore )
 set( REQUIREMENTS  )
 
+if(WIN32 OR APPLE)
+    set( CONAN_DEPS
+        zlib/1.2.11@sight/stable
+    )
+endif()

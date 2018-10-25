@@ -1,18 +1,17 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#pragma once
+
 #ifdef _WIN32
-
-
-#ifndef __FWRUNTIME_DL_WIN32_HPP__
-#define __FWRUNTIME_DL_WIN32_HPP__
 
 #include "fwRuntime/config.hpp"
 #include "fwRuntime/dl/Native.hpp"
 
+#define NOMINMAX
 #include <windows.h>
 
 namespace fwRuntime
@@ -32,7 +31,7 @@ struct Win32 : public Native
      *
      * @param[in]   modulePath      a path to the module to manage
      */
-    Win32( const boost::filesystem::path & modulePath ) noexcept;
+    Win32( const boost::filesystem::path& modulePath ) noexcept;
 
     /**
      * @brief   Tells if the module is loaded.
@@ -48,7 +47,7 @@ struct Win32 : public Native
      *
      * @return      a pointer to the found symbol or null if none has been found
      */
-    void * getSymbol(const std::string& name) const;
+    void* getSymbol(const std::string& name) const;
 
     /**
      * @brief   Loads the module.
@@ -60,7 +59,6 @@ struct Win32 : public Native
      */
     void unload();
 
-
     private:
 
         /**
@@ -70,13 +68,8 @@ struct Win32 : public Native
 
 };
 
-
 } // namespace dl
 
 } // namespace fwRuntime
-
-
-#endif // __FWRUNTIME_DL_WIN32_HPP__
-
 
 #endif // #ifdef _WIN32

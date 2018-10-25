@@ -149,6 +149,13 @@ void SMesh::starting()
 {
     this->initialize();
 
+    this->getRenderService()->makeCurrent();
+
+    if (this->getTransformId().empty())
+    {
+        this->setTransformId(this->getID() + "_TF");
+    }
+
     m_meshGeometry = ::std::make_shared< ::fwRenderOgre::Mesh>(this->getID());
     m_meshGeometry->setDynamic(m_isDynamic);
     m_meshGeometry->setDynamicVertices(m_isDynamicVertices);
@@ -183,6 +190,8 @@ void SMesh::starting()
 
 void SMesh::stopping()
 {
+    this->getRenderService()->makeCurrent();
+
     ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
     SLM_ASSERT("::Ogre::SceneManager is null", sceneMgr);
 

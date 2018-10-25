@@ -110,10 +110,12 @@ void SPointListRegistration::computeRegistration(::fwCore::HiResClock::HiResCloc
         vtkSmartPointer<vtkPoints> sourcePts = vtkSmartPointer<vtkPoints>::New();
         vtkSmartPointer<vtkPoints> targetPts = vtkSmartPointer<vtkPoints>::New();
 
-        const auto& firstPoint = referencePL->getPoints()[0];
+        const auto& firstPoint    = referencePL->getPoints()[0];
+        const auto& firstPointReg = registeredPL->getPoints()[0];
 
         // If the points have labels ...
-        if(firstPoint->getField< ::fwData::String >(::fwDataTools::fieldHelper::Image::m_labelId ) != nullptr)
+        if(firstPoint->getField< ::fwData::String >(::fwDataTools::fieldHelper::Image::m_labelId ) != nullptr
+           && firstPointReg->getField< ::fwData::String >(::fwDataTools::fieldHelper::Image::m_labelId ) != nullptr)
         {
             // ... Then match them according to that label.
             for( ::fwData::Point::sptr pointRef : referencePL->getPoints() )

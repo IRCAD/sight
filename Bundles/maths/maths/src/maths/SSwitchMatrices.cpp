@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -57,6 +57,15 @@ void SSwitchMatrices::stopping()
 
 // ----------------------------------------------------------------------------
 
+fwServices::IService::KeyConnectionsMap SSwitchMatrices::getAutoConnections() const
+{
+    ::fwServices::IService::KeyConnectionsMap connections;
+    connections.push(s_MATRIX_INPUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    return connections;
+}
+
+// ----------------------------------------------------------------------------
+
 void SSwitchMatrices::updating()
 {
     ::fwData::TransformationMatrix3D::sptr matrix = this->getInOut< ::fwData::TransformationMatrix3D >(s_MATRIX_OUTPUT);
@@ -102,6 +111,5 @@ void SSwitchMatrices::switchToMatrix(size_t index)
 }
 
 // ----------------------------------------------------------------------------
-
 
 }  // namespace maths

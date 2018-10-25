@@ -9,7 +9,8 @@
 #include "visuVTKAdaptor/config.hpp"
 #include "visuVTKAdaptor/SNegatoMPR.hpp"
 
-#include <fwDataTools/helper/MedicalImageAdaptor.hpp>
+#include <fwDataTools/helper/MedicalImage.hpp>
+#include <fwDataTools/TransferFunction.hpp>
 
 #include <fwRenderVTK/IAdaptor.hpp>
 
@@ -51,13 +52,12 @@ namespace visuVTKAdaptor
  *    - \b vtkimagesource (optional): source image, used for blend
  *    - \b actorOpacity (optional, default=1.0): actor opacity (float)
  */
-class VISUVTKADAPTOR_CLASS_API SImageSeries : public ::fwDataTools::helper::MedicalImageAdaptor,
-                                              public ::fwRenderVTK::IAdaptor
+class VISUVTKADAPTOR_CLASS_API SImageSeries : public ::fwRenderVTK::IAdaptor
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SImageSeries)(::fwRenderVTK::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (SImageSeries)(::fwRenderVTK::IAdaptor) )
 
     VISUVTKADAPTOR_API SImageSeries() noexcept;
 
@@ -69,12 +69,14 @@ public:
     {
         m_allowAlphaInTF = allow;
     }
+
     //------------------------------------------------------------------------------
 
     void setInterpolation(bool interpolation)
     {
         m_interpolation = interpolation;
     }
+
     //------------------------------------------------------------------------------
 
     void setVtkImageSourceId(std::string id)
@@ -117,13 +119,18 @@ protected:
     void set3dMode( bool enabled );
 
 private:
+
     bool m_allowAlphaInTF;
+
     bool m_interpolation;
 
     std::string m_imageSourceId;
 
     ::boost::logic::tribool m_3dModeEnabled;
+
     SNegatoMPR::SliceMode m_sliceMode;
+
+    ::fwDataTools::helper::MedicalImage m_helper;
 
 };
 

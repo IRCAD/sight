@@ -76,7 +76,7 @@ void VRWidgetsInteractor::mouseMoveEvent(MouseButton button, int x, int y, int d
             widget->scaleClippingBox(x, y, dy);
         }
     }
-    else if(button == LEFT) // Fallback to trackball otherwise.
+    else // Fallback to trackball otherwise.
     {
         TrackballInteractor::mouseMoveEvent(button, x, y, dx, dy);
     }

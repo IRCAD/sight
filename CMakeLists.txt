@@ -15,6 +15,13 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/macros.cmake)
 # User options
 ########################################################################################################################
 
+option(USE_CONAN "Use Conan package manager for dependencies (experimental)" OFF)
+mark_as_advanced(USE_CONAN)
+
+if(USE_CONAN)
+    include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/conan.cmake)
+endif()
+
 # Tests build / run options
 set(BUILD_TESTS ON CACHE BOOL "Configures projects associated tests (<project>Test projects)")
 set(TESTS_XML_OUTPUT OFF CACHE BOOL "Tests will generate an xml output, suitable for CI integration")
@@ -117,11 +124,17 @@ if(MSVC_IDE)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
 endif()
 
+if(${WIN32} AND ${MSVC})
+    if(${MSVC_VERSION} GREATER 1914)
+        add_definitions(" -D_ENABLE_EXTENDED_ALIGNED_STORAGE")
+    endif()
+endif()
+
 if(EXTERNAL_LIBRARIES)
     get_filename_component(ABSOLUTE_EXTERNAL_LIBRARIES ${EXTERNAL_LIBRARIES} REALPATH)
     set(EXTERNAL_LIBRARIES ${ABSOLUTE_EXTERNAL_LIBRARIES})
     unset(ABSOLUTE_EXTERNAL_LIBRARIES)
-    
+
     list(APPEND CMAKE_PREFIX_PATH ${EXTERNAL_LIBRARIES})
     list(APPEND CMAKE_MODULE_PATH ${EXTERNAL_LIBRARIES})
     list(APPEND CMAKE_FIND_ROOT_PATH ${EXTERNAL_LIBRARIES})
@@ -151,11 +164,13 @@ endif()
 # External libraries management
 ########################################################################################################################
 
-option(USE_SYSTEM_LIB "Use system libraries to compile sight" OFF)
+if(NOT USE_CONAN)
+    option(USE_SYSTEM_LIB "Use system libraries to compile sight" OFF)
+endif()
 
 option(BUILD_SDK "Build Sight as a SDK" OFF)
 
-if(NOT USE_SYSTEM_LIB)
+if(NOT USE_SYSTEM_LIB AND NOT USE_CONAN)
     set(EXTERNAL_LIBRARIES CACHE PATH "External libraries location")
 endif()
 
@@ -266,9 +281,6 @@ endforeach()
 ########################################################################################################################
 file(GLOB_RECURSE PROJECTS_PROPERTIES */Properties.cmake)
 
-# Discover PCL only once as it takes a while and cache results...
-add_subdirectory(${FWCMAKE_RESOURCE_PATH}/pcl)
-
 # Do the same in additional repositories
 if(ADDITIONAL_REPOSITORIES)
 
@@ -322,6 +334,7 @@ foreach(PROPERTIES_FILE ${PROJECTS_PROPERTIES})
     set(${NAME}_DEPENDENCIES "${DEPENDENCIES}")
     set(${NAME}_REQUIREMENTS "${REQUIREMENTS}")
     set(${NAME}_DISABLE_PCH  "${DISABLE_PCH}")
+    set(${NAME}_CONAN_DEPS   "${CONAN_DEPS}")
 
     # Get the pch target, test the existence of type variable to exclude unbuilt projects
     if(ENABLE_PCH AND TYPE AND NOT ${NAME}_DISABLE_PCH)
@@ -379,10 +392,23 @@ if(BUILD_TESTS)
     list(APPEND PROJECT_LIST ${PROJECT_TESTS})
 endif()
 
+# Find and install Conan packages
+if(USE_CONAN)
+    findConanDeps("${PROJECT_LIST}" CONAN_DEPS_LIST)
+    installConanDeps("${CONAN_DEPS_LIST}")
+    add_definitions(${CONAN_DEFINES})
+endif()
+
+# Define the path 'FW_EXTERNAL_LIBRARIES_DIR' used to find external libraries required by our applications
+setExternalLibrariesDir()
+
+# Discover PCL only once as it takes a while and cache results...
+add_subdirectory(${FWCMAKE_RESOURCE_PATH}/pcl)
+
 ########################################################################################################################
 # Second projects scan where we actually perform the add_subdirectory() for each project and its dependencies
 ########################################################################################################################
-if(EXTERNAL_LIBRARIES OR USE_SYSTEM_LIB)
+if(EXTERNAL_LIBRARIES OR USE_SYSTEM_LIB OR USE_CONAN)
     set(APP_TO_BUILD)
     foreach(PROJECT ${PROJECT_LIST})
         addProject(${PROJECT})
@@ -411,6 +437,12 @@ if(BUILD_SDK)
       COMPATIBILITY AnyNewerVersion
     )
 
+    if(USE_CONAN)
+        file(APPEND "${CMAKE_BINARY_DIR}/cmake/SightRequirements.cmake"
+             "set(USE_CONAN 1)\n"
+             "set(CONAN_DEFINES ${CONAN_DEFINES})\n")
+    endif()
+
     # Install the SightConfig.cmake and SightConfigVersion.cmake
     install(
       FILES
@@ -418,6 +450,7 @@ if(BUILD_SDK)
         "${CMAKE_BINARY_DIR}/cmake/SightConfigVersion.cmake"
         "${CMAKE_BINARY_DIR}/cmake/SightRequirements.cmake"
         "${CMAKE_SOURCE_DIR}/CMake/build/macros.cmake"
+        "${CMAKE_SOURCE_DIR}/CMake/build/conan.cmake"
       DESTINATION
         ${FWCONFIG_PACKAGE_LOCATION}
       COMPONENT
@@ -498,6 +531,8 @@ if(BUILD_SDK)
         )
         install(
           FILES
+            "${CMAKE_SOURCE_DIR}/CMake/install/windows/template.bat.in"
+            "${CMAKE_SOURCE_DIR}/CMake/install/windows/setpath.bat.in"
             "${CMAKE_SOURCE_DIR}/CMake/install/windows/windows_fixup.cmake.in"
           DESTINATION
             ${FWCONFIG_PACKAGE_LOCATION}/install/windows
