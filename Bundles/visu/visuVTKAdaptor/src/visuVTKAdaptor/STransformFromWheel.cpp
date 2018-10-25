@@ -166,7 +166,7 @@ void STransformFromWheel::rotateTransform(double cx, double cy, double wheelAngl
     double worldPos[3];
     ::fwRenderVTK::vtk::getNearestPickedPosition(picker, this->getRenderer(), worldPos);
 
-    ::glm::dvec3 rotAxis;
+    ::glm::dvec3 rotAxis(0.);
     ::glm::dvec3 pos(worldPos[0], worldPos[1], worldPos[2]);
 
     rotAxis[m_orientation] = 1.;
