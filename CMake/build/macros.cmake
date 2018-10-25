@@ -9,6 +9,20 @@ else()
     # FWCMAKE_RESOURCE_PATH already set in main CMakeLists.txt
 endif()
 
+if(USE_CONAN)
+    if(FW_BUILD_EXTERNAL)
+        if(WIN32)
+            set(FW_EXTERNAL_LIBRARIES_DIR "${Sight_BINARY_DIR}")
+        else()
+            set(FW_EXTERNAL_LIBRARIES_DIR "${Sight_LIBRARY_DIR}/..")
+        endif()
+    else()
+        set(FW_EXTERNAL_LIBRARIES_DIR "${CONAN_LIB_DIRS}")
+    endif()
+else()
+    set(FW_EXTERNAL_LIBRARIES_DIR "${EXTERNAL_LIBRARIES_DIRECTORIES}")
+endif()
+
 include(${FWCMAKE_INSTALL_FILES_DIR}/helper.cmake)
 include(${FWCMAKE_BUILD_FILES_DIR}/plugin_config.cmake)
 include(${FWCMAKE_BUILD_FILES_DIR}/profile_config.cmake)
@@ -598,6 +612,25 @@ macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
             configure_file(${FWCMAKE_RESOURCE_PATH}/build/linux/template.sh.in ${CMAKE_CURRENT_BINARY_DIR}/${APP_NAME} @ONLY)
             file(COPY ${CMAKE_CURRENT_BINARY_DIR}/${APP_NAME} DESTINATION ${CMAKE_BINARY_DIR}/bin
                 FILE_PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
+        elseif(WIN32 AND USE_CONAN)
+            # Install shortcut
+            string(TOLOWER ${FWPROJECT_NAME} APP_NAME)
+
+            set(LAUNCHER "fwlauncher.exe")
+            set(PROFILE_PATH "${${FWPROJECT_NAME}_FULLNAME}/profile.xml")
+            if(FW_BUILD_EXTERNAL)
+                set(LAUNCHER_PATH "${Sight_BINARY_DIR}\\${LAUNCHER}")
+            else()
+                set(LAUNCHER_PATH "%BINDIR%\\${LAUNCHER}")
+            endif()
+
+            file(TO_NATIVE_PATH "${PROFILE_PATH}" PROFILE_PATH)
+
+            configure_file(${FWCMAKE_RESOURCE_PATH}/install/windows/template.bat.in ${CMAKE_BINARY_DIR}/bin/${APP_NAME}.bat @ONLY)
+            install(PROGRAMS ${CMAKE_BINARY_DIR}/bin/${APP_NAME}.bat DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
+
+            configure_file(${FWCMAKE_RESOURCE_PATH}/install/windows/setpath.bat.in ${CMAKE_BINARY_DIR}/bin/setpath.bat @ONLY)
+            install(PROGRAMS ${CMAKE_BINARY_DIR}/bin/setpath.bat DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
         endif()
     else()
         set_target_properties(${FWPROJECT_NAME} PROPERTIES FOLDER "bundle")
@@ -779,6 +812,7 @@ macro(loadProperties PROPERTIES_FILE)
     unset(DISABLE_PCH)
     unset(START_BEFORE)
     unset(PLUGINS)
+    unset(CONAN_DEPS)
 
     include("${PROPERTIES_FILE}")
 endmacro()
@@ -860,20 +894,26 @@ macro(addProject PROJECT)
             message(SEND_ERROR "<${PROJECT}> dir '' not found.")
         endif()
 
-        # Store requirements for the SDK
-        file(APPEND "${CMAKE_BINARY_DIR}/cmake/SightRequirements.cmake"
-            "set(${PROJECT}_EXTERNAL 1)\n"
-            "set(${PROJECT}_REQUIREMENTS ${${PROJECT}_REQUIREMENTS})\n"
-            "set(${PROJECT}_DEPENDENCIES ${${PROJECT}_DEPENDENCIES})\n"
-            "set(${PROJECT}_VERSION ${${PROJECT}_VERSION})\n"
-            "set(${PROJECT}_TYPE ${${PROJECT}_TYPE})\n")
-        if(${PROJECT}_START)
+        if(BUILD_SDK)
+            # Store requirements for the SDK
             file(APPEND "${CMAKE_BINARY_DIR}/cmake/SightRequirements.cmake"
-                "set(${PROJECT}_START ${${PROJECT}_START})\n")
-        endif()
-        if(${PROJECT}_PLUGINS)
-            file(APPEND "${CMAKE_BINARY_DIR}/cmake/SightRequirements.cmake"
-                "set(${PROJECT}_PLUGINS ${${PROJECT}_PLUGINS})\n")
+                "set(${PROJECT}_EXTERNAL 1)\n"
+                "set(${PROJECT}_REQUIREMENTS ${${PROJECT}_REQUIREMENTS})\n"
+                "set(${PROJECT}_DEPENDENCIES ${${PROJECT}_DEPENDENCIES})\n"
+                "set(${PROJECT}_VERSION ${${PROJECT}_VERSION})\n"
+                "set(${PROJECT}_TYPE ${${PROJECT}_TYPE})\n")
+            if(${PROJECT}_START)
+                file(APPEND "${CMAKE_BINARY_DIR}/cmake/SightRequirements.cmake"
+                    "set(${PROJECT}_START ${${PROJECT}_START})\n")
+            endif()
+            if(${PROJECT}_PLUGINS)
+                file(APPEND "${CMAKE_BINARY_DIR}/cmake/SightRequirements.cmake"
+                    "set(${PROJECT}_PLUGINS ${${PROJECT}_PLUGINS})\n")
+            endif()
+            if(${PROJECT}_CONAN_DEPS)
+                file(APPEND "${CMAKE_BINARY_DIR}/cmake/SightRequirements.cmake"
+                    "set(${PROJECT}_CONAN_DEPS ${${PROJECT}_CONAN_DEPS})\n")
+            endif()
         endif()
 
     endif()

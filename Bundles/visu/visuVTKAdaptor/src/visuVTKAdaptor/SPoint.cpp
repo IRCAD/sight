@@ -11,6 +11,7 @@
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
+#include <fwCom/Slots.hxx>
 
 #include <fwData/Material.hpp>
 #include <fwData/Point.hpp>
@@ -38,6 +39,8 @@ namespace visuVTKAdaptor
 const ::fwCom::Signals::SignalKeyType SPoint::s_INTERACTION_STARTED_SIG = "interactionStarted";
 
 const ::fwServices::IService::KeyType SPoint::s_POINT_INOUT = "point";
+
+const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT = "updateVisibility";
 
 //------------------------------------------------------------------------------
 
@@ -153,6 +156,8 @@ SPoint::SPoint() noexcept :
     rep->SetHandleSize(m_radius);
 
     newSignal<InteractionStartedSignalType>(s_INTERACTION_STARTED_SIG);
+
+    newSlot(s_UPDATE_VISIBILITY_SLOT, &SPoint::updateVisibility, this);
 }
 
 //------------------------------------------------------------------------------
@@ -318,6 +323,20 @@ void SPoint::setInteraction(const bool interaction)
     connections.push(s_POINT_INOUT, ::fwData::Point::s_MODIFIED_SIG, s_UPDATE_SLOT);
 
     return connections;
+}
+
+//------------------------------------------------------------------------------
+
+void SPoint::updateVisibility(bool isVisible)
+{
+    ::fwRenderVTK::vtk::MarkedSphereHandleRepresentation* rep =
+        ::fwRenderVTK::vtk::MarkedSphereHandleRepresentation::SafeDownCast(m_representation);
+
+    SLM_ASSERT("MarkedSphereHandleRepresentation cast failed", rep);
+
+    rep->SetVisibility(isVisible);
+    this->setVtkPipelineModified();
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------

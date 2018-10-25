@@ -7,3 +7,7 @@ set( DEPENDENCIES
     fwRuntime
 )
 set( REQUIREMENTS  )
+set( CONAN_DEPS
+    librealsense/0.9.1.1@sight/stable
+    pcl/1.8.1-rev-9dae1ea@sight/stable
+)

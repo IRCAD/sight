@@ -12,7 +12,7 @@
 
 #include <fwRenderOgre/TransferFunction.hpp>
 
-#include <fwDataTools/helper/MedicalImageAdaptor.hpp>
+#include <fwDataTools/helper/MedicalImage.hpp>
 
 #include <OGRE/OgreMaterial.h>
 #include <OGRE/OgreMesh.h>
@@ -38,7 +38,7 @@ class FWRENDEROGRE_CLASS_API Plane
 {
 public:
 
-    typedef ::fwDataTools::helper::MedicalImageAdaptor::Orientation OrientationMode;
+    typedef ::fwDataTools::helper::MedicalImage::Orientation OrientationMode;
 
     typedef enum FilteringEnum
     {

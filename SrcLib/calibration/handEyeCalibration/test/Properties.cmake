@@ -4,3 +4,6 @@ set( TYPE TEST )
 set( DEPENDENCIES fwCore fwTest fwTools fwData handEyeCalibration eigenTools fwDataIO arData)
 set( REQUIREMENTS  )
 
+set( CONAN_DEPS
+    ceres/1.14.0@sight/stable
+)

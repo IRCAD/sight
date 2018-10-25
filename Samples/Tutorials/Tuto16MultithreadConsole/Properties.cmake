@@ -17,3 +17,6 @@ set( REQUIREMENTS
 )
 
 bundleParam(appXml PARAM_LIST config PARAM_VALUES Tuto16MultithreadConsoleConfig)
+set( CONAN_DEPS
+    boost/1.67.0@sight/stable
+)

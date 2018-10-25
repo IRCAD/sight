@@ -16,3 +16,6 @@ set( DEPENDENCIES
         fwDataTools
 )
 set( REQUIREMENTS  )
+set( CONAN_DEPS
+    qt/5.11.1@sight/stable
+)

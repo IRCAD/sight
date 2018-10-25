@@ -179,7 +179,7 @@ void Plane::initialize3DPlane()
     // Mesh plane instanciation:
     // Y is the default upVector,
     // so if we want a plane which normal is the Y unit vector we have to create it differently
-    if(m_orientation == ::fwDataTools::helper::MedicalImageAdaptor::Orientation::Y_AXIS)
+    if(m_orientation == ::fwDataTools::helper::MedicalImage::Orientation::Y_AXIS)
     {
         m_slicePlane = ::Ogre::MeshManager::getSingletonPtr()->createPlane(
             m_slicePlaneName,

@@ -1,13 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VISUVTKADAPTOR_SPOINT_HPP__
-
-#ifndef __VISUVTKADAPTOR_SPOINT_HPP__
-#define __VISUVTKADAPTOR_SPOINT_HPP__
+#pragma once
 
 #include "visuVTKAdaptor/config.hpp"
 
@@ -30,6 +27,9 @@ namespace visuVTKAdaptor
  *
  * @section Signals Signals
  * - interactionStarted : when point interaction is started.
+ *
+ * @section Slots Slots
+ * - \b updateVisibility(bool) : show/hide the point
  *
  * @code{.xml}
       <service uid="..." type="::visuVTKAdaptor::SPoint" autoConnect="yes">
@@ -83,6 +83,9 @@ public:
      * @}
      */
 
+    /// Slot: update point visibility (true = visible)
+    VISUVTKADAPTOR_API void updateVisibility( bool isVisible );
+
 protected:
 
     VISUVTKADAPTOR_API void configuring() override;
@@ -112,7 +115,3 @@ private:
 };
 
 } //namespace visuVTKAdaptor
-
-#endif // __VISUVTKADAPTOR_SPOINT_HPP__
-
-#endif // __VISUVTKADAPTOR_SPOINT_HPP__
