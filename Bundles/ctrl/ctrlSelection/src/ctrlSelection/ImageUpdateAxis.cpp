@@ -45,11 +45,11 @@ void ImageUpdateAxis::updateSliceType(int from, int to)
     if( to == static_cast< int > ( m_orientation ) )
     {
         m_orientation =
-            static_cast< ::fwDataTools::helper::MedicalImageAdaptor::Orientation > ( from );
+            static_cast< ::fwDataTools::helper::MedicalImage::Orientation > ( from );
     }
     else if(from == static_cast<int>(m_orientation))
     {
-        m_orientation = static_cast< ::fwDataTools::helper::MedicalImageAdaptor::Orientation >( to );
+        m_orientation = static_cast< ::fwDataTools::helper::MedicalImage::Orientation >( to );
     }
     this->updating();
 }
@@ -94,15 +94,15 @@ void ImageUpdateAxis::configuring()
 
     if(orientation == "axial" )
     {
-        m_orientation = ::fwDataTools::helper::MedicalImageAdaptor::Z_AXIS;
+        m_orientation = ::fwDataTools::helper::MedicalImage::Z_AXIS;
     }
     else if(orientation == "frontal" )
     {
-        m_orientation = ::fwDataTools::helper::MedicalImageAdaptor::Y_AXIS;
+        m_orientation = ::fwDataTools::helper::MedicalImage::Y_AXIS;
     }
     else if(orientation == "sagittal" )
     {
-        m_orientation = ::fwDataTools::helper::MedicalImageAdaptor::X_AXIS;
+        m_orientation = ::fwDataTools::helper::MedicalImage::X_AXIS;
     }
     else
     {

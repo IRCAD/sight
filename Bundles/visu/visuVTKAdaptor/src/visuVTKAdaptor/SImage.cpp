@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -13,6 +13,7 @@
 
 #include <fwData/Boolean.hpp>
 #include <fwData/Image.hpp>
+#include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/TransferFunction.hpp>
 
 #include <fwDataTools/fieldHelper/Image.hpp>
@@ -49,9 +50,10 @@ SImage::SImage() noexcept :
     m_allowAlphaInTF(false),
     m_lut(vtkSmartPointer<fwVtkWindowLevelLookupTable>::New()),
     m_map2colors(vtkSmartPointer<vtkImageMapToColors>::New()),
-    m_imageData(vtkSmartPointer<vtkImageData>::New())
+    m_imageData(vtkSmartPointer<vtkImageData>::New()),
+    m_helperTF(std::bind(&SImage::updateTFPoints, this),
+               std::bind(&SImage::updateTFWindowing, this, std::placeholders::_1, std::placeholders::_2))
 {
-    this->installTFSlots(this);
     newSlot(s_UPDATE_IMAGE_OPACITY_SLOT, &SImage::updateImageOpacity, this);
 }
 
@@ -67,11 +69,11 @@ void SImage::starting()
 {
     this->initialize();
 
-    ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction >(s_TF_INOUT);
-    ::fwData::Image::sptr image         = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("Missing image", image);
 
-    this->setOrCreateTF(tf, image);
+    ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
+    m_helperTF.setOrCreateTF(tf, image);
 
     this->updating();
 }
@@ -80,7 +82,7 @@ void SImage::starting()
 
 void SImage::stopping()
 {
-    this->removeTFConnections();
+    m_helperTF.removeTFConnections();
     this->destroyPipeline();
 }
 
@@ -110,11 +112,12 @@ void SImage::swapping(const KeyType& key)
 {
     if (key == s_TF_INOUT)
     {
-        ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction >(s_TF_INOUT);
-        ::fwData::Image::sptr image         = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+        ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
         SLM_ASSERT("Missing image", image);
 
-        this->setOrCreateTF(tf, image);
+        ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
+        m_helperTF.setOrCreateTF(tf, image);
+
         this->updating();
     }
 }
@@ -164,7 +167,6 @@ void SImage::updateImage( ::fwData::Image::sptr image  )
 {
     ::fwVtkIO::toVTKImage(image, m_imageData);
 
-    this->updateImageInfos(image);
     this->setVtkPipelineModified();
 }
 
@@ -172,13 +174,15 @@ void SImage::updateImage( ::fwData::Image::sptr image  )
 
 void SImage::updateImageTransferFunction()
 {
-    ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
+    const ::fwData::TransferFunction::csptr tf = m_helperTF.getTransferFunction();
+    {
+        const ::fwData::mt::ObjectReadLock tfLock(tf);
+        ::fwVtkIO::helper::TransferFunction::toVtkLookupTable(tf, m_lut, m_allowAlphaInTF, 256 );
 
-    ::fwVtkIO::helper::TransferFunction::toVtkLookupTable( tf, m_lut, m_allowAlphaInTF, 256 );
-
-    m_lut->SetClamping( !tf->getIsClamped() );
-    m_lut->SetWindow(tf->getWindow());
-    m_lut->SetLevel(tf->getLevel());
+        m_lut->SetClamping(!tf->getIsClamped());
+        m_lut->SetWindow(tf->getWindow());
+        m_lut->SetLevel(tf->getLevel());
+    }
 
     this->setVtkPipelineModified();
 }

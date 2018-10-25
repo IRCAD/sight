@@ -43,8 +43,7 @@
 # ifdef _DEBUG
 
 #  ifdef WIN32
-#   include <windows.h>
-#   define DEBUG_BREAK() DebugBreak()
+#   define DEBUG_BREAK() __debugbreak()
 #  else
 #   include <csignal>
 #   define DEBUG_BREAK() std::raise(SIGTRAP)

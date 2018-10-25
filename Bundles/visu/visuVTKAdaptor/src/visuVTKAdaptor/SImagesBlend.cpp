@@ -17,6 +17,7 @@
 #include <fwData/Color.hpp>
 #include <fwData/Image.hpp>
 #include <fwData/Integer.hpp>
+#include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/String.hpp>
 #include <fwData/TransferFunction.hpp>
 
@@ -175,9 +176,10 @@ void SImagesBlend::swapping(const KeyType& key)
 
             if (!wsrv.expired())
             {
-                ::fwData::TransferFunction::sptr tf  = this->getInOut< ::fwData::TransferFunction >(s_TF_GROUP, index);
+                const ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_GROUP,
+                                                                                                        index);
                 ::fwServices::IService::sptr service = wsrv.lock();
-                if (tf)
+                if(tf != nullptr)
                 {
                     service->registerInOut(tf, SImage::s_TF_INOUT, false, true);
                     service->swapKey(SImage::s_TF_INOUT, nullptr);

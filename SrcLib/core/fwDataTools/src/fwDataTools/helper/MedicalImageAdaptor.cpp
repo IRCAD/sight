@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -16,7 +16,10 @@
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
+#include <fwCore/macros.hpp>
+
 #include <fwData/Image.hpp>
+#include <fwData/mt/ObjectWriteLock.hpp>
 #include <fwData/TransferFunction.hpp>
 
 namespace fwDataTools
@@ -33,6 +36,9 @@ static const ::fwCom::Slots::SlotKeyType s_UPDATE_TF_WINDOWING_SLOT = "updateTFW
 MedicalImageAdaptor::MedicalImageAdaptor() :
     m_orientation(Z_AXIS)
 {
+    FW_DEPRECATED_MSG(
+        "fwDataTools::helper::MedicalImageAdaptor is deprecated, please use fwDataTools::helper::MedicalImage or fwDataTools::helper::TransferFunction instead",
+        19.0);
 }
 
 //------------------------------------------------------------------------------
@@ -309,10 +315,12 @@ void MedicalImageAdaptor::setOrCreateTF(const fwData::TransferFunction::sptr& _t
     this->removeTFConnections();
     if (_tf)
     {
+        ::fwData::mt::ObjectWriteLock tfLock(_tf);
         this->setTransferFunction(_tf);
     }
     else
     {
+        ::fwData::mt::ObjectWriteLock tfLock(_image);
         this->createTransferFunction(_image);
     }
     this->installTFConnections();
@@ -349,11 +357,12 @@ void MedicalImageAdaptor::installTFConnections()
     ::fwCom::Connection connection;
 
     ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
-
-    connection = tf->signal(::fwData::TransferFunction::s_POINTS_MODIFIED_SIG)->connect(m_slotUpdateTFPoints);
-    m_tfConnections.addConnection(connection);
-    connection = tf->signal(::fwData::TransferFunction::s_WINDOWING_MODIFIED_SIG)->connect(m_slotUpdateTFWindowing);
-    m_tfConnections.addConnection(connection);
+    {
+        connection = tf->signal(::fwData::TransferFunction::s_POINTS_MODIFIED_SIG)->connect(m_slotUpdateTFPoints);
+        m_tfConnections.addConnection(connection);
+        connection = tf->signal(::fwData::TransferFunction::s_WINDOWING_MODIFIED_SIG)->connect(m_slotUpdateTFWindowing);
+        m_tfConnections.addConnection(connection);
+    }
 }
 
 //------------------------------------------------------------------------------

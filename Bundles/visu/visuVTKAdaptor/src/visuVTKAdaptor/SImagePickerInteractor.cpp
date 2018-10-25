@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -123,7 +123,7 @@ public:
 
                 ::fwDataTools::PickingInfo info;
 
-                m_adaptor->worldToImageSliceIndex(world, info.m_worldPos);
+                m_adaptor->m_helper.worldToImageSliceIndex(world, info.m_worldPos);
 
                 const auto iter = SPickerInteractor::s_vtkEventIDConversion.find(eventId);
                 SLM_ASSERT("Unknown eventId", iter != SPickerInteractor::s_vtkEventIDConversion.end());
@@ -224,7 +224,7 @@ void SImagePickerInteractor::starting()
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("Missing image", image);
 
-    this->updateImageInfos(image);
+    m_helper.updateImageInfos(image);
 }
 
 //------------------------------------------------------------------------------
@@ -234,16 +234,15 @@ void SImagePickerInteractor::updating()
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("Missing image", image);
 
-    this->updateImageInfos(image);
+    m_helper.updateImageInfos(image);
 }
 
 //-----------------------------------------------------------------------------
 
 void SImagePickerInteractor::updateSliceIndex(int axial, int frontal, int sagittal)
 {
-    m_axialIndex->value()    = axial;
-    m_frontalIndex->value()  = frontal;
-    m_sagittalIndex->value() = sagittal;
+    const int indexes[] = {sagittal, frontal, axial};
+    m_helper.setSliceIndex(indexes);
 }
 
 //------------------------------------------------------------------------------

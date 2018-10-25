@@ -21,3 +21,6 @@ set( REQUIREMENTS dataReg
                   arDataReg
 )
 
+set( CONAN_DEPS
+    opencv/3.4.3@sight/stable
+)

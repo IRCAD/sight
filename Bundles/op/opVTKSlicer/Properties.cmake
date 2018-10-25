@@ -10,3 +10,6 @@ set( DEPENDENCIES
     fwServices
     fwVtkIO
 )
+set( CONAN_DEPS
+    vtk/8.0.1@sight/stable
+)

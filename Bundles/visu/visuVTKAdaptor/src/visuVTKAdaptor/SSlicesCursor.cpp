@@ -107,7 +107,7 @@ void SSlicesCursor::starting()
 
     this->buildPolyData();
     this->buildColorAttribute();
-    this->updateImageInfos(image);
+    m_helper.updateImageInfos(image);
     this->updateColors();
     m_cursorMapper->SetInputData( m_cursorPolyData );
     m_cursorActor->SetMapper(m_cursorMapper);
@@ -281,7 +281,7 @@ void SSlicesCursor::buildColorAttribute()
 
 void SSlicesCursor::updateColors()
 {
-    switch (m_orientation )
+    switch (m_helper.getOrientation())
     {
         case 0: m_cursorMapper->SelectColorArray("colorXAxis"); break;
         case 1: m_cursorMapper->SelectColorArray("colorYAxis"); break;
@@ -322,10 +322,12 @@ void SSlicesCursor::updateImageSliceIndex( ::fwData::Image::sptr image )
         m_cursorActor->VisibilityOn();
 
         int pos[3];
+        ::fwData::Integer::sptr arr[3];
+        m_helper.getSliceIndex(arr);
 
-        pos[2] = m_axialIndex->value();
-        pos[1] = m_frontalIndex->value();
-        pos[0] = m_sagittalIndex->value();
+        pos[2] = arr[2]->value();
+        pos[1] = arr[1]->value();
+        pos[0] = arr[0]->value();
 
         const ::fwData::Image::SpacingType spacing = image->getSpacing();
         const ::fwData::Image::OriginType origin   = image->getOrigin();
@@ -341,7 +343,7 @@ void SSlicesCursor::updateImageSliceIndex( ::fwData::Image::sptr image )
         {
             for (unsigned int dim = 0; dim < 3; ++dim )
             {
-                if ( (dim + p + 1)%3 == m_orientation )
+                if ( (dim + p + 1)%3 == m_helper.getOrientation() )
                 {
                     cursorPoints[p][dim]   = origin.at(dim);
                     cursorPoints[p+2][dim] = (size[dim]-1) * spacing[dim] + origin.at(dim);
@@ -374,9 +376,8 @@ void SSlicesCursor::updateImageSliceIndex( ::fwData::Image::sptr image )
 
 void SSlicesCursor::updateSliceIndex(int axial, int frontal, int sagittal)
 {
-    m_axialIndex->value()    = axial;
-    m_frontalIndex->value()  = frontal;
-    m_sagittalIndex->value() = sagittal;
+    int pos[] {sagittal, frontal, axial};
+    m_helper.setSliceIndex(pos);
 
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
 
@@ -401,13 +402,13 @@ void SSlicesCursor::showNormalCross()
 
 void SSlicesCursor::updateSliceType(int from, int to)
 {
-    if( to == static_cast<int>(m_orientation) )
+    if( to == static_cast<int>(m_helper.getOrientation()) )
     {
-        setOrientation( static_cast< Orientation >( from ));
+        m_helper.setOrientation( static_cast< Orientation >( from ));
     }
-    else if( from == static_cast<int>(m_orientation) )
+    else if( from == static_cast<int>(m_helper.getOrientation()) )
     {
-        setOrientation( static_cast< Orientation >( to ));
+        m_helper.setOrientation( static_cast< Orientation >( to ));
     }
     this->updating();
 }
@@ -419,7 +420,7 @@ void SSlicesCursor::updateImage()
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("Missing image", image);
 
-    this->updateImageInfos(image);
+    m_helper.updateImageInfos(image);
     this->updating();
 }
 

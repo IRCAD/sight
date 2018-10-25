@@ -22,3 +22,7 @@ set( PLUGINS
     platforms
     imageformats
 )
+set( CONAN_DEPS
+    boost/1.67.0@sight/stable
+    qt/5.11.1@sight/stable
+)

@@ -6,6 +6,8 @@
 
 #include "visuVTKAdaptor/SPointLabel.hpp"
 
+#include <fwCom/Slots.hxx>
+
 #include <fwData/Point.hpp>
 #include <fwData/String.hpp>
 
@@ -27,6 +29,7 @@ namespace visuVTKAdaptor
 {
 
 const ::fwServices::IService::KeyType SPointLabel::s_POINT_INPUT = "point";
+const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT       = "updateVisibility";
 
 //------------------------------------------------------------------------------
 
@@ -35,6 +38,8 @@ SPointLabel::SPointLabel() :
 {
     m_actor->GetPositionCoordinate()->SetCoordinateSystemToWorld();
     m_actor->GetPosition2Coordinate()->SetCoordinateSystemToWorld();
+    newSlot(s_UPDATE_VISIBILITY_SLOT, &SPointLabel::updateVisibility, this);
+
 }
 
 //------------------------------------------------------------------------------
@@ -87,6 +92,14 @@ void SPointLabel::updating()
     return connections;
 }
 
+//------------------------------------------------------------------------------
+
+void SPointLabel::updateVisibility(bool isVisible)
+{
+    m_actor->SetVisibility(isVisible);
+    this->setVtkPipelineModified();
+    this->requestRender();
+}
 //------------------------------------------------------------------------------
 
 } //namespace visuVTKAdaptor

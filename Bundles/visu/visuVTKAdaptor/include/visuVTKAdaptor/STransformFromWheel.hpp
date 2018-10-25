@@ -1,15 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017.
+ * FW4SPL - Copyright (C) IRCAD, 2017-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VISUVTKADAPTOR_STRANSFORMFROMWHEEL_HPP__
-#define __VISUVTKADAPTOR_STRANSFORMFROMWHEEL_HPP__
+#pragma once
 
 #include "visuVTKAdaptor/config.hpp"
 
-#include <fwDataTools/helper/MedicalImageAdaptor.hpp>
+#include <fwDataTools/helper/MedicalImage.hpp>
 #include <fwDataTools/PickingInfo.hpp>
 
 #include <fwRenderVTK/IAdaptor.hpp>
@@ -85,7 +84,7 @@ private:
     void updateSliceOrientation(int from, int to);
 
     /// Rotation axis direction.
-    ::fwDataTools::helper::MedicalImageAdaptor::Orientation m_orientation;
+    ::fwDataTools::helper::MedicalImage::Orientation m_orientation;
 
     /// Interaction mode: determines how the picked point is handled (default to 2d)
     unsigned char m_interactionMode;
@@ -101,5 +100,3 @@ private:
 };
 
 } // namespace visuVTKAdaptor
-
-#endif // __VISUVTKADAPTOR_STRANSFORMFROMWHEEL_HPP__

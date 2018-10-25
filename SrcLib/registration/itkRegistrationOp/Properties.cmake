@@ -11,3 +11,6 @@ set( DEPENDENCIES
 )
 set( REQUIREMENTS)
 
+set( CONAN_DEPS
+    itk/4.13.0@sight/stable
+)

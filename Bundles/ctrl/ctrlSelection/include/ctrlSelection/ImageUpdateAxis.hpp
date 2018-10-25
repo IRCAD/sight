@@ -8,7 +8,7 @@
 
 #include "ctrlSelection/config.hpp"
 
-#include <fwDataTools/helper/MedicalImageAdaptor.hpp>
+#include <fwDataTools/helper/MedicalImage.hpp>
 
 #include <fwServices/IController.hpp>
 #include <fwServices/IService.hpp>
@@ -88,7 +88,7 @@ private:
     std::string m_floatID;
 
     /// Orientation of the image axis.
-    ::fwDataTools::helper::MedicalImageAdaptor::Orientation m_orientation;
+    ::fwDataTools::helper::MedicalImage::Orientation m_orientation;
 };
 
 } // ctrlSelection
