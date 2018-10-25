@@ -151,6 +151,8 @@ void SMesh::starting()
 {
     this->initialize();
 
+    this->getRenderService()->makeCurrent();
+
     if (this->getTransformId().empty())
     {
         this->setTransformId(this->getID() + "_TF");
@@ -190,6 +192,8 @@ void SMesh::starting()
 
 void SMesh::stopping()
 {
+    this->getRenderService()->makeCurrent();
+
     ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
     SLM_ASSERT("::Ogre::SceneManager is null", sceneMgr);
 

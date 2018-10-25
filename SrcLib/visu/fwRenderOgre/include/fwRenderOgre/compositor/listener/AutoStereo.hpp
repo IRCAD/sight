@@ -35,8 +35,11 @@ public:
 
 private:
 
+    /// Pair storing techniques together with their material's handle.
+    using TechniqueMaterialPair = std::pair< ::Ogre::Technique*, ::Ogre::ResourceHandle >;
+
     /// list of techniques to be removed from the material when destroying the listener
-    std::vector< ::Ogre::Technique*> m_createdTechniques;
+    std::vector< TechniqueMaterialPair > m_createdTechniques;
 
     /// Number of viewpoints used for stereo rendering.
     const std::uint8_t m_viewpointNumber;
