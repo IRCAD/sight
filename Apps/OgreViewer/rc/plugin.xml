@@ -98,8 +98,8 @@
                         <view caption="Compositor manager" />
                         <view caption="Organ manager" selected="yes" />
                         <view caption="Light manager" />
-                        <view caption="volume TF manager" />
-                        <view caption="csg TF manager" />
+                        <view caption="Volume TF manager" />
+                        <view caption="CSG TF manager" />
                         <view caption="IDVR manager" />
                     </layout>
                 </gui>

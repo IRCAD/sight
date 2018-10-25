@@ -173,10 +173,10 @@ protected:
     /// Retrieves the current transfer function
     VISUOGREADAPTOR_API void swapping(const KeyType& key) override;
 
-    /// Slot: update the displayed transfer function
+    /// Update the displayed transfer function
     VISUOGREADAPTOR_API virtual void updateVolumeTF();
 
-    /// Slot: update the displayed transfer function used for the IDVR
+    /// Update the displayed transfer function used for the IDVR
     VISUOGREADAPTOR_API virtual void updateCSGTF();
 
     /**
@@ -234,8 +234,10 @@ private:
     /// Updates the clipping box position from the inout clipping matrix.
     void updateClippingBox();
 
+    /// Helper to manage the volume TF.
     ::fwDataTools::helper::TransferFunction m_helperVolumeTF;
 
+    /// Helper to manage the TF use to fill the CSG.
     ::fwDataTools::helper::TransferFunction m_helperCSGTF;
 
     /// Updates the inout clipping matrix from the clipping box positions.
@@ -252,7 +254,7 @@ private:
     /// TF texture used for rendering.
     ::fwRenderOgre::TransferFunction::sptr m_gpuVolumeTF;
 
-    /// TF texture used for rendering inside the IDVR.
+    /// TF texture used to fill the CSG.
     ::fwRenderOgre::TransferFunction::sptr m_gpuCSGTF;
 
     /// Pre-integration table.
