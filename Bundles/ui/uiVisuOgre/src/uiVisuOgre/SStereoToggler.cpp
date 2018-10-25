@@ -54,7 +54,7 @@ void SStereoToggler::configuring()
     }
     else
     {
-        SLM_FATAL("Unknown stereo mode: '" + stereoMode + "'");
+        SLM_ERROR("Unknown stereo mode: '" + stereoMode + "'. SStereoToggler will do nothing.");
     }
 }
 
@@ -80,12 +80,18 @@ void SStereoToggler::updating()
             ::fwRenderOgre::SRender::LayerMapType layerMap = render->getLayers();
 
             auto layerIt = layerMap.find(m_layerId);
-            SLM_ASSERT("Layer '" + m_layerId + "' does not exist.", layerIt != layerMap.end());
 
-            const bool enableStereo = this->getIsActive() && this->getIsExecutable();
-            const auto stereoMode   = enableStereo ? m_stereoMode : ::fwRenderOgre::Layer::StereoModeType::NONE;
+            if(layerIt != layerMap.end())
+            {
+                const bool enableStereo = this->getIsActive() && this->getIsExecutable();
+                const auto stereoMode   = enableStereo ? m_stereoMode : ::fwRenderOgre::Layer::StereoModeType::NONE;
 
-            layerIt->second->setStereoMode(stereoMode);
+                layerIt->second->setStereoMode(stereoMode);
+            }
+            else
+            {
+                SLM_WARN("No layer named '" + m_layerId "' in render service '" + render->getID() "'.");
+            }
         }
     }
 }
