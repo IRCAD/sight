@@ -21,12 +21,14 @@ uniform vec4 u_volIllumFactor;
 
 uniform sampler2D u_entryPoints;
 
-uniform mat4 u_worldViewProj;
 #ifdef AUTOSTEREO
 uniform mat4 u_invWorldView;
 uniform mat4 u_invProj;
+uniform mat4 u_worldView;
+uniform mat4 u_proj;
 #else
 uniform mat4 u_invWorldViewProj;
+uniform mat4 u_worldViewProj;
 #endif // AUTOSTEREO
 
 uniform vec3 u_cameraPos;
@@ -142,7 +144,11 @@ vec3 fragCoordsToNDC(in vec3 fragCoord)
 
 float voxelScreenDepth(in vec3 pos)
 {
+#ifdef AUTOSTEREO
+    vec4 projPos = u_proj * u_worldView * vec4(pos, 1);
+#else
     vec4 projPos = u_worldViewProj * vec4(pos, 1);
+#endif // AUTOSTEREO
 
     return projPos.z / projPos.w;
 }
