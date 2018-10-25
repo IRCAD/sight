@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -276,7 +276,7 @@ void SProbeCursor::updating()
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("Missing image", image);
 
-    this->updateImageInfos(image);
+    m_helper.updateImageInfos(image);
     this->setVisibility(false);
     this->requestRender();
 }
@@ -297,9 +297,8 @@ void SProbeCursor::stopping()
 
 void SProbeCursor::updateSliceIndex(int axial, int frontal, int sagittal)
 {
-    m_axialIndex->value()    = axial;
-    m_frontalIndex->value()  = frontal;
-    m_sagittalIndex->value() = sagittal;
+    int pos[] {sagittal, frontal, axial};
+    m_helper.setSliceIndex(pos);
 }
 
 //------------------------------------------------------------------------------
@@ -316,7 +315,7 @@ void SProbeCursor::updateView( double world[3] )
     SLM_ASSERT("Missing image", image);
 
     int index[3];
-    this->worldToImageSliceIndex( world, index );
+    m_helper.worldToImageSliceIndex( world, index );
     OSLM_TRACE("index=" << index[0] << "," << index[1] << "," << index[2] << "," );
 
     std::string txt;
@@ -365,16 +364,19 @@ void SProbeCursor::computeCrossExtremity(::fwData::Image::csptr image, const int
 {
     int sliceIndex[3]; // the current sliceIndex
 
-    sliceIndex[2] = m_axialIndex->value();
-    sliceIndex[1] = m_frontalIndex->value();
-    sliceIndex[0] = m_sagittalIndex->value();
+    ::fwData::Integer::sptr arr[3];
+    m_helper.getSliceIndex(arr);
+
+    sliceIndex[2] = arr[2]->value();
+    sliceIndex[1] = arr[1]->value();
+    sliceIndex[0] = arr[0]->value();
 
     double probeWorld[3]; // probe index in world positioning system
     for (unsigned int dim = 0; dim < 3; ++dim )
     {
         if ( probeSlice[dim] == sliceIndex[dim] ) // FIXME if (sliceIndex==probeWorld)
         {
-            this->setOrientation(static_cast<int>(dim));
+            m_helper.setOrientation(static_cast<int>(dim));
         }
         probeWorld[dim] = probeSlice[dim]*image->getSpacing()[dim] + image->getOrigin().at(dim);
     }
@@ -385,7 +387,7 @@ void SProbeCursor::computeCrossExtremity(::fwData::Image::csptr image, const int
         {
             worldCross[p][dim]   = probeWorld[dim];
             worldCross[p+2][dim] = probeWorld[dim];
-            if ( (dim + p + 1)%3 == m_orientation )
+            if ( (dim + p + 1)%3 == m_helper.getOrientation() )
             {
                 worldCross[p][dim] = image->getOrigin().at(dim);
                 const ::fwData::Image::SizeType::value_type size       = image->getSize().at(dim)-1;

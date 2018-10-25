@@ -8,6 +8,7 @@
 
 #include <fwData/Boolean.hpp>
 #include <fwData/Material.hpp>
+#include <fwData/mt/ObjectWriteLock.hpp>
 #include <fwData/Reconstruction.hpp>
 
 #include <fwMedData/ImageSeries.hpp>
@@ -82,15 +83,15 @@ void SImageSeries::configuring()
     const std::string orientation = config.get<std::string>("sliceIndex", "axial");
     if(orientation == "axial" )
     {
-        m_orientation = Z_AXIS;
+        m_helper.setOrientation(::fwDataTools::helper::MedicalImage::Z_AXIS);
     }
     else if(orientation == "frontal" )
     {
-        m_orientation = Y_AXIS;
+        m_helper.setOrientation(::fwDataTools::helper::MedicalImage::Y_AXIS);
     }
     else if(orientation == "sagittal" )
     {
-        m_orientation = X_AXIS;
+        m_helper.setOrientation(::fwDataTools::helper::MedicalImage::X_AXIS);
     }
 
     const std::string tfalpha = config.get<std::string>("tfalpha", "no");
@@ -128,9 +129,10 @@ void SImageSeries::updating()
     ::fwData::Image::sptr image = series->getImage();
     negato->registerInOut(image, SNegatoMPR::s_IMAGE_INOUT, true);
 
-    ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction >(s_TF_INOUT);
-    if (tf)
+    ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
+    if(tf != nullptr)
     {
+        ::fwData::mt::ObjectWriteLock tfLock(tf);
         negato->registerInOut(tf, SNegatoMPR::s_TF_INOUT, false);
     }
 
@@ -141,7 +143,7 @@ void SImageSeries::updating()
 
     negato->set3dMode(this->is3dModeEnabled());
     negato->setSliceMode(this->getSliceMode());
-    negato->setOrientation(this->getOrientation());
+    negato->setOrientation(m_helper.getOrientation());
     negato->setAllowAlphaInTF(m_allowAlphaInTF);
     negato->setInterpolation(m_interpolation);
     negato->setVtkImageSourceId(m_imageSourceId);

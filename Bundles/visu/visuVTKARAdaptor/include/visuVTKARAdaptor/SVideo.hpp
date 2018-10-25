@@ -8,7 +8,7 @@
 
 #include "visuVTKARAdaptor/config.hpp"
 
-#include <fwDataTools/helper/MedicalImageAdaptor.hpp>
+#include <fwData/Array.hpp>
 
 #include <fwRenderVTK/IAdaptor.hpp>
 
@@ -53,7 +53,7 @@ class VISUVTKARADAPTOR_CLASS_API SVideo : public ::fwRenderVTK::IAdaptor
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro( (SVideo)(::fwRenderVTK::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (SVideo)(::fwRenderVTK::IAdaptor) )
 
     /// Constructor
     SVideo() noexcept;

@@ -1,15 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017.
+ * FW4SPL - Copyright (C) IRCAD, 2017-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __OPVTKSLICER_SPLANESLICER_HPP__
-#define __OPVTKSLICER_SPLANESLICER_HPP__
+#pragma once
 
 #include "opVTKSlicer/config.hpp"
 
-#include <fwDataTools/helper/MedicalImageAdaptor.hpp>
+#include <fwDataTools/helper/MedicalImage.hpp>
 
 #include <fwServices/IOperator.hpp>
 
@@ -59,7 +58,7 @@ class OPVTKSLICER_CLASS_API SPlaneSlicer : public ::fwServices::IOperator
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SPlaneSlicer)(::fwServices::IOperator) );
+    fwCoreServiceClassDefinitionsMacro( (SPlaneSlicer)(::fwServices::IOperator) )
 
     /// Constructor.
     OPVTKSLICER_API SPlaneSlicer() noexcept;
@@ -104,12 +103,10 @@ private:
     void updateDefaultValue();
 
     /// Slicing orientation. Determines the two axes defining the plane.
-    ::fwDataTools::helper::MedicalImageAdaptor::Orientation m_orientation;
+    ::fwDataTools::helper::MedicalImage::Orientation m_orientation;
 
     /// Vtk reslicing algorithm.
     vtkSmartPointer<vtkImageReslice> m_reslicer;
 };
 
 } //namespace opVTKSlicer
-
-#endif // __OPVTKSLICER_SPLANESLICER_HPP__

@@ -1,15 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VISUVTKADAPTOR_SIMAGESLICEORIENTATIONTEXT_HPP__
-#define __VISUVTKADAPTOR_SIMAGESLICEORIENTATIONTEXT_HPP__
+#pragma once
 
 #include "visuVTKAdaptor/config.hpp"
 
-#include <fwDataTools/helper/MedicalImageAdaptor.hpp>
+#include <fwDataTools/helper/MedicalImage.hpp>
 
 #include <fwRenderVTK/IAdaptor.hpp>
 
@@ -48,13 +47,13 @@ class ImageSliceOrientationTextPImpl;
  *        if 'default' is given, 'R,L,A,P,S,I' is used. If empty, nothing is displayed
  *    - b initialOrientation : initial orientation of the associated slice
  */
-class VISUVTKADAPTOR_CLASS_API SImageSliceOrientationText : public ::fwDataTools::helper::MedicalImageAdaptor,
+class VISUVTKADAPTOR_CLASS_API SImageSliceOrientationText : public ::fwDataTools::helper::MedicalImage,
                                                             public ::fwRenderVTK::IAdaptor
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SImageSliceOrientationText)(::fwRenderVTK::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (SImageSliceOrientationText)(::fwRenderVTK::IAdaptor) )
 
     VISUVTKADAPTOR_API SImageSliceOrientationText() noexcept;
     VISUVTKADAPTOR_API virtual ~SImageSliceOrientationText() noexcept;
@@ -104,5 +103,3 @@ private:
 };
 
 } //namespace visuVTKAdaptor
-
-#endif // __VISUVTKADAPTOR_SIMAGESLICEORIENTATIONTEXT_HPP__

@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VISUVTKADAPTOR_SPOINTLABEL_HPP__
-#define __VISUVTKADAPTOR_SPOINTLABEL_HPP__
+#pragma once
 
 #include "visuVTKAdaptor/config.hpp"
 #include "visuVTKAdaptor/SText.hpp"
@@ -21,6 +20,9 @@ namespace visuVTKAdaptor
 
 /**
  * @brief Displays a label on a point. The label is given in point field "m_labelId"
+ *
+ * @section Slots Slots
+ * - \b updateVisibility(bool) : show/hide the labelPoint
  *
  * @section XML XML Configuration
  *
@@ -42,11 +44,14 @@ class VISUVTKADAPTOR_CLASS_API SPointLabel : public SText
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro( (SPointLabel)(::fwRenderVTK::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (SPointLabel)(::fwRenderVTK::IAdaptor) )
 
     VISUVTKADAPTOR_API SPointLabel();
 
     static const ::fwServices::IService::KeyType s_POINT_INPUT;
+
+    /// Slot: update pointLabel visibility (true = visible)
+    VISUVTKADAPTOR_API void updateVisibility(bool isVisible);
 
 protected:
 
@@ -64,6 +69,3 @@ protected:
 };
 
 } //namespace visuVTKAdaptor
-
-#endif // __VISUVTKADAPTOR_SPOINTLABEL_HPP__
-

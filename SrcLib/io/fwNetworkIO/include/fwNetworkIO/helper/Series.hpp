@@ -12,9 +12,6 @@
 
 #include <fwMedData/SeriesDB.hpp>
 
-#include <dcmtk/config/osconfig.h>
-#include <dcmtk/dcmnet/scu.h>
-
 #include <QJsonObject>
 
 namespace fwMedData

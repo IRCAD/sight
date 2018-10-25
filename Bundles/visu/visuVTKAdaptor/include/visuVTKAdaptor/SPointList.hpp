@@ -26,6 +26,7 @@ namespace visuVTKAdaptor
  * @section Slots Slots
  * - addPoint(::fwData::Point::sptr) : add point in the list.
  * - updateSpline() : Updates the spline's points.
+ * - updateVisibility(bool): Updates the visibility of the pointList
  *
  * @code{.xml}
       <service uid="..." type="::visuVTKAdaptor::SPointList" autoConnect="yes">
@@ -55,7 +56,7 @@ public:
 
     static const ::fwServices::IService::KeyType s_POINTLIST_INPUT;
 
-    fwCoreServiceClassDefinitionsMacro( (SPointList)(::fwRenderVTK::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (SPointList)(::fwRenderVTK::IAdaptor) )
 
     VISUVTKADAPTOR_API SPointList() noexcept;
 
@@ -66,6 +67,9 @@ public:
     VISUVTKADAPTOR_API void setColor(const fwData::Color::sptr);
 
     VISUVTKADAPTOR_API void setInteraction(const bool);
+
+    /// Slot: update point list visibility (true = visible)
+    VISUVTKADAPTOR_API void updateVisibility( bool isVisible);
 
 protected:
 
