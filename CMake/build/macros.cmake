@@ -838,7 +838,7 @@ macro(fwLoadProperties)
 
     if(PLUGINS)
         set(${NAME}_PLUGINS ${PLUGINS})
-        set(${NAME}_PLUGINS ${NAME}_PLUGINS PARENT_SCOPE)
+        set(${NAME}_PLUGINS ${PLUGINS} PARENT_SCOPE)
     endif()
 
     fwDefineDependencies( ${NAME} ${DEPENDENCIES} )
