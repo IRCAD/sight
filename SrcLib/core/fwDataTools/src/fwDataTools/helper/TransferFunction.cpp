@@ -59,6 +59,7 @@ TransferFunction::~TransferFunction()
 
 void TransferFunction::createTransferFunction( ::fwData::Image::sptr image )
 {
+    ::fwData::mt::ObjectWriteLock tfLock(image);
     ::fwData::Composite::sptr tfPool =
         image->setDefaultField(::fwDataTools::fieldHelper::Image::m_transferFunctionCompositeId,
                                ::fwData::Composite::New());
@@ -106,12 +107,10 @@ void TransferFunction::setOrCreateTF(const fwData::TransferFunction::sptr& _tf, 
     this->removeTFConnections();
     if (_tf)
     {
-        ::fwData::mt::ObjectWriteLock tfLock(_tf);
         this->setTransferFunction(_tf);
     }
     else
     {
-        ::fwData::mt::ObjectWriteLock tfLock(_image);
         this->createTransferFunction(_image);
     }
     this->installTFConnections();

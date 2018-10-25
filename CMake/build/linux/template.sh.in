@@ -12,7 +12,7 @@ bindir="@LAUNCHER_PATH@"
 rootdir=`cd "$me/.." ; pwd`
 libdir="$rootdir/lib"
 sdkdir="@Sight_LIBRARY_DIR@"
-extdir="@EXTERNAL_LIBRARIES@/lib"
+extdir="@FW_EXTERNAL_LIBRARIES_DIR@"
 
 bundledir="$rootdir/@FWBUNDLE_RC_PREFIX@"
 bundleopt="-B $bundledir"

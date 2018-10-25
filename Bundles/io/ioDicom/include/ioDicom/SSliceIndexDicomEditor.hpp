@@ -14,8 +14,6 @@
 
 #include <fwIO/IReader.hpp>
 
-#include <boost/asio/deadline_timer.hpp>
-#include <boost/asio/io_service.hpp>
 #include <boost/filesystem/path.hpp>
 
 #include <QLineEdit>
@@ -83,7 +81,7 @@ Q_OBJECT;
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SSliceIndexDicomEditor)( ::fwGui::editor::IEditor ) );
+    fwCoreServiceClassDefinitionsMacro( (SSliceIndexDicomEditor)( ::fwGui::editor::IEditor ) )
 
     IODICOM_API static const ::fwCom::Slots::SlotKeyType s_READ_IMAGE_SLOT;
     typedef ::fwCom::Slot<void (std::size_t)> ReadImageSlotType;

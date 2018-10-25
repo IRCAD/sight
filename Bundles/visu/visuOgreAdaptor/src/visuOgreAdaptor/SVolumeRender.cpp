@@ -411,8 +411,7 @@ void SVolumeRender::updateImage()
 
     ::fwData::TransferFunction::sptr volumeTF = m_helperVolumeTF.getTransferFunction();
     {
-        ::fwData::mt::ObjectWriteLock tfLock(volumeTF);
-        m_gpuVolumeTF->updateTexture(volumeTF);
+        m_gpuCSGTF->updateTexture(volumeTF);
 
         if(m_preIntegratedRendering)
         {

@@ -10,3 +10,6 @@ set( DEPENDENCIES
     fwLog
 )
 set( USE_PCH_FROM_TARGET pchData )
+set( CONAN_DEPS
+    dcmtk/3.6.3@sight/stable
+)
