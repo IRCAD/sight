@@ -213,8 +213,8 @@ void ChainManager::updateCompositorAdaptors(CompositorIdType _compositorName, bo
                                                       "geometry";
 
                     // Naming convention for shader parameters
-                    const fwTools::fwID::IDType id = _renderService->getID() + _layerId + "_" + shaderTypeStr + "-" +
-                                                     constantName;
+                    const ::fwTools::fwID::IDType id = _renderService->getID() + _layerId + "_" + shaderTypeStr + "-" +
+                                                       constantName;
 
                     if(_isEnabled && this->getRegisteredService(id) == nullptr)
                     {
