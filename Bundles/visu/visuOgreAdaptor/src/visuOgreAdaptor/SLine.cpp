@@ -81,7 +81,7 @@ void SLine::configuring()
     const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
 
     // parsing transform or create an "empty" one
-    this->setTransformId(config.get<std::string>( ::fwRenderOgre::ITransformable::s_CONFIG_TRANSFORM,
+    this->setTransformId(config.get<std::string>( ::fwRenderOgre::ITransformable::s_TRANSFORM_CONFIG,
                                                   this->getID() + "_transform"));
 
     m_length = config.get<float>(s_LENGTH_CONFIG, 50.f);

@@ -133,7 +133,7 @@ void SVolumeRender::configuring()
     m_colorBleeding       = config.get<bool>("colorBleeding", false);
     m_shadows             = config.get<bool>("shadows", false);
 
-    this->setTransformId(config.get<std::string>( ::fwRenderOgre::ITransformable::s_CONFIG_TRANSFORM,
+    this->setTransformId(config.get<std::string>( ::fwRenderOgre::ITransformable::s_TRANSFORM_CONFIG,
                                                   this->getID() + "_transform"));
 }
 

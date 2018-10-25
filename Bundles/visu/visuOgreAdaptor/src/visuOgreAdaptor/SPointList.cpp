@@ -117,7 +117,7 @@ void SPointList::configuring()
         m_textureName = config.get<std::string>("textureName");
     }
 
-    this->setTransformId(config.get<std::string>( ::fwRenderOgre::ITransformable::s_CONFIG_TRANSFORM,
+    this->setTransformId(config.get<std::string>( ::fwRenderOgre::ITransformable::s_TRANSFORM_CONFIG,
                                                   this->getID() + "_transform"));
 
     m_queryFlags = config.get<std::uint32_t>("queryFlags", m_queryFlags);

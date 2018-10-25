@@ -135,7 +135,7 @@ void SMesh::configuring()
         }
     }
 
-    this->setTransformId(config.get<std::string>( ::fwRenderOgre::ITransformable::s_CONFIG_TRANSFORM,
+    this->setTransformId(config.get<std::string>( ::fwRenderOgre::ITransformable::s_TRANSFORM_CONFIG,
                                                   this->getID() + "_transform"));
 
     m_isDynamic         = config.get<bool>("dynamic", m_isDynamic);

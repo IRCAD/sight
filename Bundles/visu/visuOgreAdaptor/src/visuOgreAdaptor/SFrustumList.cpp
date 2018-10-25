@@ -82,7 +82,7 @@ void SFrustumList::configuring()
     m_color    = config.get< std::string >("color", "#0000ffff");
     m_capacity = config.get< unsigned int > ("nbMax", 200);
 
-    this->setTransformId(config.get<std::string>( ::fwRenderOgre::ITransformable::s_CONFIG_TRANSFORM,
+    this->setTransformId(config.get<std::string>( ::fwRenderOgre::ITransformable::s_TRANSFORM_CONFIG,
                                                   this->getID() + "_transform"));
 }
 

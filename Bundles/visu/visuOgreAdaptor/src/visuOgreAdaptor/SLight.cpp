@@ -102,7 +102,7 @@ void SLight::configuring()
 
     m_lightName = config.get<std::string>("name");
 
-    this->setTransformId(config.get<std::string>( ::fwRenderOgre::ITransformable::s_CONFIG_TRANSFORM,
+    this->setTransformId(config.get<std::string>( ::fwRenderOgre::ITransformable::s_TRANSFORM_CONFIG,
                                                   this->getID() + "_transform"));
 
     m_useOrphanNode = false;

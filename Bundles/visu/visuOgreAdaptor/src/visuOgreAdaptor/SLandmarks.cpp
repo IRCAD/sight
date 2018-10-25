@@ -42,7 +42,7 @@ SLandmarks::~SLandmarks() noexcept
 {
     ::fwServices::IService::KeyConnectionsMap connections;
 
-    connections.push(s_CONFIG_TRANSFORM, ::fwData::TransformationMatrix3D::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_TRANSFORM_CONFIG, ::fwData::TransformationMatrix3D::s_MODIFIED_SIG, s_UPDATE_SLOT);
 
     connections.push(s_LANDMARKS_INPUT, ::fwData::Landmarks::s_MODIFIED_SIG, s_UPDATE_SLOT );
     connections.push(s_LANDMARKS_INPUT, ::fwData::Landmarks::s_GROUP_ADDED_SIG, s_UPDATE_SLOT );
@@ -66,7 +66,7 @@ void SLandmarks::configuring()
     const ConfigType configType = this->getConfigTree();
     const ConfigType config     = configType.get_child("config.<xmlattr>");
 
-    this->setTransformId(config.get<std::string>( ::fwRenderOgre::ITransformable::s_CONFIG_TRANSFORM,
+    this->setTransformId(config.get<std::string>( ::fwRenderOgre::ITransformable::s_TRANSFORM_CONFIG,
                                                   this->getID() + "_transform"));
 }
 

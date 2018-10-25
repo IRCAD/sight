@@ -11,7 +11,7 @@
 namespace fwRenderOgre
 {
 
-const std::string ITransformable::s_CONFIG_TRANSFORM = "transform";
+const std::string ITransformable::s_TRANSFORM_CONFIG = "transform";
 
 //------------------------------------------------------------------------------
 
@@ -29,7 +29,7 @@ void ITransformable::setTransformId(::fwRenderOgre::SRender::OgreObjectIdType _i
 
 //------------------------------------------------------------------------------
 
-::Ogre::SceneNode* ITransformable::getTransformNode(::Ogre::SceneNode* _rootNode) const
+::Ogre::SceneNode* ITransformable::getTransformNode(::Ogre::SceneNode* _rootNode)
 {
     SLM_ASSERT("Transform id is not set, please call setTransformId before.", !m_transformId.empty());
     m_transformNode = ::fwRenderOgre::helper::Scene::getNodeById(m_transformId, _rootNode);

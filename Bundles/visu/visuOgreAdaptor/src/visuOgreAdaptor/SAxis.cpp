@@ -86,7 +86,7 @@ bool SAxis::getVisibility() const
 ::fwServices::IService::KeyConnectionsMap visuOgreAdaptor::SAxis::getAutoConnections() const
 {
     ::fwServices::IService::KeyConnectionsMap connections;
-    connections.push( ::visuOgreAdaptor::STransform::s_CONFIG_TRANSFORM, ::fwData::Object::s_MODIFIED_SIG,
+    connections.push( ::visuOgreAdaptor::STransform::s_TRANSFORM_CONFIG, ::fwData::Object::s_MODIFIED_SIG,
                       s_UPDATE_SLOT );
     return connections;
 }
@@ -100,7 +100,7 @@ void SAxis::configuring()
     const ConfigType configType = this->getConfigTree();
     const ConfigType config     = configType.get_child("config.<xmlattr>");
 
-    const std::string transformId = config.get<std::string>(::visuOgreAdaptor::STransform::s_CONFIG_TRANSFORM,
+    const std::string transformId = config.get<std::string>(::visuOgreAdaptor::STransform::s_TRANSFORM_CONFIG,
                                                             this->getID() + "_transform");
 
     this->setTransformId(transformId);

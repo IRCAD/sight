@@ -21,6 +21,7 @@ namespace fwRenderOgre
 class FWRENDEROGRE_CLASS_API ITransformable
 {
 public:
+
     /**
      * @brief Get the Ogre identifier of the transform in the scene manager.
      * @return This transform service Id.
@@ -38,17 +39,17 @@ public:
      * @param _rootNode The root node of the scene.
      * @return The node matching m_transformId.
      */
-    FWRENDEROGRE_API ::Ogre::SceneNode* getTransformNode(::Ogre::SceneNode* _rootNode) const;
+    FWRENDEROGRE_API ::Ogre::SceneNode* getTransformNode(::Ogre::SceneNode* _rootNode);
 
     /**
-     * @brief s_CONFIG_TRANSFORM The key used in xml configuration.
+     * @brief s_TRANSFORM_CONFIG The key used in xml configuration.
      */
-    FWRENDEROGRE_API static const std::string s_CONFIG_TRANSFORM;
+    FWRENDEROGRE_API static const std::string s_TRANSFORM_CONFIG;
 
 private:
 
     /// Ogre transform node.
-    mutable ::Ogre::SceneNode* m_transformNode;
+    ::Ogre::SceneNode* m_transformNode;
 
     /// This transform identifier
     ::fwRenderOgre::SRender::OgreObjectIdType m_transformId;
