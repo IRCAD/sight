@@ -35,11 +35,19 @@ AutoStereoCompositorListener::AutoStereoCompositorListener(std::uint8_t _viewpoi
 
 AutoStereoCompositorListener::~AutoStereoCompositorListener()
 {
+    auto& mtlManager = ::Ogre::MaterialManager::getSingleton();
     // We need to clean the VR techniques because we want to set the correct textures
     // Cleaning the texture forces the listener to be triggered and then to create the techniques with the new textures
-    for(auto& tech : m_createdTechniques)
+    for(auto& techMatPair : m_createdTechniques)
     {
-        ::Ogre::Material* mtl = tech->getParent();
+        if(mtlManager.getByHandle(techMatPair.second) == nullptr)
+        {
+            // The material is already deleted and so is the technique.
+            continue;
+        }
+
+        ::Ogre::Technique* tech = techMatPair.first;
+        ::Ogre::Material* mtl   = tech->getParent();
 
         const ::Ogre::Material::Techniques techniques = mtl->getTechniques();
 
@@ -127,17 +135,6 @@ AutoStereoCompositorListener::~AutoStereoCompositorListener()
 
             vpParams->addSharedParameters(projParamName);
             vpParams->setNamedAutoConstant("u_worldView", ::Ogre::GpuProgramParameters::ACT_WORLDVIEW_MATRIX);
-
-            if( ::Ogre::StringUtil::startsWith( vpBaseName, "RTV_VP") )
-            {
-                ::Ogre::TextureUnitState* texUnitState = pass->getTextureUnitState("entryPoints");
-
-                SLM_ASSERT("No texture named 'entryPoints' in " + _originalMaterial->getName(), texUnitState);
-                texUnitState->setContentType(::Ogre::TextureUnitState::CONTENT_COMPOSITOR);
-
-                const auto compName = "VolumeEntries" + std::to_string(m_viewpointNumber);
-                texUnitState->setCompositorReference(compName, compName + "Texture" + passIdStr);
-            }
         }
 
         const auto fpBaseName = pass->getFragmentProgramName();
@@ -156,7 +153,8 @@ AutoStereoCompositorListener::~AutoStereoCompositorListener()
             auto fpParams = pass->getFragmentProgramParameters();
 
             // We use a shared parameters block to upload the custom projection matrices
-            const std::string projParamName = "InverseProjectionMatrixParam/"+passIdStr;
+            const std::string invProjParamName = "InverseProjectionMatrixParam/"+passIdStr;
+            const std::string projParamName    = "ProjectionMatrixParam/"+passIdStr;
 
             auto& gpuProgramMgr            = ::Ogre::GpuProgramManager::getSingleton();
             const auto& sharedParameterMap = gpuProgramMgr.getAvailableSharedParameters();
@@ -164,17 +162,31 @@ AutoStereoCompositorListener::~AutoStereoCompositorListener()
             if(sharedParameterMap.find(projParamName) == sharedParameterMap.end())
             {
                 auto params = ::Ogre::GpuProgramManager::getSingleton().createSharedParameters(projParamName);
+                params->addConstantDefinition("u_proj", ::Ogre::GCT_MATRIX_4X4);
+            }
 
-                // define the shared param structure
+            if(sharedParameterMap.find(invProjParamName) == sharedParameterMap.end())
+            {
+                auto params = ::Ogre::GpuProgramManager::getSingleton().createSharedParameters(invProjParamName);
                 params->addConstantDefinition("u_invProj", ::Ogre::GCT_MATRIX_4X4);
             }
 
             fpParams->addSharedParameters(projParamName);
+            fpParams->addSharedParameters(invProjParamName);
+            fpParams->setNamedAutoConstant("u_worldView", ::Ogre::GpuProgramParameters::ACT_WORLDVIEW_MATRIX);
             fpParams->setNamedAutoConstant("u_invWorldView",
                                            ::Ogre::GpuProgramParameters::ACT_INVERSE_WORLDVIEW_MATRIX);
+
+            ::Ogre::TextureUnitState* texUnitState = pass->getTextureUnitState("entryPoints");
+
+            SLM_ASSERT("No texture named 'entryPoints' in " + _originalMaterial->getName(), texUnitState);
+            texUnitState->setContentType(::Ogre::TextureUnitState::CONTENT_COMPOSITOR);
+
+            const auto compName = "VolumeEntries" + std::to_string(m_viewpointNumber);
+            texUnitState->setCompositorReference(compName, compName + "Texture" + passIdStr);
         }
 
-        m_createdTechniques.push_back(newTech);
+        m_createdTechniques.push_back(std::make_pair(newTech, _originalMaterial->getHandle()));
     }
 
     return newTech;
