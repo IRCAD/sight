@@ -29,12 +29,12 @@
 
             <!-- ******************************* Objects declaration ****************************** -->
 
-            <object uid="modelSeries_UID" type="::fwMedData::ModelSeries" />
-            <object uid="image_UID" type="::fwData::Image" />
-            <object uid="mask_UID" type="::fwData::Image" />
-            <object uid="landmarks_UID" type="::fwData::Landmarks" />
-            <object uid="volumeTF_UID" type="::fwData::TransferFunction" src="deferred" />
-            <object uid="CSGTF_UID" type="::fwData::TransferFunction" src="deferred" />
+            <object uid="modelSeries" type="::fwMedData::ModelSeries" />
+            <object uid="image" type="::fwData::Image" />
+            <object uid="mask" type="::fwData::Image" />
+            <object uid="landmarks" type="::fwData::Landmarks" />
+            <object uid="volumeTF" type="::fwData::TransferFunction" src="deferred" />
+            <object uid="CSGTF" type="::fwData::TransferFunction" src="deferred" />
 
             <!-- ******************************* UI declaration *********************************** -->
 
@@ -188,18 +188,18 @@
 
             <service uid="cfgVTKGenericScene" type="::fwServices::SConfigController" >
                 <appConfig id="VTKGenericScene" />
-                <inout key="modelSeriesUID" uid="modelSeries_UID" />
+                <inout key="modelSeriesUID" uid="modelSeries" />
                 <parameter replace="WID_PARENT" by="VTKSceneView" />
             </service>
 
             <service uid="cfgOgreGenericScene" type="::fwServices::SConfigController" >
                 <appConfig id="OgreGenericScene" />
-                <inout key="modelSeries_UID" uid="modelSeries_UID" />
-                <inout key="image_UID" uid="image_UID" />
-                <inout key="volumeTF_UID" uid="volumeTF_UID" optional="yes" />
-                <inout key="CSGTF_UID" uid="CSGTF_UID" optional="yes" />
-                <inout key="mask_UID" uid="mask_UID" />
-                <inout key="landmarks_UID" uid="landmarks_UID" />
+                <inout key="modelSeries" uid="modelSeries" />
+                <inout key="image" uid="image" />
+                <inout key="volumeTF" uid="volumeTF" optional="yes" />
+                <inout key="CSGTF" uid="CSGTF" optional="yes" />
+                <inout key="mask" uid="mask" />
+                <inout key="landmarks" uid="landmarks" />
                 <parameter replace="WID_PARENT" by="OgreSceneView" />
                 <parameter replace="compositorChannel" by="compositorChannel" />
                 <parameter replace="idvrEnumParamChannel" by="idvrEnumParamChannel" />
@@ -210,14 +210,14 @@
 
             <service uid="cfgOgreNegato2D" type="::fwServices::SConfigController" >
                 <appConfig id="OgreNegato2D" />
-                <inout key="image_UID" uid="image_UID" />
-                <inout key="TF_UID" uid="volumeTF_UID" optional="yes" />
+                <inout key="image" uid="image" />
+                <inout key="TF" uid="volumeTF" optional="yes" />
                 <parameter replace="WID_PARENT" by="OgreNegato2DView" />
             </service>
 
             <service uid="cfgOrganManagerConfig"  type="::fwServices::SConfigController">
                 <appConfig id="OgreOrganManagerWithSeries" />
-                <inout key="ORGAN_MANAGER_MODELSERIES" uid="modelSeries_UID" />
+                <inout key="ORGAN_MANAGER_MODELSERIES" uid="modelSeries" />
                 <parameter replace="WID_PARENT" by="organView" />
                 <parameter replace="ICON_PATH" by="arMedia-0.1/icons/app.ico" />
             </service>
@@ -229,21 +229,21 @@
 
             <service uid="cfgImageTFManager" type="::fwServices::SConfigController">
                 <appConfig id="OgreHistogramManager" />
-                <inout key="IMAGE" uid="image_UID" />
-                <inout key="TF" uid="volumeTF_UID" optional="yes" />
+                <inout key="IMAGE" uid="image" />
+                <inout key="TF" uid="volumeTF" optional="yes" />
                 <parameter replace="WID_PARENT" by="volumeTFVView" />
             </service>
 
             <service uid="cfgMaskTFManager" type="::fwServices::SConfigController">
                 <appConfig id="OgreHistogramManager" />
-                <inout key="IMAGE" uid="image_UID" />
-                <inout key="TF" uid="CSGTF_UID" optional="yes" />
+                <inout key="IMAGE" uid="image" />
+                <inout key="TF" uid="CSGTF" optional="yes" />
                 <parameter replace="WID_PARENT" by="CSGTFVView" />
             </service>
 
             <service uid="cfgIDVRManager"  type="::fwServices::SConfigController">
                 <appConfig id="OgreIDVRManager" />
-                <inout key="MASK" uid="mask_UID" />
+                <inout key="MASK" uid="mask" />
                 <parameter replace="WID_PARENT" by="idvrView" />
                 <parameter replace="IDVR_ENUM_PARAM_CHANNEL" by="idvrEnumParamChannel" />
                 <parameter replace="IDVR_BOOL_PARAM_CHANNEL" by="idvrBoolParamChannel" />
@@ -262,26 +262,26 @@
             <service uid="CoreEditor" type="::uiVisuOgre::SCoreCompositorEditor"  />
 
             <service uid="readerPathMeshFile" type="::uiIO::editor::SIOSelector" >
-                <inout key="data" uid="modelSeries_UID" />
+                <inout key="data" uid="modelSeries" />
                 <type mode="reader" />
             </service>
 
             <service uid="writerPathMeshFile" type="::uiIO::editor::SIOSelector" >
-                <inout key="data" uid="modelSeries_UID" />
+                <inout key="data" uid="modelSeries" />
                 <type mode="writer" />
             </service>
 
             <service uid="imageReader" type="::uiIO::editor::SIOSelector" >
-                <inout key="data" uid="image_UID" />
+                <inout key="data" uid="image" />
                 <type mode="reader" />
             </service>
 
             <service uid="medicalImage" type="::ctrlSelection::MedicalImageSrv" >
-                <inout key="image" uid="image_UID" autoConnect="yes" />
+                <inout key="image" uid="image" autoConnect="yes" />
             </service>
 
             <service uid="landmarksReader" type="::uiIO::editor::SIOSelector" >
-                <inout key="data" uid="landmarks_UID" />
+                <inout key="data" uid="landmarks" />
                 <type mode="reader" />
                 <selection mode="include" />
                 <addSelection service="::ioAtoms::SReader" />

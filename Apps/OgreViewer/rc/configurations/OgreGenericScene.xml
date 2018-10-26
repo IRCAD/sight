@@ -2,12 +2,12 @@
     <id>OgreGenericScene</id>
     <parameters>
         <param name="WID_PARENT" />
-        <param name="modelSeries_UID" />
-        <param name="image_UID" />
-        <param name="volumeTF_UID" />
-        <param name="CSGTF_UID" />
-        <param name="landmarks_UID" />
-        <param name="mask_UID" />
+        <param name="modelSeries" />
+        <param name="image" />
+        <param name="volumeTF" />
+        <param name="CSGTF" />
+        <param name="landmarks" />
+        <param name="mask" />
         <param name="compositorChannel" />
         <param name="idvrEnumParamChannel" />
         <param name="idvrBoolParamChannel" />
@@ -17,21 +17,21 @@
     <config>
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="${modelSeries_UID}" type="::fwMedData::ModelSeries" src="ref" />
-        <object uid="${image_UID}" type="::fwData::Image" src="ref" />
-        <object uid="${mask_UID}" type="::fwData::Image" src="ref" />
+        <object uid="${modelSeries}" type="::fwMedData::ModelSeries" src="ref" />
+        <object uid="${image}" type="::fwData::Image" src="ref" />
+        <object uid="${mask}" type="::fwData::Image" src="ref" />
 
-        <object uid="frameTL_UID" type="::arData::FrameTL" />
-        <object uid="videoImage_UID" type="::fwData::Image" />
-        <object uid="camera_UID" type="::arData::Camera" />
-        <object uid="pointList_UID" type="::fwData::PointList" />
+        <object uid="frameTL" type="::arData::FrameTL" />
+        <object uid="videoImage" type="::fwData::Image" />
+        <object uid="camera" type="::arData::Camera" />
+        <object uid="pointList" type="::fwData::PointList" />
 
-        <object uid="${volumeTF_UID}" type="::fwData::TransferFunction" src="deferred" />
-        <object uid="${CSGTF_UID}" type="::fwData::TransferFunction" src="deferred" />
-        <object uid="${landmarks_UID}" type="::fwData::Landmarks" src="ref" />
+        <object uid="${volumeTF}" type="::fwData::TransferFunction" src="deferred" />
+        <object uid="${CSGTF}" type="::fwData::TransferFunction" src="deferred" />
+        <object uid="${landmarks}" type="::fwData::Landmarks" src="ref" />
 
-        <object uid="volumeClippingMatrix_UID" type="::fwData::TransformationMatrix3D" />
-        <object uid="identityMatrix_UID" type="::fwData::TransformationMatrix3D" />
+        <object uid="volumeClippingMatrix" type="::fwData::TransformationMatrix3D" />
+        <object uid="identityMatrix" type="::fwData::TransformationMatrix3D" />
 
         <!-- ******************************* UI declaration *********************************** -->
         <service uid="OgreSceneView" type="::gui::view::SDefaultView">
@@ -204,13 +204,13 @@
         </service>
 
         <service uid="videoAdapter" type="::visuOgreAdaptor::SVideo">
-            <in key="image" uid="videoImage_UID" autoConnect="yes" />
-            <in key="camera" uid="camera_UID" />
+            <in key="image" uid="videoImage" autoConnect="yes" />
+            <in key="camera" uid="camera" />
             <config layer="video" />
         </service>
 
         <service uid="interactorAdaptorVideo" type="::visuOgreAdaptor::SInteractorStyle">
-            <in key="object" uid="camera_UID" />
+            <in key="object" uid="camera" />
             <config layer="video" movement="Fixed" />
         </service>
 
@@ -223,32 +223,32 @@
         </service>
 
         <service uid="modelSeriesAdaptor" type="::visuOgreAdaptor::SModelSeries" autoConnect="yes">
-            <in key="model" uid="${modelSeries_UID}" />
+            <in key="model" uid="${modelSeries}" />
             <config layer="default" />
         </service>
 
         <service uid="volumeAdaptor" type="::visuOgreAdaptor::SVolumeRender">
-            <inout key="image" uid="${image_UID}" autoConnect="yes" />
-            <inout key="tf" uid="${volumeTF_UID}" optional="yes" />
-            <inout key="CSGTF" uid="${CSGTF_UID}" optional="yes" />
-            <inout key="mask" uid="${mask_UID}" autoConnect="yes" />
-            <inout key="clippingMatrix" uid="volumeClippingMatrix_UID" autoConnect="yes" />
+            <inout key="image" uid="${image}" autoConnect="yes" />
+            <inout key="tf" uid="${volumeTF}" optional="yes" />
+            <inout key="CSGTF" uid="${CSGTF}" optional="yes" />
+            <inout key="mask" uid="${mask}" autoConnect="yes" />
+            <inout key="clippingMatrix" uid="volumeClippingMatrix" autoConnect="yes" />
             <config layer="default" widgets="no" preintegration="no" mode="raytracing" autoresetcamera="yes" samples="1024"/>
         </service>
 
         <service uid="negato3DAdaptor" type="::visuOgreAdaptor::SNegato3D">
-            <inout key="image" uid="${image_UID}" autoConnect="yes" />
-            <inout key="tf" uid="${volumeTF_UID}" optional="yes" />
+            <inout key="image" uid="${image}" autoConnect="yes" />
+            <inout key="tf" uid="${volumeTF}" optional="yes" />
             <config layer="default" />
         </service>
 
         <service uid="pointListAdaptor" type="::visuOgreAdaptor::SPointList" autoConnect="yes">
-            <in key="pointList" uid="pointList_UID" />
+            <in key="pointList" uid="pointList" />
             <config layer="default" autoresetcamera="no" color="#ff0000" radius="1" fixedSize="true"/>
         </service>
 
         <service uid="landmarkAdaptor" type="::visuOgreAdaptor::SLandmarks" autoConnect="yes">
-            <in key="landmarks" uid="${landmarks_UID}" />
+            <in key="landmarks" uid="${landmarks}" />
             <config layer="default" />
         </service>
 
@@ -261,36 +261,36 @@
         <!-- ************************************* Services ************************************ -->
         <service uid="synchronizer" type="::videoTools::SFrameMatrixSynchronizer" worker="videoWorker">
             <in group="frameTL">
-                <key uid="frameTL_UID" />
+                <key uid="frameTL" />
             </in>
             <inout group="image">
-                <key uid="videoImage_UID" />
+                <key uid="videoImage" />
             </inout>
             <framerate>30</framerate>
         </service>
 
         <service uid="sliderIndexEditor3D" type="::uiImageQt::SliceIndexPositionEditor" autoConnect="yes">
-            <inout key="image" uid="${image_UID}" />
+            <inout key="image" uid="${image}" />
             <sliceIndex>Sagittal</sliceIndex>
         </service>
 
         <service uid="frameGrabber" type="::videoQt::SFrameGrabber">
-            <in key="camera" uid="camera_UID" />
-            <inout key="frameTL" uid="frameTL_UID" />
+            <in key="camera" uid="camera" />
+            <inout key="frameTL" uid="frameTL" />
         </service>
 
         <service uid="videoSelector" type="::videoQt::editor::SCamera">
-            <inout key="camera" uid="camera_UID" />
+            <inout key="camera" uid="camera" />
             <videoSupport>yes</videoSupport>
         </service>
 
         <service uid="addPointInList" type="::uiVisuOgre::SAddPoint">
-            <inout key="pointList" uid="pointList_UID" />
+            <inout key="pointList" uid="pointList" />
         </service>
 
         <service uid="resetClippingBox" type="::ctrlCamp::SCopy" >
-            <in key="source" uid="identityMatrix_UID" />
-            <inout key="target" uid="volumeClippingMatrix_UID" />
+            <in key="source" uid="identityMatrix" />
+            <inout key="target" uid="volumeClippingMatrix" />
         </service>
 
         <connect>
