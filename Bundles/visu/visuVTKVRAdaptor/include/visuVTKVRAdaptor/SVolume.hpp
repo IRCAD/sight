@@ -65,7 +65,7 @@ class VISUVTKVRADAPTOR_CLASS_API SVolume : public ::fwRenderVTK::IAdaptor
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SVolume)(::fwRenderVTK::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (SVolume)(::fwRenderVTK::IAdaptor) )
 
     VISUVTKVRADAPTOR_API SVolume() noexcept;
 

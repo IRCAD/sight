@@ -39,6 +39,7 @@ static const ::fwServices::IService::KeyType s_RECONSTRUCTION_INOUT = "reconstru
 
 RepresentationEditor::RepresentationEditor() noexcept
 {
+    this->registerObject(s_RECONSTRUCTION_INOUT, ::fwServices::IService::AccessType::INOUT, true);
 }
 
 //------------------------------------------------------------------------------

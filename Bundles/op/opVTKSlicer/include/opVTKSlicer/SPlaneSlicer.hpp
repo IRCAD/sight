@@ -58,7 +58,7 @@ class OPVTKSLICER_CLASS_API SPlaneSlicer : public ::fwServices::IOperator
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SPlaneSlicer)(::fwServices::IOperator) );
+    fwCoreServiceClassDefinitionsMacro( (SPlaneSlicer)(::fwServices::IOperator) )
 
     /// Constructor.
     OPVTKSLICER_API SPlaneSlicer() noexcept;

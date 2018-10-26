@@ -74,7 +74,7 @@ class VISUVTKADAPTOR_CLASS_API SImagesBlend : public ::fwRenderVTK::IAdaptor
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SImagesBlend)(::fwRenderVTK::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (SImagesBlend)(::fwRenderVTK::IAdaptor) )
 
     VISUVTKADAPTOR_API SImagesBlend() noexcept;
 

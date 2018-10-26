@@ -62,6 +62,7 @@ SliceIndexPositionEditor::SliceIndexPositionEditor() noexcept
 {
     newSlot(s_UPDATE_SLICE_INDEX_SLOT, &SliceIndexPositionEditor::updateSliceIndex, this);
     newSlot(s_UPDATE_SLICE_TYPE_SLOT, &SliceIndexPositionEditor::updateSliceType, this);
+    this->registerObject(s_IMAGE_INOUT, AccessType::INOUT, true);
 }
 
 //------------------------------------------------------------------------------

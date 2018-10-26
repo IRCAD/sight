@@ -53,7 +53,7 @@ class VISUVTKADAPTOR_CLASS_API SImageSliceOrientationText : public ::fwDataTools
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SImageSliceOrientationText)(::fwRenderVTK::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (SImageSliceOrientationText)(::fwRenderVTK::IAdaptor) )
 
     VISUVTKADAPTOR_API SImageSliceOrientationText() noexcept;
     VISUVTKADAPTOR_API virtual ~SImageSliceOrientationText() noexcept;

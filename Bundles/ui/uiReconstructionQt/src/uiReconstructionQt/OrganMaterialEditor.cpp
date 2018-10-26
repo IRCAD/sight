@@ -41,7 +41,7 @@ static const ::fwServices::IService::KeyType s_RECONSTRUCTION_INOUT = "reconstru
 
 OrganMaterialEditor::OrganMaterialEditor() noexcept
 {
-    //handlingEventOff();
+    this->registerObject(s_RECONSTRUCTION_INOUT, ::fwServices::IService::AccessType::INOUT, true);
 }
 
 //------------------------------------------------------------------------------

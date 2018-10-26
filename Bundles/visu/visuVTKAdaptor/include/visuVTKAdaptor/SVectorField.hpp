@@ -45,7 +45,7 @@ class VISUVTKADAPTOR_CLASS_API SVectorField : public ::fwRenderVTK::IAdaptor
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SVectorField)(::fwRenderVTK::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (SVectorField)(::fwRenderVTK::IAdaptor) )
 
     VISUVTKADAPTOR_API SVectorField() noexcept;
 

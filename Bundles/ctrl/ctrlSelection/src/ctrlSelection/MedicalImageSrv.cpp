@@ -19,6 +19,8 @@
 namespace ctrlSelection
 {
 
+static const std::string s_IMAGE_INOUT = "image";
+
 //-----------------------------------------------------------------------------
 
 fwServicesRegisterMacro( ::fwServices::IController, ::ctrlSelection::MedicalImageSrv, ::fwData::Image );
@@ -27,6 +29,7 @@ fwServicesRegisterMacro( ::fwServices::IController, ::ctrlSelection::MedicalImag
 
 MedicalImageSrv::MedicalImageSrv() noexcept
 {
+    this->registerObject(s_IMAGE_INOUT, AccessType::INOUT, true);
 }
 
 //-----------------------------------------------------------------------------
@@ -39,7 +42,7 @@ MedicalImageSrv::~MedicalImageSrv() noexcept
 
 void MedicalImageSrv::convertImage()
 {
-    ::fwData::Image::sptr pImg = this->getInOut< ::fwData::Image >("image");
+    ::fwData::Image::sptr pImg = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     if(::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(pImg))
     {
         ::fwDataTools::helper::Image helper( pImg );

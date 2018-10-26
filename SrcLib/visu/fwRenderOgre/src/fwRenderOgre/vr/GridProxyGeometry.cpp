@@ -9,6 +9,7 @@
 #include "fwRenderOgre/factory/R2VBRenderable.hpp"
 #include "fwRenderOgre/Layer.hpp"
 
+#include <OGRE/OgreDepthBuffer.h>
 #include <OGRE/OgreHardwarePixelBuffer.h>
 #include <OGRE/OgreMaterial.h>
 #include <OGRE/OgreMaterialManager.h>
@@ -199,6 +200,7 @@ void GridProxyGeometry::setupGrid()
         for(unsigned i = 0; i < static_cast<unsigned>(m_gridSize[2]); ++i)
         {
             ::Ogre::RenderTexture* rt = m_gridTexture->getBuffer()->getRenderTarget(i);
+            rt->setDepthBufferPool(::Ogre::DepthBuffer::POOL_NO_DEPTH);
             rt->addViewport(mParentSceneManager->getCamera(::fwRenderOgre::Layer::DEFAULT_CAMERA_NAME));
         }
     }

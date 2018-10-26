@@ -133,13 +133,14 @@ const ::fwCom::Slots::SlotKeyType SModelSeriesList::s_SHOW_RECONSTRUCTIONS_SLOT 
 const ::fwServices::IService::KeyType s_MODEL_SERIES_INOUT = "modelSeries";
 
 SModelSeriesList::SModelSeriesList() noexcept :
-    m_tree(new QTreeWidget()),
     m_enableHideAll(true)
 {
     m_sigReconstructionSelected = newSignal< ReconstructionSelectedSignalType >( s_RECONSTRUCTION_SELECTED_SIG );
     m_sigEmptiedSelection       = newSignal< EmptiedSelectionSignalType >( s_EMPTIED_SELECTION_SIG );
 
     newSlot(s_SHOW_RECONSTRUCTIONS_SLOT, &SModelSeriesList::showReconstructions, this);
+
+    this->registerObject("modelSeries", ::fwServices::IService::AccessType::INOUT, true);
 }
 
 //------------------------------------------------------------------------------
@@ -164,6 +165,11 @@ void SModelSeriesList::starting()
     QVBoxLayout* layout       = new QVBoxLayout;
     QHBoxLayout* layoutButton = new QHBoxLayout;
     layout->addLayout(layoutButton);
+
+    m_tree = new QTreeWidget();
+
+    m_tree->setColumnCount(m_headers.size());
+    m_tree->setHeaderLabels(m_headers);
 
     if (m_enableHideAll)
     {
@@ -233,8 +239,7 @@ void SModelSeriesList::configuring()
     if(columns)
     {
         ::fwRuntime::ConfigurationElement::Container::const_iterator cIt = columns->begin();
-        m_tree->setColumnCount(static_cast<int>(columns->size()));
-        QStringList header;
+        m_headers.clear();
         for(; cIt != columns->end(); cIt++)
         {
             ValueView* view;
@@ -249,9 +254,8 @@ void SModelSeriesList::configuring()
             }
 
             m_displayedInfo.insert(DisplayedInformation::value_type((*cIt)->getValue(), view));
-            header << QString::fromStdString((*cIt)->getName());
+            m_headers << QString::fromStdString((*cIt)->getName());
         }
-        m_tree->setHeaderLabels(header);
     }
 }
 
