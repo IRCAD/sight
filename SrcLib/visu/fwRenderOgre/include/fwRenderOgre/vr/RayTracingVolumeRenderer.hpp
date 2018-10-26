@@ -52,7 +52,7 @@ public:
      */
     FWRENDEROGRE_API RayTracingVolumeRenderer(std::string parentId,
                                               Layer::sptr layer,
-                                              ::Ogre::SceneNode* parentNode,
+                                              Ogre::SceneNode* const parentNode,
                                               ::Ogre::TexturePtr imageTexture,
                                               const TransferFunction::sptr& gpuVolumeTF,
                                               PreIntegrationTable& preintegrationTable,
@@ -66,8 +66,8 @@ public:
     FWRENDEROGRE_API virtual ~RayTracingVolumeRenderer();
 
     /// Function called when a new image is being rendered.
-    FWRENDEROGRE_API virtual void imageUpdate(::fwData::Image::sptr image,
-                                              ::fwData::TransferFunction::sptr tf) override;
+    FWRENDEROGRE_API virtual void imageUpdate(const fwData::Image::sptr image,
+                                              const fwData::TransferFunction::sptr tf) override;
 
     /// Called when the transfer function is updated.
     FWRENDEROGRE_API virtual void updateVolumeTF() override;
@@ -124,7 +124,7 @@ protected:
     FWRENDEROGRE_API virtual std::tuple<std::string, std::string, size_t> computeRayTracingDefines() const;
 
     /// Sets all texture units needed by the material during the ray casting pass.
-    FWRENDEROGRE_API virtual void setRayCastingPassTextureUnits(::Ogre::Pass* _rayCastingPass,
+    FWRENDEROGRE_API virtual void setRayCastingPassTextureUnits(Ogre::Pass* const _rayCastingPass,
                                                                 const std::string& _fpPPDefines) const;
 
     /// When using AutoStereo compositor, initialize the raytracing material.

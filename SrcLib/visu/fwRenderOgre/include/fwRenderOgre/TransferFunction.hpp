@@ -48,7 +48,7 @@ public:
 
     /// Bind the texture and the uniforms in a given pass
     template <class GPU_PARAMETERS>
-    void bind(::Ogre::Pass* _ogrePass, const std::string& _texUnitName,
+    void bind(const ::Ogre::Pass* const _ogrePass, const std::string& _texUnitName,
               ::Ogre::SharedPtr<GPU_PARAMETERS> _params, const std::string& _uniform = "u_tfWindow") const;
 private:
 
@@ -91,7 +91,7 @@ inline void TransferFunction::setSampleDistance(const float& _sampleDistance)
 //------------------------------------------------------------------------------
 
 template <class GPU_PARAMETERS>
-inline void TransferFunction::bind(::Ogre::Pass* _pass, const std::string& _texUnitName,
+inline void TransferFunction::bind(const ::Ogre::Pass* const _pass, const std::string& _texUnitName,
                                    ::Ogre::SharedPtr<GPU_PARAMETERS> _params, const std::string& _uniform) const
 {
     SLM_ASSERT("Pass is null", _pass);

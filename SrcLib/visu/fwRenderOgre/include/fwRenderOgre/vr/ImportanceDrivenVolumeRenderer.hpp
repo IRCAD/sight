@@ -128,7 +128,7 @@ protected:
     FWRENDEROGRE_API virtual std::tuple<std::string, std::string, size_t> computeRayTracingDefines() const override;
 
     /// Set all texture units needed by the material during the ray casting pass.
-    FWRENDEROGRE_API virtual void setRayCastingPassTextureUnits(::Ogre::Pass* _rayCastingPass,
+    FWRENDEROGRE_API virtual void setRayCastingPassTextureUnits(Ogre::Pass* const _rayCastingPass,
                                                                 const std::string& _fpPPDefines) const override;
 
 private:
@@ -143,10 +143,10 @@ private:
     void initCompositors();
 
     /// Create and adds importance compositing compositors to the chain (MImP + JFA, AImC or VPImC).
-    void buildICCompositors(::Ogre::Viewport* _vp);
+    void buildICCompositors(Ogre::Viewport* const _vp);
 
     /// Remove all listeners and compositors from the current chain.
-    void cleanCompositorChain(::Ogre::Viewport* _vp);
+    void cleanCompositorChain(::Ogre::Viewport* const _vp);
 
     /// Texture of the segmentation mask.
     ::Ogre::TexturePtr m_maskTexture;

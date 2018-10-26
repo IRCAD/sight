@@ -50,8 +50,8 @@ const IVolumeRenderer::CubeEdgeList IVolumeRenderer::s_cubeEdges = { {
 //-----------------------------------------------------------------------------
 
 IVolumeRenderer::IVolumeRenderer(std::string parentId,
-                                 ::Ogre::SceneManager* sceneManager,
-                                 ::Ogre::SceneNode* volumeNode,
+                                 ::Ogre::SceneManager* const sceneManager,
+                                 ::Ogre::SceneNode* const volumeNode,
                                  ::Ogre::TexturePtr imageTexture,
                                  const TransferFunction::sptr& gpuVolumeTF,
                                  PreIntegrationTable& preintegrationTable) :

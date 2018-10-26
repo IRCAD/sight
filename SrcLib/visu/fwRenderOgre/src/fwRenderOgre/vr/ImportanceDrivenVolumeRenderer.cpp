@@ -50,7 +50,7 @@ public:
     {
         if(mtl->getName().find("JFA") != std::string::npos)
         {
-            ::Ogre::Technique* tech = mtl->getBestTechnique();
+            const ::Ogre::Technique* const tech = mtl->getBestTechnique();
 
             for(short unsigned int i = 0; i < tech->getNumPasses(); i++ )
             {
@@ -68,7 +68,7 @@ public:
     {
         if(mtl->getName().find("Blur") != std::string::npos)
         {
-            ::Ogre::Technique* tech = mtl->getBestTechnique();
+            const ::Ogre::Technique* const tech = mtl->getBestTechnique();
 
             for(short unsigned int i = 0; i < tech->getNumPasses(); i++ )
             {
@@ -197,8 +197,8 @@ ImportanceDrivenVolumeRenderer::ImportanceDrivenVolumeRenderer(std::string _pare
 
 ImportanceDrivenVolumeRenderer::~ImportanceDrivenVolumeRenderer()
 {
-    auto layer    = this->getLayer();
-    auto viewport = layer->getViewport();
+    const auto layer     = this->getLayer();
+    auto* const viewport = layer->getViewport();
 
     this->cleanCompositorChain(viewport);
 }
@@ -209,10 +209,10 @@ void ImportanceDrivenVolumeRenderer::updateCSGTF()
 {
     if(m_idvrMethod == s_MIMP)
     {
-        auto material  = ::Ogre::MaterialManager::getSingleton().getByName(m_currentMtlName);
-        auto technique = material->getTechnique(0);
+        const ::Ogre::MaterialPtr material       = ::Ogre::MaterialManager::getSingleton().getByName(m_currentMtlName);
+        const ::Ogre::Technique* const technique = material->getTechnique(0);
         SLM_ASSERT("Technique not found", technique);
-        auto pass = technique->getPass(0);
+        const auto* const pass = technique->getPass(0);
         m_gpuCSGTF.lock()->bind(pass, s_CSG_TF_TEXUNIT_NAME, m_RTVSharedParameters, "u_CSGTFWindow");
     }
 }
@@ -238,7 +238,7 @@ void ImportanceDrivenVolumeRenderer::setIDVRMethod(std::string _method)
                  this->getLayer()->getStereoMode() != Layer::StereoModeType::NONE && m_idvrMethod != s_NONE);
 
     this->createMaterialAndIDVRTechnique();
-    updateCSGTF();
+    this->updateCSGTF();
 }
 
 //-----------------------------------------------------------------------------
@@ -246,8 +246,8 @@ void ImportanceDrivenVolumeRenderer::setIDVRMethod(std::string _method)
 void ImportanceDrivenVolumeRenderer::initCompositors()
 {
     // Start from an empty compositor chain
-    auto layer    = this->getLayer();
-    auto viewport = layer->getViewport();
+    const auto layer     = this->getLayer();
+    auto* const viewport = layer->getViewport();
 
     this->cleanCompositorChain(viewport);
     this->buildICCompositors(viewport);
@@ -255,7 +255,7 @@ void ImportanceDrivenVolumeRenderer::initCompositors()
 
 //-----------------------------------------------------------------------------
 
-void ImportanceDrivenVolumeRenderer::buildICCompositors(::Ogre::Viewport* _vp)
+void ImportanceDrivenVolumeRenderer::buildICCompositors(::Ogre::Viewport* const _vp)
 {
     std::string vpPPDefines, fpPPDefines;
     size_t hash;
@@ -348,7 +348,7 @@ void ImportanceDrivenVolumeRenderer::buildICCompositors(::Ogre::Viewport* _vp)
 
 //-----------------------------------------------------------------------------
 
-void ImportanceDrivenVolumeRenderer::cleanCompositorChain(Ogre::Viewport* _vp)
+void ImportanceDrivenVolumeRenderer::cleanCompositorChain(Ogre::Viewport* const _vp)
 {
     ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
 
@@ -392,7 +392,7 @@ void ImportanceDrivenVolumeRenderer::cleanCompositorChain(Ogre::Viewport* _vp)
     m_compositorListeners.clear();
 
     // Reallocate chain resources, i.e. force chain recompiling.
-    for(::Ogre::CompositorInstance* instance : compInstances)
+    for(::Ogre::CompositorInstance* const instance : compInstances)
     {
         if(instance->getEnabled())
         {
@@ -642,8 +642,8 @@ void ImportanceDrivenVolumeRenderer::resizeViewport(int _w, int _h)
 {
     this->RayTracingVolumeRenderer::resizeViewport(_w, _h);
 
-    auto layer    = this->getLayer();
-    auto viewport = layer->getViewport();
+    auto layer           = this->getLayer();
+    auto* const viewport = layer->getViewport();
 
     this->cleanCompositorChain(viewport);
     this->buildICCompositors(viewport);
@@ -741,7 +741,7 @@ std::tuple<std::string, std::string, size_t> ImportanceDrivenVolumeRenderer::com
 
 //-----------------------------------------------------------------------------
 
-void ImportanceDrivenVolumeRenderer::setRayCastingPassTextureUnits(Ogre::Pass* _rayCastingPass,
+void ImportanceDrivenVolumeRenderer::setRayCastingPassTextureUnits(Ogre::Pass* const _rayCastingPass,
                                                                    const std::string& _fpPPDefines) const
 {
     this->RayTracingVolumeRenderer::setRayCastingPassTextureUnits(_rayCastingPass, _fpPPDefines);
@@ -776,7 +776,7 @@ void ImportanceDrivenVolumeRenderer::setRayCastingPassTextureUnits(Ogre::Pass* _
 
         fpParams->setNamedConstant("u_" + s_JUMP_FLOOD_ALGORITHM_TEXTURE, nbTexUnits++);
 
-        auto gpuTF = m_gpuCSGTF.lock();
+        const auto gpuTF = m_gpuCSGTF.lock();
         texUnitState = _rayCastingPass->createTextureUnitState();
         texUnitState->setName(s_CSG_TF_TEXUNIT_NAME);
         gpuTF->bind(_rayCastingPass, texUnitState->getName(), fpParams, "u_CSGTFWindow");
@@ -813,10 +813,10 @@ void ImportanceDrivenVolumeRenderer::createIDVRTechnique()
     /// Create the technique that is used in ImportanceCompositing.compositor
     if(m_idvrMethod != s_NONE )
     {
-        auto tech = mat->createTechnique();
+        auto* const tech = mat->createTechnique();
         SLM_ASSERT("Can't create a new technique", tech);
 
-        auto pass = tech->createPass();
+        auto* const pass = tech->createPass();
         SLM_ASSERT("Can't create a new pass", pass);
 
         pass->setCullingMode(::Ogre::CullingMode::CULL_ANTICLOCKWISE);
