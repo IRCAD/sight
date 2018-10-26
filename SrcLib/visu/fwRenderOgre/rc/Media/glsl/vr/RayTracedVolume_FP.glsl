@@ -293,9 +293,9 @@ vec3 hsv2rgb(vec3 HSL);
 //-----------------------------------------------------------------------------
 
 vec4 launchRay(in vec3 rayPos, in vec3 rayDir, in float rayLength, in float sampleDistance
-#if IDVR == 1
+#if CSG
                , in bool _csgTF
-#endif
+#endif // CSG
                )
 {
     vec4 result = vec4(0);
@@ -318,9 +318,20 @@ vec4 launchRay(in vec3 rayPos, in vec3 rayDir, in float rayLength, in float samp
 #ifdef PREINTEGRATION
         float tfAlpha = samplePreIntegrationTable(rayPos, rayPos + rayDir).a;
 #else
-        float intensity = texture(u_image, rayPos).r;
-
+        float intensity = texture(u_image, rayPos).r;        
+#if CSG
+        float tfAlpha;
+        if(_csgTF)
+        {
+            tfAlpha = sampleCSGTransferFunction(intensity).a;
+        }
+        else
+        {
+            tfAlpha = sampleTransferFunction(intensity).a;
+        }
+#else
         float tfAlpha = sampleTransferFunction(intensity).a;
+#endif // CSG
 #endif // PREINTEGRATION
 
         if(tfAlpha != 0)
@@ -341,7 +352,7 @@ vec4 launchRay(in vec3 rayPos, in vec3 rayDir, in float rayLength, in float samp
 #else
         float intensity = texture(u_image, rayPos).r;
 
-#if IDVR == 1
+#if CSG
         vec4 tfColour;
         if(_csgTF)
         {
@@ -353,8 +364,7 @@ vec4 launchRay(in vec3 rayPos, in vec3 rayDir, in float rayLength, in float samp
         }
 #else
         vec4  tfColour = sampleTransferFunction(intensity);
-#endif
-
+#endif // CSG
 #endif // PREINTEGRATION
 
         if(tfColour.a > 0)
@@ -555,11 +565,6 @@ void main(void)
     {
         float entryIntensity = texture(u_image, rayEntry).r;
         float entryOpacity = sampleTransferFunction(entryIntensity).a;
-
-        float rayCSGLength = length(rayEntry - rayCSGEntry);
-        vec3 rayCSGPos = rayCSGEntry;
-        vec4 colorCSG = launchRay(rayCSGPos, rayDir, rayCSGLength, u_sampleDistance, true);
-
 #ifdef CSG_DEPTH_LINES
         float rayDepthIntegralPart;
         float rayDepthFractPart = modf(rayDepth, rayDepthIntegralPart);
@@ -632,6 +637,11 @@ void main(void)
         {
             result = launchRay(rayPos, rayDir, rayLength, u_sampleDistance, false);
         }
+
+        float rayCSGLength = length(rayEntry - rayCSGEntry);
+        vec3 rayCSGPos = rayCSGEntry;
+        vec4 colorCSG = launchRay(rayCSGPos, rayDir, rayCSGLength, u_sampleDistance, true);
+
 #if CSG_DISABLE_CONTEXT
         if(entryOpacity > 0.f)
         {
