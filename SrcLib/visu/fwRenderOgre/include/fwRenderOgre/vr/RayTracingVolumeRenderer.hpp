@@ -66,13 +66,14 @@ public:
     FWRENDEROGRE_API virtual ~RayTracingVolumeRenderer();
 
     /// Function called when a new image is being rendered.
-    FWRENDEROGRE_API virtual void imageUpdate(::fwData::Image::sptr image, ::fwData::TransferFunction::sptr tf);
+    FWRENDEROGRE_API virtual void imageUpdate(::fwData::Image::sptr image,
+                                              ::fwData::TransferFunction::sptr tf) override;
 
     /// Called when the transfer function is updated.
     FWRENDEROGRE_API virtual void updateVolumeTF() override;
 
     /// Sets the number of samples per view ray.
-    FWRENDEROGRE_API virtual void setSampling(uint16_t nbSamples);
+    FWRENDEROGRE_API virtual void setSampling(uint16_t nbSamples) override;
 
     /// Sets the opacity correction factor.
     FWRENDEROGRE_API void setOpacityCorrection(int opacityCorrection);
@@ -86,7 +87,7 @@ public:
     FWRENDEROGRE_API virtual void setIlluminationVolume(SATVolumeIllumination::sptr illuminationVolume);
 
     /// Sets pre-integrated mode.
-    FWRENDEROGRE_API virtual void setPreIntegratedRendering(bool preIntegratedRendering);
+    FWRENDEROGRE_API virtual void setPreIntegratedRendering(bool preIntegratedRendering) override;
 
     /// Sets ambient occlusion usage.
     FWRENDEROGRE_API virtual void setAmbientOcclusion(bool ambientOcclusion);
@@ -102,7 +103,7 @@ public:
     FWRENDEROGRE_API void setFocalLength(float focalLength);
 
     /// Computes image positions, updates the proxy geometry.
-    FWRENDEROGRE_API virtual void clipImage(const ::Ogre::AxisAlignedBox& clippingBox);
+    FWRENDEROGRE_API virtual void clipImage(const ::Ogre::AxisAlignedBox& clippingBox) override;
 
     /// IllumVolume getter.
     FWRENDEROGRE_API SATVolumeIllumination::sptr getIllumVolume();
