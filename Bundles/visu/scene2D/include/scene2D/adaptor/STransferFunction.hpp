@@ -49,7 +49,7 @@ class SCENE2D_CLASS_API STransferFunction : public ::fwRenderQt::IAdaptor
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro( (STransferFunction)(::fwRenderQt::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (STransferFunction)(::fwRenderQt::IAdaptor) )
 
     /// Constructor, add handle events TRANSFERFUNCTION and WINDOWING.
     SCENE2D_API STransferFunction() noexcept;

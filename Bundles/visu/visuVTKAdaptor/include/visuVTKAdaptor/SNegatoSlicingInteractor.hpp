@@ -54,7 +54,7 @@ class VISUVTKADAPTOR_CLASS_API SNegatoSlicingInteractor : public ::fwDataTools::
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SNegatoSlicingInteractor)(::fwRenderVTK::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (SNegatoSlicingInteractor)(::fwRenderVTK::IAdaptor) )
 
     VISUVTKADAPTOR_API SNegatoSlicingInteractor() noexcept;
 

@@ -75,8 +75,6 @@ void ShowLandmark::updating()
     bool toShow = !isShown;
     image->setField("ShowLandmarks",  ::fwData::Boolean::New(toShow));
 
-    auto services = ::fwServices::OSR::getServices < ::fwServices::IService > (image);
-
     this->::fwGui::IActionSrv::setIsActive(isShown);
 
     // notify

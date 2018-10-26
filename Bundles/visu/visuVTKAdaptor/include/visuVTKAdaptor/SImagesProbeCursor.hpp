@@ -51,7 +51,7 @@ class VISUVTKADAPTOR_CLASS_API SImagesProbeCursor : public ::visuVTKAdaptor::SPr
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro( (SImagesProbeCursor)(::fwRenderVTK::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (SImagesProbeCursor)(::fwRenderVTK::IAdaptor) )
 
     VISUVTKADAPTOR_API SImagesProbeCursor() noexcept;
 

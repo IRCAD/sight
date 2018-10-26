@@ -68,6 +68,9 @@ SNegatoMPR::SNegatoMPR() noexcept :
     newSlot(s_SHOW_SLICE_SLOT, &SNegatoMPR::showSlice, this);
     newSlot(s_SET_CROSS_SCALE_SLOT, &SNegatoMPR::setCrossScale, this);
     newSlot(S_CHANGE_IMAGE_SOURCE_SLOT, &SNegatoMPR::changeImageSource, this);
+
+    this->registerObject(s_IMAGE_INOUT, AccessType::INOUT, true);
+    this->registerObject(s_TF_INOUT, AccessType::INOUT, false, true);
 }
 
 //------------------------------------------------------------------------------
@@ -261,7 +264,7 @@ void SNegatoMPR::swapping(const KeyType& key)
             }
             else if(::fwServices::OSR::isRegistered(s_TF_INOUT, AccessType::INOUT, service))
             {
-                ::fwServices::OSR::unregisterService(s_TF_INOUT, AccessType::INOUT, service);
+                service->unregisterInOut(s_TF_INOUT);
                 service->swapKey(s_TF_INOUT, nullptr);
             }
         }

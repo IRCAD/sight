@@ -25,7 +25,7 @@ class CTRLSELECTION_CLASS_API ImageUpdateAxis : public ::fwServices::IController
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (ImageUpdateAxis)(::fwServices::IController) );
+    fwCoreServiceClassDefinitionsMacro( (ImageUpdateAxis)(::fwServices::IController) )
 
     CTRLSELECTION_API ImageUpdateAxis() noexcept;
 

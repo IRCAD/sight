@@ -51,6 +51,7 @@ void ObjectServiceTest::tearDown()
 
 void ObjectServiceTest::swapTest()
 {
+#ifndef REMOVE_DEPRECATED
     FW_DEPRECATED_MSG("This test check a deprecated method.", "20.0");
     const std::string srvType("::fwServices::ut::TestService");
     const std::string srvImplementation("::fwServices::ut::TestServiceImplementation");
@@ -86,12 +87,14 @@ void ObjectServiceTest::swapTest()
     CPPUNIT_ASSERT_EQUAL(service, osrSrv);
 
     osr.unregisterService(service);
+#endif
 }
 
 //------------------------------------------------------------------------------
 
 void ObjectServiceTest::registerTest()
 {
+#ifndef REMOVE_DEPRECATED
     FW_DEPRECATED_MSG("This test check a deprecated method.", "20.0");
 
     const std::string srvType("::fwServices::ut::TestService");
@@ -131,6 +134,7 @@ void ObjectServiceTest::registerTest()
     CPPUNIT_ASSERT( osr.has(obj, srvType) == false );
     servicesByType = osr.getServices( srvType );
     CPPUNIT_ASSERT( servicesByType.empty() );
+#endif
 }
 
 //------------------------------------------------------------------------------
@@ -150,10 +154,10 @@ void ObjectServiceTest::registerKeyTest()
     auto service3 = ::fwServices::registry::ServiceFactory::getDefault()->create( srvType, srvImplementation1 );
 
     ::fwServices::registry::ObjectService osr;
-
-    service1->setObjectId("key1", "uid1");
-    service1->setObjectId("key2", "uid2");
-    service1->setObjectId("key3", "uid3");
+    CPPUNIT_ASSERT_EQUAL(false, service1->hasObjectId("key1"));
+    service1->registerObject("uid1", "key1", ::fwServices::IService::AccessType::INOUT);
+    service1->registerObject("uid2", "key2", ::fwServices::IService::AccessType::INOUT);
+    service1->registerObject("uid3", "key3", ::fwServices::IService::AccessType::INOUT);
 
     CPPUNIT_ASSERT_EQUAL(true, service1->hasObjectId("key1"));
     CPPUNIT_ASSERT_EQUAL(true, service1->hasObjectId("key2"));
@@ -164,11 +168,6 @@ void ObjectServiceTest::registerKeyTest()
     CPPUNIT_ASSERT_EQUAL(std::string("uid2"), service1->getObjectId("key2"));
     CPPUNIT_ASSERT_EQUAL(std::string("uid3"), service1->getObjectId("key3"));
     CPPUNIT_ASSERT_THROW(service1->getObjectId("another_key"), ::fwCore::Exception);
-
-    service2->setObjectId("key1", "uid1");
-    service2->setObjectId("key2", "uid2");
-
-    service3->setObjectId("key3", "uid3");
 
     osr.registerService(obj1, "key1", ::fwServices::IService::AccessType::INOUT, service1);
     osr.registerService(obj2, "key2", ::fwServices::IService::AccessType::INOUT, service1);
@@ -220,6 +219,7 @@ void ObjectServiceTest::registerKeyTest()
         CPPUNIT_ASSERT(std::equal(servicesByType.begin(), servicesByType.end(), servicesByTemplateType.begin()));
     }
 
+#ifndef REMOVE_DEPRECATED
     // Begin deprecated methods
     // 2 services of type "::fwServices::ut::TestService" working on obj1
     {
@@ -259,21 +259,24 @@ void ObjectServiceTest::registerKeyTest()
     }
 
     // End deprecated methods
+#endif
 
     auto servicesByType = osr.getServices( srvType );
     CPPUNIT_ASSERT_EQUAL(size_t(3), servicesByType.size());
 
-    typedef ::fwServices::registry::ObjectService::ObjectVectorType ObjectVectorType;
     CPPUNIT_ASSERT(servicesByType.find(service1) != servicesByType.end());
     CPPUNIT_ASSERT(servicesByType.find(service2) != servicesByType.end());
     CPPUNIT_ASSERT(servicesByType.find(service3) != servicesByType.end());
 
+#ifndef REMOVE_DEPRECATED
+    typedef ::fwServices::registry::ObjectService::ObjectVectorType ObjectVectorType;
     ObjectVectorType objects = osr.getObjects();
     CPPUNIT_ASSERT_EQUAL(size_t(3), objects.size());
 
     CPPUNIT_ASSERT(objects.find(obj1) != objects.end());
     CPPUNIT_ASSERT(objects.find(obj2) != objects.end());
     CPPUNIT_ASSERT(objects.find(obj3) != objects.end());
+#endif
 
     // Remove key 1 from service 1 and check consistency
     osr.unregisterService("key1", ::fwServices::IService::AccessType::INOUT, service1);
@@ -305,8 +308,11 @@ void ObjectServiceTest::registerKeyTest()
     CPPUNIT_ASSERT_EQUAL(size_t(2), servicesByType.size());
 
     osr.unregisterService(service2);
-    osr.unregisterService("key2", ::fwServices::IService::AccessType::INOUT, service1);
 
+    servicesByType = osr.getServices( srvType );
+    CPPUNIT_ASSERT_EQUAL(size_t(1), servicesByType.size());
+
+    osr.unregisterService(service1);
     servicesByType = osr.getServices( srvType );
     CPPUNIT_ASSERT( servicesByType.empty() );
 }
@@ -336,7 +342,7 @@ void ObjectServiceTest::registerConnectionTest()
 
     // Register callback test
     // Each time we wait the slot with a timeout to avoid blocking the test in case of failure
-    service1->setObjectId("key1", "uid1");
+    service1->registerObject("uid1", "key1", ::fwServices::IService::AccessType::OUTPUT);
     osr.registerServiceOutput(obj1, "key1", service1);
     {
         std::unique_lock<std::mutex> lock(m_mutex);
@@ -346,7 +352,7 @@ void ObjectServiceTest::registerConnectionTest()
         CPPUNIT_ASSERT(obj1 == m_obj);
     }
 
-    service1->setObjectId("key2", "uid2");
+    service1->registerObject("uid2", "key2", ::fwServices::IService::AccessType::OUTPUT);
     osr.registerServiceOutput(obj2, "key2", service1);
     {
         std::unique_lock<std::mutex> lock(m_mutex);

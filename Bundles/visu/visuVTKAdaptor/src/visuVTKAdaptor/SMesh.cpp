@@ -262,8 +262,7 @@ public:
                 ::fwRenderVTK::IAdaptor::sptr meshService = ::fwRenderVTK::IAdaptor::dynamicCast(srv);
                 SLM_ASSERT("Service of type '::visuVTKAdaptor::SMesh' is not an adaptor", meshService);
 
-                ::fwServices::OSR::registerServiceInput(service->getInput< ::fwData::Mesh >(SMesh::s_MESH_INPUT),
-                                                        SMesh::s_MESH_INPUT, srv);
+                srv->registerInput(service->getInput< ::fwData::Mesh >(SMesh::s_MESH_INPUT), SMesh::s_MESH_INPUT);
 
                 ::visuVTKAdaptor::SMesh::sptr meshAdaptor = SMesh::dynamicCast(meshService);
 
@@ -361,6 +360,8 @@ SMesh::SMesh() noexcept :
     newSlot(s_UPDATE_COLOR_MODE_SLOT, &SMesh::updateColorMode, this);
     newSlot(s_UPDATE_NORMAL_MODE_SLOT, &SMesh::updateNormalMode, this);
     newSlot(s_UPDATE_MATRIX_FIELD_SLOT, &SMesh::updateMatrixField, this);
+
+    this->registerObject(s_MESH_INPUT, ::fwServices::IService::AccessType::INPUT, true);
 }
 
 //------------------------------------------------------------------------------

@@ -54,7 +54,7 @@ class VISUVTKADAPTOR_CLASS_API STransformFromWheel : public ::fwRenderVTK::IAdap
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (STransformFromWheel)(::fwRenderVTK::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (STransformFromWheel)(::fwRenderVTK::IAdaptor) )
 
     /// Constructor.
     VISUVTKADAPTOR_API STransformFromWheel();

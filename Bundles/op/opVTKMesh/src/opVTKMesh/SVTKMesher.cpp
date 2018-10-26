@@ -45,6 +45,8 @@ static const std::string s_MODEL_OUTPUT = "modelSeries";
 SVTKMesher::SVTKMesher() noexcept :
     m_reduction(0)
 {
+    this->registerObject(s_IMAGE_INPUT, ::fwServices::IService::AccessType::INPUT, true);
+    this->registerObject(s_MODEL_OUTPUT, ::fwServices::IService::AccessType::OUTPUT, false, true);
 }
 
 //-----------------------------------------------------------------------------
