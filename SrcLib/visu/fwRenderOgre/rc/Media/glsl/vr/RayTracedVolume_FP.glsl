@@ -292,7 +292,11 @@ vec3 hsv2rgb(vec3 HSL);
 
 //-----------------------------------------------------------------------------
 
-vec4 launchRay(in vec3 rayPos, in vec3 rayDir, in float rayLength, in float sampleDistance, in bool _csgTF)
+vec4 launchRay(in vec3 rayPos, in vec3 rayDir, in float rayLength, in float sampleDistance
+#if IDVR == 1
+               , in bool _csgTF
+#endif
+               )
 {
     vec4 result = vec4(0);
 
@@ -543,7 +547,7 @@ void main(void)
     vec3 rayPos = rayEntry;
 
 #ifndef CSG
-    vec4 result = launchRay(rayPos, rayDir, rayLength, u_sampleDistance, false);
+    vec4 result = launchRay(rayPos, rayDir, rayLength, u_sampleDistance);
 #else    
     vec4 result;
 
