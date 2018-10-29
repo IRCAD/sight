@@ -604,9 +604,15 @@ void main(void)
             result = launchRay(rayPos, rayDir, rayLength, u_sampleDistance, u_tfTexture, u_tfWindow);
         }
 
+#ifdef CSG_TF
+        // If the second TF usage is enable, we fill the CSG with it.
         float rayCSGLength = length(rayEntry - rayCSGEntry);
         vec3 rayCSGPos = rayCSGEntry;
         vec4 colorCSG = launchRay(rayCSGPos, rayDir, rayCSGLength, u_sampleDistance, u_CSGTFTexture, u_CSGTFWindow);
+#else // CSG_TF
+        // Else, we use an empty color.
+        vec4 colorCSG = vec4(0.0, 0.0, 0.0, 0.0);
+#endif // CSG_TF
 
 #ifdef CSG_DISABLE_CONTEXT
         if(entryOpacity > 0.f)
