@@ -663,5 +663,4 @@ void main(void)
 #endif // CSG
 
     fragColor = result;
-
 }

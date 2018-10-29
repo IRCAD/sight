@@ -108,6 +108,7 @@ const std::string s_AIMC_DEFINE  = "IDVR=2";
 const std::string s_VPIMC_DEFINE = "IDVR=3";
 
 const std::string s_CSG_DEFINE                  = "CSG=1";
+const std::string s_CSG_TF_DEFINE               = "CSG_TF=1";
 const std::string s_CSG_BORDER_DEFINE           = "CSG_BORDER=1";
 const std::string s_CSG_DISABLE_CONTEXT_DEFINE  = "CSG_DISABLE_CONTEXT=1";
 const std::string s_CSG_OPACITY_DECREASE_DEFINE = "CSG_OPACITY_DECREASE=1";
@@ -401,6 +402,18 @@ void ImportanceDrivenVolumeRenderer::toggleIDVRCountersinkGeometry(bool _CSG)
 
 //-----------------------------------------------------------------------------
 
+void ImportanceDrivenVolumeRenderer::toggleIDVRCSGTF(bool _enable)
+{
+    m_idvrCSGTF = _enable;
+
+    if(this->m_idvrMethod == s_MIMP && this->m_idvrCSG)
+    {
+        this->createMaterialAndIDVRTechnique();
+    }
+}
+
+//-----------------------------------------------------------------------------
+
 void ImportanceDrivenVolumeRenderer::setIDVRCountersinkAngle(double _angle)
 {
     m_idvrCSGAngleCosine = static_cast<float>(std::cos(::glm::radians(_angle)));
@@ -657,6 +670,10 @@ std::tuple<std::string, std::string, size_t> ImportanceDrivenVolumeRenderer::com
             {
                 fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << s_CSG_DEFINE;
 
+                if(m_idvrCSGTF)
+                {
+                    fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << s_CSG_TF_DEFINE;
+                }
                 if(m_idvrCSGBorder)
                 {
                     fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << s_CSG_BORDER_DEFINE;

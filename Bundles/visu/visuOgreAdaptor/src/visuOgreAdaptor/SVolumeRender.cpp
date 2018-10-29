@@ -747,6 +747,10 @@ void SVolumeRender::setBoolParameter(bool val, std::string key)
     {
         m_volumeRenderer->toggleIDVRCountersinkGeometry(val);
     }
+    else if(key == "idvrCSGTF")
+    {
+        m_volumeRenderer->toggleIDVRCSGTF(val);
+    }
     else if(key == "idvrCSGBorder")
     {
         m_volumeRenderer->toggleIDVRCSGBorder(val);

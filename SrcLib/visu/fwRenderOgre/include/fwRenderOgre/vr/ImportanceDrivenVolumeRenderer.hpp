@@ -61,6 +61,9 @@ public:
     /// Toggle countersink geometry when using Importance Driven Volume Rendering.
     FWRENDEROGRE_API void toggleIDVRCountersinkGeometry(bool);
 
+    /// Toggle TF use for countersink geometry .
+    FWRENDEROGRE_API void toggleIDVRCSGTF(bool);
+
     /// Set the countersink's geometry angle (in degrees).
     FWRENDEROGRE_API void setIDVRCountersinkAngle(double);
 
