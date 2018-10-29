@@ -172,12 +172,8 @@ void RepresentationEditor::configuring()
 void RepresentationEditor::updating()
 {
     ::fwData::Reconstruction::sptr reconstruction = this->getInOut< ::fwData::Reconstruction >(s_RECONSTRUCTION_INOUT);
-    if (!reconstruction)
-    {
-        FW_DEPRECATED_KEY(s_RECONSTRUCTION_INOUT, "inout", "18.0");
-        reconstruction = this->getObject< ::fwData::Reconstruction >();
-    }
-    SLM_ASSERT("No Reconstruction!", reconstruction);
+    SLM_ASSERT("The inout key '" + s_RECONSTRUCTION_INOUT + "' is not defined.", reconstruction);
+
     ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
         this->getContainer() );
     QWidget* const container = qtContainer->getQtContainer();
@@ -353,12 +349,7 @@ void RepresentationEditor::refreshNormals()
 void RepresentationEditor::onShowNormals(int state )
 {
     ::fwData::Reconstruction::sptr reconstruction = this->getInOut< ::fwData::Reconstruction >(s_RECONSTRUCTION_INOUT);
-    if (!reconstruction)
-    {
-        FW_DEPRECATED_KEY(s_RECONSTRUCTION_INOUT, "inout", "18.0");
-        reconstruction = this->getObject< ::fwData::Reconstruction >();
-    }
-    SLM_ASSERT("No Reconstruction!", reconstruction);
+    SLM_ASSERT("The inout key '" + s_RECONSTRUCTION_INOUT + "' is not defined.", reconstruction);
 
     switch(state)
     {
@@ -386,12 +377,7 @@ void RepresentationEditor::onShowNormals(int state )
 void RepresentationEditor::notifyMaterial()
 {
     ::fwData::Reconstruction::sptr reconstruction = this->getInOut< ::fwData::Reconstruction >(s_RECONSTRUCTION_INOUT);
-    if (!reconstruction)
-    {
-        FW_DEPRECATED_KEY(s_RECONSTRUCTION_INOUT, "inout", "18.0");
-        reconstruction = this->getObject< ::fwData::Reconstruction >();
-    }
-    SLM_ASSERT("No Reconstruction!", reconstruction);
+    SLM_ASSERT("The inout key '" + s_RECONSTRUCTION_INOUT + "' is not defined.", reconstruction);
 
     ::fwData::Object::ModifiedSignalType::sptr sig;
     sig = reconstruction->getMaterial()->signal< ::fwData::Object::ModifiedSignalType >(
@@ -404,13 +390,7 @@ void RepresentationEditor::notifyMaterial()
 ::fwServices::IService::KeyConnectionsMap RepresentationEditor::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-
-    //FIXME hack to support deprecated getObject()
-    if (this->getInOut< ::fwData::Reconstruction >(s_RECONSTRUCTION_INOUT))
-    {
-        connections.push(s_RECONSTRUCTION_INOUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
-    }
-
+    connections.push(s_RECONSTRUCTION_INOUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
     return connections;
 }
 

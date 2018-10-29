@@ -52,17 +52,6 @@ public:
 
     UIIMAGEQT_API virtual ~ImageTransparency() noexcept;
 
-    /**
-     * @brief Returns proposals to connect service slots to associated object signals,
-     * this method is used for obj/srv auto connection
-     *
-     * Connect Image::s_MODIFIED_SIG to this::s_UPDATE_SLOT
-     * Connect Image::s_VISIBILITY_MODIFIED_SIG to this::s_UPDATE_SLOT
-     * Connect Image::s_TRANSPARENCY_MODIFIED_SIG to this::s_UPDATE_SLOT
-     * Connect Image::s_BUFFER_MODIFIED_SIG to this::s_UPDATE_SLOT
-     */
-    UIIMAGEQT_API virtual KeyConnectionsType getObjSrvConnections() const override;
-
 protected:
     /// Starts editor.
     virtual void starting() override;

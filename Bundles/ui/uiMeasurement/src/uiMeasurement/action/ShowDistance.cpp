@@ -60,11 +60,8 @@ void ShowDistance::info(std::ostream& _sstream )
 void ShowDistance::updating()
 {
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    if (!image)
-    {
-        FW_DEPRECATED_KEY(s_IMAGE_INOUT, "inout", "18.0");
-        image = this->getObject< ::fwData::Image >();
-    }
+    SLM_ASSERT("The inout key '" + s_IMAGE_INOUT + "' is not defined.", image);
+
     if ( !::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image) )
     {
         this->::fwGui::IActionSrv::setIsActive(false);
@@ -95,11 +92,8 @@ void ShowDistance::updating()
 void ShowDistance::showDistance(bool)
 {
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    if (!image)
-    {
-        FW_DEPRECATED_KEY(s_IMAGE_INOUT, "inout", "18.0");
-        image = this->getObject< ::fwData::Image >();
-    }
+    SLM_ASSERT("The inout key '" + s_IMAGE_INOUT + "' is not defined.", image);
+
     ::fwData::Boolean::sptr showDistances =
         image->getField< ::fwData::Boolean >("ShowDistances", ::fwData::Boolean::New(true));
 

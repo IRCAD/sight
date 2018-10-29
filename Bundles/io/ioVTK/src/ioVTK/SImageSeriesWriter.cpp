@@ -131,12 +131,8 @@ void SImageSeriesWriter::updating()
     {
         // Retrieve dataStruct associated with this service
         ::fwMedData::ImageSeries::csptr imageSeries = this->getInput< ::fwMedData::ImageSeries >(::fwIO::s_DATA_KEY);
-        if (!imageSeries)
-        {
-            FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "18.0");
-            imageSeries = this->getObject< ::fwMedData::ImageSeries >();
-        }
-        SLM_ASSERT("ImageSeries is not instanced", imageSeries);
+        SLM_ASSERT("The input key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", imageSeries);
+
         SLM_ASSERT("Image from ImageSeries is not instanced", imageSeries->getImage());
 
         ::fwGui::Cursor cursor;

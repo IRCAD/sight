@@ -276,11 +276,7 @@ void SActivityWizard::createActivity(std::string activityID)
         }
 
         ::fwMedData::SeriesDB::sptr seriesDB = this->getInOut< ::fwMedData::SeriesDB >(s_SERIESDB_INOUT);
-        if (!seriesDB)
-        {
-            FW_DEPRECATED_KEY(s_SERIESDB_INOUT, "inout", "18.0");
-            seriesDB = this->getObject< ::fwMedData::SeriesDB >();
-        }
+        SLM_ASSERT("The inout key '" + s_SERIESDB_INOUT + "' is not defined.", seriesDB);
 
         ::fwMedDataTools::helper::SeriesDB helper(seriesDB);
         helper.add(m_actSeries);
@@ -469,11 +465,8 @@ void SActivityWizard::onBuildActivity()
                     }
                     m_actSeries->setDescription(description);
                     ::fwMedData::SeriesDB::sptr seriesDB = this->getInOut< ::fwMedData::SeriesDB >(s_SERIESDB_INOUT);
-                    if (!seriesDB)
-                    {
-                        FW_DEPRECATED_KEY(s_SERIESDB_INOUT, "inout", "18.0");
-                        seriesDB = this->getObject< ::fwMedData::SeriesDB >();
-                    }
+                    SLM_ASSERT("The inout key '" + s_SERIESDB_INOUT + "' is not defined.", seriesDB);
+
                     ::fwMedDataTools::helper::SeriesDB helper(seriesDB);
                     helper.add(m_actSeries);
                     helper.notify();

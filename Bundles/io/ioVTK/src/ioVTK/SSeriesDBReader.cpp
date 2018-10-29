@@ -160,12 +160,7 @@ void SSeriesDBReader::updating()
     {
         // Retrieve dataStruct associated with this service
         ::fwMedData::SeriesDB::sptr seriesDB = this->getInOut< ::fwMedData::SeriesDB >(::fwIO::s_DATA_KEY);
-        if (!seriesDB)
-        {
-            FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "18.0");
-            seriesDB = this->getObject< ::fwMedData::SeriesDB >();
-        }
-        SLM_ASSERT("SeriesDB not instanced", seriesDB);
+        SLM_ASSERT("The inout key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", seriesDB);
 
         ::fwMedData::SeriesDB::sptr localSeriesDB = ::fwMedData::SeriesDB::New();
 

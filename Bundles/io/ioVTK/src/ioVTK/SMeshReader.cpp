@@ -155,12 +155,7 @@ void SMeshReader::updating()
     {
         // Retrieve dataStruct associated with this service
         ::fwData::Mesh::sptr pMesh = this->getInOut< ::fwData::Mesh >(::fwIO::s_DATA_KEY);
-        if (!pMesh)
-        {
-            FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "18.0");
-            pMesh = this->getObject< ::fwData::Mesh >();
-        }
-        SLM_ASSERT("pMesh not instanced", pMesh);
+        SLM_ASSERT("The inout key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", pMesh);
 
         ::fwGui::Cursor cursor;
         cursor.setCursor(::fwGui::ICursor::BUSY);
@@ -177,12 +172,7 @@ void SMeshReader::updating()
 void SMeshReader::notificationOfUpdate()
 {
     ::fwData::Mesh::sptr pMesh = this->getInOut< ::fwData::Mesh >(::fwIO::s_DATA_KEY);
-    if (!pMesh)
-    {
-        FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "18.0");
-        pMesh = this->getObject< ::fwData::Mesh >();
-    }
-    SLM_ASSERT("pMesh not instanced", pMesh);
+    SLM_ASSERT("The inout key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", pMesh);
 
     ::fwData::Object::ModifiedSignalType::sptr sig;
     sig = pMesh->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
