@@ -123,7 +123,7 @@ vec3 lighting(vec3 _normal, vec3 _position, vec3 _diffuse)
 
 //-----------------------------------------------------------------------------
 
-vec3 gradientNormal(vec3 uvw)
+vec3 gradientNormal(vec3 _uvw)
 {
     ivec3 imgDimensions = textureSize(u_image, 0);
     vec3 h = 1. / vec3(imgDimensions);
@@ -132,27 +132,27 @@ vec3 gradientNormal(vec3 uvw)
     vec3 hz = vec3(0, 0, h.z);
 
     return -normalize( vec3(
-                (texture(u_image, uvw + hx).r - texture(u_image, uvw - hx).r),
-                (texture(u_image, uvw + hy).r - texture(u_image, uvw - hy).r),
-                (texture(u_image, uvw + hz).r - texture(u_image, uvw - hz).r)
+                (texture(u_image, _uvw + hx).r - texture(u_image, _uvw - hx).r),
+                (texture(u_image, _uvw + hy).r - texture(u_image, _uvw - hy).r),
+                (texture(u_image, _uvw + hz).r - texture(u_image, _uvw - hz).r)
     ));
 }
 
 //-----------------------------------------------------------------------------
 
 /// Converts OpenGL fragment coordinates to normalized device coordinates (NDC).
-vec3 fragCoordsToNDC(in vec3 fragCoord)
+vec3 fragCoordsToNDC(in vec3 _fragCoord)
 {
-    vec3 ndcCoords  = vec3(fragCoord.xy * u_viewport.zw, fragCoord.z);
+    vec3 ndcCoords  = vec3(_fragCoord.xy * u_viewport.zw, _fragCoord.z);
     ndcCoords = (ndcCoords - 0.5) * 2.;
     return ndcCoords;
 }
 
 //-----------------------------------------------------------------------------
 
-float voxelScreenDepth(in vec3 pos)
+float voxelScreenDepth(in vec3 _pos)
 {
-    vec4 projPos = u_worldViewProj * vec4(pos, 1);
+    vec4 projPos = u_worldViewProj * vec4(_pos, 1);
 
     return projPos.z / projPos.w;
 }
@@ -160,13 +160,13 @@ float voxelScreenDepth(in vec3 pos)
 //-----------------------------------------------------------------------------
 
 /// Converts a position in OpenGL's normalized device coordinates (NDC) to object space.
-vec3 ndcToVolumeSpacePosition(in vec3 ndcPos, in mat4 invWorldViewProj)
+vec3 ndcToVolumeSpacePosition(in vec3 _ndcPos, in mat4 _invWorldViewProj)
 {
     vec4 clipPos;
-    clipPos.w   = (2 * u_clippingNear * u_clippingFar)  / (u_clippingNear + u_clippingFar + ndcPos.z * (u_clippingNear - u_clippingFar));
-    clipPos.xyz = ndcPos * clipPos.w;
+    clipPos.w   = (2 * u_clippingNear * u_clippingFar)  / (u_clippingNear + u_clippingFar + _ndcPos.z * (u_clippingNear - u_clippingFar));
+    clipPos.xyz = _ndcPos * clipPos.w;
 
-    vec4 imgPos = invWorldViewProj * clipPos;
+    vec4 imgPos = _invWorldViewProj * clipPos;
 
     return imgPos.xyz / imgPos.w;
 }
@@ -174,10 +174,10 @@ vec3 ndcToVolumeSpacePosition(in vec3 ndcPos, in mat4 invWorldViewProj)
 //-----------------------------------------------------------------------------
 
 #ifdef PREINTEGRATION
-vec4 samplePreIntegrationTable(vec3 rayBack, vec3 rayFront)
+vec4 samplePreIntegrationTable(vec3 _rayBack, vec3 _rayFront)
 {
-    float sf = texture(u_image, rayBack).r;
-    float sb = texture(u_image, rayFront).r;
+    float sf = texture(u_image, _rayBack).r;
+    float sb = texture(u_image, _rayFront).r;
 
     sf = ((sf * 65535.f) - float(u_min) - 32767.f) / float(u_max - u_min);
     sb = ((sb * 65535.f) - float(u_min) - 32767.f) / float(u_max - u_min);
@@ -188,11 +188,11 @@ vec4 samplePreIntegrationTable(vec3 rayBack, vec3 rayFront)
 
 //-----------------------------------------------------------------------------
 
-void composite(inout vec4 dest, in vec4 src)
+void composite(inout vec4 _dest, in vec4 _src)
 {
     // Front-to-back blending
-    dest.rgb = dest.rgb + (1 - dest.a) * src.a * src.rgb;
-    dest.a   = dest.a   + (1 - dest.a) * src.a;
+    _dest.rgb = _dest.rgb + (1 - _dest.a) * _src.a * _src.rgb;
+    _dest.a   = _dest.a   + (1 - _dest.a) * _src.a;
 }
 
 //-----------------------------------------------------------------------------
@@ -200,31 +200,31 @@ void composite(inout vec4 dest, in vec4 src)
 #ifdef CSG
 
 // Returns true if the ray hits the cone, the origin is then moved to the intersection point.
-bool rayConeIntersection(in vec3 coneOrigin, in vec3 coneDir, in float coneAngleCos, inout vec3 rayOrigin, in vec3 rayDir)
+bool rayConeIntersection(in vec3 _coneOrigin, in vec3 _coneDir, in float _coneAngleCos, inout vec3 _rayOrigin, in vec3 _rayDir)
 {
     // Vector from the cone origin to the ray origin.
-    vec3 origDir = rayOrigin - coneOrigin;
-    float squaredAngleCos = coneAngleCos * coneAngleCos;
+    vec3 origDir = _rayOrigin - _coneOrigin;
+    float squaredAngleCos = _coneAngleCos * _coneAngleCos;
 
-    float dirDot = dot(rayDir, coneDir);
-    float origConeDirDot = dot(origDir, coneDir);
+    float dirDot = dot(_rayDir, _coneDir);
+    float origConeDirDot = dot(origDir, _coneDir);
 
     // Angle cosine between the cone direction and the origin to origin vector.
-    float origAngleCos = dot(normalize(origDir), normalize(coneDir));
+    float origAngleCos = dot(normalize(origDir), normalize(_coneDir));
 
     // Ensure that the ray origin is 'inside' the cone.
-    if(origAngleCos < coneAngleCos && origAngleCos > 0)
+    if(origAngleCos < _coneAngleCos && origAngleCos > 0)
     {
         return false;
     }
 
     // We're looking for a point P belonging to the ray and the cone, P should therefore verify the following equations:
-    //     · ((P - coneOrigin) /  length(P - coneOrigin)) * coneDir = cos(coneAngle)
-    //     · P = rayOrigin + t * rayDir
+    //     · ((P - _coneOrigin) /  length(P - _coneOrigin)) * _coneDir = cos(coneAngle)
+    //     · P = _rayOrigin + t * _rayDir
     // When simplifying this system we end up with a second degree polynomial a * t² + b * t + c with the following
     // coefficients :
     float a = dirDot * dirDot - squaredAngleCos;
-    float b = 2 * (dirDot * origConeDirDot - dot(rayDir, origDir) * squaredAngleCos);
+    float b = 2 * (dirDot * origConeDirDot - dot(_rayDir, origDir) * squaredAngleCos);
     float c = origConeDirDot * origConeDirDot - dot(origDir, origDir) * squaredAngleCos;
 
     // Solving the polynomial is trivial.
@@ -245,12 +245,12 @@ bool rayConeIntersection(in vec3 coneOrigin, in vec3 coneDir, in float coneAngle
             return false;
         }
 
-        intersection = rayOrigin + t * rayDir;
+        intersection = _rayOrigin + t * _rayDir;
 
         // Check if we hit the cone or its 'shadow'
         // i.e. check if the intersection is 'in front' or 'behind' the cone origin.
-        vec3 cp = intersection - coneOrigin;
-        float h = dot(cp, coneDir);
+        vec3 cp = intersection - _coneOrigin;
+        float h = dot(cp, _coneDir);
 
         if (h < 0.) // We hit the shadow ...
         {
@@ -262,16 +262,16 @@ bool rayConeIntersection(in vec3 coneOrigin, in vec3 coneDir, in float coneAngle
         return false;
     }
 
-    rayOrigin = intersection;
+    _rayOrigin = intersection;
     return true;
 }
 
 #ifdef CSG_MODULATION || CSG_OPACITY_DECREASE
 // Computes the orthogonal distance from a point to a line.
-float pointLineDistance(in vec3 point, in vec3 linePoint, in vec3 lineUnitDir)
+float pointLineDistance(in vec3 _point, in vec3 _linePoint, in vec3 _lineUnitDir)
 {
-    vec3 line2Point = point - linePoint;
-    return length(line2Point - dot(line2Point, lineUnitDir) * lineUnitDir);
+    vec3 line2Point = _point - _linePoint;
+    return length(line2Point - dot(line2Point, _lineUnitDir) * _lineUnitDir);
 }
 #endif // CSG_MODULATION || CSG_OPACITY_DECREASE
 
@@ -286,7 +286,7 @@ vec3 hsv2rgb(vec3 HSL);
 
 //-----------------------------------------------------------------------------
 
-vec4 launchRay(in vec3 rayPos, in vec3 rayDir, in float rayLength, in float sampleDistance, in sampler1D _tfTexture, in vec2 _tfWindow)
+vec4 launchRay(in vec3 _rayPos, in vec3 _rayDir, in float _rayLength, in float _sampleDistance, in sampler1D _tfTexture, in vec2 _tfWindow)
 {
     vec4 result = vec4(0);
 
@@ -303,12 +303,12 @@ vec4 launchRay(in vec3 rayPos, in vec3 rayDir, in float rayLength, in float samp
     int iterCount = 0;
     float t = 0.f;
     // Move the ray to the first non transparent voxel.
-    for(; iterCount < MAX_ITERATIONS && t < rayLength; iterCount += 1, t += sampleDistance)
+    for(; iterCount < MAX_ITERATIONS && t < _rayLength; iterCount += 1, t += _sampleDistance)
     {
 #ifdef PREINTEGRATION
-        float tfAlpha = samplePreIntegrationTable(rayPos, rayPos + rayDir).a;
+        float tfAlpha = samplePreIntegrationTable(_rayPos, _rayPos + _rayDir).a;
 #else // PREINTEGRATION
-        float intensity = texture(u_image, rayPos).r;        
+        float intensity = texture(u_image, _rayPos).r;
         float tfAlpha = sampleTransferFunction(intensity, _tfTexture, _tfWindow).a;
 #endif // PREINTEGRATION
 
@@ -317,26 +317,26 @@ vec4 launchRay(in vec3 rayPos, in vec3 rayDir, in float rayLength, in float samp
             break;
         }
 
-        rayPos += rayDir;
+        _rayPos += _rayDir;
     }
 
-    float rayScreenDepth = voxelScreenDepth(rayPos);
+    float rayScreenDepth = voxelScreenDepth(_rayPos);
     gl_FragDepth = rayScreenDepth * 0.5f + 0.5f; // Convert to NDC assuming no clipping planes are set.
 
-    for(; iterCount < MAX_ITERATIONS && t < rayLength; iterCount += 1, t += sampleDistance)
+    for(; iterCount < MAX_ITERATIONS && t < _rayLength; iterCount += 1, t += _sampleDistance)
     {
 #ifdef PREINTEGRATION
-        vec4 tfColour = samplePreIntegrationTable(rayPos, rayPos + rayDir);
+        vec4 tfColour = samplePreIntegrationTable(_rayPos, _rayPos + _rayDir);
 #else // PREINTEGRATION
-        float intensity = texture(u_image, rayPos).r;
+        float intensity = texture(u_image, _rayPos).r;
         vec4 tfColour = sampleTransferFunction(intensity, _tfTexture, _tfWindow);
 #endif // PREINTEGRATION
 
         if(tfColour.a > 0)
         {
-            vec3 N = gradientNormal(rayPos);
+            vec3 N = gradientNormal(_rayPos);
 
-            tfColour.rgb = lighting(N, rayPos, tfColour.rgb);
+            tfColour.rgb = lighting(N, _rayPos, tfColour.rgb);
 
 #ifndef PREINTEGRATION
             // Adjust opacity to sample distance.
@@ -345,7 +345,7 @@ vec4 launchRay(in vec3 rayPos, in vec3 rayDir, in float rayLength, in float samp
 #endif // PREINTEGRATION
 
 #ifdef AMBIENT_OCCLUSION || COLOR_BLEEDING || SHADOWS
-            vec4 volIllum = texture(u_illuminationVolume, rayPos);
+            vec4 volIllum = texture(u_illuminationVolume, _rayPos);
 #endif // AMBIENT_OCCLUSION || COLOR_BLEEDING || SHADOWS
 
 #ifdef AMBIENT_OCCLUSION || SHADOWS
@@ -394,7 +394,7 @@ vec4 launchRay(in vec3 rayPos, in vec3 rayDir, in float rayLength, in float samp
             }
         }
 
-        rayPos += rayDir;
+        _rayPos += _rayDir;
 #if IDVR == 2 || IDVR == 3
 // With Visibility preserving importance compositing
 // We count the number of samples until we reach the important feature
