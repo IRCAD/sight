@@ -155,55 +155,58 @@ private:
     std::string m_idvrMethod;
 
     /// Sets usage of countersink geometry for MImP.
-    bool m_idvrCSG;
+    bool m_idvrCSG {true};
+
+    /// Sets usage of countersink geometry TF.
+    bool m_idvrCSGTF {false};
 
     /// Sets the csg's angle cosine for MImP.
     float m_idvrCSGAngleCosine;
 
     /// Sets countersink geometry blur weight for MImP.
-    float m_idvrCSGBlurWeight;
+    float m_idvrCSGBlurWeight {0.01f};
 
     /// Sets usage of countersink geometry border for MImP.
-    bool m_idvrCSGBorder;
+    bool m_idvrCSGBorder {false};
 
     /// Sets whether or not the context should be discarded when using MImP countersink geometry.
-    bool m_idvrCSGDisableContext;
+    bool m_idvrCSGDisableContext {false};
 
     /// Sets countersink geometry border thickness for MImP.
-    float m_idvrCSGBorderThickness;
+    float m_idvrCSGBorderThickness {0.05f};
 
     /// Sets countersink geometry border color for MImP.
-    ::Ogre::ColourValue m_idvrCSGBorderColor;
+    ::Ogre::ColourValue m_idvrCSGBorderColor {::Ogre::ColourValue(1.f, 1.f, 0.6f)};
 
     /// Sets usage of modulation for MImP CSG.
-    bool m_idvrCSGModulation;
+    bool m_idvrCSGModulation {false};
 
     /// Name of the method used to compute the new color values in CSG.
-    IDVRCSGModulationMethod m_idvrCSGModulationMethod;
+    IDVRCSGModulationMethod m_idvrCSGModulationMethod {IDVRCSGModulationMethod::COLOR1};
 
     /// Sets the wheighting factor for MImP CSG color modulation.
-    float m_idvrCSGModulationFactor;
+    float m_idvrCSGModulationFactor {0.02f};
 
     /// Sets usage of grayscale for MImP CSG.
-    bool m_idvrCSGGrayScale;
+    bool m_idvrCSGGrayScale {false};
 
     /// Name of the method used to compute the new color values in CSG.
-    IDVRCSGGrayScaleMethod m_idvrCSGgrayscaleMethod;
+    IDVRCSGGrayScaleMethod m_idvrCSGgrayscaleMethod {IDVRCSGGrayScaleMethod::AVERAGE_GRAYSCALE};
 
     /// Sets usage of opacity decrease for MImP CSG.
-    bool m_idvrCSGOpacityDecrease;
+    bool m_idvrCSGOpacityDecrease {false};
 
     /// Sets the opacity decrease factor used in MImP CSG.
-    float m_idvrCSGOpacityDecreaseFactor;
+    float m_idvrCSGOpacityDecreaseFactor {0.8f};
 
     /// Sets usage of depth lines for MImP CSG.
-    bool m_idvrCSGDepthLines;
+    bool m_idvrCSGDepthLines {false};
 
     /// Sets the alpha correction for AImC.
-    float m_idvrAImCAlphaCorrection;
+    float m_idvrAImCAlphaCorrection {0.05f};
 
     /// Sets the alpha correction for VPImC.
-    float m_idvrVPImCAlphaCorrection;
+    float m_idvrVPImCAlphaCorrection {0.3f};
 
     RayEntryCompositor m_idvrMaskRayEntriesCompositor;
 
