@@ -7,16 +7,18 @@ uniform sampler3D u_image;
 #if IDVR >= 1
 uniform sampler2D u_IC;
 #endif
+
 #if IDVR == 1
 uniform sampler2D u_JFA;
 uniform vec2 u_CSGTFWindow;
 uniform sampler1D u_CSGTFTexture;
 #endif
+
 #if IDVR == 2 || IDVR == 3
 uniform sampler3D u_mask;
 #endif
 
-#if AMBIENT_OCCLUSION || COLOR_BLEEDING || SHADOWS
+#ifdef AMBIENT_OCCLUSION || COLOR_BLEEDING || SHADOWS
 uniform sampler3D u_illuminationVolume;
 uniform vec4 u_volIllumFactor;
 #endif // AMBIENT_OCCLUSION || COLOR_BLEEDING || SHADOWS
@@ -26,7 +28,7 @@ uniform sampler2D u_entryPoints;
 #ifdef AUTOSTEREO
 uniform mat4 u_invWorldView;
 uniform mat4 u_invProj;
-#else
+#else // AUTOSTEREO
 uniform mat4 u_invWorldViewProj;
 uniform mat4 u_worldViewProj;
 #endif // AUTOSTEREO
@@ -53,7 +55,7 @@ uniform float u_clippingFar;
 uniform sampler2D u_tfTexture;
 uniform int u_min;
 uniform int u_max;
-#else
+#else // PREINTEGRATION
 uniform float u_opacityCorrectionFactor;
 #endif // PREINTEGRATION
 
@@ -63,22 +65,26 @@ uniform float u_csgAngleCos;
 uniform float u_csgBorderThickness;
 uniform vec3 u_csgBorderColor;
 uniform vec3 u_imageSpacing;
+
 #ifdef CSG_DEPTH_LINES
 // Number of image spacing units (millimeters usually) separating depth lines.
 uniform int u_depthLinesSpacing;
 uniform float u_depthLinesWidth;
 #endif // CSG_DEPTH_LINES
+
 #endif // IDVR == 1
+
 #if IDVR == 2
 uniform float u_aimcAlphaCorrection;
-#endif
+#endif IDVR == 2
+
 #if IDVR == 3
 uniform float u_vpimcAlphaCorrection;
-#endif
+#endif IDVR == 3
 
 #if CSG_MODULATION == 4 || CSG_MODULATION == 5 || CSG_MODULATION == 6
 uniform float u_colorModulationFactor;
-#endif
+#endif // CSG_MODULATION == 4 || CSG_MODULATION == 5 || CSG_MODULATION == 6
 
 #ifdef CSG_OPACITY_DECREASE
 uniform float u_opacityDecreaseFactor;
@@ -92,7 +98,7 @@ vec4 sampleTransferFunction(float intensity);
 
 //-----------------------------------------------------------------------------
 
-#if IDVR == 1
+#ifdef CSG
 vec4 sampleCSGTransferFunction(float intensity)
 {
     float intIntensity = intensity * 65535.f - 32768.f;
@@ -100,7 +106,7 @@ vec4 sampleCSGTransferFunction(float intensity)
 
     return texture(u_CSGTFTexture, scaledValue);
 }
-#endif
+#endif // CSG
 
 //-----------------------------------------------------------------------------
 
@@ -201,7 +207,7 @@ void composite(inout vec4 dest, in vec4 src)
 
 //-----------------------------------------------------------------------------
 
-#if IDVR == 1 && CSG
+#ifdef CSG
 
 // Returns true if the ray hits the cone, the origin is then moved to the intersection point.
 bool rayConeIntersection(in vec3 coneOrigin, in vec3 coneDir, in float coneAngleCos, inout vec3 rayOrigin, in vec3 rayDir)
@@ -270,30 +276,28 @@ bool rayConeIntersection(in vec3 coneOrigin, in vec3 coneDir, in float coneAngle
     return true;
 }
 
-#if CSG_MODULATION || CSG_OPACITY_DECREASE
-
+#ifdef CSG_MODULATION || CSG_OPACITY_DECREASE
 // Computes the orthogonal distance from a point to a line.
 float pointLineDistance(in vec3 point, in vec3 linePoint, in vec3 lineUnitDir)
 {
     vec3 line2Point = point - linePoint;
     return length(line2Point - dot(line2Point, lineUnitDir) * lineUnitDir);
 }
-
 #endif // CSG_MODULATION || CSG_OPACITY_DECREASE
 
-#endif
+#endif // CSG
 
 //-----------------------------------------------------------------------------
 
-#if CSG_MODULATION == 4 || CSG_MODULATION == 5 || CSG_MODULATION == 6 || CSG_MODULATION == 7
+#if CSG_MODULATION == 4 || CSG_MODULATION == 5 || CSG_MODULATION == 6
 vec3 rgb2hsv(vec3 RGB);
 vec3 hsv2rgb(vec3 HSL);
-#endif // CSG_MODULATION == 4 || CSG_MODULATION == 5 || CSG_MODULATION == 6 || CSG_MODULATION == 7
+#endif // CSG_MODULATION == 4 || CSG_MODULATION == 5 || CSG_MODULATION == 6
 
 //-----------------------------------------------------------------------------
 
 vec4 launchRay(in vec3 rayPos, in vec3 rayDir, in float rayLength, in float sampleDistance
-#if CSG
+#ifdef CSG
                , in bool _csgTF
 #endif // CSG
                )
@@ -308,7 +312,7 @@ vec4 launchRay(in vec3 rayPos, in vec3 rayDir, in float rayLength, in float samp
 // With Visibility preserving importance compositing
 // We count the number of samples until we reach the important feature
     float nbSamples = 0.0;
-#endif
+#endif // IDVR == 2 || IDVR == 3
 
     int iterCount = 0;
     float t = 0.f;
@@ -317,9 +321,9 @@ vec4 launchRay(in vec3 rayPos, in vec3 rayDir, in float rayLength, in float samp
     {
 #ifdef PREINTEGRATION
         float tfAlpha = samplePreIntegrationTable(rayPos, rayPos + rayDir).a;
-#else
+#else // PREINTEGRATION
         float intensity = texture(u_image, rayPos).r;        
-#if CSG
+#ifdef CSG
         float tfAlpha;
         if(_csgTF)
         {
@@ -329,7 +333,7 @@ vec4 launchRay(in vec3 rayPos, in vec3 rayDir, in float rayLength, in float samp
         {
             tfAlpha = sampleTransferFunction(intensity).a;
         }
-#else
+#else // CSG
         float tfAlpha = sampleTransferFunction(intensity).a;
 #endif // CSG
 #endif // PREINTEGRATION
@@ -349,10 +353,9 @@ vec4 launchRay(in vec3 rayPos, in vec3 rayDir, in float rayLength, in float samp
     {
 #ifdef PREINTEGRATION
         vec4 tfColour = samplePreIntegrationTable(rayPos, rayPos + rayDir);
-#else
+#else // PREINTEGRATION
         float intensity = texture(u_image, rayPos).r;
-
-#if CSG
+#ifdef CSG
         vec4 tfColour;
         if(_csgTF)
         {
@@ -362,7 +365,7 @@ vec4 launchRay(in vec3 rayPos, in vec3 rayDir, in float rayLength, in float samp
         {
             tfColour = sampleTransferFunction(intensity);
         }
-#else
+#else // CSG
         vec4  tfColour = sampleTransferFunction(intensity);
 #endif // CSG
 #endif // PREINTEGRATION
@@ -379,11 +382,11 @@ vec4 launchRay(in vec3 rayPos, in vec3 rayDir, in float rayLength, in float samp
             tfColour.a = 1 - pow(1 - tfColour.a, u_sampleDistance * u_opacityCorrectionFactor);
 #endif // PREINTEGRATION
 
-#if AMBIENT_OCCLUSION || COLOR_BLEEDING || SHADOWS
+#ifdef AMBIENT_OCCLUSION || COLOR_BLEEDING || SHADOWS
             vec4 volIllum = texture(u_illuminationVolume, rayPos);
 #endif // AMBIENT_OCCLUSION || COLOR_BLEEDING || SHADOWS
 
-#if AMBIENT_OCCLUSION || SHADOWS
+#ifdef AMBIENT_OCCLUSION || SHADOWS
             // Apply ambient occlusion + shadows
             tfColour.rgb *= pow(exp(-volIllum.a), u_volIllumFactor.a);
 #endif // AMBIENT_OCCLUSION || SHADOWS
@@ -456,9 +459,9 @@ void main(void)
 
 #ifdef AUTOSTEREO
     mat4x4 invWorldViewProj = u_invWorldView * u_invProj;
-#else
+#else // AUTOSTEREO
     mat4x4 invWorldViewProj = u_invWorldViewProj;
-#endif
+#endif // AUTOSTEREO
 
     // Entry points in window space.
     vec3 entryFrag = fragCoordsToNDC(vec3(gl_FragCoord.xy, entryDepth));
@@ -480,7 +483,7 @@ void main(void)
     vec4 jfaDistance = vec4(0.f);
     bool isCsg = false; // true if this ray hits the csg.
 
-#if CSG_MODULATION || CSG_OPACITY_DECREASE
+#ifdef CSG_MODULATION || CSG_OPACITY_DECREASE
     float coneDistance = 0.f;
 #endif // CSG_MODULATION || CSG_OPACITY_DECREASE
 
@@ -519,7 +522,7 @@ void main(void)
 
         if(hit)
         {
-#if CSG_MODULATION || CSG_OPACITY_DECREASE
+#ifdef CSG_MODULATION || CSG_OPACITY_DECREASE
             // Ray entry to central cone line distance.
             coneDistance = pointLineDistance(scaledEntry, scaledClosestPt, coneDir);
 #endif // CSG_MODULATION || CSG_OPACITY_DECREASE
@@ -540,7 +543,7 @@ void main(void)
             isCsg = true;
         }
 
-#if CSG_DISABLE_CONTEXT
+#ifdef CSG_DISABLE_CONTEXT
         else
         {
             discard;
@@ -558,7 +561,8 @@ void main(void)
 
 #ifndef CSG
     vec4 result = launchRay(rayPos, rayDir, rayLength, u_sampleDistance);
-#else    
+#else // CSG
+
     vec4 result;
 
     if(isCsg)
@@ -642,7 +646,7 @@ void main(void)
         vec3 rayCSGPos = rayCSGEntry;
         vec4 colorCSG = launchRay(rayCSGPos, rayDir, rayCSGLength, u_sampleDistance, true);
 
-#if CSG_DISABLE_CONTEXT
+#ifdef CSG_DISABLE_CONTEXT
         if(entryOpacity > 0.f)
         {
             composite(colorCSG, result);
