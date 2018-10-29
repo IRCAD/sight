@@ -728,7 +728,6 @@ void ActivityDataView::importObjectFromSDB()
     ::fwData::Object::sptr obj;
     ::fwServices::IService::sptr ioSelectorSrv;
     ioSelectorSrv = ::fwServices::add("::uiIO::editor::SIOSelector");
-    ioSelectorSrv->setObjectId(::fwIO::s_DATA_KEY, "objRead");
 
     ::fwRuntime::ConfigurationElement::csptr ioCfg;
     ioCfg = ::fwServices::registry::ServiceConfig::getDefault()->getServiceConfig(ioSelectorSrvConfig,
@@ -742,6 +741,7 @@ void ActivityDataView::importObjectFromSDB()
     {
         ioSelectorSrv->setConfiguration(srvConfig);
         ioSelectorSrv->configure();
+        ioSelectorSrv->setObjectId(::fwIO::s_DATA_KEY, "objRead");
         ioSelectorSrv->start();
         ioSelectorSrv->update();
         obj = ioSelectorSrv->getOutput< ::fwData::Object >(::fwIO::s_DATA_KEY);
