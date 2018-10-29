@@ -17,7 +17,7 @@ namespace fwServices
  * @name Methods for accessing services
  */
 //@{
-
+#ifndef REMOVE_DEPRECATED
 /**
  * @brief Get the first service of type serviceType which is attached to obj
  * @note The template method is also available, where the template parameter SERVICE relates the service type
@@ -34,7 +34,7 @@ FWSERVICES_API ::fwServices::IService::sptr get( ::fwData::Object::sptr obj,
  */
 template<class SERVICE>
 SPTR(SERVICE) get( ::fwData::Object::sptr obj);
-
+#endif
 /**
  * @brief Return a registered IService having uid as unique universal identifier , its an alias on
  * fwData::Object::getID(...) method

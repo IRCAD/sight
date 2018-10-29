@@ -146,12 +146,7 @@ void JpgImageWriterService::updating()
     {
         // Retrieve dataStruct associated with this service
         ::fwData::Image::csptr image = this->getInput< ::fwData::Image >(::fwIO::s_DATA_KEY);
-        if (!image)
-        {
-            FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "18.0");
-            image = this->getObject< ::fwData::Image >();
-        }
-        SLM_ASSERT("'" + ::fwIO::s_DATA_KEY + "' key is not defined", image);
+        SLM_ASSERT("The input key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", image);
 
         ::fwGui::Cursor cursor;
         cursor.setCursor(::fwGui::ICursor::BUSY);

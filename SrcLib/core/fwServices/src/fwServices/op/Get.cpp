@@ -14,7 +14,7 @@ namespace fwServices
 {
 
 //------------------------------------------------------------------------------
-
+#ifndef REMOVE_DEPRECATED
 ::fwServices::IService::sptr get( ::fwData::Object::sptr obj, std::string serviceType )
 {
     FW_DEPRECATED_MSG("'fwServices::get(object, srvType)' is deprecated.", "20.0");
@@ -25,7 +25,7 @@ namespace fwServices
                 services.size() == 1);
     return *services.begin();
 }
-
+#endif
 //------------------------------------------------------------------------------
 
 ::fwServices::IService::sptr get( std::string uid )

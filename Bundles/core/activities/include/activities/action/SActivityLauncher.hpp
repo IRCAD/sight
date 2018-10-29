@@ -143,15 +143,6 @@ public:
     ACTIVITIES_API static const ::fwCom::Signals::SignalKeyType s_ACTIVITY_LAUNCHED_SIG;
     /// @}
 
-    /**
-     * @brief Returns proposals to connect service slots to associated object signals,
-     * this method is used for obj/srv auto connection
-     *
-     * Connect Vector::s_ADDED_OBJECTS_SIG to this::s_UPDATE_STATE_SLOT
-     * Connect Vector::s_REMOVED_OBJECTS_SIG to this::s_UPDATE_STATE_SLOT
-     */
-    ACTIVITIES_API virtual KeyConnectionsType getObjSrvConnections() const override;
-
 protected:
 
     /**

@@ -103,12 +103,7 @@ void SImageSeriesWriter::updating()
     {
         // Retrieve dataStruct associated with this service
         ::fwMedData::ImageSeries::csptr series = this->getInput< ::fwMedData::ImageSeries >(::fwIO::s_DATA_KEY);
-        if (!series)
-        {
-            FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "18.0");
-            series = this->getObject< ::fwMedData::ImageSeries >();
-        }
-        SLM_ASSERT("ImageSeries is not instanced", series);
+        SLM_ASSERT("The input key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", series);
 
         const ::boost::filesystem::path& folder = this->getFolder();
         if(!::boost::filesystem::is_empty(folder))

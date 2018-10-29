@@ -25,6 +25,7 @@ class ServiceTest : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE( ServiceTest );
 CPPUNIT_TEST( testServiceCreation );
+CPPUNIT_TEST( testServiceConfiguration );
 CPPUNIT_TEST( testServiceCreationWithMultipleData );
 CPPUNIT_TEST( testServiceCreationWithTemplateMethods );
 CPPUNIT_TEST( testServiceCreationWithUUID );
@@ -43,6 +44,9 @@ public:
 
     /// Test add and remove service
     void testServiceCreation();
+
+    /// Test to configure a service
+    void testServiceConfiguration();
 
     /// Test add and remove service with multiple associated data
     void testServiceCreationWithMultipleData();

@@ -28,13 +28,13 @@ std::set< SPTR(SERVICE) > getServices()
 }
 
 //------------------------------------------------------------------------------
-
+#ifndef REMOVE_DEPRECATED
 template<class SERVICE>
 std::set< SPTR(SERVICE) > getServices(::fwData::Object::sptr obj)
 {
     return ::fwServices::OSR::get()->getServices< SERVICE >(obj);
 }
-
+#endif
 inline SPTR( ::fwServices::registry::ObjectService::RegisterSignalType ) getRegisterSignal()
 {
     return ::fwServices::OSR::get()->signal< ::fwServices::registry::ObjectService::RegisterSignalType >
@@ -61,6 +61,7 @@ template<class SERVICE>
 std::set< SPTR(SERVICE) > ObjectService::getServices() const
 {
     std::set< SPTR(SERVICE) > services;
+#ifndef REMOVE_DEPRECATED
     const ServiceContainerType::right_map& right = m_container.right;
     for( const ServiceContainerType::right_map::value_type& elt: right)
     {
@@ -71,8 +72,20 @@ std::set< SPTR(SERVICE) > ObjectService::getServices() const
         }
     }
     SLM_DEBUG_IF("No service registered", services.empty());
+#else
+    for(const auto& srv : m_services)
+    {
+        SPTR(SERVICE) service = std::dynamic_pointer_cast< SERVICE >( srv );
+        if ( service )
+        {
+            services.insert( service );
+        }
+    }
+#endif
     return services;
 }
+
+#ifndef REMOVE_DEPRECATED
 
 //------------------------------------------------------------------------------
 
@@ -117,6 +130,8 @@ ObjectService::ObjectVectorType ObjectService::getObjects() const
     SLM_WARN_IF( "No object registered for the requested type of service", objects.empty() );
     return objects;
 }
+
+#endif
 
 //------------------------------------------------------------------------------
 

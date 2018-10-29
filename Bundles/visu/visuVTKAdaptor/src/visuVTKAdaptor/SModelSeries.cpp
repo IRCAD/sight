@@ -56,6 +56,8 @@ SModelSeries::SModelSeries() noexcept :
     newSlot(s_UPDATE_NORMAL_MODE_SLOT, &SModelSeries::updateNormalMode, this);
     newSlot(s_SHOW_RECONSTRUCTIONS_SLOT, &SModelSeries::showReconstructions, this);
     newSlot(s_CHANGE_FIELD_SLOT, &SModelSeries::showReconstructionsOnFieldChanged, this);
+
+    this->registerObject(s_MODEL_INPUT, ::fwServices::IService::AccessType::INPUT, true);
 }
 
 //------------------------------------------------------------------------------

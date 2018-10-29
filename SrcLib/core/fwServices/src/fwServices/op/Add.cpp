@@ -20,7 +20,7 @@ namespace fwServices
 {
 
 //------------------------------------------------------------------------------
-
+#ifndef REMOVE_DEPRECATED
 ::fwServices::IService::sptr add( ::fwData::Object::sptr _obj,
                                   const std::string& _serviceType,
                                   const std::string& _implType,
@@ -38,7 +38,7 @@ namespace fwServices
     }
     return srv;
 }
-
+#endif
 //------------------------------------------------------------------------------
 
 ::fwServices::IService::sptr add( const std::string& _implType, const std::string& _uid)

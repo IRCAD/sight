@@ -1,0 +1,9 @@
+<plugin id="Tuto09MesherWithGenericSceneCpp" class="::Tuto09MesherWithGenericSceneCpp::Plugin"  version="@PROJECT_VERSION@" >
+
+    <requirement id="dataReg" />
+    <requirement id="servicesReg" />
+    <requirement id="visuVTKQt" />
+
+    <library name="Tuto09MesherWithGenericSceneCpp" />
+
+</plugin>

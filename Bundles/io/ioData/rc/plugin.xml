@@ -3,12 +3,6 @@
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwIO::IReader</type>
-        <service>::ioData::SplineReaderService</service>
-        <object>::fwData::Spline</object>
-    </extension>
-
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::fwIO::IReader</type>
         <service>::ioData::STrianMeshReader</service>
         <object>::fwData::Mesh</object>
         <desc>Trian file reader</desc>

@@ -115,30 +115,10 @@ void SSeriesSignal::updating()
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsType SSeriesSignal::getObjSrvConnections() const
-{
-    KeyConnectionsType connections;
-    connections.push_back( std::make_pair( ::fwMedData::SeriesDB::s_ADDED_SERIES_SIG, s_REPORT_SERIES_SLOT ) );
-
-    return connections;
-}
-
-//------------------------------------------------------------------------------
-
 ::fwServices::IService::KeyConnectionsMap SSeriesSignal::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-
-    // FIXME hack to support old getObject (with any 'in' or 'inout' key)
-    if (!this->getInput< ::fwMedData::SeriesDB >("seriesDB"))
-    {
-        FW_DEPRECATED_KEY("seriesDB", "in", "18.0");
-    }
-    else
-    {
-        connections.push("seriesDB",  ::fwMedData::SeriesDB::s_ADDED_SERIES_SIG, s_REPORT_SERIES_SLOT );
-    }
-
+    connections.push("seriesDB",  ::fwMedData::SeriesDB::s_ADDED_SERIES_SIG, s_REPORT_SERIES_SLOT );
     return connections;
 }
 
