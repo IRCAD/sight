@@ -79,6 +79,8 @@ class IVtkRenderWindowInteractorManager;
  *   is responsible of triggering the rendering when its slot "requestRender" is called. If renderMode="timer" the scene
  *   is rendered at N frames per second (N is defined by fps tag). If renderMode="none" you should call 'render' slot
  *   to render the scene.
+ * - \b useContainer(optional, default: false): if true, it calls the gui methods create and initialize. Automaticcaly
+ *      set to false when using offscreen.
  * - \b width (optional, "1280" by default): width for off screen render
  * - \b height (optional, "720" by default): height for off screen render
  * - \b renderer
@@ -101,7 +103,7 @@ class IVtkRenderWindowInteractorManager;
 class FWRENDERVTK_CLASS_API SRender : public ::fwRender::IRender
 {
 public:
-    fwCoreServiceClassDefinitionsMacro( (SRender)(::fwRender::IRender) );
+    fwCoreServiceClassDefinitionsMacro( (SRender)(::fwRender::IRender) )
 
     typedef std::string RendererIdType;
     typedef std::string PickerIdType;
@@ -157,6 +159,14 @@ public:
     /// Allows to change the size of the offscreen renderer at runtime. This overrides XML configuration settings.
     FWRENDERVTK_API void setOffScreenRenderSize(unsigned int _width, unsigned int _height);
 
+    /// Set the interactor manager
+    void setInteractorManager(const SPTR( ::fwRenderVTK::IVtkRenderWindowInteractorManager )& manager);
+
+    /// If true, the scene use the IGuiContainer methods (create and initialize). It should be called before configure.
+    void useContainer(bool useContainer);
+
+    /// register the adaptor to be displayed in this scene
+    FWRENDERVTK_API void displayAdaptor(const std::string& adaptorID);
 protected:
 
     /// Renders the scene.
@@ -228,6 +238,7 @@ private:
     unsigned int m_width; ///< width for off screen render
     unsigned int m_height; ///< height for off screen render
     bool m_offScreen; ///< if true, scene is render in off screen
+    bool m_useContainer; ///< if true, it call the IGuiContainer methods (create and initialize)
     bool m_flip; ///< if true, flip off screen render scene
 
     /// Timer used for the update
@@ -258,4 +269,17 @@ inline SRender::RenderMode SRender::getRenderMode() const
     return m_renderMode;
 }
 
+//-----------------------------------------------------------------------------
+
+inline void SRender::setInteractorManager(const SPTR(::fwRenderVTK::IVtkRenderWindowInteractorManager)& manager)
+{
+    m_interactorManager = manager;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void SRender::useContainer(bool useContainer)
+{
+    m_useContainer = useContainer;
+}
 }
