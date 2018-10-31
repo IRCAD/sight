@@ -16,14 +16,10 @@ uniform vec4 u_viewport;
 uniform float u_clippingNear;
 uniform float u_clippingFar;
 
+layout (location = 0) out vec4 mrt_IC_RayTracing;
 // MImP with countersink geometry
 #if IDVR == 1
-layout (location = 0) out vec4 mrt_IC_RayTracing;
 layout (location = 1) out vec4 mrt_IC_JFA;
-#else
-#if IDVR == 2 || IDVR == 3
-out vec4 mrt_IC_RayTracing;
-#endif
 #endif
 
 //-----------------------------------------------------------------------------
@@ -65,14 +61,12 @@ void composite(inout vec4 dest, in vec4 src)
 
 //-----------------------------------------------------------------------------
 
-void launchRay(inout vec3 rayPos, in vec3 rayDir, in float rayLength, inout vec4 IC_RayTracing, inout vec4 IC_JFA)
+void launchRay(inout vec3 rayPos, in vec3 rayDir, in float rayLength)
 {
 #if IDVR == 1 // MImP
-    IC_JFA = vec4(0.0);
-    IC_RayTracing = vec4(0.0, 0.0, 0.0, 0.0);
-#else
-    IC_RayTracing = vec4(0.0, 0.0, 0.0, 0.0);
+    mrt_IC_JFA = vec4(0.0);
 #endif
+    mrt_IC_RayTracing = vec4(0.0);
 
     int iterCount = 0;
 
@@ -82,7 +76,7 @@ void launchRay(inout vec3 rayPos, in vec3 rayDir, in float rayLength, inout vec4
 
     float nbSamples = 0.0f;
 
-    for(float t = 0; iterCount < 65000 && t < rayLength; iterCount += 1, t += u_sampleDistance)
+    for(float t = 0 ; iterCount < 65000 && t < rayLength; iterCount += 1, t += u_sampleDistance)
     {
         float maskValue = texture(u_mask, rayPos).r;
 
@@ -90,17 +84,17 @@ void launchRay(inout vec3 rayPos, in vec3 rayDir, in float rayLength, inout vec4
         {
 // Maximum Importance compositing
 #if IDVR == 1
-            IC_RayTracing = vec4(rayPos, 1.);
+            mrt_IC_RayTracing = vec4(rayPos, 1.);
 
             vec2 ndcScreenPos = (gl_FragCoord.xy * u_viewport.zw - 0.5) * 2.;
             float rayScreenDepth = voxelScreenDepth(rayPos);
 
-            IC_JFA = vec4(ndcScreenPos, rayScreenDepth, 1.);
+            mrt_IC_JFA = vec4(ndcScreenPos, rayScreenDepth, 1.);
 #else
 // Average Importance compositing & Visibility preserving Importance Compositing
 // We count the number of samples until the first important object
 // We will ponder those samples by the lowest important samples
-            IC_RayTracing = vec4(nbSamples, 0., 0., 1.);
+            mrt_IC_RayTracing = vec4(nbSamples, 0., 0., 1.);
 #endif
             break;
         }
@@ -133,9 +127,5 @@ void main(void)
 
     vec3 rayPos = rayEntry;
 
-#if IDVR == 2 || IDVR == 3
-    vec4 mrt_IC_JFA = vec4(0.0, 0.0, 0.0, 1.0);
-#endif
-
-    launchRay(rayPos, rayDir, rayLength, mrt_IC_RayTracing, mrt_IC_JFA);
+    launchRay(rayPos, rayDir, rayLength);
 }
