@@ -64,10 +64,10 @@ void AppManager::createVtkScene()
     if (!m_vtkSceneCreated)
     {
         // generic scene
-        auto renderSrv = this->addService< ::fwRenderVTK::SRender >("::fwRenderVTK::SRender", "", true);
-        m_imageAdaptor       = this->addService("::visuVTKAdaptor::SNegatoMPR", "", true);
-        m_modelSeriesAdaptor = this->addService("::visuVTKAdaptor::SModelSeries", "", true);
-        m_textureAdaptor     = this->addService("::visuVTKAdaptor::STexture", "", true);
+        auto renderSrv = this->addService< ::fwRenderVTK::SRender >("::fwRenderVTK::SRender", true);
+        m_imageAdaptor       = this->addService("::visuVTKAdaptor::SNegatoMPR", true);
+        m_modelSeriesAdaptor = this->addService("::visuVTKAdaptor::SModelSeries", true);
+        m_textureAdaptor     = this->addService("::visuVTKAdaptor::STexture", true);
 
         /* **************************************************************************************
         *              genericScene configuration
