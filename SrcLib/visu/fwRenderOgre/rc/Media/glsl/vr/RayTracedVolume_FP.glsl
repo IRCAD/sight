@@ -155,9 +155,9 @@ vec3 fragCoordsToNDC(in vec3 _fragCoord)
 float voxelScreenDepth(in vec3 _pos)
 {
 #ifdef AUTOSTEREO
-    vec4 projPos = u_proj * u_worldView * vec4(pos, 1);
-#else
-    vec4 projPos = u_worldViewProj * vec4(pos, 1);
+    vec4 projPos = u_proj * u_worldView * vec4(_pos, 1);
+#else // AUTOSTEREO
+    vec4 projPos = u_worldViewProj * vec4(_pos, 1);
 #endif // AUTOSTEREO
 
     return projPos.z / projPos.w;

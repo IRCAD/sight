@@ -6,8 +6,8 @@ uniform sampler1D u_tfTexture;
 uniform vec2 u_tfWindow;
 
 // Defined in TransferFunction.glsl
-vec4 sampleTransferFunction_uint16(int _intensity, in sampler1D _sampler, in vec2 _window)
-vec4 sampleTransferFunction_float(int _intensity, in sampler1D _sampler, in vec2 _window)
+vec4 sampleTransferFunction_uint16(int _intensity, in sampler1D _sampler, in vec2 _window);
+vec4 sampleTransferFunction_float(float _intensity, in sampler1D _sampler, in vec2 _window);
 
 #   ifdef TF_INTEGER
 
