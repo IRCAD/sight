@@ -211,4 +211,3 @@ void Camera::setDistortionCoefficient(double k1, double k2, double p1, double p2
 // -------------------------------------------------------------------------
 
 } // namespace arData
-
