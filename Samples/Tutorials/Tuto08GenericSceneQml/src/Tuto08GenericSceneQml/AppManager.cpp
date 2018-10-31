@@ -68,7 +68,6 @@ void AppManager::createVtkScene()
         m_imageAdaptor       = this->addService("::visuVTKAdaptor::SNegatoMPR", "", true);
         m_modelSeriesAdaptor = this->addService("::visuVTKAdaptor::SModelSeries", "", true);
         m_textureAdaptor     = this->addService("::visuVTKAdaptor::STexture", "", true);
-        m_snapshotAdaptor    = this->addService("::visuVTKAdaptor::SSnapshot", "", true);
 
         /* **************************************************************************************
         *              genericScene configuration
@@ -87,7 +86,6 @@ void AppManager::createVtkScene()
         renderSrv->displayAdaptor(m_modelSeriesAdaptor->getID());
         renderSrv->displayAdaptor(m_imageAdaptor->getID());
         renderSrv->displayAdaptor(m_textureAdaptor->getID());
-        renderSrv->displayAdaptor(m_snapshotAdaptor->getID());
 
         auto interactorManager = ::fwRenderVTK::factory::New< ::fwVTKQml::VtkRenderWindowInteractorManager >();
         SLM_ASSERT("Frame Buffer is not yet defined", m_frameBuffer);
@@ -116,11 +114,6 @@ void AppManager::createVtkScene()
         textureAdaptorConfig.add("config.<xmlattr>.wrapping", "repeat");
         m_textureAdaptor->setConfiguration(textureAdaptorConfig);
         m_textureAdaptor->configure();
-
-        ::fwServices::IService::ConfigType snapshotAdaptorConfig;
-        snapshotAdaptorConfig.add("config.<xmlattr>.renderer", "default");
-        m_snapshotAdaptor->setConfiguration(snapshotAdaptorConfig);
-        m_snapshotAdaptor->configure();
 
         /* **************************************************************************************
         *              register and star the services
@@ -213,12 +206,6 @@ void AppManager::onOpenTexture()
     ::fwServices::OSR::unregisterService(textureReader);
 }
 
-//------------------------------------------------------------------------------
-
-void AppManager::onSnap(QUrl url)
-{
-    m_snapshotAdaptor->slot("snap")->asyncRun(url.path().toStdString());
-}
 //------------------------------------------------------------------------------
 
 void AppManager::onUpdateSliceMode(int mode)

@@ -41,7 +41,6 @@ public Q_SLOTS:
     void onOpenImage();
     void onOpenModel();
     void onOpenTexture();
-    void onSnap(QUrl url);
     void onUpdateSliceMode(int mode);
     void onShowScan(bool isShown);
     void onServiceCreated(const QVariant& obj);
@@ -58,7 +57,6 @@ private:
     ::fwServices::IService::sptr m_imageAdaptor;
     ::fwServices::IService::sptr m_modelSeriesAdaptor;
     ::fwServices::IService::sptr m_textureAdaptor;
-    ::fwServices::IService::sptr m_snapshotAdaptor;
     ::fwServices::IService::sptr m_sliceIndexEditor;
 };
 

@@ -45,7 +45,6 @@ public Q_SLOTS:
     void createVtkScene();
     void onOpenImage();
     void onSaveMesh();
-    void onSnap(const QUrl& url);
     void applyMesher(unsigned int reduction);
     void onUpdateSliceMode(int mode);
     void onShowScan(bool isShown);
@@ -64,7 +63,6 @@ private:
 
     ::fwServices::IService::sptr m_imageAdaptor;
     ::fwServices::IService::sptr m_modelSeriesAdaptor;
-    ::fwServices::IService::sptr m_snapshotAdaptor;
 
     ::fwCom::SlotBase::sptr m_slotRecSelected;
     ::fwCom::SlotBase::sptr m_slotEmptySelection;

@@ -61,6 +61,7 @@ ApplicationWindow {
         spacing: 2
         anchors.fill: parent
         Rectangle {
+            id: sceneRec
             Layout.fillWidth: true
             Layout.fillHeight: true
             color: "#006699"
@@ -172,7 +173,14 @@ ApplicationWindow {
             "all (*.*)"
         ]
         onAccepted: {
-            appManager.onSnap(snapFileDialog.fileUrl)
+            // File dialog return an url like file://myFile.png, but saveToFile required a path without 'file://'
+            var urlNoProtocol = (fileUrl+"").replace('file://','');
+            sceneRec.grabToImage(function(result) {
+                var isSaved = result.saveToFile(urlNoProtocol)
+                if (!isSaved) {
+                    console.error("An error occuers while saving '" + urlNoProtocol + "'.")
+                }
+            });
         }
     }
 }

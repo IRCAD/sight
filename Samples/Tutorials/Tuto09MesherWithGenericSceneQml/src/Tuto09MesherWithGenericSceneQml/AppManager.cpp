@@ -108,7 +108,6 @@ void AppManager::createVtkScene()
         auto renderSrv = this->addService< ::fwRenderVTK::SRender >("::fwRenderVTK::SRender", "", true);
         m_imageAdaptor       = this->addService("::visuVTKAdaptor::SNegatoMPR", "", true);
         m_modelSeriesAdaptor = this->addService("::visuVTKAdaptor::SModelSeries", "", true);
-        m_snapshotAdaptor    = this->addService("::visuVTKAdaptor::SSnapshot", "", true);
 
         /* **************************************************************************************
         *              genericScene configuration
@@ -125,7 +124,6 @@ void AppManager::createVtkScene()
         renderSrv->useContainer(false);
         renderSrv->displayAdaptor(m_modelSeriesAdaptor->getID());
         renderSrv->displayAdaptor(m_imageAdaptor->getID());
-        renderSrv->displayAdaptor(m_snapshotAdaptor->getID());
 
         auto interactorManager = ::fwRenderVTK::factory::New< ::fwVTKQml::VtkRenderWindowInteractorManager >();
         SLM_ASSERT("Frame Buffer is not yet defined", m_frameBuffer);
@@ -147,11 +145,6 @@ void AppManager::createVtkScene()
         modelSeriesAdaptorConfig.add("config.<xmlattr>.picker", "");
         m_modelSeriesAdaptor->setConfiguration(modelSeriesAdaptorConfig);
         m_modelSeriesAdaptor->configure();
-
-        ::fwServices::IService::ConfigType snapshotAdaptorConfig;
-        snapshotAdaptorConfig.add("config.<xmlattr>.renderer", "default");
-        m_snapshotAdaptor->setConfiguration(snapshotAdaptorConfig);
-        m_snapshotAdaptor->configure();
 
         /* **************************************************************************************
         *              start the services
@@ -243,13 +236,6 @@ void AppManager::applyMesher(unsigned int reduction)
         SLM_ASSERT("modelSeries is not created", m_modelSeries);
         this->addObject(m_modelSeries, s_MODELSERIES_ID);
     }
-}
-
-//------------------------------------------------------------------------------
-
-void AppManager::onSnap(const QUrl& url)
-{
-    m_snapshotAdaptor->slot("snap")->asyncRun(url.path().toStdString());
 }
 
 //------------------------------------------------------------------------------
