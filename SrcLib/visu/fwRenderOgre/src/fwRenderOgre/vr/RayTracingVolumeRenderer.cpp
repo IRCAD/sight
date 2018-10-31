@@ -431,6 +431,7 @@ void RayTracingVolumeRenderer::setRayCastingPassTextureUnits(Ogre::Pass* const _
     {
         texUnitState = _rayCastingPass->createTextureUnitState(m_preIntegrationTable.getTexture()->getName());
         texUnitState->setTextureFiltering(::Ogre::TFO_BILINEAR);
+        fpParams->setNamedConstant("u_preintegratTFTexture", numTexUnit++);
     }
     else
     {
@@ -438,9 +439,8 @@ void RayTracingVolumeRenderer::setRayCastingPassTextureUnits(Ogre::Pass* const _
         texUnitState = _rayCastingPass->createTextureUnitState();
         texUnitState->setName(s_VOLUME_TF_TEXUNIT_NAME);
         gpuTF->bind(_rayCastingPass, texUnitState->getName(), fpParams);
+        fpParams->setNamedConstant("u_tfTexture", numTexUnit++);
     }
-
-    fpParams->setNamedConstant("u_tfTexture", numTexUnit++);
 
     if(_fpPPDefines.find(s_AO_DEFINE) != std::string::npos)
     {

@@ -20,7 +20,7 @@ uniform sampler1D u_CSGTFTexture;
 uniform sampler3D u_mask;
 #endif
 
-#ifdef AMBIENT_OCCLUSION || COLOR_BLEEDING || SHADOWS
+#if AMBIENT_OCCLUSION || COLOR_BLEEDING || SHADOWS
 uniform sampler3D u_illuminationVolume;
 uniform vec4 u_volIllumFactor;
 #endif // AMBIENT_OCCLUSION || COLOR_BLEEDING || SHADOWS
@@ -56,7 +56,7 @@ uniform float u_clippingNear;
 uniform float u_clippingFar;
 
 #ifdef PREINTEGRATION
-uniform sampler2D u_tfTexture;
+uniform sampler2D u_preintegratTFTexture;
 uniform int u_min;
 uniform int u_max;
 #else // PREINTEGRATION
@@ -188,7 +188,7 @@ vec4 samplePreIntegrationTable(vec3 _rayBack, vec3 _rayFront)
     sf = ((sf * 65535.f) - float(u_min) - 32767.f) / float(u_max - u_min);
     sb = ((sb * 65535.f) - float(u_min) - 32767.f) / float(u_max - u_min);
 
-    return texture(u_tfTexture, vec2(sf, sb));
+    return texture(u_preintegratTFTexture, vec2(sf, sb));
 }
 #endif // PREINTEGRATION
 
@@ -272,7 +272,7 @@ bool rayConeIntersection(in vec3 _coneOrigin, in vec3 _coneDir, in float _coneAn
     return true;
 }
 
-#ifdef CSG_MODULATION || CSG_OPACITY_DECREASE
+#if CSG_MODULATION || CSG_OPACITY_DECREASE
 // Computes the orthogonal distance from a point to a line.
 float pointLineDistance(in vec3 _point, in vec3 _linePoint, in vec3 _lineUnitDir)
 {
@@ -350,11 +350,11 @@ vec4 launchRay(in vec3 _rayPos, in vec3 _rayDir, in float _rayLength, in float _
             tfColour.a = 1 - pow(1 - tfColour.a, u_sampleDistance * u_opacityCorrectionFactor);
 #endif // PREINTEGRATION
 
-#ifdef AMBIENT_OCCLUSION || COLOR_BLEEDING || SHADOWS
+#if AMBIENT_OCCLUSION || COLOR_BLEEDING || SHADOWS
             vec4 volIllum = texture(u_illuminationVolume, _rayPos);
 #endif // AMBIENT_OCCLUSION || COLOR_BLEEDING || SHADOWS
 
-#ifdef AMBIENT_OCCLUSION || SHADOWS
+#if AMBIENT_OCCLUSION || SHADOWS
             // Apply ambient occlusion + shadows
             tfColour.rgb *= pow(exp(-volIllum.a), u_volIllumFactor.a);
 #endif // AMBIENT_OCCLUSION || SHADOWS
@@ -490,7 +490,7 @@ void main(void)
 
         if(hit)
         {
-#ifdef CSG_MODULATION || CSG_OPACITY_DECREASE
+#if CSG_MODULATION || CSG_OPACITY_DECREASE
             // Ray entry to central cone line distance.
             coneDistance = pointLineDistance(scaledEntry, scaledClosestPt, coneDir);
 #endif // CSG_MODULATION || CSG_OPACITY_DECREASE
