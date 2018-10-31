@@ -174,8 +174,6 @@ void Window::makeCurrent()
 
 void Window::destroyWindow()
 {
-    Window::m_counter--;
-
     if(m_ogreRenderWindow)
     {
         m_ogreRenderWindow->removeListener(this);
@@ -355,14 +353,6 @@ void Window::keyPressEvent(QKeyEvent* e)
         case ::Qt::Key_Alt: info.key     = ::fwRenderOgre::interactor::IInteractor::ALT; break;
         default:
             info.key = e->key();
-    }
-
-    if(m_fullscreen && e->key() == ::Qt::Key_Escape)
-    {
-        ::fwGui::Cursor cursor;
-        cursor.setCursor(::fwGui::ICursor::BUSY);
-        ::fwGui::Application::New()->exit(0);
-        cursor.setDefaultCursor();
     }
 
     Q_EMIT interacted(info);

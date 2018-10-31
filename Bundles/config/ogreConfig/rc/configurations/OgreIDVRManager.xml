@@ -62,7 +62,7 @@
         </service>
 
         <service uid="MaskReader" type="::ioVTK::SImageReader" worker="w_maskReader">
-            <in key="target" uid="${MASK}" />
+            <inout key="data" uid="${MASK}" />
             <type mode="reader" />
         </service>
         <!-- *********************************** End services declarations *********************************** -->

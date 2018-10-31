@@ -82,12 +82,7 @@ void SSeriesDBMerger::updating( )
     ::fwGui::LockAction lock(this->getSptr());
 
     ::fwMedData::SeriesDB::sptr seriesDB = this->getInOut< ::fwMedData::SeriesDB >(s_SERIES_INOUT);
-    if (!seriesDB)
-    {
-        seriesDB = this->getObject< ::fwMedData::SeriesDB >();
-        FW_DEPRECATED_KEY(s_SERIES_INOUT, "inout", "18.0");
-    }
-    SLM_ASSERT("SeriesDB not instanced", seriesDB);
+    SLM_ASSERT("The inout key '" + s_SERIES_INOUT + "' is not correctly set.", seriesDB);
 
     // Create a new SeriesDB
     ::fwMedData::SeriesDB::sptr localSeriesDB = ::fwMedData::SeriesDB::New();

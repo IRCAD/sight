@@ -56,7 +56,7 @@ public:
 
     static const ::fwServices::IService::KeyType s_POINTLIST_INPUT;
 
-    fwCoreServiceClassDefinitionsMacro( (SPointList)(::fwRenderVTK::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (SPointList)(::fwRenderVTK::IAdaptor) )
 
     VISUVTKADAPTOR_API SPointList() noexcept;
 

@@ -35,7 +35,6 @@
 #include <fwData/Resection.hpp>
 #include <fwData/ResectionDB.hpp>
 #include <fwData/ROITraits.hpp>
-#include <fwData/Spline.hpp>
 #include <fwData/String.hpp>
 #include <fwData/StructureTraits.hpp>
 #include <fwData/StructureTraitsDictionary.hpp>
@@ -106,7 +105,6 @@ void CopyTest::fieldCopyTest()
 //    __FWDATA_UT_FIELD_COPY_MACRO(::fwData::ProcessObject);
 //    __FWDATA_UT_FIELD_COPY_MACRO(::fwData::ReconstructionTraits);
 //    __FWDATA_UT_FIELD_COPY_MACRO(::fwData::ROITraits);
-//    __FWDATA_UT_FIELD_COPY_MACRO(::fwData::Spline);
 //    __FWDATA_UT_FIELD_COPY_MACRO(::fwData::StructureTraits);
 //    __FWDATA_UT_FIELD_COPY_MACRO(::fwData::StructureTraitsDictionary);
 //    __FWDATA_UT_FIELD_COPY_MACRO(::fwData::Tag);

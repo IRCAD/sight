@@ -19,6 +19,7 @@
 
 #include <boost/make_unique.hpp>
 
+#include <OGRE/OgreCompositorInstance.h>
 #include <OGRE/OgreCompositorManager.h>
 #include <OGRE/OgreGpuProgramManager.h>
 #include <OGRE/OgreHardwarePixelBuffer.h>
@@ -156,17 +157,19 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
     SLM_ERROR_IF("Compositor '" + rayEntryCompositorName + "' not found.", compositorInstance == nullptr);
     compositorInstance->setEnabled(true);
 
+    const std::string rtvSharedParamsName = parentId + "_RTVParams";
+
     // First check that we did not already instance Shared parameters
     // This can happen when reinstancing this class (e.g. switching 3D mode)
     ::Ogre::GpuProgramManager::SharedParametersMap spMap =
         ::Ogre::GpuProgramManager::getSingleton().getAvailableSharedParameters();
-    if(!spMap["RTVParams"])
+    if(!spMap[rtvSharedParamsName])
     {
-        m_RTVSharedParameters = ::Ogre::GpuProgramManager::getSingleton().createSharedParameters("RTVParams");
+        m_RTVSharedParameters = ::Ogre::GpuProgramManager::getSingleton().createSharedParameters(rtvSharedParamsName);
     }
     else
     {
-        m_RTVSharedParameters = spMap["RTVParams"];
+        m_RTVSharedParameters = spMap[rtvSharedParamsName];
     }
 
     // define the shared param structure
@@ -190,8 +193,6 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
 RayTracingVolumeRenderer::~RayTracingVolumeRenderer()
 {
     m_camera->removeListener(m_cameraListener);
-
-    m_camera->removeListener(m_cameraListener);
     delete m_cameraListener;
     m_cameraListener = nullptr;
 
@@ -209,6 +210,10 @@ RayTracingVolumeRenderer::~RayTracingVolumeRenderer()
     compositorManager.removeCompositor(viewport, rayEntryCompositorName);
 
     m_RTVSharedParameters->removeAllConstantDefinitions();
+
+    ::Ogre::GpuProgramManager::getSingleton().remove(m_RTVSharedParameters->getName());
+
+    ::Ogre::MaterialManager::getSingleton().remove(m_currentMtlName);
 }
 
 //-----------------------------------------------------------------------------
@@ -589,7 +594,7 @@ void RayTracingVolumeRenderer::createRayTracingMaterial()
         fpParams->setNamedAutoConstant("u_lightSpecular" + number,
                                        ::Ogre::GpuProgramParameters::ACT_LIGHT_SPECULAR_COLOUR, i);
     }
-    fpParams->addSharedParameters("RTVParams");
+    fpParams->addSharedParameters(m_RTVSharedParameters->getName());
 
     ///////////////////////////////////////////////////////////////////////////
     /// Setup texture unit states

@@ -10,6 +10,8 @@
 #include <fwRenderOgre/IRenderWindowInteractorManager.hpp>
 #include <fwRenderOgre/SRender.hpp>
 
+#include <fwServices/macros.hpp>
+
 #include <boost/make_unique.hpp>
 
 #include <OGRE/OgreRenderTarget.h>

@@ -192,12 +192,7 @@ void SImageWriter::updating()
     {
         // Retrieve dataStruct associated with this service
         ::fwData::Image::csptr pImage = this->getInput< ::fwData::Image >(::fwIO::s_DATA_KEY);
-        if (!pImage)
-        {
-            FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "18.0");
-            pImage = this->getObject< ::fwData::Image >();
-        }
-        SLM_ASSERT("Image not instanced", pImage);
+        SLM_ASSERT("The input key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", pImage);
 
         ::fwGui::Cursor cursor;
         cursor.setCursor(::fwGui::ICursor::BUSY);

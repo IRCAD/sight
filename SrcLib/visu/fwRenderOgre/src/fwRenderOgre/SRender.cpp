@@ -248,6 +248,8 @@ void SRender::starting()
 
 void SRender::stopping()
 {
+    this->makeCurrent();
+
     m_connections.disconnect();
 
     for (auto it : m_layers)

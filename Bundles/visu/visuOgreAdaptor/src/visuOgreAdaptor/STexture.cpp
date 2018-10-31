@@ -113,6 +113,8 @@ void STexture::starting()
 {
     this->initialize();
 
+    this->getRenderService()->makeCurrent();
+
     m_texture =
         ::Ogre::dynamic_pointer_cast< ::Ogre::Texture>( ::Ogre::TextureManager::getSingleton().createOrRetrieve(
                                                             m_textureName,
@@ -149,6 +151,8 @@ void STexture::updating()
 
 void STexture::stopping()
 {
+    this->getRenderService()->makeCurrent();
+
     // This is necessary, otherwise we have "ghost" textures later when we reload a new texture
     m_texture->freeInternalResources();
     m_texture.reset();

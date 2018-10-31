@@ -399,6 +399,9 @@ if(USE_CONAN)
     add_definitions(${CONAN_DEFINES})
 endif()
 
+# Define the path 'FW_EXTERNAL_LIBRARIES_DIR' used to find external libraries required by our applications
+setExternalLibrariesDir()
+
 # Discover PCL only once as it takes a while and cache results...
 add_subdirectory(${FWCMAKE_RESOURCE_PATH}/pcl)
 

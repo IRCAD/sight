@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWSERVICES_OP_GET_HXX__
-#define __FWSERVICES_OP_GET_HXX__
+#pragma once
 
 #include "fwServices/IService.hpp"
 #include "fwServices/op/Add.hpp"
@@ -15,7 +14,7 @@ namespace fwServices
 {
 
 //------------------------------------------------------------------------------
-
+#ifndef REMOVE_DEPRECATED
 template<class SERVICE>
 SPTR(SERVICE) get( ::fwData::Object::sptr obj )
 {
@@ -26,7 +25,5 @@ SPTR(SERVICE) get( ::fwData::Object::sptr obj )
 }
 
 //------------------------------------------------------------------------------
-
+#endif
 }
-
-#endif /*__FWSERVICES_OP_GET_HXX__*/

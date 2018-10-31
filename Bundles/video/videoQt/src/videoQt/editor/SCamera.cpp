@@ -139,8 +139,8 @@ void SCamera::starting()
         }
         else
         {
-            SLM_ASSERT("CameraSeries contains camera data but the service is configured to create " <<
-                       m_numCreateCameras <<" cameras.", m_numCreateCameras == 0);
+            OSLM_WARN_IF("CameraSeries contains camera data but the service is configured to create " <<
+                         m_numCreateCameras <<" cameras.", m_numCreateCameras != 0);
         }
     }
 }

@@ -187,6 +187,13 @@ Layer::~Layer()
         m_cameraListener = nullptr;
     }
 
+    if(m_autostereoListener)
+    {
+        ::Ogre::MaterialManager::getSingleton().removeListener(m_autostereoListener);
+        delete m_autostereoListener;
+        m_autostereoListener = nullptr;
+    }
+
     if(m_sceneManager)
     {
         ::fwRenderOgre::Utils::getOgreRoot()->destroySceneManager(m_sceneManager);

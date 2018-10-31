@@ -45,7 +45,7 @@ class VISUVTKADAPTOR_CLASS_API SNegatoWindowingInteractor : public ::fwRenderVTK
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SNegatoWindowingInteractor)(::fwRenderVTK::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (SNegatoWindowingInteractor)(::fwRenderVTK::IAdaptor) )
 
     VISUVTKADAPTOR_API SNegatoWindowingInteractor() noexcept;
 

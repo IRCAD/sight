@@ -32,6 +32,8 @@ else()
     endif()
 endif()
 
+setExternalLibrariesDir()
+
 set(FWBUNDLE_LIB_PREFIX @FWBUNDLE_LIB_PREFIX@)
 set(FWBUNDLE_RC_PREFIX @FWBUNDLE_RC_PREFIX@)
 
