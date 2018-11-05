@@ -173,8 +173,15 @@ ApplicationWindow {
             "all (*.*)"
         ]
         onAccepted: {
-            // File dialog return an url like file://myFile.png, but saveToFile required a path without 'file://'
-            var urlNoProtocol = (fileUrl+"").replace('file://','');
+            // File dialog return an url like file:///myFile.png on windows and else file://myFile.png,
+            // but saveToFile required a path without 'file:///'
+            var urlNoProtocol = ""
+            if (Qt.platform.os == "windows") {
+                urlNoProtocol = (fileUrl.toString()+"").replace('file:///','')
+            } else {
+                urlNoProtocol = (fileUrl.toString()+"").replace('file://','')
+            }
+
             sceneRec.grabToImage(function(result) {
                 var isSaved = result.saveToFile(urlNoProtocol)
                 if (!isSaved) {
