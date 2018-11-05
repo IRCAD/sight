@@ -33,7 +33,7 @@ void AppManager::initialize()
 {
     this->create();
 
-    m_string = ::fwData::String::New();
+    m_string = ::fwData::String::New("Edit this line...");
 
     this->addObject(m_string, s_EDITED_STRING);
 
