@@ -60,6 +60,10 @@ function(osx_install PRJ_NAME)
                 file(INSTALL \"${CMAKE_INSTALL_PREFIX}/lib/qt5/plugins/\" DESTINATION \"${APP_INSTALL_PATH}/Contents/MacOS/qt5/plugins\")
             endif()
 
+            if (EXISTS ${CMAKE_INSTALL_PREFIX}/qml)
+                file(INSTALL \"${CMAKE_INSTALL_PREFIX}/qml/\" DESTINATION \"${APP_INSTALL_PATH}/Contents/qml\")
+            endif()
+
             if (EXISTS ${CMAKE_INSTALL_PREFIX}/bin/Contents/Plugins)
                 file(INSTALL \"${CMAKE_INSTALL_PREFIX}/bin/Contents/Plugins/\" DESTINATION \"${APP_INSTALL_PATH}/Contents/Plugins\")
             endif()
@@ -83,6 +87,7 @@ function(osx_install PRJ_NAME)
         install(CODE "
             file(GLOB_RECURSE OGREPLUGINS \"${APP_INSTALL_PATH}/Contents/Plugins/*${CMAKE_SHARED_LIBRARY_SUFFIX}\")
             file(GLOB_RECURSE QTPLUGINS \"${APP_INSTALL_PATH}/Contents/MacOS/qt5/plugins/*${CMAKE_SHARED_LIBRARY_SUFFIX}\")
+            file(GLOB_RECURSE QMLPLUGINS \"${APP_INSTALL_PATH}/Contents/qml/*${CMAKE_SHARED_LIBRARY_SUFFIX}\")
             file(GLOB_RECURSE BUNDLES \"${APP_INSTALL_PATH}/Contents/lib/*/*${CMAKE_SHARED_LIBRARY_SUFFIX}\")
 
             # Find Bundles for fixup
@@ -106,7 +111,7 @@ function(osx_install PRJ_NAME)
             set(BU_CHMOD_BUNDLE_ITEMS ON)
 
             include(BundleUtilities)
-            fixup_bundle(\"${APP_INSTALL_PATH}\" \"\${BUNDLES_TO_FIX};\${QTPLUGINS};\${OGREPLUGINS}\" \"${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR};${EXTERNAL_LIBRARIES}/lib;\${BUNDLES_FOLDERS}\")
+            fixup_bundle(\"${APP_INSTALL_PATH}\" \"\${BUNDLES_TO_FIX};\${QTPLUGINS};\${QMLPLUGINS};\${OGREPLUGINS}\" \"${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR};${EXTERNAL_LIBRARIES}/lib;\${BUNDLES_FOLDERS}\")
 
             execute_process(
                 COMMAND sh -c \"find . -type f -name '*.dylib'|sed 's/\\\\.[0-9].*//g'|sort|uniq -d|xargs -I{} -n1 find . -path '{}.*' | paste -d ' ' - -| sed 's/^/ln -s -f /' | sh \"
