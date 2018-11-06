@@ -28,4 +28,4 @@ else()
     set(FW_QT5_LOCATION ${EXTERNAL_LIBRARIES})
 endif()
 
-add_definitions(-DQML_IMPORT_PATH="${FW_QT5_LOCATION}/qml")
+target_compile_definitions(${FWPROJECT_NAME} PRIVATE QML_IMPORT_PATH="${FW_QT5_LOCATION}/qml")

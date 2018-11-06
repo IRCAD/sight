@@ -8,6 +8,7 @@
 
 #include <fwCore/util/LazyInstantiator.hpp>
 
+#include <QDir>
 #include <QQmlComponent>
 #include <QQuickWindow>
 
@@ -19,7 +20,17 @@ namespace fwQml
 QmlEngine::QmlEngine()
 {
     m_engine = new QQmlApplicationEngine();
-    m_engine->addImportPath(QML_IMPORT_PATH);
+
+    // check if './qml' directory is in the local folder (used by installed application) or in the deps folder
+    QDir path("./qml");
+    if (path.exists())
+    {
+        m_engine->addImportPath("./qml");
+    }
+    else
+    {
+        m_engine->addImportPath(QML_IMPORT_PATH);
+    }
 }
 
 //-----------------------------------------------------------------------------
