@@ -22,5 +22,5 @@ set( REQUIREMENTS
 
 set(CPPUNITTEST_OPTIONS BUNDLE guiQt WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
 set( CONAN_DEPS
-    qt/5.11.1@sight/stable
+    qt/5.11.2@sight/stable
 )
