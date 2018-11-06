@@ -15,3 +15,8 @@ set( REQUIREMENTS
     guiQt
     fwlauncher
 )
+set( PLUGINS
+    QtQml
+    QtQuick
+    QtQuick.2
+)

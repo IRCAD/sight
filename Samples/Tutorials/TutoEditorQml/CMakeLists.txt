@@ -15,3 +15,5 @@ fwLink(
 )
 
 set_target_properties(${FWPROJECT_NAME} PROPERTIES AUTOMOC TRUE)
+
+generic_install()

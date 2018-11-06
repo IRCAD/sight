@@ -14,3 +14,8 @@ set( REQUIREMENTS # The bundles used by this application
     gui
     guiQt
     )
+set( PLUGINS
+    QtQml
+    QtQuick
+    QtQuick.2
+)
