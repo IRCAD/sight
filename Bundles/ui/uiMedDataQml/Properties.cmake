@@ -13,3 +13,8 @@ set( DEPENDENCIES
     fwQml
 )
 set( REQUIREMENTS  )
+set( PLUGINS
+    QtQml
+    QtQuick
+    QtQuick.2
+)

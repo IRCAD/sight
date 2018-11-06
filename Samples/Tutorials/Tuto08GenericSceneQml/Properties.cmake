@@ -27,3 +27,8 @@ set( REQUIREMENTS
     visuVTKQml
     fwlauncher
 )
+set( PLUGINS
+    QtQml
+    QtQuick
+    QtQuick.2
+)
