@@ -17,3 +17,15 @@ fwForwardLink(
 )
 
 set_target_properties(${FWPROJECT_NAME} PROPERTIES AUTOMOC TRUE)
+
+if(USE_CONAN)
+    if(FW_BUILD_EXTERNAL)
+        set(FW_QT5_LOCATION "${Sight_LIBRARY_DIR}/../..")
+    else()
+        set(FW_QT5_LOCATION "${CONAN_QT_ROOT}")
+    endif()
+else()
+    set(FW_QT5_LOCATION ${EXTERNAL_LIBRARIES})
+endif()
+
+add_definitions(-DQML_IMPORT_PATH="${FW_QT5_LOCATION}/qml")

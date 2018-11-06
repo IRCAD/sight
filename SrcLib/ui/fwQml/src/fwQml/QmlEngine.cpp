@@ -19,6 +19,7 @@ namespace fwQml
 QmlEngine::QmlEngine()
 {
     m_engine = new QQmlApplicationEngine();
+    m_engine->addImportPath(QML_IMPORT_PATH);
 }
 
 //-----------------------------------------------------------------------------
