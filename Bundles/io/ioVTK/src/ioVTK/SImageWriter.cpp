@@ -44,6 +44,7 @@
 
 #include <fwTools/Failed.hpp>
 
+#include <fwVtkIO/BitmapImageWriter.hpp>
 #include <fwVtkIO/ImageWriter.hpp>
 #include <fwVtkIO/MetaImageWriter.hpp>
 #include <fwVtkIO/VtiImageWriter.hpp>
@@ -79,11 +80,12 @@ void SImageWriter::configureWithIHM()
     static ::boost::filesystem::path _sDefaultPath("");
 
     ::fwGui::dialog::LocationDialog dialogFile;
-    dialogFile.setTitle(m_windowTitle.empty() ? "Choose an file to save an image" : m_windowTitle);
+    dialogFile.setTitle(m_windowTitle.empty() ? "Choose a file to save an image" : m_windowTitle);
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
     dialogFile.addFilter("Vtk", "*.vtk");
     dialogFile.addFilter("Vti", "*.vti");
     dialogFile.addFilter("MetaImage", "*.mhd");
+    dialogFile.addFilter("Bitmap images", "*.bmp *.jpeg *.jpg *.png *.pnm *.tiff");
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
 
     ::fwData::location::SingleFile::sptr result;
@@ -161,6 +163,12 @@ bool SImageWriter::saveImage( const ::boost::filesystem::path& imgFile,
         ::fwVtkIO::MetaImageWriter::sptr mhdWriter = ::fwVtkIO::MetaImageWriter::New();
         mhdWriter->setFile(imgFile);
         myWriter = mhdWriter;
+    }
+    else if(ext == ".bmp" || ext == ".jpg" || ext == ".jpeg" || ext == ".png" || ext == ".pnm" || ext == ".tiff")
+    {
+        ::fwVtkIO::BitmapImageWriter::sptr bitmapImageWriter = ::fwVtkIO::BitmapImageWriter::New();
+        bitmapImageWriter->setFile(imgFile);
+        myWriter = bitmapImageWriter;
     }
     else
     {
