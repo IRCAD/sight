@@ -148,7 +148,9 @@ void SMaterial::updateMaterial( CSPTR(::fwData::Material)material )
             vtkRenderWindow* win = this->getRenderer()->GetRenderWindow();
 
             vtkSmartPointer<vtkTexture> vtkTex;
-            if(win->IsA("vtkOpenGLRenderWindow"))
+            // FIXME Currently the context of vtkInternalOpenGLRenderWindow is not correctly given to the
+            // vtkTextureObject, so we don't use vtkTextureObject in this case
+            if(win->IsA("vtkOpenGLRenderWindow")  && !win->IsA("vtkInternalOpenGLRenderWindow"))
             {
                 int dims[3];
                 vtkImage->GetDimensions(dims);
