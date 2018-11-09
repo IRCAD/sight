@@ -619,8 +619,13 @@ macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
             else()
                 set(LAUNCHER_PATH "$me")
             endif()
-
+            
+            # Configure launcher script            
+            # Replace all ';' path separator to unix style path separator ':' 
+            string(REPLACE ";" ":" FW_EXTERNAL_LIBRARIES_DIRS "${FW_EXTERNAL_LIBRARIES_DIR}")            
             configure_file(${FWCMAKE_RESOURCE_PATH}/build/linux/template.sh.in ${CMAKE_CURRENT_BINARY_DIR}/${APP_NAME} @ONLY)
+            unset(FW_EXTERNAL_LIBRARIES_DIRS)
+            
             file(COPY ${CMAKE_CURRENT_BINARY_DIR}/${APP_NAME} DESTINATION ${CMAKE_BINARY_DIR}/bin
                 FILE_PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
         elseif(WIN32 AND USE_CONAN)

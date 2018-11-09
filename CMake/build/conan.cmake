@@ -39,6 +39,7 @@ macro(installConanDeps CONAN_DEPS_LIST)
         REQUIRES ${CONAN_DEPS_LIST}
         BASIC_SETUP CMAKE_TARGETS NO_OUTPUT_DIRS
         OPTIONS ${CONAN_OPTIONS}
+        KEEP_RPATHS
         #BUILD missing
     )
 
