@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __IOVTK_UT_IMAGEREADERWRITERTEST_HPP__
-#define __IOVTK_UT_IMAGEREADERWRITERTEST_HPP__
+#pragma once
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -40,6 +39,7 @@ CPPUNIT_TEST( testVtkImageReader );
 CPPUNIT_TEST( testVtiImageReader );
 CPPUNIT_TEST( testMhdImageReader );
 CPPUNIT_TEST( testImageReaderExtension);
+CPPUNIT_TEST( testBitmapImageWriter );
 CPPUNIT_TEST( testVtkImageWriter );
 CPPUNIT_TEST( testVtkImageSeriesWriter );
 CPPUNIT_TEST( testVtiImageWriter );
@@ -56,6 +56,7 @@ public:
     void testVtiImageReader();
     void testMhdImageReader();
     void testImageReaderExtension();
+    void testBitmapImageWriter();
     void testVtkImageWriter();
     void testVtkImageSeriesWriter();
     void testVtiImageWriter();
@@ -66,6 +67,3 @@ public:
 
 } //namespace ut
 } //namespace ioVTK
-
-#endif //__IOVTK_UT_IMAGEREADERWRITERTEST_HPP__
-
