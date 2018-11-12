@@ -16,7 +16,11 @@ set( DEPENDENCIES
     fwTools
     fwMedDataTools
 )
-set( REQUIREMENTS)
+set( REQUIREMENTS
+    guiQt
+    dataReg
+    servicesReg
+)
 
 set( CONAN_DEPS
     qt/5.11.2@sight/stable
