@@ -25,9 +25,9 @@ namespace fwVtkIO
 {
 
 /**
- * @brief Writer a bitmap image.
+ * @brief Write a bitmap image.
  *
- * Writer a Bitmap Image using the VTK library
+ * Write a Bitmap Image using the VTK library
  */
 class BitmapImageWriter : public ::fwDataIO::writer::GenericObjectWriter< ::fwData::Image >,
                           public ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >
