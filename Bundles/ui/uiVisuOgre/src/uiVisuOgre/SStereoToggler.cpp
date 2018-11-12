@@ -90,7 +90,7 @@ void SStereoToggler::updating()
             }
             else
             {
-                SLM_WARN("No layer named '" + m_layerId "' in render service '" + render->getID() "'.");
+                SLM_WARN("No layer named '" + m_layerId + "' in render service '" + render->getID() + "'.");
             }
         }
     }
