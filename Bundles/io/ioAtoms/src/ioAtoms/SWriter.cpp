@@ -307,11 +307,7 @@ void SWriter::updating()
     }
 
     ::fwData::Object::csptr obj = this->getInput< ::fwData::Object >(::fwIO::s_DATA_KEY);
-    if (!obj)
-    {
-        FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "18.0");
-        obj = this->getObject< ::fwData::Object >();
-    }
+    SLM_ASSERT("The input key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", obj);
 
     ::fwGui::Cursor cursor;
     cursor.setCursor(::fwGui::ICursor::BUSY);

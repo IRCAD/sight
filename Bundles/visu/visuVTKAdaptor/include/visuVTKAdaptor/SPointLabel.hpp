@@ -44,7 +44,7 @@ class VISUVTKADAPTOR_CLASS_API SPointLabel : public SText
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro( (SPointLabel)(::fwRenderVTK::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (SPointLabel)(::fwRenderVTK::IAdaptor) )
 
     VISUVTKADAPTOR_API SPointLabel();
 

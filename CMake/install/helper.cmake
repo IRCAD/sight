@@ -41,14 +41,14 @@ macro(qt_plugins_setup PROJECT_NAME)
         endif()
 
         # search in qml and plugins dirs
-        file(GLOB QT_DIRS  "${EXTERNAL_LIBRARIES}/qml/*" "${FW_QT5_PLUGINS_PATH}")
+        file(GLOB QT_DIRS  "${FW_QT5_LOCATION}/qml/*" "${FW_QT5_PLUGINS_PATH}")
         foreach(CURRENT_DIR ${QT_DIRS})
 
             get_filename_component(QT_NAME ${CURRENT_DIR} NAME)
             string(FIND "${${PROJECT_NAME}_PLUGINS}" ${QT_NAME} QT_TEST)
             if( NOT ${QT_TEST} EQUAL -1 )
 
-                file(GLOB_RECURSE QT_FILES  "${CURRENT_DIR}/*")
+                file(GLOB_RECURSE QT_FILES  "${CURRENT_DIR}/*${CMAKE_SHARED_LIBRARY_SUFFIX}*")
                 list(APPEND QT_PLUGINS ${QT_FILES})
 
                 file(RELATIVE_PATH SUB_DIR ${FW_QT5_LOCATION} ${CURRENT_DIR})

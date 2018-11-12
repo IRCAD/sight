@@ -1,0 +1,9 @@
+<plugin id="Tuto08GenericSceneQml" class="::Tuto08GenericSceneQml::Plugin"  version="@PROJECT_VERSION@" >
+
+    <requirement id="dataReg" />
+    <requirement id="servicesReg" />
+    <requirement id="uiImageQml" />
+
+    <library name="Tuto08GenericSceneQml" />
+
+</plugin>

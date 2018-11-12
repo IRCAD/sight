@@ -89,11 +89,6 @@ void ImageInfo::configuring()
 void ImageInfo::updating()
 {
     ::fwData::Image::csptr image = this->getInput< ::fwData::Image >(s_IMAGE_INPUT);
-    if (!image)
-    {
-        FW_DEPRECATED_KEY(s_IMAGE_INPUT, "in", "18.0");
-        image = this->getObject< ::fwData::Image >();
-    }
     SLM_ASSERT("The input '" + s_IMAGE_INPUT + "' is not defined", image);
     const bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
     m_valueText->setEnabled(imageIsValid);
@@ -106,11 +101,6 @@ void ImageInfo::getInteraction(::fwDataTools::PickingInfo info)
     if (info.m_eventId == ::fwDataTools::PickingInfo::Event::MOUSE_MOVE)
     {
         ::fwData::Image::csptr image = this->getInput< ::fwData::Image >(s_IMAGE_INPUT);
-        if (!image)
-        {
-            FW_DEPRECATED_KEY(s_IMAGE_INPUT, "in", "18.0");
-            image = this->getObject< ::fwData::Image >();
-        }
         SLM_ASSERT("The input '" + s_IMAGE_INPUT + "' is not defined", image);
 
         const bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( image );

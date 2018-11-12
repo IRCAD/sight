@@ -145,15 +145,7 @@ void SImageReader::updating()
     if( this->hasLocationDefined() )
     {
         ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(::fwIO::s_DATA_KEY);
-
-        if (!image)
-        {
-            FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "18.0");
-            // Retrieve dataStruct associated with this service
-            image = this->getObject< ::fwData::Image >();
-
-        }
-        SLM_ASSERT("image not instanced", image);
+        SLM_ASSERT("The inout key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", image);
 
         // Read new image path and update image. If the reading process is a success, we notify all listeners that image
         // has been modified.

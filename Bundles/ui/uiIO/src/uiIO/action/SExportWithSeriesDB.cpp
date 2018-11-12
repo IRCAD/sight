@@ -78,12 +78,8 @@ void SExportWithSeriesDB::updating( )
     ::fwGui::LockAction lock(this->getSptr());
 
     ::fwMedData::Series::sptr series = this->getInOut< ::fwMedData::Series >(s_SERIES_INOUT);
+    SLM_ASSERT("The inout key '" + s_SERIES_INOUT + "' is not correctly set.", series);
 
-    if (!series)
-    {
-        FW_DEPRECATED_KEY(s_SERIES_INOUT, "inout", "18.0");
-        series = this->getObject< ::fwMedData::Series >();
-    }
     // Create a new SeriesDB
     ::fwMedData::SeriesDB::sptr localSeriesDB = ::fwMedData::SeriesDB::New();
     localSeriesDB->getContainer().push_back(series);
@@ -126,12 +122,6 @@ void SExportWithSeriesDB::starting()
     this->::fwGui::IActionSrv::actionServiceStarting();
 
     ::fwMedData::Series::sptr series = this->getInOut< ::fwMedData::Series >(s_SERIES_INOUT);
-
-    if (!series)
-    {
-        FW_DEPRECATED_KEY(s_SERIES_INOUT, "inout", "18.0");
-        series = this->getObject< ::fwMedData::Series >();
-    }
     SLM_FATAL_IF( "The associated object must be a ::fwMedData::Series.", !series);
 }
 

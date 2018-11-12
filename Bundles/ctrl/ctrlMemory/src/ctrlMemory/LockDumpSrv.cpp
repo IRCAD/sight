@@ -34,11 +34,8 @@ LockDumpSrv::~LockDumpSrv() noexcept
 void LockDumpSrv::starting()
 {
     ::fwData::Object::sptr object = this->getInOut< ::fwData::Object >(s_TARGET_INOUT);
-    if (!object)
-    {
-        FW_DEPRECATED_KEY(s_TARGET_INOUT, "inout",  "18.0");
-        object = this->getObject();
-    }
+    SLM_ASSERT("The inout key '" + s_TARGET_INOUT + "' is not correctly set.", object);
+
     m_objLock = ::fwData::ObjectLock( object );
 }
 

@@ -111,11 +111,8 @@ void RemoveLandmark::notify( ::fwData::Image::sptr image, ::fwData::Point::sptr 
 void RemoveLandmark::updating( )
 {
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    if (!image)
-    {
-        FW_DEPRECATED_KEY(s_IMAGE_INOUT, "inout", "18.0");
-        image = this->getObject< ::fwData::Image >();
-    }
+    SLM_ASSERT("The inout key '" + s_IMAGE_INOUT + "' is not defined.", image);
+
     ::fwData::PointList::sptr landmarks = image->getField< ::fwData::PointList >(
         ::fwDataTools::fieldHelper::Image::m_imageLandmarksId );
 

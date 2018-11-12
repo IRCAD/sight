@@ -158,11 +158,7 @@ void SSeriesDBLazyReader::updating()
             // Retrieve dataStruct associated with this service
             ::fwMedData::SeriesDB::sptr associatedSeriesDB =
                 this->getInOut< ::fwMedData::SeriesDB >(::fwIO::s_DATA_KEY);
-            if (!associatedSeriesDB)
-            {
-                FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "18.0");
-                associatedSeriesDB = this->getObject< ::fwMedData::SeriesDB >();
-            }
+            SLM_ASSERT("The inout key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", associatedSeriesDB);
 
             SLM_ASSERT("associated SeriesDB not instanced", associatedSeriesDB);
             associatedSeriesDB->shallowCopy( seriesDB );
@@ -186,12 +182,7 @@ void SSeriesDBLazyReader::updating()
 void SSeriesDBLazyReader::notificationOfDBUpdate()
 {
     ::fwMedData::SeriesDB::sptr seriesDB = this->getInOut< ::fwMedData::SeriesDB >(::fwIO::s_DATA_KEY);
-    if (!seriesDB)
-    {
-        FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "18.0");
-        seriesDB = this->getObject< ::fwMedData::SeriesDB >();
-    }
-    SLM_ASSERT("Unable to get seriesDB", seriesDB);
+    SLM_ASSERT("The inout key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", seriesDB);
 
     ::fwMedData::SeriesDB::ContainerType addedSeries;
     for( ::fwMedData::Series::sptr s :  seriesDB->getContainer() )

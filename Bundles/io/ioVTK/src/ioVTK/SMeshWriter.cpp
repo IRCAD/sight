@@ -112,12 +112,7 @@ void SMeshWriter::updating()
     {
         // Retrieve dataStruct associated with this service
         ::fwData::Mesh::csptr pMesh = this->getInput< ::fwData::Mesh >(::fwIO::s_DATA_KEY);
-        if (!pMesh)
-        {
-            FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "18.0");
-            pMesh = this->getObject< ::fwData::Mesh >();
-        }
-        SLM_ASSERT("pMesh not instanced", pMesh);
+        SLM_ASSERT("The input key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", pMesh);
 
         ::fwGui::Cursor cursor;
         cursor.setCursor(::fwGui::ICursor::BUSY);

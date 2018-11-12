@@ -45,7 +45,7 @@ class VISUVTKADAPTOR_CLASS_API SLabeledPointList : public ::fwRenderVTK::IAdapto
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SLabeledPointList)(::fwRenderVTK::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (SLabeledPointList)(::fwRenderVTK::IAdaptor) )
 
     VISUVTKADAPTOR_API SLabeledPointList() noexcept;
 

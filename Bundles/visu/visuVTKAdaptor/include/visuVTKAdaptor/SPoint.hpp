@@ -55,7 +55,7 @@ class VISUVTKADAPTOR_CLASS_API SPoint : public ::fwRenderVTK::IAdaptor
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SPoint)(::fwRenderVTK::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (SPoint)(::fwRenderVTK::IAdaptor) )
 
     static const ::fwServices::IService::KeyType s_POINT_INOUT;
 
