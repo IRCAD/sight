@@ -205,6 +205,7 @@ private:
     /// Value indicating whether we should append timestamps or not
     bool m_useTimestampPrefix;
     ::fwCore::HiResClock::HiResClockType m_currentTimestamp;
+
     /// Value acting as a temporary location for timestamped path
     mutable ::boost::filesystem::path m_currentLocation;
 };

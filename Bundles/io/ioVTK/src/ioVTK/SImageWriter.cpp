@@ -172,7 +172,8 @@ bool SImageWriter::saveImage( const ::boost::filesystem::path& imgFile,
     }
     else
     {
-        FW_RAISE_EXCEPTION(::fwTools::Failed("Only .vtk, .vti and .mhd are supported."));
+        FW_RAISE_EXCEPTION(::fwTools::Failed("Unsupported " + ext + " format (Available formats: " +
+                                             ".vtk, .vti, .mhd, .bmp, .jpg, .jpeg, .png, .pnm, .tiff)"));
     }
 
     myWriter->setObject(image);
