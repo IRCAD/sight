@@ -26,11 +26,11 @@ if [ ! -z "${libdir}" -a "${libdir}" != " " ]; then
     LD_LIBRARY_PATH=${libdir}${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
 fi
 
-if [ ! -z "${sdkdir}" -a "$sdkdir}" != " " ]; then
+if [ ! -z "${sdkdir}" -a "${sdkdir}" != " " ]; then
     LD_LIBRARY_PATH=${sdkdir}${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
 fi
 
-if [ ! -z "${extdir}" -a "$extdir}" != " " ]; then
+if [ ! -z "${extdir}" -a "${extdir}" != " " ]; then
     LD_LIBRARY_PATH=${extdir}${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
 fi
 
