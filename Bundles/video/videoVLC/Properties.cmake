@@ -15,4 +15,7 @@ set( DEPENDENCIES
     fwTools
 )
 set( REQUIREMENTS  )
+set( CONAN_DEPS
+    vlc/3.0.4@sight/stable
+)
 
