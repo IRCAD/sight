@@ -1,0 +1,580 @@
+<plugin id="PoCMergePointcloud" version="@PROJECT_VERSION@" >
+
+    <requirement id="dataReg" />
+    <requirement id="arDataReg" />
+    <requirement id="servicesReg" />
+    <requirement id="preferences" />
+
+    <extension implements="::fwServices::registry::AppConfig">
+        <id>PoCMergePointcloud</id>
+        <desc>Merge pointcloud PoC.</desc>
+        <config>
+<!-- ******************************** Begin Objects declaration ******************************** -->
+
+            <!-- camera calibration -->
+            <object uid="rgbdCalib1"   type="::arData::CameraSeries" />
+            <object uid="rgbdCalib2"   type="::arData::CameraSeries" />
+            <!-- camera data -->
+            <object uid="camera1"  type="::arData::Camera" src="deferred" />
+            <object uid="camera2"  type="::arData::Camera" src="deferred" />
+            <object uid="dcamera1" type="::arData::Camera" src="deferred" />
+            <object uid="dcamera2" type="::arData::Camera" src="deferred" />
+            <!-- calibration matrices -->
+            <object uid="color2Tocolor1" type="::fwData::TransformationMatrix3D" />
+            <object uid="pc2toPc1" type="::fwData::TransformationMatrix3D" />
+            <object uid="color1Todepth1" type="::fwData::TransformationMatrix3D" src="deferred" />
+            <object uid="color2Todepth2" type="::fwData::TransformationMatrix3D" src="deferred" />
+
+            <!-- Frame Timelines -->
+            <object uid="frameTL1" type="::arData::FrameTL">
+                <value>100</value>
+            </object>
+            <object uid="frameTL2" type="::arData::FrameTL">
+                <value>100</value>
+            </object>
+            <object uid="depthTL1" type="::arData::FrameTL">
+                <value>100</value>
+            </object>
+            <object uid="depthTL2" type="::arData::FrameTL">
+                <value>100</value>
+            </object>
+            <!-- Images -->
+            <object uid="colorIm1"       type="::fwData::Image" />
+            <object uid="colorIm2"       type="::fwData::Image" />
+            <object uid="depthIm1"       type="::fwData::Image" />
+            <object uid="depthIm2"       type="::fwData::Image" />
+            <object uid="depthImScaled1" type="::fwData::Image" />
+            <object uid="depthImScaled2" type="::fwData::Image" />
+            <!-- pointclouds -->
+            <object uid="rgbdPointCloud1" type="::fwData::Mesh" />
+            <object uid="rgbdPointCloud2" type="::fwData::Mesh" />
+
+            <!-- Transfer function to visualize depth images -->
+            <object uid="tfDepth" type="::fwData::TransferFunction">
+                <colors>
+                    <step color="#000000ff" value="0" />
+                    <step color="#ff0000ff" value="1" />
+                    <step color="#ffff00ff" value="500" />
+                    <step color="#00ff00ff" value="1000" />
+                    <step color="#00ffffff" value="1500" />
+                    <step color="#0000ffff" value="2000" />
+                    <step color="#000000ff" value="5000" />
+                </colors>
+            </object>
+
+ <!-- ******************************** Begin layouts declaration ******************************** -->
+
+            <service uid="mainWindow" type="::gui::frame::SDefaultFrame" >
+                <gui>
+                    <frame>
+                        <name>Merge Pointcloud</name>
+                        <icon>PoCMergePointcloud-@PROJECT_VERSION@/merge_pc.ico</icon>
+                        <minSize width="1280" height="720" />
+                    </frame>
+                    <menuBar />
+                    <toolBar />
+                </gui>
+                <registry>
+                    <toolBar sid="toolbar" start="yes" />
+                    <view sid="mainView" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="mainView" type="::gui::view::SDefaultView" >
+                <gui>
+                    <layout type="::fwGui::TabLayoutManager">
+                    <view caption="Video" selected="yes" />
+                    <view caption="PointCloud" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="videoView" start="yes" />
+                    <view sid="pointcloudView" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="videoView" type="::gui::view::SDefaultView" >
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="vertical" />
+                    <view proportion="0" />
+                    <view proportion="0" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="video1" start="yes" />
+                    <view sid="video2" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="video1" type="::gui::view::SDefaultView" >
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="horizontal" />
+                    <view proportion="0" />
+                    <view proportion="0" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="color1" start="yes" />
+                    <view sid="depth1" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="video2" type="::gui::view::SDefaultView" >
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="horizontal" />
+                    <view proportion="0" />
+                    <view proportion="0" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="color2" start="yes" />
+                    <view sid="depth2" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="pointcloudView" type="::gui::view::SDefaultView" >
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="vertical" />
+                    <view proportion="0" />
+                    <view proportion="0" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="scene3d" start="yes" />
+                    <view sid="depthRangeSlider" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="toolbar" type="::gui::aspect::SDefaultToolBar">
+                <gui>
+                    <layout>
+                        <menuItem name="loadCalib1" icon="media-0.1/icons/Import.svg" />
+                         <editor/>
+                        <menuItem name="start1" icon="arMedia-0.1/icons/start-cam.svg" />
+                        <menuItem name="stop1" icon="arMedia-0.1/icons/stop-cam.svg" />
+                        <menuItem name="pause1" icon="arMedia-0.1/icons/pause-cam.svg" />
+                        <separator />
+                        <menuItem name="loadCalib2" icon="media-0.1/icons/Import.svg" />
+                        <editor/>
+                        <menuItem name="start2" icon="arMedia-0.1/icons/start-cam.svg" />
+                        <menuItem name="stop2" icon="arMedia-0.1/icons/stop-cam.svg" />
+                        <menuItem name="pause2" icon="arMedia-0.1/icons/pause-cam.svg" />
+                        <separator />
+                        <menuItem name="loadExtrinsic" icon="media-0.1/icons/Import.svg" />
+                        <separator />
+                        <menuItem name="show/hide pointcloud 1" style="check" />
+                        <menuItem name="show/hide pointcloud 2" style="check" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="loadCalibration1" start="yes" />
+                    <editor sid="cameraSelector1" start="no" />
+                    <menuItem sid="startVideo1" start="yes" />
+                    <menuItem sid="stopVideo1" start="yes" />
+                    <menuItem sid="pauseVideo1" start="yes" />
+
+                    <menuItem sid="loadCalibration2" start="yes" />
+                    <editor sid="cameraSelector2" start="no" />
+                    <menuItem sid="startVideo2" start="yes" />
+                    <menuItem sid="stopVideo2" start="yes" />
+                    <menuItem sid="pauseVideo2" start="yes" />
+
+                    <menuItem sid="loadExtrinsicMat" start="yes" />
+
+                    <menuItem sid="showHidePc1" start="yes"  />
+                    <menuItem sid="showHidePc2" start="yes"  />
+                </registry>
+            </service>
+
+<!-- ******************************** Begin actions declarations ******************************** -->
+
+            <service uid="loadCalibration1" type="::gui::action::SSlotCaller">
+                <slots>
+                    <slot>calibrationReader1/update</slot>
+                </slots>
+            </service>
+
+            <service uid="loadCalibration2" type="::gui::action::SSlotCaller">
+                <slots>
+                    <slot>calibrationReader2/update</slot>
+                </slots>
+            </service>
+
+            <service uid="loadExtrinsicMat" type="::gui::action::SSlotCaller">
+                <slots>
+                    <slot>matrixReader/update</slot>
+                </slots>
+            </service>
+
+            <service uid="startVideo1" type="::gui::action::SSlotCaller">
+                <slots>
+                    <slot>frameGrabber1/startCamera</slot>
+                </slots>
+            </service>
+
+            <service uid="stopVideo1" type="::gui::action::SSlotCaller">
+                <slots>
+                    <slot>frameGrabber1/stopCamera</slot>
+                </slots>
+            </service>
+
+            <service uid="pauseVideo1" type="::gui::action::SSlotCaller">
+                <slots>
+                    <slot>frameGrabber1/pauseCamera</slot>
+                </slots>
+            </service>
+
+
+            <service uid="startVideo2" type="::gui::action::SSlotCaller">
+                <slots>
+                    <slot>frameGrabber2/startCamera</slot>
+                </slots>
+            </service>
+
+            <service uid="stopVideo2" type="::gui::action::SSlotCaller">
+                <slots>
+                    <slot>frameGrabber2/stopCamera</slot>
+                </slots>
+            </service>
+
+            <service uid="pauseVideo2" type="::gui::action::SSlotCaller">
+                <slots>
+                    <slot>frameGrabber2/pauseCamera</slot>
+                </slots>
+            </service>
+
+            <service uid="showHidePc1" type="::gui::action::SBooleanSlotCaller">
+                <state active="true" />
+                <slots>
+                    <slot>pointcloudAdpt1/updateVisibility</slot>
+                </slots>
+            </service>
+
+            <service uid="showHidePc2" type="::gui::action::SBooleanSlotCaller">
+                <state active="true" />
+                <slots>
+                    <slot>pointcloudAdpt2/updateVisibility</slot>
+                </slots>
+            </service>
+
+<!-- ***************************************** Begin render scenes declarations ***************************************** -->
+
+            <!-- *************************** Begin color1 scene *************************** -->
+
+            <service uid="color1" type="::fwRenderOgre::SRender" >
+                <scene>
+                    <layer id="video" depth="1" background="0.3" />
+                    <adaptor uid="color1VideoAdpt" />
+                    <adaptor uid="color1VideoIS" />
+                </scene>
+            </service>
+
+            <service uid="color1VideoAdpt" type="::visuOgreAdaptor::SVideo" autoConnect="yes" >
+                <in key="image" uid="colorIm1" />
+                <config layer="video" />
+            </service>
+
+            <service uid="color1VideoIS" type="::visuOgreAdaptor::SInteractorStyle">
+                <config layer="video" style="FixedInteractorStyle" />
+            </service>
+
+            <!-- *************************** Begin depth1 scene *************************** -->
+
+            <service uid="depth1" type="::fwRenderOgre::SRender" >
+                <scene>
+                    <background topColor="#333333" />
+                    <layer id="video" depth="1" background="0.2" />
+                    <adaptor uid="depth1VideoAdpt" />
+                    <adaptor uid="depth1VideoIS" />
+                </scene>
+            </service>
+
+            <service uid="depth1VideoAdpt" type="::visuOgreAdaptor::SVideo" autoConnect="yes" >
+                <in key="image" uid="depthIm1" />
+                <in key="tf" uid="tfDepth" />
+                <config layer="video" />
+            </service>
+
+            <service uid="depth1VideoIS" type="::visuOgreAdaptor::SInteractorStyle">
+                <config layer="video" style="FixedInteractorStyle" />
+            </service>
+
+            <!-- *************************** Begin color2 scene *************************** -->
+
+            <service uid="color2" type="::fwRenderOgre::SRender" >
+                <scene>
+                    <layer id="video" depth="1" background="0.3" />
+                    <adaptor uid="color2VideoAdpt" />
+                    <adaptor uid="color2VideoIS" />
+                </scene>
+            </service>
+
+            <service uid="color2VideoAdpt" type="::visuOgreAdaptor::SVideo" autoConnect="yes" >
+                <in key="image" uid="colorIm2" />
+                <config layer="video" />
+            </service>
+
+            <service uid="color2VideoIS" type="::visuOgreAdaptor::SInteractorStyle">
+                <config layer="video" style="FixedInteractorStyle" />
+            </service>
+
+           <!-- *************************** Begin depth2 scene *************************** -->
+
+            <service uid="depth2" type="::fwRenderOgre::SRender" >
+                <scene>
+                    <background topColor="#333333" />
+                    <layer id="video" depth="1" background="0.2" />
+                    <adaptor uid="depth2VideoAdpt" />
+                    <adaptor uid="depth2VideoIS" />
+                </scene>
+            </service>
+
+            <service uid="depth2VideoAdpt" type="::visuOgreAdaptor::SVideo" autoConnect="yes" >
+                <in key="image" uid="depthIm2" />
+                <in key="tf" uid="tfDepth" />
+                <config layer="video" />
+            </service>
+
+            <service uid="depth2VideoIS" type="::visuOgreAdaptor::SInteractorStyle">
+                <config layer="video" style="FixedInteractorStyle" />
+            </service>
+
+            <service uid="scene3d" type="::fwRenderOgre::SRender" >
+                <scene>
+                    <background topColor="#222222" />
+                    <layer id="default" depth="1" />
+                    <adaptor uid="pointcloudAdpt1" />
+                    <adaptor uid="meshMatrixAdaptor" />
+                    <adaptor uid="pointcloudAdpt2" />
+                </scene>
+            </service>
+
+            <service uid="pointcloudAdpt1" type="::visuOgreAdaptor::SPointList" autoConnect="yes" >
+                <in key="mesh" uid="rgbdPointCloud1" />
+                <config layer="default" shadingMode="ambient" radius="1" autoresetcamera="no" color="#00ff00ff" />
+            </service>
+
+            <service uid="meshMatrixAdaptor" type="::visuOgreAdaptor::STransform" autoConnect="yes">
+                <inout key="transform" uid="pc2toPc1" />
+                <config layer="default" picker="" transform="pointcloudTrf" />
+            </service>
+
+            <service uid="pointcloudAdpt2" type="::visuOgreAdaptor::SPointList" autoConnect="yes" >
+                <in key="mesh" uid="rgbdPointCloud2" />
+                <config layer="default" shadingMode="ambient" radius="1" autoresetcamera="no" color="#0000ffff"
+                 transform="pointcloudTrf" />
+            </service>
+
+<!-- ******************************** Begin services declarations ******************************** -->
+
+            <service uid="calibrationReader1" type="::ioCalibration::SOpenCVReader">
+                <inout key="data" uid="rgbdCalib1" />
+            </service>
+
+            <service uid="calibrationReader2" type="::ioCalibration::SOpenCVReader">
+                <inout key="data" uid="rgbdCalib2" />
+            </service>
+
+            <!-- Extract RGB instrinsic and Extrinsic matrices from a::arData::CameraSeries -->
+            <service uid="extractor1" type="::ctrlCamp::SExtractObj" autoConnect="yes">
+                <inout key="source" uid="rgbdCalib1" >
+                    <extract from="@cameras.0" /> <!-- Camp path of the (depth) camera -->
+                    <extract from="@cameras.1" /> <!-- Camp path of the (RGB) camera -->
+                    <extract from="@extrinsic_matrices.1" />
+                </inout>
+                <out group="target">
+                    <key uid="dcamera1" />
+                    <key uid="camera1" />
+                    <key uid="color1Todepth1" />
+                </out>
+            </service>
+
+            <!-- Extract RGB instrinsic and Extrinsic matrices from a::arData::CameraSeries -->
+            <service uid="extractor2" type="::ctrlCamp::SExtractObj" autoConnect="yes" >
+                <inout key="source" uid="rgbdCalib2" >
+                    <extract from="@cameras.0" /> <!-- Camp path of the (depth) camera -->
+                    <extract from="@cameras.1" /> <!-- Camp path of the (RGB) camera -->
+                    <extract from="@extrinsic_matrices.1" />
+                </inout>
+                <out group="target">
+                    <key uid="dcamera2" />
+                    <key uid="camera2" />
+                    <key uid="color2Todepth2" />
+                </out>
+            </service>
+
+
+            <!-- Matrix (trf format) reader -->
+            <!-- This matrix is used to staticaly register the model onto the video -->
+            <service uid="matrixReader" type="::uiIO::editor::SIOSelector">
+                <inout key="data" uid="color2Tocolor1" />
+                <type mode="reader" /> <!-- mode is optional (by default it is "reader") -->
+                <selection mode="include" />
+                <addSelection service="::ioData::TransformationMatrix3DReaderService" />
+            </service>
+
+            <service uid="cameraSelector1" type="::videoQt::editor::SCamera">
+                <inout key="camera" uid="camera1" />
+                <videoSupport>yes</videoSupport>
+            </service>
+
+            <service uid="cameraSelector2" type="::videoQt::editor::SCamera">
+                <inout key="camera" uid="camera2" />
+                <videoSupport>yes</videoSupport>
+            </service>
+
+            <service uid="depthRangeSlider" type="::guiQt::editor::SParameters">
+                <parameters>
+                    <param type="int" name="Min depth" key="minDepth" defaultValue="300" min="300" max="3000" />
+                    <param type="int" name="Max depth" key="maxDepth" defaultValue="3000" min="300" max="3000" />
+                </parameters>
+            </service>
+
+
+            <service uid="frameGrabber1" type="::videoOrbbec::SScan"  worker="grabber1">
+                <in key="camera" uid="camera1" />
+                <inout key="frameTL" uid="frameTL1" />
+                <inout key="depthTL" uid="depthTL1" />
+            </service>
+
+            <service uid="frameGrabber2" type="::videoOrbbec::SScan"  worker="grabber2">
+                <in key="camera" uid="camera2" />
+                <inout key="frameTL" uid="frameTL2" />
+                <inout key="depthTL" uid="depthTL2" />
+            </service>
+
+            <service uid="synchronizer" type="::videoTools::SFrameMatrixSynchronizer" worker="videoWorker">
+                <in group="frameTL">
+                    <key uid="frameTL1" />
+                    <key uid="frameTL2" />
+                    <key uid="depthTL1" />
+                    <key uid="depthTL2" />
+                </in>
+                <inout group="image">
+                    <key uid="colorIm1" />
+                    <key uid="colorIm2" />
+                    <key uid="depthIm1" />
+                    <key uid="depthIm2" />
+                </inout>
+                <framerate>30</framerate>
+            </service>
+
+            <!-- Generate the pointCloud mesh from the rgbd camera inputs -->
+            <service uid="scaleDepthMap1" type="::opDepthMap::STransformDepthMap2mm" worker="depthMapWorker1">
+                <in    key="originDepth"  uid="depthIm1" />
+                <in    key="cameraSeries" uid="rgbdCalib1" />
+                <inout key="scaledDepth"  uid="depthImScaled1" />
+            </service>
+
+            <service uid="toPointCloud1" type="::opDepthMap::SPointCloudFromDepthMap" worker="depthMapWorker1">
+                <in    key="depthMap"    uid="depthImScaled1" />
+                <in    key="calibration" uid="rgbdCalib1" />
+                <inout key="pointCloud"  uid="rgbdPointCloud1" />
+            </service>
+
+            <!-- Generate the pointCloud mesh from the rgbd camera inputs -->
+            <service uid="scaleDepthMap2" type="::opDepthMap::STransformDepthMap2mm" worker="depthMapWorker2">
+                <in    key="originDepth"  uid="depthIm2" />
+                <in    key="cameraSeries" uid="rgbdCalib2" />
+                <inout key="scaledDepth"  uid="depthImScaled2" />
+            </service>
+
+            <service uid="toPointCloud2" type="::opDepthMap::SPointCloudFromDepthMap" worker="depthMapWorker2">
+                <in    key="depthMap"    uid="depthImScaled2" />
+                <in    key="calibration" uid="rgbdCalib2" />
+                <inout key="pointCloud"  uid="rgbdPointCloud2" />
+            </service>
+
+
+            <service uid="concatenateMatrices" type="::maths::SConcatenateMatrices">
+                <in group="matrix">
+                    <key uid="color2Todepth2" />
+                    <key uid="color2Tocolor1" autoConnect="yes" inverse="true"/>
+                    <key uid="color1Todepth1" inverse="true"/>
+                </in>
+                <inout key="output" uid="pc2toPc1" />
+            </service>
+
+<!-- ******************************** Begin connections declarations ******************************** -->
+
+            <connect>
+                <signal>depthIm1/bufferModified</signal>
+                <slot>scaleDepthMap1/update</slot>
+            </connect>
+
+            <connect>
+                <signal>scaleDepthMap1/computed</signal>
+                <slot>toPointCloud1/update</slot>
+            </connect>
+
+            <connect>
+                <signal>depthIm2/bufferModified</signal>
+                <slot>scaleDepthMap2/update</slot>
+            </connect>
+
+            <connect>
+                <signal>scaleDepthMap2/computed</signal>
+                <slot>toPointCloud2/update</slot>
+            </connect>
+
+
+           <connect>
+               <signal>depthRangeSlider/intChanged</signal>
+               <slot>toPointCloud1/setDepthRange</slot>
+               <slot>toPointCloud2/setDepthRange</slot>
+           </connect>
+
+
+            <!-- start services -->
+            <start uid="mainWindow" />
+
+            <start uid="calibrationReader1" />
+            <start uid="calibrationReader2" />
+
+            <start uid="extractor1" />
+            <start uid="extractor2" />
+
+            <start uid="cameraSelector1" />
+            <start uid="cameraSelector2" />
+
+            <start uid="matrixReader" />
+            <start uid="frameGrabber1" />
+            <start uid="frameGrabber2" />
+            <start uid="synchronizer" />
+
+            <!-- VTK scene 'color1' -->
+            <start uid="color1VideoAdpt" />
+            <start uid="color1VideoIS" />
+
+            <!-- VTK scene 'depth1' -->
+            <start uid="depth1VideoAdpt" />
+            <start uid="depth1VideoIS" />
+
+            <!-- VTK scene 'color2' -->
+            <start uid="color2VideoAdpt" />
+            <start uid="color2VideoIS" />
+
+            <!-- VTK scene 'depth2' -->
+            <start uid="depth2VideoAdpt" />
+            <start uid="depth2VideoIS" />
+
+            <!-- VTK scene 'scene3d' -->
+            <start uid="pointcloudAdpt1" />
+            <start uid="meshMatrixAdaptor" />
+            <start uid="pointcloudAdpt2" />
+
+            <!--other services start -->
+            <start uid="scaleDepthMap1" />
+            <start uid="toPointCloud1" />
+            <start uid="scaleDepthMap2" />
+            <start uid="toPointCloud2" />
+            <start uid="concatenateMatrices" />
+
+        </config>
+    </extension>
+
+</plugin>
