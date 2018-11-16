@@ -127,7 +127,7 @@
         </service>
 
         <service uid="actionOpenActivity" type="::uiIO::action::SSeriesDBMerger">
-            <inout key="series" uid="loadingSeriesDB" />
+            <inout key="seriesDB" uid="loadingSeriesDB" />
             <IOSelectorSrvConfig name="ActivityReaderConfig" />
         </service>
 
