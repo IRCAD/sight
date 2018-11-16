@@ -146,6 +146,11 @@ void SMatrixWriter::write(::fwCore::HiResClock::HiResClockType timestamp)
         CSPTR(::arData::MatrixTL::BufferType) buffer = matrixTL->getClosestBuffer(timestamp);
         if(buffer)
         {
+            CSPTR(::arData::timeline::Object) object = matrixTL->getClosestObject(timestamp);
+            if (object)
+            {
+                timestamp = object->getTimestamp();
+            }
             size_t time = static_cast<size_t>(timestamp);
             *m_filestream << time <<";";
             for(unsigned int i = 0; i < numberOfMat; ++i)
