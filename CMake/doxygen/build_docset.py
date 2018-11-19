@@ -18,16 +18,16 @@ REPO_NAMES = dict()
 
 # Global regexes we don't want to recompile every single time we parse a file
 CLASS_FILE_RE = re.compile(r'class([a-zA-Z_][a-zA-Z0-9_]*)_1_1([a-zA-Z_][a-zA-Z0-9_]*)\.html')
-CLASS_RE = re.compile('fw4spl: (.+) Class Reference')
+CLASS_RE = re.compile('sight: (.+) Class Reference')
 STRUCT_FILE_RE = re.compile(r'struct([a-zA-Z_][a-zA-Z0-9_]*)_1_1([a-zA-Z_][a-zA-Z0-9_]*)\.html')
-STRUCT_RE = re.compile('fw4spl: (.+) Struct Reference')
+STRUCT_RE = re.compile('sight: (.+) Struct Reference')
 NAMESPACE_FILE_RE = re.compile(r'namespace.+\.html')
-NAMESPACE_RE = re.compile('fw4spl: ([a-zA-Z_][a-zA-Z0-9_:]*) Namespace Reference')
-SRV_RE = re.compile('fw4spl: ([a-zA-Z_][a-zA-Z0-9_]*::(?:[a-zA-Z_][a-zA-Z0-9_]*::)*(S[A-Z0-9][a-zA-Z0-9_]*)) Class Reference')
-BAD__SRV_RE = re.compile('fw4spl: ([a-zA-Z_][a-zA-Z0-9_]*::(?:[a-zA-Z_][a-zA-Z0-9_]*::)*([A-Z0-9][a-zA-Z0-9_]*)) Class Reference')
-OBJ_RE = re.compile('fw4spl: ([a-zA-Z_][a-zA-Z0-9_]*::(?:[a-zA-Z_][a-zA-Z0-9_]*::)*([A-Z0-9][a-zA-Z0-9_]*)) Class Reference')
-IFACE_RE = re.compile('fw4spl: ([a-zA-Z_][a-zA-Z0-9_]*::(?:[a-zA-Z_][a-zA-Z0-9_]*::)*(I[A-Z0-9][a-zA-Z0-9_]*|IService)) Class Reference')
-EXCEPT_RE = re.compile('fw4spl: ([a-zA-Z_][a-zA-Z0-9_]*::(?:[a-zA-Z_][a-zA-Z0-9_]*::)*([A-Z0-9][a-zA-Z0-9_]*)) Struct Reference')
+NAMESPACE_RE = re.compile('sight: ([a-zA-Z_][a-zA-Z0-9_:]*) Namespace Reference')
+SRV_RE = re.compile('sight: ([a-zA-Z_][a-zA-Z0-9_]*::(?:[a-zA-Z_][a-zA-Z0-9_]*::)*(S[A-Z0-9][a-zA-Z0-9_]*)) Class Reference')
+BAD__SRV_RE = re.compile('sight: ([a-zA-Z_][a-zA-Z0-9_]*::(?:[a-zA-Z_][a-zA-Z0-9_]*::)*([A-Z0-9][a-zA-Z0-9_]*)) Class Reference')
+OBJ_RE = re.compile('sight: ([a-zA-Z_][a-zA-Z0-9_]*::(?:[a-zA-Z_][a-zA-Z0-9_]*::)*([A-Z0-9][a-zA-Z0-9_]*)) Class Reference')
+IFACE_RE = re.compile('sight: ([a-zA-Z_][a-zA-Z0-9_]*::(?:[a-zA-Z_][a-zA-Z0-9_]*::)*(I[A-Z0-9][a-zA-Z0-9_]*|IService)) Class Reference')
+EXCEPT_RE = re.compile('sight: ([a-zA-Z_][a-zA-Z0-9_]*::(?:[a-zA-Z_][a-zA-Z0-9_]*::)*([A-Z0-9][a-zA-Z0-9_]*)) Struct Reference')
 
 # Regexes of the files to skip
 FILE_SKIP_RE = [
@@ -42,10 +42,10 @@ def bootstrap_docset():
     database connection.
     """
     # Create the directory structure.
-    Path('./fw4spl.docset/Contents/Resources').mkdir(parents=True, exist_ok=True)
+    Path('./sight.docset/Contents/Resources').mkdir(parents=True, exist_ok=True)
 
     # Then, create the SQLite database
-    db = Path('./fw4spl.docset/Contents/Resources/docSet.dsidx')
+    db = Path('./sight.docset/Contents/Resources/docSet.dsidx')
     if db.exists():
         os.remove(str(db))
     conn_ = sqlite3.connect(str(db))
@@ -263,7 +263,7 @@ def copy_files():
     Copy the doxygen HTML files into the docset destination.
     """
     try:
-        shutil.copytree('./html', './fw4spl.docset/Contents/Resources/Documents')
+        shutil.copytree('./html', './sight.docset/Contents/Resources/Documents')
     except shutil.Error as err:
         errors = err.args[0]
         print("Warning: some files were not copied correctly. The generated docset might be incomplete.")

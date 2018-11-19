@@ -1,5 +1,5 @@
 # Generates doxygen for all specified projects.
-# Works only with fw4spl CMake script.
+# Works only with sight CMake script.
 function(doxygenGenerator)
     include(${CMAKE_ROOT}/Modules/Documentation.cmake)
     find_package(Doxygen QUIET)
@@ -38,7 +38,7 @@ function(docsetGenerator)
                       COMMENT "Creating docset directories" VERBATIM)
     add_custom_target(docset_clean
                       COMMAND ${CMAKE_COMMAND} -E remove_directory ${CMAKE_CURRENT_BINARY_DIR}/Documentation/Docset/html
-                      COMMAND ${CMAKE_COMMAND} -E remove_directory ${CMAKE_CURRENT_BINARY_DIR}/Documentation/Docset/fw4spl.docset
+                      COMMAND ${CMAKE_COMMAND} -E remove_directory ${CMAKE_CURRENT_BINARY_DIR}/Documentation/Docset/sight.docset
                       DEPENDS docset_dirs
                       COMMENT "Cleaning up previous docset build" VERBATIM)
     add_custom_target(docset_doxygen ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Documentation/Docset/Doxyfile
@@ -79,11 +79,11 @@ function(docsetGenerator)
                           VERBATIM)
         add_custom_command(TARGET docset POST_BUILD
                            COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/CMake/doxygen/Info.plist
-                                                            ${CMAKE_CURRENT_BINARY_DIR}/Documentation/Docset/fw4spl.docset/Contents
+                                                            ${CMAKE_CURRENT_BINARY_DIR}/Documentation/Docset/sight.docset/Contents
                            COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/CMake/doxygen/f4s_logo_16x16.png
-                                                            ${CMAKE_CURRENT_BINARY_DIR}/Documentation/Docset/fw4spl.docset/icon.png
+                                                            ${CMAKE_CURRENT_BINARY_DIR}/Documentation/Docset/sight.docset/icon.png
                            COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/CMake/doxygen/f4s_logo_32x32.png
-                                                            ${CMAKE_CURRENT_BINARY_DIR}/Documentation/Docset/fw4spl.docset/icon@2x.png
+                                                            ${CMAKE_CURRENT_BINARY_DIR}/Documentation/Docset/sight.docset/icon@2x.png
                            COMMENT "Copying dash docset configuration files"
                            VERBATIM)
     endif()
