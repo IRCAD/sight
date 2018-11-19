@@ -186,7 +186,7 @@ void STDataListener::stopping()
 
 void STDataListener::manageTimeline(const ::fwData::Composite::sptr& obj, double timestamp)
 {
-    double epsilon = std::numeric_limits<double>::epsilon();
+    const double epsilon = std::numeric_limits<double>::epsilon();
     if (timestamp < epsilon && timestamp > -epsilon)
     {
         timestamp = ::fwCore::HiResClock::getTimeInMilliSec();
