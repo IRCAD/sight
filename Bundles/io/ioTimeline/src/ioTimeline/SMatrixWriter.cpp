@@ -143,25 +143,27 @@ void SMatrixWriter::write(::fwCore::HiResClock::HiResClockType timestamp)
 
         unsigned int numberOfMat = matrixTL->getMaxElementNum();
         // Get the buffer of the copied timeline
-        CSPTR(::arData::MatrixTL::BufferType) buffer = matrixTL->getClosestBuffer(timestamp);
-        if(buffer)
+
+        CSPTR(::arData::timeline::Object) object = matrixTL->getClosestObject(timestamp);
+        if(object)
         {
-            CSPTR(::arData::timeline::Object) object = matrixTL->getClosestObject(timestamp);
-            if (object)
+            CSPTR(::arData::MatrixTL::BufferType) buffer =
+                std::dynamic_pointer_cast< const ::arData::MatrixTL::BufferType >(object);
+            if (buffer)
             {
                 timestamp = object->getTimestamp();
-            }
-            size_t time = static_cast<size_t>(timestamp);
-            *m_filestream << time <<";";
-            for(unsigned int i = 0; i < numberOfMat; ++i)
-            {
-                const float* values = buffer->getElement(i);
-                for(unsigned int v = 0; v < 16; ++v)
+                size_t time = static_cast<size_t>(timestamp);
+                *m_filestream << time <<";";
+                for(unsigned int i = 0; i < numberOfMat; ++i)
                 {
-                    *m_filestream << values[v] << ";";
+                    const float* values = buffer->getElement(i);
+                    for(unsigned int v = 0; v < 16; ++v)
+                    {
+                        *m_filestream << values[v] << ";";
+                    }
                 }
+                *m_filestream << std::endl;
             }
-            *m_filestream << std::endl;
         }
     }
 }
