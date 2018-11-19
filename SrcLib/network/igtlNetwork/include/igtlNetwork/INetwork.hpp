@@ -49,7 +49,8 @@ public:
     IGTLNETWORK_API ::fwData::Object::sptr receiveObject(std::string& deviceName);
 
     /**
-     * @brief generic method to receive object the type of the object is determined by response header,
+     * @brief generic method to receive object
+     * the type of the object is determined by response header
      * this method calls the correct receiver for the type found in response header and sets the timestamp
      * parameter according to the timestamp set in the message
      *
