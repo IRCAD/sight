@@ -36,6 +36,10 @@ option(VERBOSE_PCH "Display debug messages to help debugging PCH" OFF)
 mark_as_advanced(ENABLE_PCH)
 mark_as_advanced(VERBOSE_PCH)
 
+# QML_IMPORT_PATH allows qtCreator to find the qml modules created in our bundles
+set(QML_IMPORT_PATH "" CACHE string "Path of the Qml modules." FORCE)
+mark_as_advanced(QML_IMPORT_PATH)
+
 include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/PrecompiledHeader.cmake)
 
 if(MSVC)
@@ -389,7 +393,9 @@ endif()
 # Append tests to the project list
 if(BUILD_TESTS)
     findTests("${PROJECT_LIST}" "${TESTS_FILTER}" PROJECT_TESTS)
-    list(APPEND PROJECT_LIST ${PROJECT_TESTS})
+    findAllDependencies("${PROJECT_TESTS}" PROJECT_TESTS_DEPS)
+    list(APPEND PROJECT_LIST ${PROJECT_TESTS_DEPS})
+    list(REMOVE_DUPLICATES PROJECT_LIST)
 endif()
 
 # Find and install Conan packages

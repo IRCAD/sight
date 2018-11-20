@@ -14,6 +14,6 @@ set( DEPENDENCIES
 )
 set( REQUIREMENTS )
 set( CONAN_DEPS
-    vtk/8.0.1@sight/stable
-    gdcm/2.8.6@sight/stable
+    vtk/8.0.1-r1@sight/stable
+    gdcm/2.8.6-r1@sight/stable
 )
