@@ -100,7 +100,7 @@ namespace visuOgreAdaptor
  * - \b aoFactor (optional, double, default=1.0): factor used to weight the ambient occlusion.
  * - \b colorBleedingFactor (optional, double, default=1.0): factor used to weight the color bleeding.
  * - \b autoresetcamera (optional, yes/no, default=yes): reset the camera at image update to view the whole volume.
- * -\b transform (optional): transform applied to the volumeRender's scene node
+ * -\b transform (optional): transform applied to the adaptor's scene node
  */
 class VISUOGREADAPTOR_CLASS_API SVolumeRender : public ::fwRenderOgre::IAdaptor,
                                                 public ::fwRenderOgre::ITransformable
