@@ -145,8 +145,6 @@ void STransform::updating()
 
 void STransform::stopping()
 {
-    this->getSceneManager()->destroySceneNode(m_transformNode);
-    m_transformNode = nullptr;
 }
 
 //-----------------------------------------------------------------------------

@@ -280,8 +280,12 @@ void SAxis::stopping()
 
     if(m_sceneNode != nullptr)
     {
-        m_sceneNode->removeAndDestroyAllChildren();
-        sceneMgr->destroySceneNode(m_sceneNode);
+        m_sceneNode->removeAndDestroyChild(this->getID() + "_xLine");
+        m_sceneNode->removeAndDestroyChild(this->getID() + "_yLine");
+        m_sceneNode->removeAndDestroyChild(this->getID() + "_zLine");
+        m_sceneNode->removeAndDestroyChild(this->getID() + "_xCone");
+        m_sceneNode->removeAndDestroyChild(this->getID() + "_yCone");
+        m_sceneNode->removeAndDestroyChild(this->getID() + "_zCone");
     }
 
     if(m_enableLabel)
