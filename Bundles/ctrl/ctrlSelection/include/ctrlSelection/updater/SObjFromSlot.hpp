@@ -37,7 +37,7 @@ class CTRLSELECTION_CLASS_API SObjFromSlot : public ::ctrlSelection::IUpdaterSrv
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SObjFromSlot)(::ctrlSelection::IUpdaterSrv) );
+    fwCoreServiceClassDefinitionsMacro( (SObjFromSlot)(::ctrlSelection::IUpdaterSrv) )
 
     /// Constructor.  Do nothing.
     CTRLSELECTION_API SObjFromSlot() noexcept;

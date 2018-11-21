@@ -81,7 +81,7 @@ class UIMEDDATAQT_CLASS_API SModelSeriesList :  public QObject,
 Q_OBJECT
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SModelSeriesList)(::fwGui::editor::IEditor) );
+    fwCoreServiceClassDefinitionsMacro( (SModelSeriesList)(::fwGui::editor::IEditor) )
 
     /// Constructor. Do nothing.
     UIMEDDATAQT_API SModelSeriesList() noexcept;

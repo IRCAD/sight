@@ -62,7 +62,7 @@ class ACTIVITIES_CLASS_API SSeriesSignal : public ::fwServices::IController
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SSeriesSignal)(::fwServices::IController) );
+    fwCoreServiceClassDefinitionsMacro( (SSeriesSignal)(::fwServices::IController) )
 
     /// Constructor. Do nothing.
     ACTIVITIES_API SSeriesSignal() noexcept;

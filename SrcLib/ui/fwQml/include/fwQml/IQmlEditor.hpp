@@ -30,7 +30,7 @@ class FWQML_CLASS_QT_API IQmlEditor : public QObject,
 Q_OBJECT
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (IQmlEditor)(::fwServices::IService) );
+    fwCoreServiceClassDefinitionsMacro( (IQmlEditor)(::fwServices::IService) )
 
     /// Constructor. Do nothing.
     FWQML_QT_API IQmlEditor() noexcept;

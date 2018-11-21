@@ -54,7 +54,7 @@ class UIMEDDATAQT_CLASS_API SSeriesViewer : public ::fwServices::IController
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro( (SSeriesViewer)(::fwServices::IController) );
+    fwCoreServiceClassDefinitionsMacro( (SSeriesViewer)(::fwServices::IController) )
 
     /// Constructor
     UIMEDDATAQT_API SSeriesViewer();

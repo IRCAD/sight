@@ -50,7 +50,7 @@ class VISUOGREADAPTOR_CLASS_API SFrustumList : public ::fwRenderOgre::IAdaptor,
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro((SFrustumList)(::fwRenderOgre::IAdaptor));
+    fwCoreServiceClassDefinitionsMacro((SFrustumList)(::fwRenderOgre::IAdaptor))
 
     /// Constructor.
     VISUOGREADAPTOR_API SFrustumList() noexcept;
