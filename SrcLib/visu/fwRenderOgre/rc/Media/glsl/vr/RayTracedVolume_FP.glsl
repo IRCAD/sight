@@ -292,24 +292,10 @@ vec3 hsv2rgb(vec3 HSL);
 
 //-----------------------------------------------------------------------------
 
-vec4 launchRay(in vec3 _rayPos, in vec3 _rayDir, in float _rayLength, in float _sampleDistance, in sampler1D _tfTexture, in vec2 _tfWindow)
+float firstOpaqueVoxelDepth(inout int _iterCount, inout float _t, inout vec3 _rayPos, in vec3 _rayDir, in float _rayLength, in float _sampleDistance, in sampler1D _tfTexture, in vec2 _tfWindow)
 {
-    vec4 result = vec4(0);
-
-#if IDVR == 2 || IDVR == 3
-    // For the segmentation we have a [0, 255] range
-    // So we check for value superior to 128: 128 / 65536 = 0.001953125
-    float edge = 0.5 + 0.001953125;
-
-// With Visibility preserving importance compositing
-// We count the number of samples until we reach the important feature
-    float nbSamples = 0.0;
-#endif // IDVR == 2 || IDVR == 3
-
-    int iterCount = 0;
-    float t = 0.f;
     // Move the ray to the first non transparent voxel.
-    for(; iterCount < MAX_ITERATIONS && t < _rayLength; iterCount += 1, t += _sampleDistance)
+    for(; _iterCount < MAX_ITERATIONS && _t < _rayLength; _iterCount += 1, _t += _sampleDistance)
     {
 #ifdef PREINTEGRATION
         float tfAlpha = samplePreIntegrationTable(_rayPos, _rayPos + _rayDir).a;
@@ -327,8 +313,24 @@ vec4 launchRay(in vec3 _rayPos, in vec3 _rayDir, in float _rayLength, in float _
     }
 
     float rayScreenDepth = voxelScreenDepth(_rayPos);
-    gl_FragDepth = rayScreenDepth * 0.5f + 0.5f; // Convert to NDC assuming no clipping planes are set.
+    return rayScreenDepth * 0.5f + 0.5f; // Convert to NDC assuming no clipping planes are set.
+}
 
+//-----------------------------------------------------------------------------
+
+vec4 launchRay(in vec3 _rayPos, in vec3 _rayDir, in float _rayLength, in float _sampleDistance, in sampler1D _tfTexture, in vec2 _tfWindow)
+{
+    int iterCount = 0;
+    float t = 0.f;
+    // Move the ray to the first non transparent voxel.
+    gl_FragDepth = firstOpaqueVoxelDepth(iterCount, t, _rayPos, _rayDir, _rayLength, _sampleDistance, _tfTexture, _tfWindow);
+
+#if IDVR == 2 || IDVR == 3
+    // With Visibility preserving importance compositing
+    // We count the number of samples until we reach the important feature
+    float nbSamples = 0.0;
+#endif // IDVR == 2 || IDVR == 3
+    vec4 result = vec4(0);
     for(; iterCount < MAX_ITERATIONS && t < _rayLength; iterCount += 1, t += _sampleDistance)
     {
 #ifdef PREINTEGRATION
@@ -366,6 +368,7 @@ vec4 launchRay(in vec3 _rayPos, in vec3 _rayDir, in float _rayLength, in float _
 
 // Average Importance Compositing
 #if IDVR == 2
+
             vec4 aimc = texelFetch(u_IC, ivec2(gl_FragCoord.xy), 0);
             // We ensure that we have a number of samples > 0, to be in the region of interest
             if(aimc.r > 0 && nbSamples <= aimc.r)
@@ -402,8 +405,6 @@ vec4 launchRay(in vec3 _rayPos, in vec3 _rayDir, in float _rayLength, in float _
 
         _rayPos += _rayDir;
 #if IDVR == 2 || IDVR == 3
-// With Visibility preserving importance compositing
-// We count the number of samples until we reach the important feature
         nbSamples += 1.0f;
 #endif // IDVR == 2 || IDVR == 3
     }
@@ -549,6 +550,9 @@ void main(void)
 
         if(entryOpacity > 0.f && rayDepth > 0.0f && int(rayDepthIntegralPart) != 0 && distToDepthLine == 0 && (rayDepthFractPart < u_depthLinesWidth))
         {
+            int iterCount = 0;
+            float t = 0.0;
+            gl_FragDepth = firstOpaqueVoxelDepth(iterCount, t, rayPos, rayDir, rayLength, u_sampleDistance, u_tfTexture, u_tfWindow);
             result = vec4(u_csgBorderColor, 1.);
         }
         else
