@@ -150,38 +150,44 @@ void SFrameWriter::write(::fwCore::HiResClock::HiResClockType timestamp)
         ::fwCom::Connection::Blocker writeBlocker(sig->getConnection(m_slots[s_WRITE]));
 
         // Get the buffer of the copied timeline
-        CSPTR(::arData::FrameTL::BufferType) buffer = frameTL->getClosestBuffer(timestamp);
+        CSPTR(::arData::timeline::Object) object = frameTL->getClosestObject(timestamp);
 
-        if (buffer)
+        if (object)
         {
-            const int width  = static_cast<int>( frameTL->getWidth() );
-            const int height = static_cast<int>( frameTL->getHeight() );
-
-            const std::uint8_t* imageBuffer = &buffer->getElement(0);
-
-            ::cv::Mat image(::cv::Size(width, height), m_imageType, (void*)imageBuffer, ::cv::Mat::AUTO_STEP);
-
-            const size_t time = static_cast<size_t>(timestamp);
-            const std::string filename( "img_" + std::to_string(time) + m_format);
-            const ::boost::filesystem::path path = this->getFolder() / filename;
-
-            if (image.type() == CV_8UC3)
+            CSPTR(::arData::FrameTL::BufferType) buffer =
+                std::dynamic_pointer_cast< const ::arData::FrameTL::BufferType >(object);
+            if (buffer)
             {
-                // convert the read image from BGR to RGB
-                ::cv::Mat imageRgb;
-                ::cv::cvtColor(image, imageRgb, ::cv::COLOR_BGR2RGB);
-                ::cv::imwrite(path.string(), imageRgb);
-            }
-            else if (image.type() == CV_8UC4)
-            {
-                // convert the read image from BGRA to RGBA
-                ::cv::Mat imageRgb;
-                ::cv::cvtColor(image, imageRgb, ::cv::COLOR_BGRA2RGBA);
-                ::cv::imwrite(path.string(), imageRgb);
-            }
-            else
-            {
-                ::cv::imwrite(path.string(), image);
+                timestamp = object->getTimestamp();
+                const int width  = static_cast<int>( frameTL->getWidth() );
+                const int height = static_cast<int>( frameTL->getHeight() );
+
+                const std::uint8_t* imageBuffer = &buffer->getElement(0);
+
+                ::cv::Mat image(::cv::Size(width, height), m_imageType, (void*)imageBuffer, ::cv::Mat::AUTO_STEP);
+
+                const size_t time = static_cast<size_t>(timestamp);
+                const std::string filename( "img_" + std::to_string(time) + m_format);
+                const ::boost::filesystem::path path = this->getFolder() / filename;
+
+                if (image.type() == CV_8UC3)
+                {
+                    // convert the read image from BGR to RGB
+                    ::cv::Mat imageRgb;
+                    ::cv::cvtColor(image, imageRgb, ::cv::COLOR_BGR2RGB);
+                    ::cv::imwrite(path.string(), imageRgb);
+                }
+                else if (image.type() == CV_8UC4)
+                {
+                    // convert the read image from BGRA to RGBA
+                    ::cv::Mat imageRgb;
+                    ::cv::cvtColor(image, imageRgb, ::cv::COLOR_BGRA2RGBA);
+                    ::cv::imwrite(path.string(), imageRgb);
+                }
+                else
+                {
+                    ::cv::imwrite(path.string(), image);
+                }
             }
         }
     }
