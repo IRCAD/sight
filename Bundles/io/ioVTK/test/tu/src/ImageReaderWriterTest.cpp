@@ -323,7 +323,7 @@ void ImageReaderWriterTest::testBitmapImageWriter()
 {
     // Data to write
     const size_t dim = 2;
-    ::fwTools::Type type("uint8");
+    const ::fwTools::Type type("uint8");
     ::fwData::Image::SizeType sizeExpected(dim);
     sizeExpected[0] = 10;
     sizeExpected[1] = 20;
@@ -348,7 +348,7 @@ void ImageReaderWriterTest::testBitmapImageWriter()
     extensions.push_back("pnm");
     extensions.push_back("tiff");
 
-    for(std::string ext : extensions)
+    for(const std::string ext : extensions)
     {
         // Write to bitmap image.
         const ::boost::filesystem::path file = ::fwTools::System::getTemporaryFolder() / ("temporaryFile." + ext);
@@ -356,7 +356,7 @@ void ImageReaderWriterTest::testBitmapImageWriter()
         runImageSrv("::fwIO::IWriter", "::ioVTK::SImageWriter", getIOConfiguration(file), image);
 
         // Read image from disk
-        ::fwData::Image::sptr imageFromDisk = ::fwData::Image::New();
+        const ::fwData::Image::sptr imageFromDisk = ::fwData::Image::New();
         runImageSrv("::fwIO::IReader", "::ioVTK::SImageReader", getIOConfiguration(file), imageFromDisk);
 
         ::boost::filesystem::remove(file);
@@ -382,8 +382,8 @@ void ImageReaderWriterTest::testBitmapImageWriter()
         ::fwDataTools::helper::Image imageHelper(image);
         ::fwDataTools::helper::Image imageFromDiskHelper(imageFromDisk);
 
-        char* ptrOnGeneratedImage = static_cast<char*>(imageHelper.getBuffer());
-        char* ptrOnReadImage      = static_cast<char*>(imageFromDiskHelper.getBuffer());
+        const char* const ptrOnGeneratedImage = static_cast<char*>(imageHelper.getBuffer());
+        const char* const ptrOnReadImage      = static_cast<char*>(imageFromDiskHelper.getBuffer());
 
         CPPUNIT_ASSERT_EQUAL( image->getType(), imageFromDisk->getType() );
         CPPUNIT_ASSERT( std::equal(ptrOnGeneratedImage, ptrOnGeneratedImage + image->getSizeInBytes(),

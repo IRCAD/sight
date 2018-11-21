@@ -52,7 +52,7 @@ void BitmapImageWriter::write()
     SLM_ASSERT("The current object has expired.", !m_object.expired() );
     SLM_ASSERT("Unable to lock object", m_object.lock() );
 
-    ::fwData::Image::csptr pImage = getConcreteObject();
+    const ::fwData::Image::csptr pImage = getConcreteObject();
 
     vtkSmartPointer< vtkImageWriter > writer;
 
@@ -80,7 +80,7 @@ void BitmapImageWriter::write()
         writer = vtkSmartPointer< vtkTIFFWriter >::New();
     }
 
-    vtkSmartPointer< vtkImageData > vtkImage = vtkSmartPointer< vtkImageData >::New();
+    const vtkSmartPointer< vtkImageData > vtkImage = vtkSmartPointer< vtkImageData >::New();
     ::fwVtkIO::toVTKImage( pImage, vtkImage );
 
     writer->SetInputData( vtkImage );
