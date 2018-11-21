@@ -1,53 +1,78 @@
 | Branch |    Status |
 |--------|-----------|
-| Dev    | [![Build Status](https://travis-ci.org/fw4spl-org/fw4spl.svg?branch=dev)](https://travis-ci.org/fw4spl-org/fw4spl) |
-| Master | [![Build Status](https://travis-ci.org/fw4spl-org/fw4spl.svg?branch=master)](https://travis-ci.org/fw4spl-org/fw4spl) |
+| Dev    | [![pipeline status](https://git.ircad.fr/Sight/sight/badges/dev/pipeline.svg)](https://git.ircad.fr/Sight/sight/commits/dev) |
+| Master | [![pipeline status](https://git.ircad.fr/Sight/sight/badges/master/pipeline.svg)](https://git.ircad.fr/Sight/sight/commits/master) |
 
 
-Description
-===========
+# Description
 
-**FW4SPL** is a framework for fast and easy creation of applications, mainly in the medical imaging field.
-It includes various features such as 2D and 3D digital image processing, visualization, augmented reality and medical interaction simulation. It runs on many different environments (Windows, linux, OSX), is written in C++, and features rapid interface design using XML files.
-It is freely available under open source license (LGPL).
+**Sight**, the **S**urgical **I**mage **G**uidance and **H**ealthcare **T**oolkit aims to ease the creation of applications based on medical imaging.
+It includes various features such as 2D and 3D digital image processing, visualization, augmented reality and medical interaction simulation. It runs on many different environments (Windows, linux, OSX), is written in C++, and features rapid interface design using XML files. It is freely available under the LGPL.
 
-See [documentation](http://fw4spl.readthedocs.org/) for more details.
+**Sight** is mainly developed by the research and development team of [IRCAD France](https://www.ircad.fr) and [IHU Strasbourg](https://www.ihu-strasbourg.eu), where it is used everyday to develop experimental applications for the operating room.
 
-Applications
-============
+**Sight** was formerly known as [FW4SPL](https://github.com/fw4spl-org/fw4spl). It was renamed in 2018, firstly to make its purpose clearer, and secondly as part of a major change in design and in the governance of the development team. For instance, FW4SPL was made of several repositories, whereas Sight now contains all open-source features in a single one, for the sake of simplicity.
 
-*FW4SPL* comes with **VRRender**, a medical image and segmentation viewer. It supports many format including DICOM, vtk, inr, etc...
+Lots of **tutorials** and **examples** can also be found in the `Samples` directory. The tutorials can help you to learn smoothly how to use **Sight**, detailed steps are described [here](https://sight.pages.ircad.fr/sight-doc/Tutorials/index.html).
 
-Lots of **tutorials** and **examples** can also be found in the *Samples/* directory. The tutorials can help you to learn smoothly how to use *FW4SPL*, detailed steps are described [here for **stable** version](http://fw4spl.readthedocs.io/en/master/Tutorials/index.html)  and [here for **latest** version](http://fw4spl.readthedocs.io/en/dev/Tutorials/index.html).
+## Features
 
-Install
-=======
+* 2D/3D visualization of images, meshes, and many widgets, either with [VTK](https://www.vtk.org/) or [Ogre3D](https://www.ogre3d.org/),
+* Configurable GUI
+* Advanced memory management to support large data
+* webcam, network video and local video playing based on [QtMultimedia](http://doc.qt.io/qt-5/qtmultimedia-index.html),
+* mono and stereo camera calibration,
+* [ArUco](https://sourceforge.net/projects/aruco/) optical markers tracking,
+* [openIGTLink](http://openigtlink.org/) support through client and server services,
+* TimeLine data, allowing to store buffers of various data (video, matrices, markers, etc...). These can be used to synchronize these data accross time.
+* Data serialization in xml/json/zip
 
-See how to install fw4spl :
-* [stable version](http://fw4spl.readthedocs.org/en/master/Installation/index.html)
-* [latest version](http://fw4spl.readthedocs.org/en/dev/Installation/index.html)
+# Applications
 
-Documentation
-=============
+## VRRender
 
-* **[Documentation](http://fw4spl.readthedocs.org/)**
-* **Tutorials**
- * [stable](http://fw4spl.readthedocs.io/en/master/Tutorials/index.html)
- * [latest](http://fw4spl.readthedocs.io/en/dev/Tutorials/index.html)
-* **[Doxygen](http://fw4spl-org.github.io/fw4spl-dox/)**
-* **[Blog](http://fw4spl-org.github.io/fw4spl-blog/)**
+**Sight** comes with **VRRender**, a medical image and segmentation viewer. It supports many import formats including DICOM and VTK.
 
-Support
-===========
+![VRRender main page](https://sight.pages.ircad.fr/sight-doc/_images/SDB.png)
+![MPR](https://sight.pages.ircad.fr/sight-doc/_images/MPR.png)
+![3D](https://sight.pages.ircad.fr/sight-doc/_images/3D.png)
 
-- Please report any issue on the [github tracker](https://github.com/fw4spl-org/fw4spl/issues).
-- You can also get live community support on the [gitter chat room](https://gitter.im/fw4spl-org/support).
 
-Annex
-=====
+## ARCalibration
 
-* [fw4spl-deps](https://github.com/fw4spl-org/fw4spl-deps): contains the scripts to compile the external libraries used by fw4spl (Boost, VTK, ITK, Qt, ...)
-* [fw4spl-ar](https://github.com/fw4spl-org/fw4spl-ar): fw4spl repository that contains additional functionalities for Augmented Reality
-* [fw4spl-droid](https://github.com/fw4spl-org/fw4spl-droid): fw4spl repository that brings Android support.
-* [fw4spl-ogre](https://github.com/fw4spl-org/fw4spl-ogre): fw4spl repository that offers a new 3D rendering backend using [Ogre3D](http://www.ogre3d.org/).
-* [fw4spl community](https://github.com/fw4spl-org): contains various repositories associated with fw4spl (extensions, dependencies, ...)
+**ARCalibration** is a user-friendly application to calibrate mono and stereo cameras. This software is a must-have since camera calibration is a mandatory step in any AR application.
+
+![ARCalibration](https://sight.pages.ircad.fr/sight-doc/_images/calibration.png)
+![ARCalibration](https://sight.pages.ircad.fr/sight-doc/_images/calibrationExt.png)
+
+# Install
+
+See [detailed install instructions](https://sight.pages.ircad.fr/sight-doc/Installation/index.html) for each supported platforms :
+* [Windows](https://sight.pages.ircad.fr/sight-doc/Installation/src/WindowsInstall.html)
+* [Linux](https://sight.pages.ircad.fr/sight-doc/Installation/src/LinuxInstall.html)
+* [MacOs](https://sight.pages.ircad.fr/sight-doc/Installation/src/MacOSXInstall.html)
+
+# Documentation
+
+* [Documentation](https://sight.pages.ircad.fr/sight-doc)
+* [Tutorials](https://sight.pages.ircad.fr/sight-doc/Tutorials/index.html)
+* [Doxygen](https://sight.pages.ircad.fr/sight)
+* Former FW4SPL [Blog](http://fw4spl-org.github.io/fw4spl-blog/) (new website coming soon)
+
+# Support
+
+Please note that our GitLab is currently only available in read-only access
+for external developers and users. This is a restriction because of the licensing
+model of GitLab. Since we use an EE version, we would be force to pay for every
+community user, and unfortunately we cannot afford it. This licensing
+model might change in the
+future https://gitlab.com/gitlab-org/gitlab-ee/issues/4382 though.
+
+Until then, we gently ask our community users to use our GitHub mirror to [report any issues](https://github.com/IRCAD-IHU/sight/issues)
+or propose [contributions](https://github.com/IRCAD-IHU/sight/pulls).
+
+You can also get live community support on the [gitter chat room](https://gitter.im/IRCAD-IHU/sight-support).
+
+# Annex
+
+* [sight-deps](https://git.ircad.fr/Sight/sight-deps): contains the scripts to compile the external libraries used by **Sight** (Boost, VTK, ITK, Qt, ...)
