@@ -69,6 +69,8 @@ public:
                                         float maximumFrameRate,
                                         ::QVideoFrame::PixelFormat pxFormat);
 
+    FWVIDEOQT_API int64_t getVideoDuration();
+
 Q_SIGNALS:
 
     /// Emitted when duration of the video changed.

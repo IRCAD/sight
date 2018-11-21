@@ -236,4 +236,11 @@ void Player::setPosition(int64_t position)
 
 //-----------------------------------------------------------------------------
 
+int64_t Player::getVideoDuration()
+{
+    return m_mediaPlayer->duration();
+}
+
+//-----------------------------------------------------------------------------
+
 } //namespace fwVideoQt
