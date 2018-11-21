@@ -535,8 +535,12 @@ void main(void)
 
     if(isCsg)
     {
+#ifdef PREINTEGRATION
+        float entryOpacity = samplePreIntegrationTable(rayEntry, rayEntry + rayDir).a;
+#else // PREINTEGRATION
         float entryIntensity = texture(u_image, rayEntry).r;
         float entryOpacity = sampleTransferFunction(entryIntensity, u_tfTexture, u_tfWindow).a;
+#endif // PREINTEGRATION
 #ifdef CSG_DEPTH_LINES
         float rayDepthIntegralPart;
         float rayDepthFractPart = modf(rayDepth, rayDepthIntegralPart);

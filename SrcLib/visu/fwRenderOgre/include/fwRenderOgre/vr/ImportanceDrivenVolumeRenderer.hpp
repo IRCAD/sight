@@ -61,6 +61,9 @@ public:
     /// Toggle countersink geometry when using Importance Driven Volume Rendering.
     FWRENDEROGRE_API void toggleIDVRCountersinkGeometry(bool);
 
+    /// Sets pre-integrated mode.
+    FWRENDEROGRE_API virtual void setPreIntegratedRendering(bool) override;
+
     /// Toggle TF use for countersink geometry .
     FWRENDEROGRE_API void toggleIDVRCSGTF(bool);
 

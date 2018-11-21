@@ -390,6 +390,14 @@ void ImportanceDrivenVolumeRenderer::cleanCompositorChain(Ogre::Viewport* const 
 
 //-----------------------------------------------------------------------------
 
+void ImportanceDrivenVolumeRenderer::setPreIntegratedRendering(bool _preIntegratedRendering)
+{
+    m_preIntegratedRendering = _preIntegratedRendering;
+
+    this->createMaterialAndIDVRTechnique();
+}
+//-----------------------------------------------------------------------------
+
 void ImportanceDrivenVolumeRenderer::toggleIDVRCountersinkGeometry(bool _CSG)
 {
     m_idvrCSG = _CSG;
