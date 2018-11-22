@@ -56,10 +56,10 @@ public:
     FWVIDEOQT_API void play();
 
     /// enable/disable loop in video
-    FWVIDEOQT_API void toggleLoopMode(bool isLoopEnable);
+    FWVIDEOQT_API void toggleLoopMode(const bool isLoopEnable);
 
     /// set the new position in the video.
-    FWVIDEOQT_API void setPosition(int64_t position);
+    FWVIDEOQT_API void setPosition(const int64_t position);
 
     FWVIDEOQT_API void initCameraFile(const ::boost::filesystem::path& videoPath);
 
@@ -69,7 +69,7 @@ public:
                                         float maximumFrameRate,
                                         ::QVideoFrame::PixelFormat pxFormat);
 
-    FWVIDEOQT_API int64_t getVideoDuration();
+    FWVIDEOQT_API int64_t getVideoDuration() const;
 
 Q_SIGNALS:
 
