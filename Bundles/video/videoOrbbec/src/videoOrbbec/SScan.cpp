@@ -189,6 +189,8 @@ void SScan::stopCamera()
     m_depthStream.stop();
     m_rgbGrabber.release();
 
+    m_oniDevice = nullptr;
+
     this->signal< ::arServices::IGrabber::CameraStoppedSignalType>(::arServices::IGrabber::s_CAMERA_STOPPED_SIG)
     ->asyncEmit();
 

@@ -58,6 +58,8 @@ void SScanBase::configuring()
 
 void SScanBase::stopping()
 {
+    // ensure that openNI device is reset.
+    m_oniDevice = nullptr;
     this->stopCamera();
 }
 
