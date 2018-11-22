@@ -1,8 +1,16 @@
 stages:
   - lint
   - build
-  - tests
   - deploy
+
+sheldon-mr:
+  image: registry.lan.local:5000/docker-envdev-clang6:dev
+  stage: lint
+  script:
+    - export ORIG_BRANCH_COMMIT_SHA=$(git merge-base dev origin/${CI_COMMIT_REF_NAME})
+    - git -c http.sslVerify=false clone --depth 1 https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-git.git
+    # Execute sheldon, on all commits from the merge request
+    - sight-git/hooks/sheldon ${ORIG_BRANCH_COMMIT_SHA}..${CI_COMMIT_SHA}
 
 sheldon:
   image: registry.lan.local:5000/docker-envdev-clang6:dev
@@ -10,6 +18,9 @@ sheldon:
   script:
     - git -c http.sslVerify=false clone --depth 1 https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-git.git
     - sight-git/hooks/sheldon HEAD^ HEAD
+  except:
+    - dev
+    - master
 
 build:debug:
   image: registry.lan.local:5000/docker-envdev-clang6:dev
@@ -44,7 +55,7 @@ build:release:
      -DUSE_CONAN=ON
      -DCMAKE_INSTALL_PREFIX=$CI_PROJECT_DIR/install
      -DCMAKE_BUILD_TYPE=Release
-     -DBUILD_TESTS=OFF
+     -DBUILD_TESTS=ON
      -DBUILD_DOCUMENTATION=OFF
      -DENABLE_PCH=ON
     - ninja
@@ -67,21 +78,12 @@ doxygen:
      -DBUILD_TESTS=OFF
      -DBUILD_DOCUMENTATION=ON
      -DENABLE_PCH=ON
-     -DBUILD_DOCSET=ON
-     -DDOCUMENTATION_HTML_TARZ=ON
     - ninja doc
   artifacts:
     name: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
     paths:
       - $CI_PROJECT_DIR/build/Documentation/Doxygen/
-
-unit:
-  image: registry.lan.local:5000/docker-envdev-clang6:dev
-  stage: tests
-  script:
-    - export CC=/usr/bin/clang-6.0
-    - export CXX=/usr/bin/clang++-6.0
-  
+ 
 pages:
   stage: deploy
   dependencies:
@@ -91,3 +93,5 @@ pages:
   artifacts:
     paths:
     - public
+  only:
+    - dev
