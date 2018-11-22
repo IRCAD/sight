@@ -19,7 +19,7 @@ cache:
     - ccache/
 
 sheldon-mr:
-  image: registry.lan.local:5000/docker-envdev-clang6:dev
+  image: ${DOCKER_ENVDEV_CLANG6}
   stage: lint
   script:
     - export ORIG_BRANCH_COMMIT_SHA=$(git merge-base dev origin/${CI_COMMIT_REF_NAME})
@@ -28,7 +28,7 @@ sheldon-mr:
     - sight-git/hooks/sheldon ${ORIG_BRANCH_COMMIT_SHA}..${CI_COMMIT_SHA}
 
 sheldon:
-  image: registry.lan.local:5000/docker-envdev-clang6:dev
+  image: ${DOCKER_ENVDEV_CLANG6}
   stage: lint
   script:
     - git -c http.sslVerify=false clone --depth 1 https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-git.git
@@ -38,7 +38,7 @@ sheldon:
     - master
 
 build:debug:
-  image: registry.lan.local:5000/docker-envdev-clang6:dev
+  image: ${DOCKER_ENVDEV_CLANG6}
   stage: build
   script:
     - export CC=/usr/local/lib/ccache/clang
@@ -59,7 +59,7 @@ build:debug:
     - ccache -s
 
 build:release:
-  image: registry.lan.local:5000/docker-envdev-clang6:dev
+  image: ${DOCKER_ENVDEV_CLANG6}
   stage: build
   script:
     - export CC=/usr/local/lib/ccache/clang
@@ -80,7 +80,7 @@ build:release:
     - ccache -s
 
 doxygen:
-  image: registry.lan.local:5000/docker-envdev-clang6:dev
+  image: ${DOCKER_ENVDEV_CLANG6}
   stage: build
   script:
     - sudo apt-get update -yqq && sudo apt-get install -yqq graphviz doxygen
