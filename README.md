@@ -7,7 +7,7 @@
 # Description
 
 **Sight**, the **S**urgical **I**mage **G**uidance and **H**ealthcare **T**oolkit aims to ease the creation of applications based on medical imaging.
-It includes various features such as 2D and 3D digital image processing, visualization, augmented reality and medical interaction simulation. It runs on many different environments (Windows, linux, OSX), is written in C++, and features rapid interface design using XML files. It is freely available under the LGPL.
+It includes various features such as 2D and 3D digital image processing, visualization, augmented reality and medical interaction simulation. It runs on many different environments (Windows, linux, macOS), is written in C++, and features rapid interface design using XML files. It is freely available under the LGPL.
 
 **Sight** is mainly developed by the research and development team of [IRCAD France](https://www.ircad.fr) and [IHU Strasbourg](https://www.ihu-strasbourg.eu), where it is used everyday to develop experimental applications for the operating room.
 
@@ -24,7 +24,7 @@ Lots of **tutorials** and **examples** can also be found in the `Samples` direct
 * mono and stereo camera calibration,
 * [ArUco](https://sourceforge.net/projects/aruco/) optical markers tracking,
 * [openIGTLink](http://openigtlink.org/) support through client and server services,
-* TimeLine data, allowing to store buffers of various data (video, matrices, markers, etc...). These can be used to synchronize these data accross time.
+* TimeLine data, allowing to store buffers of various data (video, matrices, markers, etc...). These can be used to synchronize these data across time.
 * Data serialization in xml/json/zip
 
 # Applications
@@ -63,7 +63,7 @@ See [detailed install instructions](https://sight.pages.ircad.fr/sight-doc/Insta
 
 Please note that our GitLab is currently only available in read-only access
 for external developers and users. This is a restriction because of the licensing
-model of GitLab. Since we use an EE version, we would be force to pay for every
+model of GitLab. Since we use an EE version, we would be forced to pay for every
 community user, and unfortunately we cannot afford it. This licensing
 model might change in the
 future https://gitlab.com/gitlab-org/gitlab-ee/issues/4382 though.
