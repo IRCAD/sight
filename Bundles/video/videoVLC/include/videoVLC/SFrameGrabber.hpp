@@ -82,7 +82,7 @@ class VIDEOVLC_CLASS_API SFrameGrabber : public ::arServices::IGrabber
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SFrameGrabber)(::arServices::IGrabber) );
+    fwCoreServiceClassDefinitionsMacro( (SFrameGrabber)(::arServices::IGrabber) )
 
     /// Constructor. Do nothing.
     VIDEOVLC_API SFrameGrabber() noexcept;
