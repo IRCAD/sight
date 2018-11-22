@@ -166,6 +166,58 @@ bool SImageWriter::saveImage( const ::boost::filesystem::path& imgFile,
     }
     else if(ext == ".bmp" || ext == ".jpg" || ext == ".jpeg" || ext == ".png" || ext == ".pnm" || ext == ".tiff")
     {
+        // Get image information
+        std::string type = image->getType().string();
+        int noc          = image->getNumberOfComponents();
+
+        // Ensure type compatibility with output format
+        // To warn the user when he/she attempts to export data in the wrong format
+        // Special case for png as it can handle uin16 and 4 component data
+        if(ext == ".png")
+        {
+            // Check data type
+            if(type != "uint8" && type != "uint16")
+            {
+                ::fwGui::dialog::MessageDialog::showMessageDialog(
+                    "Warning",
+                    "Unsupported " + type + " format for " + ext + " export.\n The image will not be exported.",
+                    ::fwGui::dialog::IMessageDialog::WARNING);
+                return false;
+            }
+            // Check number of components
+            if(noc < 1 || noc > 4)
+            {
+                ::fwGui::dialog::MessageDialog::showMessageDialog(
+                    "Warning",
+                    "Unsupported number of components (" + std::to_string(noc) + ") for " +
+                    ext + " export.\n The image will not be exported.",
+                    ::fwGui::dialog::IMessageDialog::WARNING);
+                return false;
+            }
+        }
+        // Otherwise ensure that we have 1 to 3 components with uint8 type
+        else
+        {
+            if(type != "uint8")
+            {
+                ::fwGui::dialog::MessageDialog::showMessageDialog(
+                    "Warning",
+                    "Unsupported " + type + " format for " + ext + " export.\n The image will not be exported.",
+                    ::fwGui::dialog::IMessageDialog::WARNING);
+                return false;
+            }
+            // Check number of components
+            if(noc < 1 || noc > 3)
+            {
+                ::fwGui::dialog::MessageDialog::showMessageDialog(
+                    "Warning",
+                    "Unsupported number of components (" + std::to_string(noc) + ") for " +
+                    ext + " export.\n The image will not be exported.",
+                    ::fwGui::dialog::IMessageDialog::WARNING);
+                return false;
+            }
+        }
+
         ::fwVtkIO::BitmapImageWriter::sptr bitmapImageWriter = ::fwVtkIO::BitmapImageWriter::New();
         bitmapImageWriter->setFile(imgFile);
         myWriter = bitmapImageWriter;
