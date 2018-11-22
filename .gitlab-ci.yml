@@ -3,6 +3,21 @@ stages:
   - build
   - deploy
 
+before_script:
+  # CCache Config
+  - mkdir -p ccache
+  - export CCACHE_BASEDIR=${PWD}
+  - export CCACHE_DIR=${PWD}/ccache
+  - export CCACHE_COMPILERCHECK=content
+  - export CCACHE_MAXSIZE=32G
+  - export CCACHE_COMPRESS=1
+  - export CCACHE_SLOPPINESS=include_file_ctime,pch_defines,time_macros
+  - export CCACHE_NOHASHDIR=1
+
+cache:
+  paths:
+    - ccache/
+
 sheldon-mr:
   image: registry.lan.local:5000/docker-envdev-clang6:dev
   stage: lint
@@ -26,10 +41,11 @@ build:debug:
   image: registry.lan.local:5000/docker-envdev-clang6:dev
   stage: build
   script:
-    - export CC=/usr/bin/clang-6.0
-    - export CXX=/usr/bin/clang++-6.0
+    - export CC=/usr/local/lib/ccache/clang
+    - export CXX=/usr/local/lib/ccache/clang++
     - mkdir $CI_PROJECT_DIR/install $CI_PROJECT_DIR/build
     - cd $CI_PROJECT_DIR/build/
+    - ccache -s
     - >
      cmake $CI_PROJECT_DIR
      -G Ninja
@@ -40,15 +56,17 @@ build:debug:
      -DBUILD_DOCUMENTATION=OFF
      -DENABLE_PCH=ON
     - ninja
+    - ccache -s
 
 build:release:
   image: registry.lan.local:5000/docker-envdev-clang6:dev
   stage: build
   script:
-    - export CC=/usr/bin/clang-6.0
-    - export CXX=/usr/bin/clang++-6.0
+    - export CC=/usr/local/lib/ccache/clang
+    - export CXX=/usr/local/lib/ccache/clang++
     - mkdir $CI_PROJECT_DIR/install $CI_PROJECT_DIR/build
     - cd $CI_PROJECT_DIR/build/
+    - ccache -s
     - >
      cmake $CI_PROJECT_DIR
      -G Ninja
@@ -59,6 +77,7 @@ build:release:
      -DBUILD_DOCUMENTATION=OFF
      -DENABLE_PCH=ON
     - ninja
+    - ccache -s
 
 doxygen:
   image: registry.lan.local:5000/docker-envdev-clang6:dev
