@@ -47,11 +47,14 @@ namespace opDepthMap
 
 fwServicesRegisterMacro(::fwServices::IOperator, ::opDepthMap::SPointCloudFromDepthMap);
 
+const ::fwCom::Slots::SlotKeyType SPointCloudFromDepthMap::s_SET_DEPTH_RANGE = "setDepthRange";
+
 //------------------------------------------------------------------------------
 
 SPointCloudFromDepthMap::SPointCloudFromDepthMap() noexcept :
     ::fwServices::IOperator()
 {
+    newSlot(s_SET_DEPTH_RANGE, &SPointCloudFromDepthMap::setDepthRange, this);
 }
 
 //------------------------------------------------------------------------------
@@ -165,12 +168,44 @@ void SPointCloudFromDepthMap::updating()
 
 //------------------------------------------------------------------------------
 
+void SPointCloudFromDepthMap::setDepthRange(int _val, std::string _key)
+{
+    if(_key == "minDepth")
+    {
+        if(_val >= 0 && _val <= UINT16_MAX)
+        {
+            m_minDepth = static_cast< std::uint16_t >(_val);
+        }
+        else
+        {
+            SLM_ERROR("min Depth should be between [0; 65536]");
+        }
+
+    }
+    else if(_key == "maxDepth")
+    {
+        if(_val >= 0 && _val <= UINT16_MAX)
+        {
+            m_maxDepth = static_cast< std::uint16_t >(_val);
+        }
+        else
+        {
+            SLM_ERROR("min Depth should be between [0; 65536]");
+        }
+    }
+    else
+    {
+        SLM_ERROR("unknown key '" + _key + "' in slot '" + s_SET_DEPTH_RANGE + "'" );
+    }
+}
+
+//------------------------------------------------------------------------------
+
 void SPointCloudFromDepthMap::depthMapToPointCloud(
     const ::arData::Camera::csptr& depthCamera,
     const ::fwData::Image::csptr& depthMap,
     const ::fwData::Mesh::sptr& pointCloud)
 {
-    FW_PROFILE_AVG("simple point cloud", 5);
     SLM_INFO("Input RGB map was empty, skipping colors");
 
     const auto type = depthMap->getType();
@@ -208,7 +243,7 @@ void SPointCloudFromDepthMap::depthMapToPointCloud(
         for(size_t x = 0; x != width; ++x)
         {
             const uint16_t depth = depthBuffer[y * width + x];
-            if(depth > 0)
+            if(depth >= m_minDepth && depth <= m_maxDepth)
             {
                 double px, py, pz;
                 ::depthMapOp::Projection::projectPixel<double>(x, y, depth, cx, cy, fx, fy, px, py, pz);
@@ -234,7 +269,6 @@ void SPointCloudFromDepthMap::depthMapToPointCloudRGB(
     const ::fwData::TransformationMatrix3D::csptr& extrinsic,
     const ::fwData::Mesh::sptr& pointCloud)
 {
-    FW_PROFILE_AVG("RGB point cloud", 5);
     SLM_INFO("Input RGB map was supplied, including colors");
 
     const auto type = depthMap->getType();
@@ -315,7 +349,7 @@ void SPointCloudFromDepthMap::depthMapToPointCloudRGB(
         {
             const size_t idx     = y * width + x;
             const uint16_t depth = depthBuffer[idx];
-            if(depth != 0)
+            if(depth >= m_minDepth && depth <= m_maxDepth)
             {
                 // get the 3D coordinates in the depth world
                 double px, py, pz;

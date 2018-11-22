@@ -115,6 +115,16 @@ protected:
 private:
 
     /**
+     * @name Slots API
+     * @{
+     */
+    OPDEPTHMAP_API static const ::fwCom::Slots::SlotKeyType s_SET_DEPTH_RANGE;
+    /** @} */
+
+    /// SLOT: update the depth range
+    void setDepthRange(int depth, std::string key);
+
+    /**
      * @brief Computes a point cloud from a depth map.
      */
     void depthMapToPointCloud(const ::arData::Camera::csptr& depthCamera,
@@ -131,6 +141,12 @@ private:
                                  const ::fwData::Image::csptr& colorMap,
                                  const ::fwData::TransformationMatrix3D::csptr& extrinsic,
                                  const ::fwData::Mesh::sptr& pointCloud);
+
+    /// Min value of depth used to build pointcloud.
+    std::uint16_t m_minDepth = 0;
+    /// Max value of depth used to build pointcloud.
+    std::uint16_t m_maxDepth = UINT16_MAX;
+
 };
 
 } // namespace opDepthMap
