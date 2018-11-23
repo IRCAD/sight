@@ -12,6 +12,7 @@ set( DEPENDENCIES
     fwServices
     fwGui
     fwThread
+    fwIO
 )
 set( REQUIREMENTS ioITK )
 

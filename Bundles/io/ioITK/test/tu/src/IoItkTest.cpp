@@ -24,6 +24,8 @@
 
 #include <fwDataTools/Image.hpp>
 
+#include <fwIO/ioTypes.hpp>
+
 #include <fwMedData/ImageSeries.hpp>
 #include <fwMedData/SeriesDB.hpp>
 
@@ -80,12 +82,13 @@ void executeService(
     const SPTR(::fwData::Object)& obj,
     const std::string& srvType,
     const std::string& srvImpl,
-    const SPTR(::fwRuntime::EConfigurationElement)& cfg )
+    const SPTR(::fwRuntime::EConfigurationElement)& cfg,
+    const ::fwServices::IService::AccessType access = ::fwServices::IService::AccessType::INOUT)
 {
     ::fwServices::IService::sptr srv = ::fwServices::add(srvImpl);
 
     CPPUNIT_ASSERT(srv);
-    srv->registerInOut(obj, "data");
+    ::fwServices::OSR::registerService(obj, ::fwIO::s_DATA_KEY, access, srv );
     srv->setConfiguration(cfg);
     CPPUNIT_ASSERT_NO_THROW(srv->configure());
     CPPUNIT_ASSERT_NO_THROW(srv->start().wait());
@@ -116,7 +119,11 @@ void IoItkTest::testImageSeriesWriterJPG()
     srvCfg->addConfigurationElement(folderCfg);
 
     // Create and execute service
-    executeService(imageSeries, "::fwIO::IWriter", "::ioITK::SJpgImageSeriesWriter", srvCfg);
+    executeService(imageSeries,
+                   "::fwIO::IWriter",
+                   "::ioITK::SJpgImageSeriesWriter",
+                   srvCfg,
+                   ::fwServices::IService::AccessType::INPUT);
 
     // Remove path
     ::boost::filesystem::remove_all( path.string() );
@@ -141,7 +148,12 @@ void IoItkTest::testImageWriterJPG()
     srvCfg->addConfigurationElement(folderCfg);
 
     // Create and execute service
-    executeService( image, "::fwIO::IWriter", "::ioITK::JpgImageWriterService", srvCfg );
+    executeService(
+        image,
+        "::fwIO::IWriter",
+        "::ioITK::JpgImageWriterService",
+        srvCfg,
+        ::fwServices::IService::AccessType::INPUT);
 
     // Remove path
     ::boost::filesystem::remove_all( path.string() );
@@ -176,11 +188,21 @@ void IoItkTest::testSaveLoadInr()
     srvCfg->addConfigurationElement(fileCfg);
 
     // Create and execute service
-    executeService( image, "::fwIO::IWriter", "::ioITK::InrImageWriterService", srvCfg );
+    executeService(
+        image,
+        "::fwIO::IWriter",
+        "::ioITK::InrImageWriterService",
+        srvCfg,
+        ::fwServices::IService::AccessType::INPUT);
 
     // load Image
     ::fwData::Image::sptr image2 = ::fwData::Image::New();
-    executeService( image2, "::fwIO::IReader", "::ioITK::InrImageReaderService", srvCfg );
+    executeService(
+        image2,
+        "::fwIO::IReader",
+        "::ioITK::InrImageReaderService",
+        srvCfg,
+        ::fwServices::IService::AccessType::INOUT);
 
     ::boost::filesystem::remove_all( PATH.parent_path().string() );
 
@@ -221,11 +243,21 @@ void IoItkTest::ImageSeriesInrTest()
     srvCfg->addConfigurationElement(fileCfg);
 
     // Create and execute service
-    executeService( imageSeries, "::fwIO::IWriter", "::ioITK::SImageSeriesWriter", srvCfg );
+    executeService(
+        imageSeries,
+        "::fwIO::IWriter",
+        "::ioITK::SImageSeriesWriter",
+        srvCfg,
+        ::fwServices::IService::AccessType::INPUT);
 
     // load Image
     ::fwData::Image::sptr image2 = ::fwData::Image::New();
-    executeService( image2, "::fwIO::IReader", "::ioITK::InrImageReaderService", srvCfg );
+    executeService(
+        image2,
+        "::fwIO::IReader",
+        "::ioITK::InrImageReaderService",
+        srvCfg,
+        ::fwServices::IService::AccessType::INOUT);
 
     ::boost::filesystem::remove_all( PATH.parent_path().string() );
 
@@ -270,7 +302,12 @@ void IoItkTest::SeriesDBInrTest()
 
     // load SeriesDB
     ::fwMedData::SeriesDB::sptr sdb = ::fwMedData::SeriesDB::New();
-    executeService( sdb, "::fwIO::IReader", "::ioITK::SInrSeriesDBReader", srvCfg );
+    executeService(
+        sdb,
+        "::fwIO::IReader",
+        "::ioITK::SInrSeriesDBReader",
+        srvCfg,
+        ::fwServices::IService::AccessType::INOUT);
 
     ::fwData::Image::SpacingType spacing = list_of(0.781)(0.781)(1.6);
     ::fwData::Image::SizeType size       = list_of(512)(512)(134);
