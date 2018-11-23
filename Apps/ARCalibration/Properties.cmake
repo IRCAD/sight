@@ -28,7 +28,6 @@ set( REQUIREMENTS
     activities
     calibrationActivity
     trackedCameraRegistrationActivity
-    handEyeActivity
     toolCalibrationActivity
 
     appXml
