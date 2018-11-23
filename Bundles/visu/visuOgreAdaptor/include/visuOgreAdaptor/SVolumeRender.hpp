@@ -54,7 +54,6 @@ namespace visuOgreAdaptor
  * - \b toggleWidgets(bool): Toggles widget visibility.
  * - \b resizeViewport(int, int): Called when the size of the viewport changes.
  * - \b setFocalDistance(int): Called to modify focal length (only useful for stereoscopic 3D).
- * - \b setStereoMode(int): Called to modify 3D stereoscopic 3D mode.
  * - \b setBoolParameter(bool, string): Calls a bool parameter slot according to the given key.
  * - \b setIntParameter(int, string): Calls an int parameter slot according to the given key.
  * - \b setDoubleParameter(double, string): Calls a double parameter slot according to the given key.
@@ -203,7 +202,6 @@ private:
     void toggleWidgets(bool visible);
     void resizeViewport(int w, int h);
     void setFocalDistance(int focalDistance);
-    void setStereoMode(::fwRenderOgre::Layer::StereoModeType mode);
     void setBoolParameter(bool val, std::string key);
     void setIntParameter(int val, std::string key);
     void setDoubleParameter(double val, std::string key);

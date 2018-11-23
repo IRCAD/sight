@@ -79,6 +79,8 @@ public:
 
     FWRENDEROGRE_API void setStereoMode(StereoModeType stereoMode);
 
+    FWRENDEROGRE_API StereoModeType getStereoMode() const;
+
     /// Re/Activate OIT compositor
     FWRENDEROGRE_API void update();
 

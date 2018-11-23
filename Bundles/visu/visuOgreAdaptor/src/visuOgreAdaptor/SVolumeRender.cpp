@@ -95,7 +95,6 @@ SVolumeRender::SVolumeRender() noexcept :
     newSlot(s_TOGGLE_SHADOWS_SLOT, &SVolumeRender::toggleShadows, this);
     newSlot(s_TOGGLE_WIDGETS_SLOT, &SVolumeRender::toggleWidgets, this);
     newSlot(s_RESIZE_VIEWPORT_SLOT, &SVolumeRender::resizeViewport, this);
-    newSlot(s_SET_STEREO_MODE_SLOT, &SVolumeRender::setStereoMode, this);
     newSlot(s_SET_BOOL_PARAMETER_SLOT, &SVolumeRender::setBoolParameter, this);
     newSlot(s_SET_INT_PARAMETER_SLOT, &SVolumeRender::setIntParameter, this);
     newSlot(s_SET_DOUBLE_PARAMETER_SLOT, &SVolumeRender::setDoubleParameter, this);
@@ -258,8 +257,6 @@ void SVolumeRender::starting()
 
     m_volumeConnection.connect(layer, ::fwRenderOgre::Layer::s_RESIZE_LAYER_SIG,
                                this->getSptr(), ::visuOgreAdaptor::SVolumeRender::s_RESIZE_VIEWPORT_SLOT);
-    m_volumeConnection.connect(layer, ::fwRenderOgre::Layer::s_STEREO_MODE_CHANGED_SIG,
-                               this->getSptr(), ::visuOgreAdaptor::SVolumeRender::s_SET_STEREO_MODE_SLOT);
 
     const bool isValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image);
     if (isValid)
@@ -662,20 +659,11 @@ void SVolumeRender::resizeViewport(int w, int h)
 
 void SVolumeRender::setFocalDistance(int focalDistance)
 {
-    if(this->getRenderService()->getLayer(m_layerID)->getStereoMode() != ::fwRenderOgre::Layer::StereoModeType::NONE)
+    if(this->getRenderService()->getLayer(m_layerID)->getStereoMode() !=
+       ::fwRenderOgre::compositor::Core::StereoModeType::NONE)
     {
         m_volumeRenderer->setFocalLength(static_cast<float>(focalDistance) / 100);
     }
-}
-
-//-----------------------------------------------------------------------------
-
-void SVolumeRender::setStereoMode(::fwRenderOgre::Layer::StereoModeType)
-{
-    this->getRenderService()->makeCurrent();
-
-    this->stopping();
-    this->starting();
 }
 
 //-----------------------------------------------------------------------------

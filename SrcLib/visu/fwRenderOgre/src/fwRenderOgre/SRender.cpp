@@ -302,18 +302,17 @@ void SRender::configureLayer(const ConfigType& _cfg )
     SLM_ASSERT("Attribute 'depth' must be greater than 0", layerDepth > 0);
 
     ::fwRenderOgre::Layer::sptr ogreLayer = ::fwRenderOgre::Layer::New();
-    Layer::StereoModeType layerMode = stereoMode ==
-                                      "AutoStereo5" ? ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_5 :
-                                      stereoMode ==
-                                      "AutoStereo8" ? ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_8 :
-                                      stereoMode == "Stereo" ? ::fwRenderOgre::Layer::StereoModeType::STEREO :
-                                      ::fwRenderOgre::Layer::StereoModeType::NONE;
+    compositor::Core::StereoModeType layerStereoMode =
+        stereoMode == "AutoStereo5" ? compositor::Core::StereoModeType::AUTOSTEREO_5 :
+        stereoMode == "AutoStereo8" ? compositor::Core::StereoModeType::AUTOSTEREO_8 :
+        stereoMode == "Stereo"      ? compositor::Core::StereoModeType::STEREO :
+        compositor::Core::StereoModeType::NONE;
 
     ogreLayer->setRenderService(::fwRenderOgre::SRender::dynamicCast(this->shared_from_this()));
     ogreLayer->setID(id);
     ogreLayer->setDepth(layerDepth);
     ogreLayer->setWorker(m_associatedWorker);
-    ogreLayer->setCoreCompositorEnabled(true, transparencyTechnique, numPeels, layerMode);
+    ogreLayer->setCoreCompositorEnabled(true, transparencyTechnique, numPeels, layerStereoMode);
     ogreLayer->setCompositorChainEnabled(compositors);
 
     if(!defaultLight.empty() && defaultLight == "no")

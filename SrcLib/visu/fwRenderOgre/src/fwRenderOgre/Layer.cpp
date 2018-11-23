@@ -50,7 +50,6 @@ namespace fwRenderOgre
 
 const ::fwCom::Signals::SignalKeyType Layer::s_INIT_LAYER_SIG           = "layerInitialized";
 const ::fwCom::Signals::SignalKeyType Layer::s_RESIZE_LAYER_SIG         = "layerResized";
-const ::fwCom::Signals::SignalKeyType Layer::s_STEREO_MODE_CHANGED_SIG  = "StereoModeChanged";
 const ::fwCom::Signals::SignalKeyType Layer::s_CAMERA_UPDATED_SIG       = "CameraUpdated";
 const ::fwCom::Signals::SignalKeyType Layer::s_CAMERA_RANGE_UPDATED_SIG = "CameraRangeUpdated";
 
@@ -63,15 +62,6 @@ const ::fwCom::Slots::SlotKeyType Layer::s_USE_CELSHADING_SLOT = "useCelShading"
 const std::string Layer::DEFAULT_CAMERA_NAME        = "DefaultCam";
 const std::string Layer::DEFAULT_LIGHT_NAME         = "DefaultLight";
 const std::string Layer::s_DEFAULT_CAMERA_NODE_NAME = "CameraNode";
-
-//-----------------------------------------------------------------------------
-
-static const std::map<Layer::StereoModeType, std::string> s_stereoCompositorMap = {
-    { Layer::StereoModeType::AUTOSTEREO_5, "AutoStereo5" },
-    { Layer::StereoModeType::AUTOSTEREO_8, "AutoStereo8" },
-    { Layer::StereoModeType::STEREO, "Stereo" },
-    { Layer::StereoModeType::NONE, "" }
-};
 
 //-----------------------------------------------------------------------------
 
@@ -96,7 +86,7 @@ struct Layer::LayerCameraListener : public ::Ogre::Camera::Listener
     {
         SLM_ASSERT("Layer is not set", m_layer );
 
-        if(m_layer->getStereoMode() != Layer::StereoModeType::NONE)
+        if(m_layer->getStereoMode() != ::fwRenderOgre::compositor::Core::StereoModeType::NONE)
         {
             // Set the focal length using the point of interest of the interactor
             // This works well for the trackball but this would need to be adjusted for an another interactor type
@@ -150,7 +140,7 @@ Layer::Layer() :
     m_sceneManager(nullptr),
     m_renderTarget(nullptr),
     m_viewport(nullptr),
-    m_stereoMode(StereoModeType::NONE),
+    m_stereoMode(compositor::Core::StereoModeType::NONE),
     m_rawCompositorChain(""),
     m_coreCompositor(nullptr),
     m_transparencyTechnique(::fwRenderOgre::compositor::DEFAULT),
@@ -169,7 +159,6 @@ Layer::Layer() :
 {
     newSignal<InitLayerSignalType>(s_INIT_LAYER_SIG);
     newSignal<ResizeLayerSignalType>(s_RESIZE_LAYER_SIG);
-    newSignal<StereoModeChangedSignalType>(s_STEREO_MODE_CHANGED_SIG);
     newSignal<CameraUpdatedSignalType>(s_CAMERA_UPDATED_SIG);
     newSignal<CameraUpdatedSignalType>(s_CAMERA_RANGE_UPDATED_SIG);
 
@@ -372,17 +361,11 @@ void Layer::createScene()
         {
             compositorChain.push_back(it);
         }
-        if(m_stereoMode != StereoModeType::NONE)
+        if(m_stereoMode != compositor::Core::StereoModeType::NONE)
         {
-            compositorChain.push_back(s_stereoCompositorMap.at(m_stereoMode));
-
             m_autostereoListener = new compositor::listener::AutoStereoCompositorListener(this->getNumberOfCameras());
             ::Ogre::MaterialManager::getSingleton().addListener(m_autostereoListener);
         }
-
-        m_compositorChainManager->addAvailableCompositor("Stereo");
-        m_compositorChainManager->addAvailableCompositor("AutoStereo5");
-        m_compositorChainManager->addAvailableCompositor("AutoStereo8");
 
         m_compositorChainManager->setCompositorChain(compositorChain, m_id, m_renderService.lock());
     }
@@ -927,12 +910,10 @@ void Layer::requestRender()
 
 //-----------------------------------------------------------------------------
 
-void Layer::setStereoMode(StereoModeType mode)
+void Layer::setStereoMode(compositor::Core::StereoModeType mode)
 {
-    const std::string oldCompositorName = s_stereoCompositorMap.at(m_stereoMode);
-
     // Disable the old compositor
-    if(m_stereoMode != StereoModeType::NONE)
+    if(m_stereoMode != compositor::Core::StereoModeType::NONE)
     {
         ::Ogre::MaterialManager::getSingleton().removeListener(m_autostereoListener);
         delete m_autostereoListener;
@@ -942,22 +923,11 @@ void Layer::setStereoMode(StereoModeType mode)
     // Enable the new one
     m_stereoMode = mode;
 
-    compositor::Core::StereoModeType coreStereoMode;
-    switch (m_stereoMode)
-    {
-        case StereoModeType::NONE: coreStereoMode         = compositor::Core::StereoModeType::NONE; break;
-        case StereoModeType::STEREO: coreStereoMode       = compositor::Core::StereoModeType::STEREO; break;
-        case StereoModeType::AUTOSTEREO_5: coreStereoMode = compositor::Core::StereoModeType::AUTOSTEREO_5; break;
-        case StereoModeType::AUTOSTEREO_8: coreStereoMode = compositor::Core::StereoModeType::AUTOSTEREO_8; break;
-    }
-
     this->getRenderService()->makeCurrent();
-    m_coreCompositor->setStereoMode(coreStereoMode);
+    m_coreCompositor->setStereoMode(mode);
     m_coreCompositor->update();
 
-    const std::string compositorName = s_stereoCompositorMap.at(m_stereoMode);
-
-    if(m_stereoMode != StereoModeType::NONE)
+    if(m_stereoMode != compositor::Core::StereoModeType::NONE)
     {
         m_autostereoListener = new compositor::listener::AutoStereoCompositorListener(this->getNumberOfCameras());
         ::Ogre::MaterialManager::getSingleton().addListener(m_autostereoListener);
@@ -985,7 +955,7 @@ void Layer::setBackgroundScale(float topScale, float botScale)
 //-------------------------------------------------------------------------------------
 
 void Layer::setCoreCompositorEnabled(bool enabled, std::string transparencyTechnique, std::string numPeels,
-                                     StereoModeType stereoMode)
+                                     compositor::Core::StereoModeType stereoMode)
 {
     m_hasCoreCompositor = enabled;
     m_stereoMode        = stereoMode;
@@ -1051,7 +1021,7 @@ bool Layer::isCompositorChainEnabled()
 
 //-------------------------------------------------------------------------------------
 
-Layer::StereoModeType Layer::getStereoMode() const
+compositor::Core::StereoModeType Layer::getStereoMode() const
 {
     return m_stereoMode;
 }
@@ -1060,21 +1030,11 @@ Layer::StereoModeType Layer::getStereoMode() const
 
 void Layer::setupCore()
 {
-    compositor::Core::StereoModeType coreStereoMode;
-
-    switch (m_stereoMode)
-    {
-        case StereoModeType::NONE: coreStereoMode         = compositor::Core::StereoModeType::NONE; break;
-        case StereoModeType::STEREO: coreStereoMode       = compositor::Core::StereoModeType::STEREO; break;
-        case StereoModeType::AUTOSTEREO_5: coreStereoMode = compositor::Core::StereoModeType::AUTOSTEREO_5; break;
-        case StereoModeType::AUTOSTEREO_8: coreStereoMode = compositor::Core::StereoModeType::AUTOSTEREO_8; break;
-    }
-
     // Needed to setup compositors in GL3Plus, Ogre creates render targets
     m_renderService.lock()->makeCurrent();
 
     m_coreCompositor = std::make_shared< ::fwRenderOgre::compositor::Core>(m_viewport);
-    m_coreCompositor->setStereoMode(coreStereoMode);
+    m_coreCompositor->setStereoMode(m_stereoMode);
     m_coreCompositor->setTransparencyTechnique(m_transparencyTechnique);
     m_coreCompositor->setTransparencyDepth(m_numPeels);
     m_coreCompositor->update();
@@ -1175,21 +1135,21 @@ Ogre::Matrix4 Layer::getCameraProjMat(const uint8_t cameraIdx) const
     SLM_ASSERT("Index exceeds the number of cameras used for this stereo mode", cameraIdx < this->getNumberOfCameras());
     ::Ogre::Matrix4 extrinsicTransform(::Ogre::Matrix4::IDENTITY);
 
-    if(m_stereoMode == ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_5)
+    if(m_stereoMode == ::fwRenderOgre::compositor::Core::StereoModeType::AUTOSTEREO_5)
     {
         const float eyeAngle = 0.02321f;
         const float angle    = eyeAngle * (-2.f + float(cameraIdx));
 
         extrinsicTransform = ::fwRenderOgre::helper::Camera::computeFrustumShearTransform(*m_camera, angle);
     }
-    else if(m_stereoMode == ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_8)
+    else if(m_stereoMode == ::fwRenderOgre::compositor::Core::StereoModeType::AUTOSTEREO_8)
     {
         const float eyeAngle = 0.01625f;
         const float angle    = eyeAngle * (-3.5f + float(cameraIdx));
 
         extrinsicTransform = ::fwRenderOgre::helper::Camera::computeFrustumShearTransform(*m_camera, angle);
     }
-    else if(m_stereoMode == ::fwRenderOgre::Layer::StereoModeType::STEREO)
+    else if(m_stereoMode == ::fwRenderOgre::compositor::Core::StereoModeType::STEREO)
     {
         if(cameraIdx == 1)
         {
@@ -1210,9 +1170,9 @@ Ogre::Matrix4 Layer::getCameraProjMat(const uint8_t cameraIdx) const
 
 uint8_t Layer::getNumberOfCameras() const
 {
-    return m_stereoMode == ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_8 ? 8 :
-           m_stereoMode == ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_5 ? 5 :
-           m_stereoMode == ::fwRenderOgre::Layer::StereoModeType::STEREO       ? 2 : 1;
+    return m_stereoMode == ::fwRenderOgre::compositor::Core::StereoModeType::AUTOSTEREO_8 ? 8 :
+           m_stereoMode == ::fwRenderOgre::compositor::Core::StereoModeType::AUTOSTEREO_5 ? 5 :
+           m_stereoMode == ::fwRenderOgre::compositor::Core::StereoModeType::STEREO       ? 2 : 1;
 }
 
 //-------------------------------------------------------------------------------------

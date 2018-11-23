@@ -144,6 +144,13 @@ void Core::setStereoMode(Core::StereoModeType stereoMode)
 
 //-----------------------------------------------------------------------------
 
+Core::StereoModeType Core::getStereoMode() const
+{
+    return m_stereoMode;
+}
+
+//-----------------------------------------------------------------------------
+
 void Core::setupDefaultTransparency()
 {
     ::Ogre::CompositorManager::getSingleton().setCompositorEnabled( m_viewport, m_coreCompositorName, true );

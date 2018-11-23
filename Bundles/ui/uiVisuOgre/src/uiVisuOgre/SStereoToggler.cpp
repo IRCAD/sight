@@ -6,6 +6,7 @@
 
 #include "uiVisuOgre/SStereoToggler.hpp"
 
+#include <fwRenderOgre/compositor/Core.hpp>
 #include <fwRenderOgre/SRender.hpp>
 
 namespace uiVisuOgre
@@ -42,15 +43,15 @@ void SStereoToggler::configuring()
 
     if(stereoMode == "interlaced")
     {
-        m_stereoMode = ::fwRenderOgre::Layer::StereoModeType::STEREO;
+        m_stereoMode = StereoModeType::STEREO;
     }
     else if (stereoMode == "AutoStereo5")
     {
-        m_stereoMode = ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_5;
+        m_stereoMode = StereoModeType::AUTOSTEREO_5;
     }
     else if (stereoMode == "AutoStereo5")
     {
-        m_stereoMode = ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_8;
+        m_stereoMode = StereoModeType::AUTOSTEREO_8;
     }
     else
     {
@@ -84,7 +85,7 @@ void SStereoToggler::updating()
             if(layerIt != layerMap.end())
             {
                 const bool enableStereo = this->getIsActive() && this->getIsExecutable();
-                const auto stereoMode   = enableStereo ? m_stereoMode : ::fwRenderOgre::Layer::StereoModeType::NONE;
+                const auto stereoMode   = enableStereo ? m_stereoMode : StereoModeType::NONE;
 
                 auto& layer = layerIt->second;
                 layer->setStereoMode(stereoMode);

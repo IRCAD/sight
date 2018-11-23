@@ -7,6 +7,7 @@
 #pragma once
 
 #include "fwRenderOgre/compositor/ChainManager.hpp"
+#include "fwRenderOgre/compositor/Core.hpp"
 #include "fwRenderOgre/compositor/listener/AutoStereo.hpp"
 #include "fwRenderOgre/compositor/types.hpp"
 #include "fwRenderOgre/config.hpp"
@@ -40,12 +41,6 @@ namespace fwRenderOgre
 class SRender;
 class IAdaptor;
 class ILight;
-
-namespace compositor
-{
-class Core;
-}
-
 }
 
 namespace Ogre
@@ -66,14 +61,6 @@ class FWRENDEROGRE_CLASS_API Layer : public ::fwCore::BaseObject,
 {
 public:
 
-    enum class StereoModeType : std::uint8_t
-    {
-        NONE,
-        AUTOSTEREO_5,
-        AUTOSTEREO_8,
-        STEREO
-    };
-
     fwCoreClassDefinitionsWithFactoryMacro( (Layer)(::fwRenderOgre::Layer), (()), new Layer)
     fwCoreAllowSharedFromThis()
 
@@ -86,9 +73,6 @@ public:
 
     FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_RESIZE_LAYER_SIG;
     typedef ::fwCom::Signal<void (int, int)> ResizeLayerSignalType;
-
-    FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_STEREO_MODE_CHANGED_SIG;
-    typedef ::fwCom::Signal<void (StereoModeType)> StereoModeChangedSignalType;
 
     FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_CAMERA_UPDATED_SIG;
     FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_CAMERA_RANGE_UPDATED_SIG;
@@ -196,7 +180,7 @@ public:
     FWRENDEROGRE_API void requestRender();
 
     /// Sets stereoscopic rendering.
-    FWRENDEROGRE_API void setStereoMode(StereoModeType mode);
+    FWRENDEROGRE_API void setStereoMode(compositor::Core::StereoModeType mode);
 
     /// Sets background color : specific to background Layer.
     FWRENDEROGRE_API void setBackgroundColor(std::string topColor, std::string botColor);
@@ -206,8 +190,9 @@ public:
 
     /// Sets if this layer need a layer's 3D scene.
     FWRENDEROGRE_API void setCoreCompositorEnabled(bool enabled, std::string transparencyTechnique = "",
-                                                   std::string numPeels      = "",
-                                                   StereoModeType stereoMode = StereoModeType::NONE);
+                                                   std::string numPeels                        = "",
+                                                   compositor::Core::StereoModeType stereoMode =
+                                                       compositor::Core::StereoModeType::NONE);
 
     /// Sets if this layer has a configured compositor chain.
     FWRENDEROGRE_API void setCompositorChainEnabled(const std::string& compositorChain);
@@ -222,7 +207,7 @@ public:
     FWRENDEROGRE_API bool is3D() const;
 
     /// Gets stereoscopic mode
-    FWRENDEROGRE_API StereoModeType getStereoMode() const;
+    FWRENDEROGRE_API compositor::Core::StereoModeType getStereoMode() const;
 
     FWRENDEROGRE_API ::fwRenderOgre::compositor::ChainManager::CompositorChainType getCompositorChain() const;
 
@@ -293,7 +278,7 @@ private:
     ::Ogre::Viewport* m_viewport;
 
     /// Boolean used to set stereoscopic rendering.
-    StereoModeType m_stereoMode;
+    compositor::Core::StereoModeType m_stereoMode;
 
     /// If there is a configured compositor chain, this attribute stores its raw string.
     std::string m_rawCompositorChain;

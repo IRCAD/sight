@@ -58,11 +58,13 @@ protected:
 
 private:
 
+    using StereoModeType = ::fwRenderOgre::compositor::Core::StereoModeType;
+
     /// Layer in which we enable/disable stereo.
     std::string m_layerId;
 
     /// Mode that is toggled.
-    ::fwRenderOgre::Layer::StereoModeType m_stereoMode { ::fwRenderOgre::Layer::StereoModeType::NONE };
+    ::fwRenderOgre::compositor::Core::StereoModeType m_stereoMode { StereoModeType::NONE };
 
 };
 
