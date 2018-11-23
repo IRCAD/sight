@@ -187,7 +187,12 @@ void IParameter::updating()
 void IParameter::stopping()
 {
     m_material.reset();
-    m_texture.reset();
+
+    if(m_texture)
+    {
+        ::Ogre::TextureManager::getSingleton().remove(m_texture);
+        m_texture.reset();
+    }
 }
 
 //------------------------------------------------------------------------------

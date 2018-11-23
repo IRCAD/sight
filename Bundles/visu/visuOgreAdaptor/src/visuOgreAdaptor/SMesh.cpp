@@ -200,11 +200,7 @@ void SMesh::stopping()
     this->unregisterServices();
 
     m_meshGeometry->clearMesh(*sceneMgr);
-
-    if(!m_useNewMaterialAdaptor)
-    {
-        m_materialAdaptor.reset();
-    }
+    m_materialAdaptor.reset();
 
     if(m_entity)
     {
