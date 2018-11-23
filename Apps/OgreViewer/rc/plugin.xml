@@ -53,6 +53,30 @@
                 </registry>
             </service>
 
+<service uid="csgTFFrame" type="::gui::frame::SDefaultFrame" >
+    <gui>
+        <frame>
+            <name>Ogre Viewer2</name>
+            <icon>OgreViewer-@PROJECT_VERSION@/ogre_head.svg</icon>
+            <minSize width="500" height="500" />
+        </frame>
+    </gui>
+    <registry>
+        <view sid="csgTFView" start="yes" />
+    </registry>
+</service>
+
+<service uid="csgTFView" type="::gui::view::SDefaultView" >
+<gui>
+    <layout type="::fwGui::CardinalLayoutManager">
+        <view align="center" />
+        </layout>
+</gui>
+<registry>
+    <view wid="CSGTFVView" start="yes" />
+</registry>
+</service>
+
             <service uid="menuBar" type="::gui::aspect::SDefaultMenuBar" >
                 <gui>
                     <layout>
@@ -99,7 +123,6 @@
                         <view caption="Organ manager" selected="yes" />
                         <view caption="Light manager" />
                         <view caption="Volume TF manager" />
-                        <view caption="CSG TF manager" />
                         <view caption="IDVR manager" />
                     </layout>
                 </gui>
@@ -108,7 +131,6 @@
                     <view wid="organView" start="yes" />
                     <view wid="lightView" start="yes" />
                     <view wid="volumeTFVView" start="yes" />
-                    <view wid="CSGTFVView" start="yes" />
                     <view wid="idvrView" start="yes" />
                 </registry>
             </service>
@@ -300,6 +322,7 @@
             <!-- Start/Stop services -->
             <start uid="medicalImage" />
             <start uid="mainView" />
+<start uid="csgTFFrame" />
             <start uid="cfgVTKGenericScene" />
             <start uid="cfgOgreGenericScene" />
             <start uid="cfgOgreNegato2D" />
