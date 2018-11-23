@@ -82,7 +82,7 @@ private:
     typedef std::map< std::string, unsigned long > MatrixNameIndexType;
 
     ///Push received matrices in timeline
-    void manageTimeline(const SPTR(fwData::Composite)& obj);
+    void manageTimeline(const SPTR(fwData::Composite)& obj, double timestamp = 0);
 
     /**
      * @brief method contain a loop with receive and when we receive we emit m_sigReceiveObject

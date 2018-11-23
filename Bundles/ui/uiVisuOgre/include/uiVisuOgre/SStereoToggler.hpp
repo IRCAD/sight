@@ -34,7 +34,7 @@ class UIVISUOGRE_CLASS_API SStereoToggler : public ::fwGui::IActionSrv
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SStereoToggler)(::fwGui::IActionSrv) );
+    fwCoreServiceClassDefinitionsMacro( (SStereoToggler)(::fwGui::IActionSrv) )
 
     /// Constructor.
     UIVISUOGRE_API SStereoToggler();

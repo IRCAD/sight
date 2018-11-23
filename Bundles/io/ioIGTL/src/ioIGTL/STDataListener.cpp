@@ -135,11 +135,12 @@ void STDataListener::runClient()
         while (m_client.isConnected())
         {
             std::string deviceName;
-            ::fwData::Object::sptr receiveObject = m_client.receiveObject(deviceName);
+            double timestamp = 0;
+            ::fwData::Object::sptr receiveObject = m_client.receiveObject(deviceName, timestamp);
             if (receiveObject)
             {
                 composite->shallowCopy(receiveObject);
-                this->manageTimeline(composite);
+                this->manageTimeline(composite, timestamp);
             }
         }
     }
@@ -183,10 +184,15 @@ void STDataListener::stopping()
 
 //-----------------------------------------------------------------------------
 
-void STDataListener::manageTimeline(const ::fwData::Composite::sptr& obj)
+void STDataListener::manageTimeline(const ::fwData::Composite::sptr& obj, double timestamp)
 {
-    ::fwCore::HiResClock::HiResClockType timestamp = ::fwCore::HiResClock::getTimeInMilliSec();
-    ::arData::MatrixTL::sptr matTL                 = this->getInOut< ::arData::MatrixTL>(s_TIMELINE_KEY);
+    const double epsilon = std::numeric_limits<double>::epsilon();
+    if (timestamp < epsilon && timestamp > -epsilon)
+    {
+        timestamp = ::fwCore::HiResClock::getTimeInMilliSec();
+    }
+
+    ::arData::MatrixTL::sptr matTL = this->getInOut< ::arData::MatrixTL>(s_TIMELINE_KEY);
     SPTR(::arData::MatrixTL::BufferType) matrixBuf;
     matrixBuf = matTL->createBuffer(timestamp);
 

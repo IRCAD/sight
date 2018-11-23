@@ -164,7 +164,7 @@
         </service>
 
         <service uid="intrinsicEdition" type="::uiCalibration::SIntrinsicEdition">
-            <in key="camera" uid="${camera}" />
+            <inout key="camera" uid="${camera}" />
         </service>
 
         <!-- ******************************* Connections ************************************** -->
