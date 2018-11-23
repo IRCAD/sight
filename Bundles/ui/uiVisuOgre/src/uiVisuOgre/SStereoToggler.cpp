@@ -76,8 +76,8 @@ void SStereoToggler::updating()
 
         for(auto srv : renderers)
         {
-            ::fwRenderOgre::SRender::sptr render           = ::fwRenderOgre::SRender::dynamicCast(srv);
-            ::fwRenderOgre::SRender::LayerMapType layerMap = render->getLayers();
+            ::fwRenderOgre::SRender::sptr renderSrv        = ::fwRenderOgre::SRender::dynamicCast(srv);
+            ::fwRenderOgre::SRender::LayerMapType layerMap = renderSrv->getLayers();
 
             auto layerIt = layerMap.find(m_layerId);
 
@@ -86,11 +86,13 @@ void SStereoToggler::updating()
                 const bool enableStereo = this->getIsActive() && this->getIsExecutable();
                 const auto stereoMode   = enableStereo ? m_stereoMode : ::fwRenderOgre::Layer::StereoModeType::NONE;
 
-                layerIt->second->setStereoMode(stereoMode);
+                auto& layer = layerIt->second;
+                layer->setStereoMode(stereoMode);
+                layer->requestRender();
             }
             else
             {
-                SLM_WARN("No layer named '" + m_layerId + "' in render service '" + render->getID() + "'.");
+                SLM_WARN("No layer named '" + m_layerId + "' in render service '" + renderSrv->getID() + "'.");
             }
         }
     }
