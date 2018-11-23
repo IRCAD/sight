@@ -8,6 +8,7 @@
 
 #include "fwRenderOgre/compositor/Core.hpp"
 #include "fwRenderOgre/helper/Camera.hpp"
+#include "fwRenderOgre/IAdaptor.hpp"
 #include "fwRenderOgre/ILight.hpp"
 
 #include <fwCom/Signal.hxx>
@@ -379,11 +380,11 @@ void Layer::createScene()
             ::Ogre::MaterialManager::getSingleton().addListener(m_autostereoListener);
         }
 
-        m_compositorChainManager->setCompositorChain(compositorChain, m_id, m_renderService.lock());
-
         m_compositorChainManager->addAvailableCompositor("Stereo");
         m_compositorChainManager->addAvailableCompositor("AutoStereo5");
         m_compositorChainManager->addAvailableCompositor("AutoStereo8");
+
+        m_compositorChainManager->setCompositorChain(compositorChain, m_id, m_renderService.lock());
     }
 
     m_sceneCreated = true;
@@ -931,10 +932,8 @@ void Layer::setStereoMode(StereoModeType mode)
     const std::string oldCompositorName = s_stereoCompositorMap.at(m_stereoMode);
 
     // Disable the old compositor
-    if(m_stereoMode != StereoModeType::NONE && m_compositorChainManager)
+    if(m_stereoMode != StereoModeType::NONE)
     {
-        m_compositorChainManager->updateCompositorState(oldCompositorName, false, m_id, m_renderService.lock());
-
         ::Ogre::MaterialManager::getSingleton().removeListener(m_autostereoListener);
         delete m_autostereoListener;
         m_autostereoListener = nullptr;
@@ -943,18 +942,28 @@ void Layer::setStereoMode(StereoModeType mode)
     // Enable the new one
     m_stereoMode = mode;
 
+    compositor::Core::StereoModeType coreStereoMode;
+    switch (m_stereoMode)
+    {
+        case StereoModeType::NONE: coreStereoMode         = compositor::Core::StereoModeType::NONE; break;
+        case StereoModeType::STEREO: coreStereoMode       = compositor::Core::StereoModeType::STEREO; break;
+        case StereoModeType::AUTOSTEREO_5: coreStereoMode = compositor::Core::StereoModeType::AUTOSTEREO_5; break;
+        case StereoModeType::AUTOSTEREO_8: coreStereoMode = compositor::Core::StereoModeType::AUTOSTEREO_8; break;
+    }
+
+    this->getRenderService()->makeCurrent();
+    m_coreCompositor->setStereoMode(coreStereoMode);
+    m_coreCompositor->update();
+
     const std::string compositorName = s_stereoCompositorMap.at(m_stereoMode);
 
-    if(m_stereoMode != StereoModeType::NONE && m_compositorChainManager)
+    if(m_stereoMode != StereoModeType::NONE)
     {
-        m_compositorChainManager->updateCompositorState(compositorName, true, m_id, m_renderService.lock());
-
         m_autostereoListener = new compositor::listener::AutoStereoCompositorListener(this->getNumberOfCameras());
         ::Ogre::MaterialManager::getSingleton().addListener(m_autostereoListener);
     }
 
-    auto sig = this->signal<StereoModeChangedSignalType>(s_STEREO_MODE_CHANGED_SIG);
-    sig->asyncEmit(m_stereoMode);
+    this->restartAdaptors();
 }
 
 //-----------------------------------------------------------------------------
@@ -975,9 +984,11 @@ void Layer::setBackgroundScale(float topScale, float botScale)
 
 //-------------------------------------------------------------------------------------
 
-void Layer::setCoreCompositorEnabled(bool enabled, std::string transparencyTechnique, std::string numPeels)
+void Layer::setCoreCompositorEnabled(bool enabled, std::string transparencyTechnique, std::string numPeels,
+                                     StereoModeType stereoMode)
 {
     m_hasCoreCompositor = enabled;
+    m_stereoMode        = stereoMode;
     if(transparencyTechnique != "")
     {
         if(transparencyTechnique == "DepthPeeling")
@@ -1049,13 +1060,73 @@ Layer::StereoModeType Layer::getStereoMode() const
 
 void Layer::setupCore()
 {
+    compositor::Core::StereoModeType coreStereoMode;
+
+    switch (m_stereoMode)
+    {
+        case StereoModeType::NONE: coreStereoMode         = compositor::Core::StereoModeType::NONE; break;
+        case StereoModeType::STEREO: coreStereoMode       = compositor::Core::StereoModeType::STEREO; break;
+        case StereoModeType::AUTOSTEREO_5: coreStereoMode = compositor::Core::StereoModeType::AUTOSTEREO_5; break;
+        case StereoModeType::AUTOSTEREO_8: coreStereoMode = compositor::Core::StereoModeType::AUTOSTEREO_8; break;
+    }
+
     // Needed to setup compositors in GL3Plus, Ogre creates render targets
     m_renderService.lock()->makeCurrent();
 
     m_coreCompositor = std::make_shared< ::fwRenderOgre::compositor::Core>(m_viewport);
+    m_coreCompositor->setStereoMode(coreStereoMode);
     m_coreCompositor->setTransparencyTechnique(m_transparencyTechnique);
     m_coreCompositor->setTransparencyDepth(m_numPeels);
     m_coreCompositor->update();
+}
+
+//-------------------------------------------------------------------------------------
+
+void Layer::restartAdaptors()
+{
+    auto& adaptors = this->getRenderService()->getAdaptors< IAdaptor >();
+
+    auto notInLayer = [this](const IAdaptor::sptr& _adapt)
+                      {
+                          return _adapt->getLayerID() != this->m_id || _adapt == nullptr;
+                      };
+
+    // Only keep adaptors belonging to this layer.
+    adaptors.erase(std::remove_if(adaptors.begin(), adaptors.end(), notInLayer), adaptors.end());
+
+    // Search for all adaptors created as subservices by other adaptors.
+    std::vector< ::fwServices::IService::wptr > subAdaptors;
+    for(auto& adapt : adaptors)
+    {
+        SPTR( ::fwServices::IHasServices ) hasServices = std::dynamic_pointer_cast< ::fwServices::IHasServices >(adapt);
+        if(hasServices != nullptr)
+        {
+            const auto& subServices = hasServices->getRegisteredServices();
+            std::copy(subServices.begin(), subServices.end(), std::back_inserter(subAdaptors));
+        }
+    }
+
+    // Subadaptors should be started/stopped by their parent. Remove them from the list.
+    for(auto subSrv : subAdaptors)
+    {
+        auto it = std::find(adaptors.begin(), adaptors.end(), subSrv.lock());
+
+        if(it != adaptors.end())
+        {
+            adaptors.erase(it);
+        }
+    }
+
+    // Restart all adaptors.
+    for(auto& adapt : adaptors)
+    {
+        if(adapt->isStarted())
+        {
+            adapt->stop().wait();
+            adapt->start().wait();
+        }
+    }
+
 }
 
 //-------------------------------------------------------------------------------------

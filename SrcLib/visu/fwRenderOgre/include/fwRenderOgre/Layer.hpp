@@ -206,7 +206,8 @@ public:
 
     /// Sets if this layer need a layer's 3D scene.
     FWRENDEROGRE_API void setCoreCompositorEnabled(bool enabled, std::string transparencyTechnique = "",
-                                                   std::string numPeels = "");
+                                                   std::string numPeels      = "",
+                                                   StereoModeType stereoMode = StereoModeType::NONE);
 
     /// Sets if this layer has a configured compositor chain.
     FWRENDEROGRE_API void setCompositorChainEnabled(const std::string& compositorChain);
@@ -276,6 +277,8 @@ private:
 
     /// Setups default compositor for a layer's 3D scene.
     void setupCore();
+
+    void restartAdaptors();
 
     /// For a list of semicolon-separated words, returns a vector of these words.
     std::vector< std::string > trimSemicolons(std::string input);

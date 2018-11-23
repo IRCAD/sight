@@ -20,6 +20,14 @@ namespace fwRenderOgre
 
 namespace compositor
 {
+//----------------------------------------------------------------------------
+
+static const std::map<Core::StereoModeType, std::string> s_stereoCompositorMap = {
+    { Core::StereoModeType::AUTOSTEREO_5, "AutoStereo5" },
+    { Core::StereoModeType::AUTOSTEREO_8, "AutoStereo8" },
+    { Core::StereoModeType::STEREO, "Stereo" },
+    { Core::StereoModeType::NONE, "Default" }
+};
 
 // ----------------------------------------------------------------------------
 
@@ -30,7 +38,7 @@ const std::string Core::FINAL_CHAIN_COMPOSITOR = "FinalChainCompositor";
 Core::Core(::Ogre::Viewport* viewport) :
     //m_transparencyTechniqueMaxDepth(8),
     m_transparencyTechnique(DEFAULT),
-    m_transparencyTechniqueName("Default"),
+    m_coreCompositorName("Default"),
     m_compositorInstance(nullptr),
     //m_useOcclusionQuery(false),
     //m_doOcclusionQuery(false),
@@ -69,7 +77,7 @@ int Core::getTransparencyDepth()
 
 bool Core::setTransparencyTechnique(transparencyTechnique technique)
 {
-    ::Ogre::CompositorManager::getSingleton().setCompositorEnabled( m_viewport, m_transparencyTechniqueName, false );
+    ::Ogre::CompositorManager::getSingleton().setCompositorEnabled( m_viewport, m_coreCompositorName, false );
     m_transparencyTechnique = technique;
 
     return true;
@@ -81,10 +89,13 @@ void Core::update()
 {
     m_celShadingName = "";
 
+    SLM_ERROR_IF("OIT isn't supported when stereo is enabled, falling back to mono rendering.",
+                 m_transparencyTechnique != DEFAULT && m_stereoMode != StereoModeType::NONE);
+
     switch (m_transparencyTechnique)
     {
         case DEFAULT:
-            m_transparencyTechniqueName = "Default";
+            m_coreCompositorName = s_stereoCompositorMap.at(m_stereoMode);
             this->setupTransparency();
             this->setupDefaultTransparency();
             break;
@@ -92,22 +103,22 @@ void Core::update()
             m_celShadingName = "CelShading";
             BOOST_FALLTHROUGH;
         case DEPTHPEELING:
-            m_transparencyTechniqueName = m_celShadingName+"DepthPeeling";
+            m_coreCompositorName = m_celShadingName+"DepthPeeling";
             this->setupTransparency();
             this->setTransparencyDepthOfDepthPeeling(m_numPass);
             break;
         case DUALDEPTHPEELING:
-            m_transparencyTechniqueName = "DualDepthPeeling";
+            m_coreCompositorName = "DualDepthPeeling";
             this->setupTransparency();
             this->setTransparencyDepthOfDualDepthPeeling(m_numPass);
             break;
         case WEIGHTEDBLENDEDOIT:
-            m_transparencyTechniqueName = "WeightedBlended";
+            m_coreCompositorName = "WeightedBlended";
             this->setupTransparency();
             ::Ogre::CompositorManager::getSingleton().setCompositorEnabled( m_viewport, "WeightedBlended", true );
             break;
         case HYBRIDTRANSPARENCY:
-            m_transparencyTechniqueName = "HybridTransparency";
+            m_coreCompositorName = "HybridTransparency";
             this->setupTransparency();
             this->setTransparencyDepthOfHybridTransparency(m_numPass);
             break;
@@ -119,15 +130,23 @@ void Core::update()
 
 void Core::setTransparencyDepth(int depth)
 {
-    ::Ogre::CompositorManager::getSingleton().setCompositorEnabled( m_viewport, m_transparencyTechniqueName, false );
+    ::Ogre::CompositorManager::getSingleton().setCompositorEnabled( m_viewport, m_coreCompositorName, false );
     m_numPass = depth;
+}
+
+//-----------------------------------------------------------------------------
+
+void Core::setStereoMode(Core::StereoModeType stereoMode)
+{
+    ::Ogre::CompositorManager::getSingleton().setCompositorEnabled( m_viewport, m_coreCompositorName, false );
+    m_stereoMode = stereoMode;
 }
 
 //-----------------------------------------------------------------------------
 
 void Core::setupDefaultTransparency()
 {
-    ::Ogre::CompositorManager::getSingleton().setCompositorEnabled( m_viewport, "Default", true );
+    ::Ogre::CompositorManager::getSingleton().setCompositorEnabled( m_viewport, m_coreCompositorName, true );
 }
 
 //-----------------------------------------------------------------------------
@@ -143,7 +162,7 @@ void Core::setupTransparency()
 
     for(auto targetComp : compInstances)
     {
-        if(targetComp->getCompositor()->getName() == m_transparencyTechniqueName)
+        if(targetComp->getCompositor()->getName() == m_coreCompositorName)
         {
             m_compositorInstance = targetComp;
             break;
@@ -166,9 +185,9 @@ void Core::setupTransparency()
 
         // Now, we can add the new compositor to the compositor chain
         m_compositorInstance = compositorManager.addCompositor( m_viewport,
-                                                                m_transparencyTechniqueName,
+                                                                m_coreCompositorName,
                                                                 0);
-        compositorManager.setCompositorEnabled( m_viewport, m_transparencyTechniqueName, true );
+        compositorManager.setCompositorEnabled( m_viewport, m_coreCompositorName, true );
 
         // If the final compositor has been removed, we need to add it to the compositor chain
         if(needFinalCompositorSwap)
@@ -179,7 +198,7 @@ void Core::setupTransparency()
 
         if(m_compositorInstance == nullptr)
         {
-            SLM_ERROR( "Compositor " + m_transparencyTechniqueName +
+            SLM_ERROR( "Compositor " + m_coreCompositorName +
                        " script is missing in resources (check your resources' paths)");
         }
     }
