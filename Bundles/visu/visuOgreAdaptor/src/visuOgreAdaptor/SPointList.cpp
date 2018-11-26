@@ -209,16 +209,13 @@ void SPointList::updateMesh(const ::fwData::PointList::csptr& _pointList)
 
     ::fwData::mt::ObjectReadLock lock(_pointList);
 
+    detachAndDestroyEntity();
+
     const size_t uiNumVertices = _pointList->getPoints().size();
     if(uiNumVertices == 0)
     {
         SLM_DEBUG("Empty mesh");
 
-        if(m_entity)
-        {
-            sceneMgr->destroyEntity(m_entity);
-            m_entity = nullptr;
-        }
         m_meshGeometry->clearMesh(*sceneMgr);
         return;
     }
@@ -236,7 +233,6 @@ void SPointList::updateMesh(const ::fwData::PointList::csptr& _pointList)
         m_entity = m_meshGeometry->createEntity(*sceneMgr);
         m_entity->setVisible(m_isVisible);
         m_entity->addQueryFlags(m_queryFlags);
-        sceneMgr->getRootSceneNode()->detachObject(m_entity);
     }
 
     //------------------------------------------
@@ -269,16 +265,13 @@ void SPointList::updateMesh(const ::fwData::Mesh::csptr& _mesh)
 
     ::fwData::mt::ObjectReadLock lock(_mesh);
 
+    detachAndDestroyEntity();
+
     const size_t uiNumVertices = _mesh->getNumberOfPoints();
     if(uiNumVertices == 0)
     {
         SLM_DEBUG("Empty mesh");
 
-        if(m_entity)
-        {
-            sceneMgr->destroyEntity(m_entity);
-            m_entity = nullptr;
-        }
         m_meshGeometry->clearMesh(*sceneMgr);
         return;
     }
@@ -296,7 +289,6 @@ void SPointList::updateMesh(const ::fwData::Mesh::csptr& _mesh)
         m_entity = m_meshGeometry->createEntity(*sceneMgr);
         m_entity->setVisible(m_isVisible);
         m_entity->addQueryFlags(m_queryFlags);
-        sceneMgr->getRootSceneNode()->detachObject(m_entity);
     }
 
     //------------------------------------------
@@ -415,6 +407,21 @@ void SPointList::attachNode(::Ogre::MovableObject* _node)
 
     // Needed to recompute world bounding boxes of the scene node using its attached mesh bounds
     transNode->_update(true, false);
+}
+
+//-----------------------------------------------------------------------------
+
+void SPointList::detachAndDestroyEntity()
+{
+    if(m_entity)
+    {
+        ::Ogre::SceneManager* const sceneMgr   = this->getSceneManager();
+        ::Ogre::SceneNode* const rootSceneNode = sceneMgr->getRootSceneNode();
+        ::Ogre::SceneNode* const transNode     = this->getTransformNode(rootSceneNode);
+        transNode->detachObject(m_entity);
+        sceneMgr->destroyEntity(m_entity);
+        m_entity = nullptr;
+    }
 }
 
 //-----------------------------------------------------------------------------
