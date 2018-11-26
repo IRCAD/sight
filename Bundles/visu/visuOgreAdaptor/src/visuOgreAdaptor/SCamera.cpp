@@ -37,11 +37,12 @@ fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SCamera, ::
 const ::fwCom::Slots::SlotKeyType SCamera::s_CALIBRATE_SLOT = "calibrate";
 const ::fwCom::Slots::SlotKeyType SCamera::s_UPDATE_TF_SLOT = "updateTransformation";
 
+const ::fwServices::IService::KeyType s_CALIBRATION_INPUT = "calibration";
+const ::fwServices::IService::KeyType s_TRANSFORM_INOUT   = "transform";
+
 //------------------------------------------------------------------------------
 
-SCamera::SCamera() noexcept :
-    m_camera(nullptr),
-    m_aspectRatio(0.f)
+SCamera::SCamera() noexcept
 {
     newSlot(s_UPDATE_TF_SLOT, &SCamera::updateTF3D, this);
     newSlot(s_CALIBRATE_SLOT, &SCamera::calibrate, this);
@@ -58,8 +59,8 @@ SCamera::~SCamera() noexcept
 ::fwServices::IService::KeyConnectionsMap visuOgreAdaptor::SCamera::getAutoConnections() const
 {
     ::fwServices::IService::KeyConnectionsMap connections;
-    connections.push( "transform", ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT );
-    connections.push( "calibration", ::arData::Camera::s_INTRINSIC_CALIBRATED_SIG, s_CALIBRATE_SLOT );
+    connections.push( s_TRANSFORM_INOUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push( s_CALIBRATION_INPUT, ::arData::Camera::s_INTRINSIC_CALIBRATED_SIG, s_CALIBRATE_SLOT );
     return connections;
 }
 
@@ -76,21 +77,16 @@ void SCamera::starting()
 {
     this->initialize();
 
-    m_camera      = this->getLayer()->getDefaultCamera();
-    m_calibration = this->getInput< ::arData::Camera >("calibration");
+    m_camera = this->getLayer()->getDefaultCamera();
 
     m_layerConnection.connect(this->getLayer(), ::fwRenderOgre::Layer::s_CAMERA_UPDATED_SIG,
                               this->getSptr(), s_UPDATE_TF_SLOT);
     m_layerConnection.connect(this->getLayer(), ::fwRenderOgre::Layer::s_CAMERA_RANGE_UPDATED_SIG,
                               this->getSptr(), s_CALIBRATE_SLOT);
-
     m_layerConnection.connect(this->getLayer(), ::fwRenderOgre::Layer::s_RESIZE_LAYER_SIG,
                               this->getSptr(), s_CALIBRATE_SLOT);
-    if (m_calibration)
-    {
-        this->calibrate();
-    }
 
+    this->calibrate();
     this->updating();
 }
 
@@ -109,7 +105,9 @@ void SCamera::updating()
 {
     ::Ogre::Affine3 ogreMatrix;
 
-    auto transform = this->getInOut< ::fwData::TransformationMatrix3D >("transform");
+    auto transform = this->getInOut< ::fwData::TransformationMatrix3D >(s_TRANSFORM_INOUT);
+
+    SLM_ASSERT("The '" + s_TRANSFORM_INOUT + "' inout was not set but is required by this adaptor.", transform);
     {
         ::fwData::mt::ObjectReadLock lock(transform);
 
@@ -191,7 +189,7 @@ void SCamera::updateTF3D()
 
     newTransMat = newTransMat * rotate;
 
-    auto transform = this->getInOut< ::fwData::TransformationMatrix3D >("transform");
+    auto transform = this->getInOut< ::fwData::TransformationMatrix3D >(s_TRANSFORM_INOUT);
     {
         ::fwData::mt::ObjectWriteLock lock(transform);
 
@@ -244,20 +242,23 @@ void SCamera::setAspectRatio(::Ogre::Real _ratio)
 
 void SCamera::calibrate()
 {
-    if ( m_calibration && m_calibration->getIsCalibrated() )
+    const auto cameraCalibration = this->getInput< ::arData::Camera >(s_CALIBRATION_INPUT);
+
+    if ( cameraCalibration && cameraCalibration->getIsCalibrated() )
     {
         const float width    = static_cast< float >(m_camera->getViewport()->getActualWidth());
         const float height   = static_cast <float >(m_camera->getViewport()->getActualHeight());
         const float nearClip = static_cast< float >(m_camera->getNearClipDistance());
         const float farClip  = static_cast< float >(m_camera->getFarClipDistance());
 
-        ::Ogre::Matrix4 m =
-            ::fwRenderOgre::helper::Camera::computeProjectionMatrix(*m_calibration, width, height, nearClip, farClip);
+        ::Ogre::Matrix4 m = ::fwRenderOgre::helper::Camera::computeProjectionMatrix(*cameraCalibration, width, height,
+                                                                                    nearClip, farClip);
 
         m_camera->setCustomProjectionMatrix(true, m);
 
         this->updating();
     }
+
 }
 
 //------------------------------------------------------------------------------
