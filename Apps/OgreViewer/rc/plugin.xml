@@ -192,12 +192,12 @@
 
             <service uid="cfgOgreGenericScene" type="::fwServices::SConfigController" >
                 <appConfig id="OgreGenericScene" />
-                <inout key="MODEL_SERIES" uid="modelSeries" />
-                <inout key="IMAGE" uid="image" />
-                <inout key="VOLUME_TF" uid="volumeTF" optional="yes" />
-                <inout key="CSGTF" uid="csgTF" optional="yes" />
-                <inout key="MASK" uid="mask" />
-                <inout key="LANDMARKS" uid="landmarks" />
+                <inout key="modelSeries" uid="modelSeries" />
+                <inout key="image" uid="image" />
+                <inout key="volumeTF" uid="volumeTF" optional="yes" />
+                <inout key="csgTF" uid="csgTF" optional="yes" />
+                <inout key="mask" uid="mask" />
+                <inout key="landmark" uid="landmarks" />
                 <parameter replace="WID_PARENT" by="OgreSceneView" />
                 <parameter replace="COMPOSITOR_CHANNEL" by="compositorChannel" />
                 <parameter replace="IDVR_ENUM_PARAM_CHANNEL" by="idvrEnumParamChannel" />
@@ -208,14 +208,14 @@
 
             <service uid="cfgOgreNegato2D" type="::fwServices::SConfigController" >
                 <appConfig id="OgreNegato2D" />
-                <inout key="IMAGE" uid="image" />
-                <inout key="TF" uid="volumeTF" optional="yes" />
+                <inout key="image" uid="image" />
+                <inout key="tf" uid="volumeTF" optional="yes" />
                 <parameter replace="WID_PARENT" by="OgreNegato2DView" />
             </service>
 
             <service uid="cfgOrganManagerConfig"  type="::fwServices::SConfigController">
                 <appConfig id="OgreOrganManagerWithSeries" />
-                <inout key="ORGAN_MANAGER_MODELSERIES" uid="modelSeries" />
+                <inout key="organManagerModelSeries" uid="modelSeries" />
                 <parameter replace="WID_PARENT" by="organView" />
                 <parameter replace="ICON_PATH" by="arMedia-0.1/icons/app.ico" />
             </service>
@@ -236,8 +236,8 @@
             <service uid="cfgIDVRManager"  type="::fwServices::SConfigController">
                 <appConfig id="OgreIDVRManager" />
                 <inout key="MASK" uid="mask" />
-                <inout key="IMAGE" uid="image" />
-                <inout key="CSG_TF" uid="csgTF" optional="yes" />
+                <inout key="image" uid="image" />
+                <inout key="csgTF" uid="csgTF" optional="yes" />
                 <parameter replace="WID_PARENT" by="idvrView" />
                 <parameter replace="IDVR_ENUM_PARAM_CHANNEL" by="idvrEnumParamChannel" />
                 <parameter replace="IDVR_BOOL_PARAM_CHANNEL" by="idvrBoolParamChannel" />

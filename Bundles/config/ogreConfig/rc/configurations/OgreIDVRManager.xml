@@ -7,16 +7,16 @@
         <param name="IDVR_DOUBLE_PARAM_CHANNEL" />
         <param name="IDVR_BOOL_PARAM_CHANNEL" />
         <param name="IDVR_COLOR_PARAM_CHANNEL" />
-        <param name="IMAGE" />
-        <param name="CSG_TF" />
+        <param name="image" />
+        <param name="csgTF" />
     </parameters>
 
     <config>
 
         <!-- *********************************** Begin Objects declaration *********************************** -->
         <object uid="${MASK}"  type="::fwData::Image" src="ref" />
-        <object uid="${IMAGE}" type="::fwData::Image" src="ref" />
-        <object uid="${CSG_TF}" type="::fwData::TransferFunction" src="deferred" />
+        <object uid="${image}" type="::fwData::Image" src="ref" />
+        <object uid="${csgTF}" type="::fwData::TransferFunction" src="deferred" />
         <!-- *********************************** End Objects declaration *********************************** -->
 
         <!-- *********************************** Begin layouts declaration *********************************** -->
@@ -60,8 +60,8 @@
 
         <service uid="cfgMaskTFManager" type="::fwServices::SConfigController">
             <appConfig id="OgreHistogramManager" />
-            <inout key="IMAGE" uid="${IMAGE}" />
-            <inout key="TF" uid="${CSG_TF}" optional="yes" />
+            <inout key="IMAGE" uid="${image}" />
+            <inout key="TF" uid="${csgTF}" optional="yes" />
             <parameter replace="WID_PARENT" by="CSGTFVView" />
         </service>
 
