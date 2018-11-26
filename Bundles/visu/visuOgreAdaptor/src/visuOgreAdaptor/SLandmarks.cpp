@@ -169,6 +169,7 @@ void SLandmarks::updating()
                 }
 
                 ::Ogre::SceneNode* node = m_transNode->createChildSceneNode(baseName + "_node");
+                m_nodes.push_back(node);
 
                 node->attachObject(object);
                 node->attachObject(text);
@@ -202,6 +203,12 @@ void SLandmarks::clearData()
 {
     ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
 
+    for(::Ogre::SceneNode* node : m_nodes)
+    {
+        m_transNode->removeAndDestroyChild(node);
+    }
+    m_nodes.clear();
+
     for(::Ogre::ManualObject* object : m_manualObjects)
     {
         sceneMgr->destroyManualObject(object);
@@ -213,11 +220,6 @@ void SLandmarks::clearData()
         sceneMgr->destroyMovableObject(label);
     }
     m_labels.clear();
-
-    if(m_transNode != nullptr)
-    {
-        m_transNode->removeAndDestroyAllChildren();
-    }
 }
 
 } //visuOgreAdaptor
