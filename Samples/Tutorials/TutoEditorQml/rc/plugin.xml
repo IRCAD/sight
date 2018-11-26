@@ -1,0 +1,7 @@
+<plugin id="TutoEditorQml" class="::TutoEditorQml::Plugin"  version="@PROJECT_VERSION@" >
+
+    <requirement id="servicesReg" />
+
+    <library name="TutoEditorQml" />
+
+</plugin>

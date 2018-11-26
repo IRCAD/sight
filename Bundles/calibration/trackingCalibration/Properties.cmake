@@ -15,12 +15,11 @@ set( DEPENDENCIES
     arData
     cvIO
     eigenTools
-    handEyeCalibration
     calibration3d
 )
 
 set( REQUIREMENTS )
 set( CONAN_DEPS
     eigen/3.3.4@sight/stable
-    opencv/3.4.3@sight/stable
+    opencv/3.4.3-r1@sight/stable
 )

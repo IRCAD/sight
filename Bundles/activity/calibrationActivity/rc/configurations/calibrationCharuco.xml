@@ -81,31 +81,31 @@
 
         <service uid="action_chessBoardSize" type="::uiPreferences::action::SPreferencesConfiguration">
             <preference>
-                <type>number</type>
+                <type>int</type>
                 <name>Chessboard width</name>
                 <key>CHARUCO_WIDTH</key>
                 <default_value>7</default_value>
             </preference>
             <preference>
-                <type>number</type>
+                <type>int</type>
                 <name>Chessboard height</name>
                 <key>CHARUCO_HEIGHT</key>
                 <default_value>5</default_value>
             </preference>
             <preference>
-                <type>number</type>
+                <type>int</type>
                 <name>Chessboard square size (mm)</name>
                 <key>CHARUCO_SQUARE_SIZE</key>
                 <default_value>40</default_value>
             </preference>
             <preference>
-                <type>number</type>
+                <type>int</type>
                 <name>Chessboard marker size (mm)</name>
                 <key>CHARUCO_MARKER_SIZE</key>
                 <default_value>32</default_value>
             </preference>
             <preference>
-                <type>number</type>
+                <type>int</type>
                 <name>Chessboard marker size in bits (bit)</name>
                 <key>CHARUCO_MARKER_SIZE_IN_BITS</key>
                 <default_value>6</default_value>
