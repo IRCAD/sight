@@ -15,7 +15,6 @@ set( DEPENDENCIES
     arData
     cvIO
     eigenTools
-    handEyeCalibration
     calibration3d
 )
 
