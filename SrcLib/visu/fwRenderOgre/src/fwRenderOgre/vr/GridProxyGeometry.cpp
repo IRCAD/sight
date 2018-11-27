@@ -7,7 +7,6 @@
 #include "fwRenderOgre/vr/GridProxyGeometry.hpp"
 
 #include "fwRenderOgre/factory/R2VBRenderable.hpp"
-#include "fwRenderOgre/Layer.hpp"
 
 #include <OGRE/OgreDepthBuffer.h>
 #include <OGRE/OgreHardwarePixelBuffer.h>
@@ -60,12 +59,8 @@ GridProxyGeometry* GridProxyGeometry::New(const std::string& _name, ::Ogre::Scen
 //------------------------------------------------------------------------------
 
 GridProxyGeometry::GridProxyGeometry(const Ogre::String& name) :
-    R2VBRenderable(name),
-    m_r2vbSource(nullptr)
+    R2VBRenderable(name)
 {
-    // Initialize them here otherwise sheldon goes bananas.
-    m_gridSize  = {{ 2, 2, 2 }};
-    m_brickSize = {{ 8, 8, 8 }};
 }
 
 //------------------------------------------------------------------------------
@@ -85,12 +80,21 @@ GridProxyGeometry::~GridProxyGeometry()
     {
         ::Ogre::TextureManager::getSingleton().remove(m_gridTexture->getHandle());
     }
+
+    if(m_gridViewportCamera)
+    {
+        mParentSceneManager->destroyCamera(m_gridViewportCamera);
+    }
 }
 
 //------------------------------------------------------------------------------
 
 void GridProxyGeometry::initialize()
 {
+    // Create a camera to render the grid volume.
+    // Using the default camera may result in strange behaviour, especially in a concurrent environment.
+    // (E.g. accessing the camera's viewport size while the grid volume is rendered will return its width and height).
+    m_gridViewportCamera = mParentSceneManager->createCamera(this->mName + "_GridVolumeCamera");
     this->initializeR2VBSource();
     this->initializeGridMaterials();
 }
@@ -201,7 +205,7 @@ void GridProxyGeometry::setupGrid()
         {
             ::Ogre::RenderTexture* rt = m_gridTexture->getBuffer()->getRenderTarget(i);
             rt->setDepthBufferPool(::Ogre::DepthBuffer::POOL_NO_DEPTH);
-            rt->addViewport(mParentSceneManager->getCamera(::fwRenderOgre::Layer::DEFAULT_CAMERA_NAME));
+            rt->addViewport(m_gridViewportCamera);
         }
     }
 
