@@ -21,6 +21,8 @@
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 #include <fwDataTools/TransformationMatrix3D.hpp>
 
+#include <fwGui/dialog/MessageDialog.hpp>
+
 #include <fwRenderOgre/helper/Scene.hpp>
 #include <fwRenderOgre/helper/Shading.hpp>
 #include <fwRenderOgre/interactor/VRWidgetsInteractor.hpp>
@@ -820,7 +822,18 @@ void SVolumeRender::setEnumParameter(std::string val, std::string key)
     {
         if(val != "None")
         {
-            this->newMask();
+            if(this->getLayer()->getStereoMode() != ::fwRenderOgre::compositor::Core::StereoModeType::NONE)
+            {
+                ::fwGui::dialog::MessageDialog("IDVR not compatible with stereo.",
+                                               "Importance driven VR is not available for stereo rendering, "
+                                               "it will not be activated.",
+                                               ::fwGui::dialog::MessageDialog::WARNING).show();
+                val = "None";
+            }
+            else
+            {
+                this->newMask();
+            }
         }
         m_volumeRenderer->setIDVRMethod(val);
         this->requestRender();
