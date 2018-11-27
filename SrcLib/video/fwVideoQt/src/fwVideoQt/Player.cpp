@@ -238,7 +238,11 @@ void Player::setPosition(const int64_t position)
 
 int64_t Player::getVideoDuration() const
 {
-    return m_mediaPlayer->duration();
+    if(m_mediaPlayer)
+    {
+        return m_mediaPlayer->duration();
+    }
+    return -1;
 }
 
 //-----------------------------------------------------------------------------
