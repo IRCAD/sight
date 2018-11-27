@@ -6,7 +6,7 @@
 
 #include "fwRenderOgre/ITransformable.hpp"
 
-#include <fwRenderOgre/helper/Scene.hpp>
+#include "fwRenderOgre/helper/Scene.hpp"
 
 namespace fwRenderOgre
 {
