@@ -14,7 +14,6 @@
 #include <fwCom/Slots.hpp>
 
 #include <fwRenderOgre/IAdaptor.hpp>
-#include <fwRenderOgre/ITransformable.hpp>
 
 #include <OGRE/OgreMovableObject.h>
 

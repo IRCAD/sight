@@ -131,6 +131,9 @@ private:
     /// Attach a node in the scene graph
     void attachNode(::Ogre::MovableObject* _node);
 
+    /// Detach and destroy m_entity in the scene graph
+    void detachAndDestroyEntity();
+
     /// Sets whether the camera must be auto reset when a mesh is updated or not.
     bool m_autoResetCamera;
 

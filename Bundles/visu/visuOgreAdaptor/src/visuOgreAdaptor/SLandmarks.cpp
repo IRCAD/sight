@@ -42,7 +42,7 @@ SLandmarks::~SLandmarks() noexcept
 {
     ::fwServices::IService::KeyConnectionsMap connections;
 
-    connections.push(s_CONFIG_TRANSFORM, ::fwData::TransformationMatrix3D::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_TRANSFORM_CONFIG, ::fwData::TransformationMatrix3D::s_MODIFIED_SIG, s_UPDATE_SLOT);
 
     connections.push(s_LANDMARKS_INPUT, ::fwData::Landmarks::s_MODIFIED_SIG, s_UPDATE_SLOT );
     connections.push(s_LANDMARKS_INPUT, ::fwData::Landmarks::s_GROUP_ADDED_SIG, s_UPDATE_SLOT );
@@ -66,9 +66,8 @@ void SLandmarks::configuring()
     const ConfigType configType = this->getConfigTree();
     const ConfigType config     = configType.get_child("config.<xmlattr>");
 
-    const std::string transformId = config.get<std::string>(s_CONFIG_TRANSFORM, this->getID() + "_transform");
-
-    this->setTransformId(transformId);
+    this->setTransformId(config.get<std::string>( ::fwRenderOgre::ITransformable::s_TRANSFORM_CONFIG,
+                                                  this->getID() + "_transform"));
 }
 
 //-----------------------------------------------------------------------------
@@ -80,12 +79,7 @@ void SLandmarks::starting()
     this->getRenderService()->makeCurrent();
 
     ::Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
-    m_transNode                      =
-        ::fwRenderOgre::helper::Scene::getNodeById(this->getTransformId(), rootSceneNode);
-    if (m_transNode == nullptr)
-    {
-        m_transNode = rootSceneNode->createChildSceneNode(this->getTransformId());
-    }
+    m_transNode                      = this->getTransformNode(rootSceneNode);
 
     m_material = ::fwData::Material::New();
 
@@ -175,6 +169,7 @@ void SLandmarks::updating()
                 }
 
                 ::Ogre::SceneNode* node = m_transNode->createChildSceneNode(baseName + "_node");
+                m_nodes.push_back(node);
 
                 node->attachObject(object);
                 node->attachObject(text);
@@ -208,6 +203,12 @@ void SLandmarks::clearData()
 {
     ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
 
+    for(::Ogre::SceneNode* node : m_nodes)
+    {
+        m_transNode->removeAndDestroyChild(node);
+    }
+    m_nodes.clear();
+
     for(::Ogre::ManualObject* object : m_manualObjects)
     {
         sceneMgr->destroyManualObject(object);
@@ -219,11 +220,6 @@ void SLandmarks::clearData()
         sceneMgr->destroyMovableObject(label);
     }
     m_labels.clear();
-
-    if(m_transNode != nullptr)
-    {
-        m_transNode->removeAndDestroyAllChildren();
-    }
 }
 
 } //visuOgreAdaptor

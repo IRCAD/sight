@@ -72,7 +72,7 @@ namespace visuOgreAdaptor
         <config layer="default"
                 samples="1024" preintegration="yes" ao="no" colorBleeding="no" shadows="no"
                 satSizeRatio="0.25" satShells="3" satShellRadius="7" satConeAngle="0.1" satConeSamples="50"
-                aoFactor="0.5" colorBleedingFactor="0.5" autoresetcamera="yes"/>
+                aoFactor="0.5" colorBleedingFactor="0.5" autoresetcamera="yes" transform="..."/>
     </service>
    @endcode
  * @subsection Input Input
@@ -100,6 +100,7 @@ namespace visuOgreAdaptor
  * - \b aoFactor (optional, double, default=1.0): factor used to weight the ambient occlusion.
  * - \b colorBleedingFactor (optional, double, default=1.0): factor used to weight the color bleeding.
  * - \b autoresetcamera (optional, yes/no, default=yes): reset the camera at image update to view the whole volume.
+ * -\b transform (optional): transform applied to the adaptor's scene node
  */
 class VISUOGREADAPTOR_CLASS_API SVolumeRender : public ::fwRenderOgre::IAdaptor,
                                                 public ::fwRenderOgre::ITransformable
