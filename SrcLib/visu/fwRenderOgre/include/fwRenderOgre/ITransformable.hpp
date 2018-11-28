@@ -21,42 +21,38 @@ namespace fwRenderOgre
 class FWRENDEROGRE_CLASS_API ITransformable
 {
 public:
+
     /**
      * @brief Get the Ogre identifier of the transform in the scene manager.
-     * @return This transform service Id
+     * @return This transform service Id.
      */
     FWRENDEROGRE_API ::fwRenderOgre::SRender::OgreObjectIdType getTransformId() const;
 
     /**
      * @brief Set the Ogre identifier of the transform in the scene manager.
-     * @param newId The new transform service Id
+     * @param _id The new transform service Id.
      */
-    FWRENDEROGRE_API void setTransformId(::fwRenderOgre::SRender::OgreObjectIdType newId);
+    FWRENDEROGRE_API void setTransformId(::fwRenderOgre::SRender::OgreObjectIdType _id);
 
     /**
-     * @brief getParentTransformUID
-     * @return This parent transform service UID
+     * @brief Recover the node matching m_transformId.
+     * @param _rootNode The root node of the scene.
+     * @return The node matching m_transformId.
      */
-    FWRENDEROGRE_API ::fwRenderOgre::SRender::OgreObjectIdType getParentTransformId() const;
+    FWRENDEROGRE_API ::Ogre::SceneNode* getTransformNode(::Ogre::SceneNode* _rootNode);
 
     /**
-     * @brief setParentTransformId
-     * @param newId This new parent transform service UID
+     * @brief s_TRANSFORM_CONFIG The key used in xml configuration.
      */
-    FWRENDEROGRE_API void setParentTransformId(::fwRenderOgre::SRender::OgreObjectIdType newId);
+    FWRENDEROGRE_API static const std::string s_TRANSFORM_CONFIG;
 
-    FWRENDEROGRE_API static const std::string s_CONFIG_TRANSFORM;
+private:
 
-protected:
-    /// Ogre transformation of this service
-    ::Ogre::Affine3 m_ogreTransform;
-    /// Attached transform service
-    ::fwRenderOgre::IAdaptor::wptr m_transformService;
+    /// Ogre transform node.
+    ::Ogre::SceneNode* m_transformNode;
 
     /// This transform identifier
     ::fwRenderOgre::SRender::OgreObjectIdType m_transformId;
-    /// This parent transform identifier
-    ::fwRenderOgre::SRender::OgreObjectIdType m_parentTransformId;
 };
 
 } //namespace fwRenderOgre

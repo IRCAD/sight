@@ -6,12 +6,21 @@
 
 #include "fwRenderOgre/ITransformable.hpp"
 
+#include "fwRenderOgre/helper/Scene.hpp"
+
 namespace fwRenderOgre
 {
 
-const std::string ITransformable::s_CONFIG_TRANSFORM = "transform";
+const std::string ITransformable::s_TRANSFORM_CONFIG = "transform";
 
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+
+void ITransformable::setTransformId(::fwRenderOgre::SRender::OgreObjectIdType _id)
+{
+    m_transformId = _id;
+}
+
+//------------------------------------------------------------------------------
 
 ::fwRenderOgre::SRender::OgreObjectIdType ITransformable::getTransformId() const
 {
@@ -20,23 +29,15 @@ const std::string ITransformable::s_CONFIG_TRANSFORM = "transform";
 
 //------------------------------------------------------------------------------
 
-void ITransformable::setTransformId(::fwRenderOgre::SRender::OgreObjectIdType newId)
+::Ogre::SceneNode* ITransformable::getTransformNode(::Ogre::SceneNode* _rootNode)
 {
-    m_transformId = newId;
-}
-
-//------------------------------------------------------------------------------
-
-::fwRenderOgre::SRender::OgreObjectIdType ITransformable::getParentTransformId() const
-{
-    return m_parentTransformId;
-}
-
-//------------------------------------------------------------------------------
-
-void ITransformable::setParentTransformId(::fwRenderOgre::SRender::OgreObjectIdType newId)
-{
-    m_parentTransformId = newId;
+    SLM_ASSERT("Transform id is not set, please call setTransformId before.", !m_transformId.empty());
+    m_transformNode = ::fwRenderOgre::helper::Scene::getNodeById(m_transformId, _rootNode);
+    if (m_transformNode == nullptr)
+    {
+        m_transformNode = _rootNode->createChildSceneNode(m_transformId);
+    }
+    return m_transformNode;
 }
 
 //-----------------------------------------------------------------------------

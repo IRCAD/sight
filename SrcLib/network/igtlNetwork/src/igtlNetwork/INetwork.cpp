@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -62,6 +62,36 @@ bool INetwork::sendMsg (igtl::MessageBase::Pointer msg)
         ::igtl::MessageBase::Pointer msg = this->receiveBody(headerMsg);
         if (msg.IsNotNull())
         {
+            obj        = m_dataConverter->fromIgtlMessage(msg);
+            deviceName = headerMsg->GetDeviceName();
+        }
+    }
+    return obj;
+}
+
+//------------------------------------------------------------------------------
+
+::fwData::Object::sptr INetwork::receiveObject(std::string& deviceName, double& timestamp)
+{
+    ::fwData::Object::sptr obj;
+    ::igtl::MessageHeader::Pointer headerMsg = this->receiveHeader();
+    if (headerMsg.IsNotNull())
+    {
+        ::igtl::MessageBase::Pointer msg = this->receiveBody(headerMsg);
+        if (msg.IsNotNull())
+        {
+            // get message timestamp
+            unsigned int sec, frac;
+            msg->GetTimeStamp(&sec, &frac);
+            double secD, fracD;
+            secD  = static_cast<double>(sec);
+            fracD = static_cast<double>(frac);
+
+            // convert into milliseconds
+            fracD    /= 1000000.;
+            secD     *= 1000.;
+            timestamp = fracD + secD;
+
             obj        = m_dataConverter->fromIgtlMessage(msg);
             deviceName = headerMsg->GetDeviceName();
         }
@@ -196,4 +226,3 @@ std::string INetwork::getDeviceNameOut() const
 //------------------------------------------------------------------------------
 
 } // namespace igtlNetwork
-

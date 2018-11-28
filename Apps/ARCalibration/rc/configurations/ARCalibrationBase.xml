@@ -116,7 +116,6 @@
                 <id>RGBDCalibration</id>
                 <id>calibrationEdition</id>
                 <id>TrackedCameraRegistration</id>
-                <id>trackingHandEyeCalibration</id>
                 <id>toolCalibrationActivity</id>
             </filter>
         </service>
@@ -127,7 +126,7 @@
         </service>
 
         <service uid="actionOpenActivity" type="::uiIO::action::SSeriesDBMerger">
-            <inout key="series" uid="loadingSeriesDB" />
+            <inout key="seriesDB" uid="loadingSeriesDB" />
             <IOSelectorSrvConfig name="ActivityReaderConfig" />
         </service>
 

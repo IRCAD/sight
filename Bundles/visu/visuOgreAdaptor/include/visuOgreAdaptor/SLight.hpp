@@ -36,21 +36,18 @@ namespace visuOgreAdaptor
  * @section XML XML Configuration
  * @code{.xml}
     <service uid="lightAdaptor" type="::visuOgreAdaptor::SLight">
-        <inout key="transform" uid="lightTFUid" />
         <inout key="diffuseColor" uid="diffuseColorUid" />
         <inout key="specularColor" uid="specularColorUid" />
-        <config name="sceneLight" parentTransformId="cameraTF" switchedOn="yes" thetaOffset="30.5" phiOffset="45" />
+        <config name="sceneLight" transform="..." switchedOn="yes" thetaOffset="30.5" phiOffset="45" />
     </service>
  * @endcode
  * @subsection In-Out In-Out
- * - \b transform [::fwData::TransformationMatrix3D]: transform matrix for the light.
  * - \b diffuseColor [::fwData::Color]: diffuse color of the light.
  * - \b specularColor [::fwData::Color]: specular color of the light.
  * @subsection Configuration Configuration:
  * - \b name (mandatory): defines a name for the associated Ogre light.
- * - \b parentTransformId (optional): name of the parent transform node.
+ * - \b transform (optional): transform applied to the frustum's scene node
  * - \b switchedOn (optional, bool, default="yes"): defines if the light is activated or not.
- * Only if a parent transform node is configured :
  * - \b thetaOffset (optional, float, default=0.0): angle in degrees defining the rotation of the light around x axis.
  * - \b phiOffset (optional, float, default=0.0): angle in degrees defining the rotation of the light around y axis.
  */
@@ -128,7 +125,7 @@ protected:
 
     /// Parent tranform id setter.
     VISUOGREADAPTOR_API virtual void setParentTransformName(
-        const fwRenderOgre::SRender::OgreObjectIdType& _parentTransformName) override;
+        const fwRenderOgre::SRender::OgreObjectIdType&) override;
 
     /// Light activation flag getter.
     VISUOGREADAPTOR_API virtual bool isSwitchedOn() const override;
@@ -158,12 +155,6 @@ private:
     /// Creates a transform Service, and attaches it to a corresponding scene node in the scene.
     void createTransformService();
 
-    /// Returns a shared pointer of the attached transform service.
-    ::visuOgreAdaptor::STransform::sptr getTransformService();
-
-    /// Attaches a movable object to the associated scene node
-    void attachNode(::Ogre::MovableObject* _node);
-
     /// Ogre light managed by this adaptor.
     ::Ogre::Light* m_light;
 
@@ -190,6 +181,9 @@ private:
 
     /// Angle in degrees defining the rotation of the light around y axis.
     float m_phiOffset;
+
+    /// Node used to attach the light
+    ::Ogre::SceneNode* m_lightNode {nullptr};
 };
 
 //------------------------------------------------------------------------------
@@ -251,9 +245,10 @@ inline void SLight::setSpecularColor(::fwData::Color::sptr _specularColor)
 
 //------------------------------------------------------------------------------
 
-inline void SLight::setParentTransformName(const ::fwRenderOgre::SRender::OgreObjectIdType& _parentTransformName)
+inline void SLight::setParentTransformName(const ::fwRenderOgre::SRender::OgreObjectIdType& _id)
 {
-    this->setParentTransformId(_parentTransformName);
+    this->setTransformId(_id);
+    m_useOrphanNode = false;
 }
 
 //------------------------------------------------------------------------------
@@ -282,13 +277,6 @@ inline float SLight::getPhiOffset() const
 inline bool SLight::isOrphanNode() const
 {
     return m_useOrphanNode;
-}
-
-//------------------------------------------------------------------------------
-
-inline ::visuOgreAdaptor::STransform::sptr SLight::getTransformService()
-{
-    return ::visuOgreAdaptor::STransform::dynamicCast(m_transformService.lock());
 }
 
 //------------------------------------------------------------------------------

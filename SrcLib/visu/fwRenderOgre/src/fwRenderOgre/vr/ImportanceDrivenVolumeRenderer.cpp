@@ -192,7 +192,7 @@ ImportanceDrivenVolumeRenderer::~ImportanceDrivenVolumeRenderer()
 
 void ImportanceDrivenVolumeRenderer::updateCSGTF()
 {
-    if(m_idvrMethod == s_MIMP)
+    if(m_idvrMethod == s_MIMP && m_idvrCSGTF)
     {
         const ::Ogre::MaterialPtr material       = ::Ogre::MaterialManager::getSingleton().getByName(m_currentMtlName);
         const ::Ogre::Technique* const technique = material->getTechnique(0);

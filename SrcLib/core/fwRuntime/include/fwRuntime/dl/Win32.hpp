@@ -11,8 +11,13 @@
 #include "fwRuntime/config.hpp"
 #include "fwRuntime/dl/Native.hpp"
 
+#ifdef NOMINMAX
+#include <windows.h>
+#else
 #define NOMINMAX
 #include <windows.h>
+#undef NOMINMAX
+#endif
 
 namespace fwRuntime
 {

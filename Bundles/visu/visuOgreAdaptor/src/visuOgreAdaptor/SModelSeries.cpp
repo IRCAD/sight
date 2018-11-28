@@ -66,10 +66,8 @@ void SModelSeries::configuring()
 
     const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
 
-    if (config.count("transform"))
-    {
-        this->setTransformId(config.get<std::string>("transform"));
-    }
+    this->setTransformId(config.get<std::string>( ::fwRenderOgre::ITransformable::s_TRANSFORM_CONFIG,
+                                                  this->getID() + "_transform"));
 
     if (config.count("autoresetcamera"))
     {

@@ -84,6 +84,9 @@ private:
     /// Used to store label of each landmark.
     std::vector< ::fwRenderOgre::Text* > m_labels;
 
+    /// Used to store landmark`s nodes.
+    std::vector< ::Ogre::SceneNode* > m_nodes;
+
     /// Text container.
     ::Ogre::OverlayContainer* m_text {nullptr};
 

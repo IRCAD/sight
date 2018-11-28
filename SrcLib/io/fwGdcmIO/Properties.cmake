@@ -16,5 +16,5 @@ set( DEPENDENCIES
 set( REQUIREMENTS )
 set( CONAN_DEPS
     boost/1.67.0@sight/stable
-    gdcm/2.8.6@sight/stable
+    gdcm/2.8.6-r1@sight/stable
 )

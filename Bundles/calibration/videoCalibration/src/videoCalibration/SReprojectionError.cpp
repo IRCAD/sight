@@ -279,9 +279,9 @@ void SReprojectionError::compute(fwCore::HiResClock::HiResClockType timestamp)
 
                     ::cv::Rodrigues(rot, rvec);
 
-                    for(size_t p = 0; p < 4; ++p)
+                    for(const auto& p : *marker)
                     {
-                        points2D.push_back( ::cv::Point2f((*marker)[i][p*2], (*marker)[i][p*2 +1]));
+                        points2D.push_back(::cv::Point2f(p[0], p[1]));
                     }
 
                     ::calibration3d::helper::ErrorAndPointsType errP =

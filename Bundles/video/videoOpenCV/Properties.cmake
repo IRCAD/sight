@@ -18,5 +18,5 @@ set( DEPENDENCIES
 set( REQUIREMENTS  )
 set( CONAN_DEPS
     boost/1.67.0@sight/stable
-    opencv/3.4.3@sight/stable
+    opencv/3.4.3-r1@sight/stable
 )

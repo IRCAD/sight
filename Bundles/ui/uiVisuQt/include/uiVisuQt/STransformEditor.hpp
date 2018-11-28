@@ -46,7 +46,7 @@ class UIVISUQT_CLASS_API STransformEditor : public QObject,
 {
 Q_OBJECT;
 public:
-    fwCoreServiceClassDefinitionsMacro( (STransformEditor)(::fwGui::editor::IEditor) );
+    fwCoreServiceClassDefinitionsMacro( (STransformEditor)(::fwGui::editor::IEditor) )
 
     /// Constructor. Do nothing.
     UIVISUQT_API STransformEditor() noexcept;

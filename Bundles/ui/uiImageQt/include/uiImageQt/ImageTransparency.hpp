@@ -46,7 +46,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (ImageTransparency)(::fwGui::editor::IEditor) );
+    fwCoreServiceClassDefinitionsMacro( (ImageTransparency)(::fwGui::editor::IEditor) )
 
     UIIMAGEQT_API ImageTransparency() noexcept;
 

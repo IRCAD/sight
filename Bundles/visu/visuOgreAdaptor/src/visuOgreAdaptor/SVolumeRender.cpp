@@ -139,9 +139,8 @@ void SVolumeRender::configuring()
     m_colorBleeding       = config.get<bool>("colorBleeding", false);
     m_shadows             = config.get<bool>("shadows", false);
 
-    const std::string transformId = config.get<std::string>(::visuOgreAdaptor::STransform::s_CONFIG_TRANSFORM,
-                                                            this->getID() + "_transform");
-    this->setTransformId(transformId);
+    this->setTransformId(config.get<std::string>( ::fwRenderOgre::ITransformable::s_TRANSFORM_CONFIG,
+                                                  this->getID() + "_transform"));
 }
 
 //-----------------------------------------------------------------------------
@@ -238,13 +237,8 @@ void SVolumeRender::starting()
     m_sceneManager = this->getSceneManager();
 
     ::Ogre::SceneNode* rootSceneNode = m_sceneManager->getRootSceneNode();
-    ::Ogre::SceneNode* transformNode =
-        ::fwRenderOgre::helper::Scene::getNodeById(this->getTransformId(), rootSceneNode);
-    if (transformNode == nullptr)
-    {
-        transformNode = rootSceneNode->createChildSceneNode(this->getTransformId());
-    }
-    m_volumeSceneNode = transformNode->createChildSceneNode(this->getID() + "_transform_origin");
+    ::Ogre::SceneNode* transformNode = this->getTransformNode(rootSceneNode);
+    m_volumeSceneNode                = transformNode->createChildSceneNode(this->getID() + "_transform_origin");
     m_volumeSceneNode->setVisible(true, false);
 
     m_camera = this->getLayer()->getDefaultCamera();
@@ -325,7 +319,9 @@ void SVolumeRender::stopping()
 
     this->getSceneManager()->destroySceneNode(m_volumeSceneNode);
 
-    auto transformNode = m_sceneManager->getRootSceneNode()->getChild(this->getTransformId());
+    ::Ogre::SceneNode* rootSceneNode = m_sceneManager->getRootSceneNode();
+    auto transformNode = this->getTransformNode(rootSceneNode);
+
     m_sceneManager->getRootSceneNode()->removeChild(transformNode);
     this->getSceneManager()->destroySceneNode(static_cast< ::Ogre::SceneNode*>(transformNode));
 

@@ -31,7 +31,7 @@ namespace visuOgreAdaptor
         <service type="::visuOgreAdaptor::SFrustumList">
             <in key="camera" uid="..." />
             <in key="transform" uid="..." />
-            <config layer="default" near="0.1" far="300" color="#f8e119" />
+            <config layer="default" near="0.1" far="300" color="#f8e119" transform="..." />
        </service>
    @endcode
  * @subsection Input Input:
@@ -39,17 +39,18 @@ namespace visuOgreAdaptor
  * - \b transform [::fwData::TransformationMatrix3D]: each time this transform is modified, a frustum is created.
  *
  * @subsection Configuration Configuration:
- * - \b layer (mandatory): defines the frustum's layer
- * - \b near (optional): near clipping distance of the ::Ogre::Camera
- * - \b far (optional): far clipping distance of the ::Ogre::Camera
- * - \b color (optional): color of frustums
+ * -\b layer (mandatory): defines the frustum's layer
+ * -\b near (optional): near clipping distance of the ::Ogre::Camera
+ * -\b far (optional): far clipping distance of the ::Ogre::Camera
+ * -\b color (optional): color of frustums
+ * -\b transform (optional): transform applied to the frustumList's scene node
  */
 class VISUOGREADAPTOR_CLASS_API SFrustumList : public ::fwRenderOgre::IAdaptor,
                                                public ::fwRenderOgre::ITransformable
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro((SFrustumList)(::fwRenderOgre::IAdaptor));
+    fwCoreServiceClassDefinitionsMacro((SFrustumList)(::fwRenderOgre::IAdaptor))
 
     /// Constructor.
     VISUOGREADAPTOR_API SFrustumList() noexcept;
