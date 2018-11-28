@@ -25,6 +25,9 @@
 #include "visuOgreAdaptor/config.hpp"
 #include "visuOgreAdaptor/STransform.hpp"
 
+#include <arData/Camera.hpp>
+#include <arData/CameraSeries.hpp>
+
 #include <fwCom/helper/SigSlotConnection.hpp>
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
@@ -119,6 +122,10 @@ private:
 
     /// Calibrate the camera parameters according to an arData::Camera.
     void calibrate();
+
+    void calibrateMonoCamera(const ::arData::Camera::csptr& _cam);
+
+    void calibrateCameraSeries(const ::arData::CameraSeries::csptr& _cs);
 
     /// Ogre camera managed by this adaptor.
     ::Ogre::Camera* m_camera { nullptr };
