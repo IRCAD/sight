@@ -69,7 +69,7 @@ friend class AppConfigManager;
 friend class AppManager;
 
 public:
-    fwCoreServiceClassDefinitionsMacro( (IService)(::fwTools::Object) );
+    fwCoreServiceClassDefinitionsMacro( (IService)(::fwTools::Object) )
     fwCoreAllowSharedFromThis();
 
     typedef ::boost::property_tree::ptree ConfigType;

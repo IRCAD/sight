@@ -292,8 +292,6 @@ void GridProxyGeometry::computeGrid()
     {
         ::Ogre::RenderTexture* rt = m_gridTexture->getBuffer()->getRenderTarget(i);
 
-        rt->getViewport(0)->clear();
-
         params->setNamedConstant("u_slice", static_cast<int>(i));
 
         mParentSceneManager->manualRender(
