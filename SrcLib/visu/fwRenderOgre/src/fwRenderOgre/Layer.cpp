@@ -1044,7 +1044,7 @@ void Layer::setupCore()
 
 void Layer::restartAdaptors()
 {
-    auto& adaptors = this->getRenderService()->getAdaptors< IAdaptor >();
+    auto adaptors = this->getRenderService()->getAdaptors< IAdaptor >();
 
     auto notInLayer = [this](const IAdaptor::sptr& _adapt)
                       {
