@@ -40,8 +40,12 @@ namespace videoCalibration
 {
 
 static const ::fwCom::Slots::SlotKeyType s_UPDATE_CHESSBOARD_SIZE_SLOT = "updateChessboardSize";
+static const ::fwCom::Signals::SignalKeyType s_ERROR_COMPUTED_SIG      = "errorComputed";
 
-static const ::fwCom::Signals::SignalKeyType s_ERROR_COMPUTED_SIG = "errorComputed";
+const ::fwServices::IService::KeyType s_CAMERASERIES_INOUT = "cameraSeries";
+const ::fwServices::IService::KeyType s_MATRIX_OUTPUT      = "matrix";
+const ::fwServices::IService::KeyType s_CALIBINFO1_INPUT   = "calibrationInfo1";
+const ::fwServices::IService::KeyType s_CALIBINFO2_INPUT   = "calibrationInfo2";
 
 // ----------------------------------------------------------------------------
 
@@ -116,13 +120,13 @@ void SOpenCVExtrinsic::swapping()
 
 void SOpenCVExtrinsic::updating()
 {
-    ::arData::CameraSeries::sptr camSeries = this->getInOut< ::arData::CameraSeries >("cameraSeries");
+    ::arData::CameraSeries::sptr camSeries = this->getInOut< ::arData::CameraSeries >(s_CAMERASERIES_INOUT);
 
     SLM_ASSERT("camera index must be > 0 and < camSeries->getNumberOfCameras()",
                m_camIndex > 0 && m_camIndex < camSeries->getNumberOfCameras());
 
-    ::arData::CalibrationInfo::csptr calInfo1 = this->getInput< ::arData::CalibrationInfo>("calibrationInfo1");
-    ::arData::CalibrationInfo::csptr calInfo2 = this->getInput< ::arData::CalibrationInfo>("calibrationInfo2");
+    ::arData::CalibrationInfo::csptr calInfo1 = this->getInput< ::arData::CalibrationInfo>(s_CALIBINFO1_INPUT);
+    ::arData::CalibrationInfo::csptr calInfo2 = this->getInput< ::arData::CalibrationInfo>(s_CALIBINFO2_INPUT);
 
     SLM_ASSERT("Object with 'calibrationInfo1' is not found", calInfo1);
     SLM_ASSERT("Object with 'calibrationInfo2' is not found", calInfo2);
@@ -250,6 +254,12 @@ void SOpenCVExtrinsic::updating()
             ::arData::CameraSeries::s_EXTRINSIC_CALIBRATED_SIG);
 
         sig->asyncEmit();
+
+        // Export matrix if needed.
+        this->setOutput(s_MATRIX_OUTPUT, matrix);
+        auto sig2 = matrix->signal< ::fwData::TransformationMatrix3D::ModifiedSignalType >(
+            ::fwData::TransformationMatrix3D::s_MODIFIED_SIG);
+        sig2->asyncEmit();
     }
 }
 
