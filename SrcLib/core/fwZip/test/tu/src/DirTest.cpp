@@ -91,7 +91,7 @@ void DirTest::putFileTest()
     SPTR(WriteDirArchive) writer = std::make_shared<WriteDirArchive>(dirPath);
 
     const ::boost::filesystem::path testDir  = "test";
-    const ::boost::filesystem::path testFile = ::fwTest::Data::dir() / "fw4spl/image/jpg/makao01.jpg";
+    const ::boost::filesystem::path testFile = ::fwTest::Data::dir() / "sight/image/jpg/makao01.jpg";
 
 
     CPPUNIT_ASSERT_MESSAGE("The file '" + testFile.string() + "' does not exist",

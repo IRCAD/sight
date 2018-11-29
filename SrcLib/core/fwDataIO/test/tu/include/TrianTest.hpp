@@ -35,7 +35,7 @@ namespace ut
 {
 
 /**
- * @brief Test many methods to read/create fw4spl trian mesh file.
+ * @brief Test many methods to read/create sight trian mesh file.
  */
 class TrianTest : public CPPUNIT_NS::TestFixture
 {

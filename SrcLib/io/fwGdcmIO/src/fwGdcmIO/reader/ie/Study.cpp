@@ -70,7 +70,7 @@ void Study::readGeneralStudyModule()
     m_object->setTime(studyTime);
 
     // Study's accession number - Type 2
-    // NOTE: Not used in FW4SPL
+    // NOTE: Not used in Sight
 
     // Study's description - Type 3
     const std::string& description =
@@ -83,7 +83,7 @@ void Study::readGeneralStudyModule()
     m_object->setInstanceUID(instanceUID);
 
     // Study's ID - Type 2
-    // NOTE: Not used in FW4SPL
+    // NOTE: Not used in Sight
 
     // Study's referring physician name
     const std::string& referringPhysicianName =

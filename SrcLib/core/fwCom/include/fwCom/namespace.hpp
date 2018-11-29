@@ -23,7 +23,7 @@
 #define __FWCOM_NAMESPACE_HPP__
 
 /**
- * @brief Namespace containing fw4spl communication tools
+ * @brief Namespace containing sight communication tools
  */
 namespace fwCom
 {

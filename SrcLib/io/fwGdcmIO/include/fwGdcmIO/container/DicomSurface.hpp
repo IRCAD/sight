@@ -36,7 +36,7 @@ namespace container
 {
 
 /**
- * @brief This class defines one surface mesh item in order to transform into DICOM/FW4SPL form.
+ * @brief This class defines one surface mesh item in order to transform into DICOM/Sight form.
  */
 class FWGDCMIO_CLASS_API DicomSurface
 {
@@ -45,7 +45,7 @@ public:
 
     /**
      * Typedef for cell index in DICOM world (32 bits see VR OL).
-     * FW4SPL uses uint64_t (see ::fwData::Mesh::CellValueType).
+     * Sight uses uint64_t (see ::fwData::Mesh::CellValueType).
      */
     typedef std::uint32_t DicomCellValueType;
 
@@ -80,7 +80,7 @@ public:
     /// Destructor
     FWGDCMIO_API ~DicomSurface();
 
-    /// Convert DicomSurface container to FW4SPL Mesh
+    /// Convert DicomSurface container to Sight Mesh
     FWGDCMIO_API ::fwData::Mesh::sptr convertToData();
 
     /// Return point coordinates buffer

@@ -62,7 +62,7 @@ public:
      * @param[in] dicomSeries DicomSeries used to access computed tag values.
      * @param[in] reader GDCM reader that must be used to read series.
      * @param[in] instance DICOM instance used to share informations between modules
-     * @param[in] object FW4SPL data object
+     * @param[in] object Sight data object
      * @param[in] logger Logger
      * @param[in] progress Progress callback
      * @param[in] cancel Cancel requested callback
@@ -89,7 +89,7 @@ protected:
     /// DICOM Instance
     SPTR(::fwGdcmIO::container::DicomInstance) m_instance;
 
-    /// FW4SPL Object
+    /// Sight Object
     SPTR(DATATYPE) m_object;
 
     ///Logger

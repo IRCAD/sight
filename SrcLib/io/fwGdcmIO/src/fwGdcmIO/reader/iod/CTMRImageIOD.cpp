@@ -115,7 +115,7 @@ void CTMRImageIOD::read(::fwMedData::Series::sptr series) throw(::fwGdcmIO::exce
     m_progressCallback(progress);
 
     // Read Frame of Reference Module - PS 3.3 C.7.4.1
-    // NOTE: Not used in FW4SPL
+    // NOTE: Not used in Sight
 
     // Read General Equipment Module - PS 3.3 C.7.5.1
     equipmentIE.readGeneralEquipmentModule();
@@ -123,7 +123,7 @@ void CTMRImageIOD::read(::fwMedData::Series::sptr series) throw(::fwGdcmIO::exce
     m_progressCallback(progress);
 
     // Read General Image Module - PS 3.3 C.7.6.1
-    // NOTE: Not used in FW4SPL
+    // NOTE: Not used in Sight
 
     // Read Image Plane Module - PS 3.3 C.7.6.2
     imageIE.readImagePlaneModule();
@@ -136,7 +136,7 @@ void CTMRImageIOD::read(::fwMedData::Series::sptr series) throw(::fwGdcmIO::exce
     m_progressCallback(progress);
 
     // Read CT & MR Image Module - PS 3.3 C.8.2.1 - PS 3.3 C.8.3.1
-    // NOTE: Not used in FW4SPL
+    // NOTE: Not used in Sight
 
     // Read VOI LUT Module - PS 3.3 C.11.2
     imageIE.readVOILUTModule();
@@ -144,7 +144,7 @@ void CTMRImageIOD::read(::fwMedData::Series::sptr series) throw(::fwGdcmIO::exce
     m_progressCallback(progress);
 
     // Read SOP Common Module - PS 3.3 C.12.1
-    // NOTE: Not used in FW4SPL
+    // NOTE: Not used in Sight
 
 }
 

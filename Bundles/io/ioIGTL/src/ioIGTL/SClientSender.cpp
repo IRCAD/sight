@@ -66,7 +66,7 @@ void SClientSender::configuring()
     for(auto itCfg = keyCfg.first; itCfg != keyCfg.second; ++itCfg)
     {
         const ::fwServices::IService::ConfigType& attr = itCfg->second.get_child("<xmlattr>");
-        const std::string name                         = attr.get("deviceName", "F4S");
+        const std::string name                         = attr.get("deviceName", "Sight");
         m_deviceNames.push_back(name);
     }
 

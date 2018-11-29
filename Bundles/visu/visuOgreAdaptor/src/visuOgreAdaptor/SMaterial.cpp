@@ -105,7 +105,7 @@ void SMaterial::createShaderParameterAdaptors()
                                               "geometry";
             const fwTools::fwID::IDType id = this->getID() + "_" + shaderTypeStr + "-" + constantName;
 
-            // Creates an Ogre adaptor and associates it with the f4s object
+            // Creates an Ogre adaptor and associates it with the Sight object
             auto srv =
                 this->registerService< ::visuOgreAdaptor::SShaderParameter>( "::visuOgreAdaptor::SShaderParameter", id);
             srv->registerInOut(obj, "parameter", true);
@@ -352,13 +352,13 @@ void SMaterial::createTextureAdaptor()
 {
     SLM_ASSERT("Texture adaptor already configured in XML", m_textureName.empty());
 
-    ::fwData::Material::sptr f4sMaterial = this->getInOut< ::fwData::Material >(s_MATERIAL_INOUT);
+    ::fwData::Material::sptr sightMaterial = this->getInOut< ::fwData::Material >(s_MATERIAL_INOUT);
 
     // If the associated material has a texture, we have to create a texture adaptor to handle it
-    if(f4sMaterial->getDiffuseTexture())
+    if(sightMaterial->getDiffuseTexture())
     {
-        // Creates an Ogre adaptor and associates it with the f4s texture object
-        auto texture = f4sMaterial->getDiffuseTexture();
+        // Creates an Ogre adaptor and associates it with the Sight texture object
+        auto texture = sightMaterial->getDiffuseTexture();
         m_texAdaptor = this->registerService< ::visuOgreAdaptor::STexture >("::visuOgreAdaptor::STexture");
         m_texAdaptor->registerInput(texture, "image", true);
 
@@ -366,7 +366,7 @@ void SMaterial::createTextureAdaptor()
         m_texAdaptor->setRenderService(this->getRenderService());
         m_texAdaptor->setLayerID(m_layerID);
 
-        const std::string materialName = f4sMaterial->getID();
+        const std::string materialName = sightMaterial->getID();
         m_texAdaptor->setTextureName(materialName + "_Texture");
 
         m_textureConnection.connect(m_texAdaptor, ::visuOgreAdaptor::STexture::s_TEXTURE_SWAPPED_SIG, this->getSptr(),

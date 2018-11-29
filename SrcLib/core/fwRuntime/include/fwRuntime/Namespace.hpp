@@ -27,7 +27,7 @@
  * @defgroup requirement Requirements
  * The bundles in the \p \<requirement\> section of the \b plugin.xml are started when the bundle is started.
  *
- * In fw4spl, we can automatically start bundles in two case:
+ * In Sight, we can automatically start bundles in two case:
  * - The bundle contains an AppConfig or an Activity: the bundle will be started when the config or the activity is
  *   launched
  * - The bundle contains services: the bundle will be started when one of the services is used in an AppConfig to launch.

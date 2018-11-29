@@ -33,7 +33,7 @@ namespace ut
 {
 
 /**
- * @brief Test many methods to read/create fw4spl dictionary file.
+ * @brief Test many methods to read/create sight dictionary file.
  */
 class DictionaryReaderTest : public CPPUNIT_NS::TestFixture
 {

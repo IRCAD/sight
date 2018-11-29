@@ -35,7 +35,7 @@ namespace igtlNetwork
 
 INetwork::INetwork() :
     m_filteringByDeviceName(false),
-    m_deviceNameOut("F4S")
+    m_deviceNameOut("Sight")
 {
     m_dataConverter = ::igtlProtocol::DataConverter::getInstance();
 }

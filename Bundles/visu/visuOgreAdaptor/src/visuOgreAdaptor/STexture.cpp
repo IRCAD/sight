@@ -145,18 +145,18 @@ void STexture::starting()
 
 void STexture::updating()
 {
-    // Retrieves associated f4s image
-    ::fwData::Image::csptr imageF4s = this->getInput< ::fwData::Image>(s_TEXTURE_INOUT);
+    // Retrieves associated Sight image
+    ::fwData::Image::csptr imageSight = this->getInput< ::fwData::Image>(s_TEXTURE_INOUT);
 
-    SLM_ASSERT("Failed object dynamic cast", imageF4s);
+    SLM_ASSERT("Failed object dynamic cast", imageSight);
 
     if(imageF4s->getAllocatedSizeInBytes() != 0)
     {
-        ::fwData::mt::ObjectReadLock lock(imageF4s);
+        ::fwData::mt::ObjectReadLock lock(imageSight);
 
         // Loads the new image
         this->getRenderService()->makeCurrent();
-        ::fwRenderOgre::Utils::loadOgreTexture(imageF4s, m_texture, ::Ogre::TEX_TYPE_2D, m_isDynamic);
+        ::fwRenderOgre::Utils::loadOgreTexture(imageSight, m_texture, ::Ogre::TEX_TYPE_2D, m_isDynamic);
         lock.unlock();
 
         m_sigTextureSwapped->asyncEmit();

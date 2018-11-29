@@ -135,7 +135,7 @@ void DicomAnonymizerTest::anonymizeImageSeriesTest()
 
 void DicomAnonymizerTest::anonymizeDICOMTest()
 {
-    this->testDICOMFolder(::fwTest::Data::dir() / "fw4spl/Patient/Dicom/DicomDB/08-CT-PACS");
+    this->testDICOMFolder(::fwTest::Data::dir() / "sight/Patient/Dicom/DicomDB/08-CT-PACS");
     //TODO Do we have to test more images ?
 }
 

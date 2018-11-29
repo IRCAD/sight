@@ -24,13 +24,13 @@
 #define __MONITOR_NAMESPACE_HPP__
 
 /**
- * @brief       The namespace monitor contains tools for monitoring an application built with FW4SPL.
+ * @brief       The namespace monitor contains tools for monitoring an application built with sight.
  */
 namespace monitor
 {
 
 /**
- * @brief       The namespace monitor::action contains tools for monitoring an application built with FW4SPL.
+ * @brief       The namespace monitor::action contains tools for monitoring an application built with sight.
  */
 namespace action
 {

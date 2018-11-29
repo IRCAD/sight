@@ -129,7 +129,7 @@ void SCamera::updating()
     {
         ::fwData::mt::ObjectReadLock lock(transform);
 
-        // Received input lign and column data from f4s transformation matrix
+        // Received input lign and column data from Sight transformation matrix
         for (size_t lt = 0; lt < 4; lt++)
         {
             for (size_t ct = 0; ct < 4; ct++)
@@ -211,7 +211,7 @@ void SCamera::updateTF3D()
     {
         ::fwData::mt::ObjectWriteLock lock(transform);
 
-        // Received input lign and column data from f4s transformation matrix
+        // Received input lign and column data from Sight transformation matrix
         for (size_t lt = 0; lt < 4; lt++)
         {
             for (size_t ct = 0; ct < 4; ct++)

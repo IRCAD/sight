@@ -91,7 +91,7 @@ std::string getPreference(const std::string& preferenceKey)
     FW_RAISE_IF("No current profile set.", !profile);
 
     const std::string appName     = profile->getName();
-    const bfile::path appPrefDir  = ::fwTools::os::getUserDataDir("fw4spl", appName, true);
+    const bfile::path appPrefDir  = ::fwTools::os::getUserDataDir("sight", appName, true);
     const bfile::path appPrefFile = appPrefDir / "preferences.json";
 
     FW_RAISE_IF("Unable to define user data directory", appPrefDir.empty());

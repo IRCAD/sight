@@ -91,8 +91,8 @@ void SeriesDBReaderTest::tearDown()
 
 void SeriesDBReaderTest::testSeriesDBReader()
 {
-    const ::boost::filesystem::path imageFile = ::fwTest::Data::dir() / "fw4spl/image/vtk/img.vtk";
-    const ::boost::filesystem::path meshFile  = ::fwTest::Data::dir() / "fw4spl/mesh/vtk/sphere.vtk";
+    const ::boost::filesystem::path imageFile = ::fwTest::Data::dir() / "sight/image/vtk/img.vtk";
+    const ::boost::filesystem::path meshFile  = ::fwTest::Data::dir() / "sight/mesh/vtk/sphere.vtk";
 
     CPPUNIT_ASSERT_MESSAGE("The file '" + imageFile.string() + "' does not exist",
                            ::boost::filesystem::exists(imageFile));
@@ -186,7 +186,7 @@ void SeriesDBReaderTest::testSeriesDBReader()
 
 void SeriesDBReaderTest::testMergeSeriesDBReader()
 {
-    const ::boost::filesystem::path imageFile = ::fwTest::Data::dir() / "fw4spl/image/vtk/img.vtk";
+    const ::boost::filesystem::path imageFile = ::fwTest::Data::dir() / "sight/image/vtk/img.vtk";
 
     CPPUNIT_ASSERT_MESSAGE("The file '" + imageFile.string() + "' does not exist",
                            ::boost::filesystem::exists(imageFile));

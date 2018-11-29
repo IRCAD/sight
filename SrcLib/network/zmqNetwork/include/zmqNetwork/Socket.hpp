@@ -198,7 +198,7 @@ private:
     /// status of socket, true if is started false otherwise
     bool m_isStarted;
 
-    /// DataConverter instance(used for conversion between F4S data and OpenIGTLinkProtocol data)
+    /// DataConverter instance(used for conversion between Sight data and OpenIGTLinkProtocol data)
     ::igtlProtocol::DataConverter::sptr m_dataConverter;
 
     /// Socket context

@@ -113,7 +113,7 @@ void SVideo::updating()
 {
     this->getRenderService()->makeCurrent();
 
-    // Getting FW4SPL Image
+    // Getting Sight Image
     ::fwData::Image::csptr imageF4s = this->getInput< ::fwData::Image>(s_IMAGE_INPUT);
     SLM_ASSERT("Problem getting the image", imageF4s);
 

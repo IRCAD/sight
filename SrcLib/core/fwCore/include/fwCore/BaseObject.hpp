@@ -33,7 +33,7 @@ namespace fwCore
 {
 
 /**
- * @brief Base class for all FW4SPL's classes
+ * @brief Base class for all Sight's classes
  */
 class FWCORE_CLASS_API BaseObject : public std::enable_shared_from_this<BaseObject>
 {

@@ -39,7 +39,7 @@ namespace fwMedData
 
 /**
  * @brief Holds attachment file
- * @deprecated This data will be removed in FW4SPL 20.0.
+ * @deprecated This data will be removed in Sight 20.0.
  */
 class FWMEDDATA_CLASS_API AttachmentSeries : public ::fwMedData::Series
 {

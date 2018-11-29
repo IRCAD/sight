@@ -26,7 +26,7 @@
 namespace fwCore
 {
 /**
- * @brief       This namespace fwCore::util provides generic utilities for FW4SPL.
+ * @brief       This namespace fwCore::util provides generic utilities for Sight.
  * @namespace   fwCore::util
  *
  * @date        2012.

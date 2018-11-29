@@ -63,7 +63,7 @@ void ZipTest::commentTest()
     const ::boost::filesystem::path dirPath = ::fwTools::System::getTemporaryFolder() / "fwZipTest";
     ::boost::filesystem::create_directories( dirPath );
     const ::boost::filesystem::path path        = dirPath / "jambon.zip";
-    const ::boost::filesystem::path sourceFile  = ::fwTest::Data::dir() / "fw4spl/image/jpg/makao01.jpg";
+    const ::boost::filesystem::path sourceFile  = ::fwTest::Data::dir() / "sight/image/jpg/makao01.jpg";
     const ::boost::filesystem::path archiveFile = "makao.jpg";
 
     CPPUNIT_ASSERT_MESSAGE("The file '" + sourceFile.string() + "' does not exist",

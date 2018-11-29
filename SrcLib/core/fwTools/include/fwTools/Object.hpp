@@ -34,7 +34,7 @@ namespace fwTools
 class UUID;
 
 /**
- * @brief   Define Base class for FW4SPL objects and services
+ * @brief   Define Base class for Sight objects and services
  */
 class FWTOOLS_CLASS_API Object  : public ::fwCore::BaseObject,
                                   public ::boost::noncopyable,

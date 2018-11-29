@@ -38,7 +38,7 @@ Socket::Socket(SocketMode socketMode, PatternMode patternMode) :
     m_sockMode(socketMode),
     m_patternMode(patternMode),
     m_timeout(1000),
-    m_deviceNameOut("F4S")
+    m_deviceNameOut("Sight")
 {
     m_dataConverter = ::igtlProtocol::DataConverter::getInstance();
 }

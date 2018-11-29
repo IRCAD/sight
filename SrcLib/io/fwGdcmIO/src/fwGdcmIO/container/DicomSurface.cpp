@@ -157,7 +157,7 @@ DicomSurface::~DicomSurface()
             cellIt != cellDataHelper.end< ::fwData::Mesh::CellValueType >();
             ++cellIt)
         {
-            // Index shall start at 0 in FW4SPL
+            // Index shall start at 0 in Sight
             *cellIt = static_cast< ::fwData::Mesh::CellValueType >(m_cellBuffer[index++]) - 1;
         }
     }

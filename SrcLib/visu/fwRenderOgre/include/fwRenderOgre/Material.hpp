@@ -63,7 +63,7 @@ public:
                                             bool useTextureAlpha);
 
     /// Update material color in fixed function pipeline
-    FWRENDEROGRE_API void updateRGBAMode( ::fwData::Material::sptr _f4sMaterial );
+    FWRENDEROGRE_API void updateRGBAMode( ::fwData::Material::sptr _sightMaterial );
 
     void setHasMeshNormal(bool _hasMeshNormal);
     void setHasUV(bool _hasUV);

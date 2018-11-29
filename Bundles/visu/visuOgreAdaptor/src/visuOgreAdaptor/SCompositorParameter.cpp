@@ -77,7 +77,7 @@ public:
     }
 
 private:
-    /// Associated f4s adaptor
+    /// Associated Sight adaptor
     ::visuOgreAdaptor::SCompositorParameter::wptr m_adaptor;
 };
 

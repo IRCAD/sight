@@ -77,7 +77,7 @@ private:
     /// Not implemented
     ~ImageTypeConverter();
 
-    /// type converter map between igtl pixel type and F4S pixel type
+    /// type converter map between igtl pixel type and Sight pixel type
     static TypeConverterMap s_typeConverterMap;
 };
 

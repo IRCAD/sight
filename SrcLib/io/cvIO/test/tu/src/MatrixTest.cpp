@@ -423,7 +423,7 @@ void MatrixTest::copyToRvecTvec()
                                              tvec.at<double>(i), 1e-8);
     }
 
-    // Reconstruct 4x4 matrix and compare with original f4s one.
+    // Reconstruct 4x4 matrix and compare with original Sight one.
     ::cv::Mat mat4x4 = ::cv::Mat::eye(4, 4, CV_64F);
     ::cv::Rodrigues( rvec, mat4x4(::cv::Rect(0, 0, 3, 3)) );
     tvec.copyTo(mat4x4( ::cv::Rect(3, 0, 1, 3) ));

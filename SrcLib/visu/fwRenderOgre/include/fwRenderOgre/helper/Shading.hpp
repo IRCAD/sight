@@ -128,7 +128,7 @@ public:
     FWRENDEROGRE_API static ShaderConstantsType findMaterialConstants(::Ogre::Material& _material);
 
     /**
-     * @brief Create a fw4spl data that can be used to interact with a shader parameter.
+     * @brief Create a Sight data that can be used to interact with a shader parameter.
      *
      * @param[in] _params shader parameters
      * @param[in] _shaderType shader type (vertex, fragment or geometry)
@@ -140,7 +140,7 @@ public:
                                                                     bool _enableLightConstants = false);
 
     /**
-     * @brief Create a fw4spl data that can be used to interact with a shader parameter.
+     * @brief Create a Sight data that can be used to interact with a shader parameter.
      *
      * @param[in] _type type of the shader parameter
      * @param[in] _value value of the shader parameter

@@ -48,7 +48,7 @@ namespace factory
 } // namespace factory
 
 /// The namespace fwGui::layoutManager contains the base interface of managers used to handle the GUI layouts available
-/// in FW4SPL.
+/// in Sight.
 namespace layoutManager
 {
 } // namespace layoutManager

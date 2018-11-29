@@ -70,8 +70,8 @@ void SeriesDBTest::testImportSeriesDB()
 {
     ::fwMedData::SeriesDB::sptr seriesDB = ::fwMedData::SeriesDB::New();
 
-    const ::boost::filesystem::path imagePath( ::fwTest::Data::dir() / "fw4spl/image/vtk/img.vtk" );
-    const ::boost::filesystem::path meshPath( ::fwTest::Data::dir() / "fw4spl/mesh/vtk/sphere.vtk" );
+    const ::boost::filesystem::path imagePath( ::fwTest::Data::dir() / "sight/image/vtk/img.vtk" );
+    const ::boost::filesystem::path meshPath( ::fwTest::Data::dir() / "sight/mesh/vtk/sphere.vtk" );
 
     CPPUNIT_ASSERT_MESSAGE(std::string("Missing file: ") + imagePath.string(), ::boost::filesystem::exists(imagePath));
     CPPUNIT_ASSERT_MESSAGE(std::string("Missing file: ") + meshPath.string(), ::boost::filesystem::exists(meshPath));
@@ -145,8 +145,8 @@ void SeriesDBTest::testLazyImportSeriesDB()
 
     ::fwMedData::SeriesDB::sptr seriesDB = ::fwMedData::SeriesDB::New();
 
-    const ::boost::filesystem::path imagePath( ::fwTest::Data::dir() / "fw4spl/image/vtk/img.vtk" );
-    const ::boost::filesystem::path meshPath( ::fwTest::Data::dir() / "fw4spl/mesh/vtk/sphere.vtk" );
+    const ::boost::filesystem::path imagePath( ::fwTest::Data::dir() / "sight/image/vtk/img.vtk" );
+    const ::boost::filesystem::path meshPath( ::fwTest::Data::dir() / "sight/mesh/vtk/sphere.vtk" );
 
     CPPUNIT_ASSERT_MESSAGE(std::string("Missing file: ") + imagePath.string(), ::boost::filesystem::exists(imagePath));
     CPPUNIT_ASSERT_MESSAGE(std::string("Missing file: ") + meshPath.string(), ::boost::filesystem::exists(meshPath));

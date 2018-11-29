@@ -53,20 +53,20 @@ void CameraTest::tearDown()
 
 void CameraTest::copyToCv()
 {
-    ::arData::Camera::sptr f4sCam = ::arData::Camera::New();
+    ::arData::Camera::sptr sightCam = ::arData::Camera::New();
 
-    f4sCam->setCx(666.);
-    f4sCam->setCy(777.);
-    f4sCam->setFx(6.);
-    f4sCam->setFy(7.);
-    f4sCam->setWidth(15360);
-    f4sCam->setHeight(8640);
-    f4sCam->setDistortionCoefficient(2., 3., 5., 8., 13.);
+    sightCam->setCx(666.);
+    sightCam->setCy(777.);
+    sightCam->setFx(6.);
+    sightCam->setFy(7.);
+    sightCam->setWidth(15360);
+    sightCam->setHeight(8640);
+    sightCam->setDistortionCoefficient(2., 3., 5., 8., 13.);
 
     ::cv::Mat intrinsic, distCoeffs;
     ::cv::Size imgSize;
 
-    std::tie(intrinsic, imgSize, distCoeffs) = ::cvIO::Camera::copyToCv(f4sCam);
+    std::tie(intrinsic, imgSize, distCoeffs) = ::cvIO::Camera::copyToCv(sightCam);
 
     CPPUNIT_ASSERT_EQUAL(3, intrinsic.size[0]);
     CPPUNIT_ASSERT_EQUAL(3, intrinsic.size[1]);
@@ -77,19 +77,19 @@ void CameraTest::copyToCv()
         {
             if(i == 0 && j == 0)
             {
-                CPPUNIT_ASSERT_EQUAL(f4sCam->getFx(), intrinsic.at<double>(i, j));
+                CPPUNIT_ASSERT_EQUAL(sightCam->getFx(), intrinsic.at<double>(i, j));
             }
             else if(i == 1 && j == 1)
             {
-                CPPUNIT_ASSERT_EQUAL(f4sCam->getFy(), intrinsic.at<double>(i, j));
+                CPPUNIT_ASSERT_EQUAL(sightCam->getFy(), intrinsic.at<double>(i, j));
             }
             else if(i == 0 && j == 2)
             {
-                CPPUNIT_ASSERT_EQUAL(f4sCam->getCx(), intrinsic.at<double>(i, j));
+                CPPUNIT_ASSERT_EQUAL(sightCam->getCx(), intrinsic.at<double>(i, j));
             }
             else if(i == 1 && j == 2)
             {
-                CPPUNIT_ASSERT_EQUAL(f4sCam->getCy(), intrinsic.at<double>(i, j));
+                CPPUNIT_ASSERT_EQUAL(sightCam->getCy(), intrinsic.at<double>(i, j));
             }
             else if(i == 2 && j == 2)
             {
@@ -102,14 +102,14 @@ void CameraTest::copyToCv()
         }
     }
 
-    CPPUNIT_ASSERT_EQUAL(f4sCam->getWidth(), static_cast<size_t>(imgSize.width));
-    CPPUNIT_ASSERT_EQUAL(f4sCam->getHeight(), static_cast<size_t>(imgSize.height));
+    CPPUNIT_ASSERT_EQUAL(sightCam->getWidth(), static_cast<size_t>(imgSize.width));
+    CPPUNIT_ASSERT_EQUAL(sightCam->getHeight(), static_cast<size_t>(imgSize.height));
 
     CPPUNIT_ASSERT_EQUAL(5, distCoeffs.size[0]);
 
     for(std::uint8_t i = 0; i < 5; ++i)
     {
-        CPPUNIT_ASSERT_EQUAL(f4sCam->getDistortionCoefficient()[i], distCoeffs.at<double>(i));
+        CPPUNIT_ASSERT_EQUAL(sightCam->getDistortionCoefficient()[i], distCoeffs.at<double>(i));
     }
 }
 

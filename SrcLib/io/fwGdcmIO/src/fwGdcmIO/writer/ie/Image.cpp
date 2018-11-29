@@ -87,7 +87,7 @@ void Image::writeImagePlaneModule()
     ::gdcm::Image& gdcmImage              = imageWriter->GetImage();
 
     // Pixel Spacing - Type 1
-    // WARNING : some DICOM image have not any spacing (NOT SUPPORTED BY FW4SPL), but stuff like "Pixel Aspect Ratio"
+    // WARNING : some DICOM image have not any spacing (NOT SUPPORTED BY Sight), but stuff like "Pixel Aspect Ratio"
     const std::size_t dimension          = m_object->getNumberOfDimensions();
     const std::vector< double >& spacing = m_object->getSpacing();
     for (unsigned int i = 0; i < dimension; ++i)

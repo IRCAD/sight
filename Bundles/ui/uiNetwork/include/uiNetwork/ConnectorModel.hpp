@@ -37,7 +37,7 @@ namespace uiNetwork
 {
 /**
  *
- * @brief A model used to retreive service configuration and network service in current F4S app
+ * @brief A model used to retreive service configuration and network service in current Sight app
  */
 class UINETWORK_CLASS_API ConnectorModel
 {
@@ -63,16 +63,16 @@ public:
                     ::fwData::Object::csptr obj);
 
     /**
-     * @brief getter for registered ioNetwork::INetworkListener in a F4S app
+     * @brief getter for registered ioNetwork::INetworkListener in a Sight app
      *
-     * @return a vector of service name in a F4S app
+     * @return a vector of service name in a Sight app
      */
     std::vector<std::string> const& getRegisteredListeners() const;
 
     /**
-     * @brief getter for registered ioNetwork::INetworkSender in a F4S app
+     * @brief getter for registered ioNetwork::INetworkSender in a Sight app
      *
-     * @return  a vector of service name in a F4S app
+     * @return  a vector of service name in a Sight app
      */
     std::vector<std::string> const& getRegisteredSenders() const;
 

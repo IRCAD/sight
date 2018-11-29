@@ -73,7 +73,7 @@ void UtilsTest::convertOgreMatrixToTM3D()
 
     const double epsilon = 1e-7; // matrices are cast from double to float meaning that some precision could be lost.
 
-    // Convert from f4s to ogre and back to f4s.
+    // Convert from Sight to ogre and back to Sight.
     {
         ::fwData::TransformationMatrix3D::sptr mat0 = ::fwData::TransformationMatrix3D::New();
 
@@ -107,7 +107,7 @@ void UtilsTest::convertOgreMatrixToTM3D()
         }
     }
 
-    // Convert from ogre to f4s and back to ogre.
+    // Convert from ogre to Sight and back to ogre.
     {
         ::Ogre::Matrix4 ogreMat1;
         for(std::uint8_t l = 0; l < 4; ++l)

@@ -83,7 +83,7 @@ void ImageReaderWriterJPGTest::testImageWriter()
 void ImageReaderWriterJPGTest::testImageWriter2()
 {
     // create Image
-    ::boost::filesystem::path pathInr = ::fwTest::Data::dir() / "fw4spl/image/inr/image.inr.gz";
+    ::boost::filesystem::path pathInr = ::fwTest::Data::dir() / "sight/image/inr/image.inr.gz";
 
     CPPUNIT_ASSERT_MESSAGE("The file '" + pathInr.string() + "' does not exist",
                            ::boost::filesystem::exists(pathInr));

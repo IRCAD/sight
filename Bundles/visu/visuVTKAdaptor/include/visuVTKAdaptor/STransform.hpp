@@ -49,7 +49,7 @@ namespace visuVTKAdaptor
     </service>
    @endcode
  * @subsection In-Out In-Out
- * - \b tm3d [::fwData::TransformationMatrix3D]: f4s transform matrix.
+ * - \b tm3d [::fwData::TransformationMatrix3D]: Sight transform matrix.
  *
  * @subsection Configuration Configuration
  *  - \b transform (mandatory) : the vtkTransform to associate to the adaptor

@@ -24,10 +24,8 @@
 #define __FWCORE_NAMESPACE_HPP__
 
 /**
- * @brief       This namespace fwCore provides common foundations for FW4SPL.
+ * @brief       This namespace fwCore provides common foundations for Sight.
  * @namespace   fwCore
- *
- * @date        2009-2010
  *
  */
 namespace fwCore

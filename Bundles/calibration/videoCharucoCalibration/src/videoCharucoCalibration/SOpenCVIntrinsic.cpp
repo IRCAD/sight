@@ -179,7 +179,7 @@ void SOpenCVIntrinsic::updating()
             {
                 ::fwData::TransformationMatrix3D::sptr mat3D = ::fwData::TransformationMatrix3D::New();
 
-                // Convert from cv to fw4spl.
+                // Convert from cv to sight.
                 ::cvIO::Matrix::copyFromCv(rvecs.at(index), tvecs.at(index), mat3D);
 
                 poseCamera->getContainer().push_back(mat3D);

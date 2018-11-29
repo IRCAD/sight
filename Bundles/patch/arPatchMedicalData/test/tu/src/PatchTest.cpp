@@ -130,7 +130,7 @@ std::vector< ::fwMedData::Series::sptr > getOtherSeries( const ::fwMedData::Seri
 
 void PatchTest::arPatchMedicalDataTest()
 {
-    const ::boost::filesystem::path file = ::fwTest::Data::dir() /"fw4spl/patch/md_1.jsonz";
+    const ::boost::filesystem::path file = ::fwTest::Data::dir() /"sight/patch/md_1.jsonz";
 
     CPPUNIT_ASSERT_MESSAGE("The file '" + file.string() + "' does not exist",
                            ::boost::filesystem::exists(file));

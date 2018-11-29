@@ -26,7 +26,7 @@
 namespace fwCore
 {
 /**
- * @brief       This namespace fwCore::mt provides common foundations for multithread in FW4SPL.
+ * @brief       This namespace fwCore::mt provides common foundations for multithread in Sight.
  * @namespace   fwCore::mt
  *
  * @date        2012.

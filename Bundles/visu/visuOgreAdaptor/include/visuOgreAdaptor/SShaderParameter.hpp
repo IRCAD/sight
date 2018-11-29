@@ -30,7 +30,7 @@ namespace visuOgreAdaptor
 {
 
 /**
- * @brief   Send a FW4SPL data as a shader parameter.
+ * @brief   Send a Sight data as a shader parameter.
  *
  * Send parameters to vertex and fragment shaders
  *

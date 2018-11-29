@@ -40,7 +40,7 @@ namespace fwData
 /**
  * @brief   Data holding a geometric structure composed of points, lines, triangles, quads or polygons.
  *
- * It is the new structure that represent mesh in fw4spl. For the moment, this new structure is available
+ * It is the new structure that represent mesh in sight. For the moment, this new structure is available
  * to register mesh with triangle cells, with quad cells or with triangle and quad cells. Peharps, in future
  * work other cell type will be available (ex: POLYGON)
  *

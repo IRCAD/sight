@@ -103,7 +103,7 @@ private:
 
 //------------------------------------------------------------------------------
 
-/// Class to perform a lazy reading on dicom image with fw4spl system
+/// Class to perform a lazy reading on dicom image with Sight system
 class ImageDicomStream : public ::fwMemory::stream::in::IFactory
 {
 

@@ -32,7 +32,7 @@ namespace visuOgreAdaptor
 class CompositorListener;
 
 /**
- * @brief   Binds a FW4SPL data to a shader uniform from a specific compositor.
+ * @brief   Binds a Sight data to a shader uniform from a specific compositor.
  *
  * @section Slots Slots
  *  - \b setBoolParameter(bool, std::string): Set the uniform from an integer value.

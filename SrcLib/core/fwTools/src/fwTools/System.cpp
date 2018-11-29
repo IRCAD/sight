@@ -40,7 +40,7 @@
 #include <signal.h>
 #endif
 
-#define F4S_TMP_EXT "fw4spl-tmp"
+#define SIGHT_TMP_EXT "sight-tmp"
 
 namespace fwTools
 {
@@ -162,7 +162,7 @@ const ::boost::filesystem::path System::getTemporaryFolder(const std::string& su
 
     const fs::path& sysTmp = getTempPath();
 
-    const std::string tmpDirName = s_tempPrefix + (s_tempPrefix.empty() ? "" : "-") + "%%%%%%%%%%%%." F4S_TMP_EXT;
+    const std::string tmpDirName = s_tempPrefix + (s_tempPrefix.empty() ? "" : "-") + "%%%%%%%%%%%%." SIGHT_TMP_EXT;
     fs::path tmpDir              = createUniqueFolder(sysTmp/tmpDirName);
     tmpDirPath = tmpDir;    // tmpDirPath always set to root tmp dir
 
@@ -252,7 +252,7 @@ void System::cleanZombies(const ::boost::filesystem::path& dir) noexcept
 {
     namespace fs = ::boost::filesystem;
 
-    const ::boost::regex tmpFolderFilter( ".*\\." F4S_TMP_EXT );
+    const ::boost::regex tmpFolderFilter( ".*\\." SIGHT_TMP_EXT );
 
     std::vector< fs::path > allTempFolders;
 

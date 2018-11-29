@@ -21,7 +21,7 @@
  ***********************************************************************/
 
 /**
- * @brief This file includes the minimal tools to work with FW4SPL.
+ * @brief This file includes the minimal tools to work with Sight.
  */
 
 #ifndef __FWCORE_BASE_HPP__

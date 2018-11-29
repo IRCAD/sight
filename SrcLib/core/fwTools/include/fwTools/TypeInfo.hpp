@@ -32,7 +32,7 @@ namespace fwTools
 /**
  * @brief   Purpose: offer a first-class, comparable wrapper over std::type_info ( but copy construcible )
  *
- * Code imported from Loki-Library and adapted for FW4SPL
+ * Code imported from Loki-Library and adapted for Sight
  */
 
 class FWTOOLS_CLASS_API TypeInfo

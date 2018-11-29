@@ -129,16 +129,16 @@ void SurfaceSegmentationIOD::read(::fwMedData::Series::sptr series) throw(::fwGd
     seriesIE.readGeneralSeriesModule();
 
     // Read General Series Module - PS 3.3 C.8.20.1
-    // NOTE: Not used in FW4SPL
+    // NOTE: Not used in Sight
 
     // Read Frame of Reference Module - PS 3.3 C.7.4.1
-    // NOTE: Not used in FW4SPL
+    // NOTE: Not used in Sight
 
     // Read General Equipment Module - PS 3.3 C.7.5.1
     equipmentIE.readGeneralEquipmentModule();
 
     // Read SOP Common Module - PS 3.3 C.12.1
-    // NOTE: Not used in FW4SPL
+    // NOTE: Not used in Sight
 
     // Read Surface Segmentation Module - PS 3.3 C.8.23.1
     // And Surface Mesh Module - PS 3.3 C.27.1

@@ -62,7 +62,7 @@ void Equipment::writeGeneralEquipmentModule()
     ::gdcm::DataSet& dataset = m_writer->GetFile().GetDataSet();
 
     // Manufacturer - Type 2 (Type 1 for EnhancedGeneralEquipmentModule)
-    ::fwGdcmIO::helper::DicomDataWriter::setTagValue< 0x0008, 0x0070 >("FW4SPL", dataset);
+    ::fwGdcmIO::helper::DicomDataWriter::setTagValue< 0x0008, 0x0070 >("Sight", dataset);
 
     // Institution Name - Type 3
     const std::string& institutName = m_object->getInstitutionName();
@@ -87,7 +87,7 @@ void Equipment::writeEnhancedGeneralEquipmentModule()
     ::gdcm::DataSet& dataset = m_writer->GetFile().GetDataSet();
 
     // Manufacturer's Model Name - Type 1
-    ::fwGdcmIO::helper::DicomDataWriter::setTagValue< 0x0008, 0x1090 >("FW4SPL_FWGDCMIO", dataset);
+    ::fwGdcmIO::helper::DicomDataWriter::setTagValue< 0x0008, 0x1090 >("Sight_FWGDCMIO", dataset);
 
     // Device Serial Number - Type 1
     std::string deviceSerialNumber = std::string(FWGDCMIO_VER);

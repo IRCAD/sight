@@ -37,7 +37,7 @@ namespace fwServices
 /**
  * @page AppConfig AppConfig
  *
- * The FW4SPL architecture provides a dynamic management of configurations to allow the use of multiple objects and
+ * The Sight architecture provides a dynamic management of configurations to allow the use of multiple objects and
  * services.
  *
  * The xml configuration for an application is defines with the extension ``::fwServices::registry::AppConfig``.
@@ -233,7 +233,7 @@ namespace fwServices
 /**
  * @page AppConfig AppConfig
  *
- * The FW4SPL architecture provides a dynamic management of configurations to allow the use of multiple objects and
+ * The Sight architecture provides a dynamic management of configurations to allow the use of multiple objects and
  * services.
  *
  * The xml configuration for an application is defines with the extension ``::fwServices::registry::AppConfig``.

@@ -86,7 +86,7 @@ void IoVtkGdcmTest::readerDicomTest( std::string srvImpl )
     // HACK, we don't want the compiler to optimize 'm_medDataCampVersion' out.
     CPPUNIT_ASSERT_EQUAL(::fwMedDataCamp::Version::s_CURRENT_VERSION, m_medDataCampVersion);
 
-    ::boost::filesystem::path dicomDataPath(::fwTest::Data::dir() / "fw4spl/Patient/Dicom/image_281433");
+    ::boost::filesystem::path dicomDataPath(::fwTest::Data::dir() / "sight/Patient/Dicom/image_281433");
 
     CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + dicomDataPath.string() + "' does not exist",
                            ::boost::filesystem::exists(dicomDataPath));

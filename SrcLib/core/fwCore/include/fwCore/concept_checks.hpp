@@ -22,7 +22,7 @@
 
 /**
  * @file fwCore/concept_checks.hpp
- * @brief This file defines some fw4spl concept checks.
+ * @brief This file defines some sight concept checks.
  *
  *
  */

@@ -301,7 +301,7 @@ void writePrivateTags(const ::fwData::Reconstruction::csptr& reconstruction,
     // Private group
     const auto reservedGroup    = 0x5649;
     const auto reservingElement = 0x0010; // Reserve group (gggg,0x1000-0x10FF)
-    const auto privateCreator   = "FW4SPL";
+    const auto privateCreator   = "Sight";
 
     // Reserve group
     {
@@ -539,7 +539,7 @@ void Surface::writeSurfaceSequence(const ::fwData::Reconstruction::csptr& recons
     // Table C.27-4. Surface Mesh Primitives Macro Attributes
     //=======================================================
     {
-        // Mesh primitive type used by surface writer (fixed to TRIANGLE by FW4SPL)
+        // Mesh primitive type used by surface writer (fixed to TRIANGLE by Sight)
         ::gdcm::SmartPointer< ::gdcm::MeshPrimitive > primitive = surface->GetMeshPrimitive();
         primitive->SetPrimitiveType(::gdcm::MeshPrimitive::TRIANGLE);
 
@@ -559,7 +559,7 @@ void Surface::writeSurfaceSequence(const ::fwData::Reconstruction::csptr& recons
         surface->SetAlgorithmFamily(::gdcm::SegmentHelper::BasicCodedEntry("123109", "DCM", "Manual Processing"));
 
         // Algorithm Name (0x0066,0x0036) - Type 1
-        surface->SetAlgorithmName("FW4SPL");
+        surface->SetAlgorithmName("Sight");
 
         // Algorithm Version (0x0066,0x0031) - Type 1
         surface->SetAlgorithmVersion("1");

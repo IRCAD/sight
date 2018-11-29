@@ -101,7 +101,7 @@ namespace factory
              <!-- ...-->
          </requirements>
          <builder>::fwActivities::builder::ActivitySeries</builder>
-         <validator>::fwActivities::validator::ImageProperties</validator><!-- pour fw4spl_0.9.2 -->
+         <validator>::fwActivities::validator::ImageProperties</validator>
          <appConfig id="myAppConfigId">
             <parameters>
                 <parameter replace="registeredImageUid" by="@values.param1" />

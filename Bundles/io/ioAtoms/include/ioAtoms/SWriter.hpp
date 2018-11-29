@@ -65,7 +65,6 @@ namespace ioAtoms
         <extensions>
             <extension label="XML">.xml</extension>
             <extension label="Zipped XML>.xmlz</extension>
-            <extension>.f4s</extension>
             <extension>.j</extension>
             <extension label="Medical workspace">.mw</extension>
             <extension>.vpz</extension>

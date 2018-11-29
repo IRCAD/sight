@@ -31,7 +31,7 @@ namespace fwRenderOgre
 {
 
 /**
- * @brief   Base interface containing common code to upload shader parameters from FW4SPL data.
+ * @brief   Base interface containing common code to upload shader parameters from Sight data.
  */
 class FWRENDEROGRE_CLASS_API IParameter : public ::fwRenderOgre::IAdaptor
 {

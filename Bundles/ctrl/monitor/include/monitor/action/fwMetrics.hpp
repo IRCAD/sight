@@ -32,7 +32,7 @@ namespace monitor
 
 namespace action
 {
-/// Implements an action for show metrics about f4s factories (number of data, message and service in factories).
+/// Implements an action for show metrics about Sight factories (number of data, message and service in factories).
 class MONITOR_CLASS_API fwMetrics : public ::fwGui::IActionSrv
 {
 
