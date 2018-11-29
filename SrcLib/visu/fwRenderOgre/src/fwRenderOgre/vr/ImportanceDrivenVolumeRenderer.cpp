@@ -192,7 +192,7 @@ ImportanceDrivenVolumeRenderer::~ImportanceDrivenVolumeRenderer()
 
 void ImportanceDrivenVolumeRenderer::updateCSGTF()
 {
-    if(m_idvrMethod == s_MIMP && m_idvrCSGTF)
+    if(m_idvrMethod == s_MIMP && this->m_idvrCSGTF)
     {
         const ::Ogre::MaterialPtr material       = ::Ogre::MaterialManager::getSingleton().getByName(m_currentMtlName);
         const ::Ogre::Technique* const technique = material->getTechnique(0);
@@ -785,12 +785,15 @@ void ImportanceDrivenVolumeRenderer::setRayCastingPassTextureUnits(Ogre::Pass* c
 
         fpParams->setNamedConstant("u_" + s_JUMP_FLOOD_ALGORITHM_TEXTURE, nbTexUnits++);
 
-        const auto gpuTF = m_gpuCSGTF.lock();
-        texUnitState = _rayCastingPass->createTextureUnitState();
-        texUnitState->setName(s_CSG_TF_TEXUNIT_NAME);
-        gpuTF->bind(_rayCastingPass, texUnitState->getName(), fpParams, "u_CSGTFWindow");
+        if(this->m_idvrCSGTF)
+        {
+            const auto gpuTF = m_gpuCSGTF.lock();
+            texUnitState = _rayCastingPass->createTextureUnitState();
+            texUnitState->setName(s_CSG_TF_TEXUNIT_NAME);
+            gpuTF->bind(_rayCastingPass, texUnitState->getName(), fpParams, "u_CSGTFWindow");
 
-        fpParams->setNamedConstant("u_CSGTFTexture", nbTexUnits++);
+            fpParams->setNamedConstant("u_CSGTFTexture", nbTexUnits++);
+        }
     }
 
     // Alpha Correction: AImC | VPImC

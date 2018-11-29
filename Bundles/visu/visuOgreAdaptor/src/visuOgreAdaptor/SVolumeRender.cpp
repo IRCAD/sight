@@ -175,16 +175,19 @@ void SVolumeRender::updateVolumeTF()
 
 void SVolumeRender::updateCSGTF()
 {
-    this->getRenderService()->makeCurrent();
-
-    ::fwData::TransferFunction::sptr tf = m_helperCSGTF.getTransferFunction();
+    if(m_gpuCSGTF->getTexture())
     {
-        ::fwData::mt::ObjectWriteLock tfLock(tf);
-        m_gpuCSGTF->updateTexture(tf);
-        m_volumeRenderer->updateCSGTF();
-    }
+        this->getRenderService()->makeCurrent();
 
-    this->requestRender();
+        ::fwData::TransferFunction::sptr tf = m_helperCSGTF.getTransferFunction();
+        {
+            ::fwData::mt::ObjectWriteLock tfLock(tf);
+            m_gpuCSGTF->updateTexture(tf);
+            m_volumeRenderer->updateCSGTF();
+        }
+
+        this->requestRender();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -255,7 +258,6 @@ void SVolumeRender::starting()
         true);
 
     m_gpuVolumeTF->createTexture(this->getID() + "_VolumeGpuTF");
-    m_gpuCSGTF->createTexture(this->getID() + "_CSGGpuTF");
 
     m_preIntegrationTable.createTexture(this->getID());
 
@@ -745,7 +747,16 @@ void SVolumeRender::setBoolParameter(bool val, std::string key)
     }
     else if(key == "idvrCSGTF")
     {
+        if(val && !m_gpuCSGTF->getTexture())
+        {
+            m_gpuCSGTF->createTexture(this->getID() + "_CSGGpuTF");
+        }
+        else if(m_gpuCSGTF->getTexture())
+        {
+            m_gpuCSGTF->removeTexture();
+        }
         m_volumeRenderer->toggleIDVRCSGTF(val);
+        this->updateCSGTF();
     }
     else if(key == "idvrCSGBorder")
     {

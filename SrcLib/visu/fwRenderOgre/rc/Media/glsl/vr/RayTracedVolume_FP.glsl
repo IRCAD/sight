@@ -12,13 +12,16 @@ uniform sampler2D u_IC;
 
 #if IDVR == 1
 uniform sampler2D u_JFA;
-uniform vec2 u_CSGTFWindow;
-uniform sampler1D u_CSGTFTexture;
 #endif
 
 #if IDVR == 2 || IDVR == 3
 uniform sampler3D u_mask;
 #endif
+
+#ifdef CSG_TF
+uniform vec2 u_CSGTFWindow;
+uniform sampler1D u_CSGTFTexture;
+#endif // CSG_TF
 
 #if AMBIENT_OCCLUSION || COLOR_BLEEDING || SHADOWS
 uniform sampler3D u_illuminationVolume;
