@@ -1,15 +1,12 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
-
 /* crypt.h -- base code for crypt/uncrypt ZIPfile
 
 
    Version 1.01e, February 12th, 2005
 
    Copyright (C) 1998-2005 Gilles Vollant
+
+   Modifications for Sight
+   Copyright (C) 2010 IRCAD France
 
    This code is a modified version of crypting code in Infozip distribution
 
