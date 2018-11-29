@@ -407,7 +407,7 @@ void SVolumeRender::updateImage()
 
     ::fwData::TransferFunction::sptr volumeTF = m_helperVolumeTF.getTransferFunction();
     {
-        m_gpuCSGTF->updateTexture(volumeTF);
+        m_gpuVolumeTF->updateTexture(volumeTF);
 
         if(m_preIntegratedRendering)
         {
