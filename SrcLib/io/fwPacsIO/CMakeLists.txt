@@ -3,3 +3,6 @@ fwLoadProperties()
 find_package(DCMTK QUIET REQUIRED)
 fwForwardInclude( ${DCMTK_config_INCLUDE_DIRS} )
 fwForwardLink( ${DCMTK_LIBRARIES} )
+
+file(COPY "${DCMTK_DIR}/../../../etc/dcmtk/storescp.cfg"
+     DESTINATION "${CMAKE_BINARY_DIR}/${FWBUNDLE_RC_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}")
