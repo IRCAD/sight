@@ -25,6 +25,8 @@
    The MIT License
 
    Copyright (c) 2008, 2009 MouseVolcano (Thomas Gradl, Karolina Sefyrin), Esa Kylli
+   Copyright (c) 2014-2018 IRCAD France
+   Copyright (c) 2014-2018 IHU Strasbourg
 
    Thanks to Erik Biermann for the help with the Videos, SEO and Webwork
 
