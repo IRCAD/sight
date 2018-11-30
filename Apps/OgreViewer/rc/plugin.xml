@@ -34,7 +34,7 @@
             <object uid="mask" type="::fwData::Image" />
             <object uid="landmarks" type="::fwData::Landmarks" />
             <object uid="volumeTF" type="::fwData::TransferFunction" src="deferred" />
-            <object uid="CSGTF" type="::fwData::TransferFunction" src="deferred" />
+            <object uid="csgTF" type="::fwData::TransferFunction" src="deferred" />
 
             <!-- ******************************* UI declaration *********************************** -->
 
@@ -99,7 +99,6 @@
                         <view caption="Organ manager" selected="yes" />
                         <view caption="Light manager" />
                         <view caption="Volume TF manager" />
-                        <view caption="CSG TF manager" />
                         <view caption="IDVR manager" />
                     </layout>
                 </gui>
@@ -108,7 +107,6 @@
                     <view wid="organView" start="yes" />
                     <view wid="lightView" start="yes" />
                     <view wid="volumeTFVView" start="yes" />
-                    <view wid="CSGTFVView" start="yes" />
                     <view wid="idvrView" start="yes" />
                 </registry>
             </service>
@@ -197,27 +195,27 @@
                 <inout key="modelSeries" uid="modelSeries" />
                 <inout key="image" uid="image" />
                 <inout key="volumeTF" uid="volumeTF" optional="yes" />
-                <inout key="CSGTF" uid="CSGTF" optional="yes" />
+                <inout key="csgTF" uid="csgTF" optional="yes" />
                 <inout key="mask" uid="mask" />
-                <inout key="landmarks" uid="landmarks" />
+                <inout key="landmark" uid="landmarks" />
                 <parameter replace="WID_PARENT" by="OgreSceneView" />
-                <parameter replace="compositorChannel" by="compositorChannel" />
-                <parameter replace="idvrEnumParamChannel" by="idvrEnumParamChannel" />
-                <parameter replace="idvrBoolParamChannel" by="idvrBoolParamChannel" />
-                <parameter replace="idvrDoubleParamChannel" by="idvrDoubleParamChannel" />
-                <parameter replace="idvrColorParamChannel" by="idvrColorParamChannel" />
+                <parameter replace="COMPOSITOR_CHANNEL" by="compositorChannel" />
+                <parameter replace="IDVR_ENUM_PARAM_CHANNEL" by="idvrEnumParamChannel" />
+                <parameter replace="IDVR_BOOL_PARAM_CHANNEL" by="idvrBoolParamChannel" />
+                <parameter replace="IDVR_DOUBLE_PARAM_CHANNEL" by="idvrDoubleParamChannel" />
+                <parameter replace="IDVR_COLOR_PARAM_CHANNEL" by="idvrColorParamChannel" />
             </service>
 
             <service uid="cfgOgreNegato2D" type="::fwServices::SConfigController" >
                 <appConfig id="OgreNegato2D" />
                 <inout key="image" uid="image" />
-                <inout key="TF" uid="volumeTF" optional="yes" />
+                <inout key="tf" uid="volumeTF" optional="yes" />
                 <parameter replace="WID_PARENT" by="OgreNegato2DView" />
             </service>
 
             <service uid="cfgOrganManagerConfig"  type="::fwServices::SConfigController">
                 <appConfig id="OgreOrganManagerWithSeries" />
-                <inout key="ORGAN_MANAGER_MODELSERIES" uid="modelSeries" />
+                <inout key="organManagerModelSeries" uid="modelSeries" />
                 <parameter replace="WID_PARENT" by="organView" />
                 <parameter replace="ICON_PATH" by="arMedia-0.1/icons/app.ico" />
             </service>
@@ -234,16 +232,12 @@
                 <parameter replace="WID_PARENT" by="volumeTFVView" />
             </service>
 
-            <service uid="cfgMaskTFManager" type="::fwServices::SConfigController">
-                <appConfig id="OgreHistogramManager" />
-                <inout key="IMAGE" uid="image" />
-                <inout key="TF" uid="CSGTF" optional="yes" />
-                <parameter replace="WID_PARENT" by="CSGTFVView" />
-            </service>
 
             <service uid="cfgIDVRManager"  type="::fwServices::SConfigController">
                 <appConfig id="OgreIDVRManager" />
                 <inout key="MASK" uid="mask" />
+                <inout key="image" uid="image" />
+                <inout key="csgTF" uid="csgTF" optional="yes" />
                 <parameter replace="WID_PARENT" by="idvrView" />
                 <parameter replace="IDVR_ENUM_PARAM_CHANNEL" by="idvrEnumParamChannel" />
                 <parameter replace="IDVR_BOOL_PARAM_CHANNEL" by="idvrBoolParamChannel" />
@@ -293,7 +287,7 @@
             <connect channel="idvrBoolParamChannel" />
             <connect channel="idvrDoubleParamChannel" />
             <connect channel="idvrColorParamChannel" />
-            <connect channel="compositorChannel" >
+            <connect channel="COMPOSITOR_CHANNEL" >
                 <slot>compositorParameters/updateCompositor</slot>
             </connect>
 
@@ -306,7 +300,6 @@
             <start uid="cfgOrganManagerConfig" />
             <start uid="cfgLightManager" />
             <start uid="cfgImageTFManager" />
-            <start uid="cfgMaskTFManager" />
             <start uid="cfgIDVRManager" />
             <start uid="compositorSelector" />
             <start uid="compositorParameters" />

@@ -2,13 +2,13 @@
     <id>OgreOrganManagerWithSeries</id>
     <parameters>
         <param name="WID_PARENT" />
-        <param name="ORGAN_MANAGER_MODELSERIES" />
+        <param name="organManagerModelSeries" />
         <param name="ICON_PATH" />
     </parameters>
 
     <config>
 
-        <object uid="${ORGAN_MANAGER_MODELSERIES}" type="::fwMedData::ModelSeries" src="ref" />
+        <object uid="${organManagerModelSeries}" type="::fwMedData::ModelSeries" src="ref" />
         <object uid="reconstruction" type="::fwData::Reconstruction" src="deferred" />
 
         <service uid="organView" type="::gui::view::SDefaultView" >
@@ -54,7 +54,7 @@
         </service>
 
         <service uid="listOrganEditor" type="::uiMedDataQt::editor::SModelSeriesList" autoConnect="yes" >
-            <inout key="modelSeries" uid="${ORGAN_MANAGER_MODELSERIES}" />
+            <inout key="modelSeries" uid="${organManagerModelSeries}" />
             <columns>
                 <organ_name>@organ_name</organ_name>
                 <volume_cc view="positive" >@volume</volume_cc>

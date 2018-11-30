@@ -68,7 +68,7 @@ const ::fwCom::Slots::SlotKeyType SVolumeRender::s_UPDATE_CLIPPING_BOX_SLOT     
 
 static const ::fwServices::IService::KeyType s_IMAGE_INOUT           = "image";
 static const ::fwServices::IService::KeyType s_VOLUME_TF_INOUT       = "tf";
-static const ::fwServices::IService::KeyType s_CSG_TF_INOUT          = "CSGTF";
+static const ::fwServices::IService::KeyType s_CSG_TF_INOUT          = "csgTF";
 static const ::fwServices::IService::KeyType s_CLIPPING_MATRIX_INOUT = "clippingMatrix";
 static const ::fwServices::IService::KeyType s_MASK_INOUT            = "mask";
 

@@ -7,12 +7,16 @@
         <param name="IDVR_DOUBLE_PARAM_CHANNEL" />
         <param name="IDVR_BOOL_PARAM_CHANNEL" />
         <param name="IDVR_COLOR_PARAM_CHANNEL" />
+        <param name="image" />
+        <param name="csgTF" />
     </parameters>
 
     <config>
 
         <!-- *********************************** Begin Objects declaration *********************************** -->
         <object uid="${MASK}"  type="::fwData::Image" src="ref" />
+        <object uid="${image}" type="::fwData::Image" src="ref" />
+        <object uid="${csgTF}" type="::fwData::TransferFunction" src="deferred" />
         <!-- *********************************** End Objects declaration *********************************** -->
 
         <!-- *********************************** Begin layouts declaration *********************************** -->
@@ -30,6 +34,37 @@
                 <view sid="IDVRMethodSelector" start="yes" />
             </registry>
         </service>
+
+        <service uid="csgTFFrame" type="::gui::frame::SDefaultFrame" >
+            <gui>
+                <frame>
+                    <name>CSG TF Manager</name>
+                    <minSize width="500" height="500" />
+                </frame>
+            </gui>
+            <registry>
+                <view sid="csgTFView" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="csgTFView" type="::gui::view::SDefaultView" >
+            <gui>
+                <layout type="::fwGui::CardinalLayoutManager">
+                    <view align="center" />
+                </layout>
+            </gui>
+            <registry>
+                <view wid="CSGTFVView" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="cfgMaskTFManager" type="::fwServices::SConfigController">
+            <appConfig id="OgreHistogramManager" />
+            <inout key="IMAGE" uid="${image}" />
+            <inout key="TF" uid="${csgTF}" optional="yes" />
+            <parameter replace="WID_PARENT" by="CSGTFVView" />
+        </service>
+
         <!-- *********************************** End layouts declaration *********************************** -->
 
         <!-- *********************************** Begin services declarations *********************************** -->
@@ -60,6 +95,7 @@
                 <text>Mask selector</text>
             </config>
         </service>
+
 
         <service uid="MaskReader" type="::ioVTK::SImageReader" worker="w_maskReader">
             <inout key="data" uid="${MASK}" />
@@ -94,6 +130,8 @@
         <!-- *********************************** Begin start services *********************************** -->
         <start uid="IDVRView" />
         <start uid="MaskReader" />
+        <start uid="csgTFFrame" />
+        <start uid="cfgMaskTFManager" />
         <!-- *********************************** End start services *********************************** -->
 
 </config>

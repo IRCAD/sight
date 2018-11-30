@@ -80,7 +80,7 @@ namespace visuOgreAdaptor
  * @subsection In-Out In-Out
  * - \b tf [::fwData::TransferFunction] (optional): the current TransferFunction. If it is not defined, we use the
  *      image's default transferFunction (CT-GreyLevel).
- * - \b CSGTF [::fwData::TransferFunction] (optional): the TransferFunction used for the mask. If it is not defined, we
+ * - \b csgTF [::fwData::TransferFunction] (optional): the TransferFunction used for the mask. If it is not defined, we
  * use a transparent transferFunction.
  * - \b mask [::fwData::Image] (optional): segmented data.
  * - \b clippingMatrix [::fwData::TransformationMatrix3D]: matrix used to clip the volume.

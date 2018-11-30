@@ -3,11 +3,11 @@
     <parameters>
         <param name="WID_PARENT" />
         <param name="image" />
-        <param name="TF" />
+        <param name="tf" />
     </parameters>
     <config>
         <object uid="${image}" type="::fwData::Image" src="ref" />
-        <object uid="${TF}" type="::fwData::TransferFunction" src="deferred" />
+        <object uid="${tf}" type="::fwData::TransferFunction" src="deferred" />
 
         <service uid="OgreNegato2D" type="::gui::view::SDefaultView">
             <gui>
@@ -42,7 +42,7 @@
 
         <service uid="negato2DAdaptor" type="::visuOgreAdaptor::SNegato2D">
             <inout key="image" uid="${image}" autoConnect="yes" />
-            <inout key="tf" uid="${TF}" optional="yes" />
+            <inout key="tf" uid="${tf}" optional="yes" />
             <config layer="default" />
         </service>
 
