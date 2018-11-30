@@ -1,0 +1,116 @@
+stages:
+  - lint
+  - build
+  - deploy
+
+before_script:
+  # CCache Config
+  - mkdir -p ccache
+  - export CCACHE_BASEDIR=${PWD}
+  - export CCACHE_DIR=${PWD}/ccache
+  - export CCACHE_COMPILERCHECK=content
+  - export CCACHE_MAXSIZE=32G
+  - export CCACHE_COMPRESS=1
+  - export CCACHE_SLOPPINESS=include_file_ctime,pch_defines,time_macros
+  - export CCACHE_NOHASHDIR=1
+
+cache:
+  paths:
+    - ccache/
+
+sheldon-mr:
+  image: ${DOCKER_ENVDEV_CLANG6}
+  stage: lint
+  script:
+    - export ORIG_BRANCH_COMMIT_SHA=$(git merge-base dev origin/${CI_COMMIT_REF_NAME})
+    - git -c http.sslVerify=false clone --depth 1 https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-git.git
+    # Execute sheldon, on all commits from the merge request
+    - sight-git/hooks/sheldon ${ORIG_BRANCH_COMMIT_SHA}..${CI_COMMIT_SHA}
+
+sheldon:
+  image: ${DOCKER_ENVDEV_CLANG6}
+  stage: lint
+  script:
+    - git -c http.sslVerify=false clone --depth 1 https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-git.git
+    - sight-git/hooks/sheldon HEAD^ HEAD
+  except:
+    - dev
+    - master
+
+build:debug:
+  image: ${DOCKER_ENVDEV_CLANG6}
+  stage: build
+  script:
+    - export CC=/usr/local/lib/ccache/clang
+    - export CXX=/usr/local/lib/ccache/clang++
+    - mkdir $CI_PROJECT_DIR/install $CI_PROJECT_DIR/build
+    - cd $CI_PROJECT_DIR/build/
+    - ccache -s
+    - >
+     cmake $CI_PROJECT_DIR
+     -G Ninja
+     -DUSE_CONAN=ON
+     -DCMAKE_INSTALL_PREFIX=$CI_PROJECT_DIR/install
+     -DCMAKE_BUILD_TYPE=Debug
+     -DBUILD_TESTS=ON
+     -DBUILD_DOCUMENTATION=OFF
+     -DENABLE_PCH=ON
+    - ninja
+    - ccache -s
+
+build:release:
+  image: ${DOCKER_ENVDEV_CLANG6}
+  stage: build
+  script:
+    - export CC=/usr/local/lib/ccache/clang
+    - export CXX=/usr/local/lib/ccache/clang++
+    - mkdir $CI_PROJECT_DIR/install $CI_PROJECT_DIR/build
+    - cd $CI_PROJECT_DIR/build/
+    - ccache -s
+    - >
+     cmake $CI_PROJECT_DIR
+     -G Ninja
+     -DUSE_CONAN=ON
+     -DCMAKE_INSTALL_PREFIX=$CI_PROJECT_DIR/install
+     -DCMAKE_BUILD_TYPE=Release
+     -DBUILD_TESTS=ON
+     -DBUILD_DOCUMENTATION=OFF
+     -DENABLE_PCH=ON
+    - ninja
+    - ccache -s
+
+doxygen:
+  image: ${DOCKER_ENVDEV_CLANG6}
+  stage: build
+  script:
+    - sudo apt-get update -yqq && sudo apt-get install -yqq graphviz doxygen
+    - export CC=/usr/bin/clang-6.0
+    - export CXX=/usr/bin/clang++-6.0
+    - mkdir $CI_PROJECT_DIR/install $CI_PROJECT_DIR/build
+    - cd $CI_PROJECT_DIR/build/
+    - >
+     cmake $CI_PROJECT_DIR
+     -G Ninja
+     -DUSE_CONAN=ON
+     -DCMAKE_INSTALL_PREFIX=$CI_PROJECT_DIR/install
+     -DCMAKE_BUILD_TYPE=Release
+     -DBUILD_TESTS=OFF
+     -DBUILD_DOCUMENTATION=ON
+     -DENABLE_PCH=ON
+    - ninja doc
+  artifacts:
+    name: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
+    paths:
+      - $CI_PROJECT_DIR/build/Documentation/Doxygen/
+ 
+pages:
+  stage: deploy
+  dependencies:
+    - doxygen
+  script:
+    - mv build/Documentation/Doxygen/html/ public/
+  artifacts:
+    paths:
+    - public
+  only:
+    - dev

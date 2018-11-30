@@ -121,7 +121,7 @@ void SShowAbout::updating( )
 
     QDialog* dialog = new QDialog(qApp->activeWindow());
     dialog->setWindowTitle(QString::fromStdString(m_title));
-    QUrl url(QString::fromStdString(m_fsAboutPath.string()));
+    QUrl url = QUrl::fromLocalFile(QString::fromStdString(m_fsAboutPath.string()));
 #if defined(QT_WEBKIT)
     QWebView* htmlView = new QWebView(dialog);
     htmlView->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
