@@ -25,7 +25,7 @@
 #include <itkOutputWindow.h>
 
 /**
- * @brief Outputs ITK messages to the fw4spl log.
+ * @brief Outputs ITK messages to the sight log.
  */
 class ItkLogger : public ::itk::OutputWindow
 {

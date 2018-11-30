@@ -150,7 +150,7 @@ void STexture::updating()
 
     SLM_ASSERT("Failed object dynamic cast", imageSight);
 
-    if(imageF4s->getAllocatedSizeInBytes() != 0)
+    if(imageSight->getAllocatedSizeInBytes() != 0)
     {
         ::fwData::mt::ObjectReadLock lock(imageSight);
 
