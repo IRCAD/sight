@@ -76,7 +76,7 @@ void SIntrinsicEdition::updateCalibration()
     ::arData::Camera::sptr camera = this->getInOut< ::arData::Camera >(s_CAMERA_INOUT);
     if (!camera)
     {
-        FW_DEPRECATED_KEY(s_CAMERA_INOUT, "inout", "sight_19.0");
+        FW_DEPRECATED_KEY(s_CAMERA_INOUT, "inout", "19.0");
         camera = this->getObject< ::arData::Camera >();
     }
 
@@ -117,7 +117,7 @@ void SIntrinsicEdition::readCalibration()
     ::arData::Camera::sptr camera = this->getInOut< ::arData::Camera >(s_CAMERA_INOUT);
     if (!camera)
     {
-        FW_DEPRECATED_KEY(s_CAMERA_INOUT, "inout", "sight_19.0");
+        FW_DEPRECATED_KEY(s_CAMERA_INOUT, "inout", "19.0");
         camera = this->getObject< ::arData::Camera >();
     }
 

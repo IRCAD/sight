@@ -195,7 +195,7 @@ void SFilterSelectorDialog::updating()
             ::fwData::String::sptr obj = this->getInOut< ::fwData::String >(s_FILTER_INOUT);
             if (!obj)
             {
-                FW_DEPRECATED_KEY(s_FILTER_INOUT, "inout", "sight_18.0");
+                FW_DEPRECATED_KEY(s_FILTER_INOUT, "inout", "19.0");
                 obj = this->getObject< ::fwData::String >();
             }
             SLM_ASSERT("The filter selector service must work on a ::fwData::String object.", obj);
