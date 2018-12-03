@@ -160,8 +160,9 @@ void Player::stop()
     if(m_camera)
     {
         m_camera->stop();
+        m_camera->unload();
 
-        delete m_camera;
+        m_camera->deleteLater();
         m_camera.clear();
     }
 

@@ -5,7 +5,7 @@
 	<key>CFBundleIdentifier</key>
 	<string>f4s</string>
 	<key>CFBundleName</key>
-	<string>FW4SPL</string>
+	<string>Sight</string>
 	<key>DocSetPlatformFamily</key>
 	<string>f4s</string>
 	<key>isDashDocset</key>
@@ -17,6 +17,6 @@
     <key>isJavaScriptEnabled</key>
     <true/>
 	<key>DashDocSetFallbackURL</key>
-	<string>https://rawgit.com/fw4spl-org/fw4spl-dox/master/index.html</string>
+	<string>https://sight.pages.ircad.fr/sight/</string>
 </dict>
 </plist>
