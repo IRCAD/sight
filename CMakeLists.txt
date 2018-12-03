@@ -19,6 +19,8 @@ option(USE_CONAN "Use Conan package manager for dependencies (experimental)" OFF
 mark_as_advanced(USE_CONAN)
 
 if(USE_CONAN)
+    option(CONAN_BUILD_MISSING "Build missing conan package automatically (experimental)" OFF)
+    mark_as_advanced(CONAN_BUILD_MISSING)
     include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/conan.cmake)
 endif()
 

@@ -35,12 +35,20 @@ endmacro()
 
 macro(installConanDeps CONAN_DEPS_LIST)
 
-    conan_cmake_run(
-        REQUIRES ${CONAN_DEPS_LIST}
-        BASIC_SETUP CMAKE_TARGETS NO_OUTPUT_DIRS
-        OPTIONS ${CONAN_OPTIONS}
-        #BUILD missing
-    )
+    if(CONAN_BUILD_MISSING)
+        conan_cmake_run(
+            REQUIRES ${CONAN_DEPS_LIST}
+            BASIC_SETUP CMAKE_TARGETS NO_OUTPUT_DIRS
+            OPTIONS ${CONAN_OPTIONS}
+            BUILD missing
+        )
+    else()
+        conan_cmake_run(
+            REQUIRES ${CONAN_DEPS_LIST}
+            BASIC_SETUP CMAKE_TARGETS NO_OUTPUT_DIRS
+            OPTIONS ${CONAN_OPTIONS}
+        )
+    endif()
 
 endmacro()
 
