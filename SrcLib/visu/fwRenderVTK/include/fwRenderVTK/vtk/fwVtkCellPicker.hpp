@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -18,22 +18,21 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
  *
+ * This file incorporates work covered by the following copyright and
+ * permission notice:
+ *
+ *   Program:   Visualization Toolkit
+ *   Module:    $RCSfile: fwVtkCellPicker.h,v $
+ *
+ *   Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
+ *   All rights reserved.
+ *   See Copyright.txt or http://www.kitware.com/Copyright.htm for details.
+ *
+ *   This software is distributed WITHOUT ANY WARRANTY; without even
+ *   the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+ *   PURPOSE.  See the above copyright notice for more information.
+ *
  ***********************************************************************/
-
-/*=========================================================================
-
-   Program:   Visualization Toolkit
-   Module:    $RCSfile: fwVtkCellPicker.h,v $
-
-   Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
-   All rights reserved.
-   See Copyright.txt or http://www.kitware.com/Copyright.htm for details.
-
-     This software is distributed WITHOUT ANY WARRANTY; without even
-     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-     PURPOSE.  See the above copyright notice for more information.
-
-   =========================================================================*/
 // .NAME fwVtkCellPicker - select a cell by shooting a ray into graphics window
 // .SECTION Description
 // fwVtkCellPicker is used to select a cell by shooting a ray into graphics
@@ -44,8 +43,7 @@
 // .SECTION See Also
 // fwVtkPicker vtkPointPicker
 
-#ifndef __FWRENDERVTK_VTK_FWVTKCELLPICKER_HPP__
-#define __FWRENDERVTK_VTK_FWVTKCELLPICKER_HPP__
+#pragma once
 
 #include "fwRenderVTK/config.hpp"
 #include "fwRenderVTK/vtk/fwVtkPicker.hpp"
@@ -79,7 +77,7 @@ public:
 
     typedef std::vector< std::pair<int, fwVec3d> > PickedCellType;
 
-    FWRENDERVTK_API PickedCellType GetPickedCellIds( double p1[3], double p2[3], vtkPolyData *polydata);
+    FWRENDERVTK_API PickedCellType GetPickedCellIds( double p1[3], double p2[3], vtkPolyData* polydata);
 
 protected:
     fwVtkCellPicker();
@@ -90,8 +88,8 @@ protected:
     double PCoords[3]; // picked cell parametric coordinates
 
     virtual double IntersectWithLine(double p1[3], double p2[3], double tol,
-                                     vtkAssemblyPath *path, vtkProp3D *p,
-                                     vtkAbstractMapper3D *m) override;
+                                     vtkAssemblyPath* path, vtkProp3D* p,
+                                     vtkAbstractMapper3D* m) override;
     void Initialize() override;
 
 private:
@@ -101,5 +99,3 @@ private:
     fwVtkCellPicker(const fwVtkCellPicker&);  // Not implemented.
     void operator=(const fwVtkCellPicker&);  // Not implemented.
 };
-
-#endif // __FWRENDERVTK_VTK_FWVTKCELLPICKER_HPP__

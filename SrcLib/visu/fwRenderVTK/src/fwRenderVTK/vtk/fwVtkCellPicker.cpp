@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -18,33 +18,21 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
  *
+ * This file incorporates work covered by the following copyright and
+ * permission notice:
+ *
+ *   Program:   Visualization Toolkit
+ *   Module:    $RCSfile: fwVtkCellPicker.cxx,v $
+ *
+ *   Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
+ *   All rights reserved.
+ *   See Copyright.txt or http://www.kitware.com/Copyright.htm for details.
+ *
+ *   This software is distributed WITHOUT ANY WARRANTY; without even
+ *   the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+ *   PURPOSE.  See the above copyright notice for more information.
+ *
  ***********************************************************************/
-
-/*=========================================================================
-   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-   fw version of vtkCellPicked : same a vtk5.4's cellpicker,
-   but inherits from fwVtkPicker.
-   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-   =========================================================================*/
-
-/*=========================================================================
-
-   Program:   Visualization Toolkit
-   Module:    $RCSfile: fwVtkCellPicker.cxx,v $
-
-   Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
-   All rights reserved.
-   See Copyright.txt or http://www.kitware.com/Copyright.htm for details.
-
-     This software is distributed WITHOUT ANY WARRANTY; without even
-     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-     PURPOSE.  See the above copyright notice for more information.
-
-   =========================================================================*/
 
 #include "fwRenderVTK/vtk/fwVtkCellPicker.hpp"
 
