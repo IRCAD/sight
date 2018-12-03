@@ -83,11 +83,11 @@ uniform float u_depthLinesWidth;
 
 #if IDVR == 2
 uniform float u_aimcAlphaCorrection;
-#endif IDVR == 2
+#endif // IDVR == 2
 
 #if IDVR == 3
 uniform float u_vpimcAlphaCorrection;
-#endif IDVR == 3
+#endif // IDVR == 3
 
 #if CSG_MODULATION == 4 || CSG_MODULATION == 5 || CSG_MODULATION == 6
 uniform float u_colorModulationFactor;
@@ -455,9 +455,9 @@ void main(void)
     vec4 jfaDistance = vec4(0.f);
     bool isCsg = false; // true if this ray hits the csg.
 
-#ifdef CSG_MODULATION || CSG_OPACITY_DECREASE
+#if CSG_MODULATION == 1 || CSG_OPACITY_DECREASE == 1
     float coneDistance = 0.f;
-#endif // CSG_MODULATION || CSG_OPACITY_DECREASE
+#endif // CSG_MODULATION == 1 || CSG_OPACITY_DECREASE == 1
 
 #endif // CSG
 
