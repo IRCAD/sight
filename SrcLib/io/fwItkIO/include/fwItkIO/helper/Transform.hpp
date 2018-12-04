@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017 IRCAD France
- * Copyright (C) 2017 IHU Strasbourg
+ * Copyright (C) 2017-2018 IRCAD France
+ * Copyright (C) 2017-2018 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWITKIO_HELPER_TRANSFORM_HPP__
-#define __FWITKIO_HELPER_TRANSFORM_HPP__
+#pragma once
 
 #include "fwItkIO/config.hpp"
 
@@ -59,5 +58,3 @@ public:
 
 }// namespace helper
 }// namespace fwItkIO
-
-#endif //  __FWITKIO_HELPER_TRANSFORM_HPP__

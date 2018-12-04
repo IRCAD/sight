@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2017 IRCAD France
- * Copyright (C) 2014-2017 IHU Strasbourg
+ * Copyright (C) 2014-2018 IRCAD France
+ * Copyright (C) 2014-2018 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __ZMQNETWORK_SOCKET_HPP__
-#define __ZMQNETWORK_SOCKET_HPP__
+#pragma once
 
 #include "zmqNetwork/config.hpp"
 #include "zmqNetwork/Exception.hpp"
@@ -221,5 +220,3 @@ private:
 
 };
 }//namespace zmqNetwork
-
-#endif //__ZMQNETWORK_SOCKET_HPP__

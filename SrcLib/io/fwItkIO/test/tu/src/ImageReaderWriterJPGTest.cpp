@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,13 +22,13 @@
 
 #include "ImageReaderWriterJPGTest.hpp"
 
+#include <fwItkIO/ImageReader.hpp>
+#include <fwItkIO/itk.hpp>
+#include <fwItkIO/JpgImageWriter.hpp>
+
 #include <fwCore/base.hpp>
 
 #include <fwData/Image.hpp>
-
-#include <fwItkIO/ImageReader.hpp>
-#include <fwItkIO/JpgImageWriter.hpp>
-#include <fwItkIO/itk.hpp>
 
 #include <fwTest/Data.hpp>
 #include <fwTest/generator/Image.hpp>

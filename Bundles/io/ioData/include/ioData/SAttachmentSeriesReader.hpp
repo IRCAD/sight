@@ -51,7 +51,7 @@ class IODATA_CLASS_API SAttachmentSeriesReader : public ::fwIO::IReader
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SAttachmentSeriesReader)(::fwIO::IReader) );
+    fwCoreServiceClassDefinitionsMacro( (SAttachmentSeriesReader)(::fwIO::IReader) )
 
     /// Super class of reader services
     typedef ::fwIO::IReader SuperClass;

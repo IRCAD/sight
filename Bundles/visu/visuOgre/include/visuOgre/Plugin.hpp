@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2017 IRCAD France
- * Copyright (C) 2014-2017 IHU Strasbourg
+ * Copyright (C) 2014-2018 IRCAD France
+ * Copyright (C) 2014-2018 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __VISUOGRE_PLUGIN_HPP__
-#define __VISUOGRE_PLUGIN_HPP__
+#pragma once
 
 #include "visuOgre/config.hpp"
 
@@ -68,5 +67,3 @@ public:
 };
 
 } // namespace visuOgre
-
-#endif //__VISUOGRE_PLUGIN_HPP__

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,12 +20,11 @@
  *
  ***********************************************************************/
 
-#ifndef __MONITOR_NAMESPACE_HPP__
-#define __MONITOR_NAMESPACE_HPP__
-
 /**
  * @brief       The namespace monitor contains tools for monitoring an application built with sight.
  */
+#pragma once
+
 namespace monitor
 {
 
@@ -37,5 +36,3 @@ namespace action
 
 }
 }
-
-#endif // __MONITOR_NAMESPACE_HPP__

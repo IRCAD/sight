@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017 IRCAD France
- * Copyright (C) 2017 IHU Strasbourg
+ * Copyright (C) 2017-2018 IRCAD France
+ * Copyright (C) 2017-2018 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __CVIO_TYPE_HPP__
-#define __CVIO_TYPE_HPP__
+#pragma once
 
 #include "cvIO/config.hpp"
 
@@ -41,5 +40,3 @@ public:
 };
 
 } // namespace cvIO
-
-#endif //__CVIO_TYPE_HPP__

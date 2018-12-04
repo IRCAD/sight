@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWDATAIO_UT_DICTIONARYREADERTEST_HPP__
-#define __FWDATAIO_UT_DICTIONARYREADERTEST_HPP__
+#pragma once
 
 #include <boost/filesystem/operations.hpp>
 
@@ -45,7 +44,6 @@ CPPUNIT_TEST( test_4 );
 CPPUNIT_TEST( test_5 );
 CPPUNIT_TEST_SUITE_END();
 
-
 public:
     // interface
     void setUp();
@@ -68,5 +66,3 @@ protected:
 
 } //namespace ut
 } //namespace fwDataIO
-
-#endif //__FWDATAIO_UT_DICTIONARYREADERTEST_HPP__

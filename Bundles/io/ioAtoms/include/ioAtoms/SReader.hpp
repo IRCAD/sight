@@ -109,7 +109,7 @@ public:
     /// Signal type for job creation.
     typedef ::fwCom::Signal< void ( ::fwJobs::IJob::sptr ) > JobCreatedSignalType;
 
-    fwCoreServiceClassDefinitionsMacro( (SReader)(::fwIO::IReader) );
+    fwCoreServiceClassDefinitionsMacro( (SReader)(::fwIO::IReader) )
 
     /// Does nothing
     SReader();

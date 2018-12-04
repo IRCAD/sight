@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,12 +20,11 @@
  *
  ***********************************************************************/
 
-#ifndef __FWACTIVITIES_NAMESPACE_HPP__
-#define __FWACTIVITIES_NAMESPACE_HPP__
-
 /**
  * @brief Namespace containing activities data and builder
  */
+#pragma once
+
 namespace fwActivities
 {
 
@@ -196,6 +195,3 @@ namespace factory
  */
 
 } // namespace fwActivities
-
-#endif /* __FWACTIVITIES_NAMESPACE_HPP__ */
-

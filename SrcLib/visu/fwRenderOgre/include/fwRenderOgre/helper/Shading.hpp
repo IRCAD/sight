@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2017 IRCAD France
- * Copyright (C) 2014-2017 IHU Strasbourg
+ * Copyright (C) 2014-2018 IRCAD France
+ * Copyright (C) 2014-2018 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWRENDEROGRE_HELPER_SHADING_HPP__
-#define __FWRENDEROGRE_HELPER_SHADING_HPP__
+#pragma once
 
 #include "fwRenderOgre/config.hpp"
 
@@ -172,6 +171,3 @@ public:
 } // namespace helper
 
 } // namespace fwRenderOgre
-
-#endif // __FWRENDEROGRE_HELPER_SHADING_HPP__
-

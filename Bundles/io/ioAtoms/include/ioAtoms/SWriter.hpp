@@ -97,7 +97,7 @@ class IOATOMS_CLASS_API SWriter : public ::fwIO::IWriter
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SWriter)(::fwIO::IWriter) );
+    fwCoreServiceClassDefinitionsMacro( (SWriter)(::fwIO::IWriter) )
 
     /// Signal type for job creation.
     typedef ::fwCom::Signal< void ( ::fwJobs::IJob::sptr ) > JobCreatedSignalType;

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWGDCMIO_CONTAINER_DICOMSURFACE_HPP__
-#define __FWGDCMIO_CONTAINER_DICOMSURFACE_HPP__
+#pragma once
 
 #include "fwGdcmIO/config.hpp"
 
@@ -126,5 +125,3 @@ private:
 
 } //namespace container
 } //namespace fwGdcmIO
-
-#endif /* __FWGDCMIO_CONTAINER_DICOMSURFACE_HPP__ */

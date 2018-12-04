@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,14 +20,13 @@
  *
  ***********************************************************************/
 
-#ifndef __FWDATAIO_UT_TRIANTEST_HPP__
-#define __FWDATAIO_UT_TRIANTEST_HPP__
+#pragma once
+
+#include <fwRuntime/EConfigurationElement.hpp>
 
 #include <boost/filesystem/operations.hpp>
 
 #include <cppunit/extensions/HelperMacros.h>
-
-#include <fwRuntime/EConfigurationElement.hpp>
 
 namespace fwDataIO
 {
@@ -44,7 +43,6 @@ CPPUNIT_TEST( test_1 );
 CPPUNIT_TEST( test_2 );
 CPPUNIT_TEST( file_load_test );
 CPPUNIT_TEST_SUITE_END();
-
 
 public:
     // interface
@@ -65,5 +63,3 @@ protected:
 
 } //namespace ut
 } //namespace fwDataIO
-
-#endif //__FWDATAIO_UT_TRIANTEST_HPP__

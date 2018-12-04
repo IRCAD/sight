@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,9 +22,9 @@
 
 #include "SOPClassUIDSplitterTest.hpp"
 
-#include <fwDicomIOFilter/IFilter.hpp>
 #include <fwDicomIOFilter/factory/new.hpp>
 #include <fwDicomIOFilter/helper/Filter.hpp>
+#include <fwDicomIOFilter/IFilter.hpp>
 
 #include <fwGdcmIO/reader/SeriesDB.hpp>
 
@@ -89,8 +89,12 @@ void SOPClassUIDSplitterTest::simpleApplication()
     ::fwMedData::DicomSeries::sptr dicomSeriesB = dicomSeriesContainer[1];
 
     // Check SOP Class UIDs
-    CPPUNIT_ASSERT_EQUAL(std::string("1.2.840.10008.5.1.4.1.1.2"), *dicomSeriesA->getSOPClassUIDs().begin());       // CT Image Storage
-    CPPUNIT_ASSERT_EQUAL(std::string("1.2.840.10008.5.1.4.1.1.66.5"), *dicomSeriesB->getSOPClassUIDs().begin());    // Surface Segmentation Storage
+    CPPUNIT_ASSERT_EQUAL(std::string("1.2.840.10008.5.1.4.1.1.2"), *dicomSeriesA->getSOPClassUIDs().begin());       // CT
+                                                                                                                    // Image
+                                                                                                                    // Storage
+    CPPUNIT_ASSERT_EQUAL(std::string("1.2.840.10008.5.1.4.1.1.66.5"), *dicomSeriesB->getSOPClassUIDs().begin());    // Surface
+                                                                                                                    // Segmentation
+                                                                                                                    // Storage
 
 }
 

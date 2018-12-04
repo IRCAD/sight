@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __IGTLPROTOCOL_IMAGETYPECONVERTER_HPP__
-#define __IGTLPROTOCOL_IMAGETYPECONVERTER_HPP__
+#pragma once
 
 #include "igtlProtocol/config.hpp"
 #include "igtlProtocol/exception/Conversion.hpp"
@@ -82,5 +81,3 @@ private:
 };
 
 }//namespace igtlProtocol
-
-#endif // __IGTLPROTOCOL_IMAGETYPECONVERTER_HPP__

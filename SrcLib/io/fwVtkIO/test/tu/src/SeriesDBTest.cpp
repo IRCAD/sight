@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,27 +20,27 @@
  *
  ***********************************************************************/
 
-#include <boost/filesystem/path.hpp>
-#include <boost/filesystem/operations.hpp>
+#include "SeriesDBTest.hpp"
+
+#include <fwVtkIO/SeriesDBReader.hpp>
+
+#include <fwData/Array.hpp>
+#include <fwData/Image.hpp>
+#include <fwData/Reconstruction.hpp>
+
+#include <fwDataCamp/visitor/CompareObjects.hpp>
+
+#include <fwMedData/ImageSeries.hpp>
+#include <fwMedData/ModelSeries.hpp>
+#include <fwMedData/Series.hpp>
 
 #include <fwMemory/BufferManager.hpp>
 #include <fwMemory/BufferObject.hpp>
 
-#include <fwData/Reconstruction.hpp>
-#include <fwData/Image.hpp>
-#include <fwData/Array.hpp>
-
-#include <fwMedData/Series.hpp>
-#include <fwMedData/ImageSeries.hpp>
-#include <fwMedData/ModelSeries.hpp>
-
-#include <fwDataCamp/visitor/CompareObjects.hpp>
-
 #include <fwTest/Data.hpp>
 
-#include <fwVtkIO/SeriesDBReader.hpp>
-
-#include "SeriesDBTest.hpp"
+#include <boost/filesystem/operations.hpp>
+#include <boost/filesystem/path.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwVtkIO::ut::SeriesDBTest );
@@ -155,13 +155,11 @@ void SeriesDBTest::testLazyImportSeriesDB()
     paths.push_back(imagePath);
     paths.push_back(meshPath);
 
-
     ::fwVtkIO::SeriesDBReader::sptr reader = ::fwVtkIO::SeriesDBReader::New();
     reader->setObject(seriesDB);
     reader->setFiles(paths);
     reader->setLazyMode(true);
     reader->read();
-
 
     CPPUNIT_ASSERT_EQUAL(size_t(2), seriesDB->getContainer().size());
 

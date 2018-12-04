@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -114,7 +114,7 @@ std::map< std::string, configuration > initialize(std::string configFile)
 
                 OSLM_INFO(
                     "Type : "<<words[0]<<", device In : "<<words[1]<< ", device Out : "<<words[2]<<", port : "<<
-                    words[3]);
+                        words[3]);
 
                 messageType.push_back(words[0]);
                 deviceInTab.push_back(words[1]);

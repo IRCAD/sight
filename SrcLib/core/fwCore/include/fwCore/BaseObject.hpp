@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWCORE_BASEOBJECT_HPP__
-#define __FWCORE_BASEOBJECT_HPP__
+#pragma once
 
 #include "fwCore/macros.hpp"
 #include "fwCore/config.hpp"
@@ -46,6 +45,3 @@ protected:
 };
 
 } // namespace fwCore
-
-#endif // __FWCORE_BASEOBJECT_HPP__
-

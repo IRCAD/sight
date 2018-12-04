@@ -63,7 +63,7 @@ void Plugin::stop() noexcept
 //------------------------------------------------------------------------------
 
 void SightOgreListener::messageLogged(const ::Ogre::String& _message, ::Ogre::LogMessageLevel _lml, bool /*_maskDebug*/,
-                                    const ::Ogre::String& /*_logName*/, bool& _skipThisMessage)
+                                      const ::Ogre::String& /*_logName*/, bool& _skipThisMessage)
 {
     if (!_skipThisMessage)
     {

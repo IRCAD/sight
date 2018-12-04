@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,21 +20,20 @@
  *
  ***********************************************************************/
 
-#ifndef __VTKGDCMIO_HELPER_IMAGEDICOMSTREAM_HPP__
-#define __VTKGDCMIO_HELPER_IMAGEDICOMSTREAM_HPP__
+#pragma once
 
-#include <vector>
-
-#include <boost/iostreams/stream.hpp>
-
-#include <vtkSmartPointer.h>
-#include <vtkGDCMImageReader.h>
+#include "vtkGdcmIO/config.hpp"
 
 #include <fwCore/base.hpp>
 
 #include <fwMemory/stream/in/IFactory.hpp>
 
-#include "vtkGdcmIO/config.hpp"
+#include <boost/iostreams/stream.hpp>
+
+#include <vtkGDCMImageReader.h>
+#include <vtkSmartPointer.h>
+
+#include <vector>
 
 namespace vtkGdcmIO
 {
@@ -95,7 +94,7 @@ private:
     vtkSmartPointer< vtkGDCMImageReader > m_reader;
 
     /// direct pointer to raw dicom image buffer
-    char * m_inputReader;
+    char* m_inputReader;
 
     /// to conserve if reading process is a succes
     bool m_success;
@@ -125,5 +124,3 @@ protected:
 
 } // namespace helper
 } // namespace vtkGdcmIO
-
-#endif // __VTKGDCMIO_HELPER_IMAGEDICOMSTREAM_HPP__

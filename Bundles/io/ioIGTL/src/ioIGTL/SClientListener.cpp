@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -278,4 +278,3 @@ void SClientListener::manageTimeline(::fwData::Object::sptr obj, size_t index)
 //-----------------------------------------------------------------------------
 
 } // namespace ioIGTL
-

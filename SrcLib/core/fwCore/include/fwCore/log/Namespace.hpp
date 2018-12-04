@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,14 +20,12 @@
  *
  ***********************************************************************/
 
-#ifndef __FWCORE_LOG_NAMESPACE_HPP__
-#define __FWCORE_LOG_NAMESPACE_HPP__
+#pragma once
 
 namespace fwCore
 {
 /**
  * @brief       This namespace fwCore::log provides common foundations for log in Sight.
- * @namespace   fwCore::log
  *
  */
 namespace log
@@ -35,4 +33,3 @@ namespace log
 }
 
 }
-#endif /* __FWCORE_LOG_NAMESPACE_HPP__ */

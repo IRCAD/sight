@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,9 +20,6 @@
  *
  ***********************************************************************/
 
-#ifndef __FWRUNTIME_NAMESPACE_HPP__
-#define __FWRUNTIME_NAMESPACE_HPP__
-
 /**
  * @defgroup requirement Requirements
  * The bundles in the \p \<requirement\> section of the \b plugin.xml are started when the bundle is started.
@@ -30,7 +27,8 @@
  * In Sight, we can automatically start bundles in two case:
  * - The bundle contains an AppConfig or an Activity: the bundle will be started when the config or the activity is
  *   launched
- * - The bundle contains services: the bundle will be started when one of the services is used in an AppConfig to launch.
+ * - The bundle contains services: the bundle will be started when one of the services is used in an AppConfig to
+ * launch.
  *
  * But in some case, we must define the bundles to start manually using the \p \<requirement\> tag.
  *
@@ -59,7 +57,8 @@
  * @brief  The namespace fwRuntime contains classes to manage bundle, configuration element, extension point in the
  *         runtime environment from a configuration file .
  */
+#pragma once
+
 namespace fwRuntime
 {
 }
-#endif /* __FWRUNTIME_NAMESPACE_HPP__ */

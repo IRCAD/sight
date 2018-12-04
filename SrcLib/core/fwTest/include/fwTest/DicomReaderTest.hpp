@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,22 +20,15 @@
  *
  ***********************************************************************/
 
-#ifndef __FWTEST_DICOMREADERTEST_HPP__
-#define __FWTEST_DICOMREADERTEST_HPP__
-
-#include <fwMedData/ImageSeries.hpp>
+#pragma once
 
 #include "fwTest/config.hpp"
+
+#include <fwMedData/ImageSeries.hpp>
 
 namespace fwTest
 {
 
-/**
- * @class   DicomReaderTest
- * @brief   This class defines some tools to check dicom manipulations during tests
- *
- * @date    2007-2012.
- */
 class FWTEST_CLASS_API DicomReaderTest
 {
 
@@ -48,17 +41,12 @@ public:
      * This file is located here on test database : "sight/Patient/Dicom/ACHGenou",
      * its represents a CT image of a knee ( 400 slices ).
      */
-    FWTEST_API static bool checkSeriesACHGenou( const SPTR(::fwMedData::ImageSeries) &series );
+    FWTEST_API static bool checkSeriesACHGenou( const SPTR(::fwMedData::ImageSeries)& series );
 
     /**
      * @brief This method is the same as checkSeriesACHGenou but it checks trimmed strings instead of even sized strings
      */
-    FWTEST_API static bool checkSeriesACHGenouTrimmed( const SPTR(::fwMedData::ImageSeries) &series );
+    FWTEST_API static bool checkSeriesACHGenouTrimmed( const SPTR(::fwMedData::ImageSeries)& series );
 };
 
-
-
-
 } // namespace fwTest
-
-#endif // __FWTEST_DICOMREADERTEST_HPP__

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __VISUVTKADAPTOR_STRANSFORM_HPP__
-#define __VISUVTKADAPTOR_STRANSFORM_HPP__
+#pragma once
 
 #include "visuVTKAdaptor/config.hpp"
 
@@ -62,7 +61,7 @@ class VISUVTKADAPTOR_CLASS_API STransform : public ::fwRenderVTK::IAdaptor
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (STransform)(::fwRenderVTK::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (STransform)(::fwRenderVTK::IAdaptor) )
 
     static const ::fwServices::IService::KeyType s_TM3D_INOUT;
 
@@ -119,5 +118,3 @@ protected:
 };
 
 } //namespace visuVTKAdaptor
-
-#endif // __VISUVTKADAPTOR_STRANSFORM_HPP__

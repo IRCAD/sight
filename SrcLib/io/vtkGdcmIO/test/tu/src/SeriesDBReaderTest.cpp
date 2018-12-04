@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,13 +22,13 @@
 
 #include "SeriesDBReaderTest.hpp"
 
+#include <vtkGdcmIO/SeriesDBReader.hpp>
+
 #include <fwMedData/ImageSeries.hpp>
 #include <fwMedData/SeriesDB.hpp>
 
 #include <fwTest/Data.hpp>
 #include <fwTest/DicomReaderTest.hpp>
-
-#include <vtkGdcmIO/SeriesDBReader.hpp>
 
 CPPUNIT_TEST_SUITE_REGISTRATION( ::vtkGdcmIO::ut::SeriesDBReaderTest );
 
@@ -81,4 +81,3 @@ void SeriesDBReaderTest::readSeriesDBTest()
 } // namespace ut
 
 } // namespace vtkGdcmIO
-

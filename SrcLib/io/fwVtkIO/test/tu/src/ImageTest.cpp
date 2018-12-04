@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -160,7 +160,7 @@ void writerTest(const std::string& imagetype, const std::string& filename)
                             ::boost::filesystem::exists(testFile) );
 
     ::fwData::Image::sptr image2 = ::fwData::Image::New();
-    typename R::sptr reader      = R::New();
+    typename R::sptr reader = R::New();
     reader->setObject(image2);
     reader->setFile(testFile);
     reader->read();
@@ -541,4 +541,3 @@ void ImageTest::vtkWriterTest()
 
 } // namespace ut
 } // namespace fwVtkIO
-

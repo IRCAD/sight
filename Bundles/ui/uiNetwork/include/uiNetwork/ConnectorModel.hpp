@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,18 +20,19 @@
  *
  ***********************************************************************/
 
-#ifndef __UINETWORK_CONNECTORMODEL_HPP__
-#define __UINETWORK_CONNECTORMODEL_HPP__
+#pragma once
 
 #include "uiNetwork/config.hpp"
 
-#include <fwTools/Failed.hpp>
-#include <fwRuntime/ConfigurationElement.hpp>
 #include <fwData/Object.hpp>
 
-#include <vector>
-#include <string>
+#include <fwRuntime/ConfigurationElement.hpp>
+
+#include <fwTools/Failed.hpp>
+
 #include <map>
+#include <string>
+#include <vector>
 
 namespace uiNetwork
 {
@@ -83,7 +84,6 @@ public:
      */
     ServiceConfigurationContainer const& getServiceConfigurations() const;
 
-
     bool isRegisteredService(std::string const& str) const;
 private:
     /// registered listeners name
@@ -97,5 +97,3 @@ private:
 
 };
 } //namespace uiNetwork
-
-#endif // __UINETWORK_CONNECTORMODEL_HPP__
