@@ -1,5 +1,8 @@
 cmake_minimum_required (VERSION 3.1)
 
+# Use new policy for 'install_name' and RPATH on macOS (use `cmake --help-policy CMP0068` for details)
+cmake_policy(SET CMP0068 NEW)
+
 project (sight)
 
 enable_testing()
