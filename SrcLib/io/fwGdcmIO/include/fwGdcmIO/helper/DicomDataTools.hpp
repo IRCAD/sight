@@ -42,7 +42,7 @@ namespace helper
 /**
  * @brief This class contains helpers to handle GDCM data.
  * It implements many tag value getters/setters. It defines
- * also some tools for converting GDCM data to FW4SPL data.
+ * also some tools for converting GDCM data to Sight data.
  */
 class FWGDCMIO_CLASS_API DicomDataTools
 {
@@ -64,7 +64,7 @@ public:
         const ::fwData::Image::csptr& image);
 
     /**
-     * @brief Convert a surface representation mode (FW4SPL) into recommended presentation type (DICOM).
+     * @brief Convert a surface representation mode (Sight) into recommended presentation type (DICOM).
      * @see Recommended Presentation Type Tag (0066,000d).
      * @param[in] representationMode Surface representation mode.
      * @return Corresponding recommended presentation type.
@@ -73,7 +73,7 @@ public:
         ::fwData::Material::RepresentationType representationMode);
 
     /**
-     * @brief Convert a surface recommended presentation type (DICOM) into representation mode (FW4SPL).
+     * @brief Convert a surface recommended presentation type (DICOM) into representation mode (Sight).
      * @param[in] presentationType Surface recommended presentation type.
      * @return Corresponding representation mode
      */

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -77,7 +77,7 @@ void SClientListener::configuring()
     for(auto itCfg = keyCfg.first; itCfg != keyCfg.second; ++itCfg)
     {
         const ::fwServices::IService::ConfigType& attr = itCfg->second.get_child("<xmlattr>");
-        const std::string deviceName                   = attr.get("deviceName", "F4S");
+        const std::string deviceName                   = attr.get("deviceName", "Sight");
         m_deviceNames.push_back(deviceName);
         m_client.addAuthorizedDevice(deviceName);
     }
@@ -278,4 +278,3 @@ void SClientListener::manageTimeline(::fwData::Object::sptr obj, size_t index)
 //-----------------------------------------------------------------------------
 
 } // namespace ioIGTL
-

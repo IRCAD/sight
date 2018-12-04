@@ -249,8 +249,8 @@ void IoItkTest::SeriesDBInrTest()
      * - image.inr.gz : CT, type int16, size: 512x512x134, spacing 0.781:0.781:1.6
      * - skin.inr.gz : mask skin, type uint8, size: 512x512x134, spacing 0.781:0.781:1.6
      */
-    const ::boost::filesystem::path imageFile = ::fwTest::Data::dir() / "fw4spl/image/inr/image.inr.gz";
-    const ::boost::filesystem::path skinFile  = ::fwTest::Data::dir() / "fw4spl/image/inr/skin.inr.gz";
+    const ::boost::filesystem::path imageFile = ::fwTest::Data::dir() / "sight/image/inr/image.inr.gz";
+    const ::boost::filesystem::path skinFile  = ::fwTest::Data::dir() / "sight/image/inr/skin.inr.gz";
 
     CPPUNIT_ASSERT_MESSAGE("The file '" + imageFile.string() + "' does not exist",
                            ::boost::filesystem::exists(imageFile));

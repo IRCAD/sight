@@ -113,14 +113,14 @@ void SVideo::updating()
 {
     this->getRenderService()->makeCurrent();
 
-    // Getting FW4SPL Image
-    ::fwData::Image::csptr imageF4s = this->getInput< ::fwData::Image>(s_IMAGE_INPUT);
-    SLM_ASSERT("Problem getting the image", imageF4s);
+    // Getting Sight Image
+    ::fwData::Image::csptr imageSight = this->getInput< ::fwData::Image>(s_IMAGE_INPUT);
+    SLM_ASSERT("Problem getting the image", imageSight);
 
     {
-        ::fwData::mt::ObjectReadLock lock(imageF4s);
+        ::fwData::mt::ObjectReadLock lock(imageSight);
 
-        auto type = imageF4s->getType();
+        auto type = imageSight->getType();
 
         if (!m_isTextureInit || type != m_previousType )
         {
@@ -181,8 +181,8 @@ void SVideo::updating()
             m_previousType = type;
         }
 
-        ::fwData::Image::SizeType size = imageF4s->getSize();
-        ::fwRenderOgre::Utils::loadOgreTexture(imageF4s, m_texture, ::Ogre::TEX_TYPE_2D, true);
+        ::fwData::Image::SizeType size = imageSight->getSize();
+        ::fwRenderOgre::Utils::loadOgreTexture(imageSight, m_texture, ::Ogre::TEX_TYPE_2D, true);
 
         if (!m_isTextureInit || size[0] != m_previousWidth || size[1] != m_previousHeight )
         {

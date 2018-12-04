@@ -133,7 +133,7 @@ private:
 //------------------------------------------------------------------------------
 
 /**
- * @brief Class used to perform a lazy reading of dicom images with fw4spl system
+ * @brief Class used to perform a lazy reading of dicom images with Sight system
  */
 class FWDCMTKIO_CLASS_API ImageRGBLookupLazyStream : public ::fwMemory::stream::in::IFactory
 {

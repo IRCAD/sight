@@ -63,7 +63,7 @@ Logger::Logger()
 
     namespace bfile = ::boost::filesystem;
 
-    //Create PATCH.log in a user data dir nammed fw4spl/appName/
+    //Create PATCH.log in a user data dir nammed sight/appName/
     ::fwRuntime::profile::Profile::sptr profile = ::fwRuntime::profile::getCurrentProfile();
 
     //default name of application with no profile.xml
@@ -74,7 +74,7 @@ Logger::Logger()
         appName = profile->getName();
     }
 
-    const bfile::path appPrefDir = ::fwTools::os::getUserDataDir("fw4spl", appName, true);
+    const bfile::path appPrefDir = ::fwTools::os::getUserDataDir("sight", appName, true);
 
     FW_RAISE_IF("Unable to define User's data directory", appPrefDir.empty());
 

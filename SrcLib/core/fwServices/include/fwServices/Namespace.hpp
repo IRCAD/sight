@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,9 +20,6 @@
  *
  ***********************************************************************/
 
-#ifndef __FWSERVICES_NAMESPACE_HPP__
-#define __FWSERVICES_NAMESPACE_HPP__
-
 /**
  * @brief Namespace fwServices is dedicated to (mimic) the dynamic affectation of methods to (pure data) objects
  * (::fwTools::Object), and component orientation transparently. This is assimilable to the
@@ -31,13 +28,15 @@
  * \li IService : contract for service implementation
  * \li macros.hpp : declaration of service to object bindings
  */
+#pragma once
+
 namespace fwServices
 {
 
 /**
  * @page AppConfig AppConfig
  *
- * The FW4SPL architecture provides a dynamic management of configurations to allow the use of multiple objects and
+ * The Sight architecture provides a dynamic management of configurations to allow the use of multiple objects and
  * services.
  *
  * The xml configuration for an application is defines with the extension ``::fwServices::registry::AppConfig``.
@@ -233,7 +232,7 @@ namespace fwServices
 /**
  * @page AppConfig AppConfig
  *
- * The FW4SPL architecture provides a dynamic management of configurations to allow the use of multiple objects and
+ * The Sight architecture provides a dynamic management of configurations to allow the use of multiple objects and
  * services.
  *
  * The xml configuration for an application is defines with the extension ``::fwServices::registry::AppConfig``.
@@ -443,4 +442,3 @@ namespace fwServices
  */
 
 }
-#endif /* __FWSERVICES_NAMESPACE_HPP__ */

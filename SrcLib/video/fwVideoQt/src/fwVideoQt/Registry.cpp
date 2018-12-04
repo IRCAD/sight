@@ -132,11 +132,11 @@ Player* Registry::requestPlayer(const ::arData::Camera::csptr& camera)
             }
             case ::arData::Camera::DEVICE:
             {
-                ::QVideoFrame::PixelFormat qtPixelFormat = QVideoFrame::PixelFormat::Format_Invalid;
-                ::arData::Camera::PixelFormat f4sFormat  = camera->getPixelFormat();
+                ::QVideoFrame::PixelFormat qtPixelFormat  = QVideoFrame::PixelFormat::Format_Invalid;
+                ::arData::Camera::PixelFormat sightFormat = camera->getPixelFormat();
 
                 ::fwVideoQt::helper::PixelFormatTranslatorType::right_const_iterator iter;
-                iter = ::fwVideoQt::helper::pixelFormatTranslator.right.find(f4sFormat);
+                iter = ::fwVideoQt::helper::pixelFormatTranslator.right.find(sightFormat);
 
                 if(iter != ::fwVideoQt::helper::pixelFormatTranslator.right.end())
                 {

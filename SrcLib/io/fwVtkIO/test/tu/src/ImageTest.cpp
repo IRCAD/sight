@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -160,7 +160,7 @@ void writerTest(const std::string& imagetype, const std::string& filename)
                             ::boost::filesystem::exists(testFile) );
 
     ::fwData::Image::sptr image2 = ::fwData::Image::New();
-    typename R::sptr reader      = R::New();
+    typename R::sptr reader = R::New();
     reader->setObject(image2);
     reader->setFile(testFile);
     reader->read();
@@ -231,7 +231,7 @@ void imageFromVTKTest(const std::string& imagename, const std::string& type)
 
 void testVtkReader(std::string imagetype)
 {
-    const ::boost::filesystem::path testFile(::fwTest::Data::dir() / ("fw4spl/image/vtk/img-" + imagetype + ".vtk"));
+    const ::boost::filesystem::path testFile(::fwTest::Data::dir() / ("sight/image/vtk/img-" + imagetype + ".vtk"));
 
     CPPUNIT_ASSERT_MESSAGE("The file '" + testFile.string() + "' does not exist",
                            ::boost::filesystem::exists(testFile));
@@ -247,7 +247,7 @@ void testVtkReader(std::string imagetype)
     vtkreader->SetFileName(testFile.string().c_str());
     vtkreader->Update();
     vtkSmartPointer< vtkImageData > vtkImage = vtkImageData::SafeDownCast(vtkreader->GetOutput());
-    CPPUNIT_ASSERT_EQUAL_MESSAGE( "test on <" "fw4spl/image/vtk/img-" + imagetype + ".vtk" "> Failed ",
+    CPPUNIT_ASSERT_EQUAL_MESSAGE( "test on <" "sight/image/vtk/img-" + imagetype + ".vtk" "> Failed ",
                                   ::fwTools::Type(imagetype), image->getType());
 
     compareImageAttributes(
@@ -303,22 +303,22 @@ void ImageTest::testImageToVtk()
 
 void ImageTest::testFromVtk()
 {
-    imageFromVTKTest("fw4spl/image/vtk/img.vtk", "int16");
+    imageFromVTKTest("sight/image/vtk/img.vtk", "int16");
 
-    imageFromVTKTest("fw4spl/image/vtk/img-int8.vtk", "int8");
-    imageFromVTKTest("fw4spl/image/vtk/img-uint8.vtk", "uint8");
+    imageFromVTKTest("sight/image/vtk/img-int8.vtk", "int8");
+    imageFromVTKTest("sight/image/vtk/img-uint8.vtk", "uint8");
 
-    imageFromVTKTest("fw4spl/image/vtk/img-int16.vtk", "int16"  );
-    imageFromVTKTest("fw4spl/image/vtk/img-uint16.vtk", "uint16"  );
+    imageFromVTKTest("sight/image/vtk/img-int16.vtk", "int16"  );
+    imageFromVTKTest("sight/image/vtk/img-uint16.vtk", "uint16"  );
 
-    imageFromVTKTest("fw4spl/image/vtk/img-int32.vtk", "int32"  );
-    imageFromVTKTest("fw4spl/image/vtk/img-uint32.vtk", "uint32"  );
+    imageFromVTKTest("sight/image/vtk/img-int32.vtk", "int32"  );
+    imageFromVTKTest("sight/image/vtk/img-uint32.vtk", "uint32"  );
 
-    //imageFromVTKTest("fw4spl/image/vtk/img-int64.vtk", "int64"  );
-    //imageFromVTKTest("fw4spl/image/vtk/img-uint64.vtk", "uint64"  );
+    //imageFromVTKTest("sight/image/vtk/img-int64.vtk", "int64"  );
+    //imageFromVTKTest("sight/image/vtk/img-uint64.vtk", "uint64"  );
 
-    imageFromVTKTest("fw4spl/image/vtk/img-float.vtk", "float"  );
-    imageFromVTKTest("fw4spl/image/vtk/img-double.vtk", "double"  );
+    imageFromVTKTest("sight/image/vtk/img-float.vtk", "float"  );
+    imageFromVTKTest("sight/image/vtk/img-double.vtk", "double"  );
 
     int nbComponents = 4;
     std::string type = "uint8";
@@ -360,7 +360,7 @@ void ImageTest::testFromVtk()
 
 void ImageTest::mhdReaderTest()
 {
-    const ::boost::filesystem::path imagePath( ::fwTest::Data::dir() / "fw4spl/image/mhd/BostonTeapot.mhd" );
+    const ::boost::filesystem::path imagePath( ::fwTest::Data::dir() / "sight/image/mhd/BostonTeapot.mhd" );
 
     CPPUNIT_ASSERT_MESSAGE("The file '" + imagePath.string() + "' does not exist",
                            ::boost::filesystem::exists(imagePath));
@@ -389,8 +389,8 @@ void ImageTest::mhdReaderTest()
 
 void ImageTest::mhdWriterTest()
 {
-    const ::boost::filesystem::path imagePath( ::fwTest::Data::dir() / "fw4spl/image/mhd/BostonTeapot.mhd" );
-    const ::boost::filesystem::path zRawPath( ::fwTest::Data::dir() / "fw4spl/image/mhd/BostonTeapot.zraw" );
+    const ::boost::filesystem::path imagePath( ::fwTest::Data::dir() / "sight/image/mhd/BostonTeapot.mhd" );
+    const ::boost::filesystem::path zRawPath( ::fwTest::Data::dir() / "sight/image/mhd/BostonTeapot.zraw" );
 
     CPPUNIT_ASSERT_MESSAGE("The file '" + imagePath.string() + "' does not exist",
                            ::boost::filesystem::exists(imagePath));
@@ -438,7 +438,7 @@ void ImageTest::mhdWriterTest()
 
 void ImageTest::vtiReaderTest()
 {
-    const ::boost::filesystem::path imagePath( ::fwTest::Data::dir() / "fw4spl/image/vti/BostonTeapot.vti" );
+    const ::boost::filesystem::path imagePath( ::fwTest::Data::dir() / "sight/image/vti/BostonTeapot.vti" );
 
     CPPUNIT_ASSERT_MESSAGE("The file '" + imagePath.string() + "' does not exist",
                            ::boost::filesystem::exists(imagePath));
@@ -483,7 +483,7 @@ void ImageTest::vtiWriterTest()
 
 void ImageTest::vtkReaderTest()
 {
-    const ::boost::filesystem::path imagePath( ::fwTest::Data::dir() / "fw4spl/image/vtk/img.vtk" );
+    const ::boost::filesystem::path imagePath( ::fwTest::Data::dir() / "sight/image/vtk/img.vtk" );
 
     CPPUNIT_ASSERT_MESSAGE("The file '" + imagePath.string() + "' does not exist",
                            ::boost::filesystem::exists(imagePath));
@@ -541,4 +541,3 @@ void ImageTest::vtkWriterTest()
 
 } // namespace ut
 } // namespace fwVtkIO
-

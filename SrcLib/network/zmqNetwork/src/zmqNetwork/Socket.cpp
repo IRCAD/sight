@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2017 IRCAD France
- * Copyright (C) 2014-2017 IHU Strasbourg
+ * Copyright (C) 2014-2018 IRCAD France
+ * Copyright (C) 2014-2018 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -38,7 +38,7 @@ Socket::Socket(SocketMode socketMode, PatternMode patternMode) :
     m_sockMode(socketMode),
     m_patternMode(patternMode),
     m_timeout(1000),
-    m_deviceNameOut("F4S")
+    m_deviceNameOut("Sight")
 {
     m_dataConverter = ::igtlProtocol::DataConverter::getInstance();
 }

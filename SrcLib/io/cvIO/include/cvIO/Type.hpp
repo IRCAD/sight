@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017 IRCAD France
- * Copyright (C) 2017 IHU Strasbourg
+ * Copyright (C) 2017-2018 IRCAD France
+ * Copyright (C) 2017-2018 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __CVIO_TYPE_HPP__
-#define __CVIO_TYPE_HPP__
+#pragma once
 
 #include "cvIO/config.hpp"
 
@@ -33,13 +32,11 @@ namespace cvIO
 class CVIO_CLASS_API Type
 {
 public:
-    /// Returns an OpenCV format given a FW4SPL pixel type and a number of components
+    /// Returns an OpenCV format given a Sight pixel type and a number of components
     CVIO_API static std::int32_t toCv(const ::fwTools::Type _type, const size_t _numComponents);
 
-    /// Returns a FW4SPL pixel type and a number of components given an OpenCV format
+    /// Returns a Sight pixel type and a number of components given an OpenCV format
     CVIO_API static std::pair< ::fwTools::Type, std::uint8_t> fromCv(std::int32_t _cvType);
 };
 
 } // namespace cvIO
-
-#endif //__CVIO_TYPE_HPP__

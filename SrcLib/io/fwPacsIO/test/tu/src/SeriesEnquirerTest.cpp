@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -124,7 +124,7 @@ void SeriesEnquirerTest::pushSeries()
 
     // Retrieve DICOM instances
     const ::boost::filesystem::path path =
-        ::fwTest::Data::dir() / "fw4spl/Patient/Dicom/DicomDB/01-CT-DICOM_LIVER_FOR_PACS";
+        ::fwTest::Data::dir() / "sight/Patient/Dicom/DicomDB/01-CT-DICOM_LIVER_FOR_PACS";
     const std::string pathStr = ::boost::algorithm::replace_all_copy(path.string(), "\\", "/");
 
     CPPUNIT_ASSERT_MESSAGE("The file '" + path.string() + "' does not exist",
@@ -261,4 +261,3 @@ void SeriesEnquirerTest::pullInstanceUsingGetRetrieveMethod()
 } // namespace ut
 
 } // namespace fwPacsIO
-

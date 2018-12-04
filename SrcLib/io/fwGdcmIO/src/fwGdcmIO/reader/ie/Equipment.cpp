@@ -68,16 +68,16 @@ void Equipment::readGeneralEquipmentModule()
     m_object->setInstitutionName(institutName);
 
     // Manufacturer - Type 2
-    // NOTE: Not used in FW4SPL
+    // NOTE: Not used in Sight
 
     // Manufacturer's Model Name - Type 3 (Type 1 for EnhancedGeneralEquipmentModule)
-    // NOTE: Not used in FW4SPL
+    // NOTE: Not used in Sight
 
     // Device Serial Number - Type 3 (Type 1 for EnhancedGeneralEquipmentModule)
-    // NOTE: Not used in FW4SPL
+    // NOTE: Not used in Sight
 
     // Software Versions - Type 3 (Type 1 for EnhancedGeneralEquipmentModule)
-    // NOTE: Not used in FW4SPL
+    // NOTE: Not used in Sight
 }
 
 //------------------------------------------------------------------------------

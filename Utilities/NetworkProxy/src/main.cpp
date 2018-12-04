@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -43,10 +43,10 @@
 /**
  * @brief Utility app to redirect IGTL message with specific device name to a specific port
  *
- * In F4S each type of message has it's own port, but it's not the case in other system
+ * In Sight each type of message has it's own port, but it's not the case in other system
  * so if we wanted to communicate with this kind of system we need to redirect messages.
  * Example : A system send a TRANSFORM and a POLYDATA respectively named Matrix1 and Polydata1 on port 4242
- * In Order to receive them in F4S we configure the proxy to redirect Matrix1 on 4243 and PolyData1 on 4244
+ * In Order to receive them in Sight we configure the proxy to redirect Matrix1 on 4243 and PolyData1 on 4244
  * The configuration is handle in a file described below.
  *
  * Configuration file should be written as "Type" "DeviceNameOut" "DeviceNameOut" "port" on each line
@@ -114,7 +114,7 @@ std::map< std::string, configuration > initialize(std::string configFile)
 
                 OSLM_INFO(
                     "Type : "<<words[0]<<", device In : "<<words[1]<< ", device Out : "<<words[2]<<", port : "<<
-                    words[3]);
+                        words[3]);
 
                 messageType.push_back(words[0]);
                 deviceInTab.push_back(words[1]);

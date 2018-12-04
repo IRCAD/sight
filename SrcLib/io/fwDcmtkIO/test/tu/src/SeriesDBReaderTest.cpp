@@ -93,7 +93,7 @@ std::string getValue(const ::boost::property_tree::ptree& node, const std::strin
 void verifyTagValues(const std::string& filename, const ::fwMedData::SeriesDB::sptr& seriesDB)
 {
     const double delta                        = 0.001;
-    const ::boost::filesystem::path dicomPath = ::fwTest::Data::dir() / "fw4spl/Patient/Dicom/DicomDB";
+    const ::boost::filesystem::path dicomPath = ::fwTest::Data::dir() / "sight/Patient/Dicom/DicomDB";
     const ::boost::filesystem::path metaPath  = dicomPath / "META";
 
     for(::fwMedData::SeriesDB::iterator sIt = seriesDB->begin(); sIt != seriesDB->end(); ++sIt)
@@ -351,7 +351,7 @@ void SeriesDBReaderTest::readACHSeries()
 {
     ::fwMedData::SeriesDB::sptr seriesDB = ::fwMedData::SeriesDB::New();
 
-    const ::boost::filesystem::path path = ::fwTest::Data::dir() / "fw4spl/Patient/Dicom/ACHGenou";
+    const ::boost::filesystem::path path = ::fwTest::Data::dir() / "sight/Patient/Dicom/ACHGenou";
 
     CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + path.string() + "' does not exist",
                            ::boost::filesystem::exists(path));
@@ -380,7 +380,7 @@ void SeriesDBReaderTest::readCTSeries()
     ::fwMedData::SeriesDB::sptr seriesDB = ::fwMedData::SeriesDB::New();
 
     const std::string filename           = "01-CT-DICOM_LIVER";
-    const ::boost::filesystem::path path = ::fwTest::Data::dir() / "fw4spl/Patient/Dicom/DicomDB" / filename;
+    const ::boost::filesystem::path path = ::fwTest::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
 
     CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + path.string() + "' does not exist",
                            ::boost::filesystem::exists(path));
@@ -444,7 +444,7 @@ void SeriesDBReaderTest::readMRSeries()
     ::fwMedData::SeriesDB::sptr seriesDB = ::fwMedData::SeriesDB::New();
 
     const std::string filename           = "46-MR-BARRE-MONO2-12-shoulder";
-    const ::boost::filesystem::path path = ::fwTest::Data::dir() / "fw4spl/Patient/Dicom/DicomDB" / filename;
+    const ::boost::filesystem::path path = ::fwTest::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
 
     CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + path.string() + "' does not exist",
                            ::boost::filesystem::exists(path));
@@ -509,7 +509,7 @@ void SeriesDBReaderTest::readOTSeries()
     ::fwMedData::SeriesDB::sptr seriesDB = ::fwMedData::SeriesDB::New();
 
     const std::string filename           = "42-OT-BARRE-MONO2-8-colon";
-    const ::boost::filesystem::path path = ::fwTest::Data::dir() / "fw4spl/Patient/Dicom/DicomDB" / filename;
+    const ::boost::filesystem::path path = ::fwTest::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
 
     CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + path.string() + "' does not exist",
                            ::boost::filesystem::exists(path));
@@ -574,7 +574,7 @@ void SeriesDBReaderTest::readUnsupportedSeries()
     ::fwMedData::SeriesDB::sptr seriesDB = ::fwMedData::SeriesDB::New();
 
     const std::string filename           = "71-CT-DICOM_SEG";
-    const ::boost::filesystem::path path = ::fwTest::Data::dir() / "fw4spl/Patient/Dicom/DicomDB" / filename;
+    const ::boost::filesystem::path path = ::fwTest::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
 
     CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + path.string() + "' does not exist",
                            ::boost::filesystem::exists(path));
@@ -595,7 +595,7 @@ void SeriesDBReaderTest::readDisabledSeries()
     ::fwMedData::SeriesDB::sptr seriesDB = ::fwMedData::SeriesDB::New();
 
     const std::string filename           = "46-MR-BARRE-MONO2-12-shoulder";
-    const ::boost::filesystem::path path = ::fwTest::Data::dir() / "fw4spl/Patient/Dicom/DicomDB" / filename;
+    const ::boost::filesystem::path path = ::fwTest::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
 
     CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + path.string() + "' does not exist",
                            ::boost::filesystem::exists(path));

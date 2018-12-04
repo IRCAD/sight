@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,23 +22,21 @@
 
 /**
  * @file fwCore/concept_checks.hpp
- * @brief This file defines some fw4spl concept checks.
+ * @brief This file defines some sight concept checks.
  *
  *
  */
-#ifndef __FWCORE_CONCEPT_CHECKS_HPP__
-#define __FWCORE_CONCEPT_CHECKS_HPP__
 
-#include <boost/concept_check.hpp>
+#pragma once
 
 #include <fwCore/macros.hpp>
+
+#include <boost/concept_check.hpp>
 
 namespace fwCore
 {
 namespace concepts
 {
-
-
 
 template <class X>
 struct SharedPtrTypedef
@@ -47,23 +45,20 @@ struct SharedPtrTypedef
 
         BOOST_CONCEPT_USAGE(SharedPtrTypedef)
         {
-            typename X::sptr::element_type *a = 0;
-            X *b = 0;
+            typename X::sptr::element_type* a = 0;
+            X* b                              = 0;
             FwCoreNotUsedMacro(a);
             FwCoreNotUsedMacro(b);
-            same_type(a,b);
+            same_type(a, b);
         }
 
     private:
 
         // Type deduction will fail unless the arguments have the same type.
         template <typename T>
-        void same_type(T *, T *);
+        void same_type(T*, T*);
 };
-
 
 } // namespace concepts
 
 } // namespace fwCore
-
-#endif //__FWCORE_CONCEPT_CHECKS_HPP__

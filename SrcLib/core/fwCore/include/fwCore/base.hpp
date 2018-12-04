@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -21,15 +21,12 @@
  ***********************************************************************/
 
 /**
- * @brief This file includes the minimal tools to work with FW4SPL.
+ * @brief This file includes the minimal tools to work with Sight.
  */
 
-#ifndef __FWCORE_BASE_HPP__
-#define __FWCORE_BASE_HPP__
+#pragma once
 
 #include <fwCore/BaseObject.hpp>
 #include <fwCore/exceptionmacros.hpp>
 #include <fwCore/macros.hpp>
 #include <fwCore/spyLog.hpp>
-
-#endif //__FWCORE_BASE_HPP__

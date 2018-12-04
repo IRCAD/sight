@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2017 IRCAD France
- * Copyright (C) 2014-2017 IHU Strasbourg
+ * Copyright (C) 2014-2018 IRCAD France
+ * Copyright (C) 2014-2018 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __VISUOGRE_PLUGIN_HPP__
-#define __VISUOGRE_PLUGIN_HPP__
+#pragma once
 
 #include "visuOgre/config.hpp"
 
@@ -48,25 +47,23 @@ public:
 };
 
 /**
- * @brief Allows to redirect Ogre logs on FW4SPL logs
+ * @brief Allows to redirect Ogre logs on Sight logs
  *        We need this class to be declared outside to export DLL symbols on Windows.
  */
-class VISUOGRE_CLASS_API F4SOgreListener : public ::Ogre::LogListener
+class VISUOGRE_CLASS_API SightOgreListener : public ::Ogre::LogListener
 {
 public:
     /// Destructor, does nothing
-    ~F4SOgreListener()
+    ~SightOgreListener()
     {
     }
 
     /**
-     * @brief Set the message on FW4SPL logs.
-     *        Set Ogre log on FW4SPL log depending on it's LogLevel.
+     * @brief Set the message on Sight logs.
+     *        Set Ogre log on Sight log depending on it's LogLevel.
      */
     VISUOGRE_API virtual void messageLogged(const ::Ogre::String& message, ::Ogre::LogMessageLevel lml,
                                             bool maskDebug, const ::Ogre::String& logName, bool& skipThisMessage);
 };
 
 } // namespace visuOgre
-
-#endif //__VISUOGRE_PLUGIN_HPP__

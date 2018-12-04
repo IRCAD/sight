@@ -55,7 +55,7 @@ public:
      * @brief Constructor
      * @param[in] writer GDCM writer that must be enriched
      * @param[in] instance DICOM instance used to share information between modules
-     * @param[in] object FW4SPL data object
+     * @param[in] object Sight data object
      * @param[in] logger Logger
      * @param[in] progress Progress callback
      * @param[in] cancel Cancel requested callback
@@ -78,7 +78,7 @@ protected:
     /// DICOM Instance
     SPTR(::fwGdcmIO::container::DicomInstance) m_instance;
 
-    /// FW4SPL Object
+    /// Sight Object
     CSPTR(DATATYPE) m_object;
 
     /// Logger

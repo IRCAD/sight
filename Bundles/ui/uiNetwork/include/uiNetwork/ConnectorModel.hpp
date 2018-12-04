@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,24 +20,25 @@
  *
  ***********************************************************************/
 
-#ifndef __UINETWORK_CONNECTORMODEL_HPP__
-#define __UINETWORK_CONNECTORMODEL_HPP__
+#pragma once
 
 #include "uiNetwork/config.hpp"
 
-#include <fwTools/Failed.hpp>
-#include <fwRuntime/ConfigurationElement.hpp>
 #include <fwData/Object.hpp>
 
-#include <vector>
-#include <string>
+#include <fwRuntime/ConfigurationElement.hpp>
+
+#include <fwTools/Failed.hpp>
+
 #include <map>
+#include <string>
+#include <vector>
 
 namespace uiNetwork
 {
 /**
  *
- * @brief A model used to retreive service configuration and network service in current F4S app
+ * @brief A model used to retreive service configuration and network service in current Sight app
  */
 class UINETWORK_CLASS_API ConnectorModel
 {
@@ -63,16 +64,16 @@ public:
                     ::fwData::Object::csptr obj);
 
     /**
-     * @brief getter for registered ioNetwork::INetworkListener in a F4S app
+     * @brief getter for registered ioNetwork::INetworkListener in a Sight app
      *
-     * @return a vector of service name in a F4S app
+     * @return a vector of service name in a Sight app
      */
     std::vector<std::string> const& getRegisteredListeners() const;
 
     /**
-     * @brief getter for registered ioNetwork::INetworkSender in a F4S app
+     * @brief getter for registered ioNetwork::INetworkSender in a Sight app
      *
-     * @return  a vector of service name in a F4S app
+     * @return  a vector of service name in a Sight app
      */
     std::vector<std::string> const& getRegisteredSenders() const;
 
@@ -82,7 +83,6 @@ public:
      * @return @see ServiceConfigurationContainer
      */
     ServiceConfigurationContainer const& getServiceConfigurations() const;
-
 
     bool isRegisteredService(std::string const& str) const;
 private:
@@ -97,5 +97,3 @@ private:
 
 };
 } //namespace uiNetwork
-
-#endif // __UINETWORK_CONNECTORMODEL_HPP__

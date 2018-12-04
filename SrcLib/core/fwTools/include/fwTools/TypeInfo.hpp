@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWTOOLS_TYPEINFO_HPP__
-#define __FWTOOLS_TYPEINFO_HPP__
+#pragma once
 
 #include "fwTools/config.hpp"
 
@@ -32,7 +31,7 @@ namespace fwTools
 /**
  * @brief   Purpose: offer a first-class, comparable wrapper over std::type_info ( but copy construcible )
  *
- * Code imported from Loki-Library and adapted for FW4SPL
+ * Code imported from Loki-Library and adapted for Sight
  */
 
 class FWTOOLS_CLASS_API TypeInfo
@@ -62,7 +61,7 @@ public:
      * @brief cast operator TypeInfo -> std::type_info
      * @return a const reference on the embedded  std::type_info
      */
-    FWTOOLS_API operator const std::type_info&() const
+    FWTOOLS_API operator const std::type_info& () const
     {
         return *pInfo_;
     }
@@ -100,5 +99,3 @@ FWTOOLS_API bool operator>=(const TypeInfo& lhs, const TypeInfo& rhs);
 ///@}
 
 }
-
-#endif /* __FWTOOLS_TYPEINFO_HPP__ */

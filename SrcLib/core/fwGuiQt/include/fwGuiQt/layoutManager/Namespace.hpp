@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,18 +20,16 @@
  *
  ***********************************************************************/
 
-#ifndef __FWGUIQT_LAYOUTMANAGER_NAMESPACE_HPP__
-#define __FWGUIQT_LAYOUTMANAGER_NAMESPACE_HPP__
+#pragma once
 
 namespace fwGui
 {
 /**
  * @brief       The namespace fwGui::layoutManager contains the implementation of managers use to handle the GUI layout
- * available in FW4SPL. The Qt library is used.
+ * available in Sight. The Qt library is used.
  */
 namespace layoutManager
 {
 
 }
 }
-#endif /* __FWGUIQT_LAYOUTMANAGER_NAMESPACE_HPP__ */

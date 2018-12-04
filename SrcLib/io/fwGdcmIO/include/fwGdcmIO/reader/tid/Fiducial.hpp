@@ -49,7 +49,7 @@ public:
      * @param[in] dicomSeries DicomSeries used to access computed tag values.
      * @param[in] reader GDCM reader that must be used to read series.
      * @param[in] instance DICOM instance used to share informations between modules
-     * @param[in] image FW4SPL data object
+     * @param[in] image Sight data object
      * @param[in] logger Logger
      */
     FWGDCMIO_API Fiducial(const CSPTR(::fwMedData::DicomSeries)& dicomSeries,

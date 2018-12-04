@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWDATA_MESH_HPP__
-#define __FWDATA_MESH_HPP__
+#pragma once
 
 #include "fwData/Array.hpp"
 #include "fwData/config.hpp"
@@ -40,7 +39,7 @@ namespace fwData
 /**
  * @brief   Data holding a geometric structure composed of points, lines, triangles, quads or polygons.
  *
- * It is the new structure that represent mesh in fw4spl. For the moment, this new structure is available
+ * It is the new structure that represent mesh in sight. For the moment, this new structure is available
  * to register mesh with triangle cells, with quad cells or with triangle and quad cells. Peharps, in future
  * work other cell type will be available (ex: POLYGON)
  *
@@ -475,6 +474,3 @@ protected:
 };
 
 } // namespace fwData
-
-#endif // __FWDATA_MESH_HPP__
-

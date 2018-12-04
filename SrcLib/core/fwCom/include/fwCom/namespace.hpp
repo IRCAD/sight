@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -19,12 +19,12 @@
  * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
  *
  ***********************************************************************/
-#ifndef __FWCOM_NAMESPACE_HPP__
-#define __FWCOM_NAMESPACE_HPP__
 
 /**
- * @brief Namespace containing fw4spl communication tools
+ * @brief Namespace containing sight communication tools
  */
+#pragma once
+
 namespace fwCom
 {
 
@@ -259,5 +259,3 @@ namespace util
  *
  */
 } // namespace fwCom
-
-#endif /* __FWCOM_NAMESPACE_HPP__ */

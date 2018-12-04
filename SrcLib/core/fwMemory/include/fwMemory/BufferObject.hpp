@@ -47,7 +47,7 @@ class IFactory;
 }
 
 /**
- * @brief   Define Base class for FW4SPL buffers
+ * @brief   Define Base class for Sight buffers
  *
  * Keep a pointer to a buffer and it's allocation policy (new malloc) without
  * any cleverness about allocating/destroying the buffer. Users of this class

@@ -36,7 +36,7 @@ namespace visuVTK
 
 static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::visuVTK::Plugin");
 
-/// Register service ::fwRenderVTK::SRender into fw4spl service registry
+/// Register service ::fwRenderVTK::SRender into sight service registry
 fwServicesRegisterMacro( ::fwRender::IRender, ::fwRenderVTK::SRender );
 
 Plugin::~Plugin() noexcept

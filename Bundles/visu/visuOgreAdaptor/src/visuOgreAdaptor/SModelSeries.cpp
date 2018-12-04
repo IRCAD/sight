@@ -113,7 +113,7 @@ void SModelSeries::starting()
 
 void SModelSeries::updating()
 {
-    // Retrieves the associated f4s ModelSeries object
+    // Retrieves the associated Sight ModelSeries object
     const auto modelSeries = this->getInput< ::fwMedData::ModelSeries >(s_MODEL_INPUT);
 
     this->stopping();

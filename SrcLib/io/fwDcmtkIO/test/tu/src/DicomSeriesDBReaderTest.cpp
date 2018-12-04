@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -56,7 +56,7 @@ void DicomSeriesDBReaderTest::readDicomSeriesDBTest()
 {
     ::fwMedData::SeriesDB::sptr seriesDB = ::fwMedData::SeriesDB::New();
 
-    const ::boost::filesystem::path path = ::fwTest::Data::dir() / "fw4spl/Patient/Dicom/ACHGenou";
+    const ::boost::filesystem::path path = ::fwTest::Data::dir() / "sight/Patient/Dicom/ACHGenou";
 
     CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + path.string() + "' does not exist",
                            ::boost::filesystem::exists(path));
@@ -74,4 +74,3 @@ void DicomSeriesDBReaderTest::readDicomSeriesDBTest()
 } // namespace ut
 
 } // namespace fwDcmtkIO
-

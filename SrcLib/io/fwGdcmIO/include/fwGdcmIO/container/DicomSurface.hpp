@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWGDCMIO_CONTAINER_DICOMSURFACE_HPP__
-#define __FWGDCMIO_CONTAINER_DICOMSURFACE_HPP__
+#pragma once
 
 #include "fwGdcmIO/config.hpp"
 
@@ -36,7 +35,7 @@ namespace container
 {
 
 /**
- * @brief This class defines one surface mesh item in order to transform into DICOM/FW4SPL form.
+ * @brief This class defines one surface mesh item in order to transform into DICOM/Sight form.
  */
 class FWGDCMIO_CLASS_API DicomSurface
 {
@@ -45,7 +44,7 @@ public:
 
     /**
      * Typedef for cell index in DICOM world (32 bits see VR OL).
-     * FW4SPL uses uint64_t (see ::fwData::Mesh::CellValueType).
+     * Sight uses uint64_t (see ::fwData::Mesh::CellValueType).
      */
     typedef std::uint32_t DicomCellValueType;
 
@@ -80,7 +79,7 @@ public:
     /// Destructor
     FWGDCMIO_API ~DicomSurface();
 
-    /// Convert DicomSurface container to FW4SPL Mesh
+    /// Convert DicomSurface container to Sight Mesh
     FWGDCMIO_API ::fwData::Mesh::sptr convertToData();
 
     /// Return point coordinates buffer
@@ -126,5 +125,3 @@ private:
 
 } //namespace container
 } //namespace fwGdcmIO
-
-#endif /* __FWGDCMIO_CONTAINER_DICOMSURFACE_HPP__ */

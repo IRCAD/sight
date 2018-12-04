@@ -132,7 +132,7 @@ void Matrix::copyToCv(const fwData::TransformationMatrix3D::csptr& _src, cv::Mat
     _rvec = ::cv::Mat(1, 3, CV_64F);
     _tvec = ::cv::Mat(1, 3, CV_64F);
 
-    // First convert f4s to OpenCV 4x4 matrix.
+    // First convert Sight to OpenCV 4x4 matrix.
     copyToCv( _src, mat4x4);
 
     // Extract translation (_tvec) from mat4x4.

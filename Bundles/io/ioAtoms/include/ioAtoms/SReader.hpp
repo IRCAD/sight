@@ -68,7 +68,6 @@ namespace ioAtoms
        <extensions>
            <extension label="XML">.xml</extension>
            <extension label="Zipped XML>.xmlz</extension>
-           <extension>.f4s</extension>
            <extension>.j</extension>
            <extension label="Medical workspace">.mw</extension>
            <extension>.vpz</extension>
@@ -110,7 +109,7 @@ public:
     /// Signal type for job creation.
     typedef ::fwCom::Signal< void ( ::fwJobs::IJob::sptr ) > JobCreatedSignalType;
 
-    fwCoreServiceClassDefinitionsMacro( (SReader)(::fwIO::IReader) );
+    fwCoreServiceClassDefinitionsMacro( (SReader)(::fwIO::IReader) )
 
     /// Does nothing
     SReader();

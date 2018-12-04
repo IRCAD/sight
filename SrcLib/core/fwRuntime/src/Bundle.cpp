@@ -78,7 +78,7 @@ Bundle::Bundle( const ::boost::filesystem::path& location,
     // Post-condition.
     SLM_ASSERT( "Invalid bundle location.",  m_resourcesLocation.is_complete() == true );
 
-    // Starting from FW4SPL 13.0, the plugin.xml is now likely to be separated from the libraries in the build/install
+    // Starting from Sight 13.0, the plugin.xml is now likely to be separated from the libraries in the build/install
     std::string strLocation = location.string();
     ::boost::filesystem::path strRCPrefix = BUNDLE_RC_PREFIX;
     strRCPrefix                           = strRCPrefix.normalize();

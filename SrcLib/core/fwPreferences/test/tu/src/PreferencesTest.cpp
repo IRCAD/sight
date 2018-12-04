@@ -89,7 +89,7 @@ void PreferencesTest::helperTest()
     const std::string preferenceValue = "PREF_VALUE_TEST";
     const std::string profileName     = m_profile->getName();
 
-    const ::boost::filesystem::path appPrefDir = ::fwTools::os::getUserDataDir("fw4spl", profileName);
+    const ::boost::filesystem::path appPrefDir = ::fwTools::os::getUserDataDir("sight", profileName);
     const ::boost::filesystem::path prefFile   = appPrefDir / "preferences.json";
 
     //Check preference file dir

@@ -38,35 +38,35 @@ class CVIO_CLASS_API Matrix
 public:
 
     /**
-     * @brief copyFromCv: copies values from OpenCV structure to fw4spl data.
+     * @brief copyFromCv: copies values from OpenCV structure to Sight data.
      * @param _src [::cv::Matx44f]: OpenCV 4x4 double matrix.
      * @param _dst [::fwData::TransformationMatrix3D::sptr]: TransformationMatrix (need to be initialized).
      */
     CVIO_API static void copyFromCv( const ::cv::Matx44d& _src, ::fwData::TransformationMatrix3D::sptr& _dst );
 
     /**
-     * @brief copyToCv: copies values from fw4spl TransformationMatrix3D to OpenCV structure.
-     * @param _src [::fwData::TransformationMatrix3D::csptr]: fw4spl matrix to be copied.
+     * @brief copyToCv: copies values from Sight TransformationMatrix3D to OpenCV structure.
+     * @param _src [::fwData::TransformationMatrix3D::csptr]: Sight matrix to be copied.
      * @param _dst [::cv::Matx44d]: OpenCV 4x4 double matrix.
      */
     CVIO_API static void copyToCv(const ::fwData::TransformationMatrix3D::csptr& _src, ::cv::Matx44d& _dst);
 
     /**
-     * @brief copyFromCv: copies values from OpenCV structure to fw4spl data.
+     * @brief copyFromCv: copies values from OpenCV structure to Sight data.
      * @param _src [::cv::Matx44f]: OpenCV 4x4 float matrix.
      * @param _dst [::fwData::TransformationMatrix3D::sptr]: TransformationMatrix (need to be initialized).
      */
     CVIO_API static void copyFromCv( const ::cv::Matx44f& _src, ::fwData::TransformationMatrix3D::sptr& _dst );
 
     /**
-     * @brief copyToCv: copies values from fw4spl TransformationMatrix3D to OpenCV structure.
-     * @param _src [::fwData::TransformationMatrix3D::csptr]: fw4spl matrix to be copied.
+     * @brief copyToCv: copies values from Sight TransformationMatrix3D to OpenCV structure.
+     * @param _src [::fwData::TransformationMatrix3D::csptr]: Sight matrix to be copied.
      * @param _dst [::cv::Matx44f]: OpenCV 4x4 float matrix.
      */
     CVIO_API static void copyToCv(const ::fwData::TransformationMatrix3D::csptr& _src, ::cv::Matx44f& _dst);
 
     /**
-     * @brief copyFromCv: copies values from OpenCV structure (rotation & translation matrix) to fw4spl data.
+     * @brief copyFromCv: copies values from OpenCV structure (rotation & translation matrix) to Sight data.
      * @param _rvec [::cv::Mat]: OpenCV 1x3 rotation vector (cast in CV_64F).
      * @param _tvec [::cv::Mat]: OpenCV 1x3 translation vector (cast in CV_64F).
      * @param _dst [::fwData::TransformationMatrix3D::sptr]: TransformationMatrix (need to be initialized).
@@ -75,8 +75,8 @@ public:
                                     ::fwData::TransformationMatrix3D::sptr& _dst );
 
     /**
-     * @brief copyToCv copies values from fw4spl TransformationMatrix3D to OpenCV structures.
-     * @param _src [::fwData::TransformationMatrix3D::csptr]: fw4spl matrix to be copied.
+     * @brief copyToCv copies values from Sight TransformationMatrix3D to OpenCV structures.
+     * @param _src [::fwData::TransformationMatrix3D::csptr]: Sight matrix to be copied.
      * @param _rvec [::cv::Mat]: OpenCV 1x3 rotation vector of type CV_64F.
      * @param _tvec [::cv::Mat]: OpenCV 1x3 translation vector of type CV_64F.
      */
@@ -84,15 +84,15 @@ public:
                                   ::cv::Mat& _tvec);
 
     /**
-     * @brief copyFromCv copies values from OpenCV structure to fw4spl data.
+     * @brief copyFromCv copies values from OpenCV structure to Sight data.
      * @param _src [::cv::Mat] OpenCV 4x4 matrix (cast in CV_64F).
      * @param _dst [::fwData::TransformationMatrix3D::sptr]:TransformationMatrix (need to be initialized).
      */
     CVIO_API static void copyFromCv(const ::cv::Mat& _src, ::fwData::TransformationMatrix3D::sptr& _dst);
 
     /**
-     * @brief copyToCv: copies values from fw4spl TransformationMatrix3D to OpenCV structure.
-     * @param _src [::fwData::TransformationMatrix3D::csptr]: fw4spl matrix to be copied.
+     * @brief copyToCv: copies values from Sight TransformationMatrix3D to OpenCV structure.
+     * @param _src [::fwData::TransformationMatrix3D::csptr]: Sight matrix to be copied.
      * @param _dst [::cv::Mat]: OpenCV 4x4 matrix of type CV_64F.
      */
     CVIO_API static void copyToCv(const ::fwData::TransformationMatrix3D::csptr& _src, ::cv::Mat& _dst);

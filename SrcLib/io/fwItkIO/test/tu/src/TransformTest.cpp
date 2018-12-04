@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017 IRCAD France
- * Copyright (C) 2017 IHU Strasbourg
+ * Copyright (C) 2017-2018 IRCAD France
+ * Copyright (C) 2017-2018 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -55,7 +55,7 @@ void TransformTest::tearDown()
 void TransformTest::testConversion()
 {
     ::itk::Matrix<double, 4, 4> mat;
-    ::fwData::TransformationMatrix3D::sptr f4sMat = ::fwData::TransformationMatrix3D::New();
+    ::fwData::TransformationMatrix3D::sptr sightMat = ::fwData::TransformationMatrix3D::New();
 
     for(std::uint8_t i = 0; i < 4; ++i)
     {
@@ -65,19 +65,19 @@ void TransformTest::testConversion()
         }
     }
 
-    ::fwItkIO::helper::Transform::convertFromITK(mat, f4sMat);
+    ::fwItkIO::helper::Transform::convertFromITK(mat, sightMat);
 
     for(std::uint8_t i = 0; i < 4; ++i)
     {
         for(std::uint8_t j = 0; j < 4; j++)
         {
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(mat(i, j), f4sMat->getCoefficient(i, j), 0);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(mat(i, j), sightMat->getCoefficient(i, j), 0);
         }
     }
 
-    ::fwData::TransformationMatrix3D::csptr f4sMat2 = f4sMat;
+    ::fwData::TransformationMatrix3D::csptr sightMat2 = sightMat;
 
-    ::itk::Matrix<double, 4, 4> mat2 = ::fwItkIO::helper::Transform::convertToITK(f4sMat2);
+    ::itk::Matrix<double, 4, 4> mat2 = ::fwItkIO::helper::Transform::convertToITK(sightMat2);
 
     for(std::uint8_t i = 0; i < 4; ++i)
     {

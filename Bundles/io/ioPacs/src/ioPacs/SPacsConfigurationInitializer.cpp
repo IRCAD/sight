@@ -159,7 +159,7 @@ void SPacsConfigurationInitializer::configuring()
         s_CONFIG_INOUT);
     if (!pacsConfiguration)
     {
-        FW_DEPRECATED_KEY(s_CONFIG_INOUT, "inout", "fw4spl_18.0");
+        FW_DEPRECATED_KEY(s_CONFIG_INOUT, "inout", "19.0");
         pacsConfiguration = this->getObject< ::fwPacsIO::data::PacsConfiguration >();
     }
 
@@ -202,7 +202,7 @@ void SPacsConfigurationInitializer::updating()
         s_CONFIG_INOUT);
     if (!pacsConfiguration)
     {
-        FW_DEPRECATED_KEY(s_CONFIG_INOUT, "inout", "fw4spl_18.0");
+        FW_DEPRECATED_KEY(s_CONFIG_INOUT, "inout", "19.0");
         pacsConfiguration = this->getObject< ::fwPacsIO::data::PacsConfiguration >();
     }
 

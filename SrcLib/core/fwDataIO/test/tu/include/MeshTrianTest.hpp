@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWDATAIO_UT_MESHTRIANTEST_HPP__
-#define __FWDATAIO_UT_MESHTRIANTEST_HPP__
+#pragma once
 
 #include <fwData/Mesh.hpp>
 
@@ -37,7 +36,7 @@ namespace ut
 {
 
 /**
- * @brief Test many methods to read/create fw4spl trian mesh file.
+ * @brief Test many methods to read/create sight trian mesh file.
  */
 class MeshTrianTest : public CPPUNIT_NS::TestFixture
 {
@@ -45,7 +44,6 @@ CPPUNIT_TEST_SUITE( MeshTrianTest );
 CPPUNIT_TEST( testSimpleMesh );
 CPPUNIT_TEST( testMeshWithCellNormals );
 CPPUNIT_TEST_SUITE_END();
-
 
 public:
     // interface
@@ -57,10 +55,7 @@ public:
 
     void compareMesh(::fwData::Mesh::sptr mesh1, ::fwData::Mesh::sptr mesh2);
 
-
 };
 
 } //namespace ut
 } //namespace fwDataIO
-
-#endif //__FWDATAIO_UT_MESHTRIANTEST_HPP__

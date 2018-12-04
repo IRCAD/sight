@@ -37,13 +37,13 @@ class CVIO_CLASS_API PointList
 {
 public:
 
-    /// Copy the first two coordinates of the f4s point to the OpenCV point.
+    /// Copy the first two coordinates of the Sight point to the OpenCV point.
     CVIO_API static void copyToCv(const ::fwData::Point::csptr& _src, ::cv::Point2d& _dst);
 
-    /// Copy a f4s 2D point list to OpenCV.
+    /// Copy a Sight 2D point list to OpenCV.
     CVIO_API static void copyToCv(const ::fwData::PointList::csptr& _src, std::vector< ::cv::Point2d >& _dst);
 
-    /// Convert OpenCV points to a f4s point list.
+    /// Convert OpenCV points to a Sight point list.
     CVIO_API static void copyFromCv(const std::vector< ::cv::Point2d >& _src, const ::fwData::PointList::sptr& _dst);
 
 };

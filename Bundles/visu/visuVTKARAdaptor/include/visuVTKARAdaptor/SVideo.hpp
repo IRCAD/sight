@@ -124,7 +124,7 @@ private:
 
     vtkSmartPointer<vtkImageData> m_imageData; ///< vtk image created from current data Image. It is shown in the frame.
     vtkSmartPointer<vtkImageActor> m_actor;   ///< actor to show frame
-    vtkSmartPointer<vtkLookupTable> m_lookupTable; ///< Vtk LUT representing the fw4spl TF
+    vtkSmartPointer<vtkLookupTable> m_lookupTable; ///< Vtk LUT representing the sight TF
 
     bool m_isTextureInit; /// true if the texture is initialized
     bool m_isCameraInit; /// true if the vtk camera is initialized (it is only valid when the actor is visible)

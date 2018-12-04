@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,10 +20,9 @@
  *
  ***********************************************************************/
 
-#ifndef __FWGUI_NAMESPACE_HPP__
-#define __FWGUI_NAMESPACE_HPP__
-
 /// The namespace fwGui contains the base interface for IHM services.
+#pragma once
+
 namespace fwGui
 {
 
@@ -48,7 +47,7 @@ namespace factory
 } // namespace factory
 
 /// The namespace fwGui::layoutManager contains the base interface of managers used to handle the GUI layouts available
-/// in FW4SPL.
+/// in Sight.
 namespace layoutManager
 {
 } // namespace layoutManager
@@ -64,4 +63,3 @@ namespace registry
 } // namespace registry
 
 } // namespace fwGui
-#endif /* __FWGUI_NAMESPACE_HPP__ */

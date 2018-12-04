@@ -33,7 +33,7 @@ namespace fwDataTools
 bool TransformationMatrix3D::invert(const ::fwData::TransformationMatrix3D::csptr& _input,
                                     ::fwData::TransformationMatrix3D::sptr& _output)
 {
-    // Normally we should transpose matrices since GLM uses a column-major layout and FW4SPL uses row-major layout
+    // Normally we should transpose matrices since GLM uses a column-major layout and Sight uses row-major layout
     // However the transposition has a cost and inversion does not care about the layout, so we skip it
     const ::glm::dmat4x4 mat        = ::glm::make_mat4<double>(_input->getCoefficients().data());
     const ::glm::dmat4x4 matInverse = ::glm::inverse(mat);
@@ -59,7 +59,7 @@ void TransformationMatrix3D::multiply(const ::fwData::TransformationMatrix3D::cs
                                       const ::fwData::TransformationMatrix3D::csptr& _trfB,
                                       ::fwData::TransformationMatrix3D::sptr& _output)
 {
-    // Normally we should transpose matrices since GLM uses a column-major layout and FW4SPL uses row-major layout
+    // Normally we should transpose matrices since GLM uses a column-major layout and Sight uses row-major layout
     // However the transposition has a cost, so it is faster to not transpose them
     // and perform the inverse multiplication
     const ::glm::dmat4x4 matA = ::glm::make_mat4<double>(_trfA->getCoefficients().data());
@@ -98,7 +98,7 @@ void TransformationMatrix3D::identity(::fwData::TransformationMatrix3D::sptr& _t
 void TransformationMatrix3D::multiply(const ::fwData::TransformationMatrix3D::csptr& _trf,
                                       const ::fwData::Point::csptr& _input, ::fwData::Point::sptr& _output)
 {
-    // Normally we should transpose matrices since GLM uses a column-major layout and FW4SPL uses row-major layout
+    // Normally we should transpose matrices since GLM uses a column-major layout and Sight uses row-major layout
     // However the transposition has a cost, so it is faster to not transpose them
     // and perform the inverse multiplication
     const ::glm::dmat4x4 mat = ::glm::make_mat4<double>(_trf->getCoefficients().data());

@@ -348,16 +348,18 @@ void Material::updateShadingMode( int _shadingMode, int _numLights, bool _hasDif
 
 //------------------------------------------------------------------------------
 
-void Material::updateRGBAMode(fwData::Material::sptr _f4sMaterial)
+void Material::updateRGBAMode(fwData::Material::sptr _sightMaterial)
 {
     //Set up Material colors
-    ::fwData::Color::csptr f4sAmbient = _f4sMaterial->ambient();
-    ::fwData::Color::csptr f4sDiffuse = _f4sMaterial->diffuse();
+    ::fwData::Color::csptr sightAmbient = _sightMaterial->ambient();
+    ::fwData::Color::csptr sightDiffuse = _sightMaterial->diffuse();
 
-    const ::Ogre::ColourValue ambient(f4sAmbient->red(), f4sAmbient->green(), f4sAmbient->blue(), f4sAmbient->alpha());
+    const ::Ogre::ColourValue ambient(sightAmbient->red(), sightAmbient->green(),
+                                      sightAmbient->blue(), sightAmbient->alpha());
     m_material->setAmbient(ambient);
 
-    const ::Ogre::ColourValue diffuse(f4sDiffuse->red(), f4sDiffuse->green(), f4sDiffuse->blue(), f4sDiffuse->alpha());
+    const ::Ogre::ColourValue diffuse(sightDiffuse->red(), sightDiffuse->green(),
+                                      sightDiffuse->blue(), sightDiffuse->alpha());
     m_material->setDiffuse(diffuse);
 
     const ::Ogre::ColourValue specular(.2f, .2f, .2f, 1.f);

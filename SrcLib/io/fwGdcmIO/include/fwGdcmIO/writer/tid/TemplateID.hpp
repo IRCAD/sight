@@ -48,7 +48,7 @@ public:
      * @brief Constructor
      * @param[in] writer GDCM writer that must be enriched
      * @param[in] instance DICOM instance used to share informations between modules
-     * @param[in] object FW4SPL data object
+     * @param[in] object Sight data object
      */
     FWGDCMIO_API TemplateID(const SPTR(::gdcm::Writer)& writer,
                             const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
@@ -65,7 +65,7 @@ protected:
     /// DICOM Instance
     SPTR(::fwGdcmIO::container::DicomInstance) m_instance;
 
-    /// FW4SPL Object
+    /// Sight Object
     CSPTR(DATATYPE) m_object;
 };
 

@@ -21,7 +21,7 @@
  ***********************************************************************/
 
 /**
- * @brief       The namespace eigenTools contains helpers to deal between f4s and eigen.
+ * @brief       The namespace eigenTools contains helpers to deal between Sight and eigen.
  */
 #pragma once
 
@@ -29,7 +29,7 @@ namespace eigenTools
 {
 
 /**
- * @brief Contains helpers to convert between FW4SPL and Eigen types.
+ * @brief Contains helpers to convert between Sight and Eigen types.
  */
 namespace helper
 {

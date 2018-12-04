@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2017 IRCAD France
- * Copyright (C) 2014-2017 IHU Strasbourg
+ * Copyright (C) 2014-2018 IRCAD France
+ * Copyright (C) 2014-2018 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWRENDEROGRE_HELPER_SHADING_HPP__
-#define __FWRENDEROGRE_HELPER_SHADING_HPP__
+#pragma once
 
 #include "fwRenderOgre/config.hpp"
 
@@ -128,7 +127,7 @@ public:
     FWRENDEROGRE_API static ShaderConstantsType findMaterialConstants(::Ogre::Material& _material);
 
     /**
-     * @brief Create a fw4spl data that can be used to interact with a shader parameter.
+     * @brief Create a Sight data that can be used to interact with a shader parameter.
      *
      * @param[in] _params shader parameters
      * @param[in] _shaderType shader type (vertex, fragment or geometry)
@@ -140,7 +139,7 @@ public:
                                                                     bool _enableLightConstants = false);
 
     /**
-     * @brief Create a fw4spl data that can be used to interact with a shader parameter.
+     * @brief Create a Sight data that can be used to interact with a shader parameter.
      *
      * @param[in] _type type of the shader parameter
      * @param[in] _value value of the shader parameter
@@ -172,6 +171,3 @@ public:
 } // namespace helper
 
 } // namespace fwRenderOgre
-
-#endif // __FWRENDEROGRE_HELPER_SHADING_HPP__
-

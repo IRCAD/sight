@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,17 +20,11 @@
  *
  ***********************************************************************/
 
-#ifndef __FWCORE_NAMESPACE_HPP__
-#define __FWCORE_NAMESPACE_HPP__
-
 /**
- * @brief       This namespace fwCore provides common foundations for FW4SPL.
- * @namespace   fwCore
- *
- * @date        2009-2010
- *
+ * @brief       This namespace fwCore provides common foundations for Sight.
  */
+#pragma once
+
 namespace fwCore
 {
 }
-#endif /* __FWCORE_NAMESPACE_HPP__ */

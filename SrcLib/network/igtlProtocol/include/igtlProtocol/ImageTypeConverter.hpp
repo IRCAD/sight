@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __IGTLPROTOCOL_IMAGETYPECONVERTER_HPP__
-#define __IGTLPROTOCOL_IMAGETYPECONVERTER_HPP__
+#pragma once
 
 #include "igtlProtocol/config.hpp"
 #include "igtlProtocol/exception/Conversion.hpp"
@@ -77,10 +76,8 @@ private:
     /// Not implemented
     ~ImageTypeConverter();
 
-    /// type converter map between igtl pixel type and F4S pixel type
+    /// type converter map between igtl pixel type and Sight pixel type
     static TypeConverterMap s_typeConverterMap;
 };
 
 }//namespace igtlProtocol
-
-#endif // __IGTLPROTOCOL_IMAGETYPECONVERTER_HPP__

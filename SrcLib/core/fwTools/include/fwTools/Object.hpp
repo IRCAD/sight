@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWTOOLS_OBJECT_HPP__
-#define __FWTOOLS_OBJECT_HPP__
+#pragma once
 
 #include "fwTools/config.hpp"
 #include "fwTools/fwID.hpp"
@@ -34,7 +33,7 @@ namespace fwTools
 class UUID;
 
 /**
- * @brief   Define Base class for FW4SPL objects and services
+ * @brief   Define Base class for Sight objects and services
  */
 class FWTOOLS_CLASS_API Object  : public ::fwCore::BaseObject,
                                   public ::boost::noncopyable,
@@ -70,5 +69,3 @@ inline Object::~Object()
 //-----------------------------------------------------------------------------
 
 }
-
-#endif /* __FWTOOLS_OBJECT_HPP__ */

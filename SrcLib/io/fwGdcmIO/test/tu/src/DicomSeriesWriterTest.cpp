@@ -65,7 +65,7 @@ void DicomSeriesWriterTest::setUp()
 
     // Set up context before running a test.
     ::fwMedData::SeriesDB::sptr srcSeriesDB = ::fwMedData::SeriesDB::New();
-    const ::boost::filesystem::path srcPath = ::fwTest::Data::dir() / "fw4spl/Patient/Dicom/DicomDB/01-CT-DICOM_LIVER";
+    const ::boost::filesystem::path srcPath = ::fwTest::Data::dir() / "sight/Patient/Dicom/DicomDB/01-CT-DICOM_LIVER";
 
     CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + srcPath.string() + "' does not exist",
                            ::boost::filesystem::exists(srcPath));

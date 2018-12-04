@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,9 +22,9 @@
 
 #include "SliceThicknessModifierTest.hpp"
 
-#include <fwDicomIOFilter/IFilter.hpp>
 #include <fwDicomIOFilter/factory/new.hpp>
 #include <fwDicomIOFilter/helper/Filter.hpp>
+#include <fwDicomIOFilter/IFilter.hpp>
 
 #include <fwGdcmIO/reader/SeriesDB.hpp>
 
@@ -62,7 +62,7 @@ void SliceThicknessModifierTest::simpleApplication()
     ::fwMedData::SeriesDB::sptr seriesDB = ::fwMedData::SeriesDB::New();
 
     const std::string filename           = "09-CT-PACS";
-    const ::boost::filesystem::path path = ::fwTest::Data::dir() / "fw4spl/Patient/Dicom/DicomDB" / filename;
+    const ::boost::filesystem::path path = ::fwTest::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
 
     CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + path.string() + "' does not exist",
                            ::boost::filesystem::exists(path));
@@ -108,7 +108,7 @@ void SliceThicknessModifierTest::applyFilterOn2DImage()
     ::fwMedData::SeriesDB::sptr seriesDB = ::fwMedData::SeriesDB::New();
 
     const std::string filename           = "46-MR-BARRE-MONO2-12-shoulder";
-    const ::boost::filesystem::path path = ::fwTest::Data::dir() / "fw4spl/Patient/Dicom/DicomDB" / filename;
+    const ::boost::filesystem::path path = ::fwTest::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
 
     CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + path.string() + "' does not exist",
                            ::boost::filesystem::exists(path));

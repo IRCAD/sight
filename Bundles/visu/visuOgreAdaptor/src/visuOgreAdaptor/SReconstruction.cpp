@@ -98,7 +98,7 @@ void SReconstruction::createMeshService()
     SLM_TRACE_IF("Mesh is null", !mesh);
     if (mesh)
     {
-        // Creates an Ogre adaptor and associates it with the f4s mesh object
+        // Creates an Ogre adaptor and associates it with the Sight mesh object
         auto meshAdaptor = this->registerService< ::visuOgreAdaptor::SMesh >("::visuOgreAdaptor::SMesh");
         meshAdaptor->registerInOut(mesh, "mesh", true);
 

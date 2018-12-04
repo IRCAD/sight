@@ -88,7 +88,7 @@ void Series::readGeneralSeriesModule()
     m_object->setDescription(description);
 
     // Serie's number - Type 2
-    // NOTE: Not used in FW4SPL
+    // NOTE: Not used in Sight
 
     // Performing physicians name - Type 3
     const std::string& performingPhysicianNamesStr =
@@ -102,10 +102,10 @@ void Series::readGeneralSeriesModule()
     }
 
     // Laterality - Type 2C
-    // NOTE: Not used in FW4SPL
+    // NOTE: Not used in Sight
 
     // Patient Position - Type 2C
-    // NOTE: Not used in FW4SPL
+    // NOTE: Not used in Sight
 }
 
 } // namespace ie
