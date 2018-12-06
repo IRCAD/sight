@@ -1,8 +1,24 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017-2018.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2017-2018 IRCAD France
+ * Copyright (C) 2017-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #include "fwRenderOgre/Material.hpp"
 
@@ -332,16 +348,18 @@ void Material::updateShadingMode( int _shadingMode, int _numLights, bool _hasDif
 
 //------------------------------------------------------------------------------
 
-void Material::updateRGBAMode(fwData::Material::sptr _f4sMaterial)
+void Material::updateRGBAMode(fwData::Material::sptr _sightMaterial)
 {
     //Set up Material colors
-    ::fwData::Color::csptr f4sAmbient = _f4sMaterial->ambient();
-    ::fwData::Color::csptr f4sDiffuse = _f4sMaterial->diffuse();
+    ::fwData::Color::csptr sightAmbient = _sightMaterial->ambient();
+    ::fwData::Color::csptr sightDiffuse = _sightMaterial->diffuse();
 
-    const ::Ogre::ColourValue ambient(f4sAmbient->red(), f4sAmbient->green(), f4sAmbient->blue(), f4sAmbient->alpha());
+    const ::Ogre::ColourValue ambient(sightAmbient->red(), sightAmbient->green(),
+                                      sightAmbient->blue(), sightAmbient->alpha());
     m_material->setAmbient(ambient);
 
-    const ::Ogre::ColourValue diffuse(f4sDiffuse->red(), f4sDiffuse->green(), f4sDiffuse->blue(), f4sDiffuse->alpha());
+    const ::Ogre::ColourValue diffuse(sightDiffuse->red(), sightDiffuse->green(),
+                                      sightDiffuse->blue(), sightDiffuse->alpha());
     m_material->setDiffuse(diffuse);
 
     const ::Ogre::ColourValue specular(.2f, .2f, .2f, 1.f);

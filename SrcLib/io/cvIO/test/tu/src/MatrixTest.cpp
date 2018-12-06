@@ -1,8 +1,24 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2018.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2018 IRCAD France
+ * Copyright (C) 2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #include "MatrixTest.hpp"
 
@@ -407,7 +423,7 @@ void MatrixTest::copyToRvecTvec()
                                              tvec.at<double>(i), 1e-8);
     }
 
-    // Reconstruct 4x4 matrix and compare with original f4s one.
+    // Reconstruct 4x4 matrix and compare with original Sight one.
     ::cv::Mat mat4x4 = ::cv::Mat::eye(4, 4, CV_64F);
     ::cv::Rodrigues( rvec, mat4x4(::cv::Rect(0, 0, 3, 3)) );
     tvec.copyTo(mat4x4( ::cv::Rect(3, 0, 1, 3) ));

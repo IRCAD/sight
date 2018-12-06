@@ -150,7 +150,7 @@
     <!-- Service config used for ioAtoms reader and writer. Defines the Data version and filter to use. -->
     <extension implements="::fwServices::registry::ServiceConfig">
         <id>MDAtomsConfig</id>
-        <desc>Json/Xml Reader/Writer (FW4SPL)</desc>
+        <desc>Json/Xml Reader/Writer (Sight)</desc>
         <config>
             <patcher />
             <filter>VRRenderMedicalDataV2</filter>
@@ -198,7 +198,7 @@
     <!-- Service config used for ioAtoms reader and writer to read landmarks -->
     <extension implements="::fwServices::registry::ServiceConfig">
         <id>LandmarksAtomsConfig</id>
-        <desc>Json/Xml Reader/Writer (FW4SPL)</desc>
+        <desc>Json/Xml Reader/Writer (Sight)</desc>
         <config>
             <patcher context="Landmark" version="V2" />
         </config>

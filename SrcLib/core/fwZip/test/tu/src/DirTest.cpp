@@ -1,17 +1,33 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #include "DirTest.hpp"
+
+#include <fwZip/ReadDirArchive.hpp>
+#include <fwZip/WriteDirArchive.hpp>
 
 #include <fwTest/Data.hpp>
 
 #include <fwTools/System.hpp>
-
-#include <fwZip/ReadDirArchive.hpp>
-#include <fwZip/WriteDirArchive.hpp>
 
 #include <boost/filesystem/convenience.hpp>
 #include <boost/filesystem/path.hpp>
@@ -24,15 +40,21 @@ namespace fwZip
 namespace ut
 {
 
+//------------------------------------------------------------------------------
+
 void DirTest::setUp()
 {
     // Set up context before running a test.
 }
 
+//------------------------------------------------------------------------------
+
 void DirTest::tearDown()
 {
     // Clean up after the test run.
 }
+
+//------------------------------------------------------------------------------
 
 void DirTest::writeReadFileTest()
 {
@@ -51,6 +73,8 @@ void DirTest::writeReadFileTest()
 
 }
 
+//------------------------------------------------------------------------------
+
 void DirTest::writeDirTest()
 {
     const ::boost::filesystem::path dirPath = ::fwTools::System::getTemporaryFolder() / "fwDirTest";
@@ -67,6 +91,8 @@ void DirTest::writeDirTest()
     ::boost::filesystem::remove_all( dirPath );
 }
 
+//------------------------------------------------------------------------------
+
 void DirTest::putFileTest()
 {
     const ::boost::filesystem::path dirPath = ::fwTools::System::getTemporaryFolder() / "fwDirTest";
@@ -75,8 +101,7 @@ void DirTest::putFileTest()
     SPTR(WriteDirArchive) writer = std::make_shared<WriteDirArchive>(dirPath);
 
     const ::boost::filesystem::path testDir  = "test";
-    const ::boost::filesystem::path testFile = ::fwTest::Data::dir() / "fw4spl/image/jpg/makao01.jpg";
-
+    const ::boost::filesystem::path testFile = ::fwTest::Data::dir() / "sight/image/jpg/makao01.jpg";
 
     CPPUNIT_ASSERT_MESSAGE("The file '" + testFile.string() + "' does not exist",
                            ::boost::filesystem::exists(testFile));
@@ -87,7 +112,6 @@ void DirTest::putFileTest()
 
     ::boost::filesystem::remove_all( dirPath );
 }
-
 
 } // namespace ut
 } // namespace fwZip

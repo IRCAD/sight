@@ -83,15 +83,10 @@
             <gui>
                 <layout>
                     <menuItem name="About" specialAction="ABOUT" />
-                    <menuItem name="Acknowledgments" />
-                    <separator />
-                    <menuItem name="VR-Render Website" />
                 </layout>
             </gui>
             <registry>
                 <menuItem sid="action_about" start="yes" />
-                <menuItem sid="action_acknowledgments" start="yes" />
-                <menuItem sid="action_openBrowser" start="yes" />
             </registry>
         </service>
 
@@ -114,16 +109,6 @@
 
         <service uid="action_about" type="::uiGenericQt::action::SShowAbout">
             <filename id="VRRender-${appVersion}/about/about.html" />
-        </service>
-
-        <service uid="action_acknowledgments" type="::uiGenericQt::action::SShowAbout">
-            <filename id="VRRender-${appVersion}/documentations/ack.html"/>
-            <title>Acknowledgments</title>
-            <size width="500" height="600" />
-        </service>
-
-        <service uid="action_openBrowser" type="::uiGenericQt::action::LaunchBrowserActionService">
-            <url>http://www.ircad.fr/softwares/vr-render/Software.php</url>
         </service>
 
         <service uid="dynamicView" type="::guiQt::editor::SDynamicView">
