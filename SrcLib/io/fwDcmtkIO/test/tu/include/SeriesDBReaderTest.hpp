@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWDCMTKIO_UT_SERIESDBREADERTEST_HPP__
-#define __FWDCMTKIO_UT_SERIESDBREADERTEST_HPP__
+#pragma once
 
 #include <fwServices/macros.hpp>
 
@@ -35,8 +34,8 @@ namespace ut
 class SeriesDBReaderTest : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE( SeriesDBReaderTest );
-CPPUNIT_TEST( readACHSeriesDBTest );
-CPPUNIT_TEST( readACHLazySeriesDBTest );
+CPPUNIT_TEST( readJMSSeriesDBTest );
+CPPUNIT_TEST( readJMSLazySeriesDBTest );
 CPPUNIT_TEST( readCTSeriesDBTest );
 CPPUNIT_TEST( readCTLazySeriesDBTest );
 CPPUNIT_TEST( readMRSeriesDBTest );
@@ -54,9 +53,9 @@ public:
     void setUp();
     void tearDown();
 
-    /// Read ACH Series
-    void readACHSeriesDBTest();
-    void readACHLazySeriesDBTest();
+    /// Read JMS Series
+    void readJMSSeriesDBTest();
+    void readJMSLazySeriesDBTest();
 
     /// Read CT Series (01-CT-DICOM_LIVER)
     void readCTSeriesDBTest();
@@ -79,8 +78,8 @@ public:
     void readDisabledLazySeriesDBTest();
 
 protected:
-    /// Read and check ACH series
-    void readACHSeries();
+    /// Read and check JMS series
+    void readJMSSeries();
 
     /// Read and check CT series (01-CT-DICOM_LIVER)
     void readCTSeries();
@@ -97,11 +96,7 @@ protected:
     /// Read disabled series (Try to read MR when only CT is enabled)
     void readDisabledSeries();
 
-
 };
 
 } // namespace ut
 } // namespace fwDcmtkIO
-
-#endif // __FWDCMTKIO_UT_SERIESDBREADERTEST_HPP__
-
