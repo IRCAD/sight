@@ -527,7 +527,14 @@ void SMesh::attachNode(::Ogre::MovableObject* _node)
 {
     ::Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
     ::Ogre::SceneNode* transNode     = this->getTransformNode(rootSceneNode);
-    transNode->attachObject(_node);
+
+    ::Ogre::SceneNode* node = _node->getParentSceneNode();
+
+    if(node != transNode)
+    {
+        _node->detachFromParent();
+        transNode->attachObject(_node);
+    }
 }
 
 //-----------------------------------------------------------------------------
