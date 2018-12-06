@@ -28,13 +28,15 @@
 namespace uiVisuOgre
 {
 
+static const ::fwCom::Signals::SignalKeyType s_STEREO_ACTIVE_SIG = "stereoActive";
+
 fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiVisuOgre::SStereoToggler);
 
 //------------------------------------------------------------------------------
 
 SStereoToggler::SStereoToggler()
 {
-
+    m_stereoActiveSig = newSignal< StereoActiveSigType >(s_STEREO_ACTIVE_SIG);
 }
 
 //------------------------------------------------------------------------------
@@ -91,6 +93,9 @@ void SStereoToggler::updating()
         ::fwServices::registry::ObjectService::ServiceVectorType renderers =
             ::fwServices::OSR::getServices("::fwRenderOgre::SRender");
 
+        const bool enableStereo = this->getIsActive() && this->getIsExecutable();
+        const auto stereoMode   = enableStereo ? m_stereoMode : StereoModeType::NONE;
+
         for(auto srv : renderers)
         {
             ::fwRenderOgre::SRender::sptr renderSrv        = ::fwRenderOgre::SRender::dynamicCast(srv);
@@ -100,9 +105,6 @@ void SStereoToggler::updating()
 
             if(layerIt != layerMap.end())
             {
-                const bool enableStereo = this->getIsActive() && this->getIsExecutable();
-                const auto stereoMode   = enableStereo ? m_stereoMode : StereoModeType::NONE;
-
                 auto& layer = layerIt->second;
                 layer->setStereoMode(stereoMode);
                 layer->requestRender();
@@ -112,6 +114,8 @@ void SStereoToggler::updating()
                 SLM_WARN("No layer named '" + m_layerId + "' in render service '" + renderSrv->getID() + "'.");
             }
         }
+
+        m_stereoActiveSig->asyncEmit(enableStereo);
     }
 }
 
