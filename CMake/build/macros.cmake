@@ -677,7 +677,6 @@ macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
             file(TO_NATIVE_PATH "${PROFILE_PATH}" PROFILE_PATH)
 
             configure_file(${FWCMAKE_RESOURCE_PATH}/install/windows/template.bat.in ${CMAKE_BINARY_DIR}/bin/${APP_NAME}.bat @ONLY)
-            install(PROGRAMS ${CMAKE_BINARY_DIR}/bin/${APP_NAME}.bat DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
         endif()
     else()
         set_target_properties(${FWPROJECT_NAME} PROPERTIES FOLDER "bundle")
@@ -914,7 +913,6 @@ macro(fwLoadProperties)
     # Generate batch script to ease the set of PATH in order to launch a Sight application on Windows.
     if(WIN32 AND USE_CONAN)
         configure_file(${FWCMAKE_RESOURCE_PATH}/install/windows/setpath.bat.in ${CMAKE_BINARY_DIR}/bin/setpath.bat @ONLY)
-        install(PROGRAMS ${CMAKE_BINARY_DIR}/bin/setpath.bat DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
     endif()
 endmacro()
 
