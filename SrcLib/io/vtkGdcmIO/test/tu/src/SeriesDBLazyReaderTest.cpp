@@ -63,7 +63,7 @@ void SeriesDBLazyReaderTest::readSeriesDBTest()
 {
     ::fwMedData::SeriesDB::sptr seriesDB = ::fwMedData::SeriesDB::New();
 
-    const ::boost::filesystem::path path = ::fwTest::Data::dir() / "sight/Patient/Dicom/ACHGenou";
+    const ::boost::filesystem::path path = ::fwTest::Data::dir() / "sight/Patient/Dicom/JMSGenou";
 
     CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + path.string() + "' does not exist",
                            ::boost::filesystem::exists(path));
@@ -78,7 +78,7 @@ void SeriesDBLazyReaderTest::readSeriesDBTest()
     CPPUNIT_ASSERT_EQUAL( size_t( 1 ), seriesDB->size());
     ::fwMedData::ImageSeries::sptr series = ::fwMedData::ImageSeries::dynamicCast(seriesDB->front());
 
-    CPPUNIT_ASSERT( ::fwTest::DicomReaderTest::checkSeriesACHGenou( series ) );
+    CPPUNIT_ASSERT( ::fwTest::DicomReaderTest::checkSeriesJMSGenou( series ) );
 
 #if (SPYLOG_LEVEL >= 4 ) // Log level info
     ::fwCore::HiResTimer timer;

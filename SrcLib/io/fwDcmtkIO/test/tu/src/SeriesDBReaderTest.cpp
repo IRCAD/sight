@@ -251,18 +251,18 @@ void SeriesDBReaderTest::tearDown()
 }
 //------------------------------------------------------------------------------
 
-void SeriesDBReaderTest::readACHSeriesDBTest()
+void SeriesDBReaderTest::readJMSSeriesDBTest()
 {
     ::fwMemory::BufferManager::getDefault()->setLoadingMode(::fwMemory::BufferManager::DIRECT);
-    this->readACHSeries();
+    this->readJMSSeries();
 }
 
 //------------------------------------------------------------------------------
 
-void SeriesDBReaderTest::readACHLazySeriesDBTest()
+void SeriesDBReaderTest::readJMSLazySeriesDBTest()
 {
     ::fwMemory::BufferManager::getDefault()->setLoadingMode(::fwMemory::BufferManager::LAZY);
-    this->readACHSeries();
+    this->readJMSSeries();
 }
 
 //------------------------------------------------------------------------------
@@ -347,11 +347,11 @@ void SeriesDBReaderTest::readDisabledLazySeriesDBTest()
 
 //------------------------------------------------------------------------------
 
-void SeriesDBReaderTest::readACHSeries()
+void SeriesDBReaderTest::readJMSSeries()
 {
     ::fwMedData::SeriesDB::sptr seriesDB = ::fwMedData::SeriesDB::New();
 
-    const ::boost::filesystem::path path = ::fwTest::Data::dir() / "sight/Patient/Dicom/ACHGenou";
+    const ::boost::filesystem::path path = ::fwTest::Data::dir() / "sight/Patient/Dicom/JMSGenou";
 
     CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + path.string() + "' does not exist",
                            ::boost::filesystem::exists(path));
@@ -367,7 +367,7 @@ void SeriesDBReaderTest::readACHSeries()
     ::fwMedData::ImageSeries::sptr series = ::fwMedData::ImageSeries::dynamicCast(seriesDB->front());
 
     // Check trimmed values
-    CPPUNIT_ASSERT( ::fwTest::DicomReaderTest::checkSeriesACHGenouTrimmed( series ) );
+    CPPUNIT_ASSERT( ::fwTest::DicomReaderTest::checkSeriesJMSGenouTrimmed( series ) );
 
     // Read image in lazy mode
     ::fwDataTools::helper::Image locker( series->getImage() );

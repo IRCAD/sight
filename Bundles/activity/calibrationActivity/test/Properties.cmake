@@ -13,5 +13,3 @@ set( REQUIREMENTS
     activities
     calibrationActivity
 )
-
-set(CPPUNITTEST_OPTIONS BUNDLE calibrationActivity WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
