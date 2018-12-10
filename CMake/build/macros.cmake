@@ -254,6 +254,26 @@ macro(fwExec FWPROJECT_NAME PROJECT_VERSION)
         endif()
     endif()
 
+    # Configure launcher script
+    if(UNIX)
+        string(TOLOWER ${FWPROJECT_NAME}.sh ${FWPROJECT_NAME}_SCRIPT)
+        set(PROJECT_EXECUTABLE ${${FWPROJECT_NAME}_FULLNAME})
+
+        string(REPLACE ";" ":" FW_EXTERNAL_LIBRARIES_DIRS "${FW_EXTERNAL_LIBRARIES_DIR}")            
+        configure_file(${FWCMAKE_RESOURCE_PATH}/build/linux/template_exe.sh.in ${CMAKE_CURRENT_BINARY_DIR}/${${FWPROJECT_NAME}_SCRIPT} @ONLY)
+        unset(FW_EXTERNAL_LIBRARIES_DIRS)
+        file(COPY ${CMAKE_CURRENT_BINARY_DIR}/${${FWPROJECT_NAME}_SCRIPT} DESTINATION ${CMAKE_BINARY_DIR}/bin
+            FILE_PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
+    elseif(WIN32)
+        string(TOLOWER ${FWPROJECT_NAME}.bat ${FWPROJECT_NAME}_SCRIPT)
+        set(PROJECT_EXECUTABLE ${FWPROJECT_NAME})
+
+        configure_file(${FWCMAKE_RESOURCE_PATH}/build/windows/template_exe.bat.in ${CMAKE_CURRENT_BINARY_DIR}/${${FWPROJECT_NAME}_SCRIPT} @ONLY)
+        unset(FW_EXTERNAL_LIBRARIES_DIRS)
+        file(COPY ${CMAKE_CURRENT_BINARY_DIR}/${${FWPROJECT_NAME}_SCRIPT} DESTINATION ${CMAKE_BINARY_DIR}/bin
+            FILE_PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
+    endif()
+
     if(${FWPROJECT_NAME}_INSTALL OR BUILD_SDK)
         install(
             TARGETS ${FWPROJECT_NAME}
@@ -312,17 +332,37 @@ macro(fwCppunitTest FWPROJECT_NAME)
         endif()
     endif()
 
-    if(fwCppunitTest_WORKING_DIRECTORY)
-        set(fwCppunitTest_WORKING_DIRECTORY WORKING_DIRECTORY ${fwCppunitTest_WORKING_DIRECTORY})
+    # Configure launcher script
+    if(UNIX)
+        string(TOLOWER ${FWPROJECT_NAME}.sh ${FWPROJECT_NAME}_SCRIPT)
+        set(PROJECT_EXECUTABLE ${${FWPROJECT_NAME}_FULLNAME})
+        
+        string(REPLACE ";" ":" FW_EXTERNAL_LIBRARIES_DIRS "${FW_EXTERNAL_LIBRARIES_DIR}")            
+        configure_file(${FWCMAKE_RESOURCE_PATH}/build/linux/template_exe.sh.in ${CMAKE_CURRENT_BINARY_DIR}/${${FWPROJECT_NAME}_SCRIPT} @ONLY)
+        unset(FW_EXTERNAL_LIBRARIES_DIRS)
+        file(COPY ${CMAKE_CURRENT_BINARY_DIR}/${${FWPROJECT_NAME}_SCRIPT} DESTINATION ${CMAKE_BINARY_DIR}/bin
+            FILE_PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
+    elseif(WIN32)
+        string(TOLOWER ${FWPROJECT_NAME}.bat ${FWPROJECT_NAME}_SCRIPT)
+        set(PROJECT_EXECUTABLE ${FWPROJECT_NAME})
+
+        configure_file(${FWCMAKE_RESOURCE_PATH}/build/windows/template_exe.bat.in ${CMAKE_CURRENT_BINARY_DIR}/${${FWPROJECT_NAME}_SCRIPT} @ONLY)
+        unset(FW_EXTERNAL_LIBRARIES_DIRS)
+        file(COPY ${CMAKE_CURRENT_BINARY_DIR}/${${FWPROJECT_NAME}_SCRIPT} DESTINATION ${CMAKE_BINARY_DIR}/bin
+            FILE_PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
     endif()
 
-    set(${FWPROJECT_NAME}_EXECUTABLE "$<TARGET_FILE:${FWPROJECT_NAME}>")
+    if(fwCppunitTest_WORKING_DIRECTORY)
+        set(fwCppunitTest_WORKING_DIRECTORY "WORKING_DIRECTORY ${fwCppunitTest_WORKING_DIRECTORY}")
+    else()
+        set(fwCppunitTest_WORKING_DIRECTORY "WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/bin")
+    endif()
 
     if(TESTS_XML_OUTPUT)
-        add_test(NAME ${FWPROJECT_NAME} ${fwCppunitTest_WORKING_DIRECTORY} COMMAND ${${FWPROJECT_NAME}_EXECUTABLE} --xml)
+        add_test(NAME ${FWPROJECT_NAME} COMMAND "${${FWPROJECT_NAME}_SCRIPT} --xml" ${fwCppunitTest_WORKING_DIRECTORY})
         set_tests_properties(${FWPROJECT_NAME} PROPERTIES TIMEOUT 240)
     else()
-        add_test(NAME ${FWPROJECT_NAME} ${fwCppunitTest_WORKING_DIRECTORY} COMMAND ${${FWPROJECT_NAME}_EXECUTABLE})
+        add_test(NAME ${FWPROJECT_NAME} COMMAND "${${FWPROJECT_NAME}_SCRIPT}" ${fwCppunitTest_WORKING_DIRECTORY})
     endif()
 
     # Adds project into folder test
@@ -619,11 +659,16 @@ macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
             else()
                 set(LAUNCHER_PATH "$me")
             endif()
-
+            
+            # Configure launcher script            
+            # Replace all ';' path separator to unix style path separator ':' 
+            string(REPLACE ";" ":" FW_EXTERNAL_LIBRARIES_DIRS "${FW_EXTERNAL_LIBRARIES_DIR}")            
             configure_file(${FWCMAKE_RESOURCE_PATH}/build/linux/template.sh.in ${CMAKE_CURRENT_BINARY_DIR}/${APP_NAME} @ONLY)
+            unset(FW_EXTERNAL_LIBRARIES_DIRS)
+            
             file(COPY ${CMAKE_CURRENT_BINARY_DIR}/${APP_NAME} DESTINATION ${CMAKE_BINARY_DIR}/bin
                 FILE_PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
-        elseif(WIN32 AND USE_CONAN)
+        elseif(WIN32)
             # Install shortcut
             string(TOLOWER ${FWPROJECT_NAME} APP_NAME)
 
