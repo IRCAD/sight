@@ -352,17 +352,11 @@ macro(fwCppunitTest FWPROJECT_NAME)
             FILE_PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
     endif()
 
-    if(fwCppunitTest_WORKING_DIRECTORY)
-        set(fwCppunitTest_WORKING_DIRECTORY "WORKING_DIRECTORY ${fwCppunitTest_WORKING_DIRECTORY}")
-    else()
-        set(fwCppunitTest_WORKING_DIRECTORY "WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/bin")
-    endif()
-
     if(TESTS_XML_OUTPUT)
-        add_test(NAME ${FWPROJECT_NAME} COMMAND "${${FWPROJECT_NAME}_SCRIPT} --xml" ${fwCppunitTest_WORKING_DIRECTORY})
+        add_test(NAME ${FWPROJECT_NAME} COMMAND "${${FWPROJECT_NAME}_SCRIPT} --xml" WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
         set_tests_properties(${FWPROJECT_NAME} PROPERTIES TIMEOUT 240)
     else()
-        add_test(NAME ${FWPROJECT_NAME} COMMAND "${${FWPROJECT_NAME}_SCRIPT}" ${fwCppunitTest_WORKING_DIRECTORY})
+        add_test(NAME ${FWPROJECT_NAME} COMMAND "${${FWPROJECT_NAME}_SCRIPT}" WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
     endif()
 
     # Adds project into folder test

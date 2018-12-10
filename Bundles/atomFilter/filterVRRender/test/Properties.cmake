@@ -2,7 +2,7 @@
 set( NAME filterVRRenderTest )
 set( VERSION  )
 set( TYPE TEST )
-set( DEPENDENCIES 
+set( DEPENDENCIES
     fwAtoms
     fwAtomsFilter
     fwAtomsPatch
@@ -12,5 +12,3 @@ set( DEPENDENCIES
     fwTest
     )
 set( REQUIREMENTS filterVRRender dataReg servicesReg)
-
-set(CPPUNITTEST_OPTIONS BUNDLE filterVRRender WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
