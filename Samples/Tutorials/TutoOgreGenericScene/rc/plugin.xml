@@ -118,7 +118,7 @@
             </service>
 
             <service uid="sliderIndexEditor" type="::uiImageQt::SliceIndexPositionEditor" autoConnect="yes">
-                <in key="image" uid="image" />
+                <inout key="image" uid="image" />
                 <sliceIndex>Sagittal</sliceIndex>
             </service>
 
