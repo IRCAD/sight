@@ -14,4 +14,9 @@ set( DEPENDENCIES
     fwThread
     fwIO
 )
-set( REQUIREMENTS ioITK )
+set( REQUIREMENTS
+    dataReg
+    servicesReg
+    gui
+    ioITK
+)
