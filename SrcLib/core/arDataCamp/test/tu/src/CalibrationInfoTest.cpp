@@ -31,6 +31,10 @@
 #include <fwData/Image.hpp>
 #include <fwData/Point.hpp>
 
+#include <fwDataCamp/Version.hpp>
+
+#include <fwMedDataCamp/Version.hpp>
+
 #include <fwTest/generator/Image.hpp>
 
 // Registers the fixture into the 'registry'
@@ -52,8 +56,18 @@ void CalibrationInfoTest::setUp()
 
 void CalibrationInfoTest::tearDown()
 {
+    //Hack: force link with arData
+    ::arData::CalibrationInfo::sptr obj = ::arData::CalibrationInfo::New();
+    obj->getClassname();
+
+    //Force link with fwDataCamp
+    m_fwDataVersion = ::fwDataCamp::Version::s_CURRENT_VERSION;
+
+    //Force link with fwMedDataCamp
+    m_fwMedDataVersion = ::fwMedDataCamp::Version::s_CURRENT_VERSION;
+
     //Force link with arDataCamp
-    const int arfVersion = ::arDataCamp::Version::s_CURRENT_VERSION;
+    m_arDataVersion = ::arDataCamp::Version::s_CURRENT_VERSION;
 }
 
 //------------------------------------------------------------------------------

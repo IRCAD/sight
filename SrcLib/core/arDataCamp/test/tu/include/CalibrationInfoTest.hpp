@@ -43,6 +43,12 @@ public:
 
     void propertiesTest();
 
+    /// Dummy variable members used to force link with fwDataCamp, fwMedDataCamp and arDataCamp bundles
+    /// Recent GCC versions (>= 5.4) strip local variables with -O2
+    int m_fwDataVersion;
+    int m_fwMedDataVersion;
+    int m_arDataVersion;
+
 };
 
 } //namespace ut
