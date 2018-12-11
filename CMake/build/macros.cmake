@@ -259,7 +259,7 @@ macro(fwExec FWPROJECT_NAME PROJECT_VERSION)
         string(TOLOWER ${FWPROJECT_NAME}.sh ${FWPROJECT_NAME}_SCRIPT)
         set(PROJECT_EXECUTABLE ${${FWPROJECT_NAME}_FULLNAME})
 
-        string(REPLACE ";" ":" FW_EXTERNAL_LIBRARIES_DIRS "${FW_EXTERNAL_LIBRARIES_DIR}")            
+        string(REPLACE ";" ":" FW_EXTERNAL_LIBRARIES_DIRS "${FW_EXTERNAL_LIBRARIES_DIR}")
         configure_file(${FWCMAKE_RESOURCE_PATH}/build/linux/template_exe.sh.in ${CMAKE_CURRENT_BINARY_DIR}/${${FWPROJECT_NAME}_SCRIPT} @ONLY)
         unset(FW_EXTERNAL_LIBRARIES_DIRS)
         file(COPY ${CMAKE_CURRENT_BINARY_DIR}/${${FWPROJECT_NAME}_SCRIPT} DESTINATION ${CMAKE_BINARY_DIR}/bin
@@ -288,7 +288,7 @@ endmacro()
 
 macro(fwCppunitTest FWPROJECT_NAME)
     set(options)
-    set(oneValueArgs BUNDLE WORKING_DIRECTORY)
+    set(oneValueArgs)
     set(multiValueArgs)
     cmake_parse_arguments(fwCppunitTest "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
 
@@ -314,8 +314,8 @@ macro(fwCppunitTest FWPROJECT_NAME)
         ${${FWPROJECT_NAME}_RC_FILES}
         ${${FWPROJECT_NAME}_CMAKE_FILES})
 
-    if(fwCppunitTest_BUNDLE)
-        add_definitions(-DBUNDLE_TEST_PROFILE=\"${FWBUNDLE_RC_PREFIX}/${TU_NAME}/profile.xml\")
+    if(EXISTS "${FWBUNDLE_RC_PREFIX}/${TU_NAME}/profile.xml")
+        target_compile_definitions(${FWPROJECT_NAME} PRIVATE -DBUNDLE_TEST_PROFILE=\"${FWBUNDLE_RC_PREFIX}/${TU_NAME}/profile.xml\")
     endif()
 
     configureProject( ${FWPROJECT_NAME} 0.0 )
@@ -336,8 +336,8 @@ macro(fwCppunitTest FWPROJECT_NAME)
     if(UNIX)
         string(TOLOWER ${FWPROJECT_NAME}.sh ${FWPROJECT_NAME}_SCRIPT)
         set(PROJECT_EXECUTABLE ${${FWPROJECT_NAME}_FULLNAME})
-        
-        string(REPLACE ";" ":" FW_EXTERNAL_LIBRARIES_DIRS "${FW_EXTERNAL_LIBRARIES_DIR}")            
+
+        string(REPLACE ";" ":" FW_EXTERNAL_LIBRARIES_DIRS "${FW_EXTERNAL_LIBRARIES_DIR}")
         configure_file(${FWCMAKE_RESOURCE_PATH}/build/linux/template_exe.sh.in ${CMAKE_CURRENT_BINARY_DIR}/${${FWPROJECT_NAME}_SCRIPT} @ONLY)
         unset(FW_EXTERNAL_LIBRARIES_DIRS)
         file(COPY ${CMAKE_CURRENT_BINARY_DIR}/${${FWPROJECT_NAME}_SCRIPT} DESTINATION ${CMAKE_BINARY_DIR}/bin
@@ -653,13 +653,13 @@ macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
             else()
                 set(LAUNCHER_PATH "$me")
             endif()
-            
-            # Configure launcher script            
-            # Replace all ';' path separator to unix style path separator ':' 
-            string(REPLACE ";" ":" FW_EXTERNAL_LIBRARIES_DIRS "${FW_EXTERNAL_LIBRARIES_DIR}")            
+
+            # Configure launcher script
+            # Replace all ';' path separator to unix style path separator ':'
+            string(REPLACE ";" ":" FW_EXTERNAL_LIBRARIES_DIRS "${FW_EXTERNAL_LIBRARIES_DIR}")
             configure_file(${FWCMAKE_RESOURCE_PATH}/build/linux/template.sh.in ${CMAKE_CURRENT_BINARY_DIR}/${APP_NAME} @ONLY)
             unset(FW_EXTERNAL_LIBRARIES_DIRS)
-            
+
             file(COPY ${CMAKE_CURRENT_BINARY_DIR}/${APP_NAME} DESTINATION ${CMAKE_BINARY_DIR}/bin
                 FILE_PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
         elseif(WIN32)
@@ -889,7 +889,7 @@ macro(fwLoadProperties)
         set(${NAME}_TYPE "BUNDLE")
         fwBundle(${NAME} ${VERSION} ${OPTIONS})
     elseif( TYPE STREQUAL "TEST" )
-        fwCppunitTest(${NAME} "${CPPUNITTEST_OPTIONS}" "${OPTIONS}")
+        fwCppunitTest(${NAME} "${OPTIONS}")
     elseif( TYPE STREQUAL "APP" )
         set(${NAME}_TYPE "APP")
         fwBundle(${NAME} ${VERSION} ${OPTIONS})
