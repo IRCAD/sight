@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2015 IRCAD France
- * Copyright (C) 2014-2015 IHU Strasbourg
+ * Copyright (C) 2014-2018 IRCAD France
+ * Copyright (C) 2014-2018 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,17 +20,20 @@
  *
  ***********************************************************************/
 
-#include <fwTest/helper/compare.hpp>
+#include "CameraSeriesTest.hpp"
 
-#include <arData/CameraSeries.hpp>
 #include <arData/Camera.hpp>
+#include <arData/CameraSeries.hpp>
 
 #include <arDataCamp/Version.hpp>
 
 #include <fwCore/spyLog.hpp>
 
-#include "CameraSeriesTest.hpp"
+#include <fwDataCamp/Version.hpp>
 
+#include <fwMedDataCamp/Version.hpp>
+
+#include <fwTest/helper/compare.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::arData::ut::CameraSeriesTest );
@@ -51,8 +54,18 @@ void CameraSeriesTest::setUp()
 
 void CameraSeriesTest::tearDown()
 {
+    //Hack: force link with arData
+    ::arData::Camera::sptr obj = ::arData::Camera::New();
+    obj->getClassname();
+
+    //Force link with fwDataCamp
+    m_fwDataVersion = ::fwDataCamp::Version::s_CURRENT_VERSION;
+
+    //Force link with fwMedDataCamp
+    m_fwMedDataVersion = ::fwMedDataCamp::Version::s_CURRENT_VERSION;
+
     //Force link with arDataCamp
-    const int arfVersion = ::arDataCamp::Version::s_CURRENT_VERSION;
+    m_arDataVersion = ::arDataCamp::Version::s_CURRENT_VERSION;
 }
 
 //------------------------------------------------------------------------------
@@ -83,9 +96,9 @@ void CameraSeriesTest::tearDown()
 
     // --------------- Extrinsic matrix ----------------------
     ::fwData::TransformationMatrix3D::sptr mat = ::fwData::TransformationMatrix3D::New();
-    for (int i = 0; i<4; ++i)
+    for (int i = 0; i < 4; ++i)
     {
-        for (int j = 0; j<4; ++j)
+        for (int j = 0; j < 4; ++j)
         {
             mat->setCoefficient(i, j, 2*i+j);
         }
@@ -105,9 +118,9 @@ void CameraSeriesTest::cameraTest()
 
     ::fwData::TransformationMatrix3D::sptr identity = ::fwData::TransformationMatrix3D::New();
     ::fwData::TransformationMatrix3D::sptr mat      = ::fwData::TransformationMatrix3D::New();
-    for (int i = 0; i<4; ++i)
+    for (int i = 0; i < 4; ++i)
     {
-        for (int j = 0; j<4; ++j)
+        for (int j = 0; j < 4; ++j)
         {
             mat->setCoefficient(i, j, 2*i+j);
         }
