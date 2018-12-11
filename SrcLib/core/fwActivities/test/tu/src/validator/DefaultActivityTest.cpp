@@ -65,12 +65,12 @@ namespace ut
 void DefaultActivityTest::setUp()
 {
     //Force link with fwDataCamp, it is used by the validator to parse the objects
-    static const int fwDataCampVersion = ::fwDataCamp::Version::s_CURRENT_VERSION;
-    FwCoreNotUsedMacro(fwDataCampVersion);
+    m_fwDataCampVersion = ::fwDataCamp::Version::s_CURRENT_VERSION;
+    FwCoreNotUsedMacro(m_fwDataCampVersion);
 
     //Force link with fwMedDataCamp, it is used by the validator to parse the objects
-    static const int fwMedDataCampVersion = ::fwMedDataCamp::Version::s_CURRENT_VERSION;
-    FwCoreNotUsedMacro(fwMedDataCampVersion);
+    m_fwMedDataCampVersion = ::fwMedDataCamp::Version::s_CURRENT_VERSION;
+    FwCoreNotUsedMacro(m_fwMedDataCampVersion);
 
     // Set up context before running a test.
     ::boost::filesystem::path plugin = ::fwRuntime::getResourceFilePath("tu_exec_fwActivities-0.0/tu_validator");
