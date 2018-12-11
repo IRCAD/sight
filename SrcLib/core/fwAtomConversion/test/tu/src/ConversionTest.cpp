@@ -57,9 +57,12 @@
 #include <fwData/TransformationMatrix3D.hpp>
 #include <fwData/Vector.hpp>
 
+#include <fwDataCamp/Version.hpp>
 #include <fwDataCamp/visitor/CompareObjects.hpp>
 
 #include <fwMedData/SeriesDB.hpp>
+
+#include <fwMedDataCamp/Version.hpp>
 
 #include <fwTest/generator/Object.hpp>
 #include <fwTest/generator/SeriesDB.hpp>
@@ -80,6 +83,13 @@ namespace ut
 // Set up context before running a test.
 void ConversionTest::setUp()
 {
+    //Force link with fwDataCamp
+    m_fwDataVersion = ::fwDataCamp::Version::s_CURRENT_VERSION;
+    FwCoreNotUsedMacro(m_fwDataVersion);
+
+    //Force link with fwMedDataCamp
+    m_fwMedDataVersion = ::fwMedDataCamp::Version::s_CURRENT_VERSION;
+    FwCoreNotUsedMacro(m_fwMedDataVersion);
 }
 
 //-----------------------------------------------------------------------------
