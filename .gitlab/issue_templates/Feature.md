@@ -1,11 +1,3 @@
-Please read this!
-
-Before opening a new issue, verify the issue you're about to submit isn't a duplicate.
-
-Please remove this notice if you're confident your issue isn't a duplicate.
-
-------
-
 ### Description
 
 (Include problem, use cases, benefits, and/or goals)
@@ -24,4 +16,4 @@ Please remove this notice if you're confident your issue isn't a duplicate.
 
 During implementation, this can then be copied and used as a starter for the documentation.)
 
-/label ~feature
+/label ~Type:feature
