@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,11 +20,11 @@
  *
  ***********************************************************************/
 
-#ifndef __FWMEDDATA_UT_ACTIVITYSERIESTEST_HPP__
-#define __FWMEDDATA_UT_ACTIVITYSERIESTEST_HPP__
+#pragma once
+
+#include <fwMedData/ActivitySeries.hpp>
 
 #include <cppunit/extensions/HelperMacros.h>
-#include <fwMedData/ActivitySeries.hpp>
 
 namespace fwMedData
 {
@@ -64,6 +64,3 @@ private:
 
 } //namespace ut
 } //namespace fwMedData
-
-#endif //__FWMEDDATA_UT_ACTIVITYSERIESTEST_HPP__
-

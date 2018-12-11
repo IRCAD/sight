@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWATOMCONVERSION_UT_CONVERSIONTEST_HPP__
-#define __FWATOMCONVERSION_UT_CONVERSIONTEST_HPP__
+#pragma once
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -111,5 +110,3 @@ private:
 
 }  // namespace ut
 }  // namespace fwAtomConversion
-
-#endif // __FWATOMCONVERSION_UT_CONVERSIONTEST_HPP__

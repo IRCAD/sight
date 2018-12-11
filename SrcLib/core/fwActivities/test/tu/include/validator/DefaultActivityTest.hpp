@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2016 IRCAD France
- * Copyright (C) 2016 IHU Strasbourg
+ * Copyright (C) 2016-2018 IRCAD France
+ * Copyright (C) 2016-2018 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,16 +20,15 @@
  *
  ***********************************************************************/
 
-#ifndef __FWACTIVITIES_UT_VALIDATOR_DEFAULTACTIVITYTEST_HPP__
-#define __FWACTIVITIES_UT_VALIDATOR_DEFAULTACTIVITYTEST_HPP__
-
-#include <cppunit/extensions/HelperMacros.h>
+#pragma once
 
 #include <fwActivities/registry/Activities.hpp>
 
 #include <fwCore/macros.hpp>
 
 #include <fwRuntime/Bundle.hpp>
+
+#include <cppunit/extensions/HelperMacros.h>
 
 namespace fwActivities
 {
@@ -73,6 +72,3 @@ private:
 
 } //namespace ut
 } //namespace fwActivities
-
-#endif //__FWACTIVITIES_UT_VALIDATOR_DEFAULTACTIVITYTEST_HPP__
-
