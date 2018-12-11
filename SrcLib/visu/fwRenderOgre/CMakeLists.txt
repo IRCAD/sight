@@ -48,8 +48,6 @@ else()
 
     # This copies the plugins into the install directory
     install(DIRECTORY ${FRAMEWORKS_DIR} DESTINATION "bin/Contents")
-    # OpenGL is deprecated on macos 10.14
-    add_definitions(-DGL_SILENCE_DEPRECATION)
 
 endif()
 

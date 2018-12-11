@@ -92,6 +92,11 @@ set_property(CACHE SPYLOG_LEVEL PROPERTY STRINGS ${SPYLOG_LEVEL_VALUES} )
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# Workarround to avoid compile error about OpenGL on macos >= 10.14
+if(APPLE)
+    add_definitions(-DGL_SILENCE_DEPRECATION)
+endif()
+
 if(MSVC AND ENABLE_PCH)
     # Store debug information in the .obj file instead of a PDB.
     string(REGEX REPLACE "/Z[iI]" "/Z7" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
