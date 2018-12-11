@@ -62,12 +62,13 @@ void CalibrationInfoTest::tearDown()
 
     //Force link with fwDataCamp
     m_fwDataVersion = ::fwDataCamp::Version::s_CURRENT_VERSION;
-
+    FwCoreNotUsedMacro(m_fwDataVersion);
     //Force link with fwMedDataCamp
     m_fwMedDataVersion = ::fwMedDataCamp::Version::s_CURRENT_VERSION;
-
+    FwCoreNotUsedMacro(m_fwMedDataVersion);
     //Force link with arDataCamp
     m_arDataVersion = ::arDataCamp::Version::s_CURRENT_VERSION;
+    FwCoreNotUsedMacro(m_arDataVersion);
 }
 
 //------------------------------------------------------------------------------
