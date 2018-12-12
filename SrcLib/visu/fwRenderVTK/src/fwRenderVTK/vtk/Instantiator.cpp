@@ -1,15 +1,32 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
+
+#include "fwRenderVTK/vtk/Instantiator.hpp"
 
 #include "fwRenderVTK/vtk/fwVtkBoxRepresentation.hpp"
-#include "fwRenderVTK/vtk/fwVtkPicker.hpp"
 #include "fwRenderVTK/vtk/fwVtkCellPicker.hpp"
+#include "fwRenderVTK/vtk/fwVtkPicker.hpp"
 #include "fwRenderVTK/vtk/InteractorStyle2DForNegato.hpp"
 #include "fwRenderVTK/vtk/InteractorStyle3DForNegato.hpp"
-#include "fwRenderVTK/vtk/Instantiator.hpp"
 
 #include <fwCore/base.hpp>
 
@@ -36,6 +53,8 @@ namespace fwRenderVTK
 namespace vtk
 {
 
+//------------------------------------------------------------------------------
+
 void Instantiator::ClassInitialize()
 {
     vtkInstantiator::RegisterInstantiator("fwVtkBoxRepresentation", vtkInstantiatorfwVtkBoxRepresentationNew);
@@ -46,29 +65,29 @@ void Instantiator::ClassInitialize()
 
 #ifdef DEBUG
     vtkObject* o;
-#ifndef ANDROID
     o = vtkInstantiator::CreateInstance("fwVtkBoxRepresentation");
-    SLM_ASSERT("Unable to instantiate a fwVtkBoxRepresentation",o);
+    SLM_ASSERT("Unable to instantiate a fwVtkBoxRepresentation", o);
     o->Delete();
-#endif
 
     o = vtkInstantiator::CreateInstance("fwVtkPicker");
-    SLM_ASSERT("Unable to instantiate a fwVtkPicker",o);
+    SLM_ASSERT("Unable to instantiate a fwVtkPicker", o);
     o->Delete();
 
     o = vtkInstantiator::CreateInstance("fwVtkCellPicker");
-    SLM_ASSERT("Unable to instantiate a fwVtkCellPicker",o);
+    SLM_ASSERT("Unable to instantiate a fwVtkCellPicker", o);
     o->Delete();
 
     o = vtkInstantiator::CreateInstance("InteractorStyle2DForNegato");
-    SLM_ASSERT("Unable to instantiate a InteractorStyle2DForNegato",o);
+    SLM_ASSERT("Unable to instantiate a InteractorStyle2DForNegato", o);
     o->Delete();
 
     o = vtkInstantiator::CreateInstance("InteractorStyle3DForNegato");
-    SLM_ASSERT("Unable to instantiate a InteractorStyle3DForNegato",o);
+    SLM_ASSERT("Unable to instantiate a InteractorStyle3DForNegato", o);
     o->Delete();
 #endif
 }
+
+//------------------------------------------------------------------------------
 
 void Instantiator::ClassFinalize()
 {
@@ -81,4 +100,3 @@ void Instantiator::ClassFinalize()
 } //vtk
 
 } //fwRenderVTK
-

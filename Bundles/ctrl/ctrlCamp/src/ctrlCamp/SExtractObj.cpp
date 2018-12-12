@@ -1,8 +1,24 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #include "ctrlCamp/SExtractObj.hpp"
 
@@ -19,11 +35,15 @@ namespace ctrlCamp
 
 fwServicesRegisterMacro(::ctrlCamp::ICamp, ::ctrlCamp::SExtractObj);
 
+static const std::string s_SOURCE_INOUT  = "source";
+static const std::string s_TARGET_OUTPUT = "target";
+
 //-----------------------------------------------------------------------------
 
 SExtractObj::SExtractObj()
 {
-
+    this->registerObject(s_SOURCE_INOUT, AccessType::INOUT);
+    this->registerObjectGroup(s_TARGET_OUTPUT, AccessType::OUTPUT, 0);
 }
 
 //-----------------------------------------------------------------------------
@@ -44,11 +64,6 @@ void SExtractObj::configuring()
     const std::vector< ConfigurationType > extractCfg = inoutCfg->find("extract");
     SLM_ASSERT("At least one 'extract' tag is required.", !extractCfg.empty());
 
-    const ConfigurationType outCfg = m_configuration->findConfigurationElement("out");
-
-    const std::vector< ConfigurationType > outKeyCfg = outCfg->find("key");
-    SLM_ASSERT("You must have as many 'from' tags as 'out' keys.", extractCfg.size() == outKeyCfg.size());
-
     for(ConfigurationType cfg : extractCfg)
     {
         SLM_ASSERT("Missing attribute 'from'.", cfg->hasAttribute("from"));
@@ -68,7 +83,7 @@ void SExtractObj::starting()
 
 void SExtractObj::updating()
 {
-    auto sourceObject = this->getInOut< ::fwData::Object >("source");
+    auto sourceObject = this->getInOut< ::fwData::Object >(s_SOURCE_INOUT);
 
     size_t index = 0;
     for(auto path : m_sourcePaths)
@@ -96,7 +111,7 @@ void SExtractObj::updating()
         SLM_WARN_IF("Object from '"+ from +"' not found", !object);
         if(object)
         {
-            this->setOutput("target", object, index);
+            this->setOutput(s_TARGET_OUTPUT, object, index);
         }
         ++index;
     }
@@ -107,7 +122,7 @@ void SExtractObj::updating()
 void SExtractObj::stopping()
 {
     // Unregister outputs
-    for (size_t i = 0; i < this->getKeyGroupSize("target"); ++i)
+    for (size_t i = 0; i < this->getKeyGroupSize(s_TARGET_OUTPUT); ++i)
     {
         this->setOutput("target", nullptr, i);
     }

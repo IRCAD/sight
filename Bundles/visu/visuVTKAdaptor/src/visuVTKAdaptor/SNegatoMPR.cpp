@@ -1,14 +1,33 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2018.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #include "visuVTKAdaptor/SNegatoMPR.hpp"
 
+#include "visuVTKAdaptor/SMedical3DCamera.hpp"
 #include "visuVTKAdaptor/SNegatoOneSlice.hpp"
 #include "visuVTKAdaptor/SNegatoSlicingInteractor.hpp"
 #include "visuVTKAdaptor/SNegatoWindowingInteractor.hpp"
+#include "visuVTKAdaptor/SProbeCursor.hpp"
+#include "visuVTKAdaptor/SSliceFollowerCamera.hpp"
 #include "visuVTKAdaptor/SSlicesCursor.hpp"
 
 #include <fwCom/Slot.hpp>
@@ -19,6 +38,8 @@
 #include <fwData/Boolean.hpp>
 #include <fwData/Image.hpp>
 #include <fwData/Integer.hpp>
+#include <fwData/mt/ObjectReadLock.hpp>
+#include <fwData/mt/ObjectWriteLock.hpp>
 #include <fwData/String.hpp>
 
 #include <fwDataTools/fieldHelper/Image.hpp>
@@ -63,6 +84,9 @@ SNegatoMPR::SNegatoMPR() noexcept :
     newSlot(s_SHOW_SLICE_SLOT, &SNegatoMPR::showSlice, this);
     newSlot(s_SET_CROSS_SCALE_SLOT, &SNegatoMPR::setCrossScale, this);
     newSlot(S_CHANGE_IMAGE_SOURCE_SLOT, &SNegatoMPR::changeImageSource, this);
+
+    this->registerObject(s_IMAGE_INOUT, AccessType::INOUT, true);
+    this->registerObject(s_TF_INOUT, AccessType::INOUT, false, true);
 }
 
 //------------------------------------------------------------------------------
@@ -130,23 +154,70 @@ void SNegatoMPR::updating()
     {
         if(this->getSliceMode() != NO_SLICE)
         {
+            const auto oneSliceConfig = [&](::fwRenderVTK::IAdaptor::sptr _adaptor)
+                                        {
+                                            auto adaptor = ::visuVTKAdaptor::SNegatoOneSlice::dynamicCast(_adaptor);
+                                            adaptor->setAllowAlphaInTF(m_allowAlphaInTF);
+                                            adaptor->setInterpolation(m_interpolation);
+                                            if (!m_imageSourceId.empty())
+                                            {
+                                                adaptor->setVtkImageSourceId(m_imageSourceId);
+                                            }
+                                            adaptor->setActorOpacity(m_actorOpacity);
+                                        };
+
             if(this->getSliceMode() == ONE_SLICE)
             {
-                this->addAdaptor("::visuVTKAdaptor::SNegatoOneSlice", m_orientation);
+                this->addAdaptor("::visuVTKAdaptor::SNegatoOneSlice",
+                                 [&](::fwRenderVTK::IAdaptor::sptr _adaptor)
+                    {
+                        oneSliceConfig(_adaptor);
+                        ::visuVTKAdaptor::SNegatoOneSlice::dynamicCast(_adaptor)->setOrientation(m_orientation);
+                    });
             }
             else if(this->getSliceMode() == THREE_SLICES)
             {
-                this->addAdaptor("::visuVTKAdaptor::SNegatoOneSlice", X_AXIS);
-                this->addAdaptor("::visuVTKAdaptor::SNegatoOneSlice", Y_AXIS);
-                this->addAdaptor("::visuVTKAdaptor::SNegatoOneSlice", Z_AXIS);
+                this->addAdaptor("::visuVTKAdaptor::SNegatoOneSlice",
+                                 [&](::fwRenderVTK::IAdaptor::sptr _adaptor)
+                    {
+                        oneSliceConfig(_adaptor);
+                        ::visuVTKAdaptor::SNegatoOneSlice::dynamicCast(_adaptor)->setOrientation(
+                            OrientationMode::X_AXIS);
+                    });
+                this->addAdaptor("::visuVTKAdaptor::SNegatoOneSlice",
+                                 [&](::fwRenderVTK::IAdaptor::sptr _adaptor)
+                    {
+                        oneSliceConfig(_adaptor);
+                        ::visuVTKAdaptor::SNegatoOneSlice::dynamicCast(_adaptor)->setOrientation(
+                            OrientationMode::Y_AXIS);
+                    });
+                this->addAdaptor("::visuVTKAdaptor::SNegatoOneSlice",
+                                 [&](::fwRenderVTK::IAdaptor::sptr _adaptor)
+                    {
+                        oneSliceConfig(_adaptor);
+                        ::visuVTKAdaptor::SNegatoOneSlice::dynamicCast(_adaptor)->setOrientation(
+                            OrientationMode::Z_AXIS);
+                    });
             }
 
             ::fwRenderVTK::IAdaptor::sptr sliceCursor;
             ::fwRenderVTK::IAdaptor::sptr negatoSlicingInteractor;
-            this->addAdaptor("::visuVTKAdaptor::SNegatoWindowingInteractor");
-            negatoSlicingInteractor = this->addAdaptor("::visuVTKAdaptor::SNegatoSlicingInteractor", m_orientation);
-            sliceCursor             = this->addAdaptor("::visuVTKAdaptor::SSlicesCursor", m_orientation);
-            this->addAdaptor("::visuVTKAdaptor::SProbeCursor", m_orientation);
+            this->addAdaptor("::visuVTKAdaptor::SNegatoWindowingInteractor", [&](::fwRenderVTK::IAdaptor::sptr){});
+            negatoSlicingInteractor = this->addAdaptor("::visuVTKAdaptor::SNegatoSlicingInteractor",
+                                                       [&](::fwRenderVTK::IAdaptor::sptr _adaptor)
+                {
+                    ::visuVTKAdaptor::SNegatoSlicingInteractor::dynamicCast(_adaptor)->setOrientation(m_orientation);
+                });
+            sliceCursor = this->addAdaptor("::visuVTKAdaptor::SSlicesCursor",
+                                           [&](::fwRenderVTK::IAdaptor::sptr _adaptor)
+                {
+                    ::visuVTKAdaptor::SSlicesCursor::dynamicCast(_adaptor)->setOrientation(m_orientation);
+                });
+            this->addAdaptor("::visuVTKAdaptor::SProbeCursor",
+                             [&](::fwRenderVTK::IAdaptor::sptr _adaptor)
+                {
+                    ::visuVTKAdaptor::SProbeCursor::dynamicCast(_adaptor)->setOrientation(m_orientation);
+                });
 
             // Connect slicing signals/slots from NegatoSlicingInteractor to SlicesCursor using the image slicing proxy
             ::fwServices::registry::Proxy::sptr proxy = ::fwServices::registry::Proxy::getDefault();
@@ -165,11 +236,19 @@ void SNegatoMPR::updating()
         }
         if(this->is3dModeEnabled())
         {
-            this->addAdaptor("::visuVTKAdaptor::SMedical3DCamera", m_orientation);
+            this->addAdaptor("::visuVTKAdaptor::SMedical3DCamera",
+                             [&](::fwRenderVTK::IAdaptor::sptr _adaptor)
+                {
+                    ::visuVTKAdaptor::SMedical3DCamera::dynamicCast(_adaptor)->setOrientation(m_orientation);
+                });
         }
         else if(!this->is3dModeEnabled())
         {
-            this->addAdaptor("::visuVTKAdaptor::SSliceFollowerCamera", m_orientation);
+            this->addAdaptor("::visuVTKAdaptor::SSliceFollowerCamera",
+                             [&](::fwRenderVTK::IAdaptor::sptr _adaptor)
+                {
+                    ::visuVTKAdaptor::SSliceFollowerCamera::dynamicCast(_adaptor)->setOrientation(m_orientation);
+                });
         }
         else
         {
@@ -186,20 +265,22 @@ void SNegatoMPR::swapping(const KeyType& key)
 {
     if (key == s_TF_INOUT)
     {
-        ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction >(s_TF_INOUT);
-        this->setTransferFunction(tf);
+        ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
 
         for (const auto& srv: this->getRegisteredServices())
         {
             ::fwServices::IService::sptr service = srv.lock();
-            if (tf)
+            if(tf != nullptr)
             {
-                service->registerInOut(tf, s_TF_INOUT, false, true);
+                {
+                    ::fwData::mt::ObjectWriteLock tfLock(tf);
+                    service->registerInOut(tf, s_TF_INOUT, false, true);
+                }
                 service->swapKey(s_TF_INOUT, nullptr);
             }
             else if(::fwServices::OSR::isRegistered(s_TF_INOUT, AccessType::INOUT, service))
             {
-                ::fwServices::OSR::unregisterService(s_TF_INOUT, AccessType::INOUT, service);
+                service->unregisterInOut(s_TF_INOUT);
                 service->swapKey(s_TF_INOUT, nullptr);
             }
         }
@@ -212,11 +293,11 @@ void SNegatoMPR::updateSliceType(int from, int to)
 {
     if( to == static_cast<int>(m_orientation) )
     {
-        setOrientation( static_cast< Orientation >( from ));
+        this->setOrientation( static_cast< OrientationMode >( from ));
     }
     else if(from == static_cast<int>(m_orientation))
     {
-        setOrientation( static_cast< Orientation >( to ));
+        this->setOrientation( static_cast< OrientationMode >( to ));
     }
 }
 
@@ -331,15 +412,15 @@ void SNegatoMPR::configuring()
     const std::string orientation = config.get<std::string>("sliceIndex", "axial");
     if(orientation == "axial" )
     {
-        m_orientation = Z_AXIS;
+        m_orientation = OrientationMode::Z_AXIS;
     }
     else if(orientation == "frontal" )
     {
-        m_orientation = Y_AXIS;
+        m_orientation = OrientationMode::Y_AXIS;
     }
     else if(orientation == "sagittal" )
     {
-        m_orientation = X_AXIS;
+        m_orientation = OrientationMode::X_AXIS;
     }
 
     const std::string tfalpha = config.get<std::string>("tfalpha", "no");
@@ -389,41 +470,35 @@ void SNegatoMPR::set3dMode( bool enabled )
 
 //------------------------------------------------------------------------------
 
-::fwRenderVTK::IAdaptor::sptr SNegatoMPR::addAdaptor(const std::string& adaptorType, int axis)
+void SNegatoMPR::setOrientation( OrientationMode _orientation )
+{
+    m_orientation = _orientation;
+}
+
+//------------------------------------------------------------------------------
+
+::fwRenderVTK::IAdaptor::sptr SNegatoMPR::addAdaptor(const std::string& _adaptorType,
+                                                     const std::function< void(::fwRenderVTK::IAdaptor::sptr)>& _config)
 {
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("Missing image", image);
 
     // create the srv configuration for objects auto-connection
-    auto service = this->registerService< ::fwRenderVTK::IAdaptor>(adaptorType);
+    auto service = this->registerService< ::fwRenderVTK::IAdaptor>(_adaptorType);
     // register image
     service->registerInOut(image, s_IMAGE_INOUT, true);
 
-    if(axis >= 0)
-    {
-        auto adaptorSrv = ::fwDataTools::helper::MedicalImageAdaptor::dynamicCast(service);
-        SLM_ASSERT("adaptorSrv not instanced", adaptorSrv);
-        adaptorSrv->setOrientation((Orientation) axis);
-    }
+    // some methods to call before starting
+    _config(service);
 
-    auto negatoAdaptor = ::visuVTKAdaptor::SNegatoOneSlice::dynamicCast(service);
-
-    if (negatoAdaptor)
+    ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
     {
-        negatoAdaptor->setAllowAlphaInTF(m_allowAlphaInTF);
-        negatoAdaptor->setInterpolation(m_interpolation);
-        if (!m_imageSourceId.empty())
+        if(tf != nullptr)
         {
-            negatoAdaptor->setVtkImageSourceId(m_imageSourceId);
+            ::fwData::mt::ObjectWriteLock tfLock(tf);
+            // register the TF as optional
+            service->registerInOut(tf, s_TF_INOUT, false, true);
         }
-        negatoAdaptor->setActorOpacity(m_actorOpacity);
-    }
-
-    ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction >(s_TF_INOUT);
-    if (tf)
-    {
-        // register the TF as optional
-        service->registerInOut(tf, s_TF_INOUT, false, true);
     }
 
     service->setRenderService(this->getRenderService());

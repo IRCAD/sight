@@ -1,8 +1,24 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2018.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #include "fwServices/AppConfigManager.hpp"
 
@@ -598,6 +614,7 @@ void AppConfigManager::createServices(::fwRuntime::ConfigurationElement::csptr c
 {
     // Create and bind service
     const ::fwServices::IService::sptr srv = this->getNewService(srvConfig.m_uid, srvConfig.m_type);
+    ::fwServices::OSR::registerService(srv);
     m_createdSrv.push_back(srv);
 
     if (!srvConfig.m_worker.empty())
@@ -614,6 +631,7 @@ void AppConfigManager::createServices(::fwRuntime::ConfigurationElement::csptr c
     }
 
     std::string errMsgTail = " when creating service '" + srvConfig.m_uid + "'.";
+    srv->setConfiguration(srvConfig);
 
     for(const auto& objectCfg : srvConfig.m_objects)
     {
@@ -625,7 +643,8 @@ void AppConfigManager::createServices(::fwRuntime::ConfigurationElement::csptr c
                    (!objectCfg.m_optional && obj) || objectCfg.m_optional);
         if((obj || !objectCfg.m_optional) && objectCfg.m_access != ::fwServices::IService::AccessType::OUTPUT)
         {
-            ::fwServices::OSR::registerService(obj, objectCfg.m_key, objectCfg.m_access, srv);
+            srv->registerObject(obj, objectCfg.m_key, objectCfg.m_access, objectCfg.m_autoConnect,
+                                objectCfg.m_optional);
         }
     }
 
@@ -633,10 +652,9 @@ void AppConfigManager::createServices(::fwRuntime::ConfigurationElement::csptr c
     // This is only true for services that will need to perform some stuff like adding new objects, etc...
     // We will see in the future if this should be replaced or not
     {
+        srv->registerObject(m_tmpRootObject, ::fwServices::IService::s_DEFAULT_OBJECT,
+                            ::fwServices::IService::AccessType::INOUT);
         srv->setObjectId(::fwServices::IService::s_DEFAULT_OBJECT, "defaultObjectId");
-
-        ::fwServices::OSR::registerService(m_tmpRootObject, ::fwServices::IService::s_DEFAULT_OBJECT,
-                                           ::fwServices::IService::AccessType::INOUT, srv);
     }
 
     // Set the size of the key groups
@@ -653,7 +671,6 @@ void AppConfigManager::createServices(::fwRuntime::ConfigurationElement::csptr c
     }
 
     // Configure
-    srv->setConfiguration(srvConfig);
     srv->configure();
 
     return srv;
@@ -907,14 +924,15 @@ void AppConfigManager::addObjects(fwData::Object::sptr obj, const std::string& i
                             // If this is not the object we have to swap, then unregister it
                             if(registeredObj != object)
                             {
-                                ::fwServices::OSR::unregisterService(objCfg.m_key, objCfg.m_access, srv);
+                                srv->unregisterObject(objCfg.m_key, objCfg.m_access);
                             }
                         }
 
                         if(registeredObj != object)
                         {
                             // Register the key on the service
-                            ::fwServices::OSR::registerService(object, objCfg.m_key, objCfg.m_access, srv);
+                            srv->registerObject(object, objCfg.m_key, objCfg.m_access, objCfg.m_autoConnect,
+                                                objCfg.m_optional);
 
                             // Call the swapping callback of the service and wait for it
                             srv->swapKey(objCfg.m_key, ::fwData::Object::constCast(registeredObj)).wait();
@@ -1011,7 +1029,7 @@ void AppConfigManager::removeObjects(fwData::Object::sptr obj, const std::string
                         {
                             if(::fwServices::OSR::isRegistered(objCfg.m_key, objCfg.m_access, srv))
                             {
-                                ::fwServices::OSR::unregisterService(objCfg.m_key, objCfg.m_access, srv);
+                                srv->unregisterObject(objCfg.m_key, objCfg.m_access);
 
                                 srv->swapKey(objCfg.m_key, obj).wait();
                             }

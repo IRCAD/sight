@@ -1,23 +1,41 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ * This file incorporates work covered by the following copyright and
+ * permission notice:
+ *
+ *   Program:   Visualization Toolkit
+ *   Module:    $RCSfile: fwVtkPicker.h,v $
+ *
+ *   Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
+ *   All rights reserved.
+ *   See Copyright.txt or http://www.kitware.com/Copyright.htm for details.
+ *
+ *   This software is distributed WITHOUT ANY WARRANTY; without even
+ *   the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+ *   PURPOSE.  See the above copyright notice for more information.
+ *
+ ***********************************************************************/
 
-/*=========================================================================
+#pragma once
 
-   Program:   Visualization Toolkit
-   Module:    $RCSfile: fwVtkPicker.h,v $
-
-   Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
-   All rights reserved.
-   See Copyright.txt or http://www.kitware.com/Copyright.htm for details.
-
-     This software is distributed WITHOUT ANY WARRANTY; without even
-     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-     PURPOSE.  See the above copyright notice for more information.
-
-   =========================================================================*/
 // .NAME fwVtkPicker - superclass for 3D geometric pickers (uses ray cast)
 // .SECTION Description
 // fwVtkPicker is used to select instances of vtkProp3D by shooting a ray
@@ -37,9 +55,6 @@
 // points or cells, use the subclass vtkPointPicker or vtkCellPicker,
 // respectively.  Or you may use hardware picking to pick any type of vtkProp
 // - see vtkPropPicker or vtkWorldPointPicker.
-
-#ifndef __FWRENDERVTK_VTK_FWVTKPICKER_HPP__
-#define __FWRENDERVTK_VTK_FWVTKPICKER_HPP__
 
 #include "fwRenderVTK/config.hpp"
 
@@ -70,8 +85,8 @@ public:
     FWRENDERVTK_API virtual int Pick(double selectionX, double selectionY, double selectionZ,
                                      vtkRenderer* renderer) override;
 
-    FWRENDERVTK_API int PickPolyData( double p1[3], double p2[3], vtkPolyData *polydata);
-    FWRENDERVTK_API int Pick( double p1[3], double p2[3], vtkPropCollection *props);
+    FWRENDERVTK_API int PickPolyData( double p1[3], double p2[3], vtkPolyData* polydata);
+    FWRENDERVTK_API int Pick( double p1[3], double p2[3], vtkPropCollection* props);
     // Description:
     // Perform pick operation with selection point provided. Normally the first
     // two values for the selection point are x-y pixel coordinate, and the
@@ -89,6 +104,3 @@ private:
     fwVtkPicker(const fwVtkPicker&); // Not implemented.
     void operator=(const fwVtkPicker&); // Not implemented.
 };
-
-#endif //__FWRENDERVTK_VTK_FWVTKPICKER_HPP__
-

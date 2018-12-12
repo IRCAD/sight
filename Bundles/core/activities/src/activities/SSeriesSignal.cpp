@@ -1,8 +1,24 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2016-2018.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2016-2018 IRCAD France
+ * Copyright (C) 2016-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #include "activities/SSeriesSignal.hpp"
 
@@ -115,30 +131,10 @@ void SSeriesSignal::updating()
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsType SSeriesSignal::getObjSrvConnections() const
-{
-    KeyConnectionsType connections;
-    connections.push_back( std::make_pair( ::fwMedData::SeriesDB::s_ADDED_SERIES_SIG, s_REPORT_SERIES_SLOT ) );
-
-    return connections;
-}
-
-//------------------------------------------------------------------------------
-
 ::fwServices::IService::KeyConnectionsMap SSeriesSignal::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-
-    // FIXME hack to support old getObject (with any 'in' or 'inout' key)
-    if (!this->getInput< ::fwMedData::SeriesDB >("seriesDB"))
-    {
-        FW_DEPRECATED_KEY("seriesDB", "in", "18.0");
-    }
-    else
-    {
-        connections.push("seriesDB",  ::fwMedData::SeriesDB::s_ADDED_SERIES_SIG, s_REPORT_SERIES_SLOT );
-    }
-
+    connections.push("seriesDB",  ::fwMedData::SeriesDB::s_ADDED_SERIES_SIG, s_REPORT_SERIES_SLOT );
     return connections;
 }
 

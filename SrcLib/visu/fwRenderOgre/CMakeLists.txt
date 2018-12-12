@@ -48,10 +48,12 @@ else()
 
     # This copies the plugins into the install directory
     install(DIRECTORY ${FRAMEWORKS_DIR} DESTINATION "bin/Contents")
+
 endif()
 
 fwForwardInclude(
     ${OGRE_INCLUDE_DIRS}
+    ${OGRE_PREFIX_DIR}/include
     ${OGRE_Overlay_INCLUDE_DIRS}
 )
 
@@ -83,4 +85,16 @@ else()
         ${OPENGL_LIBRARIES}
     )
 
+endif()
+
+set(FWPROJECT_FULLNAME ${${FWPROJECT_NAME}_FULLNAME})
+
+configure_file( "${CMAKE_CURRENT_SOURCE_DIR}/CMake/resources.cfg.in"
+                "${CMAKE_BINARY_DIR}/${FWBUNDLE_RC_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}/resources.cfg" @ONLY)
+
+if(USE_CONAN)
+    # manage Ogre3D transitive dependencies
+    fwForwardLink(
+        CONAN_PKG::zzip
+    )
 endif()

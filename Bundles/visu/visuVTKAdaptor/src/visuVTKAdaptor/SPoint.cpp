@@ -1,10 +1,24 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2018.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
-
-#ifndef ANDROID
+/************************************************************************
+ *
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #include "visuVTKAdaptor/SPoint.hpp"
 
@@ -13,6 +27,7 @@
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
+#include <fwCom/Slots.hxx>
 
 #include <fwData/Material.hpp>
 #include <fwData/Point.hpp>
@@ -40,6 +55,8 @@ namespace visuVTKAdaptor
 const ::fwCom::Signals::SignalKeyType SPoint::s_INTERACTION_STARTED_SIG = "interactionStarted";
 
 const ::fwServices::IService::KeyType SPoint::s_POINT_INOUT = "point";
+
+const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT = "updateVisibility";
 
 //------------------------------------------------------------------------------
 
@@ -155,6 +172,8 @@ SPoint::SPoint() noexcept :
     rep->SetHandleSize(m_radius);
 
     newSignal<InteractionStartedSignalType>(s_INTERACTION_STARTED_SIG);
+
+    newSlot(s_UPDATE_VISIBILITY_SLOT, &SPoint::updateVisibility, this);
 }
 
 //------------------------------------------------------------------------------
@@ -324,6 +343,18 @@ void SPoint::setInteraction(const bool interaction)
 
 //------------------------------------------------------------------------------
 
-} //namespace visuVTKAdaptor
+void SPoint::updateVisibility(bool isVisible)
+{
+    ::fwRenderVTK::vtk::MarkedSphereHandleRepresentation* rep =
+        ::fwRenderVTK::vtk::MarkedSphereHandleRepresentation::SafeDownCast(m_representation);
 
-#endif // ANDROID
+    SLM_ASSERT("MarkedSphereHandleRepresentation cast failed", rep);
+
+    rep->SetVisibility(isVisible);
+    this->setVtkPipelineModified();
+    this->requestRender();
+}
+
+//------------------------------------------------------------------------------
+
+} //namespace visuVTKAdaptor

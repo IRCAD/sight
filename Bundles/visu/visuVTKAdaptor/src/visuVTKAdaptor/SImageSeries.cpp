@@ -1,13 +1,30 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2018.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #include "visuVTKAdaptor/SImageSeries.hpp"
 
 #include <fwData/Boolean.hpp>
 #include <fwData/Material.hpp>
+#include <fwData/mt/ObjectWriteLock.hpp>
 #include <fwData/Reconstruction.hpp>
 
 #include <fwMedData/ImageSeries.hpp>
@@ -82,15 +99,15 @@ void SImageSeries::configuring()
     const std::string orientation = config.get<std::string>("sliceIndex", "axial");
     if(orientation == "axial" )
     {
-        m_orientation = Z_AXIS;
+        m_helper.setOrientation(::fwDataTools::helper::MedicalImage::Z_AXIS);
     }
     else if(orientation == "frontal" )
     {
-        m_orientation = Y_AXIS;
+        m_helper.setOrientation(::fwDataTools::helper::MedicalImage::Y_AXIS);
     }
     else if(orientation == "sagittal" )
     {
-        m_orientation = X_AXIS;
+        m_helper.setOrientation(::fwDataTools::helper::MedicalImage::X_AXIS);
     }
 
     const std::string tfalpha = config.get<std::string>("tfalpha", "no");
@@ -128,9 +145,10 @@ void SImageSeries::updating()
     ::fwData::Image::sptr image = series->getImage();
     negato->registerInOut(image, SNegatoMPR::s_IMAGE_INOUT, true);
 
-    ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction >(s_TF_INOUT);
-    if (tf)
+    ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
+    if(tf != nullptr)
     {
+        ::fwData::mt::ObjectWriteLock tfLock(tf);
         negato->registerInOut(tf, SNegatoMPR::s_TF_INOUT, false);
     }
 
@@ -141,7 +159,7 @@ void SImageSeries::updating()
 
     negato->set3dMode(this->is3dModeEnabled());
     negato->setSliceMode(this->getSliceMode());
-    negato->setOrientation(this->getOrientation());
+    negato->setOrientation(m_helper.getOrientation());
     negato->setAllowAlphaInTF(m_allowAlphaInTF);
     negato->setInterpolation(m_interpolation);
     negato->setVtkImageSourceId(m_imageSourceId);

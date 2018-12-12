@@ -1,8 +1,24 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2018.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #include "visuVTKAdaptor/SImagesBlend.hpp"
 
@@ -17,6 +33,7 @@
 #include <fwData/Color.hpp>
 #include <fwData/Image.hpp>
 #include <fwData/Integer.hpp>
+#include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/String.hpp>
 #include <fwData/TransferFunction.hpp>
 
@@ -175,16 +192,17 @@ void SImagesBlend::swapping(const KeyType& key)
 
             if (!wsrv.expired())
             {
-                ::fwData::TransferFunction::sptr tf  = this->getInOut< ::fwData::TransferFunction >(s_TF_GROUP, index);
+                const ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_GROUP,
+                                                                                                        index);
                 ::fwServices::IService::sptr service = wsrv.lock();
-                if (tf)
+                if(tf != nullptr)
                 {
                     service->registerInOut(tf, SImage::s_TF_INOUT, false, true);
                     service->swapKey(SImage::s_TF_INOUT, nullptr);
                 }
                 else if(::fwServices::OSR::isRegistered(SImage::s_TF_INOUT, AccessType::INOUT, service))
                 {
-                    ::fwServices::OSR::unregisterService(SImage::s_TF_INOUT, AccessType::INOUT, service);
+                    service->unregisterInOut(SImage::s_TF_INOUT);
                     service->swapKey(SImage::s_TF_INOUT, nullptr);
                 }
             }

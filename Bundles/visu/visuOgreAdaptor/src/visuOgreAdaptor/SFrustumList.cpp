@@ -1,8 +1,24 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2018.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2018 IRCAD France
+ * Copyright (C) 2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #include "visuOgreAdaptor/SFrustumList.hpp"
 
@@ -82,6 +98,8 @@ void SFrustumList::configuring()
     m_color    = config.get< std::string >("color", "#0000ffff");
     m_capacity = config.get< unsigned int > ("nbMax", 200);
 
+    this->setTransformId(config.get<std::string>( ::fwRenderOgre::ITransformable::s_TRANSFORM_CONFIG,
+                                                  this->getID() + "_transform"));
 }
 
 //-----------------------------------------------------------------------------
@@ -223,20 +241,8 @@ void SFrustumList::clear()
 
 void SFrustumList::updating()
 {
-    if (m_sceneNode == nullptr)
-    {
-        // Add camera to ogre scene
-        ::Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
-        ::Ogre::SceneNode* sceneNode     = ::fwRenderOgre::helper::Scene::getNodeById(this->getTransformId(),
-                                                                                      rootSceneNode);
-
-        if(sceneNode == nullptr)
-        {
-            sceneNode = rootSceneNode->createChildSceneNode(this->getID() + "_transform_" + std::to_string(0));
-        }
-        m_sceneNode = sceneNode;
-    }
-
+    ::Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
+    m_sceneNode                      = this->getTransformNode(rootSceneNode);
     m_sceneNode->attachObject(m_frustumList.front());
 
     this->requestRender();
@@ -246,11 +252,6 @@ void SFrustumList::updating()
 
 void SFrustumList::stopping()
 {
-    if (m_sceneNode != nullptr)
-    {
-        this->getSceneManager()->destroySceneNode(m_sceneNode);
-    }
-
     this->unregisterServices();
     this->clear();
     m_materialAdaptor.reset();

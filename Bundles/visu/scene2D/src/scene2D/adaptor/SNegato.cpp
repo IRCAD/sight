@@ -1,8 +1,24 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #include "scene2D/adaptor/SNegato.hpp"
 
@@ -15,6 +31,8 @@
 #include <fwCom/Slots.hxx>
 
 #include <fwData/Image.hpp>
+#include <fwData/mt/ObjectReadLock.hpp>
+#include <fwData/mt/ObjectWriteLock.hpp>
 #include <fwData/TransferFunction.hpp>
 
 #include <fwDataTools/fieldHelper/Image.hpp>
@@ -44,7 +62,7 @@ static const ::fwCom::Slots::SlotKeyType s_UPDATE_SLICE_TYPE_SLOT  = "updateSlic
 static const ::fwCom::Slots::SlotKeyType s_UPDATE_BUFFER_SLOT      = "updateBuffer";
 static const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT  = "updateVisibility";
 
-typedef ::fwDataTools::helper::MedicalImageAdaptor MedicalImageAdaptor;
+typedef ::fwDataTools::helper::MedicalImage MedicalImage;
 
 //-----------------------------------------------------------------------------
 
@@ -52,15 +70,15 @@ SNegato::SNegato() noexcept :
     m_qimg(nullptr),
     m_pixmapItem(nullptr),
     m_layer(nullptr),
-    m_orientation(MedicalImageAdaptor::Z_AXIS),
     m_pointIsCaptured(false),
-    m_changeSliceTypeAllowed(true)
+    m_changeSliceTypeAllowed(true),
+    m_helperTF(std::bind(&SNegato::updateTF, this))
 {
-    this->installTFSlots(this);
     newSlot(s_UPDATE_SLICE_INDEX_SLOT, &SNegato::updateSliceIndex, this);
     newSlot(s_UPDATE_SLICE_TYPE_SLOT, &SNegato::updateSliceType, this);
     newSlot(s_UPDATE_BUFFER_SLOT, &SNegato::updateBuffer, this);
     newSlot(s_UPDATE_VISIBILITY_SLOT, &SNegato::updateVisibility, this);
+    m_helperImg.setOrientation(MedicalImage::Z_AXIS);
 }
 
 //-----------------------------------------------------------------------------
@@ -83,15 +101,15 @@ void SNegato::configuring()
 
         if ( orientationValue == "axial" )
         {
-            m_orientation = MedicalImageAdaptor::Z_AXIS;
+            m_helperImg.setOrientation(MedicalImage::Z_AXIS);
         }
         else if ( orientationValue == "sagittal" )
         {
-            m_orientation = MedicalImageAdaptor::X_AXIS;
+            m_helperImg.setOrientation(MedicalImage::X_AXIS);
         }
         else if ( orientationValue == "frontal" )
         {
-            m_orientation = MedicalImageAdaptor::Y_AXIS;
+            m_helperImg.setOrientation(MedicalImage::Y_AXIS);
         }
     }
 
@@ -119,7 +137,8 @@ void SNegato::updateBufferFromImage( QImage* qimg )
         return;
     }
     // Window min/max
-    ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
+    const ::fwData::TransferFunction::csptr tf = m_helperTF.getTransferFunction();
+    const ::fwData::mt::ObjectReadLock tfLock(tf);
     const double wlMin = tf->getWLMinMax().first;
 
     // Window max
@@ -135,10 +154,12 @@ void SNegato::updateBufferFromImage( QImage* qimg )
 
     std::uint8_t* pDest = qimg->bits();
 
+    ::fwData::Integer::sptr indexes[3];
+    m_helperImg.getSliceIndex(indexes);
     // Fill image according to current slice type:
-    if( m_orientation == MedicalImageAdaptor::X_AXIS ) // sagittal
+    if( m_helperImg.getOrientation() == MedicalImage::X_AXIS ) // sagittal
     {
-        const size_t sagitalIndex = static_cast<size_t>(m_sagittalIndex->value());
+        const size_t sagitalIndex = static_cast<size_t>(indexes[0]->value());
 
         for( size_t z = 0; z < size[2]; ++z)
         {
@@ -155,9 +176,9 @@ void SNegato::updateBufferFromImage( QImage* qimg )
             }
         }
     }
-    else if( m_orientation == MedicalImageAdaptor::Y_AXIS ) // frontal
+    else if( m_helperImg.getOrientation() == MedicalImage::Y_AXIS ) // frontal
     {
-        const size_t frontalIndex = static_cast<size_t>(m_frontalIndex->value());
+        const size_t frontalIndex = static_cast<size_t>(indexes[1]->value());
         const size_t yOffset      = frontalIndex * size[0];
 
         for( size_t z = 0; z < size[2]; ++z)
@@ -175,9 +196,9 @@ void SNegato::updateBufferFromImage( QImage* qimg )
             }
         }
     }
-    else if( m_orientation == MedicalImageAdaptor::Z_AXIS ) // axial
+    else if( m_helperImg.getOrientation() == MedicalImage::Z_AXIS ) // axial
     {
-        const size_t axialIndex = static_cast<size_t>(m_axialIndex->value());
+        const size_t axialIndex = static_cast<size_t>(indexes[2]->value());
         const size_t zOffset    = axialIndex * imageZOffset;
 
         for( size_t y = 0; y < size[1]; ++y )
@@ -203,7 +224,7 @@ void SNegato::updateBufferFromImage( QImage* qimg )
 //-----------------------------------------------------------------------------
 
 QRgb SNegato::getQImageVal(const size_t index, const short* buffer, double wlMin, double tfWin,
-                           const fwData::TransferFunction::sptr& tf)
+                           const ::fwData::TransferFunction::csptr& tf)
 {
     const short val16 = buffer[index];
 
@@ -234,9 +255,9 @@ QImage* SNegato::createQImage()
     double qImageOrigin[2];
     int qImageSize[2];
 
-    switch ( m_orientation )
+    switch ( m_helperImg.getOrientation() )
     {
-        case MedicalImageAdaptor::X_AXIS:// sagittal
+        case MedicalImage::X_AXIS:// sagittal
             this->m_yAxis->setScale(-1);
             qImageSize[0]    = static_cast<int>(size[1]);
             qImageSize[1]    = static_cast<int>(size[2]);
@@ -246,7 +267,7 @@ QImage* SNegato::createQImage()
             qImageOrigin[1]  = -( origin[2] + size[2] * spacing[2]  - 0.5f*spacing[2]);
             break;
 
-        case MedicalImageAdaptor::Y_AXIS:// frontal
+        case MedicalImage::Y_AXIS:// frontal
             qImageSize[0]    = static_cast<int>(size[0]);
             qImageSize[1]    = static_cast<int>(size[2]);
             qImageSpacing[0] = spacing[0];
@@ -255,7 +276,7 @@ QImage* SNegato::createQImage()
             qImageOrigin[1]  = -( origin[2] + size[2] * spacing[2]  - 0.5f*spacing[2]);
             break;
 
-        case MedicalImageAdaptor::Z_AXIS:// axial
+        case MedicalImage::Z_AXIS:// axial
             qImageSize[0]    = static_cast<int>(size[0]);
             qImageSize[1]    = static_cast<int>(size[1]);
             qImageSpacing[0] = spacing[0];
@@ -265,7 +286,7 @@ QImage* SNegato::createQImage()
             break;
 
         default:
-            SLM_FATAL("Unsupported value for m_orientation");
+            SLM_FATAL("Unsupported value for orientation");
             break;
     }
 
@@ -291,12 +312,13 @@ QImage* SNegato::createQImage()
 
 void SNegato::starting()
 {
-    ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction >(s_TF_INOUT);
-    this->setTransferFunction(tf);
+
+    ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
 
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    this->updateImageInfos( image );
-    this->createTransferFunction( image );
+    m_helperImg.updateImageInfos( image );
+
+    m_helperTF.setOrCreateTF(tf, image);
 
     m_pixmapItem = new QGraphicsPixmapItem();
     m_pixmapItem->setShapeMode( QGraphicsPixmapItem::BoundingRectShape );
@@ -312,8 +334,6 @@ void SNegato::starting()
     this->updateBufferFromImage( m_qimg );
 
     this->getScene2DRender()->updateSceneSize( 1.f );
-
-    this->installTFConnections();
 }
 
 //-----------------------------------------------------------------------------
@@ -330,11 +350,12 @@ void SNegato::swapping(const KeyType& key)
 {
     if (key == s_TF_INOUT)
     {
-        ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction >(s_TF_INOUT);
-        ::fwData::Image::sptr image         = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+        ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
         SLM_ASSERT("Missing image", image);
 
-        this->setOrCreateTF(tf, image);
+        ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
+        m_helperTF.setOrCreateTF(tf, image);
+
         this->updating();
     }
 }
@@ -343,12 +364,11 @@ void SNegato::swapping(const KeyType& key)
 
 void SNegato::updateSliceIndex(int axial, int frontal, int sagittal)
 {
-    m_axialIndex->value()    = axial;
-    m_frontalIndex->value()  = frontal;
-    m_sagittalIndex->value() = sagittal;
+    const int indexes[] = {sagittal, frontal, axial};
+    m_helperImg.setSliceIndex(indexes);
 
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    this->updateImageInfos( image );
+    m_helperImg.updateImageInfos( image );
     this->updateBufferFromImage( m_qimg );
 }
 
@@ -358,17 +378,17 @@ void SNegato::updateSliceType(int from, int to)
 {
     if (m_changeSliceTypeAllowed)
     {
-        if( to == static_cast< int > ( m_orientation ) )
+        if( to == static_cast< int > ( m_helperImg.getOrientation() ) )
         {
-            m_orientation = static_cast< MedicalImageAdaptor::Orientation > ( from );
+            m_helperImg.setOrientation( from );
         }
-        else if(from == static_cast<int>(m_orientation))
+        else if(from == static_cast<int>(m_helperImg.getOrientation()))
         {
-            m_orientation = static_cast< MedicalImageAdaptor::Orientation >( to );
+            m_helperImg.setOrientation( to );
         }
 
         // manages the modification of axes
-        if ( m_orientation == MedicalImageAdaptor::Z_AXIS )
+        if ( m_helperImg.getOrientation() == MedicalImage::Z_AXIS )
         {
             this->m_yAxis->setScale(1);
         }
@@ -404,14 +424,7 @@ void SNegato::updateBuffer()
 
 //------------------------------------------------------------------------------
 
-void SNegato::updateTFPoints()
-{
-    this->updateBufferFromImage( m_qimg );
-}
-
-//------------------------------------------------------------------------------
-
-void SNegato::updateTFWindowing(double window, double level)
+void SNegato::updateTF()
 {
     this->updateBufferFromImage( m_qimg );
 }
@@ -420,7 +433,7 @@ void SNegato::updateTFWindowing(double window, double level)
 
 void SNegato::stopping()
 {
-    this->removeTFConnections();
+    m_helperTF.removeTFConnections();
 
     this->getScene2DRender()->getScene()->removeItem(m_layer);
 
@@ -529,8 +542,10 @@ void SNegato::processInteraction( ::fwRenderQt::data::Event& _event )
 
 void SNegato::changeImageMinMaxFromCoord( ::fwRenderQt::data::Coord& oldCoord, ::fwRenderQt::data::Coord& newCoord )
 {
-    ::fwData::Image::sptr image         = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+
+    ::fwData::TransferFunction::sptr tf = m_helperTF.getTransferFunction();
+    ::fwData::mt::ObjectWriteLock tfLock(tf);
 
     const double min = tf->getWLMinMax().first;
     const double max = tf->getWLMinMax().second;
@@ -552,7 +567,7 @@ void SNegato::changeImageMinMaxFromCoord( ::fwRenderQt::data::Coord& oldCoord, :
     auto sig = tf->signal< ::fwData::TransferFunction::WindowingModifiedSignalType >(
         ::fwData::TransferFunction::s_WINDOWING_MODIFIED_SIG);
     {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdateTFWindowing));
+        ::fwCom::Connection::Blocker block(m_helperTF.getTFWindowingConnection());
         sig->asyncEmit( newImgWindow, newImgLevel);
     }
 }
@@ -574,4 +589,3 @@ void SNegato::changeImageMinMaxFromCoord( ::fwRenderQt::data::Coord& oldCoord, :
 
 } // namespace adaptor
 } // namespace scene2D
-

@@ -1,15 +1,31 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
-#ifndef __SCENE2D_ADAPTOR_SNEGATO_HPP__
-#define __SCENE2D_ADAPTOR_SNEGATO_HPP__
+#pragma once
 
 #include "scene2D/config.hpp"
 
-#include <fwDataTools/helper/MedicalImageAdaptor.hpp>
+#include <fwDataTools/helper/MedicalImage.hpp>
+#include <fwDataTools/helper/TransferFunction.hpp>
 
 #include <fwRenderQt/data/Coord.hpp>
 #include <fwRenderQt/IAdaptor.hpp>
@@ -31,9 +47,6 @@ namespace adaptor
  * - \b updateSliceType() : update image slice type
  * - \b updateBuffer() : update image buffer
  * - \b updateVisibility() : update image visibility
- * - \b updateTFPoints() : update the displayed image according to the new points
- * - \b updateTFWindowing(double window, double level) : update the displayed image according to the new
- *      window and level
  *
  * @section XML XML Configuration
  *
@@ -48,8 +61,7 @@ namespace adaptor
  * @subsection In-Out In-Out
  * - \b image [::fwData::Image]: image to display.
  * - \b tf [::fwData::TransferFunction] (optional): the current TransferFunction. If it is not defined, we use the
- *      image's default transferFunction (CT-GreyLevel). The transferFunction's signals are automatically connected to
- *      the slots 'updateTFPoints' and 'updateTFWindowing'.
+ *      image's default transferFunction (CT-GreyLevel).
  *
  * @subsection Configuration Configuration:
  * - \b config (mandatory): contains the adaptor configuration
@@ -60,15 +72,15 @@ namespace adaptor
  *    - \b orientation (optional, default axial): image orientation, axial, sagittal or frontal
  *    - \b changeSliceType (optional, default true): specify if the negato allow slice type events
  */
-class SCENE2D_CLASS_API SNegato : public ::fwDataTools::helper::MedicalImageAdaptor,
-                                  public ::fwRenderQt::IAdaptor
+class SCENE2D_CLASS_API SNegato : public ::fwRenderQt::IAdaptor
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SNegato)(::fwRenderQt::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (SNegato)(::fwRenderQt::IAdaptor) )
 
     SCENE2D_API SNegato() noexcept;
+
     SCENE2D_API virtual ~SNegato() noexcept;
 
     /**
@@ -86,18 +98,20 @@ public:
 protected:
 
     SCENE2D_API void configuring() override;
+
     SCENE2D_API void starting() override;
+
     SCENE2D_API void updating() override;
+
     SCENE2D_API void stopping() override;
+
     /// Retrives the current transfer function
     SCENE2D_API void swapping(const KeyType& key) override;
+
     SCENE2D_API void processInteraction( ::fwRenderQt::data::Event& _event ) override;
 
-    /// Slot: updates the displayed image
-    SCENE2D_API virtual void updateTFPoints() override;
-
-    /// Slot: updates the displayed image
-    SCENE2D_API virtual void updateTFWindowing(double window, double level) override;
+    /// Slot: updates the TF
+    SCENE2D_API void updateTF();
 
 private:
 
@@ -121,18 +135,22 @@ private:
      */
 
     QImage* createQImage();
+
     void updateBufferFromImage( QImage* qimg );
+
     void changeImageMinMaxFromCoord( ::fwRenderQt::data::Coord& oldCoord, ::fwRenderQt::data::Coord& newCoord );
 
     static QRgb getQImageVal(const size_t index, const short* buffer, double wlMin,
-                             double tfWin, const ::fwData::TransferFunction::sptr& tf);
+                             double tfWin, const ::fwData::TransferFunction::csptr& tf);
 
     QImage* m_qimg;
+
     QGraphicsPixmapItem* m_pixmapItem;
+
     QGraphicsItemGroup* m_layer;
 
     /// The current orientation of the negato
-    ::fwDataTools::helper::MedicalImageAdaptor::Orientation m_orientation;
+    ::fwDataTools::helper::MedicalImage::Orientation m_orientation;
 
     /// Used during negato interaction to manage window/level
     bool m_pointIsCaptured;
@@ -142,10 +160,11 @@ private:
 
     /// Specify if the negato allow slice type events
     bool m_changeSliceTypeAllowed;
+
+    ::fwDataTools::helper::TransferFunction m_helperTF;
+
+    ::fwDataTools::helper::MedicalImage m_helperImg;
 };
 
 } // namespace adaptor
 } // namespace scene2D
-
-#endif // __SCENE2D_ADAPTOR_SNEGATO_HPP__
-

@@ -116,7 +116,6 @@
                 <id>RGBDCalibration</id>
                 <id>calibrationEdition</id>
                 <id>TrackedCameraRegistration</id>
-                <id>trackingHandEyeCalibration</id>
                 <id>toolCalibrationActivity</id>
             </filter>
         </service>
@@ -127,7 +126,7 @@
         </service>
 
         <service uid="actionOpenActivity" type="::uiIO::action::SSeriesDBMerger">
-            <inout key="series" uid="loadingSeriesDB" />
+            <inout key="seriesDB" uid="loadingSeriesDB" />
             <IOSelectorSrvConfig name="ActivityReaderConfig" />
         </service>
 
@@ -178,7 +177,7 @@
         <!-- Add the current tab activity in the root composite. -->
         <connect>
             <signal>dynamicView/activitySelected</signal>
-            <slot>activitySeriesUpdater/addOrSwap</slot>
+            <slot>activitySeriesUpdater/add</slot>
         </connect>
 
         <!-- When an activity is opened: it calls the creator's update activity slot. -->

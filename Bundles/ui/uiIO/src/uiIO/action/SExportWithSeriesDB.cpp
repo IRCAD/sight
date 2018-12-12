@@ -1,8 +1,24 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2018.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #include "uiIO/action/SExportWithSeriesDB.hpp"
 
@@ -78,12 +94,8 @@ void SExportWithSeriesDB::updating( )
     ::fwGui::LockAction lock(this->getSptr());
 
     ::fwMedData::Series::sptr series = this->getInOut< ::fwMedData::Series >(s_SERIES_INOUT);
+    SLM_ASSERT("The inout key '" + s_SERIES_INOUT + "' is not correctly set.", series);
 
-    if (!series)
-    {
-        FW_DEPRECATED_KEY(s_SERIES_INOUT, "inout", "18.0");
-        series = this->getObject< ::fwMedData::Series >();
-    }
     // Create a new SeriesDB
     ::fwMedData::SeriesDB::sptr localSeriesDB = ::fwMedData::SeriesDB::New();
     localSeriesDB->getContainer().push_back(series);
@@ -126,12 +138,6 @@ void SExportWithSeriesDB::starting()
     this->::fwGui::IActionSrv::actionServiceStarting();
 
     ::fwMedData::Series::sptr series = this->getInOut< ::fwMedData::Series >(s_SERIES_INOUT);
-
-    if (!series)
-    {
-        FW_DEPRECATED_KEY(s_SERIES_INOUT, "inout", "18.0");
-        series = this->getObject< ::fwMedData::Series >();
-    }
     SLM_FATAL_IF( "The associated object must be a ::fwMedData::Series.", !series);
 }
 

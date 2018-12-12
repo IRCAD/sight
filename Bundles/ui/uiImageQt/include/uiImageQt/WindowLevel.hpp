@@ -1,8 +1,24 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2018.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #pragma once
 
@@ -10,7 +26,7 @@
 
 #include <fwData/Integer.hpp>
 
-#include <fwDataTools/helper/MedicalImageAdaptor.hpp>
+#include <fwDataTools/helper/TransferFunction.hpp>
 
 #include <fwGui/editor/IEditor.hpp>
 
@@ -29,10 +45,12 @@ class QToolButton;
 class QSignalMapper;
 
 fwCorePredeclare( (fwGuiQt)(widget)(QRangeSlider) );
+
 namespace fwGuiQt
 {
 namespace widget
 {
+
 class QRangeSlider;
 }
 }
@@ -44,10 +62,6 @@ namespace uiImageQt
  * @brief   WindowLevel service allows to change the min / max value of windowing.
  *
  * This is represented by two sliders to modify the min and max values of windowing
- *
- * @section Slots Slots
- * - \b updateTFPoints() : update the slider according to the new points
- * - \b updateTFWindowing(double window, double level) : update the slider according to the new window and level
  *
  * @section XML XML Configuration
  *
@@ -62,19 +76,17 @@ namespace uiImageQt
  * @subsection In-Out In-Out
  * - \b image [::fwData::Image]: image on which the windowing will be changed
  * - \b tf [::fwData::TransferFunction] (optional): the current TransferFunction. If it is not defined, we use the
- *      image's default transferFunction (CT-GreyLevel). The transferFunction's signals are automatically connected to
- *      the slots 'updateTFPoints' and 'updateTFWindowing'.
+ *      image's default transferFunction (CT-GreyLevel).
  *
  * @subsection Configuration Configuration
  * - \b autoWindowing(optional, default no) : if 'yes', image windowing will be automatically compute from image pixel
- * min/max
- *  intensity when this service receive BUFFER event
+ * min/max intensity when this service receive BUFFER event
  * - \b enableSquareTF(optional, default: yes) : if 'yes' enable the button to switch between current TF and square TF
  */
 class UIIMAGEQT_CLASS_API WindowLevel : public QObject,
-                                        public ::fwDataTools::helper::MedicalImageAdaptor,
                                         public ::fwGui::editor::IEditor
 {
+
 Q_OBJECT
 
 public:
@@ -89,17 +101,13 @@ public:
 
 protected:
 
-    /**
-     * @brief Install the layout.
-     */
+    /// Install the layout.
     virtual void starting() override;
 
-    /**
-     * @brief Destroy the layout.
-     */
+    ///Destroy the layout.
     virtual void stopping() override;
 
-    /// Update editor information from the image
+    /// Update editor information from the image.
     virtual void updating() override;
 
     /// Select the current tf
@@ -121,36 +129,41 @@ protected:
     UIIMAGEQT_API virtual void info( std::ostream& _sstream ) override;
 
     /// Slot: Updates the slider position
-    UIIMAGEQT_API virtual void updateTFPoints() override;
-
-    /// Slot: Updates the slider position
-    UIIMAGEQT_API virtual void updateTFWindowing(double window, double level) override;
+    UIIMAGEQT_API virtual void updateTF();
 
 protected Q_SLOTS:
 
     void onTextEditingFinished();
+
     void onToggleTF(bool squareTF);
+
     void onToggleAutoWL(bool autoWL);
 
     void onWindowLevelWidgetChanged(double _min, double _max);
+
     void onDynamicRangeSelectionChanged(QAction* action);
 
 protected:
+
     typedef ::fwData::TransferFunction::TFValuePairType WindowLevelMinMaxType;
 
     double toWindowLevel(double _val);
-    double fromWindowLevel(double _val);
 
-    WindowLevelMinMaxType getImageWindowMinMax();
+    double fromWindowLevel(double _val);
 
     void onImageWindowLevelChanged(double _imageMin, double _imageMax);
 
     void updateWidgetMinMax(double _imageMin, double _imageMax);
+
     void updateImageWindowLevel(double _imageMin, double _imageMax);
+
     void updateTextWindowLevel(double _imageMin, double _imageMax);
 
-    void setWidgetDynamicRange(double min, double max);
+    WindowLevelMinMaxType getImageWindowMinMax();
+
     bool getWidgetDoubleValue(QLineEdit* widget, double& val);
+
+    void setWidgetDynamicRange(double min, double max);
 
 private:
 
@@ -171,6 +184,8 @@ private:
 
     /// Store previous TF, used in onToggleTF() to restore this TF when switching to the square TF
     ::fwData::TransferFunction::sptr m_previousTF;
+
+    ::fwDataTools::helper::TransferFunction m_helperTF;
 };
 
 } // uiImageQt

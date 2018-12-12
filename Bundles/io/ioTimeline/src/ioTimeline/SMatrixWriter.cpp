@@ -1,8 +1,24 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017-2018.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2017-2018 IRCAD France
+ * Copyright (C) 2017-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #include "ioTimeline/SMatrixWriter.hpp"
 
@@ -143,20 +159,27 @@ void SMatrixWriter::write(::fwCore::HiResClock::HiResClockType timestamp)
 
         unsigned int numberOfMat = matrixTL->getMaxElementNum();
         // Get the buffer of the copied timeline
-        CSPTR(::arData::MatrixTL::BufferType) buffer = matrixTL->getClosestBuffer(timestamp);
-        if(buffer)
+
+        CSPTR(::arData::timeline::Object) object = matrixTL->getClosestObject(timestamp);
+        if(object)
         {
-            size_t time = static_cast<size_t>(timestamp);
-            *m_filestream << time <<";";
-            for(unsigned int i = 0; i < numberOfMat; ++i)
+            CSPTR(::arData::MatrixTL::BufferType) buffer =
+                std::dynamic_pointer_cast< const ::arData::MatrixTL::BufferType >(object);
+            if (buffer)
             {
-                const float* values = buffer->getElement(i);
-                for(unsigned int v = 0; v < 16; ++v)
+                timestamp = object->getTimestamp();
+                size_t time = static_cast<size_t>(timestamp);
+                *m_filestream << time <<";";
+                for(unsigned int i = 0; i < numberOfMat; ++i)
                 {
-                    *m_filestream << values[v] << ";";
+                    const float* values = buffer->getElement(i);
+                    for(unsigned int v = 0; v < 16; ++v)
+                    {
+                        *m_filestream << values[v] << ";";
+                    }
                 }
+                *m_filestream << std::endl;
             }
-            *m_filestream << std::endl;
         }
     }
 }

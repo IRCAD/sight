@@ -1,14 +1,32 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2014-2018 IRCAD France
+ * Copyright (C) 2014-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 /******************************************************************************************
    MOC - Minimal Ogre Collision v 1.0
    The MIT License
 
    Copyright (c) 2008, 2009 MouseVolcano (Thomas Gradl, Karolina Sefyrin), Esa Kylli
+   Copyright (c) 2014-2018 IRCAD France
+   Copyright (c) 2014-2018 IHU Strasbourg
 
    Thanks to Erik Biermann for the help with the Videos, SEO and Webwork
 
@@ -30,8 +48,6 @@
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
    THE SOFTWARE.
 ******************************************************************************************/
-#ifndef __FWRENDEROGRE_COLLISIONTOOLS_COLLISIONTOOLS_HPP__
-#define __FWRENDEROGRE_COLLISIONTOOLS_COLLISIONTOOLS_HPP__
 
 #include "fwRenderOgre/config.hpp"
 
@@ -44,6 +60,8 @@ namespace fwRenderOgre
  * @brief The CollisionTools class
  * Copy of MOC under MIT License, allows to do ray casts
  */
+#pragma once
+
 class FWRENDEROGRE_CLASS_API CollisionTools
 {
 public:
@@ -74,17 +92,19 @@ public:
 
 private:
 
-    void GetMeshInformation(const Ogre::MeshPtr mesh,
-                            size_t& vertex_count,
-                            Ogre::Vector3*& vertices,
-                            size_t& index_count,
-                            Ogre::uint32*& indices,
-                            const Ogre::Vector3& position,
-                            const Ogre::Quaternion& orient,
-                            const Ogre::Vector3& scale);
+    /** return mesh properties
+     * @param mesh pointer to Ogre Mesh
+     * @param position world position of the entity using the mesh
+     * @param orientation world orientation of the entity using the mesh
+     * @param scale world scale of the entity using the mesh
+     * @return tuple containing <list of points, list of triangles, list of quads>
+     */
+    std::tuple<std::vector<Ogre::Vector3>, std::vector<Ogre::uint32>, std::vector< Ogre::uint32> >
+    getMeshInformation(const Ogre::MeshPtr mesh,
+                       const Ogre::Vector3& position,
+                       const Ogre::Quaternion& orient,
+                       const Ogre::Vector3& scale);
 
 };
 
 }
-
-#endif // __FWRENDEROGRE_COLLISIONTOOLS_COLLISIONTOOLS_HPP__

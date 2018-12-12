@@ -1,8 +1,24 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #include "visuVTKAdaptor/SImagesProbeCursor.hpp"
 
@@ -70,7 +86,7 @@ void SImagesProbeCursor::configuring()
     SLM_ASSERT("configured group must be '" + s_IMAGE_GROUP + "'",
                config.get<std::string>("<xmlattr>.group", "") == s_IMAGE_GROUP);
 
-    BOOST_FOREACH(const ::fwServices::IService::ConfigType::value_type &v, config.equal_range("key"))
+    BOOST_FOREACH(const ::fwServices::IService::ConfigType::value_type& v, config.equal_range("key"))
     {
         const ::fwServices::IService::ConfigType& specAssoc = v.second;
         const ::fwServices::IService::ConfigType& attr      = specAssoc.get_child("<xmlattr>");
@@ -93,7 +109,7 @@ void SImagesProbeCursor::updating()
     ::fwData::Image::sptr firstImage = this->getInOut< ::fwData::Image >(s_IMAGE_GROUP, 0);
     if (firstImage)
     {
-        this->updateImageInfos(firstImage);
+        m_helper.updateImageInfos(firstImage);
         this->setVisibility(false);
         this->requestRender();
     }
@@ -120,10 +136,10 @@ void SImagesProbeCursor::updateView( double world[3] )
     {
         if(::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(firstImage))
         {
-            this->updateImageInfos(firstImage);
+            m_helper.updateImageInfos(firstImage);
 
             int index[3];
-            this->worldToImageSliceIndex( world, index );
+            m_helper.worldToImageSliceIndex( world, index );
             OSLM_TRACE("index=" << index[0] << "," << index[1] << "," << index[2] );
 
             if (    world[0] < firstImage->getOrigin()[0] ||
@@ -165,10 +181,10 @@ void SImagesProbeCursor::updateView( double world[3] )
             if(::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
             {
                 ::fwDataTools::helper::Image imageHelper(image);
-                this->updateImageInfos(image);
+                m_helper.updateImageInfos(image);
 
                 int index[3];
-                this->worldToImageSliceIndex( world, index );
+                m_helper.worldToImageSliceIndex( world, index );
                 OSLM_TRACE("index=" << index[0] << "," << index[1] << "," << index[2] << "," );
 
                 if ( !( world[0] < image->getOrigin()[0] ||

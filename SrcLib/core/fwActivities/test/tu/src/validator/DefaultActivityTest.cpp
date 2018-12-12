@@ -1,8 +1,24 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2016-2017.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2016-2018 IRCAD France
+ * Copyright (C) 2016-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #include "validator/DefaultActivityTest.hpp"
 
@@ -30,6 +46,7 @@
 #include <fwRuntime/Bundle.hpp>
 #include <fwRuntime/Extension.hpp>
 #include <fwRuntime/io/BundleDescriptorReader.hpp>
+#include <fwRuntime/operations.hpp>
 
 #include <fwTest/generator/Image.hpp>
 
@@ -48,15 +65,15 @@ namespace ut
 void DefaultActivityTest::setUp()
 {
     //Force link with fwDataCamp, it is used by the validator to parse the objects
-    static const int fwDataCampVersion = ::fwDataCamp::Version::s_CURRENT_VERSION;
-    FwCoreNotUsedMacro(fwDataCampVersion);
+    m_fwDataCampVersion = ::fwDataCamp::Version::s_CURRENT_VERSION;
+    FwCoreNotUsedMacro(m_fwDataCampVersion);
 
     //Force link with fwMedDataCamp, it is used by the validator to parse the objects
-    static const int fwMedDataCampVersion = ::fwMedDataCamp::Version::s_CURRENT_VERSION;
-    FwCoreNotUsedMacro(fwMedDataCampVersion);
+    m_fwMedDataCampVersion = ::fwMedDataCamp::Version::s_CURRENT_VERSION;
+    FwCoreNotUsedMacro(m_fwMedDataCampVersion);
 
     // Set up context before running a test.
-    ::boost::filesystem::path plugin = "share/tu_exec_fwActivities-0.0/tu_validator";
+    ::boost::filesystem::path plugin = ::fwRuntime::getResourceFilePath("tu_exec_fwActivities-0.0/tu_validator");
     m_bundle                         = ::fwRuntime::io::BundleDescriptorReader::createBundle(plugin);
 
     ::fwRuntime::Bundle::ExtensionContainer extensionsSet( m_bundle->extensionsBegin(), m_bundle->extensionsEnd());

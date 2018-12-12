@@ -1,8 +1,24 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2018.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #include "gui/action/SSlotCaller.hpp"
 
@@ -28,6 +44,10 @@ namespace gui
 {
 namespace action
 {
+
+static const ::fwServices::IService::KeyType s_SLOT_KEY        = "slot";
+static const ::fwServices::IService::KeyType s_SLOTS_KEY       = "slots";
+static const ::fwServices::IService::KeyType s_SYNCED_CALL_KEY = "sync";
 
 fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::SSlotCaller );
 
@@ -88,7 +108,14 @@ void SSlotCaller::updating()
 
                 const ::fwCom::SlotBase::csptr slot = hasSlots->slot(slotKey);
 
-                slot->asyncRun();
+                if(m_synchronized)
+                {
+                    slot->run();
+                }
+                else
+                {
+                    slot->asyncRun();
+                }
             }
         }
     }
@@ -101,11 +128,15 @@ void SSlotCaller::configuring()
     SLM_TRACE_FUNC();
     this->initialize();
 
-    OSLM_ASSERT("Missing slots configuration element in " << this->getID(),
-                m_configuration->hasConfigurationElement("slots"));
-    ConfigurationType cfg = m_configuration->findConfigurationElement("slots");
+    ConfigurationType syncCfg = m_configuration->findConfigurationElement(s_SYNCED_CALL_KEY);
 
-    ::fwRuntime::ConfigurationElementContainer slotCfgs = cfg->findAllConfigurationElement("slot");
+    m_synchronized = syncCfg && syncCfg->getValue() == "true";
+
+    OSLM_ASSERT("Missing slots configuration element in " << this->getID(),
+                m_configuration->hasConfigurationElement(s_SLOTS_KEY));
+    ConfigurationType cfg = m_configuration->findConfigurationElement(s_SLOTS_KEY);
+
+    ::fwRuntime::ConfigurationElementContainer slotCfgs = cfg->findAllConfigurationElement(s_SLOT_KEY);
 
     ::boost::regex re("(.*)/(.*)");
     ::boost::smatch match;

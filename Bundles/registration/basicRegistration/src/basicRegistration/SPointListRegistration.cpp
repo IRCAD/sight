@@ -1,8 +1,24 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2018.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #include "basicRegistration/SPointListRegistration.hpp"
 
@@ -110,10 +126,12 @@ void SPointListRegistration::computeRegistration(::fwCore::HiResClock::HiResCloc
         vtkSmartPointer<vtkPoints> sourcePts = vtkSmartPointer<vtkPoints>::New();
         vtkSmartPointer<vtkPoints> targetPts = vtkSmartPointer<vtkPoints>::New();
 
-        const auto& firstPoint = referencePL->getPoints()[0];
+        const auto& firstPoint    = referencePL->getPoints()[0];
+        const auto& firstPointReg = registeredPL->getPoints()[0];
 
         // If the points have labels ...
-        if(firstPoint->getField< ::fwData::String >(::fwDataTools::fieldHelper::Image::m_labelId ) != nullptr)
+        if(firstPoint->getField< ::fwData::String >(::fwDataTools::fieldHelper::Image::m_labelId ) != nullptr
+           && firstPointReg->getField< ::fwData::String >(::fwDataTools::fieldHelper::Image::m_labelId ) != nullptr)
         {
             // ... Then match them according to that label.
             for( ::fwData::Point::sptr pointRef : referencePL->getPoints() )

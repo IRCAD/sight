@@ -1,0 +1,25 @@
+# Resources required by the sample browser and most samples.
+[Essential]
+FileSystem=./@FWBUNDLE_RC_PREFIX@/@FWPROJECT_FULLNAME@/Media/fonts/
+FileSystem=./@FWBUNDLE_RC_PREFIX@/@FWPROJECT_FULLNAME@/Media/
+
+# Groups must be loaded in the following order.
+[Glsl]
+FileSystem=./@FWBUNDLE_RC_PREFIX@/@FWPROJECT_FULLNAME@/Media/glsl/common
+FileSystem=./@FWBUNDLE_RC_PREFIX@/@FWPROJECT_FULLNAME@/Media/glsl/core
+FileSystem=./@FWBUNDLE_RC_PREFIX@/@FWPROJECT_FULLNAME@/Media/glsl/stereo
+FileSystem=./@FWBUNDLE_RC_PREFIX@/@FWPROJECT_FULLNAME@/Media/glsl/transparency
+FileSystem=./@FWBUNDLE_RC_PREFIX@/@FWPROJECT_FULLNAME@/Media/glsl/vr
+
+[Materials]
+FileSystem=./@FWBUNDLE_RC_PREFIX@/@FWPROJECT_FULLNAME@/Media/materials/common
+FileSystem=./@FWBUNDLE_RC_PREFIX@/@FWPROJECT_FULLNAME@/Media/materials/core
+FileSystem=./@FWBUNDLE_RC_PREFIX@/@FWPROJECT_FULLNAME@/Media/materials/stereo
+FileSystem=./@FWBUNDLE_RC_PREFIX@/@FWPROJECT_FULLNAME@/Media/materials/transparency
+FileSystem=./@FWBUNDLE_RC_PREFIX@/@FWPROJECT_FULLNAME@/Media/materials/vr
+
+[compositors]
+FileSystem=./@FWBUNDLE_RC_PREFIX@/@FWPROJECT_FULLNAME@/Media/compositors/core
+FileSystem=./@FWBUNDLE_RC_PREFIX@/@FWPROJECT_FULLNAME@/Media/compositors/stereo
+FileSystem=./@FWBUNDLE_RC_PREFIX@/@FWPROJECT_FULLNAME@/Media/compositors/transparency
+FileSystem=./@FWBUNDLE_RC_PREFIX@/@FWPROJECT_FULLNAME@/Media/compositors/vr

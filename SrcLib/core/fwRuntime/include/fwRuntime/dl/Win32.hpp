@@ -1,19 +1,39 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
+
+#pragma once
 
 #ifdef _WIN32
-
-
-#ifndef __FWRUNTIME_DL_WIN32_HPP__
-#define __FWRUNTIME_DL_WIN32_HPP__
 
 #include "fwRuntime/config.hpp"
 #include "fwRuntime/dl/Native.hpp"
 
+#ifdef NOMINMAX
 #include <windows.h>
+#else
+#define NOMINMAX
+#include <windows.h>
+#undef NOMINMAX
+#endif
 
 namespace fwRuntime
 {
@@ -32,7 +52,7 @@ struct Win32 : public Native
      *
      * @param[in]   modulePath      a path to the module to manage
      */
-    Win32( const boost::filesystem::path & modulePath ) noexcept;
+    Win32( const boost::filesystem::path& modulePath ) noexcept;
 
     /**
      * @brief   Tells if the module is loaded.
@@ -48,7 +68,7 @@ struct Win32 : public Native
      *
      * @return      a pointer to the found symbol or null if none has been found
      */
-    void * getSymbol(const std::string& name) const;
+    void* getSymbol(const std::string& name) const;
 
     /**
      * @brief   Loads the module.
@@ -60,7 +80,6 @@ struct Win32 : public Native
      */
     void unload();
 
-
     private:
 
         /**
@@ -70,13 +89,8 @@ struct Win32 : public Native
 
 };
 
-
 } // namespace dl
 
 } // namespace fwRuntime
-
-
-#endif // __FWRUNTIME_DL_WIN32_HPP__
-
 
 #endif // #ifdef _WIN32

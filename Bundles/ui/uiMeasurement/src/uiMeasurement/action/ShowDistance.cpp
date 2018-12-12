@@ -1,8 +1,24 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2018.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #include "uiMeasurement/action/ShowDistance.hpp"
 
@@ -60,11 +76,8 @@ void ShowDistance::info(std::ostream& _sstream )
 void ShowDistance::updating()
 {
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    if (!image)
-    {
-        FW_DEPRECATED_KEY(s_IMAGE_INOUT, "inout", "18.0");
-        image = this->getObject< ::fwData::Image >();
-    }
+    SLM_ASSERT("The inout key '" + s_IMAGE_INOUT + "' is not defined.", image);
+
     if ( !::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image) )
     {
         this->::fwGui::IActionSrv::setIsActive(false);
@@ -95,11 +108,8 @@ void ShowDistance::updating()
 void ShowDistance::showDistance(bool)
 {
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    if (!image)
-    {
-        FW_DEPRECATED_KEY(s_IMAGE_INOUT, "inout", "18.0");
-        image = this->getObject< ::fwData::Image >();
-    }
+    SLM_ASSERT("The inout key '" + s_IMAGE_INOUT + "' is not defined.", image);
+
     ::fwData::Boolean::sptr showDistances =
         image->getField< ::fwData::Boolean >("ShowDistances", ::fwData::Boolean::New(true));
 

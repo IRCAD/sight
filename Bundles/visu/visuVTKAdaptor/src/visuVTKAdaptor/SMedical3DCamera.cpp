@@ -1,8 +1,24 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #include "visuVTKAdaptor/SMedical3DCamera.hpp"
 
@@ -31,11 +47,11 @@ static const ::fwCom::Slots::SlotKeyType SET_AXIAL_SLOT    = "setAxial";
 static const ::fwCom::Slots::SlotKeyType SET_SAGITTAL_SLOT = "setSagittal";
 static const ::fwCom::Slots::SlotKeyType SET_FRONTAL_SLOT  = "setFrontal";
 
-std::map< std::string, ::fwDataTools::helper::MedicalImageAdaptor::Orientation >
+std::map< std::string, ::fwDataTools::helper::MedicalImage::Orientation >
 SMedical3DCamera::m_orientationConversion = ::boost::assign::map_list_of
-                                                (std::string("axial"), Z_AXIS)
-                                                (std::string("frontal"), Y_AXIS)
-                                                (std::string("sagittal"), X_AXIS);
+                                                (std::string("axial"), Orientation::Z_AXIS)
+                                                (std::string("frontal"), Orientation::Y_AXIS)
+                                                (std::string("sagittal"), Orientation::X_AXIS);
 
 //------------------------------------------------------------------------------
 
@@ -64,7 +80,7 @@ void SMedical3DCamera::configuring()
 
     const std::string orientation = config.get<std::string>("sliceIndex", "axial");
     SLM_ASSERT("Unknown orientation", m_orientationConversion.find(orientation) != m_orientationConversion.end());
-    m_orientation = m_orientationConversion[orientation];
+    m_helper.setOrientation(m_orientationConversion[orientation]);
 
     const std::string reset = config.get<std::string>("resetAtStart", "no");
     SLM_ASSERT("'resetAtStart' value must be 'yes' or 'no'", reset == "yes" || reset == "no");
@@ -103,7 +119,7 @@ void SMedical3DCamera::stopping()
 
 void SMedical3DCamera::setSagittalView()
 {
-    m_orientation = X_AXIS;
+    m_helper.setOrientation(Orientation::X_AXIS);
     this->updating();
 }
 
@@ -111,7 +127,7 @@ void SMedical3DCamera::setSagittalView()
 
 void SMedical3DCamera::setFrontalView()
 {
-    m_orientation = Y_AXIS;
+    m_helper.setOrientation(Orientation::Y_AXIS);
     this->updating();
 }
 
@@ -119,7 +135,7 @@ void SMedical3DCamera::setFrontalView()
 
 void SMedical3DCamera::setAxialView()
 {
-    m_orientation = Z_AXIS;
+    m_helper.setOrientation(Orientation::Z_AXIS);
     this->updating();
 }
 
@@ -127,15 +143,15 @@ void SMedical3DCamera::setAxialView()
 
 void SMedical3DCamera::updateView()
 {
-    if(m_orientation == Z_AXIS )
+    if(m_helper.getOrientation() == Orientation::Z_AXIS )
     {
         this->resetAxialView();
     }
-    else if(m_orientation == Y_AXIS )
+    else if(m_helper.getOrientation() == Orientation::Y_AXIS )
     {
         this->resetFrontalView();
     }
-    else if(m_orientation == X_AXIS )
+    else if(m_helper.getOrientation() == Orientation::X_AXIS )
     {
         this->resetSagittalView();
     }
@@ -178,4 +194,3 @@ void SMedical3DCamera::resetAxialView()
 //------------------------------------------------------------------------------
 
 } //namespace visuVTKAdaptor
-

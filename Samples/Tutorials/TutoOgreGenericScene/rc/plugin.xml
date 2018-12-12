@@ -1,0 +1,225 @@
+<plugin id="TutoOgreGenericScene" version="@PROJECT_VERSION@">
+    <requirement id="dataReg" />
+    <requirement id="servicesReg" />
+    <requirement id="visuOgreQt" />
+
+    <extension implements="::fwServices::registry::AppConfig">
+        <id>TutoOgreGenericScene</id>
+        <config>
+            <object uid="image" type="::fwData::Image" />
+            <object uid="mesh" type="::fwData::Mesh" />
+            <object uid="material" type="::fwData::Material" />
+            <object uid="texture" type="::fwData::Image" />
+            <object uid="cameraTF" type="::fwData::TransformationMatrix3D" />
+
+            <service uid="mainFrame" type="::gui::frame::SDefaultFrame">
+                <gui>
+                    <frame>
+                        <name>TutoOgreGenericScene</name>
+                        <icon>TutoOgreGenericScene-@PROJECT_VERSION@/tuto.ico</icon>
+                        <minSize width="1024" height="768" />
+                    </frame>
+                    <menuBar/>
+                </gui>
+                <registry>
+                    <menuBar sid="menuBar" start="yes" />
+                    <view sid="mainView" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="menuBar" type="::gui::aspect::SDefaultMenuBar">
+                <gui>
+                    <layout>
+                        <menu name="File" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menu sid="menu" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="menu" type="::gui::aspect::SDefaultMenu">
+                <gui>
+                    <layout>
+                        <menuItem name="Open image" shortcut="Ctrl+I" />
+                        <menuItem name="Open mesh" shortcut="Ctrl+M" />
+                        <menuItem name="Open texture" shortcut="Ctrl+T" />
+                        <menuItem name="Render to texture" shortcut="Ctrl+R" />
+                        <menuItem name="Show axis" shortcut="Ctrl+A" />
+                        <separator/>
+                        <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="actionOpenImage" start="yes" />
+                    <menuItem sid="actionOpenMesh" start="yes" />
+                    <menuItem sid="actionOpenTexture" start="yes" />
+                    <menuItem sid="actionRenderToTexture" start="yes" />
+                    <menuItem sid="actionShowAxis" start="yes" />
+                    <menuItem sid="actionQuit" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="actionOpenImage" type="::gui::action::SStarter">
+                <start uid="imageReader" />
+            </service>
+
+            <service uid="actionOpenMesh" type="::gui::action::SStarter">
+                <start uid="meshReader" />
+            </service>
+
+            <service uid="actionOpenTexture" type="::gui::action::SStarter">
+                <start uid="textureReader" />
+            </service>
+
+            <service uid="actionShowAxis" type="::gui::action::SStarter">
+                <start_or_stop uid="axisAdaptor" />
+            </service>
+
+            <service uid="actionRenderToTexture" type="::gui::action::SStarter">
+                <start_only uid="offscreenScene" />
+                <start_only uid="meshOffscreenAdaptor" />
+            </service>
+
+            <service uid="actionQuit" type="::gui::action::SQuit" />
+            <service uid="mainView" type="::gui::view::SDefaultView">
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="vertical" />
+                        <view proportion="1" />
+                        <view proportion="0" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="genericSceneOgre" start="yes" />
+                    <view sid="multiViewBottom" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="multiViewBottom" type="::gui::view::SDefaultView">
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="vertical" />
+                        <view proportion="1" />
+                        <view proportion="1" />
+                        <view proportion="1" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="sliderIndexEditor" start="yes" />
+                    <view sid="windowLevel" start="yes" />
+                    <view sid="transparencyEditor" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="imageReader" type="::uiIO::editor::SIOSelector">
+                <inout key="data" uid="image" />
+                <type mode="reader" />
+            </service>
+
+            <service uid="sliderIndexEditor" type="::uiImageQt::SliceIndexPositionEditor" autoConnect="yes">
+                <inout key="image" uid="image" />
+                <sliceIndex>Sagittal</sliceIndex>
+            </service>
+
+            <service uid="windowLevel" type="::uiImageQt::WindowLevel" autoConnect="yes">
+                <inout key="image" uid="image" />
+            </service>
+
+            <service uid="transparencyEditor" type="::uiImageQt::ImageTransparency" autoConnect="yes">
+                <inout key="image" uid="image" />
+            </service>
+
+            <service uid="meshReader" type="::uiIO::editor::SIOSelector">
+                <inout key="data" uid="mesh" />
+                <type mode="reader" />
+            </service>
+
+            <service uid="textureReader" type="::uiIO::editor::SIOSelector">
+                <inout key="data" uid="texture" />
+                <type mode="reader" />
+            </service>
+
+            <!-- ####################################    Begin Generic Scene ######################################### -->
+            <service uid="genericSceneOgre" type="::fwRenderOgre::SRender">
+                <scene>
+                    <background topColor="#DDDDDD" bottomColor="#43958D" topScale="0.7" bottomScale="1.0" />
+                    <layer id="default" depth="1"/>
+                    <adaptor uid="interactorAdaptor" />
+                    <adaptor uid="cameraAdaptor" />
+                    <adaptor uid="meshAdaptor" />
+                    <adaptor uid="materialAdaptor" />
+                    <adaptor uid="negato3DAdaptor" />
+                    <adaptor uid="textureAdaptor" />
+                    <adaptor uid="axisAdaptor" />
+                </scene>
+            </service>
+
+            <service uid="interactorAdaptor" type="::visuOgreAdaptor::SInteractorStyle">
+                <config layer="default" movement="Trackball" />
+            </service>
+
+            <service uid="cameraAdaptor" type="::visuOgreAdaptor::SCamera" autoConnect="yes">
+                <inout key="transform" uid="cameraTF" />
+                <config layer="default" />
+            </service>
+
+            <service uid="meshAdaptor" type="::visuOgreAdaptor::SMesh" autoConnect="yes">
+                <inout key="mesh" uid="mesh" />
+                <config layer="default" materialName="texMaterial" />
+            </service>
+
+            <service uid="materialAdaptor" type="::visuOgreAdaptor::SMaterial">
+                <inout key="material" uid="material" />
+                <config layer="default" materialName="texMaterial" textureName="meshTexture" />
+            </service>
+
+            <service uid="negato3DAdaptor" type="::visuOgreAdaptor::SNegato3D">
+                <inout key="image" uid="image" autoConnect="yes" />
+                <config layer="default" opacity="opacityFloatUID" />
+            </service>
+
+            <service uid="textureAdaptor" type="::visuOgreAdaptor::STexture" autoConnect="yes">
+                <in key="image" uid="texture" />
+                <config layer="default" textureName="meshTexture" filtering="linear" wrapping="repeat" />
+            </service>
+
+            <service uid="axisAdaptor" type="::visuOgreAdaptor::SAxis" >
+                <config layer="default" length="10"/>
+            </service>
+
+            <!-- ##################################### End Generic Scene ########################################### -->
+
+            <!-- ################################### Begin offscreen scene ######################################### -->
+            <service uid="offscreenScene" type="::fwRenderOgre::SRender">
+                <inout key="offScreen" uid="texture" />
+                <scene width="1920" height="1080">
+                    <background topColor="#0000ff" bottomColor="#ff0000" topScale="0.7" bottomScale="1.0" />
+                    <layer id="default" depth="1" />
+                    <adaptor uid="meshOffscreenAdaptor" />
+                </scene>
+            </service>
+
+            <service uid="meshOffscreenAdaptor" type="::visuOgreAdaptor::SMesh" autoConnect="yes">
+                <inout key="mesh" uid="mesh" />
+                <config layer="default" />
+            </service>
+
+
+            <!-- ##################################### End offscreen Scene ######################################### -->
+
+            <start uid="mainFrame" />
+            <start uid="imageReader" />
+
+            <!-- Ogre scene 'genericSceneOgre' -->
+            <start uid="interactorAdaptor" />
+            <start uid="cameraAdaptor" />
+            <start uid="textureAdaptor" />
+            <start uid="materialAdaptor" />
+            <start uid="meshAdaptor" />
+            <start uid="negato3DAdaptor" />
+            <update uid="actionShowAxis" />
+
+        </config>
+    </extension>
+</plugin>

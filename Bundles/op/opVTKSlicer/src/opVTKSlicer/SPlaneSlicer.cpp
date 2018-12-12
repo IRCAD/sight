@@ -1,8 +1,24 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2017-2018 IRCAD France
+ * Copyright (C) 2017-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #include "opVTKSlicer/SPlaneSlicer.hpp"
 
@@ -41,7 +57,7 @@ static const ::fwCom::Slots::SlotKeyType s_UPDATE_DEFAULT_VALUE_SLOT = "updateDe
 //------------------------------------------------------------------------------
 
 SPlaneSlicer::SPlaneSlicer() noexcept :
-    m_orientation(::fwDataTools::helper::MedicalImageAdaptor::Orientation::Z_AXIS),
+    m_orientation(::fwDataTools::helper::MedicalImage::Orientation::Z_AXIS),
     m_reslicer(vtkSmartPointer<vtkImageReslice>::New())
 {
     newSlot(s_UPDATE_SLICE_TYPE_SLOT, &SPlaneSlicer::updateSliceOrientation, this);
@@ -118,15 +134,15 @@ void SPlaneSlicer::configuring()
 
     if(orientation == "axial")
     {
-        m_orientation = ::fwDataTools::helper::MedicalImageAdaptor::Orientation::Z_AXIS;
+        m_orientation = ::fwDataTools::helper::MedicalImage::Orientation::Z_AXIS;
     }
     else if(orientation == "sagittal")
     {
-        m_orientation = ::fwDataTools::helper::MedicalImageAdaptor::Orientation::X_AXIS;
+        m_orientation = ::fwDataTools::helper::MedicalImage::Orientation::X_AXIS;
     }
     else if(orientation == "frontal")
     {
-        m_orientation = ::fwDataTools::helper::MedicalImageAdaptor::Orientation::Y_AXIS;
+        m_orientation = ::fwDataTools::helper::MedicalImage::Orientation::Y_AXIS;
     }
     else
     {
@@ -171,17 +187,17 @@ void SPlaneSlicer::setReslicerExtent()
 
     switch (m_orientation)
     {
-        case ::fwDataTools::helper::MedicalImageAdaptor::Orientation::X_AXIS:
+        case ::fwDataTools::helper::MedicalImage::Orientation::X_AXIS:
             m_reslicer->SetOutputExtent(0, intSize[1], 0, intSize[2], 0, 0);
             m_reslicer->SetOutputOrigin(origin[1], origin[2], origin[0]);
             m_reslicer->SetOutputSpacing(spacing[1], spacing[2], spacing[0]);
             break;
-        case ::fwDataTools::helper::MedicalImageAdaptor::Orientation::Y_AXIS:
+        case ::fwDataTools::helper::MedicalImage::Orientation::Y_AXIS:
             m_reslicer->SetOutputExtent(0, intSize[0], 0, intSize[2], 0, 0);
             m_reslicer->SetOutputOrigin(origin[0], origin[2], origin[1]);
             m_reslicer->SetOutputSpacing(spacing[0], spacing[2], spacing[1]);
             break;
-        case ::fwDataTools::helper::MedicalImageAdaptor::Orientation::Z_AXIS:
+        case ::fwDataTools::helper::MedicalImage::Orientation::Z_AXIS:
             m_reslicer->SetOutputExtent(0, intSize[0], 0, intSize[1], 0, 0);
             m_reslicer->SetOutputOrigin(origin[0], origin[1], origin[2]);
             m_reslicer->SetOutputSpacing(spacing[0], spacing[1], spacing[2]);
@@ -204,7 +220,7 @@ void SPlaneSlicer::setReslicerAxes()
     // permutate axes.
     switch (m_orientation)
     {
-        case ::fwDataTools::helper::MedicalImageAdaptor::Orientation::X_AXIS:
+        case ::fwDataTools::helper::MedicalImage::Orientation::X_AXIS:
             // permutate X with Y and Y with Z
             for(std::uint8_t i = 0; i < 4; ++i)
             {
@@ -216,7 +232,7 @@ void SPlaneSlicer::setReslicerAxes()
                 axesMatrix->SetElement(i, 2, x);
             }
             break;
-        case ::fwDataTools::helper::MedicalImageAdaptor::Orientation::Y_AXIS:
+        case ::fwDataTools::helper::MedicalImage::Orientation::Y_AXIS:
             // permutate Y with Z
             for(std::uint8_t i = 0; i < 4; ++i)
             {
@@ -226,7 +242,7 @@ void SPlaneSlicer::setReslicerAxes()
                 axesMatrix->SetElement(i, 2, y);
             }
             break;
-        case ::fwDataTools::helper::MedicalImageAdaptor::Orientation::Z_AXIS: break; // Nothing to do.
+        case ::fwDataTools::helper::MedicalImage::Orientation::Z_AXIS: break; // Nothing to do.
     }
 
     m_reslicer->SetResliceAxes(axesMatrix);
@@ -241,13 +257,13 @@ void SPlaneSlicer::applySliceTranslation(vtkSmartPointer<vtkMatrix4x4> vtkMat) c
     ::fwData::Object::sptr index;
     switch (m_orientation)
     {
-        case ::fwDataTools::helper::MedicalImageAdaptor::Orientation::X_AXIS:
+        case ::fwDataTools::helper::MedicalImage::Orientation::X_AXIS:
             index = image->getField(::fwDataTools::fieldHelper::Image::m_sagittalSliceIndexId);
             break;
-        case ::fwDataTools::helper::MedicalImageAdaptor::Orientation::Y_AXIS:
+        case ::fwDataTools::helper::MedicalImage::Orientation::Y_AXIS:
             index = image->getField(::fwDataTools::fieldHelper::Image::m_frontalSliceIndexId);
             break;
-        case ::fwDataTools::helper::MedicalImageAdaptor::Orientation::Z_AXIS:
+        case ::fwDataTools::helper::MedicalImage::Orientation::Z_AXIS:
             index = image->getField(::fwDataTools::fieldHelper::Image::m_axialSliceIndexId);
             break;
     }
@@ -274,11 +290,11 @@ void SPlaneSlicer::updateSliceOrientation(int from, int to)
 {
     if( to == static_cast< int > ( m_orientation ) )
     {
-        m_orientation = static_cast< ::fwDataTools::helper::MedicalImageAdaptor::Orientation > ( from );
+        m_orientation = static_cast< ::fwDataTools::helper::MedicalImage::Orientation > ( from );
     }
     else if(from == static_cast<int>(m_orientation))
     {
-        m_orientation = static_cast< ::fwDataTools::helper::MedicalImageAdaptor::Orientation >( to );
+        m_orientation = static_cast< ::fwDataTools::helper::MedicalImage::Orientation >( to );
     }
 
     this->updating();

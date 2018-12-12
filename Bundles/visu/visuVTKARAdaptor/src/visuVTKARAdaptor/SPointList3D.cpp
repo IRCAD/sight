@@ -1,10 +1,28 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #include "visuVTKARAdaptor/SPointList3D.hpp"
+
+#include <fwCom/Slots.hxx>
 
 #include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/Point.hpp>
@@ -28,6 +46,8 @@ fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKARAdaptor::SPointList
 namespace visuVTKARAdaptor
 {
 
+const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT = "updateVisibility";
+
 static const ::fwServices::IService::KeyType s_POINTLIST_IN = "pointList";
 
 //------------------------------------------------------------------------------
@@ -35,6 +55,7 @@ static const ::fwServices::IService::KeyType s_POINTLIST_IN = "pointList";
 SPointList3D::SPointList3D() noexcept :
     m_radius(3.)
 {
+    newSlot(s_UPDATE_VISIBILITY_SLOT, &SPointList3D::updateVisibility, this);
 }
 
 //------------------------------------------------------------------------------
@@ -84,20 +105,20 @@ void SPointList3D::starting()
     vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
     mapper->SetInputConnection(glyph3D->GetOutputPort());
 
-    vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
-    actor->SetMapper(mapper);
-    actor->GetProperty()->SetColor(static_cast<double>(m_ptColor->red()),
-                                   static_cast<double>(m_ptColor->green()),
-                                   static_cast<double>(m_ptColor->blue()));
+    m_actor = vtkSmartPointer<vtkActor>::New();
+    m_actor->SetMapper(mapper);
+    m_actor->GetProperty()->SetColor(static_cast<double>(m_ptColor->red()),
+                                     static_cast<double>(m_ptColor->green()),
+                                     static_cast<double>(m_ptColor->blue()));
 
-    actor->GetProperty()->SetOpacity(static_cast<double>(m_ptColor->alpha()));
+    m_actor->GetProperty()->SetOpacity(static_cast<double>(m_ptColor->alpha()));
 
     if (!this->getTransformId().empty())
     {
-        actor->SetUserTransform(this->getTransform());
+        m_actor->SetUserTransform(this->getTransform());
     }
 
-    this->addToRenderer(actor);
+    this->addToRenderer(m_actor);
 
     this->updating();
 }
@@ -138,6 +159,15 @@ void SPointList3D::swapping()
 void SPointList3D::stopping()
 {
     this->removeAllPropFromRenderer();
+}
+
+//------------------------------------------------------------------------------
+
+void SPointList3D::updateVisibility(bool isVisible)
+{
+    m_actor->SetVisibility(isVisible);
+    this->setVtkPipelineModified();
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------

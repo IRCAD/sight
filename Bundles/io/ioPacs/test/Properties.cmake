@@ -10,7 +10,10 @@ set( DEPENDENCIES
 set( REQUIREMENTS
     dataReg
     servicesReg
+    gui
     ioPacs
     )
 
-set(CPPUNITTEST_OPTIONS BUNDLE ioPacs WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+set( CONAN_DEPS
+    cppunit/1.14.0@sight/stable
+)

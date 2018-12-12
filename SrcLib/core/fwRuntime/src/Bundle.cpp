@@ -1,8 +1,24 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2018.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #include "fwRuntime/Bundle.hpp"
 
@@ -62,15 +78,16 @@ Bundle::Bundle( const ::boost::filesystem::path& location,
     // Post-condition.
     SLM_ASSERT( "Invalid bundle location.",  m_resourcesLocation.is_complete() == true );
 
-    // Starting from FW4SPL 13.0, the plugin.xml is now likely to be separated from the libraries in the build/install
-    std::string strLocation       = location.string();
-    const std::string strRCPrefix = BUNDLE_RC_PREFIX;
-    const auto itBundle           = strLocation.find(strRCPrefix);
+    // Starting from Sight 13.0, the plugin.xml is now likely to be separated from the libraries in the build/install
+    std::string strLocation = location.string();
+    ::boost::filesystem::path strRCPrefix = BUNDLE_RC_PREFIX;
+    strRCPrefix                           = strRCPrefix.normalize();
+    const auto itBundle = strLocation.find(strRCPrefix.string());
     if(itBundle != std::string::npos)
     {
-        strLocation.replace(itBundle, strRCPrefix.length(), std::string(BUNDLE_LIB_PREFIX));
+        strLocation.replace(itBundle, strRCPrefix.string().length(), std::string(BUNDLE_LIB_PREFIX));
     }
-    m_libraryLocation = ::boost::filesystem::path(strLocation);
+    m_libraryLocation = ::boost::filesystem::path(strLocation).normalize();
 }
 
 //------------------------------------------------------------------------------
@@ -443,22 +460,25 @@ void Bundle::startPlugin()
         throw RuntimeException( getBundleStr(m_identifier, m_version) + ": unable to create a plugin instance." );
     }
 
-    SLM_TRACE("Starting " + getBundleStr(m_identifier, m_version) + " Bundle's plugin.");
-    // Stores and start the plugin.
-    try
+    if(::fwRuntime::profile::getCurrentProfile())
     {
-        SLM_TRACE("Register stopper for " + getBundleStr(m_identifier, m_version) + " Bundle's plugin.");
-        ::fwRuntime::profile::getCurrentProfile()->add(
-            SPTR(profile::Stopper) (new profile::Stopper(this->getIdentifier(), this->getVersion())));
-        m_plugin = plugin;
-        plugin->start();
-        ::fwRuntime::profile::getCurrentProfile()->add(
-            SPTR(profile::Initializer) (new profile::Initializer(this->getIdentifier(), this->getVersion())) );
-        m_started = true;
-    }
-    catch( std::exception& e )
-    {
-        throw RuntimeException( getBundleStr(m_identifier, m_version) + ": start plugin error : " + e.what() );
+        SLM_TRACE("Starting " + getBundleStr(m_identifier, m_version) + " Bundle's plugin.");
+        // Stores and start the plugin.
+        try
+        {
+            SLM_TRACE("Register stopper for " + getBundleStr(m_identifier, m_version) + " Bundle's plugin.");
+            ::fwRuntime::profile::getCurrentProfile()->add(
+                SPTR(profile::Stopper) (new profile::Stopper(this->getIdentifier(), this->getVersion())));
+            m_plugin = plugin;
+            m_plugin->start();
+            ::fwRuntime::profile::getCurrentProfile()->add(
+                SPTR(profile::Initializer) (new profile::Initializer(this->getIdentifier(), this->getVersion())) );
+            m_started = true;
+        }
+        catch( std::exception& e )
+        {
+            throw RuntimeException( getBundleStr(m_identifier, m_version) + ": start plugin error : " + e.what() );
+        }
     }
 }
 

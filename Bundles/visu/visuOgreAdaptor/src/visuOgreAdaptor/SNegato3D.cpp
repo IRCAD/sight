@@ -1,8 +1,24 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2018.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2014-2018 IRCAD France
+ * Copyright (C) 2014-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #include "visuOgreAdaptor/SNegato3D.hpp"
 
@@ -13,6 +29,8 @@
 #include <fwData/Boolean.hpp>
 #include <fwData/Image.hpp>
 #include <fwData/Integer.hpp>
+#include <fwData/mt/ObjectReadLock.hpp>
+#include <fwData/mt/ObjectWriteLock.hpp>
 
 #include <fwDataTools/fieldHelper/Image.hpp>
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
@@ -36,11 +54,15 @@ const ::fwCom::Slots::SlotKeyType SNegato3D::s_SLICETYPE_SLOT         = "sliceTy
 const ::fwCom::Slots::SlotKeyType SNegato3D::s_SLICEINDEX_SLOT        = "sliceIndex";
 const ::fwCom::Slots::SlotKeyType SNegato3D::s_UPDATE_OPACITY_SLOT    = "updateOpacity";
 const ::fwCom::Slots::SlotKeyType SNegato3D::s_UPDATE_VISIBILITY_SLOT = "updateVisibility";
+const ::fwCom::Slots::SlotKeyType SNegato3D::s_SET_VISIBILITY_SLOT    = "setVisibility";
 
 static const std::string s_IMAGE_INOUT = "image";
 static const std::string s_TF_INOUT    = "tf";
 
 static const std::string s_ENABLE_APLHA_CONFIG = "tfalpha";
+
+static const std::string TRANSPARENCY_FIELD = "TRANSPARENCY";
+static const std::string VISIBILITY_FIELD   = "VISIBILITY";
 
 //------------------------------------------------------------------------------
 
@@ -48,15 +70,15 @@ SNegato3D::SNegato3D() noexcept :
     m_autoResetCamera(true),
     m_activePlane(nullptr),
     m_negatoSceneNode(nullptr),
-    m_filtering( ::fwRenderOgre::Plane::FilteringEnumType::NONE )
+    m_filtering( ::fwRenderOgre::Plane::FilteringEnumType::NONE ),
+    m_helperTF(std::bind(&SNegato3D::updateTF, this))
 {
-    this->installTFSlots(this);
-
     newSlot(s_NEWIMAGE_SLOT, &SNegato3D::newImage, this);
     newSlot(s_SLICETYPE_SLOT, &SNegato3D::changeSliceType, this);
     newSlot(s_SLICEINDEX_SLOT, &SNegato3D::changeSliceIndex, this);
     newSlot(s_UPDATE_OPACITY_SLOT, &SNegato3D::setPlanesOpacity, this);
     newSlot(s_UPDATE_VISIBILITY_SLOT, &SNegato3D::setPlanesOpacity, this);
+    newSlot(s_SET_VISIBILITY_SLOT, &SNegato3D::setVisibility, this);
 }
 
 //------------------------------------------------------------------------------
@@ -82,15 +104,15 @@ void SNegato3D::configuring()
 
         if(orientation == "axial")
         {
-            m_orientation = Z_AXIS;
+            m_orientation = OrientationMode::Z_AXIS;
         }
         else if(orientation == "frontal")
         {
-            m_orientation = Y_AXIS;
+            m_orientation = OrientationMode::Y_AXIS;
         }
         else if(orientation == "sagittal")
         {
-            m_orientation = X_AXIS;
+            m_orientation = OrientationMode::X_AXIS;
         }
     }
     if(config.count("autoresetcamera"))
@@ -128,13 +150,11 @@ void SNegato3D::starting()
     this->initialize();
 
     ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
-    this->setTransferFunction(tf);
 
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
 
-    this->updateImageInfos(image);
-    this->createTransferFunction(image);
+    m_helperTF.setOrCreateTF(tf, image);
 
     // 3D source texture instantiation
     m_3DOgreTexture = ::Ogre::dynamic_pointer_cast< ::Ogre::Texture >(
@@ -170,9 +190,7 @@ void SNegato3D::starting()
         this->getRenderService()->resetCameraCoordinates(m_layerID);
     }
 
-    this->installTFConnections();
-
-    bool isValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(this->getImage());
+    bool isValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image);
     if (isValid)
     {
         this->newImage();
@@ -183,7 +201,7 @@ void SNegato3D::starting()
 
 void SNegato3D::stopping()
 {
-    this->removeTFConnections();
+    m_helperTF.removeTFConnections();
 
     delete m_planes[0];
     delete m_planes[1];
@@ -209,12 +227,13 @@ void SNegato3D::swapping(const KeyType& key)
 {
     if (key == s_TF_INOUT)
     {
-        ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction >(s_TF_INOUT);
-        ::fwData::Image::sptr image         = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+        ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
         SLM_ASSERT("Missing image", image);
 
-        this->setOrCreateTF(tf, image);
-        this->updateTFPoints();
+        ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
+        m_helperTF.setOrCreateTF(tf, image);
+
+        this->updateTF();
     }
 }
 
@@ -245,18 +264,22 @@ void SNegato3D::newImage()
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
 
-    // Retrieves or creates the slice index fields
-    this->updateImageInfos(image);
-
     ::fwRenderOgre::Utils::convertImageForNegato(m_3DOgreTexture.get(), image);
 
     createPlanes(image->getSpacing(), image->getOrigin());
 
     // Update Slice
-    this->changeSliceIndex(m_axialIndex->value(), m_frontalIndex->value(), m_sagittalIndex->value());
+    int axialIndex =
+        image->getField< ::fwData::Integer >(::fwDataTools::fieldHelper::Image::m_axialSliceIndexId)->getValue();
+    int frontalIndex =
+        image->getField< ::fwData::Integer >(::fwDataTools::fieldHelper::Image::m_frontalSliceIndexId)->getValue();
+    int sagittalIndex =
+        image->getField< ::fwData::Integer >(::fwDataTools::fieldHelper::Image::m_sagittalSliceIndexId)->getValue();
+
+    this->changeSliceIndex(axialIndex, frontalIndex, sagittalIndex);
 
     // Update tranfer function in Gpu programs
-    this->updateTFPoints();
+    this->updateTF();
 
     if (m_autoResetCamera)
     {
@@ -278,10 +301,7 @@ void SNegato3D::changeSliceType(int /*_from*/, int _to)
     this->getRenderService()->makeCurrent();
 
     // Update TF
-    this->updateTFWindowing(this->getTransferFunction()->getWindow(), this->getTransferFunction()->getLevel());
-
-    // Update threshold if necessary
-    this->updateTFPoints();
+    this->updateTF();
 
     this->requestRender();
 }
@@ -323,30 +343,21 @@ void SNegato3D::changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagitt
 
 //-----------------------------------------------------------------------------
 
-void SNegato3D::updateTFPoints()
+void SNegato3D::updateTF()
 {
-    ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
-
-    m_gpuTF->updateTexture(tf);
-
-    for(int i(0); i < 3; ++i)
+    const ::fwData::TransferFunction::csptr tf = m_helperTF.getTransferFunction();
     {
-        m_planes[i]->switchThresholding(tf->getIsClamped());
+        const ::fwData::mt::ObjectReadLock tfLock(tf);
+        m_gpuTF->updateTexture(tf);
 
-        // Sends the TF texture to the negato-related passes
-        m_planes[i]->setTFData(*m_gpuTF.get());
+        for(int i(0); i < 3; ++i)
+        {
+            m_planes[i]->switchThresholding(tf->getIsClamped());
+
+            // Sends the TF texture to the negato-related passes
+            m_planes[i]->setTFData(*m_gpuTF.get());
+        }
     }
-
-    this->requestRender();
-}
-
-//-----------------------------------------------------------------------------
-
-void SNegato3D::updateTFWindowing(double /*window*/, double /*level*/)
-{
-    ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
-
-    m_gpuTF->updateTexture(tf);
 
     this->requestRender();
 }
@@ -357,9 +368,6 @@ void SNegato3D::setPlanesOpacity()
 {
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
-
-    const std::string TRANSPARENCY_FIELD = "TRANSPARENCY";
-    const std::string VISIBILITY_FIELD   = "VISIBILITY";
 
     ::fwData::Integer::sptr transparency = image->setDefaultField(TRANSPARENCY_FIELD, ::fwData::Integer::New(0));
     ::fwData::Boolean::sptr isVisible    = image->setDefaultField(VISIBILITY_FIELD, ::fwData::Boolean::New(true));
@@ -379,6 +387,26 @@ void SNegato3D::setPlanesOpacity()
     }
 
     this->requestRender();
+}
+
+//------------------------------------------------------------------------------
+
+void SNegato3D::setVisibility(bool visibility)
+{
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
+
+    image->setField(VISIBILITY_FIELD, ::fwData::Boolean::New(visibility));
+
+    this->setPlanesOpacity();
+
+    using VisModSigType = ::fwData::Image::VisibilityModifiedSignalType;
+    auto visUpdateSig = image->signal<VisModSigType>( ::fwData::Image::s_VISIBILITY_MODIFIED_SIG );
+
+    {
+        ::fwCom::Connection::Blocker(visUpdateSig->getConnection(this->slot(s_UPDATE_VISIBILITY_SLOT)));
+        visUpdateSig->asyncEmit(visibility);
+    }
 }
 
 //------------------------------------------------------------------------------

@@ -1,8 +1,24 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #include "visuVTKAdaptor/SNegatoSlicingInteractor.hpp"
 
@@ -114,7 +130,7 @@ public:
 
         OSLM_TRACE(
             "vtkEvent: MiddleButtonPressEvent: picking " << pickPoint[0] << ", " << pickPoint[1] << ", " <<
-            pickPoint[2]);
+                pickPoint[2]);
 
         if ( this->Pick(pickPoint, pickedPoint) )
         {
@@ -209,27 +225,27 @@ public:
                 }
                 if ( std::string(keySym) == "T" || std::string(keySym) == "t" )
                 {
-                    m_adaptor->pushSlice(-1, ::fwDataTools::helper::MedicalImageAdaptor::Z_AXIS);
+                    m_adaptor->pushSlice(-1, ::fwDataTools::helper::MedicalImage::Z_AXIS);
                 }
                 else if (std::string(keySym) == "Y" || std::string(keySym) == "y" )
                 {
-                    m_adaptor->pushSlice(1, ::fwDataTools::helper::MedicalImageAdaptor::Z_AXIS);
+                    m_adaptor->pushSlice(1, ::fwDataTools::helper::MedicalImage::Z_AXIS);
                 }
                 else if (std::string(keySym) == "G" || std::string(keySym) == "g" )
                 {
-                    m_adaptor->pushSlice(-1, ::fwDataTools::helper::MedicalImageAdaptor::Y_AXIS);
+                    m_adaptor->pushSlice(-1, ::fwDataTools::helper::MedicalImage::Y_AXIS);
                 }
                 else if (std::string(keySym) == "H" || std::string(keySym) == "h" )
                 {
-                    m_adaptor->pushSlice(1, ::fwDataTools::helper::MedicalImageAdaptor::Y_AXIS);
+                    m_adaptor->pushSlice(1, ::fwDataTools::helper::MedicalImage::Y_AXIS);
                 }
                 else if (std::string(keySym) == "B" || std::string(keySym) == "b" )
                 {
-                    m_adaptor->pushSlice(-1, ::fwDataTools::helper::MedicalImageAdaptor::X_AXIS);
+                    m_adaptor->pushSlice(-1, ::fwDataTools::helper::MedicalImage::X_AXIS);
                 }
                 else if (std::string(keySym) == "N" || std::string(keySym) == "n" )
                 {
-                    m_adaptor->pushSlice(1, ::fwDataTools::helper::MedicalImageAdaptor::X_AXIS);
+                    m_adaptor->pushSlice(1, ::fwDataTools::helper::MedicalImage::X_AXIS);
                 }
                 else if (std::string(keySym) == "space" && !m_mouseMoveObserved)
                 {

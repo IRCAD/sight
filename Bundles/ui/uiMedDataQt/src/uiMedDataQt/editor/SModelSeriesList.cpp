@@ -1,8 +1,24 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2018.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #include "uiMedDataQt/editor/SModelSeriesList.hpp"
 
@@ -133,13 +149,14 @@ const ::fwCom::Slots::SlotKeyType SModelSeriesList::s_SHOW_RECONSTRUCTIONS_SLOT 
 const ::fwServices::IService::KeyType s_MODEL_SERIES_INOUT = "modelSeries";
 
 SModelSeriesList::SModelSeriesList() noexcept :
-    m_tree(new QTreeWidget()),
     m_enableHideAll(true)
 {
     m_sigReconstructionSelected = newSignal< ReconstructionSelectedSignalType >( s_RECONSTRUCTION_SELECTED_SIG );
     m_sigEmptiedSelection       = newSignal< EmptiedSelectionSignalType >( s_EMPTIED_SELECTION_SIG );
 
     newSlot(s_SHOW_RECONSTRUCTIONS_SLOT, &SModelSeriesList::showReconstructions, this);
+
+    this->registerObject("modelSeries", ::fwServices::IService::AccessType::INOUT, true);
 }
 
 //------------------------------------------------------------------------------
@@ -164,6 +181,11 @@ void SModelSeriesList::starting()
     QVBoxLayout* layout       = new QVBoxLayout;
     QHBoxLayout* layoutButton = new QHBoxLayout;
     layout->addLayout(layoutButton);
+
+    m_tree = new QTreeWidget();
+
+    m_tree->setColumnCount(m_headers.size());
+    m_tree->setHeaderLabels(m_headers);
 
     if (m_enableHideAll)
     {
@@ -233,8 +255,7 @@ void SModelSeriesList::configuring()
     if(columns)
     {
         ::fwRuntime::ConfigurationElement::Container::const_iterator cIt = columns->begin();
-        m_tree->setColumnCount(static_cast<int>(columns->size()));
-        QStringList header;
+        m_headers.clear();
         for(; cIt != columns->end(); cIt++)
         {
             ValueView* view;
@@ -249,9 +270,8 @@ void SModelSeriesList::configuring()
             }
 
             m_displayedInfo.insert(DisplayedInformation::value_type((*cIt)->getValue(), view));
-            header << QString::fromStdString((*cIt)->getName());
+            m_headers << QString::fromStdString((*cIt)->getName());
         }
-        m_tree->setHeaderLabels(header);
     }
 }
 
@@ -286,11 +306,7 @@ void SModelSeriesList::updateReconstructions()
     SLM_ASSERT("container not instanced", container);
 
     ::fwMedData::ModelSeries::sptr modelSeries = this->getInOut< ::fwMedData::ModelSeries >(s_MODEL_SERIES_INOUT);
-    if (!modelSeries)
-    {
-        FW_DEPRECATED_KEY(s_MODEL_SERIES_INOUT, "inout", "18.0");
-        modelSeries = this->getObject< ::fwMedData::ModelSeries >();
-    }
+    SLM_ASSERT("The inout key '" + s_MODEL_SERIES_INOUT + "' is not defined.", modelSeries);
 
     bool hasReconstructions = !modelSeries->getReconstructionDB().empty();
     container->setEnabled( hasReconstructions );
@@ -311,11 +327,8 @@ void SModelSeriesList::updateReconstructions()
 void SModelSeriesList::fillTree()
 {
     ::fwMedData::ModelSeries::sptr modelSeries = this->getInOut< ::fwMedData::ModelSeries >(s_MODEL_SERIES_INOUT);
-    if (!modelSeries)
-    {
-        FW_DEPRECATED_KEY(s_MODEL_SERIES_INOUT, "inout", "18.0");
-        modelSeries = this->getObject< ::fwMedData::ModelSeries >();
-    }
+    SLM_ASSERT("The inout key '" + s_MODEL_SERIES_INOUT + "' is not defined.", modelSeries);
+
     auto& reconstructions = modelSeries->getReconstructionDB();
 
     if(!m_tree->selectedItems().empty())
@@ -398,11 +411,8 @@ void SModelSeriesList::onShowReconstructions(int state )
     m_tree->setEnabled(!visible);
 
     ::fwMedData::ModelSeries::sptr modelSeries = this->getInOut< ::fwMedData::ModelSeries >(s_MODEL_SERIES_INOUT);
-    if (!modelSeries)
-    {
-        FW_DEPRECATED_KEY(s_MODEL_SERIES_INOUT, "inout", "18.0");
-        modelSeries = this->getObject< ::fwMedData::ModelSeries >();
-    }
+    SLM_ASSERT("The inout key '" + s_MODEL_SERIES_INOUT + "' is not defined.", modelSeries);
+
     {
         ::fwDataTools::helper::Field helper( modelSeries );
         helper.addOrSwap("ShowReconstructions", ::fwData::Boolean::New(state == Qt::Unchecked));
@@ -434,29 +444,13 @@ void SModelSeriesList::showReconstructions(bool show)
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsType SModelSeriesList::getObjSrvConnections() const
-{
-    KeyConnectionsType connections;
-    connections.push_back( std::make_pair( ::fwMedData::ModelSeries::s_MODIFIED_SIG, s_UPDATE_SLOT ) );
-    connections.push_back( std::make_pair( ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG, s_UPDATE_SLOT ) );
-    connections.push_back( std::make_pair( ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG, s_UPDATE_SLOT ) );
-
-    return connections;
-}
-
-//------------------------------------------------------------------------------
-
 ::fwServices::IService::KeyConnectionsMap SModelSeriesList::getAutoConnections() const
 {
     KeyConnectionsMap connections;
 
-    // FIXME hack to support deprecated getObject() with any key
-    if (this->getInOut< ::fwMedData::ModelSeries >(s_MODEL_SERIES_INOUT))
-    {
-        connections.push(s_MODEL_SERIES_INOUT, ::fwMedData::ModelSeries::s_MODIFIED_SIG, s_UPDATE_SLOT);
-        connections.push(s_MODEL_SERIES_INOUT, ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG, s_UPDATE_SLOT);
-        connections.push(s_MODEL_SERIES_INOUT, ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG, s_UPDATE_SLOT);
-    }
+    connections.push(s_MODEL_SERIES_INOUT, ::fwMedData::ModelSeries::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_MODEL_SERIES_INOUT, ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG, s_UPDATE_SLOT);
+    connections.push(s_MODEL_SERIES_INOUT, ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG, s_UPDATE_SLOT);
 
     return connections;
 }

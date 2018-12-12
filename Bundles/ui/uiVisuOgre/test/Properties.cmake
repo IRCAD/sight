@@ -11,4 +11,6 @@ set( REQUIREMENTS
     uiVisuOgre
 )
 
-set(CPPUNITTEST_OPTIONS BUNDLE uiVisuOgre WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+set( CONAN_DEPS
+    qt/5.11.2@sight/stable
+)

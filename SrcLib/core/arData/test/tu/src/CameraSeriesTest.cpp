@@ -1,20 +1,39 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2014-2018 IRCAD France
+ * Copyright (C) 2014-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
-#include <fwTest/helper/compare.hpp>
+#include "CameraSeriesTest.hpp"
 
-#include <arData/CameraSeries.hpp>
 #include <arData/Camera.hpp>
+#include <arData/CameraSeries.hpp>
 
 #include <arDataCamp/Version.hpp>
 
 #include <fwCore/spyLog.hpp>
 
-#include "CameraSeriesTest.hpp"
+#include <fwDataCamp/Version.hpp>
 
+#include <fwMedDataCamp/Version.hpp>
+
+#include <fwTest/helper/compare.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::arData::ut::CameraSeriesTest );
@@ -35,8 +54,19 @@ void CameraSeriesTest::setUp()
 
 void CameraSeriesTest::tearDown()
 {
+    //Hack: force link with arData
+    ::arData::Camera::sptr obj = ::arData::Camera::New();
+    obj->getClassname();
+
+    //Force link with fwDataCamp
+    m_fwDataVersion = ::fwDataCamp::Version::s_CURRENT_VERSION;
+    FwCoreNotUsedMacro(m_fwDataVersion);
+    //Force link with fwMedDataCamp
+    m_fwMedDataVersion = ::fwMedDataCamp::Version::s_CURRENT_VERSION;
+    FwCoreNotUsedMacro(m_fwMedDataVersion);
     //Force link with arDataCamp
-    const int arfVersion = ::arDataCamp::Version::s_CURRENT_VERSION;
+    m_arDataVersion = ::arDataCamp::Version::s_CURRENT_VERSION;
+    FwCoreNotUsedMacro(m_arDataVersion);
 }
 
 //------------------------------------------------------------------------------
@@ -67,9 +97,9 @@ void CameraSeriesTest::tearDown()
 
     // --------------- Extrinsic matrix ----------------------
     ::fwData::TransformationMatrix3D::sptr mat = ::fwData::TransformationMatrix3D::New();
-    for (int i = 0; i<4; ++i)
+    for (int i = 0; i < 4; ++i)
     {
-        for (int j = 0; j<4; ++j)
+        for (int j = 0; j < 4; ++j)
         {
             mat->setCoefficient(i, j, 2*i+j);
         }
@@ -89,9 +119,9 @@ void CameraSeriesTest::cameraTest()
 
     ::fwData::TransformationMatrix3D::sptr identity = ::fwData::TransformationMatrix3D::New();
     ::fwData::TransformationMatrix3D::sptr mat      = ::fwData::TransformationMatrix3D::New();
-    for (int i = 0; i<4; ++i)
+    for (int i = 0; i < 4; ++i)
     {
-        for (int j = 0; j<4; ++j)
+        for (int j = 0; j < 4; ++j)
         {
             mat->setCoefficient(i, j, 2*i+j);
         }

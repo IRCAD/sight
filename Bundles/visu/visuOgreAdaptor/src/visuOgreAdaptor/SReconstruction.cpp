@@ -1,8 +1,24 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2018.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2014-2018 IRCAD France
+ * Copyright (C) 2014-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #include "visuOgreAdaptor/SReconstruction.hpp"
 
@@ -54,9 +70,8 @@ void SReconstruction::configuring()
 
     const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
 
-    // The transform attribute is mandatory in the XML configuration
-    this->setTransformId(config.get<std::string>("transform"));
-
+    this->setTransformId(config.get<std::string>( ::fwRenderOgre::ITransformable::s_TRANSFORM_CONFIG,
+                                                  this->getID() + "_transform"));
     if (config.count("autoresetcamera"))
     {
         m_autoResetCamera = config.get<std::string>("autoresetcamera") == "yes";
@@ -83,7 +98,7 @@ void SReconstruction::createMeshService()
     SLM_TRACE_IF("Mesh is null", !mesh);
     if (mesh)
     {
-        // Creates an Ogre adaptor and associates it with the f4s mesh object
+        // Creates an Ogre adaptor and associates it with the Sight mesh object
         auto meshAdaptor = this->registerService< ::visuOgreAdaptor::SMesh >("::visuOgreAdaptor::SMesh");
         meshAdaptor->registerInOut(mesh, "mesh", true);
 

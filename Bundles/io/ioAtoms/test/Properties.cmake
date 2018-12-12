@@ -3,7 +3,7 @@ set( NAME ioAtomsTest )
 set( VERSION  )
 set( TYPE TEST )
 set( DEPENDENCIES
-    fwCore 
+    fwCore
     fwTest
     fwTools
     fwData
@@ -15,6 +15,9 @@ set( DEPENDENCIES
     fwThread
     fwIO
 )
-set( REQUIREMENTS ioAtoms)
-
-set(CPPUNITTEST_OPTIONS BUNDLE ioAtoms WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+set( REQUIREMENTS
+    dataReg
+    servicesReg
+    gui
+    ioAtoms
+)

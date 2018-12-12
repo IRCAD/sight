@@ -29,6 +29,9 @@
         <object uid="${TF}" type="::fwData::TransferFunction" src="deferred" />
         <object uid="${landmarks}" type="::fwData::Landmarks" src="ref" />
 
+        <object uid="volumeClippingMatrix" type="::fwData::TransformationMatrix3D" />
+        <object uid="identityMatrix" type="::fwData::TransformationMatrix3D" />
+
         <!-- ******************************* UI declaration *********************************** -->
         <service uid="OgreSceneView" type="::gui::view::SDefaultView">
             <gui>
@@ -53,7 +56,12 @@
             <gui>
                 <layout>
                     <menuItem name="Show/Hide vr editor" icon="OgreViewer-@PROJECT_VERSION@/icons/hide-view_horizontal.png" style="check" />
-                    <menuItem name="Show volume" icon="media-0.1/icons/icon-2D.png" style="check" />
+                    <separator/>
+                    <menuItem name="Show volume" icon="media-0.1/icons/icon-VR.png" style="check" />
+                    <menuItem name="Show negato" icon="media-0.1/icons/icon-2D.png" style="check" />
+                    <separator/>
+                    <menuItem name="Show/hide box cropping" icon="media-0.1/icons/icon-box.png" style="check" />
+                    <menuItem name="Reset box cropping" icon="media-0.1/icons/icon-box-reset.png" />
                     <separator/>
                     <editor/>
                     <menuItem name="Play" icon="arMedia-0.1/icons/start-cam.svg" />
@@ -62,12 +70,15 @@
                 </layout>
             </gui>
             <registry>
-                <menuItem sid="action_volumeRenderingEditor" start="yes" />
-                <menuItem sid="action_showVolume" start="yes" />
+                <menuItem sid="actionVolumeRenderingEditor" start="yes" />
+                <menuItem sid="actionShowVolume" start="yes" />
+                <menuItem sid="actionShowNegato" start="yes" />
+                <menuItem sid="actionShowHideBoxWidget" start="yes" />
+                <menuItem sid="actionResetBoxWidget" start="yes" />
                 <editor sid="videoSelector" start="yes" />
-                <menuItem sid="action_startVideo" start="yes" />
-                <menuItem sid="action_pauseVideo" start="yes" />
-                <menuItem sid="action_stopVideo" start="yes" />
+                <menuItem sid="actionStartVideo" start="yes" />
+                <menuItem sid="actionPauseVideo" start="yes" />
+                <menuItem sid="actionStopVideo" start="yes" />
             </registry>
         </service>
 
@@ -99,7 +110,6 @@
 
         <service uid="vrBasicEditor" type="::guiQt::editor::SParameters" >
             <parameters>
-                <param type="bool" name="Widgets" key="widgets" defaultValue="false" />
                 <param type="int" name="Samples" key="sampling" defaultValue="512" min="128" max="8192" />
                 <param type="int" name="Opacity correction" key="opacityCorrection" defaultValue="200" min="1" max="200" />
                 <param type="bool" name="Pre-integration" key="preIntegration" defaultValue="false" />
@@ -122,32 +132,52 @@
         </service>
 
         <!-- ************************************* Actions ************************************ -->
-        <service uid="action_volumeRenderingEditor" type="::gui::action::SModifyLayout">
+        <service uid="actionVolumeRenderingEditor" type="::gui::action::SModifyLayout">
             <config>
                 <show_or_hide sid="volumeRenderingEditorView" />
             </config>
         </service>
 
-        <service uid="action_showVolume" type="::gui::action::SBooleanSlotCaller">
+        <service uid="actionShowVolume" type="::gui::action::SBooleanSlotCaller">
             <slots>
                 <slot>volumeAdaptor/updateVisibility</slot>
             </slots>
             <state active="true" />
         </service>
 
-        <service uid="action_startVideo" type="::gui::action::SSlotCaller">
+        <service uid="actionShowNegato" type="::gui::action::SBooleanSlotCaller">
+            <slots>
+                <slot>negato3DAdaptor/setVisibility</slot>
+            </slots>
+            <state active="true" />
+        </service>
+
+        <service uid="actionShowHideBoxWidget" type="::gui::action::SBooleanSlotCaller">
+            <slots>
+                <slot>volumeAdaptor/toggleWidgets</slot>
+            </slots>
+        </service>
+
+        <service uid="actionResetBoxWidget" type="::gui::action::SSlotCaller">
+            <slots>
+                <slot>resetClippingBox/update</slot>
+                <slot>volumeAdaptor/updateClippingBox</slot>
+            </slots>
+        </service>
+
+        <service uid="actionStartVideo" type="::gui::action::SSlotCaller">
             <slots>
                 <slot>frameGrabber/startCamera</slot>
             </slots>
         </service>
 
-        <service uid="action_pauseVideo" type="::gui::action::SSlotCaller">
+        <service uid="actionPauseVideo" type="::gui::action::SSlotCaller">
             <slots>
                 <slot>frameGrabber/pauseCamera</slot>
             </slots>
         </service>
 
-        <service uid="action_stopVideo" type="::gui::action::SSlotCaller">
+        <service uid="actionStopVideo" type="::gui::action::SSlotCaller">
             <slots>
                 <slot>frameGrabber/stopCamera</slot>
             </slots>
@@ -168,6 +198,7 @@
                 <adaptor uid="volumeAdaptor" />
                 <adaptor uid="pointListAdaptor" />
                 <adaptor uid="landmarkAdaptor" />
+                <adaptor uid="renderStatsAdaptor" />
             </scene>
         </service>
 
@@ -199,6 +230,7 @@
             <inout key="image" uid="${imageUID}" autoConnect="yes" />
             <inout key="tf" uid="${TF}" optional="yes" />
             <inout key="mask" uid="${maskUID}" autoConnect="yes" />
+            <inout key="clippingMatrix" uid="volumeClippingMatrix" autoConnect="yes" />
             <config layer="default" widgets="no" preintegration="no" mode="raytracing" autoresetcamera="yes"/>
         </service>
 
@@ -216,6 +248,10 @@
         <service uid="landmarkAdaptor" type="::visuOgreAdaptor::SLandmarks" autoConnect="yes">
             <in key="landmarks" uid="${landmarks}" />
             <config layer="default" />
+        </service>
+
+        <service uid="renderStatsAdaptor" type="::visuOgreAdaptor::SRenderStats">
+            <config layer="default" color="#ff0000" height="0.02"/>
         </service>
 
         <!-- ********************************* End Generic Scene ******************************* -->
@@ -248,6 +284,11 @@
 
         <service uid="addPointInList" type="::uiVisuOgre::SAddPoint">
             <inout key="pointList" uid="pointList" />
+        </service>
+
+        <service uid="resetClippingBox" type="::ctrlCamp::SCopy" >
+            <in key="source" uid="identityMatrix" />
+            <inout key="target" uid="volumeClippingMatrix" />
         </service>
 
         <connect>
@@ -305,6 +346,11 @@
             <slot>volumeAdaptor/setColorParameter</slot>
         </connect>
 
+        <connect>
+            <signal>${imageUID}/visibilityModified</signal>
+            <slot>actionShowNegato/setIsActive</slot>
+        </connect>
+
         <!-- *************************************** Starts ************************************ -->
         <start uid="OgreSceneView" />
         <start uid="frameGrabber" />
@@ -321,8 +367,10 @@
         <start uid="pointListAdaptor" />
         <start uid="addPointInList" />
         <start uid="landmarkAdaptor" />
+        <start uid="renderStatsAdaptor" />
+        <start uid="resetClippingBox" />
 
-        <update uid="action_volumeRenderingEditor" />
+        <update uid="actionVolumeRenderingEditor" />
 
     </config>
 </extension>

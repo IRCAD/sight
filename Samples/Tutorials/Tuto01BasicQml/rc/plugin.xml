@@ -1,0 +1,7 @@
+<plugin id="Tuto01BasicQml" class="::Tuto01BasicQml::Plugin"  version="@PROJECT_VERSION@" >
+
+    <requirement id="servicesReg" />
+
+    <library name="Tuto01BasicQml" />
+
+</plugin>

@@ -1,8 +1,24 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2018.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2014-2018 IRCAD France
+ * Copyright (C) 2014-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #include "videoCalibration/SMarkerToPoint.hpp"
 
@@ -13,6 +29,7 @@
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hxx>
 
+#include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/Point.hpp>
 #include <fwData/PointList.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
@@ -25,12 +42,17 @@ namespace videoCalibration
 fwServicesRegisterMacro(::fwServices::IController, ::videoCalibration::SMarkerToPoint, ::fwData::PointList);
 
 const ::fwCom::Slots::SlotKeyType SMarkerToPoint::s_ADD_POINT_SLOT = "addPoint";
+const ::fwCom::Slots::SlotKeyType SMarkerToPoint::s_CLEAR_SLOT     = "clear";
+
+const ::fwServices::IService::KeyType SMarkerToPoint::s_MATRIXTL_INPUT  = "matrixTL";
+const ::fwServices::IService::KeyType SMarkerToPoint::s_POINTLIST_INOUT = "pointList";
 
 // ----------------------------------------------------------------------------
 
 SMarkerToPoint::SMarkerToPoint() noexcept
 {
     newSlot( s_ADD_POINT_SLOT, &SMarkerToPoint::addPoint, this );
+    newSlot( s_CLEAR_SLOT, &SMarkerToPoint::clear, this );
 }
 
 // ----------------------------------------------------------------------------
@@ -73,8 +95,8 @@ void SMarkerToPoint::stopping()
 
 void SMarkerToPoint::addPoint()
 {
-    ::arData::MatrixTL::csptr matrixTL = this->getInput< ::arData::MatrixTL >("matrixTL");
-    ::fwData::PointList::sptr pl       = this->getInOut< ::fwData::PointList >("pointList");
+    ::arData::MatrixTL::csptr matrixTL = this->getInput< ::arData::MatrixTL >(s_MATRIXTL_INPUT);
+    ::fwData::PointList::sptr pl       = this->getInOut< ::fwData::PointList >(s_POINTLIST_INOUT);
 
     ::fwData::TransformationMatrix3D::sptr matrix3D = ::fwData::TransformationMatrix3D::New();
 
@@ -111,5 +133,23 @@ void SMarkerToPoint::addPoint()
 }
 
 // ----------------------------------------------------------------------------
+
+void SMarkerToPoint::clear()
+{
+    ::fwData::PointList::sptr pl = this->getInOut< ::fwData::PointList >(s_POINTLIST_INOUT);
+
+    ::fwData::mt::ObjectReadLock lock(pl);
+
+    if (pl && !pl->getPoints().empty())
+    {
+        pl->clear();
+
+        auto sig = pl->signal< ::fwData::PointList::ModifiedSignalType >(::fwData::PointList::s_MODIFIED_SIG);
+        {
+            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+            sig->asyncEmit();
+        }
+    }
+}
 
 } //namespace videoCalibration

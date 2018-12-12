@@ -1,8 +1,24 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2018.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #include "uiReconstructionQt/RepresentationEditor.hpp"
 
@@ -39,6 +55,7 @@ static const ::fwServices::IService::KeyType s_RECONSTRUCTION_INOUT = "reconstru
 
 RepresentationEditor::RepresentationEditor() noexcept
 {
+    this->registerObject(s_RECONSTRUCTION_INOUT, ::fwServices::IService::AccessType::INOUT, true);
 }
 
 //------------------------------------------------------------------------------
@@ -171,12 +188,8 @@ void RepresentationEditor::configuring()
 void RepresentationEditor::updating()
 {
     ::fwData::Reconstruction::sptr reconstruction = this->getInOut< ::fwData::Reconstruction >(s_RECONSTRUCTION_INOUT);
-    if (!reconstruction)
-    {
-        FW_DEPRECATED_KEY(s_RECONSTRUCTION_INOUT, "inout", "18.0");
-        reconstruction = this->getObject< ::fwData::Reconstruction >();
-    }
-    SLM_ASSERT("No Reconstruction!", reconstruction);
+    SLM_ASSERT("The inout key '" + s_RECONSTRUCTION_INOUT + "' is not defined.", reconstruction);
+
     ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
         this->getContainer() );
     QWidget* const container = qtContainer->getQtContainer();
@@ -352,12 +365,7 @@ void RepresentationEditor::refreshNormals()
 void RepresentationEditor::onShowNormals(int state )
 {
     ::fwData::Reconstruction::sptr reconstruction = this->getInOut< ::fwData::Reconstruction >(s_RECONSTRUCTION_INOUT);
-    if (!reconstruction)
-    {
-        FW_DEPRECATED_KEY(s_RECONSTRUCTION_INOUT, "inout", "18.0");
-        reconstruction = this->getObject< ::fwData::Reconstruction >();
-    }
-    SLM_ASSERT("No Reconstruction!", reconstruction);
+    SLM_ASSERT("The inout key '" + s_RECONSTRUCTION_INOUT + "' is not defined.", reconstruction);
 
     switch(state)
     {
@@ -385,12 +393,7 @@ void RepresentationEditor::onShowNormals(int state )
 void RepresentationEditor::notifyMaterial()
 {
     ::fwData::Reconstruction::sptr reconstruction = this->getInOut< ::fwData::Reconstruction >(s_RECONSTRUCTION_INOUT);
-    if (!reconstruction)
-    {
-        FW_DEPRECATED_KEY(s_RECONSTRUCTION_INOUT, "inout", "18.0");
-        reconstruction = this->getObject< ::fwData::Reconstruction >();
-    }
-    SLM_ASSERT("No Reconstruction!", reconstruction);
+    SLM_ASSERT("The inout key '" + s_RECONSTRUCTION_INOUT + "' is not defined.", reconstruction);
 
     ::fwData::Object::ModifiedSignalType::sptr sig;
     sig = reconstruction->getMaterial()->signal< ::fwData::Object::ModifiedSignalType >(
@@ -403,13 +406,7 @@ void RepresentationEditor::notifyMaterial()
 ::fwServices::IService::KeyConnectionsMap RepresentationEditor::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-
-    //FIXME hack to support deprecated getObject()
-    if (this->getInOut< ::fwData::Reconstruction >(s_RECONSTRUCTION_INOUT))
-    {
-        connections.push(s_RECONSTRUCTION_INOUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
-    }
-
+    connections.push(s_RECONSTRUCTION_INOUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
     return connections;
 }
 

@@ -1,8 +1,24 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2018.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #pragma once
 
@@ -10,7 +26,7 @@
 
 #include <fwData/Image.hpp>
 
-#include <fwDataTools/helper/MedicalImageAdaptor.hpp>
+#include <fwDataTools/helper/TransferFunction.hpp>
 
 #include <fwRenderVTK/IAdaptor.hpp>
 #include <fwRenderVTK/SRender.hpp>
@@ -34,9 +50,6 @@ namespace visuVTKVRAdaptor
  * - \b resetBoxWidget(): reset the clipping box widget around the volume.
  * - \b activateBoxClipping(bool): show/hide clipping box.
  * - \b show(bool): show/hide the volume.
- * - \b updateTFPoints(): updates the volume transfer function according to the new points
- * - \b updateTFWindowing(double window, double level) : updates the volume transfer function according to the new
- *      window and level
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -50,8 +63,7 @@ namespace visuVTKVRAdaptor
  * @subsection In-Out In-Out
  * - \b image [::fwData::Image]: image to display.
  * - \b tf [::fwData::TransferFunction] (optional): the current TransferFunction. If it is not defined, we use the
- *      image's default transferFunction (CT-GreyLevel). The transferFunction's signals are automatically connected to
- *      the slots 'updateTFPoints' and 'updateTFWindowing'.
+ *      image's default transferFunction (CT-GreyLevel).
  *
  * @subsection Configuration Configuration
  * - \b renderer: ID of renderer the adaptor must use
@@ -64,19 +76,19 @@ namespace visuVTKVRAdaptor
  * - \b blend (optional): vtk BlendMode used for rendering: composite, additive, min, max, average (default:
  *      composite). Warning: average mode will use the GPU.
  */
-class VISUVTKVRADAPTOR_CLASS_API SVolume : public ::fwDataTools::helper::MedicalImageAdaptor,
-                                           public ::fwRenderVTK::IAdaptor
+class VISUVTKVRADAPTOR_CLASS_API SVolume : public ::fwRenderVTK::IAdaptor
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SVolume)(::fwRenderVTK::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (SVolume)(::fwRenderVTK::IAdaptor) )
 
     VISUVTKVRADAPTOR_API SVolume() noexcept;
 
     VISUVTKVRADAPTOR_API virtual ~SVolume() noexcept;
 
     static const ::fwServices::IService::KeyType s_IMAGE_INOUT;
+
     static const ::fwServices::IService::KeyType s_TF_INOUT;
 
     VISUVTKVRADAPTOR_API void setClippingPlanesId( ::fwRenderVTK::SRender::VtkObjectIdType id );
@@ -104,16 +116,17 @@ public:
 protected:
 
     VISUVTKVRADAPTOR_API void configuring() override;
+
     VISUVTKVRADAPTOR_API void starting() override;
+
     VISUVTKVRADAPTOR_API void stopping() override;
+
     VISUVTKVRADAPTOR_API void updating() override;
+
     VISUVTKVRADAPTOR_API void swapping(const KeyType& key) override;
 
     /// Slot: updates the volume transfer function
-    VISUVTKVRADAPTOR_API virtual void updateTFPoints() override;
-
-    /// Slot: updates the volume transfer function
-    VISUVTKVRADAPTOR_API virtual void updateTFWindowing(double window, double level) override;
+    VISUVTKVRADAPTOR_API void updateTF();
 
     /// Slot: reset the clipping box widget around the volume
     void resetBoxWidget();
@@ -135,16 +148,21 @@ protected:
     ::fwRenderVTK::SRender::VtkObjectIdType m_clippingPlanesId;
 
     vtkSmartVolumeMapper* m_volumeMapper;
+
     vtkVolumeProperty* m_volumeProperty;
+
     vtkVolume* m_volume;
 
     vtkPiecewiseFunction* m_opacityTransferFunction;
+
     vtkColorTransferFunction* m_colorTransferFunction;
 
     vtkCommand* m_abortCommand;
 
     vtkBoxWidget2* m_boxWidget;
+
     vtkCommand* m_croppingCommand;
+
     vtkCommand* m_transformCommand;
 
     /// Cropping box default state
@@ -164,6 +182,8 @@ private:
     bool m_autoResetCamera;
 
     double m_reductionFactor;
+
+    ::fwDataTools::helper::TransferFunction m_helperTF;
 };
 
 } //namespace visuVTKVRAdaptor

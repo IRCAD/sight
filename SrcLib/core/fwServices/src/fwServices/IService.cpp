@@ -1,8 +1,24 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2018.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #include "fwServices/IService.hpp"
 
@@ -59,8 +75,11 @@ IService::IService() :
     m_slotStart   = newSlot( s_START_SLOT, &IService::startSlot, this );
     m_slotStop    = newSlot( s_STOP_SLOT, &IService::stopSlot, this );
     m_slotUpdate  = newSlot( s_UPDATE_SLOT, &IService::updateSlot, this );
-    m_slotSwap    = newSlot( s_SWAP_SLOT, &IService::swapSlot, this );
     m_slotSwapKey = newSlot( s_SWAPKEY_SLOT, &IService::swapKeySlot, this );
+
+#ifndef REMOVE_DEPRECATED
+    m_slotSwap = newSlot( s_SWAP_SLOT, &IService::swapSlot, this );
+#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -132,15 +151,16 @@ void IService::setOutput(const IService::KeyType& key, const fwData::Object::spt
 void IService::registerInput(const ::fwData::Object::csptr& obj, const std::string& key, const bool autoConnect,
                              const bool optional)
 {
+    this->registerObject(obj->getID(), key, AccessType::INPUT, autoConnect, optional);
+
     ::fwServices::OSR::registerServiceInput(obj, key, this->getSptr());
+}
 
-    ObjectServiceConfig objConfig;
-    objConfig.m_key         = key;
-    objConfig.m_access      = AccessType::INPUT;
-    objConfig.m_autoConnect = autoConnect;
-    objConfig.m_optional    = optional;
+//------------------------------------------------------------------------------
 
-    m_serviceConfig.m_objects.push_back(objConfig);
+void IService::unregisterInput(const std::string& key)
+{
+    this->unregisterObject(key, AccessType::INPUT);
 }
 
 //------------------------------------------------------------------------------
@@ -148,39 +168,143 @@ void IService::registerInput(const ::fwData::Object::csptr& obj, const std::stri
 void IService::registerInOut(const ::fwData::Object::sptr& obj, const std::string& key, const bool autoConnect,
                              const bool optional)
 {
-    ::fwServices::OSR::registerService(obj, key, AccessType::INOUT, this->getSptr());
+    this->registerObject(obj, key, AccessType::INOUT, autoConnect, optional);
+}
 
-    ObjectServiceConfig objConfig;
-    objConfig.m_key         = key;
-    objConfig.m_access      = AccessType::INOUT;
-    objConfig.m_autoConnect = autoConnect;
-    objConfig.m_optional    = optional;
+//------------------------------------------------------------------------------
 
-    m_serviceConfig.m_objects.push_back(objConfig);
+void IService::unregisterInOut(const std::string& key)
+{
+    this->unregisterObject(key, AccessType::INOUT);
+}
+
+//------------------------------------------------------------------------------
+
+void IService::registerObject(const ::fwData::Object::sptr& obj, const std::string& key,
+                              AccessType access, const bool autoConnect, const bool optional)
+{
+    this->registerObject(key, access, autoConnect, optional);
+
+    if (access == AccessType::INPUT)
+    {
+        m_inputsMap[key] = obj;
+    }
+    else if (access == AccessType::INOUT)
+    {
+        m_inOutsMap[key] = obj;
+    }
+    else if (access == AccessType::OUTPUT)
+    {
+        m_outputsMap[key] = obj;
+    }
+
+    ::fwServices::OSR::registerService(obj, key, access, this->getSptr());
+}
+
+//------------------------------------------------------------------------------
+
+void IService::registerObject(const std::string& objId,
+                              const ::fwServices::IService::KeyType& key,
+                              const ::fwServices::IService::AccessType access,
+                              const bool autoConnect, const bool optional)
+{
+    this->registerObject(key, access, autoConnect, optional);
+    SLM_ASSERT("Object id must be defined", !objId.empty());
+    this->setObjectId(key, objId);
+}
+
+//------------------------------------------------------------------------------
+
+void IService::unregisterObject(const std::string& key, AccessType access)
+{
+    ::fwServices::OSR::unregisterService(key, access, this->getSptr());
+
+    if(access == ::fwServices::IService::AccessType::INPUT)
+    {
+        m_inputsMap.erase(key);
+    }
+    else if(access == ::fwServices::IService::AccessType::INOUT)
+    {
+        m_inOutsMap.erase(key);
+    }
+    else
+    {
+        m_outputsMap.erase(key);
+    }
+}
+//------------------------------------------------------------------------------
+
+void IService::unregisterObject(const std::string& objId)
+{
+    auto itr = std::find_if( m_serviceConfig.m_objects.begin(),  m_serviceConfig.m_objects.end(),
+                             [&](const ObjectServiceConfig& config)
+        {
+            return (config.m_uid == objId);
+        });
+
+    if (itr == m_serviceConfig.m_objects.end())
+    {
+        SLM_ERROR("object '" + objId + "' is not registered");
+        return;
+    }
+
+    m_serviceConfig.m_objects.erase(itr);
 }
 
 //-----------------------------------------------------------------------------
 
 bool IService::hasObjectId(const KeyType& _key) const
 {
-    auto it = m_idsMap.find(_key);
-    return (it != m_idsMap.end());
+    bool hasId = false;
+    auto itr   = std::find_if( m_serviceConfig.m_objects.begin(),  m_serviceConfig.m_objects.end(),
+                               [&](const ObjectServiceConfig& objCfg)
+        {
+            return (objCfg.m_key == _key);
+        });
+
+    if (itr != m_serviceConfig.m_objects.end())
+    {
+        hasId = (!itr->m_uid.empty());
+    }
+
+    return hasId;
 }
 
 //-----------------------------------------------------------------------------
 
 IService::IdType IService::getObjectId(const IService::KeyType& _key) const
 {
-    auto it = m_idsMap.find(_key);
-    FW_RAISE_IF("Object key '" + _key + "' not found in service " + this->getID() + ".", it == m_idsMap.end());
-    return it->second;
+    const ObjectServiceConfig& cfg = this->getObjInfoFromKey(_key);
+    FW_RAISE_IF("Object key '" + _key + "' is not found for service '" + this->getID() + "'", cfg.m_uid.empty());
+    return cfg.m_uid;
 }
 
 //-----------------------------------------------------------------------------
 
 void IService::setObjectId(const IService::KeyType& _key, const IService::IdType& _id)
 {
-    m_idsMap[_key] = _id;
+    auto keyItr = std::find_if( m_serviceConfig.m_objects.begin(),  m_serviceConfig.m_objects.end(),
+                                [&](const ObjectServiceConfig& objCfg)
+        {
+            return (objCfg.m_key == _key);
+        });
+    FW_RAISE_IF("key '" + _key + "' is not regisreted for '" + this->getID() + "'.",
+                keyItr == m_serviceConfig.m_objects.end());
+    ObjectServiceConfig& cfg = *keyItr;
+    cfg.m_uid = _id;
+}
+
+//-----------------------------------------------------------------------------
+
+void IService::setObjectId(const IService::KeyType& _key, const size_t index, const IService::IdType& _id)
+{
+    const std::string groupKey = KEY_GROUP_NAME(_key, index);
+
+    this->setObjectId(groupKey, _id);
+    if (index >= this->getKeyGroupSize(_key))
+    {
+        m_keyGroupSize[_key] = index+1;
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -294,11 +418,28 @@ void IService::configure()
 
 //-----------------------------------------------------------------------------
 
+void IService::configure(const ConfigType& ptree)
+{
+    ::fwRuntime::ConfigurationElement::sptr ce;
+
+    ConfigType serviceConfig;
+    serviceConfig.add_child("service", ptree);
+
+    ce = ::fwRuntime::Convert::fromPropertyTree(serviceConfig);
+
+    SLM_ASSERT( "Invalid ConfigurationElement", ce );
+
+    this->setConfiguration(ce);
+    this->configure();
+}
+
+//-----------------------------------------------------------------------------
+
 void IService::reconfiguring()
 {
     OSLM_FATAL(
-        "If this method (reconfiguring) is called, it must be overriden in the implementation ("<<this->getClassname()<<", "<< this->getID() <<
-            ")" );
+        "If this method (reconfiguring) is called, it must be overriden in the implementation ("
+            << this->getClassname() <<", "<< this->getID() << ")" );
 }
 
 //-----------------------------------------------------------------------------
@@ -340,20 +481,6 @@ IService::SharedFutureType IService::update()
     else
     {
         return m_slotUpdate->asyncRun();
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-IService::SharedFutureType IService::swap( ::fwData::Object::sptr _obj )
-{
-    if( !m_associatedWorker || ::fwThread::getCurrentThreadId() == m_associatedWorker->getThreadId() )
-    {
-        return this->internalSwap(_obj, false);
-    }
-    else
-    {
-        return m_slotSwap->asyncRun( _obj );
     }
 }
 
@@ -537,54 +664,6 @@ IService::SharedFutureType IService::internalStop(bool _async)
 
     return future;
 
-}
-
-//-----------------------------------------------------------------------------
-
-IService::SharedFutureType IService::swapSlot(::fwData::Object::sptr _obj)
-{
-    return this->internalSwap(_obj, true);
-}
-
-//-----------------------------------------------------------------------------
-
-IService::SharedFutureType IService::internalSwap(::fwData::Object::sptr _obj, bool _async)
-{
-    OSLM_ASSERT("Swapping on "<< this->getID() << " with same Object " << _obj->getID(),
-                m_associatedObject.lock() != _obj );
-    OSLM_FATAL_IF("Service "<< this->getID() << " is not STARTED, no swapping with Object " << _obj->getID(),
-                  m_globalState != STARTED);
-
-    PackagedTaskType task( std::bind(static_cast<void (IService::*)()>(&IService::swapping), this) );
-    SharedFutureType future = task.get_future();
-
-    m_globalState = SWAPPING;
-    ::fwServices::OSR::swapService( _obj, this->getSptr() );
-    task();
-    m_globalState = STARTED;
-
-    try
-    {
-        // This allows to trigger the exception if there was one
-        future.get();
-    }
-    catch (std::exception& e)
-    {
-        SLM_ERROR("Error while SWAPPING service '" + this->getID() + "' : " + e.what());
-
-        if(!_async)
-        {
-            // The future is shared, thus the caller can still catch the exception if needed with ufuture.get()
-            return future;
-        }
-        else
-        {
-            // Rethrow the same exception
-            throw;
-        }
-    }
-
-    return future;
 }
 
 //-----------------------------------------------------------------------------
@@ -829,7 +908,7 @@ void IService::autoConnect()
                 }
             }
 
-            SLM_ASSERT("Object '" + objectCfg.m_uid +
+            SLM_ASSERT("Object '" + objectCfg.m_key +
                        "' has not been found when autoConnecting service '" + m_serviceConfig.m_uid + "'.",
                        (!objectCfg.m_optional && obj) || objectCfg.m_optional);
 
@@ -919,6 +998,137 @@ void IService::addProxyConnection(const helper::ProxyConnections& proxy)
 
 //-----------------------------------------------------------------------------
 
+bool IService::hasObjInfoFromId(const std::string& objId) const
+{
+    auto itr = std::find_if( m_serviceConfig.m_objects.begin(),  m_serviceConfig.m_objects.end(),
+                             [&](const ObjectServiceConfig& objCfg)
+        {
+            return (objCfg.m_uid == objId);
+        });
+
+    return (itr != m_serviceConfig.m_objects.end());
+}
+
+//------------------------------------------------------------------------------
+
+bool IService::hasAllRequiredObjects() const
+{
+
+    bool hasAllObjects = true;
+
+    for (const auto& objectCfg : m_serviceConfig.m_objects)
+    {
+        if (objectCfg.m_optional == false)
+        {
+            if (objectCfg.m_access == ::fwServices::IService::AccessType::INPUT)
+            {
+                if (nullptr == this->getInput< ::fwData::Object >(objectCfg.m_key))
+                {
+                    SLM_DEBUG("The 'input' object with key '" + objectCfg.m_key + "' is missing for '" + this->getID()
+                              + "'");
+                    hasAllObjects = false;
+                    break;
+                }
+            }
+            else if (objectCfg.m_access == ::fwServices::IService::AccessType::INOUT)
+            {
+                if (nullptr == this->getInOut< ::fwData::Object >(objectCfg.m_key))
+                {
+                    SLM_DEBUG("The 'input' object with key '" + objectCfg.m_key + "' is missing for '" + this->getID()
+                              + "'");
+                    hasAllObjects = false;
+                    break;
+                }
+            }
+        }
+    }
+    return hasAllObjects;
+}
+
+//------------------------------------------------------------------------------
+
+const IService::ObjectServiceConfig& IService::getObjInfoFromId(const std::string& objId) const
+{
+    auto idItr = std::find_if( m_serviceConfig.m_objects.begin(),  m_serviceConfig.m_objects.end(),
+                               [&](const ObjectServiceConfig& objCfg)
+        {
+            return (objCfg.m_uid == objId);
+        });
+    FW_RAISE_IF("Object '" + objId + "' is not regisreted for '" + this->getID() + "'.",
+                idItr == m_serviceConfig.m_objects.end());
+
+    return *idItr;
+}
+//------------------------------------------------------------------------------
+
+const IService::ObjectServiceConfig& IService::getObjInfoFromKey(const std::string& key) const
+{
+    auto keyItr = std::find_if( m_serviceConfig.m_objects.begin(),  m_serviceConfig.m_objects.end(),
+                                [&](const ObjectServiceConfig& objCfg)
+        {
+            return (objCfg.m_key == key);
+        });
+    FW_RAISE_IF("key '" + key + "' is not regisreted for '" + this->getID() + "'.",
+                keyItr == m_serviceConfig.m_objects.end());
+
+    return *keyItr;
+}
+
+//-----------------------------------------------------------------------------
+
+void IService::registerObject(const ::fwServices::IService::KeyType& key,
+                              const ::fwServices::IService::AccessType access,
+                              const bool autoConnect, const bool optional)
+{
+    auto itr = std::find_if( m_serviceConfig.m_objects.begin(), m_serviceConfig.m_objects.end(),
+                             [&](const ObjectServiceConfig& objInfo)
+        {
+
+            return (objInfo.m_key == key);
+        });
+    if (itr == m_serviceConfig.m_objects.end())
+    {
+        ObjectServiceConfig objConfig;
+        objConfig.m_key         = key;
+        objConfig.m_access      = access;
+        objConfig.m_autoConnect = autoConnect;
+        objConfig.m_optional    = optional;
+
+        m_serviceConfig.m_objects.push_back(objConfig);
+    }
+    else
+    {
+        SLM_WARN("object '" + key + "' is already registered, it will be overriden");
+
+        ObjectServiceConfig& objConfig = *itr;
+        objConfig.m_key         = key;
+        objConfig.m_access      = access;
+        objConfig.m_autoConnect = autoConnect;
+        objConfig.m_optional    = optional;
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void IService::registerObjectGroup(const std::string& key, AccessType access, const std::uint8_t minNbObject,
+                                   const bool autoConnect, const std::uint8_t maxNbObject)
+{
+    for (std::uint8_t i = 0; i < maxNbObject; ++i)
+    {
+        const bool optional = (i < minNbObject ? false : true);
+        ObjectServiceConfig objConfig;
+        objConfig.m_key         = KEY_GROUP_NAME(key, i);
+        objConfig.m_access      = access;
+        objConfig.m_autoConnect = autoConnect;
+        objConfig.m_optional    = optional;
+
+        m_serviceConfig.m_objects.push_back(objConfig);
+    }
+    m_keyGroupSize[key] = minNbObject;
+}
+
+//-----------------------------------------------------------------------------
+
 IService::KeyConnectionsType IService::getObjSrvConnections() const
 {
     KeyConnectionsType connections;
@@ -940,5 +1150,67 @@ std::ostream& operator<<(std::ostream& _ostream, IService& _service)
 }
 
 //-----------------------------------------------------------------------------
+
+#ifndef REMOVE_DEPRECATED
+IService::SharedFutureType IService::swap( ::fwData::Object::sptr _obj )
+{
+    if( !m_associatedWorker || ::fwThread::getCurrentThreadId() == m_associatedWorker->getThreadId() )
+    {
+        return this->internalSwap(_obj, false);
+    }
+    else
+    {
+        return m_slotSwap->asyncRun( _obj );
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+IService::SharedFutureType IService::swapSlot(::fwData::Object::sptr _obj)
+{
+    return this->internalSwap(_obj, true);
+}
+
+//-----------------------------------------------------------------------------
+
+IService::SharedFutureType IService::internalSwap(::fwData::Object::sptr _obj, bool _async)
+{
+    OSLM_ASSERT("Swapping on "<< this->getID() << " with same Object " << _obj->getID(),
+                m_associatedObject.lock() != _obj );
+    OSLM_FATAL_IF("Service "<< this->getID() << " is not STARTED, no swapping with Object " << _obj->getID(),
+                  m_globalState != STARTED);
+
+    PackagedTaskType task( std::bind(static_cast<void (IService::*)()>(&IService::swapping), this) );
+    SharedFutureType future = task.get_future();
+
+    m_globalState = SWAPPING;
+    ::fwServices::OSR::swapService( _obj, this->getSptr() );
+    task();
+    m_globalState = STARTED;
+
+    try
+    {
+        // This allows to trigger the exception if there was one
+        future.get();
+    }
+    catch (std::exception& e)
+    {
+        SLM_ERROR("Error while SWAPPING service '" + this->getID() + "' : " + e.what());
+
+        if(!_async)
+        {
+            // The future is shared, thus the caller can still catch the exception if needed with ufuture.get()
+            return future;
+        }
+        else
+        {
+            // Rethrow the same exception
+            throw;
+        }
+    }
+
+    return future;
+}
+#endif
 
 }

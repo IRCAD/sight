@@ -1,8 +1,24 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2018.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2014-2018 IRCAD France
+ * Copyright (C) 2014-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #include "visuOgreQt/Window.hpp"
 
@@ -18,18 +34,13 @@
 #include <OGRE/Overlay/OgreOverlay.h>
 #include <OGRE/Overlay/OgreOverlayManager.h>
 
-// Set this to 1 to display the FPS in the console output
-#ifndef DISPLAY_OGRE_FPS
-//#define DISPLAY_OGRE_FPS 1
-#endif
-
 #define ZOOM_SPEED 0.2
 
 namespace visuOgreQt
 {
 
 int Window::m_counter = 0;
-::Ogre::OverlaySystem* Window::m_ogreOverlaySystem = 0;
+::Ogre::OverlaySystem* Window::m_ogreOverlaySystem = nullptr;
 
 // ----------------------------------------------------------------------------
 
@@ -179,8 +190,6 @@ void Window::makeCurrent()
 
 void Window::destroyWindow()
 {
-    Window::m_counter--;
-
     if(m_ogreRenderWindow)
     {
         m_ogreRenderWindow->removeListener(this);
@@ -325,20 +334,6 @@ void Window::renderNow(const bool force)
 
     this->render();
 
-#if defined(DISPLAY_OGRE_FPS) && DISPLAY_OGRE_FPS == 1
-    static int i               = 0;
-    static float fps           = 0.f;
-    static const int numFrames = 500;
-
-    fps += m_ogreRenderWindow->getStatistics().lastFPS;
-    if(++i == numFrames)
-    {
-        std::cout << "FPS average : " << fps/numFrames << std::endl;
-        i   = 0;
-        fps = 0.f;
-    }
-#endif // DISPLAY_OGRE_FPS
-
     if (m_animating)
     {
         this->renderLater();
@@ -374,14 +369,6 @@ void Window::keyPressEvent(QKeyEvent* e)
         case ::Qt::Key_Alt: info.key     = ::fwRenderOgre::interactor::IInteractor::ALT; break;
         default:
             info.key = e->key();
-    }
-
-    if(m_fullscreen && e->key() == ::Qt::Key_Escape)
-    {
-        ::fwGui::Cursor cursor;
-        cursor.setCursor(::fwGui::ICursor::BUSY);
-        ::fwGui::Application::New()->exit(0);
-        cursor.setDefaultCursor();
     }
 
     Q_EMIT interacted(info);
@@ -622,11 +609,7 @@ void Window::ogreResize(const QSize& newSize)
 
 void Window::setAnimating(bool animating)
 {
-#if defined(DISPLAY_OGRE_FPS) && DISPLAY_OGRE_FPS == 1
-    m_animating = true;
-#else
     m_animating = animating;
-#endif // DISPLAY_OGRE_FPS
 
     if (animating)
     {

@@ -1,8 +1,24 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017-2018.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2017-2018 IRCAD France
+ * Copyright (C) 2017-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #include "uiVisuQt/STransformEditor.hpp"
 
@@ -33,6 +49,10 @@ namespace uiVisuQt
 {
 
 fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuQt::STransformEditor, ::fwData::TransformationMatrix3D);
+
+//------------------------------------------------------------------------------
+
+const ::fwServices::IService::KeyType s_MATRIX_INOUT = "matrix";
 
 //------------------------------------------------------------------------------
 
@@ -207,11 +227,22 @@ void STransformEditor::updating()
     this->updateFromMatrix();
 }
 
+//-----------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsMap STransformEditor::getAutoConnections() const
+{
+    KeyConnectionsMap connections;
+
+    connections.push(s_MATRIX_INOUT, ::fwData::TransformationMatrix3D::s_MODIFIED_SIG, s_UPDATE_SLOT);
+
+    return connections;
+}
+
 //------------------------------------------------------------------------------
 
 void STransformEditor::onSliderChanged(int value)
 {
-    ::fwData::TransformationMatrix3D::sptr matrix = this->getInOut< ::fwData::TransformationMatrix3D >("matrix");
+    ::fwData::TransformationMatrix3D::sptr matrix = this->getInOut< ::fwData::TransformationMatrix3D >(s_MATRIX_INOUT);
 
     const double rx = ::glm::radians<double>(m_sliders[ROTATION_X].m_slider->value());
     const double ry = ::glm::radians<double>(m_sliders[ROTATION_Y].m_slider->value());

@@ -1,8 +1,24 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017-2018.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2017-2018 IRCAD France
+ * Copyright (C) 2017-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #pragma once
 
@@ -26,7 +42,7 @@ namespace helper
 /**
  * @brief This class contains helpers to handle GDCM data.
  * It implements many tag value getters/setters. It defines
- * also some tools for converting GDCM data to FW4SPL data.
+ * also some tools for converting GDCM data to Sight data.
  */
 class FWGDCMIO_CLASS_API DicomDataTools
 {
@@ -48,7 +64,7 @@ public:
         const ::fwData::Image::csptr& image);
 
     /**
-     * @brief Convert a surface representation mode (FW4SPL) into recommended presentation type (DICOM).
+     * @brief Convert a surface representation mode (Sight) into recommended presentation type (DICOM).
      * @see Recommended Presentation Type Tag (0066,000d).
      * @param[in] representationMode Surface representation mode.
      * @return Corresponding recommended presentation type.
@@ -57,7 +73,7 @@ public:
         ::fwData::Material::RepresentationType representationMode);
 
     /**
-     * @brief Convert a surface recommended presentation type (DICOM) into representation mode (FW4SPL).
+     * @brief Convert a surface recommended presentation type (DICOM) into representation mode (Sight).
      * @param[in] presentationType Surface recommended presentation type.
      * @return Corresponding representation mode
      */

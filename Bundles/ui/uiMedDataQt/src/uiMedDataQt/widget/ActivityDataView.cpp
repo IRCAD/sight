@@ -1,8 +1,24 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2016-2018.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2016-2018 IRCAD France
+ * Copyright (C) 2016-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #include "uiMedDataQt/widget/ActivityDataView.hpp"
 
@@ -728,7 +744,6 @@ void ActivityDataView::importObjectFromSDB()
     ::fwData::Object::sptr obj;
     ::fwServices::IService::sptr ioSelectorSrv;
     ioSelectorSrv = ::fwServices::add("::uiIO::editor::SIOSelector");
-    ioSelectorSrv->setObjectId(::fwIO::s_DATA_KEY, "objRead");
 
     ::fwRuntime::ConfigurationElement::csptr ioCfg;
     ioCfg = ::fwServices::registry::ServiceConfig::getDefault()->getServiceConfig(ioSelectorSrvConfig,
@@ -742,6 +757,7 @@ void ActivityDataView::importObjectFromSDB()
     {
         ioSelectorSrv->setConfiguration(srvConfig);
         ioSelectorSrv->configure();
+        ioSelectorSrv->setObjectId(::fwIO::s_DATA_KEY, "objRead");
         ioSelectorSrv->start();
         ioSelectorSrv->update();
         obj = ioSelectorSrv->getOutput< ::fwData::Object >(::fwIO::s_DATA_KEY);

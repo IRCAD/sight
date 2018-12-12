@@ -1,16 +1,32 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
-#ifndef __VISUVTKADAPTOR_SIMAGETEXT_HPP__
-#define __VISUVTKADAPTOR_SIMAGETEXT_HPP__
+#pragma once
 
 #include "visuVTKAdaptor/config.hpp"
 #include "visuVTKAdaptor/SText.hpp"
 
-#include <fwDataTools/helper/MedicalImageAdaptor.hpp>
+#include <fwDataTools/helper/MedicalImage.hpp>
+#include <fwDataTools/helper/TransferFunction.hpp>
 
 #include <fwRenderVTK/IAdaptor.hpp>
 
@@ -26,9 +42,6 @@ namespace visuVTKAdaptor
  *
  * @section Slots Slots
  * - \b updateSliceIndex(int axial, int frontal, int sagittal) : update image slice index
- * - \b updateTFPoints() : update the displayed information according to the new points
- * - \b updateTFWindowing(double window, double level) : update the displayed information according to the new
- *      window and level
  *
  * @section XML XML Configuration
  *
@@ -52,8 +65,7 @@ namespace visuVTKAdaptor
  * @subsection In-Out In-Out
  * - \b image [::fwData::Image]: image to display.
  * - \b tf [::fwData::TransferFunction] (optional): the current TransferFunction. If it is not defined, we use the
- *      image's default transferFunction (CT-GreyLevel). The transferFunction's signals are automatically connected to
- *      the slots 'updateTFPoints' and 'updateTFWindowing'.
+ *      image's default transferFunction (CT-GreyLevel).
  *
  * @subsection Configuration Configuration
  * - \b config(mandatory) : contains the adaptor configuration
@@ -68,13 +80,12 @@ namespace visuVTKAdaptor
  *   (see second example). This is useful for multiline text. The same rules
  *   that for the attribute are applied.
  */
-class VISUVTKADAPTOR_CLASS_API SImageText : public SText,
-                                            public ::fwDataTools::helper::MedicalImageAdaptor
+class VISUVTKADAPTOR_CLASS_API SImageText : public SText
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SImageText)(::fwRenderVTK::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (SImageText)(::fwRenderVTK::IAdaptor) )
 
     VISUVTKADAPTOR_API SImageText() noexcept;
 
@@ -83,9 +94,13 @@ public:
 protected:
 
     VISUVTKADAPTOR_API void configuring() override;
+
     VISUVTKADAPTOR_API void starting() override;
+
     VISUVTKADAPTOR_API void updating() override;
+
     VISUVTKADAPTOR_API void stopping() override;
+
     /// Select the current tf
     VISUVTKADAPTOR_API void swapping(const KeyType& key) override;
 
@@ -100,10 +115,7 @@ protected:
     VISUVTKADAPTOR_API virtual KeyConnectionsMap getAutoConnections() const override;
 
     /// Update the text according to the new windowing
-    VISUVTKADAPTOR_API virtual void updateTFPoints() override;
-
-    /// Update the text according to the new windowing
-    VISUVTKADAPTOR_API virtual void updateTFWindowing(double window, double level) override;
+    VISUVTKADAPTOR_API void updateTF();
 
     /**
      * @name Slots
@@ -114,8 +126,11 @@ protected:
     /**
      * @}
      */
+
+    ::fwDataTools::helper::TransferFunction m_helperTF;
+
+    ::fwDataTools::helper::MedicalImage m_helperImg;
+
 };
 
 } //namespace visuVTKAdaptor
-
-#endif //__VISUVTKADAPTOR_SIMAGETEXT_HPP__

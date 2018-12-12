@@ -1,36 +1,49 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #ifdef _MSC_VER
 #pragma warning(disable : 4996) // warning for sprintf() in Boost.log
 #endif // _MSC_VER
 
-#ifndef ANDROID
-#include <boost/log/core.hpp>
+#include "fwCore/log/SpyLogger.hpp"
+
+#include "fwCore/macros.hpp"
+
 #include <boost/log/attributes.hpp>
+#include <boost/log/attributes/current_process_id.hpp>
+#include <boost/log/attributes/current_thread_id.hpp>
+#include <boost/log/attributes/timer.hpp>
+#include <boost/log/core.hpp>
+#include <boost/log/expressions.hpp>
+#include <boost/log/expressions/formatters/date_time.hpp>
 #include <boost/log/sinks/sink.hpp>
 #include <boost/log/sources/global_logger_storage.hpp>
 #include <boost/log/sources/logger.hpp>
 #include <boost/log/sources/severity_logger.hpp>
-#include <boost/log/utility/setup/common_attributes.hpp>
-#include <boost/log/expressions.hpp>
+#include <boost/log/support/date_time.hpp>
 #include <boost/log/trivial.hpp>
+#include <boost/log/utility/setup/common_attributes.hpp>
 #include <boost/log/utility/setup/console.hpp>
 #include <boost/log/utility/setup/file.hpp>
-#include <boost/log/expressions/formatters/date_time.hpp>
-#include <boost/log/support/date_time.hpp>
-#include <boost/log/attributes/current_thread_id.hpp>
-#include <boost/log/attributes/current_process_id.hpp>
-#include <boost/log/attributes/timer.hpp>
-#else
-#include <android/log.h>
-#endif
-
-#include "fwCore/macros.hpp"
-#include "fwCore/log/SpyLogger.hpp"
 
 namespace fwCore
 {
@@ -39,27 +52,16 @@ namespace log
 
 SpyLogger SpyLogger::s_spyLogger;
 
-#ifndef ANDROID
 BOOST_LOG_GLOBAL_LOGGER(lg, ::boost::log::sources::severity_logger_mt< ::boost::log::trivial::severity_level >);
 BOOST_LOG_GLOBAL_LOGGER_DEFAULT(lg, ::boost::log::sources::severity_logger_mt< ::boost::log::trivial::severity_level >);
-#else
-#define  LOG_TAG    "SpyLogger"
-#define  LOGI(...)  __android_log_print(ANDROID_LOG_INFO,  LOG_TAG, __VA_ARGS__)
-#define  LOGD(...)  __android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, __VA_ARGS__)
-#define  LOGE(...)  __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__)
-#define  LOGF(...)  __android_log_print(ANDROID_LOG_FATAL, LOG_TAG, __VA_ARGS__)
-#define  LOGW(...)  __android_log_print(ANDROID_LOG_WARN,  LOG_TAG, __VA_ARGS__)
-#endif
 
 //-----------------------------------------------------------------------------
 
 SpyLogger::SpyLogger()
 {
-#ifndef ANDROID
     ::boost::log::add_common_attributes();
     ::boost::log::core::get()
     ->add_global_attribute("Uptime", ::boost::log::attributes::timer());
-#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -75,15 +77,14 @@ void SpyLogger::createBasicConfiguration()
 
 //-----------------------------------------------------------------------------
 
-void SpyLogger::addStreamAppender( std::ostream &os, LevelType level )
+void SpyLogger::addStreamAppender( std::ostream& os, LevelType level )
 {
-#ifndef ANDROID
     namespace expr     = ::boost::log::expressions;
     namespace keywords = ::boost::log::keywords;
 
     typedef ::boost::posix_time::ptime::time_duration_type DurationType;
 
-    ::boost::log::add_console_log (
+    ::boost::log::add_console_log(
         os,
         keywords::format = (
             expr::stream << "["
@@ -97,7 +98,6 @@ void SpyLogger::addStreamAppender( std::ostream &os, LevelType level )
         // auto-flush feature of the backend
         keywords::auto_flush = true
         );
-#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -108,15 +108,14 @@ void SpyLogger::addStreamAppender( std::ostream &os, LevelType level )
 
 //-----------------------------------------------------------------------------
 
-void SpyLogger::addFileAppender(const std::string & logFile, LevelType level)
+void SpyLogger::addFileAppender(const std::string& logFile, LevelType level)
 {
-#ifndef ANDROID
     namespace expr     = ::boost::log::expressions;
     namespace keywords = ::boost::log::keywords;
 
     typedef ::boost::posix_time::ptime::time_duration_type DurationType;
 
-    ::boost::log::add_file_log (
+    ::boost::log::add_file_log(
         // file name pattern
         keywords::file_name = logFile,
         // rotate files every 10 MiB...
@@ -126,113 +125,81 @@ void SpyLogger::addFileAppender(const std::string & logFile, LevelType level)
         // log record format
         keywords::format = (
             expr::stream
-            << "[" << expr::format_date_time< ::boost::posix_time::ptime >("TimeStamp", "%d.%m.%Y %H:%M:%S.%f")
-            << "][" << expr::format_date_time< DurationType >("Uptime", "%H:%M:%S.%f")
-            << "][" << expr::attr< ::boost::log::attributes::current_process_id::value_type >("ProcessID")
-            << "][" << expr::attr< ::boost::log::attributes::current_thread_id::value_type >("ThreadID")
-            << "][" << expr::attr< ::boost::log::trivial::severity_level >("Severity")
-            << "] " << expr::smessage
+                << "[" << expr::format_date_time< ::boost::posix_time::ptime >("TimeStamp", "%d.%m.%Y %H:%M:%S.%f")
+                << "][" << expr::format_date_time< DurationType >("Uptime", "%H:%M:%S.%f")
+                << "][" << expr::attr< ::boost::log::attributes::current_process_id::value_type >("ProcessID")
+                << "][" << expr::attr< ::boost::log::attributes::current_thread_id::value_type >("ThreadID")
+                << "][" << expr::attr< ::boost::log::trivial::severity_level >("Severity")
+                << "] " << expr::smessage
             ),
         keywords::filter = expr::attr< ::boost::log::trivial::severity_level >("Severity") >=
                            static_cast < ::boost::log::trivial::severity_level > (level),
         // auto-flush feature of the backend
         keywords::auto_flush = true
         );
-#endif
 }
 
 //-----------------------------------------------------------------------------
 
 void SpyLogger::setLevel(LevelType level)
 {
-#ifndef ANDROID
     ::boost::log::core::get()->set_filter
     (
         ::boost::log::expressions::attr< ::boost::log::trivial::severity_level >("Severity")
         >= static_cast < ::boost::log::trivial::severity_level > (level)
     );
-#endif
 }
 
 //-----------------------------------------------------------------------------
 
-void SpyLogger::trace(const std::string & mes, const char * file, int line)
+void SpyLogger::trace(const std::string& mes, const char* file, int line)
 {
-#ifndef ANDROID
     BOOST_LOG_SEV(lg::get(), ::boost::log::trivial::trace) << file << ":" << line << ": "<< mes;
-#else
-    LOGI("t: %s(%d): %s", file, line, mes.c_str());
-#endif
 }
 
 //-----------------------------------------------------------------------------
 
-void SpyLogger::debug(const std::string & mes, const char * file, int line)
+void SpyLogger::debug(const std::string& mes, const char* file, int line)
 {
-#ifndef ANDROID
     BOOST_LOG_SEV(lg::get(), ::boost::log::trivial::debug) << file << ":" << line << ": "<< mes;
-#else
-    LOGI("i: %s(%d): %s", file, line, mes.c_str());
-#endif
 }
 
 //-----------------------------------------------------------------------------
 
-void SpyLogger::info(const std::string & mes, const char * file, int line)
+void SpyLogger::info(const std::string& mes, const char* file, int line)
 {
-#ifndef ANDROID
     BOOST_LOG_SEV(lg::get(), ::boost::log::trivial::info) << file << ":" << line << ": "<< mes;
-#else
-    LOGI("i: %s(%d): %s", file, line, mes.c_str());
-#endif
 }
 
 //-----------------------------------------------------------------------------
 
-void SpyLogger::warn(const std::string & mes, const char * file, int line)
+void SpyLogger::warn(const std::string& mes, const char* file, int line)
 {
-#ifndef ANDROID
     BOOST_LOG_SEV(lg::get(), ::boost::log::trivial::warning) << file << ":" << line << ": "<< mes;
-#else
-    LOGW("w: %s(%d): %s", file, line, mes.c_str());
-#endif
 }
 
 //-----------------------------------------------------------------------------
 
-void SpyLogger::error(const std::string & mes, const char * file, int line)
+void SpyLogger::error(const std::string& mes, const char* file, int line)
 {
-#ifndef ANDROID
     BOOST_LOG_SEV(lg::get(), ::boost::log::trivial::error) << file << ":" << line << ": "<< mes;
-#else
-    LOGE("e: %s(%d): %s", file, line, mes.c_str());
-#endif
 }
 
 //-----------------------------------------------------------------------------
 
-void SpyLogger::fatal(const std::string & mes, const char * file, int line)
+void SpyLogger::fatal(const std::string& mes, const char* file, int line)
 {
-#ifndef ANDROID
     BOOST_LOG_SEV(lg::get(), ::boost::log::trivial::fatal) << file << ":" << line << ": "<< mes;
-#else
-    LOGF("f: %s(%d): %s", file, line, mes.c_str());
-#endif
 }
 
 //-----------------------------------------------------------------------------
 
-void SpyLogger::log(const std::string & mes, const char * file, int line)
+void SpyLogger::log(const std::string& mes, const char* file, int line)
 {
-#ifndef ANDROID
     BOOST_LOG_SEV(lg::get(), ::boost::log::trivial::error) << file << ":" << line << ": "<< mes;
-#else
-    LOGI("i: %s(%d): %s", file, line, mes.c_str());
-#endif
 }
 
 //-----------------------------------------------------------------------------
 
 } // namespace log
 } // namespace fwCore
-

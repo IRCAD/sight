@@ -1,8 +1,24 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2018.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2014-2018 IRCAD France
+ * Copyright (C) 2014-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #include "visuOgreAdaptor/STransform.hpp"
 
@@ -27,9 +43,7 @@ static const ::fwServices::IService::KeyType s_TRANSFORM_INOUT = "transform";
 
 //------------------------------------------------------------------------------
 
-STransform::STransform() noexcept :
-    m_transformNode(nullptr),
-    m_parentTransformNode(nullptr)
+STransform::STransform() noexcept
 {
 }
 
@@ -59,10 +73,7 @@ void STransform::configuring()
 
     this->setTransformId( config.get<std::string>("transform") );
 
-    if ( config.count( "parent" ) )
-    {
-        m_parentTransformId = config.get<std::string>("parent");
-    }
+    m_parentTransformId = config.get<std::string>("parent", m_parentTransformId);
 }
 
 //------------------------------------------------------------------------------
@@ -70,41 +81,22 @@ void STransform::configuring()
 void STransform::starting()
 {
     this->initialize();
+    ::Ogre::SceneManager* sceneManager = this->getSceneManager();
 
-    ::Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
-    if(!this->getTransformId().empty())
-    {
-        m_transformNode = ::fwRenderOgre::helper::Scene::getNodeById(this->getTransformId(), rootSceneNode);
-    }
+    auto rootSceneNode = sceneManager->getRootSceneNode();
+    SLM_ASSERT("Root scene node not found", rootSceneNode);
 
     if (!m_parentTransformId.empty())
     {
-        m_parentTransformNode = ::fwRenderOgre::helper::Scene::getNodeById(m_parentTransformId, rootSceneNode);
-    }
-
-    ::Ogre::SceneManager* sceneManager = this->getSceneManager();
-
-    if (!m_parentTransformNode)
-    {
-        if (!m_parentTransformId.empty())
-        {
-            m_parentTransformNode = sceneManager->getRootSceneNode()->createChildSceneNode(m_parentTransformId);
-        }
-        else
-        {
-            m_parentTransformNode = sceneManager->getRootSceneNode();
-        }
-    }
-
-    if (!m_transformNode)
-    {
-        m_transformNode = m_parentTransformNode->createChildSceneNode(this->getTransformId());
+        m_parentTransformNode = STransform::getTransformNode(m_parentTransformId, rootSceneNode);
     }
     else
     {
-        m_transformNode->getParent()->removeChild(m_transformNode);
-        m_parentTransformNode->addChild(m_transformNode);
+        m_parentTransformNode = rootSceneNode;
     }
+
+    m_transformNode = this->getTransformNode(m_parentTransformNode);
+
     this->updating();
 }
 
@@ -172,8 +164,6 @@ void STransform::updating()
 
 void STransform::stopping()
 {
-    this->getSceneManager()->destroySceneNode(m_transformNode);
-    m_transformNode = nullptr;
 }
 
 //-----------------------------------------------------------------------------

@@ -1,11 +1,26 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
-#ifndef __FWRUNTIME_DL_NATIVE_HPP__
-#define __FWRUNTIME_DL_NATIVE_HPP__
+#pragma once
 
 #include "fwRuntime/config.hpp"
 #include "fwRuntime/RuntimeException.hpp"
@@ -16,13 +31,10 @@
 namespace fwRuntime
 {
 
-
 struct Bundle;
-
 
 namespace dl
 {
-
 
 /**
  * @brief   Defines the abstract class for native module implementors.
@@ -32,19 +44,17 @@ struct Native
 {
     friend struct ::fwRuntime::Bundle;
 
-
     /**
      * @brief       Constructor
      *
      * @param[in]   modulePath      a path to the module to manage
      */
-    Native( const boost::filesystem::path & modulePath) noexcept;
+    Native( const boost::filesystem::path& modulePath) noexcept;
 
     /**
      * @brief   Destructor : does nothing.
      */
     virtual ~Native() noexcept;
-
 
     /**
      * @brief   Tells if the module is loaded.
@@ -60,7 +70,7 @@ struct Native
      *
      * @return      a pointer to the found symbol or null if none has been found
      */
-    virtual void * getSymbol( const std::string& name ) const = 0;
+    virtual void* getSymbol( const std::string& name ) const = 0;
 
     /**
      * @brief   Loads the module.
@@ -97,7 +107,7 @@ struct Native
      *
      * @param[in]   bundle  a pointer to a bundle instance
      */
-    void setBundle( const ::fwRuntime::Bundle * bundle ) noexcept;
+    void setBundle( const ::fwRuntime::Bundle* bundle ) noexcept;
 
     /**
      * @brief  Retrieves the pattern of the dynamic library file name given the host OS
@@ -109,7 +119,6 @@ struct Native
 
         /**
          * @brief  Returns the location of bundle library
-         * @note   For android, the bundle library are in the "<working_dir>/lib" directory.
          * @return The path of bundle library.
          */
         const ::boost::filesystem::path getBundleLocation() const;
@@ -122,23 +131,17 @@ struct Native
         /**
          * @brief   A pointer to the bundle the library is attached to.
          */
-        const Bundle                            * m_bundle;
-
+        const Bundle* m_bundle;
 
         /**
          * @brief   Assignment operator.
          *
          * @remark  Assignment is forbidden for this class.
          */
-        void operator=( const Native & ) noexcept;
+        void operator=( const Native& ) noexcept;
 
 };
-
-
 
 } // namesapce dl
 
 } // namespace fwRuntime
-
-
-#endif // __FWRUNTIME_DL_NATIVE_HPP__

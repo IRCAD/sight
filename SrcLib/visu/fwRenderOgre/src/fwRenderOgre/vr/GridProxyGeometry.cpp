@@ -1,14 +1,31 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017-2018.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2017-2018 IRCAD France
+ * Copyright (C) 2017-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #include "fwRenderOgre/vr/GridProxyGeometry.hpp"
 
 #include "fwRenderOgre/factory/R2VBRenderable.hpp"
 #include "fwRenderOgre/Layer.hpp"
 
+#include <OGRE/OgreDepthBuffer.h>
 #include <OGRE/OgreHardwarePixelBuffer.h>
 #include <OGRE/OgreMaterial.h>
 #include <OGRE/OgreMaterialManager.h>
@@ -199,6 +216,7 @@ void GridProxyGeometry::setupGrid()
         for(unsigned i = 0; i < static_cast<unsigned>(m_gridSize[2]); ++i)
         {
             ::Ogre::RenderTexture* rt = m_gridTexture->getBuffer()->getRenderTarget(i);
+            rt->setDepthBufferPool(::Ogre::DepthBuffer::POOL_NO_DEPTH);
             rt->addViewport(mParentSceneManager->getCamera(::fwRenderOgre::Layer::DEFAULT_CAMERA_NAME));
         }
     }
@@ -285,8 +303,6 @@ void GridProxyGeometry::computeGrid()
     for(unsigned i = 0; i < static_cast<unsigned>(m_gridSize[2]); ++i)
     {
         ::Ogre::RenderTexture* rt = m_gridTexture->getBuffer()->getRenderTarget(i);
-
-        rt->getViewport(0)->clear();
 
         params->setNamedConstant("u_slice", static_cast<int>(i));
 

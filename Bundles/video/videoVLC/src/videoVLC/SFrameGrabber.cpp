@@ -1,8 +1,24 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2018.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2018 IRCAD France
+ * Copyright (C) 2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #include "videoVLC/SFrameGrabber.hpp"
 
@@ -23,6 +39,7 @@
 #include <fwTools/Type.hpp>
 
 #include <boost/filesystem/operations.hpp>
+#include <boost/filesystem/path.hpp>
 #include <boost/foreach.hpp>
 
 #include <stdarg.h>
@@ -195,21 +212,19 @@ SFrameGrabber::~SFrameGrabber() noexcept
 
 void SFrameGrabber::starting()
 {
-#ifdef WIN32
+    if(::boost::filesystem::exists(VLC_PLUGINS_DIR))
     {
-        typedef int (_cdecl* PUTENVPROC)(const char*);
-
-        HMODULE hmodule = GetModuleHandle("msvcrt");
-        SLM_ASSERT("GetModuleHandle msvcrt failed", hmodule);
-
-        PUTENVPROC putenvFunc = (PUTENVPROC) GetProcAddress(hmodule, "_putenv");
-        SLM_ASSERT("GetProcAddress _putenv failed", hmodule);
-
-        putenvFunc("VLC_PLUGIN_PATH=.\\vlc\\plugins");
+        SFrameGrabber::exportVLCPluginsEnv(VLC_PLUGINS_DIR);
     }
+    else
+    {
+        SLM_ASSERT("VLC plugins directory is not found.", ::boost::filesystem::exists("./vlc/plugins"));
+#ifdef WIN32
+        SFrameGrabber::exportVLCPluginsEnv(".\\vlc\\plugins");
 #else
-    setenv("VLC_PLUGIN_PATH", "./vlc/plugins", 1);
+        SFrameGrabber::exportVLCPluginsEnv("./vlc/plugins");
 #endif
+    }
 
     const std::string networkCaching = "--network-caching=" + m_networkCaching;
 
@@ -531,6 +546,28 @@ void SFrameGrabber::onEventCallback(const struct libvlc_event_t* event, void* us
         default:
             break;
     }
+}
+
+//------------------------------------------------------------------------------
+
+void SFrameGrabber::exportVLCPluginsEnv(const std::string& path)
+{
+#ifdef WIN32
+    {
+        typedef int (_cdecl* PUTENVPROC)(const char*);
+
+        HMODULE hmodule = GetModuleHandle("msvcrt");
+        SLM_ASSERT("GetModuleHandle msvcrt failed", hmodule);
+
+        PUTENVPROC putenvFunc = (PUTENVPROC) GetProcAddress(hmodule, "_putenv");
+        SLM_ASSERT("GetProcAddress _putenv failed", hmodule);
+
+        const std::string env = "VLC_PLUGIN_PATH=" + path;
+        putenvFunc(env.c_str());
+    }
+#else
+    setenv("VLC_PLUGIN_PATH", path.c_str(), 1);
+#endif
 }
 
 //----------------------------------------------------------------------------

@@ -1,8 +1,24 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2018.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2014-2018 IRCAD France
+ * Copyright (C) 2014-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #include "uiVisuOgre/SCompositorSelector.hpp"
 
@@ -97,21 +113,29 @@ void SCompositorSelector::updating()
 
 void SCompositorSelector::onSelectedLayerItem(int index)
 {
-    // Empty the list widget
-    m_compositorChain->clear();
+    m_currentLayer                    = m_layers[static_cast<size_t>(index)];
+    ::fwRenderOgre::Layer::sptr layer = m_currentLayer.lock();
 
-    // Update the current layer
-    m_currentLayer         = m_layers[static_cast<size_t>(index)];
-    m_layerCompositorChain = m_currentLayer.lock()->getCompositorChain();
-
-    // We need the ogre's viewport in order to add the compositors,
-    // this is why we have to check the viewport's existence
-    if(m_currentLayer.lock()->getViewport())
+    if(layer)
     {
-        // Fill the list widget
-        this->updateCompositorList();
-        // Iterates through the compositors and checks the enabled ones
-        this->checkEnabledCompositors();
+        // Set current context
+        layer->getRenderService()->makeCurrent();
+
+        // Empty the list widget
+        m_compositorChain->clear();
+
+        // Update the current layer
+        m_layerCompositorChain = layer->getCompositorChain();
+
+        // We need the ogre's viewport in order to add the compositors,
+        // this is why we have to check the viewport's existence
+        if(layer->getViewport())
+        {
+            // Fill the list widget
+            this->updateCompositorList();
+            // Iterates through the compositors and checks the enabled ones
+            this->checkEnabledCompositors();
+        }
     }
 }
 
@@ -119,9 +143,15 @@ void SCompositorSelector::onSelectedLayerItem(int index)
 
 void SCompositorSelector::onSelectedCompositorItem(QListWidgetItem* compositorItem)
 {
-    ::std::string compositorName = compositorItem->text().toStdString();
-    bool isChecked = (compositorItem->checkState() == ::Qt::Checked);
-    m_currentLayer.lock()->updateCompositorState(compositorName, isChecked);
+    const ::std::string compositorName = compositorItem->text().toStdString();
+    const bool isChecked               = (compositorItem->checkState() == ::Qt::Checked);
+    ::fwRenderOgre::Layer::sptr layer = m_currentLayer.lock();
+
+    if(layer)
+    {
+        layer->getRenderService()->makeCurrent();
+        layer->updateCompositorState(compositorName, isChecked);
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -172,19 +202,27 @@ void SCompositorSelector::refreshRenderers()
 
 void SCompositorSelector::updateCompositorList()
 {
-    // Retrieving all compositors
-    ::Ogre::ResourceManager::ResourceMapIterator iter = ::Ogre::CompositorManager::getSingleton().getResourceIterator();
-    while(iter.hasMoreElements())
-    {
-        ::Ogre::ResourcePtr compositor = iter.getNext();
-        if (compositor->getGroup() == ::material::s_COMPOSITOR_RESOURCEGROUP_NAME)
-        {
-            QString compositorName = compositor.get()->getName().c_str();
-            m_currentLayer.lock()->addAvailableCompositor(compositorName.toStdString());
+    ::fwRenderOgre::Layer::sptr layer = m_currentLayer.lock();
 
-            QListWidgetItem* newCompositor = new QListWidgetItem(compositorName, m_compositorChain);
-            newCompositor->setFlags(newCompositor->flags() | ::Qt::ItemIsUserCheckable);
-            newCompositor->setCheckState(::Qt::Unchecked);
+    if(layer)
+    {
+        layer->getRenderService()->makeCurrent();
+
+        // Retrieving all compositors
+        ::Ogre::ResourceManager::ResourceMapIterator iter =
+            ::Ogre::CompositorManager::getSingleton().getResourceIterator();
+        while(iter.hasMoreElements())
+        {
+            ::Ogre::ResourcePtr compositor = iter.getNext();
+            if (compositor->getGroup() == ::material::s_COMPOSITOR_RESOURCEGROUP_NAME)
+            {
+                QString compositorName = compositor.get()->getName().c_str();
+                layer->addAvailableCompositor(compositorName.toStdString());
+
+                QListWidgetItem* newCompositor = new QListWidgetItem(compositorName, m_compositorChain);
+                newCompositor->setFlags(newCompositor->flags() | ::Qt::ItemIsUserCheckable);
+                newCompositor->setCheckState(::Qt::Unchecked);
+            }
         }
     }
 }
@@ -193,24 +231,31 @@ void SCompositorSelector::updateCompositorList()
 
 void SCompositorSelector::checkEnabledCompositors()
 {
-    if(!m_layerCompositorChain.empty())
+    ::fwRenderOgre::Layer::sptr layer = m_currentLayer.lock();
+
+    if(layer)
     {
-        for(int i(0); i < m_compositorChain->count(); ++i)
+        layer->getRenderService()->makeCurrent();
+
+        if(!m_layerCompositorChain.empty())
         {
-            QListWidgetItem* currentCompositor = m_compositorChain->item(i);
-            std::string currentCompositorName  = currentCompositor->text().toStdString();
-
-            auto layerCompositor = std::find_if(m_layerCompositorChain.begin(),
-                                                m_layerCompositorChain.end(),
-                                                ::fwRenderOgre::compositor::ChainManager::FindCompositorByName(
-                                                    currentCompositorName));
-
-            if(layerCompositor != m_layerCompositorChain.end())
+            for(int i(0); i < m_compositorChain->count(); ++i)
             {
-                if(layerCompositor->second)
+                QListWidgetItem* currentCompositor = m_compositorChain->item(i);
+                std::string currentCompositorName  = currentCompositor->text().toStdString();
+
+                auto layerCompositor = std::find_if(m_layerCompositorChain.begin(),
+                                                    m_layerCompositorChain.end(),
+                                                    ::fwRenderOgre::compositor::ChainManager::FindCompositorByName(
+                                                        currentCompositorName));
+
+                if(layerCompositor != m_layerCompositorChain.end())
                 {
-                    currentCompositor->setCheckState(::Qt::Checked);
-                    m_currentLayer.lock()->updateCompositorState(currentCompositor->text().toStdString(), true);
+                    if(layerCompositor->second)
+                    {
+                        currentCompositor->setCheckState(::Qt::Checked);
+                        layer->updateCompositorState(currentCompositor->text().toStdString(), true);
+                    }
                 }
             }
         }

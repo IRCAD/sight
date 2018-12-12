@@ -1,22 +1,36 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
-#ifndef __FWRENDERVTK_VTK_MARKEDSPHEREHANDLEREPRESENTATION_HPP__
-#define __FWRENDERVTK_VTK_MARKEDSPHEREHANDLEREPRESENTATION_HPP__
-#ifndef ANDROID
+#pragma once
 
-#include "vtkHandleRepresentation.h"
-#include "vtkSphereHandleRepresentation.h"
-#include "vtkCylinderSource.h" // Needed for delegation to sphere
+#include "fwRenderVTK/config.hpp"
+
+#include <vtkCylinderSource.h> // Needed for delegation to sphere
+#include <vtkHandleRepresentation.h>
+#include <vtkSphereHandleRepresentation.h>
 
 class vtkProperty;
 class vtkFollower;
 class vtkCleanPolyData;
-
-#include "fwRenderVTK/config.hpp"
 
 namespace fwRenderVTK
 {
@@ -78,6 +92,3 @@ private:
 } // namespace vtk
 
 } // namespace fwRenderVTK
-
-#endif //ANDROID
-#endif //__FWRENDERVTK_VTK_MARKEDSPHEREHANDLEREPRESENTATION_HPP__

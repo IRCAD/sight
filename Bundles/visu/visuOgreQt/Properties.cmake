@@ -15,3 +15,6 @@ set( DEPENDENCIES
     fwTools
 )
 set( REQUIREMENTS visuOgre )
+set( CONAN_DEPS
+    qt/5.11.2@sight/stable
+)

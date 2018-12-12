@@ -1,8 +1,24 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2018.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2014-2018 IRCAD France
+ * Copyright (C) 2014-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #include "visuOgre/Plugin.hpp"
 
@@ -31,10 +47,10 @@ Plugin::~Plugin() noexcept
 
 void Plugin::start()
 {
-    // Redirect Ogre Log to FW4SPL Log
+    // Redirect Ogre Log to Sight Log
     ::Ogre::LogManager* logMgr = new ::Ogre::LogManager();
     ::Ogre::Log* log           = logMgr->createLog("Ogre.log", true, false, false);
-    log->addListener(new F4SOgreListener());
+    log->addListener(new SightOgreListener());
     log->setLogDetail(::Ogre::LL_BOREME);
 }
 
@@ -46,8 +62,8 @@ void Plugin::stop() noexcept
 
 //------------------------------------------------------------------------------
 
-void F4SOgreListener::messageLogged(const ::Ogre::String& _message, ::Ogre::LogMessageLevel _lml, bool /*_maskDebug*/,
-                                    const ::Ogre::String& /*_logName*/, bool& _skipThisMessage)
+void SightOgreListener::messageLogged(const ::Ogre::String& _message, ::Ogre::LogMessageLevel _lml, bool /*_maskDebug*/,
+                                      const ::Ogre::String& /*_logName*/, bool& _skipThisMessage)
 {
     if (!_skipThisMessage)
     {

@@ -1,8 +1,24 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2018.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2014-2018 IRCAD France
+ * Copyright (C) 2014-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #pragma once
 
@@ -13,7 +29,7 @@
 
 #include <fwData/Float.hpp>
 
-#include <fwDataTools/helper/MedicalImageAdaptor.hpp>
+#include <fwDataTools/helper/TransferFunction.hpp>
 
 #include <fwRenderOgre/IAdaptor.hpp>
 #include <fwRenderOgre/ITransformable.hpp>
@@ -30,9 +46,8 @@ namespace visuOgreAdaptor
  * - \b newImage() : update the image display to show the new content.
  * - \b sliceType(int, int) : update image slice index .
  * - \b sliceIndex(int, int, int) : update image slice type.
- * - \b updateTFPoints() : update the displayed transfer function according to the new points
- * - \b updateTFWindowing(double window, double level) : update the displayed transfer function according to the new
- *      window and level
+ * - \b updateVisibility() : updates the negato visibility from the image field.
+ * - \b setVisibility(bool) : sets the image visibility fields.
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -45,8 +60,7 @@ namespace visuOgreAdaptor
  * @subsection In-Out In-Out:
  * - \b image [::fwData::Image]: image to display.
  * - \b tf [::fwData::TransferFunction] (optional): the current TransferFunction. If it is not defined, we use the
- *      image's default transferFunction (CT-GreyLevel). The transferFunction's signals are automatically connected to
- *      the slots 'updateTFPoints' and 'updateTFWindowing'.
+ *      image's default transferFunction (CT-GreyLevel).
  *
  * @subsection Configuration Configuration:
  * - \b layer (mandatory): id of the layer where this adaptor applies.
@@ -55,12 +69,11 @@ namespace visuOgreAdaptor
  * - \b tfalpha (optional, true/false, default=false): if true, the alpha channel of the transfer function is used
  */
 class VISUOGREADAPTOR_CLASS_API SNegato3D : public ::fwRenderOgre::IAdaptor,
-                                            public ::fwRenderOgre::ITransformable,
-                                            public ::fwDataTools::helper::MedicalImageAdaptor
+                                            public ::fwRenderOgre::ITransformable
 {
 public:
 
-    typedef ::fwDataTools::helper::MedicalImageAdaptor::Orientation OrientationMode;
+    typedef ::fwDataTools::helper::MedicalImage::Orientation OrientationMode;
 
     fwCoreServiceClassDefinitionsMacro( (SNegato3D)(::fwRenderOgre::IAdaptor) )
 
@@ -80,6 +93,7 @@ public:
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SLICEINDEX_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_OPACITY_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT;
+    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_VISIBILITY_SLOT;
     ///@}
 
 protected:
@@ -100,10 +114,7 @@ protected:
     VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Slot: update the displayed transfer function
-    VISUOGREADAPTOR_API virtual void updateTFPoints() override;
-
-    /// Slot: update the displayed transfer function
-    VISUOGREADAPTOR_API virtual void updateTFWindowing(double window, double level) override;
+    VISUOGREADAPTOR_API virtual void updateTF();
 
 private:
 
@@ -123,9 +134,13 @@ private:
     /// Also a slot called when image opacity is modified
     void setPlanesOpacity();
 
+    /// Slot: sets the negato's visibility
+    void setVisibility(bool visibility);
+
     /// Sets whether the camera must be auto reset when a mesh is updated or not.
     bool m_autoResetCamera;
 
+    /// Sets the opacity to that of the transfer function.
     bool m_enableAlpha {false};
 
     /// Ogre texture which will be displayed on the negato
@@ -137,7 +152,7 @@ private:
     /// Stores the planes on which we will apply our texture
     ::fwRenderOgre::Plane* m_planes[3];
 
-    // The current selected plane. This one will move in the scene
+    /// The current selected plane. This one will move in the scene
     ::fwRenderOgre::Plane* m_activePlane;
 
     /// The scene node allowing to move the entire negato
@@ -145,6 +160,11 @@ private:
 
     /// Defines the filtering type for this negato
     ::fwRenderOgre::Plane::FilteringEnumType m_filtering;
+
+    /// Image orientation
+    OrientationMode m_orientation;
+
+    ::fwDataTools::helper::TransferFunction m_helperTF;
 };
 
 //------------------------------------------------------------------------------

@@ -1,8 +1,24 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #include "visuVTKAdaptor/SImagePickerInteractor.hpp"
 
@@ -123,7 +139,7 @@ public:
 
                 ::fwDataTools::PickingInfo info;
 
-                m_adaptor->worldToImageSliceIndex(world, info.m_worldPos);
+                m_adaptor->m_helper.worldToImageSliceIndex(world, info.m_worldPos);
 
                 const auto iter = SPickerInteractor::s_vtkEventIDConversion.find(eventId);
                 SLM_ASSERT("Unknown eventId", iter != SPickerInteractor::s_vtkEventIDConversion.end());
@@ -224,7 +240,7 @@ void SImagePickerInteractor::starting()
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("Missing image", image);
 
-    this->updateImageInfos(image);
+    m_helper.updateImageInfos(image);
 }
 
 //------------------------------------------------------------------------------
@@ -234,16 +250,15 @@ void SImagePickerInteractor::updating()
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("Missing image", image);
 
-    this->updateImageInfos(image);
+    m_helper.updateImageInfos(image);
 }
 
 //-----------------------------------------------------------------------------
 
 void SImagePickerInteractor::updateSliceIndex(int axial, int frontal, int sagittal)
 {
-    m_axialIndex->value()    = axial;
-    m_frontalIndex->value()  = frontal;
-    m_sagittalIndex->value() = sagittal;
+    const int indexes[] = {sagittal, frontal, axial};
+    m_helper.setSliceIndex(indexes);
 }
 
 //------------------------------------------------------------------------------

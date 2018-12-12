@@ -1,8 +1,24 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2018.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #include "ioITK/InrImageReaderService.hpp"
 
@@ -138,12 +154,7 @@ void InrImageReaderService::updating()
     if( this->hasLocationDefined() )
     {
         ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(::fwIO::s_DATA_KEY);
-        if (!image)
-        {
-            FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "18.0");
-            image = this->getObject< ::fwData::Image >();
-        }
-        SLM_ASSERT("'" + ::fwIO::s_DATA_KEY + "' key is not defined", image);
+        SLM_ASSERT("The inout key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", image);
 
         if ( this->createImage( this->getFile(), image) )
         {
@@ -161,12 +172,7 @@ void InrImageReaderService::notificationOfDBUpdate()
 {
     SLM_TRACE_FUNC();
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(::fwIO::s_DATA_KEY);
-    if (!image)
-    {
-        FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "18.0");
-        image = this->getObject< ::fwData::Image >();
-    }
-    SLM_ASSERT("'" + ::fwIO::s_DATA_KEY + "' key is not defined", image);
+    SLM_ASSERT("The inout key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", image);
 
     auto sig = image->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
     {

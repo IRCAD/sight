@@ -1,8 +1,24 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2018.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #include "fwRenderVTK/SRender.hpp"
 
@@ -70,6 +86,7 @@ SRender::SRender() noexcept :
     m_width(160),
     m_height(90),
     m_offScreen(false),
+    m_useContainer(true),
     m_flip(false)
 {
     newSignal<DroppedSignalType>(s_DROPPED_SIG);
@@ -95,13 +112,9 @@ void SRender::configureRenderer( const ConfigType& rendererConf )
     if(m_renderers.count(id) == 0)
     {
         m_renderers[id] = vtkRenderer::New();
-
-//vtk depth peeling not available on android (Offscreen rendering issues)
-#ifndef ANDROID
         m_renderers[id]->SetUseDepthPeeling( 1  );
         m_renderers[id]->SetMaximumNumberOfPeels( 8  );
         m_renderers[id]->SetOcclusionRatio( 0. );
-#endif
 
         const int layer = rendererConf.get<int>("<xmlattr>.layer", m_renderers[id]->GetLayer());
         m_renderers[id]->SetLayer(layer);
@@ -235,14 +248,17 @@ void SRender::configuring()
 
     m_flip = (srvConf.get<std::string>("flip", "false") == "true");
 
+    m_useContainer = srvConf.get< bool >("<xmlattr>.useContainer", m_useContainer);
+
     if(nbInouts == 1)
     {
         const std::string key = srvConf.get<std::string>("inout.<xmlattr>.key", "");
-        m_offScreen = (key == s_OFFSCREEN_INOUT);
+        m_offScreen    = (key == s_OFFSCREEN_INOUT);
+        m_useContainer = false;
 
         SLM_ASSERT("'" + key + "' is not a valid key. Only '" + s_OFFSCREEN_INOUT +"' is accepted.", m_offScreen);
     }
-    else // no offscreen rendering.
+    else if (m_useContainer) // no offscreen rendering.
     {
         SLM_WARN_IF("Flip tag is set to 'true' but no off screen render image is used.", m_flip);
         this->initialize();
@@ -283,9 +299,7 @@ void SRender::configuring()
 
         SLM_FATAL_IF("Missing 'uid' attribute in adaptor configuration", adaptorUid == "");
 
-        // register the <adaptor, scene> association
-        auto& registry = ::fwRenderVTK::registry::getAdaptorRegistry();
-        registry[adaptorUid] = this->getID();
+        this->displayAdaptor(adaptorUid);
     }
 
     /// Target frame rate (default 30Hz)
@@ -306,7 +320,7 @@ void SRender::configuring()
 
 void SRender::starting()
 {
-    if (!m_offScreen)
+    if (m_useContainer)
     {
         this->create();
     }
@@ -359,7 +373,7 @@ void SRender::stopping()
 
     this->stopContext();
 
-    if (!m_offScreen)
+    if (m_useContainer)
     {
         this->destroy();
     }
@@ -424,7 +438,7 @@ void SRender::render()
 
 bool SRender::isShownOnScreen()
 {
-    if (!m_offScreen)
+    if (m_useContainer)
     {
         return this->getContainer()->isShownOnScreen();
     }
@@ -475,17 +489,17 @@ void SRender::toggleAutoRender()
 
 void SRender::startContext()
 {
-    if (!m_offScreen)
-    {
-        m_interactorManager = ::fwRenderVTK::IVtkRenderWindowInteractorManager::createManager();
-        m_interactorManager->installInteractor( this->getContainer() );
-    }
-    else
+    if (m_offScreen)
     {
         ::fwRenderVTK::OffScreenInteractorManager::sptr interactorManager =
             ::fwRenderVTK::OffScreenInteractorManager::New();
         interactorManager->installInteractor(m_width, m_height);
         m_interactorManager = interactorManager;
+    }
+    else if (!m_interactorManager)
+    {
+        m_interactorManager = ::fwRenderVTK::IVtkRenderWindowInteractorManager::createManager();
+        m_interactorManager->installInteractor( this->getContainer() );
     }
 
     auto interactor = vtkSmartPointer<InteractorStyle3DForNegato>::New();
@@ -499,7 +513,6 @@ void SRender::startContext()
     m_interactorManager->getInteractor()->GetRenderWindow()->SetAlphaBitPlanes(1);
     m_interactorManager->getInteractor()->GetRenderWindow()->SetMultiSamples(0);
 #endif
-
 }
 
 //-----------------------------------------------------------------------------
@@ -589,6 +602,15 @@ void SRender::setOffScreenRenderSize(unsigned int _width, unsigned int _height)
         m_interactorManager->getInteractor()->GetRenderWindow()->SetSize(static_cast<int>(m_width),
                                                                          static_cast<int>(m_height));
     }
+}
+
+//-----------------------------------------------------------------------------
+
+void SRender::displayAdaptor(const std::string& adaptorID)
+{
+    // register the <adaptor, scene> association
+    auto& registry = ::fwRenderVTK::registry::getAdaptorRegistry();
+    registry[adaptorID] = this->getID();
 }
 
 //-----------------------------------------------------------------------------

@@ -1,21 +1,30 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
-#ifndef __FWCORE_HIRESTIMER_HPP__
-#define __FWCORE_HIRESTIMER_HPP__
+#pragma once
 
-#ifdef WIN32
-#include <windows.h>
-#else
-#include <sys/time.h>
-#endif
-
-#include <fwCore/BaseObject.hpp>
+#include "fwCore/BaseObject.hpp"
+#include "fwCore/config.hpp"
 #include "fwCore/HiResClock.hpp"
-#include <fwCore/config.hpp>
 
 namespace fwCore
 {
@@ -58,7 +67,6 @@ public:
      */
     FWCORE_API void   reset(::fwCore::HiResClock::HiResClockType initial_value = 0.);
 
-
     /**
      * @name Elapsed time
      * @brief These methods return the cumulated elapsed running time of the timer
@@ -84,7 +92,6 @@ public:
     /**  @} */
 protected:
 
-
 private:
     /**
      * @brief Last start time.
@@ -105,5 +112,3 @@ private:
 };
 
 } //namespace fwCore
-
-#endif // __FWCORE_HIRESTIMER_HPP__

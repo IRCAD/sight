@@ -19,3 +19,7 @@ syntax: glob
 
 # macos
 .DS_Store
+
+# vs 2017 cmake project files
+\.vs*
+CMakeSettings\.json

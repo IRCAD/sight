@@ -1,8 +1,24 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2018.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #include "ioData/TransformationMatrix3DReaderService.hpp"
 
@@ -115,12 +131,7 @@ void TransformationMatrix3DReaderService::updating()
         // Retrieve object
         ::fwData::TransformationMatrix3D::sptr matrix =
             this->getInOut< ::fwData::TransformationMatrix3D >(::fwIO::s_DATA_KEY);
-        if (!matrix)
-        {
-            FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "18.0");
-            matrix = this->getObject< ::fwData::TransformationMatrix3D >();
-        }
-        SLM_ASSERT("matrix not instanced", matrix);
+        SLM_ASSERT("The inout key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", matrix);
 
         ::fwDataIO::reader::TransformationMatrix3DReader::sptr reader =
             ::fwDataIO::reader::TransformationMatrix3DReader::New();

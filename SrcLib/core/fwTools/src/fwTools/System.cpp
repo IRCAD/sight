@@ -1,16 +1,28 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
-
+/************************************************************************
+ *
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #include "fwTools/System.hpp"
 
 #include <fwCore/base.hpp>
-#ifdef ANDROID
-#include <fwRuntime/Runtime.hpp>
-#endif
 
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/fstream.hpp>
@@ -28,10 +40,7 @@
 #include <signal.h>
 #endif
 
-
-
-
-#define F4S_TMP_EXT "fw4spl-tmp"
+#define SIGHT_TMP_EXT "sight-tmp"
 
 namespace fwTools
 {
@@ -42,7 +51,8 @@ struct RemoveTemporaryFolder
 {
     typedef std::shared_ptr< RemoveTemporaryFolder > sptr;
 
-    RemoveTemporaryFolder(const ::boost::filesystem::path &path) : m_path(path)
+    RemoveTemporaryFolder(const ::boost::filesystem::path& path) :
+        m_path(path)
     {
     }
 
@@ -56,8 +66,6 @@ struct RemoveTemporaryFolder
 };
 static RemoveTemporaryFolder::sptr autoRemoveTempFolder;
 
-
-
 static struct CleanZombies
 {
     CleanZombies()
@@ -65,7 +73,6 @@ static struct CleanZombies
         System::cleanZombies(System::getTempPath());
     }
 } autoCleanZombies;
-
 
 //------------------------------------------------------------------------------
 
@@ -83,7 +90,7 @@ int System::getPID() noexcept
 
 //------------------------------------------------------------------------------
 
-const ::boost::filesystem::path &System::getTempPath() noexcept
+const ::boost::filesystem::path& System::getTempPath() noexcept
 {
     namespace fs = ::boost::filesystem;
     static fs::path sysTmp;
@@ -92,14 +99,6 @@ const ::boost::filesystem::path &System::getTempPath() noexcept
     {
         return sysTmp;
     }
-#ifdef ANDROID
-    sysTmp = ::fwRuntime::Runtime::getDefault()->getWorkingPath()/"tmp";
-    if(!fs::exists(sysTmp))
-    {
-        bool res = fs::create_directories(sysTmp);
-        SLM_ASSERT(" Failed to create '"+sysTmp.string()+"' path", res);
-    }
-#else
 
     ::boost::system::error_code err;
     sysTmp = fs::temp_directory_path(err);
@@ -114,7 +113,6 @@ const ::boost::filesystem::path &System::getTempPath() noexcept
         OSLM_ERROR("Temporary Path Error : " << err.message() << ". " << "Falling back to " << fallback );
         sysTmp = fallback;
     }
-#endif
     return sysTmp;
 }
 
@@ -162,9 +160,9 @@ const ::boost::filesystem::path System::getTemporaryFolder(const std::string& su
         return tmpDirPath;
     }
 
-    const fs::path &sysTmp = getTempPath();
+    const fs::path& sysTmp = getTempPath();
 
-    const std::string tmpDirName = s_tempPrefix + (s_tempPrefix.empty() ? "" : "-") + "%%%%%%%%%%%%." F4S_TMP_EXT;
+    const std::string tmpDirName = s_tempPrefix + (s_tempPrefix.empty() ? "" : "-") + "%%%%%%%%%%%%." SIGHT_TMP_EXT;
     fs::path tmpDir              = createUniqueFolder(sysTmp/tmpDirName);
     tmpDirPath = tmpDir;    // tmpDirPath always set to root tmp dir
 
@@ -199,7 +197,7 @@ bool System::isProcessRunning(int pid) noexcept
         return true;
     }
 #else
-    return kill(pid,0) == 0;
+    return kill(pid, 0) == 0;
 #endif
 
     return true;
@@ -207,7 +205,7 @@ bool System::isProcessRunning(int pid) noexcept
 
 //------------------------------------------------------------------------------
 
-int System::tempFolderPID(const ::boost::filesystem::path &dir) noexcept
+int System::tempFolderPID(const ::boost::filesystem::path& dir) noexcept
 {
     namespace fs = ::boost::filesystem;
 
@@ -250,11 +248,11 @@ int System::tempFolderPID(const ::boost::filesystem::path &dir) noexcept
 
 //------------------------------------------------------------------------------
 
-void System::cleanZombies(const ::boost::filesystem::path &dir) noexcept
+void System::cleanZombies(const ::boost::filesystem::path& dir) noexcept
 {
     namespace fs = ::boost::filesystem;
 
-    const ::boost::regex tmpFolderFilter( ".*\\." F4S_TMP_EXT );
+    const ::boost::regex tmpFolderFilter( ".*\\." SIGHT_TMP_EXT );
 
     std::vector< fs::path > allTempFolders;
 
@@ -280,8 +278,7 @@ void System::cleanZombies(const ::boost::filesystem::path &dir) noexcept
         allTempFolders.push_back( i->path() );
     }
 
-
-    for( const fs::path &foundTmpDir :  allTempFolders)
+    for( const fs::path& foundTmpDir :  allTempFolders)
     {
         int pid = tempFolderPID(foundTmpDir);
 
@@ -295,7 +292,6 @@ void System::cleanZombies(const ::boost::filesystem::path &dir) noexcept
             OSLM_INFO_IF( "Failed to remove " << foundTmpDir << " : " << er.message(), er.value() != 0);
         }
     }
-
 
 }
 

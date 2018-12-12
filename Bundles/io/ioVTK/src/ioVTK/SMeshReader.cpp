@@ -1,8 +1,24 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2018.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #include "ioVTK/SMeshReader.hpp"
 
@@ -155,12 +171,7 @@ void SMeshReader::updating()
     {
         // Retrieve dataStruct associated with this service
         ::fwData::Mesh::sptr pMesh = this->getInOut< ::fwData::Mesh >(::fwIO::s_DATA_KEY);
-        if (!pMesh)
-        {
-            FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "18.0");
-            pMesh = this->getObject< ::fwData::Mesh >();
-        }
-        SLM_ASSERT("pMesh not instanced", pMesh);
+        SLM_ASSERT("The inout key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", pMesh);
 
         ::fwGui::Cursor cursor;
         cursor.setCursor(::fwGui::ICursor::BUSY);
@@ -177,12 +188,7 @@ void SMeshReader::updating()
 void SMeshReader::notificationOfUpdate()
 {
     ::fwData::Mesh::sptr pMesh = this->getInOut< ::fwData::Mesh >(::fwIO::s_DATA_KEY);
-    if (!pMesh)
-    {
-        FW_DEPRECATED_KEY(::fwIO::s_DATA_KEY, "inout", "18.0");
-        pMesh = this->getObject< ::fwData::Mesh >();
-    }
-    SLM_ASSERT("pMesh not instanced", pMesh);
+    SLM_ASSERT("The inout key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", pMesh);
 
     ::fwData::Object::ModifiedSignalType::sptr sig;
     sig = pMesh->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);

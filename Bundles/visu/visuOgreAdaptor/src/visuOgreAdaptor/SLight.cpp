@@ -1,8 +1,24 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2018.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #include "visuOgreAdaptor/SLight.hpp"
 
@@ -102,24 +118,24 @@ void SLight::configuring()
 
     m_lightName = config.get<std::string>("name");
 
+    this->setTransformId(config.get<std::string>( ::fwRenderOgre::ITransformable::s_TRANSFORM_CONFIG,
+                                                  this->getID() + "_transform"));
+
+    m_useOrphanNode = false;
+
     if(config.count("switchedOn"))
     {
         m_switchedOn = config.get<std::string>("switchedOn") == "yes";
     }
 
-    if(config.count("parentTransformId"))
+    if(config.count("thetaOffset"))
     {
-        this->setParentTransformId(config.get<std::string>("parentTransformId"));
+        m_thetaOffset = config.get<float>("thetaOffset");
+    }
 
-        if(config.count("thetaOffset"))
-        {
-            m_thetaOffset = config.get<float>("thetaOffset");
-        }
-
-        if(config.count("phiOffset"))
-        {
-            m_phiOffset = config.get<float>("phiOffset");
-        }
+    if(config.count("phiOffset"))
+    {
+        m_phiOffset = config.get<float>("phiOffset");
     }
 }
 
@@ -141,25 +157,16 @@ void SLight::starting()
     m_light->setType(m_lightType ? m_lightType : ::Ogre::Light::LT_DIRECTIONAL);
     m_light->setVisible(m_switchedOn);
 
-    if(!this->getParentTransformId().empty())
+    ::Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
+    ::Ogre::SceneNode* transNode     = this->getTransformNode(rootSceneNode);
+    m_lightNode                      = transNode->createChildSceneNode(this->getID() + "_light");
+    m_lightNode->attachObject(m_light);
+
+    if(m_thetaOffset != 0.f || m_phiOffset != 0.f)
     {
-        ::Ogre::SceneNode* parentSceneNode = this->getSceneManager()->getSceneNode(this->getParentTransformId());
-
-        if(parentSceneNode)
-        {
-            m_useOrphanNode = false;
-
-            // First update of the offset only if there is a parent transform.
-            if(m_thetaOffset != 0.f || m_phiOffset != 0.f)
-            {
-                this->setThetaOffset(m_thetaOffset);
-                this->setPhiOffset(m_phiOffset);
-            }
-        }
+        this->setThetaOffset(m_thetaOffset);
+        this->setPhiOffset(m_phiOffset);
     }
-
-    this->setTransformId(m_lightName + "_node");
-    this->createTransformService();
 
     updating();
 }
@@ -230,9 +237,9 @@ void SLight::setThetaOffset(float _thetaOffset)
     m_thetaOffset = _thetaOffset;
 
     ::Ogre::Radian thetaOffsetRadDelta(::Ogre::Degree(static_cast< ::Ogre::Real>(thetaDelta)));
-    ::Ogre::Vector3 yAxis = m_light->getParentSceneNode()->getParentSceneNode()->getOrientation().yAxis();
+    ::Ogre::Vector3 yAxis = m_lightNode->getOrientation().yAxis();
 
-    m_light->getParentSceneNode()->rotate(yAxis, thetaOffsetRadDelta, ::Ogre::Node::TS_WORLD);
+    m_lightNode->rotate(yAxis, thetaOffsetRadDelta, ::Ogre::Node::TS_WORLD);
     this->requestRender();
 }
 
@@ -246,9 +253,9 @@ void SLight::setPhiOffset(float _phiOffset)
     m_phiOffset = _phiOffset;
 
     ::Ogre::Radian phiOffsetRadDelta(::Ogre::Degree(static_cast< ::Ogre::Real>(phiDelta)));
-    ::Ogre::Vector3 xAxis = m_light->getParentSceneNode()->getParentSceneNode()->getOrientation().xAxis();
+    ::Ogre::Vector3 xAxis = m_lightNode->getOrientation().xAxis();
 
-    m_light->getParentSceneNode()->rotate(xAxis, phiOffsetRadDelta, ::Ogre::Node::TS_WORLD);
+    m_lightNode->rotate(xAxis, phiOffsetRadDelta, ::Ogre::Node::TS_WORLD);
     this->requestRender();
 }
 
@@ -268,52 +275,13 @@ void SLight::setDoubleParameter(double _val, std::string _key)
 
 //------------------------------------------------------------------------------
 
-void SLight::createTransformService()
-{
-    ::fwData::TransformationMatrix3D::sptr transform =
-        this->getInOut< ::fwData::TransformationMatrix3D >(s_TRANSFORM_INOUT);
-
-    SLM_ASSERT("Missing tranform data object.", transform);
-
-    auto transformService = this->registerService< ::visuOgreAdaptor::STransform >("::visuOgreAdaptor::STransform");
-    transformService->registerInOut(transform, "transform", true);
-
-    m_transformService = transformService;
-
-    transformService->setID(this->getID() + "_" + transformService->getID());
-    transformService->setRenderService( this->getRenderService() );
-    transformService->setLayerID(m_layerID);
-    transformService->setTransformId(this->getTransformId());
-    transformService->setParentTransformId(this->getParentTransformId());
-
-    transformService->start();
-
-    this->attachNode(m_light);
-}
-
-//-----------------------------------------------------------------------------
-
-void SLight::attachNode(::Ogre::MovableObject* _node)
-{
-    auto transformService = this->getTransformService();
-
-    ::Ogre::SceneNode* transNode = transformService->getSceneNode();
-    ::Ogre::SceneNode* node      = _node->getParentSceneNode();
-    if ((node != transNode) && transNode)
-    {
-        _node->detachFromParent();
-        transNode->attachObject(_node);
-    }
-}
-
-//------------------------------------------------------------------------------
-
 void SLight::stopping()
 {
     this->unregisterServices();
-    m_transformService.reset();
 
+    m_light->detachFromParent();
     this->getSceneManager()->destroyLight(m_light);
+    this->getSceneManager()->destroySceneNode(m_lightNode);
 }
 
 //------------------------------------------------------------------------------

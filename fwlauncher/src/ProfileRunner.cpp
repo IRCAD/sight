@@ -1,8 +1,24 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2018.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #ifdef _WIN32
 #include <windows.h>
@@ -86,7 +102,7 @@ inline ostream& operator<<(ostream& s, vector<A1, A2> const& vec)
 
 //-----------------------------------------------------------------------------
 
-#ifdef __MACOSX__
+#ifdef __APPLE__
 std::pair<std::string, std::string> parsePns(const std::string& s)
 {
     if (s.substr(0, 5) == "-psn_")
@@ -163,7 +179,7 @@ int main(int argc, char* argv[])
     // Hidden options
     po::options_description hidden("Hidden options");
     hidden.add_options()
-#ifdef __MACOSX__
+#ifdef __APPLE__
     ("psn", po::value<std::string>(), "Application PSN number")
         ("NSDocumentRevisionsDebugMode", po::value<std::string>()->zero_tokens(), "DocumentRevisionsDebugMode")
 #endif
@@ -185,7 +201,7 @@ int main(int argc, char* argv[])
     {
         po::store(po::command_line_parser(argc, argv)
                   .options(cmdline_options)
-#ifdef __MACOSX__
+#ifdef __APPLE__
                   .extra_parser(parsePns)
 #endif
                   .positional(p)
@@ -244,7 +260,7 @@ int main(int argc, char* argv[])
         fclose(pFile);
     }
 
-#ifdef __MACOSX__
+#ifdef __APPLE__
     fs::path execPath = argv[0];
 
     if ( execPath.string().find(".app/") != std::string::npos || vm.count("psn"))
@@ -277,28 +293,46 @@ int main(int argc, char* argv[])
 #endif
 
     OSLM_INFO_IF( "Runtime working directory: " << rwd << " => " << ::absolute(rwd), vm.count("rwd") );
-    for(const fs::path& bundlePath :  bundlePaths )
-    {
-        OSLM_INFO_IF( "Bundle paths are: " << bundlePath.string() << " => " << ::absolute(bundlePath),
-                      vm.count("bundle-path") );
-    }
+
     OSLM_INFO_IF( "Profile path: " << profileFile << " => " << ::absolute(profileFile), vm.count("profile"));
     OSLM_INFO_IF( "Profile-args: " << profileArgs, vm.count("profile-args") );
 
     // Check if path exist
     OSLM_FATAL_IF( "Runtime working directory doesn't exist: " << rwd.string() << " => " << ::absolute(
                        rwd), !::boost::filesystem::exists(rwd.string()) );
-    for(const fs::path& bundlePath :  bundlePaths )
-    {
-        OSLM_FATAL_IF( "Bundle paths doesn't exist: " << bundlePath.string() << " => " << ::absolute(
-                           bundlePath), !::boost::filesystem::exists(bundlePath.string()) );
-    }
+
     OSLM_FATAL_IF( "Profile path doesn't exist: " << profileFile.string() << " => " << ::absolute(
                        profileFile), !::boost::filesystem::exists(profileFile.string()));
 
     std::transform( bundlePaths.begin(), bundlePaths.end(), bundlePaths.begin(), ::absolute );
     profileFile = ::absolute(profileFile);
     rwd         = ::absolute(rwd);
+
+    // Automatically adds the bundle folders where the profile.xml is located if it was not already there
+    const auto profileBundlePath = profileFile.parent_path().parent_path();
+    bool findProfileBundlePath   = false;
+    for(const fs::path& bundlePath :  bundlePaths )
+    {
+        if(profileBundlePath == bundlePath)
+        {
+            findProfileBundlePath = true;
+        }
+    }
+    if(!findProfileBundlePath)
+    {
+        bundlePaths.push_back(profileBundlePath);
+    }
+
+    for(const fs::path& bundlePath :  bundlePaths )
+    {
+        OSLM_INFO_IF( "Bundle paths are: " << bundlePath.string() << " => " << ::absolute(bundlePath),
+                      vm.count("bundle-path") );
+    }
+    for(const fs::path& bundlePath :  bundlePaths )
+    {
+        OSLM_FATAL_IF( "Bundle paths doesn't exist: " << bundlePath.string() << " => " << ::absolute(
+                           bundlePath), !::boost::filesystem::exists(bundlePath.string()) );
+    }
 
 #ifdef _WIN32
     const bool isChdirOk = static_cast<bool>(SetCurrentDirectory(rwd.string().c_str()) != 0);

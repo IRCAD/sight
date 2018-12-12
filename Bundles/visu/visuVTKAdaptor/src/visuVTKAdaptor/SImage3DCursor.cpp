@@ -1,8 +1,24 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #include "visuVTKAdaptor/SImage3DCursor.hpp"
 
@@ -116,10 +132,17 @@ void SImage3DCursor::stopping()
 void SImage3DCursor::updating()
 {
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    this->updateImageInfos(image);
-    int index[3] = { *m_sagittalIndex, *m_frontalIndex, *m_axialIndex };
+    m_helper.updateImageInfos(image);
+
+    int index[3];
+    ::fwData::Integer::sptr indexesPtr[3];
+    m_helper.getSliceIndex(indexesPtr);
+
+    index[0] = indexesPtr[0]->value();
+    index[1] = indexesPtr[1]->value();
+    index[2] = indexesPtr[2]->value();
     double center[3];
-    this->sliceIndexToWorld(index, center);
+    m_helper.sliceIndexToWorld(index, center);
     this->updateCursorPosition(center);
     this->requestRender();
 }
@@ -129,20 +152,19 @@ void SImage3DCursor::updating()
 void SImage3DCursor::swapping()
 {
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    this->updateImageInfos(image);
+    m_helper.updateImageInfos(image);
 }
 
 //-----------------------------------------------------------------------------
 
 void SImage3DCursor::updateSliceIndex(int axial, int frontal, int sagittal)
 {
-    m_axialIndex->value()    = axial;
-    m_frontalIndex->value()  = frontal;
-    m_sagittalIndex->value() = sagittal;
+    const int indexes[] = {sagittal, frontal, axial};
+    m_helper.setSliceIndex(indexes);
 
     int index[3] = {sagittal, frontal, axial};
     double center[3];
-    this->sliceIndexToWorld(index, center);
+    m_helper.sliceIndexToWorld(index, center);
     this->updateCursorPosition(center);
     this->requestRender();
 }

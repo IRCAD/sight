@@ -1,8 +1,24 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2018.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2014-2018 IRCAD France
+ * Copyright (C) 2014-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #pragma once
 
@@ -21,42 +37,47 @@ namespace fwRenderOgre
 class FWRENDEROGRE_CLASS_API ITransformable
 {
 public:
+
     /**
      * @brief Get the Ogre identifier of the transform in the scene manager.
-     * @return This transform service Id
+     * @return This transform service Id.
      */
     FWRENDEROGRE_API ::fwRenderOgre::SRender::OgreObjectIdType getTransformId() const;
 
     /**
      * @brief Set the Ogre identifier of the transform in the scene manager.
-     * @param newId The new transform service Id
+     * @param _id The new transform service Id.
      */
-    FWRENDEROGRE_API void setTransformId(::fwRenderOgre::SRender::OgreObjectIdType newId);
+    FWRENDEROGRE_API void setTransformId(::fwRenderOgre::SRender::OgreObjectIdType _id);
 
     /**
-     * @brief getParentTransformUID
-     * @return This parent transform service UID
+     * @brief Retrieve the node matching m_transformId.
+     * @param _parentNode The parent node of the created node.
+     * @return The node matching m_transformId.
      */
-    FWRENDEROGRE_API ::fwRenderOgre::SRender::OgreObjectIdType getParentTransformId() const;
+    FWRENDEROGRE_API ::Ogre::SceneNode* getTransformNode(::Ogre::SceneNode* _parentNode);
 
     /**
-     * @brief setParentTransformId
-     * @param newId This new parent transform service UID
+     * @brief Retrieve the node matching the given node name.
+     * @param _name The name of the node.
+     * @param _parentNode The parent node of the created node.
+     * @return The node matching m_transformId.
      */
-    FWRENDEROGRE_API void setParentTransformId(::fwRenderOgre::SRender::OgreObjectIdType newId);
+    FWRENDEROGRE_API static ::Ogre::SceneNode* getTransformNode(const std::string& _name,
+                                                                ::Ogre::SceneNode* _parentNode);
 
-    FWRENDEROGRE_API static const std::string s_CONFIG_TRANSFORM;
+    /**
+     * @brief s_TRANSFORM_CONFIG The key used in xml configuration.
+     */
+    FWRENDEROGRE_API static const std::string s_TRANSFORM_CONFIG;
 
-protected:
-    /// Ogre transformation of this service
-    ::Ogre::Affine3 m_ogreTransform;
-    /// Attached transform service
-    ::fwRenderOgre::IAdaptor::wptr m_transformService;
+private:
+
+    /// Ogre transform node.
+    ::Ogre::SceneNode* m_transformNode;
 
     /// This transform identifier
     ::fwRenderOgre::SRender::OgreObjectIdType m_transformId;
-    /// This parent transform identifier
-    ::fwRenderOgre::SRender::OgreObjectIdType m_parentTransformId;
 };
 
 } //namespace fwRenderOgre

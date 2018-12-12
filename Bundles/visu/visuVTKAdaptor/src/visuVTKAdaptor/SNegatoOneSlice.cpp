@@ -1,8 +1,24 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2018.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #include "visuVTKAdaptor/SNegatoOneSlice.hpp"
 
@@ -16,6 +32,7 @@
 
 #include <fwData/Color.hpp>
 #include <fwData/Image.hpp>
+#include <fwData/mt/ObjectWriteLock.hpp>
 #include <fwData/String.hpp>
 #include <fwData/TransferFunction.hpp>
 
@@ -118,7 +135,7 @@ void SNegatoOneSlice::cleanImageSource()
         imgSliceAdaptor->setVtkImageSource(this->getImageSource());
         imgSliceAdaptor->setInterpolation(m_interpolation);
         imgSliceAdaptor->setActorOpacity(m_actorOpacity);
-        imgSliceAdaptor->setOrientation(m_orientation);
+        imgSliceAdaptor->setOrientation(m_helper.getOrientation());
 
         m_imageSliceAdaptor = imgSliceAdaptor;
     }
@@ -147,10 +164,13 @@ void SNegatoOneSlice::cleanImageSource()
 
         imgAdaptor->setVtkImageRegister(this->getImageSource());
 
-        ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction >(s_TF_INOUT);
-        if (tf)
+        ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
         {
-            imgAdaptor->registerInOut(tf, s_TF_INOUT, false, true);
+            if(tf != nullptr)
+            {
+                ::fwData::mt::ObjectWriteLock tfLock(tf);
+                imgAdaptor->registerInOut(tf, s_TF_INOUT, false, true);
+            }
         }
 
         imgAdaptor->setImageOpacity(1.);
@@ -204,16 +224,22 @@ void SNegatoOneSlice::swapping(const KeyType& key)
         && nullptr == vtkImageCheckerboard::SafeDownCast(this->getImageSource()))
     {
         IAdaptor::sptr imageAdaptor = this->getImageAdaptor();
-        ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction >(s_TF_INOUT);
-        if (tf)
+
+        ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
         {
-            imageAdaptor->registerInOut(tf, s_TF_INOUT, false, true);
-            imageAdaptor->swapKey(s_TF_INOUT, nullptr);
-        }
-        else if(::fwServices::OSR::isRegistered(s_TF_INOUT, AccessType::INOUT, imageAdaptor))
-        {
-            ::fwServices::OSR::unregisterService(s_TF_INOUT, AccessType::INOUT, imageAdaptor);
-            imageAdaptor->swapKey(s_TF_INOUT, nullptr);
+            if(tf != nullptr)
+            {
+                {
+                    ::fwData::mt::ObjectWriteLock tfLock(tf);
+                    imageAdaptor->registerInOut(tf, s_TF_INOUT, false, true);
+                }
+                imageAdaptor->swapKey(s_TF_INOUT, nullptr);
+            }
+            else if(::fwServices::OSR::isRegistered(s_TF_INOUT, AccessType::INOUT, imageAdaptor))
+            {
+                imageAdaptor->unregisterInOut(s_TF_INOUT);
+                imageAdaptor->swapKey(s_TF_INOUT, nullptr);
+            }
         }
     }
 }
@@ -222,13 +248,13 @@ void SNegatoOneSlice::swapping(const KeyType& key)
 
 void SNegatoOneSlice::updateSliceType(int from, int to)
 {
-    if( to == static_cast<int>(m_orientation) )
+    if( to == static_cast<int>(m_helper.getOrientation()) )
     {
-        setOrientation( static_cast< Orientation >( from ));
+        m_helper.setOrientation( static_cast< Orientation >( from ));
     }
-    else if(from == static_cast<int>(m_orientation))
+    else if(from == static_cast<int>(m_helper.getOrientation()))
     {
-        setOrientation( static_cast< Orientation >( to ));
+        m_helper.setOrientation( static_cast< Orientation >( to ));
     }
 }
 
@@ -252,15 +278,15 @@ void SNegatoOneSlice::configuring()
     const std::string orientation = config.get<std::string>("sliceIndex", "axial");
     if(orientation == "axial" )
     {
-        m_orientation = Z_AXIS;
+        m_helper.setOrientation(Orientation::Z_AXIS);
     }
     else if(orientation == "frontal" )
     {
-        m_orientation = Y_AXIS;
+        m_helper.setOrientation(Orientation::Y_AXIS);
     }
     else if(orientation == "sagittal" )
     {
-        m_orientation = X_AXIS;
+        m_helper.setOrientation(Orientation::X_AXIS);
     }
 
     const std::string tfalpha = config.get<std::string>("tfalpha", "no");

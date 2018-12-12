@@ -1,5 +1,5 @@
 # Generates Eclipse project (.project + .cproject) for all specified projects.
-# Works only with fw4spl CMake script.
+# Works only with sight CMake script.
 function(eclipseGenerator)
 
     #find compiler system include directories
@@ -9,7 +9,7 @@ function(eclipseGenerator)
         include(CMakeExtraGeneratorDetermineCompilerMacrosAndIncludeDirs)
         set(SYSTEM_INCLUDES ${CMAKE_EXTRA_GENERATOR_C_SYSTEM_INCLUDE_DIRS} ${CMAKE_EXTRA_GENERATOR_CXX_SYSTEM_INCLUDE_DIRS})
     endif()
-    
+
     foreach(PROJECT ${ARGV})
         if(NOT TARGET ${PROJECT})
             message("Project target ${PROJECT} doesn't exist")
@@ -36,13 +36,13 @@ function(eclipseGenerator)
         endif()
         set(MAKE ${CMAKE_MAKE_PROGRAM})
         set(DEPS_INCLUDES "")
-        
+
         get_target_property(PROJECT_INCLUDE_DIRECTORIES ${PROJECT} INCLUDE_DIRECTORIES)
         list(REMOVE_DUPLICATES PROJECT_INCLUDE_DIRECTORIES)
         foreach(INCLUDE_DIR ${PROJECT_INCLUDE_DIRECTORIES})
             set(DEPS_INCLUDES "${DEPS_INCLUDES}\n<listOptionValue builtIn=\"false\" value=\"${INCLUDE_DIR}\"/>")
         endforeach()
-        
+
         foreach(DEPENDENCY ${${PROJECT}_DEPENDENCIES})
             get_target_property(DEPENDENCY_INCLUDE_DIRECTORIES ${DEPENDENCY} INCLUDE_DIRECTORIES)
             list(REMOVE_DUPLICATES DEPENDENCY_INCLUDE_DIRECTORIES)
@@ -50,13 +50,13 @@ function(eclipseGenerator)
                 set(DEPS_INCLUDES "${DEPS_INCLUDES}\n<listOptionValue builtIn=\"false\" value=\"${INCLUDE_DIR}\"/>")
             endforeach()
         endforeach()
-        
+
         #add system include dirs
         foreach(SYS_INC ${SYSTEM_INCLUDES})
             string( REGEX REPLACE "\\\\" "/" SYS_INC ${SYS_INC} )
             set(DEPS_INCLUDES "${DEPS_INCLUDES}\n<listOptionValue builtIn=\"false\" value=\"${SYS_INC}\"/>")
         endforeach()
-        
+
         configure_file(${CMAKE_CURRENT_SOURCE_DIR}/CMake/eclipse/.cproject.in ${${PROJECT}_DIR}/.cproject @ONLY )
         configure_file(${CMAKE_CURRENT_SOURCE_DIR}/CMake/eclipse/.project.in ${${PROJECT}_DIR}/.project @ONLY )
     endforeach()

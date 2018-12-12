@@ -1,0 +1,13 @@
+fwLoadProperties()
+
+find_package(Qt5 QUIET COMPONENTS Core REQUIRED)
+
+file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/${FWBUNDLE_RC_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}")
+
+qt5_add_binary_resources(${FWPROJECT_NAME}_DARKSTYLE_RCC
+    "rc/darkstyle.qrc"
+    DESTINATION "${CMAKE_BINARY_DIR}/${FWBUNDLE_RC_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}/darkstyle.rcc"
+)
+
+add_dependencies(${FWPROJECT_NAME} ${FWPROJECT_NAME}_DARKSTYLE_RCC)
+

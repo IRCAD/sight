@@ -1,8 +1,24 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2018.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #include "visuVTKAdaptor/SLabeledPointList.hpp"
 
@@ -10,6 +26,7 @@
 #include "visuVTKAdaptor/SPointList.hpp"
 
 #include <fwCom/Signal.hxx>
+#include <fwCom/Slots.hxx>
 
 #include <fwData/Point.hpp>
 #include <fwData/PointList.hpp>
@@ -37,6 +54,8 @@ namespace visuVTKAdaptor
 {
 
 static const ::fwServices::IService::KeyType s_POINTLIST_INOUT = "pointList";
+
+const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT = "updateVisibility";
 
 //------------------------------------------------------------------------------
 
@@ -187,6 +206,7 @@ SLabeledPointList::SLabeledPointList() noexcept :
     m_radius(7.0),
     m_interaction(true)
 {
+    newSlot(s_UPDATE_VISIBILITY_SLOT, &SLabeledPointList::updateVisibility, this);
 }
 
 //------------------------------------------------------------------------------
@@ -305,6 +325,33 @@ void SLabeledPointList::stopping()
     connections.push(s_POINTLIST_INOUT, ::fwData::PointList::s_POINT_REMOVED_SIG, s_UPDATE_SLOT);
 
     return connections;
+}
+
+//------------------------------------------------------------------------------
+
+void SLabeledPointList::updateVisibility( bool isVisible)
+{
+    const auto& services = this->getRegisteredServices();
+    for(const auto& service : services)
+    {
+        auto srv = ::visuVTKAdaptor::SPointList::dynamicCast(service.lock());
+        if(srv)
+        {
+            srv->updateVisibility(isVisible);
+        }
+        else
+        {
+            auto srv2 = ::visuVTKAdaptor::SPointLabel::dynamicCast(service.lock());
+            if(srv2)
+            {
+                srv2->updateVisibility(isVisible);
+            }
+            else
+            {
+                SLM_WARN("::visuVTKAdaptor::SPointLabel cast failed");
+            }
+        }
+    }
 }
 
 //------------------------------------------------------------------------------

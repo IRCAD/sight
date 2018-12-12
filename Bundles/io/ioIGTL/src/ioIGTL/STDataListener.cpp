@@ -1,8 +1,24 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2018.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #include "ioIGTL/STDataListener.hpp"
 
@@ -135,11 +151,12 @@ void STDataListener::runClient()
         while (m_client.isConnected())
         {
             std::string deviceName;
-            ::fwData::Object::sptr receiveObject = m_client.receiveObject(deviceName);
+            double timestamp = 0;
+            ::fwData::Object::sptr receiveObject = m_client.receiveObject(deviceName, timestamp);
             if (receiveObject)
             {
                 composite->shallowCopy(receiveObject);
-                this->manageTimeline(composite);
+                this->manageTimeline(composite, timestamp);
             }
         }
     }
@@ -183,10 +200,15 @@ void STDataListener::stopping()
 
 //-----------------------------------------------------------------------------
 
-void STDataListener::manageTimeline(const ::fwData::Composite::sptr& obj)
+void STDataListener::manageTimeline(const ::fwData::Composite::sptr& obj, double timestamp)
 {
-    ::fwCore::HiResClock::HiResClockType timestamp = ::fwCore::HiResClock::getTimeInMilliSec();
-    ::arData::MatrixTL::sptr matTL                 = this->getInOut< ::arData::MatrixTL>(s_TIMELINE_KEY);
+    const double epsilon = std::numeric_limits<double>::epsilon();
+    if (timestamp < epsilon && timestamp > -epsilon)
+    {
+        timestamp = ::fwCore::HiResClock::getTimeInMilliSec();
+    }
+
+    ::arData::MatrixTL::sptr matTL = this->getInOut< ::arData::MatrixTL>(s_TIMELINE_KEY);
     SPTR(::arData::MatrixTL::BufferType) matrixBuf;
     matrixBuf = matTL->createBuffer(timestamp);
 

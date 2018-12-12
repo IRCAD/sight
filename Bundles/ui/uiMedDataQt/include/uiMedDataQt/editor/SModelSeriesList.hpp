@@ -1,8 +1,24 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2018.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #pragma once
 
@@ -81,23 +97,13 @@ class UIMEDDATAQT_CLASS_API SModelSeriesList :  public QObject,
 Q_OBJECT
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SModelSeriesList)(::fwGui::editor::IEditor) );
+    fwCoreServiceClassDefinitionsMacro( (SModelSeriesList)(::fwGui::editor::IEditor) )
 
     /// Constructor. Do nothing.
     UIMEDDATAQT_API SModelSeriesList() noexcept;
 
     /// Destructor. Do nothing.
     UIMEDDATAQT_API virtual ~SModelSeriesList() noexcept;
-
-    /**
-     * @brief Returns proposals to connect service slots to associated object signals,
-     * this method is used for obj/srv auto connection
-     *
-     * Connect ModelSeries::s_MODIFIED_SIG to this::s_UPDATE_SLOT
-     * Connect ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG to this::s_UPDATE_SLOT
-     * Connect ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG to this::s_UPDATE_SLOT
-     */
-    UIMEDDATAQT_API virtual KeyConnectionsType getObjSrvConnections() const override;
 
 protected:
 
@@ -168,6 +174,8 @@ private:
     DisplayedInformation m_displayedInfo;
 
     bool m_enableHideAll;
+
+    QStringList m_headers;
 
     /// Signal emitted when a reconstruction is selected
     ReconstructionSelectedSignalType::sptr m_sigReconstructionSelected;

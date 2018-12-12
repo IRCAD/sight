@@ -1,8 +1,24 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #include "visuVTKAdaptor/SImageSlice.hpp"
 
@@ -120,9 +136,8 @@ void SImageSlice::updating()
 
 void SImageSlice::updateSliceIndex(int axial, int frontal, int sagittal)
 {
-    m_axialIndex->value()    = axial;
-    m_frontalIndex->value()  = frontal;
-    m_sagittalIndex->value() = sagittal;
+    const int indexes[] = {sagittal, frontal, axial};
+    m_helper.setSliceIndex(indexes);
 
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("Missing image", image);
@@ -135,13 +150,13 @@ void SImageSlice::updateSliceIndex(int axial, int frontal, int sagittal)
 
 void SImageSlice::updateSliceType(int from, int to)
 {
-    if( to == static_cast<int>(m_orientation) )
+    if( to == static_cast<int>(m_helper.getOrientation()) )
     {
-        setOrientation( static_cast< Orientation >( from ));
+        m_helper.setOrientation( static_cast< ::fwDataTools::helper::MedicalImage::Orientation >( from ));
     }
-    else if(from == static_cast<int>(m_orientation))
+    else if(from == static_cast<int>(m_helper.getOrientation()))
     {
-        setOrientation( static_cast< Orientation >( to ));
+        m_helper.setOrientation( static_cast< ::fwDataTools::helper::MedicalImage::Orientation >( to ));
     }
     this->updating();
 }
@@ -157,15 +172,15 @@ void SImageSlice::configuring()
     const std::string orientation = config.get<std::string>("sliceIndex", "axial");
     if(orientation == "axial" )
     {
-        m_orientation = Z_AXIS;
+        m_helper.setOrientation(::fwDataTools::helper::MedicalImage::Z_AXIS);
     }
     else if(orientation == "frontal" )
     {
-        m_orientation = Y_AXIS;
+        m_helper.setOrientation(::fwDataTools::helper::MedicalImage::Y_AXIS);
     }
     else if(orientation == "sagittal" )
     {
-        m_orientation = X_AXIS;
+        m_helper.setOrientation(::fwDataTools::helper::MedicalImage::X_AXIS);
     }
 
     this->setVtkImageSourceId( config.get<std::string>("vtkimagesource", ""));
@@ -182,7 +197,7 @@ void SImageSlice::configuring()
 
 void SImageSlice::updateImage( ::fwData::Image::sptr image  )
 {
-    this->updateImageInfos(image);
+    m_helper.updateImageInfos(image);
     this->setVtkPipelineModified();
 }
 
@@ -190,13 +205,16 @@ void SImageSlice::updateImage( ::fwData::Image::sptr image  )
 
 void SImageSlice::updateSImageSliceIndex( ::fwData::Image::sptr image )
 {
-    int axialIndex    = m_axialIndex->value();
-    int frontalIndex  = m_frontalIndex->value();
-    int sagittalIndex = m_sagittalIndex->value();
+
+    ::fwData::Integer::sptr indexesPtr[3];
+    m_helper.getSliceIndex(indexesPtr);
+    int axialIndex    = indexesPtr[2]->value();
+    int frontalIndex  = indexesPtr[1]->value();
+    int sagittalIndex = indexesPtr[0]->value();
 
     const int pos[3] = { sagittalIndex, frontalIndex, axialIndex  };
 
-    this->setSlice( pos[ m_orientation], image );
+    this->setSlice( pos[m_helper.getOrientation()], image );
 }
 
 //------------------------------------------------------------------------------
@@ -205,11 +223,11 @@ void SImageSlice::setSlice( int slice, ::fwData::Image::sptr image  )
 {
     int extent[6];
     std::fill(  extent, extent+6, 0);
-    extent[1]                 = static_cast<int>(image->getSize()[0]-1);
-    extent[3]                 = static_cast<int>(image->getSize()[1]-1);
-    extent[5]                 = static_cast<int>(image->getSize()[2]-1);
-    extent[2*m_orientation]   = slice;
-    extent[2*m_orientation+1] = slice;
+    extent[1]                             = static_cast<int>(image->getSize()[0]-1);
+    extent[3]                             = static_cast<int>(image->getSize()[1]-1);
+    extent[5]                             = static_cast<int>(image->getSize()[2]-1);
+    extent[2*m_helper.getOrientation()]   = slice;
+    extent[2*m_helper.getOrientation()+1] = slice;
 
     OSLM_TRACE("DisplayExtent : " << " X min: " << extent[0] << " X max: " << extent[1] <<
                " Y min: " << extent[2] << " Y max: " << extent[3] <<
@@ -320,7 +338,7 @@ void SImageSlice::updateOutline()
     double* extent    = m_imageActor->GetBounds();
     vtkPoints* points = m_planeOutlinePolyData->GetPoints();
 
-    const int* index = indexSet[ m_orientation ];
+    const int* index = indexSet[ m_helper.getOrientation() ];
     for ( int i = 0; i < 4; ++i)
     {
         double pt[3];
@@ -333,7 +351,7 @@ void SImageSlice::updateOutline()
     points->GetData()->Modified();
     m_planeOutlinePolyData->Modified();
 
-    m_planeOutlineActor->GetProperty()->SetColor( colors[m_orientation]);
+    m_planeOutlineActor->GetProperty()->SetColor( colors[m_helper.getOrientation()]);
     this->setVtkPipelineModified();
 }
 

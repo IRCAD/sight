@@ -1,11 +1,26 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
-#ifndef __FWRUNTIME_OPERATIONS_HPP__
-#define __FWRUNTIME_OPERATIONS_HPP__
+#pragma once
 
 #include "fwRuntime/config.hpp"
 #include "fwRuntime/ConfigurationElement.hpp"
@@ -38,6 +53,14 @@ namespace fwRuntime
 {
 
 /**
+ * @brief   Initializes Sight runtime and discovers default bundles. To be used when building an external application
+ *          with Sight.
+ *
+ * @param   directory   a path to the directory where Sight is installed
+ */
+FWRUNTIME_API void init( const boost::filesystem::path& directory );
+
+/**
  * @brief       Retrieves the extension point having the specified identifier.
  *
  * @param[in]   identifier  a string containing an extension point identifier
@@ -60,7 +83,7 @@ FWRUNTIME_API std::shared_ptr<ExtensionPoint> findExtensionPoint( const std::str
 template<typename T>
 T* createExecutableInstance(
     const std::shared_ptr<Extension>    extension,
-    const std::string& element = "executable",
+    const std::string& element   = "executable",
     const std::string& attribute = "class" )
 {
     // Retrieves the right configuration element.
@@ -281,7 +304,7 @@ FWRUNTIME_API ::boost::filesystem::path getBundleResourceFilePath(const std::str
 /**
  * @brief   Retrieve a filesystem valid path for a resource path whose first element is a bundle identifier.
  * For instance for "bundle-0.2/dir/file.txt", the function returns
- * "/home/login/f4s/build/share/bundle-0.2/dir/file.txt"
+ * "/home/login/sight/build/share/bundle-0.2/dir/file.txt"
  *
  * @param   path                relative path whose first element is a bundle identifier
  *
@@ -292,7 +315,7 @@ FWRUNTIME_API ::boost::filesystem::path getBundleResourceFilePath(const ::boost:
 /**
  * @brief   Retrieve a filesystem valid path for a resource path whose first element is a library identifier.
  * For instance for "fwLib-0.2/dir/file.txt", the function returns
- * "/home/login/f4s/build/share/fwLib-0.2/dir/file.txt"
+ * "/home/login/sight/build/share/fwLib-0.2/dir/file.txt"
  *
  * @param   path                relative path whose first element is a library identifier
  *
@@ -307,12 +330,12 @@ FWRUNTIME_API ::boost::filesystem::path getLibraryResourceFilePath(const ::boost
  * For instance for a library:
  *  - "fwLib-0.2/dir/file.txt"
  * the function returns:
- *  - "/home/login/f4s/build/share/fwLib-0.2/dir/file.txt"
+ *  - "/home/login/sight/build/share/fwLib-0.2/dir/file.txt"
  *
  * For instance for a bundle:
  *  - "bundle-0.2/dir/file.txt"
  *  the function returns:
- * - "/home/login/f4s/build/share/bundle-0.2/dir/file.txt"
+ * - "/home/login/sight/build/share/bundle-0.2/dir/file.txt"
  *
  * @param   path   relative path whose first element is a bundle or library identifier
  *
@@ -361,6 +384,16 @@ FWRUNTIME_API ::boost::filesystem::path getBundleResourcePath(const IExecutable*
 FWRUNTIME_API void addBundles( const boost::filesystem::path& directory );
 
 /**
+ * @brief   Load a bundle.
+ *
+ * @param   identifier  a string containing a bundle identifier
+ * @param   version     a version (none by default)
+ *
+ * @return  a shared pointer to the found bundle, or empty when it is not found
+ */
+FWRUNTIME_API std::shared_ptr<Bundle> loadBundle( const std::string& identifier, const Version& version = Version() );
+
+/**
  * @brief   Starts the given bundle set profile.
  *
  * @param   path    a path to an xml profile file
@@ -372,7 +405,7 @@ FWRUNTIME_API std::shared_ptr< ::fwRuntime::profile::Profile > startProfile( con
 /**
  * @brief   Retrieves the bundle with the given identifier and version
  *
- * @param   identifier  a string containing a bunle identifier
+ * @param   identifier  a string containing a bundle identifier
  * @param   version     a version (none by default)
  *
  * @return  a shared pointer to the found bundle, or empty when none
@@ -387,5 +420,3 @@ FWRUNTIME_API std::shared_ptr<Bundle> findBundle( const std::string& identifier,
 FWRUNTIME_API void startBundle(const std::string& identifier);
 
 } // namespace fwRuntime
-
-#endif // __FWRUNTIME_OPERATIONS_HPP__

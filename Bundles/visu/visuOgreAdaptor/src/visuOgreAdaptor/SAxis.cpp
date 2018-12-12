@@ -1,8 +1,24 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017-2018.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2017-2018 IRCAD France
+ * Copyright (C) 2017-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #include "visuOgreAdaptor/SAxis.hpp"
 
@@ -86,7 +102,7 @@ bool SAxis::getVisibility() const
 ::fwServices::IService::KeyConnectionsMap visuOgreAdaptor::SAxis::getAutoConnections() const
 {
     ::fwServices::IService::KeyConnectionsMap connections;
-    connections.push( ::visuOgreAdaptor::STransform::s_CONFIG_TRANSFORM, ::fwData::Object::s_MODIFIED_SIG,
+    connections.push( ::visuOgreAdaptor::STransform::s_TRANSFORM_CONFIG, ::fwData::Object::s_MODIFIED_SIG,
                       s_UPDATE_SLOT );
     return connections;
 }
@@ -100,8 +116,7 @@ void SAxis::configuring()
     const ConfigType configType = this->getConfigTree();
     const ConfigType config     = configType.get_child("config.<xmlattr>");
 
-    // parsing transform or create an "empty" one
-    const std::string transformId = config.get<std::string>(::visuOgreAdaptor::STransform::s_CONFIG_TRANSFORM,
+    const std::string transformId = config.get<std::string>(::visuOgreAdaptor::STransform::s_TRANSFORM_CONFIG,
                                                             this->getID() + "_transform");
 
     this->setTransformId(transformId);
@@ -118,8 +133,7 @@ void SAxis::starting()
     this->getRenderService()->makeCurrent();
 
     ::Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
-
-    m_sceneNode = rootSceneNode->createChildSceneNode(this->getTransformId());
+    m_sceneNode                      = this->getTransformNode(rootSceneNode);
 
     ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
 
@@ -162,8 +176,7 @@ void SAxis::starting()
                                                          cylinderRadius,
                                                          cylinderLength,
                                                          sample);
-    ::Ogre::SceneNode* xLineNode = m_sceneNode->createChildSceneNode(
-        this->getTransformId() + "_" + this->getID() + "_xLine");
+    ::Ogre::SceneNode* xLineNode = m_sceneNode->createChildSceneNode(this->getID() + "_xLine");
     xLine->setBoundingBox(::Ogre::AxisAlignedBox(::Ogre::Vector3(0.f, -coneRadius, -coneRadius),
                                                  ::Ogre::Vector3(m_length, coneRadius, coneRadius)));
     xLineNode->attachObject(xLine);
@@ -176,8 +189,7 @@ void SAxis::starting()
                                                          cylinderRadius,
                                                          cylinderLength,
                                                          sample);
-    ::Ogre::SceneNode* yLineNode = m_sceneNode->createChildSceneNode(
-        this->getTransformId() + "_" + this->getID() + "_yLine");
+    ::Ogre::SceneNode* yLineNode = m_sceneNode->createChildSceneNode(this->getID() + "_yLine");
     yLine->setBoundingBox(::Ogre::AxisAlignedBox(::Ogre::Vector3(-coneRadius, 0.f, -coneRadius),
                                                  ::Ogre::Vector3(coneRadius, m_length, coneRadius)));
     yLineNode->attachObject(yLine);
@@ -190,8 +202,7 @@ void SAxis::starting()
                                                          cylinderRadius,
                                                          cylinderLength,
                                                          sample);
-    ::Ogre::SceneNode* zLineNode = m_sceneNode->createChildSceneNode(
-        this->getTransformId() + "_" + this->getID() + "_zLine");
+    ::Ogre::SceneNode* zLineNode = m_sceneNode->createChildSceneNode(this->getID() + "_zLine");
     yLine->setBoundingBox(::Ogre::AxisAlignedBox(::Ogre::Vector3(-coneRadius, -coneRadius, 0.f),
                                                  ::Ogre::Vector3(coneRadius, coneRadius, m_length)));
     zLineNode->attachObject(zLine);
@@ -207,8 +218,7 @@ void SAxis::starting()
                                                      coneRadius,
                                                      coneLength,
                                                      sample);
-    ::Ogre::SceneNode* xConeNode = m_sceneNode->createChildSceneNode(
-        this->getTransformId() + "_" + this->getID() + "_xCone");
+    ::Ogre::SceneNode* xConeNode = m_sceneNode->createChildSceneNode(this->getID() + "_xCone");
 
     if(m_enableLabel)
     {
@@ -228,8 +238,7 @@ void SAxis::starting()
                                                      coneRadius,
                                                      coneLength,
                                                      sample);
-    ::Ogre::SceneNode* yConeNode = m_sceneNode->createChildSceneNode(
-        this->getTransformId() + "_" + this->getID() + "_yCone");
+    ::Ogre::SceneNode* yConeNode = m_sceneNode->createChildSceneNode(this->getID() + "_yCone");
     yConeNode->attachObject(yCone);
 
     if(m_enableLabel)
@@ -250,8 +259,7 @@ void SAxis::starting()
                                                      coneRadius,
                                                      coneLength,
                                                      sample);
-    ::Ogre::SceneNode* zConeNode = m_sceneNode->createChildSceneNode(
-        this->getTransformId() + "_" + this->getID() + "_zCone");
+    ::Ogre::SceneNode* zConeNode = m_sceneNode->createChildSceneNode(this->getID() + "_zCone");
     zConeNode->attachObject(zCone);
 
     if(m_enableLabel)
@@ -288,8 +296,12 @@ void SAxis::stopping()
 
     if(m_sceneNode != nullptr)
     {
-        m_sceneNode->removeAndDestroyAllChildren();
-        sceneMgr->destroySceneNode(m_sceneNode);
+        m_sceneNode->removeAndDestroyChild(this->getID() + "_xLine");
+        m_sceneNode->removeAndDestroyChild(this->getID() + "_yLine");
+        m_sceneNode->removeAndDestroyChild(this->getID() + "_zLine");
+        m_sceneNode->removeAndDestroyChild(this->getID() + "_xCone");
+        m_sceneNode->removeAndDestroyChild(this->getID() + "_yCone");
+        m_sceneNode->removeAndDestroyChild(this->getID() + "_zCone");
     }
 
     if(m_enableLabel)

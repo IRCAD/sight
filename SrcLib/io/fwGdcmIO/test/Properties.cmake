@@ -18,3 +18,6 @@ set( DEPENDENCIES
     fwDataIO
     )
 set( REQUIREMENTS )
+set( CONAN_DEPS
+    gdcm/2.8.6-r1@sight/stable
+)

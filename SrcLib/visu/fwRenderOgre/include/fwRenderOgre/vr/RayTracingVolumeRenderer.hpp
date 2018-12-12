@@ -1,8 +1,24 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2016-2018.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2016-2018 IRCAD France
+ * Copyright (C) 2016-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #pragma once
 
@@ -11,13 +27,12 @@
 #include "fwRenderOgre/R2VBRenderable.hpp"
 #include "fwRenderOgre/vr/GridProxyGeometry.hpp"
 #include "fwRenderOgre/vr/IVolumeRenderer.hpp"
+#include "fwRenderOgre/vr/RayEntryCompositor.hpp"
 #include "fwRenderOgre/vr/SATVolumeIllumination.hpp"
 
-#include <OGRE/OgreCompositorInstance.h>
 #include <OGRE/OgreGpuProgramParams.h>
 #include <OGRE/OgreManualObject.h>
 #include <OGRE/OgreMaterialManager.h>
-#include <OGRE/OgreRectangle2D.h>
 #include <OGRE/OgreTechnique.h>
 
 #include <vector>
@@ -27,6 +42,9 @@ namespace fwRenderOgre
 
 namespace vr
 {
+
+// We put proxy geometry in render queue 101. Rq 101 is not used by default and must be explicitly called.
+static const std::uint8_t s_PROXY_GEOMETRY_RQ_GROUP = 101;
 
 /**
  * @brief Implements a simple GPU ray-tracing renderer.
@@ -105,6 +123,9 @@ public:
     /// IllumVolume getter.
     FWRENDEROGRE_API SATVolumeIllumination::sptr getIllumVolume();
 
+    /// Returns whether or not the volume is visible.
+    FWRENDEROGRE_API bool isVisible() const;
+
     /// Layer getter
     ::fwRenderOgre::Layer::sptr getLayer() const;
 
@@ -136,6 +157,9 @@ protected:
 
     /// List of file names to attach to the fragment shader for compiling.
     std::vector<std::string> m_fragmentShaderAttachements;
+
+    /// Compositor used to compute volume ray entry/exit points.
+    RayEntryCompositor::uptr m_rayEntryCompositor {nullptr};
 
 private:
 
@@ -186,9 +210,6 @@ private:
     CameraListener* m_cameraListener;
 
     ::fwRenderOgre::Layer::wptr m_layer;
-
-    /// Name of the compositor used to compute entry points.
-    std::string m_entryPointsCompositor;
 };
 
 //-----------------------------------------------------------------------------

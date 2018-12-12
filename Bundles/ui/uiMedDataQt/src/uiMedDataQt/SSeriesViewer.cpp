@@ -1,8 +1,24 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2018.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #include "uiMedDataQt/SSeriesViewer.hpp"
 
@@ -70,11 +86,7 @@ void SSeriesViewer::stopping()
 void SSeriesViewer::updating()
 {
     ::fwData::Vector::csptr vector = this->getInput< ::fwData::Vector >(s_SERIES_INPUT);
-    if (!vector)
-    {
-        FW_DEPRECATED_KEY(s_SERIES_INPUT, "in", "18.0");
-        vector = this->getObject< ::fwData::Vector >();
-    }
+    SLM_ASSERT("The input key '" + s_SERIES_INPUT + "' is not defined.", vector);
 
     if(m_configTemplateManager)
     {
@@ -179,27 +191,12 @@ void SSeriesViewer::configuring()
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsType SSeriesViewer::getObjSrvConnections() const
-{
-    KeyConnectionsType connections;
-    connections.push_back( std::make_pair( ::fwData::Vector::s_ADDED_OBJECTS_SIG, s_UPDATE_SLOT ) );
-    connections.push_back( std::make_pair( ::fwData::Vector::s_REMOVED_OBJECTS_SIG, s_UPDATE_SLOT ) );
-
-    return connections;
-}
-
-//------------------------------------------------------------------------------
-
 ::fwServices::IService::KeyConnectionsMap SSeriesViewer::getAutoConnections() const
 {
     KeyConnectionsMap connections;
 
-    // FIXME hack to support deprecated getObjSrvConnection (connection to a object with a deprecated key)
-    if (this->getInput< ::fwData::Vector >(s_SERIES_INPUT))
-    {
-        connections.push(s_SERIES_INPUT, ::fwData::Vector::s_ADDED_OBJECTS_SIG, s_UPDATE_SLOT);
-        connections.push(s_SERIES_INPUT, ::fwData::Vector::s_REMOVED_OBJECTS_SIG, s_UPDATE_SLOT);
-    }
+    connections.push(s_SERIES_INPUT, ::fwData::Vector::s_ADDED_OBJECTS_SIG, s_UPDATE_SLOT);
+    connections.push(s_SERIES_INPUT, ::fwData::Vector::s_REMOVED_OBJECTS_SIG, s_UPDATE_SLOT);
 
     return connections;
 }

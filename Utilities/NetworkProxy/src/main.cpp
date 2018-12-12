@@ -1,8 +1,24 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #include "igtlMessageBase.h"
 #include "igtlMessageHeader.h"
@@ -27,10 +43,10 @@
 /**
  * @brief Utility app to redirect IGTL message with specific device name to a specific port
  *
- * In F4S each type of message has it's own port, but it's not the case in other system
+ * In Sight each type of message has it's own port, but it's not the case in other system
  * so if we wanted to communicate with this kind of system we need to redirect messages.
  * Example : A system send a TRANSFORM and a POLYDATA respectively named Matrix1 and Polydata1 on port 4242
- * In Order to receive them in F4S we configure the proxy to redirect Matrix1 on 4243 and PolyData1 on 4244
+ * In Order to receive them in Sight we configure the proxy to redirect Matrix1 on 4243 and PolyData1 on 4244
  * The configuration is handle in a file described below.
  *
  * Configuration file should be written as "Type" "DeviceNameOut" "DeviceNameOut" "port" on each line
@@ -98,7 +114,7 @@ std::map< std::string, configuration > initialize(std::string configFile)
 
                 OSLM_INFO(
                     "Type : "<<words[0]<<", device In : "<<words[1]<< ", device Out : "<<words[2]<<", port : "<<
-                    words[3]);
+                        words[3]);
 
                 messageType.push_back(words[0]);
                 deviceInTab.push_back(words[1]);

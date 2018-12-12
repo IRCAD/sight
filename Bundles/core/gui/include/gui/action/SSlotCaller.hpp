@@ -1,11 +1,26 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
-#ifndef __GUI_ACTION_SSLOTCALLER_HPP__
-#define __GUI_ACTION_SSLOTCALLER_HPP__
+#pragma once
 
 #include "gui/config.hpp"
 
@@ -28,11 +43,13 @@ namespace action
  * This action works on a ::fwData::Object. It does the action specify by the specify config.
  * @code{.xml}
    <service uid="..." type="::gui::action::SSlotCaller" >
+      <sync>true</sync>
       <slots>
           <slot>hasSlotsId/slotKey</slot>
       </slots>
    </service>
-   @endcode
+ * @subsection Configuration Configuration
+ * - \b sync : Determines whether slots are called asynchronously ("false") or synchronously ("true")
  */
 
 class GUI_CLASS_API SSlotCaller : public ::fwGui::IActionSrv
@@ -70,9 +87,10 @@ protected:
 
     // Vector representing slots
     SlotInfoContainerType m_slotInfos;
+
+    /// Determines whether slots are called asynchronously or synchronously
+    bool m_synchronized{ false };
 };
 
 } // namespace action
 } // namespace gui
-
-#endif /*__GUI_ACTION_SSLOTCALLER_HPP__*/

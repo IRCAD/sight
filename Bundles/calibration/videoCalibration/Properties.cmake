@@ -18,3 +18,6 @@ set( DEPENDENCIES
     cvIO
 )
 set( REQUIREMENTS dataReg servicesReg)
+set( CONAN_DEPS
+    opencv/3.4.3-r1@sight/stable
+)

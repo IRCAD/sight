@@ -1,8 +1,24 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2018.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #include "visuVTKAdaptor/SMesh.hpp"
 
@@ -262,8 +278,7 @@ public:
                 ::fwRenderVTK::IAdaptor::sptr meshService = ::fwRenderVTK::IAdaptor::dynamicCast(srv);
                 SLM_ASSERT("Service of type '::visuVTKAdaptor::SMesh' is not an adaptor", meshService);
 
-                ::fwServices::OSR::registerServiceInput(service->getInput< ::fwData::Mesh >(SMesh::s_MESH_INPUT),
-                                                        SMesh::s_MESH_INPUT, srv);
+                srv->registerInput(service->getInput< ::fwData::Mesh >(SMesh::s_MESH_INPUT), SMesh::s_MESH_INPUT);
 
                 ::visuVTKAdaptor::SMesh::sptr meshAdaptor = SMesh::dynamicCast(meshService);
 
@@ -361,6 +376,8 @@ SMesh::SMesh() noexcept :
     newSlot(s_UPDATE_COLOR_MODE_SLOT, &SMesh::updateColorMode, this);
     newSlot(s_UPDATE_NORMAL_MODE_SLOT, &SMesh::updateNormalMode, this);
     newSlot(s_UPDATE_MATRIX_FIELD_SLOT, &SMesh::updateMatrixField, this);
+
+    this->registerObject(s_MESH_INPUT, ::fwServices::IService::AccessType::INPUT, true);
 }
 
 //------------------------------------------------------------------------------
