@@ -22,3 +22,5 @@ REM Use CMAKE Variable of fwlauncher and Profile.xml path
 ENDLOCAL
 
 @echo on
+
+exit /b %ERRORLEVEL%

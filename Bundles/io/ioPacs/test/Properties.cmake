@@ -10,6 +10,7 @@ set( DEPENDENCIES
 set( REQUIREMENTS
     dataReg
     servicesReg
+    gui
     ioPacs
     )
 

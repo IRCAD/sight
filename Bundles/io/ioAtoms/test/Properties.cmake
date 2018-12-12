@@ -15,4 +15,9 @@ set( DEPENDENCIES
     fwThread
     fwIO
 )
-set( REQUIREMENTS ioAtoms)
+set( REQUIREMENTS
+    dataReg
+    servicesReg
+    gui
+    ioAtoms
+)

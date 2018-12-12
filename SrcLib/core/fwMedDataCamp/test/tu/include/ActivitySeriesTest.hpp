@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWMEDDATACAMP_UT_ACTIVITYSERIESTEST_HPP__
-#define __FWMEDDATACAMP_UT_ACTIVITYSERIESTEST_HPP__
+#pragma once
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -43,9 +42,13 @@ public:
 
     void propertiesTest();
 
+private:
+
+    /// Dummy variable members used to force link with fwDataCamp, fwMedDataCamp and arDataCamp bundles
+    /// Recent GCC versions (>= 5.4) strip local variables with -O2
+    int m_fwDataVersion;
+    int m_fwMedDataVersion;
 };
 
 } //namespace ut
 } //namespace fwMedDataCamp
-
-#endif // __FWMEDDATACAMP_UT_ACTIVITYSERIESTEST_HPP__

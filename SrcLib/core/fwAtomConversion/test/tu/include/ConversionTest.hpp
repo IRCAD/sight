@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWATOMCONVERSION_UT_CONVERSIONTEST_HPP__
-#define __FWATOMCONVERSION_UT_CONVERSIONTEST_HPP__
+#pragma once
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -101,9 +100,13 @@ public:
     //// Test fwData::Landmarks conversion
     void landmarksConversionTest();
 
+private:
+    /// Dummy variable members used to force link with fwDataCamp, fwMedDataCamp and arDataCamp bundles
+    /// Recent GCC versions (>= 5.4) strip local variables with -O2
+    int m_fwDataVersion;
+    int m_fwMedDataVersion;
+
 };
 
 }  // namespace ut
 }  // namespace fwAtomConversion
-
-#endif // __FWATOMCONVERSION_UT_CONVERSIONTEST_HPP__

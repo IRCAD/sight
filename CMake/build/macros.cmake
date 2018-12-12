@@ -314,15 +314,14 @@ macro(fwCppunitTest FWPROJECT_NAME)
         ${${FWPROJECT_NAME}_RC_FILES}
         ${${FWPROJECT_NAME}_CMAKE_FILES})
 
-    if(EXISTS "${FWBUNDLE_RC_PREFIX}/${TU_NAME}/profile.xml")
-        target_compile_definitions(${FWPROJECT_NAME} PRIVATE -DBUNDLE_TEST_PROFILE=\"${FWBUNDLE_RC_PREFIX}/${TU_NAME}/profile.xml\")
-    endif()
-
     configureProject( ${FWPROJECT_NAME} 0.0 )
 
     target_include_directories(${FWPROJECT_NAME} PUBLIC ${${FWPROJECT_NAME}_INCLUDE_DIR})
 
     if(EXISTS "${PRJ_SOURCE_DIR}/tu/rc")
+        if(EXISTS "${PRJ_SOURCE_DIR}/tu/rc/profile.xml")
+            target_compile_definitions(${FWPROJECT_NAME} PRIVATE -DBUNDLE_TEST_PROFILE=\"${FWBUNDLE_RC_PREFIX}/${TU_NAME}/profile.xml\")
+        endif()
         set(${FWPROJECT_NAME}_RC_BUILD_DIR "${CMAKE_BINARY_DIR}/${FWBUNDLE_RC_PREFIX}/${TU_NAME}")
         createResourcesTarget( ${FWPROJECT_NAME}_rc "${PRJ_SOURCE_DIR}/tu/rc" "${${FWPROJECT_NAME}_RC_BUILD_DIR}" )
         add_dependencies( ${FWPROJECT_NAME} ${FWPROJECT_NAME}_rc )
