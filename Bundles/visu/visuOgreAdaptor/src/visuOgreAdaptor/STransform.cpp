@@ -83,13 +83,16 @@ void STransform::starting()
     this->initialize();
     ::Ogre::SceneManager* sceneManager = this->getSceneManager();
 
+    auto rootSceneNode = sceneManager->getRootSceneNode();
+    SLM_ASSERT("Root scene node not found", rootSceneNode);
+
     if (!m_parentTransformId.empty())
     {
-        m_parentTransformNode = sceneManager->getRootSceneNode()->createChildSceneNode(m_parentTransformId);
+        m_parentTransformNode = STransform::getTransformNode(m_parentTransformId, rootSceneNode);
     }
     else
     {
-        m_parentTransformNode = sceneManager->getRootSceneNode();
+        m_parentTransformNode = rootSceneNode;
     }
 
     m_transformNode = this->getTransformNode(m_parentTransformNode);
