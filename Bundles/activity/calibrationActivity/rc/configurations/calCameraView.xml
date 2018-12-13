@@ -98,10 +98,6 @@
         <service uid="VideoGrabber" type="::videoTools::SGrabberProxy">
             <in key="camera" uid="${camera}" />
             <inout key="frameTL" uid="${timeLine}" />
-            <config>
-                <selection mode="exclude" />
-                <addSelection service="::videoOpenCV::SFrameGrabber" config="FrameByFrameOpenCVGrabberConfig" />
-            </config>
         </service>
 
         <service uid="FrameUpdater" type="::videoTools::SFrameUpdater">
