@@ -69,6 +69,7 @@ public:
                                         float maximumFrameRate,
                                         ::QVideoFrame::PixelFormat pxFormat);
 
+    /// Get duration of the current video file being played
     FWVIDEOQT_API int64_t getVideoDuration() const;
 
 Q_SIGNALS:
