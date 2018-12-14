@@ -132,6 +132,13 @@ void SRender::configuring()
 
     m_fullscreen = sceneCfg.get<bool>("<xmlattr>.fullscreen", false);
 
+#ifdef __APPLE__
+    // TODO: fix fullscreen rendering on macOS.
+    SLM_ERROR("Fullscreen is broken on macOS (as of macOS 10.14 and Qt 5.11.2 and Ogre 1.11.4, "
+              "it is therefore disabled.");
+    m_fullscreen = false;
+#endif
+
     const std::string renderMode = sceneCfg.get<std::string>("<xmlattr>.renderMode", "auto");
     if (renderMode == "auto")
     {
