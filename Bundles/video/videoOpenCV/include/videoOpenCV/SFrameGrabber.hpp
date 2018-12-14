@@ -110,7 +110,7 @@ class VIDEOOPENCV_CLASS_API SFrameGrabber : public ::arServices::IGrabber
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SFrameGrabber)(::arServices::IGrabber) );
+    fwCoreServiceClassDefinitionsMacro( (SFrameGrabber)(::arServices::IGrabber) )
 
     /// Constructor. Do nothing.
     VIDEOOPENCV_API SFrameGrabber() noexcept;
@@ -163,6 +163,9 @@ private:
 
     /// Initializes the video reader, start the timer.
     void readVideo(const ::boost::filesystem::path& file);
+
+    /// Initializes the usb device reader, start the timer.
+    void readDevice(const CSPTR(::arData::Camera)_cam);
 
     /// Initializes the image reader, start the timer.
     void readImages(const ::boost::filesystem::path& folder, const std::string& extension);

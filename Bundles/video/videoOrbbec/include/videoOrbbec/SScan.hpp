@@ -30,16 +30,12 @@
 
 #include <fwThread/Worker.hpp>
 
-#include <fwVideoQt/Player.hpp>
+#include <opencv2/opencv.hpp>
 
 #include <OpenNI.h>
-#include <QObject>
-#include <QThread>
 
 namespace videoOrbbec
 {
-
-class ColorFrameWorker;
 
 /**
  * @brief   Orbbec Astra Pro camera
@@ -75,10 +71,9 @@ class ColorFrameWorker;
  * @subsection Configuration Configuration
  * \see SScanBase
  */
-class VIDEOORBBEC_CLASS_API SScan : public QObject,
-                                    public SScanBase
+class VIDEOORBBEC_CLASS_API SScan : public SScanBase
 {
-Q_OBJECT
+
 public:
     fwCoreServiceClassDefinitionsMacro((SScan)(::arServices::IRGBDGrabber))
 
@@ -126,10 +121,6 @@ protected:
      */
     bool isReady() const noexcept;
 
-protected Q_SLOTS:
-    void workerStarted() const;
-    void workerStopped() const;
-
 private:
     // Timelines
     /// Timeline containing depth frames.
@@ -138,7 +129,7 @@ private:
     ::arData::FrameTL::sptr m_colorTL;
 
     /// RGB sensor settings.
-    ::arData::Camera::sptr m_rgbCamera;
+    ::arData::Camera::csptr m_rgbCamera;
 
     // OpenNI types
     /// Error code of the last OpenNI call.
@@ -148,12 +139,10 @@ private:
 
     /// Worker grabbing depth frames.
     ::fwThread::Worker::sptr m_workerDepth;
-    /// Qt thread owning the color worker.
-    QThread m_colorWorkerThread;
+
     /// Grabs color frames from the camera.
-    ::fwVideoQt::Player* m_qtPlayer;
-    /// Worker grabbing color frames.
-    ColorFrameWorker* m_workerColor;
+    ::cv::VideoCapture m_rgbGrabber;
+
     /// Whether we are in pause
     bool m_pause;
 
