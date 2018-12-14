@@ -209,7 +209,7 @@ void Player::stop()
 
 //-----------------------------------------------------------------------------
 
-void Player::toggleLoopMode(bool isLoopEnable)
+void Player::toggleLoopMode(const bool isLoopEnable)
 {
     if(m_playlist)
     {
@@ -226,12 +226,23 @@ void Player::toggleLoopMode(bool isLoopEnable)
 
 //-----------------------------------------------------------------------------
 
-void Player::setPosition(int64_t position)
+void Player::setPosition(const int64_t position)
 {
     if(m_mediaPlayer)
     {
         m_mediaPlayer->setPosition(position);
     }
+}
+
+//-----------------------------------------------------------------------------
+
+int64_t Player::getVideoDuration() const
+{
+    if(m_mediaPlayer)
+    {
+        return m_mediaPlayer->duration();
+    }
+    return -1;
 }
 
 //-----------------------------------------------------------------------------
