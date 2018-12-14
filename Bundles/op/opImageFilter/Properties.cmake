@@ -11,6 +11,7 @@ set( DEPENDENCIES
     fwRuntime
     fwServices
     fwTools
+    imageFilterOp
 )
 set( REQUIREMENTS  )
 
