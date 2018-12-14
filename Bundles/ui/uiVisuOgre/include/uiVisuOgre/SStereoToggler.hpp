@@ -43,7 +43,9 @@ namespace uiVisuOgre
  *
  * @subsection Configuration Configuration
  * - \b layer : layer in which to activate stereo rendering.
- * - \b stereoMode (values=interlaced|AutoStereo5|AutoStereo8): mode to activate.
+ * - \b stereoMode (values=interlaced|AutoStereo5|AutoStereo8): mode to activate. 'AutoStereo<N>' modes are
+ * for glasses-free stereo screens with N viewpoints. The 'interlaced' mode is for typical polarized screens with
+ * interlaced image pairs.
  *
  */
 class UIVISUOGRE_CLASS_API SStereoToggler : public ::fwGui::IActionSrv

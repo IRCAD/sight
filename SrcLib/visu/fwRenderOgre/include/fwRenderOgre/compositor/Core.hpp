@@ -93,8 +93,10 @@ public:
     /// Deactivate OIT compositor
     FWRENDEROGRE_API void setTransparencyDepth(int depth);
 
+    /// Set the stereo mode. Keep in mind that OIT techniques disable stereo for now.
     FWRENDEROGRE_API void setStereoMode(StereoModeType stereoMode);
 
+    /// Return the enabled stereo mode.
     FWRENDEROGRE_API StereoModeType getStereoMode() const;
 
     /// Re/Activate OIT compositor

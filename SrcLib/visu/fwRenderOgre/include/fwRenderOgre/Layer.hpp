@@ -279,6 +279,7 @@ private:
     /// Setups default compositor for a layer's 3D scene.
     void setupCore();
 
+    /// Stops and starts all adaptors belonging to this layer. Subadaptors are expected to be managed by their parent.
     void restartAdaptors();
 
     /// For a list of semicolon-separated words, returns a vector of these words.
