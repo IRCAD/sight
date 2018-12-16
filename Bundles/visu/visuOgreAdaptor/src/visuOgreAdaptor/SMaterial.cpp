@@ -274,6 +274,8 @@ void SMaterial::stopping()
     m_textureConnection.disconnect();
     this->unregisterServices();
 
+    ::Ogre::MaterialManager::getSingleton().remove(m_materialName);
+
     ::fwData::Material::sptr material = this->getInOut< ::fwData::Material >(s_MATERIAL_INOUT);
     if(material->getField("shaderParameters"))
     {

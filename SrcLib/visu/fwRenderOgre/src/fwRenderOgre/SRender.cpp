@@ -132,6 +132,13 @@ void SRender::configuring()
 
     m_fullscreen = sceneCfg.get<bool>("<xmlattr>.fullscreen", false);
 
+#ifdef __APPLE__
+    // TODO: fix fullscreen rendering on macOS.
+    SLM_ERROR("Fullscreen is broken on macOS (as of macOS 10.14 and Qt 5.11.2 and Ogre 1.11.4, "
+              "it is therefore disabled.");
+    m_fullscreen = false;
+#endif
+
     const std::string renderMode = sceneCfg.get<std::string>("<xmlattr>.renderMode", "auto");
     if (renderMode == "auto")
     {
@@ -318,16 +325,17 @@ void SRender::configureLayer(const ConfigType& _cfg )
     SLM_ASSERT("Attribute 'depth' must be greater than 0", layerDepth > 0);
 
     ::fwRenderOgre::Layer::sptr ogreLayer = ::fwRenderOgre::Layer::New();
+    compositor::Core::StereoModeType layerStereoMode =
+        stereoMode == "AutoStereo5" ? compositor::Core::StereoModeType::AUTOSTEREO_5 :
+        stereoMode == "AutoStereo8" ? compositor::Core::StereoModeType::AUTOSTEREO_8 :
+        stereoMode == "Stereo"      ? compositor::Core::StereoModeType::STEREO :
+        compositor::Core::StereoModeType::NONE;
+
     ogreLayer->setRenderService(::fwRenderOgre::SRender::dynamicCast(this->shared_from_this()));
     ogreLayer->setID(id);
     ogreLayer->setDepth(layerDepth);
     ogreLayer->setWorker(m_associatedWorker);
-    ogreLayer->setStereoMode(stereoMode == "AutoStereo5" ? ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_5 :
-                             stereoMode == "AutoStereo8" ? ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_8 :
-                             stereoMode == "Stereo" ? ::fwRenderOgre::Layer::StereoModeType::STEREO :
-                             ::fwRenderOgre::Layer::StereoModeType::NONE);
-
-    ogreLayer->setCoreCompositorEnabled(true, transparencyTechnique, numPeels);
+    ogreLayer->setCoreCompositorEnabled(true, transparencyTechnique, numPeels, layerStereoMode);
     ogreLayer->setCompositorChainEnabled(compositors);
 
     if(!defaultLight.empty() && defaultLight == "no")

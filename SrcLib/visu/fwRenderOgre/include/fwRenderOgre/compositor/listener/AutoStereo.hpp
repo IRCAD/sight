@@ -51,8 +51,8 @@ public:
 
 private:
 
-    /// Pair storing techniques together with their material's handle.
-    using TechniqueMaterialPair = std::pair< ::Ogre::Technique*, ::Ogre::ResourceHandle >;
+    /// Pair storing techniques together with their material's name.
+    using TechniqueMaterialPair = std::pair< ::Ogre::Technique*, std::string >;
 
     /// list of techniques to be removed from the material when destroying the listener
     std::vector< TechniqueMaterialPair > m_createdTechniques;

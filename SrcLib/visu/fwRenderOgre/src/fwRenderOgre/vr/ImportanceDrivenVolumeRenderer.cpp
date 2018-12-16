@@ -176,7 +176,7 @@ ImportanceDrivenVolumeRenderer::ImportanceDrivenVolumeRenderer(std::string _pare
     m_idvrAImCAlphaCorrection(0.05f),
     m_idvrVPImCAlphaCorrection(0.3f),
     m_idvrMaskRayEntriesCompositor(s_IMPORTANCE_MASK_ENTRY_POINTS_COMPOSITOR, s_PROXY_GEOMETRY_RQ_GROUP,
-                                   Layer::StereoModeType::NONE, false)
+                                   compositor::Core::StereoModeType::NONE, false)
 {
     m_RTVSharedParameters->addConstantDefinition("u_csgAngleCos", ::Ogre::GCT_FLOAT1);
     m_RTVSharedParameters->addConstantDefinition("u_csgBorderThickness", ::Ogre::GCT_FLOAT1);
@@ -232,7 +232,7 @@ void ImportanceDrivenVolumeRenderer::setIDVRMethod(std::string _method)
     m_idvrMethod = _method;
 
     SLM_FATAL_IF("IDVR isn't compatible with stereo rendering yet.",
-                 this->getLayer()->getStereoMode() != Layer::StereoModeType::NONE && m_idvrMethod != s_NONE);
+                 this->getLayer()->getStereoMode() != compositor::Core::StereoModeType::NONE && m_idvrMethod != s_NONE);
 
     this->createMaterialAndIDVRTechnique();
 }
