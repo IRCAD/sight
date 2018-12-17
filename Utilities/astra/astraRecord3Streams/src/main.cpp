@@ -253,11 +253,11 @@ int main(int argc, char** argv)
                 const ::fs::path irFile    = saveF / ("Infrared_" + num + ext);
                 const ::fs::path rgbFile   = saveF / ("Color_" + num + ext);
 
-                ::cv::imwrite(depthFile.c_str(), dIm);
+                ::cv::imwrite(depthFile.string(), dIm);
                 std::cout<<". ";
-                ::cv::imwrite(irFile.c_str(), irIm);
+                ::cv::imwrite(irFile.string(), irIm);
                 std::cout<<". ";
-                ::cv::imwrite(rgbFile.c_str(), rgbIm);
+                ::cv::imwrite(rgbFile.string(), rgbIm);
                 std::cout<<". done! "<<std::endl;
 
                 imageCount++;

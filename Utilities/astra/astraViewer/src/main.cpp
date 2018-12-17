@@ -274,9 +274,9 @@ int main(int argc, char** argv)
                     irOrColorFile = saveF / ("Color_" + num + ext);
                 }
 
-                ::cv::imwrite(depthFile.c_str(), dIm);
+                ::cv::imwrite(depthFile.string(), dIm);
                 std::cout<<". ";
-                ::cv::imwrite(irOrColorFile.c_str(), ircolorIm);
+                ::cv::imwrite(irOrColorFile.string(), ircolorIm);
                 std::cout<<". done! "<<std::endl;
 
                 imageCount++;
