@@ -195,6 +195,9 @@ private:
     /// Sets usage of soft shadows.
     bool m_shadows;
 
+    /// TF texture used for rendering.
+    TransferFunction::wptr m_gpuVolumeTF;
+
     /// Factor parameter used to weight ambient occlusion (A channel) and color bleeding (RGB channels).
     ::Ogre::Vector4 m_volIllumFactor;
 

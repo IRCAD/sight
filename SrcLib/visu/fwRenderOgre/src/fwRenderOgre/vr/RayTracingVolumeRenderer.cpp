@@ -141,7 +141,7 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
                                                    bool shadows,
                                                    double aoFactor,
                                                    double colorBleedingFactor) :
-    IVolumeRenderer(parentId, layer->getSceneManager(), parentNode, imageTexture, gpuVolumeTF, preintegrationTable),
+    IVolumeRenderer(parentId, layer->getSceneManager(), parentNode, imageTexture, preintegrationTable),
     m_entryPointGeometry(nullptr),
     m_proxyGeometry(nullptr),
     m_imageSize(::fwData::Image::SizeType({ 1, 1, 1 })),
@@ -154,6 +154,7 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
                      static_cast< ::Ogre::Real>(aoFactor)),
     m_opacityCorrectionFactor(200.f),
     m_focalLength(0.f),
+    m_gpuVolumeTF(gpuVolumeTF),
     m_cameraListener(nullptr),
     m_layer(layer)
 {

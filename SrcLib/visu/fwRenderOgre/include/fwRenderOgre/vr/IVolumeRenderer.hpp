@@ -81,14 +81,12 @@ public:
      * @param sceneManager         The scene manager being used.
      * @param volumeNode           This object's node.
      * @param imageTexture         Texture holding the 3D image to be rendered.
-     * @param gpuVolumeTF          Texture holding the transfer function.
      * @param preintegrationTable  Texture holding the pre-integration table.
      */
     FWRENDEROGRE_API IVolumeRenderer(std::string parentId,
                                      ::Ogre::SceneManager* const sceneManager,
                                      ::Ogre::SceneNode* const volumeNode,
                                      ::Ogre::TexturePtr imageTexture,
-                                     const TransferFunction::sptr& gpuVolumeTF,
                                      PreIntegrationTable& preintegrationTable);
 
     /// Destructor, does nothing.
@@ -136,20 +134,11 @@ protected:
     /// 3D Image texture.
     ::Ogre::TexturePtr m_3DOgreTexture;
 
-    /// TF texture used for rendering.
-    TransferFunction::wptr m_gpuVolumeTF;
-
     /// Pre-integration table.
     PreIntegrationTable& m_preIntegrationTable;
 
     /// Default shader parameters.
     ::Ogre::GpuProgramParametersSharedPtr m_defaultShaderParameters;
-
-    /// Pre-integration shader parameters.
-    ::Ogre::GpuProgramParametersSharedPtr m_preIntegrationShaderParameters;
-
-    /// Shader parameters for the material currently in use.
-    ::Ogre::GpuProgramParametersSharedPtr m_currentShaderParameters;
 
     /// This object's scene node.
     ::Ogre::SceneNode* m_volumeSceneNode;
