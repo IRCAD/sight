@@ -113,10 +113,10 @@ private:
     ::Ogre::TexturePtr m_gridTexture;
 
     /// Grid volume dimensions. (i.e. the number of bricks along each dimension)
-    std::array< int, 3 > m_gridSize { 2, 2, 2 };
+    std::array< int, 3 > m_gridSize {{ 2, 2, 2 }};
 
     /// Size of a volume brick.
-    const std::array< int, 3 > m_brickSize { 8, 8, 8 };
+    const std::array< int, 3 > m_brickSize {{ 8, 8, 8 }};
 
     /// Image from which we define a grid.
     ::Ogre::TexturePtr m_3DImageTexture;
