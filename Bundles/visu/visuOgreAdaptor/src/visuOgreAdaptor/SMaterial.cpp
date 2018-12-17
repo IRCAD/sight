@@ -1,8 +1,24 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2018.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2014-2018 IRCAD France
+ * Copyright (C) 2014-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #include "visuOgreAdaptor/SMaterial.hpp"
 
@@ -89,7 +105,7 @@ void SMaterial::createShaderParameterAdaptors()
                                               "geometry";
             const fwTools::fwID::IDType id = this->getID() + "_" + shaderTypeStr + "-" + constantName;
 
-            // Creates an Ogre adaptor and associates it with the f4s object
+            // Creates an Ogre adaptor and associates it with the Sight object
             auto srv =
                 this->registerService< ::visuOgreAdaptor::SShaderParameter>( "::visuOgreAdaptor::SShaderParameter", id);
             srv->registerInOut(obj, "parameter", true);
@@ -258,6 +274,8 @@ void SMaterial::stopping()
     m_textureConnection.disconnect();
     this->unregisterServices();
 
+    ::Ogre::MaterialManager::getSingleton().remove(m_materialName);
+
     ::fwData::Material::sptr material = this->getInOut< ::fwData::Material >(s_MATERIAL_INOUT);
     if(material->getField("shaderParameters"))
     {
@@ -336,13 +354,13 @@ void SMaterial::createTextureAdaptor()
 {
     SLM_ASSERT("Texture adaptor already configured in XML", m_textureName.empty());
 
-    ::fwData::Material::sptr f4sMaterial = this->getInOut< ::fwData::Material >(s_MATERIAL_INOUT);
+    ::fwData::Material::sptr sightMaterial = this->getInOut< ::fwData::Material >(s_MATERIAL_INOUT);
 
     // If the associated material has a texture, we have to create a texture adaptor to handle it
-    if(f4sMaterial->getDiffuseTexture())
+    if(sightMaterial->getDiffuseTexture())
     {
-        // Creates an Ogre adaptor and associates it with the f4s texture object
-        auto texture = f4sMaterial->getDiffuseTexture();
+        // Creates an Ogre adaptor and associates it with the Sight texture object
+        auto texture = sightMaterial->getDiffuseTexture();
         m_texAdaptor = this->registerService< ::visuOgreAdaptor::STexture >("::visuOgreAdaptor::STexture");
         m_texAdaptor->registerInput(texture, "image", true);
 
@@ -350,7 +368,7 @@ void SMaterial::createTextureAdaptor()
         m_texAdaptor->setRenderService(this->getRenderService());
         m_texAdaptor->setLayerID(m_layerID);
 
-        const std::string materialName = f4sMaterial->getID();
+        const std::string materialName = sightMaterial->getID();
         m_texAdaptor->setTextureName(materialName + "_Texture");
 
         m_textureConnection.connect(m_texAdaptor, ::visuOgreAdaptor::STexture::s_TEXTURE_SWAPPED_SIG, this->getSptr(),

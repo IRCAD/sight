@@ -1,8 +1,24 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2018.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2014-2018 IRCAD France
+ * Copyright (C) 2014-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #pragma once
 
@@ -35,11 +51,20 @@ public:
     FWRENDEROGRE_API void setTransformId(::fwRenderOgre::SRender::OgreObjectIdType _id);
 
     /**
-     * @brief Recover the node matching m_transformId.
-     * @param _rootNode The root node of the scene.
+     * @brief Retrieve the node matching m_transformId.
+     * @param _parentNode The parent node of the created node.
      * @return The node matching m_transformId.
      */
-    FWRENDEROGRE_API ::Ogre::SceneNode* getTransformNode(::Ogre::SceneNode* _rootNode);
+    FWRENDEROGRE_API ::Ogre::SceneNode* getTransformNode(::Ogre::SceneNode* _parentNode);
+
+    /**
+     * @brief Retrieve the node matching the given node name.
+     * @param _name The name of the node.
+     * @param _parentNode The parent node of the created node.
+     * @return The node matching m_transformId.
+     */
+    FWRENDEROGRE_API static ::Ogre::SceneNode* getTransformNode(const std::string& _name,
+                                                                ::Ogre::SceneNode* _parentNode);
 
     /**
      * @brief s_TRANSFORM_CONFIG The key used in xml configuration.

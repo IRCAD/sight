@@ -1,11 +1,26 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
-#ifndef __IOVTK_UT_IMAGEREADERWRITERTEST_HPP__
-#define __IOVTK_UT_IMAGEREADERWRITERTEST_HPP__
+#pragma once
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -24,6 +39,7 @@ CPPUNIT_TEST( testVtkImageReader );
 CPPUNIT_TEST( testVtiImageReader );
 CPPUNIT_TEST( testMhdImageReader );
 CPPUNIT_TEST( testImageReaderExtension);
+CPPUNIT_TEST( testBitmapImageWriter );
 CPPUNIT_TEST( testVtkImageWriter );
 CPPUNIT_TEST( testVtkImageSeriesWriter );
 CPPUNIT_TEST( testVtiImageWriter );
@@ -40,6 +56,7 @@ public:
     void testVtiImageReader();
     void testMhdImageReader();
     void testImageReaderExtension();
+    void testBitmapImageWriter();
     void testVtkImageWriter();
     void testVtkImageSeriesWriter();
     void testVtiImageWriter();
@@ -50,6 +67,3 @@ public:
 
 } //namespace ut
 } //namespace ioVTK
-
-#endif //__IOVTK_UT_IMAGEREADERWRITERTEST_HPP__
-

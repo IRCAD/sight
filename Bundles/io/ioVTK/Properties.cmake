@@ -18,7 +18,10 @@ set( DEPENDENCIES
     fwJobs
     fwIO
 )
-set( REQUIREMENTS  )
+set( REQUIREMENTS
+    dataReg
+    servicesReg
+)
 
 set( CONAN_DEPS
     vtk/8.0.1-r1@sight/stable

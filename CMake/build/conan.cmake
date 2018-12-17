@@ -7,8 +7,8 @@ endif()
 include(${CMAKE_BINARY_DIR}/conan.cmake)
 
 conan_check(VERSION 1.0.0 REQUIRED)
-conan_add_remote(NAME sight-conan INDEX 1
-                 URL http://5.39.78.163:8081/artifactory/api/conan/conan-local)
+conan_add_remote(NAME sight INDEX 1
+                 URL https://conan.ircad.fr/artifactory/api/conan/sight)
 
 unset(CONAN_OPTIONS)
 find_package(CUDA QUIET)
@@ -35,12 +35,20 @@ endmacro()
 
 macro(installConanDeps CONAN_DEPS_LIST)
 
-    conan_cmake_run(
-        REQUIRES ${CONAN_DEPS_LIST}
-        BASIC_SETUP CMAKE_TARGETS NO_OUTPUT_DIRS
-        OPTIONS ${CONAN_OPTIONS}
-        #BUILD missing
-    )
+    if(CONAN_BUILD_MISSING)
+        conan_cmake_run(
+            REQUIRES ${CONAN_DEPS_LIST}
+            BASIC_SETUP CMAKE_TARGETS NO_OUTPUT_DIRS
+            OPTIONS ${CONAN_OPTIONS}
+            BUILD missing
+        )
+    else()
+        conan_cmake_run(
+            REQUIRES ${CONAN_DEPS_LIST}
+            BASIC_SETUP CMAKE_TARGETS NO_OUTPUT_DIRS
+            OPTIONS ${CONAN_OPTIONS}
+        )
+    endif()
 
 endmacro()
 

@@ -1,8 +1,24 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2018.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2014-2018 IRCAD France
+ * Copyright (C) 2014-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #pragma once
 
@@ -29,7 +45,7 @@ namespace visuOgreAdaptor
 {
 
 /**
- * @brief Adaptor from f4s Camera to Ogre Camera.
+ * @brief Adaptor from Sight Camera to Ogre Camera.
  *
  * @section Slots Slots
  * - \b updateTF3D(): Called when the Ogre transform matrix has been updated and updates the transform service
@@ -47,8 +63,9 @@ namespace visuOgreAdaptor
  * @subsection Configuration Configuration
  * - \b layer (mandatory): defines the camera's layer
  * @subsection Input Input
- * - \b transform [::fwData::TransformationMatrix3D]: transform matrix for the camera.
  * - \b calibration [::arData::Camera]: camera containing calibration information.
+ * @subsection InOut InOut
+ * - \b transform [::fwData::TransformationMatrix3D]: transform matrix for the camera.
  */
 class VISUOGREADAPTOR_CLASS_API SCamera : public ::fwRenderOgre::IAdaptor
 {
@@ -60,7 +77,7 @@ public:
     VISUOGREADAPTOR_API SCamera() noexcept;
 
     /// Destructor. Does nothing.
-    VISUOGREADAPTOR_API virtual ~SCamera() noexcept;
+    VISUOGREADAPTOR_API virtual ~SCamera() noexcept override;
 
     /**
      * @name Slots API
@@ -76,9 +93,6 @@ public:
     /// Returns proposals to connect service slots to associated object signals.
     VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
-    /// Associated ogre camera getter.
-    VISUOGREADAPTOR_API virtual ::Ogre::Camera* getCamera();
-
     /// Near clipping plane position setter.
     VISUOGREADAPTOR_API virtual void setNearClipDistance(::Ogre::Real _nearClipDistance);
 
@@ -89,16 +103,16 @@ public:
     VISUOGREADAPTOR_API virtual void setAspectRatio(::Ogre::Real _ratio);
 
 protected:
-    /// Configures the service.
+    /// Configures the adaptor.
     VISUOGREADAPTOR_API void configuring() override;
 
-    /// Starting method. Does nothing.
+    /// Installs layer connections and calibrates the camera if it exists.
     VISUOGREADAPTOR_API void starting() override;
 
-    /// Stopping method.
+    /// Removes layer connections.
     VISUOGREADAPTOR_API void stopping() override;
 
-    /// Updating method. Does nothing.
+    /// Sets the camera's transform.
     VISUOGREADAPTOR_API void updating() override;
 
 private:
@@ -107,25 +121,14 @@ private:
     void calibrate();
 
     /// Ogre camera managed by this adaptor.
-    ::Ogre::Camera* m_camera;
+    ::Ogre::Camera* m_camera { nullptr };
 
     /// Aspect ratio for the frustum viewport.
-    ::Ogre::Real m_aspectRatio;
-
-    /// camera used to calibrate ogre camera.
-    CSPTR(::arData::Camera) m_calibration;
+    ::Ogre::Real m_aspectRatio { 0.f };
 
     /// Connection with the layer
     ::fwCom::helper::SigSlotConnection m_layerConnection;
 };
-
-//------------------------------------------------------------------------------
-// Inline method(s)
-
-inline ::Ogre::Camera* SCamera::getCamera()
-{
-    return m_camera;
-}
 
 //------------------------------------------------------------------------------
 

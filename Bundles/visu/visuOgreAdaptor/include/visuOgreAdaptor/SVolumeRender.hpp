@@ -1,8 +1,24 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2016-2018.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2016-2018 IRCAD France
+ * Copyright (C) 2016-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #pragma once
 
@@ -54,7 +70,6 @@ namespace visuOgreAdaptor
  * - \b toggleWidgets(bool): Toggles widget visibility.
  * - \b resizeViewport(int, int): Called when the size of the viewport changes.
  * - \b setFocalDistance(int): Called to modify focal length (only useful for stereoscopic 3D).
- * - \b setStereoMode(int): Called to modify 3D stereoscopic 3D mode.
  * - \b setBoolParameter(bool, string): Calls a bool parameter slot according to the given key.
  * - \b setIntParameter(int, string): Calls an int parameter slot according to the given key.
  * - \b setDoubleParameter(double, string): Calls a double parameter slot according to the given key.
@@ -209,7 +224,6 @@ private:
     void toggleWidgets(bool visible);
     void resizeViewport(int w, int h);
     void setFocalDistance(int focalDistance);
-    void setStereoMode(::fwRenderOgre::Layer::StereoModeType mode);
     void setBoolParameter(bool val, std::string key);
     void setIntParameter(int val, std::string key);
     void setDoubleParameter(double val, std::string key);

@@ -20,3 +20,11 @@
 
 - [ ] Build on Windows
 - [ ] ...
+
+## Associated Issues/Merge Requests
+
+- Issues
+  - Fixes repo#number
+
+- Merge requests
+  - repo!number

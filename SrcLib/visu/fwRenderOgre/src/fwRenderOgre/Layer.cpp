@@ -1,13 +1,30 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2018.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2014-2018 IRCAD France
+ * Copyright (C) 2014-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #include "fwRenderOgre/Layer.hpp"
 
 #include "fwRenderOgre/compositor/Core.hpp"
 #include "fwRenderOgre/helper/Camera.hpp"
+#include "fwRenderOgre/IAdaptor.hpp"
 #include "fwRenderOgre/ILight.hpp"
 
 #include <fwCom/Signal.hxx>
@@ -49,7 +66,6 @@ namespace fwRenderOgre
 
 const ::fwCom::Signals::SignalKeyType Layer::s_INIT_LAYER_SIG           = "layerInitialized";
 const ::fwCom::Signals::SignalKeyType Layer::s_RESIZE_LAYER_SIG         = "layerResized";
-const ::fwCom::Signals::SignalKeyType Layer::s_STEREO_MODE_CHANGED_SIG  = "StereoModeChanged";
 const ::fwCom::Signals::SignalKeyType Layer::s_CAMERA_UPDATED_SIG       = "CameraUpdated";
 const ::fwCom::Signals::SignalKeyType Layer::s_CAMERA_RANGE_UPDATED_SIG = "CameraRangeUpdated";
 
@@ -62,15 +78,6 @@ const ::fwCom::Slots::SlotKeyType Layer::s_USE_CELSHADING_SLOT = "useCelShading"
 const std::string Layer::DEFAULT_CAMERA_NAME        = "DefaultCam";
 const std::string Layer::DEFAULT_LIGHT_NAME         = "DefaultLight";
 const std::string Layer::s_DEFAULT_CAMERA_NODE_NAME = "CameraNode";
-
-//-----------------------------------------------------------------------------
-
-static const std::map<Layer::StereoModeType, std::string> s_stereoCompositorMap = {
-    { Layer::StereoModeType::AUTOSTEREO_5, "AutoStereo5" },
-    { Layer::StereoModeType::AUTOSTEREO_8, "AutoStereo8" },
-    { Layer::StereoModeType::STEREO, "Stereo" },
-    { Layer::StereoModeType::NONE, "" }
-};
 
 //-----------------------------------------------------------------------------
 
@@ -95,7 +102,7 @@ struct Layer::LayerCameraListener : public ::Ogre::Camera::Listener
     {
         SLM_ASSERT("Layer is not set", m_layer );
 
-        if(m_layer->getStereoMode() != Layer::StereoModeType::NONE)
+        if(m_layer->getStereoMode() != ::fwRenderOgre::compositor::Core::StereoModeType::NONE)
         {
             // Set the focal length using the point of interest of the interactor
             // This works well for the trackball but this would need to be adjusted for an another interactor type
@@ -149,7 +156,7 @@ Layer::Layer() :
     m_sceneManager(nullptr),
     m_renderTarget(nullptr),
     m_viewport(nullptr),
-    m_stereoMode(StereoModeType::NONE),
+    m_stereoMode(compositor::Core::StereoModeType::NONE),
     m_rawCompositorChain(""),
     m_coreCompositor(nullptr),
     m_transparencyTechnique(::fwRenderOgre::compositor::DEFAULT),
@@ -168,7 +175,6 @@ Layer::Layer() :
 {
     newSignal<InitLayerSignalType>(s_INIT_LAYER_SIG);
     newSignal<ResizeLayerSignalType>(s_RESIZE_LAYER_SIG);
-    newSignal<StereoModeChangedSignalType>(s_STEREO_MODE_CHANGED_SIG);
     newSignal<CameraUpdatedSignalType>(s_CAMERA_UPDATED_SIG);
     newSignal<CameraUpdatedSignalType>(s_CAMERA_RANGE_UPDATED_SIG);
 
@@ -371,19 +377,13 @@ void Layer::createScene()
         {
             compositorChain.push_back(it);
         }
-        if(m_stereoMode != StereoModeType::NONE)
+        if(m_stereoMode != compositor::Core::StereoModeType::NONE)
         {
-            compositorChain.push_back(s_stereoCompositorMap.at(m_stereoMode));
-
             m_autostereoListener = new compositor::listener::AutoStereoCompositorListener(this->getNumberOfCameras());
             ::Ogre::MaterialManager::getSingleton().addListener(m_autostereoListener);
         }
 
         m_compositorChainManager->setCompositorChain(compositorChain, m_id, m_renderService.lock());
-
-        m_compositorChainManager->addAvailableCompositor("Stereo");
-        m_compositorChainManager->addAvailableCompositor("AutoStereo5");
-        m_compositorChainManager->addAvailableCompositor("AutoStereo8");
     }
 
     m_sceneCreated = true;
@@ -640,11 +640,9 @@ void Layer::setSelectInteractor(::fwRenderOgre::interactor::IInteractor::sptr in
         childrenStack.pop();
 
         // Retrieves an iterator pointing to the attached movable objects of the current scene node
-        ::Ogre::SceneNode::ConstObjectIterator entitiesIt = tempSceneNode->getAttachedObjectIterator();
-        while(entitiesIt.hasMoreElements())
+        const ::Ogre::SceneNode::ObjectMap& entities = tempSceneNode->getAttachedObjects();
+        for(const auto movable : entities)
         {
-            // First, we try to cast the MovableObject* into an Entity*
-            const auto movable           = entitiesIt.getNext();
             const ::Ogre::Entity* entity = dynamic_cast< ::Ogre::Entity* > (movable);
 
             if(entity)
@@ -926,15 +924,11 @@ void Layer::requestRender()
 
 //-----------------------------------------------------------------------------
 
-void Layer::setStereoMode(StereoModeType mode)
+void Layer::setStereoMode(compositor::Core::StereoModeType mode)
 {
-    const std::string oldCompositorName = s_stereoCompositorMap.at(m_stereoMode);
-
     // Disable the old compositor
-    if(m_stereoMode != StereoModeType::NONE && m_compositorChainManager)
+    if(m_stereoMode != compositor::Core::StereoModeType::NONE)
     {
-        m_compositorChainManager->updateCompositorState(oldCompositorName, false, m_id, m_renderService.lock());
-
         ::Ogre::MaterialManager::getSingleton().removeListener(m_autostereoListener);
         delete m_autostereoListener;
         m_autostereoListener = nullptr;
@@ -943,18 +937,17 @@ void Layer::setStereoMode(StereoModeType mode)
     // Enable the new one
     m_stereoMode = mode;
 
-    const std::string compositorName = s_stereoCompositorMap.at(m_stereoMode);
+    this->getRenderService()->makeCurrent();
+    m_coreCompositor->setStereoMode(mode);
+    m_coreCompositor->update();
 
-    if(m_stereoMode != StereoModeType::NONE && m_compositorChainManager)
+    if(m_stereoMode != compositor::Core::StereoModeType::NONE)
     {
-        m_compositorChainManager->updateCompositorState(compositorName, true, m_id, m_renderService.lock());
-
         m_autostereoListener = new compositor::listener::AutoStereoCompositorListener(this->getNumberOfCameras());
         ::Ogre::MaterialManager::getSingleton().addListener(m_autostereoListener);
     }
 
-    auto sig = this->signal<StereoModeChangedSignalType>(s_STEREO_MODE_CHANGED_SIG);
-    sig->asyncEmit(m_stereoMode);
+    this->restartAdaptors();
 }
 
 //-----------------------------------------------------------------------------
@@ -975,9 +968,11 @@ void Layer::setBackgroundScale(float topScale, float botScale)
 
 //-------------------------------------------------------------------------------------
 
-void Layer::setCoreCompositorEnabled(bool enabled, std::string transparencyTechnique, std::string numPeels)
+void Layer::setCoreCompositorEnabled(bool enabled, std::string transparencyTechnique, std::string numPeels,
+                                     compositor::Core::StereoModeType stereoMode)
 {
     m_hasCoreCompositor = enabled;
+    m_stereoMode        = stereoMode;
     if(transparencyTechnique != "")
     {
         if(transparencyTechnique == "DepthPeeling")
@@ -1040,7 +1035,7 @@ bool Layer::isCompositorChainEnabled()
 
 //-------------------------------------------------------------------------------------
 
-Layer::StereoModeType Layer::getStereoMode() const
+compositor::Core::StereoModeType Layer::getStereoMode() const
 {
     return m_stereoMode;
 }
@@ -1053,9 +1048,59 @@ void Layer::setupCore()
     m_renderService.lock()->makeCurrent();
 
     m_coreCompositor = std::make_shared< ::fwRenderOgre::compositor::Core>(m_viewport);
+    m_coreCompositor->setStereoMode(m_stereoMode);
     m_coreCompositor->setTransparencyTechnique(m_transparencyTechnique);
     m_coreCompositor->setTransparencyDepth(m_numPeels);
     m_coreCompositor->update();
+}
+
+//-------------------------------------------------------------------------------------
+
+void Layer::restartAdaptors()
+{
+    auto adaptors = this->getRenderService()->getAdaptors< IAdaptor >();
+
+    auto notInLayer = [this](const IAdaptor::sptr& _adapt)
+                      {
+                          return _adapt->getLayerID() != this->m_id || _adapt == nullptr;
+                      };
+
+    // Only keep adaptors belonging to this layer.
+    adaptors.erase(std::remove_if(adaptors.begin(), adaptors.end(), notInLayer), adaptors.end());
+
+    // Search for all adaptors created as subservices by other adaptors.
+    std::vector< ::fwServices::IService::wptr > subAdaptors;
+    for(auto& adapt : adaptors)
+    {
+        SPTR( ::fwServices::IHasServices ) hasServices = std::dynamic_pointer_cast< ::fwServices::IHasServices >(adapt);
+        if(hasServices != nullptr)
+        {
+            const auto& subServices = hasServices->getRegisteredServices();
+            std::copy(subServices.begin(), subServices.end(), std::back_inserter(subAdaptors));
+        }
+    }
+
+    // Subadaptors should be started/stopped by their parent. Remove them from the list.
+    for(auto subSrv : subAdaptors)
+    {
+        auto it = std::find(adaptors.begin(), adaptors.end(), subSrv.lock());
+
+        if(it != adaptors.end())
+        {
+            adaptors.erase(it);
+        }
+    }
+
+    // Restart all adaptors.
+    for(auto& adapt : adaptors)
+    {
+        if(adapt->isStarted())
+        {
+            adapt->stop().wait();
+            adapt->start().wait();
+        }
+    }
+
 }
 
 //-------------------------------------------------------------------------------------
@@ -1104,21 +1149,21 @@ Ogre::Matrix4 Layer::getCameraProjMat(const uint8_t cameraIdx) const
     SLM_ASSERT("Index exceeds the number of cameras used for this stereo mode", cameraIdx < this->getNumberOfCameras());
     ::Ogre::Matrix4 extrinsicTransform(::Ogre::Matrix4::IDENTITY);
 
-    if(m_stereoMode == ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_5)
+    if(m_stereoMode == ::fwRenderOgre::compositor::Core::StereoModeType::AUTOSTEREO_5)
     {
         const float eyeAngle = 0.02321f;
         const float angle    = eyeAngle * (-2.f + float(cameraIdx));
 
         extrinsicTransform = ::fwRenderOgre::helper::Camera::computeFrustumShearTransform(*m_camera, angle);
     }
-    else if(m_stereoMode == ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_8)
+    else if(m_stereoMode == ::fwRenderOgre::compositor::Core::StereoModeType::AUTOSTEREO_8)
     {
         const float eyeAngle = 0.01625f;
         const float angle    = eyeAngle * (-3.5f + float(cameraIdx));
 
         extrinsicTransform = ::fwRenderOgre::helper::Camera::computeFrustumShearTransform(*m_camera, angle);
     }
-    else if(m_stereoMode == ::fwRenderOgre::Layer::StereoModeType::STEREO)
+    else if(m_stereoMode == ::fwRenderOgre::compositor::Core::StereoModeType::STEREO)
     {
         if(cameraIdx == 1)
         {
@@ -1139,9 +1184,9 @@ Ogre::Matrix4 Layer::getCameraProjMat(const uint8_t cameraIdx) const
 
 uint8_t Layer::getNumberOfCameras() const
 {
-    return m_stereoMode == ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_8 ? 8 :
-           m_stereoMode == ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_5 ? 5 :
-           m_stereoMode == ::fwRenderOgre::Layer::StereoModeType::STEREO       ? 2 : 1;
+    return m_stereoMode == ::fwRenderOgre::compositor::Core::StereoModeType::AUTOSTEREO_8 ? 8 :
+           m_stereoMode == ::fwRenderOgre::compositor::Core::StereoModeType::AUTOSTEREO_5 ? 5 :
+           m_stereoMode == ::fwRenderOgre::compositor::Core::StereoModeType::STEREO       ? 2 : 1;
 }
 
 //-------------------------------------------------------------------------------------

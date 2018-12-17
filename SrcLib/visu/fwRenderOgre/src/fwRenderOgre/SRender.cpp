@@ -1,8 +1,24 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2018.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2014-2018 IRCAD France
+ * Copyright (C) 2014-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #include "fwRenderOgre/SRender.hpp"
 
@@ -115,6 +131,13 @@ void SRender::configuring()
     }
 
     m_fullscreen = sceneCfg.get<bool>("<xmlattr>.fullscreen", false);
+
+#ifdef __APPLE__
+    // TODO: fix fullscreen rendering on macOS.
+    SLM_ERROR("Fullscreen is broken on macOS (as of macOS 10.14 and Qt 5.11.2 and Ogre 1.11.4, "
+              "it is therefore disabled.");
+    m_fullscreen = false;
+#endif
 
     const std::string renderMode = sceneCfg.get<std::string>("<xmlattr>.renderMode", "auto");
     if (renderMode == "auto")
@@ -302,16 +325,17 @@ void SRender::configureLayer(const ConfigType& _cfg )
     SLM_ASSERT("Attribute 'depth' must be greater than 0", layerDepth > 0);
 
     ::fwRenderOgre::Layer::sptr ogreLayer = ::fwRenderOgre::Layer::New();
+    compositor::Core::StereoModeType layerStereoMode =
+        stereoMode == "AutoStereo5" ? compositor::Core::StereoModeType::AUTOSTEREO_5 :
+        stereoMode == "AutoStereo8" ? compositor::Core::StereoModeType::AUTOSTEREO_8 :
+        stereoMode == "Stereo"      ? compositor::Core::StereoModeType::STEREO :
+        compositor::Core::StereoModeType::NONE;
+
     ogreLayer->setRenderService(::fwRenderOgre::SRender::dynamicCast(this->shared_from_this()));
     ogreLayer->setID(id);
     ogreLayer->setDepth(layerDepth);
     ogreLayer->setWorker(m_associatedWorker);
-    ogreLayer->setStereoMode(stereoMode == "AutoStereo5" ? ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_5 :
-                             stereoMode == "AutoStereo8" ? ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_8 :
-                             stereoMode == "Stereo" ? ::fwRenderOgre::Layer::StereoModeType::STEREO :
-                             ::fwRenderOgre::Layer::StereoModeType::NONE);
-
-    ogreLayer->setCoreCompositorEnabled(true, transparencyTechnique, numPeels);
+    ogreLayer->setCoreCompositorEnabled(true, transparencyTechnique, numPeels, layerStereoMode);
     ogreLayer->setCompositorChainEnabled(compositors);
 
     if(!defaultLight.empty() && defaultLight == "no")

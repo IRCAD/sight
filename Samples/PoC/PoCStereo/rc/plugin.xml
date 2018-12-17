@@ -57,10 +57,12 @@
                 <gui>
                     <layout>
                         <menu name="File" />
+                        <menu name="View" />
                     </layout>
                 </gui>
                 <registry>
                     <menu sid="menuFile" start="yes" />
+                    <menu sid="menuView" start="yes" />
                 </registry>
             </service>
 
@@ -80,6 +82,17 @@
                 </registry>
             </service>
 
+            <service uid="menuView" type="::gui::aspect::SDefaultMenu" >
+                <gui>
+                    <layout>
+                        <menuItem name="Enable stereo" style="check" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="actionToggleStereo" start="yes" />
+                </registry>
+            </service>
+
             <service uid="actionOpenMesh" type="::gui::action::SStarter" >
                 <start uid="meshReader" />
             </service>
@@ -89,6 +102,11 @@
             </service>
 
             <service uid="actionQuit" type="::gui::action::SQuit"  />
+
+            <service uid="actionToggleStereo" type="::uiVisuOgre::SStereoToggler" >
+                <state active="true" />
+                <config layer="default" stereoMode="interlaced" />
+            </service>
 
             <service uid="meshReader" type="::uiIO::editor::SIOSelector" >
                 <inout key="data" uid="modelSeries" />

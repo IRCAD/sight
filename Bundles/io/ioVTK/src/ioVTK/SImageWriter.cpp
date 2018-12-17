@@ -1,8 +1,24 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2018.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #include "ioVTK/SImageWriter.hpp"
 
@@ -28,6 +44,7 @@
 
 #include <fwTools/Failed.hpp>
 
+#include <fwVtkIO/BitmapImageWriter.hpp>
 #include <fwVtkIO/ImageWriter.hpp>
 #include <fwVtkIO/MetaImageWriter.hpp>
 #include <fwVtkIO/VtiImageWriter.hpp>
@@ -63,11 +80,12 @@ void SImageWriter::configureWithIHM()
     static ::boost::filesystem::path _sDefaultPath("");
 
     ::fwGui::dialog::LocationDialog dialogFile;
-    dialogFile.setTitle(m_windowTitle.empty() ? "Choose an file to save an image" : m_windowTitle);
+    dialogFile.setTitle(m_windowTitle.empty() ? "Choose a file to save an image" : m_windowTitle);
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
     dialogFile.addFilter("Vtk", "*.vtk");
     dialogFile.addFilter("Vti", "*.vti");
     dialogFile.addFilter("MetaImage", "*.mhd");
+    dialogFile.addFilter("Bitmap images", "*.bmp *.jpeg *.jpg *.png *.pnm *.tiff");
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
 
     ::fwData::location::SingleFile::sptr result;
@@ -146,9 +164,68 @@ bool SImageWriter::saveImage( const ::boost::filesystem::path& imgFile,
         mhdWriter->setFile(imgFile);
         myWriter = mhdWriter;
     }
+    else if(ext == ".bmp" || ext == ".jpg" || ext == ".jpeg" || ext == ".png" || ext == ".pnm" || ext == ".tiff")
+    {
+        // Get image information
+        std::string type = image->getType().string();
+        int noc          = image->getNumberOfComponents();
+
+        // Ensure type compatibility with output format
+        // To warn the user when he/she attempts to export data in the wrong format
+        // Special case for png as it can handle uin16 and 4 component data
+        if(ext == ".png")
+        {
+            // Check data type
+            if(type != "uint8" && type != "uint16")
+            {
+                ::fwGui::dialog::MessageDialog::showMessageDialog(
+                    "Warning",
+                    "Unsupported " + type + " format for " + ext + " export.\n The image will not be exported.",
+                    ::fwGui::dialog::IMessageDialog::WARNING);
+                return false;
+            }
+            // Check number of components
+            if(noc < 1 || noc > 4)
+            {
+                ::fwGui::dialog::MessageDialog::showMessageDialog(
+                    "Warning",
+                    "Unsupported number of components (" + std::to_string(noc) + ") for " +
+                    ext + " export.\n The image will not be exported.",
+                    ::fwGui::dialog::IMessageDialog::WARNING);
+                return false;
+            }
+        }
+        // Otherwise ensure that we have 1 to 3 components with uint8 type
+        else
+        {
+            if(type != "uint8")
+            {
+                ::fwGui::dialog::MessageDialog::showMessageDialog(
+                    "Warning",
+                    "Unsupported " + type + " format for " + ext + " export.\n The image will not be exported.",
+                    ::fwGui::dialog::IMessageDialog::WARNING);
+                return false;
+            }
+            // Check number of components
+            if(noc < 1 || noc > 3)
+            {
+                ::fwGui::dialog::MessageDialog::showMessageDialog(
+                    "Warning",
+                    "Unsupported number of components (" + std::to_string(noc) + ") for " +
+                    ext + " export.\n The image will not be exported.",
+                    ::fwGui::dialog::IMessageDialog::WARNING);
+                return false;
+            }
+        }
+
+        ::fwVtkIO::BitmapImageWriter::sptr bitmapImageWriter = ::fwVtkIO::BitmapImageWriter::New();
+        bitmapImageWriter->setFile(imgFile);
+        myWriter = bitmapImageWriter;
+    }
     else
     {
-        FW_RAISE_EXCEPTION(::fwTools::Failed("Only .vtk, .vti and .mhd are supported."));
+        FW_RAISE_EXCEPTION(::fwTools::Failed("Unsupported " + ext + " format (Available formats: " +
+                                             ".vtk, .vti, .mhd, .bmp, .jpg, .jpeg, .png, .pnm, .tiff)"));
     }
 
     myWriter->setObject(image);

@@ -17,7 +17,7 @@
 
     <extension implements="::fwServices::registry::ServiceConfig">
         <id>LandmarksAtomsConfig</id>
-        <desc>Json/Xml Reader (FW4SPL)</desc>
+        <desc>Json/Xml Reader (Sight)</desc>
         <config>
             <patcher context="Landmark" version="V2" />
         </config>

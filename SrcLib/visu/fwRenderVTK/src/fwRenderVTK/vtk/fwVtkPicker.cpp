@@ -1,35 +1,40 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ * This file incorporates work covered by the following copyright and
+ * permission notice:
+ *
+ *   Program:   Visualization Toolkit
+ *   Module:    $RCSfile: fwVtkPicker.cxx,v $
+ *
+ *   Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
+ *   All rights reserved.
+ *   See Copyright.txt or http://www.kitware.com/Copyright.htm for details.
+ *
+ *   This software is distributed WITHOUT ANY WARRANTY; without even
+ *   the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+ *   PURPOSE.  See the above copyright notice for more information.
+ *
+ ***********************************************************************/
 
-/*=========================================================================
-   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-   Patched version of vtkPicker,
-   see http://www.vtk.org/doc/release/5.4/html/a00996.html
-   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-   =========================================================================*/
-
-/*=========================================================================
-
-   Program:   Visualization Toolkit
-   Module:    $RCSfile: fwVtkPicker.cxx,v $
-
-   Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
-   All rights reserved.
-   See Copyright.txt or http://www.kitware.com/Copyright.htm for details.
-
-     This software is distributed WITHOUT ANY WARRANTY; without even
-     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-     PURPOSE.  See the above copyright notice for more information.
-
-   =========================================================================*/
-
+#include "fwRenderVTK/vtk/fwVtkPicker.hpp"
 
 #include <vtkAbstractVolumeMapper.h>
 #include <vtkActor.h>
@@ -49,19 +54,18 @@
 #include <vtkProp3DCollection.h>
 #include <vtkPropCollection.h>
 #include <vtkProperty.h>
-#include <vtkRenderWindow.h>
 #include <vtkRenderer.h>
+#include <vtkRenderWindow.h>
 #include <vtkTransform.h>
 #include <vtkVertex.h>
 #include <vtkVolume.h>
-
-#include "fwRenderVTK/vtk/fwVtkPicker.hpp"
 
 vtkStandardNewMacro(fwVtkPicker);
 
 // Construct object with initial tolerance of 1/40th of window. There are no
 // pick methods and picking is performed from the renderer's actors.
-fwVtkPicker::fwVtkPicker() : vtkPicker()
+fwVtkPicker::fwVtkPicker() :
+    vtkPicker()
 {
 
 }
@@ -70,25 +74,24 @@ fwVtkPicker::~fwVtkPicker()
 {
 }
 
-
 // Perform pick operation with selection point provided. Normally the
 // first two values for the selection point are x-y pixel coordinate, and
 // the third value is =0. Return non-zero if something was successfully picked.
 int fwVtkPicker::Pick(double selectionX, double selectionY, double selectionZ,
-                      vtkRenderer *renderer)
+                      vtkRenderer* renderer)
 {
     int i;
-    vtkProp *prop;
-    vtkCamera *camera;
-    vtkAbstractMapper3D *mapper = NULL;
+    vtkProp* prop;
+    vtkCamera* camera;
+    vtkAbstractMapper3D* mapper = NULL;
     double p1World[4], p2World[4], p1Mapper[4], p2Mapper[4];
     int picked = 0;
-    int *winSize;
+    int* winSize;
     double x, y, t;
-    double *viewport;
+    double* viewport;
     double cameraPos[4], cameraFP[4];
-    double *displayCoords, *worldCoords;
-    double *clipRange;
+    double* displayCoords, * worldCoords;
+    double* clipRange;
     double ray[3], rayLength;
     int pickable;
     int LODId;
@@ -106,7 +109,7 @@ int fwVtkPicker::Pick(double selectionX, double selectionY, double selectionZ,
     this->SelectionPoint[2] = selectionZ;
 
     // Invoke start pick method if defined
-    this->InvokeEvent(vtkCommand::StartPickEvent,NULL);
+    this->InvokeEvent(vtkCommand::StartPickEvent, NULL);
 
     if ( renderer == NULL )
     {
@@ -123,7 +126,7 @@ int fwVtkPicker::Pick(double selectionX, double selectionY, double selectionZ,
     camera->GetFocalPoint(cameraFP);
     cameraFP[3] = 1.0;
 
-    renderer->SetWorldPoint(cameraFP[0],cameraFP[1],cameraFP[2],cameraFP[3]);
+    renderer->SetWorldPoint(cameraFP[0], cameraFP[1], cameraFP[2], cameraFP[3]);
     renderer->WorldToDisplay();
     displayCoords = renderer->GetDisplayPoint();
     selectionZ    = displayCoords[2];
@@ -147,18 +150,18 @@ int fwVtkPicker::Pick(double selectionX, double selectionY, double selectionZ,
     //  the camera position to the selection point, starting where this line
     //  intersects the front clipping plane, and terminating where this
     //  line intersects the back clipping plane.
-    for (i = 0; i<3; i++)
+    for (i = 0; i < 3; i++)
     {
         ray[i] = this->PickPosition[i] - cameraPos[i];
     }
-    for (i = 0; i<3; i++)
+    for (i = 0; i < 3; i++)
     {
         cameraDOP[i] = cameraFP[i] - cameraPos[i];
     }
 
     vtkMath::Normalize(cameraDOP);
 
-    if (( rayLength = vtkMath::Dot(cameraDOP,ray)) == 0.0 )
+    if (( rayLength = vtkMath::Dot(cameraDOP, ray)) == 0.0 )
     {
         vtkWarningMacro("Cannot process points");
         return 0;
@@ -170,7 +173,7 @@ int fwVtkPicker::Pick(double selectionX, double selectionY, double selectionZ,
     {
         tF = clipRange[0] - rayLength;
         tB = clipRange[1] - rayLength;
-        for (i = 0; i<3; i++)
+        for (i = 0; i < 3; i++)
         {
             p1World[i] = this->PickPosition[i] + tF*cameraDOP[i];
             p2World[i] = this->PickPosition[i] + tB*cameraDOP[i];
@@ -180,7 +183,7 @@ int fwVtkPicker::Pick(double selectionX, double selectionY, double selectionZ,
     {
         tF = clipRange[0] / rayLength;
         tB = clipRange[1] / rayLength;
-        for (i = 0; i<3; i++)
+        for (i = 0; i < 3; i++)
         {
             p1World[i] = cameraPos[i] + tF*ray[i];
             p2World[i] = cameraPos[i] + tB*ray[i];
@@ -207,21 +210,21 @@ int fwVtkPicker::Pick(double selectionX, double selectionY, double selectionZ,
     renderer->DisplayToWorld();
     renderer->GetWorldPoint(windowUpperRight);
 
-    for (tol = 0.0,i = 0; i<3; i++)
+    for (tol = 0.0, i = 0; i < 3; i++)
     {
         tol += (windowUpperRight[i] - windowLowerLeft[i]) *
                (windowUpperRight[i] - windowLowerLeft[i]);
     }
 
-    tol = sqrt (tol) * this->Tolerance;
+    tol = sqrt(tol) * this->Tolerance;
 
     //  Loop over all props.  Transform ray (defined from position of
     //  camera to selection point) into coordinates of mapper (not
     //  transformed to actors coordinates!  Reduces overall computation!!!).
     //  Note that only vtkProp3D's can be picked by fwVtkPicker.
     //
-    vtkPropCollection *props;
-    vtkProp *propCandidate;
+    vtkPropCollection* props;
+    vtkProp* propCandidate;
     if ( this->PickFromList )
     {
         props = this->GetPickList();
@@ -231,12 +234,12 @@ int fwVtkPicker::Pick(double selectionX, double selectionY, double selectionZ,
         props = renderer->GetViewProps();
     }
 
-    vtkActor *actor;
-    vtkLODProp3D *prop3D;
-    vtkVolume *volume;
-    vtkImageActor *imageActor = 0;
-    vtkAssemblyPath *path;
-    vtkProperty *tempProperty;
+    vtkActor* actor;
+    vtkLODProp3D* prop3D;
+    vtkVolume* volume;
+    vtkImageActor* imageActor = 0;
+    vtkAssemblyPath* path;
+    vtkProperty* tempProperty;
     this->Transform->PostMultiply();
     vtkCollectionSimpleIterator pit;
     double scale[3];
@@ -293,10 +296,10 @@ int fwVtkPicker::Pick(double selectionX, double selectionY, double selectionZ,
             //  coordinates.
             if ( pickable  &&  mapper != NULL )
             {
-                vtkMatrix4x4 *lastMatrix = path->GetLastNode()->GetMatrix();
+                vtkMatrix4x4* lastMatrix = path->GetLastNode()->GetMatrix();
                 if (lastMatrix == NULL)
                 {
-                    vtkErrorMacro (<< "Pick: Null matrix.");
+                    vtkErrorMacro(<< "Pick: Null matrix.");
                     return 0;
                 }
                 this->Transform->SetMatrix(lastMatrix);
@@ -304,10 +307,10 @@ int fwVtkPicker::Pick(double selectionX, double selectionY, double selectionZ,
                 this->Transform->Inverse();
                 this->Transform->GetScale(scale); //need to scale the tolerance
 
-                this->Transform->TransformPoint(p1World,p1Mapper);
-                this->Transform->TransformPoint(p2World,p2Mapper);
+                this->Transform->TransformPoint(p1World, p1Mapper);
+                this->Transform->TransformPoint(p2World, p2Mapper);
 
-                for (i = 0; i<3; i++)
+                for (i = 0; i < 3; i++)
                 {
                     ray[i] = p2Mapper[i] - p1Mapper[i];
                 }
@@ -329,13 +332,13 @@ int fwVtkPicker::Pick(double selectionX, double selectionY, double selectionZ,
                 {
                     t = this->IntersectWithLine(p1Mapper, p2Mapper,
                                                 tol*0.333*(scale[0]+scale[1]+scale[2]), path,
-                                                static_cast<vtkProp3D *>(propCandidate), mapper);
+                                                static_cast<vtkProp3D*>(propCandidate), mapper);
                     if ( t < VTK_DOUBLE_MAX )
                     {
                         picked = 1;
                         if ( !this->Prop3Ds->IsItemPresent(prop) )
                         {
-                            this->Prop3Ds->AddItem(static_cast<vtkProp3D *>(prop));
+                            this->Prop3Ds->AddItem(static_cast<vtkProp3D*>(prop));
                         }
                         this->PickedPositions->InsertNextPoint
                             ((1.0 - t)*p1World[0] + t*p2World[0],
@@ -352,18 +355,18 @@ int fwVtkPicker::Pick(double selectionX, double selectionY, double selectionZ,
             }
             else if ( pickable && imageActor )
             { // special case for imageActor, which has no mapper
-                vtkMatrix4x4 *lastMatrix = path->GetLastNode()->GetMatrix();
+                vtkMatrix4x4* lastMatrix = path->GetLastNode()->GetMatrix();
                 if (lastMatrix == NULL)
                 {
-                    vtkErrorMacro (<< "Pick: Null matrix.");
+                    vtkErrorMacro(<< "Pick: Null matrix.");
                     return 0;
                 }
                 this->Transform->SetMatrix(lastMatrix);
                 this->Transform->Push();
                 this->Transform->Inverse();
 
-                this->Transform->TransformPoint(p1World,p1Mapper);
-                this->Transform->TransformPoint(p2World,p2Mapper);
+                this->Transform->TransformPoint(p1World, p1Mapper);
+                this->Transform->TransformPoint(p2World, p2Mapper);
 
                 this->Transform->Pop();
 
@@ -406,9 +409,9 @@ int fwVtkPicker::Pick(double selectionX, double selectionY, double selectionZ,
                         this->MapperPosition[0] = hitPosition[0];
                         this->MapperPosition[1] = hitPosition[1];
                         this->MapperPosition[2] = hitPosition[2];
-                        this->Transform->TransformPoint(hitPosition,this->PickPosition);
+                        this->Transform->TransformPoint(hitPosition, this->PickPosition);
                         imageActor->Pick();
-                        this->InvokeEvent(vtkCommand::PickEvent,NULL);
+                        this->InvokeEvent(vtkCommand::PickEvent, NULL);
 
                         this->Prop3Ds->AddItem(imageActor);
 //            this->PickedPositions->InsertNextPoint
@@ -426,19 +429,19 @@ int fwVtkPicker::Pick(double selectionX, double selectionY, double selectionZ,
     }//for all actors
 
     // Invoke end pick method if defined
-    this->InvokeEvent(vtkCommand::EndPickEvent,NULL);
+    this->InvokeEvent(vtkCommand::EndPickEvent, NULL);
 
     return picked;
 }
 
+//------------------------------------------------------------------------------
 
-
-int fwVtkPicker::PickPolyData( double p1[3], double p2[3], vtkPolyData *polydata)
+int fwVtkPicker::PickPolyData( double p1[3], double p2[3], vtkPolyData* polydata)
 {
 
-    vtkPolyDataMapper *mapper = vtkPolyDataMapper::New();
-    vtkActor *actor           = vtkActor::New();
-    vtkPropCollection *props  = vtkPropCollection::New();
+    vtkPolyDataMapper* mapper = vtkPolyDataMapper::New();
+    vtkActor* actor           = vtkActor::New();
+    vtkPropCollection* props  = vtkPropCollection::New();
 
     mapper->SetInputData(polydata);
     actor->SetMapper(mapper);
@@ -453,17 +456,14 @@ int fwVtkPicker::PickPolyData( double p1[3], double p2[3], vtkPolyData *polydata
     return res;
 }
 
-
-
-
 // Perform pick operation with selection point provided. Normally the
 // first two values for the selection point are x-y pixel coordinate, and
 // the third value is =0. Return non-zero if something was successfully picked.
-int fwVtkPicker::Pick( double p1[3], double p2[3], vtkPropCollection *props)
+int fwVtkPicker::Pick( double p1[3], double p2[3], vtkPropCollection* props)
 {
     int i;
-    vtkProp *prop;
-    vtkAbstractMapper3D *mapper = NULL;
+    vtkProp* prop;
+    vtkAbstractMapper3D* mapper = NULL;
     double p1World[4], p2World[4], p1Mapper[4], p2Mapper[4];
     int picked = 0;
     double t;
@@ -479,10 +479,10 @@ int fwVtkPicker::Pick( double p1[3], double p2[3], vtkPropCollection *props)
     this->Initialize();
 
     // Invoke start pick method if defined
-    this->InvokeEvent(vtkCommand::StartPickEvent,NULL);
+    this->InvokeEvent(vtkCommand::StartPickEvent, NULL);
 
-    std::copy(p1,p1+3,p1World);
-    std::copy(p2,p2+3,p2World);
+    std::copy(p1, p1+3, p1World);
+    std::copy(p2, p2+3, p2World);
 
     p1World[3] = p2World[3] = 1.0;
 
@@ -491,14 +491,14 @@ int fwVtkPicker::Pick( double p1[3], double p2[3], vtkPropCollection *props)
     //  transformed to actors coordinates!  Reduces overall computation!!!).
     //  Note that only vtkProp3D's can be picked by fwVtkPicker.
     //
-    vtkProp *propCandidate;
+    vtkProp* propCandidate;
 
-    vtkActor *actor;
-    vtkLODProp3D *prop3D;
-    vtkVolume *volume;
-    vtkImageActor *imageActor = 0;
-    vtkAssemblyPath *path;
-    vtkProperty *tempProperty;
+    vtkActor* actor;
+    vtkLODProp3D* prop3D;
+    vtkVolume* volume;
+    vtkImageActor* imageActor = 0;
+    vtkAssemblyPath* path;
+    vtkProperty* tempProperty;
     this->Transform->PostMultiply();
     vtkCollectionSimpleIterator pit;
     double scale[3];
@@ -555,10 +555,10 @@ int fwVtkPicker::Pick( double p1[3], double p2[3], vtkPropCollection *props)
             //  coordinates.
             if ( pickable  &&  mapper != NULL )
             {
-                vtkMatrix4x4 *lastMatrix = path->GetLastNode()->GetMatrix();
+                vtkMatrix4x4* lastMatrix = path->GetLastNode()->GetMatrix();
                 if (lastMatrix == NULL)
                 {
-                    vtkErrorMacro (<< "Pick: Null matrix.");
+                    vtkErrorMacro(<< "Pick: Null matrix.");
                     return 0;
                 }
                 this->Transform->SetMatrix(lastMatrix);
@@ -566,10 +566,10 @@ int fwVtkPicker::Pick( double p1[3], double p2[3], vtkPropCollection *props)
                 this->Transform->Inverse();
                 this->Transform->GetScale(scale); //need to scale the tolerance
 
-                this->Transform->TransformPoint(p1World,p1Mapper);
-                this->Transform->TransformPoint(p2World,p2Mapper);
+                this->Transform->TransformPoint(p1World, p1Mapper);
+                this->Transform->TransformPoint(p2World, p2Mapper);
 
-                for (i = 0; i<3; i++)
+                for (i = 0; i < 3; i++)
                 {
                     ray[i] = p2Mapper[i] - p1Mapper[i];
                 }
@@ -591,13 +591,13 @@ int fwVtkPicker::Pick( double p1[3], double p2[3], vtkPropCollection *props)
                 {
                     t = this->IntersectWithLine(p1Mapper, p2Mapper,
                                                 tol*0.333*(scale[0]+scale[1]+scale[2]), path,
-                                                static_cast<vtkProp3D *>(propCandidate), mapper);
+                                                static_cast<vtkProp3D*>(propCandidate), mapper);
                     if ( t < VTK_DOUBLE_MAX )
                     {
                         picked = 1;
                         if ( !this->Prop3Ds->IsItemPresent(prop) )
                         {
-                            this->Prop3Ds->AddItem(static_cast<vtkProp3D *>(prop));
+                            this->Prop3Ds->AddItem(static_cast<vtkProp3D*>(prop));
                         }
                         this->PickedPositions->InsertNextPoint
                             ((1.0 - t)*p1World[0] + t*p2World[0],
@@ -614,18 +614,18 @@ int fwVtkPicker::Pick( double p1[3], double p2[3], vtkPropCollection *props)
             }
             else if ( pickable && imageActor )
             { // special case for imageActor, which has no mapper
-                vtkMatrix4x4 *lastMatrix = path->GetLastNode()->GetMatrix();
+                vtkMatrix4x4* lastMatrix = path->GetLastNode()->GetMatrix();
                 if (lastMatrix == NULL)
                 {
-                    vtkErrorMacro (<< "Pick: Null matrix.");
+                    vtkErrorMacro(<< "Pick: Null matrix.");
                     return 0;
                 }
                 this->Transform->SetMatrix(lastMatrix);
                 this->Transform->Push();
                 this->Transform->Inverse();
 
-                this->Transform->TransformPoint(p1World,p1Mapper);
-                this->Transform->TransformPoint(p2World,p2Mapper);
+                this->Transform->TransformPoint(p1World, p1Mapper);
+                this->Transform->TransformPoint(p2World, p2Mapper);
 
                 this->Transform->Pop();
 
@@ -668,9 +668,9 @@ int fwVtkPicker::Pick( double p1[3], double p2[3], vtkPropCollection *props)
                         this->MapperPosition[0] = hitPosition[0];
                         this->MapperPosition[1] = hitPosition[1];
                         this->MapperPosition[2] = hitPosition[2];
-                        this->Transform->TransformPoint(hitPosition,this->PickPosition);
+                        this->Transform->TransformPoint(hitPosition, this->PickPosition);
                         imageActor->Pick();
-                        this->InvokeEvent(vtkCommand::PickEvent,NULL);
+                        this->InvokeEvent(vtkCommand::PickEvent, NULL);
 
                         this->Prop3Ds->AddItem(imageActor);
 //            this->PickedPositions->InsertNextPoint
@@ -688,19 +688,15 @@ int fwVtkPicker::Pick( double p1[3], double p2[3], vtkPropCollection *props)
     }//for all actors
 
     // Invoke end pick method if defined
-    this->InvokeEvent(vtkCommand::EndPickEvent,NULL);
+    this->InvokeEvent(vtkCommand::EndPickEvent, NULL);
 
     return picked;
 }
 
-
-
-
-
+//------------------------------------------------------------------------------
 
 void fwVtkPicker::PrintSelf(ostream& os, vtkIndent indent)
 {
     os << indent << "fwVtkPicker: \n";
-    this->Superclass::PrintSelf(os,indent);
+    this->Superclass::PrintSelf(os, indent);
 }
-

@@ -1,12 +1,30 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2018.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #include "IoItkTest.hpp"
 
 #include <fwDataTools/Image.hpp>
+
+#include <fwIO/ioTypes.hpp>
 
 #include <fwMedData/ImageSeries.hpp>
 #include <fwMedData/SeriesDB.hpp>
@@ -64,12 +82,13 @@ void executeService(
     const SPTR(::fwData::Object)& obj,
     const std::string& srvType,
     const std::string& srvImpl,
-    const SPTR(::fwRuntime::EConfigurationElement)& cfg )
+    const SPTR(::fwRuntime::EConfigurationElement)& cfg,
+    const ::fwServices::IService::AccessType access = ::fwServices::IService::AccessType::INOUT)
 {
     ::fwServices::IService::sptr srv = ::fwServices::add(srvImpl);
 
     CPPUNIT_ASSERT(srv);
-    srv->registerInOut(obj, "data");
+    ::fwServices::OSR::registerService(obj, ::fwIO::s_DATA_KEY, access, srv );
     srv->setConfiguration(cfg);
     CPPUNIT_ASSERT_NO_THROW(srv->configure());
     CPPUNIT_ASSERT_NO_THROW(srv->start().wait());
@@ -100,7 +119,11 @@ void IoItkTest::testImageSeriesWriterJPG()
     srvCfg->addConfigurationElement(folderCfg);
 
     // Create and execute service
-    executeService(imageSeries, "::fwIO::IWriter", "::ioITK::SJpgImageSeriesWriter", srvCfg);
+    executeService(imageSeries,
+                   "::fwIO::IWriter",
+                   "::ioITK::SJpgImageSeriesWriter",
+                   srvCfg,
+                   ::fwServices::IService::AccessType::INPUT);
 
     // Remove path
     ::boost::filesystem::remove_all( path.string() );
@@ -125,7 +148,12 @@ void IoItkTest::testImageWriterJPG()
     srvCfg->addConfigurationElement(folderCfg);
 
     // Create and execute service
-    executeService( image, "::fwIO::IWriter", "::ioITK::JpgImageWriterService", srvCfg );
+    executeService(
+        image,
+        "::fwIO::IWriter",
+        "::ioITK::JpgImageWriterService",
+        srvCfg,
+        ::fwServices::IService::AccessType::INPUT);
 
     // Remove path
     ::boost::filesystem::remove_all( path.string() );
@@ -160,11 +188,21 @@ void IoItkTest::testSaveLoadInr()
     srvCfg->addConfigurationElement(fileCfg);
 
     // Create and execute service
-    executeService( image, "::fwIO::IWriter", "::ioITK::InrImageWriterService", srvCfg );
+    executeService(
+        image,
+        "::fwIO::IWriter",
+        "::ioITK::InrImageWriterService",
+        srvCfg,
+        ::fwServices::IService::AccessType::INPUT);
 
     // load Image
     ::fwData::Image::sptr image2 = ::fwData::Image::New();
-    executeService( image2, "::fwIO::IReader", "::ioITK::InrImageReaderService", srvCfg );
+    executeService(
+        image2,
+        "::fwIO::IReader",
+        "::ioITK::InrImageReaderService",
+        srvCfg,
+        ::fwServices::IService::AccessType::INOUT);
 
     ::boost::filesystem::remove_all( PATH.parent_path().string() );
 
@@ -205,11 +243,21 @@ void IoItkTest::ImageSeriesInrTest()
     srvCfg->addConfigurationElement(fileCfg);
 
     // Create and execute service
-    executeService( imageSeries, "::fwIO::IWriter", "::ioITK::SImageSeriesWriter", srvCfg );
+    executeService(
+        imageSeries,
+        "::fwIO::IWriter",
+        "::ioITK::SImageSeriesWriter",
+        srvCfg,
+        ::fwServices::IService::AccessType::INPUT);
 
     // load Image
     ::fwData::Image::sptr image2 = ::fwData::Image::New();
-    executeService( image2, "::fwIO::IReader", "::ioITK::InrImageReaderService", srvCfg );
+    executeService(
+        image2,
+        "::fwIO::IReader",
+        "::ioITK::InrImageReaderService",
+        srvCfg,
+        ::fwServices::IService::AccessType::INOUT);
 
     ::boost::filesystem::remove_all( PATH.parent_path().string() );
 
@@ -233,8 +281,8 @@ void IoItkTest::SeriesDBInrTest()
      * - image.inr.gz : CT, type int16, size: 512x512x134, spacing 0.781:0.781:1.6
      * - skin.inr.gz : mask skin, type uint8, size: 512x512x134, spacing 0.781:0.781:1.6
      */
-    const ::boost::filesystem::path imageFile = ::fwTest::Data::dir() / "fw4spl/image/inr/image.inr.gz";
-    const ::boost::filesystem::path skinFile  = ::fwTest::Data::dir() / "fw4spl/image/inr/skin.inr.gz";
+    const ::boost::filesystem::path imageFile = ::fwTest::Data::dir() / "sight/image/inr/image.inr.gz";
+    const ::boost::filesystem::path skinFile  = ::fwTest::Data::dir() / "sight/image/inr/skin.inr.gz";
 
     CPPUNIT_ASSERT_MESSAGE("The file '" + imageFile.string() + "' does not exist",
                            ::boost::filesystem::exists(imageFile));
@@ -254,7 +302,12 @@ void IoItkTest::SeriesDBInrTest()
 
     // load SeriesDB
     ::fwMedData::SeriesDB::sptr sdb = ::fwMedData::SeriesDB::New();
-    executeService( sdb, "::fwIO::IReader", "::ioITK::SInrSeriesDBReader", srvCfg );
+    executeService(
+        sdb,
+        "::fwIO::IReader",
+        "::ioITK::SInrSeriesDBReader",
+        srvCfg,
+        ::fwServices::IService::AccessType::INOUT);
 
     ::fwData::Image::SpacingType spacing = list_of(0.781)(0.781)(1.6);
     ::fwData::Image::SizeType size       = list_of(512)(512)(134);

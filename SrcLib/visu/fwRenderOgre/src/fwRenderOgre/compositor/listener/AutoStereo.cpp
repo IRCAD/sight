@@ -1,8 +1,24 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017-2018.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2017-2018 IRCAD France
+ * Copyright (C) 2017-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #include "fwRenderOgre/compositor/listener/AutoStereo.hpp"
 
@@ -40,14 +56,15 @@ AutoStereoCompositorListener::~AutoStereoCompositorListener()
     // Cleaning the texture forces the listener to be triggered and then to create the techniques with the new textures
     for(auto& techMatPair : m_createdTechniques)
     {
-        if(mtlManager.getByHandle(techMatPair.second) == nullptr)
+        ::Ogre::MaterialPtr mtl = mtlManager.getByName(techMatPair.second);
+
+        if(mtl == nullptr)
         {
             // The material is already deleted and so is the technique.
             continue;
         }
 
         ::Ogre::Technique* tech = techMatPair.first;
-        ::Ogre::Material* mtl   = tech->getParent();
 
         const ::Ogre::Material::Techniques techniques = mtl->getTechniques();
 
@@ -186,7 +203,7 @@ AutoStereoCompositorListener::~AutoStereoCompositorListener()
             texUnitState->setCompositorReference(compName, compName + "Texture" + passIdStr);
         }
 
-        m_createdTechniques.push_back(std::make_pair(newTech, _originalMaterial->getHandle()));
+        m_createdTechniques.push_back(std::make_pair(newTech, _originalMaterial->getName()));
     }
 
     return newTech;

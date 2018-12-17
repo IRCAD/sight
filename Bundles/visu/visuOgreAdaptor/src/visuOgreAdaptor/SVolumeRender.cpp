@@ -1,8 +1,24 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2016-2018.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2016-2018 IRCAD France
+ * Copyright (C) 2016-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #include "visuOgreAdaptor/SVolumeRender.hpp"
 
@@ -20,6 +36,8 @@
 
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 #include <fwDataTools/TransformationMatrix3D.hpp>
+
+#include <fwGui/dialog/MessageDialog.hpp>
 
 #include <fwRenderOgre/helper/Scene.hpp>
 #include <fwRenderOgre/helper/Shading.hpp>
@@ -57,7 +75,6 @@ const ::fwCom::Slots::SlotKeyType SVolumeRender::s_TOGGLE_COLOR_BLEEDING_SLOT   
 const ::fwCom::Slots::SlotKeyType SVolumeRender::s_TOGGLE_SHADOWS_SLOT               = "toggleShadows";
 const ::fwCom::Slots::SlotKeyType SVolumeRender::s_TOGGLE_WIDGETS_SLOT               = "toggleWidgets";
 const ::fwCom::Slots::SlotKeyType SVolumeRender::s_RESIZE_VIEWPORT_SLOT              = "resizeViewport";
-const ::fwCom::Slots::SlotKeyType SVolumeRender::s_SET_STEREO_MODE_SLOT              = "setStereoMode";
 const ::fwCom::Slots::SlotKeyType SVolumeRender::s_SET_BOOL_PARAMETER_SLOT           = "setBoolParameter";
 const ::fwCom::Slots::SlotKeyType SVolumeRender::s_SET_INT_PARAMETER_SLOT            = "setIntParameter";
 const ::fwCom::Slots::SlotKeyType SVolumeRender::s_SET_DOUBLE_PARAMETER_SLOT         = "setDoubleParameter";
@@ -97,7 +114,6 @@ SVolumeRender::SVolumeRender() noexcept :
     newSlot(s_TOGGLE_SHADOWS_SLOT, &SVolumeRender::toggleShadows, this);
     newSlot(s_TOGGLE_WIDGETS_SLOT, &SVolumeRender::toggleWidgets, this);
     newSlot(s_RESIZE_VIEWPORT_SLOT, &SVolumeRender::resizeViewport, this);
-    newSlot(s_SET_STEREO_MODE_SLOT, &SVolumeRender::setStereoMode, this);
     newSlot(s_SET_BOOL_PARAMETER_SLOT, &SVolumeRender::setBoolParameter, this);
     newSlot(s_SET_INT_PARAMETER_SLOT, &SVolumeRender::setIntParameter, this);
     newSlot(s_SET_DOUBLE_PARAMETER_SLOT, &SVolumeRender::setDoubleParameter, this);
@@ -291,8 +307,6 @@ void SVolumeRender::starting()
 
     m_volumeConnection.connect(layer, ::fwRenderOgre::Layer::s_RESIZE_LAYER_SIG,
                                this->getSptr(), ::visuOgreAdaptor::SVolumeRender::s_RESIZE_VIEWPORT_SLOT);
-    m_volumeConnection.connect(layer, ::fwRenderOgre::Layer::s_STEREO_MODE_CHANGED_SIG,
-                               this->getSptr(), ::visuOgreAdaptor::SVolumeRender::s_SET_STEREO_MODE_SLOT);
 
     const bool isValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image);
     if (isValid)
@@ -699,20 +713,11 @@ void SVolumeRender::resizeViewport(int w, int h)
 
 void SVolumeRender::setFocalDistance(int focalDistance)
 {
-    if(this->getRenderService()->getLayer(m_layerID)->getStereoMode() != ::fwRenderOgre::Layer::StereoModeType::NONE)
+    if(this->getRenderService()->getLayer(m_layerID)->getStereoMode() !=
+       ::fwRenderOgre::compositor::Core::StereoModeType::NONE)
     {
         m_volumeRenderer->setFocalLength(static_cast<float>(focalDistance) / 100);
     }
-}
-
-//-----------------------------------------------------------------------------
-
-void SVolumeRender::setStereoMode(::fwRenderOgre::Layer::StereoModeType)
-{
-    this->getRenderService()->makeCurrent();
-
-    this->stopping();
-    this->starting();
 }
 
 //-----------------------------------------------------------------------------
@@ -882,7 +887,18 @@ void SVolumeRender::setEnumParameter(std::string val, std::string key)
     {
         if(val != "None")
         {
-            this->newMask();
+            if(this->getLayer()->getStereoMode() != ::fwRenderOgre::compositor::Core::StereoModeType::NONE)
+            {
+                ::fwGui::dialog::MessageDialog("IDVR not compatible with stereo.",
+                                               "Importance driven VR is not available for stereo rendering, "
+                                               "it will not be activated.",
+                                               ::fwGui::dialog::MessageDialog::WARNING).show();
+                val = "None";
+            }
+            else
+            {
+                this->newMask();
+            }
         }
         m_volumeRenderer->setIDVRMethod(val);
         this->requestRender();

@@ -1,11 +1,26 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
-#ifndef __FWDATA_MESH_HPP__
-#define __FWDATA_MESH_HPP__
+#pragma once
 
 #include "fwData/Array.hpp"
 #include "fwData/config.hpp"
@@ -24,7 +39,7 @@ namespace fwData
 /**
  * @brief   Data holding a geometric structure composed of points, lines, triangles, quads or polygons.
  *
- * It is the new structure that represent mesh in fw4spl. For the moment, this new structure is available
+ * It is the new structure that represent mesh in sight. For the moment, this new structure is available
  * to register mesh with triangle cells, with quad cells or with triangle and quad cells. Peharps, in future
  * work other cell type will be available (ex: POLYGON)
  *
@@ -459,6 +474,3 @@ protected:
 };
 
 } // namespace fwData
-
-#endif // __FWDATA_MESH_HPP__
-

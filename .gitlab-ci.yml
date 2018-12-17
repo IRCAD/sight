@@ -1,29 +1,25 @@
 stages:
   - lint
   - build
+  - doc
   - deploy
 
 before_script:
   # CCache Config
-  - mkdir -p ccache
   - export CCACHE_BASEDIR=${PWD}
-  - export CCACHE_DIR=${PWD}/ccache
   - export CCACHE_COMPILERCHECK=content
   - export CCACHE_MAXSIZE=32G
   - export CCACHE_COMPRESS=1
   - export CCACHE_SLOPPINESS=include_file_ctime,pch_defines,time_macros
   - export CCACHE_NOHASHDIR=1
 
-cache:
-  paths:
-    - ccache/
 
 sheldon-mr:
   image: ${DOCKER_ENVDEV_CLANG6}
   stage: lint
   script:
     - export ORIG_BRANCH_COMMIT_SHA=$(git merge-base dev origin/${CI_COMMIT_REF_NAME})
-    - git -c http.sslVerify=false clone --depth 1 https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-git.git
+    - git -c http.sslVerify=false clone --depth 1 https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-git.git -b dev
     # Execute sheldon, on all commits from the merge request
     - sight-git/hooks/sheldon ${ORIG_BRANCH_COMMIT_SHA}..${CI_COMMIT_SHA}
 
@@ -31,16 +27,17 @@ sheldon:
   image: ${DOCKER_ENVDEV_CLANG6}
   stage: lint
   script:
-    - git -c http.sslVerify=false clone --depth 1 https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-git.git
+    - git -c http.sslVerify=false clone --depth 1 https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-git.git -b dev
     - sight-git/hooks/sheldon HEAD^ HEAD
   except:
     - dev
     - master
 
-build:debug:
+build:debug-linux:
   image: ${DOCKER_ENVDEV_CLANG6}
   stage: build
   script:
+    - export CCACHE_DIR=/cache/ccache
     - export CC=/usr/local/lib/ccache/clang
     - export CXX=/usr/local/lib/ccache/clang++
     - mkdir $CI_PROJECT_DIR/install $CI_PROJECT_DIR/build
@@ -58,10 +55,13 @@ build:debug:
     - ninja
     - ccache -s
 
-build:release:
+build:release-linux:
   image: ${DOCKER_ENVDEV_CLANG6}
   stage: build
+  variables:
+    CONAN_USER_HOME: $CI_PROJECT_DIR/conan
   script:
+    - export CCACHE_DIR=/cache/ccache
     - export CC=/usr/local/lib/ccache/clang
     - export CXX=/usr/local/lib/ccache/clang++
     - mkdir $CI_PROJECT_DIR/install $CI_PROJECT_DIR/build
@@ -81,7 +81,7 @@ build:release:
 
 doxygen:
   image: ${DOCKER_ENVDEV_CLANG6}
-  stage: build
+  stage: doc
   script:
     - sudo apt-get update -yqq && sudo apt-get install -yqq graphviz doxygen
     - export CC=/usr/bin/clang-6.0
@@ -102,7 +102,7 @@ doxygen:
     name: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
     paths:
       - $CI_PROJECT_DIR/build/Documentation/Doxygen/
- 
+
 pages:
   stage: deploy
   dependencies:

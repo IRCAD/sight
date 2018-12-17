@@ -1,8 +1,24 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2018.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #pragma once
 
@@ -20,8 +36,10 @@ namespace fwIO
  * @brief Writer service API. It manages extension points definition and extension configuration
  *
  * @section Slots Slots
- * - \b setFileFolder(const ::boost::filesystem::path&) : Sets the folder when a path is configured in FILE or
+ * - \b setFileFolder(const ::boost::filesystem::path&): Sets the folder when a path is configured in FILE or
  * FILES mode
+ * - \b setTimestampPrefix(::fwCore::HiResClock::HiResClockType): When connected to a timestamp-emitting signal,
+ * this slot will concatenate the current timestamp as a prefix of the output file (file-mode only).
  *
  * This class represents the base interface for writer services.
  * Use the base service methods :
@@ -41,6 +59,7 @@ public:
      * @{
      */
     FWIO_API static const ::fwCom::Slots::SlotKeyType s_SET_FILE_FOLDER;
+    FWIO_API static const ::fwCom::Slots::SlotKeyType s_SET_TIMESTAMP_PREFIX;
     /// @}
 
     /**
@@ -119,6 +138,14 @@ public:
      */
     FWIO_API void setFileFolder(::boost::filesystem::path folder);
 
+    /**
+     * @brief Slot: Sets a timestamp prefix on the output file name
+     * When this slot is first triggered, it will enable the addition of a timestamp prefix to the filename.
+     * At each update, the filename name will get the newest timestamp as prefix.
+     *
+     */
+    FWIO_API void setTimestampPrefix(::fwCore::HiResClock::HiResClockType timestamp);
+
     /// Returns if a location has been defined ( by the configuration process or directly by user )
     FWIO_API bool hasLocationDefined() const;
 
@@ -172,8 +199,15 @@ protected:
 
 private:
 
-    /// Value to stock file or folder paths
+    /// Value to store file or folder paths
     ::fwIO::LocationsType m_locations;
+
+    /// Value indicating whether we should append timestamps or not
+    bool m_useTimestampPrefix;
+    ::fwCore::HiResClock::HiResClockType m_currentTimestamp;
+
+    /// Value acting as a temporary location for timestamped path
+    mutable ::boost::filesystem::path m_currentLocation;
 };
 
 } //namespace fwIO

@@ -1,8 +1,24 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2018.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #include "fwDataTools/TransformationMatrix3D.hpp"
 
@@ -17,7 +33,7 @@ namespace fwDataTools
 bool TransformationMatrix3D::invert(const ::fwData::TransformationMatrix3D::csptr& _input,
                                     ::fwData::TransformationMatrix3D::sptr& _output)
 {
-    // Normally we should transpose matrices since GLM uses a column-major layout and FW4SPL uses row-major layout
+    // Normally we should transpose matrices since GLM uses a column-major layout and Sight uses row-major layout
     // However the transposition has a cost and inversion does not care about the layout, so we skip it
     const ::glm::dmat4x4 mat        = ::glm::make_mat4<double>(_input->getCoefficients().data());
     const ::glm::dmat4x4 matInverse = ::glm::inverse(mat);
@@ -43,7 +59,7 @@ void TransformationMatrix3D::multiply(const ::fwData::TransformationMatrix3D::cs
                                       const ::fwData::TransformationMatrix3D::csptr& _trfB,
                                       ::fwData::TransformationMatrix3D::sptr& _output)
 {
-    // Normally we should transpose matrices since GLM uses a column-major layout and FW4SPL uses row-major layout
+    // Normally we should transpose matrices since GLM uses a column-major layout and Sight uses row-major layout
     // However the transposition has a cost, so it is faster to not transpose them
     // and perform the inverse multiplication
     const ::glm::dmat4x4 matA = ::glm::make_mat4<double>(_trfA->getCoefficients().data());
@@ -82,7 +98,7 @@ void TransformationMatrix3D::identity(::fwData::TransformationMatrix3D::sptr& _t
 void TransformationMatrix3D::multiply(const ::fwData::TransformationMatrix3D::csptr& _trf,
                                       const ::fwData::Point::csptr& _input, ::fwData::Point::sptr& _output)
 {
-    // Normally we should transpose matrices since GLM uses a column-major layout and FW4SPL uses row-major layout
+    // Normally we should transpose matrices since GLM uses a column-major layout and Sight uses row-major layout
     // However the transposition has a cost, so it is faster to not transpose them
     // and perform the inverse multiplication
     const ::glm::dmat4x4 mat = ::glm::make_mat4<double>(_trf->getCoefficients().data());

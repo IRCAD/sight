@@ -1,8 +1,24 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2018.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 #include "fwIO/IWriter.hpp"
 
 #include <fwCom/Slots.hpp>
@@ -16,17 +32,21 @@ namespace fwIO
 {
 
 // Public slot
-const ::fwCom::Slots::SlotKeyType IWriter::s_SET_FILE_FOLDER = "setFileFolder";
+const ::fwCom::Slots::SlotKeyType IWriter::s_SET_FILE_FOLDER      = "setFileFolder";
+const ::fwCom::Slots::SlotKeyType IWriter::s_SET_TIMESTAMP_PREFIX = "setTimestampPrefix";
 
 // Private slot
 static const ::fwCom::Slots::SlotKeyType s_CONFIGURE_WITH_IHM = "configureWithIHM";
 
 //-----------------------------------------------------------------------------
 
-IWriter::IWriter() noexcept
+IWriter::IWriter() noexcept :
+    m_useTimestampPrefix(false),
+    m_currentTimestamp(0.0)
 {
     newSlot(s_CONFIGURE_WITH_IHM, &IWriter::configureWithIHM, this);
     newSlot(s_SET_FILE_FOLDER, &IWriter::setFileFolder, this);
+    newSlot(s_SET_TIMESTAMP_PREFIX, &IWriter::setTimestampPrefix, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -41,7 +61,18 @@ const ::boost::filesystem::path& IWriter::getFile() const
 {
     FW_RAISE_IF("This reader doesn't manage files", !(this->getIOPathType() & ::fwIO::FILE));
     FW_RAISE_IF("Exactly one file must be define in location", m_locations.size() != 1);
-    return m_locations.front();
+
+    m_currentLocation = m_locations.front();
+    if(m_useTimestampPrefix)
+    {
+        ::boost::filesystem::path dirname  = m_currentLocation.parent_path();
+        ::boost::filesystem::path basename = m_currentLocation.filename();
+
+        m_currentLocation = dirname / ::boost::filesystem::path(std::to_string(m_currentTimestamp)
+                                                                + std::string("-") + basename.string());
+    }
+
+    return m_currentLocation;
 }
 
 //-----------------------------------------------------------------------------
@@ -100,6 +131,16 @@ void IWriter::setFileFolder(boost::filesystem::path folder)
         file = file.filename();
         file = folder / file;
     }
+}
+
+//-----------------------------------------------------------------------------
+
+void IWriter::setTimestampPrefix(::fwCore::HiResClock::HiResClockType timestamp)
+{
+    // At the first signal sent, mark that we want files to be tagged with the prefix
+    m_useTimestampPrefix = true;
+    // Record the current prefix
+    m_currentTimestamp = timestamp;
 }
 
 //-----------------------------------------------------------------------------

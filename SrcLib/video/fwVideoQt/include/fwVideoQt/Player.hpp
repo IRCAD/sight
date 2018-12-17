@@ -1,8 +1,24 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2018.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2014-2018 IRCAD France
+ * Copyright (C) 2014-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #pragma once
 
@@ -40,10 +56,10 @@ public:
     FWVIDEOQT_API void play();
 
     /// enable/disable loop in video
-    FWVIDEOQT_API void toggleLoopMode(bool isLoopEnable);
+    FWVIDEOQT_API void toggleLoopMode(const bool isLoopEnable);
 
     /// set the new position in the video.
-    FWVIDEOQT_API void setPosition(int64_t position);
+    FWVIDEOQT_API void setPosition(const int64_t position);
 
     FWVIDEOQT_API void initCameraFile(const ::boost::filesystem::path& videoPath);
 
@@ -52,6 +68,9 @@ public:
     FWVIDEOQT_API void initCameraDevice(const std::string& cameraID, size_t width, size_t height,
                                         float maximumFrameRate,
                                         ::QVideoFrame::PixelFormat pxFormat);
+
+    /// Get duration of the current video file being played
+    FWVIDEOQT_API int64_t getVideoDuration() const;
 
 Q_SIGNALS:
 
