@@ -16,7 +16,7 @@ set( DEPENDENCIES
     fwGui
 )
 set( REQUIREMENTS
+    dataReg
+    servicesReg
     ioVtkGdcm
 )
-
-set(CPPUNITTEST_OPTIONS BUNDLE ioVtkGdcm WORKING_DIRECTORY ${CMAKE_BINARY_DIR})

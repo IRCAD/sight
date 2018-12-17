@@ -95,7 +95,7 @@ void write(const ::fwServices::IService::ConfigType& srvCfg, const SPTR(T)& obj,
     ::fwServices::IService::sptr writerSrv = ::fwServices::add( writer );
     CPPUNIT_ASSERT(writerSrv);
 
-    ::fwServices::OSR::registerService( obj, ::fwIO::s_DATA_KEY, ::fwServices::IService::AccessType::INOUT, writerSrv );
+    ::fwServices::OSR::registerService( obj, ::fwIO::s_DATA_KEY, ::fwServices::IService::AccessType::INPUT, writerSrv );
     writerSrv->setConfiguration(srvCfg);
     writerSrv->configure();
     writerSrv->start().wait();

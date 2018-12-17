@@ -640,11 +640,9 @@ void Layer::setSelectInteractor(::fwRenderOgre::interactor::IInteractor::sptr in
         childrenStack.pop();
 
         // Retrieves an iterator pointing to the attached movable objects of the current scene node
-        ::Ogre::SceneNode::ConstObjectIterator entitiesIt = tempSceneNode->getAttachedObjectIterator();
-        while(entitiesIt.hasMoreElements())
+        const ::Ogre::SceneNode::ObjectMap& entities = tempSceneNode->getAttachedObjects();
+        for(const auto movable : entities)
         {
-            // First, we try to cast the MovableObject* into an Entity*
-            const auto movable           = entitiesIt.getNext();
             const ::Ogre::Entity* entity = dynamic_cast< ::Ogre::Entity* > (movable);
 
             if(entity)

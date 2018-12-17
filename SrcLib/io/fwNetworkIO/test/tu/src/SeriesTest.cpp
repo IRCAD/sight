@@ -41,7 +41,7 @@ namespace ut
 static ::fwTest::Exception e(""); // force link with fwTest
 
 const QString seriesInstanceUID("1.2.250.317.4553866982239972067453446023029080307");
-const QString seriesDate("20081028");
+const QString seriesDate("20171028");
 const QString seriesTime("180156.734");
 const QString seriesDescription("OS 0.5");
 const QString modality("CT");

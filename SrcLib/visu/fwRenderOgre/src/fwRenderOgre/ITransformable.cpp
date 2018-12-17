@@ -45,15 +45,25 @@ void ITransformable::setTransformId(::fwRenderOgre::SRender::OgreObjectIdType _i
 
 //------------------------------------------------------------------------------
 
-::Ogre::SceneNode* ITransformable::getTransformNode(::Ogre::SceneNode* _rootNode)
+::Ogre::SceneNode* ITransformable::getTransformNode(::Ogre::SceneNode* _parentNode)
 {
     SLM_ASSERT("Transform id is not set, please call setTransformId before.", !m_transformId.empty());
-    m_transformNode = ::fwRenderOgre::helper::Scene::getNodeById(m_transformId, _rootNode);
-    if (m_transformNode == nullptr)
-    {
-        m_transformNode = _rootNode->createChildSceneNode(m_transformId);
-    }
+    m_transformNode = this->getTransformNode(m_transformId, _parentNode);
     return m_transformNode;
+}
+
+//------------------------------------------------------------------------------
+
+::Ogre::SceneNode* ITransformable::getTransformNode(const std::string& _name,
+                                                    ::Ogre::SceneNode* _parentNode)
+{
+    SLM_ASSERT("Transform name is not set.", !_name.empty());
+    auto transformNode = ::fwRenderOgre::helper::Scene::getNodeById(_name, _parentNode);
+    if (transformNode == nullptr)
+    {
+        transformNode = _parentNode->createChildSceneNode(_name);
+    }
+    return transformNode;
 }
 
 //-----------------------------------------------------------------------------

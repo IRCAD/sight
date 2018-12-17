@@ -51,11 +51,20 @@ public:
     FWRENDEROGRE_API void setTransformId(::fwRenderOgre::SRender::OgreObjectIdType _id);
 
     /**
-     * @brief Recover the node matching m_transformId.
-     * @param _rootNode The root node of the scene.
+     * @brief Retrieve the node matching m_transformId.
+     * @param _parentNode The parent node of the created node.
      * @return The node matching m_transformId.
      */
-    FWRENDEROGRE_API ::Ogre::SceneNode* getTransformNode(::Ogre::SceneNode* _rootNode);
+    FWRENDEROGRE_API ::Ogre::SceneNode* getTransformNode(::Ogre::SceneNode* _parentNode);
+
+    /**
+     * @brief Retrieve the node matching the given node name.
+     * @param _name The name of the node.
+     * @param _parentNode The parent node of the created node.
+     * @return The node matching m_transformId.
+     */
+    FWRENDEROGRE_API static ::Ogre::SceneNode* getTransformNode(const std::string& _name,
+                                                                ::Ogre::SceneNode* _parentNode);
 
     /**
      * @brief s_TRANSFORM_CONFIG The key used in xml configuration.

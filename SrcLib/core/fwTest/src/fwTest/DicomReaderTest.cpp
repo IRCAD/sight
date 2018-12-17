@@ -54,7 +54,7 @@ namespace fwTest
 
 //------------------------------------------------------------------------------
 
-bool DicomReaderTest::checkSeriesACHGenou( const ::fwMedData::ImageSeries::sptr& series )
+bool DicomReaderTest::checkSeriesJMSGenou( const ::fwMedData::ImageSeries::sptr& series )
 {
     bool ok               = true;
     bool notReallyChecked = true;
@@ -86,12 +86,12 @@ bool DicomReaderTest::checkSeriesACHGenou( const ::fwMedData::ImageSeries::sptr&
     //(0008,0008) CS [ORIGINAL\PRIMARY\AXIAL]                           # 22,2-n Image Type
     //(0008,0016) UI [1.2.840.10008.5.1.4.1.1.2]                        # 26,1 SOP Class UID
     //(0008,0018) UI [1.2.392.200036.9116.2.6.1.48.1211418863.1225184712.380696]         # 58,1 SOP Instance UID
-    //(0008,0020) DA [20081028]                                         # 8,1 Study Date
-    CHECK_VALUE(ok, "Study Date doesn't match : ", "20081028", study->getDate());
-    //(0008,0021) DA [20081028]                                         # 8,1 Series Date
-    CHECK_VALUE(ok, "Series Modality doesn't match : ", "20081028", series->getDate() );
-    //(0008,0022) DA [20081028]                                         # 8,1 Acquisition Date
-    //(0008,0023) DA [20081028]                                         # 8,1 Content Date
+    //(0008,0020) DA [20171028]                                         # 8,1 Study Date
+    CHECK_VALUE(ok, "Study Date doesn't match : ", "20171028", study->getDate());
+    //(0008,0021) DA [20171028]                                         # 8,1 Series Date
+    CHECK_VALUE(ok, "Series Modality doesn't match : ", "20171028", series->getDate() );
+    //(0008,0022) DA [20171028]                                         # 8,1 Acquisition Date
+    //(0008,0023) DA [20171028]                                         # 8,1 Content Date
     //(0008,0030) TM [174327.000]                                       # 10,1 Study Time
     CHECK_VALUE(ok, "Study Time doesn't match : ", "174327.000", study->getTime() );
     //(0008,0031) TM [180156.734]                                       # 10,1 Series Time
@@ -102,15 +102,15 @@ bool DicomReaderTest::checkSeriesACHGenou( const ::fwMedData::ImageSeries::sptr&
     //(0008,0060) CS [CT]                                               # 2,1 Modality
     CHECK_VALUE(ok, "Series Modality doesn't match : ", "CT", series->getModality() );
     //(0008,0070) LO [TOSHIBA ]                                         # 8,1 Manufacturer
-    //(0008,0080) LO [SCANNER DE LA MODER ]                             # 20,1 Institution Name
-    CHECK_VALUE(ok, "Equipment's Institution Name doesn't match : ", "SCANNER DE LA MODER ",
+    //(0008,0080) LO [SCANNER DU MORDOR ]                               # 20,1 Institution Name
+    CHECK_VALUE(ok, "Equipment's Institution Name doesn't match : ", "SCANNER DU MORDOR ",
                 equipment->getInstitutionName() );
     //(0008,0090) PN [DR MOREL]                                         # 8,1 Referring Physician's Name
     CHECK_VALUE(ok, "Study Referring Physician's Name doesn't match : ", "DR MOREL",
                 study->getReferringPhysicianName() );
     //(0008,1010) SH [00000000001 ]                                     # 12,1 Station Name
     //(0008,103e) LO [ OS 0.5   ]                                       # 10,1 Series Description
-    CHECK_VALUE(ok, "Study Description doesn't match : ", " OS 0.5   ", series->getDescription() );
+    CHECK_VALUE(ok, "Study Description doesn't match : ", " OS 0.5 ", series->getDescription() );
     CHECK_VALUE(ok, "Study Description doesn't match : ", "", study->getDescription() ); // 0008,1030
     //(0008,1040) LO [ID_DEPARTMENT ]                                   # 14,1 Institutional Department Name
     {
@@ -121,12 +121,12 @@ bool DicomReaderTest::checkSeriesACHGenou( const ::fwMedData::ImageSeries::sptr&
     }
     //(0008,1090) LO [Aquilion]                                         # 8,1 Manufacturer's Model Name
     //(0010,0000) UL 104                                                # 4,1 Generic Group Length
-    //(0010,0010) PN [CHARNOZ ARNAUD]                                   # 14,1 Patient's Name
-    CHECK_VALUE(ok, "Patient's Name doesn't match : ", "CHARNOZ ARNAUD", patient->getName() );
+    //(0010,0010) PN [SAVA JEAN-MICHEL]                                   # 14,1 Patient's Name
+    CHECK_VALUE(ok, "Patient's Name doesn't match : ", "SAVA JEAN-MICHEL", patient->getName() );
     //(0010,0020) LO [12592 ARTHRO GENOU  G ]                           # 22,1 Patient ID
     CHECK_VALUE(ok, "Patient ID doesn't match : ", "12592 ARTHRO GENOU  G ", patient->getPatientId() );
-    //(0010,0030) DA [19790618]                                         # 8,1 Patient's Birth Date
-    CHECK_VALUE(ok, "Patient's Birth Date doesn't match : ", "19790618", patient->getBirthdate() );
+    //(0010,0030) DA [19970926]                                         # 8,1 Patient's Birth Date
+    CHECK_VALUE(ok, "Patient's Birth Date doesn't match : ", "19970926", patient->getBirthdate() );
     //(0010,0040) CS [M ]                                               # 2,1 Patient's Sex
     CHECK_VALUE(ok, "Patient's Sex doesn't match :", "M ", patient->getSex() );
     //(0010,1010) AS [029Y]                                             # 4,1 Patient's Age
@@ -205,11 +205,11 @@ bool DicomReaderTest::checkSeriesACHGenou( const ::fwMedData::ImageSeries::sptr&
     //(0028,1052) DS [-1024 ]                                           # 6,1 Rescale Intercept
     //(0028,1053) DS [1 ]                                               # 2,1 Rescale Slope
     //(0040,0000) UL 116                                                # 4,1 Generic Group Length
-    //(0040,0002) DA [20081028]                                         # 8,1 Scheduled Procedure Step Start Date
+    //(0040,0002) DA [20171028]                                         # 8,1 Scheduled Procedure Step Start Date
     //(0040,0003) TM [174327.000]                                       # 10,1 Scheduled Procedure Step Start Time
-    //(0040,0004) DA [20081028]                                         # 8,1 Scheduled Procedure Step End Date
+    //(0040,0004) DA [20171028]                                         # 8,1 Scheduled Procedure Step End Date
     //(0040,0005) TM [181327.000]                                       # 10,1 Scheduled Procedure Step End Time
-    //(0040,0244) DA [20081028]                                         # 8,1 Performed Procedure Step Start Date
+    //(0040,0244) DA [20171028]                                         # 8,1 Performed Procedure Step Start Date
     //(0040,0245) TM [174327.000]                                       # 10,1 Performed Procedure Step Start Time
     //(0040,0253) SH [12325 ]                                           # 6,1 Performed Procedure Step ID
     //(7005,0000) UL 546                                                # 4,1 Generic Group Length
@@ -233,7 +233,7 @@ bool DicomReaderTest::checkSeriesACHGenou( const ::fwMedData::ImageSeries::sptr&
     //(7005,101b) UN (SH) [FC30]                                        # 4,1 Convolution Kernel
     //(7005,101d) UN (UL) 9                                             # 4,1 Reconstruction Number
     //(7005,101e) UN (UL) 13                                            # 4,1 Raw Data Number
-    //(7005,101f) UN (LO) [20081028180156768480]                        # 20,1 Volume Number
+    //(7005,101f) UN (LO) [20171028180156768480]                        # 20,1 Volume Number
     //(7005,1020) UN (UL) 3                                             # 4,1 Local Series Number
     //(7005,1021) UN (LO) [BOOST ]                                      # 6,1 Decrease in Artifact Filter
     //(7005,1022) UN (DS) [0.40]                                        # 4,1 Reconstruction Interval
@@ -248,7 +248,7 @@ bool DicomReaderTest::checkSeriesACHGenou( const ::fwMedData::ImageSeries::sptr&
 
 //------------------------------------------------------------------------------
 
-bool DicomReaderTest::checkSeriesACHGenouTrimmed( const ::fwMedData::ImageSeries::sptr& series )
+bool DicomReaderTest::checkSeriesJMSGenouTrimmed( const ::fwMedData::ImageSeries::sptr& series )
 {
     bool ok               = true;
     bool notReallyChecked = true;
@@ -280,12 +280,12 @@ bool DicomReaderTest::checkSeriesACHGenouTrimmed( const ::fwMedData::ImageSeries
     //(0008,0008) CS [ORIGINAL\PRIMARY\AXIAL]                           # 22,2-n Image Type
     //(0008,0016) UI [1.2.840.10008.5.1.4.1.1.2]                        # 26,1 SOP Class UID
     //(0008,0018) UI [1.2.392.200036.9116.2.6.1.48.1211418863.1225184712.380696]         # 58,1 SOP Instance UID
-    //(0008,0020) DA [20081028]                                         # 8,1 Study Date
-    CHECK_VALUE(ok, "Study Date doesn't match : ", "20081028", study->getDate());
-    //(0008,0021) DA [20081028]                                         # 8,1 Series Date
-    CHECK_VALUE(ok, "Series Modality doesn't match : ", "20081028", series->getDate() );
-    //(0008,0022) DA [20081028]                                         # 8,1 Acquisition Date
-    //(0008,0023) DA [20081028]                                         # 8,1 Content Date
+    //(0008,0020) DA [20171028]                                         # 8,1 Study Date
+    CHECK_VALUE(ok, "Study Date doesn't match : ", "20171028", study->getDate());
+    //(0008,0021) DA [20171028]                                         # 8,1 Series Date
+    CHECK_VALUE(ok, "Series Modality doesn't match : ", "20171028", series->getDate() );
+    //(0008,0022) DA [20171028]                                         # 8,1 Acquisition Date
+    //(0008,0023) DA [20171028]                                         # 8,1 Content Date
     //(0008,0030) TM [174327.000]                                       # 10,1 Study Time
     CHECK_VALUE(ok, "Study Time doesn't match : ", "174327.000", study->getTime() );
     //(0008,0031) TM [180156.734]                                       # 10,1 Series Time
@@ -296,8 +296,8 @@ bool DicomReaderTest::checkSeriesACHGenouTrimmed( const ::fwMedData::ImageSeries
     //(0008,0060) CS [CT]                                               # 2,1 Modality
     CHECK_VALUE(ok, "Series Modality doesn't match : ", "CT", series->getModality() );
     //(0008,0070) LO [TOSHIBA ]                                         # 8,1 Manufacturer
-    //(0008,0080) LO [SCANNER DE LA MODER ]                             # 20,1 Institution Name
-    CHECK_VALUE(ok, "Equipment's Institution Name doesn't match : ", "SCANNER DE LA MODER",
+    //(0008,0080) LO [SCANNER DU MORDOR ]                               # 20,1 Institution Name
+    CHECK_VALUE(ok, "Equipment's Institution Name doesn't match : ", "SCANNER DU MORDOR",
                 equipment->getInstitutionName() );
     //(0008,0090) PN [DR MOREL]                                         # 8,1 Referring Physician's Name
     CHECK_VALUE(ok, "Study Referring Physician's Name doesn't match : ", "DR MOREL",
@@ -315,12 +315,12 @@ bool DicomReaderTest::checkSeriesACHGenouTrimmed( const ::fwMedData::ImageSeries
     }
     //(0008,1090) LO [Aquilion]                                         # 8,1 Manufacturer's Model Name
     //(0010,0000) UL 104                                                # 4,1 Generic Group Length
-    //(0010,0010) PN [CHARNOZ ARNAUD]                                   # 14,1 Patient's Name
-    CHECK_VALUE(ok, "Patient's Name doesn't match : ", "CHARNOZ ARNAUD", patient->getName() );
+    //(0010,0010) PN [SAVA JEAN-MICHEL]                                   # 14,1 Patient's Name
+    CHECK_VALUE(ok, "Patient's Name doesn't match : ", "SAVA JEAN-MICHEL", patient->getName() );
     //(0010,0020) LO [12592 ARTHRO GENOU  G ]                           # 22,1 Patient ID
     CHECK_VALUE(ok, "Patient ID doesn't match : ", "12592 ARTHRO GENOU  G", patient->getPatientId() );
-    //(0010,0030) DA [19790618]                                         # 8,1 Patient's Birth Date
-    CHECK_VALUE(ok, "Patient's Birth Date doesn't match : ", "19790618", patient->getBirthdate() );
+    //(0010,0030) DA [19970926]                                         # 8,1 Patient's Birth Date
+    CHECK_VALUE(ok, "Patient's Birth Date doesn't match : ", "19970926", patient->getBirthdate() );
     //(0010,0040) CS [M ]                                               # 2,1 Patient's Sex
     CHECK_VALUE(ok, "Patient's Sex doesn't match :", "M", patient->getSex() );
     //(0010,1010) AS [029Y]                                             # 4,1 Patient's Age
@@ -399,11 +399,11 @@ bool DicomReaderTest::checkSeriesACHGenouTrimmed( const ::fwMedData::ImageSeries
     //(0028,1052) DS [-1024 ]                                           # 6,1 Rescale Intercept
     //(0028,1053) DS [1 ]                                               # 2,1 Rescale Slope
     //(0040,0000) UL 116                                                # 4,1 Generic Group Length
-    //(0040,0002) DA [20081028]                                         # 8,1 Scheduled Procedure Step Start Date
+    //(0040,0002) DA [20171028]                                         # 8,1 Scheduled Procedure Step Start Date
     //(0040,0003) TM [174327.000]                                       # 10,1 Scheduled Procedure Step Start Time
-    //(0040,0004) DA [20081028]                                         # 8,1 Scheduled Procedure Step End Date
+    //(0040,0004) DA [20171028]                                         # 8,1 Scheduled Procedure Step End Date
     //(0040,0005) TM [181327.000]                                       # 10,1 Scheduled Procedure Step End Time
-    //(0040,0244) DA [20081028]                                         # 8,1 Performed Procedure Step Start Date
+    //(0040,0244) DA [20171028]                                         # 8,1 Performed Procedure Step Start Date
     //(0040,0245) TM [174327.000]                                       # 10,1 Performed Procedure Step Start Time
     //(0040,0253) SH [12325 ]                                           # 6,1 Performed Procedure Step ID
     //(7005,0000) UL 546                                                # 4,1 Generic Group Length
@@ -427,7 +427,7 @@ bool DicomReaderTest::checkSeriesACHGenouTrimmed( const ::fwMedData::ImageSeries
     //(7005,101b) UN (SH) [FC30]                                        # 4,1 Convolution Kernel
     //(7005,101d) UN (UL) 9                                             # 4,1 Reconstruction Number
     //(7005,101e) UN (UL) 13                                            # 4,1 Raw Data Number
-    //(7005,101f) UN (LO) [20081028180156768480]                        # 20,1 Volume Number
+    //(7005,101f) UN (LO) [20171028180156768480]                        # 20,1 Volume Number
     //(7005,1020) UN (UL) 3                                             # 4,1 Local Series Number
     //(7005,1021) UN (LO) [BOOST ]                                      # 6,1 Decrease in Artifact Filter
     //(7005,1022) UN (DS) [0.40]                                        # 4,1 Reconstruction Interval

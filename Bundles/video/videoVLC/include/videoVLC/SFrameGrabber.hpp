@@ -82,7 +82,7 @@ class VIDEOVLC_CLASS_API SFrameGrabber : public ::arServices::IGrabber
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SFrameGrabber)(::arServices::IGrabber) );
+    fwCoreServiceClassDefinitionsMacro( (SFrameGrabber)(::arServices::IGrabber) )
 
     /// Constructor. Do nothing.
     VIDEOVLC_API SFrameGrabber() noexcept;
@@ -130,6 +130,8 @@ private:
 
     /// Private event handler
     static void onEventCallback(const struct libvlc_event_t* event, void* userData);
+
+    static void exportVLCPluginsEnv(const std::string& path);
 
     /// FwID of arData::Camera
     std::string m_cameraID;

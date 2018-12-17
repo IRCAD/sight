@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -28,6 +28,8 @@
 
 #include <fwData/Composite.hpp>
 
+#include <fwDataCamp/Version.hpp>
+
 #include <fwMedData/ActivitySeries.hpp>
 
 #include <boost/assign/std/vector.hpp>
@@ -42,13 +44,21 @@ namespace fwMedDataCamp
 namespace ut
 {
 
+//------------------------------------------------------------------------------
+
 void ActivitySeriesTest::setUp()
 {
     // Set up context before running a test.
+    //Force link with fwDataCamp
+    m_fwDataVersion = ::fwDataCamp::Version::s_CURRENT_VERSION;
+    FwCoreNotUsedMacro(m_fwDataVersion);
+
     //Force link with fwMedDataCamp
-    const int version = ::fwMedDataCamp::Version::s_CURRENT_VERSION;
-    FwCoreNotUsedMacro(version);
+    m_fwMedDataVersion = ::fwMedDataCamp::Version::s_CURRENT_VERSION;
+    FwCoreNotUsedMacro(m_fwMedDataVersion);
 }
+
+//------------------------------------------------------------------------------
 
 void ActivitySeriesTest::tearDown()
 {

@@ -172,11 +172,11 @@ void Negato2DInteractor::updateTotalSize()
         childrenStack.pop();
 
         // Retrieves an iterator pointing to the attached movable objects of the current scene node
-        ::Ogre::SceneNode::ConstObjectIterator entitiesIt = tempSceneNode->getAttachedObjectIterator();
-        while(entitiesIt.hasMoreElements())
+        const ::Ogre::SceneNode::ObjectMap& entities = tempSceneNode->getAttachedObjects();
+        for(const auto movable : entities)
         {
             // First, we must cast the MovableObject* into an Entity*
-            const ::Ogre::Entity* e = dynamic_cast< ::Ogre::Entity* > (entitiesIt.getNext());
+            const ::Ogre::Entity* e = dynamic_cast< ::Ogre::Entity* > (movable);
 
             if(e)
             {

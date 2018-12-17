@@ -170,6 +170,8 @@ void SGrabberProxy::startCamera()
             auto rgbGrabbersImpl = srvFactory->getImplementationIdFromObjectAndType("::arData::FrameTL",
                                                                                     "::arServices::IGrabber");
 
+            std::move(rgbGrabbersImpl.begin(), rgbGrabbersImpl.end(), std::back_inserter(grabbersImpl));
+
             if(m_serviceToConfig.empty() && m_selectedServices.empty())
             {
                 for(const auto& impl : rgbGrabbersImpl)
@@ -180,8 +182,6 @@ void SGrabberProxy::startCamera()
                     serviceConfigs.insert(serviceConfigs.end(), configs.begin(), configs.end());
                 }
             }
-
-            std::move(rgbGrabbersImpl.begin(), rgbGrabbersImpl.end(), std::back_inserter(grabbersImpl));
 
             ::arData::Camera::SourceType sourceType = ::arData::Camera::UNKNOWN;
 
