@@ -80,6 +80,8 @@ public:
     fwCoreClassDefinitionsWithFactoryMacro( (Layer)(::fwRenderOgre::Layer), (()), new Layer)
     fwCoreAllowSharedFromThis()
 
+    using CameraCalibrationsType = std::vector< ::Ogre::Matrix4 >;
+
     /**
      * @name Signals API
      * @{
@@ -272,6 +274,9 @@ public:
     /// Deactivate OIT compositor
     FWRENDEROGRE_API void setTransparencyDepth(int depth);
 
+    /// Sets the camera calibrations for stereo rendering.
+    FWRENDEROGRE_API void setCameraCalibrations(const CameraCalibrationsType& calibrations);
+
 private:
     /// Slot: Interact with the scene.
     void interaction(::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo);
@@ -372,6 +377,9 @@ private:
 
     /// Autostereo listener
     compositor::listener::AutoStereoCompositorListener* m_autostereoListener {nullptr};
+
+    /// Holds pairs of intrinsic/extrinsic calibrations for stereo cameras.
+    CameraCalibrationsType m_stereoCameraCalibration;
 
 };
 

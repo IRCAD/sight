@@ -748,6 +748,13 @@ void Layer::setTransparencyDepth(int _depth)
 
 //-----------------------------------------------------------------------------
 
+void Layer::setCameraCalibrations(const CameraCalibrationsType& calibrations)
+{
+    m_stereoCameraCalibration = calibrations;
+}
+
+//-----------------------------------------------------------------------------
+
 void Layer::resetCameraCoordinates() const
 {
     const ::Ogre::AxisAlignedBox worldCoordBoundingBox = this->computeWorldBoundingBox();
@@ -1165,13 +1172,18 @@ Ogre::Matrix4 Layer::getCameraProjMat(const uint8_t cameraIdx) const
     }
     else if(m_stereoMode == ::fwRenderOgre::compositor::Core::StereoModeType::STEREO)
     {
-        if(cameraIdx == 1)
+        if(m_stereoCameraCalibration.size() < 2 && cameraIdx == 1)
         {
-            // Kind of arbitrary. Should be configurable in the future.
+            SLM_WARN("Only a single calibration was set but stereo rendering is set.");
+            // Kept for compatibility purposes.
             extrinsicTransform = ::Ogre::Matrix4(1, 0, 0, 5,
                                                  0, 1, 0, 0,
                                                  0, 0, 1, 0,
                                                  0, 0, 0, 1);
+        }
+        else if(!m_stereoCameraCalibration.empty())
+        {
+            return m_stereoCameraCalibration[cameraIdx];
         }
     }
 
