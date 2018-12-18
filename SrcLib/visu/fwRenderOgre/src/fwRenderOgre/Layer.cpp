@@ -1174,7 +1174,8 @@ Ogre::Matrix4 Layer::getCameraProjMat(const uint8_t cameraIdx) const
     {
         if(m_stereoCameraCalibration.size() < 2 && cameraIdx == 1)
         {
-            // Kind of arbitrary. Should be configurable in the future.
+            SLM_WARN("Only a single calibration was set but stereo rendering is set.");
+            // Kept for compatibility purposes.
             extrinsicTransform = ::Ogre::Matrix4(1, 0, 0, 5,
                                                  0, 1, 0, 0,
                                                  0, 0, 1, 0,
