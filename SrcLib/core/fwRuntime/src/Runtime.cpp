@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -76,8 +76,8 @@ Runtime::Runtime()
 #endif
     // If there is an system error, use the current path
     {
-        OSLM_WARN("Cannot guess the path of the executable, it's required to set the working directory. "
-                  "Current working directory is used");
+        OSLM_ERROR("Cannot guess the path of the executable, it's required to set the working directory. "
+                   "Current working directory is used");
         m_workingPath = ::boost::filesystem::current_path();
     }
     else
