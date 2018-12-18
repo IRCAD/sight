@@ -273,9 +273,7 @@ void SOpenCVExtrinsic::updating()
 
         // Export matrix if needed.
         this->setOutput(s_MATRIX_OUTPUT, matrix);
-        auto sig2 = matrix->signal< ::fwData::TransformationMatrix3D::ModifiedSignalType >(
-            ::fwData::TransformationMatrix3D::s_MODIFIED_SIG);
-        sig2->asyncEmit();
+
     }
 }
 
