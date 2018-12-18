@@ -1,8 +1,24 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2018.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #include "PatchTest.hpp"
 
@@ -79,11 +95,11 @@ SPTR(T) read(const ::fwRuntime::EConfigurationElement::sptr& srvCfg, const std::
 
 //------------------------------------------------------------------------------
 
-::fwMedData::Series::sptr getACHSeries( const ::fwMedData::SeriesDB::sptr& sdb )
+::fwMedData::Series::sptr getJMSSeries( const ::fwMedData::SeriesDB::sptr& sdb )
 {
     for( ::fwMedData::Series::sptr series :  sdb->getContainer() )
     {
-        if ( series->getPatient()->getName() == "CHARNOZ ARNAUD" )
+        if ( series->getPatient()->getName() == "SAVA JEAN-MICHEL" )
         {
             return series;
         }
@@ -99,7 +115,7 @@ std::vector< ::fwMedData::Series::sptr > getOtherSeries( const ::fwMedData::Seri
     std::vector< ::fwMedData::Series::sptr > otherSeries;
     for( ::fwMedData::Series::sptr series :  sdb->getContainer() )
     {
-        if ( series->getPatient()->getName() != "CHARNOZ ARNAUD" )
+        if ( series->getPatient()->getName() != "SAVA JEAN-MICHEL" )
         {
             otherSeries.push_back( series );
         }
@@ -112,7 +128,7 @@ std::vector< ::fwMedData::Series::sptr > getOtherSeries( const ::fwMedData::Seri
 
 void PatchTest::patchMedicalDataTest()
 {
-    const ::boost::filesystem::path file = ::fwTest::Data::dir() /"fw4spl/patch/md_1.jsonz";
+    const ::boost::filesystem::path file = ::fwTest::Data::dir() /"sight/patch/md_1.jsonz";
 
     CPPUNIT_ASSERT_MESSAGE("The file '" + file.string() + "' does not exist",
                            ::boost::filesystem::exists(file));
@@ -134,13 +150,13 @@ void PatchTest::patchMedicalDataTest()
     // check data
     CPPUNIT_ASSERT_EQUAL( (size_t) 3, sdb->size() );
 
-    // Check ACH Data
-    ::fwMedData::Series::sptr series = getACHSeries( sdb );
+    // Check JMS Data
+    ::fwMedData::Series::sptr series = getJMSSeries( sdb );
     CPPUNIT_ASSERT( series );
     CPPUNIT_ASSERT( ::fwMedData::ImageSeries::dynamicCast(series) );
     CPPUNIT_ASSERT_EQUAL(std::string("1.2.392.200036.9116.2.6.1.48.1211418863.1225184516.765855"),
                          series->getInstanceUID());
-    CPPUNIT_ASSERT_EQUAL(std::string("20081028"), series->getDate());
+    CPPUNIT_ASSERT_EQUAL(std::string("20171028"), series->getDate());
     CPPUNIT_ASSERT_EQUAL(std::string("174446"), series->getTime());
     CPPUNIT_ASSERT_EQUAL(std::string("Original image"), series->getDescription());
     CPPUNIT_ASSERT_EQUAL(std::string("CT"), series->getModality());
@@ -148,14 +164,14 @@ void PatchTest::patchMedicalDataTest()
     ::fwMedData::Patient::sptr patient = series->getPatient();
     CPPUNIT_ASSERT( patient );
     CPPUNIT_ASSERT_EQUAL(std::string("12592 ARTHRO GENOU  G"), patient->getPatientId());
-    CPPUNIT_ASSERT_EQUAL(std::string("19790618"), patient->getBirthdate());
+    CPPUNIT_ASSERT_EQUAL(std::string("19970926"), patient->getBirthdate());
     CPPUNIT_ASSERT_EQUAL(std::string("M"), patient->getSex());
 
     ::fwMedData::Study::sptr study = series->getStudy();
     CPPUNIT_ASSERT( study );
     CPPUNIT_ASSERT_EQUAL(std::string("1.2.392.200036.9116.2.6.1.48.1211418863.1225183167.375775"),
                          study->getInstanceUID());
-    CPPUNIT_ASSERT_EQUAL(std::string("20081028"), study->getDate());
+    CPPUNIT_ASSERT_EQUAL(std::string("20171028"), study->getDate());
     CPPUNIT_ASSERT_EQUAL(std::string("174446"), study->getTime());
     CPPUNIT_ASSERT_EQUAL(std::string(""), study->getReferringPhysicianName());
     CPPUNIT_ASSERT_EQUAL(std::string(""), study->getDescription());
@@ -163,7 +179,7 @@ void PatchTest::patchMedicalDataTest()
 
     ::fwMedData::Equipment::sptr equipment = series->getEquipment();
     CPPUNIT_ASSERT( equipment );
-    CPPUNIT_ASSERT_EQUAL(std::string("SCANNER DE LA MODER"), equipment->getInstitutionName());
+    CPPUNIT_ASSERT_EQUAL(std::string("SCANNER DU MORDOR"), equipment->getInstitutionName());
 
     // Test split between meshes and image
     std::vector< ::fwMedData::Series::sptr > otherSeries = getOtherSeries( sdb );

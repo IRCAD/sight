@@ -1,8 +1,24 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2018.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #include "ioPacs/SPacsConfigurationEditor.hpp"
 
@@ -61,7 +77,7 @@ void SPacsConfigurationEditor::starting()
         s_CONFIG_INOUT);
     if (!pacsConfiguration)
     {
-        FW_DEPRECATED_KEY(s_CONFIG_INOUT, "inout", "fw4spl_18.0");
+        FW_DEPRECATED_KEY(s_CONFIG_INOUT, "inout", "19.0");
         pacsConfiguration = this->getObject< ::fwPacsIO::data::PacsConfiguration >();
     }
     SLM_ASSERT("Pacs configuration object should not be null.", pacsConfiguration);
@@ -189,7 +205,7 @@ void SPacsConfigurationEditor::pingPacs()
         s_CONFIG_INOUT);
     if (!pacsConfiguration)
     {
-        FW_DEPRECATED_KEY(s_CONFIG_INOUT, "inout", "fw4spl_18.0");
+        FW_DEPRECATED_KEY(s_CONFIG_INOUT, "inout", "19.0");
         pacsConfiguration = this->getObject< ::fwPacsIO::data::PacsConfiguration >();
     }
 
@@ -250,7 +266,7 @@ void SPacsConfigurationEditor::localApplicationTitleChanged()
         s_CONFIG_INOUT);
     if (!pacsConfiguration)
     {
-        FW_DEPRECATED_KEY(s_CONFIG_INOUT, "inout", "fw4spl_18.0");
+        FW_DEPRECATED_KEY(s_CONFIG_INOUT, "inout", "19.0");
         pacsConfiguration = this->getObject< ::fwPacsIO::data::PacsConfiguration >();
     }
     pacsConfiguration->setLocalApplicationTitle(m_localApplicationTitleWidget->text().toStdString());
@@ -266,7 +282,7 @@ void SPacsConfigurationEditor::pacsHostNameChanged()
         s_CONFIG_INOUT);
     if (!pacsConfiguration)
     {
-        FW_DEPRECATED_KEY(s_CONFIG_INOUT, "inout", "fw4spl_18.0");
+        FW_DEPRECATED_KEY(s_CONFIG_INOUT, "inout", "19.0");
         pacsConfiguration = this->getObject< ::fwPacsIO::data::PacsConfiguration >();
     }
     pacsConfiguration->setPacsHostName(m_pacsHostNameWidget->text().toStdString());
@@ -282,7 +298,7 @@ void SPacsConfigurationEditor::pacsApplicationTitleChanged()
         s_CONFIG_INOUT);
     if (!pacsConfiguration)
     {
-        FW_DEPRECATED_KEY(s_CONFIG_INOUT, "inout", "fw4spl_18.0");
+        FW_DEPRECATED_KEY(s_CONFIG_INOUT, "inout", "19.0");
         pacsConfiguration = this->getObject< ::fwPacsIO::data::PacsConfiguration >();
     }
     pacsConfiguration->setPacsApplicationTitle(m_pacsApplicationTitleWidget->text().toStdString());
@@ -298,7 +314,7 @@ void SPacsConfigurationEditor::pacsApplicationPortChanged(int value)
         s_CONFIG_INOUT);
     if (!pacsConfiguration)
     {
-        FW_DEPRECATED_KEY(s_CONFIG_INOUT, "inout", "fw4spl_18.0");
+        FW_DEPRECATED_KEY(s_CONFIG_INOUT, "inout", "19.0");
         pacsConfiguration = this->getObject< ::fwPacsIO::data::PacsConfiguration >();
     }
     pacsConfiguration->setPacsApplicationPort(static_cast<unsigned short>(value));
@@ -314,7 +330,7 @@ void SPacsConfigurationEditor::moveApplicationTitleChanged()
         s_CONFIG_INOUT);
     if (!pacsConfiguration)
     {
-        FW_DEPRECATED_KEY(s_CONFIG_INOUT, "inout", "fw4spl_18.0");
+        FW_DEPRECATED_KEY(s_CONFIG_INOUT, "inout", "19.0");
         pacsConfiguration = this->getObject< ::fwPacsIO::data::PacsConfiguration >();
     }
     pacsConfiguration->setMoveApplicationTitle(m_moveApplicationTitleWidget->text().toStdString());
@@ -330,7 +346,7 @@ void SPacsConfigurationEditor::moveApplicationPortChanged(int value)
         s_CONFIG_INOUT);
     if (!pacsConfiguration)
     {
-        FW_DEPRECATED_KEY(s_CONFIG_INOUT, "inout", "fw4spl_18.0");
+        FW_DEPRECATED_KEY(s_CONFIG_INOUT, "inout", "19.0");
         pacsConfiguration = this->getObject< ::fwPacsIO::data::PacsConfiguration >();
     }
     pacsConfiguration->setMoveApplicationPort(static_cast<unsigned short>(value));
@@ -346,7 +362,7 @@ void SPacsConfigurationEditor::retrieveMethodChanged(int index)
         s_CONFIG_INOUT);
     if (!pacsConfiguration)
     {
-        FW_DEPRECATED_KEY(s_CONFIG_INOUT, "inout", "fw4spl_18.0");
+        FW_DEPRECATED_KEY(s_CONFIG_INOUT, "inout", "19.0");
         pacsConfiguration = this->getObject< ::fwPacsIO::data::PacsConfiguration >();
     }
     pacsConfiguration->setRetrieveMethod(

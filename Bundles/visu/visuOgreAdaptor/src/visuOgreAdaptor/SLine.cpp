@@ -1,8 +1,24 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017-2018.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2017-2018 IRCAD France
+ * Copyright (C) 2017-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #include "visuOgreAdaptor/SLine.hpp"
 
@@ -81,10 +97,9 @@ void SLine::configuring()
     const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
 
     // parsing transform or create an "empty" one
-    const std::string transformId = config.get<std::string>(::visuOgreAdaptor::STransform::s_CONFIG_TRANSFORM,
-                                                            this->getID() + "_transform");
+    this->setTransformId(config.get<std::string>( ::fwRenderOgre::ITransformable::s_TRANSFORM_CONFIG,
+                                                  this->getID() + "_transform"));
 
-    this->setTransformId(transformId);
     m_length = config.get<float>(s_LENGTH_CONFIG, 50.f);
 
     const std::string color = config.get("color", "#FFFFFF");
@@ -150,12 +165,8 @@ void SLine::starting()
 void SLine::updating()
 {
     ::Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
-    ::Ogre::SceneNode* transNode     =
-        ::fwRenderOgre::helper::Scene::getNodeById(this->getTransformId(), rootSceneNode);
-    if (transNode != nullptr)
-    {
-        transNode->setVisible(m_isVisible);
-    }
+    ::Ogre::SceneNode* transNode     = this->getTransformNode(rootSceneNode);
+    transNode->setVisible(m_isVisible);
     this->requestRender();
 }
 
@@ -178,14 +189,8 @@ void SLine::stopping()
 void SLine::attachNode(::Ogre::MovableObject* object)
 {
     ::Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
-    ::Ogre::SceneNode* transNode     =
-        ::fwRenderOgre::helper::Scene::getNodeById(this->getTransformId(), rootSceneNode);
-
-    if (transNode == nullptr)
-    {
-        transNode = rootSceneNode->createChildSceneNode(this->getTransformId());
-        transNode->setVisible(m_isVisible);
-    }
+    ::Ogre::SceneNode* transNode     = this->getTransformNode(rootSceneNode);
+    transNode->setVisible(m_isVisible);
     transNode->attachObject(object);
 }
 

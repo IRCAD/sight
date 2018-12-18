@@ -1,8 +1,24 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2018.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #pragma once
 
@@ -33,7 +49,7 @@ public:
     static const std::string s_UNCONFIGURED;
     static const std::string s_NOT_DEFINED;
 
-    fwCoreServiceClassDefinitionsMacro( (TestService)(::fwServices::IService) );
+    fwCoreServiceClassDefinitionsMacro( (TestService)(::fwServices::IService) )
     TestService() noexcept
     {
     }
@@ -137,7 +153,7 @@ class TestServiceImplementation : public TestService
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro( (TestServiceImplementation)(::fwServices::ut::TestService) );
+    fwCoreServiceClassDefinitionsMacro( (TestServiceImplementation)(::fwServices::ut::TestService) )
 
     /// Keys to register Signal
     static const ::fwCom::Signals::SignalKeyType s_MSG_SENT_SIG;
@@ -227,7 +243,7 @@ class TestServiceImplementation2 : public TestService
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro( (TestServiceImplementation2)(::fwServices::ut::TestService) );
+    fwCoreServiceClassDefinitionsMacro( (TestServiceImplementation2)(::fwServices::ut::TestService) )
 
     //-------------------------------------------------------------------------
     TestServiceImplementation2() noexcept
@@ -246,7 +262,7 @@ class TestSrvAutoconnect : public TestService
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro( (TestSrvAutoconnect)(::fwServices::ut::TestService) );
+    fwCoreServiceClassDefinitionsMacro( (TestSrvAutoconnect)(::fwServices::ut::TestService) )
 
     /// Keys to register Signal
     static const ::fwCom::Signals::SignalKeyType s_SIG_1;
@@ -328,7 +344,7 @@ public:
     static const KeyType s_INOUT_GROUP;
     static const KeyType s_OUTPUT;
 
-    fwCoreServiceClassDefinitionsMacro( (TestServiceWithData)(::fwServices::IService) );
+    fwCoreServiceClassDefinitionsMacro( (TestServiceWithData)(::fwServices::IService) )
     TestServiceWithData() noexcept
     {
         this->registerObject(s_INPUT, AccessType::INPUT, true, false);

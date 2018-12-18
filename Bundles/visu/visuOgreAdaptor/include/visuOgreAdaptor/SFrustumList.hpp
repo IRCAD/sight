@@ -1,8 +1,24 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2018.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2018 IRCAD France
+ * Copyright (C) 2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #pragma once
 
@@ -31,7 +47,7 @@ namespace visuOgreAdaptor
         <service type="::visuOgreAdaptor::SFrustumList">
             <in key="camera" uid="..." />
             <in key="transform" uid="..." />
-            <config layer="default" near="0.1" far="300" color="#f8e119" />
+            <config layer="default" near="0.1" far="300" color="#f8e119" transform="..." />
        </service>
    @endcode
  * @subsection Input Input:
@@ -39,17 +55,18 @@ namespace visuOgreAdaptor
  * - \b transform [::fwData::TransformationMatrix3D]: each time this transform is modified, a frustum is created.
  *
  * @subsection Configuration Configuration:
- * - \b layer (mandatory): defines the frustum's layer
- * - \b near (optional): near clipping distance of the ::Ogre::Camera
- * - \b far (optional): far clipping distance of the ::Ogre::Camera
- * - \b color (optional): color of frustums
+ * -\b layer (mandatory): defines the frustum's layer
+ * -\b near (optional): near clipping distance of the ::Ogre::Camera
+ * -\b far (optional): far clipping distance of the ::Ogre::Camera
+ * -\b color (optional): color of frustums
+ * -\b transform (optional): transform applied to the frustumList's scene node
  */
 class VISUOGREADAPTOR_CLASS_API SFrustumList : public ::fwRenderOgre::IAdaptor,
                                                public ::fwRenderOgre::ITransformable
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro((SFrustumList)(::fwRenderOgre::IAdaptor));
+    fwCoreServiceClassDefinitionsMacro((SFrustumList)(::fwRenderOgre::IAdaptor))
 
     /// Constructor.
     VISUOGREADAPTOR_API SFrustumList() noexcept;

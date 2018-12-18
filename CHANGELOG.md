@@ -1,3 +1,453 @@
+# sight 18.0.0
+
+## Bug fixes:
+
+### STransform
+
+*Check parent node existence before creating it.*
+
+### unit-tests
+
+*Look for profile.xml in the source directory.*
+
+Instead of looking for a profile.xml in the build directory for the unit-tests, now we look into the source directory. Otherwise, this does not work when CMake is only ran once.
+
+Doing this, some missing bundle requirements in unit-tests were fixed.
+
+### CMake
+
+*Check if profile exists to enable bundles load on unit-tests.*
+
+### *
+
+*Add GL_SILENCE_DEPRECATION definition globally.*
+
+Before it was only defined in fwRenderOgre.
+
+Resolve "OpenGL is deprecated on MacOS 10.14"
+
+### TutoOgreGenericScene
+
+*Update deprecated service key.*
+
+This made this application crash.
+
+### install
+
+*Remove useless install target.*
+
+setpath.bat and <app_name>.bat are only usable in build dir
+
+### unit-tests
+
+*Ensure test data are really free and anonymized.*
+
+This anonymize some data used in our unit-tests.
+
+### SMesh
+
+*Check if node exists before attaching it to root.*
+
+### DCMTK
+
+*Change DCMTK files path on Windows.*
+
+### *
+
+*Resolve errors reported by FOSSA.*
+
+- Update our license headers to mention Sight and not FW4SPL
+- Change the license headers to follow [GNU recommendations](https://www.gnu.org/copyleft/lesser.html)
+- Add IHU Strasbourg copyright
+- Remove LGPL license headers from minizip files
+- Remove DCMTK files and copy them at build instead
+- Add copyrights for MIT licensed files.
+
+### fwVideoQt
+
+*Properly close the camera device and deallocate the related resources.*
+
+Resolve "ARCalibration crash when stream stops"
+
+### macos
+
+*Fix OgreViewer for macOS in debug mode.*
+
+### calibrationActivity
+
+*Correct intrinsic editor inputs.*
+
+Calibration activity crashes when starting the intrinsic editor because of an input that should be an inout.
+
+Merge remote-tracking branch 'origin/fix-calibration-activity-crash-on-start' into dev
+
+### SReprojectionError
+
+*Fix indexing of marker points.*
+
+### fwRuntime
+
+*Resolve NOMINMAX redifinition.*
+
+- NOMINMAX was defined twice (in 'fw-boost.cmake' and in 'fwRuntime/dl/Win32.hpp')
+- a warning C4005 was displayed each time this file is used
+
+### conan
+
+*Update conan packages.*
+
+Conan has new packages available, it is necessary to update the versions used by Sight for macos and QML
+
+### ImportanceCompositing_FP
+
+*Allow Nsight compiling.*
+
+### SActivityWizard
+
+*Fix crash when loading or importing a data.*
+
+Fix load and import in SActivityWizard. SIOSelector service must be configured before to associate the output object Id.
+
+### CMake
+
+*Use the correct variable for deps without Conan.*
+
+We just used the wrong variable...
+
+### visuOgre
+
+*Add include file.*
+
+### SCamera
+
+*Replace assert by warning when creating cameras.*
+
+Allow to use ``::videoQt::editor::SCamera``when we don't know if the input CameraSeries will be initialized or not: the cameras will be generated if the cameraSeries is empty.
+
+### ogre
+
+*Fix naming conflicts and double deletes.*
+
+### sight
+
+*Set external lib dir in scripts to launch Sight apps.*
+
+Scripts used to launch Sight applications are not correct because the variable FW_EXTERNAL_LIBRARIES_DIR is empty.
+
+### fwRenderOgre
+
+*Silent deprecated OpenGL warnings on macos.*
+
+Resolve "[macos 10.14] OpenGL is deprecated"
+
+### tests
+
+*Fix fwServicesTest and fwActivitiesTest.*
+
+Fix the broken tests of `fwServicesTest` and `fwActivitiesTest`:
+- fix the resources path
+- update the wait macros to test if a service exists. Replace `::fwTools::fwID::getObject(uid)` by `::fwTools::fwID::exist(uid)` because when getObject() is called, an assert is raised: the service pointer expires before it is removed from the ID map.
+
+### CMake
+
+*Remove usage of QT_QPA_FONTDIR on Linux.*
+
+Usage of **QT_QPA_FONTDIR** is deleted in both build & install scripts
+since now we build Qt with fontconfig support.
+
+### fwRenderOgre
+
+*Move declaration of static const outside the class.*
+
+### Ogre
+
+*R2VB objects can't be picked.*
+
+This allows quad-based meshes to be picked. Since the quads are triangulated with a geometry shader, it was not that easy to perform. The chosen solution is not very elegant, I added intersection tests on the quads themselves. Testing intersections on the triangulation is harder to perform and on top of that, at the beginning we did not intend to read it from the CPU.
+
+### IDVR
+
+*Mesh/countersink interference.*
+
+Also brings a few new buttons to the OgreViewer toolbar and fixes the clipping box update.
+
+Only works with the Default or the DepthPeeling transparency technique.
+
+[Ogre] Fix idvr with mixed rendering
+
+### SPointListRegistration
+
+*Test if registered pointList has labels.*
+
+Fix SPointListRegistration service when having two pointLists which one has labels and the other one has no labels.
+
+Resolve "Fix SPointListRegistration"
+
+### fwDataToolsTest
+
+*Glm initialization.*
+
+### CMakeLists
+
+*Add a define for aligned storage compatibility with visual 2017.*
+
+### macos
+
+*Remove installation script for executable.*
+
+Remove installation script for executable for macOS.
+This script did not work and broke the cmake configuration. It should be rewrite completely.
+
+See #131
+
+### export
+
+*Fix export macro in arData and calibrationActivity.*
+
+### cmake
+
+*Allow use of relative path for EXTERNAL_LIBRARIES.*
+
+Resolve "Cannot use relative path for EXTERNAL_LIBRARIES"
+### ogre
+
+*Fix relative paths on linux.*
+
+material paths are now absolute using predefined variables
+
+### ogre
+
+*Add missing makeCurrent() and fix glsl errors.*
+
+### CMakeLists.txt
+
+*Fix link errors with vtk libraries.*
+
+The PCL discovery was done in the main CMakeLists.txt, thus defining VTK compile definitions for all targets. This led to strange link errors, notably in unit-tests.
+
+## New features:
+
+### conan
+
+*Implement a better Conan support, especially on macOS.*
+
+- Remove libxml2 and zlib dependencies on macOS
+- Use DYLD_FALLBACK_LIBRARY_PATH instead of LD_LIBRARY_PATH because it is unsupported in macOS and DYLD_LIBRARY_PATH prevents using ANY system libs.
+- Remove unneeded activities bundle dependency to gui
+- Fix application script template generation to use : as path separator instead of ;
+
+- Cleanup template script
+- Add VLC conan package for Windows and macOS, use system for Linux
+- Add scripts to launch unit tests and utilities with conan packages
+
+- bonus: fix ioAtoms and ioITK unit tests (updated object access type)
+
+### doxygen
+
+*Generate sight doxygen with Gitlab-CI.*
+
+- A new Gitlab-CI job is added to generate and publish Sight Doxygen
+- Doxygen is built only if sheldon and debug/release build pass
+- Doxygen is only deployed on the dev branch
+- Sight doxygen is available on https://sight.pages.ircad.fr/sight
+
+### tutoQml
+
+*Use qml and c++ for tuto 08 and 09.*
+
+New version of the Tutorial 08 and 09 using qml and c++ (without XML configuration).
+
+- fwVTKQml:new library to allow to display a VTK scene in qml
+- visuVTKQml:new bundle to initialize qml FrameBuffer
+- uiMedDataQml, uiImageQml, uiReconstructionQml: new bundles containing services inherited from IQmlService and the associated qml files.
+
+### tutoQml
+
+*Add basic samples using qml interfaces.*
+
+Add new samples to use Qml:
+- `Tuto01BasicQml`: same as Tuto01Basic but using qml instead of fwGui frame and xml
+- `TutoGuiQml`: same as TutoGui but using qml instead of fwGui frame and actions
+- `TutoEditorQml`: sample to explain how to use a IQmlEditor
+
+Add a new library `fwQml` that contains helpers to use qml:
+- IQmlEditor: base class for f4s service associated to qml UI
+- QmlEngine: to launch qml ui
+
+### tutoCpp
+
+*Convert tuto 08 and 09 to use C++.*
+
+The new Samples `Tuto08GenericSceneCpp` and `Tuto09MesherWithGenericSceneCpp` are equivalent to the existing samples (same name without 'Cpp') but they doesn't use a XML configuration.
+
+All the services are managed in C++ in the application `Plugin` class. The services' configurations are written with `::boost::property::tree`.
+
+To achieve this, a new helper : ``::fwServices::AppManager``was added. It simplifies the management of objects/services/connections in an application.
+
+### CMake
+
+*Use Conan to build Sight (experimental).*
+
+Add conan support in sight:
+- A temporary conan registry is used for the moment: [Artifactory](http://5.39.78.163:8081/artifactory)
+- All conan package are available on [gitlab Conan group](https://gitlab.lan.local/conan/)
+- A new advanced CMake option is available: `USE_CONAN`
+
+### trackingHandEyeActivity
+
+*Load and evaluate calibration matrices.*
+
+Adds the possibility to load the hand-eye X matrix for evaluation.
+
+Once loaded the Z matrix is computed using the current tracked position and camera pose.
+
+The camera can than be moved around and the app will display the reprojection and reprojection error.
+
+Evaluate external calibrations in the hand-eye activity.
+
+### SLabeledPointList
+
+*Implement updateVisibility slot.*
+- to update visibility of SLabeledPointList, we have to implement updateVisibility slot into SPoint, SPointLabel, SPointList
+
+Resolve "Implement updateVisibility slot in SLabeledPointList"
+
+### PointList
+
+*Add pointlist management methods.*
+
+* Add a slot to clear the pointlist in SMarkerToPoint
+* Add a slot to manage the visibility of the pointlist in the adaptor SPointList3D
+
+### SRenderStats
+
+*Display rendering stats such as FPS in the OGRE overlay.*
+
+- Adds a new adaptor to display FPS and triangle count in ogre windows.
+- Fixes a crash when setting the volume visibility when no image has been loaded.
+- Removes the option to print stats in a console.
+
+### sslotcaller
+
+*Add wait option for synchronized slot calling.*
+
+Add a wait option to SSlotCaller that is used to call the slots synchronously. This allows for dependent slots to be called in the right order.
+
+### 21-integration-of-sopticalflow-from-internship-repository
+
+*Into dev.*
+
+Add a new service that performs optical flow on a video to detect if camera is moving or not.
+Use the service in a new example called ExDetectCamMotion.
+
+SOpticalFlow is designed to only detect if camera is moving not if something happend on video.
+It can send 2 signals: cameraMoved if motion and cameraRemained if camera is stable.
+
+This can be usefull to trigger event when motion or remaining phases are detected, ex: only add calibration image if camera is not moving.
+
+### 124-sort-example-by-topics-and-remove-numbering
+
+*Into dev.*
+
+Remove numbering of Samples, and add topics folders.
+
+Resolve "Sort example by topics and remove numbering"
+
+### CMake
+
+*Introduce SDK mode.*
+
+After many years, we propose a real build of Sight as a SDK. This allows to:
+- create a binary package containing Sight binaries, libraries, includes and resources,
+- include/link a Sight library in a non-Sight application/library,
+- create a new Sight library, bundle or application outside Sight source and build tree
+
+### .gitignore
+
+*Ignore vs2017 cmake project files.*
+
+## Refactor:
+
+### *
+
+*Remove "fw4spl" references.*
+
+Resolve "Remove all references to "fw4spl""
+
+### ITransformable
+
+*Node managements is now handle by ITransformable.*
+
+* Factorise some functions to have a common method into ITransformable.
+* Set the parent transformation only in STransform (else, two adaptors with the same transform can have two different parents).
+* Fix the stopping method of SAxis.
+
+### ioIGTL
+
+*Modify INetwork and STDataListener to manage timestamps.*
+
+- Add receiveObject function in INetwork to return the message timestamp
+- Add optional timestamp parameter in manageTimeline from STDataListener
+
+### deprecated
+
+*Remove 'FW_DEPRECATED' related to 18.0.*
+
+Remove the deprecated code associated to the macros `FW_DEPRECATED_xxx(..., "18.0)`.
+
+### MedicalImage
+
+*Split to MedicalImage and TransferFunction.*
+Splits `::fwDataTools::helper::MedicalImageAdaptor`to `::fwDataTools::helper::MedicalImage`and ::fwDataTools::helper::TransferFunction
+
+Most of the adaptors used the half of the `::fwDataTools::helper::MedicalImageAdaptor`: one part to manage an fwData`::Image`and the other one to manage fwData::TransferFunction.
+
+Resolve "Split `MedicalImageAdaptor` into `MedicalImage` and `TransferFunction`"
+
+### getObjSrvConnections
+
+*Replace getObjSrvConnections() by getAutoConnections().*
+
+Resolve getObjSrvConnections() errors by implementing getAutoConnection() method.
+
+### fwCore::HiResClock
+
+*Use std::chrono inside and deprecate in favor of std::chrono.*
+
+### ogre
+
+*Refactor volume ray entries compositors.*
+
+- Removes the volume ray entry compositor scripts and generates them instead.
+It will be a lot easier to add stereo IDVR now.
+
+- Moves all programs/materials/compositors used in fwRenderOgre to it.
+
+* **:warning: IMPORTANT** Delete share/fwRendreOgre and share/material in your build directory
+
+### cmake
+
+*Cmake cleaning.*
+
+cleans sight CMake scripts:
+- removed unused platform
+- removed racy backward compatibility
+
+### *
+
+*Reorganise some folders.*
+
+After the big merge with fw4spl-ar, fw4spl-ogre and fw4spl-ext, it was necessary to clean up a bit the folders hierarchy, notably to group related items together. No project is renamed, the projects were only moved or their parent directory was renamed.
+
+See sight!2
+
+## Documentation:
+
+### README.md
+
+*Remove all mentions of 'fw4spl'.*
+
+
 # fw4spl 17.2.0
 
 ## New features:

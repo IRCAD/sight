@@ -1,8 +1,24 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2018.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2018 IRCAD France
+ * Copyright (C) 2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #include "fwRenderOgre/vr/RayEntryCompositor.hpp"
 
@@ -26,7 +42,7 @@ static std::mutex s_compositorManagerLock;
 //------------------------------------------------------------------------------
 
 RayEntryCompositor::RayEntryCompositor(const std::string& _compositorName, std::uint8_t _rqGroup,
-                                       Layer::StereoModeType _stereoMode, bool _enableMixedRendering) :
+                                       compositor::Core::StereoModeType _stereoMode, bool _enableMixedRendering) :
     m_compositorName(_compositorName)
 {
     auto& cm = ::Ogre::CompositorManager::getSingleton();
@@ -46,17 +62,17 @@ RayEntryCompositor::RayEntryCompositor(const std::string& _compositorName, std::
 
         switch(_stereoMode)
         {
-            case Layer::StereoModeType::NONE: break;
-            case Layer::StereoModeType::STEREO:
+            case compositor::Core::StereoModeType::NONE: break;
+            case compositor::Core::StereoModeType::STEREO:
                 nbViewpoints = 2;
                 heightFactor = 0.5f;
                 break;
-            case Layer::StereoModeType::AUTOSTEREO_5:
+            case compositor::Core::StereoModeType::AUTOSTEREO_5:
                 nbViewpoints = 5;
                 heightFactor = 0.5f;
                 widthFactor  = 0.6f;
                 break;
-            case Layer::StereoModeType::AUTOSTEREO_8:
+            case compositor::Core::StereoModeType::AUTOSTEREO_8:
                 nbViewpoints = 8;
                 heightFactor = 0.5f;
                 widthFactor  = 0.375f;

@@ -1,13 +1,28 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017-2018.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2017-2018 IRCAD France
+ * Copyright (C) 2017-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #include "fwRenderOgre/vr/GridProxyGeometry.hpp"
 
 #include "fwRenderOgre/factory/R2VBRenderable.hpp"
-#include "fwRenderOgre/Layer.hpp"
 
 #include <OGRE/OgreDepthBuffer.h>
 #include <OGRE/OgreHardwarePixelBuffer.h>
@@ -60,12 +75,8 @@ GridProxyGeometry* GridProxyGeometry::New(const std::string& _name, ::Ogre::Scen
 //------------------------------------------------------------------------------
 
 GridProxyGeometry::GridProxyGeometry(const Ogre::String& name) :
-    R2VBRenderable(name),
-    m_r2vbSource(nullptr)
+    R2VBRenderable(name)
 {
-    // Initialize them here otherwise sheldon goes bananas.
-    m_gridSize  = {{ 2, 2, 2 }};
-    m_brickSize = {{ 8, 8, 8 }};
 }
 
 //------------------------------------------------------------------------------
@@ -85,12 +96,21 @@ GridProxyGeometry::~GridProxyGeometry()
     {
         ::Ogre::TextureManager::getSingleton().remove(m_gridTexture->getHandle());
     }
+
+    if(m_gridViewportCamera)
+    {
+        mParentSceneManager->destroyCamera(m_gridViewportCamera);
+    }
 }
 
 //------------------------------------------------------------------------------
 
 void GridProxyGeometry::initialize()
 {
+    // Create a camera to render the grid volume.
+    // Using the default camera may result in strange behaviour, especially in a concurrent environment.
+    // (E.g. accessing the camera's viewport size while the grid volume is rendered will return its width and height).
+    m_gridViewportCamera = mParentSceneManager->createCamera(this->mName + "_GridVolumeCamera");
     this->initializeR2VBSource();
     this->initializeGridMaterials();
 }
@@ -201,7 +221,7 @@ void GridProxyGeometry::setupGrid()
         {
             ::Ogre::RenderTexture* rt = m_gridTexture->getBuffer()->getRenderTarget(i);
             rt->setDepthBufferPool(::Ogre::DepthBuffer::POOL_NO_DEPTH);
-            rt->addViewport(mParentSceneManager->getCamera(::fwRenderOgre::Layer::DEFAULT_CAMERA_NAME));
+            rt->addViewport(m_gridViewportCamera);
         }
     }
 

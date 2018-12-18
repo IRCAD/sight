@@ -8,9 +8,16 @@ set( USE_PCH_FROM_TARGET pchData )
 set( CONAN_DEPS
     itk/4.13.0-r1@sight/stable
 )
-if(WIN32 OR APPLE)
+
+if(WIN32)
     list(APPEND CONAN_DEPS 
         zlib/1.2.11@sight/stable
+        libjpeg/9c@sight/stable
+    )
+endif()
+
+if(APPLE)
+    list(APPEND CONAN_DEPS 
         libjpeg/9c@sight/stable
     )
 endif()

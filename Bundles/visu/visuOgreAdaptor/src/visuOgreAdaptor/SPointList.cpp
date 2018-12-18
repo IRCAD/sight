@@ -1,8 +1,24 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2018.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2014-2018 IRCAD France
+ * Copyright (C) 2014-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #include "visuOgreAdaptor/SPointList.hpp"
 
@@ -117,14 +133,8 @@ void SPointList::configuring()
         m_textureName = config.get<std::string>("textureName");
     }
 
-    if(config.count("transform"))
-    {
-        this->setTransformId(config.get<std::string>("transform"));
-    }
-    else
-    {
-        this->setTransformId(this->getID() + "_TF");
-    }
+    this->setTransformId(config.get<std::string>( ::fwRenderOgre::ITransformable::s_TRANSFORM_CONFIG,
+                                                  this->getID() + "_transform"));
 
     m_queryFlags = config.get<std::uint32_t>("queryFlags", m_queryFlags);
     m_radius     = config.get("radius", 1.f);
@@ -135,11 +145,6 @@ void SPointList::configuring()
 void SPointList::starting()
 {
     this->initialize();
-
-    if (this->getTransformId().empty())
-    {
-        this->setTransformId(this->getID() + "_TF");
-    }
 
     m_meshGeometry = ::std::make_shared< ::fwRenderOgre::Mesh>(this->getID());
     m_meshGeometry->setDynamic(true);
@@ -220,16 +225,13 @@ void SPointList::updateMesh(const ::fwData::PointList::csptr& _pointList)
 
     ::fwData::mt::ObjectReadLock lock(_pointList);
 
+    detachAndDestroyEntity();
+
     const size_t uiNumVertices = _pointList->getPoints().size();
     if(uiNumVertices == 0)
     {
         SLM_DEBUG("Empty mesh");
 
-        if(m_entity)
-        {
-            sceneMgr->destroyEntity(m_entity);
-            m_entity = nullptr;
-        }
         m_meshGeometry->clearMesh(*sceneMgr);
         return;
     }
@@ -247,7 +249,6 @@ void SPointList::updateMesh(const ::fwData::PointList::csptr& _pointList)
         m_entity = m_meshGeometry->createEntity(*sceneMgr);
         m_entity->setVisible(m_isVisible);
         m_entity->addQueryFlags(m_queryFlags);
-        sceneMgr->getRootSceneNode()->detachObject(m_entity);
     }
 
     //------------------------------------------
@@ -280,16 +281,13 @@ void SPointList::updateMesh(const ::fwData::Mesh::csptr& _mesh)
 
     ::fwData::mt::ObjectReadLock lock(_mesh);
 
+    detachAndDestroyEntity();
+
     const size_t uiNumVertices = _mesh->getNumberOfPoints();
     if(uiNumVertices == 0)
     {
         SLM_DEBUG("Empty mesh");
 
-        if(m_entity)
-        {
-            sceneMgr->destroyEntity(m_entity);
-            m_entity = nullptr;
-        }
         m_meshGeometry->clearMesh(*sceneMgr);
         return;
     }
@@ -307,7 +305,6 @@ void SPointList::updateMesh(const ::fwData::Mesh::csptr& _mesh)
         m_entity = m_meshGeometry->createEntity(*sceneMgr);
         m_entity->setVisible(m_isVisible);
         m_entity->addQueryFlags(m_queryFlags);
-        sceneMgr->getRootSceneNode()->detachObject(m_entity);
     }
 
     //------------------------------------------
@@ -420,25 +417,27 @@ void SPointList::updateMaterialAdaptor()
 
 void SPointList::attachNode(::Ogre::MovableObject* _node)
 {
-    auto transformService = ::visuOgreAdaptor::STransform::dynamicCast(m_transformService.lock());
-
     ::Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
-    ::Ogre::SceneNode* transNode     =
-        ::fwRenderOgre::helper::Scene::getNodeById(this->getTransformId(), rootSceneNode);
-
-    if (transNode == nullptr)
-    {
-        transNode = rootSceneNode->createChildSceneNode(this->getTransformId());
-    }
-    ::Ogre::SceneNode* node = _node->getParentSceneNode();
-    if ((node != transNode) && transNode)
-    {
-        _node->detachFromParent();
-        transNode->attachObject(_node);
-    }
+    ::Ogre::SceneNode* transNode     = this->getTransformNode(rootSceneNode);
+    transNode->attachObject(_node);
 
     // Needed to recompute world bounding boxes of the scene node using its attached mesh bounds
     transNode->_update(true, false);
+}
+
+//-----------------------------------------------------------------------------
+
+void SPointList::detachAndDestroyEntity()
+{
+    if(m_entity)
+    {
+        ::Ogre::SceneManager* const sceneMgr   = this->getSceneManager();
+        ::Ogre::SceneNode* const rootSceneNode = sceneMgr->getRootSceneNode();
+        ::Ogre::SceneNode* const transNode     = this->getTransformNode(rootSceneNode);
+        transNode->detachObject(m_entity);
+        sceneMgr->destroyEntity(m_entity);
+        m_entity = nullptr;
+    }
 }
 
 //-----------------------------------------------------------------------------

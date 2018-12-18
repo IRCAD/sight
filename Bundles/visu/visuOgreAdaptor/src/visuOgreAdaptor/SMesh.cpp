@@ -1,8 +1,24 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2018.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2014-2018 IRCAD France
+ * Copyright (C) 2014-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #include "visuOgreAdaptor/SMesh.hpp"
 
@@ -135,10 +151,8 @@ void SMesh::configuring()
         }
     }
 
-    if(config.count("transform"))
-    {
-        this->setTransformId(config.get<std::string>("transform"));
-    }
+    this->setTransformId(config.get<std::string>( ::fwRenderOgre::ITransformable::s_TRANSFORM_CONFIG,
+                                                  this->getID() + "_transform"));
 
     m_isDynamic         = config.get<bool>("dynamic", m_isDynamic);
     m_isDynamicVertices = config.get<bool>("dynamicVertices", m_isDynamicVertices);
@@ -200,11 +214,7 @@ void SMesh::stopping()
     this->unregisterServices();
 
     m_meshGeometry->clearMesh(*sceneMgr);
-
-    if(!m_useNewMaterialAdaptor)
-    {
-        m_materialAdaptor.reset();
-    }
+    m_materialAdaptor.reset();
 
     if(m_entity)
     {
@@ -512,15 +522,11 @@ void SMesh::modifyTexCoords()
 void SMesh::attachNode(::Ogre::MovableObject* _node)
 {
     ::Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
-    ::Ogre::SceneNode* transNode     =
-        ::fwRenderOgre::helper::Scene::getNodeById(this->getTransformId(), rootSceneNode);
+    ::Ogre::SceneNode* transNode     = this->getTransformNode(rootSceneNode);
 
-    if (transNode == nullptr)
-    {
-        transNode = rootSceneNode->createChildSceneNode(this->getTransformId());
-    }
     ::Ogre::SceneNode* node = _node->getParentSceneNode();
-    if ((node != transNode) && transNode)
+
+    if(node != transNode)
     {
         _node->detachFromParent();
         transNode->attachObject(_node);

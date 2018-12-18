@@ -94,8 +94,8 @@ macro(win_install PRJ_NAME)
         set(CPACK_INSTALLED_DIRECTORIES "${CMAKE_INSTALL_PREFIX};.") #look inside install dir for packaging
 
         set(CPACK_PACKAGE_VENDOR "Sight")
-        set(CPACK_NSIS_URL_INFO_ABOUT "https://github.com/fw4spl-org")
-        set(CPACK_NSIS_CONTACT "fw4spl@gmail.com")
+        set(CPACK_NSIS_URL_INFO_ABOUT "https://github.com/IRCAD-IHU/sight")
+        set(CPACK_NSIS_CONTACT "https://gitter.im/IRCAD-IHU/sight-support")
 
         set(CPACK_PACKAGE_NAME "${PRJ_NAME}")
         set(CPACK_NSIS_PACKAGE_NAME "${PRJ_NAME}-${${PRJ_NAME}_VERSION}")
@@ -130,7 +130,7 @@ macro(win_install PRJ_NAME)
 
         # Extract the icon found for the installer and use it for every shortcut (Start menu, Desktop and Uninstall)
         # The output variable is used in our NSIS.template
-        string(REGEX REPLACE ".*\/(.*)" "\\1" CPACK_NSIS_FW4SPL_APP_ICON ${CPACK_NSIS_MUI_ICON})
+        string(REGEX REPLACE ".*\/(.*)" "\\1" CPACK_NSIS_SIGHT_APP_ICON ${CPACK_NSIS_MUI_ICON})
 
         string(REPLACE "/" "\\\\" CPACK_PACKAGE_ICON ${CPACK_PACKAGE_ICON})
         string(REPLACE "/" "\\\\" CPACK_NSIS_WELCOMEFINISH_IMAGE ${CPACK_NSIS_WELCOMEFINISH_IMAGE})

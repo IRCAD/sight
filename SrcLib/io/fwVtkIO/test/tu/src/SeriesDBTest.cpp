@@ -1,30 +1,46 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
-#include <boost/filesystem/path.hpp>
-#include <boost/filesystem/operations.hpp>
+#include "SeriesDBTest.hpp"
+
+#include <fwVtkIO/SeriesDBReader.hpp>
+
+#include <fwData/Array.hpp>
+#include <fwData/Image.hpp>
+#include <fwData/Reconstruction.hpp>
+
+#include <fwDataCamp/visitor/CompareObjects.hpp>
+
+#include <fwMedData/ImageSeries.hpp>
+#include <fwMedData/ModelSeries.hpp>
+#include <fwMedData/Series.hpp>
 
 #include <fwMemory/BufferManager.hpp>
 #include <fwMemory/BufferObject.hpp>
 
-#include <fwData/Reconstruction.hpp>
-#include <fwData/Image.hpp>
-#include <fwData/Array.hpp>
-
-#include <fwMedData/Series.hpp>
-#include <fwMedData/ImageSeries.hpp>
-#include <fwMedData/ModelSeries.hpp>
-
-#include <fwDataCamp/visitor/CompareObjects.hpp>
-
 #include <fwTest/Data.hpp>
 
-#include <fwVtkIO/SeriesDBReader.hpp>
-
-#include "SeriesDBTest.hpp"
+#include <boost/filesystem/operations.hpp>
+#include <boost/filesystem/path.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwVtkIO::ut::SeriesDBTest );
@@ -54,8 +70,8 @@ void SeriesDBTest::testImportSeriesDB()
 {
     ::fwMedData::SeriesDB::sptr seriesDB = ::fwMedData::SeriesDB::New();
 
-    const ::boost::filesystem::path imagePath( ::fwTest::Data::dir() / "fw4spl/image/vtk/img.vtk" );
-    const ::boost::filesystem::path meshPath( ::fwTest::Data::dir() / "fw4spl/mesh/vtk/sphere.vtk" );
+    const ::boost::filesystem::path imagePath( ::fwTest::Data::dir() / "sight/image/vtk/img.vtk" );
+    const ::boost::filesystem::path meshPath( ::fwTest::Data::dir() / "sight/mesh/vtk/sphere.vtk" );
 
     CPPUNIT_ASSERT_MESSAGE(std::string("Missing file: ") + imagePath.string(), ::boost::filesystem::exists(imagePath));
     CPPUNIT_ASSERT_MESSAGE(std::string("Missing file: ") + meshPath.string(), ::boost::filesystem::exists(meshPath));
@@ -129,8 +145,8 @@ void SeriesDBTest::testLazyImportSeriesDB()
 
     ::fwMedData::SeriesDB::sptr seriesDB = ::fwMedData::SeriesDB::New();
 
-    const ::boost::filesystem::path imagePath( ::fwTest::Data::dir() / "fw4spl/image/vtk/img.vtk" );
-    const ::boost::filesystem::path meshPath( ::fwTest::Data::dir() / "fw4spl/mesh/vtk/sphere.vtk" );
+    const ::boost::filesystem::path imagePath( ::fwTest::Data::dir() / "sight/image/vtk/img.vtk" );
+    const ::boost::filesystem::path meshPath( ::fwTest::Data::dir() / "sight/mesh/vtk/sphere.vtk" );
 
     CPPUNIT_ASSERT_MESSAGE(std::string("Missing file: ") + imagePath.string(), ::boost::filesystem::exists(imagePath));
     CPPUNIT_ASSERT_MESSAGE(std::string("Missing file: ") + meshPath.string(), ::boost::filesystem::exists(meshPath));
@@ -139,13 +155,11 @@ void SeriesDBTest::testLazyImportSeriesDB()
     paths.push_back(imagePath);
     paths.push_back(meshPath);
 
-
     ::fwVtkIO::SeriesDBReader::sptr reader = ::fwVtkIO::SeriesDBReader::New();
     reader->setObject(seriesDB);
     reader->setFiles(paths);
     reader->setLazyMode(true);
     reader->read();
-
 
     CPPUNIT_ASSERT_EQUAL(size_t(2), seriesDB->getContainer().size());
 

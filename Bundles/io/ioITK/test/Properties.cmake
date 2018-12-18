@@ -12,7 +12,11 @@ set( DEPENDENCIES
     fwServices
     fwGui
     fwThread
+    fwIO
 )
-set( REQUIREMENTS ioITK )
-
-set(CPPUNITTEST_OPTIONS BUNDLE ioITK WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+set( REQUIREMENTS
+    dataReg
+    servicesReg
+    gui
+    ioITK
+)

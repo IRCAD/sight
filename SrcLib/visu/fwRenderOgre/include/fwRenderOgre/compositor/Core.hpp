@@ -1,8 +1,24 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2018.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+/************************************************************************
+ *
+ * Copyright (C) 2014-2018 IRCAD France
+ * Copyright (C) 2014-2018 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 
 #pragma once
 
@@ -40,6 +56,14 @@ class FWRENDEROGRE_CLASS_API Core   //TODO : Manage occlusion query
 {
 public:
 
+    enum class StereoModeType : std::uint8_t
+    {
+        NONE,
+        AUTOSTEREO_5,
+        AUTOSTEREO_8,
+        STEREO
+    };
+
     /// Render queue group for surface rendering.
     static const std::uint8_t s_SURFACE_RQ_GROUP_ID = ::Ogre::RenderQueueGroupID::RENDER_QUEUE_MAIN;
 
@@ -68,6 +92,12 @@ public:
     /// Set the number of peels computed by Depth Peeling or x2 Dual Depth Peeling
     /// Deactivate OIT compositor
     FWRENDEROGRE_API void setTransparencyDepth(int depth);
+
+    /// Set the stereo mode. Keep in mind that OIT techniques disable stereo for now.
+    FWRENDEROGRE_API void setStereoMode(StereoModeType stereoMode);
+
+    /// Return the enabled stereo mode.
+    FWRENDEROGRE_API StereoModeType getStereoMode() const;
 
     /// Re/Activate OIT compositor
     FWRENDEROGRE_API void update();
@@ -104,13 +134,15 @@ private:
     transparencyTechnique m_transparencyTechnique;
 
     /// OIT used - string name
-    ::Ogre::String m_transparencyTechniqueName;
+    ::Ogre::String m_coreCompositorName;
 
     /// OIT compositor instance used
     ::Ogre::CompositorInstance* m_compositorInstance;
 
     /// Cel shading activated
     ::Ogre::String m_celShadingName;
+
+    StereoModeType m_stereoMode { StereoModeType::NONE };
 
     //bool m_useOcclusionQuery;
 

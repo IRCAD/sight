@@ -1,11 +1,3 @@
-Please read this!
-
-Before opening a new issue, verify the issue you're about to submit isn't a duplicate.
-
-Please remove this notice if you're confident your issue isn't a duplicate.
-
-------
-
 ### Summary
 
 (Summarize the bug encountered concisely)
@@ -41,4 +33,4 @@ logs, and code as it's very hard to read otherwise.)
 
 (If you can, link to the line of code that might be responsible for the problem)
 
-/label ~bug
+/label ~Type:bugfix

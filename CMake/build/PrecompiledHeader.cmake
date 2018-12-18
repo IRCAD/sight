@@ -31,6 +31,8 @@
 # License:
 #
 # Copyright (C) 2009-2013 Lars Christensen <larsch@belunktum.dk>
+# Copyright (C) 2016-2018 IRCAD France
+# Copyright (C) 2016-2018 IHU Strasbourg
 #
 # Permission is hereby granted, free of charge, to any person
 # obtaining a copy of this software and associated documentation files

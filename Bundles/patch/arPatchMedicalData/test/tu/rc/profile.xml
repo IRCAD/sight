@@ -1,6 +1,7 @@
 <profile name="arMedicalDataPatchTest" version="0.1">
 
     <activate id="dataReg" version="0.1" />
+    <activate id="arDataReg" version="0.1" />
     <activate id="servicesReg" version="0.1" />
 
     <activate id="gui" version="0.1" />
@@ -13,5 +14,5 @@
     <start id="patchMedicalData" />
     <start id="arPatchMedicalData" />
     <start id="ioAtoms" />
-    
+
 </profile>
