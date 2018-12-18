@@ -639,7 +639,7 @@ void main(void)
         // Else, we use an empty color.
         vec4 colorCSG = vec4(0.0, 0.0, 0.0, 0.0);
 #endif // CSG_TF
-        // We blend colors only if the exit position is under the ray entry position
+        // We blend colors only if the exit position is in front of the ray entry position
         if(distance(u_cameraPos, rayExit) >= distance(u_cameraPos, rayEntry))
         {
 #ifdef CSG_DISABLE_CONTEXT
