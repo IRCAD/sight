@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,12 +20,15 @@
  *
  ***********************************************************************/
 
-
 #include <boost/filesystem.hpp>
+#include <boost/regex.hpp>
 
 #include "fwCore/base.hpp"
 #include "fwTools/Os.hpp"
 
+#ifdef __linux
+#include <sys/stat.h>
+#endif
 
 namespace fwTools
 {
@@ -33,9 +36,11 @@ namespace fwTools
 namespace os
 {
 
-std::string getEnv(const std::string &name, bool *ok)
+//------------------------------------------------------------------------------
+
+std::string getEnv(const std::string& name, bool* ok)
 {
-    char *value = std::getenv(name.c_str());
+    char* value = std::getenv(name.c_str());
     bool exists = (value != NULL);
     if(ok != NULL)
     {
@@ -46,7 +51,7 @@ std::string getEnv(const std::string &name, bool *ok)
 
 //------------------------------------------------------------------------------
 
-std::string getEnv(const std::string &name, const std::string &defaultValue)
+std::string getEnv(const std::string& name, const std::string& defaultValue)
 {
     bool ok           = false;
     std::string value = getEnv(name, &ok);
@@ -59,7 +64,7 @@ std::string getUserDataDir( std::string company, std::string appName, bool creat
 {
     std::string dataDir;
 #ifdef WIN32
-    char *appData = std::getenv("APPDATA");
+    char* appData = std::getenv("APPDATA");
     dataDir = ::fwTools::os::getEnv("APPDATA");
 #else
     bool hasXdgConfigHome     = false;
@@ -73,7 +78,6 @@ std::string getUserDataDir( std::string company, std::string appName, bool creat
     {
         dataDir += "/" + company;
     }
-
 
     if ( !appName.empty() )
     {
@@ -100,7 +104,8 @@ std::string getUserDataDir( std::string company, std::string appName, bool creat
     return dataDir;
 }
 
+//------------------------------------------------------------------------------
+
 } // namespace os
 
 } // namespace fwTools
-

@@ -1,22 +1,21 @@
 fwLoadProperties()
 
 find_package(OpenNI2 QUIET REQUIRED)
-find_package(Qt5 QUIET COMPONENTS Widgets Multimedia REQUIRED)
+find_package(Boost QUIET COMPONENTS filesystem REQUIRED)
+find_package(OpenCV QUIET COMPONENTS videoio )
 
 fwInclude(
     ${OPENNI2_INCLUDE_DIRS}
-    ${Qt5Core_INCLUDE_DIRS}
-    ${Qt5Multimedia_INCLUDE_DIRS}
-    ${Qt5Widgets_INCLUDE_DIRS}
+    ${Boost_FILESYSTEM_INCLUDE_DIRS}
+    ${OpenCV_INCLUDE_DIRS}
+
 )
 fwLink(
     ${OPENNI2_LIBRARY}
-    ${Qt5Core_LIBRARIES}
-    ${Qt5Multimedia_LIBRARIES}
-    ${Qt5Widgets_LIBRARIES}
-)
+    ${Boost_FILESYSTEM_LIBRARY}
+    ${OpenCV_LIBS}
 
-set_target_properties(${FWPROJECT_NAME} PROPERTIES AUTOMOC TRUE)
+)
 
 if(WIN32)
     if(OPENNI2_FOUND)
