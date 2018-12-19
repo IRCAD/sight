@@ -33,6 +33,7 @@
 #else
 #   include <link.h>
 #endif
+#include <regex>
 
 namespace fwTools
 {
@@ -176,6 +177,10 @@ static std::string _getMacOsSharedLibraryPath(const std::string& _libName)
             }
         }
     }
+    if(path.empty())
+    {
+        FW_RAISE_EXCEPTION(::fwTools::Exception(std::string("Could not find shared library path for ") + _libName));
+    }
     return path;
 }
 #else
@@ -196,10 +201,11 @@ struct FindModuleFunctor
     }
 
     static std::string s_location;
-    private:
-        static std::string s_libName;
+    static std::string s_libName;
 };
-std::string FindModuleFunctor::location;
+
+std::string FindModuleFunctor::s_location;
+std::string FindModuleFunctor::s_libName;
 
 #endif
 
@@ -213,9 +219,15 @@ std::string FindModuleFunctor::location;
     return _getMacOsSharedLibraryPath();
 #else
     FindModuleFunctor functor;
+    FindModuleFunctor::s_location.clear();
     FindModuleFunctor::s_libName = _libName;
     dl_iterate_phdr(&FindModuleFunctor::callback, nullptr);
-    return functor.location;
+
+    if(functor.s_location.empty())
+    {
+        FW_RAISE_EXCEPTION(::fwTools::Exception(std::string("Could not find shared library path for ") + _libName));
+    }
+    return functor.s_location;
 #endif
 }
 

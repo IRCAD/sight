@@ -44,7 +44,6 @@
 #include <QTimer>
 
 #include <functional>
-#include <regex>
 
 namespace fwGuiQt
 {

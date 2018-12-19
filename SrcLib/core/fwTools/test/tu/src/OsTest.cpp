@@ -69,9 +69,9 @@ void Os::getSharedLibraryPath()
 #if defined(WIN32)
         const fs::path expectedPath = execPath / "fwCore.dll";
 #elif defined(APPLE)
-        const fs::path expectedPath = execPath.parent_path() / "lib" / "libfwCore.dylib";
+        const fs::path expectedPath = execPath.parent_path() / BUNDLE_LIB_PREFIX / "libfwCore.dylib";
 #else
-        const fs::path expectedPath = execPath.parent_path() / "lib" / "libfwCore.so";
+        const fs::path expectedPath = execPath.parent_path() / BUNDLE_LIB_PREFIX / "libfwCore.so.0";
 #endif
         CPPUNIT_ASSERT_EQUAL(expectedPath, fwCorePath);
     }
