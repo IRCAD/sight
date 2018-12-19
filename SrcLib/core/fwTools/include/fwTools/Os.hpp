@@ -74,13 +74,6 @@ FWTOOLS_API std::string  getUserDataDir(
     );
 
 /**
- * @brief   Return the path to the current executable path.
- * @return path on the filesystem
- * @throw ::fwTools::Exception if the path could not be determined
- */
-FWTOOLS_API ::boost::filesystem::path getExecutablePath();
-
-/**
  * @brief   Return the path to a shared library name
  * The library should have already been loaded before.
  * @param _libName The name of the shared library, without any 'lib' prefix or extension,

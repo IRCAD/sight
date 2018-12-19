@@ -28,6 +28,7 @@
 
 #include <boost/filesystem.hpp>
 
+#include <boost/dll.hpp>
 #ifdef WIN32
 #include <windows.h>
 #endif
@@ -56,19 +57,6 @@ void Os::tearDown()
 
 //------------------------------------------------------------------------------
 
-void Os::getExecutablePath()
-{
-    namespace fs = ::boost::filesystem;
-    const auto cwd = fs::current_path();
-
-    const auto execPath = ::fwTools::os::getExecutablePath();
-
-    // TODO: Annoying to test....
-    //CPPUNIT_ASSERT_EQUAL(cwd, execPath);
-}
-
-//------------------------------------------------------------------------------
-
 void Os::getSharedLibraryPath()
 {
     namespace fs = ::boost::filesystem;
@@ -76,7 +64,7 @@ void Os::getSharedLibraryPath()
 
     {
         const auto fwCorePath = ::fwTools::os::getSharedLibraryPath("fwCore");
-        const auto execPath   = ::fwTools::os::getExecutablePath().remove_filename();
+        const auto execPath   = ::boost::dll::program_location().remove_filename();
 
 #if defined(WIN32)
         const fs::path expectedPath = execPath / "fwCore.dll";
@@ -101,13 +89,13 @@ void Os::getSharedLibraryPath()
     #else
     const auto campPath = fs::path(CAMP_LIB_DIR) / "camp.dll";
     #endif
-    auto handle = LoadLibrary( campPath.string().c_str() );
-    CPPUNIT_ASSERT_MESSAGE( "Could not load camp for testing", handle != nullptr );
 #elif defined(APPLE)
     const auto campPath = fs::path(CAMP_LIB_DIR) / "libcamp.dylib";
 #else
     const auto campPath = fs::path(CAMP_LIB_DIR) / "libcamp.so";
 #endif
+    auto handle = ::boost::dll::shared_library(campPath);
+    CPPUNIT_ASSERT_MESSAGE( "Could not load camp for testing", handle );
 
     CPPUNIT_ASSERT_EQUAL(campPath, ::fwTools::os::getSharedLibraryPath("camp"));
 }

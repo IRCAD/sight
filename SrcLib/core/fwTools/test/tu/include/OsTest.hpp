@@ -32,7 +32,6 @@ namespace ut
 class Os : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE( Os );
-CPPUNIT_TEST( getExecutablePath );
 CPPUNIT_TEST( getSharedLibraryPath );
 CPPUNIT_TEST_SUITE_END();
 
@@ -40,7 +39,6 @@ public:
     // interface
     void setUp();
     void tearDown();
-    void getExecutablePath();
     void getSharedLibraryPath();
 
     void idTest();
