@@ -76,8 +76,9 @@ FWTOOLS_API std::string  getUserDataDir(
 /**
  * @brief   Return the path to a shared library name
  * The library should have already been loaded before.
- * @param _libName The name of the shared library, without any 'lib' prefix or extension,
- * i.e. 'jpeg' or 'boost_filesystem'
+ * @param _libName The name of the shared library, without any 'lib' prefix, 'd' suffix or extension,
+ * i.e. 'jpeg' or 'boost_filesystem'. The function will try to use the appropriate combination according to
+ * the platform and the build type.
  * @return path to the library on the filesystem
  * @throw ::fwTools::Exception if the library could not be found (not loaded for instance)
  */
