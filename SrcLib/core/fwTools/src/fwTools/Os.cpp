@@ -144,19 +144,31 @@ static std::string _getWin32SharedLibraryPath(const std::string& _libName)
     char path[MAX_PATH];
     HMODULE hm = NULL;
 
-    if ( ( hm = GetModuleHandle(_libName.c_str()) ) == 0)
+#ifdef _DEBUG
+    // On Windows Debug, we try first to look for a library with a 'd' suffix. If it does not work
+    // we try with the raw name.
+    const std::string libNameDbg = _libName + "d";
+
+    if ( ( hm = GetModuleHandle(libNameDbg.c_str()) ) == nullptr)
+    {
+#endif // _DEBUG
+
+    if ( ( hm = GetModuleHandle(_libName.c_str()) ) == nullptr)
     {
         int ret = GetLastError();
         std::stringstream err;
-        err << "Cannot determine executable path, see error below." << std::endl;
+        err << "Could not find shared library path, see error below." << std::endl;
         err << "GetModuleHandle failed, error = " << ret << std::endl;
         FW_RAISE_EXCEPTION(::fwTools::Exception(err.str()));
     }
-    if (GetModuleFileName(hm, path, sizeof(path)) == 0)
+#ifdef _DEBUG
+}
+#endif // _DEBUG
+    if (GetModuleFileName(hm, path, sizeof(path)) == NULL)
     {
         int ret = GetLastError();
         std::stringstream err;
-        err << "Cannot determine executable path, see error below." << std::endl;
+        err << "Could not get shared library path, see error below." << std::endl;
         err << "GetModuleFileName failed, error = " << ret << std::endl;
         FW_RAISE_EXCEPTION(::fwTools::Exception(err.str()));
     }
@@ -200,7 +212,7 @@ struct FindModuleFunctor
 
     static int callback(struct dl_phdr_info* info, size_t, void*)
     {
-        std::string libName(info->dlpi_name);
+        const std::string libName(info->dlpi_name);
         const std::regex matchModule(s_libName);
 
         if(std::regex_search(libName, matchModule))

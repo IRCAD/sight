@@ -28,6 +28,10 @@
 
 #include <boost/filesystem.hpp>
 
+#ifdef WIN32
+#include <windows.h>
+#endif
+
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwTools::ut::Os );
 
@@ -70,22 +74,42 @@ void Os::getSharedLibraryPath()
     namespace fs = ::boost::filesystem;
     const auto cwd = fs::current_path();
 
-    const auto fwCorePath = ::fwTools::os::getSharedLibraryPath("fwCore");
-
-    const auto execPath = ::fwTools::os::getExecutablePath().remove_filename();
+    {
+        const auto fwCorePath = ::fwTools::os::getSharedLibraryPath("fwCore");
+        const auto execPath   = ::fwTools::os::getExecutablePath().remove_filename();
 
 #if defined(WIN32)
-    const fs::path expectedPath = execPath / "fwCore.dll";
+        const fs::path expectedPath = execPath / "fwCore.dll";
 #elif defined(APPLE)
-    const fs::path expectedPath = execPath.parent_path() / "lib" / "libfwCore.dylib";
+        const fs::path expectedPath = execPath.parent_path() / "lib" / "libfwCore.dylib";
 #else
-    const fs::path expectedPath = execPath.parent_path() / "lib" / "libfwCore.so";
+        const fs::path expectedPath = execPath.parent_path() / "lib" / "libfwCore.so";
 #endif
-
-    CPPUNIT_ASSERT_EQUAL(expectedPath, fwCorePath);
+        CPPUNIT_ASSERT_EQUAL(expectedPath, fwCorePath);
+    }
 
     // Test that a call with a not loaded library throws an error
     CPPUNIT_ASSERT_THROW( ::fwTools::os::getSharedLibraryPath("fwData"), ::fwTools::Exception );
+
+    // Test that a call with a not loaded library throws an error
+    CPPUNIT_ASSERT_THROW( ::fwTools::os::getSharedLibraryPath("camp"), ::fwTools::Exception );
+
+    // Now load that library and check that we find it
+#if defined(WIN32)
+    #if defined(_DEBUG)
+    const auto campPath = fs::path(CAMP_LIB_DIR) / "campd.dll";
+    #else
+    const auto campPath = fs::path(CAMP_LIB_DIR) / "camp.dll";
+    #endif
+    auto handle = LoadLibrary( campPath.string().c_str() );
+    CPPUNIT_ASSERT_MESSAGE( "Could not load camp for testing", handle != nullptr );
+#elif defined(APPLE)
+    const auto campPath = fs::path(CAMP_LIB_DIR) / "libcamp.dylib";
+#else
+    const auto campPath = fs::path(CAMP_LIB_DIR) / "libcamp.so";
+#endif
+
+    CPPUNIT_ASSERT_EQUAL(campPath, ::fwTools::os::getSharedLibraryPath("camp"));
 }
 
 } // namespace ut
