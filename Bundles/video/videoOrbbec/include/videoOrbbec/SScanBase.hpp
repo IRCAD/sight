@@ -33,7 +33,6 @@
 #include <fwCom/Slots.hxx>
 
 #include <OpenNI.h>
-#include <QtGlobal>
 
 #include <memory>
 
@@ -60,21 +59,14 @@ class ColorFrameWorker;
  *
  * @code{.xml}
         <service uid="videoGrabber" type="...">
-            <videoMode>720p</videoMode>
         </service>
  * @endcode
  *
- * @subsection Configuration Configuration
- * - \b videoMode (optional) (default: `VGA`): Video mode selection. Accepted values are `720p` (720p@10) and `VGA`
- *(640x480@30)
  */
 class VIDEOORBBEC_CLASS_API SScanBase : public ::arServices::IRGBDGrabber
 {
 public:
     fwCoreNonInstanciableClassDefinitionsMacro((SScanBase)(::arServices::IRGBDGrabber))
-
-    /// Base name of the camera as detected by UVC APIs.
-    static const std::string s_QT_CAMERA_STRING;
 
     /**
      * @brief SScanBase constructor.
@@ -132,18 +124,6 @@ protected:
     VIDEOORBBEC_API void detectCameraOpenni();
 
     /**
-     * @brief Enumerate connected UVC devices and search for the Orbbec Astra Pro.
-     *
-     * @return ::arData::Camera object representing the Orbbec Astra Pro RGB sensor.
-     */
-    VIDEOORBBEC_API ::arData::Camera::sptr detectCameraQt();
-
-    /**
-     * @brief Qt message handler
-     */
-    VIDEOORBBEC_API static void qtMessageHandler(QtMsgType, QMessageLogContext const&, QString const&);
-
-    /**
      * @brief Display a Qt error popup displaying the error string passed as argument.
      *
      * @param msg
@@ -152,9 +132,6 @@ protected:
 
     /// OpenNI device representing the Orbbec Astra Pro.
     OpenniDevicePtr m_oniDevice;
-
-    // Video mode settings
-    bool m_720p;
 };
 
 } // videoOrbbec

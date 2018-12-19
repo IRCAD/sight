@@ -102,7 +102,7 @@ class VIDEOTOOLS_CLASS_API SGrabberProxy :  public ::arServices::IGrabber,
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SGrabberProxy)(::arServices::IGrabber) );
+    fwCoreServiceClassDefinitionsMacro( (SGrabberProxy)(::arServices::IGrabber) )
 
     /// Constructor. Do nothing.
     VIDEOTOOLS_API SGrabberProxy() noexcept;
@@ -202,7 +202,7 @@ private:
     bool m_loopVideo { false };
 
     /// Configure if selected services are excluded (true) or included (false).
-    bool m_exclude { false };
+    bool m_exclude { true };
 };
 
 } // namespace videoTools
