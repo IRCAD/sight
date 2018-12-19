@@ -58,10 +58,10 @@ namespace videoCalibration
 static const ::fwCom::Slots::SlotKeyType s_UPDATE_CHESSBOARD_SIZE_SLOT = "updateChessboardSize";
 static const ::fwCom::Signals::SignalKeyType s_ERROR_COMPUTED_SIG      = "errorComputed";
 
-const ::fwServices::IService::KeyType s_CAMERASERIES_INOUT = "cameraSeries";
-const ::fwServices::IService::KeyType s_MATRIX_OUTPUT      = "matrix";
-const ::fwServices::IService::KeyType s_CALIBINFO1_INPUT   = "calibrationInfo1";
-const ::fwServices::IService::KeyType s_CALIBINFO2_INPUT   = "calibrationInfo2";
+static const ::fwServices::IService::KeyType s_CAMERASERIES_INOUT = "cameraSeries";
+static const ::fwServices::IService::KeyType s_MATRIX_OUTPUT      = "matrix";
+static const ::fwServices::IService::KeyType s_CALIBINFO1_INPUT   = "calibrationInfo1";
+static const ::fwServices::IService::KeyType s_CALIBINFO2_INPUT   = "calibrationInfo2";
 
 // ----------------------------------------------------------------------------
 

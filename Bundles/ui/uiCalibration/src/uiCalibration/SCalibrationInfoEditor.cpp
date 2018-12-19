@@ -258,7 +258,7 @@ void SCalibrationInfoEditor::getSelection()
 
 // ----------------------------------------------------------------------------
 
-fwServices::IService::KeyConnectionsMap SCalibrationInfoEditor::getAutoConnections() const
+::fwServices::IService::KeyConnectionsMap SCalibrationInfoEditor::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push( s_CALIBRATION_INFO_1, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT );
