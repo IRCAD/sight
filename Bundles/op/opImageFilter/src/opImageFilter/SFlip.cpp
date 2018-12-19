@@ -37,8 +37,8 @@ namespace opImageFilter
 
 fwServicesRegisterMacro(::fwServices::IOperator, ::opImageFilter::SFlip, ::fwData::Image);
 
-static const ::fwServices::IService::KeyType s_IMAGE_IN    = "source";
-static const ::fwServices::IService::KeyType s_IMAGE_INOUT = "target";
+static const ::fwServices::IService::KeyType s_IMAGE_IN  = "source";
+static const ::fwServices::IService::KeyType s_IMAGE_OUT = "target";
 
 const ::fwCom::Slots::SlotKeyType SFlip::s_FLIP_AXIS0_SLOT = "flipAxis0";
 const ::fwCom::Slots::SlotKeyType SFlip::s_FLIP_AXIS1_SLOT = "flipAxis1";
@@ -88,24 +88,12 @@ void SFlip::updating()
 
     ::fwData::mt::ObjectReadLock inImLock(inImg);
 
-    ::fwData::Image::sptr outImg = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-
-    ::fwData::mt::ObjectWriteLock outImLock(outImg);
-
     SLM_ASSERT("No 'imageIn' found !", inImg);
-    SLM_ASSERT("No 'imageOut' found !", outImg);
 
+    ::fwData::Image::sptr outImg = ::fwData::Image::New();
     ::imageFilterOp::Flipper::flip(inImg, outImg, m_flipAxes);
 
-    auto imgBufModifSig = outImg->signal< ::fwData::Image::BufferModifiedSignalType >
-                              (::fwData::Image::s_BUFFER_MODIFIED_SIG);
-
-    imgBufModifSig->asyncEmit();
-
-    auto imgModifSig = outImg->signal< ::fwData::Image::ModifiedSignalType >
-                           (::fwData::Image::s_MODIFIED_SIG);
-
-    imgModifSig->asyncEmit();
+    this->setOutput(s_IMAGE_OUT, outImg);
 }
 
 //------------------------------------------------------------------------------

@@ -40,7 +40,7 @@ namespace opImageFilter
  * @code{.xml}
    <service type="::opITKRegistration::SFlip">
        <in key="source" uid="..." autoConnect="yes" />
-       <inout key="target" uid="..." />
+       <out key="target" uid="..." />
    </service>
    @endcode
  * @subsection Input Input

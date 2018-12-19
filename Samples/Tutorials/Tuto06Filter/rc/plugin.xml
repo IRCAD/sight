@@ -45,9 +45,10 @@
 
             <service uid="myDefaultView" type="::gui::view::SDefaultView">
                 <gui>
-                    <layout type="::fwGui::CardinalLayoutManager">
-                        <view align="center" />
-                        <view align="right" minWidth="360" minHeight="100" />
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="horizontal" />
+                        <view proportion="1" />
+                        <view proportion="1" />
                     </layout>
                 </gui>
                 <registry>
@@ -75,10 +76,12 @@
                 <gui>
                     <layout>
                         <menuItem name="Compute Image Filter" />
+                        <menuItem name="Toggle vertical image flipping" />
                     </layout>
                 </gui>
                 <registry>
                     <menuItem sid="actionImageFilter" start="yes" />
+                    <menuItem sid="actionImageFlipper" start="yes" />
                 </registry>
             </service>
 
@@ -102,6 +105,17 @@
                 </config>
             </service>
 
+            <service uid="imageFlipper" type="::opImageFilter::SFlip">
+                <in key="source" uid="myImage1" />
+                <out key="target" uid="myImage2" />
+            </service>
+
+            <service uid="actionImageFlipper" type="::gui::action::SSlotCaller">
+                <slots>
+                    <slot>imageFlipper/flipAxis1</slot>
+                </slots>
+            </service>
+
             <service uid="RenderingImage1" type="::vtkSimpleNegato::SRenderer" autoConnect="yes" >
                 <in key="image" uid="myImage1" />
             </service>
@@ -115,7 +129,9 @@
                 <in key="image" uid="myImage2" />
             </service>
 
+
             <start uid="myFrame" />
+            <start uid="imageFlipper" />
             <start uid="RenderingImage2" />
 
         </config>
