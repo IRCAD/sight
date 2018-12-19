@@ -163,9 +163,9 @@ ImportanceDrivenVolumeRenderer::ImportanceDrivenVolumeRenderer(std::string _pare
     m_maskTexture(_maskTexture),
     m_idvrMethod(s_NONE),
     m_idvrCSGAngleCosine(std::cos(::glm::pi<float>() / 12.f)) /* cos(15 degrees) */,
-    m_gpuCSGTF(_gpuCSGTF),
     m_idvrMaskRayEntriesCompositor(s_IMPORTANCE_MASK_ENTRY_POINTS_COMPOSITOR, s_PROXY_GEOMETRY_RQ_GROUP,
-                                   compositor::Core::StereoModeType::NONE, false)
+                                   compositor::Core::StereoModeType::NONE, false),
+    m_gpuCSGTF(_gpuCSGTF)
 {
     m_RTVSharedParameters->addConstantDefinition("u_csgAngleCos", ::Ogre::GCT_FLOAT1);
     m_RTVSharedParameters->addConstantDefinition("u_csgBorderThickness", ::Ogre::GCT_FLOAT1);
