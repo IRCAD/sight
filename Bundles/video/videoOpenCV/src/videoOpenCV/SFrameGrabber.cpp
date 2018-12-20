@@ -46,6 +46,7 @@
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/imgproc.hpp>
 
+#include <chrono>
 #include <regex>
 
 namespace videoOpenCV
@@ -159,6 +160,10 @@ void SFrameGrabber::startCamera()
             this->readVideo(file);
         }
     }
+    else if(camera->getCameraSource() == ::arData::Camera::DEVICE)
+    {
+        this->readDevice(camera);
+    }
     else
     {
         ::fwGui::dialog::MessageDialog::showMessageDialog(
@@ -253,6 +258,74 @@ void SFrameGrabber::readVideo(const ::boost::filesystem::path& file)
         ::fwGui::dialog::MessageDialog::showMessageDialog(
             "Grabber",
             "This file cannot be opened: " + file.string() + ".");
+    }
+}
+
+// -----------------------------------------------------------------------------
+
+void SFrameGrabber::readDevice( const ::arData::Camera::csptr _camera)
+{
+    ::arData::FrameTL::sptr frameTL = this->getInOut< ::arData::FrameTL >(s_FRAMETL);
+
+    ::fwCore::mt::ScopedLock lock(m_mutex);
+
+    const std::string device = _camera->getCameraID();
+    const int index          = _camera->getIndex();
+
+#ifdef __linux__
+    // On linux the V4L backend can read from device id (/dev/video...)
+    m_videoCapture.open(device);
+    if(!m_videoCapture.isOpened())
+    {
+        //try with index
+        if(index >= 0 )
+        {
+            m_videoCapture.open(index);
+        }
+        else
+        {
+            ::fwGui::dialog::MessageDialog::showMessageDialog(
+                "Grabber",
+                "This device cannot be opened: " + device + " at index: " + std::to_string(index));
+        }
+    }
+#else
+    //On other platforms (at least on MacOS, we should use the index given by Qt)
+    if(index >= 0 )
+    {
+        m_videoCapture.open(index);
+    }
+    else
+    {
+        ::fwGui::dialog::MessageDialog::showMessageDialog(
+            "Grabber",
+            "This device cannot be opened: " + device + " at index: " + std::to_string(index));
+    }
+#endif
+
+    if (m_videoCapture.isOpened())
+    {
+        m_timer = m_worker->createTimer();
+        float fps = _camera->getMaximumFrameRate();
+        fps = fps <= 0.f ? 30.f : fps;
+        const size_t height = _camera->getHeight();
+        const size_t width  = _camera->getWidth();
+
+        m_videoCapture.set(::cv::CAP_PROP_FPS, static_cast<int>(fps));
+        m_videoCapture.set(::cv::CAP_PROP_FRAME_WIDTH, static_cast<double>(width));
+        m_videoCapture.set(::cv::CAP_PROP_FRAME_HEIGHT, static_cast<double>(height));
+
+        ::fwThread::Timer::TimeDurationType duration = std::chrono::milliseconds(1000 / static_cast<size_t>(fps));
+
+        m_timer->setFunction(std::bind(&SFrameGrabber::grabVideo, this));
+        m_timer->setDuration(duration);
+        m_timer->start();
+    }
+    else
+    {
+        ::fwGui::dialog::MessageDialog::showMessageDialog(
+            "Grabber",
+            "This device:" + device + " at index: " + std::to_string(index) + "cannot be openned.");
     }
 }
 
@@ -403,7 +476,8 @@ void SFrameGrabber::grabVideo()
     {
         ::arData::FrameTL::sptr frameTL = this->getInOut< ::arData::FrameTL >(s_FRAMETL);
 
-        ::fwCore::HiResClock::HiResClockType timestamp = ::fwCore::HiResClock::getTimeInMilliSec();
+        auto timestamp = std::chrono::duration_cast< std::chrono::milliseconds >
+                             (std::chrono::system_clock::now().time_since_epoch()).count();
 
         bool isGrabbed = m_videoCapture.grab();
 

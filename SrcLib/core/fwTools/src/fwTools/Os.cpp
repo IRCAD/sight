@@ -25,6 +25,7 @@
 #include "fwCore/base.hpp"
 
 #include <boost/filesystem.hpp>
+#include <boost/regex.hpp>
 
 #if defined(__APPLE__)
 #   include <mach-o/dyld.h>

@@ -127,14 +127,14 @@
             <!-- *************************** Begin generic scene *************************** -->
 
             <service uid="videoViewRender" type="::fwRenderVTK::SRender" >
-                <scene renderMode="timer">
-                    <renderer id="default" layer="0" background="0.0" />
+                <scene>
+                    <renderer id="default" layer="0" background="0.3" />
                     <adaptor uid="videoAdaptor" />
                     <adaptor uid="videoInteractorStyle" />
                 </scene>
             </service>
 
-            <service uid="videoAdaptor" type="::visuVTKARAdaptor::SVideo" >
+            <service uid="videoAdaptor" type="::visuVTKARAdaptor::SVideo" autoConnect="yes" >
                 <in key="frame" uid="imageVideo" />
                 <config renderer="default" />
             </service>
@@ -256,7 +256,7 @@
             </service>
 
             <!-- Manages Sense camera configuration -->
-            <service uid="grabber" type="::videoTools::SGrabberProxy">
+            <service uid="grabber" type="::videoTools::SGrabberProxy" worker="grabber">
                 <in key="camera" uid="RGBDCameraSeries" />
                 <inout key="depthTL" uid="frameTLDepth" />
                 <inout key="frameTL" uid="frameTLVideo" />

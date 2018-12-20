@@ -21,6 +21,7 @@
         <object uid="${cameraSeries}" type="::arData::CameraSeries" src="ref" />
         <object uid="${camera1}" type="::arData::Camera" src="ref" />
         <object uid="${camera2}" type="::arData::Camera" src="ref" />
+        <object uid="exportExtrinsicMat" type="::fwData::TransformationMatrix3D" src="deferred" />
         <!-- ******************************* UI declaration *********************************** -->
         <service uid="extrinsicView" type="::gui::view::SDefaultView">
             <gui>
@@ -120,6 +121,7 @@
                     <menuItem name="Reset" icon="arMedia-0.1/icons/reset.svg" />
                     <menuItem name="Calibrate with openCV" icon="arMedia-0.1/icons/CheckButton.svg" />
                     <menuItem name="Draw" icon="media-0.1/icons/Preview.svg" />
+                    <menuItem name="Export Extrinsic Matrix(.trf)" icon="arMedia-0.1/icons/save.svg" />
                 </layout>
             </gui>
             <registry>
@@ -129,6 +131,7 @@
                 <menuItem sid="ActionReset" start="yes" />
                 <menuItem sid="ActionGoOpenCV" start="yes" />
                 <menuItem sid="ActionDisplayImage" start="yes" />
+                <menuItem sid="ActionExportExtrinsic" start="yes" />
             </registry>
         </service>
 
@@ -138,7 +141,7 @@
                     <orientation value="vertical" />
                     <view caption="camera 1" />
                     <view caption="camera 2" />
-                    <view caption="camera series" />
+                    <view caption="Extrinsic (1 to 2)" />
                     <view align="bottom" />
                 </layout>
             </gui>
@@ -210,6 +213,12 @@
             </slots>
         </service>
 
+        <service uid="ActionExportExtrinsic" type="::gui::action::SSlotCaller">
+            <slots>
+                <slot>ExtrinsicExporter/update</slot>
+            </slots>
+        </service>
+
         <!-- ******************************* Services ***************************************** -->
         <service uid="VideoSlider" type="::videoQt::editor::SSlider" />
         <service uid="synchronizer" type="::videoTools::SFrameMatrixSynchronizer" worker="synchronizer">
@@ -223,6 +232,14 @@
             </inout>
             <framerate>30</framerate>
         </service>
+
+        <service uid="ExtrinsicExporter" type="::uiIO::editor::SIOSelector" >
+            <inout key="data" uid="exportExtrinsicMat" />
+            <type mode="writer" />
+            <selection mode="include" />
+            <addSelection service="::ioData::TransformationMatrix3DWriterService" />
+        </service>
+
 
         <!-- *************************** Begin generic scene *************************** -->
 
@@ -318,6 +335,7 @@
             <in key="calibrationInfo1" uid="${calibrationInfo1}" />
             <in key="calibrationInfo2" uid="${calibrationInfo2}" />
             <inout key="cameraSeries" uid="${cameraSeries}" />
+            <out   key="matrix" uid="exportExtrinsicMat" />
             <camIndex>${camIndex}</camIndex>
             <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" squareSize="CHESSBOARD_SQUARE_SIZE" />
         </service>
@@ -399,6 +417,7 @@
         <start uid="openCVExtrinsicCal" />
         <start uid="ChessboardDetector" />
         <start uid="DisplayCalibrationInfo" />
+        <start uid="ExtrinsicExporter" />
         <start uid="synchronizer" />
         <start uid="VideoGrabber1" />
         <start uid="VideoGrabber2" />
