@@ -117,7 +117,7 @@ std::string getUserDataDir( std::string company, std::string appName, bool creat
 static std::string _getWin32SharedLibraryPath(const std::string& _libName)
 {
     char path[MAX_PATH];
-    HMODULE hm = NULL;
+    HMODULE hm = nullptr;
 
 #ifdef _DEBUG
     // On Windows Debug, we try first to look for a library with a 'd' suffix. If it does not work
@@ -130,7 +130,7 @@ static std::string _getWin32SharedLibraryPath(const std::string& _libName)
 
     if ( ( hm = GetModuleHandle(_libName.c_str()) ) == nullptr)
     {
-        int ret = GetLastError();
+        const DWORD ret = GetLastError();
         std::stringstream err;
         err << "Could not find shared library path, see error below." << std::endl;
         err << "GetModuleHandle failed, error = " << ret << std::endl;
@@ -141,7 +141,7 @@ static std::string _getWin32SharedLibraryPath(const std::string& _libName)
 #endif // _DEBUG
     if (GetModuleFileName(hm, path, sizeof(path)) == NULL)
     {
-        int ret = GetLastError();
+        const DWORD ret = GetLastError();
         std::stringstream err;
         err << "Could not get shared library path, see error below." << std::endl;
         err << "GetModuleFileName failed, error = " << ret << std::endl;
@@ -160,7 +160,7 @@ static std::string _getMacOsSharedLibraryPath(const std::string& _libName)
     std::string path;
     for (int32_t i = _dyld_image_count(); i >= 0; i--)
     {
-        const char* image_name = _dyld_get_image_name(i);
+        const char* const image_name = _dyld_get_image_name(i);
         if (image_name)
         {
             const std::string libName(image_name);
@@ -172,7 +172,7 @@ static std::string _getMacOsSharedLibraryPath(const std::string& _libName)
             else if(std::regex_search(libName, matchFramework))
             {
                 // get the path of the .framework folder
-                auto cut = libName.find(".framework");
+                const auto cut = libName.find(".framework");
                 path = libName.substr(0, cut + 10); // cut after .framework
                 break;
             }
