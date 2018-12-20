@@ -22,6 +22,9 @@
 
 #include "imageFilterOp/Flipper.hpp"
 
+#include <fwData/mt/ObjectReadLock.hpp>
+#include <fwData/mt/ObjectWriteLock.hpp>
+
 #include <fwItkIO/itk.hpp>
 
 #include <fwTools/Dispatcher.hpp>
@@ -74,13 +77,24 @@ void Flipper::flip(const ::fwData::Image::csptr& _inImage,
                    const ::fwData::Image::sptr& _outImage,
                    const std::vector<bool>& _inFlipAxes)
 {
-    Flipping::Parameters params;
-    params.i_image    = _inImage;
-    params.i_flipAxes = _inFlipAxes;
-    params.o_image    = _outImage;
+    const ::fwData::Image::SizeType SIZE = {{ 0, 0, 0 }};
+    if(_inImage->getSize() != SIZE)
+    {
+        Flipping::Parameters params;
+        params.i_image    = _inImage;
+        params.i_flipAxes = _inFlipAxes;
+        params.o_image    = _outImage;
 
-    const ::fwTools::DynamicType type = _inImage->getPixelType();
-    ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes, Flipping >::invoke(type, params);
+        const ::fwTools::DynamicType type = _inImage->getPixelType();
+        ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes, Flipping >::invoke(type, params);
+    }
+
+    else
+    {
+        ::fwData::mt::ObjectReadLock readBlock(_inImage);
+        ::fwData::mt::ObjectWriteLock writeBlock(_outImage);
+        _outImage->deepCopy(_inImage);
+    }
 }
 
 //-----------------------------------------------------------------------------
