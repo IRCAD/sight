@@ -58,7 +58,7 @@ struct Flipping
 
         flipFilter->SetInput(itkImage);
         typename ::itk::FlipImageFilter<ImageType>::FlipAxesArrayType axes;
-        for(int i = 0; i < axes.Size() && i < params.i_flipAxes.size(); i++)
+        for(size_t i = 0; i < axes.Size() && i < params.i_flipAxes.size(); i++)
         {
             axes[i] = params.i_flipAxes[i];
         }
