@@ -349,7 +349,7 @@ void ImportanceDrivenVolumeRenderer::buildICCompositors(::Ogre::Viewport* const 
 
 //-----------------------------------------------------------------------------
 
-void ImportanceDrivenVolumeRenderer::cleanCompositorChain(Ogre::Viewport* const _vp)
+void ImportanceDrivenVolumeRenderer::cleanCompositorChain(::Ogre::Viewport* const _vp)
 {
     ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
 
@@ -766,7 +766,7 @@ std::tuple<std::string, std::string, size_t> ImportanceDrivenVolumeRenderer::com
 
 //-----------------------------------------------------------------------------
 
-void ImportanceDrivenVolumeRenderer::setRayCastingPassTextureUnits(Ogre::Pass* const _rayCastingPass,
+void ImportanceDrivenVolumeRenderer::setRayCastingPassTextureUnits(::Ogre::Pass* const _rayCastingPass,
                                                                    const std::string& _fpPPDefines) const
 {
     this->RayTracingVolumeRenderer::setRayCastingPassTextureUnits(_rayCastingPass, _fpPPDefines);
