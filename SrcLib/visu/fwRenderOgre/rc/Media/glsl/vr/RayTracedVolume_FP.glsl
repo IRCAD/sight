@@ -494,10 +494,10 @@ void main(void)
 
         if(hit)
         {
-#if CSG_MODULATION || CSG_OPACITY_DECREASE
+#if CSG_MODULATION == 1 || CSG_OPACITY_DECREASE == 1
             // Ray entry to central cone line distance.
             coneDistance = pointLineDistance(scaledEntry, scaledClosestPt, coneDir);
-#endif // CSG_MODULATION || CSG_OPACITY_DECREASE
+#endif // CSG_MODULATION == 1 || CSG_OPACITY_DECREASE == 1
 
             // Back to volume texture space.
             rayEntry = scaledEntry / normSpacing;
