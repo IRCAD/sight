@@ -137,9 +137,6 @@ protected:
     /// Pre-integration table.
     PreIntegrationTable& m_preIntegrationTable;
 
-    /// Default shader parameters.
-    ::Ogre::GpuProgramParametersSharedPtr m_defaultShaderParameters;
-
     /// This object's scene node.
     ::Ogre::SceneNode* m_volumeSceneNode;
 
