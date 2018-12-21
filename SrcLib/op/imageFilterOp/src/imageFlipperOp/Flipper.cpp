@@ -41,7 +41,7 @@ struct Flipping
     struct Parameters
     {
         ::fwData::Image::csptr i_image;
-        std::vector<bool> i_flipAxes;
+        std::array<bool, 3> i_flipAxes;
         ::fwData::Image::sptr o_image;
     };
 
@@ -75,7 +75,7 @@ struct Flipping
 
 void Flipper::flip(const ::fwData::Image::csptr& _inImage,
                    const ::fwData::Image::sptr& _outImage,
-                   const std::vector<bool>& _inFlipAxes)
+                   const std::array<bool, 3>& _inFlipAxes)
 {
     const ::fwData::Image::SizeType SIZE = {{ 0, 0, 0 }};
     if(_inImage->getSize() != SIZE)

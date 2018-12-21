@@ -71,7 +71,7 @@ public:
 
 protected:
 
-    /// Does nothing.
+    /// Configures the service.
     OPIMAGEFILTER_API virtual void configuring() override;
 
     /// Does nothing.
@@ -99,7 +99,7 @@ private:
     void flipAxisZ();
 
     // Store whether to flip or not one of the 3 axis
-    std::vector<bool> m_flipAxes;
+    std::array<bool, 3> m_flipAxes {{false, false, false}};
 };
 
 } // namespace opImageFilter

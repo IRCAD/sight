@@ -48,11 +48,6 @@ const ::fwCom::Slots::SlotKeyType SFlip::s_FLIP_AXISZ_SLOT = "flipAxisZ";
 
 SFlip::SFlip()
 {
-    // Do not flip any axis by default
-    m_flipAxes.push_back(false);
-    m_flipAxes.push_back(false);
-    m_flipAxes.push_back(false);
-
     // Initialize the slots
     newSlot(s_FLIP_AXISX_SLOT, &SFlip::flipAxisX, this);
     newSlot(s_FLIP_AXISY_SLOT, &SFlip::flipAxisY, this);

@@ -45,7 +45,7 @@ public:
      */
     static IMAGEFILTEROP_API void flip(const ::fwData::Image::csptr& _inImage,
                                        const ::fwData::Image::sptr& _outImage,
-                                       const std::vector<bool>& _flipAxis);
+                                       const std::array<bool, 3>& _flipAxis);
 
 };
 
