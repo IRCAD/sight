@@ -32,6 +32,7 @@
 #include <fwRenderOgre/IAdaptor.hpp>
 #include <fwRenderOgre/ITransformable.hpp>
 #include <fwRenderOgre/Mesh.hpp>
+#include <fwRenderOgre/Text.hpp>
 
 #include <OGRE/OgreEntity.h>
 
@@ -62,7 +63,7 @@ namespace visuOgreAdaptor
     <service uid="..." type="::visuOgreAdaptor::SPointList" >
         <in key="pointList" uid="..." />
         <config renderer="rendererId" transform="transformUID" materialAdaptor="materialName" shadingMode="gouraud"
-                textureName="texAdaptorUID" radius="2.4" />
+                textureName="texAdaptorUID" radius="2.4" displayLabel="true" charHeight="0.02" labelColor="#0000ff" />
     </service>
    @endcode
  * @subsection In-Out In-Out
@@ -83,6 +84,9 @@ namespace visuOgreAdaptor
  *  - \b materialTemplate (optional) : the name of the base Ogre material for the internally created SMaterial.
  *  - \b textureName (optional) : the name of the Ogre texture that the mesh will use.
  *  - \b radius (optional) : billboard radius.
+ *  - \b displayLabel (optional) : display the label points (default = false)
+ *  - \b charHeight (optional): size of the character label (default = 0.03)
+ *  - \b labelColor (optional): color of the label in hexadecimal (default = white)
  *  - \b fixedSize (optional, default="false") : if true, the billboard will have a fixed size in screen space.
  *  - \b queryFlags (optional) : Used for picking. Picked only by pickers with the same flag.
  */
@@ -170,13 +174,37 @@ private:
     /// before the entity is created.
     bool m_isVisible;
 
+    /// Create all the labels and attach it to the sceneNode vector
+    void createLabel(const ::fwData::PointList::csptr& _pointList);
+
+    /// Destroy all the labels and delete it from the sceneNode vector
+    void destroyLabel();
+
     ::fwRenderOgre::Mesh::sptr m_meshGeometry;
 
     /// Allows to scale the billboards
     float m_radius { 1.f };
 
+    /// Display the labelNumber
+    bool m_displayLabel {false};
+
+    /// Size of the character label
+    float m_charHeight {0.03f};
+
+    /// RGB Color for the labelPoint color
+    std::string m_labelColor {"#ffffff"};
+
     /// Mask for picking requests
     std::uint32_t m_queryFlags {0};
+
+    /// Used to store label of each points.
+    std::vector< ::fwRenderOgre::Text* > m_labels;
+
+    /// Used to store label points nodes.
+    std::vector< ::Ogre::SceneNode* > m_nodes;
+
+    /// Scene node where all of our manual objects are attached
+    ::Ogre::SceneNode* m_sceneNode { nullptr };
 };
 
 //------------------------------------------------------------------------------

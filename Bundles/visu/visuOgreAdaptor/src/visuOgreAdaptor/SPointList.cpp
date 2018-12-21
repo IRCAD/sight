@@ -21,7 +21,7 @@
  ***********************************************************************/
 
 #include "visuOgreAdaptor/SPointList.hpp"
-
+#include <fwRenderOgre/helper/Font.hpp>
 #include "visuOgreAdaptor/SMaterial.hpp"
 
 #include <fwCom/Signal.hxx>
@@ -47,7 +47,6 @@
 #include <cstdint>
 
 fwServicesRegisterMacro( ::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SPointList, ::fwData::PointList );
-
 //-----------------------------------------------------------------------------
 
 namespace visuOgreAdaptor
@@ -56,9 +55,12 @@ namespace visuOgreAdaptor
 //-----------------------------------------------------------------------------
 
 static const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT = "updateVisibility";
-
-static const ::fwServices::IService::KeyType s_POINTLIST_INPUT = "pointList";
-static const ::fwServices::IService::KeyType s_MESH_INPUT      = "mesh";
+static const ::fwServices::IService::KeyType s_POINTLIST_INPUT    = "pointList";
+static const ::fwServices::IService::KeyType s_MESH_INPUT         = "mesh";
+static const std::string RADIUS                                   = "radius";
+static const std::string DISPLAY_LABEL_BOOL                       = "displayLabel";
+static const std::string CHARACTER_HEIGHT                         = "charHeight";
+static const std::string LABEL_COLOR                              = "labelColor";
 
 //-----------------------------------------------------------------------------
 
@@ -69,7 +71,6 @@ SPointList::SPointList() noexcept :
     m_isVisible(true)
 {
     m_material = ::fwData::Material::New();
-
     newSlot(s_UPDATE_VISIBILITY_SLOT, &SPointList::updateVisibility, this);
 }
 
@@ -136,8 +137,11 @@ void SPointList::configuring()
     this->setTransformId(config.get<std::string>( ::fwRenderOgre::ITransformable::s_TRANSFORM_CONFIG,
                                                   this->getID() + "_transform"));
 
-    m_queryFlags = config.get<std::uint32_t>("queryFlags", m_queryFlags);
-    m_radius     = config.get("radius", 1.f);
+    m_queryFlags   = config.get<std::uint32_t>("queryFlags", m_queryFlags);
+    m_radius       = config.get(RADIUS, 1.f);
+    m_displayLabel = config.get(DISPLAY_LABEL_BOOL, m_displayLabel);
+    m_charHeight   = config.get(CHARACTER_HEIGHT, m_charHeight);
+    m_labelColor   = config.get(LABEL_COLOR, m_labelColor);
 }
 
 //-----------------------------------------------------------------------------
@@ -148,6 +152,8 @@ void SPointList::starting()
 
     m_meshGeometry = ::std::make_shared< ::fwRenderOgre::Mesh>(this->getID());
     m_meshGeometry->setDynamic(true);
+    ::Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
+    m_sceneNode                      = this->getTransformNode(rootSceneNode);
 
     const auto pointList = this->getInput< ::fwData::PointList >(s_POINTLIST_INPUT);
     if(pointList)
@@ -216,13 +222,73 @@ void SPointList::updating()
     this->requestRender();
 }
 
+//------------------------------------------------------------------------------
+
+void SPointList::createLabel(const ::fwData::PointList::csptr& _pointList)
+{
+    ::Ogre::SceneManager* sceneMgr          = this->getSceneManager();
+    ::Ogre::OverlayContainer* textContainer = this->getRenderService()->getOverlayTextPanel();
+    ::Ogre::FontPtr dejaVuSansFont          = ::fwRenderOgre::helper::Font::getFont("DejaVuSans.ttf", 32);
+    ::Ogre::Camera* cam                     = this->getLayer()->getDefaultCamera();
+    SLM_ASSERT("::Ogre::SceneManager is null", sceneMgr);
+
+    int* rgb = new int[3];
+    std::string str;
+    std::stringstream ss;
+
+    if (m_labelColor[0] == '#')
+    {
+        m_labelColor.erase(0, 1);
+    }
+    for (unsigned int i = 0; i < 3; i++)
+    {
+        str = m_labelColor.substr(i * 2, 2);
+        ss << std::hex << str;
+        ss >> rgb[i];
+        ss.clear();
+    }
+
+    const size_t uiNumVertices = _pointList->getPoints().size();
+    for (size_t i = 0; i < uiNumVertices; ++i)
+    {
+        const std::string labelNumber = std::to_string(i);
+        m_labels.push_back(::fwRenderOgre::Text::New(this->getID() + labelNumber, sceneMgr, textContainer,
+                                                     dejaVuSansFont, cam));
+        m_labels[i]->setText(labelNumber);
+        m_labels[i]->setCharHeight(m_charHeight);
+        m_labels[i]->setTextColor(::Ogre::ColourValue(static_cast<float>(rgb[0]), static_cast<float>(rgb[1]),
+                                                      static_cast<float>(rgb[2])));
+        m_nodes.push_back(m_sceneNode->createChildSceneNode(this->getID() + labelNumber));
+        m_nodes[i]->attachObject(m_labels[i]);
+        ::fwData::Point::PointCoordArrayType coord = _pointList->getPoints().at(i).get()->getCoord();
+        m_nodes[i]->translate(static_cast<float>(coord[0]), static_cast<float>(coord[1]), static_cast<float>(coord[2]));
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SPointList::destroyLabel()
+{
+    ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
+
+    for(::Ogre::SceneNode* node : m_nodes)
+    {
+        m_sceneNode->removeAndDestroyChild(node);
+    }
+    m_nodes.clear();
+
+    for(::fwRenderOgre::Text* label : m_labels)
+    {
+        sceneMgr->destroyMovableObject(label);
+    }
+    m_labels.clear();
+}
 //-----------------------------------------------------------------------------
 
 void SPointList::updateMesh(const ::fwData::PointList::csptr& _pointList)
 {
     ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
     SLM_ASSERT("::Ogre::SceneManager is null", sceneMgr);
-
     ::fwData::mt::ObjectReadLock lock(_pointList);
 
     detachAndDestroyEntity();
@@ -236,6 +302,11 @@ void SPointList::updateMesh(const ::fwData::PointList::csptr& _pointList)
         return;
     }
 
+    if (m_displayLabel)
+    {
+        this->destroyLabel();
+        this->createLabel(_pointList);
+    }
     this->getRenderService()->makeCurrent();
 
     m_meshGeometry->updateMesh(_pointList);
