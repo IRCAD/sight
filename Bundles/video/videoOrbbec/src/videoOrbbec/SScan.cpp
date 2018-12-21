@@ -122,6 +122,7 @@ void SScan::startCamera()
 
         }
 
+        m_isGrabbing = true;
         m_slotPresentDepthFrame->asyncRun();
 
         auto sig = this->signal< ::arServices::IGrabber::CameraStartedSignalType>(
@@ -186,22 +187,33 @@ bool SScan::isReady() const noexcept
 
 void SScan::stopCamera()
 {
-    m_depthStream.stop();
-    m_rgbGrabber.release();
+    // It's important to lock m_oniDevice because ::openni::OpenNI::waitForAnyStream
+    // (called in presentDepthFrame()) crashes if it's called when m_oniDevice is null.
+    m_grabbingMutex.lock();
+    {
+        m_depthStream.stop();
+        m_rgbGrabber.release();
 
-    m_oniDevice = nullptr;
+        m_oniDevice = nullptr;
+
+        m_pause      = false;
+        m_isGrabbing = false;
+    }
+    m_grabbingMutex.unlock();
 
     this->signal< ::arServices::IGrabber::CameraStoppedSignalType>(::arServices::IGrabber::s_CAMERA_STOPPED_SIG)
     ->asyncEmit();
-
-    m_pause = false;
 }
 
 // -----------------------------------------------------------------------------
 
 void SScan::pauseCamera()
 {
-    m_pause = !m_pause;
+    m_grabbingMutex.lock();
+    {
+        m_pause = !m_pause;
+    }
+    m_grabbingMutex.unlock();
 }
 
 //------------------------------------------------------------------------------
@@ -211,64 +223,83 @@ void SScan::presentDepthFrame()
     ::openni::VideoFrameRef depthFrame;
     int index;
     auto streamPtr = &m_depthStream;
+    bool run       = true;
 
     // grab depth & rgb
-    while(::openni::OpenNI::waitForAnyStream(&streamPtr, 1, &index, 1000) == ::openni::STATUS_OK
-          && m_rgbGrabber.isOpened())
+    while(run)
     {
-        if(m_pause)
+        // Always lock before the conditional section.
+        // Unlock as soon as possible in order to avoid deadlocks.
+        m_grabbingMutex.lock();
+        if(m_rgbGrabber.isOpened() &&
+           ::openni::OpenNI::waitForAnyStream(&streamPtr, 1, &index, 1000) == ::openni::STATUS_OK)
         {
-            continue;
+            run = m_isGrabbing;
+            if(m_pause)
+            {
+                m_grabbingMutex.unlock();
+                continue;
+            }
+
+            m_depthStream.readFrame(&depthFrame);
+            bool isGrabbed = m_rgbGrabber.grab();
+
+            auto timestamp = std::chrono::duration_cast< std::chrono::milliseconds >
+                                 (std::chrono::system_clock::now().time_since_epoch()).count();
+
+            if(depthFrame.isValid())
+            {
+                auto depthBuffer    = m_depthTL->createBuffer(timestamp);
+                auto depthBufferPtr = reinterpret_cast<uint16_t*>(depthBuffer->addElement(0));
+                auto depthPixels    = reinterpret_cast<const uint16_t*>(depthFrame.getData());
+                memcpy(depthBufferPtr, depthPixels, static_cast<size_t>(depthFrame.getDataSize()));
+                m_depthTL->pushObject(depthBuffer);
+
+                m_depthTL->signal< ::arData::TimeLine::ObjectPushedSignalType>(::arData::TimeLine::s_OBJECT_PUSHED_SIG)
+                ->asyncEmit(timestamp);
+
+            }
+
+            if (isGrabbed)
+            {
+                ::cv::Mat image;
+                m_rgbGrabber.retrieve(image);
+                m_grabbingMutex.unlock();
+
+                // Get the buffer of the timeline to fill
+                SPTR(::arData::FrameTL::BufferType) bufferOut = m_colorTL->createBuffer(timestamp);
+                std::uint8_t* frameBuffOut = bufferOut->addElement(0);
+
+                // Create an OpenCV mat that aliases the buffer created from the output timeline.
+                ::cv::Mat imgOut(image.size(), CV_8UC4, (void*)frameBuffOut, ::cv::Mat::AUTO_STEP);
+
+                ::cv::cvtColor(image, imgOut, ::cv::COLOR_BGR2RGBA);
+
+                m_colorTL->pushObject(bufferOut);
+
+                auto sig =
+                    m_colorTL->signal< ::arData::TimeLine::ObjectPushedSignalType >(
+                        ::arData::TimeLine::s_OBJECT_PUSHED_SIG);
+                sig->asyncEmit(timestamp);
+
+            }
+            else
+            {
+                m_grabbingMutex.unlock();
+            }
+
+            if(depthFrame.isValid() && isGrabbed)
+            {
+                this->signal< ::arServices::IGrabber::FramePresentedSignalType>(
+                    ::arServices::IGrabber::s_FRAME_PRESENTED_SIG)
+                ->asyncEmit();
+            }
         }
-
-        m_depthStream.readFrame(&depthFrame);
-        bool isGrabbed = m_rgbGrabber.grab();
-
-        auto timestamp = std::chrono::duration_cast< std::chrono::milliseconds >
-                             (std::chrono::system_clock::now().time_since_epoch()).count();
-
-        if(depthFrame.isValid())
+        else
         {
-            auto depthBuffer    = m_depthTL->createBuffer(timestamp);
-            auto depthBufferPtr = reinterpret_cast<uint16_t*>(depthBuffer->addElement(0));
-            auto depthPixels    = reinterpret_cast<const uint16_t*>(depthFrame.getData());
-            memcpy(depthBufferPtr, depthPixels, static_cast<size_t>(depthFrame.getDataSize()));
-            m_depthTL->pushObject(depthBuffer);
-
-            m_depthTL->signal< ::arData::TimeLine::ObjectPushedSignalType>(::arData::TimeLine::s_OBJECT_PUSHED_SIG)
-            ->asyncEmit(timestamp);
-
+            run = false;
+            m_grabbingMutex.unlock();
         }
-
-        if (isGrabbed)
-        {
-            ::cv::Mat image;
-            m_rgbGrabber.retrieve(image);
-
-            // Get the buffer of the timeline to fill
-            SPTR(::arData::FrameTL::BufferType) bufferOut = m_colorTL->createBuffer(timestamp);
-            std::uint8_t* frameBuffOut = bufferOut->addElement(0);
-
-            // Create an OpenCV mat that aliases the buffer created from the output timeline.
-            ::cv::Mat imgOut(image.size(), CV_8UC4, (void*)frameBuffOut, ::cv::Mat::AUTO_STEP);
-
-            ::cv::cvtColor(image, imgOut, ::cv::COLOR_BGR2RGBA);
-
-            m_colorTL->pushObject(bufferOut);
-
-            auto sig =
-                m_colorTL->signal< ::arData::TimeLine::ObjectPushedSignalType >(::arData::TimeLine::s_OBJECT_PUSHED_SIG);
-            sig->asyncEmit(timestamp);
-
-        }
-
-        if(depthFrame.isValid() && isGrabbed)
-        {
-            this->signal< ::arServices::IGrabber::FramePresentedSignalType>(
-                ::arServices::IGrabber::s_FRAME_PRESENTED_SIG)
-            ->asyncEmit();
-        }
-
     }
 }
 

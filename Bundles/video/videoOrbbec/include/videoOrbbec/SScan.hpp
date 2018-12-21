@@ -146,6 +146,13 @@ private:
     /// Whether we are in pause
     bool m_pause;
 
+    /// True if the grabbing thread (presentDepthFrame()) should run. Set to false by stopCamera().
+    bool m_isGrabbing {false};
+
+    /// Protect m_isGrabbing, m_rgbGrabber, m_depthStream and m_pause, they run in the grabbing thread
+    /// (presentDepthFrame()), and can by modified by this class.
+    std::mutex m_grabbingMutex;
+
     // Slots
     /// Type of the presentDepthFrame slot.
     using PresentDepthFrameSlotType = ::fwCom::Slot<void()>;
