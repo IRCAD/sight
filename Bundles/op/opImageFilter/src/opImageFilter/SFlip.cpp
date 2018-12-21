@@ -93,6 +93,7 @@ void SFlip::updating()
     ::fwData::Image::sptr outImg = ::fwData::Image::New();
     ::imageFilterOp::Flipper::flip(inImg, outImg, m_flipAxes);
 
+    m_sigComputed->asyncEmit();
     this->setOutput(s_IMAGE_OUT, outImg);
 }
 
