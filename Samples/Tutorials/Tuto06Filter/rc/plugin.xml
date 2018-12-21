@@ -112,7 +112,7 @@
 
             <service uid="actionImageFlipper" type="::gui::action::SSlotCaller">
                 <slots>
-                    <slot>imageFlipper/flipAxis1</slot>
+                    <slot>imageFlipper/flipAxisY</slot>
                 </slots>
             </service>
 

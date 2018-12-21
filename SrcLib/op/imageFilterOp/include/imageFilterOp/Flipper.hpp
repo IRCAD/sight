@@ -43,8 +43,8 @@ public:
      * @param _outImage flipped image.
      * @param _flipAxis axes on which to flip the image.
      */
-    static IMAGEFILTEROP_API void flip(const fwData::Image::csptr& _inImage,
-                                       const fwData::Image::sptr& _outImage,
+    static IMAGEFILTEROP_API void flip(const ::fwData::Image::csptr& _inImage,
+                                       const ::fwData::Image::sptr& _outImage,
                                        const std::vector<bool>& _flipAxis);
 
 };
