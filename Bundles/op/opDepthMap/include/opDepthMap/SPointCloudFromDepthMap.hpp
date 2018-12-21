@@ -46,6 +46,7 @@ namespace opDepthMap
  *
  * @section Slots Slots
  * - \b compute(double): Compute a point cloud from the input image(s).
+ * - \b setDepthRange(int depth, std::string key): Set min/max depth (with key "minDepth" or "maxDepth").
  *
  * @section XML XML Configuration
  *
