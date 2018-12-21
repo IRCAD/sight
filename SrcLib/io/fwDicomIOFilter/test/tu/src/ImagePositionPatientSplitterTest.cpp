@@ -117,7 +117,9 @@ void ImagePositionPatientSplitterTest::negativeSpacingApplication()
     reader->setObject(seriesDB);
     reader->setFolder(path);
     CPPUNIT_ASSERT_NO_THROW(reader->readDicomSeries());
-    CPPUNIT_ASSERT_EQUAL(size_t(1), seriesDB->size());
+
+    // Horos seems also to think that there is two series in this dicom
+    CPPUNIT_ASSERT_EQUAL(size_t(2), seriesDB->size());
 
     // Retrieve DicomSeries
     ::fwMedData::DicomSeries::sptr dicomSeries = ::fwMedData::DicomSeries::dynamicCast((*seriesDB)[0]);

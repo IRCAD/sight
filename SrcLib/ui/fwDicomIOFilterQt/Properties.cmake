@@ -9,8 +9,7 @@ set( DEPENDENCIES
     fwDicomIOFilter
     fwGui
     fwGuiQt
-    fwDcmtkTools
-    )
+)
 set( REQUIREMENTS )
 set( USE_PCH_FROM_TARGET pchData )
 set( CONAN_DEPS

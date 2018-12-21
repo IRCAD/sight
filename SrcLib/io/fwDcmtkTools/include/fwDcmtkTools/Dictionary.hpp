@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,30 +20,36 @@
  *
  ***********************************************************************/
 
-#ifndef __FWDCMTKTOOLS_DICTIONARY_HPP__
-#define __FWDCMTKTOOLS_DICTIONARY_HPP__
+#pragma once
 
 #include "fwDcmtkTools/config.hpp"
 
-#include <fwTools/Type.hpp>
+#include <fwCore/macros.hpp>
+#include <fwCore/spyLog.hpp>
 
-#include <stdint.h>
+#include <boost/noncopyable.hpp>
 
 namespace fwDcmtkTools
 {
 
 /**
  * @brief DICOM Dictionary Helper
+ * @deprecated This class should not be used anymore and will be removed in 19.0
  */
-class FWDCMTKTOOLS_CLASS_API Dictionary
+class FWDCMTKTOOLS_CLASS_API Dictionary : public ::boost::noncopyable
 {
 public:
     /// Load the DICOM dictionary
-    FWDCMTKTOOLS_API static void loadDictionary();
+    Dictionary()
+    {
+        FW_DEPRECATED_MSG("This class is deprecated.", "19.0");
+    }
 
+    /// @deprecated This function should not be used anymore and will be removed in 19.0
+    FWDCMTKTOOLS_API static void loadDictionary()
+    {
+        FW_DEPRECATED_MSG("This function is deprecated.", "19.0");
+    }
 };
 
 } //fwDcmtkTools
-
-
-#endif // __FWDCMTKTOOLS_DICTIONARY_HPP__

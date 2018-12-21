@@ -5,7 +5,6 @@ set( TYPE LIBRARY )
 set( DEPENDENCIES
     fwCom
     fwCore
-    fwDcmtkTools
     fwData
     fwDataIO
     fwDicomIOFilter

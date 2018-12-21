@@ -102,9 +102,6 @@ public:
         OFCondition status;
         DcmDataset* dataset;
 
-        // Register codecs
-        ::fwDcmtkIO::helper::Codec::registerCodecs();
-
         // Create temporary buffer
         T* tempoBuffer = new T[rows * columns * 3]; // 3 colors (RGB)
 
@@ -160,9 +157,6 @@ public:
                 tempoBuffer[position*3+2] = static_cast< T >((blueLookup[value]/(double)0xffff)*256);
             }
         }
-
-        // Clean up codecs
-        ::fwDcmtkIO::helper::Codec::cleanup();
 
         return tempoBuffer;
     }

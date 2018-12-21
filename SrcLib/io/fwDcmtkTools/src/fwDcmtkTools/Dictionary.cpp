@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,34 +22,6 @@
 
 #include "fwDcmtkTools/Dictionary.hpp"
 
-#include <fwCore/spyLog.hpp>
-
-#include <fwRuntime/operations.hpp>
-
-#include <boost/filesystem/operations.hpp>
-#include <boost/filesystem/path.hpp>
-
-#include <dcmtk/config/osconfig.h>
-#include <dcmtk/dcmdata/dcdict.h>
-#include <dcmtk/dcmnet/diutil.h>
-
 namespace fwDcmtkTools
 {
-
-//------------------------------------------------------------------------------
-
-void Dictionary::loadDictionary()
-{
-    // Make sure data dictionary is loaded
-    if (!dcmDataDict.isDictionaryLoaded())
-    {
-        const auto dicoPath = ::fwRuntime::getLibraryResourceFilePath("fwDcmtkTools-" FWDCMTKTOOLS_VER "/dicom.dic");
-        bool loaded         = dcmDataDict.wrlock().loadDictionary(dicoPath.string().c_str());
-        dcmDataDict.unlock();
-        SLM_ERROR_IF("Unable to load DICOM dictionary !", loaded);
-        SLM_ASSERT("Unable to load DICOM dictionary !", loaded);
-        SLM_TRACE("DICOM dictionary loaded !");
-    }
-}
-
 } //fwDcmtkTools
