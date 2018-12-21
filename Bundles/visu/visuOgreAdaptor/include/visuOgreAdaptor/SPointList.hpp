@@ -154,6 +154,12 @@ private:
     /// Detach and destroy m_entity in the scene graph
     void detachAndDestroyEntity();
 
+    /// Create all the labels and attach it to the sceneNode vector
+    void createLabel(const ::fwData::PointList::csptr& _pointList);
+
+    /// Destroy all the labels and delete it from the sceneNode vector
+    void destroyLabel();
+
     /// Sets whether the camera must be auto reset when a mesh is updated or not.
     bool m_autoResetCamera;
 
@@ -174,12 +180,6 @@ private:
     /// before the entity is created.
     bool m_isVisible;
 
-    /// Create all the labels and attach it to the sceneNode vector
-    void createLabel(const ::fwData::PointList::csptr& _pointList);
-
-    /// Destroy all the labels and delete it from the sceneNode vector
-    void destroyLabel();
-
     ::fwRenderOgre::Mesh::sptr m_meshGeometry;
 
     /// Allows to scale the billboards
@@ -191,8 +191,11 @@ private:
     /// Size of the character label
     float m_charHeight {0.03f};
 
+    /// Remove last label when removing a point
+    bool m_removeLastLabel {false};
+
     /// RGB Color for the labelPoint color
-    std::string m_labelColor {"#ffffff"};
+    ::fwData::Color::sptr m_labelColor;
 
     /// Mask for picking requests
     std::uint32_t m_queryFlags {0};

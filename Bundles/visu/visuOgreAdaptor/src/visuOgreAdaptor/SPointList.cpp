@@ -141,7 +141,11 @@ void SPointList::configuring()
     m_radius       = config.get(RADIUS, 1.f);
     m_displayLabel = config.get(DISPLAY_LABEL_BOOL, m_displayLabel);
     m_charHeight   = config.get(CHARACTER_HEIGHT, m_charHeight);
-    m_labelColor   = config.get(LABEL_COLOR, m_labelColor);
+
+    std::string labelColor = "#ffffff";
+    config.get(LABEL_COLOR, labelColor);
+    m_labelColor = ::fwData::Color::New();
+    m_labelColor->setRGBA(labelColor);
 }
 
 //-----------------------------------------------------------------------------
@@ -203,6 +207,7 @@ void SPointList::updating()
     }
 
     auto pointList = this->getInput< ::fwData::PointList >(s_POINTLIST_INPUT);
+    this->destroyLabel();
     if(pointList)
     {
         this->updateMesh(pointList);
@@ -232,22 +237,6 @@ void SPointList::createLabel(const ::fwData::PointList::csptr& _pointList)
     ::Ogre::Camera* cam                     = this->getLayer()->getDefaultCamera();
     SLM_ASSERT("::Ogre::SceneManager is null", sceneMgr);
 
-    int* rgb = new int[3];
-    std::string str;
-    std::stringstream ss;
-
-    if (m_labelColor[0] == '#')
-    {
-        m_labelColor.erase(0, 1);
-    }
-    for (unsigned int i = 0; i < 3; i++)
-    {
-        str = m_labelColor.substr(i * 2, 2);
-        ss << std::hex << str;
-        ss >> rgb[i];
-        ss.clear();
-    }
-
     const size_t uiNumVertices = _pointList->getPoints().size();
     for (size_t i = 0; i < uiNumVertices; ++i)
     {
@@ -256,8 +245,8 @@ void SPointList::createLabel(const ::fwData::PointList::csptr& _pointList)
                                                      dejaVuSansFont, cam));
         m_labels[i]->setText(labelNumber);
         m_labels[i]->setCharHeight(m_charHeight);
-        m_labels[i]->setTextColor(::Ogre::ColourValue(static_cast<float>(rgb[0]), static_cast<float>(rgb[1]),
-                                                      static_cast<float>(rgb[2])));
+        m_labels[i]->setTextColor(::Ogre::ColourValue(m_labelColor->red(), m_labelColor->green(),
+                                                      m_labelColor->blue()));
         m_nodes.push_back(m_sceneNode->createChildSceneNode(this->getID() + labelNumber));
         m_nodes[i]->attachObject(m_labels[i]);
         ::fwData::Point::PointCoordArrayType coord = _pointList->getPoints().at(i).get()->getCoord();
@@ -297,14 +286,13 @@ void SPointList::updateMesh(const ::fwData::PointList::csptr& _pointList)
     if(uiNumVertices == 0)
     {
         SLM_DEBUG("Empty mesh");
-
         m_meshGeometry->clearMesh(*sceneMgr);
+
         return;
     }
 
-    if (m_displayLabel)
+    if(m_displayLabel)
     {
-        this->destroyLabel();
         this->createLabel(_pointList);
     }
     this->getRenderService()->makeCurrent();
@@ -362,7 +350,6 @@ void SPointList::updateMesh(const ::fwData::Mesh::csptr& _mesh)
         m_meshGeometry->clearMesh(*sceneMgr);
         return;
     }
-
     this->getRenderService()->makeCurrent();
 
     m_meshGeometry->updateMesh(::std::const_pointer_cast< ::fwData::Mesh >(_mesh), true);
