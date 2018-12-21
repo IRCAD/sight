@@ -217,7 +217,7 @@ std::string FindModuleFunctor::s_libName;
 #if defined(WIN32)
     return _getWin32SharedLibraryPath(_libName);
 #elif defined(__APPLE__)
-    return _getMacOsSharedLibraryPath();
+    return _getMacOsSharedLibraryPath(_libName);
 #else
     FindModuleFunctor functor;
     FindModuleFunctor::s_location.clear();
