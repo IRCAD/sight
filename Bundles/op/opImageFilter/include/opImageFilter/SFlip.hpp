@@ -33,25 +33,25 @@ namespace opImageFilter
 {
 
 /**
- * @brief Service flipping an input image horizontally or vertically.
+ * @brief Service flipping an input image along x or y or z axis.
  *
+ * @section Slots Slots
+ * - flipAxisX(): flip along X axis
+ * - flipAxisY(): flip along Y axis
+ * - flipAxisZ(): flip along Z axis
+
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service type="::opITKRegistration::SFlip">
-       <in key="source" uid="..." autoConnect="yes" />
-       <out key="target" uid="..." />
-   </service>
+       <service type="::opITKRegistration::SFlip">
+           <in key="source" uid="..." autoConnect="yes" />
+           <out key="target" uid="..." />
+       </service>
    @endcode
  * @subsection Input Input
  * - \b imageIn [::fwData::Image]: Image to flip.
+ * @subsection Output Output:
  * - \b imageOut [::fwData::Image]: New flipped image.
- *
- ** @section Slots Slots
- * - flipAxis0(): flip the first axis
- * - flipAxis1(): flip the second axis
- * - flipAxis2(): flip the third axis
- *
  */
 class OPIMAGEFILTER_CLASS_API SFlip : public ::fwServices::IOperator
 {
@@ -59,9 +59,9 @@ public:
 
     fwCoreServiceClassDefinitionsMacro( (SFlip)(::fwServices::IOperator) )
 
-    OPIMAGEFILTER_API static const ::fwCom::Slots::SlotKeyType s_FLIP_AXIS0_SLOT;
-    OPIMAGEFILTER_API static const ::fwCom::Slots::SlotKeyType s_FLIP_AXIS1_SLOT;
-    OPIMAGEFILTER_API static const ::fwCom::Slots::SlotKeyType s_FLIP_AXIS2_SLOT;
+    OPIMAGEFILTER_API static const ::fwCom::Slots::SlotKeyType s_FLIP_AXISX_SLOT;
+    OPIMAGEFILTER_API static const ::fwCom::Slots::SlotKeyType s_FLIP_AXISY_SLOT;
+    OPIMAGEFILTER_API static const ::fwCom::Slots::SlotKeyType s_FLIP_AXISZ_SLOT;
 
     /// Constructor, does nothing.
     OPIMAGEFILTER_API SFlip();
@@ -92,11 +92,11 @@ protected:
 private:
 
     /// Slot: flip the first axis
-    void flipAxis0();
+    void flipAxisX();
     /// Slot: flip the second axis
-    void flipAxis1();
+    void flipAxisY();
     /// Slot: flip the third axis
-    void flipAxis2();
+    void flipAxisZ();
 
     // Store whether to flip or not one of the 3 axis
     std::vector<bool> m_flipAxes;

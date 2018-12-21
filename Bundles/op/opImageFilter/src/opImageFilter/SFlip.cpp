@@ -40,9 +40,9 @@ fwServicesRegisterMacro(::fwServices::IOperator, ::opImageFilter::SFlip, ::fwDat
 static const ::fwServices::IService::KeyType s_IMAGE_IN  = "source";
 static const ::fwServices::IService::KeyType s_IMAGE_OUT = "target";
 
-const ::fwCom::Slots::SlotKeyType SFlip::s_FLIP_AXIS0_SLOT = "flipAxis0";
-const ::fwCom::Slots::SlotKeyType SFlip::s_FLIP_AXIS1_SLOT = "flipAxis1";
-const ::fwCom::Slots::SlotKeyType SFlip::s_FLIP_AXIS2_SLOT = "flipAxis2";
+const ::fwCom::Slots::SlotKeyType SFlip::s_FLIP_AXISX_SLOT = "flipAxisX";
+const ::fwCom::Slots::SlotKeyType SFlip::s_FLIP_AXISY_SLOT = "flipAxisY";
+const ::fwCom::Slots::SlotKeyType SFlip::s_FLIP_AXISZ_SLOT = "flipAxisZ";
 
 //------------------------------------------------------------------------------
 
@@ -54,9 +54,9 @@ SFlip::SFlip()
     m_flipAxes.push_back(false);
 
     // Initialize the slots
-    newSlot(s_FLIP_AXIS0_SLOT, &SFlip::flipAxis0, this);
-    newSlot(s_FLIP_AXIS1_SLOT, &SFlip::flipAxis1, this);
-    newSlot(s_FLIP_AXIS2_SLOT, &SFlip::flipAxis2, this);
+    newSlot(s_FLIP_AXISX_SLOT, &SFlip::flipAxisX, this);
+    newSlot(s_FLIP_AXISY_SLOT, &SFlip::flipAxisY, this);
+    newSlot(s_FLIP_AXISZ_SLOT, &SFlip::flipAxisZ, this);
 }
 
 //------------------------------------------------------------------------------
@@ -105,7 +105,7 @@ void SFlip::stopping()
 
 //------------------------------------------------------------------------------
 
-void SFlip::flipAxis0()
+void SFlip::flipAxisX()
 {
     m_flipAxes[0] = !(m_flipAxes[0]);
     this->updating();
@@ -113,7 +113,7 @@ void SFlip::flipAxis0()
 
 //------------------------------------------------------------------------------
 
-void SFlip::flipAxis1()
+void SFlip::flipAxisY()
 {
     m_flipAxes[1] = !(m_flipAxes[1]);
     this->updating();
@@ -121,7 +121,7 @@ void SFlip::flipAxis1()
 
 //------------------------------------------------------------------------------
 
-void SFlip::flipAxis2()
+void SFlip::flipAxisZ()
 {
     m_flipAxes[2] = !(m_flipAxes[2]);
     this->updating();

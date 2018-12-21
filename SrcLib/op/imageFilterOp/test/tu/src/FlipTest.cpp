@@ -54,9 +54,9 @@ void FlipTest::flipAlongXAxisTest()
     ::fwTest::generator::Image::generateImage(imageIn, SIZE, SPACING, ORIGIN, TYPE);
     ::fwTest::generator::Image::randomizeArray(imageIn->getDataArray());
 
-    fwDataTools::helper::Image imageInHelper(imageIn);
+    ::fwDataTools::helper::Image imageInHelper(imageIn);
     ::imageFilterOp::Flipper::flip(imageIn, imageOut, flipAxes);
-    fwDataTools::helper::Image imageOutHelper(imageOut);
+    ::fwDataTools::helper::Image imageOutHelper(imageOut);
 
     for(size_t i = 0; i < SIZE[0]; ++i)
     {
@@ -90,9 +90,9 @@ void FlipTest::flipAlongYAxisTest()
     ::fwTest::generator::Image::generateImage(imageIn, SIZE, SPACING, ORIGIN, TYPE);
     ::fwTest::generator::Image::randomizeArray(imageIn->getDataArray());
 
-    fwDataTools::helper::Image imageInHelper(imageIn);
+    ::fwDataTools::helper::Image imageInHelper(imageIn);
     ::imageFilterOp::Flipper::flip(imageIn, imageOut, flipAxes);
-    fwDataTools::helper::Image imageOutHelper(imageOut);
+    ::fwDataTools::helper::Image imageOutHelper(imageOut);
 
     for(size_t i = 0; i < SIZE[0]; ++i)
     {
@@ -103,6 +103,42 @@ void FlipTest::flipAlongYAxisTest()
                 const uint8_t valueIn  = *(reinterpret_cast<uint8_t*>(imageInHelper.getPixelBuffer(i, j, k)));
                 const uint8_t valueOut =
                     *(reinterpret_cast<uint8_t*>(imageOutHelper.getPixelBuffer(i, SIZE[1]-j-1, k)));
+
+                CPPUNIT_ASSERT_EQUAL(valueIn, valueOut);
+            }
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void FlipTest::flipAlongZAxisTest()
+{
+    const ::fwData::Image::SizeType SIZE       = {{ 3, 3, 3 }};
+    const ::fwData::Image::SpacingType SPACING = {{ 0.5, 0.5, 0.5 }};
+    const ::fwData::Image::OriginType ORIGIN   = {{ 0., 0., 0. }};
+    const ::fwTools::Type TYPE                 = ::fwTools::Type::s_UINT8;
+    std::vector<bool> flipAxes{false, false, true};
+
+    ::fwData::Image::sptr imageIn  = ::fwData::Image::New();
+    ::fwData::Image::sptr imageOut = ::fwData::Image::New();
+
+    ::fwTest::generator::Image::generateImage(imageIn, SIZE, SPACING, ORIGIN, TYPE);
+    ::fwTest::generator::Image::randomizeArray(imageIn->getDataArray());
+
+    ::fwDataTools::helper::Image imageInHelper(imageIn);
+    ::imageFilterOp::Flipper::flip(imageIn, imageOut, flipAxes);
+    ::fwDataTools::helper::Image imageOutHelper(imageOut);
+
+    for(size_t i = 0; i < SIZE[0]; ++i)
+    {
+        for(size_t j = 0; j < SIZE[1]; ++j )
+        {
+            for(size_t k = 0; k < SIZE[2]; ++k)
+            {
+                const uint8_t valueIn  = *(reinterpret_cast<uint8_t*>(imageInHelper.getPixelBuffer(i, j, k)));
+                const uint8_t valueOut =
+                    *(reinterpret_cast<uint8_t*>(imageOutHelper.getPixelBuffer(i, j, SIZE[2]-k-1)));
 
                 CPPUNIT_ASSERT_EQUAL(valueIn, valueOut);
             }
@@ -126,9 +162,9 @@ void FlipTest::flipEmptyImageTest()
     ::fwTest::generator::Image::generateImage(imageIn, SIZE, SPACING, ORIGIN, TYPE);
     ::fwTest::generator::Image::randomizeArray(imageIn->getDataArray());
 
-    fwDataTools::helper::Image imageInHelper(imageIn);
+    ::fwDataTools::helper::Image imageInHelper(imageIn);
     ::imageFilterOp::Flipper::flip(imageIn, imageOut, flipAxes);
-    fwDataTools::helper::Image imageOutHelper(imageOut);
+    ::fwDataTools::helper::Image imageOutHelper(imageOut);
 
     const ::fwData::Image::SizeType imageSize    = imageIn->getSize();
     const ::fwData::Image::SizeType imageOutSize = imageOut->getSize();
