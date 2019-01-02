@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -57,6 +57,7 @@
 #include <boost/property_tree/exceptions.hpp>
 #include <boost/property_tree/json_parser.hpp>
 #include <boost/property_tree/ptree.hpp>
+#include <boost/uuid/sha1.hpp>
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -890,35 +891,25 @@ void SeriesDBReaderTest::readMultipleRescaleSeries()
     ::fwData::Image::sptr image           = series->getImage();
     ::fwDataTools::helper::Image locker(image);
 
-    // Compute image buffer hash
-    auto computeHash = [ = ]() -> std::string
-                       {
-                           ::fwMemory::BufferObject::sptr buf = image->getDataArray()->getBufferObject();
-                           CPPUNIT_ASSERT(buf);
+    // Get internal buffer
+    ::fwMemory::BufferObject::sptr buf = image->getDataArray()->getBufferObject();
+    CPPUNIT_ASSERT(buf);
 
-                           ::fwMemory::BufferObject::Lock lock = buf->lock();
-                           CPPUNIT_ASSERT(lock.getBuffer());
+    ::fwMemory::BufferObject::Lock lock = buf->lock();
+    CPPUNIT_ASSERT(lock.getBuffer());
 
-                           char* buffer               = static_cast< char* >(lock.getBuffer());
-                           std::size_t seed           = 0;
-                           const std::size_t buffsize = buf->getSize();
+    // Compute sha1 digest
+    ::boost::uuids::detail::sha1 sha1;
+    sha1.process_bytes(static_cast< char* >(lock.getBuffer()), buf->getSize());
+    ::boost::uuids::detail::sha1::digest_type digest = {0};
+    sha1.get_digest(digest);
 
-                           for(size_t i = 0; i < buffsize; ++i)
-                           {
-                               ::boost::hash_combine(seed, buffer[i]);
-                           }
-
-                           return ::boost::lexical_cast< std::string >(seed);
-                       };
-// If someone have an idea why the hash is different on macOS... The data seems to be correctly loaded,
-// at least it is viewable in VRRender using GDCM, but not exactly the same way as on Windows. Linked with GDCM...
-#ifdef __APPLE__
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("Multiple rescale image hash comparison failed ",
-                                 std::string("2153416264075454069"), computeHash());
-#else
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("Multiple rescale image hash comparison failed ",
-                                 std::string("2828747570601766717"), computeHash());
-#endif
+    // Check digests
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("Multiple rescale image hash comparison failed ", 808070165u, digest[0]);
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("Multiple rescale image hash comparison failed ", 1419762457u, digest[1]);
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("Multiple rescale image hash comparison failed ", 664759744u, digest[2]);
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("Multiple rescale image hash comparison failed ", 4220766428u, digest[3]);
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("Multiple rescale image hash comparison failed ", 2226307254u, digest[4]);
 }
 
 //------------------------------------------------------------------------------
