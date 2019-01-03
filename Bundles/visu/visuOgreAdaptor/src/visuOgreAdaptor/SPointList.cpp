@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -240,17 +240,19 @@ void SPointList::createLabel(const ::fwData::PointList::csptr& _pointList)
     ::Ogre::Camera* cam                     = this->getLayer()->getDefaultCamera();
     SLM_ASSERT("::Ogre::SceneManager is null", sceneMgr);
 
-    size_t i = 0;
+    size_t i                = 0;
     std::string labelNumber = std::to_string(i);
-    for(auto &point: _pointList->getPoints())
+    for(auto& point: _pointList->getPoints())
     {
         point.get()->getCoord();
-        fwData::String::sptr strField = point->getField<::fwData::String>(::fwDataTools::fieldHelper::Image::m_labelId);
+        fwData::String::sptr strField =
+            point->getField< ::fwData::String >(::fwDataTools::fieldHelper::Image::m_labelId);
         if(strField)
         {
             labelNumber = strField->value();
         }
-        else {
+        else
+        {
             labelNumber = std::to_string(i);
         }
         m_labels.push_back(::fwRenderOgre::Text::New(this->getID() + labelNumber, sceneMgr, textContainer,
