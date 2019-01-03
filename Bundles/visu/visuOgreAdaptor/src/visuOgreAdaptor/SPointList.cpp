@@ -244,7 +244,6 @@ void SPointList::createLabel(const ::fwData::PointList::csptr& _pointList)
     std::string labelNumber = std::to_string(i);
     for(auto& point: _pointList->getPoints())
     {
-        point.get()->getCoord();
         fwData::String::sptr strField =
             point->getField< ::fwData::String >(::fwDataTools::fieldHelper::Image::m_labelId);
         if(strField)
@@ -263,7 +262,7 @@ void SPointList::createLabel(const ::fwData::PointList::csptr& _pointList)
                                                       m_labelColor->blue()));
         m_nodes.push_back(m_sceneNode->createChildSceneNode(this->getID() + labelNumber));
         m_nodes[i]->attachObject(m_labels[i]);
-        ::fwData::Point::PointCoordArrayType coord = _pointList->getPoints().at(i).get()->getCoord();
+        ::fwData::Point::PointCoordArrayType coord = point->getCoord();
         m_nodes[i]->translate(static_cast<float>(coord[0]), static_cast<float>(coord[1]), static_cast<float>(coord[2]));
         i++;
     }
