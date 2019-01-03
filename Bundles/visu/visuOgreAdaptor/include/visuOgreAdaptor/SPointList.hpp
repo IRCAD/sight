@@ -154,10 +154,10 @@ private:
     /// Detach and destroy m_entity in the scene graph
     void detachAndDestroyEntity();
 
-    /// Create all the labels and attach it to the sceneNode vector
+    /// Create all the labels and attach them to the sceneNode vector
     void createLabel(const ::fwData::PointList::csptr& _pointList);
 
-    /// Destroy all the labels and delete it from the sceneNode vector
+    /// Destroy all the labels and delete them from the sceneNode vector
     void destroyLabel();
 
     /// Sets whether the camera must be auto reset when a mesh is updated or not.
@@ -200,7 +200,7 @@ private:
     /// Mask for picking requests
     std::uint32_t m_queryFlags {0};
 
-    /// Used to store label of each points.
+    /// Used to store label of each point.
     std::vector< ::fwRenderOgre::Text* > m_labels;
 
     /// Used to store label points nodes.

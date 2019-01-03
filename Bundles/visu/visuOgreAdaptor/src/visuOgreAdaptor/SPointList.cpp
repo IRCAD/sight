@@ -31,6 +31,9 @@
 #include <fwCore/Profiling.hpp>
 
 #include <fwData/mt/ObjectReadLock.hpp>
+#include <fwData/String.hpp>
+
+#include <fwDataTools/fieldHelper/Image.hpp>
 
 #include <fwRenderOgre/helper/Scene.hpp>
 #include <fwRenderOgre/R2VBRenderable.hpp>
@@ -57,10 +60,10 @@ namespace visuOgreAdaptor
 static const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT = "updateVisibility";
 static const ::fwServices::IService::KeyType s_POINTLIST_INPUT    = "pointList";
 static const ::fwServices::IService::KeyType s_MESH_INPUT         = "mesh";
-static const std::string RADIUS                                   = "radius";
-static const std::string DISPLAY_LABEL_BOOL                       = "displayLabel";
-static const std::string CHARACTER_HEIGHT                         = "charHeight";
-static const std::string LABEL_COLOR                              = "labelColor";
+static const ::fwServices::IService::KeyType s_RADIUS             = "radius";
+static const ::fwServices::IService::KeyType s_DISPLAY_LABEL_BOOL = "displayLabel";
+static const ::fwServices::IService::KeyType s_CHARACTER_HEIGHT   = "charHeight";
+static const ::fwServices::IService::KeyType s_LABEL_COLOR        = "labelColor";
 
 //-----------------------------------------------------------------------------
 
@@ -138,12 +141,12 @@ void SPointList::configuring()
                                                   this->getID() + "_transform"));
 
     m_queryFlags   = config.get<std::uint32_t>("queryFlags", m_queryFlags);
-    m_radius       = config.get(RADIUS, 1.f);
-    m_displayLabel = config.get(DISPLAY_LABEL_BOOL, m_displayLabel);
-    m_charHeight   = config.get(CHARACTER_HEIGHT, m_charHeight);
+    m_radius       = config.get(s_RADIUS, 1.f);
+    m_displayLabel = config.get(s_DISPLAY_LABEL_BOOL, m_displayLabel);
+    m_charHeight   = config.get(s_CHARACTER_HEIGHT, m_charHeight);
 
     std::string labelColor = "#ffffff";
-    config.get(LABEL_COLOR, labelColor);
+    config.get(s_LABEL_COLOR, labelColor);
     m_labelColor = ::fwData::Color::New();
     m_labelColor->setRGBA(labelColor);
 }
@@ -237,10 +240,19 @@ void SPointList::createLabel(const ::fwData::PointList::csptr& _pointList)
     ::Ogre::Camera* cam                     = this->getLayer()->getDefaultCamera();
     SLM_ASSERT("::Ogre::SceneManager is null", sceneMgr);
 
-    const size_t uiNumVertices = _pointList->getPoints().size();
-    for (size_t i = 0; i < uiNumVertices; ++i)
+    size_t i = 0;
+    std::string labelNumber = std::to_string(i);
+    for(auto &point: _pointList->getPoints())
     {
-        const std::string labelNumber = std::to_string(i);
+        point.get()->getCoord();
+        fwData::String::sptr strField = point->getField<::fwData::String>(::fwDataTools::fieldHelper::Image::m_labelId);
+        if(strField)
+        {
+            labelNumber = strField->value();
+        }
+        else {
+            labelNumber = std::to_string(i);
+        }
         m_labels.push_back(::fwRenderOgre::Text::New(this->getID() + labelNumber, sceneMgr, textContainer,
                                                      dejaVuSansFont, cam));
         m_labels[i]->setText(labelNumber);
@@ -251,6 +263,7 @@ void SPointList::createLabel(const ::fwData::PointList::csptr& _pointList)
         m_nodes[i]->attachObject(m_labels[i]);
         ::fwData::Point::PointCoordArrayType coord = _pointList->getPoints().at(i).get()->getCoord();
         m_nodes[i]->translate(static_cast<float>(coord[0]), static_cast<float>(coord[1]), static_cast<float>(coord[2]));
+        i++;
     }
 }
 
