@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -63,9 +63,9 @@ void JobTest::tearDown()
 void algoMockGenericCallback(int n, std::function< void(int) > progress, std::function< bool() > shouldCancel,
                              std::function< void(const std::string&) > log = nullptr )
 {
-    auto div = n/15;
+    int div = n/15;
 
-    for(std::uint64_t i = 0; i < n; ++i)
+    for(int i = 0; i < n; ++i)
     {
         // algo ...
 
@@ -76,7 +76,7 @@ void algoMockGenericCallback(int n, std::function< void(int) > progress, std::fu
 
         if(log && i%div == 0)
         {
-            log("algoMockGenericCallback step " + i);
+            log("algoMockGenericCallback step " + std::to_string(i));
         }
 
         progress(i+1);
@@ -88,9 +88,9 @@ void algoMockGenericCallback(int n, std::function< void(int) > progress, std::fu
 void JobTest::APIAndStateTest()
 {
     {
-        ::fwJobs::Job job( "Job", [](::fwJobs::Job& runningJob)
-                {
-                } );
+        ::fwJobs::Job job( "Job", [](::fwJobs::Job&)
+                    {
+                    } );
         CPPUNIT_ASSERT_EQUAL( ::fwJobs::IJob::WAITING, job.getState() );
 
         CPPUNIT_ASSERT_THROW( job.wait(), ::fwJobs::exception::Waiting  );
@@ -111,9 +111,9 @@ void JobTest::APIAndStateTest()
 
     {
         ::fwJobs::Job job( "Job", [](::fwJobs::Job& runningJob)
-                {
-                    CPPUNIT_ASSERT_EQUAL( ::fwJobs::IJob::RUNNING, runningJob.getState() );
-                } );
+                    {
+                           CPPUNIT_ASSERT_EQUAL( ::fwJobs::IJob::RUNNING, runningJob.getState() );
+                    } );
         CPPUNIT_ASSERT_EQUAL( ::fwJobs::IJob::WAITING, job.getState() );
 
         CPPUNIT_ASSERT_THROW( job.wait(), ::fwJobs::exception::Waiting );
@@ -129,10 +129,10 @@ void JobTest::APIAndStateTest()
     {
         ::fwThread::Worker::sptr worker = ::fwThread::Worker::New();
         ::fwJobs::Job job( "Job", [](::fwJobs::Job& runningJob)
-                {
-                    std::this_thread::sleep_for( std::chrono::milliseconds(30) );
-                    CPPUNIT_ASSERT_EQUAL( ::fwJobs::IJob::CANCELING, runningJob.getState() );
-                }, worker );
+                    {
+                           std::this_thread::sleep_for( std::chrono::milliseconds(30) );
+                           CPPUNIT_ASSERT_EQUAL( ::fwJobs::IJob::CANCELING, runningJob.getState() );
+                    }, worker );
         CPPUNIT_ASSERT_EQUAL( ::fwJobs::IJob::WAITING, job.getState() );
 
         CPPUNIT_ASSERT_THROW( job.wait(), ::fwJobs::exception::Waiting );
@@ -245,10 +245,11 @@ void JobTest::GenericCallbackTest()
             loops = 1 << 30;
             ::fwJobs::Job job( "GenericCallbackJob",
                                [loops](::fwJobs::Job& runningJob)
-                    {
-                        algoMockGenericCallback(loops,
-                                                runningJob.progressCallback(), runningJob.cancelRequestedCallback());
-                    },
+                        {
+                               algoMockGenericCallback(loops,
+                                                       runningJob.progressCallback(),
+                                                       runningJob.cancelRequestedCallback());
+                        },
                                worker);
             job.setTotalWorkUnits( loops );
             job.run();
@@ -259,7 +260,7 @@ void JobTest::GenericCallbackTest()
             CPPUNIT_ASSERT( ::fwJobs::IJob::CANCELING == job.getState()
                             || ::fwJobs::IJob::CANCELED == job.getState() );
 
-            CPPUNIT_ASSERT( loops > job.getDoneWorkUnits() );
+            CPPUNIT_ASSERT( static_cast< std::uint64_t>(loops) > job.getDoneWorkUnits() );
         }
 
     }
@@ -331,7 +332,7 @@ void JobTest::AggregationTest()
     { // total work units update test
         auto funcGen = []( int progressSteps ) -> ::fwJobs::Job::Task
                        {
-                           return [ = ](::fwJobs::Job &runningJob)
+                           return [ = ](::fwJobs::Job& runningJob)
                                   {
                                       algoMockGenericCallback(progressSteps, runningJob.progressCallback(),
                                                               runningJob.cancelRequestedCallback(),
@@ -447,19 +448,19 @@ void JobTest::AggregationTest()
 
         int index = -1;
 
-        ::fwJobs::Job::Task func1 = [&index](::fwJobs::Job& runningJob)
+        ::fwJobs::Job::Task func1 = [&index](::fwJobs::Job&)
                                     {
                                         CPPUNIT_ASSERT_EQUAL(-1, index);
                                         index = 0;
                                     };
 
-        ::fwJobs::Job::Task func2 = [&index](::fwJobs::Job& runningJob)
+        ::fwJobs::Job::Task func2 = [&index](::fwJobs::Job&)
                                     {
                                         CPPUNIT_ASSERT_EQUAL(0, index);
                                         index = 1;
                                     };
 
-        ::fwJobs::Job::Task func3 = [&index](::fwJobs::Job& runningJob)
+        ::fwJobs::Job::Task func3 = [&index](::fwJobs::Job&)
                                     {
                                         CPPUNIT_ASSERT_EQUAL(1, index);
                                         index = 2;
@@ -486,15 +487,15 @@ void JobTest::AggregationTest()
     { // weight test
         auto funcGen = []() -> ::fwJobs::Job::Task
                        {
-                           return [ = ](::fwJobs::Job &runningJob)
+                           return [ = ](::fwJobs::Job& runningJob)
                                   {
                                       runningJob.done();
                                   };
                        };
 
         std::uint64_t norm = 100;
-        std::uint64_t wu1  = 55, wu2 = 444, wu3 = 9999;
-        double w1          = 2, w2 = 42, w3 = 0.5;
+        std::uint64_t wu1 = 55, wu2 = 444, wu3 = 9999;
+        double w1 = 2, w2 = 42, w3 = 0.5;
 
         auto job1 = ::fwJobs::Job::New( "GenericCallbackJob1", funcGen() );
         auto job2 = ::fwJobs::Observer::New( "GenericCallbackJob2", wu2 );
@@ -543,7 +544,7 @@ class ProgressObserver
 {
 public:
     virtual void progressNotify( double p ) = 0;
-    virtual bool canceled()                 = 0;
+    virtual bool canceled() = 0;
     virtual ~ProgressObserver()
     {
     }
@@ -672,14 +673,14 @@ void JobTest::ObserverTest()
         {
             ::fwJobs::Job job( "GenericCallbackJob",
                                [ = ](::fwJobs::Job& job)
-                    {
-                        auto f = [ =, &job](double d)
-                                 {
-                                     job.doneWork(std::uint64_t(d * progress));
-                                 };
-                        algoMockObserver algo( new JobObserver( f ) );
-                        algo.run(loops);
-                    });
+                        {
+                               auto f = [ =, &job](double d)
+                            {
+                                        job.doneWork(std::uint64_t(d* progress));
+                            };
+                               algoMockObserver algo( new JobObserver( f ) );
+                               algo.run(loops);
+                        });
             job.run();
             CPPUNIT_ASSERT_EQUAL( progress, job.getDoneWorkUnits() );
         }
@@ -690,18 +691,18 @@ void JobTest::ObserverTest()
             loops = 1 << 30;
             ::fwJobs::Job job( "GenericCallbackJob",
                                [ = ](::fwJobs::Job& runningJob)
-                    {
-                        auto f = [ =, &runningJob](double d)
-                                 {
-                                     runningJob.doneWork(std::uint64_t(d * progress));
-                                 };
-                        algoMockObserver algo( new JobObserver( f ) );
-                        runningJob.addSimpleCancelHook( [&]()
                         {
-                            algo.cancel();
-                        } );
-                        algo.run(loops);
-                    },
+                               auto f = [ =, &runningJob](double d)
+                            {
+                                        runningJob.doneWork(std::uint64_t(d* progress));
+                            };
+                               algoMockObserver algo( new JobObserver( f ) );
+                               runningJob.addSimpleCancelHook( [&]()
+                            {
+                                                               algo.cancel();
+                            } );
+                               algo.run(loops);
+                        },
                                worker
                                );
             job.setTotalWorkUnits(loops);
@@ -717,14 +718,14 @@ void JobTest::ObserverTest()
             loops = 1 << 30;
             ::fwJobs::Job job( "GenericCallbackJob",
                                [ = ](::fwJobs::Job& runningJob)
-                    {
-                        auto f = [ =, &runningJob](double d)
-                                 {
-                                     runningJob.doneWork(std::uint64_t(d * progress));
-                                 };
-                        algoMockObserver algo( new JobObserverCanceler( f, runningJob.cancelRequested() ) );
-                        algo.run(loops);
-                    },
+                        {
+                               auto f = [ =, &runningJob](double d)
+                            {
+                                        runningJob.doneWork(std::uint64_t(d* progress));
+                            };
+                               algoMockObserver algo( new JobObserverCanceler( f, runningJob.cancelRequested() ) );
+                               algo.run(loops);
+                        },
                                worker
                                );
             job.setTotalWorkUnits(loops);
@@ -760,7 +761,7 @@ void JobTest::LogTest()
                                        algoMockGenericCallback(loops,
                                                                runningJob.progressCallback(),
                                                                runningJob.cancelRequestedCallback(),
-                                                               [&runningJob](const std::string& message)
+                                                               [&runningJob](const std::string message)
                     {
                         runningJob.log(message);
                     });
@@ -778,7 +779,7 @@ void JobTest::LogTest()
                                        algoMockGenericCallback(loops,
                                                                runningJob.progressCallback(),
                                                                runningJob.cancelRequestedCallback(),
-                                                               [&runningJob](const std::string& message)
+                                                               [&runningJob](const std::string message)
                     {
                         runningJob.log(message);
                     });
