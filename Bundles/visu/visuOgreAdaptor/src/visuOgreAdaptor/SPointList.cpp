@@ -145,8 +145,7 @@ void SPointList::configuring()
     m_displayLabel = config.get(s_DISPLAY_LABEL_BOOL, m_displayLabel);
     m_charHeight   = config.get(s_CHARACTER_HEIGHT, m_charHeight);
 
-    std::string labelColor = "#ffffff";
-    config.get(s_LABEL_COLOR, labelColor);
+    const std::string labelColor = config.get(s_LABEL_COLOR, "#ffffff");
     m_labelColor = ::fwData::Color::New();
     m_labelColor->setRGBA(labelColor);
 }
