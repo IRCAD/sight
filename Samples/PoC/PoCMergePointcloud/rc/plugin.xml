@@ -419,12 +419,12 @@
 
             <service uid="cameraSelector1" type="::videoQt::editor::SCamera">
                 <inout key="camera" uid="camera1" />
-                <videoSupport>yes</videoSupport>
+                <videoSupport>no</videoSupport>
             </service>
 
             <service uid="cameraSelector2" type="::videoQt::editor::SCamera">
                 <inout key="camera" uid="camera2" />
-                <videoSupport>yes</videoSupport>
+                <videoSupport>no</videoSupport>
             </service>
 
             <service uid="depthRangeSlider" type="::guiQt::editor::SParameters">
