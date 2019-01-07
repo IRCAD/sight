@@ -68,7 +68,8 @@ void FlipTest::flipAlongXAxisTest()
                 const uint8_t valueOut =
                     *(reinterpret_cast<uint8_t*>(imageOutHelper.getPixelBuffer(size[0]-i-1, j, k)));
 
-                CPPUNIT_ASSERT_EQUAL(valueIn, valueOut);
+                // Static cast to get proper printing of the value (in int and not char) on stdout
+                CPPUNIT_ASSERT_EQUAL(static_cast<int>(valueIn), static_cast<int>(valueOut));
             }
         }
     }
@@ -104,7 +105,8 @@ void FlipTest::flipAlongYAxisTest()
                 const uint8_t valueOut =
                     *(reinterpret_cast<uint8_t*>(imageOutHelper.getPixelBuffer(i, size[1]-j-1, k)));
 
-                CPPUNIT_ASSERT_EQUAL(valueIn, valueOut);
+                // Static cast to get proper printing of the value (in int and not char) on stdout
+                CPPUNIT_ASSERT_EQUAL(static_cast<int>(valueIn), static_cast<int>(valueOut));
             }
         }
     }
@@ -140,7 +142,8 @@ void FlipTest::flipAlongZAxisTest()
                 const uint8_t valueOut =
                     *(reinterpret_cast<uint8_t*>(imageOutHelper.getPixelBuffer(i, j, size[2]-k-1)));
 
-                CPPUNIT_ASSERT_EQUAL(valueIn, valueOut);
+                // Static cast to get proper printing of the value (in int and not char) on stdout
+                CPPUNIT_ASSERT_EQUAL(static_cast<int>(valueIn), static_cast<int>(valueOut));
             }
         }
     }
@@ -177,7 +180,7 @@ void FlipTest::flipAlongMultipleAxesTest()
                     const uint8_t valueOut =
                         *(reinterpret_cast<uint8_t*>(imageOutHelper.getPixelBuffer(size[0]-i-1, size[1]-j-1, k)));
 
-                    // Static cast to get proper printing of the value on stdout
+                    // Static cast to get proper printing of the value (in int and not char) on stdout
                     CPPUNIT_ASSERT_EQUAL(static_cast<int>(valueIn), static_cast<int>(valueOut));
                 }
             }
@@ -213,7 +216,7 @@ void FlipTest::flipAlongMultipleAxesTest()
                                                                                    size[1]-j-1,
                                                                                    size[2]-k-1)));
 
-                    // Static cast to get proper printing of the value on stdout
+                    // Static cast to get proper printing of the value (in int and not char) on stdout
                     CPPUNIT_ASSERT_EQUAL(static_cast<int>(valueIn), static_cast<int>(valueOut));
                 }
             }
