@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -43,7 +43,7 @@ namespace opImageFilter
  * @section XML XML Configuration
  *
  * @code{.xml}
-       <service type="::opITKRegistration::SFlip">
+       <service type="::opImageFilter::SFlip">
            <in key="source" uid="..." autoConnect="yes" />
            <out key="target" uid="..." />
        </service>
@@ -84,8 +84,10 @@ protected:
     OPIMAGEFILTER_API virtual void updating() override;
 
     /**
-     * @brief Auto connections
+     * @brief Signal-slot auto-connection proposals
      *
+     * Connect Image::s_MODIFIED_SIG to this::s_UPDATE_SLOT
+     * Connect Image::s_BUFFER_MODIFIED_SIG to this::s_UPDATE_SLOT
      */
     OPIMAGEFILTER_API virtual KeyConnectionsMap getAutoConnections() const override;
 

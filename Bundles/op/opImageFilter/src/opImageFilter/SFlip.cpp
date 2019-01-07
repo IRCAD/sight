@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -28,14 +28,10 @@
 #include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
 
-#include <fwServices/macros.hpp>
-
 #include <imageFilterOp/Flipper.hpp>
 
 namespace opImageFilter
 {
-
-fwServicesRegisterMacro(::fwServices::IOperator, ::opImageFilter::SFlip, ::fwData::Image);
 
 static const ::fwServices::IService::KeyType s_IMAGE_IN  = "source";
 static const ::fwServices::IService::KeyType s_IMAGE_OUT = "target";
@@ -88,8 +84,9 @@ void SFlip::updating()
     ::fwData::Image::sptr outImg = ::fwData::Image::New();
     ::imageFilterOp::Flipper::flip(inImg, outImg, m_flipAxes);
 
-    m_sigComputed->asyncEmit();
     this->setOutput(s_IMAGE_OUT, outImg);
+
+    m_sigComputed->asyncEmit();
 }
 
 //------------------------------------------------------------------------------

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -35,6 +35,7 @@ CPPUNIT_TEST_SUITE( FlipTest );
 CPPUNIT_TEST( flipAlongXAxisTest );
 CPPUNIT_TEST( flipAlongYAxisTest );
 CPPUNIT_TEST( flipAlongZAxisTest );
+CPPUNIT_TEST( flipAlongMultipleAxesTest );
 CPPUNIT_TEST( flipEmptyImageTest );
 CPPUNIT_TEST_SUITE_END();
 
@@ -42,6 +43,7 @@ public:
     void flipAlongXAxisTest();
     void flipAlongYAxisTest();
     void flipAlongZAxisTest();
+    void flipAlongMultipleAxesTest();
     void flipEmptyImageTest();
 };
 

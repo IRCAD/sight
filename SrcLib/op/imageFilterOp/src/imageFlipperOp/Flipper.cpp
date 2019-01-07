@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -77,8 +77,23 @@ void Flipper::flip(const ::fwData::Image::csptr& _inImage,
                    const ::fwData::Image::sptr& _outImage,
                    const std::array<bool, 3>& _inFlipAxes)
 {
-    const ::fwData::Image::SizeType SIZE = {{ 0, 0, 0 }};
-    if(_inImage->getSize() != SIZE)
+
+    ::fwData::Image::SizeType size = _inImage->getSize();
+
+    // Check if the image is empty or not
+    bool isEmpty = (size.size() == 0);
+
+    // Make sure that the image has no dimension with a 0 value
+    for(size_t i = 0; i < size.size(); i++)
+    {
+        if(size[i] == 0)
+        {
+            isEmpty = true;
+            break;
+        }
+    }
+
+    if(!isEmpty)
     {
         Flipping::Parameters params;
         params.i_image    = _inImage;
@@ -88,7 +103,6 @@ void Flipper::flip(const ::fwData::Image::csptr& _inImage,
         const ::fwTools::DynamicType type = _inImage->getPixelType();
         ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes, Flipping >::invoke(type, params);
     }
-
     else
     {
         ::fwData::mt::ObjectReadLock readBlock(_inImage);
