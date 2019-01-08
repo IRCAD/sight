@@ -286,7 +286,7 @@ function(add_precompiled_header _target _input)
         endif()
 
         if(NOT "${CMAKE_OSX_DEPLOYMENT_TARGET}" STREQUAL "")
-            list(APPEND CXXFLAGS "-mmacosx-version-min" "${CMAKE_OSX_DEPLOYMENT_TARGET}")
+            list(APPEND CXXFLAGS "-mmacosx-version-min=${CMAKE_OSX_DEPLOYMENT_TARGET}")
         endif()
     endif()
 
