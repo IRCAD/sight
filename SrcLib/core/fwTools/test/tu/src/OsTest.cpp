@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -68,8 +68,8 @@ void Os::getSharedLibraryPath()
 
 #if defined(WIN32)
         const fs::path expectedPath = execPath / "fwCore.dll";
-#elif defined(APPLE)
-        const fs::path expectedPath = execPath.parent_path() / BUNDLE_LIB_PREFIX / "libfwCore.dylib";
+#elif defined(__APPLE__)
+        const fs::path expectedPath = execPath.parent_path() / BUNDLE_LIB_PREFIX / "libfwCore.0.dylib";
 #else
         const fs::path expectedPath = execPath.parent_path() / BUNDLE_LIB_PREFIX / "libfwCore.so.0";
 #endif
@@ -89,7 +89,7 @@ void Os::getSharedLibraryPath()
     #else
     const auto campPath = fs::path(CAMP_LIB_DIR) / "camp.dll";
     #endif
-#elif defined(APPLE)
+#elif defined(__APPLE__)
     const auto campPath = fs::path(CAMP_LIB_DIR) / "libcamp.dylib";
 #else
     const auto campPath = fs::path(CAMP_LIB_DIR) / "libcamp.so";
