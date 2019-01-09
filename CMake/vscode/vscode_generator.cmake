@@ -66,7 +66,7 @@ function(vscodeGenerator)
             string(CONCAT CONFIG
                 "{\n"
                 "    \"name\": \"[test] ${PRJ_NAME}\",\n"
-                "    \"type\": \"cppvsdbg\",\n"
+                "    \"type\": \"${DBG_TYPE}\",\n"
                 "    \"request\": \"launch\",\n"
                 "    \"program\": \"${CMAKE_BINARY_DIR}/bin/${PRJ_NAME}${CMAKE_EXECUTABLE_SUFFIX}\",\n"
                 "    \"args\": [],\n"
@@ -83,7 +83,7 @@ function(vscodeGenerator)
             string(CONCAT CONFIG
                 "{\n"
                 "    \"name\": \"[app] ${PRJ_NAME}\",\n"
-                "    \"type\": \"cppvsdbg\",\n"
+                "    \"type\": \"${DBG_TYPE}\",\n"
                 "    \"request\": \"launch\",\n"
                 "    \"program\": \"${CMAKE_BINARY_DIR}/bin/fwlauncher${CMAKE_EXECUTABLE_SUFFIX}\",\n"
                 "    \"args\": [\"${CMAKE_BINARY_DIR}/${FWBUNDLE_RC_PREFIX}/${${PRJ_NAME}_FULLNAME}/profile.xml\"],\n"
