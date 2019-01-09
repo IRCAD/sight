@@ -25,6 +25,8 @@
 #include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
 
+#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
+
 #include <fwItkIO/itk.hpp>
 
 #include <fwTools/Dispatcher.hpp>
@@ -36,21 +38,23 @@
 namespace imageFilterOp
 {
 
+struct Parameters
+{
+    ::fwData::Image::csptr i_image;
+    std::array<bool, 3> i_flipAxes;
+    ::fwData::Image::sptr o_image;
+};
+
+//------------------------------------------------------------------------------
+
+template<typename PixelType, int dimension>
 struct Flipping
 {
-    struct Parameters
-    {
-        ::fwData::Image::csptr i_image;
-        std::array<bool, 3> i_flipAxes;
-        ::fwData::Image::sptr o_image;
-    };
-
     //------------------------------------------------------------------------------
 
-    template<class PIXELTYPE>
     void operator()(Parameters& params)
     {
-        typedef typename ::itk::Image< PIXELTYPE, 3 > ImageType;
+        typedef typename ::itk::Image< PixelType, dimension> ImageType;
         const typename ImageType::Pointer itkImage = ::fwItkIO::itkImageFactory< ImageType >(params.i_image);
 
         typename ::itk::FlipImageFilter<ImageType>::Pointer flipFilter =
@@ -71,37 +75,52 @@ struct Flipping
     }
 };
 
+struct FlippingDimensionExtractor
+{
+    //------------------------------------------------------------------------------
+
+    template<class PixelType>
+    void operator()(Parameters& params)
+    {
+        const ::fwData::Image::SizeType size = params.i_image->getSize();
+        switch(size.size())
+        {
+            case 1:
+                Flipping<PixelType, 1> d1;
+                d1(params);
+                break;
+            case 2:
+                Flipping<PixelType, 2> d2;
+                d2(params);
+                break;
+            case 3:
+                Flipping<PixelType, 3> d3;
+                d3(params);
+                break;
+            default:
+                SLM_ERROR("Flipping cannot be performed due to incompatible image size ("
+                          + std::to_string(size.size()) + ")");
+                break;
+        }
+    }
+};
+
 //-----------------------------------------------------------------------------
 
 void Flipper::flip(const ::fwData::Image::csptr& _inImage,
                    const ::fwData::Image::sptr& _outImage,
                    const std::array<bool, 3>& _inFlipAxes)
 {
-
-    ::fwData::Image::SizeType size = _inImage->getSize();
-
-    // Check if the image is empty or not
-    bool isEmpty = (size.size() == 0);
-
-    // Make sure that the image has no dimension with a 0 value
-    for(size_t i = 0; i < size.size(); i++)
+    // If the image is valid, process it, otherwise copy it in the output image
+    if(::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(_inImage))
     {
-        if(size[i] == 0)
-        {
-            isEmpty = true;
-            break;
-        }
-    }
-
-    if(!isEmpty)
-    {
-        Flipping::Parameters params;
+        Parameters params;
         params.i_image    = _inImage;
         params.i_flipAxes = _inFlipAxes;
         params.o_image    = _outImage;
 
         const ::fwTools::DynamicType type = _inImage->getPixelType();
-        ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes, Flipping >::invoke(type, params);
+        ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes, FlippingDimensionExtractor >::invoke(type, params);
     }
     else
     {
