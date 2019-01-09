@@ -78,7 +78,7 @@
         "cmake.sourceDirectory": "@CMAKE_SOURCE_DIR@",
         "cmake.buildDirectory": "@CMAKE_BINARY_DIR@",
         "cmake.installPrefix": "@CMAKE_INSTALL_PREFIX@"
-    }
+    },
     "launch": {
         "configurations": [
 @CONFIGS_LIST@
