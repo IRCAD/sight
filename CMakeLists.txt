@@ -630,6 +630,13 @@ if(ECLIPSE_PROJECT)
     eclipseGenerator(${PROJECT_LIST})
 endif()
 
+# VS Code project
+option(GENERATE_VSCODE_WS "Generate VS Code workspace" OFF)
+if(GENERATE_VSCODE_WS)
+    include(${FWCMAKE_RESOURCE_PATH}vscode/vscode_generator.cmake)
+    vscodeGenerator(${PROJECT_LIST})
+endif()
+
 ########################################################################################################################
 # Packaging for the SDK
 ########################################################################################################################
