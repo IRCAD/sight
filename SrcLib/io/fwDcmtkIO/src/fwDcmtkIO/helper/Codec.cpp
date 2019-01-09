@@ -38,7 +38,7 @@ namespace helper
 
 //------------------------------------------------------------------------------
 
-fwDcmtkIO::helper::Codec::Codec()
+Codec::Codec()
 {
     // Register RLE decompression codecs
     DcmRLEDecoderRegistration::registerCodecs();
@@ -49,7 +49,7 @@ fwDcmtkIO::helper::Codec::Codec()
 
 //------------------------------------------------------------------------------
 
-fwDcmtkIO::helper::Codec::~Codec()
+Codec::~Codec()
 {
     // Deregister RLE decompression codecs
     DcmRLEDecoderRegistration::cleanup();
