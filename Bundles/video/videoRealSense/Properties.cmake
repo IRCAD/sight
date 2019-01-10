@@ -14,8 +14,9 @@ set( DEPENDENCIES
         fwServices
         fwTools
         fwThread
-        realsenseTools
-
 )
 set( REQUIREMENTS )
-
+set( CONAN_DEPS
+     pcl/1.8.1-r1@sight/stable
+     librealsense/2.17.0@sight/stable
+)
