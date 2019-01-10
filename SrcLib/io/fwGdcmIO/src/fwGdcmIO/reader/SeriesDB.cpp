@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -71,7 +71,7 @@ SeriesDB::SeriesDB(::fwDataIO::reader::IObjectReader::Key key) :
     m_regularFileLookupJob(::fwJobs::Observer::New("Looking for DICOM files")),
     m_readerJob(::fwJobs::Observer::New("Reading DICOM files")),
     m_completeDicomSeriesJob(::fwJobs::Observer::New("Completing series")),
-    m_converterJob(::fwJobs::Observer::New("DICOM data convertion"))
+    m_converterJob(::fwJobs::Observer::New("DICOM data conversion"))
 {
     SLM_TRACE_FUNC();
 }
@@ -145,7 +145,7 @@ void SeriesDB::read()
     }
     catch( ... )
     {
-        m_logger->critical("An unkown error has occurred during the reading process.");
+        m_logger->critical("An unknown error has occurred during the reading process.");
     }
 
     if(m_dicomSeriesContainer.empty())
@@ -207,7 +207,7 @@ void SeriesDB::readDicomSeries()
     }
     catch( ... )
     {
-        m_logger->critical("An unkown error has occurred during the reading process.");
+        m_logger->critical("An unknown error has occurred during the reading process.");
     }
 
     if(m_dicomSeriesContainer.empty())
@@ -322,7 +322,7 @@ void SeriesDB::readFromDicomSeriesDB(const ::fwMedData::SeriesDB::csptr& dicomSe
     }
     catch( ... )
     {
-        m_logger->critical("An unkown error has occurred during the reading process.");
+        m_logger->critical("An unknown error has occurred during the reading process.");
     }
 
 }
