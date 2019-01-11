@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -75,7 +75,7 @@ const bool& IJob::cancelRequested() const
 
 IJob::CancelRequestCallback IJob::cancelRequestedCallback() const
 {
-    return [this]()->bool
+    return [this]() -> bool
            {
                ::fwCore::mt::ReadLock lock(m_mutex);
                return m_cancelRequested;
@@ -300,10 +300,18 @@ std::function< void() > IJob::finishCallback()
 
 void IJob::wait()
 {
-    decltype (m_runFuture)runFuture;
+    decltype(m_runFuture)runFuture;
+
     {
         ::fwCore::mt::ReadLock lock(m_mutex);
         runFuture = m_runFuture;
+    }
+
+    // JobTest::APIAndStateTest() crash on macOS if we don't test the validity of the future before calling wait()
+    // No std::future_error are raised before the segfault
+    if(!runFuture.valid())
+    {
+        FW_RAISE_EXCEPTION( ::fwJobs::exception::Waiting("Job has not been started") );
     }
 
     try
