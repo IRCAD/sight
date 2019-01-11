@@ -26,12 +26,8 @@
 
 #include <fwCore/base.hpp>
 
-#include <boost/filesystem.hpp>
-
 #include <boost/dll.hpp>
-#ifdef WIN32
-#include <windows.h>
-#endif
+#include <boost/filesystem.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwTools::ut::Os );

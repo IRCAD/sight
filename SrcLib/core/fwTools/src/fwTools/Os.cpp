@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,7 +22,7 @@
 
 #include "fwTools/Os.hpp"
 
-#include "fwCore/base.hpp"
+#include <fwCore/base.hpp>
 
 #include <boost/filesystem.hpp>
 #include <boost/regex.hpp>
@@ -125,9 +125,7 @@ static std::string _getWin32SharedLibraryPath(const std::string& _libName)
     const std::string libNameDbg = _libName + "d";
 
     if ( ( hm = GetModuleHandle(libNameDbg.c_str()) ) == nullptr)
-    {
 #endif // _DEBUG
-
     if ( ( hm = GetModuleHandle(_libName.c_str()) ) == nullptr)
     {
         const DWORD ret = GetLastError();
@@ -136,9 +134,7 @@ static std::string _getWin32SharedLibraryPath(const std::string& _libName)
         err << "GetModuleHandle failed, error = " << ret << std::endl;
         FW_RAISE_EXCEPTION(::fwTools::Exception(err.str()));
     }
-#ifdef _DEBUG
-}
-#endif // _DEBUG
+
     if (GetModuleFileName(hm, path, sizeof(path)) == NULL)
     {
         const DWORD ret = GetLastError();
