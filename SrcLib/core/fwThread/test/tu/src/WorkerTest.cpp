@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -29,6 +29,7 @@
 
 #include <fwTest/Exception.hpp>
 
+#include <atomic>
 #include <exception>
 #include <iostream>
 
@@ -59,9 +60,7 @@ void WorkerTest::tearDown()
 
 struct TestHandler
 {
-    TestHandler() :
-        m_step(0),
-        m_threadCheckOk(true)
+    TestHandler()
     {
         m_constructorThreadId = ::fwThread::getCurrentThreadId();
     }
@@ -78,9 +77,10 @@ struct TestHandler
 
     void nextStepNoSleep()
     {
+        m_threadCheckOk = m_threadCheckOk.load()
+                          && (m_constructorThreadId != ::fwThread::getCurrentThreadId())
+                          && (m_workerThreadId == ::fwThread::getCurrentThreadId());
 
-        m_threadCheckOk &= (m_constructorThreadId != ::fwThread::getCurrentThreadId());
-        m_threadCheckOk &= (m_workerThreadId == ::fwThread::getCurrentThreadId());
         ++m_step;
     }
 
@@ -91,8 +91,8 @@ struct TestHandler
         m_workerThreadId = id;
     }
 
-    int m_step;
-    bool m_threadCheckOk;
+    std::atomic_int m_step {0};
+    std::atomic_bool m_threadCheckOk {true};
     ::fwThread::ThreadIdType m_constructorThreadId;
     ::fwThread::ThreadIdType m_workerThreadId;
 };
@@ -111,8 +111,8 @@ void WorkerTest::basicTest()
         worker->post( std::bind( &TestHandler::nextStep, &handler) );
 
         worker->stop();
-        CPPUNIT_ASSERT_EQUAL(3, handler.m_step);
-        CPPUNIT_ASSERT_EQUAL(true, handler.m_threadCheckOk);
+        CPPUNIT_ASSERT_EQUAL(3, handler.m_step.load());
+        CPPUNIT_ASSERT_EQUAL(true, handler.m_threadCheckOk.load());
     }
 
     {
@@ -125,8 +125,8 @@ void WorkerTest::basicTest()
         worker->post( std::bind( &TestHandler::nextStepNoSleep, &handler) );
 
         worker->stop();
-        CPPUNIT_ASSERT_EQUAL(3, handler.m_step);
-        CPPUNIT_ASSERT_EQUAL(true, handler.m_threadCheckOk);
+        CPPUNIT_ASSERT_EQUAL(3, handler.m_step.load());
+        CPPUNIT_ASSERT_EQUAL(true, handler.m_threadCheckOk.load());
     }
 }
 
@@ -148,13 +148,13 @@ void WorkerTest::timerTest()
 
     CPPUNIT_ASSERT(!timer->isRunning());
     CPPUNIT_ASSERT(handler.m_threadCheckOk);
-    CPPUNIT_ASSERT_EQUAL(0, handler.m_step);
+    CPPUNIT_ASSERT_EQUAL(0, handler.m_step.load());
 
     timer->start();
 
     CPPUNIT_ASSERT(timer->isRunning());
     CPPUNIT_ASSERT(handler.m_threadCheckOk);
-    CPPUNIT_ASSERT_EQUAL(0, handler.m_step);
+    CPPUNIT_ASSERT_EQUAL(0, handler.m_step.load());
 
     std::this_thread::sleep_for( duration/10. );
 
@@ -164,8 +164,19 @@ void WorkerTest::timerTest()
 
         CPPUNIT_ASSERT(timer->isRunning());
         CPPUNIT_ASSERT(handler.m_threadCheckOk);
-        CPPUNIT_ASSERT_EQUAL(i, handler.m_step);
 
+        // Try to mitigate the light delay maybe due to nextStepNoSleep own execution
+        // The whole problem is because TimerAsio doesn't take into account the callback execution time to trigger
+        // the next call. Unfortunatelly, changing this, obviously introduces a change in behavior
+        // (opencv video playback)
+        int step = handler.m_step.load();
+        if(step < i)
+        {
+            std::this_thread::sleep_for(std::chrono::milliseconds(1));
+            step = handler.m_step.load();
+        }
+
+        CPPUNIT_ASSERT_EQUAL(i, step);
     }
 
     timer->stop();
@@ -174,16 +185,16 @@ void WorkerTest::timerTest()
 
     CPPUNIT_ASSERT(!timer->isRunning());
     CPPUNIT_ASSERT(handler.m_threadCheckOk);
-    CPPUNIT_ASSERT_EQUAL(49, handler.m_step);
+    CPPUNIT_ASSERT_EQUAL(49, handler.m_step.load());
 
     // test start after stop
-    handler.m_step = 0;
+    handler.m_step.store(0);
 
     timer->start();
 
     CPPUNIT_ASSERT(timer->isRunning());
     CPPUNIT_ASSERT(handler.m_threadCheckOk);
-    CPPUNIT_ASSERT_EQUAL(0, handler.m_step);
+    CPPUNIT_ASSERT_EQUAL(0, handler.m_step.load());
 
     std::this_thread::sleep_for( duration/10. );
 
@@ -193,8 +204,19 @@ void WorkerTest::timerTest()
 
         CPPUNIT_ASSERT(timer->isRunning());
         CPPUNIT_ASSERT(handler.m_threadCheckOk);
-        CPPUNIT_ASSERT_EQUAL(i, handler.m_step);
 
+        // Try to mitigate the light delay maybe due to nextStepNoSleep own execution
+        // The whole problem is because TimerAsio doesn't take into account the callback execution time to trigger
+        // the next call. Unfortunatelly, changing this, obviously introduces a change in behavior
+        // (opencv video playback)
+        int step = handler.m_step.load();
+        if(step < i)
+        {
+            std::this_thread::sleep_for(std::chrono::milliseconds(1));
+            step = handler.m_step.load();
+        }
+
+        CPPUNIT_ASSERT_EQUAL(i, step);
     }
 
     timer->stop();
@@ -203,17 +225,17 @@ void WorkerTest::timerTest()
 
     CPPUNIT_ASSERT(!timer->isRunning());
     CPPUNIT_ASSERT(handler.m_threadCheckOk);
-    CPPUNIT_ASSERT_EQUAL(49, handler.m_step);
+    CPPUNIT_ASSERT_EQUAL(49, handler.m_step.load());
 
     // change timer duration on the fly
     // change timer duration
-    handler.m_step = 0;
+    handler.m_step.store(0);
 
     timer->start();
 
     CPPUNIT_ASSERT(timer->isRunning());
     CPPUNIT_ASSERT(handler.m_threadCheckOk);
-    CPPUNIT_ASSERT_EQUAL(0, handler.m_step);
+    CPPUNIT_ASSERT_EQUAL(0, handler.m_step.load());
 
     std::this_thread::sleep_for( duration/10. );
 
@@ -223,8 +245,19 @@ void WorkerTest::timerTest()
 
         CPPUNIT_ASSERT(timer->isRunning());
         CPPUNIT_ASSERT(handler.m_threadCheckOk);
-        CPPUNIT_ASSERT_EQUAL(i, handler.m_step);
 
+        // Try to mitigate the light delay maybe due to nextStepNoSleep own execution
+        // The whole problem is because TimerAsio doesn't take into account the callback execution time to trigger
+        // the next call. Unfortunatelly, changing this, obviously introduces a change in behavior
+        // (Test opencv video playback !!)
+        int step = handler.m_step.load();
+        if(step < i)
+        {
+            std::this_thread::sleep_for(std::chrono::milliseconds(1));
+            step = handler.m_step.load();
+        }
+
+        CPPUNIT_ASSERT_EQUAL(i, step);
     }
 
     duration = std::chrono::milliseconds(50);
@@ -236,8 +269,19 @@ void WorkerTest::timerTest()
 
         CPPUNIT_ASSERT(timer->isRunning());
         CPPUNIT_ASSERT(handler.m_threadCheckOk);
-        CPPUNIT_ASSERT_EQUAL(i, handler.m_step);
 
+        // Try to mitigate the light delay maybe due to nextStepNoSleep own execution
+        // The whole problem is because TimerAsio doesn't take into account the callback execution time to trigger
+        // the next call. Unfortunatelly, changing this, obviously introduces a change in behavior
+        // (Test opencv video playback !!)
+        int step = handler.m_step.load();
+        if(step < i)
+        {
+            std::this_thread::sleep_for(std::chrono::milliseconds(1));
+            step = handler.m_step.load();
+        }
+
+        CPPUNIT_ASSERT_EQUAL(i, step);
     }
 
     timer->stop();
@@ -246,10 +290,10 @@ void WorkerTest::timerTest()
 
     CPPUNIT_ASSERT(!timer->isRunning());
     CPPUNIT_ASSERT(handler.m_threadCheckOk);
-    CPPUNIT_ASSERT_EQUAL(49, handler.m_step);
+    CPPUNIT_ASSERT_EQUAL(49, handler.m_step.load());
 
     // one shot test
-    handler.m_step = 0;
+    handler.m_step.store(0);
 
     duration = std::chrono::milliseconds(10);
     timer->setDuration(duration);
@@ -259,13 +303,13 @@ void WorkerTest::timerTest()
 
     CPPUNIT_ASSERT(timer->isRunning());
     CPPUNIT_ASSERT(handler.m_threadCheckOk);
-    CPPUNIT_ASSERT_EQUAL(0, handler.m_step);
+    CPPUNIT_ASSERT_EQUAL(0, handler.m_step.load());
 
     std::this_thread::sleep_for( duration*10 );
 
     CPPUNIT_ASSERT(!timer->isRunning());
     CPPUNIT_ASSERT(handler.m_threadCheckOk);
-    CPPUNIT_ASSERT_EQUAL(1, handler.m_step);
+    CPPUNIT_ASSERT_EQUAL(1, handler.m_step.load());
 
     // This test was added to reproduce a bug that is now fixed
     // The timer could be deleted before the call back is over

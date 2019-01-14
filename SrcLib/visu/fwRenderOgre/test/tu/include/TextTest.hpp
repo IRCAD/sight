@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -50,7 +50,7 @@ public:
 
 private:
     /// Ogre root to setup the scene and instantiate 'Text' objects.
-    ::Ogre::Root* m_ogreRoot;
+    ::Ogre::Root* m_ogreRoot {nullptr};
 
 };
 

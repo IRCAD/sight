@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -70,8 +70,11 @@ void TextTest::setUp()
 
 void TextTest::tearDown()
 {
-    m_ogreRoot = nullptr;
-    Utils::destroyOgreRoot();
+    if(m_ogreRoot)
+    {
+        m_ogreRoot = nullptr;
+        Utils::destroyOgreRoot();
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -126,7 +129,10 @@ void TextTest::factoryTest()
 
     m_ogreRoot->destroySceneManager(sceneManager);
 
-    ogreRenderWindow->destroy();
+    // ogreRenderWindow->destroy() leads to a double delete crash when deleting ogre root node
+    // Use the "recommended" way to delete the RenderWindow as it also detach it from root node
+    ogreRenderWindow = nullptr;
+    m_ogreRoot->getRenderSystem()->destroyRenderWindow("Dummy-RenderWindow");
 }
 
 //------------------------------------------------------------------------------
