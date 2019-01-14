@@ -455,9 +455,9 @@ void main(void)
     vec4 jfaDistance = vec4(0.f);
     bool isCsg = false; // true if this ray hits the csg.
 
-#if CSG_MODULATION == 1 || CSG_OPACITY_DECREASE == 1
+#if CSG_MODULATION == 4 || CSG_MODULATION == 5 || CSG_MODULATION == 6 || CSG_OPACITY_DECREASE == 1
     float coneDistance = 0.f;
-#endif // CSG_MODULATION == 1 || CSG_OPACITY_DECREASE == 1
+#endif // CSG_MODULATION == 4 || CSG_MODULATION == 5 || CSG_MODULATION == 6 || CSG_OPACITY_DECREASE == 1
 
 #endif // CSG
 
@@ -494,10 +494,10 @@ void main(void)
 
         if(hit)
         {
-#if CSG_MODULATION == 1 || CSG_OPACITY_DECREASE == 1
+#if CSG_MODULATION == 4 || CSG_MODULATION == 5 || CSG_MODULATION == 6 || CSG_OPACITY_DECREASE == 1
             // Ray entry to central cone line distance.
             coneDistance = pointLineDistance(scaledEntry, scaledClosestPt, coneDir);
-#endif // CSG_MODULATION == 1 || CSG_OPACITY_DECREASE == 1
+#endif // CSG_MODULATION == 4 || CSG_MODULATION == 5 || CSG_MODULATION == 6 || CSG_OPACITY_DECREASE == 1
 
             // Back to volume texture space.
             rayEntry = scaledEntry / normSpacing;
