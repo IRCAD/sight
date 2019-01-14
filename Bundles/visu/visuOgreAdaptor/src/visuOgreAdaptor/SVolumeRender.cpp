@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2018 IRCAD France
- * Copyright (C) 2016-2018 IHU Strasbourg
+ * Copyright (C) 2016-2019 IRCAD France
+ * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -242,11 +242,7 @@ void SVolumeRender::starting()
     ::fwData::TransferFunction::sptr CSGTF = this->getInOut< ::fwData::TransferFunction>(s_CSG_TF_INOUT);
     if(CSGTF == nullptr)
     {
-        CSGTF = ::fwData::TransferFunction::New();
-        ::fwData::TransferFunction::TFDataType tfData;
-        tfData[0.0] = ::fwData::TransferFunction::TFColor(0.0, 0.0, 0.0, 0.0);
-        CSGTF->setTFData( tfData );
-        m_helperCSGTF.setTransferFunction(CSGTF);
+        m_helperCSGTF.createTransferFunction(image);
     }
     else
     {
