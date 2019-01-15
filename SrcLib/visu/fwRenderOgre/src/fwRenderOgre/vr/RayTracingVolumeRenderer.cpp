@@ -158,7 +158,9 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
     m_cameraListener(nullptr),
     m_layer(layer)
 {
-    auto* const exitDepthListener = new compositor::listener::RayExitDepthListener();
+    m_fragmentShaderAttachements.push_back("SpatialTransforms_FP");
+
+    auto* exitDepthListener = new compositor::listener::RayExitDepthListener();
     ::Ogre::MaterialManager::getSingleton().addListener(exitDepthListener);
 
     ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();

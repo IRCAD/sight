@@ -102,6 +102,9 @@ out vec4 fragColor;
 //-----------------------------------------------------------------------------
 
 vec4 sampleTransferFunction(float _intensity, in sampler1D _sampler, in vec2 _window);
+vec3 fragCoordsToNDC(in vec3 _f3FragPos_Ss);
+vec3 ndcToFragCoord(in vec3 _f3FragPos_Ns);
+vec4 ndcToSpecificSpacePosition(in vec3 _f3FragPos_Ns, in mat4 _m4Inverse);
 
 //-----------------------------------------------------------------------------
 
