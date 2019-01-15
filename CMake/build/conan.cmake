@@ -40,7 +40,18 @@ macro(installConanDeps CONAN_DEPS_LIST)
         set(CONAN_BUILD_OPTION "missing")
     endif()
 
-    if(UNIX AND NOT APPLE)
+    if(UNIX AND NOT APPLE AND NOT CONAN_SETTINGS)
+        # Install conan custom settings
+        execute_process(COMMAND ${CONAN_CMD} config install https://git.ircad.fr/conan/conan-config.git --type git --verify-ssl=False
+                    RESULT_VARIABLE RETURN_CODE
+                    OUTPUT_VARIABLE CONAN_VERSION_OUTPUT
+                    ERROR_VARIABLE CONAN_VERSION_OUTPUT)
+        if(NOT "${RETURN_CODE}" STREQUAL "0")
+            message(FATAL_ERROR "Error in conan settings configuration: ${CONAN_VERSION_OUTPUT}")
+        else()
+            message(STATUS "conan settings installed: ${CONAN_VERSION_OUTPUT}")
+        endif()
+
         # Find information about current Linux distribution to configure conan
         find_program(LSB_RELEASE_EXEC lsb_release)
         if(NOT LSB_RELEASE_EXEC)
@@ -56,7 +67,7 @@ macro(installConanDeps CONAN_DEPS_LIST)
         )
         string(TOLOWER ${LSB_RELEASE_ID_SHORT} LSB_RELEASE_ID_SHORT_LOWER)
         set(CONAN_DISTRO "${LSB_RELEASE_ID_SHORT_LOWER}${LSB_RELEASE_NUMBER_SHORT}")
-        set(CONAN_SETTINGS "SETTINGS os.distro=${CONAN_DISTRO}")
+        set(CONAN_SETTINGS "os.distro=${CONAN_DISTRO}" CACHE INTERNAL "custom conan settings" FORCE)
     endif()
 
     conan_cmake_run(
@@ -64,7 +75,7 @@ macro(installConanDeps CONAN_DEPS_LIST)
         BASIC_SETUP CMAKE_TARGETS NO_OUTPUT_DIRS OUTPUT_QUIET
         OPTIONS ${CONAN_OPTIONS}
         BUILD ${CONAN_BUILD_OPTION}
-        ${CONAN_SETTINGS}
+        SETTINGS ${CONAN_SETTINGS}
     )
 
 endmacro()
