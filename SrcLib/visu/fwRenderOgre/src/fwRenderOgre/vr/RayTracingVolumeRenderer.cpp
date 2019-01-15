@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -192,13 +192,12 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
     }
 
     // define the shared param structure
+    m_RTVSharedParameters->addConstantDefinition("u_f2TFWindow", ::Ogre::GCT_FLOAT2);
     m_RTVSharedParameters->addConstantDefinition("u_sampleDistance", ::Ogre::GCT_FLOAT1);
-    m_RTVSharedParameters->addConstantDefinition("u_lobeOffset", ::Ogre::GCT_FLOAT1);
-    m_RTVSharedParameters->addConstantDefinition("u_opacityCorrectionFactor", ::Ogre::GCT_FLOAT1);
     m_RTVSharedParameters->addConstantDefinition("u_volIllumFactor", ::Ogre::GCT_FLOAT4);
     m_RTVSharedParameters->addConstantDefinition("u_min", ::Ogre::GCT_INT1);
     m_RTVSharedParameters->addConstantDefinition("u_max", ::Ogre::GCT_INT1);
-    m_RTVSharedParameters->addConstantDefinition("u_tfWindow", ::Ogre::GCT_FLOAT2);
+    m_RTVSharedParameters->addConstantDefinition("u_opacityCorrectionFactor", ::Ogre::GCT_FLOAT1);
     m_RTVSharedParameters->setNamedConstant("u_opacityCorrectionFactor", m_opacityCorrectionFactor);
 
     this->initEntryPoints();
@@ -307,6 +306,7 @@ void RayTracingVolumeRenderer::setSampling(uint16_t nbSamples)
 
     // Update the sample distance in the shaders
     m_RTVSharedParameters->setNamedConstant("u_sampleDistance", m_sampleDistance);
+    this->getLayer()->requestRender();
 }
 
 //-----------------------------------------------------------------------------
@@ -317,6 +317,7 @@ void RayTracingVolumeRenderer::setOpacityCorrection(int opacityCorrection)
 
     // Update shader parameter
     m_RTVSharedParameters->setNamedConstant("u_opacityCorrectionFactor", m_opacityCorrectionFactor);
+    this->getLayer()->requestRender();
 }
 
 //-----------------------------------------------------------------------------
@@ -327,6 +328,7 @@ void RayTracingVolumeRenderer::setAOFactor(double aoFactor)
 
     // Update the shader parameter
     m_RTVSharedParameters->setNamedConstant("u_volIllumFactor", m_volIllumFactor);
+    this->getLayer()->requestRender();
 }
 
 //-----------------------------------------------------------------------------
@@ -338,6 +340,7 @@ void RayTracingVolumeRenderer::setColorBleedingFactor(double colorBleedingFactor
 
     // Update the shader parameter
     m_RTVSharedParameters->setNamedConstant("u_volIllumFactor", m_volIllumFactor);
+    this->getLayer()->requestRender();
 }
 
 //-----------------------------------------------------------------------------
@@ -458,7 +461,7 @@ void RayTracingVolumeRenderer::setRayCastingPassTextureUnits(Ogre::Pass* const _
         texUnitState = _rayCastingPass->createTextureUnitState();
         texUnitState->setName(s_VOLUME_TF_TEXUNIT_NAME);
         gpuTF->bind(_rayCastingPass, texUnitState->getName(), fpParams);
-        fpParams->setNamedConstant("u_tfTexture", numTexUnit++);
+        fpParams->setNamedConstant("u_s1TFTexture", numTexUnit++);
     }
 
     if(_fpPPDefines.find(s_AO_DEFINE) != std::string::npos)
@@ -594,14 +597,11 @@ void RayTracingVolumeRenderer::createRayTracingMaterial()
     // Fragment program
     pass->setFragmentProgram(fpName);
     ::Ogre::GpuProgramParametersSharedPtr fpParams = pass->getFragmentProgramParameters();
-    fpParams->setNamedAutoConstant("u_viewport", ::Ogre::GpuProgramParameters::ACT_VIEWPORT_SIZE);
-    fpParams->setNamedAutoConstant("u_clippingNear", ::Ogre::GpuProgramParameters::ACT_NEAR_CLIP_DISTANCE);
-    fpParams->setNamedAutoConstant("u_clippingFar", ::Ogre::GpuProgramParameters::ACT_FAR_CLIP_DISTANCE);
+    fpParams->setNamedAutoConstant("u_viewportSize", ::Ogre::GpuProgramParameters::ACT_VIEWPORT_SIZE);
+    fpParams->setNamedAutoConstant("u_clippingNearDis", ::Ogre::GpuProgramParameters::ACT_NEAR_CLIP_DISTANCE);
+    fpParams->setNamedAutoConstant("u_clippingFarDis", ::Ogre::GpuProgramParameters::ACT_FAR_CLIP_DISTANCE);
     fpParams->setNamedAutoConstant("u_cameraPos", ::Ogre::GpuProgramParameters::ACT_CAMERA_POSITION_OBJECT_SPACE);
     fpParams->setNamedAutoConstant("u_shininess", ::Ogre::GpuProgramParameters::ACT_SURFACE_SHININESS);
-    fpParams->setNamedAutoConstant("u_invWorldViewProj",
-                                   ::Ogre::GpuProgramParameters::ACT_INVERSE_WORLDVIEWPROJ_MATRIX);
-    fpParams->setNamedAutoConstant("u_worldViewProj", ::Ogre::GpuProgramParameters::ACT_WORLDVIEWPROJ_MATRIX);
     fpParams->setNamedAutoConstant("u_numLights", ::Ogre::GpuProgramParameters::ACT_LIGHT_COUNT);
     for(size_t i = 0; i < 10; ++i)
     {
@@ -613,6 +613,9 @@ void RayTracingVolumeRenderer::createRayTracingMaterial()
         fpParams->setNamedAutoConstant("u_lightSpecular" + number,
                                        ::Ogre::GpuProgramParameters::ACT_LIGHT_SPECULAR_COLOUR, i);
     }
+    fpParams->setNamedAutoConstant("u_invWorldViewProj",
+                                   ::Ogre::GpuProgramParameters::ACT_INVERSE_WORLDVIEWPROJ_MATRIX);
+    fpParams->setNamedAutoConstant("u_worldViewProj", ::Ogre::GpuProgramParameters::ACT_WORLDVIEWPROJ_MATRIX);
     fpParams->addSharedParameters(m_RTVSharedParameters->getName());
 
     ///////////////////////////////////////////////////////////////////////////

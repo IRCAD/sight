@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2018 IRCAD France
- * Copyright (C) 2017-2018 IHU Strasbourg
+ * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -118,6 +118,7 @@ const std::string s_JFAPING_COMPOSITOR                      = "JFAPingComp";
 const std::string s_JFAPONG_COMPOSITOR                      = "JFAPongComp";
 const std::string s_JFAFINALPING_COMPOSITOR                 = "JFAFinalPingComp";
 const std::string s_JFAFINALPONG_COMPOSITOR                 = "JFAFinalPongComp";
+const std::string s_CSGDISTANCEMAP_COMPOSITOR               = "CSGInfos_C";
 
 const std::string s_MIMP_DEFINE  = "IDVR=1";
 const std::string s_AIMC_DEFINE  = "IDVR=2";
@@ -125,10 +126,11 @@ const std::string s_VPIMC_DEFINE = "IDVR=3";
 
 const std::string s_CSG_DEFINE                  = "CSG=1";
 const std::string s_CSG_TF_DEFINE               = "CSG_TF=1";
-const std::string s_CSG_BORDER_DEFINE           = "CSG_BORDER=1";
+const std::string s_CSG_LIGHTING_DEFINE         = "CSG_LIGHTING=1";
 const std::string s_CSG_DISABLE_CONTEXT_DEFINE  = "CSG_DISABLE_CONTEXT=1";
 const std::string s_CSG_OPACITY_DECREASE_DEFINE = "CSG_OPACITY_DECREASE=1";
 const std::string s_CSG_DEPTH_LINES_DEFINE      = "CSG_DEPTH_LINES=1";
+const std::string s_CSG_BORDER_DEFINE           = "CSG_BORDER=1";
 
 const std::string s_CSG_MOD_GRAYSCALE_AVERAGE_DEFINE    = "CSG_GRAYSCALE=1";
 const std::string s_CSG_MOD_GRAYSCALE_LIGHTNESS_DEFINE  = "CSG_GRAYSCALE=2";
@@ -167,29 +169,48 @@ ImportanceDrivenVolumeRenderer::ImportanceDrivenVolumeRenderer(std::string _pare
                                    compositor::Core::StereoModeType::NONE, false),
     m_gpuCSGTF(_gpuCSGTF)
 {
-    m_RTVSharedParameters->addConstantDefinition("u_csgAngleCos", ::Ogre::GCT_FLOAT1);
-    m_RTVSharedParameters->addConstantDefinition("u_csgBorderThickness", ::Ogre::GCT_FLOAT1);
-    m_RTVSharedParameters->addConstantDefinition("u_colorModulationFactor", ::Ogre::GCT_FLOAT1);
-    m_RTVSharedParameters->addConstantDefinition("u_opacityDecreaseFactor", ::Ogre::GCT_FLOAT1);
-    m_RTVSharedParameters->addConstantDefinition("u_vpimcAlphaCorrection", ::Ogre::GCT_FLOAT1);
-    m_RTVSharedParameters->addConstantDefinition("u_aimcAlphaCorrection", ::Ogre::GCT_FLOAT1);
-    m_RTVSharedParameters->addConstantDefinition("u_csgBorderColor", ::Ogre::GCT_FLOAT3);
-    m_RTVSharedParameters->addConstantDefinition("u_imageSpacing", ::Ogre::GCT_FLOAT3);
-    m_RTVSharedParameters->addConstantDefinition("u_depthLinesSpacing", ::Ogre::GCT_INT1);
-    m_RTVSharedParameters->addConstantDefinition("u_depthLinesWidth", ::Ogre::GCT_FLOAT1);
     m_RTVSharedParameters->addConstantDefinition("u_CSGTFWindow", ::Ogre::GCT_FLOAT2);
+    m_RTVSharedParameters->addConstantDefinition("u_aimcAlphaCorrection", ::Ogre::GCT_FLOAT1);
+    m_RTVSharedParameters->addConstantDefinition("u_vpimcAlphaCorrection", ::Ogre::GCT_FLOAT1);
+    m_RTVSharedParameters->addConstantDefinition("u_csgDepthLinesSpacing", ::Ogre::GCT_INT1);
+    m_RTVSharedParameters->addConstantDefinition("u_csgDepthLinesWidth", ::Ogre::GCT_FLOAT1);
+    m_RTVSharedParameters->addConstantDefinition("u_csgDepthLinesColor", ::Ogre::GCT_FLOAT3);
+    m_RTVSharedParameters->addConstantDefinition("u_csgBorderWidth", ::Ogre::GCT_FLOAT1);
+    m_RTVSharedParameters->addConstantDefinition("u_csgBorderColor", ::Ogre::GCT_FLOAT3);
+    m_RTVSharedParameters->addConstantDefinition("u_csgColorModulationFactor", ::Ogre::GCT_FLOAT1);
+    m_RTVSharedParameters->addConstantDefinition("u_csgOpacityDecreaseFactor", ::Ogre::GCT_FLOAT1);
 
-    m_RTVSharedParameters->setNamedConstant("u_csgAngleCos", m_idvrCSGAngleCosine);
-    m_RTVSharedParameters->setNamedConstant("u_csgBorderThickness", m_idvrCSGBorderThickness);
-    m_RTVSharedParameters->setNamedConstant("u_colorModulationFactor", m_idvrCSGModulationFactor);
-    m_RTVSharedParameters->setNamedConstant("u_opacityDecreaseFactor", m_idvrCSGOpacityDecreaseFactor);
-    m_RTVSharedParameters->setNamedConstant("u_csgBorderColor", m_idvrCSGBorderColor);
-    m_RTVSharedParameters->setNamedConstant("u_aimcAlphaCorrection", m_idvrAImCAlphaCorrection);
-    m_RTVSharedParameters->setNamedConstant("u_vpimcAlphaCorrection", m_idvrVPImCAlphaCorrection);
-    m_RTVSharedParameters->setNamedConstant("u_depthLinesSpacing", 10);
-    m_RTVSharedParameters->setNamedConstant("u_depthLinesWidth", 1.f);
+    m_RTVSharedParameters->setNamedConstant("u_aimcAlphaCorrection", 0.05f);
+    m_RTVSharedParameters->setNamedConstant("u_vpimcAlphaCorrection", 0.3f);
+    m_RTVSharedParameters->setNamedConstant("u_csgDepthLinesSpacing", 10);
+    m_RTVSharedParameters->setNamedConstant("u_csgDepthLinesWidth", 1.f);
+    m_RTVSharedParameters->setNamedConstant("u_csgDepthLinesColor", ::Ogre::ColourValue(1.f, 1.f, 0.6f));
+    m_RTVSharedParameters->setNamedConstant("u_csgBorderWidth", 1.f);
+    m_RTVSharedParameters->setNamedConstant("u_csgBorderColor", ::Ogre::ColourValue::Red);
+    m_RTVSharedParameters->setNamedConstant("u_csgColorModulationFactor", 0.02f);
+    m_RTVSharedParameters->setNamedConstant("u_csgOpacityDecreaseFactor", 0.8f);
 
     m_fragmentShaderAttachements.push_back("ColorFormats_FP");
+
+    const std::string csgSharedParamsName = _parentId + "_CSGParams";
+
+    // Check that we did not already instance Shared parameters
+    // This can happen when reinstancing this class (e.g. switching 3D mode)
+    ::Ogre::GpuProgramManager::SharedParametersMap spMap =
+        ::Ogre::GpuProgramManager::getSingleton().getAvailableSharedParameters();
+    if(!spMap[csgSharedParamsName])
+    {
+        m_CSGSharedParameters = ::Ogre::GpuProgramManager::getSingleton().createSharedParameters(csgSharedParamsName);
+    }
+    else
+    {
+        m_CSGSharedParameters = spMap[csgSharedParamsName];
+    }
+
+    m_CSGSharedParameters->addConstantDefinition("u_fCSGAngleCos", ::Ogre::GCT_FLOAT1);
+    m_CSGSharedParameters->addConstantDefinition("u_f3ImageSpacingSize", ::Ogre::GCT_FLOAT3);
+
+    m_CSGSharedParameters->setNamedConstant("u_fCSGAngleCos", m_idvrCSGAngleCosine);
 
     this->createIDVRTechnique();
 }
@@ -202,13 +223,16 @@ ImportanceDrivenVolumeRenderer::~ImportanceDrivenVolumeRenderer()
     auto* const viewport = layer->getViewport();
 
     this->cleanCompositorChain(viewport);
+
+    m_CSGSharedParameters->removeAllConstantDefinitions();
+    ::Ogre::GpuProgramManager::getSingleton().remove(m_CSGSharedParameters->getName());
 }
 
 //------------------------------------------------------------------------------
 
 void ImportanceDrivenVolumeRenderer::updateCSGTF()
 {
-    if(m_idvrMethod == s_MIMP && this->m_idvrCSGTF)
+    if(m_idvrMethod == s_MIMP && this->m_idvrCSG && this->m_idvrCSGTF)
     {
         const ::Ogre::MaterialPtr material       = ::Ogre::MaterialManager::getSingleton().getByName(m_currentMtlName);
         const ::Ogre::Technique* const technique = material->getTechnique(0);
@@ -332,6 +356,15 @@ void ImportanceDrivenVolumeRenderer::buildICCompositors(::Ogre::Viewport* const 
                                                                   static_cast<float>(numPasses),
                                                                   m_idvrCSGBlurWeight));
         compositorInstance->addListener(m_compositorListeners.back());
+
+        // add the compositor that creates the CSG information, it need JFA and RayEntry textures to
+        // compute it.
+        if(m_idvrCSG)
+        {
+            compositorInstance = compositorManager.addCompositor(_vp, s_CSGDISTANCEMAP_COMPOSITOR, compositorIndex++);
+            SLM_ASSERT("Compositor could not be initialized", compositorInstance);
+            compositorInstance->setEnabled(true);
+        }
     }
     else if(m_idvrMethod == s_AIMC)
     {
@@ -374,6 +407,7 @@ void ImportanceDrivenVolumeRenderer::cleanCompositorChain(::Ogre::Viewport* cons
            compName == s_JFAPONG_COMPOSITOR ||
            compName == s_JFAFINALPING_COMPOSITOR ||
            compName == s_JFAFINALPONG_COMPOSITOR ||
+           compName == s_CSGDISTANCEMAP_COMPOSITOR ||
            compName == m_idvrMaskRayEntriesCompositor.getName()
            )
         {
@@ -438,15 +472,23 @@ void ImportanceDrivenVolumeRenderer::toggleIDVRCSGTF(bool _enable)
 
 //-----------------------------------------------------------------------------
 
+void ImportanceDrivenVolumeRenderer::toggleIDVRCSGLighting(bool _enable)
+{
+    m_idvrCSGLighting = _enable;
+
+    if(this->m_idvrMethod == s_MIMP && this->m_idvrCSG)
+    {
+        this->createMaterialAndIDVRTechnique();
+    }
+}
+
+//-----------------------------------------------------------------------------
+
 void ImportanceDrivenVolumeRenderer::setIDVRCountersinkAngle(double _angle)
 {
     m_idvrCSGAngleCosine = static_cast<float>(std::cos(::glm::radians(_angle)));
 
-    if(m_idvrMethod == s_MIMP && m_idvrCSG)
-    {
-        m_RTVSharedParameters->setNamedConstant("u_csgAngleCos", m_idvrCSGAngleCosine);
-        this->getLayer()->requestRender();
-    }
+    m_CSGSharedParameters->setNamedConstant("u_fCSGAngleCos", m_idvrCSGAngleCosine);
 }
 
 //-----------------------------------------------------------------------------
@@ -454,24 +496,6 @@ void ImportanceDrivenVolumeRenderer::setIDVRCountersinkAngle(double _angle)
 void ImportanceDrivenVolumeRenderer::setIDVRCSGBlurWeight(double _blurWeight)
 {
     m_idvrCSGBlurWeight = static_cast<float>(_blurWeight);
-
-    if(m_idvrMethod == s_MIMP && m_idvrCSG)
-    {
-        this->getLayer()->requestRender();
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-void ImportanceDrivenVolumeRenderer::toggleIDVRCSGBorder(bool _border)
-{
-    // FIXME: find a new way to display the csg border.
-    m_idvrCSGBorder = _border;
-
-    if(this->m_idvrMethod == s_MIMP && this->m_idvrCSG)
-    {
-        this->createMaterialAndIDVRTechnique();
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -488,30 +512,35 @@ void ImportanceDrivenVolumeRenderer::toggleIDVRCSGDisableContext(bool _discard)
 
 //-----------------------------------------------------------------------------
 
-void ImportanceDrivenVolumeRenderer::setIDVRCSGBorderThickness(double _thickness)
+void ImportanceDrivenVolumeRenderer::setIDVRCSGDepthLinesColor(std::array<std::uint8_t, 4> _color)
 {
-    m_idvrCSGBorderThickness = static_cast<float>(_thickness);
+    m_RTVSharedParameters->setNamedConstant("u_csgDepthLinesColor",
+                                            ::Ogre::ColourValue(_color[0] / 256.f, _color[1] / 256.f,
+                                                                _color[2] / 256.f));
+}
 
-    if(m_idvrMethod == s_MIMP && this->m_idvrCSG && this->m_idvrCSGBorder)
-    {
-        m_RTVSharedParameters->setNamedConstant("u_csgBorderThickness", m_idvrCSGBorderThickness);
-        this->getLayer()->requestRender();
-    }
+//------------------------------------------------------------------------------
+
+void ImportanceDrivenVolumeRenderer::setIDVRCSGDepthLinesWidth(float _width)
+{
+    m_RTVSharedParameters->setNamedConstant("u_csgDepthLinesWidth", _width);
+
 }
 
 //-----------------------------------------------------------------------------
 
 void ImportanceDrivenVolumeRenderer::setIDVRCSGBorderColor(std::array<std::uint8_t, 4> _color)
 {
-    m_idvrCSGBorderColor.r = _color[0] / 256.f;
-    m_idvrCSGBorderColor.g = _color[1] / 256.f;
-    m_idvrCSGBorderColor.b = _color[2] / 256.f;
+    m_RTVSharedParameters->setNamedConstant("u_csgBorderColor",
+                                            ::Ogre::ColourValue(_color[0] / 256.f, _color[1] / 256.f,
+                                                                _color[2] / 256.f));
+}
 
-    if(m_idvrMethod == s_MIMP && m_idvrCSG && (m_idvrCSGBorder || m_idvrCSGDepthLines))
-    {
-        m_RTVSharedParameters->setNamedConstant("u_csgBorderColor", m_idvrCSGBorderColor);
-        this->getLayer()->requestRender();
-    }
+//------------------------------------------------------------------------------
+
+void ImportanceDrivenVolumeRenderer::setIDVRCSGBorderWidth(float _width)
+{
+    m_RTVSharedParameters->setNamedConstant("u_csgBorderWidth", _width);
 }
 
 //------------------------------------------------------------------------------
@@ -532,7 +561,7 @@ void ImportanceDrivenVolumeRenderer::setIDVRCSGGrayScaleMethod(IDVRCSGGrayScaleM
 {
     m_idvrCSGgrayscaleMethod = _method;
 
-    if(this->m_idvrMethod == s_MIMP && this->m_idvrCSG && this->m_idvrCSGModulation)
+    if(this->m_idvrMethod == s_MIMP && this->m_idvrCSG && this->m_idvrCSGGrayScale)
     {
         this->createMaterialAndIDVRTechnique();
     }
@@ -566,13 +595,7 @@ void ImportanceDrivenVolumeRenderer::setIDVRCSGModulationMethod(IDVRCSGModulatio
 
 void ImportanceDrivenVolumeRenderer::setIDVRCSGModulationFactor(double _modulationFactor)
 {
-    m_idvrCSGModulationFactor = static_cast<float>(_modulationFactor);
-
-    if(m_idvrMethod == s_MIMP && this->m_idvrCSG)
-    {
-        m_RTVSharedParameters->setNamedConstant("u_colorModulationFactor", m_idvrCSGModulationFactor);
-        this->getLayer()->requestRender();
-    }
+    m_RTVSharedParameters->setNamedConstant("u_csgColorModulationFactor", static_cast<float>(_modulationFactor));
 }
 
 //-----------------------------------------------------------------------------
@@ -591,18 +614,12 @@ void ImportanceDrivenVolumeRenderer::toggleIDVRCSGOpacityDecrease(bool _opacity)
 
 void ImportanceDrivenVolumeRenderer::setIDVRCSGOpacityDecreaseFactor(double _opacity)
 {
-    m_idvrCSGOpacityDecreaseFactor = static_cast<float>(_opacity);
-
-    if(m_idvrMethod == s_MIMP && this->m_idvrCSG)
-    {
-        m_RTVSharedParameters->setNamedConstant("u_opacityDecreaseFactor", m_idvrCSGOpacityDecreaseFactor);
-        this->getLayer()->requestRender();
-    }
+    m_RTVSharedParameters->setNamedConstant("u_csgOpacityDecreaseFactor", static_cast<float>(_opacity));
 }
 
 //-----------------------------------------------------------------------------
 
-void ImportanceDrivenVolumeRenderer::toggleIDVRDepthLines(bool _depthLines)
+void ImportanceDrivenVolumeRenderer::toggleIDVRCSGDepthLines(bool _depthLines)
 {
     m_idvrCSGDepthLines = _depthLines;
 
@@ -614,47 +631,42 @@ void ImportanceDrivenVolumeRenderer::toggleIDVRDepthLines(bool _depthLines)
 
 //-----------------------------------------------------------------------------
 
-void ImportanceDrivenVolumeRenderer::setIDVRDepthLinesSpacing(int _spacing)
+void ImportanceDrivenVolumeRenderer::setIDVRCSGDepthLinesSpacing(int _spacing)
 {
-    m_RTVSharedParameters->setNamedConstant("u_depthLinesSpacing", _spacing);
+    m_RTVSharedParameters->setNamedConstant("u_csgDepthLinesSpacing", _spacing);
+}
+
+//-----------------------------------------------------------------------------
+
+void ImportanceDrivenVolumeRenderer::toggleIDVRCSGBorder(bool _border)
+{
+    m_idvrCSGBorder = _border;
+
+    if(m_idvrMethod == s_MIMP && this->m_idvrCSG)
+    {
+        this->createMaterialAndIDVRTechnique();
+    }
 }
 
 //-----------------------------------------------------------------------------
 
 void ImportanceDrivenVolumeRenderer::setIDVRAImCAlphaCorrection(double _alphaCorrection)
 {
-    m_idvrAImCAlphaCorrection = static_cast<float>(_alphaCorrection);
-
-    if(m_idvrMethod == s_AIMC)
-    {
-        m_RTVSharedParameters->setNamedConstant("u_aimcAlphaCorrection", m_idvrAImCAlphaCorrection);
-        this->getLayer()->requestRender();
-    }
+    m_RTVSharedParameters->setNamedConstant("u_aimcAlphaCorrection", static_cast<float>(_alphaCorrection));
 }
 
 //-----------------------------------------------------------------------------
 
 void ImportanceDrivenVolumeRenderer::setIDVRVPImCAlphaCorrection(double _alphaCorrection)
 {
-    m_idvrVPImCAlphaCorrection = static_cast<float>(_alphaCorrection);
-
-    if(m_idvrMethod == s_VPIMC)
-    {
-        m_RTVSharedParameters->setNamedConstant("u_vpimcAlphaCorrection", m_idvrVPImCAlphaCorrection);
-        this->getLayer()->requestRender();
-    }
+    m_RTVSharedParameters->setNamedConstant("u_vpimcAlphaCorrection", static_cast<float>(_alphaCorrection));
 }
 
 //-----------------------------------------------------------------------------
 
 void ImportanceDrivenVolumeRenderer::setImageSpacing(const ::Ogre::Vector3& _spacing)
 {
-    m_RTVSharedParameters->setNamedConstant("u_imageSpacing", _spacing);
-
-    if(m_idvrMethod == s_MIMP && this->m_idvrCSG)
-    {
-        this->getLayer()->requestRender();
-    }
+    m_CSGSharedParameters->setNamedConstant("u_f3ImageSpacingSize", _spacing);
 }
 
 //-----------------------------------------------------------------------------
@@ -698,9 +710,9 @@ std::tuple<std::string, std::string, size_t> ImportanceDrivenVolumeRenderer::com
                 {
                     fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << s_CSG_TF_DEFINE;
                 }
-                if(m_idvrCSGBorder)
+                if(m_idvrCSGLighting)
                 {
-                    fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << s_CSG_BORDER_DEFINE;
+                    fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << s_CSG_LIGHTING_DEFINE;
                 }
                 if(m_idvrCSGDisableContext)
                 {
@@ -713,6 +725,10 @@ std::tuple<std::string, std::string, size_t> ImportanceDrivenVolumeRenderer::com
                 if(m_idvrCSGDepthLines)
                 {
                     fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << s_CSG_DEPTH_LINES_DEFINE;
+                }
+                if(m_idvrCSGBorder)
+                {
+                    fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << s_CSG_BORDER_DEFINE;
                 }
 
                 if(m_idvrCSGModulation)
@@ -801,25 +817,26 @@ void ImportanceDrivenVolumeRenderer::setRayCastingPassTextureUnits(::Ogre::Pass*
 
         fpParams->setNamedConstant("u_" + s_JUMP_FLOOD_ALGORITHM_TEXTURE, nbTexUnits++);
 
-        if(this->m_idvrCSGTF)
+        if(m_idvrCSG)
         {
-            const auto gpuTF = m_gpuCSGTF.lock();
             texUnitState = _rayCastingPass->createTextureUnitState();
-            texUnitState->setName(s_CSG_TF_TEXUNIT_NAME);
-            gpuTF->bind(_rayCastingPass, texUnitState->getName(), fpParams, "u_CSGTFWindow");
+            texUnitState->setTextureFiltering(::Ogre::TFO_BILINEAR);
+            texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
+            texUnitState->setContentType(::Ogre::TextureUnitState::CONTENT_COMPOSITOR);
+            texUnitState->setCompositorReference(s_CSGDISTANCEMAP_COMPOSITOR, "CSGInfos_T");
 
-            fpParams->setNamedConstant("u_CSGTFTexture", nbTexUnits++);
+            fpParams->setNamedConstant("u_csgInfos", nbTexUnits++);
+
+            if(this->m_idvrCSGTF)
+            {
+                const auto gpuTF = m_gpuCSGTF.lock();
+                texUnitState = _rayCastingPass->createTextureUnitState();
+                texUnitState->setName(s_CSG_TF_TEXUNIT_NAME);
+                gpuTF->bind(_rayCastingPass, texUnitState->getName(), fpParams, "u_CSGTFWindow");
+
+                fpParams->setNamedConstant("u_CSGTFTexture", nbTexUnits++);
+            }
         }
-    }
-
-    // Alpha Correction: AImC | VPImC
-    if(m_idvrMethod == s_AIMC)
-    {
-        m_RTVSharedParameters->setNamedConstant("u_aimcAlphaCorrection", m_idvrAImCAlphaCorrection);
-    }
-    else if(m_idvrMethod == s_VPIMC)
-    {
-        m_RTVSharedParameters->setNamedConstant("u_vpimcAlphaCorrection", m_idvrVPImCAlphaCorrection);
     }
 }
 
@@ -841,10 +858,10 @@ void ImportanceDrivenVolumeRenderer::createIDVRTechnique()
     /// Create the technique that is used in ImportanceCompositing.compositor
     if(m_idvrMethod != s_NONE )
     {
-        auto* const tech = mat->createTechnique();
+        auto* tech = mat->createTechnique();
         SLM_ASSERT("Can't create a new technique", tech);
 
-        auto* const pass = tech->createPass();
+        auto* pass = tech->createPass();
         SLM_ASSERT("Can't create a new pass", pass);
 
         pass->setCullingMode(::Ogre::CullingMode::CULL_ANTICLOCKWISE);
@@ -876,7 +893,8 @@ void ImportanceDrivenVolumeRenderer::createIDVRTechnique()
         ::Ogre::TextureUnitState* texUnitState = pass->createTextureUnitState();
         texUnitState->setTextureName(m_maskTexture->getName(), ::Ogre::TEX_TYPE_3D);
         texUnitState->setTextureFiltering(::Ogre::TFO_BILINEAR);
-        texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
+        texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_BORDER);
+        texUnitState->setTextureBorderColour(::Ogre::ColourValue(0.0f, 0.0f, 0.0f, 0.0f));
 
         const auto& rayEntryCompositorName = m_idvrMaskRayEntriesCompositor.getName();
         texUnitState = pass->createTextureUnitState();
@@ -885,6 +903,51 @@ void ImportanceDrivenVolumeRenderer::createIDVRTechnique()
         texUnitState->setCompositorReference(rayEntryCompositorName, rayEntryCompositorName + "Texture");
         texUnitState->setTextureFiltering(::Ogre::TFO_NONE);
         texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
+
+        //////////////////////////////////////////////////////////////
+        /// Create the technique that is used in CSGInfos.compositor
+        if(m_idvrMethod == s_MIMP && m_idvrCSG)
+        {
+            tech = mat->createTechnique();
+            SLM_ASSERT("Can't create a new technique", tech);
+
+            tech->setName("CSGInfos_M");
+            tech->setSchemeName("CSGInfos_M");
+
+            pass = tech->createPass();
+            SLM_ASSERT("Can't create a new pass", pass);
+
+            pass->setCullingMode(::Ogre::CULL_ANTICLOCKWISE);
+
+            pass->setVertexProgram(vpName);
+            pass->setFragmentProgram("CSGInfos_FP");
+
+            vpParams = pass->getVertexProgramParameters();
+            vpParams->setNamedAutoConstant("u_worldViewProj", ::Ogre::GpuProgramParameters::ACT_WORLDVIEWPROJ_MATRIX);
+
+            ::Ogre::GpuProgramParametersSharedPtr fpParams = pass->getFragmentProgramParameters();
+
+            fpParams->addSharedParameters(m_CSGSharedParameters->getName());
+
+            fpParams->setNamedConstant("u_imageSize",
+                                       ::Ogre::Vector3(::Ogre::Real( m_3DOgreTexture->getWidth()),
+                                                       ::Ogre::Real(m_3DOgreTexture->getHeight()),
+                                                       ::Ogre::Real(m_3DOgreTexture->getDepth())));
+            fpParams->setNamedConstant("u_s2EntryDepth_Ss", 0);
+            const auto& rayEntryCompositorName = m_idvrMaskRayEntriesCompositor.getName();
+            texUnitState = pass->createTextureUnitState();
+            texUnitState->setTextureFiltering(::Ogre::TFO_NONE);
+            texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
+            texUnitState->setContentType(::Ogre::TextureUnitState::CONTENT_COMPOSITOR);
+            texUnitState->setCompositorReference(rayEntryCompositorName, rayEntryCompositorName + "Texture");
+
+            fpParams->setNamedConstant("u_s2JFA_Ns", 1);
+            texUnitState = pass->createTextureUnitState();
+            texUnitState->setTextureFiltering(::Ogre::TFO_BILINEAR);
+            texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
+            texUnitState->setContentType(::Ogre::TextureUnitState::CONTENT_COMPOSITOR);
+            texUnitState->setCompositorReference(s_JFAINIT_COMPOSITOR, "JFAFinal");
+        }
     }
 
     this->initCompositors();
