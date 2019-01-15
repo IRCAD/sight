@@ -40,11 +40,31 @@ macro(installConanDeps CONAN_DEPS_LIST)
         set(CONAN_BUILD_OPTION "missing")
     endif()
 
+    if(UNIX AND NOT APPLE)
+        # Find information about current Linux distribution to configure conan
+        find_program(LSB_RELEASE_EXEC lsb_release)
+        if(NOT LSB_RELEASE_EXEC)
+            message(FATAL_ERROR "lsb_release executable not found!")
+        endif()
+        execute_process(COMMAND ${LSB_RELEASE_EXEC} -is
+            OUTPUT_VARIABLE LSB_RELEASE_ID_SHORT
+            OUTPUT_STRIP_TRAILING_WHITESPACE
+        )
+        execute_process(COMMAND ${LSB_RELEASE_EXEC} -rs
+            OUTPUT_VARIABLE LSB_RELEASE_NUMBER_SHORT
+            OUTPUT_STRIP_TRAILING_WHITESPACE
+        )
+        string(TOLOWER ${LSB_RELEASE_ID_SHORT} LSB_RELEASE_ID_SHORT_LOWER)
+        set(CONAN_DISTRO "${LSB_RELEASE_ID_SHORT_LOWER}${LSB_RELEASE_NUMBER_SHORT}")
+        set(CONAN_SETTINGS "SETTINGS os.distro=${CONAN_DISTRO}")
+    endif()
+
     conan_cmake_run(
         REQUIRES ${CONAN_DEPS_LIST}
         BASIC_SETUP CMAKE_TARGETS NO_OUTPUT_DIRS OUTPUT_QUIET
         OPTIONS ${CONAN_OPTIONS}
         BUILD ${CONAN_BUILD_OPTION}
+        ${CONAN_SETTINGS}
     )
 
 endmacro()
