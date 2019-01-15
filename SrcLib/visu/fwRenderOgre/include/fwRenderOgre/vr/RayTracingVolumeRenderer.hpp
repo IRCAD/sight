@@ -59,7 +59,7 @@ public:
      * @param sceneManager         The scene manager being used.
      * @param volumeNode           This object's node.
      * @param imageTexture         Texture holding the 3D image to be rendered.
-     * @param gpuTF                Texture holding the transfer function.
+     * @param gpuVolumeTF          Texture holding the transfer function.
      * @param preintegrationTable  Texture holding the pre-integration table.
      * @param mode3D               Stereoscopic volume rendering flag.
      * @param ambientOcclusion     Ambient occlusion flag.
@@ -68,9 +68,9 @@ public:
      */
     FWRENDEROGRE_API RayTracingVolumeRenderer(std::string parentId,
                                               Layer::sptr layer,
-                                              ::Ogre::SceneNode* parentNode,
+                                              Ogre::SceneNode* const parentNode,
                                               ::Ogre::TexturePtr imageTexture,
-                                              const TransferFunction::sptr& gpuTF,
+                                              const TransferFunction::sptr& gpuVolumeTF,
                                               PreIntegrationTable& preintegrationTable,
                                               bool ambientOcclusion      = false,
                                               bool colorBleeding         = false,
@@ -82,13 +82,14 @@ public:
     FWRENDEROGRE_API virtual ~RayTracingVolumeRenderer();
 
     /// Function called when a new image is being rendered.
-    FWRENDEROGRE_API virtual void imageUpdate(::fwData::Image::sptr image, ::fwData::TransferFunction::sptr tf);
+    FWRENDEROGRE_API virtual void imageUpdate(const fwData::Image::sptr image,
+                                              const fwData::TransferFunction::sptr tf) override;
 
     /// Called when the transfer function is updated.
-    FWRENDEROGRE_API virtual void tfUpdate(::fwData::TransferFunction::sptr tf);
+    FWRENDEROGRE_API virtual void updateVolumeTF() override;
 
     /// Sets the number of samples per view ray.
-    FWRENDEROGRE_API virtual void setSampling(uint16_t nbSamples);
+    FWRENDEROGRE_API virtual void setSampling(uint16_t nbSamples) override;
 
     /// Sets the opacity correction factor.
     FWRENDEROGRE_API void setOpacityCorrection(int opacityCorrection);
@@ -102,7 +103,7 @@ public:
     FWRENDEROGRE_API virtual void setIlluminationVolume(SATVolumeIllumination::sptr illuminationVolume);
 
     /// Sets pre-integrated mode.
-    FWRENDEROGRE_API virtual void setPreIntegratedRendering(bool preIntegratedRendering);
+    FWRENDEROGRE_API virtual void setPreIntegratedRendering(bool preIntegratedRendering) override;
 
     /// Sets ambient occlusion usage.
     FWRENDEROGRE_API virtual void setAmbientOcclusion(bool ambientOcclusion);
@@ -118,7 +119,7 @@ public:
     FWRENDEROGRE_API void setFocalLength(float focalLength);
 
     /// Computes image positions, updates the proxy geometry.
-    FWRENDEROGRE_API virtual void clipImage(const ::Ogre::AxisAlignedBox& clippingBox);
+    FWRENDEROGRE_API virtual void clipImage(const ::Ogre::AxisAlignedBox& clippingBox) override;
 
     /// IllumVolume getter.
     FWRENDEROGRE_API SATVolumeIllumination::sptr getIllumVolume();
@@ -139,7 +140,7 @@ protected:
     FWRENDEROGRE_API virtual std::tuple<std::string, std::string, size_t> computeRayTracingDefines() const;
 
     /// Sets all texture units needed by the material during the ray casting pass.
-    FWRENDEROGRE_API virtual void setRayCastingPassTextureUnits(::Ogre::Pass* _rayCastingPass,
+    FWRENDEROGRE_API virtual void setRayCastingPassTextureUnits(Ogre::Pass* const _rayCastingPass,
                                                                 const std::string& _fpPPDefines) const;
 
     /// When using AutoStereo compositor, initialize the raytracing material.
@@ -193,6 +194,9 @@ private:
 
     /// Sets usage of soft shadows.
     bool m_shadows;
+
+    /// TF texture used for rendering.
+    TransferFunction::wptr m_gpuVolumeTF;
 
     /// Factor parameter used to weight ambient occlusion (A channel) and color bleeding (RGB channels).
     ::Ogre::Vector4 m_volIllumFactor;

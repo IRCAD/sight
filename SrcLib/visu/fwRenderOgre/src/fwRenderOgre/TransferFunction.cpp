@@ -86,7 +86,10 @@ void TransferFunction::createTexture(const ::Ogre::String& _parentId)
 
 void TransferFunction::removeTexture()
 {
-    ::Ogre::TextureManager::getSingleton().remove(m_texture->getHandle());
+    if(m_texture)
+    {
+        ::Ogre::TextureManager::getSingleton().remove(m_texture->getHandle());
+    }
     m_texture.reset();
 }
 

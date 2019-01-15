@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2018 IRCAD France
- * Copyright (C) 2016-2018 IHU Strasbourg
+ * Copyright (C) 2016-2019 IRCAD France
+ * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -95,6 +95,8 @@ namespace visuOgreAdaptor
  * @subsection In-Out In-Out
  * - \b tf [::fwData::TransferFunction] (optional): the current TransferFunction. If it is not defined, we use the
  *      image's default transferFunction (CT-GreyLevel).
+ * - \b csgTF [::fwData::TransferFunction] (optional): the TransferFunction used for the mask. If it is not defined, we
+ * use the default transfer function.
  * - \b mask [::fwData::Image] (optional): segmented data.
  * - \b clippingMatrix [::fwData::TransformationMatrix3D]: matrix used to clip the volume.
  * @subsection Configuration Configuration
@@ -187,8 +189,11 @@ protected:
     /// Retrieves the current transfer function
     VISUOGREADAPTOR_API void swapping(const KeyType& key) override;
 
-    /// Slot: update the displayed transfer function
-    VISUOGREADAPTOR_API virtual void updateTF();
+    /// Update the displayed transfer function
+    VISUOGREADAPTOR_API virtual void updateVolumeTF();
+
+    /// Update the displayed transfer function used for the IDVR
+    VISUOGREADAPTOR_API virtual void updateCSGTF();
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -243,7 +248,12 @@ private:
 
     /// Updates the clipping box position from the inout clipping matrix.
     void updateClippingBox();
-    ::fwDataTools::helper::TransferFunction m_helperTF;
+
+    /// Helper to manage the volume TF.
+    ::fwDataTools::helper::TransferFunction m_helperVolumeTF;
+
+    /// Helper to manage the TF use to fill the CSG.
+    ::fwDataTools::helper::TransferFunction m_helperCSGTF;
 
     /// Updates the inout clipping matrix from the clipping box positions.
     void updateClippingTM3D();
@@ -257,7 +267,10 @@ private:
     ::Ogre::TexturePtr m_maskTexture;
 
     /// TF texture used for rendering.
-    ::fwRenderOgre::TransferFunction::sptr m_gpuTF;
+    ::fwRenderOgre::TransferFunction::sptr m_gpuVolumeTF;
+
+    /// TF texture used to fill the CSG.
+    ::fwRenderOgre::TransferFunction::sptr m_gpuCSGTF;
 
     /// Pre-integration table.
     ::fwRenderOgre::vr::PreIntegrationTable m_preIntegrationTable;

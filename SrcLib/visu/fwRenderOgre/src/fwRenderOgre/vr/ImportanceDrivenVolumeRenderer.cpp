@@ -66,7 +66,7 @@ public:
     {
         if(mtl->getName().find("JFA") != std::string::npos)
         {
-            ::Ogre::Technique* tech = mtl->getBestTechnique();
+            const ::Ogre::Technique* const tech = mtl->getBestTechnique();
 
             for(short unsigned int i = 0; i < tech->getNumPasses(); i++ )
             {
@@ -84,7 +84,7 @@ public:
     {
         if(mtl->getName().find("Blur") != std::string::npos)
         {
-            ::Ogre::Technique* tech = mtl->getBestTechnique();
+            const ::Ogre::Technique* const tech = mtl->getBestTechnique();
 
             for(short unsigned int i = 0; i < tech->getNumPasses(); i++ )
             {
@@ -124,6 +124,7 @@ const std::string s_AIMC_DEFINE  = "IDVR=2";
 const std::string s_VPIMC_DEFINE = "IDVR=3";
 
 const std::string s_CSG_DEFINE                  = "CSG=1";
+const std::string s_CSG_TF_DEFINE               = "CSG_TF=1";
 const std::string s_CSG_BORDER_DEFINE           = "CSG_BORDER=1";
 const std::string s_CSG_DISABLE_CONTEXT_DEFINE  = "CSG_DISABLE_CONTEXT=1";
 const std::string s_CSG_OPACITY_DECREASE_DEFINE = "CSG_OPACITY_DECREASE=1";
@@ -139,6 +140,8 @@ const std::string s_CSG_MOD_COLOR3_DEFINE               = "CSG_MODULATION=6";
 const std::string s_IMPORTANCE_COMPOSITING_TEXTURE = "IC";
 const std::string s_JUMP_FLOOD_ALGORITHM_TEXTURE   = "JFA";
 
+static const std::string s_CSG_TF_TEXUNIT_NAME = "CSGTransferFunction";
+
 //-----------------------------------------------------------------------------
 
 ImportanceDrivenVolumeRenderer::ImportanceDrivenVolumeRenderer(std::string _parentId,
@@ -146,37 +149,23 @@ ImportanceDrivenVolumeRenderer::ImportanceDrivenVolumeRenderer(std::string _pare
                                                                ::Ogre::SceneNode* _parentNode,
                                                                ::Ogre::TexturePtr _imageTexture,
                                                                ::Ogre::TexturePtr _maskTexture,
-                                                               const TransferFunction::sptr& _gpuTF,
+                                                               const TransferFunction::sptr& _gpuVolumeTF,
+                                                               const TransferFunction::sptr& _gpuCSGTF,
                                                                PreIntegrationTable& _preintegrationTable,
                                                                bool _ambientOcclusion,
                                                                bool _colorBleeding,
                                                                bool _shadows,
                                                                double _aoFactor,
                                                                double _colorBleedingFactor) :
-    fwRenderOgre::vr::RayTracingVolumeRenderer(_parentId, _layer, _parentNode, _imageTexture, _gpuTF,
+    fwRenderOgre::vr::RayTracingVolumeRenderer(_parentId, _layer, _parentNode, _imageTexture, _gpuVolumeTF,
                                                _preintegrationTable, _ambientOcclusion, _colorBleeding, _shadows,
                                                _aoFactor, _colorBleedingFactor),
     m_maskTexture(_maskTexture),
     m_idvrMethod(s_NONE),
-    m_idvrCSG(true),
     m_idvrCSGAngleCosine(std::cos(::glm::pi<float>() / 12.f)) /* cos(15 degrees) */,
-    m_idvrCSGBlurWeight(0.01f),
-    m_idvrCSGBorder(false),
-    m_idvrCSGDisableContext(false),
-    m_idvrCSGBorderThickness(0.05f),
-    m_idvrCSGBorderColor(::Ogre::ColourValue(1.f, 1.f, 0.6f)) /* light yellow lines */,
-    m_idvrCSGModulation(false),
-    m_idvrCSGModulationMethod(IDVRCSGModulationMethod::COLOR1),
-    m_idvrCSGModulationFactor(0.02f),
-    m_idvrCSGGrayScale(false),
-    m_idvrCSGgrayscaleMethod(IDVRCSGGrayScaleMethod::AVERAGE_GRAYSCALE),
-    m_idvrCSGOpacityDecrease(false),
-    m_idvrCSGOpacityDecreaseFactor(0.8f),
-    m_idvrCSGDepthLines(false),
-    m_idvrAImCAlphaCorrection(0.05f),
-    m_idvrVPImCAlphaCorrection(0.3f),
     m_idvrMaskRayEntriesCompositor(s_IMPORTANCE_MASK_ENTRY_POINTS_COMPOSITOR, s_PROXY_GEOMETRY_RQ_GROUP,
-                                   compositor::Core::StereoModeType::NONE, false)
+                                   compositor::Core::StereoModeType::NONE, false),
+    m_gpuCSGTF(_gpuCSGTF)
 {
     m_RTVSharedParameters->addConstantDefinition("u_csgAngleCos", ::Ogre::GCT_FLOAT1);
     m_RTVSharedParameters->addConstantDefinition("u_csgBorderThickness", ::Ogre::GCT_FLOAT1);
@@ -188,6 +177,7 @@ ImportanceDrivenVolumeRenderer::ImportanceDrivenVolumeRenderer(std::string _pare
     m_RTVSharedParameters->addConstantDefinition("u_imageSpacing", ::Ogre::GCT_FLOAT3);
     m_RTVSharedParameters->addConstantDefinition("u_depthLinesSpacing", ::Ogre::GCT_INT1);
     m_RTVSharedParameters->addConstantDefinition("u_depthLinesWidth", ::Ogre::GCT_FLOAT1);
+    m_RTVSharedParameters->addConstantDefinition("u_CSGTFWindow", ::Ogre::GCT_FLOAT2);
 
     m_RTVSharedParameters->setNamedConstant("u_csgAngleCos", m_idvrCSGAngleCosine);
     m_RTVSharedParameters->setNamedConstant("u_csgBorderThickness", m_idvrCSGBorderThickness);
@@ -208,10 +198,24 @@ ImportanceDrivenVolumeRenderer::ImportanceDrivenVolumeRenderer(std::string _pare
 
 ImportanceDrivenVolumeRenderer::~ImportanceDrivenVolumeRenderer()
 {
-    auto layer    = this->getLayer();
-    auto viewport = layer->getViewport();
+    const auto layer     = this->getLayer();
+    auto* const viewport = layer->getViewport();
 
     this->cleanCompositorChain(viewport);
+}
+
+//------------------------------------------------------------------------------
+
+void ImportanceDrivenVolumeRenderer::updateCSGTF()
+{
+    if(m_idvrMethod == s_MIMP && this->m_idvrCSGTF)
+    {
+        const ::Ogre::MaterialPtr material       = ::Ogre::MaterialManager::getSingleton().getByName(m_currentMtlName);
+        const ::Ogre::Technique* const technique = material->getTechnique(0);
+        SLM_ASSERT("Technique not found", technique);
+        const auto* const pass = technique->getPass(0);
+        m_gpuCSGTF.lock()->bind(pass, s_CSG_TF_TEXUNIT_NAME, m_RTVSharedParameters, "u_CSGTFWindow");
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -235,6 +239,7 @@ void ImportanceDrivenVolumeRenderer::setIDVRMethod(std::string _method)
                  this->getLayer()->getStereoMode() != compositor::Core::StereoModeType::NONE && m_idvrMethod != s_NONE);
 
     this->createMaterialAndIDVRTechnique();
+    this->updateCSGTF();
 }
 
 //-----------------------------------------------------------------------------
@@ -242,8 +247,8 @@ void ImportanceDrivenVolumeRenderer::setIDVRMethod(std::string _method)
 void ImportanceDrivenVolumeRenderer::initCompositors()
 {
     // Start from an empty compositor chain
-    auto layer    = this->getLayer();
-    auto viewport = layer->getViewport();
+    const auto layer     = this->getLayer();
+    auto* const viewport = layer->getViewport();
 
     this->cleanCompositorChain(viewport);
     this->buildICCompositors(viewport);
@@ -251,7 +256,7 @@ void ImportanceDrivenVolumeRenderer::initCompositors()
 
 //-----------------------------------------------------------------------------
 
-void ImportanceDrivenVolumeRenderer::buildICCompositors(::Ogre::Viewport* _vp)
+void ImportanceDrivenVolumeRenderer::buildICCompositors(::Ogre::Viewport* const _vp)
 {
     std::string vpPPDefines, fpPPDefines;
     size_t hash;
@@ -344,7 +349,7 @@ void ImportanceDrivenVolumeRenderer::buildICCompositors(::Ogre::Viewport* _vp)
 
 //-----------------------------------------------------------------------------
 
-void ImportanceDrivenVolumeRenderer::cleanCompositorChain(Ogre::Viewport* _vp)
+void ImportanceDrivenVolumeRenderer::cleanCompositorChain(::Ogre::Viewport* const _vp)
 {
     ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
 
@@ -388,7 +393,7 @@ void ImportanceDrivenVolumeRenderer::cleanCompositorChain(Ogre::Viewport* _vp)
     m_compositorListeners.clear();
 
     // Reallocate chain resources, i.e. force chain recompiling.
-    for(::Ogre::CompositorInstance* instance : compInstances)
+    for(::Ogre::CompositorInstance* const instance : compInstances)
     {
         if(instance->getEnabled())
         {
@@ -401,11 +406,31 @@ void ImportanceDrivenVolumeRenderer::cleanCompositorChain(Ogre::Viewport* _vp)
 
 //-----------------------------------------------------------------------------
 
+void ImportanceDrivenVolumeRenderer::setPreIntegratedRendering(bool _preIntegratedRendering)
+{
+    m_preIntegratedRendering = _preIntegratedRendering;
+
+    this->createMaterialAndIDVRTechnique();
+}
+//-----------------------------------------------------------------------------
+
 void ImportanceDrivenVolumeRenderer::toggleIDVRCountersinkGeometry(bool _CSG)
 {
     m_idvrCSG = _CSG;
 
     if(this->m_idvrMethod == s_MIMP)
+    {
+        this->createMaterialAndIDVRTechnique();
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void ImportanceDrivenVolumeRenderer::toggleIDVRCSGTF(bool _enable)
+{
+    m_idvrCSGTF = _enable;
+
+    if(this->m_idvrMethod == s_MIMP && this->m_idvrCSG)
     {
         this->createMaterialAndIDVRTechnique();
     }
@@ -638,8 +663,8 @@ void ImportanceDrivenVolumeRenderer::resizeViewport(int _w, int _h)
 {
     this->RayTracingVolumeRenderer::resizeViewport(_w, _h);
 
-    auto layer    = this->getLayer();
-    auto viewport = layer->getViewport();
+    auto layer           = this->getLayer();
+    auto* const viewport = layer->getViewport();
 
     this->cleanCompositorChain(viewport);
     this->buildICCompositors(viewport);
@@ -669,6 +694,10 @@ std::tuple<std::string, std::string, size_t> ImportanceDrivenVolumeRenderer::com
             {
                 fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << s_CSG_DEFINE;
 
+                if(m_idvrCSGTF)
+                {
+                    fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << s_CSG_TF_DEFINE;
+                }
                 if(m_idvrCSGBorder)
                 {
                     fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << s_CSG_BORDER_DEFINE;
@@ -737,7 +766,7 @@ std::tuple<std::string, std::string, size_t> ImportanceDrivenVolumeRenderer::com
 
 //-----------------------------------------------------------------------------
 
-void ImportanceDrivenVolumeRenderer::setRayCastingPassTextureUnits(Ogre::Pass* _rayCastingPass,
+void ImportanceDrivenVolumeRenderer::setRayCastingPassTextureUnits(::Ogre::Pass* const _rayCastingPass,
                                                                    const std::string& _fpPPDefines) const
 {
     this->RayTracingVolumeRenderer::setRayCastingPassTextureUnits(_rayCastingPass, _fpPPDefines);
@@ -771,6 +800,16 @@ void ImportanceDrivenVolumeRenderer::setRayCastingPassTextureUnits(Ogre::Pass* _
         texUnitState->setCompositorReference(s_JFAINIT_COMPOSITOR, "JFAFinal", 0);
 
         fpParams->setNamedConstant("u_" + s_JUMP_FLOOD_ALGORITHM_TEXTURE, nbTexUnits++);
+
+        if(this->m_idvrCSGTF)
+        {
+            const auto gpuTF = m_gpuCSGTF.lock();
+            texUnitState = _rayCastingPass->createTextureUnitState();
+            texUnitState->setName(s_CSG_TF_TEXUNIT_NAME);
+            gpuTF->bind(_rayCastingPass, texUnitState->getName(), fpParams, "u_CSGTFWindow");
+
+            fpParams->setNamedConstant("u_CSGTFTexture", nbTexUnits++);
+        }
     }
 
     // Alpha Correction: AImC | VPImC
@@ -802,10 +841,10 @@ void ImportanceDrivenVolumeRenderer::createIDVRTechnique()
     /// Create the technique that is used in ImportanceCompositing.compositor
     if(m_idvrMethod != s_NONE )
     {
-        auto tech = mat->createTechnique();
+        auto* const tech = mat->createTechnique();
         SLM_ASSERT("Can't create a new technique", tech);
 
-        auto pass = tech->createPass();
+        auto* const pass = tech->createPass();
         SLM_ASSERT("Can't create a new pass", pass);
 
         pass->setCullingMode(::Ogre::CullingMode::CULL_ANTICLOCKWISE);

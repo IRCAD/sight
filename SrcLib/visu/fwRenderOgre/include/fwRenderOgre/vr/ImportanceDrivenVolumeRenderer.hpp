@@ -57,7 +57,8 @@ public:
                                                     ::Ogre::SceneNode* _parentNode,
                                                     ::Ogre::TexturePtr _imageTexture,
                                                     ::Ogre::TexturePtr _maskTexture,
-                                                    const TransferFunction::sptr& _gpuTF,
+                                                    const TransferFunction::sptr& _gpuVolumeTF,
+                                                    const TransferFunction::sptr& _gpuCSGTF,
                                                     PreIntegrationTable& _preintegrationTable,
                                                     bool _ambientOcclusion,
                                                     bool _colorBleeding,
@@ -67,11 +68,20 @@ public:
 
     FWRENDEROGRE_API virtual ~ImportanceDrivenVolumeRenderer();
 
+    /// Called when the transfer function is updated.
+    FWRENDEROGRE_API virtual void updateCSGTF();
+
     /// Set the importance driven method used during the rendering.
     FWRENDEROGRE_API void setIDVRMethod(std::string method);
 
     /// Toggle countersink geometry when using Importance Driven Volume Rendering.
     FWRENDEROGRE_API void toggleIDVRCountersinkGeometry(bool);
+
+    /// Sets pre-integrated mode.
+    FWRENDEROGRE_API virtual void setPreIntegratedRendering(bool) override;
+
+    /// Toggle TF use for countersink geometry .
+    FWRENDEROGRE_API void toggleIDVRCSGTF(bool);
 
     /// Set the countersink's geometry angle (in degrees).
     FWRENDEROGRE_API void setIDVRCountersinkAngle(double);
@@ -140,7 +150,7 @@ protected:
     FWRENDEROGRE_API virtual std::tuple<std::string, std::string, size_t> computeRayTracingDefines() const override;
 
     /// Set all texture units needed by the material during the ray casting pass.
-    FWRENDEROGRE_API virtual void setRayCastingPassTextureUnits(::Ogre::Pass* _rayCastingPass,
+    FWRENDEROGRE_API virtual void setRayCastingPassTextureUnits(::Ogre::Pass* const _rayCastingPass,
                                                                 const std::string& _fpPPDefines) const override;
 
 private:
@@ -155,10 +165,10 @@ private:
     void initCompositors();
 
     /// Create and adds importance compositing compositors to the chain (MImP + JFA, AImC or VPImC).
-    void buildICCompositors(::Ogre::Viewport* _vp);
+    void buildICCompositors(::Ogre::Viewport* const _vp);
 
     /// Remove all listeners and compositors from the current chain.
-    void cleanCompositorChain(::Ogre::Viewport* _vp);
+    void cleanCompositorChain(::Ogre::Viewport* const _vp);
 
     /// Texture of the segmentation mask.
     ::Ogre::TexturePtr m_maskTexture;
@@ -167,55 +177,58 @@ private:
     std::string m_idvrMethod;
 
     /// Sets usage of countersink geometry for MImP.
-    bool m_idvrCSG;
+    bool m_idvrCSG {true};
+
+    /// Sets usage of countersink geometry TF.
+    bool m_idvrCSGTF {false};
 
     /// Sets the csg's angle cosine for MImP.
     float m_idvrCSGAngleCosine;
 
     /// Sets countersink geometry blur weight for MImP.
-    float m_idvrCSGBlurWeight;
+    float m_idvrCSGBlurWeight {0.01f};
 
     /// Sets usage of countersink geometry border for MImP.
-    bool m_idvrCSGBorder;
+    bool m_idvrCSGBorder {false};
 
     /// Sets whether or not the context should be discarded when using MImP countersink geometry.
-    bool m_idvrCSGDisableContext;
+    bool m_idvrCSGDisableContext {false};
 
     /// Sets countersink geometry border thickness for MImP.
-    float m_idvrCSGBorderThickness;
+    float m_idvrCSGBorderThickness {0.05f};
 
     /// Sets countersink geometry border color for MImP.
-    ::Ogre::ColourValue m_idvrCSGBorderColor;
+    ::Ogre::ColourValue m_idvrCSGBorderColor {::Ogre::ColourValue(1.f, 1.f, 0.6f)};
 
     /// Sets usage of modulation for MImP CSG.
-    bool m_idvrCSGModulation;
+    bool m_idvrCSGModulation {false};
 
     /// Name of the method used to compute the new color values in CSG.
-    IDVRCSGModulationMethod m_idvrCSGModulationMethod;
+    IDVRCSGModulationMethod m_idvrCSGModulationMethod {IDVRCSGModulationMethod::COLOR1};
 
     /// Sets the wheighting factor for MImP CSG color modulation.
-    float m_idvrCSGModulationFactor;
+    float m_idvrCSGModulationFactor {0.02f};
 
     /// Sets usage of grayscale for MImP CSG.
-    bool m_idvrCSGGrayScale;
+    bool m_idvrCSGGrayScale {false};
 
     /// Name of the method used to compute the new color values in CSG.
-    IDVRCSGGrayScaleMethod m_idvrCSGgrayscaleMethod;
+    IDVRCSGGrayScaleMethod m_idvrCSGgrayscaleMethod {IDVRCSGGrayScaleMethod::AVERAGE_GRAYSCALE};
 
     /// Sets usage of opacity decrease for MImP CSG.
-    bool m_idvrCSGOpacityDecrease;
+    bool m_idvrCSGOpacityDecrease {false};
 
     /// Sets the opacity decrease factor used in MImP CSG.
-    float m_idvrCSGOpacityDecreaseFactor;
+    float m_idvrCSGOpacityDecreaseFactor {0.8f};
 
     /// Sets usage of depth lines for MImP CSG.
-    bool m_idvrCSGDepthLines;
+    bool m_idvrCSGDepthLines {false};
 
     /// Sets the alpha correction for AImC.
-    float m_idvrAImCAlphaCorrection;
+    float m_idvrAImCAlphaCorrection {0.05f};
 
     /// Sets the alpha correction for VPImC.
-    float m_idvrVPImCAlphaCorrection;
+    float m_idvrVPImCAlphaCorrection {0.3f};
 
     RayEntryCompositor m_idvrMaskRayEntriesCompositor;
 
@@ -225,6 +238,9 @@ private:
     /// List of all listeners associated to the VR's compositor chain.
     /// If a compositor has no listener, we store a nullptr in the corresponding entry.
     std::vector< ::Ogre::CompositorInstance::Listener*> m_compositorListeners;
+
+    /// TF texture used for IDVR rendering.
+    TransferFunction::wptr m_gpuCSGTF;
 
 };
 

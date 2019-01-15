@@ -2,32 +2,33 @@
     <id>OgreGenericScene</id>
     <parameters>
         <param name="WID_PARENT" />
-        <param name="modelSeriesUID" />
-        <param name="compositorChannel" />
-        <!-- 3D negato image -->
-        <param name="imageUID" />
-        <param name="TF" />
-        <param name="landmarks" />
-        <param name="maskUID" />
-        <param name="idvrEnumParamChannel" />
-        <param name="idvrBoolParamChannel" />
-        <param name="idvrDoubleParamChannel" />
-        <param name="idvrColorParamChannel" />
+        <param name="modelSeries" />
+        <param name="image" />
+        <param name="volumeTF" />
+        <param name="csgTF" />
+        <param name="landmark" />
+        <param name="mask" />
+        <param name="COMPOSITOR_CHANNEL" />
+        <param name="IDVR_ENUM_PARAM_CHANNEL" />
+        <param name="IDVR_BOOL_PARAM_CHANNEL" />
+        <param name="IDVR_DOUBLE_PARAM_CHANNEL" />
+        <param name="IDVR_COLOR_PARAM_CHANNEL" />
     </parameters>
     <config>
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="${modelSeriesUID}" type="::fwMedData::ModelSeries" src="ref" />
-        <object uid="${imageUID}" type="::fwData::Image" src="ref" />
-        <object uid="${maskUID}" type="::fwData::Image" src="ref" />
+        <object uid="${modelSeries}" type="::fwMedData::ModelSeries" src="ref" />
+        <object uid="${image}" type="::fwData::Image" src="ref" />
+        <object uid="${mask}" type="::fwData::Image" src="ref" />
 
         <object uid="frameTL" type="::arData::FrameTL" />
         <object uid="videoImage" type="::fwData::Image" />
         <object uid="camera" type="::arData::Camera" />
         <object uid="pointList" type="::fwData::PointList" />
 
-        <object uid="${TF}" type="::fwData::TransferFunction" src="deferred" />
-        <object uid="${landmarks}" type="::fwData::Landmarks" src="ref" />
+        <object uid="${volumeTF}" type="::fwData::TransferFunction" src="deferred" />
+        <object uid="${csgTF}" type="::fwData::TransferFunction" src="deferred" />
+        <object uid="${landmark}" type="::fwData::Landmarks" src="ref" />
 
         <object uid="volumeClippingMatrix" type="::fwData::TransformationMatrix3D" />
         <object uid="identityMatrix" type="::fwData::TransformationMatrix3D" />
@@ -47,7 +48,7 @@
                 <parent wid="${WID_PARENT}" />
                 <toolBar sid="toolBar" start="yes" />
                 <view sid="genericScene" start="yes" />
-                <view sid="negato3DInteractor" start="yes" />
+                <view sid="negato3DInteractorView" start="yes" />
                 <view sid="volumeRenderingEditorView" start="yes" />
             </registry>
         </service>
@@ -82,7 +83,7 @@
             </registry>
         </service>
 
-        <service uid="negato3DInteractor" type="::gui::view::SDefaultView">
+        <service uid="negato3DInteractorView" type="::gui::view::SDefaultView">
             <gui>
                 <layout type="::fwGui::LineLayoutManager">
                     <orientation value="vertical" />
@@ -222,21 +223,22 @@
         </service>
 
         <service uid="modelSeriesAdaptor" type="::visuOgreAdaptor::SModelSeries" autoConnect="yes">
-            <in key="model" uid="${modelSeriesUID}" />
+            <in key="model" uid="${modelSeries}" />
             <config layer="default" />
         </service>
 
         <service uid="volumeAdaptor" type="::visuOgreAdaptor::SVolumeRender">
-            <inout key="image" uid="${imageUID}" autoConnect="yes" />
-            <inout key="tf" uid="${TF}" optional="yes" />
-            <inout key="mask" uid="${maskUID}" autoConnect="yes" />
+            <inout key="image" uid="${image}" autoConnect="yes" />
+            <inout key="tf" uid="${volumeTF}" optional="yes" />
+            <inout key="csgTF" uid="${csgTF}" optional="yes" />
+            <inout key="mask" uid="${mask}" autoConnect="yes" />
             <inout key="clippingMatrix" uid="volumeClippingMatrix" autoConnect="yes" />
-            <config layer="default" widgets="no" preintegration="no" mode="raytracing" autoresetcamera="yes"/>
+            <config layer="default" widgets="no" preintegration="no" mode="raytracing" autoresetcamera="yes" samples="1024"/>
         </service>
 
         <service uid="negato3DAdaptor" type="::visuOgreAdaptor::SNegato3D">
-            <inout key="image" uid="${imageUID}" autoConnect="yes" />
-            <inout key="tf" uid="${TF}" optional="yes" />
+            <inout key="image" uid="${image}" autoConnect="yes" />
+            <inout key="tf" uid="${volumeTF}" optional="yes" />
             <config layer="default" />
         </service>
 
@@ -246,7 +248,7 @@
         </service>
 
         <service uid="landmarkAdaptor" type="::visuOgreAdaptor::SLandmarks" autoConnect="yes">
-            <in key="landmarks" uid="${landmarks}" />
+            <in key="landmarks" uid="${landmark}" />
             <config layer="default" />
         </service>
 
@@ -268,7 +270,7 @@
         </service>
 
         <service uid="sliderIndexEditor3D" type="::uiImageQt::SliceIndexPositionEditor" autoConnect="yes">
-            <inout key="image" uid="${imageUID}" />
+            <inout key="image" uid="${image}" />
             <sliceIndex>Sagittal</sliceIndex>
         </service>
 
@@ -335,19 +337,19 @@
             <slot>volumeAdaptor/setDoubleParameter</slot>
         </connect>
 
-        <connect channel="${idvrEnumParamChannel}">
+        <connect channel="${IDVR_ENUM_PARAM_CHANNEL}">
             <slot>volumeAdaptor/setEnumParameter</slot>
         </connect>
 
-        <connect channel="${idvrBoolParamChannel}">
+        <connect channel="${IDVR_BOOL_PARAM_CHANNEL}">
             <slot>volumeAdaptor/setBoolParameter</slot>
         </connect>
 
-        <connect channel="${idvrDoubleParamChannel}">
+        <connect channel="${IDVR_DOUBLE_PARAM_CHANNEL}">
             <slot>volumeAdaptor/setDoubleParameter</slot>
         </connect>
 
-        <connect channel="${idvrColorParamChannel}">
+        <connect channel="${IDVR_COLOR_PARAM_CHANNEL}">
             <slot>volumeAdaptor/setColorParameter</slot>
         </connect>
 

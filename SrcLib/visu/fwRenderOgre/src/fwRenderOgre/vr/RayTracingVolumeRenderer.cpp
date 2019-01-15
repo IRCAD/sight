@@ -60,11 +60,11 @@ namespace vr
 
 struct RayTracingVolumeRenderer::CameraListener : public ::Ogre::Camera::Listener
 {
-    RayTracingVolumeRenderer* m_renderer;
+    RayTracingVolumeRenderer* const m_renderer;
     std::string m_currentMtlName;
     int m_frameId;
 
-    CameraListener(RayTracingVolumeRenderer* renderer) :
+    CameraListener(RayTracingVolumeRenderer* const renderer) :
         m_renderer(renderer),
         m_currentMtlName("VolIllum"),
         m_frameId(0)
@@ -75,7 +75,7 @@ struct RayTracingVolumeRenderer::CameraListener : public ::Ogre::Camera::Listene
 
     virtual void cameraPreRenderScene(::Ogre::Camera*)
     {
-        auto layer = m_renderer->getLayer();
+        const auto layer = m_renderer->getLayer();
         if(layer)
         {
             const int frameId = layer->getRenderService()->getInteractorManager()->getFrameId();
@@ -85,7 +85,7 @@ struct RayTracingVolumeRenderer::CameraListener : public ::Ogre::Camera::Listene
                 if(illuVolume && m_renderer->m_shadows)
                 {
                     // Set light directions in shader.
-                    ::Ogre::LightList closestLights =
+                    const ::Ogre::LightList closestLights =
                         m_renderer->m_volumeSceneNode->getAttachedObject(0)->queryLights();
 
                     if(!closestLights.empty())
@@ -93,7 +93,7 @@ struct RayTracingVolumeRenderer::CameraListener : public ::Ogre::Camera::Listene
                         ::Ogre::Vector3 lightDir = m_renderer->m_volumeSceneNode->convertLocalToWorldDirection(
                             closestLights[0]->getDerivedDirection(), true);
 
-                        ::Ogre::Pass* satIllumPass = ::Ogre::MaterialManager::getSingleton().getByName(
+                        const ::Ogre::Pass* const satIllumPass = ::Ogre::MaterialManager::getSingleton().getByName(
                             m_currentMtlName)->getTechnique(0)->getPass(0);
                         ::Ogre::GpuProgramParametersSharedPtr satIllumParams =
                             satIllumPass->getFragmentProgramParameters();
@@ -126,28 +126,29 @@ static const std::string s_COLOR_BLEEDING_DEFINE = "COLOR_BLEEDING=1";
 static const std::string s_SHADOWS_DEFINE        = "SHADOWS=1";
 static const std::string s_PREINTEGRATION_DEFINE = "PREINTEGRATION=1";
 
-static const std::string s_TF_TEXUNIT_NAME = "transferFunction";
+static const std::string s_VOLUME_TF_TEXUNIT_NAME = "volumeTransferFunction";
 
 //-----------------------------------------------------------------------------
 
 RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
                                                    Layer::sptr layer,
-                                                   ::Ogre::SceneNode* parentNode,
+                                                   ::Ogre::SceneNode* const parentNode,
                                                    ::Ogre::TexturePtr imageTexture,
-                                                   const TransferFunction::sptr& gpuTF,
+                                                   const TransferFunction::sptr& gpuVolumeTF,
                                                    PreIntegrationTable& preintegrationTable,
                                                    bool ambientOcclusion,
                                                    bool colorBleeding,
                                                    bool shadows,
                                                    double aoFactor,
                                                    double colorBleedingFactor) :
-    IVolumeRenderer(parentId, layer->getSceneManager(), parentNode, imageTexture, gpuTF, preintegrationTable),
+    IVolumeRenderer(parentId, layer->getSceneManager(), parentNode, imageTexture, preintegrationTable),
     m_entryPointGeometry(nullptr),
     m_proxyGeometry(nullptr),
     m_imageSize(::fwData::Image::SizeType({ 1, 1, 1 })),
     m_ambientOcclusion(ambientOcclusion),
     m_colorBleeding(colorBleeding),
     m_shadows(shadows),
+    m_gpuVolumeTF(gpuVolumeTF),
     m_volIllumFactor(static_cast< ::Ogre::Real>(colorBleedingFactor),
                      static_cast< ::Ogre::Real>(colorBleedingFactor),
                      static_cast< ::Ogre::Real>(colorBleedingFactor),
@@ -157,11 +158,11 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
     m_cameraListener(nullptr),
     m_layer(layer)
 {
-    auto* exitDepthListener = new compositor::listener::RayExitDepthListener();
+    auto* const exitDepthListener = new compositor::listener::RayExitDepthListener();
     ::Ogre::MaterialManager::getSingleton().addListener(exitDepthListener);
 
     ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
-    auto viewport = layer->getViewport();
+    auto* const viewport = layer->getViewport();
 
     const std::uint8_t numViewPoints  = this->getLayer()->getNumberOfCameras();
     const auto stereoMode             = layer->getStereoMode();
@@ -169,7 +170,7 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
     m_rayEntryCompositor = ::boost::make_unique<RayEntryCompositor> (rayEntryCompositorName, s_PROXY_GEOMETRY_RQ_GROUP,
                                                                      stereoMode, true);
 
-    auto compositorInstance = compositorManager.addCompositor(viewport, rayEntryCompositorName, 0);
+    auto* const compositorInstance = compositorManager.addCompositor(viewport, rayEntryCompositorName, 0);
     SLM_ERROR_IF("Compositor '" + rayEntryCompositorName + "' not found.", compositorInstance == nullptr);
     compositorInstance->setEnabled(true);
 
@@ -219,7 +220,7 @@ RayTracingVolumeRenderer::~RayTracingVolumeRenderer()
     m_sceneManager->destroyMovableObject(m_proxyGeometry);
 
     ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
-    auto viewport = this->getLayer()->getViewport();
+    auto* const viewport = this->getLayer()->getViewport();
 
     const auto& rayEntryCompositorName = m_rayEntryCompositor->getName();
     compositorManager.setCompositorEnabled(viewport, rayEntryCompositorName, false);
@@ -234,7 +235,7 @@ RayTracingVolumeRenderer::~RayTracingVolumeRenderer()
 
 //-----------------------------------------------------------------------------
 
-void RayTracingVolumeRenderer::imageUpdate(::fwData::Image::sptr image, ::fwData::TransferFunction::sptr tf)
+void RayTracingVolumeRenderer::imageUpdate(const ::fwData::Image::sptr image, const ::fwData::TransferFunction::sptr tf)
 {
     if(!::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
     {
@@ -263,33 +264,33 @@ void RayTracingVolumeRenderer::imageUpdate(::fwData::Image::sptr image, ::fwData
 
         // After having updated the preintegrated transfer function
         // We update the corresponding shader parameters
-        auto minMax = m_preIntegrationTable.getMinMax();
+        const auto minMax = m_preIntegrationTable.getMinMax();
 
         m_RTVSharedParameters->setNamedConstant("u_min", minMax.first);
         m_RTVSharedParameters->setNamedConstant("u_max", minMax.second);
     }
     else
     {
-        auto material  = ::Ogre::MaterialManager::getSingleton().getByName(m_currentMtlName);
-        auto technique = material->getTechnique(0);
+        const auto material         = ::Ogre::MaterialManager::getSingleton().getByName(m_currentMtlName);
+        const auto* const technique = material->getTechnique(0);
         SLM_ASSERT("Technique not found", technique);
-        auto pass = technique->getPass(0);
-        m_gpuTF.lock()->bind(pass, s_TF_TEXUNIT_NAME, m_RTVSharedParameters);
+        const auto* const pass = technique->getPass(0);
+        m_gpuVolumeTF.lock()->bind(pass, s_VOLUME_TF_TEXUNIT_NAME, m_RTVSharedParameters);
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void RayTracingVolumeRenderer::tfUpdate(fwData::TransferFunction::sptr)
+void RayTracingVolumeRenderer::updateVolumeTF()
 {
     FW_PROFILE("TF Update")
     if(!m_preIntegratedRendering)
     {
-        auto material  = ::Ogre::MaterialManager::getSingleton().getByName(m_currentMtlName);
-        auto technique = material->getTechnique(0);
+        const auto material         = ::Ogre::MaterialManager::getSingleton().getByName(m_currentMtlName);
+        const auto* const technique = material->getTechnique(0);
         SLM_ASSERT("Technique not found", technique);
-        auto pass = technique->getPass(0);
-        m_gpuTF.lock()->bind(pass, s_TF_TEXUNIT_NAME, m_RTVSharedParameters);
+        const auto* const pass = technique->getPass(0);
+        m_gpuVolumeTF.lock()->bind(pass, s_VOLUME_TF_TEXUNIT_NAME, m_RTVSharedParameters);
     }
     m_proxyGeometry->computeGrid();
 }
@@ -427,7 +428,7 @@ bool RayTracingVolumeRenderer::isVisible() const
 
 //-----------------------------------------------------------------------------
 
-void RayTracingVolumeRenderer::setRayCastingPassTextureUnits(Ogre::Pass* _rayCastingPass,
+void RayTracingVolumeRenderer::setRayCastingPassTextureUnits(Ogre::Pass* const _rayCastingPass,
                                                              const std::string& _fpPPDefines) const
 {
     ::Ogre::GpuProgramParametersSharedPtr fpParams = _rayCastingPass->getFragmentProgramParameters();
@@ -447,16 +448,16 @@ void RayTracingVolumeRenderer::setRayCastingPassTextureUnits(Ogre::Pass* _rayCas
     {
         texUnitState = _rayCastingPass->createTextureUnitState(m_preIntegrationTable.getTexture()->getName());
         texUnitState->setTextureFiltering(::Ogre::TFO_BILINEAR);
+        fpParams->setNamedConstant("u_preintegratTFTexture", numTexUnit++);
     }
     else
     {
-        auto gpuTF = m_gpuTF.lock();
+        const auto gpuTF = m_gpuVolumeTF.lock();
         texUnitState = _rayCastingPass->createTextureUnitState();
-        texUnitState->setName(s_TF_TEXUNIT_NAME);
+        texUnitState->setName(s_VOLUME_TF_TEXUNIT_NAME);
         gpuTF->bind(_rayCastingPass, texUnitState->getName(), fpParams);
+        fpParams->setNamedConstant("u_tfTexture", numTexUnit++);
     }
-
-    fpParams->setNamedConstant("u_tfTexture", numTexUnit++);
 
     if(_fpPPDefines.find(s_AO_DEFINE) != std::string::npos)
     {
@@ -495,14 +496,14 @@ void RayTracingVolumeRenderer::createRayTracingMaterial()
     size_t hash;
     std::tie(vpPPDefines, fpPPDefines, hash) = this->computeRayTracingDefines();
 
-    ::Ogre::String matName("RTV_Mat_" + m_parentId);
+    const ::Ogre::String matName("RTV_Mat_" + m_parentId);
     m_currentMtlName = matName;
 
     ::Ogre::MaterialManager& mm = ::Ogre::MaterialManager::getSingleton();
 
     // The material needs to be destroyed only if it already exists
     {
-        ::Ogre::ResourcePtr matResource =
+        const ::Ogre::ResourcePtr matResource =
             mm.getResourceByName(matName, ::Ogre::ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME);
         if(matResource)
         {
@@ -521,7 +522,7 @@ void RayTracingVolumeRenderer::createRayTracingMaterial()
 
     ///////////////////////////////////////////////////////////////////////////
     /// Compile vertex shader
-    ::Ogre::String vpName("RTV_VP_" + std::to_string(hash));
+    const ::Ogre::String vpName("RTV_VP_" + std::to_string(hash));
     ::Ogre::HighLevelGpuProgramPtr vsp;
 
     if(gpm.resourceExists(vpName))
@@ -575,9 +576,9 @@ void RayTracingVolumeRenderer::createRayTracingMaterial()
     // Ensure that we have the color parameters set for the current material
     this->setMaterialLightParams(mat);
     // Get the already created pass through the already created technique
-    ::Ogre::Technique* tech = mat->getTechnique(0);
+    const ::Ogre::Technique* const tech = mat->getTechnique(0);
 
-    ::Ogre::Pass* pass = tech->getPass(0);
+    ::Ogre::Pass* const pass = tech->getPass(0);
     pass->setCullingMode(::Ogre::CULL_ANTICLOCKWISE);
     pass->setSceneBlending(::Ogre::SBT_TRANSPARENT_ALPHA);
     pass->setDepthCheckEnabled(true);
@@ -649,7 +650,7 @@ void RayTracingVolumeRenderer::initEntryPoints()
 
     m_proxyGeometry = ::fwRenderOgre::vr::GridProxyGeometry::New(this->m_parentId + "_GridProxyGeometry",
                                                                  m_sceneManager, m_3DOgreTexture,
-                                                                 m_gpuTF.lock(), "RayEntryPoints");
+                                                                 m_gpuVolumeTF.lock(), "RayEntryPoints");
 
     m_proxyGeometry->setRenderQueueGroup(s_PROXY_GEOMETRY_RQ_GROUP);
     m_volumeSceneNode->attachObject(m_proxyGeometry);
