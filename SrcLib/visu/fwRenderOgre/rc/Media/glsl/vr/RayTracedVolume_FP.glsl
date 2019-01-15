@@ -3,8 +3,8 @@
 #define MAX_ITERATIONS 8192
 
 uniform sampler3D u_image;
-uniform sampler1D u_tfTexture;
-uniform vec2 u_tfWindow;
+uniform sampler1D u_s1TFTexture;
+uniform vec2 u_f2TFWindow;
 
 #if IDVR >= 1
 uniform sampler2D u_IC;
@@ -101,7 +101,7 @@ out vec4 fragColor;
 
 //-----------------------------------------------------------------------------
 
-vec4 sampleTransferFunction(float _intensity, in sampler1D _sampler, in vec2 _window);
+vec4 sampleTransferFunction(float _fIntensity, in sampler1D _s1Sampler, in vec2 _f2Window);
 vec3 fragCoordsToNDC(in vec3 _f3FragPos_Ss);
 vec3 ndcToFragCoord(in vec3 _f3FragPos_Ns);
 vec4 ndcToSpecificSpacePosition(in vec3 _f3FragPos_Ns, in mat4 _m4Inverse);

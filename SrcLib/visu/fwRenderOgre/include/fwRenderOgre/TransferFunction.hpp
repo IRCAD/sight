@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2018 IRCAD France
- * Copyright (C) 2015-2018 IHU Strasbourg
+ * Copyright (C) 2015-2019 IRCAD France
+ * Copyright (C) 2015-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -65,7 +65,7 @@ public:
     /// Bind the texture and the uniforms in a given pass
     template <class GPU_PARAMETERS>
     void bind(const ::Ogre::Pass* const _ogrePass, const std::string& _texUnitName,
-              ::Ogre::SharedPtr<GPU_PARAMETERS> _params, const std::string& _uniform = "u_tfWindow") const;
+              ::Ogre::SharedPtr<GPU_PARAMETERS> _params, const std::string& _uniform = "u_f2TFWindow") const;
 private:
 
     /// Texture containing the interpolated nodes of the transfer function.
