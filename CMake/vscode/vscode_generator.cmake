@@ -25,16 +25,19 @@ function(vscodeGenerator)
         set(DBG_TYPE "cppvsdbg")
         set(ENV_NAME "PATH")
         set(ENV_VALUE "${FW_EXTERNAL_LIBRARIES_DIR};%PATH%")
+        set(EXTERNAL_CONSOLE "true")
     elseif(APPLE)
         set(DBG_TYPE "cppdbg")
         set(ENV_NAME "DYLD_FALLBACK_LIBRARY_PATH")
         string(REPLACE ";" ":" FW_EXTERNAL_LIBRARIES_DIRS "${FW_EXTERNAL_LIBRARIES_DIR}")
         set(ENV_VALUE "${FW_EXTERNAL_LIBRARIES_DIRS}:$DYLD_FALLBACK_LIBRARY_PATH")
+        set(EXTERNAL_CONSOLE "false")
     else()
         set(DBG_TYPE "cppdbg")
         set(ENV_NAME "LD_LIBRARY_PATH")
         string(REPLACE ";" ":" FW_EXTERNAL_LIBRARIES_DIRS "${FW_EXTERNAL_LIBRARIES_DIR}")
         set(ENV_VALUE "${FW_EXTERNAL_LIBRARIES_DIRS}:$LD_LIBRARY_PATH")
+        set(EXTERNAL_CONSOLE "false")
     endif()
     unset(CONFIG_LIST)
     foreach(PRJ_NAME ${ARGV})
@@ -59,7 +62,7 @@ function(vscodeGenerator)
                 "        \"name\": \"${ENV_NAME}\",\n"
                 "        \"value\": \"${ENV_VALUE}\"\n"
                 "    }],\n"
-                "    \"externalConsole\": true\n"
+                "    \"externalConsole\": ${EXTERNAL_CONSOLE}\n"
                 "},\n"
             )
         elseif( TYPE STREQUAL "TEST" )
@@ -76,7 +79,7 @@ function(vscodeGenerator)
                 "        \"name\": \"${ENV_NAME}\",\n"
                 "        \"value\": \"${ENV_VALUE}\"\n"
                 "    }],\n"
-                "    \"externalConsole\": true\n"
+                "    \"externalConsole\": ${EXTERNAL_CONSOLE}\n"
                 "},\n"
             )
         elseif( TYPE STREQUAL "APP")
@@ -93,7 +96,7 @@ function(vscodeGenerator)
                 "        \"name\": \"${ENV_NAME}\",\n"
                 "        \"value\": \"${ENV_VALUE}\"\n"
                 "    }],\n"
-                "    \"externalConsole\": true\n"
+                "    \"externalConsole\": ${EXTERNAL_CONSOLE}\n"
                 "},\n"
             )
         endif()
