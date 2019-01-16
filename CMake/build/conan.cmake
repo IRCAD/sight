@@ -58,15 +58,16 @@ macro(installConanDeps CONAN_DEPS_LIST)
             message(FATAL_ERROR "lsb_release executable not found!")
         endif()
         execute_process(COMMAND ${LSB_RELEASE_EXEC} -is
-            OUTPUT_VARIABLE LSB_RELEASE_ID_SHORT
+            OUTPUT_VARIABLE LSB_RELEASE_ID
             OUTPUT_STRIP_TRAILING_WHITESPACE
         )
         execute_process(COMMAND ${LSB_RELEASE_EXEC} -rs
-            OUTPUT_VARIABLE LSB_RELEASE_NUMBER_SHORT
+            COMMAND cut -d. -f1
+            OUTPUT_VARIABLE LSB_MAJOR_RELEASE_NUMBER
             OUTPUT_STRIP_TRAILING_WHITESPACE
         )
-        string(TOLOWER ${LSB_RELEASE_ID_SHORT} LSB_RELEASE_ID_SHORT_LOWER)
-        set(CONAN_DISTRO "${LSB_RELEASE_ID_SHORT_LOWER}${LSB_RELEASE_NUMBER_SHORT}")
+        string(TOLOWER ${LSB_RELEASE_ID} LSB_RELEASE_ID_LOWER)
+        set(CONAN_DISTRO "${LSB_RELEASE_ID_LOWER}${LSB_MAJOR_RELEASE_NUMBER}")
         set(CONAN_SETTINGS "os.distro=${CONAN_DISTRO}" CACHE INTERNAL "custom conan settings" FORCE)
     endif()
 
