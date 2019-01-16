@@ -23,16 +23,17 @@
 #pragma once
 
 #include "fwTools/config.hpp"
+#include "fwTools/Exception.hpp"
+
+#include <boost/filesystem/path.hpp>
 
 #include <string>
-#include <vector>
 
 namespace fwTools
 {
 
 /**
  * @brief   Namespace fwTools::os contains tools methods which depend on os like get user application data directory.
- *
  */
 namespace os
 {
@@ -71,6 +72,17 @@ FWTOOLS_API std::string  getUserDataDir(
     std::string appName  = "",
     bool createDirectory = false
     );
+
+/**
+ * @brief   Return the path to a shared library name
+ * The library should have already been loaded before.
+ * @param _libName The name of the shared library, without any 'lib' prefix, 'd' suffix or extension,
+ * i.e. 'jpeg' or 'boost_filesystem'. The function will try to use the appropriate combination according to
+ * the platform and the build type.
+ * @return path to the library on the filesystem
+ * @throw ::fwTools::Exception if the library could not be found (not loaded for instance)
+ */
+FWTOOLS_API ::boost::filesystem::path getSharedLibraryPath(const std::string& _libName);
 
 } // namespace os
 
