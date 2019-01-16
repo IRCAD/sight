@@ -4,8 +4,11 @@
     ],
     "settings": {
         "editor.insertSpaces": true,
+        "editor.trimAutoWhitespace": true,
         "editor.tabSize": 4,
+        "editor.rulers": [ 120 ]
         "files.eol": "\n",
+        "files.trimTrailingWhitespace": true,
         "files.associations": {
             "memory": "cpp",
             "algorithm": "cpp",
