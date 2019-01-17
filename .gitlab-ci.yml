@@ -105,6 +105,7 @@ doxygen:
       - $CI_PROJECT_DIR/build/Documentation/Doxygen/
 
 pages:
+  image: ${DOCKER_ENVDEV_MINT19}
   stage: deploy
   dependencies:
     - doxygen
