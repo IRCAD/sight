@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,14 +20,10 @@
  *
  ***********************************************************************/
 
-#include <dcmtk/config/osconfig.h>
-
 #include "fwDcmtkIO/helper/DicomDir.hpp"
 
 #include <fwCore/exceptionmacros.hpp>
 #include <fwCore/spyLog.hpp>
-
-#include <fwDcmtkTools/Dictionary.hpp>
 
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/regex.hpp>
@@ -35,6 +31,7 @@
 #include <boost/filesystem/operations.hpp>
 #include <boost/regex.h>
 
+#include <dcmtk/config/osconfig.h>
 #include <dcmtk/dcmdata/dcdeftag.h>
 #include <dcmtk/dcmdata/dcdicdir.h>
 #include <dcmtk/dcmnet/diutil.h>
@@ -44,12 +41,11 @@ namespace fwDcmtkIO
 namespace helper
 {
 
+//------------------------------------------------------------------------------
+
 bool DicomDir::readDicomDir(const ::boost::filesystem::path& root, std::vector<std::string>& dicomFiles)
 {
     SLM_ASSERT("You must specify a valid directory.", ::boost::filesystem::is_directory(root));
-
-    //Load dictionary
-    ::fwDcmtkTools::Dictionary::loadDictionary();
 
     bool result = false;
 
@@ -191,7 +187,6 @@ std::string DicomDir::createRegex(std::string filename)
         FW_RAISE_IF("There is no file matching the uppercase filename stored in the dicom instance: \""+filename+"\"",
                     !matchFound);
     }
-
 
     return result;
 }

@@ -196,9 +196,6 @@ protected:
         OFCondition status;
         DcmDataset* dataset;
 
-        // Register codecs
-        ::fwDcmtkIO::helper::Codec::registerCodecs();
-
         // Create temporary buffer
         U* tempoBuffer = new U[rows * columns];
 
@@ -260,9 +257,6 @@ protected:
                 }
             }
         }
-
-        // Clean up codecs
-        ::fwDcmtkIO::helper::Codec::cleanup();
 
         return tempoBuffer;
     }

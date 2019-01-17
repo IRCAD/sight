@@ -100,8 +100,9 @@ void NoFilterCustomTest::simpleApplication()
     {
         for(unsigned int i = 0; i < dicomSeriesContainerA[j]->getDicomContainer().size(); ++i) // For every instances
         {
-            CPPUNIT_ASSERT_EQUAL(dicomSeriesContainerA[j]->getDicomContainer().at(i),
-                                 dicomSeriesContainerB[j]->getDicomContainer().at(i));
+            CPPUNIT_ASSERT(std::memcmp(dicomSeriesContainerA[j]->getDicomContainer().at(i)->getBuffer(),
+                                       dicomSeriesContainerB[j]->getDicomContainer().at(i)->getBuffer(),
+                                       dicomSeriesContainerA[j]->getDicomContainer().at(i)->getSize()) == 0 );
         }
     }
 
