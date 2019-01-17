@@ -131,7 +131,7 @@ void main()
     vec3 f3RayOri_Vs   = f3EntryPos_Ms * f3SpacingSize_N;
     vec3 f3RayDir_VsN  = normalize(f3ExitPos_Ms * f3SpacingSize_N - f3EntryPos_Ms * f3SpacingSize_N);
 
-    // Check if the ray hit the cone
+    // Check if the ray hits the cone
     bool hit = rayConeIntersection(f3ConeOri_Vs, f3DoneDir_VsN, u_fCSGAngleCos, f3RayOri_Vs, f3RayDir_VsN);
     if(hit)
     {       

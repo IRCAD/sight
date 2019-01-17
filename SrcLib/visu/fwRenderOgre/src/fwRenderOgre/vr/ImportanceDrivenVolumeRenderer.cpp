@@ -357,7 +357,7 @@ void ImportanceDrivenVolumeRenderer::buildICCompositors(::Ogre::Viewport* const 
                                                                   m_idvrCSGBlurWeight));
         compositorInstance->addListener(m_compositorListeners.back());
 
-        // add the compositor that creates the CSG information, it need JFA and RayEntry textures to
+        // add the compositor that creates the CSG information, it needs JFA and RayEntry textures to
         // compute it.
         if(m_idvrCSG)
         {

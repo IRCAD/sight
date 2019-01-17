@@ -383,7 +383,7 @@ void main(void)
     vec4 f4ResultCol = launchRay(f3RayEntryPos_Ms, f3RayDir_MsN, fRayLen, u_sampleDistance, u_s1TFTexture, u_f2TFWindow);
 #else // CSG
     vec4 f4ResultCol = vec4(0.);
-    // If the ray hit te CSG, some modulations and effects must be apply.
+    // If the ray hit the CSG, some modulations and effects must be applied.
     if(isCsg)
     {
         // We launch a ray only if the exit position is in front of the ray entry position and if the context must be disabled,
@@ -397,7 +397,7 @@ void main(void)
             float fEntryIntensity = texture(u_image, f3RayEntryPos_Ms).r;
             float fEntryOpacity = sampleTransferFunction(fEntryIntensity, u_s1TFTexture, u_f2TFWindow).a;
 #endif // PREINTEGRATION
-            // If the ray is not in an importance zone, modulations and effects are apply.
+            // If the ray is not in an importance zone, modulations and effects are applied.
             // Else, the ray is just launch normaly.
             if(f4ImportancePos_Ms.a <=  0. && fEntryOpacity > 0.)
             {
