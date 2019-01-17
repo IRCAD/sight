@@ -17,7 +17,9 @@ set( DEPENDENCIES
     fwServices
     fwTools
 )
-set( REQUIREMENTS  )
+set( REQUIREMENTS
+    gui
+)
 set( PLUGINS
     platforms
     imageformats
