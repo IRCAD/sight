@@ -15,6 +15,7 @@ find_library(VLC_LIBRARY NAMES libvlc vlc PATHS
     "$ENV{ProgramW6432}/VideoLAN/VLC/sdk/lib"
     /usr/local/lib
     /usr/lib
+    /usr/lib/x86_64-linux-gnu
 )
 
 # Find the vlc plugin directory, we check two different names :
@@ -26,6 +27,7 @@ find_path(VLC_PLUGINS_DIR NAMES plugins PATHS
     "$ENV{ProgramW6432}/VideoLAN/VLC"
     /usr/local/lib/vlc
     /usr/lib/vlc
+    /usr/lib/x86_64-linux-gnu/vlc
 )
 
 if(VLC_PLUGINS_DIR)

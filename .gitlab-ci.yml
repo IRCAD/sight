@@ -12,29 +12,30 @@ before_script:
   - export CCACHE_COMPRESS=1
   - export CCACHE_SLOPPINESS=include_file_ctime,pch_defines,time_macros
   - export CCACHE_NOHASHDIR=1
+  - git config --global http.sslVerify "false"
 
 
 sheldon-mr:
-  image: ${DOCKER_ENVDEV_CLANG6}
+  image: ${DOCKER_ENVDEV_MINT19}
   stage: lint
   script:
     - export ORIG_BRANCH_COMMIT_SHA=$(git merge-base dev origin/${CI_COMMIT_REF_NAME})
-    - git -c http.sslVerify=false clone --depth 1 https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-git.git -b dev
+    - git clone --depth 1 https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-git.git -b dev
     # Execute sheldon, on all commits from the merge request
     - sight-git/hooks/sheldon ${ORIG_BRANCH_COMMIT_SHA}..${CI_COMMIT_SHA}
 
 sheldon:
-  image: ${DOCKER_ENVDEV_CLANG6}
+  image: ${DOCKER_ENVDEV_MINT19}
   stage: lint
   script:
-    - git -c http.sslVerify=false clone --depth 1 https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-git.git -b dev
+    - git clone --depth 1 https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-git.git -b dev
     - sight-git/hooks/sheldon HEAD^ HEAD
   except:
     - dev
     - master
 
 build:debug-linux:
-  image: ${DOCKER_ENVDEV_CLANG6}
+  image: ${DOCKER_ENVDEV_MINT19}
   stage: build
   script:
     - export CCACHE_DIR=/cache/ccache
@@ -56,7 +57,7 @@ build:debug-linux:
     - ccache -s
 
 build:release-linux:
-  image: ${DOCKER_ENVDEV_CLANG6}
+  image: ${DOCKER_ENVDEV_MINT19}
   stage: build
   variables:
     CONAN_USER_HOME: $CI_PROJECT_DIR/conan
@@ -80,7 +81,7 @@ build:release-linux:
     - ccache -s
 
 doxygen:
-  image: ${DOCKER_ENVDEV_CLANG6}
+  image: ${DOCKER_ENVDEV_MINT19}
   stage: doc
   script:
     - sudo apt-get update -yqq && sudo apt-get install -yqq graphviz doxygen
