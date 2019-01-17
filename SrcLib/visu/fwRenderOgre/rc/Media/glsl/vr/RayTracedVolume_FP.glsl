@@ -3,32 +3,27 @@
 #define MAX_ITERATIONS 8192
 
 uniform sampler3D u_image;
-uniform sampler1D u_tfTexture;
-uniform vec2 u_tfWindow;
+uniform sampler1D u_s1TFTexture;
+uniform vec2 u_f2TFWindow;
 
-#if IDVR >= 1
-uniform sampler2D u_IC;
-#endif
+uniform vec3 u_cameraPos;
+uniform float u_shininess;
 
-#if IDVR == 1
-uniform sampler2D u_JFA;
-#endif
+uniform float u_sampleDistance;
 
-#if IDVR == 2 || IDVR == 3
-uniform sampler3D u_mask;
-#endif
+uniform sampler2D u_entryPoints;
 
-#ifdef CSG_TF
-uniform vec2 u_CSGTFWindow;
-uniform sampler1D u_CSGTFTexture;
-#endif // CSG_TF
+#define MAX_LIGHTS 10
+uniform float u_numLights;
+
+uniform vec3 u_lightDir[MAX_LIGHTS];
+uniform vec3 u_lightDiffuse[MAX_LIGHTS];
+uniform vec3 u_lightSpecular[MAX_LIGHTS];
 
 #if AMBIENT_OCCLUSION || COLOR_BLEEDING || SHADOWS
 uniform sampler3D u_illuminationVolume;
 uniform vec4 u_volIllumFactor;
 #endif // AMBIENT_OCCLUSION || COLOR_BLEEDING || SHADOWS
-
-uniform sampler2D u_entryPoints;
 
 #ifdef AUTOSTEREO
 uniform mat4 u_invWorldView;
@@ -40,24 +35,6 @@ uniform mat4 u_invWorldViewProj;
 uniform mat4 u_worldViewProj;
 #endif // AUTOSTEREO
 
-uniform vec3 u_cameraPos;
-uniform float u_shininess;
-
-#define MAX_LIGHTS 10
-
-uniform float u_numLights;
-
-uniform vec3 u_lightDir[MAX_LIGHTS];
-uniform vec3 u_lightDiffuse[MAX_LIGHTS];
-uniform vec3 u_lightSpecular[MAX_LIGHTS];
-
-uniform float u_sampleDistance;
-
-uniform vec4 u_viewport;
-
-uniform float u_clippingNear;
-uniform float u_clippingFar;
-
 #ifdef PREINTEGRATION
 uniform sampler2D u_preintegratTFTexture;
 uniform int u_min;
@@ -66,19 +43,12 @@ uniform int u_max;
 uniform float u_opacityCorrectionFactor;
 #endif // PREINTEGRATION
 
+#if IDVR >= 1
+uniform sampler2D u_IC;
+#endif
+
 #if IDVR == 1
-uniform float u_csgAngleCos;
-// FIXME: find a new way to display the csg border.
-uniform float u_csgBorderThickness;
-uniform vec3 u_csgBorderColor;
-uniform vec3 u_imageSpacing;
-
-#ifdef CSG_DEPTH_LINES
-// Number of image spacing units (millimeters usually) separating depth lines.
-uniform int u_depthLinesSpacing;
-uniform float u_depthLinesWidth;
-#endif // CSG_DEPTH_LINES
-
+uniform sampler2D u_JFA;
 #endif // IDVR == 1
 
 #if IDVR == 2
@@ -89,46 +59,70 @@ uniform float u_aimcAlphaCorrection;
 uniform float u_vpimcAlphaCorrection;
 #endif // IDVR == 3
 
+#ifdef CSG
+uniform sampler2D u_csgInfos;
+#endif // CSG
+
+#ifdef CSG_TF
+uniform vec2 u_CSGTFWindow;
+uniform sampler1D u_CSGTFTexture;
+#endif // CSG_TF
+
+#ifdef CSG_DEPTH_LINES
+// Number of image spacing units (millimeters usually) separating depth lines.
+uniform int u_csgDepthLinesSpacing;
+uniform float u_csgDepthLinesWidth;
+uniform vec3 u_csgDepthLinesColor;
+#endif // CSG_DEPTH_LINES
+
+#ifdef CSG_BORDER
+uniform float u_csgBorderWidth;
+uniform vec3 u_csgBorderColor;
+#endif // CSG_BORDER
+
 #if CSG_MODULATION == 4 || CSG_MODULATION == 5 || CSG_MODULATION == 6
-uniform float u_colorModulationFactor;
+uniform float u_csgColorModulationFactor;
 #endif // CSG_MODULATION == 4 || CSG_MODULATION == 5 || CSG_MODULATION == 6
 
 #ifdef CSG_OPACITY_DECREASE
-uniform float u_opacityDecreaseFactor;
+uniform float u_csgOpacityDecreaseFactor;
 #endif // CSG_OPACITY_DECREASE
 
-out vec4 fragColor;
+out vec4 v_f4FragCol;
 
 //-----------------------------------------------------------------------------
 
-vec4 sampleTransferFunction(float _intensity, in sampler1D _sampler, in vec2 _window);
+vec4 sampleTransferFunction(float _fIntensity, in sampler1D _s1Sampler, in vec2 _f2Window);
+vec3 fragCoordsToNDC(in vec3 _f3FragPos_Ss);
+vec3 ndcToFragCoord(in vec3 _f3FragPos_Ns);
+vec4 ndcToSpecificSpacePosition(in vec3 _f3FragPos_Ns, in mat4 _m4Inverse);
 
 //-----------------------------------------------------------------------------
 
-vec3 lighting(vec3 _normal, vec3 _position, vec3 _diffuse)
+vec3 lighting(vec3 _f3NormalDir_MsN, vec3 _f3Pos_Ms, vec3 _f3DiffuseCol)
 {
-    vec3 vecToCam = normalize(u_cameraPos - _position);
+    vec3 f3VecToCamDir_MsN = normalize(u_cameraPos - _f3Pos_Ms);
 
-    vec3 diffuse = vec3(0.0);
-    vec3 specular = vec3(0.0);
+    vec3 f3DiffuseCol = vec3(0.);
+    vec3 f3SpecularCol = vec3(0.);
 
     for(int i = 0; i < int(u_numLights); ++i)
     {
         // We use the Blinn-Phong lighting model.
-        float fLitDiffuse = clamp(abs(dot( normalize(-u_lightDir[i]), _normal )), 0, 1);
-        diffuse += fLitDiffuse * u_lightDiffuse[i] * _diffuse;
+        float fLitDiffuseCol_N = clamp(abs(dot( normalize(-u_lightDir[i]), _f3NormalDir_MsN )), 0, 1);
+        f3DiffuseCol += fLitDiffuseCol_N * u_lightDiffuse[i] * _f3DiffuseCol;
 
-        vec3 H = normalize(u_lightDir[i] + vecToCam);
-        float fLitSpecular = clamp(pow( abs(dot( _normal, H )), u_shininess), 0, 1);
-        specular += fLitSpecular * u_lightSpecular[i];
+        vec3 H = normalize(u_lightDir[i] + f3VecToCamDir_MsN);
+        float fLitSpecular = clamp(pow( abs(dot( _f3NormalDir_MsN, H )), u_shininess), 0, 1);
+        f3SpecularCol += fLitSpecular * u_lightSpecular[i];
     }
 
-    return vec3(diffuse + specular);
+    return vec3(f3DiffuseCol + f3SpecularCol);
 }
 
 //-----------------------------------------------------------------------------
 
-vec3 gradientNormal(vec3 _uvw)
+vec3 gradientNormal(vec3 _f3UVW)
 {
     ivec3 imgDimensions = textureSize(u_image, 0);
     vec3 h = 1. / vec3(imgDimensions);
@@ -137,56 +131,32 @@ vec3 gradientNormal(vec3 _uvw)
     vec3 hz = vec3(0, 0, h.z);
 
     return -normalize( vec3(
-                (texture(u_image, _uvw + hx).r - texture(u_image, _uvw - hx).r),
-                (texture(u_image, _uvw + hy).r - texture(u_image, _uvw - hy).r),
-                (texture(u_image, _uvw + hz).r - texture(u_image, _uvw - hz).r)
+                (texture(u_image, _f3UVW + hx).r - texture(u_image, _f3UVW - hx).r),
+                (texture(u_image, _f3UVW + hy).r - texture(u_image, _f3UVW - hy).r),
+                (texture(u_image, _f3UVW + hz).r - texture(u_image, _f3UVW - hz).r)
     ));
 }
 
 //-----------------------------------------------------------------------------
 
-/// Converts OpenGL fragment coordinates to normalized device coordinates (NDC).
-vec3 fragCoordsToNDC(in vec3 _fragCoord)
-{
-    vec3 ndcCoords  = vec3(_fragCoord.xy * u_viewport.zw, _fragCoord.z);
-    ndcCoords = (ndcCoords - 0.5) * 2.;
-    return ndcCoords;
-}
-
-//-----------------------------------------------------------------------------
-
-float voxelScreenDepth(in vec3 _pos)
+float modelSpaceToNDC(in vec3 _f3Pos_Ms)
 {
 #ifdef AUTOSTEREO
-    vec4 projPos = u_proj * u_worldView * vec4(_pos, 1);
+    vec4 f3pos_Cs = u_proj * u_worldView * vec4(_f3Pos_Ms, 1);
 #else // AUTOSTEREO
-    vec4 projPos = u_worldViewProj * vec4(_pos, 1);
+    vec4 f3pos_Cs = u_worldViewProj * vec4(_f3Pos_Ms, 1);
 #endif // AUTOSTEREO
 
-    return projPos.z / projPos.w;
-}
-
-//-----------------------------------------------------------------------------
-
-/// Converts a position in OpenGL's normalized device coordinates (NDC) to object space.
-vec3 ndcToVolumeSpacePosition(in vec3 _ndcPos, in mat4 _invWorldViewProj)
-{
-    vec4 clipPos;
-    clipPos.w   = (2 * u_clippingNear * u_clippingFar)  / (u_clippingNear + u_clippingFar + _ndcPos.z * (u_clippingNear - u_clippingFar));
-    clipPos.xyz = _ndcPos * clipPos.w;
-
-    vec4 imgPos = _invWorldViewProj * clipPos;
-
-    return imgPos.xyz / imgPos.w;
+    return f3pos_Cs.z / f3pos_Cs.w;
 }
 
 //-----------------------------------------------------------------------------
 
 #ifdef PREINTEGRATION
-vec4 samplePreIntegrationTable(vec3 _rayBack, vec3 _rayFront)
+vec4 samplePreIntegrationTable(vec3 _f3RayBack_Ms, vec3 _f3RayFront_Ms)
 {
-    float sf = texture(u_image, _rayBack).r;
-    float sb = texture(u_image, _rayFront).r;
+    float sf = texture(u_image, _f3RayBack_Ms).r;
+    float sb = texture(u_image, _f3RayFront_Ms).r;
 
     sf = ((sf * 65535.f) - float(u_min) - 32767.f) / float(u_max - u_min);
     sb = ((sb * 65535.f) - float(u_min) - 32767.f) / float(u_max - u_min);
@@ -197,94 +167,12 @@ vec4 samplePreIntegrationTable(vec3 _rayBack, vec3 _rayFront)
 
 //-----------------------------------------------------------------------------
 
-void composite(inout vec4 _dest, in vec4 _src)
+void composite(inout vec4 _f4DestCol, in vec4 _f4SrcCol)
 {
     // Front-to-back blending
-    _dest.rgb = _dest.rgb + (1 - _dest.a) * _src.a * _src.rgb;
-    _dest.a   = _dest.a   + (1 - _dest.a) * _src.a;
+    _f4DestCol.rgb = _f4DestCol.rgb + (1 - _f4DestCol.a) * _f4SrcCol.a * _f4SrcCol.rgb;
+    _f4DestCol.a   = _f4DestCol.a   + (1 - _f4DestCol.a) * _f4SrcCol.a;
 }
-
-//-----------------------------------------------------------------------------
-
-#ifdef CSG
-
-// Returns true if the ray hits the cone, the origin is then moved to the intersection point.
-bool rayConeIntersection(in vec3 _coneOrigin, in vec3 _coneDir, in float _coneAngleCos, inout vec3 _rayOrigin, in vec3 _rayDir)
-{
-    // Vector from the cone origin to the ray origin.
-    vec3 origDir = _rayOrigin - _coneOrigin;
-    float squaredAngleCos = _coneAngleCos * _coneAngleCos;
-
-    float dirDot = dot(_rayDir, _coneDir);
-    float origConeDirDot = dot(origDir, _coneDir);
-
-    // Angle cosine between the cone direction and the origin to origin vector.
-    float origAngleCos = dot(normalize(origDir), normalize(_coneDir));
-
-    // Ensure that the ray origin is 'inside' the cone.
-    if(origAngleCos < _coneAngleCos && origAngleCos > 0)
-    {
-        return false;
-    }
-
-    // We're looking for a point P belonging to the ray and the cone, P should therefore verify the following equations:
-    //     · ((P - _coneOrigin) /  length(P - _coneOrigin)) * _coneDir = cos(coneAngle)
-    //     · P = _rayOrigin + t * _rayDir
-    // When simplifying this system we end up with a second degree polynomial a * t² + b * t + c with the following
-    // coefficients :
-    float a = dirDot * dirDot - squaredAngleCos;
-    float b = 2 * (dirDot * origConeDirDot - dot(_rayDir, origDir) * squaredAngleCos);
-    float c = origConeDirDot * origConeDirDot - dot(origDir, origDir) * squaredAngleCos;
-
-    // Solving the polynomial is trivial.
-    float delta = b * b - 4. * a * c;
-
-    vec3 intersection;
-    if(delta > 0)
-    {
-        float sqrtDelta = sqrt(delta);
-        float t1 = (-b - sqrtDelta) / (2. * a);
-        float t2 = (-b + sqrtDelta) / (2. * a);
-
-        // We're looking for the point closest to the ray origin.
-        float t = min(t1, t2);
-
-        if (t < 0.)
-        {
-            return false;
-        }
-
-        intersection = _rayOrigin + t * _rayDir;
-
-        // Check if we hit the cone or its 'shadow'
-        // i.e. check if the intersection is 'in front' or 'behind' the cone origin.
-        vec3 cp = intersection - _coneOrigin;
-        float h = dot(cp, _coneDir);
-
-        if (h < 0.) // We hit the shadow ...
-        {
-            return false;
-        }
-    }
-    else // No solution to the polynomial = no intersection
-    {
-        return false;
-    }
-
-    _rayOrigin = intersection;
-    return true;
-}
-
-#if CSG_MODULATION || CSG_OPACITY_DECREASE
-// Computes the orthogonal distance from a point to a line.
-float pointLineDistance(in vec3 _point, in vec3 _linePoint, in vec3 _lineUnitDir)
-{
-    vec3 line2Point = _point - _linePoint;
-    return length(line2Point - dot(line2Point, _lineUnitDir) * _lineUnitDir);
-}
-#endif // CSG_MODULATION || CSG_OPACITY_DECREASE
-
-#endif // CSG
 
 //-----------------------------------------------------------------------------
 
@@ -295,110 +183,126 @@ vec3 hsv2rgb(vec3 HSL);
 
 //-----------------------------------------------------------------------------
 
-float firstOpaqueVoxelDepth(inout int _iterCount, inout float _t, inout vec3 _rayPos, in vec3 _rayDir, in float _rayLength, in float _sampleDistance, in sampler1D _tfTexture, in vec2 _tfWindow)
+struct RayInfos
 {
+    float m_fRayDepth_Ss;
+    int m_iIterCount;
+    float m_fT;
+    vec3 m_f3RayPos_Ms;
+};
+
+RayInfos firstOpaqueRayInfos(in vec3 _f3RayPos_Ms, in vec3 _f3RayDir_MsN, in float _fRayLen, in float _fSampleDis, in sampler1D _s1TFTexture, in vec2 _f2TFWindow)
+{
+    int iIterCount = 0;
+    float t = 0.;
     // Move the ray to the first non transparent voxel.
-    for(; _iterCount < MAX_ITERATIONS && _t < _rayLength; _iterCount += 1, _t += _sampleDistance)
+    for(; iIterCount < MAX_ITERATIONS && t < _fRayLen; iIterCount += 1, t += _fSampleDis)
     {
 #ifdef PREINTEGRATION
-        float tfAlpha = samplePreIntegrationTable(_rayPos, _rayPos + _rayDir).a;
+        float fTFAlpha = samplePreIntegrationTable(_f3RayPos_Ms, _f3RayPos_Ms + _f3RayDir_MsN).a;
 #else // PREINTEGRATION
-        float intensity = texture(u_image, _rayPos).r;
-        float tfAlpha = sampleTransferFunction(intensity, _tfTexture, _tfWindow).a;
+        float fIntensity = texture(u_image, _f3RayPos_Ms).r;
+        float fTFAlpha = sampleTransferFunction(fIntensity, _s1TFTexture, _f2TFWindow).a;
 #endif // PREINTEGRATION
 
-        if(tfAlpha != 0)
+        if(fTFAlpha != 0)
         {
             break;
         }
 
-        _rayPos += _rayDir;
+        _f3RayPos_Ms += _f3RayDir_MsN;
     }
 
-    float rayScreenDepth = voxelScreenDepth(_rayPos);
-    return rayScreenDepth * 0.5f + 0.5f; // Convert to NDC assuming no clipping planes are set.
+    float rayScreenDepth = modelSpaceToNDC(_f3RayPos_Ms) * 0.5f + 0.5f; // Convert to NDC assuming no clipping planes are set.
+    RayInfos result;
+    result.m_fRayDepth_Ss = rayScreenDepth;
+    result.m_iIterCount = iIterCount;
+    result.m_fT = t;
+    result.m_f3RayPos_Ms = _f3RayPos_Ms;
+    return result;
 }
 
 //-----------------------------------------------------------------------------
 
-vec4 launchRay(in vec3 _rayPos, in vec3 _rayDir, in float _rayLength, in float _sampleDistance, in sampler1D _tfTexture, in vec2 _tfWindow)
+vec4 launchRay(in vec3 _f3RayPos_Ms, in vec3 _f3RayDir_MsN, in float _fRayLen, in float _fSampleDis, in sampler1D _s1TFTexture, in vec2 _f2TFWindow)
 {
-    int iterCount = 0;
-    float t = 0.f;
     // Move the ray to the first non transparent voxel.
-    gl_FragDepth = firstOpaqueVoxelDepth(iterCount, t, _rayPos, _rayDir, _rayLength, _sampleDistance, _tfTexture, _tfWindow);
+    RayInfos rayInfos = firstOpaqueRayInfos(_f3RayPos_Ms, _f3RayDir_MsN, _fRayLen, _fSampleDis, _s1TFTexture, _f2TFWindow);
+    gl_FragDepth = rayInfos.m_fRayDepth_Ss;
+    int iIterCount = rayInfos.m_iIterCount;
+    float t = rayInfos.m_fT;
+    _f3RayPos_Ms = rayInfos.m_f3RayPos_Ms;
 
 #if IDVR == 2 || IDVR == 3
     // With Visibility preserving importance compositing
     // We count the number of samples until we reach the important feature
-    float nbSamples = 0.0;
+    float fNbSamples = 0.;
 #endif // IDVR == 2 || IDVR == 3
-    vec4 result = vec4(0);
-    for(; iterCount < MAX_ITERATIONS && t < _rayLength; iterCount += 1, t += _sampleDistance)
+    vec4 f4ResultCol = vec4(0.);
+    for(; iIterCount < MAX_ITERATIONS && t < _fRayLen; iIterCount += 1, t += _fSampleDis)
     {
 #ifdef PREINTEGRATION
-        vec4 tfColour = samplePreIntegrationTable(_rayPos, _rayPos + _rayDir);
+        vec4 f4TFCol = samplePreIntegrationTable(_f3RayPos_Ms, _f3RayPos_Ms + _f3RayDir_MsN);
 #else // PREINTEGRATION
-        float intensity = texture(u_image, _rayPos).r;
-        vec4 tfColour = sampleTransferFunction(intensity, _tfTexture, _tfWindow);
+        float fIntensity = texture(u_image, _f3RayPos_Ms).r;
+        vec4 f4TFCol = sampleTransferFunction(fIntensity, _s1TFTexture, _f2TFWindow);
 #endif // PREINTEGRATION
 
-        if(tfColour.a > 0)
+        if(f4TFCol.a > 0.)
         {
-            vec3 N = gradientNormal(_rayPos);
+            vec3 f3NormalDir_MsN = gradientNormal(_f3RayPos_Ms);
 
-            tfColour.rgb = lighting(N, _rayPos, tfColour.rgb);
+            f4TFCol.rgb = lighting(f3NormalDir_MsN, _f3RayPos_Ms, f4TFCol.rgb);
 
 #ifndef PREINTEGRATION
             // Adjust opacity to sample distance.
             // This could be done when generating the TF texture to improve performance.
-            tfColour.a = 1 - pow(1 - tfColour.a, u_sampleDistance * u_opacityCorrectionFactor);
+            f4TFCol.a = 1 - pow(1 - f4TFCol.a, u_sampleDistance * u_opacityCorrectionFactor);
 #endif // PREINTEGRATION
 
 #if AMBIENT_OCCLUSION || COLOR_BLEEDING || SHADOWS
-            vec4 volIllum = texture(u_illuminationVolume, _rayPos);
+            vec4 f4VolIllum = texture(u_illuminationVolume, _f3RayPos_Ms);
 #endif // AMBIENT_OCCLUSION || COLOR_BLEEDING || SHADOWS
 
 #if AMBIENT_OCCLUSION || SHADOWS
             // Apply ambient occlusion + shadows
-            tfColour.rgb *= pow(exp(-volIllum.a), u_volIllumFactor.a);
+            f4TFCol.rgb *= pow(exp(-f4VolIllum.a), u_volIllumFactor.a);
 #endif // AMBIENT_OCCLUSION || SHADOWS
 
 #ifdef COLOR_BLEEDING
             // Apply color bleeding
-            tfColour.rgb *= pow(1+volIllum.rgb, u_volIllumFactor.rgb);
+            f4TFCol.rgb *= pow(1+f4VolIllum.rgb, u_volIllumFactor.rgb);
 #endif // COLOR_BLEEDING
 
 // Average Importance Compositing
 #if IDVR == 2
-
-            vec4 aimc = texelFetch(u_IC, ivec2(gl_FragCoord.xy), 0);
+            vec4 f4Aimc = texelFetch(u_IC, ivec2(gl_FragCoord.xy), 0);
             // We ensure that we have a number of samples > 0, to be in the region of interest
-            if(aimc.r > 0 && nbSamples <= aimc.r)
+            if(f4Aimc.r > 0. && fNbSamples <= f4Aimc.r)
             {
-                tfColour.a = tfColour.a * u_aimcAlphaCorrection;
+                f4TFCol.a = f4TFCol.a * u_aimcAlphaCorrection;
             }
 #endif // IDVR == 2
 
 #if IDVR == 3
-            vec4 aimc = texelFetch(u_IC, ivec2(gl_FragCoord.xy), 0);
+            vec4 f4Aimc = texelFetch(u_IC, ivec2(gl_FragCoord.xy), 0);
             // We ensure that we have a number of samples > 0, to be in the region of interest
-            if(aimc.r > 0 && int(nbSamples) == int(aimc.r))
+            if(f4Aimc.r > 0. && int(fNbSamples) == int(f4Aimc.r))
             {
-                result.rgb = result.rgb * u_vpimcAlphaCorrection;
-                result.a = u_vpimcAlphaCorrection;
+                f4ResultCol.rgb = f4ResultCol.rgb * u_vpimcAlphaCorrection;
+                f4ResultCol.a = u_vpimcAlphaCorrection;
             }
 #endif // IDVR == 3
 
-            composite(result, tfColour);
+            composite(f4ResultCol, f4TFCol);
 
-            if(result.a > 0.99
+            if(f4ResultCol.a > 0.99
 #if IDVR == 3
 // In the case of Visibility preserving importance compositing
 // We need to ensure that we reach a certain amount of samples
 // Before cutting off the compositing and breaking the ray casting
 // Otherwise we will miss the important feature
-            && int(nbSamples) > int(aimc.r)
+            && int(fNbSamples) > int(f4Aimc.r)
 #endif // IDVR == 3
             )
             {
@@ -406,258 +310,265 @@ vec4 launchRay(in vec3 _rayPos, in vec3 _rayDir, in float _rayLength, in float _
             }
         }
 
-        _rayPos += _rayDir;
+        _f3RayPos_Ms += _f3RayDir_MsN;
 #if IDVR == 2 || IDVR == 3
-        nbSamples += 1.0f;
+        fNbSamples += 1.0;
 #endif // IDVR == 2 || IDVR == 3
     }
 
-    return result;
+    return f4ResultCol;
 }
 
 //-----------------------------------------------------------------------------
 
 void main(void)
 {
-    vec2 rayEntryExit = texelFetch(u_entryPoints, ivec2(gl_FragCoord.xy), 0).rg;
+    vec2 f2RayEntryExitDis_Ss = texelFetch(u_entryPoints, ivec2(gl_FragCoord.xy), 0).rg;
 
-    float entryDepth =  rayEntryExit.r;
-    float exitDepth  = -rayEntryExit.g;
+    float fRayEntryDis_Ss =  f2RayEntryExitDis_Ss.r;
+    float fRayExitDis_Ss  = -f2RayEntryExitDis_Ss.g;
 
-    if(exitDepth == -1 || exitDepth < entryDepth)
+    if(fRayExitDis_Ss == -1 || fRayExitDis_Ss < fRayEntryDis_Ss)
     {
         discard;
     }
 
 #ifdef AUTOSTEREO
-    mat4x4 invWorldViewProj = u_invWorldView * u_invProj;
+    mat4x4 m4Cs_Ms = u_invWorldView * u_invProj;
 #else // AUTOSTEREO
-    mat4x4 invWorldViewProj = u_invWorldViewProj;
+    mat4x4 m4Cs_Ms = u_invWorldViewProj;
 #endif // AUTOSTEREO
 
     // Entry points in window space.
-    vec3 entryFrag = fragCoordsToNDC(vec3(gl_FragCoord.xy, entryDepth));
-    vec3 exitFrag = fragCoordsToNDC(vec3(gl_FragCoord.xy, exitDepth));
+    vec3 f3RayEntryPos_Ns = fragCoordsToNDC(vec3(gl_FragCoord.xy, fRayEntryDis_Ss));
+    vec3 f3RayExitPos_Ns = fragCoordsToNDC(vec3(gl_FragCoord.xy, fRayExitDis_Ss));
 
     // Entry points in volume texture space.
-    vec3 rayEntry = ndcToVolumeSpacePosition(entryFrag, invWorldViewProj);
-    vec3 rayExit  = ndcToVolumeSpacePosition(exitFrag, invWorldViewProj);
-
-    vec3 rayDir   = normalize(rayExit - rayEntry);
-
+    vec3 f3RayEntryPos_Ms = ndcToSpecificSpacePosition(f3RayEntryPos_Ns, m4Cs_Ms).xyz;
+    vec3 f3RayExitPos_Ms  = ndcToSpecificSpacePosition(f3RayExitPos_Ns, m4Cs_Ms).xyz;
+    vec3 f3RayDir_MsN   = normalize(f3RayExitPos_Ms - f3RayEntryPos_Ms);
 #if IDVR == 1
-
+    vec3 f3RayCSGEntryPos_Ms = f3RayEntryPos_Ms;
+    vec4 f4ImportancePos_Ms = texelFetch(u_IC, ivec2(gl_FragCoord.xy), 0);
 #ifdef CSG
-#ifdef CSG_DEPTH_LINES
-    float rayDepth = 0.f;
-#endif //CSG_DEPTH_LINES
-
-    vec4 jfaDistance = vec4(0.f);
-    bool isCsg = false; // true if this ray hits the csg.
-
-#if CSG_MODULATION == 4 || CSG_MODULATION == 5 || CSG_MODULATION == 6 || CSG_OPACITY_DECREASE == 1
-    float coneDistance = 0.f;
-#endif // CSG_MODULATION == 4 || CSG_MODULATION == 5 || CSG_MODULATION == 6 || CSG_OPACITY_DECREASE == 1
-
+    vec4 f4CSGInfos = texelFetch(u_csgInfos, ivec2(gl_FragCoord.xy), 0);
+    bool isCsg = f4CSGInfos.w > 0.; // true if this ray hits the csg.
 #endif // CSG
-
-    vec3 rayCSGEntry = rayEntry;
-    vec4 importance = texelFetch(u_IC, ivec2(gl_FragCoord.xy), 0);
-
     // If we have an importance factor, we move the ray accordingly
-    if(importance.a > 0.)
+    if(f4ImportancePos_Ms.a > 0.)
     {
-        rayEntry = importance.rgb;
+        f3RayEntryPos_Ms = f4ImportancePos_Ms.xyz;
 #ifdef CSG
         isCsg = true;
 #endif // CSG
     }
 #ifdef CSG
-    // Otherwise, we use the distance to the closest important point
-    // to dig into the volume
+    // Otherwise, we check if the frag is in the CSG to dig into the volume
+    else if(isCsg)
+    {
+        f3RayEntryPos_Ms = f4CSGInfos.xyz;
+    }
+#ifdef CSG_DISABLE_CONTEXT
     else
     {
-        jfaDistance = texelFetch(u_JFA, ivec2(gl_FragCoord.xy), 0);
-
-        vec3 normSpacing = normalize(u_imageSpacing);
-
-        // Closest mask point to the entry point.
-        vec3 closestPt = ndcToVolumeSpacePosition(jfaDistance.xyz, invWorldViewProj);
-        vec3 scaledClosestPt = closestPt * normSpacing;
-
-        // Scale points and vectors to take voxel anisotropy into account when computing the countersink geometry.
-        vec3 coneDir = normalize(u_cameraPos * normSpacing - scaledClosestPt);
-        vec3 scaledEntry = rayEntry * normSpacing;
-        vec3 scaledDir   = normalize(rayDir * normSpacing);
-
-        bool hit = rayConeIntersection(scaledClosestPt, coneDir, u_csgAngleCos, scaledEntry, scaledDir);
-
-        if(hit)
-        {
-#if CSG_MODULATION == 4 || CSG_MODULATION == 5 || CSG_MODULATION == 6 || CSG_OPACITY_DECREASE == 1
-            // Ray entry to central cone line distance.
-            coneDistance = pointLineDistance(scaledEntry, scaledClosestPt, coneDir);
-#endif // CSG_MODULATION == 4 || CSG_MODULATION == 5 || CSG_MODULATION == 6 || CSG_OPACITY_DECREASE == 1
-
-            // Back to volume texture space.
-            rayEntry = scaledEntry / normSpacing;
-
-            vec3 volDimensions = vec3(textureSize(u_image, 0));
-            vec3 volSize = u_imageSpacing * volDimensions;
-
-#ifdef CSG_DEPTH_LINES
-            // Compute the ray depth in the image spacing's unit (typically millimeters for medical images).
-            vec3 cVector = normalize(u_cameraPos - closestPt) * volSize;
-            vec3 cOrig2RayEntry = rayEntry * volSize - closestPt * volSize;
-            rayDepth = dot(cVector, cOrig2RayEntry) / length(cVector);
-#endif //CSG_DEPTH_LINES
-
-            isCsg = true;
-        }
-
-#ifdef CSG_DISABLE_CONTEXT
-        else
-        {
-            discard;
-        }
-#endif // CSG_DISABLE_CONTEXT
+        discard;
     }
+#endif // CSG_DISABLE_CONTEXT
 #endif // CSG
 #endif // IDVR == 1
 
-    rayDir *= u_sampleDistance;
-
-    float rayLength = length(rayExit - rayEntry);
-
-    vec3 rayPos = rayEntry;
-
+    f3RayDir_MsN *= u_sampleDistance;
+    float fRayLen = length(f3RayExitPos_Ms - f3RayEntryPos_Ms);
 #ifndef CSG
-    vec4 result = launchRay(rayPos, rayDir, rayLength, u_sampleDistance, u_tfTexture, u_tfWindow);
+    vec4 f4ResultCol = launchRay(f3RayEntryPos_Ms, f3RayDir_MsN, fRayLen, u_sampleDistance, u_s1TFTexture, u_f2TFWindow);
 #else // CSG
-
-    vec4 result;
-
+    vec4 f4ResultCol = vec4(0.);
+    // If the ray hit the CSG, some modulations and effects must be applied.
     if(isCsg)
     {
+        // We launch a ray only if the exit position is in front of the ray entry position and if the context must be disabled,
+        // check the entry opacity. These tests avoid computing and launch a useless ray
+        // (by default the color is fully transparent, so, it doesn't affect the following composite).
+        if(distance(u_cameraPos, f3RayExitPos_Ms) >= distance(u_cameraPos, f3RayEntryPos_Ms))
+        {
 #ifdef PREINTEGRATION
-        float entryOpacity = samplePreIntegrationTable(rayEntry, rayEntry + rayDir).a;
+            float fEntryOpacity = samplePreIntegrationTable(f3RayEntryPos_Ms, f3RayEntryPos_Ms + f3RayDir_MsN).a;
 #else // PREINTEGRATION
-        float entryIntensity = texture(u_image, rayEntry).r;
-        float entryOpacity = sampleTransferFunction(entryIntensity, u_tfTexture, u_tfWindow).a;
+            float fEntryIntensity = texture(u_image, f3RayEntryPos_Ms).r;
+            float fEntryOpacity = sampleTransferFunction(fEntryIntensity, u_s1TFTexture, u_f2TFWindow).a;
 #endif // PREINTEGRATION
+            // If the ray is not in an importance zone, modulations and effects are applied.
+            // Else, the ray is just launch normaly.
+            if(f4ImportancePos_Ms.a <=  0. && fEntryOpacity > 0.)
+            {
+                vec4 f4Col;
+#if CSG_DEPTH_LINES == 1 || CSG_BORDER == 1 || CSG_MODULATION == 4 || CSG_MODULATION == 5 || CSG_MODULATION == 6 || CSG_OPACITY_DECREASE
+                float fCSGDepthLen_Ts = texelFetch(u_csgInfos, ivec2(gl_FragCoord.xy), 0).w;
+                float fCSGDepthMaxLen_Ts = 0.;
+
+                // Find the maximum depth on the cone
+                {
+                    vec2 f2TargetPos_Ss = gl_FragCoord.xy;
+                    vec2 f2ClostestPos_Ss = ndcToFragCoord(texelFetch(u_JFA, ivec2(gl_FragCoord.xy), 0).xyz).xy;
+                    vec2 f2ClostestTof2TargetPos_SsN = normalize(f2TargetPos_Ss - f2ClostestPos_Ss);
+
+                    vec4 f4CSGInfosTemp = texelFetch(u_csgInfos, ivec2(f2TargetPos_Ss), 0);
+#ifdef PREINTEGRATION
+                    while(f4CSGInfosTemp.w > 0. && samplePreIntegrationTable(f4CSGInfosTemp.xyz, f4CSGInfosTemp.xyz + f3RayDir_MsN).a > 0.)
+#else // PREINTEGRATION
+                    while(f4CSGInfosTemp.w > 0. && sampleTransferFunction(texture(u_image, f4CSGInfosTemp.xyz).r, u_s1TFTexture, u_f2TFWindow).a > 0.)
+#endif // PREINTEGRATION
+                    {
+                        fCSGDepthMaxLen_Ts = f4CSGInfosTemp.w;
+                        f2TargetPos_Ss += f2ClostestTof2TargetPos_SsN;
+                        f4CSGInfosTemp = texelFetch(u_csgInfos, ivec2(f2TargetPos_Ss), 0);
+                    }
+                }
+#endif // CSG_DEPTH_LINES == 1 || CSG_BORDER == 1 || CSG_MODULATION == 4 || CSG_MODULATION == 5 || CSG_MODULATION == 6 || CSG_OPACITY_DECREASE
+
+#if CSG_DEPTH_LINES == 1 || CSG_BORDER == 1
+                float fDepthLineLen_Ts = fCSGDepthMaxLen_Ts - fCSGDepthLen_Ts;
+                float fCSGDepthIntegralPart_Ts;
+                float fCSGDepthFractPart_Ts = modf(fDepthLineLen_Ts, fCSGDepthIntegralPart_Ts);
+#endif // CSG_DEPTH_LINES == 1 || CSG_BORDER == 1
+#ifdef CSG_LIGHTING
+                // Compute the CSG's normal
+                vec4 f4ClosetMaskPos_Ns = texelFetch(u_JFA, ivec2(gl_FragCoord.xy), 0);
+                vec3 f3ClosetMaskPos_Ms = ndcToSpecificSpacePosition(f4ClosetMaskPos_Ns.xyz, m4Cs_Ms).xyz;
+
+                vec3 f3ClosetPointToCam_Ms = u_cameraPos-f3ClosetMaskPos_Ms;
+                vec3 f3ClosetPointToEntry_Ms = f3RayEntryPos_Ms-f3ClosetMaskPos_Ms;
+
+                vec3 f3NormDir_Ms = cross(f3ClosetPointToCam_Ms, f3ClosetPointToEntry_Ms);
+                vec3 f3ConeNormalDir_MsN = normalize(cross(f3ClosetPointToEntry_Ms, f3NormDir_Ms));
+#else
+                // Else, use the gradient
+                vec3 f3ConeNormalDir_MsN = gradientNormal(f3RayEntryPos_Ms);
+#endif // CSG_LIGHTING
+#ifdef CSG_BORDER
+                // First CSG border
+                if(fDepthLineLen_Ts > 0. && fDepthLineLen_Ts < u_csgBorderWidth)
+                {
+                    gl_FragDepth = firstOpaqueRayInfos(f3RayEntryPos_Ms, f3RayDir_MsN, fRayLen, u_sampleDistance, u_s1TFTexture, u_f2TFWindow).m_fRayDepth_Ss;
+                    f4Col = vec4(lighting(f3ConeNormalDir_MsN, f3RayEntryPos_Ms, u_csgBorderColor), 1.);
+                }
+                else
+#endif // CSG_BORDER
 #ifdef CSG_DEPTH_LINES
-        float rayDepthIntegralPart;
-        float rayDepthFractPart = modf(rayDepth, rayDepthIntegralPart);
-
-        int distToDepthLine = int(mod(rayDepthIntegralPart, u_depthLinesSpacing));
-
-        if(entryOpacity > 0.f && rayDepth > 0.0f && int(rayDepthIntegralPart) != 0 && distToDepthLine == 0 && (rayDepthFractPart < u_depthLinesWidth))
-        {
-            int iterCount = 0;
-            float t = 0.0;
-            gl_FragDepth = firstOpaqueVoxelDepth(iterCount, t, rayPos, rayDir, rayLength, u_sampleDistance, u_tfTexture, u_tfWindow);
-            result = vec4(u_csgBorderColor, 1.);
-        }
-        else
+                // Depth lines inside the SCG.
+                if(fDepthLineLen_Ts > 0. && int(mod(fCSGDepthIntegralPart_Ts, u_csgDepthLinesSpacing)) == 0. && (fCSGDepthFractPart_Ts < u_csgDepthLinesWidth))
+                {
+                    gl_FragDepth = firstOpaqueRayInfos(f3RayEntryPos_Ms, f3RayDir_MsN, fRayLen, u_sampleDistance, u_s1TFTexture, u_f2TFWindow).m_fRayDepth_Ss;
+                    f4Col = vec4(lighting(f3ConeNormalDir_MsN, f3RayEntryPos_Ms, u_csgDepthLinesColor), 1.);
+                }
+                else
 #endif // CSG_DEPTH_LINES
-        if(entryOpacity > 0.f)
-        {
-            vec4 color = launchRay(rayPos, rayDir, rayLength, u_sampleDistance, u_tfTexture, u_tfWindow);
-// Average grayscale
-#if CSG_GRAYSCALE == 1
-            // The average method simply averages the values
-            float grayScale = (color.r + color.g + color.b) / 3.;
-            color.rgb = vec3(grayScale);
-#endif // CSG_GRAYSCALE == 1
-// Lightness grayscale
-#if CSG_GRAYSCALE == 2
-            // The lightness method averages the most prominent and least prominent colors
-            float grayScale =
-                (max(color.r, max(color.g, color.b)) +
-                 min(color.r, min(color.g, color.b))) / 2.;
+                {
+#ifdef CSG_LIGHTING
+                    // Use the CSG's normal to light the first voxex in the countersink
+#ifdef PREINTEGRATION
+                    vec4 f4TFCol = samplePreIntegrationTable(f3RayEntryPos_Ms, f3RayEntryPos_Ms + f3RayDir_MsN);
+#else // PREINTEGRATION
+                    float fIntensity = texture(u_image, f3RayEntryPos_Ms).r;
+                    vec4 f4TFCol = sampleTransferFunction(fIntensity, u_s1TFTexture, u_f2TFWindow);
+#endif // PREINTEGRATION
+                    f4Col = vec4(lighting(f3ConeNormalDir_MsN, f3RayEntryPos_Ms, f4TFCol.rgb), f4TFCol.a);
 
-            color.rgb = vec3(grayScale);
+                    fRayLen = length(f3RayExitPos_Ms - (f3RayEntryPos_Ms+f3RayDir_MsN));
+                    composite(f4Col, launchRay(f3RayEntryPos_Ms+f3RayDir_MsN, f3RayDir_MsN, fRayLen, u_sampleDistance, u_s1TFTexture, u_f2TFWindow));
+                    gl_FragDepth = firstOpaqueRayInfos(f3RayEntryPos_Ms, f3RayDir_MsN, fRayLen, u_sampleDistance, u_s1TFTexture, u_f2TFWindow).m_fRayDepth_Ss;
+#else
+                    // Else, juste laucn the ray
+                    f4Col = launchRay(f3RayEntryPos_Ms, f3RayDir_MsN, fRayLen, u_sampleDistance, u_s1TFTexture, u_f2TFWindow);
+#endif // CSG_LIGHTING
+                }
+
+// CSG grayscale
+// Average grayscale (CSG_GRAYSCALE == 1)
+// Lightness grayscale (CSG_GRAYSCALE == 2)
+// Luminosity grayscale (CSG_GRAYSCALE == 3)
+#if CSG_GRAYSCALE == 1
+                // The average method simply averages the values
+                float fGrayScale = (f4Col.r + f4Col.g + f4Col.b) / 3.;
+                f4Col.rgb = vec3(fGrayScale);
+#endif // CSG_GRAYSCALE == 1
+#if CSG_GRAYSCALE == 2
+                // The lightness method averages the most prominent and least prominent colors
+                float fGrayScale = (max(f4Col.r, max(f4Col.g, f4Col.b)) + min(f4Col.r, min(f4Col.g, f4Col.b))) / 2.;
+                f4Col.rgb = vec3(fGrayScale);
 #endif // CSG_GRAYSCALE == 2
-// Luminosity grayscale
 #if CSG_GRAYSCALE == 3
-            // The luminosity method is a more sophisticated version of the average method.
-            // It also averages the values, but it forms a weighted average to account for human perception.
-            // We’re more sensitive to green than other colors, so green is weighted most heavily.
-            float grayScale = 0.21 * color.r + 0.72 * color.g + 0.07 * color.b;
-            color.rgb = vec3(grayScale);
+                // The luminosity method is a more sophisticated version of the average method.
+                // It also averages the values, but it forms a weighted average to account for human perception.
+                // We’re more sensitive to green than other colors, so green is weighted most heavily.
+                float fGrayScale = 0.21 * f4Col.r + 0.72 * f4Col.g + 0.7 * f4Col.b;
+                f4Col.rgb = vec3(fGrayScale);
 #endif // CSG_GRAYSCALE == 3
 
 // CSG luminance and saturation modulations
 // Brightness increase (CSG_MODULATION == 4)
 // Saturation increase (CSG_MODULATION == 5)
 // Saturation and brightness increase (CSG_MODULATION == 6)
-#if CSG_MODULATION == 4 || CSG_MODULATION == 5 || CSG_MODULATION == 6
-            float modIncr = max(1.f - (coneDistance / abs(u_colorModulationFactor)), 0.f);
-#endif // CSG_MODULATION == 4 || CSG_MODULATION == 5 || CSG_MODULATION == 6
+#if CSG_MODULATION == 4 || CSG_MODULATION == 5 || CSG_MODULATION == 6 || CSG_OPACITY_DECREASE
+                float fModulationRatio = fCSGDepthLen_Ts/fCSGDepthMaxLen_Ts;
+#endif // CSG_MODULATION == 4 || CSG_MODULATION == 5 || CSG_MODULATION == 6 || CSG_OPACITY_DECREASE
 
 #if CSG_MODULATION == 4 || CSG_MODULATION == 5 || CSG_MODULATION == 6
-            vec3 hsv = rgb2hsv(color.rgb);
-
+                vec3 hsv = rgb2hsv(f4Col.rgb);
 #if CSG_MODULATION == 5 || CSG_MODULATION == 6
-            hsv.g += modIncr * sign(u_colorModulationFactor);
+                hsv.g += (1.0-fModulationRatio)*u_csgColorModulationFactor;
 #endif // CSG_MODULATION == 5 || CSG_MODULATION == 6
 
 #if CSG_MODULATION == 4 || CSG_MODULATION == 6
-            hsv.b += modIncr * sign(u_colorModulationFactor);
+                hsv.b += (1.0-fModulationRatio)*u_csgColorModulationFactor;
 #endif // CSG_MODULATION == 4 || CSG_MODULATION == 6
 
-            color.rgb = hsv2rgb(hsv);
+                f4Col.rgb = hsv2rgb(hsv);
 #endif // CSG_MODULATION == 4 || CSG_MODULATION == 5 || CSG_MODULATION == 6
 
 #ifdef CSG_OPACITY_DECREASE
-            float alphaModDecr = max((coneDistance / (1.f - u_opacityDecreaseFactor)), 0.f);
-            color.a -= alphaModDecr;
+                f4Col.a -= fModulationRatio*u_csgOpacityDecreaseFactor;
 #endif // CSG_OPACITY_DECREASE
 
-            result = color;
+                f4ResultCol = f4Col;
+            }
+            else
+            {
+#ifdef CSG_DISABLE_CONTEXT
+                if(fEntryOpacity > 0.)
+                {
+                    f4ResultCol = launchRay(f3RayEntryPos_Ms, f3RayDir_MsN, fRayLen, u_sampleDistance, u_s1TFTexture, u_f2TFWindow);
+                }
+#else
+                f4ResultCol = launchRay(f3RayEntryPos_Ms, f3RayDir_MsN, fRayLen, u_sampleDistance, u_s1TFTexture, u_f2TFWindow);
+#endif // CSG_DISABLE_CONTEXT
+            }
         }
-        else
-        {
-            result = launchRay(rayPos, rayDir, rayLength, u_sampleDistance, u_tfTexture, u_tfWindow);
-        }
-
 #ifdef CSG_TF
         // If the second TF usage is enable, we fill the CSG with it.
-        float rayCSGLength;
-        // Launch the ray until it hit the nearest exit point
-        if(distance(u_cameraPos, rayExit) < distance(u_cameraPos, rayEntry))
+        if(distance(u_cameraPos, f3RayExitPos_Ms) >= distance(u_cameraPos, f3RayCSGEntryPos_Ms))
         {
-            rayCSGLength = length(rayExit - rayCSGEntry);
-        }
-        else
-        {
-            rayCSGLength = length(rayEntry - rayCSGEntry);
-        }
-        vec3 rayCSGPos = rayCSGEntry;
-        vec4 colorCSG = launchRay(rayCSGPos, rayDir, rayCSGLength, u_sampleDistance, u_CSGTFTexture, u_CSGTFWindow);
-#else // CSG_TF
-        // Else, we use an empty color.
-        vec4 colorCSG = vec4(0.0, 0.0, 0.0, 0.0);
-#endif // CSG_TF
-        // We blend colors only if the exit position is in front of the ray entry position
-        if(distance(u_cameraPos, rayExit) >= distance(u_cameraPos, rayEntry))
-        {
-#ifdef CSG_DISABLE_CONTEXT
-            if(entryOpacity > 0.f)
+            float fRayCSGLen;
+            // Launch the ray until it hit the nearest exit point (the exit point in the volume or the mesh if they are mixed rendering)
+            if(distance(u_cameraPos, f3RayExitPos_Ms) < distance(u_cameraPos, f3RayEntryPos_Ms))
             {
-                composite(colorCSG, result);
+                fRayCSGLen = length(f3RayExitPos_Ms - f3RayCSGEntryPos_Ms);
             }
-#else
-            composite(colorCSG, result);
-#endif // CSG_DISABLE_CONTEXT
+            else
+            {
+                fRayCSGLen = length(f3RayEntryPos_Ms - f3RayCSGEntryPos_Ms);
+            }
+            vec4 colorCSG = launchRay(f3RayCSGEntryPos_Ms, f3RayDir_MsN, fRayCSGLen, u_sampleDistance, u_CSGTFTexture, u_CSGTFWindow);
+            composite(colorCSG, f4ResultCol);
+            f4ResultCol = colorCSG;
         }
-        result = colorCSG;
+#endif // CSG_TF
     }
     else
     {
-        result = launchRay(rayPos, rayDir, rayLength, u_sampleDistance, u_tfTexture, u_tfWindow);
+        f4ResultCol = launchRay(f3RayEntryPos_Ms, f3RayDir_MsN, fRayLen, u_sampleDistance, u_s1TFTexture, u_f2TFWindow);
     }
 #endif // CSG
 
-    fragColor = result;
+    v_f4FragCol = f4ResultCol;
 }

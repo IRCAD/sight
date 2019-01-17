@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2018 IRCAD France
- * Copyright (C) 2017-2018 IHU Strasbourg
+ * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -83,23 +83,23 @@ public:
     /// Toggle TF use for countersink geometry .
     FWRENDEROGRE_API void toggleIDVRCSGTF(bool);
 
+    /// Toggle lighting use for countersink geometry .
+    FWRENDEROGRE_API void toggleIDVRCSGLighting(bool);
+
     /// Set the countersink's geometry angle (in degrees).
     FWRENDEROGRE_API void setIDVRCountersinkAngle(double);
 
     /// Set the countersink geometry blur weight factor used in the MImP method.
     FWRENDEROGRE_API void setIDVRCSGBlurWeight(double);
 
-    /// Toggle countersink geometry border used in the MImP method.
-    FWRENDEROGRE_API void toggleIDVRCSGBorder(bool);
-
     /// Toggle context discard when using MImP countersink geometry.
     FWRENDEROGRE_API void toggleIDVRCSGDisableContext(bool);
 
-    /// Set the countersink geometry border thickness used in the MImP method.
-    FWRENDEROGRE_API void setIDVRCSGBorderThickness(double);
+    /// Set the countersink geometry depth lines color used in the MImP method.
+    FWRENDEROGRE_API void setIDVRCSGDepthLinesColor(std::array<std::uint8_t, 4>);
 
-    /// Set the countersink geometry border color used in the MImP method.
-    FWRENDEROGRE_API void setIDVRCSGBorderColor(std::array<std::uint8_t, 4>);
+    /// Set the countersink geometry depth lines width used in the MImP method.
+    FWRENDEROGRE_API void setIDVRCSGDepthLinesWidth(float);
 
     /// Toggle the modulation for MImP countersink geometry.
     FWRENDEROGRE_API void toggleIDVRCSGModulation(bool);
@@ -123,10 +123,19 @@ public:
     FWRENDEROGRE_API void setIDVRCSGOpacityDecreaseFactor(double);
 
     /// Toggle the depth lines for MImP countersink geometry.
-    FWRENDEROGRE_API void toggleIDVRDepthLines(bool);
+    FWRENDEROGRE_API void toggleIDVRCSGDepthLines(bool);
 
     /// Set the number of image spacing units between depth lines.
-    FWRENDEROGRE_API void setIDVRDepthLinesSpacing(int);
+    FWRENDEROGRE_API void setIDVRCSGDepthLinesSpacing(int);
+
+    /// Toggle the border lines for MImP countersink geometry.
+    FWRENDEROGRE_API void toggleIDVRCSGBorder(bool);
+
+    /// Set the countersink geometry border color used in the MImP method.
+    FWRENDEROGRE_API void setIDVRCSGBorderColor(std::array<std::uint8_t, 4>);
+
+    /// Set the countersink geometry border width used in the MImP method.
+    FWRENDEROGRE_API void setIDVRCSGBorderWidth(float);
 
     /// Set the alpha correction factor used in the VPImC method.
     FWRENDEROGRE_API void setIDVRAImCAlphaCorrection(double);
@@ -182,6 +191,9 @@ private:
     /// Sets usage of countersink geometry TF.
     bool m_idvrCSGTF {false};
 
+    /// Sets usage of countersink geometry lighting.
+    bool m_idvrCSGLighting {false};
+
     /// Sets the csg's angle cosine for MImP.
     float m_idvrCSGAngleCosine;
 
@@ -194,20 +206,11 @@ private:
     /// Sets whether or not the context should be discarded when using MImP countersink geometry.
     bool m_idvrCSGDisableContext {false};
 
-    /// Sets countersink geometry border thickness for MImP.
-    float m_idvrCSGBorderThickness {0.05f};
-
-    /// Sets countersink geometry border color for MImP.
-    ::Ogre::ColourValue m_idvrCSGBorderColor {::Ogre::ColourValue(1.f, 1.f, 0.6f)};
-
     /// Sets usage of modulation for MImP CSG.
     bool m_idvrCSGModulation {false};
 
     /// Name of the method used to compute the new color values in CSG.
     IDVRCSGModulationMethod m_idvrCSGModulationMethod {IDVRCSGModulationMethod::COLOR1};
-
-    /// Sets the wheighting factor for MImP CSG color modulation.
-    float m_idvrCSGModulationFactor {0.02f};
 
     /// Sets usage of grayscale for MImP CSG.
     bool m_idvrCSGGrayScale {false};
@@ -218,17 +221,8 @@ private:
     /// Sets usage of opacity decrease for MImP CSG.
     bool m_idvrCSGOpacityDecrease {false};
 
-    /// Sets the opacity decrease factor used in MImP CSG.
-    float m_idvrCSGOpacityDecreaseFactor {0.8f};
-
     /// Sets usage of depth lines for MImP CSG.
     bool m_idvrCSGDepthLines {false};
-
-    /// Sets the alpha correction for AImC.
-    float m_idvrAImCAlphaCorrection {0.05f};
-
-    /// Sets the alpha correction for VPImC.
-    float m_idvrVPImCAlphaCorrection {0.3f};
 
     RayEntryCompositor m_idvrMaskRayEntriesCompositor;
 
@@ -241,6 +235,9 @@ private:
 
     /// TF texture used for IDVR rendering.
     TransferFunction::wptr m_gpuCSGTF;
+
+    /// Shared parameters used for MImP CSG.
+    ::Ogre::GpuSharedParametersPtr m_CSGSharedParameters;
 
 };
 

@@ -759,9 +759,9 @@ void SVolumeRender::setBoolParameter(bool val, std::string key)
         m_volumeRenderer->toggleIDVRCSGTF(val);
         this->updateCSGTF();
     }
-    else if(key == "idvrCSGBorder")
+    else if(key == "idvrCSGLighting")
     {
-        m_volumeRenderer->toggleIDVRCSGBorder(val);
+        m_volumeRenderer->toggleIDVRCSGLighting(val);
     }
     else if(key == "idvrCSGGrayScale")
     {
@@ -777,11 +777,15 @@ void SVolumeRender::setBoolParameter(bool val, std::string key)
     }
     else if(key == "idvrCSGDepthLines")
     {
-        m_volumeRenderer->toggleIDVRDepthLines(val);
+        m_volumeRenderer->toggleIDVRCSGDepthLines(val);
     }
     else if(key == "idvrCSGDisableContext")
     {
         m_volumeRenderer->toggleIDVRCSGDisableContext(val);
+    }
+    else if(key == "idvrCSGBorder")
+    {
+        m_volumeRenderer->toggleIDVRCSGBorder(val);
     }
 
     this->requestRender();
@@ -823,7 +827,7 @@ void SVolumeRender::setIntParameter(int val, std::string key)
     }
     else if(key == "idvrDepthLinesSpacing")
     {
-        m_volumeRenderer->setIDVRDepthLinesSpacing(val);
+        m_volumeRenderer->setIDVRCSGDepthLinesSpacing(val);
     }
 
     this->requestRender();
@@ -851,10 +855,6 @@ void SVolumeRender::setDoubleParameter(double val, std::string key)
     {
         m_volumeRenderer->setIDVRCSGBlurWeight(val);
     }
-    else if(key == "idvrCSGBorderThickness")
-    {
-        m_volumeRenderer->setIDVRCSGBorderThickness(val);
-    }
     else if(key == "idvrCSGModulationFactor")
     {
         m_volumeRenderer->setIDVRCSGModulationFactor(val);
@@ -871,6 +871,15 @@ void SVolumeRender::setDoubleParameter(double val, std::string key)
     {
         m_volumeRenderer->setIDVRAImCAlphaCorrection(val);
     }
+    else if(key == "idvrDepthLinesWidth")
+    {
+        m_volumeRenderer->setIDVRCSGDepthLinesWidth(float(val));
+    }
+    else if(key == "idvrCSGBorderWidth")
+    {
+        m_volumeRenderer->setIDVRCSGBorderWidth(float(val));
+    }
+    this->requestRender();
 }
 
 //-----------------------------------------------------------------------------
@@ -938,12 +947,12 @@ void SVolumeRender::setEnumParameter(std::string val, std::string key)
     else if(key == "idvrDepthLinesSpacing")
     {
         const bool toggle = val != "Off";
-        m_volumeRenderer->toggleIDVRDepthLines(toggle);
+        m_volumeRenderer->toggleIDVRCSGDepthLines(toggle);
 
         if(toggle)
         {
             const int spacing = std::stoi(val);
-            m_volumeRenderer->setIDVRDepthLinesSpacing(spacing);
+            m_volumeRenderer->setIDVRCSGDepthLinesSpacing(spacing);
         }
     }
 
@@ -956,7 +965,11 @@ void SVolumeRender::setColorParameter(std::array<std::uint8_t, 4> color, std::st
 {
     this->getRenderService()->makeCurrent();
 
-    if(key == "idvrCSGBorderColor")
+    if(key == "idvrCSGDepthLinesColor")
+    {
+        m_volumeRenderer->setIDVRCSGDepthLinesColor(color);
+    }
+    else if(key == "idvrCSGBorderColor")
     {
         m_volumeRenderer->setIDVRCSGBorderColor(color);
     }

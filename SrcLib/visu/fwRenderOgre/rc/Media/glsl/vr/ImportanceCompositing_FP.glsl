@@ -11,11 +11,6 @@ uniform mat4 u_worldViewProj;
 
 uniform float u_sampleDistance;
 
-uniform vec4 u_viewport;
-
-uniform float u_clippingNear;
-uniform float u_clippingFar;
-
 layout (location = 0) out vec4 mrt_IC_RayTracing;
 // MImP with countersink geometry
 #if IDVR == 1
@@ -24,19 +19,16 @@ layout (location = 1) out vec4 mrt_IC_JFA;
 
 //-----------------------------------------------------------------------------
 
-vec3 getFragmentImageSpacePosition(in float depth, in mat4 invWorldViewProj)
+vec3 fragCoordsToNDC(in vec3 _f3FragPos_Ss);
+vec4 ndcToSpecificSpacePosition(in vec3 _f3FragPos_Ns, in mat4 _m4Inverse);
+
+//-----------------------------------------------------------------------------
+
+vec4 getFragmentImageSpacePosition(in float _depth, in mat4 _invWorldViewProj)
 {
-    vec3 screenPos = vec3(gl_FragCoord.xy * u_viewport.zw, depth);
-    screenPos -= 0.5;
-    screenPos *= 2.0;
-
-    vec4 clipPos;
-    clipPos.w   = (2 * u_clippingNear * u_clippingFar) / (u_clippingNear + u_clippingFar + screenPos.z * (u_clippingNear - u_clippingFar));
-    clipPos.xyz = screenPos * clipPos.w;
-
-    vec4 imgPos = invWorldViewProj * clipPos;
-
-    return imgPos.xyz / imgPos.w;
+    vec3 screenPos = vec3(gl_FragCoord.xy, _depth);
+    vec3 ndcPos = fragCoordsToNDC(screenPos);
+    return ndcToSpecificSpacePosition(ndcPos, _invWorldViewProj);
 }
 
 //-----------------------------------------------------------------------------
@@ -86,7 +78,7 @@ void launchRay(inout vec3 rayPos, in vec3 rayDir, in float rayLength)
 #if IDVR == 1
             mrt_IC_RayTracing = vec4(rayPos, 1.);
 
-            vec2 ndcScreenPos = (gl_FragCoord.xy * u_viewport.zw - 0.5) * 2.;
+            vec2 ndcScreenPos = fragCoordsToNDC(vec3(gl_FragCoord.xy, gl_FragDepth)).xy;
             float rayScreenDepth = voxelScreenDepth(rayPos);
 
             mrt_IC_JFA = vec4(ndcScreenPos, rayScreenDepth, 1.);
@@ -118,8 +110,8 @@ void main(void)
         discard;
     }
 
-    vec3 rayEntry = getFragmentImageSpacePosition(entryDepth, u_invWorldViewProj);
-    vec3 rayExit  = getFragmentImageSpacePosition(exitDepth, u_invWorldViewProj);
+    vec3 rayEntry = getFragmentImageSpacePosition(entryDepth, u_invWorldViewProj).xyz;
+    vec3 rayExit  = getFragmentImageSpacePosition(exitDepth, u_invWorldViewProj).xyz;
 
     vec3 rayDir   = normalize(rayExit - rayEntry) * u_sampleDistance;
 
