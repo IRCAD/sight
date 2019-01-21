@@ -126,8 +126,8 @@ std::string SScan::selectDevice()
 {
     // Obtain a list of devices currently present on the system
     ::rs2::context ctx;
-    auto devices          = ctx.query_devices();
-    uint32_t device_count = devices.size();
+    const auto devices          = ctx.query_devices();
+    const uint32_t device_count = devices.size();
     std::string selectedDevice;
 
     // Only one device found -> select it
@@ -156,11 +156,15 @@ std::string SScan::selectDevice()
         }
         dial.setSelections(selections);
 
-        std::string selected = dial.show();
+        const std::string selected = dial.show();
         // Get the index of selected camera
-        auto index = std::atoi(&selected.at(0)) - 1;
+        const size_t dot = selected.find(".");
+        const auto index = std::atoi(selected.substr(0, dot).c_str()) - 1;
+
         // Get associated serial numbers
         selectedDevice = devices[static_cast<uint32_t>(index)].get_info(RS2_CAMERA_INFO_SERIAL_NUMBER);
+
+        SLM_DEBUG("selecting camera: "<< index);
     }
 
     return selectedDevice;
@@ -265,8 +269,8 @@ void SScan::startCamera()
 
     m_colorTimeline = this->getInOut< ::arData::FrameTL>(s_FRAMETL_INOUT);
 
-    auto depthStream = profile.get_stream(RS2_STREAM_DEPTH).as< ::rs2::video_stream_profile>();
-    auto colorStream = profile.get_stream(RS2_STREAM_COLOR).as< ::rs2::video_stream_profile>();
+    const auto depthStream = profile.get_stream(RS2_STREAM_DEPTH).as< ::rs2::video_stream_profile>();
+    const auto colorStream = profile.get_stream(RS2_STREAM_COLOR).as< ::rs2::video_stream_profile>();
 
     std::stringstream str;
     str << "-- fps : " << depthStream.fps() << std::endl;
@@ -351,6 +355,10 @@ void SScan::startCamera()
     m_running = true;
     m_thread  = std::thread([this]
         {
+            // Declare pointcloud object, for calculating pointclouds and texture mappings
+            ::rs2::pointcloud pc;
+            // We want the points object to be persistent so we can display the last cloud when a frame drops
+            rs2::points points;
             while(m_running)
             {
                 // Wait for the next set of frames from the camera
@@ -361,16 +369,17 @@ void SScan::startCamera()
                 // Generate the pointcloud and texture mappings
 
                 // Declare pointcloud object, for calculating pointclouds and texture mappings
-                rs2::pointcloud pc;
-                auto points = pc.calculate(depth);
+                if(depth)
+                {
+                    points = pc.calculate(depth);
+                }
 
                 auto color = frames.get_color_frame();
 
                 this->onCameraImageDepth(reinterpret_cast<const std::uint16_t*>(depth.get_data()));
                 this->onCameraImage(reinterpret_cast<const std::uint8_t*>(color.get_data()));
             }
-        }
-                            );
+        });
 
     auto sigStarted = this->signal< ::arServices::IGrabber::CameraStartedSignalType >(
         ::arServices::IGrabber::s_CAMERA_STARTED_SIG);
