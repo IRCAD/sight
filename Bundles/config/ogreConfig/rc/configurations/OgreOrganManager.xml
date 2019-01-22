@@ -1,9 +1,8 @@
 <extension implements="::fwServices::registry::AppConfig">
-    <id>OgreOrganManagerWithSeries</id>
+    <id>OgreOrganManager</id>
     <parameters>
         <param name="WID_PARENT" />
         <param name="organManagerModelSeries" />
-        <param name="ICON_PATH" />
     </parameters>
 
     <config>
