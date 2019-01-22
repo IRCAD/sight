@@ -253,5 +253,34 @@ void FlipTest::flipEmptyImageTest()
 }
 
 //------------------------------------------------------------------------------
+
+void FlipTest::flip4DImageTest()
+{
+    const ::fwData::Image::SizeType size       = {{ 1, 1, 1, 1 }};
+    const ::fwData::Image::SpacingType spacing = {{ 0.5, 0.5, 0.5, 0.5 }};
+    const ::fwData::Image::OriginType origin   = {{ 0., 0., 0., 0. }};
+    const ::fwTools::Type type                 = ::fwTools::Type::s_UINT8;
+    std::array<bool, 3> flipAxes{false, true, false};
+
+    ::fwData::Image::sptr imageIn  = ::fwData::Image::New();
+    ::fwData::Image::sptr imageOut = ::fwData::Image::New();
+
+    ::fwTest::generator::Image::generateImage(imageIn, size, spacing, origin, type);
+    ::fwTest::generator::Image::randomizeArray(imageIn->getDataArray());
+
+    ::fwDataTools::helper::Image imageInHelper(imageIn);
+    ::imageFilterOp::Flipper::flip(imageIn, imageOut, flipAxes);
+    ::fwDataTools::helper::Image imageOutHelper(imageOut);
+
+    const ::fwData::Image::SizeType imageSize    = imageIn->getSize();
+    const ::fwData::Image::SizeType imageOutSize = imageOut->getSize();
+
+    for (int i = 0; i < 4; ++i)
+    {
+        CPPUNIT_ASSERT_EQUAL(imageSize[i], imageOutSize[i]);
+    }
+}
+
+//------------------------------------------------------------------------------
 } // ut
 } // imageFilterOp

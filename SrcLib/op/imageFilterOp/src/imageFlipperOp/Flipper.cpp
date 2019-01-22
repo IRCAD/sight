@@ -22,9 +22,6 @@
 
 #include "imageFilterOp/Flipper.hpp"
 
-#include <fwData/mt/ObjectReadLock.hpp>
-#include <fwData/mt/ObjectWriteLock.hpp>
-
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <fwItkIO/itk.hpp>
@@ -99,7 +96,9 @@ struct FlippingDimensionExtractor
                 break;
             default:
                 SLM_ERROR("Flipping cannot be performed due to incompatible image size ("
-                          + std::to_string(size.size()) + ")");
+                          + std::to_string(size.size()) + ").");
+                // In this case, we just deep copy the input image in the output
+                params.o_image->deepCopy(params.i_image);
                 break;
         }
     }
@@ -124,8 +123,6 @@ void Flipper::flip(const ::fwData::Image::csptr& _inImage,
     }
     else
     {
-        ::fwData::mt::ObjectReadLock readBlock(_inImage);
-        ::fwData::mt::ObjectWriteLock writeBlock(_outImage);
         _outImage->deepCopy(_inImage);
     }
 }

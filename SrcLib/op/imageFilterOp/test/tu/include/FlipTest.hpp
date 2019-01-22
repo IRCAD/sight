@@ -37,6 +37,7 @@ CPPUNIT_TEST( flipAlongYAxisTest );
 CPPUNIT_TEST( flipAlongZAxisTest );
 CPPUNIT_TEST( flipAlongMultipleAxesTest );
 CPPUNIT_TEST( flipEmptyImageTest );
+CPPUNIT_TEST( flip4DImageTest );
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -45,6 +46,7 @@ public:
     void flipAlongZAxisTest();
     void flipAlongMultipleAxesTest();
     void flipEmptyImageTest();
+    void flip4DImageTest();
 };
 
 } //namespace ut

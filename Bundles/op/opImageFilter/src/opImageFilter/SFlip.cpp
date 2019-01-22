@@ -77,16 +77,20 @@ void SFlip::updating()
 {
     ::fwData::Image::csptr inImg = this->getInput< ::fwData::Image >(s_IMAGE_IN);
 
-    ::fwData::mt::ObjectReadLock inImLock(inImg);
-
     SLM_ASSERT("No 'imageIn' found !", inImg);
+    if (inImg)
+    {
+        ::fwData::mt::ObjectReadLock inImLock(inImg);
 
-    ::fwData::Image::sptr outImg = ::fwData::Image::New();
-    ::imageFilterOp::Flipper::flip(inImg, outImg, m_flipAxes);
+        ::fwData::Image::sptr outImg = ::fwData::Image::New();
+        ::fwData::mt::ObjectWriteLock writeBlock(outImg);
 
-    this->setOutput(s_IMAGE_OUT, outImg);
+        ::imageFilterOp::Flipper::flip(inImg, outImg, m_flipAxes);
 
-    m_sigComputed->asyncEmit();
+        this->setOutput(s_IMAGE_OUT, outImg);
+
+        m_sigComputed->asyncEmit();
+    }
 }
 
 //------------------------------------------------------------------------------
