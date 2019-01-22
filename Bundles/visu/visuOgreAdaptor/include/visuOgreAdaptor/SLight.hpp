@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -61,6 +61,7 @@ namespace visuOgreAdaptor
  * - \b diffuseColor [::fwData::Color]: diffuse color of the light.
  * - \b specularColor [::fwData::Color]: specular color of the light.
  * @subsection Configuration Configuration:
+ * - \b layer (mandatory): defines the light's layer.
  * - \b name (mandatory): defines a name for the associated Ogre light.
  * - \b transform (optional): transform applied to the frustum's scene node
  * - \b switchedOn (optional, bool, default="yes"): defines if the light is activated or not.

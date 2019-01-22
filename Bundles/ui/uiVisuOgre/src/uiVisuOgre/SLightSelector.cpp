@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -346,6 +346,11 @@ void SLightSelector::createLightAdaptor(const std::string& _name)
         lightAdaptor->setType(::Ogre::Light::LT_DIRECTIONAL);
         lightAdaptor->setLayerID(currentLayer->getLayerID());
         lightAdaptor->setRenderService(currentLayer->getRenderService());
+        ::fwServices::IService::ConfigType config;
+        config.add("config.<xmlattr>.name", this->getID() + "_light");
+        config.add("config.<xmlattr>.layer", currentLayer->getLayerID());
+        lightAdaptor->setConfiguration(config);
+        lightAdaptor->configure();
         lightAdaptor->start();
 
         m_managedLightAdaptors.push_back(lightAdaptor);
