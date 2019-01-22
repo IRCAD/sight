@@ -43,7 +43,7 @@ namespace ut
 void FlipTest::flipAlongXAxisTest()
 {
     const ::fwData::Image::SizeType size       = {{ 3, 3, 3 }};
-    const ::fwData::Image::SpacingType spacing = {{ 0.5, 0.5, 0.5 }};
+    const ::fwData::Image::SpacingType spacing = {{ 0.1, 0.4, 1.6 }};
     const ::fwData::Image::OriginType origin   = {{ 0., 0., 0. }};
     const ::fwTools::Type type                 = ::fwTools::Type::s_UINT8;
     std::array<bool, 3> flipAxes{true, false, false};
@@ -81,7 +81,7 @@ void FlipTest::flipAlongYAxisTest()
 {
     const ::fwData::Image::SizeType size       = {{ 3, 3, 3 }};
     const ::fwData::Image::SpacingType spacing = {{ 0.5, 0.5, 0.5 }};
-    const ::fwData::Image::OriginType origin   = {{ 0., 0., 0. }};
+    const ::fwData::Image::OriginType origin   = {{ 8., 4., 2. }};
     const ::fwTools::Type type                 = ::fwTools::Type::s_UINT8;
     std::array<bool, 3> flipAxes{false, true, false};
 
@@ -117,7 +117,7 @@ void FlipTest::flipAlongYAxisTest()
 void FlipTest::flipAlongZAxisTest()
 {
     const ::fwData::Image::SizeType size       = {{ 3, 3, 3 }};
-    const ::fwData::Image::SpacingType spacing = {{ 0.5, 0.5, 0.5 }};
+    const ::fwData::Image::SpacingType spacing = {{ 2.0, 2.0, 2.0 }};
     const ::fwData::Image::OriginType origin   = {{ 0., 0., 0. }};
     const ::fwTools::Type type                 = ::fwTools::Type::s_UINT8;
     std::array<bool, 3> flipAxes{false, false, true};
