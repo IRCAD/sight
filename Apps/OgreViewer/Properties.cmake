@@ -1,40 +1,53 @@
 
 set( NAME OgreViewer )
-set( VERSION 0.2 )
+set( VERSION 0.3 )
 set( TYPE APP )
 set( DEPENDENCIES  )
 set( REQUIREMENTS
-    dataReg
-    ctrlCamp
-    ctrlSelection
+    fwlauncher              # Just to build the launcher
+    appXml                  # XML configurations
+
+    preferences             # Start the bundle, load file location or window preferences
+    visuOgre                # Start the bundle, redirect Ogre's log to Sight log
+    material                # Start the bundle, load Ogre's materials
+    visuVTKQt               # Start the bundle, allow vtk to be displayed in QT.
+
+    visuOgreQt              # Allow Ogre to be displayed in QT.
+
+    # Objects declaration
+    fwData
+    fwMedData
+
+    # UI declaration/Actions
     gui
-    guiQt
-    ioData
-    ioAtoms
-    ioVTK
-    servicesReg
-    uiImageQt
-    uiReconstructionQt
-    uiMedDataQt
-    uiIO
-    uiTF
-    visuVTK
-    visuVTKQt
-    visuVTKAdaptor
-    fwlauncher
-    appXml
-    arMedia
-    arDataReg
-    videoQt
-    videoTools
-    visuOgre
-    visuOgreQt
-    visuOgreAdaptor
-    uiVisuOgre
-    material
     media
-    preferences
+    arMedia
+    guiQt
+
+    # Configuration launchers
+    fwServices
     ogreConfig
+
+    # Services
+    ctrlSelection
+    uiVisuOgre
+    uiIO
+    ioAtoms
+    videoTools
+    uiImageQt
+    videoQt
+    ctrlCamp
+
+    # Generic Scene
+    fwRenderOgre
+    fwRenderVTK
+    visuOgreAdaptor
+    visuVTKAdaptor
+    visuVTKVRAdaptor
+
+    arDataReg
+    dataReg
+    servicesReg
     )
 
 bundleParam(appXml PARAM_LIST config PARAM_VALUES OgreViewer_Extension)
