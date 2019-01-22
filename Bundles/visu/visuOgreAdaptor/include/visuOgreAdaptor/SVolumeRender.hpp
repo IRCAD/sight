@@ -31,14 +31,11 @@
 
 #include <fwRenderOgre/IAdaptor.hpp>
 #include <fwRenderOgre/ITransformable.hpp>
-#include <fwRenderOgre/TransferFunction.hpp>
 #include <fwRenderOgre/ui/VRWidget.hpp>
-#include <fwRenderOgre/vr/ImportanceDrivenVolumeRenderer.hpp>
 #include <fwRenderOgre/vr/PreIntegrationTable.hpp>
+#include <fwRenderOgre/vr/RayTracingVolumeRenderer.hpp>
 #include <fwRenderOgre/vr/SATVolumeIllumination.hpp>
 
-#include <OGRE/OgreCamera.h>
-#include <OGRE/OgrePolygon.h>
 #include <OGRE/OgreTexture.h>
 
 #include <array>
@@ -95,9 +92,6 @@ namespace visuOgreAdaptor
  * @subsection In-Out In-Out
  * - \b tf [::fwData::TransferFunction] (optional): the current TransferFunction. If it is not defined, we use the
  *      image's default transferFunction (CT-GreyLevel).
- * - \b csgTF [::fwData::TransferFunction] (optional): the TransferFunction used for the mask. If it is not defined, we
- * use the default transfer function.
- * - \b mask [::fwData::Image] (optional): segmented data.
  * - \b clippingMatrix [::fwData::TransformationMatrix3D]: matrix used to clip the volume.
  * @subsection Configuration Configuration
  * - \b layer (mandatory): id of the layer where this adaptor applies.
@@ -127,11 +121,19 @@ public:
     fwCoreServiceClassDefinitionsMacro( (SVolumeRender)(::fwRenderOgre::IAdaptor) )
 
     /**
+     * @name In-Out API
+     * @{
+     */
+    VISUOGREADAPTOR_API static const ::fwServices::IService::KeyType s_IMAGE_INOUT;
+    VISUOGREADAPTOR_API static const ::fwServices::IService::KeyType s_VOLUME_TF_INOUT;
+    VISUOGREADAPTOR_API static const ::fwServices::IService::KeyType s_CLIPPING_MATRIX_INOUT;
+    /** @} */
+
+    /**
      * @name Slots API
      * @{
      */
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_NEW_IMAGE_SLOT;
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_NEW_MASK_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_IMAGE_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_SAMPLING_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_AO_FACTOR_SLOT;
@@ -152,8 +154,6 @@ public:
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_BOOL_PARAMETER_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_INT_PARAMETER_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_DOUBLE_PARAMETER_SLOT;
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_ENUM_PARAMETER_SLOT;
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_COLOR_PARAMETER_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_CLIPPING_BOX_SLOT;
     /** @} */
@@ -192,85 +192,104 @@ protected:
     /// Update the displayed transfer function
     VISUOGREADAPTOR_API virtual void updateVolumeTF();
 
-    /// Update the displayed transfer function used for the IDVR
-    VISUOGREADAPTOR_API virtual void updateCSGTF();
-
-    /**
-     * @brief Returns proposals to connect service slots to associated object signals,
-     * this method is used for obj/srv auto connection
-     *
-     * Connects fwData::Image::s_MODIFIED_SIG to this::s_NEWIMAGE_SLOT
-     */
+    /// Returns proposals to connect service slots to associated object signals.
     VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
-private:
+    /// Update the mask.
+    VISUOGREADAPTOR_API void newImage();
 
-    void newImage();
-    void newMask();
-    void updateImage();
-    void updateSampling(int nbSamples);
-    void updateOpacityCorrection(int opacityCorrection);
-    void updateAOFactor(double aoFactor);
-    void updateColorBleedingFactor(double colorBleedingFactor);
-    void updateSatSizeRatio(int sizeRatio);
-    void updateSatShellsNumber(int shellsNumber);
-    void updateSatShellRadius(int shellRadius);
-    void updateSatConeAngle(int coneAngle);
-    void updateSatConeSamples(int nbConeSamples);
-    void togglePreintegration(bool preintegration);
-    void toggleAmbientOcclusion(bool ambientOcclusion);
-    void toggleColorBleeding(bool colorBleeding);
-    void toggleShadows(bool shadows);
-    void toggleWidgets(bool visible);
-    void resizeViewport(int w, int h);
-    void setFocalDistance(int focalDistance);
-    void setBoolParameter(bool val, std::string key);
-    void setIntParameter(int val, std::string key);
-    void setDoubleParameter(double val, std::string key);
-    void setEnumParameter(std::string val, std::string key);
-    void setColorParameter(std::array<uint8_t, 4> color, std::string key);
-    void setImageSpacing();
+    /// Update rendering when a new image is loaded.
+    VISUOGREADAPTOR_API void virtual updateImage();
+
+    /// Update the sampling.
+    VISUOGREADAPTOR_API void virtual updateSampling(int nbSamples);
+
+    /// Set the opacity correction.
+    VISUOGREADAPTOR_API void updateOpacityCorrection(int opacityCorrection);
+
+    /// Set the ambient occlusion factor.
+    VISUOGREADAPTOR_API void updateAOFactor(double aoFactor);
+
+    /// Set the color bleeding factor.
+    VISUOGREADAPTOR_API void updateColorBleedingFactor(double colorBleedingFactor);
+
+    /// Set the SAT size ration.
+    VISUOGREADAPTOR_API void updateSatSizeRatio(int sizeRatio);
+
+    /// Set the SAT shells number.
+    VISUOGREADAPTOR_API void updateSatShellsNumber(int shellsNumber);
+
+    /// Set the SAT shells radius.
+    VISUOGREADAPTOR_API void updateSatShellRadius(int shellRadius);
+
+    /// Set the SAT cone angle.
+    VISUOGREADAPTOR_API void updateSatConeAngle(int coneAngle);
+
+    /// Set the SAT cone samples.
+    VISUOGREADAPTOR_API void updateSatConeSamples(int nbConeSamples);
+
+    /// Enable/disable the pre integration table.
+    VISUOGREADAPTOR_API void togglePreintegration(bool preintegration);
+
+    /// Enable/disable the ambient occlision.
+    VISUOGREADAPTOR_API void toggleAmbientOcclusion(bool ambientOcclusion);
+
+    /// Enable/disable the color bleeding.
+    VISUOGREADAPTOR_API void toggleColorBleeding(bool colorBleeding);
+
+    /// Enable/disable the shadow.
+    VISUOGREADAPTOR_API void toggleShadows(bool shadows);
+
+    /// Display/Hide the widget.
+    VISUOGREADAPTOR_API void toggleWidgets(bool visible);
+
+    /// Resize the viewport.
+    VISUOGREADAPTOR_API void resizeViewport(int w, int h);
+
+    /// Set the focal distance.
+    VISUOGREADAPTOR_API void setFocalDistance(int focalDistance);
+
+    /// Notify a bool parameter.
+    VISUOGREADAPTOR_API void virtual setBoolParameter(bool val, std::string key);
+
+    /// Notify a int parameter.
+    VISUOGREADAPTOR_API void virtual setIntParameter(int val, std::string key);
+
+    /// Notify a double parameter.
+    VISUOGREADAPTOR_API void virtual setDoubleParameter(double val, std::string key);
 
     /// Slot: Sets the volume to be visible or not.
-    void updateVisibility(bool visibility);
+    VISUOGREADAPTOR_API void updateVisibility(bool visibility);
 
     /// Creates widgets and connects its slots to interactor signals.
-    void createWidget();
+    VISUOGREADAPTOR_API void createWidget();
 
     /// Removes the widgets from the interactor and deletes it.
-    void destroyWidget();
+    VISUOGREADAPTOR_API void destroyWidget();
 
     /// Computes the volume illumination and applies it to the ray tracing renderer
-    void updateVolumeIllumination();
+    VISUOGREADAPTOR_API void updateVolumeIllumination();
 
     /// Updates or creates the illumination volume according to the given VR effect.
-    void toggleVREffect(VREffectType vrEffect);
+    VISUOGREADAPTOR_API void toggleVREffect(VREffectType vrEffect);
 
     /// Updates the clipping box position from the inout clipping matrix.
-    void updateClippingBox();
+    VISUOGREADAPTOR_API void updateClippingBox();
 
     /// Helper to manage the volume TF.
     ::fwDataTools::helper::TransferFunction m_helperVolumeTF;
-
-    /// Helper to manage the TF use to fill the CSG.
-    ::fwDataTools::helper::TransferFunction m_helperCSGTF;
 
     /// Updates the inout clipping matrix from the clipping box positions.
     void updateClippingTM3D();
 
     /// Renders the volume.
-    ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer* m_volumeRenderer { nullptr };
+    ::fwRenderOgre::vr::RayTracingVolumeRenderer* m_volumeRenderer { nullptr };
 
     /// 3D Image texture.
     ::Ogre::TexturePtr m_3DOgreTexture;
 
-    ::Ogre::TexturePtr m_maskTexture;
-
     /// TF texture used for rendering.
     ::fwRenderOgre::TransferFunction::sptr m_gpuVolumeTF;
-
-    /// TF texture used to fill the CSG.
-    ::fwRenderOgre::TransferFunction::sptr m_gpuCSGTF;
 
     /// Pre-integration table.
     ::fwRenderOgre::vr::PreIntegrationTable m_preIntegrationTable;
@@ -331,9 +350,6 @@ private:
 
     /// Sets whether the camera must be auto reset when a mesh is updated or not.
     bool m_autoResetCamera { true };
-
-    /// Default IDVR method
-    std::string m_IDVRMethod { "None" };
 
     /// Handle connections between the layer and the volume renderer.
     ::fwCom::helper::SigSlotConnection m_volumeConnection;
