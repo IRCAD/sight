@@ -306,7 +306,6 @@ void RayTracingVolumeRenderer::setSampling(uint16_t nbSamples)
 
     // Update the sample distance in the shaders
     m_RTVSharedParameters->setNamedConstant("u_sampleDistance", m_sampleDistance);
-    this->getLayer()->requestRender();
 }
 
 //-----------------------------------------------------------------------------
@@ -317,7 +316,6 @@ void RayTracingVolumeRenderer::setOpacityCorrection(int opacityCorrection)
 
     // Update shader parameter
     m_RTVSharedParameters->setNamedConstant("u_opacityCorrectionFactor", m_opacityCorrectionFactor);
-    this->getLayer()->requestRender();
 }
 
 //-----------------------------------------------------------------------------
@@ -328,7 +326,6 @@ void RayTracingVolumeRenderer::setAOFactor(double aoFactor)
 
     // Update the shader parameter
     m_RTVSharedParameters->setNamedConstant("u_volIllumFactor", m_volIllumFactor);
-    this->getLayer()->requestRender();
 }
 
 //-----------------------------------------------------------------------------
@@ -340,7 +337,6 @@ void RayTracingVolumeRenderer::setColorBleedingFactor(double colorBleedingFactor
 
     // Update the shader parameter
     m_RTVSharedParameters->setNamedConstant("u_volIllumFactor", m_volIllumFactor);
-    this->getLayer()->requestRender();
 }
 
 //-----------------------------------------------------------------------------
