@@ -96,9 +96,12 @@ void SScan::startCamera()
         const auto colorWidth  = m_rgbCamera->getWidth(),
                    colorHeight = m_rgbCamera->getHeight();
 
-        m_depthTL->initPoolSize(static_cast<size_t>(depthWidth), static_cast<size_t>(depthHeight),
-                                fwTools::Type::s_UINT16, 1);
-        m_depthTL->setMaximumSize(50);
+        if (m_depthTL)
+        {
+            m_depthTL->initPoolSize(static_cast<size_t>(depthWidth), static_cast<size_t>(depthHeight),
+                                    fwTools::Type::s_UINT16, 1);
+            m_depthTL->setMaximumSize(50);
+        }
 
         m_colorTL->initPoolSize(colorWidth, colorHeight, fwTools::Type::s_UINT8, 4);
         m_colorTL->setMaximumSize(50);
@@ -241,8 +244,11 @@ void SScan::presentDepthFrame()
                 continue;
             }
 
-            m_depthStream.readFrame(&depthFrame);
             bool isGrabbed = m_rgbGrabber.grab();
+            if (m_depthTL)
+            {
+                m_depthStream.readFrame(&depthFrame);
+            }
 
             auto timestamp = std::chrono::duration_cast< std::chrono::milliseconds >
                                  (std::chrono::system_clock::now().time_since_epoch()).count();
