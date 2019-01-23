@@ -1,6 +1,6 @@
 <plugin id="ioARActivity" version="@PROJECT_VERSION@">
 
-    <requirement id="filterVRRender" />
+    <requirement id="filterUnknownSeries" />
 
     <!-- Service config used to read a seriesDB using ioAtoms. -->
     <extension implements="::fwServices::registry::ServiceConfig">

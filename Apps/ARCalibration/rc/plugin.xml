@@ -8,7 +8,7 @@
     <requirement id="memory" />
     <requirement id="preferences" />
     <requirement id="activities" />
-    <requirement id="filterVRRender" />
+    <requirement id="filterUnknownSeries" />
 
     <xi:include href="configurations/activitySelector.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/ARCalibrationBase.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />

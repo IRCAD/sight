@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2015 IRCAD France
+ * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,19 +20,42 @@
  *
  ***********************************************************************/
 
-#ifndef __FILTERVRRENDER_NAMESPACE_HPP__
-#define __FILTERVRRENDER_NAMESPACE_HPP__
+#pragma once
 
-/**
- * @ingroup apprequirement
- * @brief The namespace filterVRRender contains filters for atoms: it allows to keep only the known atom objects in the
- *        application.
- * @note It also allows to filter the known activities according to their ID.
- */
+#include <fwAtomsFilter/IFilter.hpp>
 
-namespace filterVRRender
+#include <fwCore/macros.hpp>
+
+#include "filterUnknownSeries/config.hpp"
+
+namespace fwAtoms
+{
+class Object;
+}
+
+namespace filterUnknownSeries
 {
 
-} // namespace filterVRRender
+/**
+ * @class MedicalDataV2
+ * @brief Filter associated to context "MedicalData" version "V2" in VR-Render.
+ *
+ */
+class FILTERUNKNOWNSERIES_CLASS_API MedicalDataV2 : public ::fwAtomsFilter::IFilter
+{
 
-#endif // __FILTERVRRENDER_NAMESPACE_HPP__
+public:
+    /// Constructor.
+    MedicalDataV2(::fwAtomsFilter::IFilter::Key key);
+
+    /// Destructor.
+    ~MedicalDataV2();
+
+    /// Apply filter onto given atom object.
+    FILTERUNKNOWNSERIES_API virtual void apply(const SPTR(::fwAtoms::Object)& atom);
+};
+
+} // namespace filterUnknownSeries
+
+
+

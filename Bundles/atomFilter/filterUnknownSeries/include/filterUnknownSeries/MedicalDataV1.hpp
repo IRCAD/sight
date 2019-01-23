@@ -19,44 +19,42 @@
  * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
  *
  ***********************************************************************/
-
-#ifndef __FILTERVRRENDER_MEDICALDATAV2_HPP__
-#define __FILTERVRRENDER_MEDICALDATAV2_HPP__
+#pragma once
 
 #include <fwAtomsFilter/IFilter.hpp>
 
 #include <fwCore/macros.hpp>
 
-#include "filterVRRender/config.hpp"
+#include "filterUnknownSeries/config.hpp"
 
 namespace fwAtoms
 {
 class Object;
 }
 
-namespace filterVRRender
+namespace filterUnknownSeries
 {
 
 /**
- * @class MedicalDataV2
- * @brief Filter associated to context "MedicalData" version "V2" in VR-Render.
+ * @class MedicalDataV1
+ * @brief Filter associated to context "MedicalData" version "V1" in VR-Render.
  *
+ * This filter clears "processingDB" and "planningDB" keys from a "MedicalWorkspace" composite.
  */
-class FILTERVRRENDER_CLASS_API MedicalDataV2 : public ::fwAtomsFilter::IFilter
+class FILTERUNKNOWNSERIES_CLASS_API MedicalDataV1 : public ::fwAtomsFilter::IFilter
 {
 
 public:
     /// Constructor.
-    MedicalDataV2(::fwAtomsFilter::IFilter::Key key);
+    MedicalDataV1(::fwAtomsFilter::IFilter::Key key);
 
     /// Destructor.
-    ~MedicalDataV2();
+    ~MedicalDataV1();
 
     /// Apply filter onto given atom object.
-    FILTERVRRENDER_API virtual void apply(const SPTR(::fwAtoms::Object)& atom);
+    FILTERUNKNOWNSERIES_API virtual void apply(const SPTR(::fwAtoms::Object)& atom);
 };
 
-} // namespace filterVRRender
+} // namespace filterUnknownSeries
 
-#endif // __FILTERVRRENDER_MEDICALDATAV2_HPP__
 

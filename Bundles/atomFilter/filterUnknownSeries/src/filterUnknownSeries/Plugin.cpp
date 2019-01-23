@@ -22,12 +22,12 @@
 
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 
-#include "filterVRRender/Plugin.hpp"
+#include "filterUnknownSeries/Plugin.hpp"
 
-namespace filterVRRender
+namespace filterUnknownSeries
 {
 
-static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::filterVRRender::Plugin");
+static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::filterUnknownSeries::Plugin");
 
 Plugin::~Plugin() noexcept
 {
@@ -41,5 +41,5 @@ void Plugin::stop() noexcept
 {
 }
 
-} // namespace filterVRRender
+} // namespace filterUnknownSeries
 

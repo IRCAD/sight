@@ -31,9 +31,9 @@
 
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::filterVRRender::ut::MedicalDataV1Test );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::filterUnknownSeries::ut::MedicalDataV1Test );
 
-namespace filterVRRender
+namespace filterUnknownSeries
 {
 namespace ut
 {
@@ -105,5 +105,5 @@ void MedicalDataV1Test::applyTest()
 //------------------------------------------------------------------------------
 
 } // namespace ut
-} // namespace filterVRRender
+} // namespace filterUnknownSeries
 

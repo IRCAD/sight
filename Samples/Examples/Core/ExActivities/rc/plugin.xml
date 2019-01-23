@@ -7,7 +7,7 @@
     <requirement id="patchMedicalData" />
     <requirement id="preferences" />
     <requirement id="activities" />
-    <requirement id="filterVRRender" />
+    <requirement id="filterUnknownSeries" />
 
     <xi:include href="configurations/ExBase.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/ExImageReading.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />

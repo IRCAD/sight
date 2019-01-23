@@ -20,14 +20,13 @@
  *
  ***********************************************************************/
 
-#ifndef __FILTERVRRENDER_UT_MEDICALDATAV1TEST_HPP__
-#define __FILTERVRRENDER_UT_MEDICALDATAV1TEST_HPP__
+#pragma once
 
 #include <cppunit/extensions/HelperMacros.h>
 
 #include <fwRuntime/EConfigurationElement.hpp>
 
-namespace filterVRRender
+namespace filterUnknownSeries
 {
 namespace ut
 {
@@ -55,6 +54,4 @@ public:
 };
 
 } // namespace ut
-} // namespace filterVRRender
-
-#endif //__FILTERVRRENDER_UT_MEDICALDATAV1TEST_HPP__
+} // namespace filterUnknownSeries

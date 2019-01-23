@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2017 IRCAD France
+ * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,39 +20,18 @@
  *
  ***********************************************************************/
 
-#ifndef __FILTERVRRENDER_PLUGIN_HPP__
-#define __FILTERVRRENDER_PLUGIN_HPP__
+#pragma once
 
-#include <fwRuntime/Plugin.hpp>
+/**
+ * @ingroup apprequirement
+ * @brief The namespace filterUnknownSeries contains filters for atoms: it allows to keep only the known atom objects in the
+ *        application.
+ * @note It also allows to filter the known activities according to their ID.
+ */
 
-namespace filterVRRender
+namespace filterUnknownSeries
 {
 
-class Plugin : public ::fwRuntime::Plugin
-{
-public:
-    //! @brief Destructor.
-    ~Plugin() noexcept;
+} // namespace filterUnknownSeries
 
-    /**
-     * @brief Start method.
-     *
-     * This method is used by runtime in order to initialize the bundle.
-     *
-     * @exception ::fwRuntime::RuntimeException
-     */
-    void start();
-
-    /**
-     * @brief Stop method.
-     *
-     * This method is used by runtime in order to close the bundle.
-     */
-    void stop() noexcept;
-
-};
-
-} // namespace filterVRRender
-
-#endif //__FILTERVRRENDER_PLUGIN_HPP__
 

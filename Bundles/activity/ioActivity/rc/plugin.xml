@@ -1,6 +1,6 @@
 <plugin id="ioActivity" version="@PROJECT_VERSION@">
 
-    <requirement id="filterVRRender" />
+    <requirement id="filterUnknownSeries" />
     <requirement id="activities" />
 
     <!-- Activity used to export an image series. -->

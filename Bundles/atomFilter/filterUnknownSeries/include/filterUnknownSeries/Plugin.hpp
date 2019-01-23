@@ -20,44 +20,37 @@
  *
  ***********************************************************************/
 
-#ifndef __FILTERVRRENDER_MEDICALDATAV1_HPP__
-#define __FILTERVRRENDER_MEDICALDATAV1_HPP__
+#pragma once
 
-#include <fwAtomsFilter/IFilter.hpp>
+#include <fwRuntime/Plugin.hpp>
 
-#include <fwCore/macros.hpp>
-
-#include "filterVRRender/config.hpp"
-
-namespace fwAtoms
-{
-class Object;
-}
-
-namespace filterVRRender
+namespace filterUnknownSeries
 {
 
-/**
- * @class MedicalDataV1
- * @brief Filter associated to context "MedicalData" version "V1" in VR-Render.
- *
- * This filter clears "processingDB" and "planningDB" keys from a "MedicalWorkspace" composite.
- */
-class FILTERVRRENDER_CLASS_API MedicalDataV1 : public ::fwAtomsFilter::IFilter
+class Plugin : public ::fwRuntime::Plugin
 {
-
 public:
-    /// Constructor.
-    MedicalDataV1(::fwAtomsFilter::IFilter::Key key);
+    //! @brief Destructor.
+    ~Plugin() noexcept;
 
-    /// Destructor.
-    ~MedicalDataV1();
+    /**
+     * @brief Start method.
+     *
+     * This method is used by runtime in order to initialize the bundle.
+     *
+     * @exception ::fwRuntime::RuntimeException
+     */
+    void start();
 
-    /// Apply filter onto given atom object.
-    FILTERVRRENDER_API virtual void apply(const SPTR(::fwAtoms::Object)& atom);
+    /**
+     * @brief Stop method.
+     *
+     * This method is used by runtime in order to close the bundle.
+     */
+    void stop() noexcept;
+
 };
 
-} // namespace filterVRRender
+} // namespace filterUnknownSeries
 
-#endif // __FILTERVRRENDER_MEDICALDATAV1_HPP__
 

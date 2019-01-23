@@ -21,7 +21,7 @@
  ***********************************************************************/
 
 
-#include "filterVRRender/MedicalDataV2.hpp"
+#include "filterUnknownSeries/MedicalDataV2.hpp"
 
 #include <fwAtoms/Base.hpp>
 #include <fwAtoms/Object.hpp>
@@ -33,13 +33,16 @@
 
 #include <fwAtomsPatch/helper/functions.hpp>
 
-namespace filterVRRender
+#include <fwCore/spyLog.hpp>
+
+namespace filterUnknownSeries
 {
 
-fwAtomsFilterRegisterMacro( ::filterVRRender::MedicalDataV2, "VRRenderMedicalDataV2" );
+fwAtomsFilterRegisterMacro( ::filterUnknownSeries::MedicalDataV2, "VRRenderMedicalDataV2" );
 
 MedicalDataV2::MedicalDataV2(::fwAtomsFilter::IFilter::Key key)
 {
+    FW_DEPRECATED("filterVRRender", "filterUnknownSeries", "18.1");
 }
 
 MedicalDataV2::~MedicalDataV2()
@@ -79,5 +82,5 @@ void MedicalDataV2::apply(const SPTR(::fwAtoms::Object)& atom)
     }
 }
 
-} // namespace filterVRRender
+} // namespace filterUnknownSeries
 

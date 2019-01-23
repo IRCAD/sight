@@ -1,5 +1,5 @@
 
-set( NAME filterVRRenderTest )
+set( NAME filterUnknownSeriesTest )
 set( VERSION  )
 set( TYPE TEST )
 set( DEPENDENCIES
@@ -11,4 +11,4 @@ set( DEPENDENCIES
     fwRuntime
     fwTest
     )
-set( REQUIREMENTS filterVRRender dataReg servicesReg)
+set( REQUIREMENTS filterUnknownSeries dataReg servicesReg)
