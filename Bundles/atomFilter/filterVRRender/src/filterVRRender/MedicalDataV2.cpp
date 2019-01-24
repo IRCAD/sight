@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,15 +20,14 @@
  *
  ***********************************************************************/
 
-
 #include "filterVRRender/MedicalDataV2.hpp"
 
 #include <fwAtoms/Base.hpp>
 #include <fwAtoms/Object.hpp>
 #include <fwAtoms/Object.hxx>
 #include <fwAtoms/Sequence.hpp>
-#include <fwAtomsFilter/functions.hpp>
 
+#include <fwAtomsFilter/functions.hpp>
 #include <fwAtomsFilter/registry/macros.hpp>
 
 #include <fwAtomsPatch/helper/functions.hpp>
@@ -50,6 +49,8 @@ MedicalDataV2::MedicalDataV2(::fwAtomsFilter::IFilter::Key key)
 MedicalDataV2::~MedicalDataV2()
 {
 }
+
+//------------------------------------------------------------------------------
 
 void MedicalDataV2::apply(const SPTR(::fwAtoms::Object)& atom)
 {
@@ -85,4 +86,3 @@ void MedicalDataV2::apply(const SPTR(::fwAtoms::Object)& atom)
 }
 
 } // namespace filterVRRender
-

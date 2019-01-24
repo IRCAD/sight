@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -24,7 +24,8 @@
 
 /**
  * @ingroup apprequirement
- * @brief The namespace filterUnknownSeries contains filters for atoms: it allows to keep only the known atom objects in the
+ * @brief The namespace filterUnknownSeries contains filters for atoms: it allows to keep only the known atom objects in
+ * the
  *        application.
  * @note It also allows to filter the known activities according to their ID.
  */
@@ -33,5 +34,3 @@ namespace filterUnknownSeries
 {
 
 } // namespace filterUnknownSeries
-
-

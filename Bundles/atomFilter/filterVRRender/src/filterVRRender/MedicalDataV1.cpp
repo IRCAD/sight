@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,18 +20,18 @@
  *
  ***********************************************************************/
 
+#include "filterVRRender/MedicalDataV1.hpp"
+
+#include <fwAtoms/Map.hpp>
 #include <fwAtoms/Object.hpp>
 #include <fwAtoms/Object.hxx>
-#include <fwAtoms/Map.hpp>
-
-#include <fwAtomsPatch/helper/Object.hpp>
-#include <fwAtomsPatch/helper/functions.hpp>
 
 #include <fwAtomsFilter/registry/macros.hpp>
 
-#include <fwCore/spyLog.hpp>
+#include <fwAtomsPatch/helper/functions.hpp>
+#include <fwAtomsPatch/helper/Object.hpp>
 
-#include "filterVRRender/MedicalDataV1.hpp"
+#include <fwCore/spyLog.hpp>
 
 namespace filterVRRender
 {
@@ -48,6 +48,8 @@ MedicalDataV1::~MedicalDataV1()
 {
 }
 
+//------------------------------------------------------------------------------
+
 void clearMapAttribute(const std::string& key, const ::fwAtoms::Map::sptr& values)
 {
     if(values->find(key) != values->end())
@@ -60,6 +62,8 @@ void clearMapAttribute(const std::string& key, const ::fwAtoms::Map::sptr& value
         objValues->clear();
     }
 }
+
+//------------------------------------------------------------------------------
 
 void MedicalDataV1::apply(const SPTR(::fwAtoms::Object)& atom)
 {
@@ -79,4 +83,3 @@ void MedicalDataV1::apply(const SPTR(::fwAtoms::Object)& atom)
 }
 
 }
-
