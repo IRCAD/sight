@@ -41,7 +41,7 @@ class FILTERUNKNOWNSERIES_CLASS_API FilterUnknownActivities : public ::fwAtomsFi
 
 public:
     /// Constructor.
-    FitlerUnknownActivities(::fwAtomsFilter::IFilter::Key key);
+    FilterUnknownActivities(::fwAtomsFilter::IFilter::Key key);
 
     /// Destructor.
     ~FilterUnknownActivities();
