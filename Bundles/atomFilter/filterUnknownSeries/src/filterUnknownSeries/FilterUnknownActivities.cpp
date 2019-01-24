@@ -21,7 +21,7 @@
  ***********************************************************************/
 
 
-#include "filterUnknownSeries/MedicalDataV2.hpp"
+#include "filterUnknownSeries/FilterUnknownActivities.hpp"
 
 #include <fwAtoms/Base.hpp>
 #include <fwAtoms/Object.hpp>
@@ -33,23 +33,20 @@
 
 #include <fwAtomsPatch/helper/functions.hpp>
 
-#include <fwCore/spyLog.hpp>
-
 namespace filterUnknownSeries
 {
 
-fwAtomsFilterRegisterMacro( ::filterUnknownSeries::MedicalDataV2, "VRRenderMedicalDataV2" );
+fwAtomsFilterRegisterMacro( ::filterUnknownSeries::FilterUnknownActivities, "FilterUnknownActivities" );
 
-MedicalDataV2::MedicalDataV2(::fwAtomsFilter::IFilter::Key key)
-{
-    FW_DEPRECATED("filterVRRender", "filterUnknownSeries", "18.1");
-}
-
-MedicalDataV2::~MedicalDataV2()
+FilterUnknownActivities::FilterUnknownActivities(::fwAtomsFilter::IFilter::Key key)
 {
 }
 
-void MedicalDataV2::apply(const SPTR(::fwAtoms::Object)& atom)
+FilterUnknownActivities::~FilterUnknownActivities()
+{
+}
+
+void FilterUnknownActivities::apply(const SPTR(::fwAtoms::Object)& atom)
 {
     SLM_TRACE_FUNC();
 

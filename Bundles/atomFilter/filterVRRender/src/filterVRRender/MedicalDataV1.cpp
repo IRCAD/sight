@@ -31,16 +31,17 @@
 
 #include <fwCore/spyLog.hpp>
 
-#include "filterUnknownSeries/MedicalDataV1.hpp"
+#include "filterVRRender/MedicalDataV1.hpp"
 
-namespace filterUnknownSeries
+namespace filterVRRender
 {
 
-fwAtomsFilterRegisterMacro( ::filterUnknownSeries::MedicalDataV1, "VRRenderMedicalDataV1" );
+fwAtomsFilterRegisterMacro( ::filterVRRender::MedicalDataV1, "VRRenderMedicalDataV1" );
 
 MedicalDataV1::MedicalDataV1(::fwAtomsFilter::IFilter::Key key)
+
 {
-    FW_DEPRECATED("filterVRRender", "filterUnknownSeries", "18.1");
+    FW_DEPRECATED("filterVRRender", "filterUnknownSeries", "19.0");
 }
 
 MedicalDataV1::~MedicalDataV1()

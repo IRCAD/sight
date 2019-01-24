@@ -19,6 +19,7 @@
  * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
  *
  ***********************************************************************/
+
 #pragma once
 
 #include <fwAtomsFilter/IFilter.hpp>
@@ -36,25 +37,24 @@ namespace filterUnknownSeries
 {
 
 /**
- * @class MedicalDataV1
- * @brief Filter associated to context "MedicalData" version "V1" in VR-Render.
+ * @class FilterUnknownActivities
  *
- * This filter clears "processingDB" and "planningDB" keys from a "MedicalWorkspace" composite.
  */
-class FILTERUNKNOWNSERIES_CLASS_API MedicalDataV1 : public ::fwAtomsFilter::IFilter
+class FILTERUNKNOWNSERIES_CLASS_API FilterUnknownActivities : public ::fwAtomsFilter::IFilter
 {
 
 public:
     /// Constructor.
-    MedicalDataV1(::fwAtomsFilter::IFilter::Key key);
+    FitlerUnknownActivities(::fwAtomsFilter::IFilter::Key key);
 
     /// Destructor.
-    ~MedicalDataV1();
+    ~FilterUnknownActivities();
 
     /// Apply filter onto given atom object.
     FILTERUNKNOWNSERIES_API virtual void apply(const SPTR(::fwAtoms::Object)& atom);
 };
 
 } // namespace filterUnknownSeries
+
 
 

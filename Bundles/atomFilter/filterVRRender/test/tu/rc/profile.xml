@@ -3,8 +3,8 @@
     <activate id="dataReg" version="0.1" />
     <activate id="servicesReg" version="0.1" />
 
-    <activate id="filterUnknownSeries" version="0.1" />
+    <activate id="filterVRRender" version="0.1" />
 
-    <start id="filterUnknownSeries" />
+    <start id="filterVRRender" />
 
 </profile>

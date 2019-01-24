@@ -20,38 +20,43 @@
  *
  ***********************************************************************/
 
-#pragma once
+#ifndef __FILTERVRRENDER_MEDICALDATAV2_HPP__
+#define __FILTERVRRENDER_MEDICALDATAV2_HPP__
 
-#include <cppunit/extensions/HelperMacros.h>
+#include <fwAtomsFilter/IFilter.hpp>
 
-#include <fwRuntime/EConfigurationElement.hpp>
+#include <fwCore/macros.hpp>
 
-namespace filterUnknownSeries
+#include "filterVRRender/config.hpp"
+
+namespace fwAtoms
 {
-namespace ut
+class Object;
+}
+
+namespace filterVRRender
 {
 
 /**
- * @brief Test ::fwAtomsFilter::IFilter::apply method.
+ * @class MedicalDataV2
+ * @brief Filter associated to context "MedicalData" version "V2" in VR-Render.
+ *
  */
-class MedicalDataV1Test : public CPPUNIT_NS::TestFixture
+class FILTERVRRENDER_CLASS_API MedicalDataV2 : public ::fwAtomsFilter::IFilter
 {
-CPPUNIT_TEST_SUITE( MedicalDataV1Test );
-CPPUNIT_TEST( applyTest );
-CPPUNIT_TEST_SUITE_END();
 
 public:
+    /// Constructor.
+    MedicalDataV2(::fwAtomsFilter::IFilter::Key key);
 
-    /**
-     * @name Interface
-     * @{ */
-    void setUp();
-    void tearDown();
-    /**  @} */
+    /// Destructor.
+    ~MedicalDataV2();
 
-    void applyTest();
-
+    /// Apply filter onto given atom object.
+    FILTERVRRENDER_API virtual void apply(const SPTR(::fwAtoms::Object)& atom);
 };
 
-} // namespace ut
-} // namespace filterUnknownSeries
+} // namespace filterVRRender
+
+#endif // __FILTERVRRENDER_MEDICALDATAV2_HPP__
+
