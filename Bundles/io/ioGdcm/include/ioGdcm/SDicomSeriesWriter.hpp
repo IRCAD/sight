@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -44,7 +44,7 @@ namespace ioGdcm
 {
 
 /**
- * @brief Services to write an DicomSeries in DICOM format.
+ * @brief DICOM Writer (DicomSeries)
  *
  * @section Signals Signals
  * - \b jobCreated( SPTR(::fwJobs::IJob) ) : Emitted when a job is created.
@@ -66,7 +66,7 @@ class IOGDCM_CLASS_API SDicomSeriesWriter : public ::fwIO::IWriter
 public:
     typedef ::fwCom::Signal< void ( SPTR(::fwJobs::IJob) ) > JobCreatedSignal;
 
-    fwCoreServiceClassDefinitionsMacro( (SDicomSeriesWriter)( ::fwIO::IWriter) );
+    fwCoreServiceClassDefinitionsMacro( (SDicomSeriesWriter)( ::fwIO::IWriter) )
 
     /**
      * @brief   constructor

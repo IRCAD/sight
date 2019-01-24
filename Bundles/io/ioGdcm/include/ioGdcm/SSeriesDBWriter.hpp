@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -41,7 +41,7 @@ namespace ioGdcm
 {
 
 /**
- * @brief Services to write several series (ImageSeries or ModelSeries) in DICOM format.
+ * @brief DICOM Writer (ImageSeries/ModelSeries)
  *
  * @section XML XML Configuration
  *
@@ -58,7 +58,7 @@ class IOGDCM_CLASS_API SSeriesDBWriter : public ::fwIO::IWriter
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro( (SSeriesDBWriter)( ::fwIO::IWriter) );
+    fwCoreServiceClassDefinitionsMacro( (SSeriesDBWriter)( ::fwIO::IWriter) )
 
     /**
      * @brief Constructor
