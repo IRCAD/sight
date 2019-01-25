@@ -1,6 +1,6 @@
 # Goal and general information
 
-_Brief description of the goal of this research._
+_Brief description of the goal of this algorithm research task._
 
 # Specification
 
@@ -20,7 +20,7 @@ _Evaluation framework is used to test the algorithm for correctness and meeting 
 
 # Baseline
 
-_Baseline selection, implementation and evaluation._
+_Existing algorithm selection, implementation and evaluation._
 
 # Prototyping
 
@@ -30,7 +30,6 @@ _The main algorithm research cycle: evaluate performance, make improvements, rep
 
 _Integration of algorithm code into production system._
 
-# Documentation
+# Communication
 
-_Document how the algorithm works (internal and/or article publication)._
-
+_Communicate how the algorithm works (internal and/or article publication)._
