@@ -33,3 +33,5 @@ _Integration of algorithm code into production system._
 # Communication
 
 _Communicate how the algorithm works (internal and/or article publication)._
+
+/label ~Type:research
