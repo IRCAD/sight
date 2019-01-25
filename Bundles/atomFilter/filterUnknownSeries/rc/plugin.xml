@@ -1,6 +1,0 @@
-<plugin id="filterUnknownSeries" class="::filterUnknownSeries::Plugin"  version="@PROJECT_VERSION@" >
-
-    <library name="filterUnknownSeries" />
-
-</plugin>
-
