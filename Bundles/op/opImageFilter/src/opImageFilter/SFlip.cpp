@@ -83,13 +83,16 @@ void SFlip::updating()
         ::fwData::mt::ObjectReadLock inImLock(inImg);
 
         ::fwData::Image::sptr outImg = ::fwData::Image::New();
-        ::fwData::mt::ObjectWriteLock writeBlock(outImg);
 
         ::imageFilterOp::Flipper::flip(inImg, outImg, m_flipAxes);
 
         this->setOutput(s_IMAGE_OUT, outImg);
 
         m_sigComputed->asyncEmit();
+    }
+    else
+    {
+        SLM_ERROR("An update was triggered with an empty image as input. No output image was created.");
     }
 }
 
