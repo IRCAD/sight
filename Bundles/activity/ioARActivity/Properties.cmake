@@ -4,5 +4,5 @@ set( TYPE BUNDLE )
 set( DEPENDENCIES  )
 set( REQUIREMENTS
         uiIO
-        filterVRRender
+        filterUnknownSeries
 )

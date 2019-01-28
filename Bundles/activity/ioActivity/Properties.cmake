@@ -8,5 +8,5 @@ set( REQUIREMENTS
         gui
         uiIO
         media
-        filterVRRender
+        filterUnknownSeries
     )

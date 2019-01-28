@@ -1,6 +1,6 @@
 <plugin id="ioActivity" version="@PROJECT_VERSION@">
 
-    <requirement id="filterVRRender" />
+    <requirement id="filterUnknownSeries" />
     <requirement id="activities" />
 
     <!-- Activity used to export an image series. -->
@@ -153,7 +153,7 @@
         <desc>Json/Xml Reader/Writer (Sight)</desc>
         <config>
             <patcher />
-            <filter>VRRenderMedicalDataV2</filter>
+            <filter>FilterUnknownActivities</filter>
         </config>
     </extension>
 
