@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWTOOLS_BOOKMARKS_HPP__
-#define __FWTOOLS_BOOKMARKS_HPP__
+#pragma once
 
 #include "fwTools/config.hpp"
 
@@ -39,6 +38,7 @@ class Object;
  * @brief   Allows to add a bookmark to an object, the bookmark name is unique (in time), an object can have several
  * bookmarks
  * @note    expired object do not erase its bookmarks
+ * @deprecated This class is no longer supported, it will be removed in sight 20.0
  **/
 class FWTOOLS_CLASS_API Bookmarks
 {
@@ -84,5 +84,3 @@ protected:
 };
 
 }
-
-#endif /* __FWTOOLS_BOOKMARKS_HPP__ */
