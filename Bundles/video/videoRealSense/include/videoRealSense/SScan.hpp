@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2019 IRCAD France
+ * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -30,15 +30,16 @@
 
 #include <fwThread/Worker.hpp>
 
-#include <realsenseTools/RsGrabber.hpp>
+#include <librealsense2/rs.hpp>
 
 #include <pcl/point_cloud.h>
+#include <pcl/point_types.h>
 
 namespace videoRealSense
 {
 
 /**
- * @brief   RealSense camera
+ * @brief  RealSense Camera
  *
  * This service grabs the depth and color frames from a compatible device.
  * The frames are pushed into timelines.
@@ -52,7 +53,7 @@ namespace videoRealSense
  *
  * @section XML XML Configuration
  * @code{.xml}
-   <service uid="videoGrabber" type ="::videoRealSense::SScanRS" autoConnect="no">
+   <service uid="videoGrabber" type ="::videoRealSense::SScan" autoConnect="no">
         <inout key="depthTL" uid="..." />
         <inout key="frameTL" uid="..." />
         <inout key="cameraSeries" uid="..." />
@@ -63,17 +64,17 @@ namespace videoRealSense
  * - \b frameTL [::arData::FrameTL]: Frame timeline of the color video.
  * - \b cameraSeries [::arData::CameraSeries]: Camera series that will contain device camera information.
  */
-class VIDEOREALSENSE_CLASS_API SScanRS : public ::arServices::IRGBDGrabber
+class VIDEOREALSENSE_CLASS_API SScan : public ::arServices::IRGBDGrabber
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SScanRS)(::arServices::IRGBDGrabber) );
+    fwCoreServiceClassDefinitionsMacro( (SScan)(::arServices::IRGBDGrabber) )
 
     /// Constructor. Do nothing.
-    VIDEOREALSENSE_API SScanRS() noexcept;
+    VIDEOREALSENSE_API SScan() noexcept;
 
     /// Destructor. Do nothing.
-    VIDEOREALSENSE_API virtual ~SScanRS() noexcept;
+    VIDEOREALSENSE_API virtual ~SScan() noexcept;
 
 protected:
 
@@ -92,17 +93,17 @@ protected:
 private:
 
     /// SLOT : Initializes and starts the streams. Restarts the streams if already started.
-    virtual void startCamera();
+    virtual void startCamera() override;
     /// SLOT : Stops to grab frames.
-    virtual void stopCamera();
+    virtual void stopCamera() override;
     /// SLOT : Pause the grabbing
-    virtual void pauseCamera();
+    virtual void pauseCamera() override;
     /// Not used
-    virtual void toggleLoopMode()
+    virtual void toggleLoopMode() override
     {
     }
     /// Not used
-    virtual void setPosition(int64_t position)
+    virtual void setPosition(int64_t position) override
     {
     }
 
@@ -115,6 +116,16 @@ private:
     ///SLOT : Callback to grab the rgba point_cloud
     void onRgbaPointCloud(const pcl::PointCloud<pcl::PointXYZRGBA>::ConstPtr& _pc);
 
+    /**
+     * @brief selectDevice is a private function called on start of the service, it will detect if realsense cameras
+     * are plugged in, and show a dialog to user if several realsense cameras are detected.
+     * @note This function may erase previous choice made in videoQt::SCamera.
+     * @todo This function should be merged in videoQt::SCamera, or in a more generic "camera selector".
+     * @return a string containing the serial number of selected camera.
+     */
+    std::string selectDevice();
+
+    std::unique_ptr< ::rs2::pipeline> m_pipe; ///< Pipeline
     std::string m_device; ///< If 'sense', adjust the resolution of frames. That will make the mesh coloring work.
 
     std::string m_depthKey; ///< Depth frame key.
@@ -124,12 +135,17 @@ private:
     ::arData::FrameTL::sptr m_depthTimeline; ///< Depth timeline.
     ::arData::FrameTL::sptr m_colorTimeline; ///< Color timeline.
 
-    std::unique_ptr< ::realsenseTools::RsGrabber > m_rsgrabber; ///< RealSense Grabber
+    // Grabber worker thread
+    std::thread m_thread;
+
+    bool m_running { false };
 
     ::fwThread::Worker::sptr m_worker;  ///< Worker for the m_slotPresentFrame.
     mutable ::fwCore::mt::ReadWriteMutex m_videoFrameMutex; ///< Mutex to protect concurrent access for m_videoFrame.
 
     pcl::PointCloud<pcl::PointXYZRGBA>::Ptr m_pointCloud; ///< pcl point cloud
 
+    /// Determine depth value corresponding to one meter
+    float m_depthScale;
 };
 }
