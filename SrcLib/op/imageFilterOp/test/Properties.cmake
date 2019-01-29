@@ -1,12 +1,11 @@
 
-set( NAME opImageFilter )
+set( NAME imageFilterOpTest )
 set( VERSION 0.1 )
-set( TYPE BUNDLE )
+set( TYPE TEST )
 set( DEPENDENCIES
+    fwTest
     fwDataTools
-    fwGui
-    fwRuntime
-    fwServices
+    fwVtkIO
     imageFilterOp
 )
 set( REQUIREMENTS  )
