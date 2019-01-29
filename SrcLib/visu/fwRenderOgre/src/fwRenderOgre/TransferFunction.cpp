@@ -27,6 +27,10 @@
 #if defined (__APPLE__)
     #include <OpenGL/gl.h>
 #else
+#ifdef WIN32
+// OpenGL on windows requires some types defined by the windows API such as WINGDIAPI and APIENTRY.
+    #include <windows.h>
+#endif
     #include <GL/gl.h>
 #endif
 
