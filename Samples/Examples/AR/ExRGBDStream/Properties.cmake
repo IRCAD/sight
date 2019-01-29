@@ -31,9 +31,6 @@ set( REQUIREMENTS
     videoTools
 
     arMedia
-    media
-
-    preferences
 )
 
 bundleParam(appXml PARAM_LIST config PARAM_VALUES ExRGBDStream)
