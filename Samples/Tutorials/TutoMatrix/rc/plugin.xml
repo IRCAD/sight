@@ -72,13 +72,33 @@
                 <layout type="::fwGui::LineLayoutManager">
                     <orientation value="horizontal" />
                     <view caption="Mesh view" proportion="4"/>
-                    <view caption="Matrix view" proportion="1" />
+                    <view caption="Editors view" proportion="1" />
                 </layout>
             </gui>
             <registry>
                 <view sid="meshView" start="yes" />
+                <view sid="editorsView" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="editorsView" type="::gui::view::SDefaultView">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="vertical" />
+                    <view proportion="1"/>
+                    <view proportion="4" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="hideShowMesh" start="yes" />
                 <view sid="matrixView" start="yes" />
             </registry>
+        </service>
+
+        <service uid="hideShowMesh" type="::guiQt::editor::SParameters" >
+             <parameters>
+                 <param type="bool" name="Show/Hide Mesh" key="boolParam" defaultValue="true" />
+             </parameters>
         </service>
 
         <service uid="matrixView" type="::uiVisuQt::STransformEditor" autoConnect="no">
@@ -188,6 +208,14 @@
 
 
         <!-- ***************************************** End services declarations  ************************************************ -->
+
+        <!-- ************************************* Connections ************************************ -->
+        <connect>
+            <signal>hideShowMesh/boolChanged</signal>
+            <slot>meshAdaptor1/updateVisibility</slot>
+            <slot>meshAdaptor2/updateVisibility</slot>
+        </connect>
+        <!-- ************************************* End Connections ************************************ -->
 
         <start uid="myFrame" />
         <start uid="decomposeMatrix" />
