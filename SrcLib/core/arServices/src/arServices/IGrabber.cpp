@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -41,6 +41,7 @@ const ::fwCom::Signals::SignalKeyType IGrabber::s_FRAME_PRESENTED_SIG = "framePr
 const ::fwCom::Slots::SlotKeyType IGrabber::s_START_CAMERA_SLOT       = "startCamera";
 const ::fwCom::Slots::SlotKeyType IGrabber::s_STOP_CAMERA_SLOT        = "stopCamera";
 const ::fwCom::Slots::SlotKeyType IGrabber::s_PAUSE_CAMERA_SLOT       = "pauseCamera";
+const ::fwCom::Slots::SlotKeyType IGrabber::s_PLAY_PAUSE_CAMERA_SLOT  = "playPauseCamera";
 const ::fwCom::Slots::SlotKeyType IGrabber::s_LOOP_VIDEO_SLOT         = "loopVideo";
 const ::fwCom::Slots::SlotKeyType IGrabber::s_SET_POSITION_VIDEO_SLOT = "setPositionVideo";
 const ::fwCom::Slots::SlotKeyType IGrabber::s_PREVIOUS_IMAGE_SLOT     = "previousImage";
@@ -64,6 +65,7 @@ IGrabber::IGrabber() noexcept
     newSlot( s_START_CAMERA_SLOT, &IGrabber::startCamera, this );
     newSlot( s_STOP_CAMERA_SLOT, &IGrabber::stopCamera, this );
     newSlot( s_PAUSE_CAMERA_SLOT, &IGrabber::pauseCamera, this );
+    newSlot( s_PLAY_PAUSE_CAMERA_SLOT, &IGrabber::playPauseCamera, this );
     newSlot( s_LOOP_VIDEO_SLOT, &IGrabber::toggleLoopMode, this );
     newSlot( s_SET_POSITION_VIDEO_SLOT, &IGrabber::setPosition, this );
     newSlot( s_PREVIOUS_IMAGE_SLOT, &IGrabber::previousImage, this);
@@ -76,6 +78,42 @@ IGrabber::IGrabber() noexcept
 IGrabber::~IGrabber() noexcept
 {
 
+}
+
+// ----------------------------------------------------------------------------
+
+void IGrabber::startCamera()
+{
+    m_isStarted = true;
+}
+
+// ----------------------------------------------------------------------------
+
+void IGrabber::stopCamera()
+{
+    m_isStarted = false;
+    m_isPaused  = false;
+}
+
+// ----------------------------------------------------------------------------
+
+void IGrabber::pauseCamera()
+{
+    m_isPaused != m_isPaused;
+}
+
+// ----------------------------------------------------------------------------
+
+void IGrabber::playPauseCamera()
+{
+    if(m_isStarted)
+    {
+        this->pauseCamera();
+    }
+    else
+    {
+        this->startCamera();
+    }
 }
 
 // ----------------------------------------------------------------------------

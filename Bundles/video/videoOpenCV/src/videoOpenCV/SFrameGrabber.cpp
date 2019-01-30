@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -128,6 +128,8 @@ void SFrameGrabber::updating()
 
 void SFrameGrabber::startCamera()
 {
+    ::arServices::IGrabber::startCamera();
+
     if (m_timer)
     {
         this->stopCamera();
@@ -176,6 +178,8 @@ void SFrameGrabber::startCamera()
 
 void SFrameGrabber::pauseCamera()
 {
+    ::arServices::IGrabber::pauseCamera();
+
     m_isPaused = !m_isPaused;
     if (m_timer)
     {
@@ -187,6 +191,7 @@ void SFrameGrabber::pauseCamera()
 
 void SFrameGrabber::stopCamera()
 {
+    ::arServices::IGrabber::stopCamera();
     ::fwCore::mt::ScopedLock lock(m_mutex);
 
     if (m_timer)

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -48,6 +48,7 @@ namespace arServices
  * - \b startCamera() : Start playing the camera or the video.
  * - \b stopCamera() : Stop playing the camera or the video.
  * - \b pauseCamera() : Pause the video, it has no effect when playing a camera.
+ * - \b playPauseCamera() : Pauses or unpauses camera if it is started, if not, it starts it.
  * - \b loopVideo() : Toggle the loop of the playing.
  * - \b setPositionVideo(int) : Force the current time in the video.
  * - \b nextImage(): display the next image in step by step mode. Does nothing if not overridden.
@@ -60,7 +61,7 @@ class ARSERVICES_CLASS_API IGrabber : public fwServices::IService
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro((IGrabber)(fwServices::IService));
+    fwCoreServiceClassDefinitionsMacro((IGrabber)(fwServices::IService))
 
     /**
      * @name Slots API
@@ -69,6 +70,7 @@ public:
     ARSERVICES_API static const ::fwCom::Slots::SlotKeyType s_START_CAMERA_SLOT;
     ARSERVICES_API static const ::fwCom::Slots::SlotKeyType s_STOP_CAMERA_SLOT;
     ARSERVICES_API static const ::fwCom::Slots::SlotKeyType s_PAUSE_CAMERA_SLOT;
+    ARSERVICES_API static const ::fwCom::Slots::SlotKeyType s_PLAY_PAUSE_CAMERA_SLOT;
     ARSERVICES_API static const ::fwCom::Slots::SlotKeyType s_SELECT_CAMERA_SLOT;
     ARSERVICES_API static const ::fwCom::Slots::SlotKeyType s_LOOP_VIDEO_SLOT;
     ARSERVICES_API static const ::fwCom::Slots::SlotKeyType s_SET_POSITION_VIDEO_SLOT;
@@ -120,17 +122,23 @@ public:
     /**
      * @brief API for starting a camera. Needs to be reimplemented in child classes.
      */
-    ARSERVICES_API virtual void startCamera() = 0;
+    ARSERVICES_API virtual void startCamera();
 
     /**
      * @brief API for stopping a camera. Needs to be reimplemented in child classes.
      */
-    ARSERVICES_API virtual void stopCamera() = 0;
+    ARSERVICES_API virtual void stopCamera();
 
     /**
      * @brief API for pausing a camera. Needs to be reimplemented in child classes.
      */
-    ARSERVICES_API virtual void pauseCamera() = 0;
+    ARSERVICES_API virtual void pauseCamera();
+
+    /**
+     * @brief Pauses or unpauses camera if it is started, if not, it starts it. This slot shouldn't be used play or
+     * pause slots are used, this is why we add a boolean state, to ensure correct interaction with a GUI element.
+     */
+    ARSERVICES_API void playPauseCamera();
 
     /**
      * @brief API for enable/disable the loop mode in video. Needs to be reimplemented in child classes.
@@ -163,6 +171,14 @@ protected:
      * signal, pushes a black frame and emits the object pushed signal.
      */
     ARSERVICES_API static void clearTimeline(SPTR(::arData::FrameTL) const&);
+
+private:
+
+    /// Determines whether the grabber has been started, note : this does not mean it is playing, as it could be paused.
+    bool m_isStarted{false};
+
+    /// Determines whether the grabber is puased, note : it can only be paused if it is started.
+    bool m_isPaused{false};
 };
 
 } //namespace arServices

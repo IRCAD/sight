@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -98,6 +98,8 @@ void SFrameGrabber::updating()
 
 void SFrameGrabber::startCamera()
 {
+    ::arServices::IGrabber::startCamera();
+
     ::arData::Camera::csptr camera = this->getInput< ::arData::Camera>("camera");
     FW_RAISE_IF("Camera not found", !camera);
     ::arData::Camera::SourceType eSourceType = camera->getCameraSource();
@@ -137,6 +139,8 @@ void SFrameGrabber::startCamera()
 
 void SFrameGrabber::pauseCamera()
 {
+    ::arServices::IGrabber::pauseCamera();
+
     // because of the requestPlayer/releasePlayer mechanism, the m_videoPlayer may be invalid when the user presses the
     // "pause" button
     if(m_videoPlayer)
@@ -149,6 +153,8 @@ void SFrameGrabber::pauseCamera()
 
 void SFrameGrabber::stopCamera()
 {
+    ::arServices::IGrabber::stopCamera();
+
     // because of the requestPlayer/releasePlayer mechanism, the m_videoPlayer may be invalid when the user presses the
     // "pause" button
     if(m_videoPlayer)
