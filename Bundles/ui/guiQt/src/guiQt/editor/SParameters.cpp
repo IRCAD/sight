@@ -1312,6 +1312,8 @@ void SParameters::setEnumParameter(std::string val, std::string key)
 
 void SParameters::setEnumIndexParameter(int val, std::string key)
 {
+    this->blockSignals(true);
+
     QWidget* widget = this->getParamWidget(key);
 
     QComboBox* combobox = qobject_cast<QComboBox*>(widget);
