@@ -163,6 +163,8 @@
                 <adaptor uid="axisAdaptor1" />
                 <adaptor uid="axisAdaptor2" />
                 <adaptor uid="originAxisAdaptor" />
+                <adaptor uid="textTransRot" />
+                <adaptor uid="textRotTrans" />
             </scene>
         </service>
 
@@ -205,6 +207,14 @@
             <config renderer="default" length="10" transform="id" label="no" marker="yes" markerColor="#000000" />
         </service>
 
+        <service uid="textTransRot" type="::visuVTKAdaptor::SText">
+             <config text="Translation-Rotation matrix" renderer="default" color="#FF0000" fontSize="20" fontFamily="arial" hAlign="left" vAlign="bottom" />
+        </service>
+
+        <service uid="textRotTrans" type="::visuVTKAdaptor::SText">
+            <config text="Rotation-Translation matrix" renderer="default" color="#00FF00" fontSize="20" fontFamily="arial" hAlign="right" vAlign="bottom" />
+        </service>
+
 
 
         <!-- ***************************************** End services declarations  ************************************************ -->
@@ -230,6 +240,8 @@
         <start uid="axisAdaptor1" />
         <start uid="axisAdaptor2" />
         <start uid="originAxisAdaptor" />
+        <start uid="textTransRot" />
+        <start uid="textRotTrans" />
 
         </config>
     </extension>
