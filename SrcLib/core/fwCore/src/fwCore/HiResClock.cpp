@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -37,7 +37,6 @@ namespace HiResClock
 
 HiResClockType getTimeInMicroSec()
 {
-    FW_DEPRECATED_MSG("::fwCore::HiresClok::getTimeInMicroSec() is deprecated, use std::chrono instead", "20.0");
     const auto now = std::chrono::system_clock::now();
     const auto res = std::chrono::duration_cast< std::chrono::microseconds >(now.time_since_epoch()).count();
     return static_cast<HiResClockType>(res);
@@ -47,16 +46,18 @@ HiResClockType getTimeInMicroSec()
 
 HiResClockType getTimeInMilliSec()
 {
-    FW_DEPRECATED_MSG("::fwCore::HiresClok::getTimeInMilliSec() is deprecated, use std::chrono instead", "20.0");
-    return getTimeInMicroSec() * 0.001;
+    const auto now = std::chrono::system_clock::now();
+    const auto res = std::chrono::duration_cast< std::chrono::milliseconds >(now.time_since_epoch()).count();
+    return static_cast<HiResClockType>(res);
 }
 
 //------------------------------------------------------------------------------
 
 HiResClockType getTimeInSec()
 {
-    FW_DEPRECATED_MSG("::fwCore::HiresClok::getTimeInMilliSec() is deprecated, use std::chrono instead", "20.0");
-    return getTimeInMicroSec() * 0.000001;
+    const auto now = std::chrono::system_clock::now();
+    const auto res = std::chrono::duration_cast< std::chrono::seconds >(now.time_since_epoch()).count();
+    return static_cast<HiResClockType>(res);
 }
 
 } //namespace HiResClock
