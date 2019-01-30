@@ -13,11 +13,13 @@ conan_add_remote(NAME sight INDEX 1
 unset(CONAN_OPTIONS)
 find_package(CUDA QUIET)
 if(CUDA_FOUND)
-    message(STATUS "CUDA ${CUDA_VERSION_STRING} found on your PC. Cuda Conan packages will be used")
     set(CONAN_OPTIONS "*:cuda=${CUDA_VERSION_STRING}")
+    message(STATUS "CUDA ${CUDA_VERSION_STRING} found on your PC. Cuda Conan packages will be used.\n"
+                   "Conan options used: ${CONAN_OPTIONS}")
 else()
-    message(STATUS "CUDA not found on your PC. Cuda Conan packages will be NOT used")
     set(CONAN_OPTIONS "*:cuda=None")
+    message(STATUS "CUDA not found on your PC. Cuda Conan packages will be NOT used.\n"
+                   "Conan options used: ${CONAN_OPTIONS}")
 endif()
 
 macro(findConanDeps PROJECT_LIST CONAN_DEPS_LIST)
