@@ -101,8 +101,6 @@ void SFrameGrabber::updating()
 
 void SFrameGrabber::startCamera()
 {
-    ::arServices::IGrabber::startCamera();
-
     if (m_timer)
     {
         this->stopCamera();
@@ -125,15 +123,18 @@ void SFrameGrabber::startCamera()
 
         if (ext.string() == ".pcd" )
         {
+            this->setStartState(true);
             this->readImages(file.parent_path(), ext.string());
         }
         else
         {
+            this->setStartState(false);
             OSLM_ERROR("Wrong file format. The format should be *.pcd.");
         }
     }
     else
     {
+        this->setStartState(false);
         ::fwGui::dialog::MessageDialog::showMessageDialog(
             "Grabber",
             "This video source is not managed by this grabber.");
@@ -144,8 +145,6 @@ void SFrameGrabber::startCamera()
 
 void SFrameGrabber::pauseCamera()
 {
-    ::arServices::IGrabber::pauseCamera();
-
     if (m_timer)
     {
         m_timer->isRunning() ? m_timer->stop() : m_timer->start();
@@ -156,8 +155,6 @@ void SFrameGrabber::pauseCamera()
 
 void SFrameGrabber::stopCamera()
 {
-    ::arServices::IGrabber::stopCamera();
-
     ::fwCore::mt::ScopedLock lock(m_mutex);
 
     if (m_timer)
@@ -186,6 +183,8 @@ void SFrameGrabber::stopCamera()
         auto sig = this->signal< ::arServices::IGrabber::CameraStoppedSignalType >(
             ::arServices::IGrabber::s_CAMERA_STOPPED_SIG);
         sig->asyncEmit();
+
+        this->setStartState(false);
     }
     m_isInitialized = false;
 }

@@ -122,23 +122,17 @@ public:
     /**
      * @brief API for starting a camera. Needs to be reimplemented in child classes.
      */
-    ARSERVICES_API virtual void startCamera();
+    ARSERVICES_API virtual void startCamera() = 0;
 
     /**
      * @brief API for stopping a camera. Needs to be reimplemented in child classes.
      */
-    ARSERVICES_API virtual void stopCamera();
+    ARSERVICES_API virtual void stopCamera() = 0;
 
     /**
      * @brief API for pausing a camera. Needs to be reimplemented in child classes.
      */
-    ARSERVICES_API virtual void pauseCamera();
-
-    /**
-     * @brief Pauses or unpauses camera if it is started, if not, it starts it. This slot shouldn't be used play or
-     * pause slots are used, this is why we add a boolean state, to ensure correct interaction with a GUI element.
-     */
-    ARSERVICES_API void playPauseCamera();
+    ARSERVICES_API virtual void pauseCamera() = 0;
 
     /**
      * @brief API for enable/disable the loop mode in video. Needs to be reimplemented in child classes.
@@ -172,13 +166,22 @@ protected:
      */
     ARSERVICES_API static void clearTimeline(SPTR(::arData::FrameTL) const&);
 
+    /**
+     * @brief sets the current start state of the grabber.
+     */
+    ARSERVICES_API void setStartState(bool state);
+
 private:
+
+    /**
+     * @brief Pauses or unpauses camera if it is started, if not, it starts it. This slot shouldn't be used play or
+     * pause slots are used, this is why we add a boolean state, to ensure correct interaction with a GUI element.
+     */
+    ARSERVICES_API void playPauseCamera();
 
     /// Determines whether the grabber has been started, note : this does not mean it is playing, as it could be paused.
     bool m_isStarted{false};
 
-    /// Determines whether the grabber is puased, note : it can only be paused if it is started.
-    bool m_isPaused{false};
 };
 
 } //namespace arServices

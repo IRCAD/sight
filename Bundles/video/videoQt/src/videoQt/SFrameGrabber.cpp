@@ -98,8 +98,6 @@ void SFrameGrabber::updating()
 
 void SFrameGrabber::startCamera()
 {
-    ::arServices::IGrabber::startCamera();
-
     ::arData::Camera::csptr camera = this->getInput< ::arData::Camera>("camera");
     FW_RAISE_IF("Camera not found", !camera);
     ::arData::Camera::SourceType eSourceType = camera->getCameraSource();
@@ -131,6 +129,8 @@ void SFrameGrabber::startCamera()
             auto sig = this->signal< ::arServices::IGrabber::CameraStartedSignalType >(
                 ::arServices::IGrabber::s_CAMERA_STARTED_SIG);
             sig->asyncEmit();
+
+            this->setStartState(true);
         }
     }
 }
@@ -139,8 +139,6 @@ void SFrameGrabber::startCamera()
 
 void SFrameGrabber::pauseCamera()
 {
-    ::arServices::IGrabber::pauseCamera();
-
     // because of the requestPlayer/releasePlayer mechanism, the m_videoPlayer may be invalid when the user presses the
     // "pause" button
     if(m_videoPlayer)
@@ -153,8 +151,6 @@ void SFrameGrabber::pauseCamera()
 
 void SFrameGrabber::stopCamera()
 {
-    ::arServices::IGrabber::stopCamera();
-
     // because of the requestPlayer/releasePlayer mechanism, the m_videoPlayer may be invalid when the user presses the
     // "pause" button
     if(m_videoPlayer)
@@ -184,6 +180,8 @@ void SFrameGrabber::stopCamera()
         auto sig = this->signal< ::arServices::IGrabber::CameraStoppedSignalType >(
             ::arServices::IGrabber::s_CAMERA_STOPPED_SIG);
         sig->asyncEmit();
+
+        this->setStartState(false);
     }
 }
 

@@ -128,8 +128,6 @@ void SFrameGrabber::updating()
 
 void SFrameGrabber::startCamera()
 {
-    ::arServices::IGrabber::startCamera();
-
     if (m_timer)
     {
         this->stopCamera();
@@ -153,6 +151,7 @@ void SFrameGrabber::startCamera()
 
         const ::boost::filesystem::path ext = file.extension();
 
+        this->setStartState(true);
         if (ext.string() == ".png" || ext.string() == ".jpg" || ext.string() == ".tiff" || ext.string() == ".bmp" )
         {
             this->readImages(file.parent_path(), ext.string());
@@ -164,10 +163,12 @@ void SFrameGrabber::startCamera()
     }
     else if(camera->getCameraSource() == ::arData::Camera::DEVICE)
     {
+        this->setStartState(true);
         this->readDevice(camera);
     }
     else
     {
+        this->setStartState(false);
         ::fwGui::dialog::MessageDialog::showMessageDialog(
             "Grabber",
             "This video source is not managed by this grabber.");
@@ -178,8 +179,6 @@ void SFrameGrabber::startCamera()
 
 void SFrameGrabber::pauseCamera()
 {
-    ::arServices::IGrabber::pauseCamera();
-
     m_isPaused = !m_isPaused;
     if (m_timer)
     {
@@ -191,7 +190,6 @@ void SFrameGrabber::pauseCamera()
 
 void SFrameGrabber::stopCamera()
 {
-    ::arServices::IGrabber::stopCamera();
     ::fwCore::mt::ScopedLock lock(m_mutex);
 
     if (m_timer)
@@ -225,6 +223,8 @@ void SFrameGrabber::stopCamera()
         auto sig = this->signal< ::arServices::IGrabber::CameraStoppedSignalType >(
             ::arServices::IGrabber::s_CAMERA_STOPPED_SIG);
         sig->asyncEmit();
+
+        this->setStartState(false);
     }
     m_isInitialized = false;
 }

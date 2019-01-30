@@ -82,28 +82,6 @@ IGrabber::~IGrabber() noexcept
 
 // ----------------------------------------------------------------------------
 
-void IGrabber::startCamera()
-{
-    m_isStarted = true;
-}
-
-// ----------------------------------------------------------------------------
-
-void IGrabber::stopCamera()
-{
-    m_isStarted = false;
-    m_isPaused  = false;
-}
-
-// ----------------------------------------------------------------------------
-
-void IGrabber::pauseCamera()
-{
-    m_isPaused != m_isPaused;
-}
-
-// ----------------------------------------------------------------------------
-
 void IGrabber::playPauseCamera()
 {
     if(m_isStarted)
@@ -117,7 +95,6 @@ void IGrabber::playPauseCamera()
 }
 
 // ----------------------------------------------------------------------------
-
 void IGrabber::previousImage()
 {
     SLM_WARN("Frame by frame mode not implemented for this grabber type.");
@@ -159,6 +136,13 @@ void IGrabber::clearTimeline(::arData::FrameTL::sptr const& _tl)
             ::arData::TimeLine::s_OBJECT_PUSHED_SIG );
         sigTL->asyncEmit(timestamp);
     }
+}
+
+// ----------------------------------------------------------------------------
+
+void IGrabber::setStartState(bool state)
+{
+    m_isStarted = state;
 }
 
 // ----------------------------------------------------------------------------
