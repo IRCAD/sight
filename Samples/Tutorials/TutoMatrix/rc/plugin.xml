@@ -20,7 +20,7 @@
         <object uid="rotTransMatrix"    type="::fwData::TransformationMatrix3D" />
 
         <!-- ***************************************** Begin layouts declaration ***************************************** -->
-        <service uid="myFrame" type="::gui::frame::SDefaultFrame" >
+        <service uid="frame" type="::gui::frame::SDefaultFrame" >
             <gui>
                 <frame>
                     <name>TutoMatrix</name>
@@ -31,7 +31,7 @@
             </gui>
             <registry>
                 <menuBar sid="menuBar" start="yes" />
-                <view sid="myDefaultView" start="yes" />
+                <view sid="defaultView" start="yes" />
             </registry>
         </service>
 
@@ -67,7 +67,7 @@
             It is possible to add a 'proportion' attribute for the <view> to defined the proportion
             used by the view compared to the others.
         -->
-        <service uid="myDefaultView" type="::gui::view::SDefaultView">
+        <service uid="defaultView" type="::gui::view::SDefaultView">
             <gui>
                 <layout type="::fwGui::LineLayoutManager">
                     <orientation value="horizontal" />
@@ -208,11 +208,11 @@
         </service>
 
         <service uid="textTransRot" type="::visuVTKAdaptor::SText">
-             <config text="Translation-Rotation matrix" renderer="default" color="#FF0000" fontSize="20" fontFamily="arial" hAlign="left" vAlign="bottom" />
+             <config text="Translation-Rotation transform" renderer="default" color="#FF0000" fontSize="15" fontFamily="arial" hAlign="left" vAlign="bottom" />
         </service>
 
         <service uid="textRotTrans" type="::visuVTKAdaptor::SText">
-            <config text="Rotation-Translation matrix" renderer="default" color="#00FF00" fontSize="20" fontFamily="arial" hAlign="right" vAlign="bottom" />
+            <config text="Rotation-Translation transform" renderer="default" color="#00FF00" fontSize="15" fontFamily="arial" hAlign="right" vAlign="bottom" />
         </service>
 
 
@@ -227,7 +227,7 @@
         </connect>
         <!-- ************************************* End Connections ************************************ -->
 
-        <start uid="myFrame" />
+        <start uid="frame" />
         <start uid="decomposeMatrix" />
         <start uid="concatenateTranslationAndRotationMat" />
         <start uid="concatenateRotationAndTranslationMat" />
