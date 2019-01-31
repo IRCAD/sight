@@ -16,4 +16,4 @@
 
 During implementation, this can then be copied and used as a starter for the documentation.)
 
-/label ~Type:feature
+/label ~"Type:feature"
