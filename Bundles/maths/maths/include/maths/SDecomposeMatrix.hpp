@@ -30,7 +30,7 @@ namespace maths
 {
 
 /**
- * @brief   This service decompose a matrix into a rotation matrix and a translation matrix.
+ * @brief   This service decompose a matrix into a rotation/scaling matrix and a translation matrix.
  *
  * @section XML XML Configuration
  *
@@ -45,7 +45,7 @@ namespace maths
  * - \b matrix [::fwData::TransformationMatrix3D]: matrix to decompose.
  * @subsection In-Out In-Out:
  * - \b translation [::fwData::TransformationMatrix3D]: translation matrix.
- * - \b rotation [::fwData::TransformationMatrix3D]: rotation matrix.
+ * - \b rotation [::fwData::TransformationMatrix3D]: rotation/scaling matrix.
  *
  */
 class MATHS_CLASS_API SDecomposeMatrix : public ::fwServices::IOperator
