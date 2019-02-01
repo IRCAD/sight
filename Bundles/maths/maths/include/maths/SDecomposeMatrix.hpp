@@ -30,7 +30,8 @@ namespace maths
 {
 
 /**
- * @brief   This service decompose a matrix into a rotation/scaling matrix and a translation matrix.
+ * @brief   This service decomposes a matrix into a 3 by 3 matrix and a 3 dimensional translation vector.
+ * Both results are added to two identity 4 by 4 transformation matrix for separate use.
  *
  * @section XML XML Configuration
  *
