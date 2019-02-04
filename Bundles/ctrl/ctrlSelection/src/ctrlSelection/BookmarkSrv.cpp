@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -23,7 +23,9 @@
 #include "ctrlSelection/BookmarkSrv.hpp"
 
 #include <fwData/String.hpp>
+
 #include <fwServices/macros.hpp>
+
 #include <fwTools/Bookmarks.hpp>
 
 namespace ctrlSelection
@@ -37,7 +39,7 @@ fwServicesRegisterMacro( ::fwServices::IController, ::ctrlSelection::BookmarkSrv
 
 BookmarkSrv::BookmarkSrv() noexcept
 {
-    //handlingEventOff();
+    FW_DEPRECATED_MSG("This service is no longer supported", "20.0");
 }
 
 //-----------------------------------------------------------------------------
@@ -112,7 +114,7 @@ void BookmarkSrv::updating()
 
 //-----------------------------------------------------------------------------
 
-void BookmarkSrv::info( std::ostream &_sstream )
+void BookmarkSrv::info( std::ostream& _sstream )
 {
 }
 
