@@ -123,7 +123,6 @@ void SFrameGrabber::startCamera()
 
         if (ext.string() == ".pcd" )
         {
-            this->setStartState(true);
             this->readImages(file.parent_path(), ext.string());
         }
         else
@@ -217,6 +216,7 @@ void SFrameGrabber::readImages(const ::boost::filesystem::path& folder, const st
         ::pcl::PointCloud< ::pcl::PointXYZ> inputCloud;
         if (::pcl::io::loadPCDFile< ::pcl::PointXYZ> (m_imageToRead.front().string(), inputCloud) == -1)
         {
+            this->setStartState(false);
             SLM_ERROR("Couldn't read input pointcloud file " +  m_imageToRead.front().string());
         }
 
@@ -229,6 +229,7 @@ void SFrameGrabber::readImages(const ::boost::filesystem::path& folder, const st
         }
         else
         {
+            this->setStartState(false);
             SLM_ERROR("Image width or height is equal to 0.");
             return;
         }
@@ -247,6 +248,8 @@ void SFrameGrabber::readImages(const ::boost::filesystem::path& folder, const st
         m_timer->setFunction(std::bind(&SFrameGrabber::grabImage, this));
         m_timer->setDuration(duration);
         m_timer->start();
+
+        this->setStartState(true);
     }
 }
 

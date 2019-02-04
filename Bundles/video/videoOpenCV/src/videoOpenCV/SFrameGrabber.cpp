@@ -151,7 +151,6 @@ void SFrameGrabber::startCamera()
 
         const ::boost::filesystem::path ext = file.extension();
 
-        this->setStartState(true);
         if (ext.string() == ".png" || ext.string() == ".jpg" || ext.string() == ".tiff" || ext.string() == ".bmp" )
         {
             this->readImages(file.parent_path(), ext.string());
@@ -163,7 +162,6 @@ void SFrameGrabber::startCamera()
     }
     else if(camera->getCameraSource() == ::arData::Camera::DEVICE)
     {
-        this->setStartState(true);
         this->readDevice(camera);
     }
     else
@@ -257,12 +255,16 @@ void SFrameGrabber::readVideo(const ::boost::filesystem::path& file)
         m_timer->setFunction(std::bind(&SFrameGrabber::grabVideo, this));
         m_timer->setDuration(duration);
         m_timer->start();
+
+        this->setStartState(true);
     }
     else
     {
         ::fwGui::dialog::MessageDialog::showMessageDialog(
             "Grabber",
             "This file cannot be opened: " + file.string() + ".");
+
+        this->setStartState(false);
     }
 }
 
@@ -325,12 +327,16 @@ void SFrameGrabber::readDevice( const ::arData::Camera::csptr _camera)
         m_timer->setFunction(std::bind(&SFrameGrabber::grabVideo, this));
         m_timer->setDuration(duration);
         m_timer->start();
+
+        this->setStartState(true);
     }
     else
     {
         ::fwGui::dialog::MessageDialog::showMessageDialog(
             "Grabber",
             "This device:" + device + " at index: " + std::to_string(index) + "cannot be openned.");
+
+        this->setStartState(false);
     }
 }
 
@@ -417,7 +423,9 @@ void SFrameGrabber::readImages(const ::boost::filesystem::path& folder, const st
                     return;
             }
         }
+
         m_isInitialized = true;
+        this->setStartState(true);
 
         auto sigDuration = this->signal< DurationModifiedSignalType >( s_DURATION_MODIFIED_SIG );
 
