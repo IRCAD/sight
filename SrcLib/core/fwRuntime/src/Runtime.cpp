@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -30,22 +30,14 @@
 #include "fwRuntime/io/BundleDescriptorReader.hpp"
 #include "fwRuntime/IPlugin.hpp"
 
-#include <boost/filesystem/operations.hpp>
 #include <boost/dll/runtime_symbol_info.hpp>
+#include <boost/filesystem/operations.hpp>
 
 #include <limits.h>
 
 #include <algorithm>
 #include <cassert>
 #include <functional>
-
-#ifdef _WIN32
-#include <WinBase.h>
-#elif __APPLE__
-#include <mach-o/dyld.h>
-#else
-#include <unistd.h>
-#endif
 
 namespace fwRuntime
 {
