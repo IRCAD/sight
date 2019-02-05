@@ -174,8 +174,8 @@ protected:
 private:
 
     /**
-     * @brief Pauses or unpauses camera if it is started, if not, it starts it. This slot shouldn't be used play or
-     * pause slots are used, this is why we add a boolean state, to ensure correct interaction with a GUI element.
+     * @brief Pauses or unpauses camera if it is started, if not, it starts it. This slot shouldn't be used when play
+     * or pause slots are used, this is why we add a boolean state, to ensure correct interaction with a GUI element.
      */
     ARSERVICES_API void playPauseCamera();
 
