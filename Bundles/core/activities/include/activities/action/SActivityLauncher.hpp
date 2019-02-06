@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -45,7 +45,7 @@ namespace action
  * This action works on a ::fwData::Vector. It proposes all the available activity according to the selected data and
  * the given configuration. And then, send a signal with all the activity information.
  *
- * This action should be followed by the service '::guiQt::editor::DynamicView' : this service listens the action
+ * This action should be followed by the service '::guiQt::editor::SDynamicView' : this service listens the action
  * signals and launchs the activity in a new tab.
  *
  * @section Slots Slots
@@ -99,7 +99,7 @@ namespace action
  * @subsection Configuration Configuration
  * - \b mode (optional): there are two mode: "message" and "immediate"
  *    - \b message (used by default): the action send a signal containing the information needed to launch the
- *      chosen activity. The service '::guiQt::editor::DynamicView' allows to launch the activity in a new tab. For
+ *      chosen activity. The service '::guiQt::editor::SDynamicView' allows to launch the activity in a new tab. For
  *      that, it must listen the action signal.
  *    - \b immediate: the activity is automatically started et stopped by this action. It is used to run a process
  *      without creating a new tab, for example, to save the selected data.
