@@ -259,9 +259,15 @@ macro(fwExec FWPROJECT_NAME PROJECT_VERSION)
         string(TOLOWER ${FWPROJECT_NAME}.sh ${FWPROJECT_NAME}_SCRIPT)
         set(PROJECT_EXECUTABLE ${${FWPROJECT_NAME}_FULLNAME})
 
+        # Use the right path separator on unix
         string(REPLACE ";" ":" FW_EXTERNAL_LIBRARIES_DIRS "${FW_EXTERNAL_LIBRARIES_DIR}")
+
+        # Build the shell script from template_exe.sh.in
         configure_file(${FWCMAKE_RESOURCE_PATH}/build/linux/template_exe.sh.in ${CMAKE_CURRENT_BINARY_DIR}/${${FWPROJECT_NAME}_SCRIPT} @ONLY)
+
+        # Cleanup
         unset(FW_EXTERNAL_LIBRARIES_DIRS)
+
         file(COPY ${CMAKE_CURRENT_BINARY_DIR}/${${FWPROJECT_NAME}_SCRIPT} DESTINATION ${CMAKE_BINARY_DIR}/bin
             FILE_PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
     elseif(WIN32)
@@ -336,9 +342,15 @@ macro(fwCppunitTest FWPROJECT_NAME)
         string(TOLOWER ${FWPROJECT_NAME}.sh ${FWPROJECT_NAME}_SCRIPT)
         set(PROJECT_EXECUTABLE ${${FWPROJECT_NAME}_FULLNAME})
 
+        # Use the right path separator on unix
         string(REPLACE ";" ":" FW_EXTERNAL_LIBRARIES_DIRS "${FW_EXTERNAL_LIBRARIES_DIR}")
-        configure_file(${FWCMAKE_RESOURCE_PATH}/build/linux/template_exe.sh.in ${CMAKE_CURRENT_BINARY_DIR}/${${FWPROJECT_NAME}_SCRIPT} @ONLY)
+
+        # Build the shell script from template_test.sh.in
+        configure_file(${FWCMAKE_RESOURCE_PATH}/build/linux/template_test.sh.in ${CMAKE_CURRENT_BINARY_DIR}/${${FWPROJECT_NAME}_SCRIPT} @ONLY)
+
+        # Cleanup
         unset(FW_EXTERNAL_LIBRARIES_DIRS)
+
         file(COPY ${CMAKE_CURRENT_BINARY_DIR}/${${FWPROJECT_NAME}_SCRIPT} DESTINATION ${CMAKE_BINARY_DIR}/bin
             FILE_PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
     elseif(WIN32)
