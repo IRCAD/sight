@@ -1,23 +1,62 @@
 stages:
   - lint
   - build
+  - test
   - doc
   - deploy
 
-before_script:
-  # CCache Config
-  - export CCACHE_BASEDIR=${PWD}
-  - export CCACHE_COMPILERCHECK=content
-  - export CCACHE_MAXSIZE=32G
-  - export CCACHE_COMPRESS=1
-  - export CCACHE_SLOPPINESS=include_file_ctime,pch_defines,time_macros
-  - export CCACHE_NOHASHDIR=1
-  - git config --global http.sslVerify "false"
+.linux_template: &linux_job
+  image: ${DOCKER_ENVDEV_MINT19}
+  before_script:
+    - export CCACHE_BASEDIR=${PWD}
+    - export CCACHE_COMPILERCHECK=content
+    - export CCACHE_MAXSIZE=32G
+    - export CCACHE_COMPRESS=1
+    - export CCACHE_SLOPPINESS=include_file_ctime,pch_defines,time_macros,file_macro,system_headers
+    - export CCACHE_NOHASHDIR=1
+    - export CCACHE_DIR=/cache/ccache
+    - conan config set storage.path=/cache/conan-cache/data
+    - export CC=/usr/local/lib/ccache/clang
+    - export CXX=/usr/local/lib/ccache/clang++
+    - mkdir -p $CI_PROJECT_DIR/install $CI_PROJECT_DIR/build
+    - sudo chown -R sight:sight .
+    - /usr/lib/git-core/git-restore-mtime --force --skip-missing --commit-time
 
+.macos_template: &macos_job
+  variables:
+    CONAN_USER_HOME: $CI_PROJECT_DIR/conan
+  before_script:
+    - export CCACHE_BASEDIR=${PWD}
+    - export CCACHE_COMPILERCHECK=content
+    - export CCACHE_MAXSIZE=32G
+    - export CCACHE_COMPRESS=1
+    - export CCACHE_SLOPPINESS=include_file_ctime,include_file_mtime,pch_defines,time_macros,file_macro,system_headers
+    - export CCACHE_NOHASHDIR=1
+    - conan config set storage.path=/Users/$USER/.conan/data
+    - export CC=/usr/local/opt/ccache/libexec/clang
+    - export CXX=/usr/local/opt/ccache/libexec/clang++
+    - mkdir -p $CI_PROJECT_DIR/install $CI_PROJECT_DIR/build
+  tags:
+    - mojave
+
+.windows_template: &windows_job
+  variables:
+    CONAN_USER_HOME: $CI_PROJECT_DIR/conan
+    CONAN_USER_HOME_SHORT: C:/$CI_JOB_ID
+  before_script:
+    - md "%CI_PROJECT_DIR%/install"
+    - md "%CI_PROJECT_DIR%/conan"
+    - md "%CI_PROJECT_DIR%/build"
+  after_script:
+    - rd /S /Q "%CONAN_USER_HOME_SHORT%"
+  tags:
+    - shell
+    - windows
 
 sheldon-mr:
-  image: ${DOCKER_ENVDEV_MINT19}
+  <<: *linux_job
   stage: lint
+  dependencies: []
   script:
     - export ORIG_BRANCH_COMMIT_SHA=$(git merge-base dev origin/${CI_COMMIT_REF_NAME})
     - git clone --depth 1 https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-git.git -b dev
@@ -25,8 +64,9 @@ sheldon-mr:
     - sight-git/hooks/sheldon ${ORIG_BRANCH_COMMIT_SHA}..${CI_COMMIT_SHA}
 
 sheldon:
-  image: ${DOCKER_ENVDEV_MINT19}
+  <<: *linux_job
   stage: lint
+  dependencies: []
   script:
     - git clone --depth 1 https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-git.git -b dev
     - sight-git/hooks/sheldon HEAD^ HEAD
@@ -35,13 +75,10 @@ sheldon:
     - master
 
 build:debug-linux:
-  image: ${DOCKER_ENVDEV_MINT19}
+  <<: *linux_job
   stage: build
+  dependencies: []
   script:
-    - export CCACHE_DIR=/cache/ccache
-    - export CC=/usr/local/lib/ccache/clang
-    - export CXX=/usr/local/lib/ccache/clang++
-    - mkdir $CI_PROJECT_DIR/install $CI_PROJECT_DIR/build
     - cd $CI_PROJECT_DIR/build/
     - ccache -s
     - >
@@ -52,20 +89,16 @@ build:debug-linux:
      -DCMAKE_BUILD_TYPE=Debug
      -DBUILD_TESTS=ON
      -DBUILD_DOCUMENTATION=OFF
-     -DENABLE_PCH=ON
+     -DENABLE_PCH=OFF
+    - find . -type f -iname '*.?pp' -exec touch -f -a -m -t 197001010000 {} \;
     - ninja
     - ccache -s
 
 build:release-linux:
-  image: ${DOCKER_ENVDEV_MINT19}
+  <<: *linux_job
   stage: build
-  variables:
-    CONAN_USER_HOME: $CI_PROJECT_DIR/conan
+  dependencies: []
   script:
-    - export CCACHE_DIR=/cache/ccache
-    - export CC=/usr/local/lib/ccache/clang
-    - export CXX=/usr/local/lib/ccache/clang++
-    - mkdir $CI_PROJECT_DIR/install $CI_PROJECT_DIR/build
     - cd $CI_PROJECT_DIR/build/
     - ccache -s
     - >
@@ -76,18 +109,107 @@ build:release-linux:
      -DCMAKE_BUILD_TYPE=Release
      -DBUILD_TESTS=ON
      -DBUILD_DOCUMENTATION=OFF
-     -DENABLE_PCH=ON
+     -DENABLE_PCH=OFF
+    - find . -type f -iname '*.?pp' -exec touch -f -a -m -t 197001010000 {} \;
+    - ninja
+    - ccache -s
+  artifacts:
+    name: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
+    paths:
+      - $CI_PROJECT_DIR/build/
+
+build:debug-windows:
+  <<: *windows_job
+  stage: build
+  dependencies: []
+  script:
+    - cd "%CI_PROJECT_DIR%/build"
+    - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat" x64
+    - chcp 1252
+    - >
+     cmake %CI_PROJECT_DIR%
+     -G Ninja
+     -DUSE_CONAN=ON
+     -DCMAKE_INSTALL_PREFIX=%CI_PROJECT_DIR%/install
+     -DCMAKE_BUILD_TYPE=Debug
+     -DBUILD_TESTS=ON
+     -DBUILD_DOCUMENTATION=OFF
+    - ninja
+
+build:release-windows:
+  <<: *windows_job
+  stage: build
+  dependencies: []
+  script:
+    - cd "%CI_PROJECT_DIR%/build"
+    - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat" x64
+    - chcp 1252
+    - >
+     cmake %CI_PROJECT_DIR%
+     -G Ninja
+     -DUSE_CONAN=ON
+     -DCMAKE_INSTALL_PREFIX=%CI_PROJECT_DIR%/install
+     -DCMAKE_BUILD_TYPE=Release
+     -DBUILD_TESTS=ON
+     -DBUILD_DOCUMENTATION=OFF
+    - ninja
+
+build:debug-macos:
+  <<: *macos_job
+  stage: build
+  dependencies: []
+  script:
+    - cd $CI_PROJECT_DIR/build
+    - ccache -s
+    - >
+     cmake $CI_PROJECT_DIR
+     -G Ninja
+     -DUSE_CONAN=ON
+     -DCMAKE_INSTALL_PREFIX=$CI_PROJECT_DIR/install
+     -DCMAKE_BUILD_TYPE=Debug
+     -DBUILD_TESTS=ON
+     -DBUILD_DOCUMENTATION=OFF
+     -DENABLE_PCH=OFF
     - ninja
     - ccache -s
 
-doxygen:
-  image: ${DOCKER_ENVDEV_MINT19}
-  stage: doc
+build:release-macos:
+  <<: *macos_job
+  stage: build
+  dependencies: []
   script:
-    - sudo apt-get update -yqq && sudo apt-get install -yqq graphviz doxygen
-    - export CC=/usr/bin/clang-6.0
-    - export CXX=/usr/bin/clang++-6.0
-    - mkdir $CI_PROJECT_DIR/install $CI_PROJECT_DIR/build
+    - cd $CI_PROJECT_DIR/build
+    - ccache -s
+    - >
+     cmake $CI_PROJECT_DIR
+     -G Ninja
+     -DUSE_CONAN=ON
+     -DCMAKE_INSTALL_PREFIX=$CI_PROJECT_DIR/install
+     -DCMAKE_BUILD_TYPE=Release
+     -DBUILD_TESTS=ON
+     -DBUILD_DOCUMENTATION=OFF
+     -DENABLE_PCH=OFF
+    - ninja
+    - ccache -s
+
+test:release-linux:
+  <<: *linux_job
+  stage: test
+  dependencies:
+    - build:release-linux
+  script:
+    - curl --retry 3 --location --insecure --location-trusted -s https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-data/-/archive/dev/sight-data-dev.tar.gz | tar xfz - > /dev/null
+    - export FWTEST_DATA_DIR=$CI_PROJECT_DIR/sight-data-dev
+    - export FW_IGNORE_SLOW_TESTS=1
+    - cd $CI_PROJECT_DIR/build
+    - cmake .
+    - ctest --timeout 120
+
+doxygen:
+  <<: *linux_job
+  stage: doc
+  dependencies: []
+  script:
     - cd $CI_PROJECT_DIR/build/
     - >
      cmake $CI_PROJECT_DIR
@@ -97,7 +219,6 @@ doxygen:
      -DCMAKE_BUILD_TYPE=Release
      -DBUILD_TESTS=OFF
      -DBUILD_DOCUMENTATION=ON
-     -DENABLE_PCH=ON
     - ninja doc
   artifacts:
     name: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"

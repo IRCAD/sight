@@ -134,8 +134,13 @@ function(assign_precompiled_header _target _pch _pch_header)
             if(NOT _pch_compile_flags)
                 set(_pch_compile_flags)
             endif()
+            
             separate_arguments(_pch_compile_flags)
             list(APPEND _pch_compile_flags -Winvalid-pch)
+            if(APPLE)
+                list(APPEND _pch_compile_flags --relocatable-pch)
+            endif()
+            
             if("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
                 list(APPEND _pch_compile_flags -include-pch "${_pch}")
             else()
