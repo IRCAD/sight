@@ -13,10 +13,11 @@ set( DEPENDENCIES
         arServices
         fwServices
         fwTools
-        fwThread
+
 )
 set( REQUIREMENTS )
 set( CONAN_DEPS
-     pcl/1.8.1-r1@sight/stable
-     librealsense/2.17.0@sight/stable
+     librealsense/2.18.0@sight/testing
 )
+
+set( USE_PCH_FROM_TARGET pchServicesOmp )
