@@ -384,30 +384,16 @@ if(PROJECTS_TO_BUILD)
     set(PROJECT_LIST ${PROJECTS_TO_BUILD})
     findAllDependencies("${PROJECT_LIST}" PROJECT_LIST)
 
+    set(REPOSITORIES_DIRECTORIES ${ADDITIONAL_REPOSITORIES})
+    list(APPEND REPOSITORIES_DIRECTORIES ${CMAKE_SOURCE_DIR})
+
     foreach(PROJECT ${PROJECT_LIST})
         set(${PROJECT}_INSTALL 1)
 
         # Configure cpack to package the project sources.
-
-        # Search for the project in the sight repository.
-        # Try to remove the sight subdirectory from the project's directory.
-        string(REPLACE "${CMAKE_SOURCE_DIR}/" "" SOURCE_INSTALL_DIR ${${PROJECT}_DIR})
-
-        # If it failed, that means that the project is not in sight.
-        if(SOURCE_INSTALL_DIR STREQUAL ${${PROJECT}_DIR})
-            # Search for the project in additional repos.
-            foreach(REPO_DIR ${ADDITIONAL_REPOSITORIES})
-                string(REPLACE "${REPO_DIR}/" "" SOURCE_INSTALL_DIR ${${PROJECT}_DIR})
-                if(NOT SOURCE_INSTALL_DIR STREQUAL ${${PROJECT}_DIR})
-                    # The project repo was found. We can stop now.
-                    break()
-                endif()
-            endforeach()
-        endif()
-
+        findProjectSubdirectory("${${PROJECT}_DIR}" "${REPOSITORIES_DIRECTORIES}" SOURCE_INSTALL_DIR)
         # Add the project to CPack's list of source directories.
         list(APPEND CPACK_SOURCE_INSTALLED_DIRECTORIES ${${PROJECT}_DIR} ${SOURCE_INSTALL_DIR})
-
     endforeach()
 
     # Copy important sight files in a temporary directory to be packaged when generating a source archive.
@@ -429,10 +415,18 @@ if(PROJECT_TESTS)
     list(REMOVE_ITEM PROJECT_LIST ${PROJECT_TESTS})
 endif()
 
+findTests("${PROJECT_LIST}" "${TESTS_FILTER}" PROJECT_TESTS)
+findAllDependencies("${PROJECT_TESTS}" PROJECT_TESTS_DEPS)
+list(REMOVE_DUPLICATES PROJECT_TESTS_DEPS)
+
+# Add all test sources to the source package. Needed to make the package buildable without setting BUILD_TESTS=OFF.
+foreach(PROJECT ${PROJECT_TESTS_DEPS})
+    findProjectSubdirectory("${${PROJECT}_DIR}" "${REPOSITORIES_DIRECTORIES}" SOURCE_INSTALL_DIR)
+    list(APPEND CPACK_SOURCE_INSTALLED_DIRECTORIES ${${PROJECT}_DIR} ${SOURCE_INSTALL_DIR})
+endforeach()
+
 # Append tests to the project list
 if(BUILD_TESTS)
-    findTests("${PROJECT_LIST}" "${TESTS_FILTER}" PROJECT_TESTS)
-    findAllDependencies("${PROJECT_TESTS}" PROJECT_TESTS_DEPS)
     list(APPEND PROJECT_LIST ${PROJECT_TESTS_DEPS})
     list(REMOVE_DUPLICATES PROJECT_LIST)
 endif()
