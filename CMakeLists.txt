@@ -384,31 +384,38 @@ if(PROJECTS_TO_BUILD)
     set(PROJECT_LIST ${PROJECTS_TO_BUILD})
     findAllDependencies("${PROJECT_LIST}" PROJECT_LIST)
 
-    # Configure cpack to package the project sources.
-    # Package the entire sight repository. CPack only works with source directories as inputs so this is
-    # the only way to include source files at the root of the sight directory.
-    list(APPEND CPACK_SOURCE_INSTALLED_DIRECTORIES "${CMAKE_SOURCE_DIR}")
-    list(APPEND CPACK_SOURCE_INSTALLED_DIRECTORIES ".")
-
     foreach(PROJECT ${PROJECT_LIST})
         set(${PROJECT}_INSTALL 1)
 
+        # Configure cpack to package the project sources.
+
+        # Search for the project in the sight repository.
         # Try to remove the sight subdirectory from the project's directory.
         string(REPLACE "${CMAKE_SOURCE_DIR}/" "" SOURCE_INSTALL_DIR ${${PROJECT}_DIR})
 
-        # If it failed, that means that the 'project' is not in sight.
+        # If it failed, that means that the project is not in sight.
         if(SOURCE_INSTALL_DIR STREQUAL ${${PROJECT}_DIR})
             # Search for the project in additional repos.
             foreach(REPO_DIR ${ADDITIONAL_REPOSITORIES})
                 string(REPLACE "${REPO_DIR}/" "" SOURCE_INSTALL_DIR ${${PROJECT}_DIR})
                 if(NOT SOURCE_INSTALL_DIR STREQUAL ${${PROJECT}_DIR})
-                    # The 'project' repo was found. Add its source directory to cpack.
-                    list(APPEND CPACK_SOURCE_INSTALLED_DIRECTORIES ${${PROJECT}_DIR} ${SOURCE_INSTALL_DIR})
-                    break() # We can stop now.
+                    # The project repo was found. We can stop now.
+                    break()
                 endif()
             endforeach()
         endif()
+
+        # Add the project to CPack's list of source directories.
+        list(APPEND CPACK_SOURCE_INSTALLED_DIRECTORIES ${${PROJECT}_DIR} ${SOURCE_INSTALL_DIR})
+
     endforeach()
+
+    # Copy important sight files in a temporary directory to be packaged when generating a source archive.
+    set(PACKAGE_SRC_DIR "${CMAKE_BINARY_DIR}/package_source")
+    file(MAKE_DIRECTORY ${PACKAGE_SRC_DIR})
+    file(COPY CMakeLists.txt COPYING COPYING.LESSER README.md DESTINATION ${PACKAGE_SRC_DIR})
+    list(APPEND CPACK_SOURCE_INSTALLED_DIRECTORIES ${PACKAGE_SRC_DIR} "." "${CMAKE_SOURCE_DIR}/CMake" "./CMake")
+
     message(STATUS "Project configuration is restricted to : ${PROJECTS_TO_BUILD}")
 elseif(BUILD_SDK)
     foreach(PROJECT ${PROJECT_LIST})
