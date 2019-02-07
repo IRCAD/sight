@@ -395,6 +395,8 @@ void SFrameGrabber::startCamera()
         auto sig = this->signal< ::arServices::IGrabber::CameraStartedSignalType >(
             ::arServices::IGrabber::s_CAMERA_STARTED_SIG);
         sig->asyncEmit();
+
+        this->setStartState(true);
     }
 }
 
@@ -478,6 +480,8 @@ void SFrameGrabber::stopCamera()
             auto sig = this->signal< ::arServices::IGrabber::CameraStoppedSignalType >(
                 ::arServices::IGrabber::s_CAMERA_STOPPED_SIG);
             sig->asyncEmit();
+
+            this->setStartState(false);
         }
     }
 }

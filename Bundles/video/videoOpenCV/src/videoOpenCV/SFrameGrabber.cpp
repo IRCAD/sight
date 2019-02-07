@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -166,6 +166,7 @@ void SFrameGrabber::startCamera()
     }
     else
     {
+        this->setStartState(false);
         ::fwGui::dialog::MessageDialog::showMessageDialog(
             "Grabber",
             "This video source is not managed by this grabber.");
@@ -220,6 +221,8 @@ void SFrameGrabber::stopCamera()
         auto sig = this->signal< ::arServices::IGrabber::CameraStoppedSignalType >(
             ::arServices::IGrabber::s_CAMERA_STOPPED_SIG);
         sig->asyncEmit();
+
+        this->setStartState(false);
     }
     m_isInitialized = false;
 }
@@ -252,12 +255,16 @@ void SFrameGrabber::readVideo(const ::boost::filesystem::path& file)
         m_timer->setFunction(std::bind(&SFrameGrabber::grabVideo, this));
         m_timer->setDuration(duration);
         m_timer->start();
+
+        this->setStartState(true);
     }
     else
     {
         ::fwGui::dialog::MessageDialog::showMessageDialog(
             "Grabber",
             "This file cannot be opened: " + file.string() + ".");
+
+        this->setStartState(false);
     }
 }
 
@@ -320,12 +327,16 @@ void SFrameGrabber::readDevice( const ::arData::Camera::csptr _camera)
         m_timer->setFunction(std::bind(&SFrameGrabber::grabVideo, this));
         m_timer->setDuration(duration);
         m_timer->start();
+
+        this->setStartState(true);
     }
     else
     {
         ::fwGui::dialog::MessageDialog::showMessageDialog(
             "Grabber",
             "This device:" + device + " at index: " + std::to_string(index) + "cannot be openned.");
+
+        this->setStartState(false);
     }
 }
 
@@ -412,7 +423,9 @@ void SFrameGrabber::readImages(const ::boost::filesystem::path& folder, const st
                     return;
             }
         }
+
         m_isInitialized = true;
+        this->setStartState(true);
 
         auto sigDuration = this->signal< DurationModifiedSignalType >( s_DURATION_MODIFIED_SIG );
 

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -127,11 +127,13 @@ void SFrameGrabber::startCamera()
         }
         else
         {
+            this->setStartState(false);
             OSLM_ERROR("Wrong file format. The format should be *.pcd.");
         }
     }
     else
     {
+        this->setStartState(false);
         ::fwGui::dialog::MessageDialog::showMessageDialog(
             "Grabber",
             "This video source is not managed by this grabber.");
@@ -180,6 +182,8 @@ void SFrameGrabber::stopCamera()
         auto sig = this->signal< ::arServices::IGrabber::CameraStoppedSignalType >(
             ::arServices::IGrabber::s_CAMERA_STOPPED_SIG);
         sig->asyncEmit();
+
+        this->setStartState(false);
     }
     m_isInitialized = false;
 }
@@ -212,6 +216,7 @@ void SFrameGrabber::readImages(const ::boost::filesystem::path& folder, const st
         ::pcl::PointCloud< ::pcl::PointXYZ> inputCloud;
         if (::pcl::io::loadPCDFile< ::pcl::PointXYZ> (m_imageToRead.front().string(), inputCloud) == -1)
         {
+            this->setStartState(false);
             SLM_ERROR("Couldn't read input pointcloud file " +  m_imageToRead.front().string());
         }
 
@@ -224,6 +229,7 @@ void SFrameGrabber::readImages(const ::boost::filesystem::path& folder, const st
         }
         else
         {
+            this->setStartState(false);
             SLM_ERROR("Image width or height is equal to 0.");
             return;
         }
@@ -242,6 +248,8 @@ void SFrameGrabber::readImages(const ::boost::filesystem::path& folder, const st
         m_timer->setFunction(std::bind(&SFrameGrabber::grabImage, this));
         m_timer->setDuration(duration);
         m_timer->start();
+
+        this->setStartState(true);
     }
 }
 
