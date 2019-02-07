@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -74,6 +74,7 @@ static const ::fwCom::Slots::SlotKeyType s_SET_INT_PARAMETER_SLOT        = "setI
 static const ::fwCom::Slots::SlotKeyType s_SET_INT2_PARAMETER_SLOT       = "setInt2Parameter";
 static const ::fwCom::Slots::SlotKeyType s_SET_INT3_PARAMETER_SLOT       = "setInt3Parameter";
 static const ::fwCom::Slots::SlotKeyType s_SET_ENUM_PARAMETER_SLOT       = "setEnumParameter";
+static const ::fwCom::Slots::SlotKeyType s_SET_ENUM_INDEX_PARAMETER_SLOT = "setEnumIndexParameter";
 static const ::fwCom::Slots::SlotKeyType s_SET_INT_MIN_PARAMETER_SLOT    = "setIntMinParameter";
 static const ::fwCom::Slots::SlotKeyType s_SET_INT_MAX_PARAMETER_SLOT    = "setIntMaxParameter";
 static const ::fwCom::Slots::SlotKeyType s_SET_DOUBLE_MIN_PARAMETER_SLOT = "setDoubleMinParameter";
@@ -104,6 +105,7 @@ SParameters::SParameters() noexcept :
     newSlot(s_SET_INT2_PARAMETER_SLOT, &SParameters::setInt2Parameter, this);
     newSlot(s_SET_INT3_PARAMETER_SLOT, &SParameters::setInt3Parameter, this);
     newSlot(s_SET_ENUM_PARAMETER_SLOT, &SParameters::setEnumParameter, this);
+    newSlot(s_SET_ENUM_INDEX_PARAMETER_SLOT, &SParameters::setEnumIndexParameter, this);
     newSlot(s_SET_INT_MIN_PARAMETER_SLOT, &SParameters::setIntMinParameter, this);
     newSlot(s_SET_INT_MAX_PARAMETER_SLOT, &SParameters::setIntMaxParameter, this);
     newSlot(s_SET_DOUBLE_MIN_PARAMETER_SLOT, &SParameters::setDoubleMinParameter, this);
@@ -1252,6 +1254,7 @@ void SParameters::setIntParameter(int val, std::string key)
     }
     this->blockSignals(false);
 }
+
 //------------------------------------------------------------------------------
 
 void SParameters::setInt2Parameter(int val0, int val1, std::string key)
@@ -1269,6 +1272,7 @@ void SParameters::setInt2Parameter(int val0, int val1, std::string key)
     }
     this->blockSignals(false);
 }
+
 //------------------------------------------------------------------------------
 
 void SParameters::setInt3Parameter(int val0, int val1, int val2, std::string key)
@@ -1288,6 +1292,7 @@ void SParameters::setInt3Parameter(int val0, int val1, int val2, std::string key
     }
     this->blockSignals(false);
 }
+
 //------------------------------------------------------------------------------
 
 void SParameters::setEnumParameter(std::string val, std::string key)
@@ -1299,6 +1304,23 @@ void SParameters::setEnumParameter(std::string val, std::string key)
     if (combobox)
     {
         combobox->setCurrentText(QString::fromStdString(val));
+    }
+    this->blockSignals(false);
+}
+
+//------------------------------------------------------------------------------
+
+void SParameters::setEnumIndexParameter(int val, std::string key)
+{
+    this->blockSignals(true);
+
+    QWidget* widget = this->getParamWidget(key);
+
+    QComboBox* combobox = qobject_cast<QComboBox*>(widget);
+
+    if (combobox)
+    {
+        combobox->setCurrentIndex(val);
     }
     this->blockSignals(false);
 }
