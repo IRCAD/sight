@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -52,12 +52,16 @@ public:
     public:
 
         ViewInfo() :
+            m_border(0),
+            m_minSize(std::make_pair(-1, -1)),
             m_caption(""),
             m_isSelect(false),
             m_useScrollBar(false)
         {
         }
 
+        int m_border;
+        std::pair< int, int >  m_minSize;
         std::string m_caption;
         bool m_isSelect;
         bool m_useScrollBar;
@@ -78,7 +82,7 @@ public:
            <gui>
                <layout type="::fwGui::TabLayoutManager" >
                    <view caption="TabView1" />
-                   <view caption="TabView2" selected="yes" />
+                   <view caption="TabView2" selected="yes" border="10" />
                    <view caption="TabView3"  />
                </layout>
            </gui>
@@ -91,10 +95,12 @@ public:
        @endcode
      *  - \<layout type="::fwGui::TabLayoutManager" \> : define a tab layout.
      *  - \<view caption="TabView1" selected="center" /\> : define a new view which can have the following attributes
-     *   - \b caption : name of the view (display on the screen).
+     *   - \b border : define the size of the border in the layout
+     *   - \b caption : define the title to display.
+     *   - \b minWidth  : minimal width of the view.
+     *   - \b minHeight : minimal height of the view.
      *   - \b selected  {yes | no}: define if the tab is the current one.
      */
-
     FWGUI_API virtual void initialize( ConfigurationType configuration) override;
 
     FWGUI_API static const RegistryKeyType REGISTRY_KEY;

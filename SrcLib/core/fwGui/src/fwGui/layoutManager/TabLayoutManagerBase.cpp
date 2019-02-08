@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,20 +20,9 @@
  *
  ***********************************************************************/
 
-/**
- * @file fwGui/layoutManager/TabLayoutManagerBase.cpp
- * @brief This file defines the interface of the class for managing a tab layout geometry.
- *
- *
- * @date 2009-2010
- */
-
 #include "fwGui/layoutManager/TabLayoutManagerBase.hpp"
 
 #include <fwCore/base.hpp>
-
-#include <boost/lexical_cast.hpp>
-#include <boost/assign/list_of.hpp>
 
 namespace fwGui
 {
@@ -63,19 +52,34 @@ void TabLayoutManagerBase::initialize( ConfigurationType configuration)
     OSLM_ASSERT("Bad configuration name "<<configuration->getName()<< ", must be layout",
                 configuration->getName() == "layout");
 
-    std::vector < ConfigurationType > vectViews = configuration->find("view");
+    const std::vector < ConfigurationType > vectViews = configuration->find("view");
     SLM_TRACE_IF("No view define.", vectViews.empty() );
     m_views.clear();
-    for (ConfigurationType view : vectViews)
+    for (const ConfigurationType& view : vectViews)
     {
         ViewInfo vi;
+        if( view->hasAttribute("border") )
+        {
+            const std::string border = view->getExistingAttributeValue("border");
+            vi.m_border = std::stoi(border);
+        }
         if( view->hasAttribute("caption") )
         {
             vi.m_caption = view->getExistingAttributeValue("caption");
         }
+        if( view->hasAttribute("minWidth") )
+        {
+            const std::string width = view->getExistingAttributeValue("minWidth");
+            vi.m_minSize.first = std::stoi(width);
+        }
+        if( view->hasAttribute("minHeight") )
+        {
+            const std::string height = view->getExistingAttributeValue("minHeight");
+            vi.m_minSize.second = std::stoi(height);
+        }
         if( view->hasAttribute("selected") )
         {
-            std::string isSelected = view->getExistingAttributeValue("selected");
+            const std::string isSelected = view->getExistingAttributeValue("selected");
             OSLM_ASSERT("The value "<<isSelected<<" it's incorrect, it should either be yes or no.",
                         isSelected == "yes" || isSelected == "no");
             vi.m_isSelect = (isSelected == "yes");
@@ -83,10 +87,10 @@ void TabLayoutManagerBase::initialize( ConfigurationType configuration)
 
         if( view->hasAttribute("useScrollBar") )
         {
-            std::string useScrollBar = view->getExistingAttributeValue("useScrollBar");
+            const std::string useScrollBar = view->getExistingAttributeValue("useScrollBar");
             OSLM_ASSERT("Incorrect value for \"useScrollBar\" attribute "<<useScrollBar,
                         (useScrollBar == "yes") || (useScrollBar == "no"));
-            vi.m_useScrollBar = (useScrollBar=="yes");
+            vi.m_useScrollBar = (useScrollBar == "yes");
         }
 
         m_views.push_back(vi);
@@ -97,6 +101,3 @@ void TabLayoutManagerBase::initialize( ConfigurationType configuration)
 
 } // namespace layoutManager
 } // namespace fwGui
-
-
-

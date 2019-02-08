@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2018 IRCAD France
- * Copyright (C) 2015-2018 IHU Strasbourg
+ * Copyright (C) 2015-2019 IRCAD France
+ * Copyright (C) 2015-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -27,6 +27,10 @@
 #if defined (__APPLE__)
     #include <OpenGL/gl.h>
 #else
+#ifdef WIN32
+// OpenGL on windows requires some types defined by the windows API such as WINGDIAPI and APIENTRY.
+    #include <windows.h>
+#endif
     #include <GL/gl.h>
 #endif
 
