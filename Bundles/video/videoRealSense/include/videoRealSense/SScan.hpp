@@ -46,6 +46,9 @@ namespace videoRealSense
  * The frames are pushed into timelines.
  * The pointloud is pused into a ::fwData::Mesh and updated each time.
  *
+ * A Complete documentation about RealSense camera can be found here:
+ * https://github.com/IntelRealSense/librealsense/blob/master/doc/readme.md
+ *
  * \b Tags: DEVICE
  *
  * @section Signals Signals

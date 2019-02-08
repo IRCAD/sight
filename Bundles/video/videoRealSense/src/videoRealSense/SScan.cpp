@@ -52,6 +52,10 @@
 
 #include <librealsense2/rs_advanced_mode.hpp>
 
+#include <algorithm>
+
+namespace fwClock = ::fwCore::HiResClock;
+
 namespace videoRealSense
 {
 
@@ -170,7 +174,7 @@ std::string SScan::selectDevice()
         std::vector< std::string > selections;
         selections.resize(devices.size());
 
-        for(uint32_t i = 0; i < devices.size(); ++i)
+        for(std::uint32_t i = 0; i < devices.size(); ++i)
         {
             const std::string name   = devices[i].get_info(RS2_CAMERA_INFO_NAME);
             const std::string serial = devices[i].get_info(RS2_CAMERA_INFO_SERIAL_NUMBER);
@@ -241,7 +245,11 @@ void SScan::initialize(const ::rs2::pipeline_profile& _profile)
         const rs2_intrinsics colorIntrinsics = colorStream.get_intrinsics();
         const rs2_extrinsics extrinsic       = depthStream.get_extrinsics_to(colorStream);
 
-        depthCamera->setDescription("Depth camera");
+        // Construct a explicit camera name: Intel RealSense D415(839112062452)
+        const std::string cameraName = std::string(m_currentDevice.get_info(RS2_CAMERA_INFO_NAME)) + "(" +
+                                       std::string(m_currentDevice.get_info(RS2_CAMERA_INFO_SERIAL_NUMBER)) + ")";
+
+        depthCamera->setDescription(cameraName + " Depth");
         depthCamera->setWidth(depthStreamW);
         depthCamera->setHeight(depthStreamH);
         depthCamera->setFx(static_cast<double>(depthIntrinsics.fx));
@@ -256,7 +264,7 @@ void SScan::initialize(const ::rs2::pipeline_profile& _profile)
                                               static_cast<double>(depthIntrinsics.coeffs[4]));
         depthCamera->setIsCalibrated(true);
 
-        colorCamera->setDescription("Color camera");
+        colorCamera->setDescription(cameraName + "Color");
         colorCamera->setWidth(colorStreamW);
         colorCamera->setHeight(colorStreamH);
         colorCamera->setFx(static_cast<double>(colorIntrinsics.fx));
@@ -330,8 +338,7 @@ void SScan::initialize(const ::rs2::pipeline_profile& _profile)
 
 void SScan::startCamera()
 {
-
-    // Test if previous choose was kept (changing presets cases)
+    // Test if previous device was kept (changing presets cases).
     if(m_deviceID.empty())
     {
         m_deviceID = this->selectDevice();
@@ -380,8 +387,9 @@ void SScan::startCamera()
             advanced_mode_dev.load_json(json_content);
         }
 
-        // Get the depth scale.
+        // Get the depth scale: depth in mm corresponding to a depth value of 1.
         m_depthScale = m_currentDevice.first< ::rs2::depth_sensor >().get_depth_scale() * s_METERS_TO_MMS;
+
     }
     catch(const std::exception& e)
     {
@@ -392,6 +400,7 @@ void SScan::startCamera()
         return;
     }
 
+    // Initialize calibration/pointcloud.
     this->initialize(profile);
 
     // Launch the grabbing thread.
@@ -418,10 +427,12 @@ void SScan::stopCamera()
         // if we don't the preset is saved on the Camera ROM.
         if(m_resetDevice && !m_cameraSettings.presetPath.empty())
         {
-            // clear the preset
+            // Clear the preset
             m_cameraSettings.presetPath.clear();
-            // reset the device (if preset was loaded, ...)
+            // Reset the device (if preset was loaded, ...)
             m_currentDevice.hardware_reset();
+            // Wait until hardware_reset as been sent to the camera.
+            std::this_thread::sleep_for(std::chrono::seconds(1));
             m_deviceID.clear();
         }
 
@@ -453,17 +464,29 @@ void SScan::setBoolParameter(bool _value, std::string _key)
     if(_key == s_IREMITTER)
     {
         // Enable/Disable the IR emitter.
-        auto depthSensor = m_currentDevice.first< ::rs2::depth_sensor >();
-        _value ? depthSensor.set_option(RS2_OPTION_EMITTER_ENABLED, 1.f) :
-        depthSensor.set_option(RS2_OPTION_EMITTER_ENABLED, 0.f);
+        try
+        {
+            auto depthSensor = m_currentDevice.first< ::rs2::depth_sensor >();
+            _value ? depthSensor.set_option(RS2_OPTION_EMITTER_ENABLED, 1.f) :
+            depthSensor.set_option(RS2_OPTION_EMITTER_ENABLED, 0.f);
+        }
+        catch(const std::exception& e)
+        {
+            ::fwGui::dialog::MessageDialog::showMessageDialog(
+                "RealSense Error",
+                "RealSense device error: " + std::string(e.what()),
+                ::fwGui::dialog::IMessageDialog::CRITICAL);
+            return;
+        }
+
     }
-    if(_key == s_SWITHTOIR)
+    else if(_key == s_SWITHTOIR)
     {
         m_switchInfra2Color = _value;
     }
     else
     {
-        SLM_ERROR("Key with value '" +_key+"' is not recognized.");
+        SLM_ERROR("Key '" +_key+"' is not recognized.");
     }
 }
 
@@ -479,7 +502,7 @@ void SScan::setEnumParameter(std::string _value, std::string _key)
         if(!presetPathToLoad.empty())
         {
             m_cameraSettings.presetPath = presetPathToLoad;
-            // Restart the same camera (device is not reset)
+            // Restart the same camera (device is not reset).
             m_resetDevice = false;
             this->stopCamera();
             // If a real "stop" is called.
@@ -490,7 +513,6 @@ void SScan::setEnumParameter(std::string _value, std::string _key)
         {
             SLM_ERROR("Cannot load preset named: " + _value + ". Nothing append");
         }
-
     }
 }
 
@@ -498,23 +520,36 @@ void SScan::setEnumParameter(std::string _value, std::string _key)
 
 void SScan::setIntParameter(int _value, std::string _key)
 {
-    if(_key == "minRange")
+    try
     {
-        auto advanced_mode_dev = m_currentDevice.as<rs400::advanced_mode>();
-        auto depth_table       = advanced_mode_dev.get_depth_table();
-        depth_table.depthClampMin = _value;
-        advanced_mode_dev.set_depth_table(depth_table);
+        if(_key == "minRange")
+        {
+            // Use the "advanced_mode" to set DepthClampMin value.
+            auto advanced_mode_dev = m_currentDevice.as<rs400::advanced_mode>();
+            auto depth_table       = advanced_mode_dev.get_depth_table();
+            depth_table.depthClampMin = _value;
+            advanced_mode_dev.set_depth_table(depth_table);
+        }
+        else if(_key == "maxRange")
+        {
+            // Use the "advanced_mode" to set DepthClampMax value.
+            auto advanced_mode_dev = m_currentDevice.as<rs400::advanced_mode>();
+            auto depth_table       = advanced_mode_dev.get_depth_table();
+            depth_table.depthClampMax = _value;
+            advanced_mode_dev.set_depth_table(depth_table);
+        }
+        else
+        {
+            SLM_ERROR("Key '" +_key+"' is not recognized.");
+        }
     }
-    else if(_key == "maxRange")
+    catch(const std::exception& e)
     {
-        auto advanced_mode_dev = m_currentDevice.as<rs400::advanced_mode>();
-        auto depth_table       = advanced_mode_dev.get_depth_table();
-        depth_table.depthClampMax = _value;
-        advanced_mode_dev.set_depth_table(depth_table);
-    }
-    else
-    {
-        SLM_ERROR("Key with value '" +_key+"' is not recognized.");
+        ::fwGui::dialog::MessageDialog::showMessageDialog(
+            "RealSense Error",
+            "RealSense device error:" + std::string(e.what()),
+            ::fwGui::dialog::IMessageDialog::CRITICAL);
+        return;
     }
 }
 
@@ -545,8 +580,6 @@ void SScan::grab()
         m_switchInfra2Color ? colorOrInfra = infra : colorOrInfra = color;
 
         // Generate the pointcloud and texture mappings
-
-        // Declare pointcloud object, for calculating pointclouds and texture mappings
         if(depth)
         {
             points = pc.calculate(depth);
@@ -574,6 +607,7 @@ void SScan::grab()
         this->onCameraImageDepth(reinterpret_cast<const std::uint16_t*>(depth.get_data()));
         this->onCameraImage(reinterpret_cast<const std::uint8_t*>(colorOrInfra.get_data()));
 
+        // Compute the z value of the center pixel, to give the distance "object-camera" in mm.
         const auto distanceToCenter = depth.get_distance(depth.get_width() / 2, depth.get_height() / 2);
         this->signal<DistanceComputedSignalType>(s_DISTANCE_COMPUTED_SIG)->asyncEmit(
             static_cast<double>(distanceToCenter * s_METERS_TO_MMS));
@@ -584,21 +618,21 @@ void SScan::grab()
 
 void SScan::loadPresets(const ::fs::path& _path)
 {
-    // 1. list all .json files in the folder
+    // 1. List all .json files in the folder.
     ::fs::directory_iterator end_itr;
 
-    // cycle through the directory
+    // 1.1. Cycle through the directory
     for (::fs::directory_iterator itr(_path); itr != end_itr; ++itr)
     {
-        // If it's not a directory, list it. If you want to list directories too, just remove this check.
+        // 1.2. Check only files with .json extension.
         if ( ::fs::is_regular_file(itr->path()) && itr->path().extension() == ".json" )
         {
-            // 2. Generate "readable name" by removing "Preset*.json"
+            // 2. Generate "readable name" by removing "Preset*.json".
             const std::string current_file = itr->path().filename().string();
             const auto p                   = current_file.find("Preset");
             std::string name               = current_file.substr(0, p);
 
-            // 3. Push in Map [Name, path]
+            // 3. Push in Map [Name, path].
             m_jsonPresets[name] = itr->path();
         }
     }
@@ -609,9 +643,7 @@ void SScan::loadPresets(const ::fs::path& _path)
 void SScan::onCameraImage(const uint8_t* _buffer)
 {
     // Filling timeline's buffer
-    const auto now = std::chrono::system_clock::now();
-    const auto res = std::chrono::duration_cast< std::chrono::microseconds >(now.time_since_epoch()).count();
-    const double timestamp( res );
+    const ::fwClock::HiResClockType timestamp( ::fwClock::getTimeInMicroSec() );
 
     SPTR(::arData::FrameTL::BufferType) colorBuffer = m_colorTimeline->createBuffer(timestamp);
 
@@ -633,9 +665,7 @@ void SScan::onCameraImageDepth(const std::uint16_t* _buffer)
 {
 
     // Filling the depth image buffer in the timeline
-    const auto now = std::chrono::system_clock::now();
-    const auto res = std::chrono::duration_cast< std::chrono::microseconds >(now.time_since_epoch()).count();
-    const double timestamp( res );
+    const ::fwClock::HiResClockType timestamp( ::fwClock::getTimeInMicroSec() );
 
     SPTR(::arData::FrameTL::BufferType) depthTL = m_depthTimeline->createBuffer(timestamp);
 
@@ -645,9 +675,10 @@ void SScan::onCameraImageDepth(const std::uint16_t* _buffer)
     std::uint16_t* depthBuffer = reinterpret_cast< std::uint16_t* >( depthTL->addElement(0) );
     const auto sizeBuffer      = width * height;
 
+    // Re-map depth frame in mm.
     for(size_t i = 0; i < sizeBuffer; ++i)
     {
-        *depthBuffer++ = *_buffer++ *static_cast< std::uint16_t>(m_depthScale);
+        *depthBuffer++ = static_cast<std::uint16_t>(*_buffer++ *static_cast< std::uint16_t >(m_depthScale));
     }
 
     // Push buffer to timeline and notify
@@ -665,8 +696,6 @@ void SScan::onPointCloud(const ::rs2::points& _pc, const ::rs2::video_frame& _te
     if (m_pointcloud)
     {
         ::fwData::mt::ObjectWriteLock lockTFM(m_pointcloud);
-
-        // Initialize mesh points memory one time in order to increase performances
 
         ::fwData::Array::sptr pointsArray = m_pointcloud->getPointsArray();
         ::fwDataTools::helper::Array arrayHelper(pointsArray);
@@ -686,29 +715,32 @@ void SScan::onPointCloud(const ::rs2::points& _pc, const ::rs2::video_frame& _te
         const auto textureBuff      = reinterpret_cast<const uint8_t*>(_texture.get_data());
 
         /* this segment actually prints the pointcloud */
-        auto vertices     = _pc.get_vertices();
-        auto textureCoord = _pc.get_texture_coordinates();
+        const auto vertices     = _pc.get_vertices();
+        const auto textureCoord = _pc.get_texture_coordinates();
 
         size_t pcSize = _pc.size();
 
+        // Parallelize in possible since each element is indepedent.
         #pragma omp parallel for shared(buffer, colorBuf)
         for (size_t i = 0; i < pcSize; i++)
         {
+            // Fill the point buffer (x = +0, y = +1, z = +2).
             buffer[i*3 + 0] = static_cast<float>(vertices[i].x);
             buffer[i*3 + 1] = static_cast<float>(vertices[i].y);
-            buffer[i*3 + 2] = static_cast<float>(vertices[i].z);
+            buffer[i*3 + 2] = static_cast<float>(vertices[i].z) * m_depthScale; // Re-map to mm.
 
             // Normals to Texture Coordinates conversion
-            const int x_value = std::min(std::max(static_cast<int>(textureCoord[i].u * textureW  + .5f), 0),
-                                         textureW - 1);
-            const int y_value = std::min(std::max(static_cast<int>(textureCoord[i].v * textureH + .5f), 0),
-                                         textureH - 1);
+            const int x_value = std::min(std::max(static_cast<int>(textureCoord[i].u * static_cast<float>(textureW)
+                                                                   + .5f), 0), textureW - 1);
+            const int y_value = std::min(std::max(static_cast<int>(textureCoord[i].v * static_cast<float>(textureH)
+                                                                   + .5f), 0), textureH - 1);
 
             const int bytes   = x_value * textureBytePerPix;  // Get # of bytes per pixel
             const int strides = y_value * textureStrides;  // Get line width in bytes
             const int index   = (bytes + strides);
 
-            colorBuf[i*3 + 0] = textureBuff[index];
+            // Fill the color buffer (R = +0, G = +1, B = +2).
+            colorBuf[i*3 + 0] = textureBuff[index + 0];
             colorBuf[i*3 + 1] = textureBuff[index + 1];
             colorBuf[i*3 + 2] = textureBuff[index + 2];
 
