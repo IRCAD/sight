@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -65,7 +65,12 @@ void TabLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr paren
 
     for ( ViewInfo viewInfo : views)
     {
-        QWidget* widget = new QWidget(m_tabWidget);
+        const int border        = viewInfo.m_border;
+        QWidget* const widget   = new QWidget(m_tabWidget);
+        const int minWidthSize  = std::max(viewInfo.m_minSize.first, 0);
+        const int minHeightSize = std::max(viewInfo.m_minSize.second, 0);
+        widget->setMinimumSize(minWidthSize, minHeightSize);
+        widget->setContentsMargins(border, border, border, border);
 
         ::fwGuiQt::container::QtContainer::sptr subContainer = ::fwGuiQt::container::QtContainer::New();
         subContainer->setQtContainer(widget);
@@ -74,7 +79,7 @@ void TabLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr paren
         int idx = 0;
         if(viewInfo.m_useScrollBar)
         {
-            QScrollArea* scrollArea = new QScrollArea(m_tabWidget);
+            QScrollArea* const scrollArea = new QScrollArea(m_tabWidget);
             scrollArea->setWidget(widget);
             scrollArea->setWidgetResizable( true );
             idx = m_tabWidget->addTab( scrollArea, QString::fromStdString(viewInfo.m_caption));
@@ -103,4 +108,3 @@ void TabLayoutManager::destroyLayout()
 //-----------------------------------------------------------------------------
 
 } // namespace fwGui
-
