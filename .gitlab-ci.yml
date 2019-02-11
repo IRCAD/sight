@@ -121,7 +121,7 @@ build:release-linux:
      -s https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-data/-/archive/dev/sight-data-dev.tar.gz |
      tar xfz - > /dev/null
     - export FWTEST_DATA_DIR=$CI_PROJECT_DIR/build/sight-data-dev
-    - export FW_IGNORE_SLOW_TESTS=1
+    - export FW_IGNORE_SLOW_TESTS=0
     - ctest --timeout 120 --output-on-failure -O output.log
 
 build:debug-windows:
@@ -171,7 +171,7 @@ build:release-windows:
      -s https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-data/-/archive/dev/sight-data-dev.zip
      --output sight-data-dev.zip && unzip -qq sight-data-dev.zip
     - set FWTEST_DATA_DIR=%CI_PROJECT_DIR%\build\sight-data-dev
-    - set FW_IGNORE_SLOW_TESTS=1
+    - set FW_IGNORE_SLOW_TESTS=0
     - ctest --timeout 120 --output-on-failure -O output.log -E fwRenderOgreTest
 
 build:debug-macos:
@@ -223,7 +223,7 @@ build:release-macos:
      -s https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-data/-/archive/dev/sight-data-dev.tar.gz |
      tar xfz - > /dev/null
     - export FWTEST_DATA_DIR=$CI_PROJECT_DIR/build/sight-data-dev
-    - export FW_IGNORE_SLOW_TESTS=1
+    - export FW_IGNORE_SLOW_TESTS=0
     - ctest --timeout 120 --output-on-failure -O output.log
 
 doxygen:
