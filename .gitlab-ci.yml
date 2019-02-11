@@ -1,7 +1,6 @@
 stages:
   - lint
   - build
-  - test
   - doc
   - deploy
 
@@ -90,6 +89,13 @@ build:debug-linux:
     - find . -type f -iname '*.?pp' -exec touch -f -a -m -t 197001010000 {} \;
     - ninja
     - ccache -s
+    - >
+     curl --retry 3 --location --insecure --location-trusted
+     -s https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-data/-/archive/dev/sight-data-dev.tar.gz |
+     tar xfz - > /dev/null
+    - export FWTEST_DATA_DIR=$CI_PROJECT_DIR/build/sight-data-dev
+    - export FW_IGNORE_SLOW_TESTS=1
+    - ctest --timeout 240 --output-on-failure -O output.log
 
 build:release-linux:
   <<: *linux_job
@@ -109,12 +115,14 @@ build:release-linux:
      -DENABLE_PCH=OFF
     - find . -type f -iname '*.?pp' -exec touch -f -a -m -t 197001010000 {} \;
     - ninja
-    - find . -type f -name 'CTestTestfile.cmake' -exec sed -i 's/WORKING_DIRECTORY.*/WORKING_DIRECTORY ".\/bin")/g' {} \;
     - ccache -s
-  artifacts:
-    name: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
-    paths:
-      - $CI_PROJECT_DIR/build/
+    - >
+     curl --retry 3 --location --insecure --location-trusted
+     -s https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-data/-/archive/dev/sight-data-dev.tar.gz |
+     tar xfz - > /dev/null
+    - export FWTEST_DATA_DIR=$CI_PROJECT_DIR/build/sight-data-dev
+    - export FW_IGNORE_SLOW_TESTS=1
+    - ctest --timeout 120 --output-on-failure -O output.log
 
 build:debug-windows:
   <<: *windows_job
@@ -133,6 +141,13 @@ build:debug-windows:
      -DBUILD_TESTS=ON
      -DBUILD_DOCUMENTATION=OFF
     - ninja
+    - >
+     curl --retry 3 --location --insecure --location-trusted
+     -s https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-data/-/archive/dev/sight-data-dev.zip
+     --output sight-data-dev.zip && unzip -qq sight-data-dev.zip
+    - set FWTEST_DATA_DIR=%CI_PROJECT_DIR%\build\sight-data-dev
+    - set FW_IGNORE_SLOW_TESTS=1
+    - ctest --timeout 240 --output-on-failure -O output.log -E fwRenderOgreTest
 
 build:release-windows:
   <<: *windows_job
@@ -151,12 +166,13 @@ build:release-windows:
      -DBUILD_TESTS=ON
      -DBUILD_DOCUMENTATION=OFF
     - ninja
-    - powershell -Command  "gci -r -include 'CTestTestfile.cmake' | foreach-object { $a = $_.fullname; ( get-content $a ) | foreach-object { $_ -replace 'WORKING_DIRECTORY.*','WORKING_DIRECTORY ./bin)' } | set-content $a }"
-  artifacts:
-    name: "%CI_JOB_NAME%-%CI_COMMIT_REF_SLUG%"
-    paths:
-      - build
-
+    - >
+     curl --retry 3 --location --insecure --location-trusted
+     -s https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-data/-/archive/dev/sight-data-dev.zip
+     --output sight-data-dev.zip && unzip -qq sight-data-dev.zip
+    - set FWTEST_DATA_DIR=%CI_PROJECT_DIR%\build\sight-data-dev
+    - set FW_IGNORE_SLOW_TESTS=1
+    - ctest --timeout 120 --output-on-failure -O output.log -E fwRenderOgreTest
 
 build:debug-macos:
   <<: *macos_job
@@ -176,6 +192,13 @@ build:debug-macos:
      -DENABLE_PCH=OFF
     - ninja
     - ccache -s
+    - >
+     curl --retry 3 --location --insecure --location-trusted
+     -s https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-data/-/archive/dev/sight-data-dev.tar.gz |
+     tar xfz - > /dev/null
+    - export FWTEST_DATA_DIR=$CI_PROJECT_DIR/build/sight-data-dev
+    - export FW_IGNORE_SLOW_TESTS=1
+    - ctest --timeout 240 --output-on-failure -O output.log
 
 build:release-macos:
   <<: *macos_job
@@ -194,61 +217,14 @@ build:release-macos:
      -DBUILD_DOCUMENTATION=OFF
      -DENABLE_PCH=OFF
     - ninja
-    - find . -type f -name 'CTestTestfile.cmake' -exec sed -i '' 's/WORKING_DIRECTORY.*/WORKING_DIRECTORY ".\/bin")/g' {} \;
     - ccache -s
-  artifacts:
-    name: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
-    paths:
-      - build
-
-test:release-linux:
-  <<: *linux_job
-  stage: test
-  dependencies:
-    - build:release-linux
-  script:
-    - curl --retry 3 --location --insecure --location-trusted -s https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-data/-/archive/dev/sight-data-dev.tar.gz | tar xfz - > /dev/null
-    - export FWTEST_DATA_DIR=$CI_PROJECT_DIR/sight-data-dev
+    - >
+     curl --retry 3 --location --insecure --location-trusted
+     -s https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-data/-/archive/dev/sight-data-dev.tar.gz |
+     tar xfz - > /dev/null
+    - export FWTEST_DATA_DIR=$CI_PROJECT_DIR/build/sight-data-dev
     - export FW_IGNORE_SLOW_TESTS=1
-    - cd $CI_PROJECT_DIR/build
-    - cmake .
     - ctest --timeout 120 --output-on-failure -O output.log
-  artifacts:
-    name: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
-    paths:
-      - build/output.log
-
-test:release-windows:
-  <<: *windows_job
-  stage: test
-  dependencies:
-    - build:release-windows
-  script:
-    - curl --retry 3 --location --insecure --location-trusted -s https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-data/-/archive/dev/sight-data-dev.zip --output sight-data-dev.zip && unzip -qq sight-data-dev.zip
-    - set FWTEST_DATA_DIR=%CI_PROJECT_DIR%\sight-data-dev
-    - set FW_IGNORE_SLOW_TESTS=1
-    - cd "%CI_PROJECT_DIR%\build"
-    - ctest --timeout 120 --output-on-failure -O output.log -E fwRenderOgreTest
-  artifacts:
-    name: "%CI_JOB_NAME%-%CI_COMMIT_REF_SLUG%"
-    paths:
-      - build/output.log
-
-test:release-macos:
-  <<: *macos_job
-  stage: test
-  dependencies:
-    - build:release-macos
-  script:
-    - curl --retry 3 --location --insecure --location-trusted -s https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-data/-/archive/dev/sight-data-dev.tar.gz | tar xfz - > /dev/null
-    - export FWTEST_DATA_DIR=$CI_PROJECT_DIR/sight-data-dev
-    - export FW_IGNORE_SLOW_TESTS=1
-    - cd $CI_PROJECT_DIR/build
-    - ctest --timeout 120 --output-on-failure -O output.log
-  artifacts:
-    name: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
-    paths:
-      - build/output.log
 
 doxygen:
   <<: *linux_job
