@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -56,36 +56,33 @@ void HisResClockTest::tearDown()
 void HisResClockTest::getTimeTest()
 {
     {
-        const unsigned short time  = 1;
-        const double delta = 0.01;
+        const unsigned short time = 1;
 
         const double start = HiResClock::getTimeInSec();
         std::this_thread::sleep_for(std::chrono::seconds(time));
         const double end = HiResClock::getTimeInSec();
 
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(end-start, time, delta);
+        CPPUNIT_ASSERT_GREATEREQUAL(double(time), end-start);
     }
 
     {
-        const unsigned short time  = 1000;
-        const unsigned short delta = 10;
+        const unsigned short time = 1000;
 
         const double start = HiResClock::getTimeInMilliSec();
         std::this_thread::sleep_for(std::chrono::milliseconds(time));
         const double end = HiResClock::getTimeInMilliSec();
 
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(end-start, time, delta);
+        CPPUNIT_ASSERT_GREATEREQUAL(double(time), end-start);
     }
 
     {
-        const unsigned time        = 1000000;
-        const unsigned short delta = 10000;
+        const unsigned time = 1000000;
 
         const double start = HiResClock::getTimeInMicroSec();
         std::this_thread::sleep_for(std::chrono::microseconds(time));
         const double end = HiResClock::getTimeInMicroSec();
 
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(end-start, time, delta);
+        CPPUNIT_ASSERT_GREATEREQUAL(double(time), end-start);
     }
 }
 
