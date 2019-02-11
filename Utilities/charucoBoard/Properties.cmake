@@ -7,5 +7,5 @@ set( DEPENDENCIES calibration3d)
 set( REQUIREMENTS  )
 
 set( CONAN_DEPS
-    opencv/3.4.3-r2@sight/stable
+    opencv/3.4.3-r3@sight/testing
 )
