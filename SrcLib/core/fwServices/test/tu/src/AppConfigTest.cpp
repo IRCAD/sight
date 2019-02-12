@@ -660,6 +660,7 @@ void AppConfigTest::connectionTest()
         CPPUNIT_ASSERT(!srv3->getIsUpdated());
 
         // Check "started" signal
+        fwTestWaitMacro(srv4->getIsUpdated())
         CPPUNIT_ASSERT(srv4->getIsUpdated());
         CPPUNIT_ASSERT(!srv4->getIsUpdated2());
 
