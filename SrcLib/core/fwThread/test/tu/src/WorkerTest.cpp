@@ -166,15 +166,18 @@ void WorkerTest::timerTest()
         CPPUNIT_ASSERT(handler.m_threadCheckOk.load());
     }
 
-    CPPUNIT_ASSERT_GREATEREQUAL(49, handler.m_step.load());
+    // Be a bit tolerant, we have no 100% guarantee that timer will perform the requested number of ticks
+    CPPUNIT_ASSERT_GREATEREQUAL(45, handler.m_step.load());
+    CPPUNIT_ASSERT_LESSEQUAL(51, handler.m_step.load());
 
     timer->stop();
 
+    int lastStep = handler.m_step.load();
     std::this_thread::sleep_for( duration*3 );
 
     CPPUNIT_ASSERT(!timer->isRunning());
     CPPUNIT_ASSERT(handler.m_threadCheckOk.load());
-    CPPUNIT_ASSERT_GREATEREQUAL(49, handler.m_step.load());
+    CPPUNIT_ASSERT_EQUAL(lastStep, handler.m_step.load());
 
     // test start after stop
     handler.m_step.store(0);
@@ -194,15 +197,18 @@ void WorkerTest::timerTest()
         CPPUNIT_ASSERT(handler.m_threadCheckOk.load());
     }
 
-    CPPUNIT_ASSERT_GREATEREQUAL(49, handler.m_step.load());
+    // Be a bit tolerant, we have no 100% guarantee that timer will perform the requested number of ticks
+    CPPUNIT_ASSERT_GREATEREQUAL(45, handler.m_step.load());
+    CPPUNIT_ASSERT_LESSEQUAL(51, handler.m_step.load());
 
     timer->stop();
 
+    lastStep = handler.m_step.load();
     std::this_thread::sleep_for( duration*3 );
 
     CPPUNIT_ASSERT(!timer->isRunning());
     CPPUNIT_ASSERT(handler.m_threadCheckOk.load());
-    CPPUNIT_ASSERT_GREATEREQUAL(49, handler.m_step.load());
+    CPPUNIT_ASSERT_EQUAL(lastStep, handler.m_step.load());
 
     // change timer duration on the fly
     // change timer duration
@@ -224,7 +230,9 @@ void WorkerTest::timerTest()
         CPPUNIT_ASSERT(handler.m_threadCheckOk.load());
     }
 
-    CPPUNIT_ASSERT_GREATEREQUAL(24, handler.m_step.load());
+    // Be a bit tolerant, we have no 100% guarantee that timer will perform the requested number of ticks
+    CPPUNIT_ASSERT_GREATEREQUAL(20, handler.m_step.load());
+    CPPUNIT_ASSERT_LESSEQUAL(26, handler.m_step.load());
 
     duration = std::chrono::milliseconds(50);
     timer->setDuration(duration);
@@ -237,15 +245,18 @@ void WorkerTest::timerTest()
         CPPUNIT_ASSERT(handler.m_threadCheckOk.load());
     }
 
-    CPPUNIT_ASSERT_GREATEREQUAL(49, handler.m_step.load());
+    // Be a bit tolerant, we have no 100% guarantee that timer will perform the requested number of ticks
+    CPPUNIT_ASSERT_GREATEREQUAL(45, handler.m_step.load());
+    CPPUNIT_ASSERT_LESSEQUAL(51, handler.m_step.load());
 
     timer->stop();
 
+    lastStep = handler.m_step.load();
     std::this_thread::sleep_for( duration*3 );
 
     CPPUNIT_ASSERT(!timer->isRunning());
     CPPUNIT_ASSERT(handler.m_threadCheckOk.load());
-    CPPUNIT_ASSERT_GREATEREQUAL(49, handler.m_step.load());
+    CPPUNIT_ASSERT_EQUAL(lastStep, handler.m_step.load());
 
     // one shot test
     handler.m_step.store(0);
