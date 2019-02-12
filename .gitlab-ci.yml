@@ -297,7 +297,7 @@ sdk:
   stage: build
   when : manual
   variables:
-    CONAN_USER_HOME: $CI_PROJECT_DIR/conan
+    CONAN_USER_HOME: /home/sight/sdk/conan
   script:
     - export CCACHE_DIR=/cache/ccache
     - export CC=/usr/local/lib/ccache/clang
