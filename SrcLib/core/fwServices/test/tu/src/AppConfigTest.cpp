@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -929,7 +929,7 @@ void AppConfigTest::optionalKeyTest()
         CPPUNIT_ASSERT(gnsrv2 == nullptr);
 
         ::fwServices::OSR::registerServiceOutput(data5, "out5", genDataSrv);
-        WAIT_SERVICE_STARTED("testService2Uid");
+        WAIT_SERVICE_STARTED("TestService2Uid");
 
         gnsrv2 = ::fwTools::fwID::getObject("TestService2Uid");
         CPPUNIT_ASSERT(gnsrv2 != nullptr);
@@ -1116,7 +1116,7 @@ void AppConfigTest::keyGroupTest()
 
         ::fwServices::OSR::registerServiceOutput(data3, "out3", genDataSrv);
 
-        fwTestWaitMacro(data3 == srv1->getInput< ::fwData::Object>("dataGroup2"));
+        fwTestWaitMacro(data3 == srv1->getInput< ::fwData::Object>("dataGroup#1"));
 
         CPPUNIT_ASSERT(data2 == srv1->getInput< ::fwData::Object>("dataGroup#0") );
         CPPUNIT_ASSERT(data3 == srv1->getInput< ::fwData::Object>("dataGroup#1") );
