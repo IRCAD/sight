@@ -69,7 +69,8 @@ SFrameGrabber::SFrameGrabber() noexcept :
     m_isPaused(false),
     m_defaultDuration(5000),
     m_step(1),
-    m_stepChanged(1)
+    m_stepChanged(1),
+    m_videoFramesNb(0)
 {
     m_worker = ::fwThread::Worker::New();
 
@@ -241,11 +242,11 @@ void SFrameGrabber::readVideo(const ::boost::filesystem::path& file)
     {
         m_timer = m_worker->createTimer();
 
-        size_t fps      = static_cast<size_t>(m_videoCapture.get(::cv::CAP_PROP_FPS));
-        size_t nbFrames = static_cast<size_t>(m_videoCapture.get(::cv::CAP_PROP_FRAME_COUNT));
+        size_t fps = static_cast<size_t>(m_videoCapture.get(::cv::CAP_PROP_FPS));
+        m_videoFramesNb = static_cast<size_t>(m_videoCapture.get(::cv::CAP_PROP_FRAME_COUNT));
 
         auto sigDuration = this->signal< DurationModifiedSignalType >( s_DURATION_MODIFIED_SIG );
-        sigDuration->asyncEmit(static_cast<std::int64_t>(nbFrames * fps));
+        sigDuration->asyncEmit(static_cast<std::int64_t>((m_videoFramesNb / fps) * 1000));
 
         auto sigPosition = this->signal< PositionModifiedSignalType >( s_POSITION_MODIFIED_SIG );
         sigPosition->asyncEmit(0);
@@ -574,10 +575,11 @@ void SFrameGrabber::grabVideo()
         if (m_loopVideo)
         {
             // Loop the video.
-            const double ratio = m_videoCapture.get(::cv::CAP_PROP_POS_AVI_RATIO);
-            if (ratio == 1.)
+            const size_t currentF = static_cast<size_t>(m_videoCapture.get(::cv::CAP_PROP_POS_FRAMES));
+
+            if (currentF == m_videoFramesNb)
             {
-                m_videoCapture.set(::cv::CAP_PROP_POS_MSEC, 0);
+                m_videoCapture.set(::cv::CAP_PROP_POS_MSEC, 0.);
             }
         }
     }
@@ -721,7 +723,7 @@ void SFrameGrabber::setPosition(int64_t position)
 
     if (m_videoCapture.isOpened())
     {
-        m_videoCapture.set(::cv::CAP_PROP_POS_MSEC, static_cast<int>(position));
+        m_videoCapture.set(::cv::CAP_PROP_POS_MSEC, static_cast<double>(position));
     }
     else if (!m_imageToRead.empty())
     {
