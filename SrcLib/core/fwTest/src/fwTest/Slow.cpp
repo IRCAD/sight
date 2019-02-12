@@ -23,6 +23,7 @@
 #include "fwTest/Slow.hpp"
 
 #include <cstdlib>
+#include <cstring>
 #include <iostream>
 
 namespace fwTest
@@ -32,7 +33,8 @@ namespace fwTest
 
 static bool getIgnoreSlowTestsEnv()
 {
-    if(std::getenv( "FW_IGNORE_SLOW_TESTS" ) == nullptr)
+    const char* slowTests = std::getenv( "FW_IGNORE_SLOW_TESTS" );
+    if(slowTests == nullptr || std::strlen(slowTests) == 0 || std::strcmp(slowTests, "0") == 0)
     {
         return false;
     }
