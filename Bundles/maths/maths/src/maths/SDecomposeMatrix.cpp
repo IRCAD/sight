@@ -101,13 +101,8 @@ void SDecomposeMatrix::updating()
     {
         ::fwData::mt::ObjectWriteLock rotLock(rotation);
         ::fwDataTools::TransformationMatrix3D::identity(rotation);
-        for (size_t i = 0; i < 3; ++i)
-        {
-            for (size_t j = 0; j < 3; j++)
-            {
-                rotation->setCoefficient(i, j, orientationMat[i][j]);
-            }
-        }
+        ::fwDataTools::TransformationMatrix3D::setTF3DFromMatrix(rotation, orientationMat);
+
         auto rotSig = rotation->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
         rotSig->asyncEmit();
     }
