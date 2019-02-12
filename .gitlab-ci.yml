@@ -292,7 +292,7 @@ pages:
   only:
     - dev
     
- sdk:
+sdk:
   image: ${DOCKER_ENVDEV_MINT19}
   stage: build
   when : manual
