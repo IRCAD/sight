@@ -29,6 +29,9 @@
 #include <fwData/mt/ObjectWriteLock.hpp>
 
 #include <fwDataTools/TransformationMatrix3D.hpp>
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/matrix_decompose.hpp>
+#include <glm/gtx/quaternion.hpp>
 
 namespace maths
 {
@@ -36,6 +39,7 @@ namespace maths
 const ::fwServices::IService::KeyType s_SOURCE_INPUT      = "source";
 const ::fwServices::IService::KeyType s_TRANSLATION_INOUT = "translation";
 const ::fwServices::IService::KeyType s_ROTATION_INOUT    = "rotation";
+const ::fwServices::IService::KeyType s_SCALE_INOUT       = "scale";
 
 // ----------------------------------------------------------------------------
 
@@ -76,33 +80,68 @@ void SDecomposeMatrix::updating()
 {
     auto matrix = this->getInput< ::fwData::TransformationMatrix3D >(s_SOURCE_INPUT);
     SLM_ASSERT("input matrix '" + s_SOURCE_INPUT + "' is not defined", matrix);
-
-    auto rotation = this->getInOut< ::fwData::TransformationMatrix3D >(s_ROTATION_INOUT);
-    SLM_ASSERT("inout matrix '" + s_ROTATION_INOUT + "' is not defined", rotation);
-
-    auto translation = this->getInOut< ::fwData::TransformationMatrix3D >(s_TRANSLATION_INOUT);
-    SLM_ASSERT("inout matrix '" + s_TRANSLATION_INOUT + "' is not defined", translation);
-
     ::fwData::mt::ObjectReadLock srcLock(matrix);
-    ::fwData::mt::ObjectWriteLock rotLock(rotation);
-    ::fwData::mt::ObjectWriteLock transLock(translation);
 
-    ::fwDataTools::TransformationMatrix3D::identity(rotation);
-    ::fwDataTools::TransformationMatrix3D::identity(translation);
+    ::glm::dmat4 glmMatrix = ::fwDataTools::TransformationMatrix3D::getMatrixFromTF3D(matrix);
+    ::glm::dvec3 scale;
+    ::glm::dquat orientation;
+    ::glm::dvec3 translation;
+    ::glm::dvec3 skew;
+    ::glm::dvec4 perspective;
 
-    for (size_t i = 0; i < 3; ++i)
+    /// Matrix decomposition
+    ::glm::decompose(glmMatrix, scale, orientation, translation, skew, perspective);
+    ::glm::dmat4 orientationMat = ::glm::toMat4(orientation);
+
+    auto rotation       = this->getInOut< ::fwData::TransformationMatrix3D >(s_ROTATION_INOUT);
+    auto translationMat = this->getInOut< ::fwData::TransformationMatrix3D >(s_TRANSLATION_INOUT);
+    auto scaleMat       = this->getInOut< ::fwData::TransformationMatrix3D >(s_SCALE_INOUT);
+
+    if( rotation)
     {
-        for (size_t j = 0; j < 3; j++)
+        ::fwData::mt::ObjectWriteLock rotLock(rotation);
+        ::fwDataTools::TransformationMatrix3D::identity(rotation);
+        for (size_t i = 0; i < 3; ++i)
         {
-            rotation->setCoefficient(i, j, matrix->getCoefficient(i, j));
+            for (size_t j = 0; j < 3; j++)
+            {
+                rotation->setCoefficient(i, j, orientationMat[i][j]);
+            }
         }
-        translation->setCoefficient(i, 3, matrix->getCoefficient(i, 3));
+        auto rotSig = rotation->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+        rotSig->asyncEmit();
     }
 
-    auto rotSig = rotation->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
-    rotSig->asyncEmit();
-    auto transSig = translation->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
-    transSig->asyncEmit();
+    if( translationMat)
+    {
+        ::fwData::mt::ObjectWriteLock transLock(translationMat);
+        ::fwDataTools::TransformationMatrix3D::identity(translationMat);
+        for (size_t i = 0; i < 3; ++i)
+        {
+            translationMat->setCoefficient(i, 3, translation[i]);
+        }
+        auto transSig =
+            translationMat->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+        transSig->asyncEmit();
+    }
+
+    if( scaleMat)
+    {
+        ::fwData::mt::ObjectWriteLock scaleLock(scaleMat);
+        ::fwDataTools::TransformationMatrix3D::identity(scaleMat);
+        for (size_t i = 0; i < 3; ++i)
+        {
+            for (size_t j = 0; j < 3; j++)
+            {
+                if(i == j)
+                {
+                    scaleMat->setCoefficient(i, j, scale[i]);
+                }
+            }
+        }
+        auto scaleSig = scaleMat->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+        scaleSig->asyncEmit();
+    }
 
     m_sigComputed->asyncEmit();
 }

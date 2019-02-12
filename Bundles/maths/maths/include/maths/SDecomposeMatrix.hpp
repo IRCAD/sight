@@ -30,8 +30,9 @@ namespace maths
 {
 
 /**
- * @brief   This service decomposes a matrix into a 3 by 3 matrix and a 3 dimensional translation vector.
- * Both results are added to two identity 4 by 4 transformation matrix for separate use.
+ * @brief   This service decomposes a matrix into a 3 by 3 rotation matrix, a 3 dimensional translation vector
+ * and a 3 by 3 scaling matrix. The skew and the perspective are also decomposed. These information are not in
+ * ::fwData::TransformationMatrix3D data for the moment but it is possible to do it later.
  *
  * @section XML XML Configuration
  *
@@ -40,13 +41,15 @@ namespace maths
             <in key="source" uid="..." autoConnect="yes" />
             <inout key="translation" uid="..." />
             <inout key="rotation" uid="..." />
+            <inout key="scale" uid="..." />
        </service>
    @endcode
  * @subsection Input Input:
  * - \b matrix [::fwData::TransformationMatrix3D]: matrix to decompose.
  * @subsection In-Out In-Out:
- * - \b translation [::fwData::TransformationMatrix3D]: translation matrix.
- * - \b rotation [::fwData::TransformationMatrix3D]: rotation/scaling matrix.
+ * - \b translation [::fwData::TransformationMatrix3D] (optionnal): translation matrix.
+ * - \b rotation [::fwData::TransformationMatrix3D] (optionnal): rotation matrix.
+ * - \b scale [::fwData::TransformationMatrix3D] (optionnal): scaling matrix.
  *
  */
 class MATHS_CLASS_API SDecomposeMatrix : public ::fwServices::IOperator
@@ -82,6 +85,12 @@ protected:
     /// Does nothing.
     MATHS_API void updating() override;
 
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect Object::s_MODIFIED_SIG to s_UPDATE_SLOT
+     */
     MATHS_API virtual KeyConnectionsMap getAutoConnections() const override;
 };
 
