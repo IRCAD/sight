@@ -50,6 +50,7 @@
 
 #include <fwTest/Data.hpp>
 #include <fwTest/DicomReaderTest.hpp>
+#include <fwTest/Slow.hpp>
 
 #include <boost/algorithm/string.hpp>
 #include <boost/algorithm/string/replace.hpp>
@@ -226,6 +227,14 @@ void verifyTagValues(const std::string& filename, const ::fwMedData::SeriesDB::s
 void SeriesDBReaderTest::setUp()
 {
     // Set up context before running a test.
+    if(::fwTest::Slow::ignoreSlowTests())
+    {
+        std::cout << std::endl << "Ignoring slow " << std::endl;
+    }
+    else
+    {
+        std::cout << std::endl << "Executing slow tests.." << std::endl;
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -239,6 +248,10 @@ void SeriesDBReaderTest::tearDown()
 
 void SeriesDBReaderTest::readJMSSeriesDBTest()
 {
+    if(::fwTest::Slow::ignoreSlowTests())
+    {
+        return;
+    }
     ::fwMemory::BufferManager::getDefault()->setLoadingMode(::fwMemory::BufferManager::DIRECT);
     this->readJMSSeries();
 }
@@ -247,6 +260,10 @@ void SeriesDBReaderTest::readJMSSeriesDBTest()
 
 void SeriesDBReaderTest::readCTSeriesDBTest()
 {
+    if(::fwTest::Slow::ignoreSlowTests())
+    {
+        return;
+    }
     ::fwMemory::BufferManager::getDefault()->setLoadingMode(::fwMemory::BufferManager::DIRECT);
     this->readCTSeries();
 }
@@ -255,6 +272,10 @@ void SeriesDBReaderTest::readCTSeriesDBTest()
 
 void SeriesDBReaderTest::readMRSeriesDBTest()
 {
+    if(::fwTest::Slow::ignoreSlowTests())
+    {
+        return;
+    }
     ::fwMemory::BufferManager::getDefault()->setLoadingMode(::fwMemory::BufferManager::DIRECT);
     this->readMRSeries();
 }
@@ -263,6 +284,10 @@ void SeriesDBReaderTest::readMRSeriesDBTest()
 
 void SeriesDBReaderTest::readOTSeriesDBTest()
 {
+    if(::fwTest::Slow::ignoreSlowTests())
+    {
+        return;
+    }
     ::fwMemory::BufferManager::getDefault()->setLoadingMode(::fwMemory::BufferManager::DIRECT);
     this->readOTSeries();
 }
@@ -271,6 +296,10 @@ void SeriesDBReaderTest::readOTSeriesDBTest()
 
 void SeriesDBReaderTest::readSEGSeriesDBTest()
 {
+    if(::fwTest::Slow::ignoreSlowTests())
+    {
+        return;
+    }
     ::fwMemory::BufferManager::getDefault()->setLoadingMode(::fwMemory::BufferManager::DIRECT);
     this->readSEGSeries();
 }
@@ -279,6 +308,10 @@ void SeriesDBReaderTest::readSEGSeriesDBTest()
 
 void SeriesDBReaderTest::readSFSeriesDBTest()
 {
+    if(::fwTest::Slow::ignoreSlowTests())
+    {
+        return;
+    }
     ::fwMemory::BufferManager::getDefault()->setLoadingMode(::fwMemory::BufferManager::DIRECT);
     this->readSFSeries();
 }
@@ -287,6 +320,10 @@ void SeriesDBReaderTest::readSFSeriesDBTest()
 
 void SeriesDBReaderTest::readSRSeriesDBTest()
 {
+    if(::fwTest::Slow::ignoreSlowTests())
+    {
+        return;
+    }
     ::fwMemory::BufferManager::getDefault()->setLoadingMode(::fwMemory::BufferManager::DIRECT);
     this->readSRSeries();
 }
@@ -295,6 +332,10 @@ void SeriesDBReaderTest::readSRSeriesDBTest()
 
 void SeriesDBReaderTest::read3DSRSeriesDBTest()
 {
+    if(::fwTest::Slow::ignoreSlowTests())
+    {
+        return;
+    }
     ::fwMemory::BufferManager::getDefault()->setLoadingMode(::fwMemory::BufferManager::DIRECT);
     this->read3DSRSeries();
 }
@@ -303,6 +344,10 @@ void SeriesDBReaderTest::read3DSRSeriesDBTest()
 
 void SeriesDBReaderTest::readDisabledSeriesDBTest()
 {
+    if(::fwTest::Slow::ignoreSlowTests())
+    {
+        return;
+    }
     ::fwMemory::BufferManager::getDefault()->setLoadingMode(::fwMemory::BufferManager::DIRECT);
     this->readDisabledSeries();
 }
@@ -311,6 +356,10 @@ void SeriesDBReaderTest::readDisabledSeriesDBTest()
 
 void SeriesDBReaderTest::readMRSeriesWithDicomDirDBTest()
 {
+    if(::fwTest::Slow::ignoreSlowTests())
+    {
+        return;
+    }
     ::fwMemory::BufferManager::getDefault()->setLoadingMode(::fwMemory::BufferManager::DIRECT);
     this->readMRSeriesWithDicomDir();
 }
@@ -319,6 +368,10 @@ void SeriesDBReaderTest::readMRSeriesWithDicomDirDBTest()
 
 void SeriesDBReaderTest::readMultipleRescaleSeriesDBTest()
 {
+    if(::fwTest::Slow::ignoreSlowTests())
+    {
+        return;
+    }
     ::fwMemory::BufferManager::getDefault()->setLoadingMode(::fwMemory::BufferManager::DIRECT);
     this->readMultipleRescaleSeries();
 }
@@ -327,6 +380,10 @@ void SeriesDBReaderTest::readMultipleRescaleSeriesDBTest()
 
 void SeriesDBReaderTest::readCTWithSurviewSeriesDBTest()
 {
+    if(::fwTest::Slow::ignoreSlowTests())
+    {
+        return;
+    }
     ::fwMemory::BufferManager::getDefault()->setLoadingMode(::fwMemory::BufferManager::DIRECT);
     this->readCTWithSurviewSeries();
 }
@@ -335,6 +392,10 @@ void SeriesDBReaderTest::readCTWithSurviewSeriesDBTest()
 
 void SeriesDBReaderTest::readMRWithTemporalPositionSeriesDBTest()
 {
+    if(::fwTest::Slow::ignoreSlowTests())
+    {
+        return;
+    }
     ::fwMemory::BufferManager::getDefault()->setLoadingMode(::fwMemory::BufferManager::DIRECT);
     this->readMRWithTemporalPositionSeries();
 }
@@ -343,6 +404,10 @@ void SeriesDBReaderTest::readMRWithTemporalPositionSeriesDBTest()
 
 void SeriesDBReaderTest::readCTSeriesDBIssue01Test()
 {
+    if(::fwTest::Slow::ignoreSlowTests())
+    {
+        return;
+    }
     ::fwMemory::BufferManager::getDefault()->setLoadingMode(::fwMemory::BufferManager::DIRECT);
     this->readCTSeriesDBIssue01();
 }

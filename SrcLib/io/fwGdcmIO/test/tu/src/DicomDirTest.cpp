@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -29,6 +29,7 @@
 #include <fwMedData/DicomSeries.hpp>
 
 #include <fwTest/Data.hpp>
+#include <fwTest/Slow.hpp>
 
 #include <boost/algorithm/string/replace.hpp>
 #include <boost/foreach.hpp>
@@ -45,6 +46,14 @@ namespace ut
 void DicomDirTest::setUp()
 {
     // Set up context before running a test.
+    if(::fwTest::Slow::ignoreSlowTests())
+    {
+        std::cout << std::endl << "Ignoring slow " << std::endl;
+    }
+    else
+    {
+        std::cout << std::endl << "Executing slow tests.." << std::endl;
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -58,6 +67,10 @@ void DicomDirTest::tearDown()
 
 void DicomDirTest::readDicomDir()
 {
+    if(::fwTest::Slow::ignoreSlowTests())
+    {
+        return;
+    }
     const ::boost::filesystem::path path = ::fwTest::Data::dir() /
                                            "sight/Patient/Dicom/DicomDB/82-MR-SAGITTAL-KNEE-DICOMDIR";
     const std::string pathStr = ::boost::algorithm::replace_all_copy(path.string(), "\\", "/");
