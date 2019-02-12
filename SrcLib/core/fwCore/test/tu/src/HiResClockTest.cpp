@@ -62,7 +62,7 @@ void HisResClockTest::getTimeTest()
         std::this_thread::sleep_for(std::chrono::seconds(time));
         const double end = HiResClock::getTimeInSec();
 
-        CPPUNIT_ASSERT_GREATEREQUAL(double(time), end-start);
+        CPPUNIT_ASSERT_GREATEREQUAL(static_cast<double>(time), end-start);
     }
 
     {
@@ -72,7 +72,7 @@ void HisResClockTest::getTimeTest()
         std::this_thread::sleep_for(std::chrono::milliseconds(time));
         const double end = HiResClock::getTimeInMilliSec();
 
-        CPPUNIT_ASSERT_GREATEREQUAL(double(time), end-start);
+        CPPUNIT_ASSERT_GREATEREQUAL(static_cast<double>(time), end-start);
     }
 
     {
@@ -82,7 +82,7 @@ void HisResClockTest::getTimeTest()
         std::this_thread::sleep_for(std::chrono::microseconds(time));
         const double end = HiResClock::getTimeInMicroSec();
 
-        CPPUNIT_ASSERT_GREATEREQUAL(double(time), end-start);
+        CPPUNIT_ASSERT_GREATEREQUAL(static_cast<double>(time), end-start);
     }
 }
 
