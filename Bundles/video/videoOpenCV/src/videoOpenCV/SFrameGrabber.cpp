@@ -210,16 +210,16 @@ void SFrameGrabber::stopCamera()
     if (m_isInitialized)
     {
         // Clear the timeline: send a black frame
-        auto sigPosition = this->signal< PositionModifiedSignalType >( s_POSITION_MODIFIED_SIG );
+        const auto sigPosition = this->signal< PositionModifiedSignalType >( s_POSITION_MODIFIED_SIG );
         sigPosition->asyncEmit(static_cast<std::int64_t>(-1));
 
-        auto sigDuration = this->signal< DurationModifiedSignalType >( s_DURATION_MODIFIED_SIG );
+        const auto sigDuration = this->signal< DurationModifiedSignalType >( s_DURATION_MODIFIED_SIG );
         sigDuration->asyncEmit(static_cast<std::int64_t>(-1));
 
         ::arData::FrameTL::sptr frameTL = this->getInOut< ::arData::FrameTL >(s_FRAMETL);
         this->clearTimeline(frameTL);
 
-        auto sig = this->signal< ::arServices::IGrabber::CameraStoppedSignalType >(
+        const auto sig = this->signal< ::arServices::IGrabber::CameraStoppedSignalType >(
             ::arServices::IGrabber::s_CAMERA_STOPPED_SIG);
         sig->asyncEmit();
 
@@ -242,13 +242,22 @@ void SFrameGrabber::readVideo(const ::boost::filesystem::path& file)
     {
         m_timer = m_worker->createTimer();
 
-        size_t fps = static_cast<size_t>(m_videoCapture.get(::cv::CAP_PROP_FPS));
+        const size_t fps = static_cast<size_t>(m_videoCapture.get(::cv::CAP_PROP_FPS));
         m_videoFramesNb = static_cast<size_t>(m_videoCapture.get(::cv::CAP_PROP_FRAME_COUNT));
 
-        auto sigDuration = this->signal< DurationModifiedSignalType >( s_DURATION_MODIFIED_SIG );
+        if(fps == 0)
+        {
+            ::fwGui::dialog::MessageDialog::showMessageDialog(
+                "Video error",
+                "Cannot read FPS from video file. Please check the video format.",
+                ::fwGui::dialog::MessageDialog::CRITICAL);
+            return;
+        }
+
+        const auto sigDuration = this->signal< DurationModifiedSignalType >( s_DURATION_MODIFIED_SIG );
         sigDuration->asyncEmit(static_cast<std::int64_t>((m_videoFramesNb / fps) * 1000));
 
-        auto sigPosition = this->signal< PositionModifiedSignalType >( s_POSITION_MODIFIED_SIG );
+        const auto sigPosition = this->signal< PositionModifiedSignalType >( s_POSITION_MODIFIED_SIG );
         sigPosition->asyncEmit(0);
 
         ::fwThread::Timer::TimeDurationType duration = std::chrono::milliseconds(1000 / fps);
@@ -392,8 +401,8 @@ void SFrameGrabber::readImages(const ::boost::filesystem::path& folder, const st
 
         }
 
-        std::string file = m_imageToRead.front().string();
-        ::cv::Mat image = ::cv::imread(file, ::cv::IMREAD_UNCHANGED);
+        const std::string file = m_imageToRead.front().string();
+        const ::cv::Mat image  = ::cv::imread(file, ::cv::IMREAD_UNCHANGED);
 
         const int width  = image.size().width;
         const int height = image.size().height;
@@ -428,7 +437,7 @@ void SFrameGrabber::readImages(const ::boost::filesystem::path& folder, const st
         m_isInitialized = true;
         this->setStartState(true);
 
-        auto sigDuration = this->signal< DurationModifiedSignalType >( s_DURATION_MODIFIED_SIG );
+        const auto sigDuration = this->signal< DurationModifiedSignalType >( s_DURATION_MODIFIED_SIG );
 
         std::int64_t videoDuration;
         if (!m_useTimelapse)
@@ -442,7 +451,7 @@ void SFrameGrabber::readImages(const ::boost::filesystem::path& folder, const st
         }
         sigDuration->asyncEmit(videoDuration);
 
-        auto sigPosition = this->signal< PositionModifiedSignalType >( s_POSITION_MODIFIED_SIG );
+        const auto sigPosition = this->signal< PositionModifiedSignalType >( s_POSITION_MODIFIED_SIG );
         sigPosition->asyncEmit(0);
 
         if(m_oneShot)
@@ -490,10 +499,10 @@ void SFrameGrabber::grabVideo()
     {
         ::arData::FrameTL::sptr frameTL = this->getInOut< ::arData::FrameTL >(s_FRAMETL);
 
-        auto timestamp = std::chrono::duration_cast< std::chrono::milliseconds >
-                             (std::chrono::system_clock::now().time_since_epoch()).count();
+        const auto timestamp = std::chrono::duration_cast< std::chrono::milliseconds >
+                                   (std::chrono::system_clock::now().time_since_epoch()).count();
 
-        bool isGrabbed = m_videoCapture.grab();
+        const bool isGrabbed = m_videoCapture.grab();
 
         if (isGrabbed)
         {
@@ -539,8 +548,8 @@ void SFrameGrabber::grabVideo()
             }
 
             // Get time slider position.
-            const size_t ms  = static_cast<size_t>(m_videoCapture.get(::cv::CAP_PROP_POS_MSEC));
-            auto sigPosition = this->signal< PositionModifiedSignalType >( s_POSITION_MODIFIED_SIG );
+            const size_t ms        = static_cast<size_t>(m_videoCapture.get(::cv::CAP_PROP_POS_MSEC));
+            const auto sigPosition = this->signal< PositionModifiedSignalType >( s_POSITION_MODIFIED_SIG );
             sigPosition->asyncEmit(static_cast<std::int64_t>(ms));
 
             // Get the buffer of the timeline to fill
@@ -567,7 +576,7 @@ void SFrameGrabber::grabVideo()
 
             frameTL->pushObject(bufferOut);
 
-            auto sig =
+            const auto sig =
                 frameTL->signal< ::arData::TimeLine::ObjectPushedSignalType >(::arData::TimeLine::s_OBJECT_PUSHED_SIG);
             sig->asyncEmit(timestamp);
         }
@@ -601,7 +610,7 @@ void SFrameGrabber::grabImage()
 
         const ::boost::filesystem::path imagePath = m_imageToRead[m_imageCount];
 
-        ::cv::Mat image = ::cv::imread(imagePath.string(), ::cv::IMREAD_UNCHANGED);
+        const ::cv::Mat image = ::cv::imread(imagePath.string(), ::cv::IMREAD_UNCHANGED);
         ::fwCore::HiResClock::HiResClockType timestamp;
 
         //create a new timestamp
@@ -623,7 +632,7 @@ void SFrameGrabber::grabImage()
         if (width == frameTL->getWidth() && height == frameTL->getHeight())
         {
 
-            auto sigPosition = this->signal< PositionModifiedSignalType >( s_POSITION_MODIFIED_SIG );
+            const auto sigPosition = this->signal< PositionModifiedSignalType >( s_POSITION_MODIFIED_SIG );
             sigPosition->asyncEmit(static_cast<std::int64_t>(m_imageCount)  * 30);
 
             // Get the buffer of the timeline to fill
@@ -650,7 +659,7 @@ void SFrameGrabber::grabImage()
 
             frameTL->pushObject(bufferOut);
 
-            auto sig =
+            const auto sig =
                 frameTL->signal< ::arData::TimeLine::ObjectPushedSignalType >(::arData::TimeLine::s_OBJECT_PUSHED_SIG);
             sig->asyncEmit(timestamp);
 
@@ -727,7 +736,7 @@ void SFrameGrabber::setPosition(int64_t position)
     }
     else if (!m_imageToRead.empty())
     {
-        size_t newPos = static_cast<size_t>(position / 30);
+        const size_t newPos = static_cast<size_t>(position / 30);
         if (newPos < m_imageToRead.size())
         {
             m_imageCount = newPos;
