@@ -95,7 +95,12 @@ build:debug-linux:
      tar xfz - > /dev/null
     - export FWTEST_DATA_DIR=$CI_PROJECT_DIR/build/sight-data-dev
     - export FW_IGNORE_SLOW_TESTS=1
-    - ctest --timeout 240 --output-on-failure -O output.log
+    - ctest --timeout 240 --output-on-failure -O ctest.log
+  artifacts:
+    when: always
+    name: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
+    paths:
+      - $CI_PROJECT_DIR/build/ctest.log
 
 build:release-linux:
   <<: *linux_job
@@ -122,7 +127,12 @@ build:release-linux:
      tar xfz - > /dev/null
     - export FWTEST_DATA_DIR=$CI_PROJECT_DIR/build/sight-data-dev
     - export FW_IGNORE_SLOW_TESTS=0
-    - ctest --timeout 120 --output-on-failure -O output.log
+    - ctest --timeout 120 --output-on-failure -O ctest.log
+  artifacts:
+    when: always
+    name: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
+    paths:
+      - $CI_PROJECT_DIR/build/ctest.log
 
 build:debug-windows:
   <<: *windows_job
@@ -147,7 +157,13 @@ build:debug-windows:
      --output sight-data-dev.zip && unzip -qq sight-data-dev.zip
     - set FWTEST_DATA_DIR=%CI_PROJECT_DIR%\build\sight-data-dev
     - set FW_IGNORE_SLOW_TESTS=1
-    - ctest --timeout 240 --output-on-failure -O output.log -E fwRenderOgreTest
+    - ctest --timeout 240 --output-on-failure -O ctest.log -E fwRenderOgreTest
+  artifacts:
+    when: always
+    name: "%CI_JOB_NAME%-%CI_COMMIT_REF_SLUG%"
+    paths:
+      - build/ctest.log
+      - build/fwTest.log
 
 build:release-windows:
   <<: *windows_job
@@ -172,7 +188,13 @@ build:release-windows:
      --output sight-data-dev.zip && unzip -qq sight-data-dev.zip
     - set FWTEST_DATA_DIR=%CI_PROJECT_DIR%\build\sight-data-dev
     - set FW_IGNORE_SLOW_TESTS=0
-    - ctest --timeout 120 --output-on-failure -O output.log -E fwRenderOgreTest
+    - ctest --timeout 120 --output-on-failure -O ctest.log -E fwRenderOgreTest
+  artifacts:
+    when: always
+    name: "%CI_JOB_NAME%-%CI_COMMIT_REF_SLUG%"
+    paths:
+      - build/ctest.log
+      - build/fwTest.log
 
 build:debug-macos:
   <<: *macos_job
@@ -198,7 +220,12 @@ build:debug-macos:
      tar xfz - > /dev/null
     - export FWTEST_DATA_DIR=$CI_PROJECT_DIR/build/sight-data-dev
     - export FW_IGNORE_SLOW_TESTS=1
-    - ctest --timeout 240 --output-on-failure -O output.log
+    - ctest --timeout 240 --output-on-failure -O ctest.log
+  artifacts:
+    when: always
+    name: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
+    paths:
+      - $CI_PROJECT_DIR/build/ctest.log
 
 build:release-macos:
   <<: *macos_job
@@ -224,7 +251,12 @@ build:release-macos:
      tar xfz - > /dev/null
     - export FWTEST_DATA_DIR=$CI_PROJECT_DIR/build/sight-data-dev
     - export FW_IGNORE_SLOW_TESTS=0
-    - ctest --timeout 120 --output-on-failure -O output.log
+    - ctest --timeout 120 --output-on-failure -O ctest.log
+  artifacts:
+    when: always
+    name: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
+    paths:
+      - $CI_PROJECT_DIR/build/ctest.log
 
 doxygen:
   <<: *linux_job
