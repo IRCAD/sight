@@ -50,7 +50,6 @@ namespace visuOgreAdaptor
  * @section Slots Slots
  * - \b newImage(): Called when a new image is loaded.
  * - \b updateImage(): Called when the image is updated.
- * - \b resizeViewport(int, int): Called when the size of the viewport changes.
  * - \b toggleWidgets(bool): Toggles widget visibility.
  * - \b updateVisibility(bool): Shows or hides the volume.
  * - \b updateClippingBox(): Updates the cropping widget from the clipping matrix.
@@ -203,9 +202,6 @@ private:
 
     /// Displays/Hides the widget.
     void toggleWidgets(bool visible);
-
-    /// Resizes the viewport.
-    void resizeViewport(int w, int h);
 
     /// Sets the focal distance.
     void setFocalDistance(int focalDistance);

@@ -60,7 +60,6 @@ namespace visuOgreAdaptor
 
 const ::fwCom::Slots::SlotKeyType s_NEW_IMAGE_SLOT            = "newImage";
 const ::fwCom::Slots::SlotKeyType s_UPDATE_IMAGE_SLOT         = "updateImage";
-const ::fwCom::Slots::SlotKeyType s_RESIZE_VIEWPORT_SLOT      = "resizeViewport";
 const ::fwCom::Slots::SlotKeyType s_TOGGLE_WIDGETS_SLOT       = "toggleWidgets";
 const ::fwCom::Slots::SlotKeyType s_SET_BOOL_PARAMETER_SLOT   = "setBoolParameter";
 const ::fwCom::Slots::SlotKeyType s_SET_INT_PARAMETER_SLOT    = "setIntParameter";
@@ -80,7 +79,6 @@ SVolumeRender::SVolumeRender() noexcept :
     /// Handle connections between the layer and the volume renderer.
     newSlot(s_NEW_IMAGE_SLOT, &SVolumeRender::newImage, this);
     newSlot(s_UPDATE_IMAGE_SLOT, &SVolumeRender::updateImage, this);
-    newSlot(s_RESIZE_VIEWPORT_SLOT, &SVolumeRender::resizeViewport, this);
     newSlot(s_TOGGLE_WIDGETS_SLOT, &SVolumeRender::toggleWidgets, this);
     newSlot(s_SET_BOOL_PARAMETER_SLOT, &SVolumeRender::setBoolParameter, this);
     newSlot(s_SET_INT_PARAMETER_SLOT, &SVolumeRender::setIntParameter, this);
@@ -218,9 +216,6 @@ void SVolumeRender::starting()
     m_gpuVolumeTF->setSampleDistance(m_volumeRenderer->getSamplingRate());
 
     m_volumeRenderer->setPreIntegratedRendering(m_preIntegratedRendering);
-
-    m_volumeConnection.connect(layer, ::fwRenderOgre::Layer::s_RESIZE_LAYER_SIG,
-                               this->getSptr(), s_RESIZE_VIEWPORT_SLOT);
 
     const bool isValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image);
     if (isValid)
@@ -572,19 +567,6 @@ void SVolumeRender::toggleWidgets(bool visible)
     {
         m_widget->setVisibility(m_widgetVisibilty && m_volumeRenderer->isVisible());
 
-        this->requestRender();
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-void SVolumeRender::resizeViewport(int w, int h)
-{
-    this->getRenderService()->makeCurrent();
-
-    if(m_volumeRenderer)
-    {
-        m_volumeRenderer->resizeViewport(w, h);
         this->requestRender();
     }
 }
