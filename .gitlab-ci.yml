@@ -319,9 +319,11 @@ sdk:
     - ninja install
     - ninja package
     - ccache -s
-    - export SDK_FILE_NAME=$(find . -maxdepth 1 -iname '*.tar.gz' -type f -print -quit) 
-    - echo ${SDK_FILE_NAME}
-    - curl -u${CONAN_USERNAME}:${CONAN_PASSWORD} -T ./${SDK_FILE_NAME} "https://conan.ircad.fr/artifactory/data/sdk/${SDK_FILE_NAME}"
+    - export SDK_FILE_PATH=$(find . -maxdepth 1 -iname '*.tar.gz' -type f -print -quit) 
+    - find ${HOME}/sdk/build -maxdepth 1 -iname '*.tar.gz' -type f -print -quit
+    - basename ${SDK_FILE_PATH}
+    - export SDK_FILE_NAME=$(basename ${SDK_FILE_PATH})
+    - curl -u${CONAN_USERNAME}:${CONAN_PASSWORD} -T ${SDK_FILE_PATH} "https://conan.ircad.fr/artifactory/data/sdk/${SDK_FILE_NAME}"
     - mv packages/*.tar.gz ${CI_PROJECT_DIR}/
   artifacts:
     paths:
