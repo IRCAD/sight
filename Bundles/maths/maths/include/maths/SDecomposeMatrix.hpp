@@ -47,9 +47,9 @@ namespace maths
  * @subsection Input Input:
  * - \b matrix [::fwData::TransformationMatrix3D]: matrix to decompose.
  * @subsection In-Out In-Out:
- * - \b translation [::fwData::TransformationMatrix3D] (optionnal): translation matrix.
- * - \b rotation [::fwData::TransformationMatrix3D] (optionnal): rotation matrix.
- * - \b scale [::fwData::TransformationMatrix3D] (optionnal): scaling matrix.
+ * - \b translation [::fwData::TransformationMatrix3D] (optional): translation matrix.
+ * - \b rotation [::fwData::TransformationMatrix3D] (optional): rotation matrix.
+ * - \b scale [::fwData::TransformationMatrix3D] (optional): scaling matrix.
  *
  */
 class MATHS_CLASS_API SDecomposeMatrix : public ::fwServices::IOperator
