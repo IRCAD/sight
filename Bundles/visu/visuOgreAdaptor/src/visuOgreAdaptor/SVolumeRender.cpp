@@ -58,67 +58,31 @@ namespace visuOgreAdaptor
 
 //-----------------------------------------------------------------------------
 
-const ::fwCom::Slots::SlotKeyType SVolumeRender::s_NEW_IMAGE_SLOT                    = "newImage";
-const ::fwCom::Slots::SlotKeyType SVolumeRender::s_NEW_MASK_SLOT                     = "newMask";
-const ::fwCom::Slots::SlotKeyType SVolumeRender::s_UPDATE_IMAGE_SLOT                 = "updateImage";
-const ::fwCom::Slots::SlotKeyType SVolumeRender::s_UPDATE_SAMPLING_SLOT              = "updateSampling";
-const ::fwCom::Slots::SlotKeyType SVolumeRender::s_UPDATE_AO_FACTOR_SLOT             = "updateAOFactor";
-const ::fwCom::Slots::SlotKeyType SVolumeRender::s_UPDATE_COLOR_BLEEDING_FACTOR_SLOT = "updateColorBleedingFactor";
-const ::fwCom::Slots::SlotKeyType SVolumeRender::s_UPDATE_SAT_SIZE_RATIO_SLOT        = "updateSatSizeRatio";
-const ::fwCom::Slots::SlotKeyType SVolumeRender::s_UPDATE_SAT_SHELLS_SLOT            = "updateSatShellsNumber";
-const ::fwCom::Slots::SlotKeyType SVolumeRender::s_UPDATE_SAT_SHELL_RADIUS_SLOT      = "updateSatShellRadius";
-const ::fwCom::Slots::SlotKeyType SVolumeRender::s_UPDATE_SAT_CONE_ANGLE_SLOT        = "updateSatConeAngle";
-const ::fwCom::Slots::SlotKeyType SVolumeRender::s_UPDATE_SAT_CONE_SAMPLES_SLOT      = "updateSatConeSamplesNumber";
-const ::fwCom::Slots::SlotKeyType SVolumeRender::s_TOGGLE_PREINTEGRATION_SLOT        = "togglePreintegration";
-const ::fwCom::Slots::SlotKeyType SVolumeRender::s_TOGGLE_AMBIENT_OCCLUSION_SLOT     = "toggleAmbientOcclusion";
-const ::fwCom::Slots::SlotKeyType SVolumeRender::s_TOGGLE_COLOR_BLEEDING_SLOT        = "toggleColorBleeding";
-const ::fwCom::Slots::SlotKeyType SVolumeRender::s_TOGGLE_SHADOWS_SLOT               = "toggleShadows";
-const ::fwCom::Slots::SlotKeyType SVolumeRender::s_TOGGLE_WIDGETS_SLOT               = "toggleWidgets";
-const ::fwCom::Slots::SlotKeyType SVolumeRender::s_RESIZE_VIEWPORT_SLOT              = "resizeViewport";
-const ::fwCom::Slots::SlotKeyType SVolumeRender::s_SET_BOOL_PARAMETER_SLOT           = "setBoolParameter";
-const ::fwCom::Slots::SlotKeyType SVolumeRender::s_SET_INT_PARAMETER_SLOT            = "setIntParameter";
-const ::fwCom::Slots::SlotKeyType SVolumeRender::s_SET_DOUBLE_PARAMETER_SLOT         = "setDoubleParameter";
-const ::fwCom::Slots::SlotKeyType SVolumeRender::s_SET_ENUM_PARAMETER_SLOT           = "setEnumParameter";
-const ::fwCom::Slots::SlotKeyType SVolumeRender::s_SET_COLOR_PARAMETER_SLOT          = "setColorParameter";
-const ::fwCom::Slots::SlotKeyType SVolumeRender::s_UPDATE_VISIBILITY_SLOT            = "updateVisibility";
-const ::fwCom::Slots::SlotKeyType SVolumeRender::s_UPDATE_CLIPPING_BOX_SLOT          = "updateClippingBox";
+static const ::fwCom::Slots::SlotKeyType s_NEW_IMAGE_SLOT            = "newImage";
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_IMAGE_SLOT         = "updateImage";
+static const ::fwCom::Slots::SlotKeyType s_TOGGLE_WIDGETS_SLOT       = "toggleWidgets";
+static const ::fwCom::Slots::SlotKeyType s_SET_BOOL_PARAMETER_SLOT   = "setBoolParameter";
+static const ::fwCom::Slots::SlotKeyType s_SET_INT_PARAMETER_SLOT    = "setIntParameter";
+static const ::fwCom::Slots::SlotKeyType s_SET_DOUBLE_PARAMETER_SLOT = "setDoubleParameter";
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT    = "updateVisibility";
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_CLIPPING_BOX_SLOT  = "updateClippingBox";
 
 static const ::fwServices::IService::KeyType s_IMAGE_INOUT           = "image";
 static const ::fwServices::IService::KeyType s_VOLUME_TF_INOUT       = "tf";
-static const ::fwServices::IService::KeyType s_CSG_TF_INOUT          = "csgTF";
 static const ::fwServices::IService::KeyType s_CLIPPING_MATRIX_INOUT = "clippingMatrix";
-static const ::fwServices::IService::KeyType s_MASK_INOUT            = "mask";
 
 //-----------------------------------------------------------------------------
 
 SVolumeRender::SVolumeRender() noexcept :
-    m_helperVolumeTF(std::bind(&SVolumeRender::updateVolumeTF, this)),
-    m_helperCSGTF(std::bind(&SVolumeRender::updateCSGTF, this))
+    m_helperVolumeTF(std::bind(&SVolumeRender::updateVolumeTF, this))
 {
     /// Handle connections between the layer and the volume renderer.
-    ::fwCom::helper::SigSlotConnection m_volumeConnection;
     newSlot(s_NEW_IMAGE_SLOT, &SVolumeRender::newImage, this);
-    newSlot(s_NEW_MASK_SLOT, &SVolumeRender::newMask, this);
     newSlot(s_UPDATE_IMAGE_SLOT, &SVolumeRender::updateImage, this);
-    newSlot(s_UPDATE_SAMPLING_SLOT, &SVolumeRender::updateSampling, this);
-    newSlot(s_UPDATE_AO_FACTOR_SLOT, &SVolumeRender::updateAOFactor, this);
-    newSlot(s_UPDATE_COLOR_BLEEDING_FACTOR_SLOT, &SVolumeRender::updateColorBleedingFactor, this);
-    newSlot(s_UPDATE_SAT_SIZE_RATIO_SLOT, &SVolumeRender::updateSatSizeRatio, this);
-    newSlot(s_UPDATE_SAT_SHELLS_SLOT, &SVolumeRender::updateSatShellsNumber, this);
-    newSlot(s_UPDATE_SAT_SHELL_RADIUS_SLOT, &SVolumeRender::updateSatShellRadius, this);
-    newSlot(s_UPDATE_SAT_CONE_ANGLE_SLOT, &SVolumeRender::updateSatConeAngle, this);
-    newSlot(s_UPDATE_SAT_CONE_SAMPLES_SLOT, &SVolumeRender::updateSatConeSamples, this);
-    newSlot(s_TOGGLE_PREINTEGRATION_SLOT, &SVolumeRender::togglePreintegration, this);
-    newSlot(s_TOGGLE_AMBIENT_OCCLUSION_SLOT, &SVolumeRender::toggleAmbientOcclusion, this);
-    newSlot(s_TOGGLE_COLOR_BLEEDING_SLOT, &SVolumeRender::toggleColorBleeding, this);
-    newSlot(s_TOGGLE_SHADOWS_SLOT, &SVolumeRender::toggleShadows, this);
     newSlot(s_TOGGLE_WIDGETS_SLOT, &SVolumeRender::toggleWidgets, this);
-    newSlot(s_RESIZE_VIEWPORT_SLOT, &SVolumeRender::resizeViewport, this);
     newSlot(s_SET_BOOL_PARAMETER_SLOT, &SVolumeRender::setBoolParameter, this);
     newSlot(s_SET_INT_PARAMETER_SLOT, &SVolumeRender::setIntParameter, this);
     newSlot(s_SET_DOUBLE_PARAMETER_SLOT, &SVolumeRender::setDoubleParameter, this);
-    newSlot(s_SET_ENUM_PARAMETER_SLOT, &SVolumeRender::setEnumParameter, this);
-    newSlot(s_SET_COLOR_PARAMETER_SLOT, &SVolumeRender::setColorParameter, this);
     newSlot(s_UPDATE_VISIBILITY_SLOT, &SVolumeRender::updateVisibility, this);
     newSlot(s_UPDATE_CLIPPING_BOX_SLOT, &SVolumeRender::updateClippingBox, this);
 }
@@ -140,7 +104,6 @@ void SVolumeRender::configuring()
     m_autoResetCamera        = config.get<std::string>("autoresetcamera", "yes") == "yes";
     m_preIntegratedRendering = config.get<std::string>("preintegration", "no") == "yes";
     m_widgetVisibilty        = config.get<std::string>("widgets", "yes") == "yes";
-    m_IDVRMethod             = config.get<std::string>("idvrMethod", "None");
     m_nbSamples              = config.get<std::uint16_t>("samples", m_nbSamples);
 
     // Advanced illumination parameters.
@@ -189,33 +152,12 @@ void SVolumeRender::updateVolumeTF()
 
 //-----------------------------------------------------------------------------
 
-void SVolumeRender::updateCSGTF()
-{
-    if(m_gpuCSGTF->getTexture())
-    {
-        this->getRenderService()->makeCurrent();
-
-        ::fwData::TransferFunction::sptr tf = m_helperCSGTF.getTransferFunction();
-        {
-            ::fwData::mt::ObjectWriteLock tfLock(tf);
-            m_gpuCSGTF->updateTexture(tf);
-            m_volumeRenderer->updateCSGTF();
-        }
-
-        this->requestRender();
-    }
-}
-
-//-----------------------------------------------------------------------------
-
 ::fwServices::IService::KeyConnectionsMap SVolumeRender::getAutoConnections() const
 {
     ::fwServices::IService::KeyConnectionsMap connections;
 
     connections.push( s_IMAGE_INOUT, ::fwData::Image::s_MODIFIED_SIG, s_NEW_IMAGE_SLOT );
     connections.push( s_IMAGE_INOUT, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_IMAGE_SLOT );
-    connections.push( s_MASK_INOUT, ::fwData::Image::s_MODIFIED_SIG, s_NEW_MASK_SLOT );
-    connections.push( s_MASK_INOUT, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_NEW_MASK_SLOT );
     connections.push( s_CLIPPING_MATRIX_INOUT, ::fwData::TransformationMatrix3D::s_MODIFIED_SIG,
                       s_UPDATE_CLIPPING_BOX_SLOT );
 
@@ -231,23 +173,12 @@ void SVolumeRender::starting()
     this->getRenderService()->makeCurrent();
 
     m_gpuVolumeTF = std::make_shared< ::fwRenderOgre::TransferFunction>();
-    m_gpuCSGTF    = std::make_shared< ::fwRenderOgre::TransferFunction>();
 
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("inout '" + s_IMAGE_INOUT +"' is missing.", image);
 
     ::fwData::TransferFunction::sptr volumeTF = this->getInOut< ::fwData::TransferFunction>(s_VOLUME_TF_INOUT);
     m_helperVolumeTF.setOrCreateTF(volumeTF, image);
-
-    ::fwData::TransferFunction::sptr CSGTF = this->getInOut< ::fwData::TransferFunction>(s_CSG_TF_INOUT);
-    if(CSGTF == nullptr)
-    {
-        m_helperCSGTF.createTransferFunction(image);
-    }
-    else
-    {
-        m_helperCSGTF.setTransferFunction(CSGTF);
-    }
 
     m_sceneManager = this->getSceneManager();
 
@@ -264,45 +195,27 @@ void SVolumeRender::starting()
         ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
         true);
 
-    m_maskTexture = ::Ogre::TextureManager::getSingleton().create(
-        this->getID() + "_MaskTexture",
-        ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-        true);
-
     m_gpuVolumeTF->createTexture(this->getID() + "_VolumeGpuTF");
 
     m_preIntegrationTable.createTexture(this->getID());
 
     ::fwRenderOgre::Layer::sptr layer = this->getRenderService()->getLayer(m_layerID);
 
-    m_volumeRenderer = new ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer(this->getID(),
-                                                                              layer,
-                                                                              m_volumeSceneNode,
-                                                                              m_3DOgreTexture,
-                                                                              m_maskTexture,
-                                                                              m_gpuVolumeTF,
-                                                                              m_gpuCSGTF,
-                                                                              m_preIntegrationTable,
-                                                                              m_ambientOcclusion,
-                                                                              m_colorBleeding);
+    m_volumeRenderer = new ::fwRenderOgre::vr::RayTracingVolumeRenderer(this->getID(),
+                                                                        layer,
+                                                                        m_volumeSceneNode,
+                                                                        m_3DOgreTexture,
+                                                                        m_gpuVolumeTF,
+                                                                        m_preIntegrationTable,
+                                                                        m_ambientOcclusion,
+                                                                        m_colorBleeding);
 
     // Initially focus on the image center.
     this->setFocalDistance(50);
 
-    m_volumeRenderer->setIDVRMethod(m_IDVRMethod);
-
-    if(m_IDVRMethod != "None")
-    {
-        this->newMask();
-    }
-
     m_gpuVolumeTF->setSampleDistance(m_volumeRenderer->getSamplingRate());
-    m_gpuCSGTF->setSampleDistance(m_volumeRenderer->getSamplingRate());
 
     m_volumeRenderer->setPreIntegratedRendering(m_preIntegratedRendering);
-
-    m_volumeConnection.connect(layer, ::fwRenderOgre::Layer::s_RESIZE_LAYER_SIG,
-                               this->getSptr(), ::visuOgreAdaptor::SVolumeRender::s_RESIZE_VIEWPORT_SLOT);
 
     const bool isValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image);
     if (isValid)
@@ -311,7 +224,6 @@ void SVolumeRender::starting()
     }
 
     m_volumeRenderer->updateVolumeTF();
-    m_volumeRenderer->updateCSGTF();
 
     this->requestRender();
 }
@@ -323,7 +235,6 @@ void SVolumeRender::stopping()
     this->getRenderService()->makeCurrent();
 
     m_helperVolumeTF.removeTFConnections();
-    m_helperCSGTF.removeTFConnections();
 
     m_volumeConnection.disconnect();
     delete m_volumeRenderer;
@@ -340,11 +251,7 @@ void SVolumeRender::stopping()
     ::Ogre::TextureManager::getSingleton().remove(m_3DOgreTexture->getHandle());
     m_3DOgreTexture.reset();
 
-    ::Ogre::TextureManager::getSingleton().remove(m_maskTexture->getHandle());
-    m_maskTexture.reset();
-
     m_gpuVolumeTF.reset();
-    m_gpuCSGTF.reset();
 
     m_preIntegrationTable.removeTexture();
 
@@ -372,13 +279,6 @@ void SVolumeRender::swapping(const KeyType& key)
         m_helperVolumeTF.setOrCreateTF(tf, image);
 
         this->updateVolumeTF();
-    }
-    else if (key == s_CSG_TF_INOUT)
-    {
-        ::fwData::TransferFunction::sptr CSGTF = this->getInOut< ::fwData::TransferFunction>(s_CSG_TF_INOUT);
-        m_helperCSGTF.setOrCreateTF(CSGTF, image);
-
-        this->updateCSGTF();
     }
 }
 
@@ -409,9 +309,6 @@ void SVolumeRender::updateImage()
     SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
 
     this->getRenderService()->makeCurrent();
-
-    // Retrieves or creates the slice index fields
-    this->setImageSpacing();
 
     ::fwRenderOgre::Utils::convertImageForNegato(m_3DOgreTexture.get(), image);
 
@@ -451,23 +348,6 @@ void SVolumeRender::updateImage()
 
 //-----------------------------------------------------------------------------
 
-void SVolumeRender::newMask()
-{
-    this->getRenderService()->makeCurrent();
-
-    ::fwData::Image::sptr mask = this->getInOut< ::fwData::Image>(s_MASK_INOUT);
-    SLM_ASSERT("No 'mask' inout.", mask);
-
-    if(::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(mask))
-    {
-        ::fwRenderOgre::Utils::convertImageForNegato(m_maskTexture.get(), mask);
-    }
-
-    this->requestRender();
-}
-
-//-----------------------------------------------------------------------------
-
 void SVolumeRender::updateSampling(int nbSamples)
 {
     this->getRenderService()->makeCurrent();
@@ -477,7 +357,6 @@ void SVolumeRender::updateSampling(int nbSamples)
 
     m_volumeRenderer->setSampling(m_nbSamples);
     m_gpuVolumeTF->setSampleDistance(m_volumeRenderer->getSamplingRate());
-    m_gpuCSGTF->setSampleDistance(m_volumeRenderer->getSamplingRate());
 
     if(m_ambientOcclusion || m_colorBleeding || m_shadows)
     {
@@ -694,19 +573,6 @@ void SVolumeRender::toggleWidgets(bool visible)
 
 //-----------------------------------------------------------------------------
 
-void SVolumeRender::resizeViewport(int w, int h)
-{
-    this->getRenderService()->makeCurrent();
-
-    if(m_volumeRenderer)
-    {
-        m_volumeRenderer->resizeViewport(w, h);
-        this->requestRender();
-    }
-}
-
-//-----------------------------------------------------------------------------
-
 void SVolumeRender::setFocalDistance(int focalDistance)
 {
     if(this->getRenderService()->getLayer(m_layerID)->getStereoMode() !=
@@ -741,51 +607,6 @@ void SVolumeRender::setBoolParameter(bool val, std::string key)
     else if(key == "widgets")
     {
         this->toggleWidgets(val);
-    }
-    else if(key == "idvrCSG")
-    {
-        m_volumeRenderer->toggleIDVRCountersinkGeometry(val);
-    }
-    else if(key == "idvrCSGTF")
-    {
-        if(val && !m_gpuCSGTF->getTexture())
-        {
-            m_gpuCSGTF->createTexture(this->getID() + "_CSGGpuTF");
-        }
-        else if(m_gpuCSGTF->getTexture())
-        {
-            m_gpuCSGTF->removeTexture();
-        }
-        m_volumeRenderer->toggleIDVRCSGTF(val);
-        this->updateCSGTF();
-    }
-    else if(key == "idvrCSGLighting")
-    {
-        m_volumeRenderer->toggleIDVRCSGLighting(val);
-    }
-    else if(key == "idvrCSGGrayScale")
-    {
-        m_volumeRenderer->toggleIDVRCSGGrayScale(val);
-    }
-    else if(key == "idvrCSGModulation")
-    {
-        m_volumeRenderer->toggleIDVRCSGModulation(val);
-    }
-    else if(key == "idvrCSGOpacityDecrease")
-    {
-        m_volumeRenderer->toggleIDVRCSGOpacityDecrease(val);
-    }
-    else if(key == "idvrCSGDepthLines")
-    {
-        m_volumeRenderer->toggleIDVRCSGDepthLines(val);
-    }
-    else if(key == "idvrCSGDisableContext")
-    {
-        m_volumeRenderer->toggleIDVRCSGDisableContext(val);
-    }
-    else if(key == "idvrCSGBorder")
-    {
-        m_volumeRenderer->toggleIDVRCSGBorder(val);
     }
 
     this->requestRender();
@@ -825,10 +646,6 @@ void SVolumeRender::setIntParameter(int val, std::string key)
     {
         this->updateSatConeSamples(val);
     }
-    else if(key == "idvrDepthLinesSpacing")
-    {
-        m_volumeRenderer->setIDVRCSGDepthLinesSpacing(val);
-    }
 
     this->requestRender();
 }
@@ -846,154 +663,6 @@ void SVolumeRender::setDoubleParameter(double val, std::string key)
     else if(key == "colorBleedingFactor")
     {
         this->updateColorBleedingFactor(val);
-    }
-    else if(key == "idvrCSGAngle")
-    {
-        m_volumeRenderer->setIDVRCountersinkAngle(val);
-    }
-    else if(key == "idvrCSGBlurWeight")
-    {
-        m_volumeRenderer->setIDVRCSGBlurWeight(val);
-    }
-    else if(key == "idvrCSGModulationFactor")
-    {
-        m_volumeRenderer->setIDVRCSGModulationFactor(val);
-    }
-    else if(key == "idvrCSGOpacityDecreaseFactor")
-    {
-        m_volumeRenderer->setIDVRCSGOpacityDecreaseFactor(val);
-    }
-    else if(key == "idvrVPImCAlphaCorrection")
-    {
-        m_volumeRenderer->setIDVRVPImCAlphaCorrection(val);
-    }
-    else if(key == "idvrAImCAlphaCorrection")
-    {
-        m_volumeRenderer->setIDVRAImCAlphaCorrection(val);
-    }
-    else if(key == "idvrDepthLinesWidth")
-    {
-        m_volumeRenderer->setIDVRCSGDepthLinesWidth(float(val));
-    }
-    else if(key == "idvrCSGBorderWidth")
-    {
-        m_volumeRenderer->setIDVRCSGBorderWidth(float(val));
-    }
-    this->requestRender();
-}
-
-//-----------------------------------------------------------------------------
-
-void SVolumeRender::setEnumParameter(std::string val, std::string key)
-{
-    this->getRenderService()->makeCurrent();
-
-    if(key == "idvrMethod")
-    {
-        if(val != "None")
-        {
-            if(this->getLayer()->getStereoMode() != ::fwRenderOgre::compositor::Core::StereoModeType::NONE)
-            {
-                ::fwGui::dialog::MessageDialog("IDVR not compatible with stereo.",
-                                               "Importance driven VR is not available for stereo rendering, "
-                                               "it will not be activated.",
-                                               ::fwGui::dialog::MessageDialog::WARNING).show();
-                val = "None";
-            }
-            else
-            {
-                this->newMask();
-            }
-        }
-        m_volumeRenderer->setIDVRMethod(val);
-        this->requestRender();
-    }
-    else if(key == "idvrCSGModulationMethod")
-    {
-        if(val == "Brightness")
-        {
-            m_volumeRenderer->setIDVRCSGModulationMethod(
-                ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer::IDVRCSGModulationMethod::COLOR1);
-        }
-        else if(val == "Saturation")
-        {
-            m_volumeRenderer->setIDVRCSGModulationMethod(
-                ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer::IDVRCSGModulationMethod::COLOR2);
-        }
-        else if(val == "SaturationBrightness")
-        {
-            m_volumeRenderer->setIDVRCSGModulationMethod(
-                ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer::IDVRCSGModulationMethod::COLOR3);
-        }
-    }
-    else if(key == "idvrCSGGrayScaleMethod")
-    {
-        if(val == "Average_grayscale")
-        {
-            m_volumeRenderer->setIDVRCSGGrayScaleMethod(
-                ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer::IDVRCSGGrayScaleMethod::AVERAGE_GRAYSCALE);
-        }
-        else if(val == "Lightness_grayscale")
-        {
-            m_volumeRenderer->setIDVRCSGGrayScaleMethod(
-                ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer::IDVRCSGGrayScaleMethod::LIGHTNESS_GRAYSCALE);
-        }
-        else if(val == "Luminosity_grayscale")
-        {
-            m_volumeRenderer->setIDVRCSGGrayScaleMethod(
-                ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer::IDVRCSGGrayScaleMethod::LUMINOSITY_GRAYSCALE);
-        }
-    }
-    else if(key == "idvrDepthLinesSpacing")
-    {
-        const bool toggle = val != "Off";
-        m_volumeRenderer->toggleIDVRCSGDepthLines(toggle);
-
-        if(toggle)
-        {
-            const int spacing = std::stoi(val);
-            m_volumeRenderer->setIDVRCSGDepthLinesSpacing(spacing);
-        }
-    }
-
-    this->requestRender();
-}
-
-//-----------------------------------------------------------------------------
-
-void SVolumeRender::setColorParameter(std::array<std::uint8_t, 4> color, std::string key)
-{
-    this->getRenderService()->makeCurrent();
-
-    if(key == "idvrCSGDepthLinesColor")
-    {
-        m_volumeRenderer->setIDVRCSGDepthLinesColor(color);
-    }
-    else if(key == "idvrCSGBorderColor")
-    {
-        m_volumeRenderer->setIDVRCSGBorderColor(color);
-    }
-
-    this->requestRender();
-}
-
-//-----------------------------------------------------------------------------
-
-void SVolumeRender::setImageSpacing()
-{
-    auto img = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-
-    const bool isValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(img);
-
-    if(isValid)
-    {
-        const auto& spacing = img->getSpacing();
-
-        SLM_ASSERT("Image must be 3D.", spacing.size() == 3);
-
-        m_volumeRenderer->setImageSpacing(::Ogre::Vector3(static_cast<float>(spacing[0]),
-                                                          static_cast<float>(spacing[1]),
-                                                          static_cast<float>(spacing[2])));
     }
 }
 

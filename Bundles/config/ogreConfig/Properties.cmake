@@ -9,5 +9,7 @@ set( REQUIREMENTS
     ioVTK
     uiImageQt
     uiVisuOgre
+    uiMedDataQt
+    uiReconstructionQt
 )
 

@@ -2,18 +2,18 @@
 
 <plugin id="OgreViewer" version="@PROJECT_VERSION@" >
 
+    <requirement id="preferences" />
+    <requirement id="visuOgre" />
+    <requirement id="material" />
+    <requirement id="visuVTKQt" />
+
     <requirement id="arDataReg" />
     <requirement id="dataReg" />
     <requirement id="servicesReg" />
-    <requirement id="visuOgreQt" />
-    <requirement id="visuVTKQt" />
-    <requirement id="scene2D" />
-    <requirement id="preferences" />
 
-    <xi:include href="configurations/vtkGenericScene.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/OgreGenericScene.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/OgreNegato2D.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
-    <xi:include href="configurations/ManageOgreOrganWithSeries.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/VTKGenericScene.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
     <extension implements="::fwServices::registry::ServiceConfig">
         <id>LandmarksAtomsConfig</id>
@@ -31,10 +31,8 @@
 
             <object uid="modelSeries" type="::fwMedData::ModelSeries" />
             <object uid="image" type="::fwData::Image" />
-            <object uid="mask" type="::fwData::Image" />
             <object uid="landmarks" type="::fwData::Landmarks" />
             <object uid="volumeTF" type="::fwData::TransferFunction" src="deferred" />
-            <object uid="csgTF" type="::fwData::TransferFunction" src="deferred" />
 
             <!-- ******************************* UI declaration *********************************** -->
 
@@ -42,29 +40,47 @@
                 <gui>
                     <frame>
                         <name>Ogre Viewer</name>
-                        <icon>OgreViewer-@PROJECT_VERSION@/ogre_head.svg</icon>
+                        <icon>OgreViewer-@PROJECT_VERSION@/icons/ogre-head.svg</icon>
                         <minSize width="1100" height="700" />
                     </frame>
                     <menuBar />
                 </gui>
                 <registry>
-                    <menuBar sid="menuBar" start="yes" />
-                    <view sid="multiView_scene1" start="yes" />
+                    <menuBar sid="menuBarView" start="yes" />
+                    <view sid="containerView" start="yes" />
                 </registry>
             </service>
 
-            <service uid="menuBar" type="::gui::aspect::SDefaultMenuBar" >
+            <service uid="menuBarView" type="::gui::aspect::SDefaultMenuBar" >
                 <gui>
                     <layout>
                         <menu name="File" />
                     </layout>
                 </gui>
                 <registry>
-                    <menu sid="menu_File" start="yes" />
+                    <menu sid="menuView" start="yes" />
                 </registry>
             </service>
 
-            <service uid="multiView_scene1" type="::gui::view::SDefaultView" >
+            <service uid="menuView" type="::gui::aspect::SDefaultMenu" >
+                <gui>
+                    <layout>
+                        <menuItem name="Open mesh..." shortcut="Ctrl+M" />
+                        <menuItem name="Open image..." shortcut="Ctrl+O" />
+                        <menuItem name="Open landmarks..." />
+                        <separator />
+                        <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="openMeshAct" start="yes" />
+                    <menuItem sid="openImageAct" start="yes" />
+                    <menuItem sid="openLandmarksAct" start="yes" />
+                    <menuItem sid="quitAct" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="containerView" type="::gui::view::SDefaultView" >
                 <gui>
                     <layout type="::fwGui::CardinalLayoutManager">
                         <view align="center" />
@@ -73,33 +89,32 @@
                 </gui>
                 <registry>
                     <view sid="tabView" start="yes" />
-                    <view sid="rightView" start="yes" />
+                    <view sid="parametersView" start="yes" />
                 </registry>
             </service>
 
             <service uid="tabView" type="::gui::view::SDefaultView" >
                 <gui>
                     <layout type="::fwGui::TabLayoutManager">
-                        <view caption="Ogre" selected="yes" />
-                        <view caption="2D Negato Ogre" selected="no" />
-                        <view caption="VTK" selected="no" />
+                        <view caption="Ogre scene" selected="yes" />
+                        <view caption="Ogre 2D negato" selected="no" />
+                        <view caption="VTK scene" selected="no" />
                     </layout>
                 </gui>
                 <registry>
                     <view wid="OgreSceneView" start="yes" />
-                    <view wid="OgreNegato2DView" start="yes" />
+                    <view wid="Ogre2DNegatoView" start="yes" />
                     <view wid="VTKSceneView" start="yes" />
                 </registry>
             </service>
 
-            <service uid="rightView" type="::gui::view::SDefaultView" >
+            <service uid="parametersView" type="::gui::view::SDefaultView" >
                 <gui>
                     <layout type="::fwGui::TabLayoutManager">
                         <view caption="Compositor manager" />
                         <view caption="Organ manager" selected="yes" />
                         <view caption="Light manager" />
-                        <view caption="Volume TF manager" />
-                        <view caption="IDVR manager" />
+                        <view caption="TF editor" />
                     </layout>
                 </gui>
                 <registry>
@@ -107,7 +122,6 @@
                     <view wid="organView" start="yes" />
                     <view wid="lightView" start="yes" />
                     <view wid="volumeTFVView" start="yes" />
-                    <view wid="idvrView" start="yes" />
                 </registry>
             </service>
 
@@ -117,17 +131,17 @@
                         <orientation value="vertical" />
                         <view caption="Compositor selector" expanded="true" />
                         <view caption="Compositor parameters" expanded="true" />
-                        <view caption="Transparency settings" expanded="true" />
+                        <view caption="Transparency parameters" expanded="true" />
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="compositorSelector" />
-                    <view sid="compositorParameters" />
-                    <view sid="propertiesView" start="yes"/>
+                    <view sid="compositorSelectorSrv" />
+                    <view sid="compositorParametersSrv" />
+                    <view sid="transparencyView" start="yes"/>
                 </registry>
             </service>
 
-            <service uid="propertiesView" type="::gui::view::SDefaultView" >
+            <service uid="transparencyView" type="::gui::view::SDefaultView" >
                 <gui>
                     <layout type="::fwGui::LineLayoutManager">
                         <orientation value="vertical" />
@@ -135,146 +149,98 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="CoreEditor" />
-                </registry>
-            </service>
-
-            <service uid="menu_File" type="::gui::aspect::SDefaultMenu" >
-                <gui>
-                    <layout>
-                        <menuItem name="Open model series..." shortcut="Ctrl+M" />
-                        <menuItem name="Open image..." shortcut="Ctrl+O" />
-                        <menuItem name="Save model series..." shortcut="Ctrl+S" />
-                        <separator />
-                        <menuItem name="Load landmarks..." />
-                        <separator />
-                        <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
-                    </layout>
-                </gui>
-                <registry>
-                    <menuItem sid="action_openMesh" start="yes" />
-                    <menuItem sid="action_openNegato" start="yes" />
-                    <menuItem sid="action_saveFile" start="yes" />
-                    <menuItem sid="action_loadLandmarks" start="yes" />
-                    <menuItem sid="action_quit" start="yes" />
+                    <view sid="compositorEditorSrv" />
                 </registry>
             </service>
 
             <!-- ******************************* Actions ****************************************** -->
 
-            <service uid="action_openMesh" type="::gui::action::SStarter" >
-                <start uid="readerPathMeshFile" />
+            <service uid="openMeshAct" type="::gui::action::SStarter" >
+                <start uid="meshReaderSrv" />
             </service>
 
-            <service uid="action_openNegato" type="::gui::action::SStarter" >
-                <start uid="imageReader" />
+            <service uid="openImageAct" type="::gui::action::SStarter" >
+                <start uid="imageReaderSrv" />
             </service>
 
-            <service uid="action_saveFile" type="::gui::action::SStarter" >
-                <start uid="writerPathMeshFile" />
-            </service>
-
-            <service uid="action_loadLandmarks" type="::gui::action::SSlotCaller" >
+            <service uid="openLandmarksAct" type="::gui::action::SSlotCaller" >
                 <slots>
-                    <slot>landmarksReader/update</slot>
+                    <slot>landmarksReaderSrv/update</slot>
                 </slots>
             </service>
 
-            <service uid="action_quit" type="::gui::action::SQuit"  />
+            <service uid="quitAct" type="::gui::action::SQuit"  />
 
             <!-- ************************ Configuration launchers ********************************* -->
 
-            <service uid="cfgVTKGenericScene" type="::fwServices::SConfigController" >
-                <appConfig id="VTKGenericScene" />
-                <inout key="modelSeriesUID" uid="modelSeries" />
-                <parameter replace="WID_PARENT" by="VTKSceneView" />
-            </service>
-
-            <service uid="cfgOgreGenericScene" type="::fwServices::SConfigController" >
+            <service uid="ogreGenericSceneCfg" type="::fwServices::SConfigController" >
                 <appConfig id="OgreGenericScene" />
+                <parameter replace="WID_PARENT" by="OgreSceneView" />
+                <parameter replace="COMPOSITOR_CHANEL" by="compositorChannel" />
                 <inout key="modelSeries" uid="modelSeries" />
                 <inout key="image" uid="image" />
                 <inout key="volumeTF" uid="volumeTF" optional="yes" />
-                <inout key="csgTF" uid="csgTF" optional="yes" />
-                <inout key="mask" uid="mask" />
-                <inout key="landmark" uid="landmarks" />
-                <parameter replace="WID_PARENT" by="OgreSceneView" />
-                <parameter replace="COMPOSITOR_CHANNEL" by="compositorChannel" />
-                <parameter replace="IDVR_ENUM_PARAM_CHANNEL" by="idvrEnumParamChannel" />
-                <parameter replace="IDVR_BOOL_PARAM_CHANNEL" by="idvrBoolParamChannel" />
-                <parameter replace="IDVR_DOUBLE_PARAM_CHANNEL" by="idvrDoubleParamChannel" />
-                <parameter replace="IDVR_COLOR_PARAM_CHANNEL" by="idvrColorParamChannel" />
+                <inout key="landmarks" uid="landmarks" />
             </service>
 
-            <service uid="cfgOgreNegato2D" type="::fwServices::SConfigController" >
+            <service uid="ogre2DNegatoCfg" type="::fwServices::SConfigController" >
                 <appConfig id="OgreNegato2D" />
+                <parameter replace="WID_PARENT" by="Ogre2DNegatoView" />
                 <inout key="image" uid="image" />
-                <inout key="tf" uid="volumeTF" optional="yes" />
-                <parameter replace="WID_PARENT" by="OgreNegato2DView" />
+                <inout key="volumeTF" uid="volumeTF" optional="yes" />
             </service>
 
-            <service uid="cfgOrganManagerConfig"  type="::fwServices::SConfigController">
-                <appConfig id="OgreOrganManagerWithSeries" />
+            <service uid="vtkGenericSceneCfg" type="::fwServices::SConfigController" >
+                <appConfig id="VTKGenericScene" />
+                <parameter replace="WID_PARENT" by="VTKSceneView" />
+                <inout key="modelSeries" uid="modelSeries" />
+                <inout key="image" uid="image" />
+                <inout key="volumeTF" uid="volumeTF" optional="yes" />
+            </service>
+
+            <service uid="organManagerCfg"  type="::fwServices::SConfigController">
+                <appConfig id="OgreOrganManager" />
                 <inout key="organManagerModelSeries" uid="modelSeries" />
                 <parameter replace="WID_PARENT" by="organView" />
-                <parameter replace="ICON_PATH" by="arMedia-0.1/icons/app.ico" />
             </service>
 
-            <service uid="cfgLightManager"  type="::fwServices::SConfigController">
+            <service uid="lightManagerCfg"  type="::fwServices::SConfigController">
                 <appConfig id="OgreLightManager" />
                 <parameter replace="WID_PARENT" by="lightView" />
             </service>
 
-            <service uid="cfgImageTFManager" type="::fwServices::SConfigController">
+            <service uid="imageTFManagerCfg" type="::fwServices::SConfigController">
                 <appConfig id="OgreHistogramManager" />
                 <inout key="IMAGE" uid="image" />
                 <inout key="TF" uid="volumeTF" optional="yes" />
                 <parameter replace="WID_PARENT" by="volumeTFVView" />
             </service>
 
-
-            <service uid="cfgIDVRManager"  type="::fwServices::SConfigController">
-                <appConfig id="OgreIDVRManager" />
-                <inout key="MASK" uid="mask" />
-                <inout key="image" uid="image" />
-                <inout key="csgTF" uid="csgTF" optional="yes" />
-                <parameter replace="WID_PARENT" by="idvrView" />
-                <parameter replace="IDVR_ENUM_PARAM_CHANNEL" by="idvrEnumParamChannel" />
-                <parameter replace="IDVR_BOOL_PARAM_CHANNEL" by="idvrBoolParamChannel" />
-                <parameter replace="IDVR_DOUBLE_PARAM_CHANNEL" by="idvrDoubleParamChannel" />
-                <parameter replace="IDVR_COLOR_PARAM_CHANNEL" by="idvrColorParamChannel" />
-            </service>
-
             <!-- ******************************* Services ***************************************** -->
 
-            <service uid="compositorSelector" type="::uiVisuOgre::SCompositorSelector"  />
+            <service uid="medicalImageSrv" type="::ctrlSelection::MedicalImageSrv" >
+                <inout key="image" uid="image" autoConnect="yes" />
+            </service>
 
-            <service uid="compositorParameters" type="::uiVisuOgre::SCompositorParameterEditor"  >
+            <service uid="compositorSelectorSrv" type="::uiVisuOgre::SCompositorSelector"  />
+
+            <service uid="compositorParametersSrv" type="::uiVisuOgre::SCompositorParameterEditor"  >
                 <layer id="default" />
             </service>
 
-            <service uid="CoreEditor" type="::uiVisuOgre::SCoreCompositorEditor"  />
+            <service uid="compositorEditorSrv" type="::uiVisuOgre::SCoreCompositorEditor"  />
 
-            <service uid="readerPathMeshFile" type="::uiIO::editor::SIOSelector" >
+            <service uid="meshReaderSrv" type="::uiIO::editor::SIOSelector" >
                 <inout key="data" uid="modelSeries" />
                 <type mode="reader" />
             </service>
 
-            <service uid="writerPathMeshFile" type="::uiIO::editor::SIOSelector" >
-                <inout key="data" uid="modelSeries" />
-                <type mode="writer" />
-            </service>
-
-            <service uid="imageReader" type="::uiIO::editor::SIOSelector" >
+            <service uid="imageReaderSrv" type="::uiIO::editor::SIOSelector" >
                 <inout key="data" uid="image" />
                 <type mode="reader" />
             </service>
 
-            <service uid="medicalImage" type="::ctrlSelection::MedicalImageSrv" >
-                <inout key="image" uid="image" autoConnect="yes" />
-            </service>
-
-            <service uid="landmarksReader" type="::uiIO::editor::SIOSelector" >
+            <service uid="landmarksReaderSrv" type="::uiIO::editor::SIOSelector" >
                 <inout key="data" uid="landmarks" />
                 <type mode="reader" />
                 <selection mode="include" />
@@ -282,31 +248,27 @@
                 <config id="LandmarksAtomsConfig" service="::ioAtoms::SReader" />
             </service>
 
-            <!-- Shared channels between OgreVolumeRendering and OgreIDVR configurations -->
-            <connect channel="idvrEnumParamChannel" />
-            <connect channel="idvrBoolParamChannel" />
-            <connect channel="idvrDoubleParamChannel" />
-            <connect channel="idvrColorParamChannel" />
-            <connect channel="COMPOSITOR_CHANNEL" >
-                <slot>compositorParameters/updateCompositor</slot>
+            <!-- ******************************* Connections ***************************************** -->
+
+            <connect channel="compositorChannel" >
+                <slot>compositorParametersSrv/updateCompositor</slot>
             </connect>
 
-            <!-- Start/Stop services -->
-            <start uid="medicalImage" />
+            <!-- ******************************* Start/Stop services ***************************************** -->
+
+            <start uid="medicalImageSrv" />
             <start uid="mainView" />
-            <start uid="cfgVTKGenericScene" />
-            <start uid="cfgOgreGenericScene" />
-            <start uid="cfgOgreNegato2D" />
-            <start uid="cfgOrganManagerConfig" />
-            <start uid="cfgLightManager" />
-            <start uid="cfgImageTFManager" />
-            <start uid="cfgIDVRManager" />
-            <start uid="compositorSelector" />
-            <start uid="compositorParameters" />
-            <start uid="CoreEditor" />
-            <start uid="landmarksReader" />
+            <start uid="vtkGenericSceneCfg" />
+            <start uid="ogreGenericSceneCfg" />
+            <start uid="ogre2DNegatoCfg" />
+            <start uid="organManagerCfg" />
+            <start uid="lightManagerCfg" />
+            <start uid="imageTFManagerCfg" />
+            <start uid="compositorSelectorSrv" />
+            <start uid="compositorParametersSrv" />
+            <start uid="compositorEditorSrv" />
+            <start uid="landmarksReaderSrv" />
 
         </config>
-
     </extension>
 </plugin>

@@ -484,26 +484,13 @@ void main(void)
                 }
 
 // CSG grayscale
-// Average grayscale (CSG_GRAYSCALE == 1)
-// Lightness grayscale (CSG_GRAYSCALE == 2)
-// Luminosity grayscale (CSG_GRAYSCALE == 3)
 #if CSG_GRAYSCALE == 1
-                // The average method simply averages the values
-                float fGrayScale = (f4Col.r + f4Col.g + f4Col.b) / 3.;
-                f4Col.rgb = vec3(fGrayScale);
-#endif // CSG_GRAYSCALE == 1
-#if CSG_GRAYSCALE == 2
-                // The lightness method averages the most prominent and least prominent colors
-                float fGrayScale = (max(f4Col.r, max(f4Col.g, f4Col.b)) + min(f4Col.r, min(f4Col.g, f4Col.b))) / 2.;
-                f4Col.rgb = vec3(fGrayScale);
-#endif // CSG_GRAYSCALE == 2
-#if CSG_GRAYSCALE == 3
                 // The luminosity method is a more sophisticated version of the average method.
                 // It also averages the values, but it forms a weighted average to account for human perception.
                 // We’re more sensitive to green than other colors, so green is weighted most heavily.
                 float fGrayScale = 0.21 * f4Col.r + 0.72 * f4Col.g + 0.7 * f4Col.b;
                 f4Col.rgb = vec3(fGrayScale);
-#endif // CSG_GRAYSCALE == 3
+#endif // CSG_GRAYSCALE == 1
 
 // CSG luminance and saturation modulations
 // Brightness increase (CSG_MODULATION == 4)
