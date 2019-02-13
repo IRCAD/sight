@@ -330,6 +330,10 @@ void SScan::initialize(const ::rs2::pipeline_profile& _profile)
         m_pointcloud->setNumberOfCells(nbPoints);
         m_pointcloud->setCellDataSize(nbPoints);
         m_pointcloud->allocatePointColors(::fwData::Mesh::ColorArrayTypes::RGB);
+
+        const auto sig = m_pointcloud->signal< ::fwData::Mesh::ModifiedSignalType >
+                             (::fwData::Mesh::s_MODIFIED_SIG);
+        sig->asyncEmit();
     }
 
 }
@@ -746,9 +750,13 @@ void SScan::onPointCloud(const ::rs2::points& _pc, const ::rs2::video_frame& _te
 
         }
 
-        auto sigMesh = m_pointcloud->signal< ::fwData::Mesh::ModifiedSignalType >
-                           (::fwData::Mesh::s_MODIFIED_SIG);
-        sigMesh->asyncEmit();
+        const auto sigVertex = m_pointcloud->signal< ::fwData::Mesh::VertexModifiedSignalType >
+                                   (::fwData::Mesh::s_VERTEX_MODIFIED_SIG);
+        sigVertex->asyncEmit();
+
+        const auto sigcolor = m_pointcloud->signal< ::fwData::Mesh::PointColorsModifiedSignalType >
+                                  (::fwData::Mesh::s_POINT_COLORS_MODIFIED_SIG);
+        sigcolor->asyncEmit();
     }
 }
 
