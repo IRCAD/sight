@@ -1,4 +1,8 @@
-<plugin id="ExSimpleARCV" version="@PROJECT_VERSION@">
+<!--
+    This tutorial shows a VTK scene playing a video with a marker.
+    To use this application, you should open a 3D image, a mesh and/or a 2D texture image.
+-->
+<plugin id="TutoSimpleAR" version="@PROJECT_VERSION@">
     <requirement id="dataReg" />
     <requirement id="arDataReg" />
     <requirement id="servicesReg" />
@@ -7,7 +11,7 @@
     <requirement id="visuVTKARAdaptor" />
 
     <extension implements="::fwServices::registry::AppConfig">
-        <id>ExSimpleARCVConfig</id>
+        <id>TutoSimpleARConfig</id>
         <config>
             <!-- objects declarations -->
             <object uid="cameraSeries" type="::arData::CameraSeries" />
@@ -29,8 +33,8 @@
             <service uid="mainFrame" type="::gui::frame::SDefaultFrame">
                 <gui>
                     <frame>
-                        <name>ExSimpleARCV</name>
-                        <icon>ExSimpleARCV-@PROJECT_VERSION@/app.ico</icon>
+                        <name>TutoSimpleAR</name>
+                        <icon>TutoSimpleAR-@PROJECT_VERSION@/app.ico</icon>
                     </frame>
                     <toolBar/>
                 </gui>
@@ -134,7 +138,7 @@
 
             <service uid="loadMesh" type="::ioData::STrianMeshReader">
                 <inout key="data" uid="tagMesh" />
-                <resource>ExSimpleARCV-@PROJECT_VERSION@/plane_60.trian</resource>
+                <resource>TutoSimpleAR-@PROJECT_VERSION@/plane_60.trian</resource>
             </service>
 
             <service uid="startVideo" type="::gui::action::SSlotCaller">
