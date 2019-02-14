@@ -1,6 +1,6 @@
 <!--
     This tutorial shows a VTK scene playing a video with a marker.
-    To use this application, you should open a 3D image, a mesh and/or a 2D texture image.
+    To use this application, you should open a calibration and a video.
 -->
 <plugin id="TutoSimpleAR" version="@PROJECT_VERSION@">
     <requirement id="dataReg" />
