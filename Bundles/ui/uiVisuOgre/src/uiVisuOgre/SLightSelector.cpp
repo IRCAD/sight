@@ -223,11 +223,17 @@ void SLightSelector::onAddLight(bool /*_checked*/)
 
 void SLightSelector::onRemoveLight(bool /*_checked*/)
 {
-    ::fwRenderOgre::ILight::destroyLightAdaptor(m_currentLight);
-
     if(m_currentLight)
     {
         ::fwRenderOgre::Layer::sptr currentLayer = m_currentLayer.lock();
+        const std::vector< ::fwRenderOgre::ILight::sptr >::iterator position
+            = std::find(m_managedLightAdaptors.begin(), m_managedLightAdaptors.end(), m_currentLight);
+        if (position != m_managedLightAdaptors.end())
+        {
+            m_managedLightAdaptors.erase(position);
+        }
+
+        ::fwRenderOgre::ILight::destroyLightAdaptor(m_currentLight);
         m_currentLight.reset();
 
         m_lightAdaptors = currentLayer->getLightAdaptors();
