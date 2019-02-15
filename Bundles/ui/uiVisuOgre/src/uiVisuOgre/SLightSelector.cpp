@@ -233,7 +233,14 @@ void SLightSelector::onRemoveLight(bool /*_checked*/)
             m_managedLightAdaptors.erase(position);
         }
 
-        ::fwRenderOgre::ILight::destroyLightAdaptor(m_currentLight);
+        if(currentLayer->isDefaultLight(m_currentLight))
+        {
+            currentLayer->removeDefaultLight();
+        }
+        else
+        {
+            ::fwRenderOgre::ILight::destroyLightAdaptor(m_currentLight);
+        }
         m_currentLight.reset();
 
         m_lightAdaptors = currentLayer->getLightAdaptors();
