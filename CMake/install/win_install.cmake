@@ -26,6 +26,7 @@ macro(win_install PRJ_NAME)
     endif()
 
     set(CPACK_GENERATOR NSIS)
+    set(CPACK_SOURCE_GENERATOR ZIP)
 
     #set app icon filename
     string(TOLOWER ${PRJ_NAME} LOWER_PRJ_NAME)
