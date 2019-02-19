@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2018 IRCAD France
- * Copyright (C) 2016-2018 IHU Strasbourg
+ * Copyright (C) 2016-2019 IRCAD France
+ * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -144,7 +144,7 @@ protected:
                                                                 const std::string& _fpPPDefines) const;
 
     /// When using AutoStereo compositor, initialize the raytracing material.
-    FWRENDEROGRE_API void createRayTracingMaterial();
+    FWRENDEROGRE_API void createRayTracingMaterial(const std::string& = "RayTracedVolume_FP.glsl");
 
     /// Shared parameters used for Ray tracing. This should help avoiding using the listener.
     /// We resort to those parameters because setting them using:

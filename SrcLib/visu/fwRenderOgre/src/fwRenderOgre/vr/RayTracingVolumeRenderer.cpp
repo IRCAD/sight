@@ -491,7 +491,7 @@ void RayTracingVolumeRenderer::setRayCastingPassTextureUnits(Ogre::Pass* const _
 
 //-----------------------------------------------------------------------------
 
-void RayTracingVolumeRenderer::createRayTracingMaterial()
+void RayTracingVolumeRenderer::createRayTracingMaterial(const std::string& _sourceFile)
 {
     std::string vpPPDefines, fpPPDefines;
     size_t hash;
@@ -553,7 +553,7 @@ void RayTracingVolumeRenderer::createRayTracingMaterial()
     else
     {
         fsp = gpm.createProgram(fpName, "Materials", "glsl", ::Ogre::GPT_FRAGMENT_PROGRAM);
-        fsp->setSourceFile("RayTracedVolume_FP.glsl");
+        fsp->setSourceFile(_sourceFile);
 
         for(const std::string& attachement: m_fragmentShaderAttachements)
         {
