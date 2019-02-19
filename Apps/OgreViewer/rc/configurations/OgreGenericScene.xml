@@ -296,7 +296,7 @@
             <slot>pointListModifierSrv/removePoint</slot>
         </connect>
 
-        <connect>
+        <connect channel="${COMPOSITOR_CHANEL}">
             <signal>genericSceneSrv/compositorUpdated</signal>
         </connect>
 

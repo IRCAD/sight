@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -276,6 +276,12 @@ public:
 
     /// Sets the camera calibrations for stereo rendering.
     FWRENDEROGRE_API void setCameraCalibrations(const CameraCalibrationsType& calibrations);
+
+    /// Check if a specified light is the default light in the layer.
+    FWRENDEROGRE_API bool isDefaultLight(const CSPTR(::fwRenderOgre::ILight)&) const;
+
+    /// Remove the default light in the layer.
+    FWRENDEROGRE_API void removeDefaultLight();
 
 private:
     /// Slot: Interact with the scene.

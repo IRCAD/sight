@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -751,6 +751,22 @@ void Layer::setTransparencyDepth(int _depth)
 void Layer::setCameraCalibrations(const CameraCalibrationsType& calibrations)
 {
     m_stereoCameraCalibration = calibrations;
+}
+
+//-----------------------------------------------------------------------------
+
+bool Layer::isDefaultLight(const ::fwRenderOgre::ILight::csptr& _light) const
+{
+    return m_lightAdaptor == _light;
+}
+
+//-----------------------------------------------------------------------------
+
+void Layer::removeDefaultLight()
+{
+    OSLM_ASSERT("m_lightAdaptor must not be null", m_lightAdaptor != nullptr);
+    ::fwRenderOgre::ILight::destroyLightAdaptor(m_lightAdaptor);
+    m_lightAdaptor.reset();
 }
 
 //-----------------------------------------------------------------------------
