@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2018 IRCAD France
- * Copyright (C) 2017-2018 IHU Strasbourg
+ * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -326,18 +326,18 @@ void Material::updateShadingMode( int _shadingMode, int _numLights, bool _hasDif
 
                     ::Ogre::GpuProgramParametersSharedPtr vp = ogrePass->getVertexProgramParameters();
 
-                    if(vp->_findNamedConstantDefinition("u_numLights"))
+                    if(vp->_findNamedConstantDefinition("u_iNumLights"))
                     {
-                        vp->setNamedConstant("u_numLights", _numLights);
+                        vp->setNamedConstant("u_iNumLights", _numLights);
                     }
 
                     if(!ogrePass->getFragmentProgramName().empty())
                     {
                         ::Ogre::GpuProgramParametersSharedPtr fp = ogrePass->getFragmentProgramParameters();
 
-                        if(fp->_findNamedConstantDefinition("u_numLights"))
+                        if(fp->_findNamedConstantDefinition("u_iNumLights"))
                         {
-                            fp->setNamedConstant("u_numLights", _numLights);
+                            fp->setNamedConstant("u_iNumLights", _numLights);
                         }
                     }
                 }
