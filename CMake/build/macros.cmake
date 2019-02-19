@@ -823,6 +823,19 @@ function(findTests FWPROJECTS FILTER RESULT_VAR)
     set(${RESULT_VAR} ${RESULT} PARENT_SCOPE)
 endfunction()
 
+function(findProjectSubdirectory PROJECT_DIR REPOSITORY_DIRECTORIES RESULT_DIR)
+    # Search for the project in all the repositories (sight + additional repos).
+    foreach(REPO_DIR ${REPOSITORY_DIRECTORIES})
+        # Try to strip the repo's directory from the project's directory.
+        string(REPLACE "${REPO_DIR}/" "" RESULT ${PROJECT_DIR})
+        if(NOT ${RESULT} STREQUAL ${PROJECT_DIR})
+            # If it succeeded that means that the project repo was found. We can stop now.
+            set(${RESULT_DIR} ${RESULT} PARENT_SCOPE)
+            break()
+        endif()
+    endforeach()
+endfunction()
+
 function(getPchTarget FWPROJECT_NAME PROJECT_DIR TYPE)
 
     if(ARGN)
