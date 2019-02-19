@@ -159,6 +159,7 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
     m_layer(layer)
 {
     m_fragmentShaderAttachements.push_back("SpatialTransforms_FP");
+    m_fragmentShaderAttachements.push_back("Lighting_FP");
 
     auto* exitDepthListener = new compositor::listener::RayExitDepthListener();
     ::Ogre::MaterialManager::getSingleton().addListener(exitDepthListener);
@@ -596,17 +597,17 @@ void RayTracingVolumeRenderer::createRayTracingMaterial(const std::string& _sour
     fpParams->setNamedAutoConstant("u_viewportSize", ::Ogre::GpuProgramParameters::ACT_VIEWPORT_SIZE);
     fpParams->setNamedAutoConstant("u_clippingNearDis", ::Ogre::GpuProgramParameters::ACT_NEAR_CLIP_DISTANCE);
     fpParams->setNamedAutoConstant("u_clippingFarDis", ::Ogre::GpuProgramParameters::ACT_FAR_CLIP_DISTANCE);
-    fpParams->setNamedAutoConstant("u_cameraPos", ::Ogre::GpuProgramParameters::ACT_CAMERA_POSITION_OBJECT_SPACE);
-    fpParams->setNamedAutoConstant("u_shininess", ::Ogre::GpuProgramParameters::ACT_SURFACE_SHININESS);
-    fpParams->setNamedAutoConstant("u_numLights", ::Ogre::GpuProgramParameters::ACT_LIGHT_COUNT);
+    fpParams->setNamedAutoConstant("u_f3CameraPos", ::Ogre::GpuProgramParameters::ACT_CAMERA_POSITION_OBJECT_SPACE);
+    fpParams->setNamedAutoConstant("u_fShininess", ::Ogre::GpuProgramParameters::ACT_SURFACE_SHININESS);
+    fpParams->setNamedAutoConstant("u_iNumLights", ::Ogre::GpuProgramParameters::ACT_LIGHT_COUNT);
     for(size_t i = 0; i < 10; ++i)
     {
         auto number = "[" + std::to_string(i) + "]";
-        fpParams->setNamedAutoConstant("u_lightDir" + number,
+        fpParams->setNamedAutoConstant("u_f3LightDir" + number,
                                        ::Ogre::GpuProgramParameters::ACT_LIGHT_DIRECTION_OBJECT_SPACE, i);
-        fpParams->setNamedAutoConstant("u_lightDiffuse" + number,
+        fpParams->setNamedAutoConstant("u_f3LightDiffuseCol" + number,
                                        ::Ogre::GpuProgramParameters::ACT_LIGHT_DIFFUSE_COLOUR, i);
-        fpParams->setNamedAutoConstant("u_lightSpecular" + number,
+        fpParams->setNamedAutoConstant("u_f3LightSpecularCol" + number,
                                        ::Ogre::GpuProgramParameters::ACT_LIGHT_SPECULAR_COLOUR, i);
     }
     fpParams->setNamedAutoConstant("u_invWorldViewProj",

@@ -6,19 +6,9 @@ uniform sampler3D u_image;
 uniform sampler1D u_s1TFTexture;
 uniform vec2 u_f2TFWindow;
 
-uniform vec3 u_cameraPos;
-uniform float u_shininess;
-
 uniform float u_sampleDistance;
 
 uniform sampler2D u_entryPoints;
-
-#define MAX_LIGHTS 10
-uniform float u_numLights;
-
-uniform vec3 u_lightDir[MAX_LIGHTS];
-uniform vec3 u_lightDiffuse[MAX_LIGHTS];
-uniform vec3 u_lightSpecular[MAX_LIGHTS];
 
 #if AMBIENT_OCCLUSION || COLOR_BLEEDING || SHADOWS
 uniform sampler3D u_illuminationVolume;
@@ -51,29 +41,7 @@ vec4 sampleTransferFunction(float _fIntensity, in sampler1D _s1Sampler, in vec2 
 vec3 fragCoordsToNDC(in vec3 _f3FragPos_Ss);
 vec3 ndcToFragCoord(in vec3 _f3FragPos_Ns);
 vec4 ndcToSpecificSpacePosition(in vec3 _f3FragPos_Ns, in mat4 _m4Inverse);
-
-//-----------------------------------------------------------------------------
-
-vec3 lighting(vec3 _f3NormalDir_MsN, vec3 _f3Pos_Ms, vec3 _f3DiffuseCol)
-{
-    vec3 f3VecToCamDir_MsN = normalize(u_cameraPos - _f3Pos_Ms);
-
-    vec3 f3DiffuseCol = vec3(0.);
-    vec3 f3SpecularCol = vec3(0.);
-
-    for(int i = 0; i < int(u_numLights); ++i)
-    {
-        // We use the Blinn-Phong lighting model.
-        float fLitDiffuseCol_N = clamp(abs(dot( normalize(-u_lightDir[i]), _f3NormalDir_MsN )), 0, 1);
-        f3DiffuseCol += fLitDiffuseCol_N * u_lightDiffuse[i] * _f3DiffuseCol;
-
-        vec3 H = normalize(u_lightDir[i] + f3VecToCamDir_MsN);
-        float fLitSpecular = clamp(pow( abs(dot( _f3NormalDir_MsN, H )), u_shininess), 0, 1);
-        f3SpecularCol += fLitSpecular * u_lightSpecular[i];
-    }
-
-    return vec3(f3DiffuseCol + f3SpecularCol);
-}
+vec3 lighting(vec3 _f3NormalDir_MsN, vec3 _f3Pos_Ms, vec3 _f3DiffuseCol);
 
 //-----------------------------------------------------------------------------
 
