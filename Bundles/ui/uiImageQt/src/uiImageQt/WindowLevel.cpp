@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -116,7 +116,6 @@ void WindowLevel::starting()
     ico.addPixmap(QPixmap(QString::fromStdString(rampIcon)), QIcon::Normal, QIcon::Off);
     m_toggleTFButton->setIcon(ico);
     m_toggleTFButton->setCheckable(true);
-    m_toggleTFButton->setVisible(m_enableSquareTF);
 
     m_toggleAutoButton = new QToolButton();
     QIcon icon;
@@ -156,6 +155,9 @@ void WindowLevel::starting()
     qtContainer->setLayout( layout );
 
     m_dynamicRangeSignalMapper = new QSignalMapper(this);
+
+    // Set the visibility after the layout is created so it doesn't open its own window.
+    m_toggleTFButton->setVisible(m_enableSquareTF);
 
     QObject::connect(m_valueTextMin, SIGNAL(editingFinished()), this, SLOT(onTextEditingFinished()));
     QObject::connect(m_valueTextMax, SIGNAL(editingFinished()), this, SLOT(onTextEditingFinished()));
