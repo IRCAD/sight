@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2019 IRCAD France
- * Copyright (C) 2017-2019 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,34 +22,15 @@
 
 #pragma once
 
-#include <cppunit/extensions/HelperMacros.h>
+#include "fwTest/config.hpp"
 
-namespace itkRegistrationOp
-{
-namespace ut
+namespace fwTest
 {
 
-class AutomaticRegistrationTest : public CPPUNIT_NS::TestFixture
+class FWTEST_CLASS_API Slow
 {
-
-CPPUNIT_TEST_SUITE( AutomaticRegistrationTest );
-CPPUNIT_TEST( identityTest );
-CPPUNIT_TEST( rigidTransformTest );
-CPPUNIT_TEST( translateTransformTest );
-CPPUNIT_TEST( rotationTransformTest );
-CPPUNIT_TEST( multiresolutionRotationTransformTest );
-CPPUNIT_TEST_SUITE_END();
-
 public:
-    void setUp();
-    void tearDown();
-
-    void identityTest();
-    void rigidTransformTest();
-    void translateTransformTest();
-    void rotationTransformTest();
-    void multiresolutionRotationTransformTest();
+    FWTEST_API static bool ignoreSlowTests();
 };
 
-} //namespace ut
-} //namespace itkRegistrationOp
+} // namespace fwTest

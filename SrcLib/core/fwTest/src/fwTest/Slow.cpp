@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2019 IRCAD France
- * Copyright (C) 2017-2019 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,36 +20,36 @@
  *
  ***********************************************************************/
 
-#pragma once
+#include "fwTest/Slow.hpp"
 
-#include <cppunit/extensions/HelperMacros.h>
+#include <cstdlib>
+#include <cstring>
+#include <iostream>
 
-namespace itkRegistrationOp
-{
-namespace ut
-{
-
-class AutomaticRegistrationTest : public CPPUNIT_NS::TestFixture
+namespace fwTest
 {
 
-CPPUNIT_TEST_SUITE( AutomaticRegistrationTest );
-CPPUNIT_TEST( identityTest );
-CPPUNIT_TEST( rigidTransformTest );
-CPPUNIT_TEST( translateTransformTest );
-CPPUNIT_TEST( rotationTransformTest );
-CPPUNIT_TEST( multiresolutionRotationTransformTest );
-CPPUNIT_TEST_SUITE_END();
+//------------------------------------------------------------------------------
 
-public:
-    void setUp();
-    void tearDown();
+static bool getIgnoreSlowTestsEnv()
+{
+    const char* slowTests = std::getenv( "FW_IGNORE_SLOW_TESTS" );
+    if(slowTests == nullptr || std::strlen(slowTests) == 0 || std::strcmp(slowTests, "0") == 0)
+    {
+        return false;
+    }
+    else
+    {
+        return true;
+    }
+}
 
-    void identityTest();
-    void rigidTransformTest();
-    void translateTransformTest();
-    void rotationTransformTest();
-    void multiresolutionRotationTransformTest();
-};
+//------------------------------------------------------------------------------
 
-} //namespace ut
-} //namespace itkRegistrationOp
+bool Slow::ignoreSlowTests()
+{
+    static const bool IGNORE_SLOW_TESTS = getIgnoreSlowTestsEnv();
+    return IGNORE_SLOW_TESTS;
+}
+
+} // namespace fwTest

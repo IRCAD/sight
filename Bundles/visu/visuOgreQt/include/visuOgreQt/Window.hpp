@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -51,11 +51,11 @@ public:
      * @brief Window Initialise attributes
      * @param parent This window parent's
      */
-    VISUOGREQT_API Window(QWindow* parent = NULL);
+    Window(QWindow* parent = nullptr);
     /**
      * @brief ~Window Destructor. Destroy associated pointers
      */
-    VISUOGREQT_API ~Window();
+    virtual ~Window() override;
 
     /**
      * @brief render
@@ -63,38 +63,38 @@ public:
        class in any way we inform Qt that they will be unused.
      * @param painter The used painter
      */
-    VISUOGREQT_API virtual void render(QPainter* painter);
+    virtual void render(QPainter* painter);
 
-    VISUOGREQT_API void setAnimating(bool animating);
-
-    /// Returns Ogre render window.
-    VISUOGREQT_API virtual ::Ogre::RenderWindow* getOgreRenderWindow();
+    void setAnimating(bool animating);
 
     /// Returns Ogre render window.
-    VISUOGREQT_API virtual ::Ogre::OverlaySystem* getOgreOverlaySystem();
+    virtual ::Ogre::RenderWindow* getOgreRenderWindow();
+
+    /// Returns Ogre render window.
+    virtual ::Ogre::OverlaySystem* getOgreOverlaySystem();
 
     /// Get this window ID
-    VISUOGREQT_API int getId();
+    int getId();
 
     /// Request frame rendering
-    VISUOGREQT_API virtual void requestRender();
+    virtual void requestRender();
 
-    VISUOGREQT_API virtual void makeCurrent();
+    virtual void makeCurrent();
 
     /// Sets the list of overlays to be rendered in this window.
-    VISUOGREQT_API void setEnabledOverlays(
+    void setEnabledOverlays(
         const ::fwRenderOgre::IRenderWindowInteractorManager::OverlaySetType& enabledOverlays);
 
     /// Destroy ogre window
-    VISUOGREQT_API void destroyWindow();
+    void destroyWindow();
 
     /// Called right before rendering in the viewport. Activates the overlays enabled for this viewport.
-    VISUOGREQT_API virtual void preViewportUpdate(const ::Ogre::RenderTargetViewportEvent& evt) override;
+    virtual void preViewportUpdate(const ::Ogre::RenderTargetViewportEvent& evt) override;
 
     /// Called right after rendering in the viewport. Disables the overlays enabled for this viewport.
-    VISUOGREQT_API virtual void postViewportUpdate(const Ogre::RenderTargetViewportEvent& evt) override;
+    virtual void postViewportUpdate(const Ogre::RenderTargetViewportEvent& evt) override;
 
-    VISUOGREQT_API void setFullScreen(bool fullscreen);
+    void setFullScreen(bool fullscreen);
 
     int getFrameId() const;
 
@@ -102,51 +102,15 @@ public:
      * @brief initialise
      * Creates the Ogre renderWindow associated to this window, called by renderNow() once the window is first exposed
      */
-    VISUOGREQT_API void initialise();
+    void initialise();
 
-public Q_SLOTS:
-
-    /**
-     * @brief renderLater
-     * Render the renderWindow later
-     */
-    VISUOGREQT_API virtual void renderLater();
     /**
      * @brief renderNow
      * Force the renderWindow update
      */
-    VISUOGREQT_API virtual void renderNow( const bool force = false);
+    void renderNow( const bool force = false);
 
-    /// We use an event filter to be able to capture keyboard/mouse events. More on this later.
-    VISUOGREQT_API virtual bool eventFilter(QObject* target, QEvent* event) override;
-
-Q_SIGNALS:
-    /// When the render window is created
-    void renderWindowCreated();
-
-    /// When the render window is created
-    void interacted(::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo);
-
-    /// When a ray cast request is emitted
-    void rayCastRequested(int, int, int, int);
-
-    /// When the clipping range has to match the last updating of the scene bounding box
-    void cameraClippingComputation();
-
-private:
-
-    /**
-     * @brief render
-     * Calls OgreRoot renderOneFrame to update the current renderWindow
-     * If you want to update this window, call requestRender()
-     */
-    VISUOGREQT_API virtual void render();
-
-    /// Apply device pixel ratio on screen coordinates, needed only for MacOs currently
-    static std::pair<int, int> getDeviceCoordinates(int _x, int _y);
-
-    /// resizeEvent forwarding function
-    void ogreResize(const QSize& newSize);
+protected:
 
     /*
      * Qt events to manage keyboard and mouse input
@@ -174,6 +138,43 @@ private:
     /// Qt event to manage focus
     virtual void focusOutEvent(QFocusEvent* event) override;
 
+    /// We use an event filter to be able to capture keyboard/mouse events. More on this later.
+    virtual bool eventFilter(QObject* target, QEvent* event) override;
+
+Q_SIGNALS:
+    /// When the render window is created
+    void renderWindowCreated();
+
+    /// When the render window is created
+    void interacted(::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo);
+
+    /// When a ray cast request is emitted
+    void rayCastRequested(int, int, int, int);
+
+    /// When the clipping range has to match the last updating of the scene bounding box
+    void cameraClippingComputation();
+
+private:
+
+    /**
+     * @brief render
+     * Calls OgreRoot renderOneFrame to update the current renderWindow
+     * If you want to update this window, call requestRender()
+     */
+    void render();
+
+    /**
+     * @brief renderLater
+     * Render the renderWindow later
+     */
+    void renderLater();
+
+    /// Apply device pixel ratio on screen coordinates, needed only for MacOs currently
+    static std::pair<int, int> getDeviceCoordinates(int _x, int _y);
+
+    /// resizeEvent forwarding function
+    void ogreResize(const QSize& newSize);
+
     /// Needed for multiple instances of ogreQt WIDGET
     static int m_counter;
 
@@ -191,8 +192,6 @@ private:
 
     /// Ogre overlay system.
     static ::Ogre::OverlaySystem* m_ogreOverlaySystem;
-    /// Ogre tray manager
-//    ::OgreBites::SdkTrayManager* m_trayMgr;
 
     /// Tells if an update is requested
     bool m_update_pending;
@@ -209,7 +208,6 @@ private:
     QPoint* m_lastPosRightClick;
 
     int m_frameId;
-
 };
 
 //-----------------------------------------------------------------------------

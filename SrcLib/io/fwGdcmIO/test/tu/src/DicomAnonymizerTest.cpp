@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -42,6 +42,7 @@
 #include <fwTest/Data.hpp>
 #include <fwTest/generator/Image.hpp>
 #include <fwTest/generator/SeriesDB.hpp>
+#include <fwTest/Slow.hpp>
 
 #include <fwTools/System.hpp>
 
@@ -65,6 +66,14 @@ namespace ut
 void DicomAnonymizerTest::setUp()
 {
     // Set up context before running a test.
+    if(::fwTest::Slow::ignoreSlowTests())
+    {
+        std::cout << std::endl << "Ignoring slow " << std::endl;
+    }
+    else
+    {
+        std::cout << std::endl << "Executing slow tests.." << std::endl;
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -78,6 +87,10 @@ void DicomAnonymizerTest::tearDown()
 
 void DicomAnonymizerTest::anonymizeImageSeriesTest()
 {
+    if(::fwTest::Slow::ignoreSlowTests())
+    {
+        return;
+    }
     ::fwTest::generator::Image::initRand();
     ::fwMedData::ImageSeries::sptr imgSeries;
     imgSeries = ::fwTest::generator::SeriesDB::createImageSeries();
@@ -135,8 +148,11 @@ void DicomAnonymizerTest::anonymizeImageSeriesTest()
 
 void DicomAnonymizerTest::anonymizeDICOMTest()
 {
-    this->testDICOMFolder(::fwTest::Data::dir() / "sight/Patient/Dicom/DicomDB/08-CT-PACS");
-    //TODO Do we have to test more images ?
+    if(!::fwTest::Slow::ignoreSlowTests())
+    {
+        //TODO Do we have to test more images ?
+        this->testDICOMFolder(::fwTest::Data::dir() / "sight/Patient/Dicom/DicomDB/08-CT-PACS");
+    }
 }
 
 //------------------------------------------------------------------------------

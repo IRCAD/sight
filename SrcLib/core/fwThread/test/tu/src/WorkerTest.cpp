@@ -147,13 +147,13 @@ void WorkerTest::timerTest()
     timer->setDuration(duration);
 
     CPPUNIT_ASSERT(!timer->isRunning());
-    CPPUNIT_ASSERT(handler.m_threadCheckOk);
+    CPPUNIT_ASSERT(handler.m_threadCheckOk.load());
     CPPUNIT_ASSERT_EQUAL(0, handler.m_step.load());
 
     timer->start();
 
     CPPUNIT_ASSERT(timer->isRunning());
-    CPPUNIT_ASSERT(handler.m_threadCheckOk);
+    CPPUNIT_ASSERT(handler.m_threadCheckOk.load());
     CPPUNIT_ASSERT_EQUAL(0, handler.m_step.load());
 
     std::this_thread::sleep_for( duration/10. );
@@ -163,29 +163,21 @@ void WorkerTest::timerTest()
         std::this_thread::sleep_for( duration );
 
         CPPUNIT_ASSERT(timer->isRunning());
-        CPPUNIT_ASSERT(handler.m_threadCheckOk);
-
-        // Try to mitigate the light delay maybe due to nextStepNoSleep own execution
-        // The whole problem is because TimerAsio doesn't take into account the callback execution time to trigger
-        // the next call. Unfortunatelly, changing this, obviously introduces a change in behavior
-        // (opencv video playback)
-        int step = handler.m_step.load();
-        if(step < i)
-        {
-            std::this_thread::sleep_for(std::chrono::milliseconds(1));
-            step = handler.m_step.load();
-        }
-
-        CPPUNIT_ASSERT_EQUAL(i, step);
+        CPPUNIT_ASSERT(handler.m_threadCheckOk.load());
     }
+
+    // Be a bit tolerant, we have no 100% guarantee that timer will perform the requested number of ticks
+    CPPUNIT_ASSERT_GREATEREQUAL(45, handler.m_step.load());
+    CPPUNIT_ASSERT_LESSEQUAL(51, handler.m_step.load());
 
     timer->stop();
 
+    int lastStep = handler.m_step.load();
     std::this_thread::sleep_for( duration*3 );
 
     CPPUNIT_ASSERT(!timer->isRunning());
-    CPPUNIT_ASSERT(handler.m_threadCheckOk);
-    CPPUNIT_ASSERT_EQUAL(49, handler.m_step.load());
+    CPPUNIT_ASSERT(handler.m_threadCheckOk.load());
+    CPPUNIT_ASSERT_LESSEQUAL(lastStep+5, handler.m_step.load());
 
     // test start after stop
     handler.m_step.store(0);
@@ -193,7 +185,7 @@ void WorkerTest::timerTest()
     timer->start();
 
     CPPUNIT_ASSERT(timer->isRunning());
-    CPPUNIT_ASSERT(handler.m_threadCheckOk);
+    CPPUNIT_ASSERT(handler.m_threadCheckOk.load());
     CPPUNIT_ASSERT_EQUAL(0, handler.m_step.load());
 
     std::this_thread::sleep_for( duration/10. );
@@ -201,31 +193,22 @@ void WorkerTest::timerTest()
     for (int i = 1; i < 50; ++i)
     {
         std::this_thread::sleep_for( duration );
-
         CPPUNIT_ASSERT(timer->isRunning());
-        CPPUNIT_ASSERT(handler.m_threadCheckOk);
-
-        // Try to mitigate the light delay maybe due to nextStepNoSleep own execution
-        // The whole problem is because TimerAsio doesn't take into account the callback execution time to trigger
-        // the next call. Unfortunatelly, changing this, obviously introduces a change in behavior
-        // (opencv video playback)
-        int step = handler.m_step.load();
-        if(step < i)
-        {
-            std::this_thread::sleep_for(std::chrono::milliseconds(1));
-            step = handler.m_step.load();
-        }
-
-        CPPUNIT_ASSERT_EQUAL(i, step);
+        CPPUNIT_ASSERT(handler.m_threadCheckOk.load());
     }
+
+    // Be a bit tolerant, we have no 100% guarantee that timer will perform the requested number of ticks
+    CPPUNIT_ASSERT_GREATEREQUAL(40, handler.m_step.load());
+    CPPUNIT_ASSERT_LESSEQUAL(51, handler.m_step.load());
 
     timer->stop();
 
+    lastStep = handler.m_step.load();
     std::this_thread::sleep_for( duration*3 );
 
     CPPUNIT_ASSERT(!timer->isRunning());
-    CPPUNIT_ASSERT(handler.m_threadCheckOk);
-    CPPUNIT_ASSERT_EQUAL(49, handler.m_step.load());
+    CPPUNIT_ASSERT(handler.m_threadCheckOk.load());
+    CPPUNIT_ASSERT_LESSEQUAL(lastStep+5, handler.m_step.load());
 
     // change timer duration on the fly
     // change timer duration
@@ -234,7 +217,7 @@ void WorkerTest::timerTest()
     timer->start();
 
     CPPUNIT_ASSERT(timer->isRunning());
-    CPPUNIT_ASSERT(handler.m_threadCheckOk);
+    CPPUNIT_ASSERT(handler.m_threadCheckOk.load());
     CPPUNIT_ASSERT_EQUAL(0, handler.m_step.load());
 
     std::this_thread::sleep_for( duration/10. );
@@ -244,21 +227,12 @@ void WorkerTest::timerTest()
         std::this_thread::sleep_for( duration );
 
         CPPUNIT_ASSERT(timer->isRunning());
-        CPPUNIT_ASSERT(handler.m_threadCheckOk);
-
-        // Try to mitigate the light delay maybe due to nextStepNoSleep own execution
-        // The whole problem is because TimerAsio doesn't take into account the callback execution time to trigger
-        // the next call. Unfortunatelly, changing this, obviously introduces a change in behavior
-        // (Test opencv video playback !!)
-        int step = handler.m_step.load();
-        if(step < i)
-        {
-            std::this_thread::sleep_for(std::chrono::milliseconds(1));
-            step = handler.m_step.load();
-        }
-
-        CPPUNIT_ASSERT_EQUAL(i, step);
+        CPPUNIT_ASSERT(handler.m_threadCheckOk.load());
     }
+
+    // Be a bit tolerant, we have no 100% guarantee that timer will perform the requested number of ticks
+    CPPUNIT_ASSERT_GREATEREQUAL(20, handler.m_step.load());
+    CPPUNIT_ASSERT_LESSEQUAL(26, handler.m_step.load());
 
     duration = std::chrono::milliseconds(50);
     timer->setDuration(duration);
@@ -268,29 +242,21 @@ void WorkerTest::timerTest()
         std::this_thread::sleep_for( duration );
 
         CPPUNIT_ASSERT(timer->isRunning());
-        CPPUNIT_ASSERT(handler.m_threadCheckOk);
-
-        // Try to mitigate the light delay maybe due to nextStepNoSleep own execution
-        // The whole problem is because TimerAsio doesn't take into account the callback execution time to trigger
-        // the next call. Unfortunatelly, changing this, obviously introduces a change in behavior
-        // (Test opencv video playback !!)
-        int step = handler.m_step.load();
-        if(step < i)
-        {
-            std::this_thread::sleep_for(std::chrono::milliseconds(1));
-            step = handler.m_step.load();
-        }
-
-        CPPUNIT_ASSERT_EQUAL(i, step);
+        CPPUNIT_ASSERT(handler.m_threadCheckOk.load());
     }
+
+    // Be a bit tolerant, we have no 100% guarantee that timer will perform the requested number of ticks
+    CPPUNIT_ASSERT_GREATEREQUAL(45, handler.m_step.load());
+    CPPUNIT_ASSERT_LESSEQUAL(51, handler.m_step.load());
 
     timer->stop();
 
+    lastStep = handler.m_step.load();
     std::this_thread::sleep_for( duration*3 );
 
     CPPUNIT_ASSERT(!timer->isRunning());
-    CPPUNIT_ASSERT(handler.m_threadCheckOk);
-    CPPUNIT_ASSERT_EQUAL(49, handler.m_step.load());
+    CPPUNIT_ASSERT(handler.m_threadCheckOk.load());
+    CPPUNIT_ASSERT_LESSEQUAL(lastStep+5, handler.m_step.load());
 
     // one shot test
     handler.m_step.store(0);
@@ -302,14 +268,14 @@ void WorkerTest::timerTest()
     timer->start();
 
     CPPUNIT_ASSERT(timer->isRunning());
-    CPPUNIT_ASSERT(handler.m_threadCheckOk);
+    CPPUNIT_ASSERT(handler.m_threadCheckOk.load());
     CPPUNIT_ASSERT_EQUAL(0, handler.m_step.load());
 
     std::this_thread::sleep_for( duration*10 );
 
     CPPUNIT_ASSERT(!timer->isRunning());
-    CPPUNIT_ASSERT(handler.m_threadCheckOk);
-    CPPUNIT_ASSERT_EQUAL(1, handler.m_step.load());
+    CPPUNIT_ASSERT(handler.m_threadCheckOk.load());
+    CPPUNIT_ASSERT_GREATEREQUAL(1, handler.m_step.load());
 
     // This test was added to reproduce a bug that is now fixed
     // The timer could be deleted before the call back is over
