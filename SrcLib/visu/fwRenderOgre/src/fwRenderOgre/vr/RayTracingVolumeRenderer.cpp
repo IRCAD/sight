@@ -194,12 +194,12 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
 
     // define the shared param structure
     m_RTVSharedParameters->addConstantDefinition("u_f2TFWindow", ::Ogre::GCT_FLOAT2);
-    m_RTVSharedParameters->addConstantDefinition("u_sampleDistance", ::Ogre::GCT_FLOAT1);
-    m_RTVSharedParameters->addConstantDefinition("u_volIllumFactor", ::Ogre::GCT_FLOAT4);
-    m_RTVSharedParameters->addConstantDefinition("u_min", ::Ogre::GCT_INT1);
-    m_RTVSharedParameters->addConstantDefinition("u_max", ::Ogre::GCT_INT1);
-    m_RTVSharedParameters->addConstantDefinition("u_opacityCorrectionFactor", ::Ogre::GCT_FLOAT1);
-    m_RTVSharedParameters->setNamedConstant("u_opacityCorrectionFactor", m_opacityCorrectionFactor);
+    m_RTVSharedParameters->addConstantDefinition("u_fSampleDis", ::Ogre::GCT_FLOAT1);
+    m_RTVSharedParameters->addConstantDefinition("u_f4VolIllumFactor", ::Ogre::GCT_FLOAT4);
+    m_RTVSharedParameters->addConstantDefinition("u_iMinPreintegrat", ::Ogre::GCT_INT1);
+    m_RTVSharedParameters->addConstantDefinition("u_iMaxPreintegrat", ::Ogre::GCT_INT1);
+    m_RTVSharedParameters->addConstantDefinition("u_fOpacityCorrectionFactor", ::Ogre::GCT_FLOAT1);
+    m_RTVSharedParameters->setNamedConstant("u_fOpacityCorrectionFactor", m_opacityCorrectionFactor);
 
     this->initEntryPoints();
     this->createRayTracingMaterial();
@@ -268,8 +268,8 @@ void RayTracingVolumeRenderer::imageUpdate(const ::fwData::Image::sptr image, co
         // We update the corresponding shader parameters
         const auto minMax = m_preIntegrationTable.getMinMax();
 
-        m_RTVSharedParameters->setNamedConstant("u_min", minMax.first);
-        m_RTVSharedParameters->setNamedConstant("u_max", minMax.second);
+        m_RTVSharedParameters->setNamedConstant("u_iMinPreintegrat", minMax.first);
+        m_RTVSharedParameters->setNamedConstant("u_iMaxPreintegrat", minMax.second);
     }
     else
     {
@@ -306,7 +306,7 @@ void RayTracingVolumeRenderer::setSampling(uint16_t nbSamples)
     computeSampleDistance(getCameraPlane());
 
     // Update the sample distance in the shaders
-    m_RTVSharedParameters->setNamedConstant("u_sampleDistance", m_sampleDistance);
+    m_RTVSharedParameters->setNamedConstant("u_fSampleDis", m_sampleDistance);
 }
 
 //-----------------------------------------------------------------------------
@@ -316,7 +316,7 @@ void RayTracingVolumeRenderer::setOpacityCorrection(int opacityCorrection)
     m_opacityCorrectionFactor = static_cast<float>(opacityCorrection);
 
     // Update shader parameter
-    m_RTVSharedParameters->setNamedConstant("u_opacityCorrectionFactor", m_opacityCorrectionFactor);
+    m_RTVSharedParameters->setNamedConstant("u_fOpacityCorrectionFactor", m_opacityCorrectionFactor);
 }
 
 //-----------------------------------------------------------------------------
@@ -326,7 +326,7 @@ void RayTracingVolumeRenderer::setAOFactor(double aoFactor)
     m_volIllumFactor.w = static_cast< ::Ogre::Real>(aoFactor);
 
     // Update the shader parameter
-    m_RTVSharedParameters->setNamedConstant("u_volIllumFactor", m_volIllumFactor);
+    m_RTVSharedParameters->setNamedConstant("u_f4VolIllumFactor", m_volIllumFactor);
 }
 
 //-----------------------------------------------------------------------------
@@ -337,7 +337,7 @@ void RayTracingVolumeRenderer::setColorBleedingFactor(double colorBleedingFactor
     m_volIllumFactor      = ::Ogre::Vector4(cbFactor, cbFactor, cbFactor, m_volIllumFactor.w);
 
     // Update the shader parameter
-    m_RTVSharedParameters->setNamedConstant("u_volIllumFactor", m_volIllumFactor);
+    m_RTVSharedParameters->setNamedConstant("u_f4VolIllumFactor", m_volIllumFactor);
 }
 
 //-----------------------------------------------------------------------------
@@ -443,14 +443,14 @@ void RayTracingVolumeRenderer::setRayCastingPassTextureUnits(Ogre::Pass* const _
     texUnitState->setTextureFiltering(::Ogre::TFO_BILINEAR);
     texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
 
-    fpParams->setNamedConstant("u_image", numTexUnit++);
+    fpParams->setNamedConstant("u_s3Image", numTexUnit++);
 
     // Transfer function
     if(_fpPPDefines.find(s_PREINTEGRATION_DEFINE) != std::string::npos)
     {
         texUnitState = _rayCastingPass->createTextureUnitState(m_preIntegrationTable.getTexture()->getName());
         texUnitState->setTextureFiltering(::Ogre::TFO_BILINEAR);
-        fpParams->setNamedConstant("u_preintegratTFTexture", numTexUnit++);
+        fpParams->setNamedConstant("u_s2PreintegratTFTexture", numTexUnit++);
     }
     else
     {
@@ -468,9 +468,9 @@ void RayTracingVolumeRenderer::setRayCastingPassTextureUnits(Ogre::Pass* const _
         texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
         texUnitState->setTexture(m_illumVolume.lock()->getIlluminationVolume());
 
-        fpParams->setNamedConstant("u_illuminationVolume", numTexUnit++);
+        fpParams->setNamedConstant("u_s3IlluminationVolume", numTexUnit++);
         // Update the shader parameter
-        m_RTVSharedParameters->setNamedConstant("u_volIllumFactor", m_volIllumFactor);
+        m_RTVSharedParameters->setNamedConstant("u_f4VolIllumFactor", m_volIllumFactor);
     }
 
     // Entry points texture
@@ -487,7 +487,7 @@ void RayTracingVolumeRenderer::setRayCastingPassTextureUnits(Ogre::Pass* const _
     texUnitState->setTextureFiltering(::Ogre::TFO_NONE);
     texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
 
-    fpParams->setNamedConstant("u_entryPoints", numTexUnit++);
+    fpParams->setNamedConstant("u_s2EntryPoints", numTexUnit++);
 }
 
 //-----------------------------------------------------------------------------

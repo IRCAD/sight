@@ -2,17 +2,17 @@
 
 #define MAX_ITERATIONS 8192
 
-uniform sampler3D u_image;
+uniform sampler3D u_s3Image;
 uniform sampler1D u_s1TFTexture;
 uniform vec2 u_f2TFWindow;
 
-uniform float u_sampleDistance;
+uniform float u_fSampleDis;
 
-uniform sampler2D u_entryPoints;
+uniform sampler2D u_s2EntryPoints;
 
 #if AMBIENT_OCCLUSION || COLOR_BLEEDING || SHADOWS
-uniform sampler3D u_illuminationVolume;
-uniform vec4 u_volIllumFactor;
+uniform sampler3D u_s3IlluminationVolume;
+uniform vec4 u_f4VolIllumFactor;
 #endif // AMBIENT_OCCLUSION || COLOR_BLEEDING || SHADOWS
 
 #ifdef AUTOSTEREO
@@ -26,11 +26,11 @@ uniform mat4 u_worldViewProj;
 #endif // AUTOSTEREO
 
 #ifdef PREINTEGRATION
-uniform sampler2D u_preintegratTFTexture;
-uniform int u_min;
-uniform int u_max;
+uniform sampler2D u_s2PreintegratTFTexture;
+uniform int u_iMinPreintegrat;
+uniform int u_iMaxPreintegrat;
 #else // PREINTEGRATION
-uniform float u_opacityCorrectionFactor;
+uniform float u_fOpacityCorrectionFactor;
 #endif // PREINTEGRATION
 
 out vec4 v_f4FragCol;
@@ -47,16 +47,16 @@ vec3 lighting(vec3 _f3NormalDir_MsN, vec3 _f3Pos_Ms, vec3 _f3DiffuseCol);
 
 vec3 gradientNormal(vec3 _f3UVW)
 {
-    ivec3 imgDimensions = textureSize(u_image, 0);
+    ivec3 imgDimensions = textureSize(u_s3Image, 0);
     vec3 h = 1. / vec3(imgDimensions);
     vec3 hx = vec3(h.x, 0, 0);
     vec3 hy = vec3(0, h.y, 0);
     vec3 hz = vec3(0, 0, h.z);
 
     return -normalize( vec3(
-                (texture(u_image, _f3UVW + hx).r - texture(u_image, _f3UVW - hx).r),
-                (texture(u_image, _f3UVW + hy).r - texture(u_image, _f3UVW - hy).r),
-                (texture(u_image, _f3UVW + hz).r - texture(u_image, _f3UVW - hz).r)
+                (texture(u_s3Image, _f3UVW + hx).r - texture(u_s3Image, _f3UVW - hx).r),
+                (texture(u_s3Image, _f3UVW + hy).r - texture(u_s3Image, _f3UVW - hy).r),
+                (texture(u_s3Image, _f3UVW + hz).r - texture(u_s3Image, _f3UVW - hz).r)
     ));
 }
 
@@ -78,13 +78,13 @@ float modelSpaceToNDC(in vec3 _f3Pos_Ms)
 #ifdef PREINTEGRATION
 vec4 samplePreIntegrationTable(vec3 _f3RayBack_Ms, vec3 _f3RayFront_Ms)
 {
-    float sf = texture(u_image, _f3RayBack_Ms).r;
-    float sb = texture(u_image, _f3RayFront_Ms).r;
+    float sf = texture(u_s3Image, _f3RayBack_Ms).r;
+    float sb = texture(u_s3Image, _f3RayFront_Ms).r;
 
-    sf = ((sf * 65535.f) - float(u_min) - 32767.f) / float(u_max - u_min);
-    sb = ((sb * 65535.f) - float(u_min) - 32767.f) / float(u_max - u_min);
+    sf = ((sf * 65535.f) - float(u_iMinPreintegrat) - 32767.f) / float(u_iMaxPreintegrat - u_iMinPreintegrat);
+    sb = ((sb * 65535.f) - float(u_iMinPreintegrat) - 32767.f) / float(u_iMaxPreintegrat - u_iMinPreintegrat);
 
-    return texture(u_preintegratTFTexture, vec2(sf, sb));
+    return texture(u_s2PreintegratTFTexture, vec2(sf, sb));
 }
 #endif // PREINTEGRATION
 
@@ -117,7 +117,7 @@ RayInfos firstOpaqueRayInfos(in vec3 _f3RayPos_Ms, in vec3 _f3RayDir_MsN, in flo
 #ifdef PREINTEGRATION
         float fTFAlpha = samplePreIntegrationTable(_f3RayPos_Ms, _f3RayPos_Ms + _f3RayDir_MsN).a;
 #else // PREINTEGRATION
-        float fIntensity = texture(u_image, _f3RayPos_Ms).r;
+        float fIntensity = texture(u_s3Image, _f3RayPos_Ms).r;
         float fTFAlpha = sampleTransferFunction(fIntensity, _s1TFTexture, _f2TFWindow).a;
 #endif // PREINTEGRATION
 
@@ -154,7 +154,7 @@ vec4 launchRay(in vec3 _f3RayPos_Ms, in vec3 _f3RayDir_MsN, in float _fRayLen, i
 #ifdef PREINTEGRATION
         vec4 f4TFCol = samplePreIntegrationTable(_f3RayPos_Ms, _f3RayPos_Ms + _f3RayDir_MsN);
 #else // PREINTEGRATION
-        float fIntensity = texture(u_image, _f3RayPos_Ms).r;
+        float fIntensity = texture(u_s3Image, _f3RayPos_Ms).r;
         vec4 f4TFCol = sampleTransferFunction(fIntensity, _s1TFTexture, _f2TFWindow);
 #endif // PREINTEGRATION
 
@@ -167,21 +167,21 @@ vec4 launchRay(in vec3 _f3RayPos_Ms, in vec3 _f3RayDir_MsN, in float _fRayLen, i
 #ifndef PREINTEGRATION
             // Adjust opacity to sample distance.
             // This could be done when generating the TF texture to improve performance.
-            f4TFCol.a = 1 - pow(1 - f4TFCol.a, u_sampleDistance * u_opacityCorrectionFactor);
+            f4TFCol.a = 1 - pow(1 - f4TFCol.a, u_fSampleDis * u_fOpacityCorrectionFactor);
 #endif // PREINTEGRATION
 
 #if AMBIENT_OCCLUSION || COLOR_BLEEDING || SHADOWS
-            vec4 f4VolIllum = texture(u_illuminationVolume, _f3RayPos_Ms);
+            vec4 f4VolIllum = texture(u_s3IlluminationVolume, _f3RayPos_Ms);
 #endif // AMBIENT_OCCLUSION || COLOR_BLEEDING || SHADOWS
 
 #if AMBIENT_OCCLUSION || SHADOWS
             // Apply ambient occlusion + shadows
-            f4TFCol.rgb *= pow(exp(-f4VolIllum.a), u_volIllumFactor.a);
+            f4TFCol.rgb *= pow(exp(-f4VolIllum.a), u_f4VolIllumFactor.a);
 #endif // AMBIENT_OCCLUSION || SHADOWS
 
 #ifdef COLOR_BLEEDING
             // Apply color bleeding
-            f4TFCol.rgb *= pow(1+f4VolIllum.rgb, u_volIllumFactor.rgb);
+            f4TFCol.rgb *= pow(1+f4VolIllum.rgb, u_f4VolIllumFactor.rgb);
 #endif // COLOR_BLEEDING
 
             composite(f4ResultCol, f4TFCol);
@@ -202,7 +202,7 @@ vec4 launchRay(in vec3 _f3RayPos_Ms, in vec3 _f3RayDir_MsN, in float _fRayLen, i
 
 void main(void)
 {
-    vec2 f2RayEntryExitDis_Ss = texelFetch(u_entryPoints, ivec2(gl_FragCoord.xy), 0).rg;
+    vec2 f2RayEntryExitDis_Ss = texelFetch(u_s2EntryPoints, ivec2(gl_FragCoord.xy), 0).rg;
 
     float fRayEntryDis_Ss =  f2RayEntryExitDis_Ss.r;
     float fRayExitDis_Ss  = -f2RayEntryExitDis_Ss.g;
@@ -227,9 +227,9 @@ void main(void)
     vec3 f3RayExitPos_Ms  = ndcToSpecificSpacePosition(f3RayExitPos_Ns, m4Cs_Ms).xyz;
     vec3 f3RayDir_MsN   = normalize(f3RayExitPos_Ms - f3RayEntryPos_Ms);
 
-    f3RayDir_MsN *= u_sampleDistance;
+    f3RayDir_MsN *= u_fSampleDis;
     float fRayLen = length(f3RayExitPos_Ms - f3RayEntryPos_Ms);
-    vec4 f4ResultCol = launchRay(f3RayEntryPos_Ms, f3RayDir_MsN, fRayLen, u_sampleDistance, u_s1TFTexture, u_f2TFWindow);
+    vec4 f4ResultCol = launchRay(f3RayEntryPos_Ms, f3RayDir_MsN, fRayLen, u_fSampleDis, u_s1TFTexture, u_f2TFWindow);
 
     v_f4FragCol = f4ResultCol;
 }
