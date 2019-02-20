@@ -44,7 +44,7 @@ namespace videoRealSense
  *
  * This service grabs the depth, the color frame, and the poincloud from a compatible device (Realsense D400 cameras).
  * The frames are pushed into timelines.
- * The pointloud is pused into a ::fwData::Mesh and updated each time.
+ * The pointloud is pushed into a ::fwData::Mesh and updated each time.
  *
  * A Complete documentation about RealSense camera can be found here:
  * https://github.com/IntelRealSense/librealsense/blob/master/doc/readme.md
@@ -58,6 +58,14 @@ namespace videoRealSense
  * - \b startCamera() : This slot is called to initialize and start camera (restart camera if is already started).
  * - \b stopCamera()  : This slot is called to stop camera streams.
  * - \b pauseCamera() : This slot is called to pause/unpause the camera streams.
+ * - \b setBoolParameter(bool value, std::string key) : Slot called when a boolean parameter changes:
+ *   - key 'switchToIR' : switch the color stream by infrared stream if true.
+ *   - key 'IREmitter' : enable/disable the IR Emitter.
+ * - \b setIntParameter(int value, std::string key): Slot called when a integer parameter changes:
+ *   - key 'minRange' : min value of depth range (default 0)
+ *   - key 'maxRange' : max value of depth range (default 65535)
+ * -\b setEnumParameter(std::string value, std::string key) : Slot called when a enumeration parameter changes:
+ *   - key 'preset' : preset name to load. (see 'preset' in subsection \ref Configuration below).
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -161,17 +169,42 @@ private:
 
     // Internal structures
 
+    /// min and max depth range (from realsense-viewer application).
+    static const int maxDepthRange = 65535;
+    static const int minDepthRange = 0;
+
     /**
-     * @brief CameraSettings handles parameters such as resolution of streams and fps.
+     * @brief CameraSettings is a structure that handles parameters such as resolution of streams,
+     *  fps, and other options.
      */
     struct CameraSettings
     {
-        int fps               = 30;
-        int colorH            = 720;
-        int colorW            = 1280;
-        int depthH            = 720;
-        int depthW            = 1280;
-        ::fs::path presetPath = "";
+        int fps               = 30; ///< Default FPS of all streams.
+        int colorH            = 720; ///< Default Height of color/infrared streams.
+        int colorW            = 1280; ///< Default Width of color/infrared streams.
+        int depthH            = 720; ///< Default Height of depth stream.
+        int depthW            = 1280; ///< Default Width of depth stream.
+        ::fs::path presetPath = ""; ///< Path to the preset to load (default none).
+        bool irEmitter        = true; ///< enable/disable ir emitter (default on).
+        int maxRange          = maxDepthRange; ///< max depth range.
+        int minRange          = minDepthRange; ///< min depth range.
+        bool needHardReset    = false; ///< if device needs to be hard-reset before at stop.
+
+        /// Re-init all values to default.
+        void reset()
+        {
+            fps    = 30;
+            colorH = 720;
+            colorW = 1280;
+            depthH = 720;
+            depthW = 1280;
+            presetPath.clear();
+            irEmitter     = true;
+            maxRange      = maxDepthRange;
+            minRange      = minDepthRange;
+            needHardReset = false;
+
+        }
     };
 
     /// On which frame map the pointcloud.
@@ -226,26 +259,31 @@ private:
 
     /**
      * @brief loadPresets scans "presets" folder and generate the map
-     * @param _path: preset path (videoRealSense/rc/presets)
+     * @param[in] _path: preset path (videoRealSense/rc/presets)
      */
     void loadPresets(const ::boost::filesystem::path& _path);
 
     /**
+     * @brief setMinMaxRange updates the min/max range of the depth stream. Need advanced mode.
+     */
+    void setMinMaxRange();
+
+    /**
      * @brief callback called to push color/infrared frame in timeline.
-     * @param _buffer: pointer to the uint8_t buffer.
+     * @param[in] _buffer: pointer to the uint8_t buffer.
      */
     void onCameraImage(const uint8_t* _buffer);
 
     /**
-     * @brief onCameraImageDepth
-     * @param _buffer
+     * @brief callback called to push depth frame in timeline.
+     * @param[in] _buffer: pointer to the uint16_t depth buffer.
      */
     void onCameraImageDepth(const uint16_t* _buffer);
 
     /**
-     * @brief onPointCloud
-     * @param _pc
-     * @param _texture
+     * @brief callback called to update the pointcloud.
+     * @param[in] _pc : realsense points.
+     * @param[in] _texture : realsense video_frame used to add color on points.
      */
     void onPointCloud(const ::rs2::points& _pc, const ::rs2::video_frame& _texture);
 
@@ -283,7 +321,7 @@ private:
     /// Pointer to the (optional) ::fwData::Mesh output.
     ::fwData::Mesh::sptr m_pointcloud = nullptr;
 
-    /// Struct that contains basic camera settings (fps, resolution, preset).
+    /// Struct that contains basic camera settings (fps, resolution, preset, ...).
     CameraSettings m_cameraSettings;
 
     /// Contain the current realsense device (needed when parameters changed live).
@@ -295,9 +333,6 @@ private:
     /// Current device ID (to sort cameras if multiple realsense are plugged-in).
     std::string m_deviceID;
 
-    /// If True device will be reset on stop, this implies that on next start should re-choose the camera.
-    std::atomic_bool m_resetDevice { true };
-
     /// True when grabbing thread is running, set to false to stop the thread.
     std::atomic_bool m_running { false };
 
@@ -308,4 +343,4 @@ private:
     std::atomic_bool m_switchInfra2Color { false };
 
 };
-}
+} //namespace videoRealSense

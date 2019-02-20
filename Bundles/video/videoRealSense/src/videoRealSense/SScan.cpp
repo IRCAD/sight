@@ -106,8 +106,6 @@ void SScan::starting()
     m_depthTimeline = this->getInOut< ::arData::FrameTL>(s_DEPTHTL_INOUT);
     m_colorTimeline = this->getInOut< ::arData::FrameTL>(s_FRAMETL_INOUT);
 
-    m_pointcloud = ::fwData::Mesh::New();
-    this->setOutput(s_POINTCLOUD_OUTPUT, m_pointcloud);
 }
 
 //-----------------------------------------------------------------------------
@@ -160,12 +158,12 @@ std::string SScan::selectDevice()
     const uint32_t device_count = devices.size();
     std::string selectedDevice;
 
-    // Only one device found -> select it
+    // Only one device found -> select it.
     if(device_count == 1)
     {
         selectedDevice = devices[0].get_info(RS2_CAMERA_INFO_SERIAL_NUMBER);
     }
-    // Several devices found -> open a selector dialog
+    // Several devices found -> open a selector dialog.
     else if(device_count > 1)
     {
         ::fwGui::dialog::SelectorDialog dial;
@@ -179,7 +177,7 @@ std::string SScan::selectDevice()
             const std::string name   = devices[i].get_info(RS2_CAMERA_INFO_NAME);
             const std::string serial = devices[i].get_info(RS2_CAMERA_INFO_SERIAL_NUMBER);
 
-            // Display index + name + serial (ex: 1.Intel RealSense D415(839112062452) )
+            // Display index + name + serial (ex: 1.Intel RealSense D415(839112062452) ).
             const std::string nameserial = std::to_string(i + 1) + ". " + name + " (" + serial + ")";
 
             selections[i] = nameserial;
@@ -187,11 +185,11 @@ std::string SScan::selectDevice()
         dial.setSelections(selections);
 
         const std::string selected = dial.show();
-        // Get the index of selected camera
+        // Get the index of selected camera.
         const size_t dot = selected.find(".");
         const auto index = std::atoi(selected.substr(0, dot).c_str()) - 1;
 
-        // Get associated serial numbers
+        // Get associated serial numbers.
         selectedDevice = devices[static_cast<uint32_t>(index)].get_info(RS2_CAMERA_INFO_SERIAL_NUMBER);
 
         SLM_DEBUG("selecting camera: "<< index);
@@ -204,7 +202,7 @@ std::string SScan::selectDevice()
 
 void SScan::initialize(const ::rs2::pipeline_profile& _profile)
 {
-    // Get camera information
+    // Get camera information.
     ::arData::CameraSeries::sptr cameraSeries = this->getInOut< ::arData::CameraSeries>(s_CAMERA_SERIES_INOUT);
     m_colorTimeline                           = this->getInOut< ::arData::FrameTL>(s_FRAMETL_INOUT);
 
@@ -295,46 +293,44 @@ void SScan::initialize(const ::rs2::pipeline_profile& _profile)
         sig->asyncEmit();
     }
 
-    // Initialize mesh points memory one time in order to increase performances
-    if(m_pointcloud->getNumberOfPoints() == 0)
+    // Re-init the pointcloud.
+    m_pointcloud = ::fwData::Mesh::New();
+    this->setOutput(s_POINTCLOUD_OUTPUT, m_pointcloud);
+
+    SLM_ASSERT("Cannot create pointcloud output", m_pointcloud);
+
+    const size_t nbPoints = depthStreamW * depthStreamH;
+
+    ::fwData::mt::ObjectWriteLock meshLock(m_pointcloud);
+    // Allocate mesh.
+    m_pointcloud->allocate(nbPoints, nbPoints, nbPoints);
+
+    ::fwData::Array::sptr cellArray       = m_pointcloud->getCellDataArray();
+    ::fwData::Array::sptr cellOffsetArray = m_pointcloud->getCellDataOffsetsArray();
+    ::fwData::Array::sptr cellTypeArray   = m_pointcloud->getCellTypesArray();
+
+    ::fwDataTools::helper::Array cellArrayHelper(cellArray);
+    ::fwDataTools::helper::Array cellOffsetArrayHelper(cellOffsetArray);
+    ::fwDataTools::helper::Array cellTypeArrayHelper(cellTypeArray);
+
+    ::fwData::Mesh::CellValueType* cells =
+        cellArrayHelper.begin< ::fwData::Mesh::CellValueType >();
+    ::fwData::Mesh::CellDataOffsetType* cellOffsets =
+        cellOffsetArrayHelper.begin< ::fwData::Mesh::CellDataOffsetType >();
+    ::fwData::Mesh::CellTypes* cellTypes = cellTypeArrayHelper.begin< ::fwData::Mesh::CellTypes >();
+
+    // to display the mesh, we need to create cells with one point.
+    for (size_t i = 0; i < nbPoints; ++i)
     {
-        const size_t nbPoints = depthStreamW * depthStreamH;
-
-        ::fwData::mt::ObjectWriteLock meshLock(m_pointcloud);
-        // allocate mesh
-        m_pointcloud->allocate(nbPoints, nbPoints, nbPoints);
-
-        ::fwData::Array::sptr cellArray       = m_pointcloud->getCellDataArray();
-        ::fwData::Array::sptr cellOffsetArray = m_pointcloud->getCellDataOffsetsArray();
-        ::fwData::Array::sptr cellTypeArray   = m_pointcloud->getCellTypesArray();
-
-        ::fwDataTools::helper::Array cellArrayHelper(cellArray);
-        ::fwDataTools::helper::Array cellOffsetArrayHelper(cellOffsetArray);
-        ::fwDataTools::helper::Array cellTypeArrayHelper(cellTypeArray);
-
-        ::fwData::Mesh::CellValueType* cells =
-            cellArrayHelper.begin< ::fwData::Mesh::CellValueType >();
-        ::fwData::Mesh::CellDataOffsetType* cellOffsets =
-            cellOffsetArrayHelper.begin< ::fwData::Mesh::CellDataOffsetType >();
-        ::fwData::Mesh::CellTypes* cellTypes = cellTypeArrayHelper.begin< ::fwData::Mesh::CellTypes >();
-
-        // to display the mesh, we need to create cells with one point
-        for (size_t i = 0; i < nbPoints; ++i)
-        {
-            cells[i]       = i;
-            cellTypes[i]   = ::fwData::Mesh::POINT;
-            cellOffsets[i] = i;
-        }
-
-        m_pointcloud->setNumberOfPoints(nbPoints);
-        m_pointcloud->setNumberOfCells(nbPoints);
-        m_pointcloud->setCellDataSize(nbPoints);
-        m_pointcloud->allocatePointColors(::fwData::Mesh::ColorArrayTypes::RGB);
-
-        const auto sig = m_pointcloud->signal< ::fwData::Mesh::ModifiedSignalType >
-                             (::fwData::Mesh::s_MODIFIED_SIG);
-        sig->asyncEmit();
+        cells[i]       = i;
+        cellTypes[i]   = ::fwData::Mesh::POINT;
+        cellOffsets[i] = i;
     }
+
+    m_pointcloud->setNumberOfPoints(nbPoints);
+    m_pointcloud->setNumberOfCells(nbPoints);
+    m_pointcloud->setCellDataSize(nbPoints);
+    m_pointcloud->allocatePointColors(::fwData::Mesh::ColorArrayTypes::RGB);
 
 }
 
@@ -378,6 +374,23 @@ void SScan::startCamera()
         profile         = m_pipe->start(cfg);
         m_currentDevice = profile.get_device();
 
+        // Test if device support advanced mode.
+        if(m_currentDevice.is< ::rs400::advanced_mode>())
+        {
+            auto advanced_mode_dev = m_currentDevice.as< ::rs400::advanced_mode >();
+
+            if(!advanced_mode_dev.is_enabled())
+            {
+                // Enable advanced-mode.
+                advanced_mode_dev.toggle_advanced_mode(true);
+                SLM_DEBUG("Enable avdanced mode on realsense device.");
+            }
+        }
+        else
+        {
+            throw std::runtime_error("The selected device doesn't support advanced mode. This is required!");
+        }
+
         // Set a preset if there is one (can overwrite resolutions values).
         if(!m_cameraSettings.presetPath.empty())
         {
@@ -387,12 +400,15 @@ void SScan::startCamera()
                                      std::istreambuf_iterator<char>());
 
             // Camera needs to be in "advanced mode"
-            auto advanced_mode_dev = m_currentDevice.as<rs400::advanced_mode>();
+            auto advanced_mode_dev = m_currentDevice.as< ::rs400::advanced_mode>();
             advanced_mode_dev.load_json(json_content);
         }
 
+        auto depthSensor = m_currentDevice.first< ::rs2::depth_sensor >();
+
         // Get the depth scale: depth in mm corresponding to a depth value of 1.
-        m_depthScale = m_currentDevice.first< ::rs2::depth_sensor >().get_depth_scale() * s_METERS_TO_MMS;
+        m_depthScale = depthSensor.get_depth_scale() * s_METERS_TO_MMS;
+        depthSensor.set_option(RS2_OPTION_EMITTER_ENABLED, (m_cameraSettings.irEmitter ? 1.f : 0.f));
 
     }
     catch(const std::exception& e)
@@ -411,6 +427,13 @@ void SScan::startCamera()
     m_running = true;
     m_thread  = std::thread(&SScan::grab, this);
 
+    // Set min/max range if they parameters has changed (slot called before startCamera).
+    // This works only when grabbing thread is running.
+    if(m_cameraSettings.minRange > minDepthRange || m_cameraSettings.maxRange < maxDepthRange)
+    {
+        this->setMinMaxRange();
+    }
+
     auto sigStarted = this->signal< ::arServices::IGrabber::CameraStartedSignalType >(
         ::arServices::IGrabber::s_CAMERA_STARTED_SIG);
     sigStarted->asyncEmit();
@@ -428,11 +451,11 @@ void SScan::stopCamera()
         m_thread.join();
 
         // If a preset was loaded we should hard-reset the camera,
-        // if we don't the preset is saved on the Camera ROM.
-        if(m_resetDevice && !m_cameraSettings.presetPath.empty())
+        // If we don't some parameters are stored on the Camera ROM.
+        if(m_cameraSettings.needHardReset)
         {
             // Clear the preset
-            m_cameraSettings.presetPath.clear();
+            m_cameraSettings.reset();
             // Reset the device (if preset was loaded, ...)
             m_currentDevice.hardware_reset();
             // Wait until hardware_reset as been sent to the camera.
@@ -447,9 +470,6 @@ void SScan::stopCamera()
             ::arServices::IGrabber::s_CAMERA_STOPPED_SIG);
         sig->asyncEmit();
     }
-
-    ::fwData::mt::ObjectWriteLock meshLock(m_pointcloud);
-    m_pointcloud->clear();
 }
 
 //-----------------------------------------------------------------------------
@@ -470,9 +490,14 @@ void SScan::setBoolParameter(bool _value, std::string _key)
         // Enable/Disable the IR emitter.
         try
         {
-            auto depthSensor = m_currentDevice.first< ::rs2::depth_sensor >();
-            _value ? depthSensor.set_option(RS2_OPTION_EMITTER_ENABLED, 1.f) :
-            depthSensor.set_option(RS2_OPTION_EMITTER_ENABLED, 0.f);
+            // Save the value in cameraSettings.
+            m_cameraSettings.irEmitter = _value;
+            // Change the parameter live if grabber is running, otherwise it will be changed on next startCamera.
+            if(!m_deviceID.empty() && m_running)
+            {
+                auto depthSensor = m_currentDevice.first< ::rs2::depth_sensor >();
+                depthSensor.set_option(RS2_OPTION_EMITTER_ENABLED, (_value ? 1.f : 0.f));
+            }
         }
         catch(const std::exception& e)
         {
@@ -498,20 +523,25 @@ void SScan::setBoolParameter(bool _value, std::string _key)
 
 void SScan::setEnumParameter(std::string _value, std::string _key)
 {
-    // Change preset (advanced option)
+    // Change preset (advanced option).
     if(_key == s_PRESET)
     {
-        auto presetPathToLoad = m_jsonPresets[_value];
+        const auto presetPathToLoad = m_jsonPresets[_value];
 
         if(!presetPathToLoad.empty())
         {
             m_cameraSettings.presetPath = presetPathToLoad;
-            // Restart the same camera (device is not reset).
-            m_resetDevice = false;
-            this->stopCamera();
-            // If a real "stop" is called.
-            m_resetDevice = true;
-            this->startCamera();
+
+            if(!m_deviceID.empty() && m_running)
+            {
+                // We need to restart the same camera.
+                // Make sure no hard-reset is performed in this particular case.
+                m_cameraSettings.needHardReset = false;
+                this->stopCamera();
+                this->startCamera();
+            }
+            // Ok now we should hard-reset if stopCamera() is called.
+            m_cameraSettings.needHardReset = true;
         }
         else
         {
@@ -528,23 +558,33 @@ void SScan::setIntParameter(int _value, std::string _key)
     {
         if(_key == "minRange")
         {
-            // Use the "advanced_mode" to set DepthClampMin value.
-            auto advanced_mode_dev = m_currentDevice.as<rs400::advanced_mode>();
-            auto depth_table       = advanced_mode_dev.get_depth_table();
-            depth_table.depthClampMin = _value;
-            advanced_mode_dev.set_depth_table(depth_table);
+            if(_value < minDepthRange)
+            {
+                throw std::runtime_error("cannot set value < 0");
+            }
+
+            m_cameraSettings.minRange      = _value;
+            m_cameraSettings.needHardReset = true;
         }
         else if(_key == "maxRange")
         {
-            // Use the "advanced_mode" to set DepthClampMax value.
-            auto advanced_mode_dev = m_currentDevice.as<rs400::advanced_mode>();
-            auto depth_table       = advanced_mode_dev.get_depth_table();
-            depth_table.depthClampMax = _value;
-            advanced_mode_dev.set_depth_table(depth_table);
+            if(_value > maxDepthRange)
+            {
+                throw std::runtime_error("cannot set value > 65535");
+            }
+
+            m_cameraSettings.maxRange      = _value;
+            m_cameraSettings.needHardReset = true;
         }
         else
         {
             SLM_ERROR("Key '" +_key+"' is not recognized.");
+        }
+
+        // Change parameters live if grabber is running, otherwise it will be changed on next call to startCamera.
+        if(!m_deviceID.empty() && m_running)
+        {
+            this->setMinMaxRange();
         }
     }
     catch(const std::exception& e)
@@ -565,6 +605,7 @@ void SScan::grab()
     ::rs2::pointcloud pc;
     // We want the points object to be persistent so we can display the last cloud when a frame drops
     ::rs2::points points;
+
     while(m_running)
     {
         if(m_pause)
@@ -634,11 +675,34 @@ void SScan::loadPresets(const ::fs::path& _path)
             // 2. Generate "readable name" by removing "Preset*.json".
             const std::string current_file = itr->path().filename().string();
             const auto p                   = current_file.find("Preset");
-            std::string name               = current_file.substr(0, p);
+            const std::string name         = current_file.substr(0, p);
 
             // 3. Push in Map [Name, path].
             m_jsonPresets[name] = itr->path();
         }
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void SScan::setMinMaxRange()
+{
+    try
+    {
+        // Use the "advanced_mode" to set DepthClampMax value.
+        auto advanced_mode_dev = m_currentDevice.as<rs400::advanced_mode>();
+        auto depth_table       = advanced_mode_dev.get_depth_table();
+        depth_table.depthClampMin = m_cameraSettings.minRange;
+        depth_table.depthClampMax = m_cameraSettings.maxRange;
+        advanced_mode_dev.set_depth_table(depth_table);
+    }
+    catch(const std::exception& e)
+    {
+        ::fwGui::dialog::MessageDialog::showMessageDialog(
+            "RealSense Error",
+            "RealSense device error:" + std::string(e.what()),
+            ::fwGui::dialog::IMessageDialog::CRITICAL);
+        return;
     }
 }
 
@@ -722,11 +786,11 @@ void SScan::onPointCloud(const ::rs2::points& _pc, const ::rs2::video_frame& _te
         const auto vertices     = _pc.get_vertices();
         const auto textureCoord = _pc.get_texture_coordinates();
 
-        size_t pcSize = _pc.size();
+        const size_t pcSize = _pc.size();
 
-        // Parallelize in possible since each element is indepedent.
+        // Parallelization of the loop is possible since each element is independent.
         #pragma omp parallel for shared(buffer, colorBuf)
-        for (size_t i = 0; i < pcSize; i++)
+        for (std::int64_t i = 0; i < static_cast<std::int64_t>(pcSize); i++)
         {
             // Fill the point buffer (x = +0, y = +1, z = +2).
             buffer[i*3 + 0] = static_cast<float>(vertices[i].x);

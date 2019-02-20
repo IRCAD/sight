@@ -52,7 +52,6 @@
                         <editor />
                         <editor />
                         <editor />
-                        <editor />
                         <separator/>
                         <editor />
                     </layout>
@@ -197,13 +196,13 @@
 
             <service uid="rangeEditor" type="::guiQt::editor::SParameters">
                 <parameters>
-                    <param type="int" name="max range" key="maxRange" defaultValue="65536" min="0" max="65536" />
-                    <param type="int" name="min range" key="minRange" defaultValue="0" min="0" max="65535" />
+                    <param type="int" name="max range" key="maxRange" defaultValue="65535" min="0" max="65535" />
+                    <param type="int" name="min range" key="minRange" defaultValue="0" min="0" max="65534" />
                 </parameters>
             </service>
 
             <service uid="distance" type="::uiTools::editor::STextStatus">
-                <label>Distance To Center</label>
+                <label>Distance To Center (mm)</label>
             </service>
 
 
