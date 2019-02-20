@@ -19,4 +19,4 @@ LD_LIBRARY_PATH=$libdir:$libdir/sight:${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
 export LD_LIBRARY_PATH
 
 # Use CMAKE Variable of fwlauncher and Profile.xml path
-exec "$bindir/@LAUNCHER@" "$bundledir/@PROFILE_PATH@"
+exec "$bindir/@LAUNCHER@" \""$bundledir/@PROFILE_PATH@"\"
