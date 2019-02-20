@@ -328,7 +328,7 @@ void Material::updateShadingMode( int _shadingMode, int _numLights, bool _hasDif
 
                     if(vp->_findNamedConstantDefinition("u_iNumLights"))
                     {
-                        vp->setNamedConstant("u_iNumLights", _numLights);
+                        vp->setNamedConstant("u_iNumLights", static_cast<float>(_numLights));
                     }
 
                     if(!ogrePass->getFragmentProgramName().empty())
@@ -337,7 +337,7 @@ void Material::updateShadingMode( int _shadingMode, int _numLights, bool _hasDif
 
                         if(fp->_findNamedConstantDefinition("u_iNumLights"))
                         {
-                            fp->setNamedConstant("u_iNumLights", _numLights);
+                            fp->setNamedConstant("u_iNumLights", static_cast<float>(_numLights));
                         }
                     }
                 }

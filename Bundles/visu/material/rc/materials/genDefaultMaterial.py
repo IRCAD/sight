@@ -66,7 +66,7 @@ def generatePermutations(baseConfig, *configs):
 ## Common parameters used in Lighting.glsl, used both at Vertex and Fragment stages
 lightingParams = [ '// Lighting',
                    'param_named_auto u_f3CameraPos camera_position',
-                   'param_named u_iNumLights int 1',
+                   'param_named u_iNumLights float 1.0',
                    'param_named_auto u_f3LightDir light_position_array 10',
                    'param_named_auto u_f4LightAmbientCol ambient_light_colour',
                    'param_named_auto u_f3LightDiffuseCol light_diffuse_colour_array 10',
