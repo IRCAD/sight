@@ -17,7 +17,7 @@ set( DEPENDENCIES
 )
 set( REQUIREMENTS )
 set( CONAN_DEPS
-     librealsense/2.18.0@sight/testing
+     librealsense/2.18.0@sight/stable
 )
 
 set( USE_PCH_FROM_TARGET pchServicesOmp )

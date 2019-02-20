@@ -295,7 +295,6 @@ void SScan::initialize(const ::rs2::pipeline_profile& _profile)
 
     // Re-init the pointcloud.
     m_pointcloud = ::fwData::Mesh::New();
-    this->setOutput(s_POINTCLOUD_OUTPUT, m_pointcloud);
 
     SLM_ASSERT("Cannot create pointcloud output", m_pointcloud);
 
@@ -331,6 +330,8 @@ void SScan::initialize(const ::rs2::pipeline_profile& _profile)
     m_pointcloud->setNumberOfCells(nbPoints);
     m_pointcloud->setCellDataSize(nbPoints);
     m_pointcloud->allocatePointColors(::fwData::Mesh::ColorArrayTypes::RGB);
+
+    this->setOutput(s_POINTCLOUD_OUTPUT, m_pointcloud);
 
 }
 
@@ -476,8 +477,11 @@ void SScan::stopCamera()
 
 void SScan::pauseCamera()
 {
-    // Enable/disable pause mode.
-    m_pause = !m_pause;
+    if(m_running)
+    {
+        // Enable/disable pause mode.
+        m_pause = !m_pause;
+    }
 }
 
 //-----------------------------------------------------------------------------
