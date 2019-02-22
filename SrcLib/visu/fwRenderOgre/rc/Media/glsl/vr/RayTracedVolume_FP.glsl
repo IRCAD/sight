@@ -26,9 +26,9 @@ uniform mat4 u_worldViewProj;
 #endif // AUTOSTEREO
 
 #ifdef PREINTEGRATION
-uniform sampler2D u_s2PreintegratTFTexture;
-uniform int u_iMinPreintegrat;
-uniform int u_iMaxPreintegrat;
+uniform sampler2D u_s2PreintegratedTFTexture;
+uniform int u_iMinImageValue;
+uniform int u_iMaxImageValue;
 #else // PREINTEGRATION
 uniform float u_fOpacityCorrectionFactor;
 #endif // PREINTEGRATION
@@ -81,10 +81,10 @@ vec4 samplePreIntegrationTable(vec3 _f3RayBack_Ms, vec3 _f3RayFront_Ms)
     float sf = texture(u_s3Image, _f3RayBack_Ms).r;
     float sb = texture(u_s3Image, _f3RayFront_Ms).r;
 
-    sf = ((sf * 65535.f) - float(u_iMinPreintegrat) - 32767.f) / float(u_iMaxPreintegrat - u_iMinPreintegrat);
-    sb = ((sb * 65535.f) - float(u_iMinPreintegrat) - 32767.f) / float(u_iMaxPreintegrat - u_iMinPreintegrat);
+    sf = ((sf * 65535.f) - float(u_iMinImageValue) - 32767.f) / float(u_iMaxImageValue - u_iMinImageValue);
+    sb = ((sb * 65535.f) - float(u_iMinImageValue) - 32767.f) / float(u_iMaxImageValue - u_iMinImageValue);
 
-    return texture(u_s2PreintegratTFTexture, vec2(sf, sb));
+    return texture(u_s2PreintegratedTFTexture, vec2(sf, sb));
 }
 #endif // PREINTEGRATION
 

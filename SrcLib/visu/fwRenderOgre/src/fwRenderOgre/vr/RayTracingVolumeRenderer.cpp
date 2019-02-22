@@ -196,8 +196,8 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
     m_RTVSharedParameters->addConstantDefinition("u_f2TFWindow", ::Ogre::GCT_FLOAT2);
     m_RTVSharedParameters->addConstantDefinition("u_fSampleDis", ::Ogre::GCT_FLOAT1);
     m_RTVSharedParameters->addConstantDefinition("u_f4VolIllumFactor", ::Ogre::GCT_FLOAT4);
-    m_RTVSharedParameters->addConstantDefinition("u_iMinPreintegrat", ::Ogre::GCT_INT1);
-    m_RTVSharedParameters->addConstantDefinition("u_iMaxPreintegrat", ::Ogre::GCT_INT1);
+    m_RTVSharedParameters->addConstantDefinition("u_iMinImageValue", ::Ogre::GCT_INT1);
+    m_RTVSharedParameters->addConstantDefinition("u_iMaxImageValue", ::Ogre::GCT_INT1);
     m_RTVSharedParameters->addConstantDefinition("u_fOpacityCorrectionFactor", ::Ogre::GCT_FLOAT1);
     m_RTVSharedParameters->setNamedConstant("u_fOpacityCorrectionFactor", m_opacityCorrectionFactor);
 
@@ -268,8 +268,8 @@ void RayTracingVolumeRenderer::imageUpdate(const ::fwData::Image::sptr image, co
         // We update the corresponding shader parameters
         const auto minMax = m_preIntegrationTable.getMinMax();
 
-        m_RTVSharedParameters->setNamedConstant("u_iMinPreintegrat", minMax.first);
-        m_RTVSharedParameters->setNamedConstant("u_iMaxPreintegrat", minMax.second);
+        m_RTVSharedParameters->setNamedConstant("u_iMinImageValue", minMax.first);
+        m_RTVSharedParameters->setNamedConstant("u_iMaxImageValue", minMax.second);
     }
     else
     {
@@ -450,7 +450,7 @@ void RayTracingVolumeRenderer::setRayCastingPassTextureUnits(Ogre::Pass* const _
     {
         texUnitState = _rayCastingPass->createTextureUnitState(m_preIntegrationTable.getTexture()->getName());
         texUnitState->setTextureFiltering(::Ogre::TFO_BILINEAR);
-        fpParams->setNamedConstant("u_s2PreintegratTFTexture", numTexUnit++);
+        fpParams->setNamedConstant("u_s2PreintegratedTFTexture", numTexUnit++);
     }
     else
     {
