@@ -170,8 +170,8 @@ private:
     // Internal structures
 
     /// min and max depth range (from realsense-viewer application).
-    static const int maxDepthRange = 65535;
-    static const int minDepthRange = 0;
+    static const int s_MAX_DEPTH_RANGE = 65535;
+    static const int s_MIN_DEPTH_RANGE = 0;
 
     /**
      * @brief CameraSettings is a structure that handles parameters such as resolution of streams,
@@ -186,8 +186,8 @@ private:
         int depthW            = 1280; ///< Default Width of depth stream.
         ::fs::path presetPath = ""; ///< Path to the preset to load (default none).
         bool irEmitter        = true; ///< enable/disable ir emitter (default on).
-        int maxRange          = maxDepthRange; ///< max depth range.
-        int minRange          = minDepthRange; ///< min depth range.
+        int maxRange          = s_MAX_DEPTH_RANGE; ///< max depth range.
+        int minRange          = s_MIN_DEPTH_RANGE; ///< min depth range.
         bool needHardReset    = false; ///< if device needs to be hard-reset before at stop.
 
         /// Re-init all values to default.
@@ -200,8 +200,8 @@ private:
             depthW = 1280;
             presetPath.clear();
             irEmitter     = true;
-            maxRange      = maxDepthRange;
-            minRange      = minDepthRange;
+            maxRange      = s_MAX_DEPTH_RANGE;
+            minRange      = s_MIN_DEPTH_RANGE;
             needHardReset = false;
 
         }

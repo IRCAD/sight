@@ -339,6 +339,11 @@ void SScan::initialize(const ::rs2::pipeline_profile& _profile)
 
 void SScan::startCamera()
 {
+    if (m_running)
+    {
+        OSLM_WARN("Camera is still running. Nothing is done.");
+        return;
+    }
     // Test if previous device was kept (changing presets cases).
     if(m_deviceID.empty())
     {
@@ -430,7 +435,7 @@ void SScan::startCamera()
 
     // Set min/max range if they parameters has changed (slot called before startCamera).
     // This works only when grabbing thread is running.
-    if(m_cameraSettings.minRange > minDepthRange || m_cameraSettings.maxRange < maxDepthRange)
+    if(m_cameraSettings.minRange > s_MIN_DEPTH_RANGE || m_cameraSettings.maxRange < s_MAX_DEPTH_RANGE)
     {
         this->setMinMaxRange();
     }
@@ -562,7 +567,7 @@ void SScan::setIntParameter(int _value, std::string _key)
     {
         if(_key == "minRange")
         {
-            if(_value < minDepthRange)
+            if(_value < s_MIN_DEPTH_RANGE)
             {
                 throw std::runtime_error("cannot set value < 0");
             }
@@ -572,7 +577,7 @@ void SScan::setIntParameter(int _value, std::string _key)
         }
         else if(_key == "maxRange")
         {
-            if(_value > maxDepthRange)
+            if(_value > s_MAX_DEPTH_RANGE)
             {
                 throw std::runtime_error("cannot set value > 65535");
             }
@@ -750,7 +755,7 @@ void SScan::onCameraImageDepth(const std::uint16_t* _buffer)
     // Re-map depth frame in mm.
     for(size_t i = 0; i < sizeBuffer; ++i)
     {
-        *depthBuffer++ = static_cast<std::uint16_t>(*_buffer++ *static_cast< std::uint16_t >(m_depthScale));
+        *depthBuffer++ = static_cast<std::uint16_t>(*_buffer++ *m_depthScale);
     }
 
     // Push buffer to timeline and notify
@@ -797,9 +802,9 @@ void SScan::onPointCloud(const ::rs2::points& _pc, const ::rs2::video_frame& _te
         for (std::int64_t i = 0; i < static_cast<std::int64_t>(pcSize); i++)
         {
             // Fill the point buffer (x = +0, y = +1, z = +2).
-            buffer[i*3 + 0] = static_cast<float>(vertices[i].x);
-            buffer[i*3 + 1] = static_cast<float>(vertices[i].y);
-            buffer[i*3 + 2] = static_cast<float>(vertices[i].z) * m_depthScale; // Re-map to mm.
+            buffer[i*3 + 0] = static_cast<float>(vertices[i].x) * s_METERS_TO_MMS;
+            buffer[i*3 + 1] = static_cast<float>(vertices[i].y) * s_METERS_TO_MMS;
+            buffer[i*3 + 2] = static_cast<float>(vertices[i].z) * s_METERS_TO_MMS * m_depthScale;  // Re-map to mm.
 
             // Normals to Texture Coordinates conversion
             const int x_value = std::min(std::max(static_cast<int>(textureCoord[i].u * static_cast<float>(textureW)
