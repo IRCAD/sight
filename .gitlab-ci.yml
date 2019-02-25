@@ -320,6 +320,8 @@ sdk:
      -DBUILD_SDK=ON
     - ninja
     - ninja install
+    - find ${SDK_INSTALL_PATH}/lib/cmake/sight -type f
+      -exec sed -i 's@/home/sight/[^;"]*/include@${_IMPORT_PREFIX}/include@g' {} \;
     - ninja package
     - ccache -s
     - export SDK_FILE_PATH=$(find ${HOME}/sdk/build/packages -maxdepth 1 -iname '*.tar.gz' -type f -print -quit) 
