@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __IGTLNETWORK_SERVER_HPP__
-#define __IGTLNETWORK_SERVER_HPP__
+#pragma once
 
 #include "igtlNetwork/Client.hpp"
 #include "igtlNetwork/config.hpp"
@@ -165,5 +164,3 @@ private:
 };
 
 }
-
-#endif // __IGTLNETWORK_SERVER_HPP__

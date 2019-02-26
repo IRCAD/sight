@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __IGTLPROTOCOL_RAWMESSAGE_HPP__
-#define __IGTLPROTOCOL_RAWMESSAGE_HPP__
+#pragma once
 
 #include "igtlProtocol/config.hpp"
 
@@ -102,5 +101,3 @@ private:
     RawDataType m_msg;
 };
 }//namespace igtlProtocol
-
-#endif // __IGTLPROTOCOL_RAWMESSAGE_HPP__

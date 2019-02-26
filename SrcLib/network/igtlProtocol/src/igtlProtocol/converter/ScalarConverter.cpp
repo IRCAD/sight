@@ -21,6 +21,7 @@
  ***********************************************************************/
 
 #include "igtlProtocol/converter/ScalarConverter.hpp"
+
 #include "igtlProtocol/DataConverter.hpp"
 
 #include <igtlStringMessage.h>
@@ -34,8 +35,6 @@ converterRegisterMacro(::igtlProtocol::converter::IntConverter);
 converterRegisterMacro(::igtlProtocol::converter::FloatConverter);
 
 //-----------------------------------------------------------------------------
-
-
 
 } // namespace converter
 } // namespace igtlProtocol

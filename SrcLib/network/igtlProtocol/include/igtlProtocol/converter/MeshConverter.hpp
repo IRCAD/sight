@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __IGTLPROTOCOL_CONVERTER_MESHCONVERTER_HPP__
-#define __IGTLPROTOCOL_CONVERTER_MESHCONVERTER_HPP__
+#pragma once
 
 #include "igtlProtocol/converter/IConverter.hpp"
 #include "igtlProtocol/exception/Conversion.hpp"
@@ -114,5 +113,3 @@ private:
 };
 } // namespace converter
 } // namespace igtlProtocol
-
-#endif // __IGTLPROTOCOL_CONVERTER_MESHCONVERTER_HPP__

@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __IGTLPROTOCOL_CONVERTER_ICONVERTER_HPP__
-#define __IGTLPROTOCOL_CONVERTER_ICONVERTER_HPP__
+#pragma once
 
 #include "igtlProtocol/config.hpp"
 #include "igtlProtocol/exception/Conversion.hpp"
@@ -85,5 +84,3 @@ public:
 
 } // namespace converter
 } // namespace igtlProtocol
-
-#endif // __IGTLPROTOCOL_CONVERTER_ICONVERTER_HPP__
