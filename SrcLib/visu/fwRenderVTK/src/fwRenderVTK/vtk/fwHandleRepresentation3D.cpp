@@ -22,7 +22,9 @@
 
 #include "fwRenderVTK/vtk/fwHandleRepresentation3D.hpp"
 
+#include <vtkAbstractPropPicker.h>
 #include <vtkCamera.h>
+#include <vtkCellPicker.h>
 #include <vtkCleanPolyData.h>
 #include <vtkCubeSource.h>
 #include <vtkCylinderSource.h>
