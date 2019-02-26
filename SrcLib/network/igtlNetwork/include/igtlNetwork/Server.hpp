@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2017 IRCAD France
- * Copyright (C) 2014-2017 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -30,7 +30,7 @@
 #include <fwCore/Exception.hpp>
 #include <fwCore/mt/types.hpp>
 
-#include <igtl/igtlServerSocket.h>
+#include <igtlServerSocket.h>
 
 #include <list>
 #include <string>

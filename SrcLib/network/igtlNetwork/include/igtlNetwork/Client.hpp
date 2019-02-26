@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2017 IRCAD France
- * Copyright (C) 2014-2017 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -32,8 +32,8 @@
 
 #include <igtlProtocol/DataConverter.hpp>
 
-#include <igtl/igtlClientSocket.h>
-#include <igtl/igtlMessageHeader.h>
+#include <igtlClientSocket.h>
+#include <igtlMessageHeader.h>
 
 #include <string>
 

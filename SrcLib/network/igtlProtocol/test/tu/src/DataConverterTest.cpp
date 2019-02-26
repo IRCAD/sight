@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -45,12 +45,12 @@
 
 #include <fwTools/Type.hpp>
 
-#include <igtl/igtlImageMessage.h>
-#include <igtl/igtlPointMessage.h>
-#include <igtl/igtlPositionMessage.h>
-#include <igtl/igtlStringMessage.h>
-#include <igtl/igtlTrackingDataMessage.h>
-#include <igtl/igtlTransformMessage.h>
+#include <igtlImageMessage.h>
+#include <igtlPointMessage.h>
+#include <igtlPositionMessage.h>
+#include <igtlStringMessage.h>
+#include <igtlTrackingDataMessage.h>
+#include <igtlTransformMessage.h>
 
 #include <algorithm>
 #include <iostream>
