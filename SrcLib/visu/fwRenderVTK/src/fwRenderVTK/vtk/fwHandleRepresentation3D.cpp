@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017 IRCAD France
- * Copyright (C) 2017 IHU Strasbourg
+ * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -318,6 +318,29 @@ void fwHandleRepresentation3D::SetMarkerProperty(vtkProperty* p)
     {
         this->Follower->SetProperty( p );
     }
+}
+
+//----------------------------------------------------------------------
+int fwHandleRepresentation3D::ComputeInteractionState(int X, int Y, int vtkNotUsed(modify))
+{
+    // This line is commented to avoid vtk resetting the visibility
+    //this->VisibilityOn(); //actor must be on to be picked
+    vtkAssemblyPath* path = this->GetAssemblyPath(X, Y, 0., this->HandlePicker);
+
+    if ( path != nullptr )
+    {
+        this->InteractionState = vtkHandleRepresentation::Nearby;
+    }
+    else
+    {
+        this->InteractionState = vtkHandleRepresentation::Outside;
+        if ( this->ActiveRepresentation )
+        {
+            this->VisibilityOff();
+        }
+    }
+
+    return this->InteractionState;
 }
 
 } // namespace vtk
