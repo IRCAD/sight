@@ -31,6 +31,8 @@
 
 #include <fwDataTools/helper/Array.hpp>
 
+#include <boost/regex.hpp>
+
 #include <OGRE/OgreHighLevelGpuProgram.h>
 #include <OGRE/OgreHighLevelGpuProgramManager.h>
 
