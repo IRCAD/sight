@@ -117,11 +117,27 @@ void ImagePositionPatientSplitterTest::negativeSpacingApplication()
     reader->setObject(seriesDB);
     reader->setFolder(path);
     CPPUNIT_ASSERT_NO_THROW(reader->readDicomSeries());
-    CPPUNIT_ASSERT_EQUAL(size_t(1), seriesDB->size());
+
+    // Horos seems also to think that there is two series in this dicom
+    CPPUNIT_ASSERT_EQUAL(size_t(2), seriesDB->size());
 
     // Retrieve DicomSeries
-    ::fwMedData::DicomSeries::sptr dicomSeries = ::fwMedData::DicomSeries::dynamicCast((*seriesDB)[0]);
+    ::fwMedData::DicomSeries::sptr dicomSeries = ::fwMedData::DicomSeries::dynamicCast(seriesDB->at(0));
     CPPUNIT_ASSERT(dicomSeries);
+
+    // On Unix, the correct series with 304 elements is placed first and the one with 196 elements is at last position,
+    // which is the opposite on windows (???)... Assuming the Dicom is file based, the way the OS sorts files may
+    // explain the different behaviors. We should investigate this ....
+    // The test is written to assume the one of 304 elements is taken.
+    if(dicomSeries->getNumberOfInstances() != 304)
+    {
+        dicomSeries = ::fwMedData::DicomSeries::dynamicCast(seriesDB->at(1));
+        CPPUNIT_ASSERT(dicomSeries);
+    }
+
+    // Just in case we load the wrong series or the data is corrupted.
+    CPPUNIT_ASSERT_EQUAL(size_t(304), dicomSeries->getNumberOfInstances());
+
     std::vector< ::fwMedData::DicomSeries::sptr > dicomSeriesContainer;
     dicomSeriesContainer.push_back(dicomSeries);
 

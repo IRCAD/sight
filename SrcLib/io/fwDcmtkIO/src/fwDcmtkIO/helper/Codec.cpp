@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,7 +22,12 @@
 
 #include "fwDcmtkIO/helper/Codec.hpp"
 
+#include <fwCore/util/LazyInstantiator.hpp>
+
 #include <dcmtk/dcmdata/dcrledrg.h>
+
+// Comment to prevent sheldon from sorting the two headers below,
+// because they should be included this way around
 #include <dcmtk/dcmjpeg/djdecode.h>
 #include <dcmtk/dcmjpeg/dipijpeg.h>
 
@@ -31,7 +36,9 @@ namespace fwDcmtkIO
 namespace helper
 {
 
-void Codec::registerCodecs()
+//------------------------------------------------------------------------------
+
+Codec::Codec()
 {
     // Register RLE decompression codecs
     DcmRLEDecoderRegistration::registerCodecs();
@@ -40,9 +47,9 @@ void Codec::registerCodecs()
     DJDecoderRegistration::registerCodecs();
 }
 
-// ----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-void Codec::cleanup()
+Codec::~Codec()
 {
     // Deregister RLE decompression codecs
     DcmRLEDecoderRegistration::cleanup();
@@ -51,6 +58,12 @@ void Codec::cleanup()
     DJDecoderRegistration::cleanup();
 }
 
+//------------------------------------------------------------------------------
+
+SPTR(::fwDcmtkIO::helper::Codec) g_codecInstantiator =
+    ::fwCore::util::LazyInstantiator< ::fwDcmtkIO::helper::Codec >::getInstance();
+
+//------------------------------------------------------------------------------
 
 } //helper
 } //fwDcmtkIO

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -110,7 +110,7 @@ class VIDEOOPENCV_CLASS_API SFrameGrabber : public ::arServices::IGrabber
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SFrameGrabber)(::arServices::IGrabber) );
+    fwCoreServiceClassDefinitionsMacro( (SFrameGrabber)(::arServices::IGrabber) )
 
     /// Constructor. Do nothing.
     VIDEOOPENCV_API SFrameGrabber() noexcept;
@@ -163,6 +163,9 @@ private:
 
     /// Initializes the video reader, start the timer.
     void readVideo(const ::boost::filesystem::path& file);
+
+    /// Initializes the usb device reader, start the timer.
+    void readDevice(const CSPTR(::arData::Camera)_cam);
 
     /// Initializes the image reader, start the timer.
     void readImages(const ::boost::filesystem::path& folder, const std::string& extension);
@@ -222,6 +225,9 @@ private:
 
     /// Step value updated in setStep() slot used to compute a shift value when calling nextImage()/previousImage()
     unsigned long m_stepChanged;
+
+    /// Total number of frames in a video file.
+    size_t m_videoFramesNb;
 };
 
 } // namespace videoOpenCV

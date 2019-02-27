@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -73,34 +73,34 @@ namespace vtkGdcmIO
 
 //------------------------------------------------------------------------------
 
-const ::gdcm::Tag seriesUIDTag(0x0020,0x000e);
-const ::gdcm::Tag seriesDateTag(0x0008,0x0021);
-const ::gdcm::Tag seriesTimeTag(0x0008,0x0031);
-const ::gdcm::Tag seriesTypeTag(0x0008,0x0060);
-const ::gdcm::Tag seriesDescriptionTag(0x0008,0x103e);
-const ::gdcm::Tag seriesPhysicianNamesTag(0x0008,0x1050);
+const ::gdcm::Tag seriesUIDTag(0x0020, 0x000e);
+const ::gdcm::Tag seriesDateTag(0x0008, 0x0021);
+const ::gdcm::Tag seriesTimeTag(0x0008, 0x0031);
+const ::gdcm::Tag seriesTypeTag(0x0008, 0x0060);
+const ::gdcm::Tag seriesDescriptionTag(0x0008, 0x103e);
+const ::gdcm::Tag seriesPhysicianNamesTag(0x0008, 0x1050);
 
-const ::gdcm::Tag equipmentInstitutionNameTag(0x0008,0x0080);
+const ::gdcm::Tag equipmentInstitutionNameTag(0x0008, 0x0080);
 
-const ::gdcm::Tag patientNameTag(0x0010,0x0010);
-const ::gdcm::Tag patientIDTag(0x0010,0x0020);
-const ::gdcm::Tag patientBirthdateTag(0x0010,0x0030);
-const ::gdcm::Tag patientSexTag(0x0010,0x0040);
+const ::gdcm::Tag patientNameTag(0x0010, 0x0010);
+const ::gdcm::Tag patientIDTag(0x0010, 0x0020);
+const ::gdcm::Tag patientBirthdateTag(0x0010, 0x0030);
+const ::gdcm::Tag patientSexTag(0x0010, 0x0040);
 
-const ::gdcm::Tag studyUIDTag(0x0020,0x000d);
-const ::gdcm::Tag studyDateTag(0x0008,0x0020);
-const ::gdcm::Tag studyTimeTag(0x0008,0x0030);
-const ::gdcm::Tag studyReferingPhysicianNameTag(0x0008,0x0090);
-const ::gdcm::Tag studyDescriptionTag(0x0008,0x1030);
-const ::gdcm::Tag studyPatientAgeTag(0x0010,0x1010);
+const ::gdcm::Tag studyUIDTag(0x0020, 0x000d);
+const ::gdcm::Tag studyDateTag(0x0008, 0x0020);
+const ::gdcm::Tag studyTimeTag(0x0008, 0x0030);
+const ::gdcm::Tag studyReferingPhysicianNameTag(0x0008, 0x0090);
+const ::gdcm::Tag studyDescriptionTag(0x0008, 0x1030);
+const ::gdcm::Tag studyPatientAgeTag(0x0010, 0x1010);
 
-const ::gdcm::Tag imageTypeTag(0x0008,0x0008);
-const ::gdcm::Tag acquisitionDateTag(0x0008,0x0022);
-const ::gdcm::Tag acquisitionTimeTag(0x0008,0x0032);
+const ::gdcm::Tag imageTypeTag(0x0008, 0x0008);
+const ::gdcm::Tag acquisitionDateTag(0x0008, 0x0022);
+const ::gdcm::Tag acquisitionTimeTag(0x0008, 0x0032);
 
-const ::gdcm::Tag sliceThicknessTag(0x0018,0x0050);
-const ::gdcm::Tag windowCenterTag(0x0028,0x1050);
-const ::gdcm::Tag windowWidthTag(0x0028,0x1051);
+const ::gdcm::Tag sliceThicknessTag(0x0018, 0x0050);
+const ::gdcm::Tag windowCenterTag(0x0028, 0x1050);
+const ::gdcm::Tag windowWidthTag(0x0028, 0x1051);
 
 //------------------------------------------------------------------------------
 
@@ -121,7 +121,7 @@ SeriesDBLazyReader::~SeriesDBLazyReader()
 
 //------------------------------------------------------------------------------
 
-::fwMedData::SeriesDB::sptr SeriesDBLazyReader::createSeriesDB( const ::boost::filesystem::path &dicomDir )
+::fwMedData::SeriesDB::sptr SeriesDBLazyReader::createSeriesDB( const ::boost::filesystem::path& dicomDir )
 {
     SLM_TRACE_FUNC();
     ::fwMedData::SeriesDB::sptr seriesDB = this->getConcreteObject();
@@ -135,7 +135,7 @@ SeriesDBLazyReader::~SeriesDBLazyReader()
 
 //------------------------------------------------------------------------------
 
-void SeriesDBLazyReader::scanFiles( ::gdcm::Scanner & scanner, const std::vector< std::string > & filenames )
+void SeriesDBLazyReader::scanFiles( ::gdcm::Scanner& scanner, const std::vector< std::string >& filenames )
 {
     scanner.AddTag( seriesUIDTag );
     scanner.AddTag( seriesDateTag );
@@ -174,7 +174,7 @@ void SeriesDBLazyReader::scanFiles( ::gdcm::Scanner & scanner, const std::vector
 
 //------------------------------------------------------------------------------
 
-SeriesDBLazyReader::MapSeriesType buildMapSeriesFromScanner( ::gdcm::Scanner & scanner )
+SeriesDBLazyReader::MapSeriesType buildMapSeriesFromScanner( ::gdcm::Scanner& scanner )
 {
     ::gdcm::Directory::FilenamesType keys               = scanner.GetKeys();
     ::gdcm::Directory::FilenamesType::const_iterator it = keys.begin();
@@ -183,11 +183,11 @@ SeriesDBLazyReader::MapSeriesType buildMapSeriesFromScanner( ::gdcm::Scanner & s
 
     for(; it != keys.end(); ++it)
     {
-        const char *filename = it->c_str();
+        const char* filename = it->c_str();
         assert( scanner.IsKey( filename ) );
 
-        const char *seriesUID = scanner.GetValue( filename, seriesUIDTag );
-        const char *acqDate   = scanner.GetValue( filename, acquisitionDateTag );
+        const char* seriesUID = scanner.GetValue( filename, seriesUIDTag );
+        const char* acqDate   = scanner.GetValue( filename, acquisitionDateTag );
 
         if (seriesUID)
         {
@@ -199,7 +199,7 @@ SeriesDBLazyReader::MapSeriesType buildMapSeriesFromScanner( ::gdcm::Scanner & s
                 fileSetId += acqDate;
             }
 
-            const char *imageTypeStr = scanner.GetValue(filename, imageTypeTag);
+            const char* imageTypeStr = scanner.GetValue(filename, imageTypeTag);
             if(imageTypeStr)
             {
                 // Treatment of secondary capture dicom file.
@@ -214,7 +214,7 @@ SeriesDBLazyReader::MapSeriesType buildMapSeriesFromScanner( ::gdcm::Scanner & s
         }
         else
         {
-            SLM_ERROR ( "Error in vtkGdcmIO : No serie name found in : " + *it );
+            SLM_ERROR( "Error in vtkGdcmIO : No series name found in : " + *it );
         }
 
     }
@@ -224,10 +224,9 @@ SeriesDBLazyReader::MapSeriesType buildMapSeriesFromScanner( ::gdcm::Scanner & s
 
 //------------------------------------------------------------------------------
 
-
-std::string getValue( ::gdcm::Scanner & scanner, const std::string & dcmFile, const ::gdcm::Tag & tag )
+std::string getValue( ::gdcm::Scanner& scanner, const std::string& dcmFile, const ::gdcm::Tag& tag )
 {
-    const char * tagValue = scanner.GetValue( dcmFile.c_str(), tag );
+    const char* tagValue = scanner.GetValue( dcmFile.c_str(), tag );
     if( tagValue )
     {
         return std::string(tagValue);
@@ -241,12 +240,12 @@ std::string getValue( ::gdcm::Scanner & scanner, const std::string & dcmFile, co
 //------------------------------------------------------------------------------
 
 template < typename T >
-T getNumericValue( ::gdcm::Scanner & scanner, const std::string & dcmFile, const ::gdcm::Tag & tag )
+T getNumericValue( ::gdcm::Scanner& scanner, const std::string& dcmFile, const ::gdcm::Tag& tag )
 {
-    const char * tagValue = scanner.GetValue( dcmFile.c_str(), tag );
+    const char* tagValue = scanner.GetValue( dcmFile.c_str(), tag );
     if( tagValue )
     {
-        std::string val (tagValue);
+        std::string val(tagValue);
         ::boost::algorithm::trim(val);
         return ::boost::lexical_cast<T>( val );
     }
@@ -258,8 +257,8 @@ T getNumericValue( ::gdcm::Scanner & scanner, const std::string & dcmFile, const
 
 //------------------------------------------------------------------------------
 
-void SeriesDBLazyReader::fillSeries( ::gdcm::Scanner & scanner,
-                                     const std::string & dcmFile, ::fwMedData::Series::sptr series )
+void SeriesDBLazyReader::fillSeries( ::gdcm::Scanner& scanner,
+                                     const std::string& dcmFile, ::fwMedData::Series::sptr series )
 {
     const std::string seriesUID         = getValue( scanner, dcmFile, seriesUIDTag );
     const std::string seriesTime        = getValue( scanner, dcmFile, seriesTimeTag );
@@ -269,7 +268,7 @@ void SeriesDBLazyReader::fillSeries( ::gdcm::Scanner & scanner,
 
     ::fwMedData::DicomValuesType seriesPhysicianNames;
     ::gdcm::Scanner::ValuesType gdcmPhysicianNames = scanner.GetValues( seriesPhysicianNamesTag );
-    for(const std::string &str :  gdcmPhysicianNames)
+    for(const std::string& str :  gdcmPhysicianNames)
     {
         ::fwMedData::DicomValuesType result;
         ::boost::split( result, str, ::boost::is_any_of("\\"));
@@ -288,8 +287,8 @@ void SeriesDBLazyReader::fillSeries( ::gdcm::Scanner & scanner,
 
 //------------------------------------------------------------------------------
 
-void SeriesDBLazyReader::fillPatient( ::gdcm::Scanner & scanner,
-                                      const std::string & dcmFile, ::fwMedData::Patient::sptr patient )
+void SeriesDBLazyReader::fillPatient( ::gdcm::Scanner& scanner,
+                                      const std::string& dcmFile, ::fwMedData::Patient::sptr patient )
 {
     const std::string patientName      = getValue( scanner, dcmFile, patientNameTag );
     const std::string patientId        = getValue( scanner, dcmFile, patientIDTag );
@@ -304,8 +303,8 @@ void SeriesDBLazyReader::fillPatient( ::gdcm::Scanner & scanner,
 
 //------------------------------------------------------------------------------
 
-void SeriesDBLazyReader::fillStudy( ::gdcm::Scanner & scanner,
-                                    const std::string & dcmFile, ::fwMedData::Study::sptr study )
+void SeriesDBLazyReader::fillStudy( ::gdcm::Scanner& scanner,
+                                    const std::string& dcmFile, ::fwMedData::Study::sptr study )
 {
     const std::string studyUID                   = getValue( scanner, dcmFile, studyUIDTag );
     const std::string studyReferingPhysicianName = getValue( scanner, dcmFile, studyReferingPhysicianNameTag );
@@ -325,8 +324,8 @@ void SeriesDBLazyReader::fillStudy( ::gdcm::Scanner & scanner,
 
 //------------------------------------------------------------------------------
 
-void SeriesDBLazyReader::fillEquipment( ::gdcm::Scanner & scanner,
-                                        const std::string & dcmFile, ::fwMedData::Equipment::sptr equipment )
+void SeriesDBLazyReader::fillEquipment( ::gdcm::Scanner& scanner,
+                                        const std::string& dcmFile, ::fwMedData::Equipment::sptr equipment )
 {
     const std::string equipementInstitution = getValue( scanner, dcmFile, equipmentInstitutionNameTag );
 
@@ -336,13 +335,13 @@ void SeriesDBLazyReader::fillEquipment( ::gdcm::Scanner & scanner,
 //------------------------------------------------------------------------------
 
 void SeriesDBLazyReader::preprocessImage(
-    const ::fwData::Image::sptr & img,
-    const SeriesDBLazyReader::SeriesFilesType & files )
+    const ::fwData::Image::sptr& img,
+    const SeriesDBLazyReader::SeriesFilesType& files )
 {
     ::gdcm::Reader localReader;
     localReader.SetFileName( files[0].c_str() );
     localReader.Read();
-    ::gdcm::File & gdcmReaderFile = localReader.GetFile();
+    ::gdcm::File& gdcmReaderFile = localReader.GetFile();
     std::vector<double> origin    = ::gdcm::ImageHelper::GetOriginValue( gdcmReaderFile );
     std::vector<unsigned int> dim = ::gdcm::ImageHelper::GetDimensionsValue( gdcmReaderFile );
     std::vector<double> spacing   = ::gdcm::ImageHelper::GetSpacingValue( gdcmReaderFile );
@@ -366,7 +365,7 @@ void SeriesDBLazyReader::preprocessImage(
     img->setSpacing( imgSpacing );
 
     // Size
-    ::fwData::Image::SizeType imgSize (3);
+    ::fwData::Image::SizeType imgSize(3);
     imgSize.resize(3);
     imgSize[0] = dim[0];
     imgSize[1] = dim[1];
@@ -426,7 +425,7 @@ void SeriesDBLazyReader::preprocessImage(
 
 //------------------------------------------------------------------------------
 
-SeriesDBLazyReader::SeriesFilesType sortImageSeriesFiles( const SeriesDBLazyReader::SeriesFilesType & seriesFiles )
+SeriesDBLazyReader::SeriesFilesType sortImageSeriesFiles( const SeriesDBLazyReader::SeriesFilesType& seriesFiles )
 {
     SeriesDBLazyReader::SeriesFilesType sortedSeriesFiles = seriesFiles;
 
@@ -446,7 +445,7 @@ SeriesDBLazyReader::SeriesFilesType sortImageSeriesFiles( const SeriesDBLazyRead
 
 //------------------------------------------------------------------------------
 
-double SeriesDBLazyReader::computeZSpacing( const SeriesDBLazyReader::SeriesFilesType & seriesFiles )
+double SeriesDBLazyReader::computeZSpacing( const SeriesDBLazyReader::SeriesFilesType& seriesFiles )
 {
     SLM_ASSERT("This method only work if series files contains at least 2 frames.", seriesFiles.size() > 1);
     double zspacing = 0;
@@ -470,13 +469,13 @@ double SeriesDBLazyReader::computeZSpacing( const SeriesDBLazyReader::SeriesFile
 //------------------------------------------------------------------------------
 
 void SeriesDBLazyReader::fillImage(
-    ::gdcm::Scanner & scanner,
-    const SeriesDBLazyReader::SeriesFilesType & seriesFiles,
-    const std::string & dcmFile,
+    ::gdcm::Scanner& scanner,
+    const SeriesDBLazyReader::SeriesFilesType& seriesFiles,
+    const std::string& dcmFile,
     ::fwData::Image::sptr img )
 {
 
-    this->preprocessImage(img,seriesFiles);
+    this->preprocessImage(img, seriesFiles);
 
     double center = getNumericValue<double>(scanner, dcmFile, windowCenterTag);
     double width  = getNumericValue<double>(scanner, dcmFile, windowWidthTag);
@@ -499,7 +498,6 @@ void SeriesDBLazyReader::fillImage(
     }
     img->setSpacing(imgSpacing);
 
-
     ::vtkGdcmIO::helper::ImageDicomInfo::sptr dcmInfo = std::make_shared< ::vtkGdcmIO::helper::ImageDicomInfo >();
     dcmInfo->m_buffSizeInBytes                        = img->getSizeInBytes();
     dcmInfo->m_seriesFiles                            = seriesFiles;
@@ -513,8 +511,8 @@ void SeriesDBLazyReader::fillImage(
 //------------------------------------------------------------------------------
 
 void SeriesDBLazyReader::addSeries(
-    const ::fwMedData::SeriesDB::sptr &seriesDB,
-    const std::vector< std::string > & filenames )
+    const ::fwMedData::SeriesDB::sptr& seriesDB,
+    const std::vector< std::string >& filenames )
 {
     //gdcm::Trace::SetDebug( 1 );
     //gdcm::Trace::SetWarning( 1 );
@@ -539,8 +537,8 @@ void SeriesDBLazyReader::addSeries(
 
         for( MapSeriesType::value_type mapElem :  mapSeries )
         {
-            SeriesFilesType seriesFiles    = sortImageSeriesFiles( mapElem.second );
-            const std::string & refDcmFile = seriesFiles[0];
+            SeriesFilesType seriesFiles   = sortImageSeriesFiles( mapElem.second );
+            const std::string& refDcmFile = seriesFiles[0];
 
             // ToDo
             // ::gdcm::MediaStorage::IsImage( ::gdcm::MediaStorage::GetMSType( XXX ) ) );
@@ -610,5 +608,3 @@ void SeriesDBLazyReader::read()
 }
 
 } //namespace vtkGdcmIO
-
-

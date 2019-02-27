@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -254,6 +254,16 @@ void SCalibrationInfoEditor::getSelection()
             sig->asyncEmit(idx);
         }
     }
+}
+
+// ----------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsMap SCalibrationInfoEditor::getAutoConnections() const
+{
+    KeyConnectionsMap connections;
+    connections.push( s_CALIBRATION_INFO_1, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push( s_CALIBRATION_INFO_2, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    return connections;
 }
 
 // ----------------------------------------------------------------------------

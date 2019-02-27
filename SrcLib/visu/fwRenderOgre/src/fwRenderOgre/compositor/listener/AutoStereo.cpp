@@ -56,14 +56,15 @@ AutoStereoCompositorListener::~AutoStereoCompositorListener()
     // Cleaning the texture forces the listener to be triggered and then to create the techniques with the new textures
     for(auto& techMatPair : m_createdTechniques)
     {
-        if(mtlManager.getByHandle(techMatPair.second) == nullptr)
+        ::Ogre::MaterialPtr mtl = mtlManager.getByName(techMatPair.second);
+
+        if(mtl == nullptr)
         {
             // The material is already deleted and so is the technique.
             continue;
         }
 
         ::Ogre::Technique* tech = techMatPair.first;
-        ::Ogre::Material* mtl   = tech->getParent();
 
         const ::Ogre::Material::Techniques techniques = mtl->getTechniques();
 
@@ -202,7 +203,7 @@ AutoStereoCompositorListener::~AutoStereoCompositorListener()
             texUnitState->setCompositorReference(compName, compName + "Texture" + passIdStr);
         }
 
-        m_createdTechniques.push_back(std::make_pair(newTech, _originalMaterial->getHandle()));
+        m_createdTechniques.push_back(std::make_pair(newTech, _originalMaterial->getName()));
     }
 
     return newTech;

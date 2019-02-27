@@ -37,7 +37,7 @@
 #include <boost/filesystem/path.hpp>
 #include <boost/lexical_cast.hpp>
 
-#include <gdcmScanner.h>
+#include <gdcmImageReader.h>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwDicomIOFilter::ut::ImagePositionPatientSorterTest );
@@ -59,6 +59,56 @@ void ImagePositionPatientSorterTest::setUp()
 void ImagePositionPatientSorterTest::tearDown()
 {
     // Clean up after the test run.
+}
+
+//------------------------------------------------------------------------------
+
+double getInstanceZPosition(const ::fwMemory::BufferObject::sptr& bufferObj)
+{
+    ::gdcm::ImageReader reader;
+    const ::fwMemory::BufferManager::StreamInfo streamInfo = bufferObj->getStreamInfo();
+    reader.SetStream(*streamInfo.stream);
+
+    if (!reader.Read())
+    {
+        return 0;
+    }
+
+    // Retrieve dataset
+    const ::gdcm::DataSet& dataset = reader.GetFile().GetDataSet();
+
+    // Check tags availability
+    if(!dataset.FindDataElement(::gdcm::Tag(0x0020, 0x0032)) || !dataset.FindDataElement(::gdcm::Tag(0x0020, 0x0037)))
+    {
+        const std::string msg = "Unable to compute the spacing between slices of the series.";
+        throw ::fwGdcmIO::exception::Failed(msg);
+    }
+
+    // Retrieve image position
+    const ::gdcm::Image& gdcmImage = reader.GetImage();
+    const double* gdcmOrigin       = gdcmImage.GetOrigin();
+    const fwVec3d imagePosition    = {{ gdcmOrigin[0], gdcmOrigin[1], gdcmOrigin[2] }};
+
+    // Retrieve image orientation
+    const double* directionCosines  = gdcmImage.GetDirectionCosines();
+    const fwVec3d imageOrientationU = {{
+                                           std::round(directionCosines[0]),
+                                           std::round(directionCosines[1]),
+                                           std::round(directionCosines[2])
+                                       }};
+    const fwVec3d imageOrientationV = {{
+                                           std::round(directionCosines[3]),
+                                           std::round(directionCosines[4]),
+                                           std::round(directionCosines[5])
+                                       }};
+
+    //Compute Z direction (cross product)
+    const fwVec3d zVector = ::fwMath::cross(imageOrientationU, imageOrientationV);
+
+    //Compute dot product to get the index
+    const double index = ::fwMath::dot(imagePosition, zVector);
+
+    return index;
 }
 
 //-----------------------------------------------------------------------------
@@ -90,78 +140,20 @@ void ImagePositionPatientSorterTest::simpleApplication()
     ::fwDicomIOFilter::IFilter::sptr filter = ::fwDicomIOFilter::factory::New(
         "::fwDicomIOFilter::sorter::ImagePositionPatientSorter");
     CPPUNIT_ASSERT(filter);
-    ::fwDicomIOFilter::helper::Filter::applyFilter(dicomSeriesContainer, filter, true);
+    CPPUNIT_ASSERT_NO_THROW(::fwDicomIOFilter::helper::Filter::applyFilter(dicomSeriesContainer, filter, true));
+
     CPPUNIT_ASSERT_EQUAL(size_t(1), dicomSeriesContainer.size());
     dicomSeries = dicomSeriesContainer[0];
 
-    // Create the list of files
-    std::vector< std::string > filenames;
-    ::boost::filesystem::directory_iterator currentEntry(path);
-    ::boost::filesystem::directory_iterator endEntry;
-    for(; currentEntry != endEntry; ++currentEntry)
+    double oldPosition = -1.0;
+
+    const ::fwMedData::DicomSeries::DicomContainerType& dicomContainer = dicomSeries->getDicomContainer();
+    for(size_t index = dicomSeries->getFirstInstanceNumber(); index < dicomSeries->getNumberOfInstances(); ++index)
     {
-        const ::boost::filesystem::path entryPath = *currentEntry;
-        if (::boost::filesystem::is_regular_file(entryPath))
-        {
-            filenames.push_back(entryPath.string());
-        }
-    }
-
-    // Read the instance number of each file
-    ::gdcm::Scanner scanner;
-    scanner.AddTag(::gdcm::Tag(0x0020, 0x0032));    // ImagePositionPatient
-    scanner.AddTag(::gdcm::Tag(0x0020, 0x0037));    // ImageOrientationPatient
-    CPPUNIT_ASSERT(scanner.Scan(filenames));
-
-    // Loop through instance number
-    ::gdcm::Directory::FilenamesType keys = scanner.GetKeys();
-    ::gdcm::Directory::FilenamesType::const_iterator itFilename;
-    double oldPosition = -1;
-    for(itFilename = keys.begin(); itFilename != keys.end(); ++itFilename)
-    {
-        const std::string filename = itFilename->c_str();
-
-        // Retrieve image position patient
-        std::string imagePositionPatientStr = scanner.GetValue(filename.c_str(), ::gdcm::Tag(0x0020, 0x0032));
-        ::boost::algorithm::trim(imagePositionPatientStr);
-        CPPUNIT_ASSERT(!imagePositionPatientStr.empty());
-        std::vector<std::string> imagePositionPatient;
-        ::boost::split(imagePositionPatient, imagePositionPatientStr, ::boost::is_any_of("\\"));
-        CPPUNIT_ASSERT_EQUAL(size_t(3), imagePositionPatient.size());
-
-        // Retrieve image orientation patient
-        std::string imageOrientationPatientStr = scanner.GetValue(filename.c_str(), ::gdcm::Tag(0x0020, 0x0037));
-        ::boost::algorithm::trim(imageOrientationPatientStr);
-        CPPUNIT_ASSERT(!imagePositionPatientStr.empty());
-        std::vector<std::string> imageOrientationPatient;
-        ::boost::split(imageOrientationPatient, imageOrientationPatientStr, ::boost::is_any_of("\\"));
-        CPPUNIT_ASSERT_EQUAL(size_t(6), imageOrientationPatient.size());
-
-        fwVec3d imagePosition;
-        imagePosition[0] = ::boost::lexical_cast<double>(imagePositionPatient[0]);
-        imagePosition[1] = ::boost::lexical_cast<double>(imagePositionPatient[1]);
-        imagePosition[2] = ::boost::lexical_cast<double>(imagePositionPatient[2]);
-
-        fwVec3d imageOrientationU;
-        imageOrientationU[0] = ::boost::lexical_cast<double>(imageOrientationPatient[0]);
-        imageOrientationU[1] = ::boost::lexical_cast<double>(imageOrientationPatient[1]);
-        imageOrientationU[2] = ::boost::lexical_cast<double>(imageOrientationPatient[2]);
-
-        fwVec3d imageOrientationV;
-        imageOrientationV[0] = ::boost::lexical_cast<double>(imageOrientationPatient[3]);
-        imageOrientationV[1] = ::boost::lexical_cast<double>(imageOrientationPatient[4]);
-        imageOrientationV[2] = ::boost::lexical_cast<double>(imageOrientationPatient[5]);
-
-        //Compute Z direction (cross product)
-        fwVec3d zVector = ::fwMath::cross(imageOrientationU, imageOrientationV);
-
-        //Compute dot product to get the position
-        double position = ::fwMath::dot(imagePosition, zVector);
+        const double position = getInstanceZPosition(dicomContainer.at(index));
 
         // Check that the position is bigger that the previous one
-        std::stringstream ss;
-        ss << position << " is not lower than " << oldPosition;
-        CPPUNIT_ASSERT_MESSAGE(ss.str(), position > oldPosition);
+        CPPUNIT_ASSERT_LESS(position, oldPosition);
         oldPosition = position;
     }
 }

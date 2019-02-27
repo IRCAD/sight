@@ -1,30 +1,29 @@
 #version 330
 
-uniform sampler1D u_tfTexture;
-uniform vec2 u_tfWindow;
+vec4 sampleTransferFunction(float _fIntensity, in sampler1D _s1Sampler, in vec2 _f2Window)
+{
+    float intIntensity = _fIntensity * 65535.f - 32768.f;
+    float scaledValue = ((intIntensity - _f2Window.x) / (_f2Window.y - _f2Window.x));
+
+    return texture(_s1Sampler, scaledValue);
+}
 
 //-----------------------------------------------------------------------------
 
-vec4 sampleTransferFunction(float intensity)
+vec4 sampleTransferFunction_uint16(int _fIntensity, in sampler1D _s1Sampler, in vec2 _f2Window)
 {
-    float intIntensity = intensity * 65535.f - 32768.f;
-    float scaledValue = ((intIntensity - u_tfWindow.x) / (u_tfWindow.y - u_tfWindow.x));
+    float intIntensity = _fIntensity ;
+    float scaledValue = ((intIntensity - _f2Window.x) / (_f2Window.y - _f2Window.x));
 
-    return texture(u_tfTexture, scaledValue);
+    return texture(_s1Sampler, scaledValue);
 }
 
-vec4 sampleTransferFunction_uint16(int intensity)
+//-----------------------------------------------------------------------------
+
+vec4 sampleTransferFunction_float(float _fIntensity, in sampler1D _s1Sampler, in vec2 _f2Window)
 {
-    float intIntensity = intensity ;
-    float scaledValue = ((intIntensity - u_tfWindow.x) / (u_tfWindow.y - u_tfWindow.x));
+    float intIntensity = _fIntensity ;
+    float scaledValue = ((intIntensity - _f2Window.x) / (_f2Window.y - _f2Window.x));
 
-    return texture(u_tfTexture, scaledValue);
-}
-
-vec4 sampleTransferFunction_float(float intensity)
-{
-    float intIntensity = intensity ;
-    float scaledValue = ((intIntensity - u_tfWindow.x) / (u_tfWindow.y - u_tfWindow.x));
-
-    return texture(u_tfTexture, scaledValue);
+    return texture(_s1Sampler, scaledValue);
 }

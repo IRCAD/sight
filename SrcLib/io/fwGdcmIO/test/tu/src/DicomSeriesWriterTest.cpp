@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -35,6 +35,7 @@
 
 #include <fwTest/Data.hpp>
 #include <fwTest/helper/compare.hpp>
+#include <fwTest/Slow.hpp>
 
 #include <fwTools/System.hpp>
 
@@ -57,6 +58,15 @@ namespace ut
 
 void DicomSeriesWriterTest::setUp()
 {
+    if(::fwTest::Slow::ignoreSlowTests())
+    {
+        std::cout << std::endl << "Ignoring slow " << std::endl;
+        return;
+    }
+    else
+    {
+        std::cout << std::endl << "Executing slow tests.." << std::endl;
+    }
     // HACK: force link with fwMedDataCamp. Needed when calling ::fwDataCamp::visitor::CompareObjects::compare.
     m_medDataCampVersion = ::fwMedDataCamp::Version::s_CURRENT_VERSION;
 
@@ -92,6 +102,10 @@ void DicomSeriesWriterTest::tearDown()
 
 void DicomSeriesWriterTest::checkDicomSeries(const ::boost::filesystem::path& p, bool anonymized)
 {
+    if(::fwTest::Slow::ignoreSlowTests())
+    {
+        return;
+    }
     ::fwMedData::SeriesDB::sptr destSeriesDB = ::fwMedData::SeriesDB::New();
 
     ::fwGdcmIO::reader::SeriesDB::sptr reader = ::fwGdcmIO::reader::SeriesDB::New();
@@ -122,6 +136,10 @@ void DicomSeriesWriterTest::checkDicomSeries(const ::boost::filesystem::path& p,
 // TODO: This test is disabled as DicomSeries doesn't store Binaries anymore.
 void DicomSeriesWriterTest::writeReadTest()
 {
+    if(::fwTest::Slow::ignoreSlowTests())
+    {
+        return;
+    }
     CPPUNIT_ASSERT_MESSAGE("Failed to set up source Dicom series", m_srcDicomSeries);
 
     const ::boost::filesystem::path destPath = ::fwTools::System::getTemporaryFolder("writeReadTest") /
@@ -141,6 +159,10 @@ void DicomSeriesWriterTest::writeReadTest()
 
 void DicomSeriesWriterTest::writeReadAnonymiseTest()
 {
+    if(::fwTest::Slow::ignoreSlowTests())
+    {
+        return;
+    }
     CPPUNIT_ASSERT_MESSAGE("Failed to set up source Dicom series", m_srcDicomSeries);
 
     // Anonymize series
@@ -166,6 +188,10 @@ void DicomSeriesWriterTest::writeReadAnonymiseTest()
 
 void DicomSeriesWriterTest::writeReadDirArchiveTest()
 {
+    if(::fwTest::Slow::ignoreSlowTests())
+    {
+        return;
+    }
     CPPUNIT_ASSERT_MESSAGE("Failed to set up source Dicom series", m_srcDicomSeries);
 
     const ::boost::filesystem::path destPath

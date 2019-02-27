@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -41,6 +41,7 @@ namespace videoCalibration
             <in key="calibrationInfo1" uid="..." />
             <in key="calibrationInfo2" uid="..." />
             <inout key="cameraSeries" uid="..." />
+            <out key="matrix" uid="..." />
             <camIndex>...</camIndex>
             <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" squareSize="CHESSBOARD_SQUARE_SIZE" />
        </service>
@@ -50,6 +51,8 @@ namespace videoCalibration
  * - \b calibrationInfo2 [::arData::CalibrationInfo]: Data of the second camera used to compute the calibration.
  * @subsection In-Out In-Out:
  * - \b camera [::arData::CameraSeries]: Output calibration.
+ *  * @subsection Output Output:
+ * - \b matrix [::fwData::TransformationMatrix3D]: Extrinsic matrix (for export purpose) (optionnal).
  * @subsection Configuration Configuration:
  * - \b camIndex (optional, default: 1): index of the camera in \b cameraSeries used to compute extrinsic matrix
  *      (from camera[0] to camera[index]).
@@ -58,7 +61,7 @@ namespace videoCalibration
 class VIDEOCALIBRATION_CLASS_API SOpenCVExtrinsic : public ::arServices::ICalibration
 {
 public:
-    fwCoreServiceClassDefinitionsMacro((SOpenCVExtrinsic)(::arServices::ICalibration));
+    fwCoreServiceClassDefinitionsMacro((SOpenCVExtrinsic)(::arServices::ICalibration))
 
     /// Double changed signal type
     typedef ::fwCom::Signal< void (double) > ErrorComputedSignalType;

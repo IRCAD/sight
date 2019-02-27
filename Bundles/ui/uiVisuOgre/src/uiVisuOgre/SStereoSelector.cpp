@@ -125,9 +125,9 @@ void SStereoSelector::onSelectedLayerItem(int index)
 
 void SStereoSelector::onSelectedModeItem(int index)
 {
-    m_currentLayer.lock()->setStereoMode(index == 1 ? ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_5 :
-                                         index == 2 ? ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_8 :
-                                         ::fwRenderOgre::Layer::StereoModeType::NONE);
+    m_currentLayer.lock()->setStereoMode(index == 1 ? ::fwRenderOgre::compositor::Core::StereoModeType::AUTOSTEREO_5 :
+                                         index == 2 ? ::fwRenderOgre::compositor::Core::StereoModeType::AUTOSTEREO_8 :
+                                         ::fwRenderOgre::compositor::Core::StereoModeType::NONE);
 }
 
 //------------------------------------------------------------------------------

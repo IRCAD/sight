@@ -24,6 +24,7 @@ macro(linux_install PRJ_NAME)
         findExtLibDir(EXTERNAL_LIBRARIES_DIRECTORIES)
     endif()
     set(CPACK_GENERATOR TGZ)
+    set(CPACK_SOURCE_GENERATOR TGZ)
     string(TOLOWER ${PRJ_NAME} LOWER_PRJ_NAME)
     set(ICON_FILENAME ${LOWER_PRJ_NAME}.ico)
 

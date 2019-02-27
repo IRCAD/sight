@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2018 IRCAD France
- * Copyright (C) 2016-2018 IHU Strasbourg
+ * Copyright (C) 2016-2019 IRCAD France
+ * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -31,14 +31,11 @@
 
 #include <fwRenderOgre/IAdaptor.hpp>
 #include <fwRenderOgre/ITransformable.hpp>
-#include <fwRenderOgre/TransferFunction.hpp>
 #include <fwRenderOgre/ui/VRWidget.hpp>
-#include <fwRenderOgre/vr/ImportanceDrivenVolumeRenderer.hpp>
 #include <fwRenderOgre/vr/PreIntegrationTable.hpp>
+#include <fwRenderOgre/vr/RayTracingVolumeRenderer.hpp>
 #include <fwRenderOgre/vr/SATVolumeIllumination.hpp>
 
-#include <OGRE/OgreCamera.h>
-#include <OGRE/OgrePolygon.h>
 #include <OGRE/OgreTexture.h>
 
 #include <array>
@@ -52,32 +49,28 @@ namespace visuOgreAdaptor
  *
  * @section Slots Slots
  * - \b newImage(): Called when a new image is loaded.
- * - \b updateSampling(int): Called when the sampling is changed and updates the volume renderer accordingly.
- * - \b updateOpacityCorrection(int): Called when the opacity correction factor is changed and updates the volume
- * renderer accordingly.
- * - \b updateAOFactor(double) : Called when the ambient occlusion factor is changed and computes the SAT.
- * - \b updateColorBleedingFactor(double) : Called when the color bleeding factor is changed and computes the SAT.
- * - \b updateSatSizeRatio(int) : Called when the SAT ratio is changed and computes it again with the new corresponding
- *      size.
- * - \b updateSatShellsNumber(int) : Called when the number of SAT shells is changed and compute the SAT.
- * - \b updateSatShellRadius(int) : Called when the SAT shell radius is changed and computes the SAT.
- * - \b updateSatConeAngle(int) : Called when the SAT cone angle is changed and computes the SAT.
- * - \b updateSatConeSamples(int) : Called when the SAT cone samples number is changed and computes the SAT.
- * - \b togglePreintegration(bool): Toggle pre-integration.
- * - \b toggleAmbientOcclusion(bool): Toggle ambient occlusion.
- * - \b toggleColorBleeding(bool): Toggle color bleeding.
- * - \b toggleShadows(bool): Toggle soft shadows.
+ * - \b updateImage(): Called when the image is updated.
  * - \b toggleWidgets(bool): Toggles widget visibility.
- * - \b resizeViewport(int, int): Called when the size of the viewport changes.
- * - \b setFocalDistance(int): Called to modify focal length (only useful for stereoscopic 3D).
- * - \b setStereoMode(int): Called to modify 3D stereoscopic 3D mode.
+ * - \b updateVisibility(bool): Shows or hides the volume.
+ * - \b updateClippingBox(): Updates the cropping widget from the clipping matrix.
  * - \b setBoolParameter(bool, string): Calls a bool parameter slot according to the given key.
+ *   - preIntegration: Toggle pre-integration.
+ *   - ambientOcclusion: Toggle ambient occlusion.
+ *   - colorBleeding: Toggle color bleeding.
+ *   - shadows: Toggle soft shadows.
+ *   - widgets: Toggle the clipping box widget's visibility.
  * - \b setIntParameter(int, string): Calls an int parameter slot according to the given key.
+ *   - sampling: Sets the number of volume samples used by the renderer. More samples yield more details but slow down
+ * rendering.
+ *   - opacityCorrection: Sets the volume opacity correction factor.
+ *   - satSizeRatio: Sets the SAT ratio and computes it again with the new corresponding size.
+ *   - satShellsNumber: Sets the number of SAT shells and compute the SAT.
+ *   - satShellRadius: Sets the SAT shell radius and computes the SAT.
+ *   - satConeAngle: Sets the SAT cone angle and computes the SAT.
+ *   - satConeSamples: Sets the SAT cone samples number and computes the SAT.
  * - \b setDoubleParameter(double, string): Calls a double parameter slot according to the given key.
- * - \b setEnumParameter(string, string): Calls a double parameter slot according to the given key.
- * - \b setColorParameter(array<uint8_t, 4>, string): Calls a color parameter slot according to the given key.
- * - \b updateVisibility(bool): show or hide the volume.
- * - \b updateClippingBox(): updates the cropping widget from the clipping matrix.
+ *   - aoFactor: Sets the ambient occlusion factor and computes the SAT.
+ *   - colorBleedingFactor: Sets the color bleeding factor and computes the SAT.
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -91,13 +84,13 @@ namespace visuOgreAdaptor
                 aoFactor="0.5" colorBleedingFactor="0.5" autoresetcamera="yes" transform="..."/>
     </service>
    @endcode
- * @subsection Input Input
- * - \b image [::fwData::Image]: input volume data.
+ *
  * @subsection In-Out In-Out
+ * - \b image [::fwData::Image]: input volume data.
  * - \b tf [::fwData::TransferFunction] (optional): the current TransferFunction. If it is not defined, we use the
- *      image's default transferFunction (CT-GreyLevel).
- * - \b mask [::fwData::Image] (optional): segmented data.
+ * image's default transferFunction (CT-GreyLevel).
  * - \b clippingMatrix [::fwData::TransformationMatrix3D]: matrix used to clip the volume.
+ *
  * @subsection Configuration Configuration
  * - \b layer (mandatory): id of the layer where this adaptor applies.
  * - \b samples (optional, default=512): maximum number of samples per ray or number of slices.
@@ -107,16 +100,16 @@ namespace visuOgreAdaptor
  * - \b colorBleeding (optional, true/false, default=false): Color bleeding usage.
  * - \b shadows (optional, true/false, default=false): Soft shadows usage.
  * - \b satSizeRatio (optional, float, default=0.25): ratio used to determine the size of the SAT regarding of the
- *      associated image size.
+ * associated image size.
  * - \b satShells (optional, int, default=3): number of shells used to compute the volume illumination from the SAT.
  * - \b satShellRadius (optional, int, default=7): radius of the shells used to compute the volume illumination from the
- *      SAT.
+ * SAT.
  * - \b satConeAngle (optional, float, default=0.1): angle used to define the soft shadows cones.
  * - \b satConeSamples (optional, float, default=50): number of samples along the soft shadows cones.
  * - \b aoFactor (optional, double, default=1.0): factor used to weight the ambient occlusion.
  * - \b colorBleedingFactor (optional, double, default=1.0): factor used to weight the color bleeding.
  * - \b autoresetcamera (optional, yes/no, default=yes): reset the camera at image update to view the whole volume.
- * -\b transform (optional): transform applied to the adaptor's scene node
+ * - \b transform (optional): transform applied to the adaptor's scene node
  */
 class VISUOGREADAPTOR_CLASS_API SVolumeRender : public ::fwRenderOgre::IAdaptor,
                                                 public ::fwRenderOgre::ITransformable
@@ -125,37 +118,13 @@ public:
 
     fwCoreServiceClassDefinitionsMacro( (SVolumeRender)(::fwRenderOgre::IAdaptor) )
 
-    /**
-     * @name Slots API
-     * @{
-     */
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_NEW_IMAGE_SLOT;
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_NEW_MASK_SLOT;
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_IMAGE_SLOT;
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_SAMPLING_SLOT;
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_AO_FACTOR_SLOT;
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_COLOR_BLEEDING_FACTOR_SLOT;
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_SAT_SIZE_RATIO_SLOT;
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_SAT_SHELLS_SLOT;
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_SAT_SHELL_RADIUS_SLOT;
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_SAT_CONE_ANGLE_SLOT;
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_SAT_CONE_SAMPLES_SLOT;
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_TOGGLE_PREINTEGRATION_SLOT;
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_TOGGLE_AMBIENT_OCCLUSION_SLOT;
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_TOGGLE_COLOR_BLEEDING_SLOT;
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_TOGGLE_SHADOWS_SLOT;
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_TOGGLE_WIDGETS_SLOT;
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_RESIZE_VIEWPORT_SLOT;
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_FOCAL_DISTANCE_SLOT;
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_STEREO_MODE_SLOT;
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_BOOL_PARAMETER_SLOT;
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_INT_PARAMETER_SLOT;
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_DOUBLE_PARAMETER_SLOT;
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_ENUM_PARAMETER_SLOT;
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_COLOR_PARAMETER_SLOT;
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT;
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_CLIPPING_BOX_SLOT;
-    /** @} */
+    /// Constructor.
+    VISUOGREADAPTOR_API SVolumeRender() noexcept;
+
+    /// Destructor.
+    VISUOGREADAPTOR_API virtual ~SVolumeRender() noexcept;
+
+private:
 
     /// Volume rendering effects.
     typedef enum
@@ -165,70 +134,88 @@ public:
         VR_SHADOWS
     } VREffectType;
 
-    /// Constructor.
-    VISUOGREADAPTOR_API SVolumeRender() noexcept;
-
-    /// Destructor.
-    VISUOGREADAPTOR_API virtual ~SVolumeRender() noexcept;
-
-protected:
-
     /// Starts the service initializes scene objects.
-    VISUOGREADAPTOR_API virtual void starting() override;
+    virtual void starting() override;
 
     /// Cleans up memory.
-    VISUOGREADAPTOR_API virtual void stopping() override;
+    virtual void stopping() override;
 
     /// Does nothing.
-    VISUOGREADAPTOR_API virtual void updating() override;
+    virtual void updating() override;
 
-    /// Configures the service
-    VISUOGREADAPTOR_API virtual void configuring() override;
+    /// Configures the service.
+    virtual void configuring() override;
 
-    /// Retrieves the current transfer function
-    VISUOGREADAPTOR_API void swapping(const KeyType& key) override;
+    /// Retrieves the current transfer function.
+    virtual void swapping(const KeyType& key) override;
 
-    /// Slot: update the displayed transfer function
-    VISUOGREADAPTOR_API virtual void updateTF();
+    /// Returns proposals to connect service slots to associated object signals.
+    virtual ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
-    /**
-     * @brief Returns proposals to connect service slots to associated object signals,
-     * this method is used for obj/srv auto connection
-     *
-     * Connects fwData::Image::s_MODIFIED_SIG to this::s_NEWIMAGE_SLOT
-     */
-    VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
+    /// Updates the transfer function applied to the volume.
+    void updateVolumeTF();
 
-private:
-
+    /// Sets a new image.
     void newImage();
-    void newMask();
-    void updateImage();
-    void updateSampling(int nbSamples);
-    void updateOpacityCorrection(int opacityCorrection);
-    void updateAOFactor(double aoFactor);
-    void updateColorBleedingFactor(double colorBleedingFactor);
-    void updateSatSizeRatio(int sizeRatio);
-    void updateSatShellsNumber(int shellsNumber);
-    void updateSatShellRadius(int shellRadius);
-    void updateSatConeAngle(int coneAngle);
-    void updateSatConeSamples(int nbConeSamples);
-    void togglePreintegration(bool preintegration);
-    void toggleAmbientOcclusion(bool ambientOcclusion);
-    void toggleColorBleeding(bool colorBleeding);
-    void toggleShadows(bool shadows);
-    void toggleWidgets(bool visible);
-    void resizeViewport(int w, int h);
-    void setFocalDistance(int focalDistance);
-    void setStereoMode(::fwRenderOgre::Layer::StereoModeType mode);
-    void setBoolParameter(bool val, std::string key);
-    void setIntParameter(int val, std::string key);
-    void setDoubleParameter(double val, std::string key);
-    void setEnumParameter(std::string val, std::string key);
-    void setColorParameter(std::array<uint8_t, 4> color, std::string key);
-    void setImageSpacing();
 
-    /// Slot: Sets the volume to be visible or not.
+    /// Updates renderer and the GPU volume texture with the new input image data.
+    void updateImage();
+
+    /// Updates the sampling.
+    void updateSampling(int nbSamples);
+
+    /// Sets the opacity correction.
+    void updateOpacityCorrection(int opacityCorrection);
+
+    /// Sets the ambient occlusion factor.
+    void updateAOFactor(double aoFactor);
+
+    /// Sets the color bleeding factor.
+    void updateColorBleedingFactor(double colorBleedingFactor);
+
+    /// Sets the SAT size ration.
+    void updateSatSizeRatio(int sizeRatio);
+
+    /// Sets the SAT shells number.
+    void updateSatShellsNumber(int shellsNumber);
+
+    /// Sets the SAT shells radius.
+    void updateSatShellRadius(int shellRadius);
+
+    /// Sets the SAT cone angle.
+    void updateSatConeAngle(int coneAngle);
+
+    /// Sets the SAT cone samples.
+    void updateSatConeSamples(int nbConeSamples);
+
+    /// Enables/disables the pre integration table.
+    void togglePreintegration(bool preintegration);
+
+    /// Enables/disables the ambient occlision.
+    void toggleAmbientOcclusion(bool ambientOcclusion);
+
+    /// Enables/disables the color bleeding.
+    void toggleColorBleeding(bool colorBleeding);
+
+    /// Enables/disables the volume self-shadowing.
+    void toggleShadows(bool shadows);
+
+    /// Displays/Hides the widget.
+    void toggleWidgets(bool visible);
+
+    /// Sets the focal distance.
+    void setFocalDistance(int focalDistance);
+
+    /// Updates a bool parameter.
+    void setBoolParameter(bool val, std::string key);
+
+    /// Updates a int parameter.
+    void setIntParameter(int val, std::string key);
+
+    /// Updates a double parameter.
+    void setDoubleParameter(double val, std::string key);
+
+    /// Sets the volume to be visible or not.
     void updateVisibility(bool visibility);
 
     /// Creates widgets and connects its slots to interactor signals.
@@ -237,7 +224,7 @@ private:
     /// Removes the widgets from the interactor and deletes it.
     void destroyWidget();
 
-    /// Computes the volume illumination and applies it to the ray tracing renderer
+    /// Computes the volume illumination and applies it to the ray tracing renderer.
     void updateVolumeIllumination();
 
     /// Updates or creates the illumination volume according to the given VR effect.
@@ -245,21 +232,21 @@ private:
 
     /// Updates the clipping box position from the inout clipping matrix.
     void updateClippingBox();
-    ::fwDataTools::helper::TransferFunction m_helperTF;
 
     /// Updates the inout clipping matrix from the clipping box positions.
     void updateClippingTM3D();
 
+    /// Helper to manage the volume TF.
+    ::fwDataTools::helper::TransferFunction m_helperVolumeTF;
+
     /// Renders the volume.
-    ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer* m_volumeRenderer { nullptr };
+    ::fwRenderOgre::vr::RayTracingVolumeRenderer* m_volumeRenderer { nullptr };
 
     /// 3D Image texture.
     ::Ogre::TexturePtr m_3DOgreTexture;
 
-    ::Ogre::TexturePtr m_maskTexture;
-
     /// TF texture used for rendering.
-    ::fwRenderOgre::TransferFunction::sptr m_gpuTF;
+    ::fwRenderOgre::TransferFunction::sptr m_gpuVolumeTF;
 
     /// Pre-integration table.
     ::fwRenderOgre::vr::PreIntegrationTable m_preIntegrationTable;
@@ -320,9 +307,6 @@ private:
 
     /// Sets whether the camera must be auto reset when a mesh is updated or not.
     bool m_autoResetCamera { true };
-
-    /// Default IDVR method
-    std::string m_IDVRMethod { "None" };
 
     /// Handle connections between the layer and the volume renderer.
     ::fwCom::helper::SigSlotConnection m_volumeConnection;

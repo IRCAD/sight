@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -69,11 +69,11 @@ namespace factory
  * The service ::activities::action::SActivityLauncher allows to launch an activity. Its role is to create the specific
  * Activity associated with the selected data.
  *
- * This action should be followed by the service ::guiQt::editor::DynamicView : this service listens the action signals
+ * This action should be followed by the service ::guiQt::editor::SDynamicView : this service listens the action signals
  * and launchs the activity in a new tab.
  *
  * - ::activities::action::SActivityLauncher uses the selected data to generate the activity.
- * - ::guiQt::editor::DynamicView  displays the activity in the application.
+ * - ::guiQt::editor::SDynamicView  displays the activity in the application.
  * - ::fwData::Vector contains the set of selected data .
  *
  * @code{.xml}

@@ -56,6 +56,14 @@ class FWRENDEROGRE_CLASS_API Core   //TODO : Manage occlusion query
 {
 public:
 
+    enum class StereoModeType : std::uint8_t
+    {
+        NONE,
+        AUTOSTEREO_5,
+        AUTOSTEREO_8,
+        STEREO
+    };
+
     /// Render queue group for surface rendering.
     static const std::uint8_t s_SURFACE_RQ_GROUP_ID = ::Ogre::RenderQueueGroupID::RENDER_QUEUE_MAIN;
 
@@ -84,6 +92,12 @@ public:
     /// Set the number of peels computed by Depth Peeling or x2 Dual Depth Peeling
     /// Deactivate OIT compositor
     FWRENDEROGRE_API void setTransparencyDepth(int depth);
+
+    /// Set the stereo mode. Keep in mind that OIT techniques disable stereo for now.
+    FWRENDEROGRE_API void setStereoMode(StereoModeType stereoMode);
+
+    /// Return the enabled stereo mode.
+    FWRENDEROGRE_API StereoModeType getStereoMode() const;
 
     /// Re/Activate OIT compositor
     FWRENDEROGRE_API void update();
@@ -120,13 +134,15 @@ private:
     transparencyTechnique m_transparencyTechnique;
 
     /// OIT used - string name
-    ::Ogre::String m_transparencyTechniqueName;
+    ::Ogre::String m_coreCompositorName;
 
     /// OIT compositor instance used
     ::Ogre::CompositorInstance* m_compositorInstance;
 
     /// Cel shading activated
     ::Ogre::String m_celShadingName;
+
+    StereoModeType m_stereoMode { StereoModeType::NONE };
 
     //bool m_useOcclusionQuery;
 

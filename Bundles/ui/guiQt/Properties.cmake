@@ -17,10 +17,13 @@ set( DEPENDENCIES
     fwServices
     fwTools
 )
-set( REQUIREMENTS  )
+set( REQUIREMENTS
+    gui
+)
 set( PLUGINS
     platforms
     imageformats
+    styles
 )
 set( CONAN_DEPS
     boost/1.67.0@sight/stable

@@ -3,7 +3,7 @@
     <requirement id="servicesReg" />
     <requirement id="dataReg" />
     <requirement id="patchMedicalData" />
-    <requirement id="filterVRRender" />
+    <requirement id="filterUnknownSeries" />
     <requirement id="preferences" />
 
     <!-- This exmaple allows to test the different dump policy. -->

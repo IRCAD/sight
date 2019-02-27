@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -50,6 +50,7 @@
 
 #include <fwTest/Data.hpp>
 #include <fwTest/DicomReaderTest.hpp>
+#include <fwTest/Slow.hpp>
 
 #include <boost/algorithm/string.hpp>
 #include <boost/algorithm/string/replace.hpp>
@@ -57,6 +58,7 @@
 #include <boost/property_tree/exceptions.hpp>
 #include <boost/property_tree/json_parser.hpp>
 #include <boost/property_tree/ptree.hpp>
+#include <boost/uuid/sha1.hpp>
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -225,6 +227,14 @@ void verifyTagValues(const std::string& filename, const ::fwMedData::SeriesDB::s
 void SeriesDBReaderTest::setUp()
 {
     // Set up context before running a test.
+    if(::fwTest::Slow::ignoreSlowTests())
+    {
+        std::cout << std::endl << "Ignoring slow " << std::endl;
+    }
+    else
+    {
+        std::cout << std::endl << "Executing slow tests.." << std::endl;
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -238,6 +248,10 @@ void SeriesDBReaderTest::tearDown()
 
 void SeriesDBReaderTest::readJMSSeriesDBTest()
 {
+    if(::fwTest::Slow::ignoreSlowTests())
+    {
+        return;
+    }
     ::fwMemory::BufferManager::getDefault()->setLoadingMode(::fwMemory::BufferManager::DIRECT);
     this->readJMSSeries();
 }
@@ -246,6 +260,10 @@ void SeriesDBReaderTest::readJMSSeriesDBTest()
 
 void SeriesDBReaderTest::readCTSeriesDBTest()
 {
+    if(::fwTest::Slow::ignoreSlowTests())
+    {
+        return;
+    }
     ::fwMemory::BufferManager::getDefault()->setLoadingMode(::fwMemory::BufferManager::DIRECT);
     this->readCTSeries();
 }
@@ -254,6 +272,10 @@ void SeriesDBReaderTest::readCTSeriesDBTest()
 
 void SeriesDBReaderTest::readMRSeriesDBTest()
 {
+    if(::fwTest::Slow::ignoreSlowTests())
+    {
+        return;
+    }
     ::fwMemory::BufferManager::getDefault()->setLoadingMode(::fwMemory::BufferManager::DIRECT);
     this->readMRSeries();
 }
@@ -262,6 +284,10 @@ void SeriesDBReaderTest::readMRSeriesDBTest()
 
 void SeriesDBReaderTest::readOTSeriesDBTest()
 {
+    if(::fwTest::Slow::ignoreSlowTests())
+    {
+        return;
+    }
     ::fwMemory::BufferManager::getDefault()->setLoadingMode(::fwMemory::BufferManager::DIRECT);
     this->readOTSeries();
 }
@@ -270,6 +296,10 @@ void SeriesDBReaderTest::readOTSeriesDBTest()
 
 void SeriesDBReaderTest::readSEGSeriesDBTest()
 {
+    if(::fwTest::Slow::ignoreSlowTests())
+    {
+        return;
+    }
     ::fwMemory::BufferManager::getDefault()->setLoadingMode(::fwMemory::BufferManager::DIRECT);
     this->readSEGSeries();
 }
@@ -278,6 +308,10 @@ void SeriesDBReaderTest::readSEGSeriesDBTest()
 
 void SeriesDBReaderTest::readSFSeriesDBTest()
 {
+    if(::fwTest::Slow::ignoreSlowTests())
+    {
+        return;
+    }
     ::fwMemory::BufferManager::getDefault()->setLoadingMode(::fwMemory::BufferManager::DIRECT);
     this->readSFSeries();
 }
@@ -286,6 +320,10 @@ void SeriesDBReaderTest::readSFSeriesDBTest()
 
 void SeriesDBReaderTest::readSRSeriesDBTest()
 {
+    if(::fwTest::Slow::ignoreSlowTests())
+    {
+        return;
+    }
     ::fwMemory::BufferManager::getDefault()->setLoadingMode(::fwMemory::BufferManager::DIRECT);
     this->readSRSeries();
 }
@@ -294,6 +332,10 @@ void SeriesDBReaderTest::readSRSeriesDBTest()
 
 void SeriesDBReaderTest::read3DSRSeriesDBTest()
 {
+    if(::fwTest::Slow::ignoreSlowTests())
+    {
+        return;
+    }
     ::fwMemory::BufferManager::getDefault()->setLoadingMode(::fwMemory::BufferManager::DIRECT);
     this->read3DSRSeries();
 }
@@ -302,6 +344,10 @@ void SeriesDBReaderTest::read3DSRSeriesDBTest()
 
 void SeriesDBReaderTest::readDisabledSeriesDBTest()
 {
+    if(::fwTest::Slow::ignoreSlowTests())
+    {
+        return;
+    }
     ::fwMemory::BufferManager::getDefault()->setLoadingMode(::fwMemory::BufferManager::DIRECT);
     this->readDisabledSeries();
 }
@@ -310,6 +356,10 @@ void SeriesDBReaderTest::readDisabledSeriesDBTest()
 
 void SeriesDBReaderTest::readMRSeriesWithDicomDirDBTest()
 {
+    if(::fwTest::Slow::ignoreSlowTests())
+    {
+        return;
+    }
     ::fwMemory::BufferManager::getDefault()->setLoadingMode(::fwMemory::BufferManager::DIRECT);
     this->readMRSeriesWithDicomDir();
 }
@@ -318,6 +368,10 @@ void SeriesDBReaderTest::readMRSeriesWithDicomDirDBTest()
 
 void SeriesDBReaderTest::readMultipleRescaleSeriesDBTest()
 {
+    if(::fwTest::Slow::ignoreSlowTests())
+    {
+        return;
+    }
     ::fwMemory::BufferManager::getDefault()->setLoadingMode(::fwMemory::BufferManager::DIRECT);
     this->readMultipleRescaleSeries();
 }
@@ -326,6 +380,10 @@ void SeriesDBReaderTest::readMultipleRescaleSeriesDBTest()
 
 void SeriesDBReaderTest::readCTWithSurviewSeriesDBTest()
 {
+    if(::fwTest::Slow::ignoreSlowTests())
+    {
+        return;
+    }
     ::fwMemory::BufferManager::getDefault()->setLoadingMode(::fwMemory::BufferManager::DIRECT);
     this->readCTWithSurviewSeries();
 }
@@ -334,6 +392,10 @@ void SeriesDBReaderTest::readCTWithSurviewSeriesDBTest()
 
 void SeriesDBReaderTest::readMRWithTemporalPositionSeriesDBTest()
 {
+    if(::fwTest::Slow::ignoreSlowTests())
+    {
+        return;
+    }
     ::fwMemory::BufferManager::getDefault()->setLoadingMode(::fwMemory::BufferManager::DIRECT);
     this->readMRWithTemporalPositionSeries();
 }
@@ -342,6 +404,10 @@ void SeriesDBReaderTest::readMRWithTemporalPositionSeriesDBTest()
 
 void SeriesDBReaderTest::readCTSeriesDBIssue01Test()
 {
+    if(::fwTest::Slow::ignoreSlowTests())
+    {
+        return;
+    }
     ::fwMemory::BufferManager::getDefault()->setLoadingMode(::fwMemory::BufferManager::DIRECT);
     this->readCTSeriesDBIssue01();
 }
@@ -890,30 +956,25 @@ void SeriesDBReaderTest::readMultipleRescaleSeries()
     ::fwData::Image::sptr image           = series->getImage();
     ::fwDataTools::helper::Image locker(image);
 
-    // Compute image buffer hash
-    auto computeHash = [ = ]() -> std::string
-                       {
-                           ::fwMemory::BufferObject::sptr buf = image->getDataArray()->getBufferObject();
-                           CPPUNIT_ASSERT(buf);
+    // Get internal buffer
+    ::fwMemory::BufferObject::sptr buf = image->getDataArray()->getBufferObject();
+    CPPUNIT_ASSERT(buf);
 
-                           ::fwMemory::BufferObject::Lock lock = buf->lock();
-                           CPPUNIT_ASSERT(lock.getBuffer());
+    ::fwMemory::BufferObject::Lock lock = buf->lock();
+    CPPUNIT_ASSERT(lock.getBuffer());
 
-                           char* buffer               = static_cast< char* >(lock.getBuffer());
-                           std::size_t seed           = 0;
-                           const std::size_t buffsize = buf->getSize();
+    // Compute sha1 digest
+    ::boost::uuids::detail::sha1 sha1;
+    sha1.process_bytes(static_cast< char* >(lock.getBuffer()), buf->getSize());
+    ::boost::uuids::detail::sha1::digest_type digest = {0};
+    sha1.get_digest(digest);
 
-                           for(size_t i = 0; i < buffsize; ++i)
-                           {
-                               ::boost::hash_combine(seed, buffer[i]);
-                           }
-
-                           return ::boost::lexical_cast< std::string >(seed);
-                       };
-
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("Multiple rescale image hash comparison failed ",
-                                 std::string("2828747570601766717"), computeHash());
-
+    // Check digests
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("Multiple rescale image hash comparison failed ", 808070165u, digest[0]);
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("Multiple rescale image hash comparison failed ", 1419762457u, digest[1]);
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("Multiple rescale image hash comparison failed ", 664759744u, digest[2]);
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("Multiple rescale image hash comparison failed ", 4220766428u, digest[3]);
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("Multiple rescale image hash comparison failed ", 2226307254u, digest[4]);
 }
 
 //------------------------------------------------------------------------------

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -23,8 +23,6 @@
 #include "fwPacsIO/SeriesRetriever.hpp"
 
 #include "fwPacsIO/exceptions/RequestFailure.hpp"
-
-#include <fwDcmtkTools/Dictionary.hpp>
 
 #include <fwRuntime/operations.hpp>
 
@@ -71,9 +69,6 @@ void SeriesRetriever::initialize(const std::string& applicationTitle,
     {
         ::boost::filesystem::create_directories(m_path);
     }
-
-    // Load dictionary
-    ::fwDcmtkTools::Dictionary::loadDictionary();
 
     //Configure network connection
     this->setAETitle(applicationTitle.c_str());
@@ -200,4 +195,3 @@ OFCondition SeriesRetriever::handleSTORERequest(T_DIMSE_Message* incomingMsg,
 }
 
 } //namespace fwPacsIO
-

@@ -29,8 +29,6 @@
 
 #include <fwDataIO/reader/registry/macros.hpp>
 
-#include <fwDcmtkTools/Dictionary.hpp>
-
 #include <fwDicomIOFilter/composite/CTImageStorageDefaultComposite.hpp>
 #include <fwDicomIOFilter/exceptions/FilterFailure.hpp>
 #include <fwDicomIOFilter/helper/Filter.hpp>
@@ -63,21 +61,12 @@ SeriesDBReader::SeriesDBReader(::fwDataIO::reader::IObjectReader::Key key) :
     ::fwData::location::enableMultiFiles< IObjectReader >(this),
     m_isDicomdirActivated(false)
 {
-    SLM_TRACE_FUNC();
-
-    // Load dictionary
-    ::fwDcmtkTools::Dictionary::loadDictionary();
-
-    // Register codecs
-    ::fwDcmtkIO::helper::Codec::registerCodecs();
 }
 
 //------------------------------------------------------------------------------
 
 SeriesDBReader::~SeriesDBReader()
 {
-    // Clean up codecs
-    ::fwDcmtkIO::helper::Codec::cleanup();
 }
 
 //------------------------------------------------------------------------------

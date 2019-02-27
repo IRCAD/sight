@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2017 IRCAD France
- * Copyright (C) 2014-2017 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -211,4 +211,3 @@ void Camera::setDistortionCoefficient(double k1, double k2, double p1, double p2
 // -------------------------------------------------------------------------
 
 } // namespace arData
-

@@ -28,10 +28,6 @@
 #include "fwPacsIO/exceptions/RequestFailure.hpp"
 #include "fwPacsIO/exceptions/TagMissing.hpp"
 
-#include <fwCore/spyLog.hpp>
-
-#include <fwDcmtkTools/Dictionary.hpp>
-
 #include <fwTools/System.hpp>
 
 #include <boost/filesystem/operations.hpp>
@@ -97,9 +93,6 @@ void SeriesEnquirer::initialize(const std::string& applicationTitle, const std::
     {
         ::boost::filesystem::create_directories(m_path);
     }
-
-    //Load dictionary
-    ::fwDcmtkTools::Dictionary::loadDictionary();
 
     //Configure network connection
     this->setAETitle(applicationTitle.c_str());

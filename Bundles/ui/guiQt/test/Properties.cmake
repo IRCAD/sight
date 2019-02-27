@@ -14,10 +14,6 @@ set( REQUIREMENTS
     servicesReg
     gui
     guiQt
-    ioVTK
-    visuVTKQt
-    vtkSimpleNegato
-    appXml
 )
 
 set( CONAN_DEPS

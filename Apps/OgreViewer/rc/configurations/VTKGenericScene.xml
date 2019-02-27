@@ -1,0 +1,138 @@
+<extension implements="::fwServices::registry::AppConfig">
+    <id>VTKGenericScene</id>
+    <parameters>
+        <param name="WID_PARENT" />
+        <param name="modelSeries" />
+        <param name="image" />
+        <param name="volumeTF" />
+    </parameters>
+    <config>
+
+        <!-- ******************************* Objects declaration ****************************** -->
+
+        <object uid="${modelSeries}" type="::fwMedData::ModelSeries" src="ref" />
+        <object uid="${image}" type="::fwData::Image" src="ref" />
+        <object uid="${volumeTF}" type="::fwData::TransferFunction" src="deferred" />
+
+        <!-- ******************************* UI declaration *********************************** -->
+
+        <service uid="mainView" type="::gui::view::SDefaultView">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="vertical" />
+                    <view proportion="1" />
+                    <view proportion="0" />
+                </layout>
+                <toolBar/>
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <toolBar sid="toolBarView" start="yes" />
+                <view sid="genericSceneSrv" start="yes" />
+                <view sid="3DNegatoEditorView" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="toolBarView" type="::gui::aspect::SDefaultToolBar">
+            <gui>
+                <layout>
+                    <menuItem name="Show volume" icon="media-0.1/icons/icon-VR.png" style="check" />
+                    <menuItem name="Show negato" icon="media-0.1/icons/icon-2D.png" style="check" />
+                    <separator/>
+                    <menuItem name="Show/hide box cropping" icon="media-0.1/icons/icon-box.png" style="check" />
+                    <menuItem name="Reset box cropping" icon="media-0.1/icons/icon-box-reset.png" />
+                </layout>
+            </gui>
+            <registry>
+                <menuItem sid="volumeVisibilityAct" start="yes" />
+                <menuItem sid="negatoVisibilityAct" start="yes" />
+                <menuItem sid="boxWidgetVisibilityAct" start="yes" />
+                <menuItem sid="boxWidgetResetAct" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="3DNegatoEditorView" type="::gui::view::SDefaultView">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="vertical" />
+                    <view proportion="1" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="3DNegatoSlicerSrv" start="yes" />
+            </registry>
+        </service>
+
+        <!-- ************************************* Actions ************************************ -->
+
+        <service uid="volumeVisibilityAct" type="::gui::action::SBooleanSlotCaller">
+            <slots>
+                <slot>volumeAdp/show</slot>
+            </slots>
+            <state active="true" />
+        </service>
+
+        <service uid="negatoVisibilityAct" type="::gui::action::SBooleanSlotCaller">
+            <slots>
+                <slot>3DNegatoAdp/showSlice</slot>
+            </slots>
+            <state active="true" />
+        </service>
+
+        <service uid="boxWidgetVisibilityAct" type="::gui::action::SBooleanSlotCaller">
+            <slots>
+                <slot>volumeAdp/activateBoxClipping</slot>
+            </slots>
+        </service>
+
+        <service uid="boxWidgetResetAct" type="::gui::action::SSlotCaller">
+            <slots>
+                <slot>volumeAdp/resetBoxWidget</slot>
+            </slots>
+        </service>
+
+        <!-- *************************** Begin generic scene *************************** -->
+
+        <service uid="genericSceneSrv" type="::fwRenderVTK::SRender" >
+            <!-- <scene autoRender="false"> -->
+            <scene>
+                <picker id="defaultPicker" vtkclass="fwVtkCellPicker" />
+                <renderer id="default" background="#DDDDDD" />
+                <adaptor uid="modelSeriesAdp" />
+                <adaptor uid="3DNegatoAdp" />
+                <adaptor uid="volumeAdp" />
+            </scene>
+        </service>
+
+        <service uid="modelSeriesAdp" type="::visuVTKAdaptor::SModelSeries" autoConnect="yes">
+            <in key="model" uid="${modelSeries}" />
+            <config renderer="default" picker="defaultPicker" />
+        </service>
+
+        <service uid="3DNegatoAdp" type="::visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
+            <inout key="image" uid="${image}" />
+            <inout key="tf" uid="${volumeTF}" />
+            <config renderer="default" picker="defaultPicker" slices="3" sliceIndex="axial" />
+        </service>
+
+        <service uid="volumeAdp" type="::visuVTKVRAdaptor::SVolume" autoConnect="yes">
+            <inout key="image" uid="${image}" />
+            <inout key="tf" uid="${volumeTF}" optional="yes" />
+            <config renderer="default" />
+        </service>
+
+        <!-- ************************************* Services ************************************ -->
+
+        <service uid="3DNegatoSlicerSrv" type="::uiImageQt::SliceIndexPositionEditor" autoConnect="yes">
+            <inout key="image" uid="${image}" />
+            <sliceIndex>Sagittal</sliceIndex>
+        </service>
+
+        <!-- ******************************* Start/Stop services ***************************************** -->
+
+        <start uid="mainView" />
+        <start uid="modelSeriesAdp" />
+        <start uid="3DNegatoAdp" />
+        <start uid="volumeAdp" />
+    </config>
+</extension>

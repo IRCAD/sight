@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -438,7 +438,7 @@ void IService::configure(const ConfigType& ptree)
 void IService::reconfiguring()
 {
     OSLM_FATAL(
-        "If this method (reconfiguring) is called, it must be overriden in the implementation ("
+        "If this method (reconfiguring) is called, it must be overridden in the implementation ("
             << this->getClassname() <<", "<< this->getID() << ")" );
 }
 
@@ -1098,7 +1098,7 @@ void IService::registerObject(const ::fwServices::IService::KeyType& key,
     }
     else
     {
-        SLM_WARN("object '" + key + "' is already registered, it will be overriden");
+        SLM_WARN("object '" + key + "' is already registered, it will be overridden");
 
         ObjectServiceConfig& objConfig = *itr;
         objConfig.m_key         = key;

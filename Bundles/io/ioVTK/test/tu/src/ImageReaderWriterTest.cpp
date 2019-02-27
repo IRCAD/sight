@@ -318,6 +318,80 @@ void ImageReaderWriterTest::testImageReaderExtension()
 }
 
 //------------------------------------------------------------------------------
+
+void ImageReaderWriterTest::testBitmapImageWriter()
+{
+    // Data to write
+    const size_t dim = 2;
+    const ::fwTools::Type type("uint8");
+    ::fwData::Image::SizeType sizeExpected(dim);
+    sizeExpected[0] = 10;
+    sizeExpected[1] = 20;
+    // Use standard information for spacing and origin
+    // As the data will be lost in the file format
+    ::fwData::Image::SpacingType spacingExpected(dim);
+    spacingExpected[0] = 1;
+    spacingExpected[1] = 1;
+    ::fwData::Image::OriginType originExpected(dim);
+    originExpected[0] = 0;
+    originExpected[1] = 0;
+
+    ::fwData::Image::sptr image = ::fwData::Image::New();
+    ::fwTest::generator::Image::generateImage(image, sizeExpected, spacingExpected, originExpected, type);
+
+    // Test all teh available extensions
+    std::vector<std::string> extensions;
+    extensions.push_back("bmp");
+    extensions.push_back("jpeg");
+    extensions.push_back("jpg");
+    extensions.push_back("png");
+    extensions.push_back("pnm");
+    extensions.push_back("tiff");
+
+    for(const std::string ext : extensions)
+    {
+        // Write to bitmap image.
+        const ::boost::filesystem::path file = ::fwTools::System::getTemporaryFolder() / ("temporaryFile." + ext);
+
+        runImageSrv("::fwIO::IWriter", "::ioVTK::SImageWriter", getIOConfiguration(file), image);
+
+        // Read image from disk
+        const ::fwData::Image::sptr imageFromDisk = ::fwData::Image::New();
+        runImageSrv("::fwIO::IReader", "::ioVTK::SImageReader", getIOConfiguration(file), imageFromDisk);
+
+        ::boost::filesystem::remove(file);
+
+        // Data read
+        ::fwData::Image::SpacingType spacingRead = imageFromDisk->getSpacing();
+        ::fwData::Image::SpacingType originRead  = imageFromDisk->getOrigin();
+        ::fwData::Image::SizeType sizeRead       = imageFromDisk->getSize();
+
+        CPPUNIT_ASSERT_EQUAL(spacingExpected.size(), spacingRead.size() );
+        CPPUNIT_ASSERT_EQUAL(originExpected.size(), originRead.size() );
+        CPPUNIT_ASSERT_EQUAL(sizeExpected.size(), sizeRead.size() );
+
+        CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Incorrect spacing on x", spacingExpected[0], spacingRead[0], epsilon);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Incorrect spacing on y", spacingExpected[1], spacingRead[1], epsilon);
+
+        CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Incorrect origin on x", originExpected[0], originRead[0], epsilon);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Incorrect origin on y", originExpected[1], originRead[1], epsilon);
+
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect size on x", sizeExpected[0], sizeRead[0]);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect size on y", sizeExpected[1], sizeRead[1]);
+
+        ::fwDataTools::helper::Image imageHelper(image);
+        ::fwDataTools::helper::Image imageFromDiskHelper(imageFromDisk);
+
+        const char* const ptrOnGeneratedImage = static_cast<char*>(imageHelper.getBuffer());
+        const char* const ptrOnReadImage      = static_cast<char*>(imageFromDiskHelper.getBuffer());
+
+        CPPUNIT_ASSERT_EQUAL( image->getType(), imageFromDisk->getType() );
+        CPPUNIT_ASSERT( std::equal(ptrOnGeneratedImage, ptrOnGeneratedImage + image->getSizeInBytes(),
+                                   ptrOnReadImage) );
+    }
+}
+
+//------------------------------------------------------------------------------
 void ImageReaderWriterTest::testVtkImageWriter()
 {
     // Data to write

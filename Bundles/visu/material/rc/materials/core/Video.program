@@ -45,7 +45,7 @@ fragment_program Default/VideoWithTF_FP glsl
     default_params
     {
         param_named u_videoTexture int 0
-        param_named u_tfTexture int 1
+        param_named u_s1TFTexture int 1
     }
 }
 
@@ -68,6 +68,6 @@ fragment_program Default/VideoWithTF_Int_FP glsl
     default_params
     {
         param_named u_videoTexture int 0
-        param_named u_tfTexture int 1
+        param_named u_s1TFTexture int 1
     }
 }

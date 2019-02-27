@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -47,7 +47,7 @@ namespace ioGdcm
 {
 
 /**
- * @brief Read DicomSeries from DICOM folder with GDCM reader
+ * @brief GDCM Reader (DicomSeries)
  *
  * @section Signals Signals
  * - \b jobCreated( SPTR(::fwJobs::IJob) ) : Emitted when a job is created.
@@ -76,7 +76,7 @@ public:
 
     typedef ::fwCom::Signal< void ( SPTR(::fwJobs::IJob) ) > JobCreatedSignal;
 
-    fwCoreServiceClassDefinitionsMacro( (SDicomSeriesDBReader)( ::fwIO::IReader) );
+    fwCoreServiceClassDefinitionsMacro( (SDicomSeriesDBReader)( ::fwIO::IReader) )
 
     /**
      * @brief   constructor

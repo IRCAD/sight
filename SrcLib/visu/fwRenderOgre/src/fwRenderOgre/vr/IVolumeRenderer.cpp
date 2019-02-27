@@ -66,15 +66,13 @@ const IVolumeRenderer::CubeEdgeList IVolumeRenderer::s_cubeEdges = { {
 //-----------------------------------------------------------------------------
 
 IVolumeRenderer::IVolumeRenderer(std::string parentId,
-                                 ::Ogre::SceneManager* sceneManager,
-                                 ::Ogre::SceneNode* volumeNode,
+                                 ::Ogre::SceneManager* const sceneManager,
+                                 ::Ogre::SceneNode* const volumeNode,
                                  ::Ogre::TexturePtr imageTexture,
-                                 const TransferFunction::sptr& gpuTF,
                                  PreIntegrationTable& preintegrationTable) :
     m_parentId(parentId),
     m_sceneManager(sceneManager),
     m_3DOgreTexture(imageTexture),
-    m_gpuTF(gpuTF),
     m_preIntegrationTable(preintegrationTable),
     m_volumeSceneNode(volumeNode),
     m_nbSlices(512),
@@ -94,7 +92,7 @@ IVolumeRenderer::~IVolumeRenderer()
 
 //-----------------------------------------------------------------------------
 
-void IVolumeRenderer::tfUpdate(fwData::TransferFunction::sptr /*tf*/)
+void IVolumeRenderer::updateVolumeTF()
 {
 
 }

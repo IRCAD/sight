@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2017 IRCAD France
- * Copyright (C) 2014-2017 IHU Strasbourg
+ * Copyright (C) 2014-2018 IRCAD France
+ * Copyright (C) 2014-2018 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __ARDATA_CAMERA_HPP__
-#define __ARDATA_CAMERA_HPP__
+#pragma once
 
 #include "arData/config.hpp"
 
@@ -34,6 +33,7 @@
 #include <boost/filesystem/path.hpp>
 
 #include <array>
+#include <string>
 #include <utility>
 
 fwCampAutoDeclareDataMacro((arData)(Camera), ARDATA_API);
@@ -343,9 +343,24 @@ public:
         m_streamUrl = streamUrl;
     }
 
+    /**
+     * @brief setScale set the scale factor of the camera
+     * Used for RGBD cameras, where depth sensor and RGB sensor are up to a scale factor.
+     * @param scale double (default 1.0)
+     */
     void setScale(double scale);
-
+    /**
+     * @brief getScale get the scale factor of the camera (see: setScale)
+     * @return the scale factor in double.
+     */
     double getScale() const;
+
+    /**
+     * @brief getIndex returns index of the device as Qt give us in ::videoQt::editor::CameraDeviceDlg.
+     * The index is the first character of m_description. (ex: "1. Microsoft HD Camera")
+     * @return an integer of the index, -1 if unvalid (if SourceType isn't DECVICE)
+     */
+    int getIndex() const;
 
 protected:
 
@@ -405,6 +420,26 @@ inline double Camera::getScale() const
 
 //-----------------------------------------------------------------------------
 
-} // namespace arData
+inline int Camera::getIndex() const
+{
+    int index = -1;
+    if(m_cameraSource == SourceType::DEVICE)
+    {
+        try
+        {
+            // Limited to [0-9] range
+            index = std::stoi(&m_description.at(0));
+        }
+        catch (std::exception& _e)
+        {
+            SLM_ERROR("Cannot get index of: " + m_description + " " + _e.what());
+        }
+    }
 
-#endif // __ARDATA_CAMERA_HPP__
+    return index;
+
+}
+
+//-----------------------------------------------------------------------------
+
+} // namespace arData

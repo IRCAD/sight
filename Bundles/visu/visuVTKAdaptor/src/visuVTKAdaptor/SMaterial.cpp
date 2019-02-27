@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -32,6 +32,7 @@
 #include <fwVtkIO/vtk.hpp>
 
 #include <vtkImageData.h>
+#include <vtkImageMapToColors.h>
 #include <vtkOpenGLRenderWindow.h>
 #include <vtkOpenGLTexture.h>
 #include <vtkProperty.h>
@@ -40,6 +41,7 @@
 #include <vtkSmartPointer.h>
 #include <vtkTexture.h>
 #include <vtkTextureObject.h>
+#include <vtkWindowLevelLookupTable.h>
 
 fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SMaterial );
 
@@ -161,27 +163,20 @@ void SMaterial::updateMaterial( CSPTR(::fwData::Material)material )
             vtkSmartPointer< vtkImageData > vtkImage = vtkSmartPointer< vtkImageData >::New();
             ::fwVtkIO::toVTKImage( diffTex, vtkImage );
 
-            vtkRenderWindow* win = this->getRenderer()->GetRenderWindow();
-
             vtkSmartPointer<vtkTexture> vtkTex;
-            // FIXME Currently the context of vtkInternalOpenGLRenderWindow is not correctly given to the
-            // vtkTextureObject, so we don't use vtkTextureObject in this case
-            if(win->IsA("vtkOpenGLRenderWindow")  && !win->IsA("vtkInternalOpenGLRenderWindow"))
+            if( vtkImage->GetScalarType() != VTK_UNSIGNED_CHAR )
             {
-                int dims[3];
-                vtkImage->GetDimensions(dims);
-                const int type = vtkImage->GetScalarType();
-                const int noc  = vtkImage->GetNumberOfScalarComponents();
+                auto lut           = vtkSmartPointer< vtkWindowLevelLookupTable>::New();
+                const double range = vtkImage->GetScalarRange()[1] - vtkImage->GetScalarRange()[0];
+                const double level = (vtkImage->GetScalarRange()[1] + vtkImage->GetScalarRange()[0]) * 0.5;
+                lut->SetWindow(range);
+                lut->SetLevel(level);
+                lut->Build();
 
-                // Use a Texture object to finely create the texture
-                vtkSmartPointer<vtkTextureObject> to = vtkSmartPointer< vtkTextureObject >::New();
-                to->SetContext(dynamic_cast<vtkOpenGLRenderWindow*>(this->getRenderer()->GetRenderWindow()));
-                to->Create2DFromRaw(dims[0], dims[1], noc, type,
-                                    const_cast<void*>(static_cast<const void* const>(vtkImage->GetScalarPointer())));
-
-                vtkSmartPointer<vtkOpenGLTexture> vtkGLTex = vtkSmartPointer< vtkOpenGLTexture >::New();
-                vtkGLTex->SetTextureObject(to);
-                vtkTex = vtkGLTex;
+                vtkTex = vtkSmartPointer< vtkTexture >::New();
+                vtkTex->SetInputData(vtkImage);
+                vtkTex->SetLookupTable(lut);
+                vtkTex->SetMapColorScalarsThroughLookupTable(1);
             }
             else
             {

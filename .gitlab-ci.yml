@@ -1,50 +1,80 @@
 stages:
   - lint
   - build
+  - doc
   - deploy
 
-before_script:
-  # CCache Config
-  - mkdir -p ccache
-  - export CCACHE_BASEDIR=${PWD}
-  - export CCACHE_DIR=${PWD}/ccache
-  - export CCACHE_COMPILERCHECK=content
-  - export CCACHE_MAXSIZE=32G
-  - export CCACHE_COMPRESS=1
-  - export CCACHE_SLOPPINESS=include_file_ctime,pch_defines,time_macros
-  - export CCACHE_NOHASHDIR=1
+.linux_template: &linux_job
+  image: ${DOCKER_ENVDEV_MINT19}
+  before_script:
+    - export CCACHE_BASEDIR=${PWD}
+    - export CCACHE_COMPILERCHECK=content
+    - export CCACHE_MAXSIZE=32G
+    - export CCACHE_COMPRESS=1
+    - export CCACHE_SLOPPINESS=include_file_ctime,pch_defines,time_macros,file_macro,system_headers
+    - export CCACHE_NOHASHDIR=1
+    - export CCACHE_DIR=/cache/ccache
+    - conan config set storage.path=/cache/conan-cache/data
+    - export CC=/usr/local/lib/ccache/clang
+    - export CXX=/usr/local/lib/ccache/clang++
+    - mkdir -p $CI_PROJECT_DIR/install $CI_PROJECT_DIR/build
+    - sudo chown -R sight:sight .
+    - /usr/lib/git-core/git-restore-mtime --force --skip-missing --commit-time
 
-cache:
-  paths:
-    - ccache/
+.macos_template: &macos_job
+  variables:
+    CONAN_USER_HOME: $CI_PROJECT_DIR/conan
+  before_script:
+    - export CCACHE_BASEDIR=${PWD}
+    - export CCACHE_COMPILERCHECK=content
+    - export CCACHE_MAXSIZE=32G
+    - export CCACHE_COMPRESS=1
+    - export CCACHE_SLOPPINESS=include_file_ctime,include_file_mtime,pch_defines,time_macros,file_macro,system_headers
+    - export CCACHE_NOHASHDIR=1
+    - conan config set storage.path=/Users/$USER/.conan/data
+    - export CC=/usr/local/opt/ccache/libexec/clang
+    - export CXX=/usr/local/opt/ccache/libexec/clang++
+    - mkdir -p $CI_PROJECT_DIR/install $CI_PROJECT_DIR/build
+  tags:
+    - mojave
+
+.windows_template: &windows_job
+  variables:
+    CONAN_USER_HOME: $CI_PROJECT_DIR/conan
+  before_script:
+    - conan config set storage.path="C:\cache\conan"
+    - if not exist "%CI_PROJECT_DIR%/install" md "%CI_PROJECT_DIR%/install"
+    - if not exist "%CI_PROJECT_DIR%/build" md "%CI_PROJECT_DIR%/build"
+  tags:
+    - shell
+    - windows
 
 sheldon-mr:
-  image: ${DOCKER_ENVDEV_CLANG6}
+  <<: *linux_job
   stage: lint
+  dependencies: []
   script:
     - export ORIG_BRANCH_COMMIT_SHA=$(git merge-base dev origin/${CI_COMMIT_REF_NAME})
-    - export BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD)
-    - git -c http.sslVerify=false clone --depth 1 https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-git.git -b dev
+    - git clone --depth 1 https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-git.git -b dev
     # Execute sheldon, on all commits from the merge request
     - sight-git/hooks/sheldon ${ORIG_BRANCH_COMMIT_SHA}..${CI_COMMIT_SHA}
 
 sheldon:
-  image: ${DOCKER_ENVDEV_CLANG6}
+  <<: *linux_job
   stage: lint
+  dependencies: []
   script:
-    - git -c http.sslVerify=false clone --depth 1 https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-git.git -b dev
+    - git clone --depth 1 https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-git.git -b dev
     - sight-git/hooks/sheldon HEAD^ HEAD
   except:
     - dev
     - master
 
-build:debug:
-  image: ${DOCKER_ENVDEV_CLANG6}
+build:debug-linux:
+  <<: *linux_job
   stage: build
+  dependencies: []
   script:
-    - export CC=/usr/local/lib/ccache/clang
-    - export CXX=/usr/local/lib/ccache/clang++
-    - mkdir $CI_PROJECT_DIR/install $CI_PROJECT_DIR/build
     - cd $CI_PROJECT_DIR/build/
     - ccache -s
     - >
@@ -55,17 +85,28 @@ build:debug:
      -DCMAKE_BUILD_TYPE=Debug
      -DBUILD_TESTS=ON
      -DBUILD_DOCUMENTATION=OFF
-     -DENABLE_PCH=ON
+     -DENABLE_PCH=OFF
+    - find . -type f -iname '*.?pp' -exec touch -f -a -m -t 197001010000 {} \;
     - ninja
     - ccache -s
+    - >
+     curl --retry 3 --location --insecure --location-trusted
+     -s https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-data/-/archive/dev/sight-data-dev.tar.gz |
+     tar xfz - > /dev/null
+    - export FWTEST_DATA_DIR=$CI_PROJECT_DIR/build/sight-data-dev
+    - export FW_IGNORE_SLOW_TESTS=1
+    - ctest --timeout 240 --output-on-failure -O ctest.log
+  artifacts:
+    when: always
+    name: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
+    paths:
+      - $CI_PROJECT_DIR/build/ctest.log
 
-build:release:
-  image: ${DOCKER_ENVDEV_CLANG6}
+build:release-linux:
+  <<: *linux_job
   stage: build
+  dependencies: []
   script:
-    - export CC=/usr/local/lib/ccache/clang
-    - export CXX=/usr/local/lib/ccache/clang++
-    - mkdir $CI_PROJECT_DIR/install $CI_PROJECT_DIR/build
     - cd $CI_PROJECT_DIR/build/
     - ccache -s
     - >
@@ -76,18 +117,152 @@ build:release:
      -DCMAKE_BUILD_TYPE=Release
      -DBUILD_TESTS=ON
      -DBUILD_DOCUMENTATION=OFF
-     -DENABLE_PCH=ON
+     -DENABLE_PCH=OFF
+    - find . -type f -iname '*.?pp' -exec touch -f -a -m -t 197001010000 {} \;
     - ninja
     - ccache -s
+    - >
+     curl --retry 3 --location --insecure --location-trusted
+     -s https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-data/-/archive/dev/sight-data-dev.tar.gz |
+     tar xfz - > /dev/null
+    - export FWTEST_DATA_DIR=$CI_PROJECT_DIR/build/sight-data-dev
+    - export FW_IGNORE_SLOW_TESTS=0
+    - ctest --timeout 120 --output-on-failure -O ctest.log
+  artifacts:
+    when: always
+    name: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
+    paths:
+      - $CI_PROJECT_DIR/build/ctest.log
+
+build:debug-windows:
+  <<: *windows_job
+  stage: build
+  dependencies: []
+  script:
+    - cd "%CI_PROJECT_DIR%/build"
+    - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat" x64
+    - chcp 1252
+    - >
+     cmake %CI_PROJECT_DIR%
+     -G Ninja
+     -DUSE_CONAN=ON
+     -DCMAKE_INSTALL_PREFIX=%CI_PROJECT_DIR%/install
+     -DCMAKE_BUILD_TYPE=Debug
+     -DBUILD_TESTS=ON
+     -DBUILD_DOCUMENTATION=OFF
+    - ninja
+    - >
+     curl --retry 3 --location --insecure --location-trusted
+     -s https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-data/-/archive/dev/sight-data-dev.zip
+     --output sight-data-dev.zip && unzip -qq sight-data-dev.zip
+    - set FWTEST_DATA_DIR=%CI_PROJECT_DIR%\build\sight-data-dev
+    - set FW_IGNORE_SLOW_TESTS=1
+    - ctest --timeout 240 --output-on-failure -O ctest.log -E fwRenderOgreTest
+  artifacts:
+    when: always
+    name: "%CI_JOB_NAME%-%CI_COMMIT_REF_SLUG%"
+    paths:
+      - build/ctest.log
+      - build/fwTest.log
+
+build:release-windows:
+  <<: *windows_job
+  stage: build
+  dependencies: []
+  script:
+    - cd "%CI_PROJECT_DIR%/build"
+    - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat" x64
+    - chcp 1252
+    - >
+     cmake %CI_PROJECT_DIR%
+     -G Ninja
+     -DUSE_CONAN=ON
+     -DCMAKE_INSTALL_PREFIX=%CI_PROJECT_DIR%/install
+     -DCMAKE_BUILD_TYPE=Release
+     -DBUILD_TESTS=ON
+     -DBUILD_DOCUMENTATION=OFF
+    - ninja
+    - >
+     curl --retry 3 --location --insecure --location-trusted
+     -s https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-data/-/archive/dev/sight-data-dev.zip
+     --output sight-data-dev.zip && unzip -qq sight-data-dev.zip
+    - set FWTEST_DATA_DIR=%CI_PROJECT_DIR%\build\sight-data-dev
+    - set FW_IGNORE_SLOW_TESTS=0
+    - ctest --timeout 120 --output-on-failure -O ctest.log -E fwRenderOgreTest
+  artifacts:
+    when: always
+    name: "%CI_JOB_NAME%-%CI_COMMIT_REF_SLUG%"
+    paths:
+      - build/ctest.log
+      - build/fwTest.log
+
+build:debug-macos:
+  <<: *macos_job
+  stage: build
+  dependencies: []
+  script:
+    - cd $CI_PROJECT_DIR/build
+    - ccache -s
+    - >
+     cmake $CI_PROJECT_DIR
+     -G Ninja
+     -DUSE_CONAN=ON
+     -DCMAKE_INSTALL_PREFIX=$CI_PROJECT_DIR/install
+     -DCMAKE_BUILD_TYPE=Debug
+     -DBUILD_TESTS=ON
+     -DBUILD_DOCUMENTATION=OFF
+     -DENABLE_PCH=OFF
+    - ninja
+    - ccache -s
+    - >
+     curl --retry 3 --location --insecure --location-trusted
+     -s https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-data/-/archive/dev/sight-data-dev.tar.gz |
+     tar xfz - > /dev/null
+    - export FWTEST_DATA_DIR=$CI_PROJECT_DIR/build/sight-data-dev
+    - export FW_IGNORE_SLOW_TESTS=1
+    - ctest --timeout 240 --output-on-failure -O ctest.log
+  artifacts:
+    when: always
+    name: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
+    paths:
+      - $CI_PROJECT_DIR/build/ctest.log
+
+build:release-macos:
+  <<: *macos_job
+  stage: build
+  dependencies: []
+  script:
+    - cd $CI_PROJECT_DIR/build
+    - ccache -s
+    - >
+     cmake $CI_PROJECT_DIR
+     -G Ninja
+     -DUSE_CONAN=ON
+     -DCMAKE_INSTALL_PREFIX=$CI_PROJECT_DIR/install
+     -DCMAKE_BUILD_TYPE=Release
+     -DBUILD_TESTS=ON
+     -DBUILD_DOCUMENTATION=OFF
+     -DENABLE_PCH=OFF
+    - ninja
+    - ccache -s
+    - >
+     curl --retry 3 --location --insecure --location-trusted
+     -s https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-data/-/archive/dev/sight-data-dev.tar.gz |
+     tar xfz - > /dev/null
+    - export FWTEST_DATA_DIR=$CI_PROJECT_DIR/build/sight-data-dev
+    - export FW_IGNORE_SLOW_TESTS=0
+    - ctest --timeout 120 --output-on-failure -O ctest.log
+  artifacts:
+    when: always
+    name: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
+    paths:
+      - $CI_PROJECT_DIR/build/ctest.log
 
 doxygen:
-  image: ${DOCKER_ENVDEV_CLANG6}
-  stage: build
+  <<: *linux_job
+  stage: doc
+  dependencies: []
   script:
-    - sudo apt-get update -yqq && sudo apt-get install -yqq graphviz doxygen
-    - export CC=/usr/bin/clang-6.0
-    - export CXX=/usr/bin/clang++-6.0
-    - mkdir $CI_PROJECT_DIR/install $CI_PROJECT_DIR/build
     - cd $CI_PROJECT_DIR/build/
     - >
      cmake $CI_PROJECT_DIR
@@ -97,7 +272,6 @@ doxygen:
      -DCMAKE_BUILD_TYPE=Release
      -DBUILD_TESTS=OFF
      -DBUILD_DOCUMENTATION=ON
-     -DENABLE_PCH=ON
     - ninja doc
   artifacts:
     name: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
@@ -105,6 +279,7 @@ doxygen:
       - $CI_PROJECT_DIR/build/Documentation/Doxygen/
 
 pages:
+  image: ${DOCKER_ENVDEV_MINT19}
   stage: deploy
   dependencies:
     - doxygen

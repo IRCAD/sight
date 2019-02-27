@@ -15,7 +15,7 @@ set( REQUIREMENTS
     appXml
 
     patchMedicalData
-    filterVRRender
+    filterUnknownSeries
 
     2DVisualizationActivity
     vtkSimpleNegato

@@ -12,7 +12,7 @@ syntax: glob
 .*~
 *.autosave
 # qtcreator cmake preferences
-*.txt.user
+*.txt.user*
 # reject and backup file
 *.rej
 *.orig

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -60,7 +60,7 @@ namespace editor
  * - \b int3Changed(int, int, int, std::string): Emitted when three integer parameters change.
  * - \b enumChanged(std::string, std::string): Emitted when enum parameter changes, returns the the label of the
  * currently selected item.
- * - \b enumChanged(int, std::string): Emitted when enum parameter changes, returns the index of the currently
+ * - \b enumIndexChanged(int, std::string): Emitted when enum parameter changes, returns the index of the currently
  * selected item.
  *
  * @section Slots Slots
@@ -72,7 +72,8 @@ namespace editor
  * - \b setIntParameter(int, std::string): set an integer parameter.
  * - \b setInt2Parameter(int, int, std::string): set two int parameters.
  * - \b setInt3Parameter(int, int, int, std::string): set three int parameters.
- * - \b setEnumParameter(std::string, std::string y): set an enum parameter.
+ * - \b setEnumParameter(std::string, std::string): set an enum parameter.
+ * - \b setEnumIndexParameter(int, std::string): set an enum parameter using the index of the enum.
  * - \b setIntMinParameter(int, std::string): set the minimum value of an integer parameter (int, int2, int3)
  * - \b setIntMaxParameter(int, std::string): set the maximum value of an integer parameter (int, int2, int3)
  * - \b setDoubleMinParameter(double, std::string): set the minimum value of a double parameter (double, double2,
@@ -113,7 +114,7 @@ class GUIQT_CLASS_API SParameters : public QObject,
 {
 Q_OBJECT
 public:
-    fwCoreServiceClassDefinitionsMacro( (SParameters)(::fwGui::editor::IEditor) );
+    fwCoreServiceClassDefinitionsMacro( (SParameters)(::fwGui::editor::IEditor) )
 
     /// Boolean changed signal type
     typedef ::fwCom::Signal< void (bool, std::string) > BooleanChangedSignalType;
@@ -267,6 +268,9 @@ private:
 
     /// Slot: This method is used to set an enum parameter.
     void setEnumParameter(std::string val, std::string key);
+
+    /// SLOT: This method sets an enum parameter using the index of the enum
+    void setEnumIndexParameter(int, std::string key);
 
     /// Slot: Set the minimum value of an integer parameter (int, int2, int3)
     void setIntMinParameter(int min, std::string key);

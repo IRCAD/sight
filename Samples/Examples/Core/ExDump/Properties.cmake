@@ -31,7 +31,7 @@ set( REQUIREMENTS
 
     patchMedicalData
 
-    filterVRRender
+    filterUnknownSeries
 
     preferences
 

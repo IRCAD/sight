@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2018 IRCAD France
- * Copyright (C) 2017-2018 IHU Strasbourg
+ * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -45,7 +45,7 @@ namespace ioGdcm
 {
 
 /**
- * @brief Services to write in DICOM 3D format from ModelSeries.
+ * @brief DICOM 3D Writer (ModelSeries)
  *
  * @section XML XML Configuration
  *
@@ -62,7 +62,7 @@ class IOGDCM_CLASS_API SSurfaceSegmentationWriter : public ::fwIO::IWriter
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro( (SSurfaceSegmentationWriter)( ::fwIO::IWriter) );
+    fwCoreServiceClassDefinitionsMacro( (SSurfaceSegmentationWriter)( ::fwIO::IWriter) )
 
     /**
      * @brief Constructor

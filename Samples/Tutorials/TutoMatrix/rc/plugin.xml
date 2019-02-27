@@ -1,0 +1,249 @@
+<plugin id="TutoMatrix" version="@PROJECT_VERSION@" >
+
+    <requirement id="dataReg" />
+    <requirement id="servicesReg" />
+    <requirement id="visuVTKQt" />
+
+    <extension implements="::fwServices::registry::AppConfig">
+    <id>TutoMatrixConfig</id>
+        <config>
+
+        <!-- Mesh object associated to the uid 'mesh' -->
+        <object uid="mesh"              type="::fwData::Mesh" />
+        <!-- Matrix object associated to the uid 'matrix' -->
+        <object uid="matrix"            type="::fwData::TransformationMatrix3D" />
+        <!-- Translation matrix object associated to the uid 'translationMatrix' -->
+        <object uid="translationMatrix" type="::fwData::TransformationMatrix3D" />
+        <!-- Rotation matrix object associated to the uid 'rotationMatrix' -->
+        <object uid="rotationMatrix"    type="::fwData::TransformationMatrix3D" />
+        <object uid="transRotMatrix"    type="::fwData::TransformationMatrix3D" />
+        <object uid="rotTransMatrix"    type="::fwData::TransformationMatrix3D" />
+
+        <!-- ***************************************** Begin layouts declaration ***************************************** -->
+        <service uid="frame" type="::gui::frame::SDefaultFrame" >
+            <gui>
+                <frame>
+                    <name>TutoMatrix</name>
+                    <icon>TutoMatrix-0.1/tuto.ico</icon>
+                    <minSize width="800" height="600"/>
+                </frame>
+                <menuBar/>
+            </gui>
+            <registry>
+                <menuBar sid="menuBar" start="yes" />
+                <view sid="defaultView" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="menuBar" type="::gui::aspect::SDefaultMenuBar">
+            <gui>
+                <layout>
+                    <menu name="File" />
+                </layout>
+            </gui>
+            <registry>
+                <menu sid="menuFile" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="menuFile" type="::gui::aspect::SDefaultMenu">
+            <gui>
+                <layout>
+                    <menuItem name="Open mesh file" shortcut="Ctrl+M" />
+                    <separator />
+                    <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
+                </layout>
+            </gui>
+            <registry>
+                <menuItem sid="actionOpenMeshFile" start="yes" />
+                <menuItem sid="actionQuit" start="yes" />
+            </registry>
+        </service>
+
+        <!--
+            Default view service:
+            The type '::fwGui::LineLayoutManager' represents a layout where the view are aligned
+            horizontally or vertically (set orientation value 'horizontal' or 'vertical').
+            It is possible to add a 'proportion' attribute for the <view> to defined the proportion
+            used by the view compared to the others.
+        -->
+        <service uid="defaultView" type="::gui::view::SDefaultView">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="horizontal" />
+                    <view caption="Mesh view" proportion="4"/>
+                    <view caption="Editors view" proportion="1" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="meshView" start="yes" />
+                <view sid="editorsView" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="editorsView" type="::gui::view::SDefaultView">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="vertical" />
+                    <view proportion="1"/>
+                    <view proportion="4" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="hideShowMesh" start="yes" />
+                <view sid="matrixView" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="hideShowMesh" type="::guiQt::editor::SParameters" >
+             <parameters>
+                 <param type="bool" name="Show/Hide Mesh" key="boolParam" defaultValue="true" />
+             </parameters>
+        </service>
+
+        <service uid="matrixView" type="::uiVisuQt::STransformEditor" autoConnect="no">
+            <inout key="matrix" uid="matrix"/>
+            <translation enabled="yes" min="-300"/>
+            <rotation enabled="yes" min="-180" max="180" />
+        </service>
+
+        <service uid="actionOpenMeshFile" type="::gui::action::SStarter">
+            <start uid="readerPathMeshFile" />
+        </service>
+
+        <service uid="actionQuit" type="::gui::action::SQuit" />
+
+        <service uid="readerPathMeshFile" type="::uiIO::editor::SIOSelector">
+            <inout key="data" uid="mesh" />
+            <type mode="reader" />
+        </service>
+
+        <!--
+            Defines decomposeMatrix service:
+            This service decompose a matrix into a rotation matrix and a translation matrix
+        -->
+        <service uid="decomposeMatrix" type="::maths::SDecomposeMatrix">
+            <in key="source" uid="matrix" autoConnect="yes" />
+            <inout key="translation" uid="translationMatrix" />
+            <inout key="rotation" uid="rotationMatrix" />
+        </service>
+
+        <!-- to multiply matrices -->
+        <service uid="concatenateTranslationAndRotationMat" type="::maths::SConcatenateMatrices" autoConnect="yes">
+            <in group="matrix">
+                <key uid="translationMatrix" />
+                <key uid="rotationMatrix" />
+            </in>
+            <inout key="output" uid="transRotMatrix" />
+        </service>
+
+        <!-- to multiply matrices -->
+        <service uid="concatenateRotationAndTranslationMat" type="::maths::SConcatenateMatrices" autoConnect="yes">
+            <in group="matrix">
+                <key uid="rotationMatrix" />
+                <key uid="translationMatrix" />
+            </in>
+            <inout key="output" uid="rotTransMatrix" />
+        </service>
+
+        <!--
+            Mesh view:
+            This scene display two meshes.
+        -->
+        <!-- *************************** Begin mesh view *************************** -->
+        <service uid="meshView" type="::fwRenderVTK::SRender">
+            <scene>
+                <!-- Renderer -->
+                <renderer id="default" background="0.5" />
+                <!-- adaptor displayed in the scene -->
+                <adaptor uid="meshAdaptor1" />
+                <adaptor uid="meshAdaptor2" />
+                <adaptor uid="transRotMatrixAdaptor" />
+                <adaptor uid="rotTransMatrixAdaptor" />
+                <adaptor uid="axisAdaptor1" />
+                <adaptor uid="axisAdaptor2" />
+                <adaptor uid="originAxisAdaptor" />
+                <adaptor uid="textTransRot" />
+                <adaptor uid="textRotTrans" />
+            </scene>
+        </service>
+
+        <!-- Mesh adaptors -->
+        <service uid="meshAdaptor1" type="::visuVTKAdaptor::SMesh"  autoConnect="yes">
+            <in key="mesh" uid="mesh" />
+            <config renderer="default" transform="transRotMat" picker="picker" />
+        </service>
+
+        <service uid="meshAdaptor2" type="::visuVTKAdaptor::SMesh"  autoConnect="yes">
+            <in key="mesh" uid="mesh" />
+            <config renderer="default" transform="rotTransMat" picker="picker" />
+        </service>
+
+        <!--
+            Defines transform adaptors:
+            This adaptor works on a ::fwData::TransformationMatrix3D and manages a vtkTransform. When
+            the ::fwData::TransformationMatrix3D is modified, it updates the vtkTransform, and vice
+            versa.
+        -->
+        <service uid="transRotMatrixAdaptor" type="::visuVTKAdaptor::STransform" autoConnect="yes">
+            <inout key="tm3d" uid="transRotMatrix" />
+            <config renderer="default" picker="" transform="transRotMat" />
+        </service>
+
+        <service uid="rotTransMatrixAdaptor" type="::visuVTKAdaptor::STransform" autoConnect="yes">
+            <inout key="tm3d" uid="rotTransMatrix" />
+            <config renderer="default" picker="" transform="rotTransMat" />
+        </service>
+
+        <service uid="axisAdaptor1" type="::visuVTKAdaptor::SAxis">
+            <config renderer="default" length="10" transform="transRotMat" label="no" marker="yes" markerColor="#FF0000" />
+        </service>
+
+        <service uid="axisAdaptor2" type="::visuVTKAdaptor::SAxis">
+            <config renderer="default" length="10" transform="rotTransMat" label="no" marker="yes" markerColor="#00FF00" />
+        </service>
+
+        <service uid="originAxisAdaptor" type="::visuVTKAdaptor::SAxis">
+            <config renderer="default" length="10" transform="id" label="no" marker="yes" markerColor="#000000" />
+        </service>
+
+        <service uid="textTransRot" type="::visuVTKAdaptor::SText">
+             <config text="Translation-Rotation transform" renderer="default" color="#FF0000" fontSize="15" fontFamily="arial" hAlign="left" vAlign="bottom" />
+        </service>
+
+        <service uid="textRotTrans" type="::visuVTKAdaptor::SText">
+            <config text="Rotation-Translation transform" renderer="default" color="#00FF00" fontSize="15" fontFamily="arial" hAlign="right" vAlign="bottom" />
+        </service>
+
+
+
+        <!-- ***************************************** End services declarations  ************************************************ -->
+
+        <!-- ************************************* Connections ************************************ -->
+        <connect>
+            <signal>hideShowMesh/boolChanged</signal>
+            <slot>meshAdaptor1/updateVisibility</slot>
+            <slot>meshAdaptor2/updateVisibility</slot>
+        </connect>
+        <!-- ************************************* End Connections ************************************ -->
+
+        <start uid="frame" />
+        <start uid="decomposeMatrix" />
+        <start uid="concatenateTranslationAndRotationMat" />
+        <start uid="concatenateRotationAndTranslationMat" />
+
+        <!-- meshView adaptors-->
+        <start uid="meshAdaptor1" />
+        <start uid="meshAdaptor2" />
+        <start uid="transRotMatrixAdaptor" />
+        <start uid="rotTransMatrixAdaptor" />
+        <start uid="axisAdaptor1" />
+        <start uid="axisAdaptor2" />
+        <start uid="originAxisAdaptor" />
+        <start uid="textTransRot" />
+        <start uid="textRotTrans" />
+
+        </config>
+    </extension>
+
+</plugin>

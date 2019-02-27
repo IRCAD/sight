@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -129,6 +129,8 @@ void SFrameGrabber::startCamera()
             auto sig = this->signal< ::arServices::IGrabber::CameraStartedSignalType >(
                 ::arServices::IGrabber::s_CAMERA_STARTED_SIG);
             sig->asyncEmit();
+
+            this->setStartState(true);
         }
     }
 }
@@ -178,6 +180,8 @@ void SFrameGrabber::stopCamera()
         auto sig = this->signal< ::arServices::IGrabber::CameraStoppedSignalType >(
             ::arServices::IGrabber::s_CAMERA_STOPPED_SIG);
         sig->asyncEmit();
+
+        this->setStartState(false);
     }
 }
 

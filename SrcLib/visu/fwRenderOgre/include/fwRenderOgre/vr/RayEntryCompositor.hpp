@@ -43,7 +43,7 @@ public:
 
     /// Construstor. Creates the ogre compositor.
     FWRENDEROGRE_API RayEntryCompositor(const std::string& _compositorName, std::uint8_t _rqGroup,
-                                        Layer::StereoModeType _stereoMode,
+                                        compositor::Core::StereoModeType _stereoMode,
                                         bool _enableMixedRendering = false);
 
     /// Destructor. Deletes the created compositor.

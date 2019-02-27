@@ -22,8 +22,6 @@
 
 #include "visuOgreAdaptor/SCamera.hpp"
 
-#include <arData/Camera.hpp>
-
 #include <fwCom/Slots.hxx>
 
 #include <fwData/mt/ObjectReadLock.hpp>
@@ -53,11 +51,13 @@ fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SCamera, ::
 const ::fwCom::Slots::SlotKeyType SCamera::s_CALIBRATE_SLOT = "calibrate";
 const ::fwCom::Slots::SlotKeyType SCamera::s_UPDATE_TF_SLOT = "updateTransformation";
 
+const ::fwServices::IService::KeyType s_CALIBRATION_INPUT   = "calibration";
+const ::fwServices::IService::KeyType s_CAMERA_SERIES_INPUT = "cameraSeries";
+const ::fwServices::IService::KeyType s_TRANSFORM_INOUT     = "transform";
+
 //------------------------------------------------------------------------------
 
-SCamera::SCamera() noexcept :
-    m_camera(nullptr),
-    m_aspectRatio(0.f)
+SCamera::SCamera() noexcept
 {
     newSlot(s_UPDATE_TF_SLOT, &SCamera::updateTF3D, this);
     newSlot(s_CALIBRATE_SLOT, &SCamera::calibrate, this);
@@ -74,8 +74,11 @@ SCamera::~SCamera() noexcept
 ::fwServices::IService::KeyConnectionsMap visuOgreAdaptor::SCamera::getAutoConnections() const
 {
     ::fwServices::IService::KeyConnectionsMap connections;
-    connections.push( "transform", ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT );
-    connections.push( "calibration", ::arData::Camera::s_INTRINSIC_CALIBRATED_SIG, s_CALIBRATE_SLOT );
+    connections.push( s_TRANSFORM_INOUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push( s_CALIBRATION_INPUT, ::arData::Camera::s_INTRINSIC_CALIBRATED_SIG, s_CALIBRATE_SLOT );
+    connections.push( s_CAMERA_SERIES_INPUT, ::arData::CameraSeries::s_MODIFIED_SIG, s_CALIBRATE_SLOT);
+    connections.push( s_CAMERA_SERIES_INPUT, ::arData::CameraSeries::s_EXTRINSIC_CALIBRATED_SIG, s_CALIBRATE_SLOT);
+
     return connections;
 }
 
@@ -92,21 +95,16 @@ void SCamera::starting()
 {
     this->initialize();
 
-    m_camera      = this->getLayer()->getDefaultCamera();
-    m_calibration = this->getInput< ::arData::Camera >("calibration");
+    m_camera = this->getLayer()->getDefaultCamera();
 
     m_layerConnection.connect(this->getLayer(), ::fwRenderOgre::Layer::s_CAMERA_UPDATED_SIG,
                               this->getSptr(), s_UPDATE_TF_SLOT);
     m_layerConnection.connect(this->getLayer(), ::fwRenderOgre::Layer::s_CAMERA_RANGE_UPDATED_SIG,
                               this->getSptr(), s_CALIBRATE_SLOT);
-
     m_layerConnection.connect(this->getLayer(), ::fwRenderOgre::Layer::s_RESIZE_LAYER_SIG,
                               this->getSptr(), s_CALIBRATE_SLOT);
-    if (m_calibration)
-    {
-        this->calibrate();
-    }
 
+    this->calibrate();
     this->updating();
 }
 
@@ -125,7 +123,9 @@ void SCamera::updating()
 {
     ::Ogre::Affine3 ogreMatrix;
 
-    auto transform = this->getInOut< ::fwData::TransformationMatrix3D >("transform");
+    auto transform = this->getInOut< ::fwData::TransformationMatrix3D >(s_TRANSFORM_INOUT);
+
+    SLM_ASSERT("The '" + s_TRANSFORM_INOUT + "' inout was not set but is required by this adaptor.", transform);
     {
         ::fwData::mt::ObjectReadLock lock(transform);
 
@@ -207,7 +207,7 @@ void SCamera::updateTF3D()
 
     newTransMat = newTransMat * rotate;
 
-    auto transform = this->getInOut< ::fwData::TransformationMatrix3D >("transform");
+    auto transform = this->getInOut< ::fwData::TransformationMatrix3D >(s_TRANSFORM_INOUT);
     {
         ::fwData::mt::ObjectWriteLock lock(transform);
 
@@ -260,19 +260,98 @@ void SCamera::setAspectRatio(::Ogre::Real _ratio)
 
 void SCamera::calibrate()
 {
-    if ( m_calibration && m_calibration->getIsCalibrated() )
-    {
-        const float width    = static_cast< float >(m_camera->getViewport()->getActualWidth());
-        const float height   = static_cast <float >(m_camera->getViewport()->getActualHeight());
-        const float nearClip = static_cast< float >(m_camera->getNearClipDistance());
-        const float farClip  = static_cast< float >(m_camera->getFarClipDistance());
+    const auto cameraSeries      = this->getInput< ::arData::CameraSeries >(s_CAMERA_SERIES_INPUT);
+    const auto cameraCalibration = this->getInput< ::arData::Camera >(s_CALIBRATION_INPUT);
 
-        ::Ogre::Matrix4 m =
-            ::fwRenderOgre::helper::Camera::computeProjectionMatrix(*m_calibration, width, height, nearClip, farClip);
+    SLM_WARN_IF("A '" + s_CALIBRATION_INPUT +"' input was set but will not be used because a '"
+                + s_CAMERA_SERIES_INPUT + "' was defined as well", cameraSeries && cameraCalibration);
+
+    if(cameraSeries)
+    {
+        this->calibrateCameraSeries(cameraSeries);
+    }
+    else if (cameraCalibration)
+    {
+        this->calibrateMonoCamera(cameraCalibration);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SCamera::calibrateMonoCamera(const arData::Camera::csptr& _cam)
+{
+    const float width    = static_cast< float >(m_camera->getViewport()->getActualWidth());
+    const float height   = static_cast <float >(m_camera->getViewport()->getActualHeight());
+    const float nearClip = static_cast< float >(m_camera->getNearClipDistance());
+    const float farClip  = static_cast< float >(m_camera->getFarClipDistance());
+
+    if ( _cam->getIsCalibrated() )
+    {
+        ::Ogre::Matrix4 m = ::fwRenderOgre::helper::Camera::computeProjectionMatrix(*_cam, width, height,
+                                                                                    nearClip, farClip);
 
         m_camera->setCustomProjectionMatrix(true, m);
 
         this->updating();
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SCamera::calibrateCameraSeries(const arData::CameraSeries::csptr& _cs)
+{
+    const float width    = static_cast< float >(m_camera->getViewport()->getActualWidth());
+    const float height   = static_cast <float >(m_camera->getViewport()->getActualHeight());
+    const float nearClip = static_cast< float >(m_camera->getNearClipDistance());
+    const float farClip  = static_cast< float >(m_camera->getFarClipDistance());
+    const size_t nbCams  = _cs->getNumberOfCameras();
+
+    SLM_WARN_IF("There are no cameras in the '" + s_CAMERA_SERIES_INPUT + "', the default projection transform"
+                "will be used.", nbCams == 0);
+
+    auto layer = this->getLayer();
+
+    // Calibrate only the first camera when stereo is not enabled.
+    if(layer->getStereoMode() == ::fwRenderOgre::compositor::Core::StereoModeType::NONE && nbCams > 0)
+    {
+        this->calibrateMonoCamera(_cs->getCamera(0));
+    }
+    else
+    {
+        ::fwRenderOgre::Layer::CameraCalibrationsType calibrations;
+        ::Ogre::Matrix4 extrinsicMx(::Ogre::Matrix4::IDENTITY);
+
+        for(size_t i = 0; i < nbCams; ++i)
+        {
+            const ::arData::Camera::csptr camera = _cs->getCamera(i);
+
+            if(camera->getIsCalibrated())
+            {
+                const auto intrinsicProjMx =
+                    ::fwRenderOgre::helper::Camera::computeProjectionMatrix(*camera, width, height,
+                                                                            nearClip, farClip);
+
+                calibrations.push_back(intrinsicProjMx * extrinsicMx);
+            }
+            else
+            {
+                OSLM_ERROR("Camera #" << i << " is not calibrated.");
+            }
+
+            // In fwRenderOgre we define extrinsic calibrations as being the transform from the
+            // first camera to the current one.
+            if(i < nbCams - 1)
+            {
+                const ::fwData::TransformationMatrix3D::csptr extrinsic = _cs->getExtrinsicMatrix(i + 1);
+                extrinsicMx = ::fwRenderOgre::Utils::convertTM3DToOgreMx(extrinsic) * extrinsicMx;
+            }
+        }
+
+        if(calibrations.size() > 0)
+        {
+            layer->setCameraCalibrations(calibrations);
+            this->updating();
+        }
     }
 }
 

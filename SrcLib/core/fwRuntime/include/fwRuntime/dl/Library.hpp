@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,11 +22,13 @@
 
 #pragma once
 
-#include "fwRuntime/dl/Posix.hpp"
-#include "fwRuntime/dl/Win32.hpp"
+#include "fwRuntime/config.hpp"
+#include "fwRuntime/dl/Native.hpp"
 #include "fwRuntime/RuntimeException.hpp"
 
 #include <boost/filesystem/path.hpp>
+
+#include <memory>
 
 namespace fwRuntime
 {
@@ -38,28 +40,23 @@ namespace dl
 
 /**
  * @brief   Defines the module class.
- * @struct  LibraryBridge
  * This class is only a bridge to a native module implementor.
  */
-template< typename Implementor >
-struct LibraryBridge
+class FWRUNTIME_CLASS_API Library
 {
-
+public:
     /**
      * @brief       Constructor.
      *
      * @param[in]   modulePath      a path pointing the module to load without any extension
      *                          information
      */
-    LibraryBridge( const boost::filesystem::path& modulePath ) noexcept :
-        m_implementor( modulePath )
-    {
-    }
+    FWRUNTIME_API Library( const ::boost::filesystem::path& modulePath ) noexcept;
 
     /**
      * @brief   Destructor : does nothing.
      */
-    ~LibraryBridge() noexcept
+    ~Library() noexcept
     {
     }
 
@@ -70,7 +67,7 @@ struct LibraryBridge
      */
     bool isLoaded() const noexcept
     {
-        return m_implementor.isLoaded();
+        return m_implementor->isLoaded();
     }
 
     /**
@@ -80,9 +77,9 @@ struct LibraryBridge
      *
      * @see     getPath
      */
-    const boost::filesystem::path getFullPath() const
+    const ::boost::filesystem::path getFullPath() const
     {
-        return m_implementor.getFullPath();
+        return m_implementor->getFullPath();
     }
 
     /**
@@ -94,9 +91,9 @@ struct LibraryBridge
      *
      * @see     getFullPath
      */
-    const boost::filesystem::path getPath() const
+    const ::boost::filesystem::path getPath() const
     {
-        return m_implementor.getPath();
+        return m_implementor->getPath();
     }
 
     /**
@@ -108,7 +105,7 @@ struct LibraryBridge
      */
     void* getSymbol(const std::string& name) const
     {
-        return m_implementor.getSymbol(name);
+        return m_implementor->getSymbol(name);
     }
 
     /**
@@ -116,7 +113,7 @@ struct LibraryBridge
      */
     void load()
     {
-        m_implementor.load();
+        m_implementor->load();
     }
 
     /**
@@ -126,7 +123,7 @@ struct LibraryBridge
      */
     void setBundle(const ::fwRuntime::Bundle* bundle) noexcept
     {
-        m_implementor.setBundle(bundle);
+        m_implementor->setBundle(bundle);
     }
 
     /**
@@ -134,31 +131,25 @@ struct LibraryBridge
      */
     void unload()
     {
-        m_implementor.unload();
+        m_implementor->unload();
     }
 
-    private:
+private:
 
-        /**
-         * @brief   The native module implementator.
-         */
-        Implementor m_implementor;
+    /**
+     * @brief   The native module implementator.
+     */
+    std::unique_ptr< Native > m_implementor;
 
-        /**
-         * @brief   Assignment operator.
-         *
-         * @remark  Assignment is forbidden for this class.
-         */
-        void operator=(const LibraryBridge&) noexcept
-        {
-        }
+    /**
+     * @brief   Assignment operator.
+     *
+     * @remark  Assignment is forbidden for this class.
+     */
+    void operator=(const Library&) noexcept
+    {
+    }
 };
-
-#if defined(linux) || defined(__linux) || defined(__APPLE__)
-typedef struct LibraryBridge< Posix > Library;
-#else
-typedef struct LibraryBridge< Win32 > Library;
-#endif
 
 } // namespace dl
 

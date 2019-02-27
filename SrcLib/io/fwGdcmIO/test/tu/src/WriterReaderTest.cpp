@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -49,6 +49,7 @@
 #include <fwTest/generator/Object.hpp>
 #include <fwTest/generator/SeriesDB.hpp>
 #include <fwTest/helper/compare.hpp>
+#include <fwTest/Slow.hpp>
 
 #include <fwTools/System.hpp>
 
@@ -84,6 +85,14 @@ void roundSpacing(::fwData::Image::sptr image)
 void WriterReaderTest::setUp()
 {
     // Set up context before running a test.
+    if(::fwTest::Slow::ignoreSlowTests())
+    {
+        std::cout << std::endl << "Ignoring slow " << std::endl;
+    }
+    else
+    {
+        std::cout << std::endl << "Executing slow tests.." << std::endl;
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -97,6 +106,10 @@ void WriterReaderTest::tearDown()
 
 void WriterReaderTest::writeReadImageSeriesTest()
 {
+    if(::fwTest::Slow::ignoreSlowTests())
+    {
+        return;
+    }
     ::fwTest::generator::Image::initRand();
     ::fwMedData::ImageSeries::sptr imgSeries;
     imgSeries = ::fwTest::generator::SeriesDB::createImageSeries();
@@ -135,6 +148,10 @@ void WriterReaderTest::writeReadImageSeriesTest()
 
 void WriterReaderTest::writeReadSeriesDBTest()
 {
+    if(::fwTest::Slow::ignoreSlowTests())
+    {
+        return;
+    }
     ::fwTest::generator::Image::initRand();
     ::fwMedData::SeriesDB::sptr seriesDB;
     seriesDB = this->createSeriesDB();
@@ -196,7 +213,7 @@ void WriterReaderTest::writeReadSeriesDBTest()
     ::fwData::Point::sptr point3   = ::fwData::Point::New(1.2 + origin[0],
                                                           2.4 + origin[1],
                                                           static_cast<double>(size[2]-1) * spacing[2] + origin[2]);
-    point3->setField( ::fwDataTools::fieldHelper::Image::m_labelId, ::fwData::String::New("toto") );
+    point3->setField( ::fwDataTools::fieldHelper::Image::m_labelId, ::fwData::String::New("Label3") );
     landmarks->getPoints().push_back(point3);
 
     // Add distance

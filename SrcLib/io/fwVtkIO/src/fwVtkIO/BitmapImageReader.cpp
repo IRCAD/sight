@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017 IRCAD France
- * Copyright (C) 2017 IHU Strasbourg
+ * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -80,10 +80,8 @@ void BitmapImageReader::read()
 
     // Use a vtkImageReader2Factory to automatically detect the type of the input file
     // And select the right reader for the file
-    vtkSmartPointer<vtkImageReader2Factory> factory =
-        vtkSmartPointer< vtkImageReader2Factory >::New();
-    vtkSmartPointer<vtkImageReader2> reader =
-        factory->CreateImageReader2( this->getFile().string().c_str() );
+    vtkSmartPointer<vtkImageReader2Factory> factory = vtkSmartPointer< vtkImageReader2Factory >::New();
+    vtkImageReader2* reader                         = factory->CreateImageReader2( this->getFile().string().c_str() );
 
     FW_RAISE_IF("BitmapImageReader cannot read Bitmap image file :" << this->getFile().string(), !reader);
 
@@ -105,9 +103,8 @@ void BitmapImageReader::read()
     m_job->addSimpleCancelHook([&] { reader->AbortExecuteOn(); });
 
     reader->Update();
-
-    vtkDataObject* obj = reader->GetOutput();
-    vtkImageData* img  = vtkImageData::SafeDownCast(obj);
+    vtkSmartPointer< vtkImageData > img = reader->GetOutput();
+    reader->Delete();
 
     m_job->finish();
 

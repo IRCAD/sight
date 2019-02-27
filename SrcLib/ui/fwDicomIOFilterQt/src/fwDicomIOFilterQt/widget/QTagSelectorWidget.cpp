@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -23,30 +23,26 @@
 #include "fwDicomIOFilterQt/widget/QTagSelectorWidget.hpp"
 
 #include <fwCore/spyLog.hpp>
-#include <fwDcmtkTools/Dictionary.hpp>
+
+#include <dcmtk/dcmdata/dctag.h>
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>
-
-#include <dcmtk/dcmdata/dctag.h>
 
 namespace fwDicomIOFilterQt
 {
 namespace widget
 {
 
-
 //-----------------------------------------------------------------------------
 
-QTagSelectorWidget::QTagSelectorWidget(QWidget* parent) : QWidget(parent)
+QTagSelectorWidget::QTagSelectorWidget(QWidget* parent) :
+    QWidget(parent)
 {
-    // Load dictionary
-    ::fwDcmtkTools::Dictionary::loadDictionary();
-
     // Create main layout
     QVBoxLayout* mainLayout = new QVBoxLayout();
     this->setLayout(mainLayout);
-    mainLayout->setContentsMargins(QMargins(0,0,0,0));
+    mainLayout->setContentsMargins(QMargins(0, 0, 0, 0));
 
     // Add tag label
     m_tagNameLabel = new QLabel("<b>Tag name :</b> ");
@@ -57,7 +53,7 @@ QTagSelectorWidget::QTagSelectorWidget(QWidget* parent) : QWidget(parent)
     mainLayout->addWidget(bottomWidget);
     QHBoxLayout* bottomLayout = new QHBoxLayout();
     bottomWidget->setLayout(bottomLayout);
-    bottomLayout->setContentsMargins(QMargins(0,0,0,0));
+    bottomLayout->setContentsMargins(QMargins(0, 0, 0, 0));
 
     // Spin box
     m_groupSpinBox   = new ::fwDicomIOFilterQt::widget::QHexSpinBox();
@@ -109,7 +105,6 @@ DcmTagKey QTagSelectorWidget::getTag()
 {
     return DcmTagKey(m_groupSpinBox->value(), m_elementSpinBox->value());
 }
-
 
 } // namespace widget
 } // namespace fwDicomIOFilterQt

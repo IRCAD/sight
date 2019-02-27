@@ -6,16 +6,6 @@
     <activate id="gui" version="0.1" />
     <activate id="guiQt" version="0.1" />
 
-    <activate id="ioVTK" version="0.1" />
-
-    <activate id="visuVTK" version="0.1" />
-    <activate id="visuVTKQt" version="0.1" />
-    <activate id="vtkSimpleNegato" version="0.1" />
-
-    <activate id="Tuto01Basic" />
-    <activate id="Tuto02DataServiceBasic" />
-
-    <start id="visuVTKQt" />
     <start id="guiQt" />
 
 </profile>

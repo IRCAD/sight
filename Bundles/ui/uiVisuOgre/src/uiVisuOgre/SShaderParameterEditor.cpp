@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -64,7 +64,7 @@ void SShaderParameterEditor::starting()
 {
     ::fwData::Reconstruction::sptr rec = this->getInOut< ::fwData::Reconstruction >(s_RECONSTRUCTION_INOUT);
     ::fwData::Material::sptr material  = rec->getMaterial();
-    m_connections.connect(material, this->getSptr(), this->getSptr()->getObjSrvConnections() );
+    m_connections.connect(material, ::fwData::Material::s_MODIFIED_SIG, this->getSptr(), s_UPDATE_SLOT);
 
     this->create();
 
@@ -94,7 +94,8 @@ void SShaderParameterEditor::swapping()
     m_connections.disconnect();
     ::fwData::Reconstruction::sptr rec = this->getInOut< ::fwData::Reconstruction >(s_RECONSTRUCTION_INOUT);
     ::fwData::Material::sptr material  = rec->getMaterial();
-    m_connections.connect(material, this->getSptr(), this->getSptr()->getObjSrvConnections() );
+
+    m_connections.connect(material, ::fwData::Material::s_MODIFIED_SIG, this->getSptr(), s_UPDATE_SLOT);
 
     this->updating();
 }

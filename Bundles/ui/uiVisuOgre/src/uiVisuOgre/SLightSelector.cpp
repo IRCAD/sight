@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -223,11 +223,24 @@ void SLightSelector::onAddLight(bool /*_checked*/)
 
 void SLightSelector::onRemoveLight(bool /*_checked*/)
 {
-    ::fwRenderOgre::ILight::destroyLightAdaptor(m_currentLight);
-
     if(m_currentLight)
     {
         ::fwRenderOgre::Layer::sptr currentLayer = m_currentLayer.lock();
+        const std::vector< ::fwRenderOgre::ILight::sptr >::iterator position
+            = std::find(m_managedLightAdaptors.begin(), m_managedLightAdaptors.end(), m_currentLight);
+        if (position != m_managedLightAdaptors.end())
+        {
+            m_managedLightAdaptors.erase(position);
+        }
+
+        if(currentLayer->isDefaultLight(m_currentLight))
+        {
+            currentLayer->removeDefaultLight();
+        }
+        else
+        {
+            ::fwRenderOgre::ILight::destroyLightAdaptor(m_currentLight);
+        }
         m_currentLight.reset();
 
         m_lightAdaptors = currentLayer->getLightAdaptors();
@@ -346,6 +359,11 @@ void SLightSelector::createLightAdaptor(const std::string& _name)
         lightAdaptor->setType(::Ogre::Light::LT_DIRECTIONAL);
         lightAdaptor->setLayerID(currentLayer->getLayerID());
         lightAdaptor->setRenderService(currentLayer->getRenderService());
+        ::fwServices::IService::ConfigType config;
+        config.add("config.<xmlattr>.name", this->getID() + "_light");
+        config.add("config.<xmlattr>.layer", currentLayer->getLayerID());
+        lightAdaptor->setConfiguration(config);
+        lightAdaptor->configure();
         lightAdaptor->start();
 
         m_managedLightAdaptors.push_back(lightAdaptor);

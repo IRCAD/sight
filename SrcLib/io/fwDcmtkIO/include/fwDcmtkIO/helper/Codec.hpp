@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,10 +20,14 @@
  *
  ***********************************************************************/
 
-#ifndef __FWDCMTKIO_HELPER_CODEC_HPP__
-#define __FWDCMTKIO_HELPER_CODEC_HPP__
+#pragma once
 
 #include "fwDcmtkIO/config.hpp"
+
+#include <fwCore/macros.hpp>
+#include <fwCore/spyLog.hpp>
+
+#include <boost/noncopyable.hpp>
 
 namespace fwDcmtkIO
 {
@@ -31,22 +35,31 @@ namespace helper
 {
 
 /**
- * @brief Dicom Codec Helper. This class is used to load Dicom codecs.
+ * @brief Dicom Codec Helper. This class is used to load decompression codecs.
  */
-class FWDCMTKIO_CLASS_API Codec
+class FWDCMTKIO_CLASS_API Codec : public ::boost::noncopyable
 {
 public:
-    /// Load DICOM codec
-    FWDCMTKIO_API static void registerCodecs();
+    /// Load decompression codecs
+    Codec();
+    /// Clean up codecs
+    ~Codec();
 
-    /// Clean up codec register
-    FWDCMTKIO_API static void cleanup();
+    /// @deprecated This function should not be used anymore and will be removed in 19.0
+    FWDCMTKIO_API static void registerCodecs()
+    {
+        FW_DEPRECATED_MSG("This function is deprecated.", "19.0");
+    }
 
-
+    /// @deprecated This function should not be used anymore and will be removed in 19.0
+    FWDCMTKIO_API static void cleanup()
+    {
+        FW_DEPRECATED_MSG("This function is deprecated.", "19.0");
+    }
 };
 
+extern FWDCMTKIO_CLASS_API SPTR(::fwDcmtkIO::helper::Codec) g_codecInstantiator;
+
 } //helper
+
 } //fwDcmtkIO
-
-
-#endif /* __FWDCMTKIO_HELPER_CODEC_HPP__ */

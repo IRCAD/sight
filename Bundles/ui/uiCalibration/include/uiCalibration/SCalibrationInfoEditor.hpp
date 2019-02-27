@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -61,7 +61,7 @@ class UICALIBRATION_CLASS_API SCalibrationInfoEditor : public QObject,
 Q_OBJECT;
 
 public:
-    fwCoreServiceClassDefinitionsMacro((SCalibrationInfoEditor)(::fwGui::editor::IEditor));
+    fwCoreServiceClassDefinitionsMacro((SCalibrationInfoEditor)(::fwGui::editor::IEditor))
 
     /**
      * @name Slots API
@@ -118,6 +118,12 @@ protected:
      * @brief Slot: emits the CalibrationInfo signal 'getRecord(index)' with the current selection index.
      */
     UICALIBRATION_API void getSelection();
+
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     */
+    UICALIBRATION_API virtual KeyConnectionsMap getAutoConnections() const override;
 
 private Q_SLOTS:
     /**

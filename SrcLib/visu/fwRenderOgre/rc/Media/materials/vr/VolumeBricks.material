@@ -39,8 +39,8 @@ fragment_program VolumeBricksGrid_FP glsl
         param_named u_brickSize int3 8 8 8
         param_named u_slice int 0
         param_named u_image int 0
-        param_named u_tfTexture int 1
-        param_named u_tfWindow float2 0 0
+        param_named u_s1TFTexture int 1
+        param_named u_f2TFWindow float2 0 0
     }
 }
 

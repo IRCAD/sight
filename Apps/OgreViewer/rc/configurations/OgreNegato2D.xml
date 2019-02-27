@@ -2,14 +2,19 @@
     <id>OgreNegato2D</id>
     <parameters>
         <param name="WID_PARENT" />
-        <param name="imageUID" />
-        <param name="TF" />
+        <param name="image" />
+        <param name="volumeTF" />
     </parameters>
     <config>
-        <object uid="${imageUID}" type="::fwData::Image" src="ref" />
-        <object uid="${TF}" type="::fwData::TransferFunction" src="deferred" />
 
-        <service uid="OgreNegato2D" type="::gui::view::SDefaultView">
+        <!-- ******************************* Objects declaration ****************************** -->
+
+        <object uid="${image}" type="::fwData::Image" src="ref" />
+        <object uid="${volumeTF}" type="::fwData::TransferFunction" src="deferred" />
+
+        <!-- ******************************* UI declaration *********************************** -->
+
+        <service uid="mainView" type="::gui::view::SDefaultView">
             <gui>
                 <layout type="::fwGui::LineLayoutManager">
                     <orientation value="vertical" />
@@ -19,50 +24,44 @@
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <view sid="negato2DScene" start="yes" />
-                <view sid="sliderIndexEditor2D" start="yes" />
+                <view sid="genericSceneSrv" start="yes" />
+                <view sid="2DNegatoSlicerSrv" start="yes" />
             </registry>
         </service>
 
-        <!-- Begin Generic Scene ***************************************** -->
-        <service uid="negato2DScene" type="::fwRenderOgre::SRender">
-            <!-- Fix afterglow bug when dezooming -->
-            <!-- Default Layer -->
+        <!-- ******************************* Begin Generic Scene ******************************* -->
+
+        <service uid="genericSceneSrv" type="::fwRenderOgre::SRender">
             <scene>
                 <background topColor="#DDDDDD" bottomColor="#43958D" topScale="0.7" bottomScale="1.0" />
                 <layer id="default" depth="1" />
-                <adaptor uid="interactorAdaptor" />
-                <adaptor uid="negato2DAdaptor" />
+                <adaptor uid="defaultInteractorAdp" />
+                <adaptor uid="2DNegatoAdp" />
             </scene>
         </service>
 
-        <service uid="interactorAdaptor" type="::visuOgreAdaptor::SInteractorStyle">
+        <service uid="defaultInteractorAdp" type="::visuOgreAdaptor::SInteractorStyle">
             <config layer="default" movement="Negato2D" />
         </service>
 
-        <service uid="negato2DAdaptor" type="::visuOgreAdaptor::SNegato2D">
-            <inout key="image" uid="${imageUID}" autoConnect="yes" />
-            <inout key="tf" uid="${TF}" optional="yes" />
+        <service uid="2DNegatoAdp" type="::visuOgreAdaptor::SNegato2D">
+            <inout key="image" uid="${image}" autoConnect="yes" />
+            <inout key="tf" uid="${volumeTF}" optional="yes" />
             <config layer="default" />
         </service>
 
-        <!-- End Generic Scene ***************************************** -->
-
         <!-- ************************************* Services ************************************ -->
 
-        <!-- Slice editor service -->
-        <service uid="sliderIndexEditor2D" type="::uiImageQt::SliceIndexPositionEditor" autoConnect="yes">
-            <inout key="image" uid="${imageUID}" />
+        <service uid="2DNegatoSlicerSrv" type="::uiImageQt::SliceIndexPositionEditor" autoConnect="yes">
+            <inout key="image" uid="${image}" />
             <sliceIndex>Sagittal</sliceIndex>
         </service>
 
-        <!-- *************************************** Starts ************************************ -->
+        <!-- ******************************* Start/Stop services ***************************************** -->
 
-        <start uid="OgreNegato2D" />
-
-        <!-- Ogre scene 'negato2DScene' -->
-        <start uid="interactorAdaptor" />
-        <start uid="negato2DAdaptor" />
+        <start uid="mainView" />
+        <start uid="defaultInteractorAdp" />
+        <start uid="2DNegatoAdp" />
 
     </config>
 </extension>

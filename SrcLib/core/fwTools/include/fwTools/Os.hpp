@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,25 +20,23 @@
  *
  ***********************************************************************/
 
-#ifndef __FWTOOLS_OS_HPP__
-#define __FWTOOLS_OS_HPP__
-
-#include <string>
+#pragma once
 
 #include "fwTools/config.hpp"
+#include "fwTools/Exception.hpp"
 
+#include <boost/filesystem/path.hpp>
+
+#include <string>
 
 namespace fwTools
 {
 
 /**
  * @brief   Namespace fwTools::os contains tools methods which depend on os like get user application data directory.
- *
- * @date    2009-2010.
  */
 namespace os
 {
-
 
 /**
  * @brief Returns a environment variable value
@@ -48,8 +46,7 @@ namespace os
  *
  * @return The environment variable content if it exists, else an empty string
  */
-FWTOOLS_API std::string getEnv(const std::string &name, bool *ok = NULL);
-
+FWTOOLS_API std::string getEnv(const std::string& name, bool* ok = NULL);
 
 /**
  * @brief Returns a environment variable value
@@ -57,7 +54,7 @@ FWTOOLS_API std::string getEnv(const std::string &name, bool *ok = NULL);
  * @param name environment variable 'name'
  * @param defaultValue Value returned if variable 'name' doesn't exist
  */
-FWTOOLS_API std::string getEnv(const std::string &name, const std::string &defaultValue);
+FWTOOLS_API std::string getEnv(const std::string& name, const std::string& defaultValue);
 
 /**
  * @brief   Return the users's application data directory
@@ -65,21 +62,28 @@ FWTOOLS_API std::string getEnv(const std::string &name, const std::string &defau
  * @param company The company name
  * @param appName The application name
  * @param createDirectory if true, create the returned directory if it don't exist
- * @date    2007-2009.
  *
  * Return the application data directory. If company or appName is not empty, append them to
  * the path. Under unix, XDG conventions are repected.
  * For example, the UserDataDir under linux will be "~/.config/company/appName"
  */
 FWTOOLS_API std::string  getUserDataDir(
-    std::string company = "",
-    std::string appName = "",
+    std::string company  = "",
+    std::string appName  = "",
     bool createDirectory = false
     );
 
+/**
+ * @brief   Return the path to a shared library name
+ * The library should have already been loaded before.
+ * @param _libName The name of the shared library, without any 'lib' prefix, 'd' suffix or extension,
+ * i.e. 'jpeg' or 'boost_filesystem'. The function will try to use the appropriate combination according to
+ * the platform and the build type.
+ * @return path to the library on the filesystem
+ * @throw ::fwTools::Exception if the library could not be found (not loaded for instance)
+ */
+FWTOOLS_API ::boost::filesystem::path getSharedLibraryPath(const std::string& _libName);
 
 } // namespace os
 
 } // namespace fwTools
-
-#endif //__FWTOOLS_OS_HPP__

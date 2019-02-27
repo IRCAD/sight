@@ -32,17 +32,21 @@ namespace fwIO
 {
 
 // Public slot
-const ::fwCom::Slots::SlotKeyType IWriter::s_SET_FILE_FOLDER = "setFileFolder";
+const ::fwCom::Slots::SlotKeyType IWriter::s_SET_FILE_FOLDER      = "setFileFolder";
+const ::fwCom::Slots::SlotKeyType IWriter::s_SET_TIMESTAMP_PREFIX = "setTimestampPrefix";
 
 // Private slot
 static const ::fwCom::Slots::SlotKeyType s_CONFIGURE_WITH_IHM = "configureWithIHM";
 
 //-----------------------------------------------------------------------------
 
-IWriter::IWriter() noexcept
+IWriter::IWriter() noexcept :
+    m_useTimestampPrefix(false),
+    m_currentTimestamp(0.0)
 {
     newSlot(s_CONFIGURE_WITH_IHM, &IWriter::configureWithIHM, this);
     newSlot(s_SET_FILE_FOLDER, &IWriter::setFileFolder, this);
+    newSlot(s_SET_TIMESTAMP_PREFIX, &IWriter::setTimestampPrefix, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -57,7 +61,18 @@ const ::boost::filesystem::path& IWriter::getFile() const
 {
     FW_RAISE_IF("This reader doesn't manage files", !(this->getIOPathType() & ::fwIO::FILE));
     FW_RAISE_IF("Exactly one file must be define in location", m_locations.size() != 1);
-    return m_locations.front();
+
+    m_currentLocation = m_locations.front();
+    if(m_useTimestampPrefix)
+    {
+        ::boost::filesystem::path dirname  = m_currentLocation.parent_path();
+        ::boost::filesystem::path basename = m_currentLocation.filename();
+
+        m_currentLocation = dirname / ::boost::filesystem::path(std::to_string(m_currentTimestamp)
+                                                                + std::string("-") + basename.string());
+    }
+
+    return m_currentLocation;
 }
 
 //-----------------------------------------------------------------------------
@@ -116,6 +131,16 @@ void IWriter::setFileFolder(boost::filesystem::path folder)
         file = file.filename();
         file = folder / file;
     }
+}
+
+//-----------------------------------------------------------------------------
+
+void IWriter::setTimestampPrefix(::fwCore::HiResClock::HiResClockType timestamp)
+{
+    // At the first signal sent, mark that we want files to be tagged with the prefix
+    m_useTimestampPrefix = true;
+    // Record the current prefix
+    m_currentTimestamp = timestamp;
 }
 
 //-----------------------------------------------------------------------------

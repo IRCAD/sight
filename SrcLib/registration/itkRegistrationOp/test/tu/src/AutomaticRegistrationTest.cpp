@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2018 IRCAD France
- * Copyright (C) 2017-2018 IHU Strasbourg
+ * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -38,6 +38,7 @@
 #include <fwItkIO/itk.hpp>
 
 #include <fwTest/generator/Image.hpp>
+#include <fwTest/Slow.hpp>
 
 #include <fwVtkIO/ImageWriter.hpp>
 
@@ -49,6 +50,9 @@
 #include <itkEllipseSpatialObject.h>
 #include <itkImage.h>
 #include <itkSpatialObjectToImageFilter.h>
+
+#include <cstdlib>
+#include <string>
 
 CPPUNIT_TEST_SUITE_REGISTRATION(::itkRegistrationOp::ut::AutomaticRegistrationTest);
 
@@ -63,7 +67,14 @@ typedef ::itk::Image< std::int16_t, 3> ImageType;
 
 void AutomaticRegistrationTest::setUp()
 {
-
+    if(::fwTest::Slow::ignoreSlowTests())
+    {
+        std::cout << std::endl << "Ignoring slow " << std::endl;
+    }
+    else
+    {
+        std::cout << std::endl << "Executing slow tests.." << std::endl;
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -126,6 +137,11 @@ void AutomaticRegistrationTest::identityTest()
 
 void AutomaticRegistrationTest::rigidTransformTest()
 {
+    if(::fwTest::Slow::ignoreSlowTests())
+    {
+        return;
+    }
+
     namespace itkReg = ::itkRegistrationOp;
 
     ::fwData::Image::csptr target = createSphereImage< ::std::uint16_t, 3>();
@@ -175,6 +191,11 @@ void AutomaticRegistrationTest::rigidTransformTest()
 
 void AutomaticRegistrationTest::translateTransformTest()
 {
+    if(::fwTest::Slow::ignoreSlowTests())
+    {
+        return;
+    }
+
     namespace itkReg = ::itkRegistrationOp;
 
     ::fwData::Image::csptr target = createSphereImage< ::std::uint16_t, 3>();
@@ -217,6 +238,11 @@ void AutomaticRegistrationTest::translateTransformTest()
 //------------------------------------------------------------------------------
 void AutomaticRegistrationTest::rotationTransformTest()
 {
+    if(::fwTest::Slow::ignoreSlowTests())
+    {
+        return;
+    }
+
     namespace itkReg = ::itkRegistrationOp;
 
     ::fwData::Image::csptr target = createSphereImage< ::std::uint16_t, 3>();
@@ -264,6 +290,11 @@ void AutomaticRegistrationTest::rotationTransformTest()
 //------------------------------------------------------------------------------
 void AutomaticRegistrationTest::multiresolutionRotationTransformTest()
 {
+    if(::fwTest::Slow::ignoreSlowTests())
+    {
+        return;
+    }
+
     namespace itkReg = ::itkRegistrationOp;
 
     ::fwData::Image::csptr target = createSphereImage<std::uint16_t, 3>();

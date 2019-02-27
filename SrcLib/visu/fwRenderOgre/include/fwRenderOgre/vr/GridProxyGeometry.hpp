@@ -29,6 +29,7 @@
 
 #include <fwData/Image.hpp>
 
+#include <OGRE/OgreCamera.h>
 #include <OGRE/OgreEntity.h>
 #include <OGRE/OgreSceneManager.h>
 
@@ -68,7 +69,7 @@ public:
     FWRENDEROGRE_API GridProxyGeometry(const ::Ogre::String& name);
 
     /// Destructor, frees resources if they have been allocated.
-    FWRENDEROGRE_API virtual ~GridProxyGeometry();
+    FWRENDEROGRE_API virtual ~GridProxyGeometry() override;
 
     /// Function to be called when the volume changed and its size too. Recomputes texture and geometry.
     FWRENDEROGRE_API void updateGridSize();
@@ -97,7 +98,7 @@ private:
     void initializeGridMaterials();
 
     /// Entity holding the source geometry used for proxy geometry rendering.
-    ::Ogre::Entity* m_r2vbSource;
+    ::Ogre::Entity* m_r2vbSource { nullptr };
 
     /// GPU pass generating the geometry from the grid.
     ::Ogre::Pass* m_geomGeneratorPass { nullptr };
@@ -112,16 +113,19 @@ private:
     ::Ogre::TexturePtr m_gridTexture;
 
     /// Grid volume dimensions. (i.e. the number of bricks along each dimension)
-    std::array< int, 3 > m_gridSize;
+    std::array< int, 3 > m_gridSize {{ 2, 2, 2 }};
 
     /// Size of a volume brick.
-    std::array< int, 3 > m_brickSize;
+    const std::array< int, 3 > m_brickSize {{ 8, 8, 8 }};
 
     /// Image from which we define a grid.
     ::Ogre::TexturePtr m_3DImageTexture;
 
     /// Transfer function to be applied to the image.
     TransferFunction::wptr m_gpuTF;
+
+    /// Camera used to compute the grid volume image.
+    ::Ogre::Camera* m_gridViewportCamera { nullptr };
 
 };
 
@@ -142,7 +146,7 @@ public:
     }
 
     /// Destructor, does nothing.
-    FWRENDEROGRE_API ~GridProxyGeometryFactory()
+    FWRENDEROGRE_API virtual ~GridProxyGeometryFactory() override
     {
     }
 

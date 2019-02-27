@@ -170,6 +170,7 @@ void SFrameWriter::write(::fwCore::HiResClock::HiResClockType timestamp)
 
         if (buffer)
         {
+            timestamp = buffer->getTimestamp();
             const int width  = static_cast<int>( frameTL->getWidth() );
             const int height = static_cast<int>( frameTL->getHeight() );
 
