@@ -1,3 +1,412 @@
+# sight 18.1.0
+
+## New features:
+
+### MarkedSphereHandleRepresentation
+
+*Add ComputeInteractionState method.*
+
+### videoRealSense
+
+*Update realsense grabber:.*
+- grab also pointcloud
+- live loading of presets (in /rc/presets)
+- enable/disable IR emitter
+- switch between color/infrared frame
+- live modification of min/max range
+- speed-up the grabbing function
+- brand-new ExRealSense using Ogre backend
+
+Resolve "Output pointcloud from realsense grabber"
+
+### ci
+
+*Add ci-jobs to build sight on windows and macos.*
+
+- Add some jobs to build sight on Linux, Macos and Windows
+- Launch unit-test
+- Use ccache to reduce build time
+
+Resolve "Add windows and macos as gitlab CI target"
+
+### CMake
+
+*Add source packaging with CPack.*
+
+It is now possible to create a source package for a specific application.
+To do so, you have to:
+
+- Choose an app you'd like to package. (e.g. VRRender, OgreViewer,...) This needs to be an **installable** app make sure it calls `generic_install` in its `CMakeLists.txt`
+- Set it (and only it) as the `PROJECTS_TO_BUILD` in your cmake config.
+- Run cmake `cmake .`
+- Build the source archive, if building with ninja you can run `ninja package_source` else run `cpack --config CPackSourceConfig.cmake`
+- Retrieve the source archive (e.g. VRRender-0.9-Source.tar.gz if you chose VRRender).
+
+## Some results
+
+A source package example : [PoCRegistration-0.1-Source.tar.gz](/uploads/a4fdd05b1681b7f01c1c553903f0f072/PoCRegistration-0.1-Source.tar.gz)
+
+## Additional tests to run
+
+This should better be tested on all platforms.
+
+- [x] Windows
+- [ ] ~~macOS~~ :arrow\_right: won't work see #248
+- [x] GNU/Linux
+
+### SDecomposeMatrix
+
+*New service to decompose a matrix and associated tutorial.*
+
+Add a new service to decompose a matrix into a rotation matrix, a translation matrix and a scale matrix.
+Add a new sample using this service.
+
+### TabLayoutManagerBase
+
+*Add a border option.*
+- add also Parameters_Gray.svg icon.
+
+Resolve "Improve GUI esthetic"
+
+### SParameters
+
+*Add new index based enumeration slot.*
+
+Add a slot which changes enumeration state based on the index and not on the label.
+
+### video
+
+*Add slot that plays or pauses according to current state.*
+
+- Add new slot to IGrabber that plays or pauses.
+- Add two state booleans on IGrabber.
+- Add declaration to start, stop and pause on IGrabber.
+- Add parent call to all derived grabbers for start, stop, pause.
+
+### conan
+
+*Find conan packages associated with installed cuda version.*
+
+- Use conan option 'cuda' to find package associated with cuda version installed on the machine
+- Available cuda versions: "9.2", "10.0", "None"
+
+### SFlip
+
+*Add service to flip images.*
+
+- Add a service to flip images in the three main axes (can handle up to 3D images)
+- Implement the SFlip service in Tuto06Filter
+
+### vscode
+
+*Add vs code generator.*
+
+- add VS Code support to build and debug Sight
+- to use VSCode with sight: run CMake configure with option GENERATE_VSCODE_WS, and open the workspace file "sight.code-workspace" (in build dir)
+
+### conan
+
+*Add linuxmint19 support.*
+
+- Support new settings 'os.distro' in cmake-conan script into sight for linux.
+- Available values in your packages for settings 'os.distro' are:
+  - linuxmint18
+  - linuxmint19
+
+### idvr
+
+*Draw the IDVR's depth lines from the outside of the countersink.*
+
+### visuOgreAdaptor::SPointList
+
+*Addition of a labeled point list.*
+
+If the option "displayLabel" is set to true on the XML configuration, it will add a label on a point when the point is created.
+You can also choose the character height and the color of the label on the XML configuration.
+
+### PoCMergePointcloud
+
+*Add a new PoC to merge pointclouds from 2 RGBD Cameras (Orbbec astras).*
+
+Move opDepthMap & depthMapOp from internal repository to opensource.
+
+Resolve "Sample to merge two RGBD Cameras"
+
+### Calibration
+
+*Export extrinsic matrix in .trf format.*
+
+Resolve "Export extrinsic matrix in .trf in calibration activity"
+
+### OGRE
+
+*Configure stereo cameras using camera series.*
+
+- Computes each projection matrix using intrinsic and extrinsic calibrations
+
+### Ogre
+
+*Improve stereo rendering management.*
+
+- Adds an action to enable/disable stereo in an ogre layer.
+- Refactors the stereo mode to be handled by the core compositor.
+- Fixes some adaptors that crashed when restarting.
+
+### SImageWriter
+
+*Handles timestamps and bitmap images".*
+
+### Player
+
+*Add getter of video duration.*
+
+Adds a getter for QMediaPlayer::duration() this is useful for knowing how much time is left on your video and especially this ticket for a video timeline editor which basically uses the `::fwVideoQt::Player`to get specific frames at specific positions.
+
+## Bug fixes:
+
+### template.sh
+
+*Add quotes in linux sh template (build & install).*
+
+Resolve "Wrong bundledir path in application scripts automatically generated by CMake"
+
+### OgreViewer
+
+*Correct user interface bugs.*
+
+The compositor uniforms are now properly shown in the compositor selector.
+The application no longer crashes at exit when all lights are removed.
+
+### SMaterial
+
+*Use a lookup table to correctly display 16 bits texture.*
+
+### videoOpenCV
+
+*Duration calculation & loop mode.*
+* Correct the duration calculation.
+* Use total number of frame and current frame index to loop the video.
+
+Resolve "OpenCV grabber loop mode & duration"
+
+### guiQt
+
+*Copy the styles plugin on install.*
+
+Installed and packaged apps looked bad because we forgot to ship the qt styles plugin.
+
+### fwRuntime
+
+*Remove windows.h in Library.hpp.*
+
+- avoid exposing of windows.h in fwRuntime`::dl::Library`header (via dl::Win32.hpp)
+- use abstract class fwRuntime`::dl::Native`(as a pointer) in the hpp and instantiate the specific implementation in the cpp
+- update vlc conan package used in videoVLC to fix problems related to windows.h
+
+### Flipper
+
+*Move the implementation to the correct path.*
+
+Resolve "Move Flipper.cpp from imageFlipperOp to imageFilterOp"
+
+### videoOrbbec
+
+*Allow to use the grabber in RGB mode.*
+
+Fixes a crash in videoOrbbec`::SScan`if no depth timeline was given. Now, we can use this grabber to get only the RGB frames.
+
+### ci
+
+*Fix job to deploy doxygen on the sight gitlab page.*
+
+- Doxygen pages can no longer be deployed on the CI due to an error on the gitlab-ci script.
+- There is an error because the git configuration has been defined globally for all jobs, and the deployment jobs use a docker image that doesn't contain 'git'.
+- To fix this, we'll use the same docker image for all linux jobs (DOCKER_ENVDEV_MINT19)
+
+### guiQtTest
+
+*Add missing profile.xml and gui requirement.*
+
+### fwDicomIOFilter
+
+*Fix unit tests.*
+
+### SStereoToggler
+
+*Remove fwServicesRegisterMacro macro.*
+
+Fix compilation without PCH by removing the fwServicesRegisterMacro
+
+Resolve "Missing header in SStereoToggler.cpp"
+
+### utests
+
+*Various fixes for fwJobsTest, fwGdcmIOTest, fwRenderOgreTest, fwThreadTest.*
+
+This fixes the following unit tests:
+
+- fwJobsTest: The problem was visible on macOS, but other platforms maybe impacted. Testing if the future is valid before waiting did the trick. Also a wrong "+" with a char* and an integer which give also a crash in release, has been replaced with a proper string concatenation
+
+- fwGdcmIOTest: The hashing function boost::hash_combine() doesn't always use the same implementation across platforms (!!!). We now use a regular sha1 hashing, a bit slower, but safer
+
+- fwRenderOgreTest: Deleting the dummy RenderWindow with destroy() leads to a double delete crash when deleting ogre root node. Using the appropriate Ogre::RenderSystem::destroyRenderWindow() seems to fix the crash
+
+- fwThreadTest: Use a workaround to mitigate the callback cost in time computation. This is a workaround because either the test itself is false (and maybe undoable, as unpredictable), either we must change the implementation of TimerAsio to take into account the time taken by the callback. We may look again for https://git.ircad.fr/Sight/sight/tree/fix/TimerAsio, but it is clear this change will have side effect since some code may actually want to wait for the callback to perform before reseting the timer. I guess that playing a video with openCV did fail with the above merge request
+
+### cmake
+
+*Use the correct macOS flags to build pch.*
+
+Pass the correct macOS flags when compiling pch
+
+### gitignore
+
+*Parse also versioned qtcreator cmake preferences files.*
+
+Resolve "Update gitignore to include qtcreator's versioned files"
+
+### conan
+
+*Quiet conan output.*
+
+Update cmake script with conan OUTPUT_QUIET option to have a more quiet conan's output
+
+### GridProxyGeometry
+
+*Fix variables declaration.*
+
+### SGrabberProxy
+
+*Correct parsing of grabber list and ensure that the list is filled even if no config is set.*
+
+Resolve "Empty SGrabberProxy list"
+
+### ci
+
+*Update ccache path.*
+
+- now ccache use a nfs folder mounted in docker image
+- previous gitlab-ci cache is not compatible with this system
+
+### SFrameWriter
+
+*Use the correct timestamp in image filename.*
+
+Use the timeline timestamp instead of the current timestamp when saving frames using videoOpenCV::SFrameWriter
+
+## Refactor:
+
+### Ogre
+
+*Remove IDVR from the repository.*
+
+This MR removes all IDVR references from OgreViewer. This makes the application simpler,
+because over time it accumulated too many features.
+
+In the same time, we added volume rendering and negatoMPR adaptors to the VTK tab,
+in order to show the comparison between the two back-ends.
+
+OgreViewer has been updated to 0.3.
+
+### ui
+
+*Remove deprecated services (ShowLandmark, SaveLandmark, LoadLandmark and DynamicView).*
+
+Resolve "Remove deprecated services"
+
+### Bookmarks
+
+*Deprecate ::fwTools::Bookmarks.*
+
+Add FW_DEPRECATED macro in fwTools`::Bookmarks`and the associated service ctrlSelection::BookmarksSrv.
+The bookmarks are no longer used and the service still use a deprecated API.
+
+### HiResClock
+
+*Undeprecate getTime* functions.*
+
+Resolve "Un-deprecate HiResClock functions"
+
+### videoRealSense
+
+*Use the version 2 of the realsense api.*
+This is a basic implementation of a Grabber for D400 cameras:
+
+* parameters such as resolution, fps, ... are set in code
+* the camera chosen with the videoQt selector is not taken into account by the grabber (Qt doesn't recognize correctly realsense device)
+* if multiple realsense cameras are plugged-in the grabber will pop a selector dialog
+* depth pointcloud is not outputted for now
+
+### filterVRRender
+
+*Rename filterVRRender to filterUnknownSeries.*
+
+`FilterUnknownActivities` filter from `filterUnknownSeries` bundle allows
+to remove the unknown activities when reading a medical file (.json,
+.jsonz, .apz, ...) with `::ioAtoms::SReader`.
+
+The old filterVRRender bundle is kept for backward compatibility, but will
+be removed in version 19.0.
+
+### ioGdcm
+
+*Remove plugin.xml in ioGdcm.*
+
+Remove the plugin.xml file in ioGdcm bundle because it is useless (cmake generates it automatically).
+Also change the documentation of services.
+
+### uiVisuOgre
+
+*Remove obsolete getObjSrvConnections().*
+
+### fwTools
+
+*Move shared library path search code and make it generic.*
+
+This introduces a new function in `fwTools`::Os``:
+
+```cpp
+/**
+ * @brief   Return the path to a shared library name
+ * The library should have already been loaded before.
+ * @param _libName The name of the shared library, without any 'lib' prefix, 'd' suffix or extension,
+ * i.e. 'jpeg' or 'boost_filesystem'. The function will try to use the appropriate combination according to
+ * the platform and the build type.
+ * @return path to the library on the filesystem
+ * @throw `::fwTools::Exception`if the library could not be found (not loaded for instance)
+ */
+FWTOOLS_API `::boost::filesystem::path`getSharedLibraryPath(const std::string& _libName);
+```
+
+This function has been used to search for Qt plugins in `WorkerQt.cpp`,
+where this was originally needed. It can be used in some of our utilities as well. The code is generic and has been unit-tested properly.
+
+### video
+
+*Better support of selected device in video grabbers.*
+
+* Strongly identify camera when using Qt Selector, and add better support of multiple same model cameras
+
+  * Refactor CameraDeviceDlg to keep usb order in comboBox
+  * Uniquely identify cameras using a prefix pushed in description.
+
+* Grab Webcam with OpenCV is now multiplatform.
+
+* Enhance the video support when using OpenNI grabbers.
+
+  * Add support of multiple connected astra (videoOrbbec)
+  * Use Opencv instead of Qt to grab RGB frame
+  * Grab RGB & Depth frame in same thread (synchronized on depth)
+  * Remove Qt in videoOrbbec
+
+* Add Astra utility program to replace over-complicated SScanIR
+
+  * astraViewer: to view Color/IR and Depth stream
+  * astraRecord3Streams: to display Color + IR + Depth and take a snapshot (! FPS will be very very slow ! ).
+
+Resolve "videoOpenni and videoOrbbec SScan don't take into account the selected device"
+
+
 # sight 18.0.0
 
 ## Bug fixes:
