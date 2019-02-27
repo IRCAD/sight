@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -66,6 +66,8 @@ public:
     FWRENDERVTK_API virtual int RenderOpaqueGeometry(vtkViewport* viewport) override;
     FWRENDERVTK_API virtual int RenderTranslucentPolygonalGeometry(vtkViewport* viewport) override;
     FWRENDERVTK_API virtual int HasTranslucentPolygonalGeometry() override;
+    // Method to avoid vtk resetting the visibility (reimplemented from vtkSphereHandleRepresentation)
+    FWRENDERVTK_API virtual int ComputeInteractionState(int X, int Y, int vtkNotUsed(modify)) override;
 
 protected:
     MarkedSphereHandleRepresentation();
