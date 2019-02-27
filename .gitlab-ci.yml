@@ -3,7 +3,6 @@ stages:
   - build
   - doc
   - deploy
-  - sdk
 
 .linux_template: &linux_job
   image: ${DOCKER_ENVDEV_MINT19}
