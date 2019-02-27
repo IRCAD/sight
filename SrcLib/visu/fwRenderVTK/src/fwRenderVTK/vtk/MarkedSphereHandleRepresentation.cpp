@@ -108,11 +108,6 @@ void MarkedSphereHandleRepresentation::CreateDefaultProperties()
 //----------------------------------------------------------------------
 void MarkedSphereHandleRepresentation::BuildRepresentation()
 {
-    // The net effect is to resize the handle
-//  if ( this->GetMTime() > this->BuildTime ||
-//       (this->Renderer && this->Renderer->GetVTKWindow() &&
-//        this->Renderer->GetVTKWindow()->GetMTime() > this->BuildTime) )
-//  {
     if ( !this->Placed )
     {
         this->ValidPick = 1;
@@ -126,7 +121,6 @@ void MarkedSphereHandleRepresentation::BuildRepresentation()
     this->Marker->SetRadius(this->MarkerRadiusFactor * this->Sphere->GetRadius() );
     this->Marker->Update();
     this->BuildTime.Modified();
-//  }
 }
 //
 //----------------------------------------------------------------------
@@ -211,7 +205,6 @@ int MarkedSphereHandleRepresentation::ComputeInteractionState(int X, int Y, int 
 
     if ( path != nullptr )
     {
-//    this->InteractionState = vtkHandleRepresentation::Nearby;
         this->InteractionState = vtkHandleRepresentation::Selecting;
     }
     else
