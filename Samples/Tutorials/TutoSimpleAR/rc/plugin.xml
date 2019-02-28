@@ -1,33 +1,55 @@
 <!--
-    This tutorial shows a VTK scene playing a video with a marker.
-    To use this application, you should open a calibration and a video.
+    This tutorial shows a basic sample of augmented reality.
+    This exhibits:
+      - how to detect an ArUco marker,
+      - how to compute the pose of a marker,
+      - how to make a basic augmented-reality render (we superimpose a cube onto the ArUco marker)
+      - how to undistort a video according to the camera intrinsic parameters
+      - how to distort a 3D render according to the camera intrinsic parameters
+      - how to synchronize efficiently a video process pipeline with the video playback using SSignalGate
+
+    To use this application, you must open a calibration and a video. Samples are provided in the bundle folder
+    of the appplication, `share/sight/TutoSimpleAR-0.4` on Linux/MacOs and `share\TutoSimpleAR-0.4` on Windows:
+      - calibration.xml
+      - aruco_tag.m4v
 -->
 <plugin id="TutoSimpleAR" version="@PROJECT_VERSION@">
+
+    <!-- The bundles in requirements are automatically started when this application is launched. -->
     <requirement id="dataReg" />
     <requirement id="arDataReg" />
     <requirement id="servicesReg" />
     <requirement id="visuVTKQt" />
+    <!-- Using preferences is convenient because it saves the last paths chosen in the fie dialogs, or remember the
+         location and size of the application window. -->
     <requirement id="preferences" />
-    <requirement id="visuVTKARAdaptor" />
 
     <extension implements="::fwServices::registry::AppConfig">
         <id>TutoSimpleARConfig</id>
         <config>
-            <!-- objects declarations -->
+
+            <!-- Series of camera calibration -->
             <object uid="cameraSeries" type="::arData::CameraSeries" />
+            <!-- Camera calibration, deferred because it is extracted from the series -->
             <object uid="camera" type="::arData::Camera" src="deferred" />
+            <!-- Frame timeline used to buffer the output of the video grabber -->
             <object uid="frameTL" type="::arData::FrameTL" />
-
+            <!-- Video frame that is used for the current iteration -->
             <object uid="sourceFrame" type="::fwData::Image" />
+            <!-- Offscreen buffer used to distort the 3D rendering of the cube -->
             <object uid="offscreen3DImage" type="::fwData::Image" />
+            <!-- Final output video frame that will be displayed -->
             <object uid="finalFrame" type="::fwData::Image" />
-            <object uid="distortedVideoImage" type="::fwData::Image" />
-
+            <!-- Distort 3D rendering of the cube -->
+            <object uid="distorted3DImage" type="::fwData::Image" />
+            <!-- Map containing all detected markers in the current frame -->
             <object uid="markerMap" type="::arData::MarkerMap" />
-            <object uid="matrix" type="::fwData::TransformationMatrix3D" />
-            <object uid="inverseMat" type="::fwData::TransformationMatrix3D" />
-
-            <object uid="tagMesh" type="::fwData::Mesh" />
+            <!-- Marker matrix in the camera world -->
+            <object uid="markerToCamera" type="::fwData::TransformationMatrix3D" />
+            <!-- Camera matrix in the marker world -->
+            <object uid="cameraToMarker" type="::fwData::TransformationMatrix3D" />
+            <!-- Cube superimposed on the video at the marker location -->
+            <object uid="cubeMesh" type="::fwData::Mesh" />
 
             <!-- declaration of the views, menu and toolbar -->
             <service uid="mainFrame" type="::gui::frame::SDefaultFrame">
@@ -54,9 +76,9 @@
                         <menuItem name="Pause" icon="arMedia-0.1/icons/pause-cam.svg" />
                         <menuItem name="Loop" icon="arMedia-0.1/icons/loop-cam.svg" style="check"/>
                         <separator/>
-                        <menuItem name="Undistort video image" icon="arMedia-0.1/icons/distortion.svg" />
+                        <menuItem name="Enable video image undistortion" icon="arMedia-0.1/icons/distortion.svg" />
                         <menuItem name="Disable video image undistortion" icon="arMedia-0.1/icons/disableDistortion.svg" />
-                        <menuItem name="Distort 3D rendering" icon="arMedia-0.1/icons/distortion.svg" />
+                        <menuItem name="Enable 3D rendering distortion" icon="arMedia-0.1/icons/distortion.svg" />
                         <menuItem name="Disable 3D rendering distortion" icon="arMedia-0.1/icons/disableDistortion.svg" />
                         <separator/>
                         <menuItem name="Show Mesh on tag" icon="arMedia-0.1/icons/show.svg" icon2="arMedia-0.1/icons/hide.svg" style="check"/>
@@ -219,16 +241,17 @@
             <service uid="showDistortionActor" type="::gui::action::SBooleanSlotCaller" >
                 <state active="false" />
                 <slots>
-                    <slot>videoARAdpt/show</slot>
+                    <slot>distorted3DAdpt/show</slot>
                 </slots>
             </service>
 
-            <!-- Started at launch -->
+            <!-- Default synchronization at launch -->
+            <!-- Disabled when doing distortion of the 3D layer -->
             <service uid="startGenericSceneSync" type="::gui::action::SStarter" >
                 <start_or_stop uid="syncGenericScene" />
             </service>
 
-            <!-- Stopped at launch -->
+            <!-- Synchronization when doing distorting of the 3D layer -->
             <service uid="startOffscreenSync" type="::gui::action::SStarter" >
                 <start_or_stop uid="syncOffscreenRender" />
                 <start_or_stop uid="syncGenericSceneAndOffscreen" />
@@ -237,14 +260,14 @@
             <service uid="showActors" type="::gui::action::SBooleanSlotCaller" >
                 <state active="true" />
                 <slots>
-                    <slot>meshAdpt/updateVisibility</slot>
+                    <slot>cubeAdpt/updateVisibility</slot>
                     <slot>showMesh/setIsActive</slot>
                 </slots>
             </service>
 
             <service uid="showMesh" type="::gui::action::SBooleanSlotCaller">
                 <slots>
-                    <slot>meshAdpt/updateVisibility</slot>
+                    <slot>cubeAdpt/updateVisibility</slot>
                 </slots>
             </service>
 
@@ -260,7 +283,7 @@
                 <inout key="data" uid="cameraSeries" />
             </service>
 
-            <!-- extract a ::arData::Camera from the ::arData::CameraSeries -->
+            <!-- extract the first ::arData::Camera from the ::arData::CameraSeries -->
             <service uid="Extractor" type="::ctrlCamp::SExtractObj">
                 <inout key="source" uid="cameraSeries">
                     <extract from="@cameras.0" /> <!-- Camp path of the first camera in cameraSeries -->
@@ -269,20 +292,24 @@
                     <key uid="camera" /> <!-- destination -->
                 </out>
             </service>
-            <!-- Scene in which the video and the 3D will be rendered -->
+
             <!-- *************************** Begin generic scene *************************** -->
+            <!-- Scene in which the video and the 3D will be rendered -->
+            <!-- In this tutorial, we move the camera and the marker mesh is fixed -->
 
             <service uid="genericScene" type="::fwRenderVTK::SRender" >
+                <!-- It is essential to use the 'sync' mode when doing AR -->
+                <!-- In this mode, the renderer will wait for a signal to trigger the rendering -->
                 <scene renderMode="sync">
                     <renderer id="video" layer="0" background="0.0" />
                     <renderer id="ar" layer="1" background="0.0" />
                     <renderer id="default" layer="2" background="0.0" />
                     <adaptor uid="videoAdpt" />
-                    <adaptor uid="videoARAdpt" />
+                    <adaptor uid="distorted3DAdpt" />
                     <adaptor uid="interactorStyle" />
                     <adaptor uid="axis" />
                     <adaptor uid="cameraAdpt" />
-                    <adaptor uid="meshAdpt" />
+                    <adaptor uid="cubeAdpt" />
                 </scene>
             </service>
 
@@ -291,11 +318,13 @@
                 <config renderer="video" />
             </service>
 
-            <service uid="videoARAdpt" type="::visuVTKARAdaptor::SVideo" autoConnect="yes">
-                <in key="frame" uid="distortedVideoImage" />
+            <!-- Display the offscreen buffer of the 3D when we distort the 3D -->
+            <service uid="distorted3DAdpt" type="::visuVTKARAdaptor::SVideo" autoConnect="yes">
+                <in key="frame" uid="distorted3DImage" />
                 <config renderer="ar" />
             </service>
 
+            <!-- This adaptor prevents any camera interaction with mouse and the keyboard -->
             <service uid="interactorStyle" type="::visuVTKAdaptor::SInteractorStyle">
                 <config renderer="default" style="FixedInteractorStyle" />
             </service>
@@ -304,45 +333,53 @@
                 <config renderer="default" transform="id" autoresetcamera="no" length="30" />
             </service>
 
+            <!-- Camera for the 3D layer -->
             <service uid="cameraAdpt" type="::visuVTKARAdaptor::SCamera" autoConnect="yes">
-                <in key="transform" uid="inverseMat" />
+                <in key="transform" uid="cameraToMarker" />
                 <in key="camera" uid="camera" />
                 <config renderer="default" />
             </service>
 
-            <service uid="meshAdpt" type="::visuVTKAdaptor::SMesh" autoConnect="yes">
-                <in key="mesh" uid="tagMesh" />
+            <!-- Cube displayed on top of the marker plane -->
+            <service uid="cubeAdpt" type="::visuVTKAdaptor::SMesh" autoConnect="yes">
+                <in key="mesh" uid="cubeMesh" />
                 <config renderer="default" autoresetcamera="no" color="#ffffffda"/>
             </service>
 
             <!-- *************************** End generic scene *************************** -->
 
             <!-- *************************** Begin offscreen scene *************************** -->
+            <!-- Scene in which the 3D will be rendered if we apply the distortion to the 3D layer -->
 
             <service uid="offscreenRender" type="::fwRenderVTK::SRender">
                 <inout key="offScreen" uid="offscreen3DImage" />
                 <flip>true</flip>
+                <!-- It is essential to use the 'sync' mode when doing AR -->
+                <!-- In this mode, the renderer will wait for a signal to trigger the rendering -->
                 <scene renderMode="sync">
                     <renderer id="default" layer="0" background="0.0" />
                     <adaptor uid="interactorStyleOffscreen" />
-                    <adaptor uid="meshAdptOffscreen" />
                     <adaptor uid="cameraAdptOffscreen" />
+                    <adaptor uid="cubeAdptOffscreen" />
                 </scene>
             </service>
 
+            <!-- This adaptor prevents any camera interaction with mouse and the keyboard -->
             <service uid="interactorStyleOffscreen" type="::visuVTKAdaptor::SInteractorStyle">
                 <config renderer="default" style="FixedInteractorStyle" />
             </service>
 
-            <service uid="meshAdptOffscreen" type="::visuVTKAdaptor::SMesh" autoConnect="yes">
-                <in key="mesh" uid="tagMesh" />
-                <config renderer="default" autoresetcamera="no" color="#ffffffda" />
-            </service>
-
+            <!-- Camera for the 3D layer -->
             <service uid="cameraAdptOffscreen" type="::visuVTKARAdaptor::SCamera" autoConnect="yes">
-                <in key="transform" uid="inverseMat" />
+                <in key="transform" uid="cameraToMarker" />
                 <in key="camera" uid="camera" />
                 <config renderer="default" />
+            </service>
+
+            <!-- Cube displayed on top of the marker plane -->
+            <service uid="cubeAdptOffscreen" type="::visuVTKAdaptor::SMesh" autoConnect="yes">
+                <in key="mesh" uid="cubeMesh" />
+                <config renderer="default" autoresetcamera="no" color="#ffffffda" />
             </service>
 
             <!-- *************************** End offscreen scene *************************** -->
@@ -440,8 +477,8 @@
                 <debugMarkers>yes</debugMarkers>
             </service>
 
-            <!-- This will compute the pose of the camera with tag(s) detected by aruco -->
-            <service uid="registration" type="::registrationCV::SPoseFrom2d" worker="registration">
+            <!-- Computes the pose of the camera with tag(s) detected by aruco -->
+            <service uid="registration" type="::registrationCV::SPoseFrom2d" worker="tracking">
                 <in group="markerMap" autoConnect="yes">
                     <key uid="markerMap" />
                 </in>
@@ -449,15 +486,15 @@
                     <key uid="camera" />
                 </in>
                 <inout group="matrix">
-                    <key uid="matrix" id="101" />
+                    <key uid="markerToCamera" id="101" />
                 </inout>
                 <patternWidth>60</patternWidth>
             </service>
 
-            <!-- This will compute the reprojection error -->
+            <!-- Computes the reprojection error -->
             <service uid="error" type="::videoCalibration::SReprojectionError" worker="error">
                 <in group="matrix" autoConnect="yes">
-                    <key uid="matrix" id="101" />
+                    <key uid="markerToCamera" id="101" />
                 </in>
                 <in key="markerMap" uid="markerMap" />
                 <in key="camera" uid="camera" />
@@ -465,7 +502,8 @@
                 <patternWidth>60</patternWidth>
             </service>
 
-            <!-- To synchronize matrix, frame and detection -->
+            <!-- Consumes a frame in the timeline, picks the latest one to be processed -->
+            <!-- It is overkill in this sample, but mandatory when we use multiple grabbers to synchronize them. -->
             <service uid="synchronizer" type="::videoTools::SFrameMatrixSynchronizer" >
                 <in group="frameTL">
                     <key uid="frameTL" autoConnect="yes"/>
@@ -477,40 +515,46 @@
                 <framerate>0</framerate>
             </service>
 
-            <!-- to multiply matrices (here only used to inverse "matrix" )-->
+            <!-- Multiply matrices (here only used to inverse "markerToCamera") -->
             <service uid="matrixReverser" type="::maths::SConcatenateMatrices">
                 <in group="matrix">
-                    <key uid="matrix" autoConnect="yes" inverse="true" />
+                    <key uid="markerToCamera" autoConnect="yes" inverse="true" />
                 </in>
-                <inout key="output" uid="inverseMat" />
+                <inout key="output" uid="cameraToMarker" />
             </service>
 
+            <!-- Undistort the video frame -->
+            <!-- If not enabled, it simply copies the input image -->
             <service uid="undistorter" type="::videoCalibration::SDistortion" worker="distortion">
                 <in key="camera" uid="camera" />
                 <in key="input" uid="sourceFrame" />
                 <inout key="output" uid="finalFrame" />
                 <mode>undistort</mode>
-           </service>
-
-            <service uid="syncGenericScene" type="::ctrlCom::SSignalGate">
-                <signal>finalFrame/bufferModified</signal>
-                <signal>inverseMat/modified</signal>
             </service>
 
+            <!-- Wait for the undistortion and the matrix inversion to be finished -->
+            <service uid="syncGenericScene" type="::ctrlCom::SSignalGate">
+                <signal>finalFrame/bufferModified</signal>
+                <signal>cameraToMarker/modified</signal>
+            </service>
+
+            <!-- Distort the offscreen render of the 3D scene -->
             <service uid="distorter" type="::videoCalibration::SDistortion" worker="distortion">
                 <in key="camera" uid="camera" />
                 <in key="input" uid="offscreen3DImage" autoConnect="yes" />
-                <inout key="output" uid="distortedVideoImage" />
+                <inout key="output" uid="distorted3DImage" />
                 <mode>distort</mode>
             </service>
 
+            <!-- Wait for the distortion and the matrix inversion to be finished -->
             <service uid="syncGenericSceneAndOffscreen" type="::ctrlCom::SSignalGate">
-                <signal>distortedVideoImage/bufferModified</signal>
-                <signal>inverseMat/modified</signal>
+                <signal>distorted3DImage/bufferModified</signal>
+                <signal>cameraToMarker/modified</signal>
             </service>
 
+            <!-- Wait for the matrix inversion to be finished -->
             <service uid="syncOffscreenRender" type="::ctrlCom::SSignalGate">
-                <signal>inverseMat/modified</signal>
+                <signal>cameraToMarker/modified</signal>
             </service>
 
             <!-- signal/slot connection -->
@@ -560,6 +604,7 @@
                 <slot>showActors/update</slot>
             </connect>
 
+            <!-- Better stop the video playback if we pick a new video source -->
             <connect>
                 <signal>camera/idModified</signal>
                 <slot>frameGrabber/stopCamera</slot>
@@ -571,18 +616,23 @@
                 <slot>undistorter/update</slot>
             </connect>
 
+            <!-- When the undistortion and the matrix inversion are done, trigger the rendering -->
+            <!-- then process a new frame -->
             <connect>
                 <signal>syncGenericScene/allReceived</signal>
                 <slot>genericScene/requestRender</slot>
                 <slot>synchronizer/synchronize</slot>
             </connect>
 
+            <!-- When the distortion and the matrix inversion are finished, trigger the rendering -->
+            <!-- then process a new frame -->
             <connect>
                 <signal>syncGenericSceneAndOffscreen/allReceived</signal>
                 <slot>genericScene/requestRender</slot>
                 <slot>synchronizer/synchronize</slot>
             </connect>
 
+            <!-- When the matrix inversion is finished, trigger the offscreen rendering -->
             <connect>
                 <signal>syncOffscreenRender/allReceived</signal>
                 <slot>offscreenRender/requestRender</slot>
@@ -611,18 +661,19 @@
 
             <!-- VTK scene 'genericScene' -->
             <start uid="videoAdpt" />
-            <start uid="videoARAdpt" />
+            <start uid="distorted3DAdpt" />
             <start uid="interactorStyle" />
             <start uid="axis" />
             <start uid="cameraAdpt" />
-            <start uid="meshAdpt" />
+            <start uid="cubeAdpt" />
 
             <!-- VTK scene 'offscreenRender' -->
             <start uid="offscreenRender" />
             <start uid="interactorStyleOffscreen" />
-            <start uid="meshAdptOffscreen" />
+            <start uid="cubeAdptOffscreen" />
             <start uid="cameraAdptOffscreen" />
 
+            <!-- At launch, enable the synchronization with the non-offscreen rendering -->
             <update uid="startGenericSceneSync" />
             <update uid="actionShowParameters" />
             <update uid="hideAxis" />
