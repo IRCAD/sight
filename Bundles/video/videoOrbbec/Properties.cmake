@@ -14,4 +14,5 @@ set( CONAN_DEPS
      openni/2.2.0-rev-958951f@sight/stable
      opencv/3.4.3-r3@sight/stable
      boost/1.67.0@sight/stable
+     ffmpeg/4.1-r2@sight/stable
 )

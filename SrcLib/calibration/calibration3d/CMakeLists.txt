@@ -3,10 +3,12 @@ fwLoadProperties()
 find_package(OpenCV QUIET REQUIRED)
 find_package(Ceres QUIET REQUIRED)
 find_package(Qt5 QUIET COMPONENTS Test REQUIRED)
+find_package(FFMPEG QUIET REQUIRED)
 
 fwInclude(
     ${OpenCV_INCLUDE_DIRS}
     ${CERES_INCLUDE_DIRS}
+    ${FFMPEG_INCLUDE_DIRS}
 )
 
 fwLink(
@@ -15,4 +17,5 @@ fwLink(
     opencv_aruco
     Qt5::Test
     ${CERES_LIBRARIES}
+    ${FFMPEG_LIBRARIES}
 )
