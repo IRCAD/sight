@@ -9,6 +9,6 @@ set( DEPENDENCIES
 set( REQUIREMENTS  )
 set( CONAN_DEPS
     cppunit/1.14.0@sight/stable
-    opencv/3.4.3-r3@sight/testing
+    opencv/3.4.3-r3@sight/stable
     glm/0.9.9.0@sight/stable
 )
