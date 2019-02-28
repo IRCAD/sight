@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -108,11 +108,6 @@ void MarkedSphereHandleRepresentation::CreateDefaultProperties()
 //----------------------------------------------------------------------
 void MarkedSphereHandleRepresentation::BuildRepresentation()
 {
-    // The net effect is to resize the handle
-//  if ( this->GetMTime() > this->BuildTime ||
-//       (this->Renderer && this->Renderer->GetVTKWindow() &&
-//        this->Renderer->GetVTKWindow()->GetMTime() > this->BuildTime) )
-//  {
     if ( !this->Placed )
     {
         this->ValidPick = 1;
@@ -126,8 +121,6 @@ void MarkedSphereHandleRepresentation::BuildRepresentation()
     this->Marker->SetRadius(this->MarkerRadiusFactor * this->Sphere->GetRadius() );
     this->Marker->Update();
     this->BuildTime.Modified();
-//  }
-
 }
 //
 //----------------------------------------------------------------------
@@ -199,6 +192,31 @@ void MarkedSphereHandleRepresentation::PrintSelf(ostream& os, vtkIndent indent)
     }
 
     this->Sphere->PrintSelf(os, indent.GetNextIndent());
+}
+
+//----------------------------------------------------------------------
+
+int MarkedSphereHandleRepresentation::ComputeInteractionState(int X, int Y, int vtkNotUsed(modify))
+{
+    // This line is commented to avoid vtk resetting the visibility
+    //this->VisibilityOn(); //actor must be on to be picked
+
+    vtkAssemblyPath* path = this->GetAssemblyPath(X, Y, 0., this->CursorPicker);
+
+    if ( path != nullptr )
+    {
+        this->InteractionState = vtkHandleRepresentation::Selecting;
+    }
+    else
+    {
+        this->InteractionState = vtkHandleRepresentation::Outside;
+        if ( this->ActiveRepresentation )
+        {
+            this->VisibilityOff();
+        }
+    }
+
+    return this->InteractionState;
 }
 
 } // namespace vtk

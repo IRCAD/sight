@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017 IRCAD France
- * Copyright (C) 2017 IHU Strasbourg
+ * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWRENDERVTK_VTK_FWHANDLEREPRESENTATION3D_HPP__
-#define __FWRENDERVTK_VTK_FWHANDLEREPRESENTATION3D_HPP__
+#pragma once
 
 #include "fwRenderVTK/config.hpp"
 
@@ -102,6 +101,10 @@ public:
     // Does this prop have some translucent polygonal geometry?
     FWRENDERVTK_API virtual int HasTranslucentPolygonalGeometry() override;
 
+    // Description:
+    // Reimplemented from vtkAbstractPolygonalHandleRepresentation3D to avoid vtk resetting the visibility
+    FWRENDERVTK_API int ComputeInteractionState(int X, int Y, int vtkNotUsed(modify)) override;
+
 protected:
     fwHandleRepresentation3D();
     ~fwHandleRepresentation3D();
@@ -137,6 +140,3 @@ private:
 } // namespace vtk
 
 } // namespace fwRenderVTK
-
-#endif //__FWRENDERVTK_VTK_FWHANDLEREPRESENTATION3D_HPP__
-
