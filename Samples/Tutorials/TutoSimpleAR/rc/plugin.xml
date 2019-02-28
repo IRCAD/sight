@@ -158,9 +158,9 @@
                 </slots>
             </service>
 
-            <service uid="loadMesh" type="::ioData::STrianMeshReader">
-                <inout key="data" uid="tagMesh" />
-                <resource>TutoSimpleAR-@PROJECT_VERSION@/plane_60.trian</resource>
+            <service uid="loadMesh" type="::ioVTK::SMeshReader">
+                <inout key="data" uid="cubeMesh" />
+                <resource>TutoSimpleAR-@PROJECT_VERSION@/cube_60.vtk</resource>
             </service>
 
             <service uid="startVideo" type="::gui::action::SSlotCaller">
