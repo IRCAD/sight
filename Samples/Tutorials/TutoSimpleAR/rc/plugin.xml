@@ -20,7 +20,7 @@
     <requirement id="arDataReg" />
     <requirement id="servicesReg" />
     <requirement id="visuVTKQt" />
-    <!-- Using preferences is convenient because it saves the last paths chosen in the fie dialogs, or remember the
+    <!-- Using preferences is convenient because it saves the last paths chosen in the file dialogs, or remember the
          location and size of the application window. -->
     <requirement id="preferences" />
 
