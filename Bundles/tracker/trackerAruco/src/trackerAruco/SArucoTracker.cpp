@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -355,14 +355,31 @@ void SArucoTracker::tracking(::fwCore::HiResClock::HiResClockType& timestamp)
 
 void SArucoTracker::setIntParameter(int _val, std::string _key)
 {
-
     if(_key == "adaptiveThreshWinSizeMin")
     {
-        m_detectorParams->adaptiveThreshWinSizeMin = _val;
+        static const int s_ADAPTIVE_THRESH_WIN_SIZE_MIN_VALUE = 3;
+        int val                                               = _val;
+        if(m_detectorParams->adaptiveThreshWinSizeMin < s_ADAPTIVE_THRESH_WIN_SIZE_MIN_VALUE)
+        {
+            SLM_ERROR("Tried to set adaptiveThreshWinSizeMin < 3, let it set to 3");
+            val = s_ADAPTIVE_THRESH_WIN_SIZE_MIN_VALUE;
+        }
+        if(val >= m_detectorParams->adaptiveThreshWinSizeMax)
+        {
+            val = m_detectorParams->adaptiveThreshWinSizeMax - 1;
+            OSLM_ERROR("Tried to set adaptiveThreshWinSizeMin > adaptiveThreshWinSizeMax, let it set to " << val);
+        }
+        m_detectorParams->adaptiveThreshWinSizeMin = val;
     }
     else if(_key == "adaptiveThreshWinSizeMax")
     {
-        m_detectorParams->adaptiveThreshWinSizeMax = _val;
+        int val = _val;
+        if(m_detectorParams->adaptiveThreshWinSizeMin >= val)
+        {
+            val = m_detectorParams->adaptiveThreshWinSizeMin + 1;
+            OSLM_ERROR("Tried to set adaptiveThreshWinSizeMax < adaptiveThreshWinSizeMin, let it set to " << val);
+        }
+        m_detectorParams->adaptiveThreshWinSizeMax = val;
     }
     else if(_key == "adaptiveThreshWinSizeStep")
     {

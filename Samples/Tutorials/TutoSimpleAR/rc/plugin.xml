@@ -392,9 +392,9 @@
                     <!--  do corner refinement or not. -->
                     <param type="bool" name="Corner refinement." key="corner" defaultValue="true" />
                     <!-- minimum window size for adaptive thresholding before finding contours -->
-                    <param type="int" name="adpt. Threshold win size min" key="adaptiveThreshWinSizeMin" defaultValue="3" min="1" max="100" />
+                    <param type="int" name="adpt. Threshold win size min" key="adaptiveThreshWinSizeMin" defaultValue="3" min="3" max="100" />
                     <!-- maximum window size for adaptive thresholding before finding contours -->
-                    <param type="int" name="adpt. Threshold win size max" key="adaptiveThreshWinSizeMax" defaultValue="23" min="1" max="100" />
+                    <param type="int" name="adpt. Threshold win size max" key="adaptiveThreshWinSizeMax" defaultValue="23" min="4" max="100" />
                     <!-- increments from adaptiveThreshWinSizeMin to adaptiveThreshWinSizeMax during the thresholding -->
                     <param type="int" name="adpt. Threshold win size step" key="adaptiveThreshWinSizeStep" defaultValue="10" min="1" max="100" />
                     <!-- constant for adaptive thresholding before finding contours -->
