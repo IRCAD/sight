@@ -5,7 +5,7 @@ set( DEPENDENCIES
     fwCore
     fwData
     eigenTools
-    )
+)
 set( REQUIREMENTS  )
 set( DISABLE_PCH TRUE)
 set( CONAN_DEPS

@@ -23,5 +23,4 @@ set( REQUIREMENTS dataReg
 
 set( CONAN_DEPS
     opencv/3.4.3-r3@sight/stable
-    ffmpeg/4.1-r2@sight/stable
 )

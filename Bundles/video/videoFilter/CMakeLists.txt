@@ -1,12 +1,6 @@
 fwLoadProperties()
 
-find_package(OpenCV QUIET COMPONENTS opencv_core opencv_imgproc REQUIRED)
+find_package(OpenCV QUIET REQUIRED COMPONENTS imgproc)
 
-fwInclude(
-    ${OpenCV_INCLUDE_DIRS}
-)
-
-fwLink(
-    ${OpenCV_LIBS}
-)
+target_link_libraries(${FWPROJECT_NAME} PRIVATE opencv_imgproc)
 

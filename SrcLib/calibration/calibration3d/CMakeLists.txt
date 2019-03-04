@@ -1,21 +1,13 @@
 fwLoadProperties()
 
-find_package(OpenCV QUIET REQUIRED)
+find_package(OpenCV QUIET REQUIRED COMPONENTS calib3d aruco)
 find_package(Ceres QUIET REQUIRED)
-find_package(Qt5 QUIET COMPONENTS Test REQUIRED)
 find_package(FFMPEG QUIET REQUIRED)
 
-fwInclude(
-    ${OpenCV_INCLUDE_DIRS}
-    ${CERES_INCLUDE_DIRS}
-    ${FFMPEG_INCLUDE_DIRS}
-)
+target_link_libraries(${FWPROJECT_NAME} PUBLIC opencv_calib3d opencv_aruco)
+target_link_libraries(${FWPROJECT_NAME} PUBLIC ${CERES_LIBRARIES})
+target_link_libraries(${FWPROJECT_NAME} PUBLIC ${FFMPEG_LIBRARIES})
 
-fwLink(
-    opencv_core
-    opencv_calib3d
-    opencv_aruco
-    Qt5::Test
-    ${CERES_LIBRARIES}
-    ${FFMPEG_LIBRARIES}
+fwInclude(
+    ${CERES_INCLUDE_DIRS}
 )
