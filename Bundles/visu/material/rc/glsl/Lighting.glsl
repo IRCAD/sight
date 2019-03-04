@@ -6,7 +6,7 @@ uniform vec4 u_f4DiffuseCol;
 uniform vec4 u_f4SpecularCol;
 uniform float u_fShininess;
 
-uniform float u_iNumLights;
+uniform float u_fNumLights;
 uniform vec4 u_f4LightAmbientCol;
 
 uniform vec3 u_f3LightDir[MAX_LIGHTS];
@@ -22,7 +22,7 @@ vec4 lighting(vec3 _f3NormalDir_MsN, vec3 _f3Pos_Ms)
     vec3 f3DiffuseCol = vec3(0.0);
     vec3 f3SpecularCol = vec3(0.0);
 
-    for(int i = 0; i < int(u_iNumLights); ++i)
+    for(int i = 0; i < int(u_fNumLights); ++i)
     {
         float fLitDiffuseCol_N = abs(dot( normalize(-u_f3LightDir[i]), _f3NormalDir_MsN ));
         f3DiffuseCol += fLitDiffuseCol_N * u_f3LightDiffuseCol[i] * u_f4DiffuseCol.rgb;
@@ -44,7 +44,7 @@ vec3 lighting(vec3 _f3NormalDir_MsN, vec3 _f3Pos_Ms, vec3 _f3DiffuseCol)
     vec3 f3DiffuseCol = vec3(0.);
     vec3 f3SpecularCol = vec3(0.);
 
-    for(int i = 0; i < int(u_iNumLights); ++i)
+    for(int i = 0; i < int(u_fNumLights); ++i)
     {
         // We use the Blinn-Phong lighting model.
         float fLitDiffuseCol_N = clamp(abs(dot( normalize(-u_f3LightDir[i]), _f3NormalDir_MsN )), 0, 1);

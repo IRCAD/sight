@@ -599,7 +599,7 @@ void RayTracingVolumeRenderer::createRayTracingMaterial(const std::string& _sour
     fpParams->setNamedAutoConstant("u_clippingFarDis", ::Ogre::GpuProgramParameters::ACT_FAR_CLIP_DISTANCE);
     fpParams->setNamedAutoConstant("u_f3CameraPos", ::Ogre::GpuProgramParameters::ACT_CAMERA_POSITION_OBJECT_SPACE);
     fpParams->setNamedAutoConstant("u_fShininess", ::Ogre::GpuProgramParameters::ACT_SURFACE_SHININESS);
-    fpParams->setNamedAutoConstant("u_iNumLights", ::Ogre::GpuProgramParameters::ACT_LIGHT_COUNT);
+    fpParams->setNamedAutoConstant("u_fNumLights", ::Ogre::GpuProgramParameters::ACT_LIGHT_COUNT);
     for(size_t i = 0; i < 10; ++i)
     {
         auto number = "[" + std::to_string(i) + "]";

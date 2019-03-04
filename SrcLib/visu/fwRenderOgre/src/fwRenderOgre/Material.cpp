@@ -326,18 +326,18 @@ void Material::updateShadingMode( int _shadingMode, int _numLights, bool _hasDif
 
                     ::Ogre::GpuProgramParametersSharedPtr vp = ogrePass->getVertexProgramParameters();
 
-                    if(vp->_findNamedConstantDefinition("u_iNumLights"))
+                    if(vp->_findNamedConstantDefinition("u_fNumLights"))
                     {
-                        vp->setNamedConstant("u_iNumLights", static_cast<float>(_numLights));
+                        vp->setNamedConstant("u_fNumLights", static_cast<float>(_numLights));
                     }
 
                     if(!ogrePass->getFragmentProgramName().empty())
                     {
                         ::Ogre::GpuProgramParametersSharedPtr fp = ogrePass->getFragmentProgramParameters();
 
-                        if(fp->_findNamedConstantDefinition("u_iNumLights"))
+                        if(fp->_findNamedConstantDefinition("u_fNumLights"))
                         {
-                            fp->setNamedConstant("u_iNumLights", static_cast<float>(_numLights));
+                            fp->setNamedConstant("u_fNumLights", static_cast<float>(_numLights));
                         }
                     }
                 }
