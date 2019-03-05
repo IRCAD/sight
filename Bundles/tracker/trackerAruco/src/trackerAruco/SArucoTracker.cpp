@@ -447,7 +447,13 @@ void SArucoTracker::setDoubleParameter(double _val, std::string _key)
     }
     else if(_key == "cornerRefinementMinAccuracy")
     {
-        m_detectorParams->cornerRefinementMinAccuracy = _val;
+        double val = _val;
+        if(val <= 0.)
+        {
+            val = 0.01;
+            OSLM_ERROR("Tried to set cornerRefinementMinAccuracy <=0, let it set to " << val);
+        }
+        m_detectorParams->cornerRefinementMinAccuracy = val;
     }
     else if(_key == "perspectiveRemoveIgnoredMarginPerCell")
     {
