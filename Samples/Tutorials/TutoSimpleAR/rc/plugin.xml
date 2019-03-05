@@ -417,7 +417,7 @@
                     <!-- window size for the corner refinement process (in pixels) -->
                     <param type="int" name="Corner Refinement Win. Size" key="cornerRefinementWinSize" defaultValue="5" min="1" max="100" />
                     <!-- maximum number of iterations for stop criteria of the corner refinement process -->
-                    <param type="int" name="Corner Refinement Max Iterations" key="cornerRefinementMaxIterations" defaultValue="30" min="0" max="10" />
+                    <param type="int" name="Corner Refinement Max Iterations" key="cornerRefinementMaxIterations" defaultValue="30" min="1" max="10" />
                     <!-- minimum error for the stop cristeria of the corner refinement process -->
                     <param type="double" name="Corner Refinement Min. Accuracy" key="cornerRefinementMinAccuracy" defaultValue="0.1" min="0." max="10." />
                     <!-- number of bits of the marker border, i.e. marker border width -->

@@ -395,7 +395,13 @@ void SArucoTracker::setIntParameter(int _val, std::string _key)
     }
     else if(_key == "cornerRefinementMaxIterations")
     {
-        m_detectorParams->cornerRefinementMaxIterations = _val;
+        int val = _val;
+        if(val <= 0)
+        {
+            val = 1;
+            OSLM_ERROR("Tried to set cornerRefinementMaxIterations <=0, let it set to " << val);
+        }
+        m_detectorParams->cornerRefinementMaxIterations = val;
     }
     else if(_key == "markerBorderBits")
     {
