@@ -1,6 +1,6 @@
 fwLoadProperties()
 
-find_package(OpenCV QUIET REQUIRED COMPONENTS calib3d imgproc imgcodecs OPTIONAL_COMPONENTS cudawarping cudaimgproc)
+find_package(OpenCV QUIET REQUIRED COMPONENTS opencv_calib3d opencv_imgproc opencv_imgcodecs OPTIONAL_COMPONENTS opencv_cudawarping opencv_cudaimgproc)
 
 target_link_libraries(${FWPROJECT_NAME} PRIVATE opencv_calib3d opencv_imgproc opencv_imgcodecs)
 

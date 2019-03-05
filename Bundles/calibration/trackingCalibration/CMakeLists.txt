@@ -1,6 +1,6 @@
 fwLoadProperties()
 
-find_package(OpenCV QUIET REQUIRED COMPONENTS calib3d)
+find_package(OpenCV QUIET REQUIRED COMPONENTS opencv_calib3d)
 find_package(Eigen QUIET REQUIRED)
 
 fwInclude(
