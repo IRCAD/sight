@@ -308,6 +308,10 @@ void SFrameGrabber::readDevice( const ::arData::Camera::csptr _camera)
                 "This device cannot be opened: " + device + " at index: " + std::to_string(index));
         }
     }
+
+    // Only way to capture 1080p with v4l.
+    m_videoCapture.set(::cv::CAP_PROP_FOURCC, ::cv::VideoWriter::fourcc('M', 'J', 'P', 'G'));
+
 #else
     //On other platforms (at least on MacOS, we should use the index given by Qt)
     if(index >= 0 )
