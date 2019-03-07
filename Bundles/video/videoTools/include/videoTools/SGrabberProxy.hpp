@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2018 IRCAD France
- * Copyright (C) 2017-2018 IHU Strasbourg
+ * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -104,7 +104,7 @@ public:
 
     fwCoreServiceClassDefinitionsMacro( (SGrabberProxy)(::arServices::IGrabber) )
 
-    /// Constructor. Do nothing.
+    /// Constructor. Initialize slots and signals
     VIDEOTOOLS_API SGrabberProxy() noexcept;
 
     /// Destructor. Do nothing.
@@ -112,10 +112,12 @@ public:
 
     /**
      * @name Slots API
+     *
      * @{
      */
+    /// Slot: called to start the tracking.
     VIDEOTOOLS_API static const ::fwCom::Slots::SlotKeyType s_RECONFIGURE_SLOT;
-    ///@}
+    /** @} */
 
 protected:
 
@@ -131,48 +133,69 @@ protected:
     /// Parses the XML configuration of the service.
     VIDEOTOOLS_API virtual void configuring() final;
 
-    /// SLOT : Initialize and start camera (restart camera if is already started).
+    /**
+     * @name Slots methods
+     *
+     * @{
+     */
+    /// Initialize and start camera (restart camera if is already started).
     VIDEOTOOLS_API virtual void startCamera() final;
 
-    /// SLOT : Stop camera.
+    /// Stop camera.
     VIDEOTOOLS_API virtual void stopCamera() final;
 
-    /// SLOT : Pause camera.
+    /// Pause camera.
     VIDEOTOOLS_API virtual void pauseCamera() final;
 
-    /// SLOT : enable/disable loop in video.
+    /// Enable/disable loop in video.
     VIDEOTOOLS_API virtual void toggleLoopMode() final;
 
-    /// SLOT : set the new position in the video.
+    /// Set the new position in the video.
     VIDEOTOOLS_API virtual void setPosition(std::int64_t position) final;
 
-    /// SLOT : get the previous image in frame by frame mode.
+    /// Get the previous image in frame by frame mode.
     VIDEOTOOLS_API virtual void previousImage() override;
 
-    /// SLOT : get the next image in frame by frame mode.
+    /// Get the next image in frame by frame mode.
     VIDEOTOOLS_API virtual void nextImage() override;
 
-    /// SLOT : set step used on readPrevious/readNext slots.
+    /// Set step used on readPrevious/readNext slots.
     VIDEOTOOLS_API virtual void setStep(int step, std::string key) override;
+    /** @} */
 
 private:
 
     typedef std::pair<std::string, ::fwRuntime::ConfigurationElement::csptr > ServiceConfigPair;
-
-    /// SLOT : reset the grabber implementation and stop the current playback.
-    void reconfigure();
-
-    /// SLOT : position in the video has changed.
-    void modifyPosition(int64_t position);
-
-    /// SLOT : duration of the video has changed.
-    void modifyDuration(int64_t position);
 
     enum class CameraType : std::uint8_t
     {
         RGB,
         RGBD,
     };
+
+    /**
+     * @name Slots methods
+     *
+     * @{
+     */
+    /// Reset the grabber implementation and stop the current playback.
+    void reconfigure();
+
+    /// Position in the video has changed.
+    void modifyPosition(int64_t position);
+
+    /// Duration of the video has changed.
+    void modifyDuration(int64_t position);
+
+    /// The playback has started in the sub-service.
+    void fwdStartCamera();
+
+    /// The playback has stopped in the sub-service.
+    void fwdStopCamera();
+
+    /// A frame is presented in the sub-service.
+    void fwdPresentFrame();
+    /** @} */
 
     /// Camera type (RGB, RGBD,...)
     CameraType m_type { CameraType::RGB };

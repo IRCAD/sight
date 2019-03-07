@@ -48,6 +48,11 @@ const ::fwCom::Slots::SlotKeyType SGrabberProxy::s_RECONFIGURE_SLOT = "reconfigu
 const ::fwCom::Slots::SlotKeyType s_MODIFY_POSITION = "modifyPosition";
 const ::fwCom::Slots::SlotKeyType s_MODIFY_DURATION = "modifyDuration";
 
+const ::fwCom::Slots::SlotKeyType s_FWD_START_CAMERA_SLOT = "forwardStartCamera";
+const ::fwCom::Slots::SlotKeyType s_FWD_STOP_CAMERA_SLOT  = "forwardStopCamera";
+
+const ::fwCom::Slots::SlotKeyType s_FWD_PRESENT_FRAME_SLOT = "forwardPresentFrame";
+
 fwServicesRegisterMacro( ::arServices::IGrabber, ::videoTools::SGrabberProxy, ::arData::FrameTL);
 
 //-----------------------------------------------------------------------------
@@ -55,8 +60,12 @@ fwServicesRegisterMacro( ::arServices::IGrabber, ::videoTools::SGrabberProxy, ::
 SGrabberProxy::SGrabberProxy() noexcept
 {
     newSlot( s_RECONFIGURE_SLOT, &SGrabberProxy::reconfigure, this );
+
     newSlot( s_MODIFY_POSITION, &SGrabberProxy::modifyPosition, this );
     newSlot( s_MODIFY_DURATION, &SGrabberProxy::modifyDuration, this );
+    newSlot( s_FWD_START_CAMERA_SLOT, &SGrabberProxy::fwdStartCamera, this );
+    newSlot( s_FWD_STOP_CAMERA_SLOT, &SGrabberProxy::fwdStopCamera, this );
+    newSlot( s_FWD_PRESENT_FRAME_SLOT, &SGrabberProxy::fwdPresentFrame, this );
 }
 
 //-----------------------------------------------------------------------------
@@ -440,6 +449,12 @@ void SGrabberProxy::startCamera()
                                       this->getSptr(), s_MODIFY_POSITION);
                 m_connections.connect(srv, ::arServices::IGrabber::s_DURATION_MODIFIED_SIG,
                                       this->getSptr(), s_MODIFY_DURATION);
+                m_connections.connect(srv, ::arServices::IGrabber::s_CAMERA_STARTED_SIG,
+                                      this->getSptr(), s_FWD_START_CAMERA_SLOT);
+                m_connections.connect(srv, ::arServices::IGrabber::s_CAMERA_STOPPED_SIG,
+                                      this->getSptr(), s_FWD_STOP_CAMERA_SLOT);
+                m_connections.connect(srv, ::arServices::IGrabber::s_FRAME_PRESENTED_SIG,
+                                      this->getSptr(), s_FWD_PRESENT_FRAME_SLOT);
 
                 ++srvCount;
             }
@@ -578,6 +593,30 @@ void SGrabberProxy::modifyDuration(int64_t duration)
 {
     auto sig = this->signal< DurationModifiedSignalType >( s_DURATION_MODIFIED_SIG );
     sig->asyncEmit(static_cast<std::int64_t>(duration));
+}
+
+//-----------------------------------------------------------------------------
+
+void SGrabberProxy::fwdStartCamera()
+{
+    auto sig = this->signal< CameraStartedSignalType >( s_CAMERA_STARTED_SIG );
+    sig->asyncEmit();
+}
+
+//-----------------------------------------------------------------------------
+
+void SGrabberProxy::fwdStopCamera()
+{
+    auto sig = this->signal< CameraStoppedSignalType >( s_CAMERA_STOPPED_SIG );
+    sig->asyncEmit();
+}
+
+//-----------------------------------------------------------------------------
+
+void SGrabberProxy::fwdPresentFrame()
+{
+    auto sig = this->signal< FramePresentedSignalType >( s_FRAME_PRESENTED_SIG );
+    sig->asyncEmit();
 }
 
 //-----------------------------------------------------------------------------
