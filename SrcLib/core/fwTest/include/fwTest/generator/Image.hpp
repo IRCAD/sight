@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWTEST_GENERATOR_IMAGE_HPP__
-#define __FWTEST_GENERATOR_IMAGE_HPP__
+#pragma once
 
 #include "fwTest/config.hpp"
 
@@ -35,12 +34,10 @@
 
 #include <fwTools/Type.hpp>
 
-
 namespace fwTest
 {
 namespace generator
 {
-
 
 /**
  * @brief   This class contains helper to generate images.
@@ -79,9 +76,34 @@ public:
     FWTEST_API static ::fwData::Array::sptr createRandomizedArray(const std::string& type,
                                                                   ::fwData::Array::SizeType sizes);
 
+    /// Fill array with random value
+    template<typename TYPE>
+    static void randomizeArray(const ::fwData::Array::sptr& array)
+    {
+        ::fwDataTools::helper::Array helper(array);
+        TYPE* iter = helper.begin< TYPE >();
+
+        for (; iter != helper.end< TYPE >(); ++iter)
+        {
+            *iter = static_cast<TYPE>(rand()%256);
+        }
+    }
+
+    //------------------------------------------------------------------------------
+
+    template<typename TYPE>
+    static ::fwData::Array::sptr createRandomizedArray(::fwData::Array::SizeType sizes)
+    {
+        ::fwData::Array::sptr array = ::fwData::Array::New();
+
+        array->resize( ::fwTools::Type::create<TYPE>(), sizes, 1, true );
+
+        Image::randomizeArray<TYPE>( array );
+
+        return array;
+    }
+
 };
 
 } // namespace generator
 } // namespace fwTest
-
-#endif // __FWTEST_GENERATOR_IMAGE_HPP__
