@@ -164,7 +164,7 @@
 
             <service uid="pointcloudAdpt" type="::visuOgreAdaptor::SPointList"  autoConnect="yes" >
                 <in key="mesh" uid="pointcloud" />
-                <config layer="default" autoresetcamera="no" radius="0.001" color="#00FF00FF"/>
+                <config layer="default" autoresetcamera="no" radius="1" color="#00FF00FF"/>
             </service>
 
             <service uid="cameraAdaptor" type="::visuOgreAdaptor::SCamera">
