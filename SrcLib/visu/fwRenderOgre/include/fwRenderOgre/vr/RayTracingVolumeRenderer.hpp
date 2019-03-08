@@ -142,9 +142,11 @@ protected:
     /// Sets all texture units needed by the material during the ray casting pass.
     FWRENDEROGRE_API virtual void setRayCastingPassTextureUnits(Ogre::Pass* const _rayCastingPass,
                                                                 const std::string& _fpPPDefines) const;
-
-    /// When using AutoStereo compositor, initialize the raytracing material.
-    FWRENDEROGRE_API void createRayTracingMaterial(const std::string& = "RayTracedVolume_FP.glsl");
+    /**
+     * @brief Initialize the raytracing material.
+     * @param _sourceFile, name of the frgament shader program.
+     */
+    FWRENDEROGRE_API void createRayTracingMaterial(const std::string& _sourceFile = "RayTracedVolume_FP.glsl");
 
     /// Shared parameters used for Ray tracing. This should help avoiding using the listener.
     /// We resort to those parameters because setting them using:
