@@ -225,11 +225,10 @@ void main(void)
     // Entry points in volume texture space.
     vec3 f3RayEntryPos_Ms = ndcToSpecificSpacePosition(f3RayEntryPos_Ns, m4Cs_Ms).xyz;
     vec3 f3RayExitPos_Ms  = ndcToSpecificSpacePosition(f3RayExitPos_Ns, m4Cs_Ms).xyz;
-    vec3 f3RayDir_MsN   = normalize(f3RayExitPos_Ms - f3RayEntryPos_Ms);
+    vec3 f3RayDir_MsN     = normalize(f3RayExitPos_Ms - f3RayEntryPos_Ms);
 
-    f3RayDir_MsN *= u_fSampleDis;
     float fRayLen = length(f3RayExitPos_Ms - f3RayEntryPos_Ms);
-    vec4 f4ResultCol = launchRay(f3RayEntryPos_Ms, f3RayDir_MsN, fRayLen, u_fSampleDis, u_s1TFTexture, u_f2TFWindow);
+    vec4 f4ResultCol = launchRay(f3RayEntryPos_Ms, f3RayDir_MsN * u_fSampleDis, fRayLen, u_fSampleDis, u_s1TFTexture, u_f2TFWindow);
 
     v_f4FragCol = f4ResultCol;
 }
