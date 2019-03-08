@@ -42,23 +42,7 @@ vec3 fragCoordsToNDC(in vec3 _f3FragPos_Ss);
 vec3 ndcToFragCoord(in vec3 _f3FragPos_Ns);
 vec4 ndcToSpecificSpacePosition(in vec3 _f3FragPos_Ns, in mat4 _m4Inverse);
 vec3 lighting(vec3 _f3NormalDir_MsN, vec3 _f3Pos_Ms, vec3 _f3DiffuseCol);
-
-//-----------------------------------------------------------------------------
-
-vec3 gradientNormal(vec3 _f3UVW)
-{
-    ivec3 imgDimensions = textureSize(u_s3Image, 0);
-    vec3 h = 1. / vec3(imgDimensions);
-    vec3 hx = vec3(h.x, 0, 0);
-    vec3 hy = vec3(0, h.y, 0);
-    vec3 hz = vec3(0, 0, h.z);
-
-    return -normalize( vec3(
-                (texture(u_s3Image, _f3UVW + hx).r - texture(u_s3Image, _f3UVW - hx).r),
-                (texture(u_s3Image, _f3UVW + hy).r - texture(u_s3Image, _f3UVW - hy).r),
-                (texture(u_s3Image, _f3UVW + hz).r - texture(u_s3Image, _f3UVW - hz).r)
-    ));
-}
+vec3 gradientNormal(vec3 _f3Pos_Ms, sampler3D _s3Image);
 
 //-----------------------------------------------------------------------------
 
@@ -160,7 +144,7 @@ vec4 launchRay(in vec3 _f3RayPos_Ms, in vec3 _f3RayDir_MsN, in float _fRayLen, i
 
         if(f4TFCol.a > 0.)
         {
-            vec3 f3NormalDir_MsN = gradientNormal(_f3RayPos_Ms);
+            vec3 f3NormalDir_MsN = gradientNormal(_f3RayPos_Ms, u_s3Image);
 
             f4TFCol.rgb = lighting(f3NormalDir_MsN, _f3RayPos_Ms, f4TFCol.rgb);
 

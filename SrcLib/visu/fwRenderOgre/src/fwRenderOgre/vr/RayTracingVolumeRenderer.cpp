@@ -160,6 +160,7 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
 {
     m_fragmentShaderAttachements.push_back("SpatialTransforms_FP");
     m_fragmentShaderAttachements.push_back("Lighting_FP");
+    m_fragmentShaderAttachements.push_back("VolumeNormals_FP");
 
     auto* exitDepthListener = new compositor::listener::RayExitDepthListener();
     ::Ogre::MaterialManager::getSingleton().addListener(exitDepthListener);
