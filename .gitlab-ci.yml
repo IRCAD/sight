@@ -6,6 +6,8 @@ stages:
 
 .linux_template: &linux_job
   image: ${DOCKER_ENVDEV_MINT19}
+  variables:
+    FW_IGNORE_SLOW_TESTS: 1
   before_script:
     - export CCACHE_BASEDIR=${PWD}
     - export CCACHE_COMPILERCHECK=content
@@ -24,6 +26,7 @@ stages:
 .macos_template: &macos_job
   variables:
     CONAN_USER_HOME: $CI_PROJECT_DIR/conan
+    FW_IGNORE_SLOW_TESTS: 1
   before_script:
     - export CCACHE_BASEDIR=${PWD}
     - export CCACHE_COMPILERCHECK=content
@@ -41,6 +44,7 @@ stages:
 .windows_template: &windows_job
   variables:
     CONAN_USER_HOME: $CI_PROJECT_DIR/conan
+    FW_IGNORE_SLOW_TESTS: 1
   before_script:
     - conan config set storage.path="C:\cache\conan"
     - if not exist "%CI_PROJECT_DIR%/install" md "%CI_PROJECT_DIR%/install"
@@ -94,7 +98,6 @@ build:debug-linux:
      -s https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-data/-/archive/dev/sight-data-dev.tar.gz |
      tar xfz - > /dev/null
     - export FWTEST_DATA_DIR=$CI_PROJECT_DIR/build/sight-data-dev
-    - export FW_IGNORE_SLOW_TESTS=1
     - ctest --timeout 240 --output-on-failure -O ctest.log
   artifacts:
     when: always
@@ -126,7 +129,6 @@ build:release-linux:
      -s https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-data/-/archive/dev/sight-data-dev.tar.gz |
      tar xfz - > /dev/null
     - export FWTEST_DATA_DIR=$CI_PROJECT_DIR/build/sight-data-dev
-    - export FW_IGNORE_SLOW_TESTS=0
     - ctest --timeout 120 --output-on-failure -O ctest.log
   artifacts:
     when: always
@@ -156,7 +158,6 @@ build:debug-windows:
      -s https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-data/-/archive/dev/sight-data-dev.zip
      --output sight-data-dev.zip && unzip -qq sight-data-dev.zip
     - set FWTEST_DATA_DIR=%CI_PROJECT_DIR%\build\sight-data-dev
-    - set FW_IGNORE_SLOW_TESTS=1
     - ctest --timeout 240 --output-on-failure -O ctest.log -E fwRenderOgreTest
   artifacts:
     when: always
@@ -187,7 +188,6 @@ build:release-windows:
      -s https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-data/-/archive/dev/sight-data-dev.zip
      --output sight-data-dev.zip && unzip -qq sight-data-dev.zip
     - set FWTEST_DATA_DIR=%CI_PROJECT_DIR%\build\sight-data-dev
-    - set FW_IGNORE_SLOW_TESTS=0
     - ctest --timeout 120 --output-on-failure -O ctest.log -E fwRenderOgreTest
   artifacts:
     when: always
@@ -219,7 +219,6 @@ build:debug-macos:
      -s https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-data/-/archive/dev/sight-data-dev.tar.gz |
      tar xfz - > /dev/null
     - export FWTEST_DATA_DIR=$CI_PROJECT_DIR/build/sight-data-dev
-    - export FW_IGNORE_SLOW_TESTS=1
     - ctest --timeout 240 --output-on-failure -O ctest.log
   artifacts:
     when: always
@@ -250,7 +249,6 @@ build:release-macos:
      -s https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-data/-/archive/dev/sight-data-dev.tar.gz |
      tar xfz - > /dev/null
     - export FWTEST_DATA_DIR=$CI_PROJECT_DIR/build/sight-data-dev
-    - export FW_IGNORE_SLOW_TESTS=0
     - ctest --timeout 120 --output-on-failure -O ctest.log
   artifacts:
     when: always
