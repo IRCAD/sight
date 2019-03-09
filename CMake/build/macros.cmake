@@ -713,10 +713,10 @@ macro(fwForwardInclude)
 
         string(REGEX MATCH "/usr" IS_LIB_SYSTEM ${INCLUDE})
         if(IS_LIB_SYSTEM)
-            # Use the include directly for system libraries
+            # Let the absolute directly for system libraries
             target_include_directories(${FWPROJECT_NAME} SYSTEM PUBLIC $<INSTALL_INTERFACE:${INCLUDE}>)
         else()
-            # Make the include relative to the install location for the libraries that we build
+            # Make the include path relative to the install location for the libraries that we build
             string(REGEX REPLACE "(.*)(include.*)" "\\2" RELATIVE_INCLUDE ${INCLUDE})
             target_include_directories(${FWPROJECT_NAME} SYSTEM PUBLIC $<INSTALL_INTERFACE:${RELATIVE_INCLUDE}>)
         endif()
@@ -724,7 +724,21 @@ macro(fwForwardInclude)
 endmacro()
 
 macro(fwForwardLink)
-    target_link_libraries(${FWPROJECT_NAME} PUBLIC ${ARGV})
+    foreach(INCLUDE ${ARGV})
+        # Do not expose the dependencies in the install interface (for the SDK)
+        target_link_libraries(${FWPROJECT_NAME} PUBLIC $<BUILD_INTERFACE:${INCLUDE}>)
+
+        string(REGEX MATCH "/usr" IS_LIB_SYSTEM ${INCLUDE})
+        if(IS_LIB_SYSTEM)
+            # Let the absolute path for system libraries
+            target_link_libraries(${FWPROJECT_NAME} PUBLIC $<INSTALL_INTERFACE:${INCLUDE}>)
+        else()
+            # Make the path relative to the install location for the libraries that we build
+            # If the input is a lib module and not a path, the string will not be changed, which is ok
+            string(REGEX REPLACE "(.*)(lib/.*)" "\\2" RELATIVE_INCLUDE ${INCLUDE})
+            target_link_libraries(${FWPROJECT_NAME} PUBLIC $<INSTALL_INTERFACE:${RELATIVE_INCLUDE}>)
+        endif()
+    endforeach()
 endmacro()
 
 # Include the projects in parameter but do not export them.
