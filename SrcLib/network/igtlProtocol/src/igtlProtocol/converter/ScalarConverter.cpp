@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -21,9 +21,10 @@
  ***********************************************************************/
 
 #include "igtlProtocol/converter/ScalarConverter.hpp"
+
 #include "igtlProtocol/DataConverter.hpp"
 
-#include <igtl/igtlStringMessage.h>
+#include <igtlStringMessage.h>
 
 namespace igtlProtocol
 {
@@ -34,8 +35,6 @@ converterRegisterMacro(::igtlProtocol::converter::IntConverter);
 converterRegisterMacro(::igtlProtocol::converter::FloatConverter);
 
 //-----------------------------------------------------------------------------
-
-
 
 } // namespace converter
 } // namespace igtlProtocol

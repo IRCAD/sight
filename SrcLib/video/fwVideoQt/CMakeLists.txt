@@ -1,16 +1,6 @@
 fwLoadProperties()
 
-find_package(Qt5 QUIET COMPONENTS Core Multimedia MultimediaWidgets REQUIRED)
+find_package(Qt5 QUIET COMPONENTS Core Multimedia REQUIRED)
 
-fwForwardInclude(
-    ${Qt5Core_INCLUDE_DIRS}
-    ${Qt5Multimedia_INCLUDE_DIRS}
-)
-
-fwLink(
-    ${Qt5Core_LIBRARIES} 
-    ${Qt5Multimedia_LIBRARIES}
-)
-
+target_link_libraries(${FWPROJECT_NAME} PUBLIC Qt5::Core Qt5::Multimedia)
 set_target_properties(${FWPROJECT_NAME} PROPERTIES AUTOMOC TRUE)
-

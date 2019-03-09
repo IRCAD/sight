@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,12 +20,11 @@
  *
  ***********************************************************************/
 
-#ifndef __IGTLPROTOCOL_RAWMESSAGE_HPP__
-#define __IGTLPROTOCOL_RAWMESSAGE_HPP__
+#pragma once
 
 #include "igtlProtocol/config.hpp"
 
-#include <igtl/igtlMessageBase.h>
+#include <igtlMessageBase.h>
 
 #include <string>
 #include <vector>
@@ -102,5 +101,3 @@ private:
     RawDataType m_msg;
 };
 }//namespace igtlProtocol
-
-#endif // __IGTLPROTOCOL_RAWMESSAGE_HPP__

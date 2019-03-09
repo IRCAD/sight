@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -24,13 +24,13 @@
 
 #include "igtlProtocol/RawMessage.hpp"
 
-#include <igtl/igtlImageMessage.h>
-#include <igtl/igtlPointMessage.h>
-#include <igtl/igtlPolyDataMessage.h>
-#include <igtl/igtlPositionMessage.h>
-#include <igtl/igtlStringMessage.h>
-#include <igtl/igtlTrackingDataMessage.h>
-#include <igtl/igtlTransformMessage.h>
+#include <igtlImageMessage.h>
+#include <igtlPointMessage.h>
+#include <igtlPolyDataMessage.h>
+#include <igtlPositionMessage.h>
+#include <igtlStringMessage.h>
+#include <igtlTrackingDataMessage.h>
+#include <igtlTransformMessage.h>
 
 namespace igtlProtocol
 {
