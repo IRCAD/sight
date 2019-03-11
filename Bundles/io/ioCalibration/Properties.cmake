@@ -13,6 +13,7 @@ set( DEPENDENCIES
     fwCom
     fwGui
     fwIO
+    cvIO
 )
 set( REQUIREMENTS dataReg servicesReg)
 set( CONAN_DEPS

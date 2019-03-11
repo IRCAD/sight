@@ -66,6 +66,7 @@
                     <menuItem name="Calibrate with openCV" icon="arMedia-0.1/icons/CheckButton.svg" />
                     <menuItem name="Draw" icon="media-0.1/icons/Preview.svg" />
                     <menuItem name="Edit" icon="arMedia-0.1/icons/configuration.svg" />
+                    <menuItem name="Save calibration images" icon="arMedia-0.1/icons/save.svg" />
                 </layout>
             </gui>
             <registry>
@@ -76,6 +77,7 @@
                 <menuItem sid="ActionGoOpenCV" start="yes" />
                 <menuItem sid="ActionDisplayImage" start="yes" />
                 <menuItem sid="ActionEdition" start="yes" />
+                <menuItem sid="ActionSaveInputs" start="yes" />
             </registry>
         </service>
 
@@ -114,6 +116,14 @@
         <service uid="ActionDisplayImage" type="::gui::action::SSlotCaller">
             <slots>
                 <slot>CalibrationInfoEditor/getSelection</slot>
+            </slots>
+        </service>
+
+        <service uid="ActionSaveInputs" type="::gui::action::SSlotCaller">
+            <sync>true</sync>
+            <slots>
+                <slot>calibrationDataWriter/configureWithIHM</slot>
+                <slot>calibrationDataWriter/update</slot>
             </slots>
         </service>
 
@@ -167,6 +177,11 @@
             <inout key="camera" uid="${camera}" />
         </service>
 
+        <service uid="calibrationDataWriter" type="::ioCalibration::SCalibrationImagesWriter">
+            <in key="data" uid="${calibrationInfo}" />
+            <format>.tiff</format>
+        </service>
+
         <!-- ******************************* Connections ************************************** -->
         <connect>
             <signal>FrameTL/objectPushed</signal>
@@ -211,5 +226,6 @@
         <start uid="DisplayCalibrationInfo" />
         <start uid="cameraLauncher" />
         <start uid="intrinsicEdition" />
+        <start uid="calibrationDataWriter" />
     </config>
 </extension>
