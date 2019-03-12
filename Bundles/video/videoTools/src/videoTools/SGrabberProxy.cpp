@@ -282,7 +282,6 @@ void SGrabberProxy::startCamera()
             }
 
             // 3. Check if specific service or configuration should be included/excluded
-            if(availableExtensionsSelector.size() > 1)
             {
                 std::map<std::string, std::pair<std::string, std::string> > descToExtension;
                 std::vector<std::string> descriptions;
@@ -337,7 +336,14 @@ void SGrabberProxy::startCamera()
                 }
 
                 std::string selectedDesc;
-                if(descriptions.size() == 1)
+                if (descriptions.size() == 0)
+                {
+                    const std::string msg = "No video grabber implementation found.\n";
+                    ::fwGui::dialog::MessageDialog::showMessageDialog("Error", msg,
+                                                                      ::fwGui::dialog::MessageDialog::Icons::WARNING);
+                    return;
+                }
+                else if (descriptions.size() == 1)
                 {
                     /// Select the only remaining description.
                     selectedDesc = descriptions[0];
@@ -355,16 +361,6 @@ void SGrabberProxy::startCamera()
                 }
 
                 std::tie(m_grabberImpl, m_grabberConfig) = descToExtension[selectedDesc];
-            }
-            else if( availableExtensionsSelector.size() == 1)
-            {
-                m_grabberImpl = availableExtensionsSelector.front();
-            }
-            else
-            {
-                const std::string msg = "No video grabber implementation found\n";
-                ::fwGui::dialog::MessageDialog::showMessageDialog("Error", msg);
-                return;
             }
 
             if(m_grabberImpl.empty())
