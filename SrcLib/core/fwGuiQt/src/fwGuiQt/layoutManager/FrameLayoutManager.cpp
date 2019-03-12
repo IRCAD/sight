@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -116,6 +116,7 @@ void FrameLayoutManager::createFrame()
     ::fwGuiQt::container::QtContainer::sptr frameContainer = ::fwGuiQt::container::QtContainer::New();
     frameContainer->setQtContainer(m_qtWindow);
     m_frame = frameContainer;
+    m_frame->setVisible(frameInfo.m_visibility);
 }
 
 //-----------------------------------------------------------------------------
