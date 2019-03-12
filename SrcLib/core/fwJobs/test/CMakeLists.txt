@@ -3,10 +3,10 @@ fwLoadProperties()
 
 find_package(CppUnit QUIET REQUIRED)
 
-fwForwardInclude(
+fwInclude(
     ${CPPUNIT_INCLUDE_DIR}
 )
 
-fwForwardLink(
+fwLink(
     ${CPPUNIT_LIBRARY}
 )

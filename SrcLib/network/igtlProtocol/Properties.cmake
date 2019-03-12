@@ -18,5 +18,5 @@ set( REQUIREMENTS  )
 
 set( CONAN_DEPS
     libarchive/3.1.2@sight/stable
-    openigtlink/2.1@sight/stable
+    openigtlink/2.1-r1@sight/stable
 )

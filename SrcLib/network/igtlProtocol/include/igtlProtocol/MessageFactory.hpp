@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __IGTLPROTOCOL_MESSAGEFACTORY_HPP__
-#define __IGTLPROTOCOL_MESSAGEFACTORY_HPP__
+#pragma once
 
 #include "igtlProtocol/config.hpp"
 #include "igtlProtocol/exception/Conversion.hpp"
@@ -29,7 +28,8 @@
 #include <fwTools/Failed.hpp>
 
 #include <boost/function.hpp>
-#include <igtl/igtlMessageBase.h>
+
+#include <igtlMessageBase.h>
 
 #include <map>
 
@@ -39,7 +39,7 @@ namespace igtlProtocol
 class IGTLPROTOCOL_CLASS_API MessageFactory
 {
 public:
-    typedef ::boost::function< ::igtl::MessageBase::Pointer () > CreatorType;
+    typedef ::boost::function< ::igtl::MessageBase::Pointer() > CreatorType;
     typedef std::map<std::string, CreatorType>                   CreatorContainer;
 
     /**
@@ -53,7 +53,7 @@ public:
      * @param[in] type
      * @return a smart pointer to a igtl message
      */
-    static IGTLPROTOCOL_API ::igtl::MessageBase::Pointer create(std::string const& type);;
+    static IGTLPROTOCOL_API ::igtl::MessageBase::Pointer create(std::string const& type);
 private:
 
     MessageFactory();
@@ -64,7 +64,8 @@ private:
      * struct contain create function to create igtl message.
      * Hack to compile in msvc in other compiler this struct is useless
      * (see assignement of  pointer function to a overload function to boost::function)
-     * I have no choice to tell msvc take this overload because msvc don't like taking address of a overload template function
+     * I have no choice to tell msvc take this overload because msvc don't like taking address of a overload template
+     * function
      * @tparam T class derivate from igtl::MessageBase
      */
     template<typename T, int withParam> struct MessageMaker;
@@ -81,24 +82,24 @@ private:
             typename T::Pointer msg;
 
             msg = T::New();
-            return ::igtl::MessageBase::Pointer (msg);
+            return ::igtl::MessageBase::Pointer(msg);
         }
-
 
     };
 
     template<typename T>
     struct MessageMaker<T, true>
     {
+        //------------------------------------------------------------------------------
+
         static ::igtl::MessageBase::Pointer createMessage (std::string const& bodyType)
         {
             typename T::Pointer msg;
 
             msg = T::New(bodyType);
-            return ::igtl::MessageBase::Pointer (msg);
+            return ::igtl::MessageBase::Pointer(msg);
         }
     };
-
 
 private:
     /// Map of equivalence between a device type and igtl message creator method
@@ -106,5 +107,3 @@ private:
 };
 
 }//namespace igtlProtocol
-
-#endif // __IGTLPROTOCOL_MESSAGEFACTORY_HPP__
