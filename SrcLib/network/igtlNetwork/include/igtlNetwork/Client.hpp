@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2017 IRCAD France
- * Copyright (C) 2014-2017 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __IGTLNETWORK_CLIENT_HPP__
-#define __IGTLNETWORK_CLIENT_HPP__
+#pragma once
 
 #include "igtlNetwork/config.hpp"
 #include "igtlNetwork/INetwork.hpp"
@@ -32,8 +31,8 @@
 
 #include <igtlProtocol/DataConverter.hpp>
 
-#include <igtl/igtlClientSocket.h>
-#include <igtl/igtlMessageHeader.h>
+#include <igtlClientSocket.h>
+#include <igtlMessageHeader.h>
 
 #include <string>
 
@@ -97,6 +96,3 @@ private:
 };
 
 } // namespace igtlNetwork
-
-#endif // __IGTLNETWORK_CLIENT_HPP__
-

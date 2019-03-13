@@ -8,7 +8,6 @@ endif()
 
 fwLoadProperties()
 
-find_package(Boost QUIET COMPONENTS regex REQUIRED)
 find_package(OGRE QUIET REQUIRED)
 find_package(OpenGL QUIET REQUIRED)
 
@@ -74,14 +73,11 @@ if(WIN32)
 
     fwForwardLink(
         ${OGRE_FIXED_LIBRARIES}
-        ${Boost_REGEX_LIBRARY}
         ${OPENGL_LIBRARIES}
     )
 else()
     fwForwardLink(
-        -L${OGRE_LIBRARY_DIRS}
         ${OGRE_LIBRARIES}
-        ${Boost_REGEX_LIBRARY}
         ${OPENGL_LIBRARIES}
     )
 

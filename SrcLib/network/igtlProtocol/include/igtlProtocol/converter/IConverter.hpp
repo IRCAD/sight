@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __IGTLPROTOCOL_CONVERTER_ICONVERTER_HPP__
-#define __IGTLPROTOCOL_CONVERTER_ICONVERTER_HPP__
+#pragma once
 
 #include "igtlProtocol/config.hpp"
 #include "igtlProtocol/exception/Conversion.hpp"
@@ -32,7 +31,7 @@
 
 #include <fwTools/Failed.hpp>
 
-#include <igtl/igtlMessageBase.h>
+#include <igtlMessageBase.h>
 
 namespace igtlProtocol
 {
@@ -85,5 +84,3 @@ public:
 
 } // namespace converter
 } // namespace igtlProtocol
-
-#endif // __IGTLPROTOCOL_CONVERTER_ICONVERTER_HPP__

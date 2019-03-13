@@ -88,7 +88,7 @@ macro(installConanDepsForSDK)
     foreach(CONAN_DEP ${CONAN_DEPENDENCIES})
         string(REGEX REPLACE "([^\/]*)/.*" "\\1" CONAN_REQUIREMENT ${CONAN_DEP})
         string(TOUPPER ${CONAN_REQUIREMENT} CONAN_REQUIREMENT )
-        install(DIRECTORY "${CONAN_${CONAN_REQUIREMENT}_ROOT}/" DESTINATION ${CMAKE_INSTALL_PREFIX})
+        install(DIRECTORY "${CONAN_${CONAN_REQUIREMENT}_ROOT}/" DESTINATION ".")
     endforeach()
 
 endmacro()

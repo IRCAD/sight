@@ -1,6 +1,6 @@
 
-set( NAME ExSimpleARCV )
-set( VERSION 0.3 )
+set( NAME TutoSimpleAR )
+set( VERSION 0.4 )
 set( TYPE APP )
 set( DEPENDENCIES  )
 set( REQUIREMENTS
@@ -33,4 +33,4 @@ set( REQUIREMENTS
     visuVTKQt
     )
 
-bundleParam(appXml PARAM_LIST config PARAM_VALUES ExSimpleARCVConfig)
+bundleParam(appXml PARAM_LIST config PARAM_VALUES TutoSimpleARConfig)

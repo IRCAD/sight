@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2017 IRCAD France
- * Copyright (C) 2014-2017 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __IGTLNETWORK_SERVER_HPP__
-#define __IGTLNETWORK_SERVER_HPP__
+#pragma once
 
 #include "igtlNetwork/Client.hpp"
 #include "igtlNetwork/config.hpp"
@@ -30,7 +29,7 @@
 #include <fwCore/Exception.hpp>
 #include <fwCore/mt/types.hpp>
 
-#include <igtl/igtlServerSocket.h>
+#include <igtlServerSocket.h>
 
 #include <list>
 #include <string>
@@ -165,5 +164,3 @@ private:
 };
 
 }
-
-#endif // __IGTLNETWORK_SERVER_HPP__
