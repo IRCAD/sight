@@ -7,15 +7,16 @@ find_package(VTK QUIET COMPONENTS
     vtkIOXML
     vtkFiltersGeometry
     vtkIOExport
-    REQUIRED
-    NO_MODULE)
-
-include(${VTK_USE_FILE})
+    REQUIRED)
 
 fwForwardInclude(
     ${VTK_INCLUDE_DIRS}
 )
+target_link_libraries(${FWPROJECT_NAME} PUBLIC
+    vtkFiltersModeling
+    vtkIOImage
+    vtkIOLegacy
+    vtkIOXML
+    vtkFiltersGeometry
+    vtkIOExport)
 
-fwForwardLink(
-    ${VTK_LIBRARIES}
-)
