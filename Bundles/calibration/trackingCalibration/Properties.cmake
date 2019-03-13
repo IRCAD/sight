@@ -21,5 +21,5 @@ set( DEPENDENCIES
 set( REQUIREMENTS )
 set( CONAN_DEPS
     eigen/3.3.4@sight/stable
-    opencv/3.4.3-r2@sight/stable
+    opencv/3.4.3-r3@sight/stable
 )

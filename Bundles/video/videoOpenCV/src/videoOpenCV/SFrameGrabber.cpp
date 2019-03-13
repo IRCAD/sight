@@ -165,6 +165,10 @@ void SFrameGrabber::startCamera()
     {
         this->readDevice(camera);
     }
+    else if(camera->getCameraSource() == ::arData::Camera::STREAM)
+    {
+        this->readStream(camera);
+    }
     else
     {
         this->setStartState(false);
@@ -282,8 +286,6 @@ void SFrameGrabber::readVideo(const ::boost::filesystem::path& file)
 
 void SFrameGrabber::readDevice( const ::arData::Camera::csptr _camera)
 {
-    ::arData::FrameTL::sptr frameTL = this->getInOut< ::arData::FrameTL >(s_FRAMETL);
-
     ::fwCore::mt::ScopedLock lock(m_mutex);
 
     const std::string device = _camera->getCameraID();
@@ -306,6 +308,10 @@ void SFrameGrabber::readDevice( const ::arData::Camera::csptr _camera)
                 "This device cannot be opened: " + device + " at index: " + std::to_string(index));
         }
     }
+
+    // Only way to capture 1080p with v4l.
+    m_videoCapture.set(::cv::CAP_PROP_FOURCC, ::cv::VideoWriter::fourcc('M', 'J', 'P', 'G'));
+
 #else
     //On other platforms (at least on MacOS, we should use the index given by Qt)
     if(index >= 0 )
@@ -345,6 +351,44 @@ void SFrameGrabber::readDevice( const ::arData::Camera::csptr _camera)
         ::fwGui::dialog::MessageDialog::showMessageDialog(
             "Grabber",
             "This device:" + device + " at index: " + std::to_string(index) + "cannot be openned.");
+
+        this->setStartState(false);
+    }
+}
+
+// -----------------------------------------------------------------------------
+
+void SFrameGrabber::readStream( const ::arData::Camera::csptr _camera)
+{
+    ::fwCore::mt::ScopedLock lock(m_mutex);
+
+    m_videoCapture.open(_camera->getStreamUrl());
+
+    if (m_videoCapture.isOpened())
+    {
+        m_timer = m_worker->createTimer();
+        float fps = _camera->getMaximumFrameRate();
+        fps = fps <= 0.f ? 30.f : fps;
+        const size_t height = _camera->getHeight();
+        const size_t width  = _camera->getWidth();
+
+        m_videoCapture.set(::cv::CAP_PROP_FPS, static_cast<int>(fps));
+        m_videoCapture.set(::cv::CAP_PROP_FRAME_WIDTH, static_cast<double>(width));
+        m_videoCapture.set(::cv::CAP_PROP_FRAME_HEIGHT, static_cast<double>(height));
+
+        const ::fwThread::Timer::TimeDurationType duration = std::chrono::milliseconds(1000 / static_cast<size_t>(fps));
+
+        m_timer->setFunction(std::bind(&SFrameGrabber::grabVideo, this));
+        m_timer->setDuration(duration);
+        m_timer->start();
+
+        this->setStartState(true);
+    }
+    else
+    {
+        ::fwGui::dialog::MessageDialog::showMessageDialog(
+            "Grabber",
+            "This stream:" + _camera->getStreamUrl() + " cannot be opened.");
 
         this->setStartState(false);
     }
