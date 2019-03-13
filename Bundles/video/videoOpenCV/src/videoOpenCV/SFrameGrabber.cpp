@@ -376,7 +376,7 @@ void SFrameGrabber::readStream( const ::arData::Camera::csptr _camera)
         m_videoCapture.set(::cv::CAP_PROP_FRAME_WIDTH, static_cast<double>(width));
         m_videoCapture.set(::cv::CAP_PROP_FRAME_HEIGHT, static_cast<double>(height));
 
-        ::fwThread::Timer::TimeDurationType duration = std::chrono::milliseconds(1000 / static_cast<size_t>(fps));
+        const ::fwThread::Timer::TimeDurationType duration = std::chrono::milliseconds(1000 / static_cast<size_t>(fps));
 
         m_timer->setFunction(std::bind(&SFrameGrabber::grabVideo, this));
         m_timer->setDuration(duration);
@@ -388,7 +388,7 @@ void SFrameGrabber::readStream( const ::arData::Camera::csptr _camera)
     {
         ::fwGui::dialog::MessageDialog::showMessageDialog(
             "Grabber",
-            "This stream:" + _camera->getStreamUrl() + " cannot be openned.");
+            "This stream:" + _camera->getStreamUrl() + " cannot be opened.");
 
         this->setStartState(false);
     }
