@@ -724,19 +724,25 @@ macro(fwForwardInclude)
 endmacro()
 
 macro(fwForwardLink)
-    foreach(INCLUDE ${ARGV})
-        # Do not expose the dependencies in the install interface (for the SDK)
-        target_link_libraries(${FWPROJECT_NAME} PUBLIC $<BUILD_INTERFACE:${INCLUDE}>)
-
-        string(REGEX MATCH "/usr" IS_LIB_SYSTEM ${INCLUDE})
-        if(IS_LIB_SYSTEM)
-            # Let the absolute path for system libraries
-            target_link_libraries(${FWPROJECT_NAME} PUBLIC $<INSTALL_INTERFACE:${INCLUDE}>)
+    set(PREFIX "")
+    foreach(LIB ${ARGV})
+        if(${LIB} STREQUAL "debug" OR ${LIB} STREQUAL "optimized" OR ${LIB} STREQUAL "general")
+            set(PREFIX ${LIB})
         else()
-            # Make the path relative to the install location for the libraries that we build
-            # If the input is a lib module and not a path, the string will not be changed, which is ok
-            string(REGEX REPLACE "(.*)(lib/.*)" "\\2" RELATIVE_INCLUDE ${INCLUDE})
-            target_link_libraries(${FWPROJECT_NAME} PUBLIC $<INSTALL_INTERFACE:${RELATIVE_INCLUDE}>)
+            # Do not expose the dependencies in the install interface (for the SDK)
+            target_link_libraries(${FWPROJECT_NAME} PUBLIC ${PREFIX} $<BUILD_INTERFACE:${LIB}>)
+
+            string(REGEX MATCH "/usr" IS_LIB_SYSTEM ${LIB})
+            if(IS_LIB_SYSTEM)
+                # Let the absolute path for system libraries
+                target_link_libraries(${FWPROJECT_NAME} PUBLIC ${PREFIX} $<INSTALL_INTERFACE:${LIB}>)
+            else()
+                # Make the path relative to the install location for the libraries that we build
+                # If the input is a lib module and not a path, the string will not be changed, which is ok
+                string(REGEX REPLACE "(.*)(lib/.*)" "\\2" RELATIVE_INCLUDE ${LIB})
+                target_link_libraries(${FWPROJECT_NAME} PUBLIC ${PREFIX} $<INSTALL_INTERFACE:${RELATIVE_LIB}>)
+            endif()
+            set(PREFIX "")
         endif()
     endforeach()
 endmacro()
