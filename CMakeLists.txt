@@ -441,9 +441,6 @@ endif()
 # Define the path 'FW_EXTERNAL_LIBRARIES_DIR' used to find external libraries required by our applications
 setExternalLibrariesDir()
 
-# Discover PCL only once as it takes a while and cache results...
-add_subdirectory(${FWCMAKE_RESOURCE_PATH}/pcl)
-
 ########################################################################################################################
 # Second projects scan where we actually perform the add_subdirectory() for each project and its dependencies
 ########################################################################################################################

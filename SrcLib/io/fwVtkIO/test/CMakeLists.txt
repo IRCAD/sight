@@ -1,7 +1,11 @@
 fwLoadProperties()
+find_package(VTK QUIET COMPONENTS
+    vtkFiltersSources
+    REQUIRED)
 
-fwForwardInclude(
+fwInclude(
+    ${VTK_INCLUDE_DIRS}
 )
-
 fwLink(
+    vtkFiltersSources
 )

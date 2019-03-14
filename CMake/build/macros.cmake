@@ -1027,13 +1027,3 @@ macro(addProject PROJECT)
     unset(PROJECT_CACHE)
 endmacro()
 
-# Macro that allows to skip the find_package(PCL) which is very slow
-macro(fwQuickFindPCL)
-    if(NOT PCL_FOUND)
-        message(SEND_ERROR "PCL not found")
-    endif()
-
-    # This is necessary for now to run this, at least on Linux, in order to resolve the version number of the libraries,
-    # .i.e from -lvtksys to -lvtksys7.1
-    find_package(VTK QUIET)
-endmacro()
