@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2018 IRCAD France
- * Copyright (C) 2017-2018 IHU Strasbourg
+ * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -122,14 +122,10 @@ void SGrabberProxy::configuring()
             SLM_DEBUG( "add selection => " + service );
 
             const std::string configId = itSelection->second.get<std::string>("<xmlattr>.config", "");
-            if(!configId.empty())
-            {
-                // Check if service is not empty.
-                SLM_ASSERT("add selection with config but service is missing", !service.empty());
-                m_serviceToConfig[service].push_back(configId);
-                SLM_DEBUG( "add config '" + configId + "' for service '" + service + "'");
-            }
-
+            // Check if service is not empty.
+            SLM_ASSERT("add selection with config but service is missing", !service.empty());
+            m_serviceToConfig[service].push_back(configId);
+            SLM_DEBUG("add config '" + configId + "' for service '" + service + "'");
         }
 
         const auto configCfg = subConfig.equal_range("config");
@@ -171,17 +167,6 @@ void SGrabberProxy::startCamera()
                                                                                     "::arServices::IGrabber");
 
             std::move(rgbGrabbersImpl.begin(), rgbGrabbersImpl.end(), std::back_inserter(grabbersImpl));
-
-            if(m_serviceToConfig.empty() && m_selectedServices.empty())
-            {
-                for(const auto& impl : rgbGrabbersImpl)
-                {
-                    const auto configs   = srvConfigFactory->getAllConfigForService(impl, true);
-                    auto& serviceConfigs = m_serviceToConfig[impl];
-                    serviceConfigs.push_back(""); // Add the empty config.
-                    serviceConfigs.insert(serviceConfigs.end(), configs.begin(), configs.end());
-                }
-            }
 
             ::arData::Camera::SourceType sourceType = ::arData::Camera::UNKNOWN;
 
@@ -297,7 +282,6 @@ void SGrabberProxy::startCamera()
             }
 
             // 3. Check if specific service or configuration should be included/excluded
-            if(availableExtensionsSelector.size() > 1)
             {
                 std::map<std::string, std::pair<std::string, std::string> > descToExtension;
                 std::vector<std::string> descriptions;
@@ -305,97 +289,78 @@ void SGrabberProxy::startCamera()
                 const auto& srvConfigRegistry = ::fwServices::registry::ServiceConfig::getDefault();
                 for(const auto& extension : availableExtensionsSelector)
                 {
-                    // We need to test first if extension have specific configuration to include/exclude.
+                    // We need to test first if extension have specific configurations to include/exclude.
                     const auto configsIt = m_serviceToConfig.find(extension);
+                    std::vector< std::string > selectableConfigs;
 
-                    if(configsIt != m_serviceToConfig.end() )
+                    if (!m_exclude) // Include mode
                     {
-                        for(const auto& config : configsIt->second)
+                        // Available services/configs are the ones the proxy's configuration.
+                        if(configsIt != m_serviceToConfig.end())
                         {
-                            // Config should be included or excluded ?
-                            if(!m_exclude) // Include mode
-                            {
-                                if(!config.empty() ) //Specific configuration is given.
-                                {
-                                    // Store all (grabber, config) pairs.
-                                    const std::string& configDesc = srvConfigRegistry->getConfigDesc(config);
-                                    descToExtension[configDesc] = std::make_pair(extension, config);
-                                    descriptions.push_back(configDesc);
-                                }
-                                else // No specific configuration is given.
-                                {
-                                    // Add the default config-less grabber.
-                                    const auto desc = srvFactory->getServiceDescription(extension);
-                                    descToExtension[desc] = std::make_pair(extension, "");
-                                    descriptions.push_back(desc);
-                                }
-                            }
-                            else // Exclude mode
-                            {
-                                // Exclude a specific configuration of the grabber, so we should add the default one.
-                                if(!config.empty())
-                                {
-                                    // Add the default config-less grabber.
-                                    const auto desc = srvFactory->getServiceDescription(extension);
-                                    descToExtension[desc] = std::make_pair(extension, "");
-                                    descriptions.push_back(desc);
-                                }
-
-                            }
+                            selectableConfigs = configsIt->second;
                         }
                     }
-                    // No particular configurations were found
-                    else
+                    else // Exclude mode
                     {
-                        // Find if extension is a "selected" service.
-                        const auto selectedExt = std::find(m_selectedServices.begin(),
-                                                           m_selectedServices.end(), extension);
-                        // If we found extension we should add it only on include mode.
-                        if(selectedExt != m_selectedServices.end())
-                        {
-                            if(!m_exclude)
-                            {
-                                // Add the default config-less grabber.
-                                const auto desc = srvFactory->getServiceDescription(extension);
-                                descToExtension[desc] = std::make_pair(extension, "");
-                                descriptions.push_back(desc);
-                            }
+                        // Find all configurations for the given grabber.
+                        selectableConfigs = srvConfigFactory->getAllConfigForService(extension, true);
+                        selectableConfigs.push_back(""); // Add the empty config (default grabber).
 
-                        }
-                        // No config nor selected service
-                        else
+                        // Remove configs from the grabber's list.
+                        if(configsIt != m_serviceToConfig.end())
                         {
-                            if(m_exclude) // default mode
-                            {
-                                // Add the default config-less grabber.
-                                const auto desc = srvFactory->getServiceDescription(extension);
-                                descToExtension[desc] = std::make_pair(extension, "");
-                                descriptions.push_back(desc);
-                            }
+                            const auto& excludedConfigs = configsIt->second;
+                            const auto isExcludedConfig = [&excludedConfigs](const std::string& _cfgName) -> bool
+                                                          {
+                                                              return std::find(excludedConfigs.begin(),
+                                                                               excludedConfigs.end(),
+                                                                               _cfgName) != excludedConfigs.end();
+                                                          };
+
+                            // Remove the ones excluded by the grabber proxy.
+                            selectableConfigs.erase(std::remove_if(selectableConfigs.begin(), selectableConfigs.end(),
+                                                                   isExcludedConfig),
+                                                    selectableConfigs.end());
                         }
                     }
 
+                    // Fill the description list with the available config's descriptions.
+                    for (const auto& config : selectableConfigs)
+                    {
+                        const auto desc = config.empty() ? srvFactory->getServiceDescription(extension)
+                                          : srvConfigRegistry->getConfigDesc(config);
+                        descToExtension[desc] = std::make_pair(extension, config);
+                        descriptions.push_back(desc);
+                    }
                 }
-                ::fwGui::dialog::SelectorDialog::sptr selector = ::fwGui::dialog::SelectorDialog::New();
 
-                // Sort the description list.
-                std::sort(std::begin(descriptions), std::end(descriptions));
+                std::string selectedDesc;
+                if (descriptions.size() == 0)
+                {
+                    const std::string msg = "No video grabber implementation found.\n";
+                    ::fwGui::dialog::MessageDialog::showMessageDialog("Error", msg,
+                                                                      ::fwGui::dialog::MessageDialog::Icons::WARNING);
+                    return;
+                }
+                else if (descriptions.size() == 1)
+                {
+                    /// Select the only remaining description.
+                    selectedDesc = descriptions[0];
+                }
+                else
+                {
+                    // Sort the description list.
+                    std::sort(std::begin(descriptions), std::end(descriptions));
 
-                selector->setTitle(m_guiTitle);
-                selector->setSelections(descriptions);
+                    ::fwGui::dialog::SelectorDialog::sptr selector = ::fwGui::dialog::SelectorDialog::New();
+                    selector->setTitle(m_guiTitle);
+                    selector->setSelections(descriptions);
 
-                const auto selectedDesc = selector->show();
+                    selectedDesc = selector->show();
+                }
+
                 std::tie(m_grabberImpl, m_grabberConfig) = descToExtension[selectedDesc];
-            }
-            else if( availableExtensionsSelector.size() == 1)
-            {
-                m_grabberImpl = availableExtensionsSelector.front();
-            }
-            else
-            {
-                const std::string msg = "No video grabber implementation found\n";
-                ::fwGui::dialog::MessageDialog::showMessageDialog("Error", msg);
-                return;
             }
 
             if(m_grabberImpl.empty())
