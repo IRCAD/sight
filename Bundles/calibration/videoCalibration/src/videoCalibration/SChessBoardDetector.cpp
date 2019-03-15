@@ -223,6 +223,9 @@ void SChessBoardDetector::doDetection(size_t _imageIndex)
             {
                 outPl->getPoints().clear();
             }
+
+            auto sig = outPl->signal< ::fwData::PointList::ModifiedSignalType >(::fwData::PointList::s_MODIFIED_SIG);
+            sig->asyncEmit();
         }
     }
 }
