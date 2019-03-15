@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -129,7 +129,7 @@ void SIOSelector::configuring()
 
     if (m_mode == WRITER_MODE)
     {
-        this->registerObject(::fwIO::s_DATA_KEY, AccessType::INPUT);
+        this->registerObject(::fwIO::s_DATA_KEY, AccessType::INOUT);
     }
     else if (m_dataClassname.empty())
     {
