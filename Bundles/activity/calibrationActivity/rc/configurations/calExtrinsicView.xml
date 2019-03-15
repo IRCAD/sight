@@ -156,7 +156,7 @@
         <!-- ******************************* Actions ****************************************** -->
         <service uid="ActionAdd" type="::gui::action::SSlotCaller">
             <slots>
-                <slot>ChessboardDetector/detectPoints</slot>
+                <slot>ChessboardDetector/recordPoints</slot>
             </slots>
         </service>
 
@@ -221,7 +221,7 @@
 
         <!-- ******************************* Services ***************************************** -->
         <service uid="VideoSlider" type="::videoQt::editor::SSlider" />
-        <service uid="synchronizer" type="::videoTools::SFrameMatrixSynchronizer" worker="synchronizer">
+        <service uid="synchronizer" type="::videoTools::SFrameMatrixSynchronizer" worker="extr_chess_checker">
             <in group="frameTL">
                 <key uid="Frame1TL" />
                 <key uid="Frame2TL" />
@@ -299,9 +299,9 @@
         </service>
 
         <service uid="ChessboardDetector" type="::videoCalibration::SChessBoardDetector" worker="extr_chess_checker">
-            <in group="timeline">
-                <key uid="Frame1TL" />
-                <key uid="Frame2TL" />
+            <in group="image" autoConnect="yes" >
+                <key uid="Frame1" />
+                <key uid="Frame2" />
             </in>
             <inout group="calInfo">
                 <key uid="${calibrationInfo1}" />
@@ -355,23 +355,8 @@
 
         <!-- ******************************* Connections ************************************** -->
         <connect>
-            <signal>Frame1TL/objectPushed</signal>
-            <slot>ChessboardDetector/checkPoints</slot>
-        </connect>
-
-        <connect>
-            <signal>Frame2TL/objectPushed</signal>
-            <slot>ChessboardDetector/checkPoints</slot>
-        </connect>
-
-        <connect>
             <signal>ChessboardDetector/chessboardDetected</signal>
-            <slot>Status/changeToGreen</slot>
-        </connect>
-
-        <connect>
-            <signal>ChessboardDetector/chessboardNotDetected</signal>
-            <slot>Status/changeToRed</slot>
+            <slot>Status/toggleGreenRed</slot>
         </connect>
 
         <connect>

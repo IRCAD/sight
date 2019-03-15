@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -24,17 +24,15 @@
 
 #include <arData/CalibrationInfo.hpp>
 
-#include <cvIO/FrameTL.hpp>
 #include <cvIO/Image.hpp>
 
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
 
-#include <fwData/Array.hpp>
-#include <fwData/Composite.hpp>
+#include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
 
-#include <fwDataTools/helper/Array.hpp>
+#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <fwPreferences/helper.hpp>
 
@@ -44,34 +42,29 @@
 #include <opencv2/calib3d.hpp>
 #include <opencv2/imgproc.hpp>
 
+#include <future>
+
 namespace videoCalibration
 {
-fwServicesRegisterMacro(::fwServices::IController, ::videoCalibration::SChessBoardDetector, ::fwData::Composite);
 
-const ::fwCom::Slots::SlotKeyType SChessBoardDetector::s_CHECK_POINTS_SLOT           = "checkPoints";
-const ::fwCom::Slots::SlotKeyType SChessBoardDetector::s_DETECT_POINTS_SLOT          = "detectPoints";
-const ::fwCom::Slots::SlotKeyType SChessBoardDetector::s_UPDATE_CHESSBOARD_SIZE_SLOT = "updateChessboardSize";
+static const ::fwCom::Slots::SlotKeyType s_RECORD_POINTS_SLOT          = "recordPoints";
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_CHESSBOARD_SIZE_SLOT = "updateChessboardSize";
 
-const ::fwCom::Signals::SignalKeyType SChessBoardDetector::s_CHESSBOARD_DETECTED_SIG     = "chessboardDetected";
-const ::fwCom::Signals::SignalKeyType SChessBoardDetector::s_CHESSBOARD_NOT_DETECTED_SIG = "chessboardNotDetected";
+static const ::fwCom::Signals::SignalKeyType s_CHESSBOARD_DETECTED_SIG = "chessboardDetected";
 
-const ::fwServices::IService::KeyType s_TIMELINE_INPUT    = "timeline";
-const ::fwServices::IService::KeyType s_CALIBRATION_INOUT = "calInfo";
-const ::fwServices::IService::KeyType s_DETECTION_INOUT   = "detection";
+static const ::fwServices::IService::KeyType s_IMAGE_INPUT     = "image";
+static const ::fwServices::IService::KeyType s_CALINFO_INOUT   = "calInfo";
+static const ::fwServices::IService::KeyType s_DETECTION_INOUT = "detection";
 
 // ----------------------------------------------------------------------------
 
 SChessBoardDetector::SChessBoardDetector() noexcept :
     m_width(11),
-    m_height(8),
-    m_isDetected(false),
-    m_lastTimestamp(0)
+    m_height(8)
 {
-    m_sigChessboardDetected    = newSignal< ChessboardDetectedSignalType >( s_CHESSBOARD_DETECTED_SIG );
-    m_sigChessboardNotDetected = newSignal< ChessboardNotDetectedSignalType >( s_CHESSBOARD_NOT_DETECTED_SIG );
+    m_sigChessboardDetected = newSignal< ChessboardDetectedSignalType >( s_CHESSBOARD_DETECTED_SIG );
 
-    newSlot( s_CHECK_POINTS_SLOT, &SChessBoardDetector::checkPoints, this );
-    newSlot( s_DETECT_POINTS_SLOT, &SChessBoardDetector::detectPoints, this );
+    newSlot( s_RECORD_POINTS_SLOT, &SChessBoardDetector::recordPoints, this );
     newSlot( s_UPDATE_CHESSBOARD_SIZE_SLOT, &SChessBoardDetector::updateChessboardSize, this );
 }
 
@@ -85,8 +78,8 @@ SChessBoardDetector::~SChessBoardDetector() noexcept
 
 void SChessBoardDetector::configuring()
 {
-    SLM_ASSERT("You must have the same number of 'timeline' keys and 'calInfo' keys",
-               this->getKeyGroupSize(s_TIMELINE_INPUT) == this->getKeyGroupSize(s_CALIBRATION_INOUT));
+    SLM_ASSERT("You must have the same number of 'image' keys and 'calInfo' keys",
+               this->getKeyGroupSize(s_IMAGE_INPUT) == this->getKeyGroupSize(s_CALINFO_INOUT));
 
     ::fwRuntime::ConfigurationElement::sptr cfgBoard = m_configuration->findConfigurationElement("board");
     SLM_ASSERT("Tag 'board' not found.", cfgBoard);
@@ -104,117 +97,74 @@ void SChessBoardDetector::configuring()
 
 void SChessBoardDetector::starting()
 {
-    m_pointsLists.resize( this->getKeyGroupSize(s_TIMELINE_INPUT) );
     this->updateChessboardSize();
+
+    const size_t imageGroupSize = this->getKeyGroupSize(s_IMAGE_INPUT);
+
+    m_images.resize(imageGroupSize);
+    m_pointLists.resize(imageGroupSize);
 }
 
 // ----------------------------------------------------------------------------
 
 void SChessBoardDetector::updating()
 {
+    const size_t imageGroupSize = this->getKeyGroupSize(s_IMAGE_INPUT);
+
+    std::vector<std::thread> detectionJobs;
+    for(size_t i = 0; i < imageGroupSize; ++i)
+    {
+        detectionJobs.push_back(std::thread(&SChessBoardDetector::doDetection, this, i));
+    }
+
+    for(auto& detectionJob : detectionJobs)
+    {
+        detectionJob.join();
+    }
+
+    const bool allDetected = (std::count(m_images.begin(), m_images.end(), nullptr) == 0);
+
+    m_sigChessboardDetected->asyncEmit(allDetected);
 }
 
 // ----------------------------------------------------------------------------
 
 void SChessBoardDetector::stopping()
 {
+    m_images.clear();
+    m_pointLists.clear();
 }
 
 // ----------------------------------------------------------------------------
 
-void SChessBoardDetector::checkPoints( ::fwCore::HiResClock::HiResClockType timestamp)
+fwServices::IService::KeyConnectionsMap SChessBoardDetector::getAutoConnections() const
 {
-    if (timestamp > m_lastTimestamp)
-    {
-        ::fwCore::HiResClock::HiResClockType lastTimestamp;
-        lastTimestamp = std::numeric_limits< ::fwCore::HiResClock::HiResClockType >::max();
+    KeyConnectionsMap connections;
+    connections.push(s_IMAGE_INPUT, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_IMAGE_INPUT, ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
 
-        const size_t numTimeline  = this->getKeyGroupSize(s_TIMELINE_INPUT);
-        const size_t numDetection = this->getKeyGroupSize(s_DETECTION_INOUT);
-
-        OSLM_ERROR_IF("Different number of input timelines and detected point lists.",
-                      numDetection > 0 && numTimeline != numDetection);
-
-        const bool detection = (numDetection > 0) && (numTimeline == numDetection);
-
-        // Grab timeline objects
-        for(size_t i = 0; i < numTimeline; ++i)
-        {
-            auto frameTL = this->getInput< ::arData::FrameTL >(s_TIMELINE_INPUT, i);
-            lastTimestamp = std::min(lastTimestamp, frameTL->getNewerTimestamp());
-        }
-
-        m_isDetected = true;
-
-        for(size_t i = 0; i < numTimeline; ++i)
-        {
-            auto tl = this->getInput< ::arData::FrameTL >(s_TIMELINE_INPUT, i);
-
-            ::fwData::PointList::sptr chessBoardPoints;
-
-            chessBoardPoints = this->detectChessboard(tl, lastTimestamp, m_width, m_height);
-
-            if(!chessBoardPoints)
-            {
-                m_isDetected = false;
-            }
-            else
-            {
-                m_pointsLists[i] = chessBoardPoints;
-            }
-
-            if(detection)
-            {
-                auto detectedPoints = this->getInOut< ::fwData::PointList >(s_DETECTION_INOUT, i);
-                ::fwData::mt::ObjectWriteLock lock(detectedPoints);
-
-                if(m_isDetected)
-                {
-                    detectedPoints->deepCopy(chessBoardPoints);
-                }
-                else
-                {
-                    detectedPoints->getPoints().clear();
-                }
-
-                auto sig = detectedPoints->signal< ::fwData::Object::ModifiedSignalType >(
-                    ::fwData::Object::s_MODIFIED_SIG);
-                sig->asyncEmit();
-            }
-        }
-
-        if(m_isDetected)
-        {
-            m_sigChessboardDetected->asyncEmit();
-        }
-        else
-        {
-            m_sigChessboardNotDetected->asyncEmit();
-        }
-
-        m_lastTimestamp = lastTimestamp;
-    }
+    return connections;
 }
 
 // ----------------------------------------------------------------------------
 
-void SChessBoardDetector::detectPoints()
+void SChessBoardDetector::recordPoints()
 {
-    if(m_isDetected)
-    {
-        size_t numInfo = this->getKeyGroupSize(s_CALIBRATION_INOUT);
-        for(size_t i = 0; i < numInfo; ++i)
-        {
-            auto calInfo = this->getInOut< ::arData::CalibrationInfo >(s_CALIBRATION_INOUT, i);
-            auto frameTL = this->getInput< ::arData::FrameTL >(s_TIMELINE_INPUT, i);
-            ::fwData::Image::sptr image = this->createImage( frameTL, m_lastTimestamp);
+    const size_t calibGroupSize = this->getKeyGroupSize(s_CALINFO_INOUT);
 
-            calInfo->addRecord(image, m_pointsLists[i]);
+    for(size_t i = 0; i < calibGroupSize; ++i)
+    {
+        if(m_images[i] && m_pointLists[i])
+        {
+            auto calInfo = this->getInOut< ::arData::CalibrationInfo >(s_CALINFO_INOUT, i);
+            SLM_ASSERT("Missing 'calibInfo' in-out.", calInfo);
+
+            calInfo->addRecord(m_images[i], m_pointLists[i]);
 
             // Notify
             ::arData::CalibrationInfo::AddedRecordSignalType::sptr sig;
-            sig = calInfo->signal< ::arData::CalibrationInfo::AddedRecordSignalType >
-                      (::arData::CalibrationInfo::s_ADDED_RECORD_SIG);
+            sig = calInfo->signal< ::arData::CalibrationInfo::AddedRecordSignalType >(
+                ::arData::CalibrationInfo::s_ADDED_RECORD_SIG);
 
             sig->asyncEmit();
         }
@@ -239,96 +189,97 @@ void SChessBoardDetector::updateChessboardSize()
 
 // ----------------------------------------------------------------------------
 
-::fwData::Image::sptr SChessBoardDetector::createImage( ::arData::FrameTL::csptr tl,
-                                                        ::fwCore::HiResClock::HiResClockType timestamp)
+void SChessBoardDetector::doDetection(size_t _imageIndex)
 {
-    ::fwData::Image::sptr image;
+    const auto img = this->getInput< ::fwData::Image >(s_IMAGE_INPUT, _imageIndex);
+    SLM_ASSERT("Missing 'image' input.", img);
 
-    const CSPTR(::arData::FrameTL::BufferType) buffer = tl->getClosestBuffer(timestamp);
-    if (buffer)
+    ::fwData::mt::ObjectReadLock imgLock(img);
+    const bool isValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(img);
+
+    if(isValid)
     {
-        image = ::fwData::Image::New();
+        m_pointLists[_imageIndex] = detectChessboard(img, m_width, m_height);
 
-        ::fwData::Image::SizeType size(3);
-        size[0] = tl->getWidth();
-        size[1] = tl->getHeight();
-        size[2] = 1;
-        const ::fwData::Image::SpacingType::value_type voxelSize = 1;
-        image->allocate(size, tl->getType(), tl->getNumberOfComponents());
-        ::fwData::Image::OriginType origin(3, 0);
+        if (m_pointLists[_imageIndex] != nullptr)
+        {
+            m_images[_imageIndex] = ::fwData::Image::New();
+            m_images[_imageIndex]->deepCopy(img);
+        }
+        else
+        {
+            m_images[_imageIndex] = nullptr;
+        }
 
-        image->setOrigin(origin);
-        ::fwData::Image::SpacingType spacing(3, voxelSize);
-        image->setSpacing(spacing);
-        image->setWindowWidth(1);
-        image->setWindowCenter(0);
-
-        ::fwData::Array::sptr array = image->getDataArray();
-
-        ::fwDataTools::helper::Array arrayHelper(array);
-
-        const std::uint8_t*  frameBuff = &buffer->getElement(0);
-        std::uint8_t* index            = arrayHelper.begin< std::uint8_t >();
-
-        std::copy( frameBuff, frameBuff+buffer->getSize(), index);
+        const bool outputDetection = (this->getKeyGroupSize(s_DETECTION_INOUT) == this->getKeyGroupSize(s_IMAGE_INPUT));
+        if(outputDetection)
+        {
+            auto outPl = this->getInOut< ::fwData::PointList >(s_DETECTION_INOUT, _imageIndex);
+            if (m_pointLists[_imageIndex] != nullptr)
+            {
+                outPl->deepCopy(m_pointLists[_imageIndex]);
+            }
+            else
+            {
+                outPl->getPoints().clear();
+            }
+        }
     }
-
-    return image;
 }
 
 // ----------------------------------------------------------------------------
 
-SPTR(::fwData::PointList) SChessBoardDetector::detectChessboard(::arData::FrameTL::csptr tl,
-                                                                ::fwCore::HiResClock::HiResClockType timestamp,
-                                                                size_t xDim, size_t yDim)
+SPTR(::fwData::PointList) SChessBoardDetector::detectChessboard(const ::fwData::Image::csptr& _img,
+                                                                size_t _xDim, size_t _yDim)
 {
     ::fwData::PointList::sptr pointlist;
 
-    const CSPTR(::arData::FrameTL::BufferType) buffer = tl->getClosestBuffer(timestamp);
+    const auto pixType = _img->getType();
+    OSLM_ASSERT("Expected 8bit pixel components, this image has: " << 8 * pixType.sizeOf(), pixType.sizeOf() == 1);
 
-    if(buffer)
+    ::cv::Mat grayImg;
+    // The image buffer will not be modified so we const_cast it to avoid a useless copy.
+    ::cv::Mat img = ::cvIO::Image::moveToCv(std::const_pointer_cast< ::fwData::Image >(_img));
+
+    if (img.dims == 3)
     {
-        const auto pixType = tl->getType();
-        OSLM_ASSERT("Expected 8bit pixel components, have " << 8 * pixType.sizeOf(), pixType.sizeOf() == 1);
+        // Ensure that we have a true depth-less 2D image.
+        img = img.reshape(0, 2, img.size + 1);
+    }
 
-        std::uint8_t* frameBuff = const_cast< std::uint8_t*>( &buffer->getElement(0) );
+    if (_img->getNumberOfComponents() == 1)
+    {
+        grayImg = img;
+    }
+    else if (_img->getNumberOfComponents() == 3)
+    {
+        ::cv::cvtColor(img, grayImg, CV_RGB2GRAY);
+    }
+    else
+    {
+        ::cv::cvtColor(img, grayImg, CV_RGBA2GRAY);
+    }
 
-        ::cv::Mat grayImg;
-        ::cv::Mat img = ::cvIO::FrameTL::moveToCv(tl, frameBuff);
-        if (tl->getNumberOfComponents() == 1)
+    ::cv::Size boardSize(static_cast<int>(_xDim) - 1, static_cast<int>(_yDim) - 1);
+    std::vector< ::cv::Point2f > corners;
+
+    const int flags = CV_CALIB_CB_ADAPTIVE_THRESH | CV_CALIB_CB_NORMALIZE_IMAGE | CV_CALIB_CB_FILTER_QUADS |
+                      CV_CALIB_CB_FAST_CHECK;
+
+    const bool patternWasFound = ::cv::findChessboardCorners(grayImg, boardSize, corners, flags);
+    if (patternWasFound)
+    {
+        ::cv::TermCriteria term(::cv::TermCriteria::MAX_ITER + ::cv::TermCriteria::EPS, 30, 0.1);
+        ::cv::cornerSubPix(grayImg, corners, ::cv::Size(5, 5), ::cv::Size(-1, -1), term);
+
+        pointlist                                       = ::fwData::PointList::New();
+        ::fwData::PointList::PointListContainer& points = pointlist->getPoints();
+        points.reserve(corners.size());
+
+        for (::cv::Point2f& p : corners)
         {
-            grayImg = img;
-        }
-        else if (tl->getNumberOfComponents() == 3)
-        {
-            ::cv::cvtColor(img, grayImg, CV_RGB2GRAY);
-        }
-        else
-        {
-            ::cv::cvtColor(img, grayImg, CV_RGBA2GRAY);
-        }
-
-        ::cv::Size boardSize(static_cast<int>(xDim) - 1, static_cast<int>(yDim) - 1);
-        std::vector< ::cv::Point2f > corners;
-
-        const int flags = CV_CALIB_CB_ADAPTIVE_THRESH | CV_CALIB_CB_NORMALIZE_IMAGE | CV_CALIB_CB_FILTER_QUADS
-                          | CV_CALIB_CB_FAST_CHECK;
-
-        const bool patternWasFound = ::cv::findChessboardCorners(grayImg, boardSize, corners, flags);
-        if(patternWasFound)
-        {
-            ::cv::TermCriteria term(::cv::TermCriteria::MAX_ITER + ::cv::TermCriteria::EPS, 30, 0.1);
-            ::cv::cornerSubPix(grayImg, corners, ::cv::Size(5, 5), ::cv::Size(-1, -1), term);
-
-            pointlist                                       = ::fwData::PointList::New();
-            ::fwData::PointList::PointListContainer& points = pointlist->getPoints();
-            points.reserve(corners.size());
-
-            for(::cv::Point2f& p : corners)
-            {
-                ::fwData::Point::sptr point = ::fwData::Point::New(p.x, p.y);
-                points.push_back(point);
-            }
+            ::fwData::Point::sptr point = ::fwData::Point::New(p.x, p.y);
+            points.push_back(point);
         }
     }
 

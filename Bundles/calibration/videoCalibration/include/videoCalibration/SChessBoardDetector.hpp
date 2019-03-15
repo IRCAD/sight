@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -24,8 +24,6 @@
 
 #include "videoCalibration/config.hpp"
 
-#include <arData/FrameTL.hpp>
-
 #include <fwData/Image.hpp>
 #include <fwData/PointList.hpp>
 
@@ -35,44 +33,32 @@ namespace videoCalibration
 {
 
 /**
- * @brief This service updates CalibrationInfo objects with the points detected from chessboard.
+ * @brief Detects chessboards in images and pushes detected points to CalibrationInfo objects.
  *
- * This service is used by calling 'detectPoints' slot. It checks on each timeline if points are visible in each
- * frame. Then it adds the detected points and the associated image in the CalibrationInfo.
+ * Every update triggers detection on the current input image. The 'recordPoints' slot must be called to store
+ * the chessboard positions in the CalibrationInfo structure after a successful detection.
  *
  * @section Signals Signals
- * - \b chessboardDetected(): Emitted when the chessboard is detected on the current image.
- * - \b chessboardNotDetected(): Emitted when the chessboard is not detected on the current image.
+ * - \b chessboardDetected(bool): Emitted after trying to detect a chessboard. Sends whether it was detected or not.
  *
  * @section Slots Slots
- * - \b checkPoints(::fwCore::HiResClock::HiResClockType): Try to detect the chessboard in the image(s) from the
- * timeline(s) at the given timestamp.
- * - \b detectPoints(): Request to store the current image in the calibration data, if the chessboard is detected.
+ * - \b recordPoints(): Request to store the current image in the calibration data, if the chessboard is detected.
  * - \b updateChessboardSize(): update the parameters of the chessboard from preferences.
  *
  * @section XML XML Configuration
  *
  * @code{.xml}
-       <service uid="..." impl="::videoCalibration::SChessBoardDetector" >
-            <in group="timeline">
-                <key uid="..." />
-                <key uid="..." />
-            </in>
-            <inout group="calInfo">
-                <key uid="..." />
-                <key uid="..." />
-            </inout>
-            <inout group="detection">
-                <key uid="..." />
-                <key uid="..." />
-            </inout>
+       <service uid="..." type="::videoCalibration::SChessBoardDetector" >
+            <in key="image" uid="..." />
+            <inout key="calInfo" uid="..." />
+            <inout key="detection" uid="..." />
            <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" />
        </service>
    @endcode
  * @subsection Input Input:
- * - \b timeline [::arData::FrameTL]: timelines containing the images to detect the chessboard.
+ * - \b image [::fwData::Image]: image on which we run the detection.
  * @subsection In-Out In-Out:
- * - \b calInfo [::arData::CalibrationInfo]: calibration object where to store the detected images.
+ * - \b calInfo [::arData::CalibrationInfo]: calibration object storing the detected images.
  * - \b detection [::fwData::PointList] (optional): detected chessboard points in image coordinates.
  * @subsection Configuration Configuration:
  * - \b board : preference key to retrieve the number of squares of the board in width and height.
@@ -80,110 +66,68 @@ namespace videoCalibration
 class VIDEOCALIBRATION_CLASS_API SChessBoardDetector : public ::fwServices::IController
 {
 public:
-    fwCoreServiceClassDefinitionsMacro((SChessBoardDetector)(::fwServices::IController));
+    fwCoreServiceClassDefinitionsMacro((SChessBoardDetector)(::fwServices::IController))
 
-    /**
-     * @name Signals API
-     * @{
-     */
-    VIDEOCALIBRATION_API static const ::fwCom::Signals::SignalKeyType s_CHESSBOARD_DETECTED_SIG;
-    typedef ::fwCom::Signal<void ()> ChessboardDetectedSignalType;
-
-    VIDEOCALIBRATION_API static const ::fwCom::Signals::SignalKeyType s_CHESSBOARD_NOT_DETECTED_SIG;
-    typedef ::fwCom::Signal<void ()> ChessboardNotDetectedSignalType;
-    /// @}
-
-    /**
-     * @name Slots API
-     * @{
-     */
-    VIDEOCALIBRATION_API static const ::fwCom::Slots::SlotKeyType s_CHECK_POINTS_SLOT;
-    VIDEOCALIBRATION_API static const ::fwCom::Slots::SlotKeyType s_DETECT_POINTS_SLOT;
-    VIDEOCALIBRATION_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_CHESSBOARD_SIZE_SLOT;
-    ///@}
+    /// Type of signal sent after trying to detect a chessboard in an image. Sends whether detection was succesful.
+    typedef ::fwCom::Signal<void (bool)> ChessboardDetectedSignalType;
 
     /// Constructor
     VIDEOCALIBRATION_API SChessBoardDetector() noexcept;
 
     /// Destructor
-    VIDEOCALIBRATION_API ~SChessBoardDetector() noexcept;
+    VIDEOCALIBRATION_API virtual ~SChessBoardDetector() noexcept override;
 
 protected:
 
-    /// Configure the service.
-    VIDEOCALIBRATION_API void configuring() override;
+    /// Configures the service.
+    VIDEOCALIBRATION_API virtual void configuring() override;
 
-    /// Does nothing.
-    VIDEOCALIBRATION_API void starting() override;
+    /// Initializes the chessboard size from the preferences.
+    VIDEOCALIBRATION_API virtual void starting() override;
 
-    /// Does nothing.
-    VIDEOCALIBRATION_API void updating() override;
+    /// Tries to detect a chessboard in the image.
+    VIDEOCALIBRATION_API virtual void updating() override;
 
-    /// Does nothing.
-    VIDEOCALIBRATION_API void stopping() override;
+    /// Clears the detected points.
+    VIDEOCALIBRATION_API virtual void stopping() override;
+
+    /// Returns proposals to update the service when the input image is modified.
+    VIDEOCALIBRATION_API virtual KeyConnectionsMap getAutoConnections() const override;
 
 private:
 
-    /**
-     * @brief SLOT : check if chessboard is visible and send corresponding signal
-     * @param timestamp timestamp used to gets image frame
-     */
-    VIDEOCALIBRATION_API void checkPoints(::fwCore::HiResClock::HiResClockType timestamp);
+    /// SLOT: stores the last detected chessboard in the CalibrationInfo structure.
+    void recordPoints();
 
-    /**
-     * @brief SLOT: Checks on each timeline if points are visible in each frame. Then it add the detected points and the
-     * associated image in the CalibrationInfo.
-     */
-    VIDEOCALIBRATION_API void detectPoints();
+    /// SLOT: updates the chessboard size from the preferences.
+    void updateChessboardSize();
 
-    /**
-     * @brief SLOT: update the chessboard size.
-     */
-    VIDEOCALIBRATION_API void updateChessboardSize();
+    /// Runs the detection for the given input index.
+    void doDetection(size_t _imageIndex);
 
-    /**
-     * @brief Detect chessboard points
-     * @param tl the timeline containing frames displaying the chessboard
-     * @param timestamp time corresponding to the frame to process in the timeline
-     * @param xDim the number of chessboard squares horizontally
-     * @param yDim the number of chessboard squares vertically
-     * @return The list of chessboard points or NULL if no points are detected
-     */
-    static SPTR(::fwData::PointList) detectChessboard(::arData::FrameTL::csptr tl,
-                                                      ::fwCore::HiResClock::HiResClockType timestamp,
-                                                      size_t xDim, size_t yDim);
+    /// Tries to detect a chessboard with the given dimensions in the image.
+    static ::fwData::PointList::sptr detectChessboard(const ::fwData::Image::csptr& _img, size_t _xDim, size_t _yDim);
 
-    /**
-     * @brief Creates an image from frame timeline
-     */
-    ::fwData::Image::sptr createImage(arData::FrameTL::csptr tl, ::fwCore::HiResClock::HiResClockType timestamp);
-
-    /// Signal emitted when chessboard is detected
+    /// Signal emitted after detection.
     ChessboardDetectedSignalType::sptr m_sigChessboardDetected;
 
-    /// Signal emitted when chessboard is not detected
-    ChessboardNotDetectedSignalType::sptr m_sigChessboardNotDetected;
-
-    /// Preference key to retrieve width of the chessboard used for calibration
+    /// Preference key to retrieve the chessboard width.
     std::string m_widthKey;
 
-    /// Preference key to retrieve height of the chessboard used for calibration
+    /// Preference key to retrieve the chessboard height.
     std::string m_heightKey;
 
-    /// Width of the chessboard used for calibration
+    /// Width of the chessboard we're looking for.
     size_t m_width;
 
-    /// Height of the chessboard used for calibration
+    /// Height of the chessboard we're looking for.
     size_t m_height;
 
-    /// Used to know if we detected the chessboard the last time we check
-    bool m_isDetected;
+    /// Last detected chessboard points in each image. Null if detection failed.
+    std::vector< ::fwData::PointList::sptr > m_pointLists;
 
-    /// Last valid chessboard points for each timeline
-    std::vector< ::fwData::PointList::sptr> m_pointsLists;
-
-    /// Timestamp of the last managed image
-    ::fwCore::HiResClock::HiResClockType m_lastTimestamp;
+    /// Last images on which a chessboard was detected. Null if detection failed.
+    std::vector< ::fwData::Image::sptr > m_images;
 };
 
 } //namespace videoCalibration
