@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -50,6 +50,8 @@ SImageSeries::SImageSeries() noexcept :
     m_sliceMode(SNegatoMPR::THREE_SLICES)
 
 {
+    this->registerObject(s_IMAGE_SERIES_INOUT, AccessType::INOUT, true);
+    this->registerObject(s_TF_INOUT, AccessType::INOUT, false, true);
 }
 
 //------------------------------------------------------------------------------
