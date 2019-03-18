@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -74,10 +74,16 @@ void IFrameLayoutManager::initialize( ConfigurationType configuration)
     OSLM_ASSERT("Bad configuration name "<<configuration->getName()<< ", must be frame",
                 configuration->getName() == "frame");
 
-    std::vector < ConfigurationType > name    = configuration->find("name");
-    std::vector < ConfigurationType > icon    = configuration->find("icon");
-    std::vector < ConfigurationType > minSize = configuration->find("minSize");
-    std::vector < ConfigurationType > styles  = configuration->find("style");
+    std::vector < ConfigurationType > name       = configuration->find("name");
+    std::vector < ConfigurationType > icon       = configuration->find("icon");
+    std::vector < ConfigurationType > minSize    = configuration->find("minSize");
+    std::vector < ConfigurationType > styles     = configuration->find("style");
+    std::vector < ConfigurationType > visibility = configuration->find("visibility");
+
+    if (!visibility.empty())
+    {
+        m_frameInfo.m_visibility = (visibility.at(0)->getValue() == "true");
+    }
 
     if(!name.empty())
     {

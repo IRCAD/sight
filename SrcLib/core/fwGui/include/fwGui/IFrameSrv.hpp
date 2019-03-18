@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWGUI_IFRAMESRV_HPP__
-#define __FWGUI_IFRAMESRV_HPP__
+#pragma once
 
 #include "fwGui/builder/IMenuBarBuilder.hpp"
 #include "fwGui/builder/IToolBarBuilder.hpp"
@@ -59,6 +58,7 @@ namespace fwGui
              <icon>myApp-1.0/icon.ico</icon>
              <minSize width="800" height="600" />
              <style mode="MODAL" />
+             <visibility>true</visibility>
          </frame>
          <toolBar />
          <menuBar />
@@ -77,6 +77,7 @@ namespace fwGui
  * - \<frame\> : defines the frame name, icon, size and style.
  *   - \b style : defines frame style (modal, always on top, etc.), not mandatory.
  *     Allowed values are MODAL, STAY_ON_TOP and DEFAULT (default value).
+ *   - \b visibility : set the frame visibility when it is created. Possible values are true (default) or false.
  * - The toolBar section isn't mandatory.
  * - The menuBar section isn't mandatory.
 
@@ -86,7 +87,7 @@ class FWGUI_CLASS_API IFrameSrv : public ::fwServices::IService
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (IFrameSrv)(::fwServices::IService) );
+    fwCoreServiceClassDefinitionsMacro( (IFrameSrv)(::fwServices::IService) )
 
     /// Get widget defined for progress bar
     FWGUI_API static ::fwGui::container::fwContainer::sptr getProgressWidget();
@@ -183,6 +184,3 @@ private:
 };
 
 } // namespace fwGui
-
-#endif /*__FWGUI_IFRAMESRV_HPP__*/
-
