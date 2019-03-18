@@ -143,8 +143,8 @@ protected:
     FWRENDEROGRE_API virtual void setRayCastingPassTextureUnits(Ogre::Pass* const _rayCastingPass,
                                                                 const std::string& _fpPPDefines) const;
     /**
-     * @brief Initialize the raytracing material.
-     * @param _sourceFile, name of the frgament shader program.
+     * @brief Generates the material used to render the volume.
+     * @param _sourceFile, fragment shader's file name.
      */
     FWRENDEROGRE_API void createRayTracingMaterial(const std::string& _sourceFile = "RayTracedVolume_FP.glsl");
 

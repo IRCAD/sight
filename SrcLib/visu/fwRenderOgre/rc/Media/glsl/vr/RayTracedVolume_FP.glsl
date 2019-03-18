@@ -41,7 +41,7 @@ vec4 sampleTransferFunction(float _fIntensity, in sampler1D _s1Sampler, in vec2 
 vec3 fragCoordsToNDC(in vec3 _f3FragPos_Ss);
 vec3 ndcToFragCoord(in vec3 _f3FragPos_Ns);
 vec4 ndcToSpecificSpacePosition(in vec3 _f3FragPos_Ns, in mat4 _m4Inverse);
-vec3 lighting(vec3 _f3NormalDir_MsN, vec3 _f3Pos_Ms, vec3 _f3DiffuseCol);
+vec3 lightingBlinnPhong(vec3 _f3NormalDir_N, vec3 _f3Pos, vec3 _f3DiffuseCol);
 vec3 gradientNormal(vec3 _f3Pos_Ms, sampler3D _s3Image);
 
 //-----------------------------------------------------------------------------
@@ -91,7 +91,7 @@ struct RayInfos
     vec3 m_f3RayPos_Ms;
 };
 
-RayInfos firstOpaqueRayInfos(in vec3 _f3RayPos_Ms, in vec3 _f3RayDir_MsN, in float _fRayLen, in float _fSampleDis, in sampler1D _s1TFTexture, in vec2 _f2TFWindow)
+RayInfos firstOpaqueRayInfos(in vec3 _f3RayPos_Ms, in vec3 _f3RayDir_Ms, in float _fRayLen, in float _fSampleDis, in sampler1D _s1TFTexture, in vec2 _f2TFWindow)
 {
     int iIterCount = 0;
     float t = 0.;
@@ -99,7 +99,7 @@ RayInfos firstOpaqueRayInfos(in vec3 _f3RayPos_Ms, in vec3 _f3RayDir_MsN, in flo
     for(; iIterCount < MAX_ITERATIONS && t < _fRayLen; iIterCount += 1, t += _fSampleDis)
     {
 #ifdef PREINTEGRATION
-        float fTFAlpha = samplePreIntegrationTable(_f3RayPos_Ms, _f3RayPos_Ms + _f3RayDir_MsN).a;
+        float fTFAlpha = samplePreIntegrationTable(_f3RayPos_Ms, _f3RayPos_Ms + _f3RayDir_Ms).a;
 #else // PREINTEGRATION
         float fIntensity = texture(u_s3Image, _f3RayPos_Ms).r;
         float fTFAlpha = sampleTransferFunction(fIntensity, _s1TFTexture, _f2TFWindow).a;
@@ -110,7 +110,7 @@ RayInfos firstOpaqueRayInfos(in vec3 _f3RayPos_Ms, in vec3 _f3RayDir_MsN, in flo
             break;
         }
 
-        _f3RayPos_Ms += _f3RayDir_MsN;
+        _f3RayPos_Ms += _f3RayDir_Ms;
     }
 
     float rayScreenDepth = modelSpaceToNDC(_f3RayPos_Ms) * 0.5f + 0.5f; // Convert to NDC assuming no clipping planes are set.
@@ -124,10 +124,10 @@ RayInfos firstOpaqueRayInfos(in vec3 _f3RayPos_Ms, in vec3 _f3RayDir_MsN, in flo
 
 //-----------------------------------------------------------------------------
 
-vec4 launchRay(in vec3 _f3RayPos_Ms, in vec3 _f3RayDir_MsN, in float _fRayLen, in float _fSampleDis, in sampler1D _s1TFTexture, in vec2 _f2TFWindow)
+vec4 launchRay(in vec3 _f3RayPos_Ms, in vec3 _f3RayDir_Ms, in float _fRayLen, in float _fSampleDis, in sampler1D _s1TFTexture, in vec2 _f2TFWindow)
 {
     // Move the ray to the first non transparent voxel.
-    RayInfos rayInfos = firstOpaqueRayInfos(_f3RayPos_Ms, _f3RayDir_MsN, _fRayLen, _fSampleDis, _s1TFTexture, _f2TFWindow);
+    RayInfos rayInfos = firstOpaqueRayInfos(_f3RayPos_Ms, _f3RayDir_Ms, _fRayLen, _fSampleDis, _s1TFTexture, _f2TFWindow);
     gl_FragDepth = rayInfos.m_fRayDepth_Ss;
     int iIterCount = rayInfos.m_iIterCount;
     float t = rayInfos.m_fT;
@@ -136,7 +136,7 @@ vec4 launchRay(in vec3 _f3RayPos_Ms, in vec3 _f3RayDir_MsN, in float _fRayLen, i
     for(; iIterCount < MAX_ITERATIONS && t < _fRayLen; iIterCount += 1, t += _fSampleDis)
     {
 #ifdef PREINTEGRATION
-        vec4 f4TFCol = samplePreIntegrationTable(_f3RayPos_Ms, _f3RayPos_Ms + _f3RayDir_MsN);
+        vec4 f4TFCol = samplePreIntegrationTable(_f3RayPos_Ms, _f3RayPos_Ms + _f3RayDir_Ms);
 #else // PREINTEGRATION
         float fIntensity = texture(u_s3Image, _f3RayPos_Ms).r;
         vec4 f4TFCol = sampleTransferFunction(fIntensity, _s1TFTexture, _f2TFWindow);
@@ -146,7 +146,7 @@ vec4 launchRay(in vec3 _f3RayPos_Ms, in vec3 _f3RayDir_MsN, in float _fRayLen, i
         {
             vec3 f3NormalDir_MsN = gradientNormal(_f3RayPos_Ms, u_s3Image);
 
-            f4TFCol.rgb = lighting(f3NormalDir_MsN, _f3RayPos_Ms, f4TFCol.rgb);
+            f4TFCol.rgb = lightingBlinnPhong(f3NormalDir_MsN, _f3RayPos_Ms, f4TFCol.rgb);
 
 #ifndef PREINTEGRATION
             // Adjust opacity to sample distance.
@@ -176,7 +176,7 @@ vec4 launchRay(in vec3 _f3RayPos_Ms, in vec3 _f3RayDir_MsN, in float _fRayLen, i
             }
         }
 
-        _f3RayPos_Ms += _f3RayDir_MsN;
+        _f3RayPos_Ms += _f3RayDir_Ms;
     }
 
     return f4ResultCol;
@@ -211,8 +211,10 @@ void main(void)
     vec3 f3RayExitPos_Ms  = ndcToSpecificSpacePosition(f3RayExitPos_Ns, m4Cs_Ms).xyz;
     vec3 f3RayDir_MsN     = normalize(f3RayExitPos_Ms - f3RayEntryPos_Ms);
 
+    vec3 f3RayDir_Ms = f3RayDir_MsN * u_fSampleDis;
+
     float fRayLen = length(f3RayExitPos_Ms - f3RayEntryPos_Ms);
-    vec4 f4ResultCol = launchRay(f3RayEntryPos_Ms, f3RayDir_MsN * u_fSampleDis, fRayLen, u_fSampleDis, u_s1TFTexture, u_f2TFWindow);
+    vec4 f4ResultCol = launchRay(f3RayEntryPos_Ms, f3RayDir_Ms, fRayLen, u_fSampleDis, u_s1TFTexture, u_f2TFWindow);
 
     v_f4FragCol = f4ResultCol;
 }
