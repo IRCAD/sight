@@ -80,7 +80,7 @@ SChessBoardDetector::~SChessBoardDetector() noexcept
 
 void SChessBoardDetector::configuring()
 {
-    SLM_ASSERT("You must have the same number of 'image' keys and 'calInfo' keys",
+    SLM_ASSERT("This service must have the same number of 'image' keys and 'calInfo' keys",
                this->getKeyGroupSize(s_IMAGE_INPUT) == this->getKeyGroupSize(s_CALINFO_INOUT));
 
     ::fwRuntime::ConfigurationElement::sptr cfgBoard = m_configuration->findConfigurationElement("board");
