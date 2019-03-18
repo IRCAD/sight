@@ -40,6 +40,7 @@ namespace videoCalibration
  *
  * @section Signals Signals
  * - \b chessboardDetected(bool): Emitted after trying to detect a chessboard. Sends whether it was detected or not.
+ * - \b chessboardFound(): Emitted if a chessboard pattern was recognized in the image.
  *
  * @section Slots Slots
  * - \b recordPoints(): Request to store the current image in the calibration data, if the chessboard is detected.
@@ -68,8 +69,11 @@ class VIDEOCALIBRATION_CLASS_API SChessBoardDetector : public ::fwServices::ICon
 public:
     fwCoreServiceClassDefinitionsMacro((SChessBoardDetector)(::fwServices::IController))
 
-    /// Type of signal sent after trying to detect a chessboard in an image. Sends whether detection was succesful.
+    /// Signal type sent after trying to detect a chessboard in an image. Sends whether detection was succesful.
     typedef ::fwCom::Signal<void (bool)> ChessboardDetectedSignalType;
+
+    /// Signal type sent after a successful detection.
+    typedef ::fwCom::Signal<void ()> ChessboardFoundSignalType;
 
     /// Constructor
     VIDEOCALIBRATION_API SChessBoardDetector() noexcept;
@@ -110,6 +114,9 @@ private:
 
     /// Signal emitted after detection.
     ChessboardDetectedSignalType::sptr m_sigChessboardDetected;
+
+    /// Signal emitted if a chessboard can be seen in the image.
+    ChessboardFoundSignalType::sptr m_sigChessboardFound;
 
     /// Preference key to retrieve the chessboard width.
     std::string m_widthKey;

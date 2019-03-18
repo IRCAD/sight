@@ -51,6 +51,7 @@ static const ::fwCom::Slots::SlotKeyType s_RECORD_POINTS_SLOT          = "record
 static const ::fwCom::Slots::SlotKeyType s_UPDATE_CHESSBOARD_SIZE_SLOT = "updateChessboardSize";
 
 static const ::fwCom::Signals::SignalKeyType s_CHESSBOARD_DETECTED_SIG = "chessboardDetected";
+static const ::fwCom::Signals::SignalKeyType s_CHESSBOARD_FOUND_SIG    = "chessboardFound";
 
 static const ::fwServices::IService::KeyType s_IMAGE_INPUT     = "image";
 static const ::fwServices::IService::KeyType s_CALINFO_INOUT   = "calInfo";
@@ -63,6 +64,7 @@ SChessBoardDetector::SChessBoardDetector() noexcept :
     m_height(8)
 {
     m_sigChessboardDetected = newSignal< ChessboardDetectedSignalType >( s_CHESSBOARD_DETECTED_SIG );
+    m_sigChessboardFound    = newSignal< ChessboardFoundSignalType >( s_CHESSBOARD_FOUND_SIG );
 
     newSlot( s_RECORD_POINTS_SLOT, &SChessBoardDetector::recordPoints, this );
     newSlot( s_UPDATE_CHESSBOARD_SIZE_SLOT, &SChessBoardDetector::updateChessboardSize, this );
@@ -111,11 +113,15 @@ void SChessBoardDetector::updating()
 {
     const size_t imageGroupSize = this->getKeyGroupSize(s_IMAGE_INPUT);
 
+    // Run parallel detections in separate threads.
     std::vector<std::thread> detectionJobs;
-    for(size_t i = 0; i < imageGroupSize; ++i)
+    for(size_t i = 1; i < imageGroupSize; ++i)
     {
         detectionJobs.push_back(std::thread(&SChessBoardDetector::doDetection, this, i));
     }
+
+    // Detection on the first image is done on the service's worker.
+    this->doDetection(0);
 
     for(auto& detectionJob : detectionJobs)
     {
@@ -125,6 +131,11 @@ void SChessBoardDetector::updating()
     const bool allDetected = (std::count(m_images.begin(), m_images.end(), nullptr) == 0);
 
     m_sigChessboardDetected->asyncEmit(allDetected);
+
+    if(allDetected)
+    {
+        m_sigChessboardFound->asyncEmit();
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -232,7 +243,7 @@ void SChessBoardDetector::doDetection(size_t _imageIndex)
 
 // ----------------------------------------------------------------------------
 
-SPTR(::fwData::PointList) SChessBoardDetector::detectChessboard(const ::fwData::Image::csptr& _img,
+::fwData::PointList::sptr SChessBoardDetector::detectChessboard(const ::fwData::Image::csptr& _img,
                                                                 size_t _xDim, size_t _yDim)
 {
     ::fwData::PointList::sptr pointlist;
