@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -51,7 +51,7 @@ static const std::regex s_PEEL_REGEX(".*/peel.*");
 static const std::regex s_WEIGHT_BLEND_REGEX(".*/weightBlend.*");
 static const std::regex s_TRANSMITTANCE_BLEND_REGEX(".*/transmittanceBlend.*");
 static const std::regex s_DEPTH_MAP_REGEX("(.*depth.*)|(.*backDepth.*)");
-static const std::regex s_LIGHT_PARAM_REGEX("u_(numLights|light(Ambient|Dir|Diffuse|Specular).*)");
+static const std::regex s_LIGHT_PARAM_REGEX("u_f[2-4]?(NumLights|Light(Ambient|Dir|Diffuse|Specular).*)");
 
 static const std::string s_AMBIENT       = "Ambient";
 static const std::string s_FLAT          = "Flat";
