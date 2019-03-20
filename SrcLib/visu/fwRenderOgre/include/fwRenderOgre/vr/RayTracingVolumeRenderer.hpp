@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2018 IRCAD France
- * Copyright (C) 2016-2018 IHU Strasbourg
+ * Copyright (C) 2016-2019 IRCAD France
+ * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -142,9 +142,11 @@ protected:
     /// Sets all texture units needed by the material during the ray casting pass.
     FWRENDEROGRE_API virtual void setRayCastingPassTextureUnits(Ogre::Pass* const _rayCastingPass,
                                                                 const std::string& _fpPPDefines) const;
-
-    /// When using AutoStereo compositor, initialize the raytracing material.
-    FWRENDEROGRE_API void createRayTracingMaterial();
+    /**
+     * @brief Generates the material used to render the volume.
+     * @param _sourceFile, fragment shader's file name.
+     */
+    FWRENDEROGRE_API void createRayTracingMaterial(const std::string& _sourceFile = "RayTracedVolume_FP.glsl");
 
     /// Shared parameters used for Ray tracing. This should help avoiding using the listener.
     /// We resort to those parameters because setting them using:
