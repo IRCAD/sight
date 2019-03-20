@@ -35,7 +35,7 @@ namespace videoCalibration
 /**
  * @brief Detects chessboards in images and pushes detected points to CalibrationInfo objects.
  *
- * Every update triggers detection on the current input image. The 'recordPoints' slot must be called to store
+ * Every update triggers detection on the current input images. The 'recordPoints' slot must be called to store
  * the chessboard positions in the CalibrationInfo structure after a successful detection.
  *
  * @section Signals Signals
@@ -49,17 +49,26 @@ namespace videoCalibration
  * @section XML XML Configuration
  *
  * @code{.xml}
-       <service uid="..." type="::videoCalibration::SChessBoardDetector" >
-            <in key="image" uid="..." />
-            <inout key="calInfo" uid="..." />
-            <inout key="detection" uid="..." />
-           <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" />
+        <service uid="..." type="::videoCalibration::SChessBoardDetector" >
+            <in group="image">
+                <key uid="..." />
+                <key uid="..." />
+            </in>
+            <inout group="calInfo">
+                <key uid="..." />
+                <key uid="..." />
+            </inout>
+            <inout group="detection">
+                <key uid="..." />
+                <key uid="..." />
+            </inout>
+            <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" />
        </service>
    @endcode
  * @subsection Input Input:
- * - \b image [::fwData::Image]: image on which we run the detection.
+ * - \b image [::fwData::Image]: images on which we run the detection.
  * @subsection In-Out In-Out:
- * - \b calInfo [::arData::CalibrationInfo]: calibration object storing the detected images.
+ * - \b calInfo [::arData::CalibrationInfo]: calibration objects storing the detected images.
  * - \b detection [::fwData::PointList] (optional): detected chessboard points in image coordinates.
  * @subsection Configuration Configuration:
  * - \b board : preference key to retrieve the number of squares of the board in width and height.
@@ -89,7 +98,7 @@ protected:
     /// Initializes the chessboard size from the preferences.
     VIDEOCALIBRATION_API virtual void starting() override;
 
-    /// Tries to detect a chessboard in the image.
+    /// Tries to detect chessboards in all input images.
     VIDEOCALIBRATION_API virtual void updating() override;
 
     /// Clears the detected points.

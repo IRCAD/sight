@@ -42,7 +42,7 @@
 #include <opencv2/calib3d.hpp>
 #include <opencv2/imgproc.hpp>
 
-#include <future>
+#include <thread>
 
 namespace videoCalibration
 {
@@ -120,7 +120,7 @@ void SChessBoardDetector::updating()
         detectionJobs.push_back(std::thread(&SChessBoardDetector::doDetection, this, i));
     }
 
-    // Detection on the first image is done on the service's worker.
+    // Detection in the first image is done on the service's worker.
     this->doDetection(0);
 
     for(auto& detectionJob : detectionJobs)
@@ -253,7 +253,8 @@ void SChessBoardDetector::doDetection(size_t _imageIndex)
 
     ::cv::Mat grayImg;
     // The image buffer will not be modified so we const_cast it to avoid a useless copy.
-    ::cv::Mat img = ::cvIO::Image::moveToCv(std::const_pointer_cast< ::fwData::Image >(_img));
+    ::fwData::Image::sptr constCastedInput = std::const_pointer_cast< ::fwData::Image >(_img);
+    ::cv::Mat img                          = ::cvIO::Image::moveToCv(constCastedInput);
 
     if (img.dims == 3)
     {
