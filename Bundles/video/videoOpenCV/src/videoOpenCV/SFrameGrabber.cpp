@@ -271,6 +271,9 @@ void SFrameGrabber::readVideo(const ::boost::filesystem::path& file)
         m_timer->start();
 
         this->setStartState(true);
+        auto sig = this->signal< ::arServices::IGrabber::CameraStartedSignalType >(
+            ::arServices::IGrabber::s_CAMERA_STARTED_SIG);
+        sig->asyncEmit();
     }
     else
     {
@@ -345,6 +348,9 @@ void SFrameGrabber::readDevice( const ::arData::Camera::csptr _camera)
         m_timer->start();
 
         this->setStartState(true);
+        auto sig = this->signal< ::arServices::IGrabber::CameraStartedSignalType >(
+            ::arServices::IGrabber::s_CAMERA_STARTED_SIG);
+        sig->asyncEmit();
     }
     else
     {
@@ -530,6 +536,9 @@ void SFrameGrabber::readImages(const ::boost::filesystem::path& folder, const st
             m_timer->setDuration(duration);
             m_timer->start();
         }
+        auto sig = this->signal< ::arServices::IGrabber::CameraStartedSignalType >(
+            ::arServices::IGrabber::s_CAMERA_STARTED_SIG);
+        sig->asyncEmit();
     }
 }
 
