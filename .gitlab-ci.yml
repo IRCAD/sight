@@ -89,6 +89,7 @@ build:debug-linux:
      -DCMAKE_BUILD_TYPE=Debug
      -DBUILD_TESTS=ON
      -DBUILD_DOCUMENTATION=OFF
+     -DSPYLOG_LEVEL=trace
      -DENABLE_PCH=OFF
     - find . -type f -iname '*.?pp' -exec touch -f -a -m -t 197001010000 {} \;
     - ninja
@@ -152,6 +153,7 @@ build:debug-windows:
      -DCMAKE_BUILD_TYPE=Debug
      -DBUILD_TESTS=ON
      -DBUILD_DOCUMENTATION=OFF
+     -DSPYLOG_LEVEL=trace
     - ninja
     - >
      curl --retry 3 --location --insecure --location-trusted
@@ -211,6 +213,7 @@ build:debug-macos:
      -DCMAKE_BUILD_TYPE=Debug
      -DBUILD_TESTS=ON
      -DBUILD_DOCUMENTATION=OFF
+     -DSPYLOG_LEVEL=trace
      -DENABLE_PCH=OFF
     - ninja
     - ccache -s
