@@ -295,13 +295,14 @@ build:sdk-release-linux:
   when : manual
   dependencies: []
   script:
-    - cd $CI_PROJECT_DIR/build/
+    - mkdir -p /home/sight/sdk/install /home/sight/sdk/build
+    - cd /home/sight/sdk/build
     - ccache -s
     - >
      cmake $CI_PROJECT_DIR
      -G Ninja
      -DUSE_CONAN=ON
-     -DCMAKE_INSTALL_PREFIX=$CI_PROJECT_DIR/install
+     -DCMAKE_INSTALL_PREFIX=/home/sight/sdk/install
      -DCMAKE_BUILD_TYPE=Release
      -DBUILD_TESTS=OFF
      -DBUILD_DOCUMENTATION=OFF
@@ -312,10 +313,10 @@ build:sdk-release-linux:
     - ninja install
     - ninja package
     - ccache -s
-    - export SDK_FILE_PATH=$(find ${CI_PROJECT_DIR}/packages -maxdepth 1 -iname '*.tar.gz' -type f -print -quit)
+    - export SDK_FILE_PATH=$(find /home/sight/sdk/build/packages -maxdepth 1 -iname '*.tar.gz' -type f -print -quit)
     - export SDK_FILE_NAME=$(basename -s .tar.gz ${SDK_FILE_PATH})_release.tar.gz
     - curl -u${CONAN_USERNAME}:${CONAN_PASSWORD} -T ${SDK_FILE_PATH} "https://conan.ircad.fr/artifactory/data/sdk/${SDK_FILE_NAME}"
-    - mv packages/*.tar.gz ${CI_PROJECT_DIR}/
+    - mv /home/sight/sdk/build/packages/*.tar.gz ${CI_PROJECT_DIR}/
   artifacts:
     paths:
       - ${CI_PROJECT_DIR}/*.tar.gz
@@ -326,13 +327,14 @@ build:sdk-debug-linux:
   when : manual
   dependencies: []
   script:
-    - cd $CI_PROJECT_DIR/build/
+    - mkdir -p /home/sight/sdk/install /home/sight/sdk/build
+    - cd /home/sight/sdk/build
     - ccache -s
     - >
      cmake $CI_PROJECT_DIR
      -G Ninja
      -DUSE_CONAN=ON
-     -DCMAKE_INSTALL_PREFIX=$CI_PROJECT_DIR/install
+     -DCMAKE_INSTALL_PREFIX=/home/sight/sdk/install
      -DCMAKE_BUILD_TYPE=Debug
      -DBUILD_TESTS=OFF
      -DBUILD_DOCUMENTATION=OFF
@@ -343,10 +345,10 @@ build:sdk-debug-linux:
     - ninja install
     - ninja package
     - ccache -s
-    - export SDK_FILE_PATH=$(find ${CI_PROJECT_DIR}/packages -maxdepth 1 -iname '*.tar.gz' -type f -print -quit)
+    - export SDK_FILE_PATH=$(find /home/sight/sdk/build/packages -maxdepth 1 -iname '*.tar.gz' -type f -print -quit)
     - export SDK_FILE_NAME=$(basename -s .tar.gz ${SDK_FILE_PATH})_debug.tar.gz
     - curl -u${CONAN_USERNAME}:${CONAN_PASSWORD} -T ${SDK_FILE_PATH} "https://conan.ircad.fr/artifactory/data/sdk/${SDK_FILE_NAME}"
-    - mv packages/*.tar.gz ${CI_PROJECT_DIR}/
+    - mv /home/sight/sdk/build/packages/*.tar.gz ${CI_PROJECT_DIR}/
   artifacts:
     paths:
       - ${CI_PROJECT_DIR}/*.tar.gz
