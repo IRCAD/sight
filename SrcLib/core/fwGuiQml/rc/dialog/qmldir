@@ -1,0 +1,2 @@
+module fwGuiQml
+dialog 1.0 ProgressDialog.qml
