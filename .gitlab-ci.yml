@@ -343,7 +343,7 @@ build:sdk-debug-linux:
     - ninja install
     - ninja package
     - ccache -s
-    - export SDK_FILE_PATH=$(find ${HOME}/sdk/build/packages -maxdepth 1 -iname '*.tar.gz' -type f -print -quit)
+    - export SDK_FILE_PATH=$(find ${CI_PROJECT_DIR}/packages -maxdepth 1 -iname '*.tar.gz' -type f -print -quit)
     - export SDK_FILE_NAME=$(basename -s .tar.gz ${SDK_FILE_PATH})_debug.tar.gz
     - curl -u${CONAN_USERNAME}:${CONAN_PASSWORD} -T ${SDK_FILE_PATH} "https://conan.ircad.fr/artifactory/data/sdk/${SDK_FILE_NAME}"
     - mv packages/*.tar.gz ${CI_PROJECT_DIR}/
