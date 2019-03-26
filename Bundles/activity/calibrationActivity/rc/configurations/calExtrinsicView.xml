@@ -12,8 +12,12 @@
     </parameters>
     <config>
         <!-- ******************************* Objects declaration ****************************** -->
+        <!-- Displayed image pair. -->
         <object uid="Frame1" type="::fwData::Image" />
         <object uid="Frame2" type="::fwData::Image" />
+        <!-- Second pair of images used for detection. Prevents the detector from slowing down the video. -->
+        <object uid="detectionFrame1" type="::fwData::Image" />
+        <object uid="detectionFrame2" type="::fwData::Image" />
         <object uid="Frame1TL" type="::arData::FrameTL" />
         <object uid="Frame2TL" type="::arData::FrameTL" />
         <object uid="${calibrationInfo1}" type="::arData::CalibrationInfo" src="ref" />
@@ -156,7 +160,7 @@
         <!-- ******************************* Actions ****************************************** -->
         <service uid="ActionAdd" type="::gui::action::SSlotCaller">
             <slots>
-                <slot>ChessboardDetector/detectPoints</slot>
+                <slot>ChessboardDetector/recordPoints</slot>
             </slots>
         </service>
 
@@ -221,6 +225,8 @@
 
         <!-- ******************************* Services ***************************************** -->
         <service uid="VideoSlider" type="::videoQt::editor::SSlider" />
+
+        <!-- Extracts displayed images. -->
         <service uid="synchronizer" type="::videoTools::SFrameMatrixSynchronizer" worker="synchronizer">
             <in group="frameTL">
                 <key uid="Frame1TL" />
@@ -231,6 +237,19 @@
                 <key uid="Frame2" />
             </inout>
             <framerate>30</framerate>
+        </service>
+
+        <!-- Extracts images for the detection algorithm. -->
+        <service uid="detectionSynchronizer" type="::videoTools::SFrameMatrixSynchronizer" worker="extr_chess_checker">
+            <in group="frameTL" autoConnect="yes" >
+                <key uid="Frame1TL" />
+                <key uid="Frame2TL" />
+            </in>
+            <inout group="image">
+                <key uid="detectionFrame1" />
+                <key uid="detectionFrame2" />
+            </inout>
+            <framerate>0</framerate>
         </service>
 
         <service uid="ExtrinsicExporter" type="::uiIO::editor::SIOSelector" >
@@ -299,9 +318,9 @@
         </service>
 
         <service uid="ChessboardDetector" type="::videoCalibration::SChessBoardDetector" worker="extr_chess_checker">
-            <in group="timeline">
-                <key uid="Frame1TL" />
-                <key uid="Frame2TL" />
+            <in group="image" autoConnect="yes" >
+                <key uid="detectionFrame1" />
+                <key uid="detectionFrame2" />
             </in>
             <inout group="calInfo">
                 <key uid="${calibrationInfo1}" />
@@ -355,23 +374,9 @@
 
         <!-- ******************************* Connections ************************************** -->
         <connect>
-            <signal>Frame1TL/objectPushed</signal>
-            <slot>ChessboardDetector/checkPoints</slot>
-        </connect>
-
-        <connect>
-            <signal>Frame2TL/objectPushed</signal>
-            <slot>ChessboardDetector/checkPoints</slot>
-        </connect>
-
-        <connect>
             <signal>ChessboardDetector/chessboardDetected</signal>
-            <slot>Status/changeToGreen</slot>
-        </connect>
-
-        <connect>
-            <signal>ChessboardDetector/chessboardNotDetected</signal>
-            <slot>Status/changeToRed</slot>
+            <slot>detectionSynchronizer/synchronize</slot>
+            <slot>Status/toggleGreenRed</slot>
         </connect>
 
         <connect>
@@ -419,6 +424,7 @@
         <start uid="DisplayCalibrationInfo" />
         <start uid="ExtrinsicExporter" />
         <start uid="synchronizer" />
+        <start uid="detectionSynchronizer" />
         <start uid="VideoGrabber1" />
         <start uid="VideoGrabber2" />
         <!-- VTK scene 'camera1' -->
