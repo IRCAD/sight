@@ -316,10 +316,6 @@ build:sdk-release-linux:
     - export SDK_FILE_PATH=$(find /home/sight/sdk/build/packages -maxdepth 1 -iname '*.tar.gz' -type f -print -quit)
     - export SDK_FILE_NAME=$(basename -s .tar.gz ${SDK_FILE_PATH})_release.tar.gz
     - curl -u${CONAN_USERNAME}:${CONAN_PASSWORD} -T ${SDK_FILE_PATH} "https://conan.ircad.fr/artifactory/data/sdk/${SDK_FILE_NAME}"
-    - mv /home/sight/sdk/build/packages/*.tar.gz ${CI_PROJECT_DIR}/
-  artifacts:
-    paths:
-      - ${CI_PROJECT_DIR}/*.tar.gz
 
 build:sdk-debug-linux:
   <<: *linux_job
@@ -348,7 +344,3 @@ build:sdk-debug-linux:
     - export SDK_FILE_PATH=$(find /home/sight/sdk/build/packages -maxdepth 1 -iname '*.tar.gz' -type f -print -quit)
     - export SDK_FILE_NAME=$(basename -s .tar.gz ${SDK_FILE_PATH})_debug.tar.gz
     - curl -u${CONAN_USERNAME}:${CONAN_PASSWORD} -T ${SDK_FILE_PATH} "https://conan.ircad.fr/artifactory/data/sdk/${SDK_FILE_NAME}"
-    - mv /home/sight/sdk/build/packages/*.tar.gz ${CI_PROJECT_DIR}/
-  artifacts:
-    paths:
-      - ${CI_PROJECT_DIR}/*.tar.gz
