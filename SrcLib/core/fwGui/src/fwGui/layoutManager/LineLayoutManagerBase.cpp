@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -26,11 +26,11 @@
  *
  */
 
-#include <boost/lexical_cast.hpp>
+#include "fwGui/layoutManager/LineLayoutManagerBase.hpp"
 
 #include <fwCore/base.hpp>
 
-#include "fwGui/layoutManager/LineLayoutManagerBase.hpp"
+#include <boost/lexical_cast.hpp>
 
 namespace fwGui
 {
@@ -43,7 +43,8 @@ const LineLayoutManagerBase::RegistryKeyType LineLayoutManagerBase::REGISTRY_KEY
 
 //-----------------------------------------------------------------------------
 
-LineLayoutManagerBase::LineLayoutManagerBase() : m_orientation(VERTICAL)
+LineLayoutManagerBase::LineLayoutManagerBase() :
+    m_orientation(VERTICAL)
 {
 }
 
@@ -83,12 +84,12 @@ void LineLayoutManagerBase::initialize( ConfigurationType configuration)
             ViewInfo vi;
             if( view->hasAttribute("proportion") )
             {
-                std::string proportion = view->getExistingAttributeValue("proportion");
+                const std::string proportion = view->getExistingAttributeValue("proportion");
                 vi.m_proportion = ::boost::lexical_cast< int >(proportion);
             }
             if( view->hasAttribute("border") )
             {
-                std::string border = view->getExistingAttributeValue("border");
+                const std::string border = view->getExistingAttributeValue("border");
                 vi.m_border = ::boost::lexical_cast< int >(border);
             }
             if( view->hasAttribute("caption") )
@@ -98,17 +99,17 @@ void LineLayoutManagerBase::initialize( ConfigurationType configuration)
             }
             if( view->hasAttribute("minWidth") )
             {
-                std::string width = view->getExistingAttributeValue("minWidth");
+                const std::string width = view->getExistingAttributeValue("minWidth");
                 vi.m_minSize.first = ::boost::lexical_cast< int >(width);
             }
             if( view->hasAttribute("minHeight") )
             {
-                std::string height = view->getExistingAttributeValue("minHeight");
+                const std::string height = view->getExistingAttributeValue("minHeight");
                 vi.m_minSize.second = ::boost::lexical_cast< int >(height);
             }
             if( view->hasAttribute("visible") )
             {
-                std::string visible = view->getExistingAttributeValue("visible");
+                const std::string visible = view->getExistingAttributeValue("visible");
                 OSLM_ASSERT("Incorrect value for \"visible\" attribute "<<visible,
                             (visible == "true") || (visible == "false") ||
                             (visible == "yes") || (visible == "no"));
@@ -116,10 +117,15 @@ void LineLayoutManagerBase::initialize( ConfigurationType configuration)
             }
             if( view->hasAttribute("useScrollBar") )
             {
-                std::string useScrollBar = view->getExistingAttributeValue("useScrollBar");
+                const std::string useScrollBar = view->getExistingAttributeValue("useScrollBar");
                 OSLM_ASSERT("Incorrect value for \"useScrollBar\" attribute "<<useScrollBar,
                             (useScrollBar == "yes") || (useScrollBar == "no"));
-                vi.m_useScrollBar = (useScrollBar=="yes");
+                vi.m_useScrollBar = (useScrollBar == "yes");
+            }
+            if( view->hasAttribute("toolTip") )
+            {
+                const std::string toolTip = view->getExistingAttributeValue("toolTip");
+                vi.m_toolTip = toolTip;
             }
             m_views.push_back(vi);
         }
@@ -130,6 +136,3 @@ void LineLayoutManagerBase::initialize( ConfigurationType configuration)
 
 } // namespace layoutManager
 } // namespace fwGui
-
-
-
