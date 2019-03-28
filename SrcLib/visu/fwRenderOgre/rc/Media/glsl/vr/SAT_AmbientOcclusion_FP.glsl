@@ -87,7 +87,7 @@ float coneShadowQuery(in ivec3 voxelPos)
 
     if(nbConeSamples <= 1)
     {
-        return 1;
+        return 1.;
     }
 
     // Project cone origin and direction on the (primaryAxis, secondaryAxis0) plane.

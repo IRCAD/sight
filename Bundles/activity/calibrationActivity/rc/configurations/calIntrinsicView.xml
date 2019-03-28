@@ -11,6 +11,7 @@
         <object uid="${calibrationInfo}" type="::arData::CalibrationInfo" src="ref" />
         <object uid="${camera}" type="::arData::Camera" src="ref" />
         <object uid="FrameTL" type="::arData::FrameTL" />
+        <object uid="videoFrame" type="::fwData::Image" />
         <!-- ******************************* UI declaration *********************************** -->
         <service uid="intrinsicCameraView" type="::gui::view::SDefaultView">
             <gui>
@@ -84,7 +85,7 @@
         <!-- ******************************* Actions ****************************************** -->
         <service uid="ActionAdd" type="::gui::action::SSlotCaller">
             <slots>
-                <slot>ChessboardDetector/detectPoints</slot>
+                <slot>ChessboardDetector/recordPoints</slot>
             </slots>
         </service>
 
@@ -145,9 +146,14 @@
             <label>Reprojection Error (RMSE)</label>
         </service>
 
+        <service uid="frameUpdater" type="::videoTools::SFrameUpdater" worker="intr_chess_checker">
+            <in key="frameTL" uid="FrameTL" autoConnect="yes" />
+            <inout key="frame" uid="videoFrame" />
+        </service>
+
         <service uid="ChessboardDetector" type="::videoCalibration::SChessBoardDetector" worker="intr_chess_checker">
-            <in group="timeline">
-                <key uid="FrameTL" />
+            <in group="image" autoConnect="yes" >
+                <key uid="videoFrame" />
             </in>
             <inout group="calInfo">
                 <key uid="${calibrationInfo}" />
@@ -184,18 +190,8 @@
 
         <!-- ******************************* Connections ************************************** -->
         <connect>
-            <signal>FrameTL/objectPushed</signal>
-            <slot>ChessboardDetector/checkPoints</slot>
-        </connect>
-
-        <connect>
             <signal>ChessboardDetector/chessboardDetected</signal>
-            <slot>Status/changeToGreen</slot>
-        </connect>
-
-        <connect>
-            <signal>ChessboardDetector/chessboardNotDetected</signal>
-            <slot>Status/changeToRed</slot>
+            <slot>Status/toggleGreenRed</slot>
         </connect>
 
         <connect>
@@ -227,5 +223,6 @@
         <start uid="cameraLauncher" />
         <start uid="intrinsicEdition" />
         <start uid="calibrationDataWriter" />
+        <start uid="frameUpdater" />
     </config>
 </extension>

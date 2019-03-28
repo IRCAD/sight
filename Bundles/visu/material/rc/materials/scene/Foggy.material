@@ -17,15 +17,16 @@ fragment_program Default/Foggy_FP glsl
     attach Lighting_FP
     default_params
     {
-        param_named_auto u_cameraPos camera_position
-        param_named_auto u_lightDir light_position_array 1
-        param_named_auto u_ambient surface_ambient_colour
-        param_named_auto u_diffuse surface_diffuse_colour
-        param_named_auto u_specular surface_specular_colour
-        param_named_auto u_shininess surface_shininess
         param_named u_fogParams float2 100. 1000.
         param_named u_fogColor float4 0.5 0.5 0.5 1.0
         param_named u_fog int 1
+        // Lighting
+        param_named_auto u_f3CameraPos camera_position
+        param_named_auto u_f3LightDir light_position_array 10
+        param_named_auto u_f4AmbientCol surface_ambient_colour
+        param_named_auto u_f4DiffuseCol surface_diffuse_colour
+        param_named_auto u_f4SpecularCol surface_specular_colour
+        param_named_auto u_fShininess surface_shininess
     }
 }
 

@@ -192,7 +192,7 @@ std::string SScan::selectDevice()
         // Get associated serial numbers.
         selectedDevice = devices[static_cast<uint32_t>(index)].get_info(RS2_CAMERA_INFO_SERIAL_NUMBER);
 
-        SLM_DEBUG("selecting camera: "<< index);
+        OSLM_DEBUG("selecting camera: "<< index);
     }
 
     return selectedDevice;

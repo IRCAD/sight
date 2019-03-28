@@ -159,6 +159,8 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
     m_layer(layer)
 {
     m_fragmentShaderAttachements.push_back("SpatialTransforms_FP");
+    m_fragmentShaderAttachements.push_back("Lighting_FP");
+    m_fragmentShaderAttachements.push_back("VolumeNormals_FP");
 
     auto* exitDepthListener = new compositor::listener::RayExitDepthListener();
     ::Ogre::MaterialManager::getSingleton().addListener(exitDepthListener);
@@ -193,12 +195,12 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
 
     // define the shared param structure
     m_RTVSharedParameters->addConstantDefinition("u_f2TFWindow", ::Ogre::GCT_FLOAT2);
-    m_RTVSharedParameters->addConstantDefinition("u_sampleDistance", ::Ogre::GCT_FLOAT1);
-    m_RTVSharedParameters->addConstantDefinition("u_volIllumFactor", ::Ogre::GCT_FLOAT4);
-    m_RTVSharedParameters->addConstantDefinition("u_min", ::Ogre::GCT_INT1);
-    m_RTVSharedParameters->addConstantDefinition("u_max", ::Ogre::GCT_INT1);
-    m_RTVSharedParameters->addConstantDefinition("u_opacityCorrectionFactor", ::Ogre::GCT_FLOAT1);
-    m_RTVSharedParameters->setNamedConstant("u_opacityCorrectionFactor", m_opacityCorrectionFactor);
+    m_RTVSharedParameters->addConstantDefinition("u_fSampleDis", ::Ogre::GCT_FLOAT1);
+    m_RTVSharedParameters->addConstantDefinition("u_f4VolIllumFactor", ::Ogre::GCT_FLOAT4);
+    m_RTVSharedParameters->addConstantDefinition("u_iMinImageValue", ::Ogre::GCT_INT1);
+    m_RTVSharedParameters->addConstantDefinition("u_iMaxImageValue", ::Ogre::GCT_INT1);
+    m_RTVSharedParameters->addConstantDefinition("u_fOpacityCorrectionFactor", ::Ogre::GCT_FLOAT1);
+    m_RTVSharedParameters->setNamedConstant("u_fOpacityCorrectionFactor", m_opacityCorrectionFactor);
 
     this->initEntryPoints();
     this->createRayTracingMaterial();
@@ -267,8 +269,8 @@ void RayTracingVolumeRenderer::imageUpdate(const ::fwData::Image::sptr image, co
         // We update the corresponding shader parameters
         const auto minMax = m_preIntegrationTable.getMinMax();
 
-        m_RTVSharedParameters->setNamedConstant("u_min", minMax.first);
-        m_RTVSharedParameters->setNamedConstant("u_max", minMax.second);
+        m_RTVSharedParameters->setNamedConstant("u_iMinImageValue", minMax.first);
+        m_RTVSharedParameters->setNamedConstant("u_iMaxImageValue", minMax.second);
     }
     else
     {
@@ -305,7 +307,7 @@ void RayTracingVolumeRenderer::setSampling(uint16_t nbSamples)
     computeSampleDistance(getCameraPlane());
 
     // Update the sample distance in the shaders
-    m_RTVSharedParameters->setNamedConstant("u_sampleDistance", m_sampleDistance);
+    m_RTVSharedParameters->setNamedConstant("u_fSampleDis", m_sampleDistance);
 }
 
 //-----------------------------------------------------------------------------
@@ -315,7 +317,7 @@ void RayTracingVolumeRenderer::setOpacityCorrection(int opacityCorrection)
     m_opacityCorrectionFactor = static_cast<float>(opacityCorrection);
 
     // Update shader parameter
-    m_RTVSharedParameters->setNamedConstant("u_opacityCorrectionFactor", m_opacityCorrectionFactor);
+    m_RTVSharedParameters->setNamedConstant("u_fOpacityCorrectionFactor", m_opacityCorrectionFactor);
 }
 
 //-----------------------------------------------------------------------------
@@ -325,7 +327,7 @@ void RayTracingVolumeRenderer::setAOFactor(double aoFactor)
     m_volIllumFactor.w = static_cast< ::Ogre::Real>(aoFactor);
 
     // Update the shader parameter
-    m_RTVSharedParameters->setNamedConstant("u_volIllumFactor", m_volIllumFactor);
+    m_RTVSharedParameters->setNamedConstant("u_f4VolIllumFactor", m_volIllumFactor);
 }
 
 //-----------------------------------------------------------------------------
@@ -336,7 +338,7 @@ void RayTracingVolumeRenderer::setColorBleedingFactor(double colorBleedingFactor
     m_volIllumFactor      = ::Ogre::Vector4(cbFactor, cbFactor, cbFactor, m_volIllumFactor.w);
 
     // Update the shader parameter
-    m_RTVSharedParameters->setNamedConstant("u_volIllumFactor", m_volIllumFactor);
+    m_RTVSharedParameters->setNamedConstant("u_f4VolIllumFactor", m_volIllumFactor);
 }
 
 //-----------------------------------------------------------------------------
@@ -442,14 +444,14 @@ void RayTracingVolumeRenderer::setRayCastingPassTextureUnits(Ogre::Pass* const _
     texUnitState->setTextureFiltering(::Ogre::TFO_BILINEAR);
     texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
 
-    fpParams->setNamedConstant("u_image", numTexUnit++);
+    fpParams->setNamedConstant("u_s3Image", numTexUnit++);
 
     // Transfer function
     if(_fpPPDefines.find(s_PREINTEGRATION_DEFINE) != std::string::npos)
     {
         texUnitState = _rayCastingPass->createTextureUnitState(m_preIntegrationTable.getTexture()->getName());
         texUnitState->setTextureFiltering(::Ogre::TFO_BILINEAR);
-        fpParams->setNamedConstant("u_preintegratTFTexture", numTexUnit++);
+        fpParams->setNamedConstant("u_s2PreintegratedTFTexture", numTexUnit++);
     }
     else
     {
@@ -467,9 +469,9 @@ void RayTracingVolumeRenderer::setRayCastingPassTextureUnits(Ogre::Pass* const _
         texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
         texUnitState->setTexture(m_illumVolume.lock()->getIlluminationVolume());
 
-        fpParams->setNamedConstant("u_illuminationVolume", numTexUnit++);
+        fpParams->setNamedConstant("u_s3IlluminationVolume", numTexUnit++);
         // Update the shader parameter
-        m_RTVSharedParameters->setNamedConstant("u_volIllumFactor", m_volIllumFactor);
+        m_RTVSharedParameters->setNamedConstant("u_f4VolIllumFactor", m_volIllumFactor);
     }
 
     // Entry points texture
@@ -486,12 +488,12 @@ void RayTracingVolumeRenderer::setRayCastingPassTextureUnits(Ogre::Pass* const _
     texUnitState->setTextureFiltering(::Ogre::TFO_NONE);
     texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
 
-    fpParams->setNamedConstant("u_entryPoints", numTexUnit++);
+    fpParams->setNamedConstant("u_s2EntryPoints", numTexUnit++);
 }
 
 //-----------------------------------------------------------------------------
 
-void RayTracingVolumeRenderer::createRayTracingMaterial()
+void RayTracingVolumeRenderer::createRayTracingMaterial(const std::string& _sourceFile)
 {
     std::string vpPPDefines, fpPPDefines;
     size_t hash;
@@ -553,7 +555,7 @@ void RayTracingVolumeRenderer::createRayTracingMaterial()
     else
     {
         fsp = gpm.createProgram(fpName, "Materials", "glsl", ::Ogre::GPT_FRAGMENT_PROGRAM);
-        fsp->setSourceFile("RayTracedVolume_FP.glsl");
+        fsp->setSourceFile(_sourceFile);
 
         for(const std::string& attachement: m_fragmentShaderAttachements)
         {
@@ -596,17 +598,17 @@ void RayTracingVolumeRenderer::createRayTracingMaterial()
     fpParams->setNamedAutoConstant("u_viewportSize", ::Ogre::GpuProgramParameters::ACT_VIEWPORT_SIZE);
     fpParams->setNamedAutoConstant("u_clippingNearDis", ::Ogre::GpuProgramParameters::ACT_NEAR_CLIP_DISTANCE);
     fpParams->setNamedAutoConstant("u_clippingFarDis", ::Ogre::GpuProgramParameters::ACT_FAR_CLIP_DISTANCE);
-    fpParams->setNamedAutoConstant("u_cameraPos", ::Ogre::GpuProgramParameters::ACT_CAMERA_POSITION_OBJECT_SPACE);
-    fpParams->setNamedAutoConstant("u_shininess", ::Ogre::GpuProgramParameters::ACT_SURFACE_SHININESS);
-    fpParams->setNamedAutoConstant("u_numLights", ::Ogre::GpuProgramParameters::ACT_LIGHT_COUNT);
+    fpParams->setNamedAutoConstant("u_f3CameraPos", ::Ogre::GpuProgramParameters::ACT_CAMERA_POSITION_OBJECT_SPACE);
+    fpParams->setNamedAutoConstant("u_fShininess", ::Ogre::GpuProgramParameters::ACT_SURFACE_SHININESS);
+    fpParams->setNamedAutoConstant("u_fNumLights", ::Ogre::GpuProgramParameters::ACT_LIGHT_COUNT);
     for(size_t i = 0; i < 10; ++i)
     {
         auto number = "[" + std::to_string(i) + "]";
-        fpParams->setNamedAutoConstant("u_lightDir" + number,
+        fpParams->setNamedAutoConstant("u_f3LightDir" + number,
                                        ::Ogre::GpuProgramParameters::ACT_LIGHT_DIRECTION_OBJECT_SPACE, i);
-        fpParams->setNamedAutoConstant("u_lightDiffuse" + number,
+        fpParams->setNamedAutoConstant("u_f3LightDiffuseCol" + number,
                                        ::Ogre::GpuProgramParameters::ACT_LIGHT_DIFFUSE_COLOUR, i);
-        fpParams->setNamedAutoConstant("u_lightSpecular" + number,
+        fpParams->setNamedAutoConstant("u_f3LightSpecularCol" + number,
                                        ::Ogre::GpuProgramParameters::ACT_LIGHT_SPECULAR_COLOUR, i);
     }
     fpParams->setNamedAutoConstant("u_invWorldViewProj",

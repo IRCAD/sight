@@ -35,11 +35,9 @@ out vec2 oUv0;
 #ifdef PER_PRIMITIVE_COLOR
 uniform sampler2D u_colorPrimitiveTexture;
 uniform vec2 u_colorPrimitiveTextureSize;
-
-vec4 ppcolor;
 #endif // PER_PRIMITIVE_COLOR
 
-void emit(int index)
+void emit(int index, vec4 ppcolor)
 {
     oPos = gl_in[index].gl_Position.xyz;
     oNormal = vNormal[index];
@@ -66,6 +64,7 @@ void emit(int index)
 
 void main(void)
 {
+    vec4 ppcolor = vec4(1.,1.,1.,1.);
 #ifdef PER_PRIMITIVE_COLOR
     // compute offset
     int div = gl_PrimitiveIDIn / int(u_colorPrimitiveTextureSize[0]);
@@ -77,12 +76,12 @@ void main(void)
 #endif // PER_PRIMITIVE_COLOR
 
 #if defined(QUAD)
-    emit(0); emit(1); emit(3); emit(2);
+    emit(0, ppcolor); emit(1, ppcolor); emit(3, ppcolor); emit(2, ppcolor);
 #else
 #if defined(TETRA)
-    emit(0); emit(1); emit(2); emit(3); emit(0); emit(1);
+    emit(0, ppcolor); emit(1, ppcolor); emit(2, ppcolor); emit(3, ppcolor); emit(0, ppcolor); emit(1, ppcolor);
 #else
-    emit(0); emit(1); emit(2);
+    emit(0, ppcolor); emit(1, ppcolor); emit(2, ppcolor);
 #endif
 #endif
     EndPrimitive();

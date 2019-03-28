@@ -13,7 +13,6 @@ set( DEPENDENCIES
     fwMath
     fwCom
     arData
-    cvIO
     eigenTools
     calibration3d
 )
