@@ -14,5 +14,5 @@ set( DEPENDENCIES
 set( REQUIREMENTS  )
 set( USE_PCH_FROM_TARGET pchData )
 set( CONAN_DEPS
-    cppunit/1.14.0@sight/stable
+    ${CONAN_CPPUNIT}
 )

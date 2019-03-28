@@ -6,5 +6,5 @@ set( DEPENDENCIES fwCore fwTest fwTools fwData  fwMedData fwDataCamp)
 set( REQUIREMENTS  )
 
 set( CONAN_DEPS
-    cppunit/1.14.0@sight/stable
+    ${CONAN_CPPUNIT}
 )
