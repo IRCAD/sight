@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -105,6 +105,11 @@ void CardinalLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr 
             }
 
             insideWidget->setVisible(viewInfo.m_visible);
+
+            if(!viewInfo.m_toolTip.empty())
+            {
+                insideWidget->setToolTip(QString::fromStdString(viewInfo.m_toolTip));
+            }
             hasCentral = true;
         }
         else
@@ -176,6 +181,11 @@ void CardinalLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr 
             {
                 dockWidget->setVisible(false);
             }
+
+            if(!viewInfo.m_toolTip.empty())
+            {
+                dockWidget->setToolTip(QString::fromStdString(viewInfo.m_toolTip));
+            }
         }
 
         if(!viewInfo.m_isResizable)
@@ -217,4 +227,3 @@ void CardinalLayoutManager::destroyLayout()
 //-----------------------------------------------------------------------------
 
 } // namespace fwGui
-
