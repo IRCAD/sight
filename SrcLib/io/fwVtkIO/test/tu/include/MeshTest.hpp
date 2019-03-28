@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -43,6 +43,12 @@ CPPUNIT_TEST( testMeshToGrid );
 CPPUNIT_TEST( testSyntheticMesh );
 CPPUNIT_TEST( testExportImportSyntheticMesh );
 CPPUNIT_TEST( testPointCloud );
+CPPUNIT_TEST( testMeshUpdatePoints );
+CPPUNIT_TEST( testMeshUpdateColors );
+CPPUNIT_TEST( testMeshUpdateNormals );
+CPPUNIT_TEST( testGridUpdatePoints );
+CPPUNIT_TEST( testGridUpdateColors );
+CPPUNIT_TEST( testGridUpdateNormals );
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -55,6 +61,13 @@ public:
     void testSyntheticMesh();
     void testExportImportSyntheticMesh();
     void testPointCloud();
+    void testMeshUpdatePoints();
+    void testMeshUpdateColors();
+    void testMeshUpdateNormals();
+    void testGridUpdatePoints();
+    void testGridUpdateColors();
+    void testGridUpdateNormals();
+    void testGridUpdteTexCoords();
 
 };
 

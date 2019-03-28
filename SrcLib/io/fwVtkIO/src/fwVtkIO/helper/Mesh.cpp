@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -25,6 +25,7 @@
 #include <fwData/Array.hpp>
 
 #include <fwDataTools/helper/Array.hpp>
+#include <fwDataTools/helper/ArrayGetter.hpp>
 #include <fwDataTools/helper/Mesh.hpp>
 #include <fwDataTools/helper/MeshGetter.hpp>
 
@@ -568,22 +569,20 @@ void Mesh::updatePolyDataPoints(vtkSmartPointer<vtkPolyData> polyDataDst,
                                 const ::fwData::Mesh::csptr& meshSrc )
 {
     SLM_ASSERT( "vtkPolyData should not be NULL", polyDataDst);
-    ::fwDataTools::helper::MeshGetter meshHelper(meshSrc);
+    ::fwDataTools::helper::ArrayGetter arrayHelper(meshSrc->getPointsArray());
 
-    vtkPoints* polyDataPoints                              = polyDataDst->GetPoints();
-    const ::fwData::Mesh::Id nbPoints                      = meshSrc->getNumberOfPoints();
-    const ::fwData::Mesh::ConstPointsMultiArrayType points = meshHelper.getPoints();
+    vtkPoints* polyDataPoints                    = polyDataDst->GetPoints();
+    const vtkIdType nbPoints                     = meshSrc->getNumberOfPoints();
+    const ::fwData::Mesh::PointValueType* points = arrayHelper.begin< ::fwData::Mesh::PointValueType >();
 
     if (nbPoints != polyDataPoints->GetNumberOfPoints())
     {
         polyDataPoints->SetNumberOfPoints(nbPoints);
     }
 
-    vtkIdType id = 0;
-    typedef ::fwData::Mesh::PointsMultiArrayType::index PointTypesIndex;
-    for (PointTypesIndex i = 0; i != nbPoints; ++i)
+    for (vtkIdType i = 0; i != nbPoints; ++i)
     {
-        polyDataPoints->SetPoint(id++, points[i][0], points[i][1], points[i][2]);
+        polyDataPoints->SetPoint(i, points[i*3], points[i*3+1], points[i*3+2]);
     }
 
     polyDataPoints->Modified();
@@ -596,28 +595,25 @@ void Mesh::updatePolyDataPointColor(vtkSmartPointer<vtkPolyData> polyDataDst,
 {
     SLM_ASSERT( "vtkPolyData should not be NULL", polyDataDst);
 
-    const ::fwData::Array::sptr pointColorArray = meshSrc->getPointColorsArray();
+    const ::fwData::Array::csptr pointColorArray = meshSrc->getPointColorsArray();
     if(pointColorArray)
     {
-        ::fwDataTools::helper::Array arrayHelper(pointColorArray);
+        ::fwDataTools::helper::ArrayGetter arrayHelper(pointColorArray);
 
         const vtkSmartPointer<vtkUnsignedCharArray> colors = vtkSmartPointer<vtkUnsignedCharArray>::New();
         const size_t nbComponents                          = pointColorArray->getNumberOfComponents();
         colors->SetNumberOfComponents(static_cast<int>(nbComponents));
         colors->SetName("Colors");
 
-        const unsigned char* pointColor    = arrayHelper.begin< unsigned char >();
-        const unsigned char* pointColorEnd = arrayHelper.end< unsigned char >();
+        const unsigned char* pointColor          = arrayHelper.begin< unsigned char >();
+        const unsigned char* const pointColorEnd = arrayHelper.end< unsigned char >();
 
-        for (; pointColor != pointColorEnd; pointColor += nbComponents)
-        {
-            // Since VTK 7.1, InsertNextTupleValue is deprecated in favor of InsertNextTypedTuple.
-#if (VTK_MAJOR_VERSION == 7 && VTK_MINOR_VERSION >= 1) ||  VTK_MAJOR_VERSION > 7
-            colors->InsertNextTypedTuple(pointColor);
-#else
-            colors->InsertNextTupleValue(pointColor);
-#endif
-        }
+        const vtkIdType size = pointColorArray->getSize()[0] * nbComponents;
+
+        unsigned char* newColors = new unsigned char[size];
+        std::copy(pointColor, pointColorEnd, newColors);
+        colors->SetArray(newColors, size, 0, vtkUnsignedCharArray::VTK_DATA_ARRAY_DELETE);
+
         polyDataDst->GetPointData()->SetScalars(colors);
         polyDataDst->Modified();
     }
@@ -638,10 +634,10 @@ void Mesh::updatePolyDataCellColor(vtkSmartPointer<vtkPolyData> polyDataDst,
 {
     SLM_ASSERT( "vtkPolyData should not be NULL", polyDataDst);
 
-    const ::fwData::Array::sptr cellColorArray = meshSrc->getCellColorsArray();
+    const ::fwData::Array::csptr cellColorArray = meshSrc->getCellColorsArray();
     if(cellColorArray)
     {
-        ::fwDataTools::helper::Array arrayHelper(cellColorArray);
+        ::fwDataTools::helper::ArrayGetter arrayHelper(cellColorArray);
 
         const vtkSmartPointer<vtkUnsignedCharArray> colors = vtkSmartPointer<vtkUnsignedCharArray>::New();
         const size_t nbComponents                          = cellColorArray->getNumberOfComponents();
@@ -649,18 +645,14 @@ void Mesh::updatePolyDataCellColor(vtkSmartPointer<vtkPolyData> polyDataDst,
         colors->SetName("Colors");
 
         ::fwMemory::BufferObject::Lock lock = cellColorArray->getBufferObject()->lock();
-        const unsigned char* cellColor    = arrayHelper.begin< unsigned char >();
-        const unsigned char* cellColorEnd = arrayHelper.end< unsigned char >();
+        const unsigned char* cellColor          = arrayHelper.begin< unsigned char >();
+        const unsigned char* const cellColorEnd = arrayHelper.end< unsigned char >();
 
-        for (; cellColor != cellColorEnd; cellColor += nbComponents)
-        {
-            // Since VTK 7.1, InsertNextTupleValue is deprecated in favor of InsertNextTypedTuple.
-#if (VTK_MAJOR_VERSION == 7 && VTK_MINOR_VERSION >= 1) ||  VTK_MAJOR_VERSION > 7
-            colors->InsertNextTypedTuple(cellColor);
-#else
-            colors->InsertNextTupleValue(cellColor);
-#endif
-        }
+        const vtkIdType size = cellColorArray->getSize()[0] * nbComponents;
+
+        unsigned char* newColors = new unsigned char[size];
+        std::copy(cellColor, cellColorEnd, newColors);
+        colors->SetArray(newColors, size, 0, vtkUnsignedCharArray::VTK_DATA_ARRAY_DELETE);
 
         polyDataDst->GetCellData()->SetScalars(colors);
         polyDataDst->Modified();
@@ -683,10 +675,10 @@ void Mesh::updatePolyDataPointNormals(vtkSmartPointer<vtkPolyData> polyDataDst,
 {
     SLM_ASSERT( "vtkPolyData should not be NULL", polyDataDst);
 
-    const ::fwData::Array::sptr pointNormalsArray = meshSrc->getPointNormalsArray();
+    const ::fwData::Array::csptr pointNormalsArray = meshSrc->getPointNormalsArray();
     if(pointNormalsArray)
     {
-        ::fwDataTools::helper::Array arrayHelper(pointNormalsArray);
+        ::fwDataTools::helper::ArrayGetter arrayHelper(pointNormalsArray);
 
         vtkSmartPointer<vtkFloatArray> normals = vtkSmartPointer<vtkFloatArray>::New();
         const size_t nbComponents              = pointNormalsArray->getNumberOfComponents();
@@ -695,15 +687,11 @@ void Mesh::updatePolyDataPointNormals(vtkSmartPointer<vtkPolyData> polyDataDst,
         const float* pointNormal          = arrayHelper.begin< float >();
         const float* const pointNormalEnd = arrayHelper.end< float >();
 
-        for (; pointNormal != pointNormalEnd; pointNormal += nbComponents)
-        {
-            // Since VTK 7.1, InsertNextTupleValue is deprecated in favor of InsertNextTypedTuple.
-#if (VTK_MAJOR_VERSION == 7 && VTK_MINOR_VERSION >= 1) ||  VTK_MAJOR_VERSION > 7
-            normals->InsertNextTypedTuple(pointNormal);
-#else
-            normals->InsertNextTupleValue(pointNormal);
-#endif
-        }
+        const vtkIdType size = pointNormalsArray->getSize()[0] * nbComponents;
+
+        float* newNormals = new float[size];
+        std::copy(pointNormal, pointNormalEnd, newNormals);
+        normals->SetArray(newNormals, size, 0, vtkFloatArray::VTK_DATA_ARRAY_DELETE);
 
         polyDataDst->GetPointData()->SetNormals(normals);
         polyDataDst->Modified();
@@ -725,11 +713,11 @@ void Mesh::updatePolyDataCellNormals(vtkSmartPointer<vtkPolyData> polyDataDst,
 {
     SLM_ASSERT( "vtkPolyData should not be NULL", polyDataDst);
 
-    const ::fwData::Array::sptr cellNormalsArray = meshSrc->getCellNormalsArray();
+    const ::fwData::Array::csptr cellNormalsArray = meshSrc->getCellNormalsArray();
 
     if(cellNormalsArray)
     {
-        ::fwDataTools::helper::Array arrayHelper(cellNormalsArray);
+        ::fwDataTools::helper::ArrayGetter arrayHelper(cellNormalsArray);
 
         vtkSmartPointer<vtkFloatArray> normals = vtkSmartPointer<vtkFloatArray>::New();
         const size_t nbComponents              = cellNormalsArray->getNumberOfComponents();
@@ -738,15 +726,11 @@ void Mesh::updatePolyDataCellNormals(vtkSmartPointer<vtkPolyData> polyDataDst,
         const float* cellNormal          = arrayHelper.begin< float >();
         const float* const cellNormalEnd = arrayHelper.end< float >();
 
-        for (; cellNormal != cellNormalEnd; cellNormal += nbComponents)
-        {
-            // Since VTK 7.1, InsertNextTupleValue is deprecated in favor of InsertNextTypedTuple.
-#if (VTK_MAJOR_VERSION == 7 && VTK_MINOR_VERSION >= 1) ||  VTK_MAJOR_VERSION > 7
-            normals->InsertNextTypedTuple(cellNormal);
-#else
-            normals->InsertNextTupleValue(cellNormal);
-#endif
-        }
+        const vtkIdType size = cellNormalsArray->getSize()[0] * nbComponents;
+
+        float* newNormals = new float[size];
+        std::copy(cellNormal, cellNormalEnd, newNormals);
+        normals->SetArray(newNormals, size, 0, vtkFloatArray::VTK_DATA_ARRAY_DELETE);
 
         polyDataDst->GetCellData()->SetNormals(normals);
         polyDataDst->Modified();
@@ -768,29 +752,25 @@ void Mesh::updatePolyDataPointTexCoords(vtkSmartPointer<vtkPolyData> polyDataDst
 {
     SLM_ASSERT( "vtkPolyData should not be NULL", polyDataDst);
 
-    const ::fwData::Array::sptr pointTexCoordsArray = meshSrc->getPointTexCoordsArray();
+    const ::fwData::Array::csptr pointTexCoordsArray = meshSrc->getPointTexCoordsArray();
     if(pointTexCoordsArray)
     {
-        ::fwDataTools::helper::Array arrayHelper(pointTexCoordsArray);
+        ::fwDataTools::helper::ArrayGetter arrayHelper(pointTexCoordsArray);
 
-        vtkSmartPointer<vtkFloatArray> normals = vtkSmartPointer<vtkFloatArray>::New();
-        const size_t nbComponents              = pointTexCoordsArray->getNumberOfComponents();
-        normals->SetNumberOfComponents(static_cast<int>(nbComponents));
+        vtkSmartPointer<vtkFloatArray> texCoords = vtkSmartPointer<vtkFloatArray>::New();
+        const size_t nbComponents                = pointTexCoordsArray->getNumberOfComponents();
+        texCoords->SetNumberOfComponents(static_cast<int>(nbComponents));
 
         const float* pointTexCoord          = arrayHelper.begin< float >();
         const float* const pointTexCoordEnd = arrayHelper.end< float >();
 
-        for (; pointTexCoord != pointTexCoordEnd; pointTexCoord += nbComponents)
-        {
-            // Since VTK 7.1, InsertNextTupleValue is deprecated in favor of InsertNextTypedTuple.
-#if (VTK_MAJOR_VERSION == 7 && VTK_MINOR_VERSION >= 1) ||  VTK_MAJOR_VERSION > 7
-            normals->InsertNextTypedTuple(pointTexCoord);
-#else
-            normals->InsertNextTupleValue(pointTexCoord);
-#endif
-        }
+        const vtkIdType size = pointTexCoordsArray->getSize()[0] * nbComponents;
 
-        polyDataDst->GetPointData()->SetTCoords(normals);
+        float* newTexCoords = new float[size];
+        std::copy(pointTexCoord, pointTexCoordEnd, newTexCoords);
+        texCoords->SetArray(newTexCoords, size, 0, vtkFloatArray::VTK_DATA_ARRAY_DELETE);
+
+        polyDataDst->GetPointData()->SetTCoords(texCoords);
         polyDataDst->Modified();
     }
     else
@@ -810,29 +790,25 @@ void Mesh::updatePolyDataCellTexCoords(vtkSmartPointer<vtkPolyData> polyDataDst,
 {
     SLM_ASSERT( "vtkPolyData should not be NULL", polyDataDst);
 
-    const ::fwData::Array::sptr cellTexCoordsArray = meshSrc->getCellTexCoordsArray();
+    const ::fwData::Array::csptr cellTexCoordsArray = meshSrc->getCellTexCoordsArray();
     if(cellTexCoordsArray)
     {
-        ::fwDataTools::helper::Array arrayHelper(cellTexCoordsArray);
+        ::fwDataTools::helper::ArrayGetter arrayHelper(cellTexCoordsArray);
 
-        vtkSmartPointer<vtkFloatArray> normals = vtkSmartPointer<vtkFloatArray>::New();
-        const size_t nbComponents              = cellTexCoordsArray->getNumberOfComponents();
-        normals->SetNumberOfComponents(static_cast<int>(nbComponents));
+        vtkSmartPointer<vtkFloatArray> texCoords = vtkSmartPointer<vtkFloatArray>::New();
+        const size_t nbComponents                = cellTexCoordsArray->getNumberOfComponents();
+        texCoords->SetNumberOfComponents(static_cast<int>(nbComponents));
 
         const float* cellTexCoord          = arrayHelper.begin< float >();
         const float* const cellTexCoordEnd = arrayHelper.end< float >();
 
-        for (; cellTexCoord != cellTexCoordEnd; cellTexCoord += nbComponents)
-        {
-            // Since VTK 7.1, InsertNextTupleValue is deprecated in favor of InsertNextTypedTuple.
-#if (VTK_MAJOR_VERSION == 7 && VTK_MINOR_VERSION >= 1) ||  VTK_MAJOR_VERSION > 7
-            normals->InsertNextTypedTuple(cellTexCoord);
-#else
-            normals->InsertNextTupleValue(cellTexCoord);
-#endif
-        }
+        const vtkIdType size = cellTexCoordsArray->getSize()[0] * nbComponents;
 
-        polyDataDst->GetCellData()->SetTCoords(normals);
+        float* newTexCoords = new float[size];
+        std::copy(cellTexCoord, cellTexCoordEnd, newTexCoords);
+        texCoords->SetArray(newTexCoords, size, 0, vtkFloatArray::VTK_DATA_ARRAY_DELETE);
+
+        polyDataDst->GetCellData()->SetTCoords(texCoords);
         polyDataDst->Modified();
     }
     else
@@ -899,10 +875,10 @@ void Mesh::updateGridPointNormals(vtkSmartPointer<vtkUnstructuredGrid> gridDst,
 {
     SLM_ASSERT( "vtkUnstructuredGrid should not be NULL", gridDst);
 
-    const ::fwData::Array::sptr pointNormalsArray = meshSrc->getPointNormalsArray();
+    const ::fwData::Array::csptr pointNormalsArray = meshSrc->getPointNormalsArray();
     if(pointNormalsArray)
     {
-        ::fwDataTools::helper::Array arrayHelper(pointNormalsArray);
+        ::fwDataTools::helper::ArrayGetter arrayHelper(pointNormalsArray);
 
         vtkSmartPointer<vtkFloatArray> normals = vtkSmartPointer<vtkFloatArray>::New();
         const size_t nbComponents              = pointNormalsArray->getNumberOfComponents();
@@ -911,15 +887,11 @@ void Mesh::updateGridPointNormals(vtkSmartPointer<vtkUnstructuredGrid> gridDst,
         const float* pointNormal          = arrayHelper.begin< float >();
         const float* const pointNormalEnd = arrayHelper.end< float >();
 
-        for (; pointNormal != pointNormalEnd; pointNormal += nbComponents)
-        {
-            // Since VTK 7.1, InsertNextTupleValue is deprecated in favor of InsertNextTypedTuple.
-#if (VTK_MAJOR_VERSION == 7 && VTK_MINOR_VERSION >= 1) ||  VTK_MAJOR_VERSION > 7
-            normals->InsertNextTypedTuple(pointNormal);
-#else
-            normals->InsertNextTupleValue(pointNormal);
-#endif
-        }
+        const vtkIdType size = pointNormalsArray->getSize()[0] * nbComponents;
+
+        float* newNormals = new float[size];
+        std::copy(pointNormal, pointNormalEnd, newNormals);
+        normals->SetArray(newNormals, size, 0, vtkFloatArray::VTK_DATA_ARRAY_DELETE);
 
         gridDst->GetPointData()->SetNormals(normals);
         gridDst->Modified();
@@ -941,22 +913,20 @@ void Mesh::updateGridPoints(vtkSmartPointer<vtkUnstructuredGrid> gridDst,
                             const ::fwData::Mesh::csptr& meshSrc )
 {
     SLM_ASSERT( "vtkPolyData should not be NULL", gridDst);
-    ::fwDataTools::helper::MeshGetter meshHelper(meshSrc);
+    ::fwDataTools::helper::ArrayGetter arrayHelper(meshSrc->getPointsArray());
 
-    vtkPoints* polyDataPoints                              = gridDst->GetPoints();
-    const ::fwData::Mesh::Id nbPoints                      = meshSrc->getNumberOfPoints();
-    const ::fwData::Mesh::ConstPointsMultiArrayType points = meshHelper.getPoints();
+    vtkPoints* polyDataPoints                    = gridDst->GetPoints();
+    const vtkIdType nbPoints                     = meshSrc->getNumberOfPoints();
+    const ::fwData::Mesh::PointValueType* points = arrayHelper.begin< ::fwData::Mesh::PointValueType >();
 
     if (nbPoints != polyDataPoints->GetNumberOfPoints())
     {
         polyDataPoints->SetNumberOfPoints(nbPoints);
     }
 
-    vtkIdType id = 0;
-    typedef ::fwData::Mesh::PointsMultiArrayType::index PointTypesIndex;
-    for (PointTypesIndex i = 0; i != nbPoints; ++i)
+    for (vtkIdType i = 0; i != nbPoints; ++i)
     {
-        polyDataPoints->SetPoint(id++, points[i][0], points[i][1], points[i][2]);
+        polyDataPoints->SetPoint(i, points[i*3], points[i*3+1], points[i*3+2]);
     }
 
     polyDataPoints->Modified();
@@ -968,10 +938,10 @@ void Mesh::updateGridPointColor(vtkSmartPointer<vtkUnstructuredGrid> gridDst,
 {
     SLM_ASSERT( "vtkPolyData should not be NULL", gridDst);
 
-    const ::fwData::Array::sptr pointColorArray = meshSrc->getPointColorsArray();
+    const ::fwData::Array::csptr pointColorArray = meshSrc->getPointColorsArray();
     if(pointColorArray)
     {
-        ::fwDataTools::helper::Array arrayHelper(pointColorArray);
+        ::fwDataTools::helper::ArrayGetter arrayHelper(pointColorArray);
 
         vtkSmartPointer<vtkUnsignedCharArray> colors = vtkSmartPointer<vtkUnsignedCharArray>::New();
         const size_t nbComponents                    = pointColorArray->getNumberOfComponents();
@@ -981,15 +951,12 @@ void Mesh::updateGridPointColor(vtkSmartPointer<vtkUnstructuredGrid> gridDst,
         const unsigned char* pointColor          = arrayHelper.begin< unsigned char >();
         const unsigned char* const pointColorEnd = arrayHelper.end< unsigned char >();
 
-        for (; pointColor != pointColorEnd; pointColor += nbComponents)
-        {
-            // Since VTK 7.1, InsertNextTupleValue is deprecated in favor of InsertNextTypedTuple.
-#if (VTK_MAJOR_VERSION == 7 && VTK_MINOR_VERSION >= 1) ||  VTK_MAJOR_VERSION > 7
-            colors->InsertNextTypedTuple(pointColor);
-#else
-            colors->InsertNextTupleValue(pointColor);
-#endif
-        }
+        const vtkIdType size = pointColorArray->getSize()[0] * nbComponents;
+
+        unsigned char* newColors = new unsigned char[size];
+        std::copy(pointColor, pointColorEnd, newColors);
+        colors->SetArray(newColors, size, 0, vtkFloatArray::VTK_DATA_ARRAY_DELETE);
+
         gridDst->GetPointData()->SetScalars(colors);
         gridDst->Modified();
     }
@@ -1011,10 +978,10 @@ void Mesh::updateGridCellColor(vtkSmartPointer<vtkUnstructuredGrid> gridDst,
 {
     SLM_ASSERT( "vtkPolyData should not be NULL", gridDst);
 
-    const ::fwData::Array::sptr cellColorArray = meshSrc->getCellColorsArray();
+    const ::fwData::Array::csptr cellColorArray = meshSrc->getCellColorsArray();
     if(cellColorArray)
     {
-        ::fwDataTools::helper::Array arrayHelper(cellColorArray);
+        ::fwDataTools::helper::ArrayGetter arrayHelper(cellColorArray);
 
         vtkSmartPointer<vtkUnsignedCharArray> colors = vtkSmartPointer<vtkUnsignedCharArray>::New();
         const size_t nbComponents                    = cellColorArray->getNumberOfComponents();
@@ -1025,15 +992,11 @@ void Mesh::updateGridCellColor(vtkSmartPointer<vtkUnstructuredGrid> gridDst,
         const unsigned char* cellColor            = arrayHelper.begin< unsigned char >();
         const unsigned char* const cellColorEnd   = arrayHelper.end< unsigned char >();
 
-        for (; cellColor != cellColorEnd; cellColor += nbComponents)
-        {
-            // Since VTK 7.1, InsertNextTupleValue is deprecated in favor of InsertNextTypedTuple.
-#if (VTK_MAJOR_VERSION == 7 && VTK_MINOR_VERSION >= 1) ||  VTK_MAJOR_VERSION > 7
-            colors->InsertNextTypedTuple(cellColor);
-#else
-            colors->InsertNextTupleValue(cellColor);
-#endif
-        }
+        const vtkIdType size = cellColorArray->getSize()[0] * nbComponents;
+
+        unsigned char* newColors = new unsigned char[size];
+        std::copy(cellColor, cellColorEnd, newColors);
+        colors->SetArray(newColors, size, 0, vtkFloatArray::VTK_DATA_ARRAY_DELETE);
 
         gridDst->GetCellData()->SetScalars(colors);
         gridDst->Modified();
@@ -1055,11 +1018,11 @@ void Mesh::updateGridCellNormals(vtkSmartPointer<vtkUnstructuredGrid> gridDst,
 {
     SLM_ASSERT( "vtkPolyData should not be NULL", gridDst);
 
-    const ::fwData::Array::sptr cellNormalsArray = meshSrc->getCellNormalsArray();
+    const ::fwData::Array::csptr cellNormalsArray = meshSrc->getCellNormalsArray();
 
     if(cellNormalsArray)
     {
-        ::fwDataTools::helper::Array arrayHelper(cellNormalsArray);
+        ::fwDataTools::helper::ArrayGetter arrayHelper(cellNormalsArray);
 
         vtkSmartPointer<vtkFloatArray> normals = vtkSmartPointer<vtkFloatArray>::New();
         const size_t nbComponents              = cellNormalsArray->getNumberOfComponents();
@@ -1068,15 +1031,11 @@ void Mesh::updateGridCellNormals(vtkSmartPointer<vtkUnstructuredGrid> gridDst,
         const float* cellNormal          = arrayHelper.begin< float >();
         const float* const cellNormalEnd = arrayHelper.end< float >();
 
-        for (; cellNormal != cellNormalEnd; cellNormal += nbComponents)
-        {
-            // Since VTK 7.1, InsertNextTupleValue is deprecated in favor of InsertNextTypedTuple.
-#if (VTK_MAJOR_VERSION == 7 && VTK_MINOR_VERSION >= 1) ||  VTK_MAJOR_VERSION > 7
-            normals->InsertNextTypedTuple(cellNormal);
-#else
-            normals->InsertNextTupleValue(cellNormal);
-#endif
-        }
+        const vtkIdType size = cellNormalsArray->getSize()[0] * nbComponents;
+
+        float* newNormals = new float[size];
+        std::copy(cellNormal, cellNormalEnd, newNormals);
+        normals->SetArray(newNormals, size, 0, vtkFloatArray::VTK_DATA_ARRAY_DELETE);
 
         gridDst->GetCellData()->SetNormals(normals);
         gridDst->Modified();
@@ -1099,29 +1058,25 @@ void Mesh::updateGridPointTexCoords(vtkSmartPointer<vtkUnstructuredGrid> gridDst
 {
     SLM_ASSERT( "vtkPolyData should not be NULL", gridDst);
 
-    const ::fwData::Array::sptr pointTexCoordsArray = meshSrc->getPointTexCoordsArray();
+    const ::fwData::Array::csptr pointTexCoordsArray = meshSrc->getPointTexCoordsArray();
     if(pointTexCoordsArray)
     {
-        ::fwDataTools::helper::Array arrayHelper(pointTexCoordsArray);
+        ::fwDataTools::helper::ArrayGetter arrayHelper(pointTexCoordsArray);
 
-        vtkSmartPointer<vtkFloatArray> normals = vtkSmartPointer<vtkFloatArray>::New();
-        const size_t nbComponents              = pointTexCoordsArray->getNumberOfComponents();
-        normals->SetNumberOfComponents(static_cast<int>(nbComponents));
+        vtkSmartPointer<vtkFloatArray> texCoords = vtkSmartPointer<vtkFloatArray>::New();
+        const size_t nbComponents                = pointTexCoordsArray->getNumberOfComponents();
+        texCoords->SetNumberOfComponents(static_cast<int>(nbComponents));
 
         const float* pointTexCoord          = arrayHelper.begin< float >();
         const float* const pointTexCoordEnd = arrayHelper.end< float >();
 
-        for (; pointTexCoord != pointTexCoordEnd; pointTexCoord += nbComponents)
-        {
-            // Since VTK 7.1, InsertNextTupleValue is deprecated in favor of InsertNextTypedTuple.
-#if (VTK_MAJOR_VERSION == 7 && VTK_MINOR_VERSION >= 1) ||  VTK_MAJOR_VERSION > 7
-            normals->InsertNextTypedTuple(pointTexCoord);
-#else
-            normals->InsertNextTupleValue(pointTexCoord);
-#endif
-        }
+        const vtkIdType size = pointTexCoordsArray->getSize()[0] * nbComponents;
 
-        gridDst->GetPointData()->SetTCoords(normals);
+        float* newTexCoords = new float[size];
+        std::copy(pointTexCoord, pointTexCoordEnd, newTexCoords);
+        texCoords->SetArray(newTexCoords, size, 0, vtkFloatArray::VTK_DATA_ARRAY_DELETE);
+
+        gridDst->GetPointData()->SetTCoords(texCoords);
         gridDst->Modified();
     }
     else
@@ -1142,30 +1097,26 @@ void Mesh::updateGridCellTexCoords(vtkSmartPointer<vtkUnstructuredGrid> gridDst,
 {
     SLM_ASSERT( "vtkPolyData should not be NULL", gridDst);
 
-    const ::fwData::Array::sptr cellTexCoordsArray = meshSrc->getCellTexCoordsArray();
+    const ::fwData::Array::csptr cellTexCoordsArray = meshSrc->getCellTexCoordsArray();
 
     if(cellTexCoordsArray)
     {
-        ::fwDataTools::helper::Array arrayHelper(cellTexCoordsArray);
+        ::fwDataTools::helper::ArrayGetter arrayHelper(cellTexCoordsArray);
 
-        vtkSmartPointer<vtkFloatArray> normals = vtkSmartPointer<vtkFloatArray>::New();
-        size_t nbComponents                    = cellTexCoordsArray->getNumberOfComponents();
-        normals->SetNumberOfComponents(static_cast<int>(nbComponents));
+        vtkSmartPointer<vtkFloatArray> texCoords = vtkSmartPointer<vtkFloatArray>::New();
+        size_t nbComponents                      = cellTexCoordsArray->getNumberOfComponents();
+        texCoords->SetNumberOfComponents(static_cast<int>(nbComponents));
 
         const float* cellTexCoord          = arrayHelper.begin< float >();
         const float* const cellTexCoordEnd = arrayHelper.end< float >();
 
-        for (; cellTexCoord != cellTexCoordEnd; cellTexCoord += nbComponents)
-        {
-            // Since VTK 7.1, InsertNextTupleValue is deprecated in favor of InsertNextTypedTuple.
-#if (VTK_MAJOR_VERSION == 7 && VTK_MINOR_VERSION >= 1) ||  VTK_MAJOR_VERSION > 7
-            normals->InsertNextTypedTuple(cellTexCoord);
-#else
-            normals->InsertNextTupleValue(cellTexCoord);
-#endif
-        }
+        const vtkIdType size = cellTexCoordsArray->getSize()[0] * nbComponents;
 
-        gridDst->GetCellData()->SetTCoords(normals);
+        float* newTexCoords = new float[size];
+        std::copy(cellTexCoord, cellTexCoordEnd, newTexCoords);
+        texCoords->SetArray(newTexCoords, size, 0, vtkFloatArray::VTK_DATA_ARRAY_DELETE);
+
+        gridDst->GetCellData()->SetTCoords(texCoords);
         gridDst->Modified();
     }
     else
