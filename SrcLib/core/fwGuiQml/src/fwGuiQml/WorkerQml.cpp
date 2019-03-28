@@ -100,7 +100,7 @@ protected:
 
     int m_argc;
 
-    QSharedPointer< QApplication > m_app;
+    QSharedPointer< QGuiApplication > m_app;
 
     SPTR(::fwThread::Timer) createTimer();
 
@@ -224,7 +224,7 @@ void WorkerQml::init( int& argc, char** argv, bool guiEnabled )
     }
 
     m_argc = argc;
-    m_app  = QSharedPointer< QApplication > ( new ::fwGuiQml::App( m_argc, argv, guiEnabled ) );
+    m_app  = QSharedPointer< QGuiApplication > ( new ::fwGuiQml::App( m_argc, argv, guiEnabled ) );
 
     OSLM_TRACE("Init Qml" << ::fwThread::getCurrentThreadId() <<" Finish");
 }
@@ -245,7 +245,7 @@ WorkerQml::~WorkerQml()
         SLM_ASSERT("WorkerQml loop shall be created and ran from main thread ",
                    !m_future.valid() && ::fwThread::getCurrentThreadId() == this->getThreadId() );
 
-        std::packaged_task< ExitReturnType() > task( std::bind(&QApplication::exec) );
+        std::packaged_task< ExitReturnType() > task( std::bind(&QGuiApplication::exec) );
 
         std::future< ExitReturnType > ufuture = task.get_future();
 
@@ -268,7 +268,7 @@ WorkerQml::~WorkerQml()
 
 void WorkerQml::stop()
 {
-    this->postTask<void>(&QApplication::quit).wait();
+    this->postTask<void>(&QGuiApplication::quit).wait();
 }
 //------------------------------------------------------------------------------
 
@@ -281,14 +281,14 @@ SPTR(::fwThread::Timer) WorkerQml::createTimer()
 
 void WorkerQml::post(TaskType handler)
 {
-    QApplication::postEvent( qApp, new WorkerQmlTask(handler) );
+    QGuiApplication::postEvent( qApp, new WorkerQmlTask(handler) );
 }
 
 //------------------------------------------------------------------------------
 
 void WorkerQml::processTasks()
 {
-    QApplication::sendPostedEvents(0, ::fwGuiQml::WorkerQmlTask::s_WORKER_QML_TASK_EVENT_TYPE);
+    QGuiApplication::sendPostedEvents(0, ::fwGuiQml::WorkerQmlTask::s_WORKER_QML_TASK_EVENT_TYPE);
 }
 
 //------------------------------------------------------------------------------

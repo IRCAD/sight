@@ -43,7 +43,7 @@ namespace fwGuiQml
 //-----------------------------------------------------------------------------
 
 App::App(int& argc, char** argv, bool guiEnabled) :
-    QApplication(argc, argv, guiEnabled)
+    QGuiApplication(argc, argv)
 {
     SLM_TRACE_FUNC();
 
@@ -77,8 +77,8 @@ void App::onExit()
 {
     SLM_TRACE_FUNC();
 
-    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-    QApplication::restoreOverrideCursor();
+    QGuiApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+    QGuiApplication::restoreOverrideCursor();
 
     qApp->flush();
     qApp->exit(0);

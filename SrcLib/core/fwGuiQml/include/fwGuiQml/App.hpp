@@ -34,7 +34,7 @@ namespace fwGuiQml
 /**
  * @brief   Defines the Qml application.
  */
-class FWGUIQML_CLASS_API App : public QApplication
+class FWGUIQML_CLASS_API App : public QGuiApplication
 {
 Q_OBJECT
 
