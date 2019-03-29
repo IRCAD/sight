@@ -69,7 +69,7 @@ macro(installConanDeps CONAN_DEPS_LIST)
             OUTPUT_STRIP_TRAILING_WHITESPACE
         )
         string(TOLOWER ${LSB_RELEASE_ID} LSB_RELEASE_ID_LOWER)
-        set(CONAN_DISTRO "${LSB_RELEASE_ID_LOWER}${LSB_MAJOR_RELEASE_NUMBER}")
+        set(CONAN_DISTRO "${LSB_RELEASE_ID_LOWER}${LSB_MAJOR_RELEASE_NUMBER}" CACHE INTERNAL "custom conan distro" FORCE)
         set(CONAN_SETTINGS "os.distro=${CONAN_DISTRO}" CACHE INTERNAL "custom conan settings" FORCE)
     endif()
 
@@ -91,6 +91,13 @@ macro(installConanDeps CONAN_DEPS_LIST)
         set(CMAKE_CXX_COMPILER_VERSION 6.0)
     endif()
 
+    # We do not build RelWithDebInfo packages for now, so we switch to release in order to allow people
+    # to use at least a RelWithDebInfo in Sight
+    set(SAVE_CMAKE_BUILD_TYPE ${CMAKE_BUILD_TYPE})
+    if(${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
+        set(CMAKE_BUILD_TYPE "Release")
+    endif()
+
     conan_cmake_run(
         REQUIRES ${CONAN_DEPS_LIST}
         BASIC_SETUP CMAKE_TARGETS NO_OUTPUT_DIRS OUTPUT_QUIET
@@ -99,11 +106,12 @@ macro(installConanDeps CONAN_DEPS_LIST)
         SETTINGS ${CONAN_SETTINGS}
     )
 
-    # Restore the compiler selected to build sight
+    # Restore the compiler settings to build sight
     set(CMAKE_C_COMPILER_ID ${SAVE_CMAKE_C_COMPILER_ID})
     set(CMAKE_CXX_COMPILER_ID ${SAVE_CMAKE_CXX_COMPILER_ID})
     set(CMAKE_C_COMPILER_VERSION ${SAVE_CMAKE_C_COMPILER_VERSION})
     set(CMAKE_CXX_COMPILER_VERSION ${SAVE_CMAKE_CXX_COMPILER_VERSION})
+    set(CMAKE_BUILD_TYPE ${SAVE_CMAKE_BUILD_TYPE})
 
 endmacro()
 
