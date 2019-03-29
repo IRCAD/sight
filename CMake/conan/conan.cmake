@@ -73,6 +73,24 @@ macro(installConanDeps CONAN_DEPS_LIST)
         set(CONAN_SETTINGS "os.distro=${CONAN_DISTRO}" CACHE INTERNAL "custom conan settings" FORCE)
     endif()
 
+    # Override compiler to only use one per distro
+    set(SAVE_CMAKE_C_COMPILER_ID ${CMAKE_C_COMPILER_ID})
+    set(SAVE_CMAKE_CXX_COMPILER_ID ${CMAKE_CXX_COMPILER_ID})
+    set(SAVE_CMAKE_C_COMPILER_VERSION ${CMAKE_C_COMPILER_VERSION})
+    set(SAVE_CMAKE_CXX_COMPILER_VERSION ${CMAKE_CXX_COMPILER_VERSION})
+
+    if(CONAN_DISTRO STREQUAL "linuxmint19")
+        set(CMAKE_C_COMPILER_ID GNU)
+        set(CMAKE_CXX_COMPILER_ID GNU)
+        set(CMAKE_C_COMPILER_VERSION 7.3)
+        set(CMAKE_CXX_COMPILER_VERSION 7.3)
+    elseif(CONAN_DISTRO STREQUAL "linuxmint18")
+        set(CMAKE_C_COMPILER_ID Clang)
+        set(CMAKE_CXX_COMPILER_ID Clang)
+        set(CMAKE_C_COMPILER_VERSION 6.0)
+        set(CMAKE_CXX_COMPILER_VERSION 6.0)
+    endif()
+
     conan_cmake_run(
         REQUIRES ${CONAN_DEPS_LIST}
         BASIC_SETUP CMAKE_TARGETS NO_OUTPUT_DIRS OUTPUT_QUIET
@@ -80,6 +98,12 @@ macro(installConanDeps CONAN_DEPS_LIST)
         BUILD ${CONAN_BUILD_OPTION}
         SETTINGS ${CONAN_SETTINGS}
     )
+
+    # Restore the compiler selected to build sight
+    set(CMAKE_C_COMPILER_ID ${SAVE_CMAKE_C_COMPILER_ID})
+    set(CMAKE_CXX_COMPILER_ID ${SAVE_CMAKE_CXX_COMPILER_ID})
+    set(CMAKE_C_COMPILER_VERSION ${SAVE_CMAKE_C_COMPILER_VERSION})
+    set(CMAKE_CXX_COMPILER_VERSION ${SAVE_CMAKE_CXX_COMPILER_VERSION})
 
 endmacro()
 
