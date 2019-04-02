@@ -380,17 +380,19 @@ void SNegato2D::updateCamera()
         case OrientationMode::X_AXIS:
             m_cameraNode->rotate(::Ogre::Vector3(0, 1, 0), ::Ogre::Degree(::Ogre::Real(90)));
             m_cameraNode->rotate(::Ogre::Vector3(0, 0, 1), ::Ogre::Degree(::Ogre::Real(90)));
-            m_cameraNode->translate(::Ogre::Vector3(m_3DOgreTexture->getWidth(), m_plane->getWidth()/2,
+            m_cameraNode->translate(::Ogre::Vector3(static_cast<float>(m_3DOgreTexture->getWidth()),
+                                                    m_plane->getWidth()/2,
                                                     m_plane->getHeight()/2));
             break;
         case OrientationMode::Y_AXIS:
             m_cameraNode->rotate(::Ogre::Vector3(1, 0, 0), ::Ogre::Degree(::Ogre::Real(-90)));
-            m_cameraNode->translate(::Ogre::Vector3(m_plane->getWidth()/2, m_3DOgreTexture->getHeight(),
+            m_cameraNode->translate(::Ogre::Vector3(m_plane->getWidth()/2,
+                                                    static_cast<float>(m_3DOgreTexture->getHeight()),
                                                     m_plane->getHeight()/2));
             break;
         case OrientationMode::Z_AXIS:
             m_cameraNode->translate(::Ogre::Vector3(m_plane->getWidth()/2, m_plane->getHeight()/2,
-                                                    m_3DOgreTexture->getDepth()));
+                                                    static_cast<float>(m_3DOgreTexture->getDepth())));
             break;
     }
 
