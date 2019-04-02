@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -28,7 +28,6 @@
 #include <fwTools/Type.hpp>
 
 #include <ctime>
-
 
 namespace fwTest
 {
@@ -66,24 +65,26 @@ void Image::generateImage(::fwData::Image::sptr image,
 
 void Image::generateRandomImage(::fwData::Image::sptr image, ::fwTools::Type type)
 {
+    static const int s_SIZE        = 50;
+    static const int s_DOUBLE_SIZE = s_SIZE * 2;
     image->setType(type);
 
     ::fwData::Image::SizeType size(3);
-    size[0] = rand()%100 + 2;
-    size[1] = rand()%100 + 2;
-    size[2] = rand()%100 + 2;
+    size[0] = rand() % s_SIZE + 2;
+    size[1] = rand() % s_SIZE + 2;
+    size[2] = rand() % s_SIZE + 2;
     image->setSize(size);
 
     std::vector< double > spacing(3);
-    spacing[0] = (rand()%200 +1) / 100.;
-    spacing[1] = (rand()%200 +1) / 100.;
-    spacing[2] = (rand()%200 +1) / 100.;
+    spacing[0] = (rand() % s_DOUBLE_SIZE +1) / double(s_SIZE);
+    spacing[1] = (rand() % s_DOUBLE_SIZE +1) / double(s_SIZE);
+    spacing[2] = (rand() % s_DOUBLE_SIZE +1) / double(s_SIZE);
     image->setSpacing(spacing);
 
     std::vector< double > origin(3);
-    origin[0] = (rand()%200 - 100) / 10.;
-    origin[1] = (rand()%200 - 100) / 10.;
-    origin[2] = (rand()%200 - 100) / 10.;
+    origin[0] = (rand() % s_DOUBLE_SIZE - s_SIZE) / (s_SIZE / 10.);
+    origin[1] = (rand() % s_DOUBLE_SIZE - s_SIZE) / (s_SIZE / 10.);
+    origin[2] = (rand() % s_DOUBLE_SIZE - s_SIZE) / (s_SIZE / 10.);
     image->setOrigin(origin);
 
     image->allocate();
@@ -91,8 +92,8 @@ void Image::generateRandomImage(::fwData::Image::sptr image, ::fwTools::Type typ
     ::fwData::Array::sptr array = image->getDataArray();
     randomizeArray(array);
 
-    image->setWindowWidth( (rand()%200) / 10. + 1);
-    image->setWindowCenter((rand()%200 - 100) / 10.);
+    image->setWindowWidth( (rand() % s_DOUBLE_SIZE) / double(s_SIZE / 10.) + 1);
+    image->setWindowCenter((rand() % s_DOUBLE_SIZE - s_SIZE) / double(s_SIZE / 10.));
 }
 
 //------------------------------------------------------------------------------
