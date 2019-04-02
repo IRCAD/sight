@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -156,9 +156,11 @@ void SNegato2D::starting()
 
     // Plane's instanciation
     m_plane = new ::fwRenderOgre::Plane(this->getID(), m_negatoSceneNode, getSceneManager(),
-                                        OrientationMode::X_AXIS, false, m_3DOgreTexture, m_filtering);
+                                        m_orientation, false, m_3DOgreTexture, m_filtering);
 
-    this->getLayer()->getDefaultCamera()->setProjectionType( ::Ogre::ProjectionType::PT_ORTHOGRAPHIC );
+    ::Ogre::Camera* cam = this->getLayer()->getDefaultCamera();
+    m_cameraNode        = cam->getParentSceneNode();
+    cam->setProjectionType( ::Ogre::ProjectionType::PT_ORTHOGRAPHIC );
 
     bool isValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image);
     if(isValid)
@@ -266,6 +268,8 @@ void SNegato2D::changeSliceType(int /*_from*/, int _to)
 
     // The orientation update setter will change the fragment shader
     m_plane->setOrientationMode(newOrientationMode);
+    m_orientation = newOrientationMode;
+    this->updateCameraWindowBounds();
 
     // Update threshold if necessary
     this->updateTF();
@@ -364,6 +368,27 @@ void SNegato2D::updateCameraWindowBounds()
         cam->setOrthoWindowHeight(m_plane->getHeight());
     }
     cam->setAspectRatio( renderWindowRatio );
+
+    m_cameraNode->setPosition(::Ogre::Vector3(0, 0, 0));
+    m_cameraNode->resetOrientation();
+    switch(m_orientation)
+    {
+        case OrientationMode::X_AXIS:
+            m_cameraNode->rotate(::Ogre::Vector3(0, 1, 0), ::Ogre::Degree(::Ogre::Real(90)));
+            m_cameraNode->rotate(::Ogre::Vector3(0, 0, 1), ::Ogre::Degree(::Ogre::Real(90)));
+            m_cameraNode->translate(::Ogre::Vector3(m_3DOgreTexture->getWidth(), m_plane->getWidth()/2,
+                                                    m_plane->getHeight()/2));
+            break;
+        case OrientationMode::Y_AXIS:
+            m_cameraNode->rotate(::Ogre::Vector3(1, 0, 0), ::Ogre::Degree(::Ogre::Real(-90)));
+            m_cameraNode->translate(::Ogre::Vector3(m_plane->getWidth()/2, m_3DOgreTexture->getHeight(),
+                                                    m_plane->getHeight()/2));
+            break;
+        case OrientationMode::Z_AXIS:
+            m_cameraNode->translate(::Ogre::Vector3(m_plane->getWidth()/2, m_plane->getHeight()/2,
+                                                    m_3DOgreTexture->getDepth()));
+            break;
+    }
 
     this->requestRender();
 }

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -129,6 +129,9 @@ private:
 
     /// The scene node allowing to move the entire negato
     ::Ogre::SceneNode* m_negatoSceneNode;
+
+    /// The scene node allowing to move the camera
+    ::Ogre::SceneNode* m_cameraNode;
 
     /// Defines the filtering type for this negato
     ::fwRenderOgre::Plane::FilteringEnumType m_filtering;

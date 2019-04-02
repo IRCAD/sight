@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -255,6 +255,8 @@ void Plane::initialize2DPlane()
     ::Ogre::Entity* planeEntity = m_sceneManager->createEntity(m_entityName, m_slicePlane);
     planeEntity->setMaterial(m_texMaterial);
     m_planeSceneNode->attachObject(planeEntity);
+
+    this->initializePosition();
 }
 
 //-----------------------------------------------------------------------------
@@ -275,6 +277,25 @@ void Plane::initializePosition()
                 break;
             case OrientationMode::Z_AXIS:
                 m_planeSceneNode->translate(m_width / 2, m_height / 2, 0);
+                break;
+        }
+    }
+    else
+    {
+        m_planeSceneNode->resetOrientation();
+        switch(m_orientation)
+        {
+            case OrientationMode::X_AXIS:
+                m_planeSceneNode->rotate(::Ogre::Vector3(0, 1, 0), ::Ogre::Degree(::Ogre::Real(90)));
+                m_planeSceneNode->rotate(::Ogre::Vector3(0, 0, 1), ::Ogre::Degree(::Ogre::Real(90)));
+                m_planeSceneNode->translate(0, m_width/2, m_height/2);
+                break;
+            case OrientationMode::Y_AXIS:
+                m_planeSceneNode->rotate(::Ogre::Vector3(1, 0, 0), ::Ogre::Degree(::Ogre::Real(270)));
+                m_planeSceneNode->translate(m_width/2, 0, m_height/2);
+                break;
+            case OrientationMode::Z_AXIS:
+                m_planeSceneNode->translate(m_width/2, m_height/2, 0);
                 break;
         }
     }

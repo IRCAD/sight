@@ -47,7 +47,7 @@
         <service uid="2DNegatoAdp" type="::visuOgreAdaptor::SNegato2D">
             <inout key="image" uid="${image}" autoConnect="yes" />
             <inout key="tf" uid="${volumeTF}" optional="yes" />
-            <config layer="default" />
+            <config layer="default" sliceIndex="sagittal" />
         </service>
 
         <!-- ************************************* Services ************************************ -->
