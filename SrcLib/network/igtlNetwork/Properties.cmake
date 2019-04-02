@@ -9,5 +9,5 @@ set( DEPENDENCIES   fwCore
 )
 set( REQUIREMENTS  )
 set( CONAN_DEPS
-    openigtlink/2.1-r1@sight/stable
+    ${CONAN_OPENIGTLINK}
 )

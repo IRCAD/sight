@@ -6,5 +6,5 @@ set( DEPENDENCIES fwCore )
 set( REQUIREMENTS  )
 
 set( CONAN_DEPS
-    glm/0.9.9.0@sight/stable
+    ${CONAN_GLM}
 )

@@ -5,5 +5,5 @@ set( DEPENDENCIES fwCore )
 set( REQUIREMENTS  )
 
 set( CONAN_DEPS
-    boost/1.67.0@sight/stable
+    ${CONAN_BOOST}
 )

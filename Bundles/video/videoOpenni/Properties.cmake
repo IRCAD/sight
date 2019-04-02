@@ -13,5 +13,5 @@ set( DEPENDENCIES
 )
 set( REQUIREMENTS )
 set( CONAN_DEPS
-    openni/2.2.0-rev-958951f@sight/stable
+    ${CONAN_OPENNI}
 )

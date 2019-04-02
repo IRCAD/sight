@@ -19,5 +19,5 @@ set( DEPENDENCIES
 set( REQUIREMENTS  )
 
 set( CONAN_DEPS
-    ogre/1.11.4@sight/stable
+    ${CONAN_OGRE}
 )
