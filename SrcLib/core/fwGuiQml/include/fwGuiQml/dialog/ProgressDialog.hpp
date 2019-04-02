@@ -27,7 +27,6 @@
 
 #include <fwGui/dialog/IProgressDialog.hpp>
 
-#include <QApplication>
 #include <QMainWindow>
 #include <QPointer>
 #include <QProgressBar>

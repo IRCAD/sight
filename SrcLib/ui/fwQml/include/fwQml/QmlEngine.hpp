@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -57,6 +57,8 @@ public:
      * @see Use getRootObjects() to get the main objects.
      */
     FWQML_API void loadMainComponent(const ::boost::filesystem::path& file);
+
+    FWQML_API QObject* createComponent(const ::boost::filesystem::path& file);
 
     /**
      * @brief Define the path as a directory where the engine searches for installed modules in a URL-based directory

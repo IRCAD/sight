@@ -26,7 +26,7 @@
 
 #include <boost/assign/list_of.hpp>
 
-#include <QApplication>
+#include <QGuiApplication>
 #include <QMessageBox>
 #include <QPushButton>
 #include <QVector>
@@ -135,31 +135,31 @@ void MessageDialog::setDefaultButton(::fwGui::dialog::IMessageDialog::Buttons bu
         }
     }
 
-    QMessageBox box(icon, title, text, buttons, qApp->activeWindow());
+    //QMessageBox box(icon, title, text, buttons, qApp->focusWindow());
 
     for(auto customButton : m_customButtons)
     {
-        box.addButton(customButton, QMessageBox::ActionRole);
+        // box.addButton(customButton, QMessageBox::ActionRole);
     }
 
     MessageDialogQmlButtonType::const_iterator iter = messageDialogQmlButton.find(m_defaultButton);
     if(iter != messageDialogQmlButton.end())
     {
-        box.setDefaultButton(QMessageBox::StandardButton(static_cast<int>(iter->second)));
+        // box.setDefaultButton(QMessageBox::StandardButton(static_cast<int>(iter->second)));
     }
 
     ::fwGui::dialog::IMessageDialog::Buttons result = ::fwGui::dialog::IMessageDialog::NOBUTTON;
 
-    box.exec();
+    //box.exec();
 
-    for(MessageDialogQmlButtonType::value_type button :  messageDialogQmlButton)
-    {
-        if ( box.standardButton( box.clickedButton() ) == button.second)
-        {
-            result = button.first;
-            break;
-        }
-    }
+//    for(MessageDialogQmlButtonType::value_type button :  messageDialogQmlButton)
+//    {
+//        if ( box.standardButton( box.clickedButton() ) == button.second)
+//        {
+//            result = button.first;
+//            break;
+//        }
+//    }
     return result;
 }
 

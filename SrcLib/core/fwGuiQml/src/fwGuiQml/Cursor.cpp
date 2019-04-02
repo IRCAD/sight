@@ -24,7 +24,8 @@
 
 #include <fwGui/registry/macros.hpp>
 
-#include <QApplication>
+#include <QCursor>
+#include <QGuiApplication>
 
 fwGuiRegisterMacro( ::fwGuiQml::Cursor, ::fwGui::ICursor::REGISTRY_KEY );
 
@@ -64,7 +65,7 @@ void Cursor::setCursor( ::fwGui::ICursor::CursorType cursor)
             break;
     }
 
-    qApp->setOverrideCursor(qmlCursor);
+    qGuiApp->setOverrideCursor(qmlCursor);
 
 }
 
@@ -72,7 +73,7 @@ void Cursor::setCursor( ::fwGui::ICursor::CursorType cursor)
 
 void Cursor::setDefaultCursor()
 {
-    qApp->restoreOverrideCursor();
+    qGuiApp->restoreOverrideCursor();
 }
 
 //-----------------------------------------------------------------------------

@@ -26,6 +26,7 @@
 
 #include <fwCore/spyLog.hpp>
 
+#include <QGuiApplication>
 #include <QHBoxLayout>
 #include <QParallelAnimationGroup>
 #include <QPropertyAnimation>
@@ -74,10 +75,10 @@ void SlideBar::init()
     // (just listening parent event is not enough because the Move event is only send on activeWindow).
     this->parent()->installEventFilter(this);
 
-    auto activeWindow = qApp->activeWindow();
+    QWindow* activeWindow = qGuiApp->focusWindow();
     if(activeWindow)
     {
-        activeWindow->installEventFilter(this);
+        //       activeWindow->installEventFilter(this);
     }
 }
 
@@ -235,9 +236,9 @@ bool SlideBar::eventFilter(QObject* obj, QEvent* event)
     }
     else if (event->type() == QEvent::WindowActivate)
     {
-        auto activeWindow = qApp->activeWindow();
+        auto activeWindow = qApp->focusWindow();
         SLM_ASSERT("No active window", activeWindow);
-        activeWindow->installEventFilter(this);
+        //activeWindow->installEventFilter(this);
         this->updatePosition();
     }
     else if (event->type() == QEvent::WindowDeactivate)

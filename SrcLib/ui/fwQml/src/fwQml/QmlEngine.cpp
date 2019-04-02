@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -27,6 +27,10 @@
 #include <QDir>
 #include <QQmlComponent>
 #include <QQuickWindow>
+#include <QString>
+#include <QUrl>
+
+#include <iostream>
 
 namespace fwQml
 {
@@ -68,7 +72,17 @@ SPTR(QmlEngine) QmlEngine::getDefault()
 
 void QmlEngine::loadMainComponent(const ::boost::filesystem::path& file)
 {
+    std::string filepath = file.string();
+    std::cout << filepath << std::endl;
     m_engine->load(QUrl::fromLocalFile(QString::fromStdString(file.string())));
+}
+
+//-----------------------------------------------------------------------------
+
+QObject* QmlEngine::createComponent(const ::boost::filesystem::path& file)
+{
+    QQmlComponent component(m_engine, QUrl::fromLocalFile(QString::fromStdString(file.string())));
+    return component.create();
 }
 
 //-----------------------------------------------------------------------------

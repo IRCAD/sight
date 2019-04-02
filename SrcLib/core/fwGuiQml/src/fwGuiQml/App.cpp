@@ -33,6 +33,7 @@
 #include <boost/tokenizer.hpp>
 
 #include <locale.h>
+#include <QCursor>
 
 #include <iostream>
 #include <sstream>

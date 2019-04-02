@@ -22,8 +22,8 @@
 
 #include "fwGuiQml/widget/QfwToolbox.hpp"
 
-#include <QApplication>
 #include <QFrame>
+#include <QGuiApplication>
 #include <QIcon>
 #include <QPixmap>
 #include <QStyleOption>
@@ -187,18 +187,19 @@ int QfwToolBox::insertItem(int index, QWidget* widget, const QString& text)
     bIcon.addPixmap( pixClose, QIcon::Normal, QIcon::Off );
     bIcon.addPixmap( pixOpen, QIcon::Active, QIcon::On );
     c.setIcon(bIcon);
-    if(qApp->styleSheet().isEmpty())
-    {
-        QString style(
-            "text-align: left;"
-            "background-color: lightgray;"
-            "border-style: solid;"
-            "border-width: 1px;"
-            "border-color: darkgray;"
-            "height: 20px;"
-            );
-        c.button->setStyleSheet(style);
-    }
+    //TO-DO do qml Style file having pragma singleton import qtQuick to do a general theme
+//    if(qGuiApp->styleSheet().isEmpty())
+//    {
+//        QString style(
+//            "text-align: left;"
+//            "background-color: lightgray;"
+//            "border-style: solid;"
+//            "border-width: 1px;"
+//            "border-color: darkgray;"
+//            "height: 20px;"
+//            );
+//        c.button->setStyleSheet(style);
+//    }
     connect(c.button, SIGNAL(toggled(bool)), this, SLOT(buttonToggled(bool)));
 
     c.sv = new QFrame(this);

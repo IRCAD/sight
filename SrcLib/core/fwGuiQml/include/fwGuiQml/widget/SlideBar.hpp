@@ -24,7 +24,6 @@
 
 #include "fwGuiQml/config.hpp"
 
-#include <QApplication>
 #include <QBoxLayout>
 #include <QGroupBox>
 #include <QWidget>

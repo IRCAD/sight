@@ -145,6 +145,10 @@ void SImageSeries::updating()
 
     // register image
     ::fwData::Image::sptr image = series->getImage();
+    if (image == nullptr)
+    {
+        return ;
+    }
     negato->registerInOut(image, SNegatoMPR::s_IMAGE_INOUT, true);
 
     ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);

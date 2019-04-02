@@ -26,7 +26,7 @@
 
 #include <boost/assign/list_of.hpp>
 
-#include <QApplication>
+#include <QGuiApplication>
 #include <QInputDialog>
 #include <QObject>
 
@@ -81,12 +81,12 @@ std::string InputDialog::getInput()
     QString text  = QObject::tr(m_message.c_str());
 
     bool IsOkClicked;
-    QString outputText = QInputDialog::getText(
-        qApp->activeWindow(), title, text, QLineEdit::Normal, QString::fromStdString(m_input), &IsOkClicked);
+    //QString outputText = QInputDialog::getText(
+    //  qGuiApp->focusWindow(), title, text, QLineEdit::Normal, QString::fromStdString(m_input), &IsOkClicked);
 
     if ( IsOkClicked)
     {
-        m_input = outputText.toStdString();
+        //    m_input = outputText.toStdString();
     }
     else
     {

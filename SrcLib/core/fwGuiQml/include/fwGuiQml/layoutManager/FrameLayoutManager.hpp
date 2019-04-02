@@ -32,6 +32,7 @@
 #include <QObject>
 #include <QPoint>
 #include <QPointer>
+#include <QWindow>
 
 class QMainWindow;
 
@@ -74,7 +75,7 @@ private:
     FrameState getState();
     bool isOnScreen(const QPoint& pos);
 
-    QPointer<QMainWindow> m_qmlWindow;
+    QPointer<QWindow> m_qmlWindow;
 };
 
 } // namespace fwGui

@@ -30,8 +30,8 @@
 
 #include <boost/lambda/lambda.hpp>
 
-#include <QApplication>
 #include <QDesktopWidget>
+#include <QGuiApplication>
 #include <QIcon>
 #include <QLayout>
 #include <QMainWindow>
@@ -61,31 +61,31 @@ void FrameLayoutManager::createFrame()
     FrameInfo frameInfo = this->getFrameInfo();
 
     ::fwGuiQml::QmlMainFrame* mainframe = new ::fwGuiQml::QmlMainFrame();
-    m_qmlWindow                         = mainframe;
+    //m_qmlWindow                         = mainframe;
 
     ::fwGuiQml::QmlMainFrame::CloseCallback fct = std::bind( &::fwGui::FrameLayoutManager::onCloseFrame, this);
     mainframe->setCloseCallback(fct);
 
-    m_qmlWindow->setWindowTitle(QString::fromStdString(frameInfo.m_name));
-    m_qmlWindow->setMinimumSize(std::max(frameInfo.m_minSize.first, 0), std::max(frameInfo.m_minSize.second, 0));
+//    m_qmlWindow->setWindowTitle(QString::fromStdString(frameInfo.m_name));
+//    m_qmlWindow->setMinimumSize(std::max(frameInfo.m_minSize.first, 0), std::max(frameInfo.m_minSize.second, 0));
 
     if(!frameInfo.m_iconPath.empty())
     {
         QIcon icon(QString::fromStdString(frameInfo.m_iconPath.string()));
         OSLM_ASSERT("Unable to create an icon instance from " << frameInfo.m_iconPath.string(), !icon.isNull());
-        m_qmlWindow->setWindowIcon(icon);
+//        m_qmlWindow->setWindowIcon(icon);
     }
-    if(!qApp->activeWindow())
+    if(!qGuiApp->focusWindow())
     {
-        qApp->setActiveWindow(m_qmlWindow);
+        qGuiApp->focusWindowChanged(m_qmlWindow);
     }
     if (frameInfo.m_style == ::fwGui::layoutManager::IFrameLayoutManager::STAY_ON_TOP)
     {
-        m_qmlWindow->setWindowFlags(Qt::WindowStaysOnTopHint);
+//        m_qmlWindow->setWindowFlags(Qt::WindowStaysOnTopHint);
     }
     else if(frameInfo.m_style == ::fwGui::layoutManager::IFrameLayoutManager::MODAL)
     {
-        m_qmlWindow->setWindowModality(Qt::ApplicationModal);
+//        m_qmlWindow->setWindowModality(Qt::ApplicationModal);
     }
 
     int sizeX = (frameInfo.m_size.first > 0) ? frameInfo.m_size.first : m_qmlWindow->size().width();
@@ -104,17 +104,17 @@ void FrameLayoutManager::createFrame()
 
     this->setState(frameInfo.m_state);
 
-    QWidget* qwidget = new QWidget(m_qmlWindow);
-    m_qmlWindow->setCentralWidget(qwidget);
+//    QWidget* qwidget = new QWidget(m_qmlWindow);
+//    m_qmlWindow->setCentralWidget(qwidget);
 
     QObject::connect(m_qmlWindow, SIGNAL(destroyed(QObject*)), this, SLOT(onCloseFrame()));
 
     ::fwGuiQml::container::QmlContainer::sptr container = ::fwGuiQml::container::QmlContainer::New();
-    container->setQmlContainer(qwidget);
+//    container->setQmlContainer(qwidget);
     m_container = container;
 
     ::fwGuiQml::container::QmlContainer::sptr frameContainer = ::fwGuiQml::container::QmlContainer::New();
-    frameContainer->setQmlContainer(m_qmlWindow);
+/*    frameContainer->setQmlContainer(m_qmlWindow)*/
     m_frame = frameContainer;
 }
 
@@ -175,15 +175,15 @@ void FrameLayoutManager::setState( FrameState state )
 {
     FrameState state( UNKNOWN );
 
-    if( m_qmlWindow->isMinimized() )
+    if( m_qmlWindow->visibility() == QWindow::Minimized )
     {
         state = ICONIZED;
     }
-    else if( m_qmlWindow->isMaximized() )
+    else if( m_qmlWindow->visibility() == QWindow::Maximized )
     {
         state = MAXIMIZED;
     }
-    else if( m_qmlWindow->isFullScreen() )
+    else if( m_qmlWindow->visibility() == QWindow::FullScreen )
     {
         state = FULL_SCREEN;
     }

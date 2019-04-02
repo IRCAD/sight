@@ -57,13 +57,6 @@ void Plugin::start()
 
 void Plugin::initialize()
 {
-    // get the qml engine QmlApplicationEngine
-    SPTR(::fwQml::QmlEngine) engine = ::fwQml::QmlEngine::getDefault();
-
-    // get the path of the qml ui file in the 'rc' directory
-    auto path = ::fwRuntime::getBundleResourcePath("dialog");
-
-    engine->importModulePath(path);
 }
 
 //------------------------------------------------------------------------------

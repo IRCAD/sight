@@ -55,7 +55,7 @@ public:
         QEvent( static_cast< QEvent::Type >(s_WORKER_QML_TASK_EVENT_TYPE) ),
         m_handler( handler )
     {
-        SLM_ASSERT( "QApplication should be instantiated", qApp );
+        SLM_ASSERT( "QGuiApplication should be instantiated", qGuiApp );
     }
 
     ~WorkerQmlTask()

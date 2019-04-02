@@ -22,7 +22,7 @@
 
 #include "fwGuiQml/widget/QRangeSlider.hpp"
 
-#include <QApplication>
+#include <QGuiApplication>
 #include <QMouseEvent>
 #include <QPainter>
 
@@ -388,7 +388,7 @@ void QRangeSlider::paintEvent ( QPaintEvent* /*event*/ )
     QRect rect = this->rect();
     rect.setLeft(rect.left() + m_handleSize/2);
     rect.setRight(rect.right() - m_handleSize/2);
-    painter.fillRect(rect, QApplication::palette().base());
+    painter.fillRect(rect, QGuiApplication::palette().base());
 
     painter.setBrush(Qt::cyan);
     m_window->draw(painter, enabled);

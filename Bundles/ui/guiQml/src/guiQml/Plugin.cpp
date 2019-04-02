@@ -122,7 +122,7 @@ void Plugin::loadStyleSheet()
     if( this->getBundle()->hasParameter("style") )
     {
         const std::string style = this->getBundle()->getParameterValue("style");
-        qApp->setStyle(QStyleFactory::create(QString::fromStdString(style)));
+        //qApp->setStyle(QStyleFactory::create(QString::fromStdString(style)));
     }
 
     if( this->getBundle()->hasParameter("stylesheet") )
@@ -137,7 +137,7 @@ void Plugin::loadStyleSheet()
             QTextStream styleIn(&data);
             style = styleIn.readAll();
             data.close();
-            qApp->setStyleSheet(style);
+            //qApp->setStyleSheet(style);
         }
     }
 }

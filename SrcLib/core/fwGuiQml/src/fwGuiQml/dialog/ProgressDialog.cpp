@@ -28,6 +28,7 @@
 #include <fwGui/IFrameSrv.hpp>
 #include <fwGui/registry/macros.hpp>
 
+#include <QCoreApplication>
 #include <QPaintEvent>
 
 fwGuiRegisterMacro( ::fwGuiQml::dialog::ProgressDialog, ::fwGui::dialog::IProgressDialog::REGISTRY_KEY );
@@ -57,7 +58,7 @@ ProgressDialog::ProgressDialog( ::fwGui::GuiBaseObject::Key key, const std::stri
 
 //    QWidget *activeWindow = NULL;
 //
-//    BOOST_FOREACH (QWidget *widget, QApplication::topLevelWidgets())
+//    BOOST_FOREACH (QWidget *widget, QGuiApplication::topLevelWidgets())
 //    {
 //        activeWindow = qobject_cast< QMainWindow * >(widget);
 //        // activeWindow must also have a layout to use statusBar()

@@ -30,8 +30,8 @@
 
 #include <boost/foreach.hpp>
 
-#include <QApplication>
 #include <QCheckBox>
+#include <QGuiApplication>
 #include <QHBoxLayout>
 #include <QHeaderView>
 #include <QLabel>
@@ -84,13 +84,13 @@ void LoggerDialog::setLogger(const ::fwLog::Logger::sptr& logger)
 
 bool LoggerDialog::show()
 {
-    QWidget* parent = qApp->activeWindow();
+    // QWidget* parent = qApp->focusWindow();
 
     // Size policy
     QSizePolicy policy(QSizePolicy::Maximum, QSizePolicy::Preferred);
 
     // Create dialog
-    m_dialog = new QDialog(parent);
+    //m_dialog = new QDialog(parent);
     m_dialog->resize(500, 50);
     m_dialog->setWindowTitle(QString::fromStdString(m_title));
     QVBoxLayout* mainLayout = new QVBoxLayout();

@@ -26,7 +26,7 @@
 
 #include <fwGui/registry/macros.hpp>
 
-#include <QApplication>
+#include <QGuiApplication>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QListWidget>
@@ -72,21 +72,21 @@ void MultiSelectorDialog::setTitle(std::string _title)
 
 ::fwGui::dialog::IMultiSelectorDialog::Selections MultiSelectorDialog::show()
 {
-    QWidget* parent = qApp->activeWindow();
+//    QWidget* parent = qApp->focusWindow();
 
-    QDialog* dialog = new QDialog(parent);
-    dialog->setWindowTitle(QString::fromStdString(m_title));
+    //  QDialog* dialog = new QDialog(parent);
+    //dialog->setWindowTitle(QString::fromStdString(m_title));
 
-    QListWidget* selectionList = new QListWidget(dialog);
-    for( Selections::value_type selection :  m_selections)
-    {
-        QListWidgetItem* item = new QListWidgetItem(QString::fromStdString(selection.first), selectionList);
-        item->setCheckState( (selection.second ? Qt::Checked : Qt::Unchecked) );
-        selectionList->addItem(item);
-    }
+    //QListWidget* selectionList = new QListWidget(dialog);
+//    for( Selections::value_type selection :  m_selections)
+//    {
+//        QListWidgetItem* item = new QListWidgetItem(QString::fromStdString(selection.first), selectionList);
+//        item->setCheckState( (selection.second ? Qt::Checked : Qt::Unchecked) );
+//        selectionList->addItem(item);
+//    }
 
-    QListWidgetItem* firstItem = selectionList->item(0);
-    selectionList->setCurrentItem(firstItem);
+//    QListWidgetItem* firstItem = selectionList->item(0);
+//    selectionList->setCurrentItem(firstItem);
 
     QPushButton* okButton     = new QPushButton(tr("Ok"));
     QPushButton* cancelButton = new QPushButton(tr("Cancel"));
@@ -96,30 +96,30 @@ void MultiSelectorDialog::setTitle(std::string _title)
     hLayout->addWidget(cancelButton);
 
     QVBoxLayout* vLayout = new QVBoxLayout();
-    if(!m_message.empty())
-    {
-        QLabel* msgText = new QLabel(QString::fromStdString(m_message), dialog);
-        vLayout->addWidget( msgText);
-    }
-    vLayout->addWidget(selectionList);
-    vLayout->addLayout(hLayout);
+//    if(!m_message.empty())
+//    {
+//        QLabel* msgText = new QLabel(QString::fromStdString(m_message), dialog);
+//        vLayout->addWidget( msgText);
+//    }
+//    vLayout->addWidget(selectionList);
+//    vLayout->addLayout(hLayout);
 
-    dialog->setLayout(vLayout);
-    QObject::connect(okButton, SIGNAL(clicked()), dialog, SLOT(accept()));
-    QObject::connect(cancelButton, SIGNAL(clicked()), dialog, SLOT(reject()));
-    QObject::connect(selectionList, SIGNAL(itemDoubleClicked(QListWidgetItem*)), dialog, SLOT(accept()));
+//    dialog->setLayout(vLayout);
+//    QObject::connect(okButton, SIGNAL(clicked()), dialog, SLOT(accept()));
+//    QObject::connect(cancelButton, SIGNAL(clicked()), dialog, SLOT(reject()));
+//    QObject::connect(selectionList, SIGNAL(itemDoubleClicked(QListWidgetItem*)), dialog, SLOT(accept()));
 
-    Selections selections;
-    if(dialog->exec())
-    {
-        int indexItem = 0;
-        for( Selections::value_type selection :  m_selections)
-        {
-            selections[selection.first] = (selectionList->item(indexItem)->checkState() == Qt::Checked);
-            indexItem++;
-        }
-    }
-    return selections;
+//    Selections selections;
+//    if(dialog->exec())
+//    {
+//        int indexItem = 0;
+//        for( Selections::value_type selection :  m_selections)
+//        {
+//            selections[selection.first] = (selectionList->item(indexItem)->checkState() == Qt::Checked);
+//            indexItem++;
+//        }
+//    }
+    //return selections;
 }
 
 //------------------------------------------------------------------------------

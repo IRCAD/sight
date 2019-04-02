@@ -29,11 +29,15 @@
 #include <fwGui/dialog/ILocationDialog.hpp>
 #include <fwGui/registry/macros.hpp>
 
+#include <fwQml/QmlEngine.hpp>
+
+#include <fwRuntime/operations.hpp>
+
 #include <boost/filesystem/path.hpp>
 #include <boost/tokenizer.hpp>
 
-#include <QApplication>
 #include <QFileDialog>
+#include <QGuiApplication>
 #include <QString>
 
 #include <functional>
@@ -57,99 +61,114 @@ LocationDialog::LocationDialog(::fwGui::GuiBaseObject::Key key) :
 
 ::fwData::location::ILocation::sptr LocationDialog::show()
 {
-    QWidget* parent                             = qApp->activeWindow();
+//    QWidget* parent                             = qGuiApp->focusWindow();
     QString caption                             = QString::fromStdString(this->getTitle());
     const ::boost::filesystem::path defaultPath = this->getDefaultLocation();
     QString path                                = QString::fromStdString(defaultPath.string());
     QString filter                              = this->fileFilters();
     ::fwData::location::ILocation::sptr location;
+//engine.load(QUrl(QStringLiteral("qrc:/FileDialog.qml")));
+    // get the qml engine QmlApplicationEngine
+    SPTR(::fwQml::QmlEngine) engine = ::fwQml::QmlEngine::getDefault();
 
-    QFileDialog dialog;
-    dialog.setDirectory(path);
-    dialog.setNameFilter(filter);
-    dialog.setWindowTitle(caption);
+    // get the path of the qml ui file in the 'rc' directory
+    //auto qmlPath = ::fwRuntime::getBundleResourceFilePath("fwGuiQml", "dialog/LocationDialog.qml");
 
-    if (m_style & ::fwGui::dialog::ILocationDialog::READ)
+    // load the qml ui component
+    // get the qml engine QmlApplicationEngine
+
+    // get the path of the qml ui file in the 'rc' directory
+    auto dialogPath = ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-0.1/dialog/LocationDialog.qml");
+
+//    engine->importModulePath(path);
+    QObject* dialog = engine->createComponent(dialogPath);
+    QMetaObject::invokeMethod(dialog, "open");
+//    QFileDialog dialog;
+//    dialog.setDirectory(path);
+//    dialog.setNameFilter(filter);
+//    dialog.setWindowTitle(caption);
+
+//    if (m_style & ::fwGui::dialog::ILocationDialog::READ)
+//    {
+//        dialog.setAcceptMode(QFileDialog::AcceptMode::AcceptOpen);
+//    }
+//    else
+//    {
+//        dialog.setAcceptMode(QFileDialog::AcceptMode::AcceptSave);
+//    }
+
+//    if (m_type == ::fwGui::dialog::ILocationDialog::MULTI_FILES)
+//    {
+//        SLM_ASSERT("MULTI_FILES type must have a READ style", m_style & ::fwGui::dialog::ILocationDialog::READ);
+
+//        dialog.setFilter(QDir::Filter::Files);
+//        dialog.setFileMode(QFileDialog::FileMode::ExistingFiles);
+//        QStringList files;
+//        if (dialog.exec())
+//        {
+//            files      = dialog.selectedFiles();
+//            m_wildcard = dialog.selectedNameFilter().toStdString();
+
+//        }
+//        if(!files.isEmpty())
+//        {
+//            ::fwData::location::MultiFiles::sptr multifiles = ::fwData::location::MultiFiles::New();
+//            std::vector< ::boost::filesystem::path > paths;
+//            for (QString filename : files)
+//            {
+//                ::boost::filesystem::path bpath( filename.toStdString() );
+//                paths.push_back(bpath);
+//            }
+//            multifiles->setPaths(paths);
+//            location = multifiles;
+//        }
+//    }
+//    else if (m_type == ::fwGui::dialog::ILocationDialog::SINGLE_FILE)
+//    {
+//        QString fileName;
+//        if ( (m_style& ::fwGui::dialog::ILocationDialog::READ) ||
+//             (m_style & ::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST) )
+//        {
+//            dialog.setFileMode(QFileDialog::FileMode::ExistingFile);
+//            if (dialog.exec() && !dialog.selectedFiles().empty())
+//            {
+//                fileName   = dialog.selectedFiles()[0];
+//                m_wildcard = dialog.selectedNameFilter().toStdString();
+//            }
+//        }
+//        else if ( m_style & ::fwGui::dialog::ILocationDialog::WRITE )
+//        {
+//            if (dialog.exec() && !dialog.selectedFiles().empty())
+//            {
+//                fileName   = dialog.selectedFiles()[0];
+//                m_wildcard = dialog.selectedNameFilter().toStdString();
+//            }
+
+//        }
+//        if(!fileName.isNull())
+//        {
+//            ::boost::filesystem::path bpath( fileName.toStdString());
+//            location = ::fwData::location::SingleFile::New(bpath);
+//        }
+//    }
+//    else if (m_type == ::fwGui::dialog::ILocationDialog::FOLDER)
+//    {
+//        dialog.setFilter(QDir::Filter::Dirs);
+//        dialog.setAcceptMode(QFileDialog::AcceptMode::AcceptOpen);
+//        dialog.setFileMode(QFileDialog::FileMode::Directory);
+
+    QString dir;
+//        if (dialog.exec() && !dialog.selectedFiles().empty())
+//        {
+//            dir = dialog.selectedFiles()[0];
+//        }
+
+    if(!dir.isNull())
     {
-        dialog.setAcceptMode(QFileDialog::AcceptMode::AcceptOpen);
+        ::boost::filesystem::path bpath( dir.toStdString()  );
+        location = ::fwData::location::Folder::New(bpath);
     }
-    else
-    {
-        dialog.setAcceptMode(QFileDialog::AcceptMode::AcceptSave);
-    }
-
-    if (m_type == ::fwGui::dialog::ILocationDialog::MULTI_FILES)
-    {
-        SLM_ASSERT("MULTI_FILES type must have a READ style", m_style & ::fwGui::dialog::ILocationDialog::READ);
-
-        dialog.setFilter(QDir::Filter::Files);
-        dialog.setFileMode(QFileDialog::FileMode::ExistingFiles);
-        QStringList files;
-        if (dialog.exec())
-        {
-            files      = dialog.selectedFiles();
-            m_wildcard = dialog.selectedNameFilter().toStdString();
-
-        }
-        if(!files.isEmpty())
-        {
-            ::fwData::location::MultiFiles::sptr multifiles = ::fwData::location::MultiFiles::New();
-            std::vector< ::boost::filesystem::path > paths;
-            for (QString filename : files)
-            {
-                ::boost::filesystem::path bpath( filename.toStdString() );
-                paths.push_back(bpath);
-            }
-            multifiles->setPaths(paths);
-            location = multifiles;
-        }
-    }
-    else if (m_type == ::fwGui::dialog::ILocationDialog::SINGLE_FILE)
-    {
-        QString fileName;
-        if ( (m_style& ::fwGui::dialog::ILocationDialog::READ) ||
-             (m_style & ::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST) )
-        {
-            dialog.setFileMode(QFileDialog::FileMode::ExistingFile);
-            if (dialog.exec() && !dialog.selectedFiles().empty())
-            {
-                fileName   = dialog.selectedFiles()[0];
-                m_wildcard = dialog.selectedNameFilter().toStdString();
-            }
-        }
-        else if ( m_style & ::fwGui::dialog::ILocationDialog::WRITE )
-        {
-            if (dialog.exec() && !dialog.selectedFiles().empty())
-            {
-                fileName   = dialog.selectedFiles()[0];
-                m_wildcard = dialog.selectedNameFilter().toStdString();
-            }
-
-        }
-        if(!fileName.isNull())
-        {
-            ::boost::filesystem::path bpath( fileName.toStdString());
-            location = ::fwData::location::SingleFile::New(bpath);
-        }
-    }
-    else if (m_type == ::fwGui::dialog::ILocationDialog::FOLDER)
-    {
-        dialog.setFilter(QDir::Filter::Dirs);
-        dialog.setAcceptMode(QFileDialog::AcceptMode::AcceptOpen);
-        dialog.setFileMode(QFileDialog::FileMode::Directory);
-
-        QString dir;
-        if (dialog.exec() && !dialog.selectedFiles().empty())
-        {
-            dir = dialog.selectedFiles()[0];
-        }
-
-        if(!dir.isNull())
-        {
-            ::boost::filesystem::path bpath( dir.toStdString()  );
-            location = ::fwData::location::Folder::New(bpath);
-        }
-    }
+//    }
     return location;
 }
 

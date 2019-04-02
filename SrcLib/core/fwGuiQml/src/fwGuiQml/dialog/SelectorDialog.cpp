@@ -26,8 +26,8 @@
 
 #include <fwGui/registry/macros.hpp>
 
-#include <QApplication>
 #include <QDialog>
+#include <QGuiApplication>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QListWidget>
@@ -73,19 +73,19 @@ void SelectorDialog::setTitle(std::string _title)
 
 std::string SelectorDialog::show()
 {
-    QWidget* parent = qApp->activeWindow();
+    QWindow* parent = qGuiApp->focusWindow();
+    //TO-DO create dialog from the focus window
+//    QDialog* dialog = new QDialog(parent);
+//    dialog->setWindowTitle(QString::fromStdString(m_title));
 
-    QDialog* dialog = new QDialog(parent);
-    dialog->setWindowTitle(QString::fromStdString(m_title));
-
-    QListWidget* selectionList = new QListWidget(dialog);
+    //   QListWidget* selectionList = new QListWidget(dialog);
     for( std::string selection :  m_selections)
     {
-        selectionList->addItem(QString::fromStdString( selection ));
+//        selectionList->addItem(QString::fromStdString( selection ));
     }
 
-    QListWidgetItem* firstItem = selectionList->item(0);
-    selectionList->setCurrentItem(firstItem);
+//    QListWidgetItem* firstItem = selectionList->item(0);
+//   selectionList->setCurrentItem(firstItem);
 
     QPushButton* okButton     = new QPushButton(QObject::tr("Ok"));
     QPushButton* cancelButton = new QPushButton(QObject::tr("Cancel"));
@@ -97,27 +97,27 @@ std::string SelectorDialog::show()
     for(auto customButton : m_customButtons)
     {
         hLayout->addWidget(customButton);
-        QObject::connect(customButton, SIGNAL(clicked()), dialog, SLOT(reject()));
+        //      QObject::connect(customButton, SIGNAL(clicked()), dialog, SLOT(reject()));
     }
 
     QVBoxLayout* vLayout = new QVBoxLayout();
     if(!m_message.empty())
     {
-        QLabel* msgText = new QLabel(QString::fromStdString(m_message), dialog);
-        vLayout->addWidget( msgText);
+        //     QLabel* msgText = new QLabel(QString::fromStdString(m_message), dialog);
+        //    vLayout->addWidget( msgText);
     }
-    vLayout->addWidget(selectionList);
+    //   vLayout->addWidget(selectionList);
     vLayout->addLayout(hLayout);
 
-    dialog->setLayout(vLayout);
-    QObject::connect(okButton, SIGNAL(clicked()), dialog, SLOT(accept()));
-    QObject::connect(cancelButton, SIGNAL(clicked()), dialog, SLOT(reject()));
-    QObject::connect(selectionList, SIGNAL(itemDoubleClicked(QListWidgetItem*)), dialog, SLOT(accept()));
+    //  dialog->setLayout(vLayout);
+    //QObject::connect(okButton, SIGNAL(clicked()), dialog, SLOT(accept()));
+    //QObject::connect(cancelButton, SIGNAL(clicked()), dialog, SLOT(reject()));
+    //QObject::connect(selectionList, SIGNAL(itemDoubleClicked(QListWidgetItem*)), dialog, SLOT(accept()));
 
     std::string selection = "";
-    if(dialog->exec())
+    //if(dialog->exec())
     {
-        selection = selectionList->currentItem()->text().toStdString();
+        //  selection = selectionList->currentItem()->text().toStdString();
     }
 
     return selection;

@@ -26,8 +26,8 @@
 
 #include <fwGui/registry/macros.hpp>
 
-#include <QApplication>
 #include <QFutureWatcher>
+#include <QGuiApplication>
 #include <QString>
 #include <QtConcurrent>
 #include <QtCore>
@@ -42,7 +42,7 @@ namespace dialog
 
 PulseProgressDialog::PulseProgressDialog(::fwGui::GuiBaseObject::Key key)
 {
-    m_pdialog = new QProgressDialog(qApp->activeWindow());
+    //m_pdialog = new QProgressDialog(qApp->focusWindow());
 }
 
 //------------------------------------------------------------------------------
