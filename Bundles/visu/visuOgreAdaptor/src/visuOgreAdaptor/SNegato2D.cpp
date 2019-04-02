@@ -229,7 +229,7 @@ void SNegato2D::newImage()
     ::fwRenderOgre::Utils::convertImageForNegato(m_3DOgreTexture.get(), image);
 
     this->createPlane( image->getSpacing() );
-    this->updateCameraWindowBounds();
+    this->updateCamera();
 
     // Update Slice
     int axialIndex =
@@ -269,7 +269,7 @@ void SNegato2D::changeSliceType(int /*_from*/, int _to)
     // The orientation update setter will change the fragment shader
     m_plane->setOrientationMode(newOrientationMode);
     m_orientation = newOrientationMode;
-    this->updateCameraWindowBounds();
+    this->updateCamera();
 
     // Update threshold if necessary
     this->updateTF();
@@ -347,7 +347,7 @@ void SNegato2D::createPlane(const fwData::Image::SpacingType& _spacing)
 
 //------------------------------------------------------------------------------
 
-void SNegato2D::updateCameraWindowBounds()
+void SNegato2D::updateCamera()
 {
 
     ::Ogre::Real renderWindowWidth, renderWindowHeight, renderWindowRatio;
@@ -359,13 +359,17 @@ void SNegato2D::updateCameraWindowBounds()
 
     ::Ogre::Camera* cam = this->getLayer()->getDefaultCamera();
 
-    if( renderWindowWidth < renderWindowHeight)
+    if( static_cast<int>(renderWindowWidth) == static_cast<int>(renderWindowHeight) )
     {
-        cam->setOrthoWindowWidth(m_plane->getWidth());
+        cam->setOrthoWindow(m_plane->getWidth(), m_plane->getHeight());
+    }
+    else if( renderWindowWidth > renderWindowHeight)
+    {
+        cam->setOrthoWindowHeight(m_plane->getHeight());
     }
     else
     {
-        cam->setOrthoWindowHeight(m_plane->getHeight());
+        cam->setOrthoWindowWidth(m_plane->getWidth());
     }
     cam->setAspectRatio( renderWindowRatio );
 

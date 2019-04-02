@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -160,7 +160,6 @@ void Negato2DInteractor::focusOutEvent()
 void Negato2DInteractor::updateTotalSize()
 {
     ::Ogre::SceneNode* rootSceneNode = m_sceneManager->getRootSceneNode();
-    rootSceneNode->getChildIterator();
 
     ::std::stack< const ::Ogre::SceneNode* > childrenStack;
     childrenStack.push(rootSceneNode);
@@ -240,26 +239,6 @@ void Negato2DInteractor::updateCameraPosition()
 
 // ----------------------------------------------------------------------------
 
-void Negato2DInteractor::resetCameraPosition()
-{
-    ::Ogre::Real cameraWidth, cameraHeight;
-
-    if( m_renderWindowWidth < m_renderWindowHeight)
-    {
-        cameraWidth  = m_totalWidth;
-        cameraHeight = cameraWidth / m_renderWindowRatio;
-    }
-    else
-    {
-        cameraHeight = m_totalHeight;
-        cameraWidth  = cameraHeight * m_renderWindowRatio;
-    }
-
-    this->getCamera()->setOrthoWindow(cameraWidth, cameraHeight);
-}
-
-// ----------------------------------------------------------------------------
-
 ::Ogre::Camera* Negato2DInteractor::getCamera()
 {
     if(!m_camera)
@@ -277,7 +256,6 @@ void Negato2DInteractor::resetCameraPosition()
 void Negato2DInteractor::updateCameraAngle()
 {
     this->updateRenderWindowDimensions();
-    ::Ogre::Real orthoWidth, orthoHeight, imageToWindowRatio;
 
     if( static_cast<int>(m_renderWindowWidth) == static_cast<int>(m_renderWindowHeight) )
     {
@@ -285,18 +263,11 @@ void Negato2DInteractor::updateCameraAngle()
     }
     else if( m_renderWindowWidth > m_renderWindowHeight )
     {
-        orthoHeight        = m_currentHeight;
-        imageToWindowRatio = m_currentHeight / m_renderWindowHeight;
-        orthoWidth         = imageToWindowRatio * orthoHeight;
-        this->getCamera()->setOrthoWindowHeight( orthoHeight);
-
+        this->getCamera()->setOrthoWindowHeight( m_currentHeight);
     }
     else if( m_renderWindowWidth < m_renderWindowHeight )
     {
-        orthoWidth         = m_currentWidth;
-        imageToWindowRatio = m_currentWidth / m_renderWindowWidth;
-        orthoHeight        = imageToWindowRatio * orthoWidth;
-        this->getCamera()->setOrthoWindowWidth( orthoWidth );
+        this->getCamera()->setOrthoWindowWidth(m_currentWidth);
     }
 }
 

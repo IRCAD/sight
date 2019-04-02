@@ -114,7 +114,7 @@ private:
     void createPlane(const ::fwData::Image::SpacingType& _spacing);
 
     /// Adapts the camera to the width and height of the displayed plane.
-    void updateCameraWindowBounds();
+    void updateCamera();
 
     /// Ogre texture which will be displayed on the negato
     ::Ogre::TexturePtr m_3DOgreTexture;
