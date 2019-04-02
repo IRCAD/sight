@@ -68,12 +68,14 @@
             <service uid="startVideo" type="::gui::action::SSlotCaller">
                 <slots>
                     <slot>frameGrabber/startCamera</slot>
+                    <slot>startVideo/setInexecutable</slot>
                 </slots>
             </service>
 
             <service uid="stopVideo" type="::gui::action::SSlotCaller">
                 <slots>
                     <slot>frameGrabber/stopCamera</slot>
+                    <slot>startVideo/setExecutable</slot>
                 </slots>
             </service>
 

@@ -119,8 +119,7 @@ vlcSizeType media_read_cb(void* opaque, unsigned char* buf, size_t len)
  */
 int media_seek_cb(void*, uint64_t)
 {
-    OSLM_INFO("seek callback was used but it's not implemented");
-
+    SLM_INFO("seek callback was used but it's not implemented");
     return 0;
 }
 
@@ -133,8 +132,9 @@ void media_close_cb(void*)
 // Object keys
 static const ::fwServices::IService::KeyType s_FRAMETL = "frameTL";
 
-//  Public slot
+//  Public slots
 const ::fwCom::Slots::SlotKeyType SFrameStreamer::s_UPDATE_FRAME_SLOT = "updateFrame";
+const ::fwCom::Slots::SlotKeyType SFrameStreamer::s_STOP_STREAM       = "stopStream";
 
 // return the preference value if found, otherwise, cast the string into value as it is
 std::string getPreferenceKey(const std::string& key)
@@ -158,6 +158,7 @@ fwServicesRegisterMacro(::fwServices::IOperator, ::videoVLC::SFrameStreamer);
 SFrameStreamer::SFrameStreamer() noexcept
 {
     newSlot(s_UPDATE_FRAME_SLOT, &SFrameStreamer::updateFrame, this);
+    newSlot(s_STOP_STREAM, &SFrameStreamer::stopStream, this);
 }
 
 //------------------------------------------------------------------------------
@@ -176,12 +177,21 @@ void SFrameStreamer::starting()
 
 void SFrameStreamer::stopping()
 {
+    this->stopStream();
+}
+
+//------------------------------------------------------------------------------
+
+void SFrameStreamer::stopStream()
+{
     if(m_mediaPlayer)
     {
         // Stop playing
         libvlc_media_player_stop(m_mediaPlayer);
         // Free the media_player
         libvlc_media_player_release(m_mediaPlayer);
+        m_mediaPlayer = nullptr;
+        m_imemData.reset();
     }
 }
 
@@ -208,11 +218,15 @@ void SFrameStreamer::updateFrame(::fwCore::HiResClock::HiResClockType timestamp 
     // Get our current frame buffer.
     ::arData::FrameTL::csptr frameTL            = this->getInput< ::arData::FrameTL >(s_FRAMETL);
     CSPTR(::arData::FrameTL::BufferType) buffer = frameTL->getClosestBuffer(timestamp);
+    if(buffer == nullptr)
+    {
+        OSLM_TRACE("No frame found for timestamp: " << timestamp);
+        return;
+    }
 
     const std::uint8_t* frame = &buffer->getElement(0);
-
     // Initialize the vlc instance and media while setting all streaming parameters (url, ip..) and encoder options.
-    if(!m_isInitialized)
+    if(m_mediaPlayer == nullptr)
     {
         const size_t imageSize = frameTL->getWidth() * frameTL->getHeight() * frameTL->getNumberOfComponents();
 
@@ -282,8 +296,6 @@ void SFrameStreamer::updateFrame(::fwCore::HiResClock::HiResClockType timestamp 
 
         // play the media_player
         libvlc_media_player_play(m_mediaPlayer);
-
-        m_isInitialized = true;
     }
 
     // Whilst vlc instance is initialized, we need only to copy our buffer to the memory structure.
@@ -298,6 +310,8 @@ void SFrameStreamer::updateFrame(::fwCore::HiResClock::HiResClockType timestamp 
 
     connections.push( s_FRAMETL, ::arData::TimeLine::s_OBJECT_PUSHED_SIG,
                       ::videoVLC::SFrameStreamer::s_UPDATE_FRAME_SLOT );
+    connections.push( s_FRAMETL, ::arData::FrameTL::s_CLEARED_SIG,
+                      ::videoVLC::SFrameStreamer::s_STOP_STREAM );
 
     return connections;
 }

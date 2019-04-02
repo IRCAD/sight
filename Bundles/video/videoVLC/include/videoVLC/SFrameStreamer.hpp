@@ -39,6 +39,8 @@ struct MemoryVideoData;
  * @section Signals Signals
  *
  * @section Slots Slots
+ * - \b updateFrame(timestamp) : stream the current frame
+ * - \b stopStream() : stop streaming
  *
  * @section XML XML Configuration
  *
@@ -46,7 +48,7 @@ struct MemoryVideoData;
    <service type="::videoVLC::SFrameStreamer">
        <in key="frameTL" uid="..." />
        <outAddr>...</outAddr>
-        <port>...</port>
+       <port>...</port>
    </service>
    @endcode
  * @subsection Input Input
@@ -68,44 +70,46 @@ public:
     VIDEOVLC_API virtual ~SFrameStreamer() noexcept override;
 
     static const ::fwCom::Slots::SlotKeyType s_UPDATE_FRAME_SLOT;
+    static const ::fwCom::Slots::SlotKeyType s_STOP_STREAM;
 
 protected:
 
     /// Do nothing
     VIDEOVLC_API virtual void starting() override;
 
-    /// Do nothing
+    /// Stop the stream and the service
     VIDEOVLC_API virtual void stopping() override;
 
-    /// Do nothing
+    /// Configure the service
     VIDEOVLC_API virtual void configuring() override;
 
     /// Do nothing
     VIDEOVLC_API virtual void updating() override;
 
-    /// Update frame slots
+    /// Update frame slot
     VIDEOVLC_API virtual void updateFrame( ::fwCore::HiResClock::HiResClockType timestamp );
+
+    /// Stop streaming slot
+    VIDEOVLC_API void stopStream();
 
 private:
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
      * this method is used for obj/srv auto connections
      *
-     * Connect ::arData::TimeLine::s_OBJECT_PUSHED_SIG to s_UPDATE_SLOT
+     * Connect ::arData::TimeLine::s_OBJECT_PUSHED_SIG to s_UPDATE_FRAME_SLOT
+     * Connect ::arData::TimeLine::s_CLEARED_SIG to s_STOP_STREAM
      */
     ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
     std::unique_ptr<MemoryVideoData> m_imemData;
 
-    libvlc_media_player_t* m_mediaPlayer;
-
-    bool m_isInitialized{false};
+    libvlc_media_player_t* m_mediaPlayer{nullptr};
 
     /// RTP video stream output address config key
     std::string m_outAddrCfg;
     /// RTP video stream port config key
     std::string m_portCfg;
-
 };
 
 } // namespace videoVLC
