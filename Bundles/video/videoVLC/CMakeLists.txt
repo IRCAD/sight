@@ -23,6 +23,7 @@ find_library(VLC_LIBRARY NAMES libvlc vlc PATHS
 #   - on macOS, it contains only libraries (like libzip_plugin.dylib)
 find_path(VLC_PLUGINS_DIR NAMES plugins PATHS
     "${CONAN_VLC_ROOT}"
+    "${CONAN_VLC_ROOT}/lib/vlc"
     "${EXTERNAL_LIBRARIES}/vlc"
     "$ENV{ProgramW6432}/VideoLAN/VLC"
     /usr/local/lib/vlc
