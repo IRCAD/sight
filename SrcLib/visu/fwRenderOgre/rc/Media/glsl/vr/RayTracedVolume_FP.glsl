@@ -105,7 +105,10 @@ RayInfos firstOpaqueRayInfos(in vec3 _f3RayPos_Ms, in vec3 _f3RayDir_Ms, in floa
         float fTFAlpha = sampleTransferFunction(fIntensity, _s1TFTexture, _f2TFWindow).a;
 #endif // PREINTEGRATION
 
-        if(fTFAlpha != 0)
+        bool bRayPosInBounds = all(lessThanEqual(_f3RayPos_Ms, vec3(1.))) &&
+                               all(greaterThanEqual(_f3RayPos_Ms, vec3(0.)));
+
+        if(fTFAlpha != 0 && bRayPosInBounds)
         {
             break;
         }
