@@ -61,49 +61,41 @@ LocationDialog::LocationDialog(::fwGui::GuiBaseObject::Key key) :
 
 ::fwData::location::ILocation::sptr LocationDialog::show()
 {
-//    QWidget* parent                             = qGuiApp->focusWindow();
+    //    QWidget* parent                             = qGuiApp->focusWindow();
     QString caption                             = QString::fromStdString(this->getTitle());
     const ::boost::filesystem::path defaultPath = this->getDefaultLocation();
     QString path                                = QString::fromStdString(defaultPath.string());
-    QString filter                              = this->fileFilters();
+    QStringList filter                          = this->fileFilters();
     ::fwData::location::ILocation::sptr location;
-//engine.load(QUrl(QStringLiteral("qrc:/FileDialog.qml")));
+
     // get the qml engine QmlApplicationEngine
     SPTR(::fwQml::QmlEngine) engine = ::fwQml::QmlEngine::getDefault();
 
     // get the path of the qml ui file in the 'rc' directory
-    //auto qmlPath = ::fwRuntime::getBundleResourceFilePath("fwGuiQml", "dialog/LocationDialog.qml");
-
-    // load the qml ui component
-    // get the qml engine QmlApplicationEngine
-
-    // get the path of the qml ui file in the 'rc' directory
     auto dialogPath = ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-0.1/dialog/LocationDialog.qml");
+    // load the qml ui component
+    m_dialog = engine->createComponent(dialogPath);
+    m_dialog->setProperty("folder", QUrl(path));
+    m_dialog->setProperty("title", caption);
+    m_dialog->setProperty("nameFilters", filter);
 
-//    engine->importModulePath(path);
-    QObject* dialog = engine->createComponent(dialogPath);
-    QMetaObject::invokeMethod(dialog, "open");
-//    QFileDialog dialog;
-//    dialog.setDirectory(path);
-//    dialog.setNameFilter(filter);
-//    dialog.setWindowTitle(caption);
+    if (m_style & ::fwGui::dialog::ILocationDialog::READ)
+    {
+        m_dialog->setProperty("selectExisting", true);
+    }
+    else
+    {
+        m_dialog->setProperty("selectExisting", false);
+    }
 
-//    if (m_style & ::fwGui::dialog::ILocationDialog::READ)
-//    {
-//        dialog.setAcceptMode(QFileDialog::AcceptMode::AcceptOpen);
-//    }
-//    else
-//    {
-//        dialog.setAcceptMode(QFileDialog::AcceptMode::AcceptSave);
-//    }
+    if (m_type == ::fwGui::dialog::ILocationDialog::MULTI_FILES)
+    {
+        SLM_ASSERT("MULTI_FILES type must have a READ style", m_style & ::fwGui::dialog::ILocationDialog::READ);
 
-//    if (m_type == ::fwGui::dialog::ILocationDialog::MULTI_FILES)
-//    {
-//        SLM_ASSERT("MULTI_FILES type must have a READ style", m_style & ::fwGui::dialog::ILocationDialog::READ);
-
-//        dialog.setFilter(QDir::Filter::Files);
-//        dialog.setFileMode(QFileDialog::FileMode::ExistingFiles);
-//        QStringList files;
+        m_dialog->setProperty("selectFolder", false);
+        m_dialog->setProperty("selectExisting", true);
+        m_dialog->setProperty("selectMultiple", true);
+        QStringList files;
 //        if (dialog.exec())
 //        {
 //            files      = dialog.selectedFiles();
@@ -122,53 +114,52 @@ LocationDialog::LocationDialog(::fwGui::GuiBaseObject::Key key) :
 //            multifiles->setPaths(paths);
 //            location = multifiles;
 //        }
-//    }
-//    else if (m_type == ::fwGui::dialog::ILocationDialog::SINGLE_FILE)
-//    {
-//        QString fileName;
-//        if ( (m_style& ::fwGui::dialog::ILocationDialog::READ) ||
-//             (m_style & ::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST) )
-//        {
-//            dialog.setFileMode(QFileDialog::FileMode::ExistingFile);
+    }
+    else if (m_type == ::fwGui::dialog::ILocationDialog::SINGLE_FILE)
+    {
+        if ( (m_style& ::fwGui::dialog::ILocationDialog::READ) ||
+             (m_style & ::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST) )
+        {
+            m_dialog->setProperty("selectExisting", true);
 //            if (dialog.exec() && !dialog.selectedFiles().empty())
 //            {
 //                fileName   = dialog.selectedFiles()[0];
 //                m_wildcard = dialog.selectedNameFilter().toStdString();
 //            }
-//        }
-//        else if ( m_style & ::fwGui::dialog::ILocationDialog::WRITE )
-//        {
+        }
+        else if ( m_style & ::fwGui::dialog::ILocationDialog::WRITE )
+        {
 //            if (dialog.exec() && !dialog.selectedFiles().empty())
 //            {
 //                fileName   = dialog.selectedFiles()[0];
 //                m_wildcard = dialog.selectedNameFilter().toStdString();
 //            }
 
-//        }
+        }
 //        if(!fileName.isNull())
 //        {
 //            ::boost::filesystem::path bpath( fileName.toStdString());
 //            location = ::fwData::location::SingleFile::New(bpath);
 //        }
-//    }
-//    else if (m_type == ::fwGui::dialog::ILocationDialog::FOLDER)
-//    {
-//        dialog.setFilter(QDir::Filter::Dirs);
-//        dialog.setAcceptMode(QFileDialog::AcceptMode::AcceptOpen);
-//        dialog.setFileMode(QFileDialog::FileMode::Directory);
+    }
+    else if (m_type == ::fwGui::dialog::ILocationDialog::FOLDER)
+    {
+        m_dialog->setProperty("selectExisting", true);
+        m_dialog->setProperty("selectFolder", true);
 
-    QString dir;
+//        QString dir;
 //        if (dialog.exec() && !dialog.selectedFiles().empty())
 //        {
 //            dir = dialog.selectedFiles()[0];
 //        }
 
-    if(!dir.isNull())
-    {
-        ::boost::filesystem::path bpath( dir.toStdString()  );
-        location = ::fwData::location::Folder::New(bpath);
+//        if(!dir.isNull())
+//        {
+//            ::boost::filesystem::path bpath( dir.toStdString()  );
+//            location = ::fwData::location::Folder::New(bpath);
+//        }
     }
-//    }
+    QMetaObject::invokeMethod(m_dialog, "open");
     return location;
 }
 
@@ -214,22 +205,20 @@ void LocationDialog::addFilter(const std::string& filterName, const std::string&
 //------------------------------------------------------------------------------
 
 // "BMP and GIF files (*.bmp *.gif)|*.bmp *.gif|PNG files (*.png)|*.png"
-QString LocationDialog::fileFilters()
+QStringList LocationDialog::fileFilters()
 {
-    std::string result;
+    QStringList result;
     std::vector< std::pair < std::string, std::string > >::const_iterator iter;
     for ( iter = m_filters.begin(); iter != m_filters.end(); ++iter)
     {
         std::string filterName   = iter->first;
         std::string rawWildcards = iter->second;
+        QString qFilterName      = QString::fromUtf8(filterName.data(), filterName.size());
+        QString qRawWildcards    = QString::fromUtf8(rawWildcards.data(), rawWildcards.size());
 
-        if (iter != m_filters.begin() )
-        {
-            result += ";;";
-        }
-        result += filterName +" (" +  rawWildcards +")";
+        result += qFilterName +" (" +  qRawWildcards +")";
     }
-    return QString::fromStdString(result);
+    return result;
 }
 
 //------------------------------------------------------------------------------

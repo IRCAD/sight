@@ -28,6 +28,8 @@
 
 #include <fwGui/dialog/ILocationDialog.hpp>
 
+#include <QObject>
+
 class QString;
 
 /**
@@ -69,12 +71,12 @@ protected:
     std::vector< std::pair< std::string, std::string > > m_filters;
 
     /// helper to transform m_filters into qt encoding ("BMP and GIF files (*.bmp *.gif);;PNG files (*.png)"
-    QString fileFilters();
+    QStringList fileFilters();
     /// Gets the current extension file selection
     FWGUIQML_API std::string getCurrentSelection() const override;
 
     std::string m_wildcard;
-
+    QObject* m_dialog;
 };
 } // namespace dialog
 } // namespace fwGuiQml

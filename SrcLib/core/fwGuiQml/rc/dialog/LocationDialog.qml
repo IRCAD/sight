@@ -6,8 +6,6 @@ import QtQuick.Dialogs 1.0
 
         folder: shortcuts.home
 
-        nameFilters: [ "Image files (*.jpg *.png)", "All files (*)" ]
-
         modality: Qt.ApplicationModal
 
         onAccepted: {
