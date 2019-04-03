@@ -713,10 +713,10 @@ macro(fwForwardInclude)
 
         string(REGEX MATCH "/usr" IS_LIB_SYSTEM ${INCLUDE})
         if(IS_LIB_SYSTEM)
-            # Use the include directly for system libraries
+            # Let the absolute directly for system libraries
             target_include_directories(${FWPROJECT_NAME} SYSTEM PUBLIC $<INSTALL_INTERFACE:${INCLUDE}>)
         else()
-            # Make the include relative to the install location for the libraries that we build
+            # Make the include path relative to the install location for the libraries that we build
             string(REGEX REPLACE "(.*)(include.*)" "\\2" RELATIVE_INCLUDE ${INCLUDE})
             target_include_directories(${FWPROJECT_NAME} SYSTEM PUBLIC $<INSTALL_INTERFACE:${RELATIVE_INCLUDE}>)
         endif()
@@ -724,7 +724,27 @@ macro(fwForwardInclude)
 endmacro()
 
 macro(fwForwardLink)
-    target_link_libraries(${FWPROJECT_NAME} PUBLIC ${ARGV})
+    set(PREFIX "")
+    foreach(LIB ${ARGV})
+        if(${LIB} STREQUAL "debug" OR ${LIB} STREQUAL "optimized" OR ${LIB} STREQUAL "general")
+            set(PREFIX ${LIB})
+        else()
+            # Do not expose the dependencies in the install interface (for the SDK)
+            target_link_libraries(${FWPROJECT_NAME} PUBLIC ${PREFIX} $<BUILD_INTERFACE:${LIB}>)
+
+            string(REGEX MATCH "/usr" IS_LIB_SYSTEM ${LIB})
+            if(IS_LIB_SYSTEM)
+                # Let the absolute path for system libraries
+                target_link_libraries(${FWPROJECT_NAME} PUBLIC ${PREFIX} $<INSTALL_INTERFACE:${LIB}>)
+            else()
+                # Make the path relative to the install location for the libraries that we build
+                # If the input is a lib module and not a path, the string will not be changed, which is ok
+                string(REGEX REPLACE "(.*)(lib/.*)" "\\2" RELATIVE_INCLUDE ${LIB})
+                target_link_libraries(${FWPROJECT_NAME} PUBLIC ${PREFIX} $<INSTALL_INTERFACE:${RELATIVE_LIB}>)
+            endif()
+            set(PREFIX "")
+        endif()
+    endforeach()
 endmacro()
 
 # Include the projects in parameter but do not export them.
@@ -1007,13 +1027,3 @@ macro(addProject PROJECT)
     unset(PROJECT_CACHE)
 endmacro()
 
-# Macro that allows to skip the find_package(PCL) which is very slow
-macro(fwQuickFindPCL)
-    if(NOT PCL_FOUND)
-        message(SEND_ERROR "PCL not found")
-    endif()
-
-    # This is necessary for now to run this, at least on Linux, in order to resolve the version number of the libraries,
-    # .i.e from -lvtksys to -lvtksys7.1
-    find_package(VTK QUIET)
-endmacro()
