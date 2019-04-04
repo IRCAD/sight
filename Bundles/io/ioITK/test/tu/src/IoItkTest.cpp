@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -109,7 +109,7 @@ void IoItkTest::testImageSeriesWriterJPG()
     imageSeries->setImage(image);
 
     // Create path
-    const ::boost::filesystem::path path = "imageSeriesJPG";
+    const ::boost::filesystem::path path = ::fwTools::System::getTemporaryFolder() / "imageSeriesJPG";
     ::boost::filesystem::create_directories(path);
 
     // Create Config
@@ -124,9 +124,6 @@ void IoItkTest::testImageSeriesWriterJPG()
                    "::ioITK::SJpgImageSeriesWriter",
                    srvCfg,
                    ::fwServices::IService::AccessType::INPUT);
-
-    // Remove path
-    ::boost::filesystem::remove_all( path.string() );
 }
 
 //------------------------------------------------------------------------------
@@ -138,7 +135,7 @@ void IoItkTest::testImageWriterJPG()
     ::fwTest::generator::Image::generateRandomImage(image, ::fwTools::Type::create("int16"));
 
     // Create path
-    const ::boost::filesystem::path path = "imageJPG";
+    const ::boost::filesystem::path path = ::fwTools::System::getTemporaryFolder() / "imageJPG";
     ::boost::filesystem::create_directories( path );
 
     // Create Config
@@ -154,9 +151,6 @@ void IoItkTest::testImageWriterJPG()
         "::ioITK::JpgImageWriterService",
         srvCfg,
         ::fwServices::IService::AccessType::INPUT);
-
-    // Remove path
-    ::boost::filesystem::remove_all( path.string() );
 }
 
 //------------------------------------------------------------------------------
@@ -178,13 +172,13 @@ void IoItkTest::testSaveLoadInr()
     image->setOrigin(origin);
 
     // save image in inr
-    const ::boost::filesystem::path PATH = "imageInrTest/image.inr.gz";
-    ::boost::filesystem::create_directories( PATH.parent_path() );
+    const ::boost::filesystem::path path = ::fwTools::System::getTemporaryFolder() / "imageInrTest/image.inr.gz";
+    ::boost::filesystem::create_directories( path.parent_path() );
 
     // Create Config
     ::fwRuntime::EConfigurationElement::sptr srvCfg  = ::fwRuntime::EConfigurationElement::New("service");
     ::fwRuntime::EConfigurationElement::sptr fileCfg = ::fwRuntime::EConfigurationElement::New("file");
-    fileCfg->setValue(PATH.string());
+    fileCfg->setValue(path.string());
     srvCfg->addConfigurationElement(fileCfg);
 
     // Create and execute service
@@ -203,8 +197,6 @@ void IoItkTest::testSaveLoadInr()
         "::ioITK::InrImageReaderService",
         srvCfg,
         ::fwServices::IService::AccessType::INOUT);
-
-    ::boost::filesystem::remove_all( PATH.parent_path().string() );
 
     ::fwData::Image::SpacingType spacing = image2->getSpacing();
     std::transform(spacing.begin(), spacing.end(), spacing.begin(), tolerance);
@@ -233,13 +225,13 @@ void IoItkTest::ImageSeriesInrTest()
     image->setOrigin(origin);
 
     // save image in inr
-    const ::boost::filesystem::path PATH = "imageInrTest/imageseries.inr.gz";
-    ::boost::filesystem::create_directories( PATH.parent_path() );
+    const ::boost::filesystem::path path = ::fwTools::System::getTemporaryFolder() / "imageInrTest/imageseries.inr.gz";
+    ::boost::filesystem::create_directories( path.parent_path() );
 
     // Create Config
     ::fwRuntime::EConfigurationElement::sptr srvCfg  = ::fwRuntime::EConfigurationElement::New("service");
     ::fwRuntime::EConfigurationElement::sptr fileCfg = ::fwRuntime::EConfigurationElement::New("file");
-    fileCfg->setValue(PATH.string());
+    fileCfg->setValue(path.string());
     srvCfg->addConfigurationElement(fileCfg);
 
     // Create and execute service
@@ -258,8 +250,6 @@ void IoItkTest::ImageSeriesInrTest()
         "::ioITK::InrImageReaderService",
         srvCfg,
         ::fwServices::IService::AccessType::INOUT);
-
-    ::boost::filesystem::remove_all( PATH.parent_path().string() );
 
     ::fwData::Image::SpacingType spacing = image2->getSpacing();
     std::transform(spacing.begin(), spacing.end(), spacing.begin(), tolerance);

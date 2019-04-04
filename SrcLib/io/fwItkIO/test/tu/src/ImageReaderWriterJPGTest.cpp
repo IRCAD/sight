@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -32,6 +32,8 @@
 
 #include <fwTest/Data.hpp>
 #include <fwTest/generator/Image.hpp>
+
+#include <fwTools/System.hpp>
 
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
@@ -68,14 +70,12 @@ void ImageReaderWriterJPGTest::testImageWriter()
     ::fwTest::generator::Image::generateRandomImage(image, ::fwTools::Type::create("int16"));
 
     // save image in inr
-    const ::boost::filesystem::path PATH = "imageJPG";
+    const ::boost::filesystem::path PATH = ::fwTools::System::getTemporaryFolder() / "imageJPG";
     ::boost::filesystem::create_directories( PATH );
     ::fwItkIO::JpgImageWriter::sptr myWriter = ::fwItkIO::JpgImageWriter::New();
     myWriter->setObject(image);
     myWriter->setFolder(PATH);
     CPPUNIT_ASSERT_NO_THROW(myWriter->write());
-
-    ::boost::filesystem::remove_all( PATH.string() );
 }
 
 //------------------------------------------------------------------------------
@@ -95,14 +95,12 @@ void ImageReaderWriterJPGTest::testImageWriter2()
     myReader->read();
 
     // save image in inr
-    const ::boost::filesystem::path PATH = "imageJPG";
+    const ::boost::filesystem::path PATH = ::fwTools::System::getTemporaryFolder() / "imageJPG";
     ::boost::filesystem::create_directories( PATH );
     ::fwItkIO::JpgImageWriter::sptr myWriter = ::fwItkIO::JpgImageWriter::New();
     myWriter->setObject(image);
     myWriter->setFolder(PATH);
     CPPUNIT_ASSERT_NO_THROW(myWriter->write());
-
-    ::boost::filesystem::remove_all( PATH.string() );
 }
 
 //------------------------------------------------------------------------------
