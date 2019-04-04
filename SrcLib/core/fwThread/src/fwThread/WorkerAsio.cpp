@@ -184,6 +184,8 @@ WorkerAsio::~WorkerAsio()
 
     if(m_thread->joinable())
     {
+        FW_DEPRECATED_MSG("Try to call stop() from the caller thread before. It is dangerous to rely on the destructor"
+                          "to join the thread because it could be called from itself.", "20.0");
         this->stop();
     }
 }
@@ -196,6 +198,8 @@ void WorkerAsio::stop()
     std::unique_lock<std::recursive_mutex> lock(m_stopMutex);
 
     SLM_ASSERT("Thread is not joinable", m_thread->joinable());
+    SLM_ASSERT("Can not destroy a thread while running it. Try to call stop() from the caller thread before.",
+               m_thread->get_id() != ::fwThread::getCurrentThreadId());
 
     m_work.reset();
     m_thread->join();
