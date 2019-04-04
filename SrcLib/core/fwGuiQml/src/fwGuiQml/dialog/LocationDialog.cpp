@@ -36,6 +36,7 @@
 #include <boost/filesystem/path.hpp>
 #include <boost/tokenizer.hpp>
 
+#include <QDebug>
 #include <QFileDialog>
 #include <QGuiApplication>
 #include <QString>
@@ -66,20 +67,20 @@ LocationDialog::LocationDialog(::fwGui::GuiBaseObject::Key key) :
     const ::boost::filesystem::path defaultPath = this->getDefaultLocation();
     QString path                                = QString::fromStdString(defaultPath.string());
     QStringList filter                          = this->fileFilters();
-    ::fwData::location::ILocation::sptr location;
-
     // get the qml engine QmlApplicationEngine
     SPTR(::fwQml::QmlEngine) engine = ::fwQml::QmlEngine::getDefault();
-
+    m_isfinish                      = false;
     // get the path of the qml ui file in the 'rc' directory
     auto dialogPath = ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-0.1/dialog/LocationDialog.qml");
+
     // load the qml ui component
     m_dialog = engine->createComponent(dialogPath);
     m_dialog->setProperty("folder", QUrl(path));
     m_dialog->setProperty("title", caption);
     m_dialog->setProperty("nameFilters", filter);
 
-    if (m_style & ::fwGui::dialog::ILocationDialog::READ)
+    if ( (m_style& ::fwGui::dialog::ILocationDialog::READ) ||
+         (m_style & ::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST))
     {
         m_dialog->setProperty("selectExisting", true);
     }
@@ -96,71 +97,55 @@ LocationDialog::LocationDialog(::fwGui::GuiBaseObject::Key key) :
         m_dialog->setProperty("selectExisting", true);
         m_dialog->setProperty("selectMultiple", true);
         QStringList files;
-//        if (dialog.exec())
-//        {
-//            files      = dialog.selectedFiles();
-//            m_wildcard = dialog.selectedNameFilter().toStdString();
-
-//        }
-//        if(!files.isEmpty())
-//        {
-//            ::fwData::location::MultiFiles::sptr multifiles = ::fwData::location::MultiFiles::New();
-//            std::vector< ::boost::filesystem::path > paths;
-//            for (QString filename : files)
-//            {
-//                ::boost::filesystem::path bpath( filename.toStdString() );
-//                paths.push_back(bpath);
-//            }
-//            multifiles->setPaths(paths);
-//            location = multifiles;
-//        }
-    }
-    else if (m_type == ::fwGui::dialog::ILocationDialog::SINGLE_FILE)
-    {
-        if ( (m_style& ::fwGui::dialog::ILocationDialog::READ) ||
-             (m_style & ::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST) )
-        {
-            m_dialog->setProperty("selectExisting", true);
-//            if (dialog.exec() && !dialog.selectedFiles().empty())
-//            {
-//                fileName   = dialog.selectedFiles()[0];
-//                m_wildcard = dialog.selectedNameFilter().toStdString();
-//            }
-        }
-        else if ( m_style & ::fwGui::dialog::ILocationDialog::WRITE )
-        {
-//            if (dialog.exec() && !dialog.selectedFiles().empty())
-//            {
-//                fileName   = dialog.selectedFiles()[0];
-//                m_wildcard = dialog.selectedNameFilter().toStdString();
-//            }
-
-        }
-//        if(!fileName.isNull())
-//        {
-//            ::boost::filesystem::path bpath( fileName.toStdString());
-//            location = ::fwData::location::SingleFile::New(bpath);
-//        }
     }
     else if (m_type == ::fwGui::dialog::ILocationDialog::FOLDER)
     {
         m_dialog->setProperty("selectExisting", true);
         m_dialog->setProperty("selectFolder", true);
-
-//        QString dir;
-//        if (dialog.exec() && !dialog.selectedFiles().empty())
-//        {
-//            dir = dialog.selectedFiles()[0];
-//        }
-
-//        if(!dir.isNull())
-//        {
-//            ::boost::filesystem::path bpath( dir.toStdString()  );
-//            location = ::fwData::location::Folder::New(bpath);
-//        }
     }
+    QObject::connect(m_dialog, SIGNAL(filesNameChange(QVariant)),
+                     this, SLOT(resultDialog(QVariant)));
     QMetaObject::invokeMethod(m_dialog, "open");
-    return location;
+    // boolean to check first if it has called the slot or secondly if the FileDialog isn't visible
+    while (!m_isfinish && m_dialog->property("visible").toBool())
+    {
+        qGuiApp->processEvents();
+    }
+    delete m_dialog;
+    return m_location;
+}
+
+//------------------------------------------------------------------------------
+
+void LocationDialog::resultDialog(const QVariant& msg)
+{
+    QList<QUrl> files = msg.value<QList<QUrl> >();
+    m_wildcard = m_dialog->property("selectedNameFilter").toString().toStdString();
+    if (!files.isEmpty() && !files.first().isEmpty())
+    {
+        if (m_type == ::fwGui::dialog::ILocationDialog::MULTI_FILES)
+        {
+            QStringList files;
+            ::fwData::location::MultiFiles::sptr multifiles = ::fwData::location::MultiFiles::New();
+            std::vector< ::boost::filesystem::path > paths;
+            for (QUrl filename : files)
+            {
+                ::boost::filesystem::path bpath( filename.toLocalFile().toStdString() );
+                paths.push_back(bpath);
+            }
+            multifiles->setPaths(paths);
+            m_location = multifiles;
+        }
+        else if (m_type == ::fwGui::dialog::ILocationDialog::SINGLE_FILE ||
+                 m_type == ::fwGui::dialog::ILocationDialog::FOLDER)
+        {
+            qDebug() << "File:" << files.first().toString();
+            ::boost::filesystem::path bpath( files.first().toLocalFile().toStdString());
+            m_location = ::fwData::location::SingleFile::New(bpath);
+        }
+    }
+    m_isfinish = true;
+    qDebug() << "Called the C++ slot with message:" << files;
 }
 
 //------------------------------------------------------------------------------

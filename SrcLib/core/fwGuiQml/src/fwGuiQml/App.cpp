@@ -81,7 +81,7 @@ void App::onExit()
     QGuiApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
     QGuiApplication::restoreOverrideCursor();
 
-    qApp->flush();
+    qApp->sendPostedEvents();
     qApp->exit(0);
 }
 

@@ -43,8 +43,10 @@ namespace dialog
  * @brief   Defines the generic file/folder dialog for IHM.
  *
  */
-class FWGUIQML_CLASS_API LocationDialog : public ::fwGui::dialog::ILocationDialog
+class FWGUIQML_CLASS_API LocationDialog : public QObject,
+                                          public ::fwGui::dialog::ILocationDialog
 {
+Q_OBJECT
 
 public:
 
@@ -76,7 +78,12 @@ protected:
     FWGUIQML_API std::string getCurrentSelection() const override;
 
     std::string m_wildcard;
+    ::fwData::location::ILocation::sptr m_location;
+    bool m_isfinish;
     QObject* m_dialog;
+
+protected Q_SLOTS:
+    void resultDialog(const QVariant& msg);
 };
 } // namespace dialog
 } // namespace fwGuiQml
