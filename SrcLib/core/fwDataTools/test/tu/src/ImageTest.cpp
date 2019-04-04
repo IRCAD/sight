@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,8 +22,8 @@
 
 #include "ImageTest.hpp"
 
-#include <fwDataTools/Image.hpp>
 #include <fwDataTools/helper/Array.hpp>
+#include <fwDataTools/Image.hpp>
 
 #include <fwTest/generator/Image.hpp>
 
@@ -56,58 +56,57 @@ void ImageTest::tearDown()
 
 //------------------------------------------------------------------------------
 
+void TestRoiApplyMacro(const std::string& imageTypeName, const std::string& roiTypeName)
+{
+    std::stringstream ss;
+    ss
+        << "Test failed with types : img : " << imageTypeName
+        << ", roi : " << roiTypeName;
+    std::string message = ss.str();
+    ::fwTools::Type imageType(imageTypeName);
+    ::fwTools::Type roiType(roiTypeName);
+    ::fwData::Image::sptr imageRef;
+    ::fwData::Image::sptr image = ::fwData::Image::New();
+    ::fwData::Image::sptr roi   = ::fwData::Image::New();
+
+    ::fwTest::generator::Image::generateRandomImage(image, imageType);
+    ::fwData::Image::SizeType size       = image->getSize();
+    ::fwData::Image::SpacingType spacing = image->getSpacing();
+    ::fwData::Image::OriginType origin   = image->getOrigin();
+    ::fwTest::generator::Image::generateImage(roi, size, spacing, origin, roiType);
+
+    imageRef = ::fwData::Object::copy(image);
+
+    ::fwData::Array::sptr imgData;
+    ::fwData::Array::sptr roiData;
+    imgData = image->getDataArray();
+    roiData = roi->getDataArray();
+
+    ::fwDataTools::helper::Array roiDataHelper(roiData);
+
+    CPPUNIT_ASSERT(imgData);
+    CPPUNIT_ASSERT(imgData->getNumberOfElements());
+
+    CPPUNIT_ASSERT(roiData);
+    CPPUNIT_ASSERT(roiData->getNumberOfElements());
+
+    ::fwTest::generator::Image::randomizeArray(roi->getDataArray());
+
+    char* begin = roiDataHelper.begin();
+    char* end   = roiDataHelper.end();
+    size_t part = (end - begin)/3;
+
+    std::fill(begin, begin + part, 0);
+    std::fill(end - part, end, 0);
+
+    ::fwDataTools::Image::applyRoi(image, roi);
+    CPPUNIT_ASSERT_MESSAGE( message, ::fwDataTools::Image::isRoiApplyed(imageRef, roi, image));
+}
+
+//------------------------------------------------------------------------------
+
 void ImageTest::roiApplyTest()
 {
-
-#define TestRoiApplyMacro(imageTypeName, roiTypeName)                                                   \
-    {                                                                                                   \
-        std::stringstream ss;                                                                           \
-        ss                                                                                              \
-            << "Test failed with types : img : " << imageTypeName                                       \
-            << ", roi : " << roiTypeName;                                                               \
-        std::string message = ss.str();                                                                 \
-        ::fwTools::Type imageType(imageTypeName);                                                       \
-        ::fwTools::Type roiType(roiTypeName);                                                           \
-        ::fwData::Image::sptr imageRef;                                                                 \
-        ::fwData::Image::sptr image = ::fwData::Image::New();                                                                 \
-        ::fwData::Image::sptr roi   = ::fwData::Image::New();                                                                   \
-                                                                                                        \
-        ::fwTest::generator::Image::generateRandomImage(image, imageType);                                    \
-        ::fwData::Image::SizeType size       = image->getSize();                                           \
-        ::fwData::Image::SpacingType spacing = image->getSpacing();                                     \
-        ::fwData::Image::OriginType origin   = image->getOrigin();                                       \
-        ::fwTest::generator::Image::generateImage(roi, size, spacing, origin, roiType);                       \
-                                                                                                        \
-        imageRef = ::fwData::Object::copy(image);                                                       \
-                                                                                                        \
-        ::fwData::Array::sptr imgData;                                                                  \
-        ::fwData::Array::sptr roiData;                                                                  \
-        imgData = image->getDataArray();                                                                \
-        roiData = roi->getDataArray();                                                                  \
-                                                                                                        \
-        ::fwDataTools::helper::Array roiDataHelper(roiData);                                                \
-                                                                                                        \
-        CPPUNIT_ASSERT(imgData);                                                                        \
-        CPPUNIT_ASSERT(imgData->getNumberOfElements());                                                 \
-                                                                                                        \
-        CPPUNIT_ASSERT(roiData);                                                                        \
-        CPPUNIT_ASSERT(roiData->getNumberOfElements());                                                 \
-                                                                                                        \
-        ::fwTest::generator::Image::randomizeArray(roi->getDataArray());                                      \
-                                                                                                        \
-        char* begin = roiDataHelper.begin();                                                            \
-        char* end   = roiDataHelper.end();                                                              \
-        size_t part = (end - begin)/3;                                                                  \
-                                                                                                        \
-        std::fill(begin, begin + part, 0);                                                              \
-        std::fill(end - part, end, 0);                                                                  \
-                                                                                                        \
-        ::fwDataTools::Image::applyRoi(image, roi);                                                     \
-        CPPUNIT_ASSERT_MESSAGE( message, ::fwDataTools::Image::isRoiApplyed(imageRef, roi, image));     \
-    }
-
-
-
     TestRoiApplyMacro( "int8", "int8"  );
     TestRoiApplyMacro( "int8", "int16" );
     TestRoiApplyMacro( "int8", "int32" );
@@ -183,7 +182,6 @@ void ImageTest::roiApplyTest()
 //    TestRoiApplyMacro( "double", "float" );
 //    TestRoiApplyMacro( "double", "double");
 //#endif
-
 
     // 64 bit type not supported by DynamicType/Dispatcher
 
