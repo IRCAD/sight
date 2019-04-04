@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -70,7 +70,7 @@ static struct CleanZombies
 {
     CleanZombies()
     {
-        System::cleanZombies(System::getTempPath());
+        System::cleanAllTempFolders(System::getTempPath());
     }
 } autoCleanZombies;
 
@@ -211,44 +211,52 @@ int System::tempFolderPID(const ::boost::filesystem::path& dir) noexcept
 
     const ::boost::regex pidFilter( "([[:digit:]]+)\\.pid" );
 
-    fs::directory_iterator i( dir );
-    fs::directory_iterator endIter;
-
     int pid = 0;
 
-    for(; i != endIter; ++i )
+    try
     {
-        // Skip if not a dir
-        if( !fs::is_regular_file( i->status() ) )
-        {
-            continue;
-        }
+        fs::directory_iterator i( dir );
+        fs::directory_iterator endIter;
 
-        ::boost::smatch what;
-
-        // Skip if no match
-        std::string s = i->path().filename().string();
-        if( !::boost::regex_match( s, what, pidFilter ) )
+        for(; i != endIter; ++i )
         {
-            continue;
-        }
+            // Skip if not a dir
+            if( !fs::is_regular_file( i->status() ) )
+            {
+                continue;
+            }
 
-        try
-        {
-            pid = ::boost::lexical_cast< int >(what.str(1));
-            break;
-        }
-        catch (boost::bad_lexical_cast&)
-        {
-        }
+            ::boost::smatch what;
 
+            // Skip if no match
+            std::string s = i->path().filename().string();
+            if( !::boost::regex_match( s, what, pidFilter ) )
+            {
+                continue;
+            }
+
+            try
+            {
+                pid = ::boost::lexical_cast< int >(what.str(1));
+                break;
+            }
+            catch (boost::bad_lexical_cast&)
+            {
+            }
+        }
     }
+    catch (std::exception& e)
+    {
+        // The directory might have been removed by another process
+        return 0;
+    }
+
     return pid;
 }
 
 //------------------------------------------------------------------------------
 
-void System::cleanZombies(const ::boost::filesystem::path& dir) noexcept
+void System::cleanAllTempFolders(const ::boost::filesystem::path& dir) noexcept
 {
     namespace fs = ::boost::filesystem;
 
@@ -280,7 +288,7 @@ void System::cleanZombies(const ::boost::filesystem::path& dir) noexcept
 
     for( const fs::path& foundTmpDir :  allTempFolders)
     {
-        int pid = tempFolderPID(foundTmpDir);
+        const int pid = tempFolderPID(foundTmpDir);
 
         if(pid && !isProcessRunning(pid))
         {
@@ -289,7 +297,7 @@ void System::cleanZombies(const ::boost::filesystem::path& dir) noexcept
             ::boost::system::error_code er;
             fs::remove_all(foundTmpDir, er);
 
-            OSLM_INFO_IF( "Failed to remove " << foundTmpDir << " : " << er.message(), er.value() != 0);
+            OSLM_WARN_IF( "Failed to remove " << foundTmpDir << " : " << er.message(), er.value() != 0);
         }
     }
 
