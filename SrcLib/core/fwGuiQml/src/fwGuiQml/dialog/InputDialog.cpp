@@ -24,6 +24,10 @@
 
 #include <fwGui/registry/macros.hpp>
 
+#include <fwQml/QmlEngine.hpp>
+
+#include <fwRuntime/operations.hpp>
+
 #include <boost/assign/list_of.hpp>
 
 #include <QGuiApplication>
@@ -79,20 +83,43 @@ std::string InputDialog::getInput()
 {
     QString title = QObject::tr(m_title.c_str());
     QString text  = QObject::tr(m_message.c_str());
+    // get the qml engine QmlApplicationEngine
+    SPTR(::fwQml::QmlEngine) engine = ::fwQml::QmlEngine::getDefault();
+    m_isClicked                      = false;
+    // get the path of the qml ui file in the 'rc' directory
+    auto dialogPath = ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-0.1/dialog/LocationDialog.qml");
 
-    bool IsOkClicked;
-    //QString outputText = QInputDialog::getText(
-    //  qGuiApp->focusWindow(), title, text, QLineEdit::Normal, QString::fromStdString(m_input), &IsOkClicked);
-
-    if ( IsOkClicked)
+    // load the qml ui component
+    m_dialog = engine->createComponent(dialogPath);
+    m_dialog->setProperty("title", title);
+    m_dialog->findChild< QObject* >("message")->setProperty("text", text);
+    m_dialog->findChild< QObject* >("answer")->setProperty("placeholderText", QObject::tr(m_input.c_str()));
+    //slot to retrieve the result and open the dialog with invoke
+    QObject::connect(m_dialog, SIGNAL(filesNameChange(QVariant, bool)),
+                     this, SLOT(resultDialog(QVariant, bool)));
+    QMetaObject::invokeMethod(m_dialog, "open");
+    // boolean to check first if it has called the slot or secondly if the FileDialog isn't visible
+    while (!m_isClicked && m_dialog->property("visible").toBool())
     {
-        //    m_input = outputText.toStdString();
+        qGuiApp->processEvents();
+    }
+
+    return m_input;
+}
+
+//------------------------------------------------------------------------------
+
+void InputDialog::resultDialog(const QVariant& msg, bool isOk)
+{
+    if (isOk)
+    {
+        m_input = msg.toString().toStdString();
     }
     else
     {
         m_input = "";
     }
-    return m_input;
+    m_isClicked = true;
 }
 
 //------------------------------------------------------------------------------

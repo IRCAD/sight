@@ -28,6 +28,8 @@
 
 #include <fwGui/dialog/IInputDialog.hpp>
 
+#include <QObject>
+
 #include <string>
 
 namespace fwGuiQml
@@ -46,9 +48,10 @@ namespace dialog
    std::string inputText = inputDlg.getInput();
    @endcode
  */
-class FWGUIQML_CLASS_API InputDialog : public ::fwGui::dialog::IInputDialog
+class FWGUIQML_CLASS_API InputDialog : public QObject,
+                                       public ::fwGui::dialog::IInputDialog
 {
-
+Q_OBJECT
 public:
 
     fwCoreClassDefinitionsWithFactoryMacro( (InputDialog)(::fwGui::dialog::IInputDialog),
@@ -78,7 +81,13 @@ protected:
     std::string m_message;
     /// Text inputed
     std::string m_input;
+    /// dialog box
+    QObject* m_dialog;
+    /// boolean to check if button was pressed
+    bool m_isClicked;
 
+protected Q_SLOTS:
+    void resultDialog(const QVariant& msg, bool isOk);
 };
 } // namespace dialog
 } // namespace fwGuiQml
