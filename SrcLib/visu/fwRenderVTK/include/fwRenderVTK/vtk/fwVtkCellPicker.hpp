@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -87,7 +87,7 @@ protected:
     int SubId; // picked cell subId
     double PCoords[3]; // picked cell parametric coordinates
 
-    virtual double IntersectWithLine(double p1[3], double p2[3], double tol,
+    virtual double IntersectWithLine(const double p1[3], const double p2[3], double tol,
                                      vtkAssemblyPath* path, vtkProp3D* p,
                                      vtkAbstractMapper3D* m) override;
     void Initialize() override;

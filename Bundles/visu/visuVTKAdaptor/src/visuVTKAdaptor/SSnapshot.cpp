@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -101,7 +101,7 @@ void SSnapshot::snapToImage()
         ::fwData::Image::sptr imageToSnap = ::fwData::Image::New();
 
         vtkWindowToImageFilter* snapper = vtkWindowToImageFilter::New();
-        snapper->SetMagnification( 1 );
+        snapper->SetScale( 1 );
         snapper->SetInput( this->getRenderer()->GetRenderWindow() );
         snapper->Update();
 
@@ -148,7 +148,7 @@ void SSnapshot::snap(std::string filePath)
     }
 
     vtkWindowToImageFilter* snapper = vtkWindowToImageFilter::New();
-    snapper->SetMagnification( 1 );
+    snapper->SetScale( 1 );
     snapper->SetInput( this->getRenderer()->GetRenderWindow() );
 
     writer->SetInputConnection( snapper->GetOutputPort() );

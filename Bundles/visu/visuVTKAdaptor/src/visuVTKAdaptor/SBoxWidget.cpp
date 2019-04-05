@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -151,10 +151,10 @@ void SBoxWidget::starting()
 void SBoxWidget::stopping()
 {
     m_transform->Delete();
-    m_transform = 0;
+    m_transform = nullptr;
     m_vtkBoxWidget->RemoveObserver( m_boxWidgetCommand );
     m_vtkBoxWidget->Delete();
-    m_vtkBoxWidget = 0;
+    m_vtkBoxWidget = nullptr;
     this->requestRender();
 }
 
