@@ -229,7 +229,7 @@ int System::tempFolderPID(const ::boost::filesystem::path& dir) noexcept
             ::boost::smatch what;
 
             // Skip if no match
-            std::string s = i->path().filename().string();
+            const std::string s = i->path().filename().string();
             if( !::boost::regex_match( s, what, pidFilter ) )
             {
                 continue;
