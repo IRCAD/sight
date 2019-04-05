@@ -65,26 +65,26 @@ void Image::generateImage(::fwData::Image::sptr image,
 
 void Image::generateRandomImage(::fwData::Image::sptr image, ::fwTools::Type type)
 {
-    static const int s_SIZE        = 50;
-    static const int s_DOUBLE_SIZE = s_SIZE * 2;
+    constexpr int SIZE        = 50;
+    constexpr int DOUBLE_SIZE = SIZE * 2;
     image->setType(type);
 
     ::fwData::Image::SizeType size(3);
-    size[0] = rand() % s_SIZE + 2;
-    size[1] = rand() % s_SIZE + 2;
-    size[2] = rand() % s_SIZE + 2;
+    size[0] = rand() % SIZE + 2;
+    size[1] = rand() % SIZE + 2;
+    size[2] = rand() % SIZE + 2;
     image->setSize(size);
 
     std::vector< double > spacing(3);
-    spacing[0] = (rand() % s_DOUBLE_SIZE +1) / double(s_SIZE);
-    spacing[1] = (rand() % s_DOUBLE_SIZE +1) / double(s_SIZE);
-    spacing[2] = (rand() % s_DOUBLE_SIZE +1) / double(s_SIZE);
+    spacing[0] = (rand() % DOUBLE_SIZE +1) / double(SIZE);
+    spacing[1] = (rand() % DOUBLE_SIZE +1) / double(SIZE);
+    spacing[2] = (rand() % DOUBLE_SIZE +1) / double(SIZE);
     image->setSpacing(spacing);
 
     std::vector< double > origin(3);
-    origin[0] = (rand() % s_DOUBLE_SIZE - s_SIZE) / (s_SIZE / 10.);
-    origin[1] = (rand() % s_DOUBLE_SIZE - s_SIZE) / (s_SIZE / 10.);
-    origin[2] = (rand() % s_DOUBLE_SIZE - s_SIZE) / (s_SIZE / 10.);
+    origin[0] = (rand() % DOUBLE_SIZE - SIZE) / (SIZE / 10.);
+    origin[1] = (rand() % DOUBLE_SIZE - SIZE) / (SIZE / 10.);
+    origin[2] = (rand() % DOUBLE_SIZE - SIZE) / (SIZE / 10.);
     image->setOrigin(origin);
 
     image->allocate();
@@ -92,8 +92,8 @@ void Image::generateRandomImage(::fwData::Image::sptr image, ::fwTools::Type typ
     ::fwData::Array::sptr array = image->getDataArray();
     randomizeArray(array);
 
-    image->setWindowWidth( (rand() % s_DOUBLE_SIZE) / double(s_SIZE / 10.) + 1);
-    image->setWindowCenter((rand() % s_DOUBLE_SIZE - s_SIZE) / double(s_SIZE / 10.));
+    image->setWindowWidth( (rand() % DOUBLE_SIZE) / double(SIZE / 10.) + 1);
+    image->setWindowCenter((rand() % DOUBLE_SIZE - SIZE) / double(SIZE / 10.));
 }
 
 //------------------------------------------------------------------------------
