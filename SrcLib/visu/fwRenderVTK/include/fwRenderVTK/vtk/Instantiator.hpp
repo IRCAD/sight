@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,10 +20,12 @@
  *
  ***********************************************************************/
 
-#ifndef __FWRENDERVTK_VTK_INSTANTIATOR_HPP__
-#define __FWRENDERVTK_VTK_INSTANTIATOR_HPP__
+#pragma once
 
 #include "fwRenderVTK/config.hpp"
+
+#include <vtkObjectFactory.h>
+#include <vtkVersion.h>
 
 namespace fwRenderVTK
 {
@@ -31,14 +33,37 @@ namespace fwRenderVTK
 namespace vtk
 {
 
-class FWRENDERVTK_CLASS_API Instantiator
+/**
+ * @brief The Instantiator is a vtk factory object used to instantiate our sight-vtk object.
+ * You only need to register your sight-vtk object in the factory when the object will be
+ * instantiate from it's name in string (for example in xml).
+ */
+class FWRENDERVTK_CLASS_API Instantiator : public vtkObjectFactory
 {
+
 public:
-    FWRENDERVTK_API static void ClassInitialize();
-    FWRENDERVTK_API static void ClassFinalize();
+    /// Constructor: performs the registration in the factory.
+    Instantiator();
+
+    /// Creates the object.
+    static Instantiator* New()
+    {
+        Instantiator* f = new Instantiator;
+        f->InitializeObjectBase();
+        return f;
+    }
+    /// Overrides.
+    const char* GetVTKSourceVersion() override
+    {
+        return VTK_SOURCE_VERSION;
+    }
+    /// Overrrides.
+    const char* GetDescription() override
+    {
+        return "The sight-vtk factory (fwRenderVTK).";
+    }
 };
 
-} //vtk
-} //fwRenderVTK
+} //namespace vtk
 
-#endif //__FWRENDERVTK_VTK_INSTANTIATOR_HPP__
+} //namespace fwRenderVTK

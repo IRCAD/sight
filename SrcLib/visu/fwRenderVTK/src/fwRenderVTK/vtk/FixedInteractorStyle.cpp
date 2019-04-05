@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2015 IRCAD France
- * Copyright (C) 2014-2015 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,26 +20,14 @@
  *
  ***********************************************************************/
 
-#include "visuVTKARAdaptor/FixedInteractorStyle.hpp"
+#include "fwRenderVTK/vtk/FixedInteractorStyle.hpp"
 
 #include <fwCore/base.hpp>
 
 #include <vtkCommand.h>
 #include <vtkObjectFactory.h>
 
-//------------------------------------------------------------------------------
-
-vtkObject* vtkInstantiatorFixedInteractorStyleNew()
-{
-    return FixedInteractorStyle::New();
-}
-
-//------------------------------------------------------------------------------
-
-FixedInteractorStyle* FixedInteractorStyle::New()
-{
-    return new FixedInteractorStyle;
-}
+vtkStandardNewMacro(FixedInteractorStyle);
 
 //------------------------------------------------------------------------------
 

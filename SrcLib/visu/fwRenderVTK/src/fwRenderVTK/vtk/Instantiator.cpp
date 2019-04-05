@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,30 +22,10 @@
 
 #include "fwRenderVTK/vtk/Instantiator.hpp"
 
-#include "fwRenderVTK/vtk/fwVtkBoxRepresentation.hpp"
+#include "fwRenderVTK/vtk/FixedInteractorStyle.hpp"
 #include "fwRenderVTK/vtk/fwVtkCellPicker.hpp"
-#include "fwRenderVTK/vtk/fwVtkPicker.hpp"
 #include "fwRenderVTK/vtk/InteractorStyle2DForNegato.hpp"
 #include "fwRenderVTK/vtk/InteractorStyle3DForNegato.hpp"
-
-#include <fwCore/base.hpp>
-
-#include <vtkInstantiator.h>
-#include <vtkVersion.h>
-
-#if (VTK_MAJOR_VERSION < 6 || (VTK_MAJOR_VERSION == 6 && VTK_MINOR_VERSION < 1))
-extern vtkObject* vtkInstantiatorfwVtkBoxRepresentationNew();
-extern vtkObject* vtkInstantiatorfwVtkPickerNew();
-extern vtkObject* vtkInstantiatorfwVtkCellPickerNew();
-extern vtkObject* vtkInstantiatorInteractorStyle2DForNegatoNew();
-extern vtkObject* vtkInstantiatorInteractorStyle3DForNegatoNew();
-#else
-vtkInstantiatorNewMacro(fwVtkBoxRepresentation);
-vtkInstantiatorNewMacro(fwVtkPicker);
-vtkInstantiatorNewMacro(fwVtkCellPicker);
-vtkInstantiatorNewMacro(InteractorStyle2DForNegato);
-vtkInstantiatorNewMacro(InteractorStyle3DForNegato);
-#endif
 
 namespace fwRenderVTK
 {
@@ -53,50 +33,46 @@ namespace fwRenderVTK
 namespace vtk
 {
 
+// Macro to bind creation of vtk object, it will generates "vtkObjectFactory<name>" function.
+// each "vtkObjectFactory<name>" will call the <name>::New().
+VTK_CREATE_CREATE_FUNCTION(fwVtkCellPicker);
+VTK_CREATE_CREATE_FUNCTION(InteractorStyle2DForNegato);
+VTK_CREATE_CREATE_FUNCTION(InteractorStyle3DForNegato);
+VTK_CREATE_CREATE_FUNCTION(FixedInteractorStyle);
+
 //------------------------------------------------------------------------------
 
-void Instantiator::ClassInitialize()
+Instantiator::Instantiator()
 {
-    vtkInstantiator::RegisterInstantiator("fwVtkBoxRepresentation", vtkInstantiatorfwVtkBoxRepresentationNew);
-    vtkInstantiator::RegisterInstantiator("fwVtkPicker", vtkInstantiatorfwVtkPickerNew);
-    vtkInstantiator::RegisterInstantiator("fwVtkCellPicker", vtkInstantiatorfwVtkCellPickerNew);
-    vtkInstantiator::RegisterInstantiator("InteractorStyle2DForNegato", vtkInstantiatorInteractorStyle2DForNegatoNew);
-    vtkInstantiator::RegisterInstantiator("InteractorStyle3DForNegato", vtkInstantiatorInteractorStyle3DForNegatoNew);
+    // Registers each needed sight-vtk class to be called by name (in xml for example).
+    this->RegisterOverride("fwVtkCellPicker",
+                           "fwVtkCellPicker",
+                           "Select a cell by shooting a ray into graphics window",
+                           1,
+                           vtkObjectFactoryCreatefwVtkCellPicker);
 
-#ifdef DEBUG
-    vtkObject* o;
-    o = vtkInstantiator::CreateInstance("fwVtkBoxRepresentation");
-    SLM_ASSERT("Unable to instantiate a fwVtkBoxRepresentation", o);
-    o->Delete();
+    this->RegisterOverride("InteractorStyle2DForNegato",
+                           "InteractorStyle2DForNegato",
+                           "Interactor for 2D Negato",
+                           1,
+                           vtkObjectFactoryCreateInteractorStyle2DForNegato);
 
-    o = vtkInstantiator::CreateInstance("fwVtkPicker");
-    SLM_ASSERT("Unable to instantiate a fwVtkPicker", o);
-    o->Delete();
+    this->RegisterOverride("InteractorStyle3DForNegato",
+                           "InteractorStyle3DForNegato",
+                           "Iteractor for 3D Negato",
+                           1,
+                           vtkObjectFactoryCreateInteractorStyle3DForNegato);
 
-    o = vtkInstantiator::CreateInstance("fwVtkCellPicker");
-    SLM_ASSERT("Unable to instantiate a fwVtkCellPicker", o);
-    o->Delete();
+    this->RegisterOverride("FixedInteractorStyle",
+                           "FixedInteractorStyle",
+                           "Interactor class disabling all user interactions in a VTK scene",
+                           1,
+                           vtkObjectFactoryCreateFixedInteractorStyle);
 
-    o = vtkInstantiator::CreateInstance("InteractorStyle2DForNegato");
-    SLM_ASSERT("Unable to instantiate a InteractorStyle2DForNegato", o);
-    o->Delete();
-
-    o = vtkInstantiator::CreateInstance("InteractorStyle3DForNegato");
-    SLM_ASSERT("Unable to instantiate a InteractorStyle3DForNegato", o);
-    o->Delete();
-#endif
 }
 
 //------------------------------------------------------------------------------
 
-void Instantiator::ClassFinalize()
-{
-    vtkInstantiator::UnRegisterInstantiator("fwVtkBoxRepresentation", vtkInstantiatorfwVtkBoxRepresentationNew);
-    vtkInstantiator::UnRegisterInstantiator("fwVtkPicker", vtkInstantiatorfwVtkPickerNew);
-    vtkInstantiator::UnRegisterInstantiator("fwVtkCellPicker", vtkInstantiatorfwVtkCellPickerNew);
-    vtkInstantiator::UnRegisterInstantiator("InteractorStyle2DForNegato", vtkInstantiatorInteractorStyle2DForNegatoNew);
-    vtkInstantiator::UnRegisterInstantiator("InteractorStyle3DForNegato", vtkInstantiatorInteractorStyle3DForNegatoNew);
-}
 } //vtk
 
 } //fwRenderVTK

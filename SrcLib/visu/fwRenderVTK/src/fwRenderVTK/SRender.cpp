@@ -58,7 +58,7 @@
 #include <vtkAbstractPropPicker.h>
 #include <vtkCellPicker.h>
 #include <vtkImageFlip.h>
-#include <vtkInstantiator.h>
+#include <vtkObjectFactory.h>
 #include <vtkRenderer.h>
 #include <vtkRendererCollection.h>
 #include <vtkRenderWindow.h>
@@ -148,7 +148,7 @@ void SRender::configurePicker( const ConfigType& pickerConf )
 
     if(m_pickers.count(id) == 0)
     {
-        m_pickers[id] = vtkAbstractPropPicker::SafeDownCast(vtkInstantiator::CreateInstance(vtkclass.c_str()));
+        m_pickers[id] = vtkAbstractPropPicker::SafeDownCast(vtkObjectFactory::CreateInstance(vtkclass.c_str()));
         OSLM_ASSERT("'" << vtkclass.c_str() << "' instantiation failled.", m_pickers[id]);
         m_pickers[id]->InitializePickList();
         m_pickers[id]->PickFromListOn();
@@ -178,7 +178,7 @@ void SRender::configureVtkObject( const ConfigType& vtkObjectConf )
         }
         else
         {
-            m_vtkObjects[id] = vtkInstantiator::CreateInstance(vtkClass.c_str());
+            m_vtkObjects[id] = vtkObjectFactory::CreateInstance(vtkClass.c_str());
         }
     }
 }
