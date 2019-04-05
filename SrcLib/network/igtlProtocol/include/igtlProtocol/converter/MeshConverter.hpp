@@ -94,14 +94,8 @@ private:
     /// copy attributes from fwMesh(Normals, Colors) to polydata message
     void copyAttributesFromFwMesh(::fwData::Mesh::csptr meshSrc, ::igtl::PolyDataMessage::Pointer dest) const;
 
-    /// utility to convert color component(0-255) to color component in polydata attribute format(0-1)
-    static igtlFloat32 toIgtlFloat32(unsigned char colorComponent);
-
     /// copy attribute from polydata message to fwMesh
     void copyAttributeFromPolyData(::igtl::PolyDataMessage::Pointer src, ::fwData::Mesh::sptr dest) const;
-
-    /// convert a color component in polydata attribute format(0-1) to colorComponent(0-255)
-    static igtlUint8 toIgtlUint8(igtlFloat32 colorComponent);
 
 private:
 

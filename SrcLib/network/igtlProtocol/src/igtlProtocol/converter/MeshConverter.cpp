@@ -155,27 +155,52 @@ void MeshConverter::copyAttributesFromFwMesh(::fwData::Mesh::csptr meshSrc,
     ::fwData::Array::sptr cellTexCoordArray  = meshSrc->getCellTexCoordsArray();
 
     dest->ClearAttributes();
+
     const ::fwData::Mesh::Id numberOfPoints = meshSrc->getNumberOfPoints();
     const ::fwData::Mesh::Id numberOfCells  = meshSrc->getNumberOfCells();
 
+    auto toIgtlFloat32 = [] (unsigned char colorComponent)
+                         {
+                             return colorComponent / 255.f;
+                         };
+
     if (pointColorArray)
     {
-        ::fwDataTools::helper::Array arrayHelper(pointColorArray);
-        std::size_t pointColorSize = pointColorArray->getNumberOfComponents() * meshSrc->getNumberOfPoints();
 
+        // OpenIGTLink only supports RGBA (and not RGB)
+        const size_t numComponents       = 4;
+        const std::size_t pointColorSize = numComponents * meshSrc->getNumberOfPoints();
         ::igtl::PolyDataAttribute::Pointer attr = ::igtl::PolyDataAttribute::New();
         attr->SetType(::igtl::PolyDataAttribute::POINT_RGBA);
         attr->SetName("PointColors");
-        //NOTE: number of components is automaticly set to 4 when POINT_RGBA is choose
         attr->SetSize(static_cast<igtlUint32>(numberOfPoints));
 
         igtlFloat32* igtlDataPoint = new igtlFloat32[pointColorSize];
 
-        std::transform(arrayHelper.begin<unsigned char>(), arrayHelper.end<unsigned char>(),
-                       igtlDataPoint, &MeshConverter::toIgtlFloat32);
+        ::fwDataTools::helper::Array arrayHelper(pointColorArray);
+        if(pointColorArray->getNumberOfComponents() == 4)
+        {
+            std::transform(arrayHelper.begin<unsigned char>(), arrayHelper.end<unsigned char>(),
+                           igtlDataPoint, toIgtlFloat32);
+        }
+        else if(pointColorArray->getNumberOfComponents() == 3)
+        {
+            const unsigned char* src = arrayHelper.begin<unsigned char>();
+            igtlFloat32* dst         = igtlDataPoint;
+            while(src != arrayHelper.end<unsigned char>())
+            {
+                *dst++ = *src++ / 255.f;
+                *dst++ = *src++ / 255.f;
+                *dst++ = *src++ / 255.f;
+                *dst++ = 1.f;
+            }
+        }
+        else
+        {
+            SLM_ASSERT("Number of components < 3 not supported.", false);
+        }
 
         attr->SetData(igtlDataPoint);
-
         dest->AddAttribute(attr);
 
         delete[] igtlDataPoint;
@@ -184,8 +209,9 @@ void MeshConverter::copyAttributesFromFwMesh(::fwData::Mesh::csptr meshSrc,
 
     if (cellColorArray)
     {
-        ::fwDataTools::helper::Array arrayHelper(cellColorArray);
-        std::size_t cellColorSize = cellColorArray->getNumberOfComponents() * meshSrc->getNumberOfCells();
+        // OpenIGTLink only supports RGBA (and not RGB)
+        const size_t numComponents = 4;
+        std::size_t cellColorSize  = numComponents * meshSrc->getNumberOfCells();
 
         ::igtl::PolyDataAttribute::Pointer attr = ::igtl::PolyDataAttribute::New();
         attr->SetType(::igtl::PolyDataAttribute::CELL_RGBA);
@@ -193,8 +219,29 @@ void MeshConverter::copyAttributesFromFwMesh(::fwData::Mesh::csptr meshSrc,
         attr->SetSize(static_cast<igtlUint32>( numberOfCells));
 
         igtlFloat32* igtlData = new igtlFloat32[cellColorSize];
-        std::transform(arrayHelper.begin<unsigned char>(), arrayHelper.end<unsigned char>(),
-                       igtlData, &MeshConverter::toIgtlFloat32);
+
+        ::fwDataTools::helper::Array arrayHelper(cellColorArray);
+        if(cellColorArray->getNumberOfComponents() == 4)
+        {
+            std::transform(arrayHelper.begin<unsigned char>(), arrayHelper.end<unsigned char>(),
+                           igtlData, toIgtlFloat32);
+        }
+        else if(cellColorArray->getNumberOfComponents() == 3)
+        {
+            const unsigned char* src = arrayHelper.begin<unsigned char>();
+            igtlFloat32* dst         = igtlData;
+            while(src != arrayHelper.end<unsigned char>())
+            {
+                *dst++ = *src++ / 255.f;
+                *dst++ = *src++ / 255.f;
+                *dst++ = *src++ / 255.f;
+                *dst++ = 1.f;
+            }
+        }
+        else
+        {
+            SLM_ASSERT("Number of components < 3 not supported.", false);
+        }
 
         attr->SetData(igtlData);
         dest->AddAttribute(attr);
@@ -252,13 +299,6 @@ void MeshConverter::copyAttributesFromFwMesh(::fwData::Mesh::csptr meshSrc,
         attr->SetData(arrayHelper.begin<igtlFloat32>());
         dest->AddAttribute(attr);
     }
-}
-
-//-----------------------------------------------------------------------------
-
-igtlFloat32 MeshConverter::toIgtlFloat32 (unsigned char colorComponent)
-{
-    return colorComponent / 255.0f;
 }
 
 //-----------------------------------------------------------------------------
@@ -338,24 +378,21 @@ igtlFloat32 MeshConverter::toIgtlFloat32 (unsigned char colorComponent)
 
 //-----------------------------------------------------------------------------
 
-igtlUint8 MeshConverter::toIgtlUint8(igtlFloat32 colorComponent)
-{
-    return static_cast<igtlUint8>(colorComponent * 255);
-}
-
-//-----------------------------------------------------------------------------
-
 void MeshConverter::copyAttributeFromPolyData(::igtl::PolyDataMessage::Pointer src, ::fwData::Mesh::sptr dest) const
 {
-    SLM_TRACE_FUNC();
+    auto toIgtlUint8 = [] (igtlFloat32 colorComponent)
+                       {
+                           return static_cast<igtlUint8>(colorComponent * 255);
+                       };
 
     ::igtl::PolyDataAttribute::Pointer attr;
 
     ::fwDataTools::helper::Mesh meshHelper(dest);
-    unsigned char rgbaColor[4];
 
     for (int i = 0; i < src->GetNumberOfAttributes(); ++i)
     {
+        unsigned char rgbaColor[4];
+
         attr = src->GetAttribute(i);
         switch (attr->GetType())
         {
@@ -366,12 +403,15 @@ void MeshConverter::copyAttributeFromPolyData(::igtl::PolyDataMessage::Pointer s
                 meshHelper.updateLock();
                 igtlFloat32* data = new igtlFloat32[attr->GetSize() * attr->GetNumberOfComponents()];
                 attr->GetData(data);
-                for (unsigned int j = 0; j < attr->GetSize(); j = j+attr->GetNumberOfComponents())
+
+                size_t k = 0;
+                for (unsigned int j = 0; j < attr->GetSize(); ++j)
                 {
-                    std::transform(&data[j], &data[j] + attr->GetNumberOfComponents(), rgbaColor,
-                                   &MeshConverter::toIgtlUint8);
+                    std::transform(&data[k], &data[k] + attr->GetNumberOfComponents(), rgbaColor, toIgtlUint8);
                     meshHelper.setPointColor(j, rgbaColor);
+                    k += attr->GetNumberOfComponents();
                 }
+
                 attr->Clear();
                 delete[] data;
                 break;
@@ -383,11 +423,13 @@ void MeshConverter::copyAttributeFromPolyData(::igtl::PolyDataMessage::Pointer s
                 meshHelper.updateLock();
                 igtlFloat32* data = new igtlFloat32[attr->GetSize() * attr->GetNumberOfComponents()];
                 attr->GetData(data);
-                for (unsigned int j = 0; j < attr->GetSize(); j += attr->GetNumberOfComponents())
+
+                size_t k = 0;
+                for (unsigned int j = 0; j < attr->GetSize(); ++j)
                 {
-                    std::transform(&data[j], &data[j] + attr->GetNumberOfComponents(), rgbaColor,
-                                   &MeshConverter::toIgtlUint8);
+                    std::transform(&data[k], &data[k] + attr->GetNumberOfComponents(), rgbaColor, toIgtlUint8);
                     meshHelper.setCellColor(j, rgbaColor);
+                    k += attr->GetNumberOfComponents();
                 }
                 attr->Clear();
                 delete[] data;
@@ -402,7 +444,7 @@ void MeshConverter::copyAttributeFromPolyData(::igtl::PolyDataMessage::Pointer s
                 attr->GetData(data);
                 for (unsigned int j = 0; j < dest->getNumberOfPoints(); ++j)
                 {
-                    meshHelper.setPointNormal(j, &data[i * attr->GetNumberOfComponents()]);
+                    meshHelper.setPointNormal(j, &data[j * attr->GetNumberOfComponents()]);
                 }
                 attr->Clear();
                 delete[] data;
@@ -416,7 +458,7 @@ void MeshConverter::copyAttributeFromPolyData(::igtl::PolyDataMessage::Pointer s
                 attr->GetData(data);
                 for (unsigned int j = 0; j < dest->getNumberOfCells(); ++j)
                 {
-                    meshHelper.setCellNormal(j, &data[i * attr->GetNumberOfComponents()]);
+                    meshHelper.setCellNormal(j, &data[j * attr->GetNumberOfComponents()]);
                 }
                 attr->Clear();
                 delete[] data;
@@ -431,7 +473,7 @@ void MeshConverter::copyAttributeFromPolyData(::igtl::PolyDataMessage::Pointer s
                 attr->GetData(data);
                 for (unsigned int j = 0; j < dest->getNumberOfPoints(); ++j)
                 {
-                    meshHelper.setPointTexCoord(j, &data[i * attr->GetNumberOfComponents()]);
+                    meshHelper.setPointTexCoord(j, &data[j * attr->GetNumberOfComponents()]);
                 }
                 attr->Clear();
                 delete[] data;
@@ -446,7 +488,7 @@ void MeshConverter::copyAttributeFromPolyData(::igtl::PolyDataMessage::Pointer s
                 attr->GetData(data);
                 for (unsigned int j = 0; j < dest->getNumberOfCells(); ++j)
                 {
-                    meshHelper.setCellTexCoord(j, &data[i * attr->GetNumberOfComponents()]);
+                    meshHelper.setCellTexCoord(j, &data[j * attr->GetNumberOfComponents()]);
                 }
                 attr->Clear();
                 delete[] data;
