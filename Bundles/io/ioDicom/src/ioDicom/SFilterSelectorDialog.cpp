@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -193,12 +193,8 @@ void SFilterSelectorDialog::updating()
             ::fwDicomIOFilter::IFilter::sptr filter = availableFiltersMap[filterName];
 
             ::fwData::String::sptr obj = this->getInOut< ::fwData::String >(s_FILTER_INOUT);
-            if (!obj)
-            {
-                FW_DEPRECATED_KEY(s_FILTER_INOUT, "inout", "19.0");
-                obj = this->getObject< ::fwData::String >();
-            }
-            SLM_ASSERT("The filter selector service must work on a ::fwData::String object.", obj);
+            SLM_ASSERT("The inout key '" + s_FILTER_INOUT + "' is not correctly set.", obj);
+
             obj->setValue(filter->getClassname());
 
             auto sig

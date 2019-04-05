@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -123,13 +123,6 @@ void SPreferencesConfiguration::configuring()
         else if (typeCfg->getValue() == "text" )
         {
             pref.m_type = PreferenceType::TEXT;
-        }
-        else if (typeCfg->getValue() == "number")
-        {
-            FW_DEPRECATED_MSG("'number' configuration element will be deprecated in further version please use 'int'",
-                              "18.0");
-
-            pref.m_type = PreferenceType::U_INT;
         }
         else if(typeCfg->getValue() == "path")
         {
@@ -338,4 +331,4 @@ void SPreferencesConfiguration::info( std::ostream& _sstream )
 //------------------------------------------------------------------------------
 
 } // namespace action
-} // namespace videoQt
+} // namespace uiPreferences
