@@ -10,6 +10,9 @@ uniform float u_fSampleDis;
 
 uniform sampler2D u_s2EntryPoints;
 
+uniform vec3 u_f3VolumeClippingBoxMinPos;
+uniform vec3 u_f3VolumeClippingBoxMaxPos;
+
 #if AMBIENT_OCCLUSION || COLOR_BLEEDING || SHADOWS
 uniform sampler3D u_s3IlluminationVolume;
 uniform vec4 u_f4VolIllumFactor;
@@ -33,7 +36,7 @@ uniform int u_iMaxImageValue;
 uniform float u_fOpacityCorrectionFactor;
 #endif // PREINTEGRATION
 
-out vec4 v_f4FragCol;
+out vec4 f_f4FragCol;
 
 //-----------------------------------------------------------------------------
 
@@ -43,6 +46,8 @@ vec3 ndcToFragCoord(in vec3 _f3FragPos_Ns);
 vec4 ndcToSpecificSpacePosition(in vec3 _f3FragPos_Ns, in mat4 _m4Inverse);
 vec3 lightingBlinnPhong(vec3 _f3NormalDir_N, vec3 _f3Pos, vec3 _f3DiffuseCol);
 vec3 gradientNormal(vec3 _f3Pos_Ms, sampler3D _s3Image);
+float rayAxisAlignedBoxIntersection(in vec3 _f3RayPos, in vec3 _f3RayDir,
+                                   in vec3 _f3AxisAlignedBoxMin, in vec3 _f3AxisAlignedBoxMax);
 
 //-----------------------------------------------------------------------------
 
@@ -105,10 +110,7 @@ RayInfos firstOpaqueRayInfos(in vec3 _f3RayPos_Ms, in vec3 _f3RayDir_Ms, in floa
         float fTFAlpha = sampleTransferFunction(fIntensity, _s1TFTexture, _f2TFWindow).a;
 #endif // PREINTEGRATION
 
-        bool bRayPosInBounds = all(lessThanEqual(_f3RayPos_Ms, vec3(1.))) &&
-                               all(greaterThanEqual(_f3RayPos_Ms, vec3(0.)));
-
-        if(fTFAlpha != 0 && bRayPosInBounds)
+        if(fTFAlpha != 0)
         {
             break;
         }
@@ -216,8 +218,21 @@ void main(void)
 
     vec3 f3RayDir_Ms = f3RayDir_MsN * u_fSampleDis;
 
+    // We sometimes have rays starting at the near plane when they really shouldn't.
+    // This is due to intersecting edges in the proxy geometry.
+    // Although this is not technically wrong, it's suboptimal and causes artifacts due to the fact that we clamp
+    // texture coordinates outside of the volume.
+    // We fix this here by skipping the empty space between the ray's starting point and the volume.
+    if(fRayEntryDis_Ss == 0)
+    {
+        float t = rayAxisAlignedBoxIntersection(f3RayEntryPos_Ms, f3RayDir_Ms,
+                                                u_f3VolumeClippingBoxMinPos, u_f3VolumeClippingBoxMaxPos);
+
+        f3RayEntryPos_Ms += f3RayDir_Ms * max(0, t);
+    }
+
     float fRayLen = length(f3RayExitPos_Ms - f3RayEntryPos_Ms);
     vec4 f4ResultCol = launchRay(f3RayEntryPos_Ms, f3RayDir_Ms, fRayLen, u_fSampleDis, u_s1TFTexture, u_f2TFWindow);
 
-    v_f4FragCol = f4ResultCol;
+    f_f4FragCol = f4ResultCol;
 }

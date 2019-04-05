@@ -184,17 +184,3 @@ fragment_program ColorFormats_FP glsl
 {
     source ColorFormats.glsl
 }
-
-//---------------------------------------------------------------------------
-
-fragment_program SpatialTransforms_FP glsl
-{
-    source SpatialTransforms.glsl
-}
-
-//---------------------------------------------------------------------------
-
-fragment_program VolumeNormals_FP glsl
-{
-    source VolumeNormals.glsl
-}
