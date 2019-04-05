@@ -56,7 +56,7 @@ void ImageTest::tearDown()
 
 //------------------------------------------------------------------------------
 
-void TestRoiApplyMacro(const std::string& imageTypeName, const std::string& roiTypeName)
+void TestRoiApply(const std::string& imageTypeName, const std::string& roiTypeName)
 {
     std::stringstream ss;
     ss
@@ -107,122 +107,122 @@ void TestRoiApplyMacro(const std::string& imageTypeName, const std::string& roiT
 
 void ImageTest::roiApplyTest()
 {
-    TestRoiApplyMacro( "int8", "int8"  );
-    TestRoiApplyMacro( "int8", "int16" );
-    TestRoiApplyMacro( "int8", "int32" );
-    TestRoiApplyMacro( "int8", "uint8" );
-    TestRoiApplyMacro( "int8", "uint16");
-    TestRoiApplyMacro( "int8", "uint32");
+    TestRoiApply( "int8", "int8"  );
+    TestRoiApply( "int8", "int16" );
+    TestRoiApply( "int8", "int32" );
+    TestRoiApply( "int8", "uint8" );
+    TestRoiApply( "int8", "uint16");
+    TestRoiApply( "int8", "uint32");
 
-    TestRoiApplyMacro( "int16", "int8"  );
-    TestRoiApplyMacro( "int16", "int16" );
-    TestRoiApplyMacro( "int16", "int32" );
-    TestRoiApplyMacro( "int16", "uint8" );
-    TestRoiApplyMacro( "int16", "uint16");
-    TestRoiApplyMacro( "int16", "uint32");
+    TestRoiApply( "int16", "int8"  );
+    TestRoiApply( "int16", "int16" );
+    TestRoiApply( "int16", "int32" );
+    TestRoiApply( "int16", "uint8" );
+    TestRoiApply( "int16", "uint16");
+    TestRoiApply( "int16", "uint32");
 
-    TestRoiApplyMacro( "int32", "int8"  );
-    TestRoiApplyMacro( "int32", "int16" );
-    TestRoiApplyMacro( "int32", "int32" );
-    TestRoiApplyMacro( "int32", "uint8" );
-    TestRoiApplyMacro( "int32", "uint16");
-    TestRoiApplyMacro( "int32", "uint32");
+    TestRoiApply( "int32", "int8"  );
+    TestRoiApply( "int32", "int16" );
+    TestRoiApply( "int32", "int32" );
+    TestRoiApply( "int32", "uint8" );
+    TestRoiApply( "int32", "uint16");
+    TestRoiApply( "int32", "uint32");
 
-    TestRoiApplyMacro( "uint8", "int8"  );
-    TestRoiApplyMacro( "uint8", "int16" );
-    TestRoiApplyMacro( "uint8", "int32" );
-    TestRoiApplyMacro( "uint8", "uint8" );
-    TestRoiApplyMacro( "uint8", "uint16");
-    TestRoiApplyMacro( "uint8", "uint32");
+    TestRoiApply( "uint8", "int8"  );
+    TestRoiApply( "uint8", "int16" );
+    TestRoiApply( "uint8", "int32" );
+    TestRoiApply( "uint8", "uint8" );
+    TestRoiApply( "uint8", "uint16");
+    TestRoiApply( "uint8", "uint32");
 
-    TestRoiApplyMacro( "uint16", "int8"  );
-    TestRoiApplyMacro( "uint16", "int16" );
-    TestRoiApplyMacro( "uint16", "int32" );
-    TestRoiApplyMacro( "uint16", "uint8" );
-    TestRoiApplyMacro( "uint16", "uint16");
-    TestRoiApplyMacro( "uint16", "uint32");
+    TestRoiApply( "uint16", "int8"  );
+    TestRoiApply( "uint16", "int16" );
+    TestRoiApply( "uint16", "int32" );
+    TestRoiApply( "uint16", "uint8" );
+    TestRoiApply( "uint16", "uint16");
+    TestRoiApply( "uint16", "uint32");
 
-    TestRoiApplyMacro( "uint32", "int8"  );
-    TestRoiApplyMacro( "uint32", "int16" );
-    TestRoiApplyMacro( "uint32", "int32" );
-    TestRoiApplyMacro( "uint32", "uint8" );
-    TestRoiApplyMacro( "uint32", "uint16");
-    TestRoiApplyMacro( "uint32", "uint32");
+    TestRoiApply( "uint32", "int8"  );
+    TestRoiApply( "uint32", "int16" );
+    TestRoiApply( "uint32", "int32" );
+    TestRoiApply( "uint32", "uint8" );
+    TestRoiApply( "uint32", "uint16");
+    TestRoiApply( "uint32", "uint32");
 
 // float and double disabled : randomization generate some <nan>
 
-//    TestRoiApplyMacro( "int8", "float" );
-//    TestRoiApplyMacro( "int16" , "float" );
-//    TestRoiApplyMacro( "int32" , "float" );
-//    TestRoiApplyMacro( "uint8" , "float" );
-//    TestRoiApplyMacro( "uint16", "float" );
-//    TestRoiApplyMacro( "uint32", "float" );
-//    TestRoiApplyMacro( "float" , "int8"  );
-//    TestRoiApplyMacro( "float" , "int16" );
-//    TestRoiApplyMacro( "float" , "int32" );
-//    TestRoiApplyMacro( "float" , "uint8" );
-//    TestRoiApplyMacro( "float" , "uint16");
-//    TestRoiApplyMacro( "float" , "uint32");
-//    TestRoiApplyMacro( "float" , "float" );
+//    TestRoiApply( "int8", "float" );
+//    TestRoiApply( "int16" , "float" );
+//    TestRoiApply( "int32" , "float" );
+//    TestRoiApply( "uint8" , "float" );
+//    TestRoiApply( "uint16", "float" );
+//    TestRoiApply( "uint32", "float" );
+//    TestRoiApply( "float" , "int8"  );
+//    TestRoiApply( "float" , "int16" );
+//    TestRoiApply( "float" , "int32" );
+//    TestRoiApply( "float" , "uint8" );
+//    TestRoiApply( "float" , "uint16");
+//    TestRoiApply( "float" , "uint32");
+//    TestRoiApply( "float" , "float" );
 //
 //#ifndef DEBUG // double disabled from default dispatcher type list in debug mode
-//    TestRoiApplyMacro( "int8", "double");
-//    TestRoiApplyMacro( "int16" , "double");
-//    TestRoiApplyMacro( "int32" , "double");
-//    TestRoiApplyMacro( "uint8" , "double");
-//    TestRoiApplyMacro( "uint16", "double");
-//    TestRoiApplyMacro( "uint32", "double");
-//    TestRoiApplyMacro( "float" , "double");
-//    TestRoiApplyMacro( "double", "int8"  );
-//    TestRoiApplyMacro( "double", "int16" );
-//    TestRoiApplyMacro( "double", "int32" );
-//    TestRoiApplyMacro( "double", "uint8" );
-//    TestRoiApplyMacro( "double", "uint16");
-//    TestRoiApplyMacro( "double", "uint32");
-//    TestRoiApplyMacro( "double", "float" );
-//    TestRoiApplyMacro( "double", "double");
+//    TestRoiApply( "int8", "double");
+//    TestRoiApply( "int16" , "double");
+//    TestRoiApply( "int32" , "double");
+//    TestRoiApply( "uint8" , "double");
+//    TestRoiApply( "uint16", "double");
+//    TestRoiApply( "uint32", "double");
+//    TestRoiApply( "float" , "double");
+//    TestRoiApply( "double", "int8"  );
+//    TestRoiApply( "double", "int16" );
+//    TestRoiApply( "double", "int32" );
+//    TestRoiApply( "double", "uint8" );
+//    TestRoiApply( "double", "uint16");
+//    TestRoiApply( "double", "uint32");
+//    TestRoiApply( "double", "float" );
+//    TestRoiApply( "double", "double");
 //#endif
 
     // 64 bit type not supported by DynamicType/Dispatcher
 
-    // TestRoiApplyMacro( "uint64", "double");
-    // TestRoiApplyMacro( "int64" , "double");
-    // TestRoiApplyMacro( "double", "int64" );
-    // TestRoiApplyMacro( "double", "uint64");
+    // TestRoiApply( "uint64", "double");
+    // TestRoiApply( "int64" , "double");
+    // TestRoiApply( "double", "int64" );
+    // TestRoiApply( "double", "uint64");
     //
-    // TestRoiApplyMacro( "int64" , "float" );
-    // TestRoiApplyMacro( "uint64", "float" );
-    // TestRoiApplyMacro( "float" , "int64" );
-    // TestRoiApplyMacro( "float" , "uint64");
+    // TestRoiApply( "int64" , "float" );
+    // TestRoiApply( "uint64", "float" );
+    // TestRoiApply( "float" , "int64" );
+    // TestRoiApply( "float" , "uint64");
     //
-    // TestRoiApplyMacro( "int8", "int64" );
-    // TestRoiApplyMacro( "int8", "uint64");
-    // TestRoiApplyMacro( "int16" , "int64" );
-    // TestRoiApplyMacro( "int16" , "uint64");
-    // TestRoiApplyMacro( "int32" , "int64" );
-    // TestRoiApplyMacro( "int32" , "uint64");
-    // TestRoiApplyMacro( "int64" , "int8"  );
-    // TestRoiApplyMacro( "int64" , "int16" );
-    // TestRoiApplyMacro( "int64" , "int32" );
-    // TestRoiApplyMacro( "int64" , "int64" );
-    // TestRoiApplyMacro( "int64" , "uint8" );
-    // TestRoiApplyMacro( "int64" , "uint16");
-    // TestRoiApplyMacro( "int64" , "uint32");
-    // TestRoiApplyMacro( "int64" , "uint64");
-    // TestRoiApplyMacro( "uint8" , "int64" );
-    // TestRoiApplyMacro( "uint8" , "uint64");
-    // TestRoiApplyMacro( "uint16", "int64" );
-    // TestRoiApplyMacro( "uint16", "uint64");
-    // TestRoiApplyMacro( "uint32", "int64" );
-    // TestRoiApplyMacro( "uint32", "uint64");
-    // TestRoiApplyMacro( "uint64", "int8"  );
-    // TestRoiApplyMacro( "uint64", "int16" );
-    // TestRoiApplyMacro( "uint64", "int32" );
-    // TestRoiApplyMacro( "uint64", "int64" );
-    // TestRoiApplyMacro( "uint64", "uint8" );
-    // TestRoiApplyMacro( "uint64", "uint16");
-    // TestRoiApplyMacro( "uint64", "uint32");
-    // TestRoiApplyMacro( "uint64", "uint64");
+    // TestRoiApply( "int8", "int64" );
+    // TestRoiApply( "int8", "uint64");
+    // TestRoiApply( "int16" , "int64" );
+    // TestRoiApply( "int16" , "uint64");
+    // TestRoiApply( "int32" , "int64" );
+    // TestRoiApply( "int32" , "uint64");
+    // TestRoiApply( "int64" , "int8"  );
+    // TestRoiApply( "int64" , "int16" );
+    // TestRoiApply( "int64" , "int32" );
+    // TestRoiApply( "int64" , "int64" );
+    // TestRoiApply( "int64" , "uint8" );
+    // TestRoiApply( "int64" , "uint16");
+    // TestRoiApply( "int64" , "uint32");
+    // TestRoiApply( "int64" , "uint64");
+    // TestRoiApply( "uint8" , "int64" );
+    // TestRoiApply( "uint8" , "uint64");
+    // TestRoiApply( "uint16", "int64" );
+    // TestRoiApply( "uint16", "uint64");
+    // TestRoiApply( "uint32", "int64" );
+    // TestRoiApply( "uint32", "uint64");
+    // TestRoiApply( "uint64", "int8"  );
+    // TestRoiApply( "uint64", "int16" );
+    // TestRoiApply( "uint64", "int32" );
+    // TestRoiApply( "uint64", "int64" );
+    // TestRoiApply( "uint64", "uint8" );
+    // TestRoiApply( "uint64", "uint16");
+    // TestRoiApply( "uint64", "uint32");
+    // TestRoiApply( "uint64", "uint64");
 
 }
 
