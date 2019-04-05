@@ -159,17 +159,17 @@ void MeshConverter::copyAttributesFromFwMesh(::fwData::Mesh::csptr meshSrc,
     const ::fwData::Mesh::Id numberOfPoints = meshSrc->getNumberOfPoints();
     const ::fwData::Mesh::Id numberOfCells  = meshSrc->getNumberOfCells();
 
-    auto toIgtlFloat32 = [] (unsigned char colorComponent)
-                         {
-                             return colorComponent / 255.f;
-                         };
+    const auto toIgtlFloat32 = [] (unsigned char colorComponent)
+                               {
+                                   return colorComponent / 255.f;
+                               };
 
     if (pointColorArray)
     {
 
         // OpenIGTLink only supports RGBA (and not RGB)
-        const size_t numComponents       = 4;
-        const std::size_t pointColorSize = numComponents * meshSrc->getNumberOfPoints();
+        const size_t numComponents  = 4;
+        const size_t pointColorSize = numComponents * meshSrc->getNumberOfPoints();
         ::igtl::PolyDataAttribute::Pointer attr = ::igtl::PolyDataAttribute::New();
         attr->SetType(::igtl::PolyDataAttribute::POINT_RGBA);
         attr->SetName("PointColors");
@@ -211,7 +211,7 @@ void MeshConverter::copyAttributesFromFwMesh(::fwData::Mesh::csptr meshSrc,
     {
         // OpenIGTLink only supports RGBA (and not RGB)
         const size_t numComponents = 4;
-        std::size_t cellColorSize  = numComponents * meshSrc->getNumberOfCells();
+        const size_t cellColorSize = numComponents * meshSrc->getNumberOfCells();
 
         ::igtl::PolyDataAttribute::Pointer attr = ::igtl::PolyDataAttribute::New();
         attr->SetType(::igtl::PolyDataAttribute::CELL_RGBA);
@@ -380,10 +380,10 @@ void MeshConverter::copyAttributesFromFwMesh(::fwData::Mesh::csptr meshSrc,
 
 void MeshConverter::copyAttributeFromPolyData(::igtl::PolyDataMessage::Pointer src, ::fwData::Mesh::sptr dest) const
 {
-    auto toIgtlUint8 = [] (igtlFloat32 colorComponent)
-                       {
-                           return static_cast<igtlUint8>(colorComponent * 255);
-                       };
+    const auto toIgtlUint8 = [] (igtlFloat32 colorComponent)
+                             {
+                                 return static_cast<igtlUint8>(colorComponent * 255.f);
+                             };
 
     ::igtl::PolyDataAttribute::Pointer attr;
 
