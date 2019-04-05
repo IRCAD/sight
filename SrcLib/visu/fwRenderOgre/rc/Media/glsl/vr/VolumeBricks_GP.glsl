@@ -62,9 +62,9 @@ void main()
     // Cube dimensions in image space.
     vec3 cubeDimensions = vec3(u_brickSize) / vec3(u_imageResolution);
 
-    vec3 imagePos    = gridPos * cubeDimensions;
-    vec3 imagePosMin = max(imagePos,                  u_boundingBoxMin);
-    vec3 imagePosMax = min(imagePos + cubeDimensions, u_boundingBoxMax);
+    ivec3 gridPlusOnePos  = gridPos + ivec3(1);
+    vec3 imagePosMin      = max(gridPos        * cubeDimensions, u_boundingBoxMin);
+    vec3 imagePosMax      = min(gridPlusOnePos * cubeDimensions, u_boundingBoxMax);
 
     if(imagePosMin.x >= imagePosMax.x ||
        imagePosMin.y >= imagePosMax.y ||
