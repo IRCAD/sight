@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -33,10 +33,10 @@ namespace fwThread
 
 //------------------------------------------------------------------------------
 
-std::size_t WorkerThread( ::boost::asio::io_service& io_service )
+std::size_t WorkerThread( SPTR(::boost::asio::io_service)io_service )
 {
     OSLM_TRACE("Thread " << getCurrentThreadId() <<" Start");
-    std::size_t res = io_service.run();
+    std::size_t res = io_service->run();
     OSLM_TRACE("Thread " << getCurrentThreadId() <<" Finish");
     return res;
 }
@@ -77,13 +77,16 @@ protected:
     WorkerAsio& operator=( const WorkerAsio& );
 
     /// Class provides functionality to manipulate asynchronous tasks.
-    IOServiceType m_ioService;
+    SPTR(IOServiceType) m_ioService;
 
     /// Class to inform the io_service when it has work to do.
     WorkPtrType m_work;
 
     /// Thread created and managed by the worker.
     SPTR(ThreadType) m_thread;
+
+    /// To avoid race conditions when calling stop()
+    std::recursive_mutex m_stopMutex;
 };
 
 //------------------------------------------------------------------------------
@@ -162,10 +165,10 @@ protected:
 // ---------- WorkerAsio private implementation ----------
 
 WorkerAsio::WorkerAsio() :
-    m_ioService(),
-    m_work( std::make_shared< WorkType >(std::ref(m_ioService)) )
+    m_ioService( std::make_shared<IOServiceType>() ),
+    m_work( std::make_shared< WorkType >(*m_ioService) )
 {
-    std::packaged_task< ::fwThread::Worker::ExitReturnType() > task( std::bind(&WorkerThread, std::ref(m_ioService)) );
+    std::packaged_task< ::fwThread::Worker::ExitReturnType() > task( std::bind(&WorkerThread, m_ioService) );
     std::future< ::fwThread::Worker::ExitReturnType > ufuture = task.get_future();
 
     m_thread = std::make_shared< ThreadType >( std::move( task ) );
@@ -173,9 +176,13 @@ WorkerAsio::WorkerAsio() :
     m_future = std::move(ufuture);
 }
 
+//------------------------------------------------------------------------------
+
 WorkerAsio::~WorkerAsio()
 {
-    if(!m_ioService.stopped())
+    std::unique_lock<std::recursive_mutex> lock(m_stopMutex);
+
+    if(m_thread->joinable())
     {
         this->stop();
     }
@@ -185,20 +192,27 @@ WorkerAsio::~WorkerAsio()
 
 void WorkerAsio::stop()
 {
+    // stop() is also called in the destructor, so we need to put a critical section here
+    std::unique_lock<std::recursive_mutex> lock(m_stopMutex);
+
+    SLM_ASSERT("Thread is not joinable", m_thread->joinable());
+
     m_work.reset();
     m_thread->join();
 }
 
+//------------------------------------------------------------------------------
+
 SPTR(::fwThread::Timer) WorkerAsio::createTimer()
 {
-    return std::make_shared< TimerAsio >(std::ref(m_ioService));
+    return std::make_shared< TimerAsio >(*m_ioService);
 }
 
 //------------------------------------------------------------------------------
 
 void WorkerAsio::post(TaskType handler)
 {
-    m_ioService.post(handler);
+    m_ioService->post(handler);
 }
 
 //------------------------------------------------------------------------------
@@ -212,7 +226,7 @@ ThreadIdType WorkerAsio::getThreadId() const
 
 void WorkerAsio::processTasks()
 {
-    m_ioService.poll();
+    m_ioService->poll();
 }
 
 //------------------------------------------------------------------------------
@@ -224,7 +238,7 @@ void WorkerAsio::processTasks(PeriodType maxtime)
     timeStamp.modified();
     while(timeStamp.periodExpired())
     {
-        m_ioService.poll_one();
+        m_ioService->poll_one();
     }
 }
 
@@ -329,4 +343,3 @@ void TimerAsio::cancelNoLock()
 }
 
 } //namespace fwThread
-
