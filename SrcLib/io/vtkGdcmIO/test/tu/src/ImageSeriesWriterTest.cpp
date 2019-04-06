@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -107,8 +107,6 @@ void ImageSeriesWriterTest::writeReadTest()
     reader->setObject(sdb);
     reader->setFolder(PATH);
     CPPUNIT_ASSERT_NO_THROW(reader->read());
-
-    ::boost::filesystem::remove_all( PATH );
 
     // check series
     CPPUNIT_ASSERT_EQUAL(size_t(1), sdb->getContainer().size());

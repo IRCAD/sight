@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -30,7 +30,7 @@
 // Wait at worst 1s for a given condition
 #define fwTestWaitMacro(cond) \
     ::fwCore::TimeStamp BOOST_PP_CAT(timeStamp, __LINE__); \
-    BOOST_PP_CAT(timeStamp, __LINE__).setLifePeriod(1000); \
+    BOOST_PP_CAT(timeStamp, __LINE__).setLifePeriod(2500); \
     BOOST_PP_CAT(timeStamp, __LINE__).modified(); \
     while(!(cond) && !BOOST_PP_CAT(timeStamp, __LINE__).periodExpired()) \
     { \

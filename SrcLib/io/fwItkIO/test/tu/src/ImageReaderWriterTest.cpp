@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -31,6 +31,8 @@
 
 #include <fwTest/generator/Image.hpp>
 #include <fwTest/helper/compare.hpp>
+
+#include <fwTools/System.hpp>
 
 #include <boost/filesystem/convenience.hpp>
 #include <boost/filesystem/path.hpp>
@@ -124,7 +126,7 @@ void ImageReaderWriterTest::checkSaveLoadInr( ::fwData::Image::sptr image )
     image->setOrigin(origin);
 
     // save image in inr
-    const ::boost::filesystem::path PATH = "imageInrTest/image.inr.gz";
+    const ::boost::filesystem::path PATH = ::fwTools::System::getTemporaryFolder() / "imageInrTest/image.inr.gz";
     ::boost::filesystem::create_directories( PATH.parent_path() );
     ::fwItkIO::ImageWriter::sptr myWriter = ::fwItkIO::ImageWriter::New();
     myWriter->setObject(image);
@@ -137,8 +139,6 @@ void ImageReaderWriterTest::checkSaveLoadInr( ::fwData::Image::sptr image )
     myReader->setObject(image2);
     myReader->setFile(PATH);
     myReader->read();
-
-    ::boost::filesystem::remove_all( PATH.parent_path().string() );
 
     ::fwItkIO::ut::helper::roundSpacing(image2);
 
