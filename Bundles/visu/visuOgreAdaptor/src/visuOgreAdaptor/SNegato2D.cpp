@@ -349,6 +349,8 @@ void SNegato2D::createPlane(const fwData::Image::SpacingType& _spacing)
 
 void SNegato2D::updateCamera()
 {
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
 
     ::Ogre::Real renderWindowWidth, renderWindowHeight, renderWindowRatio;
     ::Ogre::RenderSystem* renderSystem = getSceneManager()->getDestinationRenderSystem();
@@ -380,19 +382,22 @@ void SNegato2D::updateCamera()
         case OrientationMode::X_AXIS:
             m_cameraNode->rotate(::Ogre::Vector3(0, 1, 0), ::Ogre::Degree(::Ogre::Real(90)));
             m_cameraNode->rotate(::Ogre::Vector3(0, 0, 1), ::Ogre::Degree(::Ogre::Real(90)));
-            m_cameraNode->translate(::Ogre::Vector3(static_cast<float>(m_3DOgreTexture->getWidth()),
+            m_cameraNode->translate(::Ogre::Vector3(static_cast<float>(m_3DOgreTexture->getWidth() *
+                                                                       image->getSpacing()[0]),
                                                     m_plane->getWidth()/2,
                                                     m_plane->getHeight()/2));
             break;
         case OrientationMode::Y_AXIS:
             m_cameraNode->rotate(::Ogre::Vector3(1, 0, 0), ::Ogre::Degree(::Ogre::Real(-90)));
             m_cameraNode->translate(::Ogre::Vector3(m_plane->getWidth()/2,
-                                                    static_cast<float>(m_3DOgreTexture->getHeight()),
+                                                    static_cast<float>(m_3DOgreTexture->getHeight() *
+                                                                       image->getSpacing()[1]),
                                                     m_plane->getHeight()/2));
             break;
         case OrientationMode::Z_AXIS:
             m_cameraNode->translate(::Ogre::Vector3(m_plane->getWidth()/2, m_plane->getHeight()/2,
-                                                    static_cast<float>(m_3DOgreTexture->getDepth())));
+                                                    static_cast<float>(m_3DOgreTexture->getDepth() *
+                                                                       image->getSpacing()[2])));
             break;
     }
 
