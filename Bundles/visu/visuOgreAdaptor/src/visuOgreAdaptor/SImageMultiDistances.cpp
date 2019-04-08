@@ -281,7 +281,7 @@ void SImageMultiDistances::deleteDistances()
     /// Delete all distance
     for (size_t id = 0; id < m_distanceNb; ++id)
     {
-        deleteDistance(id);
+        this->deleteDistance(id);
     }
     m_distanceNb = 0;
     m_millimeterValue.clear();
@@ -867,7 +867,7 @@ size_t SImageMultiDistances::findIDLine(std::string str)
 
 bool SImageMultiDistances::clickPoint(int x, int y)
 {
-    Ogre::MovableObject* picked = pickObject(x, y);
+    Ogre::MovableObject* picked = this->pickObject(x, y);
 
     if (picked != nullptr)
     {
