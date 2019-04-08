@@ -111,11 +111,25 @@ void DataConverterTest::meshConverterTest()
     CPPUNIT_ASSERT(mesh->getPointNormalsArray()->getSize() == mesh2->getPointNormalsArray()->getSize());
     CPPUNIT_ASSERT(mesh->getCellNormalsArray()->getSize() == mesh2->getCellNormalsArray()->getSize());
 
+    CPPUNIT_ASSERT_EQUAL(mesh->getPointNormalsArray()->getNumberOfComponents(),
+                         mesh2->getPointNormalsArray()->getNumberOfComponents());
+
+    CPPUNIT_ASSERT_EQUAL(mesh->getCellNormalsArray()->getNumberOfComponents(),
+                         mesh2->getCellNormalsArray()->getNumberOfComponents());
+
+    // We added an alpha channel in the conversion, there is no way to avoid that currently,
+    // since OpenIGTLink only supports RGBA
+    CPPUNIT_ASSERT_EQUAL(size_t(3), mesh->getPointColorsArray()->getNumberOfComponents());
+    CPPUNIT_ASSERT_EQUAL(size_t(4), mesh2->getPointColorsArray()->getNumberOfComponents());
+
+    CPPUNIT_ASSERT_EQUAL(mesh->getCellColorsArray()->getNumberOfComponents(),
+                         mesh2->getCellColorsArray()->getNumberOfComponents());
+
     ::fwData::Mesh::PointsMultiArrayType meshPointArray  = meshHelper.getPoints();
     ::fwData::Mesh::PointsMultiArrayType mesh2PointArray = mesh2Helper.getPoints();
 
     ::fwData::Mesh::CellTypesMultiArrayType meshCellArray  = meshHelper.getCellTypes();
-    ::fwData::Mesh::CellTypesMultiArrayType mesh2CellArray = meshHelper.getCellTypes();
+    ::fwData::Mesh::CellTypesMultiArrayType mesh2CellArray = mesh2Helper.getCellTypes();
 
     ::fwData::Mesh::PointColorsMultiArrayType meshPointColorArray  = meshHelper.getPointColors();
     ::fwData::Mesh::PointColorsMultiArrayType mesh2PointColorArray = mesh2Helper.getPointColors();
@@ -129,20 +143,25 @@ void DataConverterTest::meshConverterTest()
     ::fwData::Mesh::CellNormalsMultiArrayType meshCellNormalsArray  = meshHelper.getCellNormals();
     ::fwData::Mesh::CellNormalsMultiArrayType mesh2CellNormalsArray = mesh2Helper.getCellNormals();
 
-    for (unsigned int i = 0; i < mesh->getNumberOfPoints(); i++)
+    for (unsigned int i = 0; i < mesh->getNumberOfPoints(); ++i)
     {
         for (unsigned int j = 0; j < 3; j++)
         {
             CPPUNIT_ASSERT_EQUAL(meshPointArray[i][j], mesh2PointArray[i][j]);
-
+            CPPUNIT_ASSERT_EQUAL(meshPointNormalsArray[i][j], mesh2PointNormalsArray[i][j]);
+            CPPUNIT_ASSERT_EQUAL(meshPointColorArray[i][j], mesh2PointColorArray[i][j]);
         }
     }
 
-    for (unsigned int i = 0; i < mesh->getNumberOfCells(); i++)
+    for (unsigned int i = 0; i < mesh->getNumberOfCells(); ++i)
     {
         CPPUNIT_ASSERT_EQUAL(meshCellArray[i], mesh2CellArray[i]);
+        for (unsigned int j = 0; j < 3; j++)
+        {
+            CPPUNIT_ASSERT_EQUAL(meshCellColorArray[i][j], mesh2CellColorArray[i][j]);
+            CPPUNIT_ASSERT_EQUAL(meshCellNormalsArray[i][j], mesh2CellNormalsArray[i][j]);
+        }
     }
-
 }
 
 //------------------------------------------------------------------------------

@@ -99,7 +99,7 @@ build:debug-linux:
      -s https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-data/-/archive/dev/sight-data-dev.tar.gz |
      tar xfz - > /dev/null
     - export FWTEST_DATA_DIR=$CI_PROJECT_DIR/build/sight-data-dev
-    - ctest --timeout 240 --output-on-failure -O ctest.log
+    - ctest --timeout 240 --output-on-failure -O ctest.log -j4
   artifacts:
     when: always
     name: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
@@ -130,7 +130,7 @@ build:release-linux:
      -s https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-data/-/archive/dev/sight-data-dev.tar.gz |
      tar xfz - > /dev/null
     - export FWTEST_DATA_DIR=$CI_PROJECT_DIR/build/sight-data-dev
-    - ctest --timeout 120 --output-on-failure -O ctest.log
+    - ctest --timeout 120 --output-on-failure -O ctest.log -j4
   artifacts:
     when: always
     name: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
@@ -160,7 +160,7 @@ build:debug-windows:
      -s https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-data/-/archive/dev/sight-data-dev.zip
      --output sight-data-dev.zip && unzip -qq sight-data-dev.zip
     - set FWTEST_DATA_DIR=%CI_PROJECT_DIR%\build\sight-data-dev
-    - ctest --timeout 240 --output-on-failure -O ctest.log -E fwRenderOgreTest
+    - ctest --timeout 240 --output-on-failure -O ctest.log -E fwRenderOgreTest -j4
   artifacts:
     when: always
     name: "%CI_JOB_NAME%-%CI_COMMIT_REF_SLUG%"
@@ -190,7 +190,7 @@ build:release-windows:
      -s https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-data/-/archive/dev/sight-data-dev.zip
      --output sight-data-dev.zip && unzip -qq sight-data-dev.zip
     - set FWTEST_DATA_DIR=%CI_PROJECT_DIR%\build\sight-data-dev
-    - ctest --timeout 120 --output-on-failure -O ctest.log -E fwRenderOgreTest
+    - ctest --timeout 120 --output-on-failure -O ctest.log -E fwRenderOgreTest -j4
   artifacts:
     when: always
     name: "%CI_JOB_NAME%-%CI_COMMIT_REF_SLUG%"
@@ -222,7 +222,7 @@ build:debug-macos:
      -s https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-data/-/archive/dev/sight-data-dev.tar.gz |
      tar xfz - > /dev/null
     - export FWTEST_DATA_DIR=$CI_PROJECT_DIR/build/sight-data-dev
-    - ctest --timeout 240 --output-on-failure -O ctest.log
+    - ctest --timeout 240 --output-on-failure -O ctest.log -j4
   artifacts:
     when: always
     name: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
@@ -252,7 +252,7 @@ build:release-macos:
      -s https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-data/-/archive/dev/sight-data-dev.tar.gz |
      tar xfz - > /dev/null
     - export FWTEST_DATA_DIR=$CI_PROJECT_DIR/build/sight-data-dev
-    - ctest --timeout 120 --output-on-failure -O ctest.log
+    - ctest --timeout 120 --output-on-failure -O ctest.log -j4
   artifacts:
     when: always
     name: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"

@@ -760,6 +760,8 @@ void AppConfigTest::connectionTest()
         srv2->resetIsUpdated();
         CPPUNIT_ASSERT(!srv2->getIsUpdated());
         CPPUNIT_ASSERT(!srv3->getIsUpdated());
+
+        fwTestWaitMacro(srv4->getIsUpdated())
         CPPUNIT_ASSERT(srv4->getIsUpdated());
         CPPUNIT_ASSERT(!srv4->getIsUpdated2());
 

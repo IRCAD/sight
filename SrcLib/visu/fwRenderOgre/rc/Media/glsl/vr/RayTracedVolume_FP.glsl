@@ -47,7 +47,7 @@ vec4 ndcToSpecificSpacePosition(in vec3 _f3FragPos_Ns, in mat4 _m4Inverse);
 vec3 lightingBlinnPhong(vec3 _f3NormalDir_N, vec3 _f3Pos, vec3 _f3DiffuseCol);
 vec3 gradientNormal(vec3 _f3Pos_Ms, sampler3D _s3Image);
 float rayAxisAlignedBoxIntersection(in vec3 _f3RayPos, in vec3 _f3RayDir,
-                                   in vec3 _f3AxisAlignedBoxMin, in vec3 _f3AxisAlignedBoxMax);
+                                    in vec3 _f3AxisAlignedBoxMin, in vec3 _f3AxisAlignedBoxMax);
 
 //-----------------------------------------------------------------------------
 

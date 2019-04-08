@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -239,9 +239,6 @@ void IoVtkGdcmTest::imageSeriesWriterTest()
     readerSrv->update().wait();
     readerSrv->stop().wait();
     ::fwServices::OSR::unregisterService( readerSrv );
-
-    // Clean the written data
-    ::boost::filesystem::remove_all( PATH.string() );
 
     // check series
     CPPUNIT_ASSERT_EQUAL(size_t(1), seriesDB->getContainer().size());

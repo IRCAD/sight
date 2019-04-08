@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,23 +20,20 @@
  *
  ***********************************************************************/
 
-#ifndef __FWTOOLS_SYSTEM_HPP__
-#define __FWTOOLS_SYSTEM_HPP__
+#pragma once
 
-#include <string>
+#include "fwTools/config.hpp"
 
 #include <boost/filesystem/path.hpp>
 
-#include "fwTools/config.hpp"
+#include <string>
 
 namespace fwTools
 {
 
 /**
- * @class   System
  * @brief Provide a system to get a Temporary folder which allow multi-user, multi-instance separation
  *
- * @date    2007-2009.
  * @todo  change "fwDumpFolder" to "localTemp"
  */
 class FWTOOLS_CLASS_API System
@@ -48,7 +45,7 @@ public:
      * Returns the value returned by boost::filesystem::temp_directory_path, or
      * if boost returns no valid dir, c:\\ on windows, /tmp on other systems
      */
-    FWTOOLS_API static const ::boost::filesystem::path &getTempPath() noexcept;
+    FWTOOLS_API static const ::boost::filesystem::path& getTempPath() noexcept;
 
     /**
      * @brief   Returns a unique per-process temporary folder.
@@ -67,12 +64,12 @@ public:
      * the file name is a integer, this method will return this number.
      * Otherwise, zero will be returned
      */
-    FWTOOLS_API static int tempFolderPID(const ::boost::filesystem::path &dir) noexcept;
+    FWTOOLS_API static int tempFolderPID(const ::boost::filesystem::path& dir) noexcept;
 
     /**
      * @brief   Clean the zombie folders of old processes in given directory
      */
-    FWTOOLS_API static void cleanZombies(const ::boost::filesystem::path &dir) noexcept;
+    FWTOOLS_API static void cleanAllTempFolders(const ::boost::filesystem::path& dir) noexcept;
 
     /**
      *  @brief  Returns the pid of the current process
@@ -90,7 +87,7 @@ public:
      * The prefix must be set before the first call to getTemporaryFolder,
      * otherwise, it won't be used.
      */
-    static void setTempPrefix(const std::string &prefix)
+    static void setTempPrefix(const std::string& prefix)
     {
         s_tempPrefix = prefix;
     }
@@ -101,7 +98,4 @@ protected:
 
 };
 
-
 } // namespace fwTools
-
-#endif // __FWTOOLS_SYSTEM_HPP__
