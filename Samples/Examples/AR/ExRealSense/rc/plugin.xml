@@ -220,7 +220,7 @@
 
             <!-- Manages Sense camera configuration -->
             <service uid="grabber" type="::videoRealSense::SScan" worker="grabber">
-                <in key="camera" uid="RGBDCameraSeries" />
+                <inout key="cameraSeries" uid="RGBDCameraSeries" />
                 <inout key="depthTL" uid="frameTLDepth" />
                 <inout key="frameTL" uid="frameTLVideo" />
                 <out key="pointcloud" uid="pointcloud"/>
