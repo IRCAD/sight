@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -35,6 +35,7 @@
 #include <fwData/Vector.hpp>
 
 #include <fwDataTools/fieldHelper/Image.hpp>
+#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -66,12 +67,11 @@ AddDistance::~AddDistance() noexcept
 void AddDistance::updating()
 {
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    if (!image)
+    if (!::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
     {
         SLM_WARN("The key '" + s_IMAGE_INOUT + "' is not found.");
         return;
     }
-
     ::fwData::Point::sptr pt1 = ::fwData::Point::New();
     std::copy( image->getOrigin().begin(),  image->getOrigin().begin() +3, pt1->getCoord().begin() );
 
