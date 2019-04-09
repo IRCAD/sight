@@ -123,15 +123,15 @@ private:
     std::unique_ptr< ::fwRenderOgre::TransferFunction> m_gpuTF;
 
     /// The plane on which we will apply our texture
-    ::fwRenderOgre::Plane* m_plane;
+    ::fwRenderOgre::Plane* m_plane { nullptr };
 
     bool m_enableAlpha {false};
 
     /// The scene node allowing to move the entire negato
-    ::Ogre::SceneNode* m_negatoSceneNode;
+    ::Ogre::SceneNode* m_negatoSceneNode { nullptr };
 
     /// The scene node allowing to move the camera
-    ::Ogre::SceneNode* m_cameraNode;
+    ::Ogre::SceneNode* m_cameraNode { nullptr };
 
     /// Defines the filtering type for this negato
     ::fwRenderOgre::Plane::FilteringEnumType m_filtering;
@@ -143,7 +143,7 @@ private:
     ::fwCom::Connection m_connection;
 
     /// Image orientation
-    OrientationMode m_orientation;
+    OrientationMode m_orientation { OrientationMode::Z_AXIS };
 
     ::fwDataTools::helper::TransferFunction m_helperTF;
 };
