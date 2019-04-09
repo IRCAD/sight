@@ -33,7 +33,7 @@
 
         <service uid="genericSceneSrv" type="::fwRenderOgre::SRender">
             <scene>
-                <background topColor="#DDDDDD" bottomColor="#43958D" topScale="0.7" bottomScale="1.0" />
+                <background topColor="#000000" bottomColor="#000000" topScale="0.7" bottomScale="1.0" />
                 <layer id="default" depth="1" />
                 <adaptor uid="defaultInteractorAdp" />
                 <adaptor uid="2DNegatoAdp" />
