@@ -355,11 +355,12 @@ void SNegato2D::updateCamera()
     ::Ogre::Camera* cam = this->getLayer()->getDefaultCamera();
     SLM_ASSERT("No default camera found", cam);
 
-    const ::Ogre::Real renderWindowWidth  = static_cast< ::Ogre::Real >(cam->getViewport()->getActualWidth());
-    const ::Ogre::Real renderWindowHeight = static_cast< ::Ogre::Real >(cam->getViewport()->getActualHeight());
-    const ::Ogre::Real renderWindowRatio  = renderWindowWidth / renderWindowHeight;
+    const int renderWindowWidth          = cam->getViewport()->getActualWidth();
+    const int renderWindowHeight         = cam->getViewport()->getActualHeight();
+    const ::Ogre::Real renderWindowRatio = static_cast< ::Ogre::Real >(renderWindowWidth) /
+                                           static_cast< ::Ogre::Real >(renderWindowHeight);
 
-    if( static_cast<int>(renderWindowWidth) == static_cast<int>(renderWindowHeight) )
+    if( renderWindowWidth == renderWindowHeight )
     {
         cam->setOrthoWindow(m_plane->getWidth(), m_plane->getHeight());
     }
