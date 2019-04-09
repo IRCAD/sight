@@ -286,12 +286,12 @@ void Plane::initializePosition()
         switch(m_orientation)
         {
             case OrientationMode::X_AXIS:
-                m_planeSceneNode->rotate(::Ogre::Vector3(0, 1, 0), ::Ogre::Degree(::Ogre::Real(90)));
-                m_planeSceneNode->rotate(::Ogre::Vector3(0, 0, 1), ::Ogre::Degree(::Ogre::Real(90)));
+                m_planeSceneNode->rotate(::Ogre::Vector3(0, 1, 0), ::Ogre::Degree(90.f));
+                m_planeSceneNode->rotate(::Ogre::Vector3(0, 0, 1), ::Ogre::Degree(90.f));
                 m_planeSceneNode->translate(0, m_width/2, m_height/2);
                 break;
             case OrientationMode::Y_AXIS:
-                m_planeSceneNode->rotate(::Ogre::Vector3(1, 0, 0), ::Ogre::Degree(::Ogre::Real(270)));
+                m_planeSceneNode->rotate(::Ogre::Vector3(1, 0, 0), ::Ogre::Degree(270.f));
                 m_planeSceneNode->translate(m_width/2, 0, m_height/2);
                 break;
             case OrientationMode::Z_AXIS:
