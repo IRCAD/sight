@@ -352,14 +352,12 @@ void SNegato2D::updateCamera()
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
 
-    ::Ogre::Real renderWindowWidth, renderWindowHeight, renderWindowRatio;
-    ::Ogre::RenderSystem* renderSystem = getSceneManager()->getDestinationRenderSystem();
-
-    renderWindowWidth  = static_cast< ::Ogre::Real >(renderSystem->_getViewport()->getActualWidth());
-    renderWindowHeight = static_cast< ::Ogre::Real >(renderSystem->_getViewport()->getActualHeight());
-    renderWindowRatio  = renderWindowWidth / renderWindowHeight;
-
     ::Ogre::Camera* cam = this->getLayer()->getDefaultCamera();
+    SLM_ASSERT("No default camera found", cam);
+
+    const ::Ogre::Real renderWindowWidth  = static_cast< ::Ogre::Real >(cam->getViewport()->getActualWidth());
+    const ::Ogre::Real renderWindowHeight = static_cast< ::Ogre::Real >(cam->getViewport()->getActualHeight());
+    const ::Ogre::Real renderWindowRatio  = renderWindowWidth / renderWindowHeight;
 
     if( static_cast<int>(renderWindowWidth) == static_cast<int>(renderWindowHeight) )
     {
