@@ -115,11 +115,6 @@ void SCalibrationImagesWriter::updating()
     {
         ::arData::CalibrationInfo::csptr calibInfo =
             this->getInput< ::arData::CalibrationInfo >(::fwIO::s_DATA_KEY);
-
-        if(calibInfo)
-        {
-            m_writeFailed = true;
-        }
         SLM_ASSERT("Missing calibration info input.", calibInfo);
 
         ::fwGui::Cursor cursor;

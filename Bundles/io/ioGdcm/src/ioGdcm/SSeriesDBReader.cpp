@@ -118,11 +118,6 @@ void SSeriesDBReader::configureWithIHM()
         filterSelectorConfig = ::fwServices::registry::ServiceConfig::getDefault()->getServiceConfig(
             m_filterConfig, "::ioDicom::SFilterSelectorDialog");
 
-        if(!filterSelectorConfig)
-        {
-            m_readFailed = true;
-        }
-
         SLM_ASSERT("Sorry, there is no service configuration "
                    << m_filterConfig
                    << " for ::ioDicom::SFilterSelectorDialog", filterSelectorConfig);

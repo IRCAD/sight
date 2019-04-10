@@ -193,8 +193,6 @@ void SIOSelector::updating()
         availableExtensionsId =
             ::fwServices::registry::ServiceFactory::getDefault()->getImplementationIdFromObjectAndType(
                 obj->getClassname(), "::fwIO::IWriter");
-
-        m_sigJobFailed->asyncEmit();
     }
 
     // Filter available extensions and replace id by service description
@@ -339,7 +337,7 @@ void SIOSelector::updating()
                     reader->stop();
                     ::fwServices::OSR::unregisterService(reader);
 
-                    if (createOutput)
+                    if (createOutput && !reader->hasFailed())
                     {
                         this->setOutput(::fwIO::s_DATA_KEY, obj);
                     }

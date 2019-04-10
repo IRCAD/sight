@@ -125,12 +125,6 @@ void TransformationMatrix3DWriterService::updating()
         // Retrieve object
         ::fwData::TransformationMatrix3D::csptr matrix =
             this->getInput< ::fwData::TransformationMatrix3D >(::fwIO::s_DATA_KEY);
-
-        if(!matrix)
-        {
-            m_writeFailed = true;
-        }
-
         SLM_ASSERT("The input key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", matrix);
 
         ::fwDataIO::writer::TransformationMatrix3DWriter::sptr writer =

@@ -157,12 +157,6 @@ void SModelSeriesWriter::updating()
     {
         // Retrieve dataStruct associated with this service
         ::fwMedData::ModelSeries::csptr modelSeries = this->getInput< ::fwMedData::ModelSeries >(::fwIO::s_DATA_KEY);
-
-        if(!modelSeries)
-        {
-            m_writeFailed = true;
-        }
-
         SLM_ASSERT("The input key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", modelSeries);
 
         ::fwGui::Cursor cursor;
@@ -171,20 +165,10 @@ void SModelSeriesWriter::updating()
         const ::fwMedData::ModelSeries::ReconstructionVectorType& recs = modelSeries->getReconstructionDB();
         for(const ::fwData::Reconstruction::csptr& rec :  recs)
         {
-            if(!rec)
-            {
-                m_writeFailed = true;
-            }
             SLM_ASSERT("Reconstruction from model series is not instanced", rec);
             ::fwData::Mesh::sptr mesh = rec->getMesh();
 
-            if(!mesh)
-            {
-                m_writeFailed = true;
-            }
-
             SLM_ASSERT("Mesh from reconstruction is not instanced", mesh);
-
             ::fwVtkIO::MeshWriter::sptr writer = ::fwVtkIO::MeshWriter::New();
             m_sigJobCreated->emit(writer->getJob());
 

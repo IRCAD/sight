@@ -162,12 +162,6 @@ void SImageReader::updating()
     if( this->hasLocationDefined() )
     {
         ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(::fwIO::s_DATA_KEY);
-
-        if(!image)
-        {
-            m_readFailed = true;
-        }
-
         SLM_ASSERT("The inout key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", image);
 
         // Read new image path and update image. If the reading process is a success, we notify all listeners that image
