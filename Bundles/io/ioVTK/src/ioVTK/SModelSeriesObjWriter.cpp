@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -109,6 +109,7 @@ void SModelSeriesObjWriter::configureWithIHM()
     }
     else
     {
+        m_writeFailed = true;
         this->clearLocations();
     }
 }
@@ -151,6 +152,12 @@ void SModelSeriesObjWriter::updating()
     {
         // Retrieve dataStruct associated with this service
         ::fwMedData::ModelSeries::csptr modelSeries = this->getInput< ::fwMedData::ModelSeries >(::fwIO::s_DATA_KEY);
+
+        if(!modelSeries)
+        {
+            m_writeFailed = true;
+        }
+
         SLM_ASSERT("The input key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", modelSeries);
 
         ::fwVtkIO::ModelSeriesObjWriter::sptr writer = ::fwVtkIO::ModelSeriesObjWriter::New();
@@ -167,6 +174,7 @@ void SModelSeriesObjWriter::updating()
         }
         catch (const std::exception& e)
         {
+            m_writeFailed = true;
             std::stringstream ss;
             ss << "Warning during saving : " << e.what();
 
@@ -179,6 +187,7 @@ void SModelSeriesObjWriter::updating()
         }
         catch( ... )
         {
+            m_writeFailed = true;
             std::stringstream ss;
             ss << "Warning during saving.";
 
@@ -191,6 +200,10 @@ void SModelSeriesObjWriter::updating()
         }
 
         cursor.setDefaultCursor();
+    }
+    else
+    {
+        m_writeFailed = true;
     }
 }
 

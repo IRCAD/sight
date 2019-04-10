@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -113,6 +113,7 @@ void SInrSeriesDBReader::configureWithIHM()
     }
     else
     {
+        m_readFailed = true;
         this->clearLocations();
     }
 }
@@ -178,7 +179,10 @@ void SInrSeriesDBReader::updating()
             this->initSeries(imgSeries, instanceUID);
 
             ::fwData::Image::sptr image = ::fwData::Image::New();
-            this->createImage( path, image );
+            if(!this->createImage( path, image ))
+            {
+                m_readFailed = true;
+            }
             imgSeries->setImage(image);
 
             localSeriesDB->getContainer().push_back(imgSeries);
@@ -191,6 +195,10 @@ void SInrSeriesDBReader::updating()
         sDBhelper.notify();
 
         cursor.setDefaultCursor();
+    }
+    else
+    {
+        m_readFailed = true;
     }
 }
 

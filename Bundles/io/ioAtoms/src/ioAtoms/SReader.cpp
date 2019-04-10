@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -293,6 +293,7 @@ void SReader::updating()
                 {
                     if(runningJob.cancelRequested())
                     {
+                        m_readFailed = true;
                         return;
                     }
 
@@ -357,6 +358,7 @@ void SReader::updating()
 
             if(jobs->getState() == ::fwJobs::IJob::CANCELED)
             {
+                m_readFailed = true;
                 return;
             }
 
@@ -368,6 +370,10 @@ void SReader::updating()
             }
             else
             {
+                if(!data)
+                {
+                    m_readFailed = true;
+                }
                 SLM_ASSERT("'" + ::fwIO::s_DATA_KEY + "' key is not defined", data);
 
                 FW_RAISE_IF( "Unable to load '" << filePath
@@ -392,18 +398,24 @@ void SReader::updating()
         }
         catch( std::exception& e )
         {
+            m_readFailed = true;
             OSLM_ERROR( e.what() );
             ::fwGui::dialog::MessageDialog::showMessageDialog("Atoms reader failed", e.what(),
                                                               ::fwGui::dialog::MessageDialog::CRITICAL);
         }
         catch( ... )
         {
+            m_readFailed = true;
             ::fwGui::dialog::MessageDialog::showMessageDialog("Atoms reader failed", "Aborting operation.",
                                                               ::fwGui::dialog::MessageDialog::CRITICAL);
         }
 
         cursor.setDefaultCursor();
 
+    }
+    else
+    {
+        m_readFailed = true;
     }
 }
 
@@ -460,6 +472,7 @@ void SReader::configureWithIHM()
     else
     {
         this->clearLocations();
+        m_readFailed = true;
     }
 }
 

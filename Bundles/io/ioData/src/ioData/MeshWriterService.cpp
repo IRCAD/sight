@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -95,6 +95,7 @@ void MeshWriterService::configureWithIHM()
     }
     else
     {
+        m_writeFailed = true;
         this->clearLocations();
     }
 }
@@ -120,6 +121,7 @@ void MeshWriterService::updating()
         }
         catch (const std::exception& e)
         {
+            m_writeFailed = true;
             std::stringstream ss;
             ss << "Warning during writing Mesh : " << e.what();
 
@@ -129,6 +131,10 @@ void MeshWriterService::updating()
                 ::fwGui::dialog::IMessageDialog::WARNING);
         }
 
+    }
+    else
+    {
+        m_writeFailed = true;
     }
 }
 

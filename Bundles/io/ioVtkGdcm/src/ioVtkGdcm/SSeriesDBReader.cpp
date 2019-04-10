@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -87,6 +87,10 @@ void SSeriesDBReader::configureWithIHM()
         this->setFolder( result->getFolder() );
         dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
     }
+    else
+    {
+        m_readFailed = true;
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -150,6 +154,7 @@ std::string SSeriesDBReader::getSelectorDialogTitle()
     }
     catch (const std::exception& e)
     {
+        m_readFailed = true;
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
         ::fwGui::dialog::MessageDialog::showMessageDialog(
@@ -157,6 +162,7 @@ std::string SSeriesDBReader::getSelectorDialogTitle()
     }
     catch( ... )
     {
+        m_readFailed = true;
         ::fwGui::dialog::MessageDialog::showMessageDialog(
             "Warning", "Warning during loading", ::fwGui::dialog::IMessageDialog::WARNING);
     }
@@ -176,12 +182,19 @@ void SSeriesDBReader::updating()
         {
             if(this->isStopped()) // FIXME service might be stopped while updating in a worker
             {
+                m_readFailed = true;
                 return;
             }
 
             // Retrieve dataStruct associated with this service
             ::fwMedData::SeriesDB::sptr associatedSeriesDB =
                 this->getInOut< ::fwMedData::SeriesDB >(::fwIO::s_DATA_KEY);
+
+            if(!associatedSeriesDB)
+            {
+                m_readFailed = true;
+            }
+
             SLM_ASSERT("The inout key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", associatedSeriesDB);
 
             associatedSeriesDB->shallowCopy( seriesDB );
@@ -193,10 +206,15 @@ void SSeriesDBReader::updating()
         }
         else
         {
+            m_readFailed = true;
             ::fwGui::dialog::MessageDialog::showMessageDialog(
                 "Image Reader", "This file can not be read. Retry with another file reader.",
                 ::fwGui::dialog::IMessageDialog::WARNING);
         }
+    }
+    else
+    {
+        m_readFailed = true;
     }
 }
 

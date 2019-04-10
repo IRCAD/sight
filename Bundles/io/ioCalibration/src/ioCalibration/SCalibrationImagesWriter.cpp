@@ -86,6 +86,7 @@ void SCalibrationImagesWriter::configureWithIHM()
     }
     else
     {
+        m_writeFailed = true;
         this->clearLocations();
     }
 }
@@ -115,6 +116,10 @@ void SCalibrationImagesWriter::updating()
         ::arData::CalibrationInfo::csptr calibInfo =
             this->getInput< ::arData::CalibrationInfo >(::fwIO::s_DATA_KEY);
 
+        if(calibInfo)
+        {
+            m_writeFailed = true;
+        }
         SLM_ASSERT("Missing calibration info input.", calibInfo);
 
         ::fwGui::Cursor cursor;
@@ -150,6 +155,7 @@ void SCalibrationImagesWriter::updating()
             }
             catch(const ::cv::Exception& e)
             {
+                m_writeFailed = true;
                 ::fwGui::dialog::MessageDialog::showMessageDialog("Error writing calibration images.",
                                                                   e.what(),
                                                                   ::fwGui::dialog::MessageDialog::CRITICAL);
@@ -157,6 +163,10 @@ void SCalibrationImagesWriter::updating()
         }
 
         cursor.setDefaultCursor();
+    }
+    else
+    {
+        m_writeFailed = true;
     }
 }
 

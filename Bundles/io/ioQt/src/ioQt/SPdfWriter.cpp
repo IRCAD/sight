@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2018 IRCAD France
- * Copyright (C) 2016-2018 IHU Strasbourg
+ * Copyright (C) 2016-2019 IRCAD France
+ * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -116,6 +116,7 @@ void SPdfWriter::configureWithIHM()
     }
     else
     {
+        m_writeFailed = true;
         this->clearLocations();
     }
 }

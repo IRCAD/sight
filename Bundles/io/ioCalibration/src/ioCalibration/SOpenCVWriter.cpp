@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -95,6 +95,7 @@ bool SOpenCVWriter::defineLocationGUI()
     }
     else
     {
+        m_writeFailed = true;
         this->clearLocations();
     }
 
@@ -121,6 +122,12 @@ void SOpenCVWriter::updating()
 {
 
     ::arData::CameraSeries::csptr camSeries = this->getInput< ::arData::CameraSeries >(::fwIO::s_DATA_KEY);
+
+    if(!camSeries)
+    {
+        m_writeFailed = true;
+    }
+
     SLM_ASSERT("CameraSeries is null", camSeries);
 
     bool use_dialog = false;
@@ -129,6 +136,7 @@ void SOpenCVWriter::updating()
         use_dialog = this->defineLocationGUI();
         if(!use_dialog)
         {
+            m_writeFailed = true;
             return;
         }
     }

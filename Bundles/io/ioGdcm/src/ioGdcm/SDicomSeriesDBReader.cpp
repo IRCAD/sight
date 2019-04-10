@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -130,6 +130,10 @@ void SDicomSeriesDBReader::configureWithIHM()
         this->setFolder( result->getFolder() );
         dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
     }
+    else
+    {
+        m_readFailed = true;
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -230,6 +234,7 @@ std::string SDicomSeriesDBReader::getSelectorDialogTitle()
     }
     catch (const std::exception& e)
     {
+        m_readFailed = true;
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
         ::fwGui::dialog::MessageDialog::showMessageDialog(
@@ -237,6 +242,7 @@ std::string SDicomSeriesDBReader::getSelectorDialogTitle()
     }
     catch( ... )
     {
+        m_readFailed = true;
         ::fwGui::dialog::MessageDialog::showMessageDialog(
             "Warning", "Warning during loading", ::fwGui::dialog::IMessageDialog::WARNING);
     }
@@ -255,7 +261,7 @@ void SDicomSeriesDBReader::updating()
         ::fwGui::Cursor cursor;
         cursor.setCursor(::fwGui::ICursor::BUSY);
 
-        ::fwMedData::SeriesDB::sptr seriesDB = createSeriesDB(this->getFolder() );
+        ::fwMedData::SeriesDB::sptr seriesDB = this->createSeriesDB(this->getFolder() );
 
         if( seriesDB->size() > 0 && !m_cancelled)
         {
@@ -282,6 +288,10 @@ void SDicomSeriesDBReader::updating()
             sig->asyncEmit(addedSeries);
         }
         cursor.setDefaultCursor();
+    }
+    else
+    {
+        m_readFailed = true;
     }
 }
 

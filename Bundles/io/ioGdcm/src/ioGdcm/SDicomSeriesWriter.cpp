@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -91,6 +91,7 @@ void SDicomSeriesWriter::configureWithIHM()
     }
     else
     {
+        m_writeFailed = true;
         this->clearLocations();
     }
 }
@@ -135,8 +136,13 @@ void SDicomSeriesWriter::updating()
 
             if(button == ::fwGui::dialog::MessageDialog::NO)
             {
+                m_writeFailed = true;
                 return;
             }
+        }
+        else
+        {
+            m_writeFailed = true;
         }
 
         if (series->getModality() == "OT")
@@ -151,6 +157,7 @@ void SDicomSeriesWriter::updating()
 
             if(button == ::fwGui::dialog::MessageDialog::NO)
             {
+                m_writeFailed = true;
                 return;
             }
         }
@@ -158,6 +165,10 @@ void SDicomSeriesWriter::updating()
         cursor.setCursor(::fwGui::ICursor::BUSY);
         this->saveDicomSeries(folder, series);
         cursor.setDefaultCursor();
+    }
+    else
+    {
+        m_writeFailed = true;
     }
 }
 

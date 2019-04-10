@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -113,6 +113,7 @@ void SJpgImageSeriesWriter::configureWithIHM()
     }
     else
     {
+        m_writeFailed = true;
         this->clearLocations();
     }
 }
@@ -156,6 +157,10 @@ void SJpgImageSeriesWriter::updating()
         cursor.setCursor(::fwGui::ICursor::BUSY);
         JpgImageWriterService::saveImage(this->getFolder(), imageSeries->getImage());
         cursor.setDefaultCursor();
+    }
+    else
+    {
+        m_writeFailed = true;
     }
 }
 

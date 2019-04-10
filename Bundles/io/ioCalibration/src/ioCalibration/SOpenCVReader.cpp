@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2018 IRCAD France
- * Copyright (C) 2017-2018 IHU Strasbourg
+ * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -98,6 +98,7 @@ bool SOpenCVReader::defineLocationGUI()
     }
     else
     {
+        this->m_readFailed = true;
         this->clearLocations();
     }
 
@@ -132,6 +133,7 @@ void SOpenCVReader::updating()
         use_dialog = this->defineLocationGUI();
         if(!use_dialog)
         {
+            this->m_readFailed = true;
             return;
         }
     }
@@ -139,6 +141,7 @@ void SOpenCVReader::updating()
     ::cv::FileStorage fs(this->getFile().string().c_str(), ::cv::FileStorage::READ); // Read the settings
     if (!fs.isOpened())
     {
+        this->m_readFailed = true;
         SLM_ERROR("The file "+ this->getFile().string() + " cannot be opened.");
     }
 

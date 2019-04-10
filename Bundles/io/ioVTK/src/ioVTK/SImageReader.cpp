@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -117,6 +117,7 @@ void SImageReader::configureWithIHM()
     }
     else
     {
+        m_readFailed = true;
         this->clearLocations();
     }
 }
@@ -161,6 +162,12 @@ void SImageReader::updating()
     if( this->hasLocationDefined() )
     {
         ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(::fwIO::s_DATA_KEY);
+
+        if(!image)
+        {
+            m_readFailed = true;
+        }
+
         SLM_ASSERT("The inout key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", image);
 
         // Read new image path and update image. If the reading process is a success, we notify all listeners that image
@@ -179,9 +186,14 @@ void SImageReader::updating()
                     sig->asyncEmit();
                 }
             }
+            else
+            {
+                m_readFailed = true;
+            }
         }
         catch(::fwTools::Failed& e)
         {
+            m_readFailed = true;
             OSLM_TRACE("Error : " << e.what());
             FW_RAISE_EXCEPTION(e);
         }

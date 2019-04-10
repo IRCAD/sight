@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -101,10 +101,15 @@ void SModelSeriesReader::configureWithIHM()
             _sDefaultPath = paths[0].parent_path();
             dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
         }
+        else
+        {
+            m_readFailed = true;
+        }
         this->setFiles(paths);
     }
     else
     {
+        m_readFailed = true;
         this->clearLocations();
     }
 }
@@ -194,6 +199,7 @@ void SModelSeriesReader::loadMesh( const ::boost::filesystem::path file, ::fwDat
     }
     catch (const std::exception& e)
     {
+        m_readFailed = true;
         std::stringstream stream;
         stream << "Warning during loading : " << e.what();
         ::fwGui::dialog::MessageDialog::showMessageDialog(
@@ -203,6 +209,7 @@ void SModelSeriesReader::loadMesh( const ::boost::filesystem::path file, ::fwDat
     }
     catch( ... )
     {
+        m_readFailed = true;
         ::fwGui::dialog::MessageDialog::showMessageDialog(
             "Warning",
             "Warning during loading.",

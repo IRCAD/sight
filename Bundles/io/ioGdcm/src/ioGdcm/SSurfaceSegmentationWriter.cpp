@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2018 IRCAD France
- * Copyright (C) 2017-2018 IHU Strasbourg
+ * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -85,6 +85,7 @@ void SSurfaceSegmentationWriter::configureWithIHM()
     }
     else
     {
+        m_writeFailed = true;
         this->clearLocations();
     }
 }
@@ -127,8 +128,13 @@ void SSurfaceSegmentationWriter::updating()
 
             if(button == ::fwGui::dialog::MessageDialog::NO)
             {
+                m_writeFailed = true;
                 return;
             }
+        }
+        else
+        {
+            m_writeFailed = true;
         }
 
         // Retrieve dataStruct associated with this service
@@ -136,6 +142,7 @@ void SSurfaceSegmentationWriter::updating()
 
         if(!model->getDicomReference())
         {
+            m_writeFailed = true;
             ::fwGui::dialog::MessageDialog::showMessageDialog(
                 "Warning", "DICOM image reference is missing, DICOM Surface Segmentation cannot be generated",
                 ::fwGui::dialog::IMessageDialog::WARNING);
@@ -150,6 +157,10 @@ void SSurfaceSegmentationWriter::updating()
         cursor.setCursor(::fwGui::ICursor::BUSY);
         saveSurfaceSegmentation( outputPath, model );
         cursor.setDefaultCursor();
+    }
+    else
+    {
+        m_writeFailed = true;
     }
 }
 
@@ -172,6 +183,7 @@ void SSurfaceSegmentationWriter::saveSurfaceSegmentation( const ::boost::filesys
     }
     catch (const std::exception& e)
     {
+        m_writeFailed = true;
         std::stringstream ss;
         ss << "Warning during saving: " << e.what();
         ::fwGui::dialog::MessageDialog::showMessageDialog(
@@ -179,6 +191,7 @@ void SSurfaceSegmentationWriter::saveSurfaceSegmentation( const ::boost::filesys
     }
     catch( ... )
     {
+        m_writeFailed = true;
         ::fwGui::dialog::MessageDialog::showMessageDialog(
             "Warning", "Warning during saving", ::fwGui::dialog::IMessageDialog::WARNING);
     }

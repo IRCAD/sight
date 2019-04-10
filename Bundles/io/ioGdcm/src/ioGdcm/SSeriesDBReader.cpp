@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -106,6 +106,7 @@ void SSeriesDBReader::configureWithIHM()
     }
     else
     {
+        m_readFailed = true;
         this->clearLocations();
     }
 
@@ -116,6 +117,11 @@ void SSeriesDBReader::configureWithIHM()
         ::fwRuntime::ConfigurationElement::csptr filterSelectorConfig;
         filterSelectorConfig = ::fwServices::registry::ServiceConfig::getDefault()->getServiceConfig(
             m_filterConfig, "::ioDicom::SFilterSelectorDialog");
+
+        if(!filterSelectorConfig)
+        {
+            m_readFailed = true;
+        }
 
         SLM_ASSERT("Sorry, there is no service configuration "
                    << m_filterConfig
@@ -135,6 +141,10 @@ void SSeriesDBReader::configureWithIHM()
         ::fwServices::OSR::unregisterService( filterSelectorSrv );
 
         m_filterType = key->getValue();
+    }
+    else
+    {
+        m_readFailed = true;
     }
 }
 
@@ -299,6 +309,7 @@ std::string SSeriesDBReader::getSelectorDialogTitle()
     }
     catch (const std::exception& e)
     {
+        m_readFailed = true;
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
         ::fwGui::dialog::MessageDialog::showMessageDialog(
@@ -306,6 +317,7 @@ std::string SSeriesDBReader::getSelectorDialogTitle()
     }
     catch( ... )
     {
+        m_readFailed = true;
         ::fwGui::dialog::MessageDialog::showMessageDialog(
             "Warning", "Warning during loading", ::fwGui::dialog::IMessageDialog::WARNING);
     }
@@ -344,6 +356,14 @@ void SSeriesDBReader::updating()
                 ::fwMedData::SeriesDB::s_ADDED_SERIES_SIG);
             sig->asyncEmit(addedSeries);
         }
+        else
+        {
+            m_readFailed = true;
+        }
+    }
+    else
+    {
+        m_readFailed = true;
     }
 }
 

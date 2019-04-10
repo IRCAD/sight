@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -88,6 +88,7 @@ void SImageSeriesWriter::configureWithIHM()
     }
     else
     {
+        m_writeFailed = true;
         this->clearLocations();
     }
 }
@@ -119,6 +120,12 @@ void SImageSeriesWriter::updating()
     {
         // Retrieve dataStruct associated with this service
         ::fwMedData::ImageSeries::csptr series = this->getInput< ::fwMedData::ImageSeries >(::fwIO::s_DATA_KEY);
+
+        if(!series)
+        {
+            m_writeFailed = true;
+        }
+
         SLM_ASSERT("The input key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", series);
 
         const ::boost::filesystem::path& folder = this->getFolder();
@@ -134,6 +141,7 @@ void SImageSeriesWriter::updating()
 
             if(button == ::fwGui::dialog::MessageDialog::NO)
             {
+                m_writeFailed = true;
                 return;
             }
         }
@@ -150,6 +158,7 @@ void SImageSeriesWriter::updating()
 
             if(button == ::fwGui::dialog::MessageDialog::NO)
             {
+                m_writeFailed = true;
                 return;
             }
         }
@@ -180,6 +189,7 @@ void SImageSeriesWriter::saveImageSeries( const ::boost::filesystem::path folder
     }
     catch (const std::exception& e)
     {
+        m_writeFailed = true;
         std::stringstream ss;
         ss << "Warning during saving : " << e.what();
         ::fwGui::dialog::MessageDialog::showMessageDialog(
@@ -187,6 +197,7 @@ void SImageSeriesWriter::saveImageSeries( const ::boost::filesystem::path folder
     }
     catch( ... )
     {
+        m_writeFailed = true;
         ::fwGui::dialog::MessageDialog::showMessageDialog(
             "Warning", "Warning during saving", ::fwGui::dialog::IMessageDialog::WARNING);
     }
