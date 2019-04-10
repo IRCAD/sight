@@ -103,7 +103,6 @@ void STrianMeshReader::configureWithIHM()
     }
     else
     {
-        m_readFailed = true;
         this->clearLocations();
     }
 }

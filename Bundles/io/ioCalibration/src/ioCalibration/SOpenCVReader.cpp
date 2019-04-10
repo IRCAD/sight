@@ -98,7 +98,6 @@ bool SOpenCVReader::defineLocationGUI()
     }
     else
     {
-        this->m_readFailed = true;
         this->clearLocations();
     }
 

@@ -550,7 +550,6 @@ void SWriter::configureWithIHM()
         else
         {
             this->clearLocations();
-            m_writeFailed = true;
         }
 
     }

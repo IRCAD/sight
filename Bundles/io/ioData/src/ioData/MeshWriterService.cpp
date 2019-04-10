@@ -95,7 +95,6 @@ void MeshWriterService::configureWithIHM()
     }
     else
     {
-        m_writeFailed = true;
         this->clearLocations();
     }
 }

@@ -87,10 +87,6 @@ void SSeriesDBReader::configureWithIHM()
         this->setFolder( result->getFolder() );
         dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
     }
-    else
-    {
-        m_readFailed = true;
-    }
 }
 
 //------------------------------------------------------------------------------

@@ -113,7 +113,6 @@ void SJpgImageSeriesWriter::configureWithIHM()
     }
     else
     {
-        m_writeFailed = true;
         this->clearLocations();
     }
 }

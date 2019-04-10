@@ -109,7 +109,6 @@ void SModelSeriesObjWriter::configureWithIHM()
     }
     else
     {
-        m_writeFailed = true;
         this->clearLocations();
     }
 }

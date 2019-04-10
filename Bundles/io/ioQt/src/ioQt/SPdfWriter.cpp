@@ -116,7 +116,6 @@ void SPdfWriter::configureWithIHM()
     }
     else
     {
-        m_writeFailed = true;
         this->clearLocations();
     }
 }

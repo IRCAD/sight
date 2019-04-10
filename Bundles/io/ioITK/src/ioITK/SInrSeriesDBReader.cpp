@@ -113,7 +113,6 @@ void SInrSeriesDBReader::configureWithIHM()
     }
     else
     {
-        m_readFailed = true;
         this->clearLocations();
     }
 }

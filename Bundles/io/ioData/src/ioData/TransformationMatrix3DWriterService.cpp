@@ -102,7 +102,6 @@ void TransformationMatrix3DWriterService::configureWithIHM()
     }
     else
     {
-        m_writeFailed = true;
         this->clearLocations();
     }
 

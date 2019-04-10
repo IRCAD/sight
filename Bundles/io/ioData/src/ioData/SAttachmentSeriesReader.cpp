@@ -168,7 +168,6 @@ void SAttachmentSeriesReader::configureWithIHM()
     }
     else
     {
-        this->m_readFailed = true;
         this->clearLocations();
     }
 }
@@ -197,7 +196,7 @@ void SAttachmentSeriesReader::updating()
     }
     else
     {
-        this->m_readFailed = true;
+        m_readFailed = true;
     }
 }
 

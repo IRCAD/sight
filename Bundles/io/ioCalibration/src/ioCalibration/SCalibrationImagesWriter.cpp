@@ -86,7 +86,6 @@ void SCalibrationImagesWriter::configureWithIHM()
     }
     else
     {
-        m_writeFailed = true;
         this->clearLocations();
     }
 }

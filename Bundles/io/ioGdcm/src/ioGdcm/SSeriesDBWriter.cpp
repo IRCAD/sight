@@ -87,7 +87,6 @@ void SSeriesDBWriter::configureWithIHM()
     }
     else
     {
-        m_writeFailed = true;
         this->clearLocations();
     }
 }

@@ -85,7 +85,6 @@ void SSurfaceSegmentationWriter::configureWithIHM()
     }
     else
     {
-        m_writeFailed = true;
         this->clearLocations();
     }
 }

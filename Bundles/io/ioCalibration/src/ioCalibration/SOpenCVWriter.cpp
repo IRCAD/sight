@@ -95,7 +95,6 @@ bool SOpenCVWriter::defineLocationGUI()
     }
     else
     {
-        m_writeFailed = true;
         this->clearLocations();
     }
 

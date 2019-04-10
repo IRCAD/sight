@@ -117,7 +117,6 @@ void SImageReader::configureWithIHM()
     }
     else
     {
-        m_readFailed = true;
         this->clearLocations();
     }
 }

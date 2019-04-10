@@ -112,7 +112,6 @@ void TransformationMatrix3DReaderService::configureWithIHM()
     }
     else
     {
-        m_readFailed = true;
         this->clearLocations();
     }
 }

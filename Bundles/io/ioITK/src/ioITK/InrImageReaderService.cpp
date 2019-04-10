@@ -97,7 +97,6 @@ void InrImageReaderService::configureWithIHM()
     }
     else
     {
-        m_readFailed = true;
         this->clearLocations();
     }
 }

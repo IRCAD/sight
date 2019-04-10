@@ -84,10 +84,6 @@ void SSeriesDBReader::configureWithIHM()
         this->setFolder( result->getFolder() );
         dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
     }
-    else
-    {
-        m_readFailed = true;
-    }
 
     // Select filter
     if(!m_filterSelectorSrvConfig.empty())
@@ -96,12 +92,6 @@ void SSeriesDBReader::configureWithIHM()
         ::fwRuntime::ConfigurationElement::csptr filterSelectorConfig;
         filterSelectorConfig = ::fwServices::registry::ServiceConfig::getDefault()->getServiceConfig(
             m_filterSelectorSrvConfig, "::ioDicom::SFilterSelectorDialog");
-
-        if(!filterSelectorConfig)
-        {
-            m_readFailed = true;
-        }
-
         SLM_ASSERT("There is no service configuration "
                    + m_filterSelectorSrvConfig
                    + " for ::ioDicom::SFilterSelectorDialog", filterSelectorConfig);

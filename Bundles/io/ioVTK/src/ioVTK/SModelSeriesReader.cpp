@@ -101,15 +101,10 @@ void SModelSeriesReader::configureWithIHM()
             _sDefaultPath = paths[0].parent_path();
             dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
         }
-        else
-        {
-            m_readFailed = true;
-        }
         this->setFiles(paths);
     }
     else
     {
-        m_readFailed = true;
         this->clearLocations();
     }
 }

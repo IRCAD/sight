@@ -88,7 +88,6 @@ void SMeshWriter::configureWithIHM()
     }
     else
     {
-        m_writeFailed = true;
         this->clearLocations();
     }
 }

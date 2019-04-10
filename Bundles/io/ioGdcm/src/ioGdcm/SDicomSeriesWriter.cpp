@@ -91,7 +91,6 @@ void SDicomSeriesWriter::configureWithIHM()
     }
     else
     {
-        m_writeFailed = true;
         this->clearLocations();
     }
 }

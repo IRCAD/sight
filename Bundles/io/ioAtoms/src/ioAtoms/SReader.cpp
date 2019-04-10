@@ -472,7 +472,6 @@ void SReader::configureWithIHM()
     else
     {
         this->clearLocations();
-        m_readFailed = true;
     }
 }
 
