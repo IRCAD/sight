@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -354,6 +354,8 @@ void ObjectService::unregisterService(const ::fwServices::IService::KeyType& obj
 void ObjectService::unregisterServiceOutput( const ::fwServices::IService::KeyType& objKey,
                                              ::fwServices::IService::sptr service )
 {
+    ::fwCore::mt::WriteLock writeLock(m_containerMutex);
+
     ::fwData::Object::wptr obj = service->m_outputsMap[objKey];
 
     if (service->hasObjectId(objKey))
@@ -370,7 +372,7 @@ void ObjectService::unregisterServiceOutput( const ::fwServices::IService::KeyTy
 bool ObjectService::isRegistered(const ::fwServices::IService::KeyType& objKey,
                                  ::fwServices::IService::AccessType access, IService::sptr service) const
 {
-    ::fwCore::mt::WriteLock writeLock(m_containerMutex);
+    ::fwCore::mt::ReadLock readLock(m_containerMutex);
 
     if(access == ::fwServices::IService::AccessType::INPUT)
     {
@@ -392,7 +394,7 @@ bool ObjectService::isRegistered(const ::fwServices::IService::KeyType& objKey,
                                                      ::fwServices::IService::AccessType access,
                                                      IService::sptr service) const
 {
-    ::fwCore::mt::WriteLock writeLock(m_containerMutex);
+    ::fwCore::mt::ReadLock readLock(m_containerMutex);
 
     if(access == ::fwServices::IService::AccessType::INPUT)
     {
