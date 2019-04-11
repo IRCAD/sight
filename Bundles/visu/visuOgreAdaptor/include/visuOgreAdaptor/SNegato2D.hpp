@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -114,7 +114,7 @@ private:
     void createPlane(const ::fwData::Image::SpacingType& _spacing);
 
     /// Adapts the camera to the width and height of the displayed plane.
-    void updateCameraWindowBounds();
+    void updateCamera();
 
     /// Ogre texture which will be displayed on the negato
     ::Ogre::TexturePtr m_3DOgreTexture;
@@ -123,12 +123,15 @@ private:
     std::unique_ptr< ::fwRenderOgre::TransferFunction> m_gpuTF;
 
     /// The plane on which we will apply our texture
-    ::fwRenderOgre::Plane* m_plane;
+    ::fwRenderOgre::Plane* m_plane { nullptr };
 
     bool m_enableAlpha {false};
 
     /// The scene node allowing to move the entire negato
-    ::Ogre::SceneNode* m_negatoSceneNode;
+    ::Ogre::SceneNode* m_negatoSceneNode { nullptr };
+
+    /// The scene node allowing to move the camera
+    ::Ogre::SceneNode* m_cameraNode { nullptr };
 
     /// Defines the filtering type for this negato
     ::fwRenderOgre::Plane::FilteringEnumType m_filtering;
@@ -140,7 +143,7 @@ private:
     ::fwCom::Connection m_connection;
 
     /// Image orientation
-    OrientationMode m_orientation;
+    OrientationMode m_orientation { OrientationMode::Z_AXIS };
 
     ::fwDataTools::helper::TransferFunction m_helperTF;
 };

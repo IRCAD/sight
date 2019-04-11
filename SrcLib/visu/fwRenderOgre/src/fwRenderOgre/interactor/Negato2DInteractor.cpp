@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -129,6 +129,12 @@ void Negato2DInteractor::buttonPressEvent(MouseButton, int, int)
 
 void Negato2DInteractor::resizeEvent(int, int)
 {
+    this->updateRenderWindowDimensions();
+    this->updateTotalSize();
+    m_currentWidth  = m_zoomScale * m_totalWidth;
+    m_currentHeight = m_zoomScale * m_totalHeight;
+    this->updateCameraAngle();
+    this->updateCameraPosition();
 }
 
 //------------------------------------------------------------------------------
@@ -157,10 +163,43 @@ void Negato2DInteractor::focusOutEvent()
 
 // ----------------------------------------------------------------------------
 
+::Ogre::Real Negato2DInteractor::getTextureCoordinate_X(int mouseX) const
+{
+    ::Ogre::Real leftScreenBordure = m_cameraPos.x - static_cast< ::Ogre::Real >(m_currentWidth) / 2;
+    ::Ogre::Real newCoordinate     = static_cast< ::Ogre::Real >(leftScreenBordure) +
+                                     static_cast< ::Ogre::Real >(mouseX) / m_renderWindowWidth * m_currentWidth;
+    return newCoordinate;
+}
+
+// ----------------------------------------------------------------------------
+
+::Ogre::Real Negato2DInteractor::getTextureCoordinate_Y(int mouseY) const
+{
+    // Qt and Ogre's Y axis are oriented to the opposite of each other.
+    ::Ogre::Real topScreenBordure = m_cameraPos.y + static_cast< ::Ogre::Real >(m_currentHeight) / 2;
+    ::Ogre::Real newCoordinate    = topScreenBordure - (static_cast< ::Ogre::Real >(mouseY) /
+                                                        m_renderWindowHeight * m_currentHeight);
+    return newCoordinate;
+}
+
+// ----------------------------------------------------------------------------
+
+::Ogre::Camera* Negato2DInteractor::getCamera()
+{
+    if(!m_camera)
+    {
+        m_camera    = m_sceneManager->getCamera(::fwRenderOgre::Layer::DEFAULT_CAMERA_NAME);
+        m_cameraPos =
+            m_camera->getSceneManager()->getSceneNode(::fwRenderOgre::Layer::s_DEFAULT_CAMERA_NODE_NAME)->getPosition();
+    }
+    return m_camera;
+}
+
+// ----------------------------------------------------------------------------
+
 void Negato2DInteractor::updateTotalSize()
 {
     ::Ogre::SceneNode* rootSceneNode = m_sceneManager->getRootSceneNode();
-    rootSceneNode->getChildIterator();
 
     ::std::stack< const ::Ogre::SceneNode* > childrenStack;
     childrenStack.push(rootSceneNode);
@@ -215,8 +254,6 @@ void Negato2DInteractor::updateRenderWindowDimensions()
     m_renderWindowWidth  = static_cast< ::Ogre::Real >(renderSystem->_getViewport()->getActualWidth());
     m_renderWindowHeight = static_cast< ::Ogre::Real >(renderSystem->_getViewport()->getActualHeight());
     m_renderWindowRatio  = m_renderWindowWidth / m_renderWindowHeight;
-    this->getCamera()->setAspectRatio(m_renderWindowRatio);
-
 }
 
 // ----------------------------------------------------------------------------
@@ -240,85 +277,21 @@ void Negato2DInteractor::updateCameraPosition()
 
 // ----------------------------------------------------------------------------
 
-void Negato2DInteractor::resetCameraPosition()
-{
-    ::Ogre::Real cameraWidth, cameraHeight;
-
-    if( m_renderWindowWidth < m_renderWindowHeight)
-    {
-        cameraWidth  = m_totalWidth;
-        cameraHeight = cameraWidth / m_renderWindowRatio;
-    }
-    else
-    {
-        cameraHeight = m_totalHeight;
-        cameraWidth  = cameraHeight * m_renderWindowRatio;
-    }
-
-    this->getCamera()->setOrthoWindow(cameraWidth, cameraHeight);
-}
-
-// ----------------------------------------------------------------------------
-
-::Ogre::Camera* Negato2DInteractor::getCamera()
-{
-    if(!m_camera)
-    {
-        m_camera    = m_sceneManager->getCamera(::fwRenderOgre::Layer::DEFAULT_CAMERA_NAME);
-        m_cameraPos =
-            m_camera->getSceneManager()->getSceneNode(::fwRenderOgre::Layer::s_DEFAULT_CAMERA_NODE_NAME)->getPosition();
-        m_camera->setOrthoWindow(1.f, 1.f);
-    }
-    return m_camera;
-}
-
-// ----------------------------------------------------------------------------
-
 void Negato2DInteractor::updateCameraAngle()
 {
-    this->updateRenderWindowDimensions();
-    ::Ogre::Real orthoWidth, orthoHeight, imageToWindowRatio;
-
+    this->getCamera()->setAspectRatio(m_renderWindowRatio);
     if( static_cast<int>(m_renderWindowWidth) == static_cast<int>(m_renderWindowHeight) )
     {
         this->getCamera()->setOrthoWindow( m_currentWidth, m_currentHeight );
     }
     else if( m_renderWindowWidth > m_renderWindowHeight )
     {
-        orthoHeight        = m_currentHeight;
-        imageToWindowRatio = m_currentHeight / m_renderWindowHeight;
-        orthoWidth         = imageToWindowRatio * orthoHeight;
-        this->getCamera()->setOrthoWindowHeight( orthoHeight);
-
+        this->getCamera()->setOrthoWindowHeight( m_currentHeight);
     }
     else if( m_renderWindowWidth < m_renderWindowHeight )
     {
-        orthoWidth         = m_currentWidth;
-        imageToWindowRatio = m_currentWidth / m_renderWindowWidth;
-        orthoHeight        = imageToWindowRatio * orthoWidth;
-        this->getCamera()->setOrthoWindowWidth( orthoWidth );
+        this->getCamera()->setOrthoWindowWidth(m_currentWidth);
     }
-}
-
-// ----------------------------------------------------------------------------
-
-::Ogre::Real Negato2DInteractor::getTextureCoordinate_X(int mouseX) const
-{
-    ::Ogre::Real leftScreenBordure = m_cameraPos.x - static_cast< ::Ogre::Real >(m_currentWidth) / 2;
-    ::Ogre::Real newCoordinate     = static_cast< ::Ogre::Real >(leftScreenBordure) +
-                                     static_cast< ::Ogre::Real >(mouseX) / m_renderWindowWidth * m_currentWidth;
-    return newCoordinate;
-}
-
-// ----------------------------------------------------------------------------
-
-::Ogre::Real Negato2DInteractor::getTextureCoordinate_Y(int mouseY) const
-{
-    // Qt and Ogre's Y axis are oriented to the opposite of each other.
-    ::Ogre::Real topScreenBordure = m_cameraPos.y + static_cast< ::Ogre::Real >(m_currentHeight) / 2;
-    ::Ogre::Real newCoordinate    = topScreenBordure - (static_cast< ::Ogre::Real >(mouseY) /
-                                                        m_renderWindowHeight * m_currentHeight);
-    return newCoordinate;
 }
 
 // ----------------------------------------------------------------------------
