@@ -157,15 +157,21 @@ public:
 
     //------------------------------------------------------------------------------
 
-    static void  videoUnlock( void* opaque, void* picture, void* const* planes )
+    static void videoUnlock( void* opaque, void* picture, void* const* planes )
     {
     }
 
     //------------------------------------------------------------------------------
 
-    static void  videoDisplay( void* opaque, void* picture )
+    static void videoDisplay( void* opaque, void* picture )
     {
         VlcCallbackProxy* callback = reinterpret_cast<VlcCallbackProxy*>(opaque);
+
+        // If video is paused do not push any frames.
+        if(callback->m_isPaused)
+        {
+            return;
+        }
 
         const ::fwCore::HiResClock::HiResClockType timestamp = ::fwCore::HiResClock::getTimeInMilliSec();
 
@@ -175,7 +181,7 @@ public:
 
         memcpy(destBuffer, srcBuffer, buffer->getSize());
 
-        // push buffer and notify
+        // push buffer and notify.
         callback->m_timeline->pushObject(buffer);
 
         ::arData::TimeLine::ObjectPushedSignalType::sptr sig;
@@ -184,11 +190,19 @@ public:
         sig->asyncEmit(timestamp);
     }
 
+    //------------------------------------------------------------------------------
+
+    void setIsPause(bool status)
+    {
+        m_isPaused = status;
+    }
+
 protected:
 
     std::vector< uint8_t > m_frame;
     ::arData::FrameTL::sptr m_timeline;
     libvlc_media_player_t* m_vlcMedia;
+    bool m_isPaused{false};
 };
 
 //-----------------------------------------------------------------------------
@@ -322,6 +336,7 @@ void SFrameGrabber::startCamera()
             libvlc_event_attach( vlcHandler, libvlc_MediaPlayerEndReached, &SFrameGrabber::onEventCallback, this );
 
             libvlc_media_player_play(m_vlcPlayer);
+
             break;
         }
         case ::arData::Camera::STREAM:
@@ -396,6 +411,7 @@ void SFrameGrabber::startCamera()
             ::arServices::IGrabber::s_CAMERA_STARTED_SIG);
         sig->asyncEmit();
 
+        m_vlcProxy->setIsPause(false);
         this->setStartState(true);
     }
 }
@@ -410,11 +426,13 @@ void SFrameGrabber::pauseCamera()
         {
             // Pause
             libvlc_media_player_pause(m_vlcPlayer);
+            m_vlcProxy->setIsPause(true);
         }
         else
         {
             // Play again
             libvlc_media_player_play(m_vlcPlayer);
+            m_vlcProxy->setIsPause(false);
         }
     }
 }
