@@ -27,11 +27,8 @@
 #include <fwCore/spyLog.hpp>
 
 #include <QGuiApplication>
-#include <QHBoxLayout>
 #include <QParallelAnimationGroup>
 #include <QPropertyAnimation>
-#include <QPushButton>
-#include <QVBoxLayout>
 
 namespace fwGuiQml
 {
@@ -42,13 +39,13 @@ namespace widget
 //-----------------------------------------------------------------------------
 
 SlideBar::SlideBar(QWidget* parent, Aligment align, int buttonSize, double opacity) :
-    QGroupBox(),
+//    QGroupBox(),
     m_buttonSize(buttonSize),
     m_opacity(opacity),
     m_isShown(false),
     m_align(align)
 {
-    this->setParent(parent);
+//    this->setParent(parent);
     this->init();
 }
 
@@ -60,16 +57,16 @@ void SlideBar::init()
 
     // Set the widget position
     this->updatePosition();
-    this->setGeometry(m_hiddenPosition);
+//    this->setGeometry(m_hiddenPosition);
 
     // window flags to have a frameless dialog that can be displayed over an openGL widget
-    this->setWindowFlags(Qt::Tool
-                         | Qt::FramelessWindowHint
-                         | Qt::NoDropShadowWindowHint
-                         );
+//    this->setWindowFlags(Qt::Tool
+//                         | Qt::FramelessWindowHint
+//                         | Qt::NoDropShadowWindowHint
+//                         );
 
     // Set the transparent background
-    this->setAttribute(Qt::WA_TranslucentBackground);
+//    this->setAttribute(Qt::WA_TranslucentBackground);
 
     // Listen parent and activeWindow 'Resize' and 'Move' event to update widget position
     // (just listening parent event is not enough because the Move event is only send on activeWindow).
@@ -92,66 +89,66 @@ SlideBar::~SlideBar()
 
 void SlideBar::updatePosition()
 {
-    int height = this->parentWidget()->height();
-    int width  = this->parentWidget()->width();
+//    int height = this->parentWidget()->height();
+//    int width  = this->parentWidget()->width();
 
     switch (m_align)
     {
         case LEFT:
         case RIGHT:
-            width = std::min(width, m_buttonSize);
-            this->setFixedWidth(width);
-            this->setFixedHeight(height);
+//            width = std::min(width, m_buttonSize);
+//            this->setFixedWidth(width);
+//            this->setFixedHeight(height);
             break;
         case TOP:
         case BOTTOM:
-            height = std::min(height, m_buttonSize);
-            this->setFixedHeight(height);
-            this->setFixedWidth(width);
+//            height = std::min(height, m_buttonSize);
+//            this->setFixedHeight(height);
+//            this->setFixedWidth(width);
             break;
     }
 
     if (m_align == LEFT)
     {
-        QPoint pos = this->parentWidget()->rect().topLeft();
-        pos = this->parentWidget()->mapToGlobal(pos);
+//        QPoint pos = this->parentWidget()->rect().topLeft();
+//        pos = this->parentWidget()->mapToGlobal(pos);
 
-        m_shownPosition  = QRect(pos.x(), pos.y(), width, height);
-        m_hiddenPosition = QRect(pos.x()-width, pos.y(), 0, height);
+//        m_shownPosition  = QRect(pos.x(), pos.y(), width, height);
+//        m_hiddenPosition = QRect(pos.x()-width, pos.y(), 0, height);
     }
     else if (m_align == RIGHT)
     {
-        QPoint pos = this->parentWidget()->rect().topRight();
-        pos = this->parentWidget()->mapToGlobal(pos);
+//        QPoint pos = this->parentWidget()->rect().topRight();
+//        pos = this->parentWidget()->mapToGlobal(pos);
 
-        m_shownPosition  = QRect(pos.x()-width, pos.y(), width, height);
-        m_hiddenPosition = QRect(pos.x(), pos.y(), 0, height);
+//        m_shownPosition  = QRect(pos.x()-width, pos.y(), width, height);
+//        m_hiddenPosition = QRect(pos.x(), pos.y(), 0, height);
     }
     else if (m_align == TOP)
     {
-        QPoint pos = this->parentWidget()->rect().topLeft();
-        pos = this->parentWidget()->mapToGlobal(pos);
+//        QPoint pos = this->parentWidget()->rect().topLeft();
+//        pos = this->parentWidget()->mapToGlobal(pos);
 
-        m_shownPosition  = QRect(pos.x(), pos.y(), width, height);
-        m_hiddenPosition = QRect(pos.x(), pos.y()-height, width, 0);
+//        m_shownPosition  = QRect(pos.x(), pos.y(), width, height);
+//        m_hiddenPosition = QRect(pos.x(), pos.y()-height, width, 0);
     }
     else // m_align == BOTTOM
     {
-        QPoint pos = this->parentWidget()->rect().bottomLeft();
-        pos = this->parentWidget()->mapToGlobal(pos);
+//        QPoint pos = this->parentWidget()->rect().bottomLeft();
+//        pos = this->parentWidget()->mapToGlobal(pos);
 
-        m_shownPosition  = QRect(pos.x(), pos.y()-height, width, height);
-        m_hiddenPosition = QRect(pos.x(), pos.y(), width, 0);
+//        m_shownPosition  = QRect(pos.x(), pos.y()-height, width, height);
+//        m_hiddenPosition = QRect(pos.x(), pos.y(), width, 0);
     }
 
-    if (m_isShown)
-    {
-        this->setGeometry(m_shownPosition);
-    }
-    else
-    {
-        this->setGeometry(m_hiddenPosition);
-    }
+//    if (m_isShown)
+//    {
+//        this->setGeometry(m_shownPosition);
+//    }
+//    else
+//    {
+//        this->setGeometry(m_hiddenPosition);
+//    }
 }
 
 //-----------------------------------------------------------------------------
@@ -163,23 +160,23 @@ void SlideBar::setSide(Aligment align)
 }
 //-----------------------------------------------------------------------------
 
-void SlideBar::setVisible(bool visible)
-{
-    this->slide(visible);
-}
+//void SlideBar::setVisible(bool visible)
+//{
+//    this->slide(visible);
+//}
 
 //-----------------------------------------------------------------------------
 
 void SlideBar::forceHide()
 {
-    this->QGroupBox::setVisible(false);
+//    this->QGroupBox::setVisible(false);
 }
 
 //-----------------------------------------------------------------------------
 
 void SlideBar::forceShow()
 {
-    this->QGroupBox::setVisible(true);
+//    this->QGroupBox::setVisible(true);
 }
 
 //-----------------------------------------------------------------------------
@@ -189,7 +186,7 @@ void SlideBar::slide(bool visible)
     // Show the widget with the previous opacity. It must be hidden after the slide(false) because if opacity == 0, the
     // widget is still clickable.
     this->forceShow();
-    this->setWindowOpacity(m_isShown ? m_opacity : 0);
+//    this->setWindowOpacity(m_isShown ? m_opacity : 0);
 
     // Set animation to slide the widget and update the opacity
     QParallelAnimationGroup* animations = new QParallelAnimationGroup();
@@ -198,19 +195,19 @@ void SlideBar::slide(bool visible)
     QPropertyAnimation* geomAnimation = new QPropertyAnimation(this, "geometry");
     geomAnimation->setDuration(500);
     geomAnimation->setEasingCurve(QEasingCurve::InBack);
-    geomAnimation->setStartValue(this->geometry());
+//    geomAnimation->setStartValue(this->geometry());
 
-    if(visible == true)
-    {
-        geomAnimation->setEndValue(m_shownPosition);
-    }
-    else
-    {
-        geomAnimation->setEndValue(m_hiddenPosition);
+//    if(visible == true)
+//    {
+//        geomAnimation->setEndValue(m_shownPosition);
+//    }
+//    else
+//    {
+//        geomAnimation->setEndValue(m_hiddenPosition);
 
-        // hide the widget when the animation is finished (if opacity == 0, widget is still clickable)
-        QObject::connect(animations, &QAbstractAnimation::finished, this, &SlideBar::forceHide);
-    }
+//        // hide the widget when the animation is finished (if opacity == 0, widget is still clickable)
+//        QObject::connect(animations, &QAbstractAnimation::finished, this, &SlideBar::forceHide);
+//    }
 
     // opacity animation
     QPropertyAnimation* opacityAnimation = new QPropertyAnimation(this, "windowOpacity");

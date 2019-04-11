@@ -268,7 +268,7 @@ void SParameters::starting()
 void SParameters::updating()
 {
     auto qtContainer = ::fwGuiQml::container::QmlContainer::dynamicCast(this->getContainer());
-    QWidget* widget  = qtContainer->getQmlContainer();
+//    QWidget* widget  = qtContainer->getQmlContainer();
 
     ::fwServices::IService::ConfigType config = this->getConfigTree();
     const ::fwServices::IService::ConfigType& parametersCfg = config.get_child("parameters");
@@ -281,55 +281,56 @@ void SParameters::updating()
         const std::string key  = cfg.get< std::string >("<xmlattr>.key");
         const std::string type = cfg.get< std::string >("<xmlattr>.type");
 
-        QWidget* child = widget->findChild<QWidget*>(QString::fromStdString(key));
-        if (child)
-        {
-            if(type == "bool")
-            {
-                const QCheckBox* box = dynamic_cast<QCheckBox* >(child);
-                SLM_ASSERT("Widget must be a QCheckBox", box);
+//        QWidget* child = widget->findChild<QWidget*>(QString::fromStdString(key));
+//        if (child)
+//        {
+//            if(type == "bool")
+//            {
+//                const QCheckBox* box = dynamic_cast<QCheckBox* >(child);
+//                SLM_ASSERT("Widget must be a QCheckBox", box);
 
-                const bool state = (box->checkState() == Qt::Checked);
+//                const bool state = (box->checkState() == Qt::Checked);
 
-                if (!m_blockSignals)
-                {
-                    this->signal<BooleanChangedSignalType>(BOOLEAN_CHANGED_SIG)->asyncEmit(state, key);
-                    OSLM_DEBUG("[EMIT] " << BOOLEAN_CHANGED_SIG << "(" << (state ? "true" : "false") << ", " << key <<
-                               ")" );
+//                if (!m_blockSignals)
+//                {
+//                    this->signal<BooleanChangedSignalType>(BOOLEAN_CHANGED_SIG)->asyncEmit(state, key);
+//                    OSLM_DEBUG("[EMIT] " << BOOLEAN_CHANGED_SIG << "(" << (state ? "true" : "false") << ", " << key <<
+//                               ")" );
 
-                }
-            }
-            else if(type == "color")
-            {
-                const QColor colorQt = child->property("color").value<QColor>();
-                this->emitColorSignal(colorQt, key);
-            }
-            else if(type == "double" || type == "double2" || type == "double3")
-            {
-                this->emitDoubleSignal(child);
-            }
-            else if(type == "int" || type == "int2" || type == "int3")
-            {
-                this->emitIntegerSignal(child);
-            }
-            else if(type == "enum")
-            {
-                QComboBox* box = qobject_cast<QComboBox*>(child);
+//                }
+//            }
+//            else if(type == "color")
+//            {
+//                const QColor colorQt = child->property("color").value<QColor>();
+//                this->emitColorSignal(colorQt, key);
+//            }
+//            else if(type == "double" || type == "double2" || type == "double3")
+//            {
+//                this->emitDoubleSignal(child);
+//            }
+//            else if(type == "int" || type == "int2" || type == "int3")
+//            {
+//                this->emitIntegerSignal(child);
+//            }
+//            else if(type == "enum")
+//            {
+//                QComboBox* box = qobject_cast<QComboBox*>(child);
 
-                SLM_ASSERT("Widget must be a QComboBox", box);
+//                SLM_ASSERT("Widget must be a QComboBox", box);
 
-                const QString data = box->itemData(box->currentIndex()).toString();
+//                const QString data = box->itemData(box->currentIndex()).toString();
 
-                if (!m_blockSignals)
-                {
-                    this->signal<EnumChangedSignalType>(ENUM_CHANGED_SIG)->asyncEmit(data.toStdString(), key);
-                    OSLM_DEBUG("[EMIT] " << ENUM_CHANGED_SIG << "(" << data.toStdString() << ", " << key << ")" );
-                    this->signal<EnumChangedIndexSignalType>(ENUM_INDEX_CHANGED_SIG)->asyncEmit(box->currentIndex(),
-                                                                                                key);
-                    OSLM_DEBUG("[EMIT] " << ENUM_INDEX_CHANGED_SIG << "(" << box->currentIndex() << ", " << key << ")");
-                }
-            }
-        }
+//                if (!m_blockSignals)
+//                {
+//                    this->signal<EnumChangedSignalType>(ENUM_CHANGED_SIG)->asyncEmit(data.toStdString(), key);
+//                    OSLM_DEBUG("[EMIT] " << ENUM_CHANGED_SIG << "(" << data.toStdString() << ", " << key << ")" );
+//                    this->signal<EnumChangedIndexSignalType>(ENUM_INDEX_CHANGED_SIG)->asyncEmit(box->currentIndex(),
+//                                                                                                key);
+//                    OSLM_DEBUG("[EMIT] " << ENUM_INDEX_CHANGED_SIG << "(" << box->currentIndex() << ", " << key <<
+// ")");
+//                }
+//            }
+//        }
     }
 }
 
@@ -385,27 +386,27 @@ void SParameters::onColorButton()
     QObject* sender = this->sender();
 
     // Create Color choice dialog.
-    auto qtContainer         = ::fwGuiQml::container::QmlContainer::dynamicCast( this->getContainer() );
-    QWidget* const container = qtContainer->getQmlContainer();
-    SLM_ASSERT("container not instanced", container);
+    auto qtContainer = ::fwGuiQml::container::QmlContainer::dynamicCast( this->getContainer() );
+//    QWidget* const container = qtContainer->getQmlContainer();
+//    SLM_ASSERT("container not instanced", container);
 
     const QColor oldColor = sender->property("color").value<QColor>();
-    const QColor colorQt  = QColorDialog::getColor(oldColor, container);
-    if(colorQt.isValid())
-    {
-        const QString key = sender->property("key").toString();
+//    const QColor colorQt  = QColorDialog::getColor(oldColor, container);
+//    if(colorQt.isValid())
+//    {
+//        const QString key = sender->property("key").toString();
 
-        QPushButton* colourButton = dynamic_cast<QPushButton*>(sender);
-        colourButton->setProperty("color", colorQt);
+//        QPushButton* colourButton = dynamic_cast<QPushButton*>(sender);
+//        colourButton->setProperty("color", colorQt);
 
-        int iconSize = colourButton->style()->pixelMetric(QStyle::PM_LargeIconSize);
-        QPixmap pix(iconSize, iconSize);
-        pix.fill(colorQt);
+//        int iconSize = colourButton->style()->pixelMetric(QStyle::PM_LargeIconSize);
+//        QPixmap pix(iconSize, iconSize);
+//        pix.fill(colorQt);
 
-        colourButton->setIcon(QIcon(pix));
+//        colourButton->setIcon(QIcon(pix));
 
-        this->emitColorSignal(colorQt, key.toStdString());
-    }
+//        this->emitColorSignal(colorQt, key.toStdString());
+//    }
 }
 
 //-----------------------------------------------------------------------------
@@ -1551,13 +1552,13 @@ void SParameters::setDoubleSliderRange(QSlider* slider, double currentValue)
 
 QWidget* SParameters::getParamWidget(const std::string& key)
 {
-    auto qtContainer      = ::fwGuiQml::container::QmlContainer::dynamicCast(this->getContainer());
-    const QWidget* widget = qtContainer->getQmlContainer();
+    auto qtContainer = ::fwGuiQml::container::QmlContainer::dynamicCast(this->getContainer());
+//    const QWidget* widget = qtContainer->getQmlContainer();
 
-    QWidget* child = widget->findChild<QWidget*>(QString::fromStdString(key));
-    SLM_ERROR_IF("Widget '" + key + "' is not found", !child);
+//    QWidget* child = widget->findChild<QWidget*>(QString::fromStdString(key));
+//    SLM_ERROR_IF("Widget '" + key + "' is not found", !child);
 
-    return child;
+//    return child;
 }
 
 //-----------------------------------------------------------------------------

@@ -22,10 +22,6 @@
 
 #include "fwGuiQml/container/QmlToolBarContainer.hpp"
 
-#include <QAction>
-#include <QMenu>
-#include <QToolBar>
-
 namespace fwGuiQml
 {
 namespace container
@@ -47,33 +43,33 @@ QmlToolBarContainer::~QmlToolBarContainer() noexcept
 
 void QmlToolBarContainer::clean()
 {
-    SLM_ASSERT("The Qml toolBar is not yet initialized, cleaning is thus impossible", m_toolBar);
+//    SLM_ASSERT("The Qml toolBar is not yet initialized, cleaning is thus impossible", m_toolBar);
 
-    m_toolBar->clear();
+//    m_toolBar->clear();
 }
 
 //-----------------------------------------------------------------------------
 
 void QmlToolBarContainer::destroyContainer()
 {
-    SLM_ASSERT("The Qml toolBar is not yet initialized, cleaning is thus impossible", m_toolBar);
+//    SLM_ASSERT("The Qml toolBar is not yet initialized, cleaning is thus impossible", m_toolBar);
 
-    delete m_toolBar;
+//    delete m_toolBar;
 }
 
 //-----------------------------------------------------------------------------
 
-void QmlToolBarContainer::setQmlToolBar(QToolBar* toolBar)
-{
-    this->m_toolBar = toolBar;
-}
+//void QmlToolBarContainer::setQmlToolBar(QToolBar* toolBar)
+//{
+//    this->m_toolBar = toolBar;
+//}
 
 //-----------------------------------------------------------------------------
 
-QToolBar* QmlToolBarContainer::getQmlToolBar()
-{
-    return this->m_toolBar;
-}
+//QToolBar* QmlToolBarContainer::getQmlToolBar()
+//{
+//    return this->m_toolBar;
+//}
 
 //-----------------------------------------------------------------------------
 

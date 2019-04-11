@@ -30,15 +30,14 @@
 #include <boost/lambda/lambda.hpp>
 
 #include <QCloseEvent>
-#include <QMainWindow>
 
 namespace fwGuiQml
 {
 
 //------------------------------------------------------------------------------
 
-QmlMainFrame::QmlMainFrame() noexcept :
-    QMainWindow()
+QmlMainFrame::QmlMainFrame() noexcept/* :
+                                        QMainWindow()*/
 {
 }
 
@@ -57,12 +56,12 @@ void QmlMainFrame::setCloseCallback(CloseCallback fct)
 
 //------------------------------------------------------------------------------
 
-void QmlMainFrame::closeEvent(QCloseEvent* event)
-{
-    SLM_TRACE_FUNC();
-    m_fctCloseCallback();
-    event->ignore();
-}
+//void QmlMainFrame::closeEvent(QCloseEvent* event)
+//{
+//    SLM_TRACE_FUNC();
+//    m_fctCloseCallback();
+//    event->ignore();
+//}
 
 //------------------------------------------------------------------------------
 

@@ -28,10 +28,7 @@
 
 #include "fwGuiQml/config.hpp"
 
-#include <QFormLayout>
 #include <QObject>
-#include <QPushButton>
-#include <QScrollArea>
 #include <QString>
 
 namespace fwGuiQml
@@ -46,52 +43,52 @@ public:
 
     void setText(const QString& text)
     {
-        button->setText(text);
+//        button->setText(text);
     }
     //------------------------------------------------------------------------------
 
     void setIcon(const QIcon& is)
     {
-        button->setIcon(is);
+//        button->setIcon(is);
     }
     //------------------------------------------------------------------------------
 
     void setToolTip(const QString& tip)
     {
-        button->setToolTip(tip);
+//        button->setToolTip(tip);
     }
     //------------------------------------------------------------------------------
 
     QString toolTip() const
     {
-        return button->toolTip();
+//        return button->toolTip();
     }
     //------------------------------------------------------------------------------
 
     QString text() const
     {
-        return button->text();
+//        return button->text();
     }
     //------------------------------------------------------------------------------
 
-    QIcon icon() const
-    {
-        return button->icon();
-    }
+//    QIcon icon() const
+//    {
+//        return button->icon();
+//    }
 
     //------------------------------------------------------------------------------
 
     inline bool operator==(const Page& other) const
     {
-        return widget == other.widget;
+//        return widget == other.widget;
     }
 
-    QPushButton* button;
-    QFrame* sv;
-    QWidget* widget;
+//    QPushButton* button;
+//    QFrame* sv;
+//    QWidget* widget;
 };
 
-class FWGUIQML_CLASS_API QfwToolBox : public QFrame
+class FWGUIQML_CLASS_API QfwToolBox : public QObject
 {
 Q_OBJECT
 
@@ -138,7 +135,7 @@ private:
     void relayout();
 
     PageList pageList;
-    QFormLayout* layout;
+//    QFormLayout* layout;
 };
 
 } // namespace widget

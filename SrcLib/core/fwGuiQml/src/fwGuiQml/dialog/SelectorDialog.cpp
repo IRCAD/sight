@@ -26,13 +26,7 @@
 
 #include <fwGui/registry/macros.hpp>
 
-#include <QDialog>
 #include <QGuiApplication>
-#include <QHBoxLayout>
-#include <QLabel>
-#include <QListWidget>
-#include <QPushButton>
-#include <QVBoxLayout>
 
 fwGuiRegisterMacro( ::fwGuiQml::dialog::SelectorDialog, ::fwGui::dialog::ISelectorDialog::REGISTRY_KEY );
 
@@ -87,27 +81,27 @@ std::string SelectorDialog::show()
 //    QListWidgetItem* firstItem = selectionList->item(0);
 //   selectionList->setCurrentItem(firstItem);
 
-    QPushButton* okButton     = new QPushButton(QObject::tr("Ok"));
-    QPushButton* cancelButton = new QPushButton(QObject::tr("Cancel"));
+//    QPushButton* okButton     = new QPushButton(QObject::tr("Ok"));
+//    QPushButton* cancelButton = new QPushButton(QObject::tr("Cancel"));
 
-    QHBoxLayout* hLayout = new QHBoxLayout();
-    hLayout->addWidget(okButton);
-    hLayout->addWidget(cancelButton);
+//    QHBoxLayout* hLayout = new QHBoxLayout();
+//    hLayout->addWidget(okButton);
+//    hLayout->addWidget(cancelButton);
 
-    for(auto customButton : m_customButtons)
-    {
-        hLayout->addWidget(customButton);
-        //      QObject::connect(customButton, SIGNAL(clicked()), dialog, SLOT(reject()));
-    }
+//    for(auto customButton : m_customButtons)
+//    {
+//        hLayout->addWidget(customButton);
+//        //      QObject::connect(customButton, SIGNAL(clicked()), dialog, SLOT(reject()));
+//    }
 
-    QVBoxLayout* vLayout = new QVBoxLayout();
+//    QVBoxLayout* vLayout = new QVBoxLayout();
     if(!m_message.empty())
     {
         //     QLabel* msgText = new QLabel(QString::fromStdString(m_message), dialog);
         //    vLayout->addWidget( msgText);
     }
     //   vLayout->addWidget(selectionList);
-    vLayout->addLayout(hLayout);
+//    vLayout->addLayout(hLayout);
 
     //  dialog->setLayout(vLayout);
     //QObject::connect(okButton, SIGNAL(clicked()), dialog, SLOT(accept()));
@@ -134,9 +128,9 @@ void SelectorDialog::setMessage(const std::string& msg)
 
 void SelectorDialog::addCustomButton(const std::string& label, std::function<void()> clickedFn)
 {
-    QPushButton* button = new QPushButton( QString::fromStdString(label) );
-    m_customButtons.push_back( button );
-    QObject::connect(button, &QPushButton::clicked, clickedFn);
+//    QPushButton* button = new QPushButton( QString::fromStdString(label) );
+//    m_customButtons.push_back( button );
+//    QObject::connect(button, &QPushButton::clicked, clickedFn);
 }
 
 //------------------------------------------------------------------------------

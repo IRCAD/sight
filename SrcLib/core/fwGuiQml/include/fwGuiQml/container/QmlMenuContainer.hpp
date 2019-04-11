@@ -32,7 +32,6 @@
 
 #include <fwTools/Object.hpp>
 
-#include <QMenu>
 #include <QPointer>
 
 namespace fwGuiQml
@@ -60,12 +59,12 @@ public:
     FWGUIQML_API virtual void clean() override;
     FWGUIQML_API virtual void destroyContainer() override;
 
-    FWGUIQML_API virtual void setQmlMenu(QMenu* menu);
-    FWGUIQML_API virtual QMenu* getQmlMenu();
+//    FWGUIQML_API virtual void setQmlMenu(QMenu* menu);
+//    FWGUIQML_API virtual QMenu* getQmlMenu();
 
 private:
 
-    QPointer<QMenu> m_menu;
+//    QPointer<QMenu> m_menu;
 };
 
 } // namespace container

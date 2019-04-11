@@ -220,8 +220,8 @@ void SDynamicView::launchTab(SDynamicViewInfo& info)
 
     ::fwGuiQml::container::QmlContainer::sptr subContainer = ::fwGuiQml::container::QmlContainer::New();
     QWidget* widget = new QWidget(m_tabWidget);
-    subContainer->setQmlContainer(widget);
-    ::fwGui::GuiRegistry::registerWIDContainer(info.wid, subContainer);
+//    subContainer->setQmlContainer(widget);
+//    ::fwGui::GuiRegistry::registerWIDContainer(info.wid, subContainer);
 
     info.replaceMap[ "WID_PARENT" ] = info.wid;
     std::string genericUidAdaptor = ::fwServices::registry::AppConfig::getUniqueIdentifier(info.viewConfigID);

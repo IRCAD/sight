@@ -26,9 +26,8 @@
 
 #include <fwGui/dialog/IMultiSelectorDialog.hpp>
 
-#include <QDialog>
+#include <QObject>
 #include <QString>
-#include <QWidget>
 
 #include <vector>
 
@@ -43,7 +42,7 @@ namespace dialog
  */
 
 class FWGUIQML_CLASS_API MultiSelectorDialog : public ::fwGui::dialog::IMultiSelectorDialog,
-                                               public QDialog
+                                               public QObject
 {
 public:
 

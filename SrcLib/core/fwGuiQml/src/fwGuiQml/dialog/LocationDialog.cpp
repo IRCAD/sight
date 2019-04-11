@@ -37,7 +37,6 @@
 #include <boost/tokenizer.hpp>
 
 #include <QDebug>
-#include <QFileDialog>
 #include <QGuiApplication>
 #include <QString>
 
@@ -198,8 +197,8 @@ QStringList LocationDialog::fileFilters()
     {
         std::string filterName   = iter->first;
         std::string rawWildcards = iter->second;
-        QString qFilterName      = QString::fromUtf8(filterName.data(), filterName.size());
-        QString qRawWildcards    = QString::fromUtf8(rawWildcards.data(), rawWildcards.size());
+        QString qFilterName      = QString::fromStdString(filterName);
+        QString qRawWildcards    = QString::fromStdString(rawWildcards);
 
         result += qFilterName +" (" +  qRawWildcards +")";
     }

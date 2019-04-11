@@ -27,7 +27,6 @@
 #include <fwGui/dialog/IPulseProgressDialog.hpp>
 
 #include <QPointer>
-#include <QProgressDialog>
 
 #include <string>
 
@@ -64,7 +63,7 @@ public:
 
 protected:
 
-    QPointer< QProgressDialog >  m_pdialog;
+//    QPointer< QProgressDialog >  m_pdialog;
 
 };
 } // namespace dialog

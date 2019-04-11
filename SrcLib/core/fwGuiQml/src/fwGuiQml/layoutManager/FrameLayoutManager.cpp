@@ -30,11 +30,8 @@
 
 #include <boost/lambda/lambda.hpp>
 
-#include <QDesktopWidget>
 #include <QGuiApplication>
 #include <QIcon>
-#include <QLayout>
-#include <QMainWindow>
 
 fwGuiRegisterMacro( ::fwGui::FrameLayoutManager, ::fwGui::layoutManager::IFrameLayoutManager::REGISTRY_KEY );
 
@@ -97,7 +94,7 @@ void FrameLayoutManager::createFrame()
     if(!this->isOnScreen(pos))
     {
         QRect frect(0, 0, sizeX, sizeY);
-        frect.moveCenter(QDesktopWidget().screenGeometry().center());
+//        frect.moveCenter(QDesktopWidget().screenGeometry().center());
         pos = frect.topLeft();
     }
     m_qmlWindow->setGeometry(pos.x(), pos.y(), sizeX, sizeY);
@@ -195,10 +192,10 @@ void FrameLayoutManager::setState( FrameState state )
 bool FrameLayoutManager::isOnScreen(const QPoint& pos)
 {
     bool isVisible = false;
-    for(int i = 0; i < QDesktopWidget().screenCount() && !isVisible; ++i)
-    {
-        isVisible = QDesktopWidget().screenGeometry(i).contains(pos, false);
-    }
+//    for(int i = 0; i < QDesktopWidget().screenCount() && !isVisible; ++i)
+//    {
+//        isVisible = QDesktopWidget().screenGeometry(i).contains(pos, false);
+//    }
     return isVisible;
 }
 

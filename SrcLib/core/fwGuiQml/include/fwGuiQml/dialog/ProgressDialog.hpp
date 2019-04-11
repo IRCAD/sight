@@ -27,12 +27,7 @@
 
 #include <fwGui/dialog/IProgressDialog.hpp>
 
-#include <QMainWindow>
 #include <QPointer>
-#include <QProgressBar>
-#include <QProgressDialog>
-#include <QPushButton>
-#include <QStatusBar>
 #include <QString>
 
 #include <string>
@@ -87,11 +82,11 @@ protected Q_SLOTS:
 protected:
     QString m_title;
 
-    QPointer<QProgressDialog> m_pdialog;
-    QPointer<QProgressBar> m_pprogressbar;
-    QPointer<QPushButton> m_pcancelButton;
-    QPointer<QMainWindow> m_pmainWindow;
-    QPointer<QWindow> m_pmainWindowQml;
+//    QPointer<QProgressDialog> m_pdialog;
+//    QPointer<QProgressBar> m_pprogressbar;
+//    QPointer<QPushButton> m_pcancelButton;
+//    QPointer<QMainWindow> m_pmainWindow;
+//    QPointer<QWindow> m_pmainWindowQml;
 };
 } // namespace dialog
 } // namespace fwGuiQml

@@ -24,7 +24,6 @@
 
 #include "fwGuiQml/config.hpp"
 
-#include <QMainWindow>
 #include <QPointer>
 
 #include <functional>
@@ -36,7 +35,7 @@ namespace fwGuiQml
  * @brief A qml panel used to control a VTK 2D Negatoscope view.
  *
  */
-class QmlMainFrame : public QMainWindow
+class QmlMainFrame : public QObject
 {
 
 Q_OBJECT
@@ -54,7 +53,7 @@ public:
     FWGUIQML_API void setCloseCallback(CloseCallback fct);
 
 protected:
-    void closeEvent(QCloseEvent* event);
+//    void closeEvent(QCloseEvent* event);
 
 private:
     CloseCallback m_fctCloseCallback;

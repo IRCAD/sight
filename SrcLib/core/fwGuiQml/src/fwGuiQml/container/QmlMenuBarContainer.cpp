@@ -22,8 +22,6 @@
 
 #include "fwGuiQml/container/QmlMenuBarContainer.hpp"
 
-#include <QMenuBar>
-
 namespace fwGuiQml
 {
 namespace container
@@ -31,8 +29,8 @@ namespace container
 
 //-----------------------------------------------------------------------------
 
-QmlMenuBarContainer::QmlMenuBarContainer(::fwGui::GuiBaseObject::Key key) noexcept :
-    m_menuBar(0)
+QmlMenuBarContainer::QmlMenuBarContainer(::fwGui::GuiBaseObject::Key key) noexcept/* :
+                                                                                     m_menuBar(0)*/
 {
 }
 
@@ -46,44 +44,44 @@ QmlMenuBarContainer::~QmlMenuBarContainer() noexcept
 
 void QmlMenuBarContainer::clean()
 {
-    SLM_ASSERT("The Qml MenuBar is not yet initialized, cleaning is thus impossible", m_menuBar);
+//    SLM_ASSERT("The Qml MenuBar is not yet initialized, cleaning is thus impossible", m_menuBar);
 
-    m_menuBar->clear();
+//    m_menuBar->clear();
 
-    QList<QMenu*> list = m_menuBar->findChildren<QMenu*>();
-    Q_FOREACH (QMenu* m, list)
-    {
-        m->hide();
-        delete m;
-    }
+//    QList<QMenu*> list = m_menuBar->findChildren<QMenu*>();
+//    Q_FOREACH (QMenu* m, list)
+//    {
+//        m->hide();
+//        delete m;
+//    }
 }
 
 //-----------------------------------------------------------------------------
 
 void QmlMenuBarContainer::destroyContainer()
 {
-    SLM_ASSERT("The Qml MenuBar is not yet initialized", m_menuBar);
+//    SLM_ASSERT("The Qml MenuBar is not yet initialized", m_menuBar);
 
-    QList<QMenu*> allMenu = m_menuBar->findChildren<QMenu*>();
-    OSLM_ASSERT("MenuBar container must be empty ( " << allMenu.count() << " menus).", allMenu.empty());
+//    QList<QMenu*> allMenu = m_menuBar->findChildren<QMenu*>();
+//    OSLM_ASSERT("MenuBar container must be empty ( " << allMenu.count() << " menus).", allMenu.empty());
 
-    m_menuBar->hide();
-    delete m_menuBar;
+//    m_menuBar->hide();
+//    delete m_menuBar;
 }
 
 //-----------------------------------------------------------------------------
 
-void QmlMenuBarContainer::setQmlMenuBar(QMenuBar* menuBar)
-{
-    this->m_menuBar = menuBar;
-}
+//void QmlMenuBarContainer::setQmlMenuBar(QMenuBar* menuBar)
+//{
+//    this->m_menuBar = menuBar;
+//}
 
 //-----------------------------------------------------------------------------
 
-QMenuBar* QmlMenuBarContainer::getQmlMenuBar()
-{
-    return this->m_menuBar;
-}
+//QMenuBar* QmlMenuBarContainer::getQmlMenuBar()
+//{
+//    return this->m_menuBar;
+//}
 
 //-----------------------------------------------------------------------------
 

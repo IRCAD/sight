@@ -31,7 +31,6 @@
 #include <boost/assign/list_of.hpp>
 
 #include <QGuiApplication>
-#include <QInputDialog>
 #include <QObject>
 
 fwGuiRegisterMacro( ::fwGuiQml::dialog::InputDialog, ::fwGui::dialog::IInputDialog::REGISTRY_KEY );
@@ -81,11 +80,11 @@ void InputDialog::setInput(const std::string& text)
 /// Get the input text in the input field
 std::string InputDialog::getInput()
 {
-    QString title = QObject::tr(m_title.c_str());
-    QString text  = QObject::tr(m_message.c_str());
+    QString title = QString::fromStdString(m_title);
+    QString text  = QString::fromStdString(m_message);
     // get the qml engine QmlApplicationEngine
     SPTR(::fwQml::QmlEngine) engine = ::fwQml::QmlEngine::getDefault();
-    m_isClicked                      = false;
+    m_isClicked                     = false;
     // get the path of the qml ui file in the 'rc' directory
     auto dialogPath = ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-0.1/dialog/LocationDialog.qml");
 
@@ -93,17 +92,17 @@ std::string InputDialog::getInput()
     m_dialog = engine->createComponent(dialogPath);
     m_dialog->setProperty("title", title);
     m_dialog->findChild< QObject* >("message")->setProperty("text", text);
-    m_dialog->findChild< QObject* >("answer")->setProperty("placeholderText", QObject::tr(m_input.c_str()));
+    m_dialog->findChild< QObject* >("answer")->setProperty("placeholderText", QString::fromStdString(m_input));
     //slot to retrieve the result and open the dialog with invoke
-    QObject::connect(m_dialog, SIGNAL(filesNameChange(QVariant, bool)),
-                     this, SLOT(resultDialog(QVariant, bool)));
+    QObject::connect(m_dialog, SIGNAL(filesNameChange(QVariant,bool)),
+                     this, SLOT(resultDialog(QVariant,bool)));
     QMetaObject::invokeMethod(m_dialog, "open");
     // boolean to check first if it has called the slot or secondly if the FileDialog isn't visible
     while (!m_isClicked && m_dialog->property("visible").toBool())
     {
         qGuiApp->processEvents();
     }
-
+    delete m_dialog;
     return m_input;
 }
 

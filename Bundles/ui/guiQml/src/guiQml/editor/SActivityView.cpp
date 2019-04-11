@@ -74,7 +74,7 @@ void SActivityView::starting()
 
     ::fwGuiQml::container::QmlContainer::sptr subContainer = ::fwGuiQml::container::QmlContainer::New();
 
-    subContainer->setQmlContainer(widget);
+//    subContainer->setQmlContainer(widget);
     m_wid = this->getID() + "_container";
     ::fwGui::GuiRegistry::registerWIDContainer(m_wid, subContainer);
 

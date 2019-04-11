@@ -67,7 +67,7 @@ public:
 
 private:
 
-    QPointer<QMenuBar> m_menuBar;
+//    QPointer<QMenuBar> m_menuBar;
 };
 
 } // namespace container

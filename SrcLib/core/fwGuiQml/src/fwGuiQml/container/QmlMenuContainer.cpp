@@ -22,8 +22,6 @@
 
 #include "fwGuiQml/container/QmlMenuContainer.hpp"
 
-#include <QMenu>
-
 namespace fwGuiQml
 {
 namespace container
@@ -45,31 +43,31 @@ QmlMenuContainer::~QmlMenuContainer() noexcept
 
 void QmlMenuContainer::clean()
 {
-    SLM_ASSERT("The Qml menu is not yet initialized, cleaning is thus impossible", m_menu);
-    m_menu->clear();
+//    SLM_ASSERT("The Qml menu is not yet initialized, cleaning is thus impossible", m_menu);
+//    m_menu->clear();
 }
 
 //-----------------------------------------------------------------------------
 
 void QmlMenuContainer::destroyContainer()
 {
-    SLM_ASSERT("The Qml menu not yet initialized, cleaning is thus impossible", m_menu);
-    delete m_menu;
+//    SLM_ASSERT("The Qml menu not yet initialized, cleaning is thus impossible", m_menu);
+//    delete m_menu;
 }
 
 //-----------------------------------------------------------------------------
 
-void QmlMenuContainer::setQmlMenu(QMenu* menu)
-{
-    this->m_menu = menu;
-}
+//void QmlMenuContainer::setQmlMenu(QMenu* menu)
+//{
+//    this->m_menu = menu;
+//}
 
 //-----------------------------------------------------------------------------
 
-QMenu* QmlMenuContainer::getQmlMenu()
-{
-    return this->m_menu;
-}
+//QMenu* QmlMenuContainer::getQmlMenu()
+//{
+//    return this->m_menu;
+//}
 
 //-----------------------------------------------------------------------------
 

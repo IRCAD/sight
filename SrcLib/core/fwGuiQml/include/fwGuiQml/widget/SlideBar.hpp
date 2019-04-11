@@ -24,9 +24,7 @@
 
 #include "fwGuiQml/config.hpp"
 
-#include <QBoxLayout>
-#include <QGroupBox>
-#include <QWidget>
+#include <QObject>
 
 namespace fwGuiQml
 {
@@ -38,7 +36,7 @@ namespace widget
  * @brief This class allows to display a slide widget. The slide widget can be displayed over all the application
  *        widgets.
  */
-class FWGUIQML_CLASS_API SlideBar : public QGroupBox
+class FWGUIQML_CLASS_API SlideBar : public QObject
 {
 Q_OBJECT
 
@@ -71,7 +69,7 @@ public:
     }
 
     /// Show/hide the slide widget. The widget is animated
-    FWGUIQML_API virtual void setVisible(bool visible) override;
+//    FWGUIQML_API virtual void setVisible(bool visible) override;
 
 protected:
     /// Filter 'Resize' and 'Move' events to update the widget position.
@@ -91,8 +89,8 @@ private:
     /// Initialize the widget
     void init();
 
-    QRect m_shownPosition; ///< widget position when it is visible
-    QRect m_hiddenPosition; ///< widget position when it is not visible
+//    QRect m_shownPosition; ///< widget position when it is visible
+//    QRect m_hiddenPosition; ///< widget position when it is not visible
     int m_buttonSize; ///< widget size (width if m_align is LEFT or RIGHT, height if m_align is TOP or BOTTOM)
     double m_opacity; /// widget opacity [0 - 1]
     bool m_isShown; ///< flag if widget is visible

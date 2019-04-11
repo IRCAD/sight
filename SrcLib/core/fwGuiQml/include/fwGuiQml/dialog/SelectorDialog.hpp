@@ -26,7 +26,6 @@
 
 #include <fwGui/dialog/ISelectorDialog.hpp>
 
-#include <QPushButton>
 #include <QVector>
 
 #include <vector>
@@ -82,7 +81,7 @@ private:
     std::string m_title;
 
     /// Stores custom buttons
-    QVector< QPushButton* > m_customButtons;
+//    QVector< QPushButton* > m_customButtons;
 };
 
 } // namespace dialog

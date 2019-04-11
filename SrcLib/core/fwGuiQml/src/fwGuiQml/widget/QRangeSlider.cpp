@@ -51,16 +51,16 @@ class Handle : public QRangeSlider::Paintable,
                public Castable<Handle>
 {
 public:
-    Handle(QWidget* w) :
-        Paintable(w),
-        m_pen(Qt::gray),
-        m_brush(Qt::lightGray)
-    {
-        m_pos             = 0;
-        m_width           = 13;
-        m_verticalPadding = 0.2;
-        m_tolerance       = std::max(0, 10 - m_width);
-    }
+//    Handle(QWidget* w) :
+//        Paintable(w),
+//        m_pen(Qt::gray),
+//        m_brush(Qt::lightGray)
+//    {
+//        m_pos             = 0;
+//        m_width           = 13;
+//        m_verticalPadding = 0.2;
+//        m_tolerance       = std::max(0, 10 - m_width);
+//    }
 
     //------------------------------------------------------------------------------
 
@@ -192,16 +192,16 @@ class Window : public QRangeSlider::Paintable,
                public Castable<Window>
 {
 public:
-    Window(QWidget* w) :
-        Paintable(w),
-        m_pen(Qt::darkBlue),
-        m_brush(Qt::cyan),
-        m_reversePen(Qt::darkYellow),
-        m_reverseBrush(Qt::yellow)
-    {
-        m_left  = 0;
-        m_right = 0;
-    }
+//    Window(QWidget* w) :
+//        Paintable(w),
+//        m_pen(Qt::darkBlue),
+//        m_brush(Qt::cyan),
+//        m_reversePen(Qt::darkYellow),
+//        m_reverseBrush(Qt::yellow)
+//    {
+//        m_left  = 0;
+//        m_right = 0;
+//    }
 
     //------------------------------------------------------------------------------
 
@@ -275,29 +275,29 @@ protected:
 
 //-----------------------------------------------------------------------------
 
-QRangeSlider::QRangeSlider(QWidget* parent) :
-    QWidget(parent)
-{
-    m_minValue               = 0.;
-    m_maxValue               = 1.;
-    m_allowMinGreaterThanMax = true;
-    m_minimumMinMaxDelta     = 0.;
-    m_handleSize             = 11;
+//QRangeSlider::QRangeSlider(QWidget* parent) /*:
+//    QWidget(parent)*/
+//{
+//    m_minValue               = 0.;
+//    m_maxValue               = 1.;
+//    m_allowMinGreaterThanMax = true;
+//    m_minimumMinMaxDelta     = 0.;
+//    m_handleSize             = 11;
 
-    m_current = NULL;
+//    m_current = NULL;
 
-    Handle* minh = new Handle(this);
-    Handle* maxh = new Handle(this);
-    minh->setHandleSize(m_handleSize);
-    maxh->setHandleSize(m_handleSize);
+//    Handle* minh = new Handle(this);
+//    Handle* maxh = new Handle(this);
+//    minh->setHandleSize(m_handleSize);
+//    maxh->setHandleSize(m_handleSize);
 
-    m_minHandle = minh;
-    m_maxHandle = maxh;
-    m_window    = new Window(this);
+//    m_minHandle = minh;
+//    m_maxHandle = maxh;
+//    m_window    = new Window(this);
 
-    this->setPos(m_minValue, m_maxValue);
-    this->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
-}
+//    this->setPos(m_minValue, m_maxValue);
+//    this->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
+//}
 
 QRangeSlider::~QRangeSlider()
 {
@@ -325,7 +325,7 @@ void QRangeSlider::setPos(double _min, double _max)
     window->setPos(min, max);
 
     this->movedTo(_min, _max);
-    this->update();
+//    this->update();
 }
 
 //------------------------------------------------------------------------------
@@ -379,152 +379,152 @@ bool QRangeSlider::movedTo(double _min, double _max)
 
 //------------------------------------------------------------------------------
 
-void QRangeSlider::paintEvent ( QPaintEvent* /*event*/ )
-{
-    bool enabled = this->isEnabled();
-    QPainter painter(this);
-    painter.setRenderHint(QPainter::Antialiasing);
+//void QRangeSlider::paintEvent ( QPaintEvent* /*event*/ )
+//{
+//    bool enabled = this->isEnabled();
+//    QPainter painter(this);
+//    painter.setRenderHint(QPainter::Antialiasing);
 
-    QRect rect = this->rect();
-    rect.setLeft(rect.left() + m_handleSize/2);
-    rect.setRight(rect.right() - m_handleSize/2);
-    painter.fillRect(rect, QGuiApplication::palette().base());
+//    QRect rect = this->rect();
+//    rect.setLeft(rect.left() + m_handleSize/2);
+//    rect.setRight(rect.right() - m_handleSize/2);
+//    painter.fillRect(rect, QGuiApplication::palette().base());
 
-    painter.setBrush(Qt::cyan);
-    m_window->draw(painter, enabled);
+//    painter.setBrush(Qt::cyan);
+//    m_window->draw(painter, enabled);
 
-    painter.setBrush(Qt::gray);
-    painter.setPen(Qt::darkGreen);
-    m_minHandle->draw(painter, enabled);
+//    painter.setBrush(Qt::gray);
+//    painter.setPen(Qt::darkGreen);
+//    m_minHandle->draw(painter, enabled);
 
-    painter.setPen(Qt::darkRed);
-    m_maxHandle->draw(painter, enabled);
+//    painter.setPen(Qt::darkRed);
+//    m_maxHandle->draw(painter, enabled);
 
-}
-
-//------------------------------------------------------------------------------
-
-void QRangeSlider::mouseMoveEvent ( QMouseEvent* event )
-{
-    if (m_current)
-    {
-
-        Handle* minHandle = Handle::safeCast(m_minHandle);
-        Handle* maxHandle = Handle::safeCast(m_maxHandle);
-        Window* window    = Window::safeCast(m_window);
-        Handle* currentHandle;
-
-        if( (currentHandle = Handle::safeCast(m_current)) )
-        {
-            int oldPos = currentHandle->pos();
-            int newPos = event->pos().x();
-            currentHandle->setPos(newPos);
-
-            if(!m_allowMinGreaterThanMax &&
-               minHandle->floatingPos() + m_minimumMinMaxDelta >= maxHandle->floatingPos() )
-            {
-                currentHandle->setPos(oldPos);
-            }
-            window->setPos(minHandle->pos(), maxHandle->pos());
-        }
-        else if( Window::safeCast(m_current) )
-        {
-            QPoint delta = m_pressPos - event->pos();
-
-            minHandle->setPos(m_pressMin);
-            maxHandle->setPos(m_pressMax);
-            window->setPos(minHandle->pos(), maxHandle->pos());
-            this->move(delta.x());
-        }
-
-        double min = minHandle->floatingPos();
-        double max = maxHandle->floatingPos();
-        if( this->movedTo(min, max) )
-        {
-            Q_EMIT sliderRangeEdited( min, max );
-        }
-        this->update();
-    }
-}
+//}
 
 //------------------------------------------------------------------------------
 
-void QRangeSlider::mousePressEvent ( QMouseEvent* event )
-{
-    Handle* minHandle = Handle::safeCast(m_minHandle);
-    Handle* maxHandle = Handle::safeCast(m_maxHandle);
+//void QRangeSlider::mouseMoveEvent ( QMouseEvent* event )
+//{
+//    if (m_current)
+//    {
+
+//        Handle* minHandle = Handle::safeCast(m_minHandle);
+//        Handle* maxHandle = Handle::safeCast(m_maxHandle);
+//        Window* window    = Window::safeCast(m_window);
+//        Handle* currentHandle;
+
+//        if( (currentHandle = Handle::safeCast(m_current)) )
+//        {
+//            int oldPos = currentHandle->pos();
+//            int newPos = event->pos().x();
+//            currentHandle->setPos(newPos);
+
+//            if(!m_allowMinGreaterThanMax &&
+//               minHandle->floatingPos() + m_minimumMinMaxDelta >= maxHandle->floatingPos() )
+//            {
+//                currentHandle->setPos(oldPos);
+//            }
+//            window->setPos(minHandle->pos(), maxHandle->pos());
+//        }
+//        else if( Window::safeCast(m_current) )
+//        {
+//            QPoint delta = m_pressPos - event->pos();
+
+//            minHandle->setPos(m_pressMin);
+//            maxHandle->setPos(m_pressMax);
+//            window->setPos(minHandle->pos(), maxHandle->pos());
+//            this->move(delta.x());
+//        }
+
+//        double min = minHandle->floatingPos();
+//        double max = maxHandle->floatingPos();
+//        if( this->movedTo(min, max) )
+//        {
+//            Q_EMIT sliderRangeEdited( min, max );
+//        }
+//        this->update();
+//    }
+//}
+
+//------------------------------------------------------------------------------
+
+//void QRangeSlider::mousePressEvent ( QMouseEvent* event )
+//{
+//    Handle* minHandle = Handle::safeCast(m_minHandle);
+//    Handle* maxHandle = Handle::safeCast(m_maxHandle);
 //    Window *window     = Window::safeCast(m_window);
 
-    m_pressPos = event->pos();
-    m_pressMin = minHandle->pos();
-    m_pressMax = maxHandle->pos();
+//    m_pressPos = event->pos();
+//    m_pressMin = minHandle->pos();
+//    m_pressMax = maxHandle->pos();
 
-    if(m_maxHandle->pick(m_pressPos))
-    {
-        m_current = m_maxHandle;
-    }
-    else if(m_minHandle->pick(m_pressPos))
-    {
-        m_current = m_minHandle;
-    }
-    else if(m_window->pick(m_pressPos))
-    {
-        m_current = m_window;
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void QRangeSlider::mouseReleaseEvent ( QMouseEvent* /*event*/)
-{
-    m_current = NULL;
-}
+//    if(m_maxHandle->pick(m_pressPos))
+//    {
+//        m_current = m_maxHandle;
+//    }
+//    else if(m_minHandle->pick(m_pressPos))
+//    {
+//        m_current = m_minHandle;
+//    }
+//    else if(m_window->pick(m_pressPos))
+//    {
+//        m_current = m_window;
+//    }
+//}
 
 //------------------------------------------------------------------------------
 
-void QRangeSlider::wheelEvent ( QWheelEvent* event )
-{
-    Handle* minHandle = Handle::safeCast(m_minHandle);
-    Handle* maxHandle = Handle::safeCast(m_maxHandle);
-    Window* window    = Window::safeCast(m_window);
-
-    int delta = this->size().width()/( ((double) event->delta())/4. );
-    int low   = minHandle->pos();
-    int high  = maxHandle->pos();
-
-    if(event->orientation() == Qt::Vertical)
-    {
-        if(!m_allowMinGreaterThanMax)
-        {
-            int diff    = (high - low);
-            int minDiff = minHandle->fromFloatingPos(m_minimumMinMaxDelta);
-            delta = std::max(delta,  -(diff - minDiff)/2);
-        }
-
-        low  = minHandle->setPos(low -  delta);
-        high = maxHandle->setPos(high + delta);
-        window->setPos(low, high);
-    }
-    else
-    {
-        this->move(delta);
-    }
-
-    double min = minHandle->floatingPos();
-    double max = maxHandle->floatingPos();
-    if( this->movedTo(min, max) )
-    {
-        Q_EMIT sliderRangeEdited( min, max );
-    }
-    this->update();
-}
+//void QRangeSlider::mouseReleaseEvent ( QMouseEvent* /*event*/)
+//{
+//    m_current = NULL;
+//}
 
 //------------------------------------------------------------------------------
 
-void QRangeSlider::resizeEvent ( QResizeEvent* event )
-{
-    this->setPos(m_minValue, m_maxValue);
-}
+//void QRangeSlider::wheelEvent ( QWheelEvent* event )
+//{
+//    Handle* minHandle = Handle::safeCast(m_minHandle);
+//    Handle* maxHandle = Handle::safeCast(m_maxHandle);
+//    Window* window    = Window::safeCast(m_window);
+
+//    int delta = this->size().width()/( ((double) event->delta())/4. );
+//    int low   = minHandle->pos();
+//    int high  = maxHandle->pos();
+
+//    if(event->orientation() == Qt::Vertical)
+//    {
+//        if(!m_allowMinGreaterThanMax)
+//        {
+//            int diff    = (high - low);
+//            int minDiff = minHandle->fromFloatingPos(m_minimumMinMaxDelta);
+//            delta = std::max(delta,  -(diff - minDiff)/2);
+//        }
+
+//        low  = minHandle->setPos(low -  delta);
+//        high = maxHandle->setPos(high + delta);
+//        window->setPos(low, high);
+//    }
+//    else
+//    {
+//        this->move(delta);
+//    }
+
+//    double min = minHandle->floatingPos();
+//    double max = maxHandle->floatingPos();
+//    if( this->movedTo(min, max) )
+//    {
+//        Q_EMIT sliderRangeEdited( min, max );
+//    }
+//    this->update();
+//}
+
+//------------------------------------------------------------------------------
+
+//void QRangeSlider::resizeEvent ( QResizeEvent* event )
+//{
+//    this->setPos(m_minValue, m_maxValue);
+//}
 
 } // namespace widget
 } // namespace fwGuiQml

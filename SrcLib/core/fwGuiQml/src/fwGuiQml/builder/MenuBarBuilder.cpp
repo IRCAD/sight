@@ -27,9 +27,6 @@
 
 #include <fwGui/registry/macros.hpp>
 
-#include <QMainWindow>
-#include <QMenuBar>
-
 fwGuiRegisterMacro(::fwGui::builder::MenuBarBuilder, ::fwGui::builder::IMenuBarBuilder::REGISTRY_KEY);
 
 namespace fwGui
@@ -55,21 +52,21 @@ void MenuBarBuilder::createMenuBar( ::fwGui::container::fwContainer::sptr parent
 {
     m_parent = ::fwGuiQml::container::QmlContainer::dynamicCast(parent);
     SLM_ASSERT("The parent container is not a QmlContainer", m_parent);
-    QMainWindow* window = qobject_cast<QMainWindow*> ( m_parent->getQmlContainer() );
-    if ( !window )
-    {
-        window = qobject_cast<QMainWindow*> ( m_parent->getQmlContainer()->parent() );
-    }
-    SLM_ASSERT("The parent container must be a QMainWindow", window );
-    if (window)
-    {
-        ::fwGuiQml::container::QmlMenuBarContainer::sptr menuBarContainer =
-            ::fwGuiQml::container::QmlMenuBarContainer::New();
-        QMenuBar* menuBar = new QMenuBar(0);
-        menuBarContainer->setQmlMenuBar(menuBar);
-        window->setMenuBar( menuBar );
-        m_menuBar = menuBarContainer;
-    }
+//    QMainWindow* window = qobject_cast<QMainWindow*> ( m_parent->getQmlContainer() );
+//    if ( !window )
+//    {
+//        window = qobject_cast<QMainWindow*> ( m_parent->getQmlContainer()->parent() );
+//    }
+//    SLM_ASSERT("The parent container must be a QMainWindow", window );
+//    if (window)
+//    {
+//        ::fwGuiQml::container::QmlMenuBarContainer::sptr menuBarContainer =
+//            ::fwGuiQml::container::QmlMenuBarContainer::New();
+//        QMenuBar* menuBar = new QMenuBar(0);
+//        menuBarContainer->setQmlMenuBar(menuBar);
+//        window->setMenuBar( menuBar );
+//        m_menuBar = menuBarContainer;
+//    }
 }
 
 //-----------------------------------------------------------------------------
@@ -78,16 +75,16 @@ void MenuBarBuilder::destroyMenuBar()
 {
     SLM_ASSERT("The menu is not initialized", m_menuBar);
     SLM_ASSERT("The parent container is not a QmlContainer", m_parent);
-    QMainWindow* window = qobject_cast<QMainWindow*> ( m_parent->getQmlContainer() );
-    if ( !window )
-    {
-        window = qobject_cast<QMainWindow*> ( m_parent->getQmlContainer()->parent() );
-    }
-    SLM_ASSERT("The parent container must be a QMainWindow", window );
-    if (window)
-    {
-        window->setMenuBar( NULL );
-    }
+//    QMainWindow* window = qobject_cast<QMainWindow*> ( m_parent->getQmlContainer() );
+//    if ( !window )
+//    {
+//        window = qobject_cast<QMainWindow*> ( m_parent->getQmlContainer()->parent() );
+//    }
+//    SLM_ASSERT("The parent container must be a QMainWindow", window );
+//    if (window)
+//    {
+//        window->setMenuBar( NULL );
+//    }
     m_menuBar->destroyContainer();
 }
 

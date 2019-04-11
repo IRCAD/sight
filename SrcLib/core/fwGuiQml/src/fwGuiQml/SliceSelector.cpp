@@ -26,10 +26,6 @@
 
 #include <boost/lambda/lambda.hpp>
 
-#include <QComboBox>
-#include <QHBoxLayout>
-#include <QLineEdit>
-#include <QSlider>
 #include <QStringList>
 
 #include <functional>
@@ -39,71 +35,71 @@ namespace fwGuiQml
 
 //------------------------------------------------------------------------------
 
-SliceSelector::SliceSelector(QWidget* const parent ) noexcept :
-    QWidget( parent )
-{
-    m_fctChangeIndexCallback = std::bind( &::fwGuiQml::SliceSelector::printIndex, this, std::placeholders:: _1);
-    m_fctChangeTypeCallback  = std::bind( &::fwGuiQml::SliceSelector::printType, this, std::placeholders:: _1);
+//SliceSelector::SliceSelector(QWidget* const parent ) noexcept /*:
+//    QWidget( parent )*/
+//{
+//    m_fctChangeIndexCallback = std::bind( &::fwGuiQml::SliceSelector::printIndex, this, std::placeholders:: _1);
+//    m_fctChangeTypeCallback  = std::bind( &::fwGuiQml::SliceSelector::printType, this, std::placeholders:: _1);
 
-    m_sliceType = new QComboBox( this );
-    /// Slice type names as a Qml string array.
-    QStringList sliceTypesArray;
-    sliceTypesArray << tr("Sagittal") << tr("Frontal") << tr("Axial");
-    m_sliceType->addItems(sliceTypesArray);
+//    m_sliceType = new QComboBox( this );
+//    /// Slice type names as a Qml string array.
+//    QStringList sliceTypesArray;
+//    sliceTypesArray << tr("Sagittal") << tr("Frontal") << tr("Axial");
+//    m_sliceType->addItems(sliceTypesArray);
 
-    m_sliceIndex = new QSlider(Qt::Horizontal, this);
+//    m_sliceIndex = new QSlider(Qt::Horizontal, this);
 
-    m_pSliceIndexText = new QLineEdit(this);
-    m_pSliceIndexText->setReadOnly(true);
-    m_pSliceIndexText->setMaximumWidth(80);
+//    m_pSliceIndexText = new QLineEdit(this);
+//    m_pSliceIndexText->setReadOnly(true);
+//    m_pSliceIndexText->setMaximumWidth(80);
 
-    QHBoxLayout* layout = new QHBoxLayout(this);
-    layout->addWidget(m_sliceType, 0);
-    layout->addWidget(m_sliceIndex, 1);
-    layout->addWidget(m_pSliceIndexText, 0);
-    layout->setContentsMargins(0, 0, 0, 0);
+//    QHBoxLayout* layout = new QHBoxLayout(this);
+//    layout->addWidget(m_sliceType, 0);
+//    layout->addWidget(m_sliceIndex, 1);
+//    layout->addWidget(m_pSliceIndexText, 0);
+//    layout->setContentsMargins(0, 0, 0, 0);
 
-    QObject::connect(m_sliceIndex, SIGNAL(valueChanged(int)), this, SLOT(onSliceIndexChange(int)));
-    QObject::connect(m_sliceType, SIGNAL(currentIndexChanged(int)), this, SLOT(onSliceTypeChange(int)));
+//    QObject::connect(m_sliceIndex, SIGNAL(valueChanged(int)), this, SLOT(onSliceIndexChange(int)));
+//    QObject::connect(m_sliceType, SIGNAL(currentIndexChanged(int)), this, SLOT(onSliceTypeChange(int)));
 
-    this->setLayout( layout );
-}
+//    this->setLayout( layout );
+//}
 
 //------------------------------------------------------------------------------
 
 SliceSelector::~SliceSelector() noexcept
 {
-    QObject::disconnect(m_sliceIndex, SIGNAL(valueChanged(int)), this, SLOT(onSliceIndexChange(int)));
-    QObject::disconnect(m_sliceType, SIGNAL(currentIndexChanged(int)), this, SLOT(onSliceTypeChange(int)));
+//    QObject::disconnect(m_sliceIndex, SIGNAL(valueChanged(int)), this, SLOT(onSliceIndexChange(int)));
+//    QObject::disconnect(m_sliceType, SIGNAL(currentIndexChanged(int)), this, SLOT(onSliceTypeChange(int)));
 }
 
 //------------------------------------------------------------------------------
 
 void SliceSelector::setSliceRange( int min, int max )
 {
-    QObject::disconnect(m_sliceIndex, SIGNAL(valueChanged(int)), this, SLOT(onSliceIndexChange(int)));
-    this->m_sliceIndex->setRange(min, max);
-    QObject::connect(m_sliceIndex, SIGNAL(valueChanged(int)), this, SLOT(onSliceIndexChange(int)));
+//    QObject::disconnect(m_sliceIndex, SIGNAL(valueChanged(int)), this, SLOT(onSliceIndexChange(int)));
+//    this->m_sliceIndex->setRange(min, max);
+//    QObject::connect(m_sliceIndex, SIGNAL(valueChanged(int)), this, SLOT(onSliceIndexChange(int)));
 }
 
 //------------------------------------------------------------------------------
 
 void SliceSelector::setSliceValue( int index )
 {
-    QObject::disconnect(m_sliceIndex, SIGNAL(valueChanged(int)), this, SLOT(onSliceIndexChange(int)));
-    this->m_sliceIndex->setValue(index);
-    QObject::connect(m_sliceIndex, SIGNAL(valueChanged(int)), this, SLOT(onSliceIndexChange(int)));
+//    QObject::disconnect(m_sliceIndex, SIGNAL(valueChanged(int)), this, SLOT(onSliceIndexChange(int)));
+//    this->m_sliceIndex->setValue(index);
+//    QObject::connect(m_sliceIndex, SIGNAL(valueChanged(int)), this, SLOT(onSliceIndexChange(int)));
 
     std::stringstream ss;
-    ss << index << " / " << this->m_sliceIndex->maximum();
-    this->m_pSliceIndexText->setText( QString::fromStdString(ss.str()));
+//    ss << index << " / " << this->m_sliceIndex->maximum();
+//    this->m_pSliceIndexText->setText( QString::fromStdString(ss.str()));
 }
 
 //------------------------------------------------------------------------------
 
 void SliceSelector::setTypeSelection( int type )
 {
-    this->m_sliceType->setCurrentIndex(type);
+//    this->m_sliceType->setCurrentIndex(type);
 }
 
 //------------------------------------------------------------------------------
@@ -147,16 +143,16 @@ void SliceSelector::printType(int type)
 
 void SliceSelector::setEnable(bool enable)
 {
-    m_sliceType->setEnabled(enable);
-    m_sliceIndex->setEnabled(enable);
-    m_pSliceIndexText->setEnabled(enable);
+//    m_sliceType->setEnabled(enable);
+//    m_sliceIndex->setEnabled(enable);
+//    m_pSliceIndexText->setEnabled(enable);
 }
 
 //------------------------------------------------------------------------------
 void SliceSelector::onSliceTypeChange( int index )
 {
     m_fctChangeTypeCallback(index);
-    this->setSliceValue( this->m_sliceIndex->value());
+//    this->setSliceValue( this->m_sliceIndex->value());
 }
 
 //------------------------------------------------------------------------------

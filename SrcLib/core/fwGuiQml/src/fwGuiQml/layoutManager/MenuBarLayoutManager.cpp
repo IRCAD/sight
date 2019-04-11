@@ -26,8 +26,6 @@
 
 #include <fwGui/registry/macros.hpp>
 
-#include <QMenu>
-#include <QMenuBar>
 #include <QString>
 
 fwGuiRegisterMacro( ::fwGui::layoutManager::MenuBarLayoutManager,
@@ -59,13 +57,13 @@ void MenuBarLayoutManager::createLayout( ::fwGui::container::fwMenuBar::sptr par
     m_parent = ::fwGuiQml::container::QmlMenuBarContainer::dynamicCast(parent);
     SLM_ASSERT("dynamicCast fwMenuBar to QmlMenuBarContainer failed", m_parent);
 
-    QMenuBar* menuBar = m_parent->getQmlMenuBar();
+//    QMenuBar* menuBar = m_parent->getQmlMenuBar();
 
     for ( std::string name : m_menuNames)
     {
         ::fwGuiQml::container::QmlMenuContainer::sptr menu = ::fwGuiQml::container::QmlMenuContainer::New();
-        QMenu* qmlMenu = menuBar->addMenu(QString::fromStdString( name ));
-        menu->setQmlMenu(qmlMenu);
+//        QMenu* qmlMenu = menuBar->addMenu(QString::fromStdString( name ));
+//        menu->setQmlMenu(qmlMenu);
         m_menus.push_back(menu);
     }
 }
@@ -85,8 +83,8 @@ void MenuBarLayoutManager::menuIsVisible(::fwGui::container::fwMenu::sptr fwMenu
 {
     ::fwGuiQml::container::QmlMenuContainer::sptr menuContainer = ::fwGuiQml::container::QmlMenuContainer::dynamicCast(
         fwMenu);
-    QMenu* menu = menuContainer->getQmlMenu();
-    menu->setVisible(isVisible);
+//    QMenu* menu = menuContainer->getQmlMenu();
+//    menu->setVisible(isVisible);
 }
 
 //-----------------------------------------------------------------------------
@@ -95,8 +93,8 @@ void MenuBarLayoutManager::menuIsEnabled(::fwGui::container::fwMenu::sptr fwMenu
 {
     ::fwGuiQml::container::QmlMenuContainer::sptr menuContainer = ::fwGuiQml::container::QmlMenuContainer::dynamicCast(
         fwMenu);
-    QMenu* menu = menuContainer->getQmlMenu();
-    menu->setEnabled(isEnabled);
+//    QMenu* menu = menuContainer->getQmlMenu();
+//    menu->setEnabled(isEnabled);
 }
 
 //-----------------------------------------------------------------------------

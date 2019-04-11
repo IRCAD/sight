@@ -27,7 +27,6 @@
 #include <QDebug>
 #include <QPainter>
 #include <QPointer>
-#include <QWidget>
 
 namespace fwGuiQml
 {
@@ -35,7 +34,7 @@ namespace fwGuiQml
 namespace widget
 {
 
-class FWGUIQML_CLASS_API QRangeSlider : public QWidget
+class FWGUIQML_CLASS_API QRangeSlider : public QObject
 {
 Q_OBJECT
 
@@ -43,10 +42,10 @@ public:
     class Paintable
     {
     public:
-        Paintable(QWidget* w)
-        {
-            m_widget = w;
-        }
+//        Paintable(QWidget* w)
+//        {
+//            m_widget = w;
+//        }
         virtual ~Paintable()
         {
         }
@@ -59,12 +58,12 @@ public:
 
         QSize drawingArea() const
         {
-            return m_widget->size();
+//            return m_widget->size();
         }
-        QPointer<QWidget> m_widget;
+//        QPointer<QWidget> m_widget;
     };
 
-    FWGUIQML_API QRangeSlider(QWidget* parent = NULL);
+//    FWGUIQML_API QRangeSlider(QWidget* parent = NULL);
     FWGUIQML_API virtual ~QRangeSlider();
 
     //------------------------------------------------------------------------------
@@ -93,12 +92,12 @@ protected:
     void move(int delta);
     bool movedTo(double _min, double _max);
 
-    virtual void paintEvent ( QPaintEvent* event );
-    virtual void mouseMoveEvent ( QMouseEvent* event );
-    virtual void mousePressEvent ( QMouseEvent* event );
-    virtual void mouseReleaseEvent ( QMouseEvent* event );
-    virtual void wheelEvent ( QWheelEvent* event );
-    virtual void resizeEvent ( QResizeEvent* event );
+//    virtual void paintEvent ( QPaintEvent* event );
+//    virtual void mouseMoveEvent ( QMouseEvent* event );
+//    virtual void mousePressEvent ( QMouseEvent* event );
+//    virtual void mouseReleaseEvent ( QMouseEvent* event );
+//    virtual void wheelEvent ( QWheelEvent* event );
+//    virtual void resizeEvent ( QResizeEvent* event );
 
     Paintable* m_minHandle;
     Paintable* m_maxHandle;

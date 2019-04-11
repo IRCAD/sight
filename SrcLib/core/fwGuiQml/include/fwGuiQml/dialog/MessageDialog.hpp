@@ -90,9 +90,6 @@ protected:
 
     /// Icon
     ::fwGui::dialog::IMessageDialog::Icons m_icon;
-
-    /// Stores custom buttons
-    QVector< QPushButton* > m_customButtons;
 };
 
 } // namespace dialog

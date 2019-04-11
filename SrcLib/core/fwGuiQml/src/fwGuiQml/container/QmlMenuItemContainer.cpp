@@ -22,8 +22,6 @@
 
 #include "fwGuiQml/container/QmlMenuItemContainer.hpp"
 
-#include <QAction>
-
 namespace fwGuiQml
 {
 namespace container
@@ -31,8 +29,8 @@ namespace container
 
 //-----------------------------------------------------------------------------
 
-QmlMenuItemContainer::QmlMenuItemContainer(::fwGui::GuiBaseObject::Key key) noexcept :
-    m_menuItem(0)
+QmlMenuItemContainer::QmlMenuItemContainer(::fwGui::GuiBaseObject::Key key) noexcept /*:
+                                                                                        m_menuItem(0)*/
 {
 }
 
@@ -46,29 +44,29 @@ QmlMenuItemContainer::~QmlMenuItemContainer() noexcept
 
 void QmlMenuItemContainer::clean()
 {
-    SLM_ASSERT("The QmlMenuItem is not yet initialized, cleaning is thus impossible", m_menuItem);
+    // SLM_ASSERT("The QmlMenuItem is not yet initialized, cleaning is thus impossible", m_menuItem);
 }
 
 //-----------------------------------------------------------------------------
 
 void QmlMenuItemContainer::destroyContainer()
 {
-    SLM_ASSERT("The QmlMenuItem is not yet initialized, cleaning is thus impossible", m_menuItem);
+    // SLM_ASSERT("The QmlMenuItem is not yet initialized, cleaning is thus impossible", m_menuItem);
 }
 
 //-----------------------------------------------------------------------------
 
-void QmlMenuItemContainer::setQmlMenuItem(QAction* menuItem)
-{
-    this->m_menuItem = menuItem;
-}
+//void QmlMenuItemContainer::setQmlMenuItem(QAction* menuItem)
+//{
+//    this->m_menuItem = menuItem;
+//}
 
 //-----------------------------------------------------------------------------
 
-QAction* QmlMenuItemContainer::getQmlMenuItem()
-{
-    return this->m_menuItem;
-}
+//QAction* QmlMenuItemContainer::getQmlMenuItem()
+//{
+//    return this->m_menuItem;
+//}
 
 //-----------------------------------------------------------------------------
 

@@ -27,11 +27,6 @@
 #include <fwGui/registry/macros.hpp>
 
 #include <QGuiApplication>
-#include <QHBoxLayout>
-#include <QLabel>
-#include <QListWidget>
-#include <QPushButton>
-#include <QVBoxLayout>
 
 fwGuiRegisterMacro( ::fwGuiQml::dialog::MultiSelectorDialog, ::fwGui::dialog::IMultiSelectorDialog::REGISTRY_KEY );
 
@@ -88,14 +83,14 @@ void MultiSelectorDialog::setTitle(std::string _title)
 //    QListWidgetItem* firstItem = selectionList->item(0);
 //    selectionList->setCurrentItem(firstItem);
 
-    QPushButton* okButton     = new QPushButton(tr("Ok"));
-    QPushButton* cancelButton = new QPushButton(tr("Cancel"));
+//    QPushButton* okButton     = new QPushButton(tr("Ok"));
+//    QPushButton* cancelButton = new QPushButton(tr("Cancel"));
 
-    QHBoxLayout* hLayout = new QHBoxLayout();
-    hLayout->addWidget(okButton);
-    hLayout->addWidget(cancelButton);
+//    QHBoxLayout* hLayout = new QHBoxLayout();
+//    hLayout->addWidget(okButton);
+//    hLayout->addWidget(cancelButton);
 
-    QVBoxLayout* vLayout = new QVBoxLayout();
+//    QVBoxLayout* vLayout = new QVBoxLayout();
 //    if(!m_message.empty())
 //    {
 //        QLabel* msgText = new QLabel(QString::fromStdString(m_message), dialog);

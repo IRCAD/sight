@@ -31,7 +31,6 @@
 #include <fwTools/Object.hpp>
 
 #include <QPointer>
-#include <QToolBar>
 
 namespace fwGuiQml
 {
@@ -58,12 +57,12 @@ public:
     FWGUIQML_API virtual void clean() override;
     FWGUIQML_API virtual void destroyContainer() override;
 
-    FWGUIQML_API virtual void setQmlToolBar(QToolBar* toolBar);
-    FWGUIQML_API virtual QToolBar* getQmlToolBar();
+//    FWGUIQML_API virtual void setQmlToolBar(QToolBar* toolBar);
+//    FWGUIQML_API virtual QToolBar* getQmlToolBar();
 
 private:
 
-    QPointer<QToolBar> m_toolBar;
+//    QPointer<QToolBar> m_toolBar;
 };
 
 } // namespace container

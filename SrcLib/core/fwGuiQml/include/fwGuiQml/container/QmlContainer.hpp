@@ -58,8 +58,8 @@ public:
 
     FWGUIQML_API virtual ~QmlContainer() noexcept;
 
-    FWGUIQML_API virtual void setQmlContainer(QWidget* container);
-    FWGUIQML_API virtual QWidget* getQmlContainer();
+//    FWGUIQML_API virtual void setQmlContainer(QWidget* container);
+//    FWGUIQML_API virtual QWidget* getQmlContainer();
 
     /**
      * @brief Assign a layout to the container widget. Previous layout and its children are deleted and the container
@@ -78,7 +78,7 @@ public:
 
 private:
 
-    QPointer<QWidget> m_container;
+//    QPointer<QWidget> m_container;
 };
 
 } // namespace container

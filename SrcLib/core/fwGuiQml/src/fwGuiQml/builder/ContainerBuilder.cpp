@@ -26,10 +26,6 @@
 
 #include <fwGui/registry/macros.hpp>
 
-#include <QMainWindow>
-#include <QVBoxLayout>
-#include <QWidget>
-
 fwGuiRegisterMacro(::fwGui::builder::ContainerBuilder, ::fwGui::builder::IContainerBuilder::REGISTRY_KEY);
 
 namespace fwGui
@@ -57,14 +53,14 @@ void ContainerBuilder::createContainer( ::fwGui::container::fwContainer::sptr pa
     SLM_ASSERT("The parent container is not a QmlContainer", m_parent);
 
     ::fwGuiQml::container::QmlContainer::sptr qmlContainer = ::fwGuiQml::container::QmlContainer::New();
-    QWidget* widget = new QWidget();
-    qmlContainer->setQmlContainer(widget);
+//    QWidget* widget = new QWidget();
+//    qmlContainer->setQmlContainer(widget);
 
-    QVBoxLayout* layout = new QVBoxLayout();
-    layout->setContentsMargins(0, 0, 0, 0);
-    layout->addWidget(widget);
+//    QVBoxLayout* layout = new QVBoxLayout();
+//    layout->setContentsMargins(0, 0, 0, 0);
+//    layout->addWidget(widget);
 
-    m_parent->setLayout(layout);
+//    m_parent->setLayout(layout);
 
     m_container = qmlContainer;
 }
@@ -90,25 +86,25 @@ void ContainerBuilder::setParent(::fwGui::container::fwContainer::sptr parent)
     ::fwGuiQml::container::QmlContainer::sptr container = ::fwGuiQml::container::QmlContainer::dynamicCast(m_container);
     SLM_ASSERT("dynamicCast fwContainer to QmlContainer failed", container);
 
-    QWidget* qmlContainer = container->getQmlContainer();
-    SLM_ASSERT("The QmlContainer is not yet initialized", qmlContainer);
-    QWidget* qmlParent = parentContainer->getQmlContainer();
-    SLM_ASSERT("The parent's QmlContainer is not yet initialized", qmlParent);
+//    QWidget* qmlContainer = container->getQmlContainer();
+//    SLM_ASSERT("The QmlContainer is not yet initialized", qmlContainer);
+//    QWidget* qmlParent = parentContainer->getQmlContainer();
+//    SLM_ASSERT("The parent's QmlContainer is not yet initialized", qmlParent);
 
-    if(qmlParent != m_parent->getQmlContainer() )
-    {
-        if(!qmlParent->layout())
-        {
-            SLM_TRACE("New parent container hasn't layout");
-            QBoxLayout* layout = new QBoxLayout(QBoxLayout::TopToBottom);
-            layout->setContentsMargins(0, 0, 0, 0);
-            qmlParent->setLayout(layout);
-        }
-        qmlParent->layout()->addWidget(qmlContainer);
-        qmlContainer->update();
+//    if(qmlParent != m_parent->getQmlContainer() )
+//    {
+//        if(!qmlParent->layout())
+//        {
+//            SLM_TRACE("New parent container hasn't layout");
+//            QBoxLayout* layout = new QBoxLayout(QBoxLayout::TopToBottom);
+//            layout->setContentsMargins(0, 0, 0, 0);
+//            qmlParent->setLayout(layout);
+//        }
+//        qmlParent->layout()->addWidget(qmlContainer);
+//        qmlContainer->update();
 
-        m_parent = parentContainer;
-    }
+//        m_parent = parentContainer;
+//    }
 }
 
 //-----------------------------------------------------------------------------

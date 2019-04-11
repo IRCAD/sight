@@ -26,10 +26,6 @@
 
 #include <fwGui/registry/macros.hpp>
 
-#include <QBoxLayout>
-#include <QScrollArea>
-#include <QTabWidget>
-
 fwGuiRegisterMacro( ::fwGui::TabLayoutManager, ::fwGui::layoutManager::TabLayoutManagerBase::REGISTRY_KEY );
 
 namespace fwGui
@@ -55,43 +51,43 @@ void TabLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr paren
     m_parentContainer = ::fwGuiQml::container::QmlContainer::dynamicCast(parent);
     SLM_ASSERT("dynamicCast fwContainer to QmlContainer failed", m_parentContainer);
 
-    QBoxLayout* layout = new QBoxLayout(QBoxLayout::TopToBottom);
-    m_parentContainer->setLayout(layout);
+//    QBoxLayout* layout = new QBoxLayout(QBoxLayout::TopToBottom);
+//    m_parentContainer->setLayout(layout);
 
-    m_tabWidget = new QTabWidget();
-    layout->addWidget( m_tabWidget );
+//    m_tabWidget = new QTabWidget();
+//    layout->addWidget( m_tabWidget );
 
     const std::list< ViewInfo>& views = this->getViewsInfo();
 
     for ( ViewInfo viewInfo : views)
     {
-        const int border        = viewInfo.m_border;
-        QWidget* const widget   = new QWidget(m_tabWidget);
+        const int border = viewInfo.m_border;
+//        QWidget* const widget   = new QWidget(m_tabWidget);
         const int minWidthSize  = std::max(viewInfo.m_minSize.first, 0);
         const int minHeightSize = std::max(viewInfo.m_minSize.second, 0);
-        widget->setMinimumSize(minWidthSize, minHeightSize);
-        widget->setContentsMargins(border, border, border, border);
+//        widget->setMinimumSize(minWidthSize, minHeightSize);
+//        widget->setContentsMargins(border, border, border, border);
 
         ::fwGuiQml::container::QmlContainer::sptr subContainer = ::fwGuiQml::container::QmlContainer::New();
-        subContainer->setQmlContainer(widget);
+//        subContainer->setQmlContainer(widget);
         m_subViews.push_back(subContainer);
 
         int idx = 0;
         if(viewInfo.m_useScrollBar)
         {
-            QScrollArea* const scrollArea = new QScrollArea(m_tabWidget);
-            scrollArea->setWidget(widget);
-            scrollArea->setWidgetResizable( true );
-            idx = m_tabWidget->addTab( scrollArea, QString::fromStdString(viewInfo.m_caption));
+//            QScrollArea* const scrollArea = new QScrollArea(m_tabWidget);
+//            scrollArea->setWidget(widget);
+//            scrollArea->setWidgetResizable( true );
+//            idx = m_tabWidget->addTab( scrollArea, QString::fromStdString(viewInfo.m_caption));
         }
         else
         {
-            idx = m_tabWidget->addTab( widget, QString::fromStdString(viewInfo.m_caption));
+//            idx = m_tabWidget->addTab( widget, QString::fromStdString(viewInfo.m_caption));
         }
 
         if (viewInfo.m_isSelect )
         {
-            m_tabWidget->setCurrentIndex(idx);
+//            m_tabWidget->setCurrentIndex(idx);
         }
     }
 }
@@ -101,7 +97,7 @@ void TabLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr paren
 void TabLayoutManager::destroyLayout()
 {
     this->destroySubViews();
-    m_tabWidget->clear();
+//    m_tabWidget->clear();
     m_parentContainer->clean();
 }
 

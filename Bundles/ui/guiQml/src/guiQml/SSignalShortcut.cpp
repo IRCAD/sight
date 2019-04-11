@@ -120,10 +120,10 @@ void SSignalShortcut::starting()
             if(!m_shortcutObject)
             {
                 // Get the associated widget to use as parent for the shortcut
-                QWidget* widget = qtc->getQmlContainer();
+//                QWidget* widget = qtc->getQmlContainer();
                 // Create a key sequence from the string and its associated QShortcut
                 QKeySequence shortcutSequence = QKeySequence(QString::fromStdString(m_shortcut));
-                m_shortcutObject = new QShortcut(shortcutSequence, widget);
+//                m_shortcutObject = new QShortcut(shortcutSequence, widget);
             }
 
             // Connect the activated signal to the onActivation method of this class

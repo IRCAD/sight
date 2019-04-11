@@ -22,12 +22,9 @@
 
 #include "fwGuiQml/widget/QfwToolbox.hpp"
 
-#include <QFrame>
 #include <QGuiApplication>
 #include <QIcon>
 #include <QPixmap>
-#include <QStyleOption>
-#include <QVBoxLayout>
 
 namespace fwGuiQml
 {
@@ -79,15 +76,15 @@ QfwToolBox::~QfwToolBox()
 
 //-----------------------------------------------------------------------------
 
-QfwToolBox::QfwToolBox(QWidget* parent, Qt::WindowFlags f) :
-    QFrame(parent, f)
+QfwToolBox::QfwToolBox(QWidget* parent, Qt::WindowFlags f) /*:
+                                                              QFrame(parent, f)*/
 {
-    this->layout = new QFormLayout(this);
-    this->layout->setMargin(0);
-    layout->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
-    layout->setHorizontalSpacing(0);
-    layout->setVerticalSpacing(1);
-    setBackgroundRole(QPalette::Button);
+//    this->layout = new QFormLayout(this);
+//    this->layout->setMargin(0);
+//    layout->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
+//    layout->setHorizontalSpacing(0);
+//    layout->setVerticalSpacing(1);
+//    setBackgroundRole(QPalette::Button);
 }
 
 //-----------------------------------------------------------------------------
@@ -101,10 +98,10 @@ QfwToolBox::QfwToolBox(QWidget* parent, Qt::WindowFlags f) :
 
     for (PageList::ConstIterator i = pageList.constBegin(); i != pageList.constEnd(); ++i)
     {
-        if ((*i).widget == widget)
-        {
-            return (Page*) &(*i);
-        }
+//        if ((*i).widget == widget)
+//        {
+//            return (Page*) &(*i);
+//        }
     }
     return 0;
 }
@@ -138,8 +135,8 @@ void QfwToolBox::collapseItem(int index)
     Page* page = this->page(index);
     if(page)
     {
-        page->sv->setVisible(false);
-        page->button->setChecked(false);
+//        page->sv->setVisible(false);
+//        page->button->setChecked(false);
     }
 }
 
@@ -150,8 +147,8 @@ void QfwToolBox::expandItem(int index)
     Page* page = this->page(index);
     if(page)
     {
-        page->sv->setVisible(true);
-        page->button->setChecked(true);
+//        page->sv->setVisible(true);
+//        page->button->setChecked(true);
     }
 }
 
@@ -171,16 +168,16 @@ int QfwToolBox::insertItem(int index, QWidget* widget, const QString& text)
         return -1;
     }
 
-    connect(widget, SIGNAL(destroyed(QObject*)), this, SLOT(widgetDestroyed(QObject*)));
+//    connect(widget, SIGNAL(destroyed(QObject*)), this, SLOT(widgetDestroyed(QObject*)));
 
     Page c;
-    c.widget = widget;
-    c.button = new QPushButton(this);
-    c.button->setObjectName("QfwToolBoxButton");
-    c.button->setBackgroundRole(QPalette::Window);
-    c.button->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
-    c.button->setFocusPolicy(Qt::NoFocus);
-    c.button->setCheckable(true);
+//    c.widget = widget;
+//    c.button = new QPushButton(this);
+//    c.button->setObjectName("QfwToolBoxButton");
+//    c.button->setBackgroundRole(QPalette::Window);
+//    c.button->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
+//    c.button->setFocusPolicy(Qt::NoFocus);
+//    c.button->setCheckable(true);
     QPixmap pixOpen(branch_open);
     QPixmap pixClose(branch_closed);
     QIcon bIcon;
@@ -200,14 +197,14 @@ int QfwToolBox::insertItem(int index, QWidget* widget, const QString& text)
 //            );
 //        c.button->setStyleSheet(style);
 //    }
-    connect(c.button, SIGNAL(toggled(bool)), this, SLOT(buttonToggled(bool)));
+//    connect(c.button, SIGNAL(toggled(bool)), this, SLOT(buttonToggled(bool)));
 
-    c.sv = new QFrame(this);
-    QVBoxLayout* verticalLayout = new QVBoxLayout(c.sv);
-    verticalLayout->setMargin(0);
-    verticalLayout->addWidget(widget);
-    c.sv->hide();
-    c.sv->setFrameStyle(QFrame::NoFrame);
+//    c.sv = new QFrame(this);
+//    QVBoxLayout* verticalLayout = new QVBoxLayout(c.sv);
+//    verticalLayout->setMargin(0);
+//    verticalLayout->addWidget(widget);
+//    c.sv->hide();
+//    c.sv->setFrameStyle(QFrame::NoFrame);
 
     c.setText(text);
 
@@ -215,15 +212,15 @@ int QfwToolBox::insertItem(int index, QWidget* widget, const QString& text)
     {
         index = this->pageList.count();
         this->pageList.append(c);
-        this->layout->addWidget(c.button);
-        this->layout->addWidget(c.sv);
+//        this->layout->addWidget(c.button);
+//        this->layout->addWidget(c.sv);
     }
     else
     {
         this->pageList.insert(index, c);
         this->relayout();
     }
-    c.button->show();
+//    c.button->show();
     return index;
 }
 
@@ -231,19 +228,19 @@ int QfwToolBox::insertItem(int index, QWidget* widget, const QString& text)
 
 void QfwToolBox::buttonToggled(bool checked)
 {
-    QPushButton* tb = qobject_cast<QPushButton*>(this->sender());
-    QWidget* item   = 0;
+//    QPushButton* tb = qobject_cast<QPushButton*>(this->sender());
+    QWidget* item = 0;
     for (PageList::ConstIterator i = pageList.constBegin(); i != pageList.constEnd(); ++i)
     {
-        if ((*i).button == tb)
-        {
-            item = (*i).widget;
-            break;
-        }
+//        if ((*i).button == tb)
+//        {
+//            item = (*i).widget;
+//            break;
+//        }
     }
     int index  = this->indexOf(item);
     Page* page = this->page(index);
-    page->sv->setVisible(checked);
+//    page->sv->setVisible(checked);
 }
 
 //-----------------------------------------------------------------------------
@@ -257,17 +254,17 @@ int QfwToolBox::count() const
 
 void QfwToolBox::relayout()
 {
-    delete layout;
-    layout = new QFormLayout(this);
-    layout->setMargin(0);
-    layout->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
-    layout->setHorizontalSpacing(0);
-    layout->setVerticalSpacing(1);
-    for (PageList::ConstIterator i = pageList.constBegin(); i != pageList.constEnd(); ++i)
-    {
-        layout->addWidget((*i).button);
-        layout->addWidget((*i).sv);
-    }
+//    delete layout;
+//    layout = new QFormLayout(this);
+//    layout->setMargin(0);
+//    layout->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
+//    layout->setHorizontalSpacing(0);
+//    layout->setVerticalSpacing(1);
+//    for (PageList::ConstIterator i = pageList.constBegin(); i != pageList.constEnd(); ++i)
+//    {
+//        layout->addWidget((*i).button);
+//        layout->addWidget((*i).sv);
+//    }
 }
 
 //-----------------------------------------------------------------------------
@@ -281,10 +278,10 @@ void QfwToolBox::widgetDestroyed(QObject* object)
         return;
     }
 
-    layout->removeWidget(c->sv);
-    layout->removeWidget(c->button);
-    c->sv->deleteLater();
-    delete c->button;
+//    layout->removeWidget(c->sv);
+//    layout->removeWidget(c->button);
+//    c->sv->deleteLater();
+//    delete c->button;
     pageList.removeAll(*c);
 }
 
@@ -294,9 +291,9 @@ void QfwToolBox::removeItem(int index)
 {
     if (QWidget* w = widget(index))
     {
-        disconnect(w, SIGNAL(destroyed(QObject*)), this, SLOT(widgetDestroyed(QObject*)));
-        w->setParent(this);
-        this->widgetDestroyed(w);
+//        disconnect(w, SIGNAL(destroyed(QObject*)), this, SLOT(widgetDestroyed(QObject*)));
+//        w->setParent(this);
+//        this->widgetDestroyed(w);
     }
 }
 
@@ -308,7 +305,7 @@ QWidget* QfwToolBox::widget(int index) const
     {
         return 0;
     }
-    return this->pageList.at(index).widget;
+//    return this->pageList.at(index).widget;
 }
 
 //-----------------------------------------------------------------------------
@@ -329,7 +326,7 @@ void QfwToolBox::setItemEnabled(int index, bool enabled)
         return;
     }
 
-    c->button->setEnabled(enabled);
+//    c->button->setEnabled(enabled);
 }
 
 //-----------------------------------------------------------------------------
@@ -359,7 +356,7 @@ void QfwToolBox::setItemToolTip(int index, const QString& toolTip)
 bool QfwToolBox::isItemEnabled(int index) const
 {
     const Page* c = this->page(index);
-    return c && c->button->isEnabled();
+//    return c && c->button->isEnabled();
 }
 
 //-----------------------------------------------------------------------------

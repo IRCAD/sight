@@ -27,8 +27,6 @@
 
 #include <fwGui/registry/macros.hpp>
 
-#include <QWidget>
-
 fwGuiRegisterMacro( ::fwGui::builder::SlideViewBuilder, ::fwGui::builder::ISlideViewBuilder::REGISTRY_KEY);
 
 namespace fwGui
@@ -55,7 +53,7 @@ void SlideViewBuilder::createContainer( ::fwGui::container::fwContainer::sptr pa
     m_parent = ::fwGuiQml::container::QmlContainer::dynamicCast(parent);
     SLM_ASSERT("The parent container is not a QmlContainer", m_parent);
 
-    QWidget* qmlParent = m_parent->getQmlContainer();
+//    QWidget* qmlParent = m_parent->getQmlContainer();
 
     ::fwGuiQml::widget::SlideBar::Aligment align = ::fwGuiQml::widget::SlideBar::LEFT;
     switch (m_aligment)
@@ -77,14 +75,14 @@ void SlideViewBuilder::createContainer( ::fwGui::container::fwContainer::sptr pa
             break;
     }
 
-    ::fwGuiQml::widget::SlideBar* slideBar = new ::fwGuiQml::widget::SlideBar(qmlParent, align, m_size, m_opacity);
+//    ::fwGuiQml::widget::SlideBar* slideBar = new ::fwGuiQml::widget::SlideBar(qmlParent, align, m_size, m_opacity);
     if (!m_styleSheet.empty())
     {
-        slideBar->setStyleSheet(QString::fromStdString(m_styleSheet));
+//        slideBar->setStyleSheet(QString::fromStdString(m_styleSheet));
     }
 
     ::fwGuiQml::container::QmlContainer::sptr qmlContainer = ::fwGuiQml::container::QmlContainer::New();
-    qmlContainer->setQmlContainer(slideBar);
+//    qmlContainer->setQmlContainer(slideBar);
 
     m_container = qmlContainer;
 }

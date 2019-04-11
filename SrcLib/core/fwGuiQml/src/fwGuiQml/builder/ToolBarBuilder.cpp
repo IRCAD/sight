@@ -27,10 +27,6 @@
 
 #include <fwGui/registry/macros.hpp>
 
-#include <QHBoxLayout>
-#include <QMainWindow>
-#include <QToolBar>
-
 fwGuiRegisterMacro( ::fwGui::builder::ToolBarBuilder, ::fwGui::builder::IToolBarBuilder::REGISTRY_KEY);
 
 namespace fwGui
@@ -56,68 +52,68 @@ void ToolBarBuilder::createToolBar( ::fwGui::container::fwContainer::sptr parent
 {
     m_parent = ::fwGuiQml::container::QmlContainer::dynamicCast(parent);
     SLM_ASSERT("The parent container is not a QmlContainer", m_parent);
-    QMainWindow* window = qobject_cast<QMainWindow*> ( m_parent->getQmlContainer() );
+//    QMainWindow* window = qobject_cast<QMainWindow*> ( m_parent->getQmlContainer() );
 
-    QToolBar* toolBar = new QToolBar(QObject::tr("ToolBar"));
-    toolBar->setIconSize( QSize(m_toolBitmapSize.first, m_toolBitmapSize.second) );
-    toolBar->setFloatable(false);
+//    QToolBar* toolBar = new QToolBar(QObject::tr("ToolBar"));
+//    toolBar->setIconSize( QSize(m_toolBitmapSize.first, m_toolBitmapSize.second) );
+//    toolBar->setFloatable(false);
 
     ::fwGuiQml::container::QmlToolBarContainer::sptr toolBarContainer =
         ::fwGuiQml::container::QmlToolBarContainer::New();
-    if (window)
-    {
-        bool visible = window->isVisible();
+//    if (window)
+//    {
+//        bool visible = window->isVisible();
 
-        Qt::ToolBarArea area;
-        switch (m_aligment)
-        {
-            case TOP:
-                area = Qt::TopToolBarArea;
-                break;
-            case BOTTOM:
-                area = Qt::BottomToolBarArea;
-                break;
-            case RIGHT:
-                area = Qt::RightToolBarArea;
-                break;
-            case LEFT:
-                area = Qt::LeftToolBarArea;
-                break;
-        }
-        window->addToolBar( area, toolBar );
+//        Qt::ToolBarArea area;
+//        switch (m_aligment)
+//        {
+//            case TOP:
+//                area = Qt::TopToolBarArea;
+//                break;
+//            case BOTTOM:
+//                area = Qt::BottomToolBarArea;
+//                break;
+//            case RIGHT:
+//                area = Qt::RightToolBarArea;
+//                break;
+//            case LEFT:
+//                area = Qt::LeftToolBarArea;
+//                break;
+//        }
+//        window->addToolBar( area, toolBar );
 
-        //on Os X, the window is hidden (???)
-        window->setVisible(visible);
-    }
-    else // parent is not a QMainWindow
-    {
-        QWidget* widget = m_parent->getQmlContainer();
-        SLM_ASSERT("Parent container must have a layout", widget->layout());
-        QBoxLayout* layout = qobject_cast<QBoxLayout*> ( widget->layout() );
-        switch (m_aligment)
-        {
-            case TOP:
-                layout->setDirection(QBoxLayout::TopToBottom);
-                toolBar->setOrientation(Qt::Horizontal);
-                break;
-            case BOTTOM:
-                layout->setDirection(QBoxLayout::BottomToTop);
-                toolBar->setOrientation(Qt::Horizontal);
-                break;
-            case RIGHT:
-                layout->setDirection(QBoxLayout::RightToLeft);
-                toolBar->setOrientation(Qt::Vertical);
-                break;
-            case LEFT:
-                layout->setDirection(QBoxLayout::LeftToRight);
-                toolBar->setOrientation(Qt::Vertical);
-                break;
-        }
-        SLM_ASSERT("Parent container layout must have be a QVBoxLayout", layout);
-        layout->insertWidget(0, toolBar, 0);
-    }
+//        //on Os X, the window is hidden (???)
+//        window->setVisible(visible);
+//    }
+//    else // parent is not a QMainWindow
+//    {
+//        QWidget* widget = m_parent->getQmlContainer();
+//        SLM_ASSERT("Parent container must have a layout", widget->layout());
+//        QBoxLayout* layout = qobject_cast<QBoxLayout*> ( widget->layout() );
+//        switch (m_aligment)
+//        {
+//            case TOP:
+//                layout->setDirection(QBoxLayout::TopToBottom);
+//                toolBar->setOrientation(Qt::Horizontal);
+//                break;
+//            case BOTTOM:
+//                layout->setDirection(QBoxLayout::BottomToTop);
+//                toolBar->setOrientation(Qt::Horizontal);
+//                break;
+//            case RIGHT:
+//                layout->setDirection(QBoxLayout::RightToLeft);
+//                toolBar->setOrientation(Qt::Vertical);
+//                break;
+//            case LEFT:
+//                layout->setDirection(QBoxLayout::LeftToRight);
+//                toolBar->setOrientation(Qt::Vertical);
+//                break;
+//        }
+//        SLM_ASSERT("Parent container layout must have be a QVBoxLayout", layout);
+//        layout->insertWidget(0, toolBar, 0);
+//    }
 
-    toolBarContainer->setQmlToolBar(toolBar);
+//    toolBarContainer->setQmlToolBar(toolBar);
     m_toolBar = toolBarContainer;
 
 }
@@ -128,15 +124,15 @@ void ToolBarBuilder::destroyToolBar()
 {
     SLM_ASSERT("The ToolBar is not initialized", m_toolBar);
     SLM_ASSERT("The parent's container is not a QmlContainer", m_parent);
-    QMainWindow* window = qobject_cast<QMainWindow*> ( m_parent->getQmlContainer() );
+//    QMainWindow* window = qobject_cast<QMainWindow*> ( m_parent->getQmlContainer() );
 
-    if (window)
-    {
-        ::fwGuiQml::container::QmlToolBarContainer::sptr qmlToolBar =
-            ::fwGuiQml::container::QmlToolBarContainer::dynamicCast(m_toolBar);
-        QToolBar* toolbar = qmlToolBar->getQmlToolBar();
-        window->removeToolBar( toolbar );
-    }
+//    if (window)
+//    {
+//        ::fwGuiQml::container::QmlToolBarContainer::sptr qmlToolBar =
+//            ::fwGuiQml::container::QmlToolBarContainer::dynamicCast(m_toolBar);
+//        QToolBar* toolbar = qmlToolBar->getQmlToolBar();
+//        window->removeToolBar( toolbar );
+//    }
     m_toolBar->destroyContainer();
 }
 

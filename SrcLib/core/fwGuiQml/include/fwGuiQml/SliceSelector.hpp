@@ -28,7 +28,6 @@
 
 #include <QObject>
 #include <QPointer>
-#include <QWidget>
 
 #include <functional>
 
@@ -46,7 +45,7 @@ namespace fwGuiQml
  * @brief A qml panel used to control a VTK 2D Negatoscope view.
  *
  */
-class SliceSelector : public QWidget //QWidget
+class SliceSelector : public QObject //QWidget
 {
 
 Q_OBJECT
@@ -56,7 +55,7 @@ public:
      * @brief Constructor.
      * @param parent The parent widget.
      */
-    FWGUIQML_API SliceSelector( QWidget* const parent = nullptr) noexcept;
+//    FWGUIQML_API SliceSelector( QWidget* const parent = nullptr) noexcept;
 
     /// @brief Destructor.
     FWGUIQML_API virtual ~SliceSelector() noexcept;

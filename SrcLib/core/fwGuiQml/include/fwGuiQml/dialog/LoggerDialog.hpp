@@ -26,9 +26,7 @@
 
 #include <fwGui/dialog/ILoggerDialog.hpp>
 
-#include <QDialog>
-#include <QPointer>
-#include <QTableWidget>
+#include <QObject>
 
 #include <vector>
 
@@ -41,7 +39,7 @@ namespace dialog
 /**
  * @brief   LoggerDialog allowing the choice of an element among severals (_selections)
  */
-class FWGUIQML_CLASS_API LoggerDialog : public QDialog,
+class FWGUIQML_CLASS_API LoggerDialog : public QObject,
                                         public ::fwGui::dialog::ILoggerDialog
 {
 Q_OBJECT
@@ -82,12 +80,7 @@ public:
     FWGUIQML_API virtual bool show() override;
 
 protected Q_SLOTS:
-
-    /**
-     * @brief Slot called when the user wants to display the logs
-     * @param[in] state Checkbox state
-     */
-    void displayLogs(int state);
+    void resultDialog(bool isOk);
 
 private:
     /// Dialog title
@@ -100,10 +93,11 @@ private:
     ::fwLog::Logger::sptr m_logger;
 
     /// Qt dialog
-    QPointer<QDialog> m_dialog;
+    QObject* m_dialog;
 
-    /// Table widget used to display logs
-    QPointer<QTableWidget> m_logTableWidget;
+    //get pushed button and clicked one
+    bool m_isOk;
+    bool m_isClicked;
 };
 
 } // namespace dialog

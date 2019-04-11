@@ -26,11 +26,6 @@
 
 #include <fwGui/registry/macros.hpp>
 
-#include <QBoxLayout>
-#include <QGroupBox>
-#include <QScrollArea>
-#include <QStyle>
-
 fwGuiRegisterMacro( ::fwGui::LineLayoutManager, ::fwGui::layoutManager::LineLayoutManagerBase::REGISTRY_KEY );
 
 namespace fwGui
@@ -56,15 +51,15 @@ void LineLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr pare
     m_parentContainer = ::fwGuiQml::container::QmlContainer::dynamicCast(parent);
     SLM_ASSERT("dynamicCast fwContainer to QmlContainer failed", m_parentContainer);
 
-    QBoxLayout* layout = new QBoxLayout(QBoxLayout::LeftToRight);
-    m_parentContainer->setLayout(layout);
-    layout->setContentsMargins(0, 0, 0, 0);
+//    QBoxLayout* layout = new QBoxLayout(QBoxLayout::LeftToRight);
+//    m_parentContainer->setLayout(layout);
+//    layout->setContentsMargins(0, 0, 0, 0);
 
     Orientation orientation = this->getOrientation();
 
     if( orientation == VERTICAL )
     {
-        layout->setDirection(QBoxLayout::TopToBottom);
+//        layout->setDirection(QBoxLayout::TopToBottom);
     }
 
     const std::list< ViewInfo>& views = this->getViewsInfo();
@@ -72,7 +67,7 @@ void LineLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr pare
     {
         if(viewInfo.m_isSpacer)
         {
-            layout->addStretch();
+//            layout->addStretch();
         }
         else
         {
@@ -80,35 +75,35 @@ void LineLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr pare
             int border = viewInfo.m_border;
             if(viewInfo.m_caption.first)
             {
-                QGroupBox* groupbox = new QGroupBox();
-                groupbox->setTitle(QString::fromStdString(viewInfo.m_caption.second));
-                panel   = groupbox;
-                border += groupbox->style()->pixelMetric(QStyle::PM_LayoutTopMargin);
+//                QGroupBox* groupbox = new QGroupBox();
+//                groupbox->setTitle(QString::fromStdString(viewInfo.m_caption.second));
+//                panel   = groupbox;
+//                border += groupbox->style()->pixelMetric(QStyle::PM_LayoutTopMargin);
             }
             else
             {
-                panel = new QWidget();
+//                panel = new QWidget();
             }
-            panel->setMinimumSize(std::max(viewInfo.m_minSize.first, 0), std::max(viewInfo.m_minSize.second, 0));
-            panel->setContentsMargins(border, border, border, border);
+//            panel->setMinimumSize(std::max(viewInfo.m_minSize.first, 0), std::max(viewInfo.m_minSize.second, 0));
+//            panel->setContentsMargins(border, border, border, border);
 
             ::fwGuiQml::container::QmlContainer::sptr subContainer = ::fwGuiQml::container::QmlContainer::New();
-            subContainer->setQmlContainer(panel);
+//            subContainer->setQmlContainer(panel);
             m_subViews.push_back(subContainer);
 
             if(viewInfo.m_useScrollBar)
             {
-                QScrollArea* scrollArea = new QScrollArea();
-                scrollArea->setWidget(panel);
-                scrollArea->setWidgetResizable( true );
+//                QScrollArea* scrollArea = new QScrollArea();
+//                scrollArea->setWidget(panel);
+//                scrollArea->setWidgetResizable( true );
 
-                layout->addWidget( scrollArea );
-                layout->setStretchFactor(scrollArea, viewInfo.m_proportion);
+//                layout->addWidget( scrollArea );
+//                layout->setStretchFactor(scrollArea, viewInfo.m_proportion);
             }
             else
             {
-                layout->addWidget( panel );
-                layout->setStretchFactor(panel, viewInfo.m_proportion);
+//                layout->addWidget( panel );
+//                layout->setStretchFactor(panel, viewInfo.m_proportion);
             }
 
             if(false == viewInfo.m_visible)
