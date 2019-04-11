@@ -232,65 +232,96 @@ void SScan::initialize(const ::rs2::pipeline_profile& _profile)
 
     if(cameraSeries)
     {
-        ::arData::Camera::sptr depthCamera = ::arData::Camera::New();
-        ::arData::Camera::sptr colorCamera = ::arData::Camera::New();
-
-        ::fwData::TransformationMatrix3D::sptr matrix = ::fwData::TransformationMatrix3D::New();
-        cameraSeries->addCamera(depthCamera);
-        cameraSeries->addCamera(colorCamera);
-
-        const rs2_intrinsics depthIntrinsics = depthStream.get_intrinsics();
-        const rs2_intrinsics colorIntrinsics = colorStream.get_intrinsics();
-        const rs2_extrinsics extrinsic       = depthStream.get_extrinsics_to(colorStream);
-
-        // Construct a explicit camera name: Intel RealSense D415(839112062452)
-        const std::string cameraName = std::string(m_currentDevice.get_info(RS2_CAMERA_INFO_NAME)) + "(" +
-                                       std::string(m_currentDevice.get_info(RS2_CAMERA_INFO_SERIAL_NUMBER)) + ")";
-
-        depthCamera->setDescription(cameraName + " Depth");
-        depthCamera->setWidth(depthStreamW);
-        depthCamera->setHeight(depthStreamH);
-        depthCamera->setFx(static_cast<double>(depthIntrinsics.fx));
-        depthCamera->setFy(static_cast<double>(depthIntrinsics.fy));
-        depthCamera->setCx(static_cast<double>(depthIntrinsics.ppx));
-        depthCamera->setCy(static_cast<double>(depthIntrinsics.ppy));
-
-        depthCamera->setDistortionCoefficient(static_cast<double>(depthIntrinsics.coeffs[0]),
-                                              static_cast<double>(depthIntrinsics.coeffs[1]),
-                                              static_cast<double>(depthIntrinsics.coeffs[2]),
-                                              static_cast<double>(depthIntrinsics.coeffs[3]),
-                                              static_cast<double>(depthIntrinsics.coeffs[4]));
-        depthCamera->setIsCalibrated(true);
-
-        colorCamera->setDescription(cameraName + "Color");
-        colorCamera->setWidth(colorStreamW);
-        colorCamera->setHeight(colorStreamH);
-        colorCamera->setFx(static_cast<double>(colorIntrinsics.fx));
-        colorCamera->setFy(static_cast<double>(colorIntrinsics.fy));
-        colorCamera->setCx(static_cast<double>(colorIntrinsics.ppx));
-        colorCamera->setCy(static_cast<double>(colorIntrinsics.ppy));
-        colorCamera->setDistortionCoefficient(static_cast<double>(colorIntrinsics.coeffs[0]),
-                                              static_cast<double>(colorIntrinsics.coeffs[1]),
-                                              static_cast<double>(colorIntrinsics.coeffs[2]),
-                                              static_cast<double>(colorIntrinsics.coeffs[3]),
-                                              static_cast<double>(colorIntrinsics.coeffs[4]));
-        colorCamera->setIsCalibrated(true);
-
-        size_t index = 0;
-        for (size_t i = 0; i < 3; ++i)
+        ::arData::Camera::sptr colorCamera;
+        ::arData::Camera::sptr depthCamera;
+        // check if there is camera
+        if (cameraSeries->getNumberOfCameras() == 0)
         {
-            matrix->setCoefficient(i, 3, static_cast<double>(extrinsic.translation[i] * s_METERS_TO_MMS));
-            for (size_t j = 0; j < 3; ++j)
-            {
-                matrix->setCoefficient(i, j, static_cast<double>(extrinsic.rotation[index]));
-                ++index;
-            }
-        }
-        cameraSeries->setExtrinsicMatrix(1, matrix);
+            depthCamera = ::arData::Camera::New();
+            colorCamera = ::arData::Camera::New();
 
-        auto sig = cameraSeries->signal< ::arData::CameraSeries::ModifiedSignalType >(
-            ::arData::CameraSeries::s_MODIFIED_SIG);
-        sig->asyncEmit();
+            cameraSeries->addCamera(depthCamera);
+            cameraSeries->addCamera(colorCamera);
+            auto sig = cameraSeries->signal< ::arData::CameraSeries::AddedCameraSignalType >(
+                ::arData::CameraSeries::s_ADDED_CAMERA_SIG);
+            sig->asyncEmit(depthCamera);
+            sig->asyncEmit(colorCamera);
+        }
+        else if (cameraSeries->getNumberOfCameras() == 1) // missing one camera
+        {
+            depthCamera                        = cameraSeries->getCamera(0);
+            ::arData::Camera::sptr colorCamera = ::arData::Camera::New();
+            cameraSeries->addCamera(colorCamera);
+
+            auto sig = cameraSeries->signal< ::arData::CameraSeries::AddedCameraSignalType >(
+                ::arData::CameraSeries::s_ADDED_CAMERA_SIG);
+            sig->asyncEmit(colorCamera);
+        }
+        else
+        {
+
+            depthCamera = cameraSeries->getCamera(0);
+            colorCamera = cameraSeries->getCamera(1);
+        }
+
+        if (!depthCamera->getIsCalibrated() || !colorCamera->getIsCalibrated())
+        {
+            // copy device calibration into the camera series
+            ::fwData::TransformationMatrix3D::sptr matrix = ::fwData::TransformationMatrix3D::New();
+
+            const rs2_intrinsics depthIntrinsics = depthStream.get_intrinsics();
+            const rs2_intrinsics colorIntrinsics = colorStream.get_intrinsics();
+            const rs2_extrinsics extrinsic       = depthStream.get_extrinsics_to(colorStream);
+
+            // Construct a explicit camera name: Intel RealSense D415(839112062452)
+            const std::string cameraName = std::string(m_currentDevice.get_info(RS2_CAMERA_INFO_NAME)) + "(" +
+                                           std::string(m_currentDevice.get_info(RS2_CAMERA_INFO_SERIAL_NUMBER)) + ")";
+
+            depthCamera->setDescription(cameraName + " Depth");
+            depthCamera->setWidth(depthStreamW);
+            depthCamera->setHeight(depthStreamH);
+            depthCamera->setFx(static_cast<double>(depthIntrinsics.fx));
+            depthCamera->setFy(static_cast<double>(depthIntrinsics.fy));
+            depthCamera->setCx(static_cast<double>(depthIntrinsics.ppx));
+            depthCamera->setCy(static_cast<double>(depthIntrinsics.ppy));
+
+            depthCamera->setDistortionCoefficient(static_cast<double>(depthIntrinsics.coeffs[0]),
+                                                  static_cast<double>(depthIntrinsics.coeffs[1]),
+                                                  static_cast<double>(depthIntrinsics.coeffs[2]),
+                                                  static_cast<double>(depthIntrinsics.coeffs[3]),
+                                                  static_cast<double>(depthIntrinsics.coeffs[4]));
+            depthCamera->setIsCalibrated(true);
+
+            colorCamera->setDescription(cameraName + "Color");
+            colorCamera->setWidth(colorStreamW);
+            colorCamera->setHeight(colorStreamH);
+            colorCamera->setFx(static_cast<double>(colorIntrinsics.fx));
+            colorCamera->setFy(static_cast<double>(colorIntrinsics.fy));
+            colorCamera->setCx(static_cast<double>(colorIntrinsics.ppx));
+            colorCamera->setCy(static_cast<double>(colorIntrinsics.ppy));
+            colorCamera->setDistortionCoefficient(static_cast<double>(colorIntrinsics.coeffs[0]),
+                                                  static_cast<double>(colorIntrinsics.coeffs[1]),
+                                                  static_cast<double>(colorIntrinsics.coeffs[2]),
+                                                  static_cast<double>(colorIntrinsics.coeffs[3]),
+                                                  static_cast<double>(colorIntrinsics.coeffs[4]));
+            colorCamera->setIsCalibrated(true);
+
+            size_t index = 0;
+            for (size_t i = 0; i < 3; ++i)
+            {
+                matrix->setCoefficient(i, 3, static_cast<double>(extrinsic.translation[i] * s_METERS_TO_MMS));
+                for (size_t j = 0; j < 3; ++j)
+                {
+                    matrix->setCoefficient(i, j, static_cast<double>(extrinsic.rotation[index]));
+                    ++index;
+                }
+            }
+            cameraSeries->setExtrinsicMatrix(1, matrix);
+
+            auto sig = cameraSeries->signal< ::arData::CameraSeries::ModifiedSignalType >(
+                ::arData::CameraSeries::s_MODIFIED_SIG);
+            sig->asyncEmit();
+        }
     }
 
     // Re-init the pointcloud.
