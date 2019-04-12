@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -138,7 +138,7 @@ TagValueSplitter::DicomSeriesContainerType TagValueSplitter::apply(
     {
         // Copy the series
         ::fwMedData::DicomSeries::sptr dicomSeries = ::fwMedData::DicomSeries::New();
-        dicomSeries->deepCopy(series);
+        dicomSeries->shallowCopy(series);
         dicomSeries->clearDicomContainer();
 
         size_t index = 0;
