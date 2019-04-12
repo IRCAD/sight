@@ -161,6 +161,7 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
     m_fragmentShaderAttachements.push_back("SpatialTransforms_FP");
     m_fragmentShaderAttachements.push_back("Lighting_FP");
     m_fragmentShaderAttachements.push_back("VolumeNormals_FP");
+    m_fragmentShaderAttachements.push_back("RayUtils_FP");
 
     auto* exitDepthListener = new compositor::listener::RayExitDepthListener();
     ::Ogre::MaterialManager::getSingleton().addListener(exitDepthListener);
@@ -195,8 +196,10 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
 
     // define the shared param structure
     m_RTVSharedParameters->addConstantDefinition("u_f2TFWindow", ::Ogre::GCT_FLOAT2);
-    m_RTVSharedParameters->addConstantDefinition("u_fSampleDis", ::Ogre::GCT_FLOAT1);
+    m_RTVSharedParameters->addConstantDefinition("u_fSampleDis_Ms", ::Ogre::GCT_FLOAT1);
     m_RTVSharedParameters->addConstantDefinition("u_f4VolIllumFactor", ::Ogre::GCT_FLOAT4);
+    m_RTVSharedParameters->addConstantDefinition("u_f3VolumeClippingBoxMinPos_Ms", ::Ogre::GCT_FLOAT3);
+    m_RTVSharedParameters->addConstantDefinition("u_f3VolumeClippingBoxMaxPos_Ms", ::Ogre::GCT_FLOAT3);
     m_RTVSharedParameters->addConstantDefinition("u_iMinImageValue", ::Ogre::GCT_INT1);
     m_RTVSharedParameters->addConstantDefinition("u_iMaxImageValue", ::Ogre::GCT_INT1);
     m_RTVSharedParameters->addConstantDefinition("u_fOpacityCorrectionFactor", ::Ogre::GCT_FLOAT1);
@@ -307,7 +310,7 @@ void RayTracingVolumeRenderer::setSampling(uint16_t nbSamples)
     computeSampleDistance(getCameraPlane());
 
     // Update the sample distance in the shaders
-    m_RTVSharedParameters->setNamedConstant("u_fSampleDis", m_sampleDistance);
+    m_RTVSharedParameters->setNamedConstant("u_fSampleDis_Ms", m_sampleDistance);
 }
 
 //-----------------------------------------------------------------------------
@@ -420,6 +423,9 @@ void RayTracingVolumeRenderer::clipImage(const ::Ogre::AxisAlignedBox& clippingB
     m_entryPointGeometry->end();
 
     m_proxyGeometry->clipGrid(clippingBox);
+
+    m_RTVSharedParameters->setNamedConstant("u_f3VolumeClippingBoxMinPos_Ms", clippingBox.getMinimum());
+    m_RTVSharedParameters->setNamedConstant("u_f3VolumeClippingBoxMaxPos_Ms", clippingBox.getMaximum());
 }
 
 //-----------------------------------------------------------------------------

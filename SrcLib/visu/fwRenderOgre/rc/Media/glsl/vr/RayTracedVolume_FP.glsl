@@ -6,9 +6,12 @@ uniform sampler3D u_s3Image;
 uniform sampler1D u_s1TFTexture;
 uniform vec2 u_f2TFWindow;
 
-uniform float u_fSampleDis;
+uniform float u_fSampleDis_Ms;
 
 uniform sampler2D u_s2EntryPoints;
+
+uniform vec3 u_f3VolumeClippingBoxMinPos_Ms;
+uniform vec3 u_f3VolumeClippingBoxMaxPos_Ms;
 
 #if AMBIENT_OCCLUSION || COLOR_BLEEDING || SHADOWS
 uniform sampler3D u_s3IlluminationVolume;
@@ -33,7 +36,7 @@ uniform int u_iMaxImageValue;
 uniform float u_fOpacityCorrectionFactor;
 #endif // PREINTEGRATION
 
-out vec4 v_f4FragCol;
+out vec4 f_f4FragCol;
 
 //-----------------------------------------------------------------------------
 
@@ -43,6 +46,8 @@ vec3 ndcToFragCoord(in vec3 _f3FragPos_Ns);
 vec4 ndcToSpecificSpacePosition(in vec3 _f3FragPos_Ns, in mat4 _m4Inverse);
 vec3 lightingBlinnPhong(vec3 _f3NormalDir_N, vec3 _f3Pos, vec3 _f3DiffuseCol);
 vec3 gradientNormal(vec3 _f3Pos_Ms, sampler3D _s3Image);
+float rayAxisAlignedBoxIntersection(in vec3 _f3RayPos, in vec3 _f3RayDir,
+                                    in vec3 _f3AxisAlignedBoxMin, in vec3 _f3AxisAlignedBoxMax);
 
 //-----------------------------------------------------------------------------
 
@@ -91,12 +96,12 @@ struct RayInfos
     vec3 m_f3RayPos_Ms;
 };
 
-RayInfos firstOpaqueRayInfos(in vec3 _f3RayPos_Ms, in vec3 _f3RayDir_Ms, in float _fRayLen, in float _fSampleDis, in sampler1D _s1TFTexture, in vec2 _f2TFWindow)
+RayInfos firstOpaqueRayInfos(in vec3 _f3RayPos_Ms, in vec3 _f3RayDir_Ms, in float _fRayLen, in float _fSampleDis_Ms, in sampler1D _s1TFTexture, in vec2 _f2TFWindow)
 {
     int iIterCount = 0;
     float t = 0.;
     // Move the ray to the first non transparent voxel.
-    for(; iIterCount < MAX_ITERATIONS && t < _fRayLen; iIterCount += 1, t += _fSampleDis)
+    for(; iIterCount < MAX_ITERATIONS && t < _fRayLen; iIterCount += 1, t += _fSampleDis_Ms)
     {
 #ifdef PREINTEGRATION
         float fTFAlpha = samplePreIntegrationTable(_f3RayPos_Ms, _f3RayPos_Ms + _f3RayDir_Ms).a;
@@ -124,16 +129,16 @@ RayInfos firstOpaqueRayInfos(in vec3 _f3RayPos_Ms, in vec3 _f3RayDir_Ms, in floa
 
 //-----------------------------------------------------------------------------
 
-vec4 launchRay(in vec3 _f3RayPos_Ms, in vec3 _f3RayDir_Ms, in float _fRayLen, in float _fSampleDis, in sampler1D _s1TFTexture, in vec2 _f2TFWindow)
+vec4 launchRay(in vec3 _f3RayPos_Ms, in vec3 _f3RayDir_Ms, in float _fRayLen, in float _fSampleDis_Ms, in sampler1D _s1TFTexture, in vec2 _f2TFWindow)
 {
     // Move the ray to the first non transparent voxel.
-    RayInfos rayInfos = firstOpaqueRayInfos(_f3RayPos_Ms, _f3RayDir_Ms, _fRayLen, _fSampleDis, _s1TFTexture, _f2TFWindow);
+    RayInfos rayInfos = firstOpaqueRayInfos(_f3RayPos_Ms, _f3RayDir_Ms, _fRayLen, _fSampleDis_Ms, _s1TFTexture, _f2TFWindow);
     gl_FragDepth = rayInfos.m_fRayDepth_Ss;
     int iIterCount = rayInfos.m_iIterCount;
     float t = rayInfos.m_fT;
     _f3RayPos_Ms = rayInfos.m_f3RayPos_Ms;
     vec4 f4ResultCol = vec4(0.);
-    for(; iIterCount < MAX_ITERATIONS && t < _fRayLen; iIterCount += 1, t += _fSampleDis)
+    for(; iIterCount < MAX_ITERATIONS && t < _fRayLen; iIterCount += 1, t += _fSampleDis_Ms)
     {
 #ifdef PREINTEGRATION
         vec4 f4TFCol = samplePreIntegrationTable(_f3RayPos_Ms, _f3RayPos_Ms + _f3RayDir_Ms);
@@ -151,7 +156,7 @@ vec4 launchRay(in vec3 _f3RayPos_Ms, in vec3 _f3RayDir_Ms, in float _fRayLen, in
 #ifndef PREINTEGRATION
             // Adjust opacity to sample distance.
             // This could be done when generating the TF texture to improve performance.
-            f4TFCol.a = 1 - pow(1 - f4TFCol.a, u_fSampleDis * u_fOpacityCorrectionFactor);
+            f4TFCol.a = 1 - pow(1 - f4TFCol.a, _fSampleDis_Ms * u_fOpacityCorrectionFactor);
 #endif // PREINTEGRATION
 
 #if AMBIENT_OCCLUSION || COLOR_BLEEDING || SHADOWS
@@ -211,10 +216,23 @@ void main(void)
     vec3 f3RayExitPos_Ms  = ndcToSpecificSpacePosition(f3RayExitPos_Ns, m4Cs_Ms).xyz;
     vec3 f3RayDir_MsN     = normalize(f3RayExitPos_Ms - f3RayEntryPos_Ms);
 
-    vec3 f3RayDir_Ms = f3RayDir_MsN * u_fSampleDis;
+    vec3 f3RayDir_Ms = f3RayDir_MsN * u_fSampleDis_Ms;
+
+    // We sometimes have rays starting at the near plane when they really shouldn't.
+    // This is due to intersecting edges in the proxy geometry.
+    // Although this is not technically wrong, it's suboptimal and causes artifacts due to the fact that we clamp
+    // texture coordinates outside of the volume.
+    // We fix this here by skipping the empty space between the ray's starting point and the volume.
+    if(fRayEntryDis_Ss == 0)
+    {
+        float t = rayAxisAlignedBoxIntersection(f3RayEntryPos_Ms, f3RayDir_Ms,
+                                                u_f3VolumeClippingBoxMinPos_Ms, u_f3VolumeClippingBoxMaxPos_Ms);
+
+        f3RayEntryPos_Ms += f3RayDir_Ms * max(0, t);
+    }
 
     float fRayLen = length(f3RayExitPos_Ms - f3RayEntryPos_Ms);
-    vec4 f4ResultCol = launchRay(f3RayEntryPos_Ms, f3RayDir_Ms, fRayLen, u_fSampleDis, u_s1TFTexture, u_f2TFWindow);
+    vec4 f4ResultCol = launchRay(f3RayEntryPos_Ms, f3RayDir_Ms, fRayLen, u_fSampleDis_Ms, u_s1TFTexture, u_f2TFWindow);
 
-    v_f4FragCol = f4ResultCol;
+    f_f4FragCol = f4ResultCol;
 }

@@ -191,10 +191,3 @@ fragment_program SpatialTransforms_FP glsl
 {
     source SpatialTransforms.glsl
 }
-
-//---------------------------------------------------------------------------
-
-fragment_program VolumeNormals_FP glsl
-{
-    source VolumeNormals.glsl
-}
