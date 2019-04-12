@@ -163,21 +163,30 @@ void SChessBoardDetector::recordPoints()
 {
     const size_t calibGroupSize = this->getKeyGroupSize(s_CALINFO_INOUT);
 
-    for(size_t i = 0; i < calibGroupSize; ++i)
+    const bool allDetected = (std::count(m_images.begin(), m_images.end(), nullptr) == 0);
+
+    if (allDetected)
     {
-        if(m_images[i] && m_pointLists[i])
+        for(size_t i = 0; i < calibGroupSize; ++i)
         {
             auto calInfo = this->getInOut< ::arData::CalibrationInfo >(s_CALINFO_INOUT, i);
             SLM_ASSERT("Missing 'calibInfo' in-out.", calInfo);
 
-            calInfo->addRecord(m_images[i], m_pointLists[i]);
+            if(m_pointLists[i])
+            {
+                calInfo->addRecord(m_images[i], m_pointLists[i]);
 
-            // Notify
-            ::arData::CalibrationInfo::AddedRecordSignalType::sptr sig;
-            sig = calInfo->signal< ::arData::CalibrationInfo::AddedRecordSignalType >(
-                ::arData::CalibrationInfo::s_ADDED_RECORD_SIG);
+                // Notify
+                ::arData::CalibrationInfo::AddedRecordSignalType::sptr sig;
+                sig = calInfo->signal< ::arData::CalibrationInfo::AddedRecordSignalType >(
+                    ::arData::CalibrationInfo::s_ADDED_RECORD_SIG);
 
-            sig->asyncEmit();
+                sig->asyncEmit();
+            }
+            else
+            {
+                calInfo->addRecord(m_images[i], ::fwData::PointList::New());
+            }
         }
     }
 }

@@ -126,6 +126,7 @@
                     <menuItem name="Calibrate with openCV" icon="arMedia-0.1/icons/CheckButton.svg" />
                     <menuItem name="Draw" icon="media-0.1/icons/Preview.svg" />
                     <menuItem name="Export Extrinsic Matrix(.trf)" icon="arMedia-0.1/icons/save.svg" />
+                    <menuItem name="Save calibration information" icon="arMedia-0.1/icons/save.svg" />
                 </layout>
             </gui>
             <registry>
@@ -136,6 +137,7 @@
                 <menuItem sid="ActionGoOpenCV" start="yes" />
                 <menuItem sid="ActionDisplayImage" start="yes" />
                 <menuItem sid="ActionExportExtrinsic" start="yes" />
+                <menuItem sid="ActionSaveInputs" start="yes" />
             </registry>
         </service>
 
@@ -220,6 +222,16 @@
         <service uid="ActionExportExtrinsic" type="::gui::action::SSlotCaller">
             <slots>
                 <slot>ExtrinsicExporter/update</slot>
+            </slots>
+        </service>
+
+        <service uid="ActionSaveInputs" type="::gui::action::SSlotCaller">
+            <sync>true</sync>
+            <slots>
+                <slot>calibrationDataWriter1/configureWithIHM</slot>
+                <slot>calibrationDataWriter1/update</slot>
+                <slot>calibrationDataWriter2/configureWithIHM</slot>
+                <slot>calibrationDataWriter2/update</slot>
             </slots>
         </service>
 
@@ -372,6 +384,16 @@
             <in key="camera" uid="${camera2}" />
         </service>
 
+        <service uid="calibrationDataWriter1" type="::ioCalibration::SCalibrationImagesWriter">
+            <in key="data" uid="${calibrationInfo1}" />
+            <format>.tiff</format>
+        </service>
+
+        <service uid="calibrationDataWriter2" type="::ioCalibration::SCalibrationImagesWriter">
+            <in key="data" uid="${calibrationInfo2}" />
+            <format>.tiff</format>
+        </service>
+
         <!-- ******************************* Connections ************************************** -->
         <connect>
             <signal>ChessboardDetector/chessboardDetected</signal>
@@ -427,6 +449,8 @@
         <start uid="detectionSynchronizer" />
         <start uid="VideoGrabber1" />
         <start uid="VideoGrabber2" />
+        <start uid="calibrationDataWriter1" />
+        <start uid="calibrationDataWriter2" />
         <!-- VTK scene 'camera1' -->
         <start uid="videoAdapter1" />
         <start uid="interactorStyle1" />
