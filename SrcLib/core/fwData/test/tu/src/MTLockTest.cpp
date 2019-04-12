@@ -104,12 +104,12 @@ void MTLockTest::runLock()
 void MTLockTest::multipleLockTest()
 {
     auto future1 = std::async(std::launch::async, std::bind(&MTLockTest::runMultipleLock, this, 100, "tata"));
-    auto future2 = std::async(std::launch::async, std::bind(&MTLockTest::runMultipleLock, this, 100, "lili"));
+    auto future2 = std::async(std::launch::async, std::bind(&MTLockTest::runMultipleLock, this, 99, "lili"));
 
     // read the last four letters and check that it is "tata" or "lili"
     for (size_t i = 0; i < 40; i += 4)
     {
-        std::this_thread::sleep_for( std::chrono::milliseconds(50));
+        std::this_thread::sleep_for( std::chrono::milliseconds(10));
         ::fwData::mt::ObjectReadLock readLock(m_string);
         const std::string str = m_string->value();
 
@@ -120,7 +120,7 @@ void MTLockTest::multipleLockTest()
     // read the last four letters and replace by something else
     for (size_t i = 0; i < 40; i += 4)
     {
-        std::this_thread::sleep_for( std::chrono::milliseconds(50));
+        std::this_thread::sleep_for( std::chrono::milliseconds(10));
         ::fwData::mt::ObjectReadToWriteLock lock(m_string);
         std::string& str         = m_string->value();
         const std::string substr = str.substr(str.size()-4, 4);
@@ -158,14 +158,15 @@ void MTLockTest::runMultipleLock(size_t nb, const char value[4])
     {
         {
             ::fwData::mt::ObjectWriteLock writeLock(m_string);
-            std::this_thread::sleep_for( std::chrono::milliseconds(10));
-            m_string->value() += value[0];
-            std::this_thread::sleep_for( std::chrono::milliseconds(10));
-            m_string->value() += value[1];
-            std::this_thread::sleep_for( std::chrono::milliseconds(10));
-            m_string->value() += value[2];
-            std::this_thread::sleep_for( std::chrono::milliseconds(10));
-            m_string->value() += value[3];
+            std::string& str = m_string->value();
+            std::this_thread::sleep_for( std::chrono::milliseconds(2));
+            str += value[0];
+            std::this_thread::sleep_for( std::chrono::milliseconds(2));
+            str += value[1];
+            std::this_thread::sleep_for( std::chrono::milliseconds(2));
+            str += value[2];
+            std::this_thread::sleep_for( std::chrono::milliseconds(2));
+            str += value[3];
         }
         std::this_thread::sleep_for( std::chrono::milliseconds(5));
     }
