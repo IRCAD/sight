@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -71,11 +71,12 @@ void compareMatrix(const ::Ogre::Matrix4& _m1, const ::Ogre::Matrix4& _m2)
 
 //------------------------------------------------------------------------------
 
-void comparePoint(const Ogre::Vector3& _p1, const Ogre::Vector3& _p2)
+void comparePoint(const Ogre::Vector4& _p1, const Ogre::Vector3& _p2)
 {
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(_p1[0], _p2[0], 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(_p1[1], _p2[1], 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(_p1[2], _p2[2], 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(_p1[0], _p2[0], 0.0001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(_p1[1], _p2[1], 0.0001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(_p1[2], _p2[2], 0.0001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(_p1[3], _p2[3], 0.0001);
 }
 
 //------------------------------------------------------------------------------
@@ -193,83 +194,65 @@ void CameraTest::computeProjectionMatrix()
 
 void CameraTest::convertPixelToWorldSpace()
 {
-    const size_t width  = 1920;
-    const size_t height = 1080;
-    const double cx     = static_cast<double>(width)/2.;
-    const double cy     = static_cast<double>(height)/2.;
-    const double fx     = 10;
-    const double fy     = 10;
-    const float n       = 0.1f;
-    const float f       = 100;
+    auto* const root         = ::fwRenderOgre::Utils::getOgreRoot();
+    auto* const sceneManager = root->createSceneManager("DefaultSceneManager", "TestSceneManager");
+    auto* const renderWindow = root->createRenderWindow("TestRenderWindow",
+                                                        static_cast<unsigned int>(1920),
+                                                        static_cast<unsigned int>(1080),
+                                                        false,
+                                                        nullptr);
+    renderWindow->setVisible(false);
+    renderWindow->setAutoUpdated(false);
+    auto* const camera   = sceneManager->createCamera("TestCamera");
+    auto* const viewport = renderWindow->addViewport(camera);
 
-    // Original camera
-    ::arData::Camera::sptr camera = ::arData::Camera::New();
-    camera->setCx(cx);
-    camera->setCy(cy);
-    camera->setFx(fx);
-    camera->setFy(fy);
-    camera->setWidth(width);
-    camera->setHeight(height);
+    camera->setNearClipDistance(1);
+    camera->setFarClipDistance(10);
+    camera->setAutoAspectRatio(true);
+    camera->setOrthoWindowWidth(1920);
+    camera->setOrthoWindowHeight(1080);
 
-    ::Ogre::Camera* ogreCamera;
+    camera->setProjectionType(::Ogre::ProjectionType::PT_PERSPECTIVE);
+    {
+        // Manualy project a point
+        const ::Ogre::Vector4 standardPoint(1.f, 2.f, 3.f, 1.f);
+        const ::Ogre::Vector4 clippedPoint = camera->getProjectionMatrix() * camera->getViewMatrix() * standardPoint;
+        const ::Ogre::Vector3 ndcPoint     = clippedPoint.xyz()/clippedPoint.w;
+        // /!\ in openGl, y coordinate begin from the upper left corner, we need to set him from the lower left corner.
+        const ::Ogre::Vector3 viewportPoint(
+            (ndcPoint.x+1.0) * 0.5 * viewport->getActualWidth(),
+            viewport->getActualHeight() - (ndcPoint.y+1.0) * 0.5 * viewport->getActualHeight(),
+            (ndcPoint.z+1.0) * 0.5);
 
-    auto root = ::fwRenderOgre::Utils::getOgreRoot();
+        // Unproject the projected point
+        const float point[3]                   = {viewportPoint[0], viewportPoint[1], viewportPoint[2]};
+        const ::Ogre::Vector3 unprojectedPoint =
+            ::fwRenderOgre::helper::Camera::convertPixelToViewSpace(*camera, point);
 
-    auto ogreRenderWindow = root->createRenderWindow("Dummy-RenderWindow",
-                                                     static_cast<unsigned int>(1),
-                                                     static_cast<unsigned int>(1),
-                                                     false,
-                                                     nullptr);
+        comparePoint(standardPoint, unprojectedPoint);
+    }
 
-    ogreRenderWindow->setVisible(false);
+    camera->setProjectionType(::Ogre::ProjectionType::PT_ORTHOGRAPHIC);
+    {
+        // Manualy project a point
+        const ::Ogre::Vector4 standardPoint(1.f, 2.f, 3.f, 1.f);
+        const ::Ogre::Vector4 clippedPoint = camera->getProjectionMatrix() * camera->getViewMatrix() * standardPoint;
+        const ::Ogre::Vector3 ndcPoint     = clippedPoint.xyz()/clippedPoint.w;
+        // /!\ in openGl, y coordinate begin from the upper left corner, we need to set him from the lower left corner.
+        const ::Ogre::Vector3 viewportPoint(
+            (ndcPoint.x+1.0) * 0.5 * viewport->getActualWidth(),
+            viewport->getActualHeight() - (ndcPoint.y+1.0) * 0.5 * viewport->getActualHeight(),
+            (ndcPoint.z+1.0) * 0.5);
 
-    ogreRenderWindow->setAutoUpdated(false);
+        // Unproject the projected point
+        const float point[3]                   = {viewportPoint[0], viewportPoint[1], viewportPoint[2]};
+        const ::Ogre::Vector3 unprojectedPoint =
+            ::fwRenderOgre::helper::Camera::convertPixelToViewSpace(*camera, point);
 
-    auto sceneManager = root->createSceneManager("DefaultSceneManager", "Testing");
-
-    ogreCamera = sceneManager->createCamera("DefaultCam");
-
-    auto viewport = ogreRenderWindow->addViewport(ogreCamera, 0);
-
-    float point1[3] = {0, 0, 0};
-    float point2[3] = {12, 34, 56};
-    float point3[3] = {-65, -43, -21};
-
-    Ogre::Vector3 point1Expected = {0, 0, 0};
-    Ogre::Vector3 point2Expected = {0, 0, 56};
-    Ogre::Vector3 point3Expected = {0, 0, -21};
-
-    const float actualWidth  = static_cast<float>(viewport->getActualWidth());
-    const float actualHeight = static_cast<float>(viewport->getActualHeight());
-
-    // Since the viewport's dimensions are relative to each configuration, we must recalculate all conversions.
-    point1Expected[0] = point1[0]/actualWidth *2.f - 1.f;
-    point1Expected[1] = -(point1[1]/actualHeight * 2.f - 1.f);
-
-    point2Expected[0] = point2[0]/actualWidth *2.f - 1.f;
-    point2Expected[1] = -(point2[1]/actualHeight * 2.f - 1.f);
-
-    point3Expected[0] = point3[0]/actualWidth *2.f - 1.f;
-    point3Expected[1] = -(point3[1]/actualHeight * 2.f - 1.f);
-
-    const ::Ogre::Matrix4 viewMat = ogreCamera->getViewMatrix();
-    const ::Ogre::Matrix4 projMat = ogreCamera->getProjectionMatrixWithRSDepth();
-
-    const auto inversedCombinedMat = (projMat * viewMat).inverse();
-
-    point1Expected = inversedCombinedMat * point1Expected;
-    point2Expected = inversedCombinedMat * point2Expected;
-    point3Expected = inversedCombinedMat * point3Expected;
-
-    const auto result1 = ::fwRenderOgre::helper::Camera::convertPixelToViewSpace(*ogreCamera, point1);
-    const auto result2 = ::fwRenderOgre::helper::Camera::convertPixelToViewSpace(*ogreCamera, point2);
-    const auto result3 = ::fwRenderOgre::helper::Camera::convertPixelToViewSpace(*ogreCamera, point3);
+        comparePoint(standardPoint, unprojectedPoint);
+    }
 
     Utils::destroyOgreRoot();
-
-    comparePoint(result1, point1Expected);
-    comparePoint(result2, point2Expected);
-    comparePoint(result3, point3Expected);
 }
 
 //------------------------------------------------------------------------------
