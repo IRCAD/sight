@@ -40,8 +40,8 @@ namespace ut
 
 void MTLockTest::setUp()
 {
-    // Set up context before running a test.
-    m_string = ::fwData::String::New();
+    // Initialize the string with at least 4 letters, we need that in our tests
+    m_string = ::fwData::String::New("tata");
 }
 
 //-----------------------------------------------------------------------------
