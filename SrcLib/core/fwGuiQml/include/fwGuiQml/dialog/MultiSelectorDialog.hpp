@@ -44,6 +44,7 @@ namespace dialog
 class FWGUIQML_CLASS_API MultiSelectorDialog : public ::fwGui::dialog::IMultiSelectorDialog,
                                                public QObject
 {
+Q_OBJECT
 public:
 
     fwCoreClassDefinitionsWithFactoryMacro( (MultiSelectorDialog)(::fwGui::dialog::IMultiSelectorDialog),
@@ -71,12 +72,18 @@ public:
 
     FWGUIQML_API virtual void setMessage(const std::string& msg) override;
 
+protected Q_SLOTS:
+    void resultDialog(QVariant checkList);
+
 private:
 
     Selections m_selections;
     /// Dialog box message
     std::string m_message;
     std::string m_title;
+    /// Dialog box created
+    QObject*    m_dialog;
+    bool m_isClicked;
 };
 
 } // namespace dialog

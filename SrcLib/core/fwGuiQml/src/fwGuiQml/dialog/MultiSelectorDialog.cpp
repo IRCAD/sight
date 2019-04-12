@@ -26,6 +26,10 @@
 
 #include <fwGui/registry/macros.hpp>
 
+#include <fwQml/QmlEngine.hpp>
+
+#include <fwRuntime/operations.hpp>
+
 #include <QGuiApplication>
 
 fwGuiRegisterMacro( ::fwGuiQml::dialog::MultiSelectorDialog, ::fwGui::dialog::IMultiSelectorDialog::REGISTRY_KEY );
@@ -67,54 +71,51 @@ void MultiSelectorDialog::setTitle(std::string _title)
 
 ::fwGui::dialog::IMultiSelectorDialog::Selections MultiSelectorDialog::show()
 {
-//    QWidget* parent = qApp->focusWindow();
+    SPTR(::fwQml::QmlEngine) engine = ::fwQml::QmlEngine::getDefault();
+    QString title = QString::fromStdString(m_title);
+    m_isClicked = false;
 
-    //  QDialog* dialog = new QDialog(parent);
-    //dialog->setWindowTitle(QString::fromStdString(m_title));
+    // get the path of the qml ui file in the 'rc' directory
+    auto dialogPath = ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-0.1/dialog/MultiSelectorDialog.qml");
 
-    //QListWidget* selectionList = new QListWidget(dialog);
-//    for( Selections::value_type selection :  m_selections)
-//    {
-//        QListWidgetItem* item = new QListWidgetItem(QString::fromStdString(selection.first), selectionList);
-//        item->setCheckState( (selection.second ? Qt::Checked : Qt::Unchecked) );
-//        selectionList->addItem(item);
-//    }
+    // load the qml ui component
+    m_dialog = engine->createComponent(dialogPath);
+    m_dialog->setProperty("title", title);
+    QObject::connect(m_dialog, SIGNAL(resultDialog(QVariant)),
+                     this, SLOT(resultDialog(QVariant)));
+    QObject* options = m_dialog->findChild<QObject*>("options");
+    for( Selections::value_type selection :  m_selections)
+    {
+        QMetaObject::invokeMethod(options, "addMessage",
+                                  Q_ARG(QVariant, QString::fromStdString(selection.first)),
+                                  Q_ARG(QVariant, selection.second));
+    }
 
-//    QListWidgetItem* firstItem = selectionList->item(0);
-//    selectionList->setCurrentItem(firstItem);
+    if(!m_message.empty())
+    {
+        QObject* groupBox = m_dialog->findChild<QObject*>("groupBox");
+        groupBox->setProperty("title", QString::fromStdString(m_message));
+    }
+    QMetaObject::invokeMethod(m_dialog, "open");
+    while (!m_isClicked && m_dialog->property("visible").toBool())
+    {
+        qGuiApp->processEvents();
+    }
+    return m_selections;
+}
 
-//    QPushButton* okButton     = new QPushButton(tr("Ok"));
-//    QPushButton* cancelButton = new QPushButton(tr("Cancel"));
+//------------------------------------------------------------------------------
 
-//    QHBoxLayout* hLayout = new QHBoxLayout();
-//    hLayout->addWidget(okButton);
-//    hLayout->addWidget(cancelButton);
-
-//    QVBoxLayout* vLayout = new QVBoxLayout();
-//    if(!m_message.empty())
-//    {
-//        QLabel* msgText = new QLabel(QString::fromStdString(m_message), dialog);
-//        vLayout->addWidget( msgText);
-//    }
-//    vLayout->addWidget(selectionList);
-//    vLayout->addLayout(hLayout);
-
-//    dialog->setLayout(vLayout);
-//    QObject::connect(okButton, SIGNAL(clicked()), dialog, SLOT(accept()));
-//    QObject::connect(cancelButton, SIGNAL(clicked()), dialog, SLOT(reject()));
-//    QObject::connect(selectionList, SIGNAL(itemDoubleClicked(QListWidgetItem*)), dialog, SLOT(accept()));
-
-//    Selections selections;
-//    if(dialog->exec())
-//    {
-//        int indexItem = 0;
-//        for( Selections::value_type selection :  m_selections)
-//        {
-//            selections[selection.first] = (selectionList->item(indexItem)->checkState() == Qt::Checked);
-//            indexItem++;
-//        }
-//    }
-    //return selections;
+void MultiSelectorDialog::resultDialog(QVariant checkList)
+{
+    QList<QVariant> checkListState = checkList.toList();
+    int index                      = 0;
+    for( Selections::value_type selection :  m_selections)
+    {
+        m_selections[selection.first] = checkListState[index].toBool();
+        index++;
+    }
+    m_isClicked = true;
 }
 
 //------------------------------------------------------------------------------

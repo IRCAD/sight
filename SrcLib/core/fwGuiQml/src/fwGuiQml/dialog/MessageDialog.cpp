@@ -45,16 +45,16 @@ namespace dialog
 //value of the enum in integer
 typedef const std::map< ::fwGui::dialog::IMessageDialog::Icons, int> MessageDialogQmlIconsType;
 MessageDialogQmlIconsType messageDialogQmlIcons =
-        ::boost::assign::map_list_of(::fwGui::dialog::IMessageDialog::NONE, 0)
+    ::boost::assign::map_list_of(::fwGui::dialog::IMessageDialog::NONE, 0)
         (::fwGui::dialog::IMessageDialog::QUESTION, 4)
         (::fwGui::dialog::IMessageDialog::INFO, 1)
         (::fwGui::dialog::IMessageDialog::WARNING, 2)
         (::fwGui::dialog::IMessageDialog::CRITICAL, 3);
 
 typedef const std::map< ::fwGui::dialog::IMessageDialog::Buttons,
-int> MessageDialogQmlButtonType;
+                        int> MessageDialogQmlButtonType;
 MessageDialogQmlButtonType messageDialogQmlButton =
-        ::boost::assign::map_list_of(::fwGui::dialog::IMessageDialog::OK, 0x00000400   )
+    ::boost::assign::map_list_of(::fwGui::dialog::IMessageDialog::OK, 0x00000400   )
         (::fwGui::dialog::IMessageDialog::CANCEL, 0x00400000)
         (::fwGui::dialog::IMessageDialog::YES, 0x00004000    )
         (::fwGui::dialog::IMessageDialog::NO, 0x00010000   );
