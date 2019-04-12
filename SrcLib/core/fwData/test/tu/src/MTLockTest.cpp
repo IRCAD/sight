@@ -136,12 +136,7 @@ void MTLockTest::multipleLockTest()
         }
     }
 
-    const std::future_status status1 = future1.wait_for(std::chrono::seconds(30));
-    CPPUNIT_ASSERT(status1 == std::future_status::ready);
     CPPUNIT_ASSERT_NO_THROW(future1.get()); // Trigger exceptions
-
-    const std::future_status status2 = future2.wait_for(std::chrono::seconds(30));
-    CPPUNIT_ASSERT(status2 == std::future_status::ready);
     CPPUNIT_ASSERT_NO_THROW(future2.get()); // Trigger exceptions
 
     CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(200*4), m_string->value().size());
