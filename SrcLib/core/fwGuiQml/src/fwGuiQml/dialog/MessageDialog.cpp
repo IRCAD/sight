@@ -24,6 +24,10 @@
 
 #include <fwGui/registry/macros.hpp>
 
+#include <fwQml/QmlEngine.hpp>
+
+#include <fwRuntime/operations.hpp>
+
 #include <boost/assign/list_of.hpp>
 
 #include <QGuiApplication>
@@ -41,16 +45,16 @@ namespace dialog
 //value of the enum in integer
 typedef const std::map< ::fwGui::dialog::IMessageDialog::Icons, int> MessageDialogQmlIconsType;
 MessageDialogQmlIconsType messageDialogQmlIcons =
-    ::boost::assign::map_list_of(::fwGui::dialog::IMessageDialog::NONE, 0)
+        ::boost::assign::map_list_of(::fwGui::dialog::IMessageDialog::NONE, 0)
         (::fwGui::dialog::IMessageDialog::QUESTION, 4)
         (::fwGui::dialog::IMessageDialog::INFO, 1)
         (::fwGui::dialog::IMessageDialog::WARNING, 2)
         (::fwGui::dialog::IMessageDialog::CRITICAL, 3);
 
 typedef const std::map< ::fwGui::dialog::IMessageDialog::Buttons,
-                        int> MessageDialogQmlButtonType;
+int> MessageDialogQmlButtonType;
 MessageDialogQmlButtonType messageDialogQmlButton =
-    ::boost::assign::map_list_of(::fwGui::dialog::IMessageDialog::OK, 0x00000400   )
+        ::boost::assign::map_list_of(::fwGui::dialog::IMessageDialog::OK, 0x00000400   )
         (::fwGui::dialog::IMessageDialog::CANCEL, 0x00400000)
         (::fwGui::dialog::IMessageDialog::YES, 0x00004000    )
         (::fwGui::dialog::IMessageDialog::NO, 0x00010000   );
@@ -59,7 +63,6 @@ MessageDialogQmlButtonType messageDialogQmlButton =
 
 MessageDialog::MessageDialog(::fwGui::GuiBaseObject::Key key) :
     m_buttons(::fwGui::dialog::IMessageDialog::NOBUTTON),
-    m_defaultButton(::fwGui::dialog::IMessageDialog::NOBUTTON),
     m_icon(::fwGui::dialog::IMessageDialog::NONE)
 {
 }
@@ -102,16 +105,12 @@ void MessageDialog::addButton( ::fwGui::dialog::IMessageDialog::Buttons button )
 
 void MessageDialog::addCustomButton(const std::string& label, std::function<void()> clickedFn)
 {
-//    QPushButton* button = new QPushButton( QString::fromStdString(label) );
-//    m_customButtons.push_back( button );
-//    QObject::connect(button, &QPushButton::clicked, clickedFn);
 }
 
 //-----------------------------------------------------------------------------
 
 void MessageDialog::setDefaultButton(::fwGui::dialog::IMessageDialog::Buttons button )
 {
-    m_defaultButton = button;
 }
 
 //------------------------------------------------------------------------------
@@ -120,12 +119,24 @@ void MessageDialog::setDefaultButton(::fwGui::dialog::IMessageDialog::Buttons bu
 {
     MessageDialogQmlIconsType::const_iterator iterIcon = messageDialogQmlIcons.find(m_icon);
     SLM_ASSERT("Unknown Icon", iterIcon != messageDialogQmlIcons.end());
-
-    int icon      = iterIcon->second;
     QString title = QString::fromStdString(m_title);
     QString text  = QString::fromStdString(m_message);
+    // get the qml engine QmlApplicationEngine
+    SPTR(::fwQml::QmlEngine) engine = ::fwQml::QmlEngine::getDefault();
+    m_isClicked                     = false;
+    m_clicked                       = ::fwGui::dialog::IMessageDialog::NOBUTTON;
+    int icon = iterIcon->second;
     // 0 int value means no Button
     int buttons = 0x00000000;
+
+    // get the path of the qml ui file in the 'rc' directory
+    auto dialogPath = ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-0.1/dialog/MessageDialog.qml");
+    QObject::connect(m_dialog, SIGNAL(resultDialog(int)),
+                     this, SLOT(resultDialog(int)));
+    // load the qml ui component
+    m_dialog = engine->createComponent(dialogPath);
+    m_dialog->setProperty("title", title);
+    m_dialog->setProperty("icon", icon);
 
     for(MessageDialogQmlButtonType::value_type button :  messageDialogQmlButton)
     {
@@ -134,33 +145,29 @@ void MessageDialog::setDefaultButton(::fwGui::dialog::IMessageDialog::Buttons bu
             buttons |= button.second;
         }
     }
-
-    //QMessageBox box(icon, title, text, buttons, qApp->focusWindow());
-
-//    for(auto customButton : m_customButtons)
-//    {
-//        // box.addButton(customButton, QMessageBox::ActionRole);
-//    }
-
-    MessageDialogQmlButtonType::const_iterator iter = messageDialogQmlButton.find(m_defaultButton);
-    if(iter != messageDialogQmlButton.end())
+    m_dialog->setProperty("standardButtons", buttons);
+    QMetaObject::invokeMethod(m_dialog, "open");
+    while (!m_isClicked && m_dialog->property("visible").toBool())
     {
-        // box.setDefaultButton(QMessageBox::StandardButton(static_cast<int>(iter->second)));
+        qGuiApp->processEvents();
     }
+    delete m_dialog;
+    return m_clicked;
+}
 
-    ::fwGui::dialog::IMessageDialog::Buttons result = ::fwGui::dialog::IMessageDialog::NOBUTTON;
+//------------------------------------------------------------------------------
 
-    //box.exec();
-
-//    for(MessageDialogQmlButtonType::value_type button :  messageDialogQmlButton)
-//    {
-//        if ( box.standardButton( box.clickedButton() ) == button.second)
-//        {
-//            result = button.first;
-//            break;
-//        }
-//    }
-    return result;
+void MessageDialog::resultDialog(int clicked)
+{
+    for(MessageDialogQmlButtonType::value_type button :  messageDialogQmlButton)
+    {
+        if ( clicked == button.second)
+        {
+            m_clicked = button.first;
+            break;
+        }
+    }
+    m_isClicked = true;
 }
 
 //------------------------------------------------------------------------------

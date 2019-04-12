@@ -94,7 +94,7 @@ std::string InputDialog::getInput()
     m_dialog->findChild< QObject* >("message")->setProperty("text", text);
     m_dialog->findChild< QObject* >("answer")->setProperty("placeholderText", QString::fromStdString(m_input));
     //slot to retrieve the result and open the dialog with invoke
-    QObject::connect(m_dialog, SIGNAL(filesNameChange(QVariant,bool)),
+    QObject::connect(m_dialog, SIGNAL(resultDialog(QVariant,bool)),
                      this, SLOT(resultDialog(QVariant,bool)));
     QMetaObject::invokeMethod(m_dialog, "open");
     // boolean to check first if it has called the slot or secondly if the FileDialog isn't visible

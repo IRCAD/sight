@@ -26,6 +26,7 @@
 
 #include <fwGui/dialog/IMessageDialog.hpp>
 
+#include <QObject>
 #include <QVector>
 
 #include <string>
@@ -40,9 +41,10 @@ namespace dialog
 /**
  * @brief Defines the generic message box for IHM.
  */
-class FWGUIQML_CLASS_API MessageDialog : public ::fwGui::dialog::IMessageDialog
+class FWGUIQML_CLASS_API MessageDialog : public QObject,
+                                         public ::fwGui::dialog::IMessageDialog
 {
-
+Q_OBJECT
 public:
 
     fwCoreClassDefinitionsWithFactoryMacro( (MessageDialog)(::fwGui::dialog::IMessageDialog),
@@ -85,11 +87,18 @@ protected:
     /// List of the button
     ::fwGui::dialog::IMessageDialog::Buttons m_buttons;
 
-    /// default buttons
-    ::fwGui::dialog::IMessageDialog::Buttons m_defaultButton;
-
     /// Icon
     ::fwGui::dialog::IMessageDialog::Icons m_icon;
+
+    /// dialog object from qml
+    QObject* m_dialog;
+
+    /// boolean to check if button was pressed
+    bool m_isClicked;
+    ::fwGui::dialog::IMessageDialog::Buttons m_clicked;
+
+protected Q_SLOTS:
+    void resultDialog(int button);
 };
 
 } // namespace dialog

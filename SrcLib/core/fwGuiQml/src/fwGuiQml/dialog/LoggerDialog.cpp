@@ -85,7 +85,7 @@ bool LoggerDialog::show()
 
     // load the qml ui component
     m_dialog = engine->createComponent(dialogPath);
-    QObject::connect(m_dialog, SIGNAL(filesNameChange(bool)),
+    QObject::connect(m_dialog, SIGNAL(resultDialog(bool)),
                      this, SLOT(resultDialog(bool)));
     m_dialog->setProperty("title", QString::fromStdString(m_title));
 

@@ -9,12 +9,12 @@ Dialog {
     modality: Qt.ApplicationModal
     title: "Identification dialog"
     standardButtons: StandardButton.Cancel | StandardButton.Ok
-    signal filesNameChange(var answer, bool isOk)
+    signal resultDialog(var answer, bool isOk)
     onAccepted: {
-        filesNameChange(answer.text, true)
+        resultDialog(answer.text, true)
     }
     onRejected: {
-        filesNameChange(answer.text, false)
+        resultDialog(answer.text, false)
     }
 
     ColumnLayout {

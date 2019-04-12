@@ -31,10 +31,10 @@ Dialog {
     width: 500
 
     onAccepted: {
-        filesNameChange(true)
+        resultDialog(true)
     }
     onRejected: {
-        filesNameChange(false)
+        resultDialog(false)
     }
 
     ColumnLayout {
