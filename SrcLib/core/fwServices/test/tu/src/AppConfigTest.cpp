@@ -362,6 +362,9 @@ void AppConfigTest::startStopTest()
             auto srv5   = ::fwServices::ut::TestServiceImplementation::dynamicCast(gnsrv5);
             CPPUNIT_ASSERT(srv5 != nullptr);
             CPPUNIT_ASSERT_EQUAL(::fwServices::IService::STARTED, srv5->getStatus());
+
+            // We have started, yet we may not have been updated, so wait for it just in case
+            fwTestWaitMacro(1u == srv5->getUpdateOrder());
             CPPUNIT_ASSERT_EQUAL(0u, srv5->getStartOrder());
             CPPUNIT_ASSERT_EQUAL(1u, srv5->getUpdateOrder());
 
