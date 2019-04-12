@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -40,8 +40,8 @@ namespace ut
 
 void MTLockTest::setUp()
 {
-    // Set up context before running a test.
-    m_string = ::fwData::String::New();
+    // Initialize the string with at least 4 letters, we need that in our tests
+    m_string = ::fwData::String::New("tata");
 }
 
 //-----------------------------------------------------------------------------
@@ -103,85 +103,72 @@ void MTLockTest::runLock()
 
 void MTLockTest::multipleLockTest()
 {
-    auto future1 = std::async(std::launch::async, std::bind(&MTLockTest::runMultipleLock1, this));
-    auto future2 = std::async(std::launch::async, std::bind(&MTLockTest::runMultipleLock2, this));
+    auto future1 = std::async(std::launch::async, std::bind(&MTLockTest::runMultipleLock, this, 100, "tata"));
+    auto future2 = std::async(std::launch::async, std::bind(&MTLockTest::runMultipleLock, this, 99, "lili"));
 
-    const std::future_status status1 = future1.wait_for(std::chrono::milliseconds(2500));
-    CPPUNIT_ASSERT(status1 == std::future_status::ready);
-    future1.get(); // Trigger exceptions
+    // read the last four letters and check that it is "tata" or "lili"
+    for (size_t i = 0; i < 40; i += 4)
+    {
+        std::this_thread::sleep_for( std::chrono::milliseconds(10));
+        ::fwData::mt::ObjectReadLock readLock(m_string);
+        const std::string str = m_string->value();
 
-    const std::future_status status2 = future2.wait_for(std::chrono::milliseconds(2500));
-    CPPUNIT_ASSERT(status2 == std::future_status::ready);
-    future2.get(); // Trigger exceptions
+        const std::string substr = str.substr(str.size()-4, 4);
+        CPPUNIT_ASSERT_MESSAGE(substr, substr == "lili" ||  substr == "tata");
+    }
 
-    CPPUNIT_ASSERT_MESSAGE(m_string->value(), m_string->value() == "lili" ||  m_string->value() == "toto");
+    // read the last four letters and replace by something else
+    for (size_t i = 0; i < 40; i += 4)
+    {
+        std::this_thread::sleep_for( std::chrono::milliseconds(10));
+        ::fwData::mt::ObjectReadToWriteLock lock(m_string);
+        std::string& str         = m_string->value();
+        const std::string substr = str.substr(str.size()-4, 4);
+        if (substr == "tata")
+        {
+            lock.upgrade();
+            str.replace(str.size()-4, 4, "lili");
+        }
+        else if (substr == "lili")
+        {
+            lock.upgrade();
+            str.replace(str.size()-4, 4, "tata");
+        }
+    }
+
+    CPPUNIT_ASSERT_NO_THROW(future1.get()); // Trigger exceptions
+    CPPUNIT_ASSERT_NO_THROW(future2.get()); // Trigger exceptions
+
+    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(200*4), m_string->value().size());
+
+    // check that the letters from "lili" and "tata" are not mixed
+    const std::string str = m_string->value();
+    for (size_t i = 0; i < str.size(); i += 4)
+    {
+        const std::string substr = str.substr(i, 4);
+        CPPUNIT_ASSERT_MESSAGE(m_string->value(), substr == "lili" ||  substr == "tata");
+    }
 }
 
 //-----------------------------------------------------------------------------
 
-void MTLockTest::runMultipleLock1()
+void MTLockTest::runMultipleLock(size_t nb, const char value[4])
 {
+    for (size_t i = 0; i < nb; ++i)
     {
-        ::fwData::mt::ObjectWriteLock writeLock(m_string);
-        std::this_thread::sleep_for( std::chrono::milliseconds(100));
-        m_string->value() += "t";
-        std::this_thread::sleep_for( std::chrono::milliseconds(100));
-        m_string->value() += "o";
-        std::this_thread::sleep_for( std::chrono::milliseconds(100));
-        m_string->value() += "t";
-        std::this_thread::sleep_for( std::chrono::milliseconds(100));
-        m_string->value() += "o";
-    }
-    std::this_thread::sleep_for( std::chrono::milliseconds(100));
-
-    {
-        ::fwData::mt::ObjectReadLock readLock(m_string);
-        CPPUNIT_ASSERT(m_string->value().find("toto") != std::string::npos);
-    }
-    std::this_thread::sleep_for( std::chrono::milliseconds(100));
-
-    {
-        ::fwData::mt::ObjectReadToWriteLock lock(m_string);
-        if (m_string->value() == "totolili")
         {
-            std::this_thread::sleep_for( std::chrono::milliseconds(100));
-            lock.upgrade();
-            m_string->value() = "toto";
+            ::fwData::mt::ObjectWriteLock writeLock(m_string);
+            std::string& str = m_string->value();
+            std::this_thread::sleep_for( std::chrono::milliseconds(2));
+            str += value[0];
+            std::this_thread::sleep_for( std::chrono::milliseconds(2));
+            str += value[1];
+            std::this_thread::sleep_for( std::chrono::milliseconds(2));
+            str += value[2];
+            std::this_thread::sleep_for( std::chrono::milliseconds(2));
+            str += value[3];
         }
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-void MTLockTest::runMultipleLock2()
-{
-    {
-        ::fwData::mt::ObjectWriteLock writeLock(m_string);
-        std::this_thread::sleep_for( std::chrono::milliseconds(100));
-        m_string->value() += "l";
-        std::this_thread::sleep_for( std::chrono::milliseconds(100));
-        m_string->value() += "i";
-        std::this_thread::sleep_for( std::chrono::milliseconds(100));
-        m_string->value() += "l";
-        std::this_thread::sleep_for( std::chrono::milliseconds(100));
-        m_string->value() += "i";
-    }
-    std::this_thread::sleep_for( std::chrono::milliseconds(100));
-
-    {
-        ::fwData::mt::ObjectReadLock readLock(m_string);
-        CPPUNIT_ASSERT(m_string->value().find("lili") != std::string::npos);
-    }
-    std::this_thread::sleep_for( std::chrono::milliseconds(100));
-
-    {
-        ::fwData::mt::ObjectReadToWriteLock lock(m_string);
-        if (m_string->value() == "lilitoto")
-        {
-            std::this_thread::sleep_for( std::chrono::milliseconds(100));
-            lock.upgrade();
-            m_string->value() = "lili";
-        }
+        std::this_thread::sleep_for( std::chrono::milliseconds(5));
     }
 }
 
