@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -250,7 +250,7 @@ void SNegato3D::createPlanes(const ::fwData::Image::SpacingType& _spacing, const
     {
         m_planes[i]->setDepthSpacing(_spacing);
         m_planes[i]->setOriginPosition(origin);
-        m_planes[i]->initialize3DPlane();
+        m_planes[i]->initializePlane();
         m_planes[i]->enableAlpha(m_enableAlpha);
     }
 }

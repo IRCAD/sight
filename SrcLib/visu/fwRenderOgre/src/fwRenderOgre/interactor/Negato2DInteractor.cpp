@@ -56,8 +56,8 @@ Negato2DInteractor::Negato2DInteractor() :
     m_currentHeight(10),
     m_camera(nullptr)
 {
-    m_minimumCorner = ::Ogre::Vector3(-1., -1., 0.);
-    m_maximumCorner = ::Ogre::Vector3(1., 1., 0.);
+    m_minimumCorner = ::Ogre::Vector2(-1., -1);
+    m_maximumCorner = ::Ogre::Vector2(1., 1.);
 }
 
 // ----------------------------------------------------------------------------
@@ -195,6 +195,33 @@ void Negato2DInteractor::focusOutEvent()
     return m_camera;
 }
 
+//------------------------------------------------------------------------------
+
+::fwDataTools::helper::MedicalImage::Orientation Negato2DInteractor::getOrientation()
+{
+    ::Ogre::Matrix4 view = this->getCamera()->getViewMatrix();
+
+    /// Look in z axis, axial
+    if(std::abs(view[0][0]-1) <= std::numeric_limits<float>::epsilon()*2 &&
+       std::abs(view[1][1]+1) <= std::numeric_limits<float>::epsilon()*2 &&
+       std::abs(view[2][2]+1) <= std::numeric_limits<float>::epsilon()*2)
+    {
+        return ::fwDataTools::helper::MedicalImage::Orientation::Z_AXIS;
+    }
+    /// Look in  y, frontal
+    else if(std::abs(view[0][0]-1) <= std::numeric_limits<float>::epsilon()*2 &&
+            std::abs(view[1][2]-1) <= std::numeric_limits<float>::epsilon()*2 &&
+            std::abs(view[2][1]+1) <= std::numeric_limits<float>::epsilon()*2)
+    {
+        return ::fwDataTools::helper::MedicalImage::Orientation::Y_AXIS;
+    }
+    /// Look in x, sagittal
+    else
+    {
+        return ::fwDataTools::helper::MedicalImage::Orientation::X_AXIS;
+    }
+}
+
 // ----------------------------------------------------------------------------
 
 void Negato2DInteractor::updateTotalSize()
@@ -221,10 +248,41 @@ void Negato2DInteractor::updateTotalSize()
             {
                 ::Ogre::MeshPtr negatoMesh             = e->getMesh();
                 ::Ogre::AxisAlignedBox meshBoundingBox = negatoMesh->getBounds();
-                m_minimumCorner                        = meshBoundingBox.getMinimum();
-                m_maximumCorner                        = meshBoundingBox.getMaximum();
-                m_totalWidth                           = meshBoundingBox.getSize().x;
-                m_totalHeight                          = meshBoundingBox.getSize().y;
+                /// Checks the axis orientation to add the points correctly
+                switch (this->getOrientation())
+                {
+                    /// Look in z axis, axial]
+                    case ::fwDataTools::helper::MedicalImage::Orientation::Z_AXIS:
+                    {
+                        m_minimumCorner = meshBoundingBox.getMinimum().xy();
+                        m_maximumCorner = meshBoundingBox.getMaximum().xy();
+                        m_totalWidth    = meshBoundingBox.getSize().x;
+                        m_totalHeight   = meshBoundingBox.getSize().y;
+                        break;
+                    }
+                    /// Look in y axis, frontal
+                    case ::fwDataTools::helper::MedicalImage::Orientation::Y_AXIS:
+                    {
+                        m_minimumCorner =
+                            ::Ogre::Vector2(meshBoundingBox.getMinimum().x, meshBoundingBox.getMinimum().z);
+                        m_maximumCorner =
+                            ::Ogre::Vector2(meshBoundingBox.getMaximum().x, meshBoundingBox.getMaximum().z);
+                        m_totalWidth  = meshBoundingBox.getSize().x;
+                        m_totalHeight = meshBoundingBox.getSize().z;
+                        break;
+                    }
+                    /// Look in -z axis, sagittal
+                    case ::fwDataTools::helper::MedicalImage::Orientation::X_AXIS:
+                    {
+                        m_minimumCorner =
+                            ::Ogre::Vector2(meshBoundingBox.getMinimum().y, meshBoundingBox.getMinimum().z);
+                        m_maximumCorner =
+                            ::Ogre::Vector2(meshBoundingBox.getMaximum().y, meshBoundingBox.getMaximum().z);
+                        m_totalWidth  = meshBoundingBox.getSize().y;
+                        m_totalHeight = meshBoundingBox.getSize().z;
+                        break;
+                    }
+                }
                 break;
             }
         }

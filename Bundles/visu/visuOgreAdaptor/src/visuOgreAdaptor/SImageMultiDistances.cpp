@@ -185,21 +185,21 @@ void SImageMultiDistances::createDistance(float _begin[3], float _end[3], size_t
     /// Increase some points to avoid z-fighting
     switch (this->getOrientation())
     {
-        /// Look in -z axis, axial
+        /// Look in z axis, axial
         case ::fwDataTools::helper::MedicalImage::Orientation::Z_AXIS:
         {
             _begin[2] += 0.01f;
             _end[2]   += 0.01f;
             break;
         }
-        /// Look in -y axis, frontal
+        /// Look in y axis, frontal
         case ::fwDataTools::helper::MedicalImage::Orientation::Y_AXIS:
         {
             _begin[1] += 0.01f;
             _end[1]   += 0.01f;
             break;
         }
-        /// Look in -x axis, sagittal
+        /// Look in x axis, sagittal
         case ::fwDataTools::helper::MedicalImage::Orientation::X_AXIS:
         {
             _begin[0] += 0.01f;
@@ -494,7 +494,7 @@ void SImageMultiDistances::createLine(const ::visuOgreAdaptor::SMaterial::sptr m
     lineDashed->begin(materialAdp->getMaterialName(), ::Ogre::RenderOperation::OT_LINE_LIST);
     lineDashed->colour(_color);
 
-    int compar;
+    int compar = -1;
     switch (this->getOrientation())
     {
         case ::fwDataTools::helper::MedicalImage::Orientation::Z_AXIS:
@@ -527,23 +527,22 @@ void SImageMultiDistances::createLine(const ::visuOgreAdaptor::SMaterial::sptr m
     // Create line
     if(f3APos_Is[compar] >= f3intersectPos_Is[compar] && f3BPos_Is[compar] >= f3intersectPos_Is[compar])
     {
-        line->position(f3APos_Is[0], f3APos_Is[1], f3APos_Is[2]);
-        line->position(f3BPos_Is[0], f3BPos_Is[1], f3BPos_Is[2]);
+        dashed(f3APos_Is, f3BPos_Is);
     }
     else if((f3APos_Is[compar] < f3intersectPos_Is[compar] && f3intersectPos_Is[compar] < f3BPos_Is[compar]) ||
             (f3APos_Is[compar] > f3intersectPos_Is[compar] && f3intersectPos_Is[compar] > f3BPos_Is[compar]))
     {
         if(f3APos_Is[compar] > f3BPos_Is[compar])
         {
-            line->position(f3APos_Is[0], f3APos_Is[1], f3APos_Is[2]);
+            dashed(f3APos_Is, f3intersectPos_Is);
+            line->position(f3BPos_Is[0], f3BPos_Is[1], f3BPos_Is[2]);
             line->position(f3intersectPos_Is[0], f3intersectPos_Is[1], f3intersectPos_Is[2]);
-            dashed(f3BPos_Is, f3intersectPos_Is);
         }
         else
         {
-            line->position(f3BPos_Is[0], f3BPos_Is[1], f3BPos_Is[2]);
+            dashed(f3BPos_Is, f3intersectPos_Is);
+            line->position(f3APos_Is[0], f3APos_Is[1], f3APos_Is[2]);
             line->position(f3intersectPos_Is[0], f3intersectPos_Is[1], f3intersectPos_Is[2]);
-            dashed(f3APos_Is, f3intersectPos_Is);
         }
     }
     else if(f3APos_Is[compar] > f3PlanePos_Is[compar])
@@ -553,7 +552,8 @@ void SImageMultiDistances::createLine(const ::visuOgreAdaptor::SMaterial::sptr m
     }
     else
     {
-        dashed(f3APos_Is, f3BPos_Is);
+        line->position(f3APos_Is[0], f3APos_Is[1], f3APos_Is[2]);
+        line->position(f3BPos_Is[0], f3BPos_Is[1], f3BPos_Is[2]);
     }
 
     line->end();
@@ -648,21 +648,21 @@ void SImageMultiDistances::deleteAllRessources()
     ::Ogre::Camera* cam  = this->getLayer()->getDefaultCamera();
     ::Ogre::Matrix4 view = cam->getViewMatrix();
 
-    /// Look in -z axis, axial
-    if(std::abs(view[0][0]-1) <= std::numeric_limits<float>::epsilon() &&
-       std::abs(view[1][1]-1) <= std::numeric_limits<float>::epsilon() &&
-       std::abs(view[2][2]-1) <= std::numeric_limits<float>::epsilon())
+    /// Look in z axis, axial
+    if(std::abs(view[0][0]-1) <= std::numeric_limits<float>::epsilon()*2 &&
+       std::abs(view[1][1]+1) <= std::numeric_limits<float>::epsilon()*2 &&
+       std::abs(view[2][2]+1) <= std::numeric_limits<float>::epsilon()*2)
     {
         return ::fwDataTools::helper::MedicalImage::Orientation::Z_AXIS;
     }
-    /// Look in -y, frontal
-    else if(std::abs(view[0][0]-1) <= std::numeric_limits<float>::epsilon() &&
-            std::abs(view[1][2]+1) <= std::numeric_limits<float>::epsilon() &&
-            std::abs(view[2][1]-1) <= std::numeric_limits<float>::epsilon())
+    /// Look in  y, frontal
+    else if(std::abs(view[0][0]-1) <= std::numeric_limits<float>::epsilon()*2 &&
+            std::abs(view[1][2]-1) <= std::numeric_limits<float>::epsilon()*2 &&
+            std::abs(view[2][1]+1) <= std::numeric_limits<float>::epsilon()*2)
     {
         return ::fwDataTools::helper::MedicalImage::Orientation::Y_AXIS;
     }
-    /// Look in -x, sagittal
+    /// Look in x, sagittal
     else
     {
         return ::fwDataTools::helper::MedicalImage::Orientation::X_AXIS;
@@ -707,7 +707,7 @@ void SImageMultiDistances::mouseMoveEvent(MouseButton button, int x, int y, int,
     /// Checks the axis orientation to add the points correctly
     switch (this->getOrientation())
     {
-        /// Look in -z axis, axial
+        /// Look in z axis, axial]
         case ::fwDataTools::helper::MedicalImage::Orientation::Z_AXIS:
         {
             const int axialIndex = image->getField< ::fwData::Integer >(
@@ -718,7 +718,7 @@ void SImageMultiDistances::mouseMoveEvent(MouseButton button, int x, int y, int,
             end[2] = axialPos;
             break;
         }
-        /// Look in -y axis, frontal
+        /// Look in y axis, frontal
         case ::fwDataTools::helper::MedicalImage::Orientation::Y_AXIS:
         {
             const int frontalIndex = image->getField< ::fwData::Integer >(
@@ -799,7 +799,7 @@ void SImageMultiDistances::buttonReleaseEvent(MouseButton button, int x, int y)
     /// Checks the axis orientation to add the points correctly
     switch (this->getOrientation())
     {
-        /// Look in -z axis, axial
+        /// Look in z axis, axial]
         case ::fwDataTools::helper::MedicalImage::Orientation::Z_AXIS:
         {
             const int axialIndex = image->getField< ::fwData::Integer >(
@@ -810,7 +810,7 @@ void SImageMultiDistances::buttonReleaseEvent(MouseButton button, int x, int y)
                                                              axialPos});
             break;
         }
-        /// Look in -y axis, frontal
+        /// Look in y axis, frontal
         case ::fwDataTools::helper::MedicalImage::Orientation::Y_AXIS:
         {
             const int frontalIndex = image->getField< ::fwData::Integer >(
@@ -821,7 +821,7 @@ void SImageMultiDistances::buttonReleaseEvent(MouseButton button, int x, int y)
                                                              static_cast<double>(worldspaceClikedPoint[2])});
             break;
         }
-        /// Look in -x axis, sagittal
+        /// Look in x axis, sagittal
         case ::fwDataTools::helper::MedicalImage::Orientation::X_AXIS:
         {
             const int sagittalIndex = image->getField< ::fwData::Integer >(
