@@ -135,10 +135,10 @@ private:
     void deleteDistances();
 
     /// Remove origin in the image coord
-    void addCurrentOrigin();
+    void addCurrentOrigin() const;
 
     /// Set origin in the image coord
-    void removeCurrentOrigin();
+    void removeCurrentOrigin() const;
 
     /// Create millimeter length label of a specific point. The second argument corresponds to the distance
     void createMillimeterLabel(const float point[3], const Ogre::Real, size_t, const ::Ogre::ColourValue);
@@ -188,7 +188,7 @@ private:
     Ogre::MovableObject* pickObject(int x, int y);
 
     /// Find and return the id of the name
-    size_t findIDLine(std::string name);
+    size_t findIDLine(std::string name) const;
 
     /**
      * @brief Check if the mouse click on an existing point. First argument corresponds on the coord of the first point.
