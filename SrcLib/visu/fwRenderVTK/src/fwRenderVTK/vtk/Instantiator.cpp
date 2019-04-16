@@ -27,6 +27,14 @@
 #include "fwRenderVTK/vtk/InteractorStyle2DForNegato.hpp"
 #include "fwRenderVTK/vtk/InteractorStyle3DForNegato.hpp"
 
+// Useful VTK classes that needs to be instantiated from xml.
+
+#include <vtkCellPicker.h>
+#include <vtkImageBlend.h>
+#include <vtkImageCheckerboard.h>
+#include <vtkTransform.h>
+#include <vtkPlaneCollection.h>
+
 namespace fwRenderVTK
 {
 
@@ -39,6 +47,13 @@ VTK_CREATE_CREATE_FUNCTION(fwVtkCellPicker);
 VTK_CREATE_CREATE_FUNCTION(InteractorStyle2DForNegato);
 VTK_CREATE_CREATE_FUNCTION(InteractorStyle3DForNegato);
 VTK_CREATE_CREATE_FUNCTION(FixedInteractorStyle);
+
+// VTK classes.
+VTK_CREATE_CREATE_FUNCTION(vtkImageBlend);
+VTK_CREATE_CREATE_FUNCTION(vtkImageCheckerboard);
+VTK_CREATE_CREATE_FUNCTION(vtkTransform);
+VTK_CREATE_CREATE_FUNCTION(vtkPlaneCollection);
+VTK_CREATE_CREATE_FUNCTION(vtkCellPicker);
 
 //------------------------------------------------------------------------------
 
@@ -69,6 +84,37 @@ Instantiator::Instantiator()
                            1,
                            vtkObjectFactoryCreateFixedInteractorStyle);
 
+    // Registers also useful VTK Classes that needs to be instantiated from xml.
+
+    this->RegisterOverride("vtkImageBlend",
+                           "vtkImageBlend",
+                           "Blend images together using alpha or opacity",
+                           1,
+                           vtkObjectFactoryCreatevtkImageBlend);
+
+    this->RegisterOverride("vtkImageCheckerboard",
+                           "vtkImageCheckerboard",
+                           "Show two images at once using a checkboard pattern",
+                           1,
+                           vtkObjectFactoryCreatevtkImageCheckerboard);
+
+    this->RegisterOverride("vtkTransform",
+                           "vtkTransform",
+                           "Describes linear transformations via a 4x4 matrix",
+                           1,
+                           vtkObjectFactoryCreatevtkTransform);
+
+    this->RegisterOverride("vtkPlaneCollection",
+                           "vtkPlaneCollection",
+                           "Maintains a list of planes",
+                           1,
+                           vtkObjectFactoryCreatevtkPlaneCollection);
+
+    this->RegisterOverride("vtkCellPicker",
+                           "vtkCellPicker",
+                           "Ray-cast cell picker for all kinds of Prop3Ds",
+                           1,
+                           vtkObjectFactoryCreatevtkCellPicker);
 }
 
 //------------------------------------------------------------------------------
