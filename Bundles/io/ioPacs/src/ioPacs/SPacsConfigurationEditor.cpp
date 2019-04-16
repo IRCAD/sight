@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -75,12 +75,7 @@ void SPacsConfigurationEditor::starting()
 
     ::fwPacsIO::data::PacsConfiguration::sptr pacsConfiguration = this->getInOut< ::fwPacsIO::data::PacsConfiguration >(
         s_CONFIG_INOUT);
-    if (!pacsConfiguration)
-    {
-        FW_DEPRECATED_KEY(s_CONFIG_INOUT, "inout", "19.0");
-        pacsConfiguration = this->getObject< ::fwPacsIO::data::PacsConfiguration >();
-    }
-    SLM_ASSERT("Pacs configuration object should not be null.", pacsConfiguration);
+    SLM_ASSERT("The inout key '" + s_CONFIG_INOUT + "' is not correctly set.", pacsConfiguration);
 
     ::fwGui::IGuiContainerSrv::create();
     ::fwGuiQt::container::QtContainer::sptr qtContainer = fwGuiQt::container::QtContainer::dynamicCast(getContainer());
@@ -203,11 +198,7 @@ void SPacsConfigurationEditor::pingPacs()
 {
     ::fwPacsIO::data::PacsConfiguration::sptr pacsConfiguration = this->getInOut< ::fwPacsIO::data::PacsConfiguration >(
         s_CONFIG_INOUT);
-    if (!pacsConfiguration)
-    {
-        FW_DEPRECATED_KEY(s_CONFIG_INOUT, "inout", "19.0");
-        pacsConfiguration = this->getObject< ::fwPacsIO::data::PacsConfiguration >();
-    }
+    SLM_ASSERT("The inout key '" + s_CONFIG_INOUT + "' is not correctly set.", pacsConfiguration);
 
     ::fwPacsIO::SeriesEnquirer::sptr seriesEnquirer = ::fwPacsIO::SeriesEnquirer::New();
 
@@ -264,11 +255,8 @@ void SPacsConfigurationEditor::localApplicationTitleChanged()
 {
     ::fwPacsIO::data::PacsConfiguration::sptr pacsConfiguration = this->getInOut< ::fwPacsIO::data::PacsConfiguration >(
         s_CONFIG_INOUT);
-    if (!pacsConfiguration)
-    {
-        FW_DEPRECATED_KEY(s_CONFIG_INOUT, "inout", "19.0");
-        pacsConfiguration = this->getObject< ::fwPacsIO::data::PacsConfiguration >();
-    }
+    SLM_ASSERT("The inout key '" + s_CONFIG_INOUT + "' is not correctly set.", pacsConfiguration);
+
     pacsConfiguration->setLocalApplicationTitle(m_localApplicationTitleWidget->text().toStdString());
 
     modifiedNotify(pacsConfiguration);
@@ -280,11 +268,7 @@ void SPacsConfigurationEditor::pacsHostNameChanged()
 {
     ::fwPacsIO::data::PacsConfiguration::sptr pacsConfiguration = this->getInOut< ::fwPacsIO::data::PacsConfiguration >(
         s_CONFIG_INOUT);
-    if (!pacsConfiguration)
-    {
-        FW_DEPRECATED_KEY(s_CONFIG_INOUT, "inout", "19.0");
-        pacsConfiguration = this->getObject< ::fwPacsIO::data::PacsConfiguration >();
-    }
+    SLM_ASSERT("The inout key '" + s_CONFIG_INOUT + "' is not correctly set.", pacsConfiguration);
     pacsConfiguration->setPacsHostName(m_pacsHostNameWidget->text().toStdString());
 
     modifiedNotify(pacsConfiguration);
@@ -296,11 +280,8 @@ void SPacsConfigurationEditor::pacsApplicationTitleChanged()
 {
     ::fwPacsIO::data::PacsConfiguration::sptr pacsConfiguration = this->getInOut< ::fwPacsIO::data::PacsConfiguration >(
         s_CONFIG_INOUT);
-    if (!pacsConfiguration)
-    {
-        FW_DEPRECATED_KEY(s_CONFIG_INOUT, "inout", "19.0");
-        pacsConfiguration = this->getObject< ::fwPacsIO::data::PacsConfiguration >();
-    }
+    SLM_ASSERT("The inout key '" + s_CONFIG_INOUT + "' is not correctly set.", pacsConfiguration);
+
     pacsConfiguration->setPacsApplicationTitle(m_pacsApplicationTitleWidget->text().toStdString());
 
     modifiedNotify(pacsConfiguration);
@@ -312,11 +293,8 @@ void SPacsConfigurationEditor::pacsApplicationPortChanged(int value)
 {
     ::fwPacsIO::data::PacsConfiguration::sptr pacsConfiguration = this->getInOut< ::fwPacsIO::data::PacsConfiguration >(
         s_CONFIG_INOUT);
-    if (!pacsConfiguration)
-    {
-        FW_DEPRECATED_KEY(s_CONFIG_INOUT, "inout", "19.0");
-        pacsConfiguration = this->getObject< ::fwPacsIO::data::PacsConfiguration >();
-    }
+    SLM_ASSERT("The inout key '" + s_CONFIG_INOUT + "' is not correctly set.", pacsConfiguration);
+
     pacsConfiguration->setPacsApplicationPort(static_cast<unsigned short>(value));
 
     modifiedNotify(pacsConfiguration);
@@ -328,11 +306,8 @@ void SPacsConfigurationEditor::moveApplicationTitleChanged()
 {
     ::fwPacsIO::data::PacsConfiguration::sptr pacsConfiguration = this->getInOut< ::fwPacsIO::data::PacsConfiguration >(
         s_CONFIG_INOUT);
-    if (!pacsConfiguration)
-    {
-        FW_DEPRECATED_KEY(s_CONFIG_INOUT, "inout", "19.0");
-        pacsConfiguration = this->getObject< ::fwPacsIO::data::PacsConfiguration >();
-    }
+    SLM_ASSERT("The inout key '" + s_CONFIG_INOUT + "' is not correctly set.", pacsConfiguration);
+
     pacsConfiguration->setMoveApplicationTitle(m_moveApplicationTitleWidget->text().toStdString());
 
     modifiedNotify(pacsConfiguration);
@@ -344,11 +319,8 @@ void SPacsConfigurationEditor::moveApplicationPortChanged(int value)
 {
     ::fwPacsIO::data::PacsConfiguration::sptr pacsConfiguration = this->getInOut< ::fwPacsIO::data::PacsConfiguration >(
         s_CONFIG_INOUT);
-    if (!pacsConfiguration)
-    {
-        FW_DEPRECATED_KEY(s_CONFIG_INOUT, "inout", "19.0");
-        pacsConfiguration = this->getObject< ::fwPacsIO::data::PacsConfiguration >();
-    }
+    SLM_ASSERT("The inout key '" + s_CONFIG_INOUT + "' is not correctly set.", pacsConfiguration);
+
     pacsConfiguration->setMoveApplicationPort(static_cast<unsigned short>(value));
 
     modifiedNotify(pacsConfiguration);
@@ -360,11 +332,8 @@ void SPacsConfigurationEditor::retrieveMethodChanged(int index)
 {
     ::fwPacsIO::data::PacsConfiguration::sptr pacsConfiguration = this->getInOut< ::fwPacsIO::data::PacsConfiguration >(
         s_CONFIG_INOUT);
-    if (!pacsConfiguration)
-    {
-        FW_DEPRECATED_KEY(s_CONFIG_INOUT, "inout", "19.0");
-        pacsConfiguration = this->getObject< ::fwPacsIO::data::PacsConfiguration >();
-    }
+    SLM_ASSERT("The inout key '" + s_CONFIG_INOUT + "' is not correctly set.", pacsConfiguration);
+
     pacsConfiguration->setRetrieveMethod(
         (index ==
          0) ? (::fwPacsIO::data::PacsConfiguration::MOVE_RETRIEVE_METHOD): (::fwPacsIO::data::PacsConfiguration::

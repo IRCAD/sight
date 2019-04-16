@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -74,11 +74,7 @@ void SIntrinsicEdition::onNewCalibration(std::array< double, 12 >& cal)
 void SIntrinsicEdition::updateCalibration()
 {
     ::arData::Camera::sptr camera = this->getInOut< ::arData::Camera >(s_CAMERA_INOUT);
-    if (!camera)
-    {
-        FW_DEPRECATED_KEY(s_CAMERA_INOUT, "inout", "19.0");
-        camera = this->getObject< ::arData::Camera >();
-    }
+    SLM_ASSERT("The inout key '" + s_CAMERA_INOUT + "' is not correctly set.", camera);
 
     camera->setWidth( m_calibration[0]);
     camera->setHeight(m_calibration[1]);
@@ -115,11 +111,7 @@ void SIntrinsicEdition::configuring()
 void SIntrinsicEdition::readCalibration()
 {
     ::arData::Camera::sptr camera = this->getInOut< ::arData::Camera >(s_CAMERA_INOUT);
-    if (!camera)
-    {
-        FW_DEPRECATED_KEY(s_CAMERA_INOUT, "inout", "19.0");
-        camera = this->getObject< ::arData::Camera >();
-    }
+    SLM_ASSERT("The inout key '" + s_CAMERA_INOUT + "' is not correctly set.", camera);
 
     m_calibration[0] = camera->getWidth();
     m_calibration[1] = camera->getHeight();
