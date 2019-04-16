@@ -503,7 +503,7 @@ void SRender::startContext()
         m_interactorManager->installInteractor( this->getContainer() );
     }
 
-    auto interactor = vtkSmartPointer<InteractorStyle3DForNegato>::New();
+    auto interactor = vtkSmartPointer< fwRenderVTK::vtk::InteractorStyle3DForNegato>::New();
     SLM_ASSERT("Can't instantiate interactor", interactor);
     interactor->setAutoRender(m_renderMode == RenderMode::AUTO);
     m_interactorManager->getInteractor()->SetInteractorStyle( interactor );

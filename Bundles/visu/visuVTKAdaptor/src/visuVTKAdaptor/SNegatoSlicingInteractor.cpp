@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -142,7 +142,7 @@ public:
 
             //m_pickedProp = m_picker->GetProp3D();
             m_pickedProp  = ::fwRenderVTK::vtk::getNearestPickedProp(m_picker, m_adaptor->getRenderer());
-            m_localPicker = fwVtkCellPicker::New();
+            m_localPicker = ::fwRenderVTK::vtk::fwVtkCellPicker::New();
             m_localPicker->InitializePickList();
             m_localPicker->PickFromListOn();
             m_localPicker->AddPickList(m_pickedProp);

@@ -46,6 +46,12 @@
 #include <vtkObjectFactory.h>
 #include <vtkPolyData.h>
 
+namespace fwRenderVTK
+{
+
+namespace vtk
+{
+
 vtkStandardNewMacro(fwVtkCellPicker);
 
 //------------------------------------------------------------------------------
@@ -221,3 +227,9 @@ fwVtkCellPicker::PickedCellType fwVtkCellPicker::GetPickedCellIds( double p1[3],
 
     return res;
 }
+
+//------------------------------------------------------------------------------
+
+} // namespace vtk
+
+} // namespace fwRenderVTK

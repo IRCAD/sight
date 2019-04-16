@@ -24,8 +24,13 @@
 
 #include "fwRenderVTK/config.hpp"
 
+#include <fwCore/spyLog.hpp>
+
 #include <vtkObjectFactory.h>
 #include <vtkVersion.h>
+
+#include <string>
+#include <vector>
 
 namespace fwRenderVTK
 {
@@ -43,24 +48,50 @@ class FWRENDERVTK_CLASS_API Instantiator : public vtkObjectFactory
 
 public:
     /// Constructor: performs the registration in the factory.
-    Instantiator();
+    FWRENDERVTK_API Instantiator();
 
     /// Creates the object.
-    static Instantiator* New()
+    FWRENDERVTK_API static Instantiator* New()
     {
         Instantiator* f = new Instantiator;
         f->InitializeObjectBase();
         return f;
     }
     /// Overrides.
-    const char* GetVTKSourceVersion() override
+    FWRENDERVTK_API const char* GetVTKSourceVersion() override
     {
         return VTK_SOURCE_VERSION;
     }
     /// Overrrides.
-    const char* GetDescription() override
+    FWRENDERVTK_API const char* GetDescription() override
     {
         return "The sight-vtk factory (fwRenderVTK).";
+    }
+
+    /**
+     * @brief Returns a vector of class name registred into the factory.
+     * Also prints it into log output when log level is DEBUG.
+     * @return std::vector<std::string>
+     */
+    FWRENDERVTK_API std::vector< std::string > getClassOverrides()
+    {
+        const int nb = this->GetNumberOfOverrides();
+
+        std::vector< std::string > classOverrides;
+        classOverrides.resize(static_cast<size_t>(nb));
+
+        std::stringstream log;
+        log << "sight-vtk factory can build: "<< nb <<" classes;"<< std::endl;
+
+        for(int i = 0; i < nb; ++i)
+        {
+            classOverrides[static_cast<size_t>(i)] = std::string(this->GetClassOverrideName(i));
+
+            log << " - " + classOverrides[static_cast<size_t>(i)] << std::endl;
+        }
+
+        SLM_DEBUG(log.str());
+        return classOverrides;
     }
 };
 

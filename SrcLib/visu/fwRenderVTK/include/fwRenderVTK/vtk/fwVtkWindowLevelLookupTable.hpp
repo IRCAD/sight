@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,12 +20,17 @@
  *
  ***********************************************************************/
 
-#ifndef __FWRENDERVTK_VTK_FWVTKWINDOWLEVELLOOKUPTABLE_HPP__
-#define __FWRENDERVTK_VTK_FWVTKWINDOWLEVELLOOKUPTABLE_HPP__
+#pragma once
 
 #include "fwRenderVTK/config.hpp"
 
 #include <vtkLookupTable.h>
+
+namespace fwRenderVTK
+{
+
+namespace vtk
+{
 
 ///Reinplementation of vtkWindowLevelLookupTable : add specific out-of-bounds colors
 class FWRENDERVTK_API fwVtkWindowLevelLookupTable : public vtkLookupTable
@@ -117,4 +122,6 @@ private:
     void operator=(const fwVtkWindowLevelLookupTable&); // Not implemented.
 };
 
-#endif //__FWRENDERVTK_VTK_FWVTKWINDOWLEVELLOOKUPTABLE_HPP__
+} // namespace vtk
+
+} // namespace fwRenderVTK

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2004-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2004-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -28,6 +28,12 @@
 
 #include <cmath>
 #include <iostream>
+
+namespace fwRenderVTK
+{
+
+namespace vtk
+{
 
 vtkStandardNewMacro(fwVtkWindowLevelLookupTable);
 
@@ -250,8 +256,8 @@ void fwVtkWindowLevelLookupTableMapData(fwVtkWindowLevelLookupTable* self, T* in
                                         unsigned char* output, int length,
                                         int inIncr, int outFormat)
 {
-    int i           = length;
-    double* range   = self->GetTableRange();
+    int i = length;
+    double* range = self->GetTableRange();
     double maxIndex = self->GetNumberOfColors() - 1;
     double shift, scale;
     unsigned char* table = self->GetCurrentPointer(0);
@@ -586,6 +592,7 @@ void fwVtkWindowLevelLookupTableMapMag(fwVtkWindowLevelLookupTable* self, T* inp
 }
 
 //----------------------------------------------------------------------------
+
 void fwVtkWindowLevelLookupTable::MapScalarsThroughTable2(void* input,
                                                           unsigned char* output,
                                                           int inputDataType,
@@ -642,3 +649,8 @@ void fwVtkWindowLevelLookupTable::MapScalarsThroughTable2(void* input,
     }
 }
 
+//----------------------------------------------------------------------------
+
+} // namespace vtk
+
+} // namespace fwRenderVTK

@@ -124,7 +124,7 @@ void SBoxWidget::starting()
     SLM_ASSERT("vtk transform must be defined.", !this->getTransformId().empty());
     m_transform = this->getRenderService()->getOrAddVtkTransform(this->getTransformId());
 
-    fwVtkBoxRepresentation* boxRep = fwVtkBoxRepresentation::New();
+    ::fwRenderVTK::vtk::fwVtkBoxRepresentation* boxRep = ::fwRenderVTK::vtk::fwVtkBoxRepresentation::New();
     boxRep->SetPlaceFactor(m_scaleFactor);
 
     double bounds[] = {-1, 1, -1, 1, -1, 1};

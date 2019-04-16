@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -47,7 +47,7 @@ const ::fwCom::Slots::SlotKeyType SAxis::s_UPDATE_VISIBILITY_SLOT = "updateVisib
 //------------------------------------------------------------------------------
 
 SAxis::SAxis() noexcept :
-    m_axisActor(fwVtkAxesActor::New()),
+    m_axisActor( ::fwRenderVTK::vtk::fwVtkAxesActor::New() ),
     m_length(1.),
     m_labelOn(true),
     m_transformAxis(vtkSmartPointer<vtkTransform>::New()),

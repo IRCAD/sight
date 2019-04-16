@@ -55,6 +55,12 @@
 class vtkGenericCell;
 class vtkPolyData;
 
+namespace fwRenderVTK
+{
+
+namespace vtk
+{
+
 class FWRENDERVTK_CLASS_API fwVtkCellPicker : public fwVtkPicker
 {
 public:
@@ -99,3 +105,7 @@ private:
     fwVtkCellPicker(const fwVtkCellPicker&);  // Not implemented.
     void operator=(const fwVtkCellPicker&);  // Not implemented.
 };
+
+} // namespace vtk
+
+} // namespace fwRenderVTK

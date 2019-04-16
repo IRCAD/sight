@@ -27,6 +27,12 @@
 
 #include <vtkInteractorStyleUser.h>
 
+namespace fwRenderVTK
+{
+
+namespace vtk
+{
+
 /**
  *  @brief Interactor class disabling all user interactions in a VTK scene.
  *
@@ -79,3 +85,6 @@ private:
     void operator=(const FixedInteractorStyle&);
 
 };
+
+} // namespace vtk
+} // namespace fwRenderVTK

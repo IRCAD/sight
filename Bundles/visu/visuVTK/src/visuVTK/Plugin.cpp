@@ -48,6 +48,7 @@ Plugin::~Plugin() noexcept
 void Plugin::start()
 {
     m_factory = ::fwRenderVTK::vtk::Instantiator::New();
+    m_factory->getClassOverrides();
     vtkObjectFactory::RegisterFactory(m_factory);
 }
 

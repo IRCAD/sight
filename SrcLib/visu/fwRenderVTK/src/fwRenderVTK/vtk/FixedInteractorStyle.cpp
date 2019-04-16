@@ -27,6 +27,11 @@
 #include <vtkCommand.h>
 #include <vtkObjectFactory.h>
 
+namespace fwRenderVTK
+{
+namespace vtk
+{
+
 vtkStandardNewMacro(FixedInteractorStyle);
 
 //------------------------------------------------------------------------------
@@ -83,3 +88,6 @@ void FixedInteractorStyle::OnMouseWheelBackward()
 void FixedInteractorStyle::OnMouseWheelForward()
 {
 }
+
+} // namespace vtk
+} // namespace fwRenderVTK
