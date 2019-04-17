@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -29,6 +29,7 @@
 #include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
 
+#include <fwRenderOgre/helper/Camera.hpp>
 #include <fwRenderOgre/helper/Scene.hpp>
 
 #include <fwServices/macros.hpp>
@@ -46,33 +47,27 @@ const ::fwCom::Slots::SlotKeyType SFrustumList::s_UPDATE_VISIBILITY_SLOT = "upda
 const ::fwCom::Slots::SlotKeyType SFrustumList::s_TOGGLE_VISIBILITY_SLOT = "toggleVisibility";
 const ::fwCom::Slots::SlotKeyType SFrustumList::s_ADD_FRUSTUM_SLOT       = "addFrustum";
 
-const std::string SFrustumList::s_CAMERA_NAME_INPUT = "camera";
-const std::string SFrustumList::s_TRANSFORM_INPUT   = "transform";
+const std::string s_CAMERA_NAME_INPUT = "camera";
+const std::string s_NEAR_CONFIG       = "near";
+const std::string s_FAR_CONFIG        = "far";
+const std::string s_COLOR_CONFIG      = "color";
+const std::string s_TRANSFORM_INPUT   = "transform";
+const std::string s_NB_MAX_CONFIG     = "nbMax";
 
 //-----------------------------------------------------------------------------
 
-SFrustumList::SFrustumList() noexcept :
-    m_visibility(true),
-    m_near(1.f),
-    m_far(100.f),
-    m_color("#0000ffff"),
-    m_capacity(50),
-    m_currentCamIndex(0),
-    m_material(nullptr)
+SFrustumList::SFrustumList() noexcept
 {
-
     newSlot(s_UPDATE_VISIBILITY_SLOT, &SFrustumList::updateVisibility, this);
     newSlot(s_TOGGLE_VISIBILITY_SLOT, &SFrustumList::toggleVisibility, this);
     newSlot(s_CLEAR_SLOT, &SFrustumList::clear, this);
     newSlot(s_ADD_FRUSTUM_SLOT, &SFrustumList::addFrustum, this);
-
 }
 
 //-----------------------------------------------------------------------------
 
 SFrustumList::~SFrustumList() noexcept
 {
-
 }
 
 //-----------------------------------------------------------------------------
@@ -92,14 +87,13 @@ void SFrustumList::configuring()
 
     const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
 
-    m_near = config.get<float>("near", 1.f);
-    m_far  = config.get<float>("far", 20.f);
-
-    m_color    = config.get< std::string >("color", "#0000ffff");
-    m_capacity = config.get< unsigned int > ("nbMax", 200);
-
     this->setTransformId(config.get<std::string>( ::fwRenderOgre::ITransformable::s_TRANSFORM_CONFIG,
                                                   this->getID() + "_transform"));
+
+    m_near     = config.get< float >(s_NEAR_CONFIG, m_near);
+    m_far      = config.get< float >(s_FAR_CONFIG, m_far);
+    m_color    = config.get< std::string >(s_COLOR_CONFIG, m_color);
+    m_capacity = config.get< unsigned int >(s_NB_MAX_CONFIG, m_capacity);
 }
 
 //-----------------------------------------------------------------------------
