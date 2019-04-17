@@ -35,7 +35,7 @@
 #include "fwRenderVTK/vtk/fwVtkWindowLevelLookupTable.hpp"
 #include "fwRenderVTK/vtk/MarkedSphereHandleRepresentation.hpp"
 
-// Useful VTK classes that needs to be instantiated from xml.
+// Useful VTK classes that need to be instantiated from xml.
 
 #include <vtkCellPicker.h>
 #include <vtkImageBlend.h>
@@ -49,14 +49,14 @@ namespace fwRenderVTK
 namespace vtk
 {
 
-// Macro to bind creation of vtk object, it will generates "vtkObjectFactory<name>" function.
+// Macro to bind creation of vtk objects, it will generate "vtkObjectFactory<name>" function.
 // each "vtkObjectFactory<name>" will call the <name>::New().
 VTK_CREATE_CREATE_FUNCTION(fwVtkCellPicker);
 VTK_CREATE_CREATE_FUNCTION(InteractorStyle2DForNegato);
 VTK_CREATE_CREATE_FUNCTION(InteractorStyle3DForNegato);
 VTK_CREATE_CREATE_FUNCTION(FixedInteractorStyle);
 
-// Thoses are not instatiated using "CreateInstance" but can be in the future.
+// These are not instantiated using "CreateInstance" but can be in the future.
 VTK_CREATE_CREATE_FUNCTION(fwHandleRepresentation3D);
 VTK_CREATE_CREATE_FUNCTION(fwVtkAxesActor);
 VTK_CREATE_CREATE_FUNCTION(fwVtkBoxRepresentation);
@@ -102,7 +102,7 @@ Instantiator::Instantiator()
                            1,
                            vtkObjectFactoryCreateFixedInteractorStyle);
 
-    // Others sight-vtk classes, actualy not instantiated via factory but may be in the future.
+    // Others sight-vtk classes, actually not instantiated via factory but may be in the future.
 
     this->RegisterOverride("fwHandleRepresentation3D",
                            "fwHandleRepresentation3D",
@@ -152,7 +152,7 @@ Instantiator::Instantiator()
                            1,
                            vtkObjectFactoryCreateMarkedSphereHandleRepresentation);
 
-    // Registers also useful VTK Classes that needs to be instantiated from xml.
+    // Registers also useful VTK Classes that need to be instantiated from xml.
 
     this->RegisterOverride("vtkImageBlend",
                            "vtkImageBlend",

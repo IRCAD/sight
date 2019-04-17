@@ -38,9 +38,9 @@ CPPUNIT_TEST(instantiationTest);
 CPPUNIT_TEST_SUITE_END();
 
 public:
-    // Set up before runing test.
+    // Set up before running test.
     void setUp();
-    // Clean every thing after the test.
+    // Clean everything after the test.
     void tearDown();
 
     void instantiationTest();

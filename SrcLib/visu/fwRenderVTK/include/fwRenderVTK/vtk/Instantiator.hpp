@@ -40,8 +40,8 @@ namespace vtk
 
 /**
  * @brief The Instantiator is a vtk factory object used to instantiate our sight-vtk object.
- * You only need to register your sight-vtk object in the factory when the object will be
- * instantiate from it's name in string (for example in xml).
+ * Registering a sight-vtk object or a vtk object is only needed when it's instantiated from string representing its
+ * name (e.g. when using it in xml).
  */
 class FWRENDERVTK_CLASS_API Instantiator : public vtkObjectFactory
 {
