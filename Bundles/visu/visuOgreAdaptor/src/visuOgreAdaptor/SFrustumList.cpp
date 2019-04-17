@@ -149,25 +149,33 @@ void SFrustumList::addFrustum()
 {
     //Get camera parameters
     const std::shared_ptr< const ::arData::Camera > fwCamera = this->getInput< ::arData::Camera >(s_CAMERA_NAME_INPUT);
-
     SLM_ASSERT("Required input '" + s_CAMERA_NAME_INPUT + "' is not set", fwCamera);
-
-    const double h    = static_cast<double>(fwCamera->getHeight());
-    const double fy   = static_cast<double>(fwCamera->getFy());
-    const double fovY = 2. * std::atan( h / (2. * fy));
 
     ::Ogre::Camera* camera;
     camera = this->getSceneManager()->createCamera(::Ogre::String(this->getID()+"_camera"
                                                                   + std::to_string(m_currentCamIndex)));
-
-    camera->setFOVy(::Ogre::Radian( ::Ogre::Real(fovY)));
-    camera->setAspectRatio(::Ogre::Real(fwCamera->getWidth()/fwCamera->getHeight()));
-    camera->setVisible(m_visibility);
-
     camera->setMaterial(m_materialAdaptor->getMaterial());
-    camera->setDirection(::Ogre::Vector3(::Ogre::Real(0), ::Ogre::Real(0), ::Ogre::Real(1)));
+    camera->setVisible(m_visibility);
     camera->setDebugDisplayEnabled(m_visibility);
 
+    // Clipping
+    if(m_near != 0.f)
+    {
+        camera->setNearClipDistance(m_near);
+    }
+    if(m_far != 0.f)
+    {
+        camera->setFarClipDistance(m_far);
+    }
+
+    // Set data to camera
+    const float width  = static_cast< float >(fwCamera->getWidth());
+    const float height = static_cast< float >(fwCamera->getHeight());
+    ::Ogre::Matrix4 m =
+        ::fwRenderOgre::helper::Camera::computeProjectionMatrix(*fwCamera, width, height, m_near, m_far);
+    camera->setCustomProjectionMatrix(true, m);
+
+    // Set position
     ::Ogre::Affine3 ogreMat;
     const auto fwTransform = this->getInput< ::fwData::TransformationMatrix3D >(s_TRANSFORM_INPUT);
 
@@ -188,19 +196,14 @@ void SFrustumList::addFrustum()
     ::Ogre::Vector3 position;
     ::Ogre::Vector3 scale;
     ::Ogre::Quaternion orientation;
-
-    const ::Ogre::Quaternion rotateX(::Ogre::Degree(180), ::Ogre::Vector3(1, 0, 0));
-
     ogreMat.decomposition(position, scale, orientation);
 
-    orientation = orientation * rotateX;
+    const ::Ogre::Quaternion rotateX(::Ogre::Degree(180), ::Ogre::Vector3(1, 0, 0));
+    const ::Ogre::Quaternion rotateZ(::Ogre::Degree(180), ::Ogre::Vector3(0, 0, 1));
+    orientation = orientation * rotateZ * rotateX;
 
     camera->setOrientation(orientation);
     camera->setPosition(position);
-
-    // Clipping
-    camera->setNearClipDistance(m_near);
-    camera->setFarClipDistance(m_far);
 
     if(m_frustumList.full())
     {
