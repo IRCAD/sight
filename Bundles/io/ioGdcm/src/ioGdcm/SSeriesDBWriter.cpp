@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -129,8 +129,13 @@ void SSeriesDBWriter::updating()
 
             if(button == ::fwGui::dialog::MessageDialog::NO)
             {
+                m_writeFailed = true;
                 return;
             }
+        }
+        else
+        {
+            m_writeFailed = true;
         }
 
         // Retrieve dataStruct associated with this service
@@ -151,6 +156,10 @@ void SSeriesDBWriter::updating()
         cursor.setCursor(::fwGui::ICursor::BUSY);
         this->saveSeriesDB(folder, seriesDB);
         cursor.setDefaultCursor();
+    }
+    else
+    {
+        m_writeFailed = true;
     }
 }
 
@@ -173,6 +182,7 @@ void SSeriesDBWriter::saveSeriesDB( const ::boost::filesystem::path folder, ::fw
     }
     catch (const std::exception& e)
     {
+        m_writeFailed = true;
         std::stringstream ss;
         ss << "Warning during saving : " << e.what();
         ::fwGui::dialog::MessageDialog::showMessageDialog(
@@ -180,6 +190,7 @@ void SSeriesDBWriter::saveSeriesDB( const ::boost::filesystem::path folder, ::fw
     }
     catch( ... )
     {
+        m_writeFailed = true;
         ::fwGui::dialog::MessageDialog::showMessageDialog(
             "Warning", "Warning during saving", ::fwGui::dialog::IMessageDialog::WARNING);
     }
@@ -250,6 +261,11 @@ bool SSeriesDBWriter::selectFiducialsExportMode()
         else
         {
             m_fiducialsExportMode = ::fwGdcmIO::writer::Series::COMPREHENSIVE_3D_SR;
+        }
+
+        if(mode.empty())
+        {
+            m_writeFailed = true;
         }
 
         return !modeSelectionIsCanceled;

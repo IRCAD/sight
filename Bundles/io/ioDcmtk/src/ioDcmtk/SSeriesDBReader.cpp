@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -92,7 +92,6 @@ void SSeriesDBReader::configureWithIHM()
         ::fwRuntime::ConfigurationElement::csptr filterSelectorConfig;
         filterSelectorConfig = ::fwServices::registry::ServiceConfig::getDefault()->getServiceConfig(
             m_filterSelectorSrvConfig, "::ioDicom::SFilterSelectorDialog");
-
         SLM_ASSERT("There is no service configuration "
                    + m_filterSelectorSrvConfig
                    + " for ::ioDicom::SFilterSelectorDialog", filterSelectorConfig);
@@ -112,6 +111,10 @@ void SSeriesDBReader::configureWithIHM()
 
         m_filterType = key->getValue();
 
+    }
+    else
+    {
+        m_readFailed = true;
     }
 }
 
@@ -257,10 +260,15 @@ void SSeriesDBReader::updating()
         }
         else
         {
+            m_readFailed = true;
             ::fwGui::dialog::MessageDialog::showMessageDialog(
                 "Image Reader", "This file can not be read. Retry with another file reader.",
                 ::fwGui::dialog::IMessageDialog::WARNING);
         }
+    }
+    else
+    {
+        m_readFailed = true;
     }
 }
 

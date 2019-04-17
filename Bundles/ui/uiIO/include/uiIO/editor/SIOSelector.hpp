@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -41,6 +41,8 @@ namespace editor
  *
  * @section Signals Signals
  * - \b jobCreated(::fwJobs::IJob::sptr) : emitted when a job is created.
+ * - \b jobFailed() : emitted when the job has been cancelled by the user or has failed.
+ * - \b jobSucceeded() : emitted when a job finishes correctly.
  *
  * @section Slots Slots
  * - \b forwardJob(::fwJobs::IJob::sptr ) : slot connected to the reader/writer to forward the signal 'jobCreated'
@@ -98,9 +100,12 @@ public:
         WRITER_MODE  /**< this mode allows to configure the service as a writer */
     } IOMode;
 
-    fwCoreServiceClassDefinitionsMacro( (SIOSelector)( ::fwGui::editor::IDialogEditor) );
+    fwCoreServiceClassDefinitionsMacro( (SIOSelector)( ::fwGui::editor::IDialogEditor) )
 
     typedef ::fwCom::Signal< void ( ::fwJobs::IJob::sptr ) > JobCreatedSignalType;
+    typedef ::fwCom::Signal< void ( ) > JobFailedSignalType;
+    typedef ::fwCom::Signal< void ( ) > JobSucceededSignalType;
+
     typedef ::fwCom::Slot< void ( ::fwJobs::IJob::sptr ) > ForwardJobSlotType;
 
     /**
@@ -167,6 +172,9 @@ private:
     std::string m_dataClassname;
 
     SPTR(JobCreatedSignalType) m_sigJobCreated;
+    SPTR(JobFailedSignalType) m_sigJobFailed;
+    SPTR(JobSucceededSignalType) m_sigJobSucceeded;
+
     SPTR(ForwardJobSlotType) m_slotForwardJob;
 
 };

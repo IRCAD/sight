@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -149,6 +149,9 @@ public:
     /// Returns if a location has been defined ( by the configuration process or directly by user )
     FWIO_API bool hasLocationDefined() const;
 
+    /// Returns if reading has been cancelled by user
+    FWIO_API bool hasFailed() const;
+
 protected:
 
     FWIO_API IWriter() noexcept;
@@ -196,6 +199,9 @@ protected:
      * @brief Title of the window that will open when the `configureWithIHM` slot is called
      */
     std::string m_windowTitle;
+
+    /// Defines whether writing was performed correctly, or if user has cancelled the process.
+    bool m_writeFailed{false};
 
 private:
 

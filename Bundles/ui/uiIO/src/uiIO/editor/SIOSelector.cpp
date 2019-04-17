@@ -62,8 +62,11 @@ namespace editor
 
 fwServicesRegisterMacro( ::fwGui::editor::IDialogEditor, ::uiIO::editor::SIOSelector, ::fwData::Object );
 
-static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
-static const ::fwCom::Slots::SlotKeyType FORWARD_JOB_SLOT       = "forwardJob";
+static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL   = "jobCreated";
+static const ::fwCom::Signals::SignalKeyType JOB_FAILED_SIGNAL    = "jobFailed";
+static const ::fwCom::Signals::SignalKeyType JOB_SUCCEEDED_SIGNAL = "jobSucceeded";
+
+static const ::fwCom::Slots::SlotKeyType FORWARD_JOB_SLOT = "forwardJob";
 
 //------------------------------------------------------------------------------
 
@@ -71,7 +74,10 @@ SIOSelector::SIOSelector() :
     m_mode( READER_MODE ),
     m_servicesAreExcluded( true )
 {
-    m_sigJobCreated  = newSignal< JobCreatedSignalType >( JOB_CREATED_SIGNAL );
+    m_sigJobCreated   = newSignal< JobCreatedSignalType >( JOB_CREATED_SIGNAL );
+    m_sigJobFailed    = newSignal< JobFailedSignalType >( JOB_FAILED_SIGNAL );
+    m_sigJobSucceeded = newSignal< JobSucceededSignalType >( JOB_SUCCEEDED_SIGNAL );
+
     m_slotForwardJob = newSlot( FORWARD_JOB_SLOT, &SIOSelector::forwardJob, this );
 }
 
@@ -265,6 +271,10 @@ void SIOSelector::updating()
                         extensionIdFound = true;
                     }
                 }
+                if(!extensionIdFound)
+                {
+                    m_sigJobFailed->asyncEmit();
+                }
                 OSLM_ASSERT("Problem to find the selected string.", extensionIdFound );
             }
             else
@@ -327,7 +337,7 @@ void SIOSelector::updating()
                     reader->stop();
                     ::fwServices::OSR::unregisterService(reader);
 
-                    if (createOutput)
+                    if (createOutput && !reader->hasFailed())
                     {
                         this->setOutput(::fwIO::s_DATA_KEY, obj);
                     }
@@ -336,6 +346,15 @@ void SIOSelector::updating()
                 {
                     std::string msg = "Failed to read : \n" + std::string(e.what());
                     ::fwGui::dialog::MessageDialog::showMessageDialog("Reader Error", msg);
+                    m_sigJobFailed->asyncEmit();
+                }
+                if(reader->hasFailed())
+                {
+                    m_sigJobFailed->asyncEmit();
+                }
+                else
+                {
+                    m_sigJobSucceeded->asyncEmit();
                 }
             }
             else
@@ -380,8 +399,22 @@ void SIOSelector::updating()
                 {
                     std::string msg = "Failed to write : \n" +  std::string(e.what());
                     ::fwGui::dialog::MessageDialog::showMessageDialog("Writer Error", msg);
+                    m_sigJobFailed->asyncEmit();
+                }
+
+                if(writer->hasFailed())
+                {
+                    m_sigJobFailed->asyncEmit();
+                }
+                else
+                {
+                    m_sigJobSucceeded->asyncEmit();
                 }
             }
+        }
+        else
+        {
+            m_sigJobFailed->asyncEmit();
         }
     }
     else
@@ -404,7 +437,9 @@ void SIOSelector::updating()
             messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
             messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
             messageBox.show();
+
         }
+        m_sigJobFailed->asyncEmit();
     }
 }
 
