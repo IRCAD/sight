@@ -124,10 +124,8 @@ void SFrustum::starting()
 
     // Create camera
     m_ogreCamera = this->getSceneManager()->createCamera(::Ogre::String(this->getID() + s_CAMERA_INPUT));
-    m_ogreCamera->setPosition(::Ogre::Vector3(0, 0, 0));
     m_ogreCamera->setMaterial(materialAdaptor->getMaterial());
-    m_ogreCamera->setDirection(::Ogre::Vector3(::Ogre::Real(0), ::Ogre::Real(0), ::Ogre::Real(1)));
-    m_ogreCamera->setDebugDisplayEnabled(true);
+    m_ogreCamera->setVisible(true);
 
     // Clipping
     if(m_near != 0.f)
@@ -142,6 +140,10 @@ void SFrustum::starting()
     // Set data to camera
     this->setOgreCamFromData();
 
+    // Set position
+    m_ogreCamera->setPosition(::Ogre::Vector3(0, 0, 0));
+    m_ogreCamera->setDirection(::Ogre::Vector3(::Ogre::Real(0), ::Ogre::Real(0), ::Ogre::Real(1)));
+
     // Add camera to ogre scene
     ::Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
     ::Ogre::SceneNode* transNode     = this->getTransformNode(rootSceneNode);
@@ -155,6 +157,7 @@ void SFrustum::starting()
 void SFrustum::updating()
 {
     this->setOgreCamFromData();
+    m_ogreCamera->setDebugDisplayEnabled(m_visibility);
     this->requestRender();
 }
 
@@ -176,7 +179,8 @@ void SFrustum::stopping()
 void SFrustum::setOgreCamFromData()
 {
     auto camera = this->getInput< ::arData::Camera >(s_CAMERA_INPUT);
-    if(camera != nullptr && camera->getIsCalibrated())
+    SLM_ASSERT("Required input '" + s_CAMERA_INPUT + "' is not set", camera);
+    if(camera->getIsCalibrated())
     {
 
         const float width  = static_cast< float >(camera->getWidth());
@@ -186,11 +190,10 @@ void SFrustum::setOgreCamFromData()
             ::fwRenderOgre::helper::Camera::computeProjectionMatrix(*camera, width, height, m_near, m_far);
 
         m_ogreCamera->setCustomProjectionMatrix(true, m);
-        m_ogreCamera->setVisible(true);
     }
     else
     {
-        SLM_WARN("the input '" + s_CAMERA_INPUT + "' is not set");
+        SLM_WARN("The camera '" + s_CAMERA_INPUT + "' is not calibrated");
     }
 }
 
