@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -49,19 +49,14 @@ fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SFrustum);
 const ::fwCom::Slots::SlotKeyType SFrustum::s_UPDATE_VISIBILITY_SLOT = "updateVisibility";
 const ::fwCom::Slots::SlotKeyType SFrustum::s_TOGGLE_VISIBILITY_SLOT = "toggleVisibility";
 
-const std::string SFrustum::s_CAMERA_INPUT = "camera";
-const std::string SFrustum::s_NEAR_CONFIG  = "near";
-const std::string SFrustum::s_FAR_CONFIG   = "far";
-const std::string SFrustum::s_COLOR_CONFIG = "color";
+const std::string s_CAMERA_INPUT = "camera";
+const std::string s_NEAR_CONFIG  = "near";
+const std::string s_FAR_CONFIG   = "far";
+const std::string s_COLOR_CONFIG = "color";
 
 //-----------------------------------------------------------------------------
 
-SFrustum::SFrustum() noexcept :
-    m_ogreCamera(nullptr),
-    m_visibility(true),
-    m_near(0.f),
-    m_far(0.f),
-    m_color("#ff0000ff")
+SFrustum::SFrustum() noexcept
 {
     newSlot(s_UPDATE_VISIBILITY_SLOT, &SFrustum::updateVisibility, this);
     newSlot(s_TOGGLE_VISIBILITY_SLOT, &SFrustum::toggleVisibility, this);
