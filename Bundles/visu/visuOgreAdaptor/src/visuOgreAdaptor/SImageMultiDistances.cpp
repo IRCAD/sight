@@ -453,11 +453,11 @@ void SImageMultiDistances::createLine(const ::visuOgreAdaptor::SMaterial::sptr _
     const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("Missing image", image);
 
-    const ::glm::vec3 f3APos_Is(_ps1[0], _ps1[1], _ps1[2]);
-    const ::glm::vec3 f3BPos_Is(_ps2[0], _ps2[1], _ps2[2]);
+    const ::glm::vec3 APosImageSpace(_ps1[0], _ps1[1], _ps1[2]);
+    const ::glm::vec3 BPosImageSpace(_ps2[0], _ps2[1], _ps2[2]);
 
-    ::glm::vec3 f3PlanePos_Is;
-    ::glm::vec3 f3PlaneDir_IsN;
+    ::glm::vec3 planePosImageSpace;
+    ::glm::vec3 planeDirImageSpaceNormalized;
 
     /// Checks the axis orientation to add the line correctly
     switch (this->getOrientation())
@@ -467,8 +467,8 @@ void SImageMultiDistances::createLine(const ::visuOgreAdaptor::SMaterial::sptr _
             const int axialIndex = image->getField< ::fwData::Integer >(
                 ::fwDataTools::fieldHelper::Image::m_axialSliceIndexId)->value();
             const double axialPos = axialIndex * image->getSpacing()[2];
-            f3PlanePos_Is  = {0, 0, axialPos};
-            f3PlaneDir_IsN = {0, 0, -1};
+            planePosImageSpace           = {0, 0, axialPos};
+            planeDirImageSpaceNormalized = {0, 0, -1};
             break;
         }
         case ::fwDataTools::helper::MedicalImage::Orientation::Y_AXIS:
@@ -476,8 +476,8 @@ void SImageMultiDistances::createLine(const ::visuOgreAdaptor::SMaterial::sptr _
             const int frontalIndex = image->getField< ::fwData::Integer >(
                 ::fwDataTools::fieldHelper::Image::m_frontalSliceIndexId)->value();
             const double frontalPos = frontalIndex * image->getSpacing()[1];
-            f3PlanePos_Is  = {0, frontalPos, 0};
-            f3PlaneDir_IsN = {0, -1, 0};
+            planePosImageSpace           = {0, frontalPos, 0};
+            planeDirImageSpaceNormalized = {0, -1, 0};
             break;
         }
         case ::fwDataTools::helper::MedicalImage::Orientation::X_AXIS:
@@ -485,16 +485,16 @@ void SImageMultiDistances::createLine(const ::visuOgreAdaptor::SMaterial::sptr _
             const int sagittalIndex = image->getField< ::fwData::Integer >(
                 ::fwDataTools::fieldHelper::Image::m_sagittalSliceIndexId)->value();
             const double sagittalPos = sagittalIndex * image->getSpacing()[0];
-            f3PlanePos_Is  = {sagittalPos, 0, 0};
-            f3PlaneDir_IsN = {-1, 0, 0};
+            planePosImageSpace           = {sagittalPos, 0, 0};
+            planeDirImageSpaceNormalized = {-1, 0, 0};
             break;
         }
     }
 
     /// Compute the intersection
-    const float s = ::glm::dot(f3PlaneDir_IsN, f3PlanePos_Is - f3APos_Is) / ::glm::dot(
-        f3PlaneDir_IsN, f3BPos_Is - f3APos_Is);
-    const glm::vec3 f3intersectPos_Is = f3APos_Is + s * (f3BPos_Is - f3APos_Is);
+    const float s = ::glm::dot(planeDirImageSpaceNormalized, planePosImageSpace - APosImageSpace) / ::glm::dot(
+        planeDirImageSpaceNormalized, BPosImageSpace - APosImageSpace);
+    const glm::vec3 intersectPosImageSpace = APosImageSpace + s * (BPosImageSpace - APosImageSpace);
 
     /// Draw lines
     ::Ogre::ManualObject* const line =
@@ -524,51 +524,56 @@ void SImageMultiDistances::createLine(const ::visuOgreAdaptor::SMaterial::sptr _
     }
 
     // Function to create a dashed line
-    const auto dashed = [&](::glm::vec3 _f3BeginPos_Is, const ::glm::vec3& _f3EndPos_Is)
+    const auto dashed = [&](::glm::vec3 _beginPosImageSpace, const ::glm::vec3& _endPosImageSpace)
                         {
-                            const ::glm::vec3 f3LineDir_Is  = _f3EndPos_Is - _f3BeginPos_Is;
-                            const float len                 = glm::distance(_f3EndPos_Is, _f3BeginPos_Is);
+                            const ::glm::vec3 f3LineDir_Is  = _endPosImageSpace - _beginPosImageSpace;
+                            const float len                 = glm::distance(_endPosImageSpace, _beginPosImageSpace);
                             const ::glm::vec3 f3LineDir_IsN = ::glm::normalize(f3LineDir_Is);
                             const float step                = 2.5f;
                             for(float i = 0.f; i <= len; i += step*2)
                             {
-                                lineDashed->position(_f3BeginPos_Is[0], _f3BeginPos_Is[1], _f3BeginPos_Is[2]);
-                                _f3BeginPos_Is += f3LineDir_IsN*step;
-                                lineDashed->position(_f3BeginPos_Is[0], _f3BeginPos_Is[1], _f3BeginPos_Is[2]);
-                                _f3BeginPos_Is += f3LineDir_IsN*step;
+                                lineDashed->position(_beginPosImageSpace[0], _beginPosImageSpace[1],
+                                                     _beginPosImageSpace[2]);
+                                _beginPosImageSpace += f3LineDir_IsN*step;
+                                lineDashed->position(_beginPosImageSpace[0], _beginPosImageSpace[1],
+                                                     _beginPosImageSpace[2]);
+                                _beginPosImageSpace += f3LineDir_IsN*step;
                             }
                         };
 
     // Create line
-    if(f3APos_Is[compar] >= f3intersectPos_Is[compar] && f3BPos_Is[compar] >= f3intersectPos_Is[compar])
+    if(APosImageSpace[compar] >= intersectPosImageSpace[compar] &&
+       BPosImageSpace[compar] >= intersectPosImageSpace[compar])
     {
-        dashed(f3APos_Is, f3BPos_Is);
+        dashed(APosImageSpace, BPosImageSpace);
     }
-    else if((f3APos_Is[compar] < f3intersectPos_Is[compar] && f3intersectPos_Is[compar] < f3BPos_Is[compar]) ||
-            (f3APos_Is[compar] > f3intersectPos_Is[compar] && f3intersectPos_Is[compar] > f3BPos_Is[compar]))
+    else if((APosImageSpace[compar] < intersectPosImageSpace[compar] &&
+             intersectPosImageSpace[compar] < BPosImageSpace[compar]) ||
+            (APosImageSpace[compar] > intersectPosImageSpace[compar] &&
+             intersectPosImageSpace[compar] > BPosImageSpace[compar]))
     {
-        if(f3APos_Is[compar] > f3BPos_Is[compar])
+        if(APosImageSpace[compar] > BPosImageSpace[compar])
         {
-            dashed(f3APos_Is, f3intersectPos_Is);
-            line->position(f3BPos_Is[0], f3BPos_Is[1], f3BPos_Is[2]);
-            line->position(f3intersectPos_Is[0], f3intersectPos_Is[1], f3intersectPos_Is[2]);
+            dashed(APosImageSpace, intersectPosImageSpace);
+            line->position(BPosImageSpace[0], BPosImageSpace[1], BPosImageSpace[2]);
+            line->position(intersectPosImageSpace[0], intersectPosImageSpace[1], intersectPosImageSpace[2]);
         }
         else
         {
-            dashed(f3BPos_Is, f3intersectPos_Is);
-            line->position(f3APos_Is[0], f3APos_Is[1], f3APos_Is[2]);
-            line->position(f3intersectPos_Is[0], f3intersectPos_Is[1], f3intersectPos_Is[2]);
+            dashed(BPosImageSpace, intersectPosImageSpace);
+            line->position(APosImageSpace[0], APosImageSpace[1], APosImageSpace[2]);
+            line->position(intersectPosImageSpace[0], intersectPosImageSpace[1], intersectPosImageSpace[2]);
         }
     }
-    else if(f3APos_Is[compar] > f3PlanePos_Is[compar])
+    else if(APosImageSpace[compar] > planePosImageSpace[compar])
     {
-        line->position(f3APos_Is[0], f3APos_Is[1], f3APos_Is[2]);
-        line->position(f3BPos_Is[0], f3BPos_Is[1], f3BPos_Is[2]);
+        line->position(APosImageSpace[0], APosImageSpace[1], APosImageSpace[2]);
+        line->position(BPosImageSpace[0], BPosImageSpace[1], BPosImageSpace[2]);
     }
     else
     {
-        line->position(f3APos_Is[0], f3APos_Is[1], f3APos_Is[2]);
-        line->position(f3BPos_Is[0], f3BPos_Is[1], f3BPos_Is[2]);
+        line->position(APosImageSpace[0], APosImageSpace[1], APosImageSpace[2]);
+        line->position(BPosImageSpace[0], BPosImageSpace[1], BPosImageSpace[2]);
     }
 
     line->end();
