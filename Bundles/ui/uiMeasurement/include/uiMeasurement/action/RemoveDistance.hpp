@@ -47,13 +47,15 @@ namespace action
  *
  * @section XML XML Configuration
  *
+ * Example to remove a selected point:
  * @code{.xml}
-   Example to remove a selected point:
    <service type="::uiMeasurement::action::RemoveDistance">
        <inout key="image" uid="..." />
    </service>
-
-    Example to remove the last added point:
+   @endcode
+ *
+ * Example to remove the last added point:
+ * @code{.xml}
     <service uid="removeDistanceAct" type="::uiMeasurement::action::RemoveDistance">
             <inout key="image" uid="${image}" />
     </service>
@@ -67,6 +69,7 @@ namespace action
  * @subsection In-Out In-Out
  * - \b image [::fwData::Image]: image containing the distance field.
  */
+
 class UIMEASUREMENT_CLASS_API RemoveDistance : public ::fwGui::IActionSrv
 {
 public:
