@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,13 +22,13 @@
 
 #include "ioIGTL/SServerSender.hpp"
 
-#include "ioIGTL/helper/preferences.hpp"
-
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
 #include <fwGui/dialog/MessageDialog.hpp>
+
+#include <fwPreferences/helper.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -82,7 +82,7 @@ void SServerSender::starting()
 {
     try
     {
-        const std::uint16_t port = ::ioIGTL::helper::getPreferenceKey<std::uint16_t>(m_portConfig);
+        const std::uint16_t port = ::fwPreferences::getValue<std::uint16_t>(m_portConfig);
         m_server->start(port);
 
         m_serverFuture = std::async(std::launch::async, std::bind(&::igtlNetwork::Server::runServer, m_server) );

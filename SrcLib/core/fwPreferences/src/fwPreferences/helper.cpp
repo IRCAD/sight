@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -153,6 +153,20 @@ void savePreferences()
     {
         prefService->update();
     }
+}
+
+//-----------------------------------------------------------------------------
+
+std::string getValue(const std::string& var, const char delimiter)
+{
+    std::string value(var);
+    const size_t first = var.find(delimiter);
+    const size_t last  = var.rfind(delimiter);
+    if (first == 0 && last == var.size() - 1)
+    {
+        value = ::fwPreferences::getPreference( var.substr(1, var.size() - 2) );
+    }
+    return value;
 }
 
 //-----------------------------------------------------------------------------

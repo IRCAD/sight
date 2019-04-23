@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -28,6 +28,7 @@
 #include <fwData/Composite.hpp>
 
 #include <boost/filesystem.hpp>
+#include <boost/lexical_cast.hpp>
 
 #include <string>
 
@@ -54,5 +55,28 @@ FWPREFERENCES_API ::fwData::Composite::sptr getPreferences();
  * @warning This method does nothing if the preferences service is not found or if the service is not started.
  */
 FWPREFERENCES_API void savePreferences();
+
+/**
+ * @brief Returns associated value in preferences
+ *
+ * If the variable `var` is delimited by the character specified by `delimiter`,
+ * it returns the associated value saved in the preferences (empty string if not found).
+ * Otherwise, returns the variable directly.
+ */
+FWPREFERENCES_API std::string getValue(const std::string& var, const char delimiter = '%');
+
+/**
+ * @brief Returns casted associated value in preferences
+ *
+ * If the variable `var` is delimited by the character specified by `delimiter`,
+ * it returns the associated value casted in <T> saved in the preferences.
+ * Otherwise, returns the variable directly casted in <T>.
+ */
+template<typename T>
+T getValue(const std::string& var, const char delimiter = '%')
+{
+    const std::string value = getValue(var, delimiter);
+    return ::boost::lexical_cast< T >(value);
+}
 
 } // namespace fwPreferences
