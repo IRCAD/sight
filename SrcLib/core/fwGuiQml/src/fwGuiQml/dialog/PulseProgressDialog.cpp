@@ -26,6 +26,10 @@
 
 #include <fwGui/registry/macros.hpp>
 
+#include <fwQml/QmlEngine.hpp>
+
+#include <fwRuntime/operations.hpp>
+
 #include <QFutureWatcher>
 #include <QGuiApplication>
 #include <QString>
@@ -42,49 +46,76 @@ namespace dialog
 
 PulseProgressDialog::PulseProgressDialog(::fwGui::GuiBaseObject::Key key)
 {
-    //m_pdialog = new QProgressDialog(qApp->focusWindow());
+    m_dialog = nullptr;
 }
 
 //------------------------------------------------------------------------------
 
 PulseProgressDialog::~PulseProgressDialog()
 {
-//    if (m_pdialog)
-//    {
-////        m_pdialog->hide();
-//        delete m_pdialog;
-//    }
+    delete m_dialog;
 }
 
 //------------------------------------------------------------------------------
 
 void PulseProgressDialog::setTitle(const std::string& title)
 {
-//    m_pdialog->setWindowTitle(QString::fromStdString(title));
+    m_title = QString::fromStdString(title);
 }
 
 //------------------------------------------------------------------------------
 
 void PulseProgressDialog::setMessage(const std::string& msg)
 {
-//    m_pdialog->setLabelText(QString::fromStdString(msg));
+    m_message = QString::fromStdString(msg);
 }
 
 //------------------------------------------------------------------------------
 
 void PulseProgressDialog::show()
 {
+    SPTR(::fwQml::QmlEngine) engine = ::fwQml::QmlEngine::getDefault();
+
+    // get the path of the qml ui file in the 'rc' directory
+    auto dialogPath = ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-0.1/dialog/PulseProgressDialog.qml");
+
+    // load the qml ui component
+    engine->getRootContext()->setContextProperty("pulseProgressDialog", this);
+    m_dialog = engine->createComponent(dialogPath);
     // Create a QFutureWatcher and connect signals and slots.
     QFutureWatcher<void> futureWatcher;
-//    QObject::connect(&futureWatcher, SIGNAL(finished()), m_pdialog, SLOT(reset()));
-//    QObject::connect(m_pdialog, SIGNAL(canceled()), &futureWatcher, SLOT(cancel()));
-//    QObject::connect(&futureWatcher, SIGNAL(progressRangeChanged(int,int)), m_pdialog, SLOT(setRange(int,int)));
-//    QObject::connect(&futureWatcher, SIGNAL(progressValueChanged(int)), m_pdialog, SLOT(setValue(int)));
+    QObject::connect(&futureWatcher, SIGNAL(finished()), this, SLOT(onFinished()));
+    QObject::connect(this, SIGNAL(canceled()), &futureWatcher, SLOT(cancel()));
 
+    Q_EMIT titleChanged();
+    Q_EMIT messageChanged();
     // Start the computation.
+    QMetaObject::invokeMethod(m_dialog, "open");
     futureWatcher.setFuture(QtConcurrent::run(m_stuff));
+    while (!m_isClicked && m_visible)
+    {
+        qGuiApp->processEvents();
+    }
+    if (futureWatcher.isRunning())
+    {
+        Q_EMIT canceled();
+    }
+}
 
-//    m_pdialog->exec();
+//------------------------------------------------------------------------------
+
+void PulseProgressDialog::onFinished()
+{
+    m_visible = false;
+    Q_EMIT visibleChanged();
+}
+
+//------------------------------------------------------------------------------
+
+void PulseProgressDialog::onCanceled()
+{
+    m_visible = false;
+    Q_EMIT canceled();
 }
 
 //------------------------------------------------------------------------------

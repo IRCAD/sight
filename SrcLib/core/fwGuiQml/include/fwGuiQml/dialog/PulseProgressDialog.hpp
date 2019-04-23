@@ -26,13 +26,9 @@
 
 #include <fwGui/dialog/IPulseProgressDialog.hpp>
 
-#include <QPointer>
+#include <QObject>
 
 #include <string>
-
-QT_BEGIN_NAMESPACE
-class QProgressDialog;
-QT_END_NAMESPACE
 
 namespace fwGuiQml
 {
@@ -41,8 +37,14 @@ namespace dialog
 /**
  * @brief   This class allows us to show a pulse progress bar.
  */
-class FWGUIQML_CLASS_API PulseProgressDialog : public ::fwGui::dialog::IPulseProgressDialog
+class FWGUIQML_CLASS_API PulseProgressDialog : public QObject,
+                                               public ::fwGui::dialog::IPulseProgressDialog
 {
+Q_OBJECT
+Q_PROPERTY(QString title MEMBER m_title NOTIFY titleChanged)
+Q_PROPERTY(bool visible MEMBER m_visible NOTIFY visibleChanged)
+Q_PROPERTY(QString message MEMBER m_message NOTIFY messageChanged)
+
 public:
 
     fwCoreClassDefinitionsWithFactoryMacro( (PulseProgressDialog)(::fwGui::dialog::IPulseProgressDialog),
@@ -61,9 +63,22 @@ public:
 
     FWGUIQML_API void show() override;
 
-protected:
+Q_SIGNALS:
+    void titleChanged();
+    void messageChanged();
+    void visibleChanged();
+    void canceled();
 
-//    QPointer< QProgressDialog >  m_pdialog;
+protected Q_SLOTS:
+    void onFinished();
+    void onCanceled();
+
+protected:
+    bool m_isClicked;
+    bool m_visible;
+    QString m_title;
+    QString m_message;
+    QObject*  m_dialog;
 
 };
 } // namespace dialog
