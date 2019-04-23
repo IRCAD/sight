@@ -57,14 +57,18 @@ FWPREFERENCES_API ::fwData::Composite::sptr getPreferences();
 FWPREFERENCES_API void savePreferences();
 
 /**
- * @brief If the variable `var` is delimited by the character specified by `delimiter`,
+ * @brief Returns associated value in preferences
+ *
+ * If the variable `var` is delimited by the character specified by `delimiter`,
  * it returns the associated value saved in the preferences (empty string if not found).
  * Otherwise, returns the variable directly.
  */
 FWPREFERENCES_API std::string getValue(const std::string& var, const char delimiter = '%');
 
 /**
- * @brief If the variable `var` is delimited by the character specified by `delimiter`,
+ * @brief Returns casted associated value in preferences
+ *
+ * If the variable `var` is delimited by the character specified by `delimiter`,
  * it returns the associated value casted in <T> saved in the preferences.
  * Otherwise, returns the variable directly casted in <T>.
  */
