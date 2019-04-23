@@ -37,7 +37,6 @@
 #include <QFile>
 #include <QResource>
 #include <QString>
-#include <QStyleFactory>
 #include <QTextStream>
 
 #include <functional>

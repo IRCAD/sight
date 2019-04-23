@@ -22,9 +22,15 @@
 
 #include "fwGuiQml/dialog/SelectorDialog.hpp"
 
+#include "fwGuiQml/model/RoleListModel.hpp"
+
 #include <fwCore/base.hpp>
 
 #include <fwGui/registry/macros.hpp>
+
+#include <fwQml/QmlEngine.hpp>
+
+#include <fwRuntime/operations.hpp>
 
 #include <QGuiApplication>
 
@@ -60,77 +66,76 @@ void SelectorDialog::setSelections(std::vector< std::string > _selections)
 
 void SelectorDialog::setTitle(std::string _title)
 {
-    this->m_title = _title;
+    this->m_title = QString::fromStdString(_title);
 }
 
 //------------------------------------------------------------------------------
 
 std::string SelectorDialog::show()
 {
-    QWindow* parent = qGuiApp->focusWindow();
-    //TO-DO create dialog from the focus window
-//    QDialog* dialog = new QDialog(parent);
-//    dialog->setWindowTitle(QString::fromStdString(m_title));
+    ::fwGuiQml::model::RoleListModel model;
+    SPTR(::fwQml::QmlEngine) engine = ::fwQml::QmlEngine::getDefault();
+    m_isClicked                     = false;
 
-    //   QListWidget* selectionList = new QListWidget(dialog);
-    for( std::string selection :  m_selections)
+    // get the path of the qml ui file in the 'rc' directory
+    auto dialogPath = ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-0.1/dialog/SelectorDialog.qml");
+
+    // load the qml ui component
+    engine->getRootContext()->setContextProperty("selectorDialog", this);
+    QObject* dialog = engine->createComponent(dialogPath);
+    Q_EMIT titleChanged();
+
+    model.addRole(Qt::UserRole + 1, "textOption");
+    model.addRole(Qt::UserRole + 2, "check");
+    for(std::string selection :  m_selections)
     {
-//        selectionList->addItem(QString::fromStdString( selection ));
+        QHash<QByteArray, QVariant> data;
+        if (!model.isEmpty())
+        {
+            data.insert("check", true);
+        }
+        else
+        {
+            data.insert("check", false);
+        }
+        data.insert("textOption", QString::fromStdString(selection));
+        model.addData(QHash<QByteArray, QVariant>(data));
     }
+    engine->getRootContext()->setContextProperty("selectorModel", &model);
 
-//    QListWidgetItem* firstItem = selectionList->item(0);
-//   selectionList->setCurrentItem(firstItem);
-
-//    QPushButton* okButton     = new QPushButton(QObject::tr("Ok"));
-//    QPushButton* cancelButton = new QPushButton(QObject::tr("Cancel"));
-
-//    QHBoxLayout* hLayout = new QHBoxLayout();
-//    hLayout->addWidget(okButton);
-//    hLayout->addWidget(cancelButton);
-
-//    for(auto customButton : m_customButtons)
-//    {
-//        hLayout->addWidget(customButton);
-//        //      QObject::connect(customButton, SIGNAL(clicked()), dialog, SLOT(reject()));
-//    }
-
-//    QVBoxLayout* vLayout = new QVBoxLayout();
-    if(!m_message.empty())
+    if(!m_message.isEmpty())
     {
-        //     QLabel* msgText = new QLabel(QString::fromStdString(m_message), dialog);
-        //    vLayout->addWidget( msgText);
+        Q_EMIT messageChanged();
     }
-    //   vLayout->addWidget(selectionList);
-//    vLayout->addLayout(hLayout);
-
-    //  dialog->setLayout(vLayout);
-    //QObject::connect(okButton, SIGNAL(clicked()), dialog, SLOT(accept()));
-    //QObject::connect(cancelButton, SIGNAL(clicked()), dialog, SLOT(reject()));
-    //QObject::connect(selectionList, SIGNAL(itemDoubleClicked(QListWidgetItem*)), dialog, SLOT(accept()));
 
     std::string selection = "";
-    //if(dialog->exec())
+    QMetaObject::invokeMethod(dialog, "open");
+    while (!m_isClicked && m_visible)
     {
-        //  selection = selectionList->currentItem()->text().toStdString();
+        qGuiApp->processEvents();
     }
-
-    return selection;
+    return m_selection.toStdString();
 }
 
 //------------------------------------------------------------------------------
 
 void SelectorDialog::setMessage(const std::string& msg)
 {
-    m_message = msg;
+    m_message = QString::fromStdString(msg);
+}
+
+//------------------------------------------------------------------------------
+
+void SelectorDialog::resultDialog(QVariant selection)
+{
+    m_selection = selection.toString();
+    m_isClicked = true;
 }
 
 //------------------------------------------------------------------------------
 
 void SelectorDialog::addCustomButton(const std::string& label, std::function<void()> clickedFn)
 {
-//    QPushButton* button = new QPushButton( QString::fromStdString(label) );
-//    m_customButtons.push_back( button );
-//    QObject::connect(button, &QPushButton::clicked, clickedFn);
 }
 
 //------------------------------------------------------------------------------

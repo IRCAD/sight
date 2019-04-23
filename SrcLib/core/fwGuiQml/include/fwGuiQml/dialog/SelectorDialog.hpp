@@ -26,6 +26,7 @@
 
 #include <fwGui/dialog/ISelectorDialog.hpp>
 
+#include <QObject>
 #include <QVector>
 
 #include <vector>
@@ -39,8 +40,13 @@ namespace dialog
 /**
  * @brief   SelectorDialog allowing the choice of an element among severals (_selections)
  */
-class FWGUIQML_CLASS_API SelectorDialog : public ::fwGui::dialog::ISelectorDialog
+class FWGUIQML_CLASS_API SelectorDialog : public QObject,
+                                          public ::fwGui::dialog::ISelectorDialog
 {
+Q_OBJECT
+Q_PROPERTY(QString title MEMBER m_title NOTIFY titleChanged)
+Q_PROPERTY(QString message MEMBER m_message NOTIFY messageChanged)
+Q_PROPERTY(bool visible MEMBER m_visible)
 public:
 
     fwCoreClassDefinitionsWithFactoryMacro( (SelectorDialog)(::fwGui::dialog::ISelectorDialog),
@@ -69,19 +75,26 @@ public:
     /// Set the message
     FWGUIQML_API virtual void setMessage(const std::string& msg) override;
 
-    /// Add a custom button to this dialog
+    /// uninplemented
     FWGUIQML_API virtual void addCustomButton(const std::string& label, std::function<void()> clickedFn) override;
 
-private:
+Q_SIGNALS:
+    void titleChanged();
+    void messageChanged();
 
+protected Q_SLOTS:
+    void resultDialog(QVariant selection);
+
+private:
     std::vector< std::string > m_selections;
 
     /// Dialog box message
-    std::string m_message;
-    std::string m_title;
+    QString m_message;
+    QString m_title;
+    QString m_selection;
 
-    /// Stores custom buttons
-//    QVector< QPushButton* > m_customButtons;
+    bool m_visible;
+    bool m_isClicked;
 };
 
 } // namespace dialog
