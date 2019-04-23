@@ -28,6 +28,7 @@
 #include <fwData/Composite.hpp>
 
 #include <boost/filesystem.hpp>
+#include <boost/lexical_cast.hpp>
 
 #include <string>
 

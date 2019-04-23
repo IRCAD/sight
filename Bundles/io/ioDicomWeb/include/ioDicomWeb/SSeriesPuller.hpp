@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -73,7 +73,7 @@ class IODICOMWEB_CLASS_API SSeriesPuller : public ::fwServices::IController
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SSeriesPuller)( ::fwServices::IController ) );
+    fwCoreServiceClassDefinitionsMacro( (SSeriesPuller)( ::fwServices::IController ) )
 
     typedef ::fwMedData::SeriesDB::ContainerType DicomSeriesContainerType;
     typedef std::vector< std::string > InstanceUIDContainerType;
@@ -154,9 +154,6 @@ private:
     /// Map of Dicom series being pulled
     DicomSeriesMapType m_pullingDicomSeriesMap;
 
-    /// Returns a well formatted preferences key
-    std::string getPreferenceKey(const std::string& key) const;
-
     /// Server hostname preference key
     std::string m_serverHostnameKey;
 
@@ -164,10 +161,10 @@ private:
     std::string m_serverPortKey;
 
     /// Server hostname
-    std::string m_serverHostname;
+    std::string m_serverHostname{"localhost"};
 
     /// Server port
-    int m_serverPort;
+    int m_serverPort{4242};
 
     /// DICOM Folder path
     ::boost::filesystem::path m_path;

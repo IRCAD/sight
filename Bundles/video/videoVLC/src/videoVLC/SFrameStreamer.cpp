@@ -136,19 +136,6 @@ static const ::fwServices::IService::KeyType s_FRAMETL = "frameTL";
 const ::fwCom::Slots::SlotKeyType SFrameStreamer::s_UPDATE_FRAME_SLOT = "updateFrame";
 const ::fwCom::Slots::SlotKeyType SFrameStreamer::s_STOP_STREAM       = "stopStream";
 
-// return the preference value if found, otherwise, cast the string into value as it is
-std::string getPreferenceKey(const std::string& key)
-{
-    std::string keyResult(key);
-    const size_t first = key.find('%');
-    const size_t last  = key.rfind('%');
-    if (first == 0 && last == key.size() - 1)
-    {
-        keyResult = ::fwPreferences::getPreference( key.substr(1, key.size() - 2) );
-    }
-    return keyResult;
-}
-
 //------------------------------------------------------------------------------
 
 fwServicesRegisterMacro(::fwServices::IOperator, ::videoVLC::SFrameStreamer);
@@ -267,8 +254,8 @@ void SFrameStreamer::updateFrame(::fwCore::HiResClock::HiResClockType timestamp 
                               "acodec=none" // No audio codec.
                               "}";
 
-        const std::string port    = ::videoVLC::getPreferenceKey(m_portCfg);
-        const std::string outAddr = ::videoVLC::getPreferenceKey(m_outAddrCfg);
+        const std::string port    = ::fwPreferences::getValue(m_portCfg);
+        const std::string outAddr = ::fwPreferences::getValue(m_outAddrCfg);
 
         // Set streaming port and IP, mux=ts defines the muxing protocol. This allows a client to stream with a known
         // profile and thus, no .sdp file is needed
