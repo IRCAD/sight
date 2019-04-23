@@ -28,8 +28,11 @@
 #include <fwGui/IFrameSrv.hpp>
 #include <fwGui/registry/macros.hpp>
 
-#include <QCoreApplication>
-#include <QPaintEvent>
+#include <fwQml/QmlEngine.hpp>
+
+#include <fwRuntime/operations.hpp>
+
+#include <QGuiApplication>
 
 fwGuiRegisterMacro( ::fwGuiQml::dialog::ProgressDialog, ::fwGui::dialog::IProgressDialog::REGISTRY_KEY );
 
@@ -40,104 +43,56 @@ namespace dialog
 
 //------------------------------------------------------------------------------
 
-ProgressDialog::ProgressDialog( ::fwGui::GuiBaseObject::Key key, const std::string& title, const std::string& message) /*:
-                                                                                                                          m_title(""),
-                                                                                                                          m_pdialog(
-                                                                                                                             NULL
-                                                                                                                             ),*/
-//    m_pprogressbar( NULL )
+ProgressDialog::ProgressDialog( ::fwGui::GuiBaseObject::Key key, const std::string& title, const std::string& message) :
+    m_title("")
 {
+    SPTR(::fwQml::QmlEngine) engine = ::fwQml::QmlEngine::getDefault();
 
-    // Use progress widget defined by IFrameSrv
-    ::fwGui::container::fwContainer::sptr progressWidget = ::fwGui::IFrameSrv::getProgressWidget();
+    // get the path of the qml ui file in the 'rc' directory
+    auto dialogPath = ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-0.1/dialog/ProgressDialog.qml");
 
-//    m_pcancelButton = new QPushButton("Cancel");
-    // main window add cancel and progress bar
-//    QObject::connect( m_pcancelButton, SIGNAL(clicked()), this, SLOT(cancelPressed()) );
-
-//    if ( m_pmainWindow )
-//    {
-//        m_pprogressbar = new QProgressBar();
-//        m_pprogressbar->setRange(0, 100);
-//        m_pprogressbar->setValue(0);
-//        m_pmainWindow->statusBar()->addPermanentWidget(m_pprogressbar, 0);
-//        m_pmainWindow->statusBar()->addPermanentWidget(m_pcancelButton, 0);
-//        m_pmainWindow->statusBar()->setMinimumHeight(25);
-//        m_pmainWindow->statusBar()->setMaximumHeight(25);
-//    }
-//    else
-//    {
-//        m_pdialog = new QProgressDialog( 0, Qt::WindowStaysOnTopHint );
-
-//        m_pdialog->setWindowModality(Qt::NonModal);
-//        m_pdialog->setMinimum(0);
-//        m_pdialog->setMaximum(100);
-//        m_pdialog->setValue(0);
-//        m_pdialog->setCancelButton(m_pcancelButton);
-
-//        this->setTitle(title);
-//        this->setMessage(message);
-
-//        m_pdialog->show();
-//    }
+    // load the qml ui component
+    engine->getRootContext()->setContextProperty("progressDialog", this);
+    m_dialog = engine->createComponent(dialogPath);
+    this->setTitle(title);
+    this->setMessage(message);
+    QMetaObject::invokeMethod(m_dialog, "open");
+    qGuiApp->processEvents();
 }
 
 //------------------------------------------------------------------------------
 
 ProgressDialog::~ProgressDialog()
 {
-
-    this->setTitle("");
-    this->setMessage("");
-
-//    if (m_pdialog)
-//    {
-//        m_pdialog->hide();
-//        delete m_pdialog;
-//    }
-//    else if ( m_pprogressbar )
-//    {
-//        m_pmainWindow->statusBar()->removeWidget( m_pprogressbar );
-//        m_pmainWindow->statusBar()->removeWidget( m_pcancelButton );
-//        m_pcancelButton->hide();
-//        delete m_pcancelButton;
-//        m_pprogressbar->hide();
-//        delete m_pprogressbar;
-
-//    }
-
-//    m_pmainWindow = 0;
+    delete m_dialog;
 }
 
 //------------------------------------------------------------------------------
 
 void ProgressDialog::operator()(float percent, std::string msg)
 {
-//    SLM_ASSERT("m_pdialog or m_pprogressbar not instanced", m_pprogressbar || m_pdialog);
-    int value = (int)(percent*100);
+    SLM_ASSERT("m_dialog not instanced", m_dialog);
+    if (!m_visible)
+    {
+        this->cancelPressed();
+        return;
+    }
+    int value = int(percent*100);
     if(value != this->m_value)
     {
         OSLM_TRACE( "ProgressDialog msg" << msg << " : " << value <<"%");
         this->setMessage(msg);
 
-//        if ( m_pprogressbar )
-//        {
-//            m_pprogressbar->setValue(value);
-//        }
-//        else if ( m_pdialog )
-//        {
-//            m_pdialog->setValue(value);
-//        }
-
+        this->m_value = value;
+        Q_EMIT valueChanged();
         if ( m_processUserEvents )
         {
-            QCoreApplication::processEvents(QEventLoop::AllEvents);
+            qGuiApp->processEvents();
         }
         else
         {
-            QCoreApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
+            qGuiApp->processEvents(QEventLoop::ExcludeUserInputEvents);
         }
-        this->m_value = value;
     }
 }
 
@@ -146,44 +101,32 @@ void ProgressDialog::operator()(float percent, std::string msg)
 void ProgressDialog::setTitle(const std::string& title)
 {
     m_title = QString::fromStdString(title);
-//    if ( m_pprogressbar )
-//    {
-//        m_pmainWindow->statusBar()->showMessage(m_title);
-//    }
-//    else if ( m_pdialog )
-//    {
-//        m_pdialog->setWindowTitle(m_title);
-//    }
+    Q_EMIT titleChanged();
 }
 
 //------------------------------------------------------------------------------
 
 void ProgressDialog::setMessage(const std::string& msg)
 {
-    QString message("");
+
+    m_message = "";
     if (!m_title.isEmpty())
     {
-        message += m_title;
-        message += " - ";
+        m_message += m_title;
+        m_message += " - ";
     }
-
-    message += QString::fromStdString(msg);
-//    if ( m_pprogressbar )
-//    {
-//        m_pmainWindow->statusBar()->showMessage(message);
-//    }
-//    else if ( m_pdialog )
-//    {
-//        m_pdialog->setLabelText(message);
-//    }
+    m_message = QString::fromStdString(msg);
+    Q_EMIT messageChanged();
 }
 
 //------------------------------------------------------------------------------
-//IProgressDialog::cancelPressed();
 
-void ProgressDialog::hideCancelButton()
+void ProgressDialog::cancelPressed()
 {
+    IProgressDialog::cancelPressed();
 }
+
+//------------------------------------------------------------------------------
 
 } // namespace dialog
 } // namespace fwGuiQml

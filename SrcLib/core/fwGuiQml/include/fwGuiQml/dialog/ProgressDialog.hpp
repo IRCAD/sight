@@ -31,14 +31,6 @@
 
 #include <string>
 
-QT_BEGIN_NAMESPACE
-class QProgressDialog;
-QT_END_NAMESPACE
-
-    QT_BEGIN_NAMESPACE
-class QProgressDialog;
-QT_END_NAMESPACE
-
 namespace fwGuiQml
 {
 namespace dialog
@@ -53,6 +45,10 @@ class FWGUIQML_CLASS_API ProgressDialog : public QObject,
                                           public ::fwGui::dialog::IProgressDialog
 {
 Q_OBJECT
+Q_PROPERTY(QString title MEMBER m_title NOTIFY titleChanged)
+Q_PROPERTY(QString message MEMBER m_message NOTIFY messageChanged)
+Q_PROPERTY(int value MEMBER m_value NOTIFY valueChanged)
+Q_PROPERTY(bool visible MEMBER m_visible)
 
 public:
     fwCoreClassDefinitionsWithFactoryMacro((ProgressDialog)(::fwGui::dialog::IProgressDialog),
@@ -73,18 +69,18 @@ public:
     /// override
     FWGUIQML_API void setMessage(const std::string& message) override;
 
-    FWGUIQML_API void hideCancelButton() override;
+Q_SIGNALS:
+    void titleChanged();
+    void messageChanged();
+    void valueChanged();
 
 protected Q_SLOTS:
-
+    void cancelPressed() override;
 protected:
     QString m_title;
-
-//    QPointer<QProgressDialog> m_pdialog;
-//    QPointer<QProgressBar> m_pprogressbar;
-//    QPointer<QPushButton> m_pcancelButton;
-//    QPointer<QMainWindow> m_pmainWindow;
-//    QPointer<QWindow> m_pmainWindowQml;
+    QString m_message;
+    QObject* m_dialog;
+    bool m_visible;
 };
 } // namespace dialog
 } // namespace fwGuiQml
