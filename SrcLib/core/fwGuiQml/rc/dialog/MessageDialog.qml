@@ -1,12 +1,14 @@
-import QtQuick 2.3
+import QtQuick 2.9
 import QtQuick.Dialogs 1.2
 
 MessageDialog {
-    signal resultDialog(int flag)
 
-    title: "Overwrite?"
-    text: "file.txt already exists.  Replace?"
+    title: messageDialog.title
+    text: messageDialog.message
+    icon: messageDialog.icon
+
     onButtonClicked: {
-        resultDialog(clickedButton)
+        messageDialog.resultDialog(clickedButton)
     }
+    onVisibleChanged: messageDialog.visible = visible
 }

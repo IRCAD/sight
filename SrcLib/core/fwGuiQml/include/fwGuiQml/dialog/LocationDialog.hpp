@@ -29,6 +29,8 @@
 #include <fwGui/dialog/ILocationDialog.hpp>
 
 #include <QObject>
+#include <QString>
+#include <QUrl>
 
 class QString;
 
@@ -47,6 +49,14 @@ class FWGUIQML_CLASS_API LocationDialog : public QObject,
                                           public ::fwGui::dialog::ILocationDialog
 {
 Q_OBJECT
+Q_PROPERTY(bool existing MEMBER m_existing WRITE emitExisting NOTIFY existingChanged)
+Q_PROPERTY(QStringList filter MEMBER m_filter WRITE emitFilter NOTIFY filterChanged)
+Q_PROPERTY(QString filterSelected MEMBER m_filterSelected)
+Q_PROPERTY(QUrl folder MEMBER m_folder WRITE emitFolder NOTIFY folderChanged)
+Q_PROPERTY(bool isFolder MEMBER m_isFolder WRITE emitIsFolder NOTIFY isFolderChanged)
+Q_PROPERTY(bool multiple MEMBER m_multiple WRITE emitMultiple NOTIFY multipleChanged)
+Q_PROPERTY(QString title MEMBER m_title WRITE emitTitle NOTIFY titleChanged)
+Q_PROPERTY(bool visible MEMBER m_visible)
 
 public:
 
@@ -65,7 +75,13 @@ public:
 
     // Example ( addFilter("images","*.png *.jpg");
     FWGUIQML_API void addFilter(const std::string& filterName, const std::string& wildcardList ) override;
-
+Q_SIGNALS:
+    void existingChanged();
+    void filterChanged();
+    void folderChanged();
+    void isFolderChanged();
+    void multipleChanged();
+    void titleChanged();
 protected:
 
     ::fwGui::dialog::ILocationDialog::Options m_style;
@@ -79,8 +95,23 @@ protected:
 
     std::string m_wildcard;
     ::fwData::location::ILocation::sptr m_location;
-    bool m_isfinish;
-    QObject* m_dialog;
+    bool m_isFinish;
+    bool m_existing;
+    QStringList m_filter;
+    QString m_filterSelected;
+    QUrl m_folder;
+    bool m_isFolder;
+    bool m_multiple;
+    QString m_title;
+    bool m_visible;
+
+    //Setter to QProperty
+    FWGUIQML_API void emitExisting(const bool&);
+    FWGUIQML_API void emitFilter(const QStringList&);
+    FWGUIQML_API void emitFolder(const QUrl&);
+    FWGUIQML_API void emitIsFolder(const bool&);
+    FWGUIQML_API void emitMultiple(const bool&);
+    FWGUIQML_API void emitTitle(const QString&);
 
 protected Q_SLOTS:
     void resultDialog(const QVariant& msg);

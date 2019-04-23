@@ -1,21 +1,24 @@
-import QtQuick 2.2
-import QtQuick.Dialogs 1.0
+import QtQuick 2.9
+import QtQuick.Dialogs 1.2
+
 FileDialog {
     id: fileDialog
-    title: "Please choose a file"
 
-    folder: shortcuts.home
+    title: locationDialog.title
+    folder: locationDialog.folder
+    nameFilters: locationDialog.filter
     modality: Qt.ApplicationModal
-
-    signal filesNameChange(var files)
+    selectExisting: locationDialog.existing
+    selectFolder: locationDialog.isFolder
+    selectMultiple: locationDialog.multiple
 
     onAccepted: {
-        console.log("You chose: " + fileDialog.fileUrls)
-        filesNameChange(fileUrls)
+        locationDialog.resultDialog(fileUrls)
     }
 
     onRejected: {
-        console.log("Canceled")
-        filesNameChange(fileUrls)
+        locationDialog.resultDialog(fileUrls)
     }
+    onVisibleChanged: locationDialog.visible = visible
+    onSelectedNameFilterChanged: locationDialog.filterSelected = selectedNameFilter
 }

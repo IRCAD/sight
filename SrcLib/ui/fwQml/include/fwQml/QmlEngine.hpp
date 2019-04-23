@@ -59,6 +59,7 @@ public:
     FWQML_API void loadMainComponent(const ::boost::filesystem::path& file);
 
     FWQML_API QObject* createComponent(const ::boost::filesystem::path& file);
+    FWQML_API QObject* createComponent(const ::boost::filesystem::path& file, QQmlContext* context);
 
     /**
      * @brief Define the path as a directory where the engine searches for installed modules in a URL-based directory

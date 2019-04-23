@@ -45,6 +45,12 @@ class FWGUIQML_CLASS_API MessageDialog : public QObject,
                                          public ::fwGui::dialog::IMessageDialog
 {
 Q_OBJECT
+Q_PROPERTY(QString title MEMBER m_title NOTIFY titleChanged)
+Q_PROPERTY(QString message MEMBER m_message NOTIFY messageChanged)
+Q_PROPERTY(int icon MEMBER m_iconDialog WRITE emitIcon NOTIFY iconChanged)
+Q_PROPERTY(int buttons MEMBER m_buttonsDialog WRITE emitButtons NOTIFY buttonsChanged)
+Q_PROPERTY(bool visible MEMBER m_visible)
+
 public:
 
     fwCoreClassDefinitionsWithFactoryMacro( (MessageDialog)(::fwGui::dialog::IMessageDialog),
@@ -76,26 +82,36 @@ public:
     /// Show the message box and return the clicked button.
     FWGUIQML_API virtual Buttons show() override;
 
+Q_SIGNALS:
+    void titleChanged();
+    void iconChanged();
+    void messageChanged();
+    void buttonsChanged();
+
 protected:
 
     /// Dialog title
-    std::string m_title;
+    QString m_title;
 
     /// Dialog box message
-    std::string m_message;
+    QString m_message;
 
     /// List of the button
     ::fwGui::dialog::IMessageDialog::Buttons m_buttons;
+    int m_buttonsDialog;
 
     /// Icon
     ::fwGui::dialog::IMessageDialog::Icons m_icon;
-
-    /// dialog object from qml
-    QObject* m_dialog;
+    int m_iconDialog;
 
     /// boolean to check if button was pressed
     bool m_isClicked;
     ::fwGui::dialog::IMessageDialog::Buttons m_clicked;
+
+    bool m_visible;
+
+    void emitIcon(const int&);
+    void emitButtons(const int&);
 
 protected Q_SLOTS:
     void resultDialog(int button);

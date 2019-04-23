@@ -25,10 +25,9 @@
 namespace fwGuiQml
 {
 /**
- * @brief       The namespace fwGuiQml::container contains the classes used for container implementation with Qt
- * Library.
+ * @brief       The namespace fwGuiQml::model contains the classes used for model implementation in Qml.
  */
-namespace container
+namespace model
 {
 
 }

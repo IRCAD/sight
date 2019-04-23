@@ -77,14 +77,14 @@ MessageDialog::~MessageDialog()
 
 void MessageDialog::setTitle( const std::string& title )
 {
-    m_title = title;
+    m_title = QString::fromStdString(title);
 }
 
 //------------------------------------------------------------------------------
 
 void MessageDialog::setMessage( const std::string& msg )
 {
-    m_message = msg;
+    m_message = QString::fromStdString(msg);
 }
 
 //------------------------------------------------------------------------------
@@ -119,8 +119,6 @@ void MessageDialog::setDefaultButton(::fwGui::dialog::IMessageDialog::Buttons bu
 {
     MessageDialogQmlIconsType::const_iterator iterIcon = messageDialogQmlIcons.find(m_icon);
     SLM_ASSERT("Unknown Icon", iterIcon != messageDialogQmlIcons.end());
-    QString title = QString::fromStdString(m_title);
-    QString text  = QString::fromStdString(m_message);
     // get the qml engine QmlApplicationEngine
     SPTR(::fwQml::QmlEngine) engine = ::fwQml::QmlEngine::getDefault();
     m_isClicked                     = false;
@@ -131,12 +129,12 @@ void MessageDialog::setDefaultButton(::fwGui::dialog::IMessageDialog::Buttons bu
 
     // get the path of the qml ui file in the 'rc' directory
     auto dialogPath = ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-0.1/dialog/MessageDialog.qml");
-    QObject::connect(m_dialog, SIGNAL(resultDialog(int)),
-                     this, SLOT(resultDialog(int)));
+    engine->getRootContext()->setContextProperty("messageDialog", this);
     // load the qml ui component
-    m_dialog = engine->createComponent(dialogPath);
-    m_dialog->setProperty("title", title);
-    m_dialog->setProperty("icon", icon);
+    QObject* dialog = engine->createComponent(dialogPath);
+    Q_EMIT titleChanged();
+    Q_EMIT messageChanged();
+    emitIcon(icon);
 
     for(MessageDialogQmlButtonType::value_type button :  messageDialogQmlButton)
     {
@@ -145,13 +143,13 @@ void MessageDialog::setDefaultButton(::fwGui::dialog::IMessageDialog::Buttons bu
             buttons |= button.second;
         }
     }
-    m_dialog->setProperty("standardButtons", buttons);
-    QMetaObject::invokeMethod(m_dialog, "open");
-    while (!m_isClicked && m_dialog->property("visible").toBool())
+    emitButtons(buttons);
+    QMetaObject::invokeMethod(dialog, "open");
+    while (!m_isClicked && m_visible)
     {
         qGuiApp->processEvents();
     }
-    delete m_dialog;
+    delete dialog;
     return m_clicked;
 }
 
@@ -168,6 +166,22 @@ void MessageDialog::resultDialog(int clicked)
         }
     }
     m_isClicked = true;
+}
+
+//------------------------------------------------------------------------------
+
+void MessageDialog::emitIcon(const int& icon)
+{
+    m_iconDialog = icon;
+    Q_EMIT iconChanged();
+}
+
+//------------------------------------------------------------------------------
+
+void MessageDialog::emitButtons(const int& buttons)
+{
+    m_buttonsDialog = buttons;
+    Q_EMIT iconChanged();
 }
 
 //------------------------------------------------------------------------------

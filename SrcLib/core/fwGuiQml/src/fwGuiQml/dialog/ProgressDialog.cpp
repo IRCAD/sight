@@ -45,33 +45,14 @@ ProgressDialog::ProgressDialog( ::fwGui::GuiBaseObject::Key key, const std::stri
                                                                                                                           m_pdialog(
                                                                                                                              NULL
                                                                                                                              ),*/
-//    m_pprogressbar( NULL ),
-//    m_pcancelButton( NULL ),
-//    m_pmainWindow( NULL )
+//    m_pprogressbar( NULL )
 {
 
     // Use progress widget defined by IFrameSrv
     ::fwGui::container::fwContainer::sptr progressWidget = ::fwGui::IFrameSrv::getProgressWidget();
-    if (progressWidget != nullptr)
-    {
-//        QWidget* activeWindow = ::fwGuiQml::container::QmlContainer::dynamicCast( progressWidget )->getQmlContainer();
-//        m_pmainWindow = qobject_cast< QMainWindow* >( activeWindow );
-    }
-
-//    QWidget *activeWindow = NULL;
-//
-//    BOOST_FOREACH (QWidget *widget, QGuiApplication::topLevelWidgets())
-//    {
-//        activeWindow = qobject_cast< QMainWindow * >(widget);
-//        // activeWindow must also have a layout to use statusBar()
-//        if ( activeWindow && activeWindow->layout())
-//        {
-//            m_pmainWindow = qobject_cast< QMainWindow * >(activeWindow);
-//            break;
-//        }
-//    }
 
 //    m_pcancelButton = new QPushButton("Cancel");
+    // main window add cancel and progress bar
 //    QObject::connect( m_pcancelButton, SIGNAL(clicked()), this, SLOT(cancelPressed()) );
 
 //    if ( m_pmainWindow )
@@ -87,10 +68,7 @@ ProgressDialog::ProgressDialog( ::fwGui::GuiBaseObject::Key key, const std::stri
 //    else
 //    {
 //        m_pdialog = new QProgressDialog( 0, Qt::WindowStaysOnTopHint );
-    //m_pdialog = new QProgressDialog( activeWindow, Qt::WindowStaysOnTopHint );
 
-    // FIXME modal dialog has conflict with MessageHandler
-    //m_pdialog->setWindowModality(Qt::WindowModal);
 //        m_pdialog->setWindowModality(Qt::NonModal);
 //        m_pdialog->setMinimum(0);
 //        m_pdialog->setMaximum(100);
@@ -108,7 +86,6 @@ ProgressDialog::ProgressDialog( ::fwGui::GuiBaseObject::Key key, const std::stri
 
 ProgressDialog::~ProgressDialog()
 {
-//    QObject::disconnect( m_pcancelButton, SIGNAL(clicked()), this, SLOT(cancelPressed()) );
 
     this->setTitle("");
     this->setMessage("");
@@ -202,16 +179,10 @@ void ProgressDialog::setMessage(const std::string& msg)
 }
 
 //------------------------------------------------------------------------------
+//IProgressDialog::cancelPressed();
 
-void ProgressDialog::cancelPressed()
-{
-    IProgressDialog::cancelPressed();
-}
-
-//------------------------------------------------------------------------------
 void ProgressDialog::hideCancelButton()
 {
-//    m_pcancelButton->hide();
 }
 
 } // namespace dialog

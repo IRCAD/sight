@@ -52,6 +52,11 @@ class FWGUIQML_CLASS_API InputDialog : public QObject,
                                        public ::fwGui::dialog::IInputDialog
 {
 Q_OBJECT
+Q_PROPERTY(QString input MEMBER m_input NOTIFY inputChanged)
+Q_PROPERTY(QString message MEMBER m_message NOTIFY messageChanged)
+Q_PROPERTY(QString title MEMBER m_title NOTIFY titleChanged)
+Q_PROPERTY(bool visible MEMBER m_visible)
+
 public:
 
     fwCoreClassDefinitionsWithFactoryMacro( (InputDialog)(::fwGui::dialog::IInputDialog),
@@ -74,17 +79,21 @@ public:
     /// Get the input text in the input field
     FWGUIQML_API virtual std::string getInput() override;
 
+Q_SIGNALS:
+    void inputChanged();
+    void messageChanged();
+    void titleChanged();
+
 protected:
     /// Dialog title
-    std::string m_title;
+    QString m_title;
     /// Dialog box message
-    std::string m_message;
+    QString m_message;
     /// Text inputed
-    std::string m_input;
-    /// dialog box
-    QObject* m_dialog;
+    QString m_input;
     /// boolean to check if button was pressed
     bool m_isClicked;
+    bool m_visible;
 
 protected Q_SLOTS:
     void resultDialog(const QVariant& msg, bool isOk);

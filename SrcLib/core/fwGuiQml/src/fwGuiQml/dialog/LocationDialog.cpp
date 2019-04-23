@@ -38,7 +38,6 @@
 
 #include <QDebug>
 #include <QGuiApplication>
-#include <QString>
 
 #include <functional>
 
@@ -61,56 +60,53 @@ LocationDialog::LocationDialog(::fwGui::GuiBaseObject::Key key) :
 
 ::fwData::location::ILocation::sptr LocationDialog::show()
 {
-    //    QWidget* parent                             = qGuiApp->focusWindow();
     QString caption                             = QString::fromStdString(this->getTitle());
     const ::boost::filesystem::path defaultPath = this->getDefaultLocation();
     QString path                                = QString::fromStdString(defaultPath.string());
     QStringList filter                          = this->fileFilters();
-    // get the qml engine QmlApplicationEngine
     SPTR(::fwQml::QmlEngine) engine = ::fwQml::QmlEngine::getDefault();
-    m_isfinish                      = false;
-    // get the path of the qml ui file in the 'rc' directory
+    m_isFinish                      = false;
     auto dialogPath = ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-0.1/dialog/LocationDialog.qml");
 
+    engine->getRootContext()->setContextProperty("locationDialog", this);
     // load the qml ui component
-    m_dialog = engine->createComponent(dialogPath);
-    m_dialog->setProperty("folder", QUrl(path));
-    m_dialog->setProperty("title", caption);
-    m_dialog->setProperty("nameFilters", filter);
+    QObject* dialog = engine->createComponent(dialogPath);
+
+    emitTitle(caption);
+    emitFolder(QUrl::fromLocalFile(path));
+    emitFilter(filter);
 
     if ( (m_style& ::fwGui::dialog::ILocationDialog::READ) ||
          (m_style & ::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST))
     {
-        m_dialog->setProperty("selectExisting", true);
+        emitExisting(true);
     }
     else
     {
-        m_dialog->setProperty("selectExisting", false);
+        emitExisting(false);
     }
 
     if (m_type == ::fwGui::dialog::ILocationDialog::MULTI_FILES)
     {
         SLM_ASSERT("MULTI_FILES type must have a READ style", m_style & ::fwGui::dialog::ILocationDialog::READ);
 
-        m_dialog->setProperty("selectFolder", false);
-        m_dialog->setProperty("selectExisting", true);
-        m_dialog->setProperty("selectMultiple", true);
+        emitIsFolder(false);
+        emitExisting(true);
+        emitMultiple(true);
         QStringList files;
     }
     else if (m_type == ::fwGui::dialog::ILocationDialog::FOLDER)
     {
-        m_dialog->setProperty("selectExisting", true);
-        m_dialog->setProperty("selectFolder", true);
+        emitExisting(true);
+        emitIsFolder(true);
     }
-    QObject::connect(m_dialog, SIGNAL(filesNameChange(QVariant)),
-                     this, SLOT(resultDialog(QVariant)));
-    QMetaObject::invokeMethod(m_dialog, "open");
+    QMetaObject::invokeMethod(dialog, "open");
     // boolean to check first if it has called the slot or secondly if the FileDialog isn't visible
-    while (!m_isfinish && m_dialog->property("visible").toBool())
+    while (!m_isFinish && m_visible)
     {
         qGuiApp->processEvents();
     }
-    delete m_dialog;
+    delete dialog;
     return m_location;
 }
 
@@ -119,7 +115,7 @@ LocationDialog::LocationDialog(::fwGui::GuiBaseObject::Key key) :
 void LocationDialog::resultDialog(const QVariant& msg)
 {
     QList<QUrl> files = msg.value<QList<QUrl> >();
-    m_wildcard = m_dialog->property("selectedNameFilter").toString().toStdString();
+    m_wildcard = m_filterSelected.toStdString();
     if (!files.isEmpty() && !files.first().isEmpty())
     {
         if (m_type == ::fwGui::dialog::ILocationDialog::MULTI_FILES)
@@ -143,8 +139,7 @@ void LocationDialog::resultDialog(const QVariant& msg)
             m_location = ::fwData::location::SingleFile::New(bpath);
         }
     }
-    m_isfinish = true;
-    qDebug() << "Called the C++ slot with message:" << files;
+    m_isFinish = true;
 }
 
 //------------------------------------------------------------------------------
@@ -152,6 +147,54 @@ void LocationDialog::resultDialog(const QVariant& msg)
 void LocationDialog::setType( ::fwGui::dialog::ILocationDialog::Types type )
 {
     m_type = type;
+}
+
+//------------------------------------------------------------------------------
+
+void LocationDialog::emitExisting(const bool& existing)
+{
+    m_existing = existing;
+    Q_EMIT existingChanged();
+}
+
+//------------------------------------------------------------------------------
+
+void LocationDialog::emitFilter(const QStringList& filter)
+{
+    m_filter = filter;
+    Q_EMIT filterChanged();
+}
+
+//------------------------------------------------------------------------------
+
+void LocationDialog::emitFolder(const QUrl& folder)
+{
+    m_folder = folder;
+    Q_EMIT folderChanged();
+}
+
+//------------------------------------------------------------------------------
+
+void LocationDialog::emitMultiple(const bool& multiple)
+{
+    m_multiple = multiple;
+    Q_EMIT multipleChanged();
+}
+
+//------------------------------------------------------------------------------
+
+void LocationDialog::emitIsFolder(const bool& isFolder)
+{
+    m_isFolder = isFolder;
+    Q_EMIT isFolderChanged();
+}
+
+//------------------------------------------------------------------------------
+
+void LocationDialog::emitTitle(const QString& title)
+{
+    m_title = title;
+    Q_EMIT titleChanged();
 }
 
 //------------------------------------------------------------------------------

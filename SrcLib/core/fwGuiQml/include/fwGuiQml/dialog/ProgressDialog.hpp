@@ -23,7 +23,6 @@
 #pragma once
 
 #include "fwGuiQml/config.hpp"
-#include "fwGuiQml/container/QmlContainer.hpp"
 
 #include <fwGui/dialog/IProgressDialog.hpp>
 
@@ -77,7 +76,6 @@ public:
     FWGUIQML_API void hideCancelButton() override;
 
 protected Q_SLOTS:
-    void cancelPressed() override;
 
 protected:
     QString m_title;

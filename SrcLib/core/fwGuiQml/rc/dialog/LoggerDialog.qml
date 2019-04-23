@@ -1,14 +1,17 @@
-import QtQuick 2.3
-import QtQuick.Controls 2.5
-import QtQuick.Controls 1.4
+import QtQuick 2.9
 import QtQuick.Dialogs 1.2
-import QtQuick.Layouts 1.1
+import QtQuick.Layouts 1.3
+import QtQuick.Controls 1.4
 import QtQuick.Controls.Styles 1.4
 
 Dialog {
     id: inputDialog
 
-    signal resultDialog(bool isOk)
+    property url critical: loggerDialog.critical
+    property url hidden: loggerDialog.hidden
+    property url information: loggerDialog.information
+    property url shown: loggerDialog.shown
+    property url warning: loggerDialog.warning
 
     function provideIcon(levelValue)
     {
@@ -19,23 +22,10 @@ Dialog {
         }
     }
 
-    property url critical: ""
-    property url hidden: ""
-    property url information: ""
-    property url shown: ""
-    property url warning: ""
-
     modality: Qt.ApplicationModal
-    title: "Identification dialog"
+    title: loggerDialog.title
     standardButtons: StandardButton.Cancel | StandardButton.Ok
     width: 500
-
-    onAccepted: {
-        resultDialog(true)
-    }
-    onRejected: {
-        resultDialog(false)
-    }
 
     ColumnLayout {
         anchors.fill: parent
@@ -45,59 +35,65 @@ Dialog {
 
         Row {
             spacing: 5
+
             Image {
                 id: icon
-                objectName: "icon"
+
                 width: 48
                 height: 48
                 mipmap: true
+                source: loggerDialog.icon
                 fillMode: Image.PreserveAspectFit
             }
             Text {
                 id:description
-                objectName: "description"
+
+                text: loggerDialog.message
                 // For text to wrap, a width has to be explicitly provided
                 width: 400
-
                 // This setting makes the text wrap at word boundaries when it goes
                 // past the width of the Text object
                 wrapMode: Text.WordWrap
-
             }
         }
         CheckBox {
             id: checkbox
+
             text: "Check Box"
             height:50
             style: CheckBoxStyle {
                 indicator: Image {
+                    id: detailsIcon
+
                     width: 16
                     height: 16
-                    id: detailsIcon
                     fillMode: Image.PreserveAspectFit
-                    objectName: "shownDetails"
                     mipmap: true
                     antialiasing: true
                     source: checkbox.checkedState ? shown : hidden
                 }
             }
+
             onCheckedChanged: {
-                textDetails.visible = checkedState
+                textDetails.visible = checkedState;
                 if (!checkedState) {
-                    inputDialog.width = 500
-                    inputDialog.height = 50
+                    inputDialog.width = 500;
+                    inputDialog.height = 50;
                 }
             }
         }
         TableView {
             id: textDetails
-            visible: false
 
+            visible: false
             Layout.minimumWidth: 400
             Layout.fillWidth: true
+            Layout.fillHeight: true
             sortIndicatorVisible: true
             sortIndicatorColumn: 0
-            Layout.fillHeight: true
+            model: loggerModel
+            horizontalScrollBarPolicy: Qt.ScrollBarAlwaysOff
+            verticalScrollBarPolicy: Qt.ScrollBarAsNeeded
 
             TableViewColumn {
                 width: 50
@@ -114,9 +110,9 @@ Dialog {
                     }
                 }
             }
-
             TableViewColumn {
                 id:level
+
                 role: "level"
                 title: "Level"
                 width: 120
@@ -144,17 +140,17 @@ Dialog {
                     }
                 }
             }
-
             TableViewColumn {
                 id:message
+
                 role: "message"
                 title: "Message"
                 width: textDetails.width - 180
                 delegate: Component {
                     Item {
                         Text {
-                            //                            color: styleData.textColor
-                            color: styleData.row % 2 ? "red" : "black"
+                            color: styleData.textColor
+                            //color: styleData.row % 2 ? "red" : "black"
                             elide: styleData.elideMode
                             text: styleData.value
                             width: message.width
@@ -162,20 +158,14 @@ Dialog {
                     }
                 }
             }
-
-            model: errorModel
-            horizontalScrollBarPolicy: Qt.ScrollBarAlwaysOff
-            verticalScrollBarPolicy: Qt.ScrollBarAsNeeded
-
-        }
-        ListModel {
-            function addError(levelString, messageString)
-            {
-                errorModel.append({level: levelString, message: messageString})
-            }
-
-            id:errorModel
-            objectName: "errorModel"
         }
     }
+
+    onAccepted: {
+        loggerDialog.resultDialog(true)
+    }
+    onRejected: {
+        loggerDialog.resultDialog(false)
+    }
+    onVisibleChanged: loggerDialog.visible = visible
 }

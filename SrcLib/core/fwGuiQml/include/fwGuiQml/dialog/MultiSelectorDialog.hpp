@@ -41,10 +41,15 @@ namespace dialog
  * @brief   MultiSelectorDialog allowing the choice of an element among severals (_selections)
  */
 
-class FWGUIQML_CLASS_API MultiSelectorDialog : public ::fwGui::dialog::IMultiSelectorDialog,
-                                               public QObject
+class FWGUIQML_CLASS_API MultiSelectorDialog :  public QObject,
+                                                public ::fwGui::dialog::IMultiSelectorDialog
+
 {
 Q_OBJECT
+Q_PROPERTY(QString title MEMBER m_title NOTIFY titleChanged)
+Q_PROPERTY(QString message MEMBER m_message NOTIFY messageChanged)
+Q_PROPERTY(bool visible MEMBER m_visible)
+
 public:
 
     fwCoreClassDefinitionsWithFactoryMacro( (MultiSelectorDialog)(::fwGui::dialog::IMultiSelectorDialog),
@@ -72,18 +77,22 @@ public:
 
     FWGUIQML_API virtual void setMessage(const std::string& msg) override;
 
+Q_SIGNALS:
+    void titleChanged();
+    void messageChanged();
+
 protected Q_SLOTS:
-    void resultDialog(QVariant checkList);
+    void resultDialog(QVariant checkList, bool state);
 
 private:
 
     Selections m_selections;
     /// Dialog box message
-    std::string m_message;
-    std::string m_title;
-    /// Dialog box created
-    QObject*    m_dialog;
+    QString m_message;
+    QString m_title;
+    /// check if button clicked or dialog still visible
     bool m_isClicked;
+    bool m_visible;
 };
 
 } // namespace dialog

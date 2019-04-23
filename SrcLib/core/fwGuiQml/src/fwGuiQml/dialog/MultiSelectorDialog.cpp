@@ -22,6 +22,8 @@
 
 #include "fwGuiQml/dialog/MultiSelectorDialog.hpp"
 
+#include "fwGuiQml/model/RoleListModel.hpp"
+
 #include <fwCore/base.hpp>
 
 #include <fwGui/registry/macros.hpp>
@@ -64,56 +66,60 @@ void MultiSelectorDialog::setSelections(Selections _selections)
 
 void MultiSelectorDialog::setTitle(std::string _title)
 {
-    this->m_title = _title;
+    this->m_title = QString::fromStdString(_title);
 }
 
 //------------------------------------------------------------------------------
 
 ::fwGui::dialog::IMultiSelectorDialog::Selections MultiSelectorDialog::show()
 {
+    ::fwGuiQml::model::RoleListModel model;
     SPTR(::fwQml::QmlEngine) engine = ::fwQml::QmlEngine::getDefault();
-    QString title = QString::fromStdString(m_title);
-    m_isClicked = false;
+    m_isClicked                     = false;
 
     // get the path of the qml ui file in the 'rc' directory
     auto dialogPath = ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-0.1/dialog/MultiSelectorDialog.qml");
 
     // load the qml ui component
-    m_dialog = engine->createComponent(dialogPath);
-    m_dialog->setProperty("title", title);
-    QObject::connect(m_dialog, SIGNAL(resultDialog(QVariant)),
-                     this, SLOT(resultDialog(QVariant)));
-    QObject* options = m_dialog->findChild<QObject*>("options");
+    engine->getRootContext()->setContextProperty("multiSelectorDialog", this);
+    QObject* dialog = engine->createComponent(dialogPath);
+    Q_EMIT titleChanged();
+    model.addRole(Qt::UserRole + 1, "textOption");
+    model.addRole(Qt::UserRole + 2, "check");
     for( Selections::value_type selection :  m_selections)
     {
-        QMetaObject::invokeMethod(options, "addMessage",
-                                  Q_ARG(QVariant, QString::fromStdString(selection.first)),
-                                  Q_ARG(QVariant, selection.second));
+        QHash<QByteArray, QVariant> data;
+        data.insert("textOption", QString::fromStdString(selection.first));
+        data.insert("check", selection.second);
+        model.addData(QHash<QByteArray, QVariant>(data));
     }
-
-    if(!m_message.empty())
+    engine->getRootContext()->setContextProperty("multiSelectorModel", &model);
+    if(!m_message.isNull() && !m_message.isEmpty())
     {
-        QObject* groupBox = m_dialog->findChild<QObject*>("groupBox");
-        groupBox->setProperty("title", QString::fromStdString(m_message));
+        Q_EMIT messageChanged();
     }
-    QMetaObject::invokeMethod(m_dialog, "open");
-    while (!m_isClicked && m_dialog->property("visible").toBool())
+    QMetaObject::invokeMethod(dialog, "open");
+    while (!m_isClicked && m_visible)
     {
         qGuiApp->processEvents();
     }
+    delete dialog;
     return m_selections;
 }
 
 //------------------------------------------------------------------------------
 
-void MultiSelectorDialog::resultDialog(QVariant checkList)
+void MultiSelectorDialog::resultDialog(QVariant checkList, bool state)
 {
-    QList<QVariant> checkListState = checkList.toList();
-    int index                      = 0;
-    for( Selections::value_type selection :  m_selections)
+    if (state == true)
     {
-        m_selections[selection.first] = checkListState[index].toBool();
-        index++;
+        QList<QVariant> checkListState = checkList.toList();
+        int index                      = 0;
+        for( Selections::value_type selection :  m_selections)
+        {
+            m_selections[selection.first] = checkListState[index].toBool();
+            index++;
+        }
     }
     m_isClicked = true;
 }
@@ -122,7 +128,7 @@ void MultiSelectorDialog::resultDialog(QVariant checkList)
 
 void MultiSelectorDialog::setMessage(const std::string& msg)
 {
-    m_message = msg;
+    m_message = QString::fromStdString(msg);
 }
 
 //------------------------------------------------------------------------------

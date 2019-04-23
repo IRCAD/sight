@@ -1,35 +1,36 @@
-import QtQuick 2.3
+import QtQuick 2.9
 import QtQuick.Controls 1.4
 import QtQuick.Dialogs 1.2
-import QtQuick.Layouts 1.1
-import QtQuick.Window 2.0
+import QtQuick.Layouts 1.3
+import QtQuick.Window 2.3
 
 Dialog {
-    id: inputDialog
     modality: Qt.ApplicationModal
-    title: "Identification dialog"
+    title: inputDialog.title
     standardButtons: StandardButton.Cancel | StandardButton.Ok
-    signal resultDialog(var answer, bool isOk)
-    onAccepted: {
-        resultDialog(answer.text, true)
-    }
-    onRejected: {
-        resultDialog(answer.text, false)
-    }
 
     ColumnLayout {
         id: column
+
         width: parent ? parent.width : 100
         Label {
-            objectName: "message"
-            text: "Enter Pin Code: "
+            text: inputDialog.message
             Layout.columnSpan: 2
             Layout.fillWidth: true
             wrapMode: Text.WordWrap
         }
         TextField {
             id: answer
-            objectName: "answer"
+
+            placeholderText: inputDialog.input
         }
     }
+
+    onAccepted: {
+        inputDialog.resultDialog(answer.text, true)
+    }
+    onRejected: {
+        inputDialog.resultDialog(answer.text, false)
+    }
+    onVisibleChanged: inputDialog.visible = visible
 }

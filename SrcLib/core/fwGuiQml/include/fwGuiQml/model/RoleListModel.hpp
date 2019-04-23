@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2019 IRCAD France
+ * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,13 +22,32 @@
 
 #pragma once
 
-namespace guiQml
+#include <QAbstractListModel>
+#include <Qt>
+
+namespace fwGuiQml
 {
-/**
- * @brief       The namespace guiQml::editor contains a basic editor written with Qt.
- */
-namespace editor
+namespace model
 {
 
-}
-}
+class RoleListModel : public QAbstractListModel
+{
+Q_OBJECT
+public:
+    explicit RoleListModel(QObject* parent = nullptr);
+    void addData(const QHash<QByteArray, QVariant>&);
+    void addRole(const int& enumNb, const QByteArray& role);
+    bool isEmpty() noexcept;
+    int rowCount(const QModelIndex& parent = QModelIndex()) const Q_DECL_OVERRIDE;
+    QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const Q_DECL_OVERRIDE;
+
+    QHash<int, QByteArray> roleNames() const Q_DECL_OVERRIDE;
+Q_SIGNALS:
+public Q_SLOTS:
+    void theDataChanged();
+private:
+    QHash<int, QByteArray> m_roles;
+    QList<QHash<QByteArray, QVariant> > m_data;
+};
+} // namespace model
+} // namespace fwGuiQml

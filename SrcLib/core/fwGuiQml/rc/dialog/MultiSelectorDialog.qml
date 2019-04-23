@@ -1,44 +1,33 @@
-import QtQuick 2.3
-import QtQuick.Controls 2.5
+import QtQuick 2.9
+import QtQuick.Controls 2.3
 import QtQuick.Controls 1.4
 import QtQuick.Dialogs 1.2
-import QtQuick.Layouts 1.1
+import QtQuick.Layouts 1.3
 
 Dialog {
-    signal resultDialog(var checked)
     modality: Qt.ApplicationModal
     standardButtons: StandardButton.Ok | StandardButton.Cancel
     width: column.width
-    title: "Overwrite?"
-    onButtonClicked: {
-        var listClick = []
-        for (var i = 0; i < checkboxList.count; i++)
-        {
-            var status = checkboxList.itemAt(i).checked;
-            listClick.push(status);
-        }
-        resultDialog(listClick);
-    }
+    title: multiSelectorDialog.title
+
     ColumnLayout {
         id: column
+
         Layout.fillWidth: true
+
         GroupBox {
             id: groupBox
-            objectName: "groupBox"
+            title: multiSelectorDialog.message
             Layout.fillWidth: true
+
             Column {
                 spacing: 10
                 Layout.fillWidth: true
+
                 Repeater {
                     id: checkboxList
-                    model: ListModel{
-                        id: options
-                        objectName: "options"
-                        function addOption (opt, checked) {
-                            options.append({textOption: opt, check: checked})
-                        }
-                    }
 
+                    model: multiSelectorModel
                     CheckBox {
                         text: textOption
                         checked: check
@@ -47,4 +36,18 @@ Dialog {
             }
         }
     }
+    onAccepted: {
+        var listClick = [];
+        var length = checkboxList.count;
+        for (var i = 0; i < length; i++)
+        {
+            var status = checkboxList.itemAt(i).checked;
+            listClick.push(status);
+        }
+            multiSelectorDialog.resultDialog(listClick, true);
+    }
+    onRejected: {
+        multiSelectorDialog.resultDialog([], false);
+    }
+    onVisibleChanged: multiSelectorDialog.visible = visible
 }
