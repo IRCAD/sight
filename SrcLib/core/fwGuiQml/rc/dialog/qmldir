@@ -1,7 +1,0 @@
-module fwGuiQml
-dialog 1.0 InputDialog.qml
-dialog 1.0 LocationDialog.qml
-dialog 1.0 LoggerDialog.qml
-dialog 1.0 MessageDialog.qml
-dialog 1.0 MultiSelectorDialog.qml
-dialog 1.0 ProgressDialog.qml

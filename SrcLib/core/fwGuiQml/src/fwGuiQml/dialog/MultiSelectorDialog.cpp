@@ -81,6 +81,7 @@ void MultiSelectorDialog::setTitle(std::string _title)
     auto dialogPath = ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-0.1/dialog/MultiSelectorDialog.qml");
 
     // load the qml ui component
+    engine->getRootContext()->setContextProperty("multiSelectorModel", &model);
     engine->getRootContext()->setContextProperty("multiSelectorDialog", this);
     QObject* dialog = engine->createComponent(dialogPath);
     Q_EMIT titleChanged();
@@ -93,7 +94,6 @@ void MultiSelectorDialog::setTitle(std::string _title)
         data.insert("check", selection.second);
         model.addData(QHash<QByteArray, QVariant>(data));
     }
-    engine->getRootContext()->setContextProperty("multiSelectorModel", &model);
     if(!m_message.isNull() && !m_message.isEmpty())
     {
         Q_EMIT messageChanged();

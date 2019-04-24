@@ -91,6 +91,7 @@ bool LoggerDialog::show()
     QObject* dialog = engine->createComponent(dialogPath);
     QObject::connect(dialog, SIGNAL(resultDialog(bool)),
                      this, SLOT(resultDialog(bool)));
+    engine->getRootContext()->setContextProperty("loggerModel", &model);
     engine->getRootContext()->setContextProperty("loggerDialog", this);
     Q_EMIT titleChanged();
 
@@ -154,7 +155,6 @@ bool LoggerDialog::show()
         data.insert("message", QString::fromStdString(it->getMessage()));
         model.addData(QHash<QByteArray, QVariant>(data));
     }
-    engine->getRootContext()->setContextProperty("loggerModel", &model);
     QMetaObject::invokeMethod(dialog, "open");
 
     while (!m_isClicked && m_visible)

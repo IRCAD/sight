@@ -22,6 +22,8 @@
 
 #include "fwGuiQml/model/RoleListModel.hpp"
 
+#include <fwCore/spyLog.hpp>
+
 #include <QDebug>
 
 namespace fwGuiQml
@@ -56,13 +58,11 @@ QVariant RoleListModel::data(const QModelIndex& index, int role) const
        index.row() < 0 ||
        rowCount() <= index.row())
     {
-        qDebug() << "Warning: " << index.row() << ", " << index.column();
         return QVariant();
     }
 
     // Nominal case
-    qDebug() << "MyModel::data: " << index.column() << "; " << index.row();
-    return m_data[index.row()][m_roles.value(role)];
+    return m_data[index.row()].value(m_roles.value(role));
 }
 
 //------------------------------------------------------------------------------
@@ -77,7 +77,9 @@ QHash<int, QByteArray> RoleListModel::roleNames() const
 
 void RoleListModel::addData(const QHash<QByteArray, QVariant>& data)
 {
+    SLM_ASSERT("RoleTableModel must have role to add Data", !m_roles.empty());
     m_data.push_front(data);
+    QAbstractListModel::endResetModel();
 }
 
 //------------------------------------------------------------------------------
@@ -85,6 +87,7 @@ void RoleListModel::addData(const QHash<QByteArray, QVariant>& data)
 void RoleListModel::addRole(const int& enumNb, const QByteArray& role)
 {
     m_roles.insert(enumNb, role);
+    m_data.clear();
 }
 
 //------------------------------------------------------------------------------
@@ -95,11 +98,6 @@ bool RoleListModel::isEmpty() noexcept
 }
 
 //------------------------------------------------------------------------------
-
-void RoleListModel::theDataChanged()
-{
-    //TODO
-}
 
 } // namespace model
 } // namespace fwGuiQml

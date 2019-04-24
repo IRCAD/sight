@@ -81,6 +81,7 @@ std::string SelectorDialog::show()
     auto dialogPath = ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-0.1/dialog/SelectorDialog.qml");
 
     // load the qml ui component
+    engine->getRootContext()->setContextProperty("selectorModel", &model);
     engine->getRootContext()->setContextProperty("selectorDialog", this);
     QObject* dialog = engine->createComponent(dialogPath);
     Q_EMIT titleChanged();
@@ -101,7 +102,6 @@ std::string SelectorDialog::show()
         data.insert("textOption", QString::fromStdString(selection));
         model.addData(QHash<QByteArray, QVariant>(data));
     }
-    engine->getRootContext()->setContextProperty("selectorModel", &model);
 
     if(!m_message.isEmpty())
     {

@@ -42,9 +42,6 @@ public:
     QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const Q_DECL_OVERRIDE;
 
     QHash<int, QByteArray> roleNames() const Q_DECL_OVERRIDE;
-Q_SIGNALS:
-public Q_SLOTS:
-    void theDataChanged();
 private:
     QHash<int, QByteArray> m_roles;
     QList<QHash<QByteArray, QVariant> > m_data;

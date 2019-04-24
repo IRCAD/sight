@@ -22,6 +22,8 @@
 
 #include "fwGuiQml/model/RoleTableModel.hpp"
 
+#include <fwCore/spyLog.hpp>
+
 #include <QDebug>
 
 namespace fwGuiQml
@@ -64,13 +66,11 @@ QVariant RoleTableModel::data(const QModelIndex& index, int role) const
        index.row() < 0 ||
        rowCount() <= index.row())
     {
-        qDebug() << "Warning: " << index.row() << ", " << index.column();
         return QVariant();
     }
 
     // Nominal case
-    qDebug() << "MyModel::data: " << index.column() << "; " << index.row();
-    return m_data[index.row()][m_roles.value(role)];
+    return m_data[index.row()].value(m_roles.value(role));
 }
 
 //------------------------------------------------------------------------------
@@ -85,22 +85,23 @@ QHash<int, QByteArray> RoleTableModel::roleNames() const
 
 void RoleTableModel::addData(const QHash<QByteArray, QVariant>& data)
 {
+    SLM_ASSERT("RoleTableModel must have role to add Data", !m_roles.empty());
     m_data.push_front(data);
+    QAbstractTableModel::endResetModel();
 }
 
 //------------------------------------------------------------------------------
 
 void RoleTableModel::addRole(const int& enumNb, const QByteArray& role)
 {
+    if (!m_data.empty())
+    {
+        m_data.clear();
+    }
     m_roles.insert(enumNb, role);
 }
 
 //------------------------------------------------------------------------------
-
-void RoleTableModel::theDataChanged()
-{
-    //TODO
-}
 
 } // namespace model
 } // namespace fwGuiQml
