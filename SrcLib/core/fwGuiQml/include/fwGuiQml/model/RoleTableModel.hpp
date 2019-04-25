@@ -34,16 +34,42 @@ class RoleTableModel : public QAbstractTableModel
 {
 Q_OBJECT
 public:
+    /// Constructor
     explicit RoleTableModel(QObject* parent = nullptr);
-    void addData(const QHash<QByteArray, QVariant>&);
+
+    /**
+     * @brief Add data to the TableModel and call the reset function to emit changes to Qml.
+     * @param[in] data One data row with role name as key inside the QHash
+     */
+    void addData(const QHash<QByteArray, QVariant>& data);
+
+    /**
+     * @brief Add role to the TableModel that can only be called before any data added
+     * @param[in] enumNb the key of the QHash that carry the roles that need to be at least Qt::UserRole +1
+     * @param[in] role the value of the string role in qml
+     */
     void addRole(const int& enumNb, const QByteArray& role);
+
+    /**
+     * @brief Return if data isEmpty
+     */
+    bool isEmpty() noexcept;
+
+    /// override
     int rowCount(const QModelIndex& parent = QModelIndex()) const Q_DECL_OVERRIDE;
+
+    /// override
     int columnCount(const QModelIndex& parent = QModelIndex()) const Q_DECL_OVERRIDE;
+
+    /// override
     QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const Q_DECL_OVERRIDE;
 
+    /// override
     QHash<int, QByteArray> roleNames() const Q_DECL_OVERRIDE;
 private:
+    /// roles of the qml file to fill
     QHash<int, QByteArray> m_roles;
+    /// data to send to the qml file
     QList<QHash<QByteArray, QVariant> > m_data;
 };
 } // namespace model

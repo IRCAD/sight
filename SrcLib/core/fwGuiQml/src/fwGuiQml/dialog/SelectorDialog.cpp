@@ -73,7 +73,9 @@ void SelectorDialog::setTitle(std::string _title)
 
 std::string SelectorDialog::show()
 {
+    // list model for the repeater
     ::fwGuiQml::model::RoleListModel model;
+    // get the qml engine QmlApplicationEngine
     SPTR(::fwQml::QmlEngine) engine = ::fwQml::QmlEngine::getDefault();
     m_isClicked                     = false;
 
@@ -86,6 +88,7 @@ std::string SelectorDialog::show()
     QObject* dialog = engine->createComponent(dialogPath);
     Q_EMIT titleChanged();
 
+    // create all radiobutton
     model.addRole(Qt::UserRole + 1, "textOption");
     model.addRole(Qt::UserRole + 2, "check");
     for(std::string selection :  m_selections)
@@ -102,13 +105,13 @@ std::string SelectorDialog::show()
         data.insert("textOption", QString::fromStdString(selection));
         model.addData(QHash<QByteArray, QVariant>(data));
     }
+    SLM_ASSERT("The SelectorDialog need at least one option", !model.isEmpty());
 
     if(!m_message.isEmpty())
     {
         Q_EMIT messageChanged();
     }
 
-    std::string selection = "";
     QMetaObject::invokeMethod(dialog, "open");
     while (!m_isClicked && m_visible)
     {

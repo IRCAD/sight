@@ -73,7 +73,9 @@ void MultiSelectorDialog::setTitle(std::string _title)
 
 ::fwGui::dialog::IMultiSelectorDialog::Selections MultiSelectorDialog::show()
 {
+    // the listmodel that will be added as a context for the repeater.
     ::fwGuiQml::model::RoleListModel model;
+    // get the qml engine QmlApplicationEngine
     SPTR(::fwQml::QmlEngine) engine = ::fwQml::QmlEngine::getDefault();
     m_isClicked                     = false;
 
@@ -85,6 +87,7 @@ void MultiSelectorDialog::setTitle(std::string _title)
     engine->getRootContext()->setContextProperty("multiSelectorDialog", this);
     QObject* dialog = engine->createComponent(dialogPath);
     Q_EMIT titleChanged();
+    // fill the repeater for each checkbox that has to be created
     model.addRole(Qt::UserRole + 1, "textOption");
     model.addRole(Qt::UserRole + 2, "check");
     for( Selections::value_type selection :  m_selections)
@@ -98,6 +101,7 @@ void MultiSelectorDialog::setTitle(std::string _title)
     {
         Q_EMIT messageChanged();
     }
+    SLM_ASSERT("The MultiSelector need at least one selection", !model.isEmpty());
     QMetaObject::invokeMethod(dialog, "open");
     while (!m_isClicked && m_visible)
     {
@@ -113,6 +117,7 @@ void MultiSelectorDialog::resultDialog(QVariant checkList, bool state)
 {
     if (state == true)
     {
+        // retreive each check state of the selection list
         QList<QVariant> checkListState = checkList.toList();
         int index                      = 0;
         for( Selections::value_type selection :  m_selections)

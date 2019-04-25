@@ -136,6 +136,7 @@ void MessageDialog::setDefaultButton(::fwGui::dialog::IMessageDialog::Buttons bu
     Q_EMIT messageChanged();
     emitIcon(icon);
 
+    // add the different type of button needed
     for(MessageDialogQmlButtonType::value_type button :  messageDialogQmlButton)
     {
         if ( m_buttons & button.first)
@@ -159,6 +160,7 @@ void MessageDialog::resultDialog(int clicked)
 {
     for(MessageDialogQmlButtonType::value_type button :  messageDialogQmlButton)
     {
+        // get the button that has been click
         if ( clicked == button.second)
         {
             m_clicked = button.first;

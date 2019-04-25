@@ -83,6 +83,7 @@ public:
     FWGUIQML_API virtual Buttons show() override;
 
 Q_SIGNALS:
+    /// notify the qml of property change
     void titleChanged();
     void iconChanged();
     void messageChanged();
@@ -110,10 +111,12 @@ protected:
 
     bool m_visible;
 
-    void emitIcon(const int&);
-    void emitButtons(const int&);
+    /// Setter to QProperty and emit signal
+    FWGUIQML_API void emitIcon(const int&);
+    FWGUIQML_API void emitButtons(const int&);
 
 protected Q_SLOTS:
+    /// slot getting the result of the dialog when a button is pressed
     void resultDialog(int button);
 };
 

@@ -1,0 +1,11 @@
+<plugin id="PoCDialog" class="::PoCDialog::Plugin"  version="@PROJECT_VERSION@" >
+
+    <requirement id="dataReg" />
+    <requirement id="servicesReg" />
+    <requirement id="uiImageQml" />
+    <requirement id="uiMedDataQml" />
+    <requirement id="uiReconstructionQml" />
+
+    <library name="PoCDialog" />
+
+</plugin>

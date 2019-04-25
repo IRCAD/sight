@@ -90,6 +90,7 @@ public:
     FWGUIQML_API virtual bool show() override;
 
 Q_SIGNALS:
+    /// notify the qml of property change
     void criticalChanged();
     void hiddenChanged();
     void iconChanged();
@@ -100,6 +101,7 @@ Q_SIGNALS:
     void warningChanged();
 
 protected Q_SLOTS:
+    /// slot getting the result of the dialog when a button is pressed
     void resultDialog(bool isOk);
 
 private:
@@ -128,13 +130,14 @@ private:
     QUrl m_shown;
     QUrl m_warning;
 
-    void emitCritical(const QUrl&);
-    void emitHidden(const QUrl&);
-    void emitIcon(const QUrl&);
-    void emitInformation(const QUrl&);
-    void emitMessage(const QString&);
-    void emitShown(const QUrl&);
-    void emitWarning(const QUrl&);
+    /// Setter to QProperty and emit signal
+    FWGUIQML_API void emitCritical(const QUrl&);
+    FWGUIQML_API void emitHidden(const QUrl&);
+    FWGUIQML_API void emitIcon(const QUrl&);
+    FWGUIQML_API void emitInformation(const QUrl&);
+    FWGUIQML_API void emitMessage(const QString&);
+    FWGUIQML_API void emitShown(const QUrl&);
+    FWGUIQML_API void emitWarning(const QUrl&);
 };
 
 } // namespace dialog

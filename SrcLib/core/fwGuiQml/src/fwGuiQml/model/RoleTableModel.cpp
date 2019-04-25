@@ -87,6 +87,7 @@ void RoleTableModel::addData(const QHash<QByteArray, QVariant>& data)
 {
     SLM_ASSERT("RoleTableModel must have role to add Data", !m_roles.empty());
     m_data.push_front(data);
+    // the function that emits that data has changed it's structure
     QAbstractTableModel::endResetModel();
 }
 
@@ -94,11 +95,16 @@ void RoleTableModel::addData(const QHash<QByteArray, QVariant>& data)
 
 void RoleTableModel::addRole(const int& enumNb, const QByteArray& role)
 {
-    if (!m_data.empty())
-    {
-        m_data.clear();
-    }
+    // each time the user add a role we clear data to be sure everything is alright
     m_roles.insert(enumNb, role);
+    m_data.clear();
+}
+
+//------------------------------------------------------------------------------
+
+bool RoleTableModel::isEmpty() noexcept
+{
+    return (m_data.isEmpty());
 }
 
 //------------------------------------------------------------------------------

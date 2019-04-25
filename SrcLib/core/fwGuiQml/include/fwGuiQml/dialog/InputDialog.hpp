@@ -80,6 +80,7 @@ public:
     FWGUIQML_API virtual std::string getInput() override;
 
 Q_SIGNALS:
+    /// notify the qml of property change
     void inputChanged();
     void messageChanged();
     void titleChanged();
@@ -91,11 +92,12 @@ protected:
     QString m_message;
     /// Text inputed
     QString m_input;
-    /// boolean to check if button was pressed
+    /// boolean to check if button was pressed and dialog is visible
     bool m_isClicked;
     bool m_visible;
 
 protected Q_SLOTS:
+    /// slot getting the result of the dialog when a button is pressed
     void resultDialog(const QVariant& msg, bool isOk);
 };
 } // namespace dialog

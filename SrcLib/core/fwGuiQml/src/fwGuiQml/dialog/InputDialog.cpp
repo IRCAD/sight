@@ -86,7 +86,7 @@ std::string InputDialog::getInput()
     // get the path of the qml ui file in the 'rc' directory
     auto dialogPath = ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-0.1/dialog/InputDialog.qml");
 
-    // load the qml ui component
+    // load the qml ui component and set the context when this dialog is loaded
     engine->getRootContext()->setContextProperty("inputDialog", this);
     QObject* dialog = engine->createComponent(dialogPath);
     Q_EMIT titleChanged();

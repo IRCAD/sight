@@ -24,7 +24,9 @@ Dialog {
                 minimumValue: 0
                 maximumValue: 100
                 value: progressDialog.value
-            }            Text {
+            }
+            // text percentage at the end of the ProgressBar
+            Text {
                 id: percent
                 text: (progressBar.value * 100).toFixed().toLocaleString() + "%"
             }

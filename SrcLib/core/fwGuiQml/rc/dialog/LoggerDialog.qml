@@ -7,12 +7,14 @@ import QtQuick.Controls.Styles 1.4
 Dialog {
     id: inputDialog
 
+    // url of each icon
     property url critical: loggerDialog.critical
     property url hidden: loggerDialog.hidden
     property url information: loggerDialog.information
     property url shown: loggerDialog.shown
     property url warning: loggerDialog.warning
 
+    // check the text of the error level and set the according icon
     function provideIcon(levelValue)
     {
         switch (levelValue) {
@@ -36,6 +38,7 @@ Dialog {
         Row {
             spacing: 5
 
+            // icon of the biggest type of error from the TableView
             Image {
                 id: icon
 
@@ -61,6 +64,7 @@ Dialog {
 
             text: "Check Box"
             height:50
+            // the style permits to not show the default checkbox indicator but instead an image if set
             style: CheckBoxStyle {
                 indicator: Image {
                     id: detailsIcon
@@ -74,6 +78,7 @@ Dialog {
                 }
             }
 
+            // resize the dialog each time the checkedState change
             onCheckedChanged: {
                 textDetails.visible = checkedState;
                 if (!checkedState) {
@@ -116,6 +121,7 @@ Dialog {
                 role: "level"
                 title: "Level"
                 width: 120
+                // delegate permits to add an image and a text in the same Column
                 delegate: Component {
                     id: imageDelegate
 
@@ -146,11 +152,11 @@ Dialog {
                 role: "message"
                 title: "Message"
                 width: textDetails.width - 180
+                // ToDo Edit the row height to wrap content and change the color on styleData.row%2
                 delegate: Component {
                     Item {
                         Text {
                             color: styleData.textColor
-                            //color: styleData.row % 2 ? "red" : "black"
                             elide: styleData.elideMode
                             text: styleData.value
                             width: message.width

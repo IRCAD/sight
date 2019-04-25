@@ -64,8 +64,10 @@ LocationDialog::LocationDialog(::fwGui::GuiBaseObject::Key key) :
     const ::boost::filesystem::path defaultPath = this->getDefaultLocation();
     QString path                                = QString::fromStdString(defaultPath.string());
     QStringList filter                          = this->fileFilters();
+    // get the qml engine QmlApplicationEngine
     SPTR(::fwQml::QmlEngine) engine = ::fwQml::QmlEngine::getDefault();
     m_isFinish                      = false;
+    // get the path of the qml ui file in the 'rc' directory
     auto dialogPath = ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-0.1/dialog/LocationDialog.qml");
 
     engine->getRootContext()->setContextProperty("locationDialog", this);
@@ -76,6 +78,7 @@ LocationDialog::LocationDialog(::fwGui::GuiBaseObject::Key key) :
     emitFolder(QUrl::fromLocalFile(path));
     emitFilter(filter);
 
+    // check each option to set the property
     if ( (m_style& ::fwGui::dialog::ILocationDialog::READ) ||
          (m_style & ::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST))
     {
@@ -91,7 +94,6 @@ LocationDialog::LocationDialog(::fwGui::GuiBaseObject::Key key) :
         SLM_ASSERT("MULTI_FILES type must have a READ style", m_style & ::fwGui::dialog::ILocationDialog::READ);
 
         emitIsFolder(false);
-        emitExisting(true);
         emitMultiple(true);
         QStringList files;
     }
@@ -114,10 +116,12 @@ LocationDialog::LocationDialog(::fwGui::GuiBaseObject::Key key) :
 
 void LocationDialog::resultDialog(const QVariant& msg)
 {
+    // get the list of selected files or folder
     QList<QUrl> files = msg.value<QList<QUrl> >();
     m_wildcard = m_filterSelected.toStdString();
     if (!files.isEmpty() && !files.first().isEmpty())
     {
+        // convert all selected location into boost filesystem and add it in m_location
         if (m_type == ::fwGui::dialog::ILocationDialog::MULTI_FILES)
         {
             QStringList files;

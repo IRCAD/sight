@@ -61,6 +61,7 @@ public:
 
     FWGUIQML_API virtual ~ProgressDialog();
 
+    /// the operator to set the progress of the percentage
     FWGUIQML_API void operator()(float percent, std::string msg) override;
 
     /// override
@@ -70,6 +71,7 @@ public:
     FWGUIQML_API void setMessage(const std::string& message) override;
 
 Q_SIGNALS:
+    /// notify the qml of property change
     void titleChanged();
     void messageChanged();
     void valueChanged();
@@ -77,9 +79,13 @@ Q_SIGNALS:
 protected Q_SLOTS:
     void cancelPressed() override;
 protected:
+    /// title of the progress dialog
     QString m_title;
+    /// message of the progress dialog
     QString m_message;
+    /// the progress dialog to delete it during the destruction of the class
     QObject* m_dialog;
+    /// visible state of the progress dialog
     bool m_visible;
 };
 } // namespace dialog

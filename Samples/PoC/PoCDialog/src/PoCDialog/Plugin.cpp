@@ -20,86 +20,67 @@
  *
  ***********************************************************************/
 
-#include "fwGuiQml/model/RoleListModel.hpp"
+#include "PoCDialog/Plugin.hpp"
 
-#include <fwCore/spyLog.hpp>
+#include "PoCDialog/AppManager.hpp"
 
-#include <QDebug>
+#include <fwQml/QmlEngine.hpp>
 
-namespace fwGuiQml
+#include <fwRuntime/operations.hpp>
+#include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
+
+namespace PoCDialog
 {
-namespace model
+
+static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar(
+    "::PoCDialog::Plugin");
+
+//------------------------------------------------------------------------------
+
+Plugin::Plugin() noexcept
 {
-RoleListModel::RoleListModel(QObject* parent) :
-    QAbstractListModel(parent)
+}
+
+//------------------------------------------------------------------------------
+
+Plugin::~Plugin() noexcept
+{
+}
+
+//------------------------------------------------------------------------------
+
+void Plugin::start()
+{
+    qmlRegisterType<AppManager>("dialog", 1, 0, "AppManager");
+}
+
+//------------------------------------------------------------------------------
+
+void Plugin::initialize()
+{
+    SPTR(::fwQml::QmlEngine) engine = ::fwQml::QmlEngine::getDefault();
+
+    auto path = ::fwRuntime::getBundleResourceFilePath("PoCDialog-0.1/ui.qml");
+
+    engine->loadMainComponent(path);
+    path = ::fwRuntime::getBundleResourceFilePath("PoCDialog-0.1/ColorDialog.qml");
+
+    engine->loadMainComponent(path);
+}
+
+//------------------------------------------------------------------------------
+
+void Plugin::stop() noexcept
+{
+}
+
+//------------------------------------------------------------------------------
+
+void Plugin::uninitialize() noexcept
 {
 
 }
 
 //------------------------------------------------------------------------------
 
-int RoleListModel::rowCount(const QModelIndex& parent) const
-{
-    Q_UNUSED(parent)
-    return m_data.size();
-}
-
-//------------------------------------------------------------------------------
-
-QVariant RoleListModel::data(const QModelIndex& index, int role) const
-{
-    // check if the role exist
-    if (!m_roles.contains(role))
-    {
-        return QVariant();
-    }
-    // Check boudaries
-    if(index.column() < 0 ||
-       index.row() < 0 ||
-       rowCount() <= index.row())
-    {
-        return QVariant();
-    }
-
-    // Nominal case
-    return m_data[index.row()].value(m_roles.value(role));
-}
-
-//------------------------------------------------------------------------------
-
-QHash<int, QByteArray> RoleListModel::roleNames() const
-{
-    return m_roles;
-
-}
-
-//------------------------------------------------------------------------------
-
-void RoleListModel::addData(const QHash<QByteArray, QVariant>& data)
-{
-    SLM_ASSERT("RoleListModel must have role to add Data", !m_roles.empty());
-    m_data.push_front(data);
-    // the function that emits that data has changed it's structure
-    QAbstractListModel::endResetModel();
-}
-
-//------------------------------------------------------------------------------
-
-void RoleListModel::addRole(const int& enumNb, const QByteArray& role)
-{
-    // each time the user add a role we clear data to be sure everything is alright
-    m_roles.insert(enumNb, role);
-    m_data.clear();
-}
-
-//------------------------------------------------------------------------------
-
-bool RoleListModel::isEmpty() noexcept
-{
-    return (m_data.isEmpty());
-}
-
-//------------------------------------------------------------------------------
-
-} // namespace model
-} // namespace fwGuiQml
+} // namespace PoCDialog

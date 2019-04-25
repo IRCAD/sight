@@ -81,7 +81,9 @@ void LoggerDialog::setLogger(const ::fwLog::Logger::sptr& logger)
 
 bool LoggerDialog::show()
 {
+    // get the qml engine QmlApplicationEngine
     SPTR(::fwQml::QmlEngine) engine = ::fwQml::QmlEngine::getDefault();
+    // the model to set the data of a table
     ::fwGuiQml::model::RoleTableModel model;
 
     // get the path of the qml ui file in the 'rc' directory
@@ -89,26 +91,27 @@ bool LoggerDialog::show()
 
     // load the qml ui component
     QObject* dialog = engine->createComponent(dialogPath);
-    QObject::connect(dialog, SIGNAL(resultDialog(bool)),
-                     this, SLOT(resultDialog(bool)));
+
     engine->getRootContext()->setContextProperty("loggerModel", &model);
     engine->getRootContext()->setContextProperty("loggerDialog", this);
+
     Q_EMIT titleChanged();
 
+    // set the icon of the biggest type of error
+    const auto information = ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-0.1/information.png").string();
+    const auto warning     = ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-0.1/warning.png").string();
+    const auto critical    = ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-0.1/critical.png").string();
     if (m_logger->count(::fwLog::Log::CRITICAL) > 0)
     {
-        const auto path = ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-0.1/critical.png").string();
-        emitIcon(QUrl::fromLocalFile(QString::fromStdString(path)));
+        emitIcon(QUrl::fromLocalFile(QString::fromStdString(critical)));
     }
     else if (m_logger->count(::fwLog::Log::WARNING) > 0)
     {
-        const auto path = ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-0.1/warning.png").string();
-        emitIcon(QUrl::fromLocalFile(QString::fromStdString(path)));
+        emitIcon(QUrl::fromLocalFile(QString::fromStdString(warning)));
     }
     else
     {
-        const auto path = ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-0.1/information.png").string();
-        emitIcon(QUrl::fromLocalFile(QString::fromStdString(path)));
+        emitIcon(QUrl::fromLocalFile(QString::fromStdString(information)));
     }
     // Create message
     std::stringstream ss;
@@ -118,14 +121,12 @@ bool LoggerDialog::show()
         m_logger->count(::fwLog::Log::INFORMATION) << " information messages.";
     emitMessage(QString::fromStdString(ss.str()));
 
+    // get the icon of the details checkbox
     const auto detailshidden = ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-0.1/details-hidden.png").string();
     const auto detailsshown  = ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-0.1/details-shown.png").string();
     emitHidden(QUrl::fromLocalFile(QString::fromStdString(detailshidden)));
     emitShown(QUrl::fromLocalFile(QString::fromStdString(detailsshown)));
 
-    const auto information = ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-0.1/information.png").string();
-    const auto warning     = ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-0.1/warning.png").string();
-    const auto critical    = ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-0.1/critical.png").string();
     emitInformation(QUrl::fromLocalFile(QString::fromStdString(information)));
     emitWarning(QUrl::fromLocalFile(QString::fromStdString(warning)));
     emitCritical(QUrl::fromLocalFile(QString::fromStdString(critical)));
@@ -155,6 +156,7 @@ bool LoggerDialog::show()
         data.insert("message", QString::fromStdString(it->getMessage()));
         model.addData(QHash<QByteArray, QVariant>(data));
     }
+    SLM_ASSERT("The Logger need at least one error", !model.isEmpty());
     QMetaObject::invokeMethod(dialog, "open");
 
     while (!m_isClicked && m_visible)

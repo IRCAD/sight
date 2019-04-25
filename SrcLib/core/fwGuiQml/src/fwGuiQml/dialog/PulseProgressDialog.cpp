@@ -46,14 +46,12 @@ namespace dialog
 
 PulseProgressDialog::PulseProgressDialog(::fwGui::GuiBaseObject::Key key)
 {
-    m_dialog = nullptr;
 }
 
 //------------------------------------------------------------------------------
 
 PulseProgressDialog::~PulseProgressDialog()
 {
-    delete m_dialog;
 }
 
 //------------------------------------------------------------------------------
@@ -74,6 +72,7 @@ void PulseProgressDialog::setMessage(const std::string& msg)
 
 void PulseProgressDialog::show()
 {
+    // get the qml engine QmlApplicationEngine
     SPTR(::fwQml::QmlEngine) engine = ::fwQml::QmlEngine::getDefault();
 
     // get the path of the qml ui file in the 'rc' directory
@@ -81,7 +80,7 @@ void PulseProgressDialog::show()
 
     // load the qml ui component
     engine->getRootContext()->setContextProperty("pulseProgressDialog", this);
-    m_dialog = engine->createComponent(dialogPath);
+    QObject* dialog = engine->createComponent(dialogPath);
     // Create a QFutureWatcher and connect signals and slots.
     QFutureWatcher<void> futureWatcher;
     QObject::connect(&futureWatcher, SIGNAL(finished()), this, SLOT(onFinished()));
@@ -90,7 +89,7 @@ void PulseProgressDialog::show()
     Q_EMIT titleChanged();
     Q_EMIT messageChanged();
     // Start the computation.
-    QMetaObject::invokeMethod(m_dialog, "open");
+    QMetaObject::invokeMethod(dialog, "open");
     futureWatcher.setFuture(QtConcurrent::run(m_stuff));
     while (!m_isClicked && m_visible)
     {
@@ -100,6 +99,7 @@ void PulseProgressDialog::show()
     {
         Q_EMIT canceled();
     }
+    delete dialog;
 }
 
 //------------------------------------------------------------------------------

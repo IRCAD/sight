@@ -46,6 +46,7 @@ namespace dialog
 ProgressDialog::ProgressDialog( ::fwGui::GuiBaseObject::Key key, const std::string& title, const std::string& message) :
     m_title("")
 {
+    // get the qml engine QmlApplicationEngine
     SPTR(::fwQml::QmlEngine) engine = ::fwQml::QmlEngine::getDefault();
 
     // get the path of the qml ui file in the 'rc' directory
@@ -72,6 +73,7 @@ ProgressDialog::~ProgressDialog()
 void ProgressDialog::operator()(float percent, std::string msg)
 {
     SLM_ASSERT("m_dialog not instanced", m_dialog);
+    // check if the dialog box has been closed by the user and cancel the progress
     if (!m_visible)
     {
         this->cancelPressed();
@@ -100,6 +102,7 @@ void ProgressDialog::operator()(float percent, std::string msg)
 
 void ProgressDialog::setTitle(const std::string& title)
 {
+    SLM_ASSERT("The progress dialog is not initialized or has been closed", m_dialog);
     m_title = QString::fromStdString(title);
     Q_EMIT titleChanged();
 }
@@ -108,7 +111,7 @@ void ProgressDialog::setTitle(const std::string& title)
 
 void ProgressDialog::setMessage(const std::string& msg)
 {
-
+    SLM_ASSERT("The progress dialog is not initialized or has been closed", m_dialog);
     m_message = "";
     if (!m_title.isEmpty())
     {

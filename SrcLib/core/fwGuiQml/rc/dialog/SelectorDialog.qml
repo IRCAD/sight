@@ -15,6 +15,7 @@ Dialog {
 
         Layout.fillWidth: true
 
+        // GroupBox to set permit only one RadioButton selected
         GroupBox {
             id: groupBox
             title: selectorDialog.message
@@ -25,6 +26,7 @@ Dialog {
                 spacing: 10
                 Layout.fillWidth: true
 
+                // Repeater to create all the needed options
                 Repeater {
                     id: checkboxList
 
@@ -46,9 +48,11 @@ Dialog {
             if (checkboxList.itemAt(i).checked)
             {
                 selected = checkboxList.itemAt(i).text;
+                break;
             }
         }
-            selectorDialog.resultDialog(selected);
+        // send only the selected RadioButton option
+        selectorDialog.resultDialog(selected);
     }
     onRejected: {
         selectorDialog.resultDialog("");

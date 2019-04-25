@@ -64,21 +64,26 @@ public:
     FWGUIQML_API void show() override;
 
 Q_SIGNALS:
+    /// notify the qml of property change
     void titleChanged();
     void messageChanged();
     void visibleChanged();
     void canceled();
 
 protected Q_SLOTS:
+    /// slot to close the progress dialog
     void onFinished();
+    /// slot to notify the future watcher to cancel the progress
     void onCanceled();
 
 protected:
+    /// box dialog state
     bool m_isClicked;
     bool m_visible;
+    /// title of the progress dialog
     QString m_title;
+    /// message of the progress dialog
     QString m_message;
-    QObject*  m_dialog;
 
 };
 } // namespace dialog

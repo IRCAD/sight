@@ -20,5 +20,6 @@ FileDialog {
         locationDialog.resultDialog(fileUrls)
     }
     onVisibleChanged: locationDialog.visible = visible
+    // specify the selected extension to c++
     onSelectedNameFilterChanged: locationDialog.filterSelected = selectedNameFilter
 }

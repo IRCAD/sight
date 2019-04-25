@@ -32,8 +32,6 @@
 #include <QString>
 #include <QUrl>
 
-class QString;
-
 /**
  * @brief       The namespace fwGuiQml contains classes which provide the implementation of the Gui using Qml library.
  */
@@ -66,16 +64,20 @@ public:
 
     FWGUIQML_API LocationDialog(::fwGui::GuiBaseObject::Key key);
 
+    /// show the locationDialog to the user and wait selection from the user
     FWGUIQML_API ::fwData::location::ILocation::sptr show() override;
 
+    /// Set the type of locationDialog to open (multi selection, folder selection...)
     FWGUIQML_API void setType( ::fwGui::dialog::ILocationDialog::Types type ) override;
 
+    /// Set the type of locationDialog to open (read, write...)
     FWGUIQML_API ::fwGui::dialog::ILocationDialog& setOption(
         ::fwGui::dialog::ILocationDialog::Options option) override;
 
-    // Example ( addFilter("images","*.png *.jpg");
+    /// Set the extension of locationDialog to open example: addFilter("images","*.png *.jpg");
     FWGUIQML_API void addFilter(const std::string& filterName, const std::string& wildcardList ) override;
 Q_SIGNALS:
+    /// notify the qml of property change
     void existingChanged();
     void filterChanged();
     void folderChanged();
@@ -88,24 +90,35 @@ protected:
     ::fwGui::dialog::ILocationDialog::Types m_type;
     std::vector< std::pair< std::string, std::string > > m_filters;
 
-    /// helper to transform m_filters into qt encoding ("BMP and GIF files (*.bmp *.gif);;PNG files (*.png)"
+    /// helper to transform m_filters into qml encoding ("BMP and GIF files (*.bmp *.gif);;PNG files (*.png)"
     QStringList fileFilters();
+
     /// Gets the current extension file selection
     FWGUIQML_API std::string getCurrentSelection() const override;
 
     std::string m_wildcard;
     ::fwData::location::ILocation::sptr m_location;
-    bool m_isFinish;
+
+    /// option to save a file enable
     bool m_existing;
+    /// the filter list and the current filter selected
     QStringList m_filter;
     QString m_filterSelected;
+    /// the path of the location at the beginning
     QUrl m_folder;
+    /// option to select folder enable
     bool m_isFolder;
+    /// option to select multiple file enable
     bool m_multiple;
+
+    /// title
     QString m_title;
+
+    /// boolean to check if dialog closed
+    bool m_isFinish;
     bool m_visible;
 
-    //Setter to QProperty
+    /// Setter to QProperty and emit signal
     FWGUIQML_API void emitExisting(const bool&);
     FWGUIQML_API void emitFilter(const QStringList&);
     FWGUIQML_API void emitFolder(const QUrl&);
@@ -114,6 +127,7 @@ protected:
     FWGUIQML_API void emitTitle(const QString&);
 
 protected Q_SLOTS:
+    /// slot getting the result of the dialog when a button is pressed
     void resultDialog(const QVariant& msg);
 };
 } // namespace dialog

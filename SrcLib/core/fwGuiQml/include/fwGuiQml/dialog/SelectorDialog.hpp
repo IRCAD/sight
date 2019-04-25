@@ -79,10 +79,12 @@ public:
     FWGUIQML_API virtual void addCustomButton(const std::string& label, std::function<void()> clickedFn) override;
 
 Q_SIGNALS:
+    /// notify the qml of property change
     void titleChanged();
     void messageChanged();
 
 protected Q_SLOTS:
+    /// slot getting the result of the dialog when a button is pressed
     void resultDialog(QVariant selection);
 
 private:
@@ -90,9 +92,12 @@ private:
 
     /// Dialog box message
     QString m_message;
+    /// Dialog box title
     QString m_title;
+    /// Dialog box selected RadioButton
     QString m_selection;
 
+    /// Dialog box state
     bool m_visible;
     bool m_isClicked;
 };

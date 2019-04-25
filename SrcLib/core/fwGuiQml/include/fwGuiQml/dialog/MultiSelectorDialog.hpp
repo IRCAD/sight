@@ -75,13 +75,18 @@ public:
      */
     FWGUIQML_API virtual Selections show() override;
 
+    /**
+     * @brief Sets the selector message.
+     */
     FWGUIQML_API virtual void setMessage(const std::string& msg) override;
 
 Q_SIGNALS:
+    /// notify the qml of property change
     void titleChanged();
     void messageChanged();
 
 protected Q_SLOTS:
+    /// slot getting the result of the dialog when a button is pressed
     void resultDialog(QVariant checkList, bool state);
 
 private:
@@ -89,6 +94,7 @@ private:
     Selections m_selections;
     /// Dialog box message
     QString m_message;
+    /// Dialog box title
     QString m_title;
     /// check if button clicked or dialog still visible
     bool m_isClicked;

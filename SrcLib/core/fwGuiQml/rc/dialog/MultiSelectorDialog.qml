@@ -15,6 +15,7 @@ Dialog {
 
         Layout.fillWidth: true
 
+        // to set the checkboxs together
         GroupBox {
             id: groupBox
             title: multiSelectorDialog.message
@@ -24,6 +25,7 @@ Dialog {
                 spacing: 10
                 Layout.fillWidth: true
 
+                // the Repeater will create all the checkbox using the c++ model
                 Repeater {
                     id: checkboxList
 
