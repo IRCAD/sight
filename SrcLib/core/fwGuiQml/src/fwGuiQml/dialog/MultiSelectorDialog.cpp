@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2019 IRCAD France
+ * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -80,12 +80,16 @@ void MultiSelectorDialog::setTitle(std::string _title)
     m_isClicked                     = false;
 
     // get the path of the qml ui file in the 'rc' directory
-    auto dialogPath = ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-0.1/dialog/MultiSelectorDialog.qml");
-
-    // load the qml ui component
+    auto dialogPath =
+        ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/dialog/MultiSelectorDialog.qml");
+    // set the root context for the model
     engine->getRootContext()->setContextProperty("multiSelectorModel", &model);
-    engine->getRootContext()->setContextProperty("multiSelectorDialog", this);
-    QObject* dialog = engine->createComponent(dialogPath);
+    // set the context for the new component
+    QSharedPointer<QQmlContext> context = QSharedPointer<QQmlContext>(new QQmlContext(engine->getRootContext()));
+    context->setContextProperty("multiSelectorDialog", this);
+    // load the qml ui component
+    QObject* dialog = engine->createComponent(dialogPath, context);
+
     Q_EMIT titleChanged();
     // fill the repeater for each checkbox that has to be created
     model.addRole(Qt::UserRole + 1, "textOption");

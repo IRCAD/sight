@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2019 IRCAD France
+ * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -23,27 +23,10 @@
 #pragma once
 
 /**
- * @ingroup apprequirement
  * @brief The namespace guiQml contains the basic services to build the application IHM with Qml.
  *
  * This bundle is automatically started at the launch of the application if it is present in the REQUIREMENTS of the
  * application's Properties.cmake.
- *
- * Example
- * @code{cmake}
-    set( NAME Tuto01Basic )
-    set( VERSION 0.1 )
-    set( TYPE APP )
-    set( DEPENDENCIES  )
-    set( REQUIREMENTS
-        dataReg
-        servicesReg
-        guiQml # it will be automatically started when the application launches
-        fwlauncher
-        appXml # it will be automatically started when the application launches
-    )
-    bundleParam(appXml PARAM_LIST config PARAM_VALUES tutoBasicConfig)
-   @endcode
  */
 namespace guiQml
 {

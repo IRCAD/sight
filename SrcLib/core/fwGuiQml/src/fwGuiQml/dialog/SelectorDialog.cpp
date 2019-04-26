@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2019 IRCAD France
+ * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -80,12 +80,15 @@ std::string SelectorDialog::show()
     m_isClicked                     = false;
 
     // get the path of the qml ui file in the 'rc' directory
-    auto dialogPath = ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-0.1/dialog/SelectorDialog.qml");
-
-    // load the qml ui component
+    auto dialogPath = ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/dialog/SelectorDialog.qml");
+    // set the root context for the model
     engine->getRootContext()->setContextProperty("selectorModel", &model);
-    engine->getRootContext()->setContextProperty("selectorDialog", this);
-    QObject* dialog = engine->createComponent(dialogPath);
+    // set the context for the new component
+    QSharedPointer<QQmlContext> context = QSharedPointer<QQmlContext>(new QQmlContext(engine->getRootContext()));
+    context->setContextProperty("selectorDialog", this);
+    // load the qml ui component
+    QObject* dialog = engine->createComponent(dialogPath, context);
+
     Q_EMIT titleChanged();
 
     // create all radiobutton

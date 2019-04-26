@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2019 IRCAD France
+ * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -84,11 +84,14 @@ std::string InputDialog::getInput()
     SPTR(::fwQml::QmlEngine) engine = ::fwQml::QmlEngine::getDefault();
     m_isClicked                     = false;
     // get the path of the qml ui file in the 'rc' directory
-    auto dialogPath = ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-0.1/dialog/InputDialog.qml");
+    auto dialogPath = ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/dialog/InputDialog.qml");
 
-    // load the qml ui component and set the context when this dialog is loaded
-    engine->getRootContext()->setContextProperty("inputDialog", this);
-    QObject* dialog = engine->createComponent(dialogPath);
+    // set the context for the new component
+    QSharedPointer<QQmlContext> context = QSharedPointer<QQmlContext>(new QQmlContext(engine->getRootContext()));
+    context->setContextProperty("inputDialog", this);
+    // load the qml ui component
+    QObject* dialog = engine->createComponent(dialogPath, context);
+
     Q_EMIT titleChanged();
     Q_EMIT messageChanged();
     Q_EMIT inputChanged();

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2019 IRCAD France
+ * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -66,8 +66,6 @@ void Plugin::start()
 
     ::fwServices::registry::ActiveWorkers::setDefaultWorker(m_workerQt);
 
-    m_workerQt->post( std::bind( &Plugin::loadStyleSheet, this ) );
-
     ::fwRuntime::profile::getCurrentProfile()->setRunCallback(std::bind(&Plugin::run, this));
 }
 
@@ -103,42 +101,6 @@ int Plugin::run() noexcept
     m_workerQt.reset();
 
     return result;
-}
-
-//-----------------------------------------------------------------------------
-
-void Plugin::loadStyleSheet()
-{
-    if( this->getBundle()->hasParameter("resource") )
-    {
-        const std::string resourceFile = this->getBundle()->getParameterValue("resource");
-        const auto path                = fwRuntime::getBundleResourceFilePath(resourceFile);
-
-        const bool resourceLoaded = QResource::registerResource(path.string().c_str());
-        SLM_ASSERT("Cannot load resources '"+resourceFile+"'.", resourceLoaded);
-    }
-
-    if( this->getBundle()->hasParameter("style") )
-    {
-        const std::string style = this->getBundle()->getParameterValue("style");
-        //qApp->setStyle(QStyleFactory::create(QString::fromStdString(style)));
-    }
-
-    if( this->getBundle()->hasParameter("stylesheet") )
-    {
-        const std::string stylesheetFile = this->getBundle()->getParameterValue("stylesheet");
-        const auto path                  = fwRuntime::getBundleResourceFilePath(stylesheetFile);
-
-        QFile data(QString::fromStdString(path.string()));
-        QString style;
-        if(data.open(QFile::ReadOnly))
-        {
-            QTextStream styleIn(&data);
-            style = styleIn.readAll();
-            data.close();
-            //qApp->setStyleSheet(style);
-        }
-    }
 }
 
 //-----------------------------------------------------------------------------

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2019 IRCAD France
+ * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -87,20 +87,23 @@ bool LoggerDialog::show()
     ::fwGuiQml::model::RoleTableModel model;
 
     // get the path of the qml ui file in the 'rc' directory
-    auto dialogPath = ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-0.1/dialog/LoggerDialog.qml");
+    auto dialogPath = ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/dialog/LoggerDialog.qml");
 
+    // set the context for the new component
+    QSharedPointer<QQmlContext> context = QSharedPointer<QQmlContext>(new QQmlContext(engine->getRootContext()));
+    context->setContextProperty("loggerDialog", this);
     // load the qml ui component
-    QObject* dialog = engine->createComponent(dialogPath);
-
+    QObject* dialog = engine->createComponent(dialogPath, context);
+    // set the root context for the model
     engine->getRootContext()->setContextProperty("loggerModel", &model);
-    engine->getRootContext()->setContextProperty("loggerDialog", this);
 
     Q_EMIT titleChanged();
 
     // set the icon of the biggest type of error
-    const auto information = ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-0.1/information.png").string();
-    const auto warning     = ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-0.1/warning.png").string();
-    const auto critical    = ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-0.1/critical.png").string();
+    const auto information =
+        ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/information.png").string();
+    const auto warning  = ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/warning.png").string();
+    const auto critical = ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/critical.png").string();
     if (m_logger->count(::fwLog::Log::CRITICAL) > 0)
     {
         emitIcon(QUrl::fromLocalFile(QString::fromStdString(critical)));
@@ -122,8 +125,10 @@ bool LoggerDialog::show()
     emitMessage(QString::fromStdString(ss.str()));
 
     // get the icon of the details checkbox
-    const auto detailshidden = ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-0.1/details-hidden.png").string();
-    const auto detailsshown  = ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-0.1/details-shown.png").string();
+    const auto detailshidden =
+        ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/details-hidden.png").string();
+    const auto detailsshown =
+        ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/details-shown.png").string();
     emitHidden(QUrl::fromLocalFile(QString::fromStdString(detailshidden)));
     emitShown(QUrl::fromLocalFile(QString::fromStdString(detailsshown)));
 

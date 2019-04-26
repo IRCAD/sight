@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2019 IRCAD France
+ * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,12 +20,26 @@
  *
  ***********************************************************************/
 
+#pragma once
+
 /**
  * @brief       The namespace fwGuiQml contains classes which provide the implementation of the Gui using Qml library.
  */
-
-#pragma once
-
 namespace fwGuiQml
 {
+
+/**
+ * @brief       The namespace fwGuiQml::dialog contains the classes used for dialog implementation with Qml Library.
+ */
+namespace dialog
+{
+}
+
+/**
+ * @brief       The namespace fwGuiQml::model contains the classes used for model implementation in Qml.
+ */
+namespace model
+{
+}
+
 }

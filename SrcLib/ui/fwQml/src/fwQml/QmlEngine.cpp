@@ -86,10 +86,10 @@ QObject* QmlEngine::createComponent(const ::boost::filesystem::path& file)
 
 //-----------------------------------------------------------------------------
 
-QObject* QmlEngine::createComponent(const ::boost::filesystem::path& file, QQmlContext* context)
+QObject* QmlEngine::createComponent(const ::boost::filesystem::path& file, QSharedPointer<QQmlContext>& context)
 {
     QQmlComponent component(m_engine, QUrl::fromLocalFile(QString::fromStdString(file.string())));
-    return component.create(context);
+    return component.create(context.get());
 }
 
 //-----------------------------------------------------------------------------

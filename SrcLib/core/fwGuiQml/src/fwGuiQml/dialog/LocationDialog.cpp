@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2019 IRCAD France
+ * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -64,15 +64,17 @@ LocationDialog::LocationDialog(::fwGui::GuiBaseObject::Key key) :
     const ::boost::filesystem::path defaultPath = this->getDefaultLocation();
     QString path                                = QString::fromStdString(defaultPath.string());
     QStringList filter                          = this->fileFilters();
+
     // get the qml engine QmlApplicationEngine
     SPTR(::fwQml::QmlEngine) engine = ::fwQml::QmlEngine::getDefault();
     m_isFinish                      = false;
     // get the path of the qml ui file in the 'rc' directory
-    auto dialogPath = ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-0.1/dialog/LocationDialog.qml");
-
-    engine->getRootContext()->setContextProperty("locationDialog", this);
+    auto dialogPath = ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/dialog/LocationDialog.qml");
+    // set the context for the new component
+    QSharedPointer<QQmlContext> context = QSharedPointer<QQmlContext>(new QQmlContext(engine->getRootContext()));
+    context->setContextProperty("locationDialog", this);
     // load the qml ui component
-    QObject* dialog = engine->createComponent(dialogPath);
+    QObject* dialog = engine->createComponent(dialogPath, context);
 
     emitTitle(caption);
     emitFolder(QUrl::fromLocalFile(path));
@@ -102,7 +104,8 @@ LocationDialog::LocationDialog(::fwGui::GuiBaseObject::Key key) :
         emitExisting(true);
         emitIsFolder(true);
     }
-    else {
+    else
+    {
         emitIsFolder(false);
     }
     QMetaObject::invokeMethod(dialog, "open");
