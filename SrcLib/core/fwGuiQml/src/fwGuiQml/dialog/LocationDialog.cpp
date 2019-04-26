@@ -102,6 +102,9 @@ LocationDialog::LocationDialog(::fwGui::GuiBaseObject::Key key) :
         emitExisting(true);
         emitIsFolder(true);
     }
+    else {
+        emitIsFolder(false);
+    }
     QMetaObject::invokeMethod(dialog, "open");
     // boolean to check first if it has called the slot or secondly if the FileDialog isn't visible
     while (!m_isFinish && m_visible)
