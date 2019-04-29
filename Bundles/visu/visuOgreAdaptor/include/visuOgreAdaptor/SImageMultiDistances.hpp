@@ -34,8 +34,6 @@
 #include <fwRenderOgre/interactor/IInteractor.hpp>
 #include <fwRenderOgre/Text.hpp>
 
-class ogreCommand;
-
 namespace visuOgreAdaptor
 {
 
@@ -188,7 +186,7 @@ private:
     Ogre::MovableObject* pickObject(int x, int y);
 
     /// Find and return the id of the name
-    size_t findIDLine(std::string name) const;
+    size_t findLineID(const std::string name) const;
 
     /**
      * @brief Check if the mouse click on an existing point. First argument corresponds on the coord of the first point.
@@ -200,7 +198,7 @@ private:
     /// Scene manager of the scene
     ::Ogre::SceneManager* m_sceneMgr { nullptr };
 
-    /// Root manager of the scene
+    /// Root Scene Node
     ::Ogre::SceneNode* m_rootSceneNode { nullptr };
 
     /// Scene node where point 1 is attached

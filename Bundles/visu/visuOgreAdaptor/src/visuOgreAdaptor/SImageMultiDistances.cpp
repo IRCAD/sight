@@ -128,11 +128,11 @@ void SImageMultiDistances::updating()
     ::fwData::Vector::sptr distanceField;
     distanceField = image->getField< ::fwData::Vector >( ::fwDataTools::fieldHelper::Image::m_imageDistancesId);
 
-    // lock image
     const bool isShown = image->getField("ShowDistances", ::fwData::Boolean::New(true))->value();
 
     // removes the displayed lines if they exist
     this->deleteDistances();
+
     m_millimeterNodes.clear();
     m_millimeterValue.clear();
     m_labels.clear();
@@ -874,7 +874,7 @@ Ogre::MovableObject* SImageMultiDistances::pickObject(int _x, int _y)
 
 //------------------------------------------------------------------------------
 
-size_t SImageMultiDistances::findIDLine(std::string str) const
+size_t SImageMultiDistances::findLineID(const std::string str) const
 {
     const size_t found = str.find("-");
     const size_t start = found + 1;
@@ -895,7 +895,7 @@ bool SImageMultiDistances::clickPoint(int _x, int _y)
         std::size_t found = picked->getName().find("Entitypoint1-");
         if (found != std::string::npos)
         {
-            m_moveID      = this->findIDLine(picked->getName());
+            m_moveID      = this->findLineID(picked->getName());
             m_isBeginMove = 0;
             return true;
         }
@@ -903,7 +903,7 @@ bool SImageMultiDistances::clickPoint(int _x, int _y)
         found = picked->getName().find("Entitypoint2-");
         if (found != std::string::npos)
         {
-            m_moveID      = this->findIDLine(picked->getName());
+            m_moveID      = this->findLineID(picked->getName());
             m_isBeginMove = 1;
             return true;
         }
