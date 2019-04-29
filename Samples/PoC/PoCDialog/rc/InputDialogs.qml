@@ -30,6 +30,7 @@ Item {
                 Layout.alignment: Qt.AlignBaseline
                 Layout.fillWidth: true
                 text: "Custom Dialog"
+                onTextChanged: pocDialogInputDialogs.title = windowTitleField.text
             }
         }
         RowLayout {
@@ -43,6 +44,7 @@ Item {
                 Layout.alignment: Qt.AlignBaseline
                 Layout.fillWidth: true
                 text: "Custom Message"
+                onTextChanged: pocDialogInputDialogs.message = windowMessageField.text
             }
         }
         RowLayout {
@@ -56,6 +58,35 @@ Item {
                 Layout.alignment: Qt.AlignBaseline
                 Layout.fillWidth: true
                 text: "Custom Input"
+                onTextChanged: pocDialogInputDialogs.input = windowInputField.text
+            }
+        }
+        Label {
+            text: "<b>result input:</b> " + pocDialogInputDialogs.result
+        }
+    }
+    Rectangle {
+        id: bottomBar
+        anchors {
+            left: parent.left
+            right: parent.right
+            bottom: parent.bottom
+        }
+        height: buttonRow.height * 1.2
+        color: Qt.darker(palette.window, 1.1)
+        border.color: Qt.darker(palette.window, 1.3)
+        Row {
+            id: buttonRow
+            spacing: 6
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.left: parent.left
+            anchors.leftMargin: 12
+            height: implicitHeight
+            width: parent.width
+            Button {
+                text: "Open"
+                anchors.verticalCenter: parent.verticalCenter
+                onClicked: pocDialogInputDialogs.open()
             }
         }
     }

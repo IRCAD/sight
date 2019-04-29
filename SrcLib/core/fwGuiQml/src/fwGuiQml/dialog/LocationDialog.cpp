@@ -130,7 +130,6 @@ void LocationDialog::resultDialog(const QVariant& msg)
         // convert all selected location into boost filesystem and add it in m_location
         if (m_type == ::fwGui::dialog::ILocationDialog::MULTI_FILES)
         {
-            QStringList files;
             ::fwData::location::MultiFiles::sptr multifiles = ::fwData::location::MultiFiles::New();
             std::vector< ::boost::filesystem::path > paths;
             for (QUrl filename : files)

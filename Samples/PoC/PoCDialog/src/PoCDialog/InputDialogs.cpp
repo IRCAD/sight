@@ -20,43 +20,40 @@
  *
  ***********************************************************************/
 
-#pragma once
-
-#include "PoCDialog/config.hpp"
 #include "PoCDialog/InputDialogs.hpp"
-#include "PoCDialog/LocationDialogs.hpp"
 
-#include <fwRuntime/Plugin.hpp>
+#include <fwGui/dialog/InputDialog.hpp>
+#include <fwGui/registry/macros.hpp>
 
-namespace PoCDialog
+#include <fwQml/QmlEngine.hpp>
+
+#include <fwRuntime/operations.hpp>
+
+#include <boost/assign/list_of.hpp>
+
+#include <QGuiApplication>
+#include <QObject>
+
+InputDialogs::InputDialogs()
 {
+    // get the qml engine QmlApplicationEngine
+    SPTR(::fwQml::QmlEngine) engine = ::fwQml::QmlEngine::getDefault();
+    // add context for root Context
+    engine->getRootContext()->setContextProperty("pocDialogInputDialogs", this);
+}
 
-/**
- * @brief   This class is started when the bundle is loaded.
- */
-class POCDIALOG_CLASS_API Plugin : public ::fwRuntime::Plugin
+//------------------------------------------------------------------------------
+
+InputDialogs::~InputDialogs()
 {
-public:
-    /// Constructor.
-    POCDIALOG_API Plugin() noexcept;
+}
 
-    /// Destructor. Do nothing.
-    POCDIALOG_API ~Plugin() noexcept;
+//------------------------------------------------------------------------------
 
-    /// Overrides start method. .
-    POCDIALOG_API void start();
-
-    /// Overrides stop method. Do nothing
-    POCDIALOG_API void stop() noexcept;
-
-    POCDIALOG_API void initialize();
-
-    POCDIALOG_API void uninitialize() noexcept;
-
-private:
-    std::shared_ptr<InputDialogs> m_input;
-    std::shared_ptr<LocationDialogs> m_location;
-
-};
-
-} // namespace PoCDialog
+void InputDialogs::open()
+{
+    std::string result = ::fwGui::dialog::InputDialog::showInputDialog(
+        m_title.toStdString(), m_message.toStdString(), m_input.toStdString());
+    m_result = QString::fromStdString(result);
+    Q_EMIT onResultChanged();
+}

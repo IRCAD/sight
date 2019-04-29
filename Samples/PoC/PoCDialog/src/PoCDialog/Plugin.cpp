@@ -60,10 +60,11 @@ void Plugin::initialize()
 {
     SPTR(::fwQml::QmlEngine) engine = ::fwQml::QmlEngine::getDefault();
 
-    auto path = ::fwRuntime::getBundleResourceFilePath("PoCDialog-0.1/ui.qml");
+    m_input = std::shared_ptr<InputDialogs>(new InputDialogs);
 
-    engine->loadMainComponent(path);
-    path = ::fwRuntime::getBundleResourceFilePath("PoCDialog-0.1/ColorDialog.qml");
+    m_location = std::shared_ptr<LocationDialogs>(new LocationDialogs);
+
+    auto path = ::fwRuntime::getBundleResourceFilePath("PoCDialog-0.1/ui.qml");
 
     engine->loadMainComponent(path);
 }
