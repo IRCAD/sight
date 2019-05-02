@@ -6,6 +6,7 @@ MessageDialog {
     title: messageDialog.title
     text: messageDialog.message
     icon: messageDialog.icon
+    standardButtons: messageDialog.buttons
 
     onButtonClicked: {
         messageDialog.resultDialog(clickedButton)

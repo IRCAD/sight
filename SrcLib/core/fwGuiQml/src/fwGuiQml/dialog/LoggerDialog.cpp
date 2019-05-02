@@ -32,6 +32,7 @@
 
 #include <fwRuntime/operations.hpp>
 
+#include <boost/filesystem/operations.hpp>
 #include <boost/foreach.hpp>
 
 #include <QGuiApplication>
@@ -89,32 +90,47 @@ bool LoggerDialog::show()
     // get the path of the qml ui file in the 'rc' directory
     auto dialogPath = ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/dialog/LoggerDialog.qml");
 
+    // set the root context for the model
+    engine->getRootContext()->setContextProperty("loggerModel", &model);
+
     // set the context for the new component
     QSharedPointer<QQmlContext> context = QSharedPointer<QQmlContext>(new QQmlContext(engine->getRootContext()));
     context->setContextProperty("loggerDialog", this);
     // load the qml ui component
     QObject* dialog = engine->createComponent(dialogPath, context);
-    // set the root context for the model
-    engine->getRootContext()->setContextProperty("loggerModel", &model);
 
     Q_EMIT titleChanged();
 
     // set the icon of the biggest type of error
-    const auto information =
-        ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/information.png").string();
-    const auto warning  = ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/warning.png").string();
-    const auto critical = ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/critical.png").string();
+    auto information =
+        ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/information.png");
+    if (!boost::filesystem::exists(information))
+    {
+        information = "";
+    }
+    auto warning =
+        ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/warning.png");
+    if (!boost::filesystem::exists(warning))
+    {
+        warning = "";
+    }
+    auto critical =
+        ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/critical.png");
+    if (!boost::filesystem::exists(critical))
+    {
+        critical = "";
+    }
     if (m_logger->count(::fwLog::Log::CRITICAL) > 0)
     {
-        emitIcon(QUrl::fromLocalFile(QString::fromStdString(critical)));
+        emitIcon(QUrl::fromLocalFile(QString::fromStdString(critical.string())));
     }
     else if (m_logger->count(::fwLog::Log::WARNING) > 0)
     {
-        emitIcon(QUrl::fromLocalFile(QString::fromStdString(warning)));
+        emitIcon(QUrl::fromLocalFile(QString::fromStdString(warning.string())));
     }
     else
     {
-        emitIcon(QUrl::fromLocalFile(QString::fromStdString(information)));
+        emitIcon(QUrl::fromLocalFile(QString::fromStdString(information.string())));
     }
     // Create message
     std::stringstream ss;
@@ -125,16 +141,24 @@ bool LoggerDialog::show()
     emitMessage(QString::fromStdString(ss.str()));
 
     // get the icon of the details checkbox
-    const auto detailshidden =
-        ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/details-hidden.png").string();
-    const auto detailsshown =
-        ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/details-shown.png").string();
-    emitHidden(QUrl::fromLocalFile(QString::fromStdString(detailshidden)));
-    emitShown(QUrl::fromLocalFile(QString::fromStdString(detailsshown)));
+    auto detailshidden =
+        ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/details-hidden.png");
+    if (!boost::filesystem::exists(detailshidden))
+    {
+        detailshidden = "";
+    }
+    auto detailsshown =
+        ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/details-shown.png");
+    if (!boost::filesystem::exists(detailsshown))
+    {
+        detailsshown = "";
+    }
+    emitHidden(QUrl::fromLocalFile(QString::fromStdString(detailshidden.string())));
+    emitShown(QUrl::fromLocalFile(QString::fromStdString(detailsshown.string())));
 
-    emitInformation(QUrl::fromLocalFile(QString::fromStdString(information)));
-    emitWarning(QUrl::fromLocalFile(QString::fromStdString(warning)));
-    emitCritical(QUrl::fromLocalFile(QString::fromStdString(critical)));
+    emitInformation(QUrl::fromLocalFile(QString::fromStdString(information.string())));
+    emitWarning(QUrl::fromLocalFile(QString::fromStdString(warning.string())));
+    emitCritical(QUrl::fromLocalFile(QString::fromStdString(critical.string())));
 
     // Fill log table
     ::fwLog::Logger::ConstIteratorType it = m_logger->begin();

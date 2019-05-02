@@ -27,6 +27,7 @@
 #include <fwGui/dialog/ISelectorDialog.hpp>
 
 #include <QObject>
+#include <QVariant>
 #include <QVector>
 
 #include <vector>

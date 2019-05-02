@@ -21,6 +21,7 @@ Dialog {
         case "Critical": return critical;
         case "Warning": return warning;
         case "Information": return information;
+        default : return ""
         }
     }
 
@@ -62,7 +63,7 @@ Dialog {
         CheckBox {
             id: checkbox
 
-            text: "Check Box"
+            text: checkedState ? "Hide Details" : "Show Details"
             height:50
             // the style permits to not show the default checkbox indicator but instead an image if set
             style: CheckBoxStyle {

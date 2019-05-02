@@ -33,16 +33,8 @@
 #include <string>
 
 /**
- * @brief   Defines an Input dialog.
- *
- * Example of use:
- * @code
-   ::fwGui::dialog::InputDialog inputDlg;
-   inputDlg.setTitle("Identification dialog");
-   inputDlg.setMessage("Enter Pin Code: ");
-   inputDlg.setInput ("<Enter your code here>");
-   std::string inputText = inputDlg.getInput();
-   @endcode
+ * @brief   This class is associated to InputDialogs.qml and calls
+ * InputDialog with the selected options
  */
 class POCDIALOG_CLASS_API InputDialogs : public QObject
 {
@@ -57,9 +49,6 @@ public:
     POCDIALOG_API InputDialogs();
 
     POCDIALOG_API virtual ~InputDialogs() override;
-
-    /// Get the input text in the input field
-    POCDIALOG_API std::string getInput();
 
 Q_SIGNALS:
     void onResultChanged();

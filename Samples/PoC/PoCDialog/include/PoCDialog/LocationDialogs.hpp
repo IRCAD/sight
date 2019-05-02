@@ -35,14 +35,8 @@
 /**
  * @brief   Defines an Input dialog.
  *
- * Example of use:
- * @code
-   ::fwGui::dialog::InputDialog inputDlg;
-   inputDlg.setTitle("Identification dialog");
-   inputDlg.setMessage("Enter Pin Code: ");
-   inputDlg.setInput ("<Enter your code here>");
-   std::string inputText = inputDlg.getInput();
-   @endcode
+ * @brief   This class is associated to LocationDialogs.qml and calls
+ * LocationDialog with the selected options
  */
 class POCDIALOG_CLASS_API LocationDialogs : public QObject
 {
@@ -63,24 +57,10 @@ public:
 
     POCDIALOG_API virtual ~LocationDialogs() override;
 
-    /// Get the input text in the input field
-    POCDIALOG_API std::string getInput();
-
 Q_SIGNALS:
     void onResultChanged();
 
 protected:
-    /// Dialog box message
-    QString m_message;
-    /// Text inputed
-    QString m_input;
-
-//    ::fwGui::dialog::ILocationDialog::Options m_style;
-//    ::fwGui::dialog::ILocationDialog::Types m_type;
-    std::vector< std::pair< std::string, std::string > > m_filters;
-
-    std::string m_wildcard;
-//    ::fwData::location::ILocation::sptr m_location;
 
     /// option to save a file enable
     bool m_existing;

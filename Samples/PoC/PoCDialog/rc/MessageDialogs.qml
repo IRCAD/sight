@@ -12,27 +12,6 @@ Item {
     clip: true
 
     //! [messagedialog]
-    MessageDialog {
-        id: messageDialog
-        visible: messageDialogVisible.checked
-        modality: messageDialogModal.checked ? Qt.WindowModal : Qt.NonModal
-        title: windowTitleField.text
-        text: customizeText.checked ? textField.text : ""
-        informativeText: customizeInformativeText.checked ? informativeTextField.text : ""
-        detailedText: customizeDetailedText.checked ? detailedTextField.text : ""
-
-        onButtonClicked: console.log("clicked button " + clickedButton)
-        onAccepted: lastChosen.text = "Accepted " +
-            (clickedButton == StandardButton.Ok ? "(OK)" : (clickedButton == StandardButton.Retry ? "(Retry)" : "(Ignore)"))
-        onRejected: lastChosen.text = "Rejected " +
-            (clickedButton == StandardButton.Close ? "(Close)" : (clickedButton == StandardButton.Abort ? "(Abort)" : "(Cancel)"))
-        onHelp: lastChosen.text = "Yelped for help!"
-        onYes: lastChosen.text = (clickedButton == StandardButton.Yes ? "Yeessss!!" : "Yes, now and always")
-        onNo: lastChosen.text = (clickedButton == StandardButton.No ? "Oh No." : "No, no, a thousand times no!")
-        onApply: lastChosen.text = "Apply"
-        onReset: lastChosen.text = "Reset"
-    }
-    //! [messagedialog]
 
     ScrollView {
         id: scrollView
@@ -50,98 +29,77 @@ Item {
                 font.bold: true
                 text: "Message dialog properties:"
             }
-            CheckBox {
-                id: messageDialogModal
-                text: "Modal"
-                checked: true
-                Binding on checked { value: messageDialog.modality != Qt.NonModal }
-            }
             RowLayout {
-                CheckBox {
+                Text {
                     id: customizeTitle
                     text: "Window Title"
                     Layout.alignment: Qt.AlignBaseline
-                    checked: true
                 }
                 TextField {
                     id: windowTitleField
                     Layout.alignment: Qt.AlignBaseline
                     Layout.fillWidth: true
-                    text: "Alert"
+                    text: "Custom Dialog"
+                    onTextChanged: pocDialogMessageDialogs.title = windowTitleField.text
                 }
             }
-            Label { text: "Icon:" }
-            Flow {
-                spacing: 8
-                Layout.fillWidth: true
-                property bool updating: false
-                function updateIcon(icon, checked) {
-                    if (updating) return
-                    updating = true
-                    messageDialog.icon = (checked ? icon : StandardIcon.NoIcon)
-                    for (var i = 0; i < children.length; ++i)
-                        if (children[i].icon !== icon)
-                            children[i].checked = false
-                    updating = false
+            GroupBox {
+                id: groupBox
+                title: "Icon"
+                ExclusiveGroup {
+                    id: radioBoxGroup
+                    onCurrentChanged: pocDialogMessageDialogs.icon = current.icon
                 }
+                Column {
+                    spacing: 10
+                    Layout.fillWidth: true
+                    RadioButton {
+                        text: "None"
+                        property var icon: 0
+                        checked: false
+                        exclusiveGroup: radioBoxGroup
+                    }
+                    RadioButton {
+                        text: "Critical"
+                        property var icon: 3
+                        checked: false
+                        exclusiveGroup: radioBoxGroup
+                    }
+                    RadioButton {
+                        text: "Warning"
 
-                CheckBox {
-                    id: iconInformation
-                    text: "Information"
-                    property int icon: StandardIcon.Information
-                    onCheckedChanged: parent.updateIcon(icon, checked)
-                }
+                        property var icon: 2
+                        checked: false
+                        exclusiveGroup: radioBoxGroup
+                    }
+                    RadioButton {
+                        text: "Info"
+                        property var icon: 1
+                        checked: false
+                        exclusiveGroup: radioBoxGroup
+                    }
+                    RadioButton {
+                        property var icon: 4
+                        text: "Question"
+                        checked: false
+                        exclusiveGroup: radioBoxGroup
+                    }
 
-                CheckBox {
-                    id: iconWarning
-                    text: "Warning"
-                    checked: true
-                    property int icon: StandardIcon.Warning
-                    onCheckedChanged: parent.updateIcon(icon, checked)
-                    Component.onCompleted: parent.updateIcon(icon, true)
-                }
-
-                CheckBox {
-                    id: iconCritical
-                    text: "Critical"
-                    property int icon: StandardIcon.Critical
-                    onCheckedChanged: parent.updateIcon(icon, checked)
-                }
-
-                CheckBox {
-                    id: iconQuestion
-                    text: "Question"
-                    property int icon: StandardIcon.Question
-                    onCheckedChanged: parent.updateIcon(icon, checked)
                 }
             }
 
             RowLayout {
-                CheckBox {
-                    id: customizeText
-                    text: "Primary Text"
+                Text {
+                    id: customizeMessage
+                    text: "Window Message"
                     Layout.alignment: Qt.AlignBaseline
-                    checked: true
                 }
                 TextField {
-                    id: textField
+                    id: windowMessageField
                     Layout.alignment: Qt.AlignBaseline
                     Layout.fillWidth: true
-                    text: "Attention Please"
-                }
-            }
-            RowLayout {
-                CheckBox {
-                    id: customizeInformativeText
-                    text: "Informative Text"
-                    Layout.alignment: Qt.AlignBaseline
-                    checked: true
-                }
-                TextField {
-                    id: informativeTextField
-                    Layout.alignment: Qt.AlignBaseline
-                    Layout.fillWidth: true
-                    text: "Be alert!"
+                    text: "Custom Message"
+                    onTextChanged: pocDialogMessageDialogs.message = windowMessageField.text
                 }
             }
             Label { text: "Buttons:" }
@@ -157,39 +115,13 @@ Item {
                     for (var i = 0; i < children.length; ++i)
                         if (children[i].checked)
                             buttons |= children[i].button
-                    if (!buttons)
-                        buttons = StandardButton.Ok
-                    messageDialog.standardButtons = buttons
+                    pocDialogMessageDialogs.buttons = buttons
                     updating = false
-                }
-
-                CheckBox {
-                    text: "Help"
-                    property int button: StandardButton.Help
-                    onCheckedChanged: parent.updateButtons(button, checked)
-                }
-
-                CheckBox {
-                    text: "Abort"
-                    property int button: StandardButton.Abort
-                    onCheckedChanged: parent.updateButtons(button, checked)
-                }
-
-                CheckBox {
-                    text: "Close"
-                    property int button: StandardButton.Close
-                    onCheckedChanged: parent.updateButtons(button, checked)
                 }
 
                 CheckBox {
                     text: "Cancel"
                     property int button: StandardButton.Cancel
-                    onCheckedChanged: parent.updateButtons(button, checked)
-                }
-
-                CheckBox {
-                    text: "NoToAll"
-                    property int button: StandardButton.NoToAll
                     onCheckedChanged: parent.updateButtons(button, checked)
                 }
 
@@ -200,26 +132,8 @@ Item {
                 }
 
                 CheckBox {
-                    text: "YesToAll"
-                    property int button: StandardButton.YesToAll
-                    onCheckedChanged: parent.updateButtons(button, checked)
-                }
-
-                CheckBox {
                     text: "Yes"
                     property int button: StandardButton.Yes
-                    onCheckedChanged: parent.updateButtons(button, checked)
-                }
-
-                CheckBox {
-                    text: "Ignore"
-                    property int button: StandardButton.Ignore
-                    onCheckedChanged: parent.updateButtons(button, checked)
-                }
-
-                CheckBox {
-                    text: "Retry"
-                    property int button: StandardButton.Retry
                     onCheckedChanged: parent.updateButtons(button, checked)
                 }
 
@@ -229,25 +143,6 @@ Item {
                     property int button: StandardButton.Ok
                     onCheckedChanged: parent.updateButtons(button, checked)
                 }
-            }
-            RowLayout {
-                CheckBox {
-                    id: customizeDetailedText
-                    text: "Detailed Text"
-                    Layout.alignment: Qt.AlignBaseline
-                    checked: true
-                }
-                TextField {
-                    id: detailedTextField
-                    Layout.alignment: Qt.AlignBaseline
-                    Layout.fillWidth: true
-                    text: "The world needs more lerts."
-                }
-            }
-            CheckBox {
-                id: messageDialogVisible
-                text: "Visible"
-                Binding on checked { value: messageDialog.visible }
             }
             Label {
                 id: lastChosen
@@ -275,12 +170,7 @@ Item {
             Button {
                 text: "Open"
                 anchors.verticalCenter: parent.verticalCenter
-                onClicked: messageDialog.open()
-            }
-            Button {
-                text: "Close"
-                anchors.verticalCenter: parent.verticalCenter
-                onClicked: messageDialog.close()
+                onClicked: pocDialogMessageDialogs.open()
             }
         }
     }

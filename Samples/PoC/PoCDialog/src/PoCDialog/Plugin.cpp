@@ -64,6 +64,10 @@ void Plugin::initialize()
 
     m_location = std::shared_ptr<LocationDialogs>(new LocationDialogs);
 
+    m_logger = std::shared_ptr<LoggerDialogs>(new LoggerDialogs);
+
+    m_message = std::shared_ptr<MessageDialogs>(new MessageDialogs);
+
     auto path = ::fwRuntime::getBundleResourceFilePath("PoCDialog-0.1/ui.qml");
 
     engine->loadMainComponent(path);

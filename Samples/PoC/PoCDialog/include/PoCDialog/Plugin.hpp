@@ -25,6 +25,8 @@
 #include "PoCDialog/config.hpp"
 #include "PoCDialog/InputDialogs.hpp"
 #include "PoCDialog/LocationDialogs.hpp"
+#include "PoCDialog/LoggerDialogs.hpp"
+#include "PoCDialog/MessageDialogs.hpp"
 
 #include <fwRuntime/Plugin.hpp>
 
@@ -54,8 +56,14 @@ public:
     POCDIALOG_API void uninitialize() noexcept;
 
 private:
+    /// InputDialogs class to instantiate InputDialog
     std::shared_ptr<InputDialogs> m_input;
+    /// LocationDialogs class to instantiate LocationDialog
     std::shared_ptr<LocationDialogs> m_location;
+    /// LoggerDialogs class to instantiate LoggerDialog
+    std::shared_ptr<LoggerDialogs> m_logger;
+    /// MessageDialogs class to instantiate MessageDialog
+    std::shared_ptr<MessageDialogs> m_message;
 
 };
 

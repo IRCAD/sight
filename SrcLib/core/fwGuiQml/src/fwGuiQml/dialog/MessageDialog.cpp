@@ -52,12 +52,12 @@ MessageDialogQmlIconsType messageDialogQmlIcons =
         (::fwGui::dialog::IMessageDialog::CRITICAL, 3);
 
 typedef const std::map< ::fwGui::dialog::IMessageDialog::Buttons,
-                        int> MessageDialogQmlButtonType;
+                        QMessageBox::StandardButton> MessageDialogQmlButtonType;
 MessageDialogQmlButtonType messageDialogQmlButton =
-    ::boost::assign::map_list_of(::fwGui::dialog::IMessageDialog::OK, 0x00000400   )
-        (::fwGui::dialog::IMessageDialog::CANCEL, 0x00400000)
-        (::fwGui::dialog::IMessageDialog::YES, 0x00004000    )
-        (::fwGui::dialog::IMessageDialog::NO, 0x00010000   );
+    ::boost::assign::map_list_of(::fwGui::dialog::IMessageDialog::OK, QMessageBox::Ok)
+        (::fwGui::dialog::IMessageDialog::CANCEL, QMessageBox::Cancel)
+        (::fwGui::dialog::IMessageDialog::YES, QMessageBox::Yes)
+        (::fwGui::dialog::IMessageDialog::NO, QMessageBox::No);
 
 //------------------------------------------------------------------------------
 
@@ -124,8 +124,6 @@ void MessageDialog::setDefaultButton(::fwGui::dialog::IMessageDialog::Buttons bu
     m_isClicked                     = false;
     m_clicked                       = ::fwGui::dialog::IMessageDialog::NOBUTTON;
     int icon = iterIcon->second;
-    // 0 int value means no Button
-    int buttons = 0x00000000;
 
     // get the path of the qml ui file in the 'rc' directory
     auto dialogPath = ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/dialog/MessageDialog.qml");
@@ -139,15 +137,7 @@ void MessageDialog::setDefaultButton(::fwGui::dialog::IMessageDialog::Buttons bu
     Q_EMIT messageChanged();
     emitIcon(icon);
 
-    // add the different type of button needed
-    for(MessageDialogQmlButtonType::value_type button :  messageDialogQmlButton)
-    {
-        if ( m_buttons & button.first)
-        {
-            buttons |= button.second;
-        }
-    }
-    emitButtons(buttons);
+    emitButtons();
     QMetaObject::invokeMethod(dialog, "open");
     while (!m_isClicked && m_visible)
     {
@@ -183,10 +173,19 @@ void MessageDialog::emitIcon(const int& icon)
 
 //------------------------------------------------------------------------------
 
-void MessageDialog::emitButtons(const int& buttons)
+void MessageDialog::emitButtons()
 {
+    QMessageBox::StandardButtons buttons;
+    // add the different type of button needed
+    for(MessageDialogQmlButtonType::value_type button :  messageDialogQmlButton)
+    {
+        if ( m_buttons & button.first)
+        {
+            buttons |= button.second;
+        }
+    }
     m_buttonsDialog = buttons;
-    Q_EMIT iconChanged();
+    Q_EMIT buttonsChanged();
 }
 
 //------------------------------------------------------------------------------

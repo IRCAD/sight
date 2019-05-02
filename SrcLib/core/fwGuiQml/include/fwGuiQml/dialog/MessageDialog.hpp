@@ -26,6 +26,7 @@
 
 #include <fwGui/dialog/IMessageDialog.hpp>
 
+#include <QMessageBox>
 #include <QObject>
 #include <QVector>
 
@@ -48,7 +49,7 @@ Q_OBJECT
 Q_PROPERTY(QString title MEMBER m_title NOTIFY titleChanged)
 Q_PROPERTY(QString message MEMBER m_message NOTIFY messageChanged)
 Q_PROPERTY(int icon MEMBER m_iconDialog WRITE emitIcon NOTIFY iconChanged)
-Q_PROPERTY(int buttons MEMBER m_buttonsDialog WRITE emitButtons NOTIFY buttonsChanged)
+Q_PROPERTY(QMessageBox::StandardButtons buttons MEMBER m_buttonsDialog NOTIFY buttonsChanged)
 Q_PROPERTY(bool visible MEMBER m_visible)
 
 public:
@@ -99,7 +100,7 @@ protected:
 
     /// List of the button
     ::fwGui::dialog::IMessageDialog::Buttons m_buttons;
-    int m_buttonsDialog;
+    QMessageBox::StandardButtons m_buttonsDialog;
 
     /// Icon
     ::fwGui::dialog::IMessageDialog::Icons m_icon;
@@ -113,7 +114,7 @@ protected:
 
     /// Setter to QProperty and emit signal
     FWGUIQML_API void emitIcon(const int&);
-    FWGUIQML_API void emitButtons(const int&);
+    FWGUIQML_API void emitButtons();
 
 protected Q_SLOTS:
     /// slot getting the result of the dialog when a button is pressed

@@ -28,6 +28,7 @@
 
 #include <QObject>
 #include <QString>
+#include <QVariant>
 
 #include <vector>
 
