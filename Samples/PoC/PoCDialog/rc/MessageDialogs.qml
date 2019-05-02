@@ -139,7 +139,6 @@ Item {
 
                 CheckBox {
                     text: "OK"
-                    checked: true
                     property int button: StandardButton.Ok
                     onCheckedChanged: parent.updateButtons(button, checked)
                 }
