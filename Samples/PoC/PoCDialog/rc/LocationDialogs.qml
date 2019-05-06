@@ -142,7 +142,11 @@ Item {
             Button {
                 text: "Open"
                 anchors.verticalCenter: parent.verticalCenter
-                onClicked: pocDialogLocationDialogs.open()
+                onClicked: {
+                    pocDialogLocationDialogs.open();
+                    filterRow.nameFilters = [];
+                    filterRow.nameOfFilters = [];
+                }
             }
             Button {
                 text: "Pictures"

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2019 IRCAD France
+ * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,45 +20,44 @@
  *
  ***********************************************************************/
 
-#ifndef __FWGUIQT_APPLICATION_HPP__
-#define __FWGUIQT_APPLICATION_HPP__
+#pragma once
+
+#include "PoCDialog/config.hpp"
 
 #include <fwCore/base.hpp>
 
-#include <fwGui/Application.hpp>
+#include <fwGui/dialog/PulseProgressDialog.hpp>
 
-#include "fwGuiQt/config.hpp"
+#include <QObject>
+#include <QVariant>
 
-namespace fwGuiQt
-{
+#include <string>
 
 /**
- * @brief   Gives access to the qt application part
- * @class   Application
- *
- * @date    2009-2010.
- *
+ * @brief   This class is associated to ProgressDialogs.qml and calls
+ * ProgressDialog with the selected options
  */
-class FWGUIQT_CLASS_API Application : public ::fwGui::Application
+class POCDIALOG_CLASS_API PulseProgressDialogs : public QObject
 {
+Q_OBJECT
+Q_PROPERTY(QString message MEMBER m_message)
+Q_PROPERTY(QString title MEMBER m_title)
 
 public:
 
-    Application(::fwGui::GuiBaseObject::Key key)
-    {
-    }
+    POCDIALOG_API PulseProgressDialogs();
 
-    virtual ~Application()
-    {
-    }
+    POCDIALOG_API virtual ~PulseProgressDialogs() override;
 
-    /// Tells the application to exit with a returncode
-    FWGUIQT_API virtual void exit( int returncode = 0);
+Q_SIGNALS:
+    void onResultChanged();
 
+protected:
+    /// Dialog title
+    QString m_title;
+    /// Dialog box message
+    QString m_message;
+
+protected Q_SLOTS:
+    void open();
 };
-
-} // namespace fwGuiQt
-
-#endif /*__FWGUIQT_APPLICATION_HPP__*/
-
-

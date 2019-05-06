@@ -5,16 +5,13 @@ import QtQuick.Controls.Styles 1.4
 import QtQuick.Layouts 1.0
 import QtQuick.Dialogs 1.0
 import dialog 1.0
-import fwVTKQml 1.0
-import uiImageQml 1.0
-import uiMedDataQml 1.0
-import uiReconstructionQml 1.0
 
 ApplicationWindow {
     id: root
     width: 800
     height: 600
     visible: true
+    modality: Qt.NonModal
 
     title: qsTr("PoCDialog 0.1")
     onClosing: appManager.uninitialize();

@@ -33,6 +33,8 @@
 #include <fwRuntime/operations.hpp>
 
 #include <QGuiApplication>
+#include <QQmlProperty>
+#include <QQuickWindow>
 
 fwGuiRegisterMacro( ::fwGuiQml::dialog::ProgressDialog, ::fwGui::dialog::IProgressDialog::REGISTRY_KEY );
 
@@ -43,9 +45,9 @@ namespace dialog
 
 //------------------------------------------------------------------------------
 
-ProgressDialog::ProgressDialog( ::fwGui::GuiBaseObject::Key key, const std::string& title, const std::string& message) :
-    m_title("")
+ProgressDialog::ProgressDialog( ::fwGui::GuiBaseObject::Key key, const std::string& title, const std::string& message)
 {
+    m_visible = false;
     // get the qml engine QmlApplicationEngine
     SPTR(::fwQml::QmlEngine) engine = ::fwQml::QmlEngine::getDefault();
 
@@ -57,10 +59,17 @@ ProgressDialog::ProgressDialog( ::fwGui::GuiBaseObject::Key key, const std::stri
     // load the qml ui component
     m_dialog = engine->createComponent(dialogPath, context);
 
+    //TODO FIXME: change this progress dialog to only have QProperty and no findChild and find a way to update the
+    // progress bar without the undetermine to true
+    m_messageObject = m_dialog->findChild<QObject*>("message");
+    m_valueObject   = m_dialog->findChild<QObject*>("progressBar");
+
     this->setTitle(title);
     this->setMessage(message);
+    this->m_value = 0;
+    Q_EMIT valueChanged();
+    m_visible = true;
     QMetaObject::invokeMethod(m_dialog, "open");
-    qGuiApp->processEvents();
 }
 
 //------------------------------------------------------------------------------
@@ -89,6 +98,9 @@ void ProgressDialog::operator()(float percent, std::string msg)
 
         this->m_value = value;
         Q_EMIT valueChanged();
+
+        m_valueObject->setProperty("text", QString::number(m_value));
+
         if ( m_processUserEvents )
         {
             qGuiApp->processEvents();
@@ -105,8 +117,18 @@ void ProgressDialog::operator()(float percent, std::string msg)
 void ProgressDialog::setTitle(const std::string& title)
 {
     SLM_ASSERT("The progress dialog is not initialized or has been closed", m_dialog);
-    m_title = QString::fromStdString(title);
+    SPTR(::fwQml::QmlEngine) engine = ::fwQml::QmlEngine::getDefault();
+    m_title                         = QString::fromStdString(title);
     Q_EMIT titleChanged();
+    if (m_visible && !title.empty())
+    {
+        QMetaObject::invokeMethod(m_dialog, "close");
+        qGuiApp->processEvents();
+        m_dialog->setProperty("title", m_title);
+        QMetaObject::invokeMethod(m_dialog, "open");
+        qGuiApp->processEvents();
+    }
+
 }
 
 //------------------------------------------------------------------------------
@@ -120,7 +142,20 @@ void ProgressDialog::setMessage(const std::string& msg)
         m_message += m_title;
         m_message += " - ";
     }
-    m_message = QString::fromStdString(msg);
+    m_message = m_message + QString::fromStdString(msg);
+    Q_EMIT messageChanged();
+    emitMessageChanged(m_message);
+    if (m_visible && !msg.empty())
+    {
+        m_messageObject->setProperty("text", m_message);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void ProgressDialog::emitMessageChanged(QString message)
+{
+    m_message = message;
     Q_EMIT messageChanged();
 }
 

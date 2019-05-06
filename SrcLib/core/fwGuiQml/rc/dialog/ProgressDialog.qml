@@ -5,33 +5,45 @@ import QtQuick.Controls 1.4
 import QtQuick.Layouts 1.3
 
 Dialog {
+    id: dialog
     title: progressDialog.title
-    width: 410
+    modality: Qt.NonModal
+    width: 440
     standardButtons: StandardButton.Cancel
+
     Column {
         id: column
-        width: 400
+        width: 430
+
         Text {
+            id: progressText
+            objectName: "message"
             width: column.width
             text: progressDialog.message
             wrapMode: Text.WordWrap
         }
         RowLayout {
-            width: 400
+            width: 430
             ProgressBar {
                 id: progressBar
                 Layout.fillWidth: true
-                minimumValue: 0
-                maximumValue: 100
-                value: progressDialog.value
+                indeterminate: true
             }
             // text percentage at the end of the ProgressBar
             Text {
+                objectName: "progressBar"
+                Layout.fillWidth: true
                 id: percent
-                text: (progressBar.value * 100).toFixed().toLocaleString() + "%"
+                text: "100"
+            }
+            Text {
+                Layout.fillWidth: true
+                Layout.alignment: Qt.AlignRight
+                text: "%"
             }
         }
     }
+
     onButtonClicked: progressDialog.cancelPressed()
-    onVisibleChanged: progressDialog.visible = visible
+    onVisibleChanged: percent.text = "0"
 }

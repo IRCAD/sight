@@ -26,8 +26,6 @@
 
 #include <fwCore/base.hpp>
 
-#include <fwGui/dialog/IInputDialog.hpp>
-
 #include <QObject>
 
 #include <string>

@@ -120,7 +120,11 @@ Item {
             Button {
                 text: "Open"
                 anchors.verticalCenter: parent.verticalCenter
-                onClicked: pocDialogLoggerDialogs.open()
+                onClicked: {
+                    pocDialogLoggerDialogs.open();
+                    loggerRow.errorLevel = [];
+                    loggerRow.errorMessage = [];
+                }
             }
         }
     }

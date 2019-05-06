@@ -97,14 +97,7 @@ std::string SelectorDialog::show()
     for(std::string selection :  m_selections)
     {
         QHash<QByteArray, QVariant> data;
-        if (!model.isEmpty())
-        {
-            data.insert("check", true);
-        }
-        else
-        {
-            data.insert("check", false);
-        }
+        data.insert("check", false);
         data.insert("textOption", QString::fromStdString(selection));
         model.addData(QHash<QByteArray, QVariant>(data));
     }

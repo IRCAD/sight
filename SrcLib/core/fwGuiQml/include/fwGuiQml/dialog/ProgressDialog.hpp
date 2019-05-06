@@ -26,6 +26,7 @@
 
 #include <fwGui/dialog/IProgressDialog.hpp>
 
+#include <QObject>
 #include <QPointer>
 #include <QString>
 
@@ -46,7 +47,7 @@ class FWGUIQML_CLASS_API ProgressDialog : public QObject,
 {
 Q_OBJECT
 Q_PROPERTY(QString title MEMBER m_title NOTIFY titleChanged)
-Q_PROPERTY(QString message MEMBER m_message NOTIFY messageChanged)
+Q_PROPERTY(QString message MEMBER m_message WRITE emitMessageChanged NOTIFY messageChanged)
 Q_PROPERTY(int value MEMBER m_value NOTIFY valueChanged)
 Q_PROPERTY(bool visible MEMBER m_visible)
 
@@ -77,6 +78,7 @@ Q_SIGNALS:
     void valueChanged();
 
 protected Q_SLOTS:
+    void emitMessageChanged(QString);
     void cancelPressed() override;
 protected:
     /// title of the progress dialog
@@ -85,6 +87,10 @@ protected:
     QString m_message;
     /// the progress dialog to delete it during the destruction of the class
     QObject* m_dialog;
+    /// the message object inside the dialog
+    QObject* m_messageObject;
+    /// the value object of the ProgressBar inside the dialog
+    QObject* m_valueObject;
     /// visible state of the progress dialog
     bool m_visible;
 };

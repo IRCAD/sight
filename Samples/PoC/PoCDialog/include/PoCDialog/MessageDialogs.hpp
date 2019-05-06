@@ -26,15 +26,13 @@
 
 #include <fwCore/base.hpp>
 
-#include <fwGui/dialog/IMessageDialog.hpp>
-
 #include <QObject>
 
 #include <string>
 
 /**
- * @brief   This class is associated to InputDialogs.qml and calls
- * InputDialog with the selected options
+ * @brief   This class is associated to MessageDialogs.qml and calls
+ * MessageDialog with the selected options
  */
 class POCDIALOG_CLASS_API MessageDialogs : public QObject
 {

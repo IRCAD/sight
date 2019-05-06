@@ -68,6 +68,12 @@ void Plugin::initialize()
 
     m_message = std::shared_ptr<MessageDialogs>(new MessageDialogs);
 
+    m_multiSelector = std::shared_ptr<MultiSelectorDialogs>(new MultiSelectorDialogs);
+
+    m_progress = std::shared_ptr<ProgressDialogs>(new ProgressDialogs);
+
+    m_pulseProgress = std::shared_ptr<PulseProgressDialogs>(new PulseProgressDialogs);
+
     auto path = ::fwRuntime::getBundleResourceFilePath("PoCDialog-0.1/ui.qml");
 
     engine->loadMainComponent(path);

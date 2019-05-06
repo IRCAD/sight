@@ -84,6 +84,8 @@ void PulseProgressDialog::show()
     // load the qml ui component
     QObject* dialog = engine->createComponent(dialogPath, context);
 
+    m_isClicked = false;
+
     // Create a QFutureWatcher and connect signals and slots.
     QFutureWatcher<void> futureWatcher;
     QObject::connect(&futureWatcher, SIGNAL(finished()), this, SLOT(onFinished()));
@@ -109,7 +111,8 @@ void PulseProgressDialog::show()
 
 void PulseProgressDialog::onFinished()
 {
-    m_visible = false;
+    m_isClicked = true;
+    m_visible   = false;
     Q_EMIT visibleChanged();
 }
 
@@ -117,7 +120,8 @@ void PulseProgressDialog::onFinished()
 
 void PulseProgressDialog::onCanceled()
 {
-    m_visible = false;
+    m_isClicked = true;
+    m_visible   = false;
     Q_EMIT canceled();
 }
 

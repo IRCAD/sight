@@ -1,73 +1,82 @@
-import QtQuick 2.2
+import QtQuick 2.3
 import QtQuick.Controls 1.2
-import QtQuick.Dialogs 1.1
+import QtQuick.Dialogs 1.2
+import QtQuick.Layouts 1.1
+import QtQuick.Window 2.0
 
 Item {
-    width: 320
-    height: 240
+    id: root
+    width: 580
+    height: 400
     SystemPalette { id: palette }
     clip: true
 
-    //! [colordialog]
-    ColorDialog {
-        id: colorDialog
-        visible: colorDialogVisible.checked
-        modality: colorDialogModal.checked ? Qt.WindowModal : Qt.NonModal
-        title: "Choose a color"
-        color: "green"
-        showAlphaChannel: colorDialogAlpha.checked
-        onAccepted: { console.log("Accepted: " + color) }
-        onRejected: { console.log("Rejected") }
-    }
-    //! [colordialog]
-
-    Column {
+    ColumnLayout {
         anchors.fill: parent
         anchors.margins: 12
         spacing: 8
         Label {
             font.bold: true
-            text: "Color dialog properties:"
+            text: "Message dialog properties:"
         }
-        CheckBox {
-            id: colorDialogModal
-            text: "Modal"
-            checked: true
-            Binding on checked { value: colorDialog.modality != Qt.NonModal }
+        RowLayout {
+            Text {
+                id: customizeTitle
+                text: "Window Title"
+                Layout.alignment: Qt.AlignBaseline
+            }
+            TextField {
+                id: windowTitleField
+                Layout.alignment: Qt.AlignBaseline
+                Layout.fillWidth: true
+                text: "Custom Dialog"
+                onTextChanged: pocDialogSelectorDialogs.title = windowTitleField.text
+            }
         }
-        CheckBox {
-            id: colorDialogAlpha
-            text: "Show alpha channel"
-            Binding on checked { value: colorDialog.showAlphaChannel }
+        RowLayout {
+            Text {
+                id: customizeMessage
+                text: "Window Message"
+                Layout.alignment: Qt.AlignBaseline
+            }
+            TextField {
+                id: windowMessageField
+                Layout.alignment: Qt.AlignBaseline
+                Layout.fillWidth: true
+                text: "Custom Message"
+                onTextChanged: pocDialogSelectorDialogs.message = windowMessageField.text
+            }
         }
-        CheckBox {
-            id: colorDialogVisible
-            text: "Visible"
-            Binding on checked { value: colorDialog.visible }
-        }
-        Row {
-            id: colorRow
-            spacing: parent.spacing
-            height: colorLabel.implicitHeight * 2.0
-            Rectangle {
-                color: colorDialog.color
-                height: parent.height
-                width: height * 2
-                border.color: "black"
-                MouseArea {
-                    anchors.fill: parent
-                    onClicked: colorDialog.open()
+        RowLayout {
+            id: optionRow
+            property var options: []
+            Text {
+                id: customizeFilter
+                text: "Option"
+                Layout.alignment: Qt.AlignBaseline
+            }
+
+            TextField {
+                id: windowOptionField
+                placeholderText: "name of the option"
+                Layout.fillWidth: true
+                Layout.alignment: Qt.AlignBaseline
+            }
+            Button {
+                text: "Add"
+                onClicked: {
+                    optionRow.options.push(windowOptionField.text)
+                    windowOptionField.text = ""
+                    pocDialogSelectorDialogs.options = optionRow.options
                 }
             }
-            Label {
-                id: colorLabel
-                text: "<b>current color:</b> " + colorDialog.color
-                anchors.verticalCenter: parent.verticalCenter
-            }
+        }
+        Label {
+            text: "<b>option selected:</b> " + pocDialogSelectorDialogs.result
         }
     }
-
     Rectangle {
+        id: bottomBar
         anchors {
             left: parent.left
             right: parent.right
@@ -87,17 +96,10 @@ Item {
             Button {
                 text: "Open"
                 anchors.verticalCenter: parent.verticalCenter
-                onClicked: colorDialog.open()
-            }
-            Button {
-                text: "Close"
-                anchors.verticalCenter: parent.verticalCenter
-                onClicked: colorDialog.close()
-            }
-            Button {
-                text: "set to green"
-                anchors.verticalCenter: parent.verticalCenter
-                onClicked: colorDialog.color = "green"
+                onClicked: {
+                    pocDialogSelectorDialogs.open()
+                    optionRow.options = []
+                }
             }
         }
     }

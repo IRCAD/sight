@@ -144,7 +144,8 @@ Item {
                 }
             }
             Label {
-                id: lastChosen
+                id: result
+                text: "The result is: " + pocDialogMessageDialogs.result
             }
         }
     }
