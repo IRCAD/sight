@@ -25,19 +25,33 @@
 #include <fwCore/base.hpp>
 
 #include <fwGuiQml/App.hpp>
-#include <fwGuiQml/WorkerQml.hpp>
+
+#include <fwQt/WorkerQt.hpp>
 
 #include <fwRuntime/operations.hpp>
 #include <fwRuntime/profile/Profile.hpp>
+#include <fwRuntime/Runtime.hpp>
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ActiveWorkers.hpp>
 
+#include <fwThread/Timer.hpp>
+#include <fwThread/Worker.hpp>
+
+#include <fwTools/Os.hpp>
+
+#include <QDir>
+#include <QEvent>
 #include <QFile>
+#include <QFont>
+#include <QPointer>
 #include <QResource>
+#include <QSharedPointer>
 #include <QString>
+#include <QStringList>
 #include <QTextStream>
+#include <QTimer>
 
 #include <functional>
 
@@ -62,7 +76,15 @@ void Plugin::start()
     int& argc   = profile->getRawArgCount();
     char** argv = profile->getRawParams();
 
-    m_workerQt = ::fwGuiQml::getQmlWorker(argc, argv);
+    std::function<QSharedPointer<QCoreApplication>(int&, char**)> callback = [this](int& argc, char** argv)
+                                                                             {
+                                                                                 return QSharedPointer< QGuiApplication > ( new ::fwGuiQml::App(
+                                                                                                                                argc,
+                                                                                                                                argv,
+                                                                                                                                true) );
+                                                                             };
+
+    m_workerQt = ::fwQt::getQtWorker(argc, argv, callback);
 
     ::fwServices::registry::ActiveWorkers::setDefaultWorker(m_workerQt);
 

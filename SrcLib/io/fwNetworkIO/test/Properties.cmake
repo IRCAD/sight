@@ -9,6 +9,7 @@ set( DEPENDENCIES
     fwTest
     fwThread
     fwData
+    fwQt
     fwMedData
     )
 set( REQUIREMENTS )

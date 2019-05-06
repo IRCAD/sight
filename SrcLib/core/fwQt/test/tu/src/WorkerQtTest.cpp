@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2019 IRCAD France
+ * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,10 +22,10 @@
 
 #include "WorkerQtTest.hpp"
 
+#include <fwQt/WorkerQt.hpp>
+
 #include <fwGuiQt/App.hpp>
 #include <fwGuiQt/config.hpp>
-#include <fwGuiQt/util/FuncSlot.hpp>
-#include <fwGuiQt/WorkerQt.hpp>
 
 #include <fwServices/registry/ActiveWorkers.hpp>
 
@@ -36,6 +36,7 @@
 #include <cppunit/Exception.h>
 
 #include <QApplication>
+#include <QSharedPointer>
 #include <QTimer>
 
 #include <functional>
@@ -111,7 +112,14 @@ void WorkerQtTest::setUp()
 #endif
 
     CPPUNIT_ASSERT(qApp == NULL);
-    m_worker = ::fwGuiQt::getQtWorker(argc, argv, guiEnabled);
+    std::function<QSharedPointer<QCoreApplication>(int&, char**)> callback = [this](int& argc, char** argv)
+                                                                             {
+                                                                                 return QSharedPointer< QApplication > ( new ::fwGuiQt::App(
+                                                                                                                             argc,
+                                                                                                                             argv,
+                                                                                                                             true) );
+                                                                             };
+    m_worker = ::fwQt::getQtWorker(argc, argv, callback, guiEnabled);
 }
 
 //-----------------------------------------------------------------------------

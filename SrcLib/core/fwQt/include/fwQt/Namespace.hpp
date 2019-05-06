@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2004-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2019 IRCAD France
+ * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,28 +20,26 @@
  *
  ***********************************************************************/
 
-#include <fwGuiQt/util/FuncSlot.hpp>
+#pragma once
 
-namespace fwGuiQt
+/**
+ * @brief       The namespace fwGuiQml contains classes which provide the implementation of the Gui using Qml library.
+ */
+namespace fwQt
 {
 
-namespace util
-{
-
-void doNothing()
+/**
+ * @brief       The namespace fwGuiQml::dialog contains the classes used for dialog implementation with Qml Library.
+ */
+namespace dialog
 {
 }
 
-FuncSlot::FuncSlot() : m_func( doNothing )
+/**
+ * @brief       The namespace fwGuiQml::model contains the classes used for model implementation in Qml.
+ */
+namespace model
 {
 }
 
-void FuncSlot::trigger()
-{
-    m_func();
 }
-
-} // namespace util
-
-} // namespace fwGuiQt
-

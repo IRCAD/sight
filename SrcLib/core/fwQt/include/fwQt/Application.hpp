@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2004-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2019 IRCAD France
+ * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,32 +20,36 @@
  *
  ***********************************************************************/
 
-#include <fwGuiQml/util/FuncSlot.hpp>
+#pragma once
 
-namespace fwGuiQml
+#include "fwQt/config.hpp"
+
+#include <fwCore/base.hpp>
+
+#include <fwGui/Application.hpp>
+
+namespace fwQt
 {
 
-namespace util
+/**
+ * @brief   Gives access to the qml application part
+ */
+class FWQT_CLASS_API Application : public ::fwGui::Application
 {
 
-//------------------------------------------------------------------------------
+public:
 
-void doNothing()
-{
-}
+    Application(::fwGui::GuiBaseObject::Key key)
+    {
+    }
 
-FuncSlot::FuncSlot() :
-    m_func( doNothing )
-{
-}
+    virtual ~Application()
+    {
+    }
 
-//------------------------------------------------------------------------------
+    /// Tells the application to exit with a returncode
+    FWQT_API virtual void exit( int returncode = 0);
 
-void FuncSlot::trigger()
-{
-    m_func();
-}
-
-} // namespace util
+};
 
 } // namespace fwGuiQml

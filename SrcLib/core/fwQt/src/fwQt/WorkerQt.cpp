@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2019 IRCAD France
+ * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,10 +20,11 @@
  *
  ***********************************************************************/
 
-#include "fwGuiQt/WorkerQt.hpp"
+#include "fwQt/WorkerQt.hpp"
 
-#include "fwGuiQt/App.hpp"
-#include "fwGuiQt/util/FuncSlot.hpp"
+#include "fwQt/util/FuncSlot.hpp"
+
+#include <fwGuiQml/App.hpp>
 
 #include <fwRuntime/profile/Profile.hpp>
 #include <fwRuntime/Runtime.hpp>
@@ -39,13 +40,12 @@
 #include <QEvent>
 #include <QFont>
 #include <QPointer>
-#include <QSharedPointer>
 #include <QStringList>
 #include <QTimer>
 
 #include <functional>
 
-namespace fwGuiQt
+namespace fwQt
 {
 
 class WorkerQtTask : public QEvent
@@ -88,6 +88,8 @@ public:
 
     void post(TaskType handler);
 
+    void setApp(QSharedPointer<QCoreApplication> app);
+
     ::fwThread::Worker::FutureType getFuture();
 
     virtual ::fwThread::ThreadIdType getThreadId() const;
@@ -100,7 +102,7 @@ protected:
 
     int m_argc;
 
-    QSharedPointer< QApplication > m_app;
+    QSharedPointer< QCoreApplication > m_app;
 
     SPTR(::fwThread::Timer) createTimer();
 
@@ -115,11 +117,13 @@ protected:
 
 //-----------------------------------------------------------------------------
 
-::fwThread::Worker::sptr getQtWorker(int& argc, char** argv, bool guiEnabled)
+::fwThread::Worker::sptr getQtWorker(int& argc, char** argv, std::function<QSharedPointer<QCoreApplication>(int&,
+                                                                                                            char**)> callback,
+                                     bool guiEnabled)
 {
     SPTR(WorkerQt) workerQt = std::make_shared< WorkerQt >();
     workerQt->init(argc, argv, guiEnabled);
-
+    workerQt->setApp(callback(argc, argv));
     return workerQt;
 }
 
@@ -184,7 +188,7 @@ protected:
 
     QPointer< QTimer > m_timerQt;
 
-    QPointer< ::fwGuiQt::util::FuncSlot > m_qtFunc;
+    QPointer< ::fwQt::util::FuncSlot > m_qtFunc;
 };
 
 //------------------------------------------------------------------------------
@@ -208,7 +212,7 @@ void WorkerQt::init( int& argc, char** argv, bool guiEnabled )
     // This is difficult to do this, especially because the location of the deps is different whether
     // you are executing the application in the build tree or in the install tree
     // Thus the strategy here is to locate the Qt5Core library and then compute the path relatively
-    // This work in all cases when we use our binpkgs. If we use the system libraries, the qt.conf file
+    // This work in all cases when we use our binpkgs. If we use the system libraries, the Qt.conf file
     // of the system should do the job and the following might be useless.
     ::boost::filesystem::path qt5LibDir = ::fwTools::os::getSharedLibraryPath("Qt5Core");
     const ::boost::filesystem::path qt5PluginsDir = qt5LibDir.remove_filename() / "qt5" / "plugins";
@@ -220,13 +224,19 @@ void WorkerQt::init( int& argc, char** argv, bool guiEnabled )
     }
     else
     {
-        SLM_ERROR("Could not determine Qt5 plugins path, tried with: " + qt5PluginsDir.string());
+        SLM_ERROR("Could not determine qt5 plugins path, tried with: " + qt5PluginsDir.string());
     }
 
     m_argc = argc;
-    m_app  = QSharedPointer< QApplication > ( new ::fwGuiQt::App( m_argc, argv, guiEnabled ) );
 
     OSLM_TRACE("Init Qt" << ::fwThread::getCurrentThreadId() <<" Finish");
+}
+
+//------------------------------------------------------------------------------
+
+void WorkerQt::setApp(QSharedPointer<QCoreApplication> app)
+{
+    m_app = app;
 }
 
 //------------------------------------------------------------------------------
@@ -245,7 +255,7 @@ WorkerQt::~WorkerQt()
         SLM_ASSERT("WorkerQt loop shall be created and ran from main thread ",
                    !m_future.valid() && ::fwThread::getCurrentThreadId() == this->getThreadId() );
 
-        std::packaged_task< ExitReturnType() > task( std::bind(&QApplication::exec) );
+        std::packaged_task< ExitReturnType() > task( std::bind(&QCoreApplication::exec) );
 
         std::future< ExitReturnType > ufuture = task.get_future();
 
@@ -268,7 +278,7 @@ WorkerQt::~WorkerQt()
 
 void WorkerQt::stop()
 {
-    this->postTask<void>(&QApplication::quit).wait();
+    this->postTask<void>(&QCoreApplication::quit).wait();
 }
 //------------------------------------------------------------------------------
 
@@ -281,14 +291,14 @@ SPTR(::fwThread::Timer) WorkerQt::createTimer()
 
 void WorkerQt::post(TaskType handler)
 {
-    QApplication::postEvent( qApp, new WorkerQtTask(handler) );
+    QCoreApplication::postEvent( qApp, new WorkerQtTask(handler) );
 }
 
 //------------------------------------------------------------------------------
 
 void WorkerQt::processTasks()
 {
-    QApplication::sendPostedEvents(0, ::fwGuiQt::WorkerQtTask::s_WORKER_QT_TASK_EVENT_TYPE);
+    QCoreApplication::sendPostedEvents(0, ::fwQt::WorkerQtTask::s_WORKER_QT_TASK_EVENT_TYPE);
 }
 
 //------------------------------------------------------------------------------
@@ -303,7 +313,7 @@ void WorkerQt::processTasks(PeriodType maxtime)
 TimerQt::TimerQt() :
     m_timerQt( new QTimer(qApp) )
 {
-    m_qtFunc = new ::fwGuiQt::util::FuncSlot();
+    m_qtFunc = new ::fwQt::util::FuncSlot();
     QObject::connect(m_timerQt, SIGNAL(timeout()), m_qtFunc, SLOT(trigger()));
 }
 
@@ -357,4 +367,4 @@ void TimerQt::updatedFunction()
     m_qtFunc->setFunction(m_function);
 }
 
-} //namespace fwGuiQt
+} //namespace fwGuiQml

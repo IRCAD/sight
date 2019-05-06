@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2019 IRCAD France
- * Copyright (C) 2019 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,34 +22,46 @@
 
 #pragma once
 
-#include "fwGuiQml/config.hpp"
+#include <fwQt/config.hpp>
 
-#include <fwCore/base.hpp>
+#include <QObject>
 
-#include <fwGui/Application.hpp>
+#include <functional>
 
-namespace fwGuiQml
+namespace fwQt
 {
 
-/**
- * @brief   Gives access to the qml application part
- */
-class FWGUIQML_CLASS_API Application : public ::fwGui::Application
+namespace util
 {
+
+class FWQT_CLASS_API FuncSlot : public QObject
+{
+Q_OBJECT
 
 public:
+    FWQT_API FuncSlot();
 
-    Application(::fwGui::GuiBaseObject::Key key)
+    template< typename CALLABLE >
+    FuncSlot(CALLABLE c) :
+        m_func(c)
     {
     }
 
-    virtual ~Application()
+    //------------------------------------------------------------------------------
+
+    template< typename CALLABLE >
+    void setFunction(CALLABLE c)
     {
+        m_func = c;
     }
 
-    /// Tells the application to exit with a returncode
-    FWGUIQML_API virtual void exit( int returncode = 0);
+public Q_SLOTS:
+    void trigger();
 
+protected:
+    std::function< void() > m_func;
 };
+
+} // namespace util
 
 } // namespace fwGuiQml

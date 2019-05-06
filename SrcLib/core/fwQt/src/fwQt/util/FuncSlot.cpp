@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2019 IRCAD France
- * Copyright (C) 2019 IHU Strasbourg
+ * Copyright (C) 2004-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,24 +20,32 @@
  *
  ***********************************************************************/
 
-#pragma once
+#include <fwQt/util/FuncSlot.hpp>
 
-#include "fwGuiQml/config.hpp"
-
-#include <fwCore/base.hpp>
-
-namespace fwThread
-{
-class Worker;
-} //namespace fwThread
-
-namespace fwGuiQml
+namespace fwQt
 {
 
-//-----------------------------------------------------------------------------
+namespace util
+{
 
-FWGUIQML_API SPTR(::fwThread::Worker) getQmlWorker(int& argc, char** argv, bool guiEnabled = true);
+//------------------------------------------------------------------------------
 
-//-----------------------------------------------------------------------------
+void doNothing()
+{
+}
 
-} //namespace fwGui
+FuncSlot::FuncSlot() :
+    m_func( doNothing )
+{
+}
+
+//------------------------------------------------------------------------------
+
+void FuncSlot::trigger()
+{
+    m_func();
+}
+
+} // namespace util
+
+} // namespace fwGuiQml

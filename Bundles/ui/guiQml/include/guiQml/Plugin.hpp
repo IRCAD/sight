@@ -33,6 +33,7 @@ class Worker;
 
 namespace guiQml
 {
+
 /**
  * @brief   This class is called when the guiQt bundle is loaded.
  */

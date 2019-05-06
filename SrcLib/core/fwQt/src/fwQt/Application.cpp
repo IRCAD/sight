@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "fwGuiQml/Application.hpp"
+#include "fwQt/Application.hpp"
 
 #include <fwGui/dialog/IMessageDialog.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
@@ -28,9 +28,9 @@
 
 #include <QGuiApplication>
 
-fwGuiRegisterMacro(::fwGuiQml::Application, ::fwGui::IApplication::REGISTRY_KEY );
+fwGuiRegisterMacro(::fwQt::Application, ::fwGui::IApplication::REGISTRY_KEY );
 
-namespace fwGuiQml
+namespace fwQt
 {
 
 //-----------------------------------------------------------------------------
