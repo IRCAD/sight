@@ -513,7 +513,7 @@ void RayTracingVolumeRenderer::createRayTracingMaterial(const std::string& _sour
 
     ::Ogre::MaterialManager& mm = ::Ogre::MaterialManager::getSingleton();
 
-    /// The material needs to be destroyed only if it already exists
+    // The material needs to be destroyed only if it already exists
     {
         const ::Ogre::ResourcePtr matResource =
             mm.getResourceByName(matName, ::Ogre::ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME);
@@ -530,8 +530,7 @@ void RayTracingVolumeRenderer::createRayTracingMaterial(const std::string& _sour
         }
     }
 
-    ///////////////////////////////////////////////////////////////////////////
-    /// Compile the commun vertex shader
+    // Compile the commun vertex shader
     ::Ogre::HighLevelGpuProgramManager& gpm = ::Ogre::HighLevelGpuProgramManager::getSingleton();
     const ::Ogre::String vpName("RTV_VP_" + std::to_string(hash));
     if(!gpm.resourceExists(vpName))
@@ -545,8 +544,7 @@ void RayTracingVolumeRenderer::createRayTracingMaterial(const std::string& _sour
         }
     }
 
-    ///////////////////////////////////////////////////////////////////////////
-    /// Compile fragment shader
+    // Compile fragment shader
     ::Ogre::String fpName("RTV_FP_" + std::to_string(hash));
     if(!gpm.resourceExists(fpName))
     {
@@ -570,12 +568,10 @@ void RayTracingVolumeRenderer::createRayTracingMaterial(const std::string& _sour
         }
     }
 
-    ///////////////////////////////////////////////////////////////////////////
-    /// Create the material
+    // Create the material
     ::Ogre::MaterialPtr mat = mm.create(m_currentMtlName, ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 
-    ///////////////////////////////////////////////////////////////////////////
-    /// Create the technique
+    // Create the technique
     {
         // Ensure that we have the color parameters set for the current material
         this->setMaterialLightParams(mat);
@@ -588,12 +584,12 @@ void RayTracingVolumeRenderer::createRayTracingMaterial(const std::string& _sour
         pass->setDepthCheckEnabled(true);
         pass->setDepthWriteEnabled(true);
 
-        /// Vertex program
+        // Vertex program
         pass->setVertexProgram(vpName);
         ::Ogre::GpuProgramParametersSharedPtr vpParams = pass->getVertexProgramParameters();
         vpParams->setNamedAutoConstant("u_worldViewProj", ::Ogre::GpuProgramParameters::ACT_WORLDVIEWPROJ_MATRIX);
 
-        /// Fragment program
+        // Fragment program
         pass->setFragmentProgram(fpName);
         ::Ogre::GpuProgramParametersSharedPtr fpParams = pass->getFragmentProgramParameters();
         fpParams->setNamedAutoConstant("u_viewportSize", ::Ogre::GpuProgramParameters::ACT_VIEWPORT_SIZE);
@@ -617,13 +613,11 @@ void RayTracingVolumeRenderer::createRayTracingMaterial(const std::string& _sour
         fpParams->setNamedAutoConstant("u_worldViewProj", ::Ogre::GpuProgramParameters::ACT_WORLDVIEWPROJ_MATRIX);
         fpParams->addSharedParameters(m_RTVSharedParameters->getName());
 
-        ///////////////////////////////////////////////////////////////////////////
-        /// Setup texture unit states
+        // Setup texture unit states
         this->setRayCastingPassTextureUnits(pass, fpPPDefines);
     }
 
-    ///////////////////////////////////////////////////////////////////////////
-    /// Compile the depth fragment shader
+    // Compile the depth fragment shader
     ::Ogre::String fpDepthName("RTVD_FP_" + std::to_string(hash));
     if(!gpm.resourceExists(fpDepthName))
     {
@@ -648,8 +642,7 @@ void RayTracingVolumeRenderer::createRayTracingMaterial(const std::string& _sour
         }
     }
 
-    ///////////////////////////////////////////////////////////////////////////
-    /// Create the depth technique
+    // Create the depth technique
     {
         ::Ogre::Technique* const tech = mat->createTechnique();
         tech->setSchemeName("DepthPeeling/depthMap");
@@ -660,12 +653,12 @@ void RayTracingVolumeRenderer::createRayTracingMaterial(const std::string& _sour
         pass->setDepthCheckEnabled(true);
         pass->setDepthWriteEnabled(true);
 
-        /// Vertex program
+        // Vertex program
         pass->setVertexProgram(vpName);
         ::Ogre::GpuProgramParametersSharedPtr vpParams = pass->getVertexProgramParameters();
         vpParams->setNamedAutoConstant("u_worldViewProj", ::Ogre::GpuProgramParameters::ACT_WORLDVIEWPROJ_MATRIX);
 
-        /// Fragment program
+        // Fragment program
         pass->setFragmentProgram(fpDepthName);
         ::Ogre::GpuProgramParametersSharedPtr fpParams = pass->getFragmentProgramParameters();
         fpParams->setNamedAutoConstant("u_viewportSize", ::Ogre::GpuProgramParameters::ACT_VIEWPORT_SIZE);
@@ -677,8 +670,7 @@ void RayTracingVolumeRenderer::createRayTracingMaterial(const std::string& _sour
         fpParams->setNamedAutoConstant("u_worldViewProj", ::Ogre::GpuProgramParameters::ACT_WORLDVIEWPROJ_MATRIX);
         fpParams->addSharedParameters(m_RTVSharedParameters->getName());
 
-        ///////////////////////////////////////////////////////////////////////////
-        /// Setup texture unit states
+        // Setup texture unit states
         this->setRayCastingPassTextureUnits(pass, fpPPDefines);
     }
 
