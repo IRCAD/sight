@@ -30,6 +30,9 @@
 
 #include <boost/assign/list_of.hpp>
 
+#include <boost/date_time/posix_time/posix_time.hpp>
+#include <boost/thread/thread.hpp>
+
 #include <QGuiApplication>
 #include <QMessageBox>
 #include <QObject>
