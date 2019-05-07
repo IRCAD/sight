@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -198,7 +198,7 @@ void AppManagerTest::managerWithObjectTest()
     service5->registerObject(booleanId, "data2", ::fwServices::IService::AccessType::INPUT, true, false);
     m_appMgr->addService(service5, true, true);
 
-    CPPUNIT_ASSERT_NO_THROW(m_appMgr->startService(service5));
+    fwTestWaitMacro(service5->isStarted());
     CPPUNIT_ASSERT_EQUAL(true, service5->isStarted());
 
     m_appMgr->removeObject(image, imageId);

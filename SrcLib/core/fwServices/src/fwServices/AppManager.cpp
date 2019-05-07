@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -443,6 +443,14 @@ void AppManager::internalAddService(const ::fwServices::IService::sptr& srv, con
 
             // Register the key on the service
             srv->registerObject(obj.second, objCfg.m_key, objCfg.m_access, objCfg.m_autoConnect, objCfg.m_optional);
+        }
+    }
+    if(autoStart && m_isStarted && srv->hasAllRequiredObjects())
+    {
+        this->start(info);
+        if (info.m_autoUpdate)
+        {
+            srv->update().wait();
         }
     }
 }
