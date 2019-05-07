@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -915,7 +915,7 @@ void AppConfigManager::addObjects(fwData::Object::sptr obj, const std::string& i
                     SLM_ASSERT(this->msgHead() + "No service registered with UID \"" + uid + "\".", srv);
 
                     // We have an optional object
-                    if( objCfg.m_optional)
+                    if(objCfg.m_optional && srv->isStarted())
                     {
                         // Check if we already registered an object at this key
                         auto registeredObj = ::fwServices::OSR::getRegistered(objCfg.m_key, objCfg.m_access, srv);
@@ -1025,7 +1025,8 @@ void AppConfigManager::removeObjects(fwData::Object::sptr obj, const std::string
                         ::fwServices::IService::sptr srv = ::fwServices::get(srvCfg.m_uid);
                         OSLM_ASSERT("No service registered with UID \"" << srvCfg.m_uid << "\".", srv);
 
-                        if(objCfg.m_optional)
+                        optional &= objCfg.m_optional;
+                        if(objCfg.m_optional && srv->isStarted())
                         {
                             if(::fwServices::OSR::isRegistered(objCfg.m_key, objCfg.m_access, srv))
                             {
@@ -1033,10 +1034,6 @@ void AppConfigManager::removeObjects(fwData::Object::sptr obj, const std::string
 
                                 srv->swapKey(objCfg.m_key, obj).wait();
                             }
-                        }
-                        else
-                        {
-                            optional = false;
                         }
                     }
                 }
