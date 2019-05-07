@@ -52,51 +52,62 @@ MessageDialogs::~MessageDialogs()
 }
 
 //------------------------------------------------------------------------------
+//value of the enum in integer
+typedef const std::map< ::fwGui::dialog::IMessageDialog::Icons, int> MessageDialogQmlIconsType;
+MessageDialogQmlIconsType messageDialogQmlIcons =
+    ::boost::assign::map_list_of(::fwGui::dialog::IMessageDialog::NONE, QMessageBox::NoIcon)
+        (::fwGui::dialog::IMessageDialog::QUESTION, QMessageBox::Question)
+        (::fwGui::dialog::IMessageDialog::INFO, QMessageBox::Information)
+        (::fwGui::dialog::IMessageDialog::WARNING, QMessageBox::Warning)
+        (::fwGui::dialog::IMessageDialog::CRITICAL, QMessageBox::Critical);
+typedef const std::map< ::fwGui::dialog::IMessageDialog::Buttons,
+                        QMessageBox::StandardButton> MessageDialogQmlButtonType;
+MessageDialogQmlButtonType messageDialogQmlButton =
+    ::boost::assign::map_list_of(::fwGui::dialog::IMessageDialog::OK, QMessageBox::Ok)
+        (::fwGui::dialog::IMessageDialog::CANCEL, QMessageBox::Cancel)
+        (::fwGui::dialog::IMessageDialog::YES, QMessageBox::Yes)
+        (::fwGui::dialog::IMessageDialog::NO, QMessageBox::No);
+
+typedef const std::map< QString,
+                        ::fwGui::dialog::IMessageDialog::Buttons> ResultDialogQmlButton;
+ResultDialogQmlButton resultDialogQmlButton =
+    ::boost::assign::map_list_of("::fwGui::dialog::IMessageDialog::OK", ::fwGui::dialog::IMessageDialog::OK)
+        ("::fwGui::dialog::IMessageDialog::CANCEL", ::fwGui::dialog::IMessageDialog::CANCEL)
+        ("::fwGui::dialog::IMessageDialog::YES", ::fwGui::dialog::IMessageDialog::YES)
+        ("::fwGui::dialog::IMessageDialog::NO", ::fwGui::dialog::IMessageDialog::NO);
+
+//------------------------------------------------------------------------------
 
 void MessageDialogs::open()
 {
     ::fwGui::dialog::MessageDialog::sptr dialog = ::fwGui::dialog::MessageDialog::New();
     dialog->setTitle(m_title.toStdString());
-    if (QMessageBox::Question == m_icon)
+
+    for(MessageDialogQmlIconsType::value_type icon :  messageDialogQmlIcons)
     {
-        dialog->setIcon(::fwGui::dialog::IMessageDialog::QUESTION);
+        if (icon.second == m_icon)
+        {
+            dialog->setIcon(icon.first);
+            break;
+        }
     }
-    else if (QMessageBox::Information == m_icon)
+    for(MessageDialogQmlButtonType::value_type button :  messageDialogQmlButton)
     {
-        dialog->setIcon(::fwGui::dialog::IMessageDialog::INFO);
-    }
-    else if (QMessageBox::Warning == m_icon)
-    {
-        dialog->setIcon(::fwGui::dialog::IMessageDialog::WARNING);
-    }
-    else if (QMessageBox::Critical == m_icon)
-    {
-        dialog->setIcon(::fwGui::dialog::IMessageDialog::CRITICAL);
-    }
-    else
-    {
-        dialog->setIcon(::fwGui::dialog::IMessageDialog::NONE);
-    }
-    if (QMessageBox::Ok& m_buttons)
-    {
-        dialog->addButton(::fwGui::dialog::IMessageDialog::OK);
-    }
-    if (QMessageBox::Yes& m_buttons)
-    {
-        dialog->addButton(::fwGui::dialog::IMessageDialog::YES);
-    }
-    if (QMessageBox::No& m_buttons)
-    {
-        dialog->addButton(::fwGui::dialog::IMessageDialog::NO);
-    }
-    if (QMessageBox::Cancel& m_buttons)
-    {
-        dialog->addButton(::fwGui::dialog::IMessageDialog::CANCEL);
+        if (button.second & m_buttons)
+        {
+            dialog->addButton(button.first);
+        }
     }
     dialog->setMessage(m_message.toStdString());
-    dialog->show();
-//    std::string result = ::fwGui::dialog::InputDialog::showInputDialog(
-//        m_title.toStdString(), m_message.toStdString(), m_input.toStdString());
-//    m_result = QString::fromStdString(result);
-//    Q_EMIT onResultChanged();
+    auto result = dialog->show();
+    dialog->setMessage("Nyanaseo");
+    for(ResultDialogQmlButton::value_type button :  resultDialogQmlButton)
+    {
+        auto test = button.second;
+        if (button.second & result)
+        {
+            m_result = button.first;
+        }
+    }
+    Q_EMIT onResultChanged();
 }

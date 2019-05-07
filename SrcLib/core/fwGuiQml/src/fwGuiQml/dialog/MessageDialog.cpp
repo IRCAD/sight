@@ -45,11 +45,11 @@ namespace dialog
 //value of the enum in integer
 typedef const std::map< ::fwGui::dialog::IMessageDialog::Icons, int> MessageDialogQmlIconsType;
 MessageDialogQmlIconsType messageDialogQmlIcons =
-    ::boost::assign::map_list_of(::fwGui::dialog::IMessageDialog::NONE, 0)
-        (::fwGui::dialog::IMessageDialog::QUESTION, 4)
-        (::fwGui::dialog::IMessageDialog::INFO, 1)
-        (::fwGui::dialog::IMessageDialog::WARNING, 2)
-        (::fwGui::dialog::IMessageDialog::CRITICAL, 3);
+    ::boost::assign::map_list_of(::fwGui::dialog::IMessageDialog::NONE, QMessageBox::NoIcon)
+        (::fwGui::dialog::IMessageDialog::QUESTION, QMessageBox::Question)
+        (::fwGui::dialog::IMessageDialog::INFO, QMessageBox::Information)
+        (::fwGui::dialog::IMessageDialog::WARNING, QMessageBox::Warning)
+        (::fwGui::dialog::IMessageDialog::CRITICAL, QMessageBox::Critical);
 
 typedef const std::map< ::fwGui::dialog::IMessageDialog::Buttons,
                         QMessageBox::StandardButton> MessageDialogQmlButtonType;
@@ -85,6 +85,7 @@ void MessageDialog::setTitle( const std::string& title )
 void MessageDialog::setMessage( const std::string& msg )
 {
     m_message = QString::fromStdString(msg);
+    Q_EMIT messageChanged();
 }
 
 //------------------------------------------------------------------------------

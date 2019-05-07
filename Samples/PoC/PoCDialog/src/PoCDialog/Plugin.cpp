@@ -70,6 +70,8 @@ void Plugin::initialize()
 
     m_multiSelector = std::shared_ptr<MultiSelectorDialogs>(new MultiSelectorDialogs);
 
+    m_selector = std::shared_ptr<SelectorDialogs>(new SelectorDialogs);
+
     m_progress = std::shared_ptr<ProgressDialogs>(new ProgressDialogs);
 
     m_pulseProgress = std::shared_ptr<PulseProgressDialogs>(new PulseProgressDialogs);
