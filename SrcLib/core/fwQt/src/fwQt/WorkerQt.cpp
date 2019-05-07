@@ -24,8 +24,6 @@
 
 #include "fwQt/util/FuncSlot.hpp"
 
-#include <fwGuiQml/App.hpp>
-
 #include <fwRuntime/profile/Profile.hpp>
 #include <fwRuntime/Runtime.hpp>
 
@@ -38,7 +36,6 @@
 
 #include <QDir>
 #include <QEvent>
-#include <QFont>
 #include <QPointer>
 #include <QStringList>
 #include <QTimer>
@@ -55,7 +52,7 @@ public:
         QEvent( static_cast< QEvent::Type >(s_WORKER_QT_TASK_EVENT_TYPE) ),
         m_handler( handler )
     {
-        SLM_ASSERT( "QApplication should be instantiated", qApp );
+        SLM_ASSERT( "Application should be instantiated", QCoreApplication::instance() );
     }
 
     ~WorkerQtTask()
@@ -80,7 +77,7 @@ class WorkerQt : public ::fwThread::Worker
 public:
     WorkerQt();
 
-    void init( int& argc, char** argv, bool guiEnabled = true );
+    void init( int& argc, char** argv);
 
     virtual ~WorkerQt();
 
@@ -118,11 +115,10 @@ protected:
 //-----------------------------------------------------------------------------
 
 ::fwThread::Worker::sptr getQtWorker(int& argc, char** argv, std::function<QSharedPointer<QCoreApplication>(int&,
-                                                                                                            char**)> callback,
-                                     bool guiEnabled)
+                                                                                                            char**)> callback)
 {
     SPTR(WorkerQt) workerQt = std::make_shared< WorkerQt >();
-    workerQt->init(argc, argv, guiEnabled);
+    workerQt->init(argc, argv);
     workerQt->setApp(callback(argc, argv));
     return workerQt;
 }
@@ -204,7 +200,7 @@ WorkerQt::WorkerQt() :
 
 //------------------------------------------------------------------------------
 
-void WorkerQt::init( int& argc, char** argv, bool guiEnabled )
+void WorkerQt::init( int& argc, char** argv)
 {
     OSLM_TRACE("Init Qt" << ::fwThread::getCurrentThreadId() <<" Start");
 
@@ -291,7 +287,7 @@ SPTR(::fwThread::Timer) WorkerQt::createTimer()
 
 void WorkerQt::post(TaskType handler)
 {
-    QCoreApplication::postEvent( qApp, new WorkerQtTask(handler) );
+    QCoreApplication::postEvent( QCoreApplication::instance(), new WorkerQtTask(handler) );
 }
 
 //------------------------------------------------------------------------------
@@ -311,7 +307,7 @@ void WorkerQt::processTasks(PeriodType maxtime)
 // ---------- Timer private implementation ----------
 
 TimerQt::TimerQt() :
-    m_timerQt( new QTimer(qApp) )
+    m_timerQt( new QTimer(QCoreApplication::instance()) )
 {
     m_qtFunc = new ::fwQt::util::FuncSlot();
     QObject::connect(m_timerQt, SIGNAL(timeout()), m_qtFunc, SLOT(trigger()));
@@ -367,4 +363,4 @@ void TimerQt::updatedFunction()
     m_qtFunc->setFunction(m_function);
 }
 
-} //namespace fwGuiQml
+} //namespace fwQt

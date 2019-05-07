@@ -64,4 +64,4 @@ protected:
 
 } // namespace util
 
-} // namespace fwGuiQml
+} // namespace fwQt

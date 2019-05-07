@@ -60,7 +60,7 @@ ProgressDialog::ProgressDialog( ::fwGui::GuiBaseObject::Key key, const std::stri
     m_dialog = engine->createComponent(dialogPath, context);
 
     //TODO FIXME: change this progress dialog to only have QProperty and no findChild and find a way to update the
-    // progress bar without the undetermine to true
+    // progress bar without the undetermine to true with a Cancel Button
     m_messageObject = m_dialog->findChild<QObject*>("message");
     m_valueObject   = m_dialog->findChild<QObject*>("progressBar");
 

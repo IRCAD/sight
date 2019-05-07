@@ -80,8 +80,7 @@ void Plugin::start()
                                                                              {
                                                                                  return QSharedPointer< QGuiApplication > ( new ::fwGuiQml::App(
                                                                                                                                 argc,
-                                                                                                                                argv,
-                                                                                                                                true) );
+                                                                                                                                argv) );
                                                                              };
 
     m_workerQt = ::fwQt::getQtWorker(argc, argv, callback);

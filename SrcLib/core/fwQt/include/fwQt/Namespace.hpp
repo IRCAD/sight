@@ -23,22 +23,15 @@
 #pragma once
 
 /**
- * @brief       The namespace fwGuiQml contains classes which provide the implementation of the Gui using Qml library.
+ * @brief       The namespace fwQt contains common classes for both Qt and Qml.
  */
 namespace fwQt
 {
 
 /**
- * @brief       The namespace fwGuiQml::dialog contains the classes used for dialog implementation with Qml Library.
+ * @brief       The namespace fwQt::util contains one class used for TimerQt inside signal/slot connection.
  */
-namespace dialog
-{
-}
-
-/**
- * @brief       The namespace fwGuiQml::model contains the classes used for model implementation in Qml.
- */
-namespace model
+namespace util
 {
 }
 

@@ -48,4 +48,4 @@ void FuncSlot::trigger()
 
 } // namespace util
 
-} // namespace fwGuiQml
+} // namespace fwQt

@@ -39,7 +39,7 @@ class FWGUIQML_CLASS_API App : public QGuiApplication
 Q_OBJECT
 
 public:
-    FWGUIQML_API App(int& argc, char** argv, bool guiEnabled);
+    FWGUIQML_API App(int& argc, char** argv);
 
 public Q_SLOTS:
     void aboutToQuit();

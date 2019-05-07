@@ -101,7 +101,7 @@ void ClientQtTest::setUp()
                                                                                                                              argv,
                                                                                                                              false) );
                                                                              };
-    m_worker = ::fwQt::getQtWorker(argc, argv, callback, false);
+    m_worker = ::fwQt::getQtWorker(argc, argv, callback);
 
     m_server.moveToThread(&m_thread);
     m_thread.connect(&m_thread, &QThread::started, [ = ] {m_server.listen(); });

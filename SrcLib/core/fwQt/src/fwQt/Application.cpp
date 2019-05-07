@@ -26,7 +26,7 @@
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/registry/macros.hpp>
 
-#include <QGuiApplication>
+#include <QCoreApplication>
 
 fwGuiRegisterMacro(::fwQt::Application, ::fwGui::IApplication::REGISTRY_KEY );
 
@@ -49,15 +49,21 @@ void Application::exit(int returncode)
 
         if(res == ::fwGui::dialog::IMessageDialog::YES)
         {
-            qGuiApp->exit(returncode);
+            if (QCoreApplication::instance())
+            {
+                QCoreApplication::instance()->exit(returncode);
+            }
         }
     }
     else
     {
-        qGuiApp->exit(returncode);
+        if (QCoreApplication::instance())
+        {
+            QCoreApplication::instance()->exit(returncode);
+        }
     }
 }
 
 //-----------------------------------------------------------------------------
 
-} // namespace fwGuiQml
+} // namespace fwQt

@@ -18,3 +18,4 @@ else()
 endif()
 
 target_compile_definitions(${FWPROJECT_NAME} PRIVATE QML_IMPORT_PATH="${FW_QT5_LOCATION}/qml")
+set(QML_IMPORT_PATH "${QML_IMPORT_PATH};${FW_QT5_LOCATION}/qml" CACHE string "CMake Components" FORCE)

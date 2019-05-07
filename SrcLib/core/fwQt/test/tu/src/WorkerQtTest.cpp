@@ -105,21 +105,20 @@ void WorkerQtTest::setUp()
     int argc            = 1;
 #endif
 
-#if QT_VERSION < 0x050000
-    bool guiEnabled = false;
-#else
-    bool guiEnabled = true;
-#endif
-
     CPPUNIT_ASSERT(qApp == NULL);
     std::function<QSharedPointer<QCoreApplication>(int&, char**)> callback = [this](int& argc, char** argv)
                                                                              {
+#if QT_VERSION < 0x050000
+                                                                                 bool guiEnabled = false;
+#else
+                                                                                 bool guiEnabled = true;
+#endif
                                                                                  return QSharedPointer< QApplication > ( new ::fwGuiQt::App(
                                                                                                                              argc,
                                                                                                                              argv,
-                                                                                                                             true) );
+                                                                                                                             guiEnabled) );
                                                                              };
-    m_worker = ::fwQt::getQtWorker(argc, argv, callback, guiEnabled);
+    m_worker = ::fwQt::getQtWorker(argc, argv, callback);
 }
 
 //-----------------------------------------------------------------------------

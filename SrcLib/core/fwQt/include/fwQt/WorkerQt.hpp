@@ -29,6 +29,8 @@
 #include <QCoreApplication>
 #include <QSharedPointer>
 
+#include <functional>
+
 namespace fwThread
 {
 class Worker;
@@ -39,9 +41,8 @@ namespace fwQt
 //-----------------------------------------------------------------------------
 
 FWQT_API SPTR(::fwThread::Worker) getQtWorker(int& argc, char** argv,
-                                              std::function<QSharedPointer<QCoreApplication>(int&, char**)>,
-                                              bool guiEnabled = true);
+                                              std::function<QSharedPointer<QCoreApplication>(int&, char**)>);
 
 //-----------------------------------------------------------------------------
 
-} //namespace fwGui
+} //namespace fwQt
