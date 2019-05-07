@@ -55,7 +55,7 @@ void poCTest()
     int i = 0;
     while (i++ < 100)
     {
-        sleep(1);
+        boost::this_thread::sleep( boost::posix_time::seconds(1) );
     }
 }
 
