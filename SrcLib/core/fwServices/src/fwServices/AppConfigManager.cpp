@@ -915,7 +915,7 @@ void AppConfigManager::addObjects(fwData::Object::sptr obj, const std::string& i
                     SLM_ASSERT(this->msgHead() + "No service registered with UID \"" + uid + "\".", srv);
 
                     // We have an optional object
-                    if(objCfg.m_optional && srv->isStarted())
+                    if(objCfg.m_optional)
                     {
                         // Check if we already registered an object at this key
                         auto registeredObj = ::fwServices::OSR::getRegistered(objCfg.m_key, objCfg.m_access, srv);
@@ -934,8 +934,11 @@ void AppConfigManager::addObjects(fwData::Object::sptr obj, const std::string& i
                             srv->registerObject(object, objCfg.m_key, objCfg.m_access, objCfg.m_autoConnect,
                                                 objCfg.m_optional);
 
-                            // Call the swapping callback of the service and wait for it
-                            srv->swapKey(objCfg.m_key, ::fwData::Object::constCast(registeredObj)).wait();
+                            if(srv->isStarted())
+                            {
+                                // Call the swapping callback of the service and wait for it
+                                srv->swapKey(objCfg.m_key, ::fwData::Object::constCast(registeredObj)).wait();
+                            }
                         }
                     }
 
@@ -1026,13 +1029,16 @@ void AppConfigManager::removeObjects(fwData::Object::sptr obj, const std::string
                         OSLM_ASSERT("No service registered with UID \"" << srvCfg.m_uid << "\".", srv);
 
                         optional &= objCfg.m_optional;
-                        if(objCfg.m_optional && srv->isStarted())
+                        if(objCfg.m_optional)
                         {
                             if(::fwServices::OSR::isRegistered(objCfg.m_key, objCfg.m_access, srv))
                             {
                                 srv->unregisterObject(objCfg.m_key, objCfg.m_access);
 
-                                srv->swapKey(objCfg.m_key, obj).wait();
+                                if(srv->isStarted())
+                                {
+                                    srv->swapKey(objCfg.m_key, obj).wait();
+                                }
                             }
                         }
                     }
