@@ -93,7 +93,8 @@ namespace videoRealSense
  * - \b depthH:  desired depth frame height (default: 720, max: 720, min: 270) (optional).
  * - \b colorW: desired color frame width (default: 1280, max: 1920, min: 320) (optional).
  * - \b colorH:  desired color frame height (default: 720, max: 1080, min: 180) (optional).
- * - \b swithToIR: push infrared frame in color TL (default false) (optional)
+ * - \b switchToIR: push infrared frame in color TL (default false) (optional)
+ * - \b IREmitter: enable infrared emitter (default true) (optional)
  * - \b preset: (advanced option): load a json preset ( overwrite previous resolution values) (optional).
  *   - Default: Default preset
  *   - HighResHighAccuracy

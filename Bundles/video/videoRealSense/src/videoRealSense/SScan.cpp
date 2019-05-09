@@ -70,7 +70,7 @@ static const std::string s_DEPTH_FRAME_H = "depthH";
 static const std::string s_DEPTH_FRAME_W = "depthW";
 static const std::string s_PRESET        = "preset";
 static const std::string s_IREMITTER     = "IREmitter";
-static const std::string s_SWITHTOIR     = "switchToIR";
+static const std::string s_SWITCH_TO_IR  = "switchToIR";
 
 static const ::fwCom::Slots::SlotKeyType s_SETENUMPARAMETER = "setEnumParameter";
 static const ::fwCom::Slots::SlotKeyType s_SETBOOLPARAMETER = "setBoolParameter";
@@ -132,7 +132,8 @@ void SScan::configuring()
         m_cameraSettings.depthW = cfg->get< int >(s_DEPTH_FRAME_W, m_cameraSettings.depthW);
         m_cameraSettings.depthH = cfg->get< int >(s_DEPTH_FRAME_H, m_cameraSettings.depthH);
 
-        m_switchInfra2Color = cfg->get< bool > (s_SWITHTOIR, m_switchInfra2Color);
+        m_switchInfra2Color        = cfg->get< bool > (s_SWITCH_TO_IR, m_switchInfra2Color);
+        m_cameraSettings.irEmitter = cfg->get< bool > (s_IREMITTER, m_cameraSettings.irEmitter);
     }
 
     static const auto s_bundlePath = ::fwRuntime::getBundleResourcePath(std::string("videoRealSense"));
@@ -225,10 +226,14 @@ void SScan::initialize(const ::rs2::pipeline_profile& _profile)
     const size_t colorStreamW = static_cast<size_t>(colorStream.width());
     const size_t colorStreamH = static_cast<size_t>(colorStream.height());
 
-    m_depthTimeline->initPoolSize(depthStreamW, depthStreamH, ::fwTools::Type::s_UINT16, 1);
     m_colorTimeline->initPoolSize(colorStreamW, colorStreamH, ::fwTools::Type::s_UINT8, 4);
-    m_depthTimeline->setMaximumSize(50);
     m_colorTimeline->setMaximumSize(50);
+
+    if (m_depthTimeline)
+    {
+        m_depthTimeline->initPoolSize(depthStreamW, depthStreamH, ::fwTools::Type::s_UINT16, 1);
+        m_depthTimeline->setMaximumSize(50);
+    }
 
     if(cameraSeries)
     {
@@ -549,7 +554,7 @@ void SScan::setBoolParameter(bool _value, std::string _key)
         }
 
     }
-    else if(_key == s_SWITHTOIR)
+    else if(_key == s_SWITCH_TO_IR)
     {
         m_switchInfra2Color = _value;
     }
@@ -689,7 +694,10 @@ void SScan::grab()
             this->onPointCloud(points, mapframe);
         }
 
-        this->onCameraImageDepth(reinterpret_cast<const std::uint16_t*>(depth.get_data()));
+        if (m_depthTimeline)
+        {
+            this->onCameraImageDepth(reinterpret_cast<const std::uint16_t*>(depth.get_data()));
+        }
         this->onCameraImage(reinterpret_cast<const std::uint8_t*>(colorOrInfra.get_data()));
 
         // Compute the z value of the center pixel, to give the distance "object-camera" in mm.
