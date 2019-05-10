@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -136,6 +136,7 @@ void STrianMeshReader::updating()
         }
         catch (const std::exception& e)
         {
+            m_readFailed = true;
             std::stringstream ss;
             ss << "Warning during loading : " << e.what();
 
@@ -146,12 +147,19 @@ void STrianMeshReader::updating()
         }
         catch( ... )
         {
+            m_readFailed = true;
             ::fwGui::dialog::MessageDialog::showMessageDialog(
                 "Warning",
                 "Warning during loading.",
                 ::fwGui::dialog::IMessageDialog::WARNING);
         }
     }
+    else
+    {
+        m_readFailed = true;
+    }
 }
+
+//------------------------------------------------------------------------------
 
 }

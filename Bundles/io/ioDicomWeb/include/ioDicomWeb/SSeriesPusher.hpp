@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -63,7 +63,7 @@ class IODICOMWEB_CLASS_API SSeriesPusher : public ::fwServices::IController
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SSeriesPusher)( ::fwServices::IController ) );
+    fwCoreServiceClassDefinitionsMacro( (SSeriesPusher)( ::fwServices::IController ) )
 
     typedef std::vector< CSPTR(::fwMedData::Series) > DicomSeriesContainerType;
 
@@ -112,9 +112,6 @@ private:
     /// Set to true when pushing series
     bool m_isPushing;
 
-    /// Returns a well formatted preferences key
-    std::string getPreferenceKey(const std::string& key) const;
-
     /// Server hostname preference key
     std::string m_serverHostnameKey;
 
@@ -122,10 +119,10 @@ private:
     std::string m_serverPortKey;
 
     /// Server hostname
-    std::string m_serverHostname;
+    std::string m_serverHostname{"localhost"};
 
     /// Server port
-    int m_serverPort;
+    int m_serverPort{4242};
 
 };
 

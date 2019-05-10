@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -319,6 +319,7 @@ void SWriter::updating()
 {
     if(!this->hasLocationDefined())
     {
+        m_writeFailed = true;
         return;
     }
 
@@ -341,6 +342,7 @@ void SWriter::updating()
         ::fwGui::dialog::MessageDialog::showMessageDialog("Medical data writer failed",
                                                           errorMessage,
                                                           ::fwGui::dialog::IMessageDialog::CRITICAL);
+        m_writeFailed = true;
         return;
     }
 
@@ -407,6 +409,7 @@ void SWriter::updating()
 
             if(runningJob.cancelRequested())
             {
+                m_writeFailed = true;
                 return;
             }
 
@@ -493,12 +496,14 @@ void SWriter::updating()
         ::fwGui::dialog::MessageDialog::showMessageDialog("Medical data writer failed",
                                                           e.what(),
                                                           ::fwGui::dialog::IMessageDialog::CRITICAL);
+        m_writeFailed = true;
     }
     catch( ... )
     {
         ::fwGui::dialog::MessageDialog::showMessageDialog("Medical data writer failed",
                                                           "Writing process aborted",
                                                           ::fwGui::dialog::IMessageDialog::CRITICAL);
+        m_writeFailed = true;
     }
 
     cursor.setDefaultCursor();

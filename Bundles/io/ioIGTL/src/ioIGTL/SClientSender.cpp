@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,11 +22,11 @@
 
 #include "ioIGTL/SClientSender.hpp"
 
-#include "ioIGTL/helper/preferences.hpp"
-
 #include <fwCom/Signal.hxx>
 
 #include <fwGui/dialog/MessageDialog.hpp>
+
+#include <fwPreferences/helper.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -93,8 +93,8 @@ void SClientSender::starting()
     {
         try
         {
-            const std::uint16_t port   = ::ioIGTL::helper::getPreferenceKey<std::uint16_t>(m_portConfig);
-            const std::string hostname = ::ioIGTL::helper::getPreferenceKey<std::string>(m_hostnameConfig);
+            const std::uint16_t port   = ::fwPreferences::getValue<std::uint16_t>(m_portConfig);
+            const std::string hostname = ::fwPreferences::getValue(m_hostnameConfig);
 
             m_client.connect(hostname, port);
             m_sigConnected->asyncEmit();

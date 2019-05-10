@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -157,11 +157,7 @@ void SPacsConfigurationInitializer::configuring()
 
     ::fwPacsIO::data::PacsConfiguration::sptr pacsConfiguration = this->getInOut< ::fwPacsIO::data::PacsConfiguration >(
         s_CONFIG_INOUT);
-    if (!pacsConfiguration)
-    {
-        FW_DEPRECATED_KEY(s_CONFIG_INOUT, "inout", "19.0");
-        pacsConfiguration = this->getObject< ::fwPacsIO::data::PacsConfiguration >();
-    }
+    SLM_ASSERT("The inout key '" + s_CONFIG_INOUT + "' is not correctly set.", pacsConfiguration);
 
     // Set information from xml and update PacsConfiguration
     if(!m_preferenceKey.empty())
@@ -200,11 +196,7 @@ void SPacsConfigurationInitializer::updating()
 {
     ::fwPacsIO::data::PacsConfiguration::sptr pacsConfiguration = this->getInOut< ::fwPacsIO::data::PacsConfiguration >(
         s_CONFIG_INOUT);
-    if (!pacsConfiguration)
-    {
-        FW_DEPRECATED_KEY(s_CONFIG_INOUT, "inout", "19.0");
-        pacsConfiguration = this->getObject< ::fwPacsIO::data::PacsConfiguration >();
-    }
+    SLM_ASSERT("The inout key '" + s_CONFIG_INOUT + "' is not correctly set.", pacsConfiguration);
 
     // Check if the user has changed the Pacs configuration and update the local var
     if(pacsConfiguration->getLocalApplicationTitle() != m_localApplicationTitle

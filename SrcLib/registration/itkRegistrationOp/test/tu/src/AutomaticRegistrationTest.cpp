@@ -30,9 +30,7 @@
 
 #include <fwData/TransformationMatrix3D.hpp>
 
-#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 #include <fwDataTools/helper/Image.hpp>
-#include <fwDataTools/helper/MedicalImageAdaptor.hpp>
 #include <fwDataTools/TransformationMatrix3D.hpp>
 
 #include <fwItkIO/itk.hpp>

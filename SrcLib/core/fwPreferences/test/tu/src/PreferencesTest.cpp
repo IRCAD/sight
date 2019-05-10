@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2018 IRCAD France
- * Copyright (C) 2016-2018 IHU Strasbourg
+ * Copyright (C) 2016-2019 IRCAD France
+ * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -33,6 +33,7 @@
 #include <fwRuntime/Runtime.hpp>
 
 #include <fwTools/Os.hpp>
+#include <fwTools/UUID.hpp>
 
 #include <boost/filesystem/path.hpp>
 
@@ -87,7 +88,9 @@ void PreferencesTest::helperTest()
 {
     const std::string preferenceKey   = "PREF_KEY_TEST";
     const std::string preferenceValue = "PREF_VALUE_TEST";
-    const std::string profileName     = m_profile->getName();
+
+    const std::string profileName = ::fwTools::UUID::generateUUID();
+    m_profile->setName(profileName);
 
     const ::boost::filesystem::path appPrefDir = ::fwTools::os::getUserDataDir("sight", profileName);
     const ::boost::filesystem::path prefFile   = appPrefDir / "preferences.json";
@@ -109,6 +112,30 @@ void PreferencesTest::helperTest()
 
     ::fwData::String::sptr prefStr = prefs->at< ::fwData::String >(preferenceKey);
     CPPUNIT_ASSERT_EQUAL(preferenceValue, prefStr->value());
+
+    //Check get value
+    const std::string preferenceKey2        = "PREF_KEY_TEST_2";
+    const std::uint32_t preferenceValueInt2 = 1664;
+    const std::string preferenceValue2      = std::to_string(preferenceValueInt2);
+
+    ::fwPreferences::setPreference(preferenceKey2, preferenceValue2);
+
+    std::string resValue = ::fwPreferences::getValue(preferenceKey2);
+    CPPUNIT_ASSERT_EQUAL(preferenceKey2, resValue);
+
+    std::uint32_t resValueInt = ::fwPreferences::getValue< std::uint32_t >(preferenceValue2);
+    CPPUNIT_ASSERT_EQUAL(preferenceValueInt2, resValueInt);
+
+    const char delimiter                = '%';
+    const std::string prefKeySubstitute = delimiter + preferenceKey2 + delimiter;
+
+    resValue = ::fwPreferences::getValue(prefKeySubstitute);
+    CPPUNIT_ASSERT_EQUAL(preferenceValue2, resValue);
+
+    resValueInt = ::fwPreferences::getValue< std::uint32_t >(prefKeySubstitute);
+    CPPUNIT_ASSERT_EQUAL(preferenceValueInt2, resValueInt);
+
+    ::boost::filesystem::remove(prefFile);
 }
 
 //------------------------------------------------------------------------------
