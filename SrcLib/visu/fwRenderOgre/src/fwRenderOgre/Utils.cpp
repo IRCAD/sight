@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -624,14 +624,16 @@ void copyNegatoImage( ::Ogre::Texture* _texture, const ::fwData::Image::sptr& _i
 
         const DST_TYPE lowBound = std::numeric_limits< DST_TYPE >::min();
 
-        const ::Ogre::uint32 size = _texture->getWidth() * _texture->getHeight() * _texture->getDepth();
+        const ::Ogre::int32 size =
+            static_cast< ::Ogre::int32 >(_texture->getWidth() * _texture->getHeight() * _texture->getDepth());
 
-        for(::Ogre::uint32 i = 0; i < size; ++i)
+#pragma omp parallel for shared(pDest, srcBuffer)
+        for(::Ogre::int32 i = 0; i < size; ++i)
         {
             OSLM_ASSERT("Pixel value '" << *srcBuffer << "' doesn't fit in texture range.",
                         *srcBuffer > std::numeric_limits< DST_TYPE >::min() &&
                         *srcBuffer < std::numeric_limits< DST_TYPE >::max());
-            *pDest++ = static_cast< unsignedType >(*srcBuffer++ - lowBound);
+            pDest[i] = static_cast< unsignedType >(srcBuffer[i] + lowBound);
         }
 
         // Unlock the pixel buffer
