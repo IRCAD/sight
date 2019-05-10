@@ -27,24 +27,12 @@
 #include <fwData/location/SingleFile.hpp>
 
 #include <fwGui/dialog/LocationDialog.hpp>
-#include <fwGui/registry/macros.hpp>
 
 #include <fwQml/QmlEngine.hpp>
 
-#include <fwRuntime/operations.hpp>
-
-#include <boost/assign/list_of.hpp>
-
-#include <QGuiApplication>
-#include <QObject>
-
 LocationDialogs::LocationDialogs()
 {
-    // get the qml engine QmlApplicationEngine
-    SPTR(::fwQml::QmlEngine) engine = ::fwQml::QmlEngine::getDefault();
-    m_existing                      = true;
-    // add context for root Context
-    engine->getRootContext()->setContextProperty("pocDialogLocationDialogs", this);
+    qmlRegisterType<LocationDialogs>("PoCDialog", 1, 0, "PocDialogLocationDialogs");
 }
 
 //------------------------------------------------------------------------------

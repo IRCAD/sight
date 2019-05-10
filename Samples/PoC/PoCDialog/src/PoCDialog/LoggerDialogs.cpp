@@ -22,28 +22,13 @@
 
 #include "PoCDialog/LoggerDialogs.hpp"
 
-#include <fwData/location/Folder.hpp>
-#include <fwData/location/MultiFiles.hpp>
-#include <fwData/location/SingleFile.hpp>
-
 #include <fwGui/dialog/LoggerDialog.hpp>
-#include <fwGui/registry/macros.hpp>
 
 #include <fwQml/QmlEngine.hpp>
 
-#include <fwRuntime/operations.hpp>
-
-#include <boost/assign/list_of.hpp>
-
-#include <QGuiApplication>
-#include <QObject>
-
 LoggerDialogs::LoggerDialogs()
 {
-    // get the qml engine QmlApplicationEngine
-    SPTR(::fwQml::QmlEngine) engine = ::fwQml::QmlEngine::getDefault();
-    // add context for root Context
-    engine->getRootContext()->setContextProperty("pocDialogLoggerDialogs", this);
+    qmlRegisterType<LoggerDialogs>("PoCDialog", 1, 0, "PocDialogLoggerDialogs");
 }
 
 //------------------------------------------------------------------------------

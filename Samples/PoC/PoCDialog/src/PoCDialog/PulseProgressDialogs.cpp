@@ -22,26 +22,16 @@
 
 #include "PoCDialog/PulseProgressDialogs.hpp"
 
-#include <fwGui/registry/macros.hpp>
+#include <fwGui/dialog/PulseProgressDialog.hpp>
 
 #include <fwQml/QmlEngine.hpp>
 
-#include <fwRuntime/operations.hpp>
-
-#include <boost/assign/list_of.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/thread/thread.hpp>
 
-#include <QGuiApplication>
-#include <QMessageBox>
-#include <QObject>
-
 PulseProgressDialogs::PulseProgressDialogs()
 {
-    // get the qml engine QmlApplicationEngine
-    SPTR(::fwQml::QmlEngine) engine = ::fwQml::QmlEngine::getDefault();
-    // add context for root Context
-    engine->getRootContext()->setContextProperty("pocPulseDialogProgressDialogs", this);
+    qmlRegisterType<PulseProgressDialogs>("PoCDialog", 1, 0, "PocDialogPulseProgressDialogs");
 }
 
 //------------------------------------------------------------------------------

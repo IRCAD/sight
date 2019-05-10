@@ -3,6 +3,7 @@ import QtQuick.Controls 1.2
 import QtQuick.Dialogs 1.2
 import QtQuick.Layouts 1.1
 import QtQuick.Window 2.0
+import PoCDialog 1.0
 
 Item {
     id: root
@@ -10,6 +11,10 @@ Item {
     height: 400
     SystemPalette { id: palette }
     clip: true
+
+    PocDialogSelectorDialogs {
+        id: pocDialogSelectorDialogs
+    }
 
     ColumnLayout {
         anchors.fill: parent

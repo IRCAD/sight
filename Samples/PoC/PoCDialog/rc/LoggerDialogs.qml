@@ -3,12 +3,17 @@ import QtQuick.Controls 1.2
 import QtQuick.Dialogs 1.1
 import QtQuick.Layouts 1.1
 import QtQuick.Window 2.0
+import PoCDialog 1.0
 
 Item {
     width: 320
     height: 360
     transformOrigin: Item.Bottom
     clip: true
+
+    PocDialogLoggerDialogs {
+        id: pocDialogLoggerDialogs
+    }
 
     Column {
         id: optionsColumn

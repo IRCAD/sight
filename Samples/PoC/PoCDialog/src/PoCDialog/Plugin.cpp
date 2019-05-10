@@ -51,7 +51,7 @@ Plugin::~Plugin() noexcept
 
 void Plugin::start()
 {
-    qmlRegisterType<AppManager>("dialog", 1, 0, "AppManager");
+    qmlRegisterType<AppManager>("PoCDialog", 1, 0, "AppManager");
 }
 
 //------------------------------------------------------------------------------

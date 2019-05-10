@@ -3,6 +3,7 @@ import QtQuick.Controls 1.2
 import QtQuick.Dialogs 1.2
 import QtQuick.Layouts 1.1
 import QtQuick.Window 2.0
+import PoCDialog 1.0
 
 Item {
     id: root
@@ -10,6 +11,10 @@ Item {
     height: 400
     SystemPalette { id: palette }
     clip: true
+
+    PocDialogPulseProgressDialogs {
+        id: pocDialogPulseProgressDialogs
+    }
 
     ColumnLayout {
         anchors.fill: parent
@@ -30,7 +35,7 @@ Item {
                 Layout.alignment: Qt.AlignBaseline
                 Layout.fillWidth: true
                 text: "Custom Dialog"
-                onTextChanged: pocPulseDialogProgressDialogs.title = windowTitleField.text
+                onTextChanged: pocDialogPulseProgressDialogs.title = windowTitleField.text
             }
         }
         RowLayout {
@@ -44,7 +49,7 @@ Item {
                 Layout.alignment: Qt.AlignBaseline
                 Layout.fillWidth: true
                 text: "Custom Message"
-                onTextChanged: pocPulseDialogProgressDialogs.message = windowMessageField.text
+                onTextChanged: pocDialogPulseProgressDialogs.message = windowMessageField.text
             }
         }
     }
@@ -69,7 +74,7 @@ Item {
             Button {
                 text: "Open"
                 anchors.verticalCenter: parent.verticalCenter
-                onClicked: pocPulseDialogProgressDialogs.open()
+                onClicked: pocDialogPulseProgressDialogs.open()
             }
         }
     }

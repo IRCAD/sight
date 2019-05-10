@@ -23,26 +23,16 @@
 #include "PoCDialog/MessageDialogs.hpp"
 
 #include <fwGui/dialog/MessageDialog.hpp>
-#include <fwGui/registry/macros.hpp>
 
 #include <fwQml/QmlEngine.hpp>
 
-#include <fwRuntime/operations.hpp>
-
 #include <boost/assign/list_of.hpp>
 
-#include <QGuiApplication>
 #include <QMessageBox>
-#include <QObject>
 
 MessageDialogs::MessageDialogs()
 {
-    m_icon    = 0;
-    m_buttons = 0;
-    // get the qml engine QmlApplicationEngine
-    SPTR(::fwQml::QmlEngine) engine = ::fwQml::QmlEngine::getDefault();
-    // add context for root Context
-    engine->getRootContext()->setContextProperty("pocDialogMessageDialogs", this);
+    qmlRegisterType<MessageDialogs>("PoCDialog", 1, 0, "PocDialogMessageDialogs");
 }
 
 //------------------------------------------------------------------------------
@@ -103,7 +93,6 @@ void MessageDialogs::open()
     dialog->setMessage("Nyanaseo");
     for(ResultDialogQmlButton::value_type button :  resultDialogQmlButton)
     {
-        auto test = button.second;
         if (button.second & result)
         {
             m_result = button.first;

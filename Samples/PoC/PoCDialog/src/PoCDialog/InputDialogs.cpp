@@ -23,23 +23,12 @@
 #include "PoCDialog/InputDialogs.hpp"
 
 #include <fwGui/dialog/InputDialog.hpp>
-#include <fwGui/registry/macros.hpp>
 
 #include <fwQml/QmlEngine.hpp>
 
-#include <fwRuntime/operations.hpp>
-
-#include <boost/assign/list_of.hpp>
-
-#include <QGuiApplication>
-#include <QObject>
-
 InputDialogs::InputDialogs()
 {
-    // get the qml engine QmlApplicationEngine
-    SPTR(::fwQml::QmlEngine) engine = ::fwQml::QmlEngine::getDefault();
-    // add context for root Context
-    engine->getRootContext()->setContextProperty("pocDialogInputDialogs", this);
+    qmlRegisterType<InputDialogs>("PoCDialog", 1, 0, "PocDialogInputDialogs");
 }
 
 //------------------------------------------------------------------------------

@@ -23,24 +23,12 @@
 #include "PoCDialog/MultiSelectorDialogs.hpp"
 
 #include <fwGui/dialog/MultiSelectorDialog.hpp>
-#include <fwGui/registry/macros.hpp>
 
 #include <fwQml/QmlEngine.hpp>
 
-#include <fwRuntime/operations.hpp>
-
-#include <boost/assign/list_of.hpp>
-
-#include <QGuiApplication>
-#include <QMessageBox>
-#include <QObject>
-
 MultiSelectorDialogs::MultiSelectorDialogs()
 {
-    // get the qml engine QmlApplicationEngine
-    SPTR(::fwQml::QmlEngine) engine = ::fwQml::QmlEngine::getDefault();
-    // add context for root Context
-    engine->getRootContext()->setContextProperty("pocDialogMultiSelectorDialogs", this);
+    qmlRegisterType<MultiSelectorDialogs>("PoCDialog", 1, 0, "PocDialogMultiSelectorDialogs");
 }
 
 //------------------------------------------------------------------------------

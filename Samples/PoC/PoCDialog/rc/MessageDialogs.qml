@@ -3,6 +3,7 @@ import QtQuick.Controls 1.2
 import QtQuick.Dialogs 1.1
 import QtQuick.Layouts 1.1
 import QtQuick.Window 2.0
+import PoCDialog 1.0
 
 Item {
     id: root
@@ -12,6 +13,9 @@ Item {
     clip: true
 
     //! [messagedialog]
+    PocDialogMessageDialogs {
+        id: pocDialogMessageDialogs
+    }
 
     ScrollView {
         id: scrollView
