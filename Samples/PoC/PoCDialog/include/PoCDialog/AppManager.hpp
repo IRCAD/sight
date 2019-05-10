@@ -24,8 +24,6 @@
 
 #include "PoCDialog/config.hpp"
 
-#include <fwCom/SlotBase.hpp>
-
 #include <fwServices/AppManager.hpp>
 
 #include <QObject>

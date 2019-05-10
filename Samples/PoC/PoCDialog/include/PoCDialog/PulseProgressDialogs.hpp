@@ -24,14 +24,7 @@
 
 #include "PoCDialog/config.hpp"
 
-#include <fwCore/base.hpp>
-
-#include <fwGui/dialog/PulseProgressDialog.hpp>
-
 #include <QObject>
-#include <QVariant>
-
-#include <string>
 
 /**
  * @brief   This class is associated to ProgressDialogs.qml and calls

@@ -94,13 +94,11 @@ void ClientQtTest::setUp()
 #endif
 
     CPPUNIT_ASSERT(qApp == NULL);
-    std::function<QSharedPointer<QCoreApplication>(int&, char**)> callback = [this](int& argc, char** argv)
-                                                                             {
-                                                                                 return QSharedPointer< QApplication > ( new ::fwGuiQt::App(
-                                                                                                                             argc,
-                                                                                                                             argv,
-                                                                                                                             false) );
-                                                                             };
+    std::function<QSharedPointer<QCoreApplication>(int&, char**)> callback
+        = [this](int& argc, char** argv)
+          {
+              return QSharedPointer< QApplication > (new ::fwGuiQt::App(argc, argv, false));
+          };
     m_worker = ::fwQt::getQtWorker(argc, argv, callback);
 
     m_server.moveToThread(&m_thread);

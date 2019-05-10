@@ -89,7 +89,6 @@ bool LoggerDialog::show()
 
     // get the path of the qml ui file in the 'rc' directory
     auto dialogPath = ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/dialog/LoggerDialog.qml");
-
     // set the root context for the model
     engine->getRootContext()->setContextProperty("loggerModel", &model);
 

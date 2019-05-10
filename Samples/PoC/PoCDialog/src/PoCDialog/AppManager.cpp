@@ -22,22 +22,8 @@
 
 #include "PoCDialog/AppManager.hpp"
 
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slot.hxx>
-
-#include <fwCore/spyLog.hpp>
-
-#include <fwQml/IQmlEditor.hpp>
-
-#include <fwRenderVTK/factory/new.hpp>
-#include <fwRenderVTK/SRender.hpp>
-
-#include <fwServices/op/Add.hpp>
 #include <fwServices/registry/ActiveWorkers.hpp>
 #include <fwServices/registry/ObjectService.hpp>
-#include <fwServices/registry/Proxy.hpp>
-
-#include <fwVTKQml/VtkRenderWindowInteractorManager.hpp>
 
 namespace PoCDialog
 {

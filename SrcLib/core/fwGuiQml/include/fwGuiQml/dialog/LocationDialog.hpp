@@ -32,9 +32,6 @@
 #include <QString>
 #include <QUrl>
 
-/**
- * @brief       The namespace fwGuiQml contains classes which provide the implementation of the Gui using Qml library.
- */
 namespace fwGuiQml
 {
 namespace dialog

@@ -76,12 +76,11 @@ void Plugin::start()
     int& argc   = profile->getRawArgCount();
     char** argv = profile->getRawParams();
 
-    std::function<QSharedPointer<QCoreApplication>(int&, char**)> callback = [this](int& argc, char** argv)
-                                                                             {
-                                                                                 return QSharedPointer< QGuiApplication > ( new ::fwGuiQml::App(
-                                                                                                                                argc,
-                                                                                                                                argv) );
-                                                                             };
+    std::function<QSharedPointer<QCoreApplication>(int&, char**)> callback
+        = [this](int& argc, char** argv)
+          {
+              return QSharedPointer< QGuiApplication > ( new ::fwGuiQml::App(argc, argv) );
+          };
 
     m_workerQt = ::fwQt::getQtWorker(argc, argv, callback);
 

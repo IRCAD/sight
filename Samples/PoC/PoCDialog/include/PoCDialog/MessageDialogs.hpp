@@ -24,11 +24,7 @@
 
 #include "PoCDialog/config.hpp"
 
-#include <fwCore/base.hpp>
-
 #include <QObject>
-
-#include <string>
 
 /**
  * @brief   This class is associated to MessageDialogs.qml and calls

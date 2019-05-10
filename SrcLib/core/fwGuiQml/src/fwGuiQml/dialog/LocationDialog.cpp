@@ -143,7 +143,6 @@ void LocationDialog::resultDialog(const QVariant& msg)
         else if (m_type == ::fwGui::dialog::ILocationDialog::SINGLE_FILE ||
                  m_type == ::fwGui::dialog::ILocationDialog::FOLDER)
         {
-            qDebug() << "File:" << files.first().toString();
             ::boost::filesystem::path bpath( files.first().toLocalFile().toStdString());
             m_location = ::fwData::location::SingleFile::New(bpath);
         }

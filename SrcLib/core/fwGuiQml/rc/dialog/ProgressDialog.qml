@@ -9,7 +9,7 @@ Dialog {
     title: progressDialog.title
     modality: Qt.NonModal
     width: 440
-    standardButtons: StandardButton.Cancel
+    standardButtons: Dialog.NoButton
 
     Column {
         id: column
@@ -44,6 +44,5 @@ Dialog {
         }
     }
 
-    onButtonClicked: progressDialog.cancelPressed()
     onVisibleChanged: percent.text = "0"
 }

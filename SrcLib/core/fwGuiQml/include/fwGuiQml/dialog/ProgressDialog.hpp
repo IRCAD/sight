@@ -38,9 +38,6 @@ namespace dialog
 {
 /**
  * @brief   This class allows us to select an acquisition in a patient data base.
- *
- * @note Do not inherit from fwProgressDialog but embed a fwProgressDialog because this lasted is not copiable.
- * @todo ProgressDialog is not commented.
  */
 class FWGUIQML_CLASS_API ProgressDialog : public QObject,
                                           public ::fwGui::dialog::IProgressDialog
