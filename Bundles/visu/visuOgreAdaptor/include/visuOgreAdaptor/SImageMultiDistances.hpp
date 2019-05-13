@@ -186,7 +186,7 @@ private:
     Ogre::MovableObject* pickObject(int x, int y);
 
     /// Find and return the id of the name
-    size_t findLineID(const std::string name) const;
+    size_t findLineID(const std::string& name) const;
 
     /**
      * @brief Check if the mouse click on an existing point. First argument corresponds on the coord of the first point.

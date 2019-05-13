@@ -69,7 +69,7 @@ void AddDistance::updating()
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     if (!::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
     {
-        SLM_WARN("The key '" + s_IMAGE_INOUT + "' is not found.");
+        SLM_WARN("The image '" + s_IMAGE_INOUT + "' is invalid.");
         return;
     }
     ::fwData::Point::sptr pt1 = ::fwData::Point::New();

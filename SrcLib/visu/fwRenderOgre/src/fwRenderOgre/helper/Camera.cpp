@@ -130,13 +130,13 @@ Ogre::Vector3 Camera::convertPixelToViewSpace(const ::Ogre::Camera& _camera, con
     const float x = _pixelPoint[0]/static_cast<float>(viewport->getActualWidth()) * 2.f - 1.f;
     const float y = -(_pixelPoint[1]/static_cast<float>(viewport->getActualHeight()) * 2.f - 1.f);
     const float z = _pixelPoint[2] * 2.f - 1.f;
-    ::Ogre::Vector3 ndcCoordinates(x, y, z);
+    const ::Ogre::Vector3 ndcCoordinates(x, y, z);
 
     ::Ogre::Vector4 clippingCoordinatePixel;
     if(_camera.getProjectionType() == ::Ogre::ProjectionType::PT_PERSPECTIVE)
     {
-        float near = static_cast<float>(_camera.getNearClipDistance());
-        float far  = static_cast<float>(_camera.getFarClipDistance());
+        const float near = static_cast<const float>(_camera.getNearClipDistance());
+        const float far  = static_cast<float>(_camera.getFarClipDistance());
         clippingCoordinatePixel.w = static_cast< ::Ogre::Real >(2.0 * near * far)  /
                                     (near + far + ndcCoordinates.z * (near - far));
     }
@@ -148,8 +148,8 @@ Ogre::Vector3 Camera::convertPixelToViewSpace(const ::Ogre::Camera& _camera, con
     clippingCoordinatePixel.y = ndcCoordinates.y * clippingCoordinatePixel.w;
     clippingCoordinatePixel.z = ndcCoordinates.z * clippingCoordinatePixel.w;
 
-    const ::Ogre::Matrix4 viewMat  = _camera.getViewMatrix();
-    const ::Ogre::Matrix4 projMat  = _camera.getProjectionMatrixWithRSDepth();
+    const ::Ogre::Affine3& viewMat = _camera.getViewMatrix();
+    const ::Ogre::Matrix4& projMat = _camera.getProjectionMatrixWithRSDepth();
     const auto inversedCombinedMat = (projMat * viewMat).inverse();
 
     // We multiply by the inverse since we are performing the usual projection in the other way around.

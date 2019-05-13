@@ -133,10 +133,6 @@ void SImageMultiDistances::updating()
     // removes the displayed lines if they exist
     this->deleteDistances();
 
-    m_millimeterNodes.clear();
-    m_millimeterValue.clear();
-    m_labels.clear();
-    m_labelNodes.clear();
     if( distanceField && isShown)
     {
         m_distanceField = distanceField;
@@ -144,10 +140,10 @@ void SImageMultiDistances::updating()
         this->removeCurrentOrigin();
         for(::fwData::Object::sptr object :  *m_distanceField)
         {
-            m_millimeterNodes.push_back(nullptr);
-            m_millimeterValue.push_back(nullptr);
-            m_labels.push_back(nullptr);
-            m_labelNodes.push_back(nullptr);
+            m_millimeterNodes.resize(m_distanceField->size(), nullptr);
+            m_millimeterValue.resize(m_distanceField->size(), nullptr);
+            m_labels.resize(m_distanceField->size(), nullptr);
+            m_labelNodes.resize(m_distanceField->size(), nullptr);
             const ::fwData::PointList::sptr distance = ::fwData::PointList::dynamicCast(object);
             SLM_ASSERT( "Empty Point List for Distance !!!!", !distance->getPoints().empty() );
             /// displays a given line
@@ -286,6 +282,8 @@ void SImageMultiDistances::deleteDistances()
     m_distanceNb = 0;
     m_millimeterValue.clear();
     m_millimeterNodes.clear();
+    m_labels.clear();
+    m_labelNodes.clear();
 }
 
 //------------------------------------------------------------------------------
@@ -874,7 +872,7 @@ Ogre::MovableObject* SImageMultiDistances::pickObject(int _x, int _y)
 
 //------------------------------------------------------------------------------
 
-size_t SImageMultiDistances::findLineID(const std::string str) const
+size_t SImageMultiDistances::findLineID(const std::string& str) const
 {
     const size_t found = str.find("-");
     const size_t start = found + 1;

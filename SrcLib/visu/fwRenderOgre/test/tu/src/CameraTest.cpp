@@ -197,8 +197,8 @@ void CameraTest::convertPixelToWorldSpace()
     auto* const root         = ::fwRenderOgre::Utils::getOgreRoot();
     auto* const sceneManager = root->createSceneManager("DefaultSceneManager", "TestSceneManager");
     auto* const renderWindow = root->createRenderWindow("TestRenderWindow",
-                                                        static_cast<unsigned int>(1920),
-                                                        static_cast<unsigned int>(1080),
+                                                        1u,
+                                                        1u,
                                                         false,
                                                         nullptr);
     renderWindow->setVisible(false);
