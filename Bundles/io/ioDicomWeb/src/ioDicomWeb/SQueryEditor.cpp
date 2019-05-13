@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -71,19 +71,8 @@ void SQueryEditor::configuring()
         const std::string::size_type splitPosition = serverInfo.find(':');
         SLM_ASSERT("Server info not formatted correctly", splitPosition != std::string::npos);
 
-        const std::string hostnameStr = serverInfo.substr(0, splitPosition);
-        const std::string portStr     = serverInfo.substr(splitPosition + 1, serverInfo.size());
-
-        m_serverHostnameKey = this->getPreferenceKey(hostnameStr);
-        m_serverPortKey     = this->getPreferenceKey(portStr);
-        if(m_serverHostnameKey.empty())
-        {
-            m_serverHostname = hostnameStr;
-        }
-        if(m_serverPortKey.empty())
-        {
-            m_serverPort = std::stoi(portStr);
-        }
+        m_serverHostnameKey = serverInfo.substr(0, splitPosition);
+        m_serverPortKey     = serverInfo.substr(splitPosition + 1, serverInfo.size());
     }
     else
     {
@@ -91,20 +80,6 @@ void SQueryEditor::configuring()
     }
 
     ::fwGui::IGuiContainerSrv::initialize();
-}
-
-//------------------------------------------------------------------------------
-
-std::string SQueryEditor::getPreferenceKey(const std::string& key) const
-{
-    std::string keyResult;
-    const size_t first = key.find('%');
-    const size_t last  = key.rfind('%');
-    if (first == 0 && last == key.size() - 1)
-    {
-        keyResult = key.substr(1, key.size() - 2);
-    }
-    return keyResult;
 }
 
 //------------------------------------------------------------------------------
@@ -176,21 +151,15 @@ void SQueryEditor::updating()
 
 void SQueryEditor::queryPatientName()
 {
-    if(!m_serverHostnameKey.empty())
+    const std::string hostname = ::fwPreferences::getValue(m_serverHostnameKey);
+    if(!hostname.empty())
     {
-        const std::string hostname = ::fwPreferences::getPreference(m_serverHostnameKey);
-        if(!hostname.empty())
-        {
-            m_serverHostname = hostname;
-        }
+        m_serverHostname = hostname;
     }
-    if(!m_serverPortKey.empty())
+    const std::string port = ::fwPreferences::getValue(m_serverPortKey);
+    if(!port.empty())
     {
-        const std::string port = ::fwPreferences::getPreference(m_serverPortKey);
-        if(!port.empty())
-        {
-            m_serverPort = std::stoi(port);
-        }
+        m_serverPort = std::stoi(port);
     }
 
     try
@@ -253,21 +222,15 @@ void SQueryEditor::queryPatientName()
 
 void SQueryEditor::queryStudyDate()
 {
-    if(!m_serverHostnameKey.empty())
+    const std::string hostname = ::fwPreferences::getValue(m_serverHostnameKey);
+    if(!hostname.empty())
     {
-        const std::string hostname = ::fwPreferences::getPreference(m_serverHostnameKey);
-        if(!hostname.empty())
-        {
-            m_serverHostname = hostname;
-        }
+        m_serverHostname = hostname;
     }
-    if(!m_serverPortKey.empty())
+    const std::string port = ::fwPreferences::getValue(m_serverPortKey);
+    if(!port.empty())
     {
-        const std::string port = ::fwPreferences::getPreference(m_serverPortKey);
-        if(!port.empty())
-        {
-            m_serverPort = std::stoi(port);
-        }
+        m_serverPort = std::stoi(port);
     }
 
     try

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -29,6 +29,7 @@
 #include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
 
+#include <fwRenderOgre/helper/Camera.hpp>
 #include <fwRenderOgre/helper/Scene.hpp>
 
 #include <fwServices/macros.hpp>
@@ -46,33 +47,27 @@ const ::fwCom::Slots::SlotKeyType SFrustumList::s_UPDATE_VISIBILITY_SLOT = "upda
 const ::fwCom::Slots::SlotKeyType SFrustumList::s_TOGGLE_VISIBILITY_SLOT = "toggleVisibility";
 const ::fwCom::Slots::SlotKeyType SFrustumList::s_ADD_FRUSTUM_SLOT       = "addFrustum";
 
-const std::string SFrustumList::s_CAMERA_NAME_INPUT = "camera";
-const std::string SFrustumList::s_TRANSFORM_INPUT   = "transform";
+const std::string s_CAMERA_NAME_INPUT = "camera";
+const std::string s_NEAR_CONFIG       = "near";
+const std::string s_FAR_CONFIG        = "far";
+const std::string s_COLOR_CONFIG      = "color";
+const std::string s_TRANSFORM_INPUT   = "transform";
+const std::string s_NB_MAX_CONFIG     = "nbMax";
 
 //-----------------------------------------------------------------------------
 
-SFrustumList::SFrustumList() noexcept :
-    m_visibility(true),
-    m_near(1.f),
-    m_far(100.f),
-    m_color("#0000ffff"),
-    m_capacity(50),
-    m_currentCamIndex(0),
-    m_material(nullptr)
+SFrustumList::SFrustumList() noexcept
 {
-
     newSlot(s_UPDATE_VISIBILITY_SLOT, &SFrustumList::updateVisibility, this);
     newSlot(s_TOGGLE_VISIBILITY_SLOT, &SFrustumList::toggleVisibility, this);
     newSlot(s_CLEAR_SLOT, &SFrustumList::clear, this);
     newSlot(s_ADD_FRUSTUM_SLOT, &SFrustumList::addFrustum, this);
-
 }
 
 //-----------------------------------------------------------------------------
 
 SFrustumList::~SFrustumList() noexcept
 {
-
 }
 
 //-----------------------------------------------------------------------------
@@ -92,14 +87,13 @@ void SFrustumList::configuring()
 
     const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
 
-    m_near = config.get<float>("near", 1.f);
-    m_far  = config.get<float>("far", 20.f);
-
-    m_color    = config.get< std::string >("color", "#0000ffff");
-    m_capacity = config.get< unsigned int > ("nbMax", 200);
-
     this->setTransformId(config.get<std::string>( ::fwRenderOgre::ITransformable::s_TRANSFORM_CONFIG,
                                                   this->getID() + "_transform"));
+
+    m_near     = config.get< float >(s_NEAR_CONFIG, m_near);
+    m_far      = config.get< float >(s_FAR_CONFIG, m_far);
+    m_color    = config.get< std::string >(s_COLOR_CONFIG, m_color);
+    m_capacity = config.get< unsigned int >(s_NB_MAX_CONFIG, m_capacity);
 }
 
 //-----------------------------------------------------------------------------
@@ -149,25 +143,33 @@ void SFrustumList::addFrustum()
 {
     //Get camera parameters
     const std::shared_ptr< const ::arData::Camera > fwCamera = this->getInput< ::arData::Camera >(s_CAMERA_NAME_INPUT);
-
     SLM_ASSERT("Required input '" + s_CAMERA_NAME_INPUT + "' is not set", fwCamera);
-
-    const double h    = static_cast<double>(fwCamera->getHeight());
-    const double fy   = static_cast<double>(fwCamera->getFy());
-    const double fovY = 2. * std::atan( h / (2. * fy));
 
     ::Ogre::Camera* camera;
     camera = this->getSceneManager()->createCamera(::Ogre::String(this->getID()+"_camera"
                                                                   + std::to_string(m_currentCamIndex)));
-
-    camera->setFOVy(::Ogre::Radian( ::Ogre::Real(fovY)));
-    camera->setAspectRatio(::Ogre::Real(fwCamera->getWidth()/fwCamera->getHeight()));
-    camera->setVisible(m_visibility);
-
     camera->setMaterial(m_materialAdaptor->getMaterial());
-    camera->setDirection(::Ogre::Vector3(::Ogre::Real(0), ::Ogre::Real(0), ::Ogre::Real(1)));
+    camera->setVisible(m_visibility);
     camera->setDebugDisplayEnabled(m_visibility);
 
+    // Clipping
+    if(m_near != 0.f)
+    {
+        camera->setNearClipDistance(m_near);
+    }
+    if(m_far != 0.f)
+    {
+        camera->setFarClipDistance(m_far);
+    }
+
+    // Set data to camera
+    const float width  = static_cast< float >(fwCamera->getWidth());
+    const float height = static_cast< float >(fwCamera->getHeight());
+    ::Ogre::Matrix4 m =
+        ::fwRenderOgre::helper::Camera::computeProjectionMatrix(*fwCamera, width, height, m_near, m_far);
+    camera->setCustomProjectionMatrix(true, m);
+
+    // Set position
     ::Ogre::Affine3 ogreMat;
     const auto fwTransform = this->getInput< ::fwData::TransformationMatrix3D >(s_TRANSFORM_INPUT);
 
@@ -188,19 +190,14 @@ void SFrustumList::addFrustum()
     ::Ogre::Vector3 position;
     ::Ogre::Vector3 scale;
     ::Ogre::Quaternion orientation;
-
-    const ::Ogre::Quaternion rotateX(::Ogre::Degree(180), ::Ogre::Vector3(1, 0, 0));
-
     ogreMat.decomposition(position, scale, orientation);
 
-    orientation = orientation * rotateX;
+    const ::Ogre::Quaternion rotateX(::Ogre::Degree(180), ::Ogre::Vector3(1, 0, 0));
+    const ::Ogre::Quaternion rotateZ(::Ogre::Degree(180), ::Ogre::Vector3(0, 0, 1));
+    orientation = orientation * rotateZ * rotateX;
 
     camera->setOrientation(orientation);
     camera->setPosition(position);
-
-    // Clipping
-    camera->setNearClipDistance(m_near);
-    camera->setFarClipDistance(m_far);
 
     if(m_frustumList.full())
     {

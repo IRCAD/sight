@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -24,7 +24,7 @@
 
 #include "uiImageQml/config.hpp"
 
-#include <fwDataTools/helper/MedicalImageAdaptor.hpp>
+#include <fwDataTools/helper/MedicalImage.hpp>
 
 #include <fwQml/IQmlEditor.hpp>
 
@@ -84,7 +84,7 @@ namespace uiImageQml
  * - \b image [::fwData::Image]: image on which the slice index will be changed
  */
 class UIIMAGEQML_CLASS_QT_API SSliceIndexPositionEditor : public ::fwQml::IQmlEditor,
-                                                          public ::fwDataTools::helper::MedicalImageAdaptor
+                                                          public ::fwDataTools::helper::MedicalImage
 {
 Q_OBJECT
 Q_PROPERTY(int sliceIndex WRITE configureSliceIndex)
@@ -113,7 +113,7 @@ public Q_SLOTS:
 protected:
 
     /// @brief The slice type: axial, frontal, sagittal.
-    using ::fwDataTools::helper::MedicalImageAdaptor::Orientation;
+    using ::fwDataTools::helper::MedicalImage::Orientation;
 
     /// Update the infromation from the image
     UIIMAGEQML_QT_API virtual void starting() override;

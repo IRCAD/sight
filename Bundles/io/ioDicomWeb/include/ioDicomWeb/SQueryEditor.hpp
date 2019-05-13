@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -71,7 +71,7 @@ Q_OBJECT;
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SQueryEditor)( ::fwGui::editor::IEditor ) );
+    fwCoreServiceClassDefinitionsMacro( (SQueryEditor)( ::fwGui::editor::IEditor ) )
 
     /// Constructor
     IODICOMWEB_API SQueryEditor() noexcept;
@@ -105,7 +105,7 @@ private:
      * @brief Display an error message
      * @param[in] message Error message to display
      */
-    IODICOMWEB_API void displayErrorMessage(const std::string& message) const;
+    void displayErrorMessage(const std::string& message) const;
 
     /**
      * @brief Update the seriesDB with the series retrieved from the pacs
@@ -131,9 +131,6 @@ private:
     /// Http Qt Client
     ::fwNetworkIO::http::ClientQt m_clientQt;
 
-    /// Returns a well formatted preferences key
-    std::string getPreferenceKey(const std::string& key) const;
-
     /// Server hostname preference key
     std::string m_serverHostnameKey;
 
@@ -141,10 +138,10 @@ private:
     std::string m_serverPortKey;
 
     /// Server hostname
-    std::string m_serverHostname;
+    std::string m_serverHostname{"localhost"};
 
     /// Server port
-    int m_serverPort;
+    int m_serverPort{4242};
 
 };
 

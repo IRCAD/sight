@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -179,9 +179,14 @@ void SImageReader::updating()
                     sig->asyncEmit();
                 }
             }
+            else
+            {
+                m_readFailed = true;
+            }
         }
         catch(::fwTools::Failed& e)
         {
+            m_readFailed = true;
             OSLM_TRACE("Error : " << e.what());
             FW_RAISE_EXCEPTION(e);
         }

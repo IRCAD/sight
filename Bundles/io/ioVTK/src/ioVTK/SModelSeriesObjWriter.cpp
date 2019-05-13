@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -167,6 +167,7 @@ void SModelSeriesObjWriter::updating()
         }
         catch (const std::exception& e)
         {
+            m_writeFailed = true;
             std::stringstream ss;
             ss << "Warning during saving : " << e.what();
 
@@ -179,6 +180,7 @@ void SModelSeriesObjWriter::updating()
         }
         catch( ... )
         {
+            m_writeFailed = true;
             std::stringstream ss;
             ss << "Warning during saving.";
 
@@ -191,6 +193,10 @@ void SModelSeriesObjWriter::updating()
         }
 
         cursor.setDefaultCursor();
+    }
+    else
+    {
+        m_writeFailed = true;
     }
 }
 
