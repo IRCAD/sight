@@ -54,6 +54,8 @@
                         <editor />
                         <separator/>
                         <editor />
+                        <spacer />
+                        <menuItem name="Show/hide filter Settings" icon="media-0.1/icons/Settings.svg" style="check" />
                     </layout>
                 </gui>
                 <registry>
@@ -64,6 +66,7 @@
                     <editor sid="infraredEmitter" start="yes" />
                     <editor sid="switchInfraToColor" start="yes" />
                     <editor sid="distance" start="yes"/>
+                    <menuItem sid="showFilterSettings" start="yes" />
                 </registry>
             </service>
 
@@ -75,10 +78,27 @@
                         <view proportion="50" />
                         <view proportion="50" />
                     </layout>
+                    <slideView align="right" size="400" opacity="1">
+                        <styleSheet>
+                            <![CDATA[
+                            #SlideBar{
+                                background-color: #dddddd;
+                                border: 0;
+                            }
+                            #SlideBar QGroupBox {
+                                background-color: #eeeeee;
+                                border-radius: 10px;
+                                margin-left: 10;
+                                margin-right: 10;
+                            }
+                            ]]>
+                        </styleSheet>
+                    </slideView>
                 </gui>
                 <registry>
                     <view sid="RGBDView" start="yes" />
                     <view sid="PointcloudView" start="yes" />
+                    <slideView sid="filterSettings" start="yes" />
                 </registry>
             </service>
 
@@ -96,7 +116,6 @@
                 </registry>
             </service>
 
-
             <service uid="PointcloudView" type="::gui::view::SDefaultView">
                 <gui>
                     <layout type="::fwGui::LineLayoutManager">
@@ -111,6 +130,28 @@
                 </registry>
             </service>
 
+            <service uid="filterSettings" type="::gui::view::SDefaultView">
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="vertical" />
+                        <view proportion="0" />
+                        <view proportion="0" caption="" />
+                        <view proportion="0" />
+                        <view proportion="0" caption="" />
+                        <view proportion="0" />
+                        <view proportion="0" caption="" />
+                        <spacer />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="enableSpacialFilterParams" start="yes" />
+                    <view sid="spacialFilterParams" start="yes" />
+                    <view sid="enableTemporalFilterParams" start="yes" />
+                    <view sid="temporalFilterParams" start="yes" />
+                    <view sid="enableHoleFillingFilterParams" start="yes" />
+                    <view sid="holeFillingFilterParams" start="yes" />
+                </registry>
+            </service>
 
             <!-- ***************************************** Begin render scenes declarations ***************************************** -->
             <!-- *************************** Begin generic scene *************************** -->
@@ -172,7 +213,8 @@
               <config layer="default" />
             </service>
 
-
+            <!-- *************************** Begin scanning services declarations ***************************************** -->
+            
             <service uid="presets" type="::guiQt::editor::SParameters">
                 <parameters>
                     <param type="enum" name="Realsense presets" key="preset" defaultValue="Default"
@@ -201,12 +243,53 @@
                 </parameters>
             </service>
 
-            <service uid="distance" type="::uiTools::editor::STextStatus">
-                <label>Distance To Center (mm)</label>
+            <service uid="enableSpacialFilterParams" type="::guiQt::editor::SParameters">
+                <parameters>
+                    <param type="bool" name="Enable spatial Edge-Preserving filter" key="enableSpacial"      defaultValue="false" />
+                </parameters>
             </service>
 
+            <service uid="enableTemporalFilterParams" type="::guiQt::editor::SParameters">
+                <parameters>
+                    <param type="bool" name="Enable temporal filter"                key="enableTemporal"     defaultValue="false" />
+                </parameters>
+            </service>
 
-            <!-- *************************** Begin scanning services declarations ***************************************** -->
+            <service uid="enableHoleFillingFilterParams" type="::guiQt::editor::SParameters">
+                <parameters>
+                    <param type="bool" name="Enable holes Filling filter"           key="enableHolesFilling" defaultValue="false" />
+                </parameters>
+            </service>
+
+            <service uid="spacialFilterParams" type="::guiQt::editor::SParameters">
+                <parameters>
+                    <param type="int"    name="Number of iterations"  key="spacialMagnitude"    defaultValue="2"   min="1" max="5" />
+                    <param type="double" name="Smooth Alpha"          key="spacialSmoothAlpha"  defaultValue="0.5" min="0.25" max="1"  widget="slider" />
+                    <param type="int"    name="Smooth Delta"          key="spacialSmoothDelta"  defaultValue="20"  min="1" max="50" />
+                    <param type="enum"   name="Hole filling (pixels)" key="spacialHoleFilling"  defaultValue="0"   values="0,2,4,8,16,unlimited" />
+                </parameters>
+            </service>
+
+            <service uid="temporalFilterParams" type="::guiQt::editor::SParameters">
+                <parameters>
+                    <param type="double" name="Smooth Alpha"        key="temporalSmoothAlpha"  defaultValue="0.4" min="0" max="1" widget="slider" />
+                    <param type="int"    name="Smooth Delta"        key="temporalSmoothDelta"  defaultValue="20"  min="1" max="100" />
+                    <param type="enum"   name="Persistency index"   key="temporalPersistency"  defaultValue="Valid_in_2/last_3"
+                           values="Disabled,Valid_in_8/8 ,Valid_in_2/last_3,Valid_in_2/last_4,Valid_in_2/8,Valid_in_1/last_2,Valid_in_1/last_5,
+                                   Valid_in_1/last_8,Persist_Indefinitely" />
+                </parameters>
+            </service>
+
+            <service uid="holeFillingFilterParams" type="::guiQt::editor::SParameters">
+                <parameters>
+                    <param type="enum" name="Hole filling" key="holeFilling"  defaultValue="farest_from_around"   values="fill_from_left,farest_from_around,nearest_from_around" />
+                </parameters>
+            </service>
+
+            <service uid="distance" type="::uiTools::editor::STextStatus">
+                <label>Distance To Center (mm)</label>
+            </service> 
+            
             <service uid="synchronizer" type="::videoTools::SFrameMatrixSynchronizer" worker="synchronizer">
                 <in group="frameTL">
                     <key uid="frameTLVideo" />
@@ -251,6 +334,13 @@
                 </slots>
             </service>
 
+            <!-- Show/hide the parameters view -->
+            <service uid="showFilterSettings" type="::gui::action::SBooleanSlotCaller">
+                <slots>
+                    <slot>filterSettings/setVisible</slot>
+                </slots>
+            </service>
+
             <connect>
                 <signal>presets/enumChanged</signal>
                 <slot>grabber/setEnumParameter</slot>
@@ -258,17 +348,42 @@
 
             <connect>
                 <signal>infraredEmitter/boolChanged</signal>
-                <slot>grabber/setBoolParameter</slot>
-            </connect>
-
-            <connect>
                 <signal>switchInfraToColor/boolChanged</signal>
+                 <signal>enableSpacialFilterParams/boolChanged</signal>
+                 <signal>enableTemporalFilterParams/boolChanged</signal>
+                 <signal>enableHoleFillingFilterParams/boolChanged</signal>
                 <slot>grabber/setBoolParameter</slot>
             </connect>
 
             <connect>
                 <signal>rangeEditor/intChanged</signal>
+                <signal>spacialFilterParams/intChanged</signal>
+                <signal>spacialFilterParams/enumIndexChanged</signal>
+                <signal>temporalFilterParams/intChanged</signal>
+                <signal>temporalFilterParams/enumIndexChanged</signal>
+                <signal>holeFillingFilterParams/enumIndexChanged</signal>
                 <slot>grabber/setIntParameter</slot>
+            </connect>
+
+            <connect>
+                <signal>spacialFilterParams/doubleChanged</signal>
+                <signal>temporalFilterParams/doubleChanged</signal>
+                <slot>grabber/setDoubleParameter</slot>
+            </connect>
+
+            <connect>
+                <signal>enableSpacialFilterParams/boolChanged</signal>
+                <slot>spacialFilterParams/setEnabled</slot>
+            </connect>
+
+            <connect>
+                <signal>enableTemporalFilterParams/boolChanged</signal>
+                <slot>temporalFilterParams/setEnabled</slot>
+            </connect>
+
+            <connect>
+                <signal>enableHoleFillingFilterParams/boolChanged</signal>
+                <slot>holeFillingFilterParams/setEnabled</slot>
             </connect>
 
             <connect>
@@ -290,6 +405,11 @@
             <!-- Ogre scene '3d' -->
             <start uid="pointcloudAdpt" />
             <start uid="cameraAdaptor" />
+
+
+            <update uid="enableSpacialFilterParams" />
+            <update uid="enableTemporalFilterParams" />
+            <update uid="enableHoleFillingFilterParams" />
 
         </config>
     </extension>
