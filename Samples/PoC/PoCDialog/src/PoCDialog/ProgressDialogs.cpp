@@ -48,6 +48,7 @@ void ProgressDialogs::open()
 
 void ProgressDialogs::addPercent(QVariant percent, QString message)
 {
+    SLM_ASSERT("You need to open before adding percentage", m_dialog);
     (*m_dialog)(percent.toFloat(), message.toStdString());
     m_result = percent.toString();
     Q_EMIT onResultChanged();
