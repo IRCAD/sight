@@ -52,6 +52,10 @@ void MultiSelectorDialogs::open()
         options.insert(std::pair<std::string, bool>(option, check));
     }
     dialog->setSelections(options);
-    auto result = dialog->show();
+    auto results = dialog->show();
+    for (auto result: results)
+    {
+        m_result += QString::fromStdString(result.first);
+    }
     Q_EMIT onResultChanged();
 }

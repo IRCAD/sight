@@ -7,7 +7,7 @@ import QtQuick.Layouts 1.3
 Dialog {
     modality: Qt.ApplicationModal
     standardButtons: StandardButton.Ok | StandardButton.Cancel
-    width: column.width
+    width: 400
     title: multiSelectorDialog.title
 
     ColumnLayout {
