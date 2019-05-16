@@ -27,20 +27,13 @@
 
 #include <fwServices/macros.hpp>
 
-#include <fwTools/fwID.hpp>
-
 #include <fwVtkIO/vtk.hpp>
 
 #include <vtkImageData.h>
 #include <vtkImageMapToColors.h>
-#include <vtkOpenGLRenderWindow.h>
-#include <vtkOpenGLTexture.h>
 #include <vtkProperty.h>
-#include <vtkRenderer.h>
-#include <vtkRenderWindowInteractor.h>
 #include <vtkSmartPointer.h>
 #include <vtkTexture.h>
-#include <vtkTextureObject.h>
 #include <vtkWindowLevelLookupTable.h>
 
 fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SMaterial );
@@ -49,6 +42,10 @@ namespace visuVTKAdaptor
 {
 
 const ::fwServices::IService::KeyType SMaterial::s_MATERIAL_INPUT = "material";
+
+// Name of the texture, don't use "diffuse" as name to avoid shadowing variables,
+// "diffuse" name is already used as vec3 in VTK shaders.
+static const std::string s_TEXTURENAME = " u_diffuseTexture";
 
 //------------------------------------------------------------------------------
 
@@ -67,7 +64,7 @@ SMaterial::~SMaterial() noexcept
     {
         m_property->Delete();
     }
-    m_property = NULL;
+    m_property = nullptr;
 }
 
 //------------------------------------------------------------------------------
@@ -77,7 +74,7 @@ void SMaterial::setVtkProperty(vtkProperty* property)
     if (m_manageProperty)
     {
         m_property->Delete();
-        m_property = NULL;
+        m_property = nullptr;
     }
 
     if (property)
@@ -140,13 +137,17 @@ void SMaterial::updateMaterial( CSPTR(::fwData::Material)material )
     m_property->SetLighting(material->getShadingMode() > 0);
 
     ::fwData::Color::sptr diffuse = material->diffuse();
-    m_property->SetDiffuseColor(diffuse->red(), diffuse->green(), diffuse->blue());
+    m_property->SetDiffuseColor(static_cast<double>(diffuse->red()),
+                                static_cast<double>(diffuse->green()),
+                                static_cast<double>(diffuse->blue()));
 
     // Use alpha from the diffuse color
-    m_property->SetOpacity( diffuse->alpha() );
+    m_property->SetOpacity(static_cast<double>(diffuse->alpha()) );
 
     ::fwData::Color::sptr ambient = material->ambient();
-    m_property->SetAmbientColor(ambient->red(), ambient->green(), ambient->blue());
+    m_property->SetAmbientColor(static_cast<double>(ambient->red()),
+                                static_cast<double>(ambient->green()),
+                                static_cast<double>(ambient->blue()));
 
     m_property->SetSpecularColor(1., 1., 1.);
     m_property->SetSpecularPower(100.); //Shininess
@@ -154,7 +155,7 @@ void SMaterial::updateMaterial( CSPTR(::fwData::Material)material )
     // set texture
     ::fwData::Image::sptr diffTex = material->getDiffuseTexture();
 
-    if(diffTex != NULL)
+    if(diffTex != nullptr)
     {
         ::fwData::mt::ObjectReadLock lock(diffTex);
 
@@ -176,7 +177,7 @@ void SMaterial::updateMaterial( CSPTR(::fwData::Material)material )
                 vtkTex = vtkSmartPointer< vtkTexture >::New();
                 vtkTex->SetInputData(vtkImage);
                 vtkTex->SetLookupTable(lut);
-                vtkTex->SetMapColorScalarsThroughLookupTable(1);
+                vtkTex->SetColorMode(VTK_COLOR_MODE_MAP_SCALARS);
             }
             else
             {
@@ -189,10 +190,19 @@ void SMaterial::updateMaterial( CSPTR(::fwData::Material)material )
             vtkTex->SetRepeat( wrapping == ::fwData::Material::REPEAT );
             vtkTex->SetEdgeClamp( wrapping == ::fwData::Material::CLAMP );
             vtkTex->SetInterpolate( filtering == ::fwData::Material::LINEAR );
-            m_property->RemoveTexture("diffuse");
-            m_property->SetTexture("diffuse", vtkTex);
+            //Warning: don't use "diffuse" as texture name, "diffuse" name is already used as vec3 in VTK shaders.
+            m_property->RemoveTexture(s_TEXTURENAME.c_str());
+            m_property->SetTexture(s_TEXTURENAME.c_str(), vtkTex);
         }
     }
+
+    // Test first if representation mode is known to avoid unhandled conditions.
+    const bool knownRep = material->getRepresentationMode() == ::fwData::Material::SURFACE ||
+                          material->getRepresentationMode() == ::fwData::Material::EDGE ||
+                          material->getRepresentationMode() == ::fwData::Material::WIREFRAME ||
+                          material->getRepresentationMode() == ::fwData::Material::POINT;
+
+    OSLM_ASSERT("Unknown material representation mode : " << material->getRepresentationMode(), knownRep);
 
     switch(material->getRepresentationMode())
     {
@@ -213,10 +223,15 @@ void SMaterial::updateMaterial( CSPTR(::fwData::Material)material )
         case ::fwData::Material::POINT:
             m_property->SetRepresentationToPoints();
             break;
-
-        default:
-            OSLM_ASSERT("Unknown material representation mode : " << material->getRepresentationMode(), false );
     }
+
+    // Test first if shading mode is known to avoid unhandled conditions.
+    const bool knownShading = material->getShadingMode() == ::fwData::Material::AMBIENT ||
+                              material->getShadingMode() == ::fwData::Material::PHONG ||
+                              material->getShadingMode() == ::fwData::Material::GOURAUD ||
+                              material->getShadingMode() == ::fwData::Material::FLAT;
+
+    OSLM_ASSERT("Unknown shading mode : " << material->getShadingMode(), knownShading);
 
     switch(material->getShadingMode())
     {
@@ -234,9 +249,6 @@ void SMaterial::updateMaterial( CSPTR(::fwData::Material)material )
         case ::fwData::Material::FLAT:
             m_property->SetInterpolationToFlat();
             break;
-
-        default:
-            OSLM_ASSERT("Unknown shading mode : " << material->getShadingMode(), false );
     }
 
     m_property->Modified();

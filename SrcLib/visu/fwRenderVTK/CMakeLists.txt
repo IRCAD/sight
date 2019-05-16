@@ -4,6 +4,7 @@ find_package(VTK QUIET COMPONENTS
     vtkFiltersGeometry
     vtkFiltersSources
     vtkImagingCore
+    vtkImagingGeneral
     vtkInteractionStyle
     vtkInteractionWidgets
     vtkRenderingAnnotation
@@ -23,6 +24,7 @@ fwForwardLink(
     vtkFiltersGeometry
     vtkFiltersSources
     vtkImagingCore
+    vtkImagingGeneral
     vtkInteractionStyle
     vtkInteractionWidgets
     vtkRenderingAnnotation

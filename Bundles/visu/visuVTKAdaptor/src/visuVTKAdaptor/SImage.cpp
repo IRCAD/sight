@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -35,8 +35,6 @@
 #include <fwDataTools/fieldHelper/Image.hpp>
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 
-#include <fwRenderVTK/vtk/fwVtkWindowLevelLookupTable.hpp>
-
 #include <fwServices/macros.hpp>
 
 #include <fwVtkIO/helper/TransferFunction.hpp>
@@ -64,7 +62,7 @@ SImage::SImage() noexcept :
     m_imagePortId(-1),
     m_imageOpacity(0.),
     m_allowAlphaInTF(false),
-    m_lut(vtkSmartPointer<fwVtkWindowLevelLookupTable>::New()),
+    m_lut(vtkSmartPointer< ::fwRenderVTK::vtk::fwVtkWindowLevelLookupTable >::New()),
     m_map2colors(vtkSmartPointer<vtkImageMapToColors>::New()),
     m_imageData(vtkSmartPointer<vtkImageData>::New()),
     m_helperTF(std::bind(&SImage::updateTFPoints, this),

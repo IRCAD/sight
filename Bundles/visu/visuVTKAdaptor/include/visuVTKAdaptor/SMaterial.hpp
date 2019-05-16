@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,14 +20,13 @@
  *
  ***********************************************************************/
 
-#ifndef __VISUVTKADAPTOR_SMATERIAL_HPP__
-#define __VISUVTKADAPTOR_SMATERIAL_HPP__
+#pragma once
 
 #include "visuVTKAdaptor/config.hpp"
 
 #include <fwRenderVTK/IAdaptor.hpp>
 
-class VISUVTKADAPTOR_CLASS_API vtkProperty;
+class vtkProperty;
 
 namespace fwData
 {
@@ -57,11 +56,11 @@ public:
 
     static const ::fwServices::IService::KeyType s_MATERIAL_INPUT;
 
-    fwCoreServiceClassDefinitionsMacro( (SMaterial)(::fwRenderVTK::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (SMaterial)(::fwRenderVTK::IAdaptor) )
 
     VISUVTKADAPTOR_API SMaterial() noexcept;
 
-    VISUVTKADAPTOR_API virtual ~SMaterial() noexcept;
+    VISUVTKADAPTOR_API virtual ~SMaterial() noexcept override;
 
     VISUVTKADAPTOR_API void setVtkProperty(vtkProperty* property);
 
@@ -91,5 +90,3 @@ protected:
 };
 
 } //namespace visuVTKAdaptor
-
-#endif // __VISUVTKADAPTOR_SMATERIAL_HPP__

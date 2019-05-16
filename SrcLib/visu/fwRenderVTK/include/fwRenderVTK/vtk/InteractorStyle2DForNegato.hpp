@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWRENDERVTK_VTK_INTERACTORSTYLE2DFORNEGATO_HPP__
-#define __FWRENDERVTK_VTK_INTERACTORSTYLE2DFORNEGATO_HPP__
+#pragma once
 
 #include "fwRenderVTK/config.hpp"
 #include "fwRenderVTK/IInteractorStyle.hpp"
@@ -29,6 +28,12 @@
 #include <vtkInteractorStyleTrackballCamera.h>
 
 class Renderer;
+
+namespace fwRenderVTK
+{
+
+namespace vtk
+{
 
 class FWRENDERVTK_CLASS_API InteractorStyle2DForNegato : public vtkInteractorStyleTrackballCamera,
                                                          public ::fwRenderVTK::IInteractorStyle
@@ -69,4 +74,6 @@ private:
     double m_oldPickPoint[4];
 };
 
-#endif // __FWRENDERVTK_VTK_INTERACTORSTYLE2DFORNEGATO_HPP__
+} // namespace vtk
+
+} // namespace fwRenderVTK

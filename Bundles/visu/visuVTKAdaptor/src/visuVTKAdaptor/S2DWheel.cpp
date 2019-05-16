@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017 IRCAD France
- * Copyright (C) 2017 IHU Strasbourg
+ * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -45,7 +45,7 @@ static const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT = "updateVisib
 //------------------------------------------------------------------------------
 
 S2DWheel::S2DWheel() noexcept :
-    m_wheelWidget(vtkSmartPointer<fwVtkWheelWidget>::New()),
+    m_wheelWidget(vtkSmartPointer< ::fwRenderVTK::vtk::fwVtkWheelWidget >::New()),
     m_visible(true)
 {
     m_wheelUpdatedSignal = newSignal<WheelUpdatedSignalType>(s_WHEEL_UPDATED_SIG);
@@ -76,7 +76,8 @@ void S2DWheel::starting()
 {
     this->initialize();
 
-    fwVtkWheelRepresentation* wheelRepresentation = fwVtkWheelRepresentation::New();
+    ::fwRenderVTK::vtk::fwVtkWheelRepresentation* wheelRepresentation =
+        ::fwRenderVTK::vtk::fwVtkWheelRepresentation::New();
 
     wheelRepresentation->SetVisibility(m_visible);
     m_wheelWidget->SetInteractor(this->getRenderer()->GetRenderWindow()->GetInteractor());
@@ -93,7 +94,7 @@ void S2DWheel::starting()
     m_resizeCallback->SetCallback(
         [this](vtkObject*, long unsigned int, void* )
         {
-            const int viewportWidth = this->getRenderer()->GetRenderWindow()->GetSize()[0];
+            const int viewportWidth  = this->getRenderer()->GetRenderWindow()->GetSize()[0];
             const int viewportHeight = this->getRenderer()->GetRenderWindow()->GetSize()[1];
 
             if(viewportHeight != 0 && viewportWidth != 0)

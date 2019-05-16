@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -57,6 +57,12 @@
 #include <vtkSphereSource.h>
 #include <vtkTransform.h>
 #include <vtkWindow.h>
+
+namespace fwRenderVTK
+{
+
+namespace vtk
+{
 
 vtkStandardNewMacro(fwVtkBoxRepresentation);
 
@@ -155,6 +161,7 @@ void fwVtkBoxRepresentation::WidgetInteraction(double e[2])
 }
 
 //----------------------------------------------------------------------------
+
 void fwVtkBoxRepresentation::PrintSelf(ostream& os, vtkIndent indent)
 {
     this->Superclass::PrintSelf(os, indent);
@@ -163,3 +170,9 @@ void fwVtkBoxRepresentation::PrintSelf(ostream& os, vtkIndent indent)
     os << indent << "Scaling Enabled: " << (this->ScalingEnabled ? "On\n" : "Off\n");
     os << indent << "Rotation Enabled: " << (this->RotationEnabled ? "On\n" : "Off\n");
 }
+
+//----------------------------------------------------------------------------
+
+} // namespace vtk
+
+} // namespace fwRenderVTK

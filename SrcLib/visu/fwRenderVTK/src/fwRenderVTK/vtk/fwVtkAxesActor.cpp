@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -26,6 +26,12 @@
 #include <vtkObjectFactory.h>
 #include <vtkPolyData.h>
 #include <vtkPolyDataMapper.h>
+
+namespace fwRenderVTK
+{
+
+namespace vtk
+{
 
 vtkStandardNewMacro(fwVtkAxesActor);
 
@@ -129,3 +135,7 @@ void fwVtkAxesActor::PrintSelf(std::ostream& os, vtkIndent indent)
 }
 
 //------------------------------------------------------------------------------
+
+} // namespace vtk
+
+} // namespace fwRenderVTK

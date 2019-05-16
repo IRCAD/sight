@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -168,7 +168,7 @@ void SImagesProbeCursor::updateView( double world[3] )
                     OSLM_TRACE("p=" << worldCross[i][0] << "," << worldCross[i][2] << "," << worldCross[i][2] << "," );
                     points->SetPoint(i, worldCross[i]);
                 }
-                m_cursorPolyData->Modified();
+                points->Modified();
             }
         }
     }

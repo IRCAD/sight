@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017 IRCAD France
- * Copyright (C) 2017 IHU Strasbourg
+ * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __VISUVTKADAPTOR_S2DWHEEL_HPP__
-#define __VISUVTKADAPTOR_S2DWHEEL_HPP__
+#pragma once
 
 #include "visuVTKAdaptor/config.hpp"
 
@@ -61,7 +60,7 @@ class VISUVTKADAPTOR_CLASS_API S2DWheel : public ::fwRenderVTK::IAdaptor
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (S2DWheel)(::fwRenderVTK::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (S2DWheel)(::fwRenderVTK::IAdaptor) )
 
     typedef ::fwCom::Signal<void (double, double, double)> WheelUpdatedSignalType;
 
@@ -90,7 +89,7 @@ private:
     VISUVTKADAPTOR_API void updateVisibility ( bool isVisible );
 
     /// Wheel widget.
-    vtkSmartPointer< fwVtkWheelWidget > m_wheelWidget;
+    vtkSmartPointer< ::fwRenderVTK::vtk::fwVtkWheelWidget > m_wheelWidget;
 
     /// Called when the VTK viewport is resized. Scales the widget accordingly.
     vtkSmartPointer< ::fwVtkIO::helper::vtkLambdaCommand > m_resizeCallback;
@@ -103,5 +102,3 @@ private:
 };
 
 } // namespace visuVTKAdaptor
-
-#endif // __VISUVTKADAPTOR_S2DWHEEL_HPP__
