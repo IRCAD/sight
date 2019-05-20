@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017 IRCAD France
- * Copyright (C) 2017 IHU Strasbourg
+ * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWRENDERVTK_VTK_FWVTKWHEELREPRESENTATION_HPP__
-#define __FWRENDERVTK_VTK_FWVTKWHEELREPRESENTATION_HPP__
+#pragma once
 
 #include "fwRenderVTK/config.hpp"
 
@@ -32,6 +31,12 @@
 #include <vtkPropCollection.h>
 #include <vtkUnsignedCharArray.h>
 #include <vtkWidgetRepresentation.h>
+
+namespace fwRenderVTK
+{
+
+namespace vtk
+{
 
 /**
  * @brief Representation of a wheel widget.
@@ -146,4 +151,6 @@ private:
     bool m_hover;
 };
 
-#endif // __FWRENDERVTK_VTK_FWVTKWHEELREPRESENTATION_HPP__
+} // namespace vtk
+
+} // namespace fwRenderVTK

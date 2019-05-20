@@ -312,7 +312,7 @@ void AppManager::addObject(::fwData::Object::sptr obj, const std::string& id)
                 // Register the key on the service
                 srv->registerObject(obj, objCfg.m_key, objCfg.m_access, objCfg.m_autoConnect, objCfg.m_optional);
 
-                if (objCfg.m_optional)
+                if (objCfg.m_optional && srv->isStarted())
                 {
                     // Call the swapping callback of the service and wait for it
                     srv->swapKey(objCfg.m_key, ::fwData::Object::constCast(registeredObj)).wait();
@@ -380,7 +380,7 @@ void AppManager::removeObject(::fwData::Object::sptr obj, const std::string& id)
 
                     srv->unregisterObject(objCfg.m_key, objCfg.m_access);
 
-                    if (objCfg.m_optional)
+                    if (objCfg.m_optional && srv->isStarted())
                     {
                         srv->swapKey(objCfg.m_key, obj).wait();
                     }

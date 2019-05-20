@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2017 IRCAD France
- * Copyright (C) 2014-2017 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -26,10 +26,6 @@
 
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 
-#include <vtkInstantiator.h>
-
-extern vtkObject* vtkInstantiatorFixedInteractorStyleNew();
-
 namespace visuVTKARAdaptor
 {
 
@@ -47,16 +43,12 @@ Plugin::~Plugin() noexcept
 
 void Plugin::start()
 {
-    SLM_TRACE_FUNC();
-    vtkInstantiator::RegisterInstantiator("FixedInteractorStyle", vtkInstantiatorFixedInteractorStyleNew);
 }
 
 //-----------------------------------------------------------------------------
 
 void Plugin::stop() noexcept
 {
-    SLM_TRACE_FUNC();
-    vtkInstantiator::UnRegisterInstantiator("FixedInteractorStyle", vtkInstantiatorFixedInteractorStyleNew);
 }
 
 //-----------------------------------------------------------------------------

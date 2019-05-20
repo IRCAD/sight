@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017 IRCAD France
- * Copyright (C) 2017 IHU Strasbourg
+ * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWRENDERVTK_VTK_FWVTKWHEELWIDGET_HPP__
-#define __FWRENDERVTK_VTK_FWVTKWHEELWIDGET_HPP__
+#pragma once
 
 #include "fwRenderVTK/config.hpp"
 #include "fwRenderVTK/vtk/fwVtkWheelRepresentation.hpp"
@@ -29,6 +28,12 @@
 #include <vtkAbstractWidget.h>
 
 #include <functional>
+
+namespace fwRenderVTK
+{
+
+namespace vtk
+{
 
 /**
  * @brief Implements the interactions with the wheel widget.
@@ -102,4 +107,6 @@ private:
     std::function< void (double, double, double) > m_wheelUpdateCallback;
 };
 
-#endif // __FWRENDERVTK_VTK_FWVTKWHEELWIDGET_HPP__
+} // namespace vtk
+
+} // namespace fwRenderVTK

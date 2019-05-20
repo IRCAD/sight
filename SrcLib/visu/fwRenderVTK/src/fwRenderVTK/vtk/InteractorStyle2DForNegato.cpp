@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -30,6 +30,12 @@
 #include <vtkObjectFactory.h>
 #include <vtkRenderer.h>
 #include <vtkRenderWindowInteractor.h>
+
+namespace fwRenderVTK
+{
+
+namespace vtk
+{
 
 vtkStandardNewMacro(InteractorStyle2DForNegato);
 
@@ -301,3 +307,9 @@ void InteractorStyle2DForNegato::Dolly(double factor)
         this->Interactor->Render();
     }
 }
+
+//----------------------------------------------------------------------------
+
+} // namespace vtk
+
+} // namespace fwRenderVTK
