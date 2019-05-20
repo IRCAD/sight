@@ -454,7 +454,7 @@ void SImageMultiDistances::createLine(const ::visuOgreAdaptor::SMaterial::sptr _
     const ::glm::vec3 APosImageSpace(_ps1[0], _ps1[1], _ps1[2]);
     const ::glm::vec3 BPosImageSpace(_ps2[0], _ps2[1], _ps2[2]);
 
-    ::glm::vec3 planePosImageSpace;
+    ::glm::vec3 planePosImageSpace = {0, 0, 0};
     ::glm::vec3 planeDirImageSpaceNormalized;
 
     /// Checks the axis orientation to add the line correctly
