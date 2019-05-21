@@ -97,6 +97,7 @@ Item {
             Button {
                 text: "Add"
                 anchors.verticalCenter: parent.verticalCenter
+                enabled: pocDialogProgressDialogs.isOpen
                 onClicked: pocDialogProgressDialogs.addPercent(windowPercentField.value, windowMessageProgressField.text)
             }
         }

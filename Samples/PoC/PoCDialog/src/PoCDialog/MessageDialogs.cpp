@@ -32,7 +32,6 @@
 
 MessageDialogs::MessageDialogs()
 {
-    qmlRegisterType<MessageDialogs>("PoCDialog", 1, 0, "PocDialogMessageDialogs");
 }
 
 //------------------------------------------------------------------------------

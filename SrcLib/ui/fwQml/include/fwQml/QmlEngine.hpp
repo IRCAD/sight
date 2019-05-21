@@ -60,11 +60,6 @@ public:
 
     /**
      * @brief Load a new component inside the engine to add a new root component
-     */
-    FWQML_API QObject* createComponent(const ::boost::filesystem::path& file);
-
-    /**
-     * @brief Load a new component inside the engine to add a new root component
      * Add a context in which the component will be created instead of the root context
      */
     FWQML_API QObject* createComponent(const ::boost::filesystem::path& file, QSharedPointer<QQmlContext>& context);

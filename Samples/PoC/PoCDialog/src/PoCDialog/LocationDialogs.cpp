@@ -32,7 +32,6 @@
 
 LocationDialogs::LocationDialogs()
 {
-    qmlRegisterType<LocationDialogs>("PoCDialog", 1, 0, "PocDialogLocationDialogs");
 }
 
 //------------------------------------------------------------------------------

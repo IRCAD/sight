@@ -113,7 +113,13 @@ Item {
             CheckBox {
                 id: fileDialogSelectMultiple
                 text: "Select Multiple Files"
-                onCheckedStateChanged: pocDialogLocationDialogs.multiple = fileDialogSelectMultiple.checked
+                onCheckedStateChanged: {
+                    if (fileDialogSelectMultiple.checked)
+                    {
+                        fileDialogSelectExisting.checked = true
+                    }
+                    pocDialogLocationDialogs.multiple = fileDialogSelectMultiple.checked
+                }
             }
             Label {
                 id: labelFilter

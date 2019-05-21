@@ -81,6 +81,7 @@ Item {
                     optionRow.checkedOpt.push(windowCheckField.checked);
                     windowOptionField.text = "";
                     windowCheckField.checked = false;
+                    pocDialogMultiSelectorDialogs.hasOption = true;
                     pocDialogMultiSelectorDialogs.options = optionRow.options;
                     pocDialogMultiSelectorDialogs.checked = optionRow.checkedOpt;
                 }
@@ -112,6 +113,7 @@ Item {
             width: parent.width
             Button {
                 text: "Open"
+                enabled: pocDialogMultiSelectorDialogs.hasOption
                 anchors.verticalCenter: parent.verticalCenter
                 onClicked: {
                     pocDialogMultiSelectorDialogs.open();

@@ -39,6 +39,7 @@ Q_OBJECT
 Q_PROPERTY(QString message MEMBER m_message)
 Q_PROPERTY(QString title MEMBER m_title)
 Q_PROPERTY(QString result MEMBER m_result NOTIFY onResultChanged)
+Q_PROPERTY(bool isOpen MEMBER m_isOpen NOTIFY onOpenChanged)
 
 public:
 
@@ -48,12 +49,15 @@ public:
 
 Q_SIGNALS:
     void onResultChanged();
+    void onOpenChanged();
 
 protected:
     /// Dialog title
     QString m_title;
     /// Dialog box message
     QString m_message;
+    /// to enable button when the dialog is open
+    bool m_isOpen;
 
     QString m_result;
 

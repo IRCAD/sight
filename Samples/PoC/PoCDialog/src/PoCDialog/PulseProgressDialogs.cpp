@@ -31,7 +31,6 @@
 
 PulseProgressDialogs::PulseProgressDialogs()
 {
-    qmlRegisterType<PulseProgressDialogs>("PoCDialog", 1, 0, "PocDialogPulseProgressDialogs");
 }
 
 //------------------------------------------------------------------------------

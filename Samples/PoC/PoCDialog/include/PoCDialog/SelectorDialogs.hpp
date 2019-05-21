@@ -37,6 +37,7 @@ Q_PROPERTY(QStringList options MEMBER m_options)
 Q_PROPERTY(QString message MEMBER m_message)
 Q_PROPERTY(QString title MEMBER m_title)
 Q_PROPERTY(QString result MEMBER m_result NOTIFY onResultChanged)
+Q_PROPERTY(bool hasOption MEMBER m_hasOption NOTIFY optionChanged)
 
 public:
 
@@ -46,6 +47,7 @@ public:
 
 Q_SIGNALS:
     void onResultChanged();
+    void optionChanged();
 
 protected:
     /// Dialog title
@@ -54,6 +56,8 @@ protected:
     QString m_message;
     /// List of options
     QStringList m_options;
+    /// check if Dialog has option before open
+    bool m_hasOption;
 
     QString m_result;
 

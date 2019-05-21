@@ -38,6 +38,7 @@ Q_PROPERTY(QList<bool> checked MEMBER m_checked)
 Q_PROPERTY(QString message MEMBER m_message)
 Q_PROPERTY(QString title MEMBER m_title)
 Q_PROPERTY(QString result MEMBER m_result NOTIFY onResultChanged)
+Q_PROPERTY(bool hasOption MEMBER m_hasOption NOTIFY optionChanged)
 
 public:
 
@@ -47,6 +48,7 @@ public:
 
 Q_SIGNALS:
     void onResultChanged();
+    void optionChanged();
 
 protected:
     /// Dialog title
@@ -57,6 +59,8 @@ protected:
     QStringList m_options;
     /// Status List of options
     QList<bool> m_checked;
+    /// boolean to enable open if we have options
+    bool m_hasOption;
 
     QString m_result;
 

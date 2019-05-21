@@ -28,7 +28,8 @@
 
 MultiSelectorDialogs::MultiSelectorDialogs()
 {
-    qmlRegisterType<MultiSelectorDialogs>("PoCDialog", 1, 0, "PocDialogMultiSelectorDialogs");
+    this->m_hasOption = false;
+    Q_EMIT optionChanged();
 }
 
 //------------------------------------------------------------------------------
@@ -53,9 +54,15 @@ void MultiSelectorDialogs::open()
     }
     dialog->setSelections(options);
     auto results = dialog->show();
+    m_result.clear();
     for (auto result: results)
     {
-        m_result += QString::fromStdString(result.first);
+        if (result.second)
+        {
+            m_result += QString::fromStdString(result.first);
+        }
     }
     Q_EMIT onResultChanged();
+    this->m_hasOption = false;
+    Q_EMIT optionChanged();
 }

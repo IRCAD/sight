@@ -26,7 +26,8 @@
 
 ProgressDialogs::ProgressDialogs()
 {
-    qmlRegisterType<ProgressDialogs>("PoCDialog", 1, 0, "PocDialogProgressDialogs");
+    m_isOpen = false;
+    Q_EMIT onOpenChanged();
 }
 
 //------------------------------------------------------------------------------
@@ -42,13 +43,14 @@ void ProgressDialogs::open()
     m_dialog = ::fwGui::dialog::ProgressDialog::New();
     m_dialog->setTitle(m_title.toStdString());
     m_dialog->setMessage(m_message.toStdString());
+    m_isOpen = true;
+    Q_EMIT onOpenChanged();
 }
 
 //------------------------------------------------------------------------------
 
 void ProgressDialogs::addPercent(QVariant percent, QString message)
 {
-    SLM_ASSERT("You need to open before adding percentage", m_dialog);
     (*m_dialog)(percent.toFloat(), message.toStdString());
     m_result = percent.toString();
     Q_EMIT onResultChanged();

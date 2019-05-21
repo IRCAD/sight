@@ -72,6 +72,7 @@ Item {
                 onClicked: {
                     optionRow.options.push(windowOptionField.text)
                     windowOptionField.text = ""
+                    pocDialogSelectorDialogs.hasOption = true;
                     pocDialogSelectorDialogs.options = optionRow.options
                 }
             }
@@ -100,6 +101,7 @@ Item {
             width: parent.width
             Button {
                 text: "Open"
+                enabled: pocDialogSelectorDialogs.hasOption
                 anchors.verticalCenter: parent.verticalCenter
                 onClicked: {
                     pocDialogSelectorDialogs.open()

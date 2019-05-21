@@ -4,13 +4,7 @@ set( VERSION 0.1 )
 set( TYPE BUNDLE )
 set( START ON )
 set( DEPENDENCIES
-    fwActivities
-    fwCom
     fwCore
-    fwData
-    fwDataCamp
-    fwDataTools
-    fwMedData
     fwGui
     fwQml
     fwQt
@@ -23,9 +17,11 @@ set( REQUIREMENTS
     gui
 )
 set( PLUGINS
+    QtQml
+    QtQuick
+    QtQuick.2
     platforms
     imageformats
-    styles
 )
 set( CONAN_DEPS
     ${CONAN_BOOST}

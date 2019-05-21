@@ -14,13 +14,7 @@ ApplicationWindow {
     modality: Qt.NonModal
 
     title: qsTr("PoCDialog 0.1")
-    onClosing: appManager.uninitialize();
 
-    Component.onCompleted: appManager.initialize()
-
-    AppManager {
-        id: appManager
-    }
     TabView {
         anchors.fill: parent
         anchors.margins: 8

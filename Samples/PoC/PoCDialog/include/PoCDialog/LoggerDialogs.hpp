@@ -37,12 +37,16 @@ Q_PROPERTY(QStringList errorLevel MEMBER m_errorLevel)
 Q_PROPERTY(QStringList errorMessage MEMBER m_errorMessage)
 Q_PROPERTY(QString title MEMBER m_title)
 Q_PROPERTY(QString message MEMBER m_message)
+Q_PROPERTY(bool hasError MEMBER m_hasError NOTIFY errorChanged)
 
 public:
 
     POCDIALOG_API LoggerDialogs();
 
     POCDIALOG_API virtual ~LoggerDialogs() override;
+
+Q_SIGNALS:
+    void errorChanged();
 
 protected:
     /// Dialog box message
@@ -52,6 +56,8 @@ protected:
     QStringList m_errorMessage;
     /// title
     QString m_title;
+    /// does the Logger has error
+    bool m_hasError;
 
 protected Q_SLOTS:
     void open();

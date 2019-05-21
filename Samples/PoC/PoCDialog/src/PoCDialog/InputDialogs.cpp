@@ -28,7 +28,6 @@
 
 InputDialogs::InputDialogs()
 {
-    qmlRegisterType<InputDialogs>("PoCDialog", 1, 0, "PocDialogInputDialogs");
 }
 
 //------------------------------------------------------------------------------

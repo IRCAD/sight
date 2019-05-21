@@ -72,16 +72,7 @@ SPTR(QmlEngine) QmlEngine::getDefault()
 
 void QmlEngine::loadMainComponent(const ::boost::filesystem::path& file)
 {
-    std::string filepath = file.string();
     m_engine->load(QUrl::fromLocalFile(QString::fromStdString(file.string())));
-}
-
-//-----------------------------------------------------------------------------
-
-QObject* QmlEngine::createComponent(const ::boost::filesystem::path& file)
-{
-    QQmlComponent component(m_engine, QUrl::fromLocalFile(QString::fromStdString(file.string())));
-    return component.create();
 }
 
 //-----------------------------------------------------------------------------

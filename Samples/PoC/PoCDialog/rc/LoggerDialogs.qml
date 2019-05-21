@@ -77,14 +77,10 @@ Item {
                         checked: false
                         exclusiveGroup: radioBoxGroup
                     }
-                    RadioButton {
-                        checked: false
-                    }
                 }
             }
             TextField {
                 id: windowMessageErrorField
-                Layout.alignment: Qt.AlignBaseline
                 Layout.fillWidth: true
                 text: "Custom Message"
             }
@@ -98,6 +94,7 @@ Item {
                         loggerRow.errorLevel.push(radioBoxGroup.current.text)
                         windowMessageErrorField.text = ""
                         radioBoxGroup.current = null
+                        pocDialogLoggerDialogs.hasError = true
                         pocDialogLoggerDialogs.errorMessage = loggerRow.errorMessage
                         pocDialogLoggerDialogs.errorLevel = loggerRow.errorLevel
                     }
@@ -124,6 +121,7 @@ Item {
             width: parent.width
             Button {
                 text: "Open"
+                enabled: pocDialogLoggerDialogs.hasError
                 anchors.verticalCenter: parent.verticalCenter
                 onClicked: {
                     pocDialogLoggerDialogs.open();

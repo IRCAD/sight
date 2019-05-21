@@ -22,8 +22,6 @@
 
 #include "PoCDialog/Plugin.hpp"
 
-#include "PoCDialog/AppManager.hpp"
-
 #include <fwQml/QmlEngine.hpp>
 
 #include <fwRuntime/operations.hpp>
@@ -51,7 +49,14 @@ Plugin::~Plugin() noexcept
 
 void Plugin::start()
 {
-    qmlRegisterType<AppManager>("PoCDialog", 1, 0, "AppManager");
+    qmlRegisterType<SelectorDialogs>("PoCDialog", 1, 0, "PocDialogSelectorDialogs");
+    qmlRegisterType<InputDialogs>("PoCDialog", 1, 0, "PocDialogInputDialogs");
+    qmlRegisterType<LocationDialogs>("PoCDialog", 1, 0, "PocDialogLocationDialogs");
+    qmlRegisterType<LoggerDialogs>("PoCDialog", 1, 0, "PocDialogLoggerDialogs");
+    qmlRegisterType<MessageDialogs>("PoCDialog", 1, 0, "PocDialogMessageDialogs");
+    qmlRegisterType<ProgressDialogs>("PoCDialog", 1, 0, "PocDialogProgressDialogs");
+    qmlRegisterType<PulseProgressDialogs>("PoCDialog", 1, 0, "PocDialogPulseProgressDialogs");
+    qmlRegisterType<MultiSelectorDialogs>("PoCDialog", 1, 0, "PocDialogMultiSelectorDialogs");
 }
 
 //------------------------------------------------------------------------------
@@ -59,22 +64,6 @@ void Plugin::start()
 void Plugin::initialize()
 {
     SPTR(::fwQml::QmlEngine) engine = ::fwQml::QmlEngine::getDefault();
-
-    m_input = std::shared_ptr<InputDialogs>(new InputDialogs);
-
-    m_location = std::shared_ptr<LocationDialogs>(new LocationDialogs);
-
-    m_logger = std::shared_ptr<LoggerDialogs>(new LoggerDialogs);
-
-    m_message = std::shared_ptr<MessageDialogs>(new MessageDialogs);
-
-    m_multiSelector = std::shared_ptr<MultiSelectorDialogs>(new MultiSelectorDialogs);
-
-    m_selector = std::shared_ptr<SelectorDialogs>(new SelectorDialogs);
-
-    m_progress = std::shared_ptr<ProgressDialogs>(new ProgressDialogs);
-
-    m_pulseProgress = std::shared_ptr<PulseProgressDialogs>(new PulseProgressDialogs);
 
     auto path = ::fwRuntime::getBundleResourceFilePath("PoCDialog-0.1/ui.qml");
 

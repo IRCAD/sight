@@ -60,22 +60,6 @@ public:
     POCDIALOG_API void uninitialize() noexcept;
 
 private:
-    /// InputDialogs class to instantiate InputDialog
-    std::shared_ptr<InputDialogs> m_input;
-    /// LocationDialogs class to instantiate LocationDialog
-    std::shared_ptr<LocationDialogs> m_location;
-    /// LoggerDialogs class to instantiate LoggerDialog
-    std::shared_ptr<LoggerDialogs> m_logger;
-    /// MessageDialogs class to instantiate MessageDialog
-    std::shared_ptr<MessageDialogs> m_message;
-    /// MultiSelectorDialogs class to instantiate MultiSelectorDialog
-    std::shared_ptr<MultiSelectorDialogs> m_multiSelector;
-    /// ProgressDialogs class to instantiate ProgressDialog
-    std::shared_ptr<ProgressDialogs> m_progress;
-    /// SelectorDialogs class to instantiate SelectorDialog
-    std::shared_ptr<SelectorDialogs> m_selector;
-    /// PulseProgressDialogs class to instantiate PulseProgressDialog
-    std::shared_ptr<PulseProgressDialogs> m_pulseProgress;
 
 };
 

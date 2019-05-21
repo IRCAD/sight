@@ -28,7 +28,8 @@
 
 LoggerDialogs::LoggerDialogs()
 {
-    qmlRegisterType<LoggerDialogs>("PoCDialog", 1, 0, "PocDialogLoggerDialogs");
+    this->m_hasError = false;
+    Q_EMIT errorChanged();
 }
 
 //------------------------------------------------------------------------------
@@ -63,4 +64,6 @@ void LoggerDialogs::open()
     }
     ::fwGui::dialog::LoggerDialog dialogFile(m_title.toStdString(), m_message.toStdString(), logger);
     dialogFile.show();
+    this->m_hasError = false;
+    Q_EMIT errorChanged();
 }
