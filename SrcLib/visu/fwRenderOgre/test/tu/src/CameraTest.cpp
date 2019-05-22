@@ -76,7 +76,6 @@ void comparePoint(const Ogre::Vector4& _p1, const Ogre::Vector3& _p2)
     CPPUNIT_ASSERT_DOUBLES_EQUAL(_p1[0], _p2[0], 0.0001);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(_p1[1], _p2[1], 0.0001);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(_p1[2], _p2[2], 0.0001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(_p1[3], _p2[3], 0.0001);
 }
 
 //------------------------------------------------------------------------------

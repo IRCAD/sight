@@ -153,9 +153,9 @@ Ogre::Vector3 Camera::convertPixelToViewSpace(const ::Ogre::Camera& _camera, con
     const auto inversedCombinedMat = (projMat * viewMat).inverse();
 
     // We multiply by the inverse since we are performing the usual projection in the other way around.
-    const ::Ogre::Vector3 result = inversedCombinedMat * clippingCoordinatePixel.xyz();
+    const ::Ogre::Vector4 result = inversedCombinedMat * clippingCoordinatePixel;
 
-    return result;
+    return result.xyz();
 }
 
 } // namespace helper
