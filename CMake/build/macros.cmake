@@ -900,6 +900,7 @@ macro(loadProperties PROPERTIES_FILE)
     unset(START_BEFORE)
     unset(PLUGINS)
     unset(CONAN_DEPS)
+    unset(WARNINGS_AS_ERROR)
 
     include("${PROPERTIES_FILE}")
 endmacro()
@@ -939,6 +940,8 @@ macro(fwLoadProperties)
             profile_setup(${PROJECT})
         endif()
     endif()
+
+    fwManageWarnings(${NAME})
 
     if(DEPENDENCIES)
         fwUse( ${DEPENDENCIES} )
@@ -1011,3 +1014,15 @@ macro(addProject PROJECT)
     unset(PROJECT_CACHE)
 endmacro()
 
+# Treat warnings as errors if requested
+#   to activate "warning as errors", simply write in the Properties.cmake of your project:
+#   set(WARNINGS_AS_ERROR ON)
+macro(fwManageWarnings PROJECT)
+    if(${${PROJECT}_WARNINGS_AS_ERROR})
+        if(MSVC)
+            target_compile_options(${PROJECT} PRIVATE "/WX")
+        elseif(CMAKE_COMPILER_IS_GNUCXX OR "${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+            target_compile_options(${PROJECT} PRIVATE "-Werror")
+        endif ()
+    endif()
+endmacro()

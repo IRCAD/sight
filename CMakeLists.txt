@@ -131,6 +131,12 @@ if(UNIX)
         endif()
     endif()
 endif()
+# Use external/system includes available from Visual Studio 15.6
+# source https://gitlab.kitware.com/cmake/cmake/issues/17904
+if (MSVC AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 19.14)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /experimental:external /external:W0 ")
+    set(CMAKE_INCLUDE_SYSTEM_FLAG_CXX "/external:I ")
+endif()
 
 # Building with all your cores on Visual Studio IDE
 if(MSVC_IDE)
@@ -294,10 +300,11 @@ foreach(PROPERTIES_FILE ${PROJECTS_PROPERTIES})
 
     string( TOUPPER "${TYPE}" TYPE )
 
-    set(${NAME}_DEPENDENCIES "${DEPENDENCIES}")
-    set(${NAME}_REQUIREMENTS "${REQUIREMENTS}")
-    set(${NAME}_DISABLE_PCH  "${DISABLE_PCH}")
-    set(${NAME}_CONAN_DEPS   "${CONAN_DEPS}")
+    set(${NAME}_DEPENDENCIES      "${DEPENDENCIES}")
+    set(${NAME}_REQUIREMENTS      "${REQUIREMENTS}")
+    set(${NAME}_DISABLE_PCH       "${DISABLE_PCH}")
+    set(${NAME}_CONAN_DEPS        "${CONAN_DEPS}")
+    set(${NAME}_WARNINGS_AS_ERROR "${WARNINGS_AS_ERROR}")
 
     # Get the pch target, test the existence of type variable to exclude unbuilt projects
     if(ENABLE_PCH AND TYPE AND NOT ${NAME}_DISABLE_PCH)
