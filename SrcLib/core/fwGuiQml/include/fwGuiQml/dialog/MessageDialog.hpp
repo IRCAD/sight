@@ -50,7 +50,6 @@ Q_PROPERTY(QString title MEMBER m_title NOTIFY titleChanged)
 Q_PROPERTY(QString message MEMBER m_message NOTIFY messageChanged)
 Q_PROPERTY(int icon MEMBER m_iconDialog WRITE emitIcon NOTIFY iconChanged)
 Q_PROPERTY(QMessageBox::StandardButtons buttons MEMBER m_buttonsDialog NOTIFY buttonsChanged)
-Q_PROPERTY(bool visible MEMBER m_visible)
 
 public:
 
@@ -107,10 +106,7 @@ protected:
     int m_iconDialog;
 
     /// boolean to check if button was pressed
-    bool m_isClicked;
     ::fwGui::dialog::IMessageDialog::Buttons m_clicked;
-
-    bool m_visible;
 
     /// Setter to QProperty and emit signal
     FWGUIQML_API void emitIcon(const int&);

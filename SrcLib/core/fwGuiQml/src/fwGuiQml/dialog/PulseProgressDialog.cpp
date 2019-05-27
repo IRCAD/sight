@@ -84,44 +84,32 @@ void PulseProgressDialog::show()
     // load the qml ui component
     QObject* dialog = engine->createComponent(dialogPath, context);
 
-    m_isClicked = false;
-
     // Create a QFutureWatcher and connect signals and slots.
     QFutureWatcher<void> futureWatcher;
-    QObject::connect(&futureWatcher, SIGNAL(finished()), this, SLOT(onFinished()));
     QObject::connect(this, SIGNAL(canceled()), &futureWatcher, SLOT(cancel()));
 
     Q_EMIT titleChanged();
     Q_EMIT messageChanged();
     // Start the computation.
+
+    QEventLoop loop;
+    //slot to retrieve the result and open the dialog with invoke
+    connect(dialog, SIGNAL(rejected()), &loop, SLOT(quit()));
+    QObject::connect(&futureWatcher, SIGNAL(finished()), &loop, SLOT(quit()));
     QMetaObject::invokeMethod(dialog, "open");
     futureWatcher.setFuture(QtConcurrent::run(m_stuff));
-    while (!m_isClicked && m_visible)
-    {
-        qGuiApp->processEvents();
-    }
+    loop.exec();
     if (futureWatcher.isRunning())
     {
-        Q_EMIT canceled();
+        futureWatcher.cancel();
     }
     delete dialog;
 }
 
 //------------------------------------------------------------------------------
 
-void PulseProgressDialog::onFinished()
-{
-    m_isClicked = true;
-    m_visible   = false;
-    Q_EMIT visibleChanged();
-}
-
-//------------------------------------------------------------------------------
-
 void PulseProgressDialog::onCanceled()
 {
-    m_isClicked = true;
-    m_visible   = false;
     Q_EMIT canceled();
 }
 

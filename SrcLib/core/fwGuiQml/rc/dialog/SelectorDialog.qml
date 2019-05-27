@@ -57,5 +57,5 @@ Dialog {
     onRejected: {
         selectorDialog.resultDialog("");
     }
-    onVisibleChanged: selectorDialog.visible = visible
+    onVisibleChanged: visible ? "" : reset()
 }

@@ -11,5 +11,5 @@ MessageDialog {
     onButtonClicked: {
         messageDialog.resultDialog(clickedButton)
     }
-    onVisibleChanged: messageDialog.visible = visible
+    onVisibleChanged: visible ? "" : reset()
 }

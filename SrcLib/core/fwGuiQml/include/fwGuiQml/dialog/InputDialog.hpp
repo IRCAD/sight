@@ -55,7 +55,6 @@ Q_OBJECT
 Q_PROPERTY(QString input MEMBER m_input NOTIFY inputChanged)
 Q_PROPERTY(QString message MEMBER m_message NOTIFY messageChanged)
 Q_PROPERTY(QString title MEMBER m_title NOTIFY titleChanged)
-Q_PROPERTY(bool visible MEMBER m_visible)
 
 public:
 
@@ -92,9 +91,6 @@ protected:
     QString m_message;
     /// Text inputed
     QString m_input;
-    /// boolean to check if button was pressed and dialog is visible
-    bool m_isClicked;
-    bool m_visible;
 
 protected Q_SLOTS:
     /// slot getting the result of the dialog when a button is pressed

@@ -185,12 +185,14 @@ bool LoggerDialog::show()
         model.addData(QHash<QByteArray, QVariant>(data));
     }
     SLM_ASSERT("The Logger need at least one error", !model.isEmpty());
+    QEventLoop loop;
+    //slot to retrieve the result and open the dialog with invoke
+    connect(dialog, SIGNAL(accepted()), &loop, SLOT(quit()));
+    connect(dialog, SIGNAL(rejected()), &loop, SLOT(quit()));
+    connect(dialog, SIGNAL(reset()), &loop, SLOT(quit()));
     QMetaObject::invokeMethod(dialog, "open");
+    loop.exec();
 
-    while (!m_isClicked && m_visible)
-    {
-        qGuiApp->processEvents();
-    }
     delete dialog;
     return m_isOk;
 }
@@ -199,8 +201,7 @@ bool LoggerDialog::show()
 
 void LoggerDialog::resultDialog(bool isOk)
 {
-    m_isOk      = isOk;
-    m_isClicked = true;
+    m_isOk = isOk;
 }
 
 //------------------------------------------------------------------------------

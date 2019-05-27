@@ -77,7 +77,6 @@ void MultiSelectorDialog::setTitle(std::string _title)
     ::fwGuiQml::model::RoleListModel model;
     // get the qml engine QmlApplicationEngine
     SPTR(::fwQml::QmlEngine) engine = ::fwQml::QmlEngine::getDefault();
-    m_isClicked                     = false;
 
     // get the path of the qml ui file in the 'rc' directory
     auto dialogPath =
@@ -106,11 +105,15 @@ void MultiSelectorDialog::setTitle(std::string _title)
         Q_EMIT messageChanged();
     }
     SLM_ASSERT("The MultiSelector need at least one selection", !model.isEmpty());
+
+    QEventLoop loop;
+    //slot to retrieve the result and open the dialog with invoke
+    connect(dialog, SIGNAL(accepted()), &loop, SLOT(quit()));
+    connect(dialog, SIGNAL(rejected()), &loop, SLOT(quit()));
+    connect(dialog, SIGNAL(reset()), &loop, SLOT(quit()));
     QMetaObject::invokeMethod(dialog, "open");
-    while (!m_isClicked && m_visible)
-    {
-        qGuiApp->processEvents();
-    }
+    loop.exec();
+
     delete dialog;
     return m_selections;
 }
@@ -130,7 +133,6 @@ void MultiSelectorDialog::resultDialog(QVariant checkList, bool state)
             index++;
         }
     }
-    m_isClicked = true;
 }
 
 //------------------------------------------------------------------------------

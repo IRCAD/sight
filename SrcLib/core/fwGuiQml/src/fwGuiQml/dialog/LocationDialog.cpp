@@ -67,7 +67,6 @@ LocationDialog::LocationDialog(::fwGui::GuiBaseObject::Key key) :
 
     // get the qml engine QmlApplicationEngine
     SPTR(::fwQml::QmlEngine) engine = ::fwQml::QmlEngine::getDefault();
-    m_isFinish                      = false;
     // get the path of the qml ui file in the 'rc' directory
     auto dialogPath = ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/dialog/LocationDialog.qml");
     // set the context for the new component
@@ -108,14 +107,32 @@ LocationDialog::LocationDialog(::fwGui::GuiBaseObject::Key key) :
     {
         emitIsFolder(false);
     }
+
+    QEventLoop loop;
+    connect(dialog, SIGNAL(accepted()), &loop, SLOT(quit()));
+    connect(dialog, SIGNAL(rejected()), &loop, SLOT(quit()));
     QMetaObject::invokeMethod(dialog, "open");
-    // boolean to check first if it has called the slot or secondly if the FileDialog isn't visible
-    while (!m_isFinish && m_visible)
-    {
-        qGuiApp->processEvents();
-    }
+#ifdef __APPLE__
+    qGuiApp->installEventFilter(this);
+#endif
+    loop.exec();
+#ifdef __APPLE__
+    qGuiApp->removeEventFilter(this);
+#endif
     delete dialog;
     return m_location;
+}
+
+//------------------------------------------------------------------------------
+
+bool LocationDialog::eventFilter(QObject* watched, QEvent* event)
+{
+    if(event->type() == QEvent::Paint || event->spontaneous())
+    {
+        return false;
+    }
+
+    return true;
 }
 
 //------------------------------------------------------------------------------
@@ -147,7 +164,6 @@ void LocationDialog::resultDialog(const QVariant& msg)
             m_location = ::fwData::location::SingleFile::New(bpath);
         }
     }
-    m_isFinish = true;
 }
 
 //------------------------------------------------------------------------------

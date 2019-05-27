@@ -49,7 +49,6 @@ class FWGUIQML_CLASS_API MultiSelectorDialog :  public QObject,
 Q_OBJECT
 Q_PROPERTY(QString title MEMBER m_title NOTIFY titleChanged)
 Q_PROPERTY(QString message MEMBER m_message NOTIFY messageChanged)
-Q_PROPERTY(bool visible MEMBER m_visible)
 
 public:
 
@@ -97,9 +96,6 @@ private:
     QString m_message;
     /// Dialog box title
     QString m_title;
-    /// check if button clicked or dialog still visible
-    bool m_isClicked;
-    bool m_visible;
 };
 
 } // namespace dialog

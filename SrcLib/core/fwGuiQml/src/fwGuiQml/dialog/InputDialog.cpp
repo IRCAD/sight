@@ -82,7 +82,6 @@ std::string InputDialog::getInput()
 {
     // get the qml engine QmlApplicationEngine
     SPTR(::fwQml::QmlEngine) engine = ::fwQml::QmlEngine::getDefault();
-    m_isClicked                     = false;
     // get the path of the qml ui file in the 'rc' directory
     auto dialogPath = ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/dialog/InputDialog.qml");
 
@@ -95,13 +94,15 @@ std::string InputDialog::getInput()
     Q_EMIT titleChanged();
     Q_EMIT messageChanged();
     Q_EMIT inputChanged();
+
+    QEventLoop loop;
     //slot to retrieve the result and open the dialog with invoke
+    connect(dialog, SIGNAL(accepted()), &loop, SLOT(quit()));
+    connect(dialog, SIGNAL(rejected()), &loop, SLOT(quit()));
+    connect(dialog, SIGNAL(reset()), &loop, SLOT(quit()));
     QMetaObject::invokeMethod(dialog, "open");
-    // boolean to check first if it has called the slot or secondly if the FileDialog isn't visible
-    while (!m_isClicked && m_visible)
-    {
-        qGuiApp->processEvents();
-    }
+    loop.exec();
+
     delete dialog;
     return m_input.toStdString();
 }
@@ -118,7 +119,6 @@ void InputDialog::resultDialog(const QVariant& msg, bool isOk)
     {
         m_input = "";
     }
-    m_isClicked = true;
 }
 
 //------------------------------------------------------------------------------

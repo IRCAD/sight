@@ -42,7 +42,6 @@ class FWGUIQML_CLASS_API PulseProgressDialog : public QObject,
 {
 Q_OBJECT
 Q_PROPERTY(QString title MEMBER m_title NOTIFY titleChanged)
-Q_PROPERTY(bool visible MEMBER m_visible NOTIFY visibleChanged)
 Q_PROPERTY(QString message MEMBER m_message NOTIFY messageChanged)
 
 public:
@@ -67,19 +66,13 @@ Q_SIGNALS:
     /// notify the qml of property change
     void titleChanged();
     void messageChanged();
-    void visibleChanged();
     void canceled();
 
 protected Q_SLOTS:
-    /// slot to close the progress dialog
-    void onFinished();
     /// slot to notify the future watcher to cancel the progress
     void onCanceled();
 
 protected:
-    /// box dialog state
-    bool m_isClicked;
-    bool m_visible;
     /// title of the progress dialog
     QString m_title;
     /// message of the progress dialog

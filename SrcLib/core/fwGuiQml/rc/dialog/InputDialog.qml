@@ -32,5 +32,5 @@ Dialog {
     onRejected: {
         inputDialog.resultDialog(answer.text, false)
     }
-    onVisibleChanged: inputDialog.visible = visible
+    onVisibleChanged: visible ? "" : reset()
 }

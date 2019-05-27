@@ -21,5 +21,5 @@ Dialog {
             }
     }
     onButtonClicked: pulseProgressDialog.onCanceled()
-    onVisibilityChanged: pulseProgressDialog.visible = visible
+    onVisibleChanged: visible ? "" : rejected()
 }

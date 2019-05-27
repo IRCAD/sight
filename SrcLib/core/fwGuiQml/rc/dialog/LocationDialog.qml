@@ -7,7 +7,7 @@ FileDialog {
     title: locationDialog.title
     folder: locationDialog.folder
     nameFilters: locationDialog.filter
-    modality: Qt.ApplicationModal
+    modality: Qt.platform.os == "osx" ? Qt.NonModal : Qt.ApplicationModal
     selectExisting: locationDialog.existing
     selectFolder: locationDialog.isFolder
     selectMultiple: locationDialog.multiple
@@ -18,8 +18,9 @@ FileDialog {
 
     onRejected: {
         locationDialog.resultDialog(fileUrls)
+        console.log()
     }
-    onVisibleChanged: locationDialog.visible = visible
+    onVisibleChanged: visible ? "" : rejected()
     // specify the selected extension to c++
     onSelectedNameFilterChanged: locationDialog.filterSelected = selectedNameFilter
 }

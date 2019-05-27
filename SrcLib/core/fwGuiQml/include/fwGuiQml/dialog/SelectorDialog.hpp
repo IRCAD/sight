@@ -47,7 +47,6 @@ class FWGUIQML_CLASS_API SelectorDialog : public QObject,
 Q_OBJECT
 Q_PROPERTY(QString title MEMBER m_title NOTIFY titleChanged)
 Q_PROPERTY(QString message MEMBER m_message NOTIFY messageChanged)
-Q_PROPERTY(bool visible MEMBER m_visible)
 public:
 
     fwCoreClassDefinitionsWithFactoryMacro( (SelectorDialog)(::fwGui::dialog::ISelectorDialog),
@@ -97,10 +96,6 @@ private:
     QString m_title;
     /// Dialog box selected RadioButton
     QString m_selection;
-
-    /// Dialog box state
-    bool m_visible;
-    bool m_isClicked;
 };
 
 } // namespace dialog

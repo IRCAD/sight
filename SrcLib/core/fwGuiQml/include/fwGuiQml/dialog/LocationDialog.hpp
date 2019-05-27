@@ -51,7 +51,6 @@ Q_PROPERTY(QUrl folder MEMBER m_folder WRITE emitFolder NOTIFY folderChanged)
 Q_PROPERTY(bool isFolder MEMBER m_isFolder WRITE emitIsFolder NOTIFY isFolderChanged)
 Q_PROPERTY(bool multiple MEMBER m_multiple WRITE emitMultiple NOTIFY multipleChanged)
 Q_PROPERTY(QString title MEMBER m_title WRITE emitTitle NOTIFY titleChanged)
-Q_PROPERTY(bool visible MEMBER m_visible)
 
 public:
 
@@ -111,10 +110,6 @@ protected:
     /// title
     QString m_title;
 
-    /// boolean to check if dialog closed
-    bool m_isFinish;
-    bool m_visible;
-
     /// Setter to QProperty and emit signal
     FWGUIQML_API void emitExisting(const bool&);
     FWGUIQML_API void emitFilter(const QStringList&);
@@ -122,6 +117,8 @@ protected:
     FWGUIQML_API void emitIsFolder(const bool&);
     FWGUIQML_API void emitMultiple(const bool&);
     FWGUIQML_API void emitTitle(const QString&);
+    /// event filter for Mac
+    bool eventFilter(QObject* watched, QEvent* event) override;
 
 protected Q_SLOTS:
     /// slot getting the result of the dialog when a button is pressed

@@ -51,7 +51,6 @@ Q_PROPERTY(QUrl information MEMBER m_information WRITE emitInformation NOTIFY in
 Q_PROPERTY(QString message MEMBER m_message WRITE emitMessage NOTIFY messageChanged)
 Q_PROPERTY(QUrl shown MEMBER m_shown WRITE emitShown NOTIFY shownChanged)
 Q_PROPERTY(QString title MEMBER m_title NOTIFY titleChanged)
-Q_PROPERTY(bool visible MEMBER m_visible)
 Q_PROPERTY(QUrl warning MEMBER m_warning WRITE emitWarning NOTIFY warningChanged)
 
 public:
@@ -116,9 +115,6 @@ private:
 
     /// get pushed button and clicked one
     bool m_isOk;
-    bool m_isClicked;
-    /// visible state of the logger
-    bool m_visible;
 
     /// Resume the biggest error get with an icon
     QUrl m_icon;

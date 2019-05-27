@@ -174,5 +174,5 @@ Dialog {
     onRejected: {
         loggerDialog.resultDialog(false)
     }
-    onVisibleChanged: loggerDialog.visible = visible
+    onVisibleChanged: visible ? "" : reset()
 }

@@ -77,7 +77,6 @@ std::string SelectorDialog::show()
     ::fwGuiQml::model::RoleListModel model;
     // get the qml engine QmlApplicationEngine
     SPTR(::fwQml::QmlEngine) engine = ::fwQml::QmlEngine::getDefault();
-    m_isClicked                     = false;
 
     // get the path of the qml ui file in the 'rc' directory
     auto dialogPath = ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/dialog/SelectorDialog.qml");
@@ -108,11 +107,13 @@ std::string SelectorDialog::show()
         Q_EMIT messageChanged();
     }
 
+    QEventLoop loop;
+    //slot to retrieve the result and open the dialog with invoke
+    connect(dialog, SIGNAL(accepted()), &loop, SLOT(quit()));
+    connect(dialog, SIGNAL(rejected()), &loop, SLOT(quit()));
+    connect(dialog, SIGNAL(reset()), &loop, SLOT(quit()));
     QMetaObject::invokeMethod(dialog, "open");
-    while (!m_isClicked && m_visible)
-    {
-        qGuiApp->processEvents();
-    }
+    loop.exec();
     return m_selection.toStdString();
 }
 
@@ -128,7 +129,6 @@ void SelectorDialog::setMessage(const std::string& msg)
 void SelectorDialog::resultDialog(QVariant selection)
 {
     m_selection = selection.toString();
-    m_isClicked = true;
 }
 
 //------------------------------------------------------------------------------

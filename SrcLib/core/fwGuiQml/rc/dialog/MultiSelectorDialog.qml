@@ -51,5 +51,5 @@ Dialog {
     onRejected: {
         multiSelectorDialog.resultDialog([], false);
     }
-    onVisibleChanged: multiSelectorDialog.visible = visible
+    onVisibleChanged: visible ? "" : reset()
 }

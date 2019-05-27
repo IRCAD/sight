@@ -122,7 +122,6 @@ void MessageDialog::setDefaultButton(::fwGui::dialog::IMessageDialog::Buttons bu
     SLM_ASSERT("Unknown Icon", iterIcon != messageDialogQmlIcons.end());
     // get the qml engine QmlApplicationEngine
     SPTR(::fwQml::QmlEngine) engine = ::fwQml::QmlEngine::getDefault();
-    m_isClicked                     = false;
     m_clicked                       = ::fwGui::dialog::IMessageDialog::NOBUTTON;
     int icon = iterIcon->second;
 
@@ -139,11 +138,15 @@ void MessageDialog::setDefaultButton(::fwGui::dialog::IMessageDialog::Buttons bu
     emitIcon(icon);
 
     emitButtons();
+    QEventLoop loop;
+    //slot to retrieve the result and open the dialog with invoke
+    connect(dialog, SIGNAL(accepted()), &loop, SLOT(quit()));
+    connect(dialog, SIGNAL(rejected()), &loop, SLOT(quit()));
+    connect(dialog, SIGNAL(yes()), &loop, SLOT(quit()));
+    connect(dialog, SIGNAL(reset()), &loop, SLOT(quit()));
+    connect(dialog, SIGNAL(no()), &loop, SLOT(quit()));
     QMetaObject::invokeMethod(dialog, "open");
-    while (!m_isClicked && m_visible)
-    {
-        qGuiApp->processEvents();
-    }
+    loop.exec();
     delete dialog;
     return m_clicked;
 }
@@ -161,7 +164,6 @@ void MessageDialog::resultDialog(int clicked)
             break;
         }
     }
-    m_isClicked = true;
 }
 
 //------------------------------------------------------------------------------
