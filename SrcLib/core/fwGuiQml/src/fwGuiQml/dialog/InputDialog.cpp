@@ -91,7 +91,7 @@ std::string InputDialog::getInput()
     // load the qml ui component
     QObject* dialog = engine->createComponent(dialogPath, context);
 
-    Q_EMIT titleChanged();
+    dialog->setProperty("title", m_title);
     Q_EMIT messageChanged();
     Q_EMIT inputChanged();
 

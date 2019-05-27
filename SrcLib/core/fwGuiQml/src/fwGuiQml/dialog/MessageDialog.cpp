@@ -85,7 +85,6 @@ void MessageDialog::setTitle( const std::string& title )
 void MessageDialog::setMessage( const std::string& msg )
 {
     m_message = QString::fromStdString(msg);
-    Q_EMIT messageChanged();
 }
 
 //------------------------------------------------------------------------------
@@ -133,9 +132,9 @@ void MessageDialog::setDefaultButton(::fwGui::dialog::IMessageDialog::Buttons bu
     // load the qml ui component
     QObject* dialog = engine->createComponent(dialogPath, context);
 
-    Q_EMIT titleChanged();
-    Q_EMIT messageChanged();
-    emitIcon(icon);
+    dialog->setProperty("title", m_title);
+    dialog->setProperty("text", m_message);
+    dialog->setProperty("icon", icon);
 
     emitButtons();
     QEventLoop loop;
@@ -168,14 +167,6 @@ void MessageDialog::resultDialog(int clicked)
 
 //------------------------------------------------------------------------------
 
-void MessageDialog::emitIcon(const int& icon)
-{
-    m_iconDialog = icon;
-    Q_EMIT iconChanged();
-}
-
-//------------------------------------------------------------------------------
-
 void MessageDialog::emitButtons()
 {
     QMessageBox::StandardButtons buttons;
@@ -188,7 +179,6 @@ void MessageDialog::emitButtons()
         }
     }
     m_buttonsDialog = buttons;
-    Q_EMIT buttonsChanged();
 }
 
 //------------------------------------------------------------------------------

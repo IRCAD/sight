@@ -8,7 +8,6 @@ Dialog {
     modality: Qt.ApplicationModal
     standardButtons: StandardButton.Ok | StandardButton.Cancel
     width: 400
-    title: multiSelectorDialog.title
 
     ColumnLayout {
         id: column

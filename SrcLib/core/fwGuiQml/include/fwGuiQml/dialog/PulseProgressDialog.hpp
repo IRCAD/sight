@@ -41,7 +41,6 @@ class FWGUIQML_CLASS_API PulseProgressDialog : public QObject,
                                                public ::fwGui::dialog::IPulseProgressDialog
 {
 Q_OBJECT
-Q_PROPERTY(QString title MEMBER m_title NOTIFY titleChanged)
 Q_PROPERTY(QString message MEMBER m_message NOTIFY messageChanged)
 
 public:
@@ -64,7 +63,6 @@ public:
 
 Q_SIGNALS:
     /// notify the qml of property change
-    void titleChanged();
     void messageChanged();
     void canceled();
 

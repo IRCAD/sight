@@ -89,7 +89,6 @@ void MessageDialogs::open()
     }
     dialog->setMessage(m_message.toStdString());
     auto result = dialog->show();
-    dialog->setMessage("Nyanaseo");
     for(ResultDialogQmlButton::value_type button :  resultDialogQmlButton)
     {
         if (button.second & result)

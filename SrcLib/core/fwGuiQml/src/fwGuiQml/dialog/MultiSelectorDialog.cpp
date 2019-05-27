@@ -89,7 +89,7 @@ void MultiSelectorDialog::setTitle(std::string _title)
     // load the qml ui component
     QObject* dialog = engine->createComponent(dialogPath, context);
 
-    Q_EMIT titleChanged();
+    dialog->setProperty("title", m_title);
     // fill the repeater for each checkbox that has to be created
     model.addRole(Qt::UserRole + 1, "textOption");
     model.addRole(Qt::UserRole + 2, "check");

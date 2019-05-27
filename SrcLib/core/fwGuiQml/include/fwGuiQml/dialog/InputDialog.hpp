@@ -54,7 +54,6 @@ class FWGUIQML_CLASS_API InputDialog : public QObject,
 Q_OBJECT
 Q_PROPERTY(QString input MEMBER m_input NOTIFY inputChanged)
 Q_PROPERTY(QString message MEMBER m_message NOTIFY messageChanged)
-Q_PROPERTY(QString title MEMBER m_title NOTIFY titleChanged)
 
 public:
 

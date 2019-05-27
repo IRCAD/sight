@@ -6,7 +6,6 @@ import QtQuick.Layouts 1.3
 
 Dialog {
     id: dialog
-    title: progressDialog.title
     modality: Qt.NonModal
     width: 440
     standardButtons: Dialog.NoButton
@@ -19,7 +18,6 @@ Dialog {
             id: progressText
             objectName: "message"
             width: column.width
-            text: progressDialog.message
             wrapMode: Text.WordWrap
         }
         RowLayout {

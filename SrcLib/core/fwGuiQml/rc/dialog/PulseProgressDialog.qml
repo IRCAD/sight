@@ -3,7 +3,6 @@ import QtQuick.Dialogs 1.2
 import QtQuick.Controls 1.4
 
 Dialog {
-    title: pulseProgressDialog.title
     standardButtons: StandardButton.Cancel
     width: 410
     Column {

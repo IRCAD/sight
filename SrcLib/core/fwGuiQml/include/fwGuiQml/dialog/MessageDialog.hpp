@@ -46,9 +46,6 @@ class FWGUIQML_CLASS_API MessageDialog : public QObject,
                                          public ::fwGui::dialog::IMessageDialog
 {
 Q_OBJECT
-Q_PROPERTY(QString title MEMBER m_title NOTIFY titleChanged)
-Q_PROPERTY(QString message MEMBER m_message NOTIFY messageChanged)
-Q_PROPERTY(int icon MEMBER m_iconDialog WRITE emitIcon NOTIFY iconChanged)
 Q_PROPERTY(QMessageBox::StandardButtons buttons MEMBER m_buttonsDialog NOTIFY buttonsChanged)
 
 public:
@@ -84,9 +81,6 @@ public:
 
 Q_SIGNALS:
     /// notify the qml of property change
-    void titleChanged();
-    void iconChanged();
-    void messageChanged();
     void buttonsChanged();
 
 protected:
@@ -109,7 +103,6 @@ protected:
     ::fwGui::dialog::IMessageDialog::Buttons m_clicked;
 
     /// Setter to QProperty and emit signal
-    FWGUIQML_API void emitIcon(const int&);
     FWGUIQML_API void emitButtons();
 
 protected Q_SLOTS:

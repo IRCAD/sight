@@ -98,7 +98,7 @@ bool LoggerDialog::show()
     // load the qml ui component
     QObject* dialog = engine->createComponent(dialogPath, context);
 
-    Q_EMIT titleChanged();
+    dialog->setProperty("title", m_title);
 
     // set the icon of the biggest type of error
     auto information =
@@ -155,9 +155,9 @@ bool LoggerDialog::show()
     emitHidden(QUrl::fromLocalFile(QString::fromStdString(detailshidden.string())));
     emitShown(QUrl::fromLocalFile(QString::fromStdString(detailsshown.string())));
 
-    emitInformation(QUrl::fromLocalFile(QString::fromStdString(information.string())));
-    emitWarning(QUrl::fromLocalFile(QString::fromStdString(warning.string())));
-    emitCritical(QUrl::fromLocalFile(QString::fromStdString(critical.string())));
+    dialog->setProperty("information", QUrl::fromLocalFile(QString::fromStdString(information.string())));
+    dialog->setProperty("warning", QUrl::fromLocalFile(QString::fromStdString(warning.string())));
+    dialog->setProperty("critical", QUrl::fromLocalFile(QString::fromStdString(critical.string())));
 
     // Fill log table
     ::fwLog::Logger::ConstIteratorType it = m_logger->begin();
@@ -206,14 +206,6 @@ void LoggerDialog::resultDialog(bool isOk)
 
 //------------------------------------------------------------------------------
 
-void LoggerDialog::emitCritical(const QUrl& critical)
-{
-    m_critical = critical;
-    Q_EMIT criticalChanged();
-}
-
-//------------------------------------------------------------------------------
-
 void LoggerDialog::emitHidden(const QUrl& hidden)
 {
     m_hidden = hidden;
@@ -230,14 +222,6 @@ void LoggerDialog::emitIcon(const QUrl& path)
 
 //------------------------------------------------------------------------------
 
-void LoggerDialog::emitInformation(const QUrl& information)
-{
-    m_information = information;
-    Q_EMIT informationChanged();
-}
-
-//------------------------------------------------------------------------------
-
 void LoggerDialog::emitMessage(const QString& message)
 {
     m_message = message;
@@ -250,14 +234,6 @@ void LoggerDialog::emitShown(const QUrl& shown)
 {
     m_shown = shown;
     Q_EMIT shownChanged();
-}
-
-//------------------------------------------------------------------------------
-
-void LoggerDialog::emitWarning(const QUrl& warning)
-{
-    m_warning = warning;
-    Q_EMIT warningChanged();
 }
 
 //------------------------------------------------------------------------------

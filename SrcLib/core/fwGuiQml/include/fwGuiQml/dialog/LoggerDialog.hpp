@@ -44,14 +44,10 @@ class FWGUIQML_CLASS_API LoggerDialog : public QObject,
                                         public ::fwGui::dialog::ILoggerDialog
 {
 Q_OBJECT
-Q_PROPERTY(QUrl critical MEMBER m_critical WRITE emitCritical NOTIFY criticalChanged)
 Q_PROPERTY(QUrl hidden MEMBER m_hidden WRITE emitHidden NOTIFY hiddenChanged)
 Q_PROPERTY(QUrl icon MEMBER m_icon WRITE emitIcon NOTIFY iconChanged)
-Q_PROPERTY(QUrl information MEMBER m_information WRITE emitInformation NOTIFY informationChanged)
 Q_PROPERTY(QString message MEMBER m_message WRITE emitMessage NOTIFY messageChanged)
 Q_PROPERTY(QUrl shown MEMBER m_shown WRITE emitShown NOTIFY shownChanged)
-Q_PROPERTY(QString title MEMBER m_title NOTIFY titleChanged)
-Q_PROPERTY(QUrl warning MEMBER m_warning WRITE emitWarning NOTIFY warningChanged)
 
 public:
 
@@ -90,14 +86,10 @@ public:
 
 Q_SIGNALS:
     /// notify the qml of property change
-    void criticalChanged();
     void hiddenChanged();
     void iconChanged();
-    void informationChanged();
     void messageChanged();
     void shownChanged();
-    void titleChanged();
-    void warningChanged();
 
 protected Q_SLOTS:
     /// slot getting the result of the dialog when a button is pressed
@@ -120,20 +112,14 @@ private:
     QUrl m_icon;
 
     /// Icons path of the logger
-    QUrl m_critical;
     QUrl m_hidden;
-    QUrl m_information;
     QUrl m_shown;
-    QUrl m_warning;
 
     /// Setter to QProperty and emit signal
-    FWGUIQML_API void emitCritical(const QUrl&);
     FWGUIQML_API void emitHidden(const QUrl&);
     FWGUIQML_API void emitIcon(const QUrl&);
-    FWGUIQML_API void emitInformation(const QUrl&);
     FWGUIQML_API void emitMessage(const QString&);
     FWGUIQML_API void emitShown(const QUrl&);
-    FWGUIQML_API void emitWarning(const QUrl&);
 };
 
 } // namespace dialog

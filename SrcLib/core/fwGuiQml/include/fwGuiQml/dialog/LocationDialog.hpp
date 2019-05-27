@@ -44,13 +44,7 @@ class FWGUIQML_CLASS_API LocationDialog : public QObject,
                                           public ::fwGui::dialog::ILocationDialog
 {
 Q_OBJECT
-Q_PROPERTY(bool existing MEMBER m_existing WRITE emitExisting NOTIFY existingChanged)
-Q_PROPERTY(QStringList filter MEMBER m_filter WRITE emitFilter NOTIFY filterChanged)
 Q_PROPERTY(QString filterSelected MEMBER m_filterSelected)
-Q_PROPERTY(QUrl folder MEMBER m_folder WRITE emitFolder NOTIFY folderChanged)
-Q_PROPERTY(bool isFolder MEMBER m_isFolder WRITE emitIsFolder NOTIFY isFolderChanged)
-Q_PROPERTY(bool multiple MEMBER m_multiple WRITE emitMultiple NOTIFY multipleChanged)
-Q_PROPERTY(QString title MEMBER m_title WRITE emitTitle NOTIFY titleChanged)
 
 public:
 
@@ -72,14 +66,6 @@ public:
 
     /// Set the extension of locationDialog to open example: addFilter("images","*.png *.jpg");
     FWGUIQML_API void addFilter(const std::string& filterName, const std::string& wildcardList ) override;
-Q_SIGNALS:
-    /// notify the qml of property change
-    void existingChanged();
-    void filterChanged();
-    void folderChanged();
-    void isFolderChanged();
-    void multipleChanged();
-    void titleChanged();
 protected:
 
     ::fwGui::dialog::ILocationDialog::Options m_style;
@@ -95,28 +81,9 @@ protected:
     std::string m_wildcard;
     ::fwData::location::ILocation::sptr m_location;
 
-    /// option to save a file enable
-    bool m_existing;
     /// the filter list and the current filter selected
-    QStringList m_filter;
     QString m_filterSelected;
-    /// the path of the location at the beginning
-    QUrl m_folder;
-    /// option to select folder enable
-    bool m_isFolder;
-    /// option to select multiple file enable
-    bool m_multiple;
 
-    /// title
-    QString m_title;
-
-    /// Setter to QProperty and emit signal
-    FWGUIQML_API void emitExisting(const bool&);
-    FWGUIQML_API void emitFilter(const QStringList&);
-    FWGUIQML_API void emitFolder(const QUrl&);
-    FWGUIQML_API void emitIsFolder(const bool&);
-    FWGUIQML_API void emitMultiple(const bool&);
-    FWGUIQML_API void emitTitle(const QString&);
     /// event filter for Mac
     bool eventFilter(QObject* watched, QEvent* event) override;
 

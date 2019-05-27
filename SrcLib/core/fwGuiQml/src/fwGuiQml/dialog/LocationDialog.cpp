@@ -75,37 +75,36 @@ LocationDialog::LocationDialog(::fwGui::GuiBaseObject::Key key) :
     // load the qml ui component
     QObject* dialog = engine->createComponent(dialogPath, context);
 
-    emitTitle(caption);
-    emitFolder(QUrl::fromLocalFile(path));
-    emitFilter(filter);
+    dialog->setProperty("title", caption);
+    dialog->setProperty("folder", QUrl::fromLocalFile(path));
+    dialog->setProperty("filter", filter);
 
     // check each option to set the property
     if ( (m_style& ::fwGui::dialog::ILocationDialog::READ) ||
          (m_style & ::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST))
     {
-        emitExisting(true);
+        dialog->setProperty("selectExisting", true);
     }
     else
     {
-        emitExisting(false);
+        dialog->setProperty("selectExisting", false);
     }
 
     if (m_type == ::fwGui::dialog::ILocationDialog::MULTI_FILES)
     {
         SLM_ASSERT("MULTI_FILES type must have a READ style", m_style & ::fwGui::dialog::ILocationDialog::READ);
-
-        emitIsFolder(false);
-        emitMultiple(true);
+        dialog->setProperty("selectFolder", false);
+        dialog->setProperty("selectMultiple", true);
         QStringList files;
     }
     else if (m_type == ::fwGui::dialog::ILocationDialog::FOLDER)
     {
-        emitExisting(true);
-        emitIsFolder(true);
+        dialog->setProperty("selectExisting", true);
+        dialog->setProperty("selectFolder", true);
     }
     else
     {
-        emitIsFolder(false);
+        dialog->setProperty("selectFolder", false);
     }
 
     QEventLoop loop;
@@ -171,54 +170,6 @@ void LocationDialog::resultDialog(const QVariant& msg)
 void LocationDialog::setType( ::fwGui::dialog::ILocationDialog::Types type )
 {
     m_type = type;
-}
-
-//------------------------------------------------------------------------------
-
-void LocationDialog::emitExisting(const bool& existing)
-{
-    m_existing = existing;
-    Q_EMIT existingChanged();
-}
-
-//------------------------------------------------------------------------------
-
-void LocationDialog::emitFilter(const QStringList& filter)
-{
-    m_filter = filter;
-    Q_EMIT filterChanged();
-}
-
-//------------------------------------------------------------------------------
-
-void LocationDialog::emitFolder(const QUrl& folder)
-{
-    m_folder = folder;
-    Q_EMIT folderChanged();
-}
-
-//------------------------------------------------------------------------------
-
-void LocationDialog::emitMultiple(const bool& multiple)
-{
-    m_multiple = multiple;
-    Q_EMIT multipleChanged();
-}
-
-//------------------------------------------------------------------------------
-
-void LocationDialog::emitIsFolder(const bool& isFolder)
-{
-    m_isFolder = isFolder;
-    Q_EMIT isFolderChanged();
-}
-
-//------------------------------------------------------------------------------
-
-void LocationDialog::emitTitle(const QString& title)
-{
-    m_title = title;
-    Q_EMIT titleChanged();
 }
 
 //------------------------------------------------------------------------------

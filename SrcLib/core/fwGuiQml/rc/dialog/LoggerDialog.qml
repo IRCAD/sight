@@ -8,11 +8,11 @@ Dialog {
     id: inputDialog
 
     // url of each icon
-    property url critical: loggerDialog.critical
+    property url critical: ""
     property url hidden: loggerDialog.hidden
-    property url information: loggerDialog.information
+    property url information: ""
     property url shown: loggerDialog.shown
-    property url warning: loggerDialog.warning
+    property url warning: ""
 
     // check the text of the error level and set the according icon
     function provideIcon(levelValue)
@@ -26,7 +26,6 @@ Dialog {
     }
 
     modality: Qt.ApplicationModal
-    title: loggerDialog.title
     standardButtons: StandardButton.Cancel | StandardButton.Ok
     width: 500
 

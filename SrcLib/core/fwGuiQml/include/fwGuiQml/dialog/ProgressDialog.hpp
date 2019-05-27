@@ -43,9 +43,6 @@ class FWGUIQML_CLASS_API ProgressDialog : public QObject,
                                           public ::fwGui::dialog::IProgressDialog
 {
 Q_OBJECT
-Q_PROPERTY(QString title MEMBER m_title NOTIFY titleChanged)
-Q_PROPERTY(QString message MEMBER m_message WRITE emitMessageChanged NOTIFY messageChanged)
-Q_PROPERTY(int value MEMBER m_value NOTIFY valueChanged)
 Q_PROPERTY(bool visible MEMBER m_visible)
 
 public:
@@ -68,20 +65,9 @@ public:
     /// override
     FWGUIQML_API void setMessage(const std::string& message) override;
 
-Q_SIGNALS:
-    /// notify the qml of property change
-    void titleChanged();
-    void messageChanged();
-    void valueChanged();
-
 protected Q_SLOTS:
-    void emitMessageChanged(QString);
     void cancelPressed() override;
 protected:
-    /// title of the progress dialog
-    QString m_title;
-    /// message of the progress dialog
-    QString m_message;
     /// the progress dialog to delete it during the destruction of the class
     QObject* m_dialog;
     /// the message object inside the dialog

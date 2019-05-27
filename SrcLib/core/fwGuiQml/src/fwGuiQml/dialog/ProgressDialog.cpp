@@ -66,8 +66,7 @@ ProgressDialog::ProgressDialog( ::fwGui::GuiBaseObject::Key key, const std::stri
 
     this->setTitle(title);
     this->setMessage(message);
-    this->m_value = 0;
-    Q_EMIT valueChanged();
+    m_valueObject->setProperty("text", QString::number(0));
     m_visible = true;
     QMetaObject::invokeMethod(m_dialog, "open");
 }
@@ -97,9 +96,8 @@ void ProgressDialog::operator()(float percent, std::string msg)
         this->setMessage(msg);
 
         this->m_value = value;
-        Q_EMIT valueChanged();
 
-        m_valueObject->setProperty("text", QString::number(m_value));
+        m_valueObject->setProperty("text", QString::number(value));
 
         if ( m_processUserEvents )
         {
@@ -117,14 +115,11 @@ void ProgressDialog::operator()(float percent, std::string msg)
 void ProgressDialog::setTitle(const std::string& title)
 {
     SLM_ASSERT("The progress dialog is not initialized or has been closed", m_dialog);
-    SPTR(::fwQml::QmlEngine) engine = ::fwQml::QmlEngine::getDefault();
-    m_title                         = QString::fromStdString(title);
-    Q_EMIT titleChanged();
-    if (m_visible && !title.empty())
+    if (m_visible)
     {
         QMetaObject::invokeMethod(m_dialog, "close");
         qGuiApp->processEvents();
-        m_dialog->setProperty("title", m_title);
+        m_dialog->setProperty("title", QString::fromStdString(title));
         QMetaObject::invokeMethod(m_dialog, "open");
         qGuiApp->processEvents();
     }
@@ -136,27 +131,18 @@ void ProgressDialog::setTitle(const std::string& title)
 void ProgressDialog::setMessage(const std::string& msg)
 {
     SLM_ASSERT("The progress dialog is not initialized or has been closed", m_dialog);
-    m_message = "";
-    if (!m_title.isEmpty())
+    QString message = "";
+    QString title   = m_dialog->property("title").toString();
+    if (!title.isEmpty())
     {
-        m_message += m_title;
-        m_message += " - ";
+        message += title;
+        message += " - ";
     }
-    m_message = m_message + QString::fromStdString(msg);
-    Q_EMIT messageChanged();
-    emitMessageChanged(m_message);
-    if (m_visible && !msg.empty())
+    message = message + QString::fromStdString(msg);
+    if (m_visible)
     {
-        m_messageObject->setProperty("text", m_message);
+        m_messageObject->setProperty("text", message);
     }
-}
-
-//------------------------------------------------------------------------------
-
-void ProgressDialog::emitMessageChanged(QString message)
-{
-    m_message = message;
-    Q_EMIT messageChanged();
 }
 
 //------------------------------------------------------------------------------

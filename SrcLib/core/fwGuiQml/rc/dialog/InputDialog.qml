@@ -6,7 +6,6 @@ import QtQuick.Window 2.3
 
 Dialog {
     modality: Qt.ApplicationModal
-    title: inputDialog.title
     standardButtons: StandardButton.Cancel | StandardButton.Ok
 
     ColumnLayout {
