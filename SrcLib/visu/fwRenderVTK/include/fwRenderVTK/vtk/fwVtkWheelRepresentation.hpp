@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2019 IRCAD France
- * Copyright (C) 2017-2019 IHU Strasbourg
+ * Copyright (C) 2019 IRCAD France
+ * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -53,27 +53,27 @@ public:
     vtkTypeMacro(fwVtkWheelRepresentation, vtkWidgetRepresentation);
 
     /// Prints class information. Not implemented.
-    void PrintSelf(ostream& os, vtkIndent indent) VTK_OVERRIDE;
+    void PrintSelf(ostream& os, vtkIndent indent) override;
 
     /// Generates the representation using the center, radius and orientation.
-    FWRENDERVTK_API void BuildRepresentation() VTK_OVERRIDE;
+    FWRENDERVTK_API void BuildRepresentation() override;
 
     /// Updates wheel geometry using the center, radius and orientation.
     FWRENDERVTK_API void UpdateRepresentation();
 
     /// Adds the wheel actor to the prop collection.
-    FWRENDERVTK_API void GetActors2D(vtkPropCollection* pc) VTK_OVERRIDE;
+    FWRENDERVTK_API void GetActors2D(vtkPropCollection* pc) override;
 
     /// Releases graphic resources used by this class' actor.
-    FWRENDERVTK_API void ReleaseGraphicsResources(vtkWindow*) VTK_OVERRIDE;
+    FWRENDERVTK_API void ReleaseGraphicsResources(vtkWindow*) override;
 
     /// Standard VTK render methods.
-    FWRENDERVTK_API int RenderOverlay(vtkViewport*) VTK_OVERRIDE;
-    FWRENDERVTK_API int RenderOpaqueGeometry(vtkViewport*) VTK_OVERRIDE;
-    FWRENDERVTK_API int RenderTranslucentPolygonalGeometry(vtkViewport*) VTK_OVERRIDE;
+    FWRENDERVTK_API int RenderOverlay(vtkViewport*) override;
+    FWRENDERVTK_API int RenderOpaqueGeometry(vtkViewport*) override;
+    FWRENDERVTK_API int RenderTranslucentPolygonalGeometry(vtkViewport*) override;
 
     /// Check if this class holds any translucent geometry. (Not implemented)
-    FWRENDERVTK_API int HasTranslucentPolygonalGeometry() VTK_OVERRIDE;
+    FWRENDERVTK_API int HasTranslucentPolygonalGeometry() override;
 
     /// Set the wheel orientation, expressed in radians.
     FWRENDERVTK_API void SetOrientation(double orientation);
@@ -112,7 +112,7 @@ private:
     fwVtkWheelRepresentation();
 
     /// Deletes wheel geometry and actor.
-    ~fwVtkWheelRepresentation() VTK_OVERRIDE;
+    ~fwVtkWheelRepresentation() override;
 
     /// List of points defining the wheel.
     vtkPoints* m_wheelPoints;
@@ -123,8 +123,8 @@ private:
     /// Colors of the wheel
     vtkUnsignedCharArray* m_colors;
 
-    fwVtkWheelRepresentation(const fwVtkWheelRepresentation&) VTK_DELETE_FUNCTION;
-    void operator=(const fwVtkWheelRepresentation&) VTK_DELETE_FUNCTION;
+    fwVtkWheelRepresentation(const fwVtkWheelRepresentation&) = delete;
+    void operator=(const fwVtkWheelRepresentation&)           = delete;
 
     /// Wheel central part dimensions. The center is used to move the wheel.
     double m_centerInnerRadius;
