@@ -59,13 +59,44 @@ namespace videoRealSense
  * - \b stopCamera()  : This slot is called to stop camera streams.
  * - \b pauseCamera() : This slot is called to pause/unpause the camera streams.
  * - \b setBoolParameter(bool value, std::string key) : Slot called when a boolean parameter changes:
- *   - key 'switchToIR' : switch the color stream by infrared stream if true.
- *   - key 'IREmitter' : enable/disable the IR Emitter.
+ *   - key 'switchToIR': switch the color stream by infrared stream if true.
+ *   - key 'IREmitter': enable/disable the IR Emitter.
+ *   - key 'enableSpacial': enable/disable spacial filter. For the documentation of the filters, please refer to
+ *       https://github.com/IntelRealSense/librealsense/blob/master/doc/post-processing-filters.md
+ *   - key 'enableTemporal': enable/disable temporal filter
+ *   - key 'enableHolesFilling': enable/disable holes filling filter
  * - \b setIntParameter(int value, std::string key): Slot called when a integer parameter changes:
  *   - key 'minRange' : min value of depth range (default 0)
  *   - key 'maxRange' : max value of depth range (default 65535)
- * -\b setEnumParameter(std::string value, std::string key) : Slot called when a enumeration parameter changes:
+ *   - key 'spacialMagnitude': set the number of iteration of the spacial filter [1-5]
+ *   - key 'spacialSmoothDelta': step-size boundary. Establishes the threshold used to preserve "edges" [1-50]
+ *   - key 'spacialHoleFilling': in-place heuristic symmetric hole-filling mode applied horizontally during the filter
+ *        passes. Intended to rectify minor artefacts with minimal performance impact ([0-5] range mapped to
+ *        [none,2,4,8,16,unlimited] pixels).
+ *   - key 'temporalSmoothDelta': step-size boundary. Establishes the threshold used to preserve surfaces (edges)
+ *      [1-100]
+ *   - key 'temporalPersistency': A set of predefined rules (masks) that govern when missing pixels will be replace with
+ *      the last valid value so that the data will remain persistent over time:
+ *      - Disabled: Persistency filter is not activated and no hole filling occurs.
+ *      - Valid in 8/8: Persistency activated if the pixel was valid in 8 out of the last 8 frames
+ *      - Valid in 2/last 3: Activated if the pixel was valid in two out of the last 3 frames
+ *      - Valid in 2/last 4: Activated if the pixel was valid in two out of the last 4 frames
+ *      - Valid in 2/8: Activated if the pixel was valid in two out of the last 8 frames
+ *      - Valid in 1/last 2: Activated if the pixel was valid in one of the last two frames
+ *      - Valid in 1/last 5: Activated if the pixel was valid in one out of the last 5 frames
+ *      - Valid in 1/last 8: Activated if the pixel was valid in one out of the last 8 frames
+ *      - Persist Indefinitely: Persistency will be imposed regardless of the stored history: most aggressive filtering
+ *   - key 'holeFilling':  control the data that will be used to fill the invalid pixels, [0-2] enumerated:
+ *      - fill_from_left: Use the value from the left neighbor pixel to fill the hole
+ *      - farest_from_around: Use the value from the neighboring pixel which is furthest away from the sensor
+ *      - nearest_from_around: Use the value from the neighboring pixel closest to the sensor
+ * - \b setEnumParameter(std::string value, std::string key) : Slot called when a enumeration parameter changes:
  *   - key 'preset' : preset name to load. (see 'preset' in subsection \ref Configuration below).
+ * - \b setDoubleParameter(vouble value, std::string key): Slot called when a double parameter changes:
+ *   - key 'spacialSmoothAlpha': Alpha factor in an exponential moving average with Alpha=1: no filter . Alpha = 0:
+ *     infinite filter [0.25-1]
+ *   - key 'temporalSmoothAlpha': Alpha factor in an exponential moving average with Alpha=1: no filter . Alpha = 0:
+ *     infinite filter [0-1]
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -93,7 +124,8 @@ namespace videoRealSense
  * - \b depthH:  desired depth frame height (default: 720, max: 720, min: 270) (optional).
  * - \b colorW: desired color frame width (default: 1280, max: 1920, min: 320) (optional).
  * - \b colorH:  desired color frame height (default: 720, max: 1080, min: 180) (optional).
- * - \b swithToIR: push infrared frame in color TL (default false) (optional)
+ * - \b switchToIR: push infrared frame in color TL (default false) (optional)
+ * - \b IREmitter: enable infrared emitter (default true) (optional)
  * - \b preset: (advanced option): load a json preset ( overwrite previous resolution values) (optional).
  *   - Default: Default preset
  *   - HighResHighAccuracy
@@ -207,6 +239,39 @@ private:
         }
     };
 
+    /// Store the depth frame filters settings
+    /// (see https://github.com/IntelRealSense/librealsense/blob/master/doc/post-processing-filters.md)
+    struct FilterSettings
+    {
+        bool enableSpacial{false}; ///< Enable Spatial Edge-Preserving filter
+        bool enableTemporal{false}; ///< Enable Temporal filter
+        bool enableHolesFilling{false}; ///< Enable Holes Filling filter
+
+        // spacial filter settings
+        std::uint8_t spacialMagnitude{2}; ///<  Number of filter iterations [1-5]
+        /// Alpha factor in an exponential moving average with Alpha=1 - no filter. Alpha = 0 - infinite filter [0.25-1]
+        float spacialSmoothAlpha{0.5f};
+        /// Step-size boundary. Establishes the threshold used to preserve "edges" [1-50]
+        std::uint8_t spacialSmoothDelta{20};
+        /// An in-place heuristic symmetric hole-filling mode applied horizontally during the filter passes. Intended to
+        /// rectify minor artefacts with minimal performance impact
+        /// [0-5] range mapped to [none,2,4,8,16,unlimited] pixels.
+        std::uint8_t spacialHoleFilling{0};
+
+        // temporal filter settings
+        /// Alpha factor in an exponential moving average with Alpha=1 - no filter . Alpha = 0 - infinite filter [0-1]
+        float temporalSmoothAlpha{0.4f};
+        /// Step-size boundary. Establishes the threshold used to preserve surfaces (edges) [1-100]
+        std::uint8_t temporalSmoothDelta{20};
+        /// Persistency index [0-8]: set of predefined rules (masks) that govern when missing pixels will be replace
+        /// with the last valid value so that the data will remain persistent over time.
+        std::uint8_t temporalPersistency{3};
+
+        // holes filling settings
+        /// Control the data that will be used to fill the invalid pixels [0-2]
+        std::uint8_t holeFilling{1};
+    };
+
     /// On which frame map the pointcloud.
     typedef enum PointcloudColormap
     {
@@ -215,7 +280,7 @@ private:
         INFRARED,
     } PointcloudColormapEnumType;
 
-    // Overrided functions/slots
+    // Overriden functions/slots
 
     /// SLOT : Initializes and starts the streams. Restarts the streams if already started.
     virtual void startCamera() override;
@@ -298,6 +363,9 @@ private:
     ///SLOT: When "int" parameter changes
     void setIntParameter(int, std::string);
 
+    ///SLOT: When "double" parameter changes
+    void setDoubleParameter(double, std::string);
+
     // Members
 
     std::unique_ptr< ::rs2::pipeline> m_pipe; ///< RealSense Pipeline
@@ -323,6 +391,9 @@ private:
 
     /// Struct that contains basic camera settings (fps, resolution, preset, ...).
     CameraSettings m_cameraSettings;
+
+    /// Struct that contains the settings to apply filter on the depth frame
+    FilterSettings m_filterSettings;
 
     /// Contain the current realsense device (needed when parameters changed live).
     ::rs2::device m_currentDevice;

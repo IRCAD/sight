@@ -35,6 +35,7 @@ set( REQUIREMENTS
     videoCharucoCalibration
     videoOpenCV
     videoOpenni
+    videoRealSense
     videoQt
     videoTools
 
