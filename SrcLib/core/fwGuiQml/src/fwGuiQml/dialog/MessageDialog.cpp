@@ -42,7 +42,7 @@ namespace dialog
 
 //------------------------------------------------------------------------------
 
-//value of the enum in integer
+//value of the enum in QMessageBox
 typedef const std::map< ::fwGui::dialog::IMessageDialog::Icons, int> MessageDialogQmlIconsType;
 MessageDialogQmlIconsType messageDialogQmlIcons =
     ::boost::assign::map_list_of(::fwGui::dialog::IMessageDialog::NONE, QMessageBox::NoIcon)

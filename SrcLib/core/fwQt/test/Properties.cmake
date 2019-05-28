@@ -1,4 +1,4 @@
-set( NAME fwGuiQtTest )
+set( NAME fwQtTest )
 set( VERSION  )
 set( TYPE TEST )
 set( DEPENDENCIES

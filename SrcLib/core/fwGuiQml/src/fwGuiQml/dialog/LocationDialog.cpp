@@ -198,7 +198,6 @@ void LocationDialog::setType( ::fwGui::dialog::ILocationDialog::Types type )
 
 //------------------------------------------------------------------------------
 
-// exemple ( addFilter("images","*.png *.jpg");
 void LocationDialog::addFilter(const std::string& filterName, const std::string& wildcardList )
 {
     m_filters.push_back( std::make_pair( filterName, wildcardList ));
@@ -206,7 +205,6 @@ void LocationDialog::addFilter(const std::string& filterName, const std::string&
 
 //------------------------------------------------------------------------------
 
-// "BMP and GIF files (*.bmp *.gif)|*.bmp *.gif|PNG files (*.png)|*.png"
 QStringList LocationDialog::fileFilters()
 {
     QStringList result;

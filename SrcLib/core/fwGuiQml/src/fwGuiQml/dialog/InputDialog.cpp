@@ -69,7 +69,6 @@ void InputDialog::setMessage( const std::string& msg )
 
 //------------------------------------------------------------------------------
 
-/// Set the input text in the input field
 void InputDialog::setInput(const std::string& text)
 {
     m_input = QString::fromStdString(text);
@@ -77,7 +76,6 @@ void InputDialog::setInput(const std::string& text)
 
 //------------------------------------------------------------------------------
 
-/// Get the input text in the input field
 std::string InputDialog::getInput()
 {
     // get the qml engine QmlApplicationEngine
