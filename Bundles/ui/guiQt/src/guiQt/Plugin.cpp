@@ -70,7 +70,7 @@ void Plugin::start()
               return QSharedPointer< QApplication > ( new ::fwGuiQt::App(argc, argv, true) );
           };
 
-    m_workerQt = ::fwQt::getQtWorker(argc, argv, callback);
+    m_workerQt = ::fwQt::getQtWorker(argc, argv, callback, profile->getName(), profile->getVersion());
 
     ::fwServices::registry::ActiveWorkers::setDefaultWorker(m_workerQt);
 

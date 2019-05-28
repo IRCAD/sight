@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2019 IRCAD France
- * Copyright (C) 2019 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -85,7 +85,7 @@ public:
 
     void post(TaskType handler);
 
-    void setApp(QSharedPointer<QCoreApplication> app);
+    void setApp(QSharedPointer<QCoreApplication> app, const std::string& name, const std::string& version);
 
     ::fwThread::Worker::FutureType getFuture();
 
@@ -98,6 +98,7 @@ public:
 protected:
 
     int m_argc;
+    char** m_argv;
 
     QSharedPointer< QCoreApplication > m_app;
 
@@ -114,12 +115,13 @@ protected:
 
 //-----------------------------------------------------------------------------
 
-::fwThread::Worker::sptr getQtWorker(int& argc, char** argv, std::function<QSharedPointer<QCoreApplication>(int&,
-                                                                                                            char**)> callback)
+::fwThread::Worker::sptr getQtWorker(int& argc, char** argv,
+                                     std::function<QSharedPointer<QCoreApplication>(int&, char**)> callback,
+                                     const std::string& name, const std::string& version)
 {
     SPTR(WorkerQt) workerQt = std::make_shared< WorkerQt >();
     workerQt->init(argc, argv);
-    workerQt->setApp(callback(argc, argv));
+    workerQt->setApp(callback(argc, argv), name, version);
     return workerQt;
 }
 
@@ -224,15 +226,20 @@ void WorkerQt::init( int& argc, char** argv)
     }
 
     m_argc = argc;
+    m_argv = argv;
 
     OSLM_TRACE("Init Qt" << ::fwThread::getCurrentThreadId() <<" Finish");
 }
 
 //------------------------------------------------------------------------------
 
-void WorkerQt::setApp(QSharedPointer<QCoreApplication> app)
+void WorkerQt::setApp(QSharedPointer<QCoreApplication> app, const std::string& name, const std::string& version)
 {
     m_app = app;
+    m_app.get()->setOrganizationName("IRCAD-IHU");
+    m_app.get()->setOrganizationDomain("https://www.ircad.fr/");
+    m_app.get()->setApplicationName(QString::fromStdString(name));
+    m_app.get()->setApplicationVersion(QString::fromStdString(version));
 }
 
 //------------------------------------------------------------------------------

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2019 IRCAD France
- * Copyright (C) 2019 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -41,7 +41,8 @@ namespace fwQt
 //-----------------------------------------------------------------------------
 
 FWQT_API SPTR(::fwThread::Worker) getQtWorker(int& argc, char** argv,
-                                              std::function<QSharedPointer<QCoreApplication>(int&, char**)>);
+                                              std::function<QSharedPointer<QCoreApplication>(int&, char**)> callback,
+                                              const std::string& name, const std::string& version);
 
 //-----------------------------------------------------------------------------
 

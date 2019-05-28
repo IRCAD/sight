@@ -116,7 +116,7 @@ void WorkerQtTest::setUp()
 #endif
               return QSharedPointer< QApplication > (new ::fwGuiQt::App(argc, argv, guiEnabled));
           };
-    m_worker = ::fwQt::getQtWorker(argc, argv, callback);
+    m_worker = ::fwQt::getQtWorker(argc, argv, callback, "", "");
 }
 
 //-----------------------------------------------------------------------------
