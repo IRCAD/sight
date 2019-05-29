@@ -102,19 +102,19 @@ bool LoggerDialog::show()
 
     // set the icon of the biggest type of error
     auto information =
-        ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/information.png");
+        ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/information.svg");
     if (!boost::filesystem::exists(information))
     {
         information = "";
     }
     auto warning =
-        ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/warning.png");
+        ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/warning.svg");
     if (!boost::filesystem::exists(warning))
     {
         warning = "";
     }
     auto critical =
-        ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/critical.png");
+        ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/critical.svg");
     if (!boost::filesystem::exists(critical))
     {
         critical = "";
@@ -141,13 +141,13 @@ bool LoggerDialog::show()
 
     // get the icon of the details checkbox
     auto detailshidden =
-        ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/details-hidden.png");
+        ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/details-hidden.svg");
     if (!boost::filesystem::exists(detailshidden))
     {
         detailshidden = "";
     }
     auto detailsshown =
-        ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/details-shown.png");
+        ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/details-shown.svg");
     if (!boost::filesystem::exists(detailsshown))
     {
         detailsshown = "";

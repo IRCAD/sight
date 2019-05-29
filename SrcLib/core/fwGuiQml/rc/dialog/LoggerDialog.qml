@@ -69,8 +69,8 @@ Dialog {
                 indicator: Image {
                     id: detailsIcon
 
-                    width: 20
-                    height: 20
+                    width: 24
+                    height: 24
                     fillMode: Image.PreserveAspectFit
                     mipmap: true
                     antialiasing: true
