@@ -69,12 +69,14 @@ Dialog {
                 indicator: Image {
                     id: detailsIcon
 
-                    width: 16
-                    height: 16
+                    width: 20
+                    height: 20
                     fillMode: Image.PreserveAspectFit
                     mipmap: true
                     antialiasing: true
                     source: checkbox.checkedState ? shown : hidden
+                    cache : true;
+                    asynchronous: true;
                 }
             }
 
