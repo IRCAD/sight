@@ -1,7 +1,5 @@
 fwLoadProperties()
 
-find_package(Eigen QUIET REQUIRED)
+find_package(Eigen3 QUIET REQUIRED)
 
-fwForwardInclude(
-    ${EIGEN3_INCLUDE_DIR}
-)
+target_link_libraries (${FWPROJECT_NAME} PUBLIC Eigen3::Eigen)

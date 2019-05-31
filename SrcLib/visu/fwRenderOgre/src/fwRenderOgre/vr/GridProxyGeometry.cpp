@@ -330,25 +330,23 @@ void GridProxyGeometry::computeGrid()
 
 void GridProxyGeometry::clipGrid(const Ogre::AxisAlignedBox& _clippingBox)
 {
-    const ::Ogre::AxisAlignedBox maxBoxSize(::Ogre::Vector3::ZERO, ::Ogre::Vector3(1.f, 1.f, 1.f));
-    const ::Ogre::AxisAlignedBox realClippingBox = maxBoxSize.intersection(_clippingBox);
-
     ::Ogre::GpuProgramParametersSharedPtr geomParams = m_geomGeneratorPass->getGeometryProgramParameters();
 
-    if(realClippingBox.isFinite())
+    if(_clippingBox.isFinite())
     {
-        geomParams->setNamedConstant("u_boundingBoxMin", realClippingBox.getMinimum());
-        geomParams->setNamedConstant("u_boundingBoxMax", realClippingBox.getMaximum());
+        geomParams->setNamedConstant("u_boundingBoxMin", _clippingBox.getMinimum());
+        geomParams->setNamedConstant("u_boundingBoxMax", _clippingBox.getMaximum());
     }
-    else if(realClippingBox.isNull())
+    else if(_clippingBox.isNull())
     {
-        geomParams->setNamedConstant("u_boundingBoxMin", ::Ogre::Vector3(std::nanf("")));
-        geomParams->setNamedConstant("u_boundingBoxMax", ::Ogre::Vector3(std::nanf("")));
+        SLM_ERROR("Unexpected empty clipping box, no proxy geometry will be generated.");
+        geomParams->setNamedConstant("u_boundingBoxMin", ::Ogre::Vector3::ZERO);
+        geomParams->setNamedConstant("u_boundingBoxMax", ::Ogre::Vector3::ZERO);
     }
     else // Infinite box
     {
         geomParams->setNamedConstant("u_boundingBoxMin", ::Ogre::Vector3::ZERO);
-        geomParams->setNamedConstant("u_boundingBoxMax", ::Ogre::Vector3(1.f, 1.f, 1.f));
+        geomParams->setNamedConstant("u_boundingBoxMax", ::Ogre::Vector3::UNIT_SCALE);
     }
 
     this->manualUpdate();

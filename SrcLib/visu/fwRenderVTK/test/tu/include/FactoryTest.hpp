@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,33 +22,31 @@
 
 #pragma once
 
-#include "visuVTK/config.hpp"
-
 #include <fwRenderVTK/vtk/Instantiator.hpp>
 
-#include <fwRuntime/Plugin.hpp>
+#include <cppunit/extensions/HelperMacros.h>
 
-namespace visuVTK
+namespace fwRenderVTK
 {
-/**
- * @brief   This class is started when the bundles is loaded.
- */
-struct VISUVTK_CLASS_API Plugin : public ::fwRuntime::Plugin
+namespace ut
 {
-    /**
-     * @brief   destructor
-     */
-    ~Plugin() noexcept;
 
-    /// Overrides
-    VISUVTK_API void start();
+class FactoryTest : public CPPUNIT_NS::TestFixture
+{
+CPPUNIT_TEST_SUITE( FactoryTest );
+CPPUNIT_TEST(instantiationTest);
+CPPUNIT_TEST_SUITE_END();
 
-    /// Overrides
-    VISUVTK_API void stop() noexcept;
+public:
+    // Set up before running test.
+    void setUp();
+    // Clean everything after the test.
+    void tearDown();
 
-    /// Pointer to our "sight" vtk factory.
+    void instantiationTest();
+
     ::fwRenderVTK::vtk::Instantiator* m_factory;
-
 };
 
-} // namespace visuVTK
+} //namespace ut
+} //namespace arData

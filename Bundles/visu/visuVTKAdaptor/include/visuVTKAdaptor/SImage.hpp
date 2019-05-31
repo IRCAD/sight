@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -29,10 +29,10 @@
 #include <fwDataTools/helper/TransferFunction.hpp>
 
 #include <fwRenderVTK/IAdaptor.hpp>
+#include <fwRenderVTK/vtk/fwVtkWindowLevelLookupTable.hpp>
 
 #include <vtkSmartPointer.h>
 
-class fwVtkWindowLevelLookupTable;
 class vtkImageMapToColors;
 class vtkImageData;
 
@@ -165,7 +165,7 @@ private:
 
     bool m_allowAlphaInTF;
 
-    vtkSmartPointer< fwVtkWindowLevelLookupTable > m_lut;
+    vtkSmartPointer< ::fwRenderVTK::vtk::fwVtkWindowLevelLookupTable > m_lut;
 
     vtkSmartPointer< vtkImageMapToColors > m_map2colors;
 

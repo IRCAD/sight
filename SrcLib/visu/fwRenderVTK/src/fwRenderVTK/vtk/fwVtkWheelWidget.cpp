@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2018 IRCAD France
- * Copyright (C) 2017-2018 IHU Strasbourg
+ * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -36,6 +36,12 @@
 #include <vtkRenderWindowInteractor.h>
 #include <vtkWidgetCallbackMapper.h>
 #include <vtkWidgetEvent.h>
+
+namespace fwRenderVTK
+{
+
+namespace vtk
+{
 
 vtkStandardNewMacro(fwVtkWheelWidget);
 
@@ -165,14 +171,14 @@ void fwVtkWheelWidget::SelectAction(vtkAbstractWidget* w)
 
     if(widgetRep->isInCenter(x, y))
     {
-        self->WidgetState  = ::fwVtkWheelWidget::Selecting;
+        self->WidgetState  = fwVtkWheelWidget::Selecting;
         self->m_initMouseX = x;
         self->m_initMouseY = y;
         self->EventCallbackCommand->SetAbortFlag(1);
     }
     else if(widgetRep->isOnWheel(x, y))
     {
-        self->WidgetState       = ::fwVtkWheelWidget::Rotating;
+        self->WidgetState       = fwVtkWheelWidget::Rotating;
         self->m_initMouseX      = x;
         self->m_initMouseY      = y;
         self->m_initOrientation = widgetRep->GetOrientation();
@@ -213,3 +219,9 @@ fwVtkWheelRepresentation* fwVtkWheelWidget::GetRepresentation() const
 {
     return dynamic_cast<fwVtkWheelRepresentation*>(this->WidgetRep);
 }
+
+//----------------------------------------------------------------------------------
+
+} // namespace vtk
+
+} // namespace fwRenderVTK

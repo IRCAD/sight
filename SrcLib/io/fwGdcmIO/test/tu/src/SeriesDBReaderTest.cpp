@@ -54,11 +54,11 @@
 
 #include <boost/algorithm/string.hpp>
 #include <boost/algorithm/string/replace.hpp>
+#include <boost/compute/detail/sha1.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/property_tree/exceptions.hpp>
 #include <boost/property_tree/json_parser.hpp>
 #include <boost/property_tree/ptree.hpp>
-#include <boost/uuid/sha1.hpp>
 
 #include <cppunit/extensions/HelperMacros.h>
 

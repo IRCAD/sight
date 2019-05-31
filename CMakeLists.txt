@@ -487,7 +487,8 @@ if(BUILD_SDK)
         "${CMAKE_BINARY_DIR}/cmake/SightConfigVersion.cmake"
         "${CMAKE_BINARY_DIR}/cmake/SightRequirements.cmake"
         "${CMAKE_SOURCE_DIR}/CMake/build/macros.cmake"
-        "${CMAKE_SOURCE_DIR}/CMake/build/conan.cmake"
+        "${CMAKE_SOURCE_DIR}/CMake/conan/conan.cmake"
+        "${CMAKE_SOURCE_DIR}/CMake/conan/conan-deps.cmake"
       DESTINATION
         ${FWCONFIG_PACKAGE_LOCATION}
       COMPONENT

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -75,6 +75,12 @@ class vtkBox;
 class vtkDoubleArray;
 class vtkMatrix4x4;
 
+namespace fwRenderVTK
+{
+
+namespace vtk
+{
+
 class FWRENDERVTK_CLASS_API fwVtkBoxRepresentation : public vtkBoxRepresentation
 {
 public:
@@ -113,3 +119,7 @@ protected:
     int RotationEnabled;
 
 };
+
+} // namespace vtk
+
+} // namespace fwRenderVTK

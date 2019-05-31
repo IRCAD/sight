@@ -157,7 +157,9 @@ void SOpenCVExtrinsic::updating()
         {
             for (unsigned int x = 0; x < m_width - 1; ++x)
             {
-                points.push_back(::cv::Point3f(float(y*m_squareSize), float(x*m_squareSize), 0));
+                points.push_back(::cv::Point3f(static_cast<float>(x)*m_squareSize,
+                                               static_cast<float>(y)*m_squareSize,
+                                               0));
             }
         }
 
