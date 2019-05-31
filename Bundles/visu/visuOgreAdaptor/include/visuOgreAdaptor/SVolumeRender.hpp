@@ -236,6 +236,9 @@ private:
     /// Updates the inout clipping matrix from the clipping box positions.
     void updateClippingTM3D();
 
+    /// Reset the camera coordinates.
+    void resetCameraPosition(const ::fwData::Image::sptr& image);
+
     /// Helper to manage the volume TF.
     ::fwDataTools::helper::TransferFunction m_helperVolumeTF;
 
