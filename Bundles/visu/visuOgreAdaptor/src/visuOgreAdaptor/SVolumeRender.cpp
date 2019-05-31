@@ -156,7 +156,7 @@ void SVolumeRender::updateVolumeTF()
 {
     ::fwServices::IService::KeyConnectionsMap connections;
 
-    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_IMAGE_SLOT );
+    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_MODIFIED_SIG, s_NEW_IMAGE_SLOT );
     connections.push( s_IMAGE_INOUT, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_IMAGE_SLOT );
     connections.push( s_CLIPPING_MATRIX_INOUT, ::fwData::TransformationMatrix3D::s_MODIFIED_SIG,
                       s_UPDATE_CLIPPING_BOX_SLOT );
@@ -289,7 +289,11 @@ void SVolumeRender::newImage()
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
 
-    m_helperVolumeTF.createTransferFunction(image);
+    ::fwData::TransferFunction::sptr volumeTF = this->getInOut< ::fwData::TransferFunction>(s_VOLUME_TF_INOUT);
+    m_helperVolumeTF.setOrCreateTF(volumeTF, image);
+
+    m_gpuVolumeTF->updateTexture(volumeTF);
+
     this->updateImage();
 }
 
@@ -320,7 +324,7 @@ void SVolumeRender::updateImage()
 
     ::fwData::TransferFunction::sptr volumeTF = m_helperVolumeTF.getTransferFunction();
     {
-        m_gpuVolumeTF->updateTexture(volumeTF);
+        m_gpuVolumeTF->getTexture();
 
         if(m_preIntegratedRendering)
         {
