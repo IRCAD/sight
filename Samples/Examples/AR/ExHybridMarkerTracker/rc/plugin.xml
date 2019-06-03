@@ -1,0 +1,685 @@
+<!--
+    This tutorial shows a basic sample of augmented reality.
+    This exhibits:
+      - how to detect an ArUco marker,
+      - how to compute the pose of a marker,
+      - how to make a basic augmented-reality render (we superimpose a cube onto the ArUco marker)
+      - how to undistort a video according to the camera intrinsic parameters
+      - how to distort a 3D render according to the camera intrinsic parameters
+      - how to synchronize efficiently a video process pipeline with the video playback using SSignalGate
+
+    To use this application, you must open a calibration and a video. Samples are provided in the bundle folder
+    of the appplication, `share/sight/TutoSimpleAR-0.4` on Linux/MacOs and `share\TutoSimpleAR-0.4` on Windows:
+      - calibration.xml
+      - aruco_tag.m4v
+-->
+<plugin id="TutoSimpleAR" version="@PROJECT_VERSION@">
+
+    <!-- The bundles in requirements are automatically started when this application is launched. -->
+    <requirement id="dataReg" />
+    <requirement id="arDataReg" />
+    <requirement id="servicesReg" />
+    <requirement id="visuVTKQt" />
+    <!-- Using preferences is convenient because it saves the last paths chosen in the file dialogs, or remember the
+         location and size of the application window. -->
+    <requirement id="preferences" />
+
+    <extension implements="::fwServices::registry::AppConfig">
+        <id>TutoSimpleARConfig</id>
+        <config>
+
+            <!-- Series of camera calibration -->
+            <object uid="cameraSeries" type="::arData::CameraSeries" />
+            <!-- Camera calibration, deferred because it is extracted from the series -->
+            <object uid="camera" type="::arData::Camera" src="deferred" />
+            <!-- Frame timeline used to buffer the output of the video grabber -->
+            <object uid="frameTL" type="::arData::FrameTL" />
+            <!-- Video frame that is used for the current iteration -->
+            <object uid="sourceFrame" type="::fwData::Image" />
+            <!-- Offscreen buffer used to distort the 3D rendering of the cube -->
+            <object uid="offscreen3DImage" type="::fwData::Image" />
+            <!-- Final output video frame that will be displayed -->
+            <object uid="finalFrame" type="::fwData::Image" />
+            <!-- Distort 3D rendering of the cube -->
+            <object uid="distorted3DImage" type="::fwData::Image" />
+            <!-- Map containing all detected markers in the current frame -->
+            <object uid="markerMap" type="::arData::MarkerMap" />
+            <!-- Marker matrix in the camera world -->
+            <object uid="markerToCamera" type="::fwData::TransformationMatrix3D" />
+            <!-- Camera matrix in the marker world -->
+            <object uid="cameraToMarker" type="::fwData::TransformationMatrix3D" />
+            <!-- Cube superimposed on the video at the marker location -->
+            <object uid="cubeMesh" type="::fwData::Mesh" />
+
+            <!-- declaration of the views, menu and toolbar -->
+            <service uid="mainFrame" type="::gui::frame::SDefaultFrame">
+                <gui>
+                    <frame>
+                        <name>TutoSimpleAR</name>
+                        <icon>TutoSimpleAR-@PROJECT_VERSION@/app.ico</icon>
+                    </frame>
+                    <toolBar/>
+                </gui>
+                <registry>
+                    <toolBar sid="toolbar" start="yes" />
+                    <view sid="cameraView" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="toolbar" type="::gui::aspect::SDefaultToolBar">
+                <gui>
+                    <layout>
+                        <menuItem name="Load Calibration" icon="media-0.1/icons/Plus.svg" />
+                        <editor/>
+                        <menuItem name="Start" icon="arMedia-0.1/icons/start-cam.svg" />
+                        <menuItem name="Stop" icon="arMedia-0.1/icons/stop-cam.svg" />
+                        <menuItem name="Pause" icon="arMedia-0.1/icons/pause-cam.svg" />
+                        <menuItem name="Loop" icon="arMedia-0.1/icons/loop-cam.svg" style="check"/>
+                        <separator/>
+                        <menuItem name="Enable video image undistortion" icon="arMedia-0.1/icons/distortion.svg" />
+                        <menuItem name="Disable video image undistortion" icon="arMedia-0.1/icons/disableDistortion.svg" />
+                        <menuItem name="Enable 3D rendering distortion" icon="arMedia-0.1/icons/distortion.svg" />
+                        <menuItem name="Disable 3D rendering distortion" icon="arMedia-0.1/icons/disableDistortion.svg" />
+                        <separator/>
+                        <menuItem name="Show Mesh on tag" icon="arMedia-0.1/icons/show.svg" icon2="arMedia-0.1/icons/hide.svg" style="check"/>
+                        <separator/>
+                        <menuItem name="Settings" icon="media-0.1/icons/Settings.svg" style="check"/>
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="loadCalib" start="yes" />
+                    <editor sid="CameraSelector" />
+                    <menuItem sid="startVideo" start="yes" />
+                    <menuItem sid="stopVideo" start="yes" />
+                    <menuItem sid="pauseVideo" start="yes" />
+                    <menuItem sid="loopVideo" start="yes" />
+                    <menuItem sid="actionStartUndistort" start="yes" />
+                    <menuItem sid="actionStopUndistort" start="yes" />
+                    <menuItem sid="actionStartDistort" start="yes" />
+                    <menuItem sid="actionStopDistort" start="yes" />
+                    <menuItem sid="showMesh" start="yes" />
+                    <menuItem sid="actionShowParameters" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="cameraView" type="::gui::view::SDefaultView">
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="horizontal" />
+                        <view proportion="1" />
+                        <view proportion="0" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="videoView" start="yes" />
+                    <view sid="parameters" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="parameters" type="::gui::view::SDefaultView">
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="vertical" />
+                        <view proportion="3" caption="aruco" />
+                        <view proportion="2" caption="reprojection" />
+                        <spacer/>
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="arucoParams" start="yes" />
+                    <view sid="reprojectionParams" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="videoView" type="::gui::view::SDefaultView">
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="vertical" />
+                        <view proportion="3" />
+                        <view proportion="0" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="genericScene" />
+                    <view sid="errorLabel" start="yes" />
+                </registry>
+            </service>
+
+            <!-- declaration of actions/slot callers -->
+            <service uid="actionShowParameters" type="::gui::action::SModifyLayout">
+                <config>
+                    <show_or_hide sid="parameters" />
+                </config>
+            </service>
+
+            <service uid="loadCalib" type="::gui::action::SSlotCaller">
+                <slots>
+                    <slot>CalibrationReader/update</slot>
+                </slots>
+            </service>
+
+            <service uid="loadMesh" type="::ioVTK::SMeshReader">
+                <inout key="data" uid="cubeMesh" />
+                <resource>TutoSimpleAR-@PROJECT_VERSION@/cube_60.vtk</resource>
+            </service>
+
+            <service uid="startVideo" type="::gui::action::SSlotCaller">
+                <slots>
+                    <slot>frameGrabber/startCamera</slot>
+                </slots>
+            </service>
+
+            <service uid="stopVideo" type="::gui::action::SSlotCaller">
+                <slots>
+                    <slot>frameGrabber/stopCamera</slot>
+                </slots>
+            </service>
+
+            <service uid="pauseVideo" type="::gui::action::SSlotCaller">
+                <slots>
+                    <slot>frameGrabber/pauseCamera</slot>
+                </slots>
+            </service>
+
+            <service uid="loopVideo" type="::gui::action::SSlotCaller">
+                <slots>
+                    <slot>frameGrabber/loopVideo</slot>
+                </slots>
+            </service>
+
+            <service uid="actionStartUndistort" type="::gui::action::SSlotCaller">
+                <slots>
+                    <slot>undistorter/changeState</slot>
+                    <slot>actionStartDistort/setInexecutable</slot>
+                    <slot>actionStartUndistort/hide</slot>
+                    <slot>actionStopUndistort/show</slot>
+                </slots>
+            </service>
+
+            <service uid="actionStopUndistort" type="::gui::action::SSlotCaller">
+                <state visible="false" />
+                <slots>
+                    <slot>undistorter/changeState</slot>
+                    <slot>actionStartDistort/setExecutable</slot>
+                    <slot>actionStartUndistort/show</slot>
+                    <slot>actionStopUndistort/hide</slot>
+                </slots>
+            </service>
+
+            <service uid="actionStartDistort" type="::gui::action::SSlotCaller">
+                <slots>
+                    <slot>distorter/changeState</slot>
+                    <slot>actionStartUndistort/setInexecutable</slot>
+                    <slot>actionStartDistort/hide</slot>
+                    <slot>actionStopDistort/show</slot>
+                    <slot>showDistortionActor/activate</slot>
+                    <slot>showActors/deactivate</slot>
+                    <slot>showDistortionActor/update</slot>
+                    <slot>showActors/update</slot>
+                    <slot>startGenericSceneSync/update</slot>
+                    <slot>startOffscreenSync/update</slot>
+                </slots>
+            </service>
+
+            <service uid="actionStopDistort" type="::gui::action::SSlotCaller">
+                <state visible="false" />
+                <slots>
+                    <slot>distorter/changeState</slot>
+                    <slot>actionStartUndistort/setExecutable</slot>
+                    <slot>actionStartDistort/show</slot>
+                    <slot>actionStopDistort/hide</slot>
+                    <slot>showDistortionActor/deactivate</slot>
+                    <slot>showActors/activate</slot>
+                    <slot>showDistortionActor/update</slot>
+                    <slot>showActors/update</slot>
+                    <slot>startGenericSceneSync/update</slot>
+                    <slot>startOffscreenSync/update</slot>
+                    <slot>synchronizer/synchronize</slot>
+                </slots>
+            </service>
+
+            <service uid="showDistortionActor" type="::gui::action::SBooleanSlotCaller" >
+                <state active="false" />
+                <slots>
+                    <slot>distorted3DAdpt/show</slot>
+                </slots>
+            </service>
+
+            <!-- Default synchronization at launch -->
+            <!-- Disabled when doing distortion of the 3D layer -->
+            <service uid="startGenericSceneSync" type="::gui::action::SStarter" >
+                <start_or_stop uid="syncGenericScene" />
+            </service>
+
+            <!-- Synchronization when doing distorting of the 3D layer -->
+            <service uid="startOffscreenSync" type="::gui::action::SStarter" >
+                <start_or_stop uid="syncOffscreenRender" />
+                <start_or_stop uid="syncGenericSceneAndOffscreen" />
+            </service>
+
+            <service uid="showActors" type="::gui::action::SBooleanSlotCaller" >
+                <state active="true" />
+                <slots>
+                    <slot>cubeAdpt/updateVisibility</slot>
+                    <slot>showMesh/setIsActive</slot>
+                </slots>
+            </service>
+
+            <service uid="showMesh" type="::gui::action::SBooleanSlotCaller">
+                <slots>
+                    <slot>cubeAdpt/updateVisibility</slot>
+                </slots>
+            </service>
+
+            <!-- hide axis adaptor until a marker is found -->
+            <service uid="hideAxis" type="::gui::action::SBooleanSlotCaller" >
+                <slots>
+                    <slot>axis/updateVisibility</slot>
+                </slots>
+            </service>
+
+            <!-- Calibration reader (here OpenCV's XML/YAML) -->
+            <service uid="CalibrationReader" type="::ioCalibration::SOpenCVReader">
+                <inout key="data" uid="cameraSeries" />
+            </service>
+
+            <!-- extract the first ::arData::Camera from the ::arData::CameraSeries -->
+            <service uid="Extractor" type="::ctrlCamp::SExtractObj">
+                <inout key="source" uid="cameraSeries">
+                    <extract from="@cameras.0" /> <!-- Camp path of the first camera in cameraSeries -->
+                </inout>
+                <out group="target">
+                    <key uid="camera" /> <!-- destination -->
+                </out>
+            </service>
+
+            <!-- *************************** Begin generic scene *************************** -->
+            <!-- Scene in which the video and the 3D will be rendered -->
+            <!-- In this tutorial, we move the camera and the marker mesh is fixed -->
+
+            <service uid="genericScene" type="::fwRenderVTK::SRender" >
+                <!-- It is essential to use the 'sync' mode when doing AR -->
+                <!-- In this mode, the renderer will wait for a signal to trigger the rendering -->
+                <scene renderMode="sync">
+                    <renderer id="video" layer="0" background="0.0" />
+                    <renderer id="ar" layer="1" background="0.0" />
+                    <renderer id="default" layer="2" background="0.0" />
+                    <adaptor uid="videoAdpt" />
+                    <adaptor uid="distorted3DAdpt" />
+                    <adaptor uid="interactorStyle" />
+                    <adaptor uid="axis" />
+                    <adaptor uid="cameraAdpt" />
+                    <adaptor uid="cubeAdpt" />
+                </scene>
+            </service>
+
+            <service uid="videoAdpt" type="::visuVTKARAdaptor::SVideo" autoConnect="yes">
+                <in key="frame" uid="finalFrame" />
+                <config renderer="video" />
+            </service>
+
+            <!-- Display the offscreen buffer of the 3D when we distort the 3D -->
+            <service uid="distorted3DAdpt" type="::visuVTKARAdaptor::SVideo" autoConnect="yes">
+                <in key="frame" uid="distorted3DImage" />
+                <config renderer="ar" />
+            </service>
+
+            <!-- This adaptor prevents any camera interaction with mouse and the keyboard -->
+            <service uid="interactorStyle" type="::visuVTKAdaptor::SInteractorStyle">
+                <config renderer="default" style="FixedInteractorStyle" />
+            </service>
+
+            <service uid="axis" type="::visuVTKAdaptor::SAxis">
+                <config renderer="default" transform="id" autoresetcamera="no" length="30" />
+            </service>
+
+            <!-- Camera for the 3D layer -->
+            <service uid="cameraAdpt" type="::visuVTKARAdaptor::SCamera" autoConnect="yes">
+                <in key="transform" uid="cameraToMarker" />
+                <in key="camera" uid="camera" />
+                <config renderer="default" />
+            </service>
+
+            <!-- Cube displayed on top of the marker plane -->
+            <service uid="cubeAdpt" type="::visuVTKAdaptor::SMesh" autoConnect="yes">
+                <in key="mesh" uid="cubeMesh" />
+                <config renderer="default" autoresetcamera="no" color="#ffffffda"/>
+            </service>
+
+            <!-- *************************** End generic scene *************************** -->
+
+            <!-- *************************** Begin offscreen scene *************************** -->
+            <!-- Scene in which the 3D will be rendered if we apply the distortion to the 3D layer -->
+
+            <service uid="offscreenRender" type="::fwRenderVTK::SRender">
+                <inout key="offScreen" uid="offscreen3DImage" />
+                <flip>true</flip>
+                <!-- It is essential to use the 'sync' mode when doing AR -->
+                <!-- In this mode, the renderer will wait for a signal to trigger the rendering -->
+                <scene renderMode="sync">
+                    <renderer id="default" layer="0" background="0.0" />
+                    <adaptor uid="interactorStyleOffscreen" />
+                    <adaptor uid="cameraAdptOffscreen" />
+                    <adaptor uid="cubeAdptOffscreen" />
+                </scene>
+            </service>
+
+            <!-- This adaptor prevents any camera interaction with mouse and the keyboard -->
+            <service uid="interactorStyleOffscreen" type="::visuVTKAdaptor::SInteractorStyle">
+                <config renderer="default" style="FixedInteractorStyle" />
+            </service>
+
+            <!-- Camera for the 3D layer -->
+            <service uid="cameraAdptOffscreen" type="::visuVTKARAdaptor::SCamera" autoConnect="yes">
+                <in key="transform" uid="cameraToMarker" />
+                <in key="camera" uid="camera" />
+                <config renderer="default" />
+            </service>
+
+            <!-- Cube displayed on top of the marker plane -->
+            <service uid="cubeAdptOffscreen" type="::visuVTKAdaptor::SMesh" autoConnect="yes">
+                <in key="mesh" uid="cubeMesh" />
+                <config renderer="default" autoresetcamera="no" color="#ffffffda" />
+            </service>
+
+            <!-- *************************** End offscreen scene *************************** -->
+
+            <!-- GUI to handle aruco tracking parameters -->
+            <service uid="arucoParams" type="::guiQt::editor::SParameters">
+                <parameters>
+                    <!-- show marker or not -->
+                    <param type="bool" name="Show Marker" key="debugMode" defaultValue="true" />
+                    <!--  do corner refinement or not. -->
+                    <param type="bool" name="Corner refinement." key="corner" defaultValue="true" />
+                    <!-- minimum window size for adaptive thresholding before finding contours -->
+                    <param type="int" name="adpt. Threshold win size min" key="adaptiveThreshWinSizeMin" defaultValue="3" min="3" max="100" />
+                    <!-- maximum window size for adaptive thresholding before finding contours -->
+                    <param type="int" name="adpt. Threshold win size max" key="adaptiveThreshWinSizeMax" defaultValue="23" min="4" max="100" />
+                    <!-- increments from adaptiveThreshWinSizeMin to adaptiveThreshWinSizeMax during the thresholding -->
+                    <param type="int" name="adpt. Threshold win size step" key="adaptiveThreshWinSizeStep" defaultValue="10" min="1" max="100" />
+                    <!-- constant for adaptive thresholding before finding contours -->
+                    <param type="double" name="adpt. threshold constant" key="adaptiveThreshConstant" defaultValue="7." min="0." max="30." />
+                    <!-- determine minimum perimeter for marker contour to be detected.
+                        This is defined as a rate respect to the maximum dimension of the input image -->
+                    <param type="double" name="Min. Marker Perimeter Rate" key="minMarkerPerimeterRate" defaultValue="0.03" min="0.01" max="1.0" />
+                    <!-- determine maximum perimeter for marker contour to be detected.
+                        This is defined as a rate respect to the maximum dimension of the input image -->
+                    <param type="double" name="Max. Marker Perimeter Rate" key="maxMarkerPerimeterRate" defaultValue="4.0" min="1." max="10." />
+                    <!-- minimum accuracy during the polygonal approximation process to determine which contours are squares -->
+                    <param type="double" name="Polygonal Approx. Accuracy Rate" key="polygonalApproxAccuracyRate" defaultValue="0.03" min="0.01" max="1." />
+                    <!-- minimum distance between corners for detected markers relative to its perimeter -->
+                    <param type="double" name="Min. Corner Distance Rate" key="minCornerDistanceRate" defaultValue="0.01" min="0." max="1." />
+                    <!-- minimum distance of any corner to the image border for detected markers (in pixels) -->
+                    <param type="int" name="Min. Distance to Border" key="minDistanceToBorder" defaultValue="1" min="0" max="10" />
+                    <!-- minimum mean distance beetween two marker corners to be considered similar,
+                    so that the smaller one is removed. The rate is relative to the smaller perimeter of the two markers -->
+                    <param type="double" name="Min. Marker Distance Rate" key="minMarkerDistanceRate" defaultValue="0.01" min="0." max="1." />
+                    <!-- window size for the corner refinement process (in pixels) -->
+                    <param type="int" name="Corner Refinement Win. Size" key="cornerRefinementWinSize" defaultValue="5" min="1" max="100" />
+                    <!-- maximum number of iterations for stop criteria of the corner refinement process -->
+                    <param type="int" name="Corner Refinement Max Iterations" key="cornerRefinementMaxIterations" defaultValue="30" min="1" max="10" />
+                    <!-- minimum error for the stop cristeria of the corner refinement process -->
+                    <param type="double" name="Corner Refinement Min. Accuracy" key="cornerRefinementMinAccuracy" defaultValue="0.1" min="0.01" max="10." />
+                    <!-- number of bits of the marker border, i.e. marker border width -->
+                    <param type="int" name="Marker Border Bits" key="markerBorderBits" defaultValue="1" min="1" max="100" />
+                    <!-- number of bits (per dimension) for each cell of the marker when removing the perspective -->
+                    <param type="int" name="Perspective Remove Pixel per Cell" key="perspectiveRemovePixelPerCell" defaultValue="8" min="1" max="32" />
+                    <!-- width of the margin of pixels on each cell not considered for the determination of the cell bit.
+                        Represents the rate respect to the total size of the cell,
+                        i.e. perpectiveRemovePixelPerCel -->
+                    <param type="double" name="Perspective Remove Ignored Margin Per Cell" key="perspectiveRemoveIgnoredMarginPerCell" defaultValue="0.13" min="0." max="1." />
+                    <!-- maximum number of accepted erroneous bits in the border (i.e. number of allowed white bits in the border).
+                        Represented as a rate respect to the total number of bits per marker -->
+                    <param type="double" name="Max. Erroneous Bits In Border Rate" key="maxErroneousBitsInBorderRate" defaultValue="0.35" min="0." max="1." />
+                    <!-- minimun standard deviation in pixels values during the decodification step to apply Otsu thresholding
+                        (otherwise, all the bits are set to 0 or 1 depending on mean higher than 128 or not) -->
+                    <param type="double" name="Min. Otsu Std. Dev." key="minOtsuStdDev" defaultValue="5.0" min="0." max="100." />
+                    <!-- error correction rate respect to the maximun error correction capability for each dictionary -->
+                    <param type="double" name="Error Correction Rate" key="errorCorrectionRate" defaultValue="0.6" min="0." max="1." />
+                </parameters>
+            </service>
+
+            <service uid="reprojectionParams" type="::guiQt::editor::SParameters">
+                <parameters>
+                    <param type="bool" name="Show reprojection" key="display" defaultValue="true" />
+                    <param type="color" name="Circle color" key="color" defaultValue="#ffffff" />
+                </parameters>
+            </service>
+
+            <!-- Gui Service to display a value in a QLabel -->
+            <service uid="errorLabel" type="::uiTools::editor::STextStatus">
+                <label>Reprojection Error (RMSE)</label>
+            </service>
+
+            <!-- GUI to select camera (device, file, or stream) -->
+            <service uid="CameraSelector" type="::videoQt::editor::SCamera">
+                <inout key="camera" uid="camera" />
+                <videoSupport>yes</videoSupport>
+            </service>
+
+            <!-- Grab image from camera device and fill a frame timeline -->
+            <service uid="frameGrabber" type="::videoQt::SFrameGrabber">
+                <in key="camera" uid="camera" />
+                <inout key="frameTL" uid="frameTL" />
+            </service>
+
+            <!-- Aruco tracker service -->
+            <service uid="tracker" type="::trackerAruco::SArucoTracker" worker="tracking">
+                <in key="camera" uid="camera" />
+                <inout key="frame" uid="sourceFrame" autoConnect="yes" />
+                <inout group="markerMap">
+                    <key uid="markerMap" /> <!-- timeline of detected tag(s) -->
+                </inout>
+                <track>
+                    <!-- list of tag's id -->
+                    <marker id="101" />
+                </track>
+                <debugMarkers>yes</debugMarkers>
+            </service>
+
+            <!-- Computes the pose of the camera with tag(s) detected by aruco -->
+            <service uid="registration" type="::registrationCV::SPoseFrom2d" worker="tracking">
+                <in group="markerMap" autoConnect="yes">
+                    <key uid="markerMap" />
+                </in>
+                <in group="camera">
+                    <key uid="camera" />
+                </in>
+                <inout group="matrix">
+                    <key uid="markerToCamera" id="101" />
+                </inout>
+                <patternWidth>60</patternWidth>
+            </service>
+
+            <!-- Computes the reprojection error -->
+            <service uid="error" type="::videoCalibration::SReprojectionError" worker="error">
+                <in group="matrix" autoConnect="yes">
+                    <key uid="markerToCamera" id="101" />
+                </in>
+                <in key="markerMap" uid="markerMap" />
+                <in key="camera" uid="camera" />
+                <inout key="frame" uid="sourceFrame" />
+                <patternWidth>60</patternWidth>
+            </service>
+
+            <!-- Consumes a frame in the timeline, picks the latest one to be processed -->
+            <!-- It is overkill in this sample, but mandatory when we use multiple grabbers to synchronize them. -->
+            <service uid="synchronizer" type="::videoTools::SFrameMatrixSynchronizer" >
+                <in group="frameTL">
+                    <key uid="frameTL" autoConnect="yes"/>
+                </in>
+                <inout group="image">
+                    <key uid="sourceFrame" />
+                </inout>
+                <tolerance>100</tolerance>
+                <framerate>0</framerate>
+            </service>
+
+            <!-- Multiply matrices (here only used to inverse "markerToCamera") -->
+            <service uid="matrixReverser" type="::maths::SConcatenateMatrices">
+                <in group="matrix">
+                    <key uid="markerToCamera" autoConnect="yes" inverse="true" />
+                </in>
+                <inout key="output" uid="cameraToMarker" />
+            </service>
+
+            <!-- Undistort the video frame -->
+            <!-- If not enabled, it simply copies the input image -->
+            <service uid="undistorter" type="::videoCalibration::SDistortion" worker="distortion">
+                <in key="camera" uid="camera" />
+                <in key="input" uid="sourceFrame" />
+                <inout key="output" uid="finalFrame" />
+                <mode>undistort</mode>
+            </service>
+
+            <!-- Wait for the undistortion and the matrix inversion to be finished -->
+            <service uid="syncGenericScene" type="::ctrlCom::SSignalGate">
+                <signal>finalFrame/bufferModified</signal>
+                <signal>cameraToMarker/modified</signal>
+            </service>
+
+            <!-- Distort the offscreen render of the 3D scene -->
+            <service uid="distorter" type="::videoCalibration::SDistortion" worker="distortion">
+                <in key="camera" uid="camera" />
+                <in key="input" uid="offscreen3DImage" autoConnect="yes" />
+                <inout key="output" uid="distorted3DImage" />
+                <mode>distort</mode>
+            </service>
+
+            <!-- Wait for the distortion and the matrix inversion to be finished -->
+            <service uid="syncGenericSceneAndOffscreen" type="::ctrlCom::SSignalGate">
+                <signal>distorted3DImage/bufferModified</signal>
+                <signal>cameraToMarker/modified</signal>
+            </service>
+
+            <!-- Wait for the matrix inversion to be finished -->
+            <service uid="syncOffscreenRender" type="::ctrlCom::SSignalGate">
+                <signal>cameraToMarker/modified</signal>
+            </service>
+
+            <!-- signal/slot connection -->
+            <connect>
+                <signal>reprojectionParams/colorChanged</signal>
+                <slot>error/setColorParameter</slot>
+            </connect>
+
+            <connect>
+                <signal>reprojectionParams/boolChanged</signal>
+                <slot>error/setBoolParameter</slot>
+            </connect>
+
+            <connect>
+                <signal>error/errorComputed</signal>
+                <slot>errorLabel/setDoubleParameter</slot>
+            </connect>
+
+            <connect>
+                <signal>arucoParams/boolChanged</signal>
+                <slot>tracker/setBoolParameter</slot>
+            </connect>
+
+            <connect>
+                <signal>arucoParams/intChanged</signal>
+                <slot>tracker/setIntParameter</slot>
+            </connect>
+
+            <connect>
+                <signal>arucoParams/doubleChanged</signal>
+                <slot>tracker/setDoubleParameter</slot>
+            </connect>
+
+            <connect>
+                <signal>cameraSeries/modified</signal>
+                <slot>Extractor/update</slot>
+                <slot>error/update</slot>
+                <slot>actionStartDistort/setExecutable</slot>
+                <slot>actionStartUndistort/setExecutable</slot>
+                <slot>actionStartUndistort/show</slot>
+                <slot>actionStopUndistort/hide</slot>
+                <slot>actionStartDistort/show</slot>
+                <slot>actionStopDistort/hide</slot>
+                <slot>showDistortionActor/deactivate</slot>
+                <slot>showActors/activate</slot>
+                <slot>showDistortionActor/update</slot>
+                <slot>showActors/update</slot>
+            </connect>
+
+            <!-- Better stop the video playback if we pick a new video source -->
+            <connect>
+                <signal>camera/idModified</signal>
+                <slot>frameGrabber/stopCamera</slot>
+            </connect>
+
+            <connect>
+                <signal>tracker/markerDetected</signal>
+                <slot>axis/updateVisibility</slot>
+                <slot>undistorter/update</slot>
+            </connect>
+
+            <!-- When the undistortion and the matrix inversion are done, trigger the rendering -->
+            <!-- then process a new frame -->
+            <connect>
+                <signal>syncGenericScene/allReceived</signal>
+                <slot>genericScene/requestRender</slot>
+                <slot>synchronizer/synchronize</slot>
+            </connect>
+
+            <!-- When the distortion and the matrix inversion are finished, trigger the rendering -->
+            <!-- then process a new frame -->
+            <connect>
+                <signal>syncGenericSceneAndOffscreen/allReceived</signal>
+                <slot>genericScene/requestRender</slot>
+                <slot>synchronizer/synchronize</slot>
+            </connect>
+
+            <!-- When the matrix inversion is finished, trigger the offscreen rendering -->
+            <connect>
+                <signal>syncOffscreenRender/allReceived</signal>
+                <slot>offscreenRender/requestRender</slot>
+            </connect>
+
+            <!-- start services -->
+            <start uid="mainFrame" />
+            <start uid="frameGrabber" />
+            <start uid="synchronizer" />
+            <start uid="registration" />
+            <start uid="tracker" />
+            <start uid="CalibrationReader" />
+            <start uid="CameraSelector" />
+            <start uid="Extractor" />
+            <start uid="matrixReverser" />
+            <start uid="genericScene" />
+            <start uid="error" />
+            <start uid="hideAxis" />
+            <start uid="undistorter" />
+            <start uid="distorter" />
+            <start uid="showDistortionActor" />
+            <start uid="startGenericSceneSync" />
+            <start uid="startOffscreenSync" />
+            <start uid="showActors" />
+            <start uid="loadMesh" />
+
+            <!-- VTK scene 'genericScene' -->
+            <start uid="videoAdpt" />
+            <start uid="distorted3DAdpt" />
+            <start uid="interactorStyle" />
+            <start uid="axis" />
+            <start uid="cameraAdpt" />
+            <start uid="cubeAdpt" />
+
+            <!-- VTK scene 'offscreenRender' -->
+            <start uid="offscreenRender" />
+            <start uid="interactorStyleOffscreen" />
+            <start uid="cubeAdptOffscreen" />
+            <start uid="cameraAdptOffscreen" />
+
+            <!-- At launch, enable the synchronization with the non-offscreen rendering -->
+            <update uid="startGenericSceneSync" />
+            <update uid="actionShowParameters" />
+            <update uid="hideAxis" />
+            <update uid="loadMesh" />
+            <update uid="showMesh" />
+
+        </config>
+    </extension>
+</plugin>
