@@ -15,6 +15,7 @@ set( REQUIREMENTS
 
     gui
     guiQt
+    media
 
     uiTools
 

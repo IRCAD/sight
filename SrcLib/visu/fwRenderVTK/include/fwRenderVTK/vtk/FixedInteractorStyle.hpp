@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,11 +22,16 @@
 
 #pragma once
 
+#include "fwRenderVTK/config.hpp"
 #include "fwRenderVTK/IInteractorStyle.hpp"
 
-#include "visuVTKARAdaptor/config.hpp"
-
 #include <vtkInteractorStyleUser.h>
+
+namespace fwRenderVTK
+{
+
+namespace vtk
+{
 
 /**
  *  @brief Interactor class disabling all user interactions in a VTK scene.
@@ -41,35 +46,35 @@
     </service>
     @endcode
  *
- *  @note All overriden methods do absolutely nothing.
+ *  @note All overriden methods does absolutely nothing.
  */
-class VISUVTKARADAPTOR_CLASS_API FixedInteractorStyle : public vtkInteractorStyleUser,
-                                                        public ::fwRenderVTK::IInteractorStyle
+class FWRENDERVTK_CLASS_API FixedInteractorStyle : public vtkInteractorStyleUser,
+                                                   public ::fwRenderVTK::IInteractorStyle
 {
 
 public:
 
     /// New macro.
-    VISUVTKARADAPTOR_API static FixedInteractorStyle* New();
+    FWRENDERVTK_API static FixedInteractorStyle* New();
 
     /// VTK revision macro.
-    vtkTypeMacro(FixedInteractorStyle, vtkInteractorStyle);
+    vtkTypeMacro(FixedInteractorStyle, vtkInteractorStyle)
 
-    VISUVTKARADAPTOR_API virtual void OnMiddleButtonDown() override;
-    VISUVTKARADAPTOR_API virtual void OnChar() override;
-    VISUVTKARADAPTOR_API virtual void OnLeftButtonDown() override;
-    VISUVTKARADAPTOR_API virtual void OnMouseMove() override;
-    VISUVTKARADAPTOR_API virtual void OnMouseWheelBackward() override;
-    VISUVTKARADAPTOR_API virtual void OnMouseWheelForward() override;
-    VISUVTKARADAPTOR_API virtual void OnRightButtonDown() override;
+    FWRENDERVTK_API virtual void OnMiddleButtonDown() override;
+    FWRENDERVTK_API virtual void OnChar() override;
+    FWRENDERVTK_API virtual void OnLeftButtonDown() override;
+    FWRENDERVTK_API virtual void OnMouseMove() override;
+    FWRENDERVTK_API virtual void OnMouseWheelBackward() override;
+    FWRENDERVTK_API virtual void OnMouseWheelForward() override;
+    FWRENDERVTK_API virtual void OnRightButtonDown() override;
 
 protected:
 
     /// Constructor.
-    VISUVTKARADAPTOR_API FixedInteractorStyle();
+    FWRENDERVTK_API FixedInteractorStyle();
 
     /// Destructor.
-    VISUVTKARADAPTOR_API ~FixedInteractorStyle();
+    FWRENDERVTK_API ~FixedInteractorStyle() override;
 
 private:
 
@@ -80,3 +85,6 @@ private:
     void operator=(const FixedInteractorStyle&);
 
 };
+
+} // namespace vtk
+} // namespace fwRenderVTK

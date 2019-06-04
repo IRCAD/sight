@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2018 IRCAD France
- * Copyright (C) 2017-2018 IHU Strasbourg
+ * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -78,6 +78,7 @@ public:
     FWRENDEROGRE_API void computeGrid();
 
     /// Clip the proxy geometry. Recomputes the geometry.
+    /// @pre Clipping box coordinates must be clamped to the volume boundaries.
     FWRENDEROGRE_API void clipGrid(const ::Ogre::AxisAlignedBox& _clippingBox);
 
     /// Get the object's type as a string.

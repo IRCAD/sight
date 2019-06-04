@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -26,8 +26,8 @@
 
 #include <fwServices/macros.hpp>
 
-#include <vtkInstantiator.h>
 #include <vtkInteractorStyleImage.h>
+#include <vtkObjectFactory.h>
 #include <vtkRenderWindowInteractor.h>
 
 fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SInteractorStyle);
@@ -67,7 +67,7 @@ void SInteractorStyle::starting()
 {
     this->initialize();
 
-    vtkObject* objectStyle         = vtkInstantiator::CreateInstance(m_configuredStyle.c_str());
+    vtkObject* objectStyle         = vtkObjectFactory::CreateInstance(m_configuredStyle.c_str());
     vtkInteractorStyle* interactor = vtkInteractorStyle::SafeDownCast(objectStyle);
     SLM_ASSERT("InsteractorStyle adaptor is waiting for a vtkInteractorStyle object, but '"
                + m_configuredStyle + "' has been given.", interactor);

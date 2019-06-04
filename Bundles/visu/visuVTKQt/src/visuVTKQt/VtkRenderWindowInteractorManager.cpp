@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -39,7 +39,7 @@
 #include <QMimeData>
 #include <QSurfaceFormat>
 #include <QVBoxLayout>
-#include <QVTKOpenGLWidget.h>
+#include <QVTKOpenGLNativeWidget.h>
 #include <vtkGenericOpenGLRenderWindow.h>
 #include <vtkRenderer.h>
 #include <vtkRenderWindow.h>
@@ -125,7 +125,7 @@ void VtkRenderWindowInteractorManager::installInteractor( ::fwGui::container::fw
 
     // Create the render window and the associated QVTKOpenGLWidget
     vtkNew<vtkGenericOpenGLRenderWindow> window;
-    m_QVTKOpenGLWidget = new QVTKOpenGLWidget(m_parentContainer->getQtContainer());
+    m_QVTKOpenGLWidget = new QVTKOpenGLNativeWidget(m_parentContainer->getQtContainer());
     m_QVTKOpenGLWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     layout->addWidget(m_QVTKOpenGLWidget);
     m_QVTKOpenGLWidget->SetRenderWindow(window.Get());
@@ -162,4 +162,3 @@ void VtkRenderWindowInteractorManager::uninstallInteractor()
 //-----------------------------------------------------------------------------
 
 } // namespace visuVTKQt
-

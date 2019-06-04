@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017 IRCAD France
- * Copyright (C) 2017 IHU Strasbourg
+ * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWRENDERVTK_VTK_FWVTKWHEELWIDGET_HPP__
-#define __FWRENDERVTK_VTK_FWVTKWHEELWIDGET_HPP__
+#pragma once
 
 #include "fwRenderVTK/config.hpp"
 #include "fwRenderVTK/vtk/fwVtkWheelRepresentation.hpp"
@@ -29,6 +28,12 @@
 #include <vtkAbstractWidget.h>
 
 #include <functional>
+
+namespace fwRenderVTK
+{
+
+namespace vtk
+{
 
 /**
  * @brief Implements the interactions with the wheel widget.
@@ -46,7 +51,7 @@ public:
     vtkTypeMacro(fwVtkWheelWidget, vtkAbstractWidget);
 
     /// Not implemented.
-    FWRENDERVTK_API void PrintSelf(ostream& os, vtkIndent indent) VTK_OVERRIDE;
+    FWRENDERVTK_API void PrintSelf(ostream& os, vtkIndent indent) override;
 
     /// Set associated representation.
     FWRENDERVTK_API void SetRepresentation(fwVtkWheelRepresentation* rep);
@@ -55,7 +60,7 @@ public:
     FWRENDERVTK_API fwVtkWheelRepresentation* GetRepresentation() const;
 
     /// Creates a wheel representation as default.
-    FWRENDERVTK_API void CreateDefaultRepresentation() VTK_OVERRIDE;
+    FWRENDERVTK_API void CreateDefaultRepresentation() override;
 
     FWRENDERVTK_API void SetWheelUpdateCallback(std::function<void (double, double, double)> f);
 
@@ -65,7 +70,7 @@ private:
     fwVtkWheelWidget();
 
     /// Destructor.
-    ~fwVtkWheelWidget() VTK_OVERRIDE
+    ~fwVtkWheelWidget() override
     {
     }
 
@@ -88,8 +93,8 @@ private:
         Outside
     } WidgetState;
 
-    fwVtkWheelWidget(const fwVtkWheelWidget&) VTK_DELETE_FUNCTION;
-    void operator=(const fwVtkWheelWidget&) VTK_DELETE_FUNCTION;
+    fwVtkWheelWidget(const fwVtkWheelWidget&) = delete;
+    void operator=(const fwVtkWheelWidget&)   = delete;
 
     /// Records the mouse position when selecting.
     int m_initMouseX;
@@ -102,4 +107,6 @@ private:
     std::function< void (double, double, double) > m_wheelUpdateCallback;
 };
 
-#endif // __FWRENDERVTK_VTK_FWVTKWHEELWIDGET_HPP__
+} // namespace vtk
+
+} // namespace fwRenderVTK

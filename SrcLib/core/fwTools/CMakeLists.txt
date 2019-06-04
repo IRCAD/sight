@@ -1,6 +1,6 @@
 fwLoadProperties()
 
-find_package(Boost QUIET COMPONENTS regex signals REQUIRED)
+find_package(Boost QUIET COMPONENTS regex REQUIRED)
 
 target_link_libraries(${FWPROJECT_NAME} PRIVATE Boost::regex)
 

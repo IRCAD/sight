@@ -148,20 +148,30 @@ void SPointCloudFromDepthMap::updating()
         {
             pointCloud->allocatePointColors(::fwData::Mesh::ColorArrayTypes::RGBA);
         }
+        auto sig = pointCloud->signal< ::fwData::Mesh::ModifiedSignalType >(::fwData::Mesh::s_MODIFIED_SIG);
+        sig->asyncEmit();
     }
 
     if (rgbMap)
     {
         this->depthMapToPointCloudRGB(depthCalibration, colorCalibration, depthMap, rgbMap, extrinsicMatrix,
                                       pointCloud);
+
+        auto sig =
+            pointCloud->signal< ::fwData::Mesh::VertexModifiedSignalType >(::fwData::Mesh::s_VERTEX_MODIFIED_SIG);
+        sig->asyncEmit();
+
+        auto sig2 = pointCloud->signal< ::fwData::Mesh::PointColorsModifiedSignalType >(
+            ::fwData::Mesh::s_POINT_COLORS_MODIFIED_SIG);
+        sig2->asyncEmit();
     }
     else
     {
         this->depthMapToPointCloud(depthCalibration, depthMap, pointCloud);
+        auto sig =
+            pointCloud->signal< ::fwData::Mesh::VertexModifiedSignalType >(::fwData::Mesh::s_VERTEX_MODIFIED_SIG);
+        sig->asyncEmit();
     }
-
-    auto sig = pointCloud->signal< ::fwData::Mesh::ModifiedSignalType >(::fwData::Mesh::s_MODIFIED_SIG);
-    sig->asyncEmit();
 
     m_sigComputed->asyncEmit();
 }

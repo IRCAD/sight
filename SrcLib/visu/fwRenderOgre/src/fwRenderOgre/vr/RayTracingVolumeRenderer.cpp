@@ -404,7 +404,10 @@ void RayTracingVolumeRenderer::setFocalLength(float focalLength)
 
 void RayTracingVolumeRenderer::clipImage(const ::Ogre::AxisAlignedBox& clippingBox)
 {
-    IVolumeRenderer::clipImage(clippingBox);
+    const ::Ogre::AxisAlignedBox maxBoxSize(::Ogre::Vector3::ZERO, ::Ogre::Vector3(1.f, 1.f, 1.f));
+    const ::Ogre::AxisAlignedBox clampedClippingBox = maxBoxSize.intersection(clippingBox);
+
+    IVolumeRenderer::clipImage(clampedClippingBox);
 
     m_entryPointGeometry->beginUpdate(0);
     {
@@ -422,10 +425,10 @@ void RayTracingVolumeRenderer::clipImage(const ::Ogre::AxisAlignedBox& clippingB
     }
     m_entryPointGeometry->end();
 
-    m_proxyGeometry->clipGrid(clippingBox);
+    m_proxyGeometry->clipGrid(clampedClippingBox);
 
-    m_RTVSharedParameters->setNamedConstant("u_f3VolumeClippingBoxMinPos_Ms", clippingBox.getMinimum());
-    m_RTVSharedParameters->setNamedConstant("u_f3VolumeClippingBoxMaxPos_Ms", clippingBox.getMaximum());
+    m_RTVSharedParameters->setNamedConstant("u_f3VolumeClippingBoxMinPos_Ms", clampedClippingBox.getMinimum());
+    m_RTVSharedParameters->setNamedConstant("u_f3VolumeClippingBoxMaxPos_Ms", clampedClippingBox.getMaximum());
 }
 
 //-----------------------------------------------------------------------------

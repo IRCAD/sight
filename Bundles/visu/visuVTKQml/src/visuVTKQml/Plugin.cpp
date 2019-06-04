@@ -31,7 +31,7 @@
 #include <QGuiApplication>
 #include <QQmlEngine>
 #include <QSurfaceFormat>
-#include <QVTKOpenGLWidget.h>
+#include <QVTKOpenGLNativeWidget.h>
 #include <vtkGenericOpenGLRenderWindow.h>
 
 namespace visuVTKQml
@@ -54,7 +54,7 @@ Plugin::Plugin() noexcept
                 qGuiApp == nullptr );
 
     vtkOpenGLRenderWindow::SetGlobalMaximumNumberOfMultiSamples(0);
-    QSurfaceFormat::setDefaultFormat(QVTKOpenGLWidget::defaultFormat());
+    QSurfaceFormat::setDefaultFormat(QVTKOpenGLNativeWidget::defaultFormat());
 }
 
 //-----------------------------------------------------------------------------

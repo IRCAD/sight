@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -34,6 +34,12 @@
 #include <vtkRenderer.h>
 #include <vtkRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
+
+namespace fwRenderVTK
+{
+
+namespace vtk
+{
 
 vtkStandardNewMacro(InteractorStyle3DForNegato);
 
@@ -444,3 +450,9 @@ void InteractorStyle3DForNegato::Spin()
         rwi->Render();
     }
 }
+
+//----------------------------------------------------------------------------
+
+} // namespace vtk
+
+} // namespace fwRenderVTK

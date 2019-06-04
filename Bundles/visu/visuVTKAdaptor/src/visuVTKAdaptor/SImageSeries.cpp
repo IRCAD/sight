@@ -161,8 +161,7 @@ void SImageSeries::updating()
     negato->setRendererId( this->getRendererId() );
     negato->setPickerId( this->getPickerId() );
     negato->setRenderService(this->getRenderService());
-
-    negato->set3dMode(this->is3dModeEnabled());
+    negato->set3dMode((this->is3dModeEnabled().value == ::boost::tribool::true_value));
     negato->setSliceMode(this->getSliceMode());
     negato->setOrientation(m_helper.getOrientation());
     negato->setAllowAlphaInTF(m_allowAlphaInTF);
