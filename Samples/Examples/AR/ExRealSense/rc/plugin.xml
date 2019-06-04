@@ -48,6 +48,7 @@
                         <menuItem name="start" icon="arMedia-0.1/icons/start-cam.svg" />
                         <menuItem name="pause" icon="arMedia-0.1/icons/pause-cam.svg" />
                         <menuItem name="stop" icon="arMedia-0.1/icons/stop-cam.svg" />
+                        <menuItem name="record" icon="arMedia-0.1/icons/start-record.svg" icon2="arMedia-0.1/icons/stop.svg" style="check" />
                         <separator/>
                         <editor />
                         <editor />
@@ -55,6 +56,7 @@
                         <separator/>
                         <editor />
                         <spacer />
+                        <menuItem name="Configure recording path" icon="arMedia-0.1/icons/save.svg" />
                         <menuItem name="Show/hide filter Settings" icon="media-0.1/icons/Settings.svg" style="check" />
                     </layout>
                 </gui>
@@ -62,10 +64,12 @@
                     <menuItem sid="startVideo" start="yes" />
                     <menuItem sid="pauseVideo" start="yes" />
                     <menuItem sid="stopVideo" start="yes" />
+                    <menuItem sid="record" start="yes" />
                     <editor sid="presets" start="yes" />
                     <editor sid="infraredEmitter" start="yes" />
                     <editor sid="switchInfraToColor" start="yes" />
                     <editor sid="distance" start="yes"/>
+                    <menuItem sid="setRecordingPath" start="yes" />
                     <menuItem sid="showFilterSettings" start="yes" />
                 </registry>
             </service>
@@ -331,6 +335,18 @@
                     <slot>stopVideo/setInexecutable</slot>
                     <slot>grabber/stopCamera</slot>
                     <slot>startVideo/setExecutable</slot>
+                </slots>
+            </service>
+
+            <service uid="record" type="::gui::action::SSlotCaller">
+                <slots>
+                    <slot>grabber/record</slot>
+                </slots>
+            </service>
+
+            <service uid="setRecordingPath" type="::gui::action::SSlotCaller">
+                <slots>
+                    <slot>grabber/configureRecordingPath</slot>
                 </slots>
             </service>
 

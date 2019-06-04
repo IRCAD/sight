@@ -49,7 +49,7 @@ namespace videoRealSense
  * A Complete documentation about RealSense camera can be found here:
  * https://github.com/IntelRealSense/librealsense/blob/master/doc/readme.md
  *
- * \b Tags: DEVICE
+ * \b Tags: FILE, DEVICE
  *
  * @section Signals Signals
  * - \b distanceComputed(double): Signal sent when the distance (at the center of depth map) is computed.
@@ -58,6 +58,7 @@ namespace videoRealSense
  * - \b startCamera() : This slot is called to initialize and start camera (restart camera if is already started).
  * - \b stopCamera()  : This slot is called to stop camera streams.
  * - \b pauseCamera() : This slot is called to pause/unpause the camera streams.
+ * - \b record(): This slot is called to record current device in a .bag file.
  * - \b setBoolParameter(bool value, std::string key) : Slot called when a boolean parameter changes:
  *   - key 'switchToIR': switch the color stream by infrared stream if true.
  *   - key 'IREmitter': enable/disable the IR Emitter.
@@ -106,6 +107,7 @@ namespace videoRealSense
         <out key="pointcloud" uid="..." />
         <inout key="cameraSeries" uid="..." />
         <config fps="30" colorW="1280" colorH="720" depthW="1280" depthH="720" switchToIR="true/false" preset="..." />
+        <recordFile>/path/to/the/file.bag</recordFile>
    </service>
    @endcode
  * @subsection In-Out In-Out
@@ -166,6 +168,8 @@ namespace videoRealSense
  *
  * For more convenience we set the same fps for both color and depth streams.
  *
+ *
+ * - \b recordFile (optionnal): path & filename where recording will be saved.
  */
 
 class VIDEOREALSENSE_CLASS_API SScan : public ::arServices::IRGBDGrabber
@@ -300,6 +304,12 @@ private:
 
     }
 
+    ///SLOT: Start recording session, also open dialog to select filename if m_recordingFileName is not set.
+    void record();
+
+    /// SLOT: Configure recording filename path.
+    void configureRecordingPath();
+
     // Internal functions
 
     /**
@@ -412,6 +422,12 @@ private:
 
     /// True to push infrared frames in color TL.
     std::atomic_bool m_switchInfra2Color { false };
+
+    /// True if device needs to be recorded.
+    bool m_record {false};
+
+    /// Name of the recording file.
+    std::string m_recordingFileName;
 
 };
 } //namespace videoRealSense

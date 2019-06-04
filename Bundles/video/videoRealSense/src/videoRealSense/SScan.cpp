@@ -32,12 +32,14 @@
 
 #include <fwCore/base.hpp>
 
+#include <fwData/location/SingleFile.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
 
 #include <fwDataTools/helper/Image.hpp>
 #include <fwDataTools/helper/Mesh.hpp>
 
+#include <fwGui/dialog/LocationDialog.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/SelectorDialog.hpp>
 
@@ -84,10 +86,13 @@ static const std::string s_TEMPORAL_SMOOTH_DELTA       = "temporalSmoothDelta";
 static const std::string s_TEMPORAL_PERSISTENCY        = "temporalPersistency";
 static const std::string s_HOLE_FILLING                = "holeFilling";
 
-static const ::fwCom::Slots::SlotKeyType s_SET_ENUM_PARAMETER_SLOT   = "setEnumParameter";
-static const ::fwCom::Slots::SlotKeyType s_SET_BOOL_PARAMETER_SLOT   = "setBoolParameter";
-static const ::fwCom::Slots::SlotKeyType s_SET_INT_PARAMETER_SLOT    = "setIntParameter";
-static const ::fwCom::Slots::SlotKeyType s_SET_DOUBLE_PARAMETER_SLOT = "setDoubleParameter";
+static const ::fwCom::Slots::SlotKeyType s_SET_ENUM_PARAMETER_SLOT       = "setEnumParameter";
+static const ::fwCom::Slots::SlotKeyType s_SET_BOOL_PARAMETER_SLOT       = "setBoolParameter";
+static const ::fwCom::Slots::SlotKeyType s_SET_INT_PARAMETER_SLOT        = "setIntParameter";
+static const ::fwCom::Slots::SlotKeyType s_SET_DOUBLE_PARAMETER_SLOT     = "setDoubleParameter";
+static const ::fwCom::Slots::SlotKeyType s_CONFIGURE_RECORDING_PATH_SLOT = "configureRecordingPath";
+
+static const ::fwCom::Slots::SlotKeyType s_RECORD = "record";
 
 static const ::fwCom::Signals::SignalKeyType s_DISTANCE_COMPUTED_SIG = "distanceComputed";
 
@@ -102,6 +107,8 @@ SScan::SScan() noexcept
     newSlot(s_SET_BOOL_PARAMETER_SLOT, &SScan::setBoolParameter, this);
     newSlot(s_SET_INT_PARAMETER_SLOT, &SScan::setIntParameter, this);
     newSlot(s_SET_DOUBLE_PARAMETER_SLOT, &SScan::setDoubleParameter, this);
+    newSlot(s_CONFIGURE_RECORDING_PATH_SLOT, &SScan::configureRecordingPath, this);
+    newSlot(s_RECORD, &SScan::record, this);
 
     newSignal<DistanceComputedSignalType>(s_DISTANCE_COMPUTED_SIG);
 }
@@ -428,6 +435,11 @@ void SScan::startCamera()
         cfg.enable_stream(RS2_STREAM_INFRARED, m_cameraSettings.colorW,  m_cameraSettings.colorH,
                           RS2_FORMAT_RGBA8, m_cameraSettings.fps);
 
+        if(m_record)
+        {
+            cfg.enable_record_to_file(m_recordingFileName);
+        }
+
         profile         = m_pipe->start(cfg);
         m_currentDevice = profile.get_device();
 
@@ -535,6 +547,106 @@ void SScan::pauseCamera()
     {
         // Enable/disable pause mode.
         m_pause = !m_pause;
+
+        // Also pause the recording if needed.
+        if(m_record)
+        {
+            if(m_pause)
+            {
+                m_currentDevice.as< ::rs2::recorder>().pause();
+            }
+            else
+            {
+                m_currentDevice.as< ::rs2::recorder>().resume();
+            }
+        }
+
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void SScan::record()
+{
+    // If already recording, stop it.
+    if(m_record)
+    {
+        m_record = false;
+        if(m_running)
+        {
+            // Restart camera to stop recording pipeline.
+            this->stopCamera();
+            this->startCamera();
+        }
+        return;
+    }
+    // Check recording file first.
+    bool erase = true;
+
+    // If file already exists, should we erase it ?
+    if(::boost::filesystem::exists(m_recordingFileName))
+    {
+        ::fwGui::dialog::MessageDialog warnDial;
+        warnDial.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
+        warnDial.setTitle("File already exists");
+        warnDial.setMessage("File: " + m_recordingFileName
+                            + " already exists, are you sure you want to erase it ?");
+        warnDial.addButton(::fwGui::dialog::IMessageDialog::Buttons::YES);
+        warnDial.addButton(::fwGui::dialog::IMessageDialog::Buttons::NO);
+        warnDial.setDefaultButton(::fwGui::dialog::IMessageDialog::Buttons::NO);
+
+        const auto res = warnDial.show();
+
+        if(res == ::fwGui::dialog::IMessageDialog::Buttons::NO)
+        {
+            erase = false;
+        }
+    }
+
+    // Ask user for a new file if filename is empty OR if filename exists but user don't want to erase it.
+    if(m_recordingFileName.empty() || (!erase && !m_recordingFileName.empty()))
+    {
+        // Configure recording path.
+        this->configureRecordingPath();
+    }
+
+    // If filename is still empty at this point = user cancel the location dialog or location is not valid, so skip
+    // recording.
+    if(m_recordingFileName.empty())
+    {
+        return;
+    }
+
+    // Everything is ok at this point, we can start recording.
+    m_record = true;
+    // If grabbing thread is running.
+    if(m_running)
+    {
+        // restart camera to enable recording pipeline.
+        this->stopCamera();
+        this->startCamera();
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void SScan::configureRecordingPath()
+{
+    // Ask user for a new file name.
+    ::fwGui::dialog::LocationDialog dial;
+    dial.setTitle("Name of recording file");
+    dial.setType(::fwGui::dialog::ILocationDialog::SINGLE_FILE);
+    dial.setOption(::fwGui::dialog::ILocationDialog::WRITE);
+
+    dial.addFilter("Bag files", "*.bag");
+
+    ::fwData::location::SingleFile::sptr result
+        = ::fwData::location::SingleFile::dynamicCast( dial.show() );
+
+    // If filename is ok.
+    if(result)
+    {
+        m_recordingFileName = result->getPath().string();
     }
 }
 
