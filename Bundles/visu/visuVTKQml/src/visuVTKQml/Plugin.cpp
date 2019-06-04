@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -31,7 +31,7 @@
 #include <QApplication>
 #include <QQmlEngine>
 #include <QSurfaceFormat>
-#include <QVTKOpenGLWidget.h>
+#include <QVTKOpenGLNativeWidget.h>
 #include <vtkGenericOpenGLRenderWindow.h>
 
 namespace visuVTKQml
@@ -54,7 +54,7 @@ Plugin::Plugin() noexcept
                 qApp == nullptr );
 
     vtkOpenGLRenderWindow::SetGlobalMaximumNumberOfMultiSamples(0);
-    QSurfaceFormat::setDefaultFormat(QVTKOpenGLWidget::defaultFormat());
+    QSurfaceFormat::setDefaultFormat(QVTKOpenGLNativeWidget::defaultFormat());
 }
 
 //-----------------------------------------------------------------------------
