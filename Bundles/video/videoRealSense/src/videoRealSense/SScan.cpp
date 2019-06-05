@@ -95,6 +95,8 @@ static const ::fwCom::Slots::SlotKeyType s_CONFIGURE_RECORDING_PATH_SLOT = "conf
 static const ::fwCom::Slots::SlotKeyType s_RECORD = "record";
 
 static const ::fwCom::Signals::SignalKeyType s_DISTANCE_COMPUTED_SIG = "distanceComputed";
+static const ::fwCom::Signals::SignalKeyType s_DEVICE_PLAYED_SIG     = "devicePlayed";
+static const ::fwCom::Signals::SignalKeyType s_FILE_PLAYED_SIG       = "filePlayed";
 
 // Determine depth value corresponding to one meter
 static const float s_METERS_TO_MMS = 1000.f;
@@ -111,6 +113,8 @@ SScan::SScan() noexcept
     newSlot(s_RECORD, &SScan::record, this);
 
     newSignal<DistanceComputedSignalType>(s_DISTANCE_COMPUTED_SIG);
+    newSignal<DevicePlayedSignalType>(s_DEVICE_PLAYED_SIG);
+    newSignal<FilePlayedSignalType>(s_FILE_PLAYED_SIG);
 }
 
 //-----------------------------------------------------------------------------
@@ -175,6 +179,9 @@ void SScan::updating()
 
 std::string SScan::selectDevice()
 {
+
+    // TODO: Check if a device is already selected (via Qt).
+
     // Obtain a list of devices currently present on the system
     ::rs2::context ctx;
     const auto devices          = ctx.query_devices();
@@ -300,7 +307,7 @@ void SScan::initialize(const ::rs2::pipeline_profile& _profile)
             const rs2_intrinsics colorIntrinsics = colorStream.get_intrinsics();
             const rs2_extrinsics extrinsic       = depthStream.get_extrinsics_to(colorStream);
 
-            // Construct a explicit camera name: Intel RealSense D415(839112062452)
+            // Construct an explicit camera name: Intel RealSense D415(839112062452)
             const std::string cameraName = std::string(m_currentDevice.get_info(RS2_CAMERA_INFO_NAME)) + "(" +
                                            std::string(m_currentDevice.get_info(RS2_CAMERA_INFO_SERIAL_NUMBER)) + ")";
 
@@ -402,10 +409,32 @@ void SScan::startCamera()
         OSLM_WARN("Camera is still running. Nothing is done.");
         return;
     }
-    // Test if previous device was kept (changing presets cases).
-    if(m_deviceID.empty())
+
+    ::arData::CameraSeries::sptr cameraSeries = this->getInOut< ::arData::CameraSeries>(s_CAMERA_SERIES_INOUT);
+    // Extract the first camera (source should be the same).
+    const auto camera = cameraSeries->getCamera(0);
+    if (camera->getCameraSource() == ::arData::Camera::FILE)
     {
-        m_deviceID = this->selectDevice();
+        m_playbackMode     = true;
+        m_playbackFileName = camera->getVideoFile().string();
+        this->signal<FilePlayedSignalType>(s_FILE_PLAYED_SIG)->asyncEmit();
+    }
+    else if(camera->getCameraSource() == ::arData::Camera::STREAM)
+    {
+        SLM_ERROR("RealSense grabber cannot open STREAM type, please select DEVICE or FILE.");
+        return;
+    }
+    // CameraSource is unknow or DEVICE we open a device. This allows to work without camera selector.
+    else
+    {
+        m_playbackMode = false;
+        // Test if previous device was kept (changing presets cases).
+        if(m_deviceID.empty())
+        {
+            m_deviceID = this->selectDevice();
+        }
+
+        this->signal<DevicePlayedSignalType>(s_DEVICE_PLAYED_SIG)->asyncEmit();
     }
 
     ::rs2::config cfg;
@@ -415,13 +444,16 @@ void SScan::startCamera()
     ::rs2::pipeline_profile profile;
     try
     {
-        if(m_deviceID.empty())
+        if(m_deviceID.empty() && !m_playbackMode)
         {
             throw std::runtime_error("No RealSense device was found.");
         }
 
-        // Enable selected device
-        cfg.enable_device(m_deviceID);
+        // Enable selected device if playback is disabled.
+        if(!m_playbackMode)
+        {
+            cfg.enable_device(m_deviceID);
+        }
 
         // Enable depth stream (16 bit values)
         cfg.enable_stream(RS2_STREAM_DEPTH, m_cameraSettings.depthW, m_cameraSettings.depthH,
@@ -435,9 +467,16 @@ void SScan::startCamera()
         cfg.enable_stream(RS2_STREAM_INFRARED, m_cameraSettings.colorW,  m_cameraSettings.colorH,
                           RS2_FORMAT_RGBA8, m_cameraSettings.fps);
 
+        // Enable recording if needed.
         if(m_record)
         {
             cfg.enable_record_to_file(m_recordingFileName);
+        }
+
+        // Enable playback if needed.
+        if(m_playbackMode)
+        {
+            cfg.enable_device_from_file(m_playbackFileName);
         }
 
         profile         = m_pipe->start(cfg);
@@ -457,7 +496,11 @@ void SScan::startCamera()
         }
         else
         {
-            throw std::runtime_error("The selected device doesn't support advanced mode. This is required!");
+            // It's Ok if device is in playback mode.
+            if(!m_playbackMode)
+            {
+                throw std::runtime_error("The selected device doesn't support advanced mode. This is required!");
+            }
         }
 
         // Set a preset if there is one (can overwrite resolutions values).
@@ -477,7 +520,12 @@ void SScan::startCamera()
 
         // Get the depth scale: depth in mm corresponding to a depth value of 1.
         m_depthScale = depthSensor.get_depth_scale() * s_METERS_TO_MMS;
-        depthSensor.set_option(RS2_OPTION_EMITTER_ENABLED, (m_cameraSettings.irEmitter ? 1.f : 0.f));
+
+        // Options are read-only when playing from files.
+        if(!m_playbackMode)
+        {
+            depthSensor.set_option(RS2_OPTION_EMITTER_ENABLED, (m_cameraSettings.irEmitter ? 1.f : 0.f));
+        }
 
     }
     catch(const std::exception& e)
@@ -568,6 +616,16 @@ void SScan::pauseCamera()
 
 void SScan::record()
 {
+    // Cannot record when playback a file.
+    if(m_playbackMode)
+    {
+        ::fwGui::dialog::MessageDialog::showMessageDialog(
+            "RealSense Error",
+            "Cannot record when grabber playback a file !",
+            ::fwGui::dialog::IMessageDialog::CRITICAL);
+        return;
+    }
+
     // If already recording, stop it.
     if(m_record)
     {
@@ -1013,22 +1071,26 @@ void SScan::loadPresets(const ::fs::path& _path)
 
 void SScan::setMinMaxRange()
 {
-    try
+    if(!m_playbackMode)
     {
-        // Use the "advanced_mode" to set DepthClampMax value.
-        auto advanced_mode_dev = m_currentDevice.as<rs400::advanced_mode>();
-        auto depth_table       = advanced_mode_dev.get_depth_table();
-        depth_table.depthClampMin = m_cameraSettings.minRange;
-        depth_table.depthClampMax = m_cameraSettings.maxRange;
-        advanced_mode_dev.set_depth_table(depth_table);
-    }
-    catch(const std::exception& e)
-    {
-        ::fwGui::dialog::MessageDialog::showMessageDialog(
-            "RealSense Error",
-            "RealSense device error:" + std::string(e.what()),
-            ::fwGui::dialog::IMessageDialog::CRITICAL);
-        return;
+        try
+        {
+            // Use the "advanced_mode" to set DepthClampMax value.
+            auto advanced_mode_dev = m_currentDevice.as<rs400::advanced_mode>();
+            auto depth_table       = advanced_mode_dev.get_depth_table();
+            depth_table.depthClampMin = m_cameraSettings.minRange;
+            depth_table.depthClampMax = m_cameraSettings.maxRange;
+            advanced_mode_dev.set_depth_table(depth_table);
+        }
+        catch(const std::exception& e)
+        {
+            ::fwGui::dialog::MessageDialog::showMessageDialog(
+                "RealSense Error",
+                "RealSense device error:" + std::string(e.what()),
+                ::fwGui::dialog::IMessageDialog::CRITICAL);
+            return;
+        }
+
     }
 }
 

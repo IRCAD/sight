@@ -181,6 +181,12 @@ public:
     /// Signal send when Distance is computed.
     typedef ::fwCom::Signal< void (double) > DistanceComputedSignalType;
 
+    /// Signal send when stream from a realsense device, can be useful to enable/disable some gui actions.
+    typedef ::fwCom::Signal< void (void) > DevicePlayedSignalType;
+
+    /// Signal send when stream from a file (.bag), can be useful to enable/disable some gui actions.
+    typedef ::fwCom::Signal< void (void) > FilePlayedSignalType;
+
     /// Constructor. Initializes signals/slots.
     VIDEOREALSENSE_API SScan() noexcept;
 
@@ -429,5 +435,10 @@ private:
     /// Name of the recording file.
     std::string m_recordingFileName;
 
+    /// Name of the file to playback.
+    std::string m_playbackFileName;
+
+    /// Enable if camera source = FILE, enable playing from .bag files.
+    bool m_playbackMode {false};
 };
 } //namespace videoRealSense

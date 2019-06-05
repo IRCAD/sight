@@ -25,6 +25,7 @@ set( REQUIREMENTS
 
     videoRealSense
     videoTools
+    videoQt
 
     arMedia
 )

@@ -45,6 +45,7 @@
             <service uid="toolbar" type="::gui::aspect::SDefaultToolBar">
                 <gui>
                     <layout>
+                        <editor />
                         <menuItem name="start" icon="arMedia-0.1/icons/start-cam.svg" />
                         <menuItem name="pause" icon="arMedia-0.1/icons/pause-cam.svg" />
                         <menuItem name="stop" icon="arMedia-0.1/icons/stop-cam.svg" />
@@ -61,6 +62,7 @@
                     </layout>
                 </gui>
                 <registry>
+                    <editor sid="cameraSelector" start="yes" />
                     <menuItem sid="startVideo" start="yes" />
                     <menuItem sid="pauseVideo" start="yes" />
                     <menuItem sid="stopVideo" start="yes" />
@@ -305,6 +307,13 @@
                 </inout>
             </service>
 
+            <!-- GUI to select camera (device, file, or stream) -->
+            <service uid="cameraSelector" type="::videoQt::editor::SCamera">
+                <inout key="cameraSeries" uid="RGBDCameraSeries" />
+                <createCameraNumber>2</createCameraNumber>
+                <videoSupport>yes</videoSupport>
+            </service>
+
             <!-- Manages Sense camera configuration -->
             <service uid="grabber" type="::videoRealSense::SScan" worker="grabber">
                 <inout key="cameraSeries" uid="RGBDCameraSeries" />
@@ -363,12 +372,12 @@
             </connect>
 
             <connect>
-                <signal>infraredEmitter/boolChanged</signal>
-                <signal>switchInfraToColor/boolChanged</signal>
+                 <signal>infraredEmitter/boolChanged</signal>
+                 <signal>switchInfraToColor/boolChanged</signal>
                  <signal>enableSpacialFilterParams/boolChanged</signal>
                  <signal>enableTemporalFilterParams/boolChanged</signal>
                  <signal>enableHoleFillingFilterParams/boolChanged</signal>
-                <slot>grabber/setBoolParameter</slot>
+                 <slot>grabber/setBoolParameter</slot>
             </connect>
 
             <connect>
@@ -405,6 +414,30 @@
             <connect>
                 <signal>grabber/distanceComputed</signal>
                 <slot>distance/setDoubleParameter</slot>
+            </connect>
+
+            <connect>
+                <signal>camera1/idModified</signal>
+                <slot>frameGrabber1/stopCamera</slot>
+                <slot>frameGrabber2/stopCamera</slot>
+            </connect>
+
+            <connect>
+                <signal>grabber/filePlayed</signal>
+                <slot>record/setInexecutable</slot>
+                <slot>infraredEmitter/disable</slot>
+                <slot>presets/disable</slot>
+                <slot>rangeEditor/disable</slot>
+                <slot>setRecordingPath/setInexecutable</slot>
+            </connect>
+
+            <connect>
+                <signal>grabber/devicePlayed</signal>
+                <slot>record/setExecutable</slot>
+                <slot>infraredEmitter/enable</slot>
+                <slot>presets/enable</slot>
+                <slot>rangeEditor/enable</slot>
+                <slot>setRecordingPath/setExecutable</slot>
             </connect>
 
             <!-- layouts -->
