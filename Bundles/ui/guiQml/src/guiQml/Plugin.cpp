@@ -28,30 +28,12 @@
 
 #include <fwQt/WorkerQt.hpp>
 
-#include <fwRuntime/operations.hpp>
 #include <fwRuntime/profile/Profile.hpp>
-#include <fwRuntime/Runtime.hpp>
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 
-#include <fwServices/macros.hpp>
 #include <fwServices/registry/ActiveWorkers.hpp>
 
-#include <fwThread/Timer.hpp>
-#include <fwThread/Worker.hpp>
-
-#include <fwTools/Os.hpp>
-
-#include <QDir>
-#include <QEvent>
-#include <QFile>
-#include <QFont>
-#include <QPointer>
-#include <QResource>
 #include <QSharedPointer>
-#include <QString>
-#include <QStringList>
-#include <QTextStream>
-#include <QTimer>
 
 #include <functional>
 

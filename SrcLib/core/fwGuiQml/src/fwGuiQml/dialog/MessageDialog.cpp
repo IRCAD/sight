@@ -179,6 +179,7 @@ void MessageDialog::emitButtons()
         }
     }
     m_buttonsDialog = buttons;
+    Q_EMIT buttonsChanged();
 }
 
 //------------------------------------------------------------------------------

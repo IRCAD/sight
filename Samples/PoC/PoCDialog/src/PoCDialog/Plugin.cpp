@@ -65,7 +65,7 @@ void Plugin::initialize()
 {
     SPTR(::fwQml::QmlEngine) engine = ::fwQml::QmlEngine::getDefault();
 
-    auto path = ::fwRuntime::getBundleResourceFilePath("PoCDialog-0.1/ui.qml");
+    auto path = ::fwRuntime::getBundleResourceFilePath("PoCDialog", "ui.qml");
 
     engine->loadMainComponent(path);
 }

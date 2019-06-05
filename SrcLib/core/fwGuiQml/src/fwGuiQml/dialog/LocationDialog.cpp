@@ -111,6 +111,9 @@ LocationDialog::LocationDialog(::fwGui::GuiBaseObject::Key key) :
     connect(dialog, SIGNAL(accepted()), &loop, SLOT(quit()));
     connect(dialog, SIGNAL(rejected()), &loop, SLOT(quit()));
     QMetaObject::invokeMethod(dialog, "open");
+    // If we don't make NoneModal the FileDialog is not render so we simulate a Modal behaviour
+    // by creating a filter of event to prevent all event that are not inside the dialog
+    // for more information: https://bugreports.qt.io/browse/QTBUG-76102
 #ifdef __APPLE__
     qGuiApp->installEventFilter(this);
 #endif
