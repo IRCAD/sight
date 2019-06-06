@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -80,9 +80,11 @@ protected:
 
     /// Configure the adaptor
     VISUOGREADAPTOR_API virtual void configuring() final override;
-    /// Do nothing
+    /// Find the material on which this service works.
     VISUOGREADAPTOR_API virtual void starting() final override;
-    /// Do nothing
+    /// Update the shader parameter with the input.
+    VISUOGREADAPTOR_API virtual void updating() final override;
+    /// Clear resources.
     VISUOGREADAPTOR_API virtual void stopping() final override;
     /// Do nothing
     VISUOGREADAPTOR_API virtual void swapping() final override;
