@@ -16,7 +16,7 @@ public:
     fwCoreServiceClassDefinitionsMacro((SHybridMarkerTracker)(arServices::ITracker));
 
 //    constructor
-    HYBRIDMARKERTRACKER_API SHybridMarkerTracker(std::string filename) noexcept;
+    HYBRIDMARKERTRACKER_API SHybridMarkerTracker() noexcept;
 //    destructor
     HYBRIDMARKERTRACKER_API virtual ~SHybridMarkerTracker() noexcept;
 
@@ -24,6 +24,7 @@ public:
     HYBRIDMARKERTRACKER_API void process(const ::cv::Mat &img, ::cv::Mat &out_img);
 
     ::cv::Mat current_cHp;
+    HYBRIDMARKERTRACKER_API void readSettings(std::string filename) const;
 
     // Downsample Scale
     unsigned int img_scale;
@@ -52,8 +53,8 @@ protected:
             ::cv::InputArray rvec1, ::cv::InputArray tvec1,
             ::cv::InputArray rvec2, ::cv::InputArray tvec2,
             const std::vector<::cv::Point3f> &pts_3d,
-            ::cv::InputArray rvec, ::cv::InputArray tvec
-            );
+            ::cv::OutputArray rvec, ::cv::OutputArray tvec
+    );
 //    Detect marker
     HYBRIDMARKERTRACKER_API virtual void tracking(::fwCore::HiResClock::HiResClockType& timestamp) override;
 private:

@@ -13,9 +13,17 @@
 #include <fwData/mt/ObjectReadToWriteLock.hpp>
 namespace hybridMarkerTracker
 {
+
 fwServicesRegisterMacro(::arServices::ITracker, ::hybridMarkerTracker::SHybridMarkerTracker);
-SHybridMarkerTracker::SHybridMarkerTracker (std::string filename):
-tracker(NULL)
+SHybridMarkerTracker::SHybridMarkerTracker():tracker(NULL)
+{}
+
+SHybridMarkerTracker::~SHybridMarkerTracker()
+{
+    if(!tracker)
+        delete tracker;
+}
+void SHybridMarkerTracker::readSettings(std::filename) const
 {
     std::cout << "Initializing..." << std::endl;
     fs.open(filename, ::cv::FileStorage::READ);
@@ -190,13 +198,6 @@ tracker(NULL)
         exit(0);
     }
 }
-
-SHybridMarkerTracker::~SHybridMarkerTracker()
-{
-    if(!tracker)
-        delete tracker;
-}
-
 void SHybridMarkerTracker::process(const ::cv::Mat &img, ::cv::Mat &out_img)
 {
     m_img_track = img;
@@ -271,8 +272,7 @@ void SHybridMarkerTracker::process(const ::cv::Mat &img, ::cv::Mat &out_img)
                 // Use chessboard features to disambigulate if two solutions are similar
                 if (is_chess_detect && abs(error1 - error2) < 0.1 && error1 < 0.2 && error2 < 0.2)
                 {
-                    SHybridMarkerTracker::calculate_correct_pose(rvec1, tvec1, rvec2, tvec2,
-                                           pts_3d, rvec, tvec);
+                    calculate_correct_pose(rvec1, tvec1, rvec2, tvec2, pts_3d, rvec, tvec);
                 }
                 else
                 {
@@ -422,10 +422,11 @@ cv::Vec2f SHybridMarkerTracker::error_dist_points(const std::vector<cv::Point2f>
     return sum_error;
 }
 
-void SHybridMarkerTracker::calculate_correct_pose(cv::InputArray rvec1, cv::InputArray tvec1,
-                                         cv::InputArray rvec2, cv::InputArray tvec2,
-                                         const std::vector<cv::Point3f> &pts_3d,
-                                         cv::OutputArray rvec, cv::OutputArray tvec)
+void SHybridMarkerTracker::calculate_correct_pose(
+        ::cv::InputArray rvec1, ::cv::InputArray tvec1,
+        ::cv::InputArray rvec2, ::cv::InputArray tvec2,
+        const std::vector<::cv::Point3f> &pts_3d,
+        ::cv::OutputArray rvec, ::cv::OutputArray tvec)
 {
     std::vector<cv::Point2f> projPoints_1, projPoints_2;
 
