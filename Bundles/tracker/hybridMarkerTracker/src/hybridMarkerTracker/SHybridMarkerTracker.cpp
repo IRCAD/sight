@@ -1,6 +1,19 @@
 #include <cmath>
 #include "hybridMarkerTracker/SHybridMarkerTracker.hpp"
 
+#include <arData/Camera.hpp>
+#include <arData/FrameTL.hpp>
+#include <arData/MarkerMap.hpp>
+#include <arData/MarkerTL.hpp>
+
+#include <fwCom/Signal.hxx>
+#include <fwCom/Slots.hxx>
+
+#include <fwData/Image.hpp>
+#include <fwData/mt/ObjectReadToWriteLock.hpp>
+namespace hybridMarkerTracker
+{
+fwServicesRegisterMacro(::arServices::ITracker, ::hybridMarkerTracker::SHybridMarkerTracker);
 SHybridMarkerTracker::SHybridMarkerTracker (std::string filename):
 tracker(NULL)
 {
@@ -258,7 +271,7 @@ void SHybridMarkerTracker::process(const ::cv::Mat &img, ::cv::Mat &out_img)
                 // Use chessboard features to disambigulate if two solutions are similar
                 if (is_chess_detect && abs(error1 - error2) < 0.1 && error1 < 0.2 && error2 < 0.2)
                 {
-                    calculate_correct_pose(rvec1, tvec1, rvec2, tvec2,
+                    SHybridMarkerTracker::calculate_correct_pose(rvec1, tvec1, rvec2, tvec2,
                                            pts_3d, rvec, tvec);
                 }
                 else
@@ -500,4 +513,5 @@ void SHybridMarkerTracker::draw_rect(const cv::Mat &cHp, cv::Mat & img, cv::Scal
     //cv::line(img, proj_coord[0], proj_coord[1], cv::Scalar(0, 0, 255),4);
     //cv::line(img, proj_coord[0], proj_coord[2], cv::Scalar(0, 255, 0),4);
     //cv::line(img, proj_coord[0], proj_coord[3], cv::Scalar(255, 0, 0),4);
+}
 }

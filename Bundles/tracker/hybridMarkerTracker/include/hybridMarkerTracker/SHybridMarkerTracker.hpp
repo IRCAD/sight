@@ -5,6 +5,7 @@
 #include <arServices/ITracker.hpp>
 #include <tracker_keydot.h>
 #include <tracker_curvedot.h>
+#include "hybridMarkerTracker/config.hpp"
 
 namespace hybridMarkerTracker
 {
@@ -15,12 +16,12 @@ public:
     fwCoreServiceClassDefinitionsMacro((SHybridMarkerTracker)(arServices::ITracker));
 
 //    constructor
-    HYBRIDMARKERTRACKER_CLASS_API SHybridMarkerTracker(std::string filename) noexcept;
+    HYBRIDMARKERTRACKER_API SHybridMarkerTracker(std::string filename) noexcept;
 //    destructor
-    HYBRIDMARKERTRACKER_CLASS_API virtual ~SHybridMarkerTracker() noexcept;
+    HYBRIDMARKERTRACKER_API virtual ~SHybridMarkerTracker() noexcept;
 
 //    Start process timer
-    HYBRIDMARKERTRACKER_CLASS_API void process(const ::cv::Mat &img, ::cv::Mat &out_img);
+    HYBRIDMARKERTRACKER_API void process(const ::cv::Mat &img, ::cv::Mat &out_img);
 
     ::cv::Mat current_cHp;
 
@@ -32,29 +33,29 @@ public:
 protected:
 
 //    to configure the service
-    HYBRIDMARKERTRACKER_CLASS_API void configuring() override;
+    HYBRIDMARKERTRACKER_API void configuring() override;
 
 //    to start the service
-    HYBRIDMARKERTRACKER_CLASS_API void starting() override;
+    HYBRIDMARKERTRACKER_API void starting() override;
 
 //    to stop the service
-    HYBRIDMARKERTRACKER_CLASS_API void stopping() override;
+    HYBRIDMARKERTRACKER_API void stopping() override;
 
 //    to update the service
-    HYBRIDMARKERTRACKER_CLASS_API void updating() override;
+    HYBRIDMARKERTRACKER_API void updating() override;
 
 //    IPPE Pose solver
-    HYBRIDMARKERTRACKER_CLASS_API IPPE::Posesolver ippe_Solver;
+    HYBRIDMARKERTRACKER_API IPPE::PoseSolver ippe_solver;
 
 //    Disambiguate pose by using chess line
-    HYBRIDMARKERTRACKER_CLASS_API calculate_correct_pose(
+    HYBRIDMARKERTRACKER_API void calculate_correct_pose(
             ::cv::InputArray rvec1, ::cv::InputArray tvec1,
             ::cv::InputArray rvec2, ::cv::InputArray tvec2,
             const std::vector<::cv::Point3f> &pts_3d,
             ::cv::InputArray rvec, ::cv::InputArray tvec
             );
 //    Detect marker
-    HYBRIDMARKERTRACKER_CLASS_API virtual void tracking(::fwCore::HiResClock::HiResClockType& timestamp) override;
+    HYBRIDMARKERTRACKER_API virtual void tracking(::fwCore::HiResClock::HiResClockType& timestamp) override;
 private:
 
     ::cv::Mat m_img_track;

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <fwRuntime/Plugin.hpp>
+#include "hybridMarkerTracker/config.hpp"
 
 namespace hybridMarkerTracker
 {
