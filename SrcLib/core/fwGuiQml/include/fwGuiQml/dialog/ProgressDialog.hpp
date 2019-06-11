@@ -44,6 +44,8 @@ class FWGUIQML_CLASS_API ProgressDialog : public QObject,
 {
 Q_OBJECT
 Q_PROPERTY(bool visible MEMBER m_visible)
+Q_PROPERTY(QString title MEMBER m_title NOTIFY titleChanged)
+Q_PROPERTY(bool hasCallback MEMBER m_hasCallback NOTIFY hasCallbackChanged)
 
 public:
     fwCoreClassDefinitionsWithFactoryMacro((ProgressDialog)(::fwGui::dialog::IProgressDialog),
@@ -65,17 +67,23 @@ public:
     /// override
     FWGUIQML_API void setMessage(const std::string& message) override;
 
+    FWGUIQML_API void hideCancelButton() override;
+
+Q_SIGNALS:
+    void titleChanged();
+    void hasCallbackChanged();
+
 protected Q_SLOTS:
     void cancelPressed() override;
 protected:
     /// the progress dialog to delete it during the destruction of the class
     QObject* m_dialog;
-    /// the message object inside the dialog
-    QObject* m_messageObject;
-    /// the value object of the ProgressBar inside the dialog
-    QObject* m_valueObject;
     /// visible state of the progress dialog
     bool m_visible;
+    /// title string
+    QString m_title;
+    /// boolean to enable Cancel button
+    bool m_hasCallback;
 };
 } // namespace dialog
 } // namespace fwGuiQml

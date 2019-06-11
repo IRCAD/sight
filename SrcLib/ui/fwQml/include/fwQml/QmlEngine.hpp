@@ -65,6 +65,11 @@ public:
     FWQML_API QObject* createComponent(const ::boost::filesystem::path& file, QSharedPointer<QQmlContext>& context);
 
     /**
+     * @brief Load a new component inside the engine to add a new root component
+     */
+    FWQML_API QObject* createComponent(const ::boost::filesystem::path& file);
+
+    /**
      * @brief Define the path as a directory where the engine searches for installed modules in a URL-based directory
      * structure.
      *

@@ -85,6 +85,14 @@ QObject* QmlEngine::createComponent(const ::boost::filesystem::path& file, QShar
 
 //-----------------------------------------------------------------------------
 
+QObject* QmlEngine::createComponent(const ::boost::filesystem::path& file)
+{
+    QQmlComponent component(m_engine, QUrl(QString::fromStdString(file.string())));
+    return component.create();
+}
+
+//-----------------------------------------------------------------------------
+
 void QmlEngine::importModulePath(const ::boost::filesystem::path& path)
 {
     m_engine->addImportPath(QString::fromStdString(path.string()));

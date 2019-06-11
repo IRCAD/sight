@@ -33,7 +33,9 @@
 #include <fwRuntime/operations.hpp>
 
 #include <QGuiApplication>
+#include <QObject>
 #include <QQmlProperty>
+#include <QQuickItem>
 #include <QQuickWindow>
 
 fwGuiRegisterMacro( ::fwGuiQml::dialog::ProgressDialog, ::fwGui::dialog::IProgressDialog::REGISTRY_KEY );
@@ -47,28 +49,51 @@ namespace dialog
 
 ProgressDialog::ProgressDialog( ::fwGui::GuiBaseObject::Key key, const std::string& title, const std::string& message)
 {
-    m_visible = false;
+    m_visible     = false;
+    m_hasCallback = true;
     // get the qml engine QmlApplicationEngine
     SPTR(::fwQml::QmlEngine) engine = ::fwQml::QmlEngine::getDefault();
 
-    // get the path of the qml ui file in the 'rc' directory
-    auto dialogPath = ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/dialog/ProgressDialog.qml");
-    // set the context for the new component
-    QSharedPointer<QQmlContext> context = QSharedPointer<QQmlContext>(new QQmlContext(engine->getRootContext()));
-    context->setContextProperty("progressDialog", this);
-    // load the qml ui component
-    m_dialog = engine->createComponent(dialogPath, context);
-
-    //TODO FIXME: change this progress dialog to only have QProperty and no findChild and find a way to update the
-    // progress bar without the undetermine to true with a Cancel Button
-    m_messageObject = m_dialog->findChild<QObject*>("message");
-    m_valueObject   = m_dialog->findChild<QObject*>("progressBar");
-
+    // find if toolBar exist on the ApplicationWindow
+    auto rootObjects = engine->getRootObjects();
+    QObject* toolBar = nullptr;
+    for (auto root: rootObjects)
+    {
+        toolBar = root->findChild<QObject*>("toolBar");
+        if (toolBar)
+        {
+            break;
+        }
+    }
+    // TODO: find a way to remove the context from rootContext but instead only on the object
+    engine->getRootContext()->setContextProperty("progressDialog", this);
+    if (toolBar)
+    {
+        // get the path of the qml ui file in the 'rc' directory
+        auto dialogPath = ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/dialog/Progress.qml");
+        // load the qml ui component
+        m_dialog = engine->createComponent(dialogPath);
+        QQuickItem* item = qobject_cast<QQuickItem*>(m_dialog);
+        // get ownership to not get Progress qml destroyed
+        QQmlEngine::setObjectOwnership(item, QQmlEngine::CppOwnership);
+        // set visual parent of progress qml for render
+        item->setParent(toolBar);
+        // set the progress qml inside the root
+        item->setParentItem(qobject_cast<QQuickItem*>(toolBar));
+    }
+    else
+    {
+        // get the path of the qml ui file in the 'rc' directory
+        auto dialogPath =
+            ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/dialog/ProgressDialog.qml");
+        // load the qml ui component
+        m_dialog = engine->createComponent(dialogPath);
+        QMetaObject::invokeMethod(m_dialog, "open");
+        m_dialog->setProperty("title", QString::fromStdString(title));
+    }
+    m_visible = true;
     this->setTitle(title);
     this->setMessage(message);
-    m_valueObject->setProperty("text", QString::number(0));
-    m_visible = true;
-    QMetaObject::invokeMethod(m_dialog, "open");
 }
 
 //------------------------------------------------------------------------------
@@ -86,27 +111,20 @@ void ProgressDialog::operator()(float percent, std::string msg)
     // check if the dialog box has been closed by the user and cancel the progress
     if (!m_visible)
     {
-        this->cancelPressed();
+        if (m_cancelCallback)
+        {
+            this->cancelPressed();
+        }
         return;
     }
     int value = int(percent*100);
     if(value != this->m_value)
     {
         OSLM_TRACE( "ProgressDialog msg" << msg << " : " << value <<"%");
-        this->setMessage(msg);
 
         this->m_value = value;
-
-        m_valueObject->setProperty("text", QString::number(value));
-
-        if ( m_processUserEvents )
-        {
-            qGuiApp->processEvents();
-        }
-        else
-        {
-            qGuiApp->processEvents(QEventLoop::ExcludeUserInputEvents);
-        }
+        this->setMessage(msg);
+        this->setTitle(m_title.toStdString());
     }
 }
 
@@ -115,15 +133,11 @@ void ProgressDialog::operator()(float percent, std::string msg)
 void ProgressDialog::setTitle(const std::string& title)
 {
     SLM_ASSERT("The progress dialog is not initialized or has been closed", m_dialog);
-    if (m_visible)
-    {
-        QMetaObject::invokeMethod(m_dialog, "close");
-        qGuiApp->processEvents();
-        m_dialog->setProperty("title", QString::fromStdString(title));
-        QMetaObject::invokeMethod(m_dialog, "open");
-        qGuiApp->processEvents();
-    }
 
+    m_title = QString::fromStdString(title);
+    Q_EMIT titleChanged();
+    m_dialog->setProperty("title", QString::fromStdString(title));
+    QQmlProperty(m_dialog, "title").write(QString::fromStdString(title));
 }
 
 //------------------------------------------------------------------------------
@@ -132,7 +146,7 @@ void ProgressDialog::setMessage(const std::string& msg)
 {
     SLM_ASSERT("The progress dialog is not initialized or has been closed", m_dialog);
     QString message = "";
-    QString title   = m_dialog->property("title").toString();
+    QString title   = m_title;
     if (!title.isEmpty())
     {
         message += title;
@@ -141,8 +155,17 @@ void ProgressDialog::setMessage(const std::string& msg)
     message = message + QString::fromStdString(msg);
     if (m_visible)
     {
-        m_messageObject->setProperty("text", message);
+        QMetaObject::invokeMethod(m_dialog, "changeValue", Q_ARG(QVariant, message), Q_ARG(QVariant, qreal(m_value)));
+        //m_messageObject->setProperty("text", message);
     }
+}
+
+//------------------------------------------------------------------------------
+
+void ProgressDialog::hideCancelButton()
+{
+    m_hasCallback = false;
+    Q_EMIT hasCallbackChanged();
 }
 
 //------------------------------------------------------------------------------

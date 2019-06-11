@@ -52,5 +52,7 @@ ApplicationWindow {
             SelectorDialogs { anchors.fill:parent }
         }
     }
-
+    footer: ToolBar {
+        objectName: "toolBar"
+    }
 }

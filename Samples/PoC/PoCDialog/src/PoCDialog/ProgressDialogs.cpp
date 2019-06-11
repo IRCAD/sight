@@ -26,7 +26,8 @@
 
 ProgressDialogs::ProgressDialogs()
 {
-    m_isOpen = false;
+    m_isOpen      = false;
+    m_addCallback = false;
     Q_EMIT onOpenChanged();
 }
 
@@ -41,6 +42,18 @@ ProgressDialogs::~ProgressDialogs()
 void ProgressDialogs::open()
 {
     m_dialog = ::fwGui::dialog::ProgressDialog::New();
+    std::function<void()> callback
+        = [this]()
+          {
+          };
+    if (m_addCallback)
+    {
+        m_dialog->setCancelCallback(callback);
+    }
+    else
+    {
+        m_dialog->hideCancelButton();
+    }
     m_dialog->setTitle(m_title.toStdString());
     m_dialog->setMessage(m_message.toStdString());
     m_isOpen = true;

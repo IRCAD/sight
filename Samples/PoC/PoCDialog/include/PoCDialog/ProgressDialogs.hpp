@@ -38,6 +38,7 @@ class POCDIALOG_CLASS_API ProgressDialogs : public QObject
 Q_OBJECT
 Q_PROPERTY(QString message MEMBER m_message)
 Q_PROPERTY(QString title MEMBER m_title)
+Q_PROPERTY(bool addCallback MEMBER m_addCallback)
 Q_PROPERTY(QString result MEMBER m_result NOTIFY onResultChanged)
 Q_PROPERTY(bool isOpen MEMBER m_isOpen NOTIFY onOpenChanged)
 
@@ -58,6 +59,8 @@ protected:
     QString m_message;
     /// to enable button when the dialog is open
     bool m_isOpen;
+    /// to enable cancel button
+    bool m_addCallback;
 
     QString m_result;
 

@@ -1,5 +1,5 @@
 import QtQuick 2.3
-import QtQuick.Controls 1.2
+import QtQuick.Controls 2.5
 import QtQuick.Dialogs 1.2
 import QtQuick.Layouts 1.1
 import QtQuick.Window 2.0
@@ -35,22 +35,13 @@ Item {
                 Layout.alignment: Qt.AlignBaseline
                 Layout.fillWidth: true
                 text: "Custom Dialog"
-                onTextChanged: pocDialogProgressDialogs.title = windowTitleField.text
+                Component.onCompleted: pocDialogProgressDialogs.title = windowTitleField.text
+                onTextChanged: pocDialogProgressDialogs.message = windowTitleField.text
             }
         }
-        RowLayout {
-            Text {
-                id: customizeMessage
-                text: "Window Message"
-                Layout.alignment: Qt.AlignBaseline
-            }
-            TextField {
-                id: windowMessageField
-                Layout.alignment: Qt.AlignBaseline
-                Layout.fillWidth: true
-                text: "Custom Message"
-                onTextChanged: pocDialogProgressDialogs.message = windowMessageField.text
-            }
+        CheckBox {
+            text: "Add Callback"
+            onCheckedChanged: pocDialogProgressDialogs.addCallback = checked
         }
     }
     Rectangle {
@@ -93,6 +84,7 @@ Item {
                 Layout.fillWidth: true
                 text: "Custom Message"
                 onTextChanged: pocDialogProgressDialogs.message = windowMessageProgressField.text
+                Component.onCompleted: pocDialogProgressDialogs.message = windowMessageProgressField.text
             }
             Button {
                 text: "Add"
