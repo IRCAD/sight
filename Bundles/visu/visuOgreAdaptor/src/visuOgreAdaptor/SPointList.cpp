@@ -383,6 +383,7 @@ void SPointList::updateMesh(const ::fwData::Mesh::csptr& _mesh)
     //------------------------------------------
 
     m_meshGeometry->updateVertices(_mesh);
+    m_meshGeometry->updateColors(_mesh);
 
     //------------------------------------------
     // Create sub-services
