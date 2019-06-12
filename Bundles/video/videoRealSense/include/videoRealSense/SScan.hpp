@@ -93,6 +93,9 @@ namespace videoRealSense
  *      - nearest_from_around: Use the value from the neighboring pixel closest to the sensor
  * - \b setEnumParameter(std::string value, std::string key) : Slot called when a enumeration parameter changes:
  *   - key 'preset' : preset name to load. (see 'preset' in subsection \ref Configuration below).
+ *  -  key 'alignTo': used to change the frames alignement, all frames can be aligned on (None (default), Color, Depth
+ * or Infrared Streams).
+ *    (see also 'alignTo is subsection \ref Configuration below).'
  * - \b setDoubleParameter(vouble value, std::string key): Slot called when a double parameter changes:
  *   - key 'spacialSmoothAlpha': Alpha factor in an exponential moving average with Alpha=1: no filter . Alpha = 0:
  *     infinite filter [0.25-1]
@@ -106,7 +109,8 @@ namespace videoRealSense
         <inout key="frameTL" uid="..." />
         <out key="pointcloud" uid="..." />
         <inout key="cameraSeries" uid="..." />
-        <config fps="30" colorW="1280" colorH="720" depthW="1280" depthH="720" switchToIR="true/false" preset="..." />
+        <config fps="30" colorW="1280" colorH="720" depthW="1280" depthH="720" switchToIR="true/false" preset="..."
+ * alignTo="Color"/>
         <recordFile>/path/to/the/file.bag</recordFile>
    </service>
    @endcode
@@ -128,6 +132,7 @@ namespace videoRealSense
  * - \b colorH:  desired color frame height (default: 720, max: 1080, min: 180) (optional).
  * - \b switchToIR: push infrared frame in color TL (default false) (optional)
  * - \b IREmitter: enable infrared emitter (default true) (optional)
+ * - \b alignTo: align each frames to the chosen one, values can be: None (default), Color, Depth, Infrared (optionnal).
  * - \b preset: (advanced option): load a json preset ( overwrite previous resolution values) (optional).
  *   - Default: Default preset
  *   - HighResHighAccuracy
@@ -231,6 +236,10 @@ private:
         int maxRange          = s_MAX_DEPTH_RANGE; ///< max depth range.
         int minRange          = s_MIN_DEPTH_RANGE; ///< min depth range.
         bool needHardReset    = false; ///< if device needs to be hard-reset before at stop.
+        ///If frames needs to be aligned on in a particular STREAM.
+        /// Value can be RS2_STREAM_COUNT = No alignement, RS_STREAM_DEPTH, RS_STREAM_COLOR, RS_STREAM_INFRARED, others
+        // values are ignored.
+        ::rs2_stream streamToAlignTo = RS2_STREAM_COUNT;
 
         /// Re-init all values to default.
         void reset()
@@ -241,10 +250,11 @@ private:
             depthH = 720;
             depthW = 1280;
             presetPath.clear();
-            irEmitter     = true;
-            maxRange      = s_MAX_DEPTH_RANGE;
-            minRange      = s_MIN_DEPTH_RANGE;
-            needHardReset = false;
+            irEmitter       = true;
+            maxRange        = s_MAX_DEPTH_RANGE;
+            minRange        = s_MIN_DEPTH_RANGE;
+            needHardReset   = false;
+            streamToAlignTo = RS2_STREAM_COUNT;
 
         }
     };
@@ -345,6 +355,15 @@ private:
     void loadPresets(const ::boost::filesystem::path& _path);
 
     /**
+     * @brief updateAlignment changes the reference frame where all frames will be aligned.
+     * @param[in] _alignTo: reference frame name in string can be None, Color, Infrared or Depth.
+     * All others values are ignored.
+     * @return bool: true if new alignement is register, false if _alignTo value is ignored (avoid an unnecessary
+     * call to stop/start).
+     */
+    bool updateAlignment(const std::string& _alignTo);
+
+    /**
      * @brief setMinMaxRange updates the min/max range of the depth stream. Need advanced mode.
      */
     void setMinMaxRange();
@@ -430,7 +449,7 @@ private:
     std::atomic_bool m_switchInfra2Color { false };
 
     /// True if device needs to be recorded.
-    bool m_record {false};
+    bool m_record { false };
 
     /// Name of the recording file.
     std::string m_recordingFileName;
@@ -439,6 +458,7 @@ private:
     std::string m_playbackFileName;
 
     /// Enable if camera source = FILE, enable playing from .bag files.
-    bool m_playbackMode {false};
+    bool m_playbackMode { false };
+
 };
 } //namespace videoRealSense
