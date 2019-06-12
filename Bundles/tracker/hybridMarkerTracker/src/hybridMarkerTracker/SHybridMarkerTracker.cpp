@@ -15,7 +15,8 @@ namespace hybridMarkerTracker
 {
 
 fwServicesRegisterMacro(::arServices::ITracker, ::hybridMarkerTracker::SHybridMarkerTracker);
-SHybridMarkerTracker::SHybridMarkerTracker():tracker(NULL)
+
+SHybridMarkerTracker::SHybridMarkerTracker() noexcept :tracker(NULL)
 {}
 
 SHybridMarkerTracker::~SHybridMarkerTracker()
@@ -23,7 +24,7 @@ SHybridMarkerTracker::~SHybridMarkerTracker()
     if(!tracker)
         delete tracker;
 }
-void SHybridMarkerTracker::readSettings(std::filename) const
+void SHybridMarkerTracker::readSettings(std::string filename) const
 {
     std::cout << "Initializing..." << std::endl;
     fs.open(filename, ::cv::FileStorage::READ);
