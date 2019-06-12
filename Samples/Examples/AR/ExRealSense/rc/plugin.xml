@@ -12,7 +12,11 @@
             <object uid="imageVideo" type="::fwData::Image" />
             <object uid="pointcloud" type="::fwData::Mesh" src="deferred" />
             <object uid="RGBDCameraSeries" type="::arData::CameraSeries" />
+            <object uid="RGBCamera" type="::arData::Camera" src="deferred" />
+            <object uid="DCamera" type="::arData::Camera" src="deferred" />
             <object uid="identity" type="::fwData::TransformationMatrix3D" />
+            <object uid="3dCameraTrf" type="::fwData::TransformationMatrix3D" />
+            <object uid="depth_to_color" type="::fwData::TransformationMatrix3D" src="deferred"/>
 
             <!-- Transfer function to visualize depth images -->
             <object uid="tfDepth" type="::fwData::TransferFunction">
@@ -34,11 +38,54 @@
                         <icon>ExRealSense-@PROJECT_VERSION@/exrgbdstream.ico</icon>
                         <minSize width="1280" height="720" />
                     </frame>
+                    <menuBar/>
                     <toolBar/>
                 </gui>
                 <registry>
+                    <menuBar sid="menuBar" start="yes" />
                     <toolBar sid="toolbar" start="yes" />
                     <view sid="scanningView" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="menuBar" type="::gui::aspect::SDefaultMenuBar">
+                <gui>
+                    <layout>
+                        <menu name="File" />
+                        <menu name="Options" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menu sid="menuFile" start="yes" />
+                    <menu sid="menuOptions" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="menuFile" type="::gui::aspect::SDefaultMenu">
+                <gui>
+                    <layout>
+                        <menuItem name="Recording Path..." shortcut="Ctrl+S" />
+                        <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="setRecordingPath" start="yes" />
+                    <menuItem sid="actionQuit" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="menuOptions" type="::gui::aspect::SDefaultMenu">
+                <gui>
+                    <layout>
+                        <menuItem name="Filters settings..." style="check"/>
+                        <menuItem name="Show Points on Depth" style="check"/>
+                        <menuItem name="Show Points on Color" style="check" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="showFilterSettings" start="yes" />
+                    <menuItem sid="showPCDepth" start="yes" />
+                    <menuItem sid="showPCColor" start="yes" />
                 </registry>
             </service>
 
@@ -51,6 +98,7 @@
                         <menuItem name="stop" icon="arMedia-0.1/icons/stop-cam.svg" />
                         <menuItem name="record" icon="arMedia-0.1/icons/start-record.svg" icon2="arMedia-0.1/icons/stop.svg" style="check" />
                         <separator/>
+                        <editor />
                         <editor />
                         <editor />
                         <editor />
@@ -68,11 +116,12 @@
                     <menuItem sid="stopVideo" start="yes" />
                     <menuItem sid="record" start="yes" />
                     <editor sid="presets" start="yes" />
+                    <editor sid="alignment" start="yes" />
                     <editor sid="infraredEmitter" start="yes" />
                     <editor sid="switchInfraToColor" start="yes" />
                     <editor sid="distance" start="yes"/>
-                    <menuItem sid="setRecordingPath" start="yes" />
-                    <menuItem sid="showFilterSettings" start="yes" />
+                    <menuItem sid="setRecordingPath" />
+                    <menuItem sid="showFilterSettings" />
                 </registry>
             </service>
 
@@ -165,8 +214,12 @@
             <service uid="distanceMapRender" type="::fwRenderOgre::SRender" >
                 <scene>
                     <layer id="video" depth="1"/>
+                    <layer id="AR" depth="2"/>
                     <adaptor uid="depthAdaptor" />
                     <adaptor uid="interactorStyle" />
+                    <adaptor uid="ardInteractorStyle" />
+                    <adaptor uid="pointcloudAdptARD" />
+                    <adaptor uid="cameraAdaptorARD" />
                 </scene>
             </service>
 
@@ -180,14 +233,32 @@
                 <config layer="video" movement="Fixed" />
             </service>
 
+            <service uid="ardInteractorStyle" type="::visuOgreAdaptor::SInteractorStyle">
+                <config layer="AR" movement="Fixed" />
+            </service>
+
+            <service uid="pointcloudAdptARD" type="::visuOgreAdaptor::SPointList"  autoConnect="yes" >
+                <in key="mesh" uid="pointcloud" />
+                <config layer="AR" autoresetcamera="no" radius="1" />
+            </service>
+
+            <service uid="cameraAdaptorARD" type="::visuOgreAdaptor::SCamera">
+                <inout key="transform" uid="identity" />
+                <in key="calibration" uid="DCamera" /> <!-- Projection matrix of Depth/Infrared Sensor -->
+                <config layer="AR" />
+            </service>
 
             <!-- *************************** Begin generic scene *************************** -->
 
             <service uid="videoViewRender" type="::fwRenderOgre::SRender" >
                 <scene>
                     <layer id="video" depth="1"/>
+                    <layer id="AR"    depth="2" />
                     <adaptor uid="videoAdaptor" />
                     <adaptor uid="videoInteractorStyle" />
+                    <adaptor uid="arInteractorStyle" />
+                    <adaptor uid="pointcloudAdptAR" />
+                    <adaptor uid="cameraAdaptorAR" />
                 </scene>
             </service>
 
@@ -200,6 +271,20 @@
                 <config layer="video" movement="Fixed" />
             </service>
 
+            <service uid="arInteractorStyle" type="::visuOgreAdaptor::SInteractorStyle">
+                <config layer="AR" movement="Fixed" />
+            </service>
+
+            <service uid="pointcloudAdptAR" type="::visuOgreAdaptor::SPointList"  autoConnect="yes" >
+                <in key="mesh" uid="pointcloud" />
+                <config layer="AR" autoresetcamera="no" radius="1" />
+            </service>
+
+            <service uid="cameraAdaptorAR" type="::visuOgreAdaptor::SCamera">
+                <inout key="transform" uid="identity" />
+                <in key="calibration" uid="RGBCamera" />
+                <config layer="AR" />
+            </service>
 
             <service uid="3D" type="::fwRenderOgre::SRender" >
                 <scene>
@@ -215,8 +300,8 @@
             </service>
 
             <service uid="cameraAdaptor" type="::visuOgreAdaptor::SCamera">
-                <inout key="transform" uid="identity" />
-              <config layer="default" />
+                <inout key="transform" uid="3dCameraTrf" />
+                <config layer="default" />
             </service>
 
             <!-- *************************** Begin scanning services declarations ***************************************** -->
@@ -227,6 +312,13 @@
                     values="Default,HighResHighAccuracy,HighResHighDensity,HighResMidDensity,MidResHighAccuracy,
                     MidResHighDensity,MidResMidDensity,LowResHighAccuracy,LowResHighDensity,LowResMidDensity,
                     Hand,ShortRange,BodyScan,RemoveIR"/>
+                </parameters>
+            </service>
+
+            <service uid="alignment" type="::guiQt::editor::SParameters">
+                <parameters>
+                    <param type="enum" name="Align frames to" key="alignTo" defaultValue="None"
+                    values="None,Color,Depth,Infrared" />
                 </parameters>
             </service>
 
@@ -314,6 +406,20 @@
                 <videoSupport>yes</videoSupport>
             </service>
 
+            <!-- extract a ::arData::Camera from the ::arData::CameraSeries -->
+             <service uid="extractor" type="::ctrlCamp::SExtractObj">
+                 <inout key="source" uid="RGBDCameraSeries" autoConnect="yes">
+                     <extract from="@cameras.0" /> <!-- Camp path of the first camera in cameraSeries -->
+                     <extract from="@cameras.1" /> <!-- Camp path of the first camera in cameraSeries -->
+                     <extract from="@extrinsic_matrices.1" />
+                 </inout>
+                 <out group="target">
+                     <key uid="DCamera" /> <!-- Depth/Infrared1 Camera -->
+                     <key uid="RGBCamera" /> <!-- Color Camera -->
+                     <key uid="depth_to_color" /> <!-- Infrared1 to Color coordinate frame -->
+                 </out>
+             </service>
+
             <!-- Manages Sense camera configuration -->
             <service uid="grabber" type="::videoRealSense::SScan" worker="grabber">
                 <inout key="cameraSeries" uid="RGBDCameraSeries" />
@@ -323,6 +429,9 @@
             </service>
 
             <!-- ***************************************** Begin actions ******************************************* -->
+
+            <service uid="actionQuit" type="::gui::action::SQuit" />
+
             <service uid="startVideo" type="::gui::action::SSlotCaller">
                 <slots>
                     <slot>startVideo/setInexecutable</slot>
@@ -359,15 +468,32 @@
                 </slots>
             </service>
 
+            <service uid="showPCDepth" type="::gui::action::SBooleanSlotCaller">
+                <slots>
+                    <slot>pointcloudAdptARD/updateVisibility</slot>
+                </slots>
+                <state active="true" />
+            </service>
+
+            <service uid="showPCColor" type="::gui::action::SBooleanSlotCaller">
+                <slots>
+                    <slot>pointcloudAdptAR/updateVisibility</slot>
+                </slots>
+                <state active="true" />
+            </service>
+
             <!-- Show/hide the parameters view -->
+
             <service uid="showFilterSettings" type="::gui::action::SBooleanSlotCaller">
                 <slots>
                     <slot>filterSettings/setVisible</slot>
                 </slots>
             </service>
 
+
             <connect>
                 <signal>presets/enumChanged</signal>
+                <signal>alignment/enumChanged</signal>
                 <slot>grabber/setEnumParameter</slot>
             </connect>
 
@@ -444,17 +570,25 @@
             <start uid="mainView" />
             <start uid="synchronizer" />
             <start uid="grabber" />
+            <start uid="extractor" />
 
             <!-- Ogre scene 'distanceMapRender' -->
             <start uid="depthAdaptor" />
             <start uid="interactorStyle" />
+            <start uid="ardInteractorStyle" />
+            <start uid="pointcloudAdptARD" />
+            <start uid="cameraAdaptorARD" />
+
             <!-- Ogre scene 'videoViewRender' -->
             <start uid="videoAdaptor" />
             <start uid="videoInteractorStyle" />
+            <start uid="arInteractorStyle" />
+            <start uid="pointcloudAdptAR" />
+            <start uid="cameraAdaptorAR" />
+
             <!-- Ogre scene '3d' -->
             <start uid="pointcloudAdpt" />
             <start uid="cameraAdaptor" />
-
 
             <update uid="enableSpacialFilterParams" />
             <update uid="enableTemporalFilterParams" />
