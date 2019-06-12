@@ -24,7 +24,7 @@ public:
     HYBRIDMARKERTRACKER_API void process(const ::cv::Mat &img, ::cv::Mat &out_img);
 
     ::cv::Mat current_cHp;
-    HYBRIDMARKERTRACKER_API void readSettings(std::string filename) const;
+    HYBRIDMARKERTRACKER_API void readSettings(std::string filename) ;
 
     // Downsample Scale
     unsigned int img_scale;

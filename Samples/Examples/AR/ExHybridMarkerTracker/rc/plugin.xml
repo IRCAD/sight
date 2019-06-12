@@ -13,7 +13,7 @@
       - calibration.xml
       - aruco_tag.m4v
 -->
-<plugin id="TutoSimpleAR" version="@PROJECT_VERSION@">
+<plugin id="ExHybridMarkerTracker" version="@PROJECT_VERSION@">
 
     <!-- The bundles in requirements are automatically started when this application is launched. -->
     <requirement id="dataReg" />

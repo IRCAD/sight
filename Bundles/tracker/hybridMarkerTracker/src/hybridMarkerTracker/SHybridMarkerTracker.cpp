@@ -24,7 +24,7 @@ SHybridMarkerTracker::~SHybridMarkerTracker()
     if(!tracker)
         delete tracker;
 }
-void SHybridMarkerTracker::readSettings(std::string filename) const
+void SHybridMarkerTracker::readSettings(std::string filename)
 {
     std::cout << "Initializing..." << std::endl;
     fs.open(filename, ::cv::FileStorage::READ);

@@ -1,12 +1,22 @@
 fwLoadProperties()
 
-include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-conan_basic_setup()
+find_package(OpenCV QUIET REQUIRED COMPONENTS opencv_highgui)
+target_link_libraries(${FWPROJECT_NAME} PRIVATE opencv_highgui)
 
-include_directories(
-        ${CMAKE_CURRENT_SOURCE_DIR}/src
-        ${CMAKE_CURRENT_SOURCE_DIR}/include
-)
+find_package(Ippe QUIET REQUIRED)
+
+find_library(PATTERN_TRACKER_LIBRARY NAMES patterntracker PATHS
+        "${CONAN_HYBRID_MARKER_TRACKER_ROOT}/lib/")
+find_library(CHESS_DETECTOR_LIBRARY NAMES chessdetector PATHS
+        "${CONAN_HYBRID_MARKER_TRACKER_ROOT}/lib/")
+
 target_link_libraries(${FWPROJECT_NAME} PRIVATE
-        ${CONAN_LIBS}
+        ${PATTERN_TRACKER_LIBRARY}
+        ${CHESS_DETECTOR_LIBRARY}
+        ${IPPE_LIBRARIES}
+        )
+
+target_include_directories(${FWPROJECT_NAME} PRIVATE
+        ${IPPE_INCLUDE_DIRS}
+        ${CONAN_HYBRID_MARKER_TRACKER_ROOT}/include
         )
