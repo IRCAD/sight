@@ -537,4 +537,7 @@ void SHybridMarkerTracker::tracking(::fwCore::HiResClock::HiResClockType& timest
     ::cv::Mat img, img_track;
     process(img, img_track);
 }
+void SHybridMarkerTracker::configuring(){}
+void SHybridMarkerTracker::updating(){}
+void SHybridMarkerTracker::stopping(){}
 } // hybridMarkerTracker namespace

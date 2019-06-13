@@ -479,7 +479,7 @@
             <!-- Hybrid Marker tracker service -->
             <service uid="hybridMarkerTracker" type="::hybridMarkerTracker::SHybridMarkerTracker" worker="tracking">
                 <in key="camera" uid="camera" />
-                <inout key="frame" uid="sourceFrame" autoConnect="yes" />
+                <inout key="frame" uid="sourceFrame" autoConnect="yes"/>
             </service>
 
             <!-- Computes the pose of the camera with tag(s) detected by aruco -->
