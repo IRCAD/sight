@@ -212,10 +212,10 @@ void SCamera::onChooseFile()
 
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+    dialogFile.addFilter("All files", "*.*");
     dialogFile.addFilter("videos", "*.avi *.m4v *.mkv *.mp4 *.ogv");
     dialogFile.addFilter("images", "*.bmp *.jpeg *.jpg *.png *.tiff");
-    dialogFile.addFilter("realsense file (*.bag)", "*.bag *.rosbag");
-    dialogFile.addFilter("All files", "*.*");
+    dialogFile.addFilter("realsense files (*.bag)", "*.bag *.rosbag");
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST);
 
