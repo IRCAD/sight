@@ -25,7 +25,7 @@
     <requirement id="preferences" />
 
     <extension implements="::fwServices::registry::AppConfig">
-        <id>TutoSimpleARConfig</id>
+        <id>ExHybridMarkerTrackerConfig</id>
         <config>
 
             <!-- Series of camera calibration -->
@@ -55,8 +55,7 @@
             <service uid="mainFrame" type="::gui::frame::SDefaultFrame">
                 <gui>
                     <frame>
-                        <name>TutoSimpleAR</name>
-                        <icon>TutoSimpleAR-@PROJECT_VERSION@/app.ico</icon>
+                        <name>ExHybridMarkerTracker</name>
                     </frame>
                     <toolBar/>
                 </gui>
@@ -158,10 +157,6 @@
                 </slots>
             </service>
 
-            <service uid="loadMesh" type="::ioVTK::SMeshReader">
-                <inout key="data" uid="cubeMesh" />
-                <resource>TutoSimpleAR-@PROJECT_VERSION@/cube_60.vtk</resource>
-            </service>
 
             <service uid="startVideo" type="::gui::action::SSlotCaller">
                 <slots>
@@ -463,18 +458,28 @@
                 <inout key="frameTL" uid="frameTL" />
             </service>
 
-            <!-- Aruco tracker service -->
-            <service uid="tracker" type="::trackerAruco::SArucoTracker" worker="tracking">
+            <service uid="..." type="::hybridMarkerTracker::SHybridMarkerTracker" >
+                <in key="timeline" uid="frameTL" autoConnect="yes"/>
+            </service>
+
+<!--            &lt;!&ndash; Aruco tracker service &ndash;&gt;-->
+<!--            <service uid="tracker" type="::trackerAruco::SArucoTracker" worker="tracking">-->
+<!--                <in key="camera" uid="camera" />-->
+<!--                <inout key="frame" uid="sourceFrame" autoConnect="yes" />-->
+<!--                <inout group="markerMap">-->
+<!--                    <key uid="markerMap" /> &lt;!&ndash; timeline of detected tag(s) &ndash;&gt;-->
+<!--                </inout>-->
+<!--                <track>-->
+<!--                    &lt;!&ndash; list of tag's id &ndash;&gt;-->
+<!--                    <marker id="101" />-->
+<!--                </track>-->
+<!--                <debugMarkers>yes</debugMarkers>-->
+<!--            </service>-->
+
+            <!-- Hybrid Marker tracker service -->
+            <service uid="hybridMarkerTracker" type="::hybridMarkerTracker::SHybridMarkerTracker" worker="tracking">
                 <in key="camera" uid="camera" />
                 <inout key="frame" uid="sourceFrame" autoConnect="yes" />
-                <inout group="markerMap">
-                    <key uid="markerMap" /> <!-- timeline of detected tag(s) -->
-                </inout>
-                <track>
-                    <!-- list of tag's id -->
-                    <marker id="101" />
-                </track>
-                <debugMarkers>yes</debugMarkers>
             </service>
 
             <!-- Computes the pose of the camera with tag(s) detected by aruco -->
@@ -643,7 +648,8 @@
             <start uid="frameGrabber" />
             <start uid="synchronizer" />
             <start uid="registration" />
-            <start uid="tracker" />
+<!--            <start uid="tracker" />-->
+            <start uid="hybridMarkerTracker"/>
             <start uid="CalibrationReader" />
             <start uid="CameraSelector" />
             <start uid="Extractor" />
@@ -657,7 +663,6 @@
             <start uid="startGenericSceneSync" />
             <start uid="startOffscreenSync" />
             <start uid="showActors" />
-            <start uid="loadMesh" />
 
             <!-- VTK scene 'genericScene' -->
             <start uid="videoAdpt" />
@@ -677,7 +682,6 @@
             <update uid="startGenericSceneSync" />
             <update uid="actionShowParameters" />
             <update uid="hideAxis" />
-            <update uid="loadMesh" />
             <update uid="showMesh" />
 
         </config>

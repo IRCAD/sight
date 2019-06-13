@@ -11,6 +11,8 @@
 
 #include <fwData/Image.hpp>
 #include <fwData/mt/ObjectReadToWriteLock.hpp>
+
+#include <fwRuntime/operations.hpp>
 namespace hybridMarkerTracker
 {
 
@@ -516,4 +518,23 @@ void SHybridMarkerTracker::draw_rect(const cv::Mat &cHp, cv::Mat & img, cv::Scal
     //cv::line(img, proj_coord[0], proj_coord[2], cv::Scalar(0, 255, 0),4);
     //cv::line(img, proj_coord[0], proj_coord[3], cv::Scalar(255, 0, 0),4);
 }
+
+::fwServices::IService::KeyConnectionsMap SHybridMarkerTracker::getAutoConnections() const
+{
+    KeyConnectionsMap connections;
+    connections.push( s_TIMELINE_INPUT, ::arData::TimeLine::s_OBJECT_PUSHED_SIG, s_TRACK_SLOT );
+    return connections;
 }
+
+void SHybridMarkerTracker::starting()
+{
+    auto filePath = ::fwRuntime::getBundleResourceFilePath("hybridMarkerTracker", "settings.xml");
+    readSettings(filePath.string());
+}
+
+void SHybridMarkerTracker::tracking(::fwCore::HiResClock::HiResClockType& timestamp)
+{
+    ::cv::Mat img, img_track;
+    process(img, img_track);
+}
+} // hybridMarkerTracker namespace

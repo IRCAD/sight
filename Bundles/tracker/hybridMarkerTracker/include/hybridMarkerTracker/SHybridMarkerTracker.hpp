@@ -6,7 +6,7 @@
 #include <tracker_keydot.h>
 #include <tracker_curvedot.h>
 #include "hybridMarkerTracker/config.hpp"
-
+#include <fwServices/macros.hpp>
 namespace hybridMarkerTracker
 {
 
@@ -32,6 +32,8 @@ public:
     Tracker *tracker;
 
 protected:
+
+    ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
 //    to configure the service
     HYBRIDMARKERTRACKER_API void configuring() override;
