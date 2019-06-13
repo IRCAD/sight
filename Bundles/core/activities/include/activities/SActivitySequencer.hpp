@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017 IRCAD France
- * Copyright (C) 2017 IHU Strasbourg
+ * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __ACTIVITIES_SACTIVITYSEQUENCER_HPP__
-#define __ACTIVITIES_SACTIVITYSEQUENCER_HPP__
+#pragma once
 
 #include "activities/config.hpp"
 
@@ -48,6 +47,7 @@ namespace activities
  * @section Signal Signal
  * - \b activityCreated(::fwMedData::ActivitySeries::sptr) : This signal is emitted when an activity is created (using
  *   next() or previous().
+ * - \b dataRequired() : This signal is emitted when the activity can not be launch because it requires data.
  * - \b enabledNext(bool): This signal is emitted when the next button is enabled (when the activity is not the last
  *   one)
  * - \b enabledPrevious(bool): This signal is emitted when the previous button is enabled (when the activity is not the
@@ -86,7 +86,7 @@ class ACTIVITIES_CLASS_API SActivitySequencer : public ::fwServices::IController
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SActivitySequencer)(::fwServices::IController) );
+    fwCoreServiceClassDefinitionsMacro( (SActivitySequencer)(::fwServices::IController) )
 
     /// Constructor. Do nothing.
     ACTIVITIES_API SActivitySequencer() noexcept;
@@ -102,6 +102,7 @@ public:
      * @{
      */
     typedef ::fwCom::Signal<void (::fwMedData::ActivitySeries::sptr ) > ActivityCreatedSignalType;
+    typedef ::fwCom::Signal<void (::fwMedData::ActivitySeries::sptr) > DataRequiredSignalType;
     typedef ::fwCom::Signal<void (bool) > EnabledPreviousSignalType;
     typedef ::fwCom::Signal<void (bool) > EnabledNextSignalType;
     /**
@@ -161,11 +162,10 @@ private:
     RequirementsType m_requirements;
 
     ActivityCreatedSignalType::sptr m_sigActivityCreated;
+    DataRequiredSignalType::sptr m_sigDataRequired;
     EnabledPreviousSignalType::sptr m_sigEnabledPrevious;
     EnabledNextSignalType::sptr m_sigEnabledNext;
 
 };
 
 } // activities
-
-#endif // __ACTIVITIES_SACTIVITYSEQUENCER_HPP__
