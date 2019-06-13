@@ -421,7 +421,11 @@ void SScan::startCamera()
     }
     else if(camera->getCameraSource() == ::arData::Camera::STREAM)
     {
-        SLM_ERROR("RealSense grabber cannot open STREAM type, please select DEVICE or FILE.");
+        ::fwGui::dialog::MessageDialog::showMessageDialog(
+            "RealSense Error",
+            "ealSense grabber cannot open STREAM type, please select DEVICE or FILE. ",
+            ::fwGui::dialog::IMessageDialog::CRITICAL);
+
         return;
     }
     // CameraSource is unknow or DEVICE we open a device. This allows to work without camera selector.
