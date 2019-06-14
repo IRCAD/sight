@@ -126,6 +126,7 @@
 
             <service uid="hybridMarkerTracker" type="::hybridMarkerTracker::SHybridMarkerTracker" worker="tracking">
                 <in key="camera" uid="camera" />
+                <inout key="frameTL" uid="FrameTL"/>
                 <inout key="frame" uid="videoImage" autoConnect="yes"/>
             </service>
 

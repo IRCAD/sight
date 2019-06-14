@@ -6,6 +6,10 @@
 #include <arData/MarkerMap.hpp>
 #include <arData/MarkerTL.hpp>
 
+#include <cvIO/Camera.hpp>
+#include <cvIO/FrameTL.hpp>
+#include <cvIO/Image.hpp>
+
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
 
@@ -17,7 +21,6 @@ namespace hybridMarkerTracker
 {
 
 fwServicesRegisterMacro(::arServices::ITracker, ::hybridMarkerTracker::SHybridMarkerTracker);
-
 SHybridMarkerTracker::SHybridMarkerTracker() noexcept :tracker(NULL)
 {}
 
@@ -536,7 +539,11 @@ void SHybridMarkerTracker::starting()
 
 void SHybridMarkerTracker::tracking(::fwCore::HiResClock::HiResClockType& timestamp)
 {
+    ::arData::FrameTL::csptr frameTL = this->getInput< ::arData::FrameTL >(s_TIMELINE_INPUT);
+
     ::cv::Mat img, img_track;
+    auto frame = this->getInOut<::fwData::Image >(s_FRAME_INOUT);
+    ::cvIO::FrameTL::moveToCv()
     process(img, img_track);
 }
 void SHybridMarkerTracker::configuring(){}
