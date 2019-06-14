@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2018 IRCAD France
- * Copyright (C) 2017-2018 IHU Strasbourg
+ * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -133,7 +133,8 @@ void SAxis::starting()
     this->getRenderService()->makeCurrent();
 
     ::Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
-    m_sceneNode                      = this->getTransformNode(rootSceneNode);
+    m_sceneNode                      = this->getTransformNode(rootSceneNode)->createChildSceneNode(
+        this->getID() + "_mainNode");
 
     ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
 
@@ -322,6 +323,9 @@ void SAxis::stopping()
     sceneMgr->destroyManualObject(xCone);
     sceneMgr->destroyManualObject(yCone);
     sceneMgr->destroyManualObject(zCone);
+
+    ::Ogre::SceneNode* rootSceneNode = sceneMgr->getRootSceneNode();
+    this->getTransformNode(rootSceneNode)->removeAndDestroyChild(this->getID() + "_mainNode");
 
     this->unregisterServices();
     m_material.reset();
