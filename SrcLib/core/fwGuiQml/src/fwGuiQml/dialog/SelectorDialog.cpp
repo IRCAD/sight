@@ -89,6 +89,7 @@ std::string SelectorDialog::show()
     QObject* dialog = engine->createComponent(dialogPath, context);
 
     dialog->setProperty("title", m_title);
+    dialog = dialog->findChild<QObject*>("dialog");
 
     // create all radiobutton
     model.addRole(Qt::UserRole + 1, "textOption");

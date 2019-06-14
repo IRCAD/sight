@@ -77,7 +77,7 @@ LocationDialog::LocationDialog(::fwGui::GuiBaseObject::Key key) :
 
     dialog->setProperty("title", caption);
     dialog->setProperty("folder", QUrl::fromLocalFile(path));
-    dialog->setProperty("filter", filter);
+    dialog->setProperty("nameFilters", filter);
 
     // check each option to set the property
     if ( (m_style& ::fwGui::dialog::ILocationDialog::READ) ||

@@ -1,35 +1,50 @@
 import QtQuick 2.9
-import QtQuick.Controls 1.4
-import QtQuick.Dialogs 1.2
+import QtQuick.Controls 2.5
+import QtQuick.Controls.Material 2.3
 import QtQuick.Layouts 1.3
 import QtQuick.Window 2.3
 
-Dialog {
-    modality: Qt.ApplicationModal
-    standardButtons: StandardButton.Cancel | StandardButton.Ok
+Window {
+    id: window
+    width: 500
+    height: 300
+    Material.theme: Material.Light
+    Material.accent: Material.LightBlue
 
-    ColumnLayout {
-        id: column
+    Dialog {
+        objectName: "dialog"
+        modal: true
+        width: window.width
+        height: window.height
+        standardButtons: Dialog.Cancel | Dialog.Ok
 
-        width: parent ? parent.width : 100
-        Label {
-            text: inputDialog.message
-            Layout.columnSpan: 2
-            Layout.fillWidth: true
-            wrapMode: Text.WordWrap
+        ColumnLayout {
+            id: column
+            anchors.fill: parent
+            Label {
+                text: inputDialog.message
+                color: Material.accent
+                Layout.columnSpan: 2
+                Layout.fillWidth: true
+                width: parent.width
+                wrapMode: Text.WordWrap
+            }
+            TextField {
+                id: answer
+                Layout.fillWidth: true
+                placeholderText: inputDialog.input
+            }
         }
-        TextField {
-            id: answer
 
-            placeholderText: inputDialog.input
+        onAccepted: {
+            inputDialog.resultDialog(answer.text, true)
+            window.close()
         }
+        onRejected: {
+            inputDialog.resultDialog(answer.text, false)
+            window.close()
+        }
+        onVisibleChanged: visible ? "" : reset()
     }
-
-    onAccepted: {
-        inputDialog.resultDialog(answer.text, true)
-    }
-    onRejected: {
-        inputDialog.resultDialog(answer.text, false)
-    }
-    onVisibleChanged: visible ? "" : reset()
+    Component.onCompleted: window.show()
 }

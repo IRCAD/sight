@@ -78,6 +78,8 @@ protected Q_SLOTS:
 protected:
     /// the progress dialog to delete it during the destruction of the class
     QObject* m_dialog;
+    /// the window of the progress dialog to delete it during the destruction of the class
+    QObject* m_window;
     /// visible state of the progress dialog
     bool m_visible;
     /// title string

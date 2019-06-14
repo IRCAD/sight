@@ -97,6 +97,7 @@ bool LoggerDialog::show()
     context->setContextProperty("loggerDialog", this);
     // load the qml ui component
     QObject* dialog = engine->createComponent(dialogPath, context);
+    dialog = dialog->findChild<QObject*>("dialog");
 
     dialog->setProperty("title", m_title);
 

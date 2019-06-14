@@ -1,15 +1,13 @@
 import QtQuick 2.3
-import QtQuick.Controls 1.2
+import QtQuick.Controls 2.5
 import QtQuick.Dialogs 1.2
 import QtQuick.Layouts 1.1
 import QtQuick.Window 2.0
+
 import PoCDialog 1.0
+import "style" as Sight
 
 Item {
-    id: root
-    width: 580
-    height: 400
-    SystemPalette { id: palette }
     clip: true
 
     PocDialogSelectorDialogs {
@@ -20,12 +18,12 @@ Item {
         anchors.fill: parent
         anchors.margins: 12
         spacing: 8
-        Label {
+        Sight.Label {
             font.bold: true
             text: "Message dialog properties:"
         }
         RowLayout {
-            Text {
+            Sight.Text {
                 id: customizeTitle
                 text: "Window Title"
                 Layout.alignment: Qt.AlignBaseline
@@ -36,10 +34,11 @@ Item {
                 Layout.fillWidth: true
                 text: "Custom Dialog"
                 onTextChanged: pocDialogSelectorDialogs.title = windowTitleField.text
+                Component.onCompleted: pocDialogSelectorDialogs.title = windowTitleField.text
             }
         }
         RowLayout {
-            Text {
+            Sight.Text {
                 id: customizeMessage
                 text: "Window Message"
                 Layout.alignment: Qt.AlignBaseline
@@ -50,12 +49,13 @@ Item {
                 Layout.fillWidth: true
                 text: "Custom Message"
                 onTextChanged: pocDialogSelectorDialogs.message = windowMessageField.text
+                Component.onCompleted: pocDialogSelectorDialogs.message = windowMessageField.text
             }
         }
         RowLayout {
             id: optionRow
             property var options: []
-            Text {
+            Sight.Text {
                 id: customizeFilter
                 text: "Option"
                 Layout.alignment: Qt.AlignBaseline
@@ -67,7 +67,7 @@ Item {
                 Layout.fillWidth: true
                 Layout.alignment: Qt.AlignBaseline
             }
-            Button {
+            Sight.Button {
                 text: "Add"
                 onClicked: {
                     optionRow.options.push(windowOptionField.text)
@@ -77,32 +77,14 @@ Item {
                 }
             }
         }
-        Label {
+        Sight.Label {
             text: "<b>option selected:</b> " + pocDialogSelectorDialogs.result
         }
-    }
-    Rectangle {
-        id: bottomBar
-        anchors {
-            left: parent.left
-            right: parent.right
-            bottom: parent.bottom
-        }
-        height: buttonRow.height * 1.2
-        color: Qt.darker(palette.window, 1.1)
-        border.color: Qt.darker(palette.window, 1.3)
-        Row {
+        RowLayout {
             id: buttonRow
-            spacing: 6
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.left: parent.left
-            anchors.leftMargin: 12
-            height: implicitHeight
-            width: parent.width
-            Button {
+            Sight.Button {
                 text: "Open"
                 enabled: pocDialogSelectorDialogs.hasOption
-                anchors.verticalCenter: parent.verticalCenter
                 onClicked: {
                     pocDialogSelectorDialogs.open()
                     optionRow.options = []

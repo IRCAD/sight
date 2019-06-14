@@ -89,6 +89,7 @@ void PulseProgressDialog::show()
     QObject::connect(this, SIGNAL(canceled()), &futureWatcher, SLOT(cancel()));
 
     dialog->setProperty("title", m_title);
+    dialog = dialog->findChild<QObject*>("dialog");
     Q_EMIT messageChanged();
     // Start the computation.
 

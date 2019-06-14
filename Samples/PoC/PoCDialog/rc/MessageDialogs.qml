@@ -1,15 +1,14 @@
 import QtQuick 2.2
-import QtQuick.Controls 1.2
+import QtQuick.Controls 2.5
 import QtQuick.Dialogs 1.1
 import QtQuick.Layouts 1.1
 import QtQuick.Window 2.0
+
 import PoCDialog 1.0
+import "style" as Sight
 
 Item {
-    id: root
-    width: 580
-    height: 400
-    SystemPalette { id: palette }
+    id: messageDialogItem
     clip: true
 
     //! [messagedialog]
@@ -23,18 +22,17 @@ Item {
             left: parent.left
             right: parent.right
             top: parent.top
-            bottom: bottomBar.top
             leftMargin: 12
         }
         ColumnLayout {
             spacing: 8
             Item { Layout.preferredHeight: 4 } // padding
-            Label {
+            Sight.Label {
                 font.bold: true
                 text: "Message dialog properties:"
             }
             RowLayout {
-                Text {
+                Sight.Text {
                     id: customizeTitle
                     text: "Window Title"
                     Layout.alignment: Qt.AlignBaseline
@@ -45,55 +43,55 @@ Item {
                     Layout.fillWidth: true
                     text: "Custom Dialog"
                     onTextChanged: pocDialogMessageDialogs.title = windowTitleField.text
+                    Component.onCompleted: pocDialogMessageDialogs.title = windowTitleField.text
                 }
             }
-            GroupBox {
+            ButtonGroup {
+                id: buttonGroup
+            }
+
+            Sight.GroupBox {
                 id: groupBox
                 title: "Icon"
-                ExclusiveGroup {
-                    id: radioBoxGroup
-                    onCurrentChanged: pocDialogMessageDialogs.icon = current.icon
-                }
-                Column {
+                Row {
                     spacing: 10
                     Layout.fillWidth: true
                     RadioButton {
                         text: "None"
-                        property var icon: 0
                         checked: false
-                        exclusiveGroup: radioBoxGroup
-                    }
-                    RadioButton {
-                        text: "Critical"
-                        property var icon: 3
-                        checked: false
-                        exclusiveGroup: radioBoxGroup
-                    }
-                    RadioButton {
-                        text: "Warning"
-
-                        property var icon: 2
-                        checked: false
-                        exclusiveGroup: radioBoxGroup
+                        ButtonGroup.group: buttonGroup
+                        onCheckedChanged: pocDialogMessageDialogs.icon = (checked ? 0 : pocDialogMessageDialogs.icon)
                     }
                     RadioButton {
                         text: "Info"
-                        property var icon: 1
                         checked: false
-                        exclusiveGroup: radioBoxGroup
+                        ButtonGroup.group: buttonGroup
+                        onCheckedChanged: pocDialogMessageDialogs.icon = (checked ? 1 : pocDialogMessageDialogs.icon)
                     }
                     RadioButton {
-                        property var icon: 4
+                        text: "Warning"
+                        checked: false
+                        ButtonGroup.group: buttonGroup
+                        onCheckedChanged: pocDialogMessageDialogs.icon = (checked ? 2 : pocDialogMessageDialogs.icon)
+                    }
+                    RadioButton {
+                        text: "Critical"
+                        checked: false
+                        ButtonGroup.group: buttonGroup
+                        onCheckedChanged: pocDialogMessageDialogs.icon = (checked ? 3 : pocDialogMessageDialogs.icon)
+                    }
+                    RadioButton {
                         text: "Question"
                         checked: false
-                        exclusiveGroup: radioBoxGroup
+                        ButtonGroup.group: buttonGroup
+                        onCheckedChanged: pocDialogMessageDialogs.icon = (checked ? 4 : pocDialogMessageDialogs.icon)
                     }
 
                 }
             }
 
             RowLayout {
-                Text {
+                Sight.Text {
                     id: customizeMessage
                     text: "Window Message"
                     Layout.alignment: Qt.AlignBaseline
@@ -104,13 +102,14 @@ Item {
                     Layout.fillWidth: true
                     text: "Custom Message"
                     onTextChanged: pocDialogMessageDialogs.message = windowMessageField.text
+                    Component.onCompleted: pocDialogMessageDialogs.message = windowMessageField.text
                 }
             }
-            Label { text: "Buttons:" }
+            Sight.Label { text: "Buttons:" }
             Flow {
                 spacing: 8
                 Layout.fillWidth: true
-                Layout.preferredWidth: root.width - 30
+                Layout.preferredWidth: messageDialogItem.width - 30
                 property bool updating: false
                 function updateButtons(button, checked) {
                     if (updating) return
@@ -147,34 +146,16 @@ Item {
                     onCheckedChanged: parent.updateButtons(button, checked)
                 }
             }
-            Label {
+            Sight.Label {
                 id: result
                 text: "The result is: " + pocDialogMessageDialogs.result
             }
-        }
-    }
-
-    Rectangle {
-        id: bottomBar
-        anchors {
-            left: parent.left
-            right: parent.right
-            bottom: parent.bottom
-        }
-        height: buttonRow.height * 1.2
-        color: Qt.darker(palette.window, 1.1)
-        border.color: Qt.darker(palette.window, 1.3)
-        Row {
-            id: buttonRow
-            spacing: 6
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.left: parent.left
-            anchors.leftMargin: 12
-            width: parent.width
-            Button {
-                text: "Open"
-                anchors.verticalCenter: parent.verticalCenter
-                onClicked: pocDialogMessageDialogs.open()
+            RowLayout {
+                id: buttonRow
+                Sight.Button {
+                    text: "Open"
+                    onClicked: pocDialogMessageDialogs.open()
+                }
             }
         }
     }

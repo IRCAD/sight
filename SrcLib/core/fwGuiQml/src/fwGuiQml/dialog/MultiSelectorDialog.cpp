@@ -90,6 +90,8 @@ void MultiSelectorDialog::setTitle(std::string _title)
     QObject* dialog = engine->createComponent(dialogPath, context);
 
     dialog->setProperty("title", m_title);
+
+    dialog = dialog->findChild<QObject*>("dialog");
     // fill the repeater for each checkbox that has to be created
     model.addRole(Qt::UserRole + 1, "textOption");
     model.addRole(Qt::UserRole + 2, "check");
@@ -122,6 +124,10 @@ void MultiSelectorDialog::setTitle(std::string _title)
 
 void MultiSelectorDialog::resultDialog(QVariant checkList, bool state)
 {
+    for( Selections::value_type selection :  m_selections)
+    {
+        m_selections[selection.first] = false;
+    }
     if (state == true)
     {
         // retreive each check state of the selection list

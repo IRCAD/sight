@@ -1,10 +1,10 @@
 import QtQuick 2.9
-import QtQuick.Controls 1.4
-import QtQuick.Controls 2.4
-import QtQuick.Controls.Styles 1.4
-import QtQuick.Layouts 1.0
+import QtQuick.Controls 2.5
+import QtQuick.Controls.Material 2.3
+import QtQuick.Layouts 1.3
 import QtQuick.Dialogs 1.0
 import PoCDialog 1.0
+import "style"
 
 ApplicationWindow {
     id: root
@@ -12,47 +12,65 @@ ApplicationWindow {
     height: 600
     visible: true
     modality: Qt.NonModal
+    Material.accent: Material.LightBlue
+    Material.theme: Material.Light
 
     title: qsTr("PoCDialog 0.1")
 
-    TabView {
-        anchors.fill: parent
-        anchors.margins: 8
-        Tab {
-            id: controlPage
-            title: "Input"
-            InputDialogs { }
+    header:         TabBar {
+        id: bar
+        width: parent.width
+        TabButton {
+            text: qsTr("Input")
         }
-        Tab {
-            title: "Location"
-            LocationDialogs { }
+        TabButton {
+            text: qsTr("Location")
         }
-        Tab {
-            title: "Logger"
-            LoggerDialogs { anchors.fill: parent }
+        TabButton {
+            text: qsTr("Logger")
         }
-        Tab {
-            title: "Message"
-            MessageDialogs { anchors.fill:parent }
+        TabButton {
+            text: qsTr("Message")
         }
-        Tab {
-            title: "MultiSelector"
-            MultiSelectorDialogs { anchors.fill:parent }
+        TabButton {
+            text: qsTr("MultiSelector")
         }
-        Tab {
-            title: "Progress"
-            ProgressDialogs { anchors.fill:parent }
+        TabButton {
+            text: qsTr("Progress")
         }
-        Tab {
-            title: "PulseProgress"
-            PulseProgressDialogs { anchors.fill:parent }
+        TabButton {
+            text: qsTr("PulseProgress")
         }
-        Tab {
-            title: "Selector"
-            SelectorDialogs { anchors.fill:parent }
+        TabButton {
+            text: qsTr("Selector")
         }
     }
+
+    StackLayout {
+        anchors.fill: parent
+        currentIndex: bar.currentIndex
+        InputDialogs { }
+        LocationDialogs { }
+        LoggerDialogs { }
+        MessageDialogs { }
+        MultiSelectorDialogs { }
+        ProgressDialogs { }
+        PulseProgressDialogs { }
+        SelectorDialogs { }
+    }
     footer: ToolBar {
+        background:  Rectangle {
+            implicitHeight: 40
+            color: Material.background
+
+            Rectangle {
+                width: parent.width
+                height: 1
+                anchors.bottom: parent.bottom
+                color: "transparent"
+                border.color: Material.accent
+            }
+        }
         objectName: "toolBar"
     }
 }

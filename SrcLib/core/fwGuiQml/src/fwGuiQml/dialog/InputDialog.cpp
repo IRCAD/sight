@@ -92,6 +92,7 @@ std::string InputDialog::getInput()
     dialog->setProperty("title", m_title);
     Q_EMIT messageChanged();
     Q_EMIT inputChanged();
+    dialog = dialog->findChild<QObject*>("dialog");
 
     QEventLoop loop;
     //slot to retrieve the result and open the dialog with invoke

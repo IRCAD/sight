@@ -63,6 +63,4 @@ void MultiSelectorDialogs::open()
         }
     }
     Q_EMIT onResultChanged();
-    this->m_hasOption = false;
-    Q_EMIT optionChanged();
 }

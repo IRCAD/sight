@@ -51,9 +51,10 @@ ProgressDialog::ProgressDialog( ::fwGui::GuiBaseObject::Key key, const std::stri
 {
     m_visible     = false;
     m_hasCallback = true;
+    m_window      = nullptr;
+
     // get the qml engine QmlApplicationEngine
     SPTR(::fwQml::QmlEngine) engine = ::fwQml::QmlEngine::getDefault();
-
     // find if toolBar exist on the ApplicationWindow
     auto rootObjects = engine->getRootObjects();
     QObject* toolBar = nullptr;
@@ -88,8 +89,11 @@ ProgressDialog::ProgressDialog( ::fwGui::GuiBaseObject::Key key, const std::stri
             ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/dialog/ProgressDialog.qml");
         // load the qml ui component
         m_dialog = engine->createComponent(dialogPath);
-        QMetaObject::invokeMethod(m_dialog, "open");
         m_dialog->setProperty("title", QString::fromStdString(title));
+        m_window = m_dialog;
+        m_dialog = m_dialog->findChild<QObject*>("dialog");
+        QMetaObject::invokeMethod(m_dialog, "open");
+
     }
     m_visible = true;
     this->setTitle(title);
@@ -135,9 +139,12 @@ void ProgressDialog::setTitle(const std::string& title)
     SLM_ASSERT("The progress dialog is not initialized or has been closed", m_dialog);
 
     m_title = QString::fromStdString(title);
-    Q_EMIT titleChanged();
-    m_dialog->setProperty("title", QString::fromStdString(title));
-    QQmlProperty(m_dialog, "title").write(QString::fromStdString(title));
+    if (m_window)
+    {
+        Q_EMIT titleChanged();
+//        m_window->setProperty("title", QString::fromStdString(title));
+//        QQmlProperty(m_dialog, "title").write(QString::fromStdString(title));
+    }
 }
 
 //------------------------------------------------------------------------------

@@ -33,6 +33,7 @@
 
 #include <fwServices/registry/ActiveWorkers.hpp>
 
+#include <QQuickStyle>
 #include <QSharedPointer>
 
 #include <functional>
@@ -65,6 +66,7 @@ void Plugin::start()
           };
 
     m_workerQt = ::fwQt::getQtWorker(argc, argv, callback, profile->getName(), profile->getVersion());
+    QQuickStyle::setStyle("Material");
 
     ::fwServices::registry::ActiveWorkers::setDefaultWorker(m_workerQt);
 

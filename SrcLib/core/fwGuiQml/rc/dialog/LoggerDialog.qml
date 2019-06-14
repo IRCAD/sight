@@ -1,179 +1,268 @@
-import QtQuick 2.9
-import QtQuick.Dialogs 1.2
+import QtQuick 2.12
 import QtQuick.Layouts 1.3
-import QtQuick.Controls 1.4
+import QtQuick.Controls 2.5
+import QtQuick.Controls.Material 2.3
 import QtQuick.Controls.Styles 1.4
+import QtQuick.Window 2.3
 
-Dialog {
-    id: inputDialog
-
-    // url of each icon
-    property url critical: ""
-    property url hidden: loggerDialog.hidden
-    property url information: ""
-    property url shown: loggerDialog.shown
-    property url warning: ""
-
-    // check the text of the error level and set the according icon
-    function provideIcon(levelValue)
-    {
-        switch (levelValue) {
-        case "Critical": return critical;
-        case "Warning": return warning;
-        case "Information": return information;
-        default : return ""
-        }
-    }
-
+Window{
+    id: window
+    width: 600
+    height: 400
     modality: Qt.ApplicationModal
-    standardButtons: StandardButton.Cancel | StandardButton.Ok
-    width: 500
 
-    ColumnLayout {
-        anchors.fill: parent
-        Layout.maximumWidth: 500
-        Layout.minimumWidth: 500
-        Layout.preferredWidth: 500
+    Dialog {
+        objectName: "dialog"
+        id: dialog
+        width: parent.width
+        height: parent.height
+        modal: true
+        standardButtons: Dialog.Cancel | Dialog.Ok
+        Material.theme: Material.System
+        Material.accent: Material.LightBlue
 
-        Row {
-            spacing: 5
+        ColumnLayout {
+            anchors.fill: parent
 
-            // icon of the biggest type of error from the TableView
-            Image {
-                id: icon
+            Row {
+                spacing: 5
 
-                width: 48
-                height: 48
-                mipmap: true
-                source: loggerDialog.icon
-                fillMode: Image.PreserveAspectFit
+                // icon of the biggest type of error from the TableView
+                Image {
+                    id: icon
+
+                    width: 48
+                    height: 48
+                    x: description.leftPadding
+                    y: description.height / 2 - icon.height / 2 + 15
+                    fillMode: Image.PreserveAspectFit
+                    mipmap: true
+                    source: loggerDialog.icon
+                }
+                Text {
+                    id:description
+
+                    text: loggerDialog.message
+                    // For text to wrap, a width has to be explicitly provided
+                    width: 400
+                    // This setting makes the text wrap at word boundaries when it goes
+                    // past the width of the Text object
+                    wrapMode: Text.WordWrap
+                }
             }
-            Text {
-                id:description
+            CheckBox {
+                id: checkbox
 
-                text: loggerDialog.message
-                // For text to wrap, a width has to be explicitly provided
-                width: 400
-                // This setting makes the text wrap at word boundaries when it goes
-                // past the width of the Text object
-                wrapMode: Text.WordWrap
-            }
-        }
-        CheckBox {
-            id: checkbox
-
-            text: checkedState ? "Hide Details" : "Show Details"
-            height:50
-            // the style permits to not show the default checkbox indicator but instead an image if set
-            style: CheckBoxStyle {
+                text: checkState ? "Hide Details" : "Show Details"
+                // the style permits to not show the default checkbox indicator but instead an image if set
                 indicator: Image {
                     id: detailsIcon
 
-                    width: 24
+                    width:  24
                     height: 24
+                    x: checkbox.leftPadding
+                    y: parent.height / 2 - height / 2
                     fillMode: Image.PreserveAspectFit
                     mipmap: true
                     antialiasing: true
-                    source: checkbox.checkedState ? shown : hidden
+                    source: checkbox.checkState ? loggerDialog.shown : loggerDialog.hidden
                     cache : true;
                     asynchronous: true;
                 }
+
+                onCheckedChanged: {
+                    textDetails.visible = checkState;
+                }
             }
 
-            // resize the dialog each time the checkedState change
-            onCheckedChanged: {
-                textDetails.visible = checkedState;
-                if (!checkedState) {
-                    inputDialog.width = 500;
-                    inputDialog.height = 50;
+            ListView {
+                id: textDetails
+                visible: false
+                Layout.minimumWidth: 400
+                Layout.topMargin: 12
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                model: loggerModel
+                headerPositioning: ListView.PullBackHeader
+                header: Row {
+                    ItemDelegate {
+                        id: indexTitle
+                        text: qsTr("ItemDelegate")
+
+                        contentItem: Text {
+                            rightPadding: indexTitle.spacing
+                            text: "Index"
+                            font: indexTitle.font
+                            color: indexTitle.enabled ? (indexTitle.down ? Material.shade(Material.primary, Material.ShadeA700) : Material.primary) : "#bdbebf"
+                            elide: Text.ElideRight
+                            verticalAlignment: Text.AlignVCenter
+                        }
+
+                        background: Rectangle {
+                            id: indexRect
+                            implicitWidth: 90
+                            implicitHeight: 40
+                            opacity: enabled ? 1 : 0.3
+                            color: indexTitle.down ? Material.color(Material.Grey, Material.Shade300) : Material.color(Material.Grey, Material.Shade200)
+
+                            Rectangle {
+                                width: parent.width
+                                height: 1
+                                color: indexTitle.down ? Material.shade(Material.primary, Material.ShadeA700) : Material.primary
+                                anchors.bottom: indexRect.bottom
+                            }
+                        }
+                    }
+                    ItemDelegate {
+                        id: levelTitle
+                        text: qsTr("ItemDelegate")
+
+                        contentItem: Text {
+                            rightPadding: levelTitle.spacing
+                            text: "Level"
+                            font: levelTitle.font
+                            color: levelTitle.enabled ? (levelTitle.down ? Material.shade(Material.primary, Material.ShadeA700) : Material.primary) : "#bdbebf"
+                            elide: Text.ElideRight
+                            verticalAlignment: Text.AlignVCenter
+                        }
+
+                        background: Rectangle {
+                            id: levelRect
+                            implicitWidth: 130
+                            implicitHeight: 40
+                            opacity: enabled ? 1 : 0.3
+                            color: levelTitle.down ? Material.color(Material.Grey, Material.Shade300) : Material.color(Material.Grey, Material.Shade200)
+
+                            Rectangle {
+                                width: parent.width
+                                height: 1
+                                color: levelTitle.down ? Material.shade(Material.primary, Material.ShadeA700) : Material.primary
+                                anchors.bottom: levelRect.bottom
+                            }
+                        }
+                    }
+                    ItemDelegate {
+                        id: messageTitle
+                        text: qsTr("ItemDelegate")
+                        contentItem: Text {
+                            rightPadding: messageTitle.spacing
+                            text: "Message"
+                            font: messageTitle.font
+                            color: messageTitle.enabled ? (messageTitle.down ? Material.shade(Material.primary, Material.ShadeA700) : Material.primary) : "#bdbebf"
+                            elide: Text.ElideRight
+                            verticalAlignment: Text.AlignVCenter
+                        }
+
+                        background: Rectangle {
+                            id: messageRect
+                            implicitWidth: textDetails.width - 220
+                            implicitHeight: 40
+                            opacity: enabled ? 1 : 0.3
+                            color: messageTitle.down ? Material.color(Material.Grey, Material.Shade300) : Material.color(Material.Grey, Material.Shade200)
+
+                            Rectangle {
+                                width: parent.width
+                                height: 1
+                                color: messageTitle.down ? Material.shade(Material.primary, Material.ShadeA700) : Material.primary
+                                anchors.bottom: messageRect.bottom
+                            }
+                        }
+                    }
+                }
+                delegate: Row {
+                    ItemDelegate {
+                        id: indexRow
+                        text: qsTr("ItemDelegate")
+
+                        contentItem: Text {
+                            rightPadding: indexRow.spacing
+                            text: index + 1
+                            font: indexRow.font
+                            color: indexRow.enabled ? (indexRow.down ? Material.shade(Material.accent, Material.ShadeA700) : Material.accent) : "#bdbebf"
+                            elide: Text.ElideRight
+                            verticalAlignment: Text.AlignVCenter
+                        }
+
+                        background: Rectangle {
+                            implicitWidth: 90
+                            implicitHeight: 40
+                            opacity: enabled ? 1 : 0.3
+                            color: indexRow.down ? Material.color(Material.Grey, Material.Shade300) : Material.color(Material.Grey, Material.Shade200)
+
+                            Rectangle {
+                                width: parent.width
+                                height: 1
+                                color: indexRow.down ? Material.shade(Material.accent, Material.ShadeA700) : Material.accent
+                                anchors.bottom: parent.bottom
+                            }
+                        }
+                    }
+                    ItemDelegate {
+                        id: levelRow
+                        text: qsTr("ItemDelegate")
+
+                        contentItem: Text {
+                            rightPadding: levelRow.spacing
+                            text: level
+                            font: levelRow.font
+                            color: levelRow.enabled ? (levelRow.down ? Material.shade(Material.accent, Material.ShadeA700) : Material.accent) : "#bdbebf"
+                            elide: Text.ElideRight
+                            verticalAlignment: Text.AlignVCenter
+                        }
+
+                        background: Rectangle {
+                            implicitWidth: 130
+                            implicitHeight: 40
+                            opacity: enabled ? 1 : 0.3
+                            color: levelRow.down ? Material.color(Material.Grey, Material.Shade300) : Material.color(Material.Grey, Material.Shade200)
+
+                            Rectangle {
+                                width: parent.width
+                                height: 1
+                                color: levelRow.down ? Material.shade(Material.accent, Material.ShadeA700) : Material.accent
+                                anchors.bottom: parent.bottom
+                            }
+                        }
+                    }
+                    ItemDelegate {
+                        id: messageRow
+                        text: qsTr("ItemDelegate")
+
+                        contentItem: Text {
+                            rightPadding: messageRow.spacing
+                            text: message
+                            font: messageRow.font
+                            color: messageRow.enabled ? (messageRow.down ? Material.shade(Material.accent, Material.ShadeA700) : Material.accent) : "#bdbebf"
+                            elide: Text.ElideRight
+                            verticalAlignment: Text.AlignVCenter
+                        }
+
+                        background: Rectangle {
+                            implicitWidth: textDetails.width - 220
+                            implicitHeight: 40
+                            opacity: enabled ? 1 : 0.3
+                            color: messageRow.down ? Material.color(Material.Grey, Material.Shade300) : Material.color(Material.Grey, Material.Shade200)
+
+                            Rectangle {
+                                width: parent.width
+                                height: 1
+                                color: messageRow.down ? Material.shade(Material.accent, Material.ShadeA700) : Material.accent
+                                anchors.bottom: parent.bottom
+                            }
+                        }
+                    }
                 }
             }
         }
-        TableView {
-            id: textDetails
-
-            visible: false
-            Layout.minimumWidth: 400
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            sortIndicatorVisible: true
-            sortIndicatorColumn: 0
-            model: loggerModel
-            horizontalScrollBarPolicy: Qt.ScrollBarAlwaysOff
-            verticalScrollBarPolicy: Qt.ScrollBarAsNeeded
-
-            TableViewColumn {
-                width: 50
-                role: "index"
-                delegate: Component {
-                    Item {
-                        Text {
-                            anchors.fill: parent
-                            horizontalAlignment: Text.AlignHCenter
-                            text:  styleData.row + 1
-                            color: styleData.textColor
-                            elide: styleData.elideMode
-                        }
-                    }
-                }
-            }
-            TableViewColumn {
-                id:level
-
-                role: "level"
-                title: "Level"
-                width: 120
-                // delegate permits to add an image and a text in the same Column
-                delegate: Component {
-                    id: imageDelegate
-
-                    Item {
-                        Image {
-                            fillMode: Image.PreserveAspectFit
-                            height:20
-                            width: 20
-                            cache : true;
-                            asynchronous: true;
-                            mipmap: true
-                            antialiasing: true
-                            source: inputDialog.provideIcon(styleData.value)
-                        }
-                        Text {
-                            anchors.fill: parent
-                            horizontalAlignment: Text.AlignHCenter
-                            text:  styleData.value
-                            color: styleData.textColor
-                            elide: styleData.elideMode
-                        }
-                    }
-                }
-            }
-            TableViewColumn {
-                id:message
-
-                role: "message"
-                title: "Message"
-                width: textDetails.width - 180
-                // ToDo Edit the row height to wrap content and change the color on styleData.row%2
-                delegate: Component {
-                    Item {
-                        Text {
-                            color: styleData.textColor
-                            elide: styleData.elideMode
-                            text: styleData.value
-                            width: message.width
-                        }
-                    }
-                }
-            }
+        onAccepted: {
+            loggerDialog.resultDialog(true)
+            window.close()
         }
+        onRejected: {
+            loggerDialog.resultDialog(false)
+            window.close()
+        }
+        onVisibleChanged: visible ? "" : reset()
     }
-
-    onAccepted: {
-        loggerDialog.resultDialog(true)
-    }
-    onRejected: {
-        loggerDialog.resultDialog(false)
-    }
-    onVisibleChanged: visible ? "" : reset()
+    Component.onCompleted: show()
 }

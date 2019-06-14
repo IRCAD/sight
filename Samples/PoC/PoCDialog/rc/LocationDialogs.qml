@@ -1,14 +1,13 @@
 import QtQuick 2.2
-import QtQuick.Controls 1.2
+import QtQuick.Controls 2.5
 import QtQuick.Dialogs 1.1
 import QtQuick.Layouts 1.1
 import QtQuick.Window 2.0
+
 import PoCDialog 1.0
+import "style" as Sight
 
 Item {
-    width: 580
-    height: 400
-    SystemPalette { id: palette }
     clip: true
 
     PocDialogLocationDialogs{
@@ -27,18 +26,17 @@ Item {
             left: parent.left
             right: parent.right
             top: parent.top
-            bottom: bottomBar.top
             leftMargin: 12
         }
         ColumnLayout {
             spacing: 8
             Item { Layout.preferredHeight: 4 } // padding
-            Label {
+            Sight.Label {
                 font.bold: true
                 text: "File dialog properties:"
             }
             RowLayout {
-                Text {
+                Sight.Text {
                     id: customizeTitle
                     text: "Window Title"
                     Layout.alignment: Qt.AlignBaseline
@@ -49,10 +47,11 @@ Item {
                     Layout.fillWidth: true
                     text: "Custom Dialog"
                     onTextChanged: pocDialogLocationDialogs.title = windowTitleField.text
+                    Component.onCompleted: pocDialogLocationDialogs.title = windowTitleField.text
                 }
             }
             RowLayout {
-                Text {
+                Sight.Text {
                     id: customizeLocation
                     text: "Location"
                     Layout.alignment: Qt.AlignBaseline
@@ -62,13 +61,14 @@ Item {
                     Layout.alignment: Qt.AlignBaseline
                     Layout.fillWidth: true
                     onTextChanged: pocDialogLocationDialogs.folder = windowLocationField.text
+                    Component.onCompleted: pocDialogLocationDialogs.folder = windowLocationField.text
                 }
             }
             RowLayout {
                 id: filterRow
                 property var nameFilters: []
                 property var nameOfFilters: []
-                Text {
+                Sight.Text {
                     id: customizeFilter
                     text: "Filters"
                     Layout.alignment: Qt.AlignBaseline
@@ -86,7 +86,7 @@ Item {
                     placeholderText: "*.vtk"
                     Layout.alignment: Qt.AlignBaseline
                 }
-                Button {
+                Sight.Button {
                     text: "Add"
                     onClicked: {
                         filterRow.nameFilters.push(windowFilterExtensionField.text)
@@ -102,18 +102,18 @@ Item {
             CheckBox {
                 id: fileDialogSelectFolder
                 text: "Select Folder"
-                onCheckedStateChanged: pocDialogLocationDialogs.isFolder = fileDialogSelectFolder.checked
+                onCheckStateChanged: pocDialogLocationDialogs.isFolder = fileDialogSelectFolder.checked
             }
             CheckBox {
                 id: fileDialogSelectExisting
                 text: "Select Existing Files"
                 checked: true
-                onCheckedStateChanged: pocDialogLocationDialogs.existing = fileDialogSelectExisting.checked
+                onCheckStateChanged: pocDialogLocationDialogs.existing = fileDialogSelectExisting.checked
             }
             CheckBox {
                 id: fileDialogSelectMultiple
                 text: "Select Multiple Files"
-                onCheckedStateChanged: {
+                onCheckStateChanged: {
                     if (fileDialogSelectMultiple.checked)
                     {
                         fileDialogSelectExisting.checked = true
@@ -121,63 +121,40 @@ Item {
                     pocDialogLocationDialogs.multiple = fileDialogSelectMultiple.checked
                 }
             }
-            Label {
+            Sight.Label {
                 id: labelFilter
                 text: "<b>current filter:</b>" + fileDialog.nameFilters
             }
-            Label {
+            Sight.Label {
                 text: "<b>chosen files:</b> " + pocDialogLocationDialogs.result
             }
-        }
-    }
-
-    Rectangle {
-        id: bottomBar
-        anchors {
-            left: parent.left
-            right: parent.right
-            bottom: parent.bottom
-        }
-        height: buttonRow.height * 1.2
-        color: Qt.darker(palette.window, 1.1)
-        border.color: Qt.darker(palette.window, 1.3)
-        Row {
-            id: buttonRow
-            spacing: 6
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.left: parent.left
-            anchors.leftMargin: 12
-            height: implicitHeight
-            width: parent.width
-            Button {
-                text: "Open"
-                anchors.verticalCenter: parent.verticalCenter
-                onClicked: {
-                    pocDialogLocationDialogs.open();
-                    filterRow.nameFilters = [];
-                    filterRow.nameOfFilters = [];
+            RowLayout {
+                id: buttonRow
+                Sight.Button {
+                    text: "Open"
+                    onClicked: {
+                        pocDialogLocationDialogs.open();
+                        filterRow.nameFilters = [];
+                        filterRow.nameOfFilters = [];
+                    }
                 }
-            }
-            Button {
-                text: "Pictures"
-                tooltip: "go to my Pictures directory"
-                anchors.verticalCenter: parent.verticalCenter
-                enabled: fileDialog.shortcuts.hasOwnProperty("pictures")
-                onClicked:
-                {
-                    var pictures = fileDialog.shortcuts.pictures;
-                    windowLocationField.text = pictures.replace("file://", "");
+                Sight.Button {
+                    text: "Pictures"
+                    enabled: fileDialog.shortcuts.hasOwnProperty("pictures")
+                    onClicked:
+                    {
+                        var pictures = fileDialog.shortcuts.pictures;
+                        windowLocationField.text = pictures.replace("file://", "");
+                    }
                 }
-            }
-            Button {
-                text: "Home"
-                tooltip: "go to my home directory"
-                anchors.verticalCenter: parent.verticalCenter
-                enabled: fileDialog.shortcuts.hasOwnProperty("home")
-                onClicked:
-                {
-                    var home = fileDialog.shortcuts.home;
-                    windowLocationField.text = home.replace("file://", "");
+                Sight.Button {
+                    text: "Home"
+                    enabled: fileDialog.shortcuts.hasOwnProperty("home")
+                    onClicked:
+                    {
+                        var home = fileDialog.shortcuts.home;
+                        windowLocationField.text = home.replace("file://", "");
+                    }
                 }
             }
         }
