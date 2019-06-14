@@ -523,6 +523,8 @@ void SHybridMarkerTracker::draw_rect(const cv::Mat &cHp, cv::Mat & img, cv::Scal
 {
     KeyConnectionsMap connections;
     connections.push( s_TIMELINE_INPUT, ::arData::TimeLine::s_OBJECT_PUSHED_SIG, s_TRACK_SLOT );
+    connections.push( s_FRAME_INOUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push( s_FRAME_INOUT, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT );
     return connections;
 }
 

@@ -3,34 +3,24 @@ set(VERSION 0.1)
 set(TYPE APP)
 set(DEPENDENCIES)
 set(REQUIREMENTS
-        appXml
-        arDataReg
-        media
-        arMedia
-        ctrlCamp
-        ctrlCom
         dataReg
-        fwlauncher
+        arDataReg
         gui
         guiQt
-        hybridMarkerTracker
-        ioCalibration
-        ioData
-        ioVTK
-        uiPreferences
-        uiTools
-        maths
-        preferences
         servicesReg
-        trackerAruco
-        registrationCV
-        videoQt
-        videoTools
-        videoCalibration
+        fwlauncher
+        appXml
+        uiPreferences
         visuVTK
+        visuVTKQt
         visuVTKAdaptor
         visuVTKARAdaptor
-        visuVTKQt
+        videoQt
+        videoTools
+        hybridMarkerTracker
+        media
+        arMedia
+        preferences
         )
 
 bundleParam(appXml PARAM_LIST config PARAM_VALUES ExHybridMarkerTrackerConfig)
