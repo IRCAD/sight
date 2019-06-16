@@ -22,7 +22,6 @@ stages:
     - mkdir -p $CI_PROJECT_DIR/install $CI_PROJECT_DIR/build
     - sudo chown -R sight:sight .
     - /usr/lib/git-core/git-restore-mtime --force --skip-missing --commit-time
-    - conan remove "*" -f
 
 .macos_template: &macos_job
   variables:
@@ -39,7 +38,6 @@ stages:
     - export CC=/usr/local/opt/ccache/libexec/clang
     - export CXX=/usr/local/opt/ccache/libexec/clang++
     - mkdir -p $CI_PROJECT_DIR/install $CI_PROJECT_DIR/build
-    - conan remove "*" -f
   tags:
     - mojave
 
@@ -51,7 +49,6 @@ stages:
     - conan config set storage.path="C:\cache\conan"
     - if not exist "%CI_PROJECT_DIR%/install" md "%CI_PROJECT_DIR%/install"
     - if not exist "%CI_PROJECT_DIR%/build" md "%CI_PROJECT_DIR%/build"
-    - conan remove "*" -f
   tags:
     - shell
     - windows
