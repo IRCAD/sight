@@ -423,7 +423,7 @@ void SScan::startCamera()
     {
         ::fwGui::dialog::MessageDialog::showMessageDialog(
             "RealSense Error",
-            "ealSense grabber cannot open STREAM type, please select DEVICE or FILE. ",
+            "RealSense grabber cannot open STREAM type, please select DEVICE or FILE. ",
             ::fwGui::dialog::IMessageDialog::CRITICAL);
 
         return;
