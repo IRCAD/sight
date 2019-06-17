@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -136,6 +136,13 @@ void Text::setVisible(bool _visible)
     {
         m_overlayText->hide();
     }
+}
+
+//------------------------------------------------------------------------------
+
+void Text::setTextAlignment(const ::Ogre::TextAreaOverlayElement::Alignment _alignement)
+{
+    m_overlayText->setAlignment(_alignement);
 }
 
 //------------------------------------------------------------------------------
