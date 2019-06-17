@@ -38,11 +38,23 @@ namespace visuOgreAdaptor
 /**
  * @brief Adaptor displaying a text object in the center or along the window's borders.
  *
+ * @section Slots Slots
+ * -\b setText(std::string): sets the text to be displayed.
+ *
  * @section XML XML Configuration
  *
  * @code{.xml}
     <service type="::visuOgreAdaptor::SText">
         <in key="object" uid="..." />
+        <config layer="default" fontSize="32" hAlign="right" vAlign="bottom" color="#ff3396" />
+    </service>
+   @endcode
+ *
+ * Alternatively, you can set the text in the service's configuration :
+ *
+ * @code{.xml}
+    <service type="::visuOgreAdaptor::SText">
+        <text>Hello World!</text>
         <config layer="default" fontSize="32" hAlign="right" vAlign="bottom" color="#ff3396" />
     </service>
    @endcode
@@ -56,6 +68,7 @@ namespace visuOgreAdaptor
  * - \b fontSize (optional, default=32): font size in inches.
  * - \b hAlign (optional, values=left|center|right, default="left"): horizontal alignment.
  * - \b vAlign (optional, values=top|center|bottom, default="bottom"): vertical alignment.
+ * - \b text (optional): text to display, only available when no input is set.
  */
 class VISUOGREADAPTOR_CLASS_API SText : public ::fwRenderOgre::IAdaptor
 {
@@ -66,7 +79,7 @@ public:
     VISUOGREADAPTOR_API SText() noexcept;
 
     /// Destructor.
-    VISUOGREADAPTOR_API virtual ~SText() noexcept override;
+    VISUOGREADAPTOR_API virtual ~SText() noexcept final;
 
 protected:
 
@@ -82,9 +95,13 @@ protected:
     /// Removes the text from the ogre scene and deletes it.
     VISUOGREADAPTOR_API virtual void stopping() final;
 
+    /// Returns connection proposals with the input objects.
+    /// Connects the input's 'modified' signal to the 'update' slot.
+    VISUOGREADAPTOR_API virtual KeyConnectionsMap getAutoConnections() const final;
+
 private:
 
-    /// Sets the the text string.
+    /// Sets the text string.
     void setText(const std::string& str);
 
     /// Updates the displayed text from the input object.
@@ -101,7 +118,7 @@ private:
 
     /// The text's height, expressed as a fraction of the viewport height.
     /// FIXME: should be computed from the font size and the screen's physical size.
-    const float m_textHeight = 0.03f;
+    const float m_textHeight { 0.03f };
 
     /// Font size in inches.
     unsigned int m_fontSize;

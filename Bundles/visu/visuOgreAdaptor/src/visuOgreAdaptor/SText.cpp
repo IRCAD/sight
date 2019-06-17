@@ -64,17 +64,16 @@ void SText::configuring()
 
     m_textString = srvconfig.get<std::string>("text", "");
 
-    m_fontSize = config.get<unsigned int>("fontSize", 20);
+    m_fontSize = config.get<unsigned int>("fontSize", 32);
 
     m_horizontalAlignment = config.get<std::string>("hAlign", "left");
-    SLM_ASSERT("'hAlign' value must be 'left', 'center' or 'right'",
+    SLM_ASSERT("'hAlign' must be 'left', 'center' or 'right'",
                m_horizontalAlignment == "left"
                || m_horizontalAlignment == "center"
-               || m_horizontalAlignment == "right"
-               );
+               || m_horizontalAlignment == "right" );
 
     m_verticalAlignment = config.get<std::string>("vAlign", "bottom");
-    SLM_ASSERT("'vAlign' value must be 'top', 'center' or 'bottom'",
+    SLM_ASSERT("'vAlign' must be 'top', 'center' or 'bottom'",
                m_verticalAlignment == "top"
                || m_verticalAlignment == "center"
                || m_verticalAlignment == "bottom");
@@ -99,7 +98,7 @@ void SText::starting()
     ::Ogre::OverlayContainer* textContainer = renderSrv->getOverlayTextPanel();
     ::Ogre::FontPtr dejaVuSansFont          = ::fwRenderOgre::helper::Font::getFont("DejaVuSans.ttf", m_fontSize);
 
-    m_text = ::fwRenderOgre::Text::New(this->getID() + "_fpsText",
+    m_text = ::fwRenderOgre::Text::New(this->getID() + "_text",
                                        this->getSceneManager(),
                                        textContainer,
                                        dejaVuSansFont,
@@ -125,10 +124,21 @@ void SText::stopping()
 {
     this->getRenderService()->makeCurrent();
 
-    ::Ogre::SceneManager* sm = this->getLayer()->getSceneManager();
+    ::Ogre::SceneManager* const sm = this->getLayer()->getSceneManager();
     m_text->detachFromParent();
     sm->destroyMovableObject(m_text);
     m_text = nullptr;
+}
+
+//-----------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsMap SText::getAutoConnections() const
+{
+    KeyConnectionsMap connections;
+
+    connections.push(s_OBJECT_INPUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+
+    return connections;
 }
 
 //----------------------------------------------------------------------------
@@ -182,7 +192,7 @@ void SText::updateText()
 
     if(obj)
     {
-        ::fwData::GenericFieldBase::csptr field = ::fwData::GenericFieldBase::dynamicCast(obj);
+        const ::fwData::GenericFieldBase::csptr field = ::fwData::GenericFieldBase::dynamicCast(obj);
 
         if(field)
         {
