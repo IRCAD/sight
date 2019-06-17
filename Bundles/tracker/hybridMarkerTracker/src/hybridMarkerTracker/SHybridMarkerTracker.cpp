@@ -21,6 +21,10 @@ namespace hybridMarkerTracker
 {
 
 fwServicesRegisterMacro(::arServices::ITracker, ::hybridMarkerTracker::SHybridMarkerTracker);
+
+static const ::fwServices::IService::KeyType s_TIMELINE_INOUT = "frameTL";
+static const ::fwServices::IService::KeyType s_IMAGE_INOUT = "videoImage";
+
 SHybridMarkerTracker::SHybridMarkerTracker() noexcept :tracker(NULL)
 {}
 
@@ -525,7 +529,7 @@ void SHybridMarkerTracker::draw_rect(const cv::Mat &cHp, cv::Mat & img, cv::Scal
 ::fwServices::IService::KeyConnectionsMap SHybridMarkerTracker::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push( s_TIMELINE_INPUT, ::arData::TimeLine::s_OBJECT_PUSHED_SIG, s_TRACK_SLOT );
+    connections.push( s_TIMELINE_INOUT, ::arData::TimeLine::s_OBJECT_PUSHED_SIG, s_TRACK_SLOT );
     connections.push( s_FRAME_INOUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT );
     connections.push( s_FRAME_INOUT, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT );
     return connections;
@@ -539,14 +543,27 @@ void SHybridMarkerTracker::starting()
 
 void SHybridMarkerTracker::tracking(::fwCore::HiResClock::HiResClockType& timestamp)
 {
-    ::arData::FrameTL::csptr frameTL = this->getInput< ::arData::FrameTL >(s_TIMELINE_INPUT);
-
+    auto frameTL = this->getInOut< ::arData::FrameTL >(s_TIMELINE_INOUT);
+    auto videoImage = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     ::cv::Mat img, img_track;
-    auto frame = this->getInOut<::fwData::Image >(s_FRAME_INOUT);
-    ::cvIO::FrameTL::moveToCv()
-    process(img, img_track);
+    if (frameTL)
+    {
+        const CSPTR(::arData::FrameTL::BufferType) buffer = frameTL->getClosestBuffer(timestamp);
+        std::uint8_t* frameBuff = const_cast< std::uint8_t*>( &buffer->getElement(0) );
+
+        ::cvIO::FrameTL::moveToCv(frameTL, frameBuff,img);
+        process(img, img_track);
+        ::cvIO::Image::copyFromCv(videoImage,img_track);
+    }
 }
-void SHybridMarkerTracker::configuring(){}
-void SHybridMarkerTracker::updating(){}
+void SHybridMarkerTracker::configuring()
+{
+}
+
+void SHybridMarkerTracker::updating()
+{
+    auto timestamp = ::fwCore::HiResClock::getTimeInMilliSec();
+    this->tracking(timestamp);
+}
 void SHybridMarkerTracker::stopping(){}
 } // hybridMarkerTracker namespace

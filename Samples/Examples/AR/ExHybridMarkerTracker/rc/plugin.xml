@@ -11,9 +11,7 @@
         <id>ExHybridMarkerTrackerConfig</id>
         <config>
             <object uid="camera" type="::arData::Camera" />
-            <object uid="frameTL" type="::arData::FrameTL">
-                <value>100</value>
-            </object>
+            <object uid="frameTL" type="::arData::FrameTL"/>
             <object uid="videoImage" type="::fwData::Image" />
 
             <service uid="mainFrame" type="::gui::frame::SDefaultFrame">
@@ -126,7 +124,7 @@
 
             <service uid="hybridMarkerTracker" type="::hybridMarkerTracker::SHybridMarkerTracker" worker="tracking">
                 <in key="camera" uid="camera" />
-                <inout key="frameTL" uid="FrameTL"/>
+                <inout key="frameTL" uid="frameTL"/>
                 <inout key="frame" uid="videoImage" autoConnect="yes"/>
             </service>
 
@@ -143,6 +141,8 @@
             <!-- VTK scene 'genericScene' -->
             <start uid="videoAdpt" />
             <start uid="interactorStyle" />
+
+<!--            <update uid="hybridMarkerTracker"/>-->
         </config>
     </extension>
 </plugin>
