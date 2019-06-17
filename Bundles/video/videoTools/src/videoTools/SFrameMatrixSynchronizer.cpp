@@ -61,7 +61,10 @@ const ::fwServices::IService::KeyType s_MATRICES_INOUT = "matrices";
 
 // Private slot
 const ::fwCom::Slots::SlotKeyType s_RESET_TIMELINE_SLOT = "reset";
-const ::fwCom::Slots::SlotKeyType s_SYNCHRONIZE_SLOT    = "synchronize";
+
+// Public slots
+const ::fwCom::Slots::SlotKeyType SFrameMatrixSynchronizer::s_SYNCHRONIZE_SLOT        = "synchronize";
+const ::fwCom::Slots::SlotKeyType SFrameMatrixSynchronizer::s_SET_FRAME_DELAY_SLOT    = "setFrameDelay";
 
 // ----------------------------------------------------------------------------
 
@@ -76,6 +79,7 @@ SFrameMatrixSynchronizer::SFrameMatrixSynchronizer() noexcept :
 
     newSlot(s_RESET_TIMELINE_SLOT, &SFrameMatrixSynchronizer::resetTimeline, this);
     newSlot(s_SYNCHRONIZE_SLOT, &SFrameMatrixSynchronizer::synchronize, this);
+    newSlot(s_SET_FRAME_DELAY_SLOT, &SFrameMatrixSynchronizer::setFrameDelay, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -292,7 +296,7 @@ void SFrameMatrixSynchronizer::synchronize()
         ::fwData::mt::ObjectWriteLock destLock(image);
         ::fwData::Array::sptr array = image->getDataArray();
         ::fwDataTools::helper::Array arrayHelper(array);
-        CSPTR(::arData::FrameTL::BufferType) buffer = frameTL->getClosestBuffer(matrixTimestamp);
+        CSPTR(::arData::FrameTL::BufferType) buffer = frameTL->getClosestBuffer(matrixTimestamp - m_delay);
 
         if(!buffer)
         {
@@ -365,6 +369,20 @@ void SFrameMatrixSynchronizer::updating()
     if(m_updateMask & SYNC_REQUESTED)
     {
         this->synchronize();
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void SFrameMatrixSynchronizer::setFrameDelay(int val, std::string key)
+{
+    if(key == "frameDelay")
+    {
+        m_delay = val;
+    }
+    else
+    {
+        OSLM_WARN("Unknown key");
     }
 }
 

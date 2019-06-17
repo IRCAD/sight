@@ -135,6 +135,14 @@ public:
     /** @} */
 
     /**
+     * @name Slots API
+     * @{
+     */
+    VIDEOTOOLS_API static const ::fwCom::Slots::SlotKeyType s_SYNCHRONIZE_SLOT;
+    VIDEOTOOLS_API static const ::fwCom::Slots::SlotKeyType s_SET_FRAME_DELAY_SLOT;
+    /** @} */
+
+    /**
      * @brief Constructor.
      */
     VIDEOTOOLS_API SFrameMatrixSynchronizer() noexcept;
@@ -170,6 +178,9 @@ protected:
     /// Called when new objects are pushed into the timeline.
     VIDEOTOOLS_API void updating() override;
 
+    /// Set a delay between frames and matrices.
+    VIDEOTOOLS_API void setFrameDelay(int val, std::string key);
+
 private:
 
     /// Reset the last timestamp when the timeline is cleared
@@ -203,6 +214,9 @@ private:
 
     /// Total number of matrices in output (used to know if all the matrices are synchronized)
     size_t m_totalOutputMatrices;
+
+    /// Delay in milliseconds between frames and matrices
+    int m_delay { 0 };
 
     /// Timer used for the update
     ::fwThread::Timer::sptr m_timer;
