@@ -432,11 +432,7 @@ void SScan::startCamera()
     }
     else if(camera->getCameraSource() == ::arData::Camera::STREAM)
     {
-        ::fwGui::dialog::MessageDialog::showMessageDialog(
-            "RealSense Error",
-            "RealSense grabber cannot open STREAM type, please select DEVICE or FILE. ",
-            ::fwGui::dialog::IMessageDialog::CRITICAL);
-
+        this->popMessageDialog("RealSense grabber cannot open STREAM type, please select DEVICE or FILE.");
         return;
     }
     // CameraSource is unknow or DEVICE we open a device. This allows to work without camera selector.
@@ -545,10 +541,9 @@ void SScan::startCamera()
     }
     catch(const std::exception& e)
     {
-        ::fwGui::dialog::MessageDialog::showMessageDialog(
-            "RealSense Error",
-            "RealSense device is not available. Please check if it is plugged in. Error : " + std::string(e.what()),
-            ::fwGui::dialog::IMessageDialog::CRITICAL);
+
+        this->popMessageDialog("RealSense device is not available. Please check if it is plugged in. Error : "
+                               + std::string(e.what()));
         return;
     }
 
@@ -633,10 +628,7 @@ void SScan::record()
     // Cannot record when playback a file.
     if(m_playbackMode)
     {
-        ::fwGui::dialog::MessageDialog::showMessageDialog(
-            "RealSense Error",
-            "Cannot record when grabber playback a file !",
-            ::fwGui::dialog::IMessageDialog::CRITICAL);
+        this->popMessageDialog("Cannot record when grabber playback a file !");
         return;
     }
 
@@ -743,10 +735,7 @@ void SScan::setBoolParameter(bool _value, std::string _key)
         }
         catch(const std::exception& e)
         {
-            ::fwGui::dialog::MessageDialog::showMessageDialog(
-                "RealSense Error",
-                "RealSense device error: " + std::string(e.what()),
-                ::fwGui::dialog::IMessageDialog::CRITICAL);
+            this->popMessageDialog("RealSense device error:" + std::string(e.what()));
             return;
         }
 
@@ -899,10 +888,7 @@ void SScan::setIntParameter(int _value, std::string _key)
     }
     catch(const std::exception& e)
     {
-        ::fwGui::dialog::MessageDialog::showMessageDialog(
-            "RealSense Error",
-            "RealSense device error:" + std::string(e.what()),
-            ::fwGui::dialog::IMessageDialog::CRITICAL);
+        this->popMessageDialog("RealSense device error:" + std::string(e.what()));
         return;
     }
 }
@@ -938,12 +924,18 @@ void SScan::setDoubleParameter(double _value, std::string _key)
     }
     catch(const std::exception& e)
     {
-        ::fwGui::dialog::MessageDialog::showMessageDialog(
-            "RealSense Error",
-            "RealSense device error:" + std::string(e.what()),
-            ::fwGui::dialog::IMessageDialog::CRITICAL);
+
+        this->popMessageDialog("RealSense device error:" + std::string(e.what()));
         return;
     }
+}
+
+//-----------------------------------------------------------------------------
+
+void SScan::popMessageDialog(const std::string& _message)
+{
+    ::fwGui::dialog::MessageDialog::showMessageDialog(
+        "RealSense Error", _message, ::fwGui::dialog::IMessageDialog::CRITICAL);
 }
 
 //-----------------------------------------------------------------------------
@@ -1073,10 +1065,7 @@ void SScan::grab()
         }
         catch(const std::exception& e)
         {
-            ::fwGui::dialog::MessageDialog::showMessageDialog(
-                "RealSense Error",
-                "RealSense device error:" + std::string(e.what()),
-                ::fwGui::dialog::IMessageDialog::CRITICAL);
+            this->popMessageDialog("RealSense device error:" + std::string(e.what()));
             return;
         }
     }
@@ -1151,10 +1140,7 @@ void SScan::setMinMaxRange()
         }
         catch(const std::exception& e)
         {
-            ::fwGui::dialog::MessageDialog::showMessageDialog(
-                "RealSense Error",
-                "RealSense device error:" + std::string(e.what()),
-                ::fwGui::dialog::IMessageDialog::CRITICAL);
+            this->popMessageDialog("RealSense device error:" + std::string(e.what()));
             return;
         }
 

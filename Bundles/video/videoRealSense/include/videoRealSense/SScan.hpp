@@ -401,6 +401,10 @@ private:
     ///SLOT: When "double" parameter changes
     void setDoubleParameter(double, std::string);
 
+    /// Pop a message dialog to the user with _message.
+    /// Title is set to "RealSense Error".
+    void popMessageDialog(const std::string& _message);
+
     // Members
 
     std::unique_ptr< ::rs2::pipeline> m_pipe; ///< RealSense Pipeline
