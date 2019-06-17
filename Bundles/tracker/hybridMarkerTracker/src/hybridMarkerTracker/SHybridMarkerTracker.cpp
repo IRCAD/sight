@@ -23,7 +23,7 @@ namespace hybridMarkerTracker
 fwServicesRegisterMacro(::arServices::ITracker, ::hybridMarkerTracker::SHybridMarkerTracker);
 
 static const ::fwServices::IService::KeyType s_TIMELINE_INOUT = "frameTL";
-static const ::fwServices::IService::KeyType s_IMAGE_INOUT = "videoImage";
+static const ::fwServices::IService::KeyType s_IMAGE_INOUT = "frame";
 
 SHybridMarkerTracker::SHybridMarkerTracker() noexcept :tracker(NULL)
 {}
@@ -544,7 +544,9 @@ void SHybridMarkerTracker::starting()
 void SHybridMarkerTracker::tracking(::fwCore::HiResClock::HiResClockType& timestamp)
 {
     auto frameTL = this->getInOut< ::arData::FrameTL >(s_TIMELINE_INOUT);
-    auto videoImage = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    SLM_ASSERT("The InOut key '" + s_TIMELINE_INOUT + "' is not defined", frameTL);
+    auto frame = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    SLM_ASSERT("The InOut key '" + s_IMAGE_INOUT + "' is not defined", frame);
     ::cv::Mat img, img_track;
     if (frameTL)
     {
@@ -553,7 +555,7 @@ void SHybridMarkerTracker::tracking(::fwCore::HiResClock::HiResClockType& timest
 
         ::cvIO::FrameTL::moveToCv(frameTL, frameBuff,img);
         process(img, img_track);
-        ::cvIO::Image::copyFromCv(videoImage,img_track);
+        ::cvIO::Image::copyFromCv(frame,img_track);
     }
 }
 void SHybridMarkerTracker::configuring()

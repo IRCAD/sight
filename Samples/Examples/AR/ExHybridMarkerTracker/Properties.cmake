@@ -16,6 +16,7 @@ set(REQUIREMENTS
         visuVTKAdaptor
         visuVTKARAdaptor
         videoQt
+        videoOpenCV
         videoTools
         hybridMarkerTracker
         media

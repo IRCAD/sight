@@ -117,7 +117,7 @@
                 <videoSupport>yes</videoSupport>
             </service>
 
-            <service uid="frameGrabber" type="::videoQt::SFrameGrabber">
+            <service uid="frameGrabber" type="::videoOpenCV::SFrameGrabber">
                 <in key="camera" uid="camera" />
                 <inout key="frameTL" uid="frameTL" autoConnect="yes" />
             </service>
