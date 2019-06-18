@@ -44,9 +44,9 @@ const ::fwCom::Slots::SlotKeyType SLine::s_TOGGLE_VISIBILITY_SLOT = "toggleVisib
 
 fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SLine);
 
-static const std::string s_LENGTH_CONFIG = "length";
-static const std::string s_DOTTED_CONFIG = "dotted";
-static const std::string s_WIDTH_CONFIG  = "width";
+static const std::string s_LENGTH_CONFIG     = "length";
+static const std::string s_DASHED_CONFIG     = "dashed";
+static const std::string s_DASHLENGTH_CONFIG = "dashLength";
 
 //-----------------------------------------------------------------------------
 
@@ -110,8 +110,8 @@ void SLine::configuring()
     m_color.b = static_cast<float>(rgba[2]) / 255.f;
     m_color.a = static_cast<float>(rgba[3]) / 255.f;
 
-    m_dotted = config.get(s_DOTTED_CONFIG, m_dotted);
-    m_width  = config.get(s_WIDTH_CONFIG, m_width);
+    m_dashed     = config.get(s_DASHED_CONFIG, m_dashed);
+    m_dashLength = config.get(s_DASHLENGTH_CONFIG, m_dashLength);
 }
 
 //-----------------------------------------------------------------------------
@@ -172,6 +172,7 @@ void SLine::updating()
 
 void SLine::stopping()
 {
+    this->getRenderService()->makeCurrent();
     this->unregisterServices();
     m_material = nullptr;
     if(m_line)
@@ -207,12 +208,12 @@ void SLine::drawLine(bool existingLine)
 
     m_line->colour(m_color);
 
-    if (m_dotted == true)
+    if (m_dashed == true)
     {
-        for(float i = 0.f; i <= m_length; i += m_width*2)
+        for(float i = 0.f; i <= m_length; i += m_dashLength*2)
         {
             m_line->position(0, 0, i);
-            m_line->position(0, 0, i+m_width);
+            m_line->position(0, 0, i+m_dashLength);
         }
     }
     else
@@ -228,6 +229,8 @@ void SLine::drawLine(bool existingLine)
 
 void SLine::updateLength(float length)
 {
+    this->getRenderService()->makeCurrent();
+
     m_length = length;
 
     // Draw

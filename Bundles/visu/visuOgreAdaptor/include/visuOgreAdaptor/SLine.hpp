@@ -49,7 +49,7 @@ namespace visuOgreAdaptor
  * @section XML XML Configuration
  * @code{.xml}
     <service uid="..." type="::visuOgreAdaptor::SLine">
-        <config layer="default" transform="transformUID" length="30" width="2.5" color="#0000FF" dotted="false" />
+        <config layer="default" transform="transformUID" length="30" dashLength="2.5" color="#0000FF" dashed="false" />
     </service>
    @endcode
  * @subsection Configuration Configuration:
@@ -57,9 +57,9 @@ namespace visuOgreAdaptor
  * - \b transform (optional): the name of the Ogre transform node where to attach the mesh, as it was specified
  * in the STransform adaptor
  * - \b length (optional): (float) length of the line in mm (default 50)
- * - \b width (optional): (float) size from the hole in the line
+ * - \b dashLength (optional): (float) length of a dash
  * - \b color (optional): (string) color of the line
- * - \b dotted (optional): (bool) dotted point
+ * - \b dashed (optional): (bool) display a dashed line instead of a solid line
  *
  */
 
@@ -133,10 +133,10 @@ private:
     ::Ogre::ColourValue m_color;
     /// Handles the visibility of the line
     bool m_isVisible {true};
-    /// Dotted line
-    bool m_dotted {false};
-    /// Width for dotted line
-    float m_width {2.5f};
+    /// Display a dashed line instead of a solid line
+    bool m_dashed {false};
+    /// Length of a dash
+    float m_dashLength {2.5f};
 
 };
 
