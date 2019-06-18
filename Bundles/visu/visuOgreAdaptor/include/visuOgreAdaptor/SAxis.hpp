@@ -116,17 +116,17 @@ private:
     /// Line along the z axis
     ::Ogre::ManualObject* zLine { nullptr };
 
-    ::Ogre::ManualObject* xCone { nullptr };
     /// Arrow of the x axis
-    ::Ogre::ManualObject* yCone { nullptr };
+    ::Ogre::ManualObject* xCone { nullptr };
     /// Arrow of the y axis
-    ::Ogre::ManualObject* zCone { nullptr };
+    ::Ogre::ManualObject* yCone { nullptr };
     /// Arrow of the z axis
+    ::Ogre::ManualObject* zCone { nullptr };
 
     /// Scene node where all of our manual objects are attached
     ::Ogre::SceneNode* m_sceneNode { nullptr };
 
-    /// Labels attach to each axis
+    /// Labels attached to each axis
     std::array< ::fwRenderOgre::Text*, 3> m_axisLabels {{ nullptr, nullptr, nullptr }};
 };
 
