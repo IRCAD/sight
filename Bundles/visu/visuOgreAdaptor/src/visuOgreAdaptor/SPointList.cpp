@@ -113,6 +113,9 @@ void SPointList::configuring()
 
     const std::string color = config.get<std::string>("color", "");
 
+    const bool visible = config.get<bool>("visible", m_isVisible);
+    this->updateVisibility(visible);
+
     SLM_ASSERT("Material not found", m_material);
     m_material->diffuse()->setRGBA(color.empty() ? "#ffffffff" : color);
 

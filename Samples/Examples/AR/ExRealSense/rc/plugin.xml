@@ -239,7 +239,7 @@
 
             <service uid="pointcloudAdptARD" type="::visuOgreAdaptor::SPointList"  autoConnect="yes" >
                 <in key="mesh" uid="pointcloud" />
-                <config layer="AR" autoresetcamera="no" radius="1" />
+                <config layer="AR" autoresetcamera="no" radius="1" visible="false" />
             </service>
 
             <service uid="cameraAdaptorARD" type="::visuOgreAdaptor::SCamera">
@@ -277,12 +277,12 @@
 
             <service uid="pointcloudAdptAR" type="::visuOgreAdaptor::SPointList"  autoConnect="yes" >
                 <in key="mesh" uid="pointcloud" />
-                <config layer="AR" autoresetcamera="no" radius="1" />
+                <config layer="AR" autoresetcamera="no" radius="1" visible="false" />
             </service>
 
             <service uid="cameraAdaptorAR" type="::visuOgreAdaptor::SCamera">
                 <inout key="transform" uid="identity" />
-                <in key="calibration" uid="RGBCamera" />
+                <in key="calibration" uid="RGBCamera" /> <!-- Projection matrix of Color Sensor -->
                 <config layer="AR" />
             </service>
 
@@ -472,14 +472,14 @@
                 <slots>
                     <slot>pointcloudAdptARD/updateVisibility</slot>
                 </slots>
-                <state active="true" />
+                <state active="false" />
             </service>
 
             <service uid="showPCColor" type="::gui::action::SBooleanSlotCaller">
                 <slots>
                     <slot>pointcloudAdptAR/updateVisibility</slot>
                 </slots>
-                <state active="true" />
+                <state active="false" />
             </service>
 
             <!-- Show/hide the parameters view -->
