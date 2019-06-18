@@ -12,7 +12,11 @@
         <config>
             <object uid="camera" type="::arData::Camera" />
             <object uid="frameTL" type="::arData::FrameTL"/>
-            <object uid="videoImage" type="::fwData::Image" />
+
+<!--        source frame that is used for current iteration-->
+            <object uid="sourceFrame" type="::fwData::Image" />
+<!--        final output video frame that will be displayed-->
+            <object uid="finalFrame" type="::fwData::Image"/>
 
             <service uid="mainFrame" type="::gui::frame::SDefaultFrame">
                 <gui>
@@ -23,7 +27,21 @@
                 </gui>
                 <registry>
                     <toolBar sid="toolbar" start="yes" />
-                    <view sid="genericScene" start="yes" />
+                    <view sid="mainView" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="mainView" type="::gui::view::SDefaultView">
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="horizontal" />
+                        <view proportion="1" />
+                        <view proportion="1" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="genericScene" start="yes"/>
+                    <view sid="genericScene2" start="yes"/>
                 </registry>
             </service>
 
@@ -85,15 +103,28 @@
 
             <service uid="genericScene" type="::fwRenderVTK::SRender" >
                 <scene>
-                    <renderer id="default" background="0.0" />
+                    <renderer id="default"  background="0.0" />
                     <adaptor uid="videoAdpt" />
                     <adaptor uid="interactorStyle" />
                 </scene>
             </service>
 
+            <service uid="genericScene2" type="::fwRenderVTK::SRender">
+                <scene>
+                    <renderer id="ar"  background="0.0" />
+                    <adaptor uid="videoAdptOut" />
+<!--                    <adaptor uid="interactorStyle" />-->
+                </scene>
+            </service>
+
             <service uid="videoAdpt" type="::visuVTKARAdaptor::SVideo" autoConnect="yes">
-                <in key="frame" uid="videoImage" />
+                <in key="frame" uid="sourceFrame" />
                 <config renderer="default" />
+            </service>
+
+            <service uid="videoAdptOut" type="::visuVTKARAdaptor::SVideo" autoConnect="yes">
+                <in key="frame" uid="finalFrame" />
+                <config renderer="ar" />
             </service>
 
             <service uid="interactorStyle" type="::visuVTKAdaptor::SInteractorStyle">
@@ -107,7 +138,7 @@
                     <key uid="frameTL" />
                 </in>
                 <inout group="image">
-                    <key uid="videoImage" />
+                    <key uid="sourceFrame" />
                 </inout>
                 <framerate>30</framerate>
             </service>
@@ -124,8 +155,9 @@
 
             <service uid="hybridMarkerTracker" type="::hybridMarkerTracker::SHybridMarkerTracker" worker="tracking">
                 <in key="camera" uid="camera" />
+                <in key="frame" uid="sourceFrame"/>
                 <inout key="frameTL" uid="frameTL"/>
-                <inout key="frame" uid="videoImage" autoConnect="yes"/>
+                <inout key="frameOut" uid="finalFrame"/>
             </service>
 
             <connect>
@@ -140,6 +172,7 @@
 
             <!-- VTK scene 'genericScene' -->
             <start uid="videoAdpt" />
+            <start uid="videoAdptOut" />
             <start uid="interactorStyle" />
 
 <!--            <update uid="hybridMarkerTracker"/>-->

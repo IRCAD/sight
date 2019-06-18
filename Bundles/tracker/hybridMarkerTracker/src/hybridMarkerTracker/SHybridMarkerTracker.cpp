@@ -23,7 +23,8 @@ namespace hybridMarkerTracker
 fwServicesRegisterMacro(::arServices::ITracker, ::hybridMarkerTracker::SHybridMarkerTracker);
 
 static const ::fwServices::IService::KeyType s_TIMELINE_INOUT = "frameTL";
-static const ::fwServices::IService::KeyType s_IMAGE_INOUT = "frame";
+static const ::fwServices::IService::KeyType s_IMAGE_INPUT = "frame";
+static const ::fwServices::IService::KeyType s_IMAGE_INOUT = "frameOut";
 
 SHybridMarkerTracker::SHybridMarkerTracker() noexcept :tracker(NULL)
 {}
@@ -545,17 +546,25 @@ void SHybridMarkerTracker::tracking(::fwCore::HiResClock::HiResClockType& timest
 {
     auto frameTL = this->getInOut< ::arData::FrameTL >(s_TIMELINE_INOUT);
     SLM_ASSERT("The InOut key '" + s_TIMELINE_INOUT + "' is not defined", frameTL);
-    auto frame = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("The InOut key '" + s_IMAGE_INOUT + "' is not defined", frame);
-    ::cv::Mat img, img_track;
-    if (frameTL)
-    {
-        const CSPTR(::arData::FrameTL::BufferType) buffer = frameTL->getClosestBuffer(timestamp);
-        std::uint8_t* frameBuff = const_cast< std::uint8_t*>( &buffer->getElement(0) );
 
-        ::cvIO::FrameTL::moveToCv(frameTL, frameBuff,img);
+    auto frame = this->getInput< ::fwData::Image >(s_IMAGE_INPUT);
+    SLM_ASSERT("The Input key '" + s_IMAGE_INPUT + "' is not defined", frame);
+
+    auto frameOutput = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    SLM_ASSERT("The InOut key '" + s_IMAGE_INOUT + "' is not defined", frameOutput);
+
+
+    ::cv::Mat img, img_track;
+    if (frameTL) {
+        const CSPTR(::arData::FrameTL::BufferType)
+        buffer = frameTL->getClosestBuffer(timestamp);
+        std::uint8_t *frameBuff = const_cast< std::uint8_t *>( &buffer->getElement(0));
+
+        ::cvIO::FrameTL::moveToCv(frameTL, frameBuff, img);
         process(img, img_track);
-        ::cvIO::Image::copyFromCv(frame,img_track);
+
+        ::cvIO::Image::copyFromCv(frameOutput, img_track);
+//        this->setOutput(s_IMAGE_OUT, frameOutput);
     }
 }
 void SHybridMarkerTracker::configuring()
