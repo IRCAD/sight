@@ -555,7 +555,8 @@ void SHybridMarkerTracker::tracking(::fwCore::HiResClock::HiResClockType& timest
 
 
     ::cv::Mat img, img_track;
-    if (frameTL) {
+    if (frameTL)
+    {
         const CSPTR(::arData::FrameTL::BufferType)
         buffer = frameTL->getClosestBuffer(timestamp);
         std::uint8_t *frameBuff = const_cast< std::uint8_t *>( &buffer->getElement(0));
@@ -564,7 +565,8 @@ void SHybridMarkerTracker::tracking(::fwCore::HiResClock::HiResClockType& timest
         process(img, img_track);
 
         ::cvIO::Image::copyFromCv(frameOutput, img_track);
-//        this->setOutput(s_IMAGE_OUT, frameOutput);
+        auto sig = frameOutput->signal<::fwData::Object::ModifiedSignalType >(::fwData::Image::s_BUFFER_MODIFIED_SIG);
+        sig->asyncEmit();
     }
 }
 void SHybridMarkerTracker::configuring()

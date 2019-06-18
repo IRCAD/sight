@@ -113,7 +113,6 @@
                 <scene>
                     <renderer id="ar"  background="0.0" />
                     <adaptor uid="videoAdptOut" />
-<!--                    <adaptor uid="interactorStyle" />-->
                 </scene>
             </service>
 
