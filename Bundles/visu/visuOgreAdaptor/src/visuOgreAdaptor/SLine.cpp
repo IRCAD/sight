@@ -128,7 +128,21 @@ void SLine::starting()
     m_line->setDynamic(true);
 
     // Set the material
-    this->setMaterial();
+    m_material = ::fwData::Material::New();
+
+    m_materialAdaptor = this->registerService< ::visuOgreAdaptor::SMaterial >(
+        "::visuOgreAdaptor::SMaterial");
+    m_materialAdaptor->registerInOut(m_material, ::visuOgreAdaptor::SMaterial::s_MATERIAL_INOUT, true);
+    m_materialAdaptor->setID(this->getID() + m_materialAdaptor->getID());
+    m_materialAdaptor->setMaterialName(this->getID() + m_materialAdaptor->getID());
+    m_materialAdaptor->setRenderService( this->getRenderService() );
+    m_materialAdaptor->setLayerID(m_layerID);
+    m_materialAdaptor->setShadingMode("ambient");
+    m_materialAdaptor->setMaterialTemplateName(::fwRenderOgre::Material::DEFAULT_MATERIAL_TEMPLATE_NAME);
+    m_materialAdaptor->start();
+
+    m_materialAdaptor->getMaterialFw()->setHasVertexColor(true);
+    m_materialAdaptor->update();
 
     // Draw the line
     this->drawLine(false);
@@ -208,27 +222,6 @@ void SLine::drawLine(bool existingLine)
     }
 
     m_line->end();
-}
-
-//-----------------------------------------------------------------------------
-
-void SLine::setMaterial()
-{
-    m_material = ::fwData::Material::New();
-
-    m_materialAdaptor = this->registerService< ::visuOgreAdaptor::SMaterial >(
-        "::visuOgreAdaptor::SMaterial");
-    m_materialAdaptor->registerInOut(m_material, ::visuOgreAdaptor::SMaterial::s_MATERIAL_INOUT, true);
-    m_materialAdaptor->setID(this->getID() + m_materialAdaptor->getID());
-    m_materialAdaptor->setMaterialName(this->getID() + m_materialAdaptor->getID());
-    m_materialAdaptor->setRenderService( this->getRenderService() );
-    m_materialAdaptor->setLayerID(m_layerID);
-    m_materialAdaptor->setShadingMode("ambient");
-    m_materialAdaptor->setMaterialTemplateName(::fwRenderOgre::Material::DEFAULT_MATERIAL_TEMPLATE_NAME);
-    m_materialAdaptor->start();
-
-    m_materialAdaptor->getMaterialFw()->setHasVertexColor(true);
-    m_materialAdaptor->update();
 }
 
 //-----------------------------------------------------------------------------

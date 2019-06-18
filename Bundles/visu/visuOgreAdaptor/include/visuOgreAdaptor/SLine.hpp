@@ -107,10 +107,7 @@ private:
     void attachNode(::Ogre::MovableObject* _node);
 
     /// Draw a line
-    void drawLine(bool exsitingLine);
-
-    /// Set the material
-    void setMaterial();
+    void drawLine(bool);
 
     /**
      * @name Slots methods
