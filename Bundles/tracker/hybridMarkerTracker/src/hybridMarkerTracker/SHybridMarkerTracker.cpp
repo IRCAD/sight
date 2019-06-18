@@ -23,7 +23,6 @@ namespace hybridMarkerTracker
 fwServicesRegisterMacro(::arServices::ITracker, ::hybridMarkerTracker::SHybridMarkerTracker);
 
 static const ::fwServices::IService::KeyType s_TIMELINE_INOUT = "frameTL";
-static const ::fwServices::IService::KeyType s_IMAGE_INPUT = "frame";
 static const ::fwServices::IService::KeyType s_IMAGE_INOUT = "frameOut";
 
 SHybridMarkerTracker::SHybridMarkerTracker() noexcept :tracker(NULL)
@@ -540,15 +539,13 @@ void SHybridMarkerTracker::starting()
 {
     auto filePath = ::fwRuntime::getBundleResourceFilePath("hybridMarkerTracker", "settings.xml");
     readSettings(filePath.string());
+    this->startTracking();
 }
 
 void SHybridMarkerTracker::tracking(::fwCore::HiResClock::HiResClockType& timestamp)
 {
     auto frameTL = this->getInOut< ::arData::FrameTL >(s_TIMELINE_INOUT);
     SLM_ASSERT("The InOut key '" + s_TIMELINE_INOUT + "' is not defined", frameTL);
-
-    auto frame = this->getInput< ::fwData::Image >(s_IMAGE_INPUT);
-    SLM_ASSERT("The Input key '" + s_IMAGE_INPUT + "' is not defined", frame);
 
     auto frameOutput = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("The InOut key '" + s_IMAGE_INOUT + "' is not defined", frameOutput);
@@ -564,6 +561,34 @@ void SHybridMarkerTracker::tracking(::fwCore::HiResClock::HiResClockType& timest
         ::cvIO::FrameTL::moveToCv(frameTL, frameBuff, img);
         process(img, img_track);
 
+//        check if image dimension have changed
+        ::fwData::Image::SizeType size(2);
+        size[0] = frameTL->getWidth();
+        size[1] = frameTL->getHeight();
+
+        if(size !=frameOutput->getSize())
+        {
+            m_imagesInitialized = false;
+        }
+
+        if(!m_imagesInitialized)
+        {
+            const ::fwData::Image::SpacingType::value_type voxelSize = 1;
+            frameOutput->allocate(size, frameTL->getType(), frameTL->getNumberOfComponents());
+            ::fwData::Image::OriginType origin(2, 0);
+
+            frameOutput->setOrigin(origin);
+            ::fwData::Image::SpacingType spacing(2, voxelSize);
+            frameOutput->setSpacing(spacing);
+            frameOutput->setWindowWidth(1);
+            frameOutput->setWindowCenter(0);
+
+            m_imagesInitialized = true;
+
+            auto sig = frameOutput->signal< ::fwData::Image::BufferModifiedSignalType >(
+                    ::fwData::Image::s_MODIFIED_SIG );
+            sig->asyncEmit();
+        }
         ::cvIO::Image::copyFromCv(frameOutput, img_track);
         auto sig = frameOutput->signal<::fwData::Object::ModifiedSignalType >(::fwData::Image::s_BUFFER_MODIFIED_SIG);
         sig->asyncEmit();
@@ -572,11 +597,11 @@ void SHybridMarkerTracker::tracking(::fwCore::HiResClock::HiResClockType& timest
 void SHybridMarkerTracker::configuring()
 {
 }
-
 void SHybridMarkerTracker::updating()
 {
-    auto timestamp = ::fwCore::HiResClock::getTimeInMilliSec();
-    this->tracking(timestamp);
 }
-void SHybridMarkerTracker::stopping(){}
+void SHybridMarkerTracker::stopping()
+{
+    this->stopTracking();
+}
 } // hybridMarkerTracker namespace

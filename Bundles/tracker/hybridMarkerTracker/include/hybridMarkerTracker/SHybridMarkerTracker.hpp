@@ -118,6 +118,9 @@ private:
     std::vector< ::cv::Point3f > trackChessBotPatternPoint;
 
     std::vector< ::cv::Point3f > trackCirPatternPoint;	// Circular-dot pattern
+
+    /// Check if output images are initialized
+    bool m_imagesInitialized;
 };
 
 } // namespace hybridMarkerTracker
