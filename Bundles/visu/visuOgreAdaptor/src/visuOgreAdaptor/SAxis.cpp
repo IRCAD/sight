@@ -41,11 +41,11 @@ namespace visuOgreAdaptor
 const ::fwCom::Slots::SlotKeyType SAxis::s_UPDATE_VISIBILITY_SLOT = "updateVisibility";
 const ::fwCom::Slots::SlotKeyType SAxis::s_TOGGLE_VISIBILITY_SLOT = "toggleVisibility";
 
-fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SAxis);
-
 static const std::string s_BILLBOARD_CONFIG = "billboard";
 static const std::string s_LABEL_CONFIG     = "label";
 static const std::string s_LENGTH_CONFIG    = "length";
+
+fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SAxis);
 
 //-----------------------------------------------------------------------------
 
@@ -133,8 +133,8 @@ void SAxis::starting()
     this->getRenderService()->makeCurrent();
 
     ::Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
-    m_sceneNode                      = this->getTransformNode(rootSceneNode)->createChildSceneNode(
-        this->getID() + "_mainNode");
+    ::Ogre::SceneNode* transformNode = this->getTransformNode(rootSceneNode);
+    m_sceneNode                      = transformNode->createChildSceneNode(this->getID() + "_mainNode");
 
     ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
 
@@ -325,7 +325,8 @@ void SAxis::stopping()
     sceneMgr->destroyManualObject(zCone);
 
     ::Ogre::SceneNode* rootSceneNode = sceneMgr->getRootSceneNode();
-    this->getTransformNode(rootSceneNode)->removeAndDestroyChild(this->getID() + "_mainNode");
+    ::Ogre::SceneNode* transformNode = this->getTransformNode(rootSceneNode);
+    transformNode->removeAndDestroyChild(this->getID() + "_mainNode");
 
     this->unregisterServices();
     m_material.reset();
