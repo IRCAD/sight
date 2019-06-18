@@ -119,6 +119,7 @@ void SLine::configuring()
 void SLine::starting()
 {
     this->initialize();
+    this->getRenderService()->makeCurrent();
 
     ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
 
@@ -126,42 +127,11 @@ void SLine::starting()
     // Set the line as dynamic, so we can update it later on, when the length changes
     m_line->setDynamic(true);
 
-    // set the material
-    m_material = ::fwData::Material::New();
+    // Set the material
+    this->setMaterial();
 
-    ::visuOgreAdaptor::SMaterial::sptr materialAdaptor = this->registerService< ::visuOgreAdaptor::SMaterial >(
-        "::visuOgreAdaptor::SMaterial");
-    materialAdaptor->registerInOut(m_material, ::visuOgreAdaptor::SMaterial::s_MATERIAL_INOUT, true);
-    materialAdaptor->setID(this->getID() + materialAdaptor->getID());
-    materialAdaptor->setMaterialName(this->getID() + materialAdaptor->getID());
-    materialAdaptor->setRenderService( this->getRenderService() );
-    materialAdaptor->setLayerID(m_layerID);
-    materialAdaptor->setShadingMode("ambient");
-    materialAdaptor->setMaterialTemplateName(::fwRenderOgre::Material::DEFAULT_MATERIAL_TEMPLATE_NAME);
-    materialAdaptor->start();
-
-    materialAdaptor->getMaterialFw()->setHasVertexColor(true);
-    materialAdaptor->update();
-
-    // Draw
-    m_line->begin(materialAdaptor->getMaterialName(), ::Ogre::RenderOperation::OT_LINE_LIST);
-    m_line->colour(m_color);
-
-    if (m_dotted == true)
-    {
-        for(float i = 0.f; i <= m_length; i += m_width*2)
-        {
-            m_line->position(0, 0, i);
-            m_line->position(0, 0, i+m_width);
-        }
-    }
-    else
-    {
-        m_line->position(0, 0, 0);
-        m_line->position(0, 0, m_length);
-    }
-
-    m_line->end();
+    // Draw the line
+    this->drawLine(false);
 
     // Set the bounding box of your Manual Object
     ::Ogre::Vector3 bbMin(-0.1f, -0.1f, 0.f);
@@ -210,12 +180,17 @@ void SLine::attachNode(::Ogre::MovableObject* object)
 
 //-----------------------------------------------------------------------------
 
-void SLine::updateLength(float length)
+void SLine::drawLine(bool existingLine)
 {
-    m_length = length;
+    if (existingLine == false)
+    {
+        m_line->begin(m_materialAdaptor->getMaterialName(), ::Ogre::RenderOperation::OT_LINE_LIST);
+    }
+    else
+    {
+        m_line->beginUpdate(0);
+    }
 
-    // Draw
-    m_line->beginUpdate(0);
     m_line->colour(m_color);
 
     if (m_dotted == true)
@@ -233,6 +208,37 @@ void SLine::updateLength(float length)
     }
 
     m_line->end();
+}
+
+//-----------------------------------------------------------------------------
+
+void SLine::setMaterial()
+{
+    m_material = ::fwData::Material::New();
+
+    m_materialAdaptor = this->registerService< ::visuOgreAdaptor::SMaterial >(
+        "::visuOgreAdaptor::SMaterial");
+    m_materialAdaptor->registerInOut(m_material, ::visuOgreAdaptor::SMaterial::s_MATERIAL_INOUT, true);
+    m_materialAdaptor->setID(this->getID() + m_materialAdaptor->getID());
+    m_materialAdaptor->setMaterialName(this->getID() + m_materialAdaptor->getID());
+    m_materialAdaptor->setRenderService( this->getRenderService() );
+    m_materialAdaptor->setLayerID(m_layerID);
+    m_materialAdaptor->setShadingMode("ambient");
+    m_materialAdaptor->setMaterialTemplateName(::fwRenderOgre::Material::DEFAULT_MATERIAL_TEMPLATE_NAME);
+    m_materialAdaptor->start();
+
+    m_materialAdaptor->getMaterialFw()->setHasVertexColor(true);
+    m_materialAdaptor->update();
+}
+
+//-----------------------------------------------------------------------------
+
+void SLine::updateLength(float length)
+{
+    m_length = length;
+
+    // Draw
+    this->drawLine(true);
 
     // Set the bounding box of your Manual Object
     ::Ogre::Vector3 bbMin(-0.1f, -0.1f, 0.f);

@@ -49,7 +49,7 @@ namespace visuOgreAdaptor
  * @section XML XML Configuration
  * @code{.xml}
     <service uid="..." type="::visuOgreAdaptor::SLine">
-        <config layer="default" transform="transformUID" length="30" color="#0000FF" dotted="false" width="2.5"/>
+        <config layer="default" transform="transformUID" length="30" width="2.5" color="#0000FF" dotted="false" />
     </service>
    @endcode
  * @subsection Configuration Configuration:
@@ -57,10 +57,12 @@ namespace visuOgreAdaptor
  * - \b transform (optional): the name of the Ogre transform node where to attach the mesh, as it was specified
  * in the STransform adaptor
  * - \b length (optional): (float) length of the line in mm (default 50)
- * - \b dotted (optional): (bool) dotted point
  * - \b width (optional): (float) size from the hole in the line
+ * - \b color (optional): (string) color of the line
+ * - \b dotted (optional): (bool) dotted point
  *
  */
+
 class VISUOGREADAPTOR_CLASS_API SLine : public ::fwRenderOgre::IAdaptor,
                                         public ::fwRenderOgre::ITransformable
 {
@@ -104,6 +106,12 @@ private:
     /// Attach a node in the scene graph
     void attachNode(::Ogre::MovableObject* _node);
 
+    /// Draw a line
+    void drawLine(bool exsitingLine);
+
+    /// Set the material
+    void setMaterial();
+
     /**
      * @name Slots methods
      * @{
@@ -116,6 +124,9 @@ private:
 
     /// Pointer to the Material data
     ::fwData::Material::sptr m_material {nullptr};
+
+    /// Material Adaptor
+    ::visuOgreAdaptor::SMaterial::sptr m_materialAdaptor {nullptr};
 
     /// ManualObject defining the SLine
     ::Ogre::ManualObject* m_line {nullptr};
