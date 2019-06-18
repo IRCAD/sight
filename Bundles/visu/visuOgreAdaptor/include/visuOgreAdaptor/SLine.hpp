@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -49,7 +49,7 @@ namespace visuOgreAdaptor
  * @section XML XML Configuration
  * @code{.xml}
     <service uid="..." type="::visuOgreAdaptor::SLine">
-        <config layer="default" transform="transformUID" length="30" color="#0000FF"/>
+        <config layer="default" transform="transformUID" length="30" color="#0000FF" dotted="false" width="2.5"/>
     </service>
    @endcode
  * @subsection Configuration Configuration:
@@ -57,13 +57,15 @@ namespace visuOgreAdaptor
  * - \b transform (optional): the name of the Ogre transform node where to attach the mesh, as it was specified
  * in the STransform adaptor
  * - \b length (optional): (float) length of the line in mm (default 50)
+ * - \b dotted (optional): (bool) dotted point
+ * - \b width (optional): (float) size from the hole in the line
  *
  */
 class VISUOGREADAPTOR_CLASS_API SLine : public ::fwRenderOgre::IAdaptor,
                                         public ::fwRenderOgre::ITransformable
 {
 public:
-    fwCoreServiceClassDefinitionsMacro((SLine)(::fwRenderOgre::IAdaptor));
+    fwCoreServiceClassDefinitionsMacro((SLine)(::fwRenderOgre::IAdaptor))
 
     /// Constructor: Sets default parameters and initializes necessary members.
     VISUOGREADAPTOR_API SLine() noexcept;
@@ -113,16 +115,20 @@ private:
     /** @} */
 
     /// Pointer to the Material data
-    ::fwData::Material::sptr m_material;
+    ::fwData::Material::sptr m_material {nullptr};
 
     /// ManualObject defining the SLine
-    ::Ogre::ManualObject* m_line;
+    ::Ogre::ManualObject* m_line {nullptr};
     /// Handles the length of the line (in mm)
-    float m_length;
+    float m_length {50.f};
     /// Handles the color of the line
     ::Ogre::ColourValue m_color;
     /// Handles the visibility of the line
-    bool m_isVisible;
+    bool m_isVisible {true};
+    /// Dotted line
+    bool m_dotted {false};
+    /// Width for dotted line
+    float m_width {2.5f};
 
 };
 

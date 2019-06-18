@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2018 IRCAD France
- * Copyright (C) 2017-2018 IHU Strasbourg
+ * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -45,14 +45,12 @@ const ::fwCom::Slots::SlotKeyType SLine::s_TOGGLE_VISIBILITY_SLOT = "toggleVisib
 fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SLine);
 
 static const std::string s_LENGTH_CONFIG = "length";
+static const std::string s_DOTTED_CONFIG = "dotted";
+static const std::string s_WIDTH_CONFIG  = "width";
 
 //-----------------------------------------------------------------------------
 
-SLine::SLine() noexcept :
-    m_material(nullptr),
-    m_line(nullptr),
-    m_length(0.f),
-    m_isVisible(true)
+SLine::SLine() noexcept
 {
     newSlot(s_UPDATE_VISIBILITY_SLOT, &SLine::updateVisibility, this);
     newSlot(s_TOGGLE_VISIBILITY_SLOT, &SLine::toggleVisibility, this);
@@ -100,7 +98,7 @@ void SLine::configuring()
     this->setTransformId(config.get<std::string>( ::fwRenderOgre::ITransformable::s_TRANSFORM_CONFIG,
                                                   this->getID() + "_transform"));
 
-    m_length = config.get<float>(s_LENGTH_CONFIG, 50.f);
+    m_length = config.get<float>(s_LENGTH_CONFIG, m_length);
 
     const std::string color = config.get("color", "#FFFFFF");
 
@@ -111,6 +109,9 @@ void SLine::configuring()
     m_color.g = static_cast<float>(rgba[1]) / 255.f;
     m_color.b = static_cast<float>(rgba[2]) / 255.f;
     m_color.a = static_cast<float>(rgba[3]) / 255.f;
+
+    m_dotted = config.get(s_DOTTED_CONFIG, m_dotted);
+    m_width  = config.get(s_WIDTH_CONFIG, m_width);
 }
 
 //-----------------------------------------------------------------------------
@@ -144,10 +145,22 @@ void SLine::starting()
 
     // Draw
     m_line->begin(materialAdaptor->getMaterialName(), ::Ogre::RenderOperation::OT_LINE_LIST);
-    m_line->position(0, 0, 0);
     m_line->colour(m_color);
-    m_line->position(0, 0, m_length);
-    m_line->colour(m_color);
+
+    if (m_dotted == true)
+    {
+        for(float i = 0.f; i <= m_length; i += m_width*2)
+        {
+            m_line->position(0, 0, i);
+            m_line->position(0, 0, i+m_width);
+        }
+    }
+    else
+    {
+        m_line->position(0, 0, 0);
+        m_line->position(0, 0, m_length);
+    }
+
     m_line->end();
 
     // Set the bounding box of your Manual Object
@@ -155,6 +168,7 @@ void SLine::starting()
     ::Ogre::Vector3 bbMax(0.1f, 0.1f, m_length);
     ::Ogre::AxisAlignedBox box(bbMin, bbMax);
     m_line->setBoundingBox(box);
+
     this->attachNode(m_line);
 
     this->requestRender();
@@ -200,15 +214,27 @@ void SLine::updateLength(float length)
 {
     m_length = length;
 
-    // Update the line length with the new length
+    // Draw
     m_line->beginUpdate(0);
-    m_line->position(0, 0, 0);
     m_line->colour(m_color);
-    m_line->position(0, 0, m_length);
-    m_line->colour(m_color);
+
+    if (m_dotted == true)
+    {
+        for(float i = 0.f; i <= m_length; i += m_width*2)
+        {
+            m_line->position(0, 0, i);
+            m_line->position(0, 0, i+m_width);
+        }
+    }
+    else
+    {
+        m_line->position(0, 0, 0);
+        m_line->position(0, 0, m_length);
+    }
+
     m_line->end();
 
-    // Update the bouding box
+    // Set the bounding box of your Manual Object
     ::Ogre::Vector3 bbMin(-0.1f, -0.1f, 0.f);
     ::Ogre::Vector3 bbMax(0.1f, 0.1f, m_length);
     ::Ogre::AxisAlignedBox box(bbMin, bbMax);
