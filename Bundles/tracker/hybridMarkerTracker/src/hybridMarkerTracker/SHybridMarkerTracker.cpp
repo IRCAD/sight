@@ -304,8 +304,8 @@ void SHybridMarkerTracker::process(const ::cv::Mat &img, ::cv::Mat &out_img)
                 aux = cHp_2.colRange(3,4).rowRange(0,3);
                 tvec2.copyTo(aux);
 
-                draw_rect(cHp_1, m_img_track, ::cv::Scalar(255, 0, 0));
-                draw_rect(cHp_2, m_img_track, ::cv::Scalar(0, 0, 255));
+                draw_rect(cHp_1, m_img_track, ::cv::Scalar(0, 0, 255));
+                draw_rect(cHp_2, m_img_track, ::cv::Scalar(255, 0, 0));
             }
             else
             {
@@ -375,10 +375,10 @@ void SHybridMarkerTracker::process(const ::cv::Mat &img, ::cv::Mat &out_img)
     std::string str_2 = "Red rectangle shows the ambiguous pose provided by IPPE";
     std::string str_3 = "Green shows detection of pattern";
     std::string str_4 = "Yellow shows tracking of pattern";
-    ::cv::putText(m_img_track, str_1, ::cv::Point(10,20), ::cv::FONT_HERSHEY_COMPLEX, 0.5, ::cv::Scalar(255,0,0), 1);
-    ::cv::putText(m_img_track, str_2, ::cv::Point(10,40), ::cv::FONT_HERSHEY_COMPLEX, 0.5, ::cv::Scalar(0,0,255), 1);
+    ::cv::putText(m_img_track, str_1, ::cv::Point(10,20), ::cv::FONT_HERSHEY_COMPLEX, 0.5, ::cv::Scalar(0,0,255), 1);
+    ::cv::putText(m_img_track, str_2, ::cv::Point(10,40), ::cv::FONT_HERSHEY_COMPLEX, 0.5, ::cv::Scalar(255,0,0), 1);
     ::cv::putText(m_img_track, str_3, ::cv::Point(10,60), ::cv::FONT_HERSHEY_COMPLEX, 0.5, ::cv::Scalar(0,255,0), 1);
-    ::cv::putText(m_img_track, str_4, ::cv::Point(10,80), ::cv::FONT_HERSHEY_COMPLEX, 0.5, ::cv::Scalar(0,255,255), 1);
+    ::cv::putText(m_img_track, str_4, ::cv::Point(10,80), ::cv::FONT_HERSHEY_COMPLEX, 0.5, ::cv::Scalar(255,255,0), 1);
 
     m_img_track.copyTo(out_img);
 }
