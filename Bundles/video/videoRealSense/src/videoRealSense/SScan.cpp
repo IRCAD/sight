@@ -422,8 +422,22 @@ void SScan::startCamera()
     }
 
     ::arData::CameraSeries::sptr cameraSeries = this->getInOut< ::arData::CameraSeries>(s_CAMERA_SERIES_INOUT);
-    // Extract the first camera (source should be the same).
-    const auto camera = cameraSeries->getCamera(0);
+    ::arData::Camera::csptr camera;
+    if(cameraSeries)
+    {
+        // Extract the first camera (source should be the same).
+        camera = cameraSeries->getCamera(0);
+    }
+    else // No cameraSeries (called by SGrabberProxy for ex.).
+    {
+        const auto obj = this->getInput< ::fwData::Object >(s_CAMERA_INPUT);
+        camera = ::arData::Camera::dynamicConstCast(obj);
+    }
+
+    SLM_ASSERT("Camera should not be null, check if  '" + s_CAMERA_SERIES_INOUT
+               + "' or '" + s_CAMERA_INPUT + "' is present.", camera );
+
+    //const auto camera = cameraSeries->getCamera(0);
     if (camera->getCameraSource() == ::arData::Camera::FILE)
     {
         m_playbackMode     = true;
