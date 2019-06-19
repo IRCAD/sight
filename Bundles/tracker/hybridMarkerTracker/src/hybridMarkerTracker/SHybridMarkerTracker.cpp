@@ -252,10 +252,10 @@ void SHybridMarkerTracker::process(const ::cv::Mat& img, ::cv::Mat& out_img)
     {
         if (static_cast<TrackerCurvedot*>(tracker)->track(m_img_track))
         {
-            std::vector<::cv::Point2f> imgPoints = static_cast<TrackerCurvedot*>(tracker)->getP_img();
+            std::vector< ::cv::Point2f > imgPoints = static_cast< TrackerCurvedot* >(tracker)->getP_img();
 
             // Determine which pattern is detected
-            std::vector<::cv::Point3f> visiblePatternPoints;
+            std::vector< ::cv::Point3f > visiblePatternPoints;
             int curr_detect_state = static_cast<TrackerCurvedot*>(tracker)->CurrDetectState();
             if ((curr_detect_state& TrackerCurvedot::TOP_CIR) && !(curr_detect_state & TrackerCurvedot::MID_CIR))
             {
@@ -310,7 +310,7 @@ void SHybridMarkerTracker::process(const ::cv::Mat& img, ::cv::Mat& out_img)
 
             if (use_ippe)
             {
-                std::vector<::cv::Point3f> pts_3d;
+                std::vector< ::cv::Point3f > pts_3d;
                 bool is_chess_detect = true;
 
                 if (curr_detect_state & TrackerCurvedot::TOP_CHESS)
@@ -380,7 +380,7 @@ void SHybridMarkerTracker::process(const ::cv::Mat& img, ::cv::Mat& out_img)
 //    {
 //        if (static_cast<TrackerKeydot*>(tracker)->track(m_img_track))
 //        {
-//            std::vector<::cv::Point2f> imgPoints = static_cast<TrackerKeydot*>(tracker)->getP_img();
+//            std::vector< ::cv::Point2f  > imgPoints = static_cast<TrackerKeydot*>(tracker)->getP_img();
 //            ;
 //
 //            // Calculate pattern pose in camera coordinate
@@ -500,7 +500,7 @@ cv::Vec2f SHybridMarkerTracker::error_dist_points(const std::vector<cv::Point2f>
 void SHybridMarkerTracker::calculate_correct_pose(
     ::cv::InputArray rvec1, ::cv::InputArray tvec1,
     ::cv::InputArray rvec2, ::cv::InputArray tvec2,
-    const std::vector<::cv::Point3f>& pts_3d,
+    const std::vector< ::cv::Point3f >& pts_3d,
     ::cv::OutputArray rvec, ::cv::OutputArray tvec)
 {
     std::vector<cv::Point2f> projPoints_1, projPoints_2;
@@ -663,7 +663,7 @@ void SHybridMarkerTracker::tracking(::fwCore::HiResClock::HiResClockType& timest
             sig->asyncEmit();
         }
         ::cvIO::Image::copyFromCv(frameOutput, img_track);
-        auto sig = frameOutput->signal<::fwData::Object::ModifiedSignalType >(::fwData::Image::s_BUFFER_MODIFIED_SIG);
+        auto sig = frameOutput->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Image::s_BUFFER_MODIFIED_SIG);
         sig->asyncEmit();
     }
 }

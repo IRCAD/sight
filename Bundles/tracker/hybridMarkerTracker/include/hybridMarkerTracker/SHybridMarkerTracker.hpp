@@ -81,7 +81,7 @@ protected:
     HYBRIDMARKERTRACKER_API void calculate_correct_pose(
         ::cv::InputArray rvec1, ::cv::InputArray tvec1,
         ::cv::InputArray rvec2, ::cv::InputArray tvec2,
-        const std::vector<::cv::Point3f>& pts_3d,
+        const std::vector< ::cv::Point3f >& pts_3d,
         ::cv::OutputArray rvec, ::cv::OutputArray tvec
         );
 //    Detect marker
