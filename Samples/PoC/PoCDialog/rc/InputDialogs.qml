@@ -1,12 +1,10 @@
-import QtQuick 2.9
+import QtQuick 2.12
 import QtQuick.Controls 2.5
-import QtQuick.Controls.Material 2.3
 import QtQuick.Layouts 1.3
 import QtQuick.Window 2.3
 
+import guiQml 1.0
 import PoCDialog 1.0
-
-import "style" as Sight
 
 Item {
     clip: true
@@ -19,15 +17,16 @@ Item {
         anchors.fill: parent
         anchors.margins: 12
         spacing: 0
-        Sight.Label {
+        Label {
             font.bold: true
             text: "Message dialog properties:"
         }
         RowLayout {
-            Sight.Text {
+            Label {
                 id: customizeTitle
                 text: "Window Title"
                 Layout.alignment: Qt.AlignBaseline
+                font.italic: true
             }
             TextField {
                 id: windowTitleField
@@ -38,11 +37,15 @@ Item {
                 Component.onCompleted: pocDialogInputDialogs.title = windowTitleField.text
             }
         }
+        BusyIndicator{
+            running: true
+        }
         RowLayout {
-            Sight.Text {
+            Label {
                 id: customizeMessage
                 text: "Window Message"
                 Layout.alignment: Qt.AlignBaseline
+                font.italic: true
             }
             TextField {
                 id: windowMessageField
@@ -54,10 +57,11 @@ Item {
             }
         }
         RowLayout {
-            Sight.Text {
+            Label {
                 id: customizeInput
                 text: "Window Input Placeholder"
                 Layout.alignment: Qt.AlignBaseline
+                font.italic: true
             }
             TextField {
                 id: windowInputField
@@ -68,13 +72,14 @@ Item {
                 Component.onCompleted: pocDialogInputDialogs.input = windowInputField.text
             }
         }
-        Sight.Label {
-            text: "<b>result input:</b> " + pocDialogInputDialogs.result
+        Label {
+            text: "result input: " + pocDialogInputDialogs.result
+            font.bold: true
         }
 
         RowLayout {
             id: buttonRow
-            Sight.Button {
+            Button {
                 text: "Open"
                 onClicked: pocDialogInputDialogs.open()
             }

@@ -1,13 +1,16 @@
-import QtQuick 2.0
-import QtQuick.Controls 2.5
-import QtQuick.Controls.Material 2.3
-import QtQuick.Window 2.3
+import QtQuick 2.12
+import QtQuick.Controls 2.12
+import QtQuick.Controls.Material 2.12
+import QtQuick.Window 2.12
+
+import guiQml 1.0
 
 Window {
     id: window
     width: 600
     height: 200
     modality: Qt.ApplicationModal
+    flags: Qt.CustomizeWindowHint | Qt.WindowTitleHint
 
     Dialog {
         objectName: "dialog"
@@ -15,17 +18,17 @@ Window {
         modal: true
         width: window.width
         height: window.height
-        Material.theme: Material.System
-        Material.accent: Material.LightBlue
+
         Column {
             width: 550
             height: 150
             id: root
-            Text {
+            Label {
                 id: testing
                 width: root.width
                 wrapMode: Text.WordWrap
                 text: pulseProgressDialog.message
+                font.bold: true
             }
             ProgressBar {
                 indeterminate: true
@@ -43,5 +46,13 @@ Window {
             window.height = height
         }
     }
-    Component.onCompleted: show()
+    Component.onCompleted: {
+        Material.accent = Theme.accent
+        Material.theme = Theme.theme
+        Material.foreground = Theme.foreground
+        Material.background = Theme.background
+        Material.primary = Theme.primary
+        Material.elevation = Theme.elevation
+        window.show()
+    }
 }

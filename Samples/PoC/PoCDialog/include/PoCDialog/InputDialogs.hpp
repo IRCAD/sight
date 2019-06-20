@@ -55,6 +55,7 @@ protected:
     /// Text inputed
     QString m_input;
 
+    /// result of dialog
     QString m_result;
 
 protected Q_SLOTS:

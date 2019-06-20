@@ -22,6 +22,15 @@
 
 #include "PoCDialog/Plugin.hpp"
 
+#include "PoCDialog/InputDialogs.hpp"
+#include "PoCDialog/LocationDialogs.hpp"
+#include "PoCDialog/LoggerDialogs.hpp"
+#include "PoCDialog/MessageDialogs.hpp"
+#include "PoCDialog/MultiSelectorDialogs.hpp"
+#include "PoCDialog/ProgressDialogs.hpp"
+#include "PoCDialog/PulseProgressDialogs.hpp"
+#include "PoCDialog/SelectorDialogs.hpp"
+
 #include <fwQml/QmlEngine.hpp>
 
 #include <fwRuntime/operations.hpp>

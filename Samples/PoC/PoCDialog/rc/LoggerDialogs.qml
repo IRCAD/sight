@@ -1,11 +1,11 @@
-import QtQuick 2.2
+import QtQuick 2.12
 import QtQuick.Controls 2.5
 import QtQuick.Dialogs 1.1
 import QtQuick.Layouts 1.1
 import QtQuick.Window 2.0
 
+import guiQml 1.0
 import PoCDialog 1.0
-import "style" as Sight
 
 Item {
     clip: true
@@ -20,10 +20,11 @@ Item {
         anchors.margins: 12
         spacing: 0
         RowLayout {
-            Sight.Text {
+            Label {
                 id: customizeTitle
                 text: "Window Title"
                 Layout.alignment: Qt.AlignBaseline
+                font.italic: true
             }
             TextField {
                 id: windowTitleField
@@ -35,10 +36,11 @@ Item {
             }
         }
         RowLayout {
-            Sight.Text {
+            Label {
                 id: customizeMessage
                 text: "Window Message"
                 Layout.alignment: Qt.AlignBaseline
+                font.italic: true
             }
             TextField {
                 id: windowMessageField
@@ -56,7 +58,7 @@ Item {
             ButtonGroup {
                 id: buttonGroup
             }
-            Sight.GroupBox {
+            GroupBox {
                 id: groupBox
                 title: "Level of error"
                 Column {
@@ -84,7 +86,7 @@ Item {
                 Layout.fillWidth: true
                 text: "Custom Message"
             }
-            Sight.Button {
+            Button {
                 text: "Add"
                 onClicked: {
                     if (buttonGroup.checkedButton)
@@ -103,7 +105,7 @@ Item {
         }
         RowLayout {
             id: buttonRow
-            Sight.Button {
+            Button {
                 text: "Open"
                 enabled: pocDialogLoggerDialogs.hasError
                 onClicked: {

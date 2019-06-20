@@ -1,19 +1,21 @@
-import QtQuick 2.9
-import QtQuick.Controls 2.5
-import QtQuick.Layouts 1.3
-import QtQuick.Controls.Material 2.3
-import QtQuick.Window 2.3
+import QtQuick 2.12
+import QtQuick.Controls 2.12
+import QtQuick.Layouts 1.12
+import QtQuick.Controls.Material 2.12
+import QtQuick.Window 2.12
+
+import guiQml 1.0
 
 Window {
     id: window
     modality: Qt.ApplicationModal
+    flags: Qt.CustomizeWindowHint | Qt.WindowTitleHint
+
     Dialog {
         id: dialog
         objectName: "dialog"
         modal: true
         standardButtons: Dialog.Ok | Dialog.Cancel
-        Material.theme: Material.System
-        Material.accent: Material.LightBlue
 
         ColumnLayout {
             id: column
@@ -28,18 +30,6 @@ Window {
                 property int initSize: 0
                 ButtonGroup {
                     id: buttonGroup
-                }
-                background: Rectangle {
-                    y: groupBox.topPadding - groupBox.bottomPadding
-                    width: parent.width
-                    height: parent.height - groupBox.topPadding + groupBox.bottomPadding
-                    color: "transparent"
-                    border.color: Material.accent
-                    radius: 2
-                }
-                label: Label {
-                    text: groupBox.title
-                    color: Material.primary
                 }
 
                 Column {
@@ -68,6 +58,7 @@ Window {
                 }
             }
         }
+
         onAccepted: {
             var selected = "";
             var length = checkboxList.count;
@@ -89,5 +80,13 @@ Window {
         }
         onVisibleChanged: visible ? "" : reset()
     }
-    Component.onCompleted: show()
+    Component.onCompleted: {
+        Material.accent = Theme.accent
+        Material.theme = Theme.theme
+        Material.foreground = Theme.foreground
+        Material.background = Theme.background
+        Material.primary = Theme.primary
+        Material.elevation = Theme.elevation
+        window.show()
+    }
 }

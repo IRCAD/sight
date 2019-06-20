@@ -1,21 +1,24 @@
-import QtQuick 2.9
-import QtQuick.Controls 2.5
-import QtQuick.Controls.Material 2.3
-import QtQuick.Layouts 1.3
-import QtQuick.Window 2.3
+import QtQuick 2.12
+import QtQuick.Controls 2.12
+import QtQuick.Controls.Material 2.12
+import QtQuick.Layouts 1.12
+import QtQuick.Window 2.12
+
+import guiQml 1.0
 
 Window {
     id: window
     width: 500
     height: 300
-    Material.theme: Material.Light
-    Material.accent: Material.LightBlue
+    modality: Qt.ApplicationModal
+    flags: Qt.CustomizeWindowHint | Qt.WindowTitleHint
 
     Dialog {
         objectName: "dialog"
+        parent: ApplicationWindow.overlay
         modal: true
-        width: window.width
-        height: window.height
+        width: 500
+        height: 300
         standardButtons: Dialog.Cancel | Dialog.Ok
 
         ColumnLayout {
@@ -23,7 +26,7 @@ Window {
             anchors.fill: parent
             Label {
                 text: inputDialog.message
-                color: Material.accent
+                font.bold: true
                 Layout.columnSpan: 2
                 Layout.fillWidth: true
                 width: parent.width
@@ -46,5 +49,13 @@ Window {
         }
         onVisibleChanged: visible ? "" : reset()
     }
-    Component.onCompleted: window.show()
+    Component.onCompleted: {
+        Material.accent = Theme.accent
+        Material.theme = Theme.theme
+        Material.foreground = Theme.foreground
+        Material.background = Theme.background
+        Material.primary = Theme.primary
+        Material.elevation = Theme.elevation
+        window.show()
+    }
 }

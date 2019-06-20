@@ -1,11 +1,10 @@
-import QtQuick 2.3
+import QtQuick 2.12
 import QtQuick.Controls 2.5
-import QtQuick.Dialogs 1.2
 import QtQuick.Layouts 1.1
 import QtQuick.Window 2.0
 
+import guiQml 1.0
 import PoCDialog 1.0
-import "style" as Sight
 
 Item {
     clip: true
@@ -18,15 +17,16 @@ Item {
         anchors.fill: parent
         anchors.margins: 12
         spacing: 8
-        Sight.Label {
+        Label {
             font.bold: true
             text: "Message dialog properties:"
         }
         RowLayout {
-            Sight.Text {
+            Label {
                 id: customizeTitle
                 text: "Window Title"
                 Layout.alignment: Qt.AlignBaseline
+                font.italic: true
             }
             TextField {
                 id: windowTitleField
@@ -60,12 +60,12 @@ Item {
             anchors.leftMargin: 12
             height: implicitHeight
             width: parent.width
-            Sight.Button {
+            Button {
                 text: "Open"
                 anchors.verticalCenter: parent.verticalCenter
                 onClicked: pocDialogProgressDialogs.open()
             }
-            Sight.Text {
+            Label {
                 id: percent
                 text: pocDialogProgressDialogs.result
             }
@@ -84,7 +84,7 @@ Item {
                 onTextChanged: pocDialogProgressDialogs.message = windowMessageProgressField.text
                 Component.onCompleted: pocDialogProgressDialogs.message = windowMessageProgressField.text
             }
-            Sight.Button {
+            Button {
                 text: "Add"
                 anchors.verticalCenter: parent.verticalCenter
                 enabled: pocDialogProgressDialogs.isOpen

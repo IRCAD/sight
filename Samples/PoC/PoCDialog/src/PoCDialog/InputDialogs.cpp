@@ -26,6 +26,8 @@
 
 #include <fwQml/QmlEngine.hpp>
 
+#include <QGuiApplication>
+
 InputDialogs::InputDialogs()
 {
 }
@@ -40,6 +42,7 @@ InputDialogs::~InputDialogs()
 
 void InputDialogs::open()
 {
+    SPTR(::fwQml::QmlEngine) engine = ::fwQml::QmlEngine::getDefault();
     std::string result = ::fwGui::dialog::InputDialog::showInputDialog(
         m_title.toStdString(), m_message.toStdString(), m_input.toStdString());
     m_result = QString::fromStdString(result);

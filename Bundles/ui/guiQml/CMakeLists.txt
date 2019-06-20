@@ -23,3 +23,4 @@ fwLink(
 )
 
 set_target_properties(${FWPROJECT_NAME} PROPERTIES AUTOMOC TRUE)
+set(QML_IMPORT_PATH "${QML_IMPORT_PATH};${${FWPROJECT_NAME}_RC_BUILD_DIR}" CACHE string "CMake Components" FORCE)

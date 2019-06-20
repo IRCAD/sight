@@ -23,14 +23,6 @@
 #pragma once
 
 #include "PoCDialog/config.hpp"
-#include "PoCDialog/InputDialogs.hpp"
-#include "PoCDialog/LocationDialogs.hpp"
-#include "PoCDialog/LoggerDialogs.hpp"
-#include "PoCDialog/MessageDialogs.hpp"
-#include "PoCDialog/MultiSelectorDialogs.hpp"
-#include "PoCDialog/ProgressDialogs.hpp"
-#include "PoCDialog/PulseProgressDialogs.hpp"
-#include "PoCDialog/SelectorDialogs.hpp"
 
 #include <fwRuntime/Plugin.hpp>
 

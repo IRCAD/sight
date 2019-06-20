@@ -154,7 +154,7 @@ void ProgressDialog::setMessage(const std::string& msg)
     SLM_ASSERT("The progress dialog is not initialized or has been closed", m_dialog);
     QString message = "";
     QString title   = m_title;
-    if (!title.isEmpty())
+    if (!title.isEmpty() && !this->m_window)
     {
         message += title;
         message += " - ";

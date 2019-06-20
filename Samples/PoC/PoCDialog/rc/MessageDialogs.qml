@@ -1,11 +1,10 @@
-import QtQuick 2.2
+import QtQuick 2.12
 import QtQuick.Controls 2.5
-import QtQuick.Dialogs 1.1
 import QtQuick.Layouts 1.1
 import QtQuick.Window 2.0
 
+import guiQml 1.0
 import PoCDialog 1.0
-import "style" as Sight
 
 Item {
     id: messageDialogItem
@@ -27,15 +26,16 @@ Item {
         ColumnLayout {
             spacing: 8
             Item { Layout.preferredHeight: 4 } // padding
-            Sight.Label {
+            Label {
                 font.bold: true
                 text: "Message dialog properties:"
             }
             RowLayout {
-                Sight.Text {
+                Label {
                     id: customizeTitle
                     text: "Window Title"
                     Layout.alignment: Qt.AlignBaseline
+                    font.italic: true
                 }
                 TextField {
                     id: windowTitleField
@@ -50,7 +50,7 @@ Item {
                 id: buttonGroup
             }
 
-            Sight.GroupBox {
+            GroupBox {
                 id: groupBox
                 title: "Icon"
                 Row {
@@ -91,10 +91,11 @@ Item {
             }
 
             RowLayout {
-                Sight.Text {
+                Label {
                     id: customizeMessage
                     text: "Window Message"
                     Layout.alignment: Qt.AlignBaseline
+                    font.italic: true
                 }
                 TextField {
                     id: windowMessageField
@@ -105,7 +106,10 @@ Item {
                     Component.onCompleted: pocDialogMessageDialogs.message = windowMessageField.text
                 }
             }
-            Sight.Label { text: "Buttons:" }
+            Label {
+                text: "Buttons:"
+                font.italic: true
+            }
             Flow {
                 spacing: 8
                 Layout.fillWidth: true
@@ -124,35 +128,36 @@ Item {
 
                 CheckBox {
                     text: "Cancel"
-                    property int button: StandardButton.Cancel
+                    property int button: Dialog.Cancel
                     onCheckedChanged: parent.updateButtons(button, checked)
                 }
 
                 CheckBox {
                     text: "No"
-                    property int button: StandardButton.No
+                    property int button: Dialog.No
                     onCheckedChanged: parent.updateButtons(button, checked)
                 }
 
                 CheckBox {
                     text: "Yes"
-                    property int button: StandardButton.Yes
+                    property int button: Dialog.Yes
                     onCheckedChanged: parent.updateButtons(button, checked)
                 }
 
                 CheckBox {
                     text: "OK"
-                    property int button: StandardButton.Ok
+                    property int button: Dialog.Ok
                     onCheckedChanged: parent.updateButtons(button, checked)
                 }
             }
-            Sight.Label {
+            Label {
                 id: result
                 text: "The result is: " + pocDialogMessageDialogs.result
+                font.bold: true
             }
             RowLayout {
                 id: buttonRow
-                Sight.Button {
+                Button {
                     text: "Open"
                     onClicked: pocDialogMessageDialogs.open()
                 }

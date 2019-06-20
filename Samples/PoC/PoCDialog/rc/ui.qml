@@ -1,10 +1,10 @@
-import QtQuick 2.9
+import QtQuick 2.12
 import QtQuick.Controls 2.5
-import QtQuick.Controls.Material 2.3
+import QtQuick.Controls.Material 2.12
 import QtQuick.Layouts 1.3
-import QtQuick.Dialogs 1.0
 import PoCDialog 1.0
-import "style"
+
+import guiQml 1.0
 
 ApplicationWindow {
     id: root
@@ -12,8 +12,6 @@ ApplicationWindow {
     height: 600
     visible: true
     modality: Qt.NonModal
-    Material.accent: Material.LightBlue
-    Material.theme: Material.Light
 
     title: qsTr("PoCDialog 0.1")
 
@@ -72,5 +70,19 @@ ApplicationWindow {
             }
         }
         objectName: "toolBar"
+    }
+    Component.onCompleted: {
+        Theme.accent = Material.color(Material.LightBlue)
+        Theme.theme = Material.Light
+        Theme.foreground = (Material.theme == Material.Dark) ? Material.color(Material.BlueGrey, Material.Shade100) : Material.color(Material.BlueGrey, Material.Shade900)
+        Theme.background = Material.background
+        Theme.primary = Material.color(Material.Teal)
+        Theme.elevation = Material.elevation
+        Material.accent = Theme.accent
+        Material.theme = Theme.theme
+        Material.foreground = Theme.foreground
+        Material.background = Theme.background
+        Material.primary = Theme.primary
+        Material.elevation = Theme.elevation
     }
 }

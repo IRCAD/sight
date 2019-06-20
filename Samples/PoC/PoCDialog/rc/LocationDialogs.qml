@@ -1,11 +1,11 @@
-import QtQuick 2.2
+import QtQuick 2.12
 import QtQuick.Controls 2.5
 import QtQuick.Dialogs 1.1
 import QtQuick.Layouts 1.1
 import QtQuick.Window 2.0
 
+import guiQml 1.0
 import PoCDialog 1.0
-import "style" as Sight
 
 Item {
     clip: true
@@ -31,15 +31,16 @@ Item {
         ColumnLayout {
             spacing: 8
             Item { Layout.preferredHeight: 4 } // padding
-            Sight.Label {
+            Label {
                 font.bold: true
                 text: "File dialog properties:"
             }
             RowLayout {
-                Sight.Text {
+                Label {
                     id: customizeTitle
                     text: "Window Title"
                     Layout.alignment: Qt.AlignBaseline
+                    font.italic: true
                 }
                 TextField {
                     id: windowTitleField
@@ -51,9 +52,10 @@ Item {
                 }
             }
             RowLayout {
-                Sight.Text {
+                Label {
                     id: customizeLocation
                     text: "Location"
+                    font.italic: true
                     Layout.alignment: Qt.AlignBaseline
                 }
                 TextField {
@@ -68,9 +70,10 @@ Item {
                 id: filterRow
                 property var nameFilters: []
                 property var nameOfFilters: []
-                Sight.Text {
+                Label {
                     id: customizeFilter
                     text: "Filters"
+                    font.italic: true
                     Layout.alignment: Qt.AlignBaseline
                 }
 
@@ -86,7 +89,7 @@ Item {
                     placeholderText: "*.vtk"
                     Layout.alignment: Qt.AlignBaseline
                 }
-                Sight.Button {
+                Button {
                     text: "Add"
                     onClicked: {
                         filterRow.nameFilters.push(windowFilterExtensionField.text)
@@ -121,16 +124,18 @@ Item {
                     pocDialogLocationDialogs.multiple = fileDialogSelectMultiple.checked
                 }
             }
-            Sight.Label {
+            Label {
                 id: labelFilter
-                text: "<b>current filter:</b>" + fileDialog.nameFilters
+                text: "current filter: " + fileDialog.nameFilters
+                font.bold: true
             }
-            Sight.Label {
-                text: "<b>chosen files:</b> " + pocDialogLocationDialogs.result
+            Label {
+                text: "chosen files: " + pocDialogLocationDialogs.result
+                font.bold: true
             }
             RowLayout {
                 id: buttonRow
-                Sight.Button {
+                Button {
                     text: "Open"
                     onClicked: {
                         pocDialogLocationDialogs.open();
@@ -138,7 +143,7 @@ Item {
                         filterRow.nameOfFilters = [];
                     }
                 }
-                Sight.Button {
+                Button {
                     text: "Pictures"
                     enabled: fileDialog.shortcuts.hasOwnProperty("pictures")
                     onClicked:
@@ -147,7 +152,7 @@ Item {
                         windowLocationField.text = pictures.replace("file://", "");
                     }
                 }
-                Sight.Button {
+                Button {
                     text: "Home"
                     enabled: fileDialog.shortcuts.hasOwnProperty("home")
                     onClicked:

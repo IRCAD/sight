@@ -26,8 +26,11 @@
 
 #include <fwGuiQml/App.hpp>
 
+#include <fwQml/QmlEngine.hpp>
+
 #include <fwQt/WorkerQt.hpp>
 
+#include <fwRuntime/operations.hpp>
 #include <fwRuntime/profile/Profile.hpp>
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 
@@ -35,6 +38,7 @@
 
 #include <QQuickStyle>
 #include <QSharedPointer>
+#include <QtQml>
 
 #include <functional>
 
@@ -69,7 +73,11 @@ void Plugin::start()
     QQuickStyle::setStyle("Material");
 
     ::fwServices::registry::ActiveWorkers::setDefaultWorker(m_workerQt);
+    SPTR(::fwQml::QmlEngine) engine = ::fwQml::QmlEngine::getDefault();
 
+    // add custom controls and the singleton theme for all qml project
+    auto path = ::fwRuntime::getBundleResourcePath("guiQml");
+    engine->importModulePath(path);
     ::fwRuntime::profile::getCurrentProfile()->setRunCallback(std::bind(&Plugin::run, this));
 }
 

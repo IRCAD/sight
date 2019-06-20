@@ -1,8 +1,10 @@
-import QtQuick 2.0
-import QtQuick.Controls 2.5
-import QtQuick.Controls.Material 2.3
-import QtQuick.Layouts 1.0
-import QtQuick.Window 2.3
+import QtQuick 2.12
+import QtQuick.Controls 2.12
+import QtQuick.Controls.Material 2.12
+import QtQuick.Layouts 1.12
+import QtQuick.Window 2.12
+
+import guiQml 1.0
 
 Window {
     id: window
@@ -10,21 +12,30 @@ Window {
     title: progressDialog.title
     width: 600
     height: 300
+    flags: Qt.CustomizeWindowHint | Qt.WindowTitleHint
+
     Dialog {
+        function changeValue(msg, a)
+        {
+            message.text = msg
+            percent.text = a.toString()
+            progress.value = a
+        }
+
         id: dialog
         width: window.width
         height: window.height
         objectName: "dialog"
         standardButtons: progressDialog.hasCallback ? Dialog.Cancel : Dialog.NoButton
         modal: false
-        Material.theme: Material.System
-        Material.accent: Material.LightBlue
+
         ColumnLayout {
             anchors.fill: parent
-            Text {
+            Label {
                 id: message
                 wrapMode: Text.WordWrap
                 width: 550
+                font.bold: true
             }
             RowLayout {
                 ProgressBar {
@@ -32,27 +43,30 @@ Window {
                     Layout.fillWidth: true
                     to: 100
                 }
-                Text {
+                Label {
                     Layout.fillWidth: true
                     id: percent
                 }
-                Text {
+                Label {
                     Layout.fillWidth: true
                     Layout.alignment: Qt.AlignRight
                     text: "%"
                 }
             }
         }
-        function changeValue(msg, a)
-        {
-            message.text = msg
-            percent.text = a.toString()
-            progress.value = a
-        }
+
         onRejected: {
             progressDialog.cancelPressed()
             window.close()
         }
     }
-    Component.onCompleted: show()
+    Component.onCompleted: {
+        Material.accent = Theme.accent
+        Material.theme = Theme.theme
+        Material.foreground = Theme.foreground
+        Material.background = Theme.background
+        Material.primary = Theme.primary
+        Material.elevation = Theme.elevation
+        window.show()
+    }
 }

@@ -1,11 +1,10 @@
-import QtQuick 2.3
+import QtQuick 2.12
 import QtQuick.Controls 2.5
-import QtQuick.Dialogs 1.2
 import QtQuick.Layouts 1.1
 import QtQuick.Window 2.0
 
+import guiQml 1.0
 import PoCDialog 1.0
-import "style" as Sight
 
 Item {
     clip: true
@@ -18,15 +17,16 @@ Item {
         anchors.fill: parent
         anchors.margins: 12
         spacing: 8
-        Sight.Label {
+        Label {
             font.bold: true
             text: "Message dialog properties:"
         }
         RowLayout {
-            Sight.Text {
+            Label {
                 id: customizeTitle
                 text: "Window Title"
                 Layout.alignment: Qt.AlignBaseline
+                font.italic: true
             }
             TextField {
                 id: windowTitleField
@@ -38,10 +38,11 @@ Item {
             }
         }
         RowLayout {
-            Sight.Text {
+            Label {
                 id: customizeMessage
                 text: "Window Message"
                 Layout.alignment: Qt.AlignBaseline
+                font.italic: true
             }
             TextField {
                 id: windowMessageField
@@ -55,10 +56,11 @@ Item {
         RowLayout {
             id: optionRow
             property var options: []
-            Sight.Text {
+            Label {
                 id: customizeFilter
                 text: "Option"
                 Layout.alignment: Qt.AlignBaseline
+                font.italic: true
             }
 
             TextField {
@@ -67,7 +69,7 @@ Item {
                 Layout.fillWidth: true
                 Layout.alignment: Qt.AlignBaseline
             }
-            Sight.Button {
+            Button {
                 text: "Add"
                 onClicked: {
                     optionRow.options.push(windowOptionField.text)
@@ -77,12 +79,13 @@ Item {
                 }
             }
         }
-        Sight.Label {
-            text: "<b>option selected:</b> " + pocDialogSelectorDialogs.result
+        Label {
+            text: "option selected: " + pocDialogSelectorDialogs.result
+            font.bold: true
         }
         RowLayout {
             id: buttonRow
-            Sight.Button {
+            Button {
                 text: "Open"
                 enabled: pocDialogSelectorDialogs.hasOption
                 onClicked: {

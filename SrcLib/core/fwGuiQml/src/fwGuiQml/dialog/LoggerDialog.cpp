@@ -97,9 +97,10 @@ bool LoggerDialog::show()
     context->setContextProperty("loggerDialog", this);
     // load the qml ui component
     QObject* dialog = engine->createComponent(dialogPath, context);
-    dialog = dialog->findChild<QObject*>("dialog");
 
     dialog->setProperty("title", m_title);
+
+    dialog = dialog->findChild<QObject*>("dialog");
 
     // set the icon of the biggest type of error
     auto information =
