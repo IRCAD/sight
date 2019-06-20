@@ -60,7 +60,7 @@ public:
 
 protected:
 
-    ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
+    HYBRIDMARKERTRACKER_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
 //    to configure the service
     HYBRIDMARKERTRACKER_API void configuring() override;
