@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -49,6 +49,7 @@ namespace visuOgreAdaptor
  * @subsection Configuration Configuration:
  * - \b layer (mandatory): defines landmarks layer.
  * - \b transform (optional): the name of the Ogre transform node where to attach the mesh, as it was specified
+ * - \b textSize (optional): text size relatively to the screen's height.
  * in the STransform adaptor.
  *
  */
@@ -102,6 +103,10 @@ private:
 
     /// Used to store landmark`s nodes.
     std::vector< ::Ogre::SceneNode* > m_nodes;
+
+    /// Text size relatively to the screen's height.
+    /// FIXME: should be computed from the font size and the screen's physical size.
+    float m_textSize {0.025f};
 
     /// Text container.
     ::Ogre::OverlayContainer* m_text {nullptr};
