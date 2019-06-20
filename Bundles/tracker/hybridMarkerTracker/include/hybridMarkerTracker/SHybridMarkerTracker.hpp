@@ -52,7 +52,7 @@ public:
     ::cv::Mat current_cHp;
     HYBRIDMARKERTRACKER_API void readSettings(std::string filename);
 
-    // Downsample Scale
+// Downsample Scale
     unsigned int img_scale;
 //    pattern tracker
     Tracker* tracker;
@@ -89,15 +89,15 @@ private:
 
     ::cv::Mat m_img_track;
 
-    // --- Camera related parameters ---
+// --- Camera related parameters ---
     ::cv::Size cam_img_size;
 
-    //CameraCalibration mCalibration;
+//CameraCalibration mCalibration;
 
-    // function: error to points
-    // pts_d: detection points
-    // pts: points to be compared with 'pts_d'
-    // max_dist: maximum distance b/w a correspondence
+// function: error to points
+// pts_d: detection points
+// pts: points to be compared with 'pts_d'
+// max_dist: maximum distance b/w a correspondence
     cv::Vec2f error_dist_points(const std::vector< ::cv::Point2f >& pts_d,
                                 const std::vector< ::cv::Point2f >& pts_1,
                                 const std::vector< ::cv::Point2f >& pts_2,
@@ -105,36 +105,36 @@ private:
 
     void draw_rect(const ::cv::Mat& cHp, ::cv::Mat& img, ::cv::Scalar color = ::cv::Scalar(255, 0, 0));
 
-    // Read configuration file
+// Read configuration file
     ::cv::FileStorage fs;
 
     ::cv::Mat cameraMatrix;
     ::cv::Mat distCoeffs;
 
-    // Settings
-    std::string patternToUse;   // HYBRID or CIRCULAR
+// Settings
+    std::string patternToUse; // HYBRID or CIRCULAR
 
-    ::cv::Size cirboardSize;        // The size of the board -> Number of items by width and height
+    ::cv::Size cirboardSize;    // The size of the board -> Number of items by width and height
 
-    float cirSize;              // The size of the circular board in mm
+    float cirSize;          // The size of the circular board in mm
 
-    ::cv::Size symboardSize;        // The size of the marker used for tracking
+    ::cv::Size symboardSize;    // The size of the marker used for tracking
 
-    float squareSize;           // The size of a square in your defined unit (point, millimeter,etc).
+    float squareSize;       // The size of a square in your defined unit (point, millimeter,etc).
 
     float asymSquareSize;
 
     ::cv::Point2f symSquareSize;
 
-    float radius;               // The radius (millimeter) of cylinder the curved marker is attached on
+    float radius;           // The radius (millimeter) of cylinder the curved marker is attached on
 
-    float Chess_Dist_Center;    // Distance from the center line to chess line
+    float Chess_Dist_Center; // Distance from the center line to chess line
 
-    float Chess_Interval;       // Interval between chess
+    float Chess_Interval;   // Interval between chess
 
-    ::cv::Size img_size;            // Size of input image
+    ::cv::Size img_size;        // Size of input image
 
-    // Pattern model points
+// Pattern model points
     std::vector< ::cv::Point3f > trackMidPatternPoints;
     std::vector< ::cv::Point3f > trackTopPatternPoints;
     std::vector< ::cv::Point3f > trackBotPatternPoints;
@@ -142,9 +142,9 @@ private:
     std::vector< ::cv::Point3f > trackChessMidPatternPoint;
     std::vector< ::cv::Point3f > trackChessBotPatternPoint;
 
-    std::vector< ::cv::Point3f > trackCirPatternPoint;  // Circular-dot pattern
+    std::vector< ::cv::Point3f > trackCirPatternPoint; // Circular-dot pattern
 
-    /// Check if output images are initialized
+/// Check if output images are initialized
     bool m_imagesInitialized;
 };
 
