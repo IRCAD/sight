@@ -128,8 +128,6 @@ private:
     /// Camera related parameters
     ::cv::Size m_camImgSize;
 
-//CameraCalibration mCalibration;
-
     /// function: error to points
     /// pts_d: detection points
     /// pts: points to be compared with 'pts_d'
