@@ -36,6 +36,13 @@
 #include <tracker_keydot.h>
 namespace hybridMarkerTracker
 {
+    /**
+     * @brief Class used to track an Hybrid Marker.
+     *
+     * @see ::arServices::ITracker
+     *
+     * @subsection Inherited Inherited
+     */
 
 class HYBRIDMARKERTRACKER_CLASS_API SHybridMarkerTracker : public ::arServices::ITracker
 {
@@ -75,7 +82,7 @@ protected:
     HYBRIDMARKERTRACKER_API void updating() override;
 
 //    IPPE Pose solver
-    HYBRIDMARKERTRACKER_API IPPE::PoseSolver ippe_solver;
+    IPPE::PoseSolver ippe_solver;
 
 //    Disambiguate pose by using chess line
     HYBRIDMARKERTRACKER_API void calculate_correct_pose(
