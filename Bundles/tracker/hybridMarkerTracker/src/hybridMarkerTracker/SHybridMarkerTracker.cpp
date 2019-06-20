@@ -49,15 +49,15 @@ static const ::fwServices::IService::KeyType s_TIMELINE_INOUT = "frameTL";
 static const ::fwServices::IService::KeyType s_IMAGE_INOUT    = "frameOut";
 
 SHybridMarkerTracker::SHybridMarkerTracker() noexcept :
-    tracker(NULL)
+    m_tracker(NULL)
 {
 }
 
 SHybridMarkerTracker::~SHybridMarkerTracker()
 {
-    if(!tracker)
+    if(!m_tracker)
     {
-        delete tracker;
+        delete m_tracker;
     }
 }
 //------------------------------------------------------------------------------
@@ -65,28 +65,25 @@ SHybridMarkerTracker::~SHybridMarkerTracker()
 void SHybridMarkerTracker::readSettings(std::string filename)
 {
     std::cout << "Initializing..." << std::endl;
-    fs.open(filename, ::cv::FileStorage::READ);
+    m_fs.open(filename, ::cv::FileStorage::READ);
     // Read settings & configuration
-    fs["patternToUse" ] >> patternToUse;
-    fs["Circular_BoardSize_Width" ] >> cirboardSize.width;
-    fs["Circular_BoardSize_Height"] >> cirboardSize.height;
-    fs["Circular_Pattern_Size"] >> cirSize;
-    fs["Sym_BoardSize_Width" ] >> symboardSize.width;
-    fs["Sym_BoardSize_Height"] >> symboardSize.height;
-    fs["Square_Size"]  >> squareSize;
-    fs["Asym_Square_Size"]  >> asymSquareSize;
-    fs["Sym_Square_Size_X" ] >> symSquareSize.x;
-    fs["Sym_Square_Size_Y"] >> symSquareSize.y;
-    fs["Radius"]  >> radius;
-    fs["Chess_Dist_Center"]  >> Chess_Dist_Center;
-    fs["Chess_Interval"]  >> Chess_Interval;
+    m_fs["patternToUse" ] >> m_patternToUse;
+    m_fs["Sym_BoardSize_Width" ] >> m_symboardSize.width;
+    m_fs["Sym_BoardSize_Height"] >> m_symboardSize.height;
+    m_fs["Square_Size"]  >> m_squareSize;
+    m_fs["Asym_Square_Size"]  >> m_asymSquareSize;
+    m_fs["Sym_Square_Size_X" ] >> m_symSquareSize.x;
+    m_fs["Sym_Square_Size_Y"] >> m_symSquareSize.y;
+    m_fs["Radius"]  >> m_radius;
+    m_fs["Chess_Dist_Center"]  >> m_chessDistCenter;
+    m_fs["Chess_Interval"]  >> m_chessInterval;
 
-    fs["image_Width" ] >> img_size.width;
-    fs["image_Height"] >> img_size.height;
-    fs["Camera_Matrix"] >> cameraMatrix;
-    fs["Distortion_Coefficients"] >> distCoeffs;
+    m_fs["image_Width" ] >> m_imgSize.width;
+    m_fs["image_Height"] >> m_imgSize.height;
+    m_fs["Camera_Matrix"] >> m_cameraMatrix;
+    m_fs["Distortion_Coefficients"] >> m_distCoeffs;
 
-    fs.release();
+    m_fs.release();
 
     // --- Tracker parameters---
     ::cv::Size roi_size(300, 300);
@@ -129,49 +126,49 @@ void SHybridMarkerTracker::readSettings(std::string filename)
     /**
      *  Calculate model points for marker
      */
-    if (patternToUse.compare("HYBRID") == 0)
+    if (m_patternToUse.compare("HYBRID") == 0)
     {
         /************************************************************************/
         /* Hybrid pattern                                                       */
         /************************************************************************/
-        float arc_inner      = symSquareSize.y;
-        float arc_outter     = arc_inner + 2 * asymSquareSize;
-        float chord_inner_2  = radius * sin(arc_inner / (2*radius)); // chord/2
-        float chord_outter_2 = radius * sin(arc_outter / (2*radius));
-        float sagitta_inner  = radius - sqrt(radius * radius - chord_inner_2 * chord_inner_2);
-        float sagitta_outter = radius - sqrt(radius * radius - chord_outter_2 * chord_outter_2);
+        float arc_inner      = m_symSquareSize.y;
+        float arc_outter     = arc_inner + 2 * m_asymSquareSize;
+        float chord_inner_2  = m_radius * sin(arc_inner / (2*m_radius)); // chord/2
+        float chord_outter_2 = m_radius * sin(arc_outter / (2*m_radius));
+        float sagitta_inner  = m_radius - sqrt(m_radius * m_radius - chord_inner_2 * chord_inner_2);
+        float sagitta_outter = m_radius - sqrt(m_radius * m_radius - chord_outter_2 * chord_outter_2);
         // MID
-        for ( int i = 0; i < symboardSize.height; i++ )
+        for ( int i = 0; i < m_symboardSize.height; i++ )
         {
-            for ( int j = 0; j < symboardSize.width; j++)
+            for ( int j = 0; j < m_symboardSize.width; j++)
             {
                 ::cv::Point3f pt;
-                pt.x = i * symSquareSize.x;
+                pt.x = i * m_symSquareSize.x;
                 pt.y = chord_inner_2;
                 pt.y = (j % 2) == 0 ? pt.y : -pt.y;
                 pt.z = sagitta_inner;
-                trackMidPatternPoints.push_back(pt);
+                m_trackMidPatternPoints.push_back(pt);
             }
         }
         // TOP
-        int asym_points_num = symboardSize.height + symboardSize.height - 1;
+        int asym_points_num = m_symboardSize.height + m_symboardSize.height - 1;
         for ( int i = 0; i < asym_points_num; i++ )
         {
             ::cv::Point3f pt;
-            pt.x = (symboardSize.height-1) * symSquareSize.x
-                   - i * asymSquareSize;
+            pt.x = (m_symboardSize.height-1) * m_symSquareSize.x
+                   - i * m_asymSquareSize;
             pt.y = (i % 2) == 0 ? chord_inner_2 : chord_outter_2;
             pt.z = (i % 2) == 0 ? sagitta_inner : sagitta_outter;
-            trackTopPatternPoints.push_back(pt);
+            m_trackTopPatternPoints.push_back(pt);
         }
         // BOT
         for ( int i = 0; i < asym_points_num; i++ )
         {
             ::cv::Point3f pt;
-            pt.x = i * asymSquareSize;
+            pt.x = i * m_asymSquareSize;
             pt.y = (i % 2) == 0 ? -chord_inner_2 : -chord_outter_2;
             pt.z = (i % 2) == 0 ? sagitta_inner : sagitta_outter;
-            trackBotPatternPoints.push_back(pt);
+            m_trackBotPatternPoints.push_back(pt);
         }
 
         // Chess pattern points
@@ -179,61 +176,46 @@ void SHybridMarkerTracker::readSettings(std::string filename)
         for (auto i = -1; i < 5; i++)
         {
             ::cv::Point3f pt(0.0f, 0.0f, 0.0f);
-            pt.x = Chess_Interval/2 + i * Chess_Interval;
-            trackChessMidPatternPoint.push_back(pt);
+            pt.x = m_chessInterval/2 + i * m_chessInterval;
+            m_trackChessMidPatternPoint.push_back(pt);
         }
 
-        float arc_chess     = Chess_Dist_Center * 2;
-        float chord_chess_2 = radius * sin(arc_chess / (2*radius)); // chord/2
+        float arc_chess     = m_chessDistCenter * 2;
+        float chord_chess_2 = m_radius * sin(arc_chess / (2*m_radius));
         float sagitta_chess;
-        if (arc_chess < CV_PI * radius)
+        if (arc_chess < CV_PI * m_radius)
         {
-            sagitta_chess = radius - sqrt(radius * radius - chord_chess_2 * chord_chess_2);
+            sagitta_chess = m_radius - sqrt(m_radius * m_radius - chord_chess_2 * chord_chess_2);
         }
         else
         {
-            sagitta_chess = radius + sqrt(radius * radius - chord_chess_2 * chord_chess_2);
+            sagitta_chess = m_radius + sqrt(m_radius * m_radius - chord_chess_2 * chord_chess_2);
         }
 
         // TOP
         for (auto i = 0; i < 5; i++)
         {
             ::cv::Point3f pt;
-            pt.x = i * Chess_Interval;
+            pt.x = i * m_chessInterval;
             pt.y = chord_chess_2;
             pt.z = sagitta_chess;
 
-            trackChessTopPatternPoint.push_back(pt);
+            m_trackChessTopPatternPoint.push_back(pt);
         }
 
         // BOT
         for (auto i = 0; i < 5; i++)
         {
             ::cv::Point3f pt;
-            pt.x = i * Chess_Interval;
+            pt.x = i * m_chessInterval;
             pt.y = -chord_chess_2;
             pt.z = sagitta_chess;
 
-            trackChessBotPatternPoint.push_back(pt);
+            m_trackChessBotPatternPoint.push_back(pt);
         }
-        tracker = new TrackerCurvedot(symboardSize, roi_size, params, params_roi);
+        m_tracker = new TrackerCurvedot(m_symboardSize, roi_size, params, params_roi);
     }
-//    else if (patternToUse.compare("CIRCULAR") == 0)
-//    {
-//        /************************************************************************/
-//        /* Circular-dot pattern                                                   */
-//        /************************************************************************/
-//        for( int i = 0; i < cirboardSize.height; i++ )
-//        {
-//            for( int j = 0; j < cirboardSize.width; j++ )
-//            {
-//                //trackCirPatternPoint.push_back(::cv::Point3f(float((2*j + i % 2)*cirSize), float(i*cirSize), 0));
-//                trackCirPatternPoint.push_back(::cv::Point3f(float(i*cirSize), 0, float((2*j + i % 2)*cirSize)));
-//            }
-//        }
-//
-//        tracker = new TrackerKeydot(cirboardSize, ::cv::CALIB_CB_ASYMMETRIC_GRID, roi_size, params, params_roi);
-//    }
+
     else
     {
         std::cerr << "Unknow pattern type" << std::endl;
@@ -244,60 +226,60 @@ void SHybridMarkerTracker::readSettings(std::string filename)
 
 void SHybridMarkerTracker::process(const ::cv::Mat& img, ::cv::Mat& out_img)
 {
-    m_img_track = img;
+    m_imgTrack = img;
 
     bool use_ippe = true;
     // Tracking
-    if(patternToUse.compare("HYBRID") == 0)
+    if(m_patternToUse.compare("HYBRID") == 0)
     {
-        if (static_cast<TrackerCurvedot*>(tracker)->track(m_img_track))
+        if (static_cast<TrackerCurvedot*>(m_tracker)->track(m_imgTrack))
         {
-            std::vector< ::cv::Point2f > imgPoints = static_cast< TrackerCurvedot* >(tracker)->getP_img();
+            std::vector< ::cv::Point2f > imgPoints = static_cast< TrackerCurvedot* >(m_tracker)->getP_img();
 
             // Determine which pattern is detected
             std::vector< ::cv::Point3f > visiblePatternPoints;
-            int curr_detect_state = static_cast<TrackerCurvedot*>(tracker)->CurrDetectState();
+            int curr_detect_state = static_cast<TrackerCurvedot*>(m_tracker)->CurrDetectState();
             if ((curr_detect_state& TrackerCurvedot::TOP_CIR) && !(curr_detect_state & TrackerCurvedot::MID_CIR))
             {
-                visiblePatternPoints = trackTopPatternPoints;
+                visiblePatternPoints = m_trackTopPatternPoints;
             }
             else if ((curr_detect_state& TrackerCurvedot::BOT_CIR) && !(curr_detect_state & TrackerCurvedot::MID_CIR))
             {
-                visiblePatternPoints = trackBotPatternPoints;
+                visiblePatternPoints = m_trackBotPatternPoints;
             }
             else if ((curr_detect_state& TrackerCurvedot::TOP_CIR) && (curr_detect_state & TrackerCurvedot::MID_CIR))
             {
-                int num_sym_dot = trackMidPatternPoints.size();
-                visiblePatternPoints.reserve(trackTopPatternPoints.size() + num_sym_dot/2);
+                int num_sym_dot = m_trackMidPatternPoints.size();
+                visiblePatternPoints.reserve(m_trackTopPatternPoints.size() + num_sym_dot/2);
                 visiblePatternPoints.insert(visiblePatternPoints.end(),
-                                            trackTopPatternPoints.begin(), trackTopPatternPoints.end());
+                                            m_trackTopPatternPoints.begin(), m_trackTopPatternPoints.end());
                 for (int i = 0; i < num_sym_dot; i++)
                 {
                     if (i%2 != 0)
                     {
-                        visiblePatternPoints.push_back(trackMidPatternPoints[i]);
+                        visiblePatternPoints.push_back(m_trackMidPatternPoints[i]);
                     }
                 }
                 use_ippe = false;   // IPPE is only for planar model
             }
             else if ((curr_detect_state& TrackerCurvedot::BOT_CIR) && (curr_detect_state & TrackerCurvedot::MID_CIR))
             {
-                int num_sym_dot = trackMidPatternPoints.size();
-                visiblePatternPoints.reserve(trackBotPatternPoints.size() + num_sym_dot/2);
+                int num_sym_dot = m_trackMidPatternPoints.size();
+                visiblePatternPoints.reserve(m_trackBotPatternPoints.size() + num_sym_dot/2);
                 visiblePatternPoints.insert(visiblePatternPoints.end(),
-                                            trackBotPatternPoints.begin(), trackBotPatternPoints.end());
+                                            m_trackBotPatternPoints.begin(), m_trackBotPatternPoints.end());
                 for (int i = 0; i < num_sym_dot; i++)
                 {
                     if (i%2 == 0)
                     {
-                        visiblePatternPoints.push_back(trackMidPatternPoints[i]);
+                        visiblePatternPoints.push_back(m_trackMidPatternPoints[i]);
                     }
                 }
                 use_ippe = false;
             }
             else if (curr_detect_state & TrackerCurvedot::MID_CIR)
             {
-                visiblePatternPoints = trackMidPatternPoints;
+                visiblePatternPoints = m_trackMidPatternPoints;
             }
 
             // Calculate pattern pose in camera coordinate
@@ -306,7 +288,7 @@ void SHybridMarkerTracker::process(const ::cv::Mat& img, ::cv::Mat& out_img)
             ::cv::Mat rvec2, tvec2; // 2nd solution
             float error1, error2;
 
-            current_cHp = ::cv::Mat::eye(4, 4, CV_64F);
+            m_currentcHp = ::cv::Mat::eye(4, 4, CV_64F);
 
             if (use_ippe)
             {
@@ -315,28 +297,28 @@ void SHybridMarkerTracker::process(const ::cv::Mat& img, ::cv::Mat& out_img)
 
                 if (curr_detect_state & TrackerCurvedot::TOP_CHESS)
                 {
-                    pts_3d = trackChessTopPatternPoint;
+                    pts_3d = m_trackChessTopPatternPoint;
                 }
                 else if (curr_detect_state & TrackerCurvedot::MID_CHESS)
                 {
-                    pts_3d = trackChessMidPatternPoint;
+                    pts_3d = m_trackChessMidPatternPoint;
                 }
                 else if (curr_detect_state & TrackerCurvedot::BOT_CHESS)
                 {
-                    pts_3d = trackChessBotPatternPoint;
+                    pts_3d = m_trackChessBotPatternPoint;
                 }
                 else
                 {
                     is_chess_detect = false;    // Chess line not found
 
                 }
-                ippe_solver.solveGeneric(visiblePatternPoints, imgPoints,
-                                         cameraMatrix, distCoeffs, rvec1, tvec1, error1, rvec2, tvec2, error2);
+                ippeSolver.solveGeneric(visiblePatternPoints, imgPoints,
+                                        m_cameraMatrix, m_distCoeffs, rvec1, tvec1, error1, rvec2, tvec2, error2);
 
                 // Use chessboard features to disambigulate if two solutions are similar
                 if (is_chess_detect && abs(error1 - error2) < 0.1 && error1 < 0.2 && error2 < 0.2)
                 {
-                    calculate_correct_pose(rvec1, tvec1, rvec2, tvec2, pts_3d, rvec, tvec);
+                    calculateCorrectPose(rvec1, tvec1, rvec2, tvec2, pts_3d, rvec, tvec);
                 }
                 else
                 {
@@ -358,92 +340,44 @@ void SHybridMarkerTracker::process(const ::cv::Mat& img, ::cv::Mat& out_img)
                 aux = cHp_2.colRange(3, 4).rowRange(0, 3);
                 tvec2.copyTo(aux);
 
-                draw_rect(cHp_1, m_img_track, ::cv::Scalar(0, 0, 255));
-                draw_rect(cHp_2, m_img_track, ::cv::Scalar(255, 0, 0));
+                drawRect(cHp_1, m_imgTrack, ::cv::Scalar(0, 0, 255));
+                drawRect(cHp_2, m_imgTrack, ::cv::Scalar(255, 0, 0));
             }
             else
             {
-                ::cv::solvePnP(visiblePatternPoints, imgPoints, cameraMatrix, distCoeffs, rvec, tvec);
+                ::cv::solvePnP(visiblePatternPoints, imgPoints, m_cameraMatrix, m_distCoeffs, rvec, tvec);
                 ::cv::Rodrigues(rvec, cRp);
-                ::cv::Mat aux = current_cHp.colRange(0, 3).rowRange(0, 3);
+                ::cv::Mat aux = m_currentcHp.colRange(0, 3).rowRange(0, 3);
                 cRp.copyTo(aux);
-                aux = current_cHp.colRange(3, 4).rowRange(0, 3);
+                aux = m_currentcHp.colRange(3, 4).rowRange(0, 3);
                 tvec.copyTo(aux);
-                draw_rect(current_cHp, m_img_track);
+                drawRect(m_currentcHp, m_imgTrack);
             }
 
-            static_cast<TrackerCurvedot*>(tracker)->drawKeydots(m_img_track);
+            static_cast<TrackerCurvedot*>(m_tracker)->drawKeydots(m_imgTrack);
         }
 
     }
-//    else if (patternToUse.compare("CIRCULAR") == 0)
-//    {
-//        if (static_cast<TrackerKeydot*>(tracker)->track(m_img_track))
-//        {
-//            std::vector< ::cv::Point2f  > imgPoints = static_cast<TrackerKeydot*>(tracker)->getP_img();
-//            ;
-//
-//            // Calculate pattern pose in camera coordinate
-//            ::cv::Mat rvec, tvec, cRp;
-//            ::cv::Mat rvec1, tvec1;   // 1st solution
-//            ::cv::Mat rvec2, tvec2;   // 2nd solution
-//            float error1, error2;
-//
-//            if (use_ippe)
-//            {
-//                ippe_solver.solveGeneric(trackCirPatternPoint, imgPoints,
-//                                         cameraMatrix, distCoeffs, rvec1, tvec1, error1, rvec2, tvec2, error2);
-//
-//                ::cv::Mat cHp_1 = ::cv::Mat::eye(4, 4, CV_64F);
-//                ::cv::Rodrigues(rvec1, cRp);
-//                ::cv::Mat aux = cHp_1.colRange(0,3).rowRange(0,3);
-//                cRp.copyTo(aux);
-//                aux = cHp_1.colRange(3,4).rowRange(0,3);
-//                tvec1.copyTo(aux);
-//
-//                ::cv::Mat cHp_2 = ::cv::Mat::eye(4, 4, CV_64F);
-//                ::cv::Rodrigues(rvec2, cRp);
-//                aux = cHp_2.colRange(0,3).rowRange(0,3);
-//                cRp.copyTo(aux);
-//                aux = cHp_2.colRange(3,4).rowRange(0,3);
-//                tvec2.copyTo(aux);
-//
-//                draw_rect(cHp_2, m_img_track, ::cv::Scalar(0, 0, 255));
-//                draw_rect(cHp_1, m_img_track, ::cv::Scalar(255, 0, 0));
-//            }
-//            else
-//            {
-//                ::cv::solvePnP(trackCirPatternPoint, imgPoints, cameraMatrix, distCoeffs, rvec, tvec);
-//                ::cv::Rodrigues(rvec, cRp);
-//                ::cv::Mat aux = current_cHp.colRange(0,3).rowRange(0,3);
-//                cRp.copyTo(aux);
-//                aux = current_cHp.colRange(3,4).rowRange(0,3);
-//                tvec.copyTo(aux);
-//                draw_rect(current_cHp, m_img_track);
-//            }
-//            static_cast<TrackerKeydot*>(tracker)->drawKeydots(m_img_track);
-//        }
-//    }
 
     std::string str_1 = "Blue rectangle shows current estimated pose";
     std::string str_2 = "Red rectangle shows the ambiguous pose provided by IPPE";
     std::string str_3 = "Green shows detection of pattern";
     std::string str_4 = "Yellow shows tracking of pattern";
-    ::cv::putText(m_img_track, str_1, ::cv::Point(10, 20), ::cv::FONT_HERSHEY_COMPLEX, 0.5, ::cv::Scalar(0, 0, 255), 1);
-    ::cv::putText(m_img_track, str_2, ::cv::Point(10, 40), ::cv::FONT_HERSHEY_COMPLEX, 0.5, ::cv::Scalar(255, 0, 0), 1);
-    ::cv::putText(m_img_track, str_3, ::cv::Point(10, 60), ::cv::FONT_HERSHEY_COMPLEX, 0.5, ::cv::Scalar(0, 255, 0), 1);
-    ::cv::putText(m_img_track, str_4, ::cv::Point(10, 80), ::cv::FONT_HERSHEY_COMPLEX, 0.5, ::cv::Scalar(255, 255, 0),
+    ::cv::putText(m_imgTrack, str_1, ::cv::Point(10, 20), ::cv::FONT_HERSHEY_COMPLEX, 0.5, ::cv::Scalar(0, 0, 255), 1);
+    ::cv::putText(m_imgTrack, str_2, ::cv::Point(10, 40), ::cv::FONT_HERSHEY_COMPLEX, 0.5, ::cv::Scalar(255, 0, 0), 1);
+    ::cv::putText(m_imgTrack, str_3, ::cv::Point(10, 60), ::cv::FONT_HERSHEY_COMPLEX, 0.5, ::cv::Scalar(0, 255, 0), 1);
+    ::cv::putText(m_imgTrack, str_4, ::cv::Point(10, 80), ::cv::FONT_HERSHEY_COMPLEX, 0.5, ::cv::Scalar(255, 255, 0),
                   1);
 
-    m_img_track.copyTo(out_img);
+    m_imgTrack.copyTo(out_img);
 }
 
 //------------------------------------------------------------------------------
 
-cv::Vec2f SHybridMarkerTracker::error_dist_points(const std::vector<cv::Point2f>& pts_d,
-                                                  const std::vector<cv::Point2f>& pts_1,
-                                                  const std::vector<cv::Point2f>& pts_2,
-                                                  const double max_dist_sq)
+cv::Vec2f SHybridMarkerTracker::errorDistPoints(const std::vector<cv::Point2f>& pts_d,
+                                                const std::vector<cv::Point2f>& pts_1,
+                                                const std::vector<cv::Point2f>& pts_2,
+                                                const double max_dist_sq)
 {
     cv::Vec2f sum_error(0, 0);
     auto dist_sq_1 = 0.0, dist_sq_2 = 0.0;
@@ -489,7 +423,7 @@ cv::Vec2f SHybridMarkerTracker::error_dist_points(const std::vector<cv::Point2f>
     // recursive in case threshold max_dist_sq is too small
     if (sum_error[0] == 0.0)
     {
-        sum_error = error_dist_points(pts_d, pts_1, pts_2, max_dist_sq * 2);
+        sum_error = errorDistPoints(pts_d, pts_1, pts_2, max_dist_sq * 2);
     }
 
     return sum_error;
@@ -497,7 +431,7 @@ cv::Vec2f SHybridMarkerTracker::error_dist_points(const std::vector<cv::Point2f>
 
 //------------------------------------------------------------------------------
 
-void SHybridMarkerTracker::calculate_correct_pose(
+void SHybridMarkerTracker::calculateCorrectPose(
     ::cv::InputArray rvec1, ::cv::InputArray tvec1,
     ::cv::InputArray rvec2, ::cv::InputArray tvec2,
     const std::vector< ::cv::Point3f >& pts_3d,
@@ -506,11 +440,11 @@ void SHybridMarkerTracker::calculate_correct_pose(
     std::vector<cv::Point2f> projPoints_1, projPoints_2;
 
     cv::projectPoints(pts_3d, rvec1, tvec1,
-                      cameraMatrix, distCoeffs, projPoints_1);
+                      m_cameraMatrix, m_distCoeffs, projPoints_1);
     cv::projectPoints(pts_3d, rvec2, tvec2,
-                      cameraMatrix, distCoeffs, projPoints_2);
+                      m_cameraMatrix, m_distCoeffs, projPoints_2);
 
-    std::vector<cv::Point2f> detect_pts = static_cast<TrackerCurvedot*>(tracker)->get_chess_pts();
+    std::vector<cv::Point2f> detect_pts = static_cast<TrackerCurvedot*>(m_tracker)->get_chess_pts();
 
     // Calculate a threshold to determine correspondence
     cv::Point2f diff_temp = (projPoints_1[0] - projPoints_1[1]) * 0.7;
@@ -518,7 +452,7 @@ void SHybridMarkerTracker::calculate_correct_pose(
     diff_temp   = (projPoints_2[0] - projPoints_2[1]) * 0.7;
     max_dist_sq = (max_dist_sq + diff_temp.x*diff_temp.x + diff_temp.y*diff_temp.y)/2;
 
-    cv::Vec2f errors = error_dist_points(detect_pts, projPoints_1, projPoints_2, max_dist_sq);
+    cv::Vec2f errors = errorDistPoints(detect_pts, projPoints_1, projPoints_2, max_dist_sq);
 
     rvec.create(3, 1, CV_64FC1);
     tvec.create(3, 1, CV_64FC1);
@@ -536,7 +470,7 @@ void SHybridMarkerTracker::calculate_correct_pose(
 
 //------------------------------------------------------------------------------
 
-void SHybridMarkerTracker::draw_rect(const cv::Mat& cHp, cv::Mat& img, cv::Scalar color)
+void SHybridMarkerTracker::drawRect(const cv::Mat& cHp, cv::Mat& img, cv::Scalar color)
 {
     cv::Mat rect_corners = cv::Mat::ones(4, 4, CV_64F);
     rect_corners.at<double>(0, 0) = 0.0;
@@ -563,13 +497,13 @@ void SHybridMarkerTracker::draw_rect(const cv::Mat& cHp, cv::Mat& img, cv::Scala
         corners[i].z = corners_hm.at<double>(2, i) / corners_hm.at<double>(3, i);
     }
 
-    cv::Mat rVec, tVec, distCoeffs;
+    cv::Mat rVec, tVec, m_distCoeffs;
     rVec = cv::Mat::zeros(3, 1, CV_32FC1);
     tVec = cv::Mat::zeros(3, 1, CV_32FC1);
     std::vector <cv::Point2f> corners_2d;
 
-    cv::projectPoints(corners, rVec, tVec, cameraMatrix,
-                      distCoeffs, corners_2d);
+    cv::projectPoints(corners, rVec, tVec, m_cameraMatrix,
+                      m_distCoeffs, corners_2d);
 
     cv::Rodrigues(cHp(cv::Rect(0, 0, 3, 3)), rVec);
     cHp.colRange(3, 4).rowRange(0, 3).copyTo(tVec);
@@ -581,17 +515,6 @@ void SHybridMarkerTracker::draw_rect(const cv::Mat& cHp, cv::Mat& img, cv::Scala
 
     cv::circle(img, corners_2d[0], 4, color, -1);
 
-    // Draw coord axes
-    //std::vector<cv::Point3f> coord_pts;
-    //std::vector<cv::Point2f> proj_coord;
-    //coord_pts.push_back(cv::Point3f(0, 0, 0));
-    //coord_pts.push_back(cv::Point3f(6, 0, 0));
-    //coord_pts.push_back(cv::Point3f(0, 6, 0));
-    //coord_pts.push_back(cv::Point3f(0, 0, 6));
-    //cv::projectPoints(coord_pts, rVec, tVec, cameraMatrix, distCoeffs, proj_coord);
-    //cv::line(img, proj_coord[0], proj_coord[1], cv::Scalar(0, 0, 255),4);
-    //cv::line(img, proj_coord[0], proj_coord[2], cv::Scalar(0, 255, 0),4);
-    //cv::line(img, proj_coord[0], proj_coord[3], cv::Scalar(255, 0, 0),4);
 }
 
 //------------------------------------------------------------------------------
