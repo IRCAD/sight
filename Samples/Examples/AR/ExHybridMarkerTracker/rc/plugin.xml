@@ -53,7 +53,6 @@
                         <menuItem name="stop" icon="arMedia-0.1/icons/stop-cam.svg" />
                         <menuItem name="pause" icon="arMedia-0.1/icons/pause-cam.svg" />
                         <separator/>
-                        <menuItem name="configure streamer" icon="media-0.1/icons/Settings.svg" />
                     </layout>
                 </gui>
                 <registry>
@@ -61,24 +60,9 @@
                     <menuItem sid="startVideo" start="yes" />
                     <menuItem sid="stopVideo" start="yes" />
                     <menuItem sid="pauseVideo" start="yes" />
-                    <menuItem sid="configureStreamer" start="yes" />
                 </registry>
             </service>
 
-            <service uid="configureStreamer" type="::uiPreferences::action::SPreferencesConfiguration">
-                <preference>
-                    <type>text</type>
-                    <name>Multicast IP address</name>
-                    <key>MULTICAST_ADDR_KEY</key>
-                    <default_value>224.0.1.200</default_value>
-                </preference>
-                <preference>
-                    <type>int</type>
-                    <name>Multicast port</name>
-                    <key>MULTICAST_PORT_KEY</key>
-                    <default_value>9090</default_value>
-                </preference>
-            </service>
 
             <service uid="startVideo" type="::gui::action::SSlotCaller">
                 <slots>
@@ -172,7 +156,6 @@
             <start uid="videoAdptOut" />
             <start uid="interactorStyle" />
 
-<!--            <update uid="hybridMarkerTracker"/>-->
         </config>
     </extension>
 </plugin>
