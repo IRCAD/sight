@@ -23,16 +23,14 @@
 #pragma once
 
 #include "fwGuiQml/config.hpp"
+#include "fwGuiQml/dialog/StandardButton.hpp"
 
 #include <fwGui/dialog/IMessageDialog.hpp>
 
-#include <QMessageBox>
 #include <QObject>
-#include <QVector>
+#include <QUrl>
 
 #include <string>
-
-class QPushButton;
 
 namespace fwGuiQml
 {
@@ -46,7 +44,9 @@ class FWGUIQML_CLASS_API MessageDialog : public QObject,
                                          public ::fwGui::dialog::IMessageDialog
 {
 Q_OBJECT
-Q_PROPERTY(QMessageBox::StandardButtons buttons MEMBER m_buttonsDialog NOTIFY buttonsChanged)
+Q_PROPERTY(int buttons MEMBER m_buttonsDialog NOTIFY buttonsChanged)
+Q_PROPERTY(QString message MEMBER m_message NOTIFY messageChanged)
+Q_PROPERTY(QUrl icon MEMBER m_iconImage NOTIFY iconChanged)
 
 public:
 
@@ -82,6 +82,8 @@ public:
 Q_SIGNALS:
     /// notify the qml of property change
     void buttonsChanged();
+    void messageChanged();
+    void iconChanged();
 
 protected:
 
@@ -91,19 +93,21 @@ protected:
     /// Dialog box message
     QString m_message;
 
-    /// List of the button
     ::fwGui::dialog::IMessageDialog::Buttons m_buttons;
-    QMessageBox::StandardButtons m_buttonsDialog;
+    int m_buttonsDialog;
 
     /// Icon
     ::fwGui::dialog::IMessageDialog::Icons m_icon;
-    int m_iconDialog;
+
+    /// Resume the biggest error get with an icon
+    QUrl m_iconImage;
 
     /// boolean to check if button was pressed
     ::fwGui::dialog::IMessageDialog::Buttons m_clicked;
 
     /// Setter to QProperty and emit signal
-    FWGUIQML_API void emitButtons();
+    FWGUIQML_API void emitButtons(StandardButton*);
+    FWGUIQML_API void emitIcon(const QUrl& iconPath);
 
 protected Q_SLOTS:
     /// slot getting the result of the dialog when a button is pressed

@@ -29,6 +29,7 @@
 #include <fwRuntime/operations.hpp>
 
 #include <boost/assign/list_of.hpp>
+#include <boost/filesystem/operations.hpp>
 
 #include <QGuiApplication>
 #include <QVector>
@@ -43,21 +44,22 @@ namespace dialog
 //------------------------------------------------------------------------------
 
 //value of the enum in QMessageBox
-typedef const std::map< ::fwGui::dialog::IMessageDialog::Icons, int> MessageDialogQmlIconsType;
+typedef const std::map< ::fwGui::dialog::IMessageDialog::Icons, std::string> MessageDialogQmlIconsType;
 MessageDialogQmlIconsType messageDialogQmlIcons =
-    ::boost::assign::map_list_of(::fwGui::dialog::IMessageDialog::NONE, QMessageBox::NoIcon)
-        (::fwGui::dialog::IMessageDialog::QUESTION, QMessageBox::Question)
-        (::fwGui::dialog::IMessageDialog::INFO, QMessageBox::Information)
-        (::fwGui::dialog::IMessageDialog::WARNING, QMessageBox::Warning)
-        (::fwGui::dialog::IMessageDialog::CRITICAL, QMessageBox::Critical);
+    ::boost::assign::map_list_of(::fwGui::dialog::IMessageDialog::NONE, "")
+        (::fwGui::dialog::IMessageDialog::QUESTION, "fwGuiQml-" FWGUIQML_VER "/question.svg")
+        (::fwGui::dialog::IMessageDialog::INFO, "fwGuiQml-" FWGUIQML_VER "/information.svg")
+        (::fwGui::dialog::IMessageDialog::WARNING, "fwGuiQml-" FWGUIQML_VER "/warning.svg")
+        (::fwGui::dialog::IMessageDialog::CRITICAL, "fwGuiQml-" FWGUIQML_VER "/critical.svg");
 
+// value of the enum in int value of Dialog
 typedef const std::map< ::fwGui::dialog::IMessageDialog::Buttons,
-                        QMessageBox::StandardButton> MessageDialogQmlButtonType;
+                        StandardButton::ButtonList> MessageDialogQmlButtonType;
 MessageDialogQmlButtonType messageDialogQmlButton =
-    ::boost::assign::map_list_of(::fwGui::dialog::IMessageDialog::OK, QMessageBox::Ok)
-        (::fwGui::dialog::IMessageDialog::CANCEL, QMessageBox::Cancel)
-        (::fwGui::dialog::IMessageDialog::YES, QMessageBox::Yes)
-        (::fwGui::dialog::IMessageDialog::NO, QMessageBox::No);
+    ::boost::assign::map_list_of(::fwGui::dialog::IMessageDialog::OK, StandardButton::ButtonList::Ok)
+        (::fwGui::dialog::IMessageDialog::CANCEL, StandardButton::ButtonList::Cancel)
+        (::fwGui::dialog::IMessageDialog::YES, StandardButton::ButtonList::Yes)
+        (::fwGui::dialog::IMessageDialog::NO, StandardButton::ButtonList::No);
 
 //------------------------------------------------------------------------------
 
@@ -65,6 +67,7 @@ MessageDialog::MessageDialog(::fwGui::GuiBaseObject::Key key) :
     m_buttons(::fwGui::dialog::IMessageDialog::NOBUTTON),
     m_icon(::fwGui::dialog::IMessageDialog::NONE)
 {
+    qmlRegisterType<StandardButton>("Dialog", 1, 0, "StandardButton");
 }
 
 //------------------------------------------------------------------------------
@@ -122,7 +125,7 @@ void MessageDialog::setDefaultButton(::fwGui::dialog::IMessageDialog::Buttons bu
     // get the qml engine QmlApplicationEngine
     SPTR(::fwQml::QmlEngine) engine = ::fwQml::QmlEngine::getDefault();
     m_clicked                       = ::fwGui::dialog::IMessageDialog::NOBUTTON;
-    int icon = iterIcon->second;
+    std::string icon = iterIcon->second;
 
     // get the path of the qml ui file in the 'rc' directory
     auto dialogPath = ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/dialog/MessageDialog.qml");
@@ -133,17 +136,25 @@ void MessageDialog::setDefaultButton(::fwGui::dialog::IMessageDialog::Buttons bu
     QObject* dialog = engine->createComponent(dialogPath, context);
 
     dialog->setProperty("title", m_title);
-    dialog->setProperty("text", m_message);
-    dialog->setProperty("icon", icon);
+    dialog = dialog->findChild<QObject*>("dialog");
+    StandardButton* buttonSetting = qobject_cast<StandardButton*>(dialog->findChild<QObject*>("standardButton"));
+    Q_EMIT messageChanged();
+    //set icon
+    auto pathIcon = ::fwRuntime::getLibraryResourceFilePath(icon);
+    if (!boost::filesystem::exists(pathIcon))
+    {
+        pathIcon = "";
+    }
+    emitIcon(QUrl::fromLocalFile(QString::fromStdString(pathIcon.string())));
 
-    emitButtons();
+//    dialog->setProperty("icon", icon);
+
+    emitButtons(buttonSetting);
     QEventLoop loop;
     //slot to retrieve the result and open the dialog with invoke
     connect(dialog, SIGNAL(accepted()), &loop, SLOT(quit()));
     connect(dialog, SIGNAL(rejected()), &loop, SLOT(quit()));
-    connect(dialog, SIGNAL(yes()), &loop, SLOT(quit()));
     connect(dialog, SIGNAL(reset()), &loop, SLOT(quit()));
-    connect(dialog, SIGNAL(no()), &loop, SLOT(quit()));
     QMetaObject::invokeMethod(dialog, "open");
     loop.exec();
     delete dialog;
@@ -167,9 +178,17 @@ void MessageDialog::resultDialog(int clicked)
 
 //------------------------------------------------------------------------------
 
-void MessageDialog::emitButtons()
+void MessageDialog::emitIcon(const QUrl& iconPath)
 {
-    QMessageBox::StandardButtons buttons;
+    m_iconImage = iconPath;
+    Q_EMIT iconChanged();
+}
+
+//------------------------------------------------------------------------------
+
+void MessageDialog::emitButtons(StandardButton* standardButton)
+{
+    int buttons;
     // add the different type of button needed
     for(MessageDialogQmlButtonType::value_type button :  messageDialogQmlButton)
     {
@@ -178,8 +197,7 @@ void MessageDialog::emitButtons()
             buttons |= button.second;
         }
     }
-    m_buttonsDialog = buttons;
-    Q_EMIT buttonsChanged();
+    standardButton->setButton(static_cast<StandardButton::ButtonList>(buttons));
 }
 
 //------------------------------------------------------------------------------

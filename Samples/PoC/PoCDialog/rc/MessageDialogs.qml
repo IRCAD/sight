@@ -139,14 +139,14 @@ Item {
                 }
 
                 CheckBox {
-                    text: "Yes"
-                    property int button: Dialog.Yes
+                    text: "OK"
+                    property int button: Dialog.Ok
                     onCheckedChanged: parent.updateButtons(button, checked)
                 }
 
                 CheckBox {
-                    text: "OK"
-                    property int button: Dialog.Ok
+                    text: "Yes"
+                    property int button: Dialog.Yes
                     onCheckedChanged: parent.updateButtons(button, checked)
                 }
             }
