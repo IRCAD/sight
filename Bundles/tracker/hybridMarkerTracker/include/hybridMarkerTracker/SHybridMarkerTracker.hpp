@@ -36,14 +36,6 @@
 #include <tracker_keydot.h>
 namespace hybridMarkerTracker
 {
-    /**
-     * @brief Class used to track an Hybrid Marker.
-     *
-     * @see ::arServices::ITracker
-     *
-     * @subsection Inherited Inherited
-     */
-
 class HYBRIDMARKERTRACKER_CLASS_API SHybridMarkerTracker : public ::arServices::ITracker
 {
 public:
