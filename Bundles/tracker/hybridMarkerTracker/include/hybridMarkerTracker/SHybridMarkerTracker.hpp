@@ -42,10 +42,10 @@ namespace hybridMarkerTracker
  * @see ::arServices::ITracker
  *
  * @subsection Inherited Inherited slots (from ITracker)
- * - \b tracking(timestamp) :  Slot called to execute the tracking on a timeline data and returns the results in an
+ * - \b tracking(timestamp): Slot called to execute the tracking on a timeline data and returns the results in an
  * image.
- * - \b startTracking() : Slot called when the user wants to start tracking
- * - \b stopTracking() : Slot called when the user wants to stop tracking
+ * - \b startTracking(): Slot called when the user wants to start tracking
+ * - \b stopTracking(): Slot called when the user wants to stop tracking
  *
  * @section XML XML Configuration
  *
@@ -56,7 +56,7 @@ namespace hybridMarkerTracker
         </service>
    @endcode
  * @subsection In-Out In-Out
- * - \b timeline [::arData::FrameTL]:  Timeline of frames where pattern detection will be computed.
+ * - \b timeline [::arData::FrameTL]: Timeline of frames where pattern detection will be computed.
  * - \b frame [::fwData::Image]: final output video that will be displayed
  */
 class HYBRIDMARKERTRACKER_CLASS_API SHybridMarkerTracker : public ::arServices::ITracker
@@ -78,15 +78,15 @@ public:
      * uses the chessboard features to solve ambiguity between 2 possible positions,
      * and finally draws the result on an output image.
      *
-     * @param img: input image
-     * @param out_img : output image
+     * @param img input image
+     * @param out_img output image
      */
     HYBRIDMARKERTRACKER_API void process(const ::cv::Mat& img, ::cv::Mat& out_img);
 
     /**
      * @brief readSettings method reads a filename and sets the member variables
      *
-     * @param filename: input file name
+     * @param filename input file name
      */
     HYBRIDMARKERTRACKER_API void readSettings(std::string filename);
 
@@ -95,22 +95,22 @@ protected:
     HYBRIDMARKERTRACKER_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /**
-     * @brief Configuring method : This method does nothing
+     * @brief Configuring method: This method does nothing
      */
     HYBRIDMARKERTRACKER_API void configuring() override;
 
     /**
-     * @brief Starting method : This method is used to initialize the service by reading the settings.
+     * @brief Starting method: This method is used to initialize the service by reading the settings.
      */
     HYBRIDMARKERTRACKER_API void starting() override;
 
     /**
-     * @brief Stopping method : This method is used to stop the service.
+     * @brief Stopping method: This method is used to stop the service.
      */
     HYBRIDMARKERTRACKER_API void stopping() override;
 
     /**
-     * @brief Updating method : This method does nothing.
+     * @brief Updating method: This method does nothing.
      */
     HYBRIDMARKERTRACKER_API void updating() override;
 
@@ -141,13 +141,13 @@ private:
     /// Downsample Scale
     unsigned int m_imgScale;
 
-    /// pattern tracker
+    /// Pattern tracker
     Tracker* m_tracker;
 
-    /// current pose
+    /// Current pose
     ::cv::Mat m_currentcHp;
 
-    /// tracked image
+    /// Tracked image
     ::cv::Mat m_imgTrack;
 
     /// Camera related parameters
@@ -156,9 +156,9 @@ private:
     /**
      * @brief errorDistPoints method computes the distance error between 2 points
      *
-     * @param pts_d: detection points
-     * @param pts : points to be compared with 'pts_d'
-     * @param max_dist  maximum distance b/w a correspondence
+     * @param pts_d detection points
+     * @param pts points to be compared with 'pts_d'
+     * @param max_dist maximum distance b/w a correspondence
      */
     cv::Vec2f errorDistPoints(const std::vector< ::cv::Point2f >& pts_d,
                               const std::vector< ::cv::Point2f >& pts_1,
@@ -212,7 +212,7 @@ private:
     std::vector< ::cv::Point3f > m_trackChessBotPatternPoint;
 
     /// Check if output images are initialized
-    bool m_imagesInitialized{false};
+    bool m_imagesInitialized{ false };
 };
 
 } // namespace hybridMarkerTracker

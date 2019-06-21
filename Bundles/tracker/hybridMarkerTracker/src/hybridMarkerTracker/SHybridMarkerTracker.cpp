@@ -88,7 +88,7 @@ void SHybridMarkerTracker::readSettings(std::string filename)
     fs.release();
 
     // --- Tracker parameters---
-    ::cv::Size roi_size(300, 300);
+    ::cv::Size roiSize(300, 300);
     // Global blob detector setting
     ::cv::SimpleBlobDetector::Params params;
     params.minRepeatability    = 2;
@@ -109,21 +109,21 @@ void SHybridMarkerTracker::readSettings(std::string filename)
     params.minInertiaRatio     = 0.01;
 
     // Local blob detector setting
-    ::cv::SimpleBlobDetector::Params params_roi;
-    params_roi.minRepeatability    = 2;
-    params_roi.minDistBetweenBlobs = 10;
-    params_roi.minThreshold        = 50;
-    params_roi.maxThreshold        = 220;
-    params_roi.thresholdStep       = 10;
-    params_roi.filterByArea        = true;
-    params_roi.minArea             = 50;
-    params_roi.maxArea             = 2000;
-    params.filterByConvexity       = true;
-    params.minConvexity            = 0.85f;
-    params.maxConvexity            = 1.0f;
-    params.filterByCircularity     = true;
-    params.minCircularity          = 0.75;
-    params.maxCircularity          = 1.0f;
+    ::cv::SimpleBlobDetector::Params paramsRoi;
+    paramsRoi.minRepeatability    = 2;
+    paramsRoi.minDistBetweenBlobs = 10;
+    paramsRoi.minThreshold        = 50;
+    paramsRoi.maxThreshold        = 220;
+    paramsRoi.thresholdStep       = 10;
+    paramsRoi.filterByArea        = true;
+    paramsRoi.minArea             = 50;
+    paramsRoi.maxArea             = 2000;
+    params.filterByConvexity      = true;
+    params.minConvexity           = 0.85f;
+    params.maxConvexity           = 1.0f;
+    params.filterByCircularity    = true;
+    params.minCircularity         = 0.75;
+    params.maxCircularity         = 1.0f;
 
     /**
      *  Calculate model points for marker
@@ -133,12 +133,12 @@ void SHybridMarkerTracker::readSettings(std::string filename)
         /************************************************************************/
         /* Hybrid pattern                                                       */
         /************************************************************************/
-        float arc_inner      = m_symSquareSize.y;
-        float arc_outter     = arc_inner + 2 * m_asymSquareSize;
-        float chord_inner_2  = m_radius * sin(arc_inner / (2*m_radius)); // chord/2
-        float chord_outter_2 = m_radius * sin(arc_outter / (2*m_radius));
-        float sagitta_inner  = m_radius - sqrt(m_radius * m_radius - chord_inner_2 * chord_inner_2);
-        float sagitta_outter = m_radius - sqrt(m_radius * m_radius - chord_outter_2 * chord_outter_2);
+        float arcInner      = m_symSquareSize.y;
+        float arcOutter     = arcInner + 2 * m_asymSquareSize;
+        float chordInner_2  = m_radius * sin(arcInner / (2*m_radius)); // chord/2
+        float chordOutter_2 = m_radius * sin(arcOutter / (2*m_radius));
+        float sagittaInner  = m_radius - sqrt(m_radius * m_radius - chordInner_2 * chordInner_2);
+        float sagittaOutter = m_radius - sqrt(m_radius * m_radius - chordOutter_2 * chordOutter_2);
         // MID
         for ( int i = 0; i < m_symboardSize.height; i++ )
         {
@@ -146,9 +146,9 @@ void SHybridMarkerTracker::readSettings(std::string filename)
             {
                 ::cv::Point3f pt;
                 pt.x = i * m_symSquareSize.x;
-                pt.y = chord_inner_2;
+                pt.y = chordInner_2;
                 pt.y = (j % 2) == 0 ? pt.y : -pt.y;
-                pt.z = sagitta_inner;
+                pt.z = sagittaInner;
                 m_trackMidPatternPoints.push_back(pt);
             }
         }
@@ -159,8 +159,8 @@ void SHybridMarkerTracker::readSettings(std::string filename)
             ::cv::Point3f pt;
             pt.x = (m_symboardSize.height-1) * m_symSquareSize.x
                    - i * m_asymSquareSize;
-            pt.y = (i % 2) == 0 ? chord_inner_2 : chord_outter_2;
-            pt.z = (i % 2) == 0 ? sagitta_inner : sagitta_outter;
+            pt.y = (i % 2) == 0 ? chordInner_2 : chordOutter_2;
+            pt.z = (i % 2) == 0 ? sagittaInner : sagittaOutter;
             m_trackTopPatternPoints.push_back(pt);
         }
         // BOT
@@ -168,8 +168,8 @@ void SHybridMarkerTracker::readSettings(std::string filename)
         {
             ::cv::Point3f pt;
             pt.x = i * m_asymSquareSize;
-            pt.y = (i % 2) == 0 ? -chord_inner_2 : -chord_outter_2;
-            pt.z = (i % 2) == 0 ? sagitta_inner : sagitta_outter;
+            pt.y = (i % 2) == 0 ? -chordInner_2 : -chordOutter_2;
+            pt.z = (i % 2) == 0 ? sagittaInner : sagittaOutter;
             m_trackBotPatternPoints.push_back(pt);
         }
 
@@ -182,16 +182,16 @@ void SHybridMarkerTracker::readSettings(std::string filename)
             m_trackChessMidPatternPoint.push_back(pt);
         }
 
-        float arc_chess     = m_chessDistCenter * 2;
-        float chord_chess_2 = m_radius * sin(arc_chess / (2*m_radius));
-        float sagitta_chess;
-        if (arc_chess < CV_PI * m_radius)
+        float arcChess     = m_chessDistCenter * 2;
+        float chordChess_2 = m_radius * sin(arcChess / (2*m_radius));
+        float sagittaChess;
+        if (arcChess < CV_PI * m_radius)
         {
-            sagitta_chess = m_radius - sqrt(m_radius * m_radius - chord_chess_2 * chord_chess_2);
+            sagittaChess = m_radius - sqrt(m_radius * m_radius - chordChess_2 * chordChess_2);
         }
         else
         {
-            sagitta_chess = m_radius + sqrt(m_radius * m_radius - chord_chess_2 * chord_chess_2);
+            sagittaChess = m_radius + sqrt(m_radius * m_radius - chordChess_2 * chordChess_2);
         }
 
         // TOP
@@ -199,8 +199,8 @@ void SHybridMarkerTracker::readSettings(std::string filename)
         {
             ::cv::Point3f pt;
             pt.x = i * m_chessInterval;
-            pt.y = chord_chess_2;
-            pt.z = sagitta_chess;
+            pt.y = chordChess_2;
+            pt.z = sagittaChess;
 
             m_trackChessTopPatternPoint.push_back(pt);
         }
@@ -210,12 +210,12 @@ void SHybridMarkerTracker::readSettings(std::string filename)
         {
             ::cv::Point3f pt;
             pt.x = i * m_chessInterval;
-            pt.y = -chord_chess_2;
-            pt.z = sagitta_chess;
+            pt.y = -chordChess_2;
+            pt.z = sagittaChess;
 
             m_trackChessBotPatternPoint.push_back(pt);
         }
-        m_tracker = new TrackerCurvedot(m_symboardSize, roi_size, params, params_roi);
+        m_tracker = new TrackerCurvedot(m_symboardSize, roiSize, params, paramsRoi);
     }
 
     else
@@ -230,7 +230,7 @@ void SHybridMarkerTracker::process(const ::cv::Mat& img, ::cv::Mat& out_img)
 {
     m_imgTrack = img;
 
-    bool use_ippe = true;
+    bool useIppe = true;
     // Tracking
     if(m_patternToUse.compare("HYBRID") == 0)
     {
@@ -240,46 +240,46 @@ void SHybridMarkerTracker::process(const ::cv::Mat& img, ::cv::Mat& out_img)
 
             // Determine which pattern is detected
             std::vector< ::cv::Point3f > visiblePatternPoints;
-            int curr_detect_state = static_cast<TrackerCurvedot*>(m_tracker)->CurrDetectState();
-            if ((curr_detect_state& TrackerCurvedot::TOP_CIR) && !(curr_detect_state & TrackerCurvedot::MID_CIR))
+            int currDetectState = static_cast<TrackerCurvedot*>(m_tracker)->CurrDetectState();
+            if ((currDetectState& TrackerCurvedot::TOP_CIR) && !(currDetectState & TrackerCurvedot::MID_CIR))
             {
                 visiblePatternPoints = m_trackTopPatternPoints;
             }
-            else if ((curr_detect_state& TrackerCurvedot::BOT_CIR) && !(curr_detect_state & TrackerCurvedot::MID_CIR))
+            else if ((currDetectState& TrackerCurvedot::BOT_CIR) && !(currDetectState & TrackerCurvedot::MID_CIR))
             {
                 visiblePatternPoints = m_trackBotPatternPoints;
             }
-            else if ((curr_detect_state& TrackerCurvedot::TOP_CIR) && (curr_detect_state & TrackerCurvedot::MID_CIR))
+            else if ((currDetectState& TrackerCurvedot::TOP_CIR) && (currDetectState & TrackerCurvedot::MID_CIR))
             {
-                int num_sym_dot = m_trackMidPatternPoints.size();
-                visiblePatternPoints.reserve(m_trackTopPatternPoints.size() + num_sym_dot/2);
+                int numSymDot = m_trackMidPatternPoints.size();
+                visiblePatternPoints.reserve(m_trackTopPatternPoints.size() + numSymDot/2);
                 visiblePatternPoints.insert(visiblePatternPoints.end(),
                                             m_trackTopPatternPoints.begin(), m_trackTopPatternPoints.end());
-                for (int i = 0; i < num_sym_dot; i++)
+                for (int i = 0; i < numSymDot; i++)
                 {
                     if (i%2 != 0)
                     {
                         visiblePatternPoints.push_back(m_trackMidPatternPoints[i]);
                     }
                 }
-                use_ippe = false;   // IPPE is only for planar model
+                useIppe = false;   // IPPE is only for planar model
             }
-            else if ((curr_detect_state& TrackerCurvedot::BOT_CIR) && (curr_detect_state & TrackerCurvedot::MID_CIR))
+            else if ((currDetectState& TrackerCurvedot::BOT_CIR) && (currDetectState & TrackerCurvedot::MID_CIR))
             {
-                int num_sym_dot = m_trackMidPatternPoints.size();
-                visiblePatternPoints.reserve(m_trackBotPatternPoints.size() + num_sym_dot/2);
+                int numSymDot = m_trackMidPatternPoints.size();
+                visiblePatternPoints.reserve(m_trackBotPatternPoints.size() + numSymDot/2);
                 visiblePatternPoints.insert(visiblePatternPoints.end(),
                                             m_trackBotPatternPoints.begin(), m_trackBotPatternPoints.end());
-                for (int i = 0; i < num_sym_dot; i++)
+                for (int i = 0; i < numSymDot; i++)
                 {
                     if (i%2 == 0)
                     {
                         visiblePatternPoints.push_back(m_trackMidPatternPoints[i]);
                     }
                 }
-                use_ippe = false;
+                useIppe = false;
             }
-            else if (curr_detect_state & TrackerCurvedot::MID_CIR)
+            else if (currDetectState & TrackerCurvedot::MID_CIR)
             {
                 visiblePatternPoints = m_trackMidPatternPoints;
             }
@@ -292,33 +292,33 @@ void SHybridMarkerTracker::process(const ::cv::Mat& img, ::cv::Mat& out_img)
 
             m_currentcHp = ::cv::Mat::eye(4, 4, CV_64F);
 
-            if (use_ippe)
+            if (useIppe)
             {
                 std::vector< ::cv::Point3f > pts_3d;
-                bool is_chess_detect = true;
+                bool isChessDetect = true;
 
-                if (curr_detect_state & TrackerCurvedot::TOP_CHESS)
+                if (currDetectState & TrackerCurvedot::TOP_CHESS)
                 {
                     pts_3d = m_trackChessTopPatternPoint;
                 }
-                else if (curr_detect_state & TrackerCurvedot::MID_CHESS)
+                else if (currDetectState & TrackerCurvedot::MID_CHESS)
                 {
                     pts_3d = m_trackChessMidPatternPoint;
                 }
-                else if (curr_detect_state & TrackerCurvedot::BOT_CHESS)
+                else if (currDetectState & TrackerCurvedot::BOT_CHESS)
                 {
                     pts_3d = m_trackChessBotPatternPoint;
                 }
                 else
                 {
-                    is_chess_detect = false;    // Chess line not found
+                    isChessDetect = false;    // Chess line not found
 
                 }
                 ippeSolver.solveGeneric(visiblePatternPoints, imgPoints,
                                         m_cameraMatrix, m_distCoeffs, rvec1, tvec1, error1, rvec2, tvec2, error2);
 
                 // Use chessboard features to disambigulate if two solutions are similar
-                if (is_chess_detect && abs(error1 - error2) < 0.1 && error1 < 0.2 && error2 < 0.2)
+                if (isChessDetect && abs(error1 - error2) < 0.1 && error1 < 0.2 && error2 < 0.2)
                 {
                     calculateCorrectPose(rvec1, tvec1, rvec2, tvec2, pts_3d, rvec, tvec);
                 }
@@ -365,10 +365,10 @@ void SHybridMarkerTracker::process(const ::cv::Mat& img, ::cv::Mat& out_img)
         SLM_WARN("Make sure the pattern is set to 'HYBRID'in the setting.xml file");
     }
 
-    std::string str_1 = "Blue rectangle shows current estimated pose";
-    std::string str_2 = "Red rectangle shows the ambiguous pose provided by IPPE";
-    std::string str_3 = "Green shows detection of pattern";
-    std::string str_4 = "Yellow shows tracking of pattern";
+    const std::string str_1 = "Blue rectangle shows current estimated pose";
+    const std::string str_2 = "Red rectangle shows the ambiguous pose provided by IPPE";
+    const std::string str_3 = "Green shows detection of pattern";
+    const std::string str_4 = "Yellow shows tracking of pattern";
     ::cv::putText(m_imgTrack, str_1, ::cv::Point(10, 20), ::cv::FONT_HERSHEY_COMPLEX, 0.5, ::cv::Scalar(0, 0, 255), 1);
     ::cv::putText(m_imgTrack, str_2, ::cv::Point(10, 40), ::cv::FONT_HERSHEY_COMPLEX, 0.5, ::cv::Scalar(255, 0, 0), 1);
     ::cv::putText(m_imgTrack, str_3, ::cv::Point(10, 60), ::cv::FONT_HERSHEY_COMPLEX, 0.5, ::cv::Scalar(0, 255, 0), 1);
@@ -380,22 +380,22 @@ void SHybridMarkerTracker::process(const ::cv::Mat& img, ::cv::Mat& out_img)
 
 //------------------------------------------------------------------------------
 
-cv::Vec2f SHybridMarkerTracker::errorDistPoints(const std::vector<cv::Point2f>& pts_d,
-                                                const std::vector<cv::Point2f>& pts_1,
-                                                const std::vector<cv::Point2f>& pts_2,
-                                                const double max_dist_sq)
+::cv::Vec2f SHybridMarkerTracker::errorDistPoints(const std::vector< ::cv::Point2f >& pts_d,
+                                                  const std::vector< ::cv::Point2f >& pts_1,
+                                                  const std::vector< ::cv::Point2f >& pts_2,
+                                                  const double max_dist_sq)
 {
-    cv::Vec2f sum_error(0, 0);
-    auto dist_sq_1 = 0.0, dist_sq_2 = 0.0;
-    cv::Point2f pts_diff;
+    ::cv::Vec2f sumError(0, 0);
+    auto distSq_1 = 0.0, distSq_2 = 0.0;
+    ::cv::Point2f ptsDiff;
     for (auto i = 0; i < pts_d.size(); i++)
     {
         int valid_ind = -1;
         for (auto j = 0; j < pts_1.size(); j++)
         {
-            pts_diff  = pts_d[i] - pts_1[j];
-            dist_sq_1 = pts_diff.x * pts_diff.x + pts_diff.y * pts_diff.y;
-            if (dist_sq_1 > max_dist_sq)
+            ptsDiff  = pts_d[i] - pts_1[j];
+            distSq_1 = ptsDiff.x * ptsDiff.x + ptsDiff.y * ptsDiff.y;
+            if (distSq_1 > max_dist_sq)
             {
                 continue;
             }
@@ -408,31 +408,31 @@ cv::Vec2f SHybridMarkerTracker::errorDistPoints(const std::vector<cv::Point2f>& 
 
         for (auto j = 0; j < pts_2.size(); j++)
         {
-            pts_diff  = pts_d[i] - pts_2[j];
-            dist_sq_2 = pts_diff.x * pts_diff.x + pts_diff.y * pts_diff.y;
-            if (dist_sq_2 > max_dist_sq)
+            ptsDiff  = pts_d[i] - pts_2[j];
+            distSq_2 = ptsDiff.x * ptsDiff.x + ptsDiff.y * ptsDiff.y;
+            if (distSq_2 > max_dist_sq)
             {
                 continue;
             }
 
             if (valid_ind == j) // assume pts_1 and pts_2 have same order
             {
-                sum_error[0] += dist_sq_1;
-                sum_error[1] += dist_sq_2;
+                sumError[0] += distSq_1;
+                sumError[1] += distSq_2;
 
                 break;
             }
         }
-        dist_sq_1 = dist_sq_2 = 0.0;
+        distSq_1 = distSq_2 = 0.0;
     }
 
     // recursive in case threshold max_dist_sq is too small
-    if (sum_error[0] == 0.0)
+    if (sumError[0] == 0.0)
     {
-        sum_error = errorDistPoints(pts_d, pts_1, pts_2, max_dist_sq * 2);
+        sumError = errorDistPoints(pts_d, pts_1, pts_2, max_dist_sq * 2);
     }
 
-    return sum_error;
+    return sumError;
 }
 
 //------------------------------------------------------------------------------
@@ -445,20 +445,20 @@ void SHybridMarkerTracker::calculateCorrectPose(
 {
     std::vector<cv::Point2f> projPoints_1, projPoints_2;
 
-    cv::projectPoints(pts_3d, rvec1, tvec1,
-                      m_cameraMatrix, m_distCoeffs, projPoints_1);
-    cv::projectPoints(pts_3d, rvec2, tvec2,
-                      m_cameraMatrix, m_distCoeffs, projPoints_2);
+    ::cv::projectPoints(pts_3d, rvec1, tvec1,
+                        m_cameraMatrix, m_distCoeffs, projPoints_1);
+    ::cv::projectPoints(pts_3d, rvec2, tvec2,
+                        m_cameraMatrix, m_distCoeffs, projPoints_2);
 
-    std::vector<cv::Point2f> detect_pts = static_cast<TrackerCurvedot*>(m_tracker)->get_chess_pts();
+    std::vector< ::cv::Point2f > detect_pts = static_cast<TrackerCurvedot*>(m_tracker)->get_chess_pts();
 
     // Calculate a threshold to determine correspondence
-    cv::Point2f diff_temp = (projPoints_1[0] - projPoints_1[1]) * 0.7;
-    double max_dist_sq    = diff_temp.x*diff_temp.x + diff_temp.y*diff_temp.y;
+    ::cv::Point2f diff_temp = (projPoints_1[0] - projPoints_1[1]) * 0.7;
+    double max_dist_sq = diff_temp.x*diff_temp.x + diff_temp.y*diff_temp.y;
     diff_temp   = (projPoints_2[0] - projPoints_2[1]) * 0.7;
     max_dist_sq = (max_dist_sq + diff_temp.x*diff_temp.x + diff_temp.y*diff_temp.y)/2;
 
-    cv::Vec2f errors = errorDistPoints(detect_pts, projPoints_1, projPoints_2, max_dist_sq);
+    ::cv::Vec2f errors = errorDistPoints(detect_pts, projPoints_1, projPoints_2, max_dist_sq);
 
     rvec.create(3, 1, CV_64FC1);
     tvec.create(3, 1, CV_64FC1);
@@ -476,9 +476,9 @@ void SHybridMarkerTracker::calculateCorrectPose(
 
 //------------------------------------------------------------------------------
 
-void SHybridMarkerTracker::drawRect(const cv::Mat& cHp, cv::Mat& img, cv::Scalar color)
+void SHybridMarkerTracker::drawRect(const ::cv::Mat& cHp, ::cv::Mat& img, ::cv::Scalar color)
 {
-    cv::Mat rect_corners = cv::Mat::ones(4, 4, CV_64F);
+    ::cv::Mat rect_corners        = ::cv::Mat::ones(4, 4, CV_64F);
     rect_corners.at<double>(0, 0) = 0.0;
     rect_corners.at<double>(1, 0) = 0.0;
     rect_corners.at<double>(2, 0) = 0.0;
@@ -492,9 +492,9 @@ void SHybridMarkerTracker::drawRect(const cv::Mat& cHp, cv::Mat& img, cv::Scalar
     rect_corners.at<double>(1, 3) = 0.0;
     rect_corners.at<double>(2, 3) = 30.0;
 
-    cv::Mat corners_hm = cHp * rect_corners;
+    ::cv::Mat corners_hm = cHp * rect_corners;
 
-    std::vector <cv::Point3f> corners(4);    // 0-3: US image endpoints, 4-7: shadow pts
+    std::vector < ::cv::Point3f > corners(4);    // 0-3: US image endpoints, 4-7: shadow pts
 
     for (int i = 0; i < corners.size(); i++)
     {
@@ -503,23 +503,23 @@ void SHybridMarkerTracker::drawRect(const cv::Mat& cHp, cv::Mat& img, cv::Scalar
         corners[i].z = corners_hm.at<double>(2, i) / corners_hm.at<double>(3, i);
     }
 
-    cv::Mat rVec, tVec, m_distCoeffs;
-    rVec = cv::Mat::zeros(3, 1, CV_32FC1);
-    tVec = cv::Mat::zeros(3, 1, CV_32FC1);
-    std::vector <cv::Point2f> corners_2d;
+    ::cv::Mat rVec, tVec, m_distCoeffs;
+    rVec = ::cv::Mat::zeros(3, 1, CV_32FC1);
+    tVec = ::cv::Mat::zeros(3, 1, CV_32FC1);
+    std::vector < ::cv::Point2f > corners_2d;
 
-    cv::projectPoints(corners, rVec, tVec, m_cameraMatrix,
-                      m_distCoeffs, corners_2d);
+    ::cv::projectPoints(corners, rVec, tVec, m_cameraMatrix,
+                        m_distCoeffs, corners_2d);
 
-    cv::Rodrigues(cHp(cv::Rect(0, 0, 3, 3)), rVec);
+    ::cv::Rodrigues(cHp(::cv::Rect(0, 0, 3, 3)), rVec);
     cHp.colRange(3, 4).rowRange(0, 3).copyTo(tVec);
 
-    cv::line(img, corners_2d[0], corners_2d[1], color, 2);
-    cv::line(img, corners_2d[1], corners_2d[2], color, 2);
-    cv::line(img, corners_2d[2], corners_2d[3], color, 2);
-    cv::line(img, corners_2d[0], corners_2d[3], color, 2);
+    ::cv::line(img, corners_2d[0], corners_2d[1], color, 2);
+    ::cv::line(img, corners_2d[1], corners_2d[2], color, 2);
+    ::cv::line(img, corners_2d[2], corners_2d[3], color, 2);
+    ::cv::line(img, corners_2d[0], corners_2d[3], color, 2);
 
-    cv::circle(img, corners_2d[0], 4, color, -1);
+    ::cv::circle(img, corners_2d[0], 4, color, -1);
 
 }
 
