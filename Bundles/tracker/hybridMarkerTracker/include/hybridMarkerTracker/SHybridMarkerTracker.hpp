@@ -142,7 +142,7 @@ private:
     unsigned int m_imgScale;
 
     /// Pattern tracker
-    Tracker* m_tracker;
+    TrackerCurvedot* m_tracker;
 
     /// Current pose
     ::cv::Mat m_currentcHp;

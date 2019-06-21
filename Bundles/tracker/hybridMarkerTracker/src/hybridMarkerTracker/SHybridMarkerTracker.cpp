@@ -221,13 +221,13 @@ void SHybridMarkerTracker::process(const ::cv::Mat& img, ::cv::Mat& out_img)
     bool useIppe = true;
     // Tracking
 
-    if (static_cast<TrackerCurvedot*>(m_tracker)->track(m_imgTrack))
+    if (m_tracker->track(m_imgTrack))
     {
-        std::vector< ::cv::Point2f > imgPoints = static_cast< TrackerCurvedot* >(m_tracker)->getP_img();
+        std::vector< ::cv::Point2f > imgPoints = m_tracker->getP_img();
 
         // Determine which pattern is detected
         std::vector< ::cv::Point3f > visiblePatternPoints;
-        const int currDetectState = static_cast<TrackerCurvedot*>(m_tracker)->CurrDetectState();
+        const int currDetectState = m_tracker->CurrDetectState();
         if ((currDetectState& TrackerCurvedot::TOP_CIR) && !(currDetectState & TrackerCurvedot::MID_CIR))
         {
             visiblePatternPoints = m_trackTopPatternPoints;
@@ -343,7 +343,7 @@ void SHybridMarkerTracker::process(const ::cv::Mat& img, ::cv::Mat& out_img)
             drawRect(m_currentcHp, m_imgTrack);
         }
 
-        static_cast<TrackerCurvedot*>(m_tracker)->drawKeydots(m_imgTrack);
+        m_tracker->drawKeydots(m_imgTrack);
     }
 
     const std::string str_1 = "Blue rectangle shows current estimated pose";
@@ -431,7 +431,7 @@ void SHybridMarkerTracker::calculateCorrectPose(
     ::cv::projectPoints(pts_3d, rvec2, tvec2,
                         m_cameraMatrix, m_distCoeffs, projPoints_2);
 
-    std::vector< ::cv::Point2f > detect_pts = static_cast<TrackerCurvedot*>(m_tracker)->get_chess_pts();
+    std::vector< ::cv::Point2f > detect_pts = m_tracker->get_chess_pts();
 
     // Calculate a threshold to determine correspondence
     ::cv::Point2f diff_temp = (projPoints_1[0] - projPoints_1[1]) * 0.7;
