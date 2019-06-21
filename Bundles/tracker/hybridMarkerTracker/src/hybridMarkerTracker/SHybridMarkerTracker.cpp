@@ -65,26 +65,27 @@ SHybridMarkerTracker::~SHybridMarkerTracker()
 
 void SHybridMarkerTracker::readSettings(std::string filename)
 {
+    ::cv::FileStorage fs;
     std::cout << "Initializing..." << std::endl;
-    m_fs.open(filename, ::cv::FileStorage::READ);
+    fs.open(filename, ::cv::FileStorage::READ);
     // Read settings & configuration
-    m_fs["patternToUse" ] >> m_patternToUse;
-    m_fs["Sym_BoardSize_Width" ] >> m_symboardSize.width;
-    m_fs["Sym_BoardSize_Height"] >> m_symboardSize.height;
-    m_fs["Square_Size"]  >> m_squareSize;
-    m_fs["Asym_Square_Size"]  >> m_asymSquareSize;
-    m_fs["Sym_Square_Size_X" ] >> m_symSquareSize.x;
-    m_fs["Sym_Square_Size_Y"] >> m_symSquareSize.y;
-    m_fs["Radius"]  >> m_radius;
-    m_fs["Chess_Dist_Center"]  >> m_chessDistCenter;
-    m_fs["Chess_Interval"]  >> m_chessInterval;
+    fs["patternToUse" ] >> m_patternToUse;
+    fs["Sym_BoardSize_Width" ] >> m_symboardSize.width;
+    fs["Sym_BoardSize_Height"] >> m_symboardSize.height;
+    fs["Square_Size"]  >> m_squareSize;
+    fs["Asym_Square_Size"]  >> m_asymSquareSize;
+    fs["Sym_Square_Size_X" ] >> m_symSquareSize.x;
+    fs["Sym_Square_Size_Y"] >> m_symSquareSize.y;
+    fs["Radius"]  >> m_radius;
+    fs["Chess_Dist_Center"]  >> m_chessDistCenter;
+    fs["Chess_Interval"]  >> m_chessInterval;
 
-    m_fs["image_Width" ] >> m_imgSize.width;
-    m_fs["image_Height"] >> m_imgSize.height;
-    m_fs["Camera_Matrix"] >> m_cameraMatrix;
-    m_fs["Distortion_Coefficients"] >> m_distCoeffs;
+    fs["image_Width" ] >> m_imgSize.width;
+    fs["image_Height"] >> m_imgSize.height;
+    fs["Camera_Matrix"] >> m_cameraMatrix;
+    fs["Distortion_Coefficients"] >> m_distCoeffs;
 
-    m_fs.release();
+    fs.release();
 
     // --- Tracker parameters---
     ::cv::Size roi_size(300, 300);

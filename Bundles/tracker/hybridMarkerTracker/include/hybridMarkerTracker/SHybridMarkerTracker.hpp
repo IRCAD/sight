@@ -42,7 +42,8 @@ namespace hybridMarkerTracker
  * @see ::arServices::ITracker
  *
  * @subsection Inherited Inherited slots (from ITracker)
- * - \b tracking(timestamp) : Slot to fills the timeline with the new positions of the grid
+ * - \b tracking(timestamp) :  Slot called to execute the tracking on a timeline data and returns the results in an
+ * image.
  * - \b startTracking() : Slot called when the user wants to start tracking
  * - \b stopTracking() : Slot called when the user wants to stop tracking
  *
@@ -166,9 +167,6 @@ private:
     // Draws rectangles
     void drawRect(const ::cv::Mat& cHp, ::cv::Mat& img, ::cv::Scalar color = ::cv::Scalar(255, 0, 0));
 
-    /// Read configuration file
-    ::cv::FileStorage m_fs;
-
     /// Camera Matrix
     ::cv::Mat m_cameraMatrix;
     /// Distortion coefficient Matrix
@@ -214,7 +212,7 @@ private:
     std::vector< ::cv::Point3f > m_trackChessBotPatternPoint;
 
     /// Check if output images are initialized
-    bool m_imagesInitialized;
+    bool m_imagesInitialized{false};
 };
 
 } // namespace hybridMarkerTracker
