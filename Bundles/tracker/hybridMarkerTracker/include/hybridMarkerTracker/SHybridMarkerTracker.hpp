@@ -172,9 +172,6 @@ private:
     /// Distortion coefficient Matrix
     ::cv::Mat m_distCoeffs;
 
-    /// HYBRID
-    std::string m_patternToUse;
-
     /// The size of the marker used for tracking
     ::cv::Size m_symboardSize;
 

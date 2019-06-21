@@ -69,7 +69,7 @@ void SHybridMarkerTracker::readSettings(std::string filename)
     std::cout << "Initializing..." << std::endl;
     fs.open(filename, ::cv::FileStorage::READ);
     // Read settings & configuration
-    fs["patternToUse" ] >> m_patternToUse;
+//    fs["patternToUse" ] >> m_patternToUse;
     fs["Sym_BoardSize_Width" ] >> m_symboardSize.width;
     fs["Sym_BoardSize_Height"] >> m_symboardSize.height;
     fs["Square_Size"]  >> m_squareSize;
@@ -128,101 +128,89 @@ void SHybridMarkerTracker::readSettings(std::string filename)
     /**
      *  Calculate model points for marker
      */
-    if (m_patternToUse.compare("HYBRID") == 0)
+    const float arcInner      = m_symSquareSize.y;
+    const float arcOutter     = arcInner + 2 * m_asymSquareSize;
+    const float chordInner_2  = m_radius * sin(arcInner / (2*m_radius));     // chord/2
+    const float chordOutter_2 = m_radius * sin(arcOutter / (2*m_radius));
+    const float sagittaInner  = m_radius - sqrt(m_radius * m_radius - chordInner_2 * chordInner_2);
+    const float sagittaOutter = m_radius - sqrt(m_radius * m_radius - chordOutter_2 * chordOutter_2);
+    // MID
+    for ( int i = 0; i < m_symboardSize.height; i++ )
     {
-        /************************************************************************/
-        /* Hybrid pattern                                                       */
-        /************************************************************************/
-        float arcInner      = m_symSquareSize.y;
-        float arcOutter     = arcInner + 2 * m_asymSquareSize;
-        float chordInner_2  = m_radius * sin(arcInner / (2*m_radius)); // chord/2
-        float chordOutter_2 = m_radius * sin(arcOutter / (2*m_radius));
-        float sagittaInner  = m_radius - sqrt(m_radius * m_radius - chordInner_2 * chordInner_2);
-        float sagittaOutter = m_radius - sqrt(m_radius * m_radius - chordOutter_2 * chordOutter_2);
-        // MID
-        for ( int i = 0; i < m_symboardSize.height; i++ )
-        {
-            for ( int j = 0; j < m_symboardSize.width; j++)
-            {
-                ::cv::Point3f pt;
-                pt.x = i * m_symSquareSize.x;
-                pt.y = chordInner_2;
-                pt.y = (j % 2) == 0 ? pt.y : -pt.y;
-                pt.z = sagittaInner;
-                m_trackMidPatternPoints.push_back(pt);
-            }
-        }
-        // TOP
-        int asym_points_num = m_symboardSize.height + m_symboardSize.height - 1;
-        for ( int i = 0; i < asym_points_num; i++ )
+        for ( int j = 0; j < m_symboardSize.width; j++)
         {
             ::cv::Point3f pt;
-            pt.x = (m_symboardSize.height-1) * m_symSquareSize.x
-                   - i * m_asymSquareSize;
-            pt.y = (i % 2) == 0 ? chordInner_2 : chordOutter_2;
-            pt.z = (i % 2) == 0 ? sagittaInner : sagittaOutter;
-            m_trackTopPatternPoints.push_back(pt);
+            pt.x = i * m_symSquareSize.x;
+            pt.y = chordInner_2;
+            pt.y = (j % 2) == 0 ? pt.y : -pt.y;
+            pt.z = sagittaInner;
+            m_trackMidPatternPoints.push_back(pt);
         }
-        // BOT
-        for ( int i = 0; i < asym_points_num; i++ )
-        {
-            ::cv::Point3f pt;
-            pt.x = i * m_asymSquareSize;
-            pt.y = (i % 2) == 0 ? -chordInner_2 : -chordOutter_2;
-            pt.z = (i % 2) == 0 ? sagittaInner : sagittaOutter;
-            m_trackBotPatternPoints.push_back(pt);
-        }
-
-        // Chess pattern points
-        // MID
-        for (auto i = -1; i < 5; i++)
-        {
-            ::cv::Point3f pt(0.0f, 0.0f, 0.0f);
-            pt.x = m_chessInterval/2 + i * m_chessInterval;
-            m_trackChessMidPatternPoint.push_back(pt);
-        }
-
-        float arcChess     = m_chessDistCenter * 2;
-        float chordChess_2 = m_radius * sin(arcChess / (2*m_radius));
-        float sagittaChess;
-        if (arcChess < CV_PI * m_radius)
-        {
-            sagittaChess = m_radius - sqrt(m_radius * m_radius - chordChess_2 * chordChess_2);
-        }
-        else
-        {
-            sagittaChess = m_radius + sqrt(m_radius * m_radius - chordChess_2 * chordChess_2);
-        }
-
-        // TOP
-        for (auto i = 0; i < 5; i++)
-        {
-            ::cv::Point3f pt;
-            pt.x = i * m_chessInterval;
-            pt.y = chordChess_2;
-            pt.z = sagittaChess;
-
-            m_trackChessTopPatternPoint.push_back(pt);
-        }
-
-        // BOT
-        for (auto i = 0; i < 5; i++)
-        {
-            ::cv::Point3f pt;
-            pt.x = i * m_chessInterval;
-            pt.y = -chordChess_2;
-            pt.z = sagittaChess;
-
-            m_trackChessBotPatternPoint.push_back(pt);
-        }
-        m_tracker = new TrackerCurvedot(m_symboardSize, roiSize, params, paramsRoi);
+    }
+    // TOP
+    const int asymPointsNum = m_symboardSize.height + m_symboardSize.height - 1;
+    for ( int i = 0; i < asymPointsNum; i++ )
+    {
+        ::cv::Point3f pt;
+        pt.x = (m_symboardSize.height-1) * m_symSquareSize.x
+               - i * m_asymSquareSize;
+        pt.y = (i % 2) == 0 ? chordInner_2 : chordOutter_2;
+        pt.z = (i % 2) == 0 ? sagittaInner : sagittaOutter;
+        m_trackTopPatternPoints.push_back(pt);
+    }
+    // BOT
+    for ( int i = 0; i < asymPointsNum; i++ )
+    {
+        ::cv::Point3f pt;
+        pt.x = i * m_asymSquareSize;
+        pt.y = (i % 2) == 0 ? -chordInner_2 : -chordOutter_2;
+        pt.z = (i % 2) == 0 ? sagittaInner : sagittaOutter;
+        m_trackBotPatternPoints.push_back(pt);
     }
 
+    // Chess pattern points
+    // MID
+    for (auto i = -1; i < 5; i++)
+    {
+        ::cv::Point3f pt(0.0f, 0.0f, 0.0f);
+        pt.x = m_chessInterval/2 + i * m_chessInterval;
+        m_trackChessMidPatternPoint.push_back(pt);
+    }
+
+    const float arcChess     = m_chessDistCenter * 2;
+    const float chordChess_2 = m_radius * sin(arcChess / (2*m_radius));
+    float sagittaChess;
+    if (arcChess < CV_PI * m_radius)
+    {
+        sagittaChess = m_radius - sqrt(m_radius * m_radius - chordChess_2 * chordChess_2);
+    }
     else
     {
-        SLM_ERROR("Unknown pattern type");
-        exit(0);
+        sagittaChess = m_radius + sqrt(m_radius * m_radius - chordChess_2 * chordChess_2);
     }
+
+    // TOP
+    for (auto i = 0; i < 5; i++)
+    {
+        ::cv::Point3f pt;
+        pt.x = i * m_chessInterval;
+        pt.y = chordChess_2;
+        pt.z = sagittaChess;
+
+        m_trackChessTopPatternPoint.push_back(pt);
+    }
+
+    // BOT
+    for (auto i = 0; i < 5; i++)
+    {
+        ::cv::Point3f pt;
+        pt.x = i * m_chessInterval;
+        pt.y = -chordChess_2;
+        pt.z = sagittaChess;
+
+        m_trackChessBotPatternPoint.push_back(pt);
+    }
+    m_tracker = new TrackerCurvedot(m_symboardSize, roiSize, params, paramsRoi);
 }
 //------------------------------------------------------------------------------
 
@@ -232,137 +220,130 @@ void SHybridMarkerTracker::process(const ::cv::Mat& img, ::cv::Mat& out_img)
 
     bool useIppe = true;
     // Tracking
-    if(m_patternToUse.compare("HYBRID") == 0)
+
+    if (static_cast<TrackerCurvedot*>(m_tracker)->track(m_imgTrack))
     {
-        if (static_cast<TrackerCurvedot*>(m_tracker)->track(m_imgTrack))
+        std::vector< ::cv::Point2f > imgPoints = static_cast< TrackerCurvedot* >(m_tracker)->getP_img();
+
+        // Determine which pattern is detected
+        std::vector< ::cv::Point3f > visiblePatternPoints;
+        const int currDetectState = static_cast<TrackerCurvedot*>(m_tracker)->CurrDetectState();
+        if ((currDetectState& TrackerCurvedot::TOP_CIR) && !(currDetectState & TrackerCurvedot::MID_CIR))
         {
-            std::vector< ::cv::Point2f > imgPoints = static_cast< TrackerCurvedot* >(m_tracker)->getP_img();
-
-            // Determine which pattern is detected
-            std::vector< ::cv::Point3f > visiblePatternPoints;
-            int currDetectState = static_cast<TrackerCurvedot*>(m_tracker)->CurrDetectState();
-            if ((currDetectState& TrackerCurvedot::TOP_CIR) && !(currDetectState & TrackerCurvedot::MID_CIR))
+            visiblePatternPoints = m_trackTopPatternPoints;
+        }
+        else if ((currDetectState& TrackerCurvedot::BOT_CIR) && !(currDetectState & TrackerCurvedot::MID_CIR))
+        {
+            visiblePatternPoints = m_trackBotPatternPoints;
+        }
+        else if ((currDetectState& TrackerCurvedot::TOP_CIR) && (currDetectState & TrackerCurvedot::MID_CIR))
+        {
+            const int numSymDot = m_trackMidPatternPoints.size();
+            visiblePatternPoints.reserve(m_trackTopPatternPoints.size() + numSymDot/2);
+            visiblePatternPoints.insert(visiblePatternPoints.end(),
+                                        m_trackTopPatternPoints.begin(), m_trackTopPatternPoints.end());
+            for (int i = 0; i < numSymDot; i++)
             {
-                visiblePatternPoints = m_trackTopPatternPoints;
+                if (i%2 != 0)
+                {
+                    visiblePatternPoints.push_back(m_trackMidPatternPoints[i]);
+                }
             }
-            else if ((currDetectState& TrackerCurvedot::BOT_CIR) && !(currDetectState & TrackerCurvedot::MID_CIR))
+            useIppe = false;       // IPPE is only for planar model
+        }
+        else if ((currDetectState& TrackerCurvedot::BOT_CIR) && (currDetectState & TrackerCurvedot::MID_CIR))
+        {
+            const int numSymDot = m_trackMidPatternPoints.size();
+            visiblePatternPoints.reserve(m_trackBotPatternPoints.size() + numSymDot/2);
+            visiblePatternPoints.insert(visiblePatternPoints.end(),
+                                        m_trackBotPatternPoints.begin(), m_trackBotPatternPoints.end());
+            for (int i = 0; i < numSymDot; i++)
             {
-                visiblePatternPoints = m_trackBotPatternPoints;
+                if (i%2 == 0)
+                {
+                    visiblePatternPoints.push_back(m_trackMidPatternPoints[i]);
+                }
             }
-            else if ((currDetectState& TrackerCurvedot::TOP_CIR) && (currDetectState & TrackerCurvedot::MID_CIR))
+            useIppe = false;
+        }
+        else if (currDetectState & TrackerCurvedot::MID_CIR)
+        {
+            visiblePatternPoints = m_trackMidPatternPoints;
+        }
+
+        // Calculate pattern pose in camera coordinate
+        ::cv::Mat rvec, tvec, cRp;
+        ::cv::Mat rvec1, tvec1;     // 1st solution
+        ::cv::Mat rvec2, tvec2;     // 2nd solution
+        float error1, error2;
+
+        m_currentcHp = ::cv::Mat::eye(4, 4, CV_64F);
+
+        if (useIppe)
+        {
+            std::vector< ::cv::Point3f > pts_3d;
+            bool isChessDetect = true;
+
+            if (currDetectState & TrackerCurvedot::TOP_CHESS)
             {
-                int numSymDot = m_trackMidPatternPoints.size();
-                visiblePatternPoints.reserve(m_trackTopPatternPoints.size() + numSymDot/2);
-                visiblePatternPoints.insert(visiblePatternPoints.end(),
-                                            m_trackTopPatternPoints.begin(), m_trackTopPatternPoints.end());
-                for (int i = 0; i < numSymDot; i++)
-                {
-                    if (i%2 != 0)
-                    {
-                        visiblePatternPoints.push_back(m_trackMidPatternPoints[i]);
-                    }
-                }
-                useIppe = false;   // IPPE is only for planar model
+                pts_3d = m_trackChessTopPatternPoint;
             }
-            else if ((currDetectState& TrackerCurvedot::BOT_CIR) && (currDetectState & TrackerCurvedot::MID_CIR))
+            else if (currDetectState & TrackerCurvedot::MID_CHESS)
             {
-                int numSymDot = m_trackMidPatternPoints.size();
-                visiblePatternPoints.reserve(m_trackBotPatternPoints.size() + numSymDot/2);
-                visiblePatternPoints.insert(visiblePatternPoints.end(),
-                                            m_trackBotPatternPoints.begin(), m_trackBotPatternPoints.end());
-                for (int i = 0; i < numSymDot; i++)
-                {
-                    if (i%2 == 0)
-                    {
-                        visiblePatternPoints.push_back(m_trackMidPatternPoints[i]);
-                    }
-                }
-                useIppe = false;
+                pts_3d = m_trackChessMidPatternPoint;
             }
-            else if (currDetectState & TrackerCurvedot::MID_CIR)
+            else if (currDetectState & TrackerCurvedot::BOT_CHESS)
             {
-                visiblePatternPoints = m_trackMidPatternPoints;
-            }
-
-            // Calculate pattern pose in camera coordinate
-            ::cv::Mat rvec, tvec, cRp;
-            ::cv::Mat rvec1, tvec1; // 1st solution
-            ::cv::Mat rvec2, tvec2; // 2nd solution
-            float error1, error2;
-
-            m_currentcHp = ::cv::Mat::eye(4, 4, CV_64F);
-
-            if (useIppe)
-            {
-                std::vector< ::cv::Point3f > pts_3d;
-                bool isChessDetect = true;
-
-                if (currDetectState & TrackerCurvedot::TOP_CHESS)
-                {
-                    pts_3d = m_trackChessTopPatternPoint;
-                }
-                else if (currDetectState & TrackerCurvedot::MID_CHESS)
-                {
-                    pts_3d = m_trackChessMidPatternPoint;
-                }
-                else if (currDetectState & TrackerCurvedot::BOT_CHESS)
-                {
-                    pts_3d = m_trackChessBotPatternPoint;
-                }
-                else
-                {
-                    isChessDetect = false;    // Chess line not found
-
-                }
-                ippeSolver.solveGeneric(visiblePatternPoints, imgPoints,
-                                        m_cameraMatrix, m_distCoeffs, rvec1, tvec1, error1, rvec2, tvec2, error2);
-
-                // Use chessboard features to disambigulate if two solutions are similar
-                if (isChessDetect && abs(error1 - error2) < 0.1 && error1 < 0.2 && error2 < 0.2)
-                {
-                    calculateCorrectPose(rvec1, tvec1, rvec2, tvec2, pts_3d, rvec, tvec);
-                }
-                else
-                {
-                    rvec = rvec1;
-                    tvec = tvec1;
-                }
-
-                ::cv::Mat cHp_1 = ::cv::Mat::eye(4, 4, CV_64F);
-                ::cv::Rodrigues(rvec1, cRp);
-                ::cv::Mat aux = cHp_1.colRange(0, 3).rowRange(0, 3);
-                cRp.copyTo(aux);
-                aux = cHp_1.colRange(3, 4).rowRange(0, 3);
-                tvec1.copyTo(aux);
-
-                ::cv::Mat cHp_2 = ::cv::Mat::eye(4, 4, CV_64F);
-                ::cv::Rodrigues(rvec2, cRp);
-                aux = cHp_2.colRange(0, 3).rowRange(0, 3);
-                cRp.copyTo(aux);
-                aux = cHp_2.colRange(3, 4).rowRange(0, 3);
-                tvec2.copyTo(aux);
-
-                drawRect(cHp_1, m_imgTrack, ::cv::Scalar(0, 0, 255));
-                drawRect(cHp_2, m_imgTrack, ::cv::Scalar(255, 0, 0));
+                pts_3d = m_trackChessBotPatternPoint;
             }
             else
             {
-                ::cv::solvePnP(visiblePatternPoints, imgPoints, m_cameraMatrix, m_distCoeffs, rvec, tvec);
-                ::cv::Rodrigues(rvec, cRp);
-                ::cv::Mat aux = m_currentcHp.colRange(0, 3).rowRange(0, 3);
-                cRp.copyTo(aux);
-                aux = m_currentcHp.colRange(3, 4).rowRange(0, 3);
-                tvec.copyTo(aux);
-                drawRect(m_currentcHp, m_imgTrack);
+                isChessDetect = false;        // Chess line not found
+
+            }
+            ippeSolver.solveGeneric(visiblePatternPoints, imgPoints,
+                                    m_cameraMatrix, m_distCoeffs, rvec1, tvec1, error1, rvec2, tvec2, error2);
+
+            // Use chessboard features to disambigulate if two solutions are similar
+            if (isChessDetect && abs(error1 - error2) < 0.1 && error1 < 0.2 && error2 < 0.2)
+            {
+                calculateCorrectPose(rvec1, tvec1, rvec2, tvec2, pts_3d, rvec, tvec);
+            }
+            else
+            {
+                rvec = rvec1;
+                tvec = tvec1;
             }
 
-            static_cast<TrackerCurvedot*>(m_tracker)->drawKeydots(m_imgTrack);
+            ::cv::Mat cHp_1 = ::cv::Mat::eye(4, 4, CV_64F);
+            ::cv::Rodrigues(rvec1, cRp);
+            ::cv::Mat aux = cHp_1.colRange(0, 3).rowRange(0, 3);
+            cRp.copyTo(aux);
+            aux = cHp_1.colRange(3, 4).rowRange(0, 3);
+            tvec1.copyTo(aux);
+
+            ::cv::Mat cHp_2 = ::cv::Mat::eye(4, 4, CV_64F);
+            ::cv::Rodrigues(rvec2, cRp);
+            aux = cHp_2.colRange(0, 3).rowRange(0, 3);
+            cRp.copyTo(aux);
+            aux = cHp_2.colRange(3, 4).rowRange(0, 3);
+            tvec2.copyTo(aux);
+
+            drawRect(cHp_1, m_imgTrack, ::cv::Scalar(0, 0, 255));
+            drawRect(cHp_2, m_imgTrack, ::cv::Scalar(255, 0, 0));
+        }
+        else
+        {
+            ::cv::solvePnP(visiblePatternPoints, imgPoints, m_cameraMatrix, m_distCoeffs, rvec, tvec);
+            ::cv::Rodrigues(rvec, cRp);
+            ::cv::Mat aux = m_currentcHp.colRange(0, 3).rowRange(0, 3);
+            cRp.copyTo(aux);
+            aux = m_currentcHp.colRange(3, 4).rowRange(0, 3);
+            tvec.copyTo(aux);
+            drawRect(m_currentcHp, m_imgTrack);
         }
 
-    }
-    else
-    {
-        SLM_WARN("Make sure the pattern is set to 'HYBRID'in the setting.xml file");
+        static_cast<TrackerCurvedot*>(m_tracker)->drawKeydots(m_imgTrack);
     }
 
     const std::string str_1 = "Blue rectangle shows current estimated pose";
@@ -458,7 +439,7 @@ void SHybridMarkerTracker::calculateCorrectPose(
     diff_temp   = (projPoints_2[0] - projPoints_2[1]) * 0.7;
     max_dist_sq = (max_dist_sq + diff_temp.x*diff_temp.x + diff_temp.y*diff_temp.y)/2;
 
-    ::cv::Vec2f errors = errorDistPoints(detect_pts, projPoints_1, projPoints_2, max_dist_sq);
+    const ::cv::Vec2f errors = errorDistPoints(detect_pts, projPoints_1, projPoints_2, max_dist_sq);
 
     rvec.create(3, 1, CV_64FC1);
     tvec.create(3, 1, CV_64FC1);
@@ -478,29 +459,29 @@ void SHybridMarkerTracker::calculateCorrectPose(
 
 void SHybridMarkerTracker::drawRect(const ::cv::Mat& cHp, ::cv::Mat& img, ::cv::Scalar color)
 {
-    ::cv::Mat rect_corners        = ::cv::Mat::ones(4, 4, CV_64F);
-    rect_corners.at<double>(0, 0) = 0.0;
-    rect_corners.at<double>(1, 0) = 0.0;
-    rect_corners.at<double>(2, 0) = 0.0;
-    rect_corners.at<double>(0, 1) = 20.0;
-    rect_corners.at<double>(1, 1) = 0.0;
-    rect_corners.at<double>(2, 1) = 0.0;
-    rect_corners.at<double>(0, 2) = 20.0;
-    rect_corners.at<double>(1, 2) = 0.0;
-    rect_corners.at<double>(2, 2) = 30.0;
-    rect_corners.at<double>(0, 3) = 0.0;
-    rect_corners.at<double>(1, 3) = 0.0;
-    rect_corners.at<double>(2, 3) = 30.0;
+    ::cv::Mat rectCorners        = ::cv::Mat::ones(4, 4, CV_64F);
+    rectCorners.at<double>(0, 0) = 0.0;
+    rectCorners.at<double>(1, 0) = 0.0;
+    rectCorners.at<double>(2, 0) = 0.0;
+    rectCorners.at<double>(0, 1) = 20.0;
+    rectCorners.at<double>(1, 1) = 0.0;
+    rectCorners.at<double>(2, 1) = 0.0;
+    rectCorners.at<double>(0, 2) = 20.0;
+    rectCorners.at<double>(1, 2) = 0.0;
+    rectCorners.at<double>(2, 2) = 30.0;
+    rectCorners.at<double>(0, 3) = 0.0;
+    rectCorners.at<double>(1, 3) = 0.0;
+    rectCorners.at<double>(2, 3) = 30.0;
 
-    ::cv::Mat corners_hm = cHp * rect_corners;
+    const ::cv::Mat cornersHm = cHp * rectCorners;
 
     std::vector < ::cv::Point3f > corners(4);    // 0-3: US image endpoints, 4-7: shadow pts
 
     for (int i = 0; i < corners.size(); i++)
     {
-        corners[i].x = corners_hm.at<double>(0, i) / corners_hm.at<double>(3, i);
-        corners[i].y = corners_hm.at<double>(1, i) / corners_hm.at<double>(3, i);
-        corners[i].z = corners_hm.at<double>(2, i) / corners_hm.at<double>(3, i);
+        corners[i].x = cornersHm.at<double>(0, i) / cornersHm.at<double>(3, i);
+        corners[i].y = cornersHm.at<double>(1, i) / cornersHm.at<double>(3, i);
+        corners[i].z = cornersHm.at<double>(2, i) / cornersHm.at<double>(3, i);
     }
 
     ::cv::Mat rVec, tVec, m_distCoeffs;
