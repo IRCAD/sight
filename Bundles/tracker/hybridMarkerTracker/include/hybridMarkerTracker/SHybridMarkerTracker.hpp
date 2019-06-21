@@ -143,8 +143,10 @@ private:
     /// pattern tracker
     Tracker* m_tracker;
 
+    /// current pose
     ::cv::Mat m_currentcHp;
 
+    /// tracked image
     ::cv::Mat m_imgTrack;
 
     /// Camera related parameters
