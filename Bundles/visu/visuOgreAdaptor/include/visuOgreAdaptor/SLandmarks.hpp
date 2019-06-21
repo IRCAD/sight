@@ -49,7 +49,7 @@ namespace visuOgreAdaptor
  * @subsection Configuration Configuration:
  * - \b layer (mandatory): defines landmarks layer.
  * - \b transform (optional): the name of the Ogre transform node where to attach the mesh, as it was specified
- * - \b textSize (optional): text size relatively to the screen's height.
+ * - \b textSize (optional): text size relatively to the screen's height (default 0.025f).
  * in the STransform adaptor.
  *
  */
