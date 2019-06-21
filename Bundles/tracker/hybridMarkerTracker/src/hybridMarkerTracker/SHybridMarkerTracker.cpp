@@ -58,6 +58,7 @@ SHybridMarkerTracker::~SHybridMarkerTracker()
     if(!m_tracker)
     {
         delete m_tracker;
+        m_tracker = nullptr;
     }
 }
 //------------------------------------------------------------------------------
@@ -218,7 +219,7 @@ void SHybridMarkerTracker::readSettings(std::string filename)
 
     else
     {
-        std::cerr << "Unknow pattern type" << std::endl;
+        SLM_ERROR("Unknown pattern type");
         exit(0);
     }
 }
@@ -357,6 +358,10 @@ void SHybridMarkerTracker::process(const ::cv::Mat& img, ::cv::Mat& out_img)
             static_cast<TrackerCurvedot*>(m_tracker)->drawKeydots(m_imgTrack);
         }
 
+    }
+    else
+    {
+        SLM_WARN("Make sure the pattern is set to 'HYBRID'in the setting.xml file");
     }
 
     std::string str_1 = "Blue rectangle shows current estimated pose";
