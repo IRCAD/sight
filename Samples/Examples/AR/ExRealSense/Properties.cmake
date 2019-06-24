@@ -15,6 +15,7 @@ set( REQUIREMENTS
 
     gui
     guiQt
+    media
 
     uiTools
 
@@ -24,6 +25,7 @@ set( REQUIREMENTS
 
     videoRealSense
     videoTools
+    videoQt
 
     arMedia
 )

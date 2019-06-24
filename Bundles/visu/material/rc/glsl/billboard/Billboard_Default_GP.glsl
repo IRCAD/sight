@@ -11,6 +11,8 @@ uniform mat4 u_proj;
 uniform vec3 u_cameraPos;
 uniform vec4 u_viewport;
 
+in vec4 g_f4PointCol[];
+
 #ifndef DEPTH
 out vec4 oColor;
 out vec2 oTexCoord;
@@ -39,7 +41,7 @@ void main()
     gl_Position = vec4(va, P.zw);
 
 #ifndef DEPTH
-    oColor = u_diffuse;
+    oColor = g_f4PointCol[0] * u_diffuse;
     oTexCoord = vec2(0,0);
 #endif
 
@@ -49,7 +51,7 @@ void main()
     gl_Position = vec4(vb, P.zw);
 
 #ifndef DEPTH
-    oColor = u_diffuse;
+    oColor = g_f4PointCol[0] * u_diffuse;
     oTexCoord = vec2(0,1);
 #endif
 
@@ -59,7 +61,7 @@ void main()
     gl_Position = vec4(vd, P.zw);
 
 #ifndef DEPTH
-    oColor = u_diffuse;
+    oColor = g_f4PointCol[0] * u_diffuse;
     oTexCoord = vec2(1,0);
 #endif
 
@@ -69,7 +71,7 @@ void main()
     gl_Position = vec4(vc, P.zw);
 
 #ifndef DEPTH
-    oColor = u_diffuse;
+    oColor = g_f4PointCol[0] * u_diffuse;
     oTexCoord = vec2(1,1);
 #endif
 

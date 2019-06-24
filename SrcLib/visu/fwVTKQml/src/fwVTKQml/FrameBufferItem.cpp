@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -77,6 +77,8 @@ void FrameBufferRenderer::render()
     }
 
     m_item->lockRenderer();
+    // Initialize the state of OpenGL that VTK wants for this window
+    m_vtkRenderWindow->OpenGLInitState();
     m_vtkRenderWindow->Start();
     m_vtkRenderWindow->internalRender(); // vtkXOpenGLRenderWindow renders the scene to the FBO
     m_item->window()->resetOpenGLState();
@@ -93,7 +95,6 @@ void FrameBufferRenderer::synchronize(QQuickFramebufferObject* item)
     m_readyToRender = true;
 }
 
-//------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------
 
 FrameBufferItem::FrameBufferItem(QQuickItem* parent) :

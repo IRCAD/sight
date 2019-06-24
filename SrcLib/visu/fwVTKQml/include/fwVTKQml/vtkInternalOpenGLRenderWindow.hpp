@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -25,7 +25,7 @@
 #include "fwVTKQml/config.hpp"
 
 #include <QOpenGLFramebufferObject>
-#include <vtkExternalOpenGLRenderWindow.h>
+#include <vtkGenericOpenGLRenderWindow.h>
 
 namespace fwVTKQml
 {
@@ -34,14 +34,15 @@ class FrameBufferItem;
 
 /**
  * @brief This class is used to render a offscreen VTK window in a FrameBuffer
+ * implementing a render window using one's own OpenGL context and drawable.
  */
-class FWVTKQML_CLASS_API vtkInternalOpenGLRenderWindow : public vtkExternalOpenGLRenderWindow
+class FWVTKQML_CLASS_API vtkInternalOpenGLRenderWindow : public vtkGenericOpenGLRenderWindow
 {
 public:
     friend class FrameBufferRenderer;
 
     static vtkInternalOpenGLRenderWindow* New();
-    vtkTypeMacro(vtkInternalOpenGLRenderWindow, vtkExternalOpenGLRenderWindow);
+    vtkTypeMacro(vtkInternalOpenGLRenderWindow, vtkGenericOpenGLRenderWindow);
 
     /**
      *  @brief: initialize openGL context/functions

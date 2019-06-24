@@ -51,7 +51,7 @@ public:
     vtkTypeMacro(fwVtkWheelWidget, vtkAbstractWidget);
 
     /// Not implemented.
-    FWRENDERVTK_API void PrintSelf(ostream& os, vtkIndent indent) VTK_OVERRIDE;
+    FWRENDERVTK_API void PrintSelf(ostream& os, vtkIndent indent) override;
 
     /// Set associated representation.
     FWRENDERVTK_API void SetRepresentation(fwVtkWheelRepresentation* rep);
@@ -60,7 +60,7 @@ public:
     FWRENDERVTK_API fwVtkWheelRepresentation* GetRepresentation() const;
 
     /// Creates a wheel representation as default.
-    FWRENDERVTK_API void CreateDefaultRepresentation() VTK_OVERRIDE;
+    FWRENDERVTK_API void CreateDefaultRepresentation() override;
 
     FWRENDERVTK_API void SetWheelUpdateCallback(std::function<void (double, double, double)> f);
 
@@ -70,7 +70,7 @@ private:
     fwVtkWheelWidget();
 
     /// Destructor.
-    ~fwVtkWheelWidget() VTK_OVERRIDE
+    ~fwVtkWheelWidget() override
     {
     }
 
@@ -93,8 +93,8 @@ private:
         Outside
     } WidgetState;
 
-    fwVtkWheelWidget(const fwVtkWheelWidget&) VTK_DELETE_FUNCTION;
-    void operator=(const fwVtkWheelWidget&) VTK_DELETE_FUNCTION;
+    fwVtkWheelWidget(const fwVtkWheelWidget&) = delete;
+    void operator=(const fwVtkWheelWidget&)   = delete;
 
     /// Records the mouse position when selecting.
     int m_initMouseX;
