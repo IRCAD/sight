@@ -1,5 +1,4 @@
 #version 330
-
 uniform vec3 u_f3CameraPos;
 uniform vec4 u_f4AmbientCol;
 uniform vec4 u_f4DiffuseCol;
@@ -22,7 +21,12 @@ vec4 lighting(vec3 _f3NormalDir_N, vec3 _f3Pos)
     vec3 f3DiffuseCol = vec3(0.0);
     vec3 f3SpecularCol = vec3(0.0);
 
-    for(int i = 0; i < int(u_fNumLights); ++i)
+    // HACK: loop in reverse
+    // For some unexplained reason the older version would generate an infinite loop on
+    // macOS Mojave 10.14.5 with AMD Radeon R9 M395X 4 Go.
+    // There might be a bug in the GLSL compiler but we haven't confirmed it yet.
+    //  for(int i = 0; i < int(u_fNumLights); ++i)
+    for(int i = int(u_fNumLights); --i >= 0 ;)
     {
         float fLitDiffuseCol_N = abs(dot( normalize(-u_f3LightDir[i]), _f3NormalDir_N ));
         f3DiffuseCol += fLitDiffuseCol_N * u_f3LightDiffuseCol[i] * u_f4DiffuseCol.rgb;
@@ -44,6 +48,8 @@ vec3 lightingBlinnPhong(vec3 _f3NormalDir_N, vec3 _f3Pos, vec3 _f3DiffuseCol)
     vec3 f3DiffuseCol = vec3(0.);
     vec3 f3SpecularCol = vec3(0.);
 
+    // Oddly enough, the same loop works fine here ...
+    // (look at "for(int i = int(u_fNumLights)...")
     for(int i = 0; i < int(u_fNumLights); ++i)
     {
         // We use the Blinn-Phong lighting model.
