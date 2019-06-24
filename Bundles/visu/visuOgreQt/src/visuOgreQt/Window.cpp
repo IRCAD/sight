@@ -58,6 +58,8 @@ Window::Window(QWindow* parent) :
 {
     setAnimating(false);
     installEventFilter(this);
+
+    connect(this,  &Window::screenChanged, this, &Window::onScreenChanged);
 }
 
 // ----------------------------------------------------------------------------
@@ -300,13 +302,6 @@ bool Window::event(QEvent* event)
 void Window::exposeEvent(QExposeEvent* exposeEvent)
 {
     const bool nonEmptyRegion = !exposeEvent->region().isEmpty();
-#if defined(__APPLE__)
-    if(nonEmptyRegion)
-    {
-        // This allows correct rendering on dual screen displays when dragging the window to another screen.
-        this->ogreResize(this->size());
-    }
-#endif
 
     // Force rendering
     this->renderNow(nonEmptyRegion);
@@ -603,6 +598,20 @@ void Window::ogreResize(const QSize& newSize)
     Q_EMIT interacted(info);
 
     this->requestRender();
+}
+
+// ----------------------------------------------------------------------------
+
+void Window::onScreenChanged(QScreen*)
+{
+    // This allows correct rendering on dual screen displays when dragging the window to another screen.
+    QWindow* parent = this->parent();
+    if(parent != nullptr)
+    {
+        parent->requestUpdate();
+    }
+
+    this->ogreResize(this->size());
 }
 
 // ----------------------------------------------------------------------------

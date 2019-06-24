@@ -32,6 +32,7 @@
 #include <Overlay/OgreOverlaySystem.h>
 
 #include <QPoint>
+#include <QScreen>
 
 #include <QtGui/QKeyEvent>
 #include <QtGui/QWindow>
@@ -208,6 +209,11 @@ private:
     QPoint* m_lastPosRightClick;
 
     int m_frameId;
+
+private Q_SLOTS:
+
+    /// Called when the screen change
+    void onScreenChanged(QScreen*);
 };
 
 //-----------------------------------------------------------------------------
