@@ -55,7 +55,7 @@ SHybridMarkerTracker::SHybridMarkerTracker() noexcept :
 
 SHybridMarkerTracker::~SHybridMarkerTracker()
 {
-    if(!m_tracker)
+    if(m_tracker)
     {
         delete m_tracker;
         m_tracker = nullptr;
@@ -69,7 +69,6 @@ void SHybridMarkerTracker::readSettings(std::string filename)
     std::cout << "Initializing..." << std::endl;
     fs.open(filename, ::cv::FileStorage::READ);
     // Read settings & configuration
-//    fs["patternToUse" ] >> m_patternToUse;
     fs["Sym_BoardSize_Width" ] >> m_symboardSize.width;
     fs["Sym_BoardSize_Height"] >> m_symboardSize.height;
     fs["Square_Size"]  >> m_squareSize;
@@ -130,7 +129,7 @@ void SHybridMarkerTracker::readSettings(std::string filename)
      */
     const float arcInner      = m_symSquareSize.y;
     const float arcOutter     = arcInner + 2 * m_asymSquareSize;
-    const float chordInner_2  = m_radius * sin(arcInner / (2*m_radius));     // chord/2
+    const float chordInner_2  = m_radius * sin(arcInner / (2*m_radius));
     const float chordOutter_2 = m_radius * sin(arcOutter / (2*m_radius));
     const float sagittaInner  = m_radius - sqrt(m_radius * m_radius - chordInner_2 * chordInner_2);
     const float sagittaOutter = m_radius - sqrt(m_radius * m_radius - chordOutter_2 * chordOutter_2);
@@ -304,7 +303,7 @@ void SHybridMarkerTracker::process(const ::cv::Mat& img, ::cv::Mat& out_img)
             ippeSolver.solveGeneric(visiblePatternPoints, imgPoints,
                                     m_cameraMatrix, m_distCoeffs, rvec1, tvec1, error1, rvec2, tvec2, error2);
 
-            // Use chessboard features to disambigulate if two solutions are similar
+            // Use chessboard features to disambiguate if two solutions are similar
             if (isChessDetect && abs(error1 - error2) < 0.1 && error1 < 0.2 && error2 < 0.2)
             {
                 calculateCorrectPose(rvec1, tvec1, rvec2, tvec2, pts_3d, rvec, tvec);
@@ -345,6 +344,10 @@ void SHybridMarkerTracker::process(const ::cv::Mat& img, ::cv::Mat& out_img)
 
         m_tracker->drawKeydots(m_imgTrack);
     }
+    else
+    {
+        SLM_WARN("Cannot find the pattern");
+    }
 
     const std::string str_1 = "Blue rectangle shows current estimated pose";
     const std::string str_2 = "Red rectangle shows the ambiguous pose provided by IPPE";
@@ -371,7 +374,7 @@ void SHybridMarkerTracker::process(const ::cv::Mat& img, ::cv::Mat& out_img)
     ::cv::Point2f ptsDiff;
     for (auto i = 0; i < pts_d.size(); i++)
     {
-        int valid_ind = -1;
+        int validInd = -1;
         for (auto j = 0; j < pts_1.size(); j++)
         {
             ptsDiff  = pts_d[i] - pts_1[j];
@@ -382,7 +385,7 @@ void SHybridMarkerTracker::process(const ::cv::Mat& img, ::cv::Mat& out_img)
             }
             else
             {
-                valid_ind = j;
+                validInd = j;
                 break;
             }
         }
@@ -396,7 +399,7 @@ void SHybridMarkerTracker::process(const ::cv::Mat& img, ::cv::Mat& out_img)
                 continue;
             }
 
-            if (valid_ind == j) // assume pts_1 and pts_2 have same order
+            if (validInd == j) // assume pts_1 and pts_2 have same order
             {
                 sumError[0] += distSq_1;
                 sumError[1] += distSq_2;
