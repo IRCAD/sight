@@ -138,12 +138,12 @@ void SImageMultiDistances::updating()
         m_distanceField = distanceField;
         /// adds the origin to my distances copy
         this->removeCurrentOrigin();
+        m_millimeterNodes.resize(m_distanceField->size(), nullptr);
+        m_millimeterValue.resize(m_distanceField->size(), nullptr);
+        m_labels.resize(m_distanceField->size(), nullptr);
+        m_labelNodes.resize(m_distanceField->size(), nullptr);
         for(::fwData::Object::sptr object :  *m_distanceField)
         {
-            m_millimeterNodes.resize(m_distanceField->size(), nullptr);
-            m_millimeterValue.resize(m_distanceField->size(), nullptr);
-            m_labels.resize(m_distanceField->size(), nullptr);
-            m_labelNodes.resize(m_distanceField->size(), nullptr);
             const ::fwData::PointList::sptr distance = ::fwData::PointList::dynamicCast(object);
             SLM_ASSERT( "Empty Point List for Distance !!!!", !distance->getPoints().empty() );
             /// displays a given line
