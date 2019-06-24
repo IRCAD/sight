@@ -9,6 +9,7 @@ import PoCDialog 1.0
 Item {
     clip: true
 
+    // c++ class
     PocDialogPulseProgressDialogs {
         id: pocDialogPulseProgressDialogs
     }

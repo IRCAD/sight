@@ -9,6 +9,7 @@ import PoCDialog 1.0
 Item {
     clip: true
 
+    // c++ class
     PocDialogInputDialogs {
         id: pocDialogInputDialogs
     }
@@ -37,9 +38,7 @@ Item {
                 Component.onCompleted: pocDialogInputDialogs.title = windowTitleField.text
             }
         }
-        BusyIndicator{
-            running: true
-        }
+        // message for the input dialog
         RowLayout {
             Label {
                 id: customizeMessage
@@ -56,6 +55,7 @@ Item {
                 Component.onCompleted: pocDialogInputDialogs.message = windowMessageField.text
             }
         }
+        // the placeholder for the input dialog
         RowLayout {
             Label {
                 id: customizeInput

@@ -9,6 +9,7 @@ import guiQml 1.0
 Window {
     id: window
     modality: Qt.ApplicationModal
+    // flags to erase the close button
     flags: Qt.CustomizeWindowHint | Qt.WindowTitleHint
 
     Dialog {
@@ -50,11 +51,13 @@ Window {
                     {
                         initSize = width
                     }
+                    // to get responsive size
                     window.width = width + initSize + dialog.leftMargin + dialog.leftPadding
                 }
             }
         }
         onAccepted: {
+            // set an array with all checkbox status
             var listClick = [];
             var length = checkboxList.count;
             for (var i = 0; i < length; i++)
@@ -71,6 +74,8 @@ Window {
         }
         onVisibleChanged: visible ? "" : reset()
     }
+
+    //Set Material Theme from Singleton
     Component.onCompleted: {
         Material.accent = Theme.accent
         Material.theme = Theme.theme

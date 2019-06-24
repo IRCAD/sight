@@ -11,6 +11,7 @@ Window{
     width: 600
     height: 400
     modality: Qt.ApplicationModal
+    // flags to erase the close button
     flags: Qt.CustomizeWindowHint | Qt.WindowTitleHint
 
     Dialog {
@@ -39,6 +40,7 @@ Window{
                     mipmap: true
                     source: loggerDialog.icon
                 }
+                // this label is the summary of the number of errors
                 Label {
                     id:description
 
@@ -52,6 +54,7 @@ Window{
                 }
             }
 
+            // this checkbox show and unshow
             CheckBox {
                 id: checkbox
 
@@ -77,6 +80,7 @@ Window{
                 }
             }
 
+            // this list represent the log of all errors
             ListView {
                 id: textDetails
                 visible: false
@@ -87,6 +91,7 @@ Window{
                 model: loggerModel
                 snapMode: ListView.SnapToItem
                 headerPositioning: ListView.OverlayHeader
+                // the header represent the title of each row
                 header: Row {
                     z: 2
 
@@ -121,6 +126,7 @@ Window{
                     }
                 }
 
+                // the delegate is the style of all item from the model
                 delegate: Row {
                     ItemDelegate {
                         id: indexRow
@@ -160,6 +166,8 @@ Window{
         }
         onVisibleChanged: visible ? "" : reset()
     }
+
+    //Set Material Theme from Singleton
     Component.onCompleted: {
         Material.accent = Theme.accent
         Material.theme = Theme.theme

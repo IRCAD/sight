@@ -21,20 +21,15 @@ Window {
         width: window.width
         height: window.height
 
-        function setStandardButtons (buttons) {
-            console.log("buttonSetting: " + buttonSetting.button)
-            if (MessageDialog.Ok === buttons)
-            {
-                console.log("wut")
-            }
-        }
-
+        // this c++ object class contain an enum with all qml button and then set the standard button
         StandardButton {
             id: buttonSetting
             objectName: "standardButton"
             onButtonChanged: {
                 if (button & StandardButton.Ok)
                 {
+                    // because setting int number from the enum doesn't work
+                    // we need to recreate the group button box and change the visibility
                     okButton.visible = true;
                 }
                 if (button & StandardButton.Cancel)
@@ -73,8 +68,10 @@ Window {
             }
         }
 
+        // the footer contain the different button of the dialog box
         footer: DialogButtonBox {
             id: buttonBox
+            // for each button we need to set the background to transparent to get similar style as other dialog
             Button {
                 id: okButton
 
@@ -135,6 +132,7 @@ Window {
         onVisibleChanged: visible ? "" : reset()
     }
 
+    //Set Material Theme from Singleton
     Component.onCompleted: {
         Material.accent = Theme.accent
         Material.theme = Theme.theme

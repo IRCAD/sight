@@ -9,6 +9,7 @@ import guiQml 1.0
 Window {
     id: window
     modality: Qt.ApplicationModal
+    // flags to erase the close button
     flags: Qt.CustomizeWindowHint | Qt.WindowTitleHint
 
     Dialog {
@@ -54,6 +55,7 @@ Window {
                     {
                         initSize = width
                     }
+                    // to set the size responsive depending of the content
                     window.width = width + initSize + dialog.leftMargin + dialog.leftPadding
                 }
             }
@@ -80,6 +82,8 @@ Window {
         }
         onVisibleChanged: visible ? "" : reset()
     }
+
+    //Set Material Theme from Singleton
     Component.onCompleted: {
         Material.accent = Theme.accent
         Material.theme = Theme.theme

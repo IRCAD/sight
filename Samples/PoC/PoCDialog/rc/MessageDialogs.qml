@@ -10,7 +10,7 @@ Item {
     id: messageDialogItem
     clip: true
 
-    //! [messagedialog]
+    // c++ class
     PocDialogMessageDialogs {
         id: pocDialogMessageDialogs
     }
@@ -50,6 +50,7 @@ Item {
                 id: buttonGroup
             }
 
+            // the icon type of the message dialog
             GroupBox {
                 id: groupBox
                 title: "Icon"
@@ -110,6 +111,7 @@ Item {
                 text: "Buttons:"
                 font.italic: true
             }
+            // update the CheckBox status that represent the list of button for message dialog
             Flow {
                 spacing: 8
                 Layout.fillWidth: true

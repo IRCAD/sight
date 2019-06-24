@@ -11,6 +11,7 @@ Window {
     width: 500
     height: 300
     modality: Qt.ApplicationModal
+    // flags to erase the close button
     flags: Qt.CustomizeWindowHint | Qt.WindowTitleHint
 
     Dialog {
@@ -24,6 +25,8 @@ Window {
         ColumnLayout {
             id: column
             anchors.fill: parent
+
+            //Label to show programm message
             Label {
                 text: inputDialog.message
                 font.bold: true
@@ -32,6 +35,7 @@ Window {
                 width: parent.width
                 wrapMode: Text.WordWrap
             }
+            //TextField for the response of the user
             TextField {
                 id: answer
                 Layout.fillWidth: true
@@ -49,6 +53,8 @@ Window {
         }
         onVisibleChanged: visible ? "" : reset()
     }
+
+    //Set Material Theme from Singleton
     Component.onCompleted: {
         Material.accent = Theme.accent
         Material.theme = Theme.theme

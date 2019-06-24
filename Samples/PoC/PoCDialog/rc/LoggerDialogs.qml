@@ -10,6 +10,7 @@ import PoCDialog 1.0
 Item {
     clip: true
 
+    // c++ class
     PocDialogLoggerDialogs {
         id: pocDialogLoggerDialogs
     }
@@ -58,6 +59,7 @@ Item {
             ButtonGroup {
                 id: buttonGroup
             }
+            // add one type of error in the log with its associated message when we click add
             GroupBox {
                 id: groupBox
                 title: "Level of error"

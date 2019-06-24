@@ -12,9 +12,11 @@ Window {
     title: progressDialog.title
     width: 600
     height: 300
+    // flags to erase the close button
     flags: Qt.CustomizeWindowHint | Qt.WindowTitleHint
 
     Dialog {
+        // this function set the message of the download and set the value of the progress bar
         function changeValue(msg, a)
         {
             message.text = msg
@@ -43,6 +45,7 @@ Window {
                     Layout.fillWidth: true
                     to: 100
                 }
+                // the number of the progress value
                 Label {
                     Layout.fillWidth: true
                     id: percent

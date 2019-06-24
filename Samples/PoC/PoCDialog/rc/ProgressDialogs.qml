@@ -9,6 +9,7 @@ import PoCDialog 1.0
 Item {
     clip: true
 
+    // c++ class
     PocDialogProgressDialogs {
         id: pocDialogProgressDialogs
     }
@@ -37,11 +38,14 @@ Item {
                 onTextChanged: pocDialogProgressDialogs.message = windowTitleField.text
             }
         }
+        // if this is check, a function with nothing inside will be launch on cancel
         CheckBox {
             text: "Add Callback"
             onCheckedChanged: pocDialogProgressDialogs.addCallback = checked
         }
     }
+    // this rectangle has the open button which has to be press first
+    // then you can update the dialog with all option inside this rectangle
     Rectangle {
         id: bottomBar
         anchors {

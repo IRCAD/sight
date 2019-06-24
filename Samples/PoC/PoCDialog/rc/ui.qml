@@ -15,6 +15,7 @@ ApplicationWindow {
 
     title: qsTr("PoCDialog 0.1")
 
+    // the name of each section
     header:         TabBar {
         id: bar
         width: parent.width
@@ -44,6 +45,7 @@ ApplicationWindow {
         }
     }
 
+    // the page of each section associated to the menu TabBar
     StackLayout {
         anchors.fill: parent
         currentIndex: bar.currentIndex
@@ -56,7 +58,9 @@ ApplicationWindow {
         PulseProgressDialogs { }
         SelectorDialogs { }
     }
+    // this toolbar is for the progressDialog to fill this rectangle
     footer: ToolBar {
+        objectName: "toolBar"
         background:  Rectangle {
             implicitHeight: 40
             color: Material.background
@@ -69,8 +73,9 @@ ApplicationWindow {
                 border.color: Material.accent
             }
         }
-        objectName: "toolBar"
     }
+    // Set the global theme inside the singleton "Theme" and then set the Window theme via the Singleton
+    // This singleton will permit to set the same theme in all window open for this application
     Component.onCompleted: {
         Theme.accent = Material.color(Material.LightBlue)
         Theme.theme = Material.Light

@@ -10,6 +10,7 @@ Window {
     width: 600
     height: 200
     modality: Qt.ApplicationModal
+    // the number of the progress value
     flags: Qt.CustomizeWindowHint | Qt.WindowTitleHint
 
     Dialog {
@@ -30,6 +31,8 @@ Window {
                 text: pulseProgressDialog.message
                 font.bold: true
             }
+            // the inderteminate state is to setup a progress bar
+            // when we don't know how much time it will take
             ProgressBar {
                 indeterminate: true
                 id: progressBar
@@ -46,6 +49,8 @@ Window {
             window.height = height
         }
     }
+
+    //Set Material Theme from Singleton
     Component.onCompleted: {
         Material.accent = Theme.accent
         Material.theme = Theme.theme

@@ -70,6 +70,7 @@ Item {
                 id: filterRow
                 property var nameFilters: []
                 property var nameOfFilters: []
+                // filters extension to see only some type of file
                 Label {
                     id: customizeFilter
                     text: "Filters"
@@ -143,6 +144,7 @@ Item {
                         filterRow.nameOfFilters = [];
                     }
                 }
+                // to set the location to picture location folder
                 Button {
                     text: "Pictures"
                     enabled: fileDialog.shortcuts.hasOwnProperty("pictures")
@@ -152,6 +154,7 @@ Item {
                         windowLocationField.text = pictures.replace("file://", "");
                     }
                 }
+                // to set the location to home location folder
                 Button {
                     text: "Home"
                     enabled: fileDialog.shortcuts.hasOwnProperty("home")

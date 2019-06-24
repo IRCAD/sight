@@ -9,6 +9,7 @@ import PoCDialog 1.0
 Item {
     clip: true
 
+    // c++ class
     PocDialogMultiSelectorDialogs {
         id: pocDialogMultiSelectorDialogs
     }
@@ -53,6 +54,7 @@ Item {
                 Component.onCompleted: pocDialogMultiSelectorDialogs.message = windowMessageField.text
             }
         }
+        // row to add an option of the list of the multi selector dialog
         RowLayout {
             id: optionRow
             property var options: []

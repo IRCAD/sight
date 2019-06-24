@@ -4,6 +4,8 @@ import QtQuick.Dialogs 1.3
 FileDialog {
     id: fileDialog
 
+    // check if we are on macOs because there is a bug on mac that not permit
+    // modal window for FileDialog
     modality: Qt.platform.os == "osx" ? Qt.NonModal : Qt.ApplicationModal
 
     onAccepted: {
