@@ -188,7 +188,7 @@ void MessageDialog::emitIcon(const QUrl& iconPath)
 
 void MessageDialog::emitButtons(StandardButton* standardButton)
 {
-    int buttons;
+    int buttons = 0;
     // add the different type of button needed
     for(MessageDialogQmlButtonType::value_type button :  messageDialogQmlButton)
     {
