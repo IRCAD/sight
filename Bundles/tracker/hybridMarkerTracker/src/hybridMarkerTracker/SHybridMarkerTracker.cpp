@@ -66,7 +66,7 @@ SHybridMarkerTracker::~SHybridMarkerTracker()
 void SHybridMarkerTracker::readSettings(std::string filename)
 {
     ::cv::FileStorage fs;
-    std::cout << "Initializing..." << std::endl;
+    SLM_DEBUG("Initializing...");
     fs.open(filename, ::cv::FileStorage::READ);
     // Read settings & configuration
     fs["Sym_BoardSize_Width" ] >> m_symboardSize.width;
@@ -117,12 +117,6 @@ void SHybridMarkerTracker::readSettings(std::string filename)
     paramsRoi.filterByArea        = true;
     paramsRoi.minArea             = 50;
     paramsRoi.maxArea             = 2000;
-    params.filterByConvexity      = true;
-    params.minConvexity           = 0.85f;
-    params.maxConvexity           = 1.0f;
-    params.filterByCircularity    = true;
-    params.minCircularity         = 0.75;
-    params.maxCircularity         = 1.0f;
 
     /**
      *  Calculate model points for marker
@@ -222,7 +216,7 @@ void SHybridMarkerTracker::process(const ::cv::Mat& img, ::cv::Mat& out_img)
 
     if (m_tracker->track(m_imgTrack))
     {
-        std::vector< ::cv::Point2f > imgPoints = m_tracker->getP_img();
+        const std::vector< ::cv::Point2f > imgPoints = m_tracker->getP_img();
 
         // Determine which pattern is detected
         std::vector< ::cv::Point3f > visiblePatternPoints;
