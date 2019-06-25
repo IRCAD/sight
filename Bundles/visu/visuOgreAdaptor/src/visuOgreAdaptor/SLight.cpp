@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -145,6 +145,8 @@ void SLight::starting()
 {
     this->initialize();
 
+    this->getRenderService()->makeCurrent();
+
     m_lightDiffuseColor  = this->getInOut< ::fwData::Color >(s_DIFFUSE_COLOR_INOUT);
     m_lightSpecularColor = this->getInOut< ::fwData::Color >(s_SPECULAR_COLOR_INOUT);
 
@@ -176,6 +178,8 @@ void SLight::starting()
 void SLight::updating()
 {
     SLM_ASSERT("Missing color data objects.", m_lightDiffuseColor && m_lightSpecularColor);
+
+    this->getRenderService()->makeCurrent();
 
     const ::Ogre::ColourValue diffuseColor(m_lightDiffuseColor->red(),
                                            m_lightDiffuseColor->green(),
@@ -233,6 +237,8 @@ void SLight::setThetaOffset(float _thetaOffset)
 {
     SLM_ASSERT("Unable to update an offset if the light's node isn't attached to a parent node", !m_useOrphanNode);
 
+    this->getRenderService()->makeCurrent();
+
     const float thetaDelta = _thetaOffset - m_thetaOffset;
     m_thetaOffset = _thetaOffset;
 
@@ -249,6 +255,8 @@ void SLight::setPhiOffset(float _phiOffset)
 {
     SLM_ASSERT("Unable to update an offset if the light's node isn't attached to a parent node", !m_useOrphanNode);
 
+    this->getRenderService()->makeCurrent();
+
     const float phiDelta = _phiOffset - m_phiOffset;
     m_phiOffset = _phiOffset;
 
@@ -263,6 +271,8 @@ void SLight::setPhiOffset(float _phiOffset)
 
 void SLight::setDoubleParameter(double _val, std::string _key)
 {
+    this->getRenderService()->makeCurrent();
+
     if(_key == "thetaOffset")
     {
         this->setThetaOffset(static_cast<float>(_val));
@@ -277,6 +287,8 @@ void SLight::setDoubleParameter(double _val, std::string _key)
 
 void SLight::stopping()
 {
+    this->getRenderService()->makeCurrent();
+
     this->unregisterServices();
 
     m_light->detachFromParent();
