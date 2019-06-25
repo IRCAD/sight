@@ -117,12 +117,14 @@
                         <orientation value="vertical" />
                         <view proportion="3" caption="aruco" />
                         <view proportion="2" caption="reprojection" />
+                        <view proportion="1" caption="frame/matrices" />
                         <spacer/>
                     </layout>
                 </gui>
                 <registry>
                     <view sid="arucoParams" start="yes" />
                     <view sid="reprojectionParams" start="yes" />
+                    <view sid="synchroParams" start="yes" />
                 </registry>
             </service>
 
@@ -360,6 +362,12 @@
                 </parameters>
             </service>
 
+            <service uid="synchroParams" type="::guiQt::editor::SParameters">
+                <parameters>
+                    <param type="int" name="Delay" key="frameDelay" defaultValue="0" min="0" max="2000" />
+                </parameters>
+            </service>
+
             <!-- Gui Service to display a value in a QLabel -->
             <service uid="errorLabelLeft" type="::uiTools::editor::STextStatus">
                 <label>Reprojection Error Left (RMSE)</label>
@@ -550,7 +558,6 @@
                 <slot>frameGrabber2/stopCamera</slot>
             </connect>
 
-            <!-- start services -->
             <connect>
                 <signal>tracker1/markerDetected</signal>
                 <slot>axisLeft/updateVisibility</slot>
@@ -561,6 +568,12 @@
                 <slot>axisRight/updateVisibility</slot>
             </connect>
 
+            <connect>
+                <signal>synchroParams/intChanged</signal>
+                <slot>synchronizer/setFrameDelay</slot>
+            </connect>
+
+            <!-- start services -->
             <start uid="mainFrame" />
             <start uid="CalibrationReader" />
             <start uid="Extractor" />
