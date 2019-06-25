@@ -17,6 +17,7 @@
             <object uid="sourceFrame" type="::fwData::Image" />
 <!--        final output video frame that will be displayed-->
             <object uid="finalFrame" type="::fwData::Image"/>
+            <object uid="matrixOut" type="::fwData::TransformationMatrix3D"/>
 
             <service uid="mainFrame" type="::gui::frame::SDefaultFrame">
                 <gui>
@@ -75,20 +76,15 @@
                 <scene>
                     <renderer id="default"  background="0.0" />
                     <adaptor uid="videoAdpt" />
-                    <adaptor uid="videoAdptOut"/>
                     <adaptor uid="interactorStyle" />
                 </scene>
             </service>
 
             <service uid="videoAdpt" type="::visuVTKARAdaptor::SVideo" autoConnect="yes">
-                <in key="frame" uid="sourceFrame" />
+                <in key="frameOut" uid="finalFrame" />
                 <config renderer="default" />
             </service>
 
-            <service uid="videoAdptOut" type="::visuVTKARAdaptor::SVideo" autoConnect="yes">
-                <in key="frame" uid="sourceFrame" />
-                <config renderer="default" />
-            </service>
 
             <service uid="interactorStyle" type="::visuVTKAdaptor::SInteractorStyle">
                 <config renderer="default" style="InteractorStyle2DForNegato" />
@@ -117,8 +113,9 @@
             </service>
 
             <service uid="hybridMarkerTracker" type="::hybridMarkerTracker::SHybridMarkerTracker" worker="tracking">
-                <in key="frameTL" uid="frameTL"/>
-                <inout key="frame" uid="sourceFrame" autoConnect="yes"/>
+                <in key="frameIn" uid="sourceFrame" autoConnect="yes"/>
+                <inout key="frameOut" uid="finalFrame" autoConnect="yes"/>
+                <inout key="tag" uid="matrixOut"/>
             </service>
 
             <connect>
@@ -133,7 +130,6 @@
 
             <!-- VTK scene 'genericScene' -->
             <start uid="videoAdpt" />
-            <start uid="videoAdptOut" />
             <start uid="interactorStyle" />
 
         </config>
