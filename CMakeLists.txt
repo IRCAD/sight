@@ -581,13 +581,6 @@ else()
     unset(BUILD_DOCSET CACHE)
 endif()
 
-# Eclipse project
-option(ECLIPSE_PROJECT "Generate eclipse project" OFF)
-if(ECLIPSE_PROJECT)
-    include(${FWCMAKE_RESOURCE_PATH}eclipse/eclipse_generator.cmake)
-    eclipseGenerator(${PROJECT_LIST})
-endif()
-
 # VS Code project
 option(GENERATE_VSCODE_WS "Generate VS Code workspace" OFF)
 if(GENERATE_VSCODE_WS)
