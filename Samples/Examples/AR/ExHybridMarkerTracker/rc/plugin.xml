@@ -27,21 +27,7 @@
                 </gui>
                 <registry>
                     <toolBar sid="toolbar" start="yes" />
-                    <view sid="mainView" start="yes" />
-                </registry>
-            </service>
-
-            <service uid="mainView" type="::gui::view::SDefaultView">
-                <gui>
-                    <layout type="::fwGui::LineLayoutManager">
-                        <orientation value="horizontal" />
-                        <view proportion="1" />
-                        <view proportion="1" />
-                    </layout>
-                </gui>
-                <registry>
                     <view sid="genericScene" start="yes"/>
-                    <view sid="genericScene2" start="yes"/>
                 </registry>
             </service>
 
@@ -89,14 +75,8 @@
                 <scene>
                     <renderer id="default"  background="0.0" />
                     <adaptor uid="videoAdpt" />
+                    <adaptor uid="videoAdptOut"/>
                     <adaptor uid="interactorStyle" />
-                </scene>
-            </service>
-
-            <service uid="genericScene2" type="::fwRenderVTK::SRender">
-                <scene>
-                    <renderer id="ar"  background="0.0" />
-                    <adaptor uid="videoAdptOut" />
                 </scene>
             </service>
 
@@ -106,8 +86,8 @@
             </service>
 
             <service uid="videoAdptOut" type="::visuVTKARAdaptor::SVideo" autoConnect="yes">
-                <in key="frame" uid="finalFrame" />
-                <config renderer="ar" />
+                <in key="frame" uid="sourceFrame" />
+                <config renderer="default" />
             </service>
 
             <service uid="interactorStyle" type="::visuVTKAdaptor::SInteractorStyle">
@@ -137,8 +117,8 @@
             </service>
 
             <service uid="hybridMarkerTracker" type="::hybridMarkerTracker::SHybridMarkerTracker" worker="tracking">
-                <inout key="frameTL" uid="frameTL" autoConnect="yes"/>
-                <inout key="frameOut" uid="finalFrame"/>
+                <in key="frameTL" uid="frameTL"/>
+                <inout key="frame" uid="sourceFrame" autoConnect="yes"/>
             </service>
 
             <connect>

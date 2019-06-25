@@ -39,15 +39,16 @@
 
 #include <fwRuntime/operations.hpp>
 
+#include <boost/make_unique.hpp>
+
 #include <cmath>
 namespace hybridMarkerTracker
 {
 
 fwServicesRegisterMacro(::arServices::ITracker, ::hybridMarkerTracker::SHybridMarkerTracker);
 
-static const ::fwServices::IService::KeyType s_TIMELINE_INOUT = "frameTL";
-static const ::fwServices::IService::KeyType s_IMAGE_INOUT    = "frameOut";
-
+static const ::fwServices::IService::KeyType s_TIMELINE_INPUT = "frameTL";
+static const ::fwServices::IService::KeyType s_FRAME_INOUT    = "frame";
 SHybridMarkerTracker::SHybridMarkerTracker() noexcept :
     m_tracker(NULL)
 {
@@ -506,7 +507,7 @@ void SHybridMarkerTracker::drawRect(const ::cv::Mat& cHp, ::cv::Mat& img, ::cv::
 ::fwServices::IService::KeyConnectionsMap SHybridMarkerTracker::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push( s_TIMELINE_INOUT, ::arData::TimeLine::s_OBJECT_PUSHED_SIG, s_TRACK_SLOT );
+    connections.push( s_TIMELINE_INPUT, ::arData::TimeLine::s_OBJECT_PUSHED_SIG, s_TRACK_SLOT );
     connections.push( s_FRAME_INOUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT );
     connections.push( s_FRAME_INOUT, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT );
     return connections;
@@ -525,53 +526,69 @@ void SHybridMarkerTracker::starting()
 
 void SHybridMarkerTracker::tracking(::fwCore::HiResClock::HiResClockType& timestamp)
 {
-    auto frameTL = this->getInOut< ::arData::FrameTL >(s_TIMELINE_INOUT);
-    SLM_ASSERT("The InOut key '" + s_TIMELINE_INOUT + "' is not defined", frameTL);
+    std::cout<<"===================hello!! ======================" <<std::endl;
 
-    auto frameOutput = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("The InOut key '" + s_IMAGE_INOUT + "' is not defined", frameOutput);
+    auto frame = this->getInOut< ::fwData::Image >(s_FRAME_INOUT);
+    SLM_ASSERT("The InOut key '" + s_FRAME_INOUT + "' is not defined", frame);
 
+    std::unique_ptr< ::fwData::mt::ObjectReadToWriteLock> lockFrame;
     ::cv::Mat img, img_track;
-    if (frameTL)
+
+    if (frame)
     {
-        const CSPTR(::arData::FrameTL::BufferType)
-        buffer = frameTL->getClosestBuffer(timestamp);
-        std::uint8_t* frameBuff = const_cast< std::uint8_t*>( &buffer->getElement(0));
+        lockFrame = ::boost::make_unique< ::fwData::mt::ObjectReadToWriteLock>(frame);
+        img       = cvIO::Image::moveToCv(frame);
+    }
 
-        ::cvIO::FrameTL::moveToCv(frameTL, frameBuff, img);
-        process(img, img_track);
+    else
+    {
+        auto frameTL = this->getInput< ::arData::FrameTL>(s_TIMELINE_INPUT);
+        SLM_ASSERT("The Input key '" + s_TIMELINE_INPUT + "' is not defined", frameTL);
 
-//        check if image dimension have changed
-        ::fwData::Image::SizeType size(2);
-        size[0] = frameTL->getWidth();
-        size[1] = frameTL->getHeight();
-
-        if(size != frameOutput->getSize())
+        if (frameTL)
         {
-            m_imagesInitialized = false;
-        }
+            const CSPTR(::arData::FrameTL::BufferType)
+            buffer = frameTL->getClosestBuffer(timestamp);
+            OSLM_WARN_IF("Buffer not found with timestamp " << timestamp, !buffer);
+            if (buffer)
+            {
+                std::uint8_t* frameBuff = const_cast< std::uint8_t*>( &buffer->getElement(0));
+                const ::cv::Size frameSize(static_cast<int> (frameTL->getWidth()),
+                                           static_cast<int>(frameTL->getHeight()));
+                ::cvIO::FrameTL::moveToCv(frameTL, frameBuff, img);
+            }
+            if (!img.empty())
+            {
+                process(img, img_track);
+                ::fwData::Image::SizeType size(2);
+                size[0] = frameTL->getWidth();
+                size[1] = frameTL->getHeight();
 
-        if(!m_imagesInitialized)
-        {
-            const ::fwData::Image::SpacingType::value_type voxelSize = 1;
-            frameOutput->allocate(size, frameTL->getType(), frameTL->getNumberOfComponents());
-            ::fwData::Image::OriginType origin(2, 0);
+                if (m_imagesInitialized)
+                {
+                    const ::fwData::Image::SpacingType::value_type voxelSize = 1;
+                    frame->allocate(size, frameTL->getType(), frameTL->getNumberOfComponents());
+                    ::fwData::Image::OriginType origin(2, 0);
 
-            frameOutput->setOrigin(origin);
-            ::fwData::Image::SpacingType spacing(2, voxelSize);
-            frameOutput->setSpacing(spacing);
-            frameOutput->setWindowWidth(1);
-            frameOutput->setWindowCenter(0);
+                    frame->setOrigin(origin);
+                    ::fwData::Image::SpacingType spacing(2, voxelSize);
+                    frame->setSpacing(spacing);
+                    frame->setWindowWidth(1);
+                    frame->setWindowCenter(0);
 
-            m_imagesInitialized = true;
+                    m_imagesInitialized = true;
 
-            auto sig = frameOutput->signal< ::fwData::Image::BufferModifiedSignalType >(
-                ::fwData::Image::s_MODIFIED_SIG );
+                    auto sig = frame->signal< ::fwData::Image::BufferModifiedSignalType>(
+                        ::fwData::Image::s_MODIFIED_SIG);
+                    sig->asyncEmit();
+                }
+            }
+
+            ::cvIO::Image::copyFromCv(frame, img_track);
+            auto sig = frame->signal< ::fwData::Object::ModifiedSignalType>(
+                ::fwData::Image::s_BUFFER_MODIFIED_SIG);
             sig->asyncEmit();
         }
-        ::cvIO::Image::copyFromCv(frameOutput, img_track);
-        auto sig = frameOutput->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Image::s_BUFFER_MODIFIED_SIG);
-        sig->asyncEmit();
     }
 }
 //------------------------------------------------------------------------------
