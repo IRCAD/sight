@@ -122,6 +122,8 @@ void SImageMultiDistances::starting()
 
 void SImageMultiDistances::updating()
 {
+    this->getRenderService()->makeCurrent();
+
     const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("Missing image", image);
 
