@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -380,7 +380,15 @@ void Window::keyReleaseEvent(QKeyEvent* e)
 {
     ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo info;
     info.interactionType = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::KEYRELEASE;
-    info.key             = e->key();
+    switch(e->key())
+    {
+        case ::Qt::Key_Shift: info.key   = ::fwRenderOgre::interactor::IInteractor::SHIFT; break;
+        case ::Qt::Key_Control: info.key = ::fwRenderOgre::interactor::IInteractor::CONTROL; break;
+        case ::Qt::Key_Meta: info.key    = ::fwRenderOgre::interactor::IInteractor::META; break;
+        case ::Qt::Key_Alt: info.key     = ::fwRenderOgre::interactor::IInteractor::ALT; break;
+        default:
+            info.key = e->key();
+    }
 
     Q_EMIT interacted(info);
 }

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -32,8 +32,7 @@ namespace fwRenderOgre
 namespace interactor
 {
 
-const ::fwCom::Signals::SignalKeyType fwRenderOgre::interactor::IPickerInteractor::s_ADD_POINT_SIG    = "addPoint";
-const ::fwCom::Signals::SignalKeyType fwRenderOgre::interactor::IPickerInteractor::s_REMOVE_POINT_SIG = "removePoint";
+const ::fwCom::Signals::SignalKeyType fwRenderOgre::interactor::IPickerInteractor::s_PICKED_SIG = "picked";
 
 // ----------------------------------------------------------------------------
 
@@ -42,8 +41,9 @@ IPickerInteractor::IPickerInteractor()
     m_ogreRoot = ::fwRenderOgre::Utils::getOgreRoot();
     m_picker   = new ::fwRenderOgre::picker::IPicker();
 
-    m_sigAddPoint    = newSignal< PointClickedSigType >( s_ADD_POINT_SIG );
-    m_sigRemovePoint = newSignal< PointClickedSigType >( s_REMOVE_POINT_SIG );
+    m_sigAddPointDeprecated    = newSignal< PointClickedSigTypeDeprecated >( "addPoint" );
+    m_sigRemovePointDeprecated = newSignal< PointClickedSigTypeDeprecated >( "removePoint" );
+    m_picked                   = newSignal< PointClickedSigType >( s_PICKED_SIG );
 
     m_sigRenderRequested = newSignal< RenderRequestedSigType >( s_RENDER_REQUESTED_SIG );
 }

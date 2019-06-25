@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2018 IRCAD France
- * Copyright (C) 2017-2018 IHU Strasbourg
+ * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -82,7 +82,7 @@ public:
      * @return the removed point or nullptr if no point has been removed
      */
     FWDATATOOLS_API static const ::fwData::Point::sptr removeClosestPoint(::fwData::PointList::sptr& _pointList,
-                                                                          const ::fwData::Point::sptr& _point,
+                                                                          const ::fwData::Point::csptr& _point,
                                                                           float _delta);
 
 };

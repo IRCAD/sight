@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -39,11 +39,9 @@ fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SInteractor
 namespace visuOgreAdaptor
 {
 
-const ::fwCom::Signals::SignalKeyType visuOgreAdaptor::SInteractorStyle::s_ADD_POINT_SIG    = "pointAdded";
-const ::fwCom::Signals::SignalKeyType visuOgreAdaptor::SInteractorStyle::s_REMOVE_POINT_SIG = "pointRemoved";
+const ::fwCom::Signals::SignalKeyType visuOgreAdaptor::SInteractorStyle::s_PICKED_SIG = "picked";
 
-const ::fwCom::Slots::SlotKeyType visuOgreAdaptor::SInteractorStyle::s_ADD_POINT_SLOT    = "addPoint";
-const ::fwCom::Slots::SlotKeyType visuOgreAdaptor::SInteractorStyle::s_REMOVE_POINT_SLOT = "removePoint";
+const ::fwCom::Slots::SlotKeyType visuOgreAdaptor::SInteractorStyle::s_PICK_SLOT = "pick";
 
 static const std::string s_CONFIG_PICKER   = "picker";
 static const std::string s_CONFIG_MOVEMENT = "movement";
@@ -64,11 +62,15 @@ static const std::map<std::string, std::string> s_STYLES_MOVEMENT = {
 
 SInteractorStyle::SInteractorStyle() noexcept
 {
-    newSlot( s_ADD_POINT_SLOT, &::visuOgreAdaptor::SInteractorStyle::addPoint, this );
-    newSlot( s_REMOVE_POINT_SLOT, &::visuOgreAdaptor::SInteractorStyle::removePoint, this );
+    newSlot( s_PICK_SLOT, &::visuOgreAdaptor::SInteractorStyle::picked, this );
 
-    m_sigAddPoint    = newSignal< PointClickedSignalType >( s_ADD_POINT_SIG );
-    m_sigRemovePoint = newSignal< PointClickedSignalType >( s_REMOVE_POINT_SIG );
+    m_sigPicked = newSignal< PointClickedSigType >( s_PICKED_SIG );
+
+    newSlot( "addPoint", &::visuOgreAdaptor::SInteractorStyle::addPointDeprecated, this );
+    newSlot( "removePoint", &::visuOgreAdaptor::SInteractorStyle::removePointDeprecated, this );
+
+    m_sigAddPointDeprecated    = newSignal< PointClickedSignalTypeDeprecated >( "pointAdded" );
+    m_sigRemovePointDeprecated = newSignal< PointClickedSignalTypeDeprecated >( "pointRemoved" );
 }
 
 //------------------------------------------------------------------------------
@@ -113,10 +115,13 @@ void SInteractorStyle::starting()
 
         if(pickerInteractor)
         {
-            m_connections.connect(pickerInteractor, ::fwRenderOgre::interactor::IPickerInteractor::s_ADD_POINT_SIG,
-                                  this->getSptr(), ::visuOgreAdaptor::SInteractorStyle::s_ADD_POINT_SLOT);
-            m_connections.connect(pickerInteractor, ::fwRenderOgre::interactor::IPickerInteractor::s_REMOVE_POINT_SIG,
-                                  this->getSptr(), ::visuOgreAdaptor::SInteractorStyle::s_REMOVE_POINT_SLOT);
+            m_connections.connect(pickerInteractor, ::fwRenderOgre::interactor::IPickerInteractor::s_PICKED_SIG,
+                                  this->getSptr(), ::visuOgreAdaptor::SInteractorStyle::s_PICK_SLOT);
+            m_connections.connect(pickerInteractor, ::fwRenderOgre::interactor::IPickerInteractor::s_PICKED_SIG,
+                                  this->getSptr(), ::visuOgreAdaptor::SInteractorStyle::s_PICK_SLOT);
+
+            m_connections.connect(pickerInteractor, "addPoint", this->getSptr(), "addPoint");
+            m_connections.connect(pickerInteractor,  "removePoint", this->getSptr(), "removePoint");
         }
     }
 }
@@ -189,16 +194,35 @@ void SInteractorStyle::setInteractorStyle()
 
 //------------------------------------------------------------------------------
 
-void SInteractorStyle::addPoint( ::fwData::Object::sptr obj )
+void SInteractorStyle::picked(::fwDataTools::PickingInfo _info)
 {
-    m_sigAddPoint->asyncEmit( obj );
+    m_sigPicked->asyncEmit(_info);
 }
 
 //------------------------------------------------------------------------------
 
-void SInteractorStyle::removePoint( ::fwData::Object::sptr obj )
+void SInteractorStyle::addPointDeprecated(::fwData::Object::sptr obj )
 {
-    m_sigRemovePoint->asyncEmit( obj );
+    if(m_sigAddPointDeprecated->getNumberOfConnections() > 0 )
+    {
+        FW_DEPRECATED_MSG(
+            "This signal is deprecated. You should use `SInteractorStyle::pick(::fwDataTools::PickingInfo)`",
+            "20.0");
+        m_sigAddPointDeprecated->asyncEmit( obj );
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SInteractorStyle::removePointDeprecated( ::fwData::Object::sptr obj )
+{
+    if(m_sigRemovePointDeprecated->getNumberOfConnections() > 0 )
+    {
+        FW_DEPRECATED_MSG(
+            "This signal is deprecated. You should use `SInteractorStyle::pick(::fwDataTools::PickingInfo)`",
+            "20.0");
+        m_sigRemovePointDeprecated->asyncEmit( obj );
+    }
 }
 
 } //namespace visuOgreAdaptor

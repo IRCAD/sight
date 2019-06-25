@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -40,10 +40,10 @@ namespace visuOgreAdaptor
  * @brief   Manage interactor style for Ogre
  *
  * @section Signals Signals
- * - \b pointClickedSignal(int) : Emitted when a point is clicked.
+ * - \b picked(::fwDataTools::PickingInfo) : Emit the picked informations.
  *
  * @section Slots Slots
- * - \b pointClickedSlot(int) : Transmit the clicked point.
+ * - \b pick(::fwDataTools::PickingInfo) : Transmit the picked informations.
 
  * @section XML XML Configuration
  * @code{.xml}
@@ -68,10 +68,14 @@ public:
      * @name Signals API
      * @{
      */
-    /// Signal sent when a point is clicked
-    typedef ::fwCom::Signal< void ( ::fwData::Object::sptr ) > PointClickedSignalType;
-    VISUOGREADAPTOR_API static const ::fwCom::Signals::SignalKeyType s_ADD_POINT_SIG;
-    VISUOGREADAPTOR_API static const ::fwCom::Signals::SignalKeyType s_REMOVE_POINT_SIG;
+
+    /// Signal used to forward the interactor sinal
+    typedef ::fwCom::Signal< void ( ::fwDataTools::PickingInfo ) > PointClickedSigType;
+    VISUOGREADAPTOR_API static const ::fwCom::Signals::SignalKeyType s_PICKED_SIG;
+
+    /// Deprecated
+    typedef ::fwCom::Signal< void ( ::fwData::Object::sptr ) > PointClickedSignalTypeDeprecated;
+
     /** @} */
 
     /**
@@ -79,13 +83,14 @@ public:
      * @{
      */
 
-    /// Slots used when a point is clicked
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_ADD_POINT_SLOT;
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_REMOVE_POINT_SLOT;
+    /// Slots used to forward the picker sinal
+    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_PICK_SLOT;
+
     /** @} */
 
     /// Constructor. Creates signals and slots
     VISUOGREADAPTOR_API SInteractorStyle() noexcept;
+
     /// Destructor. Does nothing
     VISUOGREADAPTOR_API virtual ~SInteractorStyle() noexcept;
 
@@ -93,35 +98,72 @@ protected:
 
     /// Select the interactor style
     VISUOGREADAPTOR_API void configuring() override;
+
     /// Starting method
     VISUOGREADAPTOR_API void starting() override;
+
     /// Update the interactor
     VISUOGREADAPTOR_API void updating() override;
+
     /// Stopping method
     VISUOGREADAPTOR_API void stopping() override;
 
 private:
 
-    /// Slot: sends a signal when the interactor has recieved a clicked point signal
-    void addPoint(fwData::Object::sptr obj);
-    /// Slot: sends a signal when the interactor has recieved a clicked point signal
-    void removePoint(fwData::Object::sptr obj);
+    /**
+     * @name Slots methods
+     * @{
+     */
+
+    /// Slot: forward the signal sent by the interactor
+    void picked(::fwDataTools::PickingInfo);
+
+    /// Deprecated
+    void addPointDeprecated(fwData::Object::sptr obj);
+
+    /// Deprecated
+    void removePointDeprecated(fwData::Object::sptr obj);
+
+    /**
+     * @}
+     */
+
     /// Set interactor style
     void setInteractorStyle();
+
+    /**
+     * @name Signals attributes
+     * @{
+     */
+
+    /// Pointer to the generic signal
+    PointClickedSigType::sptr m_sigPicked;
+
+    /// Deprecated
+    PointClickedSignalTypeDeprecated::sptr m_sigAddPointDeprecated;
+
+    /// Deprecated
+    PointClickedSignalTypeDeprecated::sptr m_sigRemovePointDeprecated;
+
+    /**
+     * @}
+     */
+
     /// Type of the picker style
     std::string m_pickerStyle;
+
     /// Type of the movement style
     std::string m_movementStyle;
-    /// Pointer to the generic signal
-    PointClickedSignalType::sptr m_sigAddPoint;
-    /// Pointer to the generic signal
-    PointClickedSignalType::sptr m_sigRemovePoint;
+
     ///Connection service, needed for slot/signal association
     ::fwCom::helper::SigSlotConnection m_connections;
+
     /// Mask for picking requests
     std::uint32_t m_queryFlags {0};
+
     /// Pointer on move interactor
     ::fwRenderOgre::interactor::IInteractor::sptr m_moveInteractor;
+
     /// Pointer on select interactor
     ::fwRenderOgre::interactor::IInteractor::sptr m_selectInteractor;
 };
