@@ -18,15 +18,7 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/macros.cmake)
 # User options
 ########################################################################################################################
 
-option(USE_CONAN "Use Conan package manager for dependencies (experimental)" OFF)
-mark_as_advanced(USE_CONAN)
-
-if(USE_CONAN)
-    option(CONAN_BUILD_MISSING "Build missing conan package automatically (experimental)" OFF)
-    mark_as_advanced(CONAN_BUILD_MISSING)
-    include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/conan/conan-deps.cmake)
-    include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/conan/conan.cmake)
-endif()
+option(BUILD_SDK "Build Sight as a SDK" OFF)
 
 # Tests build / run options
 set(BUILD_TESTS ON CACHE BOOL "Configures projects associated tests (<project>Test projects)")
@@ -145,84 +137,33 @@ if(${WIN32} AND ${MSVC})
     endif()
 endif()
 
-if(EXTERNAL_LIBRARIES)
-    get_filename_component(ABSOLUTE_EXTERNAL_LIBRARIES ${EXTERNAL_LIBRARIES} REALPATH)
-    set(EXTERNAL_LIBRARIES ${ABSOLUTE_EXTERNAL_LIBRARIES})
-    unset(ABSOLUTE_EXTERNAL_LIBRARIES)
-
-    list(APPEND CMAKE_PREFIX_PATH ${EXTERNAL_LIBRARIES})
-    list(APPEND CMAKE_MODULE_PATH ${EXTERNAL_LIBRARIES})
-    list(APPEND CMAKE_FIND_ROOT_PATH ${EXTERNAL_LIBRARIES})
-    include(${EXTERNAL_LIBRARIES}/lib/cmake/BinPkgsConfig.cmake)
-    include(${EXTERNAL_LIBRARIES}/lib/cmake/find_sse.cmake)
-
-    # This serves two purposes:
-    # - The CUDA bundles/libs in Sight projects will automatically find a working CUDA toolkit.
-    # - Dependencies using CUDA such as OpenCV can find the toolkit they were compiled with, they might otherwise pick
-    #   another one if you have several toolkits installed, which would cause an error.
-    set(CUDA_TOOLKIT_ROOT_DIR ${BINPKGS_CUDA_TOOLKIT_ROOT_DIR} CACHE PATH
-        "Version of the CUDA toolkit used for this build, if any. Read-only."
-        FORCE)
-endif()
-
-if(BINPKGS_HAS_SSE)
-    message(STATUS "SSE support detected in the dependencies, enabling SSE.")
-    # Build with SSE support if possible
-    fwFindSSE()
-
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${SSE_FLAGS}")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SSE_FLAGS}")
-    add_definitions("${SSE_DEFINITIONS}")
-endif()
-
 ########################################################################################################################
 # External libraries management
 ########################################################################################################################
 
-if(NOT USE_CONAN)
+if(UNIX AND NOT APPLE)
     option(USE_SYSTEM_LIB "Use system libraries to compile sight" OFF)
-endif()
-
-option(BUILD_SDK "Build Sight as a SDK" OFF)
-
-if(NOT USE_SYSTEM_LIB AND NOT USE_CONAN)
-    set(EXTERNAL_LIBRARIES CACHE PATH "External libraries location")
 endif()
 
 set(FWCMAKE_RESOURCE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/CMake/)
 
-# Append our 'FindPackages.cmake' to CMAKE_MODULE_PATH and include BinPkgs config file
-if(EXTERNAL_LIBRARIES)
-
-    list(APPEND CMAKE_PREFIX_PATH ${EXTERNAL_LIBRARIES})
-    list(APPEND CMAKE_MODULE_PATH ${EXTERNAL_LIBRARIES})
-    list(APPEND CMAKE_FIND_ROOT_PATH ${EXTERNAL_LIBRARIES})
-
-elseif(USE_SYSTEM_LIB)
-
+if(USE_SYSTEM_LIB)
+    # Append our 'FindPackages.cmake' to CMAKE_MODULE_PATH and include BinPkgs config file
     list(APPEND CMAKE_PREFIX_PATH ${FWCMAKE_RESOURCE_PATH}/modules)
     list(APPEND CMAKE_MODULE_PATH ${FWCMAKE_RESOURCE_PATH}/modules)
     list(APPEND CMAKE_FIND_ROOT_PATH ${FWCMAKE_RESOURCE_PATH}/modules)
 
-endif()
-
-# Parsing of 'fw-*.cmake' scripts. This should go away at some point if we use CMake properly
-if(EXTERNAL_LIBRARIES)
-
-    file(GLOB LIB_CONFIGS ${EXTERNAL_LIBRARIES}/fw-*.cmake )
-    foreach(LIB_CONFIG ${LIB_CONFIGS})
-        message(STATUS "include: ${LIB_CONFIG}")
-        include("${LIB_CONFIG}")
-    endforeach()
-
-elseif(USE_SYSTEM_LIB)
-
+    # Parsing of 'fw-*.cmake' scripts. This should go away at some point if we use CMake properly
     file(GLOB LIB_CONFIGS ${FWCMAKE_RESOURCE_PATH}/modules/fw-*.cmake )
     foreach(LIB_CONFIG ${LIB_CONFIGS})
         message(STATUS "include: ${LIB_CONFIG}")
         include("${LIB_CONFIG}")
     endforeach()
-
+else()
+    option(CONAN_BUILD_MISSING "Build missing conan package automatically (experimental)" OFF)
+    mark_as_advanced(CONAN_BUILD_MISSING)
+    include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/conan/conan-deps.cmake)
+    include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/conan/conan.cmake)
 endif()
 
 ########################################################################################################################
@@ -433,7 +374,7 @@ if(BUILD_TESTS)
 endif()
 
 # Find and install Conan packages
-if(USE_CONAN)
+if(NOT USE_SYSTEM_LIB)
     findConanDeps("${PROJECT_LIST}" CONAN_DEPS_LIST)
     installConanDeps("${CONAN_DEPS_LIST}")
     add_definitions(${CONAN_DEFINES})
@@ -445,15 +386,11 @@ setExternalLibrariesDir()
 ########################################################################################################################
 # Second projects scan where we actually perform the add_subdirectory() for each project and its dependencies
 ########################################################################################################################
-if(EXTERNAL_LIBRARIES OR USE_SYSTEM_LIB OR USE_CONAN)
-    set(APP_TO_BUILD)
-    foreach(PROJECT ${PROJECT_LIST})
-        addProject(${PROJECT})
-    endforeach()
-else()
-    message("EXTERNAL_LIBRARIES variable is missing. Please, specify external libraries location to generate CMake projects.")
-endif()
 
+unset(APP_TO_BUILD)
+foreach(PROJECT ${PROJECT_LIST})
+    addProject(${PROJECT})
+endforeach()
 
 ########################################################################################################################
 # Export and install targets
@@ -474,9 +411,8 @@ if(BUILD_SDK)
       COMPATIBILITY AnyNewerVersion
     )
 
-    if(USE_CONAN)
+    if(NOT USE_SYSTEM_LIB)
         file(APPEND "${CMAKE_BINARY_DIR}/cmake/SightRequirements.cmake"
-             "set(USE_CONAN 1)\n"
              "set(CONAN_DEFINES ${CONAN_DEFINES})\n")
     endif()
 
