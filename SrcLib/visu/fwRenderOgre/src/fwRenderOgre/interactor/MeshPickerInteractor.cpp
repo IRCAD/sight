@@ -94,7 +94,7 @@ void MeshPickerInteractor::buttonPressEvent(MouseButton _button, int _x, int _y)
                     FW_DEPRECATED_MSG(
                         "This signal is deprecated. You should use `IPickerInteractor::picked(::fwDataTools::PickingInfo)`",
                         "20.0");
-                    ::fwData::Point::sptr point                = fwData::Point::New();
+                    ::fwData::Point::sptr point                = ::fwData::Point::New();
                     ::fwData::Point::PointCoordArrayType cords =
                     {{static_cast<double>(click.x), static_cast<double>(click.y),
                       static_cast<double>(click.z)}};
@@ -108,7 +108,7 @@ void MeshPickerInteractor::buttonPressEvent(MouseButton _button, int _x, int _y)
                 FW_DEPRECATED_MSG(
                     "This signal is deprecated. You should use `IPickerInteractor::picked(::fwDataTools::PickingInfo)`",
                     "20.0");
-                ::fwData::Point::sptr point                = fwData::Point::New();
+                ::fwData::Point::sptr point                = ::fwData::Point::New();
                 ::fwData::Point::PointCoordArrayType cords =
                 {{static_cast<double>(click.x), static_cast<double>(click.y), static_cast<double>(click.z)}};
                 point->setCoord(cords);

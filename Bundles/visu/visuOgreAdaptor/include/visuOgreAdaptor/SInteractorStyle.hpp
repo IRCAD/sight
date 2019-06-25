@@ -119,10 +119,10 @@ private:
     void picked(::fwDataTools::PickingInfo);
 
     /// Deprecated
-    void addPointDeprecated(fwData::Object::sptr obj);
+    void addPointDeprecated(::fwData::Object::sptr obj);
 
     /// Deprecated
-    void removePointDeprecated(fwData::Object::sptr obj);
+    void removePointDeprecated(::fwData::Object::sptr obj);
 
     /**
      * @}

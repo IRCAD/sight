@@ -201,27 +201,27 @@ void SInteractorStyle::picked(::fwDataTools::PickingInfo _info)
 
 //------------------------------------------------------------------------------
 
-void SInteractorStyle::addPointDeprecated(::fwData::Object::sptr obj )
+void SInteractorStyle::addPointDeprecated(::fwData::Object::sptr _obj )
 {
     if(m_sigAddPointDeprecated->getNumberOfConnections() > 0 )
     {
         FW_DEPRECATED_MSG(
             "This signal is deprecated. You should use `SInteractorStyle::pick(::fwDataTools::PickingInfo)`",
             "20.0");
-        m_sigAddPointDeprecated->asyncEmit( obj );
+        m_sigAddPointDeprecated->asyncEmit( _obj );
     }
 }
 
 //------------------------------------------------------------------------------
 
-void SInteractorStyle::removePointDeprecated( ::fwData::Object::sptr obj )
+void SInteractorStyle::removePointDeprecated(::fwData::Object::sptr _obj )
 {
     if(m_sigRemovePointDeprecated->getNumberOfConnections() > 0 )
     {
         FW_DEPRECATED_MSG(
             "This signal is deprecated. You should use `SInteractorStyle::pick(::fwDataTools::PickingInfo)`",
             "20.0");
-        m_sigRemovePointDeprecated->asyncEmit( obj );
+        m_sigRemovePointDeprecated->asyncEmit( _obj );
     }
 }
 
