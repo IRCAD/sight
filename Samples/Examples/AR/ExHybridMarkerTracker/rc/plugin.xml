@@ -12,12 +12,9 @@
         <config>
             <object uid="camera" type="::arData::Camera" />
             <object uid="frameTL" type="::arData::FrameTL"/>
-
-<!--        source frame that is used for current iteration-->
             <object uid="sourceFrame" type="::fwData::Image" />
-<!--        final output video frame that will be displayed-->
             <object uid="finalFrame" type="::fwData::Image"/>
-            <object uid="matrixOut" type="::fwData::TransformationMatrix3D"/>
+            <object uid="poseMatrix" type="::fwData::TransformationMatrix3D"/>
 
             <service uid="mainFrame" type="::gui::frame::SDefaultFrame">
                 <gui>
@@ -28,7 +25,7 @@
                 </gui>
                 <registry>
                     <toolBar sid="toolbar" start="yes" />
-                    <view sid="genericScene" start="yes"/>
+                    <view sid="cameraView" start="yes"/>
                 </registry>
             </service>
 
@@ -50,6 +47,31 @@
                 </registry>
             </service>
 
+            <service uid="cameraView" type="::gui::view::SDefaultView">
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="horizontal" />
+                        <view proportion="4" />
+                        <view proportion="1" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="genericScene" start="yes" />
+                    <view sid="parameters" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="parameters" type="::gui::view::SDefaultView">
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="vertical" />
+                        <view proportion="1" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="matrixViewer" start="yes" />
+                </registry>
+            </service>
 
             <service uid="startVideo" type="::gui::action::SSlotCaller">
                 <slots>
@@ -81,10 +103,9 @@
             </service>
 
             <service uid="videoAdpt" type="::visuVTKARAdaptor::SVideo" autoConnect="yes">
-                <in key="frameOut" uid="finalFrame" />
+                <in key="frame" uid="finalFrame" />
                 <config renderer="default" />
             </service>
-
 
             <service uid="interactorStyle" type="::visuVTKAdaptor::SInteractorStyle">
                 <config renderer="default" style="InteractorStyle2DForNegato" />
@@ -113,9 +134,14 @@
             </service>
 
             <service uid="hybridMarkerTracker" type="::hybridMarkerTracker::SHybridMarkerTracker" worker="tracking">
-                <in key="frameIn" uid="sourceFrame" autoConnect="yes"/>
-                <inout key="frameOut" uid="finalFrame" autoConnect="yes"/>
-                <inout key="tag" uid="matrixOut"/>
+                <in key="frameIn" uid="sourceFrame" autoConnect="yes" />
+                <inout key="frame" uid="finalFrame" />
+                <inout key="pose" uid="poseMatrix" />
+            </service>
+
+            <service uid="matrixViewer" type="::uiTools::editor::SMatrixViewer">
+                <in key="matrix" uid="poseMatrix" autoConnect="yes" />
+                <title>Pose matrix</title>
             </service>
 
             <connect>

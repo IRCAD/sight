@@ -11,6 +11,7 @@ set(REQUIREMENTS
         fwlauncher
         appXml
         uiPreferences
+        uiTools
         visuVTK
         visuVTKQt
         visuVTKAdaptor

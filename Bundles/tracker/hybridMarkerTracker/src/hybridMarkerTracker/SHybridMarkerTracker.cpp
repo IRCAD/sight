@@ -30,11 +30,14 @@
 #include <cvIO/Camera.hpp>
 #include <cvIO/FrameTL.hpp>
 #include <cvIO/Image.hpp>
+#include <cvIO/Matrix.hpp>
 
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
 
 #include <fwData/Image.hpp>
+
+#include <fwData/mt/ObjectWriteLock.hpp>
 
 #include <fwRuntime/operations.hpp>
 
@@ -45,8 +48,7 @@ namespace hybridMarkerTracker
 fwServicesRegisterMacro(::arServices::ITracker, ::hybridMarkerTracker::SHybridMarkerTracker);
 
 static const ::fwServices::IService::KeyType s_FRAME_INPUT = "frameIn";
-static const ::fwServices::IService::KeyType s_FRAME_INOUT = "frameOut";
-static const ::fwServices::IService::KeyType s_TAG_INOUT   = "matrixOut";
+static const ::fwServices::IService::KeyType s_POSE_INOUT  = "pose";
 SHybridMarkerTracker::SHybridMarkerTracker() noexcept :
     m_tracker(NULL)
 {
@@ -206,13 +208,13 @@ void SHybridMarkerTracker::readSettings(std::string filename)
 }
 //------------------------------------------------------------------------------
 
-void SHybridMarkerTracker::process(const ::cv::Mat& img, ::cv::Mat& out_img)
+void SHybridMarkerTracker::process(::cv::Mat& inputImg)
 {
-    m_imgTrack = img;
+    inputImg.copyTo(m_imgTrack);
 
     bool useIppe = true;
-    // Tracking
 
+    // Tracking
     if (m_tracker->track(m_imgTrack))
     {
         const std::vector< ::cv::Point2f > imgPoints = m_tracker->getP_img();
@@ -323,6 +325,8 @@ void SHybridMarkerTracker::process(const ::cv::Mat& img, ::cv::Mat& out_img)
 
             drawRect(cHp_1, m_imgTrack, ::cv::Scalar(0, 0, 255));
             drawRect(cHp_2, m_imgTrack, ::cv::Scalar(255, 0, 0));
+
+            m_currentcHp = cHp_1;
         }
         else
         {
@@ -351,8 +355,6 @@ void SHybridMarkerTracker::process(const ::cv::Mat& img, ::cv::Mat& out_img)
     ::cv::putText(m_imgTrack, str_3, ::cv::Point(10, 60), ::cv::FONT_HERSHEY_COMPLEX, 0.5, ::cv::Scalar(0, 255, 0), 1);
     ::cv::putText(m_imgTrack, str_4, ::cv::Point(10, 80), ::cv::FONT_HERSHEY_COMPLEX, 0.5, ::cv::Scalar(255, 255, 0),
                   1);
-
-    m_imgTrack.copyTo(out_img);
 }
 
 //------------------------------------------------------------------------------
@@ -505,8 +507,8 @@ void SHybridMarkerTracker::drawRect(const ::cv::Mat& cHp, ::cv::Mat& img, ::cv::
 ::fwServices::IService::KeyConnectionsMap SHybridMarkerTracker::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push( s_FRAME_INOUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT );
-    connections.push( s_FRAME_INOUT, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push( s_FRAME_INPUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push( s_FRAME_INPUT, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT );
     return connections;
 }
 
@@ -529,14 +531,13 @@ void SHybridMarkerTracker::tracking(::fwCore::HiResClock::HiResClockType& timest
     auto frameOut = this->getInOut< ::fwData::Image >(s_FRAME_INOUT);
     SLM_ASSERT("The InOut key '" + s_FRAME_INOUT + "' is not defined", frameOut);
 
-//    auto matrixOut = this->getInOut< ::fwData::TransformationMatrix3D >(s_TAG_INOUT)
-//    SLM_ASSERT("The InOut key '" + s_TAG_INOUT + "' is not defined", matrixOut);
+    auto matrixOut = this->getInOut< ::fwData::TransformationMatrix3D >(s_POSE_INOUT);
+    SLM_ASSERT("The InOut key '" + s_POSE_INOUT + "' is not defined", matrixOut);
 
     ::cv::Mat img, img_track;
     if (frameIn)
     {
         img = ::cvIO::Image::copyToCv(frameIn);
-        process(img, img_track);
 
         // check if image dimension have changed
         ::fwData::Image::SizeType size;
@@ -545,6 +546,7 @@ void SHybridMarkerTracker::tracking(::fwCore::HiResClock::HiResClockType& timest
         {
             m_imagesInitialized = false;
         }
+
         if(!m_imagesInitialized)
         {
             const ::fwData::Image::SpacingType::value_type voxelSize = 1;
@@ -558,13 +560,29 @@ void SHybridMarkerTracker::tracking(::fwCore::HiResClock::HiResClockType& timest
             frameOut->setWindowCenter(0);
 
             m_imagesInitialized = true;
+        }
 
-            auto sig = frameOut->signal< ::fwData::Image::BufferModifiedSignalType >(::fwData::Image::s_MODIFIED_SIG);
+        {
+            ::fwData::mt::ObjectWriteLock outputLock(frameOut);
+            img_track = ::cvIO::Image::moveToCv(frameOut);
+
+            process(img);
+
+            m_imgTrack.copyTo(img_track);
+
+            auto sig = frameOut->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Image::s_BUFFER_MODIFIED_SIG);
             sig->asyncEmit();
         }
-        ::cvIO::Image::copyFromCv(frameOut, img_track);
-        auto sig = frameOut->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Image::s_BUFFER_MODIFIED_SIG);
-        sig->asyncEmit();
+
+        {
+            ::fwData::mt::ObjectWriteLock matrixLock(matrixOut);
+
+            ::cvIO::Matrix::copyFromCv(m_currentcHp, matrixOut);
+
+            auto sig = matrixOut->signal<  ::fwData::TransformationMatrix3D::ModifiedSignalType >
+                         ( ::fwData::TransformationMatrix3D::s_MODIFIED_SIG);
+            sig->asyncEmit();
+        }
     }
 }
 //------------------------------------------------------------------------------
@@ -576,6 +594,8 @@ void SHybridMarkerTracker::configuring()
 
 void SHybridMarkerTracker::updating()
 {
+    auto timestamp = ::fwCore::HiResClock::getTimeInMilliSec();
+    this->tracking(timestamp);
 }
 //------------------------------------------------------------------------------
 

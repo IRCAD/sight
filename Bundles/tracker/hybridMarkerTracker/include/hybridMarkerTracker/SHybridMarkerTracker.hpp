@@ -78,10 +78,9 @@ public:
      * uses the chessboard features to solve ambiguity between 2 possible positions,
      * and finally draws the result on an output image.
      *
-     * @param img input image
      * @param out_img output image
      */
-    HYBRIDMARKERTRACKER_API void process(const ::cv::Mat& img, ::cv::Mat& out_img);
+    HYBRIDMARKERTRACKER_API void process(::cv::Mat& out_img);
 
     /**
      * @brief readSettings method reads a filename and sets the member variables
