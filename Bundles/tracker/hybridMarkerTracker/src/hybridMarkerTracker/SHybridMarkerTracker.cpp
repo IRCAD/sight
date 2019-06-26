@@ -208,10 +208,8 @@ void SHybridMarkerTracker::readSettings(std::string filename)
 
 //------------------------------------------------------------------------------
 
-void SHybridMarkerTracker::process(::cv::Mat& inputImg)
+void SHybridMarkerTracker::process()
 {
-    inputImg.copyTo(m_imgTrack);
-
     bool useIppe = true;
 
     // Tracking
@@ -534,20 +532,13 @@ void SHybridMarkerTracker::tracking(::fwCore::HiResClock::HiResClockType& timest
     auto matrixOut = this->getInOut< ::fwData::TransformationMatrix3D >(s_POSE_INOUT);
     SLM_ASSERT("The InOut key '" + s_POSE_INOUT + "' is not defined", matrixOut);
 
-    ::cv::Mat img, img_track;
     if (frameIn)
     {
-        img = ::cvIO::Image::copyToCv(frameIn);
-
         // check if image dimension have changed
         ::fwData::Image::SizeType size;
         size = frameIn->getSize();
+        // if so, we need to initilize the output image
         if(size != frameOut->getSize())
-        {
-            m_imagesInitialized = false;
-        }
-
-        if(!m_imagesInitialized)
         {
             const ::fwData::Image::SpacingType::value_type voxelSize = 1;
             frameOut->allocate(size, frameIn->getType(), frameIn->getNumberOfComponents());
@@ -558,15 +549,14 @@ void SHybridMarkerTracker::tracking(::fwCore::HiResClock::HiResClockType& timest
             frameOut->setSpacing(spacing);
             frameOut->setWindowWidth(1);
             frameOut->setWindowCenter(0);
-
-            m_imagesInitialized = true;
         }
 
         {
             ::fwData::mt::ObjectWriteLock outputLock(frameOut);
-            img_track = ::cvIO::Image::moveToCv(frameOut);
+            ::cv::Mat img_track = ::cvIO::Image::moveToCv(frameOut);
+            m_imgTrack          = ::cvIO::Image::copyToCv(frameIn);
 
-            process(img);
+            process();
 
             m_imgTrack.copyTo(img_track);
 

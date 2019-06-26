@@ -76,22 +76,6 @@ public:
      */
     HYBRIDMARKERTRACKER_API virtual ~SHybridMarkerTracker() noexcept;
 
-    /**
-     * @brief process method takes as input an image, detects the patterns, computes the pose,
-     * uses the chessboard features to solve ambiguity between 2 possible positions,
-     * and finally draws the tracking results.
-     *
-     * @param out_img image to process tracking
-     */
-    HYBRIDMARKERTRACKER_API void process(::cv::Mat& out_img);
-
-    /**
-     * @brief readSettings method reads a filename and sets the member variables
-     *
-     * @param filename input file name
-     */
-    HYBRIDMARKERTRACKER_API void readSettings(std::string filename);
-
 protected:
 
     HYBRIDMARKERTRACKER_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
@@ -116,9 +100,6 @@ protected:
      */
     HYBRIDMARKERTRACKER_API void updating() override;
 
-    /// IPPE Pose solver
-    IPPE::PoseSolver ippeSolver;
-
     /**
      * @brief calculateCorrectPose method is used to compute the correct pose between two possible solutions.
      *
@@ -138,7 +119,39 @@ protected:
 
     /// Detect marker
     HYBRIDMARKERTRACKER_API virtual void tracking(::fwCore::HiResClock::HiResClockType& timestamp) override;
+
 private:
+
+    /**
+     * @brief process method detects the patterns on m_imgTrack image, computes the pose,
+     * uses the chessboard features to solve ambiguity between 2 possible positions,
+     * and finally draws the tracking results.
+     */
+    void process();
+
+    /**
+     * @brief readSettings method reads a filename and sets the member variables
+     *
+     * @param filename input file name
+     */
+    void readSettings(std::string filename);
+
+    /**
+     * @brief errorDistPoints method computes the distance error between 2 points
+     *
+     * @param pts_d detection points
+     * @param pts points to be compared with 'pts_d'
+     * @param max_dist maximum distance b/w a correspondence
+     */
+    cv::Vec2f errorDistPoints(const std::vector< ::cv::Point2f >& pts_d,
+                              const std::vector< ::cv::Point2f >& pts_1,
+                              const std::vector< ::cv::Point2f >& pts_2,
+                              const double max_dist_sq);
+    // Draws rectangles
+    void drawRect(const ::cv::Mat& cHp, ::cv::Mat& img, ::cv::Scalar color = ::cv::Scalar(255, 0, 0));
+
+    /// IPPE Pose solver
+    IPPE::PoseSolver ippeSolver;
 
     /// Downsample Scale
     unsigned int m_imgScale;
@@ -154,20 +167,6 @@ private:
 
     /// Camera related parameters
     ::cv::Size m_camImgSize;
-
-    /**
-     * @brief errorDistPoints method computes the distance error between 2 points
-     *
-     * @param pts_d detection points
-     * @param pts points to be compared with 'pts_d'
-     * @param max_dist maximum distance b/w a correspondence
-     */
-    cv::Vec2f errorDistPoints(const std::vector< ::cv::Point2f >& pts_d,
-                              const std::vector< ::cv::Point2f >& pts_1,
-                              const std::vector< ::cv::Point2f >& pts_2,
-                              const double max_dist_sq);
-    // Draws rectangles
-    void drawRect(const ::cv::Mat& cHp, ::cv::Mat& img, ::cv::Scalar color = ::cv::Scalar(255, 0, 0));
 
     /// Camera Matrix
     ::cv::Mat m_cameraMatrix;
@@ -209,9 +208,6 @@ private:
     std::vector< ::cv::Point3f > m_trackChessMidPatternPoint;
     /// Chessboard Bottom Pattern model points
     std::vector< ::cv::Point3f > m_trackChessBotPatternPoint;
-
-    /// Check if the output image is initialized
-    bool m_imagesInitialized{ false };
 };
 
 } // namespace hybridMarkerTracker
