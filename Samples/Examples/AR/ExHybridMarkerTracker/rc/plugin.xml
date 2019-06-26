@@ -155,7 +155,7 @@
             <!-- *************************** Begin generic scene *************************** -->
 
             <service uid="genericScene" type="::fwRenderVTK::SRender" >
-                <scene>
+                <scene renderMode="sync">
                     <renderer id="default"  background="0.0" />
                     <adaptor uid="videoAdpt" />
                     <adaptor uid="interactorStyle" />
@@ -175,12 +175,13 @@
 
             <service uid="synchronizer" type="::videoTools::SFrameMatrixSynchronizer" worker="videoWorker">
                 <in group="frameTL">
-                    <key uid="frameTL" />
+                    <key uid="frameTL" autoConnect="yes" />
                 </in>
                 <inout group="image">
                     <key uid="sourceFrame" />
                 </inout>
-                <framerate>30</framerate>
+                <framerate>0</framerate>
+                <tolerance>100</tolerance>
             </service>
 
             <service uid="CameraSelector" type="::videoQt::editor::SCamera">
@@ -204,15 +205,27 @@
                 <title>Pose matrix</title>
             </service>
 
+            <service uid="syncGenericScene" type="::ctrlCom::SSignalGate">
+                <signal>finalFrame/bufferModified</signal>
+                <signal>poseMatrix/modified</signal>
+            </service>
+
             <connect>
                 <signal>camera/idModified</signal>
                 <slot>frameGrabber/stopCamera</slot>
+            </connect>
+
+            <connect>
+                <signal>syncGenericScene/allReceived</signal>
+                <slot>genericScene/requestRender</slot>
+                <slot>synchronizer/synchronize</slot>
             </connect>
 
             <start uid="mainFrame" />
             <start uid="frameGrabber" />
             <start uid="synchronizer" />
             <start uid="hybridMarkerTracker"/>
+            <start uid="syncGenericScene" />
 
             <!-- VTK scene 'genericScene' -->
             <start uid="videoAdpt" />

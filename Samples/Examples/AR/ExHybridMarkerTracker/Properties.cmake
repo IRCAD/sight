@@ -5,6 +5,7 @@ set(DEPENDENCIES)
 set(REQUIREMENTS
         dataReg
         arDataReg
+        ctrlCom
         gui
         guiQt
         servicesReg
