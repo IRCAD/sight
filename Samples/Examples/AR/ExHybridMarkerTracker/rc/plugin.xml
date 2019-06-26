@@ -21,11 +21,48 @@
                     <frame>
                         <name>ExHybridMarkerTracker</name>
                     </frame>
+                    <menuBar/>
                     <toolBar/>
                 </gui>
                 <registry>
+                    <menuBar sid="menuBar" start="yes" />
                     <toolBar sid="toolbar" start="yes" />
-                    <view sid="cameraView" start="yes"/>
+                    <view sid="mainView" start="yes"/>
+                </registry>
+            </service>
+
+            <service uid="menuBar" type="::gui::aspect::SDefaultMenuBar">
+                <gui>
+                    <layout>
+                        <menu name="File" />
+                        <menu name="Preferences" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menu sid="menuFile" start="yes" />
+                    <menu sid="menuPreferences" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="menuFile" type="::gui::aspect::SDefaultMenu">
+                <gui>
+                    <layout>
+                        <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="actionQuit" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="menuPreferences" type="::gui::aspect::SDefaultMenu">
+                <gui>
+                    <layout>
+                        <menuItem name="Show Settings" shortcut="Ctrl+H" style="check" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="actionHide" start="yes" />
                 </registry>
             </service>
 
@@ -47,17 +84,32 @@
                 </registry>
             </service>
 
-            <service uid="cameraView" type="::gui::view::SDefaultView">
+            <service uid="mainView" type="::gui::view::SDefaultView">
                 <gui>
                     <layout type="::fwGui::LineLayoutManager">
-                        <orientation value="horizontal" />
-                        <view proportion="4" />
-                        <view proportion="1" />
+                        <orientation value="vertical" />
+                        <view proportion="0" />
                     </layout>
+                    <slideView align="right" size="450" opacity="0.8" >
+                        <styleSheet>
+                            <![CDATA[
+                            #SlideBar{
+                                background-color: #dddddd;
+                                border: 0;
+                            }
+                            #SlideBar QGroupBox {
+                                background-color: #eeeeee;
+                                border-radius: 10px;
+                                margin-left: 10;
+                                margin-right: 10;
+                            }
+                            ]]>
+                        </styleSheet>
+                    </slideView>
                 </gui>
                 <registry>
                     <view sid="genericScene" start="yes" />
-                    <view sid="parameters" start="yes" />
+                    <slideView sid="parameters" start="yes" />
                 </registry>
             </service>
 
@@ -65,12 +117,20 @@
                 <gui>
                     <layout type="::fwGui::LineLayoutManager">
                         <orientation value="vertical" />
-                        <view proportion="1" />
+                        <view proportion="0" />
                     </layout>
                 </gui>
                 <registry>
                     <view sid="matrixViewer" start="yes" />
                 </registry>
+            </service>
+
+            <service uid="actionQuit" type="::gui::action::SQuit" />
+
+            <service uid="actionHide" type="::gui::action::SBooleanSlotCaller">
+                <slots>
+                    <slot>parameters/setVisible</slot>
+                </slots>
             </service>
 
             <service uid="startVideo" type="::gui::action::SSlotCaller">
@@ -157,7 +217,6 @@
             <!-- VTK scene 'genericScene' -->
             <start uid="videoAdpt" />
             <start uid="interactorStyle" />
-
         </config>
     </extension>
 </plugin>
