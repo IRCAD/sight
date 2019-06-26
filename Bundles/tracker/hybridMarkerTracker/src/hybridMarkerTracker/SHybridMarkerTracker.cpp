@@ -36,7 +36,6 @@
 #include <fwCom/Slots.hxx>
 
 #include <fwData/Image.hpp>
-
 #include <fwData/mt/ObjectWriteLock.hpp>
 
 #include <fwRuntime/operations.hpp>
@@ -580,7 +579,7 @@ void SHybridMarkerTracker::tracking(::fwCore::HiResClock::HiResClockType& timest
             ::cvIO::Matrix::copyFromCv(m_currentcHp, matrixOut);
 
             auto sig = matrixOut->signal<  ::fwData::TransformationMatrix3D::ModifiedSignalType >
-                         ( ::fwData::TransformationMatrix3D::s_MODIFIED_SIG);
+                           ( ::fwData::TransformationMatrix3D::s_MODIFIED_SIG);
             sig->asyncEmit();
         }
     }
