@@ -51,6 +51,7 @@ static const ::fwServices::IService::KeyType s_POSE_INOUT  = "pose";
 SHybridMarkerTracker::SHybridMarkerTracker() noexcept :
     m_tracker(NULL)
 {
+    m_currentcHp = ::cv::Mat::eye(4, 4, CV_64F);
 }
 
 SHybridMarkerTracker::~SHybridMarkerTracker()
