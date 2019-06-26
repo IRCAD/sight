@@ -62,6 +62,7 @@ SHybridMarkerTracker::~SHybridMarkerTracker()
         m_tracker = nullptr;
     }
 }
+
 //------------------------------------------------------------------------------
 
 void SHybridMarkerTracker::readSettings(std::string filename)
@@ -182,7 +183,6 @@ void SHybridMarkerTracker::readSettings(std::string filename)
     {
         sagittaChess = m_radius + sqrt(m_radius * m_radius - chordChess_2 * chordChess_2);
     }
-
     // TOP
     for (auto i = 0; i < 5; i++)
     {
@@ -193,7 +193,6 @@ void SHybridMarkerTracker::readSettings(std::string filename)
 
         m_trackChessTopPatternPoint.push_back(pt);
     }
-
     // BOT
     for (auto i = 0; i < 5; i++)
     {
@@ -206,6 +205,7 @@ void SHybridMarkerTracker::readSettings(std::string filename)
     }
     m_tracker = new TrackerCurvedot(m_symboardSize, roiSize, params, paramsRoi);
 }
+
 //------------------------------------------------------------------------------
 
 void SHybridMarkerTracker::process(::cv::Mat& inputImg)
@@ -585,11 +585,13 @@ void SHybridMarkerTracker::tracking(::fwCore::HiResClock::HiResClockType& timest
         }
     }
 }
+
 //------------------------------------------------------------------------------
 
 void SHybridMarkerTracker::configuring()
 {
 }
+
 //------------------------------------------------------------------------------
 
 void SHybridMarkerTracker::updating()
@@ -597,10 +599,14 @@ void SHybridMarkerTracker::updating()
     auto timestamp = ::fwCore::HiResClock::getTimeInMilliSec();
     this->tracking(timestamp);
 }
+
 //------------------------------------------------------------------------------
 
 void SHybridMarkerTracker::stopping()
 {
     this->stopTracking();
 }
-} // hybridMarkerTracker namespace
+
+//------------------------------------------------------------------------------
+
+} // namespace hybridMarkerTracker

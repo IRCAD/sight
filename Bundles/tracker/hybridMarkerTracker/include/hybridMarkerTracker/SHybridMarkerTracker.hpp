@@ -50,14 +50,17 @@ namespace hybridMarkerTracker
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service uid="..." type="::hybridMarkerTracker::SHybridMarkerTracker" >
-            <inout key="timeline" uid="..." autoConnect="yes"/>
-            <inout key="frame" uid="..."/>
+        <service uid="..." type="::hybridMarkerTracker::SHybridMarkerTracker">
+            <in key="frameIn" uid="..." />
+            <inout key="frame" uid="..." />
+            <inout key="pose" uid="..." />
         </service>
    @endcode
+ * @subsection In In
+ * - \b frameIn [::fwData::Image]: input image to process tracking on
  * @subsection In-Out In-Out
- * - \b timeline [::arData::FrameTL]: Timeline of frames where pattern detection will be computed.
- * - \b frame [::fwData::Image]: final output video that will be displayed
+ * - \b frame [::fwData::Image]: final output image with tracking information that will be displayed
+ * - \b pose [::fwData::TransformationMatrix3D]: transformation matrix from the tag to the camera
  */
 class HYBRIDMARKERTRACKER_CLASS_API SHybridMarkerTracker : public ::arServices::ITracker
 {
@@ -74,11 +77,11 @@ public:
     HYBRIDMARKERTRACKER_API virtual ~SHybridMarkerTracker() noexcept;
 
     /**
-     * @brief process method takes in an image, detects the patterns, computes the pose,
+     * @brief process method takes as input an image, detects the patterns, computes the pose,
      * uses the chessboard features to solve ambiguity between 2 possible positions,
-     * and finally draws the result on an output image.
+     * and finally draws the tracking results.
      *
-     * @param out_img output image
+     * @param out_img image to process tracking
      */
     HYBRIDMARKERTRACKER_API void process(::cv::Mat& out_img);
 
@@ -109,7 +112,7 @@ protected:
     HYBRIDMARKERTRACKER_API void stopping() override;
 
     /**
-     * @brief Updating method: This method does nothing.
+     * @brief Updating method: call tracking with a current timestamp.
      */
     HYBRIDMARKERTRACKER_API void updating() override;
 
@@ -207,7 +210,7 @@ private:
     /// Chessboard Bottom Pattern model points
     std::vector< ::cv::Point3f > m_trackChessBotPatternPoint;
 
-    /// Check if output images are initialized
+    /// Check if the output image is initialized
     bool m_imagesInitialized{ false };
 };
 
