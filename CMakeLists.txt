@@ -437,6 +437,48 @@ if(USE_CONAN)
     findConanDeps("${PROJECT_LIST}" CONAN_DEPS_LIST)
     installConanDeps("${CONAN_DEPS_LIST}")
     add_definitions(${CONAN_DEFINES})
+
+    # Import the shared C flags, we use python for that
+    find_package(PythonInterp 3 QUIET)
+    if(PYTHONINTERP_FOUND)
+        # Set PYTHONPATH environment to be able to import common
+        set(OLD_PYTHONPATH $ENV{PYTHONPATH})
+        set(ENV{PYTHONPATH} ${CONAN_COMMON_ROOT})
+
+        # Execute common.get_c_flags() and store it to ${SIGHT_C_FLAGS}
+        execute_process(
+            COMMAND ${PYTHON_EXECUTABLE} -u -c "import common; print(\"{0}\".format(common.get_c_flags()), sep='', end='', flush=True)"
+            OUTPUT_VARIABLE SIGHT_C_FLAGS
+        )
+        string(STRIP ${SIGHT_C_FLAGS} SIGHT_C_FLAGS)
+
+        # Execute common.get_cxx_flags() and store it to ${SIGHT_CXX_FLAGS}
+        execute_process(
+            COMMAND ${PYTHON_EXECUTABLE} -u -c "import common; print(\"{0}\".format(common.get_cxx_flags()), sep='', end='', flush=True)"
+            OUTPUT_VARIABLE SIGHT_CXX_FLAGS
+        )
+        string(STRIP ${SIGHT_CXX_FLAGS} SIGHT_CXX_FLAGS)
+
+        # Restore old PYTHONPATH environment
+        set(ENV{PYTHONPATH} ${OLD_PYTHONPATH})
+        unset(OLD_PYTHONPATH)
+    else()
+        # Use default values. This is a failsafe path, the options and flags maybe outdated.
+        if(WIN32)
+            set(SIGHT_C_FLAGS "/favor:blend /fp:strict /Qfast_transcendentals /arch:AVX /MP /bigobj /EHsc")
+            set(SIGHT_CXX_FLAGS "${SIGHT_C_FLAGS}")
+        else()
+            set(SIGHT_C_FLAGS "-march=x86-64 -mtune=generic -mfpmath=sse -mmmx -msse -msse2 -msse3 -mssse3 -msse4.1 -msse4.2 -mavx -maes -mpclmul -mf16c")
+            set(SIGHT_CXX_FLAGS "${SIGHT_C_FLAGS}")
+        endif()
+    endif()
+
+    # Assign the shared C flags to everything
+    set(CMAKE_C_FLAGS "${SIGHT_C_FLAGS} ${CMAKE_C_FLAGS}")
+    set(CMAKE_CXX_FLAGS "${SIGHT_CXX_FLAGS} ${CMAKE_CXX_FLAGS}")
+
+    unset(SIGHT_C_FLAGS)
+    unset(SIGHT_CXX_FLAGS)
 endif()
 
 # Define the path 'FW_EXTERNAL_LIBRARIES_DIR' used to find external libraries required by our applications
