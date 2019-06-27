@@ -5,7 +5,6 @@ set(DEPENDENCIES)
 set(REQUIREMENTS
         dataReg
         arDataReg
-        ctrlCamp
         ctrlCom
         ctrlCamp
         gui
