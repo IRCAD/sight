@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -64,6 +64,7 @@ namespace videoTools
  *
  * @section Slots Slots
  * - \b synchronize(): Actual synchronization function.
+ * - \b setFrameDelay(int, std::string): Apply delay between frames and matrices
  *
  * @section XML XML Configuration
  *

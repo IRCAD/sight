@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -63,8 +63,8 @@ const ::fwServices::IService::KeyType s_MATRICES_INOUT = "matrices";
 const ::fwCom::Slots::SlotKeyType s_RESET_TIMELINE_SLOT = "reset";
 
 // Public slots
-const ::fwCom::Slots::SlotKeyType SFrameMatrixSynchronizer::s_SYNCHRONIZE_SLOT        = "synchronize";
-const ::fwCom::Slots::SlotKeyType SFrameMatrixSynchronizer::s_SET_FRAME_DELAY_SLOT    = "setFrameDelay";
+const ::fwCom::Slots::SlotKeyType SFrameMatrixSynchronizer::s_SYNCHRONIZE_SLOT     = "synchronize";
+const ::fwCom::Slots::SlotKeyType SFrameMatrixSynchronizer::s_SET_FRAME_DELAY_SLOT = "setFrameDelay";
 
 // ----------------------------------------------------------------------------
 
