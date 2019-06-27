@@ -10,7 +10,8 @@
     <extension implements="::fwServices::registry::AppConfig">
         <id>ExHybridMarkerTrackerConfig</id>
         <config>
-            <object uid="camera" type="::arData::Camera" />
+            <object uid="cameraSeries" type="::arData::CameraSeries" />
+            <object uid="camera" type="::arData::Camera" src="deferred" />
             <object uid="frameTL" type="::arData::FrameTL"/>
             <object uid="sourceFrame" type="::fwData::Image" />
             <object uid="finalFrame" type="::fwData::Image"/>
@@ -69,6 +70,7 @@
             <service uid="toolbar" type="::gui::aspect::SDefaultToolBar">
                 <gui>
                     <layout>
+                        <menuItem name="Load Calibration" icon="media-0.1/icons/Plus.svg" />
                         <editor/>
                         <menuItem name="start" icon="arMedia-0.1/icons/start-cam.svg" />
                         <menuItem name="stop" icon="arMedia-0.1/icons/stop-cam.svg" />
@@ -77,7 +79,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <editor sid="CameraSelector" start="yes" />
+                    <menuItem sid="loadCalib" start="yes" />
+                    <editor sid="CameraSelector" />
                     <menuItem sid="startVideo" start="yes" />
                     <menuItem sid="stopVideo" start="yes" />
                     <menuItem sid="pauseVideo" start="yes" />
@@ -126,6 +129,12 @@
             </service>
 
             <service uid="actionQuit" type="::gui::action::SQuit" />
+
+            <service uid="loadCalib" type="::gui::action::SSlotCaller">
+                <slots>
+                    <slot>CalibrationReader/update</slot>
+                </slots>
+            </service>
 
             <service uid="actionHide" type="::gui::action::SBooleanSlotCaller">
                 <slots>
@@ -194,8 +203,23 @@
                 <inout key="frameTL" uid="frameTL" autoConnect="yes" />
             </service>
 
+            <service uid="CalibrationReader" type="::ioCalibration::SOpenCVReader">
+                <inout key="data" uid="cameraSeries" />
+            </service>
+
+            <service uid="Extractor" type="::ctrlCamp::SExtractObj">
+                <inout key="source" uid="cameraSeries">
+                    <extract from="@cameras.0" />
+                </inout>
+                <out group="target">
+                    <key uid="camera" />
+                </out>
+            </service>
+
+
             <service uid="hybridMarkerTracker" type="::hybridMarkerTracker::SHybridMarkerTracker" worker="tracking">
                 <in key="frameIn" uid="sourceFrame" autoConnect="yes" />
+                <in key="camera" uid="camera"/>
                 <inout key="frame" uid="finalFrame" />
                 <inout key="pose" uid="poseMatrix" />
             </service>
@@ -221,10 +245,18 @@
                 <slot>synchronizer/synchronize</slot>
             </connect>
 
+            <connect>
+                <signal>cameraSeries/modified</signal>
+                <slot>Extractor/update</slot>
+            </connect>
+
             <start uid="mainFrame" />
             <start uid="frameGrabber" />
             <start uid="synchronizer" />
             <start uid="hybridMarkerTracker"/>
+            <start uid="CalibrationReader" />
+            <start uid="CameraSelector" />
+            <start uid="Extractor" />
             <start uid="syncGenericScene" />
 
             <!-- VTK scene 'genericScene' -->

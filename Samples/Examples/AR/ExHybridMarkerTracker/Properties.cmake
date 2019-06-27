@@ -5,9 +5,11 @@ set(DEPENDENCIES)
 set(REQUIREMENTS
         dataReg
         arDataReg
+        ctrlCamp
         ctrlCom
         gui
         guiQt
+        ioCalibration
         servicesReg
         fwlauncher
         appXml

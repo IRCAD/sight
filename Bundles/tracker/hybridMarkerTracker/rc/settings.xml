@@ -24,25 +24,4 @@
     <!-- Distance b/w chess in millimeter-->
     <Chess_Interval>4.0</Chess_Interval>
 
-    <image_Width>960</image_Width>
-    <image_Height>540</image_Height>
-
-    <!-- Camera matrix (focal length and principle point)-->
-    <Camera_Matrix type_id="opencv-matrix">
-        <rows>3</rows>
-        <cols>3</cols>
-        <dt>d</dt>
-        <data>
-            8.1761498963391728e+002 0. 4.7663049159307280e+002 0.
-            8.0943091543845867e+002 2.8169579541042611e+002 0. 0. 1.</data></Camera_Matrix>
-
-    <!-- Distortion coefficients k1, k2, p1, p2, k3-->
-    <Distortion_Coefficients type_id="opencv-matrix">
-        <rows>5</rows>
-        <cols>1</cols>
-        <dt>d</dt>
-        <data>
-            -1.6734371223530975e-001 1.4546522926386546e-001
-            -2.5437423329362839e-003 -1.7038400645078837e-003 0.</data></Distortion_Coefficients>
-
 </opencv_storage>

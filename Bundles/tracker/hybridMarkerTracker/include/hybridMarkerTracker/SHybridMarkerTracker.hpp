@@ -107,7 +107,7 @@ protected:
      * @param tvec1 translation vector of the first pose as an input
      * @param rvec2 rotation vector of the second pose as an input
      * @param tvec2 translation vector of the second pose as an input
-     * @param pts_3d 3 dimension vector
+     * @param pts_3d 3 dimension pattern points vector
      * @param rvec rotation vector of the correct pose as an output
      * @param tvec translation vector of the correct pose as an output
      */

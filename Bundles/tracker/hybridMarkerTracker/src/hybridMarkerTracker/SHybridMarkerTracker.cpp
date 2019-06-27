@@ -46,8 +46,9 @@ namespace hybridMarkerTracker
 
 fwServicesRegisterMacro(::arServices::ITracker, ::hybridMarkerTracker::SHybridMarkerTracker);
 
-static const ::fwServices::IService::KeyType s_FRAME_INPUT = "frameIn";
-static const ::fwServices::IService::KeyType s_POSE_INOUT  = "pose";
+static const ::fwServices::IService::KeyType s_FRAME_INPUT  = "frameIn";
+static const ::fwServices::IService::KeyType s_POSE_INOUT   = "pose";
+static const ::fwServices::IService::KeyType s_CAMERA_INPUT = "camera";
 SHybridMarkerTracker::SHybridMarkerTracker() noexcept :
     m_tracker(NULL)
 {
@@ -80,11 +81,6 @@ void SHybridMarkerTracker::readSettings(std::string filename)
     fs["Radius"]  >> m_radius;
     fs["Chess_Dist_Center"]  >> m_chessDistCenter;
     fs["Chess_Interval"]  >> m_chessInterval;
-
-    fs["image_Width" ] >> m_imgSize.width;
-    fs["image_Height"] >> m_imgSize.height;
-    fs["Camera_Matrix"] >> m_cameraMatrix;
-    fs["Distortion_Coefficients"] >> m_distCoeffs;
 
     fs.release();
 
@@ -532,12 +528,17 @@ void SHybridMarkerTracker::tracking(::fwCore::HiResClock::HiResClockType& timest
     auto matrixOut = this->getInOut< ::fwData::TransformationMatrix3D >(s_POSE_INOUT);
     SLM_ASSERT("The InOut key '" + s_POSE_INOUT + "' is not defined", matrixOut);
 
+    auto arCamera = this->getInput< ::arData::Camera >(s_CAMERA_INPUT);
+    SLM_ASSERT("The InPut key '" + s_CAMERA_INPUT + "' is not defined", arCamera);
+
+    std::tie(m_cameraMatrix, m_camImgSize, m_distCoeffs) = ::cvIO::Camera::copyToCv(arCamera);
+
     if (frameIn)
     {
         // check if image dimension have changed
         ::fwData::Image::SizeType size;
         size = frameIn->getSize();
-        // if so, we need to initilize the output image
+        // if so, we need to initialize the output image
         if(size != frameOut->getSize())
         {
             const ::fwData::Image::SpacingType::value_type voxelSize = 1;

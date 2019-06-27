@@ -9,7 +9,7 @@
       - how to synchronize efficiently a video process pipeline with the video playback using SSignalGate
 
     To use this application, you must open a calibration and a video. Samples are provided in the bundle folder
-    of the appplication, `share/sight/TutoSimpleAR-0.4` on Linux/MacOs and `share\TutoSimpleAR-0.4` on Windows:
+    of the application, `share/sight/TutoSimpleAR-0.4` on Linux/MacOs and `share\TutoSimpleAR-0.4` on Windows:
       - calibration.xml
       - aruco_tag.m4v
 -->
