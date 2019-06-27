@@ -117,8 +117,6 @@ void SInteractorStyle::starting()
         {
             m_connections.connect(pickerInteractor, ::fwRenderOgre::interactor::IPickerInteractor::s_PICKED_SIG,
                                   this->getSptr(), ::visuOgreAdaptor::SInteractorStyle::s_PICK_SLOT);
-            m_connections.connect(pickerInteractor, ::fwRenderOgre::interactor::IPickerInteractor::s_PICKED_SIG,
-                                  this->getSptr(), ::visuOgreAdaptor::SInteractorStyle::s_PICK_SLOT);
 
             m_connections.connect(pickerInteractor, "addPoint", this->getSptr(), "addPoint");
             m_connections.connect(pickerInteractor,  "removePoint", this->getSptr(), "removePoint");
