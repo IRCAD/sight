@@ -16,6 +16,7 @@
             <object uid="sourceFrame" type="::fwData::Image" />
             <object uid="finalFrame" type="::fwData::Image"/>
             <object uid="poseMatrix" type="::fwData::TransformationMatrix3D"/>
+            <object uid="cameraToMarker" type="::fwData::TransformationMatrix3D"/>
 
             <service uid="mainFrame" type="::gui::frame::SDefaultFrame">
                 <gui>
@@ -80,7 +81,7 @@
                 </gui>
                 <registry>
                     <menuItem sid="loadCalib" start="yes" />
-                    <editor sid="CameraSelector" />
+                    <editor sid="cameraSelector"  />
                     <menuItem sid="startVideo" start="yes" />
                     <menuItem sid="stopVideo" start="yes" />
                     <menuItem sid="pauseVideo" start="yes" />
@@ -130,12 +131,6 @@
 
             <service uid="actionQuit" type="::gui::action::SQuit" />
 
-            <service uid="loadCalib" type="::gui::action::SSlotCaller">
-                <slots>
-                    <slot>CalibrationReader/update</slot>
-                </slots>
-            </service>
-
             <service uid="actionHide" type="::gui::action::SBooleanSlotCaller">
                 <slots>
                     <slot>parameters/setVisible</slot>
@@ -161,23 +156,48 @@
                 </slots>
             </service>
 
+            <service uid="loadCalib" type="::gui::action::SSlotCaller">
+                <slots>
+                    <slot>calibrationReader/update</slot>
+                </slots>
+            </service>
+
             <!-- *************************** Begin generic scene *************************** -->
 
             <service uid="genericScene" type="::fwRenderVTK::SRender" >
                 <scene renderMode="sync">
-                    <renderer id="default"  background="0.0" />
+                    <renderer id="video" layer="0" background="0" />
+                    <renderer id="default" layer="1" background="0" />
                     <adaptor uid="videoAdpt" />
                     <adaptor uid="interactorStyle" />
+                    <adaptor uid="tagToCameraTransformAdaptor" />
+                    <adaptor uid="tagAxisAdpt" />
+                    <adaptor uid="cameraAdpt" />
                 </scene>
             </service>
 
             <service uid="videoAdpt" type="::visuVTKARAdaptor::SVideo" autoConnect="yes">
                 <in key="frame" uid="finalFrame" />
-                <config renderer="default" />
+                <config renderer="video" />
             </service>
 
             <service uid="interactorStyle" type="::visuVTKAdaptor::SInteractorStyle">
-                <config renderer="default" style="InteractorStyle2DForNegato" />
+                <config renderer="default" style="FixedInteractorStyle" />
+            </service>
+
+            <service uid="tagToCameraTransformAdaptor" type="::visuVTKAdaptor::STransform" autoConnect="yes">
+                <inout key="tm3d" uid="poseMatrix" />
+                <config renderer="default" transform="tagToCameraTransform" />
+            </service>
+
+            <service uid="tagAxisAdpt" type="::visuVTKAdaptor::SAxis">
+                <config renderer="default" length="10" transform="id" label="no" marker="no" markerColor="#FF0000" />
+            </service>
+
+            <service uid="cameraAdpt" type="::visuVTKARAdaptor::SCamera" >
+                <in key="transform" uid="cameraToMarker" autoConnect="yes"/>
+                <in key="camera" uid="camera" />
+                <config renderer="default" />
             </service>
 
             <!-- *************************** End generic scene *************************** -->
@@ -193,7 +213,7 @@
                 <tolerance>100</tolerance>
             </service>
 
-            <service uid="CameraSelector" type="::videoQt::editor::SCamera">
+            <service uid="cameraSelector" type="::videoQt::editor::SCamera">
                 <inout key="camera" uid="camera" />
                 <videoSupport>yes</videoSupport>
             </service>
@@ -202,20 +222,6 @@
                 <in key="camera" uid="camera" />
                 <inout key="frameTL" uid="frameTL" autoConnect="yes" />
             </service>
-
-            <service uid="CalibrationReader" type="::ioCalibration::SOpenCVReader">
-                <inout key="data" uid="cameraSeries" />
-            </service>
-
-            <service uid="Extractor" type="::ctrlCamp::SExtractObj">
-                <inout key="source" uid="cameraSeries">
-                    <extract from="@cameras.0" />
-                </inout>
-                <out group="target">
-                    <key uid="camera" />
-                </out>
-            </service>
-
 
             <service uid="hybridMarkerTracker" type="::hybridMarkerTracker::SHybridMarkerTracker" worker="tracking">
                 <in key="frameIn" uid="sourceFrame" autoConnect="yes" />
@@ -227,6 +233,26 @@
             <service uid="matrixViewer" type="::uiTools::editor::SMatrixViewer">
                 <in key="matrix" uid="poseMatrix" autoConnect="yes" />
                 <title>Pose matrix</title>
+            </service>
+
+            <service uid="matrixReverser" type="::maths::SConcatenateMatrices">
+                <in group="matrix">
+                    <key uid="poseMatrix" autoConnect="yes" inverse="true" />
+                </in>
+                <inout key="output" uid="cameraToMarker" />
+            </service>
+
+            <service uid="calibrationReader" type="::ioCalibration::SOpenCVReader">
+                <inout key="data" uid="cameraSeries" />
+            </service>
+
+            <service uid="extractor" type="::ctrlCamp::SExtractObj">
+                <inout key="source" uid="cameraSeries">
+                    <extract from="@cameras.0" />
+                </inout>
+                <out group="target">
+                    <key uid="camera" />
+                </out>
             </service>
 
             <service uid="syncGenericScene" type="::ctrlCom::SSignalGate">
@@ -247,21 +273,25 @@
 
             <connect>
                 <signal>cameraSeries/modified</signal>
-                <slot>Extractor/update</slot>
+                <slot>extractor/update</slot>
             </connect>
 
             <start uid="mainFrame" />
             <start uid="frameGrabber" />
             <start uid="synchronizer" />
             <start uid="hybridMarkerTracker"/>
-            <start uid="CalibrationReader" />
-            <start uid="CameraSelector" />
-            <start uid="Extractor" />
             <start uid="syncGenericScene" />
+            <start uid="matrixReverser" />
+            <start uid="calibrationReader" />
+            <start uid="extractor" />
+            <start uid="cameraSelector" />
+            <start uid="cameraAdpt" />
 
             <!-- VTK scene 'genericScene' -->
             <start uid="videoAdpt" />
             <start uid="interactorStyle" />
+            <start uid="tagAxisAdpt" />
+            <start uid="tagToCameraTransformAdaptor" />
         </config>
     </extension>
 </plugin>

@@ -7,6 +7,7 @@ set(REQUIREMENTS
         arDataReg
         ctrlCamp
         ctrlCom
+        ctrlCamp
         gui
         guiQt
         ioCalibration
@@ -24,6 +25,7 @@ set(REQUIREMENTS
         videoTools
         hybridMarkerTracker
         media
+        maths
         arMedia
         preferences
         )
