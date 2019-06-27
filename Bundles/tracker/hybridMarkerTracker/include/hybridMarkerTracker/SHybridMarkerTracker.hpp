@@ -107,6 +107,7 @@ protected:
      * @param tvec1 translation vector of the first pose as an input
      * @param rvec2 rotation vector of the second pose as an input
      * @param tvec2 translation vector of the second pose as an input
+     * @param pts_3d 3 dimension vector
      * @param rvec rotation vector of the correct pose as an output
      * @param tvec translation vector of the correct pose as an output
      */
@@ -140,14 +141,22 @@ private:
      * @brief errorDistPoints method computes the distance error between 2 points
      *
      * @param pts_d detection points
-     * @param pts points to be compared with 'pts_d'
-     * @param max_dist maximum distance b/w a correspondence
+     * @param pts_1 point 1 to be compared with 'pts_d'
+     * @param pts_2 point 2 to be compared with 'pts_d'
+     * @param max_dist_sq maximum distance b/w a correspondence
      */
     cv::Vec2f errorDistPoints(const std::vector< ::cv::Point2f >& pts_d,
                               const std::vector< ::cv::Point2f >& pts_1,
                               const std::vector< ::cv::Point2f >& pts_2,
                               const double max_dist_sq);
-    // Draws rectangles
+
+    /**
+     * @brief drawRect Draws rectangles
+     *
+     * @param cHp the estimated pose
+     * @param img the image to draw on
+     * @param color the color of the rectangle
+     */
     void drawRect(const ::cv::Mat& cHp, ::cv::Mat& img, ::cv::Scalar color = ::cv::Scalar(255, 0, 0));
 
     /// IPPE Pose solver
