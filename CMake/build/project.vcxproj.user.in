@@ -5,6 +5,6 @@
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerCommandArguments>@PROFILE@</LocalDebuggerCommandArguments>
     <LocalDebuggerWorkingDirectory>@WORKING_DIRECTORY@</LocalDebuggerWorkingDirectory>
-    <LocalDebuggerEnvironment>PATH=%PATH%;@DEBUGGER_ENVIRONMENT@;$(LocalDebuggerEnvironment)</LocalDebuggerEnvironment>
+    <LocalDebuggerEnvironment>PATH=@FW_EXTERNAL_LIBRARIES_DIR@;$(LocalDebuggerEnvironment);%PATH%</LocalDebuggerEnvironment>
   </PropertyGroup>
 </Project>
