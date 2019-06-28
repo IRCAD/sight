@@ -48,41 +48,44 @@ fwServicesRegisterMacro(::arServices::ITracker, ::hybridMarkerTracker::SHybridMa
 
 static const ::fwServices::IService::KeyType s_FRAME_INPUT = "frameIn";
 static const ::fwServices::IService::KeyType s_POSE_INOUT  = "pose";
-SHybridMarkerTracker::SHybridMarkerTracker() noexcept :
-    m_tracker(NULL)
+SHybridMarkerTracker::SHybridMarkerTracker() noexcept
 {
     m_currentcHp = ::cv::Mat::eye(4, 4, CV_64F);
 }
 
 SHybridMarkerTracker::~SHybridMarkerTracker()
 {
-    if(m_tracker)
-    {
-        delete m_tracker;
-        m_tracker = nullptr;
-    }
+    delete m_tracker;
+    m_tracker = nullptr;
 }
 
 //------------------------------------------------------------------------------
 
 void SHybridMarkerTracker::readSettings(std::string filename)
 {
+    float asymSquareSize    = 0.f; // Asymetric pattern size (millimeters)
+    float radius            = 0.f; // Cylinder curved marker radius (millimeter)
+    float m_chessDistCenter = 0.f; // Distance (millimeter) from the center line to chess line
+    float m_chessInterval { 0.f }; // Interval (millimeter) between chess
+    ::cv::Point2f m_symSquareSize; // Symetric pattern (width and height) size in millimeters
+    ::cv::Size symboardSize; // Marker size (square)
+
     ::cv::FileStorage fs;
     SLM_DEBUG("Initializing...");
     fs.open(filename, ::cv::FileStorage::READ);
+    if(!fs.isOpened())
+    {
+        SLM_FATAL("Cannot read " + filename + "! ");
+    }
     // Read settings & configuration
-    fs["Sym_BoardSize_Width" ] >> m_symboardSize.width;
-    fs["Sym_BoardSize_Height"] >> m_symboardSize.height;
-    fs["Square_Size"]  >> m_squareSize;
-    fs["Asym_Square_Size"]  >> m_asymSquareSize;
+    fs["Sym_BoardSize_Width" ] >> symboardSize.width;
+    fs["Sym_BoardSize_Height"] >> symboardSize.height;
+    fs["Asym_Square_Size"]  >> asymSquareSize;
     fs["Sym_Square_Size_X" ] >> m_symSquareSize.x;
     fs["Sym_Square_Size_Y"] >> m_symSquareSize.y;
-    fs["Radius"]  >> m_radius;
+    fs["Radius"]  >> radius;
     fs["Chess_Dist_Center"]  >> m_chessDistCenter;
     fs["Chess_Interval"]  >> m_chessInterval;
-
-    fs["image_Width" ] >> m_imgSize.width;
-    fs["image_Height"] >> m_imgSize.height;
     fs["Camera_Matrix"] >> m_cameraMatrix;
     fs["Distortion_Coefficients"] >> m_distCoeffs;
 
@@ -124,15 +127,15 @@ void SHybridMarkerTracker::readSettings(std::string filename)
      *  Calculate model points for marker
      */
     const float arcInner      = m_symSquareSize.y;
-    const float arcOutter     = arcInner + 2 * m_asymSquareSize;
-    const float chordInner_2  = m_radius * sin(arcInner / (2*m_radius));
-    const float chordOutter_2 = m_radius * sin(arcOutter / (2*m_radius));
-    const float sagittaInner  = m_radius - sqrt(m_radius * m_radius - chordInner_2 * chordInner_2);
-    const float sagittaOutter = m_radius - sqrt(m_radius * m_radius - chordOutter_2 * chordOutter_2);
+    const float arcOutter     = arcInner + 2 * asymSquareSize;
+    const float chordInner_2  = radius * sin(arcInner / (2*radius));
+    const float chordOutter_2 = radius * sin(arcOutter / (2*radius));
+    const float sagittaInner  = radius - sqrt(radius * radius - chordInner_2 * chordInner_2);
+    const float sagittaOutter = radius - sqrt(radius * radius - chordOutter_2 * chordOutter_2);
     // MID
-    for ( int i = 0; i < m_symboardSize.height; i++ )
+    for ( int i = 0; i < symboardSize.height; i++ )
     {
-        for ( int j = 0; j < m_symboardSize.width; j++)
+        for ( int j = 0; j < symboardSize.width; j++)
         {
             ::cv::Point3f pt;
             pt.x = i * m_symSquareSize.x;
@@ -143,12 +146,12 @@ void SHybridMarkerTracker::readSettings(std::string filename)
         }
     }
     // TOP
-    const int asymPointsNum = m_symboardSize.height + m_symboardSize.height - 1;
+    const int asymPointsNum = symboardSize.height + symboardSize.height - 1;
     for ( int i = 0; i < asymPointsNum; i++ )
     {
         ::cv::Point3f pt;
-        pt.x = (m_symboardSize.height-1) * m_symSquareSize.x
-               - i * m_asymSquareSize;
+        pt.x = (symboardSize.height-1) * m_symSquareSize.x
+               - i * asymSquareSize;
         pt.y = (i % 2) == 0 ? chordInner_2 : chordOutter_2;
         pt.z = (i % 2) == 0 ? sagittaInner : sagittaOutter;
         m_trackTopPatternPoints.push_back(pt);
@@ -157,7 +160,7 @@ void SHybridMarkerTracker::readSettings(std::string filename)
     for ( int i = 0; i < asymPointsNum; i++ )
     {
         ::cv::Point3f pt;
-        pt.x = i * m_asymSquareSize;
+        pt.x = i * asymSquareSize;
         pt.y = (i % 2) == 0 ? -chordInner_2 : -chordOutter_2;
         pt.z = (i % 2) == 0 ? sagittaInner : sagittaOutter;
         m_trackBotPatternPoints.push_back(pt);
@@ -165,7 +168,7 @@ void SHybridMarkerTracker::readSettings(std::string filename)
 
     // Chess pattern points
     // MID
-    for (auto i = -1; i < 5; i++)
+    for (int i = -1; i < 5; i++)
     {
         ::cv::Point3f pt(0.0f, 0.0f, 0.0f);
         pt.x = m_chessInterval/2 + i * m_chessInterval;
@@ -173,18 +176,18 @@ void SHybridMarkerTracker::readSettings(std::string filename)
     }
 
     const float arcChess     = m_chessDistCenter * 2;
-    const float chordChess_2 = m_radius * sin(arcChess / (2*m_radius));
+    const float chordChess_2 = radius * sin(arcChess / (2*radius));
     float sagittaChess;
-    if (arcChess < CV_PI * m_radius)
+    if (arcChess < CV_PI * radius)
     {
-        sagittaChess = m_radius - sqrt(m_radius * m_radius - chordChess_2 * chordChess_2);
+        sagittaChess = radius - sqrt(radius * radius - chordChess_2 * chordChess_2);
     }
     else
     {
-        sagittaChess = m_radius + sqrt(m_radius * m_radius - chordChess_2 * chordChess_2);
+        sagittaChess = radius + sqrt(radius * radius - chordChess_2 * chordChess_2);
     }
     // TOP
-    for (auto i = 0; i < 5; i++)
+    for (int i = 0; i < 5; i++)
     {
         ::cv::Point3f pt;
         pt.x = i * m_chessInterval;
@@ -194,7 +197,7 @@ void SHybridMarkerTracker::readSettings(std::string filename)
         m_trackChessTopPatternPoint.push_back(pt);
     }
     // BOT
-    for (auto i = 0; i < 5; i++)
+    for (int i = 0; i < 5; i++)
     {
         ::cv::Point3f pt;
         pt.x = i * m_chessInterval;
@@ -203,7 +206,7 @@ void SHybridMarkerTracker::readSettings(std::string filename)
 
         m_trackChessBotPatternPoint.push_back(pt);
     }
-    m_tracker = new TrackerCurvedot(m_symboardSize, roiSize, params, paramsRoi);
+    m_tracker = new TrackerCurvedot(symboardSize, roiSize, params, paramsRoi);
 }
 
 //------------------------------------------------------------------------------
@@ -234,27 +237,21 @@ void SHybridMarkerTracker::process()
             visiblePatternPoints.reserve(m_trackTopPatternPoints.size() + numSymDot/2);
             visiblePatternPoints.insert(visiblePatternPoints.end(),
                                         m_trackTopPatternPoints.begin(), m_trackTopPatternPoints.end());
-            for (int i = 0; i < numSymDot; i++)
+            for (size_t i = 1; i < numSymDot; i = i+2)
             {
-                if (i%2 != 0)
-                {
-                    visiblePatternPoints.push_back(m_trackMidPatternPoints[i]);
-                }
+                visiblePatternPoints.push_back(m_trackMidPatternPoints[i]);
             }
             useIppe = false;       // IPPE is only for planar model
         }
         else if ((currDetectState& TrackerCurvedot::BOT_CIR) && (currDetectState & TrackerCurvedot::MID_CIR))
         {
-            const int numSymDot = m_trackMidPatternPoints.size();
+            const size_t numSymDot = m_trackMidPatternPoints.size();
             visiblePatternPoints.reserve(m_trackBotPatternPoints.size() + numSymDot/2);
             visiblePatternPoints.insert(visiblePatternPoints.end(),
                                         m_trackBotPatternPoints.begin(), m_trackBotPatternPoints.end());
-            for (int i = 0; i < numSymDot; i++)
+            for (size_t i = 0; i < numSymDot; i = i+2)
             {
-                if (i%2 == 0)
-                {
-                    visiblePatternPoints.push_back(m_trackMidPatternPoints[i]);
-                }
+                visiblePatternPoints.push_back(m_trackMidPatternPoints[i]);
             }
             useIppe = false;
         }
@@ -293,8 +290,9 @@ void SHybridMarkerTracker::process()
                 isChessDetect = false;        // Chess line not found
 
             }
-            ippeSolver.solveGeneric(visiblePatternPoints, imgPoints,
-                                    m_cameraMatrix, m_distCoeffs, rvec1, tvec1, error1, rvec2, tvec2, error2);
+
+            m_ippeSolver.solveGeneric(visiblePatternPoints, imgPoints,
+                                      m_cameraMatrix, m_distCoeffs, rvec1, tvec1, error1, rvec2, tvec2, error2);
 
             // Use chessboard features to disambiguate if two solutions are similar
             if (isChessDetect && abs(error1 - error2) < 0.1 && error1 < 0.2 && error2 < 0.2)
@@ -363,12 +361,12 @@ void SHybridMarkerTracker::process()
                                                   const double max_dist_sq)
 {
     ::cv::Vec2f sumError(0, 0);
-    auto distSq_1 = 0.0, distSq_2 = 0.0;
+    double distSq_1 = 0.0, distSq_2 = 0.0;
     ::cv::Point2f ptsDiff;
-    for (auto i = 0; i < pts_d.size(); i++)
+    for (int i = 0; i < pts_d.size(); i++)
     {
         int validInd = -1;
-        for (auto j = 0; j < pts_1.size(); j++)
+        for (int j = 0; j < pts_1.size(); j++)
         {
             ptsDiff  = pts_d[i] - pts_1[j];
             distSq_1 = ptsDiff.x * ptsDiff.x + ptsDiff.y * ptsDiff.y;
@@ -383,7 +381,7 @@ void SHybridMarkerTracker::process()
             }
         }
 
-        for (auto j = 0; j < pts_2.size(); j++)
+        for (int j = 0; j < pts_2.size(); j++)
         {
             ptsDiff  = pts_d[i] - pts_2[j];
             distSq_2 = ptsDiff.x * ptsDiff.x + ptsDiff.y * ptsDiff.y;
@@ -404,6 +402,7 @@ void SHybridMarkerTracker::process()
     }
 
     // recursive in case threshold max_dist_sq is too small
+    //if (std::abs(sumError[0]) < std::numeric_limits<double>::epsilon())
     if (sumError[0] == 0.0)
     {
         sumError = errorDistPoints(pts_d, pts_1, pts_2, max_dist_sq * 2);

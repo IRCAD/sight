@@ -145,10 +145,10 @@ private:
      * @param pts_2 point 2 to be compared with 'pts_d'
      * @param max_dist_sq maximum distance b/w a correspondence
      */
-    cv::Vec2f errorDistPoints(const std::vector< ::cv::Point2f >& pts_d,
-                              const std::vector< ::cv::Point2f >& pts_1,
-                              const std::vector< ::cv::Point2f >& pts_2,
-                              const double max_dist_sq);
+    ::cv::Vec2f errorDistPoints(const std::vector< ::cv::Point2f >& pts_d,
+                                const std::vector< ::cv::Point2f >& pts_1,
+                                const std::vector< ::cv::Point2f >& pts_2,
+                                const double max_dist_sq);
 
     /**
      * @brief drawRect Draws rectangles
@@ -160,13 +160,10 @@ private:
     void drawRect(const ::cv::Mat& cHp, ::cv::Mat& img, ::cv::Scalar color = ::cv::Scalar(255, 0, 0));
 
     /// IPPE Pose solver
-    IPPE::PoseSolver ippeSolver;
-
-    /// Downsample Scale
-    unsigned int m_imgScale;
+    IPPE::PoseSolver m_ippeSolver;
 
     /// Pattern tracker
-    TrackerCurvedot* m_tracker;
+    TrackerCurvedot* m_tracker { nullptr };
 
     /// Current pose
     ::cv::Mat m_currentcHp;
@@ -174,36 +171,11 @@ private:
     /// Tracked image
     ::cv::Mat m_imgTrack;
 
-    /// Camera related parameters
-    ::cv::Size m_camImgSize;
-
     /// Camera Matrix
     ::cv::Mat m_cameraMatrix;
+
     /// Distortion coefficient Matrix
     ::cv::Mat m_distCoeffs;
-
-    /// The size of the marker used for tracking
-    ::cv::Size m_symboardSize;
-
-    /// The size of a square in millimeter
-    float m_squareSize;
-
-    /// The size of the asymetric pattern in millimeters
-    float m_asymSquareSize;
-    /// The size of the symetric pattern (width and height) in millimeters
-    ::cv::Point2f m_symSquareSize;
-
-    /// The radius (millimeter) of cylinder the curved marker is attached on
-    float m_radius;
-
-    /// Distance from the center line to chess line in millimeters
-    float m_chessDistCenter;
-
-    /// Interval between chess in millimeters
-    float m_chessInterval;
-
-    /// Size of input image
-    ::cv::Size m_imgSize;
 
     /// Middle pattern model points
     std::vector< ::cv::Point3f > m_trackMidPatternPoints;
