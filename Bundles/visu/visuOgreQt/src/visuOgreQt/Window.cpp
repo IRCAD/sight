@@ -612,14 +612,16 @@ void Window::ogreResize(const QSize& newSize)
 
 void Window::onScreenChanged(QScreen*)
 {
-    // This allows correct rendering on dual screen displays when dragging the window to another screen.
-    QWindow* parent = this->parent();
-    if(parent != nullptr)
+    if(m_ogreRenderWindow != nullptr)
     {
-        parent->requestUpdate();
+        // This allows correct rendering on dual screen displays when dragging the window to another screen.
+        QWindow* parent = this->parent();
+        if(parent != nullptr)
+        {
+            parent->requestUpdate();
+        }
+        this->ogreResize(this->size());
     }
-
-    this->ogreResize(this->size());
 }
 
 // ----------------------------------------------------------------------------
