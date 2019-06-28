@@ -63,10 +63,10 @@ SHybridMarkerTracker::~SHybridMarkerTracker()
 
 void SHybridMarkerTracker::readSettings(std::string filename)
 {
-    float asymSquareSize    = 0.f; // Asymetric pattern size (millimeters)
-    float radius            = 0.f; // Cylinder curved marker radius (millimeter)
+    float asymSquareSize  = 0.f;   // Asymetric pattern size (millimeters)
+    float radius          = 0.f;   // Cylinder curved marker radius (millimeter)
     float chessDistCenter = 0.f; // Distance (millimeter) from the center line to chess line
-    float chessInterval = 0.f ; // Interval (millimeter) between chess
+    float chessInterval   = 0.f; // Interval (millimeter) between chess
     ::cv::Point2f symSquareSize; // Symetric pattern (width and height) size in millimeters
     ::cv::Size symboardSize; // Marker size (square)
 
@@ -128,8 +128,8 @@ void SHybridMarkerTracker::readSettings(std::string filename)
      */
     const float arcInner      = symSquareSize.y;
     const float arcOutter     = arcInner + 2 * asymSquareSize;
-    const float chordInner2  = radius * sin(arcInner / (2*radius));
-    const float chordOutter2 = radius * sin(arcOutter / (2*radius));
+    const float chordInner2   = radius * sin(arcInner / (2*radius));
+    const float chordOutter2  = radius * sin(arcOutter / (2*radius));
     const float sagittaInner  = radius - sqrt(radius * radius - chordInner2 * chordInner2);
     const float sagittaOutter = radius - sqrt(radius * radius - chordOutter2 * chordOutter2);
     // MID
@@ -175,7 +175,7 @@ void SHybridMarkerTracker::readSettings(std::string filename)
         m_trackChessMidPatternPoint.push_back(pt);
     }
 
-    const float arcChess     = chessDistCenter * 2;
+    const float arcChess    = chessDistCenter * 2;
     const float chordChess2 = radius * sin(arcChess / (2*radius));
     float sagittaChess;
     if (arcChess < CV_PI * radius)
@@ -368,7 +368,7 @@ void SHybridMarkerTracker::process()
         int validInd = -1;
         for (int j = 0; j < pts1.size(); j++)
         {
-            ptsDiff  = ptsDect[i] - pts1[j];
+            ptsDiff = ptsDect[i] - pts1[j];
             distSq1 = ptsDiff.x * ptsDiff.x + ptsDiff.y * ptsDiff.y;
             if (distSq1 > maxDistSq)
             {
@@ -383,7 +383,7 @@ void SHybridMarkerTracker::process()
 
         for (int j = 0; j < pts2.size(); j++)
         {
-            ptsDiff  = ptsDect[i] - pts2[j];
+            ptsDiff = ptsDect[i] - pts2[j];
             distSq2 = ptsDiff.x * ptsDiff.x + ptsDiff.y * ptsDiff.y;
             if (distSq2 > maxDistSq)
             {
@@ -431,7 +431,7 @@ void SHybridMarkerTracker::calculateCorrectPose(
     // Calculate a threshold to determine correspondence
     ::cv::Point2f diffTemp = (projPoints1[0] - projPoints1[1]) * 0.7;
     double maxDistSq = diffTemp.x*diffTemp.x + diffTemp.y*diffTemp.y;
-    diffTemp   = (projPoints2[0] - projPoints2[1]) * 0.7;
+    diffTemp  = (projPoints2[0] - projPoints2[1]) * 0.7;
     maxDistSq = (maxDistSq + diffTemp.x*diffTemp.x + diffTemp.y*diffTemp.y)/2;
 
     const ::cv::Vec2f errors = errorDistPoints(detect_pts, projPoints1, projPoints2, maxDistSq);
@@ -555,7 +555,7 @@ void SHybridMarkerTracker::tracking(::fwCore::HiResClock::HiResClockType& timest
         {
             ::fwData::mt::ObjectWriteLock outputLock(frameOut);
             ::cv::Mat imgTrack = ::cvIO::Image::moveToCv(frameOut);
-            m_imgTrack          = ::cvIO::Image::copyToCv(frameIn);
+            m_imgTrack         = ::cvIO::Image::copyToCv(frameIn);
 
             process();
 
