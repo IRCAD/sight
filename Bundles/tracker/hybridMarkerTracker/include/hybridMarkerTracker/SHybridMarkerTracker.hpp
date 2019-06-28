@@ -225,7 +225,7 @@ private:
     /// Slot called when a integer value is changed
     void setIntParameter(int _val, std::string _key);
     /// Slot called when a double value is changed
-    void setFloatParameter(float _val, std::string _key);
+    void setDoubleParameter(double _val, std::string _key);
     /// Slot called when a boolean value is changed
     void setBoolParameter(bool _val, std::string _key);
 };

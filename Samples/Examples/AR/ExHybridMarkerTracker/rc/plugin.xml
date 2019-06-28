@@ -209,19 +209,19 @@
                     <!-- Show drawing on video or not -->
                     <param type="bool" name="Show Drawings" key="showDrawings" defaultValue="true" />
                     <!-- Symmetric pattern size, for curved pattern set the central symmetric pattern size-->
-                    <param type="int" name="Symmetric Board Size Width" key="symboardSizeWidth" defaultValue="2"  />
-                    <param type="int" name="Symmetric Board Size Height" key="symboardSizeHeight" defaultValue="5"  />
+                    <param type="int" name="Symmetric Board Size Width" key="symboardSizeWidth" defaultValue="2" min="0" max="100" />
+                    <param type="int" name="Symmetric Board Size Height" key="symboardSizeHeight" defaultValue="5" min="0" max="100" />
                     <!-- The size of the asymmetric pattern in millimeters-->
-                    <param type="float" name="Asymmetric Square Size" key="asymSquareSize" defaultValue="2.0"  />
+                    <param type="double" name="Asymmetric Square Size" key="asymSquareSize" defaultValue="2.0" min="0.0" max="100.0" />
                     <!-- The size of the symmetric pattern (width and height) in millimeters -->
-                    <param type="float" name="Symmetric Square Size X" key="symSquareSizeX" defaultValue="4.0"  />
-                    <param type="float" name="Symmetric Square Size Y" key="symSquareSizeY" defaultValue="6.0"  />
+                    <param type="double" name="Symmetric Square Size X" key="symSquareSizeX" defaultValue="4.0" min="0.0" max="100.0" />
+                    <param type="double" name="Symmetric Square Size Y" key="symSquareSizeY" defaultValue="6.0" min="0.0" max="100.0" />
                     <!-- The radius (millimeter) of cylinder the curved marker is attached on -->
-                    <param type="float" name="Radius" key="radius" defaultValue="5.0"  />
+                    <param type="double" name="Radius" key="radius" defaultValue="5.0" min="0.0" max="100.0" />
                     <!-- Distance from the center line to chess line in millimeters-->
-                    <param type="float" name="Chess Distance Center" key="chessDistCEnter" defaultValue="8.0"  />
+                    <param type="double" name="Chess Distance Center" key="chessDistCEnter" defaultValue="8.0" min="0.0" max="100.0" />
                     <!-- Distance between chess in millimeter-->
-                    <param type="float" name="Chess Interval" key="chessInterval" defaultValue="4.0"  />
+                    <param type="double" name="Chess Interval" key="chessInterval" defaultValue="4.0" min="0.0" max="100.0" />
                 </parameters>
             </service>
 
@@ -306,7 +306,12 @@
 
             <connect>
                 <signal>hybridMarkerParams/doubleChanged</signal>
-                <slot>hybridMarkerTracker/setFloatParameter</slot>
+                <slot>hybridMarkerTracker/setDoubleParameter</slot>
+            </connect>
+
+            <connect>
+                <signal>hybridMarkerParams/boolChanged</signal>
+                <slot>hybridMarkerTracker/setBoolParameter</slot>
             </connect>
 
             <start uid="mainFrame" />

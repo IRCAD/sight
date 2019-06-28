@@ -47,7 +47,7 @@ namespace hybridMarkerTracker
 fwServicesRegisterMacro(::arServices::ITracker, ::hybridMarkerTracker::SHybridMarkerTracker);
 
 const ::fwCom::Slots::SlotKeyType SHybridMarkerTracker::s_SET_INT_PARAMETER_SLOT   = "setIntParameter";
-const ::fwCom::Slots::SlotKeyType SHybridMarkerTracker::s_SET_FLOAT_PARAMETER_SLOT = "setFloatParameter";
+const ::fwCom::Slots::SlotKeyType SHybridMarkerTracker::s_SET_FLOAT_PARAMETER_SLOT = "setDoubleParameter";
 const ::fwCom::Slots::SlotKeyType SHybridMarkerTracker::s_SET_BOOL_PARAMETER_SLOT  = "setBoolParameter";
 
 static const ::fwServices::IService::KeyType s_FRAME_INPUT  = "frameIn";
@@ -61,7 +61,7 @@ SHybridMarkerTracker::SHybridMarkerTracker() noexcept :
     m_currentcHp = ::cv::Mat::eye(4, 4, CV_64F);
 
     newSlot(s_SET_INT_PARAMETER_SLOT, &SHybridMarkerTracker::setIntParameter, this);
-    newSlot(s_SET_FLOAT_PARAMETER_SLOT, &SHybridMarkerTracker::setFloatParameter, this);
+    newSlot(s_SET_FLOAT_PARAMETER_SLOT, &SHybridMarkerTracker::setDoubleParameter, this);
     newSlot(s_SET_BOOL_PARAMETER_SLOT, &SHybridMarkerTracker::setBoolParameter, this);
 
 }
@@ -327,8 +327,11 @@ void SHybridMarkerTracker::process()
             aux = cHp_2.colRange(3, 4).rowRange(0, 3);
             tvec2.copyTo(aux);
 
-            drawRect(cHp_1, m_imgTrack, ::cv::Scalar(0, 0, 255));
-            drawRect(cHp_2, m_imgTrack, ::cv::Scalar(255, 0, 0));
+            if(m_showDrawings)
+            {
+                drawRect(cHp_1, m_imgTrack, ::cv::Scalar(0, 0, 255));
+                drawRect(cHp_2, m_imgTrack, ::cv::Scalar(255, 0, 0));
+            }
 
             m_currentcHp = cHp_1;
         }
@@ -340,10 +343,18 @@ void SHybridMarkerTracker::process()
             cRp.copyTo(aux);
             aux = m_currentcHp.colRange(3, 4).rowRange(0, 3);
             tvec.copyTo(aux);
-            drawRect(m_currentcHp, m_imgTrack);
+
+            if(m_showDrawings)
+            {
+                drawRect(m_currentcHp, m_imgTrack);
+
+            }
         }
 
-        m_tracker->drawKeydots(m_imgTrack);
+        if(m_showDrawings)
+        {
+            m_tracker->drawKeydots(m_imgTrack);
+        }
     }
     else
     {
@@ -354,11 +365,19 @@ void SHybridMarkerTracker::process()
     const std::string str_2 = "Red rectangle shows the ambiguous pose provided by IPPE";
     const std::string str_3 = "Green shows detection of pattern";
     const std::string str_4 = "Yellow shows tracking of pattern";
-    ::cv::putText(m_imgTrack, str_1, ::cv::Point(10, 20), ::cv::FONT_HERSHEY_COMPLEX, 0.5, ::cv::Scalar(0, 0, 255), 1);
-    ::cv::putText(m_imgTrack, str_2, ::cv::Point(10, 40), ::cv::FONT_HERSHEY_COMPLEX, 0.5, ::cv::Scalar(255, 0, 0), 1);
-    ::cv::putText(m_imgTrack, str_3, ::cv::Point(10, 60), ::cv::FONT_HERSHEY_COMPLEX, 0.5, ::cv::Scalar(0, 255, 0), 1);
-    ::cv::putText(m_imgTrack, str_4, ::cv::Point(10, 80), ::cv::FONT_HERSHEY_COMPLEX, 0.5, ::cv::Scalar(255, 255, 0),
-                  1);
+
+    if(m_showDrawings)
+    {
+        ::cv::putText(m_imgTrack, str_1, ::cv::Point(10, 20), ::cv::FONT_HERSHEY_COMPLEX, 0.5, ::cv::Scalar(0, 0,
+                                                                                                            255), 1);
+        ::cv::putText(m_imgTrack, str_2, ::cv::Point(10, 40), ::cv::FONT_HERSHEY_COMPLEX, 0.5, ::cv::Scalar(255, 0,
+                                                                                                            0), 1);
+        ::cv::putText(m_imgTrack, str_3, ::cv::Point(10, 60), ::cv::FONT_HERSHEY_COMPLEX, 0.5, ::cv::Scalar(0, 255,
+                                                                                                            0), 1);
+        ::cv::putText(m_imgTrack, str_4, ::cv::Point(10, 80), ::cv::FONT_HERSHEY_COMPLEX, 0.5, ::cv::Scalar(255, 255,
+                                                                                                            0),
+                      1);
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -608,7 +627,7 @@ void SHybridMarkerTracker::setIntParameter(int _val, std::string _key)
 
 //------------------------------------------------------------------------------
 
-void SHybridMarkerTracker::setFloatParameter(float _val, std::string _key)
+void SHybridMarkerTracker::setDoubleParameter(double _val, std::string _key)
 {
     float val = _val;
     if(_key == "asymSquareSize")
