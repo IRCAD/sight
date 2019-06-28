@@ -66,6 +66,12 @@ class HYBRIDMARKERTRACKER_CLASS_API SHybridMarkerTracker : public ::arServices::
 {
 public:
     fwCoreServiceClassDefinitionsMacro((SHybridMarkerTracker)(arServices::ITracker))
+
+    HYBRIDMARKERTRACKER_API static const ::fwCom::Slots::SlotKeyType s_SET_INT_PARAMETER_SLOT;
+    HYBRIDMARKERTRACKER_API static const ::fwCom::Slots::SlotKeyType s_SET_FLOAT_PARAMETER_SLOT;
+    HYBRIDMARKERTRACKER_API static const ::fwCom::Slots::SlotKeyType s_SET_BOOL_PARAMETER_SLOT;
+
+
     /**
      * @brief Constructor.
      */
@@ -185,12 +191,11 @@ private:
     /// The size of the marker used for tracking
     ::cv::Size m_symboardSize;
 
-    /// The size of a square in millimeter
-    float m_squareSize;
+    bool m_showDrawings;
 
-    /// The size of the asymetric pattern in millimeters
+    /// The size of the asymmetric pattern in millimeters
     float m_asymSquareSize;
-    /// The size of the symetric pattern (width and height) in millimeters
+    /// The size of the symmetric pattern (width and height) in millimeters
     ::cv::Point2f m_symSquareSize;
 
     /// The radius (millimeter) of cylinder the curved marker is attached on
@@ -217,6 +222,13 @@ private:
     std::vector< ::cv::Point3f > m_trackChessMidPatternPoint;
     /// Chessboard Bottom Pattern model points
     std::vector< ::cv::Point3f > m_trackChessBotPatternPoint;
+
+    /// Slot called when a integer value is changed
+    void setIntParameter(int _val, std::string _key);
+    /// Slot called when a double value is changed
+    void setFloatParameter(float _val, std::string _key);
+    /// Slot called when a boolean value is changed
+    void setBoolParameter(bool _val, std::string _key);
 };
 
 } // namespace hybridMarkerTracker

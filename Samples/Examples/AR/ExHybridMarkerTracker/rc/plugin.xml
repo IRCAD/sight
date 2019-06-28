@@ -122,10 +122,12 @@
                     <layout type="::fwGui::LineLayoutManager">
                         <orientation value="vertical" />
                         <view proportion="0" />
+                        <view proportion="0"/>
                     </layout>
                 </gui>
                 <registry>
                     <view sid="matrixViewer" start="yes" />
+                    <view sid="hybridMarkerParams" start="yes"/>
                 </registry>
             </service>
 
@@ -202,6 +204,27 @@
 
             <!-- *************************** End generic scene *************************** -->
 
+            <service uid="hybridMarkerParams" type="::guiQt::editor::SParameters">
+                <parameters>
+                    <!-- Show drawing on video or not -->
+                    <param type="bool" name="Show Drawings" key="showDrawings" defaultValue="true" />
+                    <!-- Symmetric pattern size, for curved pattern set the central symmetric pattern size-->
+                    <param type="int" name="Symmetric Board Size Width" key="symboardSizeWidth" defaultValue="2"  />
+                    <param type="int" name="Symmetric Board Size Height" key="symboardSizeHeight" defaultValue="5"  />
+                    <!-- The size of the asymmetric pattern in millimeters-->
+                    <param type="float" name="Asymmetric Square Size" key="asymSquareSize" defaultValue="2.0"  />
+                    <!-- The size of the symmetric pattern (width and height) in millimeters -->
+                    <param type="float" name="Symmetric Square Size X" key="symSquareSizeX" defaultValue="4.0"  />
+                    <param type="float" name="Symmetric Square Size Y" key="symSquareSizeY" defaultValue="6.0"  />
+                    <!-- The radius (millimeter) of cylinder the curved marker is attached on -->
+                    <param type="float" name="Radius" key="radius" defaultValue="5.0"  />
+                    <!-- Distance from the center line to chess line in millimeters-->
+                    <param type="float" name="Chess Distance Center" key="chessDistCEnter" defaultValue="8.0"  />
+                    <!-- Distance between chess in millimeter-->
+                    <param type="float" name="Chess Interval" key="chessInterval" defaultValue="4.0"  />
+                </parameters>
+            </service>
+
             <service uid="synchronizer" type="::videoTools::SFrameMatrixSynchronizer" worker="videoWorker">
                 <in group="frameTL">
                     <key uid="frameTL" autoConnect="yes" />
@@ -274,6 +297,16 @@
             <connect>
                 <signal>cameraSeries/modified</signal>
                 <slot>extractor/update</slot>
+            </connect>
+
+            <connect>
+                <signal>hybridMarkerParams/intChanged</signal>
+                <slot>hybridMarkerTracker/setIntParameter</slot>
+            </connect>
+
+            <connect>
+                <signal>hybridMarkerParams/doubleChanged</signal>
+                <slot>hybridMarkerTracker/setFloatParameter</slot>
             </connect>
 
             <start uid="mainFrame" />

@@ -46,13 +46,24 @@ namespace hybridMarkerTracker
 
 fwServicesRegisterMacro(::arServices::ITracker, ::hybridMarkerTracker::SHybridMarkerTracker);
 
+const ::fwCom::Slots::SlotKeyType SHybridMarkerTracker::s_SET_INT_PARAMETER_SLOT   = "setIntParameter";
+const ::fwCom::Slots::SlotKeyType SHybridMarkerTracker::s_SET_FLOAT_PARAMETER_SLOT = "setFloatParameter";
+const ::fwCom::Slots::SlotKeyType SHybridMarkerTracker::s_SET_BOOL_PARAMETER_SLOT  = "setBoolParameter";
+
 static const ::fwServices::IService::KeyType s_FRAME_INPUT  = "frameIn";
 static const ::fwServices::IService::KeyType s_POSE_INOUT   = "pose";
 static const ::fwServices::IService::KeyType s_CAMERA_INPUT = "camera";
+
 SHybridMarkerTracker::SHybridMarkerTracker() noexcept :
-    m_tracker(NULL)
+    m_tracker(NULL),
+    m_showDrawings(true)
 {
     m_currentcHp = ::cv::Mat::eye(4, 4, CV_64F);
+
+    newSlot(s_SET_INT_PARAMETER_SLOT, &SHybridMarkerTracker::setIntParameter, this);
+    newSlot(s_SET_FLOAT_PARAMETER_SLOT, &SHybridMarkerTracker::setFloatParameter, this);
+    newSlot(s_SET_BOOL_PARAMETER_SLOT, &SHybridMarkerTracker::setBoolParameter, this);
+
 }
 
 SHybridMarkerTracker::~SHybridMarkerTracker()
@@ -74,7 +85,6 @@ void SHybridMarkerTracker::readSettings(std::string filename)
     // Read settings & configuration
     fs["Sym_BoardSize_Width" ] >> m_symboardSize.width;
     fs["Sym_BoardSize_Height"] >> m_symboardSize.height;
-    fs["Square_Size"]  >> m_squareSize;
     fs["Asym_Square_Size"]  >> m_asymSquareSize;
     fs["Sym_Square_Size_X" ] >> m_symSquareSize.x;
     fs["Sym_Square_Size_Y"] >> m_symSquareSize.y;
@@ -575,6 +585,76 @@ void SHybridMarkerTracker::tracking(::fwCore::HiResClock::HiResClockType& timest
             sig->asyncEmit();
         }
     }
+}
+
+//------------------------------------------------------------------------------
+
+void SHybridMarkerTracker::setIntParameter(int _val, std::string _key)
+{
+    int val = _val;
+    if(_key == "symboardSizeWidth")
+    {
+        m_symboardSize.width = val;
+    }
+    else if(_key == "symboardSizeHeight")
+    {
+        m_symboardSize.height = val;
+    }
+    else
+    {
+        SLM_ERROR("The slot key : '"+ _key + "' is not handled");
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SHybridMarkerTracker::setFloatParameter(float _val, std::string _key)
+{
+    float val = _val;
+    if(_key == "asymSquareSize")
+    {
+        m_asymSquareSize = val;
+    }
+    else if(_key == "symSquareSizeX")
+    {
+        m_symSquareSize.x = val;
+    }
+    else if(_key == "symSquareSizeY")
+    {
+        m_symSquareSize.y = val;
+    }
+    else if(_key == "radius")
+    {
+        m_radius = val;
+    }
+    else if(_key == "chessDistCenter")
+    {
+        m_chessDistCenter = val;
+    }
+    else if(_key == "chessInterval")
+    {
+        m_chessInterval = val;
+    }
+    else
+    {
+        SLM_ERROR("The slot key : '"+ _key + "' is not handled");
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SHybridMarkerTracker::setBoolParameter(bool _val, std::string _key)
+{
+    bool val = _val;
+    if(_key == "showDrawings")
+    {
+        m_showDrawings = val;
+    }
+    else
+    {
+        SLM_ERROR("The slot key : '"+ _key + "' is not handled");
+    }
+
 }
 
 //------------------------------------------------------------------------------
