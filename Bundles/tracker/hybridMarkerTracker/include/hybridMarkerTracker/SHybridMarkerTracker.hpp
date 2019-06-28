@@ -143,12 +143,12 @@ private:
      * @param ptsDect detection points
      * @param pts1 point 1 to be compared with 'ptsDect'
      * @param pts2 point 2 to be compared with 'ptsDect'
-     * @param maxSistSq maximum distance b/w a correspondence
+     * @param maxDistSq maximum distance b/w a correspondence
      */
     ::cv::Vec2f errorDistPoints(const std::vector< ::cv::Point2f >& ptsDect,
                                 const std::vector< ::cv::Point2f >& pts1,
                                 const std::vector< ::cv::Point2f >& pts2,
-                                const double maxSistSq);
+                                const double maxDistSq);
 
     /**
      * @brief drawRect Draws rectangles

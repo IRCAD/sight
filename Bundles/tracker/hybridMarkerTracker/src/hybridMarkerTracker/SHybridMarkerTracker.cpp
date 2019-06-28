@@ -358,7 +358,7 @@ void SHybridMarkerTracker::process()
 ::cv::Vec2f SHybridMarkerTracker::errorDistPoints(const std::vector< ::cv::Point2f >& ptsDect,
                                                   const std::vector< ::cv::Point2f >& pts1,
                                                   const std::vector< ::cv::Point2f >& pts2,
-                                                  const double maxSistSq)
+                                                  const double maxDistSq)
 {
     ::cv::Vec2f sumError(0, 0);
     double distSq1 = 0.0, distSq2 = 0.0;
@@ -370,7 +370,7 @@ void SHybridMarkerTracker::process()
         {
             ptsDiff  = ptsDect[i] - pts1[j];
             distSq1 = ptsDiff.x * ptsDiff.x + ptsDiff.y * ptsDiff.y;
-            if (distSq1 > maxSistSq)
+            if (distSq1 > maxDistSq)
             {
                 continue;
             }
@@ -385,7 +385,7 @@ void SHybridMarkerTracker::process()
         {
             ptsDiff  = ptsDect[i] - pts2[j];
             distSq2 = ptsDiff.x * ptsDiff.x + ptsDiff.y * ptsDiff.y;
-            if (distSq2 > maxSistSq)
+            if (distSq2 > maxDistSq)
             {
                 continue;
             }
@@ -401,11 +401,11 @@ void SHybridMarkerTracker::process()
         distSq1 = distSq2 = 0.0;
     }
 
-    // recursive in case threshold maxSistSq is too small
+    // recursive in case threshold maxDistSq is too small
     //if (std::abs(sumError[0]) < std::numeric_limits<double>::epsilon())
     if (sumError[0] == 0.0)
     {
-        sumError = errorDistPoints(ptsDect, pts1, pts2, maxSistSq * 2);
+        sumError = errorDistPoints(ptsDect, pts1, pts2, maxDistSq * 2);
     }
 
     return sumError;
@@ -430,11 +430,11 @@ void SHybridMarkerTracker::calculateCorrectPose(
 
     // Calculate a threshold to determine correspondence
     ::cv::Point2f diffTemp = (projPoints1[0] - projPoints1[1]) * 0.7;
-    double maxSistSq = diffTemp.x*diffTemp.x + diffTemp.y*diffTemp.y;
+    double maxDistSq = diffTemp.x*diffTemp.x + diffTemp.y*diffTemp.y;
     diffTemp   = (projPoints2[0] - projPoints2[1]) * 0.7;
-    maxSistSq = (maxSistSq + diffTemp.x*diffTemp.x + diffTemp.y*diffTemp.y)/2;
+    maxDistSq = (maxDistSq + diffTemp.x*diffTemp.x + diffTemp.y*diffTemp.y)/2;
 
-    const ::cv::Vec2f errors = errorDistPoints(detect_pts, projPoints1, projPoints2, maxSistSq);
+    const ::cv::Vec2f errors = errorDistPoints(detect_pts, projPoints1, projPoints2, maxDistSq);
 
     rvec.create(3, 1, CV_64FC1);
     tvec.create(3, 1, CV_64FC1);
