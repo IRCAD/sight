@@ -12,9 +12,37 @@ vertex_program Default/Billboard_VP glsl
 
 //---------------------------------------------------------------------------
 
+vertex_program Default/Billboard_PerPointColor_VP glsl
+{
+    source Billboard_Default_VP.glsl
+    preprocessor_defines PER_POINT_COLOR=1
+    default_params
+    {
+        param_named_auto u_worldView worldview_matrix
+    }
+}
+
+//---------------------------------------------------------------------------
+
 geometry_program Default/Billboard_GP glsl
 {
     source Billboard_Default_GP.glsl
+    default_params
+    {
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_proj projection_matrix
+        param_named_auto u_cameraPos camera_position
+        param_named_auto u_viewport viewport_size
+        param_named u_billboardSize float 10.
+    }
+}
+
+//---------------------------------------------------------------------------
+
+geometry_program Default/Billboard_PerPointColor_GP glsl
+{
+    source Billboard_Default_GP.glsl
+    preprocessor_defines PER_POINT_COLOR=1
     default_params
     {
         param_named_auto u_diffuse surface_diffuse_colour
@@ -31,6 +59,22 @@ geometry_program Default/Billboard_FixedSize_GP glsl
 {
     source Billboard_Default_GP.glsl
     preprocessor_defines FIXED_SIZE=1
+    default_params
+    {
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_proj projection_matrix
+        param_named_auto u_cameraPos camera_position
+        param_named_auto u_viewport viewport_size
+        param_named u_billboardSize float 10.
+    }
+}
+
+//---------------------------------------------------------------------------
+
+geometry_program Default/Billboard_FixedSize_PerPointColor_GP glsl
+{
+    source Billboard_Default_GP.glsl
+    preprocessor_defines FIXED_SIZE=1, PER_POINT_COLOR=1
     default_params
     {
         param_named_auto u_diffuse surface_diffuse_colour
@@ -144,6 +188,57 @@ material Billboard_FixedSize
 
 //---------------------------------------------------------------------------
 
+material Billboard_FixedSize_PerPointColor
+{
+    // Default technique
+    technique
+    {
+        pass
+        {
+            cull_hardware none
+            cull_software none
+            scene_blend alpha_blend
+
+            vertex_program_ref Default/Billboard_PerPointColor_VP
+            {
+            }
+
+            geometry_program_ref Default/Billboard_FixedSize_PerPointColor_GP
+            {
+            }
+
+            fragment_program_ref Default/Billboard_FP
+            {
+            }
+
+            texture_unit sprite
+            {
+                texture sphere.dds 2d
+                tex_coord_set 0
+                filtering bilinear
+            }
+
+        }
+    }
+
+    technique depth
+    {
+        pass
+        {
+            vertex_program_ref Default/Billboard_VP
+            {
+            }
+
+            geometry_program_ref Default/Billboard_FixedSize_Depth_GP
+            {
+            }
+        }
+    }
+
+}
+
+//---------------------------------------------------------------------------
+
 material Billboard_Default
 {
     // Default technique
@@ -160,6 +255,57 @@ material Billboard_Default
             }
 
             geometry_program_ref Default/Billboard_GP
+            {
+            }
+
+            fragment_program_ref Default/Billboard_FP
+            {
+            }
+
+            texture_unit sprite
+            {
+                texture sphere.dds 2d
+                tex_coord_set 0
+                filtering bilinear
+            }
+
+        }
+    }
+
+    technique depth
+    {
+        pass
+        {
+            vertex_program_ref Default/Billboard_VP
+            {
+            }
+
+            geometry_program_ref Default/Billboard_Depth_GP
+            {
+            }
+        }
+    }
+
+}
+
+//---------------------------------------------------------------------------
+
+material Billboard_Default_PerPointColor
+{
+    // Default technique
+    technique
+    {
+        pass
+        {
+            cull_hardware none
+            cull_software none
+            scene_blend alpha_blend
+
+            vertex_program_ref Default/Billboard_PerPointColor_VP
+            {
+            }
+
+            geometry_program_ref Default/Billboard_PerPointColor_GP
             {
             }
 
