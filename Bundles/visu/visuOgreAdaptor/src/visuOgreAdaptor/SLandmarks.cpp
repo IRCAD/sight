@@ -161,6 +161,7 @@ void SLandmarks::updating()
                 text->setText(groupName + "_" + std::to_string(index));
                 text->setCharHeight(m_textSize);
                 text->setTextColor(color);
+                text->setVisible(group.m_visibility);
 
                 switch(group.m_shape)
                 {
@@ -193,6 +194,7 @@ void SLandmarks::updating()
 
                 node->attachObject(object);
                 node->attachObject(text);
+                node->setVisible(group.m_visibility);
 
                 const ::fwData::Landmarks::PointType& point = landmarks->getPoint(groupName, index);
                 node->setPosition(::Ogre::Real(point[0]), ::Ogre::Real(point[1]), ::Ogre::Real(point[2]));
