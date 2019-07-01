@@ -112,14 +112,14 @@ protected:
      * @param tvec1 translation vector of the first pose as an input
      * @param rvec2 rotation vector of the second pose as an input
      * @param tvec2 translation vector of the second pose as an input
-     * @param pts_3d 3 dimension pattern points vector
+     * @param pts3d 3 dimension vector
      * @param rvec rotation vector of the correct pose as an output
      * @param tvec translation vector of the correct pose as an output
      */
     HYBRIDMARKERTRACKER_API void calculateCorrectPose(
         ::cv::InputArray rvec1, ::cv::InputArray tvec1,
         ::cv::InputArray rvec2, ::cv::InputArray tvec2,
-        const std::vector< ::cv::Point3f >& pts_3d,
+        const std::vector< ::cv::Point3f >& pts3d,
         ::cv::OutputArray rvec, ::cv::OutputArray tvec
         );
 
@@ -144,15 +144,15 @@ private:
     /**
      * @brief errorDistPoints method computes the distance error between 2 points
      *
-     * @param pts_d detection points
-     * @param pts_1 point 1 to be compared with 'pts_d'
-     * @param pts_2 point 2 to be compared with 'pts_d'
-     * @param max_dist_sq maximum distance b/w a correspondence
+     * @param ptsDect detection points
+     * @param pts1 point 1 to be compared with 'ptsDect'
+     * @param pts2 point 2 to be compared with 'ptsDect'
+     * @param maxDistSq maximum distance b/w a correspondence
      */
-    cv::Vec2f errorDistPoints(const std::vector< ::cv::Point2f >& pts_d,
-                              const std::vector< ::cv::Point2f >& pts_1,
-                              const std::vector< ::cv::Point2f >& pts_2,
-                              const double max_dist_sq);
+    ::cv::Vec2f errorDistPoints(const std::vector< ::cv::Point2f >& ptsDect,
+                                const std::vector< ::cv::Point2f >& pts1,
+                                const std::vector< ::cv::Point2f >& pts2,
+                                const double maxDistSq);
 
     /**
      * @brief drawRect Draws rectangles
@@ -164,13 +164,10 @@ private:
     void drawRect(const ::cv::Mat& cHp, ::cv::Mat& img, ::cv::Scalar color = ::cv::Scalar(255, 0, 0));
 
     /// IPPE Pose solver
-    IPPE::PoseSolver ippeSolver;
-
-    /// Downsample Scale
-    unsigned int m_imgScale;
+    IPPE::PoseSolver m_ippeSolver;
 
     /// Pattern tracker
-    TrackerCurvedot* m_tracker;
+    TrackerCurvedot* m_tracker { nullptr };
 
     /// Current pose
     ::cv::Mat m_currentcHp;
@@ -178,11 +175,9 @@ private:
     /// Tracked image
     ::cv::Mat m_imgTrack;
 
-    /// Camera related parameters
-    ::cv::Size m_camImgSize;
-
     /// Camera Matrix
     ::cv::Mat m_cameraMatrix;
+
     /// Distortion coefficient Matrix
     ::cv::Mat m_distCoeffs;
 
