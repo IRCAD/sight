@@ -402,8 +402,7 @@ void SHybridMarkerTracker::process()
     }
 
     // recursive in case threshold maxDistSq is too small
-    //if (std::abs(sumError[0]) < std::numeric_limits<double>::epsilon())
-    if (sumError[0] == 0.0)
+    if (std::abs(sumError[0]) < std::numeric_limits<double>::epsilon())
     {
         sumError = errorDistPoints(ptsDect, pts1, pts2, maxDistSq * 2);
     }
