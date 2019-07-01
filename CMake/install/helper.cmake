@@ -24,14 +24,12 @@ macro(qt_plugins_setup PROJECT_NAME)
 
     # check if there is a PLUGINS variable in the current bundle properties.cmake
     if(${PROJECT_NAME}_PLUGINS)
-        if(USE_CONAN)
+        if(NOT USE_SYSTEM_LIB)
             if(FW_BUILD_EXTERNAL)
                 set(FW_QT5_LOCATION "${Sight_LIBRARY_DIR}/../..")
             else()
                 set(FW_QT5_LOCATION "${CONAN_QT_ROOT}")
             endif()
-        else()
-            set(FW_QT5_LOCATION ${EXTERNAL_LIBRARIES})
         endif()
 
         if(WIN32)
@@ -71,14 +69,12 @@ macro(install_qt_plugins)
 
     #qt plugins setup
     if(QT_REQUIREMENTS AND NOT BUILD_SDK) # set by helper.cmake -> qt_setup() macros
-        if(USE_CONAN)
+        if(NOT USE_SYSTEM_LIB)
             if(FW_BUILD_EXTERNAL)
                 set(FW_QT5_LOCATION "${Sight_LIBRARY_DIR}/../..")
             else()
                 set(FW_QT5_LOCATION "${CONAN_QT_ROOT}")
             endif()
-        else()
-            set(FW_QT5_LOCATION ${EXTERNAL_LIBRARIES})
         endif()
 
         foreach(QT_REQUIREMENT ${QT_REQUIREMENTS})

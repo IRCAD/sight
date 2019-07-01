@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2018 IRCAD France
- * Copyright (C) 2017-2018 IHU Strasbourg
+ * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -164,7 +164,7 @@ void PointList::associate(const ::fwData::PointList::csptr& _pointList1,
 //------------------------------------------------------------------------------
 
 const ::fwData::Point::sptr PointList::removeClosestPoint(::fwData::PointList::sptr& _pointList,
-                                                          const ::fwData::Point::sptr& _point, float _delta)
+                                                          const ::fwData::Point::csptr& _point, float _delta)
 {
     // Initial data
     const auto& list = _pointList->getPoints();

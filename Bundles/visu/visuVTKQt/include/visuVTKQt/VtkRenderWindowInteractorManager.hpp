@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __VISUVTKQT_VTKRENDERWINDOWINTERACTORMANAGER_HPP__
-#define __VISUVTKQT_VTKRENDERWINDOWINTERACTORMANAGER_HPP__
+#pragma once
 
 #include "visuVTKQt/config.hpp"
 
@@ -32,7 +31,7 @@
 class vtkRenderWindowInteractor;
 
 QT_BEGIN_NAMESPACE
-class QVTKOpenGLWidget;
+class QVTKOpenGLNativeWidget;
 QT_END_NAMESPACE
 
 namespace fwGuiQt
@@ -72,7 +71,7 @@ public:
 
 private:
 
-    QPointer<QVTKOpenGLWidget> m_QVTKOpenGLWidget;
+    QPointer<QVTKOpenGLNativeWidget> m_QVTKOpenGLWidget;
 
     vtkRenderWindowInteractor* m_interactor;
 
@@ -81,6 +80,3 @@ private:
 };
 
 } // namespace visuVTKQt
-
-#endif // __VISUVTKQT_VTKRENDERWINDOWINTERACTORMANAGER_HPP__
-

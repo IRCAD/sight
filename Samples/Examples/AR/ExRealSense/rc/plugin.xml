@@ -45,9 +45,11 @@
             <service uid="toolbar" type="::gui::aspect::SDefaultToolBar">
                 <gui>
                     <layout>
+                        <editor />
                         <menuItem name="start" icon="arMedia-0.1/icons/start-cam.svg" />
                         <menuItem name="pause" icon="arMedia-0.1/icons/pause-cam.svg" />
                         <menuItem name="stop" icon="arMedia-0.1/icons/stop-cam.svg" />
+                        <menuItem name="record" icon="arMedia-0.1/icons/start-record.svg" icon2="arMedia-0.1/icons/stop.svg" style="check" />
                         <separator/>
                         <editor />
                         <editor />
@@ -55,17 +57,21 @@
                         <separator/>
                         <editor />
                         <spacer />
+                        <menuItem name="Configure recording path" icon="arMedia-0.1/icons/save.svg" />
                         <menuItem name="Show/hide filter Settings" icon="media-0.1/icons/Settings.svg" style="check" />
                     </layout>
                 </gui>
                 <registry>
+                    <editor sid="cameraSelector" start="yes" />
                     <menuItem sid="startVideo" start="yes" />
                     <menuItem sid="pauseVideo" start="yes" />
                     <menuItem sid="stopVideo" start="yes" />
+                    <menuItem sid="record" start="yes" />
                     <editor sid="presets" start="yes" />
                     <editor sid="infraredEmitter" start="yes" />
                     <editor sid="switchInfraToColor" start="yes" />
                     <editor sid="distance" start="yes"/>
+                    <menuItem sid="setRecordingPath" start="yes" />
                     <menuItem sid="showFilterSettings" start="yes" />
                 </registry>
             </service>
@@ -205,7 +211,7 @@
 
             <service uid="pointcloudAdpt" type="::visuOgreAdaptor::SPointList"  autoConnect="yes" >
                 <in key="mesh" uid="pointcloud" />
-                <config layer="default" autoresetcamera="no" radius="1" color="#00FF00FF"/>
+                <config layer="default" autoresetcamera="no" radius="1" />
             </service>
 
             <service uid="cameraAdaptor" type="::visuOgreAdaptor::SCamera">
@@ -301,6 +307,13 @@
                 </inout>
             </service>
 
+            <!-- GUI to select camera (device, file, or stream) -->
+            <service uid="cameraSelector" type="::videoQt::editor::SCamera">
+                <inout key="cameraSeries" uid="RGBDCameraSeries" />
+                <createCameraNumber>2</createCameraNumber>
+                <videoSupport>yes</videoSupport>
+            </service>
+
             <!-- Manages Sense camera configuration -->
             <service uid="grabber" type="::videoRealSense::SScan" worker="grabber">
                 <inout key="cameraSeries" uid="RGBDCameraSeries" />
@@ -334,6 +347,18 @@
                 </slots>
             </service>
 
+            <service uid="record" type="::gui::action::SSlotCaller">
+                <slots>
+                    <slot>grabber/record</slot>
+                </slots>
+            </service>
+
+            <service uid="setRecordingPath" type="::gui::action::SSlotCaller">
+                <slots>
+                    <slot>grabber/configureRecordingPath</slot>
+                </slots>
+            </service>
+
             <!-- Show/hide the parameters view -->
             <service uid="showFilterSettings" type="::gui::action::SBooleanSlotCaller">
                 <slots>
@@ -347,12 +372,12 @@
             </connect>
 
             <connect>
-                <signal>infraredEmitter/boolChanged</signal>
-                <signal>switchInfraToColor/boolChanged</signal>
+                 <signal>infraredEmitter/boolChanged</signal>
+                 <signal>switchInfraToColor/boolChanged</signal>
                  <signal>enableSpacialFilterParams/boolChanged</signal>
                  <signal>enableTemporalFilterParams/boolChanged</signal>
                  <signal>enableHoleFillingFilterParams/boolChanged</signal>
-                <slot>grabber/setBoolParameter</slot>
+                 <slot>grabber/setBoolParameter</slot>
             </connect>
 
             <connect>
@@ -389,6 +414,30 @@
             <connect>
                 <signal>grabber/distanceComputed</signal>
                 <slot>distance/setDoubleParameter</slot>
+            </connect>
+
+            <connect>
+                <signal>camera1/idModified</signal>
+                <slot>frameGrabber1/stopCamera</slot>
+                <slot>frameGrabber2/stopCamera</slot>
+            </connect>
+
+            <connect>
+                <signal>grabber/filePlayed</signal>
+                <slot>record/setInexecutable</slot>
+                <slot>infraredEmitter/disable</slot>
+                <slot>presets/disable</slot>
+                <slot>rangeEditor/disable</slot>
+                <slot>setRecordingPath/setInexecutable</slot>
+            </connect>
+
+            <connect>
+                <signal>grabber/devicePlayed</signal>
+                <slot>record/setExecutable</slot>
+                <slot>infraredEmitter/enable</slot>
+                <slot>presets/enable</slot>
+                <slot>rangeEditor/enable</slot>
+                <slot>setRecordingPath/setExecutable</slot>
             </connect>
 
             <!-- layouts -->

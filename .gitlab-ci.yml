@@ -84,7 +84,6 @@ build:debug-linux:
     - >
      cmake $CI_PROJECT_DIR
      -G Ninja
-     -DUSE_CONAN=ON
      -DCMAKE_INSTALL_PREFIX=$CI_PROJECT_DIR/install
      -DCMAKE_BUILD_TYPE=Debug
      -DBUILD_TESTS=ON
@@ -116,7 +115,6 @@ build:release-linux:
     - >
      cmake $CI_PROJECT_DIR
      -G Ninja
-     -DUSE_CONAN=ON
      -DCMAKE_INSTALL_PREFIX=$CI_PROJECT_DIR/install
      -DCMAKE_BUILD_TYPE=Release
      -DBUILD_TESTS=ON
@@ -148,7 +146,6 @@ build:debug-windows:
     - >
      cmake %CI_PROJECT_DIR%
      -G Ninja
-     -DUSE_CONAN=ON
      -DCMAKE_INSTALL_PREFIX=%CI_PROJECT_DIR%/install
      -DCMAKE_BUILD_TYPE=Debug
      -DBUILD_TESTS=ON
@@ -179,7 +176,6 @@ build:release-windows:
     - >
      cmake %CI_PROJECT_DIR%
      -G Ninja
-     -DUSE_CONAN=ON
      -DCMAKE_INSTALL_PREFIX=%CI_PROJECT_DIR%/install
      -DCMAKE_BUILD_TYPE=Release
      -DBUILD_TESTS=ON
@@ -208,7 +204,6 @@ build:debug-macos:
     - >
      cmake $CI_PROJECT_DIR
      -G Ninja
-     -DUSE_CONAN=ON
      -DCMAKE_INSTALL_PREFIX=$CI_PROJECT_DIR/install
      -DCMAKE_BUILD_TYPE=Debug
      -DBUILD_TESTS=ON
@@ -239,7 +234,6 @@ build:release-macos:
     - >
      cmake $CI_PROJECT_DIR
      -G Ninja
-     -DUSE_CONAN=ON
      -DCMAKE_INSTALL_PREFIX=$CI_PROJECT_DIR/install
      -DCMAKE_BUILD_TYPE=Release
      -DBUILD_TESTS=ON
@@ -268,7 +262,6 @@ doxygen:
     - >
      cmake $CI_PROJECT_DIR
      -G Ninja
-     -DUSE_CONAN=ON
      -DCMAKE_INSTALL_PREFIX=$CI_PROJECT_DIR/install
      -DCMAKE_BUILD_TYPE=Release
      -DBUILD_TESTS=OFF
@@ -304,7 +297,6 @@ build:sdk-release-linux:
     - >
      cmake $CI_PROJECT_DIR
      -G Ninja
-     -DUSE_CONAN=ON
      -DCMAKE_INSTALL_PREFIX=/home/sight/sdk/install
      -DCMAKE_BUILD_TYPE=Release
      -DBUILD_TESTS=OFF
@@ -332,7 +324,6 @@ build:sdk-debug-linux:
     - >
      cmake $CI_PROJECT_DIR
      -G Ninja
-     -DUSE_CONAN=ON
      -DCMAKE_INSTALL_PREFIX=/home/sight/sdk/install
      -DCMAKE_BUILD_TYPE=Debug
      -DBUILD_TESTS=OFF

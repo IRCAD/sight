@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -32,6 +32,8 @@
 
 #include <fwData/Object.hpp>
 
+#include <fwDataTools/PickingInfo.hpp>
+
 #include <OGRE/OgreSceneManager.h>
 #include <OGRE/OgreVector3.h>
 
@@ -50,6 +52,8 @@ class FWRENDEROGRE_CLASS_API IPickerInteractor : public ::fwRenderOgre::interact
 {
 
 public:
+
+    fwCoreNonInstanciableClassDefinitionsMacro( (IPickerInteractor)(::fwCore::BaseObject) )
 
     /**
      * @brief Class used to register a class factory in factory registry.
@@ -72,12 +76,13 @@ public:
      * @name Signals API
      * @{
      */
-    typedef ::fwCom::Signal< void ( ::fwData::Object::sptr ) > PointClickedSigType;
-    FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_ADD_POINT_SIG;
-    FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_REMOVE_POINT_SIG;
-    /** @} */
+    /// Send picking info
+    typedef ::fwCom::Signal< void ( ::fwDataTools::PickingInfo ) > PointClickedSigType;
+    FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_PICKED_SIG;
 
-    fwCoreNonInstanciableClassDefinitionsMacro( (IPickerInteractor)(::fwCore::BaseObject) )
+    /// Deprecated
+    typedef ::fwCom::Signal< void ( ::fwData::Object::sptr ) > PointClickedSigTypeDeprecated;
+    /** @} */
 
     /// Constructor. Retrieves the Ogre root and the \<sceneID\> scene manager
     FWRENDEROGRE_API IPickerInteractor();
@@ -97,7 +102,7 @@ public:
 protected:
 
     /// Ogre picker
-    ::fwRenderOgre::picker::IPicker* m_picker;
+    ::fwRenderOgre::picker::IPicker* m_picker {nullptr};
 
     /// Mask for picking requests
     std::uint32_t m_queryFlags {0};
@@ -107,13 +112,16 @@ protected:
      * @{
      */
     /// Signal triggered when an action has been triggered
-    PointClickedSigType::sptr m_sigAddPoint;
+    PointClickedSigType::sptr m_picked {nullptr};
 
     /// Signal triggered when an action has been triggered
-    PointClickedSigType::sptr m_sigRemovePoint;
+    PointClickedSigTypeDeprecated::sptr m_sigAddPointDeprecated;
+
+    /// Signal triggered when an action has been triggered
+    PointClickedSigTypeDeprecated::sptr m_sigRemovePointDeprecated;
 
     /// Signal triggered when a render is requested
-    RenderRequestedSigType::sptr m_sigRenderRequested;
+    RenderRequestedSigType::sptr m_sigRenderRequested {nullptr};
     /**
      * @}
      */
