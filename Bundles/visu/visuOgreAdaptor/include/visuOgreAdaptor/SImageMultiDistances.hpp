@@ -24,7 +24,7 @@
 
 #include "visuOgreAdaptor/config.hpp"
 #include "visuOgreAdaptor/SLine.hpp"
-#include <visuOgreAdaptor/SPointList.hpp>
+#include "visuOgreAdaptor/SPointList.hpp"
 
 #include <fwData/Vector.hpp>
 
@@ -71,7 +71,7 @@ public:
     VISUOGREADAPTOR_API ~SImageMultiDistances() noexcept;
 
     /// Called when the mouse is moved
-    VISUOGREADAPTOR_API virtual void mouseMoveEvent(MouseButton, int, int, int, int) override;
+    VISUOGREADAPTOR_API virtual void mouseMoveEvent(MouseButton button, int x, int y, int dx, int dy) override;
 
     /// Called on a wheel event
     VISUOGREADAPTOR_API virtual void wheelEvent(int, int, int) override;
@@ -86,10 +86,10 @@ public:
     VISUOGREADAPTOR_API virtual void keyReleaseEvent(int) override;
 
     /// Called when a mouse button is released.
-    VISUOGREADAPTOR_API virtual void buttonReleaseEvent(MouseButton, int, int) override;
+    VISUOGREADAPTOR_API virtual void buttonReleaseEvent(MouseButton button, int x, int y) override;
 
     /// Called when a mouse button is pressed.
-    VISUOGREADAPTOR_API virtual void buttonPressEvent(MouseButton, int, int) override;
+    VISUOGREADAPTOR_API virtual void buttonPressEvent(MouseButton button, int x, int y) override;
 
     /// Called when the focus is win
     VISUOGREADAPTOR_API virtual void focusInEvent() override;
@@ -124,7 +124,7 @@ protected:
 private:
 
     /// Display line of a given pointlist
-    void createDistance(float _begin[3], float _end[3], size_t, const ::Ogre::ColourValue&);
+    void createDistance(float begin[3], float end[3], size_t id, const ::Ogre::ColourValue& color);
 
     /// Remove the line corresponding to a specific ID
     void deleteDistance(size_t lineID);
@@ -139,13 +139,14 @@ private:
     void removeCurrentOrigin() const;
 
     /// Create millimeter length label of a specific point. The second argument corresponds to the distance
-    void createMillimeterLabel(const float point[3], const Ogre::Real, size_t, const ::Ogre::ColourValue);
+    void createMillimeterLabel(const float point[3], const Ogre::Real distance, size_t id,
+                               const ::Ogre::ColourValue color);
 
     /// Delete millimeter length label of a specific point.
-    void deleteMillimeterLabel(size_t);
+    void deleteMillimeterLabel(size_t id);
 
     /// Create ID label of a given point
-    void createIdLabel(const float point[3], size_t, const ::Ogre::ColourValue);
+    void createIdLabel(const float ps1[3], size_t id, const ::Ogre::ColourValue& color);
 
     /// Destroy label corresponding on a specific id
     void deleteIdLabel(size_t id);
@@ -153,28 +154,33 @@ private:
     /**
      * @brief Creates a new line and creates another line to know if you are in front or behind the image.
      * In the case of the second line, the line should only be displayed if you are in front.
-     * First argument corresponds to the material adaptor. Second argument corresponds to the coord
-     * of the first point
-     * Third argument corresponds to the coord of the second point
+     *
+     * @param materialAdp corresponds to the material adaptor.
+     * @param ps1 corresponds to the coordinates of the first point.
+     * @param ps2 corresponds to the coordinates of the second point.
+     * @param color corresponds to the color of the line.
      */
     void createLine(const ::visuOgreAdaptor::SMaterial::sptr materialAdp, const float ps1[3],
-                    const float ps2[3], size_t, const ::Ogre::ColourValue&) const;
+                    const float ps2[3], size_t id, const ::Ogre::ColourValue& color) const;
 
     /// Deletes a specific line
-    void deleteLine(size_t) const;
+    void deleteLine(size_t id) const;
 
     /**
-     * @brief Create a new sphere manual object. First argument corresponds of the material adaptor.
-     * Second argument corresponds on the name of the node
+     * @brief Create a new sphere manual object.
+     *
+     * @param materialAdp corresponds to the material adaptor.
+     * @param name corresponds to the name of the node.
+     * @param color corresponds to the color of the sphere.
      */
     ::Ogre::ManualObject* createSphere(const ::visuOgreAdaptor::SMaterial::sptr materialAdp,
-                                       const std::string name, ::Ogre::ColourValue color) const;
+                                       const std::string name, const ::Ogre::ColourValue& color) const;
 
     /// Destroys all resources used by this service
     void deleteAllRessources();
 
     /// Generate a color from an id
-    ::Ogre::ColourValue generateColor(size_t) const;
+    ::Ogre::ColourValue generateColor(size_t id) const;
 
     /// Set and return the material adaptor
     ::visuOgreAdaptor::SMaterial::sptr setMaterialAdp();
@@ -189,9 +195,10 @@ private:
     size_t findLineID(const std::string& name) const;
 
     /**
-     * @brief Check if the mouse click on an existing point. First argument corresponds on the coord of the first point.
-     * Second argument corresponds to the coord of the second point. Last argument corresponds on the coord of the
-     * mouse
+     * @brief Check if the mouse click on an existing point..
+     *
+     * @param x corresponds corresponds to the coordinates X of a point.
+     * @param y corresponds to the coordinates Y of a point.
      */
     bool clickPoint(int x, int y);
 
@@ -250,7 +257,7 @@ private:
     float m_ps2[3] { 0, 0, 0 };
 
     /// The picker used by this interactor.
-    fwRenderOgre::picker::IPicker m_picker;
+    ::fwRenderOgre::picker::IPicker m_picker;
 
     /// Material Adaptor
     ::visuOgreAdaptor::SMaterial::sptr m_materialAdp {nullptr};

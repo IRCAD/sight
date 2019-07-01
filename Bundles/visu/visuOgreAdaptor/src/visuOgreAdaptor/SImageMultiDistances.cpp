@@ -407,7 +407,7 @@ void SImageMultiDistances::deleteMillimeterLabel(size_t _id)
 
 //------------------------------------------------------------------------------
 
-void SImageMultiDistances::createIdLabel(const float ps1[3], size_t _id, const ::Ogre::ColourValue _color)
+void SImageMultiDistances::createIdLabel(const float ps1[3], size_t _id, const ::Ogre::ColourValue& _color)
 {
     ::Ogre::OverlayContainer* textContainer = this->getRenderService()->getOverlayTextPanel();
     const ::Ogre::FontPtr dejaVuSansFont = ::fwRenderOgre::helper::Font::getFont("DejaVuSans.ttf", 32);
@@ -597,7 +597,8 @@ void SImageMultiDistances::deleteLine(size_t _id) const
 //------------------------------------------------------------------------------
 
 ::Ogre::ManualObject* SImageMultiDistances::createSphere(const ::visuOgreAdaptor::SMaterial::sptr _materialAdp,
-                                                         const std::string _name, ::Ogre::ColourValue _color) const
+                                                         const std::string _name,
+                                                         const ::Ogre::ColourValue& _color) const
 {
     ::Ogre::ManualObject* const sphere =
         m_sceneMgr->createManualObject(_name);

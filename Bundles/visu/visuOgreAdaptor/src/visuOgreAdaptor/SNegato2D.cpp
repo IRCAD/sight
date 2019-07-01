@@ -396,7 +396,6 @@ void SNegato2D::updateCamera()
             break;
         case OrientationMode::Y_AXIS:
             m_cameraNode->rotate(::Ogre::Vector3(1, 0, 0), ::Ogre::Degree(90.f));
-            //m_cameraNode->rotate(::Ogre::Vector3(0, 0, 1), ::Ogre::Degree(180.f));
             m_cameraNode->translate(::Ogre::Vector3(m_plane->getWidth()/2, 0, m_plane->getHeight()/2));
             break;
         case OrientationMode::Z_AXIS:
