@@ -623,7 +623,7 @@ void RayTracingVolumeRenderer::createRayTracingMaterial(const std::string& _sour
     {
         ::Ogre::HighLevelGpuProgramPtr fsp = gpm.createProgram(fpDepthName, "Materials", "glsl",
                                                                ::Ogre::GPT_FRAGMENT_PROGRAM);
-        fsp->setSourceFile("RaytracedVolumeDepth_FP.glsl");
+        fsp->setSourceFile("RayTracedVolumeDepth_FP.glsl");
 
         for(const std::string& attachement: m_fragmentShaderAttachements)
         {
