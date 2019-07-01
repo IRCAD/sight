@@ -121,13 +121,13 @@
                 <gui>
                     <layout type="::fwGui::LineLayoutManager">
                         <orientation value="vertical" />
-                        <view proportion="0" />
-                        <view proportion="0"/>
+                        <view proportion="0" caption="" />
+                        <view proportion="0" caption="" />
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="matrixViewer" start="yes" />
                     <view sid="hybridMarkerParams" start="yes"/>
+                    <view sid="matrixViewer" start="yes" />
                 </registry>
             </service>
 
@@ -219,7 +219,7 @@
                     <!-- The radius (millimeter) of cylinder the curved marker is attached on -->
                     <param type="double" name="Radius" key="radius" defaultValue="5.0" min="0.0" max="100.0" />
                     <!-- Distance from the center line to chess line in millimeters-->
-                    <param type="double" name="Chess Distance Center" key="chessDistCEnter" defaultValue="8.0" min="0.0" max="100.0" />
+                    <param type="double" name="Chess Distance Center" key="chessDistCenter" defaultValue="8.0" min="0.0" max="100.0" />
                     <!-- Distance between chess in millimeter-->
                     <param type="double" name="Chess Interval" key="chessInterval" defaultValue="4.0" min="0.0" max="100.0" />
                 </parameters>
@@ -247,8 +247,8 @@
             </service>
 
             <service uid="hybridMarkerTracker" type="::hybridMarkerTracker::SHybridMarkerTracker" worker="tracking">
-                <in key="frameIn" uid="sourceFrame" autoConnect="yes" />
                 <in key="camera" uid="camera"/>
+                <in key="frameIn" uid="sourceFrame" autoConnect="yes" />
                 <inout key="frame" uid="finalFrame" />
                 <inout key="pose" uid="poseMatrix" />
             </service>
@@ -290,8 +290,8 @@
 
             <connect>
                 <signal>syncGenericScene/allReceived</signal>
-                <slot>genericScene/requestRender</slot>
                 <slot>synchronizer/synchronize</slot>
+                <slot>genericScene/requestRender</slot>
             </connect>
 
             <connect>

@@ -58,73 +58,71 @@ SHybridMarkerTracker::SHybridMarkerTracker() noexcept :
     m_tracker(NULL),
     m_showDrawings(true)
 {
+    // Default pose matrix initialization
     m_currentcHp = ::cv::Mat::eye(4, 4, CV_64F);
+
+    // Default initialization describing an hybrid marker tag
+    m_symboardSize.width = 2;
+    m_symboardSize.height = 5;
+    m_asymSquareSize = 2.f;
+    m_symSquareSize.x = 4.f;
+    m_symSquareSize.y = 6.f;
+    m_radius = 5.f;
+    m_chessDistCenter = 8.f;
+    m_chessInterval = 4.f;
+
+    // Default blob parameter
+    m_blobParams.minRepeatability    = 2;
+    m_blobParams.minDistBetweenBlobs = 10;
+    m_blobParams.minThreshold        = 80;
+    m_blobParams.maxThreshold        = 160;
+    m_blobParams.thresholdStep       = 20;
+    m_blobParams.filterByArea        = true;
+    m_blobParams.minArea             = 50;
+    m_blobParams.maxArea             = 1000;
+    m_blobParams.filterByConvexity   = true;
+    m_blobParams.minConvexity        = 0.85f;
+    m_blobParams.maxConvexity        = 1.0f;
+    m_blobParams.filterByCircularity = true;
+    m_blobParams.minCircularity      = 0.7f;
+    m_blobParams.maxCircularity      = 1.0f;
+    m_blobParams.filterByInertia     = false;
+    m_blobParams.minInertiaRatio     = 0.01;
+
+    // Default blob roi parameters
+    m_blobRoiParams.minRepeatability    = 2;
+    m_blobRoiParams.minDistBetweenBlobs = 10;
+    m_blobRoiParams.minThreshold        = 50;
+    m_blobRoiParams.maxThreshold        = 220;
+    m_blobRoiParams.thresholdStep       = 10;
+    m_blobRoiParams.filterByArea        = true;
+    m_blobRoiParams.minArea             = 50;
+    m_blobRoiParams.maxArea             = 2000;
 
     newSlot(s_SET_INT_PARAMETER_SLOT, &SHybridMarkerTracker::setIntParameter, this);
     newSlot(s_SET_FLOAT_PARAMETER_SLOT, &SHybridMarkerTracker::setDoubleParameter, this);
     newSlot(s_SET_BOOL_PARAMETER_SLOT, &SHybridMarkerTracker::setBoolParameter, this);
-
 }
 
 SHybridMarkerTracker::~SHybridMarkerTracker()
 {
-    if(m_tracker)
-    {
-        delete m_tracker;
-        m_tracker = nullptr;
-    }
+    delete m_tracker;
+    m_tracker = nullptr;
 }
 
 //------------------------------------------------------------------------------
 
-void SHybridMarkerTracker::readSettings(std::string filename)
+void SHybridMarkerTracker::updateSettings()
 {
-    ::cv::FileStorage fs;
-    SLM_DEBUG("Initializing...");
-    fs.open(filename, ::cv::FileStorage::READ);
-    // Read settings & configuration
-    fs["Sym_BoardSize_Width" ] >> m_symboardSize.width;
-    fs["Sym_BoardSize_Height"] >> m_symboardSize.height;
-    fs["Asym_Square_Size"]  >> m_asymSquareSize;
-    fs["Sym_Square_Size_X" ] >> m_symSquareSize.x;
-    fs["Sym_Square_Size_Y"] >> m_symSquareSize.y;
-    fs["Radius"]  >> m_radius;
-    fs["Chess_Dist_Center"]  >> m_chessDistCenter;
-    fs["Chess_Interval"]  >> m_chessInterval;
+    m_trackTopPatternPoints.clear();
+    m_trackMidPatternPoints.clear();
+    m_trackBotPatternPoints.clear();
 
-    fs.release();
+    m_trackChessTopPatternPoint.clear();
+    m_trackChessMidPatternPoint.clear();
+    m_trackChessBotPatternPoint.clear();
 
-    // --- Tracker parameters---
     ::cv::Size roiSize(300, 300);
-    // Global blob detector setting
-    ::cv::SimpleBlobDetector::Params params;
-    params.minRepeatability    = 2;
-    params.minDistBetweenBlobs = 10;
-    params.minThreshold        = 80;
-    params.maxThreshold        = 160;
-    params.thresholdStep       = 20;
-    params.filterByArea        = true;
-    params.minArea             = 50;
-    params.maxArea             = 1000;
-    params.filterByConvexity   = true;
-    params.minConvexity        = 0.85f;
-    params.maxConvexity        = 1.0f;
-    params.filterByCircularity = true;
-    params.minCircularity      = 0.7f;
-    params.maxCircularity      = 1.0f;
-    params.filterByInertia     = false;
-    params.minInertiaRatio     = 0.01;
-
-    // Local blob detector setting
-    ::cv::SimpleBlobDetector::Params paramsRoi;
-    paramsRoi.minRepeatability    = 2;
-    paramsRoi.minDistBetweenBlobs = 10;
-    paramsRoi.minThreshold        = 50;
-    paramsRoi.maxThreshold        = 220;
-    paramsRoi.thresholdStep       = 10;
-    paramsRoi.filterByArea        = true;
-    paramsRoi.minArea             = 50;
-    paramsRoi.maxArea             = 2000;
 
     /**
      *  Calculate model points for marker
@@ -209,7 +207,9 @@ void SHybridMarkerTracker::readSettings(std::string filename)
 
         m_trackChessBotPatternPoint.push_back(pt);
     }
-    m_tracker = new TrackerCurvedot(m_symboardSize, roiSize, params, paramsRoi);
+
+    delete m_tracker;
+    m_tracker = new TrackerCurvedot(m_symboardSize, roiSize, m_blobParams, m_blobRoiParams);
 }
 
 //------------------------------------------------------------------------------
@@ -361,13 +361,14 @@ void SHybridMarkerTracker::process()
         SLM_WARN("Cannot find the pattern");
     }
 
-    const std::string str_1 = "Blue rectangle shows current estimated pose";
-    const std::string str_2 = "Red rectangle shows the ambiguous pose provided by IPPE";
-    const std::string str_3 = "Green shows detection of pattern";
-    const std::string str_4 = "Yellow shows tracking of pattern";
-
     if(m_showDrawings)
     {
+
+        const std::string str_1 = "Blue rectangle shows current estimated pose";
+        const std::string str_2 = "Red rectangle shows the ambiguous pose provided by IPPE";
+        const std::string str_3 = "Green shows detection of pattern";
+        const std::string str_4 = "Yellow shows tracking of pattern";
+
         ::cv::putText(m_imgTrack, str_1, ::cv::Point(10, 20), ::cv::FONT_HERSHEY_COMPLEX, 0.5, ::cv::Scalar(0, 0,
                                                                                                             255), 1);
         ::cv::putText(m_imgTrack, str_2, ::cv::Point(10, 40), ::cv::FONT_HERSHEY_COMPLEX, 0.5, ::cv::Scalar(255, 0,
@@ -539,8 +540,7 @@ void SHybridMarkerTracker::drawRect(const ::cv::Mat& cHp, ::cv::Mat& img, ::cv::
 
 void SHybridMarkerTracker::starting()
 {
-    auto filePath = ::fwRuntime::getBundleResourceFilePath("hybridMarkerTracker", "settings.xml");
-    readSettings(filePath.string());
+    this->updateSettings();
     this->startTracking();
 }
 
@@ -608,28 +608,29 @@ void SHybridMarkerTracker::tracking(::fwCore::HiResClock::HiResClockType& timest
 
 //------------------------------------------------------------------------------
 
-void SHybridMarkerTracker::setIntParameter(int _val, std::string _key)
+void SHybridMarkerTracker::setIntParameter(const int _val, std::string _key)
 {
-    int val = _val;
     if(_key == "symboardSizeWidth")
     {
-        m_symboardSize.width = val;
+        m_symboardSize.width = _val;
     }
     else if(_key == "symboardSizeHeight")
     {
-        m_symboardSize.height = val;
+        m_symboardSize.height = _val;
     }
     else
     {
         SLM_ERROR("The slot key : '"+ _key + "' is not handled");
     }
+
+    this->updateSettings();
 }
 
 //------------------------------------------------------------------------------
 
-void SHybridMarkerTracker::setDoubleParameter(double _val, std::string _key)
+void SHybridMarkerTracker::setDoubleParameter(const double _val, std::string _key)
 {
-    float val = _val;
+    const float val = static_cast<float>(_val);
     if(_key == "asymSquareSize")
     {
         m_asymSquareSize = val;
@@ -658,22 +659,24 @@ void SHybridMarkerTracker::setDoubleParameter(double _val, std::string _key)
     {
         SLM_ERROR("The slot key : '"+ _key + "' is not handled");
     }
+
+    this->updateSettings();
 }
 
 //------------------------------------------------------------------------------
 
-void SHybridMarkerTracker::setBoolParameter(bool _val, std::string _key)
+void SHybridMarkerTracker::setBoolParameter(const bool _val, std::string _key)
 {
-    bool val = _val;
     if(_key == "showDrawings")
     {
-        m_showDrawings = val;
+        m_showDrawings = _val;
     }
     else
     {
         SLM_ERROR("The slot key : '"+ _key + "' is not handled");
     }
 
+    this->updateSettings();
 }
 
 //------------------------------------------------------------------------------

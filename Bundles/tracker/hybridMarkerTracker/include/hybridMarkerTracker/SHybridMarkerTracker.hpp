@@ -136,11 +136,10 @@ private:
     void process();
 
     /**
-     * @brief readSettings method reads a filename and sets the member variables
-     *
-     * @param filename input file name
+     * @brief updateSettings method update needed parameters to perform the hybrid marker
+     * detection.
      */
-    void readSettings(std::string filename);
+    void updateSettings();
 
     /**
      * @brief errorDistPoints method computes the distance error between 2 points
@@ -209,6 +208,12 @@ private:
     /// Size of input image
     ::cv::Size m_imgSize;
 
+    /// Tracker global blob detector setting
+    ::cv::SimpleBlobDetector::Params m_blobParams;
+
+    /// Tracker local blob detector setting
+    ::cv::SimpleBlobDetector::Params m_blobRoiParams;
+
     /// Middle pattern model points
     std::vector< ::cv::Point3f > m_trackMidPatternPoints;
     /// Top Pattern model points
@@ -223,11 +228,11 @@ private:
     std::vector< ::cv::Point3f > m_trackChessBotPatternPoint;
 
     /// Slot called when a integer value is changed
-    void setIntParameter(int _val, std::string _key);
+    void setIntParameter(const int _val, const std::string _key);
     /// Slot called when a double value is changed
-    void setDoubleParameter(double _val, std::string _key);
+    void setDoubleParameter(const double _val, const std::string _key);
     /// Slot called when a boolean value is changed
-    void setBoolParameter(bool _val, std::string _key);
+    void setBoolParameter(const bool _val, const std::string _key);
 };
 
 } // namespace hybridMarkerTracker
