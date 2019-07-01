@@ -73,7 +73,6 @@
         },
         "cmake.generator": "@CMAKE_GENERATOR@",
         "cmake.configureSettings": {
-            "USE_CONAN": "@USE_CONAN@",
             "CMAKE_BUILD_TYPE": "@CMAKE_BUILD_TYPE@",
             "BUILD_TESTS": "@BUILD_TESTS@",
             "BUILD_DOCUMENTATION": "@BUILD_DOCUMENTATION@",

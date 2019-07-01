@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -170,6 +170,7 @@ void STexture::stopping()
     this->getRenderService()->makeCurrent();
 
     // This is necessary, otherwise we have "ghost" textures later when we reload a new texture
+    ::Ogre::TextureManager::getSingleton().remove(m_textureName);
     m_texture->freeInternalResources();
     m_texture.reset();
 }

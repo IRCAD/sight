@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -84,14 +84,14 @@ public:
 
 private:
 
-    // Render window's width
-    int m_width;
+    /// Render window's width
+    int m_width {0};
 
-    // Render window's height
-    int m_height;
+    /// Render window's height
+    int m_height {0};
 
-    // Control key status (pressed or not)
-    bool m_control;
+    /// Modifier key status (pressed or not)
+    bool m_control {false};
 };
 } //namespace itneractor
 } //namespace fwRenderOgre

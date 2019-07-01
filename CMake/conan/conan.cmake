@@ -31,6 +31,9 @@ macro(findConanDeps PROJECT_LIST CONAN_DEPS_LIST)
         endif()
     endforeach()
 
+    # Also add the common conan package which contains common.py used for sharing C flags across conan packages
+    list(APPEND RESULT_LIST ${CONAN_COMMON})
+
     list(REMOVE_DUPLICATES RESULT_LIST)
     set(CONAN_DEPS_LIST ${RESULT_LIST})
 endmacro()
