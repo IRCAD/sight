@@ -135,7 +135,7 @@ private:
      *
      * @param filename input file name
      */
-    void readSettings(std::string filename);
+    void readSettings(const std::string filename);
 
     /**
      * @brief errorDistPoints method computes the distance error between 2 points

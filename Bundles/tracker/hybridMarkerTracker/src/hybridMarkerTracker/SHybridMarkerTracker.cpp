@@ -61,7 +61,7 @@ SHybridMarkerTracker::~SHybridMarkerTracker()
 
 //------------------------------------------------------------------------------
 
-void SHybridMarkerTracker::readSettings(std::string filename)
+void SHybridMarkerTracker::readSettings(const std::string filename)
 {
     float asymSquareSize  = 0.f;   // Asymetric pattern size (millimeters)
     float radius          = 0.f;   // Cylinder curved marker radius (millimeter)
@@ -512,7 +512,7 @@ void SHybridMarkerTracker::drawRect(const ::cv::Mat& cHp, ::cv::Mat& img, ::cv::
 
 void SHybridMarkerTracker::starting()
 {
-    auto filePath = ::fwRuntime::getBundleResourceFilePath("hybridMarkerTracker", "settings.xml");
+    const auto filePath = ::fwRuntime::getBundleResourceFilePath("hybridMarkerTracker", "settings.xml");
     readSettings(filePath.string());
     this->startTracking();
 }
