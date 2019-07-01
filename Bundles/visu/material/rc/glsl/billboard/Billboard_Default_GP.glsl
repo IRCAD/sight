@@ -11,7 +11,9 @@ uniform mat4 u_proj;
 uniform vec3 u_cameraPos;
 uniform vec4 u_viewport;
 
-in vec4 g_f4PointCol[];
+#ifdef PER_POINT_COLOR
+in vec4 v_f4PointCol[];
+#endif // PER_POINT_COLOR
 
 #ifndef DEPTH
 out vec4 oColor;
@@ -24,9 +26,16 @@ void main()
     vec2 size = vec2(1., u_viewport.x/u_viewport.y) * u_billboardSize;
 #ifdef FIXED_SIZE
     size *= 0.01;
-#endif
+#endif // FIXED_SIZE
 
     vec4 P = gl_in[0].gl_Position;
+#ifndef DEPTH
+#ifdef PER_POINT_COLOR
+    vec4 color = v_f4PointCol[0] * u_diffuse;
+#else
+    vec4 color = u_diffuse;
+#endif // PER_POINT_COLOR
+#endif // DEPTH
 
     // Offset slightly the billboard to avoid z-fight when clicking points on meshes
     P.w += .01f;
@@ -41,7 +50,7 @@ void main()
     gl_Position = vec4(va, P.zw);
 
 #ifndef DEPTH
-    oColor = g_f4PointCol[0] * u_diffuse;
+    oColor = color;
     oTexCoord = vec2(0,0);
 #endif
 
@@ -51,7 +60,7 @@ void main()
     gl_Position = vec4(vb, P.zw);
 
 #ifndef DEPTH
-    oColor = g_f4PointCol[0] * u_diffuse;
+    oColor =  color;
     oTexCoord = vec2(0,1);
 #endif
 
@@ -61,7 +70,7 @@ void main()
     gl_Position = vec4(vd, P.zw);
 
 #ifndef DEPTH
-    oColor = g_f4PointCol[0] * u_diffuse;
+    oColor = color;
     oTexCoord = vec2(1,0);
 #endif
 
@@ -71,7 +80,7 @@ void main()
     gl_Position = vec4(vc, P.zw);
 
 #ifndef DEPTH
-    oColor = g_f4PointCol[0] * u_diffuse;
+    oColor = color;
     oTexCoord = vec2(1,1);
 #endif
 

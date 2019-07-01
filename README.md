@@ -1,10 +1,11 @@
+# Sight
+
 | Branch |    Status |
 |--------|-----------|
 | Dev    | [![pipeline status](https://git.ircad.fr/Sight/sight/badges/dev/pipeline.svg)](https://git.ircad.fr/Sight/sight/commits/dev) |
 | Master | [![pipeline status](https://git.ircad.fr/Sight/sight/badges/master/pipeline.svg)](https://git.ircad.fr/Sight/sight/commits/master) |
 
-
-# Description
+## Description
 
 **Sight**, the **S**urgical **I**mage **G**uidance and **H**ealthcare **T**oolkit aims to ease the creation of applications based on medical imaging.
 It includes various features such as 2D and 3D digital image processing, visualization, augmented reality and medical interaction simulation. It runs on many different environments (Windows, linux, macOS), is written in C++, and features rapid interface design using XML files. It is freely available under the LGPL.
@@ -15,7 +16,7 @@ It includes various features such as 2D and 3D digital image processing, visuali
 
 Lots of **tutorials** and **examples** can also be found in the `Samples` directory. The tutorials can help you to learn smoothly how to use **Sight**, detailed steps are described [here](https://sight.pages.ircad.fr/sight-doc/Tutorials/index.html).
 
-## Features
+### Features
 
 * 2D/3D visualization of images, meshes, and many widgets, either with [VTK](https://www.vtk.org/) or [Ogre3D](https://www.ogre3d.org/),
 * Configurable GUI
@@ -27,9 +28,9 @@ Lots of **tutorials** and **examples** can also be found in the `Samples` direct
 * TimeLine data, allowing to store buffers of various data (video, matrices, markers, etc...). These can be used to synchronize these data across time.
 * Data serialization in xml/json/zip
 
-# Applications
+## Applications
 
-## VRRender
+### VRRender
 
 **Sight** comes with **VRRender**, a medical image and segmentation viewer. It supports many import formats including DICOM and VTK.
 
@@ -37,29 +38,29 @@ Lots of **tutorials** and **examples** can also be found in the `Samples` direct
 ![MPR](https://sight.pages.ircad.fr/sight-doc/_images/MPR.png)
 ![3D](https://sight.pages.ircad.fr/sight-doc/_images/3D.png)
 
-
-## ARCalibration
+### ARCalibration
 
 **ARCalibration** is a user-friendly application to calibrate mono and stereo cameras. This software is a must-have since camera calibration is a mandatory step in any AR application.
 
 ![ARCalibration](https://sight.pages.ircad.fr/sight-doc/_images/calibration.png)
 ![ARCalibration](https://sight.pages.ircad.fr/sight-doc/_images/calibrationExt.png)
 
-# Install
+## Install
 
 See [detailed install instructions](https://sight.pages.ircad.fr/sight-doc/Installation/index.html) for each supported platforms :
+
 * [Windows](https://sight.pages.ircad.fr/sight-doc/Installation/src/WindowsInstall.html)
 * [Linux](https://sight.pages.ircad.fr/sight-doc/Installation/src/LinuxInstall.html)
 * [MacOs](https://sight.pages.ircad.fr/sight-doc/Installation/src/MacOSXInstall.html)
 
-# Documentation
+## Documentation
 
 * [Documentation](https://sight.pages.ircad.fr/sight-doc)
 * [Tutorials](https://sight.pages.ircad.fr/sight-doc/Tutorials/index.html)
 * [Doxygen](https://sight.pages.ircad.fr/sight)
 * Former FW4SPL [Blog](http://fw4spl-org.github.io/fw4spl-blog/) (new website coming soon)
 
-# Support
+## Support
 
 Please note that our GitLab is currently only available in read-only access
 for external developers and users. This is a restriction because of the licensing
@@ -73,6 +74,7 @@ or propose [contributions](https://github.com/IRCAD-IHU/sight/pulls).
 
 You can also get live community support on the [gitter chat room](https://gitter.im/IRCAD-IHU/sight-support).
 
-# Annex
+## Annex
 
-* [sight-deps](https://git.ircad.fr/Sight/sight-deps): contains the scripts to compile the external libraries used by **Sight** (Boost, VTK, ITK, Qt, ...)
+* [Artifactory](https://conan.ircad.fr): registry containing the external binary dependencies required by **Sight**.
+* [Conan](https://git.ircad.fr/conan): repositories used to generate conan packages used by **Sight** (Boost, VTK, ITK, Qt, ...).

@@ -1,29 +1,5 @@
-
-#Find all sub-folders containing external libraries
-function(findExtLibDir EXTERNAL_LIBRARIES_DIRECTORIES)
-
-    if(NOT EXTERNAL_LIBRARIES)
-        message(FATAL_ERROR "EXTERNAL_LIBRARIES variable is missing. Please, specify external libraries location to generate CMake projects.")
-    endif()
-
-    file(TO_CMAKE_PATH ${EXTERNAL_LIBRARIES} FWEXTERNAL_LIBRARIES)
-    file(GLOB_RECURSE LIBS ${FWEXTERNAL_LIBRARIES}/*${CMAKE_SHARED_LIBRARY_SUFFIX})
-    list(REMOVE_DUPLICATES LIBS)
-    set(FOLDERS)
-    foreach(LIB ${LIBS})
-        get_filename_component(LIB_DIR "${LIB}" DIRECTORY)
-        list(APPEND FOLDERS ${LIB_DIR})
-    endforeach()
-    list(REMOVE_DUPLICATES FOLDERS)
-    set(${EXTERNAL_LIBRARIES_DIRECTORIES} ${FOLDERS} PARENT_SCOPE)
-endfunction()
-
 #Windows install
 macro(win_install PRJ_NAME)
-
-    if(NOT USE_SYSTEM_LIB AND NOT BUILD_SDK AND NOT USE_CONAN)
-        findExtLibDir(EXTERNAL_LIBRARIES_DIRECTORIES)
-    endif()
 
     set(CPACK_GENERATOR NSIS)
     set(CPACK_SOURCE_GENERATOR ZIP)

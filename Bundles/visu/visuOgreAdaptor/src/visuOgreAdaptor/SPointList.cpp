@@ -90,11 +90,14 @@ SPointList::~SPointList() noexcept
 
 //-----------------------------------------------------------------------------
 
-void visuOgreAdaptor::SPointList::updateVisibility(bool isVisible)
+void SPointList::updateVisibility(bool isVisible)
 {
     m_isVisible = isVisible;
+
     if(m_entity)
     {
+        this->getRenderService()->makeCurrent();
+
         m_entity->setVisible(isVisible);
 
         m_meshGeometry->setVisible(isVisible);
@@ -121,14 +124,15 @@ void SPointList::configuring()
         m_autoResetCamera = config.get<std::string>("autoresetcamera") == "yes";
     }
 
-    if(config.get("fixedSize", false))
-    {
-        m_materialTemplateName = "Billboard_FixedSize";
-    }
-    // An existing Ogre material will be used for this mesh
     if( config.count("materialTemplate"))
     {
+        // An existing Ogre material will be used for this mesh
+        m_customMaterial       = true;
         m_materialTemplateName = config.get<std::string>("materialTemplate");
+    }
+    else if(config.get("fixedSize", false))
+    {
+        m_materialTemplateName = "Billboard_FixedSize";
     }
 
     // The mesh adaptor will pass the texture name to the created material adaptor
@@ -156,6 +160,8 @@ void SPointList::starting()
 {
     this->initialize();
 
+    this->getRenderService()->makeCurrent();
+
     m_meshGeometry = ::std::make_shared< ::fwRenderOgre::Mesh>(this->getID());
     m_meshGeometry->setDynamic(true);
     ::Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
@@ -171,6 +177,11 @@ void SPointList::starting()
         const auto mesh = this->getInput< ::fwData::Mesh >(s_MESH_INPUT);
         if(mesh)
         {
+            if(!m_customMaterial && mesh->getPointColorsArray() != nullptr)
+            {
+                m_materialTemplateName += "_PerPointColor";
+            }
+
             this->updateMesh(mesh);
         }
         else
@@ -184,6 +195,8 @@ void SPointList::starting()
 
 void SPointList::stopping()
 {
+    this->getRenderService()->makeCurrent();
+
     this->unregisterServices();
 
     ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
@@ -203,6 +216,8 @@ void SPointList::stopping()
 
 void SPointList::updating()
 {
+    this->getRenderService()->makeCurrent();
+
     if((!getVisibility() || !this->getRenderService()->isShownOnScreen()))
     {
         return;
