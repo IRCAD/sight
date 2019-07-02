@@ -28,7 +28,6 @@
 
 SelectorDialogs::SelectorDialogs()
 {
-    this->m_hasOption = false;
     Q_EMIT optionChanged();
 }
 

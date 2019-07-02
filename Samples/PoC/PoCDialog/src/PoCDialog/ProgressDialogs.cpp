@@ -26,8 +26,6 @@
 
 ProgressDialogs::ProgressDialogs()
 {
-    m_isOpen      = false;
-    m_addCallback = false;
     Q_EMIT onOpenChanged();
 }
 

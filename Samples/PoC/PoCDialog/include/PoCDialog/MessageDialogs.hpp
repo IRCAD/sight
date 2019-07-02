@@ -48,7 +48,10 @@ public:
 Q_SIGNALS:
     void onResultChanged();
 
-protected:
+protected Q_SLOTS:
+    void open();
+
+private:
     /// Dialog title
     QString m_title;
     /// Dialog box message
@@ -56,11 +59,8 @@ protected:
     /// Text inputed
     QString m_input;
     /// icon of the message dialog
-    int m_icon;
+    int m_icon {0};
     /// the buttons to add to the dialog
-    int m_buttons;
+    int m_buttons {0};
     QString m_result;
-
-protected Q_SLOTS:
-    void open();
 };

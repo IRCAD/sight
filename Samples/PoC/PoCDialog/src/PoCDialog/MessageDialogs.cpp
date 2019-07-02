@@ -44,26 +44,32 @@ MessageDialogs::~MessageDialogs()
 //value of the enum in integer
 typedef const std::map< ::fwGui::dialog::IMessageDialog::Icons, int> MessageDialogQmlIconsType;
 MessageDialogQmlIconsType messageDialogQmlIcons =
-    ::boost::assign::map_list_of(::fwGui::dialog::IMessageDialog::NONE, QMessageBox::NoIcon)
-        (::fwGui::dialog::IMessageDialog::QUESTION, QMessageBox::Question)
-        (::fwGui::dialog::IMessageDialog::INFO, QMessageBox::Information)
-        (::fwGui::dialog::IMessageDialog::WARNING, QMessageBox::Warning)
-        (::fwGui::dialog::IMessageDialog::CRITICAL, QMessageBox::Critical);
+{
+    {::fwGui::dialog::IMessageDialog::NONE, QMessageBox::NoIcon},
+    {::fwGui::dialog::IMessageDialog::QUESTION, QMessageBox::Question},
+    {::fwGui::dialog::IMessageDialog::INFO, QMessageBox::Information},
+    {::fwGui::dialog::IMessageDialog::WARNING, QMessageBox::Warning},
+    {::fwGui::dialog::IMessageDialog::CRITICAL, QMessageBox::Critical}
+};
 typedef const std::map< ::fwGui::dialog::IMessageDialog::Buttons,
                         QMessageBox::StandardButton> MessageDialogQmlButtonType;
 MessageDialogQmlButtonType messageDialogQmlButton =
-    ::boost::assign::map_list_of(::fwGui::dialog::IMessageDialog::OK, QMessageBox::Ok)
-        (::fwGui::dialog::IMessageDialog::CANCEL, QMessageBox::Cancel)
-        (::fwGui::dialog::IMessageDialog::YES, QMessageBox::Yes)
-        (::fwGui::dialog::IMessageDialog::NO, QMessageBox::No);
+{
+    {::fwGui::dialog::IMessageDialog::OK, QMessageBox::Ok},
+    {::fwGui::dialog::IMessageDialog::CANCEL, QMessageBox::Cancel},
+    {::fwGui::dialog::IMessageDialog::YES, QMessageBox::Yes},
+    {::fwGui::dialog::IMessageDialog::NO, QMessageBox::No}
+};
 
 typedef const std::map< QString,
                         ::fwGui::dialog::IMessageDialog::Buttons> ResultDialogQmlButton;
 ResultDialogQmlButton resultDialogQmlButton =
-    ::boost::assign::map_list_of("::fwGui::dialog::IMessageDialog::OK", ::fwGui::dialog::IMessageDialog::OK)
-        ("::fwGui::dialog::IMessageDialog::CANCEL", ::fwGui::dialog::IMessageDialog::CANCEL)
-        ("::fwGui::dialog::IMessageDialog::YES", ::fwGui::dialog::IMessageDialog::YES)
-        ("::fwGui::dialog::IMessageDialog::NO", ::fwGui::dialog::IMessageDialog::NO);
+{
+    {"::fwGui::dialog::IMessageDialog::OK", ::fwGui::dialog::IMessageDialog::OK},
+    {"::fwGui::dialog::IMessageDialog::CANCEL", ::fwGui::dialog::IMessageDialog::CANCEL},
+    {"::fwGui::dialog::IMessageDialog::YES", ::fwGui::dialog::IMessageDialog::YES},
+    {"::fwGui::dialog::IMessageDialog::NO", ::fwGui::dialog::IMessageDialog::NO}
+};
 
 //------------------------------------------------------------------------------
 
@@ -72,7 +78,7 @@ void MessageDialogs::open()
     ::fwGui::dialog::MessageDialog::sptr dialog = ::fwGui::dialog::MessageDialog::New();
     dialog->setTitle(m_title.toStdString());
 
-    for(MessageDialogQmlIconsType::value_type icon :  messageDialogQmlIcons)
+    for(const MessageDialogQmlIconsType::value_type& icon :  messageDialogQmlIcons)
     {
         if (icon.second == m_icon)
         {
@@ -80,7 +86,7 @@ void MessageDialogs::open()
             break;
         }
     }
-    for(MessageDialogQmlButtonType::value_type button :  messageDialogQmlButton)
+    for(const MessageDialogQmlButtonType::value_type& button :  messageDialogQmlButton)
     {
         if (button.second & m_buttons)
         {
@@ -88,8 +94,8 @@ void MessageDialogs::open()
         }
     }
     dialog->setMessage(m_message.toStdString());
-    auto result = dialog->show();
-    for(ResultDialogQmlButton::value_type button :  resultDialogQmlButton)
+    const auto& result = dialog->show();
+    for(const ResultDialogQmlButton::value_type& button :  resultDialogQmlButton)
     {
         if (button.second & result)
         {

@@ -28,7 +28,6 @@
 
 MultiSelectorDialogs::MultiSelectorDialogs()
 {
-    this->m_hasOption = false;
     Q_EMIT optionChanged();
 }
 
@@ -48,14 +47,14 @@ void MultiSelectorDialogs::open()
     std::map< std::string, bool > options;
     for (int i = 0; i < m_options.size(); ++i)
     {
-        auto option = m_options.at(i).toStdString();
-        auto check  = m_checked.at(i);
+        const auto& option = m_options.at(i).toStdString();
+        const auto& check  = m_checked.at(i);
         options.insert(std::pair<std::string, bool>(option, check));
     }
     dialog->setSelections(options);
-    auto results = dialog->show();
+    const auto& results = dialog->show();
     m_result.clear();
-    for (auto result: results)
+    for (const auto& result: results)
     {
         if (result.second)
         {

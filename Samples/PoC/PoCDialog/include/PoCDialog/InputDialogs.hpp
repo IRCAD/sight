@@ -47,7 +47,10 @@ public:
 Q_SIGNALS:
     void onResultChanged();
 
-protected:
+protected Q_SLOTS:
+    void open();
+
+private:
     /// Dialog title
     QString m_title;
     /// Dialog box message
@@ -57,7 +60,4 @@ protected:
 
     /// result of dialog
     QString m_result;
-
-protected Q_SLOTS:
-    void open();
 };

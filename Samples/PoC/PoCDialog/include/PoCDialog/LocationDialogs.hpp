@@ -54,7 +54,10 @@ public:
 Q_SIGNALS:
     void onResultChanged();
 
-protected:
+protected Q_SLOTS:
+    void open();
+
+private:
 
     /// option to save a file enable
     bool m_existing;
@@ -74,7 +77,4 @@ protected:
     QString m_title;
 
     QString m_result;
-
-protected Q_SLOTS:
-    void open();
 };

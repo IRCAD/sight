@@ -48,7 +48,10 @@ public:
 Q_SIGNALS:
     void errorChanged();
 
-protected:
+protected Q_SLOTS:
+    void open();
+
+private:
     /// Dialog box message
     QString m_message;
     /// the Logger list of error
@@ -57,8 +60,5 @@ protected:
     /// title
     QString m_title;
     /// does the Logger has error
-    bool m_hasError;
-
-protected Q_SLOTS:
-    void open();
+    bool m_hasError {false};
 };

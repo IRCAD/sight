@@ -45,12 +45,12 @@ public:
 Q_SIGNALS:
     void onResultChanged();
 
-protected:
+protected Q_SLOTS:
+    void open();
+
+private:
     /// Dialog title
     QString m_title;
     /// Dialog box message
     QString m_message;
-
-protected Q_SLOTS:
-    void open();
 };

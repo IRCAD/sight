@@ -52,21 +52,21 @@ Q_SIGNALS:
     void onResultChanged();
     void onOpenChanged();
 
-protected:
+protected Q_SLOTS:
+    void open();
+    void addPercent(QVariant, QString);
+
+private:
     /// Dialog title
     QString m_title;
     /// Dialog box message
     QString m_message;
     /// to enable button when the dialog is open
-    bool m_isOpen;
+    bool m_isOpen {false};
     /// to enable cancel button
-    bool m_addCallback;
+    bool m_addCallback {false};
 
     QString m_result;
 
     ::fwGui::dialog::ProgressDialog::sptr m_dialog;
-
-protected Q_SLOTS:
-    void open();
-    void addPercent(QVariant, QString);
 };

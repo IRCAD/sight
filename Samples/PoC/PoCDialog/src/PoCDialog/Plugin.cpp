@@ -66,6 +66,7 @@ void Plugin::start()
     qmlRegisterType<ProgressDialogs>("PoCDialog", 1, 0, "PocDialogProgressDialogs");
     qmlRegisterType<PulseProgressDialogs>("PoCDialog", 1, 0, "PocDialogPulseProgressDialogs");
     qmlRegisterType<MultiSelectorDialogs>("PoCDialog", 1, 0, "PocDialogMultiSelectorDialogs");
+
 }
 
 //------------------------------------------------------------------------------
@@ -74,7 +75,7 @@ void Plugin::initialize()
 {
     SPTR(::fwQml::QmlEngine) engine = ::fwQml::QmlEngine::getDefault();
 
-    auto path = ::fwRuntime::getBundleResourceFilePath("PoCDialog", "ui.qml");
+    const auto& path = ::fwRuntime::getBundleResourceFilePath("PoCDialog", "ui.qml");
 
     engine->loadMainComponent(path);
 }

@@ -28,7 +28,6 @@
 
 LoggerDialogs::LoggerDialogs()
 {
-    this->m_hasError = false;
     Q_EMIT errorChanged();
 }
 
@@ -47,8 +46,8 @@ void LoggerDialogs::open()
     // Fill Logger
     for (int i = 0; i < m_errorLevel.size(); ++i)
     {
-        auto level   = m_errorLevel.at(i).toStdString();
-        auto message = m_errorMessage.at(i).toStdString();
+        const auto& level   = m_errorLevel.at(i).toStdString();
+        const auto& message = m_errorMessage.at(i).toStdString();
         if (level == "Critical")
         {
             logger->critical(message);

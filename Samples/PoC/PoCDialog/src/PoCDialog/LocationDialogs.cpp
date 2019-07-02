@@ -74,30 +74,30 @@ void LocationDialogs::open()
 
     for (int i = 0; i < m_filter.size(); ++i)
     {
-        auto name      = m_filter.at(i).toStdString();
-        auto extension = m_filterExt.at(i).toStdString();
+        const auto& name      = m_filter.at(i).toStdString();
+        const auto& extension = m_filterExt.at(i).toStdString();
         dialogFile.addFilter(name, extension);
     }
 
     m_result = "";
     if (!m_multiple)
     {
-        ::fwData::location::SingleFile::sptr result
+        const ::fwData::location::SingleFile::sptr& result
             = ::fwData::location::SingleFile::dynamicCast(dialogFile.show());
         if (result)
         {
-            auto path = result->getPath();
+            const auto& path = result->getPath();
             m_result = QString::fromStdString(path.string());
         }
         Q_EMIT onResultChanged();
     }
     else
     {
-        ::fwData::location::MultiFiles::sptr result
+        const ::fwData::location::MultiFiles::sptr& result
             = ::fwData::location::MultiFiles::dynamicCast(dialogFile.show());
         if (result)
         {
-            auto paths = result->getPaths();
+            const auto& paths = result->getPaths();
             for (const auto& path : paths)
             {
                 m_result += "|" + QString::fromStdString(path.string());

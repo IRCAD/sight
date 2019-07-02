@@ -50,7 +50,10 @@ Q_SIGNALS:
     void onResultChanged();
     void optionChanged();
 
-protected:
+protected Q_SLOTS:
+    void open();
+
+private:
     /// Dialog title
     QString m_title;
     /// Dialog box message
@@ -60,10 +63,7 @@ protected:
     /// Status List of options
     QList<bool> m_checked;
     /// boolean to enable open if we have options
-    bool m_hasOption;
+    bool m_hasOption {false};
 
     QString m_result;
-
-protected Q_SLOTS:
-    void open();
 };
