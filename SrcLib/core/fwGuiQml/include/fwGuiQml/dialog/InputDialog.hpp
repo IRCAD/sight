@@ -83,17 +83,17 @@ Q_SIGNALS:
     void messageChanged();
     void titleChanged();
 
-protected:
+protected Q_SLOTS:
+    /// slot getting the result of the dialog when a button is pressed
+    void resultDialog(const QVariant& msg, bool isOk);
+
+private:
     /// Dialog title
     QString m_title;
     /// Dialog box message
     QString m_message;
     /// Text inputed
     QString m_input;
-
-protected Q_SLOTS:
-    /// slot getting the result of the dialog when a button is pressed
-    void resultDialog(const QVariant& msg, bool isOk);
 };
 } // namespace dialog
 } // namespace fwGuiQml

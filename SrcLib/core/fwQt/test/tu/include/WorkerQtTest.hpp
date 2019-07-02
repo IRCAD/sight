@@ -22,9 +22,6 @@
 
 #pragma once
 
-#ifndef __FWGUIQT_UT_WORKERQTTEST_HPP__
-#define __FWGUIQT_UT_WORKERQTTEST_HPP__
-
 #include <fwCore/base.hpp>
 
 #include <fwThread/Worker.hpp>
@@ -73,5 +70,3 @@ protected:
 
 } //namespace ut
 } //namespace fwGuiQt
-
-#endif //__FWGUIQT_UT_WORKERQTTEST_HPP__

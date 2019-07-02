@@ -43,9 +43,7 @@ namespace dialog
 
 //------------------------------------------------------------------------------
 
-SelectorDialog::SelectorDialog(::fwGui::GuiBaseObject::Key key) :
-    m_message(""),
-    m_title("")
+SelectorDialog::SelectorDialog(::fwGui::GuiBaseObject::Key key)
 {
 }
 
@@ -79,7 +77,8 @@ std::string SelectorDialog::show()
     SPTR(::fwQml::QmlEngine) engine = ::fwQml::QmlEngine::getDefault();
 
     // get the path of the qml ui file in the 'rc' directory
-    auto dialogPath = ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/dialog/SelectorDialog.qml");
+    const auto& dialogPath = ::fwRuntime::getLibraryResourceFilePath(
+        "fwGuiQml-" FWGUIQML_VER "/dialog/SelectorDialog.qml");
     // set the root context for the model
     engine->getRootContext()->setContextProperty("selectorModel", &model);
     // set the context for the new component
@@ -87,6 +86,8 @@ std::string SelectorDialog::show()
     context->setContextProperty("selectorDialog", this);
     // load the qml ui component
     QObject* dialog = engine->createComponent(dialogPath, context);
+    // keep window to destroy it
+    QObject* window = dialog;
 
     dialog->setProperty("title", m_title);
     dialog = dialog->findChild<QObject*>("dialog");
@@ -94,7 +95,7 @@ std::string SelectorDialog::show()
     // create all radiobutton
     model.addRole(Qt::UserRole + 1, "textOption");
     model.addRole(Qt::UserRole + 2, "check");
-    for(std::string selection :  m_selections)
+    for(const std::string& selection :  m_selections)
     {
         QHash<QByteArray, QVariant> data;
         data.insert("check", false);
@@ -115,6 +116,8 @@ std::string SelectorDialog::show()
     connect(dialog, SIGNAL(reset()), &loop, SLOT(quit()));
     QMetaObject::invokeMethod(dialog, "open");
     loop.exec();
+
+    delete window;
     return m_selection.toStdString();
 }
 

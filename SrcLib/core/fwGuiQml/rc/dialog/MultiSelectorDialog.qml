@@ -16,6 +16,8 @@ Window {
         id: dialog
         objectName: "dialog"
         modal: true
+        width: window.width
+        height: window.height
         standardButtons: Dialog.Ok | Dialog.Cancel
 
         ColumnLayout {
@@ -31,7 +33,6 @@ Window {
                 property int initSize: 0
 
                 Column {
-                    spacing: 10
                     Layout.fillWidth: true
 
                     // the Repeater will create all the checkbox using the c++ model

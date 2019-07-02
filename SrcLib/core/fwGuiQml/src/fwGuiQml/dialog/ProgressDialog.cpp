@@ -49,16 +49,12 @@ namespace dialog
 
 ProgressDialog::ProgressDialog( ::fwGui::GuiBaseObject::Key key, const std::string& title, const std::string& message)
 {
-    m_visible     = false;
-    m_hasCallback = true;
-    m_window      = nullptr;
-
     // get the qml engine QmlApplicationEngine
     SPTR(::fwQml::QmlEngine) engine = ::fwQml::QmlEngine::getDefault();
     // find if toolBar exist on the ApplicationWindow
-    auto rootObjects = engine->getRootObjects();
-    QObject* toolBar = nullptr;
-    for (auto root: rootObjects)
+    const auto& rootObjects = engine->getRootObjects();
+    QObject* toolBar        = nullptr;
+    for (const auto& root: rootObjects)
     {
         toolBar = root->findChild<QObject*>("toolBar");
         if (toolBar)
@@ -71,7 +67,8 @@ ProgressDialog::ProgressDialog( ::fwGui::GuiBaseObject::Key key, const std::stri
     if (toolBar)
     {
         // get the path of the qml ui file in the 'rc' directory
-        auto dialogPath = ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/dialog/Progress.qml");
+        const auto& dialogPath =
+            ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/dialog/Progress.qml");
         // load the qml ui component
         m_dialog = engine->createComponent(dialogPath);
         QQuickItem* item = qobject_cast<QQuickItem*>(m_dialog);
@@ -85,7 +82,7 @@ ProgressDialog::ProgressDialog( ::fwGui::GuiBaseObject::Key key, const std::stri
     else
     {
         // get the path of the qml ui file in the 'rc' directory
-        auto dialogPath =
+        const auto& dialogPath =
             ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/dialog/ProgressDialog.qml");
         // load the qml ui component
         m_dialog = engine->createComponent(dialogPath);
@@ -104,7 +101,14 @@ ProgressDialog::ProgressDialog( ::fwGui::GuiBaseObject::Key key, const std::stri
 
 ProgressDialog::~ProgressDialog()
 {
-    delete m_dialog;
+    if (m_window)
+    {
+        delete m_window;
+    }
+    else
+    {
+        delete m_dialog;
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -121,7 +125,7 @@ void ProgressDialog::operator()(float percent, std::string msg)
         }
         return;
     }
-    int value = int(percent*100);
+    const int& value = static_cast<int>(percent*100);
     if(value != this->m_value)
     {
         OSLM_TRACE( "ProgressDialog msg" << msg << " : " << value <<"%");
@@ -142,8 +146,6 @@ void ProgressDialog::setTitle(const std::string& title)
     if (m_window)
     {
         Q_EMIT titleChanged();
-//        m_window->setProperty("title", QString::fromStdString(title));
-//        QQmlProperty(m_dialog, "title").write(QString::fromStdString(title));
     }
 }
 
@@ -163,7 +165,6 @@ void ProgressDialog::setMessage(const std::string& msg)
     if (m_visible)
     {
         QMetaObject::invokeMethod(m_dialog, "changeValue", Q_ARG(QVariant, message), Q_ARG(QVariant, qreal(m_value)));
-        //m_messageObject->setProperty("text", message);
     }
 }
 

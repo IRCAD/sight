@@ -76,13 +76,15 @@ void PulseProgressDialog::show()
     SPTR(::fwQml::QmlEngine) engine = ::fwQml::QmlEngine::getDefault();
 
     // get the path of the qml ui file in the 'rc' directory
-    auto dialogPath =
+    const auto& dialogPath =
         ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/dialog/PulseProgressDialog.qml");
     // set the context for the new component
     QSharedPointer<QQmlContext> context = QSharedPointer<QQmlContext>(new QQmlContext(engine->getRootContext()));
     context->setContextProperty("pulseProgressDialog", this);
     // load the qml ui component
     QObject* dialog = engine->createComponent(dialogPath, context);
+    // keep window to destroy it
+    QObject* window = dialog;
 
     // Create a QFutureWatcher and connect signals and slots.
     QFutureWatcher<void> futureWatcher;
@@ -104,7 +106,7 @@ void PulseProgressDialog::show()
     {
         futureWatcher.cancel();
     }
-    delete dialog;
+    delete window;
 }
 
 //------------------------------------------------------------------------------

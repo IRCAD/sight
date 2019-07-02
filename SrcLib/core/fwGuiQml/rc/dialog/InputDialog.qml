@@ -9,7 +9,7 @@ import guiQml 1.0
 Window {
     id: window
     width: 500
-    height: 300
+    height: 400
     modality: Qt.ApplicationModal
     // flags to erase the close button
     flags: Qt.CustomizeWindowHint | Qt.WindowTitleHint
@@ -18,8 +18,8 @@ Window {
         objectName: "dialog"
         parent: ApplicationWindow.overlay
         modal: true
-        width: 500
-        height: 300
+        width: window.width
+        height: window.height
         standardButtons: Dialog.Cancel | Dialog.Ok
 
         ColumnLayout {

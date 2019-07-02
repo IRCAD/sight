@@ -75,17 +75,18 @@ Q_SIGNALS:
 
 protected Q_SLOTS:
     void cancelPressed() override;
-protected:
+
+private:
     /// the progress dialog to delete it during the destruction of the class
-    QObject* m_dialog;
+    QObject* m_dialog {nullptr};
     /// the window of the progress dialog to delete it during the destruction of the class
-    QObject* m_window;
+    QObject* m_window {nullptr};
     /// visible state of the progress dialog
-    bool m_visible;
+    bool m_visible {false};
     /// title string
     QString m_title;
     /// boolean to enable Cancel button
-    bool m_hasCallback;
+    bool m_hasCallback {true};
 };
 } // namespace dialog
 } // namespace fwGuiQml

@@ -23,13 +23,15 @@
 #pragma once
 
 #include <QAbstractTableModel>
-#include <Qt>
 
 namespace fwGuiQml
 {
 namespace model
 {
 
+/**
+ * @brief Create a generic table model for qml
+ */
 class RoleTableModel : public QAbstractTableModel
 {
 Q_OBJECT

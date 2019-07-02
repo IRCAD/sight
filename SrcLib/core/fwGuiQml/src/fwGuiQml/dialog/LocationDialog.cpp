@@ -50,9 +50,7 @@ namespace dialog
 
 //------------------------------------------------------------------------------
 
-LocationDialog::LocationDialog(::fwGui::GuiBaseObject::Key key) :
-    m_style(::fwGui::dialog::ILocationDialog::NONE),
-    m_type(::fwGui::dialog::ILocationDialog::SINGLE_FILE)
+LocationDialog::LocationDialog(::fwGui::GuiBaseObject::Key key)
 {
 }
 
@@ -60,15 +58,16 @@ LocationDialog::LocationDialog(::fwGui::GuiBaseObject::Key key) :
 
 ::fwData::location::ILocation::sptr LocationDialog::show()
 {
-    QString caption                             = QString::fromStdString(this->getTitle());
+    const QString& caption                      = QString::fromStdString(this->getTitle());
     const ::boost::filesystem::path defaultPath = this->getDefaultLocation();
-    QString path                                = QString::fromStdString(defaultPath.string());
-    QStringList filter                          = this->fileFilters();
+    const QString& path                         = QString::fromStdString(defaultPath.string());
+    const QStringList& filter                   = this->fileFilters();
 
     // get the qml engine QmlApplicationEngine
     SPTR(::fwQml::QmlEngine) engine = ::fwQml::QmlEngine::getDefault();
     // get the path of the qml ui file in the 'rc' directory
-    auto dialogPath = ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/dialog/LocationDialog.qml");
+    const auto& dialogPath = ::fwRuntime::getLibraryResourceFilePath(
+        "fwGuiQml-" FWGUIQML_VER "/dialog/LocationDialog.qml");
     // set the context for the new component
     QSharedPointer<QQmlContext> context = QSharedPointer<QQmlContext>(new QQmlContext(engine->getRootContext()));
     context->setContextProperty("locationDialog", this);
@@ -129,12 +128,7 @@ LocationDialog::LocationDialog(::fwGui::GuiBaseObject::Key key) :
 
 bool LocationDialog::eventFilter(QObject* watched, QEvent* event)
 {
-    if(event->type() == QEvent::Paint || event->spontaneous())
-    {
-        return false;
-    }
-
-    return true;
+    return (event->type() != QEvent::Paint && !event->spontaneous());
 }
 
 //------------------------------------------------------------------------------
@@ -151,7 +145,7 @@ void LocationDialog::resultDialog(const QVariant& msg)
         {
             ::fwData::location::MultiFiles::sptr multifiles = ::fwData::location::MultiFiles::New();
             std::vector< ::boost::filesystem::path > paths;
-            for (QUrl filename : files)
+            for (const QUrl& filename : files)
             {
                 ::boost::filesystem::path bpath( filename.toLocalFile().toStdString() );
                 paths.push_back(bpath);
@@ -179,23 +173,39 @@ void LocationDialog::setType( ::fwGui::dialog::ILocationDialog::Types type )
 
 ::fwGui::dialog::ILocationDialog&  LocationDialog::setOption( ::fwGui::dialog::ILocationDialog::Options option)
 {
-    if ( option == ::fwGui::dialog::ILocationDialog::WRITE )
+    switch (option)
     {
-        m_style = (::fwGui::dialog::ILocationDialog::Options) (m_style & ~::fwGui::dialog::ILocationDialog::READ);
-        m_style = (::fwGui::dialog::ILocationDialog::Options) (m_style | ::fwGui::dialog::ILocationDialog::WRITE);
+        case ::fwGui::dialog::ILocationDialog::WRITE:
+            m_style =
+                static_cast< ::fwGui::dialog::ILocationDialog::Options >(m_style &
+                                                                         ~::fwGui::dialog::ILocationDialog::READ);
+            m_style =
+                static_cast< ::fwGui::dialog::ILocationDialog::Options >(m_style |
+                                                                         ::fwGui::dialog::ILocationDialog::WRITE);
+            break;
+        case ::fwGui::dialog::ILocationDialog::READ:
+            m_style =
+                static_cast< ::fwGui::dialog::ILocationDialog::Options >(m_style &
+                                                                         ~::fwGui::dialog::ILocationDialog::WRITE);
+            m_style =
+                static_cast< ::fwGui::dialog::ILocationDialog::Options >(m_style |
+                                                                         ::fwGui::dialog::ILocationDialog::READ);
+            break;
+        case ::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST:
+            m_style =
+                static_cast< ::fwGui::dialog::ILocationDialog::Options >(m_style |
+                                                                         ::fwGui::dialog::ILocationDialog::
+                                                                         FILE_MUST_EXIST);
+            break;
+        default:
+            m_style =
+                static_cast< ::fwGui::dialog::ILocationDialog::Options >(m_style &
+                                                                         ~::fwGui::dialog::ILocationDialog::READ);
+            m_style =
+                static_cast< ::fwGui::dialog::ILocationDialog::Options >(m_style |
+                                                                         ::fwGui::dialog::ILocationDialog::WRITE);
+            break;
     }
-    else if ( option == ::fwGui::dialog::ILocationDialog::READ )
-    {
-        m_style = (::fwGui::dialog::ILocationDialog::Options) (m_style & ~::fwGui::dialog::ILocationDialog::WRITE);
-        m_style = (::fwGui::dialog::ILocationDialog::Options) (m_style | ::fwGui::dialog::ILocationDialog::READ);
-    }
-    else if ( option == ::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST )
-    {
-        m_style =
-            (::fwGui::dialog::ILocationDialog::Options) (m_style |
-                                                         ::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST);
-    }
-
     return *this;
 }
 
@@ -208,16 +218,15 @@ void LocationDialog::addFilter(const std::string& filterName, const std::string&
 
 //------------------------------------------------------------------------------
 
-QStringList LocationDialog::fileFilters()
+const QStringList LocationDialog::fileFilters()
 {
     QStringList result;
-    std::vector< std::pair < std::string, std::string > >::const_iterator iter;
-    for ( iter = m_filters.begin(); iter != m_filters.end(); ++iter)
+    for ( const auto& filter : m_filters)
     {
-        std::string filterName   = iter->first;
-        std::string rawWildcards = iter->second;
-        QString qFilterName      = QString::fromStdString(filterName);
-        QString qRawWildcards    = QString::fromStdString(rawWildcards);
+        const std::string& filterName   = filter.first;
+        const std::string& rawWildcards = filter.second;
+        const QString& qFilterName      = QString::fromStdString(filterName);
+        const QString& qRawWildcards    = QString::fromStdString(rawWildcards);
 
         result += qFilterName +" (" +  qRawWildcards +")";
     }
@@ -229,13 +238,12 @@ QStringList LocationDialog::fileFilters()
 std::string LocationDialog::getCurrentSelection() const
 {
     std::string extension;
-    std::vector< std::pair < std::string, std::string > >::const_iterator iter;
-    for ( iter = m_filters.begin(); iter != m_filters.end(); ++iter)
+    for (const auto& filter : m_filters)
     {
-        const std::string& filterName       = iter->first;
-        const std::string& rawWildcards     = iter->second;
+        const std::string& filterName       = filter.first;
+        const std::string& rawWildcards     = filter.second;
         const std::string& availableFilters = filterName + " (" +  rawWildcards + ")";
-        if (!m_wildcard.compare(availableFilters) && iter != m_filters.begin())
+        if (!m_wildcard.compare(availableFilters))
         {
             extension = &rawWildcards[1];
             break;
@@ -246,5 +254,6 @@ std::string LocationDialog::getCurrentSelection() const
 }
 
 //------------------------------------------------------------------------------
+
 } // namespace dialog
 } //namespace fwGuiQml

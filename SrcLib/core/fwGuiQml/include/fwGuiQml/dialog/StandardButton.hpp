@@ -84,7 +84,7 @@ Q_SIGNALS:
     /// notify the qml of property change
     void buttonChanged();
 
-protected:
+private:
 
     /// Button mask
     ButtonList m_button;

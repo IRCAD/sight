@@ -46,26 +46,28 @@ namespace dialog
 //value of the enum in QMessageBox
 typedef const std::map< ::fwGui::dialog::IMessageDialog::Icons, std::string> MessageDialogQmlIconsType;
 MessageDialogQmlIconsType messageDialogQmlIcons =
-    ::boost::assign::map_list_of(::fwGui::dialog::IMessageDialog::NONE, "")
-        (::fwGui::dialog::IMessageDialog::QUESTION, "fwGuiQml-" FWGUIQML_VER "/question.svg")
-        (::fwGui::dialog::IMessageDialog::INFO, "fwGuiQml-" FWGUIQML_VER "/information.svg")
-        (::fwGui::dialog::IMessageDialog::WARNING, "fwGuiQml-" FWGUIQML_VER "/warning.svg")
-        (::fwGui::dialog::IMessageDialog::CRITICAL, "fwGuiQml-" FWGUIQML_VER "/critical.svg");
+{
+    {::fwGui::dialog::IMessageDialog::NONE, ""},
+    {::fwGui::dialog::IMessageDialog::QUESTION, "fwGuiQml-" FWGUIQML_VER "/question.svg"},
+    {::fwGui::dialog::IMessageDialog::INFO, "fwGuiQml-" FWGUIQML_VER "/information.svg"},
+    {::fwGui::dialog::IMessageDialog::WARNING, "fwGuiQml-" FWGUIQML_VER "/warning.svg"},
+    {::fwGui::dialog::IMessageDialog::CRITICAL, "fwGuiQml-" FWGUIQML_VER "/critical.svg"}
+};
 
 // value of the enum in int value of Dialog
 typedef const std::map< ::fwGui::dialog::IMessageDialog::Buttons,
                         StandardButton::ButtonList> MessageDialogQmlButtonType;
 MessageDialogQmlButtonType messageDialogQmlButton =
-    ::boost::assign::map_list_of(::fwGui::dialog::IMessageDialog::OK, StandardButton::ButtonList::Ok)
-        (::fwGui::dialog::IMessageDialog::CANCEL, StandardButton::ButtonList::Cancel)
-        (::fwGui::dialog::IMessageDialog::YES, StandardButton::ButtonList::Yes)
-        (::fwGui::dialog::IMessageDialog::NO, StandardButton::ButtonList::No);
+{
+    {::fwGui::dialog::IMessageDialog::OK, StandardButton::ButtonList::Ok},
+    {::fwGui::dialog::IMessageDialog::CANCEL, StandardButton::ButtonList::Cancel},
+    {::fwGui::dialog::IMessageDialog::YES, StandardButton::ButtonList::Yes},
+    {::fwGui::dialog::IMessageDialog::NO, StandardButton::ButtonList::No}
+};
 
 //------------------------------------------------------------------------------
 
-MessageDialog::MessageDialog(::fwGui::GuiBaseObject::Key key) :
-    m_buttons(::fwGui::dialog::IMessageDialog::NOBUTTON),
-    m_icon(::fwGui::dialog::IMessageDialog::NONE)
+MessageDialog::MessageDialog(::fwGui::GuiBaseObject::Key key)
 {
     qmlRegisterType<StandardButton>("Dialog", 1, 0, "StandardButton");
 }
@@ -124,16 +126,18 @@ void MessageDialog::setDefaultButton(::fwGui::dialog::IMessageDialog::Buttons bu
     SLM_ASSERT("Unknown Icon", iterIcon != messageDialogQmlIcons.end());
     // get the qml engine QmlApplicationEngine
     SPTR(::fwQml::QmlEngine) engine = ::fwQml::QmlEngine::getDefault();
-    m_clicked                       = ::fwGui::dialog::IMessageDialog::NOBUTTON;
     std::string icon = iterIcon->second;
 
     // get the path of the qml ui file in the 'rc' directory
-    auto dialogPath = ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/dialog/MessageDialog.qml");
+    const auto& dialogPath = ::fwRuntime::getLibraryResourceFilePath(
+        "fwGuiQml-" FWGUIQML_VER "/dialog/MessageDialog.qml");
     // set the context for the new component
     QSharedPointer<QQmlContext> context = QSharedPointer<QQmlContext>(new QQmlContext(engine->getRootContext()));
     context->setContextProperty("messageDialog", this);
     // load the qml ui component
     QObject* dialog = engine->createComponent(dialogPath, context);
+    // keep window to destroy it
+    QObject* window = dialog;
 
     dialog->setProperty("title", m_title);
     dialog = dialog->findChild<QObject*>("dialog");
@@ -147,8 +151,6 @@ void MessageDialog::setDefaultButton(::fwGui::dialog::IMessageDialog::Buttons bu
     }
     emitIcon(QUrl::fromLocalFile(QString::fromStdString(pathIcon.string())));
 
-//    dialog->setProperty("icon", icon);
-
     emitButtons(buttonSetting);
     QEventLoop loop;
     //slot to retrieve the result and open the dialog with invoke
@@ -157,7 +159,7 @@ void MessageDialog::setDefaultButton(::fwGui::dialog::IMessageDialog::Buttons bu
     connect(dialog, SIGNAL(reset()), &loop, SLOT(quit()));
     QMetaObject::invokeMethod(dialog, "open");
     loop.exec();
-    delete dialog;
+    delete window;
     return m_clicked;
 }
 

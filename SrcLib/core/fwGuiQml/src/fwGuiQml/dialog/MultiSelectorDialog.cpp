@@ -43,9 +43,7 @@ namespace dialog
 
 //------------------------------------------------------------------------------
 
-MultiSelectorDialog::MultiSelectorDialog(::fwGui::GuiBaseObject::Key key) :
-    m_message(""),
-    m_title("")
+MultiSelectorDialog::MultiSelectorDialog(::fwGui::GuiBaseObject::Key key)
 {
 }
 
@@ -79,7 +77,7 @@ void MultiSelectorDialog::setTitle(std::string _title)
     SPTR(::fwQml::QmlEngine) engine = ::fwQml::QmlEngine::getDefault();
 
     // get the path of the qml ui file in the 'rc' directory
-    auto dialogPath =
+    const auto& dialogPath =
         ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/dialog/MultiSelectorDialog.qml");
     // set the root context for the model
     engine->getRootContext()->setContextProperty("multiSelectorModel", &model);
@@ -88,6 +86,8 @@ void MultiSelectorDialog::setTitle(std::string _title)
     context->setContextProperty("multiSelectorDialog", this);
     // load the qml ui component
     QObject* dialog = engine->createComponent(dialogPath, context);
+    // keep window to destroy it
+    QObject* window = dialog;
 
     dialog->setProperty("title", m_title);
 
@@ -95,7 +95,7 @@ void MultiSelectorDialog::setTitle(std::string _title)
     // fill the repeater for each checkbox that has to be created
     model.addRole(Qt::UserRole + 1, "textOption");
     model.addRole(Qt::UserRole + 2, "check");
-    for( Selections::value_type selection :  m_selections)
+    for( const Selections::value_type& selection :  m_selections)
     {
         QHash<QByteArray, QVariant> data;
         data.insert("textOption", QString::fromStdString(selection.first));
@@ -116,7 +116,7 @@ void MultiSelectorDialog::setTitle(std::string _title)
     QMetaObject::invokeMethod(dialog, "open");
     loop.exec();
 
-    delete dialog;
+    delete window;
     return m_selections;
 }
 
@@ -124,7 +124,7 @@ void MultiSelectorDialog::setTitle(std::string _title)
 
 void MultiSelectorDialog::resultDialog(QVariant checkList, bool state)
 {
-    for( Selections::value_type selection :  m_selections)
+    for( const Selections::value_type& selection :  m_selections)
     {
         m_selections[selection.first] = false;
     }
@@ -133,7 +133,7 @@ void MultiSelectorDialog::resultDialog(QVariant checkList, bool state)
         // retreive each check state of the selection list
         QList<QVariant> checkListState = checkList.toList();
         int index                      = 0;
-        for( Selections::value_type selection :  m_selections)
+        for( const Selections::value_type& selection :  m_selections)
         {
             m_selections[selection.first] = checkListState[index].toBool();
             index++;

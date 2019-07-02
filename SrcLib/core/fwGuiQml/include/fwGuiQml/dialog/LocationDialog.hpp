@@ -66,17 +66,18 @@ public:
 
     /// Set the extension of locationDialog to open example: addFilter("images","*.png *.jpg");
     FWGUIQML_API void addFilter(const std::string& filterName, const std::string& wildcardList ) override;
-protected:
+protected Q_SLOTS:
+    /// slot getting the result of the dialog when a button is pressed
+    void resultDialog(const QVariant& msg);
 
-    ::fwGui::dialog::ILocationDialog::Options m_style;
-    ::fwGui::dialog::ILocationDialog::Types m_type;
+private:
+
+    ::fwGui::dialog::ILocationDialog::Options m_style {::fwGui::dialog::ILocationDialog::NONE};
+    ::fwGui::dialog::ILocationDialog::Types m_type {::fwGui::dialog::ILocationDialog::SINGLE_FILE};
     std::vector< std::pair< std::string, std::string > > m_filters;
 
     /// helper to transform m_filters into qml encoding ("BMP and GIF files (*.bmp *.gif);;PNG files (*.png)"
-    QStringList fileFilters();
-
-    /// Gets the current extension file selection
-    FWGUIQML_API std::string getCurrentSelection() const override;
+    const QStringList fileFilters();
 
     std::string m_wildcard;
     ::fwData::location::ILocation::sptr m_location;
@@ -84,12 +85,10 @@ protected:
     /// the filter list and the current filter selected
     QString m_filterSelected;
 
+    std::string getCurrentSelection() const override;
+
     /// event filter for Mac
     bool eventFilter(QObject* watched, QEvent* event) override;
-
-protected Q_SLOTS:
-    /// slot getting the result of the dialog when a button is pressed
-    void resultDialog(const QVariant& msg);
 };
 } // namespace dialog
 } // namespace fwGuiQml

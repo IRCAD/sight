@@ -42,8 +42,7 @@ namespace dialog
 
 //------------------------------------------------------------------------------
 
-InputDialog::InputDialog(::fwGui::GuiBaseObject::Key key) :
-    m_input("")
+InputDialog::InputDialog(::fwGui::GuiBaseObject::Key key)
 {
 }
 
@@ -81,13 +80,16 @@ std::string InputDialog::getInput()
     // get the qml engine QmlApplicationEngine
     SPTR(::fwQml::QmlEngine) engine = ::fwQml::QmlEngine::getDefault();
     // get the path of the qml ui file in the 'rc' directory
-    auto dialogPath = ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/dialog/InputDialog.qml");
+    const auto& dialogPath =
+        ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/dialog/InputDialog.qml");
 
     // set the context for the new component
     QSharedPointer<QQmlContext> context = QSharedPointer<QQmlContext>(new QQmlContext(engine->getRootContext()));
     context->setContextProperty("inputDialog", this);
     // load the qml ui component
     QObject* dialog = engine->createComponent(dialogPath, context);
+    // keep window to destroy it
+    QObject* window = dialog;
 
     dialog->setProperty("title", m_title);
     Q_EMIT messageChanged();
@@ -102,7 +104,7 @@ std::string InputDialog::getInput()
     QMetaObject::invokeMethod(dialog, "open");
     loop.exec();
 
-    delete dialog;
+    delete window;
     return m_input.toStdString();
 }
 

@@ -24,8 +24,6 @@
 
 #include "fwGuiQml/model/RoleTableModel.hpp"
 
-#include <fwCore/base.hpp>
-
 #include <fwGui/registry/macros.hpp>
 
 #include <fwQml/QmlEngine.hpp>
@@ -36,7 +34,6 @@
 #include <boost/foreach.hpp>
 
 #include <QGuiApplication>
-#include <Qt>
 
 fwGuiRegisterMacro( ::fwGuiQml::dialog::LoggerDialog, ::fwGui::dialog::ILoggerDialog::REGISTRY_KEY );
 
@@ -88,7 +85,8 @@ bool LoggerDialog::show()
     ::fwGuiQml::model::RoleTableModel model;
 
     // get the path of the qml ui file in the 'rc' directory
-    auto dialogPath = ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/dialog/LoggerDialog.qml");
+    const auto& dialogPath =
+        ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/dialog/LoggerDialog.qml");
     // set the root context for the model
     engine->getRootContext()->setContextProperty("loggerModel", &model);
 
@@ -97,6 +95,8 @@ bool LoggerDialog::show()
     context->setContextProperty("loggerDialog", this);
     // load the qml ui component
     QObject* dialog = engine->createComponent(dialogPath, context);
+    // keep window to destroy it
+    QObject* window = dialog;
 
     dialog->setProperty("title", m_title);
 
@@ -105,19 +105,19 @@ bool LoggerDialog::show()
     // set the icon of the biggest type of error
     auto information =
         ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/information.svg");
-    if (!boost::filesystem::exists(information))
+    if (! ::boost::filesystem::exists(information))
     {
         information = "";
     }
     auto warning =
         ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/warning.svg");
-    if (!boost::filesystem::exists(warning))
+    if (! ::boost::filesystem::exists(warning))
     {
         warning = "";
     }
     auto critical =
         ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/critical.svg");
-    if (!boost::filesystem::exists(critical))
+    if (! ::boost::filesystem::exists(critical))
     {
         critical = "";
     }
@@ -144,13 +144,13 @@ bool LoggerDialog::show()
     // get the icon of the details checkbox
     auto detailshidden =
         ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/details-hidden.svg");
-    if (!boost::filesystem::exists(detailshidden))
+    if (! ::boost::filesystem::exists(detailshidden))
     {
         detailshidden = "";
     }
     auto detailsshown =
         ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/details-shown.svg");
-    if (!boost::filesystem::exists(detailsshown))
+    if (! ::boost::filesystem::exists(detailsshown))
     {
         detailsshown = "";
     }
@@ -195,7 +195,7 @@ bool LoggerDialog::show()
     QMetaObject::invokeMethod(dialog, "open");
     loop.exec();
 
-    delete dialog;
+    delete window;
     return m_isOk;
 }
 

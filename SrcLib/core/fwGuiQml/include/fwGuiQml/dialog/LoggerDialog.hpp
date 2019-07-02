@@ -106,7 +106,7 @@ private:
     ::fwLog::Logger::sptr m_logger;
 
     /// get pushed button and clicked one
-    bool m_isOk;
+    bool m_isOk {false};
 
     /// Resume the biggest error get with an icon
     QUrl m_icon;

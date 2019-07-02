@@ -70,7 +70,7 @@ protected Q_SLOTS:
     /// slot to notify the future watcher to cancel the progress
     void onCanceled();
 
-protected:
+private:
     /// title of the progress dialog
     QString m_title;
     /// message of the progress dialog

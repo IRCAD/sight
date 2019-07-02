@@ -23,7 +23,6 @@
 #pragma once
 
 #include <QAbstractListModel>
-#include <Qt>
 
 namespace fwGuiQml
 {

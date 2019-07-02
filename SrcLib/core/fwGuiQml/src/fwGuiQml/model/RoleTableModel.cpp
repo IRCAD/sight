@@ -24,8 +24,6 @@
 
 #include <fwCore/spyLog.hpp>
 
-#include <QDebug>
-
 namespace fwGuiQml
 {
 namespace model
