@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -32,6 +32,7 @@
 #include <fwData/Boolean.hpp>
 #include <fwData/Material.hpp>
 #include <fwData/Mesh.hpp>
+#include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/Reconstruction.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
 
@@ -117,6 +118,8 @@ void SModelSeries::updating()
     const auto modelSeries = this->getInput< ::fwMedData::ModelSeries >(s_MODEL_INPUT);
 
     this->stopping();
+
+    ::fwData::mt::ObjectReadLock lock(modelSeries);
 
     // showRec indicates if we have to show the associated reconstructions or not
     const bool showRec = modelSeries->getField("ShowReconstructions", ::fwData::Boolean::New(true))->value();
