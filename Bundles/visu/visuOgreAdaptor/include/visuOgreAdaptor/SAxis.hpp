@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2018 IRCAD France
- * Copyright (C) 2017-2018 IHU Strasbourg
+ * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -66,7 +66,7 @@ class VISUOGREADAPTOR_CLASS_API SAxis : public ::fwRenderOgre::IAdaptor,
                                         public ::fwRenderOgre::ITransformable
 {
 public:
-    fwCoreServiceClassDefinitionsMacro((SAxis)(::fwRenderOgre::IAdaptor));
+    fwCoreServiceClassDefinitionsMacro((SAxis)(::fwRenderOgre::IAdaptor))
 
     /// Constructor: Sets default parameters and initializes necessary members.
     VISUOGREADAPTOR_API SAxis() noexcept;
@@ -109,17 +109,24 @@ private:
     /// Handles the visibility of axis labels
     bool m_enableLabel { true };
 
+    /// Line along the x axis
     ::Ogre::ManualObject* xLine { nullptr };
+    /// Line along the y axis
     ::Ogre::ManualObject* yLine { nullptr };
+    /// Line along the z axis
     ::Ogre::ManualObject* zLine { nullptr };
 
+    /// Arrow of the x axis
     ::Ogre::ManualObject* xCone { nullptr };
+    /// Arrow of the y axis
     ::Ogre::ManualObject* yCone { nullptr };
+    /// Arrow of the z axis
     ::Ogre::ManualObject* zCone { nullptr };
 
     /// Scene node where all of our manual objects are attached
     ::Ogre::SceneNode* m_sceneNode { nullptr };
 
+    /// Labels attached to each axis
     std::array< ::fwRenderOgre::Text*, 3> m_axisLabels {{ nullptr, nullptr, nullptr }};
 };
 

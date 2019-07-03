@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -58,6 +58,8 @@ Window::Window(QWindow* parent) :
 {
     setAnimating(false);
     installEventFilter(this);
+
+    connect(this,  &Window::screenChanged, this, &Window::onScreenChanged);
 }
 
 // ----------------------------------------------------------------------------
@@ -245,7 +247,7 @@ void Window::render()
 std::pair<int, int> Window::getDeviceCoordinates(int _x, int _y)
 {
 #ifdef Q_OS_MAC
-    const qreal pixelRatio = qApp->devicePixelRatio();
+    const qreal pixelRatio = this->devicePixelRatio();
     const int x            = static_cast<int>(std::ceil(_x * pixelRatio));
     const int y            = static_cast<int>(std::ceil(_y * pixelRatio));
 #else
@@ -300,13 +302,6 @@ bool Window::event(QEvent* event)
 void Window::exposeEvent(QExposeEvent* exposeEvent)
 {
     const bool nonEmptyRegion = !exposeEvent->region().isEmpty();
-#if defined(__APPLE__)
-    if(nonEmptyRegion)
-    {
-        // This allows correct rendering on dual screen displays when dragging the window to another screen.
-        this->ogreResize(this->size());
-    }
-#endif
 
     // Force rendering
     this->renderNow(nonEmptyRegion);
@@ -380,7 +375,15 @@ void Window::keyReleaseEvent(QKeyEvent* e)
 {
     ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo info;
     info.interactionType = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::KEYRELEASE;
-    info.key             = e->key();
+    switch(e->key())
+    {
+        case ::Qt::Key_Shift: info.key   = ::fwRenderOgre::interactor::IInteractor::SHIFT; break;
+        case ::Qt::Key_Control: info.key = ::fwRenderOgre::interactor::IInteractor::CONTROL; break;
+        case ::Qt::Key_Meta: info.key    = ::fwRenderOgre::interactor::IInteractor::META; break;
+        case ::Qt::Key_Alt: info.key     = ::fwRenderOgre::interactor::IInteractor::ALT; break;
+        default:
+            info.key = e->key();
+    }
 
     Q_EMIT interacted(info);
 }
@@ -603,6 +606,22 @@ void Window::ogreResize(const QSize& newSize)
     Q_EMIT interacted(info);
 
     this->requestRender();
+}
+
+// ----------------------------------------------------------------------------
+
+void Window::onScreenChanged(QScreen*)
+{
+    if(m_ogreRenderWindow != nullptr)
+    {
+        // This allows correct rendering on dual screen displays when dragging the window to another screen.
+        QWindow* parent = this->parent();
+        if(parent != nullptr)
+        {
+            parent->requestUpdate();
+        }
+        this->ogreResize(this->size());
+    }
 }
 
 // ----------------------------------------------------------------------------

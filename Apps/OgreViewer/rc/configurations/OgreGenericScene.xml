@@ -287,13 +287,8 @@
         <!-- ******************************* Connections ***************************************** -->
 
         <connect>
-            <signal>defaultPickerAdp/pointAdded</signal>
-            <slot>pointListModifierSrv/addPoint</slot>
-        </connect>
-
-        <connect>
-            <signal>defaultPickerAdp/pointRemoved</signal>
-            <slot>pointListModifierSrv/removePoint</slot>
+            <signal>defaultPickerAdp/picked</signal>
+            <slot>pointListModifierSrv/pick</slot>
         </connect>
 
         <connect channel="${COMPOSITOR_CHANEL}">

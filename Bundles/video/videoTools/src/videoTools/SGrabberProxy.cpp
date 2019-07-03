@@ -36,6 +36,7 @@
 #include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/registry/ServiceConfig.hpp>
 
+#include <boost/algorithm/string/trim.hpp>
 #include <boost/tokenizer.hpp>
 
 namespace videoTools
@@ -261,16 +262,19 @@ void SGrabberProxy::startCamera()
                         bool capsMatch = false;
                         for(const auto& token : tokens)
                         {
+                            // Remove trailing and leading spaces.
+                            const auto trimedToken = ::boost::algorithm::trim_copy(token);
+
                             ::arData::Camera::SourceType handledSourceType = ::arData::Camera::UNKNOWN;
-                            if(token == "FILE")
+                            if(trimedToken == "FILE")
                             {
                                 handledSourceType = ::arData::Camera::FILE;
                             }
-                            else if(token == "STREAM")
+                            else if(trimedToken == "STREAM")
                             {
                                 handledSourceType = ::arData::Camera::STREAM;
                             }
-                            else if(token == "DEVICE")
+                            else if(trimedToken == "DEVICE")
                             {
                                 handledSourceType = ::arData::Camera::DEVICE;
                             }

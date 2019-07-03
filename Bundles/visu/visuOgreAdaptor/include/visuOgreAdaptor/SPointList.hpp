@@ -163,6 +163,9 @@ private:
     /// Sets whether the camera must be auto reset when a mesh is updated or not.
     bool m_autoResetCamera;
 
+    /// Whether the material was set by the user or not.
+    bool m_customMaterial { false };
+
     /// Node in the scene graph
     ::Ogre::Entity* m_entity;
 

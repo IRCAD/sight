@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2018 IRCAD France
- * Copyright (C) 2017-2018 IHU Strasbourg
+ * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -24,6 +24,10 @@
 
 #include <uiVisuOgre/config.hpp>
 
+#include <fwData/PointList.hpp>
+
+#include <fwDataTools/PickingInfo.hpp>
+
 #include <fwServices/IController.hpp>
 
 fwCorePredeclare( (fwData)(Object) )
@@ -35,7 +39,8 @@ namespace uiVisuOgre
  * @brief   Add points in a ::fwData::PointList
  *
  * @section Slots Slots
- * - \b addPoint(::fwData::Point) : add a new point in the list.
+ * - \b pick(::fwDataTools::PickingInfo) : Add or remove the closest point to the picking position, removal occurs when
+ * `CTRL` is pressed.
 
  * @section XML XML Configuration
  *
@@ -57,8 +62,11 @@ public:
      * @name Slots API
      * @{
      */
-    UIVISUOGRE_API static const ::fwCom::Slots::SlotKeyType s_ADD_POINT_SLOT;
-    UIVISUOGRE_API static const ::fwCom::Slots::SlotKeyType s_REMOVE_POINT_SLOT;
+
+    /// SLOT: Use data from the picking info to add or remove a point.
+    UIVISUOGRE_API static const ::fwCom::Slots::SlotKeyType s_PICK_SLOT;
+
+    /// SLOT: Clear the point list.
     UIVISUOGRE_API static const ::fwCom::Slots::SlotKeyType s_CLEAR_POINTS_SLOT;
     /** @} */
 
@@ -69,6 +77,7 @@ public:
     UIVISUOGRE_API virtual ~SAddPoint() noexcept;
 
 protected:
+
     UIVISUOGRE_API virtual void configuring() override;
 
     /// Does nothing
@@ -82,19 +91,28 @@ protected:
 
 private:
 
+    ///  Add a point in the point list
+    void addPoint(const ::fwData::Point::sptr);
+
+    ///  Remove a point from the point list
+    void removePoint(const ::fwData::Point::csptr);
+
     /**
      * @name Slots methods
      * @{
      */
 
-    /// SLOT : Sends a signal with the clicked poin coordinates.
-    void addPoint(SPTR(::fwData::Object) _pointObject);
+    /// SLOT: Add or remove a point.
+    void pick(::fwDataTools::PickingInfo);
 
-    /// SLOT : Sends a signal with the clicked poin coordinates.
-    void removePoint(SPTR(::fwData::Object) _pointObject);
-
-    /// SLOT : Clear the point list.
+    /// SLOT: Clear the point list.
     void clearPoints();
+
+    /// SLOT : Sends a signal with the clicked point coordinates.
+    void addPointDeprecated(::fwData::Object::sptr);
+
+    /// SLOT : Sends a signal with the coordinates of the clicked point.
+    void removePointDeprecated(::fwData::Object::sptr);
 
     /**
      * @}

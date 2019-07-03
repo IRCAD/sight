@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2018 IRCAD France
- * Copyright (C) 2017-2018 IHU Strasbourg
+ * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -44,15 +44,13 @@ const ::fwCom::Slots::SlotKeyType SLine::s_TOGGLE_VISIBILITY_SLOT = "toggleVisib
 
 fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SLine);
 
-static const std::string s_LENGTH_CONFIG = "length";
+static const std::string s_LENGTH_CONFIG     = "length";
+static const std::string s_DASHED_CONFIG     = "dashed";
+static const std::string s_DASHLENGTH_CONFIG = "dashLength";
 
 //-----------------------------------------------------------------------------
 
-SLine::SLine() noexcept :
-    m_material(nullptr),
-    m_line(nullptr),
-    m_length(0.f),
-    m_isVisible(true)
+SLine::SLine() noexcept
 {
     newSlot(s_UPDATE_VISIBILITY_SLOT, &SLine::updateVisibility, this);
     newSlot(s_TOGGLE_VISIBILITY_SLOT, &SLine::toggleVisibility, this);
@@ -100,7 +98,7 @@ void SLine::configuring()
     this->setTransformId(config.get<std::string>( ::fwRenderOgre::ITransformable::s_TRANSFORM_CONFIG,
                                                   this->getID() + "_transform"));
 
-    m_length = config.get<float>(s_LENGTH_CONFIG, 50.f);
+    m_length = config.get<float>(s_LENGTH_CONFIG, m_length);
 
     const std::string color = config.get("color", "#FFFFFF");
 
@@ -111,6 +109,9 @@ void SLine::configuring()
     m_color.g = static_cast<float>(rgba[1]) / 255.f;
     m_color.b = static_cast<float>(rgba[2]) / 255.f;
     m_color.a = static_cast<float>(rgba[3]) / 255.f;
+
+    m_dashed     = config.get(s_DASHED_CONFIG, m_dashed);
+    m_dashLength = config.get(s_DASHLENGTH_CONFIG, m_dashLength);
 }
 
 //-----------------------------------------------------------------------------
@@ -118,6 +119,7 @@ void SLine::configuring()
 void SLine::starting()
 {
     this->initialize();
+    this->getRenderService()->makeCurrent();
 
     ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
 
@@ -125,36 +127,32 @@ void SLine::starting()
     // Set the line as dynamic, so we can update it later on, when the length changes
     m_line->setDynamic(true);
 
-    // set the material
+    // Set the material
     m_material = ::fwData::Material::New();
 
-    ::visuOgreAdaptor::SMaterial::sptr materialAdaptor = this->registerService< ::visuOgreAdaptor::SMaterial >(
+    m_materialAdaptor = this->registerService< ::visuOgreAdaptor::SMaterial >(
         "::visuOgreAdaptor::SMaterial");
-    materialAdaptor->registerInOut(m_material, ::visuOgreAdaptor::SMaterial::s_MATERIAL_INOUT, true);
-    materialAdaptor->setID(this->getID() + materialAdaptor->getID());
-    materialAdaptor->setMaterialName(this->getID() + materialAdaptor->getID());
-    materialAdaptor->setRenderService( this->getRenderService() );
-    materialAdaptor->setLayerID(m_layerID);
-    materialAdaptor->setShadingMode("ambient");
-    materialAdaptor->setMaterialTemplateName(::fwRenderOgre::Material::DEFAULT_MATERIAL_TEMPLATE_NAME);
-    materialAdaptor->start();
+    m_materialAdaptor->registerInOut(m_material, ::visuOgreAdaptor::SMaterial::s_MATERIAL_INOUT, true);
+    m_materialAdaptor->setID(this->getID() + m_materialAdaptor->getID());
+    m_materialAdaptor->setMaterialName(this->getID() + m_materialAdaptor->getID());
+    m_materialAdaptor->setRenderService( this->getRenderService() );
+    m_materialAdaptor->setLayerID(m_layerID);
+    m_materialAdaptor->setShadingMode("ambient");
+    m_materialAdaptor->setMaterialTemplateName(::fwRenderOgre::Material::DEFAULT_MATERIAL_TEMPLATE_NAME);
+    m_materialAdaptor->start();
 
-    materialAdaptor->getMaterialFw()->setHasVertexColor(true);
-    materialAdaptor->update();
+    m_materialAdaptor->getMaterialFw()->setHasVertexColor(true);
+    m_materialAdaptor->update();
 
-    // Draw
-    m_line->begin(materialAdaptor->getMaterialName(), ::Ogre::RenderOperation::OT_LINE_LIST);
-    m_line->position(0, 0, 0);
-    m_line->colour(m_color);
-    m_line->position(0, 0, m_length);
-    m_line->colour(m_color);
-    m_line->end();
+    // Draw the line
+    this->drawLine(false);
 
     // Set the bounding box of your Manual Object
     ::Ogre::Vector3 bbMin(-0.1f, -0.1f, 0.f);
     ::Ogre::Vector3 bbMax(0.1f, 0.1f, m_length);
     ::Ogre::AxisAlignedBox box(bbMin, bbMax);
     m_line->setBoundingBox(box);
+
     this->attachNode(m_line);
 
     this->requestRender();
@@ -174,6 +172,7 @@ void SLine::updating()
 
 void SLine::stopping()
 {
+    this->getRenderService()->makeCurrent();
     this->unregisterServices();
     m_material = nullptr;
     if(m_line)
@@ -196,19 +195,48 @@ void SLine::attachNode(::Ogre::MovableObject* object)
 
 //-----------------------------------------------------------------------------
 
+void SLine::drawLine(bool existingLine)
+{
+    if (existingLine == false)
+    {
+        m_line->begin(m_materialAdaptor->getMaterialName(), ::Ogre::RenderOperation::OT_LINE_LIST);
+    }
+    else
+    {
+        m_line->beginUpdate(0);
+    }
+
+    m_line->colour(m_color);
+
+    if (m_dashed == true)
+    {
+        for(float i = 0.f; i <= m_length; i += m_dashLength*2)
+        {
+            m_line->position(0, 0, i);
+            m_line->position(0, 0, i+m_dashLength);
+        }
+    }
+    else
+    {
+        m_line->position(0, 0, 0);
+        m_line->position(0, 0, m_length);
+    }
+
+    m_line->end();
+}
+
+//-----------------------------------------------------------------------------
+
 void SLine::updateLength(float length)
 {
+    this->getRenderService()->makeCurrent();
+
     m_length = length;
 
-    // Update the line length with the new length
-    m_line->beginUpdate(0);
-    m_line->position(0, 0, 0);
-    m_line->colour(m_color);
-    m_line->position(0, 0, m_length);
-    m_line->colour(m_color);
-    m_line->end();
+    // Draw
+    this->drawLine(true);
 
-    // Update the bouding box
+    // Set the bounding box of your Manual Object
     ::Ogre::Vector3 bbMin(-0.1f, -0.1f, 0.f);
     ::Ogre::Vector3 bbMax(0.1f, 0.1f, m_length);
     ::Ogre::AxisAlignedBox box(bbMin, bbMax);
