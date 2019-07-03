@@ -3,6 +3,19 @@ cmake_minimum_required (VERSION 3.1)
 # Use new policy for 'install_name' and RPATH on macOS (use `cmake --help-policy CMP0068` for details)
 cmake_policy(SET CMP0068 NEW)
 
+# On Windows, if the user doesn't specify a value,
+# 'CMAKE_BUILD_TYPE' is automatically initialized to 'Debug' after 'project()'.
+# So we need to check this variable at this point.
+set(CMAKE_BUILD_TYPE ${CMAKE_BUILD_TYPE} CACHE STRING "Choose the type of build, options are: Debug, Release, RelWithDebInfo or MinSizeRel")
+set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug;Release;RelWithDebInfo;MinSizeRel")
+
+if(NOT CMAKE_BUILD_TYPE STREQUAL "Debug"
+        AND NOT CMAKE_BUILD_TYPE STREQUAL "Release"
+        AND NOT CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo"
+        AND NOT CMAKE_BUILD_TYPE STREQUAL "MinSizeRel")
+    message(FATAL_ERROR "Invalid value for CMAKE_BUILD_TYPE: '${CMAKE_BUILD_TYPE}' (required Debug, Release, RelWithDebInfo or MinSizeRel)")
+endif()
+
 project (sight)
 
 enable_testing()
@@ -45,14 +58,8 @@ if(MSVC)
         # this will be executed in just before makefile generation
         variable_watch(CMAKE_BACKWARDS_COMPATIBILITY pch_msvc_hook)
     endif()
-endif(MSVC)
-
-set(CMAKE_BUILD_TYPE ${CMAKE_BUILD_TYPE} CACHE STRING "Choose the type of build, options are: Debug Release RelWithDebInfo MinSizeRel")
-set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug;Release;RelWithDebInfo;MinSizeRel")
-
-if(NOT CMAKE_BUILD_TYPE STREQUAL "Debug" AND NOT CMAKE_BUILD_TYPE STREQUAL "Release" AND NOT CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo" AND NOT CMAKE_BUILD_TYPE STREQUAL "MinSizeRel")
-    message(SEND_ERROR "Invalid value for CMAKE_BUILD_TYPE: ${CMAKE_BUILD_TYPE} (required Debug, Release, RelWithDebInfo or MinSizeRel)")
 endif()
+
 if(CMAKE_CONFIGURATION_TYPES)
     set(CMAKE_CONFIGURATION_TYPES ${CMAKE_BUILD_TYPE} CACHE STRING "List of supported configurations." FORCE)
 endif()
