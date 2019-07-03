@@ -10,29 +10,25 @@ Window {
     id: window
     modality: Qt.ApplicationModal
     // flags to erase the close button
-    flags: Qt.CustomizeWindowHint | Qt.WindowTitleHint
+    flags: Qt.CustomizeWindowHint | Qt.WindowTitleHint | Qt.MSWindowsFixedSizeDialogHint
 
     Dialog {
         id: dialog
         objectName: "dialog"
         modal: true
-        width: window.width
-        height: window.height
         standardButtons: Dialog.Ok | Dialog.Cancel
 
         ColumnLayout {
             id: column
 
-            Layout.fillWidth: true
-
             // to set the checkboxs together
             GroupBox {
                 id: groupBox
                 title: multiSelectorDialog.message
-                Layout.fillWidth: true
-                property int initSize: 0
 
                 Column {
+                    id: columnBox
+                    spacing: 10
                     Layout.fillWidth: true
 
                     // the Repeater will create all the checkbox using the c++ model
@@ -46,14 +42,10 @@ Window {
                         }
                     }
                 }
-                onHeightChanged: window.height = window.height + height
+                onHeightChanged: window.height = dialog.height + height
                 onWidthChanged: {
-                    if (window.width == 0)
-                    {
-                        initSize = width
-                    }
                     // to get responsive size
-                    window.width = width + initSize + dialog.leftMargin + dialog.leftPadding
+                    window.width = dialog.width + width
                 }
             }
         }

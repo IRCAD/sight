@@ -87,8 +87,8 @@ QObject* QmlEngine::createComponent(const ::boost::filesystem::path& file, QShar
 
 QObject* QmlEngine::createComponent(const ::boost::filesystem::path& file)
 {
-    QQmlComponent component(m_engine, QUrl(QString::fromStdString(file.string())));
-    return component.create();
+    QQmlComponent component(m_engine, QUrl::fromLocalFile(QString::fromStdString(file.string())));
+    return component.create(m_engine->rootContext());
 }
 
 //-----------------------------------------------------------------------------

@@ -10,7 +10,7 @@ Window {
     id: window
     modality: Qt.ApplicationModal
     // flags to erase the close button
-    flags: Qt.CustomizeWindowHint | Qt.WindowTitleHint
+    flags: Qt.CustomizeWindowHint | Qt.WindowTitleHint | Qt.MSWindowsFixedSizeDialogHint
 
     Dialog {
         id: dialog
@@ -21,19 +21,17 @@ Window {
         ColumnLayout {
             id: column
 
-            Layout.fillWidth: true
-
             // GroupBox to set permit only one RadioButton selected
             GroupBox {
                 id: groupBox
                 title: selectorDialog.message
-                Layout.fillWidth: true
-                property int initSize: 0
+
                 ButtonGroup {
                     id: buttonGroup
                 }
 
                 Column {
+                    id: columnBox
                     spacing: 10
                     Layout.fillWidth: true
 
@@ -49,14 +47,10 @@ Window {
                         }
                     }
                 }
-                onHeightChanged: window.height = window.height + height
+                onHeightChanged: window.height = dialog.height + height
                 onWidthChanged: {
-                    if (window.width == 0)
-                    {
-                        initSize = width
-                    }
                     // to set the size responsive depending of the content
-                    window.width = width + initSize + dialog.leftMargin + dialog.leftPadding
+                    window.width = dialog.width + width
                 }
             }
         }
