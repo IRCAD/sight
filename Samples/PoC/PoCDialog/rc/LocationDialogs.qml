@@ -19,18 +19,10 @@ Item {
         id: fileDialog
         visible:  false
     }
-
-    ScrollView {
-        id: scrollView
-        anchors {
-            left: parent.left
-            right: parent.right
-            top: parent.top
-            leftMargin: 12
-        }
         ColumnLayout {
-            spacing: 8
-            Item { Layout.preferredHeight: 4 } // padding
+            anchors.fill: parent
+            anchors.margins: 12
+            spacing: 0
             Label {
                 font.bold: true
                 text: "File dialog properties:"
@@ -166,6 +158,5 @@ Item {
                 }
             }
         }
-    }
 
 }

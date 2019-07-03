@@ -25,6 +25,7 @@ Window {
             GroupBox {
                 id: groupBox
                 title: multiSelectorDialog.message
+                property var initSize: 0
 
                 Column {
                     id: columnBox
@@ -45,7 +46,11 @@ Window {
                 onHeightChanged: window.height = dialog.height + height
                 onWidthChanged: {
                     // to get responsive size
-                    window.width = dialog.width + width
+                    if (window.width == 0)
+                    {
+                        initSize = width
+                    }
+                    window.width = width + initSize + dialog.leftMargin + dialog.leftPadding
                 }
             }
         }

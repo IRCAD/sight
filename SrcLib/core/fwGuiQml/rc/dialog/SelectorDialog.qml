@@ -49,8 +49,12 @@ Window {
                 }
                 onHeightChanged: window.height = dialog.height + height
                 onWidthChanged: {
-                    // to set the size responsive depending of the content
-                    window.width = dialog.width + width
+                    // to get responsive size
+                    if (window.width == 0)
+                    {
+                        initSize = width
+                    }
+                    window.width = width + initSize + dialog.leftMargin + dialog.leftPadding
                 }
             }
         }
