@@ -448,7 +448,7 @@ void SHybridMarkerTracker::calculateCorrectPose(
     ::cv::projectPoints(pts3d, rvec2, tvec2,
                         m_cameraMatrix, m_distCoeffs, projPoints2);
 
-    std::vector< ::cv::Point2f > detect_pts = m_tracker->get_chess_pts();
+    std::vector< ::cv::Point2f > detectPts = m_tracker->get_chess_pts();
 
     // Calculate a threshold to determine correspondence
     ::cv::Point2f diffTemp = (projPoints1[0] - projPoints1[1]) * 0.7;
@@ -456,7 +456,7 @@ void SHybridMarkerTracker::calculateCorrectPose(
     diffTemp  = (projPoints2[0] - projPoints2[1]) * 0.7;
     maxDistSq = (maxDistSq + diffTemp.x*diffTemp.x + diffTemp.y*diffTemp.y)/2;
 
-    const ::cv::Vec2f errors = errorDistPoints(detect_pts, projPoints1, projPoints2, maxDistSq);
+    const ::cv::Vec2f errors = errorDistPoints(detectPts, projPoints1, projPoints2, maxDistSq);
 
     rvec.create(3, 1, CV_64FC1);
     tvec.create(3, 1, CV_64FC1);
