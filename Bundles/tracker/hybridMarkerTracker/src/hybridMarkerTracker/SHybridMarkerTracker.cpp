@@ -62,14 +62,14 @@ SHybridMarkerTracker::SHybridMarkerTracker() noexcept :
     m_currentcHp = ::cv::Mat::eye(4, 4, CV_64F);
 
     // Default initialization describing an hybrid marker tag
-    m_symboardSize.width = 2;
+    m_symboardSize.width  = 2;
     m_symboardSize.height = 5;
-    m_asymSquareSize = 2.f;
-    m_symSquareSize.x = 4.f;
-    m_symSquareSize.y = 6.f;
-    m_radius = 5.f;
-    m_chessDistCenter = 8.f;
-    m_chessInterval = 4.f;
+    m_asymSquareSize      = 2.f;
+    m_symSquareSize.x     = 4.f;
+    m_symSquareSize.y     = 6.f;
+    m_radius              = 5.f;
+    m_chessDistCenter     = 8.f;
+    m_chessInterval       = 4.f;
 
     // Default blob parameter
     m_blobParams.minRepeatability    = 2;
