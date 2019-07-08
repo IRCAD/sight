@@ -633,7 +633,7 @@ void copyNegatoImage( ::Ogre::Texture* _texture, const ::fwData::Image::sptr& _i
             OSLM_ASSERT("Pixel value '" << *srcBuffer << "' doesn't fit in texture range.",
                         *srcBuffer > std::numeric_limits< DST_TYPE >::min() &&
                         *srcBuffer < std::numeric_limits< DST_TYPE >::max());
-            pDest[i] = static_cast< unsignedType >(srcBuffer[i] + lowBound);
+            pDest[i] = static_cast< unsignedType >(srcBuffer[i] - lowBound);
         }
 
         // Unlock the pixel buffer

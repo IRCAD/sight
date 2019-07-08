@@ -290,6 +290,8 @@ void SVolumeRender::newImage()
     SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
 
     ::fwData::TransferFunction::sptr volumeTF = this->getInOut< ::fwData::TransferFunction>(s_VOLUME_TF_INOUT);
+    SLM_ASSERT("inout '" + s_VOLUME_TF_INOUT + "' is missing", volumeTF);
+
     m_helperVolumeTF.setOrCreateTF(volumeTF, image);
 
     m_gpuVolumeTF->updateTexture(volumeTF);
@@ -299,7 +301,7 @@ void SVolumeRender::newImage()
 
 //-----------------------------------------------------------------------------
 
-void SVolumeRender::resetCameraPosition(const ::fwData::Image::sptr& image)
+void SVolumeRender::resetCameraPosition(const ::fwData::Image::csptr& image)
 {
     if (m_autoResetCamera || image->getField("resetCamera"))
     {
@@ -348,10 +350,9 @@ void SVolumeRender::updateImage()
         m_volumeRenderer->imageUpdate(image, volumeTF);
     }
 
-    this->resetCameraPosition(image);
     // Create widgets on image update to take the image's size into account.
     this->createWidget();
-
+    this->resetCameraPosition(image);
     this->requestRender();
 }
 
