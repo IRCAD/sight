@@ -37,6 +37,7 @@ set( REQUIREMENTS
     uiImageQt
     videoQt
     ctrlCamp
+    uiMeasurement
 
     # Generic Scene
     fwRenderOgre

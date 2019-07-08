@@ -25,6 +25,8 @@
 #include "fwRenderOgre/config.hpp"
 #include "fwRenderOgre/interactor/IMovementInteractor.hpp"
 
+#include <fwDataTools/helper/MedicalImage.hpp>
+
 namespace fwRenderOgre
 {
 
@@ -83,10 +85,10 @@ private:
 
     /// Attributes related to the texture
     /// Minimum corner is a vector representing the Ogre coordinates of the Negato's bounding box's inferior corner
-    ::Ogre::Vector3 m_minimumCorner;
+    ::Ogre::Vector2 m_minimumCorner;
 
     /// Maximum corner is a vector representing the Ogre coordinates of the Negato's bounding box's superior corner
-    ::Ogre::Vector3 m_maximumCorner;
+    ::Ogre::Vector2 m_maximumCorner;
 
     /// Represents the Negato2D's total width
     ::Ogre::Real m_totalWidth;
@@ -119,6 +121,9 @@ private:
     /// Gets the camera. makes sure that the member pointing to the Ogre camera is initialized.
     /// This cannot be done in the constructor because we can't know for sure if the Ogre context is launched.
     ::Ogre::Camera* getCamera();
+
+    /// Get the negato orientation based on the camera direction
+    ::fwDataTools::helper::MedicalImage::Orientation getOrientation();
 
     /// Updates m_totalWidth/Height according to the size of the negato plane mesh
     void updateTotalSize();

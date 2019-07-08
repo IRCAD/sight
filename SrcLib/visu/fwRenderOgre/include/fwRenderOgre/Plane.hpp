@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -69,8 +69,7 @@ public:
 
     FWRENDEROGRE_API virtual ~Plane();
 
-    FWRENDEROGRE_API void initialize3DPlane();
-    FWRENDEROGRE_API void initialize2DPlane();
+    FWRENDEROGRE_API void initializePlane();
 
     /// Slot handling slice plane move:
     ///     - in 2D, it will convert the position in unit floating value and call the fragment shader

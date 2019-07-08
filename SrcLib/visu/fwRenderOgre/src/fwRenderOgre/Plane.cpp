@@ -91,8 +91,7 @@ Plane::~Plane()
 
 void Plane::initializeMaterial()
 {
-    ::Ogre::MaterialPtr defaultMat = m_is3D ? ::Ogre::MaterialManager::getSingleton().getByName("Negato3D")
-                                     : ::Ogre::MaterialManager::getSingleton().getByName("Negato2D");
+    ::Ogre::MaterialPtr defaultMat = ::Ogre::MaterialManager::getSingleton().getByName("Negato");
 
     m_texMaterial = ::Ogre::MaterialManager::getSingleton().create(
         "NegatoMat" + std::to_string(s_id),
@@ -174,7 +173,7 @@ void Plane::setDepthSpacing(std::vector<double> _spacing)
 
 //-----------------------------------------------------------------------------
 
-void Plane::initialize3DPlane()
+void Plane::initializePlane()
 {
     ::Ogre::MeshManager* meshManager = ::Ogre::MeshManager::getSingletonPtr();
 
@@ -226,78 +225,21 @@ void Plane::initialize3DPlane()
 
 //-----------------------------------------------------------------------------
 
-void Plane::initialize2DPlane()
-{
-    ::Ogre::MeshManager* meshManager = ::Ogre::MeshManager::getSingletonPtr();
-
-    // First delete mesh if it already exists
-    if(meshManager->resourceExists(m_slicePlaneName))
-    {
-        meshManager->remove(m_slicePlaneName);
-    }
-
-    if( m_sceneManager->hasEntity(m_entityName))
-    {
-        m_sceneManager->getEntity( m_entityName)->detachFromParent();
-        m_sceneManager->destroyEntity(m_entityName);
-    }
-
-    ::Ogre::MovablePlane* plane = setDimensions();
-
-    // Mesh plane instanciation
-    m_slicePlane = ::Ogre::MeshManager::getSingletonPtr()->createPlane(
-        m_slicePlaneName,
-        ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-        *plane,
-        m_width, m_height);
-
-    // Entity creation
-    ::Ogre::Entity* planeEntity = m_sceneManager->createEntity(m_entityName, m_slicePlane);
-    planeEntity->setMaterial(m_texMaterial);
-    m_planeSceneNode->attachObject(planeEntity);
-
-    this->initializePosition();
-}
-
-//-----------------------------------------------------------------------------
-
 void Plane::initializePosition()
 {
     this->moveToOriginPosition();
 
-    if(m_is3D)
+    switch(m_orientation)
     {
-        switch(m_orientation)
-        {
-            case OrientationMode::X_AXIS:
-                m_planeSceneNode->translate(0, m_height / 2, m_width / 2);
-                break;
-            case OrientationMode::Y_AXIS:
-                m_planeSceneNode->translate(m_width / 2, 0, m_height / 2);
-                break;
-            case OrientationMode::Z_AXIS:
-                m_planeSceneNode->translate(m_width / 2, m_height / 2, 0);
-                break;
-        }
-    }
-    else
-    {
-        m_planeSceneNode->resetOrientation();
-        switch(m_orientation)
-        {
-            case OrientationMode::X_AXIS:
-                m_planeSceneNode->rotate(::Ogre::Vector3(0, 1, 0), ::Ogre::Degree(90.f));
-                m_planeSceneNode->rotate(::Ogre::Vector3(0, 0, 1), ::Ogre::Degree(90.f));
-                m_planeSceneNode->translate(0, m_width/2, m_height/2);
-                break;
-            case OrientationMode::Y_AXIS:
-                m_planeSceneNode->rotate(::Ogre::Vector3(1, 0, 0), ::Ogre::Degree(270.f));
-                m_planeSceneNode->translate(m_width/2, 0, m_height/2);
-                break;
-            case OrientationMode::Z_AXIS:
-                m_planeSceneNode->translate(m_width/2, m_height/2, 0);
-                break;
-        }
+        case OrientationMode::X_AXIS:
+            m_planeSceneNode->translate(0, m_height / 2, m_width / 2);
+            break;
+        case OrientationMode::Y_AXIS:
+            m_planeSceneNode->translate(m_width / 2, 0, m_height / 2);
+            break;
+        case OrientationMode::Z_AXIS:
+            m_planeSceneNode->translate(m_width / 2, m_height / 2, 0);
+            break;
     }
 }
 
@@ -420,7 +362,7 @@ void Plane::setOrientationMode(OrientationMode _newMode)
 
     m_orientation = _newMode;
     this->initializeMaterial();
-    this->initialize2DPlane();
+    this->initializePlane();
 }
 
 //------------------------------------------------------------------------------
@@ -531,31 +473,17 @@ void Plane::changeSlice(float sliceIndex)
             break;
     }
 
-    if(m_is3D)
+    switch(m_orientation)
     {
-        switch(m_orientation)
-        {
-            case OrientationMode::X_AXIS:
-                plane = new ::Ogre::MovablePlane(::Ogre::Vector3::UNIT_X, 0);
-                break;
-            case OrientationMode::Y_AXIS:
-                plane = new ::Ogre::MovablePlane(::Ogre::Vector3::UNIT_Y, 0);
-                break;
-            case OrientationMode::Z_AXIS:
-                plane = new ::Ogre::MovablePlane(::Ogre::Vector3::UNIT_Z, 0);
-                break;
-        }
-    }
-    else
-    {
-        plane = new ::Ogre::MovablePlane(::Ogre::Vector3::UNIT_Z, 0);
-        // It's more convenient to display the Negato2D's sagittal plane horizontally.
-        if (m_orientation == OrientationMode::X_AXIS)
-        {
-            m_height = (tex_depth -1) * m_spacing[2];
-            m_width  = (tex_height -1) * m_spacing[1];
-            m_depth  = (tex_width -1) * m_spacing[0];
-        }
+        case OrientationMode::X_AXIS:
+            plane = new ::Ogre::MovablePlane(::Ogre::Vector3::UNIT_X, 0);
+            break;
+        case OrientationMode::Y_AXIS:
+            plane = new ::Ogre::MovablePlane(::Ogre::Vector3::UNIT_Y, 0);
+            break;
+        case OrientationMode::Z_AXIS:
+            plane = new ::Ogre::MovablePlane(::Ogre::Vector3::UNIT_Z, 0);
+            break;
     }
 
     return plane;
