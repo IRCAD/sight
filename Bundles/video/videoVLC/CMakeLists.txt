@@ -2,7 +2,6 @@ fwLoadProperties()
 
 find_path(VLC_INCLUDE_DIR vlc/vlc.h PATHS
     "${CONAN_VLC_ROOT}/include"
-    "${EXTERNAL_LIBRARIES}/include"
     "$ENV{ProgramW6432}/VideoLAN/VLC/sdk/include"
     /usr/local/include
     /usr/include    
@@ -10,8 +9,6 @@ find_path(VLC_INCLUDE_DIR vlc/vlc.h PATHS
 
 find_library(VLC_LIBRARY NAMES libvlc vlc PATHS
     "${CONAN_VLC_ROOT}/lib"
-    "${EXTERNAL_LIBRARIES}/lib/vlc"
-    "${EXTERNAL_LIBRARIES}/lib"
     "$ENV{ProgramW6432}/VideoLAN/VLC/sdk/lib"
     /usr/local/lib
     /usr/lib
@@ -24,7 +21,6 @@ find_library(VLC_LIBRARY NAMES libvlc vlc PATHS
 find_path(VLC_PLUGINS_DIR NAMES plugins PATHS
     "${CONAN_VLC_ROOT}"
     "${CONAN_VLC_ROOT}/lib/vlc"
-    "${EXTERNAL_LIBRARIES}/vlc"
     "$ENV{ProgramW6432}/VideoLAN/VLC"
     /usr/local/lib/vlc
     /usr/lib/vlc

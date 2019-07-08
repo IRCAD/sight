@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -35,8 +35,7 @@ namespace fwRenderOgre
 namespace interactor
 {
 
-MeshPickerInteractor::MeshPickerInteractor() noexcept :
-    m_control(false)
+MeshPickerInteractor::MeshPickerInteractor() noexcept
 {
 }
 
@@ -48,35 +47,76 @@ MeshPickerInteractor::~MeshPickerInteractor() noexcept
 
 //------------------------------------------------------------------------------
 
-void MeshPickerInteractor::resizeEvent(int x, int y)
+void MeshPickerInteractor::resizeEvent(int _x, int _y)
 {
-    m_width  = x;
-    m_height = y;
+    m_width  = _x;
+    m_height = _y;
 }
 
 //------------------------------------------------------------------------------
 
-void MeshPickerInteractor::buttonPressEvent(MouseButton button, int x, int y)
+void MeshPickerInteractor::buttonPressEvent(MouseButton _button, int _x, int _y)
 {
     if(m_picker->hasSceneManager())
     {
-        if(m_control && m_picker->executeRaySceneQuery(x, y, m_width, m_height, m_queryFlags))
+        if(m_picker->executeRaySceneQuery(_x, _y, m_width, m_height, m_queryFlags))
         {
             ::Ogre::Vector3 click = m_picker->getIntersectionInWorldSpace();
 
-            ::fwData::Point::sptr point                = fwData::Point::New();
-            ::fwData::Point::PointCoordArrayType cords =
-            {{static_cast<double>(click.x), static_cast<double>(click.y), static_cast<double>(click.z)}};
-            point->setCoord(cords);
+            ::fwDataTools::PickingInfo info;
+            info.m_worldPos[0] = static_cast<double>(click.x);
+            info.m_worldPos[1] = static_cast<double>(click.y);
+            info.m_worldPos[2] = static_cast<double>(click.z);
 
-            if(button == MouseButton::LEFT)
+            switch(_button)
             {
-                m_sigAddPoint->asyncEmit(::fwData::Object::dynamicCast(point));
+                case MouseButton::LEFT:
+                    info.m_eventId = ::fwDataTools::PickingInfo::Event::MOUSE_LEFT_DOWN;
+                    break;
+                case MouseButton::RIGHT:
+                    info.m_eventId = ::fwDataTools::PickingInfo::Event::MOUSE_RIGHT_DOWN;
+                    break;
+                case MouseButton::MIDDLE:
+                    info.m_eventId = ::fwDataTools::PickingInfo::Event::MOUSE_MIDDLE_DOWN;
+                    break;
+                default:
+                    SLM_ERROR("Unknow button");
+                    break;
             }
-            else
+
+            if(m_control)
             {
-                m_sigRemovePoint->asyncEmit(::fwData::Object::dynamicCast(point));
+                info.m_modifierMask |= ::fwDataTools::PickingInfo::CTRL;
+
+                // Deprecated statement
+                if(m_sigAddPointDeprecated->getNumberOfConnections() > 0)
+                {
+                    FW_DEPRECATED_MSG(
+                        "This signal is deprecated. You should use `IPickerInteractor::picked(::fwDataTools::PickingInfo)`",
+                        "20.0");
+                    ::fwData::Point::sptr point                = ::fwData::Point::New();
+                    ::fwData::Point::PointCoordArrayType cords =
+                    {{static_cast<double>(click.x), static_cast<double>(click.y),
+                      static_cast<double>(click.z)}};
+                    point->setCoord(cords);
+                    m_sigAddPointDeprecated->asyncEmit(::fwData::Object::dynamicCast(point));
+                }
             }
+            // Deprecated statement
+            else if(m_sigRemovePointDeprecated->getNumberOfConnections() > 0)
+            {
+                FW_DEPRECATED_MSG(
+                    "This signal is deprecated. You should use `IPickerInteractor::picked(::fwDataTools::PickingInfo)`",
+                    "20.0");
+                ::fwData::Point::sptr point                = ::fwData::Point::New();
+                ::fwData::Point::PointCoordArrayType cords =
+                {{static_cast<double>(click.x), static_cast<double>(click.y), static_cast<double>(click.z)}};
+                point->setCoord(cords);
+                m_sigRemovePointDeprecated->asyncEmit(::fwData::Object::dynamicCast(point));
+            }
+
+            m_picked->asyncEmit(info);
+
         }
     }
     else
@@ -99,15 +139,54 @@ void MeshPickerInteractor::wheelEvent(int, int, int)
 
 //------------------------------------------------------------------------------
 
-void MeshPickerInteractor::buttonReleaseEvent(MouseButton, int, int)
+void MeshPickerInteractor::buttonReleaseEvent(MouseButton _button, int _x, int _y)
 {
+    if(m_picker->hasSceneManager())
+    {
+        if(m_picker->executeRaySceneQuery(_x, _y, m_width, m_height, m_queryFlags))
+        {
+            ::Ogre::Vector3 click = m_picker->getIntersectionInWorldSpace();
+
+            ::fwDataTools::PickingInfo info;
+            info.m_worldPos[0] = static_cast<double>(click.x);
+            info.m_worldPos[1] = static_cast<double>(click.y);
+            info.m_worldPos[2] = static_cast<double>(click.z);
+
+            switch(_button)
+            {
+                case MouseButton::LEFT:
+                    info.m_eventId = ::fwDataTools::PickingInfo::Event::MOUSE_LEFT_UP;
+                    break;
+                case MouseButton::RIGHT:
+                    info.m_eventId = ::fwDataTools::PickingInfo::Event::MOUSE_RIGHT_UP;
+                    break;
+                case MouseButton::MIDDLE:
+                    info.m_eventId = ::fwDataTools::PickingInfo::Event::MOUSE_MIDDLE_UP;
+                    break;
+                default:
+                    SLM_ERROR("Unknow button");
+                    break;
+            }
+
+            if(m_control)
+            {
+                info.m_modifierMask |= ::fwDataTools::PickingInfo::CTRL;
+            }
+
+            m_picked->asyncEmit(info);
+        }
+    }
+    else
+    {
+        SLM_WARN("The picker scene hasn't been initialized, you are not using this interactor correctly");
+    }
 }
 
 //------------------------------------------------------------------------------
 
-void MeshPickerInteractor::keyPressEvent(int k)
+void MeshPickerInteractor::keyPressEvent(int _k)
 {
-    if(k == Modifier::CONTROL)
+    if(_k == Modifier::CONTROL)
     {
         m_control = true;
     }
@@ -115,9 +194,12 @@ void MeshPickerInteractor::keyPressEvent(int k)
 
 //------------------------------------------------------------------------------
 
-void MeshPickerInteractor::keyReleaseEvent(int)
+void MeshPickerInteractor::keyReleaseEvent(int _k)
 {
-    m_control = false;
+    if(_k == Modifier::CONTROL)
+    {
+        m_control = false;
+    }
 }
 
 //------------------------------------------------------------------------------
