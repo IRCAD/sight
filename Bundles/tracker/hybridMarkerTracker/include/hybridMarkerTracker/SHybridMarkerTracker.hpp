@@ -47,6 +47,12 @@ namespace hybridMarkerTracker
  * - \b startTracking(): Slot called when the user wants to start tracking
  * - \b stopTracking(): Slot called when the user wants to stop tracking
  *
+ * @section Slots Slots
+ * -\b setIntParameter(int, std::string): set the integer parameters 'symboardSizeWidth' and 'symboardSizeHeight'
+ * -\b setDoubleParameter(double, std::string): set the double parameters 'asymSquareSize', 'symSquareSizeX',
+ * 'symSquareSizeY', 'radius', 'chessDistCenter' and 'chessInterval'
+ * -\b setBoolParameter(bool, std::string): set the bool parameter 'showDrawings'
+ *
  * @section XML XML Configuration
  *
  * @code{.xml}
