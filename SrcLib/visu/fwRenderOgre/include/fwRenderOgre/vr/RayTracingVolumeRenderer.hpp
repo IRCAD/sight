@@ -146,7 +146,7 @@ protected:
      * @brief Generates the material used to render the volume.
      * @param _sourceFile, fragment shader's file name.
      */
-    FWRENDEROGRE_API void createRayTracingMaterial(const std::string& _sourceFile = "RayTracedVolume_FP.glsl");
+    FWRENDEROGRE_API virtual void createRayTracingMaterial(const std::string& _sourceFile = "RayTracedVolume_FP.glsl");
 
     /// Shared parameters used for Ray tracing. This should help avoiding using the listener.
     /// We resort to those parameters because setting them using:
