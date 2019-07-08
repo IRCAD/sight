@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -26,6 +26,7 @@
 #include <fwCom/Signal.hxx>
 #include <fwCom/Signals.hpp>
 
+#include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
 
 #include <fwDataCamp/exception/ObjectNotFound.hpp>
@@ -142,6 +143,7 @@ void SCopy::copy()
     }
 
     ::fwData::Object::csptr sourceObject = this->getInput< ::fwData::Object >(s_SOURCE_INPUT);
+
     if (m_hasExtractTag)
     {
         ::fwData::Object::sptr object;
@@ -171,6 +173,9 @@ void SCopy::copy()
 
     if(source)
     {
+        // Lock the source before copy
+        ::fwData::mt::ObjectReadLock lock(source);
+
         if(create)
         {
             target = ::fwData::Object::copy(source);
