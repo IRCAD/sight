@@ -341,7 +341,7 @@ void SHybridMarkerTracker::process()
 
             if(m_showDrawings)
             {
-                drawRect(m_currentcHp, m_imgTrack);
+                drawRect(m_currentcHp, m_imgTrack, ::cv::Scalar(0, 0, 255));
 
             }
         }
