@@ -618,7 +618,7 @@ void RayTracingVolumeRenderer::createRayTracingMaterial(const std::string& _sour
     }
 
     // Compile the depth fragment shader
-    ::Ogre::String fpDepthName("RTVD_FP_" + std::to_string(hash));
+    const ::Ogre::String fpDepthName("RTVD_FP_" + std::to_string(hash));
     if(!gpm.resourceExists(fpDepthName))
     {
         ::Ogre::HighLevelGpuProgramPtr fsp = gpm.createProgram(fpDepthName, "Materials", "glsl",
