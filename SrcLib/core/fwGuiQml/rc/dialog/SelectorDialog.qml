@@ -25,6 +25,7 @@ Window {
             GroupBox {
                 id: groupBox
                 title: selectorDialog.message
+                property var initSize: 0
 
                 ButtonGroup {
                     id: buttonGroup
