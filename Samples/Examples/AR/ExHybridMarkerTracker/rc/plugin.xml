@@ -1,0 +1,235 @@
+<plugin id="ExHybridMarkerTracker" version="@PROJECT_VERSION@">
+
+    <requirement id="dataReg" />
+    <requirement id="arDataReg" />
+    <requirement id="servicesReg" />
+    <requirement id="visuVTKQt" />
+    <requirement id="arMedia" />
+    <requirement id="preferences" />
+
+    <extension implements="::fwServices::registry::AppConfig">
+        <id>ExHybridMarkerTrackerConfig</id>
+        <config>
+            <object uid="camera" type="::arData::Camera" />
+            <object uid="frameTL" type="::arData::FrameTL"/>
+            <object uid="sourceFrame" type="::fwData::Image" />
+            <object uid="finalFrame" type="::fwData::Image"/>
+            <object uid="poseMatrix" type="::fwData::TransformationMatrix3D"/>
+
+            <service uid="mainFrame" type="::gui::frame::SDefaultFrame">
+                <gui>
+                    <frame>
+                        <name>ExHybridMarkerTracker</name>
+                    </frame>
+                    <menuBar/>
+                    <toolBar/>
+                </gui>
+                <registry>
+                    <menuBar sid="menuBar" start="yes" />
+                    <toolBar sid="toolbar" start="yes" />
+                    <view sid="mainView" start="yes"/>
+                </registry>
+            </service>
+
+            <service uid="menuBar" type="::gui::aspect::SDefaultMenuBar">
+                <gui>
+                    <layout>
+                        <menu name="File" />
+                        <menu name="Preferences" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menu sid="menuFile" start="yes" />
+                    <menu sid="menuPreferences" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="menuFile" type="::gui::aspect::SDefaultMenu">
+                <gui>
+                    <layout>
+                        <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="actionQuit" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="menuPreferences" type="::gui::aspect::SDefaultMenu">
+                <gui>
+                    <layout>
+                        <menuItem name="Show Settings" shortcut="Ctrl+H" style="check" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="actionHide" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="toolbar" type="::gui::aspect::SDefaultToolBar">
+                <gui>
+                    <layout>
+                        <editor/>
+                        <menuItem name="start" icon="arMedia-0.1/icons/start-cam.svg" />
+                        <menuItem name="stop" icon="arMedia-0.1/icons/stop-cam.svg" />
+                        <menuItem name="pause" icon="arMedia-0.1/icons/pause-cam.svg" />
+                        <separator/>
+                    </layout>
+                </gui>
+                <registry>
+                    <editor sid="CameraSelector" start="yes" />
+                    <menuItem sid="startVideo" start="yes" />
+                    <menuItem sid="stopVideo" start="yes" />
+                    <menuItem sid="pauseVideo" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="mainView" type="::gui::view::SDefaultView">
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="vertical" />
+                        <view proportion="0" />
+                    </layout>
+                    <slideView align="right" size="450" opacity="0.8" >
+                        <styleSheet>
+                            <![CDATA[
+                            #SlideBar{
+                                background-color: #dddddd;
+                                border: 0;
+                            }
+                            #SlideBar QGroupBox {
+                                background-color: #eeeeee;
+                                border-radius: 10px;
+                                margin-left: 10;
+                                margin-right: 10;
+                            }
+                            ]]>
+                        </styleSheet>
+                    </slideView>
+                </gui>
+                <registry>
+                    <view sid="genericScene" start="yes" />
+                    <slideView sid="parameters" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="parameters" type="::gui::view::SDefaultView">
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="vertical" />
+                        <view proportion="0" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="matrixViewer" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="actionQuit" type="::gui::action::SQuit" />
+
+            <service uid="actionHide" type="::gui::action::SBooleanSlotCaller">
+                <slots>
+                    <slot>parameters/setVisible</slot>
+                </slots>
+            </service>
+
+            <service uid="startVideo" type="::gui::action::SSlotCaller">
+                <slots>
+                    <slot>frameGrabber/startCamera</slot>
+                </slots>
+            </service>
+
+            <service uid="stopVideo" type="::gui::action::SSlotCaller">
+                <slots>
+                    <slot>frameGrabber/stopCamera</slot>
+                    <slot>startVideo/setExecutable</slot>
+                </slots>
+            </service>
+
+            <service uid="pauseVideo" type="::gui::action::SSlotCaller">
+                <slots>
+                    <slot>frameGrabber/pauseCamera</slot>
+                </slots>
+            </service>
+
+            <!-- *************************** Begin generic scene *************************** -->
+
+            <service uid="genericScene" type="::fwRenderVTK::SRender" >
+                <scene renderMode="sync">
+                    <renderer id="default"  background="0.0" />
+                    <adaptor uid="videoAdpt" />
+                    <adaptor uid="interactorStyle" />
+                </scene>
+            </service>
+
+            <service uid="videoAdpt" type="::visuVTKARAdaptor::SVideo" autoConnect="yes">
+                <in key="frame" uid="finalFrame" />
+                <config renderer="default" />
+            </service>
+
+            <service uid="interactorStyle" type="::visuVTKAdaptor::SInteractorStyle">
+                <config renderer="default" style="InteractorStyle2DForNegato" />
+            </service>
+
+            <!-- *************************** End generic scene *************************** -->
+
+            <service uid="synchronizer" type="::videoTools::SFrameMatrixSynchronizer" worker="videoWorker">
+                <in group="frameTL">
+                    <key uid="frameTL" autoConnect="yes" />
+                </in>
+                <inout group="image">
+                    <key uid="sourceFrame" />
+                </inout>
+                <framerate>0</framerate>
+                <tolerance>100</tolerance>
+            </service>
+
+            <service uid="CameraSelector" type="::videoQt::editor::SCamera">
+                <inout key="camera" uid="camera" />
+                <videoSupport>yes</videoSupport>
+            </service>
+
+            <service uid="frameGrabber" type="::videoOpenCV::SFrameGrabber">
+                <in key="camera" uid="camera" />
+                <inout key="frameTL" uid="frameTL" autoConnect="yes" />
+            </service>
+
+            <service uid="hybridMarkerTracker" type="::hybridMarkerTracker::SHybridMarkerTracker" worker="tracking">
+                <in key="frameIn" uid="sourceFrame" autoConnect="yes" />
+                <inout key="frame" uid="finalFrame" />
+                <inout key="pose" uid="poseMatrix" />
+            </service>
+
+            <service uid="matrixViewer" type="::uiTools::editor::SMatrixViewer">
+                <in key="matrix" uid="poseMatrix" autoConnect="yes" />
+                <title>Pose matrix</title>
+            </service>
+
+            <service uid="syncGenericScene" type="::ctrlCom::SSignalGate">
+                <signal>finalFrame/bufferModified</signal>
+                <signal>poseMatrix/modified</signal>
+            </service>
+
+            <connect>
+                <signal>camera/idModified</signal>
+                <slot>frameGrabber/stopCamera</slot>
+            </connect>
+
+            <connect>
+                <signal>syncGenericScene/allReceived</signal>
+                <slot>genericScene/requestRender</slot>
+                <slot>synchronizer/synchronize</slot>
+            </connect>
+
+            <start uid="mainFrame" />
+            <start uid="frameGrabber" />
+            <start uid="synchronizer" />
+            <start uid="hybridMarkerTracker"/>
+            <start uid="syncGenericScene" />
+
+            <!-- VTK scene 'genericScene' -->
+            <start uid="videoAdpt" />
+            <start uid="interactorStyle" />
+        </config>
+    </extension>
+</plugin>
