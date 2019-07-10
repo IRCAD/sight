@@ -46,9 +46,9 @@ namespace hybridMarkerTracker
 
 fwServicesRegisterMacro(::arServices::ITracker, ::hybridMarkerTracker::SHybridMarkerTracker);
 
-const ::fwCom::Slots::SlotKeyType SHybridMarkerTracker::s_SET_INT_PARAMETER_SLOT   = "setIntParameter";
-const ::fwCom::Slots::SlotKeyType SHybridMarkerTracker::s_SET_FLOAT_PARAMETER_SLOT = "setDoubleParameter";
-const ::fwCom::Slots::SlotKeyType SHybridMarkerTracker::s_SET_BOOL_PARAMETER_SLOT  = "setBoolParameter";
+const ::fwCom::Slots::SlotKeyType SHybridMarkerTracker::s_SET_INT_PARAMETER_SLOT    = "setIntParameter";
+const ::fwCom::Slots::SlotKeyType SHybridMarkerTracker::s_SET_DOUBLE_PARAMETER_SLOT = "setDoubleParameter";
+const ::fwCom::Slots::SlotKeyType SHybridMarkerTracker::s_SET_BOOL_PARAMETER_SLOT   = "setBoolParameter";
 
 static const ::fwServices::IService::KeyType s_FRAME_INPUT  = "frameIn";
 static const ::fwServices::IService::KeyType s_POSE_INOUT   = "pose";
@@ -100,7 +100,7 @@ SHybridMarkerTracker::SHybridMarkerTracker() noexcept :
     m_blobRoiParams.maxArea             = 2000;
 
     newSlot(s_SET_INT_PARAMETER_SLOT, &SHybridMarkerTracker::setIntParameter, this);
-    newSlot(s_SET_FLOAT_PARAMETER_SLOT, &SHybridMarkerTracker::setDoubleParameter, this);
+    newSlot(s_SET_DOUBLE_PARAMETER_SLOT, &SHybridMarkerTracker::setDoubleParameter, this);
     newSlot(s_SET_BOOL_PARAMETER_SLOT, &SHybridMarkerTracker::setBoolParameter, this);
 }
 

@@ -76,7 +76,7 @@ public:
     fwCoreServiceClassDefinitionsMacro((SHybridMarkerTracker)(arServices::ITracker))
 
     HYBRIDMARKERTRACKER_API static const ::fwCom::Slots::SlotKeyType s_SET_INT_PARAMETER_SLOT;
-    HYBRIDMARKERTRACKER_API static const ::fwCom::Slots::SlotKeyType s_SET_FLOAT_PARAMETER_SLOT;
+    HYBRIDMARKERTRACKER_API static const ::fwCom::Slots::SlotKeyType s_SET_DOUBLE_PARAMETER_SLOT;
     HYBRIDMARKERTRACKER_API static const ::fwCom::Slots::SlotKeyType s_SET_BOOL_PARAMETER_SLOT;
 
     /**
