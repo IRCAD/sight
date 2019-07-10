@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -77,6 +77,16 @@ void SShaderParameter::starting()
     // Retrieves the associated material
     ::Ogre::MaterialPtr material = ::Ogre::MaterialManager::getSingleton().getByName(m_materialName);
     this->setMaterial(material);
+}
+
+//------------------------------------------------------------------------------
+
+void SShaderParameter::updating()
+{
+    // This is typically called when the data has changed through autoconnect
+    // So set the parameter as dirty and perform the update
+    this->setDirty();
+    this->IParameter::updating();
 }
 
 //------------------------------------------------------------------------------
