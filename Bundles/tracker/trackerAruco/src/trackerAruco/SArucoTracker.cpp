@@ -183,7 +183,7 @@ void SArucoTracker::stopping()
 
 void SArucoTracker::updating()
 {
-    // When working with a frame (newest design), we do not rely on the timetamp
+    // When working with a frame (newest design), we do not rely on the timestamp
     // So we can just send the current one.
     // When removing timelines from the service then we could get rid of it
     auto timestamp = ::fwCore::HiResClock::getTimeInMilliSec();

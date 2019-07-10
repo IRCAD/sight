@@ -47,16 +47,24 @@ namespace hybridMarkerTracker
  * - \b startTracking(): Slot called when the user wants to start tracking
  * - \b stopTracking(): Slot called when the user wants to stop tracking
  *
+ * @section Slots Slots
+ * -\b setIntParameter(int, std::string): set the integer parameters 'symboardSizeWidth' and 'symboardSizeHeight'
+ * -\b setDoubleParameter(double, std::string): set the double parameters 'asymSquareSize', 'symSquareSizeX',
+ * 'symSquareSizeY', 'radius', 'chessDistCenter' and 'chessInterval'
+ * -\b setBoolParameter(bool, std::string): set the bool parameter 'showDrawings'
+ *
  * @section XML XML Configuration
  *
  * @code{.xml}
         <service uid="..." type="::hybridMarkerTracker::SHybridMarkerTracker">
+            <in key="camera" uid="..."/>
             <in key="frameIn" uid="..." />
             <inout key="frame" uid="..." />
             <inout key="pose" uid="..." />
         </service>
    @endcode
  * @subsection In In
+ * - \b camera [::arData::Camera]: camera calibration
  * - \b frameIn [::fwData::Image]: input image to process tracking on
  * @subsection In-Out In-Out
  * - \b frame [::fwData::Image]: final output image with tracking information that will be displayed
@@ -66,6 +74,11 @@ class HYBRIDMARKERTRACKER_CLASS_API SHybridMarkerTracker : public ::arServices::
 {
 public:
     fwCoreServiceClassDefinitionsMacro((SHybridMarkerTracker)(arServices::ITracker))
+
+    HYBRIDMARKERTRACKER_API static const ::fwCom::Slots::SlotKeyType s_SET_INT_PARAMETER_SLOT;
+    HYBRIDMARKERTRACKER_API static const ::fwCom::Slots::SlotKeyType s_SET_DOUBLE_PARAMETER_SLOT;
+    HYBRIDMARKERTRACKER_API static const ::fwCom::Slots::SlotKeyType s_SET_BOOL_PARAMETER_SLOT;
+
     /**
      * @brief Constructor.
      */
@@ -131,11 +144,10 @@ private:
     void process();
 
     /**
-     * @brief readSettings method reads a filename and sets the member variables
-     *
-     * @param filename input file name
+     * @brief updateSettings method update needed parameters to perform the hybrid marker
+     * detection.
      */
-    void readSettings(const std::string& filename);
+    void updateSettings();
 
     /**
      * @brief errorDistPoints method computes the distance error between 2 points
@@ -177,6 +189,35 @@ private:
     /// Distortion coefficient Matrix
     ::cv::Mat m_distCoeffs;
 
+    /// The size of the marker used for tracking
+    ::cv::Size m_symboardSize;
+
+    /// Allows to show or not the drawings on the video
+    bool m_showDrawings;
+
+    /// The size of the asymmetric pattern in millimeters
+    float m_asymSquareSize;
+    /// The size of the symmetric pattern (width and height) in millimeters
+    ::cv::Point2f m_symSquareSize;
+
+    /// The radius (millimeter) of cylinder the curved marker is attached on
+    float m_radius;
+
+    /// Distance from the center line to chess line in millimeters
+    float m_chessDistCenter;
+
+    /// Interval between chess in millimeters
+    float m_chessInterval;
+
+    /// Size of input image
+    ::cv::Size m_imgSize;
+
+    /// Tracker global blob detector setting
+    ::cv::SimpleBlobDetector::Params m_blobParams;
+
+    /// Tracker local blob detector setting
+    ::cv::SimpleBlobDetector::Params m_blobRoiParams;
+
     /// Middle pattern model points
     std::vector< ::cv::Point3f > m_trackMidPatternPoints;
     /// Top Pattern model points
@@ -189,6 +230,13 @@ private:
     std::vector< ::cv::Point3f > m_trackChessMidPatternPoint;
     /// Chessboard Bottom Pattern model points
     std::vector< ::cv::Point3f > m_trackChessBotPatternPoint;
+
+    /// Slot called when a integer value is changed
+    void setIntParameter(const int _val, const std::string _key);
+    /// Slot called when a double value is changed
+    void setDoubleParameter(const double _val, const std::string _key);
+    /// Slot called when a boolean value is changed
+    void setBoolParameter(const bool _val, const std::string _key);
 };
 
 } // namespace hybridMarkerTracker

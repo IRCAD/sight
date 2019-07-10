@@ -10,11 +10,13 @@
     <extension implements="::fwServices::registry::AppConfig">
         <id>ExHybridMarkerTrackerConfig</id>
         <config>
-            <object uid="camera" type="::arData::Camera" />
+            <object uid="cameraSeries" type="::arData::CameraSeries" />
+            <object uid="camera" type="::arData::Camera" src="deferred" />
             <object uid="frameTL" type="::arData::FrameTL"/>
             <object uid="sourceFrame" type="::fwData::Image" />
             <object uid="finalFrame" type="::fwData::Image"/>
             <object uid="poseMatrix" type="::fwData::TransformationMatrix3D"/>
+            <object uid="cameraToMarker" type="::fwData::TransformationMatrix3D"/>
 
             <service uid="mainFrame" type="::gui::frame::SDefaultFrame">
                 <gui>
@@ -69,6 +71,7 @@
             <service uid="toolbar" type="::gui::aspect::SDefaultToolBar">
                 <gui>
                     <layout>
+                        <menuItem name="Load Calibration" icon="media-0.1/icons/Plus.svg" />
                         <editor/>
                         <menuItem name="start" icon="arMedia-0.1/icons/start-cam.svg" />
                         <menuItem name="stop" icon="arMedia-0.1/icons/stop-cam.svg" />
@@ -77,7 +80,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <editor sid="CameraSelector" start="yes" />
+                    <menuItem sid="loadCalib" start="yes" />
+                    <editor sid="cameraSelector"  />
                     <menuItem sid="startVideo" start="yes" />
                     <menuItem sid="stopVideo" start="yes" />
                     <menuItem sid="pauseVideo" start="yes" />
@@ -117,10 +121,12 @@
                 <gui>
                     <layout type="::fwGui::LineLayoutManager">
                         <orientation value="vertical" />
-                        <view proportion="0" />
+                        <view proportion="0" caption="" />
+                        <view proportion="0" caption="" />
                     </layout>
                 </gui>
                 <registry>
+                    <view sid="hybridMarkerParams" start="yes"/>
                     <view sid="matrixViewer" start="yes" />
                 </registry>
             </service>
@@ -152,26 +158,66 @@
                 </slots>
             </service>
 
+            <service uid="loadCalib" type="::gui::action::SSlotCaller">
+                <slots>
+                    <slot>calibrationReader/update</slot>
+                </slots>
+            </service>
+
             <!-- *************************** Begin generic scene *************************** -->
 
             <service uid="genericScene" type="::fwRenderVTK::SRender" >
                 <scene renderMode="sync">
-                    <renderer id="default"  background="0.0" />
+                    <renderer id="video" layer="0" background="0" />
+                    <renderer id="default" layer="1" background="0" />
                     <adaptor uid="videoAdpt" />
                     <adaptor uid="interactorStyle" />
+                    <adaptor uid="tagAxisAdpt" />
+                    <adaptor uid="cameraAdpt" />
                 </scene>
             </service>
 
             <service uid="videoAdpt" type="::visuVTKARAdaptor::SVideo" autoConnect="yes">
                 <in key="frame" uid="finalFrame" />
-                <config renderer="default" />
+                <config renderer="video" />
             </service>
 
             <service uid="interactorStyle" type="::visuVTKAdaptor::SInteractorStyle">
-                <config renderer="default" style="InteractorStyle2DForNegato" />
+                <config renderer="default" style="FixedInteractorStyle" />
+            </service>
+
+            <service uid="tagAxisAdpt" type="::visuVTKAdaptor::SAxis">
+                <config renderer="default" length="10" transform="id" label="no" marker="no" markerColor="#FF0000" />
+            </service>
+
+            <service uid="cameraAdpt" type="::visuVTKARAdaptor::SCamera" >
+                <in key="transform" uid="cameraToMarker" autoConnect="yes"/>
+                <in key="camera" uid="camera" />
+                <config renderer="default" />
             </service>
 
             <!-- *************************** End generic scene *************************** -->
+
+            <service uid="hybridMarkerParams" type="::guiQt::editor::SParameters">
+                <parameters>
+                    <!-- Show drawing on video or not -->
+                    <param type="bool" name="Show Drawings" key="showDrawings" defaultValue="true" />
+                    <!-- Symmetric pattern size, for curved pattern set the central symmetric pattern size-->
+                    <param type="int" name="Symmetric Board Size Width" key="symboardSizeWidth" defaultValue="2" min="0" max="100" />
+                    <param type="int" name="Symmetric Board Size Height" key="symboardSizeHeight" defaultValue="5" min="0" max="100" />
+                    <!-- The size of the asymmetric pattern in millimeters-->
+                    <param type="double" name="Asymmetric Square Size" key="asymSquareSize" defaultValue="2.0" min="0.0" max="100.0" />
+                    <!-- The size of the symmetric pattern (width and height) in millimeters -->
+                    <param type="double" name="Symmetric Square Size X" key="symSquareSizeX" defaultValue="4.0" min="0.0" max="100.0" />
+                    <param type="double" name="Symmetric Square Size Y" key="symSquareSizeY" defaultValue="6.0" min="0.0" max="100.0" />
+                    <!-- The radius (millimeter) of cylinder the curved marker is attached on -->
+                    <param type="double" name="Radius" key="radius" defaultValue="5.0" min="0.0" max="100.0" />
+                    <!-- Distance from the center line to chess line in millimeters-->
+                    <param type="double" name="Chess Distance Center" key="chessDistCenter" defaultValue="8.0" min="0.0" max="100.0" />
+                    <!-- Distance between chess in millimeter-->
+                    <param type="double" name="Chess Interval" key="chessInterval" defaultValue="4.0" min="0.0" max="100.0" />
+                </parameters>
+            </service>
 
             <service uid="synchronizer" type="::videoTools::SFrameMatrixSynchronizer" worker="videoWorker">
                 <in group="frameTL">
@@ -184,7 +230,7 @@
                 <tolerance>100</tolerance>
             </service>
 
-            <service uid="CameraSelector" type="::videoQt::editor::SCamera">
+            <service uid="cameraSelector" type="::videoQt::editor::SCamera">
                 <inout key="camera" uid="camera" />
                 <videoSupport>yes</videoSupport>
             </service>
@@ -195,6 +241,7 @@
             </service>
 
             <service uid="hybridMarkerTracker" type="::hybridMarkerTracker::SHybridMarkerTracker" worker="tracking">
+                <in key="camera" uid="camera"/>
                 <in key="frameIn" uid="sourceFrame" autoConnect="yes" />
                 <inout key="frame" uid="finalFrame" />
                 <inout key="pose" uid="poseMatrix" />
@@ -205,9 +252,29 @@
                 <title>Pose matrix</title>
             </service>
 
+            <service uid="matrixReverser" type="::maths::SConcatenateMatrices">
+                <in group="matrix">
+                    <key uid="poseMatrix" autoConnect="yes" inverse="true" />
+                </in>
+                <inout key="output" uid="cameraToMarker" />
+            </service>
+
+            <service uid="calibrationReader" type="::ioCalibration::SOpenCVReader">
+                <inout key="data" uid="cameraSeries" />
+            </service>
+
+            <service uid="extractor" type="::ctrlCamp::SExtractObj">
+                <inout key="source" uid="cameraSeries">
+                    <extract from="@cameras.0" />
+                </inout>
+                <out group="target">
+                    <key uid="camera" />
+                </out>
+            </service>
+
             <service uid="syncGenericScene" type="::ctrlCom::SSignalGate">
                 <signal>finalFrame/bufferModified</signal>
-                <signal>poseMatrix/modified</signal>
+                <signal>cameraToMarker/modified</signal>
             </service>
 
             <connect>
@@ -217,8 +284,28 @@
 
             <connect>
                 <signal>syncGenericScene/allReceived</signal>
-                <slot>genericScene/requestRender</slot>
                 <slot>synchronizer/synchronize</slot>
+                <slot>genericScene/requestRender</slot>
+            </connect>
+
+            <connect>
+                <signal>cameraSeries/modified</signal>
+                <slot>extractor/update</slot>
+            </connect>
+
+            <connect>
+                <signal>hybridMarkerParams/intChanged</signal>
+                <slot>hybridMarkerTracker/setIntParameter</slot>
+            </connect>
+
+            <connect>
+                <signal>hybridMarkerParams/doubleChanged</signal>
+                <slot>hybridMarkerTracker/setDoubleParameter</slot>
+            </connect>
+
+            <connect>
+                <signal>hybridMarkerParams/boolChanged</signal>
+                <slot>hybridMarkerTracker/setBoolParameter</slot>
             </connect>
 
             <start uid="mainFrame" />
@@ -226,10 +313,16 @@
             <start uid="synchronizer" />
             <start uid="hybridMarkerTracker"/>
             <start uid="syncGenericScene" />
+            <start uid="matrixReverser" />
+            <start uid="calibrationReader" />
+            <start uid="extractor" />
+            <start uid="cameraSelector" />
+            <start uid="cameraAdpt" />
 
             <!-- VTK scene 'genericScene' -->
             <start uid="videoAdpt" />
             <start uid="interactorStyle" />
+            <start uid="tagAxisAdpt" />
         </config>
     </extension>
 </plugin>

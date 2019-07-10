@@ -6,8 +6,10 @@ set(REQUIREMENTS
         dataReg
         arDataReg
         ctrlCom
+        ctrlCamp
         gui
         guiQt
+        ioCalibration
         servicesReg
         fwlauncher
         appXml
@@ -22,6 +24,7 @@ set(REQUIREMENTS
         videoTools
         hybridMarkerTracker
         media
+        maths
         arMedia
         preferences
         )

@@ -46,11 +46,62 @@ namespace hybridMarkerTracker
 
 fwServicesRegisterMacro(::arServices::ITracker, ::hybridMarkerTracker::SHybridMarkerTracker);
 
-static const ::fwServices::IService::KeyType s_FRAME_INPUT = "frameIn";
-static const ::fwServices::IService::KeyType s_POSE_INOUT  = "pose";
-SHybridMarkerTracker::SHybridMarkerTracker() noexcept
+const ::fwCom::Slots::SlotKeyType SHybridMarkerTracker::s_SET_INT_PARAMETER_SLOT    = "setIntParameter";
+const ::fwCom::Slots::SlotKeyType SHybridMarkerTracker::s_SET_DOUBLE_PARAMETER_SLOT = "setDoubleParameter";
+const ::fwCom::Slots::SlotKeyType SHybridMarkerTracker::s_SET_BOOL_PARAMETER_SLOT   = "setBoolParameter";
+
+static const ::fwServices::IService::KeyType s_FRAME_INPUT  = "frameIn";
+static const ::fwServices::IService::KeyType s_POSE_INOUT   = "pose";
+static const ::fwServices::IService::KeyType s_CAMERA_INPUT = "camera";
+
+SHybridMarkerTracker::SHybridMarkerTracker() noexcept :
+    m_tracker(NULL),
+    m_showDrawings(true)
 {
+    // Default pose matrix initialization
     m_currentcHp = ::cv::Mat::eye(4, 4, CV_64F);
+
+    // Default initialization describing an hybrid marker tag
+    m_symboardSize.width  = 2;
+    m_symboardSize.height = 5;
+    m_asymSquareSize      = 2.f;
+    m_symSquareSize.x     = 4.f;
+    m_symSquareSize.y     = 6.f;
+    m_radius              = 5.f;
+    m_chessDistCenter     = 8.f;
+    m_chessInterval       = 4.f;
+
+    // Default blob parameter
+    m_blobParams.minRepeatability    = 2;
+    m_blobParams.minDistBetweenBlobs = 10;
+    m_blobParams.minThreshold        = 80;
+    m_blobParams.maxThreshold        = 160;
+    m_blobParams.thresholdStep       = 20;
+    m_blobParams.filterByArea        = true;
+    m_blobParams.minArea             = 50;
+    m_blobParams.maxArea             = 1000;
+    m_blobParams.filterByConvexity   = true;
+    m_blobParams.minConvexity        = 0.85f;
+    m_blobParams.maxConvexity        = 1.0f;
+    m_blobParams.filterByCircularity = true;
+    m_blobParams.minCircularity      = 0.7f;
+    m_blobParams.maxCircularity      = 1.0f;
+    m_blobParams.filterByInertia     = false;
+    m_blobParams.minInertiaRatio     = 0.01;
+
+    // Default blob roi parameters
+    m_blobRoiParams.minRepeatability    = 2;
+    m_blobRoiParams.minDistBetweenBlobs = 10;
+    m_blobRoiParams.minThreshold        = 50;
+    m_blobRoiParams.maxThreshold        = 220;
+    m_blobRoiParams.thresholdStep       = 10;
+    m_blobRoiParams.filterByArea        = true;
+    m_blobRoiParams.minArea             = 50;
+    m_blobRoiParams.maxArea             = 2000;
+
+    newSlot(s_SET_INT_PARAMETER_SLOT, &SHybridMarkerTracker::setIntParameter, this);
+    newSlot(s_SET_DOUBLE_PARAMETER_SLOT, &SHybridMarkerTracker::setDoubleParameter, this);
+    newSlot(s_SET_BOOL_PARAMETER_SLOT, &SHybridMarkerTracker::setBoolParameter, this);
 }
 
 SHybridMarkerTracker::~SHybridMarkerTracker()
@@ -61,84 +112,34 @@ SHybridMarkerTracker::~SHybridMarkerTracker()
 
 //------------------------------------------------------------------------------
 
-void SHybridMarkerTracker::readSettings(const std::string& filename)
+void SHybridMarkerTracker::updateSettings()
 {
-    float asymSquareSize  = 0.f;   // Asymetric pattern size (millimeters)
-    float radius          = 0.f;   // Cylinder curved marker radius (millimeter)
-    float chessDistCenter = 0.f; // Distance (millimeter) from the center line to chess line
-    float chessInterval   = 0.f; // Interval (millimeter) between chess
-    ::cv::Point2f symSquareSize; // Symetric pattern (width and height) size in millimeters
-    ::cv::Size symboardSize; // Marker size (square)
+    m_trackTopPatternPoints.clear();
+    m_trackMidPatternPoints.clear();
+    m_trackBotPatternPoints.clear();
 
-    ::cv::FileStorage fs;
-    SLM_DEBUG("Initializing...");
-    fs.open(filename, ::cv::FileStorage::READ);
-    if(!fs.isOpened())
-    {
-        SLM_FATAL("Cannot read " + filename + "! ");
-    }
-    // Read settings & configuration
-    fs["Sym_BoardSize_Width" ] >> symboardSize.width;
-    fs["Sym_BoardSize_Height"] >> symboardSize.height;
-    fs["Asym_Square_Size"]  >> asymSquareSize;
-    fs["Sym_Square_Size_X" ] >> symSquareSize.x;
-    fs["Sym_Square_Size_Y"] >> symSquareSize.y;
-    fs["Radius"]  >> radius;
-    fs["Chess_Dist_Center"]  >> chessDistCenter;
-    fs["Chess_Interval"]  >> chessInterval;
-    fs["Camera_Matrix"] >> m_cameraMatrix;
-    fs["Distortion_Coefficients"] >> m_distCoeffs;
+    m_trackChessTopPatternPoint.clear();
+    m_trackChessMidPatternPoint.clear();
+    m_trackChessBotPatternPoint.clear();
 
-    fs.release();
-
-    // --- Tracker parameters---
     ::cv::Size roiSize(300, 300);
-    // Global blob detector setting
-    ::cv::SimpleBlobDetector::Params params;
-    params.minRepeatability    = 2;
-    params.minDistBetweenBlobs = 10;
-    params.minThreshold        = 80;
-    params.maxThreshold        = 160;
-    params.thresholdStep       = 20;
-    params.filterByArea        = true;
-    params.minArea             = 50;
-    params.maxArea             = 1000;
-    params.filterByConvexity   = true;
-    params.minConvexity        = 0.85f;
-    params.maxConvexity        = 1.0f;
-    params.filterByCircularity = true;
-    params.minCircularity      = 0.7f;
-    params.maxCircularity      = 1.0f;
-    params.filterByInertia     = false;
-    params.minInertiaRatio     = 0.01;
-
-    // Local blob detector setting
-    ::cv::SimpleBlobDetector::Params paramsRoi;
-    paramsRoi.minRepeatability    = 2;
-    paramsRoi.minDistBetweenBlobs = 10;
-    paramsRoi.minThreshold        = 50;
-    paramsRoi.maxThreshold        = 220;
-    paramsRoi.thresholdStep       = 10;
-    paramsRoi.filterByArea        = true;
-    paramsRoi.minArea             = 50;
-    paramsRoi.maxArea             = 2000;
 
     /**
      *  Calculate model points for marker
      */
-    const float arcInner      = symSquareSize.y;
-    const float arcOutter     = arcInner + 2 * asymSquareSize;
-    const float chordInner2   = radius * sin(arcInner / (2*radius));
-    const float chordOutter2  = radius * sin(arcOutter / (2*radius));
-    const float sagittaInner  = radius - sqrt(radius * radius - chordInner2 * chordInner2);
-    const float sagittaOutter = radius - sqrt(radius * radius - chordOutter2 * chordOutter2);
+    const float arcInner      = m_symSquareSize.y;
+    const float arcOutter     = arcInner + 2 * m_asymSquareSize;
+    const float chordInner2   = m_radius * sin(arcInner / (2*m_radius));
+    const float chordOutter2  = m_radius * sin(arcOutter / (2*m_radius));
+    const float sagittaInner  = m_radius - sqrt(m_radius * m_radius - chordInner2 * chordInner2);
+    const float sagittaOutter = m_radius - sqrt(m_radius * m_radius - chordOutter2 * chordOutter2);
     // MID
-    for ( int i = 0; i < symboardSize.height; i++ )
+    for ( int i = 0; i < m_symboardSize.height; i++ )
     {
-        for ( int j = 0; j < symboardSize.width; j++)
+        for ( int j = 0; j < m_symboardSize.width; j++)
         {
             ::cv::Point3f pt;
-            pt.x = i * symSquareSize.x;
+            pt.x = i * m_symSquareSize.x;
             pt.y = chordInner2;
             pt.y = (j % 2) == 0 ? pt.y : -pt.y;
             pt.z = sagittaInner;
@@ -146,12 +147,12 @@ void SHybridMarkerTracker::readSettings(const std::string& filename)
         }
     }
     // TOP
-    const int asymPointsNum = symboardSize.height + symboardSize.height - 1;
+    const int asymPointsNum = m_symboardSize.height + m_symboardSize.height - 1;
     for ( int i = 0; i < asymPointsNum; i++ )
     {
         ::cv::Point3f pt;
-        pt.x = (symboardSize.height-1) * symSquareSize.x
-               - i * asymSquareSize;
+        pt.x = (m_symboardSize.height-1) * m_symSquareSize.x
+               - i * m_asymSquareSize;
         pt.y = (i % 2) == 0 ? chordInner2 : chordOutter2;
         pt.z = (i % 2) == 0 ? sagittaInner : sagittaOutter;
         m_trackTopPatternPoints.push_back(pt);
@@ -160,7 +161,7 @@ void SHybridMarkerTracker::readSettings(const std::string& filename)
     for ( int i = 0; i < asymPointsNum; i++ )
     {
         ::cv::Point3f pt;
-        pt.x = i * asymSquareSize;
+        pt.x = i * m_asymSquareSize;
         pt.y = (i % 2) == 0 ? -chordInner2 : -chordOutter2;
         pt.z = (i % 2) == 0 ? sagittaInner : sagittaOutter;
         m_trackBotPatternPoints.push_back(pt);
@@ -171,26 +172,26 @@ void SHybridMarkerTracker::readSettings(const std::string& filename)
     for (int i = -1; i < 5; i++)
     {
         ::cv::Point3f pt(0.0f, 0.0f, 0.0f);
-        pt.x = chessInterval/2 + i * chessInterval;
+        pt.x = m_chessInterval/2 + i * m_chessInterval;
         m_trackChessMidPatternPoint.push_back(pt);
     }
 
-    const float arcChess    = chessDistCenter * 2;
-    const float chordChess2 = radius * sin(arcChess / (2*radius));
+    const float arcChess    = m_chessDistCenter * 2;
+    const float chordChess2 = m_radius * sin(arcChess / (2*m_radius));
     float sagittaChess;
-    if (arcChess < CV_PI * radius)
+    if (arcChess < CV_PI * m_radius)
     {
-        sagittaChess = radius - sqrt(radius * radius - chordChess2 * chordChess2);
+        sagittaChess = m_radius - sqrt(m_radius * m_radius - chordChess2 * chordChess2);
     }
     else
     {
-        sagittaChess = radius + sqrt(radius * radius - chordChess2 * chordChess2);
+        sagittaChess = m_radius + sqrt(m_radius * m_radius - chordChess2 * chordChess2);
     }
     // TOP
     for (int i = 0; i < 5; i++)
     {
         ::cv::Point3f pt;
-        pt.x = i * chessInterval;
+        pt.x = i * m_chessInterval;
         pt.y = chordChess2;
         pt.z = sagittaChess;
 
@@ -200,13 +201,15 @@ void SHybridMarkerTracker::readSettings(const std::string& filename)
     for (int i = 0; i < 5; i++)
     {
         ::cv::Point3f pt;
-        pt.x = i * chessInterval;
+        pt.x = i * m_chessInterval;
         pt.y = -chordChess2;
         pt.z = sagittaChess;
 
         m_trackChessBotPatternPoint.push_back(pt);
     }
-    m_tracker = new TrackerCurvedot(symboardSize, roiSize, params, paramsRoi);
+
+    delete m_tracker;
+    m_tracker = new TrackerCurvedot(m_symboardSize, roiSize, m_blobParams, m_blobRoiParams);
 }
 
 //------------------------------------------------------------------------------
@@ -319,8 +322,11 @@ void SHybridMarkerTracker::process()
             aux = cHp2.colRange(3, 4).rowRange(0, 3);
             tvec2.copyTo(aux);
 
-            drawRect(cHp1, m_imgTrack, ::cv::Scalar(0, 0, 255));
-            drawRect(cHp2, m_imgTrack, ::cv::Scalar(255, 0, 0));
+            if(m_showDrawings)
+            {
+                drawRect(cHp1, m_imgTrack, ::cv::Scalar(0, 0, 255));
+                drawRect(cHp2, m_imgTrack, ::cv::Scalar(255, 0, 0));
+            }
 
             m_currentcHp = cHp1;
         }
@@ -332,25 +338,42 @@ void SHybridMarkerTracker::process()
             cRp.copyTo(aux);
             aux = m_currentcHp.colRange(3, 4).rowRange(0, 3);
             tvec.copyTo(aux);
-            drawRect(m_currentcHp, m_imgTrack);
+
+            if(m_showDrawings)
+            {
+                drawRect(m_currentcHp, m_imgTrack, ::cv::Scalar(0, 0, 255));
+
+            }
         }
 
-        m_tracker->drawKeydots(m_imgTrack);
+        if(m_showDrawings)
+        {
+            m_tracker->drawKeydots(m_imgTrack);
+        }
     }
     else
     {
         SLM_WARN("Cannot find the pattern");
     }
 
-    const std::string str1 = "Blue rectangle shows current estimated pose";
-    const std::string str2 = "Red rectangle shows the ambiguous pose provided by IPPE";
-    const std::string str3 = "Green shows detection of pattern";
-    const std::string str4 = "Yellow shows tracking of pattern";
-    ::cv::putText(m_imgTrack, str1, ::cv::Point(10, 20), ::cv::FONT_HERSHEY_COMPLEX, 0.5, ::cv::Scalar(0, 0, 255), 1);
-    ::cv::putText(m_imgTrack, str2, ::cv::Point(10, 40), ::cv::FONT_HERSHEY_COMPLEX, 0.5, ::cv::Scalar(255, 0, 0), 1);
-    ::cv::putText(m_imgTrack, str3, ::cv::Point(10, 60), ::cv::FONT_HERSHEY_COMPLEX, 0.5, ::cv::Scalar(0, 255, 0), 1);
-    ::cv::putText(m_imgTrack, str4, ::cv::Point(10, 80), ::cv::FONT_HERSHEY_COMPLEX, 0.5, ::cv::Scalar(255, 255, 0),
-                  1);
+    if(m_showDrawings)
+    {
+
+        const std::string str_1 = "Blue rectangle shows current estimated pose";
+        const std::string str_2 = "Red rectangle shows the ambiguous pose provided by IPPE";
+        const std::string str_3 = "Green shows detection of pattern";
+        const std::string str_4 = "Yellow shows tracking of pattern";
+
+        ::cv::putText(m_imgTrack, str_1, ::cv::Point(10, 20), ::cv::FONT_HERSHEY_COMPLEX, 0.5, ::cv::Scalar(0, 0,
+                                                                                                            255), 1);
+        ::cv::putText(m_imgTrack, str_2, ::cv::Point(10, 40), ::cv::FONT_HERSHEY_COMPLEX, 0.5, ::cv::Scalar(255, 0,
+                                                                                                            0), 1);
+        ::cv::putText(m_imgTrack, str_3, ::cv::Point(10, 60), ::cv::FONT_HERSHEY_COMPLEX, 0.5, ::cv::Scalar(0, 255,
+                                                                                                            0), 1);
+        ::cv::putText(m_imgTrack, str_4, ::cv::Point(10, 80), ::cv::FONT_HERSHEY_COMPLEX, 0.5, ::cv::Scalar(255, 255,
+                                                                                                            0),
+                      1);
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -425,7 +448,7 @@ void SHybridMarkerTracker::calculateCorrectPose(
     ::cv::projectPoints(pts3d, rvec2, tvec2,
                         m_cameraMatrix, m_distCoeffs, projPoints2);
 
-    std::vector< ::cv::Point2f > detect_pts = m_tracker->get_chess_pts();
+    std::vector< ::cv::Point2f > detectPts = m_tracker->get_chess_pts();
 
     // Calculate a threshold to determine correspondence
     ::cv::Point2f diffTemp = (projPoints1[0] - projPoints1[1]) * 0.7;
@@ -433,7 +456,7 @@ void SHybridMarkerTracker::calculateCorrectPose(
     diffTemp  = (projPoints2[0] - projPoints2[1]) * 0.7;
     maxDistSq = (maxDistSq + diffTemp.x*diffTemp.x + diffTemp.y*diffTemp.y)/2;
 
-    const ::cv::Vec2f errors = errorDistPoints(detect_pts, projPoints1, projPoints2, maxDistSq);
+    const ::cv::Vec2f errors = errorDistPoints(detectPts, projPoints1, projPoints2, maxDistSq);
 
     rvec.create(3, 1, CV_64FC1);
     tvec.create(3, 1, CV_64FC1);
@@ -512,8 +535,7 @@ void SHybridMarkerTracker::drawRect(const ::cv::Mat& cHp, ::cv::Mat& img, ::cv::
 
 void SHybridMarkerTracker::starting()
 {
-    const auto filePath = ::fwRuntime::getBundleResourceFilePath("hybridMarkerTracker", "settings.xml");
-    readSettings(filePath.string());
+    this->updateSettings();
     this->startTracking();
 }
 
@@ -532,12 +554,17 @@ void SHybridMarkerTracker::tracking(::fwCore::HiResClock::HiResClockType& timest
     auto matrixOut = this->getInOut< ::fwData::TransformationMatrix3D >(s_POSE_INOUT);
     SLM_ASSERT("The InOut key '" + s_POSE_INOUT + "' is not defined", matrixOut);
 
+    auto arCamera = this->getInput< ::arData::Camera >(s_CAMERA_INPUT);
+    SLM_ASSERT("The InPut key '" + s_CAMERA_INPUT + "' is not defined", arCamera);
+
+    std::tie(m_cameraMatrix, std::ignore, m_distCoeffs) = ::cvIO::Camera::copyToCv(arCamera);
+
     if (frameIn)
     {
         // check if image dimension have changed
         ::fwData::Image::SizeType size;
         size = frameIn->getSize();
-        // if so, we need to initilize the output image
+        // if so, we need to initialize the output image
         if(size != frameOut->getSize())
         {
             const ::fwData::Image::SpacingType::value_type voxelSize = 1;
@@ -574,6 +601,79 @@ void SHybridMarkerTracker::tracking(::fwCore::HiResClock::HiResClockType& timest
             sig->asyncEmit();
         }
     }
+}
+
+//------------------------------------------------------------------------------
+
+void SHybridMarkerTracker::setIntParameter(const int _val, std::string _key)
+{
+    if(_key == "symboardSizeWidth")
+    {
+        m_symboardSize.width = _val;
+    }
+    else if(_key == "symboardSizeHeight")
+    {
+        m_symboardSize.height = _val;
+    }
+    else
+    {
+        SLM_ERROR("The slot key : '"+ _key + "' is not handled");
+    }
+
+    this->updateSettings();
+}
+
+//------------------------------------------------------------------------------
+
+void SHybridMarkerTracker::setDoubleParameter(const double _val, std::string _key)
+{
+    const float val = static_cast<float>(_val);
+    if(_key == "asymSquareSize")
+    {
+        m_asymSquareSize = val;
+    }
+    else if(_key == "symSquareSizeX")
+    {
+        m_symSquareSize.x = val;
+    }
+    else if(_key == "symSquareSizeY")
+    {
+        m_symSquareSize.y = val;
+    }
+    else if(_key == "radius")
+    {
+        m_radius = val;
+    }
+    else if(_key == "chessDistCenter")
+    {
+        m_chessDistCenter = val;
+    }
+    else if(_key == "chessInterval")
+    {
+        m_chessInterval = val;
+    }
+    else
+    {
+        SLM_ERROR("The slot key : '"+ _key + "' is not handled");
+    }
+
+    this->updateSettings();
+}
+
+//------------------------------------------------------------------------------
+
+void SHybridMarkerTracker::setBoolParameter(const bool _val, std::string _key)
+{
+    if(_key == "showDrawings")
+    {
+        m_showDrawings = _val;
+    }
+    else
+    {
+        SLM_ERROR("The slot key : '"+ _key + "' is not handled");
+    }
+
+    this->updateSettings();
 }
 
 //------------------------------------------------------------------------------
