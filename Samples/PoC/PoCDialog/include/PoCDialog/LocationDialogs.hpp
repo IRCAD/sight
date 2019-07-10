@@ -60,7 +60,7 @@ protected Q_SLOTS:
 private:
 
     /// option to save a file enable
-    bool m_existing;
+    bool m_existing {true};
     /// the filter list and the current filter selected
     QStringList m_filter;
     /// the filter list extension
@@ -69,9 +69,9 @@ private:
     /// the path of the location at the beginning
     QString m_folder;
     /// option to select folder enable
-    bool m_isFolder;
+    bool m_isFolder {false};
     /// option to select multiple file enable
-    bool m_multiple;
+    bool m_multiple {false};
 
     /// title
     QString m_title;

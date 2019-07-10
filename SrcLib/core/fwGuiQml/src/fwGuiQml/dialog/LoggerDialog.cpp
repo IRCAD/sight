@@ -31,7 +31,6 @@
 #include <fwRuntime/operations.hpp>
 
 #include <boost/filesystem/operations.hpp>
-#include <boost/foreach.hpp>
 
 #include <QGuiApplication>
 
