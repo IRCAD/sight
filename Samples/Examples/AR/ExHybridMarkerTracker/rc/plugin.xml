@@ -172,7 +172,6 @@
                     <renderer id="default" layer="1" background="0" />
                     <adaptor uid="videoAdpt" />
                     <adaptor uid="interactorStyle" />
-                    <adaptor uid="tagToCameraTransformAdaptor" />
                     <adaptor uid="tagAxisAdpt" />
                     <adaptor uid="cameraAdpt" />
                 </scene>
@@ -185,11 +184,6 @@
 
             <service uid="interactorStyle" type="::visuVTKAdaptor::SInteractorStyle">
                 <config renderer="default" style="FixedInteractorStyle" />
-            </service>
-
-            <service uid="tagToCameraTransformAdaptor" type="::visuVTKAdaptor::STransform" autoConnect="yes">
-                <inout key="tm3d" uid="poseMatrix" />
-                <config renderer="default" transform="tagToCameraTransform" />
             </service>
 
             <service uid="tagAxisAdpt" type="::visuVTKAdaptor::SAxis">
@@ -280,7 +274,7 @@
 
             <service uid="syncGenericScene" type="::ctrlCom::SSignalGate">
                 <signal>finalFrame/bufferModified</signal>
-                <signal>poseMatrix/modified</signal>
+                <signal>cameraToMarker/modified</signal>
             </service>
 
             <connect>
@@ -329,7 +323,6 @@
             <start uid="videoAdpt" />
             <start uid="interactorStyle" />
             <start uid="tagAxisAdpt" />
-            <start uid="tagToCameraTransformAdaptor" />
         </config>
     </extension>
 </plugin>
