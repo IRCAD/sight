@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2018 IRCAD France
- * Copyright (C) 2016-2018 IHU Strasbourg
+ * Copyright (C) 2016-2019 IRCAD France
+ * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -257,9 +257,9 @@ void SummedAreaTable::updateSatFromRatio(float _sizeRatio)
 
 void SummedAreaTable::initializeSAT()
 {
-    std::uint8_t width  = static_cast<std::uint8_t>(m_satSize[0]);
-    std::uint8_t height = static_cast<std::uint8_t>(m_satSize[1]);
-    std::uint8_t depth  = static_cast<std::uint8_t>(m_satSize[2]);
+    unsigned width  = static_cast<unsigned>(m_satSize[0]);
+    unsigned height = static_cast<unsigned>(m_satSize[1]);
+    unsigned depth  = static_cast<unsigned>(m_satSize[2]);
 
     ::Ogre::TextureManager& textureManager = ::Ogre::TextureManager::getSingleton();
 
