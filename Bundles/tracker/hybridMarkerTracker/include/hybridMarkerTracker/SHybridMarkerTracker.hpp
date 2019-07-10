@@ -57,12 +57,14 @@ namespace hybridMarkerTracker
  *
  * @code{.xml}
         <service uid="..." type="::hybridMarkerTracker::SHybridMarkerTracker">
+            <in key="camera" uid="..."/>
             <in key="frameIn" uid="..." />
             <inout key="frame" uid="..." />
             <inout key="pose" uid="..." />
         </service>
    @endcode
  * @subsection In In
+ * - \b camera [::arData::Camera]: camera calibration
  * - \b frameIn [::fwData::Image]: input image to process tracking on
  * @subsection In-Out In-Out
  * - \b frame [::fwData::Image]: final output image with tracking information that will be displayed
@@ -190,6 +192,7 @@ private:
     /// The size of the marker used for tracking
     ::cv::Size m_symboardSize;
 
+    /// Allows to show or not the drawings on the video
     bool m_showDrawings;
 
     /// The size of the asymmetric pattern in millimeters
