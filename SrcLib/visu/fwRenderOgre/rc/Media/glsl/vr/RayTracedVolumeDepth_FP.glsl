@@ -23,12 +23,6 @@ uniform mat4 u_invWorldViewProj;
 uniform mat4 u_worldViewProj;
 #endif // AUTOSTEREO
 
-#ifdef PREINTEGRATION
-uniform sampler2D u_s2PreintegratedTFTexture;
-uniform int u_iMinImageValue;
-uniform int u_iMaxImageValue;
-#endif // PREINTEGRATION
-
 out vec4 f_f4FragCol;
 
 //-----------------------------------------------------------------------------
@@ -55,21 +49,6 @@ float modelSpaceToNDC(in vec3 _f3Pos_Ms)
 
 //-----------------------------------------------------------------------------
 
-#ifdef PREINTEGRATION
-vec4 samplePreIntegrationTable(vec3 _f3RayBack_Ms, vec3 _f3RayFront_Ms)
-{
-    float sf = texture(u_s3Image, _f3RayBack_Ms).r;
-    float sb = texture(u_s3Image, _f3RayFront_Ms).r;
-
-    sf = ((sf * 65535.f) - float(u_iMinImageValue) - 32767.f) / float(u_iMaxImageValue - u_iMinImageValue);
-    sb = ((sb * 65535.f) - float(u_iMinImageValue) - 32767.f) / float(u_iMaxImageValue - u_iMinImageValue);
-
-    return texture(u_s2PreintegratedTFTexture, vec2(sf, sb));
-}
-#endif // PREINTEGRATION
-
-//-----------------------------------------------------------------------------
-
 float firstOpaqueRayDepth(in vec3 _f3RayPos_Ms, in vec3 _f3RayDir_Ms, in float _fRayLen, in float _fSampleDis, in sampler1D _s1TFTexture, in vec2 _f2TFWindow)
 {
     int iIterCount = 0;
@@ -77,12 +56,8 @@ float firstOpaqueRayDepth(in vec3 _f3RayPos_Ms, in vec3 _f3RayDir_Ms, in float _
     // Move the ray to the first non transparent voxel.
     for(; iIterCount < MAX_ITERATIONS && t < _fRayLen; iIterCount += 1, t += _fSampleDis)
     {
-#ifdef PREINTEGRATION
-        float fTFAlpha = samplePreIntegrationTable(_f3RayPos_Ms, _f3RayPos_Ms + _f3RayDir_Ms).a;
-#else // PREINTEGRATION
         float fIntensity = texture(u_s3Image, _f3RayPos_Ms).r;
         float fTFAlpha = sampleTransferFunction(fIntensity, _s1TFTexture, _f2TFWindow).a;
-#endif // PREINTEGRATION
 
         if(fTFAlpha != 0)
         {

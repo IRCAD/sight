@@ -264,6 +264,7 @@ void RayTracingVolumeRenderer::imageUpdate(const ::fwData::Image::sptr image, co
         m_proxyGeometry->computeGrid();
     }
 
+    const auto material = ::Ogre::MaterialManager::getSingleton().getByName(m_currentMtlName);
     if(m_preIntegratedRendering)
     {
         m_preIntegrationTable.imageUpdate(image, tf, m_sampleDistance);
@@ -277,12 +278,18 @@ void RayTracingVolumeRenderer::imageUpdate(const ::fwData::Image::sptr image, co
     }
     else
     {
-        const auto material         = ::Ogre::MaterialManager::getSingleton().getByName(m_currentMtlName);
         const auto* const technique = material->getTechnique(0);
         SLM_ASSERT("Technique not found", technique);
         const auto* const pass = technique->getPass(0);
+        SLM_ASSERT("Pass not found", pass);
         m_gpuVolumeTF.lock()->bind(pass, s_VOLUME_TF_TEXUNIT_NAME, m_RTVSharedParameters);
     }
+
+    // The depth technique always used the transfer function
+    const auto* const technique = material->getTechnique(1);
+    SLM_ASSERT("Technique not found", technique);
+    const auto* const pass = technique->getPass(0);
+    m_gpuVolumeTF.lock()->bind(pass, s_VOLUME_TF_TEXUNIT_NAME, m_RTVSharedParameters);
 }
 
 //-----------------------------------------------------------------------------
@@ -290,14 +297,24 @@ void RayTracingVolumeRenderer::imageUpdate(const ::fwData::Image::sptr image, co
 void RayTracingVolumeRenderer::updateVolumeTF()
 {
     FW_PROFILE("TF Update")
+    const auto material = ::Ogre::MaterialManager::getSingleton().getByName(m_currentMtlName);
+
     if(!m_preIntegratedRendering)
     {
-        const auto material         = ::Ogre::MaterialManager::getSingleton().getByName(m_currentMtlName);
         const auto* const technique = material->getTechnique(0);
         SLM_ASSERT("Technique not found", technique);
         const auto* const pass = technique->getPass(0);
+        SLM_ASSERT("Pass not found", pass);
         m_gpuVolumeTF.lock()->bind(pass, s_VOLUME_TF_TEXUNIT_NAME, m_RTVSharedParameters);
     }
+
+    // The depth technique always used the transfer function
+    const auto* const technique = material->getTechnique(1);
+    SLM_ASSERT("Technique not found", technique);
+    const auto* const pass = technique->getPass(0);
+    SLM_ASSERT("Pass not found", pass);
+    m_gpuVolumeTF.lock()->bind(pass, s_VOLUME_TF_TEXUNIT_NAME, m_RTVSharedParameters);
+
     m_proxyGeometry->computeGrid();
 }
 
@@ -624,18 +641,13 @@ void RayTracingVolumeRenderer::createRayTracingMaterial(const std::string& _sour
         ::Ogre::HighLevelGpuProgramPtr fsp = gpm.createProgram(fpDepthName, "Materials", "glsl",
                                                                ::Ogre::GPT_FRAGMENT_PROGRAM);
         fsp->setSourceFile("RayTracedVolumeDepth_FP.glsl");
+        fsp->setParameter("attach", "TransferFunction_FP");
+        fsp->setParameter("attach", "DepthPeelingCommon_FP");
 
         for(const std::string& attachement: m_fragmentShaderAttachements)
         {
             fsp->setParameter("attach", attachement);
         }
-        fsp->setParameter("attach", "DepthPeelingCommon_FP");
-
-        if(fpPPDefines.find(s_PREINTEGRATION_DEFINE) == std::string::npos)
-        {
-            fsp->setParameter("attach", "TransferFunction_FP");
-        }
-
         if(fpPPDefines.size() > 0)
         {
             fsp->setParameter("preprocessor_defines", fpPPDefines);
@@ -671,7 +683,30 @@ void RayTracingVolumeRenderer::createRayTracingMaterial(const std::string& _sour
         fpParams->addSharedParameters(m_RTVSharedParameters->getName());
 
         // Setup texture unit states
-        this->setRayCastingPassTextureUnits(pass, fpPPDefines);
+        ::Ogre::TextureUnitState* texUnitState;
+        texUnitState = pass->createTextureUnitState();
+        texUnitState->setTextureName(m_3DOgreTexture->getName(), ::Ogre::TEX_TYPE_3D);
+        texUnitState->setTextureFiltering(::Ogre::TFO_BILINEAR);
+        texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
+        fpParams->setNamedConstant("u_s3Image", 0);
+
+        const auto gpuTF = m_gpuVolumeTF.lock();
+        texUnitState = pass->createTextureUnitState();
+        texUnitState->setName(s_VOLUME_TF_TEXUNIT_NAME);
+        gpuTF->bind(pass, texUnitState->getName(), fpParams);
+        fpParams->setNamedConstant("u_s1TFTexture", 1);
+
+        texUnitState = pass->createTextureUnitState();
+        texUnitState->setName("entryPoints");
+        if(this->getLayer()->getNumberOfCameras() == 1)
+        {
+            const auto& rayEntryCompositorName = m_rayEntryCompositor->getName();
+            texUnitState->setContentType(::Ogre::TextureUnitState::CONTENT_COMPOSITOR);
+            texUnitState->setCompositorReference(rayEntryCompositorName, rayEntryCompositorName + "Texture");
+        }
+        texUnitState->setTextureFiltering(::Ogre::TFO_NONE);
+        texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
+        fpParams->setNamedConstant("u_s2EntryPoints", 2);
     }
 
     m_entryPointGeometry->setMaterialName(0, m_currentMtlName);
