@@ -116,7 +116,7 @@ void SModelSeries::updating()
 {
     // Retrieves the associated Sight ModelSeries object
     const auto modelSeries = this->getInput< ::fwMedData::ModelSeries >(s_MODEL_INPUT);
-    SLM_ASSERT("'" + s_MODEL_INPUT + "' input not found", s_MODEL_INPUT);
+    SLM_ASSERT("'" + s_MODEL_INPUT + "' input not found", modelSeries);
 
     this->stopping();
 
@@ -173,7 +173,7 @@ void SModelSeries::showReconstructions(bool _show)
 void SModelSeries::showReconstructionsOnFieldChanged()
 {
     const auto modelSeries = this->getInput< ::fwMedData::ModelSeries >(s_MODEL_INPUT);
-    SLM_ASSERT("'" + s_MODEL_INPUT + "' input not found", s_MODEL_INPUT);
+    SLM_ASSERT("'" + s_MODEL_INPUT + "' input not found", modelSeries);
 
     ::fwData::mt::ObjectReadLock lock(modelSeries);
 
