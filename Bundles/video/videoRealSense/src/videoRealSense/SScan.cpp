@@ -71,8 +71,10 @@ static const std::string s_COLOR_FRAME_W = "colorW";
 static const std::string s_DEPTH_FRAME_H = "depthH";
 static const std::string s_DEPTH_FRAME_W = "depthW";
 static const std::string s_PRESET        = "preset";
-static const std::string s_IREMITTER     = "IREmitter";
-static const std::string s_SWITCH_TO_IR  = "switchToIR";
+static const std::string s_ALIGNMENT     = "alignTo";
+
+static const std::string s_IREMITTER    = "IREmitter";
+static const std::string s_SWITCH_TO_IR = "switchToIR";
 
 static const std::string s_ENABLE_SPACIAL_FILTER       = "enableSpacial";
 static const std::string s_ENABLE_TEMPORAL_FILTER      = "enableTemporal";
@@ -160,6 +162,10 @@ void SScan::configuring()
 
         m_switchInfra2Color        = cfg->get< bool > (s_SWITCH_TO_IR, m_switchInfra2Color);
         m_cameraSettings.irEmitter = cfg->get< bool > (s_IREMITTER, m_cameraSettings.irEmitter);
+
+        const std::string alignTo = cfg->get< std::string >(s_ALIGNMENT, "None");
+        this->updateAlignment(alignTo);
+
     }
 
     static const auto s_bundlePath = ::fwRuntime::getBundleResourcePath(std::string("videoRealSense"));
@@ -236,8 +242,9 @@ void SScan::initialize(const ::rs2::pipeline_profile& _profile)
     ::arData::CameraSeries::sptr cameraSeries = this->getInOut< ::arData::CameraSeries>(s_CAMERA_SERIES_INOUT);
     m_colorTimeline                           = this->getInOut< ::arData::FrameTL>(s_FRAMETL_INOUT);
 
-    const auto depthStream = _profile.get_stream(RS2_STREAM_DEPTH).as< ::rs2::video_stream_profile>();
-    const auto colorStream = _profile.get_stream(RS2_STREAM_COLOR).as< ::rs2::video_stream_profile>();
+    const auto depthStream    = _profile.get_stream(RS2_STREAM_DEPTH).as< ::rs2::video_stream_profile>();
+    const auto colorStream    = _profile.get_stream(RS2_STREAM_COLOR).as< ::rs2::video_stream_profile>();
+    const auto infraredStream = _profile.get_stream(RS2_STREAM_INFRARED).as< ::rs2::video_stream_profile>();
 
     std::stringstream str;
     str << "-- fps : " << depthStream.fps() << std::endl;
@@ -343,13 +350,14 @@ void SScan::initialize(const ::rs2::pipeline_profile& _profile)
             size_t index = 0;
             for (size_t i = 0; i < 3; ++i)
             {
-                matrix->setCoefficient(i, 3, static_cast<double>(extrinsic.translation[i] * s_METERS_TO_MMS));
+                matrix->setCoefficient(i, 3, static_cast<double>(extrinsic.translation[i]  * s_METERS_TO_MMS ));
                 for (size_t j = 0; j < 3; ++j)
                 {
                     matrix->setCoefficient(i, j, static_cast<double>(extrinsic.rotation[index]));
                     ++index;
                 }
             }
+
             cameraSeries->setExtrinsicMatrix(1, matrix);
 
             auto sig = cameraSeries->signal< ::arData::CameraSeries::ModifiedSignalType >(
@@ -358,9 +366,14 @@ void SScan::initialize(const ::rs2::pipeline_profile& _profile)
         }
     }
 
-    // Re-init the pointcloud.
-    m_pointcloud = ::fwData::Mesh::New();
+    //Only create the pointer one time.
+    if(m_pointcloud == nullptr)
+    {
+        m_pointcloud = ::fwData::Mesh::New();
+        this->setOutput(s_POINTCLOUD_OUTPUT, m_pointcloud);
+    }
 
+    // Re-init the pointcloud.
     SLM_ASSERT("Cannot create pointcloud output", m_pointcloud);
 
     const size_t nbPoints = depthStreamW * depthStreamH;
@@ -396,8 +409,6 @@ void SScan::initialize(const ::rs2::pipeline_profile& _profile)
     m_pointcloud->setCellDataSize(nbPoints);
     m_pointcloud->allocatePointColors(::fwData::Mesh::ColorArrayTypes::RGB);
 
-    this->setOutput(s_POINTCLOUD_OUTPUT, m_pointcloud);
-
 }
 
 //-----------------------------------------------------------------------------
@@ -411,8 +422,22 @@ void SScan::startCamera()
     }
 
     ::arData::CameraSeries::sptr cameraSeries = this->getInOut< ::arData::CameraSeries>(s_CAMERA_SERIES_INOUT);
-    // Extract the first camera (source should be the same).
-    const auto camera = cameraSeries->getCamera(0);
+    ::arData::Camera::csptr camera;
+    if(cameraSeries)
+    {
+        // Extract the first camera (source should be the same).
+        camera = cameraSeries->getCamera(0);
+    }
+    else // No cameraSeries (called by SGrabberProxy for ex.).
+    {
+        const auto obj = this->getInput< ::fwData::Object >(s_CAMERA_INPUT);
+        camera = ::arData::Camera::dynamicConstCast(obj);
+    }
+
+    SLM_ASSERT("Camera should not be null, check if  '" + s_CAMERA_SERIES_INOUT
+               + "' or '" + s_CAMERA_INPUT + "' is present.", camera );
+
+    //const auto camera = cameraSeries->getCamera(0);
     if (camera->getCameraSource() == ::arData::Camera::FILE)
     {
         m_playbackMode     = true;
@@ -421,11 +446,7 @@ void SScan::startCamera()
     }
     else if(camera->getCameraSource() == ::arData::Camera::STREAM)
     {
-        ::fwGui::dialog::MessageDialog::showMessageDialog(
-            "RealSense Error",
-            "RealSense grabber cannot open STREAM type, please select DEVICE or FILE. ",
-            ::fwGui::dialog::IMessageDialog::CRITICAL);
-
+        this->popMessageDialog("RealSense grabber cannot open STREAM type, please select DEVICE or FILE.");
         return;
     }
     // CameraSource is unknow or DEVICE we open a device. This allows to work without camera selector.
@@ -534,10 +555,9 @@ void SScan::startCamera()
     }
     catch(const std::exception& e)
     {
-        ::fwGui::dialog::MessageDialog::showMessageDialog(
-            "RealSense Error",
-            "RealSense device is not available. Please check if it is plugged in. Error : " + std::string(e.what()),
-            ::fwGui::dialog::IMessageDialog::CRITICAL);
+
+        this->popMessageDialog("RealSense device is not available. Please check if it is plugged in. Error : "
+                               + std::string(e.what()));
         return;
     }
 
@@ -612,7 +632,6 @@ void SScan::pauseCamera()
                 m_currentDevice.as< ::rs2::recorder>().resume();
             }
         }
-
     }
 }
 
@@ -623,10 +642,7 @@ void SScan::record()
     // Cannot record when playback a file.
     if(m_playbackMode)
     {
-        ::fwGui::dialog::MessageDialog::showMessageDialog(
-            "RealSense Error",
-            "Cannot record when grabber playback a file !",
-            ::fwGui::dialog::IMessageDialog::CRITICAL);
+        this->popMessageDialog("Cannot record when grabber playback a file !");
         return;
     }
 
@@ -733,10 +749,7 @@ void SScan::setBoolParameter(bool _value, std::string _key)
         }
         catch(const std::exception& e)
         {
-            ::fwGui::dialog::MessageDialog::showMessageDialog(
-                "RealSense Error",
-                "RealSense device error: " + std::string(e.what()),
-                ::fwGui::dialog::IMessageDialog::CRITICAL);
+            this->popMessageDialog("RealSense device error:" + std::string(e.what()));
             return;
         }
 
@@ -790,6 +803,14 @@ void SScan::setEnumParameter(std::string _value, std::string _key)
         else
         {
             SLM_ERROR("Cannot load preset named: " + _value + ". Nothing append");
+        }
+    }
+    if(_key == s_ALIGNMENT)
+    {
+        if(this->updateAlignment(_value))
+        {
+            this->stopCamera();
+            this->startCamera();
         }
     }
 }
@@ -881,10 +902,7 @@ void SScan::setIntParameter(int _value, std::string _key)
     }
     catch(const std::exception& e)
     {
-        ::fwGui::dialog::MessageDialog::showMessageDialog(
-            "RealSense Error",
-            "RealSense device error:" + std::string(e.what()),
-            ::fwGui::dialog::IMessageDialog::CRITICAL);
+        this->popMessageDialog("RealSense device error:" + std::string(e.what()));
         return;
     }
 }
@@ -895,7 +913,6 @@ void SScan::setDoubleParameter(double _value, std::string _key)
 {
     try
     {
-
         if(_key == s_SPACIAL_SMOOTH_ALPHA)
         {
             if(_value < 0.25 || _value > 1)
@@ -921,12 +938,18 @@ void SScan::setDoubleParameter(double _value, std::string _key)
     }
     catch(const std::exception& e)
     {
-        ::fwGui::dialog::MessageDialog::showMessageDialog(
-            "RealSense Error",
-            "RealSense device error:" + std::string(e.what()),
-            ::fwGui::dialog::IMessageDialog::CRITICAL);
+
+        this->popMessageDialog("RealSense device error:" + std::string(e.what()));
         return;
     }
+}
+
+//-----------------------------------------------------------------------------
+
+void SScan::popMessageDialog(const std::string& _message)
+{
+    ::fwGui::dialog::MessageDialog::showMessageDialog(
+        "RealSense Error", _message, ::fwGui::dialog::IMessageDialog::CRITICAL);
 }
 
 //-----------------------------------------------------------------------------
@@ -941,6 +964,18 @@ void SScan::grab()
     ::rs2::disparity_transform depthToDisparity(true);  // transform depth to disparity
     ::rs2::disparity_transform disparityToDepth(false); // transform disparity to depth
 
+    bool needAligment = false;
+
+    ::rs2::align alignFrames(RS2_STREAM_COLOR);
+
+    // Since RS2_STREAM_* is an enum, and DEPTH, COLOR & INFRARED are stored in this order, we can eliminate other
+    // value, and default one.
+    if(m_cameraSettings.streamToAlignTo != RS2_STREAM_ANY && m_cameraSettings.streamToAlignTo < RS2_STREAM_FISHEYE)
+    {
+        alignFrames  = rs2::align(m_cameraSettings.streamToAlignTo);
+        needAligment = true;
+    }
+
     // We want the points object to be persistent so we can display the last cloud when a frame drops
     ::rs2::points points;
 
@@ -954,6 +989,12 @@ void SScan::grab()
         {
             // Wait for the next set of frames from the camera
             auto frames = m_pipe->wait_for_frames();
+
+            // Align each frames in the chosen coordinate frames.
+            if(needAligment)
+            {
+                frames = alignFrames.process(frames);
+            }
 
             auto depth = frames.get_depth_frame();
             auto color = frames.get_color_frame();
@@ -1038,10 +1079,7 @@ void SScan::grab()
         }
         catch(const std::exception& e)
         {
-            ::fwGui::dialog::MessageDialog::showMessageDialog(
-                "RealSense Error",
-                "RealSense device error:" + std::string(e.what()),
-                ::fwGui::dialog::IMessageDialog::CRITICAL);
+            this->popMessageDialog("RealSense device error:" + std::string(e.what()));
             return;
         }
     }
@@ -1073,6 +1111,34 @@ void SScan::loadPresets(const ::fs::path& _path)
 
 //-----------------------------------------------------------------------------
 
+bool SScan::updateAlignment(const std::string& _alignTo)
+{
+    if(_alignTo == "None")
+    {
+        m_cameraSettings.streamToAlignTo = RS2_STREAM_COUNT; // Equivalent to No alignment.
+    }
+    else if(_alignTo == "Color")
+    {
+        m_cameraSettings.streamToAlignTo = RS2_STREAM_COLOR;
+    }
+    else if(_alignTo == "Depth")
+    {
+        m_cameraSettings.streamToAlignTo = RS2_STREAM_DEPTH;
+    }
+    else if(_alignTo == "Infrared")
+    {
+        m_cameraSettings.streamToAlignTo = RS2_STREAM_INFRARED;
+    }
+    else
+    {
+        SLM_ERROR("'" + _alignTo + "' is not a valid alignment option (None, Color, Depth or Infrared).");
+        return false;
+    }
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+
 void SScan::setMinMaxRange()
 {
     if(!m_playbackMode)
@@ -1088,10 +1154,7 @@ void SScan::setMinMaxRange()
         }
         catch(const std::exception& e)
         {
-            ::fwGui::dialog::MessageDialog::showMessageDialog(
-                "RealSense Error",
-                "RealSense device error:" + std::string(e.what()),
-                ::fwGui::dialog::IMessageDialog::CRITICAL);
+            this->popMessageDialog("RealSense device error:" + std::string(e.what()));
             return;
         }
 

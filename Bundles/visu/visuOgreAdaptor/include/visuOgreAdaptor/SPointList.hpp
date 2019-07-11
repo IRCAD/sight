@@ -63,7 +63,8 @@ namespace visuOgreAdaptor
     <service uid="..." type="::visuOgreAdaptor::SPointList" >
         <in key="pointList" uid="..." />
         <config renderer="rendererId" transform="transformUID" materialAdaptor="materialName" shadingMode="gouraud"
-                textureName="texAdaptorUID" radius="2.4" displayLabel="true" charHeight="0.02" labelColor="#0000ff" />
+                textureName="texAdaptorUID" radius="2.4" displayLabel="true" charHeight="0.02" labelColor="#0000ff"
+                visible="true"/>
     </service>
    @endcode
  * @subsection In-Out In-Out
@@ -89,6 +90,7 @@ namespace visuOgreAdaptor
  *  - \b labelColor (optional): color of the label in hexadecimal (default = white)
  *  - \b fixedSize (optional, default="false") : if true, the billboard will have a fixed size in screen space.
  *  - \b queryFlags (optional) : Used for picking. Picked only by pickers with the same flag.
+ *  - \b visible (optional): If pointlist should be visible or not at start (default true).
  */
 class VISUOGREADAPTOR_CLASS_API SPointList : public ::fwRenderOgre::IAdaptor,
                                              public ::fwRenderOgre::ITransformable

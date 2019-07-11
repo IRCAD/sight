@@ -13,6 +13,8 @@ set( REQUIREMENTS
     dataReg
     servicesReg
 
+    ctrlCamp
+
     gui
     guiQt
     media
