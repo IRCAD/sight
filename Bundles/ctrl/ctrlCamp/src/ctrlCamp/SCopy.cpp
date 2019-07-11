@@ -143,6 +143,10 @@ void SCopy::copy()
     }
 
     ::fwData::Object::csptr sourceObject = this->getInput< ::fwData::Object >(s_SOURCE_INPUT);
+    SLM_ASSERT("Source '" + s_SOURCE_INPUT + "' not found", sourceObject);
+
+    // Lock the source before copy
+    ::fwData::mt::ObjectReadLock sourceObjectLock(sourceObject);
 
     if (m_hasExtractTag)
     {
@@ -173,8 +177,8 @@ void SCopy::copy()
 
     if(source)
     {
-        // Lock the source before copy
-        ::fwData::mt::ObjectReadLock lock(source);
+        // Lock the source before copy, but only if not already locked
+        ::fwData::mt::ObjectReadLock sourceLock(source, source != sourceObject);
 
         if(create)
         {
