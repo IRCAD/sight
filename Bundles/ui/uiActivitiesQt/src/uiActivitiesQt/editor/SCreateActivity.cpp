@@ -20,9 +20,7 @@
  *
  ***********************************************************************/
 
-#include "activities/editor/SCreateActivity.hpp"
-
-#if QML_APPLICATION == 0
+#include "uiActivitiesQt/editor/SCreateActivity.hpp"
 
 #include <fwActivities/IBuilder.hpp>
 #include <fwActivities/IValidator.hpp>
@@ -62,18 +60,14 @@
 
 Q_DECLARE_METATYPE(::fwActivities::registry::ActivityInfo)
 
-#endif
-
-namespace activities
+namespace uiActivitiesQt
 {
 namespace editor
 {
 
-#if QML_APPLICATION == 0
-
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::activities::editor::SCreateActivity );
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiActivitiesQt::editor::SCreateActivity );
 
 //------------------------------------------------------------------------------
 
@@ -82,17 +76,10 @@ const ::fwCom::Signals::SignalKeyType SCreateActivity::s_LOAD_REQUESTED_SIG     
 
 //------------------------------------------------------------------------------
 
-#endif
-
 SCreateActivity::SCreateActivity() noexcept
 {
-#if QML_APPLICATION == 1
-    SLM_FATAL("Do not use activities::SCreateActivity with Qml");
-#else
-    FW_DEPRECATED_MSG("This class is deprecated, instead use the bundle uiActivitiesQt", "19.0");
     newSignal< ActivityIDSelectedSignalType >(s_ACTIVITY_ID_SELECTED_SIG);
     newSignal< LoadRequestedSignalType >(s_LOAD_REQUESTED_SIG);
-#endif
 }
 
 //------------------------------------------------------------------------------
@@ -100,8 +87,6 @@ SCreateActivity::SCreateActivity() noexcept
 SCreateActivity::~SCreateActivity() noexcept
 {
 }
-
-#if QML_APPLICATION == 0
 
 //------------------------------------------------------------------------------
 
@@ -293,8 +278,6 @@ SCreateActivity::ActivityInfoContainer SCreateActivity::getEnabledActivities(con
 }
 
 //------------------------------------------------------------------------------
-
-#endif
 
 } // namespace editor
 } // namespace activities

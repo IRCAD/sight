@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "activities/action/SCreateActivity.hpp"
+#include "uiActivitiesQt/action/SCreateActivity.hpp"
 
 #include <fwActivities/IBuilder.hpp>
 #include <fwActivities/IValidator.hpp>
@@ -48,8 +48,6 @@
 
 #include <boost/foreach.hpp>
 
-#if QML_APPLICATION == 0
-
 #include <QApplication>
 #include <QDialog>
 #include <QHBoxLayout>
@@ -60,16 +58,14 @@
 
 Q_DECLARE_METATYPE(::fwActivities::registry::ActivityInfo)
 
-#endif
-
-namespace activities
+namespace uiActivitiesQt
 {
 namespace action
 {
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::activities::action::SCreateActivity, ::fwData::Vector );
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiActivitiesQt::action::SCreateActivity, ::fwData::Vector );
 
 //------------------------------------------------------------------------------
 
@@ -80,13 +76,8 @@ const ::fwCom::Signals::SignalKeyType SCreateActivity::s_ACTIVITY_SELECTED_SIG  
 
 SCreateActivity::SCreateActivity() noexcept
 {
-#if QML_APPLICATION == 1
-    SLM_FATAL("Do not use activities::SCreateActivity with Qml");
-#else
-    FW_DEPRECATED_MSG("activities::SCreateActivity is deprecated, instead use the bundle uiActivitiesQt", "19.0");
     m_sigActivityIDSelected = newSignal< ActivityIDSelectedSignalType >(s_ACTIVITY_ID_SELECTED_SIG);
     m_sigActivitySelected   = newSignal< ActivitySelectedSignalType >(s_ACTIVITY_SELECTED_SIG);
-#endif
 }
 
 //------------------------------------------------------------------------------
@@ -140,8 +131,6 @@ void SCreateActivity::configuring()
 
 ::fwActivities::registry::ActivityInfo SCreateActivity::show( const ActivityInfoContainer& infos )
 {
-#if QML_APPLICATION == 0
-
     QWidget* parent = qApp->activeWindow();
 
     QDialog* dialog = new QDialog(parent);
@@ -204,9 +193,6 @@ void SCreateActivity::configuring()
     }
 
     return info;
-
-#endif
-
 }
 
 //------------------------------------------------------------------------------

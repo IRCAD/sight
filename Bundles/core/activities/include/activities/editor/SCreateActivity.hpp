@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2018 IRCAD France
- * Copyright (C) 2016-2018 IHU Strasbourg
+ * Copyright (C) 2016-2019 IRCAD France
+ * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -29,9 +29,13 @@
 
 #include <fwGui/editor/IEditor.hpp>
 
+#if QML_APPLICATION == 0
+
 #include <QButtonGroup>
 #include <QObject>
 #include <QPointer>
+
+#endif
 
 namespace activities
 {
@@ -70,21 +74,27 @@ namespace editor
  *      (exclude).
  *    - \b id: id of the activity
  */
+#if QML_APPLICATION == 0
 class ACTIVITIES_CLASS_API SCreateActivity : public QObject,
                                              public ::fwGui::editor::IEditor
+        #else
+class ACTIVITIES_CLASS_API SCreateActivity
+        #endif
 {
+    #if QML_APPLICATION == 0
 Q_OBJECT;
-
+#endif
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SCreateActivity)(::fwGui::editor::IEditor) );
-
+    #if QML_APPLICATION == 0
+    fwCoreServiceClassDefinitionsMacro( (SCreateActivity)(::fwGui::editor::IEditor) )
+#endif
     /// Constructor. Do nothing.
     ACTIVITIES_API SCreateActivity() noexcept;
 
     /// Destructor. Do nothing.
     ACTIVITIES_API virtual ~SCreateActivity() noexcept;
-
+#if QML_APPLICATION == 0
     /**
      * @name Signals API
      * @{
@@ -143,6 +153,7 @@ private:
 
     /// Pointer on the buttons group
     QPointer<QButtonGroup> m_buttonGroup;
+#endif
 };
 
 } // namespace editor

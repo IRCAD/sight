@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "activities/config.hpp"
+#include "uiActivitiesQt/config.hpp"
 
 #include <fwActivities/registry/Activities.hpp>
 #include <fwActivities/registry/ActivityMsg.hpp>
@@ -31,7 +31,7 @@
 
 #include <fwGui/IActionSrv.hpp>
 
-namespace activities
+namespace uiActivitiesQt
 {
 namespace action
 {
@@ -71,7 +71,7 @@ namespace action
  *      (exclude).
  *    - \b id: id of the activity
  */
-class ACTIVITIES_CLASS_API SCreateActivity : public ::fwGui::IActionSrv
+class UIACTIVITIESQT_CLASS_API SCreateActivity : public ::fwGui::IActionSrv
 {
 
 public:
@@ -79,19 +79,19 @@ public:
     fwCoreServiceClassDefinitionsMacro( (SCreateActivity)(::fwGui::IActionSrv) )
 
     /// Constructor. Do nothing.
-    ACTIVITIES_API SCreateActivity() noexcept;
+    UIACTIVITIESQT_API SCreateActivity() noexcept;
 
     /// Destructor. Do nothing.
-    ACTIVITIES_API virtual ~SCreateActivity() noexcept;
+    UIACTIVITIESQT_API virtual ~SCreateActivity() noexcept;
 
     /**
      * @name Signals API
      * @{
      */
-    ACTIVITIES_API static const ::fwCom::Signals::SignalKeyType s_ACTIVITY_SELECTED_SIG;
+    UIACTIVITIESQT_API static const ::fwCom::Signals::SignalKeyType s_ACTIVITY_SELECTED_SIG;
     typedef ::fwCom::Signal< void ( ::fwMedData::ActivitySeries::sptr ) > ActivitySelectedSignalType;
 
-    ACTIVITIES_API static const ::fwCom::Signals::SignalKeyType s_ACTIVITY_ID_SELECTED_SIG;
+    UIACTIVITIESQT_API static const ::fwCom::Signals::SignalKeyType s_ACTIVITY_ID_SELECTED_SIG;
     typedef ::fwCom::Signal< void (std::string) > ActivityIDSelectedSignalType;
     /// @}
 
