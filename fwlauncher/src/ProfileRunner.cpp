@@ -324,12 +324,13 @@ int main(int argc, char* argv[])
     {
         bundlePaths.push_back(profileBundlePath);
     }
-
+#if (SPYLOG_LEVEL >= 4 ) // Log level info
     for(const fs::path& bundlePath :  bundlePaths )
     {
         OSLM_INFO_IF( "Bundle paths are: " << bundlePath.string() << " => " << ::absolute(bundlePath),
                       vm.count("bundle-path") );
     }
+#endif
     for(const fs::path& bundlePath :  bundlePaths )
     {
         OSLM_FATAL_IF( "Bundle paths doesn't exist: " << bundlePath.string() << " => " << ::absolute(
@@ -401,7 +402,7 @@ int main(int argc, char* argv[])
 //-----------------------------------------------------------------------------
 
 #ifdef _WIN32
-int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR args, int)
+int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 {
     return main(__argc, __argv);
 }
