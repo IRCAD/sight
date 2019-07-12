@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -35,6 +35,7 @@
 #include <boost/program_options/variables_map.hpp>
 
 #include <csignal>
+#include <fstream>
 #include <ostream>
 #include <stdio.h>
 #include <string>
@@ -234,8 +235,10 @@ int main(int argc, char* argv[])
 
     if(fileLog)
     {
-        FILE* pFile = fopen(logFile.c_str(), "w");
-        if (pFile == NULL)
+        std::ofstream logFileStream(logFile.c_str());
+        const bool logFileExists = logFileStream.good();
+        logFileStream.close();
+        if (!logFileExists)
         {
             ::boost::system::error_code err;
             PathType sysTmp = fs::temp_directory_path(err);
@@ -257,7 +260,6 @@ int main(int argc, char* argv[])
             // creates SLM.log in default logFile directory
             logger.addFileAppender(logFile, static_cast<SpyLogger::LevelType>(logLevel));
         }
-        fclose(pFile);
     }
 
 #ifdef __APPLE__
