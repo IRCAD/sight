@@ -289,8 +289,20 @@ void SVolumeRender::newImage()
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
 
-    this->updateImage();
+    ::fwData::TransferFunction::sptr volumeTF = this->getInOut< ::fwData::TransferFunction>(s_VOLUME_TF_INOUT);
+    SLM_ASSERT("inout '" + s_VOLUME_TF_INOUT + "' is missing", volumeTF);
 
+    m_helperVolumeTF.setOrCreateTF(volumeTF, image);
+
+    m_gpuVolumeTF->updateTexture(volumeTF);
+
+    this->updateImage();
+}
+
+//-----------------------------------------------------------------------------
+
+void SVolumeRender::resetCameraPosition(const ::fwData::Image::csptr& image)
+{
     if (m_autoResetCamera || image->getField("resetCamera"))
     {
         this->getRenderService()->resetCameraCoordinates(m_layerID);
@@ -312,11 +324,9 @@ void SVolumeRender::updateImage()
 
     ::fwRenderOgre::Utils::convertImageForNegato(m_3DOgreTexture.get(), image);
 
-    m_helperVolumeTF.createTransferFunction(image);
-
     ::fwData::TransferFunction::sptr volumeTF = m_helperVolumeTF.getTransferFunction();
     {
-        m_gpuVolumeTF->updateTexture(volumeTF);
+        m_gpuVolumeTF->getTexture();
 
         if(m_preIntegratedRendering)
         {
@@ -342,7 +352,7 @@ void SVolumeRender::updateImage()
 
     // Create widgets on image update to take the image's size into account.
     this->createWidget();
-
+    this->resetCameraPosition(image);
     this->requestRender();
 }
 

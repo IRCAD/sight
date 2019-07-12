@@ -158,6 +158,9 @@ private:
     /// Sets a new image.
     void newImage();
 
+    /// Reset the camera coordinates.
+    void resetCameraPosition(const ::fwData::Image::csptr& image);
+
     /// Updates renderer and the GPU volume texture with the new input image data.
     void updateImage();
 
