@@ -83,6 +83,7 @@ void PulseProgressDialog::show()
     context->setContextProperty("pulseProgressDialog", this);
     // load the qml ui component
     QObject* dialog = engine->createComponent(dialogPath, context);
+    SLM_ASSERT("The Qml File PulseProgressDialog is not found or not loaded", dialog);
     // keep window to destroy it
     QObject* window = dialog;
 
@@ -92,6 +93,7 @@ void PulseProgressDialog::show()
 
     dialog->setProperty("title", m_title);
     dialog = dialog->findChild<QObject*>("dialog");
+    SLM_ASSERT("The dialog is not found inside the window", dialog);
     Q_EMIT messageChanged();
     // Start the computation.
 

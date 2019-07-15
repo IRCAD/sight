@@ -73,6 +73,7 @@ LocationDialog::LocationDialog(::fwGui::GuiBaseObject::Key key)
     context->setContextProperty("locationDialog", this);
     // load the qml ui component
     QObject* dialog = engine->createComponent(dialogPath, context);
+    SLM_ASSERT("The Qml File LocationDialog is not found or not loaded", dialog);
 
     dialog->setProperty("title", caption);
     dialog->setProperty("folder", QUrl::fromLocalFile(path));

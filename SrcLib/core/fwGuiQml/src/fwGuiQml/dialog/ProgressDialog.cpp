@@ -71,6 +71,7 @@ ProgressDialog::ProgressDialog( ::fwGui::GuiBaseObject::Key key, const std::stri
             ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/dialog/Progress.qml");
         // load the qml ui component
         m_dialog = engine->createComponent(dialogPath);
+        SLM_ASSERT("The Qml File ProgressDialog is not found or not loaded", m_dialog);
         QQuickItem* item = qobject_cast<QQuickItem*>(m_dialog);
         // get ownership to not get Progress qml destroyed
         QQmlEngine::setObjectOwnership(item, QQmlEngine::CppOwnership);
@@ -86,9 +87,11 @@ ProgressDialog::ProgressDialog( ::fwGui::GuiBaseObject::Key key, const std::stri
             ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/dialog/ProgressDialog.qml");
         // load the qml ui component
         m_dialog = engine->createComponent(dialogPath);
+        SLM_ASSERT("The Qml File ProgressDialog is not found or not loaded", m_dialog);
         m_dialog->setProperty("title", QString::fromStdString(title));
         m_window = m_dialog;
         m_dialog = m_dialog->findChild<QObject*>("dialog");
+        SLM_ASSERT("The dialog is not found inside the window", m_dialog);
         QMetaObject::invokeMethod(m_dialog, "open");
 
     }

@@ -88,6 +88,7 @@ std::string InputDialog::getInput()
     context->setContextProperty("inputDialog", this);
     // load the qml ui component
     QObject* dialog = engine->createComponent(dialogPath, context);
+    SLM_ASSERT("The Qml File InputDialog is not found or not loaded", dialog);
     // keep window to destroy it
     QObject* window = dialog;
 
@@ -95,6 +96,7 @@ std::string InputDialog::getInput()
     Q_EMIT messageChanged();
     Q_EMIT inputChanged();
     dialog = dialog->findChild<QObject*>("dialog");
+    SLM_ASSERT("The dialog is not found inside the window", dialog);
 
     QEventLoop loop;
     //slot to retrieve the result and open the dialog with invoke

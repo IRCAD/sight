@@ -136,11 +136,13 @@ void MessageDialog::setDefaultButton(::fwGui::dialog::IMessageDialog::Buttons bu
     context->setContextProperty("messageDialog", this);
     // load the qml ui component
     QObject* dialog = engine->createComponent(dialogPath, context);
+    SLM_ASSERT("The Qml File MessageDialog is not found or not loaded", dialog);
     // keep window to destroy it
     QObject* window = dialog;
 
     dialog->setProperty("title", m_title);
     dialog = dialog->findChild<QObject*>("dialog");
+    SLM_ASSERT("The dialog is not found inside the window", dialog);
     StandardButton* buttonSetting = qobject_cast<StandardButton*>(dialog->findChild<QObject*>("standardButton"));
     Q_EMIT messageChanged();
     //set icon

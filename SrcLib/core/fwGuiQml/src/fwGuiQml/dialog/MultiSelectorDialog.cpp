@@ -86,12 +86,15 @@ void MultiSelectorDialog::setTitle(std::string _title)
     context->setContextProperty("multiSelectorDialog", this);
     // load the qml ui component
     QObject* dialog = engine->createComponent(dialogPath, context);
+    SLM_ASSERT("The Qml File MultiSelectorDialog is not found or not loaded", dialog);
     // keep window to destroy it
     QObject* window = dialog;
 
     dialog->setProperty("title", m_title);
 
     dialog = dialog->findChild<QObject*>("dialog");
+    SLM_ASSERT("The dialog is not found inside the window", dialog);
+
     // fill the repeater for each checkbox that has to be created
     model.addRole(Qt::UserRole + 1, "textOption");
     model.addRole(Qt::UserRole + 2, "check");

@@ -94,32 +94,25 @@ bool LoggerDialog::show()
     context->setContextProperty("loggerDialog", this);
     // load the qml ui component
     QObject* dialog = engine->createComponent(dialogPath, context);
+    SLM_ASSERT("The Qml File LoggerDialog is not found or not loaded", dialog);
     // keep window to destroy it
     QObject* window = dialog;
 
     dialog->setProperty("title", m_title);
 
     dialog = dialog->findChild<QObject*>("dialog");
+    SLM_ASSERT("The dialog is not found inside the window", dialog);
 
     // set the icon of the biggest type of error
     auto information =
         ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/information.svg");
-    if (!::boost::filesystem::exists(information))
-    {
-        information = "";
-    }
+    SLM_ASSERT("The information svg is not found", ::boost::filesystem::exists(information));
     auto warning =
         ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/warning.svg");
-    if (!::boost::filesystem::exists(warning))
-    {
-        warning = "";
-    }
+    SLM_ASSERT("The warning svg is not found", ::boost::filesystem::exists(warning));
     auto critical =
         ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/critical.svg");
-    if (!::boost::filesystem::exists(critical))
-    {
-        critical = "";
-    }
+    SLM_ASSERT("The critical svg is not found", ::boost::filesystem::exists(critical));
     if (m_logger->count(::fwLog::Log::CRITICAL) > 0)
     {
         emitIcon(QUrl::fromLocalFile(QString::fromStdString(critical.string())));
@@ -143,16 +136,10 @@ bool LoggerDialog::show()
     // get the icon of the details checkbox
     auto detailshidden =
         ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/details-hidden.svg");
-    if (!::boost::filesystem::exists(detailshidden))
-    {
-        detailshidden = "";
-    }
+    SLM_ASSERT("The details-hidden svg is not found", ::boost::filesystem::exists(detailshidden));
     auto detailsshown =
         ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/details-shown.svg");
-    if (!::boost::filesystem::exists(detailsshown))
-    {
-        detailsshown = "";
-    }
+    SLM_ASSERT("The details-shown svg is not found", ::boost::filesystem::exists(detailsshown));
     emitHidden(QUrl::fromLocalFile(QString::fromStdString(detailshidden.string())));
     emitShown(QUrl::fromLocalFile(QString::fromStdString(detailsshown.string())));
 
