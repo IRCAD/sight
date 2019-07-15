@@ -22,11 +22,21 @@ Window{
         modal: true
         standardButtons: Dialog.Cancel | Dialog.Ok
 
+        // column use only to resize everything without moving checkbox and rowLayout
         ColumnLayout {
-            anchors.fill: parent
+            id: columnReposition
+            width: window.width
+            height: 50
+        }
+
+        ColumnLayout {
+            id: column
+            anchors.fill: checkbox.checkState ? parent : columnReposition
 
             Row {
-                spacing: 5
+                id: rowLayout
+                Layout.alignment: Qt.AlignTop
+                width: window.width
 
                 // icon of the biggest type of error from the TableView
                 Image {
@@ -46,7 +56,7 @@ Window{
 
                     text: loggerDialog.message
                     // For text to wrap, a width has to be explicitly provided
-                    width: 400
+                    width: window.width
                     // This setting makes the text wrap at word boundaries when it goes
                     // past the width of the Text object
                     wrapMode: Text.WordWrap
@@ -57,14 +67,15 @@ Window{
             // this checkbox show and unshow
             CheckBox {
                 id: checkbox
+                Layout.alignment: Qt.AlignTop
 
                 text: checkState ? "Hide Details" : "Show Details"
                 // the style permits to not show the default checkbox indicator but instead an image if set
                 indicator: Image {
                     id: detailsIcon
 
-                    width:  24
-                    height: 24
+                    width:  28
+                    height: 28
                     x: checkbox.leftPadding
                     y: parent.height / 2 - height / 2
                     fillMode: Image.PreserveAspectFit
@@ -83,9 +94,12 @@ Window{
             // this list represent the log of all errors
             ListView {
                 id: textDetails
+                Layout.alignment: Qt.AlignBottom
+
                 visible: false
-                Layout.minimumWidth: 400
+                width: window.width
                 Layout.topMargin: 12
+                Layout.rightMargin: 12
                 Layout.fillWidth: true
                 Layout.fillHeight: true
                 model: loggerModel
@@ -121,7 +135,7 @@ Window{
                         text: qsTr("Message")
 
                         font.bold: true
-                        implicitWidth: textDetails.width - 220
+                        implicitWidth: textDetails.width - 310
                         implicitHeight: 40
                     }
                 }
@@ -149,7 +163,7 @@ Window{
                         id: messageRow
                         text: message
 
-                        implicitWidth: textDetails.width - 220
+                        implicitWidth: textDetails.width - 310
                         implicitHeight: 40
                     }
                 }
