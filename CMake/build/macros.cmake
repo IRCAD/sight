@@ -275,6 +275,7 @@ macro(fwExec FWPROJECT_NAME PROJECT_VERSION)
 
         if(MSVC_IDE)
             set(LAUNCHER "${CMAKE_BINARY_DIR}/bin/${FWPROJECT_NAME}")
+            set(PROFILE "")
             set(WORKING_DIRECTORY "${CMAKE_BINARY_DIR}")
             if(CMAKE_CL_64)
                 set(PLATFORM "x64")
