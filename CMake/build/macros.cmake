@@ -272,6 +272,22 @@ macro(fwExec FWPROJECT_NAME PROJECT_VERSION)
         unset(FW_EXTERNAL_LIBRARIES_DIRS)
         file(COPY ${CMAKE_CURRENT_BINARY_DIR}/${${FWPROJECT_NAME}_SCRIPT} DESTINATION ${CMAKE_BINARY_DIR}/bin
             FILE_PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
+
+        if(MSVC_IDE)
+            set(LAUNCHER "${CMAKE_BINARY_DIR}/bin/${FWPROJECT_NAME}")
+            set(PROFILE "")
+            set(WORKING_DIRECTORY "${CMAKE_BINARY_DIR}")
+            if(CMAKE_CL_64)
+                set(PLATFORM "x64")
+            else()
+                set(PLATFORM "Win32")
+            endif()
+            configure_file(
+                "${CMAKE_SOURCE_DIR}/CMake/build/project.vcxproj.user.in"
+                "${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/${FWPROJECT_NAME}.vcxproj.user"
+                IMMEDIATE @ONLY)
+        endif()
+
     endif()
 
     if(${FWPROJECT_NAME}_INSTALL OR BUILD_SDK)
