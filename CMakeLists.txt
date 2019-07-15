@@ -312,7 +312,7 @@ foreach(PROPERTIES_FILE ${PROJECTS_PROPERTIES})
     set(${NAME}_REQUIREMENTS      "${REQUIREMENTS}")
     set(${NAME}_DISABLE_PCH       "${DISABLE_PCH}")
     set(${NAME}_CONAN_DEPS        "${CONAN_DEPS}")
-    set(${NAME}_WARNINGS_AS_ERROR "${WARNINGS_AS_ERROR}")
+    set(${NAME}_WARNINGS_AS_ERRORS "${WARNINGS_AS_ERRORS}")
 
     # Get the pch target, test the existence of type variable to exclude unbuilt projects
     if(ENABLE_PCH AND TYPE AND NOT ${NAME}_DISABLE_PCH)

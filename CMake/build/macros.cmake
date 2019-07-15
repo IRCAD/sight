@@ -900,7 +900,7 @@ macro(loadProperties PROPERTIES_FILE)
     unset(START_BEFORE)
     unset(PLUGINS)
     unset(CONAN_DEPS)
-    unset(WARNINGS_AS_ERROR)
+    unset(WARNINGS_AS_ERRORS)
 
     include("${PROPERTIES_FILE}")
 endmacro()
@@ -1016,9 +1016,9 @@ endmacro()
 
 # Treat warnings as errors if requested
 #   to activate "warning as errors", simply write in the Properties.cmake of your project:
-#   set(WARNINGS_AS_ERROR ON)
+#   set(WARNINGS_AS_ERRORS ON)
 macro(fwManageWarnings PROJECT)
-    if(${${PROJECT}_WARNINGS_AS_ERROR})
+    if(${${PROJECT}_WARNINGS_AS_ERRORS})
         if(MSVC)
             target_compile_options(${PROJECT} PRIVATE /WX)
         elseif(CMAKE_COMPILER_IS_GNUCXX OR "${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
