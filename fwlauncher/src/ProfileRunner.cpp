@@ -37,7 +37,6 @@
 #include <csignal>
 #include <fstream>
 #include <ostream>
-#include <stdio.h>
 #include <string>
 #include <vector>
 
@@ -58,32 +57,9 @@
 #define DEFAULT_PROFILE_STRING  GET_DEFAULT_PROFILE2(DEFAULT_PROFILE)
 
 //------------------------------------------------------------------------------
-#if defined(_WIN32) && _MSC_VER > 1499 &&  _MSC_VER < 1600 // Visual C++ 2008 only
 
- #pragma message ( "Setting up manifest..." )
-
- #if defined(_DEBUG)
-// add a dependency on the retail crt even in debug
-     #pragma comment(linker,"/manifestdependency:\"type='win32' " \
-    "name='" __LIBRARIES_ASSEMBLY_NAME_PREFIX ".CRT' " \
-    "version='" _CRT_ASSEMBLY_VERSION "' " \
-    "processorArchitecture='*' " \
-    "publicKeyToken='" _VC_ASSEMBLY_PUBLICKEYTOKEN "' " \
-    "language='*'\"")
- #endif /* _DEBUG */
-
- #pragma comment(linker,"/manifestdependency:\"type='win32' " \
-    "name='Microsoft.Windows.Common-Controls' " \
-    "version='6.0.0.0' " \
-    "processorArchitecture='*' " \
-    "publicKeyToken='6595b64144ccf1df' " \
-    "language='*'\"")
-
-#endif /* _WIN32 && _MSC_VER > 1499 &&  _MSC_VER < 1600 */
-
-//------------------------------------------------------------------------------
-namespace po = boost::program_options;
-namespace fs = boost::filesystem;
+namespace po = ::boost::program_options;
+namespace fs = ::boost::filesystem;
 
 typedef fs::path PathType;
 typedef std::vector< PathType > PathListType;
