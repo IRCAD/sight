@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -212,7 +212,7 @@ void OffScreenRenderWindowInteractorManager::render()
     FW_PROFILE_AVG("Ogre", 3);
     this->makeCurrent();
 
-    m_ogreRoot->renderOneFrame();
+    m_ogreRenderTarget->update();
 }
 
 //-----------------------------------------------------------------------------
