@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -44,18 +44,6 @@ public:
     Codec();
     /// Clean up codecs
     ~Codec();
-
-    /// @deprecated This function should not be used anymore and will be removed in 19.0
-    FWDCMTKIO_API static void registerCodecs()
-    {
-        FW_DEPRECATED_MSG("This function is deprecated.", "19.0");
-    }
-
-    /// @deprecated This function should not be used anymore and will be removed in 19.0
-    FWDCMTKIO_API static void cleanup()
-    {
-        FW_DEPRECATED_MSG("This function is deprecated.", "19.0");
-    }
 };
 
 extern FWDCMTKIO_CLASS_API SPTR(::fwDcmtkIO::helper::Codec) g_codecInstantiator;
