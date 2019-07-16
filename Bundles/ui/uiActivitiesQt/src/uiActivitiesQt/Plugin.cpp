@@ -29,7 +29,7 @@
 namespace uiActivitiesQt
 {
 
-static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("uiActivitiesQt::Plugin");
+static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::uiActivitiesQt::Plugin");
 
 Plugin::~Plugin() noexcept
 {

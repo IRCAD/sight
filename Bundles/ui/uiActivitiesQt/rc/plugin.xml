@@ -1,4 +1,4 @@
-<plugin id="uiActivitiesQt" class="uiActivitiesQt::Plugin"  version="@PROJECT_VERSION@" >
+<plugin id="uiActivitiesQt" class="::uiActivitiesQt::Plugin"  version="@PROJECT_VERSION@" >
 
     <library name="uiActivitiesQt" />
 
