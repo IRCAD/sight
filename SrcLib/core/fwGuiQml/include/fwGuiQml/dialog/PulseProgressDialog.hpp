@@ -64,11 +64,6 @@ public:
 Q_SIGNALS:
     /// notify the qml of property change
     void messageChanged();
-    void canceled();
-
-protected Q_SLOTS:
-    /// slot to notify the future watcher to cancel the progress
-    void onCanceled();
 
 private:
     /// title of the progress dialog

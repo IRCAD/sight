@@ -89,7 +89,6 @@ void PulseProgressDialog::show()
 
     // Create a QFutureWatcher and connect signals and slots.
     QFutureWatcher<void> futureWatcher;
-    QObject::connect(this, SIGNAL(canceled()), &futureWatcher, SLOT(cancel()));
 
     dialog->setProperty("title", m_title);
     dialog = dialog->findChild<QObject*>("dialog");
@@ -104,18 +103,7 @@ void PulseProgressDialog::show()
     QMetaObject::invokeMethod(dialog, "open");
     futureWatcher.setFuture(QtConcurrent::run(m_stuff));
     loop.exec();
-    if (futureWatcher.isRunning())
-    {
-        futureWatcher.cancel();
-    }
     delete window;
-}
-
-//------------------------------------------------------------------------------
-
-void PulseProgressDialog::onCanceled()
-{
-    Q_EMIT canceled();
 }
 
 //------------------------------------------------------------------------------

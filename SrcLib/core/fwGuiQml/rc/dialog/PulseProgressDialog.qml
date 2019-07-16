@@ -15,18 +15,17 @@ Window {
 
     Dialog {
         objectName: "dialog"
-        standardButtons: Dialog.Cancel
+        standardButtons: Dialog.NoButton
         modal: true
         width: window.width
         height: window.height
 
         Column {
-            width: 550
-            height: 150
-            id: root
+            anchors.fill: parent
+            spacing: 15
             Label {
                 id: testing
-                width: root.width
+                width: window.width - 50
                 wrapMode: Text.WordWrap
                 text: pulseProgressDialog.message
                 font.bold: true
@@ -36,12 +35,8 @@ Window {
             ProgressBar {
                 indeterminate: true
                 id: progressBar
-                width: root.width
+                width: window.width - 50
             }
-        }
-        onRejected: {
-            pulseProgressDialog.onCanceled()
-            window.close()
         }
         onVisibleChanged: visible ? "" : rejected()
         Component.onCompleted: {
