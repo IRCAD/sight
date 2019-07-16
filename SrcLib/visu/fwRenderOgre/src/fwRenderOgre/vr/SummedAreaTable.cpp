@@ -124,6 +124,10 @@ SummedAreaTable::SummedAreaTable(std::string _parentId, ::Ogre::SceneManager* _s
 
 SummedAreaTable::~SummedAreaTable()
 {
+    ::Ogre::TextureManager& textureManager = ::Ogre::TextureManager::getSingleton();
+
+    textureManager.remove(m_parentId + SOURCE_BUFFER_NAME);
+    textureManager.remove(m_parentId + TARGET_BUFFER_NAME);
 }
 
 //-----------------------------------------------------------------------------
@@ -257,9 +261,9 @@ void SummedAreaTable::updateSatFromRatio(float _sizeRatio)
 
 void SummedAreaTable::initializeSAT()
 {
-    unsigned width  = static_cast<unsigned>(m_satSize[0]);
-    unsigned height = static_cast<unsigned>(m_satSize[1]);
-    unsigned depth  = static_cast<unsigned>(m_satSize[2]);
+    ::Ogre::uint width  = static_cast< ::Ogre::uint >(m_satSize[0]);
+    ::Ogre::uint height = static_cast< ::Ogre::uint >(m_satSize[1]);
+    ::Ogre::uint depth  = static_cast< ::Ogre::uint >(m_satSize[2]);
 
     ::Ogre::TextureManager& textureManager = ::Ogre::TextureManager::getSingleton();
 
