@@ -20,6 +20,8 @@
  *
  ***********************************************************************/
 
+#include "fwServices/IService.hpp"
+
 #include "activities/action/SCreateActivity.hpp"
 
 #include <fwActivities/IBuilder.hpp>
@@ -48,7 +50,7 @@
 
 #include <boost/foreach.hpp>
 
-#if QML_APPLICATION == 0
+#ifdef KEEP_OLD_SERVICE
 
 #include <QApplication>
 #include <QDialog>
@@ -80,10 +82,10 @@ const ::fwCom::Signals::SignalKeyType SCreateActivity::s_ACTIVITY_SELECTED_SIG  
 
 SCreateActivity::SCreateActivity() noexcept
 {
-#if QML_APPLICATION == 1
+#ifndef KEEP_OLD_SERVICE
     SLM_FATAL("Do not use activities::SCreateActivity with Qml");
 #else
-    FW_DEPRECATED_MSG("activities::SCreateActivity is deprecated, instead use the bundle uiActivitiesQt", "19.0");
+    FW_DEPRECATED("::activities::action::SCreateActivity", "::uiActivitiesQt::action::SCreateActivity", "21.0");
     m_sigActivityIDSelected = newSignal< ActivityIDSelectedSignalType >(s_ACTIVITY_ID_SELECTED_SIG);
     m_sigActivitySelected   = newSignal< ActivitySelectedSignalType >(s_ACTIVITY_SELECTED_SIG);
 #endif
@@ -140,7 +142,7 @@ void SCreateActivity::configuring()
 
 ::fwActivities::registry::ActivityInfo SCreateActivity::show( const ActivityInfoContainer& infos )
 {
-#if QML_APPLICATION == 0
+#ifdef KEEP_OLD_SERVICE
 
     QWidget* parent = qApp->activeWindow();
 

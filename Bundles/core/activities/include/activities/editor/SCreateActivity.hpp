@@ -29,7 +29,7 @@
 
 #include <fwGui/editor/IEditor.hpp>
 
-#if QML_APPLICATION == 0
+#ifdef KEEP_OLD_SERVICE
 
 #include <QButtonGroup>
 #include <QObject>
@@ -74,19 +74,19 @@ namespace editor
  *      (exclude).
  *    - \b id: id of the activity
  */
-#if QML_APPLICATION == 0
+#ifdef KEEP_OLD_SERVICE
 class ACTIVITIES_CLASS_API SCreateActivity : public QObject,
                                              public ::fwGui::editor::IEditor
         #else
 class ACTIVITIES_CLASS_API SCreateActivity
         #endif
 {
-    #if QML_APPLICATION == 0
+    #ifdef KEEP_OLD_SERVICE
 Q_OBJECT;
 #endif
 public:
 
-    #if QML_APPLICATION == 0
+    #ifdef KEEP_OLD_SERVICE
     fwCoreServiceClassDefinitionsMacro( (SCreateActivity)(::fwGui::editor::IEditor) )
 #endif
     /// Constructor. Do nothing.
@@ -94,7 +94,7 @@ public:
 
     /// Destructor. Do nothing.
     ACTIVITIES_API virtual ~SCreateActivity() noexcept;
-#if QML_APPLICATION == 0
+#ifdef KEEP_OLD_SERVICE
     /**
      * @name Signals API
      * @{

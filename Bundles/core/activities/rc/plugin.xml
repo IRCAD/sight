@@ -1,4 +1,4 @@
-<plugin id="activities" class="activities::Plugin"  version="@PROJECT_VERSION@" >
+<plugin id="activities" class="::activities::Plugin"  version="@PROJECT_VERSION@" >
 
     <library name="activities" />
 

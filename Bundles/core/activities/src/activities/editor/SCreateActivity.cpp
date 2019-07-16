@@ -22,7 +22,9 @@
 
 #include "activities/editor/SCreateActivity.hpp"
 
-#if QML_APPLICATION == 0
+#ifdef KEEP_OLD_SERVICE
+
+#include "fwServices/IService.hpp"
 
 #include <fwActivities/IBuilder.hpp>
 #include <fwActivities/IValidator.hpp>
@@ -69,7 +71,7 @@ namespace activities
 namespace editor
 {
 
-#if QML_APPLICATION == 0
+#ifdef KEEP_OLD_SERVICE
 
 //------------------------------------------------------------------------------
 
@@ -86,10 +88,10 @@ const ::fwCom::Signals::SignalKeyType SCreateActivity::s_LOAD_REQUESTED_SIG     
 
 SCreateActivity::SCreateActivity() noexcept
 {
-#if QML_APPLICATION == 1
+#ifndef KEEP_OLD_SERVICE
     SLM_FATAL("Do not use activities::SCreateActivity with Qml");
 #else
-    FW_DEPRECATED_MSG("This class is deprecated, instead use the bundle uiActivitiesQt", "19.0");
+    FW_DEPRECATED("::activities::editor::SCreateActivity", "::uiActivitiesQt::editor::SCreateActivity", "21.0");
     newSignal< ActivityIDSelectedSignalType >(s_ACTIVITY_ID_SELECTED_SIG);
     newSignal< LoadRequestedSignalType >(s_LOAD_REQUESTED_SIG);
 #endif
@@ -101,7 +103,7 @@ SCreateActivity::~SCreateActivity() noexcept
 {
 }
 
-#if QML_APPLICATION == 0
+#ifdef KEEP_OLD_SERVICE
 
 //------------------------------------------------------------------------------
 
