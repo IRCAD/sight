@@ -702,6 +702,11 @@ macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
     if(${FWPROJECT_NAME}_INSTALL OR BUILD_SDK)
         createResourcesInstallTarget( "${${FWPROJECT_NAME}_RC_BUILD_DIR}" "${FWBUNDLE_RC_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}" )
     endif()
+
+    if(${FWPROJECT_NAME}_BUNDLE_DEPENDENCIES)
+        message(WARNING "Bundle ${FWPROJECT_NAME} links with other bundles (${${FWPROJECT_NAME}_BUNDLE_DEPENDENCIES}), "
+                        "this feature will be removed in version 21.0 of Sight")
+    endif()
 endmacro()
 
 # Include the projects in parameter and export them.
