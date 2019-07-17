@@ -452,7 +452,7 @@ if(BUILD_SDK)
     configure_file(${FWCONFIG_FILE} "${CMAKE_BINARY_DIR}/cmake/SightConfig.cmake" @ONLY)
 
     # Create the SightConfigVersion file
-    set(SIGHT_VERSION 18.0)
+    set(SIGHT_VERSION ${GIT_TAG})
 
     write_basic_package_version_file(
       "${CMAKE_BINARY_DIR}/cmake/SightConfigVersion.cmake"
@@ -642,6 +642,5 @@ endif()
 ########################################################################################################################
 if(BUILD_SDK)
     set(FWPROJECT_NAME sight)
-    set(VERSION ${SIGHT_VERSION})
     generic_install()
 endif()

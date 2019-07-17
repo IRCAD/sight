@@ -32,6 +32,7 @@ include(${FWCMAKE_INSTALL_FILES_DIR}/helper.cmake)
 include(${FWCMAKE_BUILD_FILES_DIR}/plugin_config.cmake)
 include(${FWCMAKE_BUILD_FILES_DIR}/profile_config.cmake)
 include(${FWCMAKE_INSTALL_FILES_DIR}/generic_install.cmake)
+include(${FWCMAKE_INSTALL_FILES_DIR}/get_git_rev.cmake)
 
 file(REMOVE "${CMAKE_BINARY_DIR}/cmake/SightRequirements.cmake")
 
