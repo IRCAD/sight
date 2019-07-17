@@ -63,12 +63,12 @@ macro(qt_plugins_setup PROJECT_NAME)
 
     endif()
 
-endmacro(qt_plugins_setup)
+endmacro()
 
 macro(install_qt_plugins)
 
     #qt plugins setup
-    if(QT_REQUIREMENTS AND NOT BUILD_SDK) # set by helper.cmake -> qt_setup() macros
+    if(QT_REQUIREMENTS) # set by helper.cmake -> qt_setup() macros
         if(NOT USE_SYSTEM_LIB)
             if(FW_BUILD_EXTERNAL)
                 set(FW_QT5_LOCATION "${Sight_LIBRARY_DIR}/../..")
@@ -84,4 +84,4 @@ macro(install_qt_plugins)
         endforeach()
     endif()
 
-endmacro(install_qt_plugins)
+endmacro()

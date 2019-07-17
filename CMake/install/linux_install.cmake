@@ -22,58 +22,50 @@ macro(linux_install PRJ_NAME)
         set(LAUNCHER "${PRJ_NAME}-${${PRJ_NAME}_VERSION}")
         set(PROFILE_PATH "")
 
-    elseif(NOT BUILD_SDK)
+    elseif()
         message(FATAL_ERROR "'${PRJ_NAME}' is not a installable (type : ${${PRJ_NAME}_TYPE})")
     endif()
 
-    if(NOT BUILD_SDK)
-        set(PROJECT_REQUIREMENTS ${${PROJECT}_REQUIREMENTS})
+    set(PROJECT_REQUIREMENTS ${${PROJECT}_REQUIREMENTS})
 
-        if(${FW_BUILD_EXTERNAL})
-            # install requirements
-            findAllDependencies("${PROJECT}" PROJECT_LIST)
+    if(${FW_BUILD_EXTERNAL})
+        # install requirements
+        findAllDependencies("${PROJECT}" PROJECT_LIST)
 
-            foreach(REQUIREMENT ${PROJECT_LIST})
-                if(${REQUIREMENT}_EXTERNAL)
-                    # search and setup qt plugins for each bundles
-                    qt_plugins_setup(${REQUIREMENT})
+        foreach(REQUIREMENT ${PROJECT_LIST})
+            if(${REQUIREMENT}_EXTERNAL)
+                # search and setup qt plugins for each bundles
+                qt_plugins_setup(${REQUIREMENT})
 
-                    if(EXISTS "${Sight_LIBRARY_DIR}/${REQUIREMENT}-${${REQUIREMENT}_VERSION}")
-                        install(DIRECTORY "${Sight_LIBRARY_DIR}/${REQUIREMENT}-${${REQUIREMENT}_VERSION}" DESTINATION ${FWBUNDLE_LIB_PREFIX})
-                    endif()
-                    if(EXISTS "${Sight_BUNDLES_DIR}/${REQUIREMENT}-${${REQUIREMENT}_VERSION}")
-                        install(DIRECTORY "${Sight_BUNDLES_DIR}/${REQUIREMENT}-${${REQUIREMENT}_VERSION}" DESTINATION ${FWBUNDLE_RC_PREFIX})
-                    endif()
+                if(EXISTS "${Sight_LIBRARY_DIR}/${REQUIREMENT}-${${REQUIREMENT}_VERSION}")
+                    install(DIRECTORY "${Sight_LIBRARY_DIR}/${REQUIREMENT}-${${REQUIREMENT}_VERSION}" DESTINATION ${FWBUNDLE_LIB_PREFIX})
                 endif()
-            endforeach()
+                if(EXISTS "${Sight_BUNDLES_DIR}/${REQUIREMENT}-${${REQUIREMENT}_VERSION}")
+                    install(DIRECTORY "${Sight_BUNDLES_DIR}/${REQUIREMENT}-${${REQUIREMENT}_VERSION}" DESTINATION ${FWBUNDLE_RC_PREFIX})
+                endif()
+            endif()
+        endforeach()
 
-            install_qt_plugins()
-        endif()
+        install_qt_plugins()
     endif()
 
-    if(NOT BUILD_SDK OR (BUILD_SDK AND ${PRJ_NAME} STREQUAL "sight") )
-        if(${PRJ_NAME} STREQUAL "sight")
-            # Needed for fixup_bundle first argument
-            set(LAUNCHER_PATH "bin/fwlauncher-${fwlauncher_VERSION}")
-        endif()
-
-        if(NOT BUILD_SDK)
-            configure_file(${FWCMAKE_RESOURCE_PATH}/install/linux/linux_fixup.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/linux_fixup.cmake @ONLY)
-            install(SCRIPT ${CMAKE_CURRENT_BINARY_DIR}/linux_fixup.cmake)
-        else()
-            installConanDepsForSDK()
-        endif()
-
-        set(CPACK_OUTPUT_FILE_PREFIX packages)
-        set(CPACK_INSTALLED_DIRECTORIES "${CMAKE_INSTALL_PREFIX};.") #look inside install dir for packaging
-
-        execute_process( COMMAND uname -m COMMAND tr -d '\n' OUTPUT_VARIABLE ARCHITECTURE )
-
-        set(CPACK_PACKAGE_FILE_NAME "${PRJ_NAME}-${VERSION}-linux_${ARCHITECTURE}")
-        set(CPACK_PACKAGE_VENDOR "IRCAD-IHU")
-        set(CPACK_PACKAGE_NAME "${PRJ_NAME}")
-        set(CPACK_PACKAGE_VERSION "${VERSION}")
+    if(${PRJ_NAME} STREQUAL "sight")
+        # Needed for fixup_bundle first argument
+        set(LAUNCHER_PATH "bin/fwlauncher-${fwlauncher_VERSION}")
     endif()
+
+    configure_file(${FWCMAKE_RESOURCE_PATH}/install/linux/linux_fixup.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/linux_fixup.cmake @ONLY)
+    install(SCRIPT ${CMAKE_CURRENT_BINARY_DIR}/linux_fixup.cmake)
+
+    set(CPACK_OUTPUT_FILE_PREFIX packages)
+    set(CPACK_INSTALLED_DIRECTORIES "${CMAKE_INSTALL_PREFIX};.") #look inside install dir for packaging
+
+    execute_process( COMMAND uname -m COMMAND tr -d '\n' OUTPUT_VARIABLE ARCHITECTURE )
+
+    set(CPACK_PACKAGE_FILE_NAME "${PRJ_NAME}-${VERSION}-linux_${ARCHITECTURE}")
+    set(CPACK_PACKAGE_VENDOR "IRCAD-IHU")
+    set(CPACK_PACKAGE_NAME "${PRJ_NAME}")
+    set(CPACK_PACKAGE_VERSION "${VERSION}")
 
     if("${${PRJ_NAME}_TYPE}" STREQUAL  "APP")
         string(TOLOWER ${PRJ_NAME} APP_NAME)

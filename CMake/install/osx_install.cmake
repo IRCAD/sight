@@ -12,7 +12,7 @@ function(osx_install PRJ_NAME)
 
     set_source_files_properties(${${PRJ_NAME}_ICON_PATH} PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
 
-    if(NOT BUILD_SDK AND TARGET fwlauncher)
+    if(TARGET fwlauncher)
         if("${${PRJ_NAME}_TYPE}" STREQUAL  "APP")
             # create a new executable equivalent to fwLauncher
             add_executable(${EXECUTABLE_NAME} MACOSX_BUNDLE ${fwlauncher_HEADERS} ${fwlauncher_SOURCES} ${${PRJ_NAME}_ICON_PATH})
@@ -137,4 +137,4 @@ function(osx_install PRJ_NAME)
         include(CPack)
     endif()
 
-endfunction(osx_install)
+endfunction()
