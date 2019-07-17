@@ -129,7 +129,7 @@ function(osx_install PRJ_NAME)
 
         execute_process( COMMAND uname -m COMMAND tr -d '\n' OUTPUT_VARIABLE ARCHITECTURE )
 
-        set(CPACK_PACKAGE_FILE_NAME "${PRJ_NAME}-${VERSION}-macos_${ARCHITECTURE}")
+        set(CPACK_PACKAGE_FILE_NAME "${PRJ_NAME}-${VERSION}-macos_${ARCHITECTURE}-Sight_${GIT_TAG}")
         set(CPACK_PACKAGE_VENDOR "IRCAD-IHU")
         set(CPACK_PACKAGE_NAME "${PRJ_NAME}")
         set(CPACK_PACKAGE_VERSION "${VERSION}")

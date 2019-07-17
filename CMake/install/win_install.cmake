@@ -61,11 +61,12 @@ macro(win_install PRJ_NAME)
     set(CPACK_NSIS_ENABLE_UNINSTALL_BEFORE_INSTALL ON)
     set(CPACK_INSTALLED_DIRECTORIES "${CMAKE_INSTALL_PREFIX};.") #look inside install dir for packaging
 
-    set(CPACK_PACKAGE_VENDOR "Sight")
+    set(CPACK_PACKAGE_VENDOR "IRCAD-IHU")
     set(CPACK_NSIS_URL_INFO_ABOUT "https://github.com/IRCAD-IHU/sight")
     set(CPACK_NSIS_CONTACT "https://gitter.im/IRCAD-IHU/sight-support")
 
     set(CPACK_PACKAGE_NAME "${PRJ_NAME}")
+    set(CPACK_PACKAGE_FILE_NAME "${PRJ_NAME}-${VERSION}-win64-Sight_${GIT_TAG}")
     set(CPACK_NSIS_PACKAGE_NAME "${PRJ_NAME}-${${PRJ_NAME}_VERSION}")
     set(CPACK_NSIS_DISPLAY_NAME "${PRJ_NAME}")
     set(CPACK_PACKAGE_VERSION "${VERSION}")
