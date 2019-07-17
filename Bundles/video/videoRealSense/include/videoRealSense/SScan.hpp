@@ -452,6 +452,9 @@ private:
     /// True to push infrared frames in color TL.
     std::atomic_bool m_switchInfra2Color { false };
 
+    /// True when the first real frame has been grabbed. Set the point cloud output.
+    std::atomic_bool m_grabbingSarted { false };
+
     /// True if device needs to be recorded.
     bool m_record { false };
 

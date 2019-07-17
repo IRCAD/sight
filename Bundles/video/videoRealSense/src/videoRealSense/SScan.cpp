@@ -132,6 +132,8 @@ void SScan::starting()
 {
     m_depthTimeline = this->getInOut< ::arData::FrameTL>(s_DEPTHTL_INOUT);
     m_colorTimeline = this->getInOut< ::arData::FrameTL>(s_FRAMETL_INOUT);
+
+    m_grabbingSarted = false;
 }
 
 //-----------------------------------------------------------------------------
@@ -238,10 +240,6 @@ std::string SScan::selectDevice()
 
 void SScan::initialize(const ::rs2::pipeline_profile& _profile)
 {
-    // Get camera information.
-    ::arData::CameraSeries::sptr cameraSeries = this->getInOut< ::arData::CameraSeries>(s_CAMERA_SERIES_INOUT);
-    m_colorTimeline                           = this->getInOut< ::arData::FrameTL>(s_FRAMETL_INOUT);
-
     const auto depthStream    = _profile.get_stream(RS2_STREAM_DEPTH).as< ::rs2::video_stream_profile>();
     const auto colorStream    = _profile.get_stream(RS2_STREAM_COLOR).as< ::rs2::video_stream_profile>();
     const auto infraredStream = _profile.get_stream(RS2_STREAM_INFRARED).as< ::rs2::video_stream_profile>();
@@ -262,6 +260,7 @@ void SScan::initialize(const ::rs2::pipeline_profile& _profile)
     const size_t colorStreamW = static_cast<size_t>(colorStream.width());
     const size_t colorStreamH = static_cast<size_t>(colorStream.height());
 
+    m_colorTimeline = this->getInOut< ::arData::FrameTL>(s_FRAMETL_INOUT);
     m_colorTimeline->initPoolSize(colorStreamW, colorStreamH, ::fwTools::Type::s_UINT8, 4);
     m_colorTimeline->setMaximumSize(50);
 
@@ -271,10 +270,16 @@ void SScan::initialize(const ::rs2::pipeline_profile& _profile)
         m_depthTimeline->setMaximumSize(50);
     }
 
+    // Get camera information.
+    ::arData::CameraSeries::sptr cameraSeries = this->getInOut< ::arData::CameraSeries>(s_CAMERA_SERIES_INOUT);
+
     if(cameraSeries)
     {
+        ::fwData::mt::ObjectWriteLock cameraSeriesLock(cameraSeries);
+
         ::arData::Camera::sptr colorCamera;
         ::arData::Camera::sptr depthCamera;
+
         // check if there is camera
         if (cameraSeries->getNumberOfCameras() == 0)
         {
@@ -290,8 +295,8 @@ void SScan::initialize(const ::rs2::pipeline_profile& _profile)
         }
         else if (cameraSeries->getNumberOfCameras() == 1) // missing one camera
         {
-            depthCamera                        = cameraSeries->getCamera(0);
-            ::arData::Camera::sptr colorCamera = ::arData::Camera::New();
+            depthCamera = cameraSeries->getCamera(0);
+            colorCamera = ::arData::Camera::New();
             cameraSeries->addCamera(colorCamera);
 
             auto sig = cameraSeries->signal< ::arData::CameraSeries::AddedCameraSignalType >(
@@ -300,7 +305,6 @@ void SScan::initialize(const ::rs2::pipeline_profile& _profile)
         }
         else
         {
-
             depthCamera = cameraSeries->getCamera(0);
             colorCamera = cameraSeries->getCamera(1);
         }
@@ -370,15 +374,14 @@ void SScan::initialize(const ::rs2::pipeline_profile& _profile)
     if(m_pointcloud == nullptr)
     {
         m_pointcloud = ::fwData::Mesh::New();
-        this->setOutput(s_POINTCLOUD_OUTPUT, m_pointcloud);
     }
 
     // Re-init the pointcloud.
     SLM_ASSERT("Cannot create pointcloud output", m_pointcloud);
-
     const size_t nbPoints = depthStreamW * depthStreamH;
 
     ::fwData::mt::ObjectWriteLock meshLock(m_pointcloud);
+
     // Allocate mesh.
     m_pointcloud->allocate(nbPoints, nbPoints, nbPoints);
 
@@ -397,7 +400,7 @@ void SScan::initialize(const ::rs2::pipeline_profile& _profile)
     ::fwData::Mesh::CellTypes* cellTypes = cellTypeArrayHelper.begin< ::fwData::Mesh::CellTypes >();
 
     // to display the mesh, we need to create cells with one point.
-    for (size_t i = 0; i < nbPoints; ++i)
+    for( size_t i = 0; i < nbPoints; ++i )
     {
         cells[i]       = i;
         cellTypes[i]   = ::fwData::Mesh::POINT;
@@ -408,7 +411,6 @@ void SScan::initialize(const ::rs2::pipeline_profile& _profile)
     m_pointcloud->setNumberOfCells(nbPoints);
     m_pointcloud->setCellDataSize(nbPoints);
     m_pointcloud->allocatePointColors(::fwData::Mesh::ColorArrayTypes::RGB);
-
 }
 
 //-----------------------------------------------------------------------------
@@ -585,10 +587,8 @@ void SScan::startCamera()
 void SScan::stopCamera()
 {
     // Grabbing thread is running
-    if(m_running)
+    if(m_running.exchange(false))
     {
-        m_running = false;
-
         m_thread.join();
 
         // If a preset was loaded we should hard-reset the camera,
@@ -1056,8 +1056,6 @@ void SScan::grab()
                 }
                 else if(m_pointcloudColorMap == PointcloudColormap::INFRARED)
                 {
-
-                    auto infra = frames.get_infrared_frame();
                     mapframe = infra;
                     pc.map_to(infra);
                 }
@@ -1186,7 +1184,6 @@ void SScan::onCameraImage(const uint8_t* _buffer)
 
 void SScan::onCameraImageDepth(const std::uint16_t* _buffer)
 {
-
     // Filling the depth image buffer in the timeline
     const ::fwClock::HiResClockType timestamp( ::fwClock::getTimeInMicroSec() );
 
@@ -1245,7 +1242,7 @@ void SScan::onPointCloud(const ::rs2::points& _pc, const ::rs2::video_frame& _te
 
         // Parallelization of the loop is possible since each element is independent.
         #pragma omp parallel for shared(buffer, colorBuf)
-        for (std::int64_t i = 0; i < static_cast<std::int64_t>(pcSize); i++)
+        for (size_t i = 0; i < pcSize; i++)
         {
             // Fill the point buffer (x = +0, y = +1, z = +2).
             buffer[i*3 + 0] = static_cast<float>(vertices[i].x) * s_METERS_TO_MMS;
@@ -1267,6 +1264,12 @@ void SScan::onPointCloud(const ::rs2::points& _pc, const ::rs2::video_frame& _te
             colorBuf[i*3 + 1] = textureBuff[index + 1];
             colorBuf[i*3 + 2] = textureBuff[index + 2];
 
+        }
+
+        // Now that we have correct data in the point cloud, we can allow other to read us
+        if(!m_grabbingSarted.exchange(true))
+        {
+            this->setOutput(s_POINTCLOUD_OUTPUT, m_pointcloud);
         }
 
         const auto sigVertex = m_pointcloud->signal< ::fwData::Mesh::VertexModifiedSignalType >

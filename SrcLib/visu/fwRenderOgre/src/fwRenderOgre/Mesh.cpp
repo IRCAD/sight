@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2018 IRCAD France
- * Copyright (C) 2017-2018 IHU Strasbourg
+ * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -41,6 +41,8 @@
 #include <OgreSceneNode.h>
 #include <OgreSubMesh.h>
 #include <OgreTextureManager.h>
+
+#include <math.h>
 
 namespace fwRenderOgre
 {
@@ -725,15 +727,30 @@ void Mesh::updateVertices(const ::fwData::Mesh::csptr& _mesh)
        zMax > std::numeric_limits<PointValueType>::lowest())
     {
         m_ogreMesh->_setBounds( ::Ogre::AxisAlignedBox( xMin, yMin, zMin, xMax, yMax, zMax) );
+
+        SLM_ASSERT("Infinite bounds found...",
+                   !isinf(m_ogreMesh->getBounds().getMaximum()[0])
+                   && !isinf(m_ogreMesh->getBounds().getMaximum()[1])
+                   && !isinf(m_ogreMesh->getBounds().getMaximum()[2])
+                   && !isinf(m_ogreMesh->getBounds().getMinimum()[0])
+                   && !isinf(m_ogreMesh->getBounds().getMinimum()[1])
+                   && !isinf(m_ogreMesh->getBounds().getMinimum()[2])
+                   && !isnan(m_ogreMesh->getBounds().getMaximum()[0])
+                   && !isnan(m_ogreMesh->getBounds().getMaximum()[1])
+                   && !isnan(m_ogreMesh->getBounds().getMaximum()[2])
+                   && !isnan(m_ogreMesh->getBounds().getMinimum()[0])
+                   && !isnan(m_ogreMesh->getBounds().getMinimum()[1])
+                   && !isnan(m_ogreMesh->getBounds().getMinimum()[2]));
+
+            m_ogreMesh->_setBoundingSphereRadius( ::Ogre::Math::Sqrt( ::Ogre::Math::Sqr(xMax - xMin) +
+                                                                      ::Ogre::Math::Sqr(yMax - yMin) +
+                                                                      ::Ogre::Math::Sqr(zMax - zMin)) /2);
     }
     else
     {
         // An extent was not found or is NaN
         m_ogreMesh->_setBounds( ::Ogre::AxisAlignedBox::EXTENT_NULL );
     }
-    m_ogreMesh->_setBoundingSphereRadius( ::Ogre::Math::Sqrt( ::Ogre::Math::Sqr(xMax - xMin) +
-                                                              ::Ogre::Math::Sqr(yMax - yMin) +
-                                                              ::Ogre::Math::Sqr(zMax - zMin)) /2);
 
     /// Notify Mesh object that it has been modified
     m_ogreMesh->load();
