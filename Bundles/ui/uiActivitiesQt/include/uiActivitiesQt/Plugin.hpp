@@ -43,4 +43,4 @@ struct UIACTIVITIESQT_CLASS_API Plugin : public ::fwRuntime::Plugin
 
 };
 
-} // namespace activities
+} // namespace uiActivitiesQt

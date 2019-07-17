@@ -47,4 +47,4 @@ void Plugin::stop() noexcept
 {
 }
 
-} // namespace activities
+} // namespace uiActivitiesQt

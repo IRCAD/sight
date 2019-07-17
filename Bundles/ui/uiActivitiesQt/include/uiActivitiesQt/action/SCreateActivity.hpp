@@ -54,7 +54,7 @@ namespace action
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service uid="..." type="::activities::action::SCreateActivity" autoConnect="yes" >
+   <service uid="..." type="::uiActivitiesQt::action::SCreateActivity" >
        <!-- Filter mode 'include' allows all given activity id-s.
             Filter mode 'exclude' allows all activity id-s excepted given ones. -->
        <filter>
@@ -149,4 +149,4 @@ private:
 };
 
 } // namespace action
-} // namespace activities
+} // namespace uiActivitiesQt

@@ -146,4 +146,4 @@ private:
 };
 
 } // namespace editor
-} // namespace activities
+} // namespace uiActivitiesQt

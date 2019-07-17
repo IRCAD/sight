@@ -24,7 +24,7 @@
 
 /**
  * @ingroup apprequirement
- * @brief The namespace activities contains helpers and services allowing to launch activities.
+ * @brief The namespace uiActivitiesQt contains helpers and services allowing to launch activities.
  *
  * This bundles allows to register the activities available for an application. It is required for application using
  * Activities.
@@ -32,4 +32,4 @@
 namespace uiActivitiesQt
 {
 
-} // namespace activities
+} // namespace uiActivitiesQt
