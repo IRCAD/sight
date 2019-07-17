@@ -20,8 +20,6 @@
  *
  ***********************************************************************/
 
-#include "fwServices/IService.hpp"
-
 #include "activities/action/SCreateActivity.hpp"
 
 #include <fwActivities/IBuilder.hpp>

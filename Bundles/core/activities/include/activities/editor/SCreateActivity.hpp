@@ -77,16 +77,16 @@ namespace editor
 #ifdef KEEP_OLD_SERVICE
 class ACTIVITIES_CLASS_API SCreateActivity : public QObject,
                                              public ::fwGui::editor::IEditor
-        #else
+#else
 class ACTIVITIES_CLASS_API SCreateActivity
-        #endif
+#endif
 {
-    #ifdef KEEP_OLD_SERVICE
+#ifdef KEEP_OLD_SERVICE
 Q_OBJECT;
 #endif
 public:
 
-    #ifdef KEEP_OLD_SERVICE
+#ifdef KEEP_OLD_SERVICE
     fwCoreServiceClassDefinitionsMacro( (SCreateActivity)(::fwGui::editor::IEditor) )
 #endif
     /// Constructor. Do nothing.

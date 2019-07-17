@@ -24,8 +24,6 @@
 
 #ifdef KEEP_OLD_SERVICE
 
-#include "fwServices/IService.hpp"
-
 #include <fwActivities/IBuilder.hpp>
 #include <fwActivities/IValidator.hpp>
 
