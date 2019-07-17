@@ -232,7 +232,7 @@
             </config>
         </service>
 
-        <service uid="action_createActivity" type="::uiActivitiesQt::action::SCreateActivity">
+        <service uid="action_createActivity" type="::activities::action::SCreateActivity">
             <in key="series" uid="selections" />
             <filter>
                 <mode>exclude</mode>
