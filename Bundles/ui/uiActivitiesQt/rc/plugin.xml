@@ -1,19 +1,24 @@
 <plugin id="uiActivitiesQt" class="::uiActivitiesQt::Plugin"  version="@PROJECT_VERSION@" >
 
-    <library name="uiActivitiesQt" />
+<library name="uiActivitiesQt" />
 
-    <requirement id="dataReg"/>
-    <requirement id="servicesReg"/>
-    <requirement id="guiQt"/>
+<requirement id="dataReg"/>
+<requirement id="servicesReg"/>
 
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::fwGui::IActionSrv</type>
-        <service>::uiActivitiesQt::action::SCreateActivity</service>
-        <object>::fwData::Vector</object>
-    </extension>
+<extension implements="::fwServices::registry::ServiceFactory">
+<type>::fwGui::IActionSrv</type>
+<service>::uiActivitiesQt::action::SActivityLauncher</service>
+<object>::fwData::Vector</object>
+</extension>
 
-    <!-- EXTENSION POINT FOR AN APP CONFIGURATION -->
-    <extension-point id="::fwActivities::registry::Activities" schema="uiActivitiesQt.xsd"/>
+<extension implements="::fwServices::registry::ServiceFactory">
+<type>::fwGui::IActionSrv</type>
+<service>::uiActivitiesQt::action::SCreateActivity</service>
+<object>::fwData::Vector</object>
+</extension>
+
+<!-- EXTENSION POINT FOR AN APP CONFIGURATION -->
+<extension-point id="::fwActivities::registry::Activities" schema="uiActivitiesQt.xsd"/>
 
 
 

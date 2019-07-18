@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "activities/action/SActivityLauncher.hpp"
+#include "uiActivitiesQt/action/SActivityLauncher.hpp"
 
 #include <fwActivities/IActivityValidator.hpp>
 #include <fwActivities/IBuilder.hpp>
@@ -56,7 +56,6 @@
 
 #include <boost/foreach.hpp>
 
-#ifdef KEEP_OLD_SERVICE
 #include <QApplication>
 #include <QDialog>
 #include <QHBoxLayout>
@@ -66,16 +65,15 @@
 #include <QVBoxLayout>
 
 Q_DECLARE_METATYPE(::fwActivities::registry::ActivityInfo)
-#endif
 
-namespace activities
+namespace uiActivitiesQt
 {
 namespace action
 {
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::activities::action::SActivityLauncher, ::fwData::Vector );
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiActivitiesQt::action::SActivityLauncher, ::fwData::Vector );
 
 //------------------------------------------------------------------------------
 
@@ -194,10 +192,6 @@ void SActivityLauncher::configuring()
 
 ::fwActivities::registry::ActivityInfo SActivityLauncher::show( const ActivityInfoContainer& infos )
 {
-#ifndef KEEP_OLD_SERVICE
-    SLM_FATAL("Do not use activities::SActivityLauncher with Qml");
-#else
-    FW_DEPRECATED("::activities::action::SActivityLauncher", "::uiActivitiesQt::action::SActivityLauncher", "21.0");
     QWidget* parent = qApp->activeWindow();
 
     QDialog* dialog = new QDialog(parent);
@@ -259,7 +253,6 @@ void SActivityLauncher::configuring()
     }
 
     return info;
-#endif
 }
 
 //------------------------------------------------------------------------------
