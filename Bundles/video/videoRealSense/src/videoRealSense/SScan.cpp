@@ -1257,7 +1257,7 @@ void SScan::onPointCloud(const ::rs2::points& _pc, const ::rs2::video_frame& _te
 
         // Parallelization of the loop is possible since each element is independent.
         #pragma omp parallel for shared(buffer, colorBuf)
-        for (size_t i = 0; i < pcSize; i++)
+        for (std::int64_t i = 0; i < static_cast<std::int64_t>(pcSize); i++)
         {
             // Fill the point buffer (x = +0, y = +1, z = +2).
             buffer[i*3 + 0] = static_cast<float>(vertices[i].x) * s_METERS_TO_MMS;
