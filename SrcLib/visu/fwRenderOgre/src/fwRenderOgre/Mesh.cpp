@@ -830,15 +830,33 @@ void Mesh::updateVertices(const ::fwData::PointList::csptr& _pointList)
         m_ogreMesh->_setBounds(
             ::Ogre::AxisAlignedBox(static_cast<float>(xMin), static_cast<float>(yMin), static_cast<float>(zMin),
                                    static_cast<float>(xMax), static_cast<float>(yMax), static_cast<float>(zMax)) );
+
+        // Check again the bounds, since ogre may add some extent that could give infinite bounds
+        const bool valid = this->areBoundsValid(m_ogreMesh);
+        SLM_ASSERT("Invalid bounds found...", valid);
+
+        if(valid)
+        {
+            m_ogreMesh->_setBoundingSphereRadius( ::Ogre::Math::Sqrt( ::Ogre::Math::Sqr(static_cast<float>(xMax -
+                                                                                                           xMin)) +
+                                                                      ::Ogre::Math::Sqr(static_cast<float>(yMax -
+                                                                                                           yMin)) +
+                                                                      ::Ogre::Math::Sqr(
+                                                                          static_cast<float>(zMax - zMin)))* .5f);
+        }
+        else
+        {
+            SLM_ERROR("Infinite or NaN values for the bounding box. Check the mesh validity.");
+
+            // This silent the problem so there is no crash in Ogre
+            m_ogreMesh->_setBounds( ::Ogre::AxisAlignedBox::EXTENT_NULL );
+        }
     }
     else
     {
         // An extent was not found or is NaN
         m_ogreMesh->_setBounds( ::Ogre::AxisAlignedBox::EXTENT_NULL );
     }
-    m_ogreMesh->_setBoundingSphereRadius( ::Ogre::Math::Sqrt( ::Ogre::Math::Sqr(static_cast<float>(xMax - xMin)) +
-                                                              ::Ogre::Math::Sqr(static_cast<float>(yMax - yMin)) +
-                                                              ::Ogre::Math::Sqr(static_cast<float>(zMax - zMin)))* .5f);
 
     /// Notify Mesh object that it has been modified
     m_ogreMesh->load();
