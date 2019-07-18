@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -31,6 +31,8 @@
 
 #include <fwCom/Signal.hxx>
 
+#include <fwData/mt/ObjectReadLock.hpp>
+#include <fwData/mt/ObjectWriteLock.hpp>
 #include <fwData/PointList.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
 
@@ -76,8 +78,10 @@ void SSolvePnP::computeRegistration(::fwCore::HiResClock::HiResClockType _timest
     auto fwMatrix = this->getInOut< ::fwData::TransformationMatrix3D >(s_MATRIX_INOUT);
     SLM_ASSERT("'" + s_MATRIX_INOUT + "' should not be null", fwMatrix);
 
-    //points list should have same number of points
+    ::fwData::mt::ObjectReadLock readLock2d(fwPoints2d);
+    ::fwData::mt::ObjectReadLock readLock3d(fwPoints3d);
 
+    //points list should have same number of points
     if(fwPoints2d->getPoints().size() != fwPoints3d->getPoints().size())
     {
         SLM_ERROR("'" + s_POINTLIST2D_INPUT + "' and '"
@@ -118,6 +122,7 @@ void SSolvePnP::computeRegistration(::fwCore::HiResClock::HiResClockType _timest
         cvMat = cvMat.inv();
     }
 
+    ::fwData::mt::ObjectWriteLock writeLock(fwMatrix);
     ::cvIO::Matrix::copyFromCv(cvMat, fwMatrix);
 
     const auto sig = fwMatrix->signal< ::fwData::TransformationMatrix3D::ModifiedSignalType >
