@@ -589,6 +589,14 @@ void SScan::stopCamera()
     // Grabbing thread is running
     if(m_running.exchange(false))
     {
+        if(m_pause)
+        {
+            std::lock_guard<std::mutex> lock(m_PauseMutex);
+            m_pause = false;
+        }
+
+        m_PauseConditionVariable.notify_all();
+
         m_thread.join();
 
         // If a preset was loaded we should hard-reset the camera,
@@ -618,7 +626,12 @@ void SScan::pauseCamera()
     if(m_running)
     {
         // Enable/disable pause mode.
-        m_pause = !m_pause;
+        {
+            std::lock_guard<std::mutex> lock(m_PauseMutex);
+            m_pause = !m_pause;
+        }
+
+        m_PauseConditionVariable.notify_all();
 
         // Also pause the recording if needed.
         if(m_record)
@@ -983,8 +996,10 @@ void SScan::grab()
     {
         if(m_pause)
         {
-            continue;
+            std::unique_lock<std::mutex> lock(m_PauseMutex);
+            m_PauseConditionVariable.wait(lock);
         }
+
         try
         {
             // Wait for the next set of frames from the camera

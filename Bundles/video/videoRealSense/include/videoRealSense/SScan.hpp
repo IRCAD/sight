@@ -467,5 +467,10 @@ private:
     /// Enable if camera source = FILE, enable playing from .bag files.
     bool m_playbackMode { false };
 
+    /// Condition Variable Used to pause grabbing thread
+    std::condition_variable m_PauseConditionVariable;
+
+    /// Mutex used for the Condition Variable
+    std::mutex m_PauseMutex;
 };
 } //namespace videoRealSense

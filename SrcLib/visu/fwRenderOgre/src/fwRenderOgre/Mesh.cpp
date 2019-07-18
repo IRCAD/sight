@@ -742,9 +742,28 @@ void Mesh::updateVertices(const ::fwData::Mesh::csptr& _mesh)
                    && !isnan(m_ogreMesh->getBounds().getMinimum()[1])
                    && !isnan(m_ogreMesh->getBounds().getMinimum()[2]));
 
+        const auto bounds  = m_ogreMesh->getBounds();
+        const auto maximum = bounds.getMaximum();
+        const auto minimum = bounds.getMinimum();
+
+        if(isinf(maximum[0]) || isnan(maximum[0])
+           || isinf(maximum[1]) || isnan(maximum[1])
+           || isinf(maximum[2]) || isnan(maximum[2])
+           || isinf(minimum[0]) || isnan(minimum[0])
+           || isinf(minimum[1]) || isnan(minimum[1])
+           || isinf(minimum[2]) || isnan(minimum[2]))
+        {
+            SLM_ERROR("Infinite or NaN values for the bounding box. Check the mesh validity.");
+
+            // This silent the problem so there is no crash in Ogre
+            m_ogreMesh->_setBounds( ::Ogre::AxisAlignedBox::EXTENT_NULL );
+        }
+        else
+        {
             m_ogreMesh->_setBoundingSphereRadius( ::Ogre::Math::Sqrt( ::Ogre::Math::Sqr(xMax - xMin) +
                                                                       ::Ogre::Math::Sqr(yMax - yMin) +
                                                                       ::Ogre::Math::Sqr(zMax - zMin)) /2);
+        }
     }
     else
     {
