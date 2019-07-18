@@ -994,7 +994,7 @@ void SScan::grab()
 
     while(m_running)
     {
-        if(m_pause)
+        while(m_pause && m_running)
         {
             std::unique_lock<std::mutex> lock(m_PauseMutex);
             m_PauseConditionVariable.wait(lock);

@@ -42,7 +42,7 @@
 #include <OgreSubMesh.h>
 #include <OgreTextureManager.h>
 
-#include <math.h>
+#include <cmath>
 
 namespace fwRenderOgre
 {
