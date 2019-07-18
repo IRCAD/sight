@@ -33,9 +33,10 @@ Item {
                 id: windowTitleField
                 Layout.alignment: Qt.AlignBaseline
                 Layout.fillWidth: true
-                text: "Custom Dialog"
+                placeholderText: "Custom Dialog"
+
                 onTextChanged: pocDialogInputDialogs.title = windowTitleField.text
-                Component.onCompleted: pocDialogInputDialogs.title = windowTitleField.text
+                Component.onCompleted: pocDialogInputDialogs.title = windowTitleField.placeholderText
             }
         }
         // message for the input dialog
@@ -50,9 +51,9 @@ Item {
                 id: windowMessageField
                 Layout.alignment: Qt.AlignBaseline
                 Layout.fillWidth: true
-                text: "Custom Message"
+                placeholderText: "Custom Message"
                 onTextChanged: pocDialogInputDialogs.message = windowMessageField.text
-                Component.onCompleted: pocDialogInputDialogs.message = windowMessageField.text
+                Component.onCompleted: pocDialogInputDialogs.message = windowMessageField.placeholderText
             }
         }
         // the placeholder for the input dialog
@@ -67,9 +68,9 @@ Item {
                 id: windowInputField
                 Layout.alignment: Qt.AlignBaseline
                 Layout.fillWidth: true
-                text: "Custom Input"
+                placeholderText: "Custom Input"
                 onTextChanged: pocDialogInputDialogs.input = windowInputField.text
-                Component.onCompleted: pocDialogInputDialogs.input = windowInputField.text
+                Component.onCompleted: pocDialogInputDialogs.input = windowInputField.placeholderText
             }
         }
         Label {

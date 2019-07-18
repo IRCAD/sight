@@ -41,9 +41,9 @@ Item {
                     id: windowTitleField
                     Layout.alignment: Qt.AlignBaseline
                     Layout.fillWidth: true
-                    text: "Custom Dialog"
+                    placeholderText: "Custom Dialog"
                     onTextChanged: pocDialogMessageDialogs.title = windowTitleField.text
-                    Component.onCompleted: pocDialogMessageDialogs.title = windowTitleField.text
+                    Component.onCompleted: pocDialogMessageDialogs.title = windowTitleField.placeholderText
                 }
             }
             ButtonGroup {
@@ -102,9 +102,9 @@ Item {
                     id: windowMessageField
                     Layout.alignment: Qt.AlignBaseline
                     Layout.fillWidth: true
-                    text: "Custom Message"
+                    placeholderText: "Custom Message"
                     onTextChanged: pocDialogMessageDialogs.message = windowMessageField.text
-                    Component.onCompleted: pocDialogMessageDialogs.message = windowMessageField.text
+                    Component.onCompleted: pocDialogMessageDialogs.message = windowMessageField.placeholderText
                 }
             }
             Label {

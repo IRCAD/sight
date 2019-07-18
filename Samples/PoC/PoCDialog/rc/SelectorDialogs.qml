@@ -33,9 +33,9 @@ Item {
                 id: windowTitleField
                 Layout.alignment: Qt.AlignBaseline
                 Layout.fillWidth: true
-                text: "Custom Dialog"
+                placeholderText: "Custom Dialog"
                 onTextChanged: pocDialogSelectorDialogs.title = windowTitleField.text
-                Component.onCompleted: pocDialogSelectorDialogs.title = windowTitleField.text
+                Component.onCompleted: pocDialogSelectorDialogs.title = windowTitleField.placeholderText
             }
         }
         RowLayout {
@@ -49,9 +49,9 @@ Item {
                 id: windowMessageField
                 Layout.alignment: Qt.AlignBaseline
                 Layout.fillWidth: true
-                text: "Custom Message"
+                placeholderText: "Custom Message"
                 onTextChanged: pocDialogSelectorDialogs.message = windowMessageField.text
-                Component.onCompleted: pocDialogSelectorDialogs.message = windowMessageField.text
+                Component.onCompleted: pocDialogSelectorDialogs.message = windowMessageField.placeholderText
             }
         }
         // row to add an option of the list of the multi selector dialog
@@ -74,7 +74,8 @@ Item {
             Button {
                 text: "Add"
                 onClicked: {
-                    optionRow.options.push(windowOptionField.text)
+                    var option = windowOptionField.text ? windowOptionField.text : windowOptionField.placeholderText
+                    optionRow.options.push(option)
                     windowOptionField.text = ""
                     pocDialogSelectorDialogs.hasOption = true;
                     pocDialogSelectorDialogs.options = optionRow.options

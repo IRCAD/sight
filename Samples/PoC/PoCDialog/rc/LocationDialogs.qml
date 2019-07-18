@@ -38,9 +38,9 @@ Item {
                     id: windowTitleField
                     Layout.alignment: Qt.AlignBaseline
                     Layout.fillWidth: true
-                    text: "Custom Dialog"
+                    placeholderText: "Custom Dialog"
                     onTextChanged: pocDialogLocationDialogs.title = windowTitleField.text
-                    Component.onCompleted: pocDialogLocationDialogs.title = windowTitleField.text
+                    Component.onCompleted: pocDialogLocationDialogs.title = windowTitleField.placeholderText
                 }
             }
             RowLayout {
@@ -85,8 +85,11 @@ Item {
                 Button {
                     text: "Add"
                     onClicked: {
-                        filterRow.nameFilters.push(windowFilterExtensionField.text)
-                        filterRow.nameOfFilters.push(windowFilterField.text)
+                        var nameFilter = windowFilterExtensionField.text ? windowFilterExtensionField.text :
+                                                                           windowFilterExtensionField.placeholderText;
+                        filterRow.nameFilters.push(nameFilter)
+                        var filter = windowFilterField.text ? windowFilterField.text : windowFilterField.placeholderText
+                        filterRow.nameOfFilters.push(filter)
                         windowFilterField.text = ""
                         windowFilterExtensionField.text = ""
                         fileDialog.nameFilters = filterRow.nameFilters

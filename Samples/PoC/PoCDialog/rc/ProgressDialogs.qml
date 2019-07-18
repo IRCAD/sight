@@ -33,9 +33,9 @@ Item {
                 id: windowTitleField
                 Layout.alignment: Qt.AlignBaseline
                 Layout.fillWidth: true
-                text: "Custom Dialog"
+                placeholderText: "Custom Dialog"
                 Component.onCompleted: pocDialogProgressDialogs.title = windowTitleField.text
-                onTextChanged: pocDialogProgressDialogs.message = windowTitleField.text
+                onTextChanged: pocDialogProgressDialogs.message = windowTitleField.placeholderText
             }
         }
         // if this is check, a function with nothing inside will be launch on cancel
@@ -84,15 +84,18 @@ Item {
                 id: windowMessageProgressField
                 Layout.alignment: Qt.AlignBaseline
                 Layout.fillWidth: true
-                text: "Custom Message"
+                placeholderText: "Custom Message"
                 onTextChanged: pocDialogProgressDialogs.message = windowMessageProgressField.text
-                Component.onCompleted: pocDialogProgressDialogs.message = windowMessageProgressField.text
+                Component.onCompleted: pocDialogProgressDialogs.message = windowMessageProgressField.placeholderText
             }
             Button {
                 text: "Add"
                 anchors.verticalCenter: parent.verticalCenter
                 enabled: pocDialogProgressDialogs.isOpen
-                onClicked: pocDialogProgressDialogs.addPercent(windowPercentField.value, windowMessageProgressField.text)
+                onClicked: {
+                    var message = windowMessageProgressField.text ? windowMessageProgressField.text : windowMessageProgressField.placeholderText
+                    pocDialogProgressDialogs.addPercent(windowPercentField.value, message)
+                }
             }
         }
     }

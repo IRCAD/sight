@@ -31,9 +31,9 @@ Item {
                 id: windowTitleField
                 Layout.alignment: Qt.AlignBaseline
                 Layout.fillWidth: true
-                text: "Custom Dialog"
+                placeholderText: "Custom Dialog"
                 onTextChanged: pocDialogLoggerDialogs.title = windowTitleField.text
-                Component.onCompleted: pocDialogLoggerDialogs.title = windowTitleField.text
+                Component.onCompleted: pocDialogLoggerDialogs.title = windowTitleField.placeholderText
             }
         }
         RowLayout {
@@ -47,9 +47,9 @@ Item {
                 id: windowMessageField
                 Layout.alignment: Qt.AlignBaseline
                 Layout.fillWidth: true
-                text: "Custom Message"
+                placeholderText: "Custom Message"
                 onTextChanged: pocDialogLoggerDialogs.message = windowMessageField.text
-                Component.onCompleted: pocDialogLoggerDialogs.message = windowMessageField.text
+                Component.onCompleted: pocDialogLoggerDialogs.message = windowMessageField.placeholderText
             }
         }
         RowLayout {
@@ -86,14 +86,14 @@ Item {
             TextField {
                 id: windowMessageErrorField
                 Layout.fillWidth: true
-                text: "Custom Message"
+                placeholderText: "Custom Message"
             }
             Button {
                 text: "Add"
                 onClicked: {
                     if (buttonGroup.checkedButton)
                     {
-                        var message = windowMessageErrorField.text;
+                        var message = windowMessageErrorField.text ? windowMessageErrorField.text: windowMessageErrorField.placeholderText;
                         loggerRow.errorMessage.push(message);
                         loggerRow.errorLevel.push(buttonGroup.checkedButton.text)
                         windowMessageErrorField.text = ""

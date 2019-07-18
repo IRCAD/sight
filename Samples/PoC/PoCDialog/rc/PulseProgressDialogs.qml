@@ -33,9 +33,9 @@ Item {
                 id: windowTitleField
                 Layout.alignment: Qt.AlignBaseline
                 Layout.fillWidth: true
-                text: "Custom Dialog"
+                placeholderText: "Custom Dialog"
                 onTextChanged: pocDialogPulseProgressDialogs.title = windowTitleField.text
-                Component.onCompleted: pocDialogPulseProgressDialogs.title = windowTitleField.text
+                Component.onCompleted: pocDialogPulseProgressDialogs.title = windowTitleField.placeholderText
             }
         }
         RowLayout {
@@ -49,9 +49,9 @@ Item {
                 id: windowMessageField
                 Layout.alignment: Qt.AlignBaseline
                 Layout.fillWidth: true
-                text: "Custom Message"
+                placeholderText: "Custom Message"
                 onTextChanged: pocDialogPulseProgressDialogs.message = windowMessageField.text
-                Component.onCompleted: pocDialogPulseProgressDialogs.message = windowMessageField.text
+                Component.onCompleted: pocDialogPulseProgressDialogs.message = windowMessageField.placeholderText
             }
         }
         RowLayout {
