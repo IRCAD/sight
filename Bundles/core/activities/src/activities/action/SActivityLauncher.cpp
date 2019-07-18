@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -57,6 +57,7 @@
 #include <boost/foreach.hpp>
 
 #ifdef KEEP_OLD_SERVICE
+
 #include <QApplication>
 #include <QDialog>
 #include <QHBoxLayout>
@@ -66,6 +67,7 @@
 #include <QVBoxLayout>
 
 Q_DECLARE_METATYPE(::fwActivities::registry::ActivityInfo)
+
 #endif
 
 namespace activities
@@ -361,12 +363,12 @@ void SActivityLauncher::updateState()
                 isExecutable = true;
             }
             isExecutable &= ::fwActivities::registry::Activities::getDefault()->hasInfo(
-                                as->getActivityConfigId());
+                as->getActivityConfigId());
         }
         else
         {
             isExecutable = ::fwActivities::registry::Activities::getDefault()->hasInfo(
-                               as->getActivityConfigId());
+                as->getActivityConfigId());
         }
     }
     else
@@ -423,7 +425,7 @@ void SActivityLauncher::buildActivity(const ::fwActivities::registry::ActivityIn
             ::fwActivities::IValidator::sptr validator = ::fwActivities::validator::factory::New(validatorImpl);
 
             ::fwActivities::IActivityValidator::sptr activityValidator =
-                    ::fwActivities::IActivityValidator::dynamicCast(validator);
+                ::fwActivities::IActivityValidator::dynamicCast(validator);
 
             if (activityValidator)
             {
@@ -455,7 +457,7 @@ void SActivityLauncher::buildActivity(const ::fwActivities::registry::ActivityIn
         std::string viewConfigID = msg.getAppConfigID();
         ::fwActivities::registry::ActivityMsg::ReplaceMapType replaceMap = msg.getReplaceMap();
         replaceMap["GENERIC_UID"]                                        =
-                ::fwServices::registry::AppConfig::getUniqueIdentifier();
+            ::fwServices::registry::AppConfig::getUniqueIdentifier();
 
         ::fwServices::IAppConfigManager::sptr helper = ::fwServices::IAppConfigManager::New();
         helper->setConfig( viewConfigID, replaceMap );
@@ -500,10 +502,10 @@ void SActivityLauncher::sendConfig( const ::fwActivities::registry::ActivityInfo
     if(!validation.first)
     {
         ::fwGui::dialog::MessageDialog::showMessageDialog(
-                    "Activity can not be launched",
-                    "The activity " + info.title + " can't be launched. Reason : " + validation.second,
-                    ::fwGui::dialog::IMessageDialog::WARNING
-                    );
+            "Activity can not be launched",
+            "The activity " + info.title + " can't be launched. Reason : " + validation.second,
+            ::fwGui::dialog::IMessageDialog::WARNING
+            );
     }
     else
     {
@@ -589,7 +591,7 @@ void SActivityLauncher::launchActivitySeries(::fwMedData::ActivitySeries::sptr s
             ::fwActivities::IValidator::sptr validator = ::fwActivities::validator::factory::New(validatorImpl);
 
             ::fwActivities::IActivityValidator::sptr activityValidator =
-                    ::fwActivities::IActivityValidator::dynamicCast(validator);
+                ::fwActivities::IActivityValidator::dynamicCast(validator);
 
             if (activityValidator)
             {
