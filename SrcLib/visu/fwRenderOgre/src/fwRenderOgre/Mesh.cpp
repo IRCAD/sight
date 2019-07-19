@@ -842,9 +842,9 @@ void Mesh::updateVertices(const ::fwData::PointList::csptr& _pointList)
 
         if(valid)
         {
-            const float xLenF = static_cast<float>(xMax - xMin);
-            const float yLenF = static_cast<float>(yMax - yMin);
-            const float zLenF = static_cast<float>(zMax - xMin);
+            const float xLenF = xMaxF - xMinF;
+            const float yLenF = yMaxF - yMinF;
+            const float zLenF = zMaxF - xMinF;
 
             m_ogreMesh->_setBoundingSphereRadius( ::Ogre::Math::Sqrt(
                                                       ::Ogre::Math::Sqr( xLenF )
