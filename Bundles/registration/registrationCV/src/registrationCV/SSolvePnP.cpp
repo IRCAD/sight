@@ -174,6 +174,7 @@ void SSolvePnP::initialize()
     const auto camera = this->getInput< ::arData::Camera > (s_CALIBRATION_INPUT);
     SLM_FATAL_IF("Camera '" + s_CALIBRATION_INPUT + "' not found", !camera);
 
+    ::fwData::mt::ObjectReadLock cameraLock(camera);
     m_cvCamera.intrinsicMat = ::cv::Mat::eye(3, 3, CV_64F);
 
     std::tie(m_cvCamera.intrinsicMat, m_cvCamera.imageSize, m_cvCamera.distCoef) = ::cvIO::Camera::copyToCv(camera);
