@@ -827,9 +827,14 @@ void Mesh::updateVertices(const ::fwData::PointList::csptr& _pointList)
        yMax > std::numeric_limits<PointType>::lowest() &&
        zMax > std::numeric_limits<PointType>::lowest())
     {
-        m_ogreMesh->_setBounds(
-            ::Ogre::AxisAlignedBox(static_cast<float>(xMin), static_cast<float>(yMin), static_cast<float>(zMin),
-                                   static_cast<float>(xMax), static_cast<float>(yMax), static_cast<float>(zMax)) );
+        const float xMinF = static_cast<float>(xMin);
+        const float yMinF = static_cast<float>(yMin);
+        const float zMinF = static_cast<float>(zMin);
+        const float xMaxF = static_cast<float>(xMax);
+        const float yMaxF = static_cast<float>(yMax);
+        const float zMaxF = static_cast<float>(zMax);
+
+        m_ogreMesh->_setBounds( ::Ogre::AxisAlignedBox(xMinF, yMinF, zMinF, xMaxF, yMaxF, zMaxF ));
 
         // Check again the bounds, since ogre may add some extent that could give infinite bounds
         const bool valid = this->areBoundsValid(m_ogreMesh);
@@ -837,12 +842,14 @@ void Mesh::updateVertices(const ::fwData::PointList::csptr& _pointList)
 
         if(valid)
         {
-            m_ogreMesh->_setBoundingSphereRadius( ::Ogre::Math::Sqrt( ::Ogre::Math::Sqr(static_cast<float>(xMax -
-                                                                                                           xMin)) +
-                                                                      ::Ogre::Math::Sqr(static_cast<float>(yMax -
-                                                                                                           yMin)) +
-                                                                      ::Ogre::Math::Sqr(
-                                                                          static_cast<float>(zMax - zMin)))* .5f);
+            const float xLenF = static_cast<float>(xMax - xMin);
+            const float yLenF = static_cast<float>(yMax - yMin);
+            const float zLenF = static_cast<float>(zMax - xMin);
+
+            m_ogreMesh->_setBoundingSphereRadius( ::Ogre::Math::Sqrt(
+                                                      ::Ogre::Math::Sqr( xLenF )
+                                                      + ::Ogre::Math::Sqr( yLenF )
+                                                      + ::Ogre::Math::Sqr( zLenF )) / 2.0f);
         }
         else
         {
