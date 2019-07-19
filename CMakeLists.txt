@@ -504,6 +504,7 @@ if(BUILD_SDK)
       FILES
         "${CMAKE_SOURCE_DIR}/CMake/install/generic_install.cmake"
         "${CMAKE_SOURCE_DIR}/CMake/install/helper.cmake"
+        "${CMAKE_SOURCE_DIR}/CMake/install/get_git_rev.cmake"
       DESTINATION
         ${FWCONFIG_PACKAGE_LOCATION}/install
       COMPONENT
