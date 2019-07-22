@@ -2,6 +2,8 @@ cmake_minimum_required (VERSION 3.1)
 
 # Use new policy for 'install_name' and RPATH on macOS (use `cmake --help-policy CMP0068` for details)
 cmake_policy(SET CMP0068 NEW)
+# Use new policy for `FindOpenGL` to prefer GLVND by default when available on linux (use `cmake --help-policy CMP0072` for details).
+cmake_policy(SET CMP0072 NEW)
 
 # On Windows, if the user doesn't specify a value,
 # 'CMAKE_BUILD_TYPE' is automatically initialized to 'Debug' after 'project()'.
