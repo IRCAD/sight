@@ -308,8 +308,8 @@ build:sdk-release-linux:
     - ninja install
     - ninja package
     - ccache -s
-    - export SDK_FILE_PATH=$(find /home/sight/sdk/build/packages -maxdepth 1 -iname '*.tar.gz' -type f -print -quit)
-    - export SDK_FILE_NAME=$(basename -s .tar.gz ${SDK_FILE_PATH})_release.tar.gz
+    - export SDK_FILE_PATH=$(find /home/sight/sdk/build -maxdepth 1 -iname '*.tar.gz' -type f -print -quit)
+    - export SDK_FILE_NAME=$(basename -s .tar.gz ${SDK_FILE_PATH}).tar.gz
     - curl -u${CONAN_USERNAME}:${CONAN_PASSWORD} -T ${SDK_FILE_PATH} "https://conan.ircad.fr/artifactory/data/sdk/${SDK_FILE_NAME}"
 
 build:sdk-debug-linux:
@@ -335,6 +335,6 @@ build:sdk-debug-linux:
     - ninja install
     - ninja package
     - ccache -s
-    - export SDK_FILE_PATH=$(find /home/sight/sdk/build/packages -maxdepth 1 -iname '*.tar.gz' -type f -print -quit)
-    - export SDK_FILE_NAME=$(basename -s .tar.gz ${SDK_FILE_PATH})_debug.tar.gz
+    - export SDK_FILE_PATH=$(find /home/sight/sdk/build -maxdepth 1 -iname '*.tar.gz' -type f -print -quit)
+    - export SDK_FILE_NAME=$(basename -s .tar.gz ${SDK_FILE_PATH}).tar.gz
     - curl -u${CONAN_USERNAME}:${CONAN_PASSWORD} -T ${SDK_FILE_PATH} "https://conan.ircad.fr/artifactory/data/sdk/${SDK_FILE_NAME}"
