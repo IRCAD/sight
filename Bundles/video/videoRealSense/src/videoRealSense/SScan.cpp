@@ -133,7 +133,7 @@ void SScan::starting()
     m_depthTimeline = this->getInOut< ::arData::FrameTL>(s_DEPTHTL_INOUT);
     m_colorTimeline = this->getInOut< ::arData::FrameTL>(s_FRAMETL_INOUT);
 
-    m_grabbingSarted = false;
+    m_grabbingStarted = false;
 }
 
 //-----------------------------------------------------------------------------
@@ -591,11 +591,11 @@ void SScan::stopCamera()
     {
         if(m_pause)
         {
-            std::lock_guard<std::mutex> lock(m_PauseMutex);
+            std::lock_guard<std::mutex> lock(m_pauseMutex);
             m_pause = false;
         }
 
-        m_PauseConditionVariable.notify_all();
+        m_pauseConditionVariable.notify_all();
 
         m_thread.join();
 
@@ -627,11 +627,11 @@ void SScan::pauseCamera()
     {
         // Enable/disable pause mode.
         {
-            std::lock_guard<std::mutex> lock(m_PauseMutex);
+            std::lock_guard<std::mutex> lock(m_pauseMutex);
             m_pause = !m_pause;
         }
 
-        m_PauseConditionVariable.notify_all();
+        m_pauseConditionVariable.notify_all();
 
         // Also pause the recording if needed.
         if(m_record)
@@ -996,8 +996,8 @@ void SScan::grab()
     {
         while(m_pause && m_running)
         {
-            std::unique_lock<std::mutex> lock(m_PauseMutex);
-            m_PauseConditionVariable.wait(lock);
+            std::unique_lock<std::mutex> lock(m_pauseMutex);
+            m_pauseConditionVariable.wait(lock);
         }
 
         try
@@ -1282,7 +1282,7 @@ void SScan::onPointCloud(const ::rs2::points& _pc, const ::rs2::video_frame& _te
         }
 
         // Now that we have correct data in the point cloud, we can allow other to read us
-        if(!m_grabbingSarted.exchange(true))
+        if(!m_grabbingStarted.exchange(true))
         {
             this->setOutput(s_POINTCLOUD_OUTPUT, m_pointcloud);
         }
