@@ -26,6 +26,7 @@ Window {
                 id: groupBox
                 title: multiSelectorDialog.message
                 property var initSize: 0
+                Layout.minimumWidth: 150
 
                 Column {
                     id: columnBox
