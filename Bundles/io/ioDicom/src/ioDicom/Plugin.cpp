@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -23,25 +23,30 @@
 #include "ioDicom/Plugin.hpp"
 
 #include <fwDicomIOFilterQt/sorter/TagValueConfigurableSorter.hpp>
+
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
+
 #include <fwServices/macros.hpp>
 
 namespace ioDicom
 {
 
-using namespace ::fwRuntime::utils;
-static GenericExecutableFactoryRegistrar<Plugin> registrar("ioDicom::Plugin");
+static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("ioDicom::Plugin");
 
-Plugin::~Plugin() noexcept
+Plugin::Plugin()
 {
     // Hack to force link with Qt filters
     ::fwDicomIOFilterQt::sorter::TagValueConfigurableSorter::sptr t =
         ::fwDicomIOFilterQt::sorter::TagValueConfigurableSorter::New();
 }
 
+//------------------------------------------------------------------------------
+
 void Plugin::start()
 {
 }
+
+//------------------------------------------------------------------------------
 
 void Plugin::stop() noexcept
 {
