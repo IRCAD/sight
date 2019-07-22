@@ -25,7 +25,7 @@
             <registry>
                 <parent wid="${WID_PARENT}" />
                 <view sid="leftPanelView" start="yes" />
-                <view sid="cameraScene" start="yes" />
+                <view sid="cameraView" start="yes" />
             </registry>
         </service>
 
@@ -40,6 +40,20 @@
             <registry>
                 <view sid="toolboxView" start="yes" />
                 <view sid="errorLabel" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="cameraView" type="::gui::view::SDefaultView" >
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="vertical" />
+                    <view proportion="1" />
+                    <view proportion="0" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="cameraScene" start="yes" />
+                <view sid="videoSlider" start="yes" />
             </registry>
         </service>
 
