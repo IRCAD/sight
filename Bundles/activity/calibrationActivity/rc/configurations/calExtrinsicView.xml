@@ -13,13 +13,13 @@
     <config>
         <!-- ******************************* Objects declaration ****************************** -->
         <!-- Displayed image pair. -->
-        <object uid="Frame1" type="::fwData::Image" />
-        <object uid="Frame2" type="::fwData::Image" />
+        <object uid="frame1" type="::fwData::Image" />
+        <object uid="frame2" type="::fwData::Image" />
         <!-- Second pair of images used for detection. Prevents the detector from slowing down the video. -->
         <object uid="detectionFrame1" type="::fwData::Image" />
         <object uid="detectionFrame2" type="::fwData::Image" />
-        <object uid="Frame1TL" type="::arData::FrameTL" />
-        <object uid="Frame2TL" type="::arData::FrameTL" />
+        <object uid="frame1TL" type="::arData::FrameTL" />
+        <object uid="frame2TL" type="::arData::FrameTL" />
         <object uid="${calibrationInfo1}" type="::arData::CalibrationInfo" src="ref" />
         <object uid="${calibrationInfo2}" type="::arData::CalibrationInfo" src="ref" />
         <object uid="${cameraSeries}" type="::arData::CameraSeries" src="ref" />
@@ -41,16 +41,44 @@
 
         <service uid="extrinsicCameraView" type="::gui::view::SDefaultView">
             <gui>
-                <layout type="::fwGui::CardinalLayoutManager">
-                    <view align="center" />
-                    <view align="bottom" caption="Calibration" />
-                    <view align="bottom" caption="Information" />
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="horizontal" />
+                    <view proportion="2" />
+                    <view proportion="7" />
                 </layout>
+            </gui>
+            <registry>
+                <view sid="leftPanelView" start="yes" />
+                <view sid="videoView" start="yes" />
+            </registry>
+
+        </service>
+
+        <service uid="leftPanelView" type="::gui::view::SDefaultView" >
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="vertical" />
+                    <view proportion="1" />
+                    <view proportion="0" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="toolboxView" start="yes" />
+                <view sid="errorLabel" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="toolboxView" type="::gui::view::SDefaultView" >
+            <gui>
                 <toolBar/>
+                <layout type="::fwGui::ToolboxLayoutManager">
+                    <orientation value="vertical" />
+                    <view proportion="1" caption="Calibration input" expanded="true" />
+                    <view proportion="1" caption="Calibration result" expanded="true" />
+                </layout>
             </gui>
             <registry>
                 <toolBar sid="toolBar" start="yes" />
-                <view sid="videoView" start="yes" />
                 <view sid="calibrationInfoView" start="yes" />
                 <view sid="cameraInfoView" start="yes" />
             </registry>
@@ -61,15 +89,15 @@
                 <layout>
                     <menuItem name="Start camera" icon="arMedia-0.1/icons/start-cam.svg" />
                     <menuItem name="Stop camera" icon="arMedia-0.1/icons/stop-cam.svg" />
-                    <menuItem name="Pause video" icon="arMedia-0.1/icons/pause-cam.svg" />
+                    <menuItem name="Pause video" icon="arMedia-0.1/icons/pause-cam.svg" style="check" />
                     <menuItem name="Loop video" icon="arMedia-0.1/icons/loop-cam.svg" style="check" />
                 </layout>
             </gui>
             <registry>
-                <menuItem sid="ActionStartCamera" start="yes" />
-                <menuItem sid="ActionStopCamera" start="yes" />
-                <menuItem sid="PauseVideo" start="yes" />
-                <menuItem sid="LoopVideo" start="yes" />
+                <menuItem sid="actionStartCamera" start="yes" />
+                <menuItem sid="actionStopCamera" start="yes" />
+                <menuItem sid="actionPauseVideo" start="yes" />
+                <menuItem sid="actionLoopVideo" start="yes" />
             </registry>
         </service>
 
@@ -78,12 +106,12 @@
                 <layout type="::fwGui::CardinalLayoutManager">
                     <view align="center" />
                 </layout>
-                <toolBar align="left">
+                <toolBar>
                     <toolBitmapSize height="24" width="24" />
                 </toolBar>
             </gui>
             <registry>
-                <view sid="ExtrinsicCalibrationInfoEditor" start="yes" />
+                <view sid="extrinsicCalibrationInfoEditor" start="yes" />
                 <toolBar sid="extrinsicCamera" start="yes" />
             </registry>
         </service>
@@ -98,7 +126,7 @@
             </gui>
             <registry>
                 <view sid="camerasView" start="yes" />
-                <view sid="VideoSlider" start="yes" />
+                <view sid="videoSlider" start="yes" />
             </registry>
         </service>
 
@@ -130,14 +158,14 @@
                 </layout>
             </gui>
             <registry>
-                <editor sid="Status" start="yes" />
-                <menuItem sid="ActionAdd" start="yes" />
-                <menuItem sid="ActionRemove" start="yes" />
-                <menuItem sid="ActionReset" start="yes" />
-                <menuItem sid="ActionGoOpenCV" start="yes" />
-                <menuItem sid="ActionDisplayImage" start="yes" />
-                <menuItem sid="ActionExportExtrinsic" start="yes" />
-                <menuItem sid="ActionSaveInputs" start="yes" />
+                <editor sid="detectionStatus" start="yes" />
+                <menuItem sid="actionAdd" start="yes" />
+                <menuItem sid="actionRemove" start="yes" />
+                <menuItem sid="actionReset" start="yes" />
+                <menuItem sid="actionGoOpenCV" start="yes" />
+                <menuItem sid="actionDisplayImage" start="yes" />
+                <menuItem sid="actionExportExtrinsic" start="yes" />
+                <menuItem sid="actionSaveInputs" start="yes" />
             </registry>
         </service>
 
@@ -148,84 +176,87 @@
                     <view caption="camera 1" />
                     <view caption="camera 2" />
                     <view caption="Extrinsic (1 to 2)" />
-                    <view align="bottom" />
                 </layout>
             </gui>
             <registry>
                 <view sid="cameraInfo1" start="yes" />
                 <view sid="cameraInfo2" start="yes" />
                 <view sid="cameraSeriesInfo" start="yes" />
-                <view sid="errorLabel" start="yes" />
             </registry>
         </service>
 
-        <!-- ******************************* Actions ****************************************** -->
-        <service uid="ActionAdd" type="::gui::action::SSlotCaller">
+        <!-- ******************************* actions ****************************************** -->
+        <service uid="actionAdd" type="::gui::action::SSlotCaller">
             <slots>
-                <slot>ChessboardDetector/recordPoints</slot>
+                <slot>chessboardDetector/recordPoints</slot>
             </slots>
         </service>
 
-        <service uid="ActionReset" type="::gui::action::SSlotCaller">
+        <service uid="actionReset" type="::gui::action::SSlotCaller">
             <slots>
-                <slot>ExtrinsicCalibrationInfoEditor/reset</slot>
+                <slot>extrinsicCalibrationInfoEditor/reset</slot>
             </slots>
         </service>
 
-        <service uid="ActionRemove" type="::gui::action::SSlotCaller">
+        <service uid="actionRemove" type="::gui::action::SSlotCaller">
             <slots>
-                <slot>ExtrinsicCalibrationInfoEditor/remove</slot>
+                <slot>extrinsicCalibrationInfoEditor/remove</slot>
             </slots>
         </service>
 
-        <service uid="ActionGoOpenCV" type="::gui::action::SSlotCaller">
+        <service uid="actionGoOpenCV" type="::gui::action::SSlotCaller">
             <slots>
                 <slot>openCVExtrinsicCal/update</slot>
                 <slot>Status/changeToOrange</slot>
             </slots>
         </service>
 
-        <service uid="ActionDisplayImage" type="::gui::action::SSlotCaller">
+        <service uid="actionDisplayImage" type="::gui::action::SSlotCaller">
             <slots>
-                <slot>ExtrinsicCalibrationInfoEditor/getSelection</slot>
+                <slot>extrinsicCalibrationInfoEditor/getSelection</slot>
             </slots>
         </service>
 
-        <service uid="ActionStartCamera" type="::gui::action::SSlotCaller">
+        <service uid="actionStartCamera" type="::gui::action::SSlotCaller">
             <slots>
-                <slot>VideoGrabber1/startCamera</slot>
-                <slot>VideoGrabber2/startCamera</slot>
+                <slot>videoGrabber1/startCamera</slot>
+                <slot>videoGrabber2/startCamera</slot>
+                <slot>actionStartCamera/hide</slot>
+                <slot>actionStopCamera/show</slot>
             </slots>
         </service>
 
-        <service uid="ActionStopCamera" type="::gui::action::SSlotCaller">
+        <service uid="actionStopCamera" type="::gui::action::SSlotCaller">
+            <state visible="false" />
             <slots>
-                <slot>VideoGrabber1/stopCamera</slot>
-                <slot>VideoGrabber2/stopCamera</slot>
+                <slot>videoGrabber1/stopCamera</slot>
+                <slot>videoGrabber2/stopCamera</slot>
+                <slot>actionStopCamera/hide</slot>
+                <slot>actionStartCamera/show</slot>
             </slots>
         </service>
 
-        <service uid="PauseVideo" type="::gui::action::SSlotCaller">
+        <service uid="actionPauseVideo" type="::gui::action::SSlotCaller">
             <slots>
-                <slot>VideoGrabber1/pauseCamera</slot>
-                <slot>VideoGrabber2/pauseCamera</slot>
+                <slot>videoGrabber1/pauseCamera</slot>
+                <slot>videoGrabber2/pauseCamera</slot>
             </slots>
         </service>
 
-        <service uid="LoopVideo" type="::gui::action::SSlotCaller">
+        <service uid="actionLoopVideo" type="::gui::action::SSlotCaller">
             <slots>
-                <slot>VideoGrabber1/loopVideo</slot>
-                <slot>VideoGrabber2/loopVideo</slot>
+                <slot>videoGrabber1/loopVideo</slot>
+                <slot>videoGrabber2/loopVideo</slot>
             </slots>
         </service>
 
-        <service uid="ActionExportExtrinsic" type="::gui::action::SSlotCaller">
+        <service uid="actionExportExtrinsic" type="::gui::action::SSlotCaller">
             <slots>
-                <slot>ExtrinsicExporter/update</slot>
+                <slot>extrinsicExporter/update</slot>
             </slots>
         </service>
 
-        <service uid="ActionSaveInputs" type="::gui::action::SSlotCaller">
+        <service uid="actionSaveInputs" type="::gui::action::SSlotCaller">
             <sync>true</sync>
             <slots>
                 <slot>calibrationDataWriter1/configureWithIHM</slot>
@@ -236,17 +267,17 @@
         </service>
 
         <!-- ******************************* Services ***************************************** -->
-        <service uid="VideoSlider" type="::videoQt::editor::SSlider" />
+        <service uid="videoSlider" type="::videoQt::editor::SSlider" />
 
         <!-- Extracts displayed images. -->
         <service uid="synchronizer" type="::videoTools::SFrameMatrixSynchronizer" worker="synchronizer">
             <in group="frameTL">
-                <key uid="Frame1TL" />
-                <key uid="Frame2TL" />
+                <key uid="frame1TL" />
+                <key uid="frame2TL" />
             </in>
             <inout group="image">
-                <key uid="Frame1" />
-                <key uid="Frame2" />
+                <key uid="frame1" />
+                <key uid="frame2" />
             </inout>
             <framerate>30</framerate>
         </service>
@@ -254,8 +285,8 @@
         <!-- Extracts images for the detection algorithm. -->
         <service uid="detectionSynchronizer" type="::videoTools::SFrameMatrixSynchronizer" worker="extr_chess_checker">
             <in group="frameTL" autoConnect="yes" >
-                <key uid="Frame1TL" />
-                <key uid="Frame2TL" />
+                <key uid="frame1TL" />
+                <key uid="frame2TL" />
             </in>
             <inout group="image">
                 <key uid="detectionFrame1" />
@@ -264,7 +295,7 @@
             <framerate>0</framerate>
         </service>
 
-        <service uid="ExtrinsicExporter" type="::uiIO::editor::SIOSelector" >
+        <service uid="extrinsicExporter" type="::uiIO::editor::SIOSelector" >
             <inout key="data" uid="exportExtrinsicMat" />
             <type mode="writer" />
             <selection mode="include" />
@@ -283,7 +314,7 @@
         </service>
 
         <service uid="videoAdapter1" type="::visuVTKARAdaptor::SVideo" autoConnect="yes">
-            <in key="frame" uid="Frame1" />
+            <in key="frame" uid="frame1" />
             <config renderer="default" />
         </service>
 
@@ -304,7 +335,7 @@
         </service>
 
         <service uid="videoAdapter2" type="::visuVTKARAdaptor::SVideo" autoConnect="yes">
-            <in key="frame" uid="Frame2" />
+            <in key="frame" uid="frame2" />
             <config renderer="default" />
         </service>
 
@@ -314,12 +345,12 @@
 
         <!-- *************************** End generic scene *************************** -->
 
-        <service uid="ExtrinsicCalibrationInfoEditor" type="::uiCalibration::SCalibrationInfoEditor" autoConnect="yes">
+        <service uid="extrinsicCalibrationInfoEditor" type="::uiCalibration::SCalibrationInfoEditor" autoConnect="yes">
             <inout key="calInfo1" uid="${calibrationInfo1}" />
             <inout key="calInfo2" uid="${calibrationInfo2}" />
         </service>
 
-        <service uid="Status" type="::uiTools::editor::SStatus">
+        <service uid="detectionStatus" type="::uiTools::editor::SStatus">
             <green>Point are visible</green>
             <orange>Calibration in progress</orange>
             <red>Points are NOT visible</red>
@@ -329,7 +360,7 @@
             <label>Reprojection Error (RMSE)</label>
         </service>
 
-        <service uid="ChessboardDetector" type="::videoCalibration::SChessBoardDetector" worker="extr_chess_checker">
+        <service uid="chessboardDetector" type="::videoCalibration::SChessBoardDetector" worker="extr_chess_checker">
             <in group="image" autoConnect="yes" >
                 <key uid="detectionFrame1" />
                 <key uid="detectionFrame2" />
@@ -341,22 +372,22 @@
             <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" />
         </service>
 
-        <service uid="DisplayCalibrationInfo" type="::uiCalibration::SDisplayCalibrationInfo">
+        <service uid="displayCalibrationInfo" type="::uiCalibration::SDisplayCalibrationInfo">
             <in key="calInfo1" uid="${calibrationInfo1}" />
             <in key="calInfo2" uid="${calibrationInfo2}" />
         </service>
 
-        <service uid="VideoGrabber1" type="::videoTools::SGrabberProxy">
+        <service uid="videoGrabber1" type="::videoTools::SGrabberProxy">
             <in key="camera" uid="${camera1}" />
-            <inout key="frameTL" uid="Frame1TL" />
+            <inout key="frameTL" uid="frame1TL" />
             <config>
                 <gui title="Please select the first camera grabber" />
             </config>
         </service>
 
-        <service uid="VideoGrabber2" type="::videoTools::SGrabberProxy">
+        <service uid="videoGrabber2" type="::videoTools::SGrabberProxy">
             <in key="camera" uid="${camera2}" />
-            <inout key="frameTL" uid="Frame2TL" />
+            <inout key="frameTL" uid="frame2TL" />
             <config>
                 <gui title="Please select the second camera grabber" />
             </config>
@@ -396,38 +427,38 @@
 
         <!-- ******************************* Connections ************************************** -->
         <connect>
-            <signal>ChessboardDetector/chessboardDetected</signal>
+            <signal>chessboardDetector/chessboardDetected</signal>
             <slot>detectionSynchronizer/synchronize</slot>
-            <slot>Status/toggleGreenRed</slot>
+            <slot>detectionStatus/toggleGreenRed</slot>
         </connect>
 
         <connect>
             <signal>${calibrationInfo1}/getRecord</signal>
-            <slot>DisplayCalibrationInfo/displayImage</slot>
+            <slot>displayCalibrationInfo/displayImage</slot>
         </connect>
 
         <connect>
-            <signal>VideoSlider/positionChanged</signal>
-            <slot>VideoGrabber1/setPositionVideo</slot>
-            <slot>VideoGrabber2/setPositionVideo</slot>
+            <signal>videoSlider/positionChanged</signal>
+            <slot>videoGrabber1/setPositionVideo</slot>
+            <slot>videoGrabber2/setPositionVideo</slot>
         </connect>
 
         <connect>
-            <signal>VideoGrabber1/durationModified</signal>
-            <slot>VideoSlider/setDurationSlider</slot>
+            <signal>videoGrabber1/durationModified</signal>
+            <slot>videoSlider/setDurationSlider</slot>
         </connect>
 
         <connect>
-            <signal>VideoGrabber1/positionModified</signal>
-            <signal>VideoGrabber2/positionModified</signal>
-            <slot>VideoSlider/setPositionSlider</slot>
+            <signal>videoGrabber1/positionModified</signal>
+            <signal>videoGrabber2/positionModified</signal>
+            <slot>videoSlider/setPositionSlider</slot>
         </connect>
 
         <connect>
             <signal>${calibrationInfo1}/addedRecord</signal>
             <signal>${calibrationInfo1}/removedRecord</signal>
             <signal>${calibrationInfo1}/resetRecord</signal>
-            <slot>ExtrinsicCalibrationInfoEditor/update</slot>
+            <slot>extrinsicCalibrationInfoEditor/update</slot>
         </connect>
 
         <connect>
@@ -437,18 +468,18 @@
 
         <connect channel="${preferencesModifiedProxy}">
             <slot>openCVExtrinsicCal/updateChessboardSize</slot>
-            <slot>ChessboardDetector/updateChessboardSize</slot>
+            <slot>chessboardDetector/updateChessboardSize</slot>
         </connect>
 
         <start uid="extrinsicView" />
         <start uid="openCVExtrinsicCal" />
-        <start uid="ChessboardDetector" />
-        <start uid="DisplayCalibrationInfo" />
-        <start uid="ExtrinsicExporter" />
+        <start uid="chessboardDetector" />
+        <start uid="displayCalibrationInfo" />
+        <start uid="extrinsicExporter" />
         <start uid="synchronizer" />
         <start uid="detectionSynchronizer" />
-        <start uid="VideoGrabber1" />
-        <start uid="VideoGrabber2" />
+        <start uid="videoGrabber1" />
+        <start uid="videoGrabber2" />
         <start uid="calibrationDataWriter1" />
         <start uid="calibrationDataWriter2" />
         <!-- VTK scene 'camera1' -->
