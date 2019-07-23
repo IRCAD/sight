@@ -333,17 +333,23 @@ void SWriter::updating()
     const ::boost::filesystem::path& requestedFilePath = this->getFile();
     std::string requestedExtension                     = requestedFilePath.extension().string();
 
-    if ( !m_selectedExtension.empty()
-         && !requestedExtension.empty()
-         && m_selectedExtension.compare(requestedExtension))
+    if(!requestedExtension.empty())
     {
-        std::string errorMessage("File extension '" + requestedExtension +
-                                 "' is different from the selected extension '" + m_selectedExtension + "'");
-        ::fwGui::dialog::MessageDialog::showMessageDialog("Medical data writer failed",
-                                                          errorMessage,
-                                                          ::fwGui::dialog::IMessageDialog::CRITICAL);
-        m_writeFailed = true;
-        return;
+        // Check first if the requestedExtension exists in allowed extensions.
+        if(m_allowedExts.find(requestedExtension) != m_allowedExts.end())
+        {
+            // Overwrite selectedExtension.
+            m_selectedExtension = requestedExtension;
+        }
+        else
+        {
+            std::string errorMessage("File extension '" + requestedExtension + "' is not handled.");
+            ::fwGui::dialog::MessageDialog::showMessageDialog("Medical data writer failed",
+                                                              errorMessage,
+                                                              ::fwGui::dialog::IMessageDialog::CRITICAL);
+            m_writeFailed = true;
+            return;
+        }
     }
 
     ::boost::filesystem::path filePath = requestedFilePath;
@@ -356,24 +362,20 @@ void SWriter::updating()
     }
 
     const ::boost::filesystem::path folderPath = filePath.parent_path();
-    ::boost::filesystem::path filename = filePath.filename();
-    std::string extension = filePath.extension().string();
+    std::string extension                      = filePath.extension().string();
 
     // Check if the extension of the filename is set. If not, assign it to the selected extension.
     if (extension.empty())
     {
         extension = m_selectedExtension;
+
+        filePath += extension;
     }
 
-    // Check if the extension set is allowed. If not, assigns to the first allowed extension.
-    if (m_allowedExts.find(extension) == m_allowedExts.end())
-    {
-        std::set< std::string >::const_iterator begin = m_allowedExts.begin();
-        std::string firstAllowedExt                   = *begin;
-
-        extension = firstAllowedExt;
-    }
     FW_RAISE_IF( "Extension is empty", extension.empty() );
+
+    ::boost::filesystem::path filename = filePath.filename();
+
     FW_RAISE_IF("The file extension '" << extension << "' is not managed",
                 m_allowedExts.find(extension) == m_allowedExts.end());
 
@@ -441,7 +443,7 @@ void SWriter::updating()
                 archiveRootName = filename;
                 format          = ::fwAtomsBoostIO::JSON;
             }
-            else if ( extension == ".jsonz" )
+            else if ( extension == ".jsonz")
             {
                 if ( ::boost::filesystem::exists( filePath ) )
                 {
@@ -530,8 +532,6 @@ void SWriter::configureWithIHM()
         dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
         dialogFile.setType(::fwGui::dialog::LocationDialog::SINGLE_FILE);
 
-        dialogFile.addFilter("Medical data", "*" + ::boost::algorithm::join(m_allowedExts, " *"));
-
         for(const std::string& ext :  m_allowedExts)
         {
             dialogFile.addFilter(m_allowedExtLabels[ext], "*" + ext);
@@ -542,10 +542,10 @@ void SWriter::configureWithIHM()
 
         if (result)
         {
-            _sDefaultPath = result->getPath();
+            m_selectedExtension = dialogFile.getCurrentSelection();
+            _sDefaultPath       = result->getPath();
             this->setFile( _sDefaultPath );
             dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath.parent_path()) );
-            m_selectedExtension = dialogFile.getCurrentSelection();
         }
         else
         {
