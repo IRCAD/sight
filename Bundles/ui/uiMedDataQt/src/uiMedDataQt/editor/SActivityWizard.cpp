@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2018 IRCAD France
- * Copyright (C) 2016-2018 IHU Strasbourg
+ * Copyright (C) 2016-2019 IRCAD France
+ * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -411,9 +411,9 @@ void SActivityWizard::onBuildActivity()
 
     std::string errorMsg;
     // Check current data
-    if (m_activityDataView->checkData(size_t(index), errorMsg))
+    if (index == -1 || m_activityDataView->checkData(size_t(index), errorMsg))
     {
-        if (index != lastTab)
+        if (index != lastTab && index != -1)
         {
             // enable and select the next tab
             m_activityDataView->setTabEnabled(index+1, true);
