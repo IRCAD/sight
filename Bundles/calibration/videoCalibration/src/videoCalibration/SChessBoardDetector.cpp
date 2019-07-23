@@ -167,6 +167,7 @@ void SChessBoardDetector::recordPoints()
         {
             auto calInfo = this->getInOut< ::arData::CalibrationInfo >(s_CALINFO_INOUT, i);
             SLM_ASSERT("Missing 'calibInfo' in-out.", calInfo);
+            ::fwData::mt::ObjectWriteLock calInfoLock(calInfo);
 
             if(m_pointLists[i])
             {
@@ -244,6 +245,7 @@ void SChessBoardDetector::doDetection(size_t _imageIndex)
         if(outputDetection)
         {
             auto outPl = this->getInOut< ::fwData::PointList >(s_DETECTION_INOUT, _imageIndex);
+            ::fwData::mt::ObjectWriteLock writeLockOutPl(outPl);
             if (m_pointLists[_imageIndex] != nullptr)
             {
                 outPl->deepCopy(m_pointLists[_imageIndex]);
@@ -286,7 +288,7 @@ void SChessBoardDetector::doDetection(size_t _imageIndex)
         ::cv::cvtColor(img2d, grayImg, cvtMethod);
     }
 
-    ::cv::Size boardSize(static_cast<int>(_xDim) - 1, static_cast<int>(_yDim) - 1);
+    const ::cv::Size boardSize(static_cast<int>(_xDim) - 1, static_cast<int>(_yDim) - 1);
     std::vector< ::cv::Point2f > corners;
 
     const int flags = CV_CALIB_CB_ADAPTIVE_THRESH | CV_CALIB_CB_NORMALIZE_IMAGE | CV_CALIB_CB_FILTER_QUADS |

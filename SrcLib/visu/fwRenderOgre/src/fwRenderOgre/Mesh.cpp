@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2018 IRCAD France
- * Copyright (C) 2017-2018 IHU Strasbourg
+ * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -41,6 +41,8 @@
 #include <OgreSceneNode.h>
 #include <OgreSubMesh.h>
 #include <OgreTextureManager.h>
+
+#include <cmath>
 
 namespace fwRenderOgre
 {
@@ -725,15 +727,30 @@ void Mesh::updateVertices(const ::fwData::Mesh::csptr& _mesh)
        zMax > std::numeric_limits<PointValueType>::lowest())
     {
         m_ogreMesh->_setBounds( ::Ogre::AxisAlignedBox( xMin, yMin, zMin, xMax, yMax, zMax) );
+
+        // Check again the bounds, since ogre may add some extent that could give infinite bounds
+        const bool valid = this->areBoundsValid(m_ogreMesh);
+        SLM_ASSERT("Invalid bounds found...", valid);
+
+        if(valid)
+        {
+            m_ogreMesh->_setBoundingSphereRadius( ::Ogre::Math::Sqrt( ::Ogre::Math::Sqr(xMax - xMin) +
+                                                                      ::Ogre::Math::Sqr(yMax - yMin) +
+                                                                      ::Ogre::Math::Sqr(zMax - zMin)) /2);
+        }
+        else
+        {
+            SLM_ERROR("Infinite or NaN values for the bounding box. Check the mesh validity.");
+
+            // This silent the problem so there is no crash in Ogre
+            m_ogreMesh->_setBounds( ::Ogre::AxisAlignedBox::EXTENT_NULL );
+        }
     }
     else
     {
         // An extent was not found or is NaN
         m_ogreMesh->_setBounds( ::Ogre::AxisAlignedBox::EXTENT_NULL );
     }
-    m_ogreMesh->_setBoundingSphereRadius( ::Ogre::Math::Sqrt( ::Ogre::Math::Sqr(xMax - xMin) +
-                                                              ::Ogre::Math::Sqr(yMax - yMin) +
-                                                              ::Ogre::Math::Sqr(zMax - zMin)) /2);
 
     /// Notify Mesh object that it has been modified
     m_ogreMesh->load();
@@ -810,18 +827,43 @@ void Mesh::updateVertices(const ::fwData::PointList::csptr& _pointList)
        yMax > std::numeric_limits<PointType>::lowest() &&
        zMax > std::numeric_limits<PointType>::lowest())
     {
-        m_ogreMesh->_setBounds(
-            ::Ogre::AxisAlignedBox(static_cast<float>(xMin), static_cast<float>(yMin), static_cast<float>(zMin),
-                                   static_cast<float>(xMax), static_cast<float>(yMax), static_cast<float>(zMax)) );
+        const float xMinF = static_cast<float>(xMin);
+        const float yMinF = static_cast<float>(yMin);
+        const float zMinF = static_cast<float>(zMin);
+        const float xMaxF = static_cast<float>(xMax);
+        const float yMaxF = static_cast<float>(yMax);
+        const float zMaxF = static_cast<float>(zMax);
+
+        m_ogreMesh->_setBounds( ::Ogre::AxisAlignedBox(xMinF, yMinF, zMinF, xMaxF, yMaxF, zMaxF ));
+
+        // Check again the bounds, since ogre may add some extent that could give infinite bounds
+        const bool valid = this->areBoundsValid(m_ogreMesh);
+        SLM_ASSERT("Invalid bounds found...", valid);
+
+        if(valid)
+        {
+            const float xLenF = xMaxF - xMinF;
+            const float yLenF = yMaxF - yMinF;
+            const float zLenF = zMaxF - xMinF;
+
+            m_ogreMesh->_setBoundingSphereRadius( ::Ogre::Math::Sqrt(
+                                                      ::Ogre::Math::Sqr( xLenF )
+                                                      + ::Ogre::Math::Sqr( yLenF )
+                                                      + ::Ogre::Math::Sqr( zLenF )) / 2.0f);
+        }
+        else
+        {
+            SLM_ERROR("Infinite or NaN values for the bounding box. Check the mesh validity.");
+
+            // This silent the problem so there is no crash in Ogre
+            m_ogreMesh->_setBounds( ::Ogre::AxisAlignedBox::EXTENT_NULL );
+        }
     }
     else
     {
         // An extent was not found or is NaN
         m_ogreMesh->_setBounds( ::Ogre::AxisAlignedBox::EXTENT_NULL );
     }
-    m_ogreMesh->_setBoundingSphereRadius( ::Ogre::Math::Sqrt( ::Ogre::Math::Sqr(static_cast<float>(xMax - xMin)) +
-                                                              ::Ogre::Math::Sqr(static_cast<float>(yMax - yMin)) +
-                                                              ::Ogre::Math::Sqr(static_cast<float>(zMax - zMin)))* .5f);
 
     /// Notify Mesh object that it has been modified
     m_ogreMesh->load();
@@ -1075,6 +1117,19 @@ void Mesh::invalidateR2VB()
     {
         r2vbObject.second->setDirty();
     }
+}
+
+//------------------------------------------------------------------------------
+
+bool Mesh::areBoundsValid(const ::Ogre::MeshPtr& _ogreMesh)
+{
+    const ::Ogre::AxisAlignedBox& bounds = _ogreMesh->getBounds();
+    const ::Ogre::Vector3& maximum       = bounds.getMaximum();
+    const ::Ogre::Vector3& minimum       = bounds.getMinimum();
+
+    return !maximum.isNaN() && !minimum.isNaN()
+           && !isinf(maximum[0]) && !isinf(maximum[1]) && !isinf(maximum[2])
+           && !isinf(minimum[0]) && !isinf(minimum[1]) && !isinf(minimum[2]);
 }
 
 //------------------------------------------------------------------------------

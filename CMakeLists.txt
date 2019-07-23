@@ -2,6 +2,8 @@ cmake_minimum_required (VERSION 3.1)
 
 # Use new policy for 'install_name' and RPATH on macOS (use `cmake --help-policy CMP0068` for details)
 cmake_policy(SET CMP0068 NEW)
+# Use new policy for `FindOpenGL` to prefer GLVND by default when available on linux (use `cmake --help-policy CMP0072` for details).
+cmake_policy(SET CMP0072 NEW)
 
 # On Windows, if the user doesn't specify a value,
 # 'CMAKE_BUILD_TYPE' is automatically initialized to 'Debug' after 'project()'.
@@ -130,6 +132,20 @@ if(UNIX)
             set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fdiagnostics-color")
         endif()
     endif()
+elseif(MSVC)
+    # Force to always compile with W4
+    if(CMAKE_CXX_FLAGS MATCHES "/W[0-4]")
+        string(REGEX REPLACE "/W[0-4]" "/W4" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+    else()
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4")
+    endif()
+endif()
+
+# Use external/system includes available from Visual Studio 15.6
+# source https://gitlab.kitware.com/cmake/cmake/issues/17904
+if (MSVC AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 19.14)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /experimental:external /external:W0 ")
+    set(CMAKE_INCLUDE_SYSTEM_FLAG_CXX "/external:I ")
 endif()
 
 # Building with all your cores on Visual Studio IDE
@@ -294,10 +310,11 @@ foreach(PROPERTIES_FILE ${PROJECTS_PROPERTIES})
 
     string( TOUPPER "${TYPE}" TYPE )
 
-    set(${NAME}_DEPENDENCIES "${DEPENDENCIES}")
-    set(${NAME}_REQUIREMENTS "${REQUIREMENTS}")
-    set(${NAME}_DISABLE_PCH  "${DISABLE_PCH}")
-    set(${NAME}_CONAN_DEPS   "${CONAN_DEPS}")
+    set(${NAME}_DEPENDENCIES      "${DEPENDENCIES}")
+    set(${NAME}_REQUIREMENTS      "${REQUIREMENTS}")
+    set(${NAME}_DISABLE_PCH       "${DISABLE_PCH}")
+    set(${NAME}_CONAN_DEPS        "${CONAN_DEPS}")
+    set(${NAME}_WARNINGS_AS_ERRORS "${WARNINGS_AS_ERRORS}")
 
     # Get the pch target, test the existence of type variable to exclude unbuilt projects
     if(ENABLE_PCH AND TYPE AND NOT ${NAME}_DISABLE_PCH)
@@ -452,7 +469,7 @@ if(BUILD_SDK)
     configure_file(${FWCONFIG_FILE} "${CMAKE_BINARY_DIR}/cmake/SightConfig.cmake" @ONLY)
 
     # Create the SightConfigVersion file
-    set(SIGHT_VERSION 18.0)
+    set(SIGHT_VERSION ${GIT_TAG})
 
     write_basic_package_version_file(
       "${CMAKE_BINARY_DIR}/cmake/SightConfigVersion.cmake"
@@ -504,6 +521,7 @@ if(BUILD_SDK)
       FILES
         "${CMAKE_SOURCE_DIR}/CMake/install/generic_install.cmake"
         "${CMAKE_SOURCE_DIR}/CMake/install/helper.cmake"
+        "${CMAKE_SOURCE_DIR}/CMake/install/get_git_rev.cmake"
       DESTINATION
         ${FWCONFIG_PACKAGE_LOCATION}/install
       COMPONENT
@@ -642,6 +660,5 @@ endif()
 ########################################################################################################################
 if(BUILD_SDK)
     set(FWPROJECT_NAME sight)
-    set(VERSION ${SIGHT_VERSION})
     generic_install()
 endif()
