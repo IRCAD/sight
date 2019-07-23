@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2018 IRCAD France
- * Copyright (C) 2017-2018 IHU Strasbourg
+ * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -95,6 +95,9 @@ public:
     FWRENDEROGRE_API void invalidateR2VB();
 
 private:
+
+    /// Returns true if the bounding box of a ogre mesh is valid (not NaN or infinite values)
+    static bool areBoundsValid(const ::Ogre::MeshPtr& _ogreMesh);
 
     /// Maximum size of a texture (TODO: get this from hardware instead)
     static const unsigned int s_maxTextureSize = 2048;

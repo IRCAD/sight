@@ -452,6 +452,9 @@ private:
     /// True to push infrared frames in color TL.
     std::atomic_bool m_switchInfra2Color { false };
 
+    /// True when the first real frame has been grabbed. Set the point cloud output.
+    std::atomic_bool m_grabbingStarted { false };
+
     /// True if device needs to be recorded.
     bool m_record { false };
 
@@ -464,5 +467,10 @@ private:
     /// Enable if camera source = FILE, enable playing from .bag files.
     bool m_playbackMode { false };
 
+    /// Condition Variable used to pause grabbing thread
+    std::condition_variable m_pauseConditionVariable;
+
+    /// Mutex used for the Condition Variable
+    std::mutex m_pauseMutex;
 };
 } //namespace videoRealSense
