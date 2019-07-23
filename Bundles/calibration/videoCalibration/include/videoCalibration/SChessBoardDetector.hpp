@@ -24,6 +24,8 @@
 
 #include "videoCalibration/config.hpp"
 
+#include <fwCore/mt/types.hpp>
+
 #include <fwData/Image.hpp>
 #include <fwData/PointList.hpp>
 
@@ -144,6 +146,9 @@ private:
 
     /// Last images on which a chessboard was detected. Null if detection failed.
     std::vector< ::fwData::Image::sptr > m_images;
+
+    /// Mutex for protecting m_images
+    ::fwCore::mt::ReadWriteMutex m_imagesMutex;
 };
 
 } //namespace videoCalibration

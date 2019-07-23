@@ -96,6 +96,7 @@ void SSolvePnP::computeRegistration(::fwCore::HiResClock::HiResClockType _timest
     {
         // 2d
         ::fwData::Point::csptr p2d = fwPoints2d->getPoints()[i];
+        ::fwData::mt::ObjectReadLock readLockp2d(p2d);
         ::cv::Point2f cvP2d;
 
         cvP2d.x = static_cast<float>(p2d->getCoord()[0]) + m_offset[0];
@@ -105,6 +106,7 @@ void SSolvePnP::computeRegistration(::fwCore::HiResClock::HiResClockType _timest
 
         // 3d
         ::fwData::Point::csptr p3d = fwPoints3d->getPoints()[i];
+        ::fwData::mt::ObjectReadLock readLockp3d(p3d);
         ::cv::Point3f cvP3d;
         cvP3d.x = static_cast<float>(p3d->getCoord()[0]);
         cvP3d.y = static_cast<float>(p3d->getCoord()[1]);

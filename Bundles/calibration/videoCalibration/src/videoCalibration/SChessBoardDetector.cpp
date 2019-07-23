@@ -103,6 +103,7 @@ void SChessBoardDetector::starting()
 
     const size_t imageGroupSize = this->getKeyGroupSize(s_IMAGE_INPUT);
 
+    ::fwCore::mt::WriteLock lock(m_imagesMutex);
     m_images.resize(imageGroupSize);
     m_pointLists.resize(imageGroupSize);
 }
@@ -113,6 +114,9 @@ void SChessBoardDetector::updating()
 {
     const size_t imageGroupSize = this->getKeyGroupSize(s_IMAGE_INPUT);
 
+    // Detection in the first image is done on the service's worker.
+    this->doDetection(0);
+
     // Run parallel detections in separate threads.
     std::vector<std::thread> detectionJobs;
     for(size_t i = 1; i < imageGroupSize; ++i)
@@ -120,14 +124,12 @@ void SChessBoardDetector::updating()
         detectionJobs.push_back(std::thread(&SChessBoardDetector::doDetection, this, i));
     }
 
-    // Detection in the first image is done on the service's worker.
-    this->doDetection(0);
-
     for(auto& detectionJob : detectionJobs)
     {
         detectionJob.join();
     }
 
+    ::fwCore::mt::ReadLock lock(m_imagesMutex);
     const bool allDetected = (std::count(m_images.begin(), m_images.end(), nullptr) == 0);
 
     m_sigChessboardDetected->asyncEmit(allDetected);
@@ -142,6 +144,7 @@ void SChessBoardDetector::updating()
 
 void SChessBoardDetector::stopping()
 {
+    ::fwCore::mt::WriteLock lock(m_imagesMutex);
     m_images.clear();
     m_pointLists.clear();
 }
@@ -163,6 +166,7 @@ void SChessBoardDetector::recordPoints()
 {
     const size_t calibGroupSize = this->getKeyGroupSize(s_CALINFO_INOUT);
 
+    ::fwCore::mt::WriteLock lock(m_imagesMutex);
     const bool allDetected = (std::count(m_images.begin(), m_images.end(), nullptr) == 0);
 
     if (allDetected)
@@ -219,6 +223,8 @@ void SChessBoardDetector::doDetection(size_t _imageIndex)
 
     if(isValid)
     {
+        ::fwCore::mt::WriteLock lock(m_imagesMutex);
+
         m_pointLists[_imageIndex] = detectChessboard(img, m_width, m_height);
 
         if (m_pointLists[_imageIndex] != nullptr)
@@ -235,6 +241,7 @@ void SChessBoardDetector::doDetection(size_t _imageIndex)
         if(outputDetection)
         {
             auto outPl = this->getInOut< ::fwData::PointList >(s_DETECTION_INOUT, _imageIndex);
+            ::fwData::mt::ObjectWriteLock writeLockOutPl(outPl);
             if (m_pointLists[_imageIndex] != nullptr)
             {
                 outPl->deepCopy(m_pointLists[_imageIndex]);
