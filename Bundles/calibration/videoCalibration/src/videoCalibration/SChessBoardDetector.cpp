@@ -269,28 +269,21 @@ void SChessBoardDetector::doDetection(size_t _imageIndex)
     const auto pixType = _img->getType();
     OSLM_ASSERT("Expected 8bit pixel components, this image has: " << 8 * pixType.sizeOf(), pixType.sizeOf() == 1);
 
+    const ::cv::Mat img = ::cvIO::Image::moveToCv(_img);
+
+    // Ensure that we have a true depth-less 2D image.
+    const ::cv::Mat img2d = img.dims == 3 ? img.reshape(0, 2, img.size + 1) : img;
+
     ::cv::Mat grayImg;
-    // The image buffer will not be modified so we const_cast it to avoid a useless copy.
-    ::fwData::Image::sptr constCastedInput = std::const_pointer_cast< ::fwData::Image >(_img);
-    ::cv::Mat img                          = ::cvIO::Image::moveToCv(constCastedInput);
-
-    if (img.dims == 3)
-    {
-        // Ensure that we have a true depth-less 2D image.
-        img = img.reshape(0, 2, img.size + 1);
-    }
-
     if (_img->getNumberOfComponents() == 1)
     {
-        grayImg = img;
-    }
-    else if (_img->getNumberOfComponents() == 3)
-    {
-        ::cv::cvtColor(img, grayImg, CV_RGB2GRAY);
+        grayImg = img2d;
     }
     else
     {
-        ::cv::cvtColor(img, grayImg, CV_RGBA2GRAY);
+        const auto cvtMethod = _img->getNumberOfComponents() == 3 ? CV_RGB2GRAY : CV_RGBA2GRAY;
+
+        ::cv::cvtColor(img2d, grayImg, cvtMethod);
     }
 
     ::cv::Size boardSize(static_cast<int>(_xDim) - 1, static_cast<int>(_yDim) - 1);
