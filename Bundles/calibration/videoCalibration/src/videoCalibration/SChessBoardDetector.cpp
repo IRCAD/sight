@@ -127,7 +127,6 @@ void SChessBoardDetector::updating()
     {
         detectionJob.join();
     }
-
     const bool allDetected = (std::count(m_images.begin(), m_images.end(), nullptr) == 0);
 
     m_sigChessboardDetected->asyncEmit(allDetected);
@@ -171,6 +170,7 @@ void SChessBoardDetector::recordPoints()
         {
             auto calInfo = this->getInOut< ::arData::CalibrationInfo >(s_CALINFO_INOUT, i);
             SLM_ASSERT("Missing 'calibInfo' in-out.", calInfo);
+            ::fwData::mt::ObjectWriteLock calInfoLock(calInfo);
 
             if(m_pointLists[i])
             {
@@ -235,6 +235,7 @@ void SChessBoardDetector::doDetection(size_t _imageIndex)
         if(outputDetection)
         {
             auto outPl = this->getInOut< ::fwData::PointList >(s_DETECTION_INOUT, _imageIndex);
+            ::fwData::mt::ObjectWriteLock writeLockOutPl(outPl);
             if (m_pointLists[_imageIndex] != nullptr)
             {
                 outPl->deepCopy(m_pointLists[_imageIndex]);
