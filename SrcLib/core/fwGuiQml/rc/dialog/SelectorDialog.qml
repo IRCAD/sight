@@ -8,55 +8,67 @@ import guiQml 1.0
 
 Window {
     id: window
+
+    height: 400
     modality: Qt.ApplicationModal
     // flags to erase the close button
     flags: Qt.CustomizeWindowHint | Qt.WindowTitleHint | Qt.MSWindowsFixedSizeDialogHint
 
     Dialog {
-        id: dialog
         objectName: "dialog"
+        id: dialog
+        height: parent.height
+        width: parent.width
         modal: true
         standardButtons: Dialog.Ok | Dialog.Cancel
 
-        ColumnLayout {
-            id: column
+        // GroupBox to set permit only one RadioButton selected
+        GroupBox {
+            id: groupBox
+            anchors.fill: parent
+            title: selectorDialog.message
+            height: window.height
+            Layout.minimumWidth: 150
 
-            // GroupBox to set permit only one RadioButton selected
-            GroupBox {
-                id: groupBox
-                title: selectorDialog.message
-                property var initSize: 0
-                Layout.minimumWidth: 150
+            property var initSize: 0
+            property var checkLength: 0
 
-                ButtonGroup {
-                    id: buttonGroup
-                }
+            ButtonGroup {
+                id: buttonGroup
+            }
+
+            Flickable {
+                anchors.fill: parent
+                contentHeight: columnRepeater.implicitHeight
+                clip: true
 
                 Column {
-                    id: columnBox
-                    spacing: 10
-                    Layout.fillWidth: true
+                    id: columnRepeater
+                    anchors.fill: parent
 
                     // Repeater to create all the needed options
                     Repeater {
                         id: checkboxList
 
                         model: selectorModel
-                        RadioButton {
+                        delegate: RadioButton {
                             text: textOption
                             checked: check
                             ButtonGroup.group: buttonGroup
+                            Component.onCompleted: {
+                                if (width > groupBox.checkLength)
+                                {
+                                    groupBox.checkLength = width
+                                    if (window.width == 0)
+                                    {
+                                        groupBox.initSize = width
+                                        groupBox.checkLength = 0
+                                    }
+                                    window.width = groupBox.checkLength + groupBox.initSize + dialog.leftMargin + dialog.leftPadding
+                                }
+                            }
                         }
                     }
-                }
-                onHeightChanged: window.height = dialog.height + height
-                onWidthChanged: {
-                    // to get responsive size
-                    if (window.width == 0)
-                    {
-                        initSize = width
-                    }
-                    window.width = width + initSize + dialog.leftMargin + dialog.leftPadding
                 }
             }
         }

@@ -98,7 +98,7 @@ Window{
 
                 visible: false
                 width: window.width
-                Layout.topMargin: 12
+                Layout.topMargin: 40
                 Layout.rightMargin: 12
                 Layout.fillWidth: true
                 Layout.fillHeight: true
@@ -107,7 +107,6 @@ Window{
                 headerPositioning: ListView.OverlayHeader
                 // the header represent the title of each row
                 header: Row {
-                    z: 2
 
                     ItemDelegate {
                         id: indexTitle

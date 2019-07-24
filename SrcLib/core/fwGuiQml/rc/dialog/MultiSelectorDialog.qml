@@ -6,64 +6,77 @@ import QtQuick.Window 2.12
 
 import guiQml 1.0
 
-Window {
+Window{
     id: window
+
+    height: 400
     modality: Qt.ApplicationModal
     // flags to erase the close button
     flags: Qt.CustomizeWindowHint | Qt.WindowTitleHint | Qt.MSWindowsFixedSizeDialogHint
 
     Dialog {
-        id: dialog
         objectName: "dialog"
+        id: dialog
+        height: parent.height
+        width: parent.width
         modal: true
-        standardButtons: Dialog.Ok | Dialog.Cancel
+        standardButtons: Dialog.Cancel | Dialog.Ok
 
-        ColumnLayout {
-            id: column
+        GroupBox {
+            id: groupBoxOption
+            anchors.fill: parent
+            height: window.height
+            title: multiSelectorDialog.message
+            Layout.minimumWidth: 150
 
-            // to set the checkboxs together
-            GroupBox {
-                id: groupBox
-                title: multiSelectorDialog.message
-                property var initSize: 0
-                Layout.minimumWidth: 150
+            property var initSize: 0
+            property var checkLength: 0
+
+            Flickable {
+                anchors.fill: parent
+                contentHeight: columnRepeater.implicitHeight
+                clip: true
 
                 Column {
-                    id: columnBox
-                    spacing: 10
-                    Layout.fillWidth: true
+                    id: columnRepeater
+                    anchors.fill: parent
 
-                    // the Repeater will create all the checkbox using the c++ model
                     Repeater {
-                        id: checkboxList
+                        id: checkBoxList
 
                         model: multiSelectorModel
-                        CheckBox {
+                        delegate: CheckBox {
                             text: textOption
                             checked: check
+                            Component.onCompleted: {
+                                if (width > groupBoxOption.checkLength)
+                                {
+                                    groupBoxOption.checkLength = width
+                                    if (window.width == 0)
+                                    {
+                                        groupBoxOption.initSize = width
+                                        groupBoxOption.checkLength = 0
+                                    }
+                                    window.width = groupBoxOption.checkLength + groupBoxOption.initSize + dialog.leftMargin + dialog.leftPadding
+                                }
+                            }
                         }
                     }
                 }
-                onHeightChanged: window.height = dialog.height + height
-                onWidthChanged: {
-                    // to get responsive size
-                    if (window.width == 0)
-                    {
-                        initSize = width
-                    }
-                    window.width = width + initSize + dialog.leftMargin + dialog.leftPadding
-                }
             }
         }
+
         onAccepted: {
             // set an array with all checkbox status
             var listClick = [];
-            var length = checkboxList.count;
+            var length = checkBoxList.count
+            console.log("the length is: " +  length)
             for (var i = 0; i < length; i++)
             {
-                var status = checkboxList.itemAt(i).checked;
+                var status = checkBoxList.itemAt(i).checked
                 listClick.push(status);
             }
+            console.log("ok on test")
             multiSelectorDialog.resultDialog(listClick, true);
             window.close()
         }
