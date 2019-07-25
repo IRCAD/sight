@@ -409,11 +409,15 @@ void SActivityWizard::onBuildActivity()
     int index   = m_activityDataView->currentIndex();
     int lastTab = m_activityDataView->count() -1;
 
+    if (index < 0)
+    {
+        return;
+    }
     std::string errorMsg;
     // Check current data
-    if (index == -1 || m_activityDataView->checkData(size_t(index), errorMsg))
+    if (m_activityDataView->checkData(size_t(index), errorMsg))
     {
-        if (index != lastTab && index != -1)
+        if (index != lastTab)
         {
             // enable and select the next tab
             m_activityDataView->setTabEnabled(index+1, true);
