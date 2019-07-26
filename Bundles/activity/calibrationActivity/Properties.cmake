@@ -40,6 +40,8 @@ set( REQUIREMENTS
     videoQt
     videoTools
 
+    registrationCV
+
     trackerAruco
 
     validators
