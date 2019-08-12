@@ -105,7 +105,7 @@ void TextTest::factoryTest()
     auto overlayTextPanel =
         static_cast< ::Ogre::OverlayContainer* >(overlayManager.createOverlayElement("Panel", "_GUI"));
 
-    ::Ogre::FontPtr courrierFont = ::fwRenderOgre::helper::Font::getFont("Courier.ttf", 32);
+    ::Ogre::FontPtr courrierFont = ::fwRenderOgre::helper::Font::getFont("DejaVuSans.ttf", 32);
 
     ::fwRenderOgre::Text* textObj1 = ::fwRenderOgre::Text::New("testTest", sceneManager, overlayTextPanel,
                                                                courrierFont);
