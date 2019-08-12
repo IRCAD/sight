@@ -104,9 +104,10 @@ Window{
                 Layout.fillHeight: true
                 model: loggerModel
                 snapMode: ListView.SnapToItem
-                headerPositioning: ListView.OverlayHeader
+                headerPositioning: ListView.PullBackHeader
                 // the header represent the title of each row
                 header: Row {
+                    z: 2
 
                     ItemDelegate {
                         id: indexTitle
