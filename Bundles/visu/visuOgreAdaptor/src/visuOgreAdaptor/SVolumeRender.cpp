@@ -190,8 +190,13 @@ void SVolumeRender::starting()
     m_camera = this->getLayer()->getDefaultCamera();
 
     // Create textures
-    m_3DOgreTexture = ::Ogre::TextureManager::getSingleton().create(
+    m_double3DOgreTexture[0] = ::Ogre::TextureManager::getSingleton().create(
         this->getID() + "_Texture",
+        ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+        true);
+
+    m_double3DOgreTexture[1] = ::Ogre::TextureManager::getSingleton().create(
+        this->getID() + "_Texture2",
         ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
         true);
 
@@ -204,7 +209,7 @@ void SVolumeRender::starting()
     m_volumeRenderer = new ::fwRenderOgre::vr::RayTracingVolumeRenderer(this->getID(),
                                                                         layer,
                                                                         m_volumeSceneNode,
-                                                                        m_3DOgreTexture,
+                                                                        m_double3DOgreTexture[0],
                                                                         m_gpuVolumeTF,
                                                                         m_preIntegrationTable,
                                                                         m_ambientOcclusion,
@@ -248,8 +253,11 @@ void SVolumeRender::stopping()
     m_sceneManager->getRootSceneNode()->removeChild(transformNode);
     this->getSceneManager()->destroySceneNode(static_cast< ::Ogre::SceneNode*>(transformNode));
 
-    ::Ogre::TextureManager::getSingleton().remove(m_3DOgreTexture->getHandle());
-    m_3DOgreTexture.reset();
+    ::Ogre::TextureManager::getSingleton().remove(m_double3DOgreTexture[0]->getHandle());
+    m_double3DOgreTexture[0].reset();
+
+    ::Ogre::TextureManager::getSingleton().remove(m_double3DOgreTexture[1]->getHandle());
+    m_double3DOgreTexture[1].reset();
 
     m_gpuVolumeTF.reset();
 
@@ -296,6 +304,12 @@ void SVolumeRender::newImage()
 
     m_gpuVolumeTF->updateTexture(volumeTF);
 
+    ::fwRenderOgre::Utils::allocateTexture(m_double3DOgreTexture[0].get(), image->getSize()[0], image->getSize()[1],
+                                           image->getSize()[2], ::Ogre::PF_L16, ::Ogre::TEX_TYPE_3D, false);
+
+    ::fwRenderOgre::Utils::convertImageForNegato(m_double3DOgreTexture[0].get(), image);
+    m_useTextureOne = true;
+
     this->updateImage();
 }
 
@@ -322,7 +336,14 @@ void SVolumeRender::updateImage()
 
     this->getRenderService()->makeCurrent();
 
-    ::fwRenderOgre::Utils::convertImageForNegato(m_3DOgreTexture.get(), image);
+    if (m_useTextureOne)
+    {
+        m_volumeRenderer->setTexture(m_double3DOgreTexture[0]);
+    }
+    else
+    {
+        m_volumeRenderer->setTexture(m_double3DOgreTexture[1]);
+    }
 
     ::fwData::TransferFunction::sptr volumeTF = m_helperVolumeTF.getTransferFunction();
     {
@@ -347,6 +368,7 @@ void SVolumeRender::updateImage()
             }
             this->updateVolumeIllumination();
         }
+
         m_volumeRenderer->imageUpdate(image, volumeTF);
     }
 
@@ -354,6 +376,15 @@ void SVolumeRender::updateImage()
     this->createWidget();
     this->resetCameraPosition(image);
     this->requestRender();
+    if (m_useTextureOne)
+    {
+        ::fwRenderOgre::Utils::convertImageForNegato(m_double3DOgreTexture[1].get(), image);
+    }
+    else
+    {
+        ::fwRenderOgre::Utils::convertImageForNegato(m_double3DOgreTexture[0].get(), image);
+    }
+    m_useTextureOne = !m_useTextureOne;
 }
 
 //-----------------------------------------------------------------------------
@@ -742,7 +773,7 @@ void SVolumeRender::updateVolumeIllumination()
 {
     this->getRenderService()->makeCurrent();
 
-    m_illum->SATUpdate(m_3DOgreTexture, m_gpuVolumeTF, m_volumeRenderer->getSamplingRate());
+    m_illum->SATUpdate(m_double3DOgreTexture[m_useTextureOne], m_gpuVolumeTF, m_volumeRenderer->getSamplingRate());
 
     m_volumeRenderer->setIlluminationVolume(m_illum);
 }

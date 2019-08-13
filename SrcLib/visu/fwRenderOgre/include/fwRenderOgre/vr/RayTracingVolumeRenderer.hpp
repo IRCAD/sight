@@ -130,6 +130,9 @@ public:
     /// Layer getter
     ::fwRenderOgre::Layer::sptr getLayer() const;
 
+    /// Sets texture.
+    FWRENDEROGRE_API void setTexture( ::Ogre::TexturePtr texture );
+
 protected:
 
     /// Updates the current compositor name according to VR effects flags.

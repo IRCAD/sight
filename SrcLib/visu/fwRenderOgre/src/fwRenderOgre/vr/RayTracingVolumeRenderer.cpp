@@ -294,6 +294,26 @@ void RayTracingVolumeRenderer::imageUpdate(const ::fwData::Image::sptr image, co
 
 //-----------------------------------------------------------------------------
 
+void RayTracingVolumeRenderer::setTexture(::Ogre::TexturePtr _texture)
+{
+    this->setIVRTexture(_texture);
+
+    ::Ogre::MaterialManager& mm = ::Ogre::MaterialManager::getSingleton();
+    ::Ogre::MaterialPtr mat     = mm.getByName(m_currentMtlName,
+                                               ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+    const ::Ogre::Technique* const tech = mat->getTechnique(0);
+    ::Ogre::Pass* const pass = tech->getPass(0);
+
+    ::Ogre::TextureUnitState* texUnitState;
+    texUnitState = pass->getTextureUnitState(0);
+    texUnitState->setTextureName(m_3DOgreTexture->getName(), ::Ogre::TEX_TYPE_3D);
+
+    ::Ogre::GpuProgramParametersSharedPtr fpParams = pass->getFragmentProgramParameters();
+    fpParams->setNamedConstant("u_s3Image", 0);
+}
+
+//-----------------------------------------------------------------------------
+
 void RayTracingVolumeRenderer::updateVolumeTF()
 {
     FW_PROFILE("TF Update")
