@@ -131,7 +131,7 @@ public:
     ::fwRenderOgre::Layer::sptr getLayer() const;
 
     /// Sets texture.
-    FWRENDEROGRE_API void setTexture( ::Ogre::TexturePtr texture );
+    FWRENDEROGRE_API void set3DTexture(const ::Ogre::TexturePtr& _texture );
 
 protected:
 

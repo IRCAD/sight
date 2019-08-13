@@ -245,8 +245,11 @@ private:
     /// Renders the volume.
     ::fwRenderOgre::vr::RayTracingVolumeRenderer* m_volumeRenderer { nullptr };
 
-    /// Double 3D Image texture.
-    ::Ogre::TexturePtr m_double3DOgreTexture[2];
+    /// 3D Image texture.
+    ::Ogre::TexturePtr m_3DOgreTexture;
+
+    /// Buffering texture for the 3D image.
+    ::Ogre::TexturePtr m_bufferingTexture;
 
     /// TF texture used for rendering.
     ::fwRenderOgre::TransferFunction::sptr m_gpuVolumeTF;
@@ -314,8 +317,6 @@ private:
     /// Handle connections between the layer and the volume renderer.
     ::fwCom::helper::SigSlotConnection m_volumeConnection;
 
-    /// Use of the first texture.
-    bool m_useTextureOne { true };
 };
 
 } // visuOgreAdaptor

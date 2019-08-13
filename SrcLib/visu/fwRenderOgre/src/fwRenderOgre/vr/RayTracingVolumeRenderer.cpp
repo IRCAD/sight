@@ -294,22 +294,23 @@ void RayTracingVolumeRenderer::imageUpdate(const ::fwData::Image::sptr image, co
 
 //-----------------------------------------------------------------------------
 
-void RayTracingVolumeRenderer::setTexture(::Ogre::TexturePtr _texture)
+void RayTracingVolumeRenderer::set3DTexture(const ::Ogre::TexturePtr& _texture)
 {
-    this->setIVRTexture(_texture);
+    m_3DOgreTexture = _texture;
 
     ::Ogre::MaterialManager& mm = ::Ogre::MaterialManager::getSingleton();
-    ::Ogre::MaterialPtr mat     = mm.getByName(m_currentMtlName,
-                                               ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+    ::Ogre::MaterialPtr mat     = mm.getByName(m_currentMtlName);
+    SLM_ASSERT("Missing material '" + m_currentMtlName + "'.", mat);
     const ::Ogre::Technique* const tech = mat->getTechnique(0);
+    SLM_ASSERT("Material '" + m_currentMtlName + "' has no techniques.", tech);
     ::Ogre::Pass* const pass = tech->getPass(0);
+    SLM_ASSERT("Material '" + m_currentMtlName + "' has no passes.", pass);
 
-    ::Ogre::TextureUnitState* texUnitState;
-    texUnitState = pass->getTextureUnitState(0);
+    ::Ogre::TextureUnitState* const texUnitState = pass->getTextureUnitState(0);
+    SLM_ASSERT("Material '" + m_currentMtlName + "' has no texture units.", texUnitState);
     texUnitState->setTextureName(m_3DOgreTexture->getName(), ::Ogre::TEX_TYPE_3D);
 
-    ::Ogre::GpuProgramParametersSharedPtr fpParams = pass->getFragmentProgramParameters();
-    fpParams->setNamedConstant("u_s3Image", 0);
+    m_proxyGeometry->set3DImageTexture(m_3DOgreTexture);
 }
 
 //-----------------------------------------------------------------------------

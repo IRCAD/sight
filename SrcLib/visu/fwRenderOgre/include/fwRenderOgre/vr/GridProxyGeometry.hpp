@@ -84,6 +84,8 @@ public:
     /// Get the object's type as a string.
     FWRENDEROGRE_API virtual const ::Ogre::String& getMovableType(void) const override;
 
+    FWRENDEROGRE_API void set3DImageTexture(const ::Ogre::TexturePtr& _texture);
+
 private:
 
     /// Initializes the structures used for geometry generation.
