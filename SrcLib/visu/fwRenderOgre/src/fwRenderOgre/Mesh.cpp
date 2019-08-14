@@ -1128,8 +1128,8 @@ bool Mesh::areBoundsValid(const ::Ogre::MeshPtr& _ogreMesh)
     const ::Ogre::Vector3& minimum       = bounds.getMinimum();
 
     return !maximum.isNaN() && !minimum.isNaN()
-           && !isinf(maximum[0]) && !isinf(maximum[1]) && !isinf(maximum[2])
-           && !isinf(minimum[0]) && !isinf(minimum[1]) && !isinf(minimum[2]);
+           && !std::isinf(maximum[0]) && !std::isinf(maximum[1]) && !std::isinf(maximum[2])
+           && !std::isinf(minimum[0]) && !std::isinf(minimum[1]) && !std::isinf(minimum[2]);
 }
 
 //------------------------------------------------------------------------------
