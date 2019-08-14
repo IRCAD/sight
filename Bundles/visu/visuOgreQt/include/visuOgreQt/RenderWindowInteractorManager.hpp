@@ -96,6 +96,8 @@ public:
     VISUOGREQT_API virtual void setEnabledOverlays(
         const ::fwRenderOgre::IRenderWindowInteractorManager::OverlaySetType& enabledOverlays) override;
 
+    VISUOGREQT_API virtual void spawnGfxWorker(std::function<void (void)>& _f) const final;
+
 private Q_SLOTS:
 
     /// When the render window is created

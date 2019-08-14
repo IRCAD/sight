@@ -1,0 +1,64 @@
+/************************************************************************
+ *
+ * Copyright (C) 2019 IRCAD France
+ * Copyright (C) 2019 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
+
+#include "visuOgreQt/OpenGLContext.hpp"
+
+namespace visuOgreQt
+{
+
+std::weak_ptr<QOpenGLContext> OpenGLContext::s_globalOgreOpenGLContext;
+
+//-----------------------------------------------------------------------------
+
+QOpenGLContext* OpenGLContext::createOgreGLContext()
+{
+    auto* glContext = new QOpenGLContext();
+    QSurfaceFormat format;
+    format.setProfile(QSurfaceFormat::OpenGLContextProfile::CoreProfile);
+    format.setRenderableType(QSurfaceFormat::RenderableType::OpenGL);
+    format.setSwapBehavior(QSurfaceFormat::DoubleBuffer);
+    format.setMajorVersion(4);
+    format.setMinorVersion(1);
+    glContext->setFormat(format);
+    glContext->create();
+
+    return glContext;
+}
+
+//-----------------------------------------------------------------------------
+
+std::shared_ptr<QOpenGLContext> OpenGLContext::getGlobalOgreOpenGLContext()
+{
+    std::shared_ptr<QOpenGLContext> globalContext = s_globalOgreOpenGLContext.lock();
+
+    if(globalContext == nullptr)
+    {
+        globalContext             = std::shared_ptr<QOpenGLContext>(createOgreGLContext());
+        s_globalOgreOpenGLContext = globalContext;
+    }
+
+    return globalContext;
+}
+
+//-----------------------------------------------------------------------------
+
+}

@@ -77,6 +77,13 @@ public:
     /// Get the Ogre texture attached to the target
     FWRENDEROGRE_API ::Ogre::TexturePtr getRenderTexture() const;
 
+    FWRENDEROGRE_API virtual void spawnGfxWorker(std::function<void (void)>& _f) const final
+    {
+        // SLM_FATAL("Not supported");
+        _f();
+    }
+
+
 private:
     void render();
 

@@ -23,6 +23,7 @@
 #pragma once
 
 #include "visuOgreQt/config.hpp"
+#include "visuOgreQt/OpenGLContext.hpp"
 
 #include <fwRenderOgre/IRenderWindowInteractorManager.hpp>
 
@@ -38,7 +39,6 @@
 #include <QtGui/QWindow>
 
 #include <QtWidgets/QApplication>
-//#include <OGRE/SdkTrays.h>
 
 namespace visuOgreQt
 {
@@ -209,6 +209,8 @@ private:
     QPoint* m_lastPosRightClick;
 
     int m_frameId;
+
+    std::shared_ptr<QOpenGLContext> m_currentContext;
 
 private Q_SLOTS:
 

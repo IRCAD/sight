@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,6 +22,8 @@
 
 #include "visuOgreQt/RenderWindowInteractorManager.hpp"
 
+#include "visuOgreQt/OpenGLContext.hpp"
+
 #include <fwData/String.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
@@ -32,6 +34,7 @@
 #include <QDesktopWidget>
 #include <QEvent>
 #include <QRect>
+#include <QThread>
 #include <QVBoxLayout>
 #include <QWidget>
 
@@ -208,6 +211,20 @@ void RenderWindowInteractorManager::onCameraClippingComputation()
     ::fwRenderOgre::SRender::sptr ogreRenderService = ::fwRenderOgre::SRender::dynamicCast( renderService );
 
     ogreRenderService->slot(::fwRenderOgre::SRender::s_COMPUTE_CAMERA_CLIPPING_SLOT)->asyncRun();
+}
+
+//-----------------------------------------------------------------------------
+
+void RenderWindowInteractorManager::spawnGfxWorker(std::function<void (void)>& _f) const
+{
+    QThread* worker       = QThread::create(_f);
+    auto* threadGLContext = ::visuOgreQt::OpenGLContext::createOgreGLContext();
+    auto* globalGlContext = visuOgreQt::OpenGLContext::getGlobalOgreOpenGLContext().get();
+    threadGLContext->setShareContext(globalGlContext); // Share resources with the main thread's context.
+
+    threadGLContext->moveToThread(worker); // Set the shared context on the new worker.
+
+    worker->start(QThread::Priority::HighPriority); // Execute the function asynchronously.
 }
 
 //-----------------------------------------------------------------------------

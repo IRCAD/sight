@@ -147,6 +147,8 @@ public:
 
     FWRENDEROGRE_API virtual void setEnabledOverlays(const OverlaySetType& overlaySet);
 
+    FWRENDEROGRE_API virtual void spawnGfxWorker(std::function<void (void)>& _f) const = 0;
+
     /// Set the render service using the IOgreRenderWindowInteractor
     virtual void setRenderService(::fwServices::IService::sptr srv)
     {
