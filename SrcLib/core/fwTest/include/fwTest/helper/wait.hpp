@@ -29,6 +29,13 @@
 
 // Wait at worst 1s for a given condition
 #define fwTestWaitMacro(cond) \
+    while(!(cond)) \
+    { \
+        std::this_thread::sleep_for( std::chrono::milliseconds(100)); \
+    }
+
+// Wait at worst 1s for a given condition
+#define fwTestTimeoutMacro(cond) \
     ::fwCore::TimeStamp BOOST_PP_CAT(timeStamp, __LINE__); \
     BOOST_PP_CAT(timeStamp, __LINE__).setLifePeriod(2500); \
     BOOST_PP_CAT(timeStamp, __LINE__).modified(); \

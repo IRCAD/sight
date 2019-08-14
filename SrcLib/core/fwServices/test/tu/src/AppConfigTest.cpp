@@ -1192,7 +1192,7 @@ void AppConfigTest::keyGroupTest()
         srv2->resetIsUpdated();
         auto sig4 = data4->signal< ::fwData::Object::ModifiedSignalType>(::fwData::Object::s_MODIFIED_SIG);
         sig4->asyncEmit();
-        fwTestWaitMacro(srv2->getIsUpdated());
+        fwTestTimeoutMacro(srv2->getIsUpdated());
         CPPUNIT_ASSERT(!srv2->getIsUpdated());
         auto sigIm4 = data4->signal< ::fwData::Image::BufferModifiedSignalType>(::fwData::Image::s_BUFFER_MODIFIED_SIG);
         sigIm4->asyncEmit();
@@ -1208,7 +1208,7 @@ void AppConfigTest::keyGroupTest()
 
         auto sigIm5 = data5->signal< ::fwData::Image::BufferModifiedSignalType>(::fwData::Image::s_BUFFER_MODIFIED_SIG);
         sigIm5->asyncEmit();
-        fwTestWaitMacro(srv2->getIsUpdated());
+        fwTestTimeoutMacro(srv2->getIsUpdated());
         CPPUNIT_ASSERT(!srv2->getIsUpdated());
     }
 
