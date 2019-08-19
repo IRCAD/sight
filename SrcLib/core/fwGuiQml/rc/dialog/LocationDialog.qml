@@ -14,7 +14,6 @@ FileDialog {
 
     onRejected: {
         locationDialog.resultDialog(fileUrls)
-        console.log()
     }
     onVisibleChanged: visible ? "" : rejected()
     // specify the selected extension to c++

@@ -70,13 +70,11 @@ Window{
             // set an array with all checkbox status
             var listClick = [];
             var length = checkBoxList.count
-            console.log("the length is: " +  length)
             for (var i = 0; i < length; i++)
             {
                 var status = checkBoxList.itemAt(i).checked
                 listClick.push(status);
             }
-            console.log("ok on test")
             multiSelectorDialog.resultDialog(listClick, true);
             window.close()
         }
