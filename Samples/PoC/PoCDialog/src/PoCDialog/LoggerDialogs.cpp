@@ -62,6 +62,7 @@ void LoggerDialogs::open()
         }
     }
     ::fwGui::dialog::LoggerDialog dialogFile(m_title.toStdString(), m_message.toStdString(), logger);
+
     dialogFile.show();
     this->m_hasError = false;
     Q_EMIT errorChanged();

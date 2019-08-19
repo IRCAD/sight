@@ -95,6 +95,7 @@ void MessageDialogs::open()
     }
     dialog->setMessage(m_message.toStdString());
     const auto& result = dialog->show();
+
     for(const ResultDialogQmlButton::value_type& button :  resultDialogQmlButton)
     {
         if (button.second & result)

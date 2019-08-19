@@ -53,6 +53,7 @@ void MultiSelectorDialogs::open()
     }
     dialog->setSelections(options);
     const auto& results = dialog->show();
+
     m_result.clear();
     for (const auto& result: results)
     {

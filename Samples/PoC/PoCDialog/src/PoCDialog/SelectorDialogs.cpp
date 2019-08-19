@@ -51,6 +51,7 @@ void SelectorDialogs::open()
     }
     dialog->setSelections(options);
     m_result = QString::fromStdString(dialog->show());
+
     Q_EMIT onResultChanged();
     this->m_hasOption = false;
     Q_EMIT optionChanged();
