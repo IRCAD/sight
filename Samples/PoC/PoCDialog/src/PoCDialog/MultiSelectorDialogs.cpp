@@ -59,7 +59,7 @@ void MultiSelectorDialogs::open()
     {
         if (result.second)
         {
-            m_result += QString::fromStdString(result.first);
+            m_result += QString::fromStdString(result.first) + "| ";
         }
     }
     Q_EMIT onResultChanged();
