@@ -317,6 +317,9 @@ bool SWriter::versionSelection()
 
 void SWriter::updating()
 {
+    // Reset m_writeFailed to the default value (default).
+    m_writeFailed = false;
+
     if(!this->hasLocationDefined())
     {
         m_writeFailed = true;
@@ -343,7 +346,7 @@ void SWriter::updating()
         }
         else
         {
-            std::string errorMessage("File extension '" + requestedExtension + "' is not handled.");
+            const std::string errorMessage("File extension '" + requestedExtension + "' is not handled.");
             ::fwGui::dialog::MessageDialog::showMessageDialog("Medical data writer failed",
                                                               errorMessage,
                                                               ::fwGui::dialog::IMessageDialog::CRITICAL);
@@ -374,7 +377,7 @@ void SWriter::updating()
 
     FW_RAISE_IF( "Extension is empty", extension.empty() );
 
-    ::boost::filesystem::path filename = filePath.filename();
+    const ::boost::filesystem::path filename = filePath.filename();
 
     FW_RAISE_IF("The file extension '" << extension << "' is not managed",
                 m_allowedExts.find(extension) == m_allowedExts.end());
