@@ -95,9 +95,8 @@ void Window::initialise()
 
     ::fwRenderOgre::WindowManager::sptr mgr = ::fwRenderOgre::WindowManager::get();
 
-    // We share the OpenGL context on all windows. The first Ogre window will create the context, the other ones will
-    // reuse the current context
-    // parameters["externalGLControl"] = "true";
+    // We share the OpenGL context on all windows. The first window will create the context, the other ones will
+    // reuse the current context.
     parameters["currentGLContext"] = "true";
 
     /*
@@ -120,10 +119,7 @@ void Window::initialise()
     parameters["contextProfile"] = Ogre::String("1");
 #endif
 
-    if(!m_currentContext)
-    {
-        m_currentContext = ::visuOgreQt::OpenGLContext::getGlobalOgreOpenGLContext();
-    }
+    m_glContext = ::visuOgreQt::OpenGLContext::getGlobalOgreOpenGLContext();
     this->makeCurrent();
 
     m_ogreRenderWindow = m_ogreRoot->createRenderWindow("Widget-RenderWindow_" + std::to_string(m_id),
@@ -157,9 +153,9 @@ void Window::requestRender()
 
 void Window::makeCurrent()
 {
-    if(m_currentContext)
+    if(m_glContext)
     {
-        m_currentContext->makeCurrent(this);
+        m_glContext->makeCurrent(this);
     }
 }
 

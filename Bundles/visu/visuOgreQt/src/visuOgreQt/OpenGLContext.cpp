@@ -33,9 +33,11 @@ QOpenGLContext* OpenGLContext::createOgreGLContext()
 {
     auto* glContext = new QOpenGLContext();
     QSurfaceFormat format;
-    format.setProfile(QSurfaceFormat::OpenGLContextProfile::CoreProfile);
     format.setRenderableType(QSurfaceFormat::RenderableType::OpenGL);
+    // Enforce core profile (required on OSX).
+    format.setProfile(QSurfaceFormat::OpenGLContextProfile::CoreProfile);
     format.setSwapBehavior(QSurfaceFormat::DoubleBuffer);
+    // We limit ourselves to version 4.1 as it is the last one supported by Apple.
     format.setMajorVersion(4);
     format.setMinorVersion(1);
     glContext->setFormat(format);

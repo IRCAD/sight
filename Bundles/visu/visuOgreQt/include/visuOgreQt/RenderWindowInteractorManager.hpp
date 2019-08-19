@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -61,42 +61,43 @@ public:
     /// Constructor
     VISUOGREQT_API RenderWindowInteractorManager(::fwRenderOgre::IRenderWindowInteractorManager::Key key);
     /// Destructor
-    VISUOGREQT_API virtual ~RenderWindowInteractorManager();
+    VISUOGREQT_API virtual ~RenderWindowInteractorManager() final;
 
     /// Call Widget render immediately
-    VISUOGREQT_API virtual void renderNow() override;
+    VISUOGREQT_API virtual void renderNow() final;
 
     /// Call Widget render as soon as possible
-    VISUOGREQT_API virtual void requestRender() override;
+    VISUOGREQT_API virtual void requestRender() final;
 
     /// Create the container that holds the QtWidget.
     VISUOGREQT_API virtual void createContainer(::fwGui::container::fwContainer::sptr _parent,
-                                                bool renderOnDemand, bool fullscreen) override;
+                                                bool renderOnDemand, bool fullscreen) final;
 
     /// Connects widget and SRender signals and slots.
-    VISUOGREQT_API virtual void connectToContainer() override;
+    VISUOGREQT_API virtual void connectToContainer() final;
 
     /// Not implemented yet
     /// Deletes interactor and manages correctly the window (removing layout).
-    VISUOGREQT_API virtual void disconnectInteractor() override;
+    VISUOGREQT_API virtual void disconnectInteractor() final;
 
     /// Returns Ogre widget
-    VISUOGREQT_API virtual int getWidgetId() const override;
+    VISUOGREQT_API virtual int getWidgetId() const final;
 
     /// Returns frame ID
-    VISUOGREQT_API virtual int getFrameId() const override;
+    VISUOGREQT_API virtual int getFrameId() const final;
 
-    /// Set this render service as the current OpenGL context
-    VISUOGREQT_API virtual void makeCurrent() override;
+    /// Enables visuOgreQt's shared gl context on this thread against this window.
+    VISUOGREQT_API virtual void makeCurrent() final;
 
     /// Get Ogre RenderWindow
-    VISUOGREQT_API virtual ::Ogre::RenderTarget* getRenderTarget() override;
+    VISUOGREQT_API virtual ::Ogre::RenderTarget* getRenderTarget() final;
+
+    /// Returns a nullptr. This is due to the fact that this manager doesn't write to a texture.
+    VISUOGREQT_API virtual ::Ogre::TexturePtr getRenderTexture() final;
 
     /// Sets the list of overlays to be rendered in this window.
     VISUOGREQT_API virtual void setEnabledOverlays(
-        const ::fwRenderOgre::IRenderWindowInteractorManager::OverlaySetType& enabledOverlays) override;
-
-    VISUOGREQT_API virtual void spawnGfxWorker(std::function<void (void)>& _f) const final;
+        const ::fwRenderOgre::IRenderWindowInteractorManager::OverlaySetType& enabledOverlays) final;
 
 private Q_SLOTS:
 
@@ -113,5 +114,13 @@ private:
 
     SPTR(::fwGuiQt::container::QtContainer) m_parentContainer;
 };
+
+//-----------------------------------------------------------------------------
+
+inline ::Ogre::TexturePtr RenderWindowInteractorManager::getRenderTexture()
+{
+    SLM_ERROR("'RenderWindowInteractorManager' doesn't render in a texture.");
+    return ::Ogre::TexturePtr();
+}
 
 } // namespace visuOgreQt

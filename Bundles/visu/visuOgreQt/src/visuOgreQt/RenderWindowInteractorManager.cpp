@@ -215,18 +215,4 @@ void RenderWindowInteractorManager::onCameraClippingComputation()
 
 //-----------------------------------------------------------------------------
 
-void RenderWindowInteractorManager::spawnGfxWorker(std::function<void (void)>& _f) const
-{
-    QThread* worker       = QThread::create(_f);
-    auto* threadGLContext = ::visuOgreQt::OpenGLContext::createOgreGLContext();
-    auto* globalGlContext = visuOgreQt::OpenGLContext::getGlobalOgreOpenGLContext().get();
-    threadGLContext->setShareContext(globalGlContext); // Share resources with the main thread's context.
-
-    threadGLContext->moveToThread(worker); // Set the shared context on the new worker.
-
-    worker->start(QThread::Priority::HighPriority); // Execute the function asynchronously.
-}
-
-//-----------------------------------------------------------------------------
-
 } // namespace visuOgreQt

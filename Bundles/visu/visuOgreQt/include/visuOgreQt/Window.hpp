@@ -78,9 +78,10 @@ public:
     int getId();
 
     /// Request frame rendering
-    virtual void requestRender();
+    void requestRender();
 
-    virtual void makeCurrent();
+    /// Enables visuOgreQt's shared gl context on this thread against this window.
+    void makeCurrent();
 
     /// Sets the list of overlays to be rendered in this window.
     void setEnabledOverlays(
@@ -210,7 +211,7 @@ private:
 
     int m_frameId;
 
-    std::shared_ptr<QOpenGLContext> m_currentContext;
+    std::shared_ptr<QOpenGLContext> m_glContext;
 
 private Q_SLOTS:
 
