@@ -24,13 +24,17 @@
 
 #include <fwCore/TimeStamp.hpp>
 
+#include <boost/preprocessor.hpp>
+
 #include <chrono>
 #include <thread>
 
 // Wait at worst 1s for a given condition
-#define fwTestWaitMacro(cond) \
+#define fwTestWaitMacro(cond, ...) \
     ::fwCore::TimeStamp BOOST_PP_CAT(timeStamp, __LINE__); \
-    BOOST_PP_CAT(timeStamp, __LINE__).setLifePeriod(2500); \
+    BOOST_PP_CAT(timeStamp, \
+                 __LINE__).setLifePeriod( BOOST_PP_IF( BOOST_PP_IS_EMPTY( __VA_ARGS__), 10000, \
+                                                       BOOST_PP_VARIADIC_ELEM(0, __VA_ARGS__) ) ); \
     BOOST_PP_CAT(timeStamp, __LINE__).modified(); \
     while(!(cond) && !BOOST_PP_CAT(timeStamp, __LINE__).periodExpired()) \
     { \
