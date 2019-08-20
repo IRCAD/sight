@@ -34,7 +34,7 @@ namespace visuOgreQt
 /**
  * @brief Static class to manage the OpenGL context shared by all render windows.
  */
-VISUOGREQT_CLASS_API class OpenGLContext
+class OpenGLContext
 {
 public:
 
