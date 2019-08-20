@@ -127,18 +127,18 @@ void MultiSelectorDialog::setTitle(std::string _title)
 
 void MultiSelectorDialog::resultDialog(QVariant checkList, bool state)
 {
-    for( const Selections::value_type& selection :  m_selections)
+    for( Selections::value_type& selection :  m_selections)
     {
-        m_selections[selection.first] = false;
+        selection.second = false;
     }
     if (state == true)
     {
         // retreive each check state of the selection list
         QList<QVariant> checkListState = checkList.toList();
         int index                      = 0;
-        for( const Selections::value_type& selection :  m_selections)
+        for( Selections::value_type& selection :  m_selections)
         {
-            m_selections[selection.first] = checkListState[index].toBool();
+            selection.second = checkListState[index].toBool();
             index++;
         }
     }
