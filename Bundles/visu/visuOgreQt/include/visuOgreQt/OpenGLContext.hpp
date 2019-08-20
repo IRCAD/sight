@@ -42,7 +42,7 @@ public:
     static std::shared_ptr<QOpenGLContext> getGlobalOgreOpenGLContext();
 
     /// Creates an OpenGL 4.1 context.
-    static QOpenGLContext* OpenGLContext::createOgreGLContext();
+    static QOpenGLContext* createOgreGLContext();
 
 private:
 
