@@ -129,13 +129,7 @@ LocationDialog::LocationDialog(::fwGui::GuiBaseObject::Key key)
 
 bool LocationDialog::eventFilter(QObject* watched, QEvent* event)
 {
-    auto eventType = event->type()
-    //block mouse event and press event to create modal window for mac
-    if (eventType >= 2 && eventType <= 7)
-    {
-        return true;
-    }
-    return false;
+    return (event->type() != QEvent::Paint && event->type() != QEvent::MetaCall && !event->spontaneous());
 }
 
 //------------------------------------------------------------------------------
