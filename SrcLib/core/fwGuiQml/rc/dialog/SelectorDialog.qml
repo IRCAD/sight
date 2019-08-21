@@ -29,6 +29,7 @@ Window {
             anchors.fill: parent
             title: selectorDialog.message
             height: window.height
+            width: window.width
 
             property var initSize: 0
             property var checkLength: 0
@@ -38,8 +39,10 @@ Window {
             }
 
             Flickable {
+                id: flickable
                 anchors.fill: parent
                 contentHeight: columnRepeater.implicitHeight
+                contentWidth: columnRepeater.implicitWidth
                 clip: true
 
                 Column {
@@ -57,19 +60,26 @@ Window {
                             ButtonGroup.group: buttonGroup
 
                             Component.onCompleted: {
-                                if (width > groupBox.checkLength && width > window.width && width > groupBox.width)
-                                {
-                                    groupBox.checkLength = width
-                                    if (window.width == 0)
-                                    {
-                                        groupBox.initSize = width
-                                        groupBox.checkLength = width / 2
-                                    }
-                                    window.width = groupBox.checkLength + groupBox.initSize + dialog.leftMargin + dialog.leftPadding
-                                }
+                                if (width > flickable.contentWidth)
+                                    flickable.contentWidth = width
                             }
                         }
                     }
+                }
+                ScrollBar.vertical: ScrollBar {
+                    parent: flickable.parent
+                    anchors.top: flickable.top
+                    anchors.right: flickable.right
+                    anchors.bottom: flickable.bottom
+                    active: true
+                }
+                ScrollBar.horizontal: ScrollBar {
+                    id: horizontalScroll
+                    parent: flickable.parent
+                    anchors.left: flickable.left
+                    anchors.right: flickable.right
+                    anchors.bottom: flickable.bottom
+                    active: true
                 }
             }
         }

@@ -26,14 +26,14 @@ Window{
             id: groupBoxOption
             anchors.fill: parent
             height: window.height
+            width: window.width
             title: multiSelectorDialog.message
 
-            property var initSize: 0
-            property var checkLength: 0
-
             Flickable {
+                id: flickable
                 anchors.fill: parent
                 contentHeight: columnRepeater.implicitHeight
+                contentWidth: columnRepeater.implicitWidth
                 clip: true
 
                 Column {
@@ -48,19 +48,26 @@ Window{
                             text: textOption
                             checked: check
                             Component.onCompleted: {
-                                if (width > groupBoxOption.checkLength && width > window.width && width > groupBoxOption.width)
-                                {
-                                    groupBoxOption.checkLength = width
-                                    if (window.width == 0)
-                                    {
-                                        groupBoxOption.initSize = width
-                                        groupBoxOption.checkLength = width / 2
-                                    }
-                                    window.width = groupBoxOption.checkLength + groupBoxOption.initSize + dialog.leftMargin + dialog.leftPadding
-                                }
+                                if (width > flickable.contentWidth)
+                                    flickable.contentWidth = width
                             }
                         }
                     }
+                }
+                ScrollBar.vertical: ScrollBar {
+                    parent: flickable.parent
+                    anchors.top: flickable.top
+                    anchors.right: flickable.right
+                    anchors.bottom: flickable.bottom
+                    active: true
+                }
+                ScrollBar.horizontal: ScrollBar {
+                    id: horizontalScroll
+                    parent: flickable.parent
+                    anchors.left: flickable.left
+                    anchors.right: flickable.right
+                    anchors.bottom: flickable.bottom
+                    active: true
                 }
             }
         }
