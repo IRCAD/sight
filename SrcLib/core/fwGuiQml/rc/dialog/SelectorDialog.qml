@@ -10,6 +10,7 @@ Window {
     id: window
 
     height: 400
+    minimumWidth: 600
     modality: Qt.ApplicationModal
     // flags to erase the close button
     flags: Qt.CustomizeWindowHint | Qt.WindowTitleHint | Qt.MSWindowsFixedSizeDialogHint
@@ -28,7 +29,6 @@ Window {
             anchors.fill: parent
             title: selectorDialog.message
             height: window.height
-            Layout.minimumWidth: 150
 
             property var initSize: 0
             property var checkLength: 0
@@ -55,14 +55,15 @@ Window {
                             text: textOption
                             checked: check
                             ButtonGroup.group: buttonGroup
+
                             Component.onCompleted: {
-                                if (width > groupBox.checkLength)
+                                if (width > groupBox.checkLength && width > window.width && width > groupBox.width)
                                 {
                                     groupBox.checkLength = width
                                     if (window.width == 0)
                                     {
                                         groupBox.initSize = width
-                                        groupBox.checkLength = 0
+                                        groupBox.checkLength = width / 2
                                     }
                                     window.width = groupBox.checkLength + groupBox.initSize + dialog.leftMargin + dialog.leftPadding
                                 }

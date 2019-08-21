@@ -10,6 +10,7 @@ Window{
     id: window
 
     height: 400
+    minimumWidth: 600
     modality: Qt.ApplicationModal
     // flags to erase the close button
     flags: Qt.CustomizeWindowHint | Qt.WindowTitleHint | Qt.MSWindowsFixedSizeDialogHint
@@ -27,7 +28,6 @@ Window{
             anchors.fill: parent
             height: window.height
             title: multiSelectorDialog.message
-            Layout.minimumWidth: 150
 
             property var initSize: 0
             property var checkLength: 0
@@ -49,13 +49,13 @@ Window{
                             text: textOption
                             checked: check
                             Component.onCompleted: {
-                                if (width > groupBoxOption.checkLength)
+                                if (width > groupBoxOption.checkLength && width > window.width && width > groupBoxOption.width)
                                 {
                                     groupBoxOption.checkLength = width
                                     if (window.width == 0)
                                     {
                                         groupBoxOption.initSize = width
-                                        groupBoxOption.checkLength = 0
+                                        groupBoxOption.checkLength = width / 2
                                     }
                                     window.width = groupBoxOption.checkLength + groupBoxOption.initSize + dialog.leftMargin + dialog.leftPadding
                                 }
