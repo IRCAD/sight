@@ -12,8 +12,6 @@ Window {
     height: 400
     minimumWidth: 600
     modality: Qt.ApplicationModal
-    // flags to erase the close button
-    flags: Qt.MSWindowsFixedSizeDialogHint
 
     Dialog {
         objectName: "dialog"

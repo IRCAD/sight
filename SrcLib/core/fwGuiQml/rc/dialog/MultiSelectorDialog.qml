@@ -12,7 +12,6 @@ Window{
     height: 400
     minimumWidth: 600
     modality: Qt.ApplicationModal
-    flags: Qt.MSWindowsFixedSizeDialogHint
 
     Dialog {
         objectName: "dialog"
