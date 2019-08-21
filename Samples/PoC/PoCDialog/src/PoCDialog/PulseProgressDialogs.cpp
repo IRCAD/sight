@@ -44,7 +44,7 @@ PulseProgressDialogs::~PulseProgressDialogs()
 void poCTest()
 {
     int i = 0;
-    while (i++ < 100)
+    while (i++ < 10)
     {
         std::this_thread::sleep_for(std::chrono::seconds(1));
     }

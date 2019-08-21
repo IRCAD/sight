@@ -32,6 +32,7 @@
 
 #include <QFutureWatcher>
 #include <QGuiApplication>
+#include <QKeyEvent>
 #include <QString>
 #include <QtConcurrent>
 #include <QtCore>
@@ -101,8 +102,22 @@ void PulseProgressDialog::show()
     QObject::connect(&futureWatcher, SIGNAL(finished()), &loop, SLOT(quit()));
     QMetaObject::invokeMethod(dialog, "open");
     futureWatcher.setFuture(QtConcurrent::run(m_stuff));
+    qGuiApp->installEventFilter(this);
     loop.exec();
+    qGuiApp->removeEventFilter(this);
     delete window;
+}
+
+//------------------------------------------------------------------------------
+
+bool PulseProgressDialog::eventFilter(QObject* watched, QEvent* event)
+{
+    qDebug() << event->type();
+    if (event->type() == QEvent::Shortcut || event->type() == QEvent::ShortcutOverride)
+    {
+        return true;
+    }
+    return false;
 }
 
 //------------------------------------------------------------------------------

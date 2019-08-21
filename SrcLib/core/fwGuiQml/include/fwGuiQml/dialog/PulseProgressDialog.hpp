@@ -71,6 +71,9 @@ private:
     /// message of the progress dialog
     QString m_message;
 
+    /// event filter to filter shortcut event
+    bool eventFilter(QObject* watched, QEvent* event) override;
+
 };
 } // namespace dialog
 } // namespace fwGuiQml
