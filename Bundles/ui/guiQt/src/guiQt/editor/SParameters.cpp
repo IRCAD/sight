@@ -123,6 +123,10 @@ SParameters::~SParameters() noexcept
 void SParameters::configuring()
 {
     this->initialize();
+
+    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
+
+    m_sendSignalAtStarting = config.get<bool>("send_at_start", m_sendSignalAtStarting);
 }
 
 //-----------------------------------------------------------------------------
@@ -260,7 +264,10 @@ void SParameters::starting()
 
     this->blockSignals(false);
 
-    this->updating(); // emits the signals with the default values
+    if(m_sendSignalAtStarting)
+    {
+        this->updating(); // emits the signals with the default values
+    }
 }
 
 //-----------------------------------------------------------------------------

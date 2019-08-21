@@ -91,6 +91,7 @@ namespace editor
             <param type="int" name="integer parameter" key="intParam" defaultValue="1" min="0" max="255" />
             <param type="enum" name="enum parameters" key="enumParam" defaultValue="p1" values="p1,p2,p3" />
         </parameters>
+        <config send_at_start="true" />
        </service>
    @endcode
  *
@@ -108,6 +109,7 @@ namespace editor
  * The actual displayed value and the returned one in the signal can be different using '=' to separate the two. For
  * example 'values="BLEND=imageBlend,CHECKERBOARD=imageCheckerboard"' means the combo will display BLEND, CHECKBOARD
  * and will send 'imageBlend' or 'imageCheckerboard'.
+ * - \b send_at_start (optional): send signals at the starting of the service (default: true)
  */
 class GUIQT_CLASS_API SParameters : public QObject,
                                     public ::fwGui::editor::IEditor
@@ -307,6 +309,9 @@ private:
 
     /// if true, the signals are not emitted
     bool m_blockSignals;
+
+    /// Send signals at the starting of this service.
+    bool m_sendSignalAtStarting {true};
 };
 
 //------------------------------------------------------------------------------
