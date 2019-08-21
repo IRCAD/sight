@@ -34,8 +34,8 @@ Item {
                 Layout.alignment: Qt.AlignBaseline
                 Layout.fillWidth: true
                 placeholderText: "Custom Dialog"
-                Component.onCompleted: pocDialogProgressDialogs.title = windowTitleField.text
-                onTextChanged: pocDialogProgressDialogs.message = windowTitleField.placeholderText
+                onTextChanged: pocDialogProgressDialogs.title = windowTitleField.text
+                Component.onCompleted: pocDialogProgressDialogs.title = windowTitleField.placeholderText
             }
         }
         // if this is check, a function with nothing inside will be launch on cancel
