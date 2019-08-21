@@ -88,7 +88,7 @@ ProgressDialog::ProgressDialog( ::fwGui::GuiBaseObject::Key key, const std::stri
         // load the qml ui component
         m_window = engine->createComponent(dialogPath);
         SLM_ASSERT("The Qml File ProgressDialog is not found or not loaded", m_window);
-        m_dialog->setProperty("title", QString::fromStdString(title));
+        m_window->setProperty("title", QString::fromStdString(title));
         m_dialog = m_window->findChild<QObject*>("dialog");
         SLM_ASSERT("The dialog is not found inside the window", m_dialog);
         QMetaObject::invokeMethod(m_dialog, "open");
