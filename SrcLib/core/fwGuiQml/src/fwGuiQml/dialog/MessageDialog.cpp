@@ -135,13 +135,12 @@ void MessageDialog::setDefaultButton(::fwGui::dialog::IMessageDialog::Buttons bu
     QSharedPointer<QQmlContext> context = QSharedPointer<QQmlContext>(new QQmlContext(engine->getRootContext()));
     context->setContextProperty("messageDialog", this);
     // load the qml ui component
-    QObject* dialog = engine->createComponent(dialogPath, context);
-    SLM_ASSERT("The Qml File MessageDialog is not found or not loaded", dialog);
+    QObject* window = engine->createComponent(dialogPath, context);
+    SLM_ASSERT("The Qml File MessageDialog is not found or not loaded", window);
     // keep window to destroy it
-    QObject* window = dialog;
 
-    dialog->setProperty("title", m_title);
-    dialog = dialog->findChild<QObject*>("dialog");
+    window->setProperty("title", m_title);
+    QObject* dialog = window->findChild<QObject*>("dialog");
     SLM_ASSERT("The dialog is not found inside the window", dialog);
     StandardButton* buttonSetting = qobject_cast<StandardButton*>(dialog->findChild<QObject*>("standardButton"));
     Q_EMIT messageChanged();
@@ -152,13 +151,15 @@ void MessageDialog::setDefaultButton(::fwGui::dialog::IMessageDialog::Buttons bu
         pathIcon = "";
     }
     emitIcon(QUrl::fromLocalFile(QString::fromStdString(pathIcon.string())));
-
     emitButtons(buttonSetting);
+
+    m_clicked = ::fwGui::dialog::IMessageDialog::CANCEL;
     QEventLoop loop;
     //slot to retrieve the result and open the dialog with invoke
     connect(dialog, SIGNAL(accepted()), &loop, SLOT(quit()));
     connect(dialog, SIGNAL(rejected()), &loop, SLOT(quit()));
     connect(dialog, SIGNAL(reset()), &loop, SLOT(quit()));
+    connect(window, SIGNAL(closing(QQuickCloseEvent*)), &loop, SLOT(quit()));
     QMetaObject::invokeMethod(dialog, "open");
     loop.exec();
     delete window;

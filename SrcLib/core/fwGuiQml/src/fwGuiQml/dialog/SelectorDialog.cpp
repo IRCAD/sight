@@ -85,13 +85,12 @@ std::string SelectorDialog::show()
     QSharedPointer<QQmlContext> context = QSharedPointer<QQmlContext>(new QQmlContext(engine->getRootContext()));
     context->setContextProperty("selectorDialog", this);
     // load the qml ui component
-    QObject* dialog = engine->createComponent(dialogPath, context);
-    SLM_ASSERT("The Qml File SelectorDialog is not found or not loaded", dialog);
+    QObject* window = engine->createComponent(dialogPath, context);
+    SLM_ASSERT("The Qml File SelectorDialog is not found or not loaded", window);
     // keep window to destroy it
-    QObject* window = dialog;
 
-    dialog->setProperty("title", m_title);
-    dialog = dialog->findChild<QObject*>("dialog");
+    window->setProperty("title", m_title);
+    QObject* dialog = window->findChild<QObject*>("dialog");
     SLM_ASSERT("The dialog is not found inside the window", dialog);
 
     // create all radiobutton
@@ -111,11 +110,13 @@ std::string SelectorDialog::show()
         Q_EMIT messageChanged();
     }
 
+    m_selection = "";
     QEventLoop loop;
     //slot to retrieve the result and open the dialog with invoke
     connect(dialog, SIGNAL(accepted()), &loop, SLOT(quit()));
     connect(dialog, SIGNAL(rejected()), &loop, SLOT(quit()));
     connect(dialog, SIGNAL(reset()), &loop, SLOT(quit()));
+    connect(window, SIGNAL(closing(QQuickCloseEvent*)), &loop, SLOT(quit()));
     QMetaObject::invokeMethod(dialog, "open");
     loop.exec();
 

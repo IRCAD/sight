@@ -94,7 +94,4 @@ Window{
         Material.elevation = Theme.elevation
         window.show()
     }
-    Component.onDestruction: {
-        multiSelectorDialog.resultDialog([], false);
-    }
 }

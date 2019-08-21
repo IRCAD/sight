@@ -106,7 +106,4 @@ Window {
         Material.elevation = Theme.elevation
         window.show()
     }
-    Component.onDestruction: {
-        selectorDialog.resultDialog("");
-    }
 }

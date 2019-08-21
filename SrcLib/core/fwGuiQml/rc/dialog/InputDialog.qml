@@ -62,7 +62,4 @@ Window {
         Material.elevation = Theme.elevation
         window.show()
     }
-    Component.onDestruction: {
-        inputDialog.resultDialog(answer.text, false)
-    }
 }

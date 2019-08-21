@@ -189,7 +189,4 @@ Window{
         Material.elevation = Theme.elevation
         window.show()
     }
-    Component.onDestruction: {
-        loggerDialog.resultDialog(false)
-    }
 }

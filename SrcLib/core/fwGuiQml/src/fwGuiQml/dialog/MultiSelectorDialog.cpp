@@ -85,14 +85,13 @@ void MultiSelectorDialog::setTitle(std::string _title)
     QSharedPointer<QQmlContext> context = QSharedPointer<QQmlContext>(new QQmlContext(engine->getRootContext()));
     context->setContextProperty("multiSelectorDialog", this);
     // load the qml ui component
-    QObject* dialog = engine->createComponent(dialogPath, context);
-    SLM_ASSERT("The Qml File MultiSelectorDialog is not found or not loaded", dialog);
+    QObject* window = engine->createComponent(dialogPath, context);
+    SLM_ASSERT("The Qml File MultiSelectorDialog is not found or not loaded", window);
     // keep window to destroy it
-    QObject* window = dialog;
 
-    dialog->setProperty("title", m_title);
+    window->setProperty("title", m_title);
 
-    dialog = dialog->findChild<QObject*>("dialog");
+    QObject* dialog = window->findChild<QObject*>("dialog");
     SLM_ASSERT("The dialog is not found inside the window", dialog);
 
     // fill the repeater for each checkbox that has to be created
@@ -111,11 +110,16 @@ void MultiSelectorDialog::setTitle(std::string _title)
     }
     SLM_ASSERT("The MultiSelector need at least one selection", !model.isEmpty());
 
+    for( Selections::value_type& selection :  m_selections)
+    {
+        selection.second = false;
+    }
     QEventLoop loop;
     //slot to retrieve the result and open the dialog with invoke
     connect(dialog, SIGNAL(accepted()), &loop, SLOT(quit()));
     connect(dialog, SIGNAL(rejected()), &loop, SLOT(quit()));
     connect(dialog, SIGNAL(reset()), &loop, SLOT(quit()));
+    connect(window, SIGNAL(closing(QQuickCloseEvent*)), &loop, SLOT(quit()));
     QMetaObject::invokeMethod(dialog, "open");
     loop.exec();
 
@@ -127,10 +131,6 @@ void MultiSelectorDialog::setTitle(std::string _title)
 
 void MultiSelectorDialog::resultDialog(QVariant checkList, bool state)
 {
-    for( Selections::value_type& selection :  m_selections)
-    {
-        selection.second = false;
-    }
     if (state == true)
     {
         // retreive each check state of the selection list
