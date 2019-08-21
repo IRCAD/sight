@@ -43,6 +43,7 @@ void ProgressDialogs::open()
     std::function<void()> callback
         = [this]()
           {
+            m_dialog.reset();
           };
     if (m_addCallback)
     {

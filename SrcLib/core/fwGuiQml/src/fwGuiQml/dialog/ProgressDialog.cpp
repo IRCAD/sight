@@ -105,11 +105,11 @@ ProgressDialog::~ProgressDialog()
 {
     if (m_window)
     {
-        delete m_window;
+        m_window->deleteLater();
     }
     else
     {
-        delete m_dialog;
+        m_dialog->deleteLater();
     }
 }
 
