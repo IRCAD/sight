@@ -11,8 +11,6 @@ Window{
     width: 600
     height: 400
     modality: Qt.ApplicationModal
-    // flags to erase the close button
-    flags: Qt.CustomizeWindowHint | Qt.WindowTitleHint
 
     Dialog {
         objectName: "dialog"
@@ -190,5 +188,8 @@ Window{
         Material.primary = Theme.primary
         Material.elevation = Theme.elevation
         window.show()
+    }
+    Component.onDestruction: {
+        loggerDialog.resultDialog(false)
     }
 }

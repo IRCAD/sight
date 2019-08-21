@@ -13,7 +13,7 @@ Window {
     minimumWidth: 600
     modality: Qt.ApplicationModal
     // flags to erase the close button
-    flags: Qt.CustomizeWindowHint | Qt.WindowTitleHint | Qt.MSWindowsFixedSizeDialogHint
+    flags: Qt.MSWindowsFixedSizeDialogHint
 
     Dialog {
         objectName: "dialog"
@@ -105,5 +105,8 @@ Window {
         Material.primary = Theme.primary
         Material.elevation = Theme.elevation
         window.show()
+    }
+    Component.onDestruction: {
+        selectorDialog.resultDialog("");
     }
 }

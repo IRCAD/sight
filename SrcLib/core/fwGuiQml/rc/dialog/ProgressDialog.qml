@@ -12,8 +12,6 @@ Window {
     title: progressDialog.title
     width: 600
     height: 300
-    // flags to erase the close button
-    flags: Qt.CustomizeWindowHint | Qt.WindowTitleHint
 
     Dialog {
         // this function set the message of the download and set the value of the progress bar
@@ -71,5 +69,8 @@ Window {
         Material.primary = Theme.primary
         Material.elevation = Theme.elevation
         window.show()
+    }
+    Component.onDestruction: {
+        progressDialog.cancelPressed()
     }
 }
