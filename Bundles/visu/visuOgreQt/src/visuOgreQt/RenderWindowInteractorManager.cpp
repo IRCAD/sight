@@ -90,6 +90,7 @@ void RenderWindowInteractorManager::createContainer( ::fwGui::container::fwConta
 
     m_qOgreWidget = new ::visuOgreQt::Window();
     m_qOgreWidget->setAnimating(!renderOnDemand);
+    m_qOgreWidget->create();
 
     QWidget* renderingContainer = QWidget::createWindowContainer(m_qOgreWidget);
     layout->addWidget(renderingContainer);

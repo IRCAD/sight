@@ -22,6 +22,8 @@
 
 #include "visuOgreQt/OpenGLContext.hpp"
 
+#include <QOpenGLFunctions_4_1_Core>
+
 namespace visuOgreQt
 {
 
@@ -41,7 +43,9 @@ QOpenGLContext* OpenGLContext::createOgreGLContext()
     format.setMajorVersion(4);
     format.setMinorVersion(1);
     glContext->setFormat(format);
-    glContext->create();
+    bool success = glContext->create();
+    OSLM_FATAL_IF("Did not manage to create an OpenGL 4.1 core context for ogre.",
+                  !success || glContext->versionFunctions<QOpenGLFunctions_4_1_Core>() == nullptr);
 
     return glContext;
 }
