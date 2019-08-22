@@ -101,7 +101,13 @@ Item {
             CheckBox {
                 id: fileDialogSelectFolder
                 text: "Select Folder"
-                onCheckStateChanged: pocDialogLocationDialogs.isFolder = fileDialogSelectFolder.checked
+                onCheckStateChanged: {
+                    if (fileDialogSelectFolder.checked)
+                    {
+                        fileDialogSelectExisting.checked = true
+                    }
+                    pocDialogLocationDialogs.isFolder = fileDialogSelectFolder.checked
+                }
             }
             CheckBox {
                 id: fileDialogSelectExisting

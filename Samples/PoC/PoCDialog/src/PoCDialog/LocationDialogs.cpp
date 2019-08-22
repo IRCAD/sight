@@ -48,11 +48,6 @@ void LocationDialogs::open()
     dialogFile.setTitle(m_title.toStdString());
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(m_folder.toStdString()) );
 
-    if (m_isFolder)
-    {
-        dialogFile.setType(::fwGui::dialog::ILocationDialog::FOLDER);
-        dialogFile.setOption(::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST);
-    }
     if (!m_existing)
     {
         dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
@@ -70,6 +65,11 @@ void LocationDialogs::open()
     {
         dialogFile.setOption(::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST);
         dialogFile.setType(::fwGui::dialog::ILocationDialog::MULTI_FILES);
+    }
+    if (m_isFolder)
+    {
+        dialogFile.setType(::fwGui::dialog::ILocationDialog::FOLDER);
+        dialogFile.setOption(::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST);
     }
 
     for (int i = 0; i < m_filter.size(); ++i)
