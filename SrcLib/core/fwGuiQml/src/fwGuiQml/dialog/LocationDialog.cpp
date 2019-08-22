@@ -27,6 +27,7 @@
 #include <fwData/location/SingleFile.hpp>
 
 #include <fwGui/dialog/ILocationDialog.hpp>
+#include <fwGui/dialog/InputDialog.hpp>
 #include <fwGui/registry/macros.hpp>
 
 #include <fwQml/QmlEngine.hpp>
@@ -58,6 +59,19 @@ LocationDialog::LocationDialog(::fwGui::GuiBaseObject::Key key)
 
 ::fwData::location::ILocation::sptr LocationDialog::show()
 {
+#ifdef __APPLE__
+    if ( !(m_style& ::fwGui::dialog::ILocationDialog::READ) &&
+         !(m_style& ::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST))
+    {
+        const std::string& result = ::fwGui::dialog::InputDialog::showInputDialog(
+            this->getTitle(), "This is a temporary dialog to save file under osX. Write below the path of the file you want to save:",
+            "/home/");
+        ::boost::filesystem::path bpath( result);
+        m_location = ::fwData::location::SingleFile::New(bpath);
+        return m_location;
+    }
+#endif
+
     const QString& caption                      = QString::fromStdString(this->getTitle());
     const ::boost::filesystem::path defaultPath = this->getDefaultLocation();
     const QString& path                         = QString::fromStdString(defaultPath.string());
@@ -106,7 +120,6 @@ LocationDialog::LocationDialog(::fwGui::GuiBaseObject::Key key)
     {
         dialog->setProperty("selectFolder", false);
     }
-
     QEventLoop loop;
     connect(dialog, SIGNAL(accepted()), &loop, SLOT(quit()));
     connect(dialog, SIGNAL(rejected()), &loop, SLOT(quit()));
@@ -122,6 +135,7 @@ LocationDialog::LocationDialog(::fwGui::GuiBaseObject::Key key)
     qGuiApp->removeEventFilter(this);
 #endif
     delete dialog;
+
     return m_location;
 }
 

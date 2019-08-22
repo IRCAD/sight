@@ -56,7 +56,7 @@ ProgressDialog::ProgressDialog( ::fwGui::GuiBaseObject::Key key, const std::stri
     QObject* toolBar        = nullptr;
     for (const auto& root: rootObjects)
     {
-        toolBar = root->findChild<QObject*>("toolBar");
+        toolBar = root->findChild<QObject*>("fwGuiQml_ProgressBar");
         if (toolBar)
         {
             break;

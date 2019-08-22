@@ -58,9 +58,10 @@ ApplicationWindow {
         PulseProgressDialogs { }
         SelectorDialogs { }
     }
+
     // this toolbar is for the progressDialog to fill this rectangle
     footer: ToolBar {
-        objectName: "toolBar"
+        objectName: "fwGuiQml_ProgressBar"
         background:  Rectangle {
             implicitHeight: 40
             color: Material.background
