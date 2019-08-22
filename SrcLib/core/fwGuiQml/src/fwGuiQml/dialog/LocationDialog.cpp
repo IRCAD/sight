@@ -37,7 +37,7 @@
 #include <boost/filesystem/path.hpp>
 #include <boost/tokenizer.hpp>
 
-#include <QDebug>
+#include <QDir>
 #include <QGuiApplication>
 
 #include <functional>
@@ -59,13 +59,17 @@ LocationDialog::LocationDialog(::fwGui::GuiBaseObject::Key key)
 
 ::fwData::location::ILocation::sptr LocationDialog::show()
 {
+    // If we don't create an alternative by creating an input dialog to save file,
+    // The application freeze without opening the FileDialog
+    // sight issue: https://git.ircad.fr/Sight/sight/issues/365
+    // for more information: https://bugreports.qt.io/browse/QTBUG-77781
 #ifdef __APPLE__
     if ( !(m_style& ::fwGui::dialog::ILocationDialog::READ) &&
          !(m_style& ::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST))
     {
         const std::string& result = ::fwGui::dialog::InputDialog::showInputDialog(
-            this->getTitle(), "This is a temporary dialog to save file under osX. Write below the path of the file you want to save:",
-            "/home/");
+            this->getTitle(), "This is a temporary dialog to save file under macOS. Write below the path of the file you want to save:",
+            QDir::homePath().toStdString());
         ::boost::filesystem::path bpath( result);
         m_location = ::fwData::location::SingleFile::New(bpath);
         return m_location;
