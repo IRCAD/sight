@@ -155,16 +155,20 @@ void SParameters::starting()
         const std::string key          = cfg.get< std::string >("<xmlattr>.key");
         const std::string type         = cfg.get< std::string >("<xmlattr>.type");
         const std::string defaultValue = cfg.get< std::string >("<xmlattr>.defaultValue");
+        const bool resetButton         = cfg.get< bool >("<xmlattr>.reset", true);
 
-        layout->addWidget(new QLabel(QString(name.c_str())), row, 0);
+        if(name.compare("") != 0)
+        {
+            layout->addWidget(new QLabel(QString(name.c_str())), row, 0);
+        }
 
         if(type == "bool")
         {
-            this->createBoolWidget(*layout, row, key, defaultValue);
+            this->createBoolWidget(*layout, row, key, defaultValue, resetButton);
         }
         else if(type == "color")
         {
-            this->createColorWidget(*layout, row, key, defaultValue);
+            this->createColorWidget(*layout, row, key, defaultValue, resetButton);
         }
         else if(type == "double" || type == "double2" || type == "double3")
         {
@@ -178,7 +182,7 @@ void SParameters::starting()
 
             if(widget == "spin")
             {
-                this->createDoubleWidget(*layout, row, key, defaultValue, min, max, count);
+                this->createDoubleWidget(*layout, row, key, defaultValue, min, max, count, resetButton);
             }
             else if(widget == "slider")
             {
@@ -186,7 +190,7 @@ void SParameters::starting()
                 SLM_ASSERT("Count > 1 is not supported with sliders", count == 1);
 
                 const std::uint8_t decimals = cfg.get< std::uint8_t >("<xmlattr>.decimals", 2);
-                this->createDoubleSliderWidget(*layout, row, key, defaultValue, min, max, decimals);
+                this->createDoubleSliderWidget(*layout, row, key, defaultValue, min, max, decimals, resetButton);
             }
             else
             {
@@ -205,14 +209,14 @@ void SParameters::starting()
 
             if(widget == "spin")
             {
-                this->createIntegerSpinWidget(*layout, row, key, defaultValue, min, max, count);
+                this->createIntegerSpinWidget(*layout, row, key, defaultValue, min, max, count, resetButton);
             }
             else if(widget == "slider")
             {
                 // We don't support multiple sliders because we will not have the room in a single row
                 SLM_ASSERT("Count > 1 is not supported with sliders", count == 1);
 
-                this->createIntegerSliderWidget(*layout, row, key, defaultValue, min, max);
+                this->createIntegerSliderWidget(*layout, row, key, defaultValue, min, max, resetButton);
             }
             else
             {
@@ -772,7 +776,7 @@ QPushButton* SParameters::createResetButton()
 
 void SParameters::createBoolWidget(QGridLayout& layout, int row,
                                    const std::string& key,
-                                   const std::string& defaultValue)
+                                   const std::string& defaultValue, bool _resetButton)
 {
     QCheckBox* checkbox = new QCheckBox();
     checkbox->setTristate(false);
@@ -785,27 +789,26 @@ void SParameters::createBoolWidget(QGridLayout& layout, int row,
 
     checkbox->setProperty("key", QString(key.c_str()));
     checkbox->setProperty("defaultValue", checkbox->checkState());
-
-    // Reset button
-    QPushButton* resetButton = this->createResetButton();
-
     layout.addWidget(checkbox, row, 2);
-    layout.addWidget(resetButton, row, 5);
-
     QObject::connect(checkbox, SIGNAL(stateChanged(int)), this, SLOT(onChangeBoolean(int)));
 
-    // Connect reset button to the slider
-    QObject::connect(resetButton, &QPushButton::clicked, this, [ = ] { onResetBooleanMapped(checkbox); });
+    // Reset button
+    if(_resetButton)
+    {
+        QPushButton* resetButton = this->createResetButton();
+
+        layout.addWidget(resetButton, row, 5);
+
+        // Connect reset button to the slider
+        QObject::connect(resetButton, &QPushButton::clicked, this, [ = ] { onResetBooleanMapped(checkbox); });
+    }
 }
 
 //-----------------------------------------------------------------------------
 
 void SParameters::createColorWidget(QGridLayout& layout, int row, const std::string& key,
-                                    const std::string& defaultValue)
+                                    const std::string& defaultValue, bool _resetButton)
 {
-    // Reset button
-    QPushButton* resetButton = this->createResetButton();
-
     QPushButton* colourButton = new QPushButton("Color");
     colourButton->setObjectName(QString::fromStdString(key));
     colourButton->setToolTip(tr("Selected color"));
@@ -837,24 +840,26 @@ void SParameters::createColorWidget(QGridLayout& layout, int row, const std::str
     colourButton->setProperty("color", colorQt);
 
     layout.addWidget(colourButton, row, 2);
-    layout.addWidget(resetButton, row, 5);
 
     QObject::connect(colourButton, SIGNAL(clicked()), this, SLOT(onColorButton()));
 
-    // Connect reset button to the button
-    QObject::connect(resetButton, &QPushButton::clicked, this, [ = ] { onResetColorMapped(colourButton); });
+    // Reset button
+    if(_resetButton)
+    {
+        QPushButton* resetButton = this->createResetButton();
+
+        layout.addWidget(resetButton, row, 5);
+
+        // Connect reset button to the slider
+        QObject::connect(resetButton, &QPushButton::clicked, this, [ = ] { onResetColorMapped(colourButton); });
+    }
 }
 
 //-----------------------------------------------------------------------------
 
 void SParameters::createDoubleWidget(QGridLayout& layout, int row, const std::string& key,
-                                     double defaultValue, double min, double max, int count)
+                                     double defaultValue, double min, double max, int count, bool _resetButton)
 {
-    // Reset button
-    QPushButton* resetButton = this->createResetButton();
-
-    layout.addWidget(resetButton, row, 5);
-
     QDoubleSpinBox* spinboxes[3];
 
     // Spinboxes
@@ -894,9 +899,6 @@ void SParameters::createDoubleWidget(QGridLayout& layout, int row, const std::st
     QDoubleSpinBox* spinbox = spinboxes[0];
     spinbox->setObjectName(QString::fromStdString(key));
 
-    // Connect reset button to the slider
-    QObject::connect(resetButton, &QPushButton::clicked, this, [ = ] { onResetDoubleMapped(spinbox); });
-
     // Set a property with a pointer on each member of the group
     for(int i = 0; i < count; ++i)
     {
@@ -906,18 +908,25 @@ void SParameters::createDoubleWidget(QGridLayout& layout, int row, const std::st
             spinboxes[i]->setProperty(propName.c_str(), QVariant::fromValue< QDoubleSpinBox*>(spinboxes[j]));
         }
     }
+
+    // Reset button
+    if(_resetButton)
+    {
+        QPushButton* resetButton = this->createResetButton();
+
+        layout.addWidget(resetButton, row, 5);
+
+        // Connect reset button to the slider
+        QObject::connect(resetButton, &QPushButton::clicked, this, [ = ] { onResetDoubleMapped(spinbox); });
+    }
 }
 
 //-----------------------------------------------------------------------------
 
 void SParameters::createDoubleSliderWidget(QGridLayout& layout, int row, const std::string& key,
-                                           double defaultValue, double min, double max, std::uint8_t decimals)
+                                           double defaultValue, double min, double max, std::uint8_t decimals,
+                                           bool _resetButton)
 {
-    // Reset button
-    QPushButton* resetButton = this->createResetButton();
-
-    layout.addWidget(resetButton, row, 5);
-
     const double valueRange = max - min;
 
     QSlider* slider = new QSlider(Qt::Horizontal);
@@ -959,7 +968,6 @@ void SParameters::createDoubleSliderWidget(QGridLayout& layout, int row, const s
     layout.addWidget( slider, row, 2 );
     layout.addWidget( maxValueLabel, row, 3 );
     layout.addWidget( valueLabel, row, 4);
-    layout.addWidget( resetButton, row, 5);
 
     // Connect slider value with our editor
     QObject::connect(slider, SIGNAL(valueChanged(int)), this, SLOT(onChangeDoubleSlider(int)));
@@ -972,20 +980,26 @@ void SParameters::createDoubleSliderWidget(QGridLayout& layout, int row, const s
                                           maxValueLabel, slider);
             });
 
-    QObject::connect(resetButton, &QPushButton::clicked, this, [ = ] { onResetDoubleMapped(slider); });
-
     const std::string propName = std::string("widget#0");
     slider->setProperty(propName.c_str(), QVariant::fromValue< QSlider*>(slider));
+
+    // Reset button
+    if(_resetButton)
+    {
+        QPushButton* resetButton = this->createResetButton();
+
+        layout.addWidget(resetButton, row, 5);
+
+        // Connect reset button to the slider
+        QObject::connect(resetButton, &QPushButton::clicked, this, [ = ] { onResetDoubleMapped(slider); });
+    }
 }
 
 //-----------------------------------------------------------------------------
 
 void SParameters::createIntegerSliderWidget(QGridLayout& layout, int row, const std::string& key,
-                                            int defaultValue, int min, int max)
+                                            int defaultValue, int min, int max, bool _resetButton)
 {
-    // Reset button
-    QPushButton* resetButton = this->createResetButton();
-
     QSlider* slider = new QSlider(Qt::Horizontal);
     slider->setObjectName(QString::fromStdString(key));
     slider->setMinimum(min);
@@ -1016,7 +1030,6 @@ void SParameters::createIntegerSliderWidget(QGridLayout& layout, int row, const 
     layout.addWidget( slider, row, 2 );
     layout.addWidget( maxValueLabel, row, 3 );
     layout.addWidget( valueLabel, row, 4);
-    layout.addWidget( resetButton, row, 5);
 
     slider->setProperty("key", QString(key.c_str()));
     slider->setProperty("count", 1);
@@ -1033,22 +1046,26 @@ void SParameters::createIntegerSliderWidget(QGridLayout& layout, int row, const 
                                     slider);
             });
 
-    QObject::connect(resetButton, &QPushButton::clicked, this, [ = ] { onResetIntegerMapped(slider); });
-
     const std::string propName = std::string("widget#0");
     slider->setProperty(propName.c_str(), QVariant::fromValue< QSlider*>(slider));
+
+    // Reset button
+    if(_resetButton)
+    {
+        QPushButton* resetButton = this->createResetButton();
+
+        layout.addWidget(resetButton, row, 5);
+
+        // Connect reset button to the slider
+        QObject::connect(resetButton, &QPushButton::clicked, this, [ = ] { onResetIntegerMapped(slider); });
+    }
 }
 
 //-----------------------------------------------------------------------------
 
 void SParameters::createIntegerSpinWidget(QGridLayout& layout, int row, const std::string& key,
-                                          int defaultValue, int min, int max, int count)
+                                          int defaultValue, int min, int max, int count, bool _resetButton)
 {
-    // Reset button
-    QPushButton* resetButton = this->createResetButton();
-
-    layout.addWidget(resetButton, row, 5);
-
     QSpinBox* spinboxes[3];
 
     // Spinboxes
@@ -1073,7 +1090,6 @@ void SParameters::createIntegerSpinWidget(QGridLayout& layout, int row, const st
 
     QSpinBox* spinbox = spinboxes[0];
     spinbox->setObjectName(QString::fromStdString(key));
-    QObject::connect(resetButton, &QPushButton::clicked, this, [ = ] { onResetIntegerMapped(spinbox); });
 
     // Set a property with a pointer on each member of the group
     for(int i = 0; i < count; ++i)
@@ -1083,6 +1099,17 @@ void SParameters::createIntegerSpinWidget(QGridLayout& layout, int row, const st
             const std::string propName = std::string("widget#") + std::to_string(j);
             spinboxes[i]->setProperty(propName.c_str(), QVariant::fromValue< QSpinBox*>(spinboxes[j]));
         }
+    }
+
+    // Reset button
+    if(_resetButton)
+    {
+        QPushButton* resetButton = this->createResetButton();
+
+        layout.addWidget(resetButton, row, 5);
+
+        // Connect reset button to the slider
+        QObject::connect(resetButton, &QPushButton::clicked, this, [ = ] { onResetIntegerMapped(spinbox); });
     }
 }
 
