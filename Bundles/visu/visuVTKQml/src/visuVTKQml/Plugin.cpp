@@ -28,7 +28,7 @@
 
 #include <fwVTKQml/FrameBufferItem.hpp>
 
-#include <QApplication>
+#include <QGuiApplication>
 #include <QQmlEngine>
 #include <QSurfaceFormat>
 #include <QVTKOpenGLNativeWidget.h>
@@ -47,11 +47,11 @@ Plugin::Plugin() noexcept
 {
     // Since we share the opengl context with Qt, we must set the default QSurfaceFormat before QApplication
     // to allow QVTKOpenGLWidget to work properly
-    SLM_ASSERT( "QApplication is already created! The default surface format cannot be changed afterward.\n"
+    SLM_ASSERT( "GuiApplication is already created! The default surface format cannot be changed afterward.\n"
                 "This problem can happen when the profile.xml is handwritten and contains 'visuVTKQt' and 'guiQt'.\n"
                 "If that is the case, please ensure that 'visuVTKQt' is started before 'guiQt'.\n"
                 "It could also happen for generated 'profile.xml' files, check it to be sure.",
-                qApp == nullptr );
+                qGuiApp == nullptr );
 
     vtkOpenGLRenderWindow::SetGlobalMaximumNumberOfMultiSamples(0);
     QSurfaceFormat::setDefaultFormat(QVTKOpenGLNativeWidget::defaultFormat());

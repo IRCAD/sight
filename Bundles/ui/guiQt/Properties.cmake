@@ -12,6 +12,7 @@ set( DEPENDENCIES
     fwDataTools
     fwMedData
     fwGui
+    fwQt
     fwGuiQt
     fwRuntime
     fwServices

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -24,7 +24,9 @@
 
 #include <fwNetworkIO/helper/Series.hpp>
 
-#include <fwGuiQt/WorkerQt.hpp>
+#include <fwGuiQt/App.hpp>
+
+#include <fwQt/WorkerQt.hpp>
 
 #include <fwServices/registry/ActiveWorkers.hpp>
 
@@ -92,7 +94,12 @@ void ClientQtTest::setUp()
 #endif
 
     CPPUNIT_ASSERT(qApp == NULL);
-    m_worker = ::fwGuiQt::getQtWorker(argc, argv, false);
+    std::function<QSharedPointer<QCoreApplication>(int&, char**)> callback
+        = [this](int& argc, char** argv)
+          {
+              return QSharedPointer< QApplication > (new ::fwGuiQt::App(argc, argv, false));
+          };
+    m_worker = ::fwQt::getQtWorker(argc, argv, callback, "", "");
 
     m_server.moveToThread(&m_thread);
     m_thread.connect(&m_thread, &QThread::started, [ = ] {m_server.listen(); });
