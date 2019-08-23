@@ -89,7 +89,7 @@ void MeshPickerInteractor::buttonPressEvent(MouseButton _button, int _x, int _y)
                 info.m_modifierMask |= ::fwDataTools::PickingInfo::CTRL;
 
                 // Deprecated statement
-                if(m_sigAddPointDeprecated->getNumberOfConnections() > 0)
+                if(m_sigAddPointDeprecated->getNumberOfConnections() > 1)
                 {
                     FW_DEPRECATED_MSG(
                         "This signal is deprecated. You should use `IPickerInteractor::picked(::fwDataTools::PickingInfo)`",
@@ -103,7 +103,7 @@ void MeshPickerInteractor::buttonPressEvent(MouseButton _button, int _x, int _y)
                 }
             }
             // Deprecated statement
-            else if(m_sigRemovePointDeprecated->getNumberOfConnections() > 0)
+            else if(m_sigRemovePointDeprecated->getNumberOfConnections() > 1)
             {
                 FW_DEPRECATED_MSG(
                     "This signal is deprecated. You should use `IPickerInteractor::picked(::fwDataTools::PickingInfo)`",
