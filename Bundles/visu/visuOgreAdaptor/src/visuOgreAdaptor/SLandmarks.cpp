@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -39,6 +39,8 @@ namespace visuOgreAdaptor
 fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SLandmarks);
 
 static const std::string s_LANDMARKS_INPUT = "landmarks";
+
+static const std::string s_TEXT_SIZE_CONFIG = "textSize";
 
 //-----------------------------------------------------------------------------
 
@@ -84,6 +86,8 @@ void SLandmarks::configuring()
 
     this->setTransformId(config.get<std::string>( ::fwRenderOgre::ITransformable::s_TRANSFORM_CONFIG,
                                                   this->getID() + "_transform"));
+
+    m_textSize = config.get<float>(s_TEXT_SIZE_CONFIG, m_textSize);
 }
 
 //-----------------------------------------------------------------------------
@@ -155,8 +159,9 @@ void SLandmarks::updating()
                     = ::Ogre::ColourValue(group.m_color[0], group.m_color[1], group.m_color[2], group.m_color[3]);
 
                 text->setText(groupName + "_" + std::to_string(index));
-                text->setCharHeight(0.025f);
+                text->setCharHeight(m_textSize);
                 text->setTextColor(color);
+                text->setVisible(group.m_visibility);
 
                 switch(group.m_shape)
                 {
@@ -189,6 +194,7 @@ void SLandmarks::updating()
 
                 node->attachObject(object);
                 node->attachObject(text);
+                node->setVisible(group.m_visibility);
 
                 const ::fwData::Landmarks::PointType& point = landmarks->getPoint(groupName, index);
                 node->setPosition(::Ogre::Real(point[0]), ::Ogre::Real(point[1]), ::Ogre::Real(point[2]));

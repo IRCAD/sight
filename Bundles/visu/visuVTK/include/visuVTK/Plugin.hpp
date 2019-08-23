@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -24,6 +24,8 @@
 
 #include "visuVTK/config.hpp"
 
+#include <fwRenderVTK/vtk/Instantiator.hpp>
+
 #include <fwRuntime/Plugin.hpp>
 
 namespace visuVTK
@@ -43,6 +45,9 @@ struct VISUVTK_CLASS_API Plugin : public ::fwRuntime::Plugin
 
     /// Overrides
     VISUVTK_API void stop() noexcept;
+
+    /// Pointer to our "sight" vtk factory.
+    ::fwRenderVTK::vtk::Instantiator* m_factory;
 
 };
 

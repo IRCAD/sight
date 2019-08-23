@@ -12,7 +12,11 @@
             <object uid="imageVideo" type="::fwData::Image" />
             <object uid="pointcloud" type="::fwData::Mesh" src="deferred" />
             <object uid="RGBDCameraSeries" type="::arData::CameraSeries" />
+            <object uid="RGBCamera" type="::arData::Camera" src="deferred" />
+            <object uid="DCamera" type="::arData::Camera" src="deferred" />
             <object uid="identity" type="::fwData::TransformationMatrix3D" />
+            <object uid="3dCameraTrf" type="::fwData::TransformationMatrix3D" />
+            <object uid="depth_to_color" type="::fwData::TransformationMatrix3D" src="deferred"/>
 
             <!-- Transfer function to visualize depth images -->
             <object uid="tfDepth" type="::fwData::TransferFunction">
@@ -34,36 +38,90 @@
                         <icon>ExRealSense-@PROJECT_VERSION@/exrgbdstream.ico</icon>
                         <minSize width="1280" height="720" />
                     </frame>
+                    <menuBar/>
                     <toolBar/>
                 </gui>
                 <registry>
+                    <menuBar sid="menuBar" start="yes" />
                     <toolBar sid="toolbar" start="yes" />
                     <view sid="scanningView" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="menuBar" type="::gui::aspect::SDefaultMenuBar">
+                <gui>
+                    <layout>
+                        <menu name="File" />
+                        <menu name="Options" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menu sid="menuFile" start="yes" />
+                    <menu sid="menuOptions" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="menuFile" type="::gui::aspect::SDefaultMenu">
+                <gui>
+                    <layout>
+                        <menuItem name="Recording Path..." shortcut="Ctrl+S" />
+                        <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="setRecordingPath" start="yes" />
+                    <menuItem sid="actionQuit" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="menuOptions" type="::gui::aspect::SDefaultMenu">
+                <gui>
+                    <layout>
+                        <menuItem name="Filters settings..." style="check"/>
+                        <menuItem name="Show Points on Depth" style="check"/>
+                        <menuItem name="Show Points on Color" style="check" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="showFilterSettings" start="yes" />
+                    <menuItem sid="showPCDepth" start="yes" />
+                    <menuItem sid="showPCColor" start="yes" />
                 </registry>
             </service>
 
             <service uid="toolbar" type="::gui::aspect::SDefaultToolBar">
                 <gui>
                     <layout>
+                        <editor />
                         <menuItem name="start" icon="arMedia-0.1/icons/start-cam.svg" />
                         <menuItem name="pause" icon="arMedia-0.1/icons/pause-cam.svg" />
                         <menuItem name="stop" icon="arMedia-0.1/icons/stop-cam.svg" />
+                        <menuItem name="record" icon="arMedia-0.1/icons/start-record.svg" icon2="arMedia-0.1/icons/stop.svg" style="check" />
                         <separator/>
                         <editor />
                         <editor />
                         <editor />
+                        <editor />
                         <separator/>
                         <editor />
+                        <spacer />
+                        <menuItem name="Configure recording path" icon="arMedia-0.1/icons/save.svg" />
+                        <menuItem name="Show/hide filter Settings" icon="media-0.1/icons/Settings.svg" style="check" />
                     </layout>
                 </gui>
                 <registry>
+                    <editor sid="cameraSelector" start="yes" />
                     <menuItem sid="startVideo" start="yes" />
                     <menuItem sid="pauseVideo" start="yes" />
                     <menuItem sid="stopVideo" start="yes" />
+                    <menuItem sid="record" start="yes" />
                     <editor sid="presets" start="yes" />
+                    <editor sid="alignment" start="yes" />
                     <editor sid="infraredEmitter" start="yes" />
                     <editor sid="switchInfraToColor" start="yes" />
                     <editor sid="distance" start="yes"/>
+                    <menuItem sid="setRecordingPath" />
+                    <menuItem sid="showFilterSettings" />
                 </registry>
             </service>
 
@@ -75,10 +133,27 @@
                         <view proportion="50" />
                         <view proportion="50" />
                     </layout>
+                    <slideView align="right" size="400" opacity="1">
+                        <styleSheet>
+                            <![CDATA[
+                            #SlideBar{
+                                background-color: #dddddd;
+                                border: 0;
+                            }
+                            #SlideBar QGroupBox {
+                                background-color: #eeeeee;
+                                border-radius: 10px;
+                                margin-left: 10;
+                                margin-right: 10;
+                            }
+                            ]]>
+                        </styleSheet>
+                    </slideView>
                 </gui>
                 <registry>
                     <view sid="RGBDView" start="yes" />
                     <view sid="PointcloudView" start="yes" />
+                    <slideView sid="filterSettings" start="yes" />
                 </registry>
             </service>
 
@@ -96,7 +171,6 @@
                 </registry>
             </service>
 
-
             <service uid="PointcloudView" type="::gui::view::SDefaultView">
                 <gui>
                     <layout type="::fwGui::LineLayoutManager">
@@ -111,6 +185,28 @@
                 </registry>
             </service>
 
+            <service uid="filterSettings" type="::gui::view::SDefaultView">
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="vertical" />
+                        <view proportion="0" />
+                        <view proportion="0" caption="" />
+                        <view proportion="0" />
+                        <view proportion="0" caption="" />
+                        <view proportion="0" />
+                        <view proportion="0" caption="" />
+                        <spacer />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="enableSpacialFilterParams" start="yes" />
+                    <view sid="spacialFilterParams" start="yes" />
+                    <view sid="enableTemporalFilterParams" start="yes" />
+                    <view sid="temporalFilterParams" start="yes" />
+                    <view sid="enableHoleFillingFilterParams" start="yes" />
+                    <view sid="holeFillingFilterParams" start="yes" />
+                </registry>
+            </service>
 
             <!-- ***************************************** Begin render scenes declarations ***************************************** -->
             <!-- *************************** Begin generic scene *************************** -->
@@ -118,8 +214,12 @@
             <service uid="distanceMapRender" type="::fwRenderOgre::SRender" >
                 <scene>
                     <layer id="video" depth="1"/>
+                    <layer id="AR" depth="2"/>
                     <adaptor uid="depthAdaptor" />
                     <adaptor uid="interactorStyle" />
+                    <adaptor uid="ardInteractorStyle" />
+                    <adaptor uid="pointcloudAdptARD" />
+                    <adaptor uid="cameraAdaptorARD" />
                 </scene>
             </service>
 
@@ -133,14 +233,32 @@
                 <config layer="video" movement="Fixed" />
             </service>
 
+            <service uid="ardInteractorStyle" type="::visuOgreAdaptor::SInteractorStyle">
+                <config layer="AR" movement="Fixed" />
+            </service>
+
+            <service uid="pointcloudAdptARD" type="::visuOgreAdaptor::SPointList"  autoConnect="yes" >
+                <in key="mesh" uid="pointcloud" />
+                <config layer="AR" autoresetcamera="no" radius="1" visible="false" />
+            </service>
+
+            <service uid="cameraAdaptorARD" type="::visuOgreAdaptor::SCamera">
+                <inout key="transform" uid="identity" />
+                <in key="calibration" uid="DCamera" /> <!-- Projection matrix of Depth/Infrared Sensor -->
+                <config layer="AR" />
+            </service>
 
             <!-- *************************** Begin generic scene *************************** -->
 
             <service uid="videoViewRender" type="::fwRenderOgre::SRender" >
                 <scene>
                     <layer id="video" depth="1"/>
+                    <layer id="AR"    depth="2" />
                     <adaptor uid="videoAdaptor" />
                     <adaptor uid="videoInteractorStyle" />
+                    <adaptor uid="arInteractorStyle" />
+                    <adaptor uid="pointcloudAdptAR" />
+                    <adaptor uid="cameraAdaptorAR" />
                 </scene>
             </service>
 
@@ -153,6 +271,20 @@
                 <config layer="video" movement="Fixed" />
             </service>
 
+            <service uid="arInteractorStyle" type="::visuOgreAdaptor::SInteractorStyle">
+                <config layer="AR" movement="Fixed" />
+            </service>
+
+            <service uid="pointcloudAdptAR" type="::visuOgreAdaptor::SPointList"  autoConnect="yes" >
+                <in key="mesh" uid="pointcloud" />
+                <config layer="AR" autoresetcamera="no" radius="1" visible="false" />
+            </service>
+
+            <service uid="cameraAdaptorAR" type="::visuOgreAdaptor::SCamera">
+                <inout key="transform" uid="identity" />
+                <in key="calibration" uid="RGBCamera" /> <!-- Projection matrix of Color Sensor -->
+                <config layer="AR" />
+            </service>
 
             <service uid="3D" type="::fwRenderOgre::SRender" >
                 <scene>
@@ -164,21 +296,29 @@
 
             <service uid="pointcloudAdpt" type="::visuOgreAdaptor::SPointList"  autoConnect="yes" >
                 <in key="mesh" uid="pointcloud" />
-                <config layer="default" autoresetcamera="no" radius="0.001" color="#00FF00FF"/>
+                <config layer="default" autoresetcamera="no" radius="1" />
             </service>
 
             <service uid="cameraAdaptor" type="::visuOgreAdaptor::SCamera">
-                <inout key="transform" uid="identity" />
-              <config layer="default" />
+                <inout key="transform" uid="3dCameraTrf" />
+                <config layer="default" />
             </service>
 
-
+            <!-- *************************** Begin scanning services declarations ***************************************** -->
+            
             <service uid="presets" type="::guiQt::editor::SParameters">
                 <parameters>
                     <param type="enum" name="Realsense presets" key="preset" defaultValue="Default"
                     values="Default,HighResHighAccuracy,HighResHighDensity,HighResMidDensity,MidResHighAccuracy,
                     MidResHighDensity,MidResMidDensity,LowResHighAccuracy,LowResHighDensity,LowResMidDensity,
                     Hand,ShortRange,BodyScan,RemoveIR"/>
+                </parameters>
+            </service>
+
+            <service uid="alignment" type="::guiQt::editor::SParameters">
+                <parameters>
+                    <param type="enum" name="Align frames to" key="alignTo" defaultValue="None"
+                    values="None,Color,Depth,Infrared" />
                 </parameters>
             </service>
 
@@ -201,12 +341,53 @@
                 </parameters>
             </service>
 
-            <service uid="distance" type="::uiTools::editor::STextStatus">
-                <label>Distance To Center (mm)</label>
+            <service uid="enableSpacialFilterParams" type="::guiQt::editor::SParameters">
+                <parameters>
+                    <param type="bool" name="Enable spatial Edge-Preserving filter" key="enableSpacial"      defaultValue="false" />
+                </parameters>
             </service>
 
+            <service uid="enableTemporalFilterParams" type="::guiQt::editor::SParameters">
+                <parameters>
+                    <param type="bool" name="Enable temporal filter"                key="enableTemporal"     defaultValue="false" />
+                </parameters>
+            </service>
 
-            <!-- *************************** Begin scanning services declarations ***************************************** -->
+            <service uid="enableHoleFillingFilterParams" type="::guiQt::editor::SParameters">
+                <parameters>
+                    <param type="bool" name="Enable holes Filling filter"           key="enableHolesFilling" defaultValue="false" />
+                </parameters>
+            </service>
+
+            <service uid="spacialFilterParams" type="::guiQt::editor::SParameters">
+                <parameters>
+                    <param type="int"    name="Number of iterations"  key="spacialMagnitude"    defaultValue="2"   min="1" max="5" />
+                    <param type="double" name="Smooth Alpha"          key="spacialSmoothAlpha"  defaultValue="0.5" min="0.25" max="1"  widget="slider" />
+                    <param type="int"    name="Smooth Delta"          key="spacialSmoothDelta"  defaultValue="20"  min="1" max="50" />
+                    <param type="enum"   name="Hole filling (pixels)" key="spacialHoleFilling"  defaultValue="0"   values="0,2,4,8,16,unlimited" />
+                </parameters>
+            </service>
+
+            <service uid="temporalFilterParams" type="::guiQt::editor::SParameters">
+                <parameters>
+                    <param type="double" name="Smooth Alpha"        key="temporalSmoothAlpha"  defaultValue="0.4" min="0" max="1" widget="slider" />
+                    <param type="int"    name="Smooth Delta"        key="temporalSmoothDelta"  defaultValue="20"  min="1" max="100" />
+                    <param type="enum"   name="Persistency index"   key="temporalPersistency"  defaultValue="Valid_in_2/last_3"
+                           values="Disabled,Valid_in_8/8 ,Valid_in_2/last_3,Valid_in_2/last_4,Valid_in_2/8,Valid_in_1/last_2,Valid_in_1/last_5,
+                                   Valid_in_1/last_8,Persist_Indefinitely" />
+                </parameters>
+            </service>
+
+            <service uid="holeFillingFilterParams" type="::guiQt::editor::SParameters">
+                <parameters>
+                    <param type="enum" name="Hole filling" key="holeFilling"  defaultValue="farest_from_around"   values="fill_from_left,farest_from_around,nearest_from_around" />
+                </parameters>
+            </service>
+
+            <service uid="distance" type="::uiTools::editor::STextStatus">
+                <label>Distance To Center (mm)</label>
+            </service> 
+            
             <service uid="synchronizer" type="::videoTools::SFrameMatrixSynchronizer" worker="synchronizer">
                 <in group="frameTL">
                     <key uid="frameTLVideo" />
@@ -218,15 +399,39 @@
                 </inout>
             </service>
 
+            <!-- GUI to select camera (device, file, or stream) -->
+            <service uid="cameraSelector" type="::videoQt::editor::SCamera">
+                <inout key="cameraSeries" uid="RGBDCameraSeries" />
+                <createCameraNumber>2</createCameraNumber>
+                <videoSupport>yes</videoSupport>
+            </service>
+
+            <!-- extract a ::arData::Camera from the ::arData::CameraSeries -->
+             <service uid="extractor" type="::ctrlCamp::SExtractObj">
+                 <inout key="source" uid="RGBDCameraSeries" autoConnect="yes">
+                     <extract from="@cameras.0" /> <!-- Camp path of the first camera in cameraSeries -->
+                     <extract from="@cameras.1" /> <!-- Camp path of the first camera in cameraSeries -->
+                     <extract from="@extrinsic_matrices.1" />
+                 </inout>
+                 <out group="target">
+                     <key uid="DCamera" /> <!-- Depth/Infrared1 Camera -->
+                     <key uid="RGBCamera" /> <!-- Color Camera -->
+                     <key uid="depth_to_color" /> <!-- Infrared1 to Color coordinate frame -->
+                 </out>
+             </service>
+
             <!-- Manages Sense camera configuration -->
             <service uid="grabber" type="::videoRealSense::SScan" worker="grabber">
-                <in key="camera" uid="RGBDCameraSeries" />
+                <inout key="cameraSeries" uid="RGBDCameraSeries" />
                 <inout key="depthTL" uid="frameTLDepth" />
                 <inout key="frameTL" uid="frameTLVideo" />
                 <out key="pointcloud" uid="pointcloud"/>
             </service>
 
             <!-- ***************************************** Begin actions ******************************************* -->
+
+            <service uid="actionQuit" type="::gui::action::SQuit" />
+
             <service uid="startVideo" type="::gui::action::SSlotCaller">
                 <slots>
                     <slot>startVideo/setInexecutable</slot>
@@ -251,24 +456,85 @@
                 </slots>
             </service>
 
+            <service uid="record" type="::gui::action::SSlotCaller">
+                <slots>
+                    <slot>grabber/record</slot>
+                </slots>
+            </service>
+
+            <service uid="setRecordingPath" type="::gui::action::SSlotCaller">
+                <slots>
+                    <slot>grabber/configureRecordingPath</slot>
+                </slots>
+            </service>
+
+            <service uid="showPCDepth" type="::gui::action::SBooleanSlotCaller">
+                <slots>
+                    <slot>pointcloudAdptARD/updateVisibility</slot>
+                </slots>
+                <state active="false" />
+            </service>
+
+            <service uid="showPCColor" type="::gui::action::SBooleanSlotCaller">
+                <slots>
+                    <slot>pointcloudAdptAR/updateVisibility</slot>
+                </slots>
+                <state active="false" />
+            </service>
+
+            <!-- Show/hide the parameters view -->
+
+            <service uid="showFilterSettings" type="::gui::action::SBooleanSlotCaller">
+                <slots>
+                    <slot>filterSettings/setVisible</slot>
+                </slots>
+            </service>
+
+
             <connect>
                 <signal>presets/enumChanged</signal>
+                <signal>alignment/enumChanged</signal>
                 <slot>grabber/setEnumParameter</slot>
             </connect>
 
             <connect>
-                <signal>infraredEmitter/boolChanged</signal>
-                <slot>grabber/setBoolParameter</slot>
-            </connect>
-
-            <connect>
-                <signal>switchInfraToColor/boolChanged</signal>
-                <slot>grabber/setBoolParameter</slot>
+                 <signal>infraredEmitter/boolChanged</signal>
+                 <signal>switchInfraToColor/boolChanged</signal>
+                 <signal>enableSpacialFilterParams/boolChanged</signal>
+                 <signal>enableTemporalFilterParams/boolChanged</signal>
+                 <signal>enableHoleFillingFilterParams/boolChanged</signal>
+                 <slot>grabber/setBoolParameter</slot>
             </connect>
 
             <connect>
                 <signal>rangeEditor/intChanged</signal>
+                <signal>spacialFilterParams/intChanged</signal>
+                <signal>spacialFilterParams/enumIndexChanged</signal>
+                <signal>temporalFilterParams/intChanged</signal>
+                <signal>temporalFilterParams/enumIndexChanged</signal>
+                <signal>holeFillingFilterParams/enumIndexChanged</signal>
                 <slot>grabber/setIntParameter</slot>
+            </connect>
+
+            <connect>
+                <signal>spacialFilterParams/doubleChanged</signal>
+                <signal>temporalFilterParams/doubleChanged</signal>
+                <slot>grabber/setDoubleParameter</slot>
+            </connect>
+
+            <connect>
+                <signal>enableSpacialFilterParams/boolChanged</signal>
+                <slot>spacialFilterParams/setEnabled</slot>
+            </connect>
+
+            <connect>
+                <signal>enableTemporalFilterParams/boolChanged</signal>
+                <slot>temporalFilterParams/setEnabled</slot>
+            </connect>
+
+            <connect>
+                <signal>enableHoleFillingFilterParams/boolChanged</signal>
+                <slot>holeFillingFilterParams/setEnabled</slot>
             </connect>
 
             <connect>
@@ -276,20 +542,57 @@
                 <slot>distance/setDoubleParameter</slot>
             </connect>
 
+            <connect>
+                <signal>camera1/idModified</signal>
+                <slot>frameGrabber1/stopCamera</slot>
+                <slot>frameGrabber2/stopCamera</slot>
+            </connect>
+
+            <connect>
+                <signal>grabber/filePlayed</signal>
+                <slot>record/setInexecutable</slot>
+                <slot>infraredEmitter/disable</slot>
+                <slot>presets/disable</slot>
+                <slot>rangeEditor/disable</slot>
+                <slot>setRecordingPath/setInexecutable</slot>
+            </connect>
+
+            <connect>
+                <signal>grabber/devicePlayed</signal>
+                <slot>record/setExecutable</slot>
+                <slot>infraredEmitter/enable</slot>
+                <slot>presets/enable</slot>
+                <slot>rangeEditor/enable</slot>
+                <slot>setRecordingPath/setExecutable</slot>
+            </connect>
+
             <!-- layouts -->
             <start uid="mainView" />
             <start uid="synchronizer" />
             <start uid="grabber" />
+            <start uid="extractor" />
 
             <!-- Ogre scene 'distanceMapRender' -->
             <start uid="depthAdaptor" />
             <start uid="interactorStyle" />
+            <start uid="ardInteractorStyle" />
+            <start uid="pointcloudAdptARD" />
+            <start uid="cameraAdaptorARD" />
+
             <!-- Ogre scene 'videoViewRender' -->
             <start uid="videoAdaptor" />
             <start uid="videoInteractorStyle" />
+            <start uid="arInteractorStyle" />
+            <start uid="pointcloudAdptAR" />
+            <start uid="cameraAdaptorAR" />
+
             <!-- Ogre scene '3d' -->
             <start uid="pointcloudAdpt" />
             <start uid="cameraAdaptor" />
+
+            <update uid="enableSpacialFilterParams" />
+            <update uid="enableTemporalFilterParams" />
+            <update uid="enableHoleFillingFilterParams" />
 
         </config>
     </extension>

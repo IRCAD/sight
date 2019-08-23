@@ -1,14 +1,5 @@
 fwLoadProperties()
 
-find_package(OpenCV QUIET REQUIRED core calib3d)
-find_package(Qt5 QUIET COMPONENTS Test REQUIRED)
+find_package(OpenCV QUIET REQUIRED COMPONENTS opencv_calib3d)
 
-fwForwardInclude(
-    ${OpenCV_INCLUDE_DIRS}
-)
-
-fwForwardLink(
-    opencv_core
-    opencv_calib3d
-    Qt5::Test
-)
+target_link_libraries(${FWPROJECT_NAME} PUBLIC opencv_calib3d)

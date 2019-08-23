@@ -6,7 +6,6 @@
     <xi:include href="configurations/calibration.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/calIntrinsicView.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/calExtrinsicView.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
-    <xi:include href="configurations/calCameraView.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/displayImageConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/displayTwoImagesConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/calibrationEdition.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
@@ -83,6 +82,16 @@
                 <parameter replace="cameraSeries" by="@values.cameraSeries" />
             </parameters>
         </appConfig>
+    </extension>
+
+    <!-- Service config used grab infrared frames from RealSense camera without the IR emitter -->
+    <extension implements="::fwServices::registry::ServiceConfig">
+        <id>InfraredRealsenseGrabberConfig</id>
+        <service>::videoRealSense::SScan</service>
+        <desc>Infrared grabber without IR emitter </desc>
+        <config>
+            <config fps="30" colorW="1280" colorH="720" depthW="1280" depthH="720" switchToIR="true" IREmitter="false" />
+        </config>
     </extension>
 
 </plugin>

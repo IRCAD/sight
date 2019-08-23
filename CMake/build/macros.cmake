@@ -11,7 +11,7 @@ endif()
 
 # Define the path 'FW_EXTERNAL_LIBRARIES_DIR' used to find external libraries required by our applications
 macro(setExternalLibrariesDir)
-    if(USE_CONAN)
+    if(NOT USE_SYSTEM_LIB)
         if(FW_BUILD_EXTERNAL)
             if(WIN32)
                 set(FW_EXTERNAL_LIBRARIES_DIR "${Sight_BINARY_DIR}")
@@ -25,12 +25,6 @@ macro(setExternalLibrariesDir)
                 set(FW_EXTERNAL_LIBRARIES_DIR "${CONAN_LIB_DIRS}")
             endif()
         endif()
-    else()
-        if(WIN32)
-            set(FW_EXTERNAL_LIBRARIES_DIR "${EXTERNAL_LIBRARIES}/bin")
-        else()
-            set(FW_EXTERNAL_LIBRARIES_DIR "${EXTERNAL_LIBRARIES}/lib")
-        endif()
     endif()
 endmacro()
 
@@ -38,6 +32,7 @@ include(${FWCMAKE_INSTALL_FILES_DIR}/helper.cmake)
 include(${FWCMAKE_BUILD_FILES_DIR}/plugin_config.cmake)
 include(${FWCMAKE_BUILD_FILES_DIR}/profile_config.cmake)
 include(${FWCMAKE_INSTALL_FILES_DIR}/generic_install.cmake)
+include(${FWCMAKE_INSTALL_FILES_DIR}/get_git_rev.cmake)
 
 file(REMOVE "${CMAKE_BINARY_DIR}/cmake/SightRequirements.cmake")
 
@@ -278,6 +273,22 @@ macro(fwExec FWPROJECT_NAME PROJECT_VERSION)
         unset(FW_EXTERNAL_LIBRARIES_DIRS)
         file(COPY ${CMAKE_CURRENT_BINARY_DIR}/${${FWPROJECT_NAME}_SCRIPT} DESTINATION ${CMAKE_BINARY_DIR}/bin
             FILE_PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
+
+        if(MSVC_IDE)
+            set(LAUNCHER "${CMAKE_BINARY_DIR}/bin/${FWPROJECT_NAME}")
+            set(PROFILE "")
+            set(WORKING_DIRECTORY "${CMAKE_BINARY_DIR}")
+            if(CMAKE_CL_64)
+                set(PLATFORM "x64")
+            else()
+                set(PLATFORM "Win32")
+            endif()
+            configure_file(
+                "${CMAKE_SOURCE_DIR}/CMake/build/project.vcxproj.user.in"
+                "${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/${FWPROJECT_NAME}.vcxproj.user"
+                IMMEDIATE @ONLY)
+        endif()
+
     endif()
 
     if(${FWPROJECT_NAME}_INSTALL OR BUILD_SDK)
@@ -379,11 +390,6 @@ macro(fwCppunitTest FWPROJECT_NAME)
         set(PROFILE "")
         set(WORKING_DIRECTORY "${CMAKE_BINARY_DIR}")
         include(${FWCMAKE_RESOURCE_PATH}/install/win_install.cmake)
-        if(NOT DEBUGGER_ENVIRONMENT)
-            findExtLibDir(EXTERNAL_LIBRARIES_DIRECTORIES)
-            set(DEBUGGER_ENVIRONMENT ${EXTERNAL_LIBRARIES_DIRECTORIES}
-                CACHE INTERNAL "List of all folders containing external libraries")
-        endif()
         if(CMAKE_CL_64)
             set(PLATFORM "x64")
         else()
@@ -638,11 +644,6 @@ macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
             set(PROFILE "${CMAKE_BINARY_DIR}/${FWBUNDLE_RC_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}/profile.xml")
             set(WORKING_DIRECTORY "${CMAKE_BINARY_DIR}")
             include(${FWCMAKE_RESOURCE_PATH}/install/win_install.cmake)
-            if(NOT DEBUGGER_ENVIRONMENT)
-                findExtLibDir(EXTERNAL_LIBRARIES_DIRECTORIES)
-                set(DEBUGGER_ENVIRONMENT ${EXTERNAL_LIBRARIES_DIRECTORIES}
-                    CACHE INTERNAL "List of all folders containing external libraries")
-            endif()
             if(CMAKE_CL_64)
                 set(PLATFORM "x64")
             else()
@@ -702,16 +703,54 @@ macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
     if(${FWPROJECT_NAME}_INSTALL OR BUILD_SDK)
         createResourcesInstallTarget( "${${FWPROJECT_NAME}_RC_BUILD_DIR}" "${FWBUNDLE_RC_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}" )
     endif()
+
+    if(${FWPROJECT_NAME}_BUNDLE_DEPENDENCIES)
+        message(WARNING "Bundle ${FWPROJECT_NAME} links with other bundles (${${FWPROJECT_NAME}_BUNDLE_DEPENDENCIES}), "
+                        "this feature will be removed in version 21.0 of Sight")
+    endif()
 endmacro()
 
 # Include the projects in parameter and export them.
 # Compiling warnings will not be reported (because of SYSTEM).
 macro(fwForwardInclude)
-    target_include_directories(${FWPROJECT_NAME} SYSTEM PUBLIC ${ARGV})
+    foreach(INCLUDE ${ARGV})
+        # Do not expose the dependencies in the install interface (for the SDK)
+        target_include_directories(${FWPROJECT_NAME} SYSTEM PUBLIC $<BUILD_INTERFACE:${INCLUDE}>)
+
+        string(REGEX MATCH "/usr" IS_LIB_SYSTEM ${INCLUDE})
+        if(IS_LIB_SYSTEM)
+            # Let the absolute directly for system libraries
+            target_include_directories(${FWPROJECT_NAME} SYSTEM PUBLIC $<INSTALL_INTERFACE:${INCLUDE}>)
+        else()
+            # Make the include path relative to the install location for the libraries that we build
+            string(REGEX REPLACE "(.*)(include.*)" "\\2" RELATIVE_INCLUDE ${INCLUDE})
+            target_include_directories(${FWPROJECT_NAME} SYSTEM PUBLIC $<INSTALL_INTERFACE:${RELATIVE_INCLUDE}>)
+        endif()
+    endforeach()
 endmacro()
 
 macro(fwForwardLink)
-    target_link_libraries(${FWPROJECT_NAME} PUBLIC ${ARGV})
+    set(PREFIX "")
+    foreach(LIB ${ARGV})
+        if(${LIB} STREQUAL "debug" OR ${LIB} STREQUAL "optimized" OR ${LIB} STREQUAL "general")
+            set(PREFIX ${LIB})
+        else()
+            # Do not expose the dependencies in the install interface (for the SDK)
+            target_link_libraries(${FWPROJECT_NAME} PUBLIC ${PREFIX} $<BUILD_INTERFACE:${LIB}>)
+
+            string(REGEX MATCH "/usr" IS_LIB_SYSTEM ${LIB})
+            if(IS_LIB_SYSTEM)
+                # Let the absolute path for system libraries
+                target_link_libraries(${FWPROJECT_NAME} PUBLIC ${PREFIX} $<INSTALL_INTERFACE:${LIB}>)
+            else()
+                # Make the path relative to the install location for the libraries that we build
+                # If the input is a lib module and not a path, the string will not be changed, which is ok
+                string(REGEX REPLACE "(.*)(lib/.*)" "\\2" RELATIVE_INCLUDE ${LIB})
+                target_link_libraries(${FWPROJECT_NAME} PUBLIC ${PREFIX} $<INSTALL_INTERFACE:${RELATIVE_LIB}>)
+            endif()
+            set(PREFIX "")
+        endif()
+    endforeach()
 endmacro()
 
 # Include the projects in parameter but do not export them.
@@ -883,6 +922,7 @@ macro(loadProperties PROPERTIES_FILE)
     unset(START_BEFORE)
     unset(PLUGINS)
     unset(CONAN_DEPS)
+    unset(WARNINGS_AS_ERRORS)
 
     include("${PROPERTIES_FILE}")
 endmacro()
@@ -923,6 +963,8 @@ macro(fwLoadProperties)
         endif()
     endif()
 
+    fwManageWarnings(${NAME})
+
     if(DEPENDENCIES)
         fwUse( ${DEPENDENCIES} )
     endif()
@@ -935,7 +977,7 @@ macro(fwLoadProperties)
     endif()
 
     # Generate batch script to ease the set of PATH in order to launch a Sight application on Windows.
-    if(WIN32 AND USE_CONAN)
+    if(WIN32)
         configure_file(${FWCMAKE_RESOURCE_PATH}/install/windows/setpath.bat.in ${CMAKE_BINARY_DIR}/bin/setpath.bat @ONLY)
     endif()
 endmacro()
@@ -994,13 +1036,19 @@ macro(addProject PROJECT)
     unset(PROJECT_CACHE)
 endmacro()
 
-# Macro that allows to skip the find_package(PCL) which is very slow
-macro(fwQuickFindPCL)
-    if(NOT PCL_FOUND)
-        message(SEND_ERROR "PCL not found")
+# Treat warnings as errors if requested
+#   to activate "warning as errors", simply write in the Properties.cmake of your project:
+#   set(WARNINGS_AS_ERRORS ON)
+macro(fwManageWarnings PROJECT)
+    if(${${PROJECT}_WARNINGS_AS_ERRORS})
+        if(MSVC)
+            if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 19.14)
+                target_compile_options(${PROJECT} PRIVATE /WX)
+            else()
+                message(WARNING "Your version of MSVC is too old to use WARNINGS_AS_ERRORS.")
+            endif()
+        elseif(CMAKE_COMPILER_IS_GNUCXX OR "${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+            target_compile_options(${PROJECT} PRIVATE "-Werror")
+        endif ()
     endif()
-
-    # This is necessary for now to run this, at least on Linux, in order to resolve the version number of the libraries,
-    # .i.e from -lvtksys to -lvtksys7.1
-    find_package(VTK QUIET)
 endmacro()

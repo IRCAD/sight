@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -49,7 +49,7 @@ namespace visuOgreAdaptor
  * @section XML XML Configuration
  * @code{.xml}
     <service uid="..." type="::visuOgreAdaptor::SLine">
-        <config layer="default" transform="transformUID" length="30" color="#0000FF"/>
+        <config layer="default" transform="transformUID" length="30" dashLength="2.5" color="#0000FF" dashed="false" />
     </service>
    @endcode
  * @subsection Configuration Configuration:
@@ -57,13 +57,17 @@ namespace visuOgreAdaptor
  * - \b transform (optional): the name of the Ogre transform node where to attach the mesh, as it was specified
  * in the STransform adaptor
  * - \b length (optional): (float) length of the line in mm (default 50)
+ * - \b dashLength (optional): (float) length of a dash
+ * - \b color (optional): (string) color of the line
+ * - \b dashed (optional): (bool) display a dashed line instead of a solid line
  *
  */
+
 class VISUOGREADAPTOR_CLASS_API SLine : public ::fwRenderOgre::IAdaptor,
                                         public ::fwRenderOgre::ITransformable
 {
 public:
-    fwCoreServiceClassDefinitionsMacro((SLine)(::fwRenderOgre::IAdaptor));
+    fwCoreServiceClassDefinitionsMacro((SLine)(::fwRenderOgre::IAdaptor))
 
     /// Constructor: Sets default parameters and initializes necessary members.
     VISUOGREADAPTOR_API SLine() noexcept;
@@ -102,6 +106,9 @@ private:
     /// Attach a node in the scene graph
     void attachNode(::Ogre::MovableObject* _node);
 
+    /// Draw a line
+    void drawLine(bool);
+
     /**
      * @name Slots methods
      * @{
@@ -113,16 +120,23 @@ private:
     /** @} */
 
     /// Pointer to the Material data
-    ::fwData::Material::sptr m_material;
+    ::fwData::Material::sptr m_material {nullptr};
+
+    /// Material Adaptor
+    ::visuOgreAdaptor::SMaterial::sptr m_materialAdaptor {nullptr};
 
     /// ManualObject defining the SLine
-    ::Ogre::ManualObject* m_line;
+    ::Ogre::ManualObject* m_line {nullptr};
     /// Handles the length of the line (in mm)
-    float m_length;
+    float m_length {50.f};
     /// Handles the color of the line
     ::Ogre::ColourValue m_color;
     /// Handles the visibility of the line
-    bool m_isVisible;
+    bool m_isVisible {true};
+    /// Display a dashed line instead of a solid line
+    bool m_dashed {false};
+    /// Length of a dash
+    float m_dashLength {2.5f};
 
 };
 

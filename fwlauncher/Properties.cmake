@@ -4,7 +4,8 @@ set( VERSION 0.1 )
 set( TYPE EXECUTABLE )
 set( DEPENDENCIES fwCore fwRuntime )
 set( REQUIREMENTS  )
+set( WARNINGS_AS_ERRORS ON)
 
 set( CONAN_DEPS
-    boost/1.67.0@sight/stable
+    ${CONAN_BOOST}
 )

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -66,12 +66,15 @@ public:
 
     fwCoreServiceClassDefinitionsMacro((SFrustum)(::fwRenderOgre::IAdaptor))
 
-    /// Slot to enable/disable visibility
+    /**
+     * @name Slots API
+     * @{
+     */
+    /// Enable/disable visibility
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT;
-    typedef ::fwCom::Slot<void (bool)> UpdateVisibilitySlotType;
-    /// Slot to toggle visibility
+    /// Toggle visibility
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_TOGGLE_VISIBILITY_SLOT;
-    typedef ::fwCom::Slot<void ()> ToggleVisibilitySlotType;
+    /** @} */
 
     /// Constructor: Sets default parameters and initializes necessary members.
     VISUOGREADAPTOR_API SFrustum() noexcept;
@@ -81,19 +84,10 @@ public:
     /// Connect ::fwData::Object::s_MODIFIED_SIG and s_INTRINSIC_CALIBRATED_SIG of the camera data to s_UPDATE_SLOT
     VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
-    /// Sets visibility of the frustum
+    /// Slot: Sets visibility of the frustum
     VISUOGREADAPTOR_API void updateVisibility(bool);
-    /// Toggles visibility of the frustum
+    /// Slot: Toggles visibility of the frustum
     VISUOGREADAPTOR_API void toggleVisibility();
-
-    /// Key for the camera
-    VISUOGREADAPTOR_API static const std::string s_CAMERA_INPUT;
-    /// Key for the near plane
-    VISUOGREADAPTOR_API static const std::string s_NEAR_CONFIG;
-    /// Key for the far plane
-    VISUOGREADAPTOR_API static const std::string s_FAR_CONFIG;
-    /// Key for color
-    VISUOGREADAPTOR_API static const std::string s_COLOR_CONFIG;
 
 private:
 
@@ -110,17 +104,17 @@ private:
     void setOgreCamFromData();
 
     /// Ogre's camera (frustum) representing arData::Camera position and parameters
-    ::Ogre::Camera* m_ogreCamera;
+    ::Ogre::Camera* m_ogreCamera {nullptr};
     /// Pointer to the Material data
-    ::fwData::Material::sptr m_material;
+    ::fwData::Material::sptr m_material {nullptr};
     /// Hides or displays the frustum
-    bool m_visibility;
+    bool m_visibility {true};
     /// Near clipping
-    float m_near;
+    float m_near {1.f};
     /// Far clipping
-    float m_far;
+    float m_far {20.f};
     /// Color of frustum
-    std::string m_color;
+    std::string m_color {"#ff0000ff"};
 
 };
 

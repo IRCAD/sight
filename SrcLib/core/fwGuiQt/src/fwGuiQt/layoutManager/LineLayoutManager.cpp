@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -91,6 +91,10 @@ void LineLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr pare
             }
             panel->setMinimumSize(std::max(viewInfo.m_minSize.first, 0), std::max(viewInfo.m_minSize.second, 0));
             panel->setContentsMargins(border, border, border, border);
+            if(!viewInfo.m_toolTip.empty())
+            {
+                panel->setToolTip(QString::fromStdString(viewInfo.m_toolTip));
+            }
 
             ::fwGuiQt::container::QtContainer::sptr subContainer = ::fwGuiQt::container::QtContainer::New();
             subContainer->setQtContainer(panel);
@@ -130,4 +134,3 @@ void LineLayoutManager::destroyLayout()
 //-----------------------------------------------------------------------------
 
 } // namespace fwGui
-

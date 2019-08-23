@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -34,6 +34,7 @@
 #include <fwData/Boolean.hpp>
 #include <fwData/Material.hpp>
 #include <fwData/Mesh.hpp>
+#include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/Reconstruction.hpp>
 
 #include <fwMedData/ModelSeries.hpp>
@@ -117,6 +118,7 @@ void SModelSeries::updating()
 {
     ::fwMedData::ModelSeries::csptr modelSeries = this->getInput< ::fwMedData::ModelSeries >(s_MODEL_INPUT);
     SLM_ASSERT("Missing ModelSeries '" + s_MODEL_INPUT + "'", modelSeries);
+    ::fwData::mt::ObjectReadLock lock(modelSeries);
 
     this->stopping();
 
@@ -183,6 +185,7 @@ void SModelSeries::showReconstructions(bool show)
 {
     ::fwMedData::ModelSeries::csptr modelSeries = this->getInput< ::fwMedData::ModelSeries >(s_MODEL_INPUT);
     SLM_ASSERT("Missing ModelSeries '" + s_MODEL_INPUT + "'", modelSeries);
+    ::fwData::mt::ObjectReadLock lock(modelSeries);
 
     auto subServices = this->getRegisteredServices();
     for( auto& wService :  subServices)
@@ -206,7 +209,10 @@ void SModelSeries::showReconstructions(bool show)
 void SModelSeries::showReconstructionsOnFieldChanged()
 {
     const auto modelSeries = this->getInput< ::fwMedData::ModelSeries >(s_MODEL_INPUT);
-    const bool show        = modelSeries->getField("ShowReconstructions", ::fwData::Boolean::New(true))->value();
+    SLM_ASSERT("Missing ModelSeries '" + s_MODEL_INPUT + "'", modelSeries);
+    ::fwData::mt::ObjectReadLock lock(modelSeries);
+
+    const bool show = modelSeries->getField("ShowReconstructions", ::fwData::Boolean::New(true))->value();
 
     auto subServices = this->getRegisteredServices();
     for( auto& wService : subServices)

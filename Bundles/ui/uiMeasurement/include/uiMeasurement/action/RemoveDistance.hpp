@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -40,21 +40,40 @@ namespace action
 
 /**
  * @brief   This action removes distances from the image field.
+ * Choose between removing a selected point or the last added point
+ *
+ * @section Slots Slots
+ * - \b removeLastDistance: Remove the last added point
  *
  * @section XML XML Configuration
  *
+ * Example to remove a selected point:
  * @code{.xml}
    <service type="::uiMeasurement::action::RemoveDistance">
        <inout key="image" uid="..." />
    </service>
    @endcode
+ *
+ * Example to remove the last added point:
+ * @code{.xml}
+    <service uid="removeDistanceAct" type="::uiMeasurement::action::RemoveDistance">
+            <inout key="image" uid="${image}" />
+    </service>
+
+    <service uid="removeLastDistance" type="::gui::action::SSlotCaller">
+        <slots>
+            <slot>removeDistanceAct/removeLastDistance</slot>
+        </slots>
+    </service>
+   @endcode
  * @subsection In-Out In-Out
  * - \b image [::fwData::Image]: image containing the distance field.
  */
+
 class UIMEASUREMENT_CLASS_API RemoveDistance : public ::fwGui::IActionSrv
 {
 public:
-    fwCoreServiceClassDefinitionsMacro( (RemoveDistance)( ::fwGui::IActionSrv) );
+    fwCoreServiceClassDefinitionsMacro( (RemoveDistance)( ::fwGui::IActionSrv) )
 
     UIMEASUREMENT_API RemoveDistance() noexcept;
 
@@ -74,6 +93,9 @@ private:
     void notifyNewDistance(const ::fwData::Image::csptr& image, const ::fwData::PointList::sptr& distance) const;
 
     void notifyDeleteDistance(const ::fwData::Image::csptr& image, const ::fwData::PointList::csptr& distance) const;
+
+    /// Removes the last added distance
+    void removeLastDistance();
 };
 
 } // namespace action

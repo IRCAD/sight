@@ -13,13 +13,12 @@ set( DEPENDENCIES
     fwMath
     fwCom
     arData
-    cvIO
     eigenTools
     calibration3d
 )
 
 set( REQUIREMENTS )
 set( CONAN_DEPS
-    eigen/3.3.4@sight/stable
-    opencv/3.4.3-r2@sight/stable
+    ${CONAN_EIGEN}
+    ${CONAN_OPENCV}
 )

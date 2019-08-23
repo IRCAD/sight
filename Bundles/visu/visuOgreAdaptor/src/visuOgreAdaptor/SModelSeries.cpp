@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -32,6 +32,7 @@
 #include <fwData/Boolean.hpp>
 #include <fwData/Material.hpp>
 #include <fwData/Mesh.hpp>
+#include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/Reconstruction.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
 
@@ -115,8 +116,11 @@ void SModelSeries::updating()
 {
     // Retrieves the associated Sight ModelSeries object
     const auto modelSeries = this->getInput< ::fwMedData::ModelSeries >(s_MODEL_INPUT);
+    SLM_ASSERT("'" + s_MODEL_INPUT + "' input not found", modelSeries);
 
     this->stopping();
+
+    ::fwData::mt::ObjectReadLock lock(modelSeries);
 
     // showRec indicates if we have to show the associated reconstructions or not
     const bool showRec = modelSeries->getField("ShowReconstructions", ::fwData::Boolean::New(true))->value();
@@ -169,7 +173,11 @@ void SModelSeries::showReconstructions(bool _show)
 void SModelSeries::showReconstructionsOnFieldChanged()
 {
     const auto modelSeries = this->getInput< ::fwMedData::ModelSeries >(s_MODEL_INPUT);
-    const bool showRec     = modelSeries->getField("ShowReconstructions", ::fwData::Boolean::New(true))->value();
+    SLM_ASSERT("'" + s_MODEL_INPUT + "' input not found", modelSeries);
+
+    ::fwData::mt::ObjectReadLock lock(modelSeries);
+
+    const bool showRec = modelSeries->getField("ShowReconstructions", ::fwData::Boolean::New(true))->value();
 
     auto adaptors = this->getRegisteredServices();
     for(auto adaptor : adaptors)

@@ -41,8 +41,7 @@ class AppConfigTest : public CPPUNIT_NS::TestFixture
 CPPUNIT_TEST_SUITE( AppConfigTest );
 CPPUNIT_TEST( addConfigTest );
 CPPUNIT_TEST( parametersConfigTest );
-// Disable startStopTest because it fails randomly on a busy computer (see #72)
-//CPPUNIT_TEST( startStopTest );
+CPPUNIT_TEST( startStopTest );
 CPPUNIT_TEST( autoConnectTest );
 CPPUNIT_TEST( connectionTest );
 CPPUNIT_TEST( optionalKeyTest );

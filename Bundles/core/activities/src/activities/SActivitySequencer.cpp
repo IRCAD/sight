@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017 IRCAD France
- * Copyright (C) 2017 IHU Strasbourg
+ * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -63,6 +63,7 @@ const ::fwCom::Slots::SlotKeyType s_PREVIOUS_SLOT  = "previous";
 const ::fwCom::Slots::SlotKeyType s_SEND_INFO_SLOT = "sendInfo";
 
 const ::fwCom::Signals::SignalKeyType s_ACTIVITY_CREATED_SIG = "activityCreated";
+const ::fwCom::Signals::SignalKeyType s_DATA_REQUIRED_SIG    = "dataRequired";
 const ::fwCom::Signals::SignalKeyType s_ENABLED_PREVIOUS_SIG = "enabledPrevious";
 const ::fwCom::Signals::SignalKeyType s_ENABLED_NEXT_SIG     = "enabledNext";
 
@@ -79,6 +80,7 @@ SActivitySequencer::SActivitySequencer() noexcept :
     newSlot(s_SEND_INFO_SLOT, &SActivitySequencer::sendInfo, this);
 
     m_sigActivityCreated = newSignal< ActivityCreatedSignalType >(s_ACTIVITY_CREATED_SIG);
+    m_sigDataRequired    = newSignal< DataRequiredSignalType >(s_DATA_REQUIRED_SIG);
     m_sigEnabledPrevious = newSignal< EnabledPreviousSignalType >(s_ENABLED_PREVIOUS_SIG);
     m_sigEnabledNext     = newSignal< EnabledNextSignalType >(s_ENABLED_NEXT_SIG);
 }
@@ -94,7 +96,7 @@ SActivitySequencer::~SActivitySequencer() noexcept
 void SActivitySequencer::configuring()
 {
     const ::fwServices::IService::ConfigType config = this->getConfigTree();
-    BOOST_FOREACH( const ::fwServices::IService::ConfigType::value_type &v,  config.equal_range("activity") )
+    BOOST_FOREACH( const ::fwServices::IService::ConfigType::value_type& v,  config.equal_range("activity") )
     {
         m_activityIds.push_back(v.second.get<std::string>(""));
     }
@@ -158,7 +160,19 @@ void SActivitySequencer::updating()
         const size_t index = static_cast<size_t>(m_currentActivity);
         ::fwMedData::ActivitySeries::sptr lastActivity = this->getActivity(index);
 
-        m_sigActivityCreated->asyncEmit(lastActivity);
+        if (this->checkValidity(lastActivity, false))
+        {
+            m_sigActivityCreated->asyncEmit(lastActivity);
+        }
+        else
+        {
+            m_sigDataRequired->asyncEmit(lastActivity);
+        }
+    }
+    else
+    {
+        // launch the first activity
+        next();
     }
 }
 
@@ -186,6 +200,10 @@ void SActivitySequencer::next()
 
         ++m_currentActivity;
     }
+    else
+    {
+        m_sigDataRequired->asyncEmit(activity);
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -207,6 +225,10 @@ void SActivitySequencer::previous()
         m_sigActivityCreated->asyncEmit(activity);
 
         --m_currentActivity;
+    }
+    else
+    {
+        m_sigDataRequired->asyncEmit(activity);
     }
 }
 

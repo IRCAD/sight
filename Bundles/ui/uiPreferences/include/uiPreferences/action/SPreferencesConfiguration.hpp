@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -103,7 +103,7 @@ class UIPREFERENCES_CLASS_API SPreferencesConfiguration : public QObject,
 Q_OBJECT
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SPreferencesConfiguration)(::fwGui::IActionSrv) );
+    fwCoreServiceClassDefinitionsMacro( (SPreferencesConfiguration)(::fwGui::IActionSrv) )
 
     /// Constructor. Do nothing.
     UIPREFERENCES_API SPreferencesConfiguration() noexcept;

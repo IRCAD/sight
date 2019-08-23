@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -312,7 +312,7 @@ void AppManager::addObject(::fwData::Object::sptr obj, const std::string& id)
                 // Register the key on the service
                 srv->registerObject(obj, objCfg.m_key, objCfg.m_access, objCfg.m_autoConnect, objCfg.m_optional);
 
-                if (objCfg.m_optional)
+                if (objCfg.m_optional && srv->isStarted())
                 {
                     // Call the swapping callback of the service and wait for it
                     srv->swapKey(objCfg.m_key, ::fwData::Object::constCast(registeredObj)).wait();
@@ -380,7 +380,7 @@ void AppManager::removeObject(::fwData::Object::sptr obj, const std::string& id)
 
                     srv->unregisterObject(objCfg.m_key, objCfg.m_access);
 
-                    if (objCfg.m_optional)
+                    if (objCfg.m_optional && srv->isStarted())
                     {
                         srv->swapKey(objCfg.m_key, obj).wait();
                     }
@@ -443,6 +443,14 @@ void AppManager::internalAddService(const ::fwServices::IService::sptr& srv, con
 
             // Register the key on the service
             srv->registerObject(obj.second, objCfg.m_key, objCfg.m_access, objCfg.m_autoConnect, objCfg.m_optional);
+        }
+    }
+    if(autoStart && m_isStarted && srv->hasAllRequiredObjects())
+    {
+        this->start(info);
+        if (info.m_autoUpdate)
+        {
+            srv->update().wait();
         }
     }
 }

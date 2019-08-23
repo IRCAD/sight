@@ -7,6 +7,6 @@ set( REQUIREMENTS  )
 
 if(WIN32)
     set( CONAN_DEPS
-        zlib/1.2.11@sight/stable
+        ${CONAN_ZLIB}
     )
 endif()

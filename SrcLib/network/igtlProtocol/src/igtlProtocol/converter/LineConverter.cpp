@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -28,7 +28,7 @@
 
 #include <boost/numeric/conversion/cast.hpp>
 
-#include <igtl/igtlPositionMessage.h>
+#include <igtlPositionMessage.h>
 
 #include <algorithm>
 
@@ -56,7 +56,8 @@ LineConverter::~LineConverter()
 ::igtl::MessageBase::Pointer LineConverter::fromFwDataObject(::fwData::Object::csptr src) const
 {
     float pos[3];
-    float direction[3];
+    float direction[4];
+
     ::igtl::PositionMessage::Pointer dest;
     ::fwData::Line::csptr srcLine = ::fwData::Line::dynamicConstCast(src);
 
@@ -68,7 +69,7 @@ LineConverter::~LineConverter()
                    srcLine->getDirection()->getCoord().end(), &direction[0],
                    ::boost::numeric_cast<double, float>);
     dest->SetPosition(pos);
-    dest->SetQuaternion(direction);
+    dest->SetQuaternion(direction);  // We use the quaternion to store the direction
     return ::igtl::MessageBase::Pointer(dest.GetPointer());
 }
 
@@ -77,7 +78,7 @@ LineConverter::~LineConverter()
 ::fwData::Object::sptr LineConverter::fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const
 {
     float igtlPos[3];
-    float igtlDirection[3];
+    float igtlDirection[4];
 
     ::fwData::Line::sptr dest                = ::fwData::Line::New();
     ::igtl::PositionMessage*  msg            = dynamic_cast< ::igtl::PositionMessage* >(src.GetPointer());

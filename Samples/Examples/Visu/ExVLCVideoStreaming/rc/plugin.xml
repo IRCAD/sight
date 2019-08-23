@@ -1,0 +1,150 @@
+<plugin id="ExVLCVideoStreaming" version="@PROJECT_VERSION@">
+
+    <requirement id="dataReg" />
+    <requirement id="arDataReg" />
+    <requirement id="servicesReg" />
+    <requirement id="visuVTKQt" />
+    <requirement id="arMedia" />
+    <requirement id="preferences" />
+
+    <extension implements="::fwServices::registry::AppConfig">
+        <id>ExVLCVideoStreamingConfig</id>
+        <config>
+            <object uid="camera" type="::arData::Camera" />
+            <object uid="frameTL" type="::arData::FrameTL">
+                <value>100</value>
+            </object>
+
+            <object uid="videoImage" type="::fwData::Image" />
+            <service uid="mainFrame" type="::gui::frame::SDefaultFrame">
+                <gui>
+                    <frame>
+                        <name>ExVLCVideoStreaming</name>
+                        <icon>ExVLCVideoStreaming-0.1/exvlcvideostreaming.ico</icon>
+                    </frame>
+                    <toolBar/>
+                </gui>
+                <registry>
+                    <toolBar sid="toolbar" start="yes" />
+                    <view sid="genericScene" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="toolbar" type="::gui::aspect::SDefaultToolBar">
+                <gui>
+                    <layout>
+                        <editor/>
+                        <menuItem name="start" icon="arMedia-0.1/icons/start-cam.svg" />
+                        <menuItem name="stop" icon="arMedia-0.1/icons/stop-cam.svg" />
+                        <menuItem name="pause" icon="arMedia-0.1/icons/pause-cam.svg" />
+                        <separator/>
+                        <menuItem name="configure streamer" icon="media-0.1/icons/Settings.svg" />
+                    </layout>
+                </gui>
+                <registry>
+                    <editor sid="CameraSelector" start="yes" />
+                    <menuItem sid="startVideo" start="yes" />
+                    <menuItem sid="stopVideo" start="yes" />
+                    <menuItem sid="pauseVideo" start="yes" />
+                    <menuItem sid="configureStreamer" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="configureStreamer" type="::uiPreferences::action::SPreferencesConfiguration">
+                <preference>
+                    <type>text</type>
+                    <name>Multicast IP address</name>
+                    <key>MULTICAST_ADDR_KEY</key>
+                    <default_value>224.0.1.200</default_value>
+                </preference>
+                <preference>
+                    <type>int</type>
+                    <name>Multicast port</name>
+                    <key>MULTICAST_PORT_KEY</key>
+                    <default_value>9090</default_value>
+                </preference>
+            </service>
+
+            <service uid="startVideo" type="::gui::action::SSlotCaller">
+                <slots>
+                    <slot>frameGrabber/startCamera</slot>
+                    <slot>startVideo/setInexecutable</slot>
+                </slots>
+            </service>
+
+            <service uid="stopVideo" type="::gui::action::SSlotCaller">
+                <slots>
+                    <slot>frameGrabber/stopCamera</slot>
+                    <slot>startVideo/setExecutable</slot>
+                </slots>
+            </service>
+
+            <service uid="pauseVideo" type="::gui::action::SSlotCaller">
+                <slots>
+                    <slot>frameGrabber/pauseCamera</slot>
+                </slots>
+            </service>
+
+            <!-- *************************** Begin generic scene *************************** -->
+
+            <service uid="genericScene" type="::fwRenderVTK::SRender" >
+                <scene>
+                    <renderer id="default" background="0.0" />
+                    <adaptor uid="videoAdpt" />
+                    <adaptor uid="interactorStyle" />
+                </scene>
+            </service>
+
+            <service uid="videoAdpt" type="::visuVTKARAdaptor::SVideo" autoConnect="yes">
+                <in key="frame" uid="videoImage" />
+                <config renderer="default" />
+            </service>
+
+            <service uid="interactorStyle" type="::visuVTKAdaptor::SInteractorStyle">
+                <config renderer="default" style="InteractorStyle2DForNegato" />
+            </service>
+
+            <!-- *************************** End generic scene *************************** -->
+
+            <service uid="synchronizer" type="::videoTools::SFrameMatrixSynchronizer" worker="videoWorker">
+                <in group="frameTL">
+                    <key uid="frameTL" />
+                </in>
+                <inout group="image">
+                    <key uid="videoImage" />
+                </inout>
+                <framerate>30</framerate>
+            </service>
+
+            <service uid="CameraSelector" type="::videoQt::editor::SCamera">
+                <inout key="camera" uid="camera" />
+                <videoSupport>yes</videoSupport>
+            </service>
+
+            <service uid="frameGrabber" type="::videoVLC::SFrameGrabber">
+                <in key="camera" uid="camera" />
+                <inout key="frameTL" uid="frameTL" autoConnect="yes" />
+            </service>
+
+            <service uid="frameStreamer" type="::videoVLC::SFrameStreamer">
+                <in key="frameTL" uid="frameTL" autoConnect="yes" />
+                <port>%MULTICAST_PORT_KEY%</port>
+                <outAddr>%MULTICAST_ADDR_KEY%</outAddr>
+            </service>
+
+            <connect>
+                <signal>camera/idModified</signal>
+                <slot>frameGrabber/stopCamera</slot>
+            </connect>
+
+            <start uid="mainFrame" />
+            <start uid="frameGrabber" />
+            <start uid="frameStreamer" />
+            <start uid="synchronizer" />
+
+            <!-- VTK scene 'genericScene' -->
+            <start uid="videoAdpt" />
+            <start uid="interactorStyle" />
+        </config>
+    </extension>
+</plugin>

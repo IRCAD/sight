@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -69,6 +69,12 @@ class vtkPropCollection;
 class vtkPolyData;
 class vtkPoints;
 
+namespace fwRenderVTK
+{
+
+namespace vtk
+{
+
 class FWRENDERVTK_CLASS_API fwVtkPicker : public vtkPicker
 {
 public:
@@ -104,3 +110,7 @@ private:
     fwVtkPicker(const fwVtkPicker&); // Not implemented.
     void operator=(const fwVtkPicker&); // Not implemented.
 };
+
+} // namespace vtk
+
+} // namespace fwRenderVTK

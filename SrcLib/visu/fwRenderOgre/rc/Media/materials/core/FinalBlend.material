@@ -5,7 +5,12 @@ material FinalBlend
     {
         pass
         {
-            scene_blend src_alpha one_minus_src_alpha
+            // We want to blend colors using alpha blending but no the opacity.
+            // This works because we expect the background to be fully opaque (=1),
+            // which would always result in an output opacity of 1.
+            separate_scene_blend src_alpha one_minus_src_alpha zero one
+            // Disable alpha writing. (redundant with the blend settings but could help performances on some platforms).
+            colour_write on on on off
 
             vertex_program_ref RenderQuad_VP
             {

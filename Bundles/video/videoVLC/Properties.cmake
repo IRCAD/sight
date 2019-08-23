@@ -11,11 +11,11 @@ set( DEPENDENCIES
     fwData
     fwDataTools
     fwRuntime
+    fwPreferences
     fwServices
     fwTools
 )
 set( REQUIREMENTS )
 
-if(WIN32 OR APPLE)
-  set( CONAN_DEPS vlc/3.0.4-r1@sight/stable )
-endif()
+set( CONAN_DEPS ${CONAN_VLC} )
+

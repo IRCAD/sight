@@ -12,6 +12,7 @@ set( DEPENDENCIES
     fwDataTools
     fwMedData
     fwGui
+    fwQt
     fwGuiQt
     fwRuntime
     fwServices
@@ -26,6 +27,6 @@ set( PLUGINS
     styles
 )
 set( CONAN_DEPS
-    boost/1.67.0@sight/stable
-    qt/5.11.2@sight/stable
+    ${CONAN_BOOST}
+    ${CONAN_QT}
 )

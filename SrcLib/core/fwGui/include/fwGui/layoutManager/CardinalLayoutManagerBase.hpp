@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -84,6 +84,7 @@ public:
         int m_row;
         std::pair< bool, std::string >   m_caption;
         bool m_useScrollBar;
+        std::string m_toolTip;
     };
 
     /// Constructor. Do nothing.
@@ -125,6 +126,7 @@ public:
      *   - \b row : use to place several view next to each other (available only with wxWidget). See wxAuiManager in
      * wxWidgets documenattion for more details
      *   - \b visible  {true | yes | false | no} : define if the view is visible or not.
+     *   - \b toolTip : string that will be displayed next to the mouse pointer when it lies over the view.
      */
 
     FWGUI_API virtual void initialize( ConfigurationType configuration) override;

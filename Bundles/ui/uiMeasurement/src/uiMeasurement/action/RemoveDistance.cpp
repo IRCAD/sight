@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -23,6 +23,7 @@
 #include "uiMeasurement/action/RemoveDistance.hpp"
 
 #include <fwCom/Signal.hxx>
+#include <fwCom/Slots.hxx>
 
 #include <fwCore/base.hpp>
 
@@ -50,12 +51,15 @@ namespace action
 
 fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiMeasurement::action::RemoveDistance, ::fwData::Image );
 
+static const ::fwCom::Slots::SlotKeyType s_REMOVE_LAST_DISTANCE_SLOT = "removeLastDistance";
+
 static const ::fwServices::IService::KeyType s_IMAGE_INOUT = "image";
 
 //------------------------------------------------------------------------------
 
 RemoveDistance::RemoveDistance( ) noexcept
 {
+    newSlot(s_REMOVE_LAST_DISTANCE_SLOT, &RemoveDistance::removeLastDistance, this);
 }
 
 //------------------------------------------------------------------------------
@@ -187,6 +191,30 @@ void RemoveDistance::updating( )
 
             image->removeField( ::fwDataTools::fieldHelper::Image::m_imageDistancesId );
             this->notifyNewDistance(image, backupDistance);
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void RemoveDistance::removeLastDistance()
+{
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    SLM_ASSERT("The inout key '" + s_IMAGE_INOUT + "' is not defined.", image);
+
+    ::fwData::Vector::sptr vectDist;
+    vectDist = image->getField< ::fwData::Vector >(::fwDataTools::fieldHelper::Image::m_imageDistancesId);
+
+    if (::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image)
+        && vectDist)
+    {
+        ::fwData::PointList::sptr distToRemove = ::fwData::PointList::dynamicCast(*(*vectDist).rbegin());
+
+        if ( distToRemove)
+        {
+            ::fwData::Vector::IteratorType newEnd = std::remove(vectDist->begin(), vectDist->end(), distToRemove);
+            vectDist->getContainer().erase(newEnd, vectDist->end());
+            this->notifyDeleteDistance(image, distToRemove);
         }
     }
 }

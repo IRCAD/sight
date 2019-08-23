@@ -6,10 +6,10 @@ set( DEPENDENCIES fwCore )
 set( REQUIREMENTS  )
 set( USE_PCH_FROM_TARGET fwCore )
 set( CONAN_DEPS
-    boost/1.67.0@sight/stable
+    ${CONAN_BOOST}
 )
 
 if(WIN32)
-    list(APPEND CONAN_DEPS winiconv/0.0.8@sight/stable)
-    list(APPEND CONAN_DEPS libxml2/2.9.8@sight/stable)
+    list(APPEND CONAN_DEPS ${CONAN_WINICONV})
+    list(APPEND CONAN_DEPS ${CONAN_LIBXML2})
 endif()

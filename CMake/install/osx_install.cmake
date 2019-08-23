@@ -12,7 +12,7 @@ function(osx_install PRJ_NAME)
 
     set_source_files_properties(${${PRJ_NAME}_ICON_PATH} PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
 
-    if(NOT BUILD_SDK AND TARGET fwlauncher)
+    if(TARGET fwlauncher)
         if("${${PRJ_NAME}_TYPE}" STREQUAL  "APP")
             # create a new executable equivalent to fwLauncher
             add_executable(${EXECUTABLE_NAME} MACOSX_BUNDLE ${fwlauncher_HEADERS} ${fwlauncher_SOURCES} ${${PRJ_NAME}_ICON_PATH})
@@ -111,7 +111,7 @@ function(osx_install PRJ_NAME)
             set(BU_CHMOD_BUNDLE_ITEMS ON)
 
             include(BundleUtilities)
-            fixup_bundle(\"${APP_INSTALL_PATH}\" \"\${BUNDLES_TO_FIX};\${QTPLUGINS};\${QMLPLUGINS};\${OGREPLUGINS}\" \"${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR};${EXTERNAL_LIBRARIES}/lib;\${BUNDLES_FOLDERS}\")
+            fixup_bundle(\"${APP_INSTALL_PATH}\" \"\${BUNDLES_TO_FIX};\${QTPLUGINS};\${QMLPLUGINS};\${OGREPLUGINS}\" \"${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR};${FW_EXTERNAL_LIBRARIES_DIRS};\${BUNDLES_FOLDERS}\")
 
             execute_process(
                 COMMAND sh -c \"find . -type f -name '*.dylib'|sed 's/\\\\.[0-9].*//g'|sort|uniq -d|xargs -I{} -n1 find . -path '{}.*' | paste -d ' ' - -| sed 's/^/ln -s -f /' | sh \"
@@ -129,7 +129,7 @@ function(osx_install PRJ_NAME)
 
         execute_process( COMMAND uname -m COMMAND tr -d '\n' OUTPUT_VARIABLE ARCHITECTURE )
 
-        set(CPACK_PACKAGE_FILE_NAME "${PRJ_NAME}-${VERSION}-macos_${ARCHITECTURE}")
+        set(CPACK_PACKAGE_FILE_NAME "${PRJ_NAME}-${VERSION}-macos_${ARCHITECTURE}-Sight_${GIT_TAG}")
         set(CPACK_PACKAGE_VENDOR "IRCAD-IHU")
         set(CPACK_PACKAGE_NAME "${PRJ_NAME}")
         set(CPACK_PACKAGE_VERSION "${VERSION}")
@@ -137,4 +137,4 @@ function(osx_install PRJ_NAME)
         include(CPack)
     endif()
 
-endfunction(osx_install)
+endfunction()

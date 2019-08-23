@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -21,10 +21,9 @@
  ***********************************************************************/
 
 #include "fwTest/generator/SeriesDB.hpp"
+
 #include "fwTest/generator/Image.hpp"
 #include "fwTest/generator/Mesh.hpp"
-
-#include <fwTools/Type.hpp>
 
 #include <fwData/Composite.hpp>
 #include <fwData/Image.hpp>
@@ -33,17 +32,18 @@
 #include <fwData/Reconstruction.hpp>
 #include <fwData/String.hpp>
 
-#include <fwMedData/SeriesDB.hpp>
-#include <fwMedData/Series.hpp>
+#include <fwMedData/ActivitySeries.hpp>
+#include <fwMedData/Equipment.hpp>
 #include <fwMedData/ImageSeries.hpp>
 #include <fwMedData/ModelSeries.hpp>
-#include <fwMedData/ActivitySeries.hpp>
-#include <fwMedData/Study.hpp>
 #include <fwMedData/Patient.hpp>
-#include <fwMedData/Equipment.hpp>
+#include <fwMedData/Series.hpp>
+#include <fwMedData/SeriesDB.hpp>
+#include <fwMedData/Study.hpp>
+
+#include <fwTools/Type.hpp>
 
 #include <sstream>
-
 
 namespace fwTest
 {
@@ -58,21 +58,21 @@ namespace generator
 {
     Image::initRand();
     ::fwMedData::SeriesDB::sptr seriesDB = ::fwMedData::SeriesDB::New();
-    for (unsigned char nb = 0; nb<nbImgSeries; ++nb)
+    for (unsigned char nb = 0; nb < nbImgSeries; ++nb)
     {
         ::fwMedData::Series::sptr imgSeries;
         imgSeries = SeriesDB::createImageSeries();
         seriesDB->getContainer().push_back(imgSeries);
     }
 
-    for (unsigned char nb = 0; nb<nbModelSeries; ++nb)
+    for (unsigned char nb = 0; nb < nbModelSeries; ++nb)
     {
         ::fwMedData::Series::sptr modelSeries;
-        modelSeries = SeriesDB::createModelSeries(rand()%15+1);
+        modelSeries = SeriesDB::createModelSeries(rand()%5+1);
         seriesDB->getContainer().push_back(modelSeries);
     }
 
-    for (unsigned char nb = 0; nb<nbActivitySeries; ++nb)
+    for (unsigned char nb = 0; nb < nbActivitySeries; ++nb)
     {
         ::fwMedData::Series::sptr activitySeries;
         activitySeries = SeriesDB::createActivitySeries();
@@ -141,7 +141,6 @@ namespace generator
     return equipment;
 }
 
-
 //------------------------------------------------------------------------------
 
 void SeriesDB::generateSeriesInformation(::fwMedData::Series::sptr series)
@@ -200,7 +199,7 @@ void SeriesDB::generateSeriesInformation(::fwMedData::Series::sptr series)
     SeriesDB::generateSeriesInformation(modelSeries);
 
     ::fwMedData::ModelSeries::ReconstructionVectorType recDB;
-    for (unsigned char nb = 0; nb<nbReconstruction; ++nb)
+    for (unsigned char nb = 0; nb < nbReconstruction; ++nb)
     {
         ::fwData::Reconstruction::sptr rec = ::fwData::Reconstruction::New();
 

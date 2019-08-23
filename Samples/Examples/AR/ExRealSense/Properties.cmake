@@ -13,8 +13,11 @@ set( REQUIREMENTS
     dataReg
     servicesReg
 
+    ctrlCamp
+
     gui
     guiQt
+    media
 
     uiTools
 
@@ -24,6 +27,7 @@ set( REQUIREMENTS
 
     videoRealSense
     videoTools
+    videoQt
 
     arMedia
 )

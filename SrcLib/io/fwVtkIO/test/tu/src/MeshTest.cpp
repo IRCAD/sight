@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -43,7 +43,7 @@
 #include <vtkPolyDataMapper.h>
 #include <vtkSmartPointer.h>
 #include <vtkSphereSource.h>
-#include <vtkTextureMapToSphere.h>
+#include <vtkTexturedSphereSource.h>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwVtkIO::ut::MeshTest );
@@ -90,7 +90,7 @@ void MeshTest::testMeshToVtk()
     const ::fwData::Mesh::sptr mesh1 = ::fwData::Mesh::New();
     CPPUNIT_ASSERT( mesh1 );
 
-    const vtkSmartPointer< vtkSphereSource > source = vtkSmartPointer< vtkSphereSource >::New();
+    const vtkSmartPointer< vtkTexturedSphereSource > source = vtkSmartPointer< vtkTexturedSphereSource >::New();
     source->SetThetaResolution(50);
     source->SetPhiResolution(50);
     source->SetRadius(2);
@@ -113,6 +113,8 @@ void MeshTest::testMeshToVtk()
     CPPUNIT_ASSERT( mesh1->getCellNormalsArray()->getSize()[0] );
     CPPUNIT_ASSERT( mesh1->getPointColorsArray()->getSize()[0] );
     CPPUNIT_ASSERT( mesh1->getCellColorsArray()->getSize()[0] );
+    CPPUNIT_ASSERT( mesh1->getPointTexCoordsArray() );
+    CPPUNIT_ASSERT( mesh1->getPointTexCoordsArray()->getSize()[0] );
 
     const vtkSmartPointer< vtkPolyData > vtkMesh = vtkSmartPointer< vtkPolyData >::New();
     ::fwVtkIO::helper::Mesh::toVTKMesh( mesh1, vtkMesh);
@@ -137,7 +139,7 @@ void MeshTest::testMeshToGrid()
     const ::fwData::Mesh::sptr mesh1 = ::fwData::Mesh::New();
     CPPUNIT_ASSERT( mesh1 );
 
-    const vtkSmartPointer< vtkSphereSource > source = vtkSmartPointer< vtkSphereSource >::New();
+    const vtkSmartPointer< vtkTexturedSphereSource > source = vtkSmartPointer< vtkTexturedSphereSource >::New();
     source->SetThetaResolution(50);
     source->SetPhiResolution(50);
     source->SetRadius(2);
@@ -160,6 +162,8 @@ void MeshTest::testMeshToGrid()
     CPPUNIT_ASSERT( mesh1->getCellNormalsArray()->getSize()[0] );
     CPPUNIT_ASSERT( mesh1->getPointColorsArray()->getSize()[0] );
     CPPUNIT_ASSERT( mesh1->getCellColorsArray()->getSize()[0] );
+    CPPUNIT_ASSERT( mesh1->getPointTexCoordsArray() );
+    CPPUNIT_ASSERT( mesh1->getPointTexCoordsArray()->getSize()[0] );
 
     const vtkSmartPointer< vtkUnstructuredGrid > vtkGrid = vtkSmartPointer< vtkUnstructuredGrid >::New();
     ::fwVtkIO::helper::Mesh::toVTKGrid( mesh1, vtkGrid);
@@ -261,6 +265,206 @@ void MeshTest::testPointCloud()
     CPPUNIT_ASSERT_EQUAL(NB_POINTS, mesh2->getNumberOfPoints());
     CPPUNIT_ASSERT_EQUAL(NB_POINTS, mesh2->getNumberOfCells());
     CPPUNIT_ASSERT_EQUAL(NB_POINTS, mesh2->getCellDataSize());
+    compare(mesh1, mesh2);
+}
+
+//------------------------------------------------------------------------------
+
+void MeshTest::testMeshUpdatePoints()
+{
+    const ::fwData::Mesh::sptr mesh1 = ::fwData::Mesh::New();
+    CPPUNIT_ASSERT( mesh1 );
+
+    const vtkSmartPointer< vtkSphereSource > source = vtkSmartPointer< vtkSphereSource >::New();
+    source->SetThetaResolution(50);
+    source->SetPhiResolution(50);
+    source->SetRadius(2);
+    source->Update();
+    vtkSmartPointer< vtkPolyData > poly_source = source->GetOutput();
+
+    CPPUNIT_ASSERT_EQUAL(mesh1->getNumberOfCells(), (::fwData::Mesh::Id)0);
+    CPPUNIT_ASSERT_EQUAL(mesh1->getNumberOfPoints(), (::fwData::Mesh::Id)0);
+
+    ::fwVtkIO::helper::Mesh::fromVTKMesh(poly_source, mesh1);
+
+    // modify mesh vertex position
+    ::fwDataTools::Mesh::shakePoint(mesh1);
+
+    ::fwVtkIO::helper::Mesh::updatePolyDataPoints(poly_source, mesh1);
+
+    const ::fwData::Mesh::sptr mesh2 = ::fwData::Mesh::New();
+    ::fwVtkIO::helper::Mesh::fromVTKMesh(poly_source, mesh2);
+
+    compare(mesh1, mesh2);
+}
+
+//------------------------------------------------------------------------------
+
+void MeshTest::testMeshUpdateColors()
+{
+    const ::fwData::Mesh::sptr mesh1 = ::fwData::Mesh::New();
+    CPPUNIT_ASSERT( mesh1 );
+
+    const vtkSmartPointer< vtkSphereSource > source = vtkSmartPointer< vtkSphereSource >::New();
+    source->SetThetaResolution(50);
+    source->SetPhiResolution(50);
+    source->SetRadius(2);
+    source->Update();
+    vtkSmartPointer< vtkPolyData > poly_source = source->GetOutput();
+
+    CPPUNIT_ASSERT_EQUAL(mesh1->getNumberOfCells(), (::fwData::Mesh::Id)0);
+    CPPUNIT_ASSERT_EQUAL(mesh1->getNumberOfPoints(), (::fwData::Mesh::Id)0);
+
+    ::fwVtkIO::helper::Mesh::fromVTKMesh(poly_source, mesh1);
+
+    ::fwDataTools::Mesh::colorizeMeshPoints(mesh1);
+    ::fwDataTools::Mesh::colorizeMeshCells(mesh1);
+
+    ::fwVtkIO::helper::Mesh::updatePolyDataPointColor(poly_source, mesh1);
+    ::fwVtkIO::helper::Mesh::updatePolyDataCellColor(poly_source, mesh1);
+
+    const ::fwData::Mesh::sptr mesh2 = ::fwData::Mesh::New();
+    ::fwVtkIO::helper::Mesh::fromVTKMesh(poly_source, mesh2);
+
+    compare(mesh1, mesh2);
+}
+
+//------------------------------------------------------------------------------
+
+void MeshTest::testMeshUpdateNormals()
+{
+    const ::fwData::Mesh::sptr mesh1 = ::fwData::Mesh::New();
+    CPPUNIT_ASSERT( mesh1 );
+
+    const vtkSmartPointer< vtkSphereSource > source = vtkSmartPointer< vtkSphereSource >::New();
+    source->SetThetaResolution(50);
+    source->SetPhiResolution(50);
+    source->SetRadius(2);
+    source->Update();
+    vtkSmartPointer< vtkPolyData > poly_source = source->GetOutput();
+
+    CPPUNIT_ASSERT_EQUAL(mesh1->getNumberOfCells(), (::fwData::Mesh::Id)0);
+    CPPUNIT_ASSERT_EQUAL(mesh1->getNumberOfPoints(), (::fwData::Mesh::Id)0);
+
+    ::fwVtkIO::helper::Mesh::fromVTKMesh(poly_source, mesh1);
+
+    ::fwDataTools::Mesh::generatePointNormals(mesh1);
+    ::fwDataTools::Mesh::generateCellNormals(mesh1);
+    ::fwDataTools::Mesh::shakeNormals(mesh1->getPointNormalsArray());
+    ::fwDataTools::Mesh::shakeNormals(mesh1->getCellNormalsArray());
+
+    ::fwVtkIO::helper::Mesh::updatePolyDataPointNormals(poly_source, mesh1);
+    ::fwVtkIO::helper::Mesh::updatePolyDataCellNormals(poly_source, mesh1);
+
+    const ::fwData::Mesh::sptr mesh2 = ::fwData::Mesh::New();
+    ::fwVtkIO::helper::Mesh::fromVTKMesh(poly_source, mesh2);
+
+    compare(mesh1, mesh2);
+}
+
+//------------------------------------------------------------------------------
+
+void MeshTest::testGridUpdatePoints()
+{
+    const ::fwData::Mesh::sptr mesh1 = ::fwData::Mesh::New();
+    CPPUNIT_ASSERT( mesh1 );
+
+    const vtkSmartPointer< vtkSphereSource > source = vtkSmartPointer< vtkSphereSource >::New();
+    source->SetThetaResolution(50);
+    source->SetPhiResolution(50);
+    source->SetRadius(2);
+    source->Update();
+    const vtkSmartPointer< vtkPolyData > poly_source = source->GetOutput();
+
+    CPPUNIT_ASSERT_EQUAL(mesh1->getNumberOfCells(), (::fwData::Mesh::Id)0);
+    CPPUNIT_ASSERT_EQUAL(mesh1->getNumberOfPoints(), (::fwData::Mesh::Id)0);
+
+    ::fwVtkIO::helper::Mesh::fromVTKMesh(poly_source, mesh1);
+
+    vtkSmartPointer< vtkUnstructuredGrid > vtkGrid = vtkSmartPointer< vtkUnstructuredGrid >::New();
+    ::fwVtkIO::helper::Mesh::toVTKGrid( mesh1, vtkGrid);
+    CPPUNIT_ASSERT( vtkGrid );
+
+    // modify mesh vertex position
+    ::fwDataTools::Mesh::shakePoint(mesh1);
+    ::fwVtkIO::helper::Mesh::updateGridPoints(vtkGrid, mesh1);
+
+    const ::fwData::Mesh::sptr mesh2 = ::fwData::Mesh::New();
+    ::fwVtkIO::helper::Mesh::fromVTKGrid(vtkGrid, mesh2);
+
+    compare(mesh1, mesh2);
+}
+
+//------------------------------------------------------------------------------
+
+void MeshTest::testGridUpdateColors()
+{
+    const ::fwData::Mesh::sptr mesh1 = ::fwData::Mesh::New();
+    CPPUNIT_ASSERT( mesh1 );
+
+    const vtkSmartPointer< vtkSphereSource > source = vtkSmartPointer< vtkSphereSource >::New();
+    source->SetThetaResolution(50);
+    source->SetPhiResolution(50);
+    source->SetRadius(2);
+    source->Update();
+    const vtkSmartPointer< vtkPolyData > poly_source = source->GetOutput();
+
+    ::fwVtkIO::helper::Mesh::fromVTKMesh(poly_source, mesh1);
+
+    vtkSmartPointer< vtkUnstructuredGrid > vtkGrid = vtkSmartPointer< vtkUnstructuredGrid >::New();
+    ::fwVtkIO::helper::Mesh::toVTKGrid( mesh1, vtkGrid);
+    CPPUNIT_ASSERT( vtkGrid );
+
+    ::fwDataTools::Mesh::colorizeMeshPoints(mesh1);
+    ::fwDataTools::Mesh::colorizeMeshCells(mesh1);
+
+    ::fwVtkIO::helper::Mesh::updateGridPointColor(vtkGrid, mesh1);
+    ::fwVtkIO::helper::Mesh::updateGridCellColor(vtkGrid, mesh1);
+
+    const ::fwData::Mesh::sptr mesh2 = ::fwData::Mesh::New();
+    ::fwVtkIO::helper::Mesh::fromVTKGrid(vtkGrid, mesh2);
+
+    compare(mesh1, mesh2);
+}
+
+//------------------------------------------------------------------------------
+
+void MeshTest::testGridUpdateNormals()
+{
+    const ::fwData::Mesh::sptr mesh1 = ::fwData::Mesh::New();
+    CPPUNIT_ASSERT( mesh1 );
+
+    const vtkSmartPointer< vtkSphereSource > source = vtkSmartPointer< vtkSphereSource >::New();
+    source->SetThetaResolution(50);
+    source->SetPhiResolution(50);
+    source->SetRadius(2);
+    source->Update();
+    const vtkSmartPointer< vtkPolyData > poly_source = source->GetOutput();
+
+    CPPUNIT_ASSERT_EQUAL(mesh1->getNumberOfCells(), (::fwData::Mesh::Id)0);
+    CPPUNIT_ASSERT_EQUAL(mesh1->getNumberOfPoints(), (::fwData::Mesh::Id)0);
+
+    ::fwVtkIO::helper::Mesh::fromVTKMesh(poly_source, mesh1);
+
+    ::fwDataTools::Mesh::generatePointNormals(mesh1);
+    ::fwDataTools::Mesh::generateCellNormals(mesh1);
+
+    CPPUNIT_ASSERT( mesh1->getNumberOfCells() );
+    CPPUNIT_ASSERT( mesh1->getNumberOfPoints() );
+    CPPUNIT_ASSERT( mesh1->getPointNormalsArray()->getSize()[0] );
+    CPPUNIT_ASSERT( mesh1->getCellNormalsArray()->getSize()[0] );
+
+    vtkSmartPointer< vtkUnstructuredGrid > vtkGrid = vtkSmartPointer< vtkUnstructuredGrid >::New();
+    ::fwVtkIO::helper::Mesh::toVTKGrid( mesh1, vtkGrid);
+    CPPUNIT_ASSERT( vtkGrid );
+
+    ::fwVtkIO::helper::Mesh::updateGridPoints(vtkGrid, mesh1);
+    ::fwVtkIO::helper::Mesh::updateGridPointNormals(vtkGrid, mesh1);
+    ::fwVtkIO::helper::Mesh::updateGridCellNormals(vtkGrid, mesh1);
+
+    const ::fwData::Mesh::sptr mesh2 = ::fwData::Mesh::New();
+    ::fwVtkIO::helper::Mesh::fromVTKGrid(vtkGrid, mesh2);
+
     compare(mesh1, mesh2);
 }
 

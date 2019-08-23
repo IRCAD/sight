@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2017 IRCAD France
- * Copyright (C) 2014-2017 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -116,10 +116,9 @@ void SFrameUpdater::updateFrame( ::fwCore::HiResClock::HiResClockType timestamp 
 {
     if (timestamp > m_lastTimestamp)
     {
-        ::fwData::Image::SizeType size(3);
+        ::fwData::Image::SizeType size(2);
         size[0] = m_frameTL->getWidth();
         size[1] = m_frameTL->getHeight();
-        size[2] = 1;
 
         // Check if image dimensions has changed
         if(size != m_image->getSize())
@@ -131,10 +130,10 @@ void SFrameUpdater::updateFrame( ::fwCore::HiResClock::HiResClockType timestamp 
         {
             const ::fwData::Image::SpacingType::value_type voxelSize = 1;
             m_image->allocate(size, m_frameTL->getType(), m_frameTL->getNumberOfComponents());
-            ::fwData::Image::OriginType origin(3, 0);
+            ::fwData::Image::OriginType origin(2, 0);
 
             m_image->setOrigin(origin);
-            ::fwData::Image::SpacingType spacing(3, voxelSize);
+            ::fwData::Image::SpacingType spacing(2, voxelSize);
             m_image->setSpacing(spacing);
             m_image->setWindowWidth(1);
             m_image->setWindowCenter(0);

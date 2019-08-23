@@ -16,5 +16,5 @@ set( DEPENDENCIES
 set( REQUIREMENTS  )
 
 set( CONAN_DEPS
-    vtk/8.0.1-r1@sight/stable
+    ${CONAN_VTK}
 )

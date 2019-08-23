@@ -1,0 +1,14 @@
+
+//---------------------------------------------------------------------------
+
+fragment_program VolumeNormals_FP glsl
+{
+    source VolumeNormals.glsl
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program RayUtils_FP glsl
+{
+    source RayUtils.glsl
+}

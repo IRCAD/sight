@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -140,7 +140,9 @@ void SOpenCVIntrinsic::updating()
         {
             for (unsigned int x = 0; x < m_width - 1; ++x)
             {
-                points.push_back(::cv::Point3f(float(y*m_squareSize), float(x*m_squareSize), 0));
+                points.push_back(::cv::Point3f(static_cast<float>(x)*m_squareSize,
+                                               static_cast<float>(y)*m_squareSize,
+                                               0));
             }
         }
 

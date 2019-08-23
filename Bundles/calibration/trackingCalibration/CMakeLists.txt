@@ -1,13 +1,7 @@
 fwLoadProperties()
 
-find_package(OpenCV QUIET REQUIRED core calib3d)
-find_package(Eigen QUIET REQUIRED)
+find_package(OpenCV QUIET REQUIRED COMPONENTS opencv_calib3d)
+find_package(Eigen3 QUIET REQUIRED)
 
-fwForwardInclude(
-    ${EIGEN3_INCLUDE_DIR}
-    ${OpenCV_INCLUDE_DIRS}
-)
-
-fwLink(
-    ${OpenCV_LIBS}
-)
+target_link_libraries(${FWPROJECT_NAME} PRIVATE Eigen3::Eigen)
+target_link_libraries(${FWPROJECT_NAME} PRIVATE opencv_calib3d)

@@ -25,6 +25,8 @@
 
 - Issues
   - Fixes repo#number
+  - [ ] depends on repo#number
 
 - Merge requests
-  - repo!number
+  - See also repo!number
+  - [ ] depends on repo!number

@@ -5,30 +5,13 @@ include("${CMAKE_CURRENT_LIST_DIR}/macros.cmake")
 
 set(_SUPPORTED_COMPONENTS @FW_COMPONENTS@)
 
-if(USE_CONAN)
+if(NOT USE_SYSTEM_LIB)
     if(NOT FW_CONAN_CONFIGURED)
+        include("${CMAKE_CURRENT_LIST_DIR}/conan-deps.cmake")
+        include("${CMAKE_CURRENT_LIST_DIR}/conan.cmake")
         list(APPEND CMAKE_PREFIX_PATH "${Sight_DIR}/../../..")
         add_definitions(${CONAN_DEFINES})
         set(FW_CONAN_CONFIGURED 1)
-    endif()
-else()
-    set(EXTERNAL_LIBRARIES CACHE PATH "External libraries location (if not at a default location like /usr on Linux)")
-
-    file(TO_CMAKE_PATH ${EXTERNAL_LIBRARIES} FWEXTERNAL_LIBRARIES)
-    if(NOT ${FWEXTERNAL_LIBRARIES} IN_LIST CMAKE_PREFIX_PATH)
-        list(APPEND CMAKE_PREFIX_PATH ${FWEXTERNAL_LIBRARIES})
-        list(APPEND CMAKE_MODULE_PATH ${FWEXTERNAL_LIBRARIES})
-        list(APPEND CMAKE_FIND_ROOT_PATH ${FWEXTERNAL_LIBRARIES})
-
-        include(${EXTERNAL_LIBRARIES}/lib/cmake/BinPkgsConfig.cmake)
-        include(${EXTERNAL_LIBRARIES}/lib/cmake/find_sse.cmake)
-
-        # I think all these files should go away soon...
-        file(GLOB LIB_CONFIGS ${EXTERNAL_LIBRARIES}/fw-*.cmake )
-        foreach(LIB_CONFIG ${LIB_CONFIGS})
-            message(STATUS "include: ${LIB_CONFIG}")
-            include("${LIB_CONFIG}")
-        endforeach()
     endif()
 endif()
 

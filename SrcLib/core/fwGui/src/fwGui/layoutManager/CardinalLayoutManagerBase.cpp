@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -21,11 +21,7 @@
  ***********************************************************************/
 
 /**
- * @file fwGui/layoutManager/CardinalLayoutManagerBase.cpp
  * @brief This file defines the implementation of the class for managing a cardinal layout geometry.
- *
- *
- * @date 2009-2010
  */
 
 #include "fwGui/layoutManager/CardinalLayoutManagerBase.hpp"
@@ -48,11 +44,11 @@ const CardinalLayoutManagerBase::RegistryKeyType CardinalLayoutManagerBase::REGI
 //-----------------------------------------------------------------------------
 
 const std::map<std::string, CardinalLayoutManagerBase::Align> CardinalLayoutManagerBase::STRING_TO_ALIGN =
-    ::boost::assign::map_list_of("center",CENTER)
-        ("right",RIGHT)
-        ("left",LEFT)
-        ("bottom",BOTTOM)
-        ("top",TOP);
+    ::boost::assign::map_list_of("center", CENTER)
+        ("right", RIGHT)
+        ("left", LEFT)
+        ("bottom", BOTTOM)
+        ("top", TOP);
 
 //-----------------------------------------------------------------------------
 
@@ -81,52 +77,52 @@ void CardinalLayoutManagerBase::initialize( ConfigurationType configuration)
         ViewInfo vi;
         if( view->hasAttribute("align") )
         {
-            std::string align = view->getExistingAttributeValue("align");
+            const std::string align = view->getExistingAttributeValue("align");
             OSLM_ASSERT("Align "<<align<<" unknown", STRING_TO_ALIGN.find(align) != STRING_TO_ALIGN.end() );
             vi.m_align = STRING_TO_ALIGN.find(align)->second;
         }
 
         if( view->hasAttribute("minWidth") )
         {
-            std::string width = view->getExistingAttributeValue("minWidth");
+            const std::string width = view->getExistingAttributeValue("minWidth");
             vi.m_minSize.first = ::boost::lexical_cast< int >(width);
         }
 
         if( view->hasAttribute("minHeight") )
         {
-            std::string height = view->getExistingAttributeValue("minHeight");
+            const std::string height = view->getExistingAttributeValue("minHeight");
             vi.m_minSize.second = ::boost::lexical_cast< int >(height);
         }
 
         if( view->hasAttribute("resizable") )
         {
-            std::string resizable = view->getExistingAttributeValue("resizable");
+            const std::string resizable = view->getExistingAttributeValue("resizable");
             OSLM_ASSERT("Incorrect value for \"resizable\" attribute "<<resizable,
                         (resizable == "yes") || (resizable == "no"));
-            vi.m_isResizable = (resizable=="yes");
+            vi.m_isResizable = (resizable == "yes");
         }
 
         if( view->hasAttribute("position") )
         {
-            std::string position = view->getExistingAttributeValue("position");
+            const std::string position = view->getExistingAttributeValue("position");
             vi.m_position = ::boost::lexical_cast< int >(position);
         }
 
         if( view->hasAttribute("layer") )
         {
-            std::string layer = view->getExistingAttributeValue("layer");
+            const std::string layer = view->getExistingAttributeValue("layer");
             vi.m_layer = ::boost::lexical_cast< int >(layer);
         }
 
         if( view->hasAttribute("row") )
         {
-            std::string row = view->getExistingAttributeValue("row");
+            const std::string row = view->getExistingAttributeValue("row");
             vi.m_row = ::boost::lexical_cast< int >(row);
         }
 
         if( view->hasAttribute("visible") )
         {
-            std::string visible = view->getExistingAttributeValue("visible");
+            const std::string visible = view->getExistingAttributeValue("visible");
             OSLM_ASSERT("Incorrect value for \"visible\" attribute "<<visible,
                         (visible == "true") || (visible == "false") ||
                         (visible == "yes") || (visible == "no"));
@@ -141,10 +137,15 @@ void CardinalLayoutManagerBase::initialize( ConfigurationType configuration)
 
         if( view->hasAttribute("useScrollBar") )
         {
-            std::string useScrollBar = view->getExistingAttributeValue("useScrollBar");
+            const std::string useScrollBar = view->getExistingAttributeValue("useScrollBar");
             OSLM_ASSERT("Incorrect value for \"useScrollBar\" attribute "<<useScrollBar,
                         (useScrollBar == "yes") || (useScrollBar == "no"));
-            vi.m_useScrollBar = (useScrollBar=="yes");
+            vi.m_useScrollBar = (useScrollBar == "yes");
+        }
+        if( view->hasAttribute("toolTip") )
+        {
+            const std::string toolTip = view->getExistingAttributeValue("toolTip");
+            vi.m_toolTip = toolTip;
         }
 
         m_views.push_back(vi);
@@ -155,6 +156,3 @@ void CardinalLayoutManagerBase::initialize( ConfigurationType configuration)
 
 } // namespace layoutManager
 } // namespace fwGui
-
-
-

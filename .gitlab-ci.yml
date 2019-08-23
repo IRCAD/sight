@@ -6,6 +6,8 @@ stages:
 
 .linux_template: &linux_job
   image: ${DOCKER_ENVDEV_MINT19}
+  variables:
+    FW_IGNORE_SLOW_TESTS: 1
   before_script:
     - export CCACHE_BASEDIR=${PWD}
     - export CCACHE_COMPILERCHECK=content
@@ -24,6 +26,7 @@ stages:
 .macos_template: &macos_job
   variables:
     CONAN_USER_HOME: $CI_PROJECT_DIR/conan
+    FW_IGNORE_SLOW_TESTS: 1
   before_script:
     - export CCACHE_BASEDIR=${PWD}
     - export CCACHE_COMPILERCHECK=content
@@ -41,6 +44,7 @@ stages:
 .windows_template: &windows_job
   variables:
     CONAN_USER_HOME: $CI_PROJECT_DIR/conan
+    FW_IGNORE_SLOW_TESTS: 1
   before_script:
     - conan config set storage.path="C:\cache\conan"
     - if not exist "%CI_PROJECT_DIR%/install" md "%CI_PROJECT_DIR%/install"
@@ -80,11 +84,11 @@ build:debug-linux:
     - >
      cmake $CI_PROJECT_DIR
      -G Ninja
-     -DUSE_CONAN=ON
      -DCMAKE_INSTALL_PREFIX=$CI_PROJECT_DIR/install
      -DCMAKE_BUILD_TYPE=Debug
      -DBUILD_TESTS=ON
      -DBUILD_DOCUMENTATION=OFF
+     -DSPYLOG_LEVEL=trace
      -DENABLE_PCH=OFF
     - find . -type f -iname '*.?pp' -exec touch -f -a -m -t 197001010000 {} \;
     - ninja
@@ -94,8 +98,7 @@ build:debug-linux:
      -s https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-data/-/archive/dev/sight-data-dev.tar.gz |
      tar xfz - > /dev/null
     - export FWTEST_DATA_DIR=$CI_PROJECT_DIR/build/sight-data-dev
-    - export FW_IGNORE_SLOW_TESTS=1
-    - ctest --timeout 240 --output-on-failure -O ctest.log
+    - ctest --timeout 240 --output-on-failure -O ctest.log -j4
   artifacts:
     when: always
     name: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
@@ -112,7 +115,6 @@ build:release-linux:
     - >
      cmake $CI_PROJECT_DIR
      -G Ninja
-     -DUSE_CONAN=ON
      -DCMAKE_INSTALL_PREFIX=$CI_PROJECT_DIR/install
      -DCMAKE_BUILD_TYPE=Release
      -DBUILD_TESTS=ON
@@ -126,8 +128,7 @@ build:release-linux:
      -s https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-data/-/archive/dev/sight-data-dev.tar.gz |
      tar xfz - > /dev/null
     - export FWTEST_DATA_DIR=$CI_PROJECT_DIR/build/sight-data-dev
-    - export FW_IGNORE_SLOW_TESTS=0
-    - ctest --timeout 120 --output-on-failure -O ctest.log
+    - ctest --timeout 120 --output-on-failure -O ctest.log -j4
   artifacts:
     when: always
     name: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
@@ -145,19 +146,18 @@ build:debug-windows:
     - >
      cmake %CI_PROJECT_DIR%
      -G Ninja
-     -DUSE_CONAN=ON
      -DCMAKE_INSTALL_PREFIX=%CI_PROJECT_DIR%/install
      -DCMAKE_BUILD_TYPE=Debug
      -DBUILD_TESTS=ON
      -DBUILD_DOCUMENTATION=OFF
+     -DSPYLOG_LEVEL=trace
     - ninja
     - >
      curl --retry 3 --location --insecure --location-trusted
      -s https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-data/-/archive/dev/sight-data-dev.zip
      --output sight-data-dev.zip && unzip -qq sight-data-dev.zip
     - set FWTEST_DATA_DIR=%CI_PROJECT_DIR%\build\sight-data-dev
-    - set FW_IGNORE_SLOW_TESTS=1
-    - ctest --timeout 240 --output-on-failure -O ctest.log -E fwRenderOgreTest
+    - ctest --timeout 240 --output-on-failure -O ctest.log -E fwRenderOgreTest -j4
   artifacts:
     when: always
     name: "%CI_JOB_NAME%-%CI_COMMIT_REF_SLUG%"
@@ -176,7 +176,6 @@ build:release-windows:
     - >
      cmake %CI_PROJECT_DIR%
      -G Ninja
-     -DUSE_CONAN=ON
      -DCMAKE_INSTALL_PREFIX=%CI_PROJECT_DIR%/install
      -DCMAKE_BUILD_TYPE=Release
      -DBUILD_TESTS=ON
@@ -187,8 +186,7 @@ build:release-windows:
      -s https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-data/-/archive/dev/sight-data-dev.zip
      --output sight-data-dev.zip && unzip -qq sight-data-dev.zip
     - set FWTEST_DATA_DIR=%CI_PROJECT_DIR%\build\sight-data-dev
-    - set FW_IGNORE_SLOW_TESTS=0
-    - ctest --timeout 120 --output-on-failure -O ctest.log -E fwRenderOgreTest
+    - ctest --timeout 120 --output-on-failure -O ctest.log -E fwRenderOgreTest -j4
   artifacts:
     when: always
     name: "%CI_JOB_NAME%-%CI_COMMIT_REF_SLUG%"
@@ -206,11 +204,11 @@ build:debug-macos:
     - >
      cmake $CI_PROJECT_DIR
      -G Ninja
-     -DUSE_CONAN=ON
      -DCMAKE_INSTALL_PREFIX=$CI_PROJECT_DIR/install
      -DCMAKE_BUILD_TYPE=Debug
      -DBUILD_TESTS=ON
      -DBUILD_DOCUMENTATION=OFF
+     -DSPYLOG_LEVEL=trace
      -DENABLE_PCH=OFF
     - ninja
     - ccache -s
@@ -219,8 +217,7 @@ build:debug-macos:
      -s https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-data/-/archive/dev/sight-data-dev.tar.gz |
      tar xfz - > /dev/null
     - export FWTEST_DATA_DIR=$CI_PROJECT_DIR/build/sight-data-dev
-    - export FW_IGNORE_SLOW_TESTS=1
-    - ctest --timeout 240 --output-on-failure -O ctest.log
+    - ctest --timeout 240 --output-on-failure -O ctest.log -j4
   artifacts:
     when: always
     name: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
@@ -237,7 +234,6 @@ build:release-macos:
     - >
      cmake $CI_PROJECT_DIR
      -G Ninja
-     -DUSE_CONAN=ON
      -DCMAKE_INSTALL_PREFIX=$CI_PROJECT_DIR/install
      -DCMAKE_BUILD_TYPE=Release
      -DBUILD_TESTS=ON
@@ -250,8 +246,7 @@ build:release-macos:
      -s https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-data/-/archive/dev/sight-data-dev.tar.gz |
      tar xfz - > /dev/null
     - export FWTEST_DATA_DIR=$CI_PROJECT_DIR/build/sight-data-dev
-    - export FW_IGNORE_SLOW_TESTS=0
-    - ctest --timeout 120 --output-on-failure -O ctest.log
+    - ctest --timeout 120 --output-on-failure -O ctest.log -j4
   artifacts:
     when: always
     name: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
@@ -267,7 +262,6 @@ doxygen:
     - >
      cmake $CI_PROJECT_DIR
      -G Ninja
-     -DUSE_CONAN=ON
      -DCMAKE_INSTALL_PREFIX=$CI_PROJECT_DIR/install
      -DCMAKE_BUILD_TYPE=Release
      -DBUILD_TESTS=OFF
@@ -290,3 +284,57 @@ pages:
     - public
   only:
     - dev
+
+build:sdk-release-linux:
+  <<: *linux_job
+  stage: build
+  when : manual
+  dependencies: []
+  script:
+    - mkdir -p /home/sight/sdk/install /home/sight/sdk/build
+    - cd /home/sight/sdk/build
+    - ccache -s
+    - >
+     cmake $CI_PROJECT_DIR
+     -G Ninja
+     -DCMAKE_INSTALL_PREFIX=/home/sight/sdk/install
+     -DCMAKE_BUILD_TYPE=Release
+     -DBUILD_TESTS=OFF
+     -DBUILD_DOCUMENTATION=OFF
+     -DENABLE_PCH=OFF
+     -DBUILD_SDK=ON
+    - find . -type f -iname '*.?pp' -exec touch -f -a -m -t 197001010000 {} \;
+    - ninja
+    - ninja install
+    - ninja package
+    - ccache -s
+    - export SDK_FILE_PATH=$(find /home/sight/sdk/build -maxdepth 1 -iname '*.tar.gz' -type f -print -quit)
+    - export SDK_FILE_NAME=$(basename -s .tar.gz ${SDK_FILE_PATH}).tar.gz
+    - curl -u${CONAN_USERNAME}:${CONAN_PASSWORD} -T ${SDK_FILE_PATH} "https://conan.ircad.fr/artifactory/data/sdk/${SDK_FILE_NAME}"
+
+build:sdk-debug-linux:
+  <<: *linux_job
+  stage: build
+  when : manual
+  dependencies: []
+  script:
+    - mkdir -p /home/sight/sdk/install /home/sight/sdk/build
+    - cd /home/sight/sdk/build
+    - ccache -s
+    - >
+     cmake $CI_PROJECT_DIR
+     -G Ninja
+     -DCMAKE_INSTALL_PREFIX=/home/sight/sdk/install
+     -DCMAKE_BUILD_TYPE=Debug
+     -DBUILD_TESTS=OFF
+     -DBUILD_DOCUMENTATION=OFF
+     -DENABLE_PCH=OFF
+     -DBUILD_SDK=ON
+    - find . -type f -iname '*.?pp' -exec touch -f -a -m -t 197001010000 {} \;
+    - ninja
+    - ninja install
+    - ninja package
+    - ccache -s
+    - export SDK_FILE_PATH=$(find /home/sight/sdk/build -maxdepth 1 -iname '*.tar.gz' -type f -print -quit)
+    - export SDK_FILE_NAME=$(basename -s .tar.gz ${SDK_FILE_PATH}).tar.gz
+    - curl -u${CONAN_USERNAME}:${CONAN_PASSWORD} -T ${SDK_FILE_PATH} "https://conan.ircad.fr/artifactory/data/sdk/${SDK_FILE_NAME}"

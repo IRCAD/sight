@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -41,11 +41,16 @@
 #include <vtkAbstractVolumeMapper.h>
 #include <vtkGenericCell.h>
 #include <vtkImageData.h>
-#include <vtkInstantiator.h>
 #include <vtkMapper.h>
 #include <vtkMath.h>
 #include <vtkObjectFactory.h>
 #include <vtkPolyData.h>
+
+namespace fwRenderVTK
+{
+
+namespace vtk
+{
 
 vtkStandardNewMacro(fwVtkCellPicker);
 
@@ -71,7 +76,7 @@ fwVtkCellPicker::~fwVtkCellPicker()
 
 //------------------------------------------------------------------------------
 
-double fwVtkCellPicker::IntersectWithLine(double p1[3], double p2[3], double tol,
+double fwVtkCellPicker::IntersectWithLine(const double p1[], const double p2[], double tol,
                                           vtkAssemblyPath* path,
                                           vtkProp3D* prop3D,
                                           vtkAbstractMapper3D* m)
@@ -222,3 +227,9 @@ fwVtkCellPicker::PickedCellType fwVtkCellPicker::GetPickedCellIds( double p1[3],
 
     return res;
 }
+
+//------------------------------------------------------------------------------
+
+} // namespace vtk
+
+} // namespace fwRenderVTK

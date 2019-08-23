@@ -5,4 +5,10 @@ set( DEPENDENCIES
     fwTest
     cvIO
 )
-set( REQUIREMENTS  )
+set( REQUIREMENTS )
+
+set( CONAN_DEPS
+    ${CONAN_OPENCV}
+    ${CONAN_QT}
+    ${CONAN_FFMPEG}
+)

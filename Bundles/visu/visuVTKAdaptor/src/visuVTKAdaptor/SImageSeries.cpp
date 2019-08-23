@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -50,6 +50,8 @@ SImageSeries::SImageSeries() noexcept :
     m_sliceMode(SNegatoMPR::THREE_SLICES)
 
 {
+    this->registerObject(s_IMAGE_SERIES_INOUT, AccessType::INOUT, true);
+    this->registerObject(s_TF_INOUT, AccessType::INOUT, false, true);
 }
 
 //------------------------------------------------------------------------------
@@ -143,8 +145,11 @@ void SImageSeries::updating()
 
     // register image
     ::fwData::Image::sptr image = series->getImage();
+    if (!image)
+    {
+        return;
+    }
     negato->registerInOut(image, SNegatoMPR::s_IMAGE_INOUT, true);
-
     ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
     if(tf != nullptr)
     {
@@ -156,8 +161,7 @@ void SImageSeries::updating()
     negato->setRendererId( this->getRendererId() );
     negato->setPickerId( this->getPickerId() );
     negato->setRenderService(this->getRenderService());
-
-    negato->set3dMode(this->is3dModeEnabled());
+    negato->set3dMode((this->is3dModeEnabled().value == ::boost::tribool::true_value));
     negato->setSliceMode(this->getSliceMode());
     negato->setOrientation(m_helper.getOrientation());
     negato->setAllowAlphaInTF(m_allowAlphaInTF);

@@ -5,9 +5,9 @@ set( TYPE BUNDLE )
 set( DEPENDENCIES fwCom fwCore fwData fwGui fwGuiQt fwMemory fwRuntime fwServices fwTools gui )
 set( REQUIREMENTS  )
 set( CONAN_DEPS
-    qt/5.11.2@sight/stable
+    ${CONAN_QT}
 )
 
 if(WIN32)
-    list(APPEND CONAN_DEPS libxml2/2.9.8@sight/stable)
+    list(APPEND CONAN_DEPS ${CONAN_LIBXML2})
 endif()

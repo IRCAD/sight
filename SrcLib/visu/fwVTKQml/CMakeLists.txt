@@ -1,18 +1,11 @@
 fwLoadProperties()
 
 find_package(Qt5 QUIET COMPONENTS Core Qml Quick REQUIRED)
+find_package(VTK QUIET COMPONENTS vtkGUISupportQt vtkRenderingExternal REQUIRED)
 
-fwForwardInclude(
-    ${Qt5Core_INCLUDE_DIRS}
-    ${Qt5Qml_INCLUDE_DIRS}
-    ${Qt5Quick_INCLUDE_DIRS}
+fwInclude(
+    ${VTK_INCLUDE_DIRS}
 )
 
-fwLink(
-    ${Qt5Core_LIBRARIES}
-    ${Qt5Qml_LIBRARIES}
-    ${Qt5Quick_LIBRARIES}
-
-)
-
+target_link_libraries(${FWPROJECT_NAME} PUBLIC Qt5::Core Qt5::Qml Qt5::Quick vtkGUISupportQt vtkRenderingExternal)
 set_target_properties(${FWPROJECT_NAME} PROPERTIES AUTOMOC TRUE)

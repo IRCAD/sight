@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -156,9 +156,11 @@ void SNegato2D::starting()
 
     // Plane's instanciation
     m_plane = new ::fwRenderOgre::Plane(this->getID(), m_negatoSceneNode, getSceneManager(),
-                                        OrientationMode::X_AXIS, false, m_3DOgreTexture, m_filtering);
+                                        m_orientation, false, m_3DOgreTexture, m_filtering);
 
-    this->getLayer()->getDefaultCamera()->setProjectionType( ::Ogre::ProjectionType::PT_ORTHOGRAPHIC );
+    ::Ogre::Camera* cam = this->getLayer()->getDefaultCamera();
+    m_cameraNode        = cam->getParentSceneNode();
+    cam->setProjectionType( ::Ogre::ProjectionType::PT_ORTHOGRAPHIC );
 
     bool isValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image);
     if(isValid)
@@ -227,7 +229,7 @@ void SNegato2D::newImage()
     ::fwRenderOgre::Utils::convertImageForNegato(m_3DOgreTexture.get(), image);
 
     this->createPlane( image->getSpacing() );
-    this->updateCameraWindowBounds();
+    this->updateCamera();
 
     // Update Slice
     int axialIndex =
@@ -238,6 +240,7 @@ void SNegato2D::newImage()
         image->getField< ::fwData::Integer >(::fwDataTools::fieldHelper::Image::m_sagittalSliceIndexId)->getValue();
 
     this->changeSliceIndex(axialIndex, frontalIndex, sagittalIndex);
+    this->changeSliceType(0, m_orientation);
 
     // Update tranfer function in Gpu programs
     this->updateTF();
@@ -249,23 +252,35 @@ void SNegato2D::newImage()
 
 void SNegato2D::changeSliceType(int /*_from*/, int _to)
 {
-    OrientationMode newOrientationMode = OrientationMode::X_AXIS;
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
 
+    OrientationMode newOrientationMode = OrientationMode::X_AXIS;
     switch (_to)
     {
         case 0:
+            m_plane->setOriginPosition(::Ogre::Vector3(static_cast<float>(image->getSize()[0]) *
+                                                       static_cast<float>(image->getSpacing()[0]), 0, 0));
             newOrientationMode = OrientationMode::X_AXIS;
             break;
         case 1:
+            m_plane->setOriginPosition(::Ogre::Vector3(0,
+                                                       static_cast<float>(image->getSize()[1]) *
+                                                       static_cast<float>(image->getSpacing()[1]), 0));
             newOrientationMode = OrientationMode::Y_AXIS;
             break;
         case 2:
             newOrientationMode = OrientationMode::Z_AXIS;
+            m_plane->setOriginPosition(::Ogre::Vector3(0, 0,
+                                                       static_cast<float>(image->getSize()[2]) *
+                                                       static_cast<float>(image->getSpacing()[2])));
             break;
     }
 
     // The orientation update setter will change the fragment shader
     m_plane->setOrientationMode(newOrientationMode);
+    m_orientation = newOrientationMode;
+    this->updateCamera();
 
     // Update threshold if necessary
     this->updateTF();
@@ -337,33 +352,58 @@ void SNegato2D::createPlane(const fwData::Image::SpacingType& _spacing)
     this->getRenderService()->makeCurrent();
     // Fits the plane to the new texture
     m_plane->setDepthSpacing(_spacing);
-    m_plane->initialize2DPlane();
+    m_plane->initializePlane();
     m_plane->enableAlpha(m_enableAlpha);
 }
 
 //------------------------------------------------------------------------------
 
-void SNegato2D::updateCameraWindowBounds()
+void SNegato2D::updateCamera()
 {
-
-    ::Ogre::Real renderWindowWidth, renderWindowHeight, renderWindowRatio;
-    ::Ogre::RenderSystem* renderSystem = getSceneManager()->getDestinationRenderSystem();
-
-    renderWindowWidth  = static_cast< ::Ogre::Real >(renderSystem->_getViewport()->getActualWidth());
-    renderWindowHeight = static_cast< ::Ogre::Real >(renderSystem->_getViewport()->getActualHeight());
-    renderWindowRatio  = renderWindowWidth / renderWindowHeight;
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
 
     ::Ogre::Camera* cam = this->getLayer()->getDefaultCamera();
+    SLM_ASSERT("No default camera found", cam);
 
-    if( renderWindowWidth < renderWindowHeight)
+    const int renderWindowWidth          = cam->getViewport()->getActualWidth();
+    const int renderWindowHeight         = cam->getViewport()->getActualHeight();
+    const ::Ogre::Real renderWindowRatio = static_cast< ::Ogre::Real >(renderWindowWidth) /
+                                           static_cast< ::Ogre::Real >(renderWindowHeight);
+
+    if( renderWindowWidth == renderWindowHeight )
     {
-        cam->setOrthoWindowWidth(m_plane->getWidth());
+        cam->setOrthoWindow(m_plane->getWidth(), m_plane->getHeight());
     }
-    else
+    else if( renderWindowWidth > renderWindowHeight)
     {
         cam->setOrthoWindowHeight(m_plane->getHeight());
     }
+    else
+    {
+        cam->setOrthoWindowWidth(m_plane->getWidth());
+    }
     cam->setAspectRatio( renderWindowRatio );
+
+    m_cameraNode->setPosition(::Ogre::Vector3(0, 0, 0));
+    m_cameraNode->resetOrientation();
+    switch(m_orientation)
+    {
+        case OrientationMode::X_AXIS:
+            m_cameraNode->rotate(::Ogre::Vector3(0, 1, 0), ::Ogre::Degree(-90.f));
+            m_cameraNode->rotate(::Ogre::Vector3(0, 0, 1), ::Ogre::Degree(-90.f));
+            m_cameraNode->translate(::Ogre::Vector3(0, m_plane->getHeight()/2, m_plane->getWidth()/2));
+            break;
+        case OrientationMode::Y_AXIS:
+            m_cameraNode->rotate(::Ogre::Vector3(1, 0, 0), ::Ogre::Degree(90.f));
+            m_cameraNode->translate(::Ogre::Vector3(m_plane->getWidth()/2, 0, m_plane->getHeight()/2));
+            break;
+        case OrientationMode::Z_AXIS:
+            m_cameraNode->rotate(::Ogre::Vector3(0, 0, 1), ::Ogre::Degree(180.f));
+            m_cameraNode->rotate(::Ogre::Vector3(0, 1, 0), ::Ogre::Degree(180.f));
+            m_cameraNode->translate(::Ogre::Vector3(m_plane->getWidth()/2, m_plane->getHeight()/2, 0));
+            break;
+    }
 
     this->requestRender();
 }

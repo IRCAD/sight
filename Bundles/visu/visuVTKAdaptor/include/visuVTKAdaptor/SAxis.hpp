@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -59,7 +59,7 @@ class VISUVTKADAPTOR_CLASS_API SAxis : public ::fwRenderVTK::IAdaptor
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SAxis)(::fwRenderVTK::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (SAxis)(::fwRenderVTK::IAdaptor) )
 
     VISUVTKADAPTOR_API SAxis() noexcept;
     VISUVTKADAPTOR_API virtual ~SAxis() noexcept;
@@ -84,7 +84,7 @@ protected:
 
     void buildPipeline();
 
-    fwVtkAxesActor* m_axisActor;
+    ::fwRenderVTK::vtk::fwVtkAxesActor* m_axisActor;
     double m_length;
     bool m_labelOn;
     vtkSmartPointer< vtkTransform> m_transformAxis;

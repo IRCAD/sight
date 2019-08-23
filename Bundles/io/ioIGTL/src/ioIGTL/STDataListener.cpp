@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,8 +22,6 @@
 
 #include "ioIGTL/STDataListener.hpp"
 
-#include "ioIGTL/helper/preferences.hpp"
-
 #include <arData/MatrixTL.hpp>
 
 #include <fwCom/Signal.hpp>
@@ -33,6 +31,8 @@
 #include <fwData/TransformationMatrix3D.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
+
+#include <fwPreferences/helper.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -111,14 +111,14 @@ void STDataListener::runClient()
     // 1. Connection
     try
     {
-        const std::uint16_t port   = ::ioIGTL::helper::getPreferenceKey<std::uint16_t>(m_portConfig);
-        const std::string hostname = ::ioIGTL::helper::getPreferenceKey<std::string>(m_hostnameConfig);
+        const std::uint16_t port   = ::fwPreferences::getValue<std::uint16_t>(m_portConfig);
+        const std::string hostname = ::fwPreferences::getValue(m_hostnameConfig);
 
         if(!m_deviceNamesConfig.empty())
         {
             for(const auto& dn : m_deviceNamesConfig)
             {
-                const std::string dnKey = ::ioIGTL::helper::getPreferenceKey<std::string>(dn->getValue());
+                const std::string dnKey = ::fwPreferences::getValue(dn->getValue());
                 m_client.addAuthorizedDevice(dnKey);
             }
             m_client.setFilteringByDeviceName(true);
@@ -202,12 +202,6 @@ void STDataListener::stopping()
 
 void STDataListener::manageTimeline(const ::fwData::Composite::sptr& obj, double timestamp)
 {
-    const double epsilon = std::numeric_limits<double>::epsilon();
-    if (timestamp < epsilon && timestamp > -epsilon)
-    {
-        timestamp = ::fwCore::HiResClock::getTimeInMilliSec();
-    }
-
     ::arData::MatrixTL::sptr matTL = this->getInOut< ::arData::MatrixTL>(s_TIMELINE_KEY);
     SPTR(::arData::MatrixTL::BufferType) matrixBuf;
     matrixBuf = matTL->createBuffer(timestamp);

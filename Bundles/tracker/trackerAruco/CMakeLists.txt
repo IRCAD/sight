@@ -1,11 +1,5 @@
 fwLoadProperties()
 
-find_package(OpenCV QUIET REQUIRED core aruco)
+find_package(OpenCV QUIET REQUIRED COMPONENTS opencv_aruco)
 
-fwForwardInclude(
-    ${OpenCV_INCLUDE_DIRS}
-)
-
-fwForwardLink(
-    ${OpenCV_LIBS}
-)
+target_link_libraries(${FWPROJECT_NAME} PRIVATE opencv_aruco)

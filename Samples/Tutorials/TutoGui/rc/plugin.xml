@@ -153,9 +153,9 @@
             <gui>
                 <layout type="::fwGui::LineLayoutManager" >
                     <orientation value="horizontal" />
-                    <view caption="view3" />
-                    <view caption="view4" />
-                    <view caption="view5" />
+                    <view caption="view3" toolTip="View with tabs inside" />
+                    <view caption="view4" toolTip="Empty view" />
+                    <view caption="view5" toolTip="Empty view"/>
                 </layout>
             </gui>
             <registry>
@@ -191,13 +191,29 @@
         <service uid="view12" type="::gui::view::SDefaultView" >
             <gui>
                 <layout type="::fwGui::LineLayoutManager" >
-                    <orientation value="vertical" />
+                    <orientation value="horizontal" />
+                    <view toolTip="This is a nice tooltip"  />
+                    <view toolTip="You can put some useful information here"  />
                 </layout>
                 <toolBar />
             </gui>
             <registry>
+                <view sid="ButtonClick" start="yes" />
+                <view sid="ButtonMe" start="yes" />
                 <toolBar sid="toolbar2" start="yes" />
             </registry>
+        </service>
+
+        <service uid="ButtonClick" type="::guiQt::editor::SSignalButton">
+            <config>
+                <text>Click</text>
+            </config>
+        </service>
+
+        <service uid="ButtonMe" type="::guiQt::editor::SSignalButton">
+            <config>
+                <text>Me</text>
+            </config>
         </service>
 
         <service uid="toolbar2" type="::gui::aspect::SDefaultToolBar" >

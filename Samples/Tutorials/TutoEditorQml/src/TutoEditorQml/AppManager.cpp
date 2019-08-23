@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -78,15 +78,6 @@ void AppManager::onServiceCreated(const QVariant& obj)
             // added
             srv->setObjectId("string", s_EDITED_STRING);
             this->addService(srv, true);
-
-            try
-            {
-                this->startService(srv);
-            }
-            catch (std::exception& e)
-            {
-                SLM_ERROR("Try to start '" + srv->getID() + "': " + std::string(e.what()));
-            }
         }
     }
 }

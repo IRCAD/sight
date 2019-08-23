@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -31,6 +31,8 @@
 
 #include <fwCom/Signal.hxx>
 
+#include <fwData/mt/ObjectReadLock.hpp>
+#include <fwData/mt/ObjectWriteLock.hpp>
 #include <fwData/PointList.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
 
@@ -76,8 +78,10 @@ void SSolvePnP::computeRegistration(::fwCore::HiResClock::HiResClockType _timest
     auto fwMatrix = this->getInOut< ::fwData::TransformationMatrix3D >(s_MATRIX_INOUT);
     SLM_ASSERT("'" + s_MATRIX_INOUT + "' should not be null", fwMatrix);
 
-    //points list should have same number of points
+    ::fwData::mt::ObjectReadLock readLock2d(fwPoints2d);
+    ::fwData::mt::ObjectReadLock readLock3d(fwPoints3d);
 
+    //points list should have same number of points
     if(fwPoints2d->getPoints().size() != fwPoints3d->getPoints().size())
     {
         SLM_ERROR("'" + s_POINTLIST2D_INPUT + "' and '"
@@ -92,6 +96,7 @@ void SSolvePnP::computeRegistration(::fwCore::HiResClock::HiResClockType _timest
     {
         // 2d
         ::fwData::Point::csptr p2d = fwPoints2d->getPoints()[i];
+        ::fwData::mt::ObjectReadLock readLockp2d(p2d);
         ::cv::Point2f cvP2d;
 
         cvP2d.x = static_cast<float>(p2d->getCoord()[0]) + m_offset[0];
@@ -101,6 +106,7 @@ void SSolvePnP::computeRegistration(::fwCore::HiResClock::HiResClockType _timest
 
         // 3d
         ::fwData::Point::csptr p3d = fwPoints3d->getPoints()[i];
+        ::fwData::mt::ObjectReadLock readLockp3d(p3d);
         ::cv::Point3f cvP3d;
         cvP3d.x = static_cast<float>(p3d->getCoord()[0]);
         cvP3d.y = static_cast<float>(p3d->getCoord()[1]);
@@ -118,6 +124,7 @@ void SSolvePnP::computeRegistration(::fwCore::HiResClock::HiResClockType _timest
         cvMat = cvMat.inv();
     }
 
+    ::fwData::mt::ObjectWriteLock writeLock(fwMatrix);
     ::cvIO::Matrix::copyFromCv(cvMat, fwMatrix);
 
     const auto sig = fwMatrix->signal< ::fwData::TransformationMatrix3D::ModifiedSignalType >
@@ -169,6 +176,7 @@ void SSolvePnP::initialize()
     const auto camera = this->getInput< ::arData::Camera > (s_CALIBRATION_INPUT);
     SLM_FATAL_IF("Camera '" + s_CALIBRATION_INPUT + "' not found", !camera);
 
+    ::fwData::mt::ObjectReadLock cameraLock(camera);
     m_cvCamera.intrinsicMat = ::cv::Mat::eye(3, 3, CV_64F);
 
     std::tie(m_cvCamera.intrinsicMat, m_cvCamera.imageSize, m_cvCamera.distCoef) = ::cvIO::Camera::copyToCv(camera);

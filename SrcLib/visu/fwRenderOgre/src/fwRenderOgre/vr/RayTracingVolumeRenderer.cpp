@@ -159,6 +159,9 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
     m_layer(layer)
 {
     m_fragmentShaderAttachements.push_back("SpatialTransforms_FP");
+    m_fragmentShaderAttachements.push_back("Lighting_FP");
+    m_fragmentShaderAttachements.push_back("VolumeNormals_FP");
+    m_fragmentShaderAttachements.push_back("RayUtils_FP");
 
     auto* exitDepthListener = new compositor::listener::RayExitDepthListener();
     ::Ogre::MaterialManager::getSingleton().addListener(exitDepthListener);
@@ -193,12 +196,14 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
 
     // define the shared param structure
     m_RTVSharedParameters->addConstantDefinition("u_f2TFWindow", ::Ogre::GCT_FLOAT2);
-    m_RTVSharedParameters->addConstantDefinition("u_sampleDistance", ::Ogre::GCT_FLOAT1);
-    m_RTVSharedParameters->addConstantDefinition("u_volIllumFactor", ::Ogre::GCT_FLOAT4);
-    m_RTVSharedParameters->addConstantDefinition("u_min", ::Ogre::GCT_INT1);
-    m_RTVSharedParameters->addConstantDefinition("u_max", ::Ogre::GCT_INT1);
-    m_RTVSharedParameters->addConstantDefinition("u_opacityCorrectionFactor", ::Ogre::GCT_FLOAT1);
-    m_RTVSharedParameters->setNamedConstant("u_opacityCorrectionFactor", m_opacityCorrectionFactor);
+    m_RTVSharedParameters->addConstantDefinition("u_fSampleDis_Ms", ::Ogre::GCT_FLOAT1);
+    m_RTVSharedParameters->addConstantDefinition("u_f4VolIllumFactor", ::Ogre::GCT_FLOAT4);
+    m_RTVSharedParameters->addConstantDefinition("u_f3VolumeClippingBoxMinPos_Ms", ::Ogre::GCT_FLOAT3);
+    m_RTVSharedParameters->addConstantDefinition("u_f3VolumeClippingBoxMaxPos_Ms", ::Ogre::GCT_FLOAT3);
+    m_RTVSharedParameters->addConstantDefinition("u_iMinImageValue", ::Ogre::GCT_INT1);
+    m_RTVSharedParameters->addConstantDefinition("u_iMaxImageValue", ::Ogre::GCT_INT1);
+    m_RTVSharedParameters->addConstantDefinition("u_fOpacityCorrectionFactor", ::Ogre::GCT_FLOAT1);
+    m_RTVSharedParameters->setNamedConstant("u_fOpacityCorrectionFactor", m_opacityCorrectionFactor);
 
     this->initEntryPoints();
     this->createRayTracingMaterial();
@@ -259,6 +264,7 @@ void RayTracingVolumeRenderer::imageUpdate(const ::fwData::Image::sptr image, co
         m_proxyGeometry->computeGrid();
     }
 
+    const auto material = ::Ogre::MaterialManager::getSingleton().getByName(m_currentMtlName);
     if(m_preIntegratedRendering)
     {
         m_preIntegrationTable.imageUpdate(image, tf, m_sampleDistance);
@@ -267,17 +273,23 @@ void RayTracingVolumeRenderer::imageUpdate(const ::fwData::Image::sptr image, co
         // We update the corresponding shader parameters
         const auto minMax = m_preIntegrationTable.getMinMax();
 
-        m_RTVSharedParameters->setNamedConstant("u_min", minMax.first);
-        m_RTVSharedParameters->setNamedConstant("u_max", minMax.second);
+        m_RTVSharedParameters->setNamedConstant("u_iMinImageValue", minMax.first);
+        m_RTVSharedParameters->setNamedConstant("u_iMaxImageValue", minMax.second);
     }
     else
     {
-        const auto material         = ::Ogre::MaterialManager::getSingleton().getByName(m_currentMtlName);
         const auto* const technique = material->getTechnique(0);
         SLM_ASSERT("Technique not found", technique);
         const auto* const pass = technique->getPass(0);
+        SLM_ASSERT("Pass not found", pass);
         m_gpuVolumeTF.lock()->bind(pass, s_VOLUME_TF_TEXUNIT_NAME, m_RTVSharedParameters);
     }
+
+    // The depth technique always used the transfer function
+    const auto* const technique = material->getTechnique(1);
+    SLM_ASSERT("Technique not found", technique);
+    const auto* const pass = technique->getPass(0);
+    m_gpuVolumeTF.lock()->bind(pass, s_VOLUME_TF_TEXUNIT_NAME, m_RTVSharedParameters);
 }
 
 //-----------------------------------------------------------------------------
@@ -285,14 +297,24 @@ void RayTracingVolumeRenderer::imageUpdate(const ::fwData::Image::sptr image, co
 void RayTracingVolumeRenderer::updateVolumeTF()
 {
     FW_PROFILE("TF Update")
+    const auto material = ::Ogre::MaterialManager::getSingleton().getByName(m_currentMtlName);
+
     if(!m_preIntegratedRendering)
     {
-        const auto material         = ::Ogre::MaterialManager::getSingleton().getByName(m_currentMtlName);
         const auto* const technique = material->getTechnique(0);
         SLM_ASSERT("Technique not found", technique);
         const auto* const pass = technique->getPass(0);
+        SLM_ASSERT("Pass not found", pass);
         m_gpuVolumeTF.lock()->bind(pass, s_VOLUME_TF_TEXUNIT_NAME, m_RTVSharedParameters);
     }
+
+    // The depth technique always used the transfer function
+    const auto* const technique = material->getTechnique(1);
+    SLM_ASSERT("Technique not found", technique);
+    const auto* const pass = technique->getPass(0);
+    SLM_ASSERT("Pass not found", pass);
+    m_gpuVolumeTF.lock()->bind(pass, s_VOLUME_TF_TEXUNIT_NAME, m_RTVSharedParameters);
+
     m_proxyGeometry->computeGrid();
 }
 
@@ -305,7 +327,7 @@ void RayTracingVolumeRenderer::setSampling(uint16_t nbSamples)
     computeSampleDistance(getCameraPlane());
 
     // Update the sample distance in the shaders
-    m_RTVSharedParameters->setNamedConstant("u_sampleDistance", m_sampleDistance);
+    m_RTVSharedParameters->setNamedConstant("u_fSampleDis_Ms", m_sampleDistance);
 }
 
 //-----------------------------------------------------------------------------
@@ -315,7 +337,7 @@ void RayTracingVolumeRenderer::setOpacityCorrection(int opacityCorrection)
     m_opacityCorrectionFactor = static_cast<float>(opacityCorrection);
 
     // Update shader parameter
-    m_RTVSharedParameters->setNamedConstant("u_opacityCorrectionFactor", m_opacityCorrectionFactor);
+    m_RTVSharedParameters->setNamedConstant("u_fOpacityCorrectionFactor", m_opacityCorrectionFactor);
 }
 
 //-----------------------------------------------------------------------------
@@ -325,7 +347,7 @@ void RayTracingVolumeRenderer::setAOFactor(double aoFactor)
     m_volIllumFactor.w = static_cast< ::Ogre::Real>(aoFactor);
 
     // Update the shader parameter
-    m_RTVSharedParameters->setNamedConstant("u_volIllumFactor", m_volIllumFactor);
+    m_RTVSharedParameters->setNamedConstant("u_f4VolIllumFactor", m_volIllumFactor);
 }
 
 //-----------------------------------------------------------------------------
@@ -336,7 +358,7 @@ void RayTracingVolumeRenderer::setColorBleedingFactor(double colorBleedingFactor
     m_volIllumFactor      = ::Ogre::Vector4(cbFactor, cbFactor, cbFactor, m_volIllumFactor.w);
 
     // Update the shader parameter
-    m_RTVSharedParameters->setNamedConstant("u_volIllumFactor", m_volIllumFactor);
+    m_RTVSharedParameters->setNamedConstant("u_f4VolIllumFactor", m_volIllumFactor);
 }
 
 //-----------------------------------------------------------------------------
@@ -399,7 +421,10 @@ void RayTracingVolumeRenderer::setFocalLength(float focalLength)
 
 void RayTracingVolumeRenderer::clipImage(const ::Ogre::AxisAlignedBox& clippingBox)
 {
-    IVolumeRenderer::clipImage(clippingBox);
+    const ::Ogre::AxisAlignedBox maxBoxSize(::Ogre::Vector3::ZERO, ::Ogre::Vector3(1.f, 1.f, 1.f));
+    const ::Ogre::AxisAlignedBox clampedClippingBox = maxBoxSize.intersection(clippingBox);
+
+    IVolumeRenderer::clipImage(clampedClippingBox);
 
     m_entryPointGeometry->beginUpdate(0);
     {
@@ -417,7 +442,10 @@ void RayTracingVolumeRenderer::clipImage(const ::Ogre::AxisAlignedBox& clippingB
     }
     m_entryPointGeometry->end();
 
-    m_proxyGeometry->clipGrid(clippingBox);
+    m_proxyGeometry->clipGrid(clampedClippingBox);
+
+    m_RTVSharedParameters->setNamedConstant("u_f3VolumeClippingBoxMinPos_Ms", clampedClippingBox.getMinimum());
+    m_RTVSharedParameters->setNamedConstant("u_f3VolumeClippingBoxMaxPos_Ms", clampedClippingBox.getMaximum());
 }
 
 //-----------------------------------------------------------------------------
@@ -442,14 +470,14 @@ void RayTracingVolumeRenderer::setRayCastingPassTextureUnits(Ogre::Pass* const _
     texUnitState->setTextureFiltering(::Ogre::TFO_BILINEAR);
     texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
 
-    fpParams->setNamedConstant("u_image", numTexUnit++);
+    fpParams->setNamedConstant("u_s3Image", numTexUnit++);
 
     // Transfer function
     if(_fpPPDefines.find(s_PREINTEGRATION_DEFINE) != std::string::npos)
     {
         texUnitState = _rayCastingPass->createTextureUnitState(m_preIntegrationTable.getTexture()->getName());
         texUnitState->setTextureFiltering(::Ogre::TFO_BILINEAR);
-        fpParams->setNamedConstant("u_preintegratTFTexture", numTexUnit++);
+        fpParams->setNamedConstant("u_s2PreintegratedTFTexture", numTexUnit++);
     }
     else
     {
@@ -467,9 +495,9 @@ void RayTracingVolumeRenderer::setRayCastingPassTextureUnits(Ogre::Pass* const _
         texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
         texUnitState->setTexture(m_illumVolume.lock()->getIlluminationVolume());
 
-        fpParams->setNamedConstant("u_illuminationVolume", numTexUnit++);
+        fpParams->setNamedConstant("u_s3IlluminationVolume", numTexUnit++);
         // Update the shader parameter
-        m_RTVSharedParameters->setNamedConstant("u_volIllumFactor", m_volIllumFactor);
+        m_RTVSharedParameters->setNamedConstant("u_f4VolIllumFactor", m_volIllumFactor);
     }
 
     // Entry points texture
@@ -486,12 +514,12 @@ void RayTracingVolumeRenderer::setRayCastingPassTextureUnits(Ogre::Pass* const _
     texUnitState->setTextureFiltering(::Ogre::TFO_NONE);
     texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
 
-    fpParams->setNamedConstant("u_entryPoints", numTexUnit++);
+    fpParams->setNamedConstant("u_s2EntryPoints", numTexUnit++);
 }
 
 //-----------------------------------------------------------------------------
 
-void RayTracingVolumeRenderer::createRayTracingMaterial()
+void RayTracingVolumeRenderer::createRayTracingMaterial(const std::string& _sourceFile)
 {
     std::string vpPPDefines, fpPPDefines;
     size_t hash;
@@ -519,20 +547,12 @@ void RayTracingVolumeRenderer::createRayTracingMaterial()
         }
     }
 
+    // Compile the commun vertex shader
     ::Ogre::HighLevelGpuProgramManager& gpm = ::Ogre::HighLevelGpuProgramManager::getSingleton();
-
-    ///////////////////////////////////////////////////////////////////////////
-    /// Compile vertex shader
     const ::Ogre::String vpName("RTV_VP_" + std::to_string(hash));
-    ::Ogre::HighLevelGpuProgramPtr vsp;
-
-    if(gpm.resourceExists(vpName))
+    if(!gpm.resourceExists(vpName))
     {
-        vsp = gpm.getByName(vpName, "Materials");
-    }
-    else
-    {
-        vsp = gpm.createProgram(vpName, "Materials", "glsl", ::Ogre::GPT_VERTEX_PROGRAM);
+        ::Ogre::HighLevelGpuProgramPtr vsp = gpm.createProgram(vpName, "Materials", "glsl", ::Ogre::GPT_VERTEX_PROGRAM);
         vsp->setSourceFile("RayTracedVolume_VP.glsl");
 
         if(vpPPDefines.size() > 0)
@@ -541,19 +561,13 @@ void RayTracingVolumeRenderer::createRayTracingMaterial()
         }
     }
 
-    ///////////////////////////////////////////////////////////////////////////
-    /// Compile fragment shader
+    // Compile fragment shader
     ::Ogre::String fpName("RTV_FP_" + std::to_string(hash));
-    ::Ogre::HighLevelGpuProgramPtr fsp;
-
-    if(gpm.resourceExists(fpName))
+    if(!gpm.resourceExists(fpName))
     {
-        fsp = gpm.getByName(fpName, "Materials");
-    }
-    else
-    {
-        fsp = gpm.createProgram(fpName, "Materials", "glsl", ::Ogre::GPT_FRAGMENT_PROGRAM);
-        fsp->setSourceFile("RayTracedVolume_FP.glsl");
+        ::Ogre::HighLevelGpuProgramPtr fsp =
+            gpm.createProgram(fpName, "Materials", "glsl", ::Ogre::GPT_FRAGMENT_PROGRAM);
+        fsp->setSourceFile(_sourceFile);
 
         for(const std::string& attachement: m_fragmentShaderAttachements)
         {
@@ -571,52 +585,129 @@ void RayTracingVolumeRenderer::createRayTracingMaterial()
         }
     }
 
-    ///////////////////////////////////////////////////////////////////////////
-    /// Create the material
+    // Create the material
     ::Ogre::MaterialPtr mat = mm.create(m_currentMtlName, ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
-    // Ensure that we have the color parameters set for the current material
-    this->setMaterialLightParams(mat);
-    // Get the already created pass through the already created technique
-    const ::Ogre::Technique* const tech = mat->getTechnique(0);
 
-    ::Ogre::Pass* const pass = tech->getPass(0);
-    pass->setCullingMode(::Ogre::CULL_ANTICLOCKWISE);
-    pass->setSceneBlending(::Ogre::SBT_TRANSPARENT_ALPHA);
-    pass->setDepthCheckEnabled(true);
-    pass->setDepthWriteEnabled(true);
-
-    // Vertex program
-    pass->setVertexProgram(vpName);
-    ::Ogre::GpuProgramParametersSharedPtr vpParams = pass->getVertexProgramParameters();
-    vpParams->setNamedAutoConstant("u_worldViewProj", ::Ogre::GpuProgramParameters::ACT_WORLDVIEWPROJ_MATRIX);
-
-    // Fragment program
-    pass->setFragmentProgram(fpName);
-    ::Ogre::GpuProgramParametersSharedPtr fpParams = pass->getFragmentProgramParameters();
-    fpParams->setNamedAutoConstant("u_viewportSize", ::Ogre::GpuProgramParameters::ACT_VIEWPORT_SIZE);
-    fpParams->setNamedAutoConstant("u_clippingNearDis", ::Ogre::GpuProgramParameters::ACT_NEAR_CLIP_DISTANCE);
-    fpParams->setNamedAutoConstant("u_clippingFarDis", ::Ogre::GpuProgramParameters::ACT_FAR_CLIP_DISTANCE);
-    fpParams->setNamedAutoConstant("u_cameraPos", ::Ogre::GpuProgramParameters::ACT_CAMERA_POSITION_OBJECT_SPACE);
-    fpParams->setNamedAutoConstant("u_shininess", ::Ogre::GpuProgramParameters::ACT_SURFACE_SHININESS);
-    fpParams->setNamedAutoConstant("u_numLights", ::Ogre::GpuProgramParameters::ACT_LIGHT_COUNT);
-    for(size_t i = 0; i < 10; ++i)
+    // Create the technique
     {
-        auto number = "[" + std::to_string(i) + "]";
-        fpParams->setNamedAutoConstant("u_lightDir" + number,
-                                       ::Ogre::GpuProgramParameters::ACT_LIGHT_DIRECTION_OBJECT_SPACE, i);
-        fpParams->setNamedAutoConstant("u_lightDiffuse" + number,
-                                       ::Ogre::GpuProgramParameters::ACT_LIGHT_DIFFUSE_COLOUR, i);
-        fpParams->setNamedAutoConstant("u_lightSpecular" + number,
-                                       ::Ogre::GpuProgramParameters::ACT_LIGHT_SPECULAR_COLOUR, i);
-    }
-    fpParams->setNamedAutoConstant("u_invWorldViewProj",
-                                   ::Ogre::GpuProgramParameters::ACT_INVERSE_WORLDVIEWPROJ_MATRIX);
-    fpParams->setNamedAutoConstant("u_worldViewProj", ::Ogre::GpuProgramParameters::ACT_WORLDVIEWPROJ_MATRIX);
-    fpParams->addSharedParameters(m_RTVSharedParameters->getName());
+        // Ensure that we have the color parameters set for the current material
+        this->setMaterialLightParams(mat);
+        // Get the already created pass through the already created technique
+        const ::Ogre::Technique* const tech = mat->getTechnique(0);
 
-    ///////////////////////////////////////////////////////////////////////////
-    /// Setup texture unit states
-    this->setRayCastingPassTextureUnits(pass, fpPPDefines);
+        ::Ogre::Pass* const pass = tech->getPass(0);
+        pass->setCullingMode(::Ogre::CULL_ANTICLOCKWISE);
+        pass->setSceneBlending(::Ogre::SBT_TRANSPARENT_ALPHA);
+        pass->setDepthCheckEnabled(true);
+        pass->setDepthWriteEnabled(true);
+
+        // Vertex program
+        pass->setVertexProgram(vpName);
+        ::Ogre::GpuProgramParametersSharedPtr vpParams = pass->getVertexProgramParameters();
+        vpParams->setNamedAutoConstant("u_worldViewProj", ::Ogre::GpuProgramParameters::ACT_WORLDVIEWPROJ_MATRIX);
+
+        // Fragment program
+        pass->setFragmentProgram(fpName);
+        ::Ogre::GpuProgramParametersSharedPtr fpParams = pass->getFragmentProgramParameters();
+        fpParams->setNamedAutoConstant("u_viewportSize", ::Ogre::GpuProgramParameters::ACT_VIEWPORT_SIZE);
+        fpParams->setNamedAutoConstant("u_clippingNearDis", ::Ogre::GpuProgramParameters::ACT_NEAR_CLIP_DISTANCE);
+        fpParams->setNamedAutoConstant("u_clippingFarDis", ::Ogre::GpuProgramParameters::ACT_FAR_CLIP_DISTANCE);
+        fpParams->setNamedAutoConstant("u_f3CameraPos", ::Ogre::GpuProgramParameters::ACT_CAMERA_POSITION_OBJECT_SPACE);
+        fpParams->setNamedAutoConstant("u_fShininess", ::Ogre::GpuProgramParameters::ACT_SURFACE_SHININESS);
+        fpParams->setNamedAutoConstant("u_fNumLights", ::Ogre::GpuProgramParameters::ACT_LIGHT_COUNT);
+        for(size_t i = 0; i < 10; ++i)
+        {
+            auto number = "[" + std::to_string(i) + "]";
+            fpParams->setNamedAutoConstant("u_f3LightDir" + number,
+                                           ::Ogre::GpuProgramParameters::ACT_LIGHT_DIRECTION_OBJECT_SPACE, i);
+            fpParams->setNamedAutoConstant("u_f3LightDiffuseCol" + number,
+                                           ::Ogre::GpuProgramParameters::ACT_LIGHT_DIFFUSE_COLOUR, i);
+            fpParams->setNamedAutoConstant("u_f3LightSpecularCol" + number,
+                                           ::Ogre::GpuProgramParameters::ACT_LIGHT_SPECULAR_COLOUR, i);
+        }
+        fpParams->setNamedAutoConstant("u_invWorldViewProj",
+                                       ::Ogre::GpuProgramParameters::ACT_INVERSE_WORLDVIEWPROJ_MATRIX);
+        fpParams->setNamedAutoConstant("u_worldViewProj", ::Ogre::GpuProgramParameters::ACT_WORLDVIEWPROJ_MATRIX);
+        fpParams->addSharedParameters(m_RTVSharedParameters->getName());
+
+        // Setup texture unit states
+        this->setRayCastingPassTextureUnits(pass, fpPPDefines);
+    }
+
+    // Compile the depth fragment shader
+    const ::Ogre::String fpDepthName("RTVD_FP_" + std::to_string(hash));
+    if(!gpm.resourceExists(fpDepthName))
+    {
+        ::Ogre::HighLevelGpuProgramPtr fsp = gpm.createProgram(fpDepthName, "Materials", "glsl",
+                                                               ::Ogre::GPT_FRAGMENT_PROGRAM);
+        fsp->setSourceFile("RayTracedVolumeDepth_FP.glsl");
+        fsp->setParameter("attach", "TransferFunction_FP");
+        fsp->setParameter("attach", "DepthPeelingCommon_FP");
+
+        for(const std::string& attachement: m_fragmentShaderAttachements)
+        {
+            fsp->setParameter("attach", attachement);
+        }
+        if(fpPPDefines.size() > 0)
+        {
+            fsp->setParameter("preprocessor_defines", fpPPDefines);
+        }
+    }
+
+    // Create the depth technique
+    {
+        ::Ogre::Technique* const tech = mat->createTechnique();
+        tech->setSchemeName("DepthPeeling/depthMap");
+
+        ::Ogre::Pass* const pass = tech->createPass();
+        pass->setCullingMode(::Ogre::CULL_ANTICLOCKWISE);
+        pass->setSceneBlending(::Ogre::SBT_TRANSPARENT_ALPHA);
+        pass->setDepthCheckEnabled(true);
+        pass->setDepthWriteEnabled(true);
+
+        // Vertex program
+        pass->setVertexProgram(vpName);
+        ::Ogre::GpuProgramParametersSharedPtr vpParams = pass->getVertexProgramParameters();
+        vpParams->setNamedAutoConstant("u_worldViewProj", ::Ogre::GpuProgramParameters::ACT_WORLDVIEWPROJ_MATRIX);
+
+        // Fragment program
+        pass->setFragmentProgram(fpDepthName);
+        ::Ogre::GpuProgramParametersSharedPtr fpParams = pass->getFragmentProgramParameters();
+        fpParams->setNamedAutoConstant("u_viewportSize", ::Ogre::GpuProgramParameters::ACT_VIEWPORT_SIZE);
+        fpParams->setNamedAutoConstant("u_clippingNearDis", ::Ogre::GpuProgramParameters::ACT_NEAR_CLIP_DISTANCE);
+        fpParams->setNamedAutoConstant("u_clippingFarDis", ::Ogre::GpuProgramParameters::ACT_FAR_CLIP_DISTANCE);
+        fpParams->setNamedAutoConstant("u_f3CameraPos", ::Ogre::GpuProgramParameters::ACT_CAMERA_POSITION_OBJECT_SPACE);
+        fpParams->setNamedAutoConstant("u_invWorldViewProj",
+                                       ::Ogre::GpuProgramParameters::ACT_INVERSE_WORLDVIEWPROJ_MATRIX);
+        fpParams->setNamedAutoConstant("u_worldViewProj", ::Ogre::GpuProgramParameters::ACT_WORLDVIEWPROJ_MATRIX);
+        fpParams->addSharedParameters(m_RTVSharedParameters->getName());
+
+        // Setup texture unit states
+        ::Ogre::TextureUnitState* texUnitState;
+        texUnitState = pass->createTextureUnitState();
+        texUnitState->setTextureName(m_3DOgreTexture->getName(), ::Ogre::TEX_TYPE_3D);
+        texUnitState->setTextureFiltering(::Ogre::TFO_BILINEAR);
+        texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
+        fpParams->setNamedConstant("u_s3Image", 0);
+
+        const auto gpuTF = m_gpuVolumeTF.lock();
+        texUnitState = pass->createTextureUnitState();
+        texUnitState->setName(s_VOLUME_TF_TEXUNIT_NAME);
+        gpuTF->bind(pass, texUnitState->getName(), fpParams);
+        fpParams->setNamedConstant("u_s1TFTexture", 1);
+
+        texUnitState = pass->createTextureUnitState();
+        texUnitState->setName("entryPoints");
+        if(this->getLayer()->getNumberOfCameras() == 1)
+        {
+            const auto& rayEntryCompositorName = m_rayEntryCompositor->getName();
+            texUnitState->setContentType(::Ogre::TextureUnitState::CONTENT_COMPOSITOR);
+            texUnitState->setCompositorReference(rayEntryCompositorName, rayEntryCompositorName + "Texture");
+        }
+        texUnitState->setTextureFiltering(::Ogre::TFO_NONE);
+        texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
+        fpParams->setNamedConstant("u_s2EntryPoints", 2);
+    }
 
     m_entryPointGeometry->setMaterialName(0, m_currentMtlName);
 }

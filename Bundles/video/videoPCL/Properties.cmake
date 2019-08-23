@@ -16,6 +16,6 @@ set( DEPENDENCIES
 )
 set( REQUIREMENTS  )
 set( CONAN_DEPS
-    boost/1.67.0@sight/stable
-    pcl/1.8.1-r2@sight/stable
+    ${CONAN_BOOST}
+    ${CONAN_PCL}
 )

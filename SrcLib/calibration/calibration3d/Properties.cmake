@@ -5,10 +5,12 @@ set( DEPENDENCIES
     fwCore
     fwData
     eigenTools
-    )
+)
 set( REQUIREMENTS  )
 set( DISABLE_PCH TRUE)
 set( CONAN_DEPS
-    ceres/1.14.0@sight/stable
-    opencv/3.4.3-r2@sight/stable
+    ${CONAN_CERES}
+    ${CONAN_OPENCV}
+    ${CONAN_FFMPEG}
+    ${CONAN_QT}
 )

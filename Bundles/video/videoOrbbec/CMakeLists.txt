@@ -1,20 +1,17 @@
 fwLoadProperties()
 
+find_package(Boost QUIET REQUIRED COMPONENTS filesystem)
+find_package(OpenCV QUIET REQUIRED COMPONENTS opencv_videoio)
+find_package(FFMPEG QUIET REQUIRED)
 find_package(OpenNI2 QUIET REQUIRED)
-find_package(Boost QUIET COMPONENTS filesystem REQUIRED)
-find_package(OpenCV QUIET COMPONENTS videoio )
+
+target_link_libraries(${FWPROJECT_NAME} PRIVATE Boost::filesystem)
+target_link_libraries(${FWPROJECT_NAME} PRIVATE opencv_videoio)
+target_link_libraries(${FWPROJECT_NAME} PRIVATE ${FFMPEG_LIBRARIES})
+target_link_libraries(${FWPROJECT_NAME} PRIVATE ${OPENNI2_LIBRARIES})
 
 fwInclude(
     ${OPENNI2_INCLUDE_DIRS}
-    ${Boost_FILESYSTEM_INCLUDE_DIRS}
-    ${OpenCV_INCLUDE_DIRS}
-
-)
-fwLink(
-    ${OPENNI2_LIBRARY}
-    ${Boost_FILESYSTEM_LIBRARY}
-    ${OpenCV_LIBS}
-
 )
 
 if(WIN32)

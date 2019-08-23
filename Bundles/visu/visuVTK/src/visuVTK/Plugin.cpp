@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -47,14 +47,19 @@ Plugin::~Plugin() noexcept
 
 void Plugin::start()
 {
-    ::fwRenderVTK::vtk::Instantiator::ClassInitialize();
+    m_factory = ::fwRenderVTK::vtk::Instantiator::New();
+    m_factory->getClassOverrides();
+    vtkObjectFactory::RegisterFactory(m_factory);
 }
 
 //------------------------------------------------------------------------------
 
 void Plugin::stop() noexcept
 {
-    ::fwRenderVTK::vtk::Instantiator::ClassFinalize();
+    vtkObjectFactory::UnRegisterFactory(m_factory);
+    m_factory->Delete();
 }
+
+//------------------------------------------------------------------------------
 
 } // namespace visuVTK

@@ -7,7 +7,13 @@ material IrcadLogo
         pass
         {
             cull_hardware none
-            scene_blend alpha_blend
+
+            // We want to blend colors using alpha blending but no the opacity.
+            // This works because we expect the background to be fully opaque (=1),
+            // which would always result in an output opacity of 1.
+            separate_scene_blend src_alpha one_minus_src_alpha zero one
+            // Disable alpha writing. (redundant with the blend settings but could help performances on some platforms).
+            colour_write on on on off
 
             vertex_program_ref Default/Video_VP
             {
@@ -34,10 +40,14 @@ material IHULogo
     {
         pass
         {
-            ambient 1.0 1.0 1.0 1.0
-            diffuse 1.0 1.0 1.0 1.0
             cull_hardware none
-            scene_blend alpha_blend
+
+            // We want to blend colors using alpha blending but no the opacity.
+            // This works because we expect the background to be fully opaque (=1),
+            // which would always result in an output opacity of 1.
+            separate_scene_blend src_alpha one_minus_src_alpha zero one
+            // Disable alpha writing. (redundant with the blend settings but could help performances on some platforms).
+            colour_write on on on off
 
             vertex_program_ref Default/Video_VP
             {

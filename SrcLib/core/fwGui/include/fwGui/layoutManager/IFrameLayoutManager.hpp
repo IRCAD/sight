@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -87,7 +87,8 @@ public:
             m_style(DEFAULT),
             m_size(std::make_pair(-1, -1)),
             m_position(std::make_pair(-1, -1)),
-            m_state(UNKNOWN)
+            m_state(UNKNOWN),
+            m_visibility(true)
         {
         }
 
@@ -105,6 +106,8 @@ public:
         std::pair< int, int >            m_position;
         /// Frame state (maximize, minized, full screen)
         FrameState m_state;
+        /// Frame visibility
+        bool m_visibility;
     };
 
     /// Constructor. Do nothing.

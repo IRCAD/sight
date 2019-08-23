@@ -1,0 +1,5 @@
+<plugin id="PoCDialog" class="::PoCDialog::Plugin"  version="@PROJECT_VERSION@" >
+
+    <library name="PoCDialog" />
+
+</plugin>

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -56,8 +56,8 @@ Negato2DInteractor::Negato2DInteractor() :
     m_currentHeight(10),
     m_camera(nullptr)
 {
-    m_minimumCorner = ::Ogre::Vector3(-1., -1., 0.);
-    m_maximumCorner = ::Ogre::Vector3(1., 1., 0.);
+    m_minimumCorner = ::Ogre::Vector2(-1., -1);
+    m_maximumCorner = ::Ogre::Vector2(1., 1.);
 }
 
 // ----------------------------------------------------------------------------
@@ -129,6 +129,12 @@ void Negato2DInteractor::buttonPressEvent(MouseButton, int, int)
 
 void Negato2DInteractor::resizeEvent(int, int)
 {
+    this->updateRenderWindowDimensions();
+    this->updateTotalSize();
+    m_currentWidth  = m_zoomScale * m_totalWidth;
+    m_currentHeight = m_zoomScale * m_totalHeight;
+    this->updateCameraAngle();
+    this->updateCameraPosition();
 }
 
 //------------------------------------------------------------------------------
@@ -157,10 +163,70 @@ void Negato2DInteractor::focusOutEvent()
 
 // ----------------------------------------------------------------------------
 
+::Ogre::Real Negato2DInteractor::getTextureCoordinate_X(int mouseX) const
+{
+    ::Ogre::Real leftScreenBordure = m_cameraPos.x - static_cast< ::Ogre::Real >(m_currentWidth) / 2;
+    ::Ogre::Real newCoordinate     = static_cast< ::Ogre::Real >(leftScreenBordure) +
+                                     static_cast< ::Ogre::Real >(mouseX) / m_renderWindowWidth * m_currentWidth;
+    return newCoordinate;
+}
+
+// ----------------------------------------------------------------------------
+
+::Ogre::Real Negato2DInteractor::getTextureCoordinate_Y(int mouseY) const
+{
+    // Qt and Ogre's Y axis are oriented to the opposite of each other.
+    ::Ogre::Real topScreenBordure = m_cameraPos.y + static_cast< ::Ogre::Real >(m_currentHeight) / 2;
+    ::Ogre::Real newCoordinate    = topScreenBordure - (static_cast< ::Ogre::Real >(mouseY) /
+                                                        m_renderWindowHeight * m_currentHeight);
+    return newCoordinate;
+}
+
+// ----------------------------------------------------------------------------
+
+::Ogre::Camera* Negato2DInteractor::getCamera()
+{
+    if(!m_camera)
+    {
+        m_camera    = m_sceneManager->getCamera(::fwRenderOgre::Layer::DEFAULT_CAMERA_NAME);
+        m_cameraPos =
+            m_camera->getSceneManager()->getSceneNode(::fwRenderOgre::Layer::s_DEFAULT_CAMERA_NODE_NAME)->getPosition();
+    }
+    return m_camera;
+}
+
+//------------------------------------------------------------------------------
+
+::fwDataTools::helper::MedicalImage::Orientation Negato2DInteractor::getOrientation()
+{
+    ::Ogre::Matrix4 view = this->getCamera()->getViewMatrix();
+
+    /// Look in z axis, axial
+    if(std::abs(view[0][0]-1) <= std::numeric_limits<float>::epsilon()*2 &&
+       std::abs(view[1][1]+1) <= std::numeric_limits<float>::epsilon()*2 &&
+       std::abs(view[2][2]+1) <= std::numeric_limits<float>::epsilon()*2)
+    {
+        return ::fwDataTools::helper::MedicalImage::Orientation::Z_AXIS;
+    }
+    /// Look in  y, frontal
+    else if(std::abs(view[0][0]-1) <= std::numeric_limits<float>::epsilon()*2 &&
+            std::abs(view[1][2]-1) <= std::numeric_limits<float>::epsilon()*2 &&
+            std::abs(view[2][1]+1) <= std::numeric_limits<float>::epsilon()*2)
+    {
+        return ::fwDataTools::helper::MedicalImage::Orientation::Y_AXIS;
+    }
+    /// Look in x, sagittal
+    else
+    {
+        return ::fwDataTools::helper::MedicalImage::Orientation::X_AXIS;
+    }
+}
+
+// ----------------------------------------------------------------------------
+
 void Negato2DInteractor::updateTotalSize()
 {
     ::Ogre::SceneNode* rootSceneNode = m_sceneManager->getRootSceneNode();
-    rootSceneNode->getChildIterator();
 
     ::std::stack< const ::Ogre::SceneNode* > childrenStack;
     childrenStack.push(rootSceneNode);
@@ -182,10 +248,41 @@ void Negato2DInteractor::updateTotalSize()
             {
                 ::Ogre::MeshPtr negatoMesh             = e->getMesh();
                 ::Ogre::AxisAlignedBox meshBoundingBox = negatoMesh->getBounds();
-                m_minimumCorner                        = meshBoundingBox.getMinimum();
-                m_maximumCorner                        = meshBoundingBox.getMaximum();
-                m_totalWidth                           = meshBoundingBox.getSize().x;
-                m_totalHeight                          = meshBoundingBox.getSize().y;
+                /// Checks the axis orientation to add the points correctly
+                switch (this->getOrientation())
+                {
+                    /// Look in z axis, axial]
+                    case ::fwDataTools::helper::MedicalImage::Orientation::Z_AXIS:
+                    {
+                        m_minimumCorner = meshBoundingBox.getMinimum().xy();
+                        m_maximumCorner = meshBoundingBox.getMaximum().xy();
+                        m_totalWidth    = meshBoundingBox.getSize().x;
+                        m_totalHeight   = meshBoundingBox.getSize().y;
+                        break;
+                    }
+                    /// Look in y axis, frontal
+                    case ::fwDataTools::helper::MedicalImage::Orientation::Y_AXIS:
+                    {
+                        m_minimumCorner =
+                            ::Ogre::Vector2(meshBoundingBox.getMinimum().x, meshBoundingBox.getMinimum().z);
+                        m_maximumCorner =
+                            ::Ogre::Vector2(meshBoundingBox.getMaximum().x, meshBoundingBox.getMaximum().z);
+                        m_totalWidth  = meshBoundingBox.getSize().x;
+                        m_totalHeight = meshBoundingBox.getSize().z;
+                        break;
+                    }
+                    /// Look in -z axis, sagittal
+                    case ::fwDataTools::helper::MedicalImage::Orientation::X_AXIS:
+                    {
+                        m_minimumCorner =
+                            ::Ogre::Vector2(meshBoundingBox.getMinimum().y, meshBoundingBox.getMinimum().z);
+                        m_maximumCorner =
+                            ::Ogre::Vector2(meshBoundingBox.getMaximum().y, meshBoundingBox.getMaximum().z);
+                        m_totalWidth  = meshBoundingBox.getSize().y;
+                        m_totalHeight = meshBoundingBox.getSize().z;
+                        break;
+                    }
+                }
                 break;
             }
         }
@@ -215,8 +312,6 @@ void Negato2DInteractor::updateRenderWindowDimensions()
     m_renderWindowWidth  = static_cast< ::Ogre::Real >(renderSystem->_getViewport()->getActualWidth());
     m_renderWindowHeight = static_cast< ::Ogre::Real >(renderSystem->_getViewport()->getActualHeight());
     m_renderWindowRatio  = m_renderWindowWidth / m_renderWindowHeight;
-    this->getCamera()->setAspectRatio(m_renderWindowRatio);
-
 }
 
 // ----------------------------------------------------------------------------
@@ -240,85 +335,21 @@ void Negato2DInteractor::updateCameraPosition()
 
 // ----------------------------------------------------------------------------
 
-void Negato2DInteractor::resetCameraPosition()
-{
-    ::Ogre::Real cameraWidth, cameraHeight;
-
-    if( m_renderWindowWidth < m_renderWindowHeight)
-    {
-        cameraWidth  = m_totalWidth;
-        cameraHeight = cameraWidth / m_renderWindowRatio;
-    }
-    else
-    {
-        cameraHeight = m_totalHeight;
-        cameraWidth  = cameraHeight * m_renderWindowRatio;
-    }
-
-    this->getCamera()->setOrthoWindow(cameraWidth, cameraHeight);
-}
-
-// ----------------------------------------------------------------------------
-
-::Ogre::Camera* Negato2DInteractor::getCamera()
-{
-    if(!m_camera)
-    {
-        m_camera    = m_sceneManager->getCamera(::fwRenderOgre::Layer::DEFAULT_CAMERA_NAME);
-        m_cameraPos =
-            m_camera->getSceneManager()->getSceneNode(::fwRenderOgre::Layer::s_DEFAULT_CAMERA_NODE_NAME)->getPosition();
-        m_camera->setOrthoWindow(1.f, 1.f);
-    }
-    return m_camera;
-}
-
-// ----------------------------------------------------------------------------
-
 void Negato2DInteractor::updateCameraAngle()
 {
-    this->updateRenderWindowDimensions();
-    ::Ogre::Real orthoWidth, orthoHeight, imageToWindowRatio;
-
+    this->getCamera()->setAspectRatio(m_renderWindowRatio);
     if( static_cast<int>(m_renderWindowWidth) == static_cast<int>(m_renderWindowHeight) )
     {
         this->getCamera()->setOrthoWindow( m_currentWidth, m_currentHeight );
     }
     else if( m_renderWindowWidth > m_renderWindowHeight )
     {
-        orthoHeight        = m_currentHeight;
-        imageToWindowRatio = m_currentHeight / m_renderWindowHeight;
-        orthoWidth         = imageToWindowRatio * orthoHeight;
-        this->getCamera()->setOrthoWindowHeight( orthoHeight);
-
+        this->getCamera()->setOrthoWindowHeight( m_currentHeight);
     }
     else if( m_renderWindowWidth < m_renderWindowHeight )
     {
-        orthoWidth         = m_currentWidth;
-        imageToWindowRatio = m_currentWidth / m_renderWindowWidth;
-        orthoHeight        = imageToWindowRatio * orthoWidth;
-        this->getCamera()->setOrthoWindowWidth( orthoWidth );
+        this->getCamera()->setOrthoWindowWidth(m_currentWidth);
     }
-}
-
-// ----------------------------------------------------------------------------
-
-::Ogre::Real Negato2DInteractor::getTextureCoordinate_X(int mouseX) const
-{
-    ::Ogre::Real leftScreenBordure = m_cameraPos.x - static_cast< ::Ogre::Real >(m_currentWidth) / 2;
-    ::Ogre::Real newCoordinate     = static_cast< ::Ogre::Real >(leftScreenBordure) +
-                                     static_cast< ::Ogre::Real >(mouseX) / m_renderWindowWidth * m_currentWidth;
-    return newCoordinate;
-}
-
-// ----------------------------------------------------------------------------
-
-::Ogre::Real Negato2DInteractor::getTextureCoordinate_Y(int mouseY) const
-{
-    // Qt and Ogre's Y axis are oriented to the opposite of each other.
-    ::Ogre::Real topScreenBordure = m_cameraPos.y + static_cast< ::Ogre::Real >(m_currentHeight) / 2;
-    ::Ogre::Real newCoordinate    = topScreenBordure - (static_cast< ::Ogre::Real >(mouseY) /
-                                                        m_renderWindowHeight * m_currentHeight);
-    return newCoordinate;
 }
 
 // ----------------------------------------------------------------------------

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -79,6 +79,9 @@ public:
 
     /// Set the visibility of the text. Beware this hides ::Ogre::MovableObject::setVisible() which is not virtual !
     FWRENDEROGRE_API void setVisible(bool _visible);
+
+    /// Aligns the text by setting the x coordinate origin.
+    FWRENDEROGRE_API void setTextAlignment(const ::Ogre::TextAreaOverlayElement::Alignment _alignement);
 
     /// Returns this MovableObject's type as a string.
     FWRENDEROGRE_API virtual const ::Ogre::String& getMovableType() const override;

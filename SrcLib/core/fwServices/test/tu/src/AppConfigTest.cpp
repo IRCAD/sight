@@ -362,6 +362,9 @@ void AppConfigTest::startStopTest()
             auto srv5   = ::fwServices::ut::TestServiceImplementation::dynamicCast(gnsrv5);
             CPPUNIT_ASSERT(srv5 != nullptr);
             CPPUNIT_ASSERT_EQUAL(::fwServices::IService::STARTED, srv5->getStatus());
+
+            // We have started, yet we may not have been updated, so wait for it just in case
+            fwTestWaitMacro(1u == srv5->getUpdateOrder());
             CPPUNIT_ASSERT_EQUAL(0u, srv5->getStartOrder());
             CPPUNIT_ASSERT_EQUAL(1u, srv5->getUpdateOrder());
 
@@ -760,6 +763,8 @@ void AppConfigTest::connectionTest()
         srv2->resetIsUpdated();
         CPPUNIT_ASSERT(!srv2->getIsUpdated());
         CPPUNIT_ASSERT(!srv3->getIsUpdated());
+
+        fwTestWaitMacro(srv4->getIsUpdated())
         CPPUNIT_ASSERT(srv4->getIsUpdated());
         CPPUNIT_ASSERT(!srv4->getIsUpdated2());
 
@@ -1187,7 +1192,7 @@ void AppConfigTest::keyGroupTest()
         srv2->resetIsUpdated();
         auto sig4 = data4->signal< ::fwData::Object::ModifiedSignalType>(::fwData::Object::s_MODIFIED_SIG);
         sig4->asyncEmit();
-        fwTestWaitMacro(srv2->getIsUpdated());
+        fwTestWaitMacro(srv2->getIsUpdated(), 2500);
         CPPUNIT_ASSERT(!srv2->getIsUpdated());
         auto sigIm4 = data4->signal< ::fwData::Image::BufferModifiedSignalType>(::fwData::Image::s_BUFFER_MODIFIED_SIG);
         sigIm4->asyncEmit();
@@ -1203,7 +1208,7 @@ void AppConfigTest::keyGroupTest()
 
         auto sigIm5 = data5->signal< ::fwData::Image::BufferModifiedSignalType>(::fwData::Image::s_BUFFER_MODIFIED_SIG);
         sigIm5->asyncEmit();
-        fwTestWaitMacro(srv2->getIsUpdated());
+        fwTestWaitMacro(srv2->getIsUpdated(), 2500);
         CPPUNIT_ASSERT(!srv2->getIsUpdated());
     }
 
