@@ -22,6 +22,8 @@
 
 #include "visuOgreQt/OpenGLContext.hpp"
 
+#include <fwCore/spyLog.hpp>
+
 #include <QOpenGLFunctions_4_1_Core>
 
 namespace visuOgreQt

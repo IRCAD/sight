@@ -93,8 +93,6 @@ void Window::initialise()
 
     Ogre::NameValuePairList parameters;
 
-    ::fwRenderOgre::WindowManager::sptr mgr = ::fwRenderOgre::WindowManager::get();
-
     // We share the OpenGL context on all windows. The first window will create the context, the other ones will
     // reuse the current context.
     parameters["currentGLContext"] = "true";
@@ -104,19 +102,16 @@ void Window::initialise()
        the scene. Below is a cross-platform method on how to do this.
      */
 #if defined(Q_OS_MAC) || defined(Q_OS_WIN)
-    parameters["externalWindowHandle"] = Ogre::StringConverter::toString(size_t(this->winId()));
-    parameters["parentWindowHandle"]   = Ogre::StringConverter::toString(size_t(this->winId()));
+    {
+        size_t winId = static_cast<size_t>(this->winId());
+        parameters["externalWindowHandle"] = Ogre::StringConverter::toString(winId);
+        parameters["parentWindowHandle"]   = Ogre::StringConverter::toString(winId);
+    }
 #else
-    parameters["externalWindowHandle"] = Ogre::StringConverter::toString((unsigned long)(this->winId()));
-#endif
-
-#if defined(Q_OS_MAC)
-    parameters["macAPI"]               = Ogre::String("cocoa");
-    parameters["macAPICocoaUseNSView"] = Ogre::String("true");
-
-    // We set the contextProfile to GLNativeSupport::CONTEXT_CORE by default otherwise ogre will initialize the default
-    // context to "compatibility" which wil set openGL version to 2.1 which do not support all the feature we want
-    parameters["contextProfile"] = Ogre::String("1");
+    {
+        unsigned long winId = static_cast<unsigned long>(this->winId());
+        parameters["externalWindowHandle"] = Ogre::StringConverter::toString(winId);
+    }
 #endif
 
     m_glContext = ::visuOgreQt::OpenGLContext::getGlobalOgreOpenGLContext();
@@ -132,6 +127,7 @@ void Window::initialise()
     m_ogreRenderWindow->setAutoUpdated(false);
     m_ogreRenderWindow->addListener(this);
 
+    ::fwRenderOgre::WindowManager::sptr mgr = ::fwRenderOgre::WindowManager::get();
     mgr->registerWindow(m_ogreRenderWindow);
 
     ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo info;
