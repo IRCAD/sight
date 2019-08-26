@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -31,6 +31,8 @@ namespace helper
 Array::Array( ::fwData::Array::sptr array ) :
     m_array(array)
 {
+    FW_DEPRECATED_MSG("::fwDataTools::helper::Array is no longer supported, the methods have been moved to "
+                      "::fwData::Array", "22.0");
     SLM_ASSERT("Array ptr is null.", array);
     m_lock = array->getBufferObject()->lock();
 }
