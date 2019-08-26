@@ -255,6 +255,8 @@ void SVolumeRender::stopping()
 
     m_preIntegrationTable.removeTexture();
 
+    m_illum.reset();
+
     this->destroyWidget();
 }
 
