@@ -30,6 +30,7 @@ set( REQUIREMENTS
     uiIO
     uiCalibration
     uiPreferences
+    uiMedDataQt
 
     videoCalibration
     videoCharucoCalibration

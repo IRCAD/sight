@@ -98,6 +98,12 @@
                 <key>CHESSBOARD_SQUARE_SIZE</key>
                 <default_value>20</default_value>
             </preference>
+            <preference>
+                <type>double</type>
+                <name>Input scaling for chessboard detection</name>
+                <key>CHESSBOARD_SCALE</key>
+                <default_value>0.25</default_value>
+            </preference>
         </service>
 
         <service uid="ActionExport" type="::uiMedDataQt::action::SExportSeries" autoConnect="yes">
