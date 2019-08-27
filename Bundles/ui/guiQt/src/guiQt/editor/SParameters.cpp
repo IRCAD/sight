@@ -124,9 +124,13 @@ void SParameters::configuring()
 {
     this->initialize();
 
-    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
+    const ConfigType configTree = this->getConfigTree();
 
-    m_sendSignalAtStarting = config.get<bool>("send_at_start", m_sendSignalAtStarting);
+    const ::boost::optional< bool > sendAtStart = configTree.get_optional< bool >("config.<xmlattr>.sendAtStart");
+    if(sendAtStart)
+    {
+        m_sendSignalAtStart = sendAtStart.value();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -268,7 +272,7 @@ void SParameters::starting()
 
     this->blockSignals(false);
 
-    if(m_sendSignalAtStarting)
+    if(m_sendSignalAtStart)
     {
         this->updating(); // emits the signals with the default values
     }
@@ -776,7 +780,7 @@ QPushButton* SParameters::createResetButton()
 
 void SParameters::createBoolWidget(QGridLayout& layout, int row,
                                    const std::string& key,
-                                   const std::string& defaultValue, bool _resetButton)
+                                   const std::string& defaultValue, bool resetButton)
 {
     QCheckBox* checkbox = new QCheckBox();
     checkbox->setTristate(false);
@@ -793,7 +797,7 @@ void SParameters::createBoolWidget(QGridLayout& layout, int row,
     QObject::connect(checkbox, SIGNAL(stateChanged(int)), this, SLOT(onChangeBoolean(int)));
 
     // Reset button
-    if(_resetButton)
+    if(resetButton)
     {
         QPushButton* resetButton = this->createResetButton();
 
@@ -807,7 +811,7 @@ void SParameters::createBoolWidget(QGridLayout& layout, int row,
 //-----------------------------------------------------------------------------
 
 void SParameters::createColorWidget(QGridLayout& layout, int row, const std::string& key,
-                                    const std::string& defaultValue, bool _resetButton)
+                                    const std::string& defaultValue, bool resetButton)
 {
     QPushButton* colourButton = new QPushButton("Color");
     colourButton->setObjectName(QString::fromStdString(key));
@@ -844,13 +848,13 @@ void SParameters::createColorWidget(QGridLayout& layout, int row, const std::str
     QObject::connect(colourButton, SIGNAL(clicked()), this, SLOT(onColorButton()));
 
     // Reset button
-    if(_resetButton)
+    if(resetButton)
     {
         QPushButton* resetButton = this->createResetButton();
 
         layout.addWidget(resetButton, row, 5);
 
-        // Connect reset button to the slider
+        // Connect reset button to the button
         QObject::connect(resetButton, &QPushButton::clicked, this, [ = ] { onResetColorMapped(colourButton); });
     }
 }
@@ -858,7 +862,7 @@ void SParameters::createColorWidget(QGridLayout& layout, int row, const std::str
 //-----------------------------------------------------------------------------
 
 void SParameters::createDoubleWidget(QGridLayout& layout, int row, const std::string& key,
-                                     double defaultValue, double min, double max, int count, bool _resetButton)
+                                     double defaultValue, double min, double max, int count, bool resetButton)
 {
     QDoubleSpinBox* spinboxes[3];
 
@@ -910,7 +914,7 @@ void SParameters::createDoubleWidget(QGridLayout& layout, int row, const std::st
     }
 
     // Reset button
-    if(_resetButton)
+    if(resetButton)
     {
         QPushButton* resetButton = this->createResetButton();
 
@@ -925,7 +929,7 @@ void SParameters::createDoubleWidget(QGridLayout& layout, int row, const std::st
 
 void SParameters::createDoubleSliderWidget(QGridLayout& layout, int row, const std::string& key,
                                            double defaultValue, double min, double max, std::uint8_t decimals,
-                                           bool _resetButton)
+                                           bool resetButton)
 {
     const double valueRange = max - min;
 
@@ -984,7 +988,7 @@ void SParameters::createDoubleSliderWidget(QGridLayout& layout, int row, const s
     slider->setProperty(propName.c_str(), QVariant::fromValue< QSlider*>(slider));
 
     // Reset button
-    if(_resetButton)
+    if(resetButton)
     {
         QPushButton* resetButton = this->createResetButton();
 
@@ -998,7 +1002,7 @@ void SParameters::createDoubleSliderWidget(QGridLayout& layout, int row, const s
 //-----------------------------------------------------------------------------
 
 void SParameters::createIntegerSliderWidget(QGridLayout& layout, int row, const std::string& key,
-                                            int defaultValue, int min, int max, bool _resetButton)
+                                            int defaultValue, int min, int max, bool resetButton)
 {
     QSlider* slider = new QSlider(Qt::Horizontal);
     slider->setObjectName(QString::fromStdString(key));
@@ -1050,7 +1054,7 @@ void SParameters::createIntegerSliderWidget(QGridLayout& layout, int row, const 
     slider->setProperty(propName.c_str(), QVariant::fromValue< QSlider*>(slider));
 
     // Reset button
-    if(_resetButton)
+    if(resetButton)
     {
         QPushButton* resetButton = this->createResetButton();
 
@@ -1064,7 +1068,7 @@ void SParameters::createIntegerSliderWidget(QGridLayout& layout, int row, const 
 //-----------------------------------------------------------------------------
 
 void SParameters::createIntegerSpinWidget(QGridLayout& layout, int row, const std::string& key,
-                                          int defaultValue, int min, int max, int count, bool _resetButton)
+                                          int defaultValue, int min, int max, int count, bool resetButton)
 {
     QSpinBox* spinboxes[3];
 
@@ -1102,7 +1106,7 @@ void SParameters::createIntegerSpinWidget(QGridLayout& layout, int row, const st
     }
 
     // Reset button
-    if(_resetButton)
+    if(resetButton)
     {
         QPushButton* resetButton = this->createResetButton();
 
