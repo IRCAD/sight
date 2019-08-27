@@ -75,7 +75,7 @@ public:
      */
     FWDATA_API Array( ::fwData::Object::Key key );
 
-    FWDATA_API virtual ~Array();
+    FWDATA_API virtual ~Array() override;
 
     /// Defines deep copy
     FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
@@ -192,10 +192,14 @@ public:
      * @brief Compute offset in buffer
      *
      * @param id Item id
+     * @param component Item component id
+     * @param sizeOfType size of a component
      *
      * @return buffer offset
+     * @deprecated Component attribute is deprecated, increase array dimension instead of using component, it will be
+     * removed in sight 22.0. Use getBufferOffset( const ::fwData::Array::IndexType& id, size_t sizeOfType )
      */
-    FWDATA_API size_t getBufferOffset( const ::fwData::Array::IndexType& id ) const;
+    FWDATA_API size_t getBufferOffset( const ::fwData::Array::IndexType& id, size_t component, size_t sizeOfType) const;
 
     /**
      * @brief Compute strides for given parameters
@@ -215,6 +219,60 @@ public:
     // -----------------------------------
     // New Array API
     // -----------------------------------
+
+    /**
+     * @brief Iterator on array buffer
+     *
+     * Iterate through the buffer and check if the idex is not out of the bounds
+     */
+    template <class TYPE>
+    class ArrayIterator
+    {
+    public:
+        ArrayIterator(Array* array);
+        ArrayIterator(const ArrayIterator& it);
+        ~ArrayIterator();
+        ArrayIterator& operator++();
+        ArrayIterator operator++(int);
+        ArrayIterator& operator+(size_t index);
+        ArrayIterator& operator+=(size_t index);
+        bool operator==(const ArrayIterator& it) const;
+        bool operator!=(const ArrayIterator& it) const;
+        bool operator<(const ArrayIterator& it) const;
+        TYPE& operator*();
+        TYPE operator*() const;
+    private:
+        TYPE* m_pointer{nullptr};
+        size_t m_idx{0};
+        Array* m_array{nullptr};
+        ::fwMemory::BufferObject::Lock m_lock;
+        size_t m_numberOfElements{0};
+    };
+
+    /**
+     * @brief Iterator on array buffer
+     *
+     * Iterate through the buffer and check if the idex is not out of the bounds
+     */
+    template <class TYPE>
+    class ArrayConstIterator
+    {
+    public:
+        ArrayConstIterator(Array* array);
+        ArrayConstIterator(const ArrayConstIterator& it);
+        ArrayConstIterator(const ArrayIterator<TYPE>& it);
+        ~ArrayConstIterator();
+        ArrayConstIterator& operator++();
+        ArrayConstIterator operator++(int);
+        ArrayConstIterator& operator+(size_t index);
+        ArrayConstIterator& operator+=(size_t index);
+        bool operator==(const ArrayConstIterator& it) const;
+        bool operator!=(const ArrayConstIterator& it) const;
+        bool operator<(const ArrayConstIterator& it) const;
+        TYPE operator*() const;
+    private:
+        ArrayIterator<TYPE> m_iter;
+    };
 
     /**
      * @brief Resizes and allocate (if needed) the array.
@@ -246,44 +304,28 @@ public:
     FWDATA_API ::fwMemory::BufferObject::Lock lock() const;
 
     /**
-     * @brief Setter for one item components of the array
-     *
-     * @param id Item id
-     * @param value Valid buffer of elements of type \<m_type\> with a length equal to \<m_nbOfComponents\> to be copied
-     * to array 'id'
-     * @throw ::fwData::Exception The buffer cannot be accessed if the array is not locked
-     */
-    FWDATA_API virtual void setItem(const ::fwData::Array::IndexType& id, const void* value);
-
-    /**
-     * @brief Getter for a buffer item. pointer to the requested item in the buffer
-     *
-     * @param id Item id
-     *
-     * @return Pointer to the requested item in the buffer
-     * @throw ::fwData::Exception The buffer cannot be accessed if the array is not locked
-     */
-    FWDATA_API virtual void* getItem(const ::fwData::Array::IndexType& id);
-
-    /**
-     * @brief Typed version of getItem
+     * @brief Get the value of an element
      *
      * @tparam T Type in which the pointer will be returned
      * @param id Item id
      *
-     * @return Array buffer pointer casted to T
+     * @return Buffer value casted to T
      * @throw ::fwData::Exception The buffer cannot be accessed if the array is not locked
+     * @throw ::fwData::Exception Index out of bounds
      */
-    template< typename T > T* getItem(const ::fwData::Array::IndexType& id);
+    template< typename T > T& at(const ::fwData::Array::IndexType& id);
 
     /**
-     * @brief Copies the data into the buffer pointed by <value>
+     * @brief Get the value of an element
      *
+     * @tparam T Type in which the pointer will be returned
      * @param id Item id
+     *
+     * @return Buffer value casted to T
      * @throw ::fwData::Exception The buffer cannot be accessed if the array is not locked
-     * @param[out] value Buffer to write into
+     * @throw ::fwData::Exception Index out of bounds
      */
-    FWDATA_API virtual void getItem(const ::fwData::Array::IndexType& id, void* value) const;
+    template< typename T > T at(const ::fwData::Array::IndexType& id) const;
 
     /**
      * @brief Getter for the array buffer
@@ -316,35 +358,15 @@ public:
         ::fwMemory::BufferAllocationPolicy::sptr policy = ::fwMemory::BufferMallocPolicy::New()
         );
 
-    /**
-     * Returns the begining/end of the buffer interpreted as a char buffer
-     * @throw ::fwData::Exception The buffer cannot be accessed if the array is not locked
-     * @{
-     */
-    FWDATA_API virtual char* begin();
-    FWDATA_API virtual char* end();
-    FWDATA_API virtual const char* begin() const;
-    FWDATA_API virtual const char* end() const;
-    ///@}
-
     /** Returns the begining/end of the buffer, casted to T
      * @throw ::fwData::Exception The buffer cannot be accessed if the array is not locked
      * @{
      */
-    template< typename T > T* begin();
-    template< typename T > T* end();
+    template< typename T > ArrayIterator<T> beginItr();
+    template< typename T > ArrayIterator<T> endItr();
+    template< typename T > Array::ArrayConstIterator<T> beginItr() const;
+    template< typename T > Array::ArrayConstIterator<T> endItr() const;
     /// @}
-    /**
-     * @brief Get a pointer to the value described by given parameters
-     *
-     * @param id Item id
-     *
-     * @return buffer item pointer
-     * @{
-     */
-    FWDATA_API char* getBufferPtr( const ::fwData::Array::IndexType& id);
-    FWDATA_API const char* getBufferPtr( const ::fwData::Array::IndexType& id) const;
-    ///@}
 
     //-----------------------------------------------------
     // Deprecated API
@@ -408,28 +430,23 @@ public:
     FWDATA_API virtual size_t getNumberOfComponents() const;
 
     /**
-     * @brief Compute offset in buffer
-     *
-     * @param id Item id
-     * @param component Item component id
-     * @param sizeOfType size of a component
-     *
-     * @return buffer offset
-     * @deprecated Component attribute is deprecated, increase array dimension instead of using component, it will be
-     * removed in sight 22.0. Use getBufferOffset( const ::fwData::Array::IndexType& id, size_t sizeOfType )
+     * Returns the begining/end of the buffer interpreted as a char buffer
+     * @throw ::fwData::Exception The buffer cannot be accessed if the array is not locked
+     * @{
      */
-    FWDATA_API size_t getBufferOffset( const ::fwData::Array::IndexType& id, size_t component, size_t sizeOfType) const;
+    FWDATA_API virtual char* begin();
+    FWDATA_API virtual char* end();
+    FWDATA_API virtual const char* begin() const;
+    FWDATA_API virtual const char* end() const;
+    ///@}
 
-    /**
-     * @brief Compute strides for given parameters
-     *
-     * @param size Array size
-     * @param nbOfComponents number of components
-     * @param sizeOfType size of a component
-     * @deprecated Component attribute is deprecated, increase array dimension instead of using component, it will be
-     * removed in sight 22.0. Use computeStrides( SizeType size, size_t sizeOfType )
+    /** Returns the begining/end of the buffer, casted to T
+     * @throw ::fwData::Exception The buffer cannot be accessed if the array is not locked
+     * @{
      */
-    FWDATA_API static OffsetType computeStrides( SizeType size, size_t nbOfComponents, size_t sizeOfType );
+    template< typename T > T* begin();
+    template< typename T > T* end();
+    /// @}
 
 protected:
 
@@ -447,10 +464,44 @@ protected:
         ::fwMemory::BufferAllocationPolicy::sptr policy = ::fwMemory::BufferMallocPolicy::New()
         );
 
+    /**
+     * @brief Compute strides for given parameters
+     *
+     * @param size Array size
+     * @param nbOfComponents number of components
+     * @param sizeOfType size of a component
+     * @deprecated Component attribute is deprecated, increase array dimension instead of using component, it will be
+     * removed in sight 22.0. Use computeStrides( SizeType size, size_t sizeOfType )
+     */
+    FWDATA_API static OffsetType computeStrides( SizeType size, size_t nbOfComponents, size_t sizeOfType );
+
+    /**
+     * @brief Get a pointer to the value described by given parameters
+     *
+     * @param id Item id
+     *
+     * @return buffer item pointer
+     * @{
+     */
+    FWDATA_API char* getBufferPtr( const ::fwData::Array::IndexType& id);
+    FWDATA_API const char* getBufferPtr( const ::fwData::Array::IndexType& id) const;
+    ///@}
+
+    /**
+     * @brief Compute offset in buffer
+     *
+     * @param id Item id
+     *
+     * @return buffer offset
+     */
+    FWDATA_API size_t getBufferOffset( const ::fwData::Array::IndexType& id ) const;
+
     /// Not implemented
     Array( const Array& );
 
     const Array& operator= ( const Array& );
+
+private:
 
     OffsetType m_strides;
     ::fwTools::Type m_type;
@@ -478,6 +529,285 @@ inline void Array::setBufferObject (const ::fwMemory::BufferObject::sptr& val)
 //------------------------------------------------------------------------------
 
 template< typename T >
+Array::ArrayIterator<T> Array::beginItr()
+{
+    return ArrayIterator<T>(this);
+}
+
+//------------------------------------------------------------------------------
+
+template< typename T >
+Array::ArrayIterator<T> Array::endItr()
+{
+    auto itr = ArrayIterator<T>(this);
+    itr += this->getNumberOfElements();
+    return itr;
+}
+
+//------------------------------------------------------------------------------
+
+template< typename T >
+Array::ArrayConstIterator<T> Array::beginItr() const
+{
+    return ArrayConstIterator<T>(this);
+}
+
+//------------------------------------------------------------------------------
+
+template< typename T >
+Array::ArrayConstIterator<T> Array::endItr() const
+{
+    auto itr = ArrayConstIterator<T>(this);
+    itr += this->getNumberOfElements();
+    return itr;
+}
+
+//------------------------------------------------------------------------------
+
+template< typename T >
+T& Array::at(const ::fwData::Array::IndexType& id)
+{
+    const bool isIndexInBounds =
+        std::equal(id.begin(), id.end(), m_size.begin(),
+                   [](const IndexType::value_type& a, const IndexType::value_type& b)
+        {
+            return a < b;
+        });
+    FW_RAISE_EXCEPTION_IF(::fwData::Exception("Index out of bounds"), !isIndexInBounds);
+    return *reinterpret_cast<T*>(this->getBufferPtr(id));
+}
+
+//------------------------------------------------------------------------------
+
+template< typename T >
+T Array::at(const ::fwData::Array::IndexType& id) const
+{
+    const bool isIndexInBounds =
+        std::equal(id.begin(), id.end(), m_size.begin(),
+                   [](const IndexType::value_type& a, const IndexType::value_type& b)
+        {
+            return a < b;
+        });
+    FW_RAISE_EXCEPTION_IF(::fwData::Exception("Index out of bounds"), !isIndexInBounds);
+    return *reinterpret_cast<T*>(this->getBufferPtr(id));
+}
+
+//------------------------------------------------------------------------------
+
+template <class TYPE>
+Array::ArrayIterator<TYPE>::ArrayIterator(Array* array)
+{
+    m_lock             = array->lock();
+    m_pointer          = static_cast<TYPE*>(array->getBuffer());
+    m_numberOfElements = array->getNumberOfElements();
+}
+
+//------------------------------------------------------------------------------
+
+template <class TYPE>
+Array::ArrayIterator<TYPE>::ArrayIterator(const ArrayIterator& it) :
+    m_pointer(it.m_pointer),
+    m_idx(it.m_idx),
+    m_lock(it.m_lock),
+    m_numberOfElements(it.m_numberOfElements)
+{
+}
+
+//------------------------------------------------------------------------------
+
+template <class TYPE>
+Array::ArrayIterator<TYPE>::~ArrayIterator()
+{
+    m_lock.reset();
+}
+
+//------------------------------------------------------------------------------
+
+template <class TYPE>
+Array::ArrayIterator<TYPE>& Array::ArrayIterator<TYPE>::operator++()
+{
+    ++m_idx;
+    m_pointer++;
+    return *this;
+}
+
+//------------------------------------------------------------------------------
+
+template <class TYPE>
+Array::ArrayIterator<TYPE> Array::ArrayIterator<TYPE>::operator++(int)
+{
+    ArrayIterator tmp(*this);
+    operator++();
+    return tmp;
+}
+
+//------------------------------------------------------------------------------
+
+template <class TYPE>
+Array::ArrayIterator<TYPE>& Array::ArrayIterator<TYPE>::operator+(size_t index)
+{
+    m_idx     += index;
+    m_pointer += index;
+    return *this;
+}
+
+//------------------------------------------------------------------------------
+
+template <class TYPE>
+Array::ArrayIterator<TYPE>& Array::ArrayIterator<TYPE>::operator+=(size_t index)
+{
+    m_idx     += index;
+    m_pointer += index;
+    return *this;
+}
+
+//------------------------------------------------------------------------------
+
+template <class TYPE>
+bool Array::ArrayIterator<TYPE>::operator==(const ArrayIterator& it) const
+{
+    return m_pointer == it.m_pointer && m_idx == it.m_idx;
+}
+
+//------------------------------------------------------------------------------
+
+template <class TYPE>
+bool Array::ArrayIterator<TYPE>::operator!=(const ArrayIterator& it) const
+{
+    return m_pointer != it.m_pointer || m_idx != it.m_idx;
+}
+
+//------------------------------------------------------------------------------
+
+template <class TYPE>
+bool Array::ArrayIterator<TYPE>::operator<(const ArrayIterator& it) const
+{
+    return m_idx < it.m_idx;
+}
+
+//------------------------------------------------------------------------------
+
+template <class TYPE>
+TYPE& Array::ArrayIterator<TYPE>::operator*()
+{
+    FW_RAISE_EXCEPTION_IF(::fwData::Exception("Index out of bounds"),
+                          m_idx >= m_numberOfElements);
+    return *m_pointer;
+}
+
+//------------------------------------------------------------------------------
+
+template <class TYPE>
+TYPE Array::ArrayIterator<TYPE>::operator*() const
+{
+    FW_RAISE_EXCEPTION_IF(::fwData::Exception("Index out of bounds"),
+                          m_idx >= m_numberOfElements);
+    return *m_pointer;
+}
+
+//------------------------------------------------------------------------------
+
+template <class TYPE>
+Array::ArrayConstIterator<TYPE>::ArrayConstIterator(Array* array) :
+    m_iter(array)
+{
+}
+
+//------------------------------------------------------------------------------
+
+template <class TYPE>
+Array::ArrayConstIterator<TYPE>::ArrayConstIterator(const ArrayConstIterator& it) :
+    m_iter(it.m_iter)
+{
+}
+
+//------------------------------------------------------------------------------
+
+template <class TYPE>
+Array::ArrayConstIterator<TYPE>::ArrayConstIterator(const ArrayIterator<TYPE>& it) :
+    m_iter(it)
+{
+}
+
+//------------------------------------------------------------------------------
+
+template <class TYPE>
+Array::ArrayConstIterator<TYPE>::~ArrayConstIterator()
+{
+}
+
+//------------------------------------------------------------------------------
+
+template <class TYPE>
+Array::ArrayConstIterator<TYPE>& Array::ArrayConstIterator<TYPE>::operator++()
+{
+    ++m_iter;
+    return *this;
+}
+
+//------------------------------------------------------------------------------
+
+template <class TYPE>
+Array::ArrayConstIterator<TYPE> Array::ArrayConstIterator<TYPE>::operator++(int)
+{
+    ArrayConstIterator tmp(*this);
+    m_iter++;
+    return tmp;
+}
+
+//------------------------------------------------------------------------------
+
+template <class TYPE>
+Array::ArrayConstIterator<TYPE>& Array::ArrayConstIterator<TYPE>::operator+(size_t index)
+{
+    m_iter = m_iter + index;
+    return *this;
+}
+
+//------------------------------------------------------------------------------
+
+template <class TYPE>
+Array::ArrayConstIterator<TYPE>& Array::ArrayConstIterator<TYPE>::operator+=(size_t index)
+{
+    m_iter += index;
+    return *this;
+}
+
+//------------------------------------------------------------------------------
+
+template <class TYPE>
+bool Array::ArrayConstIterator<TYPE>::operator==(const ArrayConstIterator& it) const
+{
+    return m_iter == it.m_iter;
+}
+
+//------------------------------------------------------------------------------
+
+template <class TYPE>
+bool Array::ArrayConstIterator<TYPE>::operator!=(const ArrayConstIterator& it) const
+{
+    return m_iter != it.m_iter;
+}
+
+//------------------------------------------------------------------------------
+
+template <class TYPE>
+bool Array::ArrayConstIterator<TYPE>::operator<(const ArrayConstIterator& it) const
+{
+    return m_iter < it.m_iter;
+}
+
+//------------------------------------------------------------------------------
+
+template <class TYPE>
+TYPE Array::ArrayConstIterator<TYPE>::operator*() const
+{
+    return *m_iter;
+}
+
+//------------------------------------------------------------------------------
+
+template< typename T >
 T* Array::begin()
 {
     return static_cast<T*>(this->getBuffer());
@@ -489,14 +819,6 @@ template< typename T >
 T* Array::end()
 {
     return reinterpret_cast<T*> (static_cast<char*>(this->getBuffer()) + this->getSizeInBytes());
-}
-
-//------------------------------------------------------------------------------
-
-template< typename T >
-T* Array::getItem(const ::fwData::Array::IndexType& id)
-{
-    return static_cast<T*> (this->getItem(id));
 }
 
 //-----------------------------------------------------------------------------

@@ -274,10 +274,10 @@ void Array::setType(const ::fwTools::Type& type)
 
 size_t Array::getBufferOffset( const ::fwData::Array::IndexType& id ) const
 {
-    OSLM_ASSERT(
-        "Given index has " << id.size() << " dimensions, but Array has " << m_size.size() << "dimensions.",
-            id.size() == m_size.size()
-        );
+    FW_RAISE_EXCEPTION_IF(
+        ::fwData::Exception("Given index has " + std::to_string(id.size()) + " dimensions, but Array has " +
+                            std::to_string(m_size.size()) + " dimensions."),
+        id.size() != m_size.size() );
 
     OffsetType offsets(id.size());
 
@@ -422,35 +422,6 @@ const char* Array::getBufferPtr( const ::fwData::Array::IndexType& id) const
     const size_t offset = this->getBufferOffset(id);
     const char* item    = static_cast<const char*>(this->getBuffer()) + offset;
     return item;
-}
-
-//------------------------------------------------------------------------------
-
-void Array::setItem(const ::fwData::Array::IndexType& id, const void* value)
-{
-
-    size_t sizeOf   = m_type.sizeOf();
-    const char* val = static_cast<const char*>(value);
-    char* item      = this->getBufferPtr(id);
-    std::copy(val, val + sizeOf, item);
-}
-
-//------------------------------------------------------------------------------
-
-void* Array::getItem(const ::fwData::Array::IndexType& id)
-{
-    char* item = this->getBufferPtr(id);
-    return item;
-}
-
-//------------------------------------------------------------------------------
-
-void Array::getItem(const ::fwData::Array::IndexType& id, void* value) const
-{
-    const size_t sizeOf = m_type.sizeOf();
-    const char* item    = this->getBufferPtr(id);
-    char* val           = static_cast<char*>(value);
-    std::copy(item, item + sizeOf, val);
 }
 
 //------------------------------------------------------------------------------
