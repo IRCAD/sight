@@ -103,13 +103,13 @@ void Window::initialise()
      */
 #if defined(Q_OS_MAC) || defined(Q_OS_WIN)
     {
-        size_t winId = static_cast<size_t>(this->winId());
+        const size_t winId = static_cast<size_t>(this->winId());
         parameters["externalWindowHandle"] = Ogre::StringConverter::toString(winId);
         parameters["parentWindowHandle"]   = Ogre::StringConverter::toString(winId);
     }
 #else
     {
-        unsigned long winId = static_cast<unsigned long>(this->winId());
+        const unsigned long winId = static_cast<unsigned long>(this->winId());
         parameters["externalWindowHandle"] = Ogre::StringConverter::toString(winId);
     }
 #endif
@@ -539,6 +539,8 @@ void Window::ogreResize(const QSize& newSize)
     m_ogreRenderWindow->resize(static_cast< unsigned int >(newWidth), static_cast< unsigned int >(newHeight));
 #endif
     m_ogreRenderWindow->windowMovedOrResized();
+    const float newAspectRatio = static_cast<float>(m_ogreRenderWindow->getWidth()) /
+                                 static_cast<float>(m_ogreRenderWindow->getHeight());
 
     const auto numViewports = m_ogreRenderWindow->getNumViewports();
 
@@ -546,7 +548,7 @@ void Window::ogreResize(const QSize& newSize)
     for (unsigned short i = 0; i < numViewports; i++)
     {
         viewport = m_ogreRenderWindow->getViewport(i);
-        viewport->getCamera()->setAspectRatio(::Ogre::Real(newWidth) / ::Ogre::Real(newHeight));
+        viewport->getCamera()->setAspectRatio(newAspectRatio);
     }
 
     if (viewport && ::Ogre::CompositorManager::getSingleton().hasCompositorChain(viewport))
