@@ -50,7 +50,7 @@ public:
 
     fwCoreClassDefinitionsWithFactoryMacro( (Array)(::fwData::Object), (()), ::fwData::factory::New< Array >);
 
-    fwCampMakeFriendDataMacro((fwData)(Array));
+    fwCampMakeFriendDataMacro((fwData)(Array))
 
     /**
      * @brief Array size type
