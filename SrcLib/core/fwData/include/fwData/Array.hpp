@@ -280,8 +280,8 @@ public:
 
         BufferType m_pointer{nullptr};
         size_t m_idx{0};
-        ::fwMemory::BufferObject::Lock m_lock;
         size_t m_numberOfElements{0};
+        ::fwMemory::BufferObject::Lock m_lock;
     };
 
     template <typename TYPE>
@@ -325,6 +325,7 @@ public:
      * @param id Item id
      *
      * @return Buffer value casted to T
+     * @warning This method is slow and should not be used intensively
      * @throw ::fwData::Exception The buffer cannot be accessed if the array is not locked
      * @throw ::fwData::Exception Index out of bounds
      */
@@ -337,6 +338,7 @@ public:
      * @param id Item id
      *
      * @return Buffer value casted to T
+     * @warning This method is slow and should not be used intensively
      * @throw ::fwData::Exception The buffer cannot be accessed if the array is not locked
      * @throw ::fwData::Exception Index out of bounds
      */
@@ -546,6 +548,8 @@ inline void Array::setBufferObject (const ::fwMemory::BufferObject::sptr& val)
 template< typename T >
 Array::Iterator<T> Array::beginItr()
 {
+    SLM_WARN_IF("Array is of type '" + m_type.string() + "', but you try get a buffer of type '" +
+                ::fwTools::Type::create<T>().string() + "'", m_type != ::fwTools::Type::create<T>());
     return Iterator<T>(this);
 }
 
@@ -554,8 +558,11 @@ Array::Iterator<T> Array::beginItr()
 template< typename T >
 Array::Iterator<T> Array::endItr()
 {
+    SLM_WARN_IF("Array is of type '" + m_type.string() + "', but you try get a buffer of type '" +
+                ::fwTools::Type::create<T>().string() + "'", m_type != ::fwTools::Type::create<T>());
+
     auto itr = Iterator<T>(this);
-    itr += this->getNumberOfElements();
+    itr += this->getSizeInBytes()/sizeof(T);
     return itr;
 }
 
@@ -564,6 +571,8 @@ Array::Iterator<T> Array::endItr()
 template< typename T >
 Array::ConstIterator<T> Array::beginItr() const
 {
+    SLM_WARN_IF("Array is of type '" + m_type.string() + "', but you try get a buffer of type '" +
+                ::fwTools::Type::create<T>().string() + "'", m_type != ::fwTools::Type::create<T>());
     return ConstIterator<T>(this);
 }
 
@@ -572,8 +581,11 @@ Array::ConstIterator<T> Array::beginItr() const
 template< typename T >
 Array::ConstIterator<T> Array::endItr() const
 {
+    SLM_WARN_IF("Array is of type '" + m_type.string() + "', but you try get a buffer of type '" +
+                ::fwTools::Type::create<T>().string() + "'", m_type != ::fwTools::Type::create<T>());
+
     auto itr = ConstIterator<T>(this);
-    itr += this->getNumberOfElements();
+    itr += this->getSizeInBytes()/sizeof(T);
     return itr;
 }
 
@@ -623,8 +635,8 @@ template <class TYPE, bool isConst>
 Array::IteratorBase<TYPE, isConst>::IteratorBase(const IteratorBase<TYPE, false>& other) :
     m_pointer(other.m_pointer),
     m_idx(other.m_idx),
-    m_lock(other.m_lock),
-    m_numberOfElements(other.m_numberOfElements)
+    m_numberOfElements(other.m_numberOfElements),
+    m_lock(other.m_lock)
 {
 }
 
@@ -633,31 +645,30 @@ Array::IteratorBase<TYPE, isConst>::IteratorBase(const IteratorBase<TYPE, false>
 template <class TYPE, bool isConst>
 Array::IteratorBase<TYPE, isConst>::~IteratorBase()
 {
-    m_lock.reset();
 }
 
 //------------------------------------------------------------------------------
 
 template <class TYPE, bool isConst>
-bool Array::IteratorBase<TYPE, isConst>::operator==(const IteratorBase& it) const
+bool Array::IteratorBase<TYPE, isConst>::operator==(const IteratorBase& other) const
 {
-    return m_pointer == it.m_pointer && m_idx == it.m_idx;
+    return m_pointer == other.m_pointer && m_idx == other.m_idx;
 }
 
 //------------------------------------------------------------------------------
 
 template <class TYPE, bool isConst>
-bool Array::IteratorBase<TYPE, isConst>::operator!=(const IteratorBase& it) const
+bool Array::IteratorBase<TYPE, isConst>::operator!=(const IteratorBase& other) const
 {
-    return m_pointer != it.m_pointer || m_idx != it.m_idx;
+    return !(*this == other);
 }
 
 //------------------------------------------------------------------------------
 
 template <class TYPE, bool isConst>
-bool Array::IteratorBase<TYPE, isConst>::operator<(const IteratorBase& it) const
+bool Array::IteratorBase<TYPE, isConst>::operator<(const IteratorBase& other) const
 {
-    return m_idx < it.m_idx;
+    return m_idx < other.m_idx;
 }
 
 //------------------------------------------------------------------------------
@@ -665,8 +676,7 @@ bool Array::IteratorBase<TYPE, isConst>::operator<(const IteratorBase& it) const
 template <typename TYPE, bool isConst>
 typename Array::IteratorBase<TYPE, isConst>::ValueReferenceType Array::IteratorBase<TYPE, isConst>::operator*()
 {
-    FW_RAISE_EXCEPTION_IF(::fwData::Exception("Index out of bounds"),
-                          m_idx >= m_numberOfElements);
+    SLM_ASSERT("Index out of bounds", m_idx < m_numberOfElements);
     return *m_pointer;
 }
 
@@ -695,8 +705,8 @@ Array::IteratorBase<TYPE, isConst> Array::IteratorBase<TYPE, isConst>::operator+
 template <class TYPE, bool isConst>
 Array::IteratorBase<TYPE, isConst>& Array::IteratorBase<TYPE, isConst>::operator+(size_t index)
 {
-    m_idx     += index;
-    m_pointer += index;
+    m_idx     = m_idx + index;
+    m_pointer = m_pointer + index;
     return *this;
 }
 
@@ -735,8 +745,8 @@ Array::IteratorBase<TYPE, isConst> Array::IteratorBase<TYPE, isConst>::operator-
 template <class TYPE, bool isConst>
 Array::IteratorBase<TYPE, isConst>& Array::IteratorBase<TYPE, isConst>::operator-(size_t index)
 {
-    m_idx     -= index;
-    m_pointer -= index;
+    m_idx     = m_idx - index;
+    m_pointer = m_pointer - index;
     return *this;
 }
 

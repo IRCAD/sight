@@ -235,9 +235,10 @@ void ArrayTest::reallocate()
     array->resize(size, ::fwTools::Type::s_UINT32, true);
     auto lock = array->lock();
 
-    std::uint32_t count                           = 0;
-    ::fwData::Array::Iterator<std::uint32_t> iter = array->beginItr<std::uint32_t>();
-    for (; iter < array->endItr<std::uint32_t>(); ++iter)
+    std::uint32_t count                              = 0;
+    ::fwData::Array::Iterator<std::uint32_t> iter    = array->beginItr<std::uint32_t>();
+    ::fwData::Array::Iterator<std::uint32_t> iterEnd = array->endItr<std::uint32_t>();
+    for (; iter < iterEnd; ++iter)
     {
         *iter = count++;
     }
@@ -481,6 +482,7 @@ void ArrayTest::bufferAccessTest()
             CPPUNIT_ASSERT_NO_THROW(++itr);
             ++val;
         }
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(1000), val);
     }
     {
         Array::ConstIterator<std::uint32_t> itr = array->beginItr<std::uint32_t>();
