@@ -225,54 +225,70 @@ public:
      *
      * Iterate through the buffer and check if the idex is not out of the bounds
      */
-    template <class TYPE>
-    class ArrayIterator
+    template <class TYPE, bool isConstIterator = true>
+    class IteratorBase : public std::iterator<std::bidirectional_iterator_tag, TYPE>
     {
     public:
-        ArrayIterator(Array* array);
-        ArrayIterator(const ArrayIterator& it);
-        ~ArrayIterator();
-        ArrayIterator& operator++();
-        ArrayIterator operator++(int);
-        ArrayIterator& operator+(size_t index);
-        ArrayIterator& operator+=(size_t index);
-        bool operator==(const ArrayIterator& it) const;
-        bool operator!=(const ArrayIterator& it) const;
-        bool operator<(const ArrayIterator& it) const;
-        TYPE& operator*();
-        TYPE operator*() const;
+
+        /**
+         * For ConstIterator:   define input to be a const Array*
+         * For Iterator: define input to be a Array*
+         */
+        typedef typename std::conditional<isConstIterator, const Array*, Array*>::type ArrayType;
+
+        /**
+         * For ConstIterator:   define buffer type to be a const TYPE*
+         * For Iterator: define buffer type to be a TYPE*
+         */
+        typedef typename std::conditional<isConstIterator, const TYPE*, TYPE*>::type BufferType;
+
+        /**
+         * For const_iterator:   define ValueReferenceType to be a   const TYPE&
+         * For regular iterator: define ValueReferenceType to be a   TYPE&
+         */
+        typedef typename std::conditional<isConstIterator, const TYPE&, TYPE&>::type ValueReferenceType;
+
+        /// Constructor
+        IteratorBase(ArrayType array);
+        /// Copy constructor
+        IteratorBase(const IteratorBase<TYPE, false>& other);
+        /// Desttructor
+        ~IteratorBase();
+
+        /// Comparison operators
+        bool operator==(const IteratorBase& other) const;
+        bool operator!=(const IteratorBase& other) const;
+        bool operator<(const IteratorBase& other) const;
+
+        /// Increment/Decrement operators
+        IteratorBase& operator++();
+        IteratorBase operator++(int);
+        IteratorBase& operator+(size_t index);
+        IteratorBase& operator+=(size_t index);
+        IteratorBase& operator--();
+        IteratorBase operator--(int);
+        IteratorBase& operator-(size_t index);
+        IteratorBase& operator-=(size_t index);
+
+        /// Value access operators
+        ValueReferenceType operator*();
+        const TYPE& operator*() const;
+
     private:
-        TYPE* m_pointer{nullptr};
+
+        /// allow to create a ConstIterator from an Iterator
+        friend class IteratorBase<TYPE, true>;
+
+        BufferType m_pointer{nullptr};
         size_t m_idx{0};
-        Array* m_array{nullptr};
         ::fwMemory::BufferObject::Lock m_lock;
         size_t m_numberOfElements{0};
     };
 
-    /**
-     * @brief Iterator on array buffer
-     *
-     * Iterate through the buffer and check if the idex is not out of the bounds
-     */
-    template <class TYPE>
-    class ArrayConstIterator
-    {
-    public:
-        ArrayConstIterator(Array* array);
-        ArrayConstIterator(const ArrayConstIterator& it);
-        ArrayConstIterator(const ArrayIterator<TYPE>& it);
-        ~ArrayConstIterator();
-        ArrayConstIterator& operator++();
-        ArrayConstIterator operator++(int);
-        ArrayConstIterator& operator+(size_t index);
-        ArrayConstIterator& operator+=(size_t index);
-        bool operator==(const ArrayConstIterator& it) const;
-        bool operator!=(const ArrayConstIterator& it) const;
-        bool operator<(const ArrayConstIterator& it) const;
-        TYPE operator*() const;
-    private:
-        ArrayIterator<TYPE> m_iter;
-    };
+    template <typename TYPE>
+    using Iterator = IteratorBase<TYPE, false>;
+    template <typename TYPE>
+    using ConstIterator = IteratorBase<TYPE, true>;
 
     /**
      * @brief Resizes and allocate (if needed) the array.
@@ -362,10 +378,10 @@ public:
      * @throw ::fwData::Exception The buffer cannot be accessed if the array is not locked
      * @{
      */
-    template< typename T > ArrayIterator<T> beginItr();
-    template< typename T > ArrayIterator<T> endItr();
-    template< typename T > Array::ArrayConstIterator<T> beginItr() const;
-    template< typename T > Array::ArrayConstIterator<T> endItr() const;
+    template< typename T > Iterator<T> beginItr();
+    template< typename T > Iterator<T> endItr();
+    template< typename T > Array::ConstIterator<T> beginItr() const;
+    template< typename T > Array::ConstIterator<T> endItr() const;
     /// @}
 
     //-----------------------------------------------------
@@ -529,17 +545,17 @@ inline void Array::setBufferObject (const ::fwMemory::BufferObject::sptr& val)
 //------------------------------------------------------------------------------
 
 template< typename T >
-Array::ArrayIterator<T> Array::beginItr()
+Array::Iterator<T> Array::beginItr()
 {
-    return ArrayIterator<T>(this);
+    return Iterator<T>(this);
 }
 
 //------------------------------------------------------------------------------
 
 template< typename T >
-Array::ArrayIterator<T> Array::endItr()
+Array::Iterator<T> Array::endItr()
 {
-    auto itr = ArrayIterator<T>(this);
+    auto itr = Iterator<T>(this);
     itr += this->getNumberOfElements();
     return itr;
 }
@@ -547,17 +563,17 @@ Array::ArrayIterator<T> Array::endItr()
 //------------------------------------------------------------------------------
 
 template< typename T >
-Array::ArrayConstIterator<T> Array::beginItr() const
+Array::ConstIterator<T> Array::beginItr() const
 {
-    return ArrayConstIterator<T>(this);
+    return ConstIterator<T>(this);
 }
 
 //------------------------------------------------------------------------------
 
 template< typename T >
-Array::ArrayConstIterator<T> Array::endItr() const
+Array::ConstIterator<T> Array::endItr() const
 {
-    auto itr = ArrayConstIterator<T>(this);
+    auto itr = ConstIterator<T>(this);
     itr += this->getNumberOfElements();
     return itr;
 }
@@ -594,101 +610,61 @@ T Array::at(const ::fwData::Array::IndexType& id) const
 
 //------------------------------------------------------------------------------
 
-template <class TYPE>
-Array::ArrayIterator<TYPE>::ArrayIterator(Array* array)
+template <class TYPE, bool isConst>
+Array::IteratorBase<TYPE, isConst>::IteratorBase(ArrayType array)
 {
     m_lock             = array->lock();
-    m_pointer          = static_cast<TYPE*>(array->getBuffer());
+    m_pointer          = static_cast<BufferType>(array->getBuffer());
     m_numberOfElements = array->getNumberOfElements();
 }
 
 //------------------------------------------------------------------------------
 
-template <class TYPE>
-Array::ArrayIterator<TYPE>::ArrayIterator(const ArrayIterator& it) :
-    m_pointer(it.m_pointer),
-    m_idx(it.m_idx),
-    m_lock(it.m_lock),
-    m_numberOfElements(it.m_numberOfElements)
+template <class TYPE, bool isConst>
+Array::IteratorBase<TYPE, isConst>::IteratorBase(const IteratorBase<TYPE, false>& other) :
+    m_pointer(other.m_pointer),
+    m_idx(other.m_idx),
+    m_lock(other.m_lock),
+    m_numberOfElements(other.m_numberOfElements)
 {
 }
 
 //------------------------------------------------------------------------------
 
-template <class TYPE>
-Array::ArrayIterator<TYPE>::~ArrayIterator()
+template <class TYPE, bool isConst>
+Array::IteratorBase<TYPE, isConst>::~IteratorBase()
 {
     m_lock.reset();
 }
 
 //------------------------------------------------------------------------------
 
-template <class TYPE>
-Array::ArrayIterator<TYPE>& Array::ArrayIterator<TYPE>::operator++()
-{
-    ++m_idx;
-    m_pointer++;
-    return *this;
-}
-
-//------------------------------------------------------------------------------
-
-template <class TYPE>
-Array::ArrayIterator<TYPE> Array::ArrayIterator<TYPE>::operator++(int)
-{
-    ArrayIterator tmp(*this);
-    operator++();
-    return tmp;
-}
-
-//------------------------------------------------------------------------------
-
-template <class TYPE>
-Array::ArrayIterator<TYPE>& Array::ArrayIterator<TYPE>::operator+(size_t index)
-{
-    m_idx     += index;
-    m_pointer += index;
-    return *this;
-}
-
-//------------------------------------------------------------------------------
-
-template <class TYPE>
-Array::ArrayIterator<TYPE>& Array::ArrayIterator<TYPE>::operator+=(size_t index)
-{
-    m_idx     += index;
-    m_pointer += index;
-    return *this;
-}
-
-//------------------------------------------------------------------------------
-
-template <class TYPE>
-bool Array::ArrayIterator<TYPE>::operator==(const ArrayIterator& it) const
+template <class TYPE, bool isConst>
+bool Array::IteratorBase<TYPE, isConst>::operator==(const IteratorBase& it) const
 {
     return m_pointer == it.m_pointer && m_idx == it.m_idx;
 }
 
 //------------------------------------------------------------------------------
 
-template <class TYPE>
-bool Array::ArrayIterator<TYPE>::operator!=(const ArrayIterator& it) const
+template <class TYPE, bool isConst>
+bool Array::IteratorBase<TYPE, isConst>::operator!=(const IteratorBase& it) const
 {
     return m_pointer != it.m_pointer || m_idx != it.m_idx;
 }
 
 //------------------------------------------------------------------------------
 
-template <class TYPE>
-bool Array::ArrayIterator<TYPE>::operator<(const ArrayIterator& it) const
+template <class TYPE, bool isConst>
+bool Array::IteratorBase<TYPE, isConst>::operator<(const IteratorBase& it) const
 {
     return m_idx < it.m_idx;
 }
 
 //------------------------------------------------------------------------------
 
-template <class TYPE>
-TYPE& Array::ArrayIterator<TYPE>::operator*()
+template <typename TYPE, bool isConst>
+typename Array::IteratorBase<TYPE, isConst>::ValueReferenceType Array::IteratorBase<TYPE, isConst>::operator*()
 {
     FW_RAISE_EXCEPTION_IF(::fwData::Exception("Index out of bounds"),
                           m_idx >= m_numberOfElements);
@@ -697,8 +673,8 @@ TYPE& Array::ArrayIterator<TYPE>::operator*()
 
 //------------------------------------------------------------------------------
 
-template <class TYPE>
-TYPE Array::ArrayIterator<TYPE>::operator*() const
+template <class TYPE, bool isConst>
+const TYPE& Array::IteratorBase<TYPE, isConst>::operator*() const
 {
     FW_RAISE_EXCEPTION_IF(::fwData::Exception("Index out of bounds"),
                           m_idx >= m_numberOfElements);
@@ -707,102 +683,82 @@ TYPE Array::ArrayIterator<TYPE>::operator*() const
 
 //------------------------------------------------------------------------------
 
-template <class TYPE>
-Array::ArrayConstIterator<TYPE>::ArrayConstIterator(Array* array) :
-    m_iter(array)
+template <class TYPE, bool isConst>
+Array::IteratorBase<TYPE, isConst>& Array::IteratorBase<TYPE, isConst>::operator++()
 {
-}
-
-//------------------------------------------------------------------------------
-
-template <class TYPE>
-Array::ArrayConstIterator<TYPE>::ArrayConstIterator(const ArrayConstIterator& it) :
-    m_iter(it.m_iter)
-{
-}
-
-//------------------------------------------------------------------------------
-
-template <class TYPE>
-Array::ArrayConstIterator<TYPE>::ArrayConstIterator(const ArrayIterator<TYPE>& it) :
-    m_iter(it)
-{
-}
-
-//------------------------------------------------------------------------------
-
-template <class TYPE>
-Array::ArrayConstIterator<TYPE>::~ArrayConstIterator()
-{
-}
-
-//------------------------------------------------------------------------------
-
-template <class TYPE>
-Array::ArrayConstIterator<TYPE>& Array::ArrayConstIterator<TYPE>::operator++()
-{
-    ++m_iter;
+    ++m_idx;
+    ++m_pointer;
     return *this;
 }
 
 //------------------------------------------------------------------------------
 
-template <class TYPE>
-Array::ArrayConstIterator<TYPE> Array::ArrayConstIterator<TYPE>::operator++(int)
+template <class TYPE, bool isConst>
+Array::IteratorBase<TYPE, isConst> Array::IteratorBase<TYPE, isConst>::operator++(int)
 {
-    ArrayConstIterator tmp(*this);
-    m_iter++;
+    IteratorBase tmp(*this);
+    operator++();
     return tmp;
 }
 
 //------------------------------------------------------------------------------
 
-template <class TYPE>
-Array::ArrayConstIterator<TYPE>& Array::ArrayConstIterator<TYPE>::operator+(size_t index)
+template <class TYPE, bool isConst>
+Array::IteratorBase<TYPE, isConst>& Array::IteratorBase<TYPE, isConst>::operator+(size_t index)
 {
-    m_iter = m_iter + index;
+    m_idx     += index;
+    m_pointer += index;
     return *this;
 }
 
 //------------------------------------------------------------------------------
 
-template <class TYPE>
-Array::ArrayConstIterator<TYPE>& Array::ArrayConstIterator<TYPE>::operator+=(size_t index)
+template <class TYPE, bool isConst>
+Array::IteratorBase<TYPE, isConst>& Array::IteratorBase<TYPE, isConst>::operator+=(size_t index)
 {
-    m_iter += index;
+    m_idx     += index;
+    m_pointer += index;
     return *this;
 }
 
 //------------------------------------------------------------------------------
 
-template <class TYPE>
-bool Array::ArrayConstIterator<TYPE>::operator==(const ArrayConstIterator& it) const
+template <class TYPE, bool isConst>
+Array::IteratorBase<TYPE, isConst>& Array::IteratorBase<TYPE, isConst>::operator--()
 {
-    return m_iter == it.m_iter;
+    --m_idx;
+    --m_pointer;
+    return *this;
 }
 
 //------------------------------------------------------------------------------
 
-template <class TYPE>
-bool Array::ArrayConstIterator<TYPE>::operator!=(const ArrayConstIterator& it) const
+template <class TYPE, bool isConst>
+Array::IteratorBase<TYPE, isConst> Array::IteratorBase<TYPE, isConst>::operator--(int)
 {
-    return m_iter != it.m_iter;
+    IteratorBase tmp(*this);
+    operator--();
+    return tmp;
 }
 
 //------------------------------------------------------------------------------
 
-template <class TYPE>
-bool Array::ArrayConstIterator<TYPE>::operator<(const ArrayConstIterator& it) const
+template <class TYPE, bool isConst>
+Array::IteratorBase<TYPE, isConst>& Array::IteratorBase<TYPE, isConst>::operator-(size_t index)
 {
-    return m_iter < it.m_iter;
+    m_idx     -= index;
+    m_pointer -= index;
+    return *this;
 }
 
 //------------------------------------------------------------------------------
 
-template <class TYPE>
-TYPE Array::ArrayConstIterator<TYPE>::operator*() const
+template <class TYPE, bool isConst>
+Array::IteratorBase<TYPE, isConst>& Array::IteratorBase<TYPE, isConst>::operator-=(size_t index)
 {
-    return *m_iter;
+    m_idx     -= index;
+    m_pointer -= index;
+    return *this;
 }
 
 //------------------------------------------------------------------------------
