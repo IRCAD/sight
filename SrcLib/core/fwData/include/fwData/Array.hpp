@@ -272,7 +272,6 @@ public:
 
         /// Value access operators
         ValueReferenceType operator*();
-        const TYPE& operator*() const;
 
     private:
 
@@ -665,16 +664,6 @@ bool Array::IteratorBase<TYPE, isConst>::operator<(const IteratorBase& it) const
 
 template <typename TYPE, bool isConst>
 typename Array::IteratorBase<TYPE, isConst>::ValueReferenceType Array::IteratorBase<TYPE, isConst>::operator*()
-{
-    FW_RAISE_EXCEPTION_IF(::fwData::Exception("Index out of bounds"),
-                          m_idx >= m_numberOfElements);
-    return *m_pointer;
-}
-
-//------------------------------------------------------------------------------
-
-template <class TYPE, bool isConst>
-const TYPE& Array::IteratorBase<TYPE, isConst>::operator*() const
 {
     FW_RAISE_EXCEPTION_IF(::fwData::Exception("Index out of bounds"),
                           m_idx >= m_numberOfElements);
