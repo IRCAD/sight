@@ -81,7 +81,7 @@ namespace visuOgreAdaptor
         <inout key="tf" uid="..." optional="yes" />
         <inout key="clippingMatrix" uid="..." />
         <config layer="default"
-                samples="1024" preintegration="yes" ao="no" colorBleeding="no" shadows="no"
+                samples="1024" preintegration="yes" dynamic="false" ao="no" colorBleeding="no" shadows="no"
                 satSizeRatio="0.25" satShells="3" satShellRadius="7" satConeAngle="0.1" satConeSamples="50"
                 aoFactor="0.5" colorBleedingFactor="0.5" autoresetcamera="yes" transform="..."/>
     </service>
@@ -97,6 +97,7 @@ namespace visuOgreAdaptor
  * - \b layer (mandatory): id of the layer where this adaptor applies.
  * - \b samples (optional, default=512): maximum number of samples per ray or number of slices.
  * - \b preintegration (optional, yes/no, default=no): use pre-integration.
+ * - \b dynamic (optional, true/false, default=false): enables background buffering for dynamic images.
  * - \b widgets (optional, yes/no, default=yes): display VR widgets.
  * - \b ao (optional, true/false, default=false): Ambient occlusion usage.
  * - \b colorBleeding (optional, true/false, default=false): Color bleeding usage.
@@ -285,6 +286,9 @@ private:
 
     /// Use pre-integration.
     bool m_preIntegratedRendering { false };
+
+    /// Enables background buffering for dynamic images.
+    bool m_dynamic { false };
 
     /// Sets usage of ambient occlusion.
     bool m_ambientOcclusion { false };

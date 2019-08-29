@@ -105,6 +105,7 @@ void SVolumeRender::configuring()
 
     m_autoResetCamera        = config.get<std::string>("autoresetcamera", "yes") == "yes";
     m_preIntegratedRendering = config.get<std::string>("preintegration", "no") == "yes";
+    m_dynamic                = config.get<bool>("dynamic", m_dynamic);
     m_widgetVisibilty        = config.get<std::string>("widgets", "yes") == "yes";
     m_nbSamples              = config.get<std::uint16_t>("samples", m_nbSamples);
 
@@ -346,30 +347,41 @@ void SVolumeRender::resetCameraPosition(const ::fwData::Image::csptr& image)
 
 void SVolumeRender::bufferImage()
 {
-    // this->getRenderService()->makeCurrent();
-    auto bufferingFn = [this]()
-                       {
-                           ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-                           SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
-
-                           ::fwData::mt::ObjectReadLock imageLock(image);
-                           ::fwRenderOgre::Utils::convertImageForNegato(m_bufferingTexture.get(), image);
-
-                           // Swap texture pointers.
+    if(m_dynamic)
+    {
+        auto bufferingFn = [this]()
                            {
-                               std::lock_guard<std::mutex> swapLock(m_bufferSwapMutex);
-                               std::swap(m_3DOgreTexture, m_bufferingTexture);
-                           }
+                               ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+                               SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
 
-                           // Switch back to the main thread to compute the proxy geometry.
-                           // Ogre can't handle parallel rendering.
-                           this->slot(s_UPDATE_IMAGE_SLOT)->asyncRun();
-                       };
+                               ::fwData::mt::ObjectReadLock imageLock(image);
+                               ::fwRenderOgre::Utils::convertImageForNegato(m_bufferingTexture.get(), image);
 
-    m_bufferingWorker->pushTask(bufferingFn);
+                               // Swap texture pointers.
+                               {
+                                   std::lock_guard<std::mutex> swapLock(m_bufferSwapMutex);
+                                   std::swap(m_3DOgreTexture, m_bufferingTexture);
+                               }
 
-    // bufferingFn();
-    // this->updateImage();
+                               // Switch back to the main thread to compute the proxy geometry.
+                               // Ogre can't handle parallel rendering.
+                               this->slot(s_UPDATE_IMAGE_SLOT)->asyncRun();
+                           };
+
+        m_bufferingWorker->pushTask(bufferingFn);
+    }
+    else
+    {
+        ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+        SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
+
+        this->getRenderService()->makeCurrent();
+
+        ::fwData::mt::ObjectReadLock imageLock(image);
+        ::fwRenderOgre::Utils::convertImageForNegato(m_3DOgreTexture.get(), image);
+
+        this->updateImage();
+    }
 }
 
 //-----------------------------------------------------------------------------
