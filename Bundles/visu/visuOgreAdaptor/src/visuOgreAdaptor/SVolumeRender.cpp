@@ -130,6 +130,7 @@ void SVolumeRender::configuring()
 void SVolumeRender::updateVolumeTF()
 {
     this->getRenderService()->makeCurrent();
+    std::lock_guard<std::mutex> swapLock(m_bufferSwapMutex);
 
     ::fwData::TransferFunction::sptr tf = m_helperVolumeTF.getTransferFunction();
     {
@@ -436,6 +437,7 @@ void SVolumeRender::updateImage()
 void SVolumeRender::updateSampling(int nbSamples)
 {
     this->getRenderService()->makeCurrent();
+    std::lock_guard<std::mutex> swapLock(m_bufferSwapMutex);
 
     OSLM_ASSERT("Sampling rate must fit in a 16 bit uint.", nbSamples < 65536 && nbSamples >= 0);
     m_nbSamples = static_cast<std::uint16_t>(nbSamples);
@@ -674,6 +676,7 @@ void SVolumeRender::setFocalDistance(int focalDistance)
 void SVolumeRender::setBoolParameter(bool val, std::string key)
 {
     this->getRenderService()->makeCurrent();
+    std::lock_guard<std::mutex> swapLock(m_bufferSwapMutex);
 
     if(key == "preIntegration")
     {
@@ -704,6 +707,7 @@ void SVolumeRender::setBoolParameter(bool val, std::string key)
 void SVolumeRender::setIntParameter(int val, std::string key)
 {
     this->getRenderService()->makeCurrent();
+    std::lock_guard<std::mutex> swapLock(m_bufferSwapMutex);
 
     if(key == "sampling")
     {
@@ -742,6 +746,7 @@ void SVolumeRender::setIntParameter(int val, std::string key)
 void SVolumeRender::setDoubleParameter(double val, std::string key)
 {
     this->getRenderService()->makeCurrent();
+    std::lock_guard<std::mutex> swapLock(m_bufferSwapMutex);
 
     if(key == "aoFactor")
     {
@@ -818,6 +823,7 @@ void SVolumeRender::destroyWidget()
 void SVolumeRender::updateVolumeIllumination()
 {
     this->getRenderService()->makeCurrent();
+    std::lock_guard<std::mutex> swapLock(m_bufferSwapMutex);
 
     m_illum->SATUpdate(m_3DOgreTexture, m_gpuVolumeTF, m_volumeRenderer->getSamplingRate());
 
@@ -925,6 +931,7 @@ void SVolumeRender::updateClippingTM3D()
         sig->asyncEmit();
     }
 
+    std::lock_guard<std::mutex> swapLock(m_bufferSwapMutex);
     m_volumeRenderer->clipImage(m_widget->getClippingBox());
 
     this->requestRender();

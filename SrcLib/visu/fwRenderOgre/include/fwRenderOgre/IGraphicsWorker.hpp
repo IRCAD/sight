@@ -24,6 +24,8 @@
 
 #include "fwRenderOgre/config.hpp"
 
+#include <functional>
+
 namespace fwRenderOgre
 {
 
